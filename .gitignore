@@ -1,0 +1,12 @@
+# OS / editor cruft
+Thumbs.db
+desktop.ini
+.DS_Store
+*.swp
+*~
+
+# Generated dev artifact (rebuilt by tools/extract_start.ps1 each build)
+config/start_baseline.json
+
+# mod/ and most of tools/ are source and belong on GitHub.
+# The deployed mod excludes docs/tools automatically because the junction points at mod/ only.
