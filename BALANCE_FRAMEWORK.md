@@ -95,6 +95,11 @@ tier-N's break-even**, forcing tier-N into the red.
 We express this as a descending **break-even ladder** on the output good, at base input
 prices:
 
+> **These are the original v0.1 targets.** In v0.2 every tier was relaxed **−20 pp** (light
+> T1 → 120%, heavy/military T1 → 90%, single-PM synthetics/electrics → 100%). See **§8.1** for
+> the ladder actually in force and **§8.2–8.3** for how volumes are now derived. The *shape*
+> below (≈−20 pp/tier, N+2 obsolescence) is unchanged; only the absolute band moved down.
+
 | Tier | Target BE% (output price to break even) | Interpretation |
 |---|---|---|
 | **T1** (earliest) | **130–150%** | Only profitable when the good is scarce/expensive. A frontier industry. |
@@ -368,7 +373,55 @@ so tier-N sits ~40 pts above tier-(N+2)'s break-even → the N+2 obsolescence me
 5. **Secondary-PM edge cases:** distillery `pot_stills` (−30 groceries) on a T1 food building
    (now +29 groceries) can drive net groceries ≈ 0. Pre-existing vanilla behavior, now sharper.
 
-**Not yet done:** heavy industry (chemical/fertilizer, explosives, steel, motor, shipyard,
-automotive), military industry (arms, artillery, munitions), and the wage/TP layer. Synthetics
-and electrics already have a single main PM and need no split.
+**Superseded by §8** — the applied numbers above were the first light-industry pass; the whole of
+manufacturing has since been re-derived by the §8 volume methodology on the relaxed (v0.2) ladder.
+
+---
+
+## 8. Volume methodology & the relaxed (v0.2) ladder
+
+### 8.1 The relaxed ladder (−20 pp)
+
+Every industry's target break-even was made **20 pp more lenient** (profitable at cheaper output
+prices). Two ladders, both stepping −20 pp/tier:
+
+| Group | T1 | T2 | T3 | T4 |
+|---|--:|--:|--:|--:|
+| **Light** (food, textile, furniture, glass, tooling, paper) | 120% | 95% | 75% | 55% |
+| **Heavy + military** (fertilizer, explosives, steel, motor, automotive, arms, artillery, munitions; shipyard when enabled) | 90% | 70% | 50% | 30% |
+
+**Single-PM buildings** (synthetics, electrics) have no tier progression, so their target is set by
+**input depth**: start from the light-T1 max (120%) and subtract 20 pp per level of manufactured
+input. Electrics consumes **tools** (a tier-1 manufactured good) → one level down → **100%**;
+synthetics consumes **fertilizer** likewise → **100%**. (Raw inputs = level 0; the −20 pp global
+leniency is already folded into the 120% max.)
+
+### 8.2 How volumes are derived (the goal)
+
+Break-even only fixes the **ratio** of input value to output value; it does not fix the absolute
+volumes (140-out-for-100-in and 14-out-for-10-in have the same BE). We pin the volumes so they are
+**deterministic and re-derivable from the current vanilla recipes** (so a game patch is a one-command
+refresh, not a re-tune):
+
+1. **Tier-1 output = the vanilla tier-1 PM's output** (e.g. paper T1 = 40 paper, steel T1 = 65 steel).
+2. **Tier-1 inputs** are solved from the tier's target BE at base prices, scaling the *vanilla* input
+   quantities by a single factor so input↔input ratios stay vanilla, rounded to integers (≥1).
+3. **Higher-tier output = tier-1 output × 1.5^(tier−1)** (T2 ×1.5, T3 ×2.25, T4 ×3.375), unless a tier
+   sets an explicit `output_override` for a realism-driven reason. Per-industry `output_mult`
+   overrides the 1.5 default.
+4. **Higher-tier inputs** are solved exactly like step 2, using *that tier's* vanilla input goods/ratios
+   and its own target BE.
+
+This makes higher tiers genuinely **bigger plants** (more absolute output), which is what floods the
+market and drives laggards out, while BE governs *when* each tier is viable.
+
+### 8.3 Implementation
+
+`tools/solve_volumes.ps1` implements §8.2: it reads the **current** vanilla recipes from the game
+(via each tier's `vanilla_pm`), plus `target_be` / `output_mult` from the config, and writes the
+solved `output_qty` + `inputs` back into `config/mod_config.json`. Run it after changing a target or
+after a game update, then `build.ps1`. The linter (`lint.sh`) confirms each building's actual BE is
+within ±6 pp of its configured `target_be`. Coverage: **all manufacturing** (17 industries), with
+**shipyards** held at `disabled: true` for now. Deferred: the wage/total-profitability layer, more
+tech tiers, and raw-resource extraction.
 

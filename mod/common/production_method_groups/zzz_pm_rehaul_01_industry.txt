@@ -235,3 +235,13 @@ pmg_main_munition_shells = {
 	production_methods = { pm_main_munition_shells }
 }
 
+pmg_main_synthetics_dye = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+	production_methods = { pm_main_synthetics_dye }
+}
+
+pmg_main_electrics_telephones = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+	production_methods = { pm_main_electrics_telephones }
+}
+

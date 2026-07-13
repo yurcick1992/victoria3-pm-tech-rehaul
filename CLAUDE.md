@@ -34,14 +34,14 @@ Everything below — "one main PM", "a building per tier", the profitability lad
    laggards out. Governed by a break-even ladder in `BALANCE_FRAMEWORK.md` (the balance
    source of truth).
 
-Scope now: **all manufacturing** — 14 industries / 47 tier buildings. Light (food, textile,
-furniture, glass, tooling, paper) sits on a ~140/−22 break-even ladder; heavy + military
-(fertilizer, explosives, steel, motor, automotive, arms, artillery, munitions) on the 110/−20
-ladder (deep-funnel goods break even lower — two ladders coexist by design). **Shipyards are
-intentionally left vanilla for now** (industry-level `disabled: true` in the config — data kept,
-one flag to re-enable). Synthetics + electrics are left vanilla too (already one main PM).
-Deferred: shipyards, more tech tiers, transport/electricity secondary-PM tweaks, the
-wage/total-profitability balance layer, and raw-resource extraction.
+Scope now: **all manufacturing** — 17 industries / 49 tier buildings. Break-even ladders (relaxed
+by −20 pp in v0.2): light (food, textile, furniture, glass, tooling, paper) at **120/95/75/55**;
+heavy + military (fertilizer, explosives, steel, motor, automotive, arms, artillery, munitions) at
+**90/70/50/30**; single-PM **synthetics + electrics at 100** (set by input depth). Volumes follow
+the §8 methodology (tier-1 output = vanilla output, ×1.5 per tier, inputs solved from the BE goal).
+**Shipyards are intentionally left vanilla for now** (industry-level `disabled: true` in the config
+— data kept, one flag to re-enable). Deferred: shipyards, the wage/total-profitability balance
+layer, more tech tiers, transport/electricity secondary-PM tweaks, and raw-resource extraction.
 
 ## Repository layout
 
@@ -56,6 +56,7 @@ config/start_exceptions.json manual 1836-start overrides (force_tier / remove, s
 config/start_baseline.json   GENERATED inventory of the vanilla 1836 start (per-industry/tier/country + drift check)
 tools/                  dev tooling — NOT shipped in the mod
   build.ps1             builder: config → generates all mod/ files + all-language loc + ladder_tiers.txt + 1836 start, then lints
+  solve_volumes.ps1     re-derives every tier's output/input volumes from vanilla recipes + target_be (BALANCE_FRAMEWORK §8)
   convert_history.ps1   1836 start converter: re-tiers vanilla starting factories, applies start_exceptions.json
   extract_start.ps1     baseline extractor: vanilla start → start_baseline.json (inventory + version-drift alarm)
   history_lib.ps1       shared history parser used by the converter + extractor
@@ -65,7 +66,7 @@ tools/                  dev tooling — NOT shipped in the mod
   solve_targets.awk / profit.awk / vanilla_profit_baseline.txt   ad-hoc analysis helpers
 ui/                     browser balance editor — builder.html (hand-authored) + data.js (GENERATED each build)
 mod/                    THE DEPLOYABLE MOD — GENERATED, do not hand-edit
-  .metadata/metadata.json                                (the one hand-maintained mod file; has replace_paths for history)
+  .metadata/metadata.json                                (hand-maintained, except the mod `name` which the builder suffixes with the build time; has replace_paths for history)
   common/buildings/01_industry.txt                       (generated: WHOLE-FILE replacement of vanilla — see MODDING_NOTES)
   common/{production_methods,production_method_groups}/zzz_pm_rehaul_*.txt   (generated, additive)
   common/history/buildings/*.txt                         (generated: the re-tiered 1836 start; replaces vanilla via replace_paths)
@@ -78,6 +79,14 @@ the game.
 
 ## Working conventions
 
+- **Keep the docs in sync with reality — always, in the same pass as the change.** Any change
+  that affects behavior, file structure, conventions, scope, or numbers must be reflected in the
+  relevant `.md` (`CLAUDE.md`, `BALANCE_FRAMEWORK.md`, `MODDING_NOTES.md`, `README.md`) right then.
+  Never leave a doc describing something that is no longer true, and never leave a doc update
+  "hanging" for later. **One narrow exception:** when a change is a *proposed* solution the user is
+  still weighing and its outcome is genuinely uncertain, the doc update may be briefly deferred —
+  but call out the divergence explicitly and reconcile it the moment it settles (bring the docs to
+  the facts, or the facts to the docs). Resolve such gaps as soon as possible, not eventually.
 - **Edit the config, not the generated files.** The mod content lives in
   `config/mod_config.json`. To change balance or add/split buildings, edit that, then run the
   builder:
@@ -106,8 +115,14 @@ the game.
   the game uses; the builder emits them directly. `target_be` is the design goal (informational).
   The linter re-checks each building's actual break-even (building-level: main PM + the base PM of
   every other PMG) against its configured `target_be` (±6pp). This per-target check supports the
-  two coexisting ladders: light industry at ~140/−22, heavy+military at 110/−20 (deep-funnel goods
-  sit lower). `tools/ladder_tiers.txt` carries `pm tier target_be`.
+  coexisting ladders (light 120/−20, heavy+military 90/−20, single-PM 100). `tools/ladder_tiers.txt`
+  carries `pm tier target_be`.
+- **Volumes are derived, not hand-tuned.** `output_qty`/`inputs` come from `tools/solve_volumes.ps1`
+  (BALANCE_FRAMEWORK §8): tier-1 output = the vanilla tier-1 PM's output, higher tiers ×`output_mult`
+  (default 1.5) per tier, inputs solved from `target_be` keeping vanilla input ratios. It re-reads the
+  **current** vanilla recipes (via each tier's `vanilla_pm`), so after changing a `target_be`/`output_mult`
+  or after a game update: run `solve_volumes.ps1`, then `build.ps1`. (The UI edits volumes directly;
+  the solver regenerates them from the methodology.)
 - **Toggle a whole industry** with an industry-level `disabled: true` in the config — the builder,
   history converter, and UI all skip it, leaving that vanilla building untouched (used to keep
   shipyards vanilla for now). Building-level flags: `heavy_industry_law` (emits the industry-ban /
@@ -127,11 +142,15 @@ the game.
 - **Localization is generated for all 11 languages** — every added key gets an English stub in
   every language file, because untranslated keys show as raw `<key>` placeholders for non-English
   players (no reliable English fallback). This is handled by the builder; you never write loc by
-  hand. See MODDING_NOTES.md → Localization.
+  hand. See MODDING_NOTES.md → Localization. In-game building names are auto-formatted as
+  `Tier N. <name>. BE target <actual on-build BE>%` (e.g. "Tier 1. Bakery Food Industries. BE target 120%").
 - **After an in-game load, check `error.log`** (see MODDING_NOTES.md) — the linter checks
   economics, not engine errors.
 - Read `MODDING_NOTES.md` before touching metadata, load order, or icons.
-- The only hand-maintained file inside `mod/` is `.metadata/metadata.json`.
+- The only hand-maintained file inside `mod/` is `.metadata/metadata.json` — and even there the
+  builder suffixes the mod `name` with `(built yyyy-MM-dd HH:mm)` each build (stripping the prior
+  suffix so it never accumulates), so the Paradox launcher's mod list makes the freshest build
+  obvious. The mod `id` stays fixed, so playset membership is unaffected.
 
 ## Deployment / testing
 

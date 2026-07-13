@@ -44,10 +44,10 @@ window.PMDATA = {
                                              "pm_name":  "Bakery",
                                              "vanilla_pm":  "pm_bakery",
                                              "tech":  "manufacturies",
-                                             "target_be":  140,
-                                             "output_qty":  29,
+                                             "target_be":  120,
+                                             "output_qty":  45,
                                              "inputs":  {
-                                                            "grain":  61
+                                                            "grain":  81
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -64,11 +64,11 @@ window.PMDATA = {
                                              "pm_name":  "Sweeteners",
                                              "vanilla_pm":  "pm_sweeteners",
                                              "tech":  "distillation",
-                                             "target_be":  115,
-                                             "output_qty":  49,
+                                             "target_be":  95,
+                                             "output_qty":  68,
                                              "inputs":  {
-                                                            "grain":  54,
-                                                            "sugar":  20
+                                                            "grain":  62,
+                                                            "sugar":  23
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -86,11 +86,11 @@ window.PMDATA = {
                                              "pm_name":  "Baking Powder",
                                              "vanilla_pm":  "pm_baking_powder",
                                              "tech":  "baking_powder",
-                                             "target_be":  95,
-                                             "output_qty":  103,
+                                             "target_be":  75,
+                                             "output_qty":  101,
                                              "inputs":  {
-                                                            "grain":  94,
-                                                            "sugar":  35
+                                                            "grain":  73,
+                                                            "sugar":  27
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -132,10 +132,10 @@ window.PMDATA = {
                                              "pm_name":  "Handsewn Clothes",
                                              "vanilla_pm":  "pm_handsewn_clothes",
                                              "tech":  "manufacturies",
-                                             "target_be":  140,
-                                             "output_qty":  29,
+                                             "target_be":  120,
+                                             "output_qty":  45,
                                              "inputs":  {
-                                                            "fabric":  61
+                                                            "fabric":  81
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -152,11 +152,11 @@ window.PMDATA = {
                                              "pm_name":  "Dye Workshops",
                                              "vanilla_pm":  "pm_dye_workshops",
                                              "tech":  "lathe",
-                                             "target_be":  115,
-                                             "output_qty":  42,
+                                             "target_be":  95,
+                                             "output_qty":  68,
                                              "inputs":  {
-                                                            "fabric":  58,
-                                                            "dye":  7
+                                                            "dye":  10,
+                                                            "fabric":  78
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -174,11 +174,11 @@ window.PMDATA = {
                                              "pm_name":  "Sewing Machines",
                                              "vanilla_pm":  "pm_sewing_machines",
                                              "tech":  "mechanized_workshops",
-                                             "target_be":  95,
-                                             "output_qty":  79,
+                                             "target_be":  75,
+                                             "output_qty":  101,
                                              "inputs":  {
-                                                            "fabric":  75,
                                                             "dye":  13,
+                                                            "fabric":  76,
                                                             "tools":  6
                                                         },
                                              "employment":  {
@@ -198,13 +198,13 @@ window.PMDATA = {
                                              "pm_name":  "Electric Sewing Machines",
                                              "vanilla_pm":  "pm_electric_sewing_machines",
                                              "tech":  "electrical_capacitors",
-                                             "target_be":  75,
-                                             "output_qty":  130,
+                                             "target_be":  55,
+                                             "output_qty":  152,
                                              "inputs":  {
-                                                            "fabric":  65,
-                                                            "dye":  22,
-                                                            "tools":  11,
-                                                            "electricity":  11
+                                                            "dye":  19,
+                                                            "electricity":  9,
+                                                            "fabric":  56,
+                                                            "tools":  9
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -247,11 +247,11 @@ window.PMDATA = {
                                              "pm_name":  "Handcrafted Furniture",
                                              "vanilla_pm":  "pm_handcrafted_furniture",
                                              "tech":  "manufacturies",
-                                             "target_be":  140,
-                                             "output_qty":  29,
+                                             "target_be":  120,
+                                             "output_qty":  45,
                                              "inputs":  {
-                                                            "wood":  46,
-                                                            "fabric":  15
+                                                            "fabric":  20,
+                                                            "wood":  61
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -268,12 +268,12 @@ window.PMDATA = {
                                              "pm_name":  "Lathes",
                                              "vanilla_pm":  "pm_lathe",
                                              "tech":  "lathe",
-                                             "target_be":  115,
-                                             "output_qty":  43,
+                                             "target_be":  95,
+                                             "output_qty":  68,
                                              "inputs":  {
-                                                            "wood":  45,
-                                                            "fabric":  15,
-                                                            "tools":  7
+                                                            "fabric":  19,
+                                                            "tools":  10,
+                                                            "wood":  58
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -292,12 +292,12 @@ window.PMDATA = {
                                              "pm_name":  "Mechanized Workshops",
                                              "vanilla_pm":  "pm_mechanized_workshops",
                                              "tech":  "mechanized_workshops",
-                                             "target_be":  95,
-                                             "output_qty":  79,
+                                             "target_be":  75,
+                                             "output_qty":  101,
                                              "inputs":  {
-                                                            "wood":  70,
                                                             "fabric":  14,
-                                                            "tools":  14
+                                                            "tools":  14,
+                                                            "wood":  71
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -335,10 +335,10 @@ window.PMDATA = {
                                              "pm_name":  "Forest Glass",
                                              "vanilla_pm":  "pm_forest_glass",
                                              "tech":  "manufacturies",
-                                             "target_be":  140,
-                                             "output_qty":  18,
+                                             "target_be":  120,
+                                             "output_qty":  30,
                                              "inputs":  {
-                                                            "wood":  50
+                                                            "wood":  72
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -355,11 +355,11 @@ window.PMDATA = {
                                              "pm_name":  "Leaded Glass",
                                              "vanilla_pm":  "pm_leaded_glass",
                                              "tech":  "lathe",
-                                             "target_be":  115,
-                                             "output_qty":  26,
+                                             "target_be":  95,
+                                             "output_qty":  45,
                                              "inputs":  {
-                                                            "wood":  30,
-                                                            "lead":  15
+                                                            "lead":  21,
+                                                            "wood":  43
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -377,10 +377,10 @@ window.PMDATA = {
                                              "pm_name":  "Crystal Glass",
                                              "vanilla_pm":  "pm_crystal_glass",
                                              "tech":  "crystal_glass",
-                                             "target_be":  95,
-                                             "output_qty":  47,
+                                             "target_be":  75,
+                                             "output_qty":  68,
                                              "inputs":  {
-                                                            "lead":  45
+                                                            "lead":  51
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -399,11 +399,11 @@ window.PMDATA = {
                                              "pm_name":  "Houseware Plastics",
                                              "vanilla_pm":  "pm_houseware_plastics",
                                              "tech":  "plastics",
-                                             "target_be":  75,
-                                             "output_qty":  82,
+                                             "target_be":  55,
+                                             "output_qty":  101,
                                              "inputs":  {
-                                                            "oil":  25,
-                                                            "lead":  37
+                                                            "lead":  33,
+                                                            "oil":  22
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -445,10 +445,10 @@ window.PMDATA = {
                                              "pm_name":  "Crude Tools",
                                              "vanilla_pm":  "pm_crude_tools",
                                              "tech":  "manufacturies",
-                                             "target_be":  140,
-                                             "output_qty":  18,
+                                             "target_be":  120,
+                                             "output_qty":  30,
                                              "inputs":  {
-                                                            "wood":  50
+                                                            "wood":  72
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -465,11 +465,11 @@ window.PMDATA = {
                                              "pm_name":  "Pig Iron Tools",
                                              "vanilla_pm":  "pm_pig_iron",
                                              "tech":  "steelworking",
-                                             "target_be":  115,
-                                             "output_qty":  43,
+                                             "target_be":  95,
+                                             "output_qty":  45,
                                              "inputs":  {
-                                                            "wood":  42,
-                                                            "iron":  28
+                                                            "iron":  24,
+                                                            "wood":  37
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -487,11 +487,11 @@ window.PMDATA = {
                                              "pm_name":  "Steel Tools",
                                              "vanilla_pm":  "pm_steel",
                                              "tech":  "mechanical_tools",
-                                             "target_be":  95,
-                                             "output_qty":  58,
+                                             "target_be":  75,
+                                             "output_qty":  68,
                                              "inputs":  {
-                                                            "wood":  41,
-                                                            "steel":  28
+                                                            "steel":  26,
+                                                            "wood":  38
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -510,11 +510,11 @@ window.PMDATA = {
                                              "pm_name":  "Rubber Grip Tools",
                                              "vanilla_pm":  "pm_rubber_grips",
                                              "tech":  "vulcanization",
-                                             "target_be":  75,
-                                             "output_qty":  83,
+                                             "target_be":  55,
+                                             "output_qty":  101,
                                              "inputs":  {
-                                                            "rubber":  13,
-                                                            "steel":  39
+                                                            "rubber":  12,
+                                                            "steel":  35
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -555,10 +555,10 @@ window.PMDATA = {
                                              "pm_name":  "Pulp Pressing",
                                              "vanilla_pm":  "pm_pulp_pressing",
                                              "tech":  "manufacturies",
-                                             "target_be":  140,
-                                             "output_qty":  24,
+                                             "target_be":  120,
+                                             "output_qty":  40,
                                              "inputs":  {
-                                                            "wood":  50
+                                                            "wood":  72
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -575,11 +575,11 @@ window.PMDATA = {
                                              "pm_name":  "Sulfite Pulping",
                                              "vanilla_pm":  "pm_sulfite_pulping",
                                              "tech":  "mechanical_tools",
-                                             "target_be":  115,
-                                             "output_qty":  47,
+                                             "target_be":  95,
+                                             "output_qty":  60,
                                              "inputs":  {
-                                                            "wood":  44,
-                                                            "sulfur":  15
+                                                            "sulfur":  16,
+                                                            "wood":  47
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -597,12 +597,12 @@ window.PMDATA = {
                                              "pm_name":  "Bleached Paper",
                                              "vanilla_pm":  "pm_bleached_paper",
                                              "tech":  "chemical_bleaching",
-                                             "target_be":  95,
-                                             "output_qty":  73,
+                                             "target_be":  75,
+                                             "output_qty":  90,
                                              "inputs":  {
-                                                            "wood":  42,
+                                                            "dye":  14,
                                                             "sulfur":  14,
-                                                            "dye":  14
+                                                            "wood":  41
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -643,11 +643,11 @@ window.PMDATA = {
                                              "pm_name":  "Artificial Fertilizers",
                                              "vanilla_pm":  "pm_artificial_fertilizers",
                                              "tech":  "intensive_agriculture",
-                                             "target_be":  110,
+                                             "target_be":  90,
                                              "output_qty":  90,
                                              "inputs":  {
-                                                            "sulfur":  47,
-                                                            "iron":  16
+                                                            "iron":  13,
+                                                            "sulfur":  38
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -666,11 +666,11 @@ window.PMDATA = {
                                              "pm_name":  "Improved Fertilizer",
                                              "vanilla_pm":  "pm_improved_fertilizer",
                                              "tech":  "improved_fertilizer",
-                                             "target_be":  90,
-                                             "output_qty":  140,
+                                             "target_be":  70,
+                                             "output_qty":  135,
                                              "inputs":  {
-                                                            "sulfur":  42,
-                                                            "iron":  42
+                                                            "iron":  32,
+                                                            "sulfur":  32
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -689,12 +689,12 @@ window.PMDATA = {
                                              "pm_name":  "Nitrogen Fixation",
                                              "vanilla_pm":  "pm_nitrogen_fixation",
                                              "tech":  "nitrogen_fixation",
-                                             "target_be":  70,
-                                             "output_qty":  200,
+                                             "target_be":  50,
+                                             "output_qty":  203,
                                              "inputs":  {
-                                                            "sulfur":  42,
-                                                            "oil":  21,
-                                                            "iron":  32
+                                                            "iron":  23,
+                                                            "oil":  15,
+                                                            "sulfur":  30
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -732,11 +732,11 @@ window.PMDATA = {
                                              "pm_name":  "Leblanc Process",
                                              "vanilla_pm":  "pm_leblanc_process",
                                              "tech":  "intensive_agriculture",
-                                             "target_be":  110,
+                                             "target_be":  90,
                                              "output_qty":  50,
                                              "inputs":  {
-                                                            "sulfur":  34,
-                                                            "fertilizer":  34
+                                                            "fertilizer":  28,
+                                                            "sulfur":  28
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -755,12 +755,12 @@ window.PMDATA = {
                                              "pm_name":  "Ammonia-Soda Process",
                                              "vanilla_pm":  "pm_ammonia-soda_process",
                                              "tech":  "nitroglycerin",
-                                             "target_be":  90,
-                                             "output_qty":  80,
+                                             "target_be":  70,
+                                             "output_qty":  75,
                                              "inputs":  {
-                                                            "sulfur":  40,
-                                                            "fertilizer":  40,
-                                                            "paper":  13
+                                                            "fertilizer":  29,
+                                                            "paper":  10,
+                                                            "sulfur":  29
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -779,12 +779,12 @@ window.PMDATA = {
                                              "pm_name":  "Vacuum Evaporation",
                                              "vanilla_pm":  "pm_vacuum_evaporation",
                                              "tech":  "dynamite",
-                                             "target_be":  70,
-                                             "output_qty":  110,
+                                             "target_be":  50,
+                                             "output_qty":  113,
                                              "inputs":  {
-                                                            "sulfur":  41,
-                                                            "fertilizer":  41,
-                                                            "paper":  20
+                                                            "fertilizer":  30,
+                                                            "paper":  15,
+                                                            "sulfur":  30
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -803,13 +803,13 @@ window.PMDATA = {
                                              "pm_name":  "Brine Electrolysis",
                                              "vanilla_pm":  "pm_brine_electrolysis",
                                              "tech":  "electrical_capacitors",
-                                             "target_be":  50,
-                                             "output_qty":  150,
+                                             "target_be":  30,
+                                             "output_qty":  169,
                                              "inputs":  {
-                                                            "sulfur":  30,
-                                                            "fertilizer":  38,
-                                                            "paper":  23,
-                                                            "electricity":  15
+                                                            "electricity":  10,
+                                                            "fertilizer":  25,
+                                                            "paper":  15,
+                                                            "sulfur":  20
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -851,11 +851,11 @@ window.PMDATA = {
                                              "pm_name":  "Blister Steel Process",
                                              "vanilla_pm":  "pm_blister_steel_process",
                                              "tech":  "steelworking",
-                                             "target_be":  110,
+                                             "target_be":  90,
                                              "output_qty":  65,
                                              "inputs":  {
-                                                            "iron":  57,
-                                                            "coal":  43
+                                                            "coal":  35,
+                                                            "iron":  47
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -874,11 +874,11 @@ window.PMDATA = {
                                              "pm_name":  "Bessemer Process",
                                              "vanilla_pm":  "pm_bessemer_process",
                                              "tech":  "bessemer_process",
-                                             "target_be":  90,
-                                             "output_qty":  90,
+                                             "target_be":  70,
+                                             "output_qty":  98,
                                              "inputs":  {
-                                                            "iron":  74,
-                                                            "coal":  37
+                                                            "coal":  31,
+                                                            "iron":  62
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -897,11 +897,11 @@ window.PMDATA = {
                                              "pm_name":  "Open-Hearth Process",
                                              "vanilla_pm":  "pm_open_hearth_process",
                                              "tech":  "open_hearth_process",
-                                             "target_be":  70,
-                                             "output_qty":  120,
+                                             "target_be":  50,
+                                             "output_qty":  146,
                                              "inputs":  {
-                                                            "iron":  84,
-                                                            "coal":  28
+                                                            "coal":  24,
+                                                            "iron":  73
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -920,12 +920,12 @@ window.PMDATA = {
                                              "pm_name":  "Electric Arc Process",
                                              "vanilla_pm":  "pm_electric_arc_process",
                                              "tech":  "electric_arc_process",
-                                             "target_be":  50,
-                                             "output_qty":  150,
+                                             "target_be":  30,
+                                             "output_qty":  219,
                                              "inputs":  {
-                                                            "iron":  65,
-                                                            "coal":  19,
-                                                            "electricity":  19
+                                                            "coal":  17,
+                                                            "electricity":  17,
+                                                            "iron":  57
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -963,10 +963,10 @@ window.PMDATA = {
                                              "pm_name":  "Steam Engines",
                                              "vanilla_pm":  "pm_steam_engines",
                                              "tech":  "atmospheric_engine",
-                                             "target_be":  110,
+                                             "target_be":  90,
                                              "output_qty":  40,
                                              "inputs":  {
-                                                            "steel":  53
+                                                            "steel":  43
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -985,11 +985,11 @@ window.PMDATA = {
                                              "pm_name":  "Electric Engines",
                                              "vanilla_pm":  "pm_electric_engines",
                                              "tech":  "electric_railway",
-                                             "target_be":  90,
-                                             "output_qty":  80,
+                                             "target_be":  70,
+                                             "output_qty":  60,
                                              "inputs":  {
-                                                            "steel":  60,
-                                                            "electricity":  45
+                                                            "electricity":  26,
+                                                            "steel":  35
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1008,11 +1008,11 @@ window.PMDATA = {
                                              "pm_name":  "Diesel Engines",
                                              "vanilla_pm":  "pm_diesel_engines",
                                              "tech":  "compression_ignition",
-                                             "target_be":  70,
-                                             "output_qty":  120,
+                                             "target_be":  50,
+                                             "output_qty":  90,
                                              "inputs":  {
-                                                            "steel":  56,
-                                                            "oil":  56
+                                                            "oil":  30,
+                                                            "steel":  30
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1054,11 +1054,11 @@ window.PMDATA = {
                                              "pm_name":  "Basic Shipbuilding",
                                              "vanilla_pm":  "pm_basic_shipbuilding",
                                              "tech":  "navigation",
-                                             "target_be":  110,
+                                             "target_be":  90,
                                              "output_qty":  40,
                                              "inputs":  {
-                                                            "wood":  88,
-                                                            "fabric":  44
+                                                            "fabric":  36,
+                                                            "wood":  72
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1077,13 +1077,13 @@ window.PMDATA = {
                                              "pm_name":  "Complex Shipbuilding",
                                              "vanilla_pm":  "pm_complex_shipbuilding",
                                              "tech":  "screw_frigate",
-                                             "target_be":  90,
-                                             "output_qty":  70,
+                                             "target_be":  70,
+                                             "output_qty":  60,
                                              "inputs":  {
-                                                            "wood":  40,
-                                                            "hardwood":  40,
-                                                            "fabric":  40,
-                                                            "engines":  10
+                                                            "engines":  7,
+                                                            "fabric":  27,
+                                                            "hardwood":  27,
+                                                            "wood":  27
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1102,13 +1102,13 @@ window.PMDATA = {
                                              "pm_name":  "Metal Shipbuilding",
                                              "vanilla_pm":  "pm_metal_shipbuilding",
                                              "tech":  "gantry_cranes",
-                                             "target_be":  70,
-                                             "output_qty":  65,
+                                             "target_be":  50,
+                                             "output_qty":  90,
                                              "output_good":  "steamers",
                                              "inputs":  {
-                                                            "steel":  40,
                                                             "coal":  13,
-                                                            "engines":  13
+                                                            "engines":  13,
+                                                            "steel":  39
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1127,13 +1127,13 @@ window.PMDATA = {
                                              "pm_name":  "Arc Welding Shipbuilding",
                                              "vanilla_pm":  "pm_arc_welding_shipbuilding",
                                              "tech":  "arc_welding",
-                                             "target_be":  50,
-                                             "output_qty":  80,
+                                             "target_be":  30,
+                                             "output_qty":  135,
                                              "output_good":  "steamers",
                                              "inputs":  {
-                                                            "steel":  28,
                                                             "electricity":  28,
-                                                            "engines":  9
+                                                            "engines":  9,
+                                                            "steel":  28
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1174,12 +1174,12 @@ window.PMDATA = {
                                              "pm_name":  "Automobile Production",
                                              "vanilla_pm":  "pm_automobile_production",
                                              "tech":  "combustion_engine",
-                                             "target_be":  110,
+                                             "target_be":  90,
                                              "output_qty":  30,
                                              "inputs":  {
-                                                            "engines":  33,
-                                                            "rubber":  17,
-                                                            "oil":  17
+                                                            "engines":  27,
+                                                            "oil":  14,
+                                                            "rubber":  14
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1198,12 +1198,12 @@ window.PMDATA = {
                                              "pm_name":  "Mass Automobile Production",
                                              "vanilla_pm":  "pm_mass_automobile_production",
                                              "tech":  "compression_ignition",
-                                             "target_be":  90,
-                                             "output_qty":  50,
+                                             "target_be":  70,
+                                             "output_qty":  45,
                                              "inputs":  {
-                                                            "engines":  32,
-                                                            "rubber":  32,
-                                                            "oil":  32
+                                                            "engines":  23,
+                                                            "oil":  23,
+                                                            "rubber":  23
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1244,11 +1244,11 @@ window.PMDATA = {
                                              "pm_name":  "Muskets",
                                              "vanilla_pm":  "pm_muskets",
                                              "tech":  "gunsmithing",
-                                             "target_be":  110,
+                                             "target_be":  90,
                                              "output_qty":  30,
                                              "inputs":  {
-                                                            "iron":  25,
-                                                            "hardwood":  25
+                                                            "hardwood":  20,
+                                                            "iron":  20
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1266,12 +1266,12 @@ window.PMDATA = {
                                              "pm_name":  "Rifles",
                                              "vanilla_pm":  "pm_rifles",
                                              "tech":  "rifling",
-                                             "target_be":  90,
-                                             "output_qty":  50,
+                                             "target_be":  70,
+                                             "output_qty":  45,
                                              "inputs":  {
-                                                            "steel":  25,
-                                                            "hardwood":  25,
-                                                            "tools":  12
+                                                            "hardwood":  17,
+                                                            "steel":  17,
+                                                            "tools":  9
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1289,12 +1289,12 @@ window.PMDATA = {
                                              "pm_name":  "Repeaters",
                                              "vanilla_pm":  "pm_repeaters",
                                              "tech":  "repeaters",
-                                             "target_be":  70,
-                                             "output_qty":  70,
+                                             "target_be":  50,
+                                             "output_qty":  68,
                                              "inputs":  {
-                                                            "steel":  33,
-                                                            "hardwood":  16,
-                                                            "tools":  16
+                                                            "hardwood":  11,
+                                                            "steel":  23,
+                                                            "tools":  11
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1313,13 +1313,13 @@ window.PMDATA = {
                                              "pm_name":  "Bolt-Action Rifles",
                                              "vanilla_pm":  "pm_bolt_action_rifles",
                                              "tech":  "bolt_action_rifles",
-                                             "target_be":  50,
-                                             "output_qty":  100,
+                                             "target_be":  30,
+                                             "output_qty":  101,
                                              "inputs":  {
-                                                            "steel":  23,
-                                                            "hardwood":  12,
-                                                            "tools":  23,
-                                                            "oil":  12
+                                                            "hardwood":  7,
+                                                            "oil":  7,
+                                                            "steel":  14,
+                                                            "tools":  14
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1357,11 +1357,11 @@ window.PMDATA = {
                                              "pm_name":  "Cannons",
                                              "vanilla_pm":  "pm_cannons",
                                              "tech":  "artillery",
-                                             "target_be":  110,
+                                             "target_be":  90,
                                              "output_qty":  25,
                                              "inputs":  {
-                                                            "iron":  29,
-                                                            "hardwood":  19
+                                                            "hardwood":  16,
+                                                            "iron":  24
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1379,11 +1379,11 @@ window.PMDATA = {
                                              "pm_name":  "Smoothbores",
                                              "vanilla_pm":  "pm_smoothbores",
                                              "tech":  "shell_gun",
-                                             "target_be":  90,
-                                             "output_qty":  45,
+                                             "target_be":  70,
+                                             "output_qty":  38,
                                              "inputs":  {
-                                                            "iron":  44,
-                                                            "hardwood":  27
+                                                            "hardwood":  17,
+                                                            "iron":  29
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1402,12 +1402,12 @@ window.PMDATA = {
                                              "pm_name":  "Breech Loaders",
                                              "vanilla_pm":  "pm_breech_loaders",
                                              "tech":  "breech_loading_artillery",
-                                             "target_be":  70,
-                                             "output_qty":  65,
+                                             "target_be":  50,
+                                             "output_qty":  56,
                                              "inputs":  {
-                                                            "steel":  39,
-                                                            "hardwood":  16,
-                                                            "tools":  16
+                                                            "hardwood":  10,
+                                                            "steel":  24,
+                                                            "tools":  10
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1426,12 +1426,12 @@ window.PMDATA = {
                                              "pm_name":  "Recoiled Barrels",
                                              "vanilla_pm":  "pm_recoiled_barrels",
                                              "tech":  "automatic_machine_guns",
-                                             "target_be":  50,
-                                             "output_qty":  90,
+                                             "target_be":  30,
+                                             "output_qty":  84,
                                              "inputs":  {
-                                                            "steel":  39,
-                                                            "tools":  20,
-                                                            "oil":  10
+                                                            "oil":  6,
+                                                            "steel":  22,
+                                                            "tools":  11
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1473,11 +1473,11 @@ window.PMDATA = {
                                              "pm_name":  "Percussion Caps",
                                              "vanilla_pm":  "pm_percussion_caps",
                                              "tech":  "percussion_cap",
-                                             "target_be":  110,
+                                             "target_be":  90,
                                              "output_qty":  50,
                                              "inputs":  {
-                                                            "explosives":  31,
-                                                            "lead":  31
+                                                            "explosives":  25,
+                                                            "lead":  25
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1496,11 +1496,11 @@ window.PMDATA = {
                                              "pm_name":  "Explosive Shells",
                                              "vanilla_pm":  "pm_explosive_shells",
                                              "tech":  "dynamite",
-                                             "target_be":  90,
-                                             "output_qty":  90,
+                                             "target_be":  70,
+                                             "output_qty":  75,
                                              "inputs":  {
-                                                            "explosives":  51,
-                                                            "lead":  38
+                                                            "explosives":  33,
+                                                            "lead":  25
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1510,6 +1510,95 @@ window.PMDATA = {
                                                             },
                                              "pollution":  15,
                                              "texture":  "gfx/interface/icons/production_method_icons/explosive_shells.dds"
+                                         }
+                                     ]
+                       },
+                       {
+                           "id":  "synthetics",
+                           "output_good":  "dye",
+                           "building":  {
+                                            "aliases":  [
+                                                            "building_synthetics_plants"
+                                                        ],
+                                            "building_group":  "bg_heavy_industry",
+                                            "icon":  "gfx/interface/icons/building_icons/synthetics_plants.dds",
+                                            "background":  "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds",
+                                            "city_type":  "city",
+                                            "levels_per_mesh":  50,
+                                            "required_construction":  "construction_cost_very_high",
+                                            "ownership_type":  "self",
+                                            "heavy_industry_law":  true
+                                        },
+                           "secondary_pmgs":  [
+                                                  "pmg_synthetic_silk"
+                                              ],
+                           "tiers":  [
+                                         {
+                                             "key":  "building_synthetics_plant",
+                                             "name":  "Synthetics Plants",
+                                             "pm_key":  "pm_main_synthetics_dye",
+                                             "pmg_key":  "pmg_main_synthetics_dye",
+                                             "pm_name":  "Synthetic Dyes",
+                                             "vanilla_pm":  "pm_dye_production",
+                                             "tech":  "aniline",
+                                             "target_be":  100,
+                                             "output_qty":  80,
+                                             "inputs":  {
+                                                            "fertilizer":  51,
+                                                            "sulfur":  34
+                                                        },
+                                             "employment":  {
+                                                                "shopkeepers":  500,
+                                                                "laborers":  1000,
+                                                                "machinists":  1500,
+                                                                "engineers":  2000
+                                                            },
+                                             "pollution":  5,
+                                             "texture":  "gfx/interface/icons/production_method_icons/synthetic_dyes.dds"
+                                         }
+                                     ]
+                       },
+                       {
+                           "id":  "electrics",
+                           "output_good":  "telephones",
+                           "building":  {
+                                            "building_group":  "bg_heavy_industry",
+                                            "icon":  "gfx/interface/icons/building_icons/electrics_industry.dds",
+                                            "background":  "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds",
+                                            "city_type":  "city",
+                                            "levels_per_mesh":  50,
+                                            "required_construction":  "construction_cost_very_high",
+                                            "ownership_type":  "self",
+                                            "heavy_industry_law":  true
+                                        },
+                           "secondary_pmgs":  [
+                                                  "pmg_radios_category"
+                                              ],
+                           "tiers":  [
+                                         {
+                                             "key":  "building_electrics_industry",
+                                             "name":  "Electrics Industries",
+                                             "pm_key":  "pm_main_electrics_telephones",
+                                             "pmg_key":  "pmg_main_electrics_telephones",
+                                             "pm_name":  "Telephones",
+                                             "vanilla_pm":  "pm_telephones",
+                                             "tech":  "telephone",
+                                             "target_be":  100,
+                                             "output_qty":  60,
+                                             "inputs":  {
+                                                            "iron":  30,
+                                                            "lead":  30,
+                                                            "rubber":  30,
+                                                            "tools":  15
+                                                        },
+                                             "employment":  {
+                                                                "shopkeepers":  500,
+                                                                "laborers":  1500,
+                                                                "machinists":  2000,
+                                                                "engineers":  1000
+                                                            },
+                                             "pollution":  0,
+                                             "texture":  "gfx/interface/icons/production_method_icons/telephones.dds"
                                          }
                                      ]
                        }

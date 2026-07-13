@@ -86,9 +86,15 @@ copies with only the header line swapped from `l_english:` to `l_<lang>:`.
 - Lives at `mod/.metadata/metadata.json`. Key fields: `name`, unique `id` (reverse-domain),
   `version`, `game_id:"victoria3"`, `supported_game_version`, `tags`, and
   `game_custom_data.multiplayer_synchronized`.
+- **The builder stamps `name`.** `build.ps1` suffixes the mod `name` with `(built yyyy-MM-dd HH:mm)`
+  on every build (stripping the previous suffix first so it never accumulates), so the Paradox
+  launcher's mod list shows which build is freshest. The `id` is left untouched, so playset
+  membership is stable. This is the one field of an otherwise hand-maintained file that is machine-edited.
 - `replace_paths` (optional array of folder paths) makes the engine **ignore the entire vanilla
   folder** and use only the mod's — use when merge-override is not enough (e.g. to fully drop a
-  vanilla file's objects). We currently merge/override and do **not** need it.
+  vanilla file's objects). We **do** use it for `common/history/buildings` (so the converted 1836
+  start replaces vanilla's rather than double-placing factories); the rest of the mod is
+  merge/override and needs no entry.
 
 ## gfx / icons
 

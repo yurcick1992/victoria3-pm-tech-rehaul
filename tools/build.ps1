@@ -79,6 +79,7 @@ foreach ($ind in $cfg.industries) {
         if ($null -ne $t.required_input_goods) { $pm += "`trequired_input_goods = $($t.required_input_goods)" }
         $pm += "}",""
         $pmOut += $pm
+        $actualBe = if ($Oval -gt 0) { $actualI / $Oval * 100 } else { 0 }   # actual break-even, for the building name + summary
 
         # ---- PMG (single main PM) ----
         $pmgOut += "$($t.pmg_key) = {","`ttexture = `"gfx/interface/icons/generic_icons/mixed_icon_base.dds`"","`tproduction_methods = { $($t.pm_key) }","}",""
@@ -101,14 +102,13 @@ foreach ($ind in $cfg.industries) {
         $indBld += $bl
 
         # ---- localization (shared body) ----
-        $locBody += " $($t.key):0 `"$($t.name)`""
+        $locBody += " $($t.key):0 `"Tier $tierNo. $($t.name). BE target $([math]::Round($actualBe))%`""
         $locBody += " $($t.key)_lens_option:0 `"Expand $D$($t.key)$D`""
         $locBody += " $($t.pmg_key):0 `"$($t.pm_name)`""
         $locBody += " $($t.pm_key):0 `"$($t.pm_name)`""
 
         # ---- tier map + summary ----
         $tierMap += "$($t.pm_key) $tierNo $($t.target_be)"
-        $actualBe = if ($Oval -gt 0) { $actualI / $Oval * 100 } else { 0 }
         $summary += [pscustomobject]@{ Building=$t.key; Tier=$tierNo; TargetBE=$t.target_be; ActualBE=[math]::Round($actualBe) }
     }
     $genByBase[$ind.tiers[0].key] = ($indBld -join "`n")   # keyed by the vanilla base building key
@@ -189,6 +189,15 @@ if (-not $NoLint) {
         Write-Output "bash (Git Bash) not found - run the linter separately:  bash tools/lint.sh"
     }
 }
+
+# --- stamp the build time into the mod NAME so it's obvious in the launcher which build is loaded ---
+$metaPath = Join-Path $repo 'mod\.metadata\metadata.json'
+$ts = Get-Date -Format 'yyyy-MM-dd HH:mm'
+$meta = Get-Content $metaPath -Raw
+$meta = [regex]::Replace($meta, '("name"\s*:\s*"[^"]*?)\s*\(built[^)]*\)(")', '${1}${2}')          # strip any prior "(built ...)"
+$meta = [regex]::Replace($meta, '("name"\s*:\s*"[^"]*)(")', ('${1} (built ' + $ts + ')${2}'))       # append fresh timestamp
+[System.IO.File]::WriteAllText($metaPath, $meta, $noBom)
+Write-Output "Build timestamp: $ts (mod name)"
 
 # --- deploy: mirror mod/ into the Paradox mod folder as a REAL copy ---
 # The Paradox launcher does not traverse directory junctions (it reports the mod as ~48 bytes),

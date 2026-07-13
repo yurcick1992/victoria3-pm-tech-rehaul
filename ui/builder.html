@@ -331,7 +331,7 @@ function currentPart(){
   IND.forEach(i=>{ industries[i.id]={}; i.tiers.forEach(t=>{ industries[i.id][t.key]={output_qty:t.output_qty, inputs:{...t.inputs}, target_be:t.target_be}; }); });
   return {_schema:"pm_rehaul.manufacturing", _version:1, savedAt:new Date().toISOString(), industries};
 }
-document.getElementById('savePart').onclick=()=>saveJSON(`manufacturing_${stamp()}.json`, currentPart());
+document.getElementById('savePart').onclick=async()=>{ try{ const how=await saveJSON(`manufacturing_${stamp()}.json`, currentPart()); if(how&&how!=='abort') banner('info', how==='download'?'Config part downloaded to your <b>Downloads</b> folder.':'Config part saved.'); }catch(e){ banner('warn', `Save failed: <code>${esc(e.message)}</code>`); } };
 document.getElementById('loadPart').onclick=async()=>{ const obj=await openJSON(); if(obj) importPart(obj); };
 function importPart(part){
   if(!part||!part.industries){ banner('warn','Not a recognized config part (missing "industries").'); return; }
@@ -378,18 +378,25 @@ document.addEventListener('click', e=>{
   if(e.target.dataset.restore!==undefined){ const e2=loadHistory()[+e.target.dataset.restore]; if(e2){ importPart(e2.part); banner('info',`Restored snapshot from ${new Date(e2.at).toLocaleString()}.`); } }
   if(e.target.dataset.delh!==undefined){ const h=loadHistory(); h.splice(+e.target.dataset.delh,1); saveHistory(h); renderHistory(); }
 });
-document.getElementById('exportHist').onclick=()=>saveJSON(`build_history_${stamp()}.json`, loadHistory());
+document.getElementById('exportHist').onclick=async()=>{ try{ const how=await saveJSON(`build_history_${stamp()}.json`, loadHistory()); if(how&&how!=='abort') banner('info', how==='download'?'History downloaded to your <b>Downloads</b> folder.':'History saved.'); }catch(e){ banner('warn', `Save failed: <code>${esc(e.message)}</code>`); } };
 
 // ---------- export / build full mod_config.json ----------
 function mergedConfig(){
   const cfg=JSON.parse(JSON.stringify(window.PMDATA.config));
-  cfg.industries.forEach(i=>{ const mi=IND.find(x=>x.id===i.id); i.tiers.forEach(t=>{ const mt=mi.tiers.find(x=>x.key===t.key);
-    t.output_qty=mt.output_qty; t.target_be=mt.target_be; t.inputs=mt.inputs; }); });
+  cfg.industries.forEach(i=>{ const mi=IND.find(x=>x.id===i.id); if(!mi) return;   // skip disabled/hidden industries (left as-is)
+    i.tiers.forEach(t=>{ const mt=mi.tiers.find(x=>x.key===t.key); if(!mt) return;
+      t.output_qty=mt.output_qty; t.target_be=mt.target_be; t.inputs=mt.inputs; }); });
   return cfg;
 }
-document.getElementById('exportCfg').onclick=()=>{
-  saveJSON('mod_config.json', mergedConfig());
-  banner('info','Exported mod_config.json. Save it over <code>config/mod_config.json</code>, then run <code>powershell tools\\build.ps1</code>.');
+document.getElementById('exportCfg').onclick=async()=>{
+  try{
+    const how=await saveJSON('mod_config.json', mergedConfig());
+    if(how==='abort') return;
+    banner('info', (how==='download'
+      ? 'Downloaded <code>mod_config.json</code> to your browser\'s <b>Downloads</b> folder.'
+      : 'Saved <code>mod_config.json</code> to the location you picked.')
+      + ' Copy it over <code>config\\mod_config.json</code>, then run <code>powershell tools\\build.ps1</code>.');
+  }catch(e){ banner('warn', `Export failed: <code>${esc(e.name+': '+e.message)}</code>`); }
 };
 document.getElementById('buildNow').onclick=async()=>{
   banner('info','Building… (writing config, regenerating, linting, deploying)');
@@ -398,17 +405,26 @@ document.getElementById('buildNow').onclick=async()=>{
     const txt=await r.text();
     const pass=/LINT PASSED/.test(txt);
     banner(pass?'info':'warn', `Build ${pass?'succeeded':'finished (check output)'} — config saved &amp; mod redeployed. Restart Victoria 3 to load it.<pre style="white-space:pre-wrap;max-height:200px;overflow:auto;margin:6px 0 0">${esc(txt)}</pre>`);
-  }catch(e){ banner('warn','No build server reachable. Launch the UI with <code>powershell tools\\ui.ps1</code> for one-click builds, or use “Export mod_config.json”.'); }
+  }catch(e){
+    const net = (e instanceof TypeError);   // fetch() rejects with TypeError on a real network failure
+    banner('warn', net
+      ? `Couldn't reach the build server (<code>${esc(location.origin)}</code>). Open the editor at <code>http://localhost:8777/</code> via <code>balance-ui.cmd</code>, or use <b>Export mod_config.json</b> + run <code>tools\\build.ps1</code>.`
+      : `Build failed before sending: <code>${esc(e.name+': '+e.message)}</code>.`);
+  }
 };
 
 // ---------- file IO (File System Access API with download fallback) ----------
+// returns 'picker' (saved via dialog), 'download' (went to Downloads), or 'abort' (cancelled)
 async function saveJSON(suggested, obj){
   const text=JSON.stringify(obj,null,2);
   if(window.showSaveFilePicker){ try{
       const h=await showSaveFilePicker({suggestedName:suggested, types:[{description:'JSON',accept:{'application/json':['.json']}}]});
-      const w=await h.createWritable(); await w.write(text); await w.close(); return;
-    }catch(err){ if(err&&err.name==='AbortError') return; /* else fall through */ } }
-  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:'application/json'})); a.download=suggested; a.click(); URL.revokeObjectURL(a.href);
+      const w=await h.createWritable(); await w.write(text); await w.close(); return 'picker';
+    }catch(err){ if(err&&err.name==='AbortError') return 'abort'; /* else fall through to download */ } }
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));
+  a.download=suggested; document.body.appendChild(a); a.click(); a.remove();   // must be in DOM for Firefox
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1500);                            // revoke late so the download isn't cancelled
+  return 'download';
 }
 async function openJSON(){
   if(window.showOpenFilePicker){ try{

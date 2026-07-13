@@ -9,7 +9,9 @@ factories drive obsolete ones out of the market — and modernizing now costs **
 Design detail lives in [`CLAUDE.md`](CLAUDE.md) (how it's built), [`BALANCE_FRAMEWORK.md`](BALANCE_FRAMEWORK.md)
 (the balance methodology + numbers), and [`MODDING_NOTES.md`](MODDING_NOTES.md) (engine gotchas).
 
-Scope today: **manufacturing** (light industry done; heavy/military in progress).
+Scope today: **all manufacturing** — 17 industries / 49 tier buildings (light, heavy, and military),
+with **shipyards deliberately left vanilla for now**. Raw-resource extraction and agriculture are
+out of scope.
 
 ## Requirements
 
@@ -35,7 +37,7 @@ and opens the editor in your browser. You can:
 
 - edit input/output **volumes** for every building × tier,
 - watch **break-even** and **profitability** update live,
-- apply the **“natural BE” preset** (tier 1 at 130%, −20 percentage points per tier),
+- apply the **“natural BE” preset** (tier 1 at 110%, −20 percentage points per tier),
 - click **Build now** to write the config and rebuild + redeploy (then restart V3 to load it).
 
 **No-server option:** just open [`ui/builder.html`](ui/builder.html) in a browser. Everything works
