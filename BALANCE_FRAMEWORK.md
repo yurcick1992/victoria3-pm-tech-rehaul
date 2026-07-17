@@ -19,35 +19,40 @@ built in layers:
 
 For a building (or a single PM) at a given set of market prices, let:
 
-- **I** = input cost = Σ (input good qty × input good price)
+- **I** = input-goods cost = Σ (input good qty × input good price)
 - **O** = output revenue = Σ (output good qty × output good price)
-- **W** = wages = Σ (employees × wage)
+- **W** = wages. In the live game wages are endogenous (employees × wage, moving with prosperity
+  and labor demand), which is not a design knob. For balance purposes we model wages as a **fixed
+  fraction of input-goods cost**: `W = wage_pct · I`, with **`wage_pct` defaulting to 33%** (a
+  per-tier `wage_pct` in the config overrides it). This is a **model/accounting layer only** — it is
+  **not** emitted to the game (no wage "goods input"); the game still pays its own wages from
+  employment. Every tool (volume solver, linter, building-cost solver, UI) uses this same `W`.
 
-We track three numbers:
+We track two numbers, both **wage-inclusive** (this is the change from earlier versions, where the
+ladder was run on the wage-free `I/O`):
 
 | Metric | Formula | Meaning |
 |---|---|---|
-| **Input-output profitability** (IO%) | `(O − I) / I` | Gross margin over input cost, wages ignored. Governs whether the *process* is worth running at all. |
-| **Total profitability** (TP%) | `(O − I − W) / (I + W)` | Return on the building's full operating cost. What the owner actually cares about. |
-| **Break-even output price** (BE%) | `I / O` at base prices, expressed as a % of base output price | The output price (as % of base) at which IO% = 0. **This is the key tuning handle.** |
+| **Full profitability** (the displayed profit) | `(O − I − W) / (I + W)` | Return on the building's full operating cost. What the owner actually earns. |
+| **Full break-even output price** (BE%) | `(I + W) / O` at base input prices, as a % of base output price | The output price (as % of base) at which full profit = 0. Equivalently `(1 + wage_pct) · (I/O)`. **This is the key tuning handle.** |
 
-**Worked example** (the one from the brief): W = 500, I = 2000, O = 3000.
-- IO% = (3000 − 2000) / 2000 = **+50%**
-- TP% = (3000 − 2000 − 500) / (2000 + 500) = 500 / 2500 = **+20%**
+**Worked example** (the brief's): W = 500, I = 2000, O = 3000.
+- Full profitability = (3000 − 2000 − 500) / (2000 + 500) = 500 / 2500 = **+20%**
+- Full BE% at these volumes = (2000 + 500) / 3000 = **83%** — the output can fall to 83% of base
+  before this building stops covering inputs **and** wages.
 
-**Why break-even output price is the master handle.** A building only earns positive IO
-margin when the market price of its output is above its BE%. Because higher tiers should
-survive at *lower* output prices, we design the ladder directly in BE% terms and then
-solve the input/output quantities to hit it. At base input prices, `BE% = I / O`, so:
+**Why full break-even output price is the master handle.** A building only turns a real (wage-inclusive)
+profit when the market price of its output is above its BE%. Because higher tiers should survive at
+*lower* output prices, we design the ladder directly in BE% terms and then solve the input/output
+quantities to hit it. At base input prices, `BE% = (I + W) / O`, so:
 
 - To **lower** a tier's BE% (make it viable at cheaper output prices) → raise output per
-  unit input, or cheapen the input mix.
+  unit input, cheapen the input mix, or lower `wage_pct`.
 - To **raise** a tier's BE% → the opposite.
 
-Wages (W) are deliberately held aside for the first pass, as instructed: wage levels are
-endogenous (they move with pop prosperity and labor demand), so IO% is the stable,
-price-only quantity we anchor on first. TP% targets come in a later pass once the IO
-ladder is fixed.
+> **Note on the vanilla baseline (§4/§5).** Those tables were measured on the wage-free `I/O`
+> (the metric this framework originally anchored on). They are kept as historical vanilla
+> documentation; multiply by ~`1 + wage_pct` to compare against a wage-inclusive BE.
 
 **Building-level vs. PM-level.** Because we only edit *main* PMs but a building also runs
 the base (default) states of its other PMGs, profitability is checked at the **building
@@ -95,10 +100,12 @@ tier-N's break-even**, forcing tier-N into the red.
 We express this as a descending **break-even ladder** on the output good, at base input
 prices:
 
-> **These are the original v0.1 targets.** In v0.2 every tier was relaxed **−20 pp** (light
-> T1 → 120%, heavy/military T1 → 90%, single-PM synthetics/electrics → 100%). See **§8.1** for
-> the ladder actually in force and **§8.2–8.3** for how volumes are now derived. The *shape*
-> below (≈−20 pp/tier, N+2 obsolescence) is unchanged; only the absolute band moved down.
+> **These are the original v0.1 wage-free targets, kept for history.** The ladder was since relaxed
+> (v0.2, −20 pp), re-based to **wage-inclusive full break-even**, and finally re-cast as a **curve over
+> tech unlock date (era)** rather than a per-industry group ladder — see **§1** for the metric and
+> **§8.1** for the ladder **actually in force** (era anchors 140/115/90/65/50 with an H1 manufactured-input
+> −15 pp adjustment), with **§8.2–8.3** for how volumes are derived. The *shape* (descending BE, N+2
+> obsolescence) is unchanged; the meaning of BE and the absolute numbers moved.
 
 | Tier | Target BE% (output price to break even) | Interpretation |
 |---|---|---|
@@ -124,6 +131,14 @@ inputs are expensive, real BE rises; when inputs are cheap (glutted), real BE fa
 with a heavier, more diverse input mix is therefore more exposed to input-price swings — a
 property we can use deliberately (modern tiers trading raw-material dependence for
 efficiency).
+
+> **Raw vs. manufactured inputs (for BE-target purposes).** When we classify a tier's inputs
+> as raw vs. factory-made (e.g. the early-game manufactured-input adjustment), **dye and silk
+> count as raw, not manufactured.** Both are RGO/plantation-sourced in the early game (dye
+> plantations, sericulture) and trade near base then, so a consumer of dye/silk is not
+> structurally input-squeezed the way a consumer of tools/steel/engines is. (Dye only becomes
+> factory-made later, via the synthetics plant, i.e. in the late game where such an adjustment
+> would be off anyway.) This carve-out lives in `tools/solve_be_targets.ps1` (`$MFG_GOODS`).
 
 ---
 
@@ -380,21 +395,60 @@ manufacturing has since been re-derived by the §8 volume methodology on the rel
 
 ## 8. Volume methodology & the relaxed (v0.2) ladder
 
-### 8.1 The relaxed ladder (−20 pp)
+### 8.1 The in-force ladder (date curve — wage-inclusive full break-even)
 
-Every industry's target break-even was made **20 pp more lenient** (profitable at cheaper output
-prices). Two ladders, both stepping −20 pp/tier:
+Targets are **full break-even** output prices (input goods **+ wages**, §1), referenced to the output
+good's price as % of base. **BE is a curve over each tier's tech unlock date (era), not a per-industry
+group ladder.** This ties obsolescence to real historical tech gaps: whichever tier's tech is ~2 eras
+older is ~50 pp underwater on output price when the market settles at the newer tier's BE.
 
-| Group | T1 | T2 | T3 | T4 |
-|---|--:|--:|--:|--:|
-| **Light** (food, textile, furniture, glass, tooling, paper) | 120% | 95% | 75% | 55% |
-| **Heavy + military** (fertilizer, explosives, steel, motor, automotive, arms, artillery, munitions; shipyard when enabled) | 90% | 70% | 50% | 30% |
+Each tier's `target_be` is:
 
-**Single-PM buildings** (synthetics, electrics) have no tier progression, so their target is set by
-**input depth**: start from the light-T1 max (120%) and subtract 20 pp per level of manufactured
-input. Electrics consumes **tools** (a tier-1 manufactured good) → one level down → **100%**;
-synthetics consumes **fertilizer** likewise → **100%**. (Raw inputs = level 0; the −20 pp global
-leniency is already folded into the 120% max.)
+> **target_be = anchor(era) − 15 · [ era ≤ 3 AND the recipe consumes a factory-made intermediate ]**
+
+**Era anchors** (the date curve). The tech's vanilla era → its BE anchor:
+
+| Era (vanilla band) | e1 (pre-1836) | e2 (1836–61) | e3 (1862–86) | e4 (1887–1911) | e5 (1911–36) |
+|---|--:|--:|--:|--:|--:|
+| **Anchor BE %** | 140 | 115 | 90 | 65 | 50 |
+
+~25 pp/era, so a 2-era gap ≈ 50 pp → the **N+2 obsolescence** mechanic; everything stays inside the
+25–175% band (§2) with headroom. There is **no within-era differentiation** — every tier on the same era
+gets the same anchor. (The eras themselves will be reworked/expanded later; a within-era spread was
+considered and dropped for simplicity.)
+
+**H1 manufactured-input discount (−15 pp).** Applied only when a tier unlocks in **eras 1–3** *and* its
+recipe consumes a **factory-made intermediate** (tools, steel, engines, fertilizer, explosives, paper,
+glass, …). Rationale: in the first half of the game those intermediates trade *above* base, so their
+consumer's real BE is higher than the base-price figure; we lower the nominal target to compensate. In
+**eras 4–5 the discount is off** — those intermediate markets have matured to ~base, so a
+manufactured-input plant is no longer disadvantaged and everything converges to the pure date curve.
+**Dye and silk are NOT counted as manufactured** here (RGO/plantation-sourced in H1; see the §3 note).
+
+This replaces the earlier per-group ladders (light 140/115/90/65, tools one tier lower, heavy/mil
+120/95/65/40, single-PM 65). Those group distinctions are now **emergent**: chains capped at an early
+era stay high-BE (e.g. food tops out at e2 → 115), tool/steel/engine consumers get the H1 discount, and
+deep-funnel goods (explosives, munitions, synthetics) pick up the discount automatically.
+
+Targets are derived by **`tools/solve_be_targets.ps1`**, which reads each tech's era live from vanilla
+`common/technology/technologies/*.txt` and writes per-tier `target_be` + `natural_year` (the era's
+representative year, shown in the UI). Run it first: `solve_be_targets.ps1` → `solve_volumes.ps1` →
+`solve_building_cost.ps1` → `build.ps1`.
+
+**Shipyards are enabled and split by output good** (§ following). The vanilla shipyard's single chain
+produces *clippers* (wooden: basic/complex shipbuilding) then switches to *steamers* (metal:
+metal/arc-welding) — a genuine output-good **and** input-mix type change, not a scaled recipe. Because BE
+is referenced to the output good's price, a single mixed-good ladder is incoherent across that seam, so
+the chain is split into two **output-good-consistent** chains, each placed on the date curve by its own
+techs:
+
+- **`shipyard` → clippers** — Basic (`navigation`, e1 → 140) / Complex (`screw_frigate`, e2 → 100 after
+  the engines discount), inputs wood/hardwood/fabric/engines. Keeps the vanilla base building
+  `building_shipyard` (+ `building_shipyards` alias).
+- **`shipyard_steam` → steamers** — Metal (`gantry_cranes`, e3 → 75) / Arc-Welding (`arc_welding`, e5 →
+  50), inputs steel/coal/electricity/engines. All-new buildings (base `building_shipyard_metal`, no
+  vanilla anchor — the builder appends it). No 1836 start factories (metal/arc techs post-date the start),
+  so the whole 1836 shipyard stock converts onto the clipper line.
 
 ### 8.2 How volumes are derived (the goal)
 
@@ -405,7 +459,9 @@ refresh, not a re-tune):
 
 1. **Tier-1 output = the vanilla tier-1 PM's output** (e.g. paper T1 = 40 paper, steel T1 = 65 steel).
 2. **Tier-1 inputs** are solved from the tier's target BE at base prices, scaling the *vanilla* input
-   quantities by a single factor so input↔input ratios stay vanilla, rounded to integers (≥1).
+   quantities by a single factor so input↔input ratios stay vanilla, rounded to integers (≥1). Because
+   the target is a **full** break-even, wages are folded in: solve `(I + wage_pct·I)/O = target_be`,
+   i.e. `I = target_be/100 · O / (1 + wage_pct)`, then distribute `I` across the vanilla input mix.
 3. **Higher-tier output = tier-1 output × 1.5^(tier−1)** (T2 ×1.5, T3 ×2.25, T4 ×3.375), unless a tier
    sets an explicit `output_override` for a realism-driven reason. Per-industry `output_mult`
    overrides the 1.5 default.
@@ -419,9 +475,90 @@ market and drives laggards out, while BE governs *when* each tier is viable.
 
 `tools/solve_volumes.ps1` implements §8.2: it reads the **current** vanilla recipes from the game
 (via each tier's `vanilla_pm`), plus `target_be` / `output_mult` from the config, and writes the
-solved `output_qty` + `inputs` back into `config/mod_config.json`. Run it after changing a target or
-after a game update, then `build.ps1`. The linter (`lint.sh`) confirms each building's actual BE is
-within ±6 pp of its configured `target_be`. Coverage: **all manufacturing** (17 industries), with
-**shipyards** held at `disabled: true` for now. Deferred: the wage/total-profitability layer, more
-tech tiers, and raw-resource extraction.
+solved `output_qty` + `inputs` back into `config/mod_config.json`. Both the solver and the linter read
+`wage_pct` (per-tier override, default 0.33). Run it after changing a target or after a game update,
+then `build.ps1`. The linter (`lint.sh`) confirms each building's actual **full** BE (input goods +
+wages) is within ±6 pp of its configured `target_be`. Coverage: **all manufacturing** (18 config
+industries — 17 vanilla, with the shipyard split into clipper + steamer chains, all enabled). Deferred:
+more tech tiers and raw-resource extraction. (The wage layer, previously deferred, is now folded into
+the ladder here.)
+
+---
+
+## 9. Building construction cost (10-year-payback model)
+
+Each tier carries an explicit **`building_cost`** (construction points) in the config, emitted as the
+building's `required_construction`. It replaces vanilla's four flat script-values
+(`construction_cost_low/medium/high/very_high` = 200/400/600/800). This directly serves the mod's core
+goal — **modernizing must cost capital**: a newer plant has to be *built*, not toggled on for free, so
+a bigger/more-modern tier costs more to construct. Solved by `tools/solve_building_cost.ps1`.
+
+### 9.1 The model
+
+Per building level, weekly flows at base prices:
+
+- **I** = input-goods cost = Σ(input qty × base price)
+- **W** = wages = **`wage_pct`·I** (the same shared assumption as §1; default 33%, per-tier override)
+- **TC** = total operating cost = I + W = (1 + wage_pct)·I
+- **π** = net weekly profit = **20%** of TC
+- **cost** = `PaybackYears × WeeksPerYear × π` = money the building must earn back over a **10-year** payback
+- **building_cost** (points) = cost ÷ (money per construction point), rounded to the nearest 5.
+
+**Money per construction point** is read from the **live** construction sector at **0 efficiency bonus**,
+using the "iron" PM `pm_iron_frame_buildings`: it consumes wood 40 + fabric 20 + iron 50 + tools 10 =
+**£3 600/wk** and produces `country_construction_add = 5` points/wk → **£720/point**. Both sides are
+weekly, so the tick cancels; the solver re-reads this from the game each run, so a patch is a one-command
+refresh.
+
+**Weekly vs. yearly.** Victoria 3 ticks **weekly** (52/yr); PM `_add` flows and construction output are
+weekly. So profit is annualized **×52**, and the per-point cost is a flow **ratio** (tick-independent).
+
+### 9.2 Why a flat return on cost (not "output at BE+20pp")
+
+The brief said "output priced at BE+20pp, wages +33% of input, 10-yr payback." Pricing revenue off each
+tier's BE makes the cost **scale with BE**, which balloons the tier spread: high-BE early tiers and
+low-BE modern tiers end up with wildly different margins (an earlier IO-BE experiment gave a **~800×**
+spread and pushed T1 basics toward ≈3 points, violating the "T1 ≈ vanilla" and "≤ 20–30× spread"
+guards). Now that BE is wage-inclusive the literal reading no longer goes *negative*, but it still
+inherits that BE-driven spread.
+
+We therefore realize "+20pp" as a **flat 20% net return on total operating cost** (π = 0.20·TC), which is
+BE-independent and bounded. This hugs vanilla and keeps a mild "modern costs more" slope. (A steeper
+alternative — 20% of *output value*, giving a wider spread that leans harder into the capital-demand goal —
+was considered and rejected in favor of this vanilla-hugging shape; it stays available as
+`solve_building_cost.ps1 -Basis output` if playtesting wants a steeper ladder.)
+
+### 9.3 Resulting costs (points), vs. vanilla 600 (light/mil) / 800 (heavy)
+
+Solver-derived from the current volumes (on the date-ladder targets); a snapshot — the live config/UI is
+authoritative and these move on any re-solve.
+
+| Industry | T1 | T2 | T3 | T4 |
+|---|--:|--:|--:|--:|
+| Food | 275 | 415 | 500 | — |
+| Textile | 275 | 415 | 440 | 430 |
+| Furniture | 275 | 375 | 435 | — |
+| Glass | 240 | 365 | 455 | 385 |
+| Tooling | 240 | 365 | 395 | 440 |
+| Paper | 240 | 295 | 455 | — |
+| Fertilizer | 450 | 520 | 570 | — |
+| Explosives | 355 | 535 | 620 | 795 |
+| Steel | 660 | 815 | 950 | 1030 |
+| Motor | 345 | 335 | 400 | — |
+| Automotive | 280 | 325 | — | — |
+| Arms | 370 | 380 | 450 | 565 |
+| Artillery | 355 | 445 | 430 | 555 |
+| Munitions | 365 | 405 | — | — |
+| Shipyard — clippers | 485 | 510 | — | — |
+| Shipyard — steamers | 500 | 505 | — | — |
+| Synthetics / Electrics (single-PM) | 345 / 400 | — | — | — |
+
+Spread **240 → 1030 = 4.3×**; T1 basics ≈2× under vanilla. Cheapest are the lean light T1s (glass /
+paper / tooling at 240); **steel is now the most expensive** (660 → 1030 — coal/iron-heavy recipes on the
+high early-era BE anchors). Costs rise with era mainly via the ×1.5 volume growth per tier; where a tier's
+BE anchor drops sharply (H2), input cost and hence build cost can dip against the tier below (e.g. motor
+T2, artillery T3) — an expected property of the "return on cost" reading.
+
+All assumptions are the solver's parameters (`WagePct`, `MarginPct`, `PaybackYears`, `WeeksPerYear`,
+`RoundTo`, `ConstructionPm`); re-solve with one command after playtest tuning.
 

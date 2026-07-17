@@ -33,16 +33,27 @@
   td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
   .mtable{table-layout:fixed}
   .mtable col.c-tier{width:52px}
-  .mtable col.c-out{width:140px}
+  .mtable col.c-bld{width:158px}
+  .mtable col.c-out{width:200px}
   .mtable col.c-in{width:236px}
   .mtable col.c-tgt{width:92px}
   .mtable col.c-be{width:96px}
   .mtable col.c-io{width:74px}
+  .mtable col.c-bc{width:96px}
+  .mtable col.c-pb{width:74px}
+  /* keep long text (building keys, good names) inside its column, and draw thin dotted column dividers */
+  .mtable td, .mtable th{overflow-wrap:break-word;border-right:1px dotted #3a4757}
+  .mtable td:last-child, .mtable th:last-child{border-right:none}
   input[type=number]{width:58px;background:#0f141b;color:var(--ink);border:1px solid var(--line);
     border-radius:5px;padding:3px 5px;font:inherit;text-align:right}
   input[type=number]:focus{outline:none;border-color:var(--accent)}
   .goodrow{display:flex;justify-content:space-between;gap:6px;align-items:center;margin:1px 0}
   .goodrow .g{color:var(--muted)}
+  /* right-side amount group: fixed columns so qty inputs, unit, and £ line up across goods + wages */
+  .goodrow .amt{display:flex;align-items:center;gap:4px;flex:none}
+  .goodrow .amt input[type=number]{width:52px}
+  .goodrow .amt .u{width:10px;color:var(--muted);font-size:11px}
+  .goodrow .amt .v{width:58px;text-align:right;font-variant-numeric:tabular-nums}
   .be{font-weight:700;font-variant-numeric:tabular-nums}
   .be.ok{color:var(--good)} .be.off{color:var(--warn)}
   .pill{display:inline-block;min-width:20px;text-align:center;border-radius:6px;padding:1px 7px;font-size:11px;font-weight:700;color:#0a0e14}
@@ -68,6 +79,41 @@
   .hist .row{display:flex;gap:10px;align-items:center;padding:5px 0;border-bottom:1px solid var(--line);font-size:12.5px}
   .hist .row .when{color:var(--muted);min-width:150px}
   code{background:#0f141b;padding:1px 5px;border-radius:4px;color:#bcd3ee}
+  .ind-hd{display:flex;align-items:center;gap:6px}
+  .ind-hd .spacer{flex:1}
+  .minibtn{font-size:11px;padding:1px 6px;line-height:1.6}
+  .lockbtn{font-size:13px;padding:0 6px}
+  .mtable col.c-act{width:58px}
+  .tieract{display:flex;gap:3px;justify-content:flex-end}
+  button:disabled{opacity:.38;cursor:not-allowed}
+  .card.locked{opacity:.6;box-shadow:inset 3px 0 0 var(--warn)}
+  #vizTip{position:fixed;z-index:50;display:none;pointer-events:none;background:var(--panel2);
+    border:1px solid var(--line);border-radius:7px;padding:6px 9px;font-size:12px;color:var(--ink);
+    max-width:300px;box-shadow:0 6px 20px rgba(0,0,0,.45);line-height:1.55}
+  #vizTip b{color:var(--accent)}
+  /* secondary-PM selectors (on our tier rows) + the reference-building explorer */
+  .secsep{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin:4px 0 2px;border-top:1px dashed var(--line);padding-top:3px}
+  .secrow{display:flex;justify-content:space-between;align-items:center;gap:6px;margin:1px 0}
+  select.pmsel{max-width:100%;flex:1;background:#0f141b;color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:2px 4px;font:inherit;font-size:11.5px}
+  select.pmsel.on{border-color:var(--accent)}
+  .refnote{color:var(--muted);font-size:12px;margin:2px 0 10px}
+  .refcluster{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:16px 2px 6px;padding-bottom:3px;border-bottom:1px solid var(--line)}
+  .refio{margin:3px 0 2px}
+  .refedit{display:flex;align-items:center;gap:6px;margin:1px 0}
+  .refedit .g{color:var(--muted);font-size:11.5px;min-width:130px}
+  .refedit input{width:58px;background:#0f141b;color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:1px 4px;font:inherit;font-size:11.5px;text-align:right}
+  .refedit .v{font-size:11px}
+  .refmods{margin:2px 0 0;font-size:11px;color:var(--muted)}
+  .refmods .mod{margin-right:8px;white-space:nowrap}
+  .refbld>.hd{cursor:pointer;display:flex;align-items:center;gap:8px;padding:6px 10px;border-bottom:1px solid var(--line)}
+  .refbld:last-child>.hd{border-bottom:none}
+  .refbld .bbe{font-weight:700;font-variant-numeric:tabular-nums}
+  .bbe.ok{color:var(--good)} .bbe.off{color:var(--bad)} .bbe.muted{color:var(--muted)}
+  .refbld .bd{padding:8px 12px 10px 26px;background:var(--bg);border-bottom:1px solid var(--line)}
+  .pmgblock{margin:6px 0}
+  .pmgblock .lbl{font-size:11px;color:var(--muted);margin-bottom:2px}
+  .flows{font-size:12px;color:var(--muted);margin-top:3px}
+  .flows .in{color:var(--bad)} .flows .out{color:var(--good)} .flows .mod{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -75,8 +121,15 @@
   <h1>PM &amp; Tech Rehaul — Balance UI</h1>
   <span class="tag muted">Manufacturing industry PMs</span>
   <span class="sp"></span>
-  <select id="presetScope" title="Apply preset to..."></select>
-  <button id="applyPreset" title="Set target BE to 130% at tier 1, −20pp per tier, and solve input volumes to hit it">Apply preset: natural BE ladder</button>
+  <select id="presetScope" title="Scope for the preset and payback tools"></select>
+  <button id="applyPreset" title="Set target FULL break-even to 110% at tier 1, −20pp per tier, and solve input volumes to hit it">Apply preset: natural BE ladder</button>
+  <span class="sp"></span>
+  <label class="muted" style="font-size:12px">Payback <input id="pbYears" type="number" min="1" step="1" value="10" style="width:48px"> yrs</label>
+  <button id="pbFixPrices" title="WHOLE SHEET (skips locked groups): set every tier's Build cost so payback = X years at the CURRENT price panel. Tiers unprofitable at current prices are skipped.">sheet $→X (build cost)</button>
+  <button id="pbFixCost" title="WHOLE SHEET (skips locked groups): for each unlocked industry, scale its output + input prices by one factor (keeps IO ratio & input mix) so its Tier-1 payback = X years, Build cost unchanged. Note: prices are shared, so this overwrites shared input goods across industries.">sheet %→X (prices, anchor T1)</button>
+  <span class="sp"></span>
+  <button id="lockAll" title="Lock every group (exclude all from mass editors)">🔒 all</button>
+  <button id="unlockAll" title="Unlock every group">🔓 all</button>
   <button id="savePart">Save part…</button>
   <button id="loadPart">Load part…</button>
   <button id="snapshot">Snapshot → history</button>
@@ -88,20 +141,22 @@
   <div id="banner" class="banner"></div>
 
   <div class="card">
-    <div class="hd" data-toggle="viz">Break-even ladder <span class="tag">— output price (% of base) at which input-output profit = 0, inputs at base. Lower = survives cheaper markets.</span></div>
+    <div class="hd" data-toggle="viz">Break-even ladder <span class="tag">— FULL break-even: output price (% of base) at which output revenue = input goods + wages, inputs at base. Lower = survives cheaper markets. Shaded = each tier's target range.</span></div>
     <div class="bd" id="vizBody"><div id="viz"></div>
       <div class="legend" id="vizLegend"></div>
     </div>
   </div>
 
   <div class="card">
-    <div class="hd" data-toggle="thr">Price panel — every good at % of base <span class="tag">— market price as % of base (band 25–175%; red = outside). Drives the IO@thr column. Hover an industry below to flag its inputs (red) / output (green).</span></div>
+    <div class="hd" data-toggle="thr">Price panel — every good at % of base <span class="tag">— market price as % of base (band 25–175%; red = outside). Drives the Profit@thr column. Hover an industry below to flag its inputs (red) / output (green).</span></div>
     <div class="bd"><div id="thresholds"></div>
       <div style="margin-top:8px"><button id="resetThr" style="padding:3px 9px">Reset all to 100%</button></div>
     </div>
   </div>
 
   <div id="industries"></div>
+  <div id="econref"></div>
+  <div id="reference"></div>
 
   <div class="card" id="histCard" style="display:none">
     <div class="hd" data-toggle="histbd">Build history <span class="tag">— snapshots of settings; stored in this browser. Restore to roll back.</span></div>
@@ -112,12 +167,14 @@
 </main>
 
 <script src="data.js"></script>
+<script src="vanilla.js"></script>
 <script>
 "use strict";
 // ---------- constants ----------
-const BANDS = {1:[130,150],2:[105,125],3:[85,105],4:[65,85],5:[50,65]};
 const TIERCOL = {1:"var(--tier1)",2:"var(--tier2)",3:"var(--tier3)",4:"var(--tier4)",5:"var(--tier5)"};
-const PRESET_BE = t => Math.max(30, 110 - (t-1)*20);   // natural BE ladder: T1 110%, −20pp/tier
+const TARGET_TOL = 6;   // pp: |BE − target_be| ≤ TOL shows green (matches the linter tolerance)
+const DEF_WAGE = 0.33;  // default wages as a fraction of input-goods cost (per-tier wage_pct overrides)
+const PRESET_BE = t => Math.max(30, 110 - (t-1)*20);   // natural full-BE ladder: T1 110%, −20pp/tier
 const round = x => Math.floor(x+0.5);
 // price-panel grouping by production depth (a good's canonical tier; adjust freely)
 const GOOD_GROUPS = [
@@ -131,15 +188,74 @@ const GOOD_GROUPS = [
 // ---------- state ----------
 if(!window.PMDATA){ document.body.innerHTML = '<p style="padding:24px">Could not load <code>data.js</code>. Run <code>tools\\build.ps1</code> first, and open this file from the same <code>ui/</code> folder.</p>'; throw new Error("no data"); }
 const PRICES = window.PMDATA.prices;
+// full vanilla building/PMG/PM reference (from vanilla.js); may be absent if not yet generated.
+const VAN = window.PMVANILLA || {buildings:{}, pmgs:{}, pms:{}};
+const HAVE_VAN = !!window.PMVANILLA;
+// default (base) PM of a PMG = its first listed PM (the vanilla "off"/baseline state).
+function basePm(pmg){ const g=VAN.pmgs[pmg]; return g && g.pms && g.pms[0]; }
+function initSel(pmgs){ const s={}; (pmgs||[]).forEach(pg=>{ const b=basePm(pg); if(b) s[pg]=b; }); return s; }
 // normalize industries into an editable model
 const IND = window.PMDATA.config.industries.filter(i => !i.disabled).map(i => ({
   id:i.id, output_good:i.output_good,
+  secondary_pmgs:(i.secondary_pmgs||[]).filter(pg=>VAN.pmgs[pg]),   // vanilla secondary PMGs (selectable)
+  locked:false,   // UI-session lock: excludes this group from all mass editors (preset + payback sweeps)
+  _open:false,    // fold state, preserved across re-render
   tiers:i.tiers.map((t,ix)=>({
     key:t.key, name:t.name, tier:ix+1, output_qty:+t.output_qty, target_be:+t.target_be,
+      tech:t.tech, natural_year:(t.natural_year!=null?+t.natural_year:null),   // unlock tech + its era's representative year (solve_be_targets.ps1)
     output_good:t.output_good,   // optional per-tier override (e.g. shipyard clippers→steamers)
+    building_cost:(t.building_cost!=null?+t.building_cost:null),   // construction points (→ required_construction)
+    wage_pct:(t.wage_pct!=null?+t.wage_pct:null),   // optional per-tier wage override (fraction of input-goods cost; default DEF_WAGE)
+    _sec:initSel((i.secondary_pmgs||[]).filter(pg=>VAN.pmgs[pg])),   // per-tier secondary-PM selection (session-only, default base)
     inputs:Object.fromEntries(Object.entries(t.inputs).map(([g,q])=>[g,+q]))
   }))
 }));
+// building-cost model — mirrors tools/solve_building_cost.ps1 (that solver is authoritative).
+// £/point = construction sector iron PM: £3600/wk goods ÷ 5 pts/wk = 720 (0 efficiency bonus).
+// NOTE: poundPerPoint is STATIC here and may go STALE on a game update if Paradox changes the
+// construction sector's iron PM recipe or its construction output. The solver re-derives it live
+// from the game each run, so the stored building_cost values shown are always correct — only this
+// UI "model N" hint would drift until 720 is refreshed. See ON_GAME_UPDATE.md.
+const BCM = { paybackYears:10, weeksPerYear:52, marginPct:0.20, wagePct:DEF_WAGE, poundPerPoint:720, roundTo:5, basis:'cost' };
+// wages are a balance-model construct (NOT emitted to the game — Victoria 3 pays wages endogenously
+// from employment). W = wagePct(t) * input-goods cost, always at BASE prices (labor is a fixed cost).
+function wagePct(t){ return (t.wage_pct!=null) ? +t.wage_pct : DEF_WAGE; }
+function wageCost(t){ return wagePct(t)*inputValue(t,false); }
+function buildingCostModel(i,t){
+  const I=inputValue(t,false);
+  const profit = (BCM.basis==='output') ? BCM.marginPct*outputValue(i,t,false) : BCM.marginPct*(1+wagePct(t))*I;
+  const cost = BCM.paybackYears*BCM.weeksPerYear*profit/BCM.poundPerPoint;
+  const pts = BCM.roundTo>0 ? Math.round(cost/BCM.roundTo)*BCM.roundTo : Math.round(cost);
+  return Math.max(1, pts);
+}
+// ---- payback period (depends on building_cost + the current price panel) ----
+// capital = build cost (points) × £/point ; weekly net profit at CURRENT prices, wages = 33% of
+// input cost at BASE (labor is a fixed cost, it doesn't swing with input good market prices).
+function storedBuildCost(i,t){ return (t.building_cost!=null?t.building_cost:buildingCostModel(i,t)); }
+function capitalCost(i,t){ return storedBuildCost(i,t)*BCM.poundPerPoint; }
+function weeklyProfit(i,t){ return outputValue(i,t,true) - inputValue(t,true) - wageCost(t); }
+function paybackYears(i,t){ const p=weeklyProfit(i,t); return p>0 ? capitalCost(i,t)/(BCM.weeksPerYear*p) : Infinity; }
+function fmtPayback(y){ return !isFinite(y) ? '∞' : (y>=99.5 ? '99+' : (y<10?y.toFixed(1):Math.round(y))+'y'); }
+// ---- payback actions (shared by tier / group / worksheet levels) ----
+// Fix prices, set a tier's Build cost so payback = X yrs. Returns false if unprofitable now.
+function applyBuildCost(i,t,X){
+  const p=weeklyProfit(i,t); if(p<=0) return false;
+  let pts=X*BCM.weeksPerYear*p/BCM.poundPerPoint;
+  pts = BCM.roundTo>0 ? Math.round(pts/BCM.roundTo)*BCM.roundTo : Math.round(pts);
+  t.building_cost=Math.max(1,pts); return true;
+}
+// Fix Build cost, scale industry i's output+input prices by one factor (keeps IO ratio + input mix)
+// so the ANCHOR tier's payback = X yrs. Returns {ok, oob}. Fails if the anchor's IO ≤ 0 at current prices.
+function applyPricesAnchor(i,anchor,X){
+  const spread = outputValue(i,anchor,true) - inputValue(anchor,true);
+  const wages  = wageCost(anchor);          // fixed labor (base)
+  if(spread<=0) return {ok:false};
+  const k = (capitalCost(i,anchor)/(BCM.weeksPerYear*X) + wages)/spread;
+  if(!(k>0)) return {ok:false};
+  const goods=new Set(); i.tiers.forEach(tt=>{ goods.add(tierOut(i,tt)); Object.keys(tt.inputs).forEach(g=>goods.add(g)); });
+  let oob=false; goods.forEach(g=>{ let v=Math.round(thresholds[g]*k); if(v<1)v=1; thresholds[g]=v; if(thrOOB(v))oob=true; });
+  return {ok:true,oob};
+}
 const thresholds = {};   // good -> percent (every priced good, not just the ones in use)
 Object.keys(PRICES).forEach(g => thresholds[g]=100);
 
@@ -152,17 +268,34 @@ function allGoods(){
 function outputGoods(){ const seen=new Set(),r=[]; IND.forEach(i=>{ if(!seen.has(i.output_good)){seen.add(i.output_good); r.push(i.output_good);} }); return r; }
 function thrOOB(v){ return v<25 || v>175; }   // outside the ±75% price band
 function tierOut(i,t){ return t.output_good || i.output_good; }
-function inputValue(t, useThr){ let v=0; for(const[g,q]of Object.entries(t.inputs)){ v += q*(PRICES[g]||0)*(useThr?(thresholds[g]??100)/100:1);} return v; }
-function outputValue(i,t, useThr){ const og=tierOut(i,t); return t.output_qty*(PRICES[og]||0)*(useThr?(thresholds[og]??100)/100:1); }
-function BE(i,t){ const O=outputValue(i,t,false); return O>0 ? inputValue(t,false)/O*100 : 0; }
-function IOthr(i,t){ const I=inputValue(t,true); return I>0 ? (outputValue(i,t,true)-I)/I*100 : 0; }
-// re-solve a tier's input volumes (keeping recipe proportions) so its break-even hits target_be
+// ----- production-method (PMVANILLA) helpers, shared by our secondaries + the reference explorer -----
+function pmRec(pm){ const v=VAN.pms[pm]||{in:{},out:{},emp:{},mods:{}}; const o=REFEDIT[pm];
+  return o ? {in:o.in||v.in, out:o.out||v.out, emp:v.emp, mods:v.mods} : v; }   // REFEDIT = session goods overrides (explorer editing)
+function goodsVal(map, useThr){ let v=0; for(const g in (map||{})){ v += map[g]*(PRICES[g]||0)*(useThr?(thresholds[g]??100)/100:1); } return v; }
+// value of the input/output goods of a set of selected PMs (sel = {pmg: pm})
+function selInVal(sel, useThr){ let v=0; for(const pg in (sel||{})) v += goodsVal(pmRec(sel[pg]).in, useThr); return v; }
+function selOutVal(sel, useThr){ let v=0; for(const pg in (sel||{})) v += goodsVal(pmRec(sel[pg]).out, useThr); return v; }
+// merge goods maps of selected PMs (for display); non-goods modifiers accumulate too
+function selGoods(sel){ const inm={},outm={},mods={}; for(const pg in (sel||{})){ const r=pmRec(sel[pg]);
+  for(const g in r.in) inm[g]=(inm[g]||0)+r.in[g]; for(const g in r.out) outm[g]=(outm[g]||0)+r.out[g];
+  for(const m in r.mods) mods[m]=(mods[m]||0)+r.mods[m]; } return {in:inm,out:outm,mods}; }
+function prettyPm(pm){ return String(pm).replace(/^pm_/,'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); }
+function prettyKey(k){ return String(k).replace(/^(building_|pmg_)/,'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); }
+// tier economics fold in the tier's selected secondary PMs (default base = inert, so no change until switched)
+function inputValue(t, useThr){ let v=0; for(const[g,q]of Object.entries(t.inputs)){ v += q*(PRICES[g]||0)*(useThr?(thresholds[g]??100)/100:1);} return v + selInVal(t._sec, useThr); }
+function outputValue(i,t, useThr){ const og=tierOut(i,t); return t.output_qty*(PRICES[og]||0)*(useThr?(thresholds[og]??100)/100:1) + selOutVal(t._sec, useThr); }
+// FULL break-even: output price (% of base) at which full profit (input goods + wages) = 0.
+function BE(i,t){ const O=outputValue(i,t,false); return O>0 ? (inputValue(t,false)+wageCost(t))/O*100 : 0; }
+// FULL profitability at the current price panel: (O − I − W)/(I + W). Wages at base (fixed labor).
+function TPthr(i,t){ const I=inputValue(t,true), W=wageCost(t); const C=I+W; return C>0 ? (outputValue(i,t,true)-C)/C*100 : 0; }
+// re-solve a tier's input volumes (keeping recipe proportions) so its FULL break-even hits target_be.
+// (I + wage*I)/O = target  =>  I = target/100 * O / (1+wage).
 function solveTierToTarget(i,t){
   const Ob=outputValue(i,t,false), Ib=inputValue(t,false);
-  if(Ib>0 && Ob>0){ const scale=(t.target_be/100*Ob)/Ib;
+  if(Ib>0 && Ob>0){ const scale=(t.target_be/100*Ob/(1+wagePct(t)))/Ib;
     for(const g of Object.keys(t.inputs)) t.inputs[g]=Math.max(1, round(t.inputs[g]*scale)); }
 }
-function inBand(t,be){ const b=BANDS[t.tier]; return b && be>=b[0] && be<=b[1]; }
+function onTarget(t,be){ return Math.abs(be - t.target_be) <= TARGET_TOL; }   // green if BE within tolerance of its target
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
 // ---------- rendering ----------
@@ -172,6 +305,7 @@ function render(){
   attachIndustryUI();
   renderViz();
   renderPresetScope();
+  renderReference();
 }
 function renderPresetScope(){
   const sel=document.getElementById('presetScope');
@@ -214,7 +348,9 @@ function highlightIndustryAll(id){   // union of every tier's goods; output wins
 function attachIndustryUI(){
   document.querySelectorAll('.card[data-ind]').forEach(c=>{
     const hd=c.querySelector('.hd'), bd=c.querySelector('.bd'), caret=c.querySelector('.caret');
-    hd.addEventListener('click', ()=>{ const hidden=bd.style.display==='none'; bd.style.display=hidden?'':'none'; caret.textContent=hidden?'▾':'▸'; });
+    const i=IND.find(x=>x.id===c.dataset.ind);
+    hd.addEventListener('click', e=>{ if(e.target.closest('button,input,select')) return;   // buttons handled elsewhere
+      i._open=!i._open; bd.style.display=i._open?'':'none'; caret.textContent=i._open?'▾':'▸'; });
     hd.addEventListener('mouseenter', ()=>highlightIndustryAll(c.dataset.ind));   // header → all goods
     hd.addEventListener('mouseleave', ()=>highlightIndustryAll(null));
   });
@@ -225,37 +361,90 @@ function attachIndustryUI(){
 }
 function industryCard(i){
   const rows = i.tiers.map(t=>tierRow(i,t)).join('');
-  return `<div class="card" data-ind="${esc(i.id)}"><div class="hd ind-hd"><span class="caret">▸</span> ${esc(i.id)} <span class="tag">→ ${esc(i.output_good)} · click to fold/unfold · hover for its goods (rows = per-tier)</span></div>
-    <div class="bd" style="display:none"><table class="mtable">
-      <colgroup><col class="c-tier"><col class="c-bld"><col class="c-out"><col class="c-in"><col class="c-tgt"><col class="c-be"><col class="c-io"></colgroup>
+  const dis = i.locked?'disabled':'';
+  return `<div class="card${i.locked?' locked':''}" data-ind="${esc(i.id)}"><div class="hd ind-hd"><span class="caret">${i._open?'▾':'▸'}</span> ${esc(i.id)} <span class="tag">→ ${esc(i.output_good)}${i.tiers[0]&&i.tiers[0].natural_year?' · unlocks ~'+i.tiers[0].natural_year:''} · click to fold/unfold</span>
+      <span class="spacer"></span>
+      <button class="minibtn" data-pb="cost" data-ind="${esc(i.id)}" ${dis} title="This group: set every tier's Build cost so payback = X yrs at current prices (fix prices)">group $→X</button>
+      <button class="minibtn" data-pb="price" data-ind="${esc(i.id)}" ${dis} title="This group: scale its output+input prices so Tier-1 payback = X yrs (fix build cost)">group %→X</button>
+      <button class="minibtn lockbtn" data-lock="${esc(i.id)}" title="${i.locked?'Unlock this group':'Lock: exclude this group from all mass editors (preset + group/worksheet payback). Manual edits stay allowed.'}">${i.locked?'🔒':'🔓'}</button>
+    </div>
+    <div class="bd" style="display:${i._open?'':'none'}"><table class="mtable">
+      <colgroup><col class="c-tier"><col class="c-bld"><col class="c-in"><col class="c-out"><col class="c-tgt"><col class="c-be"><col class="c-io"><col class="c-bc"><col class="c-pb"><col class="c-act"></colgroup>
       <thead><tr>
-      <th>Tier</th><th>Building</th><th class="num">Output</th><th>Inputs (qty)</th>
-      <th class="num" title="Edit to re-solve this tier's input volumes to hit that break-even">Target</th>
-      <th class="num" title="Break-even output price % (inputs at base)">BE</th>
-      <th class="num" title="Input-output profitability at the thresholds above">IO@thr</th>
+      <th>Tier</th><th>Building</th><th>Inputs (qty) + wages</th><th>Output</th>
+      <th class="num" title="Edit to re-solve this tier's input volumes to hit that FULL break-even">Target</th>
+      <th class="num" title="FULL break-even output price % — where output revenue = input goods + wages (inputs at base)">BE</th>
+      <th class="num" title="Full profitability at the price panel above: (output − inputs − wages) / (inputs + wages)">Profit@thr</th>
+      <th class="num" title="Build cost in construction points (→ required_construction). Editable; the muted number is what solve_building_cost.ps1 would set for the current inputs.">Build cost</th>
+      <th class="num" title="Payback period = (build cost × £720/point) ÷ annual net profit at the CURRENT price panel (wages per the wage % on each row, at base input cost). ∞ = unprofitable at current prices.">Payback</th>
+      <th class="num" title="Bring THIS tier to the X-yr payback: $ = set its Build cost (fix prices); % = scale this industry's prices so this tier hits X (fix build cost).">→X</th>
     </tr></thead><tbody>${rows}</tbody></table></div></div>`;
 }
+// secondary-PM selector rows for one tier (switchable vanilla PMGs; default base = inert).
+function secRows(i,t){
+  if(!HAVE_VAN || !i.secondary_pmgs.length) return '';
+  const rows = i.secondary_pmgs.map(pg=>{
+    const g=VAN.pmgs[pg]; const sel=t._sec[pg]||basePm(pg);
+    const opts=g.pms.map(pm=>`<option value="${esc(pm)}" ${pm===sel?'selected':''}>${esc(prettyPm(pm))}</option>`).join('');
+    const r=pmRec(sel), inV=goodsVal(r.in,false), outV=goodsVal(r.out,false), active=(pm=>pm!==basePm(pg))(sel);
+    const eff = (inV||outV) ? `<span class="v muted">${inV?'−£'+round(inV):''}${outV?' +£'+round(outV):''}</span>` : `<span class="v muted">off</span>`;
+    return `<div class="secrow" title="${esc(prettyKey(pg))} — switch PM to fold its goods into this building's BE">
+      <select class="pmsel${active?' on':''}" data-ind="${i.id}" data-tier="${t.tier}" data-pmg="${esc(pg)}">${opts}</select>${eff}</div>`;
+  }).join('');
+  return `<div class="secsep">secondary PMs</div>${rows}`;
+}
 function tierRow(i,t){
-  const be=BE(i,t), io=IOthr(i,t);
-  const inputs = Object.entries(t.inputs).map(([g,q])=>`<div class="goodrow"><span class="g">${esc(g)}</span>
-    <input type="number" min="0" step="1" value="${q}" data-ind="${i.id}" data-tier="${t.tier}" data-input="${esc(g)}"></div>`).join('');
+  const be=BE(i,t), tp=TPthr(i,t), outG=tierOut(i,t);
+  const inputs = Object.entries(t.inputs).map(([g,q])=>`<div class="goodrow" title="${esc(g)}: qty × base price £${PRICES[g]||'?'}"><span class="g">${esc(g)}</span>
+    <span class="amt"><input type="number" min="0" step="1" value="${q}" data-ind="${i.id}" data-tier="${t.tier}" data-input="${esc(g)}"><span class="u"></span><span class="v muted" id="gv_${i.id}_${t.tier}_${g}">£${round(q*(PRICES[g]||0))}</span></span></div>`).join('')
+    + `<div class="goodrow" title="Wages = this % of input-goods cost, at base prices. Model-only — not emitted to the game."><span class="g" style="font-style:italic">wages</span>
+    <span class="amt"><input type="number" min="0" step="1" value="${round(wagePct(t)*100)}" data-ind="${i.id}" data-tier="${t.tier}" data-wage="1"><span class="u">%</span><span class="v muted" id="wv_${i.id}_${t.tier}">£${round(wageCost(t))}</span></span></div>`
+    + secRows(i,t);
   return `<tr data-ind="${esc(i.id)}" data-tier="${t.tier}">
     <td><span class="pill" style="background:${TIERCOL[t.tier]||'#666'}">${t.tier}</span></td>
-    <td>${esc(t.name)}<div class="muted" style="font-size:11px">${esc(t.key)}</div></td>
-    <td class="num"><input type="number" min="1" step="1" value="${t.output_qty}" data-ind="${i.id}" data-tier="${t.tier}" data-out="1"> <span class="muted">${esc(tierOut(i,t))}</span></td>
+    <td>${esc(t.name)}<div class="muted" style="font-size:11px">${esc(t.key)}</div><div class="muted" style="font-size:10px" title="natural unlock date = this tier's tech era">${t.natural_year?'~'+t.natural_year+' · ':''}${esc(t.tech||'')}</div></td>
     <td>${inputs}</td>
+    <td><div class="goodrow" title="${esc(outG)}: qty × base price £${PRICES[outG]||'?'}"><span class="g">${esc(outG)}</span>
+      <span class="amt"><input type="number" min="1" step="1" value="${t.output_qty}" data-ind="${i.id}" data-tier="${t.tier}" data-out="1"><span class="u"></span><span class="v muted" id="ov_${i.id}_${t.tier}">£${round(t.output_qty*(PRICES[outG]||0))}</span></span></div></td>
     <td class="num"><input type="number" step="5" value="${t.target_be}" data-ind="${i.id}" data-tier="${t.tier}" data-target="1">%</td>
-    <td class="num" id="be_${i.id}_${t.tier}"><span class="be ${inBand(t,be)?'ok':'off'}">${be.toFixed(0)}%</span><div class="muted" style="font-size:10px">${BANDS[t.tier]?BANDS[t.tier][0]+'–'+BANDS[t.tier][1]:''}</div></td>
-    <td class="num" id="io_${i.id}_${t.tier}">${io>=0?'+':''}${io.toFixed(0)}%</td>
+    <td class="num" id="be_${i.id}_${t.tier}"><span class="be ${onTarget(t,be)?'ok':'off'}">${be.toFixed(0)}%</span><div class="muted" style="font-size:10px">±${TARGET_TOL} of ${t.target_be}</div></td>
+    <td class="num" id="tp_${i.id}_${t.tier}">${tp>=0?'+':''}${tp.toFixed(0)}%</td>
+    <td class="num" id="bc_${i.id}_${t.tier}">${bcCell(i,t)}</td>
+    <td class="num" id="pb_${i.id}_${t.tier}">${pbCell(i,t)}</td>
+    <td><div class="tieract">
+      <button class="minibtn" data-pb="cost" data-ind="${i.id}" data-tier="${t.tier}" ${i.locked?'disabled':''} title="Set THIS tier's Build cost so its payback = X yrs at current prices (fix prices)">$</button>
+      <button class="minibtn" data-pb="price" data-ind="${i.id}" data-tier="${t.tier}" ${i.locked?'disabled':''} title="Scale this industry's prices so THIS tier's payback = X yrs (fix build cost)">%</button>
+    </div></td>
   </tr>`;
+}
+function pbCell(i,t){ const y=paybackYears(i,t); const bad=!isFinite(y)||y>=25;
+  return `<span class="be ${bad?'off':'ok'}" title="${!isFinite(y)?'unprofitable at current prices':y.toFixed(2)+' years'}">${fmtPayback(y)}</span>`; }
+// Build-cost cell: editable stored value + muted model value (amber when they differ = stale).
+function bcCell(i,t){
+  const model=buildingCostModel(i,t);
+  const stored=(t.building_cost!=null?t.building_cost:model);
+  const stale=(stored!==model);
+  return `<input type="number" min="1" step="5" value="${stored}" data-ind="${i.id}" data-tier="${t.tier}" data-bc="1">
+    <div class="muted" style="font-size:10px${stale?';color:#e6b455':''}" title="${stale?'stored value differs from the current model — re-run solve_building_cost.ps1 to sync':'matches the model'}">model ${model}</div>`;
 }
 function updateComputed(){
   IND.forEach(i=>i.tiers.forEach(t=>{
-    const be=BE(i,t), io=IOthr(i,t);
+    const be=BE(i,t), tp=TPthr(i,t);
     const bcell=document.getElementById(`be_${i.id}_${t.tier}`);
-    if(bcell) bcell.querySelector('.be').outerHTML = `<span class="be ${inBand(t,be)?'ok':'off'}">${be.toFixed(0)}%</span>`;
-    const icell=document.getElementById(`io_${i.id}_${t.tier}`);
-    if(icell) icell.firstChild.nodeValue = `${io>=0?'+':''}${io.toFixed(0)}%`;
+    if(bcell){ bcell.querySelector('.be').outerHTML = `<span class="be ${onTarget(t,be)?'ok':'off'}">${be.toFixed(0)}%</span>`;
+      const sub=bcell.querySelector('.muted'); if(sub) sub.textContent=`±${TARGET_TOL} of ${t.target_be}`; }
+    const icell=document.getElementById(`tp_${i.id}_${t.tier}`);
+    if(icell) icell.firstChild.nodeValue = `${tp>=0?'+':''}${tp.toFixed(0)}%`;
+    // refresh each input good's £ (qty × base price), the output good's £, and the wages £ (all at base)
+    for(const g of Object.keys(t.inputs)){ const gv=document.getElementById(`gv_${i.id}_${t.tier}_${g}`); if(gv) gv.textContent='£'+round(t.inputs[g]*(PRICES[g]||0)); }
+    const ov=document.getElementById(`ov_${i.id}_${t.tier}`); if(ov) ov.textContent='£'+round(t.output_qty*(PRICES[tierOut(i,t)]||0));
+    const wv=document.getElementById(`wv_${i.id}_${t.tier}`); if(wv) wv.textContent='£'+round(wageCost(t));
+    const bccell=document.getElementById(`bc_${i.id}_${t.tier}`);   // refresh the muted model hint (not the editable value)
+    if(bccell){ const m=bccell.querySelector('.muted'), model=buildingCostModel(i,t);
+      const stored=(t.building_cost!=null?t.building_cost:model), stale=(stored!==model);
+      m.textContent='model '+model; m.style.color=stale?'#e6b455':''; }
+    const pbc=document.getElementById(`pb_${i.id}_${t.tier}`);   // payback tracks price panel + build cost
+    if(pbc) pbc.innerHTML=pbCell(i,t);
   }));
   renderViz();
 }
@@ -268,10 +457,14 @@ function renderViz(){
   const x = t => padL + (maxTier<=1?0:(t-1)/(maxTier-1))*(W-padL-padR);
   const y = v => padT + (1-(v-yMin)/(yMax-yMin))*(H-padT-padB);
   let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" font-family="system-ui" font-size="11">`;
-  // band rectangles per tier
-  for(let t=1;t<=maxTier;t++){ const b=BANDS[t]; if(!b)continue;
+  // per-tier target range: shade min..max of every industry's target_be at that tier (auto-adapts
+  // to the coexisting ladders — light, tools, heavy/mil, single-PM — instead of one fixed band).
+  for(let t=1;t<=maxTier;t++){
+    const tg=IND.map(i=>i.tiers.find(z=>z.tier===t)).filter(Boolean).map(z=>z.target_be);
     const cx=x(t), w=Math.max(24,(W-padL-padR)/(maxTier)*0.8);
-    s+=`<rect x="${cx-w/2}" y="${y(b[1])}" width="${w}" height="${y(b[0])-y(b[1])}" fill="${TIERCOL[t]}" opacity="0.13"/>`;
+    if(tg.length){ const lo=Math.max(yMin,Math.min(...tg)), hi=Math.min(yMax,Math.max(...tg));
+      const tip=`Tier ${t} target band|${Math.min(...tg)}–${Math.max(...tg)}% break-even|across ${tg.length} group(s)`;
+      s+=`<rect x="${cx-w/2}" y="${y(hi)}" width="${w}" height="${Math.max(1,y(lo)-y(hi))}" fill="${TIERCOL[t]}" opacity="0.13" data-tip="${esc(tip)}" style="cursor:help"/>`; }
     s+=`<text x="${cx}" y="${H-8}" text-anchor="middle" fill="#93a1b3">T${t}</text>`;
   }
   // y gridlines
@@ -280,14 +473,172 @@ function renderViz(){
   // industry polylines
   const colors=["#5aa9ff","#4ec98f","#e6b455","#e8735a","#b98cff","#57c7d4"];
   IND.forEach((i,ix)=>{ const col=colors[ix%colors.length];
-    const pts=i.tiers.map(t=>[x(t.tier),y(Math.max(yMin,Math.min(yMax,BE(i,t))))]);
-    s+=`<polyline fill="none" stroke="${col}" stroke-width="2" points="${pts.map(p=>p.join(',')).join(' ')}"/>`;
-    pts.forEach(p=>s+=`<circle cx="${p[0]}" cy="${p[1]}" r="3.2" fill="${col}"/>`);
+    const pts=i.tiers.map(t=>({x:x(t.tier), y:y(Math.max(yMin,Math.min(yMax,BE(i,t)))), t}));
+    s+=`<polyline fill="none" stroke="${col}" stroke-width="2" points="${pts.map(p=>p.x+','+p.y).join(' ')}"/>`;
+    pts.forEach(p=>{ const be=BE(i,p.t);
+      // visible dot + a larger invisible hit-circle (the 3.2px dot is too small to hover reliably)
+      const tip=`${i.id} — Tier ${p.t.tier}|${p.t.name}|BE ${be.toFixed(0)}% (target ${p.t.target_be}%)|${p.t.output_qty} ${tierOut(i,p.t)}`;
+      s+=`<circle cx="${p.x}" cy="${p.y}" r="3.2" fill="${col}"/>`;
+      s+=`<circle cx="${p.x}" cy="${p.y}" r="7" fill="transparent" data-tip="${esc(tip)}" style="cursor:help"/>`;
+    });
   });
   s+=`</svg>`;
   document.getElementById('viz').innerHTML=s;
   document.getElementById('vizLegend').innerHTML = IND.map((i,ix)=>`<span><span class="swatch" style="background:${["#5aa9ff","#4ec98f","#e6b455","#e8735a","#b98cff","#57c7d4"][ix%6]}"></span>${esc(i.id)}</span>`).join('');
 }
+// ---------- viz hover tooltips (dots + target-band rects; appear 2s after hover starts) ----------
+// Event-delegated on #viz so it survives every renderViz re-render. Content is stored raw in each
+// element's data-tip (pipe-separated); we re-escape per line when showing (guards against injection).
+function initVizTooltips(){
+  const viz=document.getElementById('viz'); if(!viz) return;
+  const tip=document.createElement('div'); tip.id='vizTip'; document.body.appendChild(tip);
+  let timer=null, lastX=0, lastY=0, curEl=null;
+  function place(){ const r=tip.getBoundingClientRect();
+    let px=lastX+14, py=lastY+16;
+    if(px+r.width  > window.innerWidth -8) px=lastX-r.width -14;
+    if(py+r.height > window.innerHeight-8) py=lastY-r.height-16;
+    tip.style.left=Math.max(4,px)+'px'; tip.style.top=Math.max(4,py)+'px'; }
+  function show(el){ const parts=(el.getAttribute('data-tip')||'').split('|');
+    tip.innerHTML=parts.map((p,ix)=>ix===0?`<b>${esc(p)}</b>`:esc(p)).join('<br>');
+    tip.style.display='block'; place(); }
+  const hide=()=>{ clearTimeout(timer); curEl=null; tip.style.display='none'; };
+  viz.addEventListener('mouseover', e=>{ const el=e.target.closest('[data-tip]'); if(!el || el===curEl) return;
+    curEl=el; clearTimeout(timer); tip.style.display='none';
+    timer=setTimeout(()=>{ if(curEl===el && el.isConnected) show(el); }, 2000); });   // 2s dwell
+  viz.addEventListener('mousemove', e=>{ lastX=e.clientX; lastY=e.clientY; if(tip.style.display==='block') place(); });
+  viz.addEventListener('mouseout', e=>{ const el=e.target.closest('[data-tip]'); if(!el) return;
+    if(e.relatedTarget && el.contains(e.relatedTarget)) return;   // still within the same hit element
+    hide(); });
+  viz.addEventListener('mouseleave', hide);   // left the chart entirely
+}
+
+// ---------- reference explorer: every vanilla building, grouped into custom categories ----------
+const OURS = new Set(); IND.forEach(i=>i.tiers.forEach(t=>OURS.add(t.key)));   // buildings we own (exclude from reference)
+const REFSEL = {};                    // buildingKey -> {pmg: pm}  (session-only PM selection)
+const REFEDIT = {};                   // pm -> {in:{good:qty}, out:{good:qty}}  (session-only goods overrides; keyed by PM = global recipe)
+function refEditSet(pm,dir,good,val){ const v=VAN.pms[pm]||{in:{},out:{}};
+  const o=REFEDIT[pm]||(REFEDIT[pm]={in:{...(v.in||{})},out:{...(v.out||{})}});
+  o[dir][good]=Math.max(0,+val||0); }
+const REFOPEN = new Set();            // expanded building blocks
+const REFGRPOPEN = new Set();         // expanded category cards
+function refBuildings(){ return HAVE_VAN ? Object.keys(VAN.buildings).filter(b=>!OURS.has(b)) : []; }
+function prettyGroup(g){ return String(g).replace(/^bg_/,'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); }
+
+// Custom taxonomy: vanilla building_group -> our display category. Unmapped groups fall back to a
+// category of their own (id 'grp_<group>'), sorted into the last cluster. Everything the user
+// reorganized maps cleanly by group. See CLAUDE.md (UI explorer categories).
+const GRPCAT = {
+  // ECONOMIC — rendered with our industries (read-only, not tiered yet)
+  bg_private_infrastructure:'utilities_trade', bg_trade:'utilities_trade', bg_power:'utilities_trade',
+  bg_arts:'arts',
+  // food & agriculture (arable-land users)
+  bg_staple_crops:'farms', bg_plantations:'plantations', bg_agriculture:'plantations', bg_ranching:'ranching',
+  // raw resource extraction
+  bg_mining:'mining', bg_gold_fields:'gold_fields', bg_logging:'logging', bg_oil_extraction:'oil', bg_rubber:'rubber',
+  // other
+  bg_army:'military_consumers', bg_army_logistics_center:'military_consumers', bg_conscription:'military_consumers',
+  bg_naval_administration:'military_consumers', bg_naval_fortification:'military_consumers', bg_naval_logistics_center:'military_consumers',
+  bg_company_headquarter:'property_owners', bg_company_regional_headquarter:'property_owners',
+  bg_financial_districts:'property_owners', bg_manor_houses:'property_owners',
+  bg_bureaucracy:'administration', bg_skyscraper:'administration', bg_technology:'administration',
+  bg_fishing:'fishing_whaling', bg_whaling:'fishing_whaling',
+  bg_subsistence_agriculture:'subsistence', bg_subsistence_ranching:'subsistence',
+  bg_service:'service', bg_construction:'construction',
+  bg_monuments:'unique', bg_monuments_hidden:'unique', bg_canals:'unique'
+};
+const CATLABEL = {
+  utilities_trade:'Utilities & trade', arts:'Arts',
+  farms:'Farms (staple crops)', plantations:'Plantations', ranching:'Ranching',
+  mining:'Mining', gold_fields:'Gold fields', logging:'Logging', oil:'Oil extraction', rubber:'Rubber',
+  military_consumers:'Military consumers', property_owners:'Property owners', administration:'Administration',
+  fishing_whaling:'Fishing and whaling', subsistence:'Subsistence', service:'Service', construction:'Construction',
+  unique:'Unique buildings'
+};
+const ECON_CATS = ['utilities_trade','arts'];                 // shown right below our industries
+const REF_CLUSTERS = [                                         // non-economic explorer, in order
+  { label:'Food & agriculture (arable land)', cats:['farms','plantations','ranching'] },
+  { label:'Raw resource extraction',          cats:['mining','gold_fields','logging','oil','rubber'] },
+  { label:'Other',                            cats:['military_consumers','property_owners','administration','fishing_whaling','subsistence','service','construction','unique'] }
+];
+function catOf(b){ const info=VAN.buildings[b];
+  if(info.unique && !GRPCAT[info.group]) return 'unique';     // any stray unique -> Unique buildings
+  return GRPCAT[info.group] || ('grp_'+(info.group||'other')); }
+function catLabel(c){ return CATLABEL[c] || prettyGroup(c.replace(/^grp_/,'')); }
+function refCats(){ const map={}; refBuildings().forEach(b=>{ const c=catOf(b); (map[c]=map[c]||[]).push(b); }); return map; }
+function refSel(b){ const info=VAN.buildings[b], sel=REFSEL[b]||(REFSEL[b]={});
+  (info.pmgs||[]).forEach(pg=>{ if(!sel[pg]) sel[pg]=basePm(pg); }); return sel; }
+function refEcon(b){ const g=selGoods(refSel(b));
+  const I=goodsVal(g.in,false), O=goodsVal(g.out,false), W=DEF_WAGE*I;   // reference uses the default wage model
+  const Ith=goodsVal(g.in,true), Oth=goodsVal(g.out,true);
+  return { I, O, W, goods:g, BE:(O>0?(I+W)/O*100:null), tp:((I+W)>0&&O>0?(Oth-(Ith+W))/(Ith+W)*100:null) };
+}
+function flowsLine(e){ return e.BE!=null ? `BE <b>${round(e.BE)}%</b> · £in ${round(e.I)} · £out ${round(e.O)} · wages £${round(e.W)}`
+                                          : `no market output · £in ${round(e.I)} · wages £${round(e.W)}`; }
+function flowsHTML(b,e){ return `<div class="flows" id="flows_${b}">${flowsLine(e)}</div>`; }
+function pmgBlockHTML(b,pg){ const g=VAN.pmgs[pg]; if(!g) return '';
+  const sel=refSel(b)[pg], rec=pmRec(sel);
+  const opts=g.pms.map(pm=>`<option value="${esc(pm)}" ${pm===sel?'selected':''}>${esc(prettyPm(pm))}</option>`).join('');
+  const row=(dir,k,q)=>`<div class="refedit"><span class="g">${dir==='in'?'−':'+'} ${esc(k)}</span>`+
+    `<input type="number" min="0" step="1" value="${q}" data-refedit="${esc(b)}" data-pm="${esc(sel)}" data-dir="${dir}" data-good="${esc(k)}">`+
+    `<span class="v muted" id="rv_${b}_${sel}_${dir}_${k}">£${round(q*(PRICES[k]||0))}</span></div>`;
+  const ins=Object.entries(rec.in).map(([k,q])=>row('in',k,q)).join('');
+  const outs=Object.entries(rec.out).map(([k,q])=>row('out',k,q)).join('');
+  // secondary effects (state_infrastructure, pollution, bureaucracy, trade capacity, …) stay READ-ONLY
+  const mods=Object.entries(rec.mods).map(([m,v])=>`<span class="mod">${esc(m.replace(/_/g,' '))} ${v>=0?'+':''}${v}</span>`).join(' ');
+  return `<div class="pmgblock"><div class="lbl">${esc(prettyKey(pg))}</div>
+    <select class="pmsel${sel!==basePm(pg)?' on':''}" data-refbld="${esc(b)}" data-pmg="${esc(pg)}">${opts}</select>
+    <div class="refio">${ins}${outs}${(!ins&&!outs)?'<span class="muted" style="font-size:11px">no goods</span>':''}</div>
+    ${mods?`<div class="refmods">${mods}</div>`:''}</div>`;
+}
+function refBuildingHTML(b){ const info=VAN.buildings[b], e=refEcon(b), open=REFOPEN.has(b);
+  const beTxt=e.BE!=null?`${round(e.BE)}%`:'—', beCls=e.BE!=null?(Math.abs(e.BE)<=175?'ok':'off'):'muted';
+  const body = open ? `<div class="bd">${(info.pmgs||[]).map(pg=>pmgBlockHTML(b,pg)).join('')}${flowsHTML(b,e)}</div>` : '';
+  return `<div class="refbld" data-refbld="${esc(b)}"><div class="hd" data-reftoggle="${esc(b)}">
+      <span class="caret">${open?'▾':'▸'}</span>
+      <span style="flex:1">${esc(prettyKey(b))} <span class="muted" style="font-size:11px">${esc(prettyGroup(info.group||''))}${info.tech?' · '+esc(info.tech):''}</span></span>
+      <span class="bbe ${beCls}" id="bbe_${b}" title="full break-even (input goods + wages) ÷ priced output; — = no market output">${beTxt}</span></div>${body}</div>`;
+}
+function catCardHTML(catId, blds){ const open=REFGRPOPEN.has(catId);
+  const note = catId==='utilities_trade'
+    ? '<div class="muted" style="font-size:11px;padding:4px 12px 8px">Trade, ports &amp; railways keep <b>vanilla</b> values (different economics); only <b>power plants</b> will follow our BE ladder.</div>' : '';
+  const body = open ? note+blds.map(refBuildingHTML).join('') : '';
+  return `<div class="card"><div class="hd" data-refgrp="${esc(catId)}"><span class="caret">${open?'▾':'▸'}</span> ${esc(catLabel(catId))} <span class="tag">${blds.length} building${blds.length!==1?'s':''}</span></div>
+    <div class="bd" style="display:${open?'':'none'};padding:0">${body}</div></div>`;
+}
+function renderReference(){
+  const econRoot=document.getElementById('econref'), root=document.getElementById('reference');
+  if(!root) return;
+  if(!HAVE_VAN){ root.innerHTML='<div class="refnote">Building reference unavailable — run <code>tools\\build.ps1</code> to generate <code>ui/vanilla.js</code>.</div>'; if(econRoot) econRoot.innerHTML=''; return; }
+  const cats=refCats();
+  const emit=!!window.PMDATA.config.include_all_buildings;
+  // ECONOMIC (read-only) — rendered right below our tiered industries
+  if(econRoot){
+    let e='<div class="refnote"><b>Other economic buildings</b> — switch PMs and edit input/output quantities (secondary effects stay read-only). Edits are session-only until these are tiered into the config.</div>';
+    ECON_CATS.forEach(c=>{ if(cats[c]&&cats[c].length) e+=catCardHTML(c,cats[c]); });
+    econRoot.innerHTML=e;
+  }
+  // NON-ECONOMIC explorer — clustered + ordered
+  const used=new Set(ECON_CATS);
+  let html=`<div class="refnote">Non-economic buildings — switch PMs and <b>edit input/output quantities</b>; BE/£ update live (secondary effects like infrastructure/pollution/bureaucracy stay read-only). Edits are <b>session-only</b> (not saved or emitted). Whether any of these reach the mod is the <code>include_all_buildings</code> builder flag (currently <b>${emit?'on':'off'}</b>).</div>`;
+  const last=REF_CLUSTERS[REF_CLUSTERS.length-1];
+  REF_CLUSTERS.forEach(cl=>{
+    let list=cl.cats.filter(c=>cats[c]&&cats[c].length);
+    if(cl===last){ const extra=Object.keys(cats).filter(c=>!used.has(c)&&!REF_CLUSTERS.some(x=>x.cats.includes(c))).sort(); list=list.concat(extra); }
+    list.forEach(c=>used.add(c));
+    if(!list.length) return;
+    html+=`<div class="refcluster">${esc(cl.label)}</div>`;
+    list.forEach(c=>{ html+=catCardHTML(c,cats[c]); });
+  });
+  root.innerHTML=html;
+}
+function renderRefBuilding(b){ const el=document.querySelector(`.refbld[data-refbld="${b}"]`); if(el) el.outerHTML=refBuildingHTML(b); }
+// fold toggles for the reference explorer
+document.addEventListener('click', e=>{
+  const gh=e.target.closest('[data-refgrp]');
+  if(gh){ const t=gh.dataset.refgrp; REFGRPOPEN.has(t)?REFGRPOPEN.delete(t):REFGRPOPEN.add(t); renderReference(); return; }
+  const bh=e.target.closest('[data-reftoggle]');
+  if(bh){ const b=bh.dataset.reftoggle; REFOPEN.has(b)?REFOPEN.delete(b):REFOPEN.add(b); renderRefBuilding(b); }
+});
 
 // ---------- editing ----------
 function findTier(id,tier){ const i=IND.find(x=>x.id===id); return [i, i.tiers.find(t=>t.tier==tier)]; }
@@ -295,6 +646,16 @@ document.addEventListener('input', e=>{
   const el=e.target;
   if(el.dataset.input!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.inputs[el.dataset.input]=+el.value||0; updateComputed(); }
   else if(el.dataset.out!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.output_qty=+el.value||0; updateComputed(); }
+  else if(el.dataset.wage!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.wage_pct=Math.max(0,(+el.value||0)/100); updateComputed(); }
+  else if(el.dataset.bc!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.building_cost=Math.max(1,+el.value||0); const c=document.getElementById(`bc_${i.id}_${t.tier}`); if(c){ const m=c.querySelector('.muted'), model=buildingCostModel(i,t), stale=(t.building_cost!==model); m.textContent='model '+model; m.style.color=stale?'#e6b455':''; } const pbc=document.getElementById(`pb_${i.id}_${t.tier}`); if(pbc) pbc.innerHTML=pbCell(i,t); }
+  else if(el.dataset.refedit!==undefined){    // explorer building goods edit (session override)
+    const b=el.dataset.refedit, pm=el.dataset.pm, dir=el.dataset.dir, good=el.dataset.good;
+    refEditSet(pm,dir,good,el.value);
+    const rv=document.getElementById(`rv_${b}_${pm}_${dir}_${good}`); if(rv) rv.textContent='£'+round((+el.value||0)*(PRICES[good]||0));
+    const e=refEcon(b), beEl=document.getElementById(`bbe_${b}`), fl=document.getElementById(`flows_${b}`);
+    if(beEl){ beEl.textContent=e.BE!=null?`${round(e.BE)}%`:'—'; beEl.className='bbe '+(e.BE!=null?(Math.abs(e.BE)<=175?'ok':'off'):'muted'); }
+    if(fl) fl.innerHTML=flowsLine(e);
+  }
   else if(el.dataset.thr!==undefined){
     if(el.value==='') return;                 // mid-edit; leave value alone
     let v=+el.value; if(isNaN(v)) return;
@@ -306,12 +667,19 @@ document.addEventListener('input', e=>{
 });
 // editing a tier's Target break-even re-solves its input volumes to hit it (fires on blur/Enter)
 document.addEventListener('change', e=>{
-  if(e.target.dataset && e.target.dataset.target!==undefined){
-    const [i,t]=findTier(e.target.dataset.ind, e.target.dataset.tier);
+  const d=e.target.dataset||{};
+  if(d.target!==undefined){
+    const [i,t]=findTier(d.ind, d.tier);
     t.target_be = +e.target.value || t.target_be;
     solveTierToTarget(i,t);
     render();
     banner('info', `${esc(t.name)}: re-solved input volumes to hit ${t.target_be}% break-even.`);
+  } else if(e.target.classList.contains('pmsel') && d.tier!==undefined){   // our tier's secondary PM
+    const [i,t]=findTier(d.ind, d.tier); t._sec[d.pmg]=e.target.value;
+    render();   // re-render so BE/profit + the secondary effect labels refresh
+  } else if(e.target.classList.contains('pmsel') && d.refbld!==undefined){ // a reference building's PM
+    (REFSEL[d.refbld]=REFSEL[d.refbld]||{})[d.pmg]=e.target.value;
+    renderRefBuilding(d.refbld);
   }
 });
 document.getElementById('resetThr').onclick=()=>{ Object.keys(PRICES).forEach(g=>thresholds[g]=100); renderThresholds(); updateComputed(); };
@@ -319,16 +687,68 @@ document.getElementById('resetThr').onclick=()=>{ Object.keys(PRICES).forEach(g=
 // ---------- preset ----------
 document.getElementById('applyPreset').onclick=()=>{
   const scope=document.getElementById('presetScope').value;
-  const targets = scope==='__all'?IND:IND.filter(i=>i.id===scope);
+  const inScope = scope==='__all'?IND:IND.filter(i=>i.id===scope);
+  const targets = inScope.filter(i=>!i.locked);
+  const lockedSkipped = inScope.length - targets.length;
   targets.forEach(i=>i.tiers.forEach(t=>{ t.target_be = PRESET_BE(t.tier); solveTierToTarget(i,t); }));
   render();
-  banner('info', `Applied natural-BE preset to ${scope==='__all'?'all industries':scope}. Input volumes re-solved to hit the ladder (T1 130% → −20pp/tier). Review, then Export.`);
+  banner(lockedSkipped?'warn':'info', `Applied natural-BE preset to ${targets.length} group(s) (${scope==='__all'?'all industries':scope}). Input volumes re-solved to hit the full-BE ladder (T1 110% → −20pp/tier).`
+    + (lockedSkipped?` Skipped ${lockedSkipped} locked group(s).`:'') + ' Review, then Export.');
 };
+// ---------- payback tools ----------
+function readX(){ return +document.getElementById('pbYears').value||10; }
+// Whole worksheet, skipping locked groups: set every tier's Build cost so payback = X yrs (fix prices).
+document.getElementById('pbFixPrices').onclick=()=>{
+  const X=readX(); const targets=IND.filter(i=>!i.locked);
+  let set=0; const skip=[]; const locked=IND.length-targets.length;
+  targets.forEach(i=>i.tiers.forEach(t=>{ applyBuildCost(i,t,X) ? set++ : skip.push(`${i.id} T${t.tier}`); }));
+  render();
+  banner((skip.length||locked)?'warn':'info',
+    `Sheet: set Build cost on ${set} tier(s) for a ${X}-yr payback at current prices.`
+    + (skip.length?` Skipped ${skip.length} unprofitable at current prices: ${skip.slice(0,10).join(', ')}${skip.length>10?` +${skip.length-10} more`:''}.`:'')
+    + (locked?` ${locked} group(s) left locked.`:'') + ' Review, then Export.');
+};
+// Whole worksheet, skipping locked groups: for each unlocked industry, anchor Tier-1 to X yrs (fix cost).
+document.getElementById('pbFixCost').onclick=()=>{
+  const X=readX(); const targets=IND.filter(i=>!i.locked);
+  const done=[]; const skip=[]; let oob=false; const locked=IND.length-targets.length;
+  targets.forEach(i=>{ const r=applyPricesAnchor(i,i.tiers[0],X); if(r.ok){ done.push(i.id); if(r.oob)oob=true; } else skip.push(i.id); });
+  render();
+  banner((skip.length||oob||locked)?'warn':'info',
+    `Sheet: scaled prices so Tier-1 payback = ${X} yrs for ${done.length} industr${done.length===1?'y':'ies'}.`
+    + (skip.length?` Skipped (T1 unprofitable now): ${skip.join(', ')}.`:'')
+    + (oob?` Some prices left the 25–175% band (flagged red).`:'')
+    + (locked?` ${locked} group(s) left locked.`:'') + ' Review, then Export.');
+};
+// Lock all / unlock all.
+document.getElementById('lockAll').onclick=()=>{ IND.forEach(i=>i.locked=true); render(); banner('info','Locked all groups — mass editors will skip every group until you unlock.'); };
+document.getElementById('unlockAll').onclick=()=>{ IND.forEach(i=>i.locked=false); render(); banner('info','Unlocked all groups.'); };
+// Group- and tier-level payback buttons + per-group lock toggle (event-delegated).
+document.addEventListener('click', e=>{
+  const lk=e.target.closest('button[data-lock]');
+  if(lk){ const i=IND.find(x=>x.id===lk.dataset.lock); if(i){ i.locked=!i.locked; render(); banner('info', `${i.id} ${i.locked?'locked — excluded from mass editors':'unlocked'}.`); } return; }
+  const pb=e.target.closest('button[data-pb]'); if(!pb || pb.disabled) return;
+  const i=IND.find(x=>x.id===pb.dataset.ind); if(!i || i.locked) return;   // locked = frozen (buttons also disabled)
+  const X=readX(), act=pb.dataset.pb;
+  if(pb.dataset.tier!=null){                                   // ----- tier level -----
+    const t=i.tiers.find(z=>z.tier==pb.dataset.tier);
+    if(act==='cost'){ const ok=applyBuildCost(i,t,X);
+      banner(ok?'info':'warn', ok?`${i.id} T${t.tier}: Build cost set for a ${X}-yr payback.`:`${i.id} T${t.tier}: unprofitable at current prices — raise its output price first.`); }
+    else { const r=applyPricesAnchor(i,t,X);
+      banner(r.ok?(r.oob?'warn':'info'):'warn', r.ok?`Scaled ${i.id} prices so T${t.tier} payback = ${X} yrs${r.oob?' (some prices left the band, flagged red)':''}.`:`${i.id} T${t.tier}: can't reach ${X} yrs by uniform price scaling (IO ≤ 0 at current prices).`); }
+  } else {                                                     // ----- group level -----
+    if(act==='cost'){ let set=0; const skip=[]; i.tiers.forEach(t=>{ applyBuildCost(i,t,X)?set++:skip.push('T'+t.tier); });
+      banner(skip.length?'warn':'info', `${i.id}: set Build cost on ${set} tier(s) for a ${X}-yr payback.`+(skip.length?` Skipped ${skip.join(', ')} (unprofitable now).`:'')); }
+    else { const r=applyPricesAnchor(i,i.tiers[0],X);
+      banner(r.ok?(r.oob?'warn':'info'):'warn', r.ok?`${i.id}: scaled prices so Tier-1 payback = ${X} yrs${r.oob?' (some prices left the band, flagged red)':''}.`:`${i.id}: Tier-1 unprofitable at current prices — can't anchor by price scaling.`); }
+  }
+  render();
+});
 
 // ---------- config parts (save / load, version-tolerant) ----------
 function currentPart(){
   const industries={};
-  IND.forEach(i=>{ industries[i.id]={}; i.tiers.forEach(t=>{ industries[i.id][t.key]={output_qty:t.output_qty, inputs:{...t.inputs}, target_be:t.target_be}; }); });
+  IND.forEach(i=>{ industries[i.id]={}; i.tiers.forEach(t=>{ const e={output_qty:t.output_qty, inputs:{...t.inputs}, target_be:t.target_be}; if(t.wage_pct!=null) e.wage_pct=t.wage_pct; industries[i.id][t.key]=e; }); });
   return {_schema:"pm_rehaul.manufacturing", _version:1, savedAt:new Date().toISOString(), industries};
 }
 document.getElementById('savePart').onclick=async()=>{ try{ const how=await saveJSON(`manufacturing_${stamp()}.json`, currentPart()); if(how&&how!=='abort') banner('info', how==='download'?'Config part downloaded to your <b>Downloads</b> folder.':'Config part saved.'); }catch(e){ banner('warn', `Save failed: <code>${esc(e.message)}</code>`); } };
@@ -341,6 +761,7 @@ function importPart(part){
     i.tiers.forEach(t=>{ const pt=pi[t.key]; if(pt){ seen.add(i.id+'/'+t.key);
         if(pt.output_qty!=null) t.output_qty=+pt.output_qty;
         if(pt.target_be!=null) t.target_be=+pt.target_be;
+        if(pt.wage_pct!=null) t.wage_pct=+pt.wage_pct;
         if(pt.inputs) t.inputs=Object.fromEntries(Object.entries(pt.inputs).map(([g,q])=>[g,+q]));
         matched++;
       } else kept.push(i.id+'/'+t.key); });
@@ -385,7 +806,9 @@ function mergedConfig(){
   const cfg=JSON.parse(JSON.stringify(window.PMDATA.config));
   cfg.industries.forEach(i=>{ const mi=IND.find(x=>x.id===i.id); if(!mi) return;   // skip disabled/hidden industries (left as-is)
     i.tiers.forEach(t=>{ const mt=mi.tiers.find(x=>x.key===t.key); if(!mt) return;
-      t.output_qty=mt.output_qty; t.target_be=mt.target_be; t.inputs=mt.inputs; }); });
+      t.output_qty=mt.output_qty; t.target_be=mt.target_be; t.inputs=mt.inputs;
+      if(mt.building_cost!=null) t.building_cost=mt.building_cost;
+      if(mt.wage_pct!=null) t.wage_pct=mt.wage_pct; }); });
   return cfg;
 }
 document.getElementById('exportCfg').onclick=async()=>{
@@ -441,6 +864,7 @@ function banner(kind,msg){ const b=document.getElementById('banner'); b.classNam
 document.querySelectorAll('.hd[data-toggle]').forEach(h=>h.onclick=()=>{ const bd=h.nextElementSibling; bd.style.display = bd.style.display==='none'?'':'none'; });
 
 render();
+initVizTooltips();
 window.addEventListener('resize', renderViz);
 </script>
 </body>

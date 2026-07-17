@@ -8,5 +8,10 @@ desktop.ini
 # Generated dev artifact (rebuilt by tools/extract_start.ps1 each build)
 config/start_baseline.json
 
+# Alternate/throwaway build outputs from build.ps1 -SaveTo <name> (mod_<name>/) and -DryRun
+# (mod_dryrun_<pid>/, auto-deleted). Only the canonical mod/ is source. Note the trailing-slash
+# and mod_ prefix keep the real mod/ tracked.
+mod_*/
+
 # mod/ and most of tools/ are source and belong on GitHub.
 # The deployed mod excludes docs/tools automatically because the junction points at mod/ only.

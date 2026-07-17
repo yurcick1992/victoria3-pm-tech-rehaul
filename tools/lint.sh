@@ -11,6 +11,8 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 MODROOT="$(cd "$HERE/.." && pwd)"
 GAME="${VIC3_GAME:-C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game}"
 C="$GAME/common"
+MODDIR="${PM_MOD_DIR:-mod}"       # which built mod folder to lint (build.ps1 sets this for -DryRun/-SaveTo)
+LADDER="${PM_LADDER:-$HERE/ladder_tiers.txt}"   # tier map to lint against (alt builds pass a temp one)
 
 TMP="$(mktemp)"
 trap 'rm -f "$TMP"' EXIT
@@ -20,9 +22,9 @@ sed 's/^\xEF\xBB\xBF//' \
   "$C/production_methods/01_industry.txt" \
   "$C/production_method_groups/01_industry.txt" \
   "$C/buildings/01_industry.txt" \
-  "$MODROOT"/mod/common/production_methods/zzz_*.txt \
-  "$MODROOT"/mod/common/production_method_groups/zzz_*.txt \
-  "$MODROOT"/mod/common/buildings/*.txt \
+  "$MODROOT/$MODDIR"/common/production_methods/zzz_*.txt \
+  "$MODROOT/$MODDIR"/common/production_method_groups/zzz_*.txt \
+  "$MODROOT/$MODDIR"/common/buildings/*.txt \
   > "$TMP"
 
-awk -f "$HERE/lint_profitability.awk" "$HERE/ladder_tiers.txt" "$TMP"
+awk -f "$HERE/lint_profitability.awk" "$LADDER" "$TMP"

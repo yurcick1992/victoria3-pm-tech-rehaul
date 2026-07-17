@@ -17,17 +17,20 @@
 #>
 param(
     [string]$Repo = (Split-Path $PSScriptRoot -Parent),
-    [string]$Game = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game" })
+    [string]$Game = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game" }),
+    [string]$Config,
+    [string]$ModDir = 'mod'   # output mod folder (relative to Repo); build.ps1 passes the -DryRun/-SaveTo target
 )
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'history_lib.ps1')
 
 $histDir = Join-Path $Game 'common\history\buildings'
 if (-not (Test-Path $histDir)) { throw "History dir not found: $histDir (set -Game or VIC3_GAME)" }
-$outDir = Join-Path $Repo 'mod\common\history\buildings'
+$outDir = Join-Path $Repo (Join-Path $ModDir 'common\history\buildings')
 if (-not (Test-Path $outDir)) { New-Item -ItemType Directory -Force -Path $outDir | Out-Null }
 
-$cfg = Get-Content (Join-Path $Repo 'config\mod_config.json') -Raw | ConvertFrom-Json
+$cfgPath = if ($Config) { (Resolve-Path -LiteralPath $Config).Path } else { Join-Path $Repo 'config\mod_config.json' }
+$cfg = Get-Content -LiteralPath $cfgPath -Raw | ConvertFrom-Json
 $maps = Get-SplitMaps $cfg
 $baseIndustry = $maps.baseIndustry; $pmMap = $maps.pmMap; $industryById = $maps.industryById
 

@@ -15,7 +15,8 @@
 #>
 param(
     [string]$Repo = (Split-Path $PSScriptRoot -Parent),
-    [string]$Game = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game" })
+    [string]$Game = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game" }),
+    [string]$Config
 )
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'history_lib.ps1')
@@ -23,7 +24,8 @@ $ErrorActionPreference = 'Stop'
 $histDir = Join-Path $Game 'common\history\buildings'
 if (-not (Test-Path $histDir)) { throw "History dir not found: $histDir (set -Game or VIC3_GAME)" }
 
-$cfg = Get-Content (Join-Path $Repo 'config\mod_config.json') -Raw | ConvertFrom-Json
+$cfgPath = if ($Config) { (Resolve-Path -LiteralPath $Config).Path } else { Join-Path $Repo 'config\mod_config.json' }
+$cfg = Get-Content -LiteralPath $cfgPath -Raw | ConvertFrom-Json
 $maps = Get-SplitMaps $cfg
 $baseIndustry = $maps.baseIndustry; $pmMap = $maps.pmMap
 

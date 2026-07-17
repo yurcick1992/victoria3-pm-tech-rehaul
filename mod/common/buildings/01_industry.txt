@@ -14,7 +14,7 @@ building_food_industry = {
 		pmg_distillery
 		pmg_automation_building_food_industry
 	}
-	required_construction = construction_cost_high
+	required_construction = 275
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -32,7 +32,7 @@ building_food_industry_sweetener = {
 		pmg_distillery
 		pmg_automation_building_food_industry
 	}
-	required_construction = construction_cost_high
+	required_construction = 415
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -50,7 +50,7 @@ building_food_industry_baking_powder = {
 		pmg_distillery
 		pmg_automation_building_food_industry
 	}
-	required_construction = construction_cost_high
+	required_construction = 500
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -69,7 +69,7 @@ building_textile_mill = {
 		pmg_luxury_building_textile_mill
 		pmg_automation_building_textile_mill
 	}
-	required_construction = construction_cost_high
+	required_construction = 275
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -86,7 +86,7 @@ building_textile_mill_dye = {
 		pmg_luxury_building_textile_mill
 		pmg_automation_building_textile_mill
 	}
-	required_construction = construction_cost_high
+	required_construction = 415
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -103,7 +103,7 @@ building_textile_mill_sewing = {
 		pmg_luxury_building_textile_mill
 		pmg_automation_building_textile_mill
 	}
-	required_construction = construction_cost_high
+	required_construction = 440
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -120,7 +120,7 @@ building_textile_mill_electric = {
 		pmg_luxury_building_textile_mill
 		pmg_automation_building_textile_mill
 	}
-	required_construction = construction_cost_high
+	required_construction = 430
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -139,7 +139,7 @@ building_furniture_manufactory = {
 		pmg_luxury_building_furniture_manufactory
 		pmg_automation_building_furniture_manufactory
 	}
-	required_construction = construction_cost_high
+	required_construction = 275
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -156,7 +156,7 @@ building_furniture_manufactory_lathe = {
 		pmg_luxury_building_furniture_manufactory
 		pmg_automation_building_furniture_manufactory
 	}
-	required_construction = construction_cost_high
+	required_construction = 375
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -173,7 +173,7 @@ building_furniture_manufactory_mechanized = {
 		pmg_luxury_building_furniture_manufactory
 		pmg_automation_building_furniture_manufactory
 	}
-	required_construction = construction_cost_high
+	required_construction = 435
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -190,7 +190,7 @@ building_glassworks = {
 		pmg_luxury_building_glassworks
 		pmg_glassblowing
 	}
-	required_construction = construction_cost_high
+	required_construction = 240
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -206,7 +206,7 @@ building_glassworks_leaded = {
 		pmg_luxury_building_glassworks
 		pmg_glassblowing
 	}
-	required_construction = construction_cost_high
+	required_construction = 365
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -222,7 +222,7 @@ building_glassworks_crystal = {
 		pmg_luxury_building_glassworks
 		pmg_glassblowing
 	}
-	required_construction = construction_cost_high
+	required_construction = 455
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -238,7 +238,7 @@ building_glassworks_plastics = {
 		pmg_luxury_building_glassworks
 		pmg_glassblowing
 	}
-	required_construction = construction_cost_high
+	required_construction = 385
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -256,7 +256,7 @@ building_tooling_workshop = {
 		pmg_main_tooling_crude
 		pmg_automation_building_tooling_workshop
 	}
-	required_construction = construction_cost_high
+	required_construction = 240
 	ai_value = 2000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -273,7 +273,7 @@ building_tooling_workshop_pig_iron = {
 		pmg_main_tooling_pig_iron
 		pmg_automation_building_tooling_workshop
 	}
-	required_construction = construction_cost_high
+	required_construction = 365
 	ai_value = 2000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -290,7 +290,7 @@ building_tooling_workshop_steel = {
 		pmg_main_tooling_steel
 		pmg_automation_building_tooling_workshop
 	}
-	required_construction = construction_cost_high
+	required_construction = 395
 	ai_value = 2000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -307,7 +307,7 @@ building_tooling_workshop_rubber = {
 		pmg_main_tooling_rubber
 		pmg_automation_building_tooling_workshop
 	}
-	required_construction = construction_cost_high
+	required_construction = 440
 	ai_value = 2000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -326,7 +326,7 @@ building_paper_mill = {
 		pmg_main_paper_mill_pulp
 		pmg_automation_building_paper_mill
 	}
-	required_construction = construction_cost_high
+	required_construction = 240
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -342,7 +342,7 @@ building_paper_mill_sulfite = {
 		pmg_main_paper_mill_sulfite
 		pmg_automation_building_paper_mill
 	}
-	required_construction = construction_cost_high
+	required_construction = 295
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -358,7 +358,7 @@ building_paper_mill_bleached = {
 		pmg_main_paper_mill_bleached
 		pmg_automation_building_paper_mill
 	}
-	required_construction = construction_cost_high
+	required_construction = 455
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -374,7 +374,7 @@ building_chemical_plant = {
 	production_method_groups = {
 		pmg_main_fertilizer_artificial
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 450
 	possible = {
 		owner = {
 			NOT = {
@@ -398,7 +398,7 @@ building_chemical_plant_improved = {
 	production_method_groups = {
 		pmg_main_fertilizer_improved
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 520
 	possible = {
 		owner = {
 			NOT = {
@@ -422,7 +422,7 @@ building_chemical_plant_nitrogen = {
 	production_method_groups = {
 		pmg_main_fertilizer_nitrogen
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 570
 	possible = {
 		owner = {
 			NOT = {
@@ -447,7 +447,7 @@ building_explosives_factory = {
 	production_method_groups = {
 		pmg_main_explosives_leblanc
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 355
 	possible = {
 		owner = {
 			NOT = {
@@ -471,7 +471,7 @@ building_explosives_factory_ammonia = {
 	production_method_groups = {
 		pmg_main_explosives_ammonia
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 535
 	possible = {
 		owner = {
 			NOT = {
@@ -495,7 +495,7 @@ building_explosives_factory_vacuum = {
 	production_method_groups = {
 		pmg_main_explosives_vacuum
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 620
 	possible = {
 		owner = {
 			NOT = {
@@ -519,7 +519,7 @@ building_explosives_factory_brine = {
 	production_method_groups = {
 		pmg_main_explosives_brine
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 795
 	possible = {
 		owner = {
 			NOT = {
@@ -546,7 +546,7 @@ building_synthetics_plant = {
 		pmg_main_synthetics_dye
 		pmg_synthetic_silk
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 345
 	possible = {
 		owner = {
 			NOT = {
@@ -574,7 +574,7 @@ building_steel_mill = {
 		pmg_main_steel_blister
 		pmg_automation_building_steel_mill
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 660
 	possible = {
 		owner = {
 			NOT = {
@@ -600,7 +600,7 @@ building_steel_mill_bessemer = {
 		pmg_main_steel_bessemer
 		pmg_automation_building_steel_mill
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 815
 	possible = {
 		owner = {
 			NOT = {
@@ -626,7 +626,7 @@ building_steel_mill_open_hearth = {
 		pmg_main_steel_openhearth
 		pmg_automation_building_steel_mill
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 950
 	possible = {
 		owner = {
 			NOT = {
@@ -652,7 +652,7 @@ building_steel_mill_electric_arc = {
 		pmg_main_steel_arc
 		pmg_automation_building_steel_mill
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 1030
 	possible = {
 		owner = {
 			NOT = {
@@ -678,7 +678,7 @@ building_motor_industry = {
 		pmg_main_motor_steam
 		pmg_automation_building_motor_industry
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 345
 	possible = {
 		owner = {
 			NOT = {
@@ -703,7 +703,7 @@ building_motor_industry_electric = {
 		pmg_main_motor_electric
 		pmg_automation_building_motor_industry
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 335
 	possible = {
 		owner = {
 			NOT = {
@@ -728,7 +728,7 @@ building_motor_industry_diesel = {
 		pmg_main_motor_diesel
 		pmg_automation_building_motor_industry
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 400
 	possible = {
 		owner = {
 			NOT = {
@@ -750,26 +750,37 @@ building_shipyard = {
 	icon = "gfx/interface/icons/building_icons/shipyards.dds"
 	city_type = port
 	levels_per_mesh = 1
-
-	ai_nationalization_desire = 0.25 # AI is a bit reluctant to privatize government goods
-
-	unlocking_technologies = {
-		navigation
-	}
-
+	ai_nationalization_desire = 0.25
+	unlocking_technologies = { navigation }
 	production_method_groups = {
-		pmg_base_building_shipyard
+		pmg_main_shipyard_basic
 	}
-
-	required_construction = construction_cost_high
-
+	required_construction = 485
 	potential = {
 		is_coastal = yes
 	}
 	ownership_type = self
-
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_harbour.dds"
 }
+
+building_shipyard_complex = {
+	building_group = bg_ship_construction
+	icon = "gfx/interface/icons/building_icons/shipyards.dds"
+	city_type = port
+	levels_per_mesh = 1
+	ai_nationalization_desire = 0.25
+	unlocking_technologies = { screw_frigate }
+	production_method_groups = {
+		pmg_main_shipyard_complex
+	}
+	required_construction = 510
+	potential = {
+		is_coastal = yes
+	}
+	ownership_type = self
+	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_harbour.dds"
+}
+
 
 building_automotive_industry = {
 	building_group = bg_heavy_industry
@@ -783,7 +794,7 @@ building_automotive_industry = {
 		pmg_tanks
 		pmg_automation_building_automotive_industry
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 280
 	possible = {
 		owner = {
 			NOT = {
@@ -810,7 +821,7 @@ building_automotive_industry_mass = {
 		pmg_tanks
 		pmg_automation_building_automotive_industry
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 325
 	possible = {
 		owner = {
 			NOT = {
@@ -836,7 +847,7 @@ building_electrics_industry = {
 		pmg_main_electrics_telephones
 		pmg_radios_category
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 400
 	possible = {
 		owner = {
 			NOT = {
@@ -864,7 +875,7 @@ building_arms_industry = {
 		pmg_main_arms_muskets
 		pmg_automation_building_arms_industry
 	}
-	required_construction = construction_cost_high
+	required_construction = 370
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -880,7 +891,7 @@ building_arms_industry_rifles = {
 		pmg_main_arms_rifles
 		pmg_automation_building_arms_industry
 	}
-	required_construction = construction_cost_high
+	required_construction = 380
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -896,7 +907,7 @@ building_arms_industry_repeaters = {
 		pmg_main_arms_repeaters
 		pmg_automation_building_arms_industry
 	}
-	required_construction = construction_cost_high
+	required_construction = 450
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -912,7 +923,7 @@ building_arms_industry_bolt_action = {
 		pmg_main_arms_bolt
 		pmg_automation_building_arms_industry
 	}
-	required_construction = construction_cost_high
+	required_construction = 565
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -929,7 +940,7 @@ building_artillery_foundry = {
 		pmg_main_artillery_cannons
 		pmg_automation_building_arms_industry
 	}
-	required_construction = construction_cost_high
+	required_construction = 355
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -945,7 +956,7 @@ building_artillery_foundry_smoothbore = {
 		pmg_main_artillery_smoothbore
 		pmg_automation_building_arms_industry
 	}
-	required_construction = construction_cost_high
+	required_construction = 445
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -961,7 +972,7 @@ building_artillery_foundry_breech = {
 		pmg_main_artillery_breech
 		pmg_automation_building_arms_industry
 	}
-	required_construction = construction_cost_high
+	required_construction = 430
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -977,7 +988,7 @@ building_artillery_foundry_recoiled = {
 		pmg_main_artillery_recoiled
 		pmg_automation_building_arms_industry
 	}
-	required_construction = construction_cost_high
+	required_construction = 555
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -995,7 +1006,7 @@ building_munition_plant = {
 		pmg_main_munition_percussion
 		pmg_automation_building_munition_plant
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 365
 	possible = {
 		owner = {
 			NOT = {
@@ -1021,7 +1032,7 @@ building_munition_plant_shells = {
 		pmg_main_munition_shells
 		pmg_automation_building_munition_plant
 	}
-	required_construction = construction_cost_very_high
+	required_construction = 405
 	possible = {
 		owner = {
 			NOT = {
@@ -1034,5 +1045,41 @@ building_munition_plant_shells = {
 	}
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
+}
+
+building_shipyard_metal = {
+	building_group = bg_ship_construction
+	icon = "gfx/interface/icons/building_icons/shipyards.dds"
+	city_type = port
+	levels_per_mesh = 1
+	ai_nationalization_desire = 0.25
+	unlocking_technologies = { gantry_cranes }
+	production_method_groups = {
+		pmg_main_shipyard_metal
+	}
+	required_construction = 500
+	potential = {
+		is_coastal = yes
+	}
+	ownership_type = self
+	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_harbour.dds"
+}
+
+building_shipyard_arc_welding = {
+	building_group = bg_ship_construction
+	icon = "gfx/interface/icons/building_icons/shipyards.dds"
+	city_type = port
+	levels_per_mesh = 1
+	ai_nationalization_desire = 0.25
+	unlocking_technologies = { arc_welding }
+	production_method_groups = {
+		pmg_main_shipyard_arcweld
+	}
+	required_construction = 505
+	potential = {
+		is_coastal = yes
+	}
+	ownership_type = self
+	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_harbour.dds"
 }
 

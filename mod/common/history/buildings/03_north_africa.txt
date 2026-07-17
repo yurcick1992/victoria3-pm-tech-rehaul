@@ -84,7 +84,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_wheat_farm"
@@ -757,7 +757,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 		}
 		region_state:SPA={
@@ -935,7 +935,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 		}
 		region_state:FRA={
@@ -1070,7 +1070,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 		}
 		region_state:FRA={
@@ -1267,7 +1267,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_textile_mill"

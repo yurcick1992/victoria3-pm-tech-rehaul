@@ -940,7 +940,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_port"
@@ -2827,7 +2827,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_cotton_plantation"
@@ -4105,7 +4105,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_glassworks"

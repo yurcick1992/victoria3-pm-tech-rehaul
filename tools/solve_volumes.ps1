@@ -11,14 +11,18 @@
     - tier N output_qty = tier.output_override, else (N==1 ? baseOut : round(baseOut * mult^(N-1))),
       mult = industry.output_mult (default 1.5).
     - tier N inputs = the tier's OWN vanilla_pm input goods, scaled by one factor to hit target_be
-      at base prices (so input↔input ratios stay vanilla), rounded to integers (min 1):
-        scale = (target_be/100 * outputValue) / vanillaInputValue ; qty[g] = round(vanilla_qty[g]*scale)
+      at base prices (so input↔input ratios stay vanilla), rounded to integers (min 1). target_be is
+      the FULL break-even (input goods + wages), so wages are folded in: W = wage_pct * I, and we
+      solve (I + W) / O = target_be, i.e. I = target_be/100 * O / (1 + wage_pct):
+        scale = (target_be/100 * outputValue / (1+wage_pct)) / vanillaInputValue ; qty[g] = round(vanilla_qty[g]*scale)
+      wage_pct defaults to 33% (a per-tier `wage_pct` in the config overrides it). See BALANCE_FRAMEWORK §1/§8.
 
   Usage:  powershell -ExecutionPolicy Bypass -File tools\solve_volumes.ps1 [-Game "<...\Victoria 3\game>"]
 #>
 param(
     [string]$Repo = (Split-Path $PSScriptRoot -Parent),
-    [string]$Game = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game" })
+    [string]$Game = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game" }),
+    [double]$WagePct = 0.33   # wages as a fraction of input-goods cost (default; per-tier wage_pct overrides)
 )
 $ErrorActionPreference = 'Stop'
 function RoundHalfUp($x) { return [int][math]::Floor([double]$x + 0.5) }
@@ -64,7 +68,10 @@ foreach ($ind in $cfg.industries) {
 
         $van = $recipes[$t.vanilla_pm].ins
         $vanInVal = 0.0; foreach ($g in $van.Keys) { $vanInVal += $van[$g] * $prices[$g] }
-        $scale = ($t.target_be / 100.0 * $outVal) / $vanInVal
+        # target_be is the FULL break-even (input goods + wages). Solve input goods so
+        # (I + wage*I) / O = target_be  =>  I = target_be/100 * O / (1+wage).
+        $wage = if ($null -ne $t.wage_pct) { [double]$t.wage_pct } else { $WagePct }
+        $scale = ($t.target_be / 100.0 * $outVal / (1 + $wage)) / $vanInVal
 
         $newIn = [ordered]@{}
         foreach ($g in ($van.Keys | Sort-Object)) { $q = RoundHalfUp ($van[$g] * $scale); if ($q -lt 1) { $q = 1 }; $newIn[$g] = $q }
@@ -73,7 +80,7 @@ foreach ($ind in $cfg.industries) {
         $t.output_qty = $outQty
         $t.inputs = [pscustomobject]$newIn
         $actualIn = 0.0; foreach ($g in $newIn.Keys) { $actualIn += $newIn[$g] * $prices[$g] }
-        $be = if ($outVal -gt 0) { $actualIn / $outVal * 100 } else { 0 }
+        $be = if ($outVal -gt 0) { $actualIn * (1 + $wage) / $outVal * 100 } else { 0 }   # full BE (incl. wages)
         $report += [pscustomobject]@{ Building = $t.key; Tier = $n; Out = "$outGood x$outQty"; TargetBE = $t.target_be; ActualBE = [math]::Round($be) }
     }
 }

@@ -290,7 +290,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -422,7 +422,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 		}
 	}
@@ -604,7 +604,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_vineyard"
@@ -1267,7 +1267,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_vineyard"
@@ -1556,7 +1556,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_vineyard"
@@ -2152,7 +2152,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -2383,7 +2383,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_livestock_ranch"
@@ -2465,7 +2465,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_maize_farm"
@@ -2847,7 +2847,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_wheat_farm"
@@ -3042,7 +3042,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_wheat_farm"
@@ -3359,7 +3359,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_port"
@@ -3923,7 +3923,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_port"
@@ -4332,7 +4332,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_textile_mill"
@@ -5090,7 +5090,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -5379,7 +5379,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_wheat_farm"

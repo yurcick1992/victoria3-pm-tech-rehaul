@@ -175,6 +175,26 @@ pmg_main_motor_diesel = {
 	production_methods = { pm_main_motor_diesel }
 }
 
+pmg_main_shipyard_basic = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+	production_methods = { pm_main_shipyard_basic }
+}
+
+pmg_main_shipyard_complex = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+	production_methods = { pm_main_shipyard_complex }
+}
+
+pmg_main_shipyard_metal = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+	production_methods = { pm_main_shipyard_metal }
+}
+
+pmg_main_shipyard_arcweld = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+	production_methods = { pm_main_shipyard_arcweld }
+}
+
 pmg_main_automotive_basic = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
 	production_methods = { pm_main_automotive_basic }

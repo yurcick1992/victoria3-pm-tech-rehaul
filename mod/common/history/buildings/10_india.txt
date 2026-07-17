@@ -280,7 +280,7 @@
 				activate_production_methods = { "pm_main_glass_forest"  "pm_manual_glassblowing" "pm_ceramics" }
 			}
 			create_building = {
-				building = "building_shipyard"
+				building="building_shipyard"
 				add_ownership = {
 					building = {
 						type = "building_financial_district"
@@ -290,7 +290,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_basic_shipbuilding" }
+				activate_production_methods = { "pm_main_shipyard_basic" }
 			}
 			create_building = {
 				building = "building_silk_plantation"
@@ -1057,7 +1057,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building = {
 				building="building_furniture_manufactory"
@@ -2463,7 +2463,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 		}
 		region_state:BIC = {
@@ -2829,7 +2829,7 @@
 				activate_production_methods = { "pm_horizontal_drawer_cabinets" "pm_hereditary_bureaucrats" "pm_secular_bureaucrats" }
 			}
 			create_building = {
-				building = "building_shipyard"
+				building="building_shipyard"
 				add_ownership = {
 					building = {
 						type = "building_financial_district"
@@ -2839,7 +2839,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_basic_shipbuilding" }
+				activate_production_methods = { "pm_main_shipyard_basic" }
 			}
 			create_building = {
 				building = "building_cotton_plantation"

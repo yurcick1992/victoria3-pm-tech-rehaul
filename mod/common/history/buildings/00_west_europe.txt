@@ -311,7 +311,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_tooling_workshop_pig_iron"
@@ -566,7 +566,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_textile_mill"
@@ -706,7 +706,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_livestock_ranch"
@@ -832,7 +832,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -1073,7 +1073,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_furniture_manufactory_lathe"
@@ -2074,7 +2074,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_rye_farm"
@@ -2262,7 +2262,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_wheat_farm"
@@ -3122,7 +3122,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_textile_mill_dye"
@@ -4215,7 +4215,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_naval_administration"
@@ -4949,7 +4949,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_arms_industry"
@@ -5475,7 +5475,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_government_administration"
@@ -7641,7 +7641,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_trade_center"

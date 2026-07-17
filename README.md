@@ -9,9 +9,9 @@ factories drive obsolete ones out of the market — and modernizing now costs **
 Design detail lives in [`CLAUDE.md`](CLAUDE.md) (how it's built), [`BALANCE_FRAMEWORK.md`](BALANCE_FRAMEWORK.md)
 (the balance methodology + numbers), and [`MODDING_NOTES.md`](MODDING_NOTES.md) (engine gotchas).
 
-Scope today: **all manufacturing** — 17 industries / 49 tier buildings (light, heavy, and military),
-with **shipyards deliberately left vanilla for now**. Raw-resource extraction and agriculture are
-out of scope.
+Scope today: **all manufacturing** — 18 industries / 53 tier buildings (light, heavy, military, and
+ship construction; the shipyard is split into separate clipper and steamer chains). Raw-resource
+extraction and agriculture are out of scope.
 
 ## Requirements
 
@@ -35,8 +35,11 @@ launcher**, add **“PM and Tech Rehaul”** to a playset, and Play.
 **One click: double-click [`balance-ui.cmd`](balance-ui.cmd).** It starts a small local server
 and opens the editor in your browser. You can:
 
-- edit input/output **volumes** for every building × tier,
+- edit input/output **volumes** and **wages** for every building × tier,
 - watch **break-even** and **profitability** update live,
+- switch **secondary production methods** (automation, luxury, …) and see the effect on break-even,
+- browse **every vanilla building** in the read-only all-buildings explorer (pick production methods,
+  see their goods and break-even; monuments/canals collapsed into one “Unique buildings” group),
 - apply the **“natural BE” preset** (tier 1 at 110%, −20 percentage points per tier),
 - click **Build now** to write the config and rebuild + redeploy (then restart V3 to load it).
 

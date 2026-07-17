@@ -8,13 +8,28 @@
     mod/localization/<lang>/zzz_pm_rehaul_l_<lang>.yml   (ALL configured languages)
     tools/ladder_tiers.txt                               (linter tier map, derived from config)
 
-  Building logic: per tier you specify intent (target_be, output_qty, input composition,
-  employment). The builder solves input quantities so break-even = target_be at base prices,
-  writes output_qty as-is, and preserves employment/pollution.
+  Building logic: per tier the config carries ACTUAL volumes (output_qty + inputs, derived by
+  solve_volumes.ps1). The builder emits them as-is, preserves employment/pollution, and labels each
+  building with its actual FULL break-even (input goods + wages; wages = wage_pct * input cost,
+  default 0.33). See BALANCE_FRAMEWORK §1/§8.
 
-  Usage:   powershell -ExecutionPolicy Bypass -File tools\build.ps1 [-NoLint]
+  Usage:   powershell -ExecutionPolicy Bypass -File tools\build.ps1 [-NoLint] [-NoDeploy] [-Config <path>] [-DryRun] [-SaveTo <name>]
+
+  -Config lets you build from a specific config file (the same mod_config.json the UI emits)
+  instead of the default config/mod_config.json - handy for building an alternate balance set
+  without the UI. The path is threaded through the start extractor + history converter too, so
+  the whole build (including the 1836 start) uses that config. Default: config/mod_config.json.
+
+  Output location (default is the canonical mod/ folder, which also deploys to the Paradox mod
+  folder). Two ways to build WITHOUT touching mod/:
+    -DryRun         Build a full, real mod into a throwaway folder (mod_dryrun_<pid>), run the
+                    post-build checks on the finished mod, report, then DELETE the folder. Never
+                    deploys. Use this to verify a build/config safely - it never rewrites mod/.
+    -SaveTo <name>  Build into mod_<name>/ inside the repo and KEEP it (not deployed, not deleted).
+                    For alternate balance sets you want to compare/keep. Clean up manually.
+  -DryRun and -SaveTo are mutually exclusive. Both leave the canonical mod/ untouched.
 #>
-param([switch]$NoLint, [switch]$NoDeploy)
+param([switch]$NoLint, [switch]$NoDeploy, [string]$Config, [switch]$DryRun, [string]$SaveTo, [switch]$IncludeAllBuildings)
 $ErrorActionPreference = 'Stop'
 $INV = [System.Globalization.CultureInfo]::InvariantCulture
 function Fmt($v) { return ([double]$v).ToString($INV) }   # locale-safe number -> string
@@ -31,22 +46,81 @@ foreach ($line in (Get-Content (Join-Path $repo 'tools\goods_prices.tsv'))) {
     if ($c.Count -ge 2) { $prices[$c[0].Trim()] = [double]$c[1].Trim() }
 }
 
-# --- load config ---
-$cfg = Get-Content (Join-Path $repo 'config\mod_config.json') -Raw | ConvertFrom-Json
+# --- load config (default, or a caller-supplied file via -Config) ---
+$cfgPath = if ($Config) { (Resolve-Path -LiteralPath $Config).Path } else { Join-Path $repo 'config\mod_config.json' }
+Write-Output "Config: $cfgPath"
+$cfg = Get-Content -LiteralPath $cfgPath -Raw | ConvertFrom-Json
 $Game = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game" })
 
+# include_all_buildings: EMISSION-scope switch for the untouched (non-tiered) vanilla buildings.
+# It does NOT affect the UI (which always shows every building) - only whether those buildings are
+# emitted into the built mod. Source is the config field; -IncludeAllBuildings forces it on. Default
+# off = only our tiered industries reach the mod (today's behavior). See CLAUDE.md.
+$includeAll = $IncludeAllBuildings.IsPresent -or [bool]$cfg.include_all_buildings
+Write-Output ("include_all_buildings = {0} (emission scope for non-tiered buildings)" -f $includeAll)
+
+# --- resolve output mod directory (relative name under repo) --------------------------------------
+#   default 'mod' (canonical, deploys); -SaveTo X -> 'mod_X' (kept); -DryRun -> throwaway (deleted).
+if ($DryRun -and $SaveTo) { throw "-DryRun and -SaveTo are mutually exclusive." }
+$isAlt = $DryRun -or $SaveTo
+if ($DryRun) {
+    $modRel = "mod_dryrun_$PID"
+} elseif ($SaveTo) {
+    if ($SaveTo -notmatch '^[A-Za-z0-9._-]+$') { throw "-SaveTo name must be [A-Za-z0-9._-]+ (got '$SaveTo')." }
+    $modRel = "mod_$SaveTo"
+} else {
+    $modRel = "mod"
+}
+$modAbs = Join-Path $repo $modRel
+Write-Output "Output: $modRel$(if ($DryRun) { '  (dry run - will be deleted)' } elseif ($SaveTo) { '  (kept, not deployed)' })"
+
+# For an alternate target, start from a clean folder but seed the one hand-maintained file
+# (.metadata/metadata.json) from the canonical mod/ so the result is a complete, loadable mod.
+if ($isAlt) {
+    if (Test-Path $modAbs) { Remove-Item $modAbs -Recurse -Force }
+    $srcMeta = Join-Path $repo 'mod\.metadata\metadata.json'
+    $dstMeta = Join-Path $modAbs '.metadata\metadata.json'
+    New-Item -ItemType Directory -Force -Path (Split-Path $dstMeta -Parent) | Out-Null
+    Copy-Item -LiteralPath $srcMeta -Destination $dstMeta -Force
+}
+
+# --- post-build checks: run on the FINISHED mod folder (after generation + convert + lint).
+#   This is the mandated-checks hook the dry run relies on; add future must-pass checks here.
+#   Returns an array of problem strings (empty = healthy). Existence + non-empty of the files a
+#   loadable build must have, one loc file per configured language. ------------------------------
+function Invoke-ModChecks($modRoot, $config) {
+    $problems = @()
+    $required = @(
+        'common\buildings\01_industry.txt',
+        'common\production_methods\zzz_pm_rehaul_01_industry.txt',
+        'common\production_method_groups\zzz_pm_rehaul_01_industry.txt',
+        '.metadata\metadata.json'
+    )
+    foreach ($r in $required) {
+        $p = Join-Path $modRoot $r
+        if (-not (Test-Path $p)) { $problems += "missing: $r" }
+        elseif ((Get-Item $p).Length -eq 0) { $problems += "empty: $r" }
+    }
+    foreach ($lang in $config.languages) {
+        $p = Join-Path $modRoot "localization\$lang\replace\$($config.loc_basename)_l_$lang.yml"
+        if (-not (Test-Path $p)) { $problems += "missing loc: $lang" }
+        elseif ((Get-Item $p).Length -eq 0) { $problems += "empty loc: $lang" }
+    }
+    return $problems
+}
+
 # --- clean previously generated outputs (keep .metadata + history, which the converter rewrites) ---
-foreach ($d in 'mod\common\buildings', 'mod\common\production_methods', 'mod\common\production_method_groups') {
-    $p = Join-Path $repo $d
+foreach ($d in 'common\buildings', 'common\production_methods', 'common\production_method_groups') {
+    $p = Join-Path $modAbs $d
     if (Test-Path $p) { Remove-Item (Join-Path $p '*') -Force -Recurse -ErrorAction SilentlyContinue }
 }
-$locRoot = Join-Path $repo 'mod\localization'
+$locRoot = Join-Path $modAbs 'localization'
 if (Test-Path $locRoot) { Remove-Item $locRoot -Recurse -Force -ErrorAction SilentlyContinue }
 
 $pmOut = @($genHeader); $pmgOut = @($genHeader)
 $genByBase = @{}        # base building key -> generated text for that whole industry (base + tiers)
 $locBody = @()          # localization entries (identical across languages)
-$tierMap = @('# MAIN production method -> tier (1-based). AUTO-GENERATED by build.ps1.')
+$tierMap = @('# MAIN production method  tier(1-based)  target_be  wage_pct. AUTO-GENERATED by build.ps1.')
 $summary = @()
 $D = [char]36           # literal '$' for loc interpolation
 
@@ -60,6 +134,7 @@ foreach ($ind in $cfg.industries) {
         # inputs/output_qty are actual volumes; the builder emits them directly.
         $outGood = if ($t.output_good) { $t.output_good } else { $ind.output_good }
         $Oval = [double]$t.output_qty * $prices[$outGood]
+        $wage = if ($null -ne $t.wage_pct) { [double]$t.wage_pct } else { 0.33 }   # wages as fraction of input-goods cost (default; BALANCE_FRAMEWORK §1)
 
         # ---- PM ----
         $pm = @("$($t.pm_key) = {", "`ttexture = `"$($t.texture)`"")
@@ -79,7 +154,7 @@ foreach ($ind in $cfg.industries) {
         if ($null -ne $t.required_input_goods) { $pm += "`trequired_input_goods = $($t.required_input_goods)" }
         $pm += "}",""
         $pmOut += $pm
-        $actualBe = if ($Oval -gt 0) { $actualI / $Oval * 100 } else { 0 }   # actual break-even, for the building name + summary
+        $actualBe = if ($Oval -gt 0) { $actualI * (1 + $wage) / $Oval * 100 } else { 0 }   # actual FULL break-even (input goods + wages), for the building name + summary
 
         # ---- PMG (single main PM) ----
         $pmgOut += "$($t.pmg_key) = {","`ttexture = `"gfx/interface/icons/generic_icons/mixed_icon_base.dds`"","`tproduction_methods = { $($t.pm_key) }","}",""
@@ -94,7 +169,10 @@ foreach ($ind in $cfg.industries) {
         if ($null -ne $b.ai_nationalization_desire) { $bl += "`tai_nationalization_desire = $(Fmt $b.ai_nationalization_desire)" }
         $bl += "`tunlocking_technologies = { $($t.tech) }","`tproduction_method_groups = {","`t`t$($t.pmg_key)"
         foreach ($s in $ind.secondary_pmgs) { $bl += "`t`t$s" }
-        $bl += "`t}","`trequired_construction = $($b.required_construction)"
+        # required_construction: per-tier building_cost (construction points) if set, else the
+        # building-level fallback (a raw number or a vanilla script-value name like construction_cost_high).
+        $reqCon = if ($null -ne $t.building_cost) { [int]$t.building_cost } else { $b.required_construction }
+        $bl += "`t}","`trequired_construction = $reqCon"
         if ($b.heavy_industry_law) { $bl += "`tpossible = {","`t`towner = {","`t`t`tNOT = {","`t`t`t`tOR = {","`t`t`t`t`thas_law_or_variant = law_type:law_industry_banned","`t`t`t`t`thas_law_or_variant = law_type:law_extraction_economy","`t`t`t`t}","`t`t`t}","`t`t}","`t}" }
         if ($b.coastal_only) { $bl += "`tpotential = {","`t`tis_coastal = yes","`t}" }
         if ($null -ne $b.ai_value) { $bl += "`tai_value = $([int]$b.ai_value)" }
@@ -107,8 +185,8 @@ foreach ($ind in $cfg.industries) {
         $locBody += " $($t.pmg_key):0 `"$($t.pm_name)`""
         $locBody += " $($t.pm_key):0 `"$($t.pm_name)`""
 
-        # ---- tier map + summary ----
-        $tierMap += "$($t.pm_key) $tierNo $($t.target_be)"
+        # ---- tier map + summary ---- (columns: pm tier target_be wage_pct; linter reads all four)
+        $tierMap += "$($t.pm_key) $tierNo $($t.target_be) $(Fmt $wage)"
         $summary += [pscustomobject]@{ Building=$t.key; Tier=$tierNo; TargetBE=$t.target_be; ActualBE=[math]::Round($actualBe) }
     }
     $genByBase[$ind.tiers[0].key] = ($indBld -join "`n")   # keyed by the vanilla base building key
@@ -123,9 +201,17 @@ function WriteText($rel, $text, $enc) {
     if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Force -Path $dir | Out-Null }
     [System.IO.File]::WriteAllText($path, $text, $enc)
 }
-WriteText 'mod\common\production_methods\zzz_pm_rehaul_01_industry.txt'        (($pmOut  -join "`n") + "`n") $bom
-WriteText 'mod\common\production_method_groups\zzz_pm_rehaul_01_industry.txt'  (($pmgOut -join "`n") + "`n") $bom
-WriteText 'tools\ladder_tiers.txt'                                            (($tierMap -join "`n") + "`n") $noBom
+WriteText "$modRel\common\production_methods\zzz_pm_rehaul_01_industry.txt"        (($pmOut  -join "`n") + "`n") $bom
+WriteText "$modRel\common\production_method_groups\zzz_pm_rehaul_01_industry.txt"  (($pmgOut -join "`n") + "`n") $bom
+# Linter tier map: canonical build writes the committed tools\ladder_tiers.txt; alternate builds
+# (-DryRun/-SaveTo) write a throwaway temp copy so they never mutate the committed file.
+if ($isAlt) {
+    $ladderPath = Join-Path ([System.IO.Path]::GetTempPath()) "pm_ladder_$PID.txt"
+    [System.IO.File]::WriteAllText($ladderPath, (($tierMap -join "`n") + "`n"), $noBom)
+} else {
+    WriteText 'tools\ladder_tiers.txt' (($tierMap -join "`n") + "`n") $noBom
+    $ladderPath = Join-Path $repo 'tools\ladder_tiers.txt'
+}
 
 # --- buildings: REPLACE vanilla common/buildings/01_industry.txt (same filename) ---
 # V3 rejects a redefined building key that comes from a different file, so the mod must OWN the
@@ -149,29 +235,37 @@ while ($i -lt $vanLines.Count) {
         else { foreach ($bl2 in $blk) { $bOut.Add($bl2) } }
     } else { $bOut.Add($line); $i++ }
 }
-foreach ($bk in $genByBase.Keys) { if (-not $emitted.ContainsKey($bk)) { Write-Warning "base building $bk not in vanilla 01_industry.txt; appending"; $bOut.Add($genByBase[$bk]) } }
-WriteText 'mod\common\buildings\01_industry.txt' (($bOut -join "`n") + "`n") $bom
+foreach ($bk in $genByBase.Keys) { if (-not $emitted.ContainsKey($bk)) { Write-Output "note: $bk has no vanilla base building - appending as a new industry (expected for split-out chains, e.g. the steamer shipyard)"; $bOut.Add($genByBase[$bk]) } }
+WriteText "$modRel\common\buildings\01_industry.txt" (($bOut -join "`n") + "`n") $bom
 
 # --- localization for every language (UTF-8 WITH BOM), in a replace/ folder so our building-name
 #     overrides win over vanilla (and new keys are still defined) ---
 $base = $cfg.loc_basename
 foreach ($lang in $cfg.languages) {
     $content = "l_${lang}:`n" + "# AUTO-GENERATED by tools/build.ps1 - do not edit by hand. English strings are used as stubs for all languages.`n" + (($locBody -join "`n")) + "`n"
-    WriteText "mod\localization\$lang\replace\${base}_l_${lang}.yml" $content $bom
+    WriteText "$modRel\localization\$lang\replace\${base}_l_${lang}.yml" $content $bom
 }
 
 # --- emit UI data (consumed by ui/builder.html) so the editor always reflects the latest config ---
-$uiData = "// AUTO-GENERATED by tools/build.ps1 - the balance UI reads this.`n" +
-          "window.PMDATA = {`n  config: " + ($cfg | ConvertTo-Json -Depth 20) + ",`n  prices: " + ($prices | ConvertTo-Json) + "`n};`n"
-WriteText 'ui\data.js' $uiData $noBom
+# Only the canonical build repoints the UI; alternate builds (-DryRun/-SaveTo) leave ui/data.js alone.
+if (-not $isAlt) {
+    $uiData = "// AUTO-GENERATED by tools/build.ps1 - the balance UI reads this.`n" +
+              "window.PMDATA = {`n  config: " + ($cfg | ConvertTo-Json -Depth 20) + ",`n  prices: " + ($prices | ConvertTo-Json) + "`n};`n"
+    WriteText 'ui\data.js' $uiData $noBom
+    # vanilla.js: full building/PMG/PM reference so the UI ALWAYS shows every building (regardless of
+    # include_all_buildings, which only gates emission). Re-derived from the live game each build.
+    & (Join-Path $PSScriptRoot 'extract_vanilla.ps1') -Repo $repo -Game $Game
+}
 
 # --- report ---
 Write-Output ("Generated {0} tier buildings across {1} industries; localization in {2} languages." -f $summary.Count, $cfg.industries.Count, $cfg.languages.Count)
 $summary | Format-Table -AutoSize | Out-String | Write-Output
 
 # --- refresh the 1836 start baseline (inventory + version-drift check), then convert it ---
-& (Join-Path $PSScriptRoot 'extract_start.ps1') -Repo $repo
-& (Join-Path $PSScriptRoot 'convert_history.ps1') -Repo $repo
+# extract_start rewrites the repo-tracked config/start_baseline.json; skip it for alternate targets
+# (-DryRun/-SaveTo) so they only ever touch their own mod_* folder, never canonical repo files.
+if (-not $isAlt) { & (Join-Path $PSScriptRoot 'extract_start.ps1') -Repo $repo -Config $cfgPath }
+& (Join-Path $PSScriptRoot 'convert_history.ps1') -Repo $repo -Config $cfgPath -ModDir $modRel
 
 if (-not $NoLint) {
     $bashPath = $null
@@ -184,20 +278,47 @@ if (-not $NoLint) {
     }
     if ($bashPath) {
         Write-Output "Running linter..."
-        & $bashPath (Join-Path $repo 'tools/lint.sh')
+        $env:PM_MOD_DIR = $modRel      # tell lint.sh which mod folder to read (default 'mod')
+        $env:PM_LADDER  = $ladderPath  # ...and which tier map to lint against (temp copy for alt builds)
+        try { & $bashPath (Join-Path $repo 'tools/lint.sh') }
+        finally { Remove-Item Env:\PM_MOD_DIR, Env:\PM_LADDER -ErrorAction SilentlyContinue }
     } else {
         Write-Output "bash (Git Bash) not found - run the linter separately:  bash tools/lint.sh"
     }
 }
+# alt builds used a throwaway ladder in TEMP; remove it now that the linter is done with it.
+if ($isAlt -and $ladderPath -and (Test-Path $ladderPath)) { Remove-Item $ladderPath -Force -ErrorAction SilentlyContinue }
 
 # --- stamp the build time into the mod NAME so it's obvious in the launcher which build is loaded ---
-$metaPath = Join-Path $repo 'mod\.metadata\metadata.json'
+$metaPath = Join-Path $modAbs '.metadata\metadata.json'
 $ts = Get-Date -Format 'yyyy-MM-dd HH:mm'
 $meta = Get-Content $metaPath -Raw
 $meta = [regex]::Replace($meta, '("name"\s*:\s*"[^"]*?)\s*\(built[^)]*\)(")', '${1}${2}')          # strip any prior "(built ...)"
 $meta = [regex]::Replace($meta, '("name"\s*:\s*"[^"]*)(")', ('${1} (built ' + $ts + ')${2}'))       # append fresh timestamp
 [System.IO.File]::WriteAllText($metaPath, $meta, $noBom)
 Write-Output "Build timestamp: $ts (mod name)"
+
+# --- post-build checks on the FINISHED mod (the dry-run guarantee; also guards deploy) ---
+$problems = Invoke-ModChecks $modAbs $cfg
+if ($problems.Count -gt 0) {
+    Write-Output "MOD CHECKS FAILED for ${modRel}:"
+    $problems | ForEach-Object { Write-Output "  - $_" }
+    if ($DryRun) { Remove-Item $modAbs -Recurse -Force -ErrorAction SilentlyContinue; Write-Output "Dry-run folder deleted." }
+    throw "Post-build mod checks failed ($($problems.Count) problem(s))."
+}
+Write-Output "MOD CHECKS PASSED: $modRel is a complete build."
+
+# --- dry run: we proved a full build works; delete the throwaway folder and stop (never deploy) ---
+if ($DryRun) {
+    Remove-Item $modAbs -Recurse -Force
+    Write-Output "DRY RUN OK: built + checked $modRel, then deleted it. Canonical mod/ untouched."
+    return
+}
+# --- alternate save target: keep it, but never deploy (only the canonical mod/ deploys) ---
+if ($SaveTo) {
+    Write-Output "Saved alternate build -> $modRel (not deployed)."
+    return
+}
 
 # --- deploy: mirror mod/ into the Paradox mod folder as a REAL copy ---
 # The Paradox launcher does not traverse directory junctions (it reports the mod as ~48 bytes),
