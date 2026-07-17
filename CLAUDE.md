@@ -72,6 +72,7 @@ balance-ui.cmd          one-click launcher for the balance editor (double-click;
 BALANCE_FRAMEWORK.md    balance methodology, targets, vanilla baseline, applied changes (SOURCE OF TRUTH)
 MODDING_NOTES.md        Victoria 3 engine/tooling gotchas (localization, load order, error.log, …)
 ON_GAME_UPDATE.md       what to re-run / re-check after a Victoria 3 patch (version-sensitive touchpoints + drift log)
+BUGS_AND_FIXES.md       root-cause log of non-obvious fixed bugs — NOT auto-loaded; CONSULT when investigating a new bug or after a patch
 config/mod_config.json      THE THING YOU EDIT — industries → tiers (tech, target_be, natural_year, output, inputs, building_cost, wage_pct?, employment, names, vanilla_pm, state_infrastructure?, ship_construction?, output_override?); industry flags source_file?/clone_from_vanilla?/follows_be?/no_mass_be? (new-economy); plus top-level include_all_buildings (build-emission scope flag; see below)
 config/start_exceptions.json manual 1836-start overrides (force_tier / remove, scoped by country/state) — editable
 config/start_baseline.json   GENERATED inventory of the vanilla 1836 start (per-industry/tier/country + drift check)
