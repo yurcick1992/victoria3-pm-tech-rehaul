@@ -93,6 +93,7 @@ mod/                    THE DEPLOYABLE MOD — GENERATED, do not hand-edit
   .metadata/metadata.json                                (hand-maintained, except the mod `name` which the builder suffixes with the build time; has replace_paths for history)
   common/buildings/{01_industry,06_urban_center,11_private_infrastructure}.txt   (generated: WHOLE-FILE replacements of vanilla — 06/11 own the new-economy chains — see MODDING_NOTES)
   common/{production_methods,production_method_groups}/zzz_pm_rehaul_*.txt   (generated, additive)
+  common/production_methods/01_industry.txt              (generated: WHOLE-FILE replacement of vanilla — remaps secondary-PM gates, see below)
   common/history/buildings/*.txt                         (generated: the re-tiered 1836 start; replaces vanilla via replace_paths)
   localization/<lang>/replace/zzz_pm_rehaul_l_<lang>.yml (generated for all 11 languages; replace/ so name overrides win)
 ```
@@ -208,6 +209,16 @@ the game.
   are our own copies (editable), so `solve_volumes` reads **every** `common/production_methods` file, not
   just `01_industry`. `trade_center` stays vanilla (no tiers). `1836` ports/railways are re-tiered by
   `convert_history` like any split industry.
+- **Secondary-PM gates (`unlocking_production_methods`).** A few vanilla secondary PMs are gated behind a
+  main PM: `pm_bone_china` (glass porcelain), `pm_elastics` (textile luxury), `pm_precision_tools`
+  (furniture luxury) each have `unlocking_production_methods = { <vanilla main PM> }` — only available when
+  that main PM is present in the building. Splitting each main PM into its own renamed building broke the
+  gate (the secondary silently locked). Fix: the builder **whole-file-replaces `common/production_methods/01_industry.txt`**
+  and, for every `unlocking_production_methods` list, **appends our tier `pm_key`** for each split
+  vanilla main PM it references (map: `vanilla_pm`→`pm_key`). The secondary then unlocks at exactly the
+  tiers whose main PM satisfied it in vanilla (e.g. bone china at glass T3/T4). Everything else in the file
+  is copied verbatim; the linter reads vanilla's copy + our `zzz`, so it's untouched. New gated secondaries
+  a patch adds are picked up automatically on rebuild.
 - **Balance UI (for Claude-less iteration):** one-click **`balance-ui.cmd`** (or
   `powershell -ExecutionPolicy Bypass -File tools\ui.ps1`) opens a browser editor (`ui/builder.html`)
   showing every building × tier with editable input/output volumes + an editable **wages %** line (per-tier

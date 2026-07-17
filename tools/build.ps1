@@ -307,6 +307,29 @@ foreach ($rel in $ownedRels) {
     WriteText "$modRel\$relWin" (($bOut -join "`n") + "`n") $bom
 }
 
+# --- own production_methods/01_industry.txt to keep gated secondary PMs working across the split ---
+# Some secondary PMs (bone china, elastics, precision tools) are gated by
+# `unlocking_production_methods = { <vanilla main PM> }` - only available when that main PM is present
+# in the building. Splitting each main PM into its own building (renamed pm_main_*) broke that gate, so
+# those secondaries silently locked. Fix: whole-file-replace this vanilla PM file, APPENDING our tier
+# pm_key to every unlocking_production_methods list that references a split vanilla main PM (map:
+# vanilla_pm -> pm_key). A secondary then unlocks at exactly the tiers whose main PM satisfied it in
+# vanilla. (Linter reads vanilla's copy + our zzz, so it's unaffected; the vanilla main PMs stay defined
+# but unused.)
+$script:pmRemap = @{}
+foreach ($ind in $cfg.industries) { if ($ind.disabled) { continue }; foreach ($t in $ind.tiers) { if ($t.vanilla_pm) { $script:pmRemap[$t.vanilla_pm] = $t.pm_key } } }
+$vanPmText = [System.IO.File]::ReadAllText((Join-Path $Game 'common\production_methods\01_industry.txt'))
+$gateEval = [System.Text.RegularExpressions.MatchEvaluator]{
+    param($m)
+    $toks = @([regex]::Matches($m.Groups[1].Value, 'pm_[A-Za-z0-9_-]+') | ForEach-Object { $_.Value })
+    $adds = @()
+    foreach ($tk in $toks) { if ($script:pmRemap.ContainsKey($tk)) { $mapped = $script:pmRemap[$tk]; if (($toks -notcontains $mapped) -and ($adds -notcontains $mapped)) { $adds += $mapped } } }
+    if ($adds.Count -eq 0) { return $m.Value }
+    "unlocking_production_methods = {`n" + ((@($toks) + $adds | ForEach-Object { "`t`t$_" }) -join "`n") + "`n`t}"
+}
+$pmOwned = [regex]::Replace($vanPmText, 'unlocking_production_methods\s*=\s*\{([^{}]*)\}', $gateEval)
+WriteText "$modRel\common\production_methods\01_industry.txt" $pmOwned $bom
+
 # --- localization for every language (UTF-8 WITH BOM), in a replace/ folder so our building-name
 #     overrides win over vanilla (and new keys are still defined) ---
 $base = $cfg.loc_basename

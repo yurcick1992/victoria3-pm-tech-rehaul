@@ -40,6 +40,7 @@ still must **run** them; they don't run themselves.
 | Tier **BE targets** (`target_be`) + `natural_year` | `common/technology/technologies/*.txt` (each tier's `tech` → `era`) | `solve_be_targets.ps1 -Write` | Era anchors 140/115/90/65/50 (e1–e5) − 15pp H1 manufactured-input adjustment. Run **before** `solve_volumes`. If a patch moves a tech's `era`, its tier's target shifts. |
 | Tier output/input **volumes** | **all** `common/production_methods/*.txt` (each tier's `vanilla_pm`; reads every file so power/port/railway PMs in `06`/`11` resolve) | `solve_volumes.ps1` | Re-solves inputs to hit `target_be`; skips `follows_be:false` industries (ports/railways stay vanilla). |
 | Tier **building_cost** (£/point) | `common/production_methods/13_construction.txt` → `pm_iron_frame_buildings` | `solve_building_cost.ps1` | £/point = Σ(goods_input×price) ÷ `country_construction_add`. Today **£3600/wk ÷ 5 = £720/pt**. |
+| **production_methods** file (whole-file replace) | `common/production_methods/01_industry.txt` | `build.ps1` | Owned to fix secondary-PM gates: copies vanilla verbatim but **appends our tier `pm_key`** to every `unlocking_production_methods` list referencing a split vanilla main PM (so gated secondaries — bone china / elastics / precision tools — unlock at the right tier). New vanilla PMs / new gates flow in on rebuild. Our own tier PMs stay in the additive `zzz_*` file. |
 | **buildings** files (whole-file replace) | `common/buildings/01_industry.txt` + `06_urban_center.txt` + `11_private_infrastructure.txt` | `build.ps1` | Owns all three (V3 rejects cross-file redefine). Copies each vanilla file, swaps our base buildings, keeps others **verbatim**. New-economy chains (power/port/railway) are **clone-and-swap**: `build.ps1` copies the vanilla building block and swaps only key/tech/PMGs/construction — so a patch that changes `port`/`railway`/`power_plant`'s special fields (`port=yes`, `terrain_manipulator`, `ai_value`, …) flows in on rebuild, and a patch that changes urban_center/trade_center/manor/financial (kept verbatim) does too. |
 | **1836 start** (re-tiered) | `common/history/buildings/*.txt` | `convert_history.ps1` (via `build.ps1`) | `metadata.json` `replace_paths` makes the mod's copy replace vanilla's. Rebuild to absorb new vanilla history. |
 | **Linter** baseline | `common/production_methods/`, `production_method_groups/`, `buildings/` `01_industry.txt` | `lint.sh` | Concatenates vanilla + mod (vanilla first) to check break-even. |
@@ -113,6 +114,14 @@ hand on a major patch.
 
 Newest first. Append here as we discover more couplings to vanilla.
 
+- **2026-07-17** — **Fixed: split broke gated secondary PMs.** `pm_bone_china` / `pm_elastics` /
+  `pm_precision_tools` are gated by `unlocking_production_methods = { <vanilla main PM> }` (only available
+  when that main PM is in the building). Renaming/splitting the main PMs (`pm_crystal_glass` →
+  `pm_main_glass_crystal`, etc.) left the gate unsatisfiable, so those secondaries silently locked. Fix:
+  builder now **owns `common/production_methods/01_industry.txt`** (whole-file replace) and appends our tier
+  `pm_key` to each `unlocking_production_methods` list referencing a split main PM. New coupling: that
+  vanilla file (verbatim except the gate lists). Verified: 106 PMs preserved, untouched PMs byte-identical,
+  the 3 gates extended; LINT still 53/53 (linter reads vanilla + zzz, not the owned copy).
 - **2026-07-17** — **Fixed: shipyard split silently dropped naval capacity.** The base shipbuilding PMs
   (`pm_basic/complex/metal/arc_welding_shipbuilding`) carry a **`country_modifiers { country_ship_construction_add }`**
   (5/10/15/20) from the *same* PM that outputs clippers/steamers — this is what lets a country build and
