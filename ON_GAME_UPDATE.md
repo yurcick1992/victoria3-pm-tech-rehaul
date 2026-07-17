@@ -38,9 +38,9 @@ still must **run** them; they don't run themselves.
 | What | Reads from vanilla | Tool | Notes |
 |---|---|---|---|
 | Tier **BE targets** (`target_be`) + `natural_year` | `common/technology/technologies/*.txt` (each tier's `tech` → `era`) | `solve_be_targets.ps1 -Write` | Era anchors 140/115/90/65/50 (e1–e5) − 15pp H1 manufactured-input adjustment. Run **before** `solve_volumes`. If a patch moves a tech's `era`, its tier's target shifts. |
-| Tier output/input **volumes** | `common/production_methods/01_industry.txt` (each tier's `vanilla_pm`) | `solve_volumes.ps1` | Re-solves inputs to hit `target_be` at base prices. |
+| Tier output/input **volumes** | **all** `common/production_methods/*.txt` (each tier's `vanilla_pm`; reads every file so power/port/railway PMs in `06`/`11` resolve) | `solve_volumes.ps1` | Re-solves inputs to hit `target_be`; skips `follows_be:false` industries (ports/railways stay vanilla). |
 | Tier **building_cost** (£/point) | `common/production_methods/13_construction.txt` → `pm_iron_frame_buildings` | `solve_building_cost.ps1` | £/point = Σ(goods_input×price) ÷ `country_construction_add`. Today **£3600/wk ÷ 5 = £720/pt**. |
-| **buildings** file (whole-file replace) | `common/buildings/01_industry.txt` | `build.ps1` | Copies vanilla, swaps split industries, keeps other buildings **verbatim** → new/changed heavy/military buildings flow through only after a rebuild. |
+| **buildings** files (whole-file replace) | `common/buildings/01_industry.txt` + `06_urban_center.txt` + `11_private_infrastructure.txt` | `build.ps1` | Owns all three (V3 rejects cross-file redefine). Copies each vanilla file, swaps our base buildings, keeps others **verbatim**. New-economy chains (power/port/railway) are **clone-and-swap**: `build.ps1` copies the vanilla building block and swaps only key/tech/PMGs/construction — so a patch that changes `port`/`railway`/`power_plant`'s special fields (`port=yes`, `terrain_manipulator`, `ai_value`, …) flows in on rebuild, and a patch that changes urban_center/trade_center/manor/financial (kept verbatim) does too. |
 | **1836 start** (re-tiered) | `common/history/buildings/*.txt` | `convert_history.ps1` (via `build.ps1`) | `metadata.json` `replace_paths` makes the mod's copy replace vanilla's. Rebuild to absorb new vanilla history. |
 | **Linter** baseline | `common/production_methods/`, `production_method_groups/`, `buildings/` `01_industry.txt` | `lint.sh` | Concatenates vanilla + mod (vanilla first) to check break-even. |
 | **UI building explorer** (`ui/vanilla.js`) | ALL of `common/buildings/`, `common/production_method_groups/`, `common/production_methods/` | `extract_vanilla.ps1` (via `build.ps1`) | Full building/PMG/PM dump for the UI's read-only all-buildings explorer. UI-only, never shipped. Regenerated every build, so a patch's new/changed buildings show up after a rebuild. |
@@ -82,8 +82,11 @@ hand on a major patch.
    `13_construction.txt`, `common/production_method_groups/01_industry.txt`,
    `common/history/buildings/*.txt`, `common/goods/00_goods.txt`,
    `common/script_values/building_values.txt`, `common/technology/technologies/*.txt` (era per tech, read
-   by `solve_be_targets.ps1`). If Paradox **renames or resplits** any of these, the corresponding tool
-   breaks loudly — update the path.
+   by `solve_be_targets.ps1`), and `common/buildings/06_urban_center.txt` + `11_private_infrastructure.txt`
+   (own the new-economy chains via clone-and-swap; each tier's `vanilla_pm` must still exist). If Paradox
+   **renames or resplits** any of these — or moves `building_power_plant`/`building_port`/`building_railway`
+   to another file — the corresponding tool breaks loudly (clone throws "vanilla building … not found"):
+   update the path / the industry's `source_file`.
 
 ---
 
@@ -110,6 +113,31 @@ hand on a major patch.
 
 Newest first. Append here as we discover more couplings to vanilla.
 
+- **2026-07-17** — **Fixed: shipyard split silently dropped naval capacity.** The base shipbuilding PMs
+  (`pm_basic/complex/metal/arc_welding_shipbuilding`) carry a **`country_modifiers { country_ship_construction_add }`**
+  (5/10/15/20) from the *same* PM that outputs clippers/steamers — this is what lets a country build and
+  **maintain navies**. Our PM emitter only copied goods/employment/pollution, so the split produced shipyards
+  that made clippers but granted **zero ship construction** → navies couldn't be built and existing ones
+  decayed. Fix: new per-tier **`ship_construction`** field → emitted as `country_ship_construction_add`; set
+  5/10/15/20 on the four shipyard tiers. **Gotcha (version-sensitive):** the builder's PM emitter carries only
+  a *whitelist* of modifiers — goods in/out, employment, `state_pollution_generation`, `state_infrastructure`,
+  `country_ship_construction`. **Any other modifier on a tiered building's main PM is silently dropped.** If a
+  patch adds a modifier to a tiered main PM (or we tier a new building whose PM has one), audit for it — a
+  quick scan of each `vanilla_pm` for `country_modifiers` / unexpected `state_*_add` catches it (that scan
+  found the shipyard was the only affected chain).
+- **2026-07-17** — **New-economy chains tiered (power / port / railway).** The builder now **owns three**
+  vanilla buildings files (`01` + `06_urban_center` + `11_private_infrastructure`) and emits the new
+  chains by **clone-and-swap** (`New-ClonedBuilding`: copy the vanilla block, swap only key/tech/PMGs/
+  construction — preserves `port=yes`, `terrain_manipulator`, `ai_value`, `should_auto_expand`, `potential`).
+  New config flags: `clone_from_vanilla`, `source_file`, `follows_be` (false = ports/railways stay on
+  vanilla volumes — solvers + linter skip them), `no_mass_be` (excluded from the linter ladder + UI mass
+  tools), per-tier `state_infrastructure` (emitted as `state_infrastructure_add`; ports/railways produce
+  infrastructure) and `output_override` (power keeps vanilla electricity output while on the BE ladder).
+  `solve_volumes` now reads **all** production-methods files. 1836 ports/railways are re-tiered by
+  `convert_history` (both start on their T1 PM; conversion is a token swap). `trade_center` left vanilla.
+  Rebuilt clean: 63 tier buildings / 21 industries, LINT PASSED (53 core), 604 factories re-tiered.
+  **Not verifiable without launching V3** — engine correctness (mod loads, ports/railways function,
+  `error.log`) needs an in-game test.
 - **2026-07-16** — **BE targets re-cast as a curve over tech unlock date (era).** New solver
   `solve_be_targets.ps1` reads each tier's unlocking tech's **era** from `common/technology/technologies/*.txt`
   and writes per-tier `target_be` (era anchors **140/115/90/65/50** for e1–e5, minus **−15 pp** when a tier

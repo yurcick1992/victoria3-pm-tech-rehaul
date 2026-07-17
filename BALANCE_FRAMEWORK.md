@@ -483,6 +483,27 @@ industries — 17 vanilla, with the shipyard split into clipper + steamer chains
 more tech tiers and raw-resource extraction. (The wage layer, previously deferred, is now folded into
 the ladder here.)
 
+### 8.4 New-economy chains (power / port / railway)
+
+Three infrastructure/utility buildings are now tiered too, so modernizing them **costs capital** (build
+the newer plant) like every other chain — the mod's core goal — while **not** all following the BE ladder:
+
+- **`power`** (electricity) is a normal BE-ladder chain: `electrical_generation`/`steam_turbine`/`oil_turbine`
+  → e3/e4/e5 → targets **75 / 65 / 50**. It sets `output_override` per tier to keep vanilla electricity
+  output (25/50/80) rather than the ×1.5 volume growth (electricity is consumed locally, not a good to
+  flood a market with); inputs are solved to the target. Its tiny volumes miss the target by a few pp on
+  integer rounding, so it's kept **off the hard linter ladder** (`no_mass_be`).
+- **`port`** (merchant_marine, 3 tiers) and **`railway`** (transportation, 4 tiers) are **`follows_be: false`**:
+  they keep **vanilla volumes and vanilla construction cost**, and their BE is informational only (the
+  volume / BE-target / building-cost solvers and the linter all skip them). Rationale (brief point 3 note):
+  these are utilities with non-market-flooding outputs and produce **infrastructure** (`state_infrastructure`,
+  emitted verbatim) — the BE-obsolescence mechanic isn't the right model for them, but tech-gated
+  *construction cost* still is. `trade_center` is left fully vanilla (no main-PM ladder — only its secondary
+  quantity PMs change, unchanged from vanilla).
+
+All three are `no_mass_be` (locked-by-default in the UI, excluded from the mass BE tools) and are emitted
+by **clone-and-swap** to preserve their special engine fields (see CLAUDE.md / §ON_GAME_UPDATE).
+
 ---
 
 ## 9. Building construction cost (10-year-payback model)

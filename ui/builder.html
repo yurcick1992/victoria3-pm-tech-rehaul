@@ -198,7 +198,9 @@ function initSel(pmgs){ const s={}; (pmgs||[]).forEach(pg=>{ const b=basePm(pg);
 const IND = window.PMDATA.config.industries.filter(i => !i.disabled).map(i => ({
   id:i.id, output_good:i.output_good,
   secondary_pmgs:(i.secondary_pmgs||[]).filter(pg=>VAN.pmgs[pg]),   // vanilla secondary PMGs (selectable)
-  locked:false,   // UI-session lock: excludes this group from all mass editors (preset + payback sweeps)
+  follows_be:(i.follows_be!==false),   // false = stays on vanilla economics (ports, railways), not on the BE ladder
+  no_mass_be:!!i.no_mass_be,           // new-economy buildings: excluded from mass BE tools + preset by default
+  locked:!!i.no_mass_be,   // UI-session lock: excludes this group from all mass editors (preset + payback sweeps); new-economy starts locked
   _open:false,    // fold state, preserved across re-render
   tiers:i.tiers.map((t,ix)=>({
     key:t.key, name:t.name, tier:ix+1, output_qty:+t.output_qty, target_be:+t.target_be,

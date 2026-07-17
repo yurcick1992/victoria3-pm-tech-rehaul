@@ -34,9 +34,13 @@ Everything below — "one main PM", "a building per tier", the profitability lad
    laggards out. Governed by a break-even ladder in `BALANCE_FRAMEWORK.md` (the balance
    source of truth).
 
-Scope now: **all manufacturing** — 18 config industries / 53 tier buildings. Break-even is **wage-inclusive**
-(full break-even: output revenue = input goods + wages, wages = `wage_pct`·input cost, default 33% — a
-model-only accounting layer, **not** emitted to the game; see BALANCE_FRAMEWORK §1).
+Scope now: **all manufacturing + the new-economy chains** — 21 config industries / 63 tier buildings.
+The new-economy chains (infra + electricity) are `power` (electricity, **on the BE ladder**), `port`
+and `railway` (both `follows_be: false` — kept on **vanilla economics**, informational BE only). They
+live in other vanilla files (`06_urban_center`, `11_private_infrastructure`) and are emitted by
+**clone-and-swap** (see below); `trade_center` is deliberately left vanilla. Break-even is
+**wage-inclusive** (full break-even: output revenue = input goods + wages, wages = `wage_pct`·input cost,
+default 33% — a model-only accounting layer, **not** emitted to the game; see BALANCE_FRAMEWORK §1).
 **The ladder is a curve over each tier's tech unlock date (era), not a per-industry group ladder.** Each
 tier's `target_be` = the era anchor for its unlocking tech's era, minus an early-game input adjustment:
 - **Era anchors** (BE % of base output price), by the tech's vanilla era: **e1 140 / e2 115 / e3 90 /
@@ -68,7 +72,7 @@ balance-ui.cmd          one-click launcher for the balance editor (double-click;
 BALANCE_FRAMEWORK.md    balance methodology, targets, vanilla baseline, applied changes (SOURCE OF TRUTH)
 MODDING_NOTES.md        Victoria 3 engine/tooling gotchas (localization, load order, error.log, …)
 ON_GAME_UPDATE.md       what to re-run / re-check after a Victoria 3 patch (version-sensitive touchpoints + drift log)
-config/mod_config.json      THE THING YOU EDIT — industries → tiers (tech, target_be, natural_year, output, inputs, building_cost, wage_pct?, employment, names, vanilla_pm); plus top-level include_all_buildings (build-emission scope flag; see below)
+config/mod_config.json      THE THING YOU EDIT — industries → tiers (tech, target_be, natural_year, output, inputs, building_cost, wage_pct?, employment, names, vanilla_pm, state_infrastructure?, ship_construction?, output_override?); industry flags source_file?/clone_from_vanilla?/follows_be?/no_mass_be? (new-economy); plus top-level include_all_buildings (build-emission scope flag; see below)
 config/start_exceptions.json manual 1836-start overrides (force_tier / remove, scoped by country/state) — editable
 config/start_baseline.json   GENERATED inventory of the vanilla 1836 start (per-industry/tier/country + drift check)
 tools/                  dev tooling — NOT shipped in the mod
@@ -87,7 +91,7 @@ tools/                  dev tooling — NOT shipped in the mod
 ui/                     browser balance editor — builder.html (hand-authored) + data.js + vanilla.js (both GENERATED each build)
 mod/                    THE DEPLOYABLE MOD — GENERATED, do not hand-edit
   .metadata/metadata.json                                (hand-maintained, except the mod `name` which the builder suffixes with the build time; has replace_paths for history)
-  common/buildings/01_industry.txt                       (generated: WHOLE-FILE replacement of vanilla — see MODDING_NOTES)
+  common/buildings/{01_industry,06_urban_center,11_private_infrastructure}.txt   (generated: WHOLE-FILE replacements of vanilla — 06/11 own the new-economy chains — see MODDING_NOTES)
   common/{production_methods,production_method_groups}/zzz_pm_rehaul_*.txt   (generated, additive)
   common/history/buildings/*.txt                         (generated: the re-tiered 1836 start; replaces vanilla via replace_paths)
   localization/<lang>/replace/zzz_pm_rehaul_l_<lang>.yml (generated for all 11 languages; replace/ so name overrides win)
@@ -188,6 +192,22 @@ the game.
   and a per-tier `output_good` override (e.g. clippers→steamers). `mod_config.json` is stored
   **minified**; edit it via the balance UI, or with JSON-aware tooling (add industries by merging
   with PowerShell `ConvertTo-Json -Compress`), not by hand.
+- **New-economy industries (clone-and-swap) — power / port / railway.** These vanilla buildings carry
+  engine-critical fields our simple schema can't model (`port = yes`, `terrain_manipulator`, big
+  `ai_value`/`should_auto_expand` blocks, `potential`). So an industry with **`clone_from_vanilla: true`**
+  is emitted by *copying its vanilla building block* and surgically swapping only key / tech / PMGs /
+  (construction) — everything else verbatim (`New-ClonedBuilding` in build.ps1). It also needs
+  **`source_file`** (the vanilla `common/buildings/*.txt` we whole-file-own for it — `06_urban_center` for
+  power, `11_private_infrastructure` for port/railway; the builder now owns **01 + 06 + 11**). Two more
+  industry flags: **`follows_be: false`** (port/railway — stay on vanilla volumes: the volume / BE-target /
+  building-cost solvers skip them, the linter ladder skips them, the building name omits the BE target) and
+  **`no_mass_be: true`** (all three — excluded from the linter ladder and, in the UI, locked-by-default so
+  the mass BE tools + preset never touch them). Per-tier **`state_infrastructure`** is emitted as a
+  workforce-scaled `state_infrastructure_add` (ports/railways produce infrastructure). Power is on the BE
+  ladder normally (electricity output; `output_override` keeps its vanilla per-tier electricity). Their PMs
+  are our own copies (editable), so `solve_volumes` reads **every** `common/production_methods` file, not
+  just `01_industry`. `trade_center` stays vanilla (no tiers). `1836` ports/railways are re-tiered by
+  `convert_history` like any split industry.
 - **Balance UI (for Claude-less iteration):** one-click **`balance-ui.cmd`** (or
   `powershell -ExecutionPolicy Bypass -File tools\ui.ps1`) opens a browser editor (`ui/builder.html`)
   showing every building × tier with editable input/output volumes + an editable **wages %** line (per-tier

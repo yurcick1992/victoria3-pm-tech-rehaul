@@ -35,14 +35,18 @@ foreach ($line in (Get-Content (Join-Path $Repo 'tools\goods_prices.tsv'))) {
 }
 
 # --- parse vanilla recipes (pm -> @{out=@{good=qty}; ins=@{good=qty}}) from the game ---
+# Read EVERY production_methods file (not just 01_industry) so PMs from 06_urban_center (power) and
+# 11_private_infrastructure (port/railway) resolve too.
 $recipes = @{}
-$text = [System.IO.File]::ReadAllText((Join-Path $Game 'common\production_methods\01_industry.txt'))  # ReadAllText strips the BOM
-$cur = $null
-foreach ($l in ($text -split "`r?`n")) {
-    if ($l -match '^(pm_[A-Za-z0-9_-]+)\s*=\s*\{') { $cur = $Matches[1]; $recipes[$cur] = @{ out = @{}; ins = @{} } }
-    elseif ($cur) {
-        if     ($l -match 'goods_input_([a-z_]+)_add\s*=\s*(-?\d+)')  { $recipes[$cur].ins[$Matches[1]] = [int]$Matches[2] }
-        elseif ($l -match 'goods_output_([a-z_]+)_add\s*=\s*(-?\d+)') { $recipes[$cur].out[$Matches[1]] = [int]$Matches[2] }
+foreach ($f in (Get-ChildItem (Join-Path $Game 'common\production_methods') -Filter *.txt)) {
+    $text = [System.IO.File]::ReadAllText($f.FullName)   # ReadAllText strips the BOM
+    $cur = $null
+    foreach ($l in ($text -split "`r?`n")) {
+        if ($l -match '^(pm_[A-Za-z0-9_-]+)\s*=\s*\{') { $cur = $Matches[1]; $recipes[$cur] = @{ out = @{}; ins = @{} } }
+        elseif ($cur) {
+            if     ($l -match 'goods_input_([a-z_]+)_add\s*=\s*(-?\d+)')  { $recipes[$cur].ins[$Matches[1]] = [int]$Matches[2] }
+            elseif ($l -match 'goods_output_([a-z_]+)_add\s*=\s*(-?\d+)') { $recipes[$cur].out[$Matches[1]] = [int]$Matches[2] }
+        }
     }
 }
 
@@ -50,6 +54,7 @@ foreach ($l in ($text -split "`r?`n")) {
 $cfg = Get-Content (Join-Path $Repo 'config\mod_config.json') -Raw | ConvertFrom-Json
 $report = @()
 foreach ($ind in $cfg.industries) {
+    if ($ind.follows_be -eq $false) { continue }   # ports/railways stay on vanilla volumes - don't re-solve
     $mult = if ($null -ne $ind.output_mult) { [double]$ind.output_mult } else { 1.5 }
     $t1 = $ind.tiers[0]
     if (-not $recipes.ContainsKey($t1.vanilla_pm)) { Write-Warning "no vanilla recipe for $($t1.vanilla_pm) ($($ind.id)) - skipped"; continue }

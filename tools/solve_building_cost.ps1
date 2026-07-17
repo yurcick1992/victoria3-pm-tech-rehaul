@@ -68,6 +68,7 @@ $cfg = Get-Content (Join-Path $Repo 'config\mod_config.json') -Raw | ConvertFrom
 $horizon = $PaybackYears * $WeeksPerYear   # weeks of profit the build cost must equal
 $report = @()
 foreach ($ind in $cfg.industries) {
+    if ($ind.follows_be -eq $false) { continue }   # ports/railways keep vanilla required_construction (no building_cost)
     $n = 0
     foreach ($t in $ind.tiers) {
         $n++

@@ -73,8 +73,10 @@ foreach ($i in $cfg.industries) {
     $mark = if ($r.era -le $H1_MAX_ERA -and $hasMfg) { 'MFG-15' } elseif ($hasMfg) { '(mfg,H2)' } else { 'raw' }
     "{0,-16} T{1} {2,-24} e{3}  {4}  {5,-9} {6,3}  {7}" -f $i.id,$ti,$t.tech,$r.era,$r.year,($man -join '+'),$r.be,$mark
     if ($Write) {
-      $t | Add-Member -NotePropertyName target_be    -NotePropertyValue $r.be   -Force
-      $t | Add-Member -NotePropertyName natural_year  -NotePropertyValue $r.year -Force
+      # follows_be:false industries (ports, railways) stay on vanilla economics — keep their
+      # (informational) target_be, don't overwrite it from the era ladder. natural_year is still useful.
+      if ($i.follows_be -ne $false) { $t | Add-Member -NotePropertyName target_be -NotePropertyValue $r.be -Force }
+      $t | Add-Member -NotePropertyName natural_year -NotePropertyValue $r.year -Force
     }
   }
 }

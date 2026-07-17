@@ -265,3 +265,53 @@ pmg_main_electrics_telephones = {
 	production_methods = { pm_main_electrics_telephones }
 }
 
+pmg_main_power_early = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+	production_methods = { pm_main_power_early }
+}
+
+pmg_main_power_coal = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+	production_methods = { pm_main_power_coal }
+}
+
+pmg_main_power_oil = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+	production_methods = { pm_main_power_oil }
+}
+
+pmg_main_port_basic = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+	production_methods = { pm_main_port_basic }
+}
+
+pmg_main_port_industrial = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+	production_methods = { pm_main_port_industrial }
+}
+
+pmg_main_port_modern = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+	production_methods = { pm_main_port_modern }
+}
+
+pmg_main_rail_early = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+	production_methods = { pm_main_rail_early }
+}
+
+pmg_main_rail_steam = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+	production_methods = { pm_main_rail_steam }
+}
+
+pmg_main_rail_electric = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+	production_methods = { pm_main_rail_electric }
+}
+
+pmg_main_rail_diesel = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+	production_methods = { pm_main_rail_diesel }
+}
+

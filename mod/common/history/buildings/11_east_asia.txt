@@ -319,7 +319,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -951,7 +951,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -1019,7 +1019,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -1855,7 +1855,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -1946,7 +1946,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -2011,7 +2011,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -2385,7 +2385,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={# Sake and Soy industries
 				building="building_food_industry"
@@ -2944,7 +2944,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_tobacco_plantation"
@@ -3417,7 +3417,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -3946,7 +3946,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 		region_state:DEN = {
@@ -4179,7 +4179,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}

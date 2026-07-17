@@ -21,7 +21,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port"}
+				activate_production_methods={ "pm_main_port_basic"}
 			}
 			create_building={
 				building="building_white_house"
@@ -66,7 +66,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_sugar_plantation"
@@ -278,7 +278,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -428,7 +428,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -1261,7 +1261,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -1372,7 +1372,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -1480,7 +1480,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -1975,7 +1975,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -2136,7 +2136,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -2321,7 +2321,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -2418,7 +2418,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -2523,7 +2523,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -2770,7 +2770,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 		region_state:NVS={
@@ -2820,7 +2820,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -2932,7 +2932,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 		region_state:HBC={
@@ -3059,7 +3059,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 		region_state:IRC={
@@ -3563,7 +3563,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_administration"

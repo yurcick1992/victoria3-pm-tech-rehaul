@@ -1139,7 +1139,8 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/wooden_ships.dds",
                                              "target_be":  140,
                                              "natural_year":  1836,
-                                             "building_cost":  485
+                                             "building_cost":  485,
+                                             "ship_construction":  5
                                          },
                                          {
                                              "key":  "building_shipyard_complex",
@@ -1166,7 +1167,8 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/reinforced_wooden_ships.dds",
                                              "target_be":  100,
                                              "natural_year":  1848,
-                                             "building_cost":  510
+                                             "building_cost":  510,
+                                             "ship_construction":  10
                                          }
                                      ]
                        },
@@ -1212,7 +1214,8 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/reinforced_steam_ships.dds",
                                              "target_be":  75,
                                              "natural_year":  1874,
-                                             "building_cost":  500
+                                             "building_cost":  500,
+                                             "ship_construction":  15
                                          },
                                          {
                                              "key":  "building_shipyard_arc_welding",
@@ -1238,7 +1241,8 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/arc_welded_steam_ships.dds",
                                              "target_be":  50,
                                              "natural_year":  1923,
-                                             "building_cost":  505
+                                             "building_cost":  505,
+                                             "ship_construction":  20
                                          }
                                      ]
                        },
@@ -1722,6 +1726,301 @@ window.PMDATA = {
                                              "target_be":  65,
                                              "natural_year":  1899,
                                              "building_cost":  400
+                                         }
+                                     ]
+                       },
+                       {
+                           "id":  "power",
+                           "output_good":  "electricity",
+                           "source_file":  "common/buildings/06_urban_center.txt",
+                           "clone_from_vanilla":  true,
+                           "follows_be":  true,
+                           "no_mass_be":  true,
+                           "building":  {
+                                            "building_group":  "bg_power",
+                                            "icon":  "gfx/interface/icons/building_icons/power_plant.dds"
+                                        },
+                           "secondary_pmgs":  [
+
+                                              ],
+                           "tiers":  [
+                                         {
+                                             "key":  "building_power_plant",
+                                             "name":  "Early Power Plant",
+                                             "pm_key":  "pm_main_power_early",
+                                             "pmg_key":  "pmg_main_power_early",
+                                             "pm_name":  "Early Power Plant",
+                                             "vanilla_pm":  "pm_early_power_plant",
+                                             "tech":  "electrical_generation",
+                                             "output_override":  25,
+                                             "output_qty":  25,
+                                             "inputs":  {
+                                                            "coal":  4,
+                                                            "engines":  3,
+                                                            "wood":  4
+                                                        },
+                                             "employment":  {
+                                                                "laborers":  500,
+                                                                "machinists":  400,
+                                                                "engineers":  100
+                                                            },
+                                             "pollution":  25,
+                                             "texture":  "gfx/interface/icons/production_method_icons/power_plant.dds",
+                                             "target_be":  75,
+                                             "natural_year":  1874,
+                                             "building_cost":  75
+                                         },
+                                         {
+                                             "key":  "building_power_plant_coal",
+                                             "name":  "Coal-Fired Power Plant",
+                                             "pm_key":  "pm_main_power_coal",
+                                             "pmg_key":  "pmg_main_power_coal",
+                                             "pm_name":  "Coal-Fired Power Plant",
+                                             "vanilla_pm":  "pm_coal-fired_plant",
+                                             "tech":  "steam_turbine",
+                                             "output_override":  50,
+                                             "output_qty":  50,
+                                             "inputs":  {
+                                                            "coal":  15,
+                                                            "engines":  5
+                                                        },
+                                             "employment":  {
+                                                                "laborers":  350,
+                                                                "machinists":  500,
+                                                                "engineers":  150
+                                                            },
+                                             "pollution":  50,
+                                             "texture":  "gfx/interface/icons/production_method_icons/coal_fired_plant.dds",
+                                             "target_be":  65,
+                                             "natural_year":  1899,
+                                             "building_cost":  145
+                                         },
+                                         {
+                                             "key":  "building_power_plant_oil",
+                                             "name":  "Oil-Fired Power Plant",
+                                             "pm_key":  "pm_main_power_oil",
+                                             "pmg_key":  "pmg_main_power_oil",
+                                             "pm_name":  "Oil-Fired Power Plant",
+                                             "vanilla_pm":  "pm_oil-fired_plant",
+                                             "tech":  "oil_turbine",
+                                             "output_override":  80,
+                                             "output_qty":  80,
+                                             "inputs":  {
+                                                            "engines":  6,
+                                                            "oil":  14
+                                                        },
+                                             "employment":  {
+                                                                "laborers":  200,
+                                                                "machinists":  600,
+                                                                "engineers":  200
+                                                            },
+                                             "pollution":  40,
+                                             "texture":  "gfx/interface/icons/production_method_icons/oil_fired_plant.dds",
+                                             "target_be":  50,
+                                             "natural_year":  1923,
+                                             "building_cost":  175
+                                         }
+                                     ]
+                       },
+                       {
+                           "id":  "port",
+                           "output_good":  "merchant_marine",
+                           "source_file":  "common/buildings/11_private_infrastructure.txt",
+                           "clone_from_vanilla":  true,
+                           "follows_be":  false,
+                           "no_mass_be":  true,
+                           "building":  {
+                                            "building_group":  "bg_private_infrastructure",
+                                            "icon":  "gfx/interface/icons/building_icons/building_port.dds"
+                                        },
+                           "secondary_pmgs":  [
+
+                                              ],
+                           "tiers":  [
+                                         {
+                                             "key":  "building_port",
+                                             "name":  "Basic Port",
+                                             "pm_key":  "pm_main_port_basic",
+                                             "pmg_key":  "pmg_main_port_basic",
+                                             "pm_name":  "Basic Port",
+                                             "vanilla_pm":  "pm_basic_port",
+                                             "tech":  "navigation",
+                                             "output_qty":  9,
+                                             "inputs":  {
+                                                            "clippers":  6
+                                                        },
+                                             "employment":  {
+                                                                "laborers":  700,
+                                                                "clerks":  200,
+                                                                "bureaucrats":  100
+                                                            },
+                                             "state_infrastructure":  3,
+                                             "texture":  "gfx/interface/icons/production_method_icons/basic_port.dds",
+                                             "target_be":  106,
+                                             "natural_year":  1836
+                                         },
+                                         {
+                                             "key":  "building_port_industrial",
+                                             "name":  "Industrial Port",
+                                             "pm_key":  "pm_main_port_industrial",
+                                             "pmg_key":  "pmg_main_port_industrial",
+                                             "pm_name":  "Industrial Port",
+                                             "vanilla_pm":  "pm_industrial_port",
+                                             "tech":  "gantry_cranes",
+                                             "output_qty":  20,
+                                             "inputs":  {
+                                                            "steamers":  5,
+                                                            "coal":  5
+                                                        },
+                                             "employment":  {
+                                                                "laborers":  500,
+                                                                "machinists":  200,
+                                                                "clerks":  200,
+                                                                "bureaucrats":  100
+                                                            },
+                                             "state_infrastructure":  4,
+                                             "texture":  "gfx/interface/icons/production_method_icons/industrial_port.dds",
+                                             "target_be":  66,
+                                             "natural_year":  1874
+                                         },
+                                         {
+                                             "key":  "building_port_modern",
+                                             "name":  "Modern Port",
+                                             "pm_key":  "pm_main_port_modern",
+                                             "pmg_key":  "pmg_main_port_modern",
+                                             "pm_name":  "Modern Port",
+                                             "vanilla_pm":  "pm_modern_port",
+                                             "tech":  "concrete_dockyards",
+                                             "output_qty":  30,
+                                             "inputs":  {
+                                                            "steamers":  5,
+                                                            "oil":  10
+                                                        },
+                                             "employment":  {
+                                                                "laborers":  400,
+                                                                "machinists":  250,
+                                                                "engineers":  50,
+                                                                "clerks":  200,
+                                                                "bureaucrats":  100
+                                                            },
+                                             "state_infrastructure":  5,
+                                             "texture":  "gfx/interface/icons/production_method_icons/modern_port.dds",
+                                             "target_be":  66,
+                                             "natural_year":  1899
+                                         }
+                                     ]
+                       },
+                       {
+                           "id":  "railway",
+                           "output_good":  "transportation",
+                           "source_file":  "common/buildings/11_private_infrastructure.txt",
+                           "clone_from_vanilla":  true,
+                           "follows_be":  false,
+                           "no_mass_be":  true,
+                           "building":  {
+                                            "building_group":  "bg_private_infrastructure",
+                                            "icon":  "gfx/interface/icons/building_icons/building_railway.dds"
+                                        },
+                           "secondary_pmgs":  [
+                                                  "pmg_passenger_trains"
+                                              ],
+                           "tiers":  [
+                                         {
+                                             "key":  "building_railway",
+                                             "name":  "Early Railway",
+                                             "pm_key":  "pm_main_rail_early",
+                                             "pmg_key":  "pmg_main_rail_early",
+                                             "pm_name":  "Early Trains",
+                                             "vanilla_pm":  "pm_early_trains",
+                                             "tech":  "railways",
+                                             "output_qty":  20,
+                                             "inputs":  {
+                                                            "engines":  5,
+                                                            "coal":  2
+                                                        },
+                                             "employment":  {
+                                                                "laborers":  600,
+                                                                "machinists":  200,
+                                                                "clerks":  200
+                                                            },
+                                             "pollution":  25,
+                                             "state_infrastructure":  20,
+                                             "texture":  "gfx/interface/icons/production_method_icons/experimental_trains.dds",
+                                             "target_be":  80,
+                                             "natural_year":  1848
+                                         },
+                                         {
+                                             "key":  "building_railway_steam",
+                                             "name":  "Steam Railway",
+                                             "pm_key":  "pm_main_rail_steam",
+                                             "pmg_key":  "pmg_main_rail_steam",
+                                             "pm_name":  "Steam Trains",
+                                             "vanilla_pm":  "pm_steam_trains",
+                                             "tech":  "steel_railway_cars",
+                                             "output_qty":  25,
+                                             "inputs":  {
+                                                            "engines":  5,
+                                                            "coal":  5
+                                                        },
+                                             "employment":  {
+                                                                "laborers":  500,
+                                                                "machinists":  300,
+                                                                "clerks":  200
+                                                            },
+                                             "pollution":  20,
+                                             "state_infrastructure":  25,
+                                             "texture":  "gfx/interface/icons/production_method_icons/trains_steam.dds",
+                                             "target_be":  80,
+                                             "natural_year":  1874
+                                         },
+                                         {
+                                             "key":  "building_railway_electric",
+                                             "name":  "Electric Railway",
+                                             "pm_key":  "pm_main_rail_electric",
+                                             "pmg_key":  "pmg_main_rail_electric",
+                                             "pm_name":  "Electric Trains",
+                                             "vanilla_pm":  "pm_electric_trains",
+                                             "tech":  "electric_railway",
+                                             "output_qty":  35,
+                                             "inputs":  {
+                                                            "engines":  5,
+                                                            "electricity":  8
+                                                        },
+                                             "employment":  {
+                                                                "laborers":  400,
+                                                                "machinists":  350,
+                                                                "engineers":  50,
+                                                                "clerks":  200
+                                                            },
+                                             "state_infrastructure":  30,
+                                             "texture":  "gfx/interface/icons/production_method_icons/trains_electric.dds",
+                                             "target_be":  68,
+                                             "natural_year":  1899
+                                         },
+                                         {
+                                             "key":  "building_railway_diesel",
+                                             "name":  "Diesel Railway",
+                                             "pm_key":  "pm_main_rail_diesel",
+                                             "pmg_key":  "pmg_main_rail_diesel",
+                                             "pm_name":  "Diesel Trains",
+                                             "vanilla_pm":  "pm_diesel_trains",
+                                             "tech":  "compression_ignition",
+                                             "output_qty":  40,
+                                             "inputs":  {
+                                                            "engines":  5,
+                                                            "oil":  6
+                                                        },
+                                             "employment":  {
+                                                                "laborers":  400,
+                                                                "machinists":  300,
+                                                                "engineers":  100,
+                                                                "clerks":  200
+                                                            },
+                                             "pollution":  15,
+                                             "state_infrastructure":  40,
+                                             "texture":  "gfx/interface/icons/production_method_icons/trains_diesel.dds",
+                                             "target_be":  60,
+                                             "natural_year":  1923
                                          }
                                      ]
                        }

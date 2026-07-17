@@ -106,7 +106,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -272,7 +272,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -396,7 +396,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -505,7 +505,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_administration"
@@ -629,7 +629,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_arms_industry"
@@ -743,7 +743,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_administration"
@@ -901,7 +901,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_iron_mine"
@@ -1142,7 +1142,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_early_trains"  "pm_wooden_passenger_carriages" }
+				activate_production_methods={ "pm_main_rail_early"  "pm_wooden_passenger_carriages" }
 			}
 			create_building={
 				building="building_port"
@@ -1153,7 +1153,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_administration"
@@ -1358,7 +1358,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_early_trains" "pm_wooden_passenger_carriages"  }
+				activate_production_methods={ "pm_main_rail_early" "pm_wooden_passenger_carriages"  }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -1382,7 +1382,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -1679,7 +1679,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_early_trains" "pm_wooden_passenger_carriages"  }
+				activate_production_methods={ "pm_main_rail_early" "pm_wooden_passenger_carriages"  }
 			}
 			create_building={
 				building="building_port"
@@ -1690,7 +1690,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -1957,7 +1957,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_early_trains" "pm_wooden_passenger_carriages"  }
+				activate_production_methods={ "pm_main_rail_early" "pm_wooden_passenger_carriages"  }
 			}
 			create_building={
 				building="building_port"
@@ -1968,7 +1968,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -2142,7 +2142,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_early_trains" "pm_wooden_passenger_carriages"  }
+				activate_production_methods={ "pm_main_rail_early" "pm_wooden_passenger_carriages"  }
 			}
 			create_building={
 				building="building_port"
@@ -2153,7 +2153,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_coal_mine"
@@ -2325,7 +2325,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -2507,7 +2507,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_early_trains" "pm_wooden_passenger_carriages"  }
+				activate_production_methods={ "pm_main_rail_early" "pm_wooden_passenger_carriages"  }
 			}
 			create_building={
 				building="building_port"
@@ -2518,7 +2518,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_coal_mine"
@@ -2585,7 +2585,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -2613,7 +2613,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -2691,7 +2691,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -2901,7 +2901,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_early_trains"  "pm_wooden_passenger_carriages" }
+				activate_production_methods={ "pm_main_rail_early"  "pm_wooden_passenger_carriages" }
 			}
 		}
 	}
@@ -3046,7 +3046,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -3209,7 +3209,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_administration"
@@ -3554,7 +3554,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_early_trains" "pm_wooden_passenger_carriages"  }
+				activate_production_methods={ "pm_main_rail_early" "pm_wooden_passenger_carriages"  }
 			}
 		}
 	}
@@ -3674,7 +3674,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_coal_mine"
@@ -3973,7 +3973,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -4313,7 +4313,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -4806,7 +4806,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -5048,7 +5048,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_administration"
@@ -5164,7 +5164,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -5445,7 +5445,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_early_trains"  "pm_wooden_passenger_carriages" }
+				activate_production_methods={ "pm_main_rail_early"  "pm_wooden_passenger_carriages" }
 			}
 		}
 	}
@@ -5660,7 +5660,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_early_trains" "pm_wooden_passenger_carriages"  }
+				activate_production_methods={ "pm_main_rail_early" "pm_wooden_passenger_carriages"  }
 			}
 			create_building={
 				building="building_port"
@@ -5671,7 +5671,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_administration"
@@ -6331,7 +6331,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_administration"
@@ -6381,7 +6381,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 		region_state:HAM={
@@ -6433,7 +6433,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 		region_state:HAN={
@@ -7302,7 +7302,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_trade_center"
@@ -7721,7 +7721,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_administration"
@@ -8054,7 +8054,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_early_trains"  "pm_wooden_passenger_carriages" }
+				activate_production_methods={ "pm_main_rail_early"  "pm_wooden_passenger_carriages" }
 			}
 		}
 	}
@@ -8590,7 +8590,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 		region_state:MST={

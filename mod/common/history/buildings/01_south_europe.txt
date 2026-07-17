@@ -314,7 +314,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_arms_industry"
@@ -409,7 +409,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_shipyard"
@@ -450,7 +450,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -576,7 +576,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -778,7 +778,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_paper_mill"
@@ -906,7 +906,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -1442,7 +1442,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_administration"
@@ -1643,7 +1643,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_administration"
@@ -1822,7 +1822,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_administration"
@@ -1930,7 +1930,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -2176,7 +2176,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -2317,7 +2317,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -2570,7 +2570,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -2909,7 +2909,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -3092,7 +3092,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -3195,7 +3195,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -3370,7 +3370,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -3546,7 +3546,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_administration"
@@ -3643,7 +3643,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -3934,7 +3934,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_administration"
@@ -4139,7 +4139,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -4408,7 +4408,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_hagia_sophia"
@@ -4476,7 +4476,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 		region_state:RUS={
@@ -4538,7 +4538,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -4757,7 +4757,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_wheat_farm"
@@ -4899,7 +4899,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -5011,7 +5011,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -5114,7 +5114,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -5173,7 +5173,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -5461,7 +5461,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -5749,7 +5749,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -5854,7 +5854,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_basic_port" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
