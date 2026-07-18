@@ -38,11 +38,16 @@ and opens the editor in your browser. You can:
 - edit input/output **volumes** and **wages** for every building × tier,
 - watch **break-even** and **profitability** update live,
 - switch **secondary production methods** (automation, luxury, …) and see the effect on break-even,
-- browse **every vanilla building** in the all-buildings explorer (pick production methods and **edit
-  their input/output quantities**; secondary effects like infrastructure/pollution stay read-only) —
-  sorted into a custom taxonomy (economic set, food & agriculture, raw extraction, other),
-- set each tier's base **`ai_value`** (AI construction desire), and click **Restore defaults** to reset
-  unlocked groups to the loaded config,
+- browse **every vanilla building** in the all-buildings explorer — same card/table look as the tiered
+  industries (pick production methods and **edit any good's input/output**; non-goods outputs like
+  infrastructure/pollution and workforce stay read-only), sorted into a custom taxonomy (utilities/trade/arts,
+  food & agriculture, raw extraction, other) and **locked by default** (unlock a group to include it in mass tools),
+- set each tier's base **`ai_value`** (AI construction desire); click **Restore defaults** to reset
+  unlocked groups to the loaded config, or **Bring to vanilla** to reset split buildings toward their
+  base-game recipes + ai_value,
+- switch a tier's **secondary PMs** (selectors under the building name) — their goods distribute into the
+  Input/Output columns as editable `↳` rows (shared via `pm_goods`), their non-goods outputs
+  (infrastructure/pollution) and employment show read-only; the **Workforce** column tracks the selected PMs,
 - click **Build now** to write the config and rebuild + redeploy (then restart V3 to load it).
 
 **No-server option:** just open [`ui/builder.html`](ui/builder.html) in a browser. Everything works

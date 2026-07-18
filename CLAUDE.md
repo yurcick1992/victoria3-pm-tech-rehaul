@@ -89,7 +89,9 @@ tools/                  dev tooling — NOT shipped in the mod
   history_lib.ps1       shared history parser used by the converter + extractor
   ui.ps1                balance-UI server: serves ui/ at localhost:8777 + POST /api/build (writes config, runs build)
   goods_prices.tsv      shared vanilla price table (build + UI + reference)
-  lint.sh / lint_profitability.awk / ladder_tiers.txt   profitability linter (ladder_tiers.txt is GENERATED)
+  lint.sh                profitability + negative-goods linter wrapper (runs both awks below)
+  lint_profitability.awk / ladder_tiers.txt   BE-vs-ladder linter (ladder_tiers.txt is GENERATED)
+  lint_negative_goods.awk negative-goods invariant linter (no PM combination drives a good's building total < 0)
   solve_targets.awk / profit.awk / vanilla_profit_baseline.txt   ad-hoc analysis helpers
 ui/                     browser balance editor — builder.html (hand-authored) + data.js + vanilla.js (both GENERATED each build)
 mod/                    THE DEPLOYABLE MOD — GENERATED, do not hand-edit
@@ -127,7 +129,9 @@ the game.
   It regenerates every `mod/common/*` and `mod/localization/*` file, regenerates
   `tools/ladder_tiers.txt`, **converts the 1836 start** (re-tiers vanilla starting factories into
   `mod/common/history/buildings/` via `convert_history.ps1`), and then runs the linter — which
-  must print **LINT PASSED**, then **MOD CHECKS PASSED** (post-build sanity on the finished mod:
+  must print **LINT PASSED** (BE-vs-ladder) and **NEGATIVE-GOODS CHECK PASSED** (invariant: no
+  reachable PM combination drives any good's building-level total input/output below zero — see
+  Working conventions), then **MOD CHECKS PASSED** (post-build sanity on the finished mod:
   required files exist + non-empty, one loc file per language — the hook for future mandatory
   checks lives in `Invoke-ModChecks` in `build.ps1`). Never hand-edit files under `mod/common` or
   `mod/localization`; they are overwritten on every build. To build from a **different config
@@ -166,6 +170,25 @@ the game.
   wages = `wage_pct`·inputs) against its configured `target_be` (±6pp). This per-target check supports
   the date-based ladder (era anchors 125/100/75/50/35 with the H1 −15 pp input adjustment; targets set by
   `solve_be_targets.ps1`). `tools/ladder_tiers.txt` carries `pm tier target_be wage_pct`.
+- **Negative-goods invariant (second linter).** `tools/lint_negative_goods.awk` (run by `lint.sh` after
+  the BE check) enforces that **no reachable combination of PMs drives any good's building-level total
+  input or output below zero** — across **EVERY building** (vanilla + mod). Reduction PMs legitimately emit
+  negative `goods_output_*_add` (e.g. the aeroplane/tank lines subtract from a car plant's automobiles
+  output; luxury/ceramics/rayon PMs subtract from the base good); the design guarantees the active main
+  output covers the maximum reduction. Because the balance UI lets any PM's goods be edited via `pm_goods`
+  (**negatives allowed**, for those reduction outputs), this check catches an edit — or a tier-volume choice
+  — that would let a player-selectable combination go negative. Method: **brute-force** the Cartesian
+  product of each building's PMGs (one active PM per PMG — counts are tiny), keep only **legal**
+  combinations, sum every good, and flag any total `< 0`. **Gating is respected** — a combination is legal
+  only if every chosen PM's `unlocking_production_methods` gate is satisfied by another chosen PM in that
+  same combination, so a gated secondary (e.g. `pm_elastics`, unlocked only by the sewing/electric main PMs)
+  is never counted against a main PM that can't run it, and a vanilla base PMG's low-tier main PM isn't
+  blamed for a reduction it can't reach. Only "risky" goods (those with a negative contribution in some PM)
+  are checked, so buildings without reductions are skipped outright. **PM names are not all `pm_`-prefixed**
+  (plantations/farms use `default_`/`automatic_`/`worker_`/… ), so every top-level block in a
+  production_methods file is a PM and every token in a `production_methods`/`unlocking_production_methods`
+  list is a PM reference. The check reads all vanilla PMGs, the mod's **owned** production-methods files (so
+  `pm_goods` overrides are seen), and all buildings (vanilla + mod, mod overriding).
 - **BE targets are derived from tech unlock date.** `tools/solve_be_targets.ps1` reads each tier's
   unlocking tech's **era** live from vanilla `common/technology/technologies/*.txt` and writes per-tier
   `target_be` (era anchor − H1 input discount, above) and `natural_year` (the era's representative year,
@@ -225,8 +248,22 @@ the game.
   a patch adds are picked up automatically on rebuild.
 - **Balance UI (for Claude-less iteration):** one-click **`balance-ui.cmd`** (or
   `powershell -ExecutionPolicy Bypass -File tools\ui.ps1`) opens a browser editor (`ui/builder.html`)
-  showing every building × tier with editable input/output volumes + an editable **wages %** line (per-tier
-  `wage_pct`, default 33% of input-goods cost), live **full** break-even + per-good-threshold **full
+  showing every building × tier with editable **main-PM** input/output volumes + an editable **wages %** line
+  (per-tier `wage_pct`, default 33% of input-goods cost). Each tier's **secondary-PM selectors** sit under the
+  building name (Building column); switching one distributes that PM's effects across the columns: its input goods
+  appear as extra rows in the **Input** column, its output goods (including negative *reductions* of the main good,
+  e.g. tank production −20 automobiles) as extra rows in the **Output** column, and its employment folds into
+  **Workforce**. The secondary **goods rows are editable** (marked with a `↳`), wired to the shared `pm_goods`
+  override — so editing one changes that PM's recipe everywhere it's used (negatives allowed, for reduction
+  outputs). Contributions are **not summed** with the main good — each active secondary is its own row (you see
+  `automobiles 30` and `↳ automobiles −20` side by side, both editable but independent). **Non-goods outputs**
+  (infrastructure / ship construction / pollution from the config, plus modifiers from active secondaries) are
+  listed at the bottom of the Output cell **read-only**, **merged by kind into a total** (base pollution + an
+  automation PM's pollution ⇒ one `pollution +25`). A **Workforce** column shows each tier's employment (total + per-profession),
+  **tracking the selected PMs** (e.g. automation's −1500 laborers) — **viz-only**: not editable, not saved, not a
+  new emit path (the builder already emits base `employment`; the UI just carries it through and adds active
+  secondary-PM employment for display). Reference-explorer buildings get the same read-only workforce line. Live
+  **full** break-even + per-good-threshold **full
   profitability** ((output − inputs − wages)/(inputs + wages)), an editable **Build cost** column
   (construction points → `required_construction`, with a muted "model N" hint that turns amber when the
   stored value diverges from what `solve_building_cost.ps1` would set), a read-only **Payback** column
@@ -245,7 +282,12 @@ the game.
   allowed. Locks are UI-session state (reset on reload). The **Restore defaults** button resets each in-scope
   **unlocked** group to its as-loaded config values (target BE, volumes, build cost, ai_value, secondary PMs)
   — i.e. what a page refresh produces, but honoring current locks (a page refresh restores all defaults **and**
-  lockedness). More named presets will come later; this button is just the reset. **Base `ai_value`**
+  lockedness). The **Bring to vanilla** button (same scope selector + lock honoring) resets each in-scope
+  **unlocked** split building *toward base-game values*: every tier's output+inputs become its `vanilla_pm`'s
+  recipe (read live from `vanilla.js`), its `ai_value` becomes the **pre-split vanilla building's** value
+  (Tier-1 key = the vanilla base building; blank = engine default, e.g. tooling → 2000), and its secondaries
+  reset to base. `target_be`/`building_cost` are left as-is, so BE then reflects vanilla economics (usually
+  off-target/amber — expected). More named presets will come later. **Base `ai_value`**
   (building AI construction desire) is editable everywhere: on **our tier rows** (per-tier `ai_value` in the
   config; blank = engine default 1000) and on **every explorer building** (a `data-refaiv` field backed by
   the top-level **`building_ai_value`** map). The builder emits ai_value for buildings in files it owns —
@@ -257,27 +299,33 @@ the game.
   directly still edits + previews + **Export mod_config.json** (then run `build.ps1` yourself).
   User-facing setup lives in `README.md`.
 - **All-buildings explorer + `include_all_buildings`.** The UI **always** shows every vanilla building,
-  not just our tiered industries: our industries stay editable cards (now each tier also exposes its
-  **secondary PMGs** — canning, luxury, automation, … — as PM dropdowns whose selection folds into that
-  tier's BE/profit, matching the linter's building-level view; default = base/"off" PM, so nothing moves
-  until you switch). Below them, **every other vanilla building** is a **PM explorer with editable goods
-  I/O**: pick a PM per PMG, and **edit its input/output quantities** (number fields; BE / £ in-out update
-  live via a `REFEDIT` override keyed by PM). Only **secondary effects** (state_infrastructure,
-  pollution, bureaucracy, trade capacity, ship construction, …) stay read-only. **Goods edits are
-  config-backed and emitted**: they persist to the top-level **`pm_goods`** map, which the builder writes
-  into the owned production-methods files, so an edit to a PM applies to **every** building that uses it
-  (our tier main PMs stay per-tier; every *other* PM — non-economic buildings' PMs *and* our tiers'
-  secondary PMs, now editable on the tier cards too — go through `pm_goods`). These are sorted into
-  a **custom taxonomy** (not raw `building_group`): a `#econref` block of **"Other economic buildings"**
-  right under our industries (Utilities & trade = ports/railways/trade/power — vanilla values, only power
-  will follow our BE ladder; and Arts), then the `#reference` explorer clustered **Food & agriculture
-  (arable land)** → **Raw resource extraction** (mining, gold fields, logging, oil, rubber) → **Other**
-  (military consumers, property owners, administration, fishing & whaling, subsistence, service,
-  construction, Unique buildings). The map is `GRPCAT`/`CATLABEL`/`REF_CLUSTERS` in `ui/builder.html`
+  not just our tiered industries: our industries stay editable cards (each tier's **secondary PMGs** —
+  canning, luxury, automation, … — are PM dropdowns under the building name; a non-base selection folds into
+  that tier's BE/profit + Workforce and its **goods are editable** (via `pm_goods`) in the Input/Output columns,
+  matching the linter's building-level view; default = base/"off" PM, so nothing moves until you switch). Below
+  them, **every other vanilla building** (those not on our tier ladder — some economic, just out of scope
+  for now) renders in the **same card + table UI** as our industries: one **category card** per taxonomy
+  group, one **row per building**, with columns Building / Inputs / Output / Workforce / BE. Each row has the
+  building's **PM selectors under its name**, **every good editable** in the Input/Output columns (wired to
+  `pm_goods`), non-goods outputs (infrastructure, pollution, bureaucracy, trade capacity, ship construction,
+  …) and **workforce** read-only, and an informational **BE**. **Each category is locked by default** (a
+  🔒 that excludes it from future mass tools — still fully editable; the amber bar without the dimming);
+  unlock to include it. **Goods edits are config-backed and emitted**: they persist to the top-level
+  **`pm_goods`** map, which the builder writes into the owned production-methods files, so an edit to a PM
+  applies to **every** building that uses it (our tier main PMs stay per-tier; every *other* PM — reference
+  buildings' PMs *and* our tiers' secondary PMs, editable both in the reference table and on the tier cards
+  (the `↳` rows) — goes through `pm_goods`). Note **PM names are not all `pm_`-prefixed** (plantations/mines
+  use `default_`/`automatic_`/`picks_and_shovels_`/… ); the extractor, the builder's `pm_goods` writer, and
+  the linter all handle any name — so plantation/mine goods are editable & emittable too. Buildings are
+  sorted into a **custom taxonomy** (not raw `building_group`): one unified `#reference` explorer clustered
+  **Utilities, trade & arts** → **Food & agriculture (arable land)** → **Raw resource extraction** (mining,
+  gold fields, logging, oil, rubber) → **Other** (military consumers, property owners, administration,
+  fishing & whaling, subsistence, service, construction, Unique buildings). (`#econref` is now emptied and
+  merged into `#reference`.) The map is `GRPCAT`/`CATLABEL`/`ECON_CATS`/`REF_CLUSTERS` in `ui/builder.html`
   (keyed by vanilla `building_group`; unmapped groups fall back to their own card in the Other cluster).
   All PM data comes from `ui/vanilla.js` (regenerated every build by `extract_vanilla.ps1`; UI-only, never
   shipped). PM *selections* in the explorer are session-only (which PM is active is the game's runtime
-  choice); PM *goods* edits are saved/emitted via `pm_goods` (above).
+  choice); PM *goods* edits are saved/emitted via `pm_goods` (above); category **locks** are UI-session state.
   **`include_all_buildings`** is a **builder** flag (top-level bool in `mod_config.json`, default `false`;
   `build.ps1 -IncludeAllBuildings` forces it on) — it is the **emission scope** for the untouched
   buildings (whether they'd reach an exported config / the built mod), **not** a UI visibility switch. The

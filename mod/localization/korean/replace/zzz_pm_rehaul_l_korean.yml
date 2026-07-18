@@ -112,7 +112,7 @@
  building_explosives_factory_brine_lens_option:0 "Expand $building_explosives_factory_brine$"
  pmg_main_explosives_brine:0 "Brine Electrolysis"
  pm_main_explosives_brine:0 "Brine Electrolysis"
- building_steel_mill:0 "Tier 1. Blister Steel Mills. BE target 126%"
+ building_steel_mill:0 "Tier 1. Blister Steel Mills. BE target 123%"
  building_steel_mill_lens_option:0 "Expand $building_steel_mill$"
  pmg_main_steel_blister:0 "Blister Steel Process"
  pm_main_steel_blister:0 "Blister Steel Process"

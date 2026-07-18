@@ -33,14 +33,33 @@
   td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
   .mtable{table-layout:fixed}
   .mtable col.c-tier{width:52px}
-  .mtable col.c-bld{width:158px}
-  .mtable col.c-out{width:200px}
+  .mtable col.c-bld{width:184px}
+  .mtable col.c-out{width:240px}
   .mtable col.c-in{width:236px}
   .mtable col.c-tgt{width:92px}
   .mtable col.c-be{width:96px}
   .mtable col.c-io{width:74px}
   .mtable col.c-bc{width:96px}
   .mtable col.c-pb{width:74px}
+  .mtable col.c-wf{width:112px}
+  .mtable col.c-refbld{width:230px}
+  .mtable col.c-rbe{width:70px}
+  /* secondary-PM goods rows: editable like main goods, but a faint ↳ marks that edits go to pm_goods (shared) */
+  input[type=number]:disabled{opacity:1;color:var(--muted);background:#0c1017;border-style:dashed;cursor:default}
+  .goodrow.sec .g{color:var(--muted)}
+  .goodrow.sec .g::before{content:"↳ ";opacity:.7}
+  /* the secondary-PM selectors, relocated under the building name */
+  .secselwrap{margin-top:3px;display:flex;flex-direction:column;gap:2px}
+  .secselwrap select.pmsel{width:100%;font-size:11px;padding:2px 4px}
+  /* non-GOODS outputs (infrastructure / pollution / ship construction / modifiers) — compact, not goods */
+  .outsep{font-size:9.5px;text-transform:uppercase;letter-spacing:.3px;color:var(--muted);margin:3px 0 1px;border-top:1px dashed var(--line);padding-top:2px}
+  .outro{display:flex;justify-content:space-between;gap:6px;align-items:center;margin:1px 0;font-size:11.5px}
+  .outro .g{color:var(--muted);font-style:italic}
+  .outro .v{font-variant-numeric:tabular-nums}
+  .outro .v.pos{color:var(--good)} .outro .v.neg{color:var(--warn)}
+  /* workforce cell (viz-only, read-only) */
+  .wfcell .tot{font-weight:700;font-variant-numeric:tabular-nums}
+  .wfcell .brk{color:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
   /* keep long text (building keys, good names) inside its column, and draw thin dotted column dividers */
   .mtable td, .mtable th{overflow-wrap:break-word;border-right:1px dotted #3a4757}
   .mtable td:last-child, .mtable th:last-child{border-right:none}
@@ -87,6 +106,7 @@
   .tieract{display:flex;gap:3px;justify-content:flex-end}
   button:disabled{opacity:.38;cursor:not-allowed}
   .card.locked{opacity:.6;box-shadow:inset 3px 0 0 var(--warn)}
+  .card.refcard.locked{opacity:1}   /* reference cards are locked by DEFAULT (still fully editable) — keep the amber bar, drop the dimming */
   #vizTip{position:fixed;z-index:50;display:none;pointer-events:none;background:var(--panel2);
     border:1px solid var(--line);border-radius:7px;padding:6px 9px;font-size:12px;color:var(--ink);
     max-width:300px;box-shadow:0 6px 20px rgba(0,0,0,.45);line-height:1.55}
@@ -125,6 +145,7 @@
   <span class="sp"></span>
   <select id="presetScope" title="Scope for the preset and payback tools"></select>
   <button id="applyPreset" title="Reset in-scope UNLOCKED groups to the loaded config defaults (target BE, volumes, build cost, ai_value, secondary PMs) — like a page refresh but honoring current locks">Restore defaults</button>
+  <button id="bringVanilla" title="Bring in-scope UNLOCKED split buildings back to vanilla: each tier's output+inputs = its vanilla_pm's recipe, and ai_value = the pre-split vanilla building's value. Secondaries reset to base. Honors current locks.">Bring to vanilla</button>
   <span class="sp"></span>
   <label class="muted" style="font-size:12px">Payback <input id="pbYears" type="number" min="1" step="1" value="10" style="width:48px"> yrs</label>
   <button id="pbFixPrices" title="WHOLE SHEET (skips locked groups): set every tier's Build cost so payback = X years at the CURRENT price panel. Tiers unprofitable at current prices are skipped.">sheet $→X (build cost)</button>
@@ -203,9 +224,15 @@ function makeTiers(i){ return i.tiers.map((t,ix)=>({
     key:t.key, name:t.name, tier:ix+1, output_qty:+t.output_qty, target_be:+t.target_be,
     tech:t.tech, natural_year:(t.natural_year!=null?+t.natural_year:null),   // unlock tech + its era's representative year (solve_be_targets.ps1)
     output_good:t.output_good,   // optional per-tier override (e.g. shipyard clippers→steamers)
+    vanilla_pm:t.vanilla_pm,     // base-game main PM this tier replaces (used by "Bring to vanilla")
     building_cost:(t.building_cost!=null?+t.building_cost:null),   // construction points (→ required_construction)
     wage_pct:(t.wage_pct!=null?+t.wage_pct:null),   // optional per-tier wage override (fraction of input-goods cost; default DEF_WAGE)
     ai_value:(t.ai_value!=null?+t.ai_value:null),   // per-tier AI construction desire; null = engine default (AIVAL_DEFAULT)
+    // ---- read-only display fields (carried for the Output zone + Workforce column; not edited or re-emitted by the UI) ----
+    employment:(t.employment?Object.fromEntries(Object.entries(t.employment).map(([k,v])=>[k,+v])):null),  // workforce by profession (viz-only)
+    pollution:(t.pollution!=null?+t.pollution:null),
+    state_infrastructure:(t.state_infrastructure!=null?+t.state_infrastructure:null),
+    ship_construction:(t.ship_construction!=null?+t.ship_construction:null),
     _sec:initSel((i.secondary_pmgs||[]).filter(pg=>VAN.pmgs[pg])),   // per-tier secondary-PM selection (session-only, default base)
     inputs:Object.fromEntries(Object.entries(t.inputs).map(([g,q])=>[g,+q]))
   })); }
@@ -292,6 +319,47 @@ function prettyKey(k){ return String(k).replace(/^(building_|pmg_)/,'').replace(
 // tier economics fold in the tier's selected secondary PMs (default base = inert, so no change until switched)
 function inputValue(t, useThr){ let v=0; for(const[g,q]of Object.entries(t.inputs)){ v += q*(PRICES[g]||0)*(useThr?(thresholds[g]??100)/100:1);} return v + selInVal(t._sec, useThr); }
 function outputValue(i,t, useThr){ const og=tierOut(i,t); return t.output_qty*(PRICES[og]||0)*(useThr?(thresholds[og]??100)/100:1) + selOutVal(t._sec, useThr); }
+// ----- editable secondary-PM goods rows (rendered into the Input / Output columns) -----
+// Same markup as a main good row (editable field), but wired to the pm_goods override (data-refedit) keyed by the
+// secondary PM — so editing changes that PM's recipe everywhere it's used. Values may be negative (a secondary PM
+// that reduces the main output, e.g. tank production −20 automobiles). Not summed with the main good — each active
+// secondary contributes its own row. The ↳ prefix (CSS) marks these as shared/secondary contributions.
+// One EDITABLE good row wired to the shared pm_goods override (data-refedit), keyed by a context key
+// (a tier's building key, or a reference building key). Same markup as a main good row; `secondary` adds
+// the ↳ marker used on tier cards to distinguish a secondary-PM contribution from the tier's main output.
+function editGoodRow(ctxKey, pm, dir, good, qty, secondary){ const val=qty*(PRICES[good]||0);
+  return `<div class="goodrow${secondary?' sec':''}" title="${esc(good)} from ${esc(prettyPm(pm))} — editing changes this PM's goods everywhere it's used (saved via pm_goods)"><span class="g">${esc(good)}</span>
+    <span class="amt"><input type="number" step="1" value="${qty}" data-refedit="${esc(ctxKey)}" data-pm="${esc(pm)}" data-dir="${dir}" data-good="${esc(good)}"><span class="u"></span><span class="v muted" id="rv_${ctxKey}_${pm}_${dir}_${good}">£${round(val)}</span></span></div>`; }
+// input-goods (dir='in') or output-goods (dir='out') contributed by the tier's ACTIVE (non-base) secondary PMs.
+function secGoodRows(i,t,dir){ let html='';
+  for(const pg in t._sec){ const sel=t._sec[pg]; if(sel===basePm(pg)) continue;   // base = inert
+    const map=pmRec(sel)[dir]||{}; for(const g in map) html+=editGoodRow(t.key, sel, dir, g, map[g], true); }
+  return html; }
+// non-GOODS outputs a tier produces: infrastructure / pollution / ship construction (from the config), plus any
+// modifiers from ACTIVE secondary PMs. Purely informational (not priced, not in BE). Employment lives in Workforce.
+function prettyMod(m){ return String(m).replace(/^(state_|country_|building_)/,'').replace(/_generation$/,'').replace(/_add$/,'').replace(/_/g,' '); }
+// non-goods outputs are cumulative totals (unlike goods, pollution/infrastructure of the same kind add up), so we
+// merge by label: config base (pollution/infrastructure/ship construction) + any modifiers from active secondary PMs.
+function tierNonGoods(i,t){ const acc={};
+  const add=(label,val,cls)=>{ if(!acc[label]) acc[label]={label,val:0,cls}; acc[label].val+=val; };
+  if(t.state_infrastructure!=null) add('infrastructure', +t.state_infrastructure, 'pos');
+  if(t.ship_construction!=null)    add('ship construction', +t.ship_construction, 'pos');
+  if(t.pollution!=null && t.pollution>0) add('pollution', +t.pollution, 'neg');
+  for(const pg in t._sec){ const sel=t._sec[pg]; if(sel===basePm(pg)) continue;
+    const m=pmRec(sel).mods||{}; for(const k in m){ if(!m[k]) continue; const lbl=prettyMod(k);
+      add(lbl, m[k], lbl==='pollution'?'neg':(m[k]>0?'pos':'neg')); } }
+  return Object.values(acc).filter(x=>x.val!==0); }
+function nonGoodsRows(i,t){ const ng=tierNonGoods(i,t); if(!ng.length) return '';
+  return `<div class="outsep">non-goods output</div>`+ng.map(n=>`<div class="outro" title="non-goods output (total)"><span class="g">${esc(n.label)}</span><span class="v ${n.cls}">${n.val>=0?'+':''}${n.val}</span></div>`).join(''); }
+// ----- workforce (viz-only): base building employment + ACTIVE secondary-PM employment (e.g. automation −laborers) -----
+function tierEmp(t){ const e=Object.assign({}, t.employment||{});
+  for(const pg in (t._sec||{})){ const sel=t._sec[pg]; if(sel===basePm(pg)) continue; const r=VAN.pms[sel];
+    if(r&&r.emp) for(const k in r.emp) e[k]=(e[k]||0)+r.emp[k]; }
+  for(const k in e){ if(e[k]===0) delete e[k]; } return e; }
+function empTotal(m){ let s=0; for(const k in (m||{})) s+=m[k]; return s; }
+function empRows(m){ return Object.entries(m||{}).map(([k,v])=>`<div class="brk">${esc(k)} ${v}</div>`).join(''); }
+function empBreak(m){ return Object.entries(m||{}).map(([k,v])=>`${k} ${v}`).join(', '); }
+function selEmp(sel){ const e={}; for(const pg in (sel||{})){ const r=VAN.pms[sel[pg]]; if(r&&r.emp) for(const k in r.emp) e[k]=(e[k]||0)+r.emp[k]; } return e; }
 // FULL break-even: output price (% of base) at which full profit (input goods + wages) = 0.
 function BE(i,t){ const O=outputValue(i,t,false); return O>0 ? (inputValue(t,false)+wageCost(t))/O*100 : 0; }
 // FULL profitability at the current price panel: (O − I − W)/(I + W). Wages at base (fixed labor).
@@ -377,9 +445,10 @@ function industryCard(i){
       <button class="minibtn lockbtn" data-lock="${esc(i.id)}" title="${i.locked?'Unlock this group':'Lock: exclude this group from all mass editors (preset + group/worksheet payback). Manual edits stay allowed.'}">${i.locked?'🔒':'🔓'}</button>
     </div>
     <div class="bd" style="display:${i._open?'':'none'}"><table class="mtable">
-      <colgroup><col class="c-tier"><col class="c-bld"><col class="c-in"><col class="c-out"><col class="c-tgt"><col class="c-be"><col class="c-io"><col class="c-bc"><col class="c-pb"><col class="c-act"></colgroup>
+      <colgroup><col class="c-tier"><col class="c-bld"><col class="c-in"><col class="c-out"><col class="c-wf"><col class="c-tgt"><col class="c-be"><col class="c-io"><col class="c-bc"><col class="c-pb"><col class="c-act"></colgroup>
       <thead><tr>
       <th>Tier</th><th>Building</th><th>Inputs (qty) + wages</th><th>Output</th>
+      <th title="Workforce (employment by profession). Read-only visualization — not editable or emitted from the UI.">Workforce</th>
       <th class="num" title="Edit to re-solve this tier's input volumes to hit that FULL break-even">Target</th>
       <th class="num" title="FULL break-even output price % — where output revenue = input goods + wages (inputs at base)">BE</th>
       <th class="num" title="Full profitability at the price panel above: (output − inputs − wages) / (inputs + wages)">Profit@thr</th>
@@ -388,34 +457,43 @@ function industryCard(i){
       <th class="num" title="Bring THIS tier to the X-yr payback: $ = set its Build cost (fix prices); % = scale this industry's prices so this tier hits X (fix build cost).">→X</th>
     </tr></thead><tbody>${rows}</tbody></table></div></div>`;
 }
-// secondary-PM selector rows for one tier (switchable vanilla PMGs; default base = inert).
-function secRows(i,t){
+// secondary-PM selectors for one tier, relocated under the building name (switchable vanilla PMGs; default base =
+// inert). The selected PM's goods/employment are distributed into the Input / Output / Workforce columns; here we
+// render only the dropdowns, with the net £ effect as a hint.
+function secSelectors(i,t){
   if(!HAVE_VAN || !i.secondary_pmgs.length) return '';
   const rows = i.secondary_pmgs.map(pg=>{
     const g=VAN.pmgs[pg]; const sel=t._sec[pg]||basePm(pg);
     const opts=g.pms.map(pm=>`<option value="${esc(pm)}" ${pm===sel?'selected':''}>${esc(prettyPm(pm))}</option>`).join('');
-    const r=pmRec(sel), inV=goodsVal(r.in,false), outV=goodsVal(r.out,false), active=(pm=>pm!==basePm(pg))(sel);
-    const eff = (inV||outV) ? `<span class="v muted">${inV?'−£'+round(inV):''}${outV?' +£'+round(outV):''}</span>` : `<span class="v muted">off</span>`;
-    const io=refGoodsRows(t.key,sel);   // editable goods for the selected secondary PM (emitted via pm_goods)
-    return `<div class="secrow" title="${esc(prettyKey(pg))} — switch PM to fold its goods into this building's BE; edit its goods (saved via pm_goods)">
-      <select class="pmsel${active?' on':''}" data-ind="${i.id}" data-tier="${t.tier}" data-pmg="${esc(pg)}">${opts}</select>${eff}</div>${io?`<div class="refio" style="margin-left:10px">${io}</div>`:''}`;
+    const r=pmRec(sel), inV=goodsVal(r.in,false), outV=goodsVal(r.out,false), active=(sel!==basePm(pg));
+    const eff = active ? `<span class="v muted" style="font-size:10px">${inV?'−£'+round(inV):''}${(outV>0||outV<0)?' +£'+round(outV):''}</span>` : '';
+    return `<div class="secrow" title="${esc(prettyKey(pg))} — its goods go to the Input/Output columns, employment to Workforce">
+      <select class="pmsel${active?' on':''}" data-ind="${i.id}" data-tier="${t.tier}" data-pmg="${esc(pg)}">${opts}</select>${eff}</div>`;
   }).join('');
-  return `<div class="secsep">secondary PMs</div>${rows}`;
+  return `<div class="secsep">secondary PMs</div><div class="secselwrap">${rows}</div>`;
 }
+// read-only workforce cell (viz-only): total + per-profession breakdown, tracking the selected PMs.
+function wfCell(emp){ const tot=empTotal(emp);
+  return `<div class="tot num" title="${esc(empBreak(emp)||'no employment data')}">${tot||'—'}</div>${empRows(emp)}`; }
 function tierRow(i,t){
   const be=BE(i,t), tp=TPthr(i,t), outG=tierOut(i,t);
   const inputs = Object.entries(t.inputs).map(([g,q])=>`<div class="goodrow" title="${esc(g)}: qty × base price £${PRICES[g]||'?'}"><span class="g">${esc(g)}</span>
     <span class="amt"><input type="number" min="0" step="1" value="${q}" data-ind="${i.id}" data-tier="${t.tier}" data-input="${esc(g)}"><span class="u"></span><span class="v muted" id="gv_${i.id}_${t.tier}_${g}">£${round(q*(PRICES[g]||0))}</span></span></div>`).join('')
+    + secGoodRows(i,t,'in')   // read-only input goods from active secondary PMs
     + `<div class="goodrow" title="Wages = this % of input-goods cost, at base prices. Model-only — not emitted to the game."><span class="g" style="font-style:italic">wages</span>
-    <span class="amt"><input type="number" min="0" step="1" value="${round(wagePct(t)*100)}" data-ind="${i.id}" data-tier="${t.tier}" data-wage="1"><span class="u">%</span><span class="v muted" id="wv_${i.id}_${t.tier}">£${round(wageCost(t))}</span></span></div>`
-    + secRows(i,t);
+    <span class="amt"><input type="number" min="0" step="1" value="${round(wagePct(t)*100)}" data-ind="${i.id}" data-tier="${t.tier}" data-wage="1"><span class="u">%</span><span class="v muted" id="wv_${i.id}_${t.tier}">£${round(wageCost(t))}</span></span></div>`;
+  const outputs = `<div class="goodrow" title="${esc(outG)}: qty × base price £${PRICES[outG]||'?'}"><span class="g">${esc(outG)}</span>
+      <span class="amt"><input type="number" min="1" step="1" value="${t.output_qty}" data-ind="${i.id}" data-tier="${t.tier}" data-out="1"><span class="u"></span><span class="v muted" id="ov_${i.id}_${t.tier}">£${round(t.output_qty*(PRICES[outG]||0))}</span></span></div>`
+    + secGoodRows(i,t,'out')   // read-only output goods from active secondary PMs (incl. negative main-good reductions)
+    + nonGoodsRows(i,t);
   return `<tr data-ind="${esc(i.id)}" data-tier="${t.tier}">
     <td><span class="pill" style="background:${TIERCOL[t.tier]||'#666'}">${t.tier}</span></td>
     <td>${esc(t.name)}<div class="muted" style="font-size:11px">${esc(t.key)}</div><div class="muted" style="font-size:10px" title="natural unlock date = this tier's tech era">${t.natural_year?'~'+t.natural_year+' · ':''}${esc(t.tech||'')}</div>
-      <div class="aivrow" title="Base AI construction desire (building ai_value). Blank = engine default ${AIVAL_DEFAULT}. Emitted as the building's ai_value when set.">ai_value <input type="number" min="0" step="50" value="${t.ai_value!=null?t.ai_value:''}" placeholder="${AIVAL_DEFAULT}" data-ind="${i.id}" data-tier="${t.tier}" data-aiv="1"></div></td>
+      <div class="aivrow" title="Base AI construction desire (building ai_value). Blank = engine default ${AIVAL_DEFAULT}. Emitted as the building's ai_value when set.">ai_value <input type="number" min="0" step="50" value="${t.ai_value!=null?t.ai_value:''}" placeholder="${AIVAL_DEFAULT}" data-ind="${i.id}" data-tier="${t.tier}" data-aiv="1"></div>
+      ${secSelectors(i,t)}</td>
     <td>${inputs}</td>
-    <td><div class="goodrow" title="${esc(outG)}: qty × base price £${PRICES[outG]||'?'}"><span class="g">${esc(outG)}</span>
-      <span class="amt"><input type="number" min="1" step="1" value="${t.output_qty}" data-ind="${i.id}" data-tier="${t.tier}" data-out="1"><span class="u"></span><span class="v muted" id="ov_${i.id}_${t.tier}">£${round(t.output_qty*(PRICES[outG]||0))}</span></span></div></td>
+    <td>${outputs}</td>
+    <td class="wfcell">${wfCell(tierEmp(t))}</td>
     <td class="num"><input type="number" step="5" value="${t.target_be}" data-ind="${i.id}" data-tier="${t.tier}" data-target="1">%</td>
     <td class="num" id="be_${i.id}_${t.tier}"><span class="be ${onTarget(t,be)?'ok':'off'}">${be.toFixed(0)}%</span><div class="muted" style="font-size:10px">±${TARGET_TOL} of ${t.target_be}</div></td>
     <td class="num" id="tp_${i.id}_${t.tier}">${tp>=0?'+':''}${tp.toFixed(0)}%</td>
@@ -529,8 +607,8 @@ const REFEDIT = JSON.parse(JSON.stringify(window.PMDATA.config.pm_goods||{}));  
 const REFAIV = Object.assign({}, window.PMDATA.config.building_ai_value||{});   // buildingKey -> base ai_value override (config-backed; emitted for buildings in owned files)
 function refEditSet(pm,dir,good,val){ const v=VAN.pms[pm]||{in:{},out:{}};
   const o=REFEDIT[pm]||(REFEDIT[pm]={in:{...(v.in||{})},out:{...(v.out||{})}});
-  o[dir][good]=Math.max(0,+val||0); }
-const REFOPEN = new Set();            // expanded building blocks
+  o[dir][good]=Math.round(+val||0); }   // allow negatives — some PMs reduce a good (e.g. tank PM: automobiles −20)
+const REFUNLOCK = new Set();          // reference categories the user has UNLOCKED (default = all locked)
 const REFGRPOPEN = new Set();         // expanded category cards
 function refBuildings(){ return HAVE_VAN ? Object.keys(VAN.buildings).filter(b=>!OURS.has(b)) : []; }
 function prettyGroup(g){ return String(g).replace(/^bg_/,'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); }
@@ -583,78 +661,83 @@ function refEcon(b){ const g=selGoods(refSel(b));
   const Ith=goodsVal(g.in,true), Oth=goodsVal(g.out,true);
   return { I, O, W, goods:g, BE:(O>0?(I+W)/O*100:null), tp:((I+W)>0&&O>0?(Oth-(Ith+W))/(Ith+W)*100:null) };
 }
-function flowsLine(e){ return e.BE!=null ? `BE <b>${round(e.BE)}%</b> · £in ${round(e.I)} · £out ${round(e.O)} · wages £${round(e.W)}`
-                                          : `no market output · £in ${round(e.I)} · wages £${round(e.W)}`; }
-function flowsHTML(b,e){ return `<div class="flows" id="flows_${b}">${flowsLine(e)}</div>`; }
-// Editable input/output good rows for a PM (keyed to REFEDIT, global recipe). `b` is a display context
-// (a building/tier key) used only for the £-span element ids. Shared by the explorer and tier secondaries.
-function refGoodsRows(b, pm){ const rec=pmRec(pm);
-  const row=(dir,k,q)=>`<div class="refedit"><span class="g">${dir==='in'?'−':'+'} ${esc(k)}</span>`+
-    `<input type="number" min="0" step="1" value="${q}" data-refedit="${esc(b)}" data-pm="${esc(pm)}" data-dir="${dir}" data-good="${esc(k)}">`+
-    `<span class="v muted" id="rv_${b}_${pm}_${dir}_${k}">£${round(q*(PRICES[k]||0))}</span></div>`;
-  return Object.entries(rec.in).map(([k,q])=>row('in',k,q)).join('') + Object.entries(rec.out).map(([k,q])=>row('out',k,q)).join('');
+// PM selectors for a reference building (one dropdown per PMG), placed under the building name — same
+// look as our tier cards' secondary-PM selectors.
+function refPmSelectors(b){ const info=VAN.buildings[b], sel=refSel(b);
+  const rows=(info.pmgs||[]).filter(pg=>VAN.pmgs[pg]).map(pg=>{
+    const g=VAN.pmgs[pg], s=sel[pg]||basePm(pg);
+    const opts=g.pms.map(pm=>`<option value="${esc(pm)}" ${pm===s?'selected':''}>${esc(prettyPm(pm))}</option>`).join('');
+    return `<div class="secrow" title="${esc(prettyKey(pg))}"><select class="pmsel${s!==basePm(pg)?' on':''}" data-refbld="${esc(b)}" data-pmg="${esc(pg)}">${opts}</select></div>`;
+  }).join('');
+  return rows ? `<div class="secsep">production methods</div><div class="secselwrap">${rows}</div>` : '';
 }
-function pmgBlockHTML(b,pg){ const g=VAN.pmgs[pg]; if(!g) return '';
-  const sel=refSel(b)[pg], rec=pmRec(sel);
-  const opts=g.pms.map(pm=>`<option value="${esc(pm)}" ${pm===sel?'selected':''}>${esc(prettyPm(pm))}</option>`).join('');
-  const io=refGoodsRows(b,sel);
-  // secondary effects (state_infrastructure, pollution, bureaucracy, trade capacity, …) stay READ-ONLY
-  const mods=Object.entries(rec.mods).map(([m,v])=>`<span class="mod">${esc(m.replace(/_/g,' '))} ${v>=0?'+':''}${v}</span>`).join(' ');
-  return `<div class="pmgblock"><div class="lbl">${esc(prettyKey(pg))}</div>
-    <select class="pmsel${sel!==basePm(pg)?' on':''}" data-refbld="${esc(b)}" data-pmg="${esc(pg)}">${opts}</select>
-    <div class="refio">${io||'<span class="muted" style="font-size:11px">no goods</span>'}</div>
-    ${mods?`<div class="refmods">${mods}</div>`:''}</div>`;
+// editable goods rows (dir) for a reference building = every selected PM's goods in that direction.
+function refGoodRows(b, dir){ const sel=refSel(b); let html='';
+  for(const pg in sel){ const pm=sel[pg], map=pmRec(pm)[dir]||{}; for(const g in map) html+=editGoodRow(b, pm, dir, g, map[g], false); }
+  return html; }
+// read-only non-goods outputs (modifiers) for a reference building, merged by kind into a total.
+function refNonGoods(b){ const sel=refSel(b), acc={};
+  for(const pg in sel){ const m=pmRec(sel[pg]).mods||{}; for(const k in m){ if(!m[k])continue; const lbl=prettyMod(k);
+    if(!acc[lbl]) acc[lbl]={label:lbl,val:0,cls:(lbl==='pollution'?'neg':(m[k]>0?'pos':'neg'))}; acc[lbl].val+=m[k]; } }
+  const arr=Object.values(acc).filter(x=>x.val!==0); if(!arr.length) return '';
+  return `<div class="outsep">non-goods output</div>`+arr.map(n=>`<div class="outro"><span class="g">${esc(n.label)}</span><span class="v ${n.cls}">${n.val>=0?'+':''}${n.val}</span></div>`).join(''); }
+// one reference building as a table row — same columns/edit affordances as our tier rows (minus the ladder columns).
+function refRow(b){ const info=VAN.buildings[b], e=refEcon(b);
+  const beTxt=e.BE!=null?`${round(e.BE)}%`:'—', beCls=e.BE!=null?(e.BE<=175?'ok':'off'):'muted';
+  const aivDef=info.ai_value!=null?info.ai_value:AIVAL_DEFAULT;
+  const inG=refGoodRows(b,'in'), outG=refGoodRows(b,'out'), nong=refNonGoods(b);
+  return `<tr data-refbld="${esc(b)}">
+    <td>${esc(prettyKey(b))}<div class="muted" style="font-size:11px">${esc(b)}</div>
+      <div class="muted" style="font-size:10px">${esc(prettyGroup(info.group||''))}${info.tech?' · '+esc(info.tech):''}</div>
+      <div class="aivrow" title="Base AI construction desire (building ai_value). Blank = vanilla (${aivDef}). Emitted only for buildings in files the mod owns (01/06/11); others are session-only.">ai_value <input type="number" min="0" step="50" value="${REFAIV[b]!=null?REFAIV[b]:''}" placeholder="${aivDef}" data-refaiv="${esc(b)}"></div>
+      ${refPmSelectors(b)}</td>
+    <td>${inG||'<span class="muted" style="font-size:11px">—</span>'}</td>
+    <td>${outG}${nong}${(!outG&&!nong)?'<span class="muted" style="font-size:11px">—</span>':''}</td>
+    <td class="wfcell">${wfCell(selEmp(refSel(b)))}</td>
+    <td class="num"><span class="be ${beCls}" id="refbe_${b}" title="full break-even (input goods + wages) ÷ priced output; — = no market output">${beTxt}</span></td>
+  </tr>`;
 }
-function refBuildingHTML(b){ const info=VAN.buildings[b], e=refEcon(b), open=REFOPEN.has(b);
-  const beTxt=e.BE!=null?`${round(e.BE)}%`:'—', beCls=e.BE!=null?(Math.abs(e.BE)<=175?'ok':'off'):'muted';
-  const aivDef = info.ai_value!=null?info.ai_value:AIVAL_DEFAULT;
-  const aivRow = `<div class="aivrow" title="Base AI construction desire (building ai_value). Blank = vanilla (${aivDef}). Emitted only for buildings in files the mod owns (01/06/11 — e.g. trade center); others are session-only.">ai_value <input type="number" min="0" step="50" value="${REFAIV[b]!=null?REFAIV[b]:''}" placeholder="${aivDef}" data-refaiv="${esc(b)}"></div>`;
-  const body = open ? `<div class="bd">${aivRow}${(info.pmgs||[]).map(pg=>pmgBlockHTML(b,pg)).join('')}${flowsHTML(b,e)}</div>` : '';
-  return `<div class="refbld" data-refbld="${esc(b)}"><div class="hd" data-reftoggle="${esc(b)}">
-      <span class="caret">${open?'▾':'▸'}</span>
-      <span style="flex:1">${esc(prettyKey(b))} <span class="muted" style="font-size:11px">${esc(prettyGroup(info.group||''))}${info.tech?' · '+esc(info.tech):''}</span></span>
-      <span class="bbe ${beCls}" id="bbe_${b}" title="full break-even (input goods + wages) ÷ priced output; — = no market output">${beTxt}</span></div>${body}</div>`;
-}
-function catCardHTML(catId, blds){ const open=REFGRPOPEN.has(catId);
+// a category = a card (locked by default) whose body is a table of building rows — mirrors an industry card.
+function refCatCard(catId, blds){ const open=REFGRPOPEN.has(catId), locked=!REFUNLOCK.has(catId);
   const note = catId==='utilities_trade'
-    ? '<div class="muted" style="font-size:11px;padding:4px 12px 8px">Trade, ports &amp; railways keep <b>vanilla</b> values (different economics); only <b>power plants</b> will follow our BE ladder.</div>' : '';
-  const body = open ? note+blds.map(refBuildingHTML).join('') : '';
-  return `<div class="card"><div class="hd" data-refgrp="${esc(catId)}"><span class="caret">${open?'▾':'▸'}</span> ${esc(catLabel(catId))} <span class="tag">${blds.length} building${blds.length!==1?'s':''}</span></div>
+    ? '<div class="muted" style="font-size:11px;padding:6px 12px">Trade, ports &amp; railways keep <b>vanilla</b> values (different economics); only <b>power plants</b> will follow our BE ladder.</div>' : '';
+  const body = open ? `${note}<table class="mtable reftable">
+      <colgroup><col class="c-refbld"><col class="c-in"><col class="c-out"><col class="c-wf"><col class="c-rbe"></colgroup>
+      <thead><tr><th>Building</th><th>Inputs (qty)</th><th>Output</th><th>Workforce</th><th class="num">BE</th></tr></thead>
+      <tbody>${blds.map(refRow).join('')}</tbody></table>` : '';
+  return `<div class="card refcard${locked?' locked':''}"><div class="hd ind-hd" data-refgrp="${esc(catId)}"><span class="caret">${open?'▾':'▸'}</span> ${esc(catLabel(catId))} <span class="tag">${blds.length} building${blds.length!==1?'s':''}${locked?' · locked':''}</span>
+      <span class="spacer"></span>
+      <button class="minibtn lockbtn" data-reflock="${esc(catId)}" title="${locked?'Unlock this group (include in future mass tools)':'Lock this group (exclude from mass tools)'}">${locked?'🔒':'🔓'}</button></div>
     <div class="bd" style="display:${open?'':'none'};padding:0">${body}</div></div>`;
 }
 function renderReference(){
   const econRoot=document.getElementById('econref'), root=document.getElementById('reference');
   if(!root) return;
-  if(!HAVE_VAN){ root.innerHTML='<div class="refnote">Building reference unavailable — run <code>tools\\build.ps1</code> to generate <code>ui/vanilla.js</code>.</div>'; if(econRoot) econRoot.innerHTML=''; return; }
+  if(econRoot) econRoot.innerHTML='';   // merged into the single reference explorer below
+  if(!HAVE_VAN){ root.innerHTML='<div class="refnote">Building reference unavailable — run <code>tools\\build.ps1</code> to generate <code>ui/vanilla.js</code>.</div>'; return; }
   const cats=refCats();
-  const emit=!!window.PMDATA.config.include_all_buildings;
-  // ECONOMIC (read-only) — rendered right below our tiered industries
-  if(econRoot){
-    let e='<div class="refnote"><b>Other economic buildings</b> — switch PMs and edit input/output quantities (<b>saved &amp; emitted</b> via <code>pm_goods</code>; secondary effects stay read-only).</div>';
-    ECON_CATS.forEach(c=>{ if(cats[c]&&cats[c].length) e+=catCardHTML(c,cats[c]); });
-    econRoot.innerHTML=e;
-  }
-  // NON-ECONOMIC explorer — clustered + ordered
-  const used=new Set(ECON_CATS);
-  let html=`<div class="refnote">Non-economic buildings — switch PMs and <b>edit input/output quantities</b>; BE/£ update live. Goods edits are <b>saved &amp; emitted</b> (via <code>pm_goods</code> → the mod's owned production-methods files), so they apply to every building using that PM. Only <b>secondary effects</b> (infrastructure, pollution, bureaucracy, ship construction, …) stay read-only.</div>`;
-  const last=REF_CLUSTERS[REF_CLUSTERS.length-1];
-  REF_CLUSTERS.forEach(cl=>{
+  // one unified explorer for every vanilla building NOT on our tier ladder (some are economic, just out of
+  // the mod's current scope). Same card/table UI as our industries; edit any good (saved via pm_goods).
+  let html=`<div class="refnote">Other vanilla buildings — <b>not on the mod's tier ladder</b> (some are economic, just out of scope for now). Switch PMs and <b>edit any good's input/output</b>; edits are <b>saved &amp; emitted</b> via <code>pm_goods</code>, applying to every building using that PM. Non-goods outputs (infrastructure, pollution, …) and workforce are read-only. Each group is <b>locked by default</b> (excluded from mass tools) — unlock to include it.</div>`;
+  const clusters=[{label:'Utilities, trade &amp; arts', cats:ECON_CATS.slice()}].concat(REF_CLUSTERS);
+  const used=new Set(), last=clusters[clusters.length-1];
+  clusters.forEach(cl=>{
     let list=cl.cats.filter(c=>cats[c]&&cats[c].length);
-    if(cl===last){ const extra=Object.keys(cats).filter(c=>!used.has(c)&&!REF_CLUSTERS.some(x=>x.cats.includes(c))).sort(); list=list.concat(extra); }
+    if(cl===last){ const extra=Object.keys(cats).filter(c=>!used.has(c)&&!clusters.some(x=>x.cats.includes(c))).sort(); list=list.concat(extra); }
     list.forEach(c=>used.add(c));
     if(!list.length) return;
-    html+=`<div class="refcluster">${esc(cl.label)}</div>`;
-    list.forEach(c=>{ html+=catCardHTML(c,cats[c]); });
+    html+=`<div class="refcluster">${cl.label}</div>`;
+    list.forEach(c=>{ html+=refCatCard(c,cats[c]); });
   });
   root.innerHTML=html;
 }
-function renderRefBuilding(b){ const el=document.querySelector(`.refbld[data-refbld="${b}"]`); if(el) el.outerHTML=refBuildingHTML(b); }
-// fold toggles for the reference explorer
+function renderRefRow(b){ const tr=document.querySelector(`tr[data-refbld="${b}"]`); if(tr) tr.outerHTML=refRow(b); }
+// fold + lock toggles for the reference explorer (event-delegated)
 document.addEventListener('click', e=>{
+  const lk=e.target.closest('[data-reflock]');
+  if(lk){ const c=lk.dataset.reflock; REFUNLOCK.has(c)?REFUNLOCK.delete(c):REFUNLOCK.add(c); renderReference(); return; }
   const gh=e.target.closest('[data-refgrp]');
   if(gh){ const t=gh.dataset.refgrp; REFGRPOPEN.has(t)?REFGRPOPEN.delete(t):REFGRPOPEN.add(t); renderReference(); return; }
-  const bh=e.target.closest('[data-reftoggle]');
-  if(bh){ const b=bh.dataset.reftoggle; REFOPEN.has(b)?REFOPEN.delete(b):REFOPEN.add(b); renderRefBuilding(b); }
 });
 
 // ---------- editing ----------
@@ -675,9 +758,8 @@ document.addEventListener('input', e=>{
     const b=el.dataset.refedit, pm=el.dataset.pm, dir=el.dataset.dir, good=el.dataset.good;
     refEditSet(pm,dir,good,el.value);
     const rv=document.getElementById(`rv_${b}_${pm}_${dir}_${good}`); if(rv) rv.textContent='£'+round((+el.value||0)*(PRICES[good]||0));
-    const e=refEcon(b), beEl=document.getElementById(`bbe_${b}`), fl=document.getElementById(`flows_${b}`);
-    if(beEl){ beEl.textContent=e.BE!=null?`${round(e.BE)}%`:'—'; beEl.className='bbe '+(e.BE!=null?(Math.abs(e.BE)<=175?'ok':'off'):'muted'); }
-    if(fl) fl.innerHTML=flowsLine(e);
+    const rbe=document.getElementById(`refbe_${b}`);   // reference-building BE cell (absent when b is a tier key)
+    if(rbe){ const e=refEcon(b); rbe.textContent=e.BE!=null?`${round(e.BE)}%`:'—'; rbe.className='be '+(e.BE!=null?(e.BE<=175?'ok':'off'):'muted'); }
     updateComputed();   // the PM may be a secondary on our tiers — refresh their BE/profit/payback too
   }
   else if(el.dataset.thr!==undefined){
@@ -703,7 +785,7 @@ document.addEventListener('change', e=>{
     render();   // re-render so BE/profit + the secondary effect labels refresh
   } else if(e.target.classList.contains('pmsel') && d.refbld!==undefined){ // a reference building's PM
     (REFSEL[d.refbld]=REFSEL[d.refbld]||{})[d.pmg]=e.target.value;
-    renderRefBuilding(d.refbld);
+    renderRefRow(d.refbld); updateComputed();   // its PMs may also be tier secondaries
   }
 });
 document.getElementById('resetThr').onclick=()=>{ Object.keys(PRICES).forEach(g=>thresholds[g]=100); renderThresholds(); updateComputed(); };
@@ -722,6 +804,37 @@ document.getElementById('applyPreset').onclick=()=>{
   targets.forEach(ind=>{ const s=src.find(x=>x.id===ind.id); if(s) ind.tiers = makeTiers(s); });
   render();
   banner(lockedSkipped?'warn':'info', `Restored defaults for ${targets.length} group(s) (${scope==='__all'?'all industries':scope}) — target BE, volumes, build cost, ai_value & secondary PMs reset to the loaded config.`
+    + (lockedSkipped?` Skipped ${lockedSkipped} locked group(s).`:''));
+};
+// "Bring to vanilla" — for each in-scope UNLOCKED group, set every tier's output+inputs to its vanilla_pm's
+// recipe (so all tier "types" carry the same values as their base-game PMs) and its ai_value to the pre-split
+// vanilla building's value (blank = engine default). Secondaries reset to base. Honors current locks.
+document.getElementById('bringVanilla').onclick=()=>{
+  if(!HAVE_VAN){ banner('warn','Vanilla reference unavailable — run <code>tools\\build.ps1</code> to generate <code>ui/vanilla.js</code> first.'); return; }
+  const scope=document.getElementById('presetScope').value;
+  const inScope = scope==='__all'?IND:IND.filter(i=>i.id===scope);
+  const targets = inScope.filter(i=>!i.locked);
+  const lockedSkipped = inScope.length - targets.length;
+  let tiersSet=0; const noPm=[];
+  targets.forEach(ind=>{
+    const baseKey=ind.tiers[0] && ind.tiers[0].key;             // split industries reuse the vanilla base building key at Tier 1
+    const vb=baseKey?VAN.buildings[baseKey]:null;
+    const vanAiv=(vb && vb.ai_value!=null)?vb.ai_value:null;    // pre-split vanilla ai_value (null = engine default)
+    ind.tiers.forEach(t=>{
+      const rec=t.vanilla_pm?VAN.pms[t.vanilla_pm]:null;
+      if(rec){ const og=tierOut(ind,t);
+        if(rec.out && rec.out[og]!=null) t.output_qty=+rec.out[og];
+        t.inputs=Object.fromEntries(Object.entries(rec.in||{}).map(([g,q])=>[g,+q]));
+        tiersSet++;
+      } else noPm.push(`${ind.id} T${t.tier}`);
+      t.ai_value=vanAiv;
+      t._sec=initSel(ind.secondary_pmgs);                       // reset secondaries to inert base
+    });
+  });
+  render();
+  banner((lockedSkipped||noPm.length)?'warn':'info',
+    `Brought ${tiersSet} tier(s) to vanilla (${scope==='__all'?'all industries':scope}) — output+inputs = vanilla_pm recipe, ai_value = pre-split vanilla building, secondaries reset. Target BE left as-is (BE now reflects vanilla economics).`
+    + (noPm.length?` No vanilla_pm for: ${noPm.slice(0,8).join(', ')}${noPm.length>8?` +${noPm.length-8} more`:''} (left unchanged).`:'')
     + (lockedSkipped?` Skipped ${lockedSkipped} locked group(s).`:''));
 };
 // ---------- payback tools ----------

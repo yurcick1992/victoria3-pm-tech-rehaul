@@ -336,7 +336,8 @@ foreach ($rel in $ownedRels) {
 #       quantities from config. Modifiers/employment/effects stay verbatim (display-only). This makes
 #       EVERY PM's goods editable & emittable WITHOUT owning any building file — buildings reference PMs
 #       by key, so all buildings pick up the edited goods. Default (no override) = verbatim copy.
-# The linter reads vanilla + our zzz (not these owned copies), so it's unaffected.
+# The BE linter reads vanilla + our zzz (not these owned copies), so it's unaffected. The negative-goods
+# linter (lint_negative_goods.awk) DOES read these owned copies, so it checks pm_goods overrides.
 $script:pmRemap = @{}
 foreach ($ind in $cfg.industries) { if ($ind.disabled) { continue }; foreach ($t in $ind.tiers) { if ($t.vanilla_pm) { $script:pmRemap[$t.vanilla_pm] = $t.pm_key } } }
 $gateEval = [System.Text.RegularExpressions.MatchEvaluator]{
@@ -360,7 +361,9 @@ foreach ($pf in (Get-ChildItem (Join-Path $Game 'common\production_methods') -Fi
     if ($pmGoods.Count -gt 0) {
         $lines = $txt -split "`r?`n"; $cur = $null
         for ($k = 0; $k -lt $lines.Count; $k++) {
-            if ($lines[$k] -match '^(pm_[A-Za-z0-9_-]+)\s*=\s*\{') { $cur = $Matches[1]; continue }
+            # PM headers are top-level (column 0) in a production_methods file; names are NOT all pm_-prefixed
+            # (plantations/farms use default_/automatic_/worker_/… , e.g. default_building_cotton_plantation).
+            if ($lines[$k] -match '^([A-Za-z_][A-Za-z0-9_-]*)\s*=\s*\{') { $cur = $Matches[1]; continue }
             if ($null -ne $cur -and $pmGoods.ContainsKey($cur)) {
                 if ($lines[$k] -match '^(\s*)goods_input_([a-z_]+)_add\s*=')      { $g = $Matches[2]; if ($pmGoods[$cur].in.ContainsKey($g))  { $lines[$k] = "$($Matches[1])goods_input_${g}_add = $($pmGoods[$cur].in[$g])" } }
                 elseif ($lines[$k] -match '^(\s*)goods_output_([a-z_]+)_add\s*=') { $g = $Matches[2]; if ($pmGoods[$cur].out.ContainsKey($g)) { $lines[$k] = "$($Matches[1])goods_output_${g}_add = $($pmGoods[$cur].out[$g])" } }

@@ -15,7 +15,8 @@ MODDIR="${PM_MOD_DIR:-mod}"       # which built mod folder to lint (build.ps1 se
 LADDER="${PM_LADDER:-$HERE/ladder_tiers.txt}"   # tier map to lint against (alt builds pass a temp one)
 
 TMP="$(mktemp)"
-trap 'rm -f "$TMP"' EXIT
+TMP2="$(mktemp)"
+trap 'rm -f "$TMP" "$TMP2"' EXIT
 
 # vanilla first, then mod overrides; strip UTF-8 BOM from any line start
 sed 's/^\xEF\xBB\xBF//' \
@@ -28,3 +29,16 @@ sed 's/^\xEF\xBB\xBF//' \
   > "$TMP"
 
 awk -f "$HERE/lint_profitability.awk" "$LADDER" "$TMP"
+
+# --- negative-goods invariant: no legal PM combination drives any good's building total below zero ---
+# EVERY building (vanilla + mod). Reads the MOD's OWNED (overridden) production_methods so pm_goods edits
+# are checked, all vanilla PMGs (PMG->PM lists), and all buildings (vanilla first, mod overrides second).
+sed 's/^\xEF\xBB\xBF//' \
+  "$C"/production_method_groups/*.txt \
+  "$MODROOT/$MODDIR"/common/production_method_groups/zzz_*.txt \
+  "$MODROOT/$MODDIR"/common/production_methods/*.txt \
+  "$C"/buildings/*.txt \
+  "$MODROOT/$MODDIR"/common/buildings/*.txt \
+  > "$TMP2"
+
+awk -f "$HERE/lint_negative_goods.awk" "$TMP2"

@@ -926,7 +926,8 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/blister_steel_process.dds",
                                              "target_be":  125,
                                              "natural_year":  1836,
-                                             "building_cost":  590
+                                             "building_cost":  590,
+                                             "wage_pct":  0.3
                                          },
                                          {
                                              "key":  "building_steel_mill_bessemer",

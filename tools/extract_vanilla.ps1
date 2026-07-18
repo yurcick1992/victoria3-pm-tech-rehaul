@@ -78,11 +78,14 @@ foreach ($name in $bBlocks.Keys) {
 $gBlocks = Get-TopBlocks (Join-Path $Game 'common\production_method_groups') 'pmg_'
 $pmgs = [ordered]@{}
 foreach ($name in $gBlocks.Keys) {
-    $pmgs[$name] = [ordered]@{ pms = @(Get-ListTokens $gBlocks[$name] 'production_methods' 'pm_') }
+    # PM names are NOT all pm_-prefixed (plantations/farms use default_/automatic_/worker_/slave_/… ,
+    # e.g. default_building_cotton_plantation), so capture every token in the production_methods list.
+    $pmgs[$name] = [ordered]@{ pms = @(Get-ListTokens $gBlocks[$name] 'production_methods' '') }
 }
 
 # --- pms (goods in/out, employment, and other *_add modifiers) ---
-$pBlocks = Get-TopBlocks (Join-Path $Game 'common\production_methods') 'pm_'
+# Every top-level block in a production_methods file IS a PM, whatever its name prefix (see above).
+$pBlocks = Get-TopBlocks (Join-Path $Game 'common\production_methods') ''
 $pms = [ordered]@{}
 foreach ($name in $pBlocks.Keys) {
     $in = [ordered]@{}; $out = [ordered]@{}; $emp = [ordered]@{}; $mods = [ordered]@{}

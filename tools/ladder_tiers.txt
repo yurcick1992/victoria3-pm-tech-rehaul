@@ -27,7 +27,7 @@ pm_main_explosives_leblanc 1 85 0.33
 pm_main_explosives_ammonia 2 85 0.33
 pm_main_explosives_vacuum 3 60 0.33
 pm_main_explosives_brine 4 50 0.33
-pm_main_steel_blister 1 125 0.33
+pm_main_steel_blister 1 125 0.3
 pm_main_steel_bessemer 2 100 0.33
 pm_main_steel_openhearth 3 75 0.33
 pm_main_steel_arc 4 50 0.33
