@@ -42,12 +42,15 @@
   .mtable col.c-bc{width:96px}
   .mtable col.c-pb{width:74px}
   .mtable col.c-wf{width:112px}
-  .mtable col.c-refbld{width:230px}
-  .mtable col.c-rbe{width:70px}
   /* secondary-PM goods rows: editable like main goods, but a faint ↳ marks that edits go to pm_goods (shared) */
   input[type=number]:disabled{opacity:1;color:var(--muted);background:#0c1017;border-style:dashed;cursor:default}
   .goodrow.sec .g{color:var(--muted)}
   .goodrow.sec .g::before{content:"↳ ";opacity:.7}
+  /* wages: a modelling-only term (NOT emitted). Fenced off at the bottom of the input cell, visually distinct. */
+  .wagesep{font-size:8.5px;text-transform:uppercase;letter-spacing:.3px;color:var(--muted);opacity:.75;margin:6px 0 1px;border-top:1px dashed var(--line);padding-top:3px}
+  .goodrow.wagerow{background:rgba(230,180,85,.07);border-radius:5px;padding:1px 3px;margin-left:-3px}
+  .goodrow.wagerow .g{font-style:italic;color:var(--warn)}
+  .goodrow.wagerow input[type=number]{border-style:dotted}
   /* the secondary-PM selectors, relocated under the building name */
   .secselwrap{margin-top:3px;display:flex;flex-direction:column;gap:2px}
   .secselwrap select.pmsel{width:100%;font-size:11px;padding:2px 4px}
@@ -194,7 +197,9 @@
 <script>
 "use strict";
 // ---------- constants ----------
-const TIERCOL = {1:"var(--tier1)",2:"var(--tier2)",3:"var(--tier3)",4:"var(--tier4)",5:"var(--tier5)"};
+const TIERCOL = {0:"#5b6b7d",1:"var(--tier1)",2:"var(--tier2)",3:"var(--tier3)",4:"var(--tier4)",5:"var(--tier5)"};   // tier 0 = untiered (reference)
+// shared column layout for BOTH the industry tables and the reference tables, so every column lines up.
+const MTABLE_COLS='<colgroup><col class="c-tier"><col class="c-bld"><col class="c-in"><col class="c-out"><col class="c-wf"><col class="c-tgt"><col class="c-be"><col class="c-io"><col class="c-bc"><col class="c-pb"><col class="c-act"></colgroup>';
 const TARGET_TOL = 6;   // pp: |BE − target_be| ≤ TOL shows green (matches the linter tolerance)
 const DEF_WAGE = 0.33;  // default wages as a fraction of input-goods cost (per-tier wage_pct overrides)
 const round = x => Math.floor(x+0.5);
@@ -218,6 +223,9 @@ function basePm(pmg){ const g=VAN.pmgs[pmg]; return g && g.pms && g.pms[0]; }
 function initSel(pmgs){ const s={}; (pmgs||[]).forEach(pg=>{ const b=basePm(pg); if(b) s[pg]=b; }); return s; }
 // normalize industries into an editable model
 const AIVAL_DEFAULT = 1000;   // PRODUCTION_BUILDING_BASE_VALUE — engine default when a building scripts no ai_value
+// vanilla construction_cost_* script values (common/script_values/building_values.txt) — used by "Bring to
+// vanilla" to reset build cost to the pre-split building's flat required_construction. Keep in sync on a patch.
+const VANILLA_CONSTRUCTION = { construction_cost_low:200, construction_cost_medium:400, construction_cost_high:600, construction_cost_very_high:800 };
 // Build a group's editable tier list from a pristine config industry. Used at init AND by the
 // "Restore defaults" preset, so both produce identical fresh state.
 function makeTiers(i){ return i.tiers.map((t,ix)=>({
@@ -445,7 +453,7 @@ function industryCard(i){
       <button class="minibtn lockbtn" data-lock="${esc(i.id)}" title="${i.locked?'Unlock this group':'Lock: exclude this group from all mass editors (preset + group/worksheet payback). Manual edits stay allowed.'}">${i.locked?'🔒':'🔓'}</button>
     </div>
     <div class="bd" style="display:${i._open?'':'none'}"><table class="mtable">
-      <colgroup><col class="c-tier"><col class="c-bld"><col class="c-in"><col class="c-out"><col class="c-wf"><col class="c-tgt"><col class="c-be"><col class="c-io"><col class="c-bc"><col class="c-pb"><col class="c-act"></colgroup>
+      ${MTABLE_COLS}
       <thead><tr>
       <th>Tier</th><th>Building</th><th>Inputs (qty) + wages</th><th>Output</th>
       <th title="Workforce (employment by profession). Read-only visualization — not editable or emitted from the UI.">Workforce</th>
@@ -479,8 +487,11 @@ function tierRow(i,t){
   const be=BE(i,t), tp=TPthr(i,t), outG=tierOut(i,t);
   const inputs = Object.entries(t.inputs).map(([g,q])=>`<div class="goodrow" title="${esc(g)}: qty × base price £${PRICES[g]||'?'}"><span class="g">${esc(g)}</span>
     <span class="amt"><input type="number" min="0" step="1" value="${q}" data-ind="${i.id}" data-tier="${t.tier}" data-input="${esc(g)}"><span class="u"></span><span class="v muted" id="gv_${i.id}_${t.tier}_${g}">£${round(q*(PRICES[g]||0))}</span></span></div>`).join('')
-    + secGoodRows(i,t,'in')   // read-only input goods from active secondary PMs
-    + `<div class="goodrow" title="Wages = this % of input-goods cost, at base prices. Model-only — not emitted to the game."><span class="g" style="font-style:italic">wages</span>
+    + secGoodRows(i,t,'in')   // editable input goods from active secondary PMs (↳)
+    // wages sit at the BOTTOM of the input cell, visually fenced off — a MODELLING-only input to BE/profit,
+    // NOT a good and NOT emitted to the game (V3 pays wages from employment). Editing % changes only the model.
+    + `<div class="wagesep" title="Wages are a modelling-only term in the BE/profit calculation — NOT emitted to the game (Victoria 3 pays wages endogenously from employment). Editing this % changes only the model.">modelling only · not emitted</div>`
+    + `<div class="goodrow wagerow" title="Wages = this % of input-goods cost, at base prices. Model-only — not emitted."><span class="g">wages</span>
     <span class="amt"><input type="number" min="0" step="1" value="${round(wagePct(t)*100)}" data-ind="${i.id}" data-tier="${t.tier}" data-wage="1"><span class="u">%</span><span class="v muted" id="wv_${i.id}_${t.tier}">£${round(wageCost(t))}</span></span></div>`;
   const outputs = `<div class="goodrow" title="${esc(outG)}: qty × base price £${PRICES[outG]||'?'}"><span class="g">${esc(outG)}</span>
       <span class="amt"><input type="number" min="1" step="1" value="${t.output_qty}" data-ind="${i.id}" data-tier="${t.tier}" data-out="1"><span class="u"></span><span class="v muted" id="ov_${i.id}_${t.tier}">£${round(t.output_qty*(PRICES[outG]||0))}</span></span></div>`
@@ -681,29 +692,38 @@ function refNonGoods(b){ const sel=refSel(b), acc={};
     if(!acc[lbl]) acc[lbl]={label:lbl,val:0,cls:(lbl==='pollution'?'neg':(m[k]>0?'pos':'neg'))}; acc[lbl].val+=m[k]; } }
   const arr=Object.values(acc).filter(x=>x.val!==0); if(!arr.length) return '';
   return `<div class="outsep">non-goods output</div>`+arr.map(n=>`<div class="outro"><span class="g">${esc(n.label)}</span><span class="v ${n.cls}">${n.val>=0?'+':''}${n.val}</span></div>`).join(''); }
-// one reference building as a table row — same columns/edit affordances as our tier rows (minus the ladder columns).
+// one reference building as a table row — SAME 11 columns as our tier rows (Tier shown as 0 = untiered; the
+// ladder-only columns Target / Build cost / Payback / →X are N/A here and show "—").
 function refRow(b){ const info=VAN.buildings[b], e=refEcon(b);
   const beTxt=e.BE!=null?`${round(e.BE)}%`:'—', beCls=e.BE!=null?(e.BE<=175?'ok':'off'):'muted';
+  const tp=e.tp, tpTxt=(tp!=null)?`${tp>=0?'+':''}${Math.round(tp)}%`:'—';
   const aivDef=info.ai_value!=null?info.ai_value:AIVAL_DEFAULT;
   const inG=refGoodRows(b,'in'), outG=refGoodRows(b,'out'), nong=refNonGoods(b);
+  const dash='<span class="muted">—</span>';
   return `<tr data-refbld="${esc(b)}">
+    <td><span class="pill" style="background:${TIERCOL[0]}" title="untiered — a vanilla building not split by the mod">0</span></td>
     <td>${esc(prettyKey(b))}<div class="muted" style="font-size:11px">${esc(b)}</div>
       <div class="muted" style="font-size:10px">${esc(prettyGroup(info.group||''))}${info.tech?' · '+esc(info.tech):''}</div>
       <div class="aivrow" title="Base AI construction desire (building ai_value). Blank = vanilla (${aivDef}). Emitted only for buildings in files the mod owns (01/06/11); others are session-only.">ai_value <input type="number" min="0" step="50" value="${REFAIV[b]!=null?REFAIV[b]:''}" placeholder="${aivDef}" data-refaiv="${esc(b)}"></div>
       ${refPmSelectors(b)}</td>
-    <td>${inG||'<span class="muted" style="font-size:11px">—</span>'}</td>
-    <td>${outG}${nong}${(!outG&&!nong)?'<span class="muted" style="font-size:11px">—</span>':''}</td>
+    <td>${inG||dash}</td>
+    <td>${outG}${nong}${(!outG&&!nong)?dash:''}</td>
     <td class="wfcell">${wfCell(selEmp(refSel(b)))}</td>
+    <td class="num">${dash}</td>
     <td class="num"><span class="be ${beCls}" id="refbe_${b}" title="full break-even (input goods + wages) ÷ priced output; — = no market output">${beTxt}</span></td>
+    <td class="num" id="reftp_${b}">${tpTxt}</td>
+    <td class="num">${dash}</td>
+    <td class="num">${dash}</td>
+    <td></td>
   </tr>`;
 }
 // a category = a card (locked by default) whose body is a table of building rows — mirrors an industry card.
 function refCatCard(catId, blds){ const open=REFGRPOPEN.has(catId), locked=!REFUNLOCK.has(catId);
   const note = catId==='utilities_trade'
     ? '<div class="muted" style="font-size:11px;padding:6px 12px">Trade, ports &amp; railways keep <b>vanilla</b> values (different economics); only <b>power plants</b> will follow our BE ladder.</div>' : '';
-  const body = open ? `${note}<table class="mtable reftable">
-      <colgroup><col class="c-refbld"><col class="c-in"><col class="c-out"><col class="c-wf"><col class="c-rbe"></colgroup>
-      <thead><tr><th>Building</th><th>Inputs (qty)</th><th>Output</th><th>Workforce</th><th class="num">BE</th></tr></thead>
+  const body = open ? `${note}<table class="mtable">
+      ${MTABLE_COLS}
+      <thead><tr><th>Tier</th><th>Building</th><th>Inputs (qty)</th><th>Output</th><th>Workforce</th><th class="num">Target</th><th class="num">BE</th><th class="num">Profit@thr</th><th class="num">Build cost</th><th class="num">Payback</th><th class="num">→X</th></tr></thead>
       <tbody>${blds.map(refRow).join('')}</tbody></table>` : '';
   return `<div class="card refcard${locked?' locked':''}"><div class="hd ind-hd" data-refgrp="${esc(catId)}"><span class="caret">${open?'▾':'▸'}</span> ${esc(catLabel(catId))} <span class="tag">${blds.length} building${blds.length!==1?'s':''}${locked?' · locked':''}</span>
       <span class="spacer"></span>
@@ -759,7 +779,8 @@ document.addEventListener('input', e=>{
     refEditSet(pm,dir,good,el.value);
     const rv=document.getElementById(`rv_${b}_${pm}_${dir}_${good}`); if(rv) rv.textContent='£'+round((+el.value||0)*(PRICES[good]||0));
     const rbe=document.getElementById(`refbe_${b}`);   // reference-building BE cell (absent when b is a tier key)
-    if(rbe){ const e=refEcon(b); rbe.textContent=e.BE!=null?`${round(e.BE)}%`:'—'; rbe.className='be '+(e.BE!=null?(e.BE<=175?'ok':'off'):'muted'); }
+    if(rbe){ const e=refEcon(b); rbe.textContent=e.BE!=null?`${round(e.BE)}%`:'—'; rbe.className='be '+(e.BE!=null?(e.BE<=175?'ok':'off'):'muted');
+      const rtp=document.getElementById(`reftp_${b}`); if(rtp) rtp.textContent=(e.tp!=null)?`${e.tp>=0?'+':''}${Math.round(e.tp)}%`:'—'; }
     updateComputed();   // the PM may be a secondary on our tiers — refresh their BE/profit/payback too
   }
   else if(el.dataset.thr!==undefined){
@@ -816,10 +837,13 @@ document.getElementById('bringVanilla').onclick=()=>{
   const targets = inScope.filter(i=>!i.locked);
   const lockedSkipped = inScope.length - targets.length;
   let tiersSet=0; const noPm=[];
+  const srcInds=window.PMDATA.config.industries;
   targets.forEach(ind=>{
     const baseKey=ind.tiers[0] && ind.tiers[0].key;             // split industries reuse the vanilla base building key at Tier 1
     const vb=baseKey?VAN.buildings[baseKey]:null;
     const vanAiv=(vb && vb.ai_value!=null)?vb.ai_value:null;    // pre-split vanilla ai_value (null = engine default)
+    const src=srcInds.find(x=>x.id===ind.id);                   // the pre-split building had ONE flat required_construction
+    const vanCost=src && src.building ? VANILLA_CONSTRUCTION[src.building.required_construction] : null;
     ind.tiers.forEach(t=>{
       const rec=t.vanilla_pm?VAN.pms[t.vanilla_pm]:null;
       if(rec){ const og=tierOut(ind,t);
@@ -828,13 +852,14 @@ document.getElementById('bringVanilla').onclick=()=>{
         tiersSet++;
       } else noPm.push(`${ind.id} T${t.tier}`);
       t.ai_value=vanAiv;
+      if(vanCost!=null) t.building_cost=vanCost;                // GUIDELINE: bring EVERYTHING editable/emittable to vanilla
       t._sec=initSel(ind.secondary_pmgs);                       // reset secondaries to inert base
     });
   });
   render();
   banner((lockedSkipped||noPm.length)?'warn':'info',
-    `Brought ${tiersSet} tier(s) to vanilla (${scope==='__all'?'all industries':scope}) — output+inputs = vanilla_pm recipe, ai_value = pre-split vanilla building, secondaries reset. Target BE left as-is (BE now reflects vanilla economics).`
-    + (noPm.length?` No vanilla_pm for: ${noPm.slice(0,8).join(', ')}${noPm.length>8?` +${noPm.length-8} more`:''} (left unchanged).`:'')
+    `Brought ${tiersSet} tier(s) to vanilla (${scope==='__all'?'all industries':scope}) — output+inputs = vanilla_pm recipe, ai_value = pre-split vanilla building, build cost = vanilla required_construction, secondaries reset. Kept: the tier split itself + not-yet-editable fields (workforce). Target BE left as-is (BE now reflects vanilla economics).`
+    + (noPm.length?` No vanilla_pm for: ${noPm.slice(0,8).join(', ')}${noPm.length>8?` +${noPm.length-8} more`:''} (recipe left unchanged).`:'')
     + (lockedSkipped?` Skipped ${lockedSkipped} locked group(s).`:''));
 };
 // ---------- payback tools ----------

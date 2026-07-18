@@ -71,10 +71,11 @@ hand on a major patch.
    `solve_building_cost.ps1` re-derives the real £/point live — only this hint drifts until 720 is
    refreshed. (Commented in-file.)
 
-3. **Construction cost script-values (fallback only).** Vanilla
+3. **Construction cost script-values (fallback + "Bring to vanilla").** Vanilla
    `common/script_values/building_values.txt`: `construction_cost_low/medium/high/very_high` =
-   200/400/600/800. We now emit explicit per-tier `building_cost`, so these are only the **fallback**
-   for a tier missing `building_cost`. Note if the numbers move, but low priority.
+   200/400/600/800. We now emit explicit per-tier `building_cost`, so these are the **fallback** for a tier
+   missing `building_cost` **and** the values the UI's **Bring-to-vanilla** resets `building_cost` to (mirrored
+   statically as `VANILLA_CONSTRUCTION` in `ui/builder.html`). If these numbers move, update that map too.
 
 4. **`metadata.json` → `supported_game_version`.** Bump to the new version so the launcher doesn't flag
    the mod as out-of-date. (`id` must stay fixed to preserve playset membership; the builder only

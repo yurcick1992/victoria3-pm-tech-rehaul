@@ -249,7 +249,10 @@ the game.
 - **Balance UI (for Claude-less iteration):** one-click **`balance-ui.cmd`** (or
   `powershell -ExecutionPolicy Bypass -File tools\ui.ps1`) opens a browser editor (`ui/builder.html`)
   showing every building × tier with editable **main-PM** input/output volumes + an editable **wages %** line
-  (per-tier `wage_pct`, default 33% of input-goods cost). Each tier's **secondary-PM selectors** sit under the
+  (per-tier `wage_pct`, default 33% of input-goods cost). **Wages sit fenced off at the bottom of the Input cell**
+  (a dashed "modelling only · not emitted" divider + a tinted `.wagerow`): wages are a **model-only** term in the
+  BE/profit math, **never emitted** to the game (V3 pays wages from employment) — the styling makes that explicit
+  so the % field doesn't read as an emittable good. Each tier's **secondary-PM selectors** sit under the
   building name (Building column); switching one distributes that PM's effects across the columns: its input goods
   appear as extra rows in the **Input** column, its output goods (including negative *reductions* of the main good,
   e.g. tank production −20 automobiles) as extra rows in the **Output** column, and its employment folds into
@@ -285,9 +288,19 @@ the game.
   lockedness). The **Bring to vanilla** button (same scope selector + lock honoring) resets each in-scope
   **unlocked** split building *toward base-game values*: every tier's output+inputs become its `vanilla_pm`'s
   recipe (read live from `vanilla.js`), its `ai_value` becomes the **pre-split vanilla building's** value
-  (Tier-1 key = the vanilla base building; blank = engine default, e.g. tooling → 2000), and its secondaries
-  reset to base. `target_be`/`building_cost` are left as-is, so BE then reflects vanilla economics (usually
-  off-target/amber — expected). More named presets will come later. **Base `ai_value`**
+  (Tier-1 key = the vanilla base building; blank = engine default, e.g. tooling → 2000), its **`building_cost`**
+  becomes the pre-split building's flat `required_construction` (the vanilla `construction_cost_*` script value:
+  low 200 / medium 400 / high 600 / very_high 800 — `VANILLA_CONSTRUCTION` in the UI, mirror
+  `common/script_values/building_values.txt`), and its secondaries reset to base. `target_be` is left as-is, so
+  BE then reflects vanilla economics (usually off-target/amber — expected).
+  **GUIDELINE — what "Bring to vanilla" must (not) touch:** it brings **everything** back to vanilla **except**
+  (1) the *tier split itself* (the per-tier buildings that replaced one vanilla building stay split — this
+  button is about values, not structure), and (2) any field the UI does **not** yet make editable **and**
+  emittable (today: **workforce**/`employment`). Everything else that is editable+emittable — output, inputs,
+  `ai_value`, `building_cost`, secondary-PM goods — must reset to the base-game value. Uphold this as we add
+  fields: when a field becomes editable+emittable, wire it into Bring-to-vanilla too. *(Future: give every
+  building a "vanilla root" — the recorded base-game values — so any building, not just the tier-split ones,
+  can be brought to vanilla.)* More named presets will come later. **Base `ai_value`**
   (building AI construction desire) is editable everywhere: on **our tier rows** (per-tier `ai_value` in the
   config; blank = engine default 1000) and on **every explorer building** (a `data-refaiv` field backed by
   the top-level **`building_ai_value`** map). The builder emits ai_value for buildings in files it owns —
@@ -305,10 +318,12 @@ the game.
   matching the linter's building-level view; default = base/"off" PM, so nothing moves until you switch). Below
   them, **every other vanilla building** (those not on our tier ladder — some economic, just out of scope
   for now) renders in the **same card + table UI** as our industries: one **category card** per taxonomy
-  group, one **row per building**, with columns Building / Inputs / Output / Workforce / BE. Each row has the
+  group, one **row per building** using the **exact same 11-column layout** as the industry tables (shared
+  `MTABLE_COLS` colgroup, so columns line up). Each building is shown as **Tier 0** (untiered — a grey `0`
+  pill); the ladder-only columns (Target / Build cost / Payback / →X) show **—**. Each row has the
   building's **PM selectors under its name**, **every good editable** in the Input/Output columns (wired to
   `pm_goods`), non-goods outputs (infrastructure, pollution, bureaucracy, trade capacity, ship construction,
-  …) and **workforce** read-only, and an informational **BE**. **Each category is locked by default** (a
+  …) and **workforce** read-only, and informational **BE** + **Profit@thr**. **Each category is locked by default** (a
   🔒 that excludes it from future mass tools — still fully editable; the amber bar without the dimming);
   unlock to include it. **Goods edits are config-backed and emitted**: they persist to the top-level
   **`pm_goods`** map, which the builder writes into the owned production-methods files, so an edit to a PM
