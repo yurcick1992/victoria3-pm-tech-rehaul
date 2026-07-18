@@ -38,9 +38,11 @@ and opens the editor in your browser. You can:
 - edit input/output **volumes** and **wages** for every building × tier,
 - watch **break-even** and **profitability** update live,
 - switch **secondary production methods** (automation, luxury, …) and see the effect on break-even,
-- browse **every vanilla building** in the read-only all-buildings explorer (pick production methods,
-  see their goods and break-even; monuments/canals collapsed into one “Unique buildings” group),
-- apply the **“natural BE” preset** (tier 1 at 110%, −20 percentage points per tier),
+- browse **every vanilla building** in the all-buildings explorer (pick production methods and **edit
+  their input/output quantities**; secondary effects like infrastructure/pollution stay read-only) —
+  sorted into a custom taxonomy (economic set, food & agriculture, raw extraction, other),
+- set each tier's base **`ai_value`** (AI construction desire), and click **Restore defaults** to reset
+  unlocked groups to the loaded config,
 - click **Build now** to write the config and rebuild + redeploy (then restart V3 to load it).
 
 **No-server option:** just open [`ui/builder.html`](ui/builder.html) in a browser. Everything works

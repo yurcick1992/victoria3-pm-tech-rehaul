@@ -103,7 +103,7 @@ prices:
 > **These are the original v0.1 wage-free targets, kept for history.** The ladder was since relaxed
 > (v0.2, −20 pp), re-based to **wage-inclusive full break-even**, and finally re-cast as a **curve over
 > tech unlock date (era)** rather than a per-industry group ladder — see **§1** for the metric and
-> **§8.1** for the ladder **actually in force** (era anchors 140/115/90/65/50 with an H1 manufactured-input
+> **§8.1** for the ladder **actually in force** (era anchors 125/100/75/50/35 with an H1 manufactured-input
 > −15 pp adjustment), with **§8.2–8.3** for how volumes are derived. The *shape* (descending BE, N+2
 > obsolescence) is unchanged; the meaning of BE and the absolute numbers moved.
 
@@ -410,7 +410,7 @@ Each tier's `target_be` is:
 
 | Era (vanilla band) | e1 (pre-1836) | e2 (1836–61) | e3 (1862–86) | e4 (1887–1911) | e5 (1911–36) |
 |---|--:|--:|--:|--:|--:|
-| **Anchor BE %** | 140 | 115 | 90 | 65 | 50 |
+| **Anchor BE %** | 125 | 100 | 75 | 50 | 35 |
 
 ~25 pp/era, so a 2-era gap ≈ 50 pp → the **N+2 obsolescence** mechanic; everything stays inside the
 25–175% band (§2) with headroom. There is **no within-era differentiation** — every tier on the same era
@@ -442,11 +442,11 @@ is referenced to the output good's price, a single mixed-good ladder is incohere
 the chain is split into two **output-good-consistent** chains, each placed on the date curve by its own
 techs:
 
-- **`shipyard` → clippers** — Basic (`navigation`, e1 → 140) / Complex (`screw_frigate`, e2 → 100 after
+- **`shipyard` → clippers** — Basic (`navigation`, e1 → 125) / Complex (`screw_frigate`, e2 → 85 after
   the engines discount), inputs wood/hardwood/fabric/engines. Keeps the vanilla base building
   `building_shipyard` (+ `building_shipyards` alias).
-- **`shipyard_steam` → steamers** — Metal (`gantry_cranes`, e3 → 75) / Arc-Welding (`arc_welding`, e5 →
-  50), inputs steel/coal/electricity/engines. All-new buildings (base `building_shipyard_metal`, no
+- **`shipyard_steam` → steamers** — Metal (`gantry_cranes`, e3 → 60) / Arc-Welding (`arc_welding`, e5 →
+  35), inputs steel/coal/electricity/engines. All-new buildings (base `building_shipyard_metal`, no
   vanilla anchor — the builder appends it). No 1836 start factories (metal/arc techs post-date the start),
   so the whole 1836 shipyard stock converts onto the clipper line.
 
@@ -489,7 +489,7 @@ Three infrastructure/utility buildings are now tiered too, so modernizing them *
 the newer plant) like every other chain — the mod's core goal — while **not** all following the BE ladder:
 
 - **`power`** (electricity) is a normal BE-ladder chain: `electrical_generation`/`steam_turbine`/`oil_turbine`
-  → e3/e4/e5 → targets **75 / 65 / 50**. It sets `output_override` per tier to keep vanilla electricity
+  → e3/e4/e5 → targets **60 / 50 / 35**. It sets `output_override` per tier to keep vanilla electricity
   output (25/50/80) rather than the ×1.5 volume growth (electricity is consumed locally, not a good to
   flood a market with); inputs are solved to the target. Its tiny volumes miss the target by a few pp on
   integer rounding, so it's kept **off the hard linter ladder** (`no_mass_be`).

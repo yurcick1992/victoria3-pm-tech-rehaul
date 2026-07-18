@@ -14,18 +14,18 @@
 #>
 param(
   [string]$Game   = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game" }),
-  [string]$Config = "config\mod_config.json",
+  [string]$Config = (Join-Path (Split-Path $PSScriptRoot -Parent) 'config\mod_config.json'),   # absolute: cwd-independent
   [switch]$Write
 )
 $ErrorActionPreference = 'Stop'
 
-$anchor  = @{1=140; 2=115; 3=90; 4=65; 5=50}
+$anchor  = @{1=125; 2=100; 3=75; 4=50; 5=35}   # softened −15pp from the original 140/115/90/65/50
 # Representative natural-unlock year per era. Vanilla era bands: e1 pre-1836, e2 1836-61,
 # e3 1862-86, e4 1887-1911, e5 1911-36; we use each band's midpoint (e1 = the 1836 start).
 $eraYear = @{1=1836; 2=1848; 3=1874; 4=1899; 5=1923}
 $H1_MAX_ERA   = 3
 $MFG_DISCOUNT = 15
-$FLOOR        = 45
+$FLOOR        = 30   # keep BE inside the 25-175% band with headroom (e5 anchor is now 35)
 
 # Goods produced by manufacturing (an input drawn from another factory, not an RGO), used to apply
 # the H1 manufactured-input discount to a consuming tier.

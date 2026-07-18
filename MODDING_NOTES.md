@@ -81,6 +81,44 @@ copies with only the header line swapped from `l_english:` to `l_<lang>:`.
 - Our own lightweight check is `bash tools/lint.sh` (economic balance). It does **not** catch
   engine errors — still eyeball `error.log` after a load.
 
+### Self-diagnostics (dev convention — a tripwire we can read)
+
+The builder generates **`mod/common/on_actions/zzz_pm_rehaul_diag.txt`**, a self-diagnostic that fires at
+game start and writes to **`Documents\Paradox Interactive\Victoria 3\logs\debug.log`** (search
+`PM_TECH_REHAUL`). It logs an **init marker** with the **build timestamp**:
+`PM_TECH_REHAUL: init OK - mod loaded, game started (build yyyy-MM-dd HH:mm) on <date>`.
+
+- **Marker present** → the mod's script loaded and its on_action fired; the timestamp confirms *which*
+  build is loaded (matches the mod name in `metadata.json`).
+- **Marker absent** → the mod failed to load (or the on_action didn't merge) → read **`error.log`** for the
+  cause. `error.log` + `debug.log` together are the diagnostic pair.
+- **Safe hook:** it only adds `on_actions = { pm_tech_rehaul_diag }` to the vanilla
+  `on_game_started_after_lobby` — it does **not** redefine vanilla's `effect` block (which would conflict /
+  break game-start), per `common/on_actions/_on_actions.md`.
+- If the lines don't appear, launch with **`-debug_mode`** (debug_log may be gated to it).
+
+**The convention:** whenever a change is risky and *might* trip something the linter can't see (naval
+capacity, PM goods, gated PMs, a building failing to load), **add an invariant tripwire** inside
+`pm_tech_rehaul_diag` in `build.ps1` — a check that logs `PM_TECH_REHAUL WARN: <what broke>` on failure.
+Then have the user run the game and read back the log. **How long to run:** `on_game_started_after_lobby`
+fires *immediately*, so the init marker appears at the 1836 start — running ~1 in-game day is enough;
+run to **01.02.1837** to also catch a first monthly/yearly tick if a check is hooked there.
+
+**Triage rule for the errors you find.** Two classes:
+
+- **Genuine mod bugs** (something we generated is malformed / references a key that doesn't exist, e.g. the
+  `pm_anchorage` history bug) → **fix**, and log the root cause in `BUGS_AND_FIXES.md`.
+- **Vanilla scripts referencing a main PM our split *relocated*** (`is_production_method_active` etc.
+  erroring + returning false → missed flavor, no crash) → **do NOT fix piecemeal.** Append the case to
+  **`MISSING_PM_REFERENCES.md`** (or add the PM to the split set and re-run `tools/audit_pm_refs.ps1`). That
+  catalogue is deliberately **premature** — we'll relocate more vanilla PMs as we add tiers, so it grows;
+  we batch one strategic pass over it later (lean: make our new tier buildings eligible where advanced enough).
+
+**Log retention:** the game keeps the current `error.log`/`debug.log` **plus 5 rotated backups**
+(`error.1.log` … `error.5.log`), rotated **per launch, not by time**. So a run is readable only if **≤ 5
+launches** have happened since — a run from N launches ago is `error.N.log` (gone once N > 5). Grab the log
+before relaunching too many times.
+
 ## metadata.json
 
 - Lives at `mod/.metadata/metadata.json`. Key fields: `name`, unique `id` (reverse-domain),

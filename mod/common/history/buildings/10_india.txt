@@ -1219,7 +1219,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_anchorage" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -2026,7 +2026,7 @@
 		}
 		region_state:GBR= {
 			create_building = {
-				building = "building_port"
+				building="building_port"
 				add_ownership = {
 					country = {
 						country = "c:GBR"
@@ -2034,7 +2034,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_anchorage" }
+				activate_production_methods = { "pm_main_port_basic" }
 			}		
 		}
 	}
@@ -2067,7 +2067,7 @@
 				activate_production_methods = { "default_building_sugar_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building = "building_port"
+				building="building_port"
 				add_ownership = {
 					country= {
 						country = "c:FRA"
@@ -2075,7 +2075,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_anchorage" }
+				activate_production_methods = { "pm_main_port_basic" }
 			}
 		}
 		region_state:GBR= {
@@ -2106,7 +2106,7 @@
 				activate_production_methods = { "default_building_sugar_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building = "building_port"
+				building="building_port"
 				add_ownership = {
 					country= {
 						country = "c:GBR"
@@ -2114,7 +2114,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_anchorage" }
+				activate_production_methods = { "pm_main_port_basic" }
 			}
 		}
 	}
@@ -2149,7 +2149,7 @@
 				activate_production_methods = { "default_building_sugar_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building = "building_port"
+				building="building_port"
 				add_ownership = {
 					country= {
 						country = "c:FRA"
@@ -2157,7 +2157,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_anchorage" }
+				activate_production_methods = { "pm_main_port_basic" }
 			}
 			create_building = {
 				building = "building_logging_camp"
@@ -2498,7 +2498,7 @@
 				activate_production_methods = { "default_building_dye_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building = "building_port"
+				building="building_port"
 				add_ownership = {
 					country= {
 						country = "c:FRA"
@@ -2506,7 +2506,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_anchorage" }
+				activate_production_methods = { "pm_main_port_basic" }
 			}
 		}
 
@@ -2520,7 +2520,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_anchorage" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 
@@ -2805,7 +2805,7 @@
 				activate_production_methods={ "pm_simple_farming_building_rice_farm" "pm_fig_orchards_building_rice_farm" "pm_tools_disabled"  }
 			}
 			create_building = {
-				building = "building_port"
+				building="building_port"
 				add_ownership = {
 					country= {
 						country = "c:POR"
@@ -2813,7 +2813,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_anchorage" }
+				activate_production_methods = { "pm_main_port_basic" }
 			}
 		}
 		region_state:BIC = {

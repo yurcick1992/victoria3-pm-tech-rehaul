@@ -17,7 +17,10 @@ function Get-SplitMaps($cfg) {
         foreach ($t in $ind.tiers) {
             $n++
             if ($n -eq 1) { $baseIndustry[$t.key] = $ind.id }
-            $pmMap[$ind.id][$t.vanilla_pm] = @{ tier_key = $t.key; new_pm = $t.pm_key; tier = $n }
+            $entry = @{ tier_key = $t.key; new_pm = $t.pm_key; tier = $n }
+            $pmMap[$ind.id][$t.vanilla_pm] = $entry
+            # extra vanilla main PMs that also map to this tier (e.g. an undeveloped port's pm_anchorage → T1)
+            if ($t.vanilla_pm_aliases) { foreach ($a in $t.vanilla_pm_aliases) { $pmMap[$ind.id][$a] = $entry } }
         }
     }
     return @{ baseIndustry = $baseIndustry; pmMap = $pmMap; industryById = $industryById }

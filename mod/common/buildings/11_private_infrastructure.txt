@@ -901,6 +901,7 @@ building_railway_diesel = {
 
 
 building_trade_center = {
+	ai_value = 3000
 	building_group = bg_trade
 	city_type = city
 	levels_per_mesh = 50

@@ -451,7 +451,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_anchorage" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -942,7 +942,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_anchorage" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -957,7 +957,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_anchorage" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -7615,7 +7615,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_anchorage" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 		region_state:HAN={

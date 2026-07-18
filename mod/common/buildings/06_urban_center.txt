@@ -82,7 +82,7 @@ building_power_plant = {
 		pmg_main_power_early
 	}
 
-	required_construction = 75
+	required_construction = 65
 
 	ai_value = {
 		value = 1000
@@ -126,7 +126,7 @@ building_power_plant_coal = {
 		pmg_main_power_coal
 	}
 
-	required_construction = 145
+	required_construction = 115
 
 	ai_value = {
 		value = 1000
@@ -170,7 +170,7 @@ building_power_plant_oil = {
 		pmg_main_power_oil
 	}
 
-	required_construction = 175
+	required_construction = 125
 
 	ai_value = {
 		value = 1000

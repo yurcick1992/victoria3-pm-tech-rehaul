@@ -37,10 +37,10 @@ still must **run** them; they don't run themselves.
 
 | What | Reads from vanilla | Tool | Notes |
 |---|---|---|---|
-| Tier **BE targets** (`target_be`) + `natural_year` | `common/technology/technologies/*.txt` (each tier's `tech` → `era`) | `solve_be_targets.ps1 -Write` | Era anchors 140/115/90/65/50 (e1–e5) − 15pp H1 manufactured-input adjustment. Run **before** `solve_volumes`. If a patch moves a tech's `era`, its tier's target shifts. |
+| Tier **BE targets** (`target_be`) + `natural_year` | `common/technology/technologies/*.txt` (each tier's `tech` → `era`) | `solve_be_targets.ps1 -Write` | Era anchors 125/100/75/50/35 (e1–e5) − 15pp H1 manufactured-input adjustment. Run **before** `solve_volumes`. If a patch moves a tech's `era`, its tier's target shifts. |
 | Tier output/input **volumes** | **all** `common/production_methods/*.txt` (each tier's `vanilla_pm`; reads every file so power/port/railway PMs in `06`/`11` resolve) | `solve_volumes.ps1` | Re-solves inputs to hit `target_be`; skips `follows_be:false` industries (ports/railways stay vanilla). |
 | Tier **building_cost** (£/point) | `common/production_methods/13_construction.txt` → `pm_iron_frame_buildings` | `solve_building_cost.ps1` | £/point = Σ(goods_input×price) ÷ `country_construction_add`. Today **£3600/wk ÷ 5 = £720/pt**. |
-| **production_methods** file (whole-file replace) | `common/production_methods/01_industry.txt` | `build.ps1` | Owned to fix secondary-PM gates: copies vanilla verbatim but **appends our tier `pm_key`** to every `unlocking_production_methods` list referencing a split vanilla main PM (so gated secondaries — bone china / elastics / precision tools — unlock at the right tier). New vanilla PMs / new gates flow in on rebuild. Our own tier PMs stay in the additive `zzz_*` file. |
+| **production_methods** files (whole-file replace, ALL) | **every** `common/production_methods/*.txt` | `build.ps1` | Owns them all so any PM's goods can be edited without owning building files (buildings reference PMs by key). Two surgical transforms, verbatim otherwise: (1) **gate remap** — append our tier `pm_key` to `unlocking_production_methods` lists referencing a split main PM (bone china / elastics / precision tools); (2) **goods override** — overwrite `goods_input/output_*_add` for any PM in the config `pm_goods` map. Modifiers/employment/effects untouched. New vanilla PMs flow in on rebuild. Our tier PMs stay in the additive `zzz_*` file; the linter reads vanilla + `zzz`, not these owned copies. |
 | **buildings** files (whole-file replace) | `common/buildings/01_industry.txt` + `06_urban_center.txt` + `11_private_infrastructure.txt` | `build.ps1` | Owns all three (V3 rejects cross-file redefine). Copies each vanilla file, swaps our base buildings, keeps others **verbatim**. New-economy chains (power/port/railway) are **clone-and-swap**: `build.ps1` copies the vanilla building block and swaps only key/tech/PMGs/construction — so a patch that changes `port`/`railway`/`power_plant`'s special fields (`port=yes`, `terrain_manipulator`, `ai_value`, …) flows in on rebuild, and a patch that changes urban_center/trade_center/manor/financial (kept verbatim) does too. |
 | **1836 start** (re-tiered) | `common/history/buildings/*.txt` | `convert_history.ps1` (via `build.ps1`) | `metadata.json` `replace_paths` makes the mod's copy replace vanilla's. Rebuild to absorb new vanilla history. |
 | **Linter** baseline | `common/production_methods/`, `production_method_groups/`, `buildings/` `01_industry.txt` | `lint.sh` | Concatenates vanilla + mod (vanilla first) to check break-even. |
@@ -114,6 +114,26 @@ hand on a major patch.
 
 Newest first. Append here as we discover more couplings to vanilla.
 
+- **2026-07-17** — **All PM goods editable & emitted.** The builder now **owns EVERY
+  `common/production_methods/*.txt`** (was just `01_industry`), applying the gate remap + a new per-PM
+  **goods override** from the config `pm_goods` map (default = verbatim copy). This makes every PM's
+  input/output goods editable in the UI (explorer buildings *and* our tiers' secondary PMs) and emitted —
+  without owning building files, since buildings reference PMs by key. Secondary *effects* (modifiers,
+  employment) stay verbatim/display-only. New coupling: **all** vanilla PM files (a patch that adds/renames
+  PMs or PM files flows in on rebuild; stale until then, like the buildings files). Verified: unaffected
+  files byte-identical to vanilla, overrides scoped to the exact PM, LINT 53/53.
+- **2026-07-17** — **Softened the ladder −15pp** (era anchors 140/115/90/65/50 → **125/100/75/50/35**; solver
+  `FLOOR` 45 → 30 so e5 can reach 35). Re-ran `solve_be_targets -Write` → `solve_volumes` →
+  `solve_building_cost` → `build` (LINT 53/53). Also: per-tier **`ai_value`** is now editable in the UI and
+  emitted by the builder (blank = engine default 1000); the UI "natural BE" preset became **Restore
+  defaults** (resets unlocked groups to the loaded config). **Tooling gotcha fixed:** `solve_be_targets.ps1`
+  used a *relative* `-Config` default, so launching it via `powershell -File …` from the wrong cwd silently
+  failed to persist (the build stayed self-consistent at the OLD targets). Its default is now the repo-absolute
+  path like the other solvers. When running solvers, prefer dot/`&`-invocation in the repo, or pass `-Config`.
+  Also: **`ai_value` is now editable for every explorer building** (top-level `building_ai_value` map →
+  builder injects it into PRESERVED blocks in owned files via `Set-BuildingAiValue`); set **trade center =
+  3000** (3× the vanilla 1000 default) and **tooling = 2000** (vanilla) at all tiers. `extract_vanilla.ps1`
+  now also captures each building's base `ai_value` into `ui/vanilla.js` (UI default display).
 - **2026-07-17** — **Fixed: split broke gated secondary PMs.** `pm_bone_china` / `pm_elastics` /
   `pm_precision_tools` are gated by `unlocking_production_methods = { <vanilla main PM> }` (only available
   when that main PM is in the building). Renaming/splitting the main PMs (`pm_crystal_glass` →
@@ -149,7 +169,7 @@ Newest first. Append here as we discover more couplings to vanilla.
   `error.log`) needs an in-game test.
 - **2026-07-16** — **BE targets re-cast as a curve over tech unlock date (era).** New solver
   `solve_be_targets.ps1` reads each tier's unlocking tech's **era** from `common/technology/technologies/*.txt`
-  and writes per-tier `target_be` (era anchors **140/115/90/65/50** for e1–e5, minus **−15 pp** when a tier
+  and writes per-tier `target_be` (era anchors **125/100/75/50/35** for e1–e5, minus **−15 pp** when a tier
   unlocks in eras 1–3 and consumes a factory-made intermediate — dye/silk excluded) plus `natural_year`
   (era's representative year, shown in the UI). Replaces the old per-group ladders (light/heavy/tools/single-PM).
   **New vanilla coupling:** tech→era assignments; a patch that moves a tech between eras shifts that tier's

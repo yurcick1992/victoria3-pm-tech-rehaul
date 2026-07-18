@@ -66,8 +66,12 @@ foreach ($name in $bBlocks.Keys) {
     $tech   = if ($joined -match 'unlocking_technologies\s*=\s*\{\s*([A-Za-z0-9_]+)') { $Matches[1] }
               elseif ($joined -match 'unlocking_technologies\s*=\s*\{[^}]*\b([A-Za-z0-9_]+)\b') { $Matches[1] } else { $null }
     $city   = if ($joined -match 'city_type\s*=\s*([A-Za-z0-9_]+)') { $Matches[1] } else { $null }
+    # base ai_value: a scalar `ai_value = N`, or the `value = N` at the head of an `ai_value = { … }` block.
+    # $null when unscripted (engine default 1000). Used only for the UI's ai_value default display.
+    $aiv = if ($joined -match 'ai_value\s*=\s*(-?\d+)') { [int]$Matches[1] }
+           elseif ($joined -match 'ai_value\s*=\s*\{\s*value\s*=\s*(-?\d+)') { [int]$Matches[1] } else { $null }
     $pmgs   = @(Get-ListTokens $blk 'production_method_groups' 'pmg_')
-    $buildings[$name] = [ordered]@{ group = $group; unique = $unique; tech = $tech; city = $city; pmgs = $pmgs }
+    $buildings[$name] = [ordered]@{ group = $group; unique = $unique; tech = $tech; city = $city; ai_value = $aiv; pmgs = $pmgs }
 }
 
 # --- pmgs ---

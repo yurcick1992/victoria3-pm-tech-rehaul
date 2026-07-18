@@ -125,7 +125,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_anchorage" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -166,7 +166,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_anchorage" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_barrack"
@@ -242,7 +242,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_anchorage" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -548,7 +548,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_anchorage" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -599,7 +599,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_anchorage" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -666,7 +666,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_anchorage" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 		region_state:DEN={
@@ -679,7 +679,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_anchorage" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_sugar_plantation"
@@ -705,7 +705,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_anchorage" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_cotton_plantation"
@@ -770,7 +770,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_anchorage" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 		region_state:VNZ={
@@ -796,7 +796,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_anchorage" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}
@@ -881,7 +881,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_anchorage" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 		}
 	}

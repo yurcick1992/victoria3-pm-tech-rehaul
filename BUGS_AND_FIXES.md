@@ -35,6 +35,42 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-07-18 — 1836 start: `Invalid production method: pm_anchorage` (90× in error.log)
+
+**Symptom.** `error.log` at load: 90× `create_building effect [ Invalid production method: pm_anchorage ]`
+in our re-tiered `common/history/buildings/*.txt`. (Found via the new self-diagnostic in-game test.)
+
+**Root cause.** `pm_anchorage` is vanilla's *undeveloped-port* base PM. The 1836 start has ports on it.
+`convert_history.ps1` matches a factory's active main PM against each tier's `vanilla_pm` (port = basic /
+industrial / modern) — `pm_anchorage` matches none, so the block is left **unchanged** (still
+`building_port` + `pm_anchorage`). But `building_port` is now our T1 (PMG `pmg_main_port_basic`, no
+`pm_anchorage`), so the activated PM is invalid for it.
+
+**Fix.** New per-tier **`vanilla_pm_aliases`** (list) in the config + `history_lib.ps1`: extra vanilla main
+PMs that also map to that tier. Set port T1 `vanilla_pm_aliases = ["pm_anchorage"]`, so undeveloped ports
+convert to our basic port (T1). Verified: 0 `pm_anchorage` left; conversion 604→694.
+
+**Detect/prevent.** After tiering any building, check the 1836 history for its **base/level-0 PM** (ports:
+anchorage; some buildings have an inert base main PM) — it won't match a tier's `vanilla_pm` and will be
+left invalid. Add it to that tier's `vanilla_pm_aliases`. The converter's `unmapped` warning also flags it.
+
+## 2026-07-18 — Known limitation: `is_production_method_active` checks on split main PMs (log noise + missed flavor)
+
+**Symptom.** `error.log`: `is_production_method_active trigger [ Invalid Production Method 'pm_mechanized_workshops' / 'pm_electric_trains' / 'pm_diesel_trains' … ]` (a few each, more as the game runs).
+
+**Root cause.** Theme #2 at scale. Vanilla industrialization/modernization **events, journal entries, and
+scripted effects** (e.g. `save_industrialized_pm_building_and_state` in `common/scripted_effects`, used by
+`events/pm_events.txt`) check `is_production_method_active = { building_type = building_X; production_method = pm_Y }`
+where `pm_Y` is a **main** PM we split/renamed onto a separate tier building — so the base building no longer
+has it, and the trigger errors and returns **false**.
+
+**Impact.** Low: those checks fail → the flavor/journal content that detects "this building is industrialized/
+modern" won't fire for our tiered buildings. **No crashes.** Long-standing for manufacturing (since the v0.1
+split); railway variants arrived with Phase 2. **Not fixed** — a comprehensive fix means owning
+`scripted_effects` / `scripted_triggers` / `journal_entries` / `events` and rewriting every such check to our
+tier structure (check for our tier *building* instead of the old main PM). Deferred pending a decision on
+whether the affected content is worth it.
+
 ## 2026-07-17 — Gated secondary PMs stopped working (bone china / elastics / precision tools)
 
 **Symptom.** After the tier split, secondary PMs that were gated behind a primary PM became permanently
