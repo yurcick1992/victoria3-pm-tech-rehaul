@@ -8,6 +8,11 @@ content won't detect our tiered buildings. **No crashes; missed content.** See B
 Deduped by (PM, enclosing block): same PM in the same block across country/state copies = one row; the
 same PM in a different block = a separate row.
 
+**Part of the `MISSING_*` family** (see CLAUDE.md — Missing-reference cataloguing): this doc covers
+*relocated main-PM references*. Conditional building fields our split drops (e.g. a conditional `ai_value`
+block) live in [MISSING_BUILDING_CONDITIONS.md](MISSING_BUILDING_CONDITIONS.md). The related `has_building`
+narrowing (checks now match only Tier 1) shares the same *make-our-tiers-eligible* strategic fix.
+
 **This is a living, deliberately-premature catalogue.** We will relocate *more* vanilla PMs as we add
 tiers, so **re-run `tools/audit_pm_refs.ps1` after any tiering change or game patch** to refresh it.
 **Convention:** when an in-game run surfaces a *new* log error of this class (a vanilla script referring
@@ -20,6 +25,17 @@ buildings eligible where advanced enough).
 | `pm_bolt_action_rifles` | arms | `building_arms_industry` | `military_tech_events.401` | events/tech_events/military_tech_events_01.txt:32 |
 | `pm_repeaters` | arms | `building_arms_industry` | `military_tech_events.401` | events/tech_events/military_tech_events_01.txt:31 |
 | `pm_rifles` | arms | `building_arms_industry` | `military_tech_events.401` | events/tech_events/military_tech_events_01.txt:30 |
+| `pm_film_art` | art_academy | `building_art_academy` | `camera_film_pm_events.2` | events/tech_events/camera_film_pm_events.txt:95 |
+| `pm_film_art` | art_academy | `building_art_academy` | `je_belle_epoque` | common/journal_entries/00_belle_epoque.txt:44 |
+| `pm_film_art` | art_academy | `building_art_academy` | `je_film` | common/journal_entries/00_art_jes.txt:159 |
+| `pm_photographic_art` | art_academy | `building_art_academy` | `camera_film_pm_events.1` | events/tech_events/camera_film_pm_events.txt:32 |
+| `pm_photographic_art` | art_academy | `building_art_academy` | `je_belle_epoque` | common/journal_entries/00_belle_epoque.txt:43 |
+| `pm_photographic_art` | art_academy | `building_art_academy` | `je_camera` | common/journal_entries/00_art_jes.txt:112 |
+| `pm_realist_art` | art_academy | `building_art_academy` | `dt_society_events.2` | events/tech_events/society_events_01.txt:121 |
+| `pm_realist_art` | art_academy | `building_art_academy` | `je_realism` | common/journal_entries/00_art_jes.txt:73 |
+| `pm_traditional_art` | art_academy | `building_art_academy` | `japan_events.32` | events/japan_events/ep2_japan_events_03.txt:158 |
+| `pm_traditional_art` | art_academy | `building_art_academy` | `je_romanticism` | common/journal_entries/00_art_jes.txt:28 |
+| `pm_traditional_art` | art_academy | `building_art_academy` | `society_tech_events.302` | events/tech_events/society_events_03.txt:102 |
 | `pm_automobile_production` | automotive | `building_motor_industry` | `production_tech_events.103` | events/tech_events/production_tech_events.txt:170 |
 | `pm_telephones` | electrics | `building_electrics_industry` | `production_tech_events.300` | events/tech_events/production_tech_events.txt:432 |
 | `pm_mechanized_workshops` | furniture | `building_furniture_manufactory` | `has_industrialized_pm` | common/scripted_triggers/00_scripted_triggers.txt:156 |
@@ -36,4 +52,4 @@ buildings eligible where advanced enough).
 | `pm_steam_trains` | railway | - | `gfx_steam_locomotive_trigger` | common/scripted_triggers/00_gfx_route_graphics_triggers.txt:76 |
 | `pm_metal_shipbuilding` | shipyard_steam | `building_shipyard` | `titanic.1` | events/titanic_events.txt:43 |
 
-_18 distinct (PM, block) cases across 8 files._
+_29 distinct (PM, block) cases across 14 files._

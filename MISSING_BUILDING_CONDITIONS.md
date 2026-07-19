@@ -7,6 +7,10 @@ A catalogue of **special conditional fields inside vanilla building definitions 
 fix — the cases here are **fully in our control**: we chose to flatten/omit the field when regenerating the
 building. They are therefore directly fixable; we're just **deferring** them to a batch pass.
 
+**Part of the `MISSING_*` family** (see CLAUDE.md → *Missing-reference cataloguing* for the full taxonomy:
+relocated-PM references → `MISSING_PM_REFERENCES.md`; dropped building conditions → this doc; `has_building`
+narrowing → the shared *make-our-tiers-eligible* strategic fix).
+
 **Convention:** when a tier-split or clone drops a special vanilla building condition (a conditional
 `ai_value` block, `should_auto_expand`, `potential`, `possible`, a `unique` flag, a scripted trigger inside
 the building, …), **append it here** rather than fixing it piecemeal. Re-audit after any tiering change or
