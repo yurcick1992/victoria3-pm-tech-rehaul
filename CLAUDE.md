@@ -34,11 +34,15 @@ Everything below — "one main PM", "a building per tier", the profitability lad
    laggards out. Governed by a break-even ladder in `BALANCE_FRAMEWORK.md` (the balance
    source of truth).
 
-Scope now: **all manufacturing + the new-economy chains** — 21 config industries / 63 tier buildings.
-The new-economy chains (infra + electricity) are `power` (electricity, **on the BE ladder**), `port`
+Scope now: **all manufacturing + the new-economy chains + the art academy** — 22 config industries / 67 tier
+buildings. The new-economy chains (infra + electricity) are `power` (electricity, **on the BE ladder**), `port`
 and `railway` (both `follows_be: false` — kept on **vanilla economics**, informational BE only). They
 live in other vanilla files (`06_urban_center`, `11_private_infrastructure`) and are emitted by
-**clone-and-swap** (see below); `trade_center` is deliberately left vanilla. Break-even is
+**clone-and-swap** (see below); `trade_center` is deliberately left vanilla. **`art_academy`** (fine_art,
+`bg_arts`, on the BE ladder) is a normal split (not clone) sourced from `06_urban_center`; its 4 tiers are the
+vanilla base PMs (traditional → realist → photographic → film art). Its jobs live in its **ownership PMG**
+(kept as a secondary), so its tiers carry **no base `employment`** — the builder omits the empty `level_scaled`
+block, and the UI's workforce column counts every secondary PMG's active PM (base included) so the jobs still show. Break-even is
 **wage-inclusive** (full break-even: output revenue = input goods + wages, wages = `wage_pct`·input cost,
 default 33% — a model-only accounting layer, **not** emitted to the game; see BALANCE_FRAMEWORK §1).
 **The ladder is a curve over each tier's tech unlock date (era), not a per-industry group ladder.** Each
@@ -264,8 +268,10 @@ the game.
   listed at the bottom of the Output cell **read-only**, **merged by kind into a total** (base pollution + an
   automation PM's pollution ⇒ one `pollution +25`). A **Workforce** column shows each tier's employment (total + per-profession),
   **tracking the selected PMs** (e.g. automation's −1500 laborers) — **viz-only**: not editable, not saved, not a
-  new emit path (the builder already emits base `employment`; the UI just carries it through and adds active
-  secondary-PM employment for display). Reference-explorer buildings get the same read-only workforce line. Live
+  new emit path (the builder already emits base `employment`; the UI carries it through and adds **every** secondary
+  PMG's active PM employment — *including its base/default PM*, since each PMG always has one active PM in-game.
+  Usually the base is inert, but some carry the jobs, e.g. the art academy's ownership PMG employs academics/
+  clerks/laborers even at its default). Reference-explorer buildings get the same read-only workforce line. Live
   **full** break-even + per-good-threshold **full
   profitability** ((output − inputs − wages)/(inputs + wages)), an editable **Build cost** column
   (construction points → `required_construction`, with a muted "model N" hint that turns amber when the

@@ -52,3 +52,7 @@ pm_main_munition_percussion 1 85 0.33
 pm_main_munition_shells 2 60 0.33
 pm_main_synthetics_dye 1 60 0.33
 pm_main_electrics_telephones 1 50 0.33
+pm_main_art_traditional 1 110 0.33
+pm_main_art_realist 2 85 0.33
+pm_main_art_photographic 3 60 0.33
+pm_main_art_film 4 50 0.33

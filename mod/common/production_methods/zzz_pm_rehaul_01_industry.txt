@@ -539,8 +539,8 @@ pm_main_steel_blister = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_coal_add = 37
-			goods_input_iron_add = 49
+			goods_input_coal_add = 38
+			goods_input_iron_add = 50
 			goods_output_steel_add = 65
 		}
 		level_scaled = {
@@ -1270,6 +1270,49 @@ pm_main_rail_diesel = {
 			building_employment_machinists_add = 300
 			building_employment_engineers_add = 100
 			building_employment_clerks_add = 200
+		}
+	}
+}
+
+pm_main_art_traditional = {
+	texture = "gfx/interface/icons/production_method_icons/traditional_art.dds"
+	building_modifiers = {
+		workforce_scaled = {
+			goods_input_paper_add = 28
+			goods_output_fine_art_add = 5
+		}
+	}
+}
+
+pm_main_art_realist = {
+	texture = "gfx/interface/icons/production_method_icons/realist_art.dds"
+	building_modifiers = {
+		workforce_scaled = {
+			goods_input_paper_add = 34
+			goods_output_fine_art_add = 8
+		}
+	}
+}
+
+pm_main_art_photographic = {
+	texture = "gfx/interface/icons/production_method_icons/photographic_art.dds"
+	building_modifiers = {
+		workforce_scaled = {
+			goods_input_paper_add = 19
+			goods_input_tools_add = 10
+			goods_output_fine_art_add = 11
+		}
+	}
+}
+
+pm_main_art_film = {
+	texture = "gfx/interface/icons/production_method_icons/film_art.dds"
+	building_modifiers = {
+		workforce_scaled = {
+			goods_input_electricity_add = 6
+			goods_input_paper_add = 19
+			goods_input_tools_add = 13
+			goods_output_fine_art_add = 17
 		}
 	}
 }

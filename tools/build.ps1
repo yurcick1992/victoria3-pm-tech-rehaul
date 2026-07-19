@@ -210,9 +210,16 @@ foreach ($ind in $cfg.industries) {
             $actualI += $q * $prices[$p.Name]
             $pm += "`t`t`tgoods_input_$($p.Name)_add = $q"
         }
-        $pm += "`t`t`tgoods_output_$($outGood)_add = $([int]$t.output_qty)","`t`t}","`t`tlevel_scaled = {"
-        foreach ($e in $t.employment.PSObject.Properties) { $pm += "`t`t`tbuilding_employment_$($e.Name)_add = $([int]$e.Value)" }
-        $pm += "`t`t}","`t}"
+        $pm += "`t`t`tgoods_output_$($outGood)_add = $([int]$t.output_qty)","`t`t}"
+        # employment (level_scaled). Some buildings carry NO base-PM employment (e.g. the art academy: jobs live
+        # in its ownership PMG, kept as a secondary), so omit the block entirely when employment is empty.
+        $empProps = if ($null -ne $t.employment) { @($t.employment.PSObject.Properties) } else { @() }
+        if ($empProps.Count -gt 0) {
+            $pm += "`t`tlevel_scaled = {"
+            foreach ($e in $empProps) { $pm += "`t`t`tbuilding_employment_$($e.Name)_add = $([int]$e.Value)" }
+            $pm += "`t`t}"
+        }
+        $pm += "`t}"
         if ($null -ne $t.required_input_goods) { $pm += "`trequired_input_goods = $($t.required_input_goods)" }
         $pm += "}",""
         $pmOut += $pm

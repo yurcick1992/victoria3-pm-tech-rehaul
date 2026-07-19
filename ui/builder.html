@@ -360,8 +360,11 @@ function tierNonGoods(i,t){ const acc={};
 function nonGoodsRows(i,t){ const ng=tierNonGoods(i,t); if(!ng.length) return '';
   return `<div class="outsep">non-goods output</div>`+ng.map(n=>`<div class="outro" title="non-goods output (total)"><span class="g">${esc(n.label)}</span><span class="v ${n.cls}">${n.val>=0?'+':''}${n.val}</span></div>`).join(''); }
 // ----- workforce (viz-only): base building employment + ACTIVE secondary-PM employment (e.g. automation −laborers) -----
+// workforce = base-PM employment (config) + the ACTIVE PM of EVERY secondary PMG (including its default/base PM —
+// each PMG always has one active PM in-game). Base secondary PMs are usually inert (0 emp), but some carry the
+// building's jobs (e.g. the art academy's ownership PMG employs academics/clerks/laborers even at its default).
 function tierEmp(t){ const e=Object.assign({}, t.employment||{});
-  for(const pg in (t._sec||{})){ const sel=t._sec[pg]; if(sel===basePm(pg)) continue; const r=VAN.pms[sel];
+  for(const pg in (t._sec||{})){ const r=VAN.pms[t._sec[pg]];
     if(r&&r.emp) for(const k in r.emp) e[k]=(e[k]||0)+r.emp[k]; }
   for(const k in e){ if(e[k]===0) delete e[k]; } return e; }
 function empTotal(m){ let s=0; for(const k in (m||{})) s+=m[k]; return s; }

@@ -33,41 +33,72 @@ building_urban_center = {
 building_art_academy = {
 	aliases = { building_arts_academy }
 	building_group = bg_arts
-
+	icon = "gfx/interface/icons/building_icons/building_arts_academy.dds"
 	city_type = city
-
 	levels_per_mesh = 50
-
-	unlocking_technologies = {
-		romanticism
-	}
-
+	unlocking_technologies = { romanticism }
 	production_method_groups = {
-		pmg_base_building_art_academy
+		pmg_main_art_traditional
 		pmg_ownership_building_art_academy
 		pmg_principle_freedom_of_movement_3
 	}
-
-	icon = "gfx/interface/icons/building_icons/building_arts_academy.dds"
-
-	required_construction = construction_cost_medium
-
+	required_construction = 160
+	ai_value = 1000
 	ownership_type = self
-
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
-	ai_value = {
-		value = 1000
-		if = { # AI Metternich really wants arts academies
-			limit = {
-				owner ?= {
-					c:AUS ?= this
-					has_journal_entry = je_metternich
-				}
-			}
-            add = 500
-		}
-	}
 }
+
+building_art_academy_realist = {
+	building_group = bg_arts
+	icon = "gfx/interface/icons/building_icons/building_arts_academy.dds"
+	city_type = city
+	levels_per_mesh = 50
+	unlocking_technologies = { realism }
+	production_method_groups = {
+		pmg_main_art_realist
+		pmg_ownership_building_art_academy
+		pmg_principle_freedom_of_movement_3
+	}
+	required_construction = 195
+	ai_value = 1000
+	ownership_type = self
+	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
+}
+
+building_art_academy_photographic = {
+	building_group = bg_arts
+	icon = "gfx/interface/icons/building_icons/building_arts_academy.dds"
+	city_type = city
+	levels_per_mesh = 50
+	unlocking_technologies = { camera }
+	production_method_groups = {
+		pmg_main_art_photographic
+		pmg_ownership_building_art_academy
+		pmg_principle_freedom_of_movement_3
+	}
+	required_construction = 185
+	ai_value = 1000
+	ownership_type = self
+	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
+}
+
+building_art_academy_film = {
+	building_group = bg_arts
+	icon = "gfx/interface/icons/building_icons/building_arts_academy.dds"
+	city_type = city
+	levels_per_mesh = 50
+	unlocking_technologies = { film }
+	production_method_groups = {
+		pmg_main_art_film
+		pmg_ownership_building_art_academy
+		pmg_principle_freedom_of_movement_3
+	}
+	required_construction = 245
+	ai_value = 1000
+	ownership_type = self
+	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
+}
+
 
 building_power_plant = {
 	building_group = bg_power

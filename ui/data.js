@@ -483,10 +483,10 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/crude_tools.dds",
+                                             "ai_value":  2000,
                                              "target_be":  125,
                                              "natural_year":  1836,
-                                             "building_cost":  215,
-                                             "ai_value":  2000
+                                             "building_cost":  215
                                          },
                                          {
                                              "key":  "building_tooling_workshop_pig_iron",
@@ -508,10 +508,10 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/pig_iron_tools.dds",
+                                             "ai_value":  2000,
                                              "target_be":  125,
                                              "natural_year":  1836,
-                                             "building_cost":  325,
-                                             "ai_value":  2000
+                                             "building_cost":  325
                                          },
                                          {
                                              "key":  "building_tooling_workshop_steel",
@@ -534,10 +534,10 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/bessemer_process.dds",
+                                             "ai_value":  2000,
                                              "target_be":  85,
                                              "natural_year":  1848,
-                                             "building_cost":  340,
-                                             "ai_value":  2000
+                                             "building_cost":  340
                                          },
                                          {
                                              "key":  "building_tooling_workshop_rubber",
@@ -560,10 +560,10 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/steel_tools.dds",
+                                             "ai_value":  2000,
                                              "target_be":  60,
                                              "natural_year":  1874,
-                                             "building_cost":  355,
-                                             "ai_value":  2000
+                                             "building_cost":  355
                                          }
                                      ]
                        },
@@ -913,8 +913,8 @@ window.PMDATA = {
                                              "tech":  "steelworking",
                                              "output_qty":  65,
                                              "inputs":  {
-                                                            "coal":  37,
-                                                            "iron":  49
+                                                            "coal":  38,
+                                                            "iron":  50
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -924,10 +924,10 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/blister_steel_process.dds",
+                                             "wage_pct":  0.3,
                                              "target_be":  125,
                                              "natural_year":  1836,
-                                             "building_cost":  590,
-                                             "wage_pct":  0.3
+                                             "building_cost":  590
                                          },
                                          {
                                              "key":  "building_steel_mill_bessemer",
@@ -1862,10 +1862,10 @@ window.PMDATA = {
                                              "state_infrastructure":  3,
                                              "texture":  "gfx/interface/icons/production_method_icons/basic_port.dds",
                                              "target_be":  106,
-                                             "natural_year":  1836,
                                              "vanilla_pm_aliases":  [
                                                                         "pm_anchorage"
-                                                                    ]
+                                                                    ],
+                                             "natural_year":  1836
                                          },
                                          {
                                              "key":  "building_port_industrial",
@@ -2029,6 +2029,117 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/trains_diesel.dds",
                                              "target_be":  60,
                                              "natural_year":  1923
+                                         }
+                                     ]
+                       },
+                       {
+                           "id":  "art_academy",
+                           "output_good":  "fine_art",
+                           "building":  {
+                                            "aliases":  [
+                                                            "building_arts_academy"
+                                                        ],
+                                            "building_group":  "bg_arts",
+                                            "icon":  "gfx/interface/icons/building_icons/building_arts_academy.dds",
+                                            "background":  "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds",
+                                            "city_type":  "city",
+                                            "levels_per_mesh":  50,
+                                            "required_construction":  "construction_cost_medium",
+                                            "ownership_type":  "self",
+                                            "ai_value":  1000
+                                        },
+                           "source_file":  "common/buildings/06_urban_center.txt",
+                           "secondary_pmgs":  [
+                                                  "pmg_ownership_building_art_academy",
+                                                  "pmg_principle_freedom_of_movement_3"
+                                              ],
+                           "tiers":  [
+                                         {
+                                             "key":  "building_art_academy",
+                                             "name":  "Traditional Art Academy",
+                                             "pm_key":  "pm_main_art_traditional",
+                                             "pmg_key":  "pmg_main_art_traditional",
+                                             "pm_name":  "Traditional Art",
+                                             "vanilla_pm":  "pm_traditional_art",
+                                             "tech":  "romanticism",
+                                             "output_qty":  5,
+                                             "inputs":  {
+                                                            "paper":  28
+                                                        },
+                                             "employment":  {
+
+                                                            },
+                                             "pollution":  0,
+                                             "texture":  "gfx/interface/icons/production_method_icons/traditional_art.dds",
+                                             "target_be":  110,
+                                             "natural_year":  1836,
+                                             "building_cost":  160
+                                         },
+                                         {
+                                             "key":  "building_art_academy_realist",
+                                             "name":  "Realist Art Academy",
+                                             "pm_key":  "pm_main_art_realist",
+                                             "pmg_key":  "pmg_main_art_realist",
+                                             "pm_name":  "Realist Art",
+                                             "vanilla_pm":  "pm_realist_art",
+                                             "tech":  "realism",
+                                             "output_qty":  8,
+                                             "inputs":  {
+                                                            "paper":  34
+                                                        },
+                                             "employment":  {
+
+                                                            },
+                                             "pollution":  0,
+                                             "texture":  "gfx/interface/icons/production_method_icons/realist_art.dds",
+                                             "target_be":  85,
+                                             "natural_year":  1848,
+                                             "building_cost":  195
+                                         },
+                                         {
+                                             "key":  "building_art_academy_photographic",
+                                             "name":  "Photographic Art Academy",
+                                             "pm_key":  "pm_main_art_photographic",
+                                             "pmg_key":  "pmg_main_art_photographic",
+                                             "pm_name":  "Photographic Art",
+                                             "vanilla_pm":  "pm_photographic_art",
+                                             "tech":  "camera",
+                                             "output_qty":  11,
+                                             "inputs":  {
+                                                            "paper":  19,
+                                                            "tools":  10
+                                                        },
+                                             "employment":  {
+
+                                                            },
+                                             "pollution":  0,
+                                             "texture":  "gfx/interface/icons/production_method_icons/photographic_art.dds",
+                                             "target_be":  60,
+                                             "natural_year":  1874,
+                                             "building_cost":  185
+                                         },
+                                         {
+                                             "key":  "building_art_academy_film",
+                                             "name":  "Film Art Academy",
+                                             "pm_key":  "pm_main_art_film",
+                                             "pmg_key":  "pmg_main_art_film",
+                                             "pm_name":  "Film Art",
+                                             "vanilla_pm":  "pm_film_art",
+                                             "tech":  "film",
+                                             "output_qty":  17,
+                                             "inputs":  {
+                                                            "electricity":  6,
+                                                            "paper":  19,
+                                                            "tools":  13
+                                                        },
+                                             "employment":  {
+
+                                                            },
+                                             "pollution":  0,
+                                             "texture":  "gfx/interface/icons/production_method_icons/film_art.dds",
+                                             "target_be":  50,
+                                             "natural_year":  1899,
+                                             "building_cost":  245
                                          }
                                      ]
                        }

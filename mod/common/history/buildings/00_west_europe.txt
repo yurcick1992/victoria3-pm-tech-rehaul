@@ -1004,7 +1004,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_traditional_art" }
+				activate_production_methods={ "pm_main_art_traditional" }
 			}
 			create_building={
 				building="building_construction_sector"
@@ -2795,7 +2795,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_traditional_art" }
+				activate_production_methods={ "pm_main_art_traditional" }
 			}
 			create_building={
 				building="building_furniture_manufactory_lathe"
@@ -5745,7 +5745,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_traditional_art" }
+				activate_production_methods={ "pm_main_art_traditional" }
 			}
 			create_building={
 				building="building_furniture_manufactory_lathe"
@@ -7966,7 +7966,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_traditional_art" }
+				activate_production_methods={ "pm_main_art_traditional" }
 			}
 			create_building={
 				building="building_textile_mill"
