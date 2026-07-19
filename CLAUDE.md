@@ -88,7 +88,7 @@ tools/                  dev tooling — NOT shipped in the mod
   solve_be_targets.ps1  re-derives every tier's target_be + natural_year from its tech's vanilla era (date ladder; BALANCE_FRAMEWORK §8.1)
   solve_volumes.ps1     re-derives every tier's output/input volumes from vanilla recipes + target_be (BALANCE_FRAMEWORK §8)
   solve_building_cost.ps1 re-derives every tier's building_cost (construction points) from a 10yr-payback model (BALANCE_FRAMEWORK §9)
-  extract_vanilla.ps1   dumps EVERY vanilla building/PMG/PM → ui/vanilla.js (the UI's read-only all-buildings explorer); regenerated each build
+  extract_vanilla.ps1   dumps EVERY vanilla building/PMG/PM → ui/vanilla.js (the UI's all-buildings explorer — same editable layout as the tier cards); regenerated each build
   audit_pm_refs.ps1     scans vanilla events/JEs/effects for references to main PMs our split relocated → MISSING_PM_REFERENCES.md (diagnostic; not run by build)
   convert_history.ps1   1836 start converter: re-tiers vanilla starting factories, applies start_exceptions.json
   extract_start.ps1     baseline extractor: vanilla start → start_baseline.json (inventory + version-drift alarm)
@@ -320,6 +320,16 @@ the game.
   browser can't run programs). Everything else works **frontend-only**: opening `ui/builder.html`
   directly still edits + previews + **Export mod_config.json** (then run `build.ps1` yourself).
   User-facing setup lives in `README.md`.
+- **PRINCIPLE — ONE UI layout for every building (do not keep re-deriving this).** There is **no separate or
+  lesser UI** for buildings outside the tiering scope. Our tiers, economic-but-out-of-scope buildings (farms,
+  mines, …), and non-economic buildings (government administration, military, …) all render with the **exact
+  same row layout** — same columns, PM selectors under the name, editable goods, the **wages row**, workforce,
+  BE/Profit. A cell or value is blank / `—` **only when the building genuinely lacks it**: no goods output →
+  Output `—`; no *input* goods → the wage £ isn't modelable → `—`; not on the ladder → Target / Build cost /
+  Payback `—`. **Never branch the layout on tiered-vs-reference.** When you add a UI element, add it everywhere
+  and let it show `—` where truly absent. **Macrogroups only organize** buildings (economic-out-of-scope vs
+  non-economic) — they never change the layout. (The wages row uses one shared `wageRowHTML`; reference-building
+  wages are session-only via `REFWAGE`, model-only like everywhere else.)
 - **All-buildings explorer + `include_all_buildings`.** The UI **always** shows every vanilla building,
   not just our tiered industries: our industries stay editable cards (each tier's **secondary PMGs** —
   canning, luxury, automation, … — are PM dropdowns under the building name; a non-base selection folds into
@@ -329,10 +339,12 @@ the game.
   for now) renders in the **same card + table UI** as our industries: one **category card** per taxonomy
   group, one **row per building** using the **exact same 11-column layout** as the industry tables (shared
   `MTABLE_COLS` colgroup, so columns line up). Each building is shown as **Tier 0** (untiered — a grey `0`
-  pill); the ladder-only columns (Target / Build cost / Payback / →X) show **—**. Each row has the
-  building's **PM selectors under its name**, **every good editable** in the Input/Output columns (wired to
-  `pm_goods`), non-goods outputs (infrastructure, pollution, bureaucracy, trade capacity, ship construction,
-  …) and **workforce** read-only, and informational **BE** + **Profit@thr**. **Each category is locked by default** (a
+  pill); the ladder-only columns (Target / Build cost / Payback / →X) show **—** (genuinely N/A — not on the
+  ladder). Each row has the building's **PM selectors under its name**, **every good editable** in the
+  Input/Output columns (wired to `pm_goods`), the **wages row** at the bottom of the Input cell (editable
+  £↔%, model-only; `—` when the building has no input goods so wages aren't modelable yet), non-goods outputs
+  (infrastructure, pollution, bureaucracy, trade capacity, ship construction, …) and **workforce** read-only,
+  and informational **BE** + **Profit@thr**. **Each category is locked by default** (a
   🔒 that excludes it from future mass tools — still fully editable; the amber bar without the dimming);
   unlock to include it. **Goods edits are config-backed and emitted**: they persist to the top-level
   **`pm_goods`** map, which the builder writes into the owned production-methods files, so an edit to a PM
@@ -341,20 +353,22 @@ the game.
   (the `↳` rows) — goes through `pm_goods`). Note **PM names are not all `pm_`-prefixed** (plantations/mines
   use `default_`/`automatic_`/`picks_and_shovels_`/… ); the extractor, the builder's `pm_goods` writer, and
   the linter all handle any name — so plantation/mine goods are editable & emittable too. Buildings are
-  sorted into a **custom taxonomy** (not raw `building_group`): one unified `#reference` explorer clustered
-  **Utilities, trade & arts** → **Food & agriculture (arable land)** → **Raw resource extraction** (mining,
-  gold fields, logging, oil, rubber) → **Other** (military consumers, property owners, administration,
-  fishing & whaling, subsistence, service, construction, Unique buildings). (`#econref` is now emptied and
-  merged into `#reference`.) The map is `GRPCAT`/`CATLABEL`/`ECON_CATS`/`REF_CLUSTERS` in `ui/builder.html`
+  sorted into a **custom taxonomy** (not raw `building_group`) grouped into **macrogroups by economic status**
+  (organization only — never a layout change): **economic, out of scope** — *Utilities, trade & arts* →
+  *Food & agriculture* (farms/plantations/ranching) → *Raw resource extraction* (mining, gold fields, logging,
+  oil, rubber, fishing & whaling); then **non-economic** (state, property & special, no market goods) —
+  administration, military consumers, property owners, subsistence, service, construction, Unique buildings.
+  (`#econref` is now emptied and merged into `#reference`.) The map is `GRPCAT`/`CATLABEL`/`ECON_CATS`/`REF_CLUSTERS` in `ui/builder.html`
   (keyed by vanilla `building_group`; unmapped groups fall back to their own card in the Other cluster).
   All PM data comes from `ui/vanilla.js` (regenerated every build by `extract_vanilla.ps1`; UI-only, never
   shipped). PM *selections* in the explorer are session-only (which PM is active is the game's runtime
   choice); PM *goods* edits are saved/emitted via `pm_goods` (above); category **locks** are UI-session state.
   **`include_all_buildings`** is a **builder** flag (top-level bool in `mod_config.json`, default `false`;
-  `build.ps1 -IncludeAllBuildings` forces it on) — it is the **emission scope** for the untouched
-  buildings (whether they'd reach an exported config / the built mod), **not** a UI visibility switch. The
-  headless builder reads it (logs the mode); the UI only preserves it on export. We do **not** tier or edit
-  those buildings yet, so today the flag has nothing extra to emit — it's the gate for when we do.
+  `build.ps1 -IncludeAllBuildings` forces it on) — it is the **emission scope** for buildings we don't yet
+  *tier* (whether they'd reach an exported config / the built mod beyond their `pm_goods`/`ai_value` edits),
+  **not** a UI visibility switch. The headless builder reads it (logs the mode); the UI only preserves it on
+  export. (We already edit these buildings' **goods** (via `pm_goods`) and **ai_value**, which emit regardless
+  — see the explorer above; the flag gates the *rest* of a building's definition when we start tiering it.)
 - **Localization is generated for all 11 languages** — every added key gets an English stub in
   every language file, because untranslated keys show as raw `<key>` placeholders for non-English
   players (no reliable English fallback). This is handled by the builder; you never write loc by

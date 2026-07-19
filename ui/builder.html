@@ -267,6 +267,16 @@ const BCM = { paybackYears:10, weeksPerYear:52, marginPct:0.20, wagePct:DEF_WAGE
 function wagePct(t){ return (t.wage_pct!=null) ? +t.wage_pct : DEF_WAGE; }
 function wageFactor(w){ return (w>=1) ? 0 : w/(1-w); }   // £ wages per £ goods; guard the degenerate w→1 (no-goods)
 function wageCost(t){ return wageFactor(wagePct(t))*inputValue(t,false); }
+// ONE shared wage row, identical on tier cards and reference rows (no separate layout for out-of-scope
+// buildings). idSuffix keys the two linked inputs; dataAttr carries the row's identity (data-ind+data-tier,
+// or data-refbld). When goodsCost is 0 the £ wage isn't modelable from the goods-based model (labour-only,
+// e.g. gov admin) — the row still shows, with the value truly absent (—), until wages are per-profession.
+function wageRowHTML(idSuffix, pctVal, gbpVal, dataAttr, goodsCost){
+  const sep=`<div class="wagesep" title="Wages are a MODELLING-only term (the fraction of TOTAL cost) — NOT emitted to the game (V3 pays wages from employment).">modelling only · not emitted</div>`;
+  if(goodsCost<=0) return sep+`<div class="goodrow wagerow" title="No input goods, so the goods-based model can't put a £ on this building's wages yet (deferred to per-profession values). Model-only — not emitted."><span class="g">wages</span><span class="amt"><span class="v muted">—</span></span></div>`;
+  return sep+`<div class="goodrow wagerow" title="Wages = the fraction of TOTAL cost (goods + wages). Both fields editable &amp; linked. Model-only — not emitted."><span class="g">wages</span>
+    <span class="amt"><input type="number" min="0" max="99" step="1" value="${pctVal}" ${dataAttr} data-wage="1" id="wp_${idSuffix}" title="wages as % of total cost"><span class="u">%</span><span class="wgbp">£</span><input type="number" min="0" step="1" value="${gbpVal}" ${dataAttr} data-wageabs="1" id="wv_${idSuffix}" title="wage £ (editable — sets the %)"></span></div>`;
+}
 function buildingCostModel(i,t){
   const I=inputValue(t,false);
   const profit = (BCM.basis==='output') ? BCM.marginPct*outputValue(i,t,false) : BCM.marginPct*I/(1-wagePct(t));
@@ -494,11 +504,8 @@ function tierRow(i,t){
   const inputs = Object.entries(t.inputs).map(([g,q])=>`<div class="goodrow" title="${esc(g)}: qty × base price £${PRICES[g]||'?'}"><span class="g">${esc(g)}</span>
     <span class="amt"><input type="number" min="0" step="1" value="${q}" data-ind="${i.id}" data-tier="${t.tier}" data-input="${esc(g)}"><span class="u"></span><span class="v muted" id="gv_${i.id}_${t.tier}_${g}">£${round(q*(PRICES[g]||0))}</span></span></div>`).join('')
     + secGoodRows(i,t,'in')   // editable input goods from active secondary PMs (↳)
-    // wages sit at the BOTTOM of the input cell, visually fenced off — a MODELLING-only input to BE/profit,
-    // NOT a good and NOT emitted to the game (V3 pays wages from employment). Editing % changes only the model.
-    + `<div class="wagesep" title="Wages are a modelling-only term in the BE/profit calculation — NOT emitted to the game (Victoria 3 pays wages endogenously from employment). Editing this % changes only the model.">modelling only · not emitted</div>`
-    + `<div class="goodrow wagerow" title="Wages = a MODELLING-only term, the fraction of TOTAL cost (goods + wages). Both fields are editable and linked: set the % of total, or the £ directly. Not emitted to the game."><span class="g">wages</span>
-    <span class="amt"><input type="number" min="0" max="99" step="1" value="${round(wagePct(t)*100)}" data-ind="${i.id}" data-tier="${t.tier}" data-wage="1" id="wp_${i.id}_${t.tier}" title="wages as % of total cost"><span class="u">%</span><span class="wgbp">£</span><input type="number" min="0" step="1" value="${round(wageCost(t))}" data-ind="${i.id}" data-tier="${t.tier}" data-wageabs="1" id="wv_${i.id}_${t.tier}" title="wage £ (editable — sets the %)"></span></div>`;
+    // wages sit at the BOTTOM of the input cell, fenced off — a MODELLING-only term (not a good, not emitted).
+    + wageRowHTML(`${i.id}_${t.tier}`, round(wagePct(t)*100), round(wageCost(t)), `data-ind="${i.id}" data-tier="${t.tier}"`, inputValue(t,false));
   const outputs = `<div class="goodrow" title="${esc(outG)}: qty × base price £${PRICES[outG]||'?'}"><span class="g">${esc(outG)}</span>
       <span class="amt"><input type="number" min="1" step="1" value="${t.output_qty}" data-ind="${i.id}" data-tier="${t.tier}" data-out="1"><span class="u"></span><span class="v muted" id="ov_${i.id}_${t.tier}">£${round(t.output_qty*(PRICES[outG]||0))}</span></span></div>`
     + secGoodRows(i,t,'out')   // read-only output goods from active secondary PMs (incl. negative main-good reductions)
@@ -628,6 +635,8 @@ function refEditSet(pm,dir,good,val){ const v=VAN.pms[pm]||{in:{},out:{}};
   const o=REFEDIT[pm]||(REFEDIT[pm]={in:{...(v.in||{})},out:{...(v.out||{})}});
   o[dir][good]=Math.round(+val||0); }   // allow negatives — some PMs reduce a good (e.g. tank PM: automobiles −20)
 const REFUNLOCK = new Set();          // reference categories the user has UNLOCKED (default = all locked)
+const REFWAGE = {};                   // reference building key -> wage_pct (session-only; wages are model-only / informational, never emitted)
+function refWagePct(b){ return REFWAGE[b]!=null ? REFWAGE[b] : DEF_WAGE; }
 const REFGRPOPEN = new Set();         // expanded category cards
 function refBuildings(){ return HAVE_VAN ? Object.keys(VAN.buildings).filter(b=>!OURS.has(b)) : []; }
 function prettyGroup(g){ return String(g).replace(/^bg_/,'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); }
@@ -662,11 +671,15 @@ const CATLABEL = {
   fishing_whaling:'Fishing and whaling', subsistence:'Subsistence', service:'Service', construction:'Construction',
   unique:'Unique buildings'
 };
-const ECON_CATS = ['utilities_trade','arts'];                 // shown right below our industries
-const REF_CLUSTERS = [                                         // non-economic explorer, in order
-  { label:'Food & agriculture (arable land)', cats:['farms','plantations','ranching'] },
-  { label:'Raw resource extraction',          cats:['mining','gold_fields','logging','oil','rubber'] },
-  { label:'Other',                            cats:['military_consumers','property_owners','administration','fishing_whaling','subsistence','service','construction','unique'] }
+// Macrogroups for the reference explorer. Every building here uses the SAME row layout as our tiered
+// industries — the macrogroup only organizes them; it never changes the UI. Split by economic status:
+// "economic, out of the mod's scope" (produce/consume market goods, just not tiered yet — farms, mines, …)
+// vs "non-economic" (never produce market goods — gov administration, military, property owners, …).
+const ECON_CATS = ['utilities_trade','arts'];                 // first economic macrogroup (shown first)
+const REF_CLUSTERS = [
+  { label:'Food & agriculture — economic, out of scope',        cats:['farms','plantations','ranching'] },
+  { label:'Raw resource extraction — economic, out of scope',   cats:['mining','gold_fields','logging','oil','rubber','fishing_whaling'] },
+  { label:'Non-economic — state, property & special (no market goods)', cats:['administration','military_consumers','property_owners','subsistence','service','construction','unique'] }
 ];
 function catOf(b){ const info=VAN.buildings[b];
   if(info.unique && !GRPCAT[info.group]) return 'unique';     // any stray unique -> Unique buildings
@@ -676,7 +689,7 @@ function refCats(){ const map={}; refBuildings().forEach(b=>{ const c=catOf(b); 
 function refSel(b){ const info=VAN.buildings[b], sel=REFSEL[b]||(REFSEL[b]={});
   (info.pmgs||[]).forEach(pg=>{ if(!sel[pg]) sel[pg]=basePm(pg); }); return sel; }
 function refEcon(b){ const g=selGoods(refSel(b));
-  const I=goodsVal(g.in,false), O=goodsVal(g.out,false), W=wageFactor(DEF_WAGE)*I;   // reference uses the default wage model (fraction of total)
+  const I=goodsVal(g.in,false), O=goodsVal(g.out,false), W=wageFactor(refWagePct(b))*I;   // per-building wage (fraction of total)
   const Ith=goodsVal(g.in,true), Oth=goodsVal(g.out,true);
   return { I, O, W, goods:g, BE:(O>0?(I+W)/O*100:null), tp:((I+W)>0&&O>0?(Oth-(Ith+W))/(Ith+W)*100:null) };
 }
@@ -714,7 +727,7 @@ function refRow(b){ const info=VAN.buildings[b], e=refEcon(b);
       <div class="muted" style="font-size:10px">${esc(prettyGroup(info.group||''))}${info.tech?' · '+esc(info.tech):''}</div>
       <div class="aivrow" title="Base AI construction desire (building ai_value). Blank = vanilla (${aivDef}). Emitted only for buildings in files the mod owns (01/06/11); others are session-only.">ai_value <input type="number" min="0" step="50" value="${REFAIV[b]!=null?REFAIV[b]:''}" placeholder="${aivDef}" data-refaiv="${esc(b)}"></div>
       ${refPmSelectors(b)}</td>
-    <td>${inG||dash}</td>
+    <td>${inG}${wageRowHTML(b, round(refWagePct(b)*100), round(e.W), `data-refbld="${esc(b)}"`, e.I)}</td>
     <td>${outG}${nong}${(!outG&&!nong)?dash:''}</td>
     <td class="wfcell">${wfCell(selEmp(refSel(b)))}</td>
     <td class="num">${dash}</td>
@@ -747,7 +760,7 @@ function renderReference(){
   // one unified explorer for every vanilla building NOT on our tier ladder (some are economic, just out of
   // the mod's current scope). Same card/table UI as our industries; edit any good (saved via pm_goods).
   let html=`<div class="refnote">Other vanilla buildings — <b>not on the mod's tier ladder</b> (some are economic, just out of scope for now). Switch PMs and <b>edit any good's input/output</b>; edits are <b>saved &amp; emitted</b> via <code>pm_goods</code>, applying to every building using that PM. Non-goods outputs (infrastructure, pollution, …) and workforce are read-only. Each group is <b>locked by default</b> (excluded from mass tools) — unlock to include it.</div>`;
-  const clusters=[{label:'Utilities, trade &amp; arts', cats:ECON_CATS.slice()}].concat(REF_CLUSTERS);
+  const clusters=[{label:'Utilities, trade &amp; arts — economic, out of scope', cats:ECON_CATS.slice()}].concat(REF_CLUSTERS);
   const used=new Set(), last=clusters[clusters.length-1];
   clusters.forEach(cl=>{
     let list=cl.cats.filter(c=>cats[c]&&cats[c].length);
@@ -760,6 +773,13 @@ function renderReference(){
   root.innerHTML=html;
 }
 function renderRefRow(b){ const tr=document.querySelector(`tr[data-refbld="${b}"]`); if(tr) tr.outerHTML=refRow(b); }
+// live-refresh a reference building's linked wage inputs + its BE/Profit cells (never the field being typed).
+function refreshRefWage(b){ const e=refEcon(b);
+  const wv=document.getElementById(`wv_${b}`); if(wv && wv!==document.activeElement) wv.value=round(e.W);
+  const wp=document.getElementById(`wp_${b}`); if(wp && wp!==document.activeElement) wp.value=round(refWagePct(b)*100);
+  const rbe=document.getElementById(`refbe_${b}`); if(rbe){ rbe.textContent=e.BE!=null?`${round(e.BE)}%`:'—'; rbe.className='be '+(e.BE!=null?(e.BE<=175?'ok':'off'):'muted'); }
+  const rtp=document.getElementById(`reftp_${b}`); if(rtp) rtp.textContent=(e.tp!=null)?`${e.tp>=0?'+':''}${Math.round(e.tp)}%`:'—';
+}
 // fold + lock toggles for the reference explorer (event-delegated)
 document.addEventListener('click', e=>{
   const lk=e.target.closest('[data-reflock]');
@@ -775,10 +795,13 @@ document.addEventListener('input', e=>{
   if(el.dataset.input!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.inputs[el.dataset.input]=+el.value||0; updateComputed(); }
   else if(el.dataset.out!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.output_qty=+el.value||0; updateComputed(); }
   else if(el.dataset.wage!==undefined){        // wages as % of TOTAL cost (clamped <1 to avoid a divide-by-zero £)
-    const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.wage_pct=Math.min(0.99,Math.max(0,(+el.value||0)/100)); updateComputed(); }
+    const wp=Math.min(0.99,Math.max(0,(+el.value||0)/100));
+    if(el.dataset.refbld!==undefined){ REFWAGE[el.dataset.refbld]=wp; refreshRefWage(el.dataset.refbld); }
+    else { const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.wage_pct=wp; updateComputed(); } }
   else if(el.dataset.wageabs!==undefined){     // edit the £ wage directly → back-solve the % of total: wp = W/(goods+W)
-    const[i,t]=findTier(el.dataset.ind,el.dataset.tier); const G=inputValue(t,false), W=Math.max(0,+el.value||0);
-    t.wage_pct=(G+W>0)?W/(G+W):0; updateComputed(); }
+    const W=Math.max(0,+el.value||0);
+    if(el.dataset.refbld!==undefined){ const b=el.dataset.refbld, I=refEcon(b).I; REFWAGE[b]=(I+W>0)?W/(I+W):0; refreshRefWage(b); }
+    else { const[i,t]=findTier(el.dataset.ind,el.dataset.tier), G=inputValue(t,false); t.wage_pct=(G+W>0)?W/(G+W):0; updateComputed(); } }
   else if(el.dataset.bc!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.building_cost=Math.max(1,+el.value||0); const c=document.getElementById(`bc_${i.id}_${t.tier}`); if(c){ const m=c.querySelector('.muted'), model=buildingCostModel(i,t), stale=(t.building_cost!==model); m.textContent='model '+model; m.style.color=stale?'#e6b455':''; } const pbc=document.getElementById(`pb_${i.id}_${t.tier}`); if(pbc) pbc.innerHTML=pbCell(i,t); }
   else if(el.dataset.aiv!==undefined){        // per-tier base ai_value (blank = engine default)
     const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.ai_value = (el.value===''?null:Math.max(0,+el.value||0));
