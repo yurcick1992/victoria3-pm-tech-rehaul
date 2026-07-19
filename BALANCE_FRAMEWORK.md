@@ -29,8 +29,11 @@ For a building (or a single PM) at a given set of market prices, let:
   fraction of *total* (rather than of goods) keeps the knob bounded 0–100% and is forward-compatible with
   labour-only buildings (no input goods → wages are 100% of total). This is a **model/accounting layer
   only** — **not** emitted to the game (no wage "goods input"); the game still pays its own wages from
-  employment. Every tool (volume solver, linter, building-cost solver, UI) uses this same `W`. *(Deferred:
-  rooting wages in real per-profession values.)*
+  employment. The solvers, linter, and builder use this same `W`. **The UI has moved on** (transition in
+  progress): it now roots wages in the real workforce — `W = Σ (employees × base wage × pop-type wage_weight)`,
+  driven by a global **base wage** in the Workforce panel (see CLAUDE.md → Balance UI). So the UI's BE currently
+  diverges from `wage_pct`-based `target_be`; the pipeline will be switched to the workforce model once the base
+  wage is calibrated.
 
 We track two numbers, both **wage-inclusive** (this is the change from earlier versions, where the
 ladder was run on the wage-free `I/O`):

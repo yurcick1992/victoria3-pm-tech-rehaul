@@ -254,12 +254,20 @@ the game.
   a patch adds are picked up automatically on rebuild.
 - **Balance UI (for Claude-less iteration):** one-click **`balance-ui.cmd`** (or
   `powershell -ExecutionPolicy Bypass -File tools\ui.ps1`) opens a browser editor (`ui/builder.html`)
-  showing every building × tier with editable **main-PM** input/output volumes + an editable **wages** line with
-  **two linked fields** — a **% of total cost** (per-tier `wage_pct`, fraction of goods + wages, default 25%) and
-  the **£ amount**; editing either updates the other (£ = `wp/(1−wp)·goods`; % = `W/(goods+W)`). **Wages sit fenced
-  off at the bottom of the Input cell** (a dashed "modelling only · not emitted" divider + a tinted `.wagerow`):
-  wages are a **model-only** term in the BE/profit math, **never emitted** to the game (V3 pays wages from
-  employment) — the styling makes that explicit so the fields don't read as an emittable good. Each tier's **secondary-PM selectors** sit under the
+  showing every building × tier with editable **main-PM** input/output volumes. **Wages now stem from the
+  building's WORKFORCE**, not a fraction of goods: a **Workforce panel** (right under the price panel) sets one
+  global **base wage** in two linked terms — **£/week ↔ £/year** (yearly = ×52; V3 is inconsistent about which
+  it shows) — and lists each profession's weekly wage = `base × wage_weight` (the vanilla `common/pop_types`
+  weights: laborers 1, machinists/clerks/soldiers 1.5, farmers 2, shopkeepers/engineers/clergymen 3,
+  bureaucrats/academics 4, officers/aristocrats/capitalists 5, peasants 0.2, slaves 0; everyone
+  non-discriminated). A building's wage `W = Σ (employees × base × wage_weight)`, so the **wages row** at the
+  bottom of the Input cell is now **read-only** — it shows `W` (£) and its **% of total** (a labour-only building
+  like gov administration is 100% wages, and now has a real £ from its bureaucrats). Changing the base wage
+  **recomputes every building's BE / profit / payback** live. Wages remain a **model-only** term (dashed
+  "modelling only · not emitted" fence) — **never emitted** to the game (V3 pays wages from employment).
+  **NOTE (transitional):** only the **UI** uses workforce wages so far; the solvers/linter/builder still use the
+  legacy per-tier `wage_pct` (fraction of total, §1), so the UI's BE currently diverges from `target_be` / the
+  linter until the pipeline is switched over. Each tier's **secondary-PM selectors** sit under the
   building name (Building column); switching one distributes that PM's effects across the columns: its input goods
   appear as extra rows in the **Input** column, its output goods (including negative *reductions* of the main good,
   e.g. tank production −20 automobiles) as extra rows in the **Output** column, and its employment folds into
