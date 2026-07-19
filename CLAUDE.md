@@ -325,8 +325,8 @@ the game.
   mines, …), and non-economic buildings (government administration, military, …) all render with the **exact
   same row layout** — same columns, PM selectors under the name, editable goods, the **wages row**, workforce,
   BE/Profit. A cell or value is blank / `—` **only when the building genuinely lacks it**: no goods output →
-  Output `—`; no *input* goods → the wage £ isn't modelable → `—`; not on the ladder → Target / Build cost /
-  Payback `—`. **Never branch the layout on tiered-vs-reference.** When you add a UI element, add it everywhere
+  Output `—`; no *input* goods → wages are **100%** of total with the £ magnitude `—` (not modelable yet); not
+  on the ladder → Target / Build cost / Payback `—`. **Never branch the layout on tiered-vs-reference.** When you add a UI element, add it everywhere
   and let it show `—` where truly absent. **Macrogroups only organize** buildings (economic-out-of-scope vs
   non-economic) — they never change the layout. (The wages row uses one shared `wageRowHTML`; reference-building
   wages are session-only via `REFWAGE`, model-only like everywhere else.)
@@ -342,7 +342,8 @@ the game.
   pill); the ladder-only columns (Target / Build cost / Payback / →X) show **—** (genuinely N/A — not on the
   ladder). Each row has the building's **PM selectors under its name**, **every good editable** in the
   Input/Output columns (wired to `pm_goods`), the **wages row** at the bottom of the Input cell (editable
-  £↔%, model-only; `—` when the building has no input goods so wages aren't modelable yet), non-goods outputs
+  £↔%, model-only; a building with no *input* goods is **100% wages** (its whole cost is labour) with the £
+  magnitude shown as `—` until wages are per-profession), non-goods outputs
   (infrastructure, pollution, bureaucracy, trade capacity, ship construction, …) and **workforce** read-only,
   and informational **BE** + **Profit@thr**. **Each category is locked by default** (a
   🔒 that excludes it from future mass tools — still fully editable; the amber bar without the dimming);

@@ -273,7 +273,9 @@ function wageCost(t){ return wageFactor(wagePct(t))*inputValue(t,false); }
 // e.g. gov admin) — the row still shows, with the value truly absent (—), until wages are per-profession.
 function wageRowHTML(idSuffix, pctVal, gbpVal, dataAttr, goodsCost){
   const sep=`<div class="wagesep" title="Wages are a MODELLING-only term (the fraction of TOTAL cost) — NOT emitted to the game (V3 pays wages from employment).">modelling only · not emitted</div>`;
-  if(goodsCost<=0) return sep+`<div class="goodrow wagerow" title="No input goods, so the goods-based model can't put a £ on this building's wages yet (deferred to per-profession values). Model-only — not emitted."><span class="g">wages</span><span class="amt"><span class="v muted">—</span></span></div>`;
+  // no input goods ⇒ the building's whole cost IS wages, so wages are 100% of total (fixed — nothing to trade
+  // off against). The £ magnitude isn't modelable from the goods-based model yet (deferred to per-profession).
+  if(goodsCost<=0) return sep+`<div class="goodrow wagerow" title="No input goods — the building's entire cost is wages, so wages are 100% of total. The £ magnitude isn't modelable from the goods-based model yet (deferred to per-profession values). Model-only — not emitted."><span class="g">wages</span><span class="amt"><span class="v" title="all cost is wages">100</span><span class="u">%</span><span class="wgbp">£</span><span class="v muted">—</span></span></div>`;
   return sep+`<div class="goodrow wagerow" title="Wages = the fraction of TOTAL cost (goods + wages). Both fields editable &amp; linked. Model-only — not emitted."><span class="g">wages</span>
     <span class="amt"><input type="number" min="0" max="99" step="1" value="${pctVal}" ${dataAttr} data-wage="1" id="wp_${idSuffix}" title="wages as % of total cost"><span class="u">%</span><span class="wgbp">£</span><input type="number" min="0" step="1" value="${gbpVal}" ${dataAttr} data-wageabs="1" id="wv_${idSuffix}" title="wage £ (editable — sets the %)"></span></div>`;
 }
