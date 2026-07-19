@@ -102,14 +102,15 @@ hand on a major patch.
 - **Price band 25%–175% of base** (floor at supply≈2×demand, ceiling at demand≈2×supply) — the
   corridor the whole break-even ladder lives in (`BALANCE_FRAMEWORK.md` §2). Used by the UI's out-of-band
   flags. Would only change with a market-mechanics overhaul.
-- **Wage assumption `wage_pct = 0.33`** — wages modeled as 33% of input-goods cost, folded into the
-  full break-even everything is designed against (`BALANCE_FRAMEWORK.md` §1). It is **not** derived from
-  vanilla (the game pays its own endogenous wages; this is a design-model layer, not emitted to the mod).
-  The default is **duplicated** across `solve_volumes.ps1` (`-WagePct`), `solve_building_cost.ps1`
-  (`-WagePct`), `build.ps1` (hardcoded 0.33 for the building-name BE + tier map), `lint_profitability.awk`
-  (fallback when the tier map lacks a `wage_pct` column), and `ui/builder.html` (`DEF_WAGE`). To change the
-  global default, update all five (or set per-tier `wage_pct` in the config, which every tool honors); then
-  re-solve volumes + building cost and rebuild.
+- **Wage assumption `wage_pct = 0.25`** — wages modeled as the wage fraction of **total** cost (goods +
+  wages), so `W = wage_pct/(1−wage_pct)·I` and total `= I/(1−wage_pct)`; 0.25 of total ≡ the old 0.333 of
+  goods. Folded into the full break-even everything is designed against (`BALANCE_FRAMEWORK.md` §1). It is
+  **not** derived from vanilla (the game pays its own endogenous wages; a design-model layer, not emitted).
+  The default + the `1/(1−wage_pct)` total-cost factor are **duplicated** across `solve_volumes.ps1`
+  (`-WagePct`), `solve_building_cost.ps1` (`-WagePct`), `build.ps1` (hardcoded 0.25 for the building-name BE +
+  tier map), `lint_profitability.awk` (fallback when the tier map lacks a `wage_pct` column), and
+  `ui/builder.html` (`DEF_WAGE`; the £↔% wage row). To change the global default, update all five (or set
+  per-tier `wage_pct` in the config, which every tool honors); then re-solve volumes + building cost and rebuild.
 
 ---
 
@@ -117,6 +118,13 @@ hand on a major patch.
 
 Newest first. Append here as we discover more couplings to vanilla.
 
+- **2026-07-19** — **Wages re-parameterized: fraction of TOTAL, not of goods.** `wage_pct` now means
+  `W/(I+W)` (default **0.25**, ≡ the old +33%-over-goods), so the total-cost factor is `1/(1−wage_pct)`
+  instead of `(1+wage_pct)`. Economics-neutral (re-solved volumes/costs are ~identical). Updated in all five
+  duplication points (both solvers, `build.ps1`, `lint_profitability.awk`, `ui/builder.html`) and the one
+  explicit per-tier override (steel 0.3→0.23). The UI wage row is now **two linked editable fields** (% of
+  total ↔ £). Framing is bounded 0–100% and forward-compatible with labour-only buildings. Still model-only,
+  not emitted. Deferred: rooting wages in real per-profession values.
 - **2026-07-17** — **All PM goods editable & emitted.** The builder now **owns EVERY
   `common/production_methods/*.txt`** (was just `01_industry`), applying the gate remap + a new per-PM
   **goods override** from the config `pm_goods` map (default = verbatim copy). This makes every PM's

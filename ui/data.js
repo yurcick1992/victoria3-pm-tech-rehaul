@@ -56,7 +56,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/bakeries.dds",
                                              "target_be":  125,
                                              "natural_year":  1836,
-                                             "building_cost":  240
+                                             "building_cost":  245
                                          },
                                          {
                                              "key":  "building_food_industry_sweetener",
@@ -80,7 +80,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/sweeteners.dds",
                                              "target_be":  125,
                                              "natural_year":  1836,
-                                             "building_cost":  365
+                                             "building_cost":  370
                                          },
                                          {
                                              "key":  "building_food_industry_baking_powder",
@@ -150,7 +150,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/handsewn_clothes.dds",
                                              "target_be":  125,
                                              "natural_year":  1836,
-                                             "building_cost":  240
+                                             "building_cost":  245
                                          },
                                          {
                                              "key":  "building_textile_mill_dye",
@@ -187,7 +187,7 @@ window.PMDATA = {
                                              "output_qty":  101,
                                              "inputs":  {
                                                             "dye":  11,
-                                                            "fabric":  65,
+                                                            "fabric":  64,
                                                             "tools":  5
                                                         },
                                              "employment":  {
@@ -200,7 +200,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/sewing_machines.dds",
                                              "target_be":  85,
                                              "natural_year":  1848,
-                                             "building_cost":  375
+                                             "building_cost":  370
                                          },
                                          {
                                              "key":  "building_textile_mill_electric",
@@ -264,7 +264,7 @@ window.PMDATA = {
                                              "output_qty":  45,
                                              "inputs":  {
                                                             "fabric":  16,
-                                                            "wood":  48
+                                                            "wood":  47
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -288,7 +288,7 @@ window.PMDATA = {
                                              "inputs":  {
                                                             "fabric":  17,
                                                             "tools":  8,
-                                                            "wood":  51
+                                                            "wood":  50
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -300,7 +300,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/lathes.dds",
                                              "target_be":  110,
                                              "natural_year":  1836,
-                                             "building_cost":  325
+                                             "building_cost":  320
                                          },
                                          {
                                              "key":  "building_furniture_manufactory_mechanized",
@@ -314,7 +314,7 @@ window.PMDATA = {
                                              "inputs":  {
                                                             "fabric":  12,
                                                             "tools":  12,
-                                                            "wood":  61
+                                                            "wood":  60
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -326,7 +326,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/mechanized_workshops.dds",
                                              "target_be":  85,
                                              "natural_year":  1848,
-                                             "building_cost":  375
+                                             "building_cost":  370
                                          }
                                      ]
                        },
@@ -415,7 +415,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/crystal_glass.dds",
                                              "target_be":  100,
                                              "natural_year":  1848,
-                                             "building_cost":  390
+                                             "building_cost":  395
                                          },
                                          {
                                              "key":  "building_glassworks_plastics",
@@ -440,7 +440,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/houseware_plastics.dds",
                                              "target_be":  50,
                                              "natural_year":  1899,
-                                             "building_cost":  290
+                                             "building_cost":  295
                                          }
                                      ]
                        },
@@ -631,7 +631,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/sulfite_pulping.dds",
                                              "target_be":  100,
                                              "natural_year":  1848,
-                                             "building_cost":  255
+                                             "building_cost":  260
                                          },
                                          {
                                              "key":  "building_paper_mill_bleached",
@@ -704,7 +704,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/chemical_fertilizers.dds",
                                              "target_be":  100,
                                              "natural_year":  1848,
-                                             "building_cost":  390
+                                             "building_cost":  395
                                          },
                                          {
                                              "key":  "building_chemical_plant_improved",
@@ -729,7 +729,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/improved_fertilizer.dds",
                                              "target_be":  75,
                                              "natural_year":  1874,
-                                             "building_cost":  430
+                                             "building_cost":  435
                                          },
                                          {
                                              "key":  "building_chemical_plant_nitrogen",
@@ -799,7 +799,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/leblanc_process.dds",
                                              "target_be":  85,
                                              "natural_year":  1848,
-                                             "building_cost":  305
+                                             "building_cost":  310
                                          },
                                          {
                                              "key":  "building_explosives_factory_ammonia",
@@ -825,7 +825,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/ammonia_soda_process.dds",
                                              "target_be":  85,
                                              "natural_year":  1848,
-                                             "building_cost":  465
+                                             "building_cost":  470
                                          },
                                          {
                                              "key":  "building_explosives_factory_vacuum",
@@ -924,7 +924,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/blister_steel_process.dds",
-                                             "wage_pct":  0.3,
+                                             "wage_pct":  0.23,
                                              "target_be":  125,
                                              "natural_year":  1836,
                                              "building_cost":  590
@@ -977,7 +977,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/open_hearth_process.dds",
                                              "target_be":  75,
                                              "natural_year":  1874,
-                                             "building_cost":  785
+                                             "building_cost":  790
                                          },
                                          {
                                              "key":  "building_steel_mill_electric_arc",
@@ -1431,8 +1431,8 @@ window.PMDATA = {
                                              "inputs":  {
                                                             "hardwood":  9,
                                                             "oil":  9,
-                                                            "steel":  18,
-                                                            "tools":  18
+                                                            "steel":  17,
+                                                            "tools":  17
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1444,7 +1444,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/bolt_action_rifles.dds",
                                              "target_be":  50,
                                              "natural_year":  1899,
-                                             "building_cost":  450
+                                             "building_cost":  435
                                          }
                                      ]
                        },

@@ -7,8 +7,8 @@
 
   Model (per tier, per level, weekly flows):
     I   = input cost at base prices  = sum(config input qty * base price)
-    W   = wages = WagePct * I                          (wages add +33% to input cost)
-    TC  = total operating cost = I + W = (1+WagePct)*I
+    W   = wages = WagePct fraction of TOTAL cost       (WagePct=0.25 of total = +33% over goods)
+    TC  = total operating cost = I + W = I / (1-WagePct)
     profit = weekly net profit = MarginPct * TC        (a 20% return on operating cost)
     cost_money = PaybackYears * WeeksPerYear * profit   (money the building must earn back)
     building_cost (points) = cost_money / money-per-construction-point, rounded to RoundTo.
@@ -27,7 +27,7 @@
 param(
     [string]$Repo = (Split-Path $PSScriptRoot -Parent),
     [string]$Game = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game" }),
-    [double]$WagePct      = 0.33,   # wages as a fraction of input cost
+    [double]$WagePct      = 0.25,   # wages as a fraction of TOTAL cost (goods + wages)
     [double]$MarginPct    = 0.20,   # net profit as a fraction of total operating cost
     [int]   $PaybackYears = 10,
     [int]   $WeeksPerYear = 52,     # Victoria 3 economy ticks weekly (52/yr)
@@ -77,7 +77,7 @@ foreach ($ind in $cfg.industries) {
         $O = [double]$t.output_qty * $prices[$outGood]
         $wage = if ($null -ne $t.wage_pct) { [double]$t.wage_pct } else { $WagePct }   # per-tier override
         # weekly net profit under the chosen basis
-        $profit = if ($Basis -eq 'output') { $MarginPct * $O } else { $MarginPct * (1 + $wage) * $I }
+        $profit = if ($Basis -eq 'output') { $MarginPct * $O } else { $MarginPct * $I / (1 - $wage) }
         $cost = $horizon * $profit / $poundPerPoint
         $pts = if ($RoundTo -gt 0) { [int]([math]::Round($cost / $RoundTo) * $RoundTo) } else { RoundHalfUp $cost }
         if ($pts -lt 1) { $pts = 1 }

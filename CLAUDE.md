@@ -43,8 +43,9 @@ live in other vanilla files (`06_urban_center`, `11_private_infrastructure`) and
 vanilla base PMs (traditional → realist → photographic → film art). Its jobs live in its **ownership PMG**
 (kept as a secondary), so its tiers carry **no base `employment`** — the builder omits the empty `level_scaled`
 block, and the UI's workforce column counts every secondary PMG's active PM (base included) so the jobs still show. Break-even is
-**wage-inclusive** (full break-even: output revenue = input goods + wages, wages = `wage_pct`·input cost,
-default 33% — a model-only accounting layer, **not** emitted to the game; see BALANCE_FRAMEWORK §1).
+**wage-inclusive** (full break-even: output revenue = input goods + wages; `wage_pct` is the wage fraction of
+**total** cost so total = goods/(1−`wage_pct`), default 25% ≡ old +33%-over-goods — a model-only accounting
+layer, **not** emitted to the game; see BALANCE_FRAMEWORK §1).
 **The ladder is a curve over each tier's tech unlock date (era), not a per-industry group ladder.** Each
 tier's `target_be` = the era anchor for its unlocking tech's era, minus an early-game input adjustment:
 - **Era anchors** (BE % of base output price), by the tech's vanilla era: **e1 125 / e2 100 / e3 75 /
@@ -215,8 +216,8 @@ the game.
   10yr × 52wk × (20% net return on total operating cost) ÷ £720-per-construction-point`, where £720 is
   read live from the construction sector's iron PM at 0 efficiency bonus. Re-solve after changing volumes
   or a game patch: `solve_volumes.ps1` → `solve_building_cost.ps1` → `build.ps1`. The model's knobs
-  (margin %, payback years, weeks/yr) are solver parameters; **wages** use the shared `wage_pct` (default
-  0.33, per-tier `wage_pct` override — the same knob the volume solver, linter, and UI use; §1). The UI
+  (margin %, payback years, weeks/yr) are solver parameters; **wages** use the shared `wage_pct` (fraction of
+  total, default 0.25, per-tier `wage_pct` override — the same knob the volume solver, linter, and UI use; §1). The UI
   preserves `building_cost` through export/Build-now (it deep-clones the config), but does not itself edit it.
 - **Toggle a whole industry** with an industry-level `disabled: true` in the config — the builder,
   history converter, and UI all skip it, leaving that vanilla building untouched (the mechanism that
@@ -253,11 +254,12 @@ the game.
   a patch adds are picked up automatically on rebuild.
 - **Balance UI (for Claude-less iteration):** one-click **`balance-ui.cmd`** (or
   `powershell -ExecutionPolicy Bypass -File tools\ui.ps1`) opens a browser editor (`ui/builder.html`)
-  showing every building × tier with editable **main-PM** input/output volumes + an editable **wages %** line
-  (per-tier `wage_pct`, default 33% of input-goods cost). **Wages sit fenced off at the bottom of the Input cell**
-  (a dashed "modelling only · not emitted" divider + a tinted `.wagerow`): wages are a **model-only** term in the
-  BE/profit math, **never emitted** to the game (V3 pays wages from employment) — the styling makes that explicit
-  so the % field doesn't read as an emittable good. Each tier's **secondary-PM selectors** sit under the
+  showing every building × tier with editable **main-PM** input/output volumes + an editable **wages** line with
+  **two linked fields** — a **% of total cost** (per-tier `wage_pct`, fraction of goods + wages, default 25%) and
+  the **£ amount**; editing either updates the other (£ = `wp/(1−wp)·goods`; % = `W/(goods+W)`). **Wages sit fenced
+  off at the bottom of the Input cell** (a dashed "modelling only · not emitted" divider + a tinted `.wagerow`):
+  wages are a **model-only** term in the BE/profit math, **never emitted** to the game (V3 pays wages from
+  employment) — the styling makes that explicit so the fields don't read as an emittable good. Each tier's **secondary-PM selectors** sit under the
   building name (Building column); switching one distributes that PM's effects across the columns: its input goods
   appear as extra rows in the **Input** column, its output goods (including negative *reductions* of the main good,
   e.g. tank production −20 automobiles) as extra rows in the **Output** column, and its employment folds into
@@ -380,8 +382,10 @@ the game.
     deferred. → **`MISSING_BUILDING_CONDITIONS.md`** (hand-maintained).
   - **Narrowed building references** — `has_building = <base building>` (457 vanilla uses) now matches only
     Tier 1, missing owners who built only higher tiers. Not a broken reference (the key survives via the Tier-1
-    alias) but a completeness gap; the **same "make our tier buildings eligible" strategic fix** resolves it and
-    the PM-reference class together. Not separately enumerated.
+    alias) but a completeness gap — and **gameplay-significant, not just flavor**: e.g. **company mandates,
+    monopolies, and similar mechanics latch onto our Tier-1 building, not all tiers of the industry** (which
+    would make more sense). The **same "make our tier buildings eligible" strategic fix** resolves it and the
+    PM-reference class together. Not separately enumerated.
   When an in-game run surfaces a new case, **append it to the right `MISSING_*` doc** (or add the PM to the split
   set and re-run the audit) — don't fix it inline.
 - Read `MODDING_NOTES.md` before touching metadata, load order, or icons.

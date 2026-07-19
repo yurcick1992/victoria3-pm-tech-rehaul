@@ -10,7 +10,7 @@
 
   Building logic: per tier the config carries ACTUAL volumes (output_qty + inputs, derived by
   solve_volumes.ps1). The builder emits them as-is, preserves employment/pollution, and labels each
-  building with its actual FULL break-even (input goods + wages; wages = wage_pct * input cost,
+  building with its actual FULL break-even (input goods + wages; wages = wage_pct fraction of TOTAL,
   default 0.33). See BALANCE_FRAMEWORK §1/§8.
 
   Usage:   powershell -ExecutionPolicy Bypass -File tools\build.ps1 [-NoLint] [-NoDeploy] [-Config <path>] [-DryRun] [-SaveTo <name>]
@@ -185,7 +185,7 @@ foreach ($ind in $cfg.industries) {
         # inputs/output_qty are actual volumes; the builder emits them directly.
         $outGood = if ($t.output_good) { $t.output_good } else { $ind.output_good }
         $Oval = [double]$t.output_qty * $prices[$outGood]
-        $wage = if ($null -ne $t.wage_pct) { [double]$t.wage_pct } else { 0.33 }   # wages as fraction of input-goods cost (default; BALANCE_FRAMEWORK §1)
+        $wage = if ($null -ne $t.wage_pct) { [double]$t.wage_pct } else { 0.25 }   # wages as fraction of TOTAL cost (input goods + wages); default 0.25 (BALANCE_FRAMEWORK §1)
 
         # ---- PM ----
         $pm = @("$($t.pm_key) = {", "`ttexture = `"$($t.texture)`"")
@@ -223,7 +223,7 @@ foreach ($ind in $cfg.industries) {
         if ($null -ne $t.required_input_goods) { $pm += "`trequired_input_goods = $($t.required_input_goods)" }
         $pm += "}",""
         $pmOut += $pm
-        $actualBe = if ($Oval -gt 0) { $actualI * (1 + $wage) / $Oval * 100 } else { 0 }   # actual FULL break-even (input goods + wages), for the building name + summary
+        $actualBe = if ($Oval -gt 0) { $actualI / (1 - $wage) / $Oval * 100 } else { 0 }   # actual FULL break-even (total cost = goods/(1-wage)), for the building name + summary
 
         # ---- PMG (single main PM) ----
         $pmgOut += "$($t.pmg_key) = {","`ttexture = `"gfx/interface/icons/generic_icons/mixed_icon_base.dds`"","`tproduction_methods = { $($t.pm_key) }","}",""

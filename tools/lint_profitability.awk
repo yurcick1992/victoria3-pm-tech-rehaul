@@ -5,8 +5,8 @@
 #   - the building's single main PM, PLUS
 #   - the BASE (first-listed) PM of every other PMG the building runs.
 # Base PMs are the default/"off" states; this is the building's baseline profitability
-# with no optional PMs toggled on. Wages are modeled as wage_pct * input-goods cost
-# (wage_pct comes from the tier map, default 0.33), so BE = (I + wage*I)/O. Checked
+# with no optional PMs toggled on. Wages are the wage_pct fraction of TOTAL cost
+# (wage_pct comes from the tier map, default 0.25), so BE = I/(1-wage)/O. Checked
 # against the tier's target_be in BALANCE_FRAMEWORK.md §8.1.
 #
 # Inputs (file1 = tier map "pm tier target_be wage_pct", file2 = concatenated vanilla+mod
@@ -30,7 +30,7 @@ BEGIN {
     cur="";
 }
 # ---- file1: tier map (pm  tier  target_be  wage_pct) ----
-FNR==NR { if ($1 ~ /^pm_/) { tier[$1]=$2+0; target[$1]=$3+0; wage[$1]=($4=="")?0.33:$4+0 } next }
+FNR==NR { if ($1 ~ /^pm_/) { tier[$1]=$2+0; target[$1]=$3+0; wage[$1]=($4=="")?0.25:$4+0 } next }
 
 # ---- file2: object definitions (structural parse) ----
 # top-level headers at column 0
@@ -69,8 +69,8 @@ END {
         }
         if (m=="") continue;                       # not an in-scope building
         rows++;
-        # FULL break-even: input goods plus wages (wages = wg * input-goods cost)
-        bldbe = (tout>0) ? tin*(1+wg)/tout*100 : 0;
+        # FULL break-even: total cost (goods + wages); wg is the wage fraction of total, so total = goods/(1-wg)
+        bldbe = (tout>0) ? tin/(1-wg)/tout*100 : 0;
         d = bldbe - tg; ad = (d<0)?-d:d;
         res = (ad<=TOL) ? "PASS" : "FAIL"; if(res=="FAIL") fails++;
         key=sprintf("%d_%s", t, b); rowT[key]=t; rowB[key]=b; rowD[key]=bldbe; rowG[key]=tg; rowE[key]=d; rowR[key]=res;

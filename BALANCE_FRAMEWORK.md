@@ -23,10 +23,14 @@ For a building (or a single PM) at a given set of market prices, let:
 - **O** = output revenue = Σ (output good qty × output good price)
 - **W** = wages. In the live game wages are endogenous (employees × wage, moving with prosperity
   and labor demand), which is not a design knob. For balance purposes we model wages as a **fixed
-  fraction of input-goods cost**: `W = wage_pct · I`, with **`wage_pct` defaulting to 33%** (a
-  per-tier `wage_pct` in the config overrides it). This is a **model/accounting layer only** — it is
-  **not** emitted to the game (no wage "goods input"); the game still pays its own wages from
-  employment. Every tool (volume solver, linter, building-cost solver, UI) uses this same `W`.
+  fraction of TOTAL cost** (goods + wages): `wage_pct = W / (I + W)`, so `W = wage_pct/(1−wage_pct) · I`
+  and total cost `= I / (1−wage_pct)`. **`wage_pct` defaults to 25%** (≡ the old "+33% over goods" —
+  0.25 of total = 0.333 of goods; a per-tier `wage_pct` in the config overrides it). Framing wages as a
+  fraction of *total* (rather than of goods) keeps the knob bounded 0–100% and is forward-compatible with
+  labour-only buildings (no input goods → wages are 100% of total). This is a **model/accounting layer
+  only** — **not** emitted to the game (no wage "goods input"); the game still pays its own wages from
+  employment. Every tool (volume solver, linter, building-cost solver, UI) uses this same `W`. *(Deferred:
+  rooting wages in real per-profession values.)*
 
 We track two numbers, both **wage-inclusive** (this is the change from earlier versions, where the
 ladder was run on the wage-free `I/O`):
@@ -34,7 +38,7 @@ ladder was run on the wage-free `I/O`):
 | Metric | Formula | Meaning |
 |---|---|---|
 | **Full profitability** (the displayed profit) | `(O − I − W) / (I + W)` | Return on the building's full operating cost. What the owner actually earns. |
-| **Full break-even output price** (BE%) | `(I + W) / O` at base input prices, as a % of base output price | The output price (as % of base) at which full profit = 0. Equivalently `(1 + wage_pct) · (I/O)`. **This is the key tuning handle.** |
+| **Full break-even output price** (BE%) | `(I + W) / O` at base input prices, as a % of base output price | The output price (as % of base) at which full profit = 0. Equivalently `(I/O) / (1 − wage_pct)`. **This is the key tuning handle.** |
 
 **Worked example** (the brief's): W = 500, I = 2000, O = 3000.
 - Full profitability = (3000 − 2000 − 500) / (2000 + 500) = 500 / 2500 = **+20%**
