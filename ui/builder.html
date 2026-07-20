@@ -55,6 +55,11 @@
   .goodrow.wagerow.wagebase{margin-top:0;padding-top:0}
   .goodrow.wagerow.wagebase .g{font-size:10.5px;font-style:normal;opacity:.85}
   .goodrow.wagerow.wagebase .v{font-size:10px}
+  /* cell subtotals: input (goods + wages) and output (goods), so a row reads in − out − profit */
+  .goodrow.subtot{border-top:1px solid var(--line);margin-top:4px;padding-top:3px;font-weight:700}
+  .goodrow.subtot .g{color:var(--ink)}
+  .profgbp{font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
+  .profgbp.pos{color:var(--good)} .profgbp.neg{color:var(--bad)}
   /* the secondary-PM selectors, relocated under the building name */
   .secselwrap{margin-top:3px;display:flex;flex-direction:column;gap:2px}
   .secselwrap select.pmsel{width:100%;font-size:11px;padding:2px 4px}
@@ -311,6 +316,10 @@ function wageRowHTML(idSuffix, base, U, goodsCost, dataAttr){
     <span class="amt"><input type="number" min="0" max="99" step="1" value="${pct}" ${dataAttr} data-wagepct="1" id="wpct_${idSuffix}" ${noGoods?'disabled title="no input goods — the whole cost is wages, so this is fixed at 100%"':'title="wages as % of total cost"'}><span class="u">%</span><span class="wgbp">£</span><input type="number" min="0" step="1" value="${round(W)}" ${dataAttr} data-wagetot="1" id="wtot_${idSuffix}" title="total weekly wage bill (£) — sets the base wage"></span></div>
     <div class="goodrow wagerow wagebase" title="This building's base wage: £/week for a weight-1 employee (laborer). Inherited from the Workforce panel; edit to override just this building."><span class="g">base /wk</span>
     <span class="amt"><input type="number" min="0" step="0.001" value="${+base.toFixed(4)}" ${dataAttr} data-wagebase="1" id="wbase_${idSuffix}" title="base wage £/week (weight-1)"><span class="u"></span><span class="v muted" title="wage units = Σ employees × wage_weight">×${round(U)}</span></span></div>`;
+}
+// cell subtotal (£, at BASE prices — it sums the rows above it), so a row reads: in − out − profit.
+function subtotalRow(id, label, val, title){
+  return `<div class="goodrow subtot" title="${title}"><span class="g">${label}</span><span class="amt"><span class="v" id="${id}">£${round(val)}</span></span></div>`;
 }
 function buildingCostModel(i,t){
   const I=inputValue(t,false);
@@ -573,10 +582,12 @@ function tierRow(i,t){
     + secGoodRows(i,t,'in')   // editable input goods from active secondary PMs (↳)
     // wages sit at the BOTTOM of the input cell, fenced off — a MODELLING-only term (not a good, not emitted).
     // Wrapped so updateComputed() can refresh it live when goods or the base wage change.
-    + wageRowHTML(`${i.id}_${t.tier}`, tierBaseWage(t), wageUnits(tierEmp(t)), inputValue(t,false), `data-ind="${i.id}" data-tier="${t.tier}"`);
+    + wageRowHTML(`${i.id}_${t.tier}`, tierBaseWage(t), wageUnits(tierEmp(t)), inputValue(t,false), `data-ind="${i.id}" data-tier="${t.tier}"`)
+    + subtotalRow(`isub_${i.id}_${t.tier}`, 'total in', inputValue(t,false)+wageCost(t), 'total input cost at BASE prices: input goods + wages');
   const outputs = `<div class="goodrow" title="${esc(outG)}: qty × base price £${PRICES[outG]||'?'}"><span class="g">${esc(outG)}</span>
       <span class="amt"><input type="number" min="1" step="1" value="${t.output_qty}" data-ind="${i.id}" data-tier="${t.tier}" data-out="1"><span class="u"></span><span class="v muted" id="ov_${i.id}_${t.tier}">£${round(t.output_qty*(PRICES[outG]||0))}</span></span></div>`
     + secGoodRows(i,t,'out')   // read-only output goods from active secondary PMs (incl. negative main-good reductions)
+    + subtotalRow(`osub_${i.id}_${t.tier}`, 'total out', outputValue(i,t,false), 'total output revenue at BASE prices (priced goods only — non-goods below are not £)')
     + nonGoodsRows(i,t);
   return `<tr data-ind="${esc(i.id)}" data-tier="${t.tier}">
     <td><span class="pill" style="background:${TIERCOL[t.tier]||'#666'}">${t.tier}</span></td>
@@ -588,7 +599,7 @@ function tierRow(i,t){
     <td class="wfcell">${wfCell(tierEmp(t))}</td>
     <td class="num"><input type="number" step="5" value="${t.target_be}" data-ind="${i.id}" data-tier="${t.tier}" data-target="1">%</td>
     <td class="num" id="be_${i.id}_${t.tier}"><span class="be ${onTarget(t,be)?'ok':'off'}">${be.toFixed(0)}%</span><div class="muted" style="font-size:10px">±${TARGET_TOL} of ${t.target_be}</div></td>
-    <td class="num" id="tp_${i.id}_${t.tier}">${tp>=0?'+':''}${tp.toFixed(0)}%</td>
+    <td class="num" id="tp_${i.id}_${t.tier}">${profitCell(i,t,tp)}</td>
     <td class="num" id="bc_${i.id}_${t.tier}">${bcCell(i,t)}</td>
     <td class="num" id="pb_${i.id}_${t.tier}">${pbCell(i,t)}</td>
     <td><div class="tieract">
@@ -597,6 +608,10 @@ function tierRow(i,t){
     </div></td>
   </tr>`;
 }
+// Profit cell: % on top, weekly £ underneath. Both at the CURRENT price panel (the cells' subtotals are at
+// BASE prices, so at the default 100% panel the row reads exactly: total in − total out ⇒ profit).
+function profitCell(i,t,tp){ const p=weeklyProfit(i,t);
+  return `<span class="pctv">${tp>=0?'+':''}${tp.toFixed(0)}%</span><div class="profgbp ${p>=0?'pos':'neg'}" title="weekly net profit at the current price panel: output − input goods − wages">£${round(p)}</div>`; }
 function pbCell(i,t){ const y=paybackYears(i,t); const bad=!isFinite(y)||y>=25;
   return `<span class="be ${bad?'off':'ok'}" title="${!isFinite(y)?'unprofitable at current prices':y.toFixed(2)+' years'}">${fmtPayback(y)}</span>`; }
 // Build-cost cell: editable stored value + muted model value (amber when they differ = stale).
@@ -614,10 +629,13 @@ function updateComputed(){
     if(bcell){ bcell.querySelector('.be').outerHTML = `<span class="be ${onTarget(t,be)?'ok':'off'}">${be.toFixed(0)}%</span>`;
       const sub=bcell.querySelector('.muted'); if(sub) sub.textContent=`±${TARGET_TOL} of ${t.target_be}`; }
     const icell=document.getElementById(`tp_${i.id}_${t.tier}`);
-    if(icell) icell.firstChild.nodeValue = `${tp>=0?'+':''}${tp.toFixed(0)}%`;
+    if(icell) icell.innerHTML = profitCell(i,t,tp);   // % + weekly £
     // refresh each input good's £ (qty × base price), the output good's £, and the wages £ (all at base)
     for(const g of Object.keys(t.inputs)){ const gv=document.getElementById(`gv_${i.id}_${t.tier}_${g}`); if(gv) gv.textContent='£'+round(t.inputs[g]*(PRICES[g]||0)); }
     const ov=document.getElementById(`ov_${i.id}_${t.tier}`); if(ov) ov.textContent='£'+round(t.output_qty*(PRICES[tierOut(i,t)]||0));
+    // cell subtotals: in (goods + wages) and out (priced goods), both at BASE prices
+    const isb=document.getElementById(`isub_${i.id}_${t.tier}`); if(isb) isb.textContent='£'+round(inputValue(t,false)+wageCost(t));
+    const osb=document.getElementById(`osub_${i.id}_${t.tier}`); if(osb) osb.textContent='£'+round(outputValue(i,t,false));
     // wages: keep the three linked fields (base ⇄ £ ⇄ %) in sync, never touching the one being typed in
     setWageFields(`${i.id}_${t.tier}`, tierBaseWage(t), wageCost(t), inputValue(t,false));
     const bccell=document.getElementById(`bc_${i.id}_${t.tier}`);   // refresh the muted model hint (not the editable value)
@@ -757,7 +775,8 @@ function refSel(b){ const info=VAN.buildings[b], sel=REFSEL[b]||(REFSEL[b]={});
 function refEcon(b){ const g=selGoods(refSel(b));
   const I=goodsVal(g.in,false), O=goodsVal(g.out,false), W=wageUnits(selEmp(refSel(b)))*refBaseWage(b);   // workforce × this building's base wage
   const Ith=goodsVal(g.in,true), Oth=goodsVal(g.out,true);
-  return { I, O, W, goods:g, BE:(O>0?(I+W)/O*100:null), tp:((I+W)>0&&O>0?(Oth-(Ith+W))/(Ith+W)*100:null) };
+  return { I, O, W, goods:g, BE:(O>0?(I+W)/O*100:null), tp:((I+W)>0&&O>0?(Oth-(Ith+W))/(Ith+W)*100:null),
+           p:(O>0?Oth-(Ith+W):null) };   // weekly £ profit at the current price panel (null = no market output)
 }
 // PM selectors for a reference building (one dropdown per PMG), placed under the building name — same
 // look as our tier cards' secondary-PM selectors.
@@ -781,9 +800,11 @@ function refNonGoods(b){ const sel=refSel(b), acc={};
   return `<div class="outsep">non-goods output</div>`+arr.map(n=>`<div class="outro"><span class="g">${esc(n.label)}</span><span class="v ${n.cls}">${n.val>=0?'+':''}${n.val}</span></div>`).join(''); }
 // one reference building as a table row — SAME 11 columns as our tier rows (Tier shown as 0 = untiered; the
 // ladder-only columns Target / Build cost / Payback / →X are N/A here and show "—").
+// reference Profit cell: % on top, weekly £ underneath (same shape as the tier rows' profitCell)
+function refProfitHTML(e){ const tpTxt=(e.tp!=null)?`${e.tp>=0?'+':''}${Math.round(e.tp)}%`:'—';
+  return `<span class="pctv">${tpTxt}</span>`+(e.p!=null?`<div class="profgbp ${e.p>=0?'pos':'neg'}" title="weekly net profit at the current price panel: output − input goods − wages">£${round(e.p)}</div>`:''); }
 function refRow(b){ const info=VAN.buildings[b], e=refEcon(b);
   const beTxt=e.BE!=null?`${round(e.BE)}%`:'—', beCls=e.BE!=null?(e.BE<=175?'ok':'off'):'muted';
-  const tp=e.tp, tpTxt=(tp!=null)?`${tp>=0?'+':''}${Math.round(tp)}%`:'—';
   const aivDef=info.ai_value!=null?info.ai_value:AIVAL_DEFAULT;
   const inG=refGoodRows(b,'in'), outG=refGoodRows(b,'out'), nong=refNonGoods(b);
   const dash='<span class="muted">—</span>';
@@ -793,12 +814,12 @@ function refRow(b){ const info=VAN.buildings[b], e=refEcon(b);
       <div class="muted" style="font-size:10px">${esc(prettyGroup(info.group||''))}${info.tech?' · '+esc(info.tech):''}</div>
       <div class="aivrow" title="Base AI construction desire (building ai_value). Blank = vanilla (${aivDef}). Emitted only for buildings in files the mod owns (01/06/11); others are session-only.">ai_value <input type="number" min="0" step="50" value="${REFAIV[b]!=null?REFAIV[b]:''}" placeholder="${aivDef}" data-refaiv="${esc(b)}"></div>
       ${refPmSelectors(b)}</td>
-    <td>${inG}${wageRowHTML(esc(b), refBaseWage(b), wageUnits(selEmp(refSel(b))), e.I, `data-refbld="${esc(b)}"`)}</td>
-    <td>${outG}${nong}${(!outG&&!nong)?dash:''}</td>
+    <td>${inG}${wageRowHTML(esc(b), refBaseWage(b), wageUnits(selEmp(refSel(b))), e.I, `data-refbld="${esc(b)}"`)}${subtotalRow(`isub_${esc(b)}`,'total in',e.I+e.W,'total input cost at BASE prices: input goods + wages')}</td>
+    <td>${outG?outG+subtotalRow(`osub_${esc(b)}`,'total out',e.O,'total output revenue at BASE prices (priced goods only)'):''}${nong}${(!outG&&!nong)?dash:''}</td>
     <td class="wfcell">${wfCell(selEmp(refSel(b)))}</td>
     <td class="num">${dash}</td>
     <td class="num"><span class="be ${beCls}" id="refbe_${b}" title="full break-even (input goods + wages) ÷ priced output; — = no market output">${beTxt}</span></td>
-    <td class="num" id="reftp_${b}">${tpTxt}</td>
+    <td class="num" id="reftp_${b}">${refProfitHTML(e)}</td>
     <td class="num">${dash}</td>
     <td class="num">${dash}</td>
     <td></td>
@@ -842,8 +863,15 @@ function renderRefRow(b){ const tr=document.querySelector(`tr[data-refbld="${b}"
 // refresh a reference building's three linked wage fields + its BE/Profit (never the field being typed in).
 function refreshRefWageRow(b){ const e=refEcon(b), U=wageUnits(selEmp(refSel(b))), base=refBaseWage(b), W=base*U;
   setWageFields(esc(b), base, W, e.I);
+  refreshRefEconCells(b, e);
+}
+// BE / Profit(% + £) / cell subtotals for one reference row
+function refreshRefEconCells(b, e){
+  e = e || refEcon(b);
   const rbe=document.getElementById(`refbe_${b}`); if(rbe){ rbe.textContent=e.BE!=null?`${round(e.BE)}%`:'—'; rbe.className='be '+(e.BE!=null?(e.BE<=175?'ok':'off'):'muted'); }
-  const rtp=document.getElementById(`reftp_${b}`); if(rtp) rtp.textContent=(e.tp!=null)?`${e.tp>=0?'+':''}${Math.round(e.tp)}%`:'—';
+  const rtp=document.getElementById(`reftp_${b}`); if(rtp) rtp.innerHTML=refProfitHTML(e);
+  const isb=document.getElementById(`isub_${b}`); if(isb) isb.textContent='£'+round(e.I+e.W);
+  const osb=document.getElementById(`osub_${b}`); if(osb) osb.textContent='£'+round(e.O);
 }
 // write the three linked wage fields from the model, skipping whichever the user is typing in
 function setWageFields(idSuffix, base, W, goodsCost){
@@ -899,9 +927,8 @@ document.addEventListener('input', e=>{
     const b=el.dataset.refedit, pm=el.dataset.pm, dir=el.dataset.dir, good=el.dataset.good;
     refEditSet(pm,dir,good,el.value);
     const rv=document.getElementById(`rv_${b}_${pm}_${dir}_${good}`); if(rv) rv.textContent='£'+round((+el.value||0)*(PRICES[good]||0));
-    const rbe=document.getElementById(`refbe_${b}`);   // reference-building BE cell (absent when b is a tier key)
-    if(rbe){ const e=refEcon(b); rbe.textContent=e.BE!=null?`${round(e.BE)}%`:'—'; rbe.className='be '+(e.BE!=null?(e.BE<=175?'ok':'off'):'muted');
-      const rtp=document.getElementById(`reftp_${b}`); if(rtp) rtp.textContent=(e.tp!=null)?`${e.tp>=0?'+':''}${Math.round(e.tp)}%`:'—'; }
+    // refresh this reference row's BE / Profit / subtotals (no-op when b is a tier key, not a reference row)
+    if(document.getElementById(`refbe_${b}`)) refreshRefEconCells(b);
     updateComputed();   // the PM may be a secondary on our tiers — refresh their BE/profit/payback too
   }
   else if(el.dataset.thr!==undefined){

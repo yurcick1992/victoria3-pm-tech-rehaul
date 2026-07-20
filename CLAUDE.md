@@ -291,7 +291,11 @@ the game.
   Usually the base is inert, but some carry the jobs, e.g. the art academy's ownership PMG employs academics/
   clerks/laborers even at its default). Reference-explorer buildings get the same read-only workforce line. Live
   **full** break-even + per-good-threshold **full
-  profitability** ((output − inputs − wages)/(inputs + wages)), an editable **Build cost** column
+  profitability** ((output − inputs − wages)/(inputs + wages), shown as **% and weekly £**). Each Input/Output
+  cell ends in a **subtotal** — `total in` (input goods **+ wages**) and `total out` (priced goods only; the
+  non-goods block below it has no £) — so a row reads as one equation: *in − out ⇒ profit*. Subtotals are at
+  **base** prices (they sum the rows above them) while the Profit column is at the **current price panel**, so
+  they line up exactly at the default 100% panel. An editable **Build cost** column
   (construction points → `required_construction`, with a muted "model N" hint that turns amber when the
   stored value diverges from what `solve_building_cost.ps1` would set), a read-only **Payback** column
   (years = build cost × £720/point ÷ annual net profit at the current price panel; wages per the row's
