@@ -55,7 +55,11 @@
   .goodrow.wagerow.wagebase{margin-top:0;padding-top:0}
   .goodrow.wagerow.wagebase .g{font-size:10.5px;font-style:normal;opacity:.85}
   .goodrow.wagerow.wagebase .v{font-size:10px}
-  /* cell subtotals: input (goods + wages) and output (goods), so a row reads in − out − profit */
+  /* cell subtotals: input (goods + wages) and output (goods), so a row reads in − out − profit.
+     They (and the £ profit) are pinned to the BOTTOM of their cell so the three line up across the row. */
+  .mtable td.cellbot{height:1px}                                        /* lets .cw resolve height:100% */
+  .mtable td.cellbot>.cw{height:100%;display:flex;flex-direction:column}
+  .mtable td.cellbot>.cw>.pushbot{margin-top:auto}
   .goodrow.subtot{border-top:1px solid var(--line);margin-top:4px;padding-top:3px;font-weight:700}
   .goodrow.subtot .g{color:var(--ink)}
   .profgbp{font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
@@ -317,9 +321,10 @@ function wageRowHTML(idSuffix, base, U, goodsCost, dataAttr){
     <div class="goodrow wagerow wagebase" title="This building's base wage: £/week for a weight-1 employee (laborer). Inherited from the Workforce panel; edit to override just this building."><span class="g">base /wk</span>
     <span class="amt"><input type="number" min="0" step="0.001" value="${+base.toFixed(4)}" ${dataAttr} data-wagebase="1" id="wbase_${idSuffix}" title="base wage £/week (weight-1)"><span class="u"></span><span class="v muted" title="wage units = Σ employees × wage_weight">×${round(U)}</span></span></div>`;
 }
-// cell subtotal (£, at BASE prices — it sums the rows above it), so a row reads: in − out − profit.
+// cell subtotal (£, at BASE prices — it sums the rows above it), pinned to the BOTTOM of the cell so a row
+// reads across as: total in − total out ⇒ profit.
 function subtotalRow(id, label, val, title){
-  return `<div class="goodrow subtot" title="${title}"><span class="g">${label}</span><span class="amt"><span class="v" id="${id}">£${round(val)}</span></span></div>`;
+  return `<div class="goodrow subtot pushbot" title="${title}"><span class="g">${label}</span><span class="amt"><span class="v" id="${id}">£${round(val)}</span></span></div>`;
 }
 function buildingCostModel(i,t){
   const I=inputValue(t,false);
@@ -587,19 +592,19 @@ function tierRow(i,t){
   const outputs = `<div class="goodrow" title="${esc(outG)}: qty × base price £${PRICES[outG]||'?'}"><span class="g">${esc(outG)}</span>
       <span class="amt"><input type="number" min="1" step="1" value="${t.output_qty}" data-ind="${i.id}" data-tier="${t.tier}" data-out="1"><span class="u"></span><span class="v muted" id="ov_${i.id}_${t.tier}">£${round(t.output_qty*(PRICES[outG]||0))}</span></span></div>`
     + secGoodRows(i,t,'out')   // read-only output goods from active secondary PMs (incl. negative main-good reductions)
-    + subtotalRow(`osub_${i.id}_${t.tier}`, 'total out', outputValue(i,t,false), 'total output revenue at BASE prices (priced goods only — non-goods below are not £)')
-    + nonGoodsRows(i,t);
+    + nonGoodsRows(i,t)
+    + subtotalRow(`osub_${i.id}_${t.tier}`, 'total out', outputValue(i,t,false), 'total output revenue at BASE prices — priced goods only (the non-goods above carry no £)');
   return `<tr data-ind="${esc(i.id)}" data-tier="${t.tier}">
     <td><span class="pill" style="background:${TIERCOL[t.tier]||'#666'}">${t.tier}</span></td>
     <td>${esc(t.name)}<div class="muted" style="font-size:11px">${esc(t.key)}</div><div class="muted" style="font-size:10px" title="natural unlock date = this tier's tech era">${t.natural_year?'~'+t.natural_year+' · ':''}${esc(t.tech||'')}</div>
       <div class="aivrow" title="Base AI construction desire (building ai_value). Blank = engine default ${AIVAL_DEFAULT}. Emitted as the building's ai_value when set.">ai_value <input type="number" min="0" step="50" value="${t.ai_value!=null?t.ai_value:''}" placeholder="${AIVAL_DEFAULT}" data-ind="${i.id}" data-tier="${t.tier}" data-aiv="1"></div>
       ${secSelectors(i,t)}</td>
-    <td>${inputs}</td>
-    <td>${outputs}</td>
+    <td class="cellbot"><div class="cw">${inputs}</div></td>
+    <td class="cellbot"><div class="cw">${outputs}</div></td>
     <td class="wfcell">${wfCell(tierEmp(t))}</td>
     <td class="num"><input type="number" step="5" value="${t.target_be}" data-ind="${i.id}" data-tier="${t.tier}" data-target="1">%</td>
     <td class="num" id="be_${i.id}_${t.tier}"><span class="be ${onTarget(t,be)?'ok':'off'}">${be.toFixed(0)}%</span><div class="muted" style="font-size:10px">±${TARGET_TOL} of ${t.target_be}</div></td>
-    <td class="num" id="tp_${i.id}_${t.tier}">${profitCell(i,t,tp)}</td>
+    <td class="num cellbot" id="tp_${i.id}_${t.tier}">${profitCell(i,t,tp)}</td>
     <td class="num" id="bc_${i.id}_${t.tier}">${bcCell(i,t)}</td>
     <td class="num" id="pb_${i.id}_${t.tier}">${pbCell(i,t)}</td>
     <td><div class="tieract">
@@ -611,7 +616,7 @@ function tierRow(i,t){
 // Profit cell: % on top, weekly £ underneath. Both at the CURRENT price panel (the cells' subtotals are at
 // BASE prices, so at the default 100% panel the row reads exactly: total in − total out ⇒ profit).
 function profitCell(i,t,tp){ const p=weeklyProfit(i,t);
-  return `<span class="pctv">${tp>=0?'+':''}${tp.toFixed(0)}%</span><div class="profgbp ${p>=0?'pos':'neg'}" title="weekly net profit at the current price panel: output − input goods − wages">£${round(p)}</div>`; }
+  return `<div class="cw"><span class="pctv">${tp>=0?'+':''}${tp.toFixed(0)}%</span><div class="profgbp pushbot ${p>=0?'pos':'neg'}" title="weekly net profit at the current price panel: output − input goods − wages">£${round(p)}</div></div>`; }
 function pbCell(i,t){ const y=paybackYears(i,t); const bad=!isFinite(y)||y>=25;
   return `<span class="be ${bad?'off':'ok'}" title="${!isFinite(y)?'unprofitable at current prices':y.toFixed(2)+' years'}">${fmtPayback(y)}</span>`; }
 // Build-cost cell: editable stored value + muted model value (amber when they differ = stale).
@@ -802,7 +807,7 @@ function refNonGoods(b){ const sel=refSel(b), acc={};
 // ladder-only columns Target / Build cost / Payback / →X are N/A here and show "—").
 // reference Profit cell: % on top, weekly £ underneath (same shape as the tier rows' profitCell)
 function refProfitHTML(e){ const tpTxt=(e.tp!=null)?`${e.tp>=0?'+':''}${Math.round(e.tp)}%`:'—';
-  return `<span class="pctv">${tpTxt}</span>`+(e.p!=null?`<div class="profgbp ${e.p>=0?'pos':'neg'}" title="weekly net profit at the current price panel: output − input goods − wages">£${round(e.p)}</div>`:''); }
+  return `<div class="cw"><span class="pctv">${tpTxt}</span>`+(e.p!=null?`<div class="profgbp pushbot ${e.p>=0?'pos':'neg'}" title="weekly net profit at the current price panel: output − input goods − wages">£${round(e.p)}</div>`:'')+`</div>`; }
 function refRow(b){ const info=VAN.buildings[b], e=refEcon(b);
   const beTxt=e.BE!=null?`${round(e.BE)}%`:'—', beCls=e.BE!=null?(e.BE<=175?'ok':'off'):'muted';
   const aivDef=info.ai_value!=null?info.ai_value:AIVAL_DEFAULT;
@@ -814,12 +819,12 @@ function refRow(b){ const info=VAN.buildings[b], e=refEcon(b);
       <div class="muted" style="font-size:10px">${esc(prettyGroup(info.group||''))}${info.tech?' · '+esc(info.tech):''}</div>
       <div class="aivrow" title="Base AI construction desire (building ai_value). Blank = vanilla (${aivDef}). Emitted only for buildings in files the mod owns (01/06/11); others are session-only.">ai_value <input type="number" min="0" step="50" value="${REFAIV[b]!=null?REFAIV[b]:''}" placeholder="${aivDef}" data-refaiv="${esc(b)}"></div>
       ${refPmSelectors(b)}</td>
-    <td>${inG}${wageRowHTML(esc(b), refBaseWage(b), wageUnits(selEmp(refSel(b))), e.I, `data-refbld="${esc(b)}"`)}${subtotalRow(`isub_${esc(b)}`,'total in',e.I+e.W,'total input cost at BASE prices: input goods + wages')}</td>
-    <td>${outG?outG+subtotalRow(`osub_${esc(b)}`,'total out',e.O,'total output revenue at BASE prices (priced goods only)'):''}${nong}${(!outG&&!nong)?dash:''}</td>
+    <td class="cellbot"><div class="cw">${inG}${wageRowHTML(esc(b), refBaseWage(b), wageUnits(selEmp(refSel(b))), e.I, `data-refbld="${esc(b)}"`)}${subtotalRow(`isub_${esc(b)}`,'total in',e.I+e.W,'total input cost at BASE prices: input goods + wages')}</div></td>
+    <td class="cellbot"><div class="cw">${outG}${nong}${(!outG&&!nong)?dash:''}${outG?subtotalRow(`osub_${esc(b)}`,'total out',e.O,'total output revenue at BASE prices — priced goods only (the non-goods above carry no £)'):''}</div></td>
     <td class="wfcell">${wfCell(selEmp(refSel(b)))}</td>
     <td class="num">${dash}</td>
     <td class="num"><span class="be ${beCls}" id="refbe_${b}" title="full break-even (input goods + wages) ÷ priced output; — = no market output">${beTxt}</span></td>
-    <td class="num" id="reftp_${b}">${refProfitHTML(e)}</td>
+    <td class="num cellbot" id="reftp_${b}">${refProfitHTML(e)}</td>
     <td class="num">${dash}</td>
     <td class="num">${dash}</td>
     <td></td>
