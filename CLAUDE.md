@@ -260,11 +260,18 @@ the game.
   it shows) — and lists each profession's weekly wage = `base × wage_weight` (the vanilla `common/pop_types`
   weights: laborers 1, machinists/clerks/soldiers 1.5, farmers 2, shopkeepers/engineers/clergymen 3,
   bureaucrats/academics 4, officers/aristocrats/capitalists 5, peasants 0.2, slaves 0; everyone
-  non-discriminated). A building's wage `W = Σ (employees × base × wage_weight)`, so the **wages row** at the
-  bottom of the Input cell is now **read-only** — it shows `W` (£) and its **% of total** (a labour-only building
-  like gov administration is 100% wages, and now has a real £ from its bureaucrats). Changing the base wage
-  **recomputes every building's BE / profit / payback** live. Wages remain a **model-only** term (dashed
-  "modelling only · not emitted" fence) — **never emitted** to the game (V3 pays wages from employment).
+  non-discriminated). A building's **wage units** = `Σ (employees × wage_weight)` and its wage `W = base × units`.
+  Every building keeps its **own base wage**, so the wages row (bottom of the Input cell) has **three
+  mutually-dependent editable fields**: **base £/wk** ⇄ **total £** ⇄ **% of total cost**. Edit any one and the
+  other two follow (`W = base·units`; `base = W/units`; `% → W = p/(1−p)·goods → base`). Two rules make this
+  behave: (1) a **PM change** that alters the labour mix **preserves the base wage** and recomputes the other two
+  (base is the stored value, the rest derive); (2) changing the **sheet-level** base wage is **inherited by every
+  building in a NON-LOCKED group**, while **locked groups keep their current wage** (pinned to the old sheet value
+  if they were only following it) — so locks protect a tuned group from the global knob. A labour-only building
+  (gov administration) is 100% wages (that field is fixed/disabled — nothing to trade off against) and now has a
+  real £ from its bureaucrats; a building with no workforce shows `—`. Wages remain a **model-only** term (dashed
+  "modelling only · not emitted" fence) — **never emitted** to the game (V3 pays wages from employment). Per-building
+  base wages are **session-only** (like PM selections), not saved to the config.
   **NOTE (transitional):** only the **UI** uses workforce wages so far; the solvers/linter/builder still use the
   legacy per-tier `wage_pct` (fraction of total, §1), so the UI's BE currently diverges from `target_be` / the
   linter until the pipeline is switched over. Each tier's **secondary-PM selectors** sit under the
