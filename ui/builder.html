@@ -32,11 +32,13 @@
   th{color:var(--muted);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px}
   td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
   .mtable{table-layout:fixed}
+  /* let a wide table scroll inside its card instead of clipping the right-hand columns on narrow screens */
+  .card[data-ind]>.bd, .card.refcard>.bd{overflow-x:auto}
   .mtable col.c-tier{width:52px}
   .mtable col.c-bld{width:184px}
-  .mtable col.c-num{width:58px}
-  .mtable col.c-out{width:240px}
-  .mtable col.c-in{width:236px}
+  .mtable col.c-num{width:44px}
+  .mtable col.c-out{width:206px}
+  .mtable col.c-in{width:204px}
   .mtable col.c-tgt{width:92px}
   .mtable col.c-be{width:96px}
   .mtable col.c-io{width:74px}
@@ -745,7 +747,7 @@ function industryCard(i){
     <div class="bd" style="display:${i._open?'':'none'}"><table class="mtable">
       ${MTABLE_COLS}
       <thead><tr>
-      <th>Tier</th><th>Building</th><th class="num" title="How many of this building exist in the scenario. Drives the scenario panel's buy/sell orders (input×N = buy, output×N = sell).">Number</th><th>Inputs (qty) + wages</th><th>Output</th>
+      <th>Tier</th><th>Building</th><th class="num" title="How many of this building exist in the scenario. Drives the scenario panel's buy/sell orders (input×N = buy, output×N = sell).">No.</th><th>Inputs (qty) + wages</th><th>Output</th>
       <th title="Workforce (employment by profession). Read-only visualization — not editable or emitted from the UI.">Workforce</th>
       <th class="num" title="Edit to re-solve this tier's input volumes to hit that FULL break-even">Target</th>
       <th class="num" title="FULL break-even output price % — where output revenue = input goods + wages (inputs at base)">BE output prices @ 100% input prices</th>
@@ -1034,7 +1036,7 @@ function refCatCard(catId, blds){ const open=REFGRPOPEN.has(catId), locked=!REFU
     ? '<div class="muted" style="font-size:11px;padding:6px 12px">Trade, ports &amp; railways keep <b>vanilla</b> values (different economics); only <b>power plants</b> will follow our BE ladder.</div>' : '';
   const body = open ? `${note}<table class="mtable">
       ${MTABLE_COLS}
-      <thead><tr><th>Tier</th><th>Building</th><th class="num" title="How many of this building exist in the scenario. Drives the scenario panel's buy/sell orders.">Number</th><th>Inputs (qty)</th><th>Output</th><th>Workforce</th><th class="num">Target</th><th class="num">BE output prices @ 100% input prices</th><th class="num">Profit @ prices</th><th class="num">Build cost</th><th class="num">Payback</th><th class="num">→X</th></tr></thead>
+      <thead><tr><th>Tier</th><th>Building</th><th class="num" title="How many of this building exist in the scenario. Drives the scenario panel's buy/sell orders.">No.</th><th>Inputs (qty)</th><th>Output</th><th>Workforce</th><th class="num">Target</th><th class="num">BE output prices @ 100% input prices</th><th class="num">Profit @ prices</th><th class="num">Build cost</th><th class="num">Payback</th><th class="num">→X</th></tr></thead>
       <tbody>${blds.map(refRow).join('')}</tbody></table>` : '';
   return `<div class="card refcard${locked?' locked':''}"><div class="hd ind-hd" data-refgrp="${esc(catId)}"><span class="caret">${open?'▾':'▸'}</span> ${esc(catLabel(catId))} <span class="tag">${blds.length} building${blds.length!==1?'s':''}${locked?' · locked':''}</span>
       <span class="spacer"></span>
