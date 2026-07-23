@@ -103,6 +103,7 @@ ui/                     browser balance editor — builder.html (hand-authored) 
 mod/                    THE DEPLOYABLE MOD — GENERATED, do not hand-edit
   .metadata/metadata.json                                (hand-maintained, except the mod `name` which the builder suffixes with the build time; has replace_paths for history)
   common/buildings/{01_industry,06_urban_center,11_private_infrastructure}.txt   (generated: WHOLE-FILE replacements of vanilla — 06/11 own the new-economy chains — see MODDING_NOTES)
+  common/ai_strategies/01_admin_strategies.txt            (generated: WHOLE-FILE replacement of vanilla — rewrites the `subsidies` block of all 7 administrative strategies from `building_subsidies`; see AI subsidy policy)
   common/{production_methods,production_method_groups}/zzz_pm_rehaul_*.txt   (generated, additive)
   common/production_methods/*.txt                        (generated: WHOLE-FILE replacements of EVERY vanilla PM file — remaps secondary-PM gates + applies per-PM goods overrides; verbatim otherwise. Lets any PM's goods be edited without owning building files. See below)
   common/history/buildings/*.txt                         (generated: the re-tiered 1836 start; replaces vanilla via replace_paths)
@@ -242,6 +243,35 @@ the game.
   are our own copies (editable), so `solve_volumes` reads **every** `common/production_methods` file, not
   just `01_industry`. `trade_center` stays vanilla (no tiers). `1836` ports/railways are re-tiered by
   `convert_history` like any split industry.
+- **AI subsidy policy (`building_subsidies` → `common/ai_strategies/01_admin_strategies.txt`).** The `subsidies`
+  block inside an ai_strategy is the AI's subsidy **decision rule** (`must_have` / `wants_to_have` / `nice_to_have`
+  — the only three values vanilla uses). It is the **only durable** way to make the AI subsidize a building: the AI
+  re-scores subsidies continuously (defines `NAI` `SUBSIDIZE_*`), so a scripted `set_subsidized` effect is simply
+  undone on its next pass — do NOT try to force subsidies from an on_action.
+  The builder **whole-file-replaces `01_admin_strategies.txt`**, rewriting the `subsidies` block of each of its **7
+  administrative** strategies. We own that (~655-line) file rather than `ai_strategy_default`, which is a single
+  ~8790-line block — a 13× smaller patch surface. Coverage is still universal because every AI country always runs
+  exactly one administrative strategy (`ai_strategy_industrial_expansion` has **no `possible` gate**, so it is always
+  available). Each rewritten block = that strategy's own vanilla entries + our overrides — **plus**, *only* if the
+  strategy had **no `subsidies` block at all** in vanilla, `ai_strategy_default`'s subsidies restated (read **live**
+  from `00_default_strategy.txt` each build — that file is read, never owned, so it can never go stale).
+  **The conditional matters.** Whether a typed strategy's `subsidies` merges with the default's per key or replaces
+  it wholesale is **not conclusively settled** (an in-game probe — since removed — leaned toward *merge* but on
+  late-game data only; see ON_GAME_UPDATE.md drift log 2026-07-23). The rule below is written to be **correct under
+  both readings**, so this never needs resolving for the mod to be right — it only matters for the two loose ends
+  noted after it. The two cases differ:
+    - A strategy that **already has** a block is **authoritative** — under *replace* whatever it omits was omitted
+      deliberately (real vanilla fine-tuning, e.g. `industrial_expansion` subsidizing only its four mines), and
+      under *merge* the default supplies the rest anyway. Restating there would **invent subsidies vanilla never
+      granted**, so we don't.
+    - A strategy with **no** block only becomes replace-exposed *because we add one*, so there we restate to keep
+      vanilla behaviour intact.
+  That rule is correct under both readings and never overwrites a strategy-specific value (e.g. `tooling_workshop`
+  stays `nice_to_have` in `resource_expansion` and `wants_to_have` in `colonial_extraction`). Config values: `vanilla` (or absent) emits nothing;
+  `none` drops the key from every block we write. ⚠ `none` can only reliably suppress entries living in files we
+  own — the trio is also set by `ai_strategy_default`, so suppressing those is semantics-dependent (the UI warns).
+  **Note this does NOT bypass the trade-center GDP gate** (`NAI` `TRADE_CENTER_MINIMUM_GDP_*`), a hard eligibility
+  filter on which states the AI will even consider; subsidy only re-weights states that already cleared it.
 - **Secondary-PM gates (`unlocking_production_methods`).** A few vanilla secondary PMs are gated behind a
   main PM: `pm_bone_china` (glass porcelain), `pm_elastics` (textile luxury), `pm_precision_tools`
   (furniture luxury) each have `unlocking_production_methods = { <vanilla main PM> }` — only available when
@@ -255,7 +285,7 @@ the game.
 - **Balance UI (for Claude-less iteration):** one-click **`balance-ui.cmd`** (or
   `powershell -ExecutionPolicy Bypass -File tools\ui.ps1`) opens a browser editor (`ui/builder.html`)
   showing every building × tier with editable **main-PM** input/output volumes. **Wages now stem from the
-  building's WORKFORCE**, not a fraction of goods: a **Workforce panel** (right under the price panel) sets one
+  building's WORKFORCE**, not a fraction of goods: a **Workforce panel** (right under the scenario panel) sets one
   global **base wage** in two linked terms — **£/week ↔ £/year** (yearly = ×52; V3 is inconsistent about which
   it shows) — and lists each profession's weekly wage = `base × wage_weight` (the vanilla `common/pop_types`
   weights: laborers 1, machinists/clerks/soldiers 1.5, farmers 2, shopkeepers/engineers/clergymen 3,
@@ -273,8 +303,23 @@ the game.
   "modelling only · not emitted" fence) — **never emitted** to the game (V3 pays wages from employment). Per-building
   base wages are **session-only** (like PM selections), not saved to the config.
   **NOTE (transitional):** only the **UI** uses workforce wages so far; the solvers/linter/builder still use the
-  legacy per-tier `wage_pct` (fraction of total, §1), so the UI's BE currently diverges from `target_be` / the
-  linter until the pipeline is switched over. Each tier's **secondary-PM selectors** sit under the
+  legacy per-tier `wage_pct` (fraction of total, §1). Because the legacy wage scales with *input cost* (~I/3)
+  while the workforce wage scales with *employment* (flat, and much smaller), the config's stored volumes read
+  **~10–20 pp UNDER `target_be`** when loaded into the UI (worst on input-heavy tiers). So **on load the UI
+  re-solves every unlocked ladder group to its `target_be` at the current standard wage, and lets `building_cost`
+  follow** (`reconcileToWageModel`, bottom of `builder.html`) — the sheet therefore opens *on target*. This is a
+  UI-side reconcile: it does not touch the config until you **Export** / **Build now**. ⚠️ **Pipeline conflict:**
+  exporting now writes workforce-wage volumes (inputs ~+15%), which a later `solve_volumes.ps1` run would
+  overwrite back to legacy — so until the pipeline is switched over, don't re-run the volume solver on a config
+  exported from the UI. (`building_cost` is nearly unchanged by the reconcile: total operating cost `I + W` is
+  pinned to `target × O` under either wage model, so the payback model lands in the same place.)
+  **Mass BE tools** (toolbar, whole sheet, skipping **locked** *and* `follows_be:false` groups): **`solve →
+  targets`** re-solves every unlocked tier's INPUT volumes (recipe proportions kept, **output untouched** per §8;
+  an active secondary PM's inputs are held fixed and netted off the goal first) so its full BE hits its Target at
+  the **current** standard wage — **build cost deliberately does not follow** (the payback tools own that); and
+  **`targets −10pp` / `targets +10pp`** shift every unlocked tier's `target_be` by 10 pp (floored at
+  `BE_MIN` = 5) **without** re-solving, so you can stack shifts or change the wage and then re-solve once.
+  Each tier's **secondary-PM selectors** sit under the
   building name (Building column); switching one distributes that PM's effects across the columns: its input goods
   appear as extra rows in the **Input** column, its output goods (including negative *reductions* of the main good,
   e.g. tank production −20 automobiles) as extra rows in the **Output** column, and its employment folds into
@@ -294,11 +339,31 @@ the game.
   profitability** ((output − inputs − wages)/(inputs + wages), shown as **% and weekly £**). Each Input/Output
   cell ends in a **subtotal** — `total in` (input goods **+ wages**) and `total out` (priced goods only; the
   non-goods block below it has no £) — so a row reads as one equation: *in − out ⇒ profit*. Subtotals are at
-  **base** prices (they sum the rows above them) while the Profit column is at the **current price panel**, so
-  they line up exactly at the default 100% panel. An editable **Build cost** column
+  **base** prices (they sum the rows above them) while the Profit column is at the **current prices** (the scenario
+  panel's price column), so they line up exactly at the default 100% prices.
+  **Scenario panel + market prices (session-only).** Every building row has a **Number** column (count of that
+  building in a hypothetical market; default 0, keyed by building key for tiers *and* reference buildings). The
+  **Scenario panel** (which **replaced the old price panel** — it now owns pricing) lists every good with:
+  **building inputs = BUY orders** and **outputs = SELL orders** (each building's active-PM goods × its Number;
+  secondary reductions net out), two user-editable fields **+ buy** and **+ sell** (default 0, to stand in for
+  pops/trade), and a **price** column. Assumptions (per design): full employment, no market-access/throughput
+  effects — a building contributes exactly its listed in/out × Number. The good-group **sections are individually
+  foldable** (click the section header; `SCENFOLD` set). The **price column header carries the two price controls**
+  (replacing the removed panel's lock toggle + reset button), wired by **event delegation** since the panel
+  re-renders: a **`locked` checkbox** (default **ON**) and a **`100%` button**. **Locked** = prices are manual —
+  each price cell is an editable **% of base** (the old price-panel behaviour, now inline); the `100%` button
+  (enabled only when locked) resets every good to 100%. **Auto** (unchecked) = prices are computed live from the
+  orders via the **actual V3 formula** `price = base × [1 + 0.75·clamp((BUY−SELL)/min(BUY,SELL), ±1)]` (25–175%
+  band; vic3.paradoxwikis.com/Market) and the cells go read-only. Either way the value lives in the existing
+  **`thresholds`** map (the formula output *is* a "% of base"), so it **propagates to every building's
+  Profit@prices** (tier cells + reference rows) with no other plumbing — `refreshScenPrices()` (called from
+  `updateComputed`) keeps the price column in sync after any change, including the `%→X` payback tools. Hovering an
+  industry flags its goods on their **scenario rows** (the highlight moved off the removed panel). All of this —
+  `BLDNUM`/`ADDBUY`/`ADDSELL`/`SCENFOLD`/lock state — is **session-only** (never saved to config or emitted), like
+  PM selections. An editable **Build cost** column
   (construction points → `required_construction`, with a muted "model N" hint that turns amber when the
   stored value diverges from what `solve_building_cost.ps1` would set), a read-only **Payback** column
-  (years = build cost × £720/point ÷ annual net profit at the current price panel; wages per the row's
+  (years = build cost × £720/point ÷ annual net profit at the current prices; wages per the row's
   wage %, at base input cost; **∞** when unprofitable at current prices), a
   break-even-ladder chart, config-part save/load (version-tolerant), and snapshot history. **Payback
   tools** (selectable X years) come in two actions at three levels: **$ = set build cost** (fix prices,
@@ -335,7 +400,10 @@ the game.
   our tiers, and PRESERVED buildings in `01/06/11` via `building_ai_value` + `Set-BuildingAiValue` (used to
   set **trade center = 3000**, 3× the vanilla default, and **tooling = 2000** at all tiers, matching
   vanilla); explorer edits to non-owned buildings show but don't emit yet. The UI's default display reads
-  each building's vanilla `ai_value` from `vanilla.js` (now extracted). **"Build now"** writes the config and runs the full build (needs the `ui.ps1` server — a
+  each building's vanilla `ai_value` from `vanilla.js` (now extracted). **AI subsidy policy** is editable the same way,
+  on **every** row (tier + explorer), via a 5-option dropdown backed by the top-level **`building_subsidies`** map
+  (building key → `vanilla`/`none`/`nice_to_have`/`wants_to_have`/`must_have`; **default `vanilla` everywhere except
+  `building_trade_center` = `must_have`**). See "AI subsidy policy" below for what it emits and why. **"Build now"** writes the config and runs the full build (needs the `ui.ps1` server — a
   browser can't run programs). Everything else works **frontend-only**: opening `ui/builder.html`
   directly still edits + previews + **Export mod_config.json** (then run `build.ps1` yourself).
   User-facing setup lives in `README.md`.
@@ -353,7 +421,11 @@ the game.
   not just our tiered industries: our industries stay editable cards (each tier's **secondary PMGs** —
   canning, luxury, automation, … — are PM dropdowns under the building name; a non-base selection folds into
   that tier's BE/profit + Workforce and its **goods are editable** (via `pm_goods`) in the Input/Output columns,
-  matching the linter's building-level view; default = base/"off" PM, so nothing moves until you switch). Below
+  matching the linter's building-level view; default = base/"off" PM = the PMG's first **non-gated** PM, so nothing
+  moves until you switch). A PM carrying `unlocking_principles` is **power-bloc-gated** (only active with a power-bloc
+  principle, e.g. `pm_principle_freedom_of_movement_3`); `extract_vanilla.ps1` flags these with `gated:true` in
+  `vanilla.js`, and `basePm()` skips them when picking a PMG's default — some PMGs list the gated PM first, and
+  defaulting to it would show effects that are inactive in-game. Below
   them, **every other vanilla building** (those not on our tier ladder — some economic, just out of scope
   for now) renders in the **same card + table UI** as our industries: one **category card** per taxonomy
   group, one **row per building** using the **exact same 11-column layout** as the industry tables (shared

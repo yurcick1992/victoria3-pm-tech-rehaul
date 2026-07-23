@@ -97,6 +97,30 @@ game start and writes to **`Documents\Paradox Interactive\Victoria 3\logs\debug.
   break game-start), per `common/on_actions/_on_actions.md`.
 - If the lines don't appear, launch with **`-debug_mode`** (debug_log may be gated to it).
 
+**Writing a temporary diagnostic probe (hard-won gotchas).** When adding a periodic tripwire that logs per-country
+state (as an ad-hoc AI-behaviour probe once did), these cost real iteration to discover:
+- **Hook a periodic pulse the same way as game-start:** `on_five_year_pulse_country = { on_actions = { <ours> } }`
+  merges with vanilla's own `events`/`on_actions` on that pulse (on_action *data* merges across files; only a
+  second `trigger`/`effect` block conflicts). Root scope of `..._country` pulses **is the country** (`has_strategy`,
+  `is_ai`, etc. work directly).
+- **Country name in a `debug_log`** has **no preset data context**, so the obvious tokens fail silently or blank:
+  `[This.GetName]` → *"Failed to find type 'This'"* (no such type); `[Country.GetName]` → *"No context supplied …
+  wanted 'Country'"* and prints **blank** (a tell-tale double space). Use an explicit root-walk:
+  **`[SCOPE.GetRootScope.GetCountry.GetNameNoFormatting]`** — context-free, and `NoFormatting` avoids the
+  clickable-tooltip blob that plain `GetName` emits (`…CountryTooltip GBR!flag_overlay! United Kingdom!!`).
+- **Reaching buildings from country scope needs `any_scope_state` first:** `any_scope_building` used directly from
+  country scope **parses cleanly and silently returns false** (no error.log entry). Vanilla always nests
+  `any_scope_state = { any_scope_building = { … } }` (cf. `journal_entries/00_belle_epoque.txt`).
+- **A silent-false trigger is indistinguishable from "condition genuinely false" — so gate wiring checks on
+  something guaranteed to exist.** Testing an iterator against a rare building misleads: railways exist in only 11
+  places in 1836 (all West Europe), so a railway-based check reading 0 proved nothing. Use `building_urban_center`
+  (every incorporated state has one), and **layer** checks (state exists → building iterates → the specific trigger
+  evaluates) so a blank result pinpoints the broken layer.
+- **`debug.log` rotates by size.** A long observer run (to the 20th century) overwrites early-game lines — the init
+  marker and anything before ~the last ~0.4 MB are gone. To capture a *specific-era* window, either stop the run
+  near that date and read before it rotates, or tail `debug.log` into a separate file as it's written. Don't trust
+  a late read to contain early pulses.
+
 **The convention:** whenever a change is risky and *might* trip something the linter can't see (naval
 capacity, PM goods, gated PMs, a building failing to load), **add an invariant tripwire** inside
 `pm_tech_rehaul_diag` in `build.ps1` — a check that logs `PM_TECH_REHAUL WARN: <what broke>` on failure.

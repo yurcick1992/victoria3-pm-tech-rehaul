@@ -34,6 +34,7 @@
   .mtable{table-layout:fixed}
   .mtable col.c-tier{width:52px}
   .mtable col.c-bld{width:184px}
+  .mtable col.c-num{width:58px}
   .mtable col.c-out{width:240px}
   .mtable col.c-in{width:236px}
   .mtable col.c-tgt{width:92px}
@@ -62,7 +63,9 @@
   .mtable td.cellbot>.cw>.pushbot{margin-top:auto}
   .goodrow.subtot{border-top:1px solid var(--line);margin-top:4px;padding-top:3px;font-weight:700}
   .goodrow.subtot .g{color:var(--ink)}
-  .profgbp{font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
+  /* weekly £ profit: styled like the cell subtotals (13px bold + top bar) so it reads as the row's bottom line;
+     keeps its own pos/neg colour (green/red) rather than the subtotals' ink. */
+  .profgbp{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;border-top:1px solid var(--line);padding-top:3px}
   .profgbp.pos{color:var(--good)} .profgbp.neg{color:var(--bad)}
   /* the secondary-PM selectors, relocated under the building name */
   .secselwrap{margin-top:3px;display:flex;flex-direction:column;gap:2px}
@@ -93,12 +96,28 @@
   .be.ok{color:var(--good)} .be.off{color:var(--warn)}
   .pill{display:inline-block;min-width:20px;text-align:center;border-radius:6px;padding:1px 7px;font-size:11px;font-weight:700;color:#0a0e14}
   .muted{color:var(--muted)}
-  .thrgroup{margin-bottom:10px}
-  .thrhd{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin:2px 0 5px}
-  .thresholds{display:flex;flex-wrap:wrap;gap:8px}
-  .thresholds label{display:flex;align-items:center;gap:5px;background:var(--panel2);border:1px solid var(--line);
-    border-radius:7px;padding:3px 8px;font-size:12px}
-  .thresholds input{width:52px}
+  /* scenario panel: buy/sell orders per good → market price (locked=manual / auto=V3 formula from orders) */
+  .scen table{font-size:12px;width:auto;min-width:100%}
+  .scen th{font-size:10px}
+  .scen td, .scen th{padding:2px 8px;border-bottom:1px solid var(--line)}
+  .scen td.num, .scen th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .scen input{width:64px;text-align:right}
+  .scen .grphd td{background:var(--panel2);font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:700;cursor:pointer;user-select:none}
+  .scen .grphd .caret{display:inline-block;width:12px;color:var(--muted)}
+  .scen .scpx{font-weight:700;font-variant-numeric:tabular-nums}
+  .scen .scpx.oob{color:var(--bad)}
+  .scen .g{color:var(--muted)}
+  .scen input.scthr{width:48px;text-align:right}
+  .scen input.scthr.oob{border-color:var(--bad);color:var(--bad)}
+  .scen .scpd{margin-left:2px}
+  .scprhdrow{display:flex;align-items:center;justify-content:flex-end;gap:6px;white-space:nowrap}
+  .scentoggle{display:inline-flex;align-items:center;gap:3px;font-weight:600;text-transform:none;letter-spacing:0}
+  .scentoggle input{width:auto}
+  #resetThr{padding:1px 6px;font-size:10px}
+  #resetThr:disabled{opacity:.4;cursor:default}
+  /* hover-highlight a building's goods on its own row in the scenario panel (inputs red, output green) */
+  .scen tr[data-good].hl-in{background:rgba(232,115,90,.20)}
+  .scen tr[data-good].hl-out{background:rgba(78,201,143,.20)}
   /* workforce panel: base wage (weekly↔yearly) + per-profession weekly wages */
   .wfrow{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
   .wfbase{flex:none}
@@ -177,6 +196,10 @@
   <button id="applyPreset" title="Reset in-scope UNLOCKED groups to the loaded config defaults (target BE, volumes, build cost, ai_value, secondary PMs) — like a page refresh but honoring current locks">Restore defaults</button>
   <button id="bringVanilla" title="Bring in-scope UNLOCKED split buildings back to vanilla: each tier's output+inputs = its vanilla_pm's recipe, and ai_value = the pre-split vanilla building's value. Secondaries reset to base. Honors current locks.">Bring to vanilla</button>
   <span class="sp"></span>
+  <button id="solveBE" title="WHOLE SHEET (skips locked &amp; off-ladder groups): re-solve every unlocked tier's INPUT volumes (keeping recipe proportions; output untouched) so its FULL break-even hits its Target, using the CURRENT standard wage. Build cost is deliberately NOT touched — use 'sheet $→X' for that.">solve → targets</button>
+  <button id="beMinus" title="WHOLE SHEET (skips locked &amp; off-ladder groups): lower every unlocked tier's Target break-even by 10 pp. Volumes are NOT re-solved — press 'solve → targets' to apply.">targets −10pp</button>
+  <button id="bePlus" title="WHOLE SHEET (skips locked &amp; off-ladder groups): raise every unlocked tier's Target break-even by 10 pp. Volumes are NOT re-solved — press 'solve → targets' to apply.">targets +10pp</button>
+  <span class="sp"></span>
   <label class="muted" style="font-size:12px">Payback <input id="pbYears" type="number" min="1" step="1" value="10" style="width:48px"> yrs</label>
   <button id="pbFixPrices" title="WHOLE SHEET (skips locked groups): set every tier's Build cost so payback = X years at the CURRENT price panel. Tiers unprofitable at current prices are skipped.">sheet $→X (build cost)</button>
   <button id="pbFixCost" title="WHOLE SHEET (skips locked groups): for each unlocked industry, scale its output + input prices by one factor (keeps IO ratio & input mix) so its Tier-1 payback = X years, Build cost unchanged. Note: prices are shared, so this overwrites shared input goods across industries.">sheet %→X (prices, anchor T1)</button>
@@ -201,10 +224,8 @@
   </div>
 
   <div class="card">
-    <div class="hd" data-toggle="thr">Price panel — every good at % of base <span class="tag">— market price as % of base (band 25–175%; red = outside). Drives the Profit@thr column. Hover an industry below to flag its inputs (red) / output (green).</span></div>
-    <div class="bd"><div id="thresholds"></div>
-      <div style="margin-top:8px"><button id="resetThr" style="padding:3px 9px">Reset all to 100%</button></div>
-    </div>
+    <div class="hd" data-toggle="scen">Scenario panel — buy/sell orders &amp; prices <span class="tag">— building inputs = BUY orders, outputs = SELL orders (each building's goods × its <b>Number</b>). Add extra buy/sell to model pops &amp; trade. The <b>price</b> column's toggle switches between <b>locked</b> (edit each % by hand) and <b>auto</b> (recomputed live from orders: price = base × [1 + 0.75·clamp((buy−sell)/min(buy,sell), ±1)], propagated to every building). Click a section header to fold it. Hover an industry below to flag its goods here.</span></div>
+    <div class="bd scen" id="scenarioBody"></div>
   </div>
 
   <div class="card">
@@ -231,7 +252,7 @@
 // ---------- constants ----------
 const TIERCOL = {0:"#5b6b7d",1:"var(--tier1)",2:"var(--tier2)",3:"var(--tier3)",4:"var(--tier4)",5:"var(--tier5)"};   // tier 0 = untiered (reference)
 // shared column layout for BOTH the industry tables and the reference tables, so every column lines up.
-const MTABLE_COLS='<colgroup><col class="c-tier"><col class="c-bld"><col class="c-in"><col class="c-out"><col class="c-wf"><col class="c-tgt"><col class="c-be"><col class="c-io"><col class="c-bc"><col class="c-pb"><col class="c-act"></colgroup>';
+const MTABLE_COLS='<colgroup><col class="c-tier"><col class="c-bld"><col class="c-num"><col class="c-in"><col class="c-out"><col class="c-wf"><col class="c-tgt"><col class="c-be"><col class="c-io"><col class="c-bc"><col class="c-pb"><col class="c-act"></colgroup>';
 const TARGET_TOL = 6;   // pp: |BE − target_be| ≤ TOL shows green (matches the linter tolerance)
 // ---- workforce wages: wages stem from the actual workforce employed, not a fraction of goods ----
 // Each employee's weekly wage = BASE_WAGE × the pop type's vanilla wage_weight (common/pop_types/*.txt).
@@ -258,11 +279,40 @@ const PRICES = window.PMDATA.prices;
 // full vanilla building/PMG/PM reference (from vanilla.js); may be absent if not yet generated.
 const VAN = window.PMVANILLA || {buildings:{}, pmgs:{}, pms:{}};
 const HAVE_VAN = !!window.PMVANILLA;
-// default (base) PM of a PMG = its first listed PM (the vanilla "off"/baseline state).
-function basePm(pmg){ const g=VAN.pmgs[pmg]; return g && g.pms && g.pms[0]; }
+// power-bloc-gated PM: only active when a power-bloc principle is enabled (unlocking_principles). Extractor flags these.
+function pmGated(pm){ const r=VAN.pms&&VAN.pms[pm]; return !!(r&&r.gated); }
+// default (base) PM of a PMG = its first listed NON-gated PM (the vanilla "off"/baseline state). Some PMGs list a
+// power-bloc-gated PM first (e.g. pm_principle_freedom_of_movement_3 before pm_freedom_of_movement_no_effect); in-game
+// that gated PM is inactive without the bloc principle, so we must never pick it as the default — fall back to pms[0]
+// only if every PM is gated (shouldn't happen).
+function basePm(pmg){ const g=VAN.pmgs[pmg]; if(!(g&&g.pms&&g.pms.length)) return undefined;
+  return g.pms.find(p=>!pmGated(p)) || g.pms[0]; }
 function initSel(pmgs){ const s={}; (pmgs||[]).forEach(pg=>{ const b=basePm(pg); if(b) s[pg]=b; }); return s; }
 // normalize industries into an editable model
 const AIVAL_DEFAULT = 1000;   // PRODUCTION_BUILDING_BASE_VALUE — engine default when a building scripts no ai_value
+// ---- AI subsidy policy (config-backed top-level `building_subsidies` map) ----
+// The `subsidies` block inside an ai_strategy is the AI's subsidy DECISION RULE — the only durable way to
+// make the AI subsidize a building. (The AI re-scores subsidies continuously via defines NAI SUBSIDIZE_*,
+// so a scripted set_subsidized would just be undone on its next pass.) The builder writes this map into
+// every administrative ai_strategy. Keyed by BUILDING KEY, so tier rows and explorer rows share one map.
+//   '' / absent = vanilla: emit nothing, the base game's own entries stand
+//   'none'      = suppress: drop the key from every strategy block we write
+// NOTE: 'none' can only reliably suppress entries that live in files we own (the administrative
+// strategies). power_plant / railway / port also carry must_have in ai_strategy_default, which we do NOT
+// own — suppressing those depends on the (unverified) merge-vs-replace semantics of `subsidies`.
+const SUBSIDY_DEFAULT_TRIO = ['building_power_plant','building_railway','building_port'];
+const SUBSIDY_OPTS = [['','vanilla (don’t touch)'],['none','none (suppress)'],
+  ['nice_to_have','nice_to_have'],['wants_to_have','wants_to_have'],['must_have','must_have']];
+const SUBSIDY = Object.assign({}, window.PMDATA.config.building_subsidies||{});
+function subsidyRowHTML(bkey){
+  const cur = SUBSIDY[bkey]||'';
+  const warn = (cur==='none' && SUBSIDY_DEFAULT_TRIO.indexOf(bkey)>=0)
+    ? ' ⚠' : '';
+  const tip = 'AI subsidy policy — written into every administrative ai_strategy’s subsidies block (the AI’s subsidy DECISION rule, so it is not undone on the next AI pass). "vanilla" emits nothing; "none" suppresses a subsidy the base game would grant.'
+    + (warn?' ⚠ This building is also subsidized by ai_strategy_default, which the mod does not own — suppression here may not take effect.':'');
+  const opts = SUBSIDY_OPTS.map(([v,l])=>`<option value="${v}"${v===cur?' selected':''}>${esc(l)}</option>`).join('');
+  return `<div class="aivrow" title="${esc(tip)}">subsidy${warn} <select class="pmsel${cur?' on':''}" data-subsidy="${esc(bkey)}">${opts}</select></div>`;
+}
 // vanilla construction_cost_* script values (common/script_values/building_values.txt) — used by "Bring to
 // vanilla" to reset build cost to the pre-split building's flat required_construction. Keep in sync on a patch.
 const VANILLA_CONSTRUCTION = { construction_cost_low:200, construction_cost_medium:400, construction_cost_high:600, construction_cost_very_high:800 };
@@ -364,6 +414,61 @@ function applyPricesAnchor(i,anchor,X){
 const thresholds = {};   // good -> percent (every priced good, not just the ones in use)
 Object.keys(PRICES).forEach(g => thresholds[g]=100);
 
+// ---------- scenario / market simulation (session-only, like thresholds & PM selections) ----------
+// A "scenario" = how many of each building exist × their chosen PM setup. Each building's inputs become BUY
+// orders and its outputs SELL orders for the market; the user can add extra buy/sell per good. The V3 market
+// price then follows from the order imbalance. Assumptions per the spec: full employment, no market-access /
+// throughput effects — every building contributes exactly its listed input/output × its Number.
+const BLDNUM  = {};   // building key (tier t.key OR reference building key) -> count in the scenario (default 0)
+const ADDBUY  = {};   // good -> extra buy orders the user dials in (default 0)
+const ADDSELL = {};   // good -> extra sell orders the user dials in (default 0)
+let PRICES_LOCKED = true;   // price panel lock. ON (default) = prices are manual/frozen; OFF = computed from orders.
+// Victoria 3 market price (vic3.paradoxwikis.com/Market):
+//   price = base × [ 1 + 0.75 × clamp( (BUY − SELL) / min(BUY,SELL), ±1 ) ]  → 25%..175% of base.
+// We return the multiplier as a PERCENT (100 = base), which is exactly what `thresholds` stores, so the whole
+// Profit@prices machinery consumes it unchanged. Edge cases (min ≤ 0): one-sided market clamps to the extreme;
+// an empty market (both 0) sits at base.
+function priceMultPct(buy, sell){
+  buy=Math.max(0,buy); sell=Math.max(0,sell);
+  if(buy===0 && sell===0) return 100;
+  const mn=Math.min(buy,sell);
+  let dev = mn>0 ? (buy-sell)/mn : (buy>sell?1:-1);
+  dev=Math.max(-1,Math.min(1,dev));
+  return Math.round((1+0.75*dev)*100);
+}
+// tier's TOTAL goods (main PM baked into the building + its ACTIVE secondary PMs), for scenario order accounting.
+// Secondary outputs include negative reductions (e.g. tank line −automobiles), so the map nets out per good.
+function tierGoodsIO(i,t){
+  const inm={...t.inputs}, outm={}; const og=tierOut(i,t); outm[og]=(outm[og]||0)+t.output_qty;
+  for(const pg in (t._sec||{})){ const sel=t._sec[pg]; if(sel===basePm(pg)) continue; const r=pmRec(sel);
+    for(const g in r.in)  inm[g]=(inm[g]||0)+r.in[g];
+    for(const g in r.out) outm[g]=(outm[g]||0)+r.out[g]; }
+  return {in:inm, out:outm};
+}
+// aggregate BUILDING buy(input)/sell(output) orders across every building × its Number. Reference buildings use
+// their full selected-PM goods (selGoods already sums all selected PMs). Returns {inAgg, outAgg} per good.
+function scenarioAggregates(){
+  const inAgg={}, outAgg={};
+  IND.forEach(i=>i.tiers.forEach(t=>{ const n=BLDNUM[t.key]||0; if(!n) return; const g=tierGoodsIO(i,t);
+    for(const k in g.in)  inAgg[k]  = (inAgg[k] ||0)+n*g.in[k];
+    for(const k in g.out) outAgg[k] = (outAgg[k]||0)+n*g.out[k]; }));
+  refBuildings().forEach(b=>{ const n=BLDNUM[b]||0; if(!n) return; const g=selGoods(refSel(b));
+    for(const k in g.in)  inAgg[k]  = (inAgg[k] ||0)+n*g.in[k];
+    for(const k in g.out) outAgg[k] = (outAgg[k]||0)+n*g.out[k]; });
+  return {inAgg, outAgg};
+}
+function scenarioBuySell(agg, g){ return { buy:(agg.inAgg[g]||0)+(ADDBUY[g]||0), sell:(agg.outAgg[g]||0)+(ADDSELL[g]||0) }; }
+// the Number column cell — same markup for tier rows and reference rows (BLDNUM keyed by building key).
+function numCellHTML(key){ return `<td class="num"><input type="number" min="0" step="1" value="${BLDNUM[key]||0}" data-bldnum="${esc(key)}" title="Number of this building in the scenario"></td>`; }
+// when UNLOCKED, push the scenario's computed price (%) into thresholds for every priced good. Returns whether
+// it did anything (i.e. prices are live). Callers then re-render the price panel + downstream profit cells.
+function syncScenarioPrices(agg){
+  if(PRICES_LOCKED) return false;
+  agg=agg||scenarioAggregates();
+  Object.keys(PRICES).forEach(g=>{ const {buy,sell}=scenarioBuySell(agg,g); thresholds[g]=priceMultPct(buy,sell); });
+  return true;
+}
+
 // ---------- helpers ----------
 function allGoods(){
   const s=new Set();
@@ -439,17 +544,38 @@ function BE(i,t){ const O=outputValue(i,t,false); return O>0 ? (inputValue(t,fal
 function TPthr(i,t){ const I=inputValue(t,true), W=wageCost(t); const C=I+W; return C>0 ? (outputValue(i,t,true)-C)/C*100 : 0; }
 // re-solve a tier's input volumes (keeping recipe proportions) so its FULL break-even hits target_be.
 // Wages W are now FIXED by the workforce, so (I + W)/O = target  =>  I = target/100 * O − W.
+// Only the MAIN recipe (t.inputs) scales: an active secondary PM's inputs are its own recipe, so they are
+// held fixed and subtracted off the goal first. OUTPUT is never touched — the ×1.5-per-tier output ladder
+// (BALANCE_FRAMEWORK §8) is the mod's core structure; inputs are the lever, matching solve_volumes.ps1.
+// Returns false when the target is unreachable (wages + secondary inputs already exceed the target revenue).
 function solveTierToTarget(i,t){
-  const Ob=outputValue(i,t,false), Ib=inputValue(t,false), W=wageCost(t);
-  if(Ib>0 && Ob>0){ const targetI=t.target_be/100*Ob - W; const scale=Math.max(0,targetI)/Ib;
-    for(const g of Object.keys(t.inputs)) t.inputs[g]=Math.max(1, round(t.inputs[g]*scale)); }
+  const Ob=outputValue(i,t,false), W=wageCost(t);
+  const secI=selInVal(t._sec,false);                    // active secondary-PM inputs — fixed, not scaled
+  const mainI=inputValue(t,false)-secI;
+  if(!(mainI>0 && Ob>0)) return false;
+  const targetMain=t.target_be/100*Ob - W - secI;
+  const scale=Math.max(0,targetMain)/mainI;
+  for(const g of Object.keys(t.inputs)) t.inputs[g]=Math.max(1, round(t.inputs[g]*scale));
+  return targetMain>0;
+}
+// ---- mass BE tools (whole sheet, UNLOCKED groups only) ----
+const BE_MIN = 5;   // floor for target_be, so repeated −10pp can't drive a target to zero/negative
+// Groups a mass BE operation may touch: unlocked AND on the BE ladder. Ports/railways carry follows_be:false
+// (vanilla economics, informational BE only), so a BE solve must never touch them even if the user unlocks them.
+function beTargets(){ return IND.filter(i=>!i.locked && i.follows_be); }
+function beSkipNote(){ const n=IND.filter(i=>i.locked||!i.follows_be).length; return n?` Skipped ${n} locked / off-ladder group(s).`:''; }
+// Re-solve every tier of the given groups to its target_be. Returns counts + the tiers that couldn't reach it.
+function solveGroupsToTarget(inds){
+  let tiers=0; const unsolvable=[];
+  inds.forEach(i=>i.tiers.forEach(t=>{ if(solveTierToTarget(i,t)) tiers++; else unsolvable.push(`${i.id} T${t.tier}`); }));
+  return { tiers, groups:inds.length, unsolvable };
 }
 function onTarget(t,be){ return Math.abs(be - t.target_be) <= TARGET_TOL; }   // green if BE within tolerance of its target
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
 // ---------- rendering ----------
 function render(){
-  renderThresholds();
+  renderScenario();         // syncs AUTO prices into thresholds first, so the tier/reference cells below use them
   renderWorkforcePanel();
   renderIndustries();
   attachIndustryUI();
@@ -493,38 +619,105 @@ function renderPresetScope(){
   if(sel.options.length) return;
   sel.innerHTML = '<option value="__all">All industries</option>' + IND.map(i=>`<option value="${i.id}">${esc(i.id)}</option>`).join('');
 }
-function renderThresholds(){
-  const el=document.getElementById('thresholds');
+// ---------- scenario panel: buy/sell orders per good + the market price (locked=manual / auto=orders-derived) ----------
+const SCENFOLD = new Set();   // collapsed good-group section titles (session-only)
+function scenGroups(){
   const priced=new Set(Object.keys(PRICES)), grouped=new Set();
   const groups=GOOD_GROUPS.map(gr=>{ const gs=gr.goods.filter(g=>priced.has(g)); gs.forEach(g=>grouped.add(g)); return {title:gr.title, goods:gs}; });
-  const other=[...priced].filter(g=>!grouped.has(g)).sort();
-  if(other.length) groups.push({title:"Other", goods:other});
-  const chip=g=>`<label class="${thrOOB(thresholds[g])?'oob':''}" data-good="${esc(g)}">${esc(g)} <span class="muted">@${PRICES[g]||'?'}</span>
-    <input type="number" data-thr="${esc(g)}" value="${thresholds[g]}" min="1" step="5">%</label>`;
-  el.innerHTML = groups.filter(gr=>gr.goods.length).map(gr=>
-    `<div class="thrgroup"><div class="thrhd">${esc(gr.title)}</div><div class="thresholds">${gr.goods.map(chip).join('')}</div></div>`).join('');
+  const other=[...priced].filter(g=>!grouped.has(g)).sort(); if(other.length) groups.push({title:'Other', goods:other});
+  return groups.filter(gr=>gr.goods.length);
+}
+// the price cell: LOCKED = an editable % (manual price, like the old price panel); AUTO = read-only computed price.
+// In both cases the displayed value is thresholds[g] — in AUTO mode syncScenarioPrices has already set it from orders.
+function scenPriceCell(g){ const base=PRICES[g]||0, v=thresholds[g], oob=thrOOB(v)?'oob':'';
+  if(PRICES_LOCKED) return `<td class="num"><input class="scthr ${oob}" type="number" data-thr="${esc(g)}" value="${v}" min="1" step="5" title="manual price — % of base">%<span class="v muted scpd" id="scpd_${esc(g)}">£${round(base*v/100)}</span></td>`;
+  return `<td class="num"><span class="scpx ${oob}" id="scpx_${esc(g)}" title="auto price from orders (V3 formula)">${v}% · £${round(base*v/100)}</span></td>`;
+}
+function renderScenario(){
+  const el=document.getElementById('scenarioBody'); if(!el) return;
+  const agg=scenarioAggregates();
+  syncScenarioPrices(agg);   // AUTO: thresholds ← orders before rendering (LOCKED: no-op)
+  const row=g=>{ const inv=agg.inAgg[g]||0, outv=agg.outAgg[g]||0;
+    return `<tr data-good="${esc(g)}" title="${esc(g)} @base £${PRICES[g]||'?'}">
+      <td class="g">${esc(g)}</td>
+      <td class="num"><span id="scin_${esc(g)}">${round(inv)}</span></td>
+      <td class="num"><span id="scout_${esc(g)}">${round(outv)}</span></td>
+      <td class="num"><input type="number" min="0" step="1" value="${ADDBUY[g]||0}" data-addbuy="${esc(g)}"></td>
+      <td class="num"><input type="number" min="0" step="1" value="${ADDSELL[g]||0}" data-addsell="${esc(g)}"></td>
+      ${scenPriceCell(g)}</tr>`; };
+  const toggle=`<label class="scentoggle" title="Locked: prices are manual — edit each % by hand. Auto: prices recompute live from the buy/sell orders and propagate to every building's Profit @ prices."><input type="checkbox" id="lockPrices" ${PRICES_LOCKED?'checked':''}> locked</label>`;
+  const btn=`<button id="resetThr" ${PRICES_LOCKED?'':'disabled'} title="Set every good's price to 100% of base (only when locked)">100%</button>`;
+  el.innerHTML = `<table><thead><tr><th>Good</th>
+      <th class="num" title="Σ building inputs × Number = buy orders from buildings">bld in (buy)</th>
+      <th class="num" title="Σ building outputs × Number = sell orders from buildings">bld out (sell)</th>
+      <th class="num" title="extra buy orders you dial in (pops, trade, anything not modelled as a building)">+ buy</th>
+      <th class="num" title="extra sell orders you dial in">+ sell</th>
+      <th class="num scprhd"><div class="scprhdrow">price ${toggle} ${btn}</div></th></tr></thead><tbody>`
+    + scenGroups().map(gr=>{ const collapsed=SCENFOLD.has(gr.title);
+        return `<tr class="grphd" data-scenfold="${esc(gr.title)}" title="click to fold / unfold"><td colspan="6"><span class="caret">${collapsed?'▸':'▾'}</span> ${esc(gr.title)}</td></tr>`
+          + (collapsed?'':gr.goods.map(row).join('')); }).join('')
+    + `</tbody></table>`;
+}
+// refresh the scenario price column from thresholds[] (called by updateComputed, so ANY price change — manual
+// edit, auto-recompute, the %→X tools, reset — keeps this column in sync). Never clobbers a field being typed.
+function refreshScenPrices(){
+  Object.keys(PRICES).forEach(g=>{ const base=PRICES[g]||0, v=thresholds[g];
+    const inp=document.querySelector(`.scen input[data-thr="${g}"]`);   // LOCKED cell
+    if(inp){ if(inp!==document.activeElement) inp.value=v; inp.classList.toggle('oob',thrOOB(v));
+      const pd=document.getElementById(`scpd_${g}`); if(pd) pd.textContent=`£${round(base*v/100)}`; }
+    const px=document.getElementById(`scpx_${g}`);                       // AUTO cell
+    if(px){ px.textContent=`${v}% · £${round(base*v/100)}`; px.classList.toggle('oob',thrOOB(v)); } });
+}
+// lightweight order refresh (no input rebuild → a field being typed keeps focus). AUTO also re-derives prices.
+function updateScenario(){
+  const agg=scenarioAggregates();
+  Object.keys(PRICES).forEach(g=>{ const ie=document.getElementById(`scin_${g}`);  if(ie) ie.textContent=round(agg.inAgg[g]||0);
+    const oe=document.getElementById(`scout_${g}`); if(oe) oe.textContent=round(agg.outAgg[g]||0); });
+  if(!PRICES_LOCKED){
+    syncScenarioPrices(agg);        // thresholds ← orders
+    updateComputed();               // tier cells + (via refreshScenPrices) the auto price spans
+    refBuildings().forEach(b=>{ if(document.getElementById(`refbe_${b}`)) refreshRefEconCells(b); });   // reference rows
+  }
+}
+// price lock toggle + reset, shared by the delegated handlers below.
+function setPricesLocked(locked){
+  PRICES_LOCKED=locked;
+  if(!PRICES_LOCKED) syncScenarioPrices();
+  renderScenario(); updateComputed();
+  refBuildings().forEach(b=>{ if(document.getElementById(`refbe_${b}`)) refreshRefEconCells(b); });
+  banner('info', PRICES_LOCKED
+    ? 'Prices locked — edit each good’s % by hand in the scenario panel’s price column.'
+    : 'Prices auto — recomputed live from the buy/sell orders and propagated to every building.');
+}
+function resetPricesTo100(){
+  if(!PRICES_LOCKED) return;
+  Object.keys(PRICES).forEach(g=>thresholds[g]=100);
+  renderScenario(); updateComputed();
+  refBuildings().forEach(b=>{ if(document.getElementById(`refbe_${b}`)) refreshRefEconCells(b); });
 }
 function renderIndustries(){
   const root=document.getElementById('industries');
   root.innerHTML = IND.map(i=>industryCard(i)).join('');
 }
+function clearScenHL(){ document.querySelectorAll('#scenarioBody tr[data-good]').forEach(l=>l.classList.remove('hl-in','hl-out')); }
+function scenHL(g, cls){ const l=document.querySelector(`#scenarioBody tr[data-good="${g}"]`); if(l) l.classList.add(cls); }
 function highlightTier(indId, tierNum){
-  document.querySelectorAll('#thresholds label[data-good]').forEach(l=>l.classList.remove('hl-in','hl-out'));
+  clearScenHL();
   if(indId==null) return;
   const i=IND.find(x=>x.id===indId); if(!i) return;
   const t=i.tiers.find(x=>x.tier==tierNum); if(!t) return;
   const og=tierOut(i,t);
-  Object.keys(t.inputs).forEach(g=>{ if(g===og) return; const l=document.querySelector(`#thresholds label[data-good="${g}"]`); if(l) l.classList.add('hl-in'); });
-  const lo=document.querySelector(`#thresholds label[data-good="${og}"]`); if(lo) lo.classList.add('hl-out');
+  Object.keys(t.inputs).forEach(g=>{ if(g!==og) scenHL(g,'hl-in'); });
+  scenHL(og,'hl-out');
 }
 function highlightIndustryAll(id){   // union of every tier's goods; output wins if a good is both
-  document.querySelectorAll('#thresholds label[data-good]').forEach(l=>l.classList.remove('hl-in','hl-out'));
+  clearScenHL();
   if(id==null) return;
   const i=IND.find(x=>x.id===id); if(!i) return;
   const ins=new Set(), outs=new Set();
   i.tiers.forEach(t=>{ outs.add(tierOut(i,t)); Object.keys(t.inputs).forEach(g=>ins.add(g)); });
-  ins.forEach(g=>{ if(outs.has(g)) return; const l=document.querySelector(`#thresholds label[data-good="${g}"]`); if(l) l.classList.add('hl-in'); });
-  outs.forEach(g=>{ const l=document.querySelector(`#thresholds label[data-good="${g}"]`); if(l) l.classList.add('hl-out'); });
+  ins.forEach(g=>{ if(!outs.has(g)) scenHL(g,'hl-in'); });
+  outs.forEach(g=>scenHL(g,'hl-out'));
 }
 function attachIndustryUI(){
   document.querySelectorAll('.card[data-ind]').forEach(c=>{
@@ -552,11 +745,11 @@ function industryCard(i){
     <div class="bd" style="display:${i._open?'':'none'}"><table class="mtable">
       ${MTABLE_COLS}
       <thead><tr>
-      <th>Tier</th><th>Building</th><th>Inputs (qty) + wages</th><th>Output</th>
+      <th>Tier</th><th>Building</th><th class="num" title="How many of this building exist in the scenario. Drives the scenario panel's buy/sell orders (input×N = buy, output×N = sell).">Number</th><th>Inputs (qty) + wages</th><th>Output</th>
       <th title="Workforce (employment by profession). Read-only visualization — not editable or emitted from the UI.">Workforce</th>
       <th class="num" title="Edit to re-solve this tier's input volumes to hit that FULL break-even">Target</th>
-      <th class="num" title="FULL break-even output price % — where output revenue = input goods + wages (inputs at base)">BE</th>
-      <th class="num" title="Full profitability at the price panel above: (output − inputs − wages) / (inputs + wages)">Profit@thr</th>
+      <th class="num" title="FULL break-even output price % — where output revenue = input goods + wages (inputs at base)">BE output prices @ 100% input prices</th>
+      <th class="num" title="Full profitability at the price panel above: (output − inputs − wages) / (inputs + wages)">Profit @ prices</th>
       <th class="num" title="Build cost in construction points (→ required_construction). Editable; the muted number is what solve_building_cost.ps1 would set for the current inputs.">Build cost</th>
       <th class="num" title="Payback period = (build cost × £720/point) ÷ annual net profit at the CURRENT price panel (wages per the wage % on each row, at base input cost). ∞ = unprofitable at current prices.">Payback</th>
       <th class="num" title="Bring THIS tier to the X-yr payback: $ = set its Build cost (fix prices); % = scale this industry's prices so this tier hits X (fix build cost).">→X</th>
@@ -598,7 +791,9 @@ function tierRow(i,t){
     <td><span class="pill" style="background:${TIERCOL[t.tier]||'#666'}">${t.tier}</span></td>
     <td>${esc(t.name)}<div class="muted" style="font-size:11px">${esc(t.key)}</div><div class="muted" style="font-size:10px" title="natural unlock date = this tier's tech era">${t.natural_year?'~'+t.natural_year+' · ':''}${esc(t.tech||'')}</div>
       <div class="aivrow" title="Base AI construction desire (building ai_value). Blank = engine default ${AIVAL_DEFAULT}. Emitted as the building's ai_value when set.">ai_value <input type="number" min="0" step="50" value="${t.ai_value!=null?t.ai_value:''}" placeholder="${AIVAL_DEFAULT}" data-ind="${i.id}" data-tier="${t.tier}" data-aiv="1"></div>
+      ${subsidyRowHTML(t.key)}
       ${secSelectors(i,t)}</td>
+    ${numCellHTML(t.key)}
     <td class="cellbot"><div class="cw">${inputs}</div></td>
     <td class="cellbot"><div class="cw">${outputs}</div></td>
     <td class="wfcell">${wfCell(tierEmp(t))}</td>
@@ -650,6 +845,7 @@ function updateComputed(){
     const pbc=document.getElementById(`pb_${i.id}_${t.tier}`);   // payback tracks price panel + build cost
     if(pbc) pbc.innerHTML=pbCell(i,t);
   }));
+  refreshScenPrices();   // keep the scenario panel's price column in sync with thresholds[] after any change
   renderViz();
 }
 
@@ -818,7 +1014,9 @@ function refRow(b){ const info=VAN.buildings[b], e=refEcon(b);
     <td>${esc(prettyKey(b))}<div class="muted" style="font-size:11px">${esc(b)}</div>
       <div class="muted" style="font-size:10px">${esc(prettyGroup(info.group||''))}${info.tech?' · '+esc(info.tech):''}</div>
       <div class="aivrow" title="Base AI construction desire (building ai_value). Blank = vanilla (${aivDef}). Emitted only for buildings in files the mod owns (01/06/11); others are session-only.">ai_value <input type="number" min="0" step="50" value="${REFAIV[b]!=null?REFAIV[b]:''}" placeholder="${aivDef}" data-refaiv="${esc(b)}"></div>
+      ${subsidyRowHTML(b)}
       ${refPmSelectors(b)}</td>
+    ${numCellHTML(b)}
     <td class="cellbot"><div class="cw">${inG}${wageRowHTML(esc(b), refBaseWage(b), wageUnits(selEmp(refSel(b))), e.I, `data-refbld="${esc(b)}"`)}${subtotalRow(`isub_${esc(b)}`,'total in',e.I+e.W,'total input cost at BASE prices: input goods + wages')}</div></td>
     <td class="cellbot"><div class="cw">${outG}${nong}${(!outG&&!nong)?dash:''}${outG?subtotalRow(`osub_${esc(b)}`,'total out',e.O,'total output revenue at BASE prices — priced goods only (the non-goods above carry no £)'):''}</div></td>
     <td class="wfcell">${wfCell(selEmp(refSel(b)))}</td>
@@ -836,7 +1034,7 @@ function refCatCard(catId, blds){ const open=REFGRPOPEN.has(catId), locked=!REFU
     ? '<div class="muted" style="font-size:11px;padding:6px 12px">Trade, ports &amp; railways keep <b>vanilla</b> values (different economics); only <b>power plants</b> will follow our BE ladder.</div>' : '';
   const body = open ? `${note}<table class="mtable">
       ${MTABLE_COLS}
-      <thead><tr><th>Tier</th><th>Building</th><th>Inputs (qty)</th><th>Output</th><th>Workforce</th><th class="num">Target</th><th class="num">BE</th><th class="num">Profit@thr</th><th class="num">Build cost</th><th class="num">Payback</th><th class="num">→X</th></tr></thead>
+      <thead><tr><th>Tier</th><th>Building</th><th class="num" title="How many of this building exist in the scenario. Drives the scenario panel's buy/sell orders.">Number</th><th>Inputs (qty)</th><th>Output</th><th>Workforce</th><th class="num">Target</th><th class="num">BE output prices @ 100% input prices</th><th class="num">Profit @ prices</th><th class="num">Build cost</th><th class="num">Payback</th><th class="num">→X</th></tr></thead>
       <tbody>${blds.map(refRow).join('')}</tbody></table>` : '';
   return `<div class="card refcard${locked?' locked':''}"><div class="hd ind-hd" data-refgrp="${esc(catId)}"><span class="caret">${open?'▾':'▸'}</span> ${esc(catLabel(catId))} <span class="tag">${blds.length} building${blds.length!==1?'s':''}${locked?' · locked':''}</span>
       <span class="spacer"></span>
@@ -903,8 +1101,12 @@ document.addEventListener('click', e=>{
 function findTier(id,tier){ const i=IND.find(x=>x.id===id); return [i, i.tiers.find(t=>t.tier==tier)]; }
 document.addEventListener('input', e=>{
   const el=e.target;
-  if(el.dataset.input!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.inputs[el.dataset.input]=+el.value||0; updateComputed(); }
-  else if(el.dataset.out!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.output_qty=+el.value||0; updateComputed(); }
+  // ---- scenario inputs: building Number, and per-good extra buy/sell orders (session-only) ----
+  if(el.dataset.bldnum!==undefined){ BLDNUM[el.dataset.bldnum]=Math.max(0,+el.value||0); updateScenario(); return; }
+  else if(el.dataset.addbuy!==undefined){ ADDBUY[el.dataset.addbuy]=Math.max(0,+el.value||0); updateScenario(); return; }
+  else if(el.dataset.addsell!==undefined){ ADDSELL[el.dataset.addsell]=Math.max(0,+el.value||0); updateScenario(); return; }
+  if(el.dataset.input!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.inputs[el.dataset.input]=+el.value||0; updateComputed(); updateScenario(); }
+  else if(el.dataset.out!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.output_qty=+el.value||0; updateComputed(); updateScenario(); }
   else if(el.dataset.basewage!==undefined){    // SHEET base wage — weekly ↔ yearly; inherited by non-locked groups
     const old=BASE_WAGE;
     if(el.dataset.basewage==='yr') BASE_WAGE=Math.max(0,(+el.value||0)/WEEKS_PER_YEAR);
@@ -935,19 +1137,32 @@ document.addEventListener('input', e=>{
     // refresh this reference row's BE / Profit / subtotals (no-op when b is a tier key, not a reference row)
     if(document.getElementById(`refbe_${b}`)) refreshRefEconCells(b);
     updateComputed();   // the PM may be a secondary on our tiers — refresh their BE/profit/payback too
+    updateScenario();   // editing a PM's recipe changes its buy/sell orders everywhere it's used
   }
-  else if(el.dataset.thr!==undefined){
+  else if(el.dataset.thr!==undefined){        // manual price edit in the scenario panel's price column (LOCKED mode)
     if(el.value==='') return;                 // mid-edit; leave value alone
     let v=+el.value; if(isNaN(v)) return;
     if(v<1){ v=1; el.value='1'; }             // 0 / negative not allowed
-    thresholds[el.dataset.thr]=v;
-    el.closest('label').classList.toggle('oob', thrOOB(v));   // red if outside 25–175%
-    updateComputed();
+    const g=el.dataset.thr; thresholds[g]=v;
+    el.classList.toggle('oob', thrOOB(v));    // red if outside 25–175%
+    updateComputed();   // tier cells + (via refreshScenPrices) the £ readout on every price row
+    refBuildings().forEach(b=>{ if(document.getElementById(`refbe_${b}`)) refreshRefEconCells(b); });
   }
 });
 // editing a tier's Target break-even re-solves its input volumes to hit it (fires on blur/Enter)
 document.addEventListener('change', e=>{
   const d=e.target.dataset||{};
+  // AI subsidy policy dropdown (tier rows AND explorer rows share the building-key-keyed SUBSIDY map)
+  if(d.subsidy!==undefined){
+    const b=d.subsidy, v=e.target.value;
+    if(v==='') delete SUBSIDY[b]; else SUBSIDY[b]=v;
+    e.target.classList.toggle('on', !!v);
+    const warned = (v==='none' && SUBSIDY_DEFAULT_TRIO.indexOf(b)>=0);
+    banner(warned?'warn':'info', warned
+      ? `${esc(b)} → none. ⚠ This building is also subsidized by <code>ai_strategy_default</code>, which the mod does not own — suppression may not take effect (depends on whether a typed strategy's subsidies merge with or replace the default's).`
+      : `AI subsidy policy: ${esc(b)} → ${v||'vanilla (don’t touch)'}. Written into all 7 administrative ai_strategies on build.`);
+    return;
+  }
   if(d.target!==undefined){
     const [i,t]=findTier(d.ind, d.tier);
     t.target_be = +e.target.value || t.target_be;
@@ -960,9 +1175,17 @@ document.addEventListener('change', e=>{
   } else if(e.target.classList.contains('pmsel') && d.refbld!==undefined){ // a reference building's PM
     (REFSEL[d.refbld]=REFSEL[d.refbld]||{})[d.pmg]=e.target.value;
     renderRefRow(d.refbld); updateComputed();   // its PMs may also be tier secondaries
+    updateScenario();   // PM change alters this building's buy/sell orders
   }
 });
-document.getElementById('resetThr').onclick=()=>{ Object.keys(PRICES).forEach(g=>thresholds[g]=100); renderThresholds(); updateComputed(); };
+// Scenario price controls live INSIDE the panel and are re-created on every renderScenario, so they're wired by
+// delegation, not a one-time onclick/onchange. The lock toggle (checkbox) and section folds are 'change'/'click'.
+document.addEventListener('click', e=>{
+  if(e.target.id==='resetThr'){ resetPricesTo100(); return; }
+  const fold=e.target.closest('[data-scenfold]');
+  if(fold){ const t=fold.dataset.scenfold; SCENFOLD.has(t)?SCENFOLD.delete(t):SCENFOLD.add(t); renderScenario(); }
+});
+document.addEventListener('change', e=>{ if(e.target.id==='lockPrices') setPricesLocked(e.target.checked); });
 
 // ---------- preset ----------
 // "Restore defaults" — reset each in-scope UNLOCKED group to its as-loaded config values (same state a
@@ -1015,6 +1238,34 @@ document.getElementById('bringVanilla').onclick=()=>{
     + (noPm.length?` No vanilla_pm for: ${noPm.slice(0,8).join(', ')}${noPm.length>8?` +${noPm.length-8} more`:''} (recipe left unchanged).`:'')
     + (lockedSkipped?` Skipped ${lockedSkipped} locked group(s).`:''));
 };
+// ---------- mass BE target tools (whole sheet, UNLOCKED ladder groups) ----------
+// "solve → targets": the button to press after changing the standard wage or shifting targets. Re-solves INPUT
+// volumes only; build cost is left alone on purpose (the payback tools own that).
+document.getElementById('solveBE').onclick=()=>{
+  const inds=beTargets();
+  if(!inds.length){ banner('warn','No unlocked ladder groups — unlock a group first.'); return; }
+  const r=solveGroupsToTarget(inds); render();
+  banner(r.unsolvable.length?'warn':'info',
+    `Re-solved ${r.tiers} tier(s) across ${r.groups} group(s) to their Target break-even at the current standard wage (base £${round2(BASE_WAGE)}/wk) — inputs scaled, output &amp; build cost unchanged.`
+    + (r.unsolvable.length?` Could NOT reach target on ${r.unsolvable.length} tier(s) — wages alone exceed the target revenue: ${r.unsolvable.slice(0,6).join(', ')}${r.unsolvable.length>6?` +${r.unsolvable.length-6} more`:''}.`:'')
+    + beSkipNote());
+};
+// ±10 pp shift the DESIGN targets only — volumes stay put until "solve → targets" is pressed, so you can
+// stack several shifts (or change the wage) and re-solve once.
+function shiftTargets(pp){
+  const inds=beTargets();
+  if(!inds.length){ banner('warn','No unlocked ladder groups — unlock a group first.'); return; }
+  let n=0, floored=0;
+  inds.forEach(i=>i.tiers.forEach(t=>{ const v=t.target_be+pp;
+    if(v<BE_MIN) floored++;
+    t.target_be=Math.round(Math.max(BE_MIN,v)*10)/10; n++; }));
+  render();
+  banner(floored?'warn':'info',
+    `${pp>0?'Raised':'Lowered'} the Target break-even of ${n} tier(s) across ${inds.length} group(s) by ${Math.abs(pp)} pp. Volumes are unchanged — press <b>solve → targets</b> to re-solve inputs.`
+    + (floored?` ${floored} tier(s) clamped at the ${BE_MIN}% floor.`:'') + beSkipNote());
+}
+document.getElementById('beMinus').onclick=()=>shiftTargets(-10);
+document.getElementById('bePlus').onclick=()=>shiftTargets(+10);
 // ---------- payback tools ----------
 function readX(){ return +document.getElementById('pbYears').value||10; }
 // Whole worksheet, skipping locked groups: set every tier's Build cost so payback = X yrs (fix prices).
@@ -1131,6 +1382,7 @@ function mergedConfig(){
       if(mt.wage_pct!=null) t.wage_pct=mt.wage_pct;
       if(mt.ai_value!=null) t.ai_value=mt.ai_value; else delete t.ai_value; }); });
   cfg.building_ai_value = Object.assign({}, REFAIV);   // explorer/preserved-building ai_value overrides (builder applies to owned files)
+  cfg.building_subsidies = Object.assign({}, SUBSIDY); // AI subsidy policy (builder writes it into every administrative ai_strategy)
   cfg.pm_goods = JSON.parse(JSON.stringify(REFEDIT)); // per-PM goods overrides (any building's PM); builder rewrites the owned production_methods files
   return cfg;
 }
@@ -1186,7 +1438,26 @@ function banner(kind,msg){ const b=document.getElementById('banner'); b.classNam
 // ---------- collapsibles ----------
 document.querySelectorAll('.hd[data-toggle]').forEach(h=>h.onclick=()=>{ const bd=h.nextElementSibling; bd.style.display = bd.style.display==='none'?'':'none'; });
 
-render();
+// ---------- startup: reconcile the sheet with the WORKFORCE wage model ----------
+// The config's stored volumes were solved by tools/solve_volumes.ps1 under the LEGACY wage model (wages = a
+// fraction of input cost, ~I/3). The UI now takes wages from the workforce (base wage × wage units), which is a
+// much smaller and input-independent number, so on load every tier's FULL break-even sits well UNDER its
+// target_be (worst on input-heavy tiers). Re-solve each unlocked ladder group at the current standard wage so
+// the sheet opens ON target, and let build cost FOLLOW (the payback model reads the new input cost).
+// This is a UI-side reconcile; it does not change the config on disk until you Export / Build now.
+// TRANSITIONAL: once the solvers/linter/builder move off wage_pct onto workforce wages, the config will already
+// be on target and this becomes a no-op. See CLAUDE.md → Balance UI (transitional note).
+(function reconcileToWageModel(){
+  const inds=beTargets();
+  const r=solveGroupsToTarget(inds);
+  inds.forEach(i=>i.tiers.forEach(t=>{ t.building_cost=buildingCostModel(i,t); }));   // build costs follow at load
+  render();
+  banner(r.unsolvable.length?'warn':'info',
+    `Loaded: re-solved ${r.tiers} tier(s) across ${r.groups} group(s) to their Target break-even at the standard wage (base £${round2(BASE_WAGE)}/wk), and set build cost from the payback model. `
+    + `The stored config was solved under the legacy wage model, so its volumes read ~10–20 pp under target here.`
+    + (r.unsolvable.length?` Could NOT reach target on ${r.unsolvable.length} tier(s): ${r.unsolvable.slice(0,6).join(', ')}${r.unsolvable.length>6?` +${r.unsolvable.length-6} more`:''}.`:'')
+    + beSkipNote());
+})();
 initVizTooltips();
 window.addEventListener('resize', renderViz);
 </script>

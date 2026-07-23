@@ -12,7 +12,8 @@
     window.PMVANILLA = {
       buildings: { building_x: { group, unique(bool), tech, city, pmgs:[...] }, ... },
       pmgs:      { pmg_x: { pms:[...] }, ... },
-      pms:       { pm_x: { in:{good:qty}, out:{good:qty}, emp:{pop:qty}, mods:{name:val} }, ... }
+      pms:       { pm_x: { in:{good:qty}, out:{good:qty}, emp:{pop:qty}, mods:{name:val}, gated?:true }, ... }
+                 (gated = power-bloc-gated: has unlocking_principles; the UI never defaults to it)
     }
 
   Usage:  powershell -ExecutionPolicy Bypass -File tools\extract_vanilla.ps1 [-Game "<...\Victoria 3\game>"]
@@ -88,14 +89,17 @@ foreach ($name in $gBlocks.Keys) {
 $pBlocks = Get-TopBlocks (Join-Path $Game 'common\production_methods') ''
 $pms = [ordered]@{}
 foreach ($name in $pBlocks.Keys) {
-    $in = [ordered]@{}; $out = [ordered]@{}; $emp = [ordered]@{}; $mods = [ordered]@{}
+    $in = [ordered]@{}; $out = [ordered]@{}; $emp = [ordered]@{}; $mods = [ordered]@{}; $gated = $false
     foreach ($l in $pBlocks[$name]) {
         if     ($l -match 'goods_input_([a-z_]+)_add\s*=\s*(-?\d+)')          { $in[$Matches[1]]  = [int]$Matches[2] }
         elseif ($l -match 'goods_output_([a-z_]+)_add\s*=\s*(-?\d+)')         { $out[$Matches[1]] = [int]$Matches[2] }
         elseif ($l -match 'building_employment_([a-z_]+)_add\s*=\s*(-?\d+)')  { $emp[$Matches[1]] = [int]$Matches[2] }
         elseif ($l -match '^\s*([a-z][a-z0-9_]*)_add\s*=\s*(-?\d+)\s*$')      { $mods[$Matches[1]] = [int]$Matches[2] }
+        elseif ($l -match 'unlocking_principles\s*=')                        { $gated = $true }  # power-bloc-gated (only active with a bloc principle) — UI must not default to it
     }
-    $pms[$name] = [ordered]@{ in = $in; out = $out; emp = $emp; mods = $mods }
+    $rec = [ordered]@{ in = $in; out = $out; emp = $emp; mods = $mods }
+    if ($gated) { $rec.gated = $true }
+    $pms[$name] = $rec
 }
 
 # --- write ui/vanilla.js ---

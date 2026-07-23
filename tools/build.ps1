@@ -335,6 +335,137 @@ foreach ($rel in $ownedRels) {
     WriteText "$modRel\$relWin" (($bOut -join "`n") + "`n") $bom
 }
 
+# --- ai_strategies: REPLACE 01_admin_strategies.txt to control AI SUBSIDY POLICY ------------------
+# The `subsidies` block inside an ai_strategy is the AI's subsidy DECISION RULE (must_have /
+# wants_to_have / nice_to_have) - NOT a per-building flag. It is the only durable way to make the AI
+# subsidize a building: the AI re-scores subsidies continuously (defines NAI SUBSIDIZE_*), so a scripted
+# `set_subsidized` would simply be undone on its next pass.
+# WHY THIS FILE: we own the ADMINISTRATIVE strategies (all 7 live in this one ~655-line file) rather than
+# ai_strategy_default (a single ~8790-line block) - a 13x smaller patch surface. Every AI country always
+# runs exactly one administrative strategy (ai_strategy_industrial_expansion has no `possible` gate, so it
+# is always available), so covering all 7 covers everyone.
+# TRIO RESTATEMENT: it is unclear whether a typed strategy's `subsidies` MERGES with ai_strategy_default's
+# per key or REPLACES it wholesale, so we restate the default's power_plant/railway/port = must_have in
+# every block we write. That is a no-op under merge and correct under replace.
+# Config: top-level `building_subsidies` map, building key -> vanilla|none|nice_to_have|wants_to_have|must_have.
+#   vanilla (or absent) = emit nothing for that building (its vanilla entries stand)
+#   none                = suppress it (drop the key from every block we write)
+$SUBSIDY_ENUM = @('nice_to_have','wants_to_have','must_have')
+# depth-1 `subsidies = { … }` helpers: read its building->value entries, and strip the whole block out.
+function Get-SubsidyEntries($blk) {
+    $out = [ordered]@{}; $d = 0; $inb = $false
+    foreach ($l in $blk) {
+        if (-not $inb -and $l -match '^\s*subsidies\s*=\s*\{') { $inb = $true; $d = 0 }
+        if ($inb) {
+            $d += ([regex]::Matches($l,'\{')).Count - ([regex]::Matches($l,'\}')).Count
+            if ($l -match '^\s*(building_[A-Za-z0-9_]+)\s*=\s*([a-z_]+)') { $out[$Matches[1]] = $Matches[2] }
+            if ($d -le 0) { $inb = $false }
+        }
+    }
+    return $out
+}
+function Test-HasSubsidyBlock($blk) {
+    foreach ($l in $blk) { if ($l -match '^\s*subsidies\s*=\s*\{') { return $true } }
+    return $false
+}
+function Remove-SubsidyBlock($blk) {
+    $out = New-Object System.Collections.Generic.List[string]; $d = 0; $inb = $false
+    foreach ($l in $blk) {
+        if (-not $inb -and $l -match '^\s*subsidies\s*=\s*\{') { $inb = $true; $d = 0 }
+        if ($inb) {
+            $d += ([regex]::Matches($l,'\{')).Count - ([regex]::Matches($l,'\}')).Count
+            if ($d -le 0) { $inb = $false }
+            continue
+        }
+        $out.Add($l)
+    }
+    return $out
+}
+$subMap = @{}
+if ($cfg.building_subsidies) {
+    foreach ($p in $cfg.building_subsidies.PSObject.Properties) {
+        $v = [string]$p.Value
+        if ([string]::IsNullOrWhiteSpace($v) -or $v -eq 'vanilla') { continue }
+        if ($v -ne 'none' -and $SUBSIDY_ENUM -notcontains $v) {
+            throw "building_subsidies: '$($p.Name)' = '$v' is invalid (expected vanilla|none|nice_to_have|wants_to_have|must_have)"
+        }
+        $subMap[$p.Name] = $v
+    }
+}
+# Read ai_strategy_default's OWN subsidies live from vanilla (we deliberately do NOT own that file - it is a
+# single ~8790-line block covering the whole AI: wargoals, navy/army sizes, treaties, infamy, interest groups.
+# Owning it to change one field would freeze all of that against every future patch). We only READ its trio so
+# the restatement stays in sync automatically instead of being hardcoded here.
+$SUBSIDY_TRIO = [ordered]@{}
+$srcDef = Join-Path $Game 'common\ai_strategies\00_default_strategy.txt'
+if (Test-Path -LiteralPath $srcDef) {
+    $defLines = Get-Content -LiteralPath $srcDef
+    $dBlk = New-Object System.Collections.Generic.List[string]; $dd = 0; $started = $false
+    foreach ($l in $defLines) {
+        if (-not $started) { if ($l -match '^ai_strategy_default\s*=\s*\{') { $started = $true } else { continue } }
+        $dd += ([regex]::Matches($l,'\{')).Count - ([regex]::Matches($l,'\}')).Count
+        $dBlk.Add($l)
+        if ($started -and $dd -le 0) { break }
+    }
+    $SUBSIDY_TRIO = Get-SubsidyEntries $dBlk
+}
+if ($SUBSIDY_TRIO.Count -eq 0) {
+    Write-Output "note: could not read ai_strategy_default's subsidies from vanilla - typed strategies will carry only their own entries + our overrides"
+}
+$relAI    = 'common\ai_strategies\01_admin_strategies.txt'
+$srcAI    = Join-Path $Game $relAI
+if (-not (Test-Path -LiteralPath $srcAI)) {
+    Write-Output "note: $relAI not found in game - skipping AI subsidy emission (subsidy policy will stay vanilla)"
+} else {
+    $aiLines = Get-Content -LiteralPath $srcAI
+    $aOut = New-Object System.Collections.Generic.List[string]
+    $aOut.Add($genHeader.TrimEnd())
+    $touched = 0; $i = 0
+    while ($i -lt $aiLines.Count) {
+        $line = $aiLines[$i]
+        if ($line -match '^(ai_strategy_[A-Za-z0-9_]+)\s*=\s*\{') {
+            $blk = New-Object System.Collections.Generic.List[string]; $depth = 0
+            do {
+                $l = $aiLines[$i]
+                $depth += ([regex]::Matches($l,'\{')).Count - ([regex]::Matches($l,'\}')).Count
+                $blk.Add($l); $i++
+            } while ($i -lt $aiLines.Count -and $depth -gt 0)
+            # only administrative strategies carry economy policy; leave any other type verbatim
+            if (($blk -join "`n") -match '(?m)^\s*type\s*=\s*administrative\s*$') {
+                $hadBlock = Test-HasSubsidyBlock $blk
+                $ent = Get-SubsidyEntries $blk                                   # this strategy's vanilla entries
+                # Seed ai_strategy_default's entries ONLY into strategies that had NO subsidies block of their
+                # own. A strategy that HAS one is authoritative: under REPLACE semantics whatever it omits was
+                # omitted deliberately (vanilla fine-tuning), and under MERGE semantics the default supplies the
+                # rest anyway - so restating there would invent subsidies vanilla never granted. A strategy with
+                # NO block only becomes replace-exposed because WE add one, so there we must restate to keep
+                # vanilla behaviour intact. Correct under both readings, and never overrides a tuned value.
+                if (-not $hadBlock) {
+                    foreach ($k in $SUBSIDY_TRIO.Keys) { if (-not $ent.Contains($k)) { $ent[$k] = $SUBSIDY_TRIO[$k] } }
+                }
+                foreach ($k in $subMap.Keys) {                                   # user overrides win
+                    if ($subMap[$k] -eq 'none') { if ($ent.Contains($k)) { $ent.Remove($k) } }
+                    else { $ent[$k] = $subMap[$k] }
+                }
+                $body = Remove-SubsidyBlock $blk
+                $new  = New-Object System.Collections.Generic.List[string]
+                $new.Add($body[0])                                               # strategy header
+                $new.Add("`tsubsidies = {")
+                foreach ($k in $ent.Keys) { $new.Add("`t`t$k = $($ent[$k])") }
+                $new.Add("`t}")
+                for ($j = 1; $j -lt $body.Count; $j++) { $new.Add($body[$j]) }
+                foreach ($nl in $new) { $aOut.Add($nl) }
+                $touched++
+            } else { foreach ($bl in $blk) { $aOut.Add($bl) } }
+        } else { $aOut.Add($line); $i++ }
+    }
+    WriteText "$modRel\$relAI" (($aOut -join "`n") + "`n") $bom
+    $setList  = if ($subMap.Count) { ($subMap.Keys | Sort-Object | ForEach-Object { "$_=$($subMap[$_])" }) -join ', ' } else { '(none - vanilla policy)' }
+    $trioList = if ($SUBSIDY_TRIO.Count) { ($SUBSIDY_TRIO.Keys | ForEach-Object { "$_=$($SUBSIDY_TRIO[$_])" }) -join ', ' } else { '(none)' }
+    Write-Output "ai subsidies: rewrote $touched administrative strategies; overrides: $setList"
+    Write-Output "ai subsidies: default-strategy trio read live from vanilla: $trioList"
+}
+
 # --- own EVERY production_methods file: two surgical transforms, everything else verbatim ---
 #   (1) GATE REMAP: append our tier pm_key to each `unlocking_production_methods` list that references a
 #       split vanilla main PM (map vanilla_pm -> pm_key), so gated secondaries (bone china, elastics,

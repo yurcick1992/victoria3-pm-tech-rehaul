@@ -6,7 +6,7 @@ on_game_started_after_lobby = {
 
 pm_tech_rehaul_diag = {
 	effect = {
-		debug_log = "PM_TECH_REHAUL: init OK - mod loaded, game started (build 2026-07-19 14:05) on [TimeKeeper.GetCurrentDate.GetString]"
+		debug_log = "PM_TECH_REHAUL: init OK - mod loaded, game started (build 2026-07-23 21:33) on [TimeKeeper.GetCurrentDate.GetString]"
 		# --- invariant tripwires: add checks for risky changes; log PM_TECH_REHAUL WARN on failure ---
 	}
 }
