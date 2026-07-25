@@ -142,14 +142,23 @@
   .scen input.scthr{width:52px;text-align:right}
   .scen input.scthr.oob{border-color:var(--bad);color:var(--bad)}
   /* price cell = £ price then % of base, each in a fixed-width slot so both line up down the column
-     (mixed-width content in a plain right-aligned cell went ragged). Mirrors the in-game order. */
+     (mixed-width content in a plain right-aligned cell went ragged). Mirrors the in-game order.
+     The PRICE HEADER uses the SAME .pxrow/.pxgbp/.pxpct geometry, so the header's `100%` button lands
+     exactly above the rows' % inputs — .pxsuf reserves the trailing "%" width in both. */
   .scen .pxrow{display:flex;align-items:center;justify-content:flex-end;gap:10px}
   .scen .pxgbp{min-width:46px;text-align:right;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
-  .scen .pxpct{min-width:76px;text-align:right;font-variant-numeric:tabular-nums}
-  .scprhdrow{display:flex;align-items:center;justify-content:flex-end;gap:6px;white-space:nowrap}
+  .scen .pxpct{min-width:76px;font-variant-numeric:tabular-nums;display:inline-flex;align-items:center;justify-content:flex-end}
+  .scen .pxsuf{display:inline-block;width:15px;text-align:left;padding-left:3px}
+  /* the % input and the header button are the SAME box: same width, padding and font */
+  /* explicit height as well as width: a button's line box resolves 2px shorter than an input's otherwise */
+  .scen input.scthr, .scen button#resetThr{width:52px;height:25px;box-sizing:border-box;padding:3px 5px;font-size:12px;font-family:inherit;line-height:17px}
+  .scen button#resetThr{text-align:center}
+  /* AUTO mode: the read-only % occupies the same 52px box the input does, so both modes line up */
+  .scen .pxpct .scpx{display:inline-block;width:52px;text-align:right}
+  .scen .pxhdlbl{flex:1;display:flex;align-items:center;gap:6px;white-space:nowrap;text-align:left}
+  .scen .pxhdsub{color:var(--muted);font-weight:600}
   .scentoggle{display:inline-flex;align-items:center;gap:3px;font-weight:600;text-transform:none;letter-spacing:0}
   .scentoggle input{width:auto}
-  #resetThr{padding:1px 6px;font-size:10px}
   #resetThr:disabled{opacity:.4;cursor:default}
   /* hover-highlight a building's goods on its own row in the scenario panel (inputs red, output green) */
   .scen tr[data-good].hl-in{background:rgba(232,115,90,.20)}
@@ -692,8 +701,8 @@ function scBar(frac, cls){ const w=Math.round(Math.max(0,Math.min(1,frac))*100);
 function scenPriceInner(g){ const base=PRICES[g]||0, v=thresholds[g], oob=thrOOB(v)?'oob':'', cls=scenPriceCls(v);
   const gbp=`<span class="pxgbp" id="scpd_${esc(g)}">£${round(base*v/100)}</span>`;
   const pct=PRICES_LOCKED
-    ? `<span class="pxpct"><input class="scthr ${oob} ${cls}" type="number" data-thr="${esc(g)}" value="${v}" min="1" step="5" title="manual price — % of base">%</span>`
-    : `<span class="pxpct"><span class="scpx ${oob} ${cls}" id="scpx_${esc(g)}" title="auto price from orders (V3 formula)">${v}%</span></span>`;
+    ? `<span class="pxpct"><input class="scthr ${oob} ${cls}" type="number" data-thr="${esc(g)}" value="${v}" min="1" step="5" title="manual price — % of base"><span class="pxsuf">%</span></span>`
+    : `<span class="pxpct"><span class="scpx ${oob} ${cls}" id="scpx_${esc(g)}" title="auto price from orders (V3 formula)">${v}</span><span class="pxsuf">%</span></span>`;
   return `<div class="pxrow">${gbp}${pct}</div>${scBar((v-25)/150, cls)}`;   // bar = position in the 25–175% band
 }
 function scenBalInner(g, buy, sell){ const bal=sell-buy, cls=scenBalCls(bal), mx=Math.max(buy,sell,1);
@@ -719,7 +728,10 @@ function renderScenario(){
         <th class="num grpcol" colspan="2" title="BUY orders: what buildings consume, plus anything extra you dial in">Buy orders</th>
         <th class="num grpcol" colspan="2" title="SELL orders: what buildings produce, plus anything extra you dial in">Sell orders</th>
         <th class="num grpcol" rowspan="2" title="sell − buy. Gold = surplus (abundance), blue = deficit.">Balance</th>
-        <th class="num grpcol" rowspan="2"><div class="scprhdrow">Price ${toggle} ${btn}</div></th></tr>
+        <th class="num grpcol" rowspan="2"><div class="pxrow">
+          <span class="pxhdlbl">Price ${toggle}</span>
+          <span class="pxgbp pxhdsub">£</span>
+          <span class="pxpct">${btn}<span class="pxsuf"></span></span></div></th></tr>
       <tr><th class="num grpcol" title="Σ building inputs × Number">buildings</th>
         <th class="num" title="extra buy orders you dial in (pops, trade, anything not modelled as a building)">+ extra</th>
         <th class="num grpcol" title="Σ building outputs × Number">buildings</th>
