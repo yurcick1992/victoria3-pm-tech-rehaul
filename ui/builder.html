@@ -150,11 +150,22 @@
   .scen .pxpct{min-width:76px;font-variant-numeric:tabular-nums;display:inline-flex;align-items:center;justify-content:flex-end}
   .scen .pxsuf{display:inline-block;width:15px;text-align:left;padding-left:3px}
   /* the % input and the header button are the SAME box: same width, padding and font */
-  /* explicit height as well as width: a button's line box resolves 2px shorter than an input's otherwise */
-  .scen input.scthr, .scen button#resetThr{width:52px;height:25px;box-sizing:border-box;padding:3px 5px;font-size:12px;font-family:inherit;line-height:17px}
-  .scen button#resetThr{text-align:center}
-  /* AUTO mode: the read-only % occupies the same 52px box the input does, so both modes line up */
-  .scen .pxpct .scpx{display:inline-block;width:52px;text-align:right}
+  /* The header button spans the WHOLE indicator footprint (number box + "%" suffix) and mirrors a row's
+     internal layout: a 52px right-aligned number slot then the 15px .pxsuf. So its "100%" sits glyph-for-
+     glyph over each row's "100 %" in BOTH modes — locked (where the input's border shows the box) and auto
+     (where the number is bare text, which is what exposed the old centred label as misaligned).
+     Explicit height: a button's line box otherwise resolves 2px shorter than an input's. */
+  .scen input.scthr{width:52px;height:25px;box-sizing:border-box;padding:3px 5px;font-size:12px;font-family:inherit;line-height:17px}
+  .scen button#resetThr{width:67px;height:25px;box-sizing:border-box;padding:0;display:inline-flex;align-items:center;font-size:12px;font-family:inherit;line-height:17px}
+  /* the button's 1px border insets its content, so the inner slots are 1px narrower than a row's
+     (51+14 vs 52+15). That makes the button's GLYPHS land exactly on the rows' — text right edge at the
+     same x as an input's, "%" starting at the same x — which is what actually reads as aligned. */
+  .scen button#resetThr .pxbtnnum{width:51px;flex:none;box-sizing:border-box;padding-right:6px;text-align:right}
+  .scen button#resetThr .pxsuf{width:14px;flex:none}
+  /* AUTO mode: the read-only % occupies the same 52px box the input does — and repeats the input's
+     right padding + border (5+1) so the digits sit at the SAME x in both modes (they used to jump 6px
+     on toggle) and under the header button's label. */
+  .scen .pxpct .scpx{display:inline-block;width:52px;box-sizing:border-box;padding-right:6px;text-align:right}
   .scen .pxhdlbl{flex:1;display:flex;align-items:center;gap:6px;white-space:nowrap;text-align:left}
   .scen .pxhdsub{color:var(--muted);font-weight:600}
   .scentoggle{display:inline-flex;align-items:center;gap:3px;font-weight:600;text-transform:none;letter-spacing:0}
@@ -722,7 +733,8 @@ function renderScenario(){
       <td class="num grpcol" id="scbalc_${esc(g)}">${scenBalInner(g,buy,sell)}</td>
       <td class="num grpcol" id="scpxc_${esc(g)}">${scenPriceInner(g)}</td></tr>`; };
   const toggle=`<label class="scentoggle" title="Locked: prices are manual — edit each % by hand. Auto: prices recompute live from the buy/sell orders and propagate to every building's Profit @ prices."><input type="checkbox" id="lockPrices" ${PRICES_LOCKED?'checked':''}> locked</label>`;
-  const btn=`<button id="resetThr" ${PRICES_LOCKED?'':'disabled'} title="Set every good's price to 100% of base (only when locked)">100%</button>`;
+  // inner spans mirror a row's number slot + "%" suffix, so the label lands exactly over the rows' values
+  const btn=`<button id="resetThr" ${PRICES_LOCKED?'':'disabled'} title="Set every good's price to 100% of base (only when locked)"><span class="pxbtnnum">100</span><span class="pxsuf">%</span></button>`;
   el.innerHTML = `<table><thead>
       <tr><th rowspan="2">Good</th>
         <th class="num grpcol" colspan="2" title="BUY orders: what buildings consume, plus anything extra you dial in">Buy orders</th>
@@ -731,7 +743,7 @@ function renderScenario(){
         <th class="num grpcol" rowspan="2"><div class="pxrow">
           <span class="pxhdlbl">Price ${toggle}</span>
           <span class="pxgbp pxhdsub">£</span>
-          <span class="pxpct">${btn}<span class="pxsuf"></span></span></div></th></tr>
+          <span class="pxpct">${btn}</span></div></th></tr>   <!-- no outer .pxsuf: the button carries its own -->
       <tr><th class="num grpcol" title="Σ building inputs × Number">buildings</th>
         <th class="num" title="extra buy orders you dial in (pops, trade, anything not modelled as a building)">+ extra</th>
         <th class="num grpcol" title="Σ building outputs × Number">buildings</th>
@@ -1266,7 +1278,9 @@ document.addEventListener('change', e=>{
 // Scenario price controls live INSIDE the panel and are re-created on every renderScenario, so they're wired by
 // delegation, not a one-time onclick/onchange. The lock toggle (checkbox) and section folds are 'change'/'click'.
 document.addEventListener('click', e=>{
-  if(e.target.id==='resetThr'){ resetPricesTo100(); return; }
+  // closest(), not e.target.id: the button holds inner spans (its label mirrors a row's number + "%" slots)
+  const rb=e.target.closest && e.target.closest('#resetThr');
+  if(rb){ if(!rb.disabled) resetPricesTo100(); return; }
   const fold=e.target.closest('[data-scenfold]');
   if(fold){ const t=fold.dataset.scenfold; SCENFOLD.has(t)?SCENFOLD.delete(t):SCENFOLD.add(t); renderScenario(); }
 });
