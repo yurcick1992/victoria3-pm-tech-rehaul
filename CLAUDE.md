@@ -89,6 +89,7 @@ tools/                  dev tooling — NOT shipped in the mod
   solve_volumes.ps1     re-derives every tier's output/input volumes from vanilla recipes + target_be (BALANCE_FRAMEWORK §8)
   solve_building_cost.ps1 re-derives every tier's building_cost (construction points) from a 10yr-payback model (BALANCE_FRAMEWORK §9)
   extract_vanilla.ps1   dumps EVERY vanilla building/PMG/PM → ui/vanilla.js (the UI's all-buildings explorer — same editable layout as the tier cards); regenerated each build
+  extract_icons.ps1     converts the vanilla goods icons (.dds) → ui/icons.js (base64 PNGs) for the scenario panel; regenerated each build. ui/icons.js is GITIGNORED — it is Paradox art, never committed or shipped; the UI degrades to text-only without it
   audit_pm_refs.ps1     scans vanilla events/JEs/effects for references to main PMs our split relocated → MISSING_PM_REFERENCES.md (diagnostic; not run by build)
   convert_history.ps1   1836 start converter: re-tiers vanilla starting factories, applies start_exceptions.json
   extract_start.ps1     baseline extractor: vanilla start → start_baseline.json (inventory + version-drift alarm)
@@ -99,7 +100,7 @@ tools/                  dev tooling — NOT shipped in the mod
   lint_profitability.awk / ladder_tiers.txt   BE-vs-ladder linter (ladder_tiers.txt is GENERATED)
   lint_negative_goods.awk negative-goods invariant linter (no PM combination drives a good's building total < 0)
   solve_targets.awk / profit.awk / vanilla_profit_baseline.txt   ad-hoc analysis helpers
-ui/                     browser balance editor — builder.html (hand-authored) + data.js + vanilla.js (both GENERATED each build)
+ui/                     browser balance editor — builder.html (hand-authored) + data.js + vanilla.js + icons.js (all GENERATED each build; icons.js is gitignored game art)
 mod/                    THE DEPLOYABLE MOD — GENERATED, do not hand-edit
   .metadata/metadata.json                                (hand-maintained, except the mod `name` which the builder suffixes with the build time; has replace_paths for history)
   common/buildings/{01_industry,06_urban_center,11_private_infrastructure}.txt   (generated: WHOLE-FILE replacements of vanilla — 06/11 own the new-economy chains — see MODDING_NOTES)
@@ -343,10 +344,17 @@ the game.
   panel's price column), so they line up exactly at the default 100% prices.
   **Scenario panel + market prices (session-only).** Every building row has a **Number** column (count of that
   building in a hypothetical market; default 0, keyed by building key for tiers *and* reference buildings). The
-  **Scenario panel** (which **replaced the old price panel** — it now owns pricing) lists every good with:
-  **building inputs = BUY orders** and **outputs = SELL orders** (each building's active-PM goods × its Number;
-  secondary reductions net out), two user-editable fields **+ buy** and **+ sell** (default 0, to stand in for
-  pops/trade), and a **price** column. Assumptions (per design): full employment, no market-access/throughput
+  **Scenario panel** (which **replaced the old price panel** — it now owns pricing) is **styled after the in-game
+  market screen**: a **goods pictogram** + name/base price, then a two-row grouped header —
+  **Buy orders** (buildings | + extra) · **Sell orders** (buildings | + extra) · **Balance** · **Price** — with
+  thin proportional bars under Balance and Price. Buy = each building's active-PM **inputs** × its Number, Sell =
+  its **outputs** × Number (secondary reductions net out); **+ extra** (default 0) stands in for pops/trade.
+  **Colour** (gold `#d9a441` / blue `#5c9ede`): **gold = abundance** (sell > buy) **and below-base price**,
+  **blue = deficit and above-base price** — surplus and a low price always co-occur, so a row reads as one market
+  state. ⚠ The game itself appears to colour by **sign** (a *high* price is gold there); we colour by meaning —
+  flip `scenPriceCls()` to mirror vanilla exactly. **Pictograms** come from `ui/icons.js` (generated,
+  gitignored); the UI can never read game files itself, so a fresh clone that has not been built shows clean
+  **text-only** rows, and a good with no icon gets a dashed placeholder so names stay aligned. Assumptions (per design): full employment, no market-access/throughput
   effects — a building contributes exactly its listed in/out × Number. The good-group **sections are individually
   foldable** (click the section header; `SCENFOLD` set). The **price column header carries the two price controls**
   (replacing the removed panel's lock toggle + reset button), wired by **event delegation** since the panel
@@ -407,6 +415,12 @@ the game.
   browser can't run programs). Everything else works **frontend-only**: opening `ui/builder.html`
   directly still edits + previews + **Export mod_config.json** (then run `build.ps1` yourself).
   User-facing setup lives in `README.md`.
+- **PRINCIPLE — column alignment: LEFT unless there's a reason.** In the building tables every column aligns
+  **left** (`th,td` default); the `.num` class now only requests **tabular figures**, it does *not* force
+  right-alignment. Right-alignment is **opt-in**, and only justified where a cell holds a **label → value pair**
+  that should read as an equation — the goods rows (`grain 66 £1320`) and the `total in £1560` subtotals, both
+  handled by `.goodrow`'s flex — or in the **scenario panel**, which deliberately mirrors the in-game market
+  screen (order magnitudes line up). Don't reintroduce a right-aligned column without one of those reasons.
 - **PRINCIPLE — ONE UI layout for every building (do not keep re-deriving this).** There is **no separate or
   lesser UI** for buildings outside the tiering scope. Our tiers, economic-but-out-of-scope buildings (farms,
   mines, …), and non-economic buildings (government administration, military, …) all render with the **exact

@@ -30,13 +30,22 @@
   table{border-collapse:collapse;width:100%;font-size:13px}
   th,td{padding:5px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
   th{color:var(--muted);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px}
-  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  /* ALIGNMENT RULE: everything aligns LEFT (inherited from th,td above). `.num` only asks for
+     tabular figures - it no longer forces right-alignment. Right-alignment is opt-in, and only where a
+     cell holds a label->value PAIR that should read as an equation (the goods rows' `grain 66 £1320`,
+     the `total in £1560` subtotals - both handled by .goodrow's flex), or in the scenario panel, which
+     deliberately mirrors the in-game market screen (see .scen below). */
+  td.num,th.num{font-variant-numeric:tabular-nums}
   .mtable{table-layout:fixed}
   /* let a wide table scroll inside its card instead of clipping the right-hand columns on narrow screens */
   .card[data-ind]>.bd, .card.refcard>.bd{overflow-x:auto}
   .mtable col.c-tier{width:52px}
   .mtable col.c-bld{width:184px}
-  .mtable col.c-num{width:44px}
+  .mtable col.c-num{width:54px}
+  /* the Number cell: the global input width (58px) + the 8px cell padding overflowed this narrow
+     column, spilling into Inputs. Tight padding + a border-box input that fills the cell fixes it. */
+  .mtable td.numcell{padding-left:6px;padding-right:6px}
+  .mtable td.numcell input[type=number]{width:100%;box-sizing:border-box;text-align:left;padding:3px 4px}
   .mtable col.c-out{width:206px}
   .mtable col.c-in{width:204px}
   .mtable col.c-tgt{width:92px}
@@ -98,20 +107,41 @@
   .be.ok{color:var(--good)} .be.off{color:var(--warn)}
   .pill{display:inline-block;min-width:20px;text-align:center;border-radius:6px;padding:1px 7px;font-size:11px;font-weight:700;color:#0a0e14}
   .muted{color:var(--muted)}
-  /* scenario panel: buy/sell orders per good → market price (locked=manual / auto=V3 formula from orders) */
-  .scen table{font-size:12px;width:auto;min-width:100%}
-  .scen th{font-size:10px}
-  .scen td, .scen th{padding:2px 8px;border-bottom:1px solid var(--line)}
+  /* Scenario panel — styled after the in-game market screen: goods pictogram + name, grouped buy/sell
+     order columns, a signed balance and the market price. COLOUR (per spec): gold = abundance (sell >
+     buy) and below-base price; blue = deficit and above-base price. Surplus and a low price always
+     co-occur, so a row reads as one market state. NOTE: the game itself appears to colour by SIGN
+     (+gold / −blue), which tints a HIGH price gold; we colour by meaning instead — swap .sur/.def in
+     scenPriceCls() to mirror the game exactly.
+     Numbers here stay RIGHT-aligned (unlike the building tables, which are left per the alignment rule):
+     this panel deliberately mirrors the in-game market screen, where order magnitudes line up. */
+  .scen{--gold:#d9a441;--blue:#5c9ede}
+  .scen table{font-size:13.5px;width:auto;min-width:100%}
+  .scen th{font-size:10.5px;line-height:1.25}
+  .scen td, .scen th{padding:3px 10px;border-bottom:1px solid var(--line)}
   .scen td.num, .scen th.num{text-align:right;font-variant-numeric:tabular-nums}
-  .scen input{width:64px;text-align:right}
-  .scen .grphd td{background:var(--panel2);font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:700;cursor:pointer;user-select:none}
+  .scen .grpcol{border-left:1px solid var(--line)}
+  .scen input{width:70px;text-align:right}
+  .scen .grphd td{background:var(--panel2);font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:700;cursor:pointer;user-select:none}
   .scen .grphd .caret{display:inline-block;width:12px;color:var(--muted)}
+  .scen .gcell{display:flex;align-items:center;gap:9px}
+  .scen img.gico{width:28px;height:28px;flex:none}
+  /* placeholder keeps names aligned when a good has no pictogram (e.g. a patch added a new good) */
+  .scen .gicomiss{width:28px;height:28px;flex:none;border:1px dashed var(--line);border-radius:5px;box-sizing:border-box}
+  .scen .gname{color:var(--ink)}
+  .scen .gbase{color:var(--muted);font-size:11px}
+  .scen .sur{color:var(--gold)} .scen .def{color:var(--blue)}
   .scen .scpx{font-weight:700;font-variant-numeric:tabular-nums}
   .scen .scpx.oob{color:var(--bad)}
-  .scen .g{color:var(--muted)}
-  .scen input.scthr{width:48px;text-align:right}
+  .scen .scbal{font-weight:700;font-variant-numeric:tabular-nums}
+  /* thin proportional bars under balance / price, like the in-game panel */
+  /* bars sit under their number (cells are right-aligned), not stretched across the whole column */
+  .scen .scbar{height:3px;background:#20262f;border-radius:2px;margin:3px 0 1px auto;overflow:hidden;max-width:88px}
+  .scen .scbar i{display:block;height:100%;border-radius:2px;background:var(--muted)}
+  .scen .scbar i.sur{background:var(--gold)} .scen .scbar i.def{background:var(--blue)}
+  .scen input.scthr{width:52px;text-align:right}
   .scen input.scthr.oob{border-color:var(--bad);color:var(--bad)}
-  .scen .scpd{margin-left:2px}
+  .scen .scpd{margin-left:3px;color:var(--muted)}
   .scprhdrow{display:flex;align-items:center;justify-content:flex-end;gap:6px;white-space:nowrap}
   .scentoggle{display:inline-flex;align-items:center;gap:3px;font-weight:600;text-transform:none;letter-spacing:0}
   .scentoggle input{width:auto}
@@ -249,6 +279,9 @@
 
 <script src="data.js"></script>
 <script src="vanilla.js"></script>
+<!-- goods pictograms (generated by tools/extract_icons.ps1, .gitignore'd game art). Optional: the
+     scenario panel falls back to a text-only good name when window.PMICONS is absent. -->
+<script src="icons.js"></script>
 <script>
 "use strict";
 // ---------- constants ----------
@@ -461,7 +494,7 @@ function scenarioAggregates(){
 }
 function scenarioBuySell(agg, g){ return { buy:(agg.inAgg[g]||0)+(ADDBUY[g]||0), sell:(agg.outAgg[g]||0)+(ADDSELL[g]||0) }; }
 // the Number column cell — same markup for tier rows and reference rows (BLDNUM keyed by building key).
-function numCellHTML(key){ return `<td class="num"><input type="number" min="0" step="1" value="${BLDNUM[key]||0}" data-bldnum="${esc(key)}" title="Number of this building in the scenario"></td>`; }
+function numCellHTML(key){ return `<td class="num numcell"><input type="number" min="0" step="1" value="${BLDNUM[key]||0}" data-bldnum="${esc(key)}" title="Number of this building in the scenario"></td>`; }
 // when UNLOCKED, push the scenario's computed price (%) into thresholds for every priced good. Returns whether
 // it did anything (i.e. prices are live). Callers then re-render the price panel + downstream profit cells.
 function syncScenarioPrices(agg){
@@ -629,57 +662,86 @@ function scenGroups(){
   const other=[...priced].filter(g=>!grouped.has(g)).sort(); if(other.length) groups.push({title:'Other', goods:other});
   return groups.filter(gr=>gr.goods.length);
 }
-// the price cell: LOCKED = an editable % (manual price, like the old price panel); AUTO = read-only computed price.
-// In both cases the displayed value is thresholds[g] — in AUTO mode syncScenarioPrices has already set it from orders.
-function scenPriceCell(g){ const base=PRICES[g]||0, v=thresholds[g], oob=thrOOB(v)?'oob':'';
-  if(PRICES_LOCKED) return `<td class="num"><input class="scthr ${oob}" type="number" data-thr="${esc(g)}" value="${v}" min="1" step="5" title="manual price — % of base">%<span class="v muted scpd" id="scpd_${esc(g)}">£${round(base*v/100)}</span></td>`;
-  return `<td class="num"><span class="scpx ${oob}" id="scpx_${esc(g)}" title="auto price from orders (V3 formula)">${v}% · £${round(base*v/100)}</span></td>`;
+// Goods pictogram, from the generated + .gitignore'd icons.js. That file is written by build.ps1
+// (tools/extract_icons.ps1) — the UI itself can NEVER read the game's files, it's a browser page. So:
+//   * icons.js absent (fresh clone, never built) ⇒ HAVE_ICONS false ⇒ clean TEXT-ONLY rows, no gaps.
+//   * icons.js present but this good has no icon (a patch added a good) ⇒ a neutral placeholder box,
+//     so the good's name still lines up with its neighbours instead of jumping left.
+// Either way the good's name + base price are always rendered, so the panel stays readable.
+const HAVE_ICONS = !!(window.PMICONS && Object.keys(window.PMICONS).length);
+function goodIcon(g){
+  if(!HAVE_ICONS) return '';
+  const src=window.PMICONS[g];
+  return src ? `<img class="gico" src="${src}" alt="">`
+             : `<span class="gico gicomiss" title="no pictogram for ${esc(g)} — re-run tools\\build.ps1 after a game update"></span>`;
+}
+// market-state classes: gold = abundance / below-base price, blue = deficit / above-base price.
+function scenBalCls(bal){ return bal>0?'sur':(bal<0?'def':''); }
+function scenPriceCls(v){ return v<100?'sur':(v>100?'def':''); }
+function scBar(frac, cls){ const w=Math.round(Math.max(0,Math.min(1,frac))*100);
+  return `<div class="scbar"><i class="${cls}" style="width:${w}%"></i></div>`; }
+// the price cell: LOCKED = an editable % (manual price); AUTO = read-only computed price. Either way the
+// value shown is thresholds[g] — in AUTO mode syncScenarioPrices has already set it from the orders.
+function scenPriceInner(g){ const base=PRICES[g]||0, v=thresholds[g], oob=thrOOB(v)?'oob':'', cls=scenPriceCls(v);
+  const bar=scBar((v-25)/150, cls);   // position within the 25–175% band
+  if(PRICES_LOCKED) return `<input class="scthr ${oob}" type="number" data-thr="${esc(g)}" value="${v}" min="1" step="5" title="manual price — % of base">%<span class="scpd" id="scpd_${esc(g)}">£${round(base*v/100)}</span>${bar}`;
+  return `<span class="scpx ${oob} ${cls}" id="scpx_${esc(g)}" title="auto price from orders (V3 formula)">${v}% · £${round(base*v/100)}</span>${bar}`;
+}
+function scenBalInner(g, buy, sell){ const bal=sell-buy, cls=scenBalCls(bal), mx=Math.max(buy,sell,1);
+  return `<span class="scbal ${cls}" id="scbal_${esc(g)}">${bal>0?'+':''}${round(bal)}</span>${scBar(Math.abs(bal)/mx, cls)}`;
 }
 function renderScenario(){
   const el=document.getElementById('scenarioBody'); if(!el) return;
   const agg=scenarioAggregates();
   syncScenarioPrices(agg);   // AUTO: thresholds ← orders before rendering (LOCKED: no-op)
-  const row=g=>{ const inv=agg.inAgg[g]||0, outv=agg.outAgg[g]||0;
-    return `<tr data-good="${esc(g)}" title="${esc(g)} @base £${PRICES[g]||'?'}">
-      <td class="g">${esc(g)}</td>
-      <td class="num"><span id="scin_${esc(g)}">${round(inv)}</span></td>
-      <td class="num"><span id="scout_${esc(g)}">${round(outv)}</span></td>
+  const row=g=>{ const inv=agg.inAgg[g]||0, outv=agg.outAgg[g]||0, {buy,sell}=scenarioBuySell(agg,g);
+    return `<tr data-good="${esc(g)}">
+      <td><div class="gcell">${goodIcon(g)}<span><span class="gname">${esc(g)}</span><br><span class="gbase">base £${PRICES[g]||'?'}</span></span></div></td>
+      <td class="num grpcol"><span id="scin_${esc(g)}">${round(inv)}</span></td>
       <td class="num"><input type="number" min="0" step="1" value="${ADDBUY[g]||0}" data-addbuy="${esc(g)}"></td>
+      <td class="num grpcol"><span id="scout_${esc(g)}">${round(outv)}</span></td>
       <td class="num"><input type="number" min="0" step="1" value="${ADDSELL[g]||0}" data-addsell="${esc(g)}"></td>
-      ${scenPriceCell(g)}</tr>`; };
+      <td class="num grpcol" id="scbalc_${esc(g)}">${scenBalInner(g,buy,sell)}</td>
+      <td class="num grpcol" id="scpxc_${esc(g)}">${scenPriceInner(g)}</td></tr>`; };
   const toggle=`<label class="scentoggle" title="Locked: prices are manual — edit each % by hand. Auto: prices recompute live from the buy/sell orders and propagate to every building's Profit @ prices."><input type="checkbox" id="lockPrices" ${PRICES_LOCKED?'checked':''}> locked</label>`;
   const btn=`<button id="resetThr" ${PRICES_LOCKED?'':'disabled'} title="Set every good's price to 100% of base (only when locked)">100%</button>`;
-  el.innerHTML = `<table><thead><tr><th>Good</th>
-      <th class="num" title="Σ building inputs × Number = buy orders from buildings">bld in (buy)</th>
-      <th class="num" title="Σ building outputs × Number = sell orders from buildings">bld out (sell)</th>
-      <th class="num" title="extra buy orders you dial in (pops, trade, anything not modelled as a building)">+ buy</th>
-      <th class="num" title="extra sell orders you dial in">+ sell</th>
-      <th class="num scprhd"><div class="scprhdrow">price ${toggle} ${btn}</div></th></tr></thead><tbody>`
+  el.innerHTML = `<table><thead>
+      <tr><th rowspan="2">Good</th>
+        <th class="num grpcol" colspan="2" title="BUY orders: what buildings consume, plus anything extra you dial in">Buy orders</th>
+        <th class="num grpcol" colspan="2" title="SELL orders: what buildings produce, plus anything extra you dial in">Sell orders</th>
+        <th class="num grpcol" rowspan="2" title="sell − buy. Gold = surplus (abundance), blue = deficit.">Balance</th>
+        <th class="num grpcol" rowspan="2"><div class="scprhdrow">Price ${toggle} ${btn}</div></th></tr>
+      <tr><th class="num grpcol" title="Σ building inputs × Number">buildings</th>
+        <th class="num" title="extra buy orders you dial in (pops, trade, anything not modelled as a building)">+ extra</th>
+        <th class="num grpcol" title="Σ building outputs × Number">buildings</th>
+        <th class="num" title="extra sell orders you dial in">+ extra</th></tr></thead><tbody>`
     + scenGroups().map(gr=>{ const collapsed=SCENFOLD.has(gr.title);
-        return `<tr class="grphd" data-scenfold="${esc(gr.title)}" title="click to fold / unfold"><td colspan="6"><span class="caret">${collapsed?'▸':'▾'}</span> ${esc(gr.title)}</td></tr>`
+        return `<tr class="grphd" data-scenfold="${esc(gr.title)}" title="click to fold / unfold"><td colspan="7"><span class="caret">${collapsed?'▸':'▾'}</span> ${esc(gr.title)}</td></tr>`
           + (collapsed?'':gr.goods.map(row).join('')); }).join('')
     + `</tbody></table>`;
 }
 // refresh the scenario price column from thresholds[] (called by updateComputed, so ANY price change — manual
 // edit, auto-recompute, the %→X tools, reset — keeps this column in sync). Never clobbers a field being typed.
 function refreshScenPrices(){
-  Object.keys(PRICES).forEach(g=>{ const base=PRICES[g]||0, v=thresholds[g];
-    const inp=document.querySelector(`.scen input[data-thr="${g}"]`);   // LOCKED cell
-    if(inp){ if(inp!==document.activeElement) inp.value=v; inp.classList.toggle('oob',thrOOB(v));
-      const pd=document.getElementById(`scpd_${g}`); if(pd) pd.textContent=`£${round(base*v/100)}`; }
-    const px=document.getElementById(`scpx_${g}`);                       // AUTO cell
-    if(px){ px.textContent=`${v}% · £${round(base*v/100)}`; px.classList.toggle('oob',thrOOB(v)); } });
+  Object.keys(PRICES).forEach(g=>{ const cell=document.getElementById(`scpxc_${g}`); if(!cell) return;
+    const inp=cell.querySelector('input[data-thr]');
+    if(inp && inp===document.activeElement){   // mid-edit: update only the derived bits, never the field
+      const base=PRICES[g]||0, v=thresholds[g];
+      const pd=document.getElementById(`scpd_${g}`); if(pd) pd.textContent=`£${round(base*v/100)}`;
+      return; }
+    cell.innerHTML=scenPriceInner(g); });
 }
-// lightweight order refresh (no input rebuild → a field being typed keeps focus). AUTO also re-derives prices.
+// lightweight order refresh (no rebuild of the +buy/+sell inputs → a field being typed keeps focus).
 function updateScenario(){
   const agg=scenarioAggregates();
   Object.keys(PRICES).forEach(g=>{ const ie=document.getElementById(`scin_${g}`);  if(ie) ie.textContent=round(agg.inAgg[g]||0);
-    const oe=document.getElementById(`scout_${g}`); if(oe) oe.textContent=round(agg.outAgg[g]||0); });
+    const oe=document.getElementById(`scout_${g}`); if(oe) oe.textContent=round(agg.outAgg[g]||0);
+    const bc=document.getElementById(`scbalc_${g}`); if(bc){ const {buy,sell}=scenarioBuySell(agg,g); bc.innerHTML=scenBalInner(g,buy,sell); } });
   if(!PRICES_LOCKED){
     syncScenarioPrices(agg);        // thresholds ← orders
-    updateComputed();               // tier cells + (via refreshScenPrices) the auto price spans
+    updateComputed();               // tier cells + (via refreshScenPrices) the price column
     refBuildings().forEach(b=>{ if(document.getElementById(`refbe_${b}`)) refreshRefEconCells(b); });   // reference rows
-  }
+  } else refreshScenPrices();       // locked: balance moved, so the price bar/colour may still change
 }
 // price lock toggle + reset, shared by the delegated handlers below.
 function setPricesLocked(locked){

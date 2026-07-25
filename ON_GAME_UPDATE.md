@@ -48,6 +48,7 @@ still must **run** them; they don't run themselves.
 | **UI building explorer** (`ui/vanilla.js`) | ALL of `common/buildings/`, `common/production_method_groups/`, `common/production_methods/`; per-PM `unlocking_principles` (→ `gated:true`) | `extract_vanilla.ps1` (via `build.ps1`) | Full building/PMG/PM dump for the UI's all-buildings explorer. UI-only, never shipped. Regenerated every build, so a patch's new/changed buildings show up after a rebuild. `gated:true` marks **power-bloc-gated** PMs (have `unlocking_principles`); the UI's `basePm()` never defaults a PMG to one. A patch that adds/renames `unlocking_principles` on more PMs flows in on rebuild. |
 | **AI subsidy policy** | `common/ai_strategies/01_admin_strategies.txt` (whole-file replacement) + `00_default_strategy.txt` (**read-only**, for its `subsidies` trio) | `build.ps1` (`building_subsidies` map) | Rewrites the `subsidies` block of all **7 administrative** strategies. `ai_strategy_default`'s own subsidies are **read live** from vanilla each build and restated **only into strategies that had no `subsidies` block of their own** (a strategy that has one is authoritative — restating there would invent subsidies vanilla never granted, overriding deliberate per-strategy fine-tuning). Nothing to resync by hand. We deliberately do NOT own `00_default_strategy.txt`: it is one ~8790-line block covering the whole AI (wargoals, army/navy sizes, treaties, infamy, interest groups), so owning it to set one field would freeze all of that against future patches. **Re-check after a patch:** (a) new/renamed administrative strategies — the builder keys off `type = administrative`, so new ones are picked up automatically, but a strategy that stops being administrative silently loses our policy; (b) `ai_strategy_industrial_expansion` gaining a `possible` gate would break universal coverage (today it has none, which is why every AI always runs one administrative strategy). Unverified: whether a typed strategy's `subsidies` merges per key with the default's or replaces it (we restate the trio so we are correct either way). |
 | **Trade-center GDP gate** | `common/defines/00_ai.txt` → `NAI` `TRADE_CENTER_MINIMUM_GDP_*` | (not modded — informational) | Hard eligibility filter on where the AI will build trade centers (market capital 100k / other 500k yearly GDP, ×2 non-coastal, ×2 unrecognized, ×(1 + years×0.02)). `ai_value` and subsidies only re-weight states that already cleared it. If AI trade-center construction is being tuned, check these first. |
+| **UI goods pictograms** (`ui/icons.js`) | `common/goods/00_goods.txt` (each good's `texture = "…"`) + `gfx/interface/icons/goods_icons/*.dds` | `extract_icons.ps1` (via `build.ps1`) | Converts each good's icon to a base64 PNG for the scenario panel. Reads the texture path **per good** (never assumes filename = good name: `engines`→`locomotives.dds`, `manowars`→`man_o_wars.dds`), so renames/re-points follow on rebuild. **UI-only, `.gitignore`d — Paradox art is never committed or shipped in `mod/`.** Requires *uncompressed 32-bit BGRA* DDS (today's format); if a patch switches to DXT/BC the icons are skipped with a `note:` and the UI degrades to text-only. Absent `icons.js` (fresh clone, never built) ⇒ text-only rows, no error. |
 | **Non-`pm_` PM names** | PM keys in `common/production_methods/` (plantations/mines use `default_`/`automatic_`/`worker_`/`picks_and_shovels_`/… , not `pm_`) | `extract_vanilla.ps1`, `build.ps1` (`pm_goods` writer), `lint_negative_goods.awk` | All three treat **every** top-level block in a production_methods file as a PM (not only `pm_*`), so plantation/mine goods extract, emit (via `pm_goods`), and lint. If a patch introduces yet another PM-name shape, these already handle any identifier. |
 
 **Drift alarm (read this every update):** `config/start_baseline.json` → **`unmapped`** list. It is
@@ -62,10 +63,23 @@ refresh the affected tier's **`vanilla_pm`** field in `config/mod_config.json`, 
 These are hand-maintained copies of vanilla data. Nothing warns you if vanilla changes them — check by
 hand on a major patch.
 
-1. **Base good prices — `tools/goods_prices.tsv`.** A static mirror of `common/goods/00_goods.txt`
-   base prices, and the single price source for the builder, both solvers, the linter, and the UI. If a
-   patch **re-prices any good**, update this TSV or every derived number is subtly wrong. (No automatic
-   check — compare against `00_goods.txt`.)
+1. **Base good prices AND the good list — `tools/goods_prices.tsv`.** A static mirror of
+   `common/goods/00_goods.txt` base prices, and the single price source for the builder, both solvers,
+   the linter, and the UI. Two things to check after a patch, both by comparing against `00_goods.txt`
+   (no automatic check):
+   - **Re-priced goods** → update the TSV or every derived number is subtly wrong.
+   - **Added / removed / renamed goods** → add them to the TSV, *and* to `GOOD_GROUPS` in
+     `ui/builder.html` (an unlisted good still shows, but lands in the catch-all "Other" section).
+     A good the TSV doesn't know is priced £0 everywhere — this one bites hard, so check it first.
+   **Goods pictograms** follow automatically: `tools/extract_icons.ps1` re-reads each good's own
+   `texture = "…"` from `00_goods.txt` every build, so a new/renamed good or a re-pointed icon is
+   picked up on the next `build.ps1` with nothing to hand-edit. Two caveats worth knowing:
+   - The decoder only handles **uncompressed 32-bit BGRA** `.dds` (what V3 ships today: 256×256, no
+     fourCC). If a patch re-encodes the icons as **DXT/BC compressed**, every icon is skipped with a
+     `note:` line and the UI falls back to text-only — it will not crash, but you'd need block
+     decompression added to the extractor.
+   - A good whose icon is missing renders a dashed placeholder box in the scenario panel (its name and
+     price still show), so a gap is visible rather than silent.
 
 2. **UI £/point constant — `ui/builder.html`, `BCM.poundPerPoint = 720`.** Static; used only for the
    UI's muted "model N" build-cost hint. Will go **stale if the construction iron PM recipe changes**.

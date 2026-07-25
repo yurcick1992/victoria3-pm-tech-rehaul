@@ -550,6 +550,9 @@ if (-not $isAlt) {
     # vanilla.js: full building/PMG/PM reference so the UI ALWAYS shows every building (regardless of
     # include_all_buildings, which only gates emission). Re-derived from the live game each build.
     & (Join-Path $PSScriptRoot 'extract_vanilla.ps1') -Repo $repo -Game $Game
+    # icons.js: goods pictograms for the scenario panel. UI-only and .gitignore'd (game art is never
+    # committed or shipped); if it's missing the UI simply renders without pictograms.
+    & (Join-Path $PSScriptRoot 'extract_icons.ps1') -Repo $repo -Game $Game
 }
 
 # --- report ---
