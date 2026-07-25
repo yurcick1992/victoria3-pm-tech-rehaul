@@ -155,7 +155,14 @@
      glyph over each row's "100 %" in BOTH modes — locked (where the input's border shows the box) and auto
      (where the number is bare text, which is what exposed the old centred label as misaligned).
      Explicit height: a button's line box otherwise resolves 2px shorter than an input's. */
-  .scen input.scthr{width:52px;height:25px;box-sizing:border-box;padding:3px 5px;font-size:12px;font-family:inherit;line-height:17px}
+  .scen input.scthr{width:52px;height:25px;box-sizing:border-box;padding:3px 5px;font-size:12px;font-family:inherit;line-height:17px;text-align:right}
+  /* Kill the number spinners on the price input. They are rendered inside the box and RESERVE WIDTH, so
+     the digits were pushed left of the header button's label (which has no spinner) and shifted again
+     when toggling to auto (a plain span, also no spinner). With them gone all three — input, header
+     button and the auto-mode span — put their digits flush against the same 6px right inset. */
+  .scen input.scthr::-webkit-outer-spin-button,
+  .scen input.scthr::-webkit-inner-spin-button{-webkit-appearance:none;appearance:none;margin:0}
+  .scen input.scthr{-moz-appearance:textfield;appearance:textfield}
   /* The header button IS the number box: identical width/height/padding/border to a row's % input, with
      the "%" sitting OUTSIDE it in a .pxsuf — exactly the structure of a row. So the boxes line up AND the
      glyphs do. (Letting the button swallow the "%" made it 67px against the rows' 52px, which read as the
