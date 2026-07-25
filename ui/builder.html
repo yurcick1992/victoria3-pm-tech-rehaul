@@ -174,8 +174,11 @@
      same 6px right inset (input's 5px padding + 1px border). Matching the HEIGHT matters as much as the
      width: a shorter span collapses the .pxrow, which pulled the £, the % and (worst) the bar upwards
      when unlocking. Flex-centred so the digits sit on the same baseline as the input's. */
+  /* font-size must be stated here too: the input and the header button set 12px explicitly, while this
+     span would otherwise inherit the table's 13.5px and the digits would resize on every lock toggle.
+     All THREE renderings of the % (locked input, header button, auto span) must share the same font. */
   .scen .pxpct .scpx{display:inline-flex;align-items:center;justify-content:flex-end;
-    width:52px;height:25px;box-sizing:border-box;padding-right:6px}
+    width:52px;height:25px;box-sizing:border-box;padding-right:6px;font-size:12px;line-height:17px}
   .scen .pxhdlbl{flex:1;display:flex;align-items:center;gap:6px;white-space:nowrap;text-align:left}
   .scen .pxhdsub{color:var(--muted);font-weight:600}
   .scentoggle{display:inline-flex;align-items:center;gap:3px;font-weight:600;text-transform:none;letter-spacing:0}
