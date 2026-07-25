@@ -131,7 +131,9 @@
   .scen .gname{color:var(--ink)}
   .scen .gbase{color:var(--muted);font-size:11px}
   .scen .sur{color:var(--gold)} .scen .def{color:var(--blue)}
-  .scen .scpx{font-weight:700;font-variant-numeric:tabular-nums}
+  /* NOT bold: the auto-mode number must look identical to the locked input's text, or the digits
+     visibly change weight when you toggle. The £ price is the bold one (.pxgbp). */
+  .scen .scpx{font-variant-numeric:tabular-nums}
   .scen .scpx.oob{color:var(--bad)}
   .scen .scbal{font-weight:700;font-variant-numeric:tabular-nums}
   /* thin proportional bars under balance / price, like the in-game panel */
@@ -168,10 +170,12 @@
      glyphs do. (Letting the button swallow the "%" made it 67px against the rows' 52px, which read as the
      header being wider than the column beneath it.) */
   .scen button#resetThr{width:52px;height:25px;box-sizing:border-box;padding:3px 5px;text-align:right;font-size:12px;font-family:inherit;line-height:17px}
-  /* AUTO mode: the read-only % occupies the same 52px box the input does — and repeats the input's
-     right padding + border (5+1) so the digits sit at the SAME x in both modes (they used to jump 6px
-     on toggle) and under the header button's label. */
-  .scen .pxpct .scpx{display:inline-block;width:52px;box-sizing:border-box;padding-right:6px;text-align:right}
+  /* AUTO mode: the read-only % occupies the SAME BOX the input does — same 52x25 footprint and the
+     same 6px right inset (input's 5px padding + 1px border). Matching the HEIGHT matters as much as the
+     width: a shorter span collapses the .pxrow, which pulled the £, the % and (worst) the bar upwards
+     when unlocking. Flex-centred so the digits sit on the same baseline as the input's. */
+  .scen .pxpct .scpx{display:inline-flex;align-items:center;justify-content:flex-end;
+    width:52px;height:25px;box-sizing:border-box;padding-right:6px}
   .scen .pxhdlbl{flex:1;display:flex;align-items:center;gap:6px;white-space:nowrap;text-align:left}
   .scen .pxhdsub{color:var(--muted);font-weight:600}
   .scentoggle{display:inline-flex;align-items:center;gap:3px;font-weight:600;text-transform:none;letter-spacing:0}
