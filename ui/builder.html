@@ -156,12 +156,11 @@
      (where the number is bare text, which is what exposed the old centred label as misaligned).
      Explicit height: a button's line box otherwise resolves 2px shorter than an input's. */
   .scen input.scthr{width:52px;height:25px;box-sizing:border-box;padding:3px 5px;font-size:12px;font-family:inherit;line-height:17px}
-  .scen button#resetThr{width:67px;height:25px;box-sizing:border-box;padding:0;display:inline-flex;align-items:center;font-size:12px;font-family:inherit;line-height:17px}
-  /* the button's 1px border insets its content, so the inner slots are 1px narrower than a row's
-     (51+14 vs 52+15). That makes the button's GLYPHS land exactly on the rows' — text right edge at the
-     same x as an input's, "%" starting at the same x — which is what actually reads as aligned. */
-  .scen button#resetThr .pxbtnnum{width:51px;flex:none;box-sizing:border-box;padding-right:6px;text-align:right}
-  .scen button#resetThr .pxsuf{width:14px;flex:none}
+  /* The header button IS the number box: identical width/height/padding/border to a row's % input, with
+     the "%" sitting OUTSIDE it in a .pxsuf — exactly the structure of a row. So the boxes line up AND the
+     glyphs do. (Letting the button swallow the "%" made it 67px against the rows' 52px, which read as the
+     header being wider than the column beneath it.) */
+  .scen button#resetThr{width:52px;height:25px;box-sizing:border-box;padding:3px 5px;text-align:right;font-size:12px;font-family:inherit;line-height:17px}
   /* AUTO mode: the read-only % occupies the same 52px box the input does — and repeats the input's
      right padding + border (5+1) so the digits sit at the SAME x in both modes (they used to jump 6px
      on toggle) and under the header button's label. */
@@ -733,8 +732,8 @@ function renderScenario(){
       <td class="num grpcol" id="scbalc_${esc(g)}">${scenBalInner(g,buy,sell)}</td>
       <td class="num grpcol" id="scpxc_${esc(g)}">${scenPriceInner(g)}</td></tr>`; };
   const toggle=`<label class="scentoggle" title="Locked: prices are manual — edit each % by hand. Auto: prices recompute live from the buy/sell orders and propagate to every building's Profit @ prices."><input type="checkbox" id="lockPrices" ${PRICES_LOCKED?'checked':''}> locked</label>`;
-  // inner spans mirror a row's number slot + "%" suffix, so the label lands exactly over the rows' values
-  const btn=`<button id="resetThr" ${PRICES_LOCKED?'':'disabled'} title="Set every good's price to 100% of base (only when locked)"><span class="pxbtnnum">100</span><span class="pxsuf">%</span></button>`;
+  // label is just the number: the button stands in for a row's % input, and the "%" goes outside it below
+  const btn=`<button id="resetThr" ${PRICES_LOCKED?'':'disabled'} title="Set every good's price to 100% of base (only when locked)">100</button>`;
   el.innerHTML = `<table><thead>
       <tr><th rowspan="2">Good</th>
         <th class="num grpcol" colspan="2" title="BUY orders: what buildings consume, plus anything extra you dial in">Buy orders</th>
@@ -743,7 +742,7 @@ function renderScenario(){
         <th class="num grpcol" rowspan="2"><div class="pxrow">
           <span class="pxhdlbl">Price ${toggle}</span>
           <span class="pxgbp pxhdsub">£</span>
-          <span class="pxpct">${btn}</span></div></th></tr>   <!-- no outer .pxsuf: the button carries its own -->
+          <span class="pxpct">${btn}<span class="pxsuf">%</span></span></div></th></tr>
       <tr><th class="num grpcol" title="Σ building inputs × Number">buildings</th>
         <th class="num" title="extra buy orders you dial in (pops, trade, anything not modelled as a building)">+ extra</th>
         <th class="num grpcol" title="Σ building outputs × Number">buildings</th>
