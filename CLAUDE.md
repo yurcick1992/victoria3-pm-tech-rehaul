@@ -83,6 +83,7 @@ MISSING_BUILDING_CONDITIONS.md catalogue of special conditional fields (e.g. a c
 config/mod_config.json      THE THING YOU EDIT — industries → tiers (tech, target_be, natural_year, output, inputs, building_cost, wage_pct?, employment, names, vanilla_pm, vanilla_pm_aliases?, state_infrastructure?, ship_construction?, ai_value?, output_override?); industry flags source_file?/clone_from_vanilla?/follows_be?/no_mass_be? (new-economy); plus top-level include_all_buildings (build-emission scope flag; see below), building_ai_value (map building_key→ai_value for PRESERVED buildings in owned files, e.g. trade center), and pm_goods (map pm_key→{in:{good:qty},out:{good:qty}} — per-PM goods overrides applied to the owned PM files; any building's PM)
 config/start_exceptions.json manual 1836-start overrides (force_tier / remove, scoped by country/state) — editable
 config/start_baseline.json   GENERATED inventory of the vanilla 1836 start (per-industry/tier/country + drift check)
+config/presets.json          WHICH scenario presets to generate (id/label/group/country + optional market_add/market_drop, sol) — editable
 tools/                  dev tooling — NOT shipped in the mod
   build.ps1             builder: config → generates all mod/ files + all-language loc + ladder_tiers.txt + 1836 start, then lints
   solve_be_targets.ps1  re-derives every tier's target_be + natural_year from its tech's vanilla era (date ladder; BALANCE_FRAMEWORK §8.1)
@@ -90,17 +91,18 @@ tools/                  dev tooling — NOT shipped in the mod
   solve_building_cost.ps1 re-derives every tier's building_cost (construction points) from a 10yr-payback model (BALANCE_FRAMEWORK §9)
   extract_vanilla.ps1   dumps EVERY vanilla building/PMG/PM → ui/vanilla.js (the UI's all-buildings explorer — same editable layout as the tier cards); regenerated each build
   extract_icons.ps1     converts the vanilla goods icons (.dds) → ui/icons.js (base64 PNGs) for the scenario panel; regenerated each build. ui/icons.js is GITIGNORED — it is Paradox art, never committed or shipped; the UI degrades to text-only without it
+  extract_presets.ps1   derives the scenario panel's market PRESETS from the vanilla 1836 start (config/presets.json → ui/presets.js): per country market, its buildings (re-tiered) + the PMs vanilla runs, treaty goods transfers, and the population split into consumption classes, plus the buy-package / pop-need tables the UI needs; regenerated each build
   audit_pm_refs.ps1     scans vanilla events/JEs/effects for references to main PMs our split relocated → MISSING_PM_REFERENCES.md (diagnostic; not run by build)
   convert_history.ps1   1836 start converter: re-tiers vanilla starting factories, applies start_exceptions.json
   extract_start.ps1     baseline extractor: vanilla start → start_baseline.json (inventory + version-drift alarm)
-  history_lib.ps1       shared history parser used by the converter + extractor
+  history_lib.ps1       shared vanilla parsing: history walkers (Walk-HistoryFile / Read-HistoryBlocks) + Get-TopBlocks / Get-ListTokens, used by the converter and every extractor
   ui.ps1                balance-UI server: serves ui/ at localhost:8777 + POST /api/build (writes config, runs build)
   goods_prices.tsv      shared vanilla price table (build + UI + reference)
   lint.sh                profitability + negative-goods linter wrapper (runs both awks below)
   lint_profitability.awk / ladder_tiers.txt   BE-vs-ladder linter (ladder_tiers.txt is GENERATED)
   lint_negative_goods.awk negative-goods invariant linter (no PM combination drives a good's building total < 0)
   solve_targets.awk / profit.awk / vanilla_profit_baseline.txt   ad-hoc analysis helpers
-ui/                     browser balance editor — builder.html (hand-authored) + data.js + vanilla.js + icons.js (all GENERATED each build; icons.js is gitignored game art)
+ui/                     browser balance editor — builder.html (hand-authored) + data.js + vanilla.js + presets.js + icons.js (all GENERATED each build; icons.js is gitignored game art)
 mod/                    THE DEPLOYABLE MOD — GENERATED, do not hand-edit
   .metadata/metadata.json                                (hand-maintained, except the mod `name` which the builder suffixes with the build time; has replace_paths for history)
   common/buildings/{01_industry,06_urban_center,11_private_infrastructure}.txt   (generated: WHOLE-FILE replacements of vanilla — 06/11 own the new-economy chains — see MODDING_NOTES)
@@ -346,9 +348,11 @@ the game.
   building in a hypothetical market; default 0, keyed by building key for tiers *and* reference buildings). The
   **Scenario panel** (which **replaced the old price panel** — it now owns pricing) is **styled after the in-game
   market screen**: a **goods pictogram** + name/base price, then a two-row grouped header —
-  **Buy orders** (buildings | + extra) · **Sell orders** (buildings | + extra) · **Balance** · **Price** — with
+  **Buy orders** (buildings | pops | non-pops) · **Sell orders** (buildings | + extra) · **Balance** · **Price** — with
   thin proportional bars under Balance and Price. Buy = each building's active-PM **inputs** × its Number, Sell =
-  its **outputs** × Number (secondary reductions net out); **+ extra** (default 0) stands in for pops/trade.
+  its **outputs** × Number (secondary reductions net out); **pops** is the derived population demand (read-only,
+  see the preset section below) and **non-pops** (default 0) is everything else — treaty transfers a preset fills
+  in, or anything you dial in by hand. Pops never sell, so the sell side keeps a single **+ extra** column.
   **Colour** (gold `#d9a441` / blue `#5c9ede`): **gold = abundance** (sell > buy) **and below-base price**,
   **blue = deficit and above-base price** — surplus and a low price always co-occur, so a row reads as one market
   state. ⚠ The game itself appears to colour by **sign** (a *high* price is gold there); we colour by meaning —
@@ -368,7 +372,79 @@ the game.
   `updateComputed`) keeps the price column in sync after any change, including the `%→X` payback tools. Hovering an
   industry flags its goods on their **scenario rows** (the highlight moved off the removed panel). All of this —
   `BLDNUM`/`ADDBUY`/`ADDSELL`/`SCENFOLD`/lock state — is **session-only** (never saved to config or emitted), like
-  PM selections. An editable **Build cost** column
+  PM selections.
+  **Scenario presets (the preset bar).** A wrapping button strip at the top of the scenario panel (sized to hold a
+  couple of dozen entries, grouped by the preset's `group`). Clicking one **completely overwrites** the scenario:
+  every building **Number**, the **non-pop** buy + sell orders, the **population**, the **year**, *and* the
+  **PM selections** (both our tiers' secondaries and the explorer's `REFSEL`, reset to defaults first, then set to
+  what vanilla actually runs there). Always present: a built-in **Empty** preset that zeroes everything — it works
+  even without `ui/presets.js`.
+  **PRINCIPLE — a preset is a one-off overwrite, not a mode you sit in.** The instant you touch a field the
+  scenario is your own, so **nothing in the panel may claim you are "in" a preset**: no active-button highlight, no
+  standing description of the market / subsistence / lock state. Everything a preset knows about itself —
+  market members, building types + levels, the pop split, the subsistence staffing sum, treaty transfers, which
+  goods the year locks, the price-lock state, the urban-centre gap — is reported **once, in the banner**, by
+  `presetReportHTML()` when it is applied (a changed **year** reports there too). The bar itself holds only live
+  controls. Keep it that way when adding preset features. The rest come from **`ui/presets.js`**, generated by `tools/extract_presets.ps1` from the live
+  vanilla 1836 start (so they refresh on a game patch), and **which** presets exist is `config/presets.json`
+  (id/label/group/country, optional `market_add`/`market_drop` and `sol`). Derivation, per spec:
+  a preset is a country's **whole market** — the lead country plus every subject that shares its market (all
+  subject types share the overlord's by default; `grant_own_market` is the exception, resolved transitively, e.g.
+  GBR → BIC → its Indian puppets); its **buildings** are every `create_building` in `common/history/buildings`
+  owned by a member, counted in **levels** and mapped onto **our tier building** via the active vanilla main PM;
+  **no trade-route trade** is assumed, only `goods_transfer` treaty articles in force in 1836 (a transfer **out**
+  of the market is an extra **buy** order, a transfer **in** an extra **sell** order).
+  **Pop demand** is computed **live in the UI** (`popDemand()`), not baked into the preset: the preset carries the
+  population split into **upper / middle / lower / slaves / peasants**, each class buys the **buy package**
+  (`common/buy_packages`) of its wealth level — the **SoL** fields in the bar, default 35 / 16 / 9 — scaled by
+  people ÷ `POP_SIZE_PACKAGE` (10 000), by the **per-head dependent factor** (needs are per *working adult*;
+  dependents need `DEPENDENT_CONSUMPTION_RATIO` = half ⇒ `0.25 + 0.75×0.5` = **0.625** per head) and by its class
+  multiplier (**peasants ×0.05** — the game's own `consumption_mult` in `common/pop_types/peasants.txt`: most of a
+  peasant's needs are met inside the subsistence building and never reach the market; **slaves ×0.5** is ours,
+  overridable via `defaults.class_mult` in `config/presets.json`). Each **pop need**'s money is split across the
+  goods that need lists, by the game's own `weight` (`common/pop_needs`), **restricted to the goods currently
+  unlocked** — a deliberately flat distribution over what technology makes possible, with **no supply-share
+  substitution** (a need with nothing unlocked falls back to its `default` good, so a need can never silently
+  vanish). Money → quantity at **base price**, then scaled by the **`pop demand fit ×`** knob (the "vanilla-fit"
+  calibration multiplier, default 1).
+  **The population itself is editable** — one field per class (`upper / middle / lower / slaves / peasants`) in the
+  preset bar, showing the derived total; a preset reloads them, and you can then push them around by hand.
+  **Per-good unlock toggles** ("Pops may buy") cover every good any pop need lists (`pop_model.need_goods`, 35
+  today), next to an editable **year**. **This is a START STATE the preset seeds and the user then owns — nothing
+  more.** Nothing here is emitted, and the mod has **no tech-gating of PMs or goods in the UI**; don't extend this
+  into one. The default is **the calendar, never a country's research** — a market imports what it cannot make, so
+  a good is available once *some* building × PM that outputs it could exist **anywhere**: `pop_model.available_from`
+  = the earliest year satisfying both the building's and the PM's `unlocking_technologies`, using the **era start
+  years vanilla writes in comments** in `common/technology/eras` (`era_2 = { #1836-1861 }` → 1836; era 1 "Pre-1836"
+  → always). Today that dates **steamers + electricity to 1862** and **automobiles, telephones, radios, aeroplanes
+  to 1887**; everything else is always available, so all four 1836 presets lock the same six goods. Editing the
+  **year** re-derives the whole set; per-preset forcing lives in `config/presets.json` as `unlock_add` /
+  `unlock_drop` (e.g. `"unlock_drop": ["clippers"]` for a landlocked market) — that is the hook for anything the
+  calendar cannot know. Toggling one good re-splits every need that lists it. The pops column,
+  the knob, the SoL fields, the pop counts and the unlock set are all **session-only**.
+  **Buildings the history files never create are inferred**, because two of them dominate the supply side:
+  - **Subsistence farms** (`bg_subsistence_*`) — *the peasants ARE this supply*. The game raises one per state on
+    the arable land the real farms/ranches/plantations leave free (`arable_land` and `subsistence_building` in
+    `map_data/state_regions`, minus the levels of `bg_agriculture`/`bg_ranching`/`bg_plantations` buildings there;
+    state ownership from `common/history/states`, apportioned by owned-province share when a state is split).
+    Each level hires 5 000 peasants (rice paddies 10 000) and its goods are **`workforce_scaled`** — proportional
+    to the peasants actually working, *not* to the level count. So the extractor emits each subsistence type at
+    its **staffed-level equivalent** = free arable × `staffing`, where `staffing = min(1, peasant workforce ÷
+    capacity)` and peasant workforce = peasant pop × `WORKING_ADULT_RATIO_BASE` (0.25). That reproduces the real
+    output exactly under the UI's full-employment model, and it self-scales: peasants are already the residual of
+    the class split, so more industry ⇒ fewer peasants ⇒ less subsistence output. 1836 staffing lands at
+    FRA 79% / GBR 73% / RUS 57% / **CHI 100%** (China is arable-capped: 90.9M peasant workers vs 73.3M jobs).
+  - **Ownership buildings** (**manor houses / financial districts**) — inferred from the `add_ownership` entries
+    (one level per owned level), for any owner type history never `create_building`s.
+  For both, which PM is active is decided by the owner's **LAWS** (`activate_law` in `common/history/countries`)
+  rather than by a history line: `Select-LawPm` picks the first PM that is not power-bloc- or tech-gated, not
+  disallowed by an active law, and either ungated or unlocked by one the country has — so Russia/Qing run
+  `pm_serfdom`, France `pm_peasant_proprietorship`, Britain `pm_serfdom_no`, and everyone gets home workshops
+  rather than the collectivized-agriculture variant the PMG happens to list first.
+  **Known model gap (reported in the apply banner):** **urban centres** are still missing — their level count
+  comes from state urbanization by an engine-side rule that is not in the game files (`common/building_groups`
+  gives urbanization *per building level*, but not the divisor). Their absence understates services supply,
+  wood/glass demand and the middle class. An editable **Build cost** column
   (construction points → `required_construction`, with a muted "model N" hint that turns amber when the
   stored value diverges from what `solve_building_cost.ps1` would set), a read-only **Payback** column
   (years = build cost × £720/point ÷ annual net profit at the current prices; wages per the row's

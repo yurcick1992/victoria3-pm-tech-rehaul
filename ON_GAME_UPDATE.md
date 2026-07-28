@@ -49,6 +49,7 @@ still must **run** them; they don't run themselves.
 | **AI subsidy policy** | `common/ai_strategies/01_admin_strategies.txt` (whole-file replacement) + `00_default_strategy.txt` (**read-only**, for its `subsidies` trio) | `build.ps1` (`building_subsidies` map) | Rewrites the `subsidies` block of all **7 administrative** strategies. `ai_strategy_default`'s own subsidies are **read live** from vanilla each build and restated **only into strategies that had no `subsidies` block of their own** (a strategy that has one is authoritative — restating there would invent subsidies vanilla never granted, overriding deliberate per-strategy fine-tuning). Nothing to resync by hand. We deliberately do NOT own `00_default_strategy.txt`: it is one ~8790-line block covering the whole AI (wargoals, army/navy sizes, treaties, infamy, interest groups), so owning it to set one field would freeze all of that against future patches. **Re-check after a patch:** (a) new/renamed administrative strategies — the builder keys off `type = administrative`, so new ones are picked up automatically, but a strategy that stops being administrative silently loses our policy; (b) `ai_strategy_industrial_expansion` gaining a `possible` gate would break universal coverage (today it has none, which is why every AI always runs one administrative strategy). Unverified: whether a typed strategy's `subsidies` merges per key with the default's or replaces it (we restate the trio so we are correct either way). |
 | **Trade-center GDP gate** | `common/defines/00_ai.txt` → `NAI` `TRADE_CENTER_MINIMUM_GDP_*` | (not modded — informational) | Hard eligibility filter on where the AI will build trade centers (market capital 100k / other 500k yearly GDP, ×2 non-coastal, ×2 unrecognized, ×(1 + years×0.02)). `ai_value` and subsidies only re-weight states that already cleared it. If AI trade-center construction is being tuned, check these first. |
 | **UI goods pictograms** (`ui/icons.js`) | `common/goods/00_goods.txt` (each good's `texture = "…"`) + `gfx/interface/icons/goods_icons/*.dds` | `extract_icons.ps1` (via `build.ps1`) | Converts each good's icon to a base64 PNG for the scenario panel. Reads the texture path **per good** (never assumes filename = good name: `engines`→`locomotives.dds`, `manowars`→`man_o_wars.dds`), so renames/re-points follow on rebuild. **UI-only, `.gitignore`d — Paradox art is never committed or shipped in `mod/`.** Requires *uncompressed 32-bit BGRA* DDS (today's format); if a patch switches to DXT/BC the icons are skipped with a `note:` and the UI degrades to text-only. Absent `icons.js` (fresh clone, never built) ⇒ text-only rows, no error. |
+| **UI scenario presets** (`ui/presets.js`) | `common/history/buildings/*.txt`, `common/history/pops/*.txt`, `common/history/states/00_states.txt`, `common/history/countries/*.txt` (`activate_law`), `common/history/diplomacy/00_subject_relationships.txt`, `common/history/treaties/00_historical_treaties.txt`, `map_data/state_regions/*.txt` (`arable_land`, `subsistence_building`), `common/technology/technologies/*.txt` + `common/technology/eras/*.txt` (tech eras + the era start years, which vanilla writes only as comments → the year each pop good becomes available), `common/buy_packages/*.txt`, `common/pop_needs/*.txt`, `common/pop_types/*.txt` (`working_adult_ratio`, `consumption_mult`), `common/buildings/`, `production_method_groups/`, `production_methods/` (PMGs, per-PM employment, law + tech gates) | `extract_presets.ps1` (via `build.ps1`) | One preset per entry in `config/presets.json` = a country's whole market: buildings (re-tiered via `vanilla_pm`, counted in levels) + the PMs vanilla runs, `goods_transfer` treaty articles in force in 1836, the **subsistence** buildings inferred from free arable land at their staffed-level equivalent, and the population split into consumption classes. UI-only, never shipped. **Re-check after a patch:** (a) the **strata map** (`$STRATA`) and **subject-type list** (`$SUBJECT_TYPES`) are ENGINE-side, spelled out in the tool — a new profession warns ("unknown pop type … treated as lower") but a new *subject type* would silently drop that subject out of the market; (b) market membership assumes **every subject shares its overlord's market unless a `grant_own_market` pact exists** — if Paradox changes that default (or which types it applies to), fix `Get-MarketMembers` or use `market_add`/`market_drop`; (c) **ownership buildings** (manor house / financial district) are inferred as "owner types history never `create_building`s", one level per owned level — a patch that starts creating them explicitly, or adds a third ownership type, flows in automatically, but a patch that changes the levels-per-ownership rule does not; (d) **subsistence** assumes one arable land per agricultural level and `subsistence levels = free arable`, with employment read per type from its own PM (5 000, rice 10 000) — the arable-land accounting is the part not stated anywhere in the files. Defines mirrored statically in the tool / `ui/builder.html`: `POP_SIZE_PACKAGE` (10 000), `WORKING_ADULT_RATIO_BASE` (0.25), `DEPENDENT_CONSUMPTION_RATIO` (0.5). |
 | **Non-`pm_` PM names** | PM keys in `common/production_methods/` (plantations/mines use `default_`/`automatic_`/`worker_`/`picks_and_shovels_`/… , not `pm_`) | `extract_vanilla.ps1`, `build.ps1` (`pm_goods` writer), `lint_negative_goods.awk` | All three treat **every** top-level block in a production_methods file as a PM (not only `pm_*`), so plantation/mine goods extract, emit (via `pm_goods`), and lint. If a patch introduces yet another PM-name shape, these already handle any identifier. |
 
 **Drift alarm (read this every update):** `config/start_baseline.json` → **`unmapped`** list. It is
@@ -100,7 +101,11 @@ hand on a major patch.
 5. **Hardcoded vanilla file paths.** The tools assume these vanilla files exist by name:
    `common/buildings/01_industry.txt`, `common/production_methods/01_industry.txt` &
    `13_construction.txt`, `common/production_method_groups/01_industry.txt`,
-   `common/history/buildings/*.txt`, `common/goods/00_goods.txt`,
+   `common/history/buildings/*.txt`, `common/history/pops/*.txt`,
+   `common/history/diplomacy/00_subject_relationships.txt`,
+   `common/history/treaties/00_historical_treaties.txt`, `common/buy_packages/*.txt`,
+   `common/pop_needs/*.txt`, `common/pop_types/*.txt` (the last five feed the UI's scenario presets —
+   a missing dir makes `extract_presets.ps1` throw), `common/goods/00_goods.txt`,
    `common/script_values/building_values.txt`, `common/technology/technologies/*.txt` (era per tech, read
    by `solve_be_targets.ps1`), and `common/buildings/06_urban_center.txt` + `11_private_infrastructure.txt`
    (own the new-economy chains via clone-and-swap; each tier's `vanilla_pm` must still exist). If Paradox
@@ -134,6 +139,47 @@ hand on a major patch.
 
 Newest first. Append here as we discover more couplings to vanilla.
 
+- **2026-07-27** — **Which goods pops may want is derived from the YEAR, not from any country's technology.** A
+  market imports what it cannot produce, so availability is a calendar question: `available_from[good]` = the
+  earliest year some building × PM that outputs it can run, from the **era start years vanilla only writes as
+  COMMENTS** in `common/technology/eras` (`era_2 = { #1836-1861 }`). That comment is the sole place those years
+  appear — if a patch drops or reformats them the extractor warns and falls back to a static ladder
+  (`$ERA_YEAR_FALLBACK` = 0/1836/1862/1887/1911), so check it after a patch. Per-preset forcing is
+  `unlock_add`/`unlock_drop` in `config/presets.json`. **Scope**: this seeds the "pops may buy" toggles and nothing
+  else — deliberately no tech-gating of PMs or goods anywhere in the UI or the mod. Don't extend it. (Supersedes an
+  earlier country-tech derivation, removed: `effect_starting_technology_tier_N_tech` is no longer read at all.)
+- **2026-07-26** — **Pop demand: flat weights over UNLOCKED goods, editable pop counts.** The goods split inside a
+  pop need no longer uses V3's supply-share substitution; it is the need's own `weight` over the goods currently
+  unlocked (per design: a standard distribution, no substitution modelling). For where "unlocked" comes from, see
+  the 2026-07-27 entry above — it is the scenario year, not any country's research.
+- **2026-07-26** — **`Get-Content -Raw` reads config JSON as ANSI.** Every tool now passes `-Encoding UTF8` when
+  reading a config file. Windows PowerShell 5.1 defaults to the system ANSI codepage for BOM-less files, so a
+  non-ASCII character in `config/*.json` (the `·` in a preset label) came out mojibake in the generated file. Only
+  `presets.json` had non-ASCII, but `mod_config.json` was equally exposed — a building name with an accent would
+  have been mangled into the mod's localization.
+- **2026-07-26** — **Subsistence supply modelled; PM goods are NOT always integers.** The presets now include the
+  subsistence buildings (the dominant food/wood/fabric/services supplier at 1836), derived from `arable_land` +
+  `subsistence_building` in **`map_data/state_regions`** (a data source no other tool here reads) minus the state's
+  real agricultural levels, staffed by the peasant residual. Three vanilla numbers now matter and are worth
+  re-checking on a patch: subsistence employment per level (**5 000**, rice paddies **10 000**),
+  `DEPENDENT_CONSUMPTION_RATIO` (**0.5** — pop needs are per *working adult*, so per head it is 0.625), and
+  peasants' `consumption_mult` (**0.05** — read live, this is the game's own "peasants barely reach the market"
+  factor). Separately: vanilla PM goods use **fractions** (58 values: subsistence/urban-centre/agro use 1.0, 0.5,
+  0.33) and `extract_vanilla.ps1` was matching `\d+` only, silently truncating them to 0 — fixed (`Get-Num`), and
+  `build.ps1` now writes `pm_goods` quantities with **invariant culture** so a comma decimal separator from a
+  non-English Windows can never reach a game file. See BUGS_AND_FIXES.
+- **2026-07-25** — **Scenario presets added (`ui/presets.js`), with three engine-side assumptions worth
+  re-checking.** The UI's scenario panel can now be filled from a country's vanilla 1836 market
+  (`tools/extract_presets.ps1`, driven by `config/presets.json`). Three things it must assume because they are
+  **not in the game files**: (1) **pop strata** — which profession is upper/middle/lower is engine-side, only
+  `officers.txt` even mentions `strata`, so the map lives in the tool (a new profession warns; a *re-stratified*
+  one would be silently wrong); (2) **market membership** — no script field says a subject shares its overlord's
+  market; the `grant_own_market` pact type (used exactly twice in 1836: NET→LUX, TUR→EGY) is the evidence that
+  sharing is the **default**, which is what the tool implements, transitively (so GBR's market is 65 tags,
+  including BIC and all of India, and Qing's includes its tributaries); (3) **ownership-building levels** —
+  manor houses / financial districts are never `create_building`d, so they are inferred from `add_ownership`
+  entries at **one level per owned level**. Also note `common/history/trade/00_historical_trade.txt`
+  (`add_exports`) is deliberately **ignored** — the presets assume no trade-route trade.
 - **2026-07-23** — **AI subsidy policy added; merge-vs-replace probed, not conclusively settled.** The builder now
   owns `common/ai_strategies/01_admin_strategies.txt` and writes a `subsidies` block into all 7 administrative
   strategies from the top-level `building_subsidies` config map (shipped set: only `building_trade_center =

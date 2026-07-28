@@ -58,7 +58,7 @@ function BE-For($techName, $hasMfg) {
 }
 
 # ---- walk config ----
-$cfg = Get-Content $Config -Raw | ConvertFrom-Json
+$cfg = Get-Content $Config -Raw -Encoding UTF8 | ConvertFrom-Json
 "{0,-16} {1,-3} {2,-24} {3,-4} {4,-6} {5,-9} {6}" -f 'industry','T','tech','era','year','inputs','BE'
 "".PadRight(80,'-')
 foreach ($i in $cfg.industries) {

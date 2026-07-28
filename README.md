@@ -45,6 +45,14 @@ and opens the editor in your browser. You can:
 - set each tier's base **`ai_value`** (AI construction desire); click **Restore defaults** to reset
   unlocked groups to the loaded config, or **Bring to vanilla** to reset split buildings toward their
   base-game recipes + ai_value,
+- load a **market preset** in the scenario panel — one click fills the whole scenario with a country's
+  vanilla 1836 market (France / UK / Russia / Qing, or Empty): its buildings and the production methods
+  the base game runs there, its **subsistence farms** (staffed by the peasant population, which is where
+  most 1836 food comes from), its treaty goods transfers, and its population. Buy orders then split into
+  **buildings | pops | non-pops**, with editable **population** counts per class, per-good **"pops may buy"**
+  toggles driven by a scenario **year** (1836 locks automobiles, electricity, telephones, radios,
+  aeroplanes, steamers) and a
+  **pop demand fit ×** knob to calibrate pop consumption,
 - switch a tier's **secondary PMs** (selectors under the building name) — their goods distribute into the
   Input/Output columns as editable `↳` rows (shared via `pm_goods`), their non-goods outputs
   (infrastructure/pollution) and employment show read-only; the **Workforce** column tracks the selected PMs,

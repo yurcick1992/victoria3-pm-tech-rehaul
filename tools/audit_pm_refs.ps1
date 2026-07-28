@@ -2,7 +2,7 @@
 $ErrorActionPreference='Stop'
 $repo = "C:\claude-code\victoria 3 PM and tech rehaul"
 $game = "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game"
-$cfg  = Get-Content (Join-Path $repo 'config\mod_config.json') -Raw | ConvertFrom-Json
+$cfg  = Get-Content (Join-Path $repo 'config\mod_config.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 $split = @{}; foreach($i in $cfg.industries){ foreach($t in $i.tiers){ if($t.vanilla_pm){ $split[$t.vanilla_pm]=$i.id } } }
 
 $files = @()

@@ -35,6 +35,31 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-07-26 — Fractional PM goods silently read as 0 (subsistence / urban centre / agro)
+
+**Symptom.** Building the scenario presets, a subsistence farm looked like it produced *nothing*: the UI's
+all-buildings explorer showed `default_building_subsistence_farm` with grain 1 and **fabric 0, wood 0,
+services 0**, so a whole market's food/wood supply vanished from the model.
+
+**Root cause.** Vanilla PM quantities are **not all integers** — 58 values across
+`production_methods/12_subsistence.txt`, `06_urban_center.txt` and `02_agro.txt` are fractions
+(`goods_output_grain_add = 1.0`, `fabric 0.5`, `meat 0.33`). `extract_vanilla.ps1` matched
+`goods_(input|output)_..._add\s*=\s*(-?\d+)`, and `-?\d+` happily matches the **leading integer part** of
+`0.5` → `0`, then `[int]` locks it in. No error, no warning: every fractional good became zero in
+`ui/vanilla.js`. It went unnoticed because our own tiered industries (`01_industry`) are all integers.
+
+**Fix.** `Get-Num` in `tools/history_lib.ps1` (int when whole, double otherwise) + a decimal-aware regex in
+`extract_vanilla.ps1`. Two follow-ons, because fractions must now survive a round trip: the UI's
+`refEditSet` no longer `Math.round`s an edited quantity, and `build.ps1` writes `pm_goods` overrides through
+`Format-Qty`, which formats with **`InvariantCulture`** — on a Russian-locale Windows (this dev box) plain
+interpolation of `0.5` emits `0,5`, which V3 cannot parse.
+
+**Detect/prevent.** When a tool parses a vanilla number, assume it can be fractional: match
+`-?\d+(\.\d+)?`. When a tool *writes* one, pass it through `InvariantCulture` — the locale trap is silent
+and only reproduces on a non-English machine.
+
+---
+
 ## 2026-07-18 — 1836 start: `Invalid production method: pm_anchorage` (90× in error.log)
 
 **Symptom.** `error.log` at load: 90× `create_building effect [ Invalid production method: pm_anchorage ]`

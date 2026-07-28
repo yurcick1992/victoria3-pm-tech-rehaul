@@ -81,6 +81,23 @@ copies with only the header line swapped from `l_english:` to `l_<lang>:`.
 - Our own lightweight check is `bash tools/lint.sh` (economic balance). It does **not** catch
   engine errors — still eyeball `error.log` after a load.
 
+### Two Windows PowerShell 5.1 traps our tools hit (not V3-specific, but they cost hours)
+
+- **Keep `.ps1` files pure ASCII.** PowerShell 5.1 reads a BOM-less script as **ANSI (CP1252)**, so a
+  UTF-8 em-dash (`—` = `E2 80 94`) decodes as `â€"` — and `0x94` is a **smart double quote**, which
+  terminates the enclosing string and produces nonsense parse errors dozens of lines away. Use `-`, `->`.
+- **Read config JSON with `-Encoding UTF8`.** `Get-Content -Raw` uses the system ANSI codepage for a BOM-less
+  file, so a UTF-8 `·` in `config/*.json` becomes `В·` in whatever the tool generates. Every tool here
+  passes `-Encoding UTF8`; keep new ones consistent.
+- **Write vanilla numbers with `InvariantCulture`.** PM goods quantities can be fractional (`0.5`, `0.33` in
+  the subsistence / urban-centre / agro files). On a non-English Windows, plain string interpolation of a
+  double emits `0,5` — which V3 cannot parse, and which only breaks on *that* machine. `build.ps1` routes
+  quantities through `Format-Qty`; do the same for any new numeric emitter.
+- **Never `@($list)` a `System.Collections.Generic.List[object]`.** It throws
+  `Argument types do not match` (an ArgumentException blamed on whatever statement contains it — the
+  reported line is not the real problem). Use `$list.ToArray()`. `List[string]` is fine; `List[object]`
+  is not. This bit the preset extractor twice.
+
 ### Self-diagnostics (dev convention — a tripwire we can read)
 
 The builder generates **`mod/common/on_actions/zzz_pm_rehaul_diag.txt`**, a self-diagnostic that fires at

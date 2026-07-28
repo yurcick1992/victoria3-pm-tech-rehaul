@@ -52,7 +52,7 @@ foreach ($f in (Get-ChildItem (Join-Path $Game 'common\production_methods') -Fil
 }
 
 # --- config ---
-$cfg = Get-Content (Join-Path $Repo 'config\mod_config.json') -Raw | ConvertFrom-Json
+$cfg = Get-Content (Join-Path $Repo 'config\mod_config.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 $report = @()
 foreach ($ind in $cfg.industries) {
     if ($ind.follows_be -eq $false) { continue }   # ports/railways stay on vanilla volumes - don't re-solve
