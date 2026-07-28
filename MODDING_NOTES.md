@@ -112,7 +112,8 @@ game start and writes to **`Documents\Paradox Interactive\Victoria 3\logs\debug.
 - **Safe hook:** it only adds `on_actions = { pm_tech_rehaul_diag }` to the vanilla
   `on_game_started_after_lobby` — it does **not** redefine vanilla's `effect` block (which would conflict /
   break game-start), per `common/on_actions/_on_actions.md`.
-- If the lines don't appear, launch with **`-debug_mode`** (debug_log may be gated to it).
+- **`debug_log` is NOT gated behind `-debug_mode`** (verified 1.13.9, plain launch): the lines land in
+  `debug.log` in a normal run. If they're missing, the mod didn't load — check `error.log`.
 
 **Writing a temporary diagnostic probe (hard-won gotchas).** When adding a periodic tripwire that logs per-country
 state (as an ad-hoc AI-behaviour probe once did), these cost real iteration to discover:
@@ -159,6 +160,110 @@ run to **01.02.1837** to also catch a first monthly/yearly tick if a check is ho
 (`error.1.log` … `error.5.log`), rotated **per launch, not by time**. So a run is readable only if **≤ 5
 launches** have happened since — a run from N launches ago is `error.N.log` (gone once N > 5). Grab the log
 before relaunching too many times.
+
+## Automated headless runs (the testbed)
+
+`tools/testbed/run_observer.ps1` drives the game itself — no launcher, no clicking, no debug mode —
+so balance changes can be measured over real playthroughs. Everything below is **verified against
+1.13.9**; it is all engine behaviour, so re-verify after a patch (see `ON_GAME_UPDATE.md`).
+
+**Launching without the launcher.** `binaries\victoria3.exe`, working directory `binaries`:
+
+| arg | effect |
+|---|---|
+| `-handsoff` | **Auto-starts an observer game** at the 1836 bookmark, straight from the exe — no launcher, no lobby, no country selection, no input. `continue_game.json` then reads `Observing Great Britain`. This is the whole trick. |
+| `-run_until=<Y.M.D>` | The game plays to that date and **quits the process itself** (exit is clean; no kill needed). |
+| `-disable_renderframeifneeded` | The exe's own description: *"Sacrifice sub-tick rendering for tick speed."* |
+| `-gdpr-compliant` | What the launcher passes; suppresses the legal-docs prompt. |
+
+The full CLI table lives in the exe's string pool near `game_setup.cpp` (`start_tag=`, `handsoff`,
+`run_until`, `scripted_tests`, `no_save_after_failed_test`, `gamestate_validation`, `host_server`,
+`automated_test`, …). `game/tools/scripted_tests/scripted_tests.md` documents a **separate** pass/fail
+suite mechanism (daily triggers, no effects) — not what we use; it only yields PASS/FAIL, we need numbers.
+
+**Throughput:** ~5.7 in-game days/second early game (366 days in 64 s), plus ~40 s fixed startup and a
+few seconds to exit. A 5-year run lands around 6–8 minutes.
+
+**Enabling mods from a script — it is `content_load.json`, NOT `dlc_load.json`.** `dlc_load.json` does
+not exist in 1.13 (launcher v2); the exe reads `Documents\Paradox Interactive\Victoria 3\content_load.json`.
+Entries are **objects with a `path`**, and the path must be **absolute with forward slashes**:
+
+```json
+{"enabledMods":[{"path":"C:/Users/<you>/Documents/Paradox Interactive/Victoria 3/mod/pm_tech_rehaul"}],"disabledDLC":[],"enabledUGC":[]}
+```
+
+A bare string gives `dlc.cpp: Missing path for dlc/mod`; a relative path gives
+`No subdirs mounted for game dir from candidates: mod/<name>`. Success looks like
+`dlc.cpp: Mod <name> (<id>) version 1.13.9 successfully matched game version 1.13.9.` in `debug.log` —
+the harness asserts on that line. The Paradox launcher overwrites this file whenever it runs, so the
+harness backs it up and restores it.
+
+**`pdx_settings.json` is rewritten by the game on exit**, dropping keys it considers default — never
+assume a category or key survived. The harness sets `Graphics.display_mode=windowed` (so a run can't
+hijack the desktop) and `game.autosave=never` (verified value: autosaves drop to zero — otherwise the
+game writes a ~14 MB save every other in-game month *and* clobbers the player's own `autosave*.v3` slots).
+
+**Getting numbers out.** `debug_log` interpolates data functions, which is the only numeric channel that
+needs no debug mode and no save parsing. Verified market path:
+
+```
+c:GBR = { market_capital.market = {
+    every_market_goods = {
+        debug_log = "…[THIS.GetMarketGoods.GetGoods.GetKey]…[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrders|2]…"
+    }
+} }
+```
+
+- `every_market_goods` iterates a market's goods (43 in the British market at the 1836 start).
+- `THIS.GetMarketGoods.GetGoods` then exposes `.GetKey` (stable `grain`, language-independent — prefer it
+  to `GetName`, which emits a tooltip blob, and to `GetNameNoFormatting`, which is localized),
+  `.GetMarketBuyOrders`, `.GetMarketSellOrders`, `.GetMarketPrice`. `|2` gives two decimals.
+- **One bad data function kills the entire line** — it is not printed at all, you only get
+  `pdx_data_localize.cpp: Data error in loc string '<the whole string>'`. So never put an unverified
+  function into a line that carries data you need; probe it separately first.
+- The functions are **per-market** (British grain buy orders ≠ French), which is the point.
+- `THIS.GetMarketGoods.GetMarketBuyOrders` (skipping `.GetGoods`) does **not** exist.
+
+**Timing the dump.** `on_monthly_pulse` fires on the **1st of every month** (verified across 12 months),
+and has **no root scope** — `game_date` comparisons and `debug_log` work, but don't expect a country there.
+A one-shot dump needs no global variable, just a one-month window:
+
+```
+trigger = { game_date >= "1840.1.1"  NOT = { game_date >= "1840.2.1" } }
+```
+
+**Absent countries degrade gracefully:** `exists = c:GER` is false in 1836 (no error), and
+`c:GBR = { exists = market_capital.market }` guards the market itself — the harness emits a
+`MARKET_NOT_FOUND` row rather than losing the run.
+
+**Harvesting the log — the game's logs are a rotating ring, so copy them as the run happens.** Two
+distinct hazards, both of which bite in practice:
+
+- **The ring is small and it is shared.** `debug.log` rotates at 512 KB with 5 backups (~3 MB total),
+  and the game rotates again at *every launch*. `dedicated_server.log` alone fills a slot per ~5 in-game
+  years (4 `Processing Tick` lines a day), so a full-length campaign discards its own early game long
+  before it ends — and an end-of-run snapshot of `logs\` **mixes runs**, because a previous run's file is
+  still sitting in the ring. The harness therefore **mirrors the growing logs continuously** into
+  `runNN\logs_live\` (`debug.log`, `error.log`, `dedicated_server.log`): one complete file per log per
+  run, never rotated, flushed on every poll so a harness crash doesn't lose it. That directory is the
+  authoritative copy; `runNN\logs\` is just the exit-time snapshot.
+- **Rotation eats what you haven't read yet.** When the live file is renamed to `.1.log`, everything
+  written since the last poll goes with it. This is not a corner case: a `debug_log` burst can *itself*
+  trigger the rotation — a measured 89-line dump lost 68 lines this way. On detecting the shrink the
+  tail therefore reads the remainder of `<name>.1.log` from its last offset **before** restarting on the
+  new file, and writes a `--- harness: source log rotated … recovered N chars ---` seam so any gap is
+  visible rather than silent.
+
+**And tag every emitted line with a per-run token.** Because runs share one `logs\` folder, filtering by
+file mtime is not enough — back-to-back runs are seconds apart and rotation preserves timestamps (this
+produced a run with exactly double the rows). The harness regenerates the instrumentation mod **per run**
+with a unique token in every line (`V3TB|<stamp>r02|G|…`) and accepts only its own;
+`meta.json`'s `foreign_token_lines_skipped` reports how many belonged to an earlier run. Judge
+completeness from the harvest, not the live tail — a poll can miss the final line.
+
+**One game at a time.** A second instance writes to the same `logs\` folder. The harness refuses to start
+if `victoria3.exe` is already running (it will not kill it — that might be a game you are playing); a
+crashed harness can leave one orphaned, since `-run_until` means the game outlives its launcher.
 
 ## metadata.json
 

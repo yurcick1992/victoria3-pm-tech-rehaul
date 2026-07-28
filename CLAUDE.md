@@ -97,6 +97,8 @@ tools/                  dev tooling — NOT shipped in the mod
   extract_start.ps1     baseline extractor: vanilla start → start_baseline.json (inventory + version-drift alarm)
   history_lib.ps1       shared vanilla parsing: history walkers (Walk-HistoryFile / Read-HistoryBlocks) + Get-TopBlocks / Get-ListTokens, used by the converter and every extractor
   ui.ps1                balance-UI server: serves ui/ at localhost:8777 + POST /api/build (writes config, runs build)
+  testbed/run_observer.ps1  automated observer runs: launches the game headless (no launcher), plays to a date,
+                        dumps one metric per run, quits, repeats N times -> tools/testbed/runs/<stamp>/ (see below)
   goods_prices.tsv      shared vanilla price table (build + UI + reference)
   lint.sh                profitability + negative-goods linter wrapper (runs both awks below)
   lint_profitability.awk / ladder_tiers.txt   BE-vs-ladder linter (ladder_tiers.txt is GENERATED)
@@ -565,6 +567,46 @@ the game.
   (logs `PM_TECH_REHAUL WARN …` on failure), then have the user run the game (init fires at the 1836 start;
   ~1 in-game day, or to 01.02.1837 for a first pulse) and read back `debug.log` + `error.log`. See
   MODDING_NOTES → Self-diagnostics.
+- **NEVER launch a game run without the user's explicit go-ahead — and ask for the whole batch in ONE
+  request.** Game time is the one cost here that cannot be optimized away: every run pays ~40 s of load
+  plus roughly a minute per in-game year, and it monopolizes the machine. Three rules:
+  - **Explicit ask or explicit permission, every time.** Only start `run_observer.ps1` (or the game by any
+    other means) when the user has asked for a run or approved the one you proposed. Permission for one
+    batch is **not** permission for the next — re-ask, even for a rerun of the same thing.
+  - **Always quote the cost as `<count> × <span>`** — e.g. *"I need five 1836→1840 runs, ~30 min"* — whether
+    the runs are your idea or the user's. The only exception is when the user has already named the count
+    and span themselves; then just confirm what you're about to do.
+  - **Bundle every run you can foresee, including the branches.** If the outcome forks (*"if tier-1 BE 140
+    reads badly we'll want the same batch at 130"*), ask for **both** in the same request instead of coming
+    back for the second half. The normal working pattern is a batch left running overnight, after which the
+    user is unreachable for hours — one night beats two nights with an idle day between them. When a fork is
+    plausible but not certain, name it and ask for permission to cover it anyway.
+- **Automated observer runs (`tools/testbed/run_observer.ps1`) — measuring balance on real playthroughs.**
+  Deterministic, no agent in the loop: it launches the game **without the Paradox launcher**
+  (`victoria3.exe -handsoff` auto-starts an **observer** game at the 1836 bookmark;
+  `-run_until=<date>` makes the game play to a date and **quit itself**), harvests a metric, and repeats
+  N times. ~5.7 in-game days/sec (+~40 s startup), so a 5-year run is ~5–6 min.
+  ```
+  powershell -ExecutionPolicy Bypass -File tools\testbed\run_observer.ps1 -Runs 3 -DumpDate 1840.1.1 -UntilDate 1841.1.1
+  ```
+  Three pieces: (1) it writes **`content_load.json`** to enable the deployed mod (`dlc_load.json` is gone
+  in 1.13 — see MODDING_NOTES) and backs up/restores that plus `pdx_settings.json`; (2) it generates a
+  **throwaway instrumentation mod** (`Documents\…\mod\v3_testbed_instr`, deleted afterwards) that dumps the
+  metric via `debug_log` on an `on_monthly_pulse` date window — **telemetry never goes into `mod/`**, so
+  there is nothing to strip out of the shipped mod, and `build.ps1` need not know about it; (3) it
+  harvests into `tools/testbed/runs/<stamp>/`: `markets.tsv` + `meta.json` per run, `markets_all.tsv` +
+  `session.log` per session, and the game's logs. **The game's own logs are a 5×512 KB rotating ring
+  shared by every run**, so the growing ones (`debug`, `error`, `dedicated_server`) are **mirrored
+  continuously** into `runNN/logs_live/` — one complete file per log per run, which is the authoritative
+  copy (`runNN/logs/` is only the exit-time snapshot, and can contain a previous run's rotated files).
+  Long runs *need* this: a full-length campaign overflows the ring and would otherwise lose its early
+  game. See MODDING_NOTES → *Automated headless runs* for the two rotation hazards and the per-run token
+  that keeps runs from contaminating each other. **MVP scope: one metric** — per-good buy/sell orders + price for the GBR and FRA markets
+  (`-Tags`); a missing country/market yields a `MARKET_NOT_FOUND` row instead of failing the run.
+  `meta.json`'s `mod_loaded` / `dump_complete` / `goods_rows` are the health assertion for a session.
+  Next steps toward parameter sweeps: build a config variant (`build.ps1 -Config …`), run a session per
+  variant, aggregate `markets_all.tsv` across runs. Engine couplings to re-verify after a patch are in
+  `ON_GAME_UPDATE.md` → *Testbed*.
 - **Missing-reference cataloguing (the `MISSING_*` family).** Replacing/splitting a vanilla entity can make
   vanilla script or the building's own fields stop matching. **We catalogue every such case rather than fix it
   piecemeal — one strategic batch pass later.** Document *all* missing references this way, one focused

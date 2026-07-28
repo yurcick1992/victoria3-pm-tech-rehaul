@@ -115,6 +115,23 @@ hand on a major patch.
 
 ---
 
+## Testbed (`tools/testbed/run_observer.ps1`) — engine couplings to re-verify
+
+The automated observer harness drives the **executable and the launcher's config files**, none of which
+are moddable data — a patch can change them silently. Full detail in `MODDING_NOTES.md` →
+*Automated headless runs*. After an update, run one short session
+(`-Runs 1 -DumpDate 1836.3.1 -UntilDate 1836.4.1`, ~1 min) and check `meta.json`: `mod_loaded`,
+`dump_complete` and `goods_rows` are the assertion. What can break:
+
+| Coupling | Where it lives | How breakage shows |
+|---|---|---|
+| CLI args `-handsoff`, `-run_until=`, `-disable_renderframeifneeded` | `binaries\victoria3.exe` (arg table near `game_setup.cpp` in the string pool) | The game sits in the main menu (no auto-start), or never exits → the harness watchdog kills it and flags `timed_out`. |
+| Mod enabling via `content_load.json` (objects with an **absolute** `path`) | `Documents\Paradox Interactive\Victoria 3\content_load.json`, read by `dlc.cpp` | `meta.json` `mod_loaded=false`; `debug.log` says `Missing path for dlc/mod` or `No subdirs mounted`. The launcher rewriting this file is normal — the harness backs it up and restores it. |
+| `pdx_settings.json` keys `Graphics.display_mode`, `game.autosave` (`"never"`) | same folder; **the game rewrites this file on exit and drops default-valued keys** | Runs go fullscreen, or `autosaves_written > 0` in `meta.json` (slower, and it overwrites the player's autosave slots). |
+| Data functions `GetMarketGoods.GetGoods.{GetKey,GetMarketBuyOrders,GetMarketSellOrders,GetMarketPrice}` and the `every_market_goods` iterator | engine-side, exercised through `debug_log` | `goods_rows = 0` with `Data error in loc string …` in `error.log`. Remember one bad function voids the **whole** line. |
+| `on_monthly_pulse` firing on the 1st of each month, with no root scope | `common/on_actions/00_code_on_actions.txt` + engine | The dump never fires (`dump_complete=false`) because the one-month trigger window is missed. |
+| Log names/rotation (`debug.log` 512 KB × 5, `dedicated_server.log` tick lines) | `platform_specific_game_data/log_settings_live.json` | Progress reporting goes blank (tick parsing), or rows go missing from long runs. The harness mirrors the growing logs live into `runNN/logs_live/` and recovers from `<name>.1.log` on rotation — a renamed/re-sinked log would silently stop being mirrored, so check that `meta.json`'s `mirrored_lines` are non-zero. |
+
 ## Baked-in assumptions (rarely change, but they're here)
 
 - **Weekly economy tick, 52 weeks/year** — `solve_building_cost.ps1 -WeeksPerYear 52`. PM `_add`
