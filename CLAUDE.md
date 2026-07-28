@@ -99,6 +99,9 @@ tools/                  dev tooling — NOT shipped in the mod
   ui.ps1                balance-UI server: serves ui/ at localhost:8777 + POST /api/build (writes config, runs build)
   testbed/run_observer.ps1  automated observer runs: launches the game headless (no launcher), plays to a date,
                         dumps one metric per run, quits, repeats N times -> tools/testbed/runs/<stamp>/ (see below)
+  testbed/make_vanilla_stub.ps1  derives a "tiering only" config (structure kept, base-game recipes/costs/ai_value)
+                        -> config/mod_config.vanilla_stub.json; the headless twin of the UI's Bring-to-vanilla,
+                        used as the control arm when measuring what the tier split alone does
   goods_prices.tsv      shared vanilla price table (build + UI + reference)
   lint.sh                profitability + negative-goods linter wrapper (runs both awks below)
   lint_profitability.awk / ladder_tiers.txt   BE-vs-ladder linter (ladder_tiers.txt is GENERATED)
@@ -601,7 +604,19 @@ the game.
   copy (`runNN/logs/` is only the exit-time snapshot, and can contain a previous run's rotated files).
   Long runs *need* this: a full-length campaign overflows the ring and would otherwise lose its early
   game. See MODDING_NOTES → *Automated headless runs* for the two rotation hazards and the per-run token
-  that keeps runs from contaminating each other. **MVP scope: one metric** — per-good buy/sell orders + price for the GBR and FRA markets
+  that keeps runs from contaminating each other.
+  **Every batch writes `build_state.json`** at the session root — what was under test, so the numbers stay
+  interpretable later. It is a two-part tree: **`deterministic`** (machine-read: mod metadata + a
+  file-layout fingerprint, the config it was built from + that config's hash, git branch/commit/dirty, game
+  version, harness args, the harness script's own hash) and **`agentic`** (free text via `-Label` / `-Notes
+  <json>`: what this build *is*, how it differs from the baseline, why it ran, what signal is expected,
+  caveats). The agentic half is a deliberate stopgap for hand-driven experiments — as the sweep driver
+  learns to set a parameter, that parameter moves into `deterministic`; anything added there must be
+  machine-read, never described.
+  Useful flags: **`-DumpDates a,b,c`** (several dump dates per run; each must be the 1st of a month, and
+  extra dates are cheap insurance — a run cut short still has its earlier dumps), **`-NoMod`** (control arm:
+  base game + instrumentation only), **`-ModPath <dir>`** (any absolute path, so an alternate build from
+  `build.ps1 -SaveTo <name>` runs without being deployed), `-Label`, `-Notes`, `-BuildConfig`. **MVP scope: one metric** — per-good buy/sell orders + price for the GBR and FRA markets
   (`-Tags`); a missing country/market yields a `MARKET_NOT_FOUND` row instead of failing the run.
   `meta.json`'s `mod_loaded` / `dump_complete` / `goods_rows` are the health assertion for a session.
   Next steps toward parameter sweeps: build a config variant (`build.ps1 -Config …`), run a session per

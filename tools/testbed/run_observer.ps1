@@ -41,15 +41,26 @@
 param(
     # how many observer runs to do
     [int]      $Runs = 3,
-    # in-game date the metric is dumped on (must be the 1st of a month - on_monthly_pulse)
-    [string]   $DumpDate = "1840.1.1",
+    # in-game dates the metric is dumped on. Each MUST be the 1st of a month (on_monthly_pulse).
+    # Several dates cost nothing but a few log lines and are cheap insurance: if a long run is
+    # cut short, the earlier dumps still landed.
+    [string[]] $DumpDates = @("1840.1.1"),
     # in-game date the game quits itself on
     [string]   $UntilDate = "1841.1.1",
     # country tags whose markets we dump
     [string[]] $Tags = @("GBR", "FRA"),
     [string]   $Game = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game" }),
-    # the deployed mod under test; default = what build.ps1 deploys
+    # the mod under test; default = what build.ps1 deploys. Any absolute path works, so an
+    # alternate build (build.ps1 -SaveTo <name> -> mod_<name>\) can be run without deploying it.
     [string]   $ModPath = "",
+    # run the BASE GAME with no mod under test (only the instrumentation mod) - the control arm
+    [switch]   $NoMod,
+    # the config the mod under test was built from; recorded (with its hash) in build_state.json
+    [string]   $BuildConfig = "",
+    # short label for this batch, e.g. "vanilla-baseline"
+    [string]   $Label = "",
+    # path to a JSON file whose contents become build_state.json's "agentic" block
+    [string]   $Notes = "",
     [string]   $OutRoot = "",
     # hard watchdog: kill the process if a single run exceeds this
     [int]      $TimeoutMinutes = 45,
@@ -72,11 +83,22 @@ $LogDir   = Join-Path $Doc "logs"
 $SaveDir  = Join-Path $Doc "save games"
 $InstrDir = Join-Path $Doc "mod\v3_testbed_instr"
 
-if (-not $ModPath) { $ModPath = Join-Path $Doc "mod\pm_tech_rehaul" }
+if ($NoMod)        { $ModPath = "" }
+elseif (-not $ModPath) { $ModPath = Join-Path $Doc "mod\pm_tech_rehaul" }
 if (-not $OutRoot) { $OutRoot = Join-Path $PSScriptRoot "runs" }
 
-foreach ($p in @($Exe, $ModPath)) {
+$checkPaths = @($Exe)
+if ($ModPath) { $checkPaths += $ModPath }
+foreach ($p in $checkPaths) {
     if (-not (Test-Path $p)) { throw "not found: $p" }
+}
+# `powershell -File script.ps1 -DumpDates a,b` hands the whole "a,b" over as ONE string (-File
+# does not parse arrays, unlike -Command), so accept both forms.
+$DumpDates = @($DumpDates | ForEach-Object { $_ -split ',' } | Where-Object { $_ })
+$Tags      = @($Tags      | ForEach-Object { $_ -split ',' } | Where-Object { $_ })
+
+foreach ($d in $DumpDates) {
+    if ($d -notmatch '^\d{3,4}\.\d{1,2}\.1$') { throw "dump date '$d' must be the 1st of a month (on_monthly_pulse fires then), e.g. 1886.1.1" }
 }
 
 $Stamp      = Get-Date -Format "yyyyMMdd_HHmmss"
@@ -103,14 +125,7 @@ function Write-InstrumentMod {
     # harvest safe: consecutive runs share one logs\ folder and the game rotates debug.log at
     # startup, so the previous run's lines are physically reachable from this run's files.
     # Filtering on the token (not on file mtimes, which are seconds apart) is what keeps them out.
-    param([string]$Dir, [string]$Date, [string[]]$Tags, [string]$Token)
-
-    # 1840.1.1 -> the following month, so the trigger window is exactly one monthly pulse
-    $parts = $Date.Split('.')
-    $y = [int]$parts[0]; $m = [int]$parts[1]
-    $nm = $m + 1; $ny = $y
-    if ($nm -gt 12) { $nm = 1; $ny = $y + 1 }
-    $nextDate = "{0}.{1}.1" -f $ny, $nm
+    param([string]$Dir, [string[]]$Dates, [string[]]$Tags, [string]$Token)
 
     $null = New-Item -ItemType Directory -Force -Path (Join-Path $Dir ".metadata")
     $null = New-Item -ItemType Directory -Force -Path (Join-Path $Dir "common\on_actions")
@@ -132,42 +147,76 @@ function Write-InstrumentMod {
 "@
     [System.IO.File]::WriteAllText((Join-Path $Dir ".metadata\metadata.json"), $meta, $Utf8NoBom)
 
-    # One block per tag. Every value below uses a datafunction verified to resolve in 1.13.9 -
-    # ONE bad function makes the whole debug_log line vanish, so do not add unverified ones.
-    $blocks = ""
-    foreach ($tag in $Tags) {
-        $blocks += @"
+    # One on_action per dump date, each with a one-month trigger window; the DATE IS BAKED INTO
+    # every line as a literal, so rows stay attributable without asking the engine for the date
+    # (GetCurrentDate returns localized prose - fine for a banner, useless as a key).
+    # Every value below uses a datafunction verified to resolve in 1.13.9 - ONE bad function makes
+    # the whole debug_log line vanish, so do not add unverified ones.
+    $dumpActions = ""
+    $dumpNames   = @()
+    $n = 0
+    foreach ($date in $Dates) {
+        $n++
+        $name = "v3tb_dump_$n"
+        $dumpNames += $name
 
-		# ---- $tag ----
-		if = {
-			limit = { exists = c:$tag }
-			c:$tag = {
-				if = {
-					limit = { exists = market_capital.market }
-					market_capital.market = {
-						debug_log = "V3TB|$Token|MARKET|$tag|[THIS.GetMarket.GetNameNoFormatting]"
-						every_market_goods = {
-							debug_log = "V3TB|$Token|G|$tag|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketSellOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketPrice|2]"
+        $parts = $date.Split('.')
+        $y = [int]$parts[0]; $m = [int]$parts[1]
+        $nm = $m + 1; $ny = $y
+        if ($nm -gt 12) { $nm = 1; $ny = $y + 1 }
+        $nextDate = "{0}.{1}.1" -f $ny, $nm
+
+        $blocks = ""
+        foreach ($tag in $Tags) {
+            $blocks += @"
+
+			# ---- $tag ----
+			if = {
+				limit = { exists = c:$tag }
+				c:$tag = {
+					if = {
+						limit = { exists = market_capital.market }
+						market_capital.market = {
+							debug_log = "V3TB|$Token|MARKET|$date|$tag|[THIS.GetMarket.GetNameNoFormatting]"
+							every_market_goods = {
+								debug_log = "V3TB|$Token|G|$date|$tag|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketSellOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketPrice|2]"
+							}
 						}
 					}
+					else = { debug_log = "V3TB|$Token|MARKET_NOT_FOUND|$date|$tag|country exists but has no market" }
 				}
-				else = { debug_log = "V3TB|$Token|MARKET_NOT_FOUND|$tag|country exists but has no market" }
 			}
-		}
-		else = { debug_log = "V3TB|$Token|MARKET_NOT_FOUND|$tag|no such country" }
+			else = { debug_log = "V3TB|$Token|MARKET_NOT_FOUND|$date|$tag|no such country" }
+"@
+        }
+
+        $dumpActions += @"
+
+$name = {
+	# on_monthly_pulse fires on the 1st of every month, so this window is hit exactly once
+	trigger = {
+		game_date >= "$date"
+		NOT = { game_date >= "$nextDate" }
+	}
+	effect = {
+		debug_log = "V3TB|$Token|BEGIN|$date|[TimeKeeper.GetCurrentDate.GetString]"
+$blocks
+		debug_log = "V3TB|$Token|END|$date|[TimeKeeper.GetCurrentDate.GetString]"
+	}
+}
 "@
     }
 
     $onaction = @"
 # AUTO-GENERATED by tools/testbed/run_observer.ps1 - throwaway telemetry mod, do not edit.
-# Dump date: $Date   tags: $($Tags -join ', ')   run token: $Token
+# Dump dates: $($Dates -join ', ')   tags: $($Tags -join ', ')   run token: $Token
 
 on_game_started_after_lobby = {
 	on_actions = { v3tb_boot }
 }
 
 on_monthly_pulse = {
-	on_actions = { v3tb_dump }
+	on_actions = { $($dumpNames -join ' ') }
 }
 
 v3tb_boot = {
@@ -175,19 +224,7 @@ v3tb_boot = {
 		debug_log = "V3TB|$Token|BOOT|[TimeKeeper.GetCurrentDate.GetString]"
 	}
 }
-
-v3tb_dump = {
-	# on_monthly_pulse fires on the 1st of every month, so this window is hit exactly once
-	trigger = {
-		game_date >= "$Date"
-		NOT = { game_date >= "$nextDate" }
-	}
-	effect = {
-		debug_log = "V3TB|$Token|BEGIN|[TimeKeeper.GetCurrentDate.GetString]"
-$blocks
-		debug_log = "V3TB|$Token|END|[TimeKeeper.GetCurrentDate.GetString]"
-	}
-}
+$dumpActions
 "@
     # the game warns unless script files are utf8-BOM
     [System.IO.File]::WriteAllText((Join-Path $Dir "common\on_actions\zzz_v3tb_dump.txt"), $onaction, $Utf8Bom)
@@ -345,6 +382,99 @@ function Set-RunSettings {
     [System.IO.File]::WriteAllText($f, ($s | ConvertTo-Json -Depth 12 -Compress), $Utf8NoBom)
 }
 
+# --------------------------------------------------------- build state ----
+# One build_state.json per batch: what was under test, so a session's numbers stay
+# interpretable months later. Deliberately a TREE with two halves:
+#   deterministic - filled from the machine, never from a description. Grows as we learn
+#                   which knobs matter; anything added here must be machine-read.
+#   agentic       - free text supplied via -Notes/-Label. A stopgap while the parameter
+#                   sweep is driven by hand; it explains what a build IS and why it ran.
+# Read it as: deterministic answers "what exactly ran", agentic answers "what were we asking".
+
+function Get-DirFingerprint {
+    param([string]$Dir)
+    if (-not $Dir -or -not (Test-Path $Dir)) { return $null }
+    $files = @(Get-ChildItem $Dir -Recurse -File -ErrorAction SilentlyContinue)
+    $bytes = 0L
+    $sb = New-Object System.Text.StringBuilder
+    foreach ($f in ($files | Sort-Object FullName)) {
+        $bytes += $f.Length
+        $null = $sb.Append($f.FullName.Substring($Dir.Length)).Append(':').Append($f.Length).Append(';')
+    }
+    $sha  = [System.Security.Cryptography.SHA256]::Create()
+    $hash = ($sha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($sb.ToString())) |
+             ForEach-Object { $_.ToString("x2") }) -join ""
+    $sha.Dispose()
+    return [ordered]@{ file_count = $files.Count; bytes = $bytes; layout_sha256 = $hash.Substring(0, 16) }
+}
+
+function Get-FileSha {
+    param([string]$Path)
+    if (-not $Path -or -not (Test-Path $Path)) { return $null }
+    return (Get-FileHash $Path -Algorithm SHA256).Hash.Substring(0, 16).ToLower()
+}
+
+function Write-BuildState {
+    $modMeta = $null
+    if ($ModPath) {
+        $mj = Join-Path $ModPath ".metadata\metadata.json"
+        if (Test-Path $mj) {
+            $m = Get-Content $mj -Raw -Encoding UTF8 | ConvertFrom-Json
+            $modMeta = [ordered]@{
+                name = $m.name; id = $m.id; version = $m.version
+                supported_game_version = $m.supported_game_version
+                replace_paths = $(if ($m.PSObject.Properties.Name -contains "replace_paths") { $m.replace_paths } else { @() })
+            }
+        }
+    }
+
+    $git = [ordered]@{ branch = ""; commit = ""; dirty = $null }
+    try {
+        Push-Location $RepoRoot
+        $git.branch = (git rev-parse --abbrev-ref HEAD 2>$null)
+        $git.commit = (git rev-parse --short HEAD 2>$null)
+        $git.dirty  = @(git status --porcelain 2>$null).Count -gt 0
+    } catch { } finally { Pop-Location -ErrorAction SilentlyContinue }
+
+    $gameVersion = ""
+    $ls = Join-Path (Split-Path -Parent $Game) "launcher\launcher-settings.json"
+    if (Test-Path $ls) { $gameVersion = (Get-Content $ls -Raw -Encoding UTF8 | ConvertFrom-Json).rawVersion }
+
+    $agentic = [ordered]@{
+        label = $Label
+        note  = "free-text for now; fill deterministically once the sweep driver exists"
+    }
+    if ($Notes) {
+        if (-not (Test-Path $Notes)) { throw "notes file not found: $Notes" }
+        $agentic = Get-Content $Notes -Raw -Encoding UTF8 | ConvertFrom-Json
+    }
+
+    $state = [ordered]@{
+        schema_version = 1
+        generated      = (Get-Date).ToString("s")
+        session        = $Stamp
+        deterministic  = [ordered]@{
+            mod_under_test = $(if ($ModPath) { [ordered]@{
+                                    path = $ModPath; metadata = $modMeta
+                                    fingerprint = (Get-DirFingerprint $ModPath)
+                                    built_from_config = $BuildConfig
+                                    config_sha256 = (Get-FileSha $BuildConfig)
+                                } } else { $null })
+            repo    = $git
+            game    = [ordered]@{ version = $gameVersion; exe = $Exe }
+            harness = [ordered]@{
+                script_sha256 = (Get-FileSha $PSCommandPath)
+                runs = $Runs; dump_dates = $DumpDates; until_date = $UntilDate; tags = $Tags
+                timeout_minutes = $TimeoutMinutes
+            }
+            host = [ordered]@{ machine = $env:COMPUTERNAME; started = (Get-Date).ToString("s") }
+        }
+        agentic = $agentic
+    }
+    [System.IO.File]::WriteAllText((Join-Path $SessionDir "build_state.json"), ($state | ConvertTo-Json -Depth 12), $Utf8NoBom)
+    return $state
+}
+
 # ============================================================== session ====
 
 $backupDir = Join-Path $SessionDir "_settings_backup"
@@ -355,7 +485,7 @@ foreach ($f in @("content_load.json", "pdx_settings.json")) {
 }
 
 $session = [ordered]@{
-    stamp = $Stamp; runs_requested = $Runs; dump_date = $DumpDate; until_date = $UntilDate
+    stamp = $Stamp; runs_requested = $Runs; dump_dates = $DumpDates; until_date = $UntilDate
     tags = $Tags; mod_path = $ModPath; exe = $Exe; runs = @()
 }
 $allRows = New-Object System.Collections.Generic.List[string]
@@ -370,10 +500,16 @@ try {
     }
 
     Write-Log "session $Stamp -> $SessionDir"
-    Write-Log "mod under test: $ModPath"
-    Write-Log "plan: $Runs run(s), dump $($Tags -join '+') markets on $DumpDate, quit at $UntilDate"
+    $null = Write-BuildState
+    Write-Log "build_state.json written$(if ($Label) { " (label: $Label)" })"
+    Write-Log "mod under test: $(if ($ModPath) { $ModPath } else { '<none - base game>' })"
+    Write-Log "plan: $Runs run(s), dump $($Tags -join '+') markets on $($DumpDates -join ', '), quit at $UntilDate"
 
-    $cl = Set-ContentLoad -ModDirs @($ModPath, $InstrDir)
+    $modDirs = @()
+    if ($ModPath) { $modDirs += $ModPath }
+    else { Write-Log "NO MOD UNDER TEST - base game plus instrumentation only (control arm)" }
+    $modDirs += $InstrDir
+    $cl = Set-ContentLoad -ModDirs $modDirs
     Write-Log "content_load.json = $cl"
     Set-RunSettings
     Write-Log "pdx_settings.json: display_mode=windowed, language=l_english"
@@ -391,7 +527,7 @@ try {
                          Where-Object { $_.LastWriteTime -ge $runStart }).Count
 
         $token = "{0}r{1:d2}" -f $Stamp, $run
-        Write-InstrumentMod -Dir $InstrDir -Date $DumpDate -Tags $Tags -Token $token
+        Write-InstrumentMod -Dir $InstrDir -Dates $DumpDates -Tags $Tags -Token $token
         Write-Log "run $run/$Runs starting (token $token)"
         $proc = Start-Process -FilePath $Exe -ArgumentList $gameArgs -WorkingDirectory $Binaries -PassThru
 
@@ -488,27 +624,29 @@ try {
         # ---- parse -> markets.tsv ----
         $rows = New-Object System.Collections.Generic.List[string]
         $markets = @{}; $notFound = @{}; $ingameDate = ""
-        $sawEnd = $false   # judged from the harvest, not the live stream (a poll can miss the tail)
-        # payload layout: V3TB | <token> | <kind> | ...
+        # payload layout: V3TB | <token> | <kind> | <dump date> | ...   (BOOT has no date)
+        $dumpsSeen = @{}
         foreach ($p in $final) {
             $f = $p.Split('|')
-            if ($f.Count -lt 3) { continue }
-            if ($f[2] -eq "END") { $sawEnd = $true }
-            if ($f[2] -eq "BEGIN" -and $f.Count -ge 4) { $ingameDate = $f[3] }
-            elseif ($f[2] -eq "MARKET" -and $f.Count -ge 5) { $markets[$f[3]] = $f[4] }
-            elseif ($f[2] -eq "MARKET_NOT_FOUND" -and $f.Count -ge 5) { $notFound[$f[3]] = $f[4] }
-            elseif ($f[2] -eq "G" -and $f.Count -ge 8) {
-                $mk = ""; if ($markets.ContainsKey($f[3])) { $mk = $markets[$f[3]] }
+            if ($f.Count -lt 4) { continue }
+            $kind = $f[2]; $date = $f[3]
+            if ($kind -eq "END") { $dumpsSeen[$date] = $true }
+            elseif ($kind -eq "BEGIN") { $ingameDate = $f[4] }
+            elseif ($kind -eq "MARKET" -and $f.Count -ge 6) { $markets["$date|$($f[4])"] = $f[5] }
+            elseif ($kind -eq "MARKET_NOT_FOUND" -and $f.Count -ge 6) { $notFound["$date|$($f[4])"] = $f[5] }
+            elseif ($kind -eq "G" -and $f.Count -ge 9) {
+                $mk = ""; if ($markets.ContainsKey("$date|$($f[4])")) { $mk = $markets["$date|$($f[4])"] }
                 $null = $rows.Add(("{0}`t{1}`t{2}`t{3}`t{4}`t{5}`t{6}`t{7}`t{8}" -f `
-                    $run, $DumpDate, $f[3], $mk, $f[4], $f[5], $f[6], $f[7], "ok"))
+                    $run, $date, $f[4], $mk, $f[5], $f[6], $f[7], $f[8], "ok"))
             }
         }
-        foreach ($tag in $Tags) {
-            if ($notFound.ContainsKey($tag)) {
-                $null = $rows.Add(("{0}`t{1}`t{2}`t`t`t`t`t`t{3}" -f $run, $DumpDate, $tag, "MARKET_NOT_FOUND: $($notFound[$tag])"))
-                Write-Log "  $tag -> MARKET NOT FOUND ($($notFound[$tag]))" "WARN"
-            }
+        foreach ($k in $notFound.Keys) {
+            $parts = $k.Split('|')
+            $null = $rows.Add(("{0}`t{1}`t{2}`t`t`t`t`t`t{3}" -f $run, $parts[0], $parts[1], "MARKET_NOT_FOUND: $($notFound[$k])"))
+            Write-Log "  $($parts[1]) at $($parts[0]) -> MARKET NOT FOUND ($($notFound[$k]))" "WARN"
         }
+        $sawEnd = $true
+        foreach ($d in $DumpDates) { if (-not $dumpsSeen.ContainsKey($d)) { $sawEnd = $false } }
         $header = "run`tdump_date`ttag`tmarket`tgood`tbuy_orders`tsell_orders`tprice`tstatus"
         [System.IO.File]::WriteAllLines((Join-Path $runDir "markets.tsv"), [string[]](@($header) + $rows), $Utf8NoBom)
         foreach ($r in $rows) { $null = $allRows.Add($r) }
@@ -519,10 +657,10 @@ try {
 
         $meta = [ordered]@{
             run = $run; token = $token; started = $runStart.ToString("s"); ended = $runEnd.ToString("s")
-            wall_seconds = $wallSec; args = $gameArgs; dump_date = $DumpDate; until_date = $UntilDate
+            wall_seconds = $wallSec; args = $gameArgs; dump_dates = $DumpDates; until_date = $UntilDate
             reached_ingame_date = $lastTick; self_quit = (-not $timedOut); timed_out = $timedOut
             mod_loaded = $modLoaded; mod_init_marker = $modInit
-            dump_complete = $sawEnd; dump_date_ingame = $ingameDate
+            dump_complete = $sawEnd; dumps_seen = @($dumpsSeen.Keys | Sort-Object); dump_date_ingame = $ingameDate
             goods_rows = $rows.Count; markets = $markets; markets_not_found = $notFound
             error_log_lines = $errorLines; autosaves_written = $savesAfter - $savesBefore
             foreign_token_lines_skipped = $foreign
