@@ -25,7 +25,7 @@ $histDir = Join-Path $Game 'common\history\buildings'
 if (-not (Test-Path $histDir)) { throw "History dir not found: $histDir (set -Game or VIC3_GAME)" }
 
 $cfgPath = if ($Config) { (Resolve-Path -LiteralPath $Config).Path } else { Join-Path $Repo 'config\mod_config.json' }
-$cfg = Get-Content -LiteralPath $cfgPath -Raw | ConvertFrom-Json
+$cfg = Get-Content -LiteralPath $cfgPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $maps = Get-SplitMaps $cfg
 $baseIndustry = $maps.baseIndustry; $pmMap = $maps.pmMap
 

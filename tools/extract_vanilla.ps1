@@ -23,39 +23,7 @@ param(
     [string]$Game = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game" })
 )
 $ErrorActionPreference = 'Stop'
-
-# Read every top-level `<prefix>NAME = { ... }` block from a directory of .txt files, brace-tracked.
-# Returns an ordered hashtable name -> array of block lines (header .. matching close).
-function Get-TopBlocks([string]$dir, [string]$prefix) {
-    $blocks = [ordered]@{}
-    foreach ($f in (Get-ChildItem -LiteralPath $dir -Filter *.txt | Sort-Object Name)) {
-        $text = [System.IO.File]::ReadAllText($f.FullName)   # ReadAllText strips the BOM
-        $lines = $text -split "`r?`n"
-        $i = 0
-        while ($i -lt $lines.Count) {
-            if ($lines[$i] -match ("^(" + $prefix + "[A-Za-z0-9_-]+)\s*=\s*\{")) {   # keys may contain '-' (e.g. pm_coal-fired_plant)
-                $name = $Matches[1]; $depth = 0
-                $buf = New-Object System.Collections.Generic.List[string]
-                do {
-                    $ln = $lines[$i]
-                    $depth += ([regex]::Matches($ln, '\{')).Count - ([regex]::Matches($ln, '\}')).Count
-                    $buf.Add($ln); $i++
-                } while ($i -lt $lines.Count -and $depth -gt 0)
-                $blocks[$name] = $buf.ToArray()
-            } else { $i++ }
-        }
-    }
-    return $blocks
-}
-
-# Collect the `key_` tokens inside a `<field> = { ... }` list (single- or multi-line, no nested braces).
-function Get-ListTokens([string[]]$block, [string]$field, [string]$tokenPrefix) {
-    $joined = ($block -join " ")
-    if ($joined -match ($field + '\s*=\s*\{([^}]*)\}')) {
-        return ([regex]::Matches($Matches[1], '(' + $tokenPrefix + '[A-Za-z0-9_-]+)') | ForEach-Object { $_.Groups[1].Value })   # keys may contain '-'
-    }
-    return @()
-}
+. (Join-Path $PSScriptRoot 'history_lib.ps1')   # Get-TopBlocks / Get-ListTokens
 
 # --- buildings ---
 $bBlocks = Get-TopBlocks (Join-Path $Game 'common\buildings') 'building_'
@@ -90,9 +58,11 @@ $pBlocks = Get-TopBlocks (Join-Path $Game 'common\production_methods') ''
 $pms = [ordered]@{}
 foreach ($name in $pBlocks.Keys) {
     $in = [ordered]@{}; $out = [ordered]@{}; $emp = [ordered]@{}; $mods = [ordered]@{}; $gated = $false
+    # Goods values are NOT always integers: subsistence / urban-centre / agro PMs use fractions
+    # (grain 1.0, fabric 0.5, meat 0.33, ...). Matching only \d+ silently truncated those to 0.
     foreach ($l in $pBlocks[$name]) {
-        if     ($l -match 'goods_input_([a-z_]+)_add\s*=\s*(-?\d+)')          { $in[$Matches[1]]  = [int]$Matches[2] }
-        elseif ($l -match 'goods_output_([a-z_]+)_add\s*=\s*(-?\d+)')         { $out[$Matches[1]] = [int]$Matches[2] }
+        if     ($l -match 'goods_input_([a-z_]+)_add\s*=\s*(-?\d+(?:\.\d+)?)')  { $in[$Matches[1]]  = Get-Num $Matches[2] }
+        elseif ($l -match 'goods_output_([a-z_]+)_add\s*=\s*(-?\d+(?:\.\d+)?)') { $out[$Matches[1]] = Get-Num $Matches[2] }
         elseif ($l -match 'building_employment_([a-z_]+)_add\s*=\s*(-?\d+)')  { $emp[$Matches[1]] = [int]$Matches[2] }
         elseif ($l -match '^\s*([a-z][a-z0-9_]*)_add\s*=\s*(-?\d+)\s*$')      { $mods[$Matches[1]] = [int]$Matches[2] }
         elseif ($l -match 'unlocking_principles\s*=')                        { $gated = $true }  # power-bloc-gated (only active with a bloc principle) — UI must not default to it

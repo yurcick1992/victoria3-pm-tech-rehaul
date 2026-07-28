@@ -81,7 +81,7 @@ foreach ($line in (Get-Content (Join-Path $repo 'tools\goods_prices.tsv'))) {
 # --- load config (default, or a caller-supplied file via -Config) ---
 $cfgPath = if ($Config) { (Resolve-Path -LiteralPath $Config).Path } else { Join-Path $repo 'config\mod_config.json' }
 Write-Output "Config: $cfgPath"
-$cfg = Get-Content -LiteralPath $cfgPath -Raw | ConvertFrom-Json
+$cfg = Get-Content -LiteralPath $cfgPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $Game = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game" })
 
 # include_all_buildings: EMISSION-scope switch for the untouched (non-tiered) vanilla buildings.
@@ -486,12 +486,22 @@ $gateEval = [System.Text.RegularExpressions.MatchEvaluator]{
     if ($adds.Count -eq 0) { return $m.Value }
     "unlocking_production_methods = {`n" + ((@($toks) + $adds | ForEach-Object { "`t`t$_" }) -join "`n") + "`n`t}"
 }
+# Write a goods quantity the way the game reads it: invariant decimal point, no trailing ".0" on whole
+# numbers (a comma separator from a non-English locale would be a parse error in V3 script).
+function Format-Qty($v) {
+    $d = [double]$v
+    if ($d -eq [math]::Truncate($d)) { return ([int]$d).ToString([System.Globalization.CultureInfo]::InvariantCulture) }
+    return $d.ToString('0.####', [System.Globalization.CultureInfo]::InvariantCulture)
+}
 # goods-override lookup: pm -> @{ in=@{good=qty}; out=@{good=qty} }
 $pmGoods = @{}
 if ($cfg.pm_goods) { foreach ($p in $cfg.pm_goods.PSObject.Properties) {
     $ov = @{ in = @{}; out = @{} }
-    if ($p.Value.in)  { foreach ($g in $p.Value.in.PSObject.Properties)  { $ov.in[$g.Name]  = [int]$g.Value } }
-    if ($p.Value.out) { foreach ($g in $p.Value.out.PSObject.Properties) { $ov.out[$g.Name] = [int]$g.Value } }
+    # Quantities are NOT always integers — vanilla's subsistence / urban-centre / agro PMs use fractions
+    # (grain 1.0, fabric 0.5, meat 0.33). Keep them as doubles and write them back with INVARIANT
+    # culture, or a comma decimal separator on a non-English Windows would emit invalid script.
+    if ($p.Value.in)  { foreach ($g in $p.Value.in.PSObject.Properties)  { $ov.in[$g.Name]  = [double]$g.Value } }
+    if ($p.Value.out) { foreach ($g in $p.Value.out.PSObject.Properties) { $ov.out[$g.Name] = [double]$g.Value } }
     $pmGoods[$p.Name] = $ov
 } }
 foreach ($pf in (Get-ChildItem (Join-Path $Game 'common\production_methods') -Filter *.txt)) {
@@ -503,8 +513,8 @@ foreach ($pf in (Get-ChildItem (Join-Path $Game 'common\production_methods') -Fi
             # (plantations/farms use default_/automatic_/worker_/… , e.g. default_building_cotton_plantation).
             if ($lines[$k] -match '^([A-Za-z_][A-Za-z0-9_-]*)\s*=\s*\{') { $cur = $Matches[1]; continue }
             if ($null -ne $cur -and $pmGoods.ContainsKey($cur)) {
-                if ($lines[$k] -match '^(\s*)goods_input_([a-z_]+)_add\s*=')      { $g = $Matches[2]; if ($pmGoods[$cur].in.ContainsKey($g))  { $lines[$k] = "$($Matches[1])goods_input_${g}_add = $($pmGoods[$cur].in[$g])" } }
-                elseif ($lines[$k] -match '^(\s*)goods_output_([a-z_]+)_add\s*=') { $g = $Matches[2]; if ($pmGoods[$cur].out.ContainsKey($g)) { $lines[$k] = "$($Matches[1])goods_output_${g}_add = $($pmGoods[$cur].out[$g])" } }
+                if ($lines[$k] -match '^(\s*)goods_input_([a-z_]+)_add\s*=')      { $g = $Matches[2]; if ($pmGoods[$cur].in.ContainsKey($g))  { $lines[$k] = "$($Matches[1])goods_input_${g}_add = $(Format-Qty $pmGoods[$cur].in[$g])" } }
+                elseif ($lines[$k] -match '^(\s*)goods_output_([a-z_]+)_add\s*=') { $g = $Matches[2]; if ($pmGoods[$cur].out.ContainsKey($g)) { $lines[$k] = "$($Matches[1])goods_output_${g}_add = $(Format-Qty $pmGoods[$cur].out[$g])" } }
             }
         }
         $txt = $lines -join "`n"
@@ -553,6 +563,9 @@ if (-not $isAlt) {
     # icons.js: goods pictograms for the scenario panel. UI-only and .gitignore'd (game art is never
     # committed or shipped); if it's missing the UI simply renders without pictograms.
     & (Join-Path $PSScriptRoot 'extract_icons.ps1') -Repo $repo -Game $Game
+    # presets.js: the scenario panel's one-click market presets (vanilla 1836 per country market) +
+    # the pop consumption tables they need. Derived from the live game, so a patch refreshes them here.
+    & (Join-Path $PSScriptRoot 'extract_presets.ps1') -Repo $repo -Game $Game -Config $cfgPath
 }
 
 # --- report ---
