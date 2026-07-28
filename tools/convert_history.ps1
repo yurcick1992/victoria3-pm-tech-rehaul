@@ -30,7 +30,7 @@ $outDir = Join-Path $Repo (Join-Path $ModDir 'common\history\buildings')
 if (-not (Test-Path $outDir)) { New-Item -ItemType Directory -Force -Path $outDir | Out-Null }
 
 $cfgPath = if ($Config) { (Resolve-Path -LiteralPath $Config).Path } else { Join-Path $Repo 'config\mod_config.json' }
-$cfg = Get-Content -LiteralPath $cfgPath -Raw | ConvertFrom-Json
+$cfg = Get-Content -LiteralPath $cfgPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $maps = Get-SplitMaps $cfg
 $baseIndustry = $maps.baseIndustry; $pmMap = $maps.pmMap; $industryById = $maps.industryById
 
@@ -38,7 +38,7 @@ $baseIndustry = $maps.baseIndustry; $pmMap = $maps.pmMap; $industryById = $maps.
 $rules = @()
 $exPath = Join-Path $Repo 'config\start_exceptions.json'
 if (Test-Path $exPath) {
-    $ex = Get-Content $exPath -Raw | ConvertFrom-Json
+    $ex = Get-Content $exPath -Raw -Encoding UTF8 | ConvertFrom-Json
     if ($ex.rules) { $rules = @($ex.rules) }
 }
 

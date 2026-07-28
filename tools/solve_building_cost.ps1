@@ -64,7 +64,7 @@ $poundPerPoint = $conGoodsVal / $conAdd
 Write-Output ("Money/construction-point = {0:N0} (PM {1}: {2:N0}/wk goods / {3} pts/wk)" -f $poundPerPoint, $ConstructionPm, $conGoodsVal, $conAdd)
 
 # --- solve building_cost per tier ---
-$cfg = Get-Content (Join-Path $Repo 'config\mod_config.json') -Raw | ConvertFrom-Json
+$cfg = Get-Content (Join-Path $Repo 'config\mod_config.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 $horizon = $PaybackYears * $WeeksPerYear   # weeks of profit the build cost must equal
 $report = @()
 foreach ($ind in $cfg.industries) {
