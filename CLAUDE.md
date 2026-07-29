@@ -616,7 +616,15 @@ the game.
   Useful flags: **`-DumpDates a,b,c`** (several dump dates per run; each must be the 1st of a month, and
   extra dates are cheap insurance — a run cut short still has its earlier dumps), **`-NoMod`** (control arm:
   base game + instrumentation only), **`-ModPath <dir>`** (any absolute path, so an alternate build from
-  `build.ps1 -SaveTo <name>` runs without being deployed), `-Label`, `-Notes`, `-BuildConfig`. **MVP scope: one metric** — per-good buy/sell orders + price for the GBR and FRA markets
+  `build.ps1 -SaveTo <name>` runs without being deployed), `-Label`, `-Notes`, `-BuildConfig`.
+  **Crash resilience:** a run that ends early is resumed from its own last autosave
+  (`-AutosaveInterval`, default `yearly` — the engine's coarsest; no multi-year option exists and no script
+  effect can save the game). **⚠ Autosaves overwrite the player's own `autosave*.v3` slots.** A CTD is
+  identified by a new `crashes\victoria3_*` minidump, never by exit code. **To stop a batch — including one
+  already running — create `tools/testbed/STOP`**; that is the reliable channel, since a background batch
+  has no console to press a key in. Resume is guarded three ways (own-save-is-newest, and the resumed clock
+  landing neither ahead nor at a fresh 1836 start), because `-continuelastsave` loads the newest save *on
+  the machine* and will otherwise splice in a foreign timeline; see MODDING_NOTES for the measured failure. **MVP scope: one metric** — per-good buy/sell orders + price for the GBR and FRA markets
   (`-Tags`); a missing country/market yields a `MARKET_NOT_FOUND` row instead of failing the run.
   `meta.json`'s `mod_loaded` / `dump_complete` / `goods_rows` are the health assertion for a session.
   Next steps toward parameter sweeps: build a config variant (`build.ps1 -Config …`), run a session per

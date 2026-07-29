@@ -265,6 +265,42 @@ completeness from the harvest, not the live tail — a poll can miss the final l
 if `victoria3.exe` is already running (it will not kill it — that might be a game you are playing); a
 crashed harness can leave one orphaned, since `-run_until` means the game outlives its launcher.
 
+**Surviving a crash, without mistaking you for one.** A run that ends before its `-run_until` date is
+either the game dying (resume it) or a human killing it (stop the batch). Three signals, strongest first:
+
+1. **A STOP file** — `tools\testbed\STOP` (stops any session) or `STOP` in the session folder. Checked on
+   every poll, works unattended, and is the only channel that is never ambiguous. **This is the intended
+   way to end a batch**, including one already running overnight.
+2. **A new `crashes\victoria3_*` directory** (with `exception.txt` + `minidump.dmp`) whose mtime falls
+   inside the attempt ⇒ definitely a CTD ⇒ resume, no questions asked. Exit codes are deliberately *not*
+   used: Task Manager, `Stop-Process` and the game's own crash handler are not reliably distinguishable,
+   whereas a minidump either exists or does not.
+3. **A keypress within a grace window** (default 30 s) — only the tiebreak, for an early exit with no
+   crash dump. With no interactive console (a background batch) this cannot be asked, so it falls through
+   to "assume crash"; that is exactly why signal 1 exists.
+
+**Resuming is `-continuelastsave`, and it needs a guard.** ⚠ `-continuelastsave` loads the newest save
+**on the machine**, not "this run's last save". Measured failure: a resume jumped *forward* from 1836.8 to
+1837.1 because a previous test run's autosave was newer — silently splicing a foreign timeline in and
+skipping a dump date. The harness therefore refuses to resume unless the newest `*.v3` in `save games\` was
+written after this run started, and after resuming checks where the clock landed: **ahead** of the kill
+point ⇒ foreign save, **far behind** ⇒ the load failed and `-handsoff` started a fresh 1836 game (verified:
+a bad `-loadsave=` path does exactly that), **no progress** ⇒ abandon. Any of the three abandons the run
+rather than reporting corrupt data. `-loadsave=<absolute path>` was tried and rejected by the exe
+(`Could not load save game [...]. Going to main menu.`), so the save cannot be named explicitly.
+
+A resume rewinds to the last autosave, so a dump date that already fired can fire **again** with different
+numbers. The harvest keeps the **last** emission per `(date, tag, good)` — the one on the timeline that
+actually reached the end — and reports the count as `re-dumped` rows.
+
+**Autosave: `yearly` is the coarsest the engine offers.** There is no multi-year interval (the enum is
+never / monthly / every_other_month / three_months / half_year / yearly) and **no script effect can save
+the game** (`save_scope_as` and friends save *scopes*, not the game), so a 5-year cadence is not reachable
+by any route. Yearly caps crash loss at under one in-game year, at ~99 saves for a full campaign.
+⚠ **Autosaves OVERWRITE the player's own `autosave*.v3` slots** — a testbed session will destroy whatever
+was in them. Named saves are untouched. Set `-AutosaveInterval never` to opt out, at the cost of making
+crashes unrecoverable (and note a crash in the first in-game year has nothing to resume from either way).
+
 ## metadata.json
 
 - Lives at `mod/.metadata/metadata.json`. Key fields: `name`, unique `id` (reverse-domain),

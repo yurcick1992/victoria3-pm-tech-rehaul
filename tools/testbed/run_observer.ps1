@@ -62,6 +62,18 @@ param(
     # path to a JSON file whose contents become build_state.json's "agentic" block
     [string]   $Notes = "",
     [string]   $OutRoot = "",
+    # How often the game autosaves. The engine's coarsest option is "yearly" - there is NO
+    # multi-year interval and no script effect that can save the game, so a 5-year cadence is
+    # not reachable. Yearly is the closest, and it caps CTD loss at <1 in-game year.
+    # WARNING: this OVERWRITES the player's own autosave*.v3 slots. See MODDING_NOTES.
+    [ValidateSet("never", "monthly", "every_other_month", "three_months", "half_year", "yearly")]
+    [string]   $AutosaveInterval = "yearly",
+    # How many times a single run may be resumed from its last autosave after an abnormal exit.
+    # 0 disables resuming (an abnormal exit then just ends the run).
+    [int]      $MaxResumes = 5,
+    # On an abnormal exit with NO crash artifact, wait this long for a keypress before deciding
+    # it was a crash rather than you. Any key = you did it = stop the batch.
+    [int]      $StopGraceSeconds = 30,
     # hard watchdog: kill the process if a single run exceeds this
     [int]      $TimeoutMinutes = 45,
     # leave content_load.json / pdx_settings.json as the harness set them
@@ -244,12 +256,13 @@ function New-Tail {
     # 5 in-game years - a full-length campaign would have thrown its early game away long
     # before the run ends. The mirror is written as the run happens, so it never rotates,
     # and it holds exactly one run (unlike the copied ring, which mixes runs).
-    param([string]$Path, [string]$Mirror = "")
+    # $Append keeps one run in one mirror file across a crash resume.
+    param([string]$Path, [string]$Mirror = "", [bool]$Append = $false)
     $len = 0L
     if (Test-Path $Path) { $len = (Get-Item $Path).Length }
     $writer = $null
     if ($Mirror) {
-        $writer = New-Object System.IO.StreamWriter($Mirror, $false, (New-Object System.Text.UTF8Encoding($false)))
+        $writer = New-Object System.IO.StreamWriter($Mirror, $Append, (New-Object System.Text.UTF8Encoding($false)))
         $writer.AutoFlush = $true   # survive a harness crash mid-run
     }
     return @{ Path = $Path; Pos = $len; Buf = ""; Writer = $writer; Lines = 0L }
@@ -376,9 +389,9 @@ function Set-RunSettings {
     Set-JsonSetting $s "Graphics" "display_mode" "windowed"
     Set-JsonSetting $s "System"   "language"     "l_english"
     Set-JsonSetting $s "game"     "save_on_exit" $false
-    # autosaves are pure cost here (~14 MB and a stall every other in-game month) and they
-    # clobber the player's own autosave slots
-    Set-JsonSetting $s "game"     "autosave"     "never"
+    # Autosaves are the ONLY way to make a crash resumable - no script effect can save the game.
+    # They cost a stall and ~14-95 MB per write, and they OVERWRITE the player's autosave slots.
+    Set-JsonSetting $s "game"     "autosave"     $AutosaveInterval
     [System.IO.File]::WriteAllText($f, ($s | ConvertTo-Json -Depth 12 -Compress), $Utf8NoBom)
 }
 
@@ -465,7 +478,8 @@ function Write-BuildState {
             harness = [ordered]@{
                 script_sha256 = (Get-FileSha $PSCommandPath)
                 runs = $Runs; dump_dates = $DumpDates; until_date = $UntilDate; tags = $Tags
-                timeout_minutes = $TimeoutMinutes
+                timeout_minutes = $TimeoutMinutes; autosave_interval = $AutosaveInterval
+                max_resumes = $MaxResumes; stop_grace_seconds = $StopGraceSeconds
             }
             host = [ordered]@{ machine = $env:COMPUTERNAME; started = (Get-Date).ToString("s") }
         }
@@ -473,6 +487,75 @@ function Write-BuildState {
     }
     [System.IO.File]::WriteAllText((Join-Path $SessionDir "build_state.json"), ($state | ConvertTo-Json -Depth 12), $Utf8NoBom)
     return $state
+}
+
+# -------------------------------------------------- crash vs you, and stop ----
+# An abnormal exit is either the game dying (resume it) or you killing it (stop the batch).
+# Three signals, strongest first - the timed prompt is only the tiebreak, never the main test:
+#   1. STOP file in the session dir  -> unambiguous, works unattended, checked every poll
+#   2. a new crashes\victoria3_* dir -> unambiguous CTD (exception.txt + minidump.dmp)
+#   3. a keypress within the grace window -> you did it
+# Exit codes are NOT used: Task Manager, Stop-Process and the game's own crash handler are not
+# reliably distinguishable, whereas a minidump either exists or does not.
+
+$StopFile      = Join-Path $SessionDir "STOP"
+$GlobalStopFile = Join-Path $PSScriptRoot "STOP"   # tools\testbed\STOP - stops ANY session
+$CrashDir      = Join-Path $Doc "crashes"
+
+function Test-StopRequested {
+    # Either file works. The global one is what a human wants when a batch spans several
+    # sessions and they do not know which stamp is running right now.
+    return ((Test-Path $StopFile) -or (Test-Path $GlobalStopFile))
+}
+
+function Get-NewCrashDirs {
+    param([datetime]$Since)
+    if (-not (Test-Path $CrashDir)) { return @() }
+    return @(Get-ChildItem $CrashDir -Directory -ErrorAction SilentlyContinue |
+             Where-Object { $_.LastWriteTime -ge $Since })
+}
+
+function Test-OwnSaveIsNewest {
+    # -continuelastsave loads the newest save ON THE MACHINE, not "this run's last save". If the
+    # newest save predates this run it belongs to an earlier run or to the player, and resuming
+    # would splice a foreign timeline into the data (measured: a resume once jumped FORWARD from
+    # 1836.8 to 1837.1 and skipped a dump). So only resume when this run owns the newest save.
+    param([datetime]$RunStart)
+    $newest = Get-ChildItem $SaveDir -Filter *.v3 -ErrorAction SilentlyContinue |
+              Sort-Object LastWriteTime -Descending | Select-Object -First 1
+    if (-not $newest) { return $null }
+    if ($newest.LastWriteTime -lt $RunStart) { return $null }
+    return $newest
+}
+
+function ConvertTo-DateNum {
+    # "1886.1.1" / "1886.1.1.6" -> 18860101, for ordering. Returns 0 if unparseable.
+    param([string]$D)
+    if (-not $D) { return 0 }
+    $p = $D.Split('.')
+    if ($p.Count -lt 3) { return 0 }
+    return ([int]$p[0]) * 10000 + ([int]$p[1]) * 100 + ([int]$p[2])
+}
+
+function Wait-ForUserVerdict {
+    # Returns $true if a human is telling us to stop. Falls back to "no verdict" when there is
+    # no interactive console at all (the overnight case), which is why the STOP file exists.
+    param([int]$Seconds)
+    $interactive = $true
+    try { $null = [Console]::KeyAvailable } catch { $interactive = $false }
+    if (-not $interactive) {
+        Write-Log "  no interactive console - cannot ask; treating as a crash (drop a STOP file to end the batch)" "WARN"
+        return $false
+    }
+    Write-Log "  press any key within ${Seconds}s if YOU stopped the game (no key = crash, will resume)" "WARN"
+    while ([Console]::KeyAvailable) { $null = [Console]::ReadKey($true) }   # drain stale input
+    $deadline = (Get-Date).AddSeconds($Seconds)
+    while ((Get-Date) -lt $deadline) {
+        if (Test-StopRequested) { return $true }
+        if ([Console]::KeyAvailable) { $null = [Console]::ReadKey($true); return $true }
+        Start-Sleep -Milliseconds 250
+    }
+    return $false
 }
 
 # ============================================================== session ====
@@ -528,18 +611,34 @@ try {
 
         $token = "{0}r{1:d2}" -f $Stamp, $run
         Write-InstrumentMod -Dir $InstrDir -Dates $DumpDates -Tags $Tags -Token $token
-        Write-Log "run $run/$Runs starting (token $token)"
-        $proc = Start-Process -FilePath $Exe -ArgumentList $gameArgs -WorkingDirectory $Binaries -PassThru
 
-        # continuous mirrors: the only complete, single-run copy of the logs that grow
         $liveDir = Join-Path $runDir "logs_live"
         $null = New-Item -ItemType Directory -Force -Path $liveDir
-        $tailDebug = New-Tail (Join-Path $LogDir "debug.log")             (Join-Path $liveDir "debug.log")
-        $tailTick  = New-Tail (Join-Path $LogDir "dedicated_server.log")  (Join-Path $liveDir "dedicated_server.log")
-        $tailError = New-Tail (Join-Path $LogDir "error.log")             (Join-Path $liveDir "error.log")
-        $streamed  = New-Object System.Collections.Generic.List[string]
-        $lastTick = ""; $lastReport = Get-Date; $timedOut = $false
-        $modLoaded = $false; $modInit = $false
+        $streamed = New-Object System.Collections.Generic.List[string]
+        $lastTick = ""; $timedOut = $false; $modLoaded = $false; $modInit = $false
+        $targetNum = ConvertTo-DateNum $UntilDate
+        $attempt = 0; $resumes = 0; $abandoned = ""
+        $attemptLog = @()
+
+        # ---- attempt loop: one pass per launch, extra passes are crash resumes ----
+        while ($true) {
+        $attempt++
+        $attemptStart = Get-Date
+        $launchArgs = $gameArgs
+        if ($attempt -gt 1) { $launchArgs = @("-continuelastsave") + $gameArgs }
+        $resumeFrom = $lastTick
+        Write-Log $(if ($attempt -eq 1) { "run $run/$Runs starting (token $token)" }
+                    else { "run $run resume attempt $attempt from the last autosave (was at $resumeFrom)" })
+        $proc = Start-Process -FilePath $Exe -ArgumentList $launchArgs -WorkingDirectory $Binaries -PassThru
+
+        # Mirrors APPEND on a resume so one run stays one file.
+        $app = ($attempt -gt 1)
+        $tailDebug = New-Tail (Join-Path $LogDir "debug.log")             (Join-Path $liveDir "debug.log")             $app
+        $tailTick  = New-Tail (Join-Path $LogDir "dedicated_server.log")  (Join-Path $liveDir "dedicated_server.log")  $app
+        $tailError = New-Tail (Join-Path $LogDir "error.log")             (Join-Path $liveDir "error.log")             $app
+        $lastReport = Get-Date
+        $tickAtStart = $lastTick
+        $firstTick = ""
 
         while ($true) {
             $alive = $null -ne (Get-Process -Id $proc.Id -ErrorAction SilentlyContinue)
@@ -554,7 +653,10 @@ try {
                 if ($line -match "PM_TECH_REHAUL: init OK")           { $modInit = $true }
             }
             foreach ($line in (Read-Tail $tailTick)) {
-                if ($line -match "Processing Tick: ([0-9]+\.[0-9]+\.[0-9]+)") { $lastTick = $Matches[1] }
+                if ($line -match "Processing Tick: ([0-9]+\.[0-9]+\.[0-9]+)") {
+                    $lastTick = $Matches[1]
+                    if (-not $firstTick) { $firstTick = $lastTick }
+                }
             }
             $null = Read-Tail $tailError   # mirrored only; nothing to react to live
 
@@ -563,11 +665,18 @@ try {
                 Write-Log ("  ...{0,4:N0}s  in-game {1}" -f $elapsed, $(if ($lastTick) { $lastTick } else { "loading" }))
                 $lastReport = Get-Date
             }
+            if (Test-StopRequested) {
+                Write-Log "STOP file present - ending the batch and closing the game" "WARN"
+                Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
+                $timedOut = $true; $abandoned = "stopped by user (STOP file)"
+                Start-Sleep -Seconds 3
+                break
+            }
             if (-not $alive) { break }
             if ($elapsed -gt ($TimeoutMinutes * 60)) {
                 Write-Log "run $run exceeded ${TimeoutMinutes}m - terminating the game process" "WARN"
                 Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
-                $timedOut = $true
+                $timedOut = $true; $abandoned = "watchdog timeout"
                 Start-Sleep -Seconds 3
                 break
             }
@@ -586,9 +695,77 @@ try {
         $mirrored = [ordered]@{ "debug.log" = $tailDebug.Lines; "dedicated_server.log" = $tailTick.Lines; "error.log" = $tailError.Lines }
         Close-Tail $tailDebug; Close-Tail $tailTick; Close-Tail $tailError
 
+        # ---- did this attempt finish the run, and if not, whose fault was it? ----
+        # @() at the CALL site: PowerShell unrolls a returned array, so an empty result would
+        # arrive as $null and $null.Count throws under StrictMode
+        $crashDirs = @(Get-NewCrashDirs $attemptStart)
+        $reached   = (ConvertTo-DateNum $lastTick) -ge $targetNum
+        $attemptLog += [ordered]@{
+            attempt = $attempt; started = $attemptStart.ToString("s")
+            seconds = [math]::Round(((Get-Date) - $attemptStart).TotalSeconds, 1)
+            resumed_from = $(if ($attempt -gt 1) { $resumeFrom } else { "" })
+            ended_at_ingame = $lastTick; reached_target = $reached
+            crash_dirs = @($crashDirs | ForEach-Object { $_.Name })
+        }
+
+        if ($reached -or $timedOut) { break }
+
+        # Where did a resume actually land? Two ways it can be wrong, both silent:
+        #   ahead  - it loaded a newer save belonging to something else, skipping dumps
+        #   at the start - the load failed and -handsoff began a FRESH 1836 game instead
+        #                  (verified: a bad -loadsave path does exactly this)
+        if ($attempt -gt 1) {
+            $landed = ConvertTo-DateNum $firstTick
+            $wanted = ConvertTo-DateNum $tickAtStart
+            if ($landed -gt $wanted) {
+                Write-Log "resume landed at $firstTick, AHEAD of $tickAtStart - foreign save, abandoning run $run" "WARN"
+                $abandoned = "resume loaded a save ahead of the run"
+                break
+            }
+            if ($wanted - $landed -gt 20000) {   # >2 in-game years back = not our autosave
+                Write-Log "resume landed at $firstTick, far behind $tickAtStart - fresh game, abandoning run $run" "WARN"
+                $abandoned = "resume started a fresh game"
+                break
+            }
+            if ((ConvertTo-DateNum $lastTick) -le $wanted) {
+                Write-Log "resume made no progress (still $lastTick) - abandoning run $run" "WARN"
+                $abandoned = "resume made no progress"
+                break
+            }
+        }
+        if ($resumes -ge $MaxResumes) {
+            Write-Log "run ${run}: $MaxResumes resume(s) already used - giving up at $lastTick" "WARN"
+            $abandoned = "resume budget exhausted"
+            break
+        }
+
+        if (Test-StopRequested) { $abandoned = "stopped by user (STOP file)"; break }
+
+        $ownSave = Test-OwnSaveIsNewest $runStart
+        if (-not $ownSave) {
+            Write-Log "run ${run}: no autosave from this run to resume from (autosave=$AutosaveInterval) - abandoning at $lastTick" "WARN"
+            $abandoned = "no own autosave to resume from"
+            break
+        }
+
+        if ($crashDirs.Count -gt 0) {
+            Write-Log "run ${run}: game CRASHED at $lastTick (crash dump: $($crashDirs[0].Name)) - resuming" "WARN"
+        } else {
+            Write-Log "run ${run}: game exited early at $lastTick with no crash dump" "WARN"
+            if (Wait-ForUserVerdict $StopGraceSeconds) {
+                Write-Log "  user confirmed - stopping the batch" "WARN"
+                $abandoned = "stopped by user (keypress)"
+                break
+            }
+            Write-Log "  no response - treating as a crash and resuming"
+        }
+        $resumes++
+        }   # ---- end attempt loop ----
+
         $runEnd  = Get-Date
         $wallSec = [math]::Round(($runEnd - $runStart).TotalSeconds, 1)
-        Write-Log ("run $run finished: {0}s wall, in-game {1}, exit {2}" -f $wallSec, $lastTick, $(if ($timedOut) { "KILLED" } else { "self-quit" }))
+        Write-Log ("run $run finished: {0}s wall over {1} attempt(s), in-game {2}, exit {3}" -f `
+            $wallSec, $attempt, $lastTick, $(if ($abandoned) { $abandoned } elseif ($timedOut) { "KILLED" } else { "self-quit" }))
 
         # ---- collect the game's own logs (only files this run actually touched) ----
         $copied = @()
@@ -625,7 +802,12 @@ try {
         $rows = New-Object System.Collections.Generic.List[string]
         $markets = @{}; $notFound = @{}; $ingameDate = ""
         # payload layout: V3TB | <token> | <kind> | <dump date> | ...   (BOOT has no date)
+        # LAST WINS per (date, tag, good): a crash resume rewinds to the last autosave, so a dump
+        # date already passed can fire a SECOND time with different numbers. The later emission is
+        # the one on the timeline that actually reached the end, so it is the one to keep.
         $dumpsSeen = @{}
+        $byKey = New-Object System.Collections.Specialized.OrderedDictionary
+        $reDumped = 0
         foreach ($p in $final) {
             $f = $p.Split('|')
             if ($f.Count -lt 4) { continue }
@@ -636,10 +818,14 @@ try {
             elseif ($kind -eq "MARKET_NOT_FOUND" -and $f.Count -ge 6) { $notFound["$date|$($f[4])"] = $f[5] }
             elseif ($kind -eq "G" -and $f.Count -ge 9) {
                 $mk = ""; if ($markets.ContainsKey("$date|$($f[4])")) { $mk = $markets["$date|$($f[4])"] }
-                $null = $rows.Add(("{0}`t{1}`t{2}`t{3}`t{4}`t{5}`t{6}`t{7}`t{8}" -f `
-                    $run, $date, $f[4], $mk, $f[5], $f[6], $f[7], $f[8], "ok"))
+                $key = "$date|$($f[4])|$($f[5])"
+                if ($byKey.Contains($key)) { $reDumped++ }
+                $byKey[$key] = ("{0}`t{1}`t{2}`t{3}`t{4}`t{5}`t{6}`t{7}`t{8}" -f `
+                    $run, $date, $f[4], $mk, $f[5], $f[6], $f[7], $f[8], "ok")
             }
         }
+        foreach ($k in $byKey.Keys) { $null = $rows.Add($byKey[$k]) }
+        if ($reDumped -gt 0) { Write-Log "  $reDumped row(s) re-dumped after a resume - kept the later value" "WARN" }
         foreach ($k in $notFound.Keys) {
             $parts = $k.Split('|')
             $null = $rows.Add(("{0}`t{1}`t{2}`t`t`t`t`t`t{3}" -f $run, $parts[0], $parts[1], "MARKET_NOT_FOUND: $($notFound[$k])"))
@@ -658,7 +844,9 @@ try {
         $meta = [ordered]@{
             run = $run; token = $token; started = $runStart.ToString("s"); ended = $runEnd.ToString("s")
             wall_seconds = $wallSec; args = $gameArgs; dump_dates = $DumpDates; until_date = $UntilDate
-            reached_ingame_date = $lastTick; self_quit = (-not $timedOut); timed_out = $timedOut
+            reached_ingame_date = $lastTick; self_quit = ((-not $timedOut) -and (-not $abandoned)); timed_out = $timedOut
+            attempts = $attempt; resumes = $resumes; abandoned_reason = $abandoned
+            attempt_log = $attemptLog; autosave_interval = $AutosaveInterval
             mod_loaded = $modLoaded; mod_init_marker = $modInit
             dump_complete = $sawEnd; dumps_seen = @($dumpsSeen.Keys | Sort-Object); dump_date_ingame = $ingameDate
             goods_rows = $rows.Count; markets = $markets; markets_not_found = $notFound
