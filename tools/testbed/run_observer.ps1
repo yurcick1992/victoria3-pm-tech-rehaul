@@ -62,12 +62,12 @@ param(
     # path to a JSON file whose contents become build_state.json's "agentic" block
     [string]   $Notes = "",
     [string]   $OutRoot = "",
-    # How often the game autosaves. The engine's coarsest option is "yearly" - there is NO
-    # multi-year interval and no script effect that can save the game, so a 5-year cadence is
-    # not reachable. Yearly is the closest, and it caps CTD loss at <1 in-game year.
+    # How often the game autosaves - the ONLY way to make a crash resumable, since no script
+    # effect can save the game. Values are the engine's own (exe: SETTING_AUTOSAVE / OPTION_*);
+    # note "halfyear" has no underscore while "five_year" does.
     # WARNING: this OVERWRITES the player's own autosave*.v3 slots. See MODDING_NOTES.
-    [ValidateSet("never", "monthly", "every_other_month", "three_months", "half_year", "yearly")]
-    [string]   $AutosaveInterval = "yearly",
+    [ValidateSet("never", "monthly", "quarteryear", "halfyear", "five_year", "yearly")]
+    [string]   $AutosaveInterval = "five_year",
     # How many times a single run may be resumed from its last autosave after an abnormal exit.
     # 0 disables resuming (an abnormal exit then just ends the run).
     [int]      $MaxResumes = 5,
@@ -503,9 +503,34 @@ $GlobalStopFile = Join-Path $PSScriptRoot "STOP"   # tools\testbed\STOP - stops 
 $CrashDir      = Join-Path $Doc "crashes"
 
 function Test-StopRequested {
-    # Either file works. The global one is what a human wants when a batch spans several
-    # sessions and they do not know which stamp is running right now.
+    # Either file works. The global one is also how a keypress here propagates to a parent
+    # batch driver running in another process.
     return ((Test-Path $StopFile) -or (Test-Path $GlobalStopFile))
+}
+
+$script:HasConsole = $true
+try { $null = [Console]::KeyAvailable } catch { $script:HasConsole = $false }
+
+function Read-StopKey {
+    # Polled every cycle WHILE the game runs, so you can stop the batch without touching the
+    # game or a file:  q = finish this run then stop,  x = kill the game now and stop.
+    # Returns "" / "after" / "now".
+    if (-not $script:HasConsole) { return "" }
+    $verdict = ""
+    while ([Console]::KeyAvailable) {
+        $k = [Console]::ReadKey($true)
+        switch ($k.Key) {
+            "Q"      { $verdict = "after" }
+            "X"      { $verdict = "now" }
+            "Escape" { $verdict = "now" }
+        }
+    }
+    return $verdict
+}
+
+function Set-GlobalStop {
+    param([string]$Why)
+    Set-Content -Path $GlobalStopFile -Value $Why -Encoding utf8   # seen by a parent batch driver
 }
 
 function Get-NewCrashDirs {
@@ -600,6 +625,9 @@ try {
     $gameArgs = @("-gdpr-compliant", "-handsoff", "-disable_renderframeifneeded", "-run_until=$UntilDate")
     Write-Log "args: $($gameArgs -join ' ')"
 
+    if ($script:HasConsole) { Write-Log "press [q] to stop after the current run, [x] to stop immediately" }
+    $stopAfterRun = $false
+
     for ($run = 1; $run -le $Runs; $run++) {
         $runDir = Join-Path $SessionDir ("run{0:d2}" -f $run)
         $null = New-Item -ItemType Directory -Force -Path (Join-Path $runDir "logs")
@@ -665,8 +693,22 @@ try {
                 Write-Log ("  ...{0,4:N0}s  in-game {1}" -f $elapsed, $(if ($lastTick) { $lastTick } else { "loading" }))
                 $lastReport = Get-Date
             }
-            if (Test-StopRequested) {
-                Write-Log "STOP file present - ending the batch and closing the game" "WARN"
+            $key = Read-StopKey
+            if ($key -eq "now") {
+                Write-Log "[q/x] stopping now - closing the game" "WARN"
+                Set-GlobalStop "stopped by keypress"
+                Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
+                $timedOut = $true; $abandoned = "stopped by user (keypress)"
+                Start-Sleep -Seconds 3
+                break
+            }
+            if ($key -eq "after") {
+                Write-Log "[q] will stop after this run finishes" "WARN"
+                Set-GlobalStop "stop after current run"
+                $stopAfterRun = $true
+            }
+            if (Test-StopRequested -and -not $stopAfterRun) {
+                Write-Log "STOP requested - ending the batch and closing the game" "WARN"
                 Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
                 $timedOut = $true; $abandoned = "stopped by user (STOP file)"
                 Start-Sleep -Seconds 3
@@ -858,6 +900,11 @@ try {
         $session.runs += $meta
 
         Write-Log ("run ${run}: {0} goods rows, dump_complete={1}, mod_loaded={2}, error.log {3} lines" -f $rows.Count, $sawEnd, $modLoaded, $errorLines)
+
+        if ($stopAfterRun -or (Test-StopRequested)) {
+            Write-Log "stopping after run $run of $Runs as requested" "WARN"
+            break
+        }
         Write-Log ("  mirrored live: debug {0} lines, ticks {1}, errors {2} -> logs_live\" -f $mirrored["debug.log"], $mirrored["dedicated_server.log"], $errorLines)
     }
 

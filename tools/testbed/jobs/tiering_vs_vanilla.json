@@ -1,0 +1,40 @@
+{
+  "label": "tiering-vs-vanilla",
+  "runs_per_arm": 5,
+  "interleave": true,
+  "dump_dates": ["1860.1.1", "1886.1.1", "1910.1.1", "1935.1.1"],
+  "until_date": "1935.2.1",
+  "tags": ["GBR", "FRA"],
+  "autosave_interval": "five_year",
+  "timeout_minutes": 360,
+  "arms": [
+    {
+      "id": "vanilla",
+      "no_mod": true,
+      "notes": {
+        "label": "vanilla-baseline",
+        "arm": "A - control",
+        "what_this_build_is": "Base game with no mod under test; only the harness instrumentation mod (on_actions and debug_log lines, no economic content).",
+        "differs_from_baseline": "Nothing - this IS the baseline.",
+        "why_running": "Reference for run time and British market state over a full campaign.",
+        "caveats": ["Arms are interleaved, so any drift over the batch hits both equally."]
+      }
+    },
+    {
+      "id": "stub",
+      "mod_path": "mod_vanilla_stub",
+      "build_config": "config/mod_config.vanilla_stub.json",
+      "notes": {
+        "label": "tiering-only-stub",
+        "arm": "B - tiering only, vanilla economics",
+        "what_this_build_is": "All 67 tier buildings, but every tier's recipe, build cost and ai_value are the base game's (tools/testbed/make_vanilla_stub.ps1).",
+        "differs_from_baseline": "Only the structure: modernising requires CONSTRUCTING the next tier instead of flipping a production method.",
+        "why_running": "Isolate the effect of the tier split itself from our re-sloped recipes.",
+        "caveats": [
+          "Built with -NoLint: off the break-even ladder by construction.",
+          "shipyard_steam has no pre-split vanilla building, so its cost/ai_value stay as configured."
+        ]
+      }
+    }
+  ]
+}

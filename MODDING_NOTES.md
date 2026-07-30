@@ -268,16 +268,18 @@ crashed harness can leave one orphaned, since `-run_until` means the game outliv
 **Surviving a crash, without mistaking you for one.** A run that ends before its `-run_until` date is
 either the game dying (resume it) or a human killing it (stop the batch). Three signals, strongest first:
 
-1. **A STOP file** — `tools\testbed\STOP` (stops any session) or `STOP` in the session folder. Checked on
-   every poll, works unattended, and is the only channel that is never ambiguous. **This is the intended
-   way to end a batch**, including one already running overnight.
+1. **A keypress in the harness console, at any time during the run** — `q` finishes the current run then
+   stops, `x`/`Esc` closes the game and stops now. This is the primary control: you never have to kill the
+   game yourself, and it responds *while* a run is in progress rather than only after one ends.
 2. **A new `crashes\victoria3_*` directory** (with `exception.txt` + `minidump.dmp`) whose mtime falls
-   inside the attempt ⇒ definitely a CTD ⇒ resume, no questions asked. Exit codes are deliberately *not*
-   used: Task Manager, `Stop-Process` and the game's own crash handler are not reliably distinguishable,
-   whereas a minidump either exists or does not.
-3. **A keypress within a grace window** (default 30 s) — only the tiebreak, for an early exit with no
-   crash dump. With no interactive console (a background batch) this cannot be asked, so it falls through
-   to "assume crash"; that is exactly why signal 1 exists.
+   inside the attempt ⇒ definitely a CTD ⇒ resume immediately, with no 30 s stall. Exit codes are
+   deliberately *not* used: Task Manager, `Stop-Process` and the game's own crash handler are not reliably
+   distinguishable, whereas a minidump either exists or does not.
+3. **A 30 s grace prompt** if the game exits early with no crash dump — you killed it directly, so press
+   any key to confirm. No key ⇒ assume crash ⇒ resume.
+4. **A STOP file** — `tools\testbed\STOP`, or `STOP` in the session folder. The **fallback for headless
+   invocation** (an agent-launched background job has no console, so signals 1 and 3 cannot work there).
+   A keypress also writes this file, which is how it reaches a parent `run_batch.ps1` in another process.
 
 **Resuming is `-continuelastsave`, and it needs a guard.** ⚠ `-continuelastsave` loads the newest save
 **on the machine**, not "this run's last save". Measured failure: a resume jumped *forward* from 1836.8 to
@@ -293,13 +295,25 @@ A resume rewinds to the last autosave, so a dump date that already fired can fir
 numbers. The harvest keeps the **last** emission per `(date, tag, good)` — the one on the timeline that
 actually reached the end — and reports the count as `re-dumped` rows.
 
-**Autosave: `yearly` is the coarsest the engine offers.** There is no multi-year interval (the enum is
-never / monthly / every_other_month / three_months / half_year / yearly) and **no script effect can save
-the game** (`save_scope_as` and friends save *scopes*, not the game), so a 5-year cadence is not reachable
-by any route. Yearly caps crash loss at under one in-game year, at ~99 saves for a full campaign.
+**Autosave is the only way to make a crash resumable** — **no script effect can save the game**
+(`save_scope_as` and friends save *scopes*). The engine's own values, from the exe's `SETTING_AUTOSAVE`
+option block, are:
+
+```
+never   monthly   quarteryear   halfyear   five_year   yearly
+```
+
+Note the inconsistent spelling: **`halfyear` has no underscore, `five_year` does**. ⚠ Do not look for
+these near the `save_interval` string in the exe — that is a *different* enum (`half_year`,
+`three_months`, `every_other_month`) belonging to something else, and mistaking it for this one is how
+this file previously came to claim, wrongly, that no multi-year interval existed. The authoritative
+cluster is the one containing `SETTING_AUTOSAVE` / `autosave` / `OPTION_FIVE_YEAR`.
+
+`five_year` is the harness default: ~19 saves over a full 1836–1936 campaign, capping crash loss at five
+in-game years. Verified in-game — a 7-year run writes exactly 1 autosave.
 ⚠ **Autosaves OVERWRITE the player's own `autosave*.v3` slots** — a testbed session will destroy whatever
 was in them. Named saves are untouched. Set `-AutosaveInterval never` to opt out, at the cost of making
-crashes unrecoverable (and note a crash in the first in-game year has nothing to resume from either way).
+crashes unrecoverable (and note a crash before the first autosave has nothing to resume from either way).
 
 ## metadata.json
 

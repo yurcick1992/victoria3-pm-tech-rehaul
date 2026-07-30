@@ -99,6 +99,9 @@ tools/                  dev tooling — NOT shipped in the mod
   ui.ps1                balance-UI server: serves ui/ at localhost:8777 + POST /api/build (writes config, runs build)
   testbed/run_observer.ps1  automated observer runs: launches the game headless (no launcher), plays to a date,
                         dumps one metric per run, quits, repeats N times -> tools/testbed/runs/<stamp>/ (see below)
+  testbed/run_batch.ps1     CLI experiment driver: runs a JSON job (arms x runs, interleaved) with no agent
+                        in the loop -> tools/testbed/batches/<stamp>/ (batch.json + merged markets_all.tsv)
+  testbed/jobs/*.json   job specs for run_batch.ps1 (editable; tiering_vs_vanilla.json is the worked example)
   testbed/make_vanilla_stub.ps1  derives a "tiering only" config (structure kept, base-game recipes/costs/ai_value)
                         -> config/mod_config.vanilla_stub.json; the headless twin of the UI's Bring-to-vanilla,
                         used as the control arm when measuring what the tier split alone does
@@ -618,13 +621,22 @@ the game.
   base game + instrumentation only), **`-ModPath <dir>`** (any absolute path, so an alternate build from
   `build.ps1 -SaveTo <name>` runs without being deployed), `-Label`, `-Notes`, `-BuildConfig`.
   **Crash resilience:** a run that ends early is resumed from its own last autosave
-  (`-AutosaveInterval`, default `yearly` — the engine's coarsest; no multi-year option exists and no script
-  effect can save the game). **⚠ Autosaves overwrite the player's own `autosave*.v3` slots.** A CTD is
-  identified by a new `crashes\victoria3_*` minidump, never by exit code. **To stop a batch — including one
-  already running — create `tools/testbed/STOP`**; that is the reliable channel, since a background batch
-  has no console to press a key in. Resume is guarded three ways (own-save-is-newest, and the resumed clock
-  landing neither ahead nor at a fresh 1836 start), because `-continuelastsave` loads the newest save *on
-  the machine* and will otherwise splice in a foreign timeline; see MODDING_NOTES for the measured failure. **MVP scope: one metric** — per-good buy/sell orders + price for the GBR and FRA markets
+  (`-AutosaveInterval`, default `five_year` ≈ 19 saves per campaign; engine values are
+  `never/monthly/quarteryear/halfyear/five_year/yearly` — no script effect can save the game).
+  **⚠ Autosaves overwrite the player's own `autosave*.v3` slots.** A CTD is identified by a new
+  `crashes\victoria3_*` minidump, never by exit code. Resume is guarded three ways (own-save-is-newest, and
+  the resumed clock landing neither ahead nor at a fresh 1836 start), because `-continuelastsave` loads the
+  newest save *on the machine* and will otherwise splice in a foreign timeline; see MODDING_NOTES.
+  **To stop:** press **`q`** (finish this run, then stop) or **`x`** (stop now) in the harness console at
+  any time — no need to kill the game. A `tools/testbed/STOP` file does the same and is the fallback when
+  the harness was launched headlessly (an agent-launched background job has no console).
+- **Non-agentic experiments: `tools/testbed/run_batch.ps1 -Job <job.json>`.** The CLI front end for
+  parameter sweeps — no chat in the loop. A job declares `arms` (each a mod build or `no_mod`), plus
+  `runs_per_arm`, `dump_dates`, `until_date`, `autosave_interval`, `timeout_minutes`. It **interleaves the
+  arms** by default (A, B, A, B, …) so drift over a long batch hits both equally instead of landing on
+  whichever ran first, calls `run_observer.ps1` once per run into one batch folder, and writes `batch.json`
+  (job as run + per-run index) plus a merged `markets_all.tsv` with an `arm` column. `-WhatIf` prints the
+  plan and a time estimate without launching. Example job: `tools/testbed/jobs/tiering_vs_vanilla.json`. **MVP scope: one metric** — per-good buy/sell orders + price for the GBR and FRA markets
   (`-Tags`); a missing country/market yields a `MARKET_NOT_FOUND` row instead of failing the run.
   `meta.json`'s `mod_loaded` / `dump_complete` / `goods_rows` are the health assertion for a session.
   Next steps toward parameter sweeps: build a config variant (`build.ps1 -Config …`), run a session per

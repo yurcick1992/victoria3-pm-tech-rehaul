@@ -1,0 +1,17 @@
+[11:19:37][game_setup.cpp:219]: Exe Git Version: release/1.13.9 : afea32b87
+[11:19:37][game_setup.cpp:220]: Build Timestamp: 2026-06-24 14:36:18 +0000 long hash: afea32b87c002fe0621f2f732d60a80ba914c14e
+[11:19:37][systemsettings.cpp:205]: CPU Model: Intel(R) Core(TM) i5-14600K
+[11:19:37][systemsettings.cpp:206]: CPU Speed: 3494MHz
+[11:19:37][systemsettings.cpp:207]: CPU Physical Cores: 14
+[11:19:37][systemsettings.cpp:208]: CPU Logical Cores: 20
+[11:19:37][systemsettings.cpp:209]: RAM Total: 32406
+[11:19:37][systemsettings.cpp:210]: RAM Free: 22474
+[11:19:37][systemsettings.cpp:211]: Swap Total: 46230
+[11:19:37][systemsettings.cpp:212]: Swap Free: 31956
+[11:19:37][systemsettings.cpp:213]: OS Version: Windows 11 (Build 26200)
+[11:19:37][systemsettings.cpp:214]: OS Language: ru
+[11:19:38][contextowner.cpp:868]: GPU Name: NVIDIA GeForce RTX 5050
+[11:19:38][contextowner.cpp:869]: GPU Vendor: nVidia
+[11:19:38][contextowner.cpp:870]: GPU Id: 11651
+[11:19:38][contextowner.cpp:871]: GPU Dedicated Memory: 7910
+[11:19:45][gameapplication.cpp:1278]: Loading cursors...

@@ -1,0 +1,10 @@
+[11:21:03][jomini_log.cpp:35]: [AUTOMATION_SINGLE_STAT][time-to-reach-title-menu]:[85.459]
+
+[11:21:08][jomini_log.cpp:35]: [AUTOMATION_SINGLE_STAT][time-to-complete-generate-from-bookmark-task]:[4.96]
+
+[11:21:08][jomini_log.cpp:35]: [AUTOMATION_SINGLE_STAT][time-to-save-initial-save]:[0.358]
+
+[11:21:08][jomini_log.cpp:35]: [AUTOMATION_SINGLE_STAT][time-to-load-initial-save]:[0.014]
+
+[11:21:09][jomini_log.cpp:35]: [AUTOMATION_SINGLE_STAT][time-to-reach-ingame-idler]:[91.441]
+

@@ -1,0 +1,59 @@
+{
+    "label":  "smoke",
+    "stamp":  "20260730_111935",
+    "job_file":  "C:\\Users\\User\\AppData\\Local\\Temp\\claude\\C--claude-code-victoria-3-PM-and-tech-rehaul\\dd653197-fccf-41bb-a498-f3c0f8699972\\scratchpad\\smoke_job.json",
+    "job":  {
+                "label":  "smoke",
+                "runs_per_arm":  1,
+                "interleave":  true,
+                "dump_dates":  [
+                                   "1836.2.1"
+                               ],
+                "until_date":  "1836.3.1",
+                "tags":  [
+                             "GBR",
+                             "FRA"
+                         ],
+                "autosave_interval":  "five_year",
+                "timeout_minutes":  10,
+                "arms":  [
+                             {
+                                 "id":  "vanilla",
+                                 "no_mod":  true,
+                                 "notes":  {
+                                               "label":  "smoke-vanilla"
+                                           }
+                             },
+                             {
+                                 "id":  "stub",
+                                 "mod_path":  "mod_vanilla_stub",
+                                 "notes":  {
+                                               "label":  "smoke-stub"
+                                           }
+                             }
+                         ]
+            },
+    "runs_planned":  2,
+    "runs_done":  2,
+    "stopped_early":  false,
+    "index":  [
+                  {
+                      "n":  1,
+                      "arm":  "vanilla",
+                      "iteration":  1,
+                      "session":  "20260730_111936",
+                      "driver_seconds":  110,
+                      "run_wall_seconds":  108.5,
+                      "goods_rows":  83
+                  },
+                  {
+                      "n":  2,
+                      "arm":  "stub",
+                      "iteration":  1,
+                      "session":  "20260730_112126",
+                      "driver_seconds":  49.9,
+                      "run_wall_seconds":  48.6,
+                      "goods_rows":  83
+                  }
+              ]
+}

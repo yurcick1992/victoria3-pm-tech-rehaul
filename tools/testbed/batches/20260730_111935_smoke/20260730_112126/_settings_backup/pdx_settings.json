@@ -1,0 +1,44 @@
+{
+	"game":	{
+		"autosave":	"never",
+		"save_on_exit":	false
+	},
+	"Graphics":	{
+		"display_mode":	"windowed",
+		"quality":	"custom"
+	},
+	"interface":	{
+		"tooltip":	"SETTING_TOOLTIP_MODE_LOCK_ON_TIMER_OR_ACTION_WIDGET_ANCHOR"
+	},
+	"map_modes":	{
+},
+	"System":	{
+},
+	"accessibility":	{
+},
+	"Theme":	{
+		"seen_ui_skin_theme":	"gui_skin_base",
+		"seen_papermap_theme":	"papermap_base",
+		"seen_table_top_theme":	"table_base",
+		"seen_table_asset_1_theme":	"papermap_object_divider",
+		"seen_table_asset_2_theme":	"papermap_object_compass",
+		"seen_table_asset_3_theme":	"papermap_cigarbox",
+		"seen_table_asset_4_theme":	"papermap_letter",
+		"seen_table_asset_cloth_theme":	"papermap_cloth_default",
+		"seen_main_menu_image_theme":	"main_menu_image_base"
+	},
+	"daynight_cycle":	{
+},
+	"Tools":	{
+},
+	"Audio":	{
+},
+	"notifications":	{
+},
+	"Account":	{
+},
+	"GUI":	{
+		"scale":	"1.3",
+		"tools_gui_scale":	"1.3"
+	}
+}

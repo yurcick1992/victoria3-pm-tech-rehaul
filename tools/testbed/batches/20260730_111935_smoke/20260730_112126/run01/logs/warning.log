@@ -1,0 +1,38 @@
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key ELECTION has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key AMENDMENT has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key MARKET has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key STATE has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key LAW has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key GOODS has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key BUILDING has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key INTEREST_GROUP has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key STRATEGIC_REGION has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key RELIGION has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key THEATER has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key BUILDING_GROUP has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key COUNTRY has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key BUILDING_TYPE has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key SWAY_OFFER_TYPE has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key CHARACTER_TRAIT has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key IDEOLOGY has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key LAW_GROUP has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key TECHNOLOGY has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key POWER_BLOC has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key POP_TYPE has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key THEME has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key NAVAL_BATTLE_CONDITION has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key MARKET_GOODS has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key COMMANDER_RANK has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key DIPLOMATIC_DEMAND has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key CULTURE has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key MAP_MODE has same name as promote
+[11:21:31][data_utility.cpp:280]: Name collision when registering global promote, localization key STATE_REGION has same name as promote
+[11:21:31][script_localization.cpp:40]: Scope battle_side is missing text description functions. It might be missing a data wrapper class. Or if the data wrapper uses an accessor the NDataWrapper::SUnwrapAccessor specialization might be missing.
+[11:21:31][script_localization.cpp:40]: Scope interest_group_type is missing text description functions. It might be missing a data wrapper class. Or if the data wrapper uses an accessor the NDataWrapper::SUnwrapAccessor specialization might be missing.
+[11:21:31][script_localization.cpp:40]: Scope technology_status is missing text description functions. It might be missing a data wrapper class. Or if the data wrapper uses an accessor the NDataWrapper::SUnwrapAccessor specialization might be missing.
+[11:21:31][script_localization.cpp:40]: Scope travel_connection is missing text description functions. It might be missing a data wrapper class. Or if the data wrapper uses an accessor the NDataWrapper::SUnwrapAccessor specialization might be missing.
+[11:21:31][script_localization.cpp:40]: Scope travel_connection_definition is missing text description functions. It might be missing a data wrapper class. Or if the data wrapper uses an accessor the NDataWrapper::SUnwrapAccessor specialization might be missing.
+[11:21:31][script_localization.cpp:40]: Scope travel_node is missing text description functions. It might be missing a data wrapper class. Or if the data wrapper uses an accessor the NDataWrapper::SUnwrapAccessor specialization might be missing.
+[11:21:31][script_localization.cpp:40]: Scope travel_node_definition is missing text description functions. It might be missing a data wrapper class. Or if the data wrapper uses an accessor the NDataWrapper::SUnwrapAccessor specialization might be missing.
+[11:21:31][script_localization.cpp:40]: Scope treaty_options is missing text description functions. It might be missing a data wrapper class. Or if the data wrapper uses an accessor the NDataWrapper::SUnwrapAccessor specialization might be missing.
+[11:21:31][script_localization.cpp:40]: Scope treaty_article_options is missing text description functions. It might be missing a data wrapper class. Or if the data wrapper uses an accessor the NDataWrapper::SUnwrapAccessor specialization might be missing.

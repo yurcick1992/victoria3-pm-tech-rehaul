@@ -1,0 +1,3 @@
+--- harness: source log rotated at 11:19:38, recovered 0 chars from error.1.log ---
+[11:21:13][pdx_assert.cpp:637]: Assertion failed: NGameState::GameStateAccess._Value == EGameStateAccess::Interface || NGameState::HiddenGameStateAccess._Value == EHiddenGameStateAccess::Allowed
+[11:21:16][pdx_assert.cpp:637]: Assertion failed: Trying to update exile status for dead Formation '4th Portuguese Army' (1064)
