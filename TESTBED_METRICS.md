@@ -185,7 +185,7 @@ yields the observed country's bilateral trade **both ways**.
 The **source** side is not limited to trade partners: `every_market` enumerates all ~305 markets and a
 non-partner simply returns `0.00`, so the breakdown is complete.
 
-### `PREV` works — but observer-independence is ⚠ NOT YET VERIFIED
+### ✅ `PREV` works, and is observer-independent — there is no destination limit
 
 **`PREV` refers to the enclosing scope inside a loc string** (verified: in `every_market` nested under the
 British market, `PREV.GetMarket` = British Market while `THIS.GetMarket` = the iterated market). That
@@ -204,22 +204,34 @@ VERIFIED output, and it reconciles **exactly** against the independent market to
 
 `SCOPE.GetPrevScope` and `SCOPE.Prev` do **not** work — it is the bare `PREV`.
 
-⚠ **Only tested with the OBSERVED country as destination.** Every verified case so far has GBR — which
-`-handsoff` observes — on the receiving end. Nothing in the expression references
-`GetPlayedOrObservedCountry`, so it *should* be observer-independent, but that is an inference from syntax,
-not a measurement, and this engine has repeatedly returned silent zeros for expressions that parse fine.
+**Observer-independence VERIFIED.** Tested in spring 1836 with Great Britain observed, on four
+destination × good pairs where *neither* side is the observed country, each checked against that market's
+own `GetMarketImports`:
 
-Attempts to settle it were inconclusive for a mundane reason: **no non-observed market with non-zero
-imports has been found to test against.** At 1836.7, France, the USA, Russia and Austria all report
-`GetMarketImports = 0.00` for every good sampled — Russia *exports* grain (84.00) rather than importing it.
-A whole-world sweep did surface one non-observed market with a non-zero import (Pama Market), which
-suggests non-GBR trade does exist and the "only the observed market has imports" hypothesis is probably
-wrong — but the sweep was truncated by log rotation before it could be paired with a breakdown.
+| Destination ← good | independent total | `PREV` breakdown sum | |
+|---|---|---|---|
+| Qing ← meat | 104.00 | 103.97 | ✓ |
+| Russia ← tea | 65.00 | 64.98 | ✓ |
+| Austria ← sugar | 216.00 | 215.96 | ✓ |
+| Great Britain ← silk *(observed control)* | 130.00 | 129.99 | ✓ |
+| Russia ← tobacco | 105.00 | 109.96 | ⚠ +4.96 |
 
-**To settle it:** run the sweep through `run_observer.ps1` (whose tail recovers from rotation, unlike an
-ad-hoc mirror) at a **later date, ~1860+**, when AI trade routes are widespread; find any non-observed
-market with non-zero imports of some good; then dump that market's `GetMarketImports` alongside its `PREV`
-breakdown and check they reconcile the way the GBR control does.
+The residual ~0.04 is rounding: each of ~305 source rows is printed to 2 dp. Origins are plausible
+(Austrian sugar: Spain 119.81, Brazil 36.72, Ottomans 25.75, Venezuela 12.51).
+
+⚠ **Open question — is `GetMarketImports` NET of exports?** Every total comes back a whole number
+(104 / 105 / 65 / 216 / 130) while the breakdowns are fractional, and Russian tobacco's breakdown exceeds
+its total by 4.96. The likeliest explanation is that `GetMarketImports` nets off that market's own exports
+of the same good while the per-source sum is gross. Not confirmed — the cheap test is to log
+`GetMarketExports` for the same pair and see whether `gross − exports = total`. Until then, prefer the
+**per-source sum** when you need gross import volume, and treat `GetMarketImports` as possibly net.
+
+Earlier attempts to settle observer-independence failed for two avoidable reasons worth remembering: the
+destinations first chosen (France, USA, Russia-grain, Austria) import *nothing* that early — Russia
+**exports** grain — so their zeros were true negatives; and two bulk dumps were silently truncated because
+the probe used an ad-hoc log mirror with **no rotation recovery**. Probe through `run_observer.ps1`, or
+replicate its recovery (on shrink, read the remainder of `debug.1.log` from the last offset *before*
+restarting on the new file) — the final run handled 2 rotations and captured all 1 633 lines.
 
 ⚠ **Volume is now the only limit.** A full market×market matrix is ~305 × 305 = ~93 000 lines *per good*.
 Pin the destination side (one country, or a handful) rather than iterating both.
