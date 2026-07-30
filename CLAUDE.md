@@ -102,14 +102,11 @@ tools/                  dev tooling — NOT shipped in the mod
   extract_start.ps1     baseline extractor: vanilla start → start_baseline.json (inventory + version-drift alarm)
   history_lib.ps1       shared vanilla parsing: history walkers (Walk-HistoryFile / Read-HistoryBlocks) + Get-TopBlocks / Get-ListTokens, used by the converter and every extractor
   ui.ps1                balance-UI server: serves ui/ at localhost:8777 + POST /api/build (writes config, runs build)
-  testbed/run_observer.ps1  automated observer runs: launches the game headless (no launcher), plays to a date,
-                        dumps one metric per run, quits, repeats N times -> tools/testbed/runs/<stamp>/ (see below)
+  testbed/run_observer.ps1  the GAME driver, normally called BY run_schedule (not by hand): launches the game
+                        headless (no launcher), plays to a date, harvests, quits; owns crash-resume + the p/r/s/x keys
   testbed/run_schedule.ps1  THE entry point for all measurement: ordered schedule JSON -> build each run via
                         build.ps1 -> run -> harvest. Interactive p/r/s/x control; crash policy. Never call the
                         builder directly for test data. Specs in testbed/schedules/, results in testbed/sessions/
-  testbed/run_batch.ps1     older CLI experiment driver: runs a JSON job (arms x runs, interleaved) with no agent
-                        in the loop -> tools/testbed/batches/<stamp>/ (batch.json + merged markets_all.tsv)
-  testbed/jobs/*.json   job specs for run_batch.ps1 (editable; tiering_vs_vanilla.json is the worked example)
   testbed/make_vanilla_stub.ps1  derives a "tiering only" config (structure kept, base-game recipes/costs/ai_value)
                         -> config/mod_config.vanilla_stub.json; the headless twin of the UI's Bring-to-vanilla,
                         used as the control arm when measuring what the tier split alone does
@@ -608,7 +605,7 @@ the game.
   **throwaway instrumentation mod** (`Documents\…\mod\v3_testbed_instr`, deleted afterwards) that dumps the
   metric via `debug_log` on an `on_monthly_pulse` date window — **telemetry never goes into `mod/`**, so
   there is nothing to strip out of the shipped mod, and `build.ps1` need not know about it; (3) it
-  harvests into `tools/testbed/runs/<stamp>/`: `markets.tsv` + `meta.json` per run, `markets_all.tsv` +
+  harvests into `tools/testbed/sessions/<stamp>_<label>/`: `markets.tsv` + `events.tsv` + `meta.json` per run, `markets_all.tsv` +
   `session.log` per session, and the game's logs. **The game's own logs are a 5×512 KB rotating ring
   shared by every run**, so the growing ones (`debug`, `error`, `dedicated_server`) are **mirrored
   continuously** into `runNN/logs_live/` — one complete file per log per run, which is the authoritative
@@ -675,18 +672,6 @@ the game.
   resumed; **3 crashes from the same autosave** ⇒ permanent failure, move to the next run; **3 crashes
   before the first autosave ever exists** ⇒ loud alert and the **whole schedule aborts**, because repeated
   deaths that early mean the mod itself is broken. Exit codes: `0` ok, `2` stopped by user, `3` fatal.
-- **Non-agentic experiments: `tools/testbed/run_batch.ps1 -Job <job.json>`.** The CLI front end for
-  parameter sweeps — no chat in the loop. A job declares `arms` (each a mod build or `no_mod`), plus
-  `runs_per_arm`, `dump_dates`, `until_date`, `autosave_interval`, `timeout_minutes`. It **interleaves the
-  arms** by default (A, B, A, B, …) so drift over a long batch hits both equally instead of landing on
-  whichever ran first, calls `run_observer.ps1` once per run into one batch folder, and writes `batch.json`
-  (job as run + per-run index) plus a merged `markets_all.tsv` with an `arm` column. `-WhatIf` prints the
-  plan and a time estimate without launching. Example job: `tools/testbed/jobs/tiering_vs_vanilla.json`. **MVP scope: one metric** — per-good buy/sell orders + price for the GBR and FRA markets
-  (`-Tags`); a missing country/market yields a `MARKET_NOT_FOUND` row instead of failing the run.
-  `meta.json`'s `mod_loaded` / `dump_complete` / `goods_rows` are the health assertion for a session.
-  Next steps toward parameter sweeps: build a config variant (`build.ps1 -Config …`), run a session per
-  variant, aggregate `markets_all.tsv` across runs. Engine couplings to re-verify after a patch are in
-  `ON_GAME_UPDATE.md` → *Testbed*.
 - **Missing-reference cataloguing (the `MISSING_*` family).** Replacing/splitting a vanilla entity can make
   vanilla script or the building's own fields stop matching. **We catalogue every such case rather than fix it
   piecemeal — one strategic batch pass later.** Document *all* missing references this way, one focused

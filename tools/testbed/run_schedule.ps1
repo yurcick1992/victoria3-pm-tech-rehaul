@@ -205,7 +205,7 @@ foreach ($p in $plan) {
                  "-Tags",($p.tags -join ","),
                  "-AutosaveInterval",$p.autosave,
                  "-TimeoutMinutes","$($p.timeout)",
-                 "-OutRoot",$runDir,
+                 "-OutRoot",$runDir, "-FlatOut",
                  "-NoInstrument",
                  "-TelemetryToken",$token,
                  "-Label","$label/#$($p.index) $($p.setup)")

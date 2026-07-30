@@ -62,6 +62,10 @@ param(
     # path to a JSON file whose contents become build_state.json's "agentic" block
     [string]   $Notes = "",
     [string]   $OutRoot = "",
+    # Write straight into -OutRoot instead of creating a timestamped subfolder under it. The
+    # scheduler already owns the folder naming, so without this a scheduled run nests three
+    # deep: run001_setup\<stamp>\run01\.
+    [switch]   $FlatOut,
     # How often the game autosaves - the ONLY way to make a crash resumable, since no script
     # effect can save the game. Values are the engine's own (exe: SETTING_AUTOSAVE / OPTION_*);
     # note "halfyear" has no underscore while "five_year" does.
@@ -119,7 +123,7 @@ foreach ($d in $DumpDates) {
 }
 
 $Stamp      = Get-Date -Format "yyyyMMdd_HHmmss"
-$SessionDir = Join-Path $OutRoot $Stamp
+$SessionDir = $(if ($FlatOut) { $OutRoot } else { Join-Path $OutRoot $Stamp })
 $null = New-Item -ItemType Directory -Force -Path $SessionDir
 $SessionLog = Join-Path $SessionDir "session.log"
 
