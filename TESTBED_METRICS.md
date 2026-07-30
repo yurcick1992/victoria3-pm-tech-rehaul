@@ -52,11 +52,12 @@ append pattern (`some_vanilla_on_action = { on_actions = { ours } }`).
 | A database definition by key | `GetGoods('silk')`, `GetBuildingType('building_tooling_workshop')`; also `GetLawType`, `GetPopType`, `GetCulture`, `GetStateRegion`, … | ✅ verified |
 | A scope **the game passed** to the on_action | `SCOPE.sCountry('initiator')` | ✅ verified |
 | A scope **you saved yourself** with `save_scope_as` | **not reachable** — resolves as a function but finds nothing, yielding an empty object | ❌ |
+| The **enclosing** scope of a nested iterator | **`PREV`** — bare, e.g. `PREV.GetMarket`. `SCOPE.GetPrevScope` / `SCOPE.Prev` do not work | ✅ verified |
 | The on_action's root country | `SCOPE.GetRootScope.GetCountry` — empty in on_actions with no country root (e.g. `on_game_started_after_lobby`) | ⚠ context-dependent |
 
-**Consequence:** any metric needing *two* runtime objects (market × market, state × owner country) must get
-one of them from `GetPlayedOrObservedCountry` or a `Get…('key')` literal. This is the single biggest
-constraint on what can be logged.
+**Consequence:** any metric needing *two* runtime objects (market × market, state × owner country) gets the
+second one from **`PREV`** when the objects are nested iterations — otherwise from
+`GetPlayedOrObservedCountry` or a `Get…('key')` literal.
 
 ⚠ **Argument forms are not uniform.** For `GetImportedAmountFromMarket(market, goods)` the market argument
 **requires `.Self`** and so does the goods argument — the form copied from `custom_tooltip.gui`
@@ -184,17 +185,37 @@ yields the observed country's bilateral trade **both ways**.
 The **source** side is not limited to trade partners: `every_market` enumerates all ~305 markets and a
 non-partner simply returns `0.00`, so the breakdown is complete.
 
-⚠ **The destination is limited to the observed country** (`-start_tag=<TAG>` chooses it at launch), because
-both sides would otherwise need to be runtime objects in one expression. Three ways out, none yet tested:
-1. **Reload the same autosave with a different `-start_tag`** — if `-start_tag` is honoured alongside
-   `-continuelastsave`, every country's view of one *identical* timeline costs only a ~30 s load each, with
-   zero risk of perturbing the simulation. This is the option to try first.
-2. **`play_as` is a script effect** (the exe carries "Error in `play_as` effect: non existing country
-   target" and "Failed to switch player to new country in `play_as` effect"), so the perspective might be
-   switchable mid-run, dumping every country in one pass. Risk: changing the played country could alter AI
-   behaviour for the remainder of the run — safest at the final dump only, or switch-dump-switch-back.
-3. A **`PREV`-style accessor** in the loc string would remove the limit entirely by making both nested
-   market scopes reachable. `PREV`, `SCOPE.GetPrevScope` and `SCOPE.Prev` are written but untested.
+### ✅ `PREV` works — there is no destination limit
+
+**`PREV` refers to the enclosing scope inside a loc string** (verified: in `every_market` nested under the
+British market, `PREV.GetMarket` = British Market while `THIS.GetMarket` = the iterated market). That
+removes the two-runtime-object constraint entirely for nested iterations — **no observed country, no saved
+scopes, no `-start_tag` needed**:
+
+```
+c:GBR = { market_capital.market = {          # or: every_market = {   for EVERY destination
+    every_market = {                          # THIS = source, PREV = destination
+        debug_log = "…dest=[PREV.GetMarket.GetNameNoFormatting]|src=[THIS.GetMarket.GetNameNoFormatting]|
+                     amt=[PREV.GetMarket.GetImportedAmountFromMarket(THIS.GetMarket.Self, GetGoods('silk').Self)|2]"
+    } } }
+```
+VERIFIED output: `dest=British Market|src=Qing Market|silk=100.07` and `src=Sicilian Market|silk=4.92`.
+
+`SCOPE.GetPrevScope` and `SCOPE.Prev` do **not** work — it is the bare `PREV`.
+
+⚠ **Volume is now the only limit.** A full market×market matrix is ~305 × 305 = ~93 000 lines *per good*.
+Pin the destination side (one country, or a handful) rather than iterating both.
+
+### ❌ `play_as` cannot retarget an observer run
+
+`play_as` is a real script effect, but it moves **the player**, and a `-handsoff` observer game has none.
+With the correct form (`<country> = { play_as = c:FRA }` — it needs a country scope *and* a country target)
+the log says plainly:
+`play_as effect [ Failed to switch player to new country in play_as effect - no player for scoped country ]`.
+Verified over 12 monthly switch attempts across 1836: the observed country stayed Great Britain throughout
+and **observer mode never dropped**. Wrong forms fail earlier and differently — `play_as = c:FRA` at top
+level gives "Wrong scope for effect: none, expected country", and `play_as = yes` gives "target: scope type
+boolean, expected country". Use `PREV` instead; it is better in every way.
 ⚠ **Volume:** `every_market` is ~305 markets. Times all ~40 goods that is ~12 000 lines per dump — fine
 for one dump, but restrict the goods list for multi-date runs.
 
