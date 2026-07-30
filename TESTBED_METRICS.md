@@ -74,7 +74,7 @@ Probed over 1836→1850, one observer run:
 
 | Event | on_action | Identity available | Count to 1850 |
 |---|---|---|---|
-| **Entering DEFAULT** (not bankruptcy — see below) | `on_country_default` | `GetRootScope.GetCountry` = the defaulting country, plus its GDP and gold reserves at that moment | 57 |
+| **Entering DEFAULT** — NOT bankruptcy; report it as "defaults" (see below) | `on_country_default` | `GetRootScope.GetCountry` = the defaulting country, plus its GDP and gold reserves at that moment | 57 |
 | Leaving default (recovered **or** went bankrupt) | `on_country_no_longer_default` | root country | 356 ⚠ |
 | **Diplomatic play started** | `on_diplomatic_play_started` | `SCOPE.sCountry('initiator')` and `('target')` — root is EMPTY | 41 |
 | **Peace signed** | `on_peace_agreement_signed_war_leader` | root country; fires once per war leader, so twice per peace | 68 |
@@ -116,11 +116,47 @@ Related but not hookable: the diplomatic catalyst `catalyst_declared_bankruptcy`
 is fired by code when it happens, but catalysts have no on_action. `last_bankruptcy_date` also exists
 internally.
 
-⚠ **UNMEASURED:** how long a country sits in default before declaring bankruptcy — i.e. whether the AI
-presses the button immediately (in which case default events ≈ bankruptcy events and either signal will do)
-or waits months/years (in which case they must be logged separately). The probe above is written but the
-run to measure it has not been done. Until then, **do not read the 57 `on_country_default` firings as 57
-bankruptcies** — they are 57 entries into default.
+**Decision: we log DEFAULT STATES, and we say so.** There is no event hook for the bankruptcy button, and
+the pollable `declared_bankruptcy` modifier would only tell us which exits were bankruptcies — not worth a
+separate metric for now. So every report must call this metric what it is: **entries into default**, never
+"bankruptcies". The modifier stays available if attribution is ever wanted.
+
+**How long a default lasts (measured, 1836→1850, 93 events, 89 with an observed exit):**
+
+| entering default → leaving it | |
+|---|---|
+| under ~6 weeks | **81 (91 %)** |
+| 6 weeks – 6 months | 4 (4 %) |
+| 6 months – 2 years | 1 (1 %) |
+| over 2 years | 3 (3 %) |
+
+Median ≈ 30 days. ⚠ Method caveat: `on_country_no_longer_default` carries no in-game date, so exits were
+dated by interpolating wall-clock timestamps between the `DEFAULT` events (the only anchors with dates,
+~55 days apart on average). "On the order of a month" is solid; "exactly 30 days" is not. The multi-year
+outliers are far outside that noise and are real. Leaving default is *either* a declared bankruptcy *or*
+the weekly balance turning positive — this measures the episode, not which ending it had.
+
+### Reporting rule: collapse chains with <13 months between neighbours
+
+Small states oscillate in and out of default, which inflates raw counts badly — **Portugal enters default
+12 times in 14 years**. So when reporting *how many defaults happened*, group each country's events into
+chains and **report only the earliest event of each chain**, starting a new chain whenever the gap **from
+the previous event** is 13 months or more:
+
+```
+gap_months = (y2*12 + m2) - (y1*12 + m1)      # calendar months; ~396 days if you only have day numbers
+gap_months <  13  -> same chain (drop this event)
+gap_months >= 13  -> new chain  (report this event)
+```
+
+The gap is between **neighbours**, not from the chain's start, so a long chain of closely-spaced events
+stays one episode. Worked example — `1838.01, 1838.11, 1839.04, 1842.02, 1843.01` reports as **two**
+defaults, 1838 and 1842 (10, 5 and 11-month gaps stay within their chains; the 34-month gap starts a new
+one). 13 months is deliberately just over a year, so an annual re-default cycle collapses.
+
+Applied to the measured run: **94 raw events → 80 reported (15 % collapsed)**, and the collapse lands
+exactly where it should — Portugal 12 → 1 (1846.06), Hanover 4 → 1 (1848.09) — while Mombasa's five
+genuinely separate crises, ~2 years apart, all survive.
 ⚠ `on_diplomatic_play_started` has **no country root**; use the `initiator`/`target` scopes.
 There are also `on_diplomatic_action*`, `on_diplomats_expelled`, `on_capitulation`-family hooks (~40 more
 in `00_code_on_actions.txt`) that were not probed but should behave the same way.
