@@ -73,8 +73,8 @@ Probed over 1836→1850, one observer run:
 
 | Event | on_action | Identity available | Count to 1850 |
 |---|---|---|---|
-| **Bankruptcy** | `on_country_default` | `GetRootScope.GetCountry` = the defaulting country, plus its GDP and gold reserves at that moment | 57 |
-| Recovery from bankruptcy | `on_country_no_longer_default` | root country | 356 ⚠ |
+| **Entering DEFAULT** (not bankruptcy — see below) | `on_country_default` | `GetRootScope.GetCountry` = the defaulting country, plus its GDP and gold reserves at that moment | 57 |
+| Leaving default (recovered **or** went bankrupt) | `on_country_no_longer_default` | root country | 356 ⚠ |
 | **Diplomatic play started** | `on_diplomatic_play_started` | `SCOPE.sCountry('initiator')` and `('target')` — root is EMPTY | 41 |
 | **Peace signed** | `on_peace_agreement_signed_war_leader` | root country; fires once per war leader, so twice per peace | 68 |
 | War ended | `on_war_end` | `SCOPE.sCountry('actor')` and `('target')` | 35 |
@@ -85,6 +85,41 @@ Samples: `DEFAULT|root=Carlist Spain|d=December 27, 1838|gdp=397319.96|gold=0.00
 
 ⚠ **`on_country_no_longer_default` fires once for EVERY country at game init** (~300 lines before the
 first tick) — filter by date before treating it as a recovery signal.
+
+### DEFAULT is not BANKRUPTCY — they are two different things
+
+The game distinguishes them, and so must we:
+
+- **Default** is a *state*: loans exceed credit, construction pauses, building throughput is penalised and
+  the penalty grows over time. The game's own `concept_default_desc` says the penalties end "as soon as the
+  country's weekly balance becomes positive again, **or if bankruptcy is declared**".
+- **Bankruptcy** is an *action* taken while in default: it wipes the debt, angers debt-holding pops, drops
+  institutions to 1 and applies a decaying 10-year debuff.
+
+`on_country_default` fires on **entering the default state**. There is **no bankruptcy on_action** — the
+complete set is `on_country_default`, `on_country_no_longer_default`, `on_debt`, `on_scaled_debt`,
+`on_entity_default`, `on_should_override_default`. And because leaving default happens on *either* recovery
+or bankruptcy, `on_country_no_longer_default` cannot tell you which occurred.
+
+**To detect bankruptcy itself**, poll the static modifier it applies:
+`common/static_modifiers/00_code_static_modifiers.txt` → **`declared_bankruptcy`** (loc: "Declared
+Bankruptcy" / "Effects of the country declaring bankruptcy"). On a monthly pulse:
+```
+every_country = {
+    limit = { has_modifier = declared_bankruptcy  NOT = { has_variable = v3tb_bk_seen } }
+    set_variable = v3tb_bk_seen
+    debug_log = "…"
+}
+```
+Related but not hookable: the diplomatic catalyst `catalyst_declared_bankruptcy` (category `cc_bankruptcy`)
+is fired by code when it happens, but catalysts have no on_action. `last_bankruptcy_date` also exists
+internally.
+
+⚠ **UNMEASURED:** how long a country sits in default before declaring bankruptcy — i.e. whether the AI
+presses the button immediately (in which case default events ≈ bankruptcy events and either signal will do)
+or waits months/years (in which case they must be logged separately). The probe above is written but the
+run to measure it has not been done. Until then, **do not read the 57 `on_country_default` firings as 57
+bankruptcies** — they are 57 entries into default.
 ⚠ `on_diplomatic_play_started` has **no country root**; use the `initiator`/`target` scopes.
 There are also `on_diplomatic_action*`, `on_diplomats_expelled`, `on_capitulation`-family hooks (~40 more
 in `00_code_on_actions.txt`) that were not probed but should behave the same way.
@@ -146,9 +181,20 @@ British market silk imports, 1836: **Qing Market 105.04, Sicilian Market 4.95** 
 `THIS.GetMarket.GetExportedAmountToMarket(<observed>.GetMarket.Self, GetGoods('x').Self)`, so one run
 yields the observed country's bilateral trade **both ways**.
 
-⚠ **The destination is limited to the observed country** (`-start_tag=<TAG>`). A full market×market matrix
-is not expressible, because both sides would need to be runtime objects in one expression. For several
-destinations: one run per country, or accept the observed country as the focus.
+The **source** side is not limited to trade partners: `every_market` enumerates all ~305 markets and a
+non-partner simply returns `0.00`, so the breakdown is complete.
+
+⚠ **The destination is limited to the observed country** (`-start_tag=<TAG>` chooses it at launch), because
+both sides would otherwise need to be runtime objects in one expression. Three ways out, none yet tested:
+1. **Reload the same autosave with a different `-start_tag`** — if `-start_tag` is honoured alongside
+   `-continuelastsave`, every country's view of one *identical* timeline costs only a ~30 s load each, with
+   zero risk of perturbing the simulation. This is the option to try first.
+2. **`play_as` is a script effect** (the exe carries "Error in `play_as` effect: non existing country
+   target" and "Failed to switch player to new country in `play_as` effect"), so the perspective might be
+   switchable mid-run, dumping every country in one pass. Risk: changing the played country could alter AI
+   behaviour for the remainder of the run — safest at the final dump only, or switch-dump-switch-back.
+3. A **`PREV`-style accessor** in the loc string would remove the limit entirely by making both nested
+   market scopes reachable. `PREV`, `SCOPE.GetPrevScope` and `SCOPE.Prev` are written but untested.
 ⚠ **Volume:** `every_market` is ~305 markets. Times all ~40 goods that is ~12 000 lines per dump — fine
 for one dump, but restrict the goods list for multi-date runs.
 
