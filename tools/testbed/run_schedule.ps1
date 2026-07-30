@@ -186,7 +186,8 @@ foreach ($p in $plan) {
 
     Log "building setup '$($p.setup)' (kind $($resolved.Kind))..."
     $t0 = Get-Date
-    & powershell @($resolved.Args) 2>&1 | Tee-Object -FilePath (Join-Path $runDir "build.log") | Out-Null
+    # Out-File, not Tee-Object: Tee-Object writes UTF-16 on PS 5.1, which makes build.log ungreppable
+    & powershell @($resolved.Args) 2>&1 | Out-File -FilePath (Join-Path $runDir "build.log") -Encoding utf8
     if ($LASTEXITCODE -ne 0) {
         Log "BUILD FAILED for setup '$($p.setup)' (exit $LASTEXITCODE) - see build.log; aborting schedule" "ALERT"
         $abort = $true

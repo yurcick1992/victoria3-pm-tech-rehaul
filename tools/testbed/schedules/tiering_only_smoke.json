@@ -1,0 +1,20 @@
+{
+  "schedule_version": 1,
+  "label": "tiering-only-smoke",
+  "defaults": {
+    "tags": ["GBR", "FRA"],
+    "metrics": ["market_goods", "events"],
+    "autosave_interval": "five_year",
+    "timeout_minutes": 30
+  },
+  "setups": {
+    "tiering": {
+      "kind": "config",
+      "config": "config/mod_config.vanilla_stub.json",
+      "lint": false
+    }
+  },
+  "runs": [
+    { "setup": "tiering", "until": "1837.1.1", "dump_dates": ["1836.7.1"] }
+  ]
+}

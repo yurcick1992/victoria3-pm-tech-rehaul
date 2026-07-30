@@ -898,6 +898,7 @@ try {
 
         # ---- parse -> markets.tsv ----
         $rows = New-Object System.Collections.Generic.List[string]
+        $events = New-Object System.Collections.Generic.List[string]
         $markets = @{}; $notFound = @{}; $ingameDate = ""
         # payload layout: V3TB | <token> | <kind> | <dump date> | ...   (BOOT has no date)
         # LAST WINS per (date, tag, good): a crash resume rewinds to the last autosave, so a dump
@@ -915,25 +916,42 @@ try {
             elseif ($kind -eq "MARKET" -and $f.Count -ge 6) { $markets["$date|$($f[4])"] = $f[5] }
             elseif ($kind -eq "MARKET_NOT_FOUND" -and $f.Count -ge 6) { $notFound["$date|$($f[4])"] = $f[5] }
             elseif ($kind -eq "G" -and $f.Count -ge 9) {
+                # V3TB|tok|G|date|tag|good|buy|sell|price[|imports|exports|production]
+                # imports/exports/production are present when the telemetry spec asks for them;
+                # older logs stop at price, so treat the tail as optional rather than dropping it.
                 $mk = ""; if ($markets.ContainsKey("$date|$($f[4])")) { $mk = $markets["$date|$($f[4])"] }
+                $imp = $(if ($f.Count -ge 10) { $f[9] }  else { "" })
+                $exp = $(if ($f.Count -ge 11) { $f[10] } else { "" })
+                $prd = $(if ($f.Count -ge 12) { $f[11] } else { "" })
                 $key = "$date|$($f[4])|$($f[5])"
                 if ($byKey.Contains($key)) { $reDumped++ }
-                $byKey[$key] = ("{0}`t{1}`t{2}`t{3}`t{4}`t{5}`t{6}`t{7}`t{8}" -f `
-                    $run, $date, $f[4], $mk, $f[5], $f[6], $f[7], $f[8], "ok")
+                $byKey[$key] = ("{0}`t{1}`t{2}`t{3}`t{4}`t{5}`t{6}`t{7}`t{8}`t{9}`t{10}`t{11}" -f `
+                    $run, $date, $f[4], $mk, $f[5], $f[6], $f[7], $f[8], $imp, $exp, $prd, "ok")
+            }
+            elseif ($kind -eq "EV" -and $f.Count -ge 5) {
+                $null = $events.Add(("{0}`t{1}`t{2}" -f $run, $f[3], (($f[4..($f.Count-1)]) -join "`t")))
             }
         }
         foreach ($k in $byKey.Keys) { $null = $rows.Add($byKey[$k]) }
         if ($reDumped -gt 0) { Write-Log "  $reDumped row(s) re-dumped after a resume - kept the later value" "WARN" }
         foreach ($k in $notFound.Keys) {
             $parts = $k.Split('|')
-            $null = $rows.Add(("{0}`t{1}`t{2}`t`t`t`t`t`t{3}" -f $run, $parts[0], $parts[1], "MARKET_NOT_FOUND: $($notFound[$k])"))
+            $null = $rows.Add(("{0}`t{1}`t{2}`t`t`t`t`t`t`t`t`t{3}" -f $run, $parts[0], $parts[1], "MARKET_NOT_FOUND: $($notFound[$k])"))
             Write-Log "  $($parts[1]) at $($parts[0]) -> MARKET NOT FOUND ($($notFound[$k]))" "WARN"
         }
         $sawEnd = $true
         foreach ($d in $DumpDates) { if (-not $dumpsSeen.ContainsKey($d)) { $sawEnd = $false } }
-        $header = "run`tdump_date`ttag`tmarket`tgood`tbuy_orders`tsell_orders`tprice`tstatus"
+        $header = "run`tdump_date`ttag`tmarket`tgood`tbuy_orders`tsell_orders`tprice`timports`texports`tproduction`tstatus"
         [System.IO.File]::WriteAllLines((Join-Path $runDir "markets.tsv"), [string[]](@($header) + $rows), $Utf8NoBom)
         foreach ($r in $rows) { $null = $allRows.Add($r) }
+
+        # one-off events (bankruptcy/default entry, diplo plays, peace, capitulation) get their own
+        # file: they are event-shaped, not a per-good grid, so they do not belong in markets.tsv
+        if ($events.Count -gt 0) {
+            $evHeader = "run`tkind`tfields..."
+            [System.IO.File]::WriteAllLines((Join-Path $runDir "events.tsv"), [string[]](@($evHeader) + $events), $Utf8NoBom)
+            Write-Log "  $($events.Count) one-off event(s) -> events.tsv"
+        }
 
         $errorLines = $mirrored["error.log"]   # from the mirror: the copied ring can be short
         $savesAfter = @(Get-ChildItem $SaveDir -Filter "autosave*.v3" -ErrorAction SilentlyContinue |
@@ -964,7 +982,7 @@ try {
         Write-Log ("  mirrored live: debug {0} lines, ticks {1}, errors {2} -> logs_live\" -f $mirrored["debug.log"], $mirrored["dedicated_server.log"], $errorLines)
     }
 
-    $header = "run`tdump_date`ttag`tmarket`tgood`tbuy_orders`tsell_orders`tprice`tstatus"
+    $header = "run`tdump_date`ttag`tmarket`tgood`tbuy_orders`tsell_orders`tprice`timports`texports`tproduction`tstatus"
     [System.IO.File]::WriteAllLines((Join-Path $SessionDir "markets_all.tsv"), [string[]](@($header) + $allRows), $Utf8NoBom)
     [System.IO.File]::WriteAllText((Join-Path $SessionDir "session.json"), ($session | ConvertTo-Json -Depth 10), $Utf8NoBom)
 
