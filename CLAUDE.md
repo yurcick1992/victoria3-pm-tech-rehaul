@@ -93,6 +93,8 @@ tools/                  dev tooling — NOT shipped in the mod
   solve_volumes.ps1     re-derives every tier's output/input volumes from vanilla recipes + target_be (BALANCE_FRAMEWORK §8)
   solve_building_cost.ps1 re-derives every tier's building_cost (construction points) from a 10yr-payback model (BALANCE_FRAMEWORK §9)
   extract_vanilla.ps1   dumps EVERY vanilla building/PMG/PM → ui/vanilla.js (the UI's all-buildings explorer — same editable layout as the tier cards); regenerated each build
+  telemetry_lib.ps1     THE one generator of testbed telemetry script; dot-sourced by build.ps1 so the vanilla
+                        control and every modded arm instrument IDENTICALLY (a control that logs differently is not a control)
   extract_icons.ps1     converts the vanilla goods icons (.dds) → ui/icons.js (base64 PNGs) for the scenario panel; regenerated each build. ui/icons.js is GITIGNORED — it is Paradox art, never committed or shipped; the UI degrades to text-only without it
   extract_presets.ps1   derives the scenario panel's market PRESETS from the vanilla 1836 start (config/presets.json → ui/presets.js): per country market, its buildings (re-tiered) + the PMs vanilla runs, treaty goods transfers, and the population split into consumption classes, plus the buy-package / pop-need tables the UI needs; regenerated each build
   audit_pm_refs.ps1     scans vanilla events/JEs/effects for references to main PMs our split relocated → MISSING_PM_REFERENCES.md (diagnostic; not run by build)
@@ -633,6 +635,19 @@ the game.
   **To stop:** press **`q`** (finish this run, then stop) or **`x`** (stop now) in the harness console at
   any time — no need to kill the game. A `tools/testbed/STOP` file does the same and is the fallback when
   the harness was launched headlessly (an agent-launched background job has no console).
+- **Telemetry belongs to the BUILDER, not the harness.** `tools/telemetry_lib.ps1` is the single
+  generator of testbed logging script; `build.ps1` dot-sources it and emits
+  `common/on_actions/zzz_v3tb_telemetry.txt` into whatever mod it builds. Flags: **`-Telemetry <spec.json>`**
+  (`{dump_dates, tags, metrics}`; each dump date must be the 1st of a month), `-TelemetryOn` (defaults),
+  `-TelemetryToken <tok>` (stamps every line so one run cannot read another's output), and
+  **`-ControlOnly`** — the **vanilla control arm**: a complete, loadable mod whose *only* content is that
+  telemetry file plus metadata (no buildings, PMs, localization or history). `-ControlOnly` requires
+  `-SaveTo`/`-DryRun` so it can never overwrite the canonical `mod/`.
+  **Why the builder owns this:** an experiment's arms must instrument *identically* or the control isn't a
+  control — one generator guarantees that (verified: control and modded builds emit byte-identical
+  telemetry apart from the build-timestamp comment). Before adding a metric, read `TESTBED_METRICS.md`.
+  ⚠ `telemetry_lib.ps1` deliberately sets **no** `Set-StrictMode`: it is dot-sourced, and StrictMode
+  applies to the *caller's* scope — switching it on broke the builder's own property tests.
 - **Non-agentic experiments: `tools/testbed/run_batch.ps1 -Job <job.json>`.** The CLI front end for
   parameter sweeps — no chat in the loop. A job declares `arms` (each a mod build or `no_mod`), plus
   `runs_per_arm`, `dump_dates`, `until_date`, `autosave_interval`, `timeout_minutes`. It **interleaves the

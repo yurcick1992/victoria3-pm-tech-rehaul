@@ -29,7 +29,8 @@
                     For alternate balance sets you want to compare/keep. Clean up manually.
   -DryRun and -SaveTo are mutually exclusive. Both leave the canonical mod/ untouched.
 #>
-param([switch]$NoLint, [switch]$NoDeploy, [string]$Config, [switch]$DryRun, [string]$SaveTo, [switch]$IncludeAllBuildings)
+param([switch]$NoLint, [switch]$NoDeploy, [string]$Config, [switch]$DryRun, [string]$SaveTo, [switch]$IncludeAllBuildings,
+      [string]$Telemetry, [switch]$TelemetryOn, [string]$TelemetryToken, [switch]$ControlOnly)
 $ErrorActionPreference = 'Stop'
 $INV = [System.Globalization.CultureInfo]::InvariantCulture
 function Fmt($v) { return ([double]$v).ToString($INV) }   # locale-safe number -> string
@@ -114,6 +115,45 @@ if ($isAlt) {
     $dstMeta = Join-Path $modAbs '.metadata\metadata.json'
     New-Item -ItemType Directory -Force -Path (Split-Path $dstMeta -Parent) | Out-Null
     Copy-Item -LiteralPath $srcMeta -Destination $dstMeta -Force
+}
+
+# ---------------------------------------------------------------- telemetry ----
+# Telemetry is generated HERE, by the one shared module, for every arm of an experiment - the
+# vanilla control and any modded build alike. That is what makes a control valid: arms that
+# instrument differently are not comparable. See TESTBED_METRICS.md before adding a metric.
+. (Join-Path $PSScriptRoot 'telemetry_lib.ps1')
+
+$telemetryOn = $TelemetryOn -or $Telemetry -or $ControlOnly
+$telemetrySpec = $null
+if ($telemetryOn) {
+    $telemetrySpec = Read-TelemetrySpec $Telemetry
+    $tok = $(if ($TelemetryToken) { $TelemetryToken } else { "build" })
+    $telemetryText = New-TelemetryScript -Spec $telemetrySpec -Token $tok -BuildStamp (Get-Date -Format 'yyyy-MM-dd HH:mm')
+}
+
+# -ControlOnly: the CONTROL ARM. A complete, loadable mod whose only content is telemetry -
+# no tier buildings, no production methods, no localization, no history. Everything the game
+# sees is vanilla except the logging, which is byte-identical to what the modded arms carry.
+if ($ControlOnly) {
+    if (-not $isAlt) { throw "-ControlOnly must be combined with -SaveTo <name> or -DryRun; it must never overwrite the canonical mod/." }
+    $meta = Get-Content $dstMeta -Raw -Encoding UTF8 | ConvertFrom-Json
+    $meta.name = "V3 Testbed Control (vanilla + telemetry, built $(Get-Date -Format 'yyyy-MM-dd HH:mm'))"
+    $meta.id = "com.yurcick.v3_testbed_control"
+    $meta.short_description = "Vanilla control arm: telemetry only, no gameplay content."
+    if ($meta.PSObject.Properties.Name -contains 'replace_paths') { $meta.PSObject.Properties.Remove('replace_paths') }
+    [System.IO.File]::WriteAllText($dstMeta, ($meta | ConvertTo-Json -Depth 12), (New-Object System.Text.UTF8Encoding($false)))
+    # WriteText/$bom are defined further down the script, so write directly here.
+    # Game content must be UTF-8 WITH BOM (the lexer warns otherwise).
+    $telDir = Join-Path $modAbs 'common\on_actions'
+    New-Item -ItemType Directory -Force -Path $telDir | Out-Null
+    [System.IO.File]::WriteAllText((Join-Path $telDir 'zzz_v3tb_telemetry.txt'), $telemetryText, (New-Object System.Text.UTF8Encoding($true)))
+    Write-Output ""
+    Write-Output "CONTROL BUILD: vanilla + telemetry only -> $modRel"
+    Write-Output "  dump dates: $($telemetrySpec.dump_dates -join ', ')"
+    Write-Output "  tags      : $($telemetrySpec.tags -join ', ')"
+    Write-Output "  metrics   : $($telemetrySpec.metrics -join ', ')"
+    Write-Output "  (no buildings, no production methods, no localization, no history)"
+    exit 0
 }
 
 # --- post-build checks: run on the FINISHED mod folder (after generation + convert + lint).
@@ -550,6 +590,12 @@ $diag = @(
     "}"
 )
 WriteText "$modRel\common\on_actions\zzz_pm_rehaul_diag.txt" (($diag -join "`n") + "`n") $bom
+
+# testbed telemetry, from the same generator the control arm uses
+if ($telemetryOn) {
+    WriteText "$modRel\common\on_actions\zzz_v3tb_telemetry.txt" $telemetryText $bom
+    Write-Output "telemetry: dump $($telemetrySpec.dump_dates -join ', ') for $($telemetrySpec.tags -join '+') [$($telemetrySpec.metrics -join ', ')]"
+}
 
 # --- emit UI data (consumed by ui/builder.html) so the editor always reflects the latest config ---
 # Only the canonical build repoints the UI; alternate builds (-DryRun/-SaveTo) leave ui/data.js alone.
