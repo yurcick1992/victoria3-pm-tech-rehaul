@@ -1,0 +1,20 @@
+{
+  "schedule_version": 1,
+  "label": "tiering-vs-vanilla",
+  "defaults": {
+    "tags": ["GBR", "FRA"],
+    "metrics": ["market_goods", "events"],
+    "autosave_interval": "five_year",
+    "timeout_minutes": 360
+  },
+  "setups": {
+    "vanilla": { "kind": "control" },
+    "tiering": { "kind": "config", "config": "config/mod_config.vanilla_stub.json", "lint": false }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1841.1.1", "dump_dates": ["1840.1.1"] },
+    { "setup": "tiering", "until": "1841.1.1", "dump_dates": ["1840.1.1"] },
+    { "setup": "vanilla", "until": "1841.1.1", "dump_dates": ["1840.1.1"] },
+    { "setup": "tiering", "until": "1846.1.1", "dump_dates": ["1840.1.1", "1845.1.1"] }
+  ]
+}

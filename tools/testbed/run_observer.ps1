@@ -73,7 +73,12 @@ param(
     [int]      $MaxResumes = 5,
     # On an abnormal exit with NO crash artifact, wait this long for a keypress before deciding
     # it was a crash rather than you. Any key = you did it = stop the batch.
-    [int]      $StopGraceSeconds = 30,
+    [int]      $StopGraceSeconds = 60,
+    # Telemetry now comes from the BUILDER (build.ps1 -Telemetry), baked into the mod under test.
+    # -NoInstrument stops this script generating its own, so both arms log identically.
+    [switch]   $NoInstrument,
+    # must match the token the builder stamped into that mod's telemetry
+    [string]   $TelemetryToken = "",
     # hard watchdog: kill the process if a single run exceeds this
     [int]      $TimeoutMinutes = 45,
     # leave content_load.json / pdx_settings.json as the harness set them
@@ -512,14 +517,17 @@ $script:HasConsole = $true
 try { $null = [Console]::KeyAvailable } catch { $script:HasConsole = $false }
 
 function Read-StopKey {
-    # Polled every cycle WHILE the game runs, so you can stop the batch without touching the
-    # game or a file:  q = finish this run then stop,  x = kill the game now and stop.
-    # Returns "" / "after" / "now".
+    # Polled every cycle WHILE the game runs:
+    #   p = pause   r = resume   s/q = stop after this run   x/Esc = stop now
+    # Returns "" / "pause" / "resume" / "after" / "now".
     if (-not $script:HasConsole) { return "" }
     $verdict = ""
     while ([Console]::KeyAvailable) {
         $k = [Console]::ReadKey($true)
         switch ($k.Key) {
+            "P"      { $verdict = "pause" }
+            "R"      { $verdict = "resume" }
+            "S"      { $verdict = "after" }
             "Q"      { $verdict = "after" }
             "X"      { $verdict = "now" }
             "Escape" { $verdict = "now" }
@@ -597,6 +605,8 @@ $session = [ordered]@{
     tags = $Tags; mod_path = $ModPath; exe = $Exe; runs = @()
 }
 $allRows = New-Object System.Collections.Generic.List[string]
+$script:FatalEarly = $false
+$script:ExitCode = 0
 
 try {
     # An already-running game would fight this session for the same log files (and CPU). That
@@ -637,8 +647,14 @@ try {
         $savesBefore = @(Get-ChildItem $SaveDir -Filter "autosave*.v3" -ErrorAction SilentlyContinue |
                          Where-Object { $_.LastWriteTime -ge $runStart }).Count
 
-        $token = "{0}r{1:d2}" -f $Stamp, $run
-        Write-InstrumentMod -Dir $InstrDir -Dates $DumpDates -Tags $Tags -Token $token
+        $token = $(if ($TelemetryToken) { $TelemetryToken } else { "{0}r{1:d2}" -f $Stamp, $run })
+        if ($NoInstrument) {
+            # telemetry is baked into the mod under test by build.ps1 -Telemetry, so both the
+            # control and the modded arm log identically; nothing to generate here
+            Write-Log "telemetry: from the mod under test (token $token)"
+        } else {
+            Write-InstrumentMod -Dir $InstrDir -Dates $DumpDates -Tags $Tags -Token $token
+        }
 
         $liveDir = Join-Path $runDir "logs_live"
         $null = New-Item -ItemType Directory -Force -Path $liveDir
@@ -647,6 +663,7 @@ try {
         $targetNum = ConvertTo-DateNum $UntilDate
         $attempt = 0; $resumes = 0; $abandoned = ""
         $attemptLog = @()
+        $earlyDeaths = 0; $sameSaveTries = 0; $lastResumeSave = ""
 
         # ---- attempt loop: one pass per launch, extra passes are crash resumes ----
         while ($true) {
@@ -667,6 +684,7 @@ try {
         $lastReport = Get-Date
         $tickAtStart = $lastTick
         $firstTick = ""
+        $paused = $false; $pauseStart = Get-Date; $pausedFor = 0.0
 
         while ($true) {
             $alive = $null -ne (Get-Process -Id $proc.Id -ErrorAction SilentlyContinue)
@@ -688,12 +706,27 @@ try {
             }
             $null = Read-Tail $tailError   # mirrored only; nothing to react to live
 
-            $elapsed = ((Get-Date) - $runStart).TotalSeconds
+            # time spent paused must not count toward the watchdog
+            $elapsed = ((Get-Date) - $runStart).TotalSeconds - $pausedFor
             if (((Get-Date) - $lastReport).TotalSeconds -ge 20) {
                 Write-Log ("  ...{0,4:N0}s  in-game {1}" -f $elapsed, $(if ($lastTick) { $lastTick } else { "loading" }))
                 $lastReport = Get-Date
             }
             $key = Read-StopKey
+            if ($key -eq "pause" -and -not $paused) {
+                $paused = $true; $pauseStart = Get-Date
+                Write-Log "[p] PAUSED - watchdog and crash detection suspended. Pause the game yourself if you want it stopped. [r] to resume." "WARN"
+            }
+            elseif ($key -eq "resume" -and $paused) {
+                # your rule: if the game is still up you will unpause it yourself and we just
+                # keep watching; if it is gone, resume that run from its last autosave.
+                $paused = $false
+                $pausedFor += ((Get-Date) - $pauseStart).TotalSeconds
+                $stillUp = $null -ne (Get-Process -Id $proc.Id -ErrorAction SilentlyContinue)
+                if ($stillUp) { Write-Log "[r] resumed - game still running, continuing to watch" }
+                else { Write-Log "[r] resumed - game is gone; will resume this run from its last autosave" "WARN" }
+            }
+            if ($paused) { Start-Sleep -Milliseconds 400; continue }
             if ($key -eq "now") {
                 Write-Log "[q/x] stopping now - closing the game" "WARN"
                 Set-GlobalStop "stopped by keypress"
@@ -785,8 +818,31 @@ try {
 
         $ownSave = Test-OwnSaveIsNewest $runStart
         if (-not $ownSave) {
-            Write-Log "run ${run}: no autosave from this run to resume from (autosave=$AutosaveInterval) - abandoning at $lastTick" "WARN"
-            $abandoned = "no own autosave to resume from"
+            # Nothing to resume from: the run died before its first autosave (with five_year,
+            # inside the first 5 in-game years). Repeated deaths this early are a broken-mod
+            # signature, not bad luck - count them and let the scheduler abort everything.
+            $earlyDeaths++
+            Write-Log "run ${run}: died at $lastTick before any autosave existed (attempt $earlyDeaths of 3)" "WARN"
+            if ($earlyDeaths -ge 3) {
+                Write-Log "" "ALERT"
+                Write-Log "*** THREE CRASHES BEFORE THE FIRST AUTOSAVE ***" "ALERT"
+                Write-Log "*** The mod under test is almost certainly broken. Stopping the whole schedule. ***" "ALERT"
+                $abandoned = "3 crashes before the first autosave - mod likely broken"
+                $script:FatalEarly = $true
+                break
+            }
+            Write-Log "restarting run $run from the beginning"
+            $lastTick = ""; $streamed.Clear()
+            continue
+        }
+
+        # Three consecutive resumes that all restart from the SAME save = the save itself is
+        # poisoned; retrying it again would just loop.
+        $saveKey = $ownSave.LastWriteTime.ToString("s")
+        if ($saveKey -eq $lastResumeSave) { $sameSaveTries++ } else { $sameSaveTries = 1; $lastResumeSave = $saveKey }
+        if ($sameSaveTries -ge 3) {
+            Write-Log "run ${run}: 3 crashes from the same autosave - permanent failure, moving to the next run" "ALERT"
+            $abandoned = "3 crashes from the same save"
             break
         }
 
@@ -913,6 +969,10 @@ try {
     [System.IO.File]::WriteAllText((Join-Path $SessionDir "session.json"), ($session | ConvertTo-Json -Depth 10), $Utf8NoBom)
 
     Write-Log "SESSION DONE: $($session.runs.Count) run(s), $($allRows.Count) rows -> $SessionDir"
+
+    # exit codes the scheduler reads:  0 ok | 2 stopped by user | 3 fatal (mod likely broken)
+    if ($script:FatalEarly)  { $script:ExitCode = 3 }
+    elseif ($stopAfterRun -or (Test-StopRequested)) { $script:ExitCode = 2 }
 }
 finally {
     if (-not $NoRestore) {
@@ -927,3 +987,5 @@ finally {
         Write-Log "removed instrumentation mod"
     }
 }
+
+exit $script:ExitCode

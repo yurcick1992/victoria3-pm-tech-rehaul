@@ -28,6 +28,7 @@ config/mod_config.*.json
 # itself (tools/testbed/*.ps1) IS source and stays tracked.
 tools/testbed/runs/
 tools/testbed/batches/
+tools/testbed/sessions/
 
 # mod/ and most of tools/ are source and belong on GitHub.
 # The deployed mod excludes docs/tools automatically because the junction points at mod/ only.

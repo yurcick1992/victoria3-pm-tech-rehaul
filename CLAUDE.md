@@ -104,7 +104,10 @@ tools/                  dev tooling — NOT shipped in the mod
   ui.ps1                balance-UI server: serves ui/ at localhost:8777 + POST /api/build (writes config, runs build)
   testbed/run_observer.ps1  automated observer runs: launches the game headless (no launcher), plays to a date,
                         dumps one metric per run, quits, repeats N times -> tools/testbed/runs/<stamp>/ (see below)
-  testbed/run_batch.ps1     CLI experiment driver: runs a JSON job (arms x runs, interleaved) with no agent
+  testbed/run_schedule.ps1  THE entry point for all measurement: ordered schedule JSON -> build each run via
+                        build.ps1 -> run -> harvest. Interactive p/r/s/x control; crash policy. Never call the
+                        builder directly for test data. Specs in testbed/schedules/, results in testbed/sessions/
+  testbed/run_batch.ps1     older CLI experiment driver: runs a JSON job (arms x runs, interleaved) with no agent
                         in the loop -> tools/testbed/batches/<stamp>/ (batch.json + merged markets_all.tsv)
   testbed/jobs/*.json   job specs for run_batch.ps1 (editable; tiering_vs_vanilla.json is the worked example)
   testbed/make_vanilla_stub.ps1  derives a "tiering only" config (structure kept, base-game recipes/costs/ai_value)
@@ -648,6 +651,30 @@ the game.
   telemetry apart from the build-timestamp comment). Before adding a metric, read `TESTBED_METRICS.md`.
   ⚠ `telemetry_lib.ps1` deliberately sets **no** `Set-StrictMode`: it is dot-sourced, and StrictMode
   applies to the *caller's* scope — switching it on broke the builder's own property tests.
+- **ALL measurement goes through `tools/testbed/run_schedule.ps1 -Schedule <x.json>`.** This is the entry
+  point: it owns *schedule JSON → build each run's mod via `build.ps1` → run it → harvest*. **Never invoke
+  the builder directly to produce test data** — that bypasses the record of what was built and why. (Calling
+  `build.ps1 -DryRun` during development, to check a config still lints, is fine: it produces no
+  measurements.) The `runs` list is **explicit and ordered**, so any sequence works including repeats and
+  alternation (`A@1841, B@1841, A@1841, B@1846`); each run carries its **index**, and the schedule JSON is
+  copied verbatim into the session folder so a result always traces back to its plan. Setups are
+  `{kind: control}` (vanilla + telemetry, via `build.ps1 -ControlOnly`) or `{kind: config, config: <path>}`.
+  **The mod is rebuilt for every run, never cached** — builds are deterministic (same config + same vanilla
+  ⇒ same output) and take ~1 min, whereas caching would hide a setup that isn't reproducible. The only
+  nondeterminism in a build artifact is the timestamp the builder stamps into the mod `name`, so any
+  "did this rebuild change?" check must exclude it. `{kind: recipe}` (ordered solver steps) is deliberately
+  **not** implemented: a recipe encodes balance *methodology*, so its vocabulary dies with the next BE
+  rework — author a config file and reference it instead. Specs live in `tools/testbed/schedules/`,
+  results in `tools/testbed/sessions/` (gitignored).
+  **Interactive control** — the runner reads keys, so start it from a console you can type into (or let it
+  be spawned into its own window): **`[p]` pause · `[r]` resume · `[s]` stop after this run · `[x]` stop
+  now**. Pause suspends the watchdog *and* crash detection, so a paused session is never mistaken for a
+  crash; the runner cannot pause the *game*, you do that yourself. On `[r]` it checks whether
+  `victoria3.exe` is still up: if so it just keeps watching, if not it resumes that run from its last
+  autosave. **Crash policy:** an unexplained exit with no keypress within 60 s is treated as a CTD and
+  resumed; **3 crashes from the same autosave** ⇒ permanent failure, move to the next run; **3 crashes
+  before the first autosave ever exists** ⇒ loud alert and the **whole schedule aborts**, because repeated
+  deaths that early mean the mod itself is broken. Exit codes: `0` ok, `2` stopped by user, `3` fatal.
 - **Non-agentic experiments: `tools/testbed/run_batch.ps1 -Job <job.json>`.** The CLI front end for
   parameter sweeps — no chat in the loop. A job declares `arms` (each a mod build or `no_mod`), plus
   `runs_per_arm`, `dump_dates`, `until_date`, `autosave_interval`, `timeout_minutes`. It **interleaves the
