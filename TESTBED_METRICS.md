@@ -185,7 +185,7 @@ yields the observed country's bilateral trade **both ways**.
 The **source** side is not limited to trade partners: `every_market` enumerates all ~305 markets and a
 non-partner simply returns `0.00`, so the breakdown is complete.
 
-### ✅ `PREV` works — there is no destination limit
+### `PREV` works — but observer-independence is ⚠ NOT YET VERIFIED
 
 **`PREV` refers to the enclosing scope inside a loc string** (verified: in `every_market` nested under the
 British market, `PREV.GetMarket` = British Market while `THIS.GetMarket` = the iterated market). That
@@ -199,9 +199,27 @@ c:GBR = { market_capital.market = {          # or: every_market = {   for EVERY 
                      amt=[PREV.GetMarket.GetImportedAmountFromMarket(THIS.GetMarket.Self, GetGoods('silk').Self)|2]"
     } } }
 ```
-VERIFIED output: `dest=British Market|src=Qing Market|silk=100.07` and `src=Sicilian Market|silk=4.92`.
+VERIFIED output, and it reconciles **exactly** against the independent market total: the British market's
+`GetMarketImports` for silk = `130.00`, and the breakdown gives Qing `124.57` + Sicilian `5.43` = `130.00`.
 
 `SCOPE.GetPrevScope` and `SCOPE.Prev` do **not** work — it is the bare `PREV`.
+
+⚠ **Only tested with the OBSERVED country as destination.** Every verified case so far has GBR — which
+`-handsoff` observes — on the receiving end. Nothing in the expression references
+`GetPlayedOrObservedCountry`, so it *should* be observer-independent, but that is an inference from syntax,
+not a measurement, and this engine has repeatedly returned silent zeros for expressions that parse fine.
+
+Attempts to settle it were inconclusive for a mundane reason: **no non-observed market with non-zero
+imports has been found to test against.** At 1836.7, France, the USA, Russia and Austria all report
+`GetMarketImports = 0.00` for every good sampled — Russia *exports* grain (84.00) rather than importing it.
+A whole-world sweep did surface one non-observed market with a non-zero import (Pama Market), which
+suggests non-GBR trade does exist and the "only the observed market has imports" hypothesis is probably
+wrong — but the sweep was truncated by log rotation before it could be paired with a breakdown.
+
+**To settle it:** run the sweep through `run_observer.ps1` (whose tail recovers from rotation, unlike an
+ad-hoc mirror) at a **later date, ~1860+**, when AI trade routes are widespread; find any non-observed
+market with non-zero imports of some good; then dump that market's `GetMarketImports` alongside its `PREV`
+breakdown and check they reconcile the way the GBR control does.
 
 ⚠ **Volume is now the only limit.** A full market×market matrix is ~305 × 305 = ~93 000 lines *per good*.
 Pin the destination side (one country, or a handful) rather than iterating both.
