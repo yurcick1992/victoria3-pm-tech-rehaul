@@ -175,7 +175,27 @@ function New-Tail {
         $writer = New-Object System.IO.StreamWriter($Mirror, $Append, (New-Object System.Text.UTF8Encoding($false)))
         $writer.AutoFlush = $true   # survive a harness crash mid-run
     }
-    return @{ Path = $Path; Pos = $len; Buf = ""; Writer = $writer; Lines = 0L }
+    # Sig/Seen support the multi-rotation drain in Read-Tail: a rotated segment never changes
+    # again, so its first ~120 chars (which begin with a timestamp) identify it for good.
+    return @{ Path = $Path; Pos = $len; Buf = ""; Writer = $writer; Lines = 0L
+              Sig = (Get-SegmentSig $Path); Seen = (New-Object 'System.Collections.Generic.HashSet[string]')
+              Lost = 0L }
+}
+
+function Get-SegmentSig {
+    # First ~120 chars of a file, used as its identity. Empty string when unreadable.
+    param([string]$Path)
+    if (-not (Test-Path $Path)) { return "" }
+    $share = [System.IO.FileShare]::ReadWrite -bor [System.IO.FileShare]::Delete
+    $fs = $null
+    try {
+        $fs = [System.IO.File]::Open($Path, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, $share)
+        $n = [int][Math]::Min(120, $fs.Length)
+        if ($n -le 0) { return "" }
+        $b = New-Object byte[] $n
+        $null = $fs.Read($b, 0, $n)
+        return [System.Text.Encoding]::UTF8.GetString($b, 0, $n)
+    } catch { return "" } finally { if ($fs) { $fs.Dispose() } }
 }
 
 function Close-Tail {
@@ -224,29 +244,52 @@ function Read-Tail {
     try { $len = (Get-Item $State.Path -ErrorAction Stop).Length } catch { return $lines }
 
     if ($len -lt $State.Pos) {
-        # The game rotated this log out from under us. Everything we had not read yet is now
-        # in <name>.1.<ext> - so read the remainder of THAT before moving on. Without this the
-        # bytes written since the last poll are simply gone, and a burst of debug_log output can
-        # itself be what triggers the rotation (measured: 68 of an 89-line dump lost this way).
-        $rot = Join-Path (Split-Path -Parent $State.Path) `
-                         ("{0}.1{1}" -f [IO.Path]::GetFileNameWithoutExtension($State.Path), [IO.Path]::GetExtension($State.Path))
-        $recovered = Read-Chunk $rot $State.Pos
-        Add-TailChunk $State $recovered $lines
-        if ($State.Buf) {   # rotated file is finished: no partial line can still be growing
-            $null = $lines.Add($State.Buf)
-            if ($State.Writer) { $State.Writer.WriteLine($State.Buf); $State.Lines++ }
+        # The game rotated this log out from under us. The ring is 5 x 512 KB and a SINGLE
+        # telemetry dump can write ~450 KB, so more than one rotation can happen between polls -
+        # the earlier "read <name>.1" fix handled exactly one and silently lost whole segments
+        # beyond that (measured 2026-07-31: 1046 GDP lines emitted, 0 mirrored).
+        #
+        # So drain every segment we have not already consumed, OLDEST first (.5 -> .1): the one
+        # matching our remembered signature is the file we were reading, so take it from Pos;
+        # any other unseen segment appeared entirely after our last poll, so take all of it.
+        $dir  = Split-Path -Parent $State.Path
+        $base = [IO.Path]::GetFileNameWithoutExtension($State.Path)
+        $ext  = [IO.Path]::GetExtension($State.Path)
+        $recoveredChars = 0; $drained = @()
+        for ($i = 5; $i -ge 1; $i--) {
+            $rot = Join-Path $dir ("{0}.{1}{2}" -f $base, $i, $ext)
+            if (-not (Test-Path $rot)) { continue }
+            $sig = Get-SegmentSig $rot
+            if (-not $sig) { continue }
+            $from = 0L
+            if ($sig -eq $State.Sig) { $from = $State.Pos }        # our file, continue where we left off
+            elseif ($State.Seen.Contains($sig)) { continue }        # already drained on an earlier poll
+            $chunk = Read-Chunk $rot $from
+            if ($chunk) {
+                Add-TailChunk $State $chunk $lines
+                if ($State.Buf) {   # a rotated file is finished: no partial line can still grow
+                    $null = $lines.Add($State.Buf)
+                    if ($State.Writer) { $State.Writer.WriteLine($State.Buf); $State.Lines++ }
+                    $State.Buf = ""
+                }
+                $recoveredChars += $chunk.Length
+                $drained += "$base.$i$ext"
+            }
+            $null = $State.Seen.Add($sig)
         }
         $State.Pos = 0L; $State.Buf = ""
+        $State.Sig = Get-SegmentSig $State.Path
         if ($State.Writer) {
             # NOTE: build the string first - inside a method call's parens a comma is an
             # ARGUMENT separator, so an inline `-f a, b, c` would hand -f only its first value
-            $seam = "--- harness: source log rotated at {0}, recovered {1} chars from {2} ---" -f `
-                    (Get-Date -Format "HH:mm:ss"), $recovered.Length, (Split-Path -Leaf $rot)
+            $seam = "--- harness: source log rotated at {0}, recovered {1} chars from [{2}] ---" -f `
+                    (Get-Date -Format "HH:mm:ss"), $recoveredChars, ($drained -join ', ')
             $State.Writer.WriteLine($seam)
         }
     }
 
     if ($len -gt $State.Pos) {
+        if (-not $State.Sig) { $State.Sig = Get-SegmentSig $State.Path }
         $text = Read-Chunk $State.Path $State.Pos
         if ($text) {
             $State.Pos = $State.Pos + [System.Text.Encoding]::UTF8.GetByteCount($text)
@@ -254,6 +297,32 @@ function Read-Tail {
         }
     }
     return $lines
+}
+
+function Test-MirrorIntegrity {
+    <#
+      A silent 96% loss is worse than a crash. After a run, compare what we mirrored against what
+      the game's own ring still holds: every V3TB line present in the ring MUST also be in the
+      mirror (the mirror is a superset - it also holds segments the ring has since discarded).
+      Returns the number of ring lines missing from the mirror; 0 is healthy.
+    #>
+    param([string]$MirrorPath, [string]$LogDir, [string]$Token)
+    if (-not (Test-Path $MirrorPath)) { return -1 }
+    $mine = New-Object 'System.Collections.Generic.HashSet[string]'
+    foreach ($l in [System.IO.File]::ReadLines($MirrorPath)) {
+        if ($l.Contains("V3TB|$Token|")) { $null = $mine.Add($l.Substring($l.IndexOf("V3TB|"))) }
+    }
+    $missing = 0
+    foreach ($f in (Get-ChildItem $LogDir -Filter 'debug*.log' -ErrorAction SilentlyContinue)) {
+        try {
+            foreach ($l in [System.IO.File]::ReadLines($f.FullName)) {
+                if ($l.Contains("V3TB|$Token|")) {
+                    if (-not $mine.Contains($l.Substring($l.IndexOf("V3TB|")))) { $missing++ }
+                }
+            }
+        } catch { }
+    }
+    return $missing
 }
 
 # ------------------------------------------------------------- helpers ----
@@ -401,10 +470,14 @@ function Write-BuildState {
 
 # -------------------------------------------------- crash vs you, and stop ----
 # An abnormal exit is either the game dying (resume it) or you killing it (stop the batch).
-# Three signals, strongest first - the timed prompt is only the tiebreak, never the main test:
-#   1. STOP file in the session dir  -> unambiguous, works unattended, checked every poll
-#   2. a new crashes\victoria3_* dir -> unambiguous CTD (exception.txt + minidump.dmp)
-#   3. a keypress within the grace window -> you did it
+# Signals, in the order you actually use them:
+#   1. a KEYPRESS, at any time while the game runs -> the PRIMARY control (Read-StopKey below:
+#      p pause / r resume / s|q stop after this run / x|Esc stop now). Needs a real console.
+#   2. a new crashes\victoria3_* dir -> unambiguous CTD (exception.txt + minidump.dmp). This is
+#      the crash DISCRIMINATOR, not a stop request.
+#   3. a keypress within the grace window -> you killed the game directly, with no minidump.
+#   4. a STOP file -> the FALLBACK for headless invocation (no console => signals 1 and 3 cannot
+#      work), and the way a keypress reaches a parent run_schedule.ps1 in another process.
 # Exit codes are NOT used: Task Manager, Stop-Process and the game's own crash handler are not
 # reliably distinguishable, whereas a minidump either exists or does not.
 
@@ -420,6 +493,30 @@ function Test-StopRequested {
 
 $script:HasConsole = $true
 try { $null = [Console]::KeyAvailable } catch { $script:HasConsole = $false }
+# Say so ONCE, loudly, at startup. Redirecting stdout/stderr (Start-Process -RedirectStandardOutput
+# / -NoNewWindow) is enough to make [Console]::KeyAvailable throw, which silently disables every
+# key below - and until this warning existed a headless launch looked identical to an interactive
+# one in the log, so a whole overnight batch could run with no stop control but the STOP file.
+if (-not $script:HasConsole) {
+    Write-Log "no interactive console - keypress control (p/r/s/q/x) is DISABLED for this session" "WARN"
+    Write-Log "  the STOP file is the only stop channel: $(Join-Path $PSScriptRoot 'STOP')" "WARN"
+    Write-Log "  to get the keys back, launch into its OWN window and do not redirect stdio" "WARN"
+}
+
+function Write-KeyLegend {
+    # Printed at the start of every run: the keys are useless if you have to remember them, and
+    # they are only live while the game is running.
+    if (-not $script:HasConsole) { return }
+    Write-Log "controls (press in THIS window, any time while the game runs):"
+    Write-Log "  [p] pause   - suspends the watchdog + crash detection. Does NOT pause the GAME;"
+    Write-Log "                pause that yourself. Paused time is not counted toward the timeout."
+    Write-Log "  [r] resume  - if the game is still up, just resumes watching; if it has exited,"
+    Write-Log "                resumes this run from its last autosave."
+    Write-Log "  [s] or [q]  - stop AFTER this run finishes: the run completes and is harvested"
+    Write-Log "                normally, then the batch ends. Nothing is lost."
+    Write-Log "  [x] or ESC  - stop NOW: kills the game immediately. The current run is marked"
+    Write-Log "                abandoned and its remaining dumps are lost."
+}
 
 function Read-StopKey {
     # Polled every cycle WHILE the game runs:
@@ -574,6 +671,7 @@ try {
         $resumeFrom = $lastTick
         Write-Log $(if ($attempt -eq 1) { "run $run/$Runs starting (token $token)" }
                     else { "run $run resume attempt $attempt from the last autosave (was at $resumeFrom)" })
+        Write-KeyLegend
         $proc = Start-Process -FilePath $Exe -ArgumentList $launchArgs -WorkingDirectory $Binaries -PassThru
 
         # Mirrors APPEND on a resume so one run stays one file.
@@ -615,7 +713,8 @@ try {
             $key = Read-StopKey
             if ($key -eq "pause" -and -not $paused) {
                 $paused = $true; $pauseStart = Get-Date
-                Write-Log "[p] PAUSED - watchdog and crash detection suspended. Pause the game yourself if you want it stopped. [r] to resume." "WARN"
+                Write-Log "[p] PAUSED - watchdog and crash detection suspended. The GAME is still running; pause it yourself if you want it stopped. [r] to resume." "WARN"
+                Write-KeyLegend
             }
             elseif ($key -eq "resume" -and $paused) {
                 # your rule: if the game is still up you will unpause it yourself and we just
@@ -628,7 +727,7 @@ try {
             }
             if ($paused) { Start-Sleep -Milliseconds 400; continue }
             if ($key -eq "now") {
-                Write-Log "[q/x] stopping now - closing the game" "WARN"
+                Write-Log "[x/Esc] stopping NOW - closing the game; this run is abandoned" "WARN"
                 Set-GlobalStop "stopped by keypress"
                 Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
                 $timedOut = $true; $abandoned = "stopped by user (keypress)"
@@ -636,7 +735,7 @@ try {
                 break
             }
             if ($key -eq "after") {
-                Write-Log "[q] will stop after this run finishes" "WARN"
+                Write-Log "[s/q] will stop AFTER this run finishes - it completes and is harvested" "WARN"
                 Set-GlobalStop "stop after current run"
                 $stopAfterRun = $true
             }
@@ -880,6 +979,14 @@ try {
             break
         }
         Write-Log ("  mirrored live: debug {0} lines, ticks {1}, errors {2} -> logs_live\" -f $mirrored["debug.log"], $mirrored["dedicated_server.log"], $errorLines)
+        # Loud integrity check: anything the game's ring still holds must be in the mirror too.
+        $missed = Test-MirrorIntegrity (Join-Path $liveDir "debug.log") $LogDir $token
+        if ($missed -gt 0) {
+            Write-Log ("  MIRROR INCOMPLETE: {0} telemetry line(s) present in the game's ring but NOT mirrored" -f $missed) "WARN"
+            Write-Log  "  the harvest for this run is missing data - do not treat it as complete" "WARN"
+        } elseif ($missed -eq 0) {
+            Write-Log "  mirror integrity OK (every telemetry line in the ring is in the mirror)"
+        }
     }
 
     # Session-level aggregates only when there IS a session: with -FlatOut there is exactly one run,

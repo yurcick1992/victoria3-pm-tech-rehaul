@@ -303,6 +303,14 @@ either the game dying (resume it) or a human killing it (stop the batch). Three 
    A keypress also writes this file, which is how it reaches the parent `run_schedule.ps1` driver running
    in another process.
 
+⚠ **Redirecting stdio disables signals 1 and 3.** `[Console]::KeyAvailable` throws when stdout/stdin are
+redirected, so `Start-Process … -NoNewWindow -RedirectStandardOutput …` silently drops the harness into
+headless mode with the STOP file as its only control. Launch batches into their **own visible window**
+(`Start-Process powershell -NoExit -File tools\testbed\run_schedule.ps1 -Schedule <spec>`) and read
+progress from `sessions\<stamp>\session.log` instead of capturing stdio. The observer now emits a
+startup `WARN` when it has no console; before that (pre-2026-07-31) the two cases were
+indistinguishable in the log.
+
 **Resuming is `-continuelastsave`, and it needs a guard.** ⚠ `-continuelastsave` loads the newest save
 **on the machine**, not "this run's last save". Measured failure: a resume jumped *forward* from 1836.8 to
 1837.1 because a previous test run's autosave was newer — silently splicing a foreign timeline in and

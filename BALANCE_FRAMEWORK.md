@@ -423,12 +423,17 @@ Each tier's `target_be` is:
 
 | Era (vanilla band) | e1 (pre-1836) | e2 (1836–61) | e3 (1862–86) | e4 (1887–1911) | e5 (1911–36) |
 |---|--:|--:|--:|--:|--:|
-| **Anchor BE %** | 125 | 100 | 75 | 50 | 35 |
+| **Anchor BE %** | 115 | 90 | 65 | 40 | 25 |
 
-~25 pp/era, so a 2-era gap ≈ 50 pp → the **N+2 obsolescence** mechanic; everything stays inside the
+25 pp/era, so a 2-era gap = 50 pp → the **N+2 obsolescence** mechanic; everything stays inside the
 25–175% band (§2) with headroom. There is **no within-era differentiation** — every tier on the same era
 gets the same anchor. (The eras themselves will be reworked/expanded later; a within-era spread was
 considered and dropped for simplicity.)
+
+**Two hand-tuned exceptions.** `tooling` (95 / 95 / 55 / 30, a further −20 pp) and `power`
+(60 / 50 / 35) sit off the curve **deliberately**. They are not solver output:
+`solve_be_targets.ps1 -Write` resets them to the anchors above, so re-apply them after any solver run.
+Every other BE-ladder tier (53 of 60) is exactly `anchor − 15·[H1 mfg input]`.
 
 **H1 manufactured-input discount (−15 pp).** Applied only when a tier unlocks in **eras 1–3** *and* its
 recipe consumes a **factory-made intermediate** (tools, steel, engines, fertilizer, explosives, paper,
@@ -547,7 +552,32 @@ refresh.
 **Weekly vs. yearly.** Victoria 3 ticks **weekly** (52/yr); PM `_add` flows and construction output are
 weekly. So profit is annualized **×52**, and the per-point cost is a flow **ratio** (tick-independent).
 
-### 9.2 Why a flat return on cost (not "output at BE+20pp")
+### 9.2 ⚠ SUPERSEDED (2026-07-31) — the model is now "output at BE+20pp"
+
+**The `output` basis is now the one in force**, by explicit design decision: *inputs at 100 % of base
+price, wages at the regular `wage_pct`, output sold 20 pp above the tier's BE, 10-year payback.* Since a
+tier at its BE has revenue exactly equal to `inputs + wages`, selling 20 pp higher yields
+**π = 0.20 × (base output value)** — which is what `-Basis output` computes. The command of record is:
+
+```
+powershell -ExecutionPolicy Bypass -File tools\solve_building_cost.ps1 -Basis output -MarginPct 0.20 -PaybackYears 10
+```
+
+⚠ **`-Basis output` is NOT the solver's default** (`cost` still is), so the basis must be passed
+explicitly or a re-solve silently reverts to the superseded model below.
+
+**Why the change.** The `cost` basis ties build cost to *input* cost, and because `target_be` falls
+steeply with tier, inputs shrink as tiers advance — so it made **modern buildings cheaper to construct
+than primitive ones** (textile 230 → 360 → 270), directly against the mod's capital-demand goal. The
+`output` basis rises monotonically with tier in every industry, which is the intended ladder.
+
+**Resulting spread is sane:** 110–1580 points against vanilla's flat 200/400/600/800 — ratios
+**0.18×–2.63×** of each building's own vanilla cost, no order-of-magnitude outlier. It also removes the
+near-free buildings the previous stored values had (art academy T1 was **5** points, furniture T2 **15**).
+
+The reasoning that originally rejected this basis is kept below for the record.
+
+### 9.2.1 (superseded) Why a flat return on cost
 
 The brief said "output priced at BE+20pp, wages +33% of input, 10-yr payback." Pricing revenue off each
 tier's BE makes the cost **scale with BE**, which balloons the tier spread: high-BE early tiers and

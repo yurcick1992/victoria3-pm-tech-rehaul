@@ -8,7 +8,7 @@
 
   Model (BALANCE_FRAMEWORK, date-ladder):
     target_be(tier) = anchor(era) - 15 * [era<=3 AND the recipe consumes a manufactured input]
-      anchor: e1..e5 = 125 100 75 50 35   (the date curve; ~25pp/era, 2-era gap = ~50pp -> N+2 obsolescence)
+      anchor: e1..e5 = 115 90 65 40 25   (the date curve; 25pp/era, 2-era gap = 50pp -> N+2 obsolescence)
       H1 manufactured-input discount (-15pp) only in eras 1-3, where factory intermediates trade
       above base; off in H2 (eras 4-5), where those markets have matured.
     natural_year(tier) = a representative unlock year for the tech's era (for UI display).
@@ -24,7 +24,12 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 
-$anchor  = @{1=125; 2=100; 3=75; 4=50; 5=35}   # softened −15pp from the original 140/115/90/65/50
+$anchor  = @{1=115; 2=90; 3=65; 4=40; 5=25}    # matches config/mod_config.json (the config is the truth)
+# ⚠ TWO GROUPS ARE HAND-TUNED AND THIS SOLVER WOULD FLATTEN THEM. Re-running it with -Write resets
+# every tier to the curve above, discarding:
+#   tooling  95 / 95 / 55 / 30   (a further -20pp under the curve)
+#   power    60 / 50 / 35        (its own values, not curve+discount)
+# Both are deliberate. Re-apply them by hand (or re-lock them in the UI) after any -Write run.
 # Representative natural-unlock year per era. Vanilla era bands: e1 pre-1836, e2 1836-61,
 # e3 1862-86, e4 1887-1911, e5 1911-36; we use each band's midpoint (e1 = the 1836 start).
 $eraYear = @{1=1836; 2=1848; 3=1874; 4=1899; 5=1923}

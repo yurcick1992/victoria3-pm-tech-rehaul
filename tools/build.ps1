@@ -140,6 +140,12 @@ if ($telemetryOn) {
     $telemetrySpec = Read-TelemetrySpec $Telemetry
     $tok = $(if ($TelemetryToken) { $TelemetryToken } else { "build" })
     $telemetryText = New-TelemetryScript -Spec $telemetrySpec -Token $tok -BuildStamp (Get-Date -Format 'yyyy-MM-dd HH:mm')
+    # Script values are the SECOND half of the same instrument (aggregate building counts read via
+    # MakeScope.ScriptValue). Both arms get both files, or the arms are not comparable.
+    $telemetryValues = New-TelemetryScriptValues
+    # Probe values live in their own file so an unverified keyword cannot take the working ones
+    # down with it (a script-values file that fails to parse loses everything in it).
+    $telemetryProbeValues = $(if (@($telemetrySpec.metrics) -contains 'treasury_probe') { New-TelemetryProbeValues } else { $null })
 }
 
 # -ControlOnly: the CONTROL ARM. A complete, loadable mod whose only content is telemetry -
@@ -158,6 +164,10 @@ if ($ControlOnly) {
     $telDir = Join-Path $modAbs 'common\on_actions'
     New-Item -ItemType Directory -Force -Path $telDir | Out-Null
     [System.IO.File]::WriteAllText((Join-Path $telDir 'zzz_v3tb_telemetry.txt'), $telemetryText, (New-Object System.Text.UTF8Encoding($true)))
+    $svDir = Join-Path $modAbs 'common\script_values'
+    New-Item -ItemType Directory -Force -Path $svDir | Out-Null
+    [System.IO.File]::WriteAllText((Join-Path $svDir 'zzz_v3tb_values.txt'), $telemetryValues, (New-Object System.Text.UTF8Encoding($true)))
+    if ($telemetryProbeValues) { [System.IO.File]::WriteAllText((Join-Path $svDir 'zzz_v3tb_probe_values.txt'), $telemetryProbeValues, (New-Object System.Text.UTF8Encoding($true))) }
     Write-Output ""
     Write-Output "CONTROL BUILD: vanilla + telemetry only -> $modRel"
     Write-Output "  dump dates: $($telemetrySpec.dump_dates -join ', ')"
@@ -632,6 +642,8 @@ WriteText "$modRel\common\on_actions\zzz_pm_rehaul_diag.txt" (($diag -join "`n")
 # testbed telemetry, from the same generator the control arm uses
 if ($telemetryOn) {
     WriteText "$modRel\common\on_actions\zzz_v3tb_telemetry.txt" $telemetryText $bom
+    WriteText "$modRel\common\script_values\zzz_v3tb_values.txt" $telemetryValues $bom
+    if ($telemetryProbeValues) { WriteText "$modRel\common\script_values\zzz_v3tb_probe_values.txt" $telemetryProbeValues $bom }
     Write-Output "telemetry: dump $($telemetrySpec.dump_dates -join ', ') for $($telemetrySpec.tags -join '+') [$($telemetrySpec.metrics -join ', ')]"
 }
 

@@ -1,0 +1,34 @@
+{
+    "label":  "treasury-probe2",
+    "defaults":  {
+                     "autosave_interval":  "five_year",
+                     "tags":  [
+                                  "GBR",
+                                  "FRA",
+                                  "RUS",
+                                  "CHI"
+                              ],
+                     "metrics":  [
+                                     "treasury_probe"
+                                 ],
+                     "timeout_minutes":  20
+                 },
+    "runs":  [
+                 {
+                     "until":  "1836.4.1",
+                     "setup":  "mod",
+                     "dump_dates":  [
+                                        "1836.2.1",
+                                        "1836.3.1"
+                                    ]
+                 }
+             ],
+    "schedule_version":  1,
+    "setups":  {
+                   "mod":  {
+                               "config":  "config/mod_config.json",
+                               "lint":  false,
+                               "kind":  "config"
+                           }
+               }
+}

@@ -1,0 +1,21 @@
+{
+  "schedule_version": 1,
+  "label": "state-probe-1848",
+  "_why": "Validate the v4 STATE metric (at_war / civil_war / revolutionary / in_default) against the 1848 revolution wave, which is near-guaranteed. Snapshots are dense through 1846-1853 so a revolutionary tag is caught while it exists - they are temporary. Tag list widened to the European majors most likely to revolt. If every STATE value comes back 0 the metric is broken, not the world at peace.",
+  "defaults": {
+    "tags": ["GBR", "FRA", "PRU", "GER", "NGF", "AUS", "HUN", "RUS", "USA", "CHI", "BIC", "TUR", "SPA", "POR", "SAR", "TWO", "PAP", "BAV", "NET", "BEL", "DEN", "SWE"],
+    "metrics": ["market_goods", "country_state", "events"],
+    "autosave_interval": "five_year",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "mod": { "kind": "config", "config": "config/mod_config.json", "lint": false }
+  },
+  "runs": [
+    {
+      "setup": "mod",
+      "until": "1856.3.1",
+      "dump_dates": ["1836.2.1", "1841.2.1", "1846.2.1", "1847.2.1", "1848.2.1", "1848.8.1", "1849.2.1", "1849.8.1", "1850.2.1", "1851.2.1", "1853.2.1", "1855.2.1"]
+    }
+  ]
+}
