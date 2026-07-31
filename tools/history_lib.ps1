@@ -68,13 +68,26 @@ function Get-SplitMaps($cfg) {
     return @{ baseIndustry = $baseIndustry; pmMap = $pmMap; industryById = $industryById }
 }
 
-# READ-ONLY variant of Walk-HistoryFile: invoke $Handler ($blockLines, $state, $country) for every
-# `<keyword> = {` block in a history file, with the same s:STATE_x / region_state:TAG context tracking,
-# but emitting nothing (the caller just collects). $keyword is a literal, e.g. 'create_pop'.
-function Read-HistoryBlocks([string]$path, [string]$keyword, [scriptblock]$Handler) {
-    $lines = Get-Content -LiteralPath $path
+# THE history-file walker. Reads a history file, tracks the enclosing s:STATE_x and
+# region_state:TAG so every `<keyword> = { ... }` block is handed its (state, country) context, and
+# calls $Handler ($blockLines, $state, $country).
+#
+# -Emit switches the two modes that used to be two near-identical copies of this function:
+#   -Emit off (default) : nothing is collected; the handler's return value is ignored (pure read).
+#   -Emit on            : whatever the handler returns (array of lines, or @()/$null to DROP the
+#                         block) is emitted in place of the block, non-block lines pass through
+#                         verbatim, and the full emitted line array is returned.
+function Invoke-HistoryWalk {
+    param(
+        [string]$Path,
+        [string]$Keyword,
+        [scriptblock]$Handler,
+        [switch]$Emit
+    )
+    $lines = Get-Content -LiteralPath $Path
+    $out   = New-Object System.Collections.Generic.List[string]
     $stack = New-Object System.Collections.Generic.List[object]
-    $open = [regex]::Escape($keyword) + '\s*=\s*\{'
+    $open  = [regex]::Escape($Keyword) + '\s*=\s*\{'
     $i = 0
     while ($i -lt $lines.Count) {
         $line = $lines[$i]
@@ -91,7 +104,8 @@ function Read-HistoryBlocks([string]$path, [string]$keyword, [scriptblock]$Handl
                 if (-not $country -and $stack[$s].type -eq 'country') { $country = $stack[$s].name }
                 if (-not $state   -and $stack[$s].type -eq 'state')   { $state   = $stack[$s].name }
             }
-            & $Handler $block.ToArray() $state $country
+            $res = & $Handler $block.ToArray() $state $country
+            if ($Emit -and $null -ne $res) { foreach ($e in $res) { $out.Add($e) } }
         } else {
             $delta = ([regex]::Matches($line, '\{')).Count - ([regex]::Matches($line, '\}')).Count
             if ($delta -ge 1) {
@@ -103,52 +117,20 @@ function Read-HistoryBlocks([string]$path, [string]$keyword, [scriptblock]$Handl
             } elseif ($delta -le -1) {
                 for ($k = 0; $k -lt [math]::Abs($delta); $k++) { if ($stack.Count -gt 0) { $stack.RemoveAt($stack.Count - 1) } }
             }
+            if ($Emit) { $out.Add($line) }
             $i++
         }
     }
+    return ,$out.ToArray()
 }
 
-# Walk a history/buildings file. Tracks the enclosing s:STATE_x and region_state:TAG so each
-# create_building block is handed its (state, country) context. Calls $BlockHandler with
-# ($blockLines, $state, $country); whatever it returns (array of lines, or @()/nothing to drop)
-# is emitted in place. Non-block lines pass through unchanged. Returns the full emitted line array.
+# READ-ONLY walk over every `<keyword> = {` block, e.g. 'create_pop'. Collects nothing itself.
+function Read-HistoryBlocks([string]$path, [string]$keyword, [scriptblock]$Handler) {
+    $null = Invoke-HistoryWalk -Path $path -Keyword $keyword -Handler $Handler
+}
+
+# REWRITING walk over create_building blocks: the handler's return value replaces the block.
+# Returns the full emitted line array.
 function Walk-HistoryFile([string]$path, [scriptblock]$BlockHandler) {
-    $lines = Get-Content -LiteralPath $path
-    $out = New-Object System.Collections.Generic.List[string]
-    $stack = New-Object System.Collections.Generic.List[object]
-    $i = 0
-    while ($i -lt $lines.Count) {
-        $line = $lines[$i]
-        if ($line -match 'create_building\s*=\s*\{') {
-            $block = New-Object System.Collections.Generic.List[string]
-            $depth = 0
-            do {
-                $l = $lines[$i]
-                $depth += ([regex]::Matches($l, '\{')).Count - ([regex]::Matches($l, '\}')).Count
-                $block.Add($l); $i++
-            } while ($i -lt $lines.Count -and $depth -gt 0)
-            $state = $null; $country = $null
-            for ($s = $stack.Count - 1; $s -ge 0; $s--) {
-                if (-not $country -and $stack[$s].type -eq 'country') { $country = $stack[$s].name }
-                if (-not $state   -and $stack[$s].type -eq 'state')   { $state   = $stack[$s].name }
-            }
-            $emit = & $BlockHandler $block.ToArray() $state $country
-            if ($null -ne $emit) { foreach ($e in $emit) { $out.Add($e) } }
-        } else {
-            $opens  = ([regex]::Matches($line, '\{')).Count
-            $closes = ([regex]::Matches($line, '\}')).Count
-            $delta = $opens - $closes
-            if ($delta -ge 1) {
-                $type = 'generic'; $name = $null
-                if     ($line -match 's:(STATE_[A-Za-z0-9_]+)\s*=')     { $type = 'state';   $name = $Matches[1] }
-                elseif ($line -match 'region_state:([A-Za-z0-9_]+)\s*=') { $type = 'country'; $name = $Matches[1] }
-                $stack.Add(@{ type = $type; name = $name })
-                for ($k = 1; $k -lt $delta; $k++) { $stack.Add(@{ type = 'generic'; name = $null }) }
-            } elseif ($delta -le -1) {
-                for ($k = 0; $k -lt [math]::Abs($delta); $k++) { if ($stack.Count -gt 0) { $stack.RemoveAt($stack.Count - 1) } }
-            }
-            $out.Add($line); $i++
-        }
-    }
-    return ,$out.ToArray()
+    return ,(Invoke-HistoryWalk -Path $path -Keyword 'create_building' -Handler $BlockHandler -Emit)
 }

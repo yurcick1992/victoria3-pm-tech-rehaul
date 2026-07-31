@@ -1,8 +1,18 @@
-<#  Audit: vanilla script references to production methods our tier-split relocated. #>
+<#
+  Audit: vanilla script references to production methods our tier-split relocated.
+  Regenerates MISSING_PM_REFERENCES.md. Diagnostic - not run by build.ps1.
+
+  Usage:  powershell -ExecutionPolicy Bypass -File tools\audit_pm_refs.ps1 [-Game "<...\Victoria 3\game>"] [-Config <path>]
+#>
+param(
+    [string]$Repo   = (Split-Path $PSScriptRoot -Parent),
+    [string]$Game   = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game" }),
+    [string]$Config = (Join-Path (Split-Path $PSScriptRoot -Parent) 'config\mod_config.json')   # absolute: cwd-independent
+)
 $ErrorActionPreference='Stop'
-$repo = "C:\claude-code\victoria 3 PM and tech rehaul"
-$game = "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game"
-$cfg  = Get-Content (Join-Path $repo 'config\mod_config.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+$repo = $Repo
+$game = $Game
+$cfg  = Get-Content -LiteralPath $Config -Raw -Encoding UTF8 | ConvertFrom-Json
 $split = @{}; foreach($i in $cfg.industries){ foreach($t in $i.tiers){ if($t.vanilla_pm){ $split[$t.vanilla_pm]=$i.id } } }
 
 $files = @()

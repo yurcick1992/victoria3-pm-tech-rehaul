@@ -2144,7 +2144,6 @@ window.PMDATA = {
                                      ]
                        }
                    ],
-    "include_all_buildings":  false,
     "building_ai_value":  {
                               "building_trade_center":  5000
                           },

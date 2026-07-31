@@ -18,7 +18,15 @@ Target game version: **1.13.x "Matcha"**.
   `common/buildings/01_industry.txt` supersedes vanilla's), which means the mod file must then
   contain **everything** that file should define (we copy the untouched vanilla buildings verbatim
   and swap in our own). This is why `build.ps1` generates `common/buildings/01_industry.txt`
-  (whole-file replacement) but keeps PMs/PMGs as additive `zzz_*` files (all-new keys, no clash).
+  (whole-file replacement, plus `06_urban_center.txt` + `11_private_infrastructure.txt` for the
+  new-economy chains) but keeps *our own* PMs/PMGs as additive `zzz_*` files (all-new keys, no clash).
+- **Whole-file replacement is a cost, so only take it where you actually change something.** Owning a
+  file freezes it against every future patch. The builder also whole-file-replaces vanilla
+  `common/production_methods/*.txt` — to remap secondary-PM gates and apply `pm_goods` overrides — but
+  **only the files it really changes**: it compares its transformed text against the vanilla text and
+  skips the write when they are equal. Today that is `01_industry.txt` alone; the other 14 stay vanilla.
+  A verbatim copy buys nothing (an unwritten file simply stays vanilla) and costs a frozen file plus
+  ~230 KB of someone else's script in the repo and in the shipped mod.
 - **The filename choice is load-bearing, and cuts both ways:**
   - **Override existing keys → use the SAME filename as vanilla** (replaces the whole file, so your
     file must contain *everything* it should define — copy the untouched vanilla entries too).
@@ -89,6 +97,12 @@ copies with only the header line swapped from `l_english:` to `l_<lang>:`.
 - **Read config JSON with `-Encoding UTF8`.** `Get-Content -Raw` uses the system ANSI codepage for a BOM-less
   file, so a UTF-8 `·` in `config/*.json` becomes `В·` in whatever the tool generates. Every tool here
   passes `-Encoding UTF8`; keep new ones consistent.
+- **…and WRITE it with `[IO.File]::WriteAllText(path, text, UTF8Encoding($false))`, never `Set-Content`.**
+  The write side has the same trap and is worse, because it is lossy rather than mojibake: without
+  `-Encoding`, `Set-Content` encodes to the system ANSI codepage, and a character that codepage has no
+  room for is silently best-fitted or dropped. Verified on this ru-RU/CP1251 machine: an `é` injected into
+  a tier name came back out of `solve_be_targets.ps1 -Write` as a plain `e`, with no error and no warning.
+  Every config writer now uses `WriteAllText`; keep it that way.
 - **Write vanilla numbers with `InvariantCulture`.** PM goods quantities can be fractional (`0.5`, `0.33` in
   the subsistence / urban-centre / agro files). On a non-English Windows, plain string interpolation of a
   double emits `0,5` — which V3 cannot parse, and which only breaks on *that* machine. `build.ps1` routes
@@ -163,9 +177,11 @@ before relaunching too many times.
 
 ## Automated headless runs (the testbed)
 
-`tools/testbed/run_observer.ps1` drives the game itself — no launcher, no clicking, no debug mode —
-so balance changes can be measured over real playthroughs. Everything below is **verified against
-1.13.9**; it is all engine behaviour, so re-verify after a patch (see `ON_GAME_UPDATE.md`).
+`tools/testbed/run_observer.ps1` drives the game itself — no launcher, no clicking, no debug mode — so
+balance changes can be measured over real playthroughs. It is called by `tools/testbed/run_schedule.ps1`,
+which is the entry point for all measurement (it owns building each run's mod); a hand invocation of the
+observer is a diagnostic. Everything below is **verified against 1.13.9**; it is all engine behaviour, so
+re-verify after a patch (see `ON_GAME_UPDATE.md`).
 
 **Launching without the launcher.** `binaries\victoria3.exe`, working directory `binaries`:
 
@@ -200,8 +216,11 @@ harness backs it up and restores it.
 
 **`pdx_settings.json` is rewritten by the game on exit**, dropping keys it considers default — never
 assume a category or key survived. The harness sets `Graphics.display_mode=windowed` (so a run can't
-hijack the desktop) and `game.autosave=never` (verified value: autosaves drop to zero — otherwise the
-game writes a ~14 MB save every other in-game month *and* clobbers the player's own `autosave*.v3` slots).
+hijack the desktop), `System.language=l_english` (so logged strings stay stable), `game.save_on_exit=false`,
+and `game.autosave` to whatever `-AutosaveInterval` says — **default `five_year`**, not `never`: autosaves
+are the only thing that makes a crash resumable (see *Surviving a crash* below and the enum note further
+down). `never` is still available and costs nothing per run, at the price of unrecoverable crashes.
+⚠ Either way, autosaving **clobbers the player's own `autosave*.v3` slots**.
 
 **Getting numbers out.** `debug_log` interpolates data functions, which is the only numeric channel that
 needs no debug mode and no save parsing. Verified market path:
@@ -243,10 +262,10 @@ distinct hazards, both of which bite in practice:
   and the game rotates again at *every launch*. `dedicated_server.log` alone fills a slot per ~5 in-game
   years (4 `Processing Tick` lines a day), so a full-length campaign discards its own early game long
   before it ends — and an end-of-run snapshot of `logs\` **mixes runs**, because a previous run's file is
-  still sitting in the ring. The harness therefore **mirrors the growing logs continuously** into
-  `runNN\logs_live\` (`debug.log`, `error.log`, `dedicated_server.log`): one complete file per log per
+  still sitting in the ring. The harness therefore **mirrors the growing logs continuously** into the run
+  folder's `logs_live\` (`debug.log`, `error.log`, `dedicated_server.log`): one complete file per log per
   run, never rotated, flushed on every poll so a harness crash doesn't lose it. That directory is the
-  authoritative copy; `runNN\logs\` is just the exit-time snapshot.
+  authoritative copy; `logs\` next to it is just the exit-time snapshot.
 - **Rotation eats what you haven't read yet.** When the live file is renamed to `.1.log`, everything
   written since the last poll goes with it. This is not a corner case: a `debug_log` burst can *itself*
   trigger the rotation — a measured 89-line dump lost 68 lines this way. On detecting the shrink the
@@ -256,10 +275,12 @@ distinct hazards, both of which bite in practice:
 
 **And tag every emitted line with a per-run token.** Because runs share one `logs\` folder, filtering by
 file mtime is not enough — back-to-back runs are seconds apart and rotation preserves timestamps (this
-produced a run with exactly double the rows). The harness regenerates the instrumentation mod **per run**
-with a unique token in every line (`V3TB|<stamp>r02|G|…`) and accepts only its own;
-`meta.json`'s `foreign_token_lines_skipped` reports how many belonged to an earlier run. Judge
-completeness from the harvest, not the live tail — a poll can miss the final line.
+produced a run with exactly double the rows). The mod under test is therefore **rebuilt per run** with a
+unique token stamped into every line (`build.ps1 -TelemetryToken`, e.g. `V3TB|<stamp>s001|G|…`), and the
+harness accepts only its own; `meta.json`'s `foreign_token_lines_skipped` reports how many belonged to an
+earlier run. Judge completeness from the harvest, not the live tail — a poll can miss the final line.
+The token is generated by `run_schedule.ps1` and passed to *both* the builder and the observer, so the
+mod and the harvester always agree on it.
 
 **One game at a time.** A second instance writes to the same `logs\` folder. The harness refuses to start
 if `victoria3.exe` is already running (it will not kill it — that might be a game you are playing); a
@@ -272,14 +293,15 @@ either the game dying (resume it) or a human killing it (stop the batch). Three 
    stops, `x`/`Esc` closes the game and stops now. This is the primary control: you never have to kill the
    game yourself, and it responds *while* a run is in progress rather than only after one ends.
 2. **A new `crashes\victoria3_*` directory** (with `exception.txt` + `minidump.dmp`) whose mtime falls
-   inside the attempt ⇒ definitely a CTD ⇒ resume immediately, with no 30 s stall. Exit codes are
+   inside the attempt ⇒ definitely a CTD ⇒ resume immediately, with no grace-window stall. Exit codes are
    deliberately *not* used: Task Manager, `Stop-Process` and the game's own crash handler are not reliably
    distinguishable, whereas a minidump either exists or does not.
-3. **A 30 s grace prompt** if the game exits early with no crash dump — you killed it directly, so press
-   any key to confirm. No key ⇒ assume crash ⇒ resume.
+3. **A grace prompt** if the game exits early with no crash dump — you killed it directly, so press any
+   key to confirm. No key ⇒ assume crash ⇒ resume. The window is `-StopGraceSeconds`, **default 60 s**.
 4. **A STOP file** — `tools\testbed\STOP`, or `STOP` in the session folder. The **fallback for headless
    invocation** (an agent-launched background job has no console, so signals 1 and 3 cannot work there).
-   A keypress also writes this file, which is how it reaches a parent `run_batch.ps1` in another process.
+   A keypress also writes this file, which is how it reaches the parent `run_schedule.ps1` driver running
+   in another process.
 
 **Resuming is `-continuelastsave`, and it needs a guard.** ⚠ `-continuelastsave` loads the newest save
 **on the machine**, not "this run's last save". Measured failure: a resume jumped *forward* from 1836.8 to

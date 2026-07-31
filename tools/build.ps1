@@ -2,16 +2,29 @@
   PM & Tech Rehaul - mod builder.
 
   Reads config/mod_config.json and generates the whole mod:
-    mod/common/buildings/zzz_pm_rehaul_01_industry.txt
-    mod/common/production_methods/zzz_pm_rehaul_01_industry.txt
-    mod/common/production_method_groups/zzz_pm_rehaul_01_industry.txt
-    mod/localization/<lang>/zzz_pm_rehaul_l_<lang>.yml   (ALL configured languages)
+    mod/common/buildings/{01_industry,06_urban_center,11_private_infrastructure}.txt
+                                                         (WHOLE-FILE replacements of vanilla)
+    mod/common/production_methods/zzz_pm_rehaul_01_industry.txt        (our tier main PMs, additive)
+    mod/common/production_method_groups/zzz_pm_rehaul_01_industry.txt  (additive)
+    mod/common/production_methods/<vanilla file>.txt     (whole-file replacement, but ONLY for the
+                                                         files we actually change: the secondary-PM
+                                                         gate remap and any pm_goods override)
+    mod/common/ai_strategies/01_admin_strategies.txt     (WHOLE-FILE replacement: AI subsidy policy)
+    mod/common/on_actions/zzz_pm_rehaul_diag.txt         (self-diagnostic tripwire)
+    mod/common/on_actions/zzz_v3tb_telemetry.txt         (testbed telemetry, when asked for)
+    mod/common/history/buildings/*.txt                   (the re-tiered 1836 start, via convert_history)
+    mod/localization/<lang>/replace/zzz_pm_rehaul_l_<lang>.yml   (ALL configured languages)
     tools/ladder_tiers.txt                               (linter tier map, derived from config)
 
   Building logic: per tier the config carries ACTUAL volumes (output_qty + inputs, derived by
   solve_volumes.ps1). The builder emits them as-is, preserves employment/pollution, and labels each
-  building with its actual FULL break-even (input goods + wages; wages = wage_pct fraction of TOTAL,
-  default 0.33). See BALANCE_FRAMEWORK §1/§8.
+  building with its actual FULL break-even (input goods + wages).
+
+  WAGES ARE NEVER EMITTED. `wage_pct` is a model-only accounting term: the wage fraction of TOTAL
+  cost (goods + wages), default 0.25, so total = goods/(1-0.25). It exists to compute break-even in
+  our tools; V3 pays its own wages endogenously from employment and we do not touch that. (0.25 of
+  total is the same number as the older "+33% over goods" spelling - reparameterized 2026-07-19, so
+  a stray 0.33 in an old comment is the same value, not a different setting.) See BALANCE_FRAMEWORK §1/§8.
 
   Usage:   powershell -ExecutionPolicy Bypass -File tools\build.ps1 [-NoLint] [-NoDeploy] [-Config <path>] [-DryRun] [-SaveTo <name>]
 
@@ -29,7 +42,7 @@
                     For alternate balance sets you want to compare/keep. Clean up manually.
   -DryRun and -SaveTo are mutually exclusive. Both leave the canonical mod/ untouched.
 #>
-param([switch]$NoLint, [switch]$NoDeploy, [string]$Config, [switch]$DryRun, [string]$SaveTo, [switch]$IncludeAllBuildings,
+param([switch]$NoLint, [switch]$NoDeploy, [string]$Config, [switch]$DryRun, [string]$SaveTo,
       [string]$Telemetry, [switch]$TelemetryOn, [string]$TelemetryToken, [switch]$ControlOnly)
 $ErrorActionPreference = 'Stop'
 $INV = [System.Globalization.CultureInfo]::InvariantCulture
@@ -85,12 +98,10 @@ Write-Output "Config: $cfgPath"
 $cfg = Get-Content -LiteralPath $cfgPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $Game = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game" })
 
-# include_all_buildings: EMISSION-scope switch for the untouched (non-tiered) vanilla buildings.
-# It does NOT affect the UI (which always shows every building) - only whether those buildings are
-# emitted into the built mod. Source is the config field; -IncludeAllBuildings forces it on. Default
-# off = only our tiered industries reach the mod (today's behavior). See CLAUDE.md.
-$includeAll = $IncludeAllBuildings.IsPresent -or [bool]$cfg.include_all_buildings
-Write-Output ("include_all_buildings = {0} (emission scope for non-tiered buildings)" -f $includeAll)
+# NOTE: buildings we do not TIER are never emitted as whole definitions - only their PM goods (via
+# pm_goods) and, inside files we already own, their ai_value. There is deliberately no switch for
+# that: an `include_all_buildings` flag existed here but gated nothing, so it was removed. If we
+# ever start emitting untiered buildings wholesale, add the scope control together with the code.
 
 # --- resolve output mod directory (relative name under repo) --------------------------------------
 #   default 'mod' (canonical, deploys); -SaveTo X -> 'mod_X' (kept); -DryRun -> throwaway (deleted).
@@ -177,6 +188,24 @@ function Invoke-ModChecks($modRoot, $config) {
         $p = Join-Path $modRoot "localization\$lang\replace\$($config.loc_basename)_l_$lang.yml"
         if (-not (Test-Path $p)) { $problems += "missing loc: $lang" }
         elseif ((Get-Item $p).Length -eq 0) { $problems += "empty loc: $lang" }
+    }
+    # 1836 start. metadata.json lists common/history/buildings under `replace_paths`, so the engine
+    # reads ONLY our copy: a converter that silently emitted nothing would wipe every starting
+    # factory in the game and nothing else here would notice. Check one file per vanilla file, all
+    # non-empty, and that they still contain create_building blocks.
+    $histSrc = Join-Path $Game 'common\history\buildings'
+    $histOut = Join-Path $modRoot 'common\history\buildings'
+    if (Test-Path $histSrc) {
+        $srcFiles = @(Get-ChildItem $histSrc -Filter *.txt)
+        $outFiles = @(Get-ChildItem $histOut -Filter *.txt -ErrorAction SilentlyContinue)
+        if ($outFiles.Count -ne $srcFiles.Count) {
+            $problems += "history: $($outFiles.Count) file(s) emitted, vanilla has $($srcFiles.Count) (replace_paths makes ours the only history)"
+        }
+        $emptyHist = @($outFiles | Where-Object { $_.Length -eq 0 })
+        if ($emptyHist.Count -gt 0) { $problems += "history: empty file(s): $(($emptyHist | ForEach-Object { $_.Name }) -join ', ')" }
+        $totalBuildings = 0
+        foreach ($f in $outFiles) { $totalBuildings += ([regex]::Matches([System.IO.File]::ReadAllText($f.FullName), 'create_building\s*=\s*\{')).Count }
+        if ($totalBuildings -eq 0 -and $outFiles.Count -gt 0) { $problems += "history: no create_building blocks emitted - the 1836 start would be empty" }
     }
     return $problems
 }
@@ -544,23 +573,32 @@ if ($cfg.pm_goods) { foreach ($p in $cfg.pm_goods.PSObject.Properties) {
     if ($p.Value.out) { foreach ($g in $p.Value.out.PSObject.Properties) { $ov.out[$g.Name] = [double]$g.Value } }
     $pmGoods[$p.Name] = $ov
 } }
+# ONLY files we actually CHANGE are emitted. A file we own but copy verbatim is pure downside: it
+# freezes that vanilla file against every future patch, ships bytes we did not author, and buys
+# nothing (an unwritten file simply stays vanilla). Today only 01_industry.txt changes (the gate
+# remap); with an empty pm_goods map the other 14 were byte-identical copies.
+$pmEmitted = @(); $pmSkipped = 0
 foreach ($pf in (Get-ChildItem (Join-Path $Game 'common\production_methods') -Filter *.txt)) {
-    $txt = [regex]::Replace([System.IO.File]::ReadAllText($pf.FullName), 'unlocking_production_methods\s*=\s*\{([^{}]*)\}', $gateEval)
+    $orig = [System.IO.File]::ReadAllText($pf.FullName)
+    $txt = [regex]::Replace($orig, 'unlocking_production_methods\s*=\s*\{([^{}]*)\}', $gateEval)
     if ($pmGoods.Count -gt 0) {
-        $lines = $txt -split "`r?`n"; $cur = $null
+        $lines = $txt -split "`r?`n"; $cur = $null; $touched = $false
         for ($k = 0; $k -lt $lines.Count; $k++) {
             # PM headers are top-level (column 0) in a production_methods file; names are NOT all pm_-prefixed
             # (plantations/farms use default_/automatic_/worker_/… , e.g. default_building_cotton_plantation).
             if ($lines[$k] -match '^([A-Za-z_][A-Za-z0-9_-]*)\s*=\s*\{') { $cur = $Matches[1]; continue }
             if ($null -ne $cur -and $pmGoods.ContainsKey($cur)) {
-                if ($lines[$k] -match '^(\s*)goods_input_([a-z_]+)_add\s*=')      { $g = $Matches[2]; if ($pmGoods[$cur].in.ContainsKey($g))  { $lines[$k] = "$($Matches[1])goods_input_${g}_add = $(Format-Qty $pmGoods[$cur].in[$g])" } }
-                elseif ($lines[$k] -match '^(\s*)goods_output_([a-z_]+)_add\s*=') { $g = $Matches[2]; if ($pmGoods[$cur].out.ContainsKey($g)) { $lines[$k] = "$($Matches[1])goods_output_${g}_add = $(Format-Qty $pmGoods[$cur].out[$g])" } }
+                if ($lines[$k] -match '^(\s*)goods_input_([a-z_]+)_add\s*=')      { $g = $Matches[2]; if ($pmGoods[$cur].in.ContainsKey($g))  { $lines[$k] = "$($Matches[1])goods_input_${g}_add = $(Format-Qty $pmGoods[$cur].in[$g])"; $touched = $true } }
+                elseif ($lines[$k] -match '^(\s*)goods_output_([a-z_]+)_add\s*=') { $g = $Matches[2]; if ($pmGoods[$cur].out.ContainsKey($g)) { $lines[$k] = "$($Matches[1])goods_output_${g}_add = $(Format-Qty $pmGoods[$cur].out[$g])"; $touched = $true } }
             }
         }
-        $txt = $lines -join "`n"
+        if ($touched) { $txt = $lines -join "`n" }
     }
+    if ($txt -ceq $orig) { $pmSkipped++; continue }   # unchanged => do not own it
     WriteText "$modRel\common\production_methods\$($pf.Name)" $txt $bom
+    $pmEmitted += $pf.Name
 }
+Write-Output ("production_methods: owning {0} file(s) [{1}]; {2} left vanilla (unchanged)" -f $pmEmitted.Count, ($pmEmitted -join ', '), $pmSkipped)
 
 # --- localization for every language (UTF-8 WITH BOM), in a replace/ folder so our building-name
 #     overrides win over vanilla (and new keys are still defined) ---
@@ -603,8 +641,8 @@ if (-not $isAlt) {
     $uiData = "// AUTO-GENERATED by tools/build.ps1 - the balance UI reads this.`n" +
               "window.PMDATA = {`n  config: " + ($cfg | ConvertTo-Json -Depth 20) + ",`n  prices: " + ($prices | ConvertTo-Json) + "`n};`n"
     WriteText 'ui\data.js' $uiData $noBom
-    # vanilla.js: full building/PMG/PM reference so the UI ALWAYS shows every building (regardless of
-    # include_all_buildings, which only gates emission). Re-derived from the live game each build.
+    # vanilla.js: full building/PMG/PM reference so the UI ALWAYS shows every building, tiered or
+    # not. Re-derived from the live game each build.
     & (Join-Path $PSScriptRoot 'extract_vanilla.ps1') -Repo $repo -Game $Game
     # icons.js: goods pictograms for the scenario panel. UI-only and .gitignore'd (game art is never
     # committed or shipped); if it's missing the UI simply renders without pictograms.

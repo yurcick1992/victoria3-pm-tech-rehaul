@@ -28,14 +28,18 @@ sed 's/^\xEF\xBB\xBF//' \
   "$MODROOT/$MODDIR"/common/buildings/*.txt \
   > "$TMP"
 
-awk -f "$HERE/lint_profitability.awk" "$LADDER" "$TMP"
+# prices come from the ONE shared table, never a copy inside the linter
+awk -v PRICES="$HERE/goods_prices.tsv" -f "$HERE/lint_profitability.awk" "$LADDER" "$TMP"
 
 # --- negative-goods invariant: no legal PM combination drives any good's building total below zero ---
-# EVERY building (vanilla + mod). Reads the MOD's OWNED (overridden) production_methods so pm_goods edits
-# are checked, all vanilla PMGs (PMG->PM lists), and all buildings (vanilla first, mod overrides second).
+# EVERY building (vanilla + mod). VANILLA FIRST, MOD SECOND everywhere, so the mod overrides: the
+# builder only owns a production_methods file it actually CHANGES, so the vanilla set is the base and
+# the mod contributes just the changed file(s) plus our zzz_* tier PMs. (Before that change the mod
+# carried a verbatim copy of every vanilla PM file and the vanilla ones were redundant here.)
 sed 's/^\xEF\xBB\xBF//' \
   "$C"/production_method_groups/*.txt \
   "$MODROOT/$MODDIR"/common/production_method_groups/zzz_*.txt \
+  "$C"/production_methods/*.txt \
   "$MODROOT/$MODDIR"/common/production_methods/*.txt \
   "$C"/buildings/*.txt \
   "$MODROOT/$MODDIR"/common/buildings/*.txt \

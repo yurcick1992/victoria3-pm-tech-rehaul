@@ -14,6 +14,17 @@
   Usage (from a console you can type into - see CONTROL below):
     powershell -ExecutionPolicy Bypass -File tools\testbed\run_schedule.ps1 -Schedule tools\testbed\schedules\example.json
     ... -WhatIf     print the plan, the builds it implies and a time estimate; launch nothing
+    ... -KeepMods   keep the mod_sched_<setup>\ folders (default: deleted when the schedule ends)
+
+  OUTPUT - tools\testbed\sessions\<stamp>_<label>\
+    schedule.json      the plan, verbatim
+    session.json       what ran, per run, with status
+    session.log        the driver's log
+    markets_all.tsv    ALL runs, each row prefixed run_index + setup  <- the cross-run aggregate
+    runNNN_<setup>\    one folder per run: build.log, build_state.json, telemetry.json, run.log,
+                       meta.json, markets.tsv, events.tsv, harness.log, logs_live\, logs\
+  A run folder is FLAT (the observer writes straight into it): there is no extra run01\ level and
+  no per-run copy of the aggregate - one run's results live in exactly one place.
 
   CONTROL, while running:
     [p] pause    [r] resume    [s] stop after this run    [x] stop now
@@ -46,6 +57,9 @@
 param(
     [Parameter(Mandatory = $true)][string] $Schedule,
     [string] $OutRoot = "",
+    # keep the mod_sched_<setup>\ folders this builds (default: delete them when the schedule ends;
+    # they are ~1.7 MB each and fully reproducible from the setup's config)
+    [switch] $KeepMods,
     [switch] $WhatIf
 )
 
@@ -168,6 +182,7 @@ function Resolve-Setup {
 $index = @()
 $abort = $false
 $runNo = 0
+$modsBuilt = @{}
 foreach ($p in $plan) {
     if ($abort) { Log "schedule aborted - skipping remaining runs" "WARN"; break }
     $runNo++
@@ -195,8 +210,11 @@ foreach ($p in $plan) {
         continue
     }
     Log ("build ok in {0:N0}s -> {1}" -f ((Get-Date)-$t0).TotalSeconds, (Split-Path $resolved.ModPath -Leaf))
+    $modsBuilt[$resolved.ModPath] = $true
 
     # ---- run it. run_observer owns the game: launch, supervise, harvest, crash-resume. ----
+    # -Stamp: the run inherits THIS schedule's identity, so build_state.json, the folder and the
+    # telemetry token all say the same thing instead of three different timestamps.
     $obsArgs = @("-ExecutionPolicy","Bypass","-File",$Observer,
                  "-Runs","1",
                  "-ModPath",$resolved.ModPath,
@@ -206,7 +224,7 @@ foreach ($p in $plan) {
                  "-AutosaveInterval",$p.autosave,
                  "-TimeoutMinutes","$($p.timeout)",
                  "-OutRoot",$runDir, "-FlatOut",
-                 "-NoInstrument",
+                 "-Stamp",$stamp,
                  "-TelemetryToken",$token,
                  "-Label","$label/#$($p.index) $($p.setup)")
     & powershell @obsArgs
@@ -226,10 +244,40 @@ foreach ($p in $plan) {
                           token = $token; status = $status; dir = (Split-Path $runDir -Leaf) }
 }
 
+# ---- cross-run aggregate. This is the level the aggregate belongs at: each run folder holds ONE
+#      run's markets.tsv, and comparing setups means reading them together. Every row is prefixed
+#      with the run index + setup, so a row identifies its arm without a lookup.
+$allRows = New-Object System.Collections.Generic.List[string]
+foreach ($e in $index) {
+    if (-not $e.Contains("dir")) { continue }
+    $tsv = Join-Path (Join-Path $sessionDir $e.dir) "markets.tsv"
+    if (-not (Test-Path $tsv)) { continue }
+    $lines = @(Get-Content $tsv)
+    for ($k = 1; $k -lt $lines.Count; $k++) {           # skip the per-run header
+        if (-not $lines[$k]) { continue }
+        $cols = $lines[$k] -split "`t"
+        # drop the per-run "run" column (always 1 under the scheduler) and prefix run_index + setup
+        $rest = if ($cols.Count -gt 1) { ($cols[1..($cols.Count - 1)]) -join "`t" } else { "" }
+        $null = $allRows.Add(("{0}`t{1}`t{2}" -f $e.index, $e.setup, $rest))
+    }
+}
+$aggHeader = "run_index`tsetup`tdump_date`ttag`tmarket`tgood`tbuy_orders`tsell_orders`tprice`timports`texports`tproduction`tstatus"
+[System.IO.File]::WriteAllLines((Join-Path $sessionDir "markets_all.tsv"), [string[]](@($aggHeader) + $allRows.ToArray()), $Utf8)
+Log "aggregate: $($allRows.Count) row(s) -> markets_all.tsv"
+
 $summary = [ordered]@{
     label = $label; stamp = $stamp; schedule_file = (Resolve-Path $Schedule).Path
     runs_planned = $plan.Count; runs_executed = $index.Count; aborted = $abort
     schedule = ($schedRaw | ConvertFrom-Json); index = $index
 }
 [System.IO.File]::WriteAllText((Join-Path $sessionDir "session.json"), ($summary | ConvertTo-Json -Depth 14), $Utf8)
+
+# ---- the built mods are BUILD OUTPUT, not results: reproducible from the setup's config, ~1.7 MB
+#      each, and previously left behind forever. build_state.json already records what each one was.
+if (-not $KeepMods) {
+    foreach ($m in $modsBuilt.Keys) {
+        if (Test-Path $m) { Remove-Item $m -Recurse -Force -ErrorAction SilentlyContinue }
+    }
+    if ($modsBuilt.Count -gt 0) { Log "removed $($modsBuilt.Count) built mod folder(s) (pass -KeepMods to keep them)" }
+}
 Log "SCHEDULE DONE: $($index.Count)/$($plan.Count) run(s) -> $sessionDir"

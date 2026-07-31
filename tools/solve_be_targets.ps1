@@ -1,9 +1,14 @@
 <#
   solve_be_targets.ps1 - derive each tier's target_be from its tech's era (natural unlock date).
 
+  *** SOON TO BE DEPRECATED *** - the BE methodology (era anchors, the H1 input discount, and the
+  wage model they are solved against) is being reworked wholesale. Treat the model below as the
+  CURRENT ladder, not as a durable design: expect this solver to be rewritten or replaced rather
+  than incrementally tuned. Keep the anchors here in sync with BALANCE_FRAMEWORK 8.1 until then.
+
   Model (BALANCE_FRAMEWORK, date-ladder):
     target_be(tier) = anchor(era) - 15 * [era<=3 AND the recipe consumes a manufactured input]
-      anchor: e1..e5 = 140 115 90 65 50   (the date curve; ~25pp/era, 2-era gap = ~50pp -> N+2 obsolescence)
+      anchor: e1..e5 = 125 100 75 50 35   (the date curve; ~25pp/era, 2-era gap = ~50pp -> N+2 obsolescence)
       H1 manufactured-input discount (-15pp) only in eras 1-3, where factory intermediates trade
       above base; off in H2 (eras 4-5), where those markets have matured.
     natural_year(tier) = a representative unlock year for the tech's era (for UI display).
@@ -81,7 +86,11 @@ foreach ($i in $cfg.industries) {
   }
 }
 if ($Write) {
-  ($cfg | ConvertTo-Json -Depth 40 -Compress) | Set-Content $Config -NoNewline
+  # WriteAllText + explicit UTF-8 (no BOM), like every other tool that writes a config. NEVER use
+  # Set-Content here: with no -Encoding, PowerShell 5.1 writes the system ANSI codepage, so on a
+  # non-English Windows a non-ASCII building name is silently mangled or dropped (verified on a
+  # ru-RU/CP1251 box: an e-acute in a tier name came back as a plain 'e'). See MODDING_NOTES.
+  [System.IO.File]::WriteAllText($Config, ($cfg | ConvertTo-Json -Depth 40 -Compress), (New-Object System.Text.UTF8Encoding($false)))
   Write-Host "`n[written] target_be + natural_year -> $Config"
 } else {
   Write-Host "`n(report only -- pass -Write to patch the config)"

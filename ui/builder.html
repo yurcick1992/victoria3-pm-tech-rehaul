@@ -628,12 +628,6 @@ function syncScenarioPrices(agg){
 }
 
 // ---------- helpers ----------
-function allGoods(){
-  const s=new Set();
-  IND.forEach(i=>{ s.add(i.output_good); i.tiers.forEach(t=>Object.keys(t.inputs).forEach(g=>s.add(g))); });
-  return [...s].sort();
-}
-function outputGoods(){ const seen=new Set(),r=[]; IND.forEach(i=>{ if(!seen.has(i.output_good)){seen.add(i.output_good); r.push(i.output_good);} }); return r; }
 function thrOOB(v){ return v<25 || v>175; }   // outside the ±75% price band
 function tierOut(i,t){ return t.output_good || i.output_good; }
 // ----- production-method (PMVANILLA) helpers, shared by our secondaries + the reference explorer -----

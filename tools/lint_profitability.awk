@@ -9,28 +9,33 @@
 # (wage_pct comes from the tier map, default 0.25), so BE = I/(1-wage)/O. Checked
 # against the tier's target_be in BALANCE_FRAMEWORK.md §8.1.
 #
-# Inputs (file1 = tier map "pm tier target_be wage_pct", file2 = concatenated vanilla+mod
-# defs, vanilla first so mod overrides). Driven by lint.sh. Exit 1 if any in-scope building
-# is more than TOL pp off its target BE.
+# Inputs (-v PRICES=<goods_prices.tsv>, file1 = tier map "pm tier target_be wage_pct", file2 =
+# concatenated vanilla+mod defs, vanilla first so mod overrides). Driven by lint.sh. Exit 1 if any
+# in-scope building is more than TOL pp off its target BE.
+#
+# PRICES is read from tools/goods_prices.tsv - the ONE price table shared by the builder, both
+# solvers and the UI. It used to be copied into this file as a literal table, which meant a price
+# refreshed after a game patch reached everything EXCEPT the linter, silently.
 
 BEGIN {
-    p["ammunition"]=50; p["small_arms"]=60; p["artillery"]=70; p["tanks"]=80;
-    p["aeroplanes"]=80; p["manowars"]=70; p["ironclads"]=80; p["grain"]=20;
-    p["fish"]=20; p["fabric"]=20; p["wood"]=20; p["groceries"]=30; p["clothes"]=30;
-    p["furniture"]=30; p["paper"]=30; p["services"]=30; p["transportation"]=30;
-    p["electricity"]=30; p["merchant_marine"]=50; p["clippers"]=60; p["steamers"]=70;
-    p["silk"]=40; p["dye"]=40; p["sulfur"]=50; p["coal"]=30; p["iron"]=40; p["lead"]=40;
-    p["hardwood"]=40; p["rubber"]=40; p["oil"]=40; p["engines"]=60; p["steel"]=50;
-    p["glass"]=40; p["fertilizer"]=30; p["tools"]=40; p["explosives"]=50;
-    p["porcelain"]=70; p["meat"]=30; p["fruit"]=30; p["liquor"]=30; p["wine"]=50;
-    p["tea"]=50; p["coffee"]=50; p["sugar"]=30; p["tobacco"]=40; p["opium"]=50;
-    p["automobiles"]=100; p["telephones"]=70; p["radios"]=80; p["luxury_clothes"]=60;
-    p["luxury_furniture"]=60; p["gold"]=100; p["fine_art"]=200;
-    TOL=6;   # allowed deviation (pp) of a building's actual BE from its configured target_be
+    # NOTE: `exit` in BEGIN still runs END, so bail out via ABORT rather than printing a stray report.
+    if (PRICES == "") { print "lint_profitability: -v PRICES=<goods_prices.tsv> is required" > "/dev/stderr"; ABORT=1; exit 2 }
+    np = 0;
+    while ((getline pl < PRICES) > 0) {
+        if (pl ~ /^[ \t]*#/ || pl ~ /^[ \t]*$/) continue;
+        nf = split(pl, pf, "\t");
+        if (nf < 2) continue;
+        gsub(/^[ \t]+|[ \t\r]+$/, "", pf[1]); gsub(/^[ \t]+|[ \t\r]+$/, "", pf[2]);
+        if (pf[1] != "") { p[pf[1]] = pf[2]+0; np++ }
+    }
+    close(PRICES);
+    if (np == 0) { printf "lint_profitability: no prices read from %s\n", PRICES > "/dev/stderr"; ABORT=1; exit 2 }
+    TOL=6;         # allowed deviation (pp) of a building's actual BE from its configured target_be
+    DEFWAGE=0.25;  # wage fraction of TOTAL cost when the tier map carries no wage_pct column (BALANCE_FRAMEWORK 1)
     cur="";
 }
 # ---- file1: tier map (pm  tier  target_be  wage_pct) ----
-FNR==NR { if ($1 ~ /^pm_/) { tier[$1]=$2+0; target[$1]=$3+0; wage[$1]=($4=="")?0.25:$4+0 } next }
+FNR==NR { if ($1 ~ /^pm_/) { tier[$1]=$2+0; target[$1]=$3+0; wage[$1]=($4=="")?DEFWAGE:$4+0 } next }
 
 # ---- file2: object definitions (structural parse) ----
 # top-level headers at column 0
@@ -57,12 +62,13 @@ cur=="bld" {
 }
 
 END {
+    if (ABORT) exit 2;
     print  "BUILDING                                  TIER  bldBE  target   d    result";
     print  "----------------------------------------  ----  -----  ------  ----  ------";
     fails=0; rows=0;
     for (b in blist) {
         # find the main PMG (its base PM is on the ladder) and sum all base PMs
-        m=""; t=0; tg=0; tin=0; tout=0; wg=0.33; k=split(blist[b], gs, " ");
+        m=""; t=0; tg=0; tin=0; tout=0; wg=DEFWAGE; k=split(blist[b], gs, " ");
         for (i=1;i<=k;i++){ pg=gs[i]; if(pg=="") continue; bp=pmgBase[pg];
             tin += pmIn[bp]; tout += pmOut[bp];
             if (bp in tier) { m=bp; t=tier[bp]; tg=target[bp]; wg=wage[bp] }

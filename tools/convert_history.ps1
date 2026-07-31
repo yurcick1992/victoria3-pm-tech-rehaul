@@ -28,6 +28,10 @@ $histDir = Join-Path $Game 'common\history\buildings'
 if (-not (Test-Path $histDir)) { throw "History dir not found: $histDir (set -Game or VIC3_GAME)" }
 $outDir = Join-Path $Repo (Join-Path $ModDir 'common\history\buildings')
 if (-not (Test-Path $outDir)) { New-Item -ItemType Directory -Force -Path $outDir | Out-Null }
+# Clear stale output first. metadata.json puts this folder under `replace_paths`, so the mod's copy
+# is the ONLY history the engine reads: a file vanilla dropped in a patch would otherwise keep
+# placing its factories forever, from a leftover we never rewrite.
+Remove-Item (Join-Path $outDir '*.txt') -Force -ErrorAction SilentlyContinue
 
 $cfgPath = if ($Config) { (Resolve-Path -LiteralPath $Config).Path } else { Join-Path $Repo 'config\mod_config.json' }
 $cfg = Get-Content -LiteralPath $cfgPath -Raw -Encoding UTF8 | ConvertFrom-Json

@@ -38,6 +38,7 @@ $ErrorActionPreference = "Stop"
 Set-StrictMode -Version 2.0
 
 $Repo = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+. (Join-Path $Repo 'tools\history_lib.ps1')   # Get-Num (fraction-safe vanilla number parse)
 if (-not $Config) { $Config = Join-Path $Repo "config\mod_config.json" }
 if (-not $Out)    { $Out    = Join-Path $Repo "config\mod_config.vanilla_stub.json" }
 
@@ -66,8 +67,9 @@ foreach ($f in (Get-ChildItem (Join-Path $Game 'common\production_methods') -Fil
     foreach ($l in ([System.IO.File]::ReadAllText($f.FullName) -split "`r?`n")) {
         if ($l -match '^(pm_[A-Za-z0-9_-]+)\s*=\s*\{') { $cur = $Matches[1]; $recipes[$cur] = @{ out = @{}; ins = @{} } }
         elseif ($cur) {
-            if     ($l -match 'goods_input_([a-z_]+)_add\s*=\s*(-?\d+)')  { $recipes[$cur].ins[$Matches[1]] = [int]$Matches[2] }
-            elseif ($l -match 'goods_output_([a-z_]+)_add\s*=\s*(-?\d+)') { $recipes[$cur].out[$Matches[1]] = [int]$Matches[2] }
+            # fraction-safe: matching only \d+ would capture "0" out of "0.5" and silently zero the good
+            if     ($l -match 'goods_input_([a-z_]+)_add\s*=\s*(-?\d+(?:\.\d+)?)')  { $recipes[$cur].ins[$Matches[1]] = Get-Num $Matches[2] }
+            elseif ($l -match 'goods_output_([a-z_]+)_add\s*=\s*(-?\d+(?:\.\d+)?)') { $recipes[$cur].out[$Matches[1]] = Get-Num $Matches[2] }
         }
     }
 }

@@ -1,9 +1,15 @@
 <#
-  run_observer.ps1 - automated Victoria 3 observer runs for balance telemetry (MVP).
+  run_observer.ps1 - the GAME driver: launch, supervise, harvest, crash-resume.
 
-  Launches Victoria 3 WITHOUT the Paradox launcher, straight into a hands-off observer
-  game, runs it to a date, harvests one metric (per-market buy/sell orders), quits, and
-  repeats N times. Fully deterministic - no agent in the loop.
+  NOT THE MEASUREMENT ENTRY POINT. All measurement goes through
+  tools\testbed\run_schedule.ps1, which owns "schedule -> build each run's mod -> run it ->
+  harvest" and the record of what was built and why. This script is what the scheduler calls,
+  and a hand invocation is a DIAGNOSTIC (a post-patch smoke test), not an experiment: it has no
+  build step, so it can only run a mod someone else already built.
+
+  Launches Victoria 3 WITHOUT the Paradox launcher, straight into a hands-off observer game, runs
+  it to a date, harvests the telemetry that mod emits, quits. Fully deterministic - no agent in
+  the loop.
 
   COST / PERMISSION: a run costs ~40 s of load plus ~1 min per in-game year and takes over the
   machine. Claude must NOT start a session without the user's explicit go-ahead, must state the
@@ -17,15 +23,22 @@
     * -run_until=<date>                             the game plays to that date and EXITS by itself
     * -disable_renderframeifneeded                  "sacrifice sub-tick rendering for tick speed"
     * mods are enabled by writing content_load.json (NOT dlc_load.json - that file is gone in 1.13)
-    * the metric is collected by a throwaway instrumentation mod this script generates, which
-      uses the `debug_log` effect - works WITHOUT debug mode - and lands in logs\debug.log
 
-  Output (one folder per session, one subfolder per run):
-    tools\testbed\runs\<stamp>\session.log / session.json / markets_all.tsv
-    tools\testbed\runs\<stamp>\run01\meta.json / markets.tsv / harness.log
-    tools\testbed\runs\<stamp>\run01\logs_live\*   <- AUTHORITATIVE: written continuously as the
-                                                     run happens, one complete file per log, per run
-    tools\testbed\runs\<stamp>\run01\logs\*        <- snapshot of the game's log folder at exit
+  TELEMETRY COMES FROM THE MOD UNDER TEST, always. build.ps1 bakes it in from the single generator
+  tools\telemetry_lib.ps1 (`-Telemetry <spec>`), so the vanilla control arm (`build.ps1
+  -ControlOnly`) and every modded arm instrument IDENTICALLY - which is the only thing that makes a
+  control a control. This script used to be able to generate its own instrumentation mod instead;
+  that second generator was removed, because it had already drifted (its market line stopped at
+  price - no imports/exports/production - and it emitted no events at all).
+
+  Output - ONE results root, tools\testbed\sessions\:
+    sessions\<stamp>\session.log / session.json / markets_all.tsv    (multi-run session)
+    sessions\<stamp>\runNN\meta.json / markets.tsv / events.tsv / harness.log
+    sessions\<stamp>\runNN\logs_live\*   <- AUTHORITATIVE: written continuously as the run happens,
+                                            one complete file per log, per run
+    sessions\<stamp>\runNN\logs\*        <- snapshot of the game's log folder at exit
+  With -FlatOut (how the scheduler calls this) there is exactly ONE run, so the runNN level and the
+  session-level aggregates collapse away: everything above lands directly in -OutRoot.
 
   Why logs_live exists: the game's own logs are a rotating ring (5 x 512 KB) and it rotates them
   again at every launch, so (a) a long run throws its own early game away before it ends -
@@ -33,9 +46,8 @@
   mixes runs, because a previous run's log is still sitting in the ring. Mirroring as we go fixes
   both. Only the growing logs are mirrored; the rest are static and the snapshot is enough.
 
-  Usage:
-    powershell -ExecutionPolicy Bypass -File tools\testbed\run_observer.ps1
-    powershell -ExecutionPolicy Bypass -File tools\testbed\run_observer.ps1 -Runs 3 -DumpDate 1840.1.1 -UntilDate 1841.1.1
+  Usage (measurement: use run_schedule.ps1 instead):
+    powershell -ExecutionPolicy Bypass -File tools\testbed\run_observer.ps1 -Runs 1 -DumpDates 1836.3.1 -UntilDate 1836.4.1
 #>
 [CmdletBinding()]
 param(
@@ -52,9 +64,9 @@ param(
     [string]   $Game = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game" }),
     # the mod under test; default = what build.ps1 deploys. Any absolute path works, so an
     # alternate build (build.ps1 -SaveTo <name> -> mod_<name>\) can be run without deploying it.
+    # It MUST carry telemetry (build.ps1 -Telemetry/-TelemetryOn), including the vanilla control
+    # arm, which is a real mod built by build.ps1 -ControlOnly.
     [string]   $ModPath = "",
-    # run the BASE GAME with no mod under test (only the instrumentation mod) - the control arm
-    [switch]   $NoMod,
     # the config the mod under test was built from; recorded (with its hash) in build_state.json
     [string]   $BuildConfig = "",
     # short label for this batch, e.g. "vanilla-baseline"
@@ -62,10 +74,15 @@ param(
     # path to a JSON file whose contents become build_state.json's "agentic" block
     [string]   $Notes = "",
     [string]   $OutRoot = "",
-    # Write straight into -OutRoot instead of creating a timestamped subfolder under it. The
-    # scheduler already owns the folder naming, so without this a scheduled run nests three
-    # deep: run001_setup\<stamp>\run01\.
+    # Write straight into -OutRoot instead of creating a timestamped subfolder under it, AND
+    # collapse the single run's own folder + session-level aggregates into it. The scheduler owns
+    # the folder naming and always runs exactly one run per invocation, so without this a scheduled
+    # run nests three deep (run001_setup\<stamp>\run01\) and duplicates its own results one level up
+    # (markets_all.tsv == run01\markets.tsv, session.json == run01\meta.json).
     [switch]   $FlatOut,
+    # Session id. The scheduler passes ITS stamp so one run has ONE identity across
+    # build_state.json, session.json, the folder name and the telemetry token.
+    [string]   $Stamp = "",
     # How often the game autosaves - the ONLY way to make a crash resumable, since no script
     # effect can save the game. Values are the engine's own (exe: SETTING_AUTOSAVE / OPTION_*);
     # note "halfyear" has no underscore while "five_year" does.
@@ -78,17 +95,12 @@ param(
     # On an abnormal exit with NO crash artifact, wait this long for a keypress before deciding
     # it was a crash rather than you. Any key = you did it = stop the batch.
     [int]      $StopGraceSeconds = 60,
-    # Telemetry now comes from the BUILDER (build.ps1 -Telemetry), baked into the mod under test.
-    # -NoInstrument stops this script generating its own, so both arms log identically.
-    [switch]   $NoInstrument,
-    # must match the token the builder stamped into that mod's telemetry
+    # must match the token the builder stamped into the mod's telemetry
     [string]   $TelemetryToken = "",
     # hard watchdog: kill the process if a single run exceeds this
     [int]      $TimeoutMinutes = 45,
     # leave content_load.json / pdx_settings.json as the harness set them
-    [switch]   $NoRestore,
-    # keep the generated instrumentation mod on disk after the session
-    [switch]   $KeepInstrument
+    [switch]   $NoRestore
 )
 
 $ErrorActionPreference = "Stop"
@@ -102,17 +114,20 @@ $Binaries = Join-Path (Split-Path -Parent $Game) "binaries"
 $Exe      = Join-Path $Binaries "victoria3.exe"
 $LogDir   = Join-Path $Doc "logs"
 $SaveDir  = Join-Path $Doc "save games"
-$InstrDir = Join-Path $Doc "mod\v3_testbed_instr"
 
-if ($NoMod)        { $ModPath = "" }
-elseif (-not $ModPath) { $ModPath = Join-Path $Doc "mod\pm_tech_rehaul" }
-if (-not $OutRoot) { $OutRoot = Join-Path $PSScriptRoot "runs" }
+if (-not $ModPath) { $ModPath = Join-Path $Doc "mod\pm_tech_rehaul" }
+if (-not $OutRoot) { $OutRoot = Join-Path $PSScriptRoot "sessions" }   # ONE results root
 
-$checkPaths = @($Exe)
-if ($ModPath) { $checkPaths += $ModPath }
-foreach ($p in $checkPaths) {
+foreach ($p in @($Exe, $ModPath)) {
     if (-not (Test-Path $p)) { throw "not found: $p" }
 }
+# Telemetry lives in the mod under test - there is no fallback generator here any more, so a mod
+# without it would run for the full span and harvest nothing. Fail before burning the game time.
+$TelemetryFile = Join-Path $ModPath "common\on_actions\zzz_v3tb_telemetry.txt"
+if (-not (Test-Path $TelemetryFile)) {
+    throw "the mod under test carries no telemetry: $TelemetryFile is missing. Build it with build.ps1 -Telemetry <spec.json> (or -TelemetryOn), or -ControlOnly for the vanilla control arm."
+}
+if ($FlatOut -and $Runs -ne 1) { throw "-FlatOut writes ONE run straight into -OutRoot; use -Runs 1 (the scheduler always does)." }
 # `powershell -File script.ps1 -DumpDates a,b` hands the whole "a,b" over as ONE string (-File
 # does not parse arrays, unlike -Command), so accept both forms.
 $DumpDates = @($DumpDates | ForEach-Object { $_ -split ',' } | Where-Object { $_ })
@@ -122,133 +137,19 @@ foreach ($d in $DumpDates) {
     if ($d -notmatch '^\d{3,4}\.\d{1,2}\.1$') { throw "dump date '$d' must be the 1st of a month (on_monthly_pulse fires then), e.g. 1886.1.1" }
 }
 
-$Stamp      = Get-Date -Format "yyyyMMdd_HHmmss"
+if (-not $Stamp) { $Stamp = Get-Date -Format "yyyyMMdd_HHmmss" }
 $SessionDir = $(if ($FlatOut) { $OutRoot } else { Join-Path $OutRoot $Stamp })
 $null = New-Item -ItemType Directory -Force -Path $SessionDir
-$SessionLog = Join-Path $SessionDir "session.log"
+# under -FlatOut this file sits next to the run's own artifacts, so name it for what it is
+$SessionLog = Join-Path $SessionDir $(if ($FlatOut) { "run.log" } else { "session.log" })
 
-$Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
-$Utf8Bom   = New-Object System.Text.UTF8Encoding($true)
+$Utf8NoBom = New-Object System.Text.UTF8Encoding($false)   # harness output; game content is the builder's job
 
 function Write-Log {
     param([string]$Message, [string]$Level = "INFO")
     $line = "[{0}] [{1}] {2}" -f (Get-Date -Format "HH:mm:ss"), $Level, $Message
     Write-Host $line
     Add-Content -Path $SessionLog -Value $line -Encoding utf8
-}
-
-# ------------------------------------------------- instrumentation mod ----
-# A separate, throwaway mod - deliberately NOT part of mod/, so build.ps1 never has to
-# know about it and there is nothing to strip out of the shipped mod later.
-
-function Write-InstrumentMod {
-    # $Token stamps every emitted line. It is regenerated per run, which is what makes the
-    # harvest safe: consecutive runs share one logs\ folder and the game rotates debug.log at
-    # startup, so the previous run's lines are physically reachable from this run's files.
-    # Filtering on the token (not on file mtimes, which are seconds apart) is what keeps them out.
-    param([string]$Dir, [string[]]$Dates, [string[]]$Tags, [string]$Token)
-
-    $null = New-Item -ItemType Directory -Force -Path (Join-Path $Dir ".metadata")
-    $null = New-Item -ItemType Directory -Force -Path (Join-Path $Dir "common\on_actions")
-
-    $meta = @"
-{
-	"name" : "V3 Testbed Instrumentation",
-	"id" : "com.yurcick.v3_testbed_instr",
-	"version" : "0.1.0",
-	"game_id" : "victoria3",
-	"supported_game_version" : "1.13.9",
-	"short_description" : "Generated by tools/testbed/run_observer.ps1 - telemetry only, never shipped.",
-	"tags" : ["Gameplay"],
-	"relationships" : [],
-	"game_custom_data" : {
-		"multiplayer_synchronized" : true
-	}
-}
-"@
-    [System.IO.File]::WriteAllText((Join-Path $Dir ".metadata\metadata.json"), $meta, $Utf8NoBom)
-
-    # One on_action per dump date, each with a one-month trigger window; the DATE IS BAKED INTO
-    # every line as a literal, so rows stay attributable without asking the engine for the date
-    # (GetCurrentDate returns localized prose - fine for a banner, useless as a key).
-    # Every value below uses a datafunction verified to resolve in 1.13.9 - ONE bad function makes
-    # the whole debug_log line vanish, so do not add unverified ones.
-    $dumpActions = ""
-    $dumpNames   = @()
-    $n = 0
-    foreach ($date in $Dates) {
-        $n++
-        $name = "v3tb_dump_$n"
-        $dumpNames += $name
-
-        $parts = $date.Split('.')
-        $y = [int]$parts[0]; $m = [int]$parts[1]
-        $nm = $m + 1; $ny = $y
-        if ($nm -gt 12) { $nm = 1; $ny = $y + 1 }
-        $nextDate = "{0}.{1}.1" -f $ny, $nm
-
-        $blocks = ""
-        foreach ($tag in $Tags) {
-            $blocks += @"
-
-			# ---- $tag ----
-			if = {
-				limit = { exists = c:$tag }
-				c:$tag = {
-					if = {
-						limit = { exists = market_capital.market }
-						market_capital.market = {
-							debug_log = "V3TB|$Token|MARKET|$date|$tag|[THIS.GetMarket.GetNameNoFormatting]"
-							every_market_goods = {
-								debug_log = "V3TB|$Token|G|$date|$tag|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketSellOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketPrice|2]"
-							}
-						}
-					}
-					else = { debug_log = "V3TB|$Token|MARKET_NOT_FOUND|$date|$tag|country exists but has no market" }
-				}
-			}
-			else = { debug_log = "V3TB|$Token|MARKET_NOT_FOUND|$date|$tag|no such country" }
-"@
-        }
-
-        $dumpActions += @"
-
-$name = {
-	# on_monthly_pulse fires on the 1st of every month, so this window is hit exactly once
-	trigger = {
-		game_date >= "$date"
-		NOT = { game_date >= "$nextDate" }
-	}
-	effect = {
-		debug_log = "V3TB|$Token|BEGIN|$date|[TimeKeeper.GetCurrentDate.GetString]"
-$blocks
-		debug_log = "V3TB|$Token|END|$date|[TimeKeeper.GetCurrentDate.GetString]"
-	}
-}
-"@
-    }
-
-    $onaction = @"
-# AUTO-GENERATED by tools/testbed/run_observer.ps1 - throwaway telemetry mod, do not edit.
-# Dump dates: $($Dates -join ', ')   tags: $($Tags -join ', ')   run token: $Token
-
-on_game_started_after_lobby = {
-	on_actions = { v3tb_boot }
-}
-
-on_monthly_pulse = {
-	on_actions = { $($dumpNames -join ' ') }
-}
-
-v3tb_boot = {
-	effect = {
-		debug_log = "V3TB|$Token|BOOT|[TimeKeeper.GetCurrentDate.GetString]"
-	}
-}
-$dumpActions
-"@
-    # the game warns unless script files are utf8-BOM
-    [System.IO.File]::WriteAllText((Join-Path $Dir "common\on_actions\zzz_v3tb_dump.txt"), $onaction, $Utf8Bom)
 }
 
 # ------------------------------------------------------------ log tail ----
@@ -624,14 +525,10 @@ try {
     Write-Log "session $Stamp -> $SessionDir"
     $null = Write-BuildState
     Write-Log "build_state.json written$(if ($Label) { " (label: $Label)" })"
-    Write-Log "mod under test: $(if ($ModPath) { $ModPath } else { '<none - base game>' })"
+    Write-Log "mod under test: $ModPath"
     Write-Log "plan: $Runs run(s), dump $($Tags -join '+') markets on $($DumpDates -join ', '), quit at $UntilDate"
 
-    $modDirs = @()
-    if ($ModPath) { $modDirs += $ModPath }
-    else { Write-Log "NO MOD UNDER TEST - base game plus instrumentation only (control arm)" }
-    $modDirs += $InstrDir
-    $cl = Set-ContentLoad -ModDirs $modDirs
+    $cl = Set-ContentLoad -ModDirs @($ModPath)
     Write-Log "content_load.json = $cl"
     Set-RunSettings
     Write-Log "pdx_settings.json: display_mode=windowed, language=l_english"
@@ -643,7 +540,8 @@ try {
     $stopAfterRun = $false
 
     for ($run = 1; $run -le $Runs; $run++) {
-        $runDir = Join-Path $SessionDir ("run{0:d2}" -f $run)
+        # -FlatOut = exactly one run, written straight into the session folder (no runNN level)
+        $runDir = $(if ($FlatOut) { $SessionDir } else { Join-Path $SessionDir ("run{0:d2}" -f $run) })
         $null = New-Item -ItemType Directory -Force -Path (Join-Path $runDir "logs")
         $harnessLog = Join-Path $runDir "harness.log"
 
@@ -651,14 +549,12 @@ try {
         $savesBefore = @(Get-ChildItem $SaveDir -Filter "autosave*.v3" -ErrorAction SilentlyContinue |
                          Where-Object { $_.LastWriteTime -ge $runStart }).Count
 
+        # The token stamps every emitted line, which is what makes the harvest safe: consecutive runs
+        # share one logs\ folder and the game rotates debug.log at startup, so a previous run's lines
+        # are physically reachable from this run's files. It must MATCH what the builder baked into
+        # the mod under test, so the scheduler passes it; a hand run derives one from the stamp.
         $token = $(if ($TelemetryToken) { $TelemetryToken } else { "{0}r{1:d2}" -f $Stamp, $run })
-        if ($NoInstrument) {
-            # telemetry is baked into the mod under test by build.ps1 -Telemetry, so both the
-            # control and the modded arm log identically; nothing to generate here
-            Write-Log "telemetry: from the mod under test (token $token)"
-        } else {
-            Write-InstrumentMod -Dir $InstrDir -Dates $DumpDates -Tags $Tags -Token $token
-        }
+        Write-Log "telemetry: from the mod under test (token $token)"
 
         $liveDir = Join-Path $runDir "logs_live"
         $null = New-Item -ItemType Directory -Force -Path $liveDir
@@ -986,9 +882,14 @@ try {
         Write-Log ("  mirrored live: debug {0} lines, ticks {1}, errors {2} -> logs_live\" -f $mirrored["debug.log"], $mirrored["dedicated_server.log"], $errorLines)
     }
 
-    $header = "run`tdump_date`ttag`tmarket`tgood`tbuy_orders`tsell_orders`tprice`timports`texports`tproduction`tstatus"
-    [System.IO.File]::WriteAllLines((Join-Path $SessionDir "markets_all.tsv"), [string[]](@($header) + $allRows), $Utf8NoBom)
-    [System.IO.File]::WriteAllText((Join-Path $SessionDir "session.json"), ($session | ConvertTo-Json -Depth 10), $Utf8NoBom)
+    # Session-level aggregates only when there IS a session: with -FlatOut there is exactly one run,
+    # so markets_all.tsv would be a byte copy of its markets.tsv and session.json a re-wrap of its
+    # meta.json. The scheduler builds the real cross-run aggregate over its whole schedule instead.
+    if (-not $FlatOut) {
+        $header = "run`tdump_date`ttag`tmarket`tgood`tbuy_orders`tsell_orders`tprice`timports`texports`tproduction`tstatus"
+        [System.IO.File]::WriteAllLines((Join-Path $SessionDir "markets_all.tsv"), [string[]](@($header) + $allRows), $Utf8NoBom)
+        [System.IO.File]::WriteAllText((Join-Path $SessionDir "session.json"), ($session | ConvertTo-Json -Depth 10), $Utf8NoBom)
+    }
 
     Write-Log "SESSION DONE: $($session.runs.Count) run(s), $($allRows.Count) rows -> $SessionDir"
 
@@ -1003,10 +904,6 @@ finally {
             if (Test-Path $b) { Copy-Item $b (Join-Path $Doc $f) -Force }
         }
         Write-Log "restored content_load.json + pdx_settings.json"
-    }
-    if ((-not $KeepInstrument) -and (Test-Path $InstrDir)) {
-        Remove-Item $InstrDir -Recurse -Force -ErrorAction SilentlyContinue
-        Write-Log "removed instrumentation mod"
     }
 }
 

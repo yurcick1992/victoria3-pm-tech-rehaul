@@ -361,7 +361,8 @@ ladder and verified by the building-level linter (`tools/lint.sh`, 21/21 PASS).
 tier's `target_be` at base prices, given the configured `output_qty` and input composition
 (`input_qty = ref_qty × (target_be/100 × outputValue / refInputValue)`). Vanilla **employment**
 and **pollution** are preserved (wage/TP layer deferred). The initial `output_qty` values came
-from a balanced sqrt-split of the vanilla recipe (`tools/solve_targets.awk`), but going forward
+from a balanced sqrt-split of the vanilla recipe (a one-off `tools/solve_targets.awk`, since deleted
+along with `profit.awk` / `vanilla_profit_baseline.txt` — nothing referenced them), but going forward
 `output_qty` and `target_be` are simply design knobs in the config.
 
 **Resulting break-even ladder (linter output):**
@@ -403,6 +404,11 @@ manufacturing has since been re-derived by the §8 volume methodology on the rel
 ## 8. Volume methodology & the relaxed (v0.2) ladder
 
 ### 8.1 The in-force ladder (date curve — wage-inclusive full break-even)
+
+> ⚠ **Soon to be deprecated.** The BE methodology — era anchors, the H1 input discount, and the wage
+> model they are solved against — is being reworked wholesale, and `tools/solve_be_targets.ps1` carries
+> the same marker. Expect it to be replaced rather than incrementally tuned; keep the anchors below and
+> the solver's `$anchor` table in step until then.
 
 Targets are **full break-even** output prices (input goods **+ wages**, §1), referenced to the output
 good's price as % of base. **BE is a curve over each tier's tech unlock date (era), not a per-industry

@@ -18,14 +18,21 @@
         scale = (target_be/100 * outputValue * (1-wage_pct)) / vanillaInputValue ; qty[g] = round(vanilla_qty[g]*scale)
       wage_pct defaults to 25% (a per-tier `wage_pct` in the config overrides it). See BALANCE_FRAMEWORK §1/§8.
 
-  Usage:  powershell -ExecutionPolicy Bypass -File tools\solve_volumes.ps1 [-Game "<...\Victoria 3\game>"]
+  Usage:  powershell -ExecutionPolicy Bypass -File tools\solve_volumes.ps1 [-Game "<...\Victoria 3\game>"] [-Config <path>]
+
+  -Config builds the same alternate-config story as build.ps1 / solve_be_targets.ps1 /
+  solve_building_cost.ps1: solve an alternate balance set without touching config/mod_config.json.
+  Default is the repo-absolute config/mod_config.json (absolute, so it cannot silently miss when
+  the script is launched via `powershell -File` from another working directory).
 #>
 param(
     [string]$Repo = (Split-Path $PSScriptRoot -Parent),
     [string]$Game = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game" }),
+    [string]$Config = (Join-Path (Split-Path $PSScriptRoot -Parent) 'config\mod_config.json'),   # absolute: cwd-independent
     [double]$WagePct = 0.25   # wages as a fraction of TOTAL cost (goods + wages); default (per-tier wage_pct overrides)
 )
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'history_lib.ps1')   # Get-Num (fraction-safe vanilla number parse)
 function RoundHalfUp($x) { return [int][math]::Floor([double]$x + 0.5) }
 
 # --- prices ---
@@ -45,14 +52,18 @@ foreach ($f in (Get-ChildItem (Join-Path $Game 'common\production_methods') -Fil
     foreach ($l in ($text -split "`r?`n")) {
         if ($l -match '^(pm_[A-Za-z0-9_-]+)\s*=\s*\{') { $cur = $Matches[1]; $recipes[$cur] = @{ out = @{}; ins = @{} } }
         elseif ($cur) {
-            if     ($l -match 'goods_input_([a-z_]+)_add\s*=\s*(-?\d+)')  { $recipes[$cur].ins[$Matches[1]] = [int]$Matches[2] }
-            elseif ($l -match 'goods_output_([a-z_]+)_add\s*=\s*(-?\d+)') { $recipes[$cur].out[$Matches[1]] = [int]$Matches[2] }
+            # Quantities are NOT always integers - subsistence / urban-centre / agro PMs use fractions
+            # (1.0, 0.5, 0.33). Matching only \d+ does not skip those, it captures the leading digits
+            # ("0" from "0.5"), silently zeroing the good. Same trap fixed in extract_vanilla.ps1.
+            if     ($l -match 'goods_input_([a-z_]+)_add\s*=\s*(-?\d+(?:\.\d+)?)')  { $recipes[$cur].ins[$Matches[1]] = Get-Num $Matches[2] }
+            elseif ($l -match 'goods_output_([a-z_]+)_add\s*=\s*(-?\d+(?:\.\d+)?)') { $recipes[$cur].out[$Matches[1]] = Get-Num $Matches[2] }
         }
     }
 }
 
 # --- config ---
-$cfg = Get-Content (Join-Path $Repo 'config\mod_config.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+$cfgPath = (Resolve-Path -LiteralPath $Config).Path
+$cfg = Get-Content -LiteralPath $cfgPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $report = @()
 foreach ($ind in $cfg.industries) {
     if ($ind.follows_be -eq $false) { continue }   # ports/railways stay on vanilla volumes - don't re-solve
@@ -92,6 +103,6 @@ foreach ($ind in $cfg.industries) {
 }
 
 $json = $cfg | ConvertTo-Json -Depth 30 -Compress
-[System.IO.File]::WriteAllText((Join-Path $Repo 'config\mod_config.json'), $json, (New-Object System.Text.UTF8Encoding($false)))
-Write-Output ("Solved volumes for {0} tiers across {1} industries -> config\mod_config.json" -f $report.Count, $cfg.industries.Count)
+[System.IO.File]::WriteAllText($cfgPath, $json, (New-Object System.Text.UTF8Encoding($false)))
+Write-Output ("Solved volumes for {0} tiers across {1} industries -> {2}" -f $report.Count, $cfg.industries.Count, $cfgPath)
 $report | Format-Table -AutoSize | Out-String | Write-Output

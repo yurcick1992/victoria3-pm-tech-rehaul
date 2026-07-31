@@ -9,9 +9,11 @@ factories drive obsolete ones out of the market — and modernizing now costs **
 Design detail lives in [`CLAUDE.md`](CLAUDE.md) (how it's built), [`BALANCE_FRAMEWORK.md`](BALANCE_FRAMEWORK.md)
 (the balance methodology + numbers), and [`MODDING_NOTES.md`](MODDING_NOTES.md) (engine gotchas).
 
-Scope today: **all manufacturing** — 18 industries / 53 tier buildings (light, heavy, military, and
-ship construction; the shipyard is split into separate clipper and steamer chains). Raw-resource
-extraction and agriculture are out of scope.
+Scope today: **22 industries / 67 tier buildings** — all manufacturing (light, heavy, military, and ship
+construction; the shipyard is split into separate clipper and steamer chains), the new-economy chains
+(**power plants**, **ports**, **railways** — ports and railways keep vanilla economics and are tiered for
+the construction cost alone), and the **art academy**. Raw-resource extraction and agriculture are out of
+scope; the balance editor still shows and can edit every other vanilla building's recipe.
 
 ## Requirements
 

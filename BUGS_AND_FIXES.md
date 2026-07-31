@@ -33,6 +33,32 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
    values, infrastructure output — all invisible to `lint.sh`. A green build is necessary, not sufficient;
    **in-game load + `error.log` is the only real check** (see `MODDING_NOTES.md`).
 
+4. **This dev box is `ru-RU` / codepage 1251, and PowerShell 5.1 defaults to it for both reading and
+   writing.** Every non-ASCII round trip through a tool is a silent corruption risk that reproduces only
+   here — read with `-Encoding UTF8`, write with `[IO.File]::WriteAllText(..., UTF8Encoding($false))`,
+   format numbers with `InvariantCulture`. Three separate bugs below share this one root.
+
+---
+
+## 2026-07-31 — `Set-Content` silently transliterated the config on write
+
+**Symptom.** None visible — found by audit, not by failure. `config/mod_config.json` happens to be pure
+ASCII today, so the bug had nothing to destroy yet.
+
+**Root cause.** `solve_be_targets.ps1 -Write` persisted the config with `... | Set-Content $Config
+-NoNewline`. With no `-Encoding`, PowerShell 5.1 encodes to the **system ANSI codepage** — CP1251 here.
+That is worse than the usual mojibake: CP1251 has no `é`, so the character is **best-fitted away**, not
+mangled. Verified on a temp copy: a tier named `Béakery` came back `Beakery`, no error, no warning, and
+the next `Get-Content -Encoding UTF8` reads the damaged name as if it were authored that way. Every other
+config writer in the repo already used `WriteAllText` + UTF-8 no BOM; this was the one hold-out, and it
+sits in the solver you run *first* in the pipeline, so the loss would then propagate into localization.
+
+**Fix.** `WriteAllText(..., UTF8Encoding($false))`, matching every other tool.
+
+**Detect/prevent.** Grep for `Set-Content` / `Out-File` / `>` in any tool that writes a file another tool
+reads: on 5.1 they are all ANSI-by-default. The failure is invisible on an en-US machine, so it will never
+show up in review — only a non-ASCII round-trip test catches it.
+
 ---
 
 ## 2026-07-26 — Fractional PM goods silently read as 0 (subsistence / urban centre / agro)

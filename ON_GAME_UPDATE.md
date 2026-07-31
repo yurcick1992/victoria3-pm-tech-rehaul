@@ -40,11 +40,11 @@ still must **run** them; they don't run themselves.
 | Tier **BE targets** (`target_be`) + `natural_year` | `common/technology/technologies/*.txt` (each tier's `tech` → `era`) | `solve_be_targets.ps1 -Write` | Era anchors 125/100/75/50/35 (e1–e5) − 15pp H1 manufactured-input adjustment. Run **before** `solve_volumes`. If a patch moves a tech's `era`, its tier's target shifts. |
 | Tier output/input **volumes** | **all** `common/production_methods/*.txt` (each tier's `vanilla_pm`; reads every file so power/port/railway PMs in `06`/`11` resolve) | `solve_volumes.ps1` | Re-solves inputs to hit `target_be`; skips `follows_be:false` industries (ports/railways stay vanilla). |
 | Tier **building_cost** (£/point) | `common/production_methods/13_construction.txt` → `pm_iron_frame_buildings` | `solve_building_cost.ps1` | £/point = Σ(goods_input×price) ÷ `country_construction_add`. Today **£3600/wk ÷ 5 = £720/pt**. |
-| **production_methods** files (whole-file replace, ALL) | **every** `common/production_methods/*.txt` | `build.ps1` | Owns them all so any PM's goods can be edited without owning building files (buildings reference PMs by key). Two surgical transforms, verbatim otherwise: (1) **gate remap** — append our tier `pm_key` to `unlocking_production_methods` lists referencing a split main PM (bone china / elastics / precision tools); (2) **goods override** — overwrite `goods_input/output_*_add` for any PM in the config `pm_goods` map. Modifiers/employment/effects untouched. New vanilla PMs flow in on rebuild. Our tier PMs stay in the additive `zzz_*` file; the linter reads vanilla + `zzz`, not these owned copies. |
+| **production_methods** files (whole-file replace, **only the CHANGED ones**) | **every** `common/production_methods/*.txt` is read; only files a transform actually alters are emitted | `build.ps1` | Any PM's goods can be edited without owning building files (buildings reference PMs by key). Two surgical transforms, verbatim otherwise: (1) **gate remap** — append our tier `pm_key` to `unlocking_production_methods` lists referencing a split main PM (bone china / elastics / precision tools); (2) **goods override** — overwrite `goods_input/output_*_add` for any PM in the config `pm_goods` map. Modifiers/employment/effects untouched. **The builder compares its output against the vanilla text and skips the write when they match**, so we own only what we change (today: `01_industry.txt`; the other 14 stay vanilla and thus absorb a patch automatically). The build log line `production_methods: owning N file(s) … M left vanilla` says which. Our tier PMs stay in the additive `zzz_*` file; the BE linter reads vanilla + `zzz`, and the negative-goods linter reads vanilla PMs **plus** whatever we own on top. |
 | **buildings** files (whole-file replace) | `common/buildings/01_industry.txt` + `06_urban_center.txt` + `11_private_infrastructure.txt` | `build.ps1` | Owns all three (V3 rejects cross-file redefine). Copies each vanilla file, swaps our base buildings, keeps others **verbatim**. New-economy chains (power/port/railway) are **clone-and-swap**: `build.ps1` copies the vanilla building block and swaps only key/tech/PMGs/construction — so a patch that changes `port`/`railway`/`power_plant`'s special fields (`port=yes`, `terrain_manipulator`, `ai_value`, …) flows in on rebuild, and a patch that changes urban_center/trade_center/manor/financial (kept verbatim) does too. |
 | **1836 start** (re-tiered) | `common/history/buildings/*.txt` | `convert_history.ps1` (via `build.ps1`) | `metadata.json` `replace_paths` makes the mod's copy replace vanilla's. Rebuild to absorb new vanilla history. |
-| **BE linter** baseline | `common/production_methods/`, `production_method_groups/`, `buildings/` `01_industry.txt` | `lint.sh` → `lint_profitability.awk` | Concatenates vanilla + mod (vanilla first) to check break-even. |
-| **Negative-goods linter** | ALL vanilla `common/production_method_groups/*.txt` + the mod's **owned** `common/production_methods/*.txt` + ALL `buildings/*.txt` (vanilla + mod); reads `unlocking_production_methods` gates | `lint.sh` → `lint_negative_goods.awk` | Brute-forces every legal PM combination of **every building** to ensure no good's total goes < 0. Reads the mod's overridden PM files (so `pm_goods` edits are checked) and honors vanilla PM gates. A patch that changes vanilla PMG membership, gate lists, or a building's PMGs flows in on rebuild. |
+| **BE linter** baseline | `common/production_methods/`, `production_method_groups/`, `buildings/` `01_industry.txt`; **prices from `tools/goods_prices.tsv`** (passed as `-v PRICES=`) | `lint.sh` → `lint_profitability.awk` | Concatenates vanilla + mod (vanilla first) to check break-even. The linter used to carry its **own hardcoded copy** of the 53-good price table, so a post-patch price refresh in the TSV reached the builder, both solvers and the UI but silently *not* the linter; it now reads the one table like everything else. |
+| **Negative-goods linter** | ALL vanilla `common/production_method_groups/*.txt` + ALL vanilla `common/production_methods/*.txt` + the mod's own PM files on top + ALL `buildings/*.txt` (vanilla + mod); reads `unlocking_production_methods` gates | `lint.sh` → `lint_negative_goods.awk` | Brute-forces every legal PM combination of **every building** to ensure no good's total goes < 0. Vanilla-first-mod-second at every layer, so it sees the full PM set even though the mod now owns only the PM files it changes (`pm_goods` edits are still checked — they land in an owned file by definition). Honors vanilla PM gates. A patch that changes vanilla PMG membership, gate lists, or a building's PMGs flows in on rebuild. |
 | **UI building explorer** (`ui/vanilla.js`) | ALL of `common/buildings/`, `common/production_method_groups/`, `common/production_methods/`; per-PM `unlocking_principles` (→ `gated:true`) | `extract_vanilla.ps1` (via `build.ps1`) | Full building/PMG/PM dump for the UI's all-buildings explorer. UI-only, never shipped. Regenerated every build, so a patch's new/changed buildings show up after a rebuild. `gated:true` marks **power-bloc-gated** PMs (have `unlocking_principles`); the UI's `basePm()` never defaults a PMG to one. A patch that adds/renames `unlocking_principles` on more PMs flows in on rebuild. |
 | **AI subsidy policy** | `common/ai_strategies/01_admin_strategies.txt` (whole-file replacement) + `00_default_strategy.txt` (**read-only**, for its `subsidies` trio) | `build.ps1` (`building_subsidies` map) | Rewrites the `subsidies` block of all **7 administrative** strategies. `ai_strategy_default`'s own subsidies are **read live** from vanilla each build and restated **only into strategies that had no `subsidies` block of their own** (a strategy that has one is authoritative — restating there would invent subsidies vanilla never granted, overriding deliberate per-strategy fine-tuning). Nothing to resync by hand. We deliberately do NOT own `00_default_strategy.txt`: it is one ~8790-line block covering the whole AI (wargoals, army/navy sizes, treaties, infamy, interest groups), so owning it to set one field would freeze all of that against future patches. **Re-check after a patch:** (a) new/renamed administrative strategies — the builder keys off `type = administrative`, so new ones are picked up automatically, but a strategy that stops being administrative silently loses our policy; (b) `ai_strategy_industrial_expansion` gaining a `possible` gate would break universal coverage (today it has none, which is why every AI always runs one administrative strategy). Unverified: whether a typed strategy's `subsidies` merges per key with the default's or replaces it (we restate the trio so we are correct either way). |
 | **Trade-center GDP gate** | `common/defines/00_ai.txt` → `NAI` `TRADE_CENTER_MINIMUM_GDP_*` | (not modded — informational) | Hard eligibility filter on where the AI will build trade centers (market capital 100k / other 500k yearly GDP, ×2 non-coastal, ×2 unrecognized, ×(1 + years×0.02)). `ai_value` and subsidies only re-weight states that already cleared it. If AI trade-center construction is being tuned, check these first. |
@@ -89,10 +89,15 @@ hand on a major patch.
    refreshed. (Commented in-file.)
 
 3. **Construction cost script-values (fallback + "Bring to vanilla").** Vanilla
-   `common/script_values/building_values.txt`: `construction_cost_low/medium/high/very_high` =
-   200/400/600/800. We now emit explicit per-tier `building_cost`, so these are the **fallback** for a tier
-   missing `building_cost` **and** the values the UI's **Bring-to-vanilla** resets `building_cost` to (mirrored
-   statically as `VANILLA_CONSTRUCTION` in `ui/builder.html`). If these numbers move, update that map too.
+   `common/script_values/building_values.txt` defines `construction_cost_very_low/low/medium/high/very_high`
+   = 100/200/400/600/800 (plus `monument` 2500, `sagrada_familia` 6000, `construction_sector` 25). We now emit
+   explicit per-tier `building_cost`, so these are the **fallback** for a tier missing `building_cost` **and**
+   the values the UI's **Bring-to-vanilla** resets `building_cost` to (mirrored statically as
+   `VANILLA_CONSTRUCTION` in `ui/builder.html`). If these numbers move, update that map too. ⚠ The UI mirror
+   currently lists only `low/medium/high/very_high` — the four our split industries actually use. A building
+   on `very_low` (e.g. the trade centre) or on no building-level value at all (the clone-and-swap chains:
+   power/port/railway) would get `undefined` from Bring-to-vanilla; harmless today because those groups are
+   locked by default, but extend the map if we tier such a building.
 
 4. **`metadata.json` → `supported_game_version`.** Bump to the new version so the launcher doesn't flag
    the mod as out-of-date. (`id` must stay fixed to preserve playset membership; the builder only
@@ -119,20 +124,28 @@ hand on a major patch.
 
 The automated observer harness drives the **executable and the launcher's config files**, none of which
 are moddable data — a patch can change them silently. Full detail in `MODDING_NOTES.md` →
-*Automated headless runs*. After an update, run one short session
-(`-Runs 1 -DumpDate 1836.3.1 -UntilDate 1836.4.1`, ~1 min) and check `meta.json`: `mod_loaded`,
-`dump_complete` and `goods_rows` are the assertion. What can break:
+*Automated headless runs*. After an update, run one short **diagnostic** session — this is the one
+sanctioned hand invocation of the observer; everything that produces *measurements* goes through
+`run_schedule.ps1`:
+
+```
+powershell -ExecutionPolicy Bypass -File tools\testbed\run_observer.ps1 -Runs 1 -DumpDates 1836.3.1 -UntilDate 1836.4.1
+```
+
+(~1 min; lands in `tools\testbed\sessions\<stamp>\`). It runs the **deployed** mod, so build first — the
+observer refuses to launch a mod that carries no telemetry, so build it with `-TelemetryOn`. Check
+`meta.json`: `mod_loaded`, `dump_complete` and `goods_rows` are the assertion. What can break:
 
 | Coupling | Where it lives | How breakage shows |
 |---|---|---|
 | CLI args `-handsoff`, `-run_until=`, `-disable_renderframeifneeded` | `binaries\victoria3.exe` (arg table near `game_setup.cpp` in the string pool) | The game sits in the main menu (no auto-start), or never exits → the harness watchdog kills it and flags `timed_out`. |
 | Mod enabling via `content_load.json` (objects with an **absolute** `path`) | `Documents\Paradox Interactive\Victoria 3\content_load.json`, read by `dlc.cpp` | `meta.json` `mod_loaded=false`; `debug.log` says `Missing path for dlc/mod` or `No subdirs mounted`. The launcher rewriting this file is normal — the harness backs it up and restores it. |
-| `pdx_settings.json` keys `Graphics.display_mode`, `game.autosave` (enum: never/monthly/every_other_month/three_months/half_year/**yearly**) | same folder; **the game rewrites this file on exit and drops default-valued keys** | Runs go fullscreen, or the autosave cadence changes — which silently changes how much a crash resume loses. A new coarser interval (multi-year) would be worth adopting; the harness caps at `yearly` only because that is the coarsest 1.13.9 offers. |
-| Crash artifacts at `Documents\…\crashes\victoria3_<stamp>\` (`exception.txt` + `minidump.dmp`) | engine crash handler | The harness would stop distinguishing a CTD from a manual kill and fall back to the 30 s prompt — which a background batch cannot answer, so it would resume when it should stop. |
+| `pdx_settings.json` keys `Graphics.display_mode`, `game.autosave` (enum: `never`/`monthly`/`quarteryear`/`halfyear`/**`five_year`**/`yearly` — the `SETTING_AUTOSAVE` cluster in the exe; note `halfyear` has no underscore while `five_year` does) | same folder; **the game rewrites this file on exit and drops default-valued keys** | Runs go fullscreen, or the autosave cadence changes — which silently changes how much a crash resume loses. ⚠ Do **not** read these values off the `save_interval` string in the exe: that is a *different* enum (`half_year`, `three_months`, `every_other_month`) belonging to something else, and this row previously quoted it by mistake. The harness default is `five_year` (`-AutosaveInterval`), the coarsest 1.13.9 offers. |
+| Crash artifacts at `Documents\…\crashes\victoria3_<stamp>\` (`exception.txt` + `minidump.dmp`) | engine crash handler | The harness would stop distinguishing a CTD from a manual kill and fall back to the grace prompt (`-StopGraceSeconds`, default 60 s) — which a background batch cannot answer, so it would resume when it should stop. |
 | `-continuelastsave` semantics (loads the newest save **on the machine**) | `frontendidlerlogic.cpp` | Resume guards fire and runs get abandoned with `abandoned_reason` set, rather than producing corrupt data. `-loadsave=<path>` is NOT a working alternative — it was rejected in 1.13.9. |
 | Data functions `GetMarketGoods.GetGoods.{GetKey,GetMarketBuyOrders,GetMarketSellOrders,GetMarketPrice}` and the `every_market_goods` iterator | engine-side, exercised through `debug_log` | `goods_rows = 0` with `Data error in loc string …` in `error.log`. Remember one bad function voids the **whole** line. |
 | `on_monthly_pulse` firing on the 1st of each month, with no root scope | `common/on_actions/00_code_on_actions.txt` + engine | The dump never fires (`dump_complete=false`) because the one-month trigger window is missed. |
-| Log names/rotation (`debug.log` 512 KB × 5, `dedicated_server.log` tick lines) | `platform_specific_game_data/log_settings_live.json` | Progress reporting goes blank (tick parsing), or rows go missing from long runs. The harness mirrors the growing logs live into `runNN/logs_live/` and recovers from `<name>.1.log` on rotation — a renamed/re-sinked log would silently stop being mirrored, so check that `meta.json`'s `mirrored_lines` are non-zero. |
+| Log names/rotation (`debug.log` 512 KB × 5, `dedicated_server.log` tick lines) | `platform_specific_game_data/log_settings_live.json` | Progress reporting goes blank (tick parsing), or rows go missing from long runs. The harness mirrors the growing logs live into the run folder's `logs_live/` and recovers from `<name>.1.log` on rotation — a renamed/re-sinked log would silently stop being mirrored, so check that `meta.json`'s `mirrored_lines` are non-zero. |
 
 ## Baked-in assumptions (rarely change, but they're here)
 
@@ -158,6 +171,37 @@ are moddable data — a patch can change them silently. Full detail in `MODDING_
 
 Newest first. Append here as we discover more couplings to vanilla.
 
+- **2026-07-31** — **Redundancy audit: one price table, one telemetry generator, one results root, one
+  history walker; and only CHANGED vanilla files are owned.** No balance numbers moved (both linters give
+  byte-identical output before and after; the converted 1836 start is byte-identical). What changed that
+  matters on a patch:
+  - **`goods_prices.tsv` is now genuinely the only price table.** `lint_profitability.awk` carried a
+    hardcoded copy of all 53 goods; it now reads the TSV via `-v PRICES=`. They happened to agree, but a
+    post-patch price refresh would have reached everything *except* the linter.
+  - **The builder owns only the `common/production_methods/*.txt` it actually changes** (compare-then-skip).
+    14 of 15 were verbatim vanilla copies — frozen against future patches for nothing. The negative-goods
+    linter now reads vanilla PMs as its base with the mod layered on top.
+  - **`Set-Content` without `-Encoding` is a config-corrupting bug on a non-English Windows** —
+    `solve_be_targets.ps1 -Write` used it; verified losing an `é` to CP1251 on this machine. All config
+    writers use `WriteAllText` + UTF-8 no BOM. See MODDING_NOTES → PS 5.1 traps.
+  - **`solve_volumes.ps1` gained `-Config`** (the other two solvers already had it), and it + 
+    `make_vanilla_stub.ps1` now parse **fractional** PM quantities via `Get-Num` — the integer-only regex
+    captured `0` out of `0.5` rather than skipping it. Vanilla has 58 such lines; none is on a tier's
+    `vanilla_pm` today, so nothing moved, but a patch could put one there.
+  - **`include_all_buildings` removed** (config bool + `-IncludeAllBuildings`): it was read, logged and
+    never used. Untiered buildings still emit their `pm_goods` and, in owned files, their `ai_value`.
+  - **Post-build checks now cover the 1836 start**: one history file per vanilla history file, none empty,
+    `create_building` blocks present. `replace_paths` makes our copy the only history the engine reads, so
+    an empty conversion would delete every starting factory and nothing was checking. The converter also
+    clears its output folder first, so a history file a patch *removes* can't linger as a stale copy.
+  - **Testbed**: the observer's second telemetry generator is gone (it had drifted to a shorter market
+    line and no events); `tools/testbed/sessions/` is the one results root (`runs/`, `batches/` stay
+    gitignored); a scheduled run writes flat into its own folder with no duplicate aggregate; the
+    scheduler emits a real cross-run `markets_all.tsv` and deletes its `mod_sched_*` build folders.
+  - Docs corrected against code: trade-centre `ai_value` is **5000** (not 3000); README scope is **22
+    industries / 67 tier buildings**; the harness autosave default is **`five_year`** (not `never`) and the
+    autosave enum row here quoted the *wrong* exe enum; the grace prompt is **60 s** (not 30 s); the removed
+    `run_batch.ps1` was still referenced.
 - **2026-07-27** — **Which goods pops may want is derived from the YEAR, not from any country's technology.** A
   market imports what it cannot produce, so availability is a calendar question: `available_from[good]` = the
   earliest year some building × PM that outputs it can run, from the **era start years vanilla only writes as
@@ -240,6 +284,8 @@ Newest first. Append here as we discover more couplings to vanilla.
   builder injects it into PRESERVED blocks in owned files via `Set-BuildingAiValue`); set **trade center =
   3000** (3× the vanilla 1000 default) and **tooling = 2000** (vanilla) at all tiers. `extract_vanilla.ps1`
   now also captures each building's base `ai_value` into `ui/vanilla.js` (UI default display).
+  *(Superseded: the trade centre is **5000** in the shipped config — raised later without a log entry, found
+  and reconciled 2026-07-31. Tooling's 2000 is per-tier `ai_value`, not the `building_ai_value` map.)*
 - **2026-07-17** — **Fixed: split broke gated secondary PMs.** `pm_bone_china` / `pm_elastics` /
   `pm_precision_tools` are gated by `unlocking_production_methods = { <vanilla main PM> }` (only available
   when that main PM is in the building). Renaming/splitting the main PMs (`pm_crystal_glass` →
@@ -287,6 +333,7 @@ Newest first. Append here as we discover more couplings to vanilla.
   `production_method_groups`, `production_methods` (all files, not just `01_*`), so a patch that adds/renames
   buildings, PMGs or PMs flows in on rebuild. New builder flag `include_all_buildings` (config bool /
   `-IncludeAllBuildings`) gates emission of non-tiered buildings (currently no-op — we don't edit them yet).
+  *(Superseded: still a no-op two months later, so it was **removed** 2026-07-31 — see that entry.)*
 - **2026-07-14** — Shipyards **enabled and split by output good**. The vanilla shipyard's one chain makes
   clippers (basic/complex) then steamers (metal/arc-welding) — a mid-ladder good change — so it's split
   into `shipyard` → clippers and `shipyard_steam` → steamers, each a 2-tier 120/95 chain. History routing:
