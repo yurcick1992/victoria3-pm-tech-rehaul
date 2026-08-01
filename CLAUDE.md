@@ -115,6 +115,15 @@ tools/                  dev tooling — NOT shipped in the mod
                         a date, harvests, quits; owns crash-resume + the p/r/s/x keys. Telemetry always comes
                         from the mod under test — it has NO generator of its own and refuses to launch a mod
                         that carries none
+  testbed/summarise.ps1 THE post-run analysis step: raw logs -> summary.json + TSVs, then optionally
+                        gzips the raws (-Compress, only after the summary verifies). THREE TIERS per run:
+                        summary.json (~100 KB, what meta-batch analysis reads) / TSVs (~7 MB, drill-down)
+                        / logs .gz (~5 MB, archive). **The summary is a CACHE; the raw log is the record** —
+                        the script re-runs over .gz archives, so a field added later is back-filled, not
+                        lost. That is what makes compressing safe under the never-delete rule
+  testbed/wait_for_session.ps1  the wake-up signal for a batch launched into its own window (which the
+                        agent harness cannot see). Run it with run_in_background; returns DONE on
+                        completion, RUNNING on a heartbeat, DEAD (exit 2) if the game vanished
   testbed/extract_country_state.ps1  post-hoc harvester for the country_state metric block (GDP / BLD /
                         LVL / WORLD) -> country_state.tsv + buildings.tsv + world.tsv at the session root.
                         NEEDED because run_observer parses only MARKET/G lines (markets.tsv) and EV lines

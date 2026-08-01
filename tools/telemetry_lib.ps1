@@ -45,7 +45,10 @@
 #   v6  + POP line per country per dump (metric `population`): total workforce, peasant workforce,
 #       slave workforce, dependents, mean state unemployment rate, total population. Rides inside
 #       the existing every_country pass. UNVALIDATED until probed in-game.
-$script:TELEMETRY_VERSION = 6
+#   v7  PHASED dumps (one logical dump emitted over 3 consecutive months, cutting the per-tick
+#       log burst to ~1/3) + tag-scoping removed: treasury per EVERY country, market goods per
+#       EVERY market. Country sets can differ slightly between phases - join on name.
+$script:TELEMETRY_VERSION = 7
 
 function Get-TelemetryVersion { return $script:TELEMETRY_VERSION }
 

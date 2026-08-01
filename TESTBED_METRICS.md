@@ -23,6 +23,24 @@ record the bump here *and* in the FINDINGS numbering table.
 | **v4** | STATE per country per dump: `at_war` / `civil_war` / `revolutionary` / `in_default` |
 | **v5** | TREASURY per **tracked** country: TCASH / TREV / TEXP (the in-game budget panel, §3.5) + TRADE (country trade capacity + trade-centre count/levels, §3.6) |
 | **v6** | POP per country per dump (§3.7): workforce total / peasants / slaves, dependents, mean state unemployment rate, total population — **VERIFIED** |
+| **v7** | **PHASED DUMPS** + tag-scoping removed: treasury sweeps every country, market goods every market (~304). One logical dump is emitted across **three consecutive months** (§3.9) |
+
+## ⚠ v7: one dump is spread over three months — group by the LOGGED date
+
+A dump used to emit everything in one tick: **~1.96 MB, i.e. 78 % of the game's whole 5×512 KB log
+ring**, so segments rotated away before any poll could read them (measured: 6 015 telemetry lines
+lost). **No poll rate fixes this** — you cannot read a ring faster than it is destroyed.
+
+So each metric block now fires in a different month — `p0` market goods, `p1` country/population,
+`p2` treasury — cutting the peak burst to about a third. Verified: *mirror integrity OK*, all
+BEGIN/END phase pairs present.
+
+The **logged** date is the logical one, so grouping by `dump_date` remains correct. But:
+
+⚠ **The country set can differ slightly between phases.** Phases are a month apart, so countries
+annexed in between appear in one phase and not another — measured 285 countries in `p1` against
+283 in `p2` at the same logical dump. **Join on country name and tolerate the difference; never
+assume the treasury row count equals the GDP row count.**
 
 ⚠ **v1–v3 carry no war state**, so a country-level snapshot from them can be distorted by a war or
 civil war with no way to detect it after the fact. See FINDINGS.md for which findings that affects.
