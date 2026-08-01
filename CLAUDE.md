@@ -780,9 +780,12 @@ the game.
   game version they ran on. Keep it honest about limits: a stated confound (F2's time-of-day
   ordering) or an unmeasured question (F1's per-good dispersion) belongs in the doc, not dropped
   because it complicates the headline.
-- **Status board — REBUILD it, never maintain it.** When a session has added or discussed enough that
-  the open/closed picture has moved, publish a **fresh** status board as an Artifact. It is a *view*,
-  generated from the current state; it is **not** a document that accumulates. Do not carry numbering,
+- **Status board — REBUILD it, never maintain it.** Publish a status board as an Artifact, and
+  **republish it to the same URL the moment the picture moves — during the session, not at the end.**
+  Closing an item, discovering a blocker, or deferring something to the user all change the board;
+  a board that still shows yesterday's state is worse than none, because the user is reading it.
+  Restructure freely: entries move between sections, sections empty out, the tally changes. It is a
+  *view*, regenerated from current state; it is **not** a document that accumulates. Do not carry numbering,
   wording or entries across sessions, and do not commit it — the durable records are `FINDINGS.md`
   (results), `TESTBED_METRICS.md` (what the instrument can do), `MODDING_NOTES.md` (engine gotchas)
   and `BUGS_AND_FIXES.md` (root causes). If a board entry says something not captured in one of those,

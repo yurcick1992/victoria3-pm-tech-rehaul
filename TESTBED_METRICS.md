@@ -298,7 +298,36 @@ own `GetMarketImports`:
 The residual ~0.04 is rounding: each of ~305 source rows is printed to 2 dp. Origins are plausible
 (Austrian sugar: Spain 119.81, Brazil 36.72, Ottomans 25.75, Venezuela 12.51).
 
-⚠ **Open question — is `GetMarketImports` NET of exports?** Every total comes back a whole number
+### ✅ RE-VERIFIED 2026-08-01 — and the old anomaly was a mirror bug, not an engine one
+
+Re-probed after the log-mirror fixes (session `20260801_173148_origins-probe2`), British market,
+1836.2.1, silk:
+
+| | |
+|---|--:|
+| `GetMarketImports` | **125.00** |
+| `GetMarketExports` | 0.00 |
+| per-source: Qing Market | 120.80 |
+| per-source: Sicilian Market | 4.20 |
+| **sum of sources** | **125.00** ✓ |
+
+**The breakdown reconciles exactly.** The bilateral `PREV` form works; the earlier probe that
+returned `0.00` for all 1 167 sources was reading a mirror that was silently dropping ~96 % of its
+lines — the non-zero rows were among the lost ones. **Any measurement taken before the mirror fixes
+should be re-checked before it is trusted.**
+
+⚠ **`every_trade_route` yields NOTHING here.** Proven with a constant marker line inside the loop (a
+line with no data function cannot void): the enclosing `c:GBR` and `market_capital.market` markers
+each printed once, the in-loop marker printed **zero** times. The iterator parses but produces no
+iterations in this context, so **origins must come from the `PREV` market×market form**, not routes.
+
+**On net-vs-gross:** no good in the British market had both imports *and* exports at this date —
+they appear mutually exclusive per good per market, which would make the distinction moot. Combined
+with the exact reconciliation above, the likeliest explanation for the old "+4.96" discrepancy is
+the same mirror loss. Not proven — a market where one good both imports and exports would settle
+it — but it is no longer a reason to distrust import shares.
+
+⚠ **Superseded — the original open question, kept for the record:** Every total comes back a whole number
 (104 / 105 / 65 / 216 / 130) while the breakdowns are fractional, and Russian tobacco's breakdown exceeds
 its total by 4.96. The likeliest explanation is that `GetMarketImports` nets off that market's own exports
 of the same good while the per-source sum is gross. Not confirmed — the cheap test is to log

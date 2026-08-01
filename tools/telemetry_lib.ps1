@@ -438,9 +438,18 @@ function New-TelemetryScript {
             $blocks += @"
 
 			c:GBR = {
+				# CONSTANT MARKERS FIRST. A line with no data function in it CANNOT void, so if a
+				# marker is missing the enclosing block did not run - whereas a missing data line
+				# means that call failed. Without these two cases are indistinguishable, which is
+				# what made the 2026-08-01 probe ambiguous.
+				debug_log = "V3TB|$Token|RP|$date|m_country|reached-GBR"
 				market_capital.market = {
+					debug_log = "V3TB|$Token|RP|$date|m_market|reached-market"
 					debug_log = "V3TB|$Token|RP|$date|mkt|[THIS.GetMarket.GetNameNoFormatting]"
 					every_trade_route = {
+						debug_log = "V3TB|$Token|RP|$date|m_route|reached-route"
+						debug_log = "V3TB|$Token|RP|$date|r_this_key|[THIS.GetKey]"
+						debug_log = "V3TB|$Token|RP|$date|r_this_name|[THIS.GetName]"
 						debug_log = "V3TB|$Token|RP|$date|r_goods|[THIS.GetTradeRoute.GetGoods.GetKey]"
 						debug_log = "V3TB|$Token|RP|$date|r_qty|[THIS.GetTradeRoute.GetQuantity|2]"
 						debug_log = "V3TB|$Token|RP|$date|r_imp|[THIS.GetTradeRoute.GetImporter.GetNameNoFormatting]"
@@ -452,8 +461,7 @@ function New-TelemetryScript {
 					# market's own totals beside the per-source breakdown. If gross - exports equals
 					# the total, GetMarketImports is net and every import share we have quoted is too.
 					every_market_goods = {
-						limit = { is_goods = GetGoods('silk') }
-						debug_log = "V3TB|$Token|RP|$date|ng_tot|silk|imports=[THIS.GetMarketGoods.GetGoods.GetMarketImports|2]|exports=[THIS.GetMarketGoods.GetGoods.GetMarketExports|2]"
+						debug_log = "V3TB|$Token|RP|$date|ng_all|[THIS.GetMarketGoods.GetGoods.GetKey]|imports=[THIS.GetMarketGoods.GetGoods.GetMarketImports|2]|exports=[THIS.GetMarketGoods.GetGoods.GetMarketExports|2]|buy=[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrders|2]"
 					}
 					every_market = {
 						debug_log = "V3TB|$Token|RP|$date|ng_src|silk|[THIS.GetMarket.GetNameNoFormatting]|[PREV.GetMarket.GetImportedAmountFromMarket(THIS.GetMarket.Self, GetGoods('silk').Self)|2]"
