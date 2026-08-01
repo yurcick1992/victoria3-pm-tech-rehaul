@@ -780,8 +780,16 @@ the game.
   game version they ran on. Keep it honest about limits: a stated confound (F2's time-of-day
   ordering) or an unmeasured question (F1's per-good dispersion) belongs in the doc, not dropped
   because it complicates the headline.
-- **Status board — REBUILD it, never maintain it.** Publish a status board as an Artifact, and
-  **republish it to the same URL the moment the picture moves — during the session, not at the end.**
+- **Status board — REBUILD it UNPROMPTED, never maintain it.** Publish a status board as an
+  Artifact, and **republish it to the same URL the moment the picture moves — during the session,
+  not at the end, and without being asked.** Closing an item, hitting a blocker or handing a
+  decision back are all triggers; waiting to be told defeats the point, because the user is
+  reading it while you work.
+  **Never commit it.** It is a view, so a committed copy rots into a stale second source of truth.
+  Write it to the scratchpad (outside the repo); `.gitignore` carries `status_board*.html` as a
+  safety net if one is ever written inside. The **template** at
+  `tools/status_board.template.html` IS committed — it is the reusable shell, holds no state, and
+  carries the section rules as comments. Start from it.
   Closing an item, discovering a blocker, or deferring something to the user all change the board;
   a board that still shows yesterday's state is worse than none, because the user is reading it.
   Restructure freely: entries move between sections, sections empty out, the tally changes. It is a

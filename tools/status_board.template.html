@@ -1,0 +1,176 @@
+<title>Testbed status — PM &amp; Tech Rehaul</title>
+
+<!--
+  TEMPLATE for the status board (CLAUDE.md -> Status board). Committed on purpose: it is the
+  reusable shell and holds no state. The GENERATED board is gitignored - it is a view, rebuilt
+  from current state and republished to the same Artifact URL whenever the picture moves.
+
+  To use: copy to the scratchpad, fill the marked sections, publish with the Artifact tool.
+  Keep the section ORDER - it goes summary-first so the board is scannable, and it deliberately
+  ends on solid ground rather than on a list of problems.
+
+  Rules that are easy to lose and cost the most:
+    * State outcomes in PLAIN LANGUAGE. "F3, F4, F5" is a reference, not an outcome. A reader
+      must never have to open another file to learn what happened.
+    * If a section is empty, DELETE it and say so in a note - an empty "Open work" heading reads
+      as an oversight; "nothing is blocked" reads as a result.
+    * Session task ids (#4, #11) do NOT survive into a new session. Either omit them or say so.
+    * Anything here that is not also in FINDINGS / TESTBED_METRICS / MODDING_NOTES /
+      BUGS_AND_FIXES means the DOC is missing it. Fix the doc; the board is disposable.
+-->
+
+<style>
+  :root{
+    --ground:#f5f7fa; --surface:#ffffff; --ink:#0e131b; --soft:#5a6675; --faint:#8a94a3;
+    --line:#dde3ea; --accent:#2f4fd6; --good:#2b8a3e; --warn:#d9480f; --stop:#c02525;
+    --good-bg:#e9f6ec; --warn-bg:#fdf0e6; --stop-bg:#fdecec; --accent-bg:#eaeeff;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:where(:not([data-theme="light"])){
+      --ground:#11151b; --surface:#181d25; --ink:#e7ebf1; --soft:#9aa5b4; --faint:#6f7b8b;
+      --line:#262d38; --accent:#8ba3ff; --good:#5cc46c; --warn:#ff9a4d; --stop:#ff7070;
+      --good-bg:#16301c; --warn-bg:#33200f; --stop-bg:#331616; --accent-bg:#1b2340;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#11151b; --surface:#181d25; --ink:#e7ebf1; --soft:#9aa5b4; --faint:#6f7b8b;
+    --line:#262d38; --accent:#8ba3ff; --good:#5cc46c; --warn:#ff9a4d; --stop:#ff7070;
+    --good-bg:#16301c; --warn-bg:#33200f; --stop-bg:#331616; --accent-bg:#1b2340;
+  }
+
+  .wrap{background:var(--ground);color:var(--ink);font-family:var(--sans);
+        line-height:1.55;padding:2.5rem 1.25rem 4rem;}
+  .col{max-width:60rem;margin:0 auto;display:flex;flex-direction:column;gap:2.25rem;}
+
+  .head h1{font-size:1.75rem;font-weight:650;letter-spacing:-.02em;margin:0 0 .35rem;
+           text-wrap:balance;}
+  .head p{margin:0;color:var(--soft);max-width:60ch;}
+  .stamp{font-family:var(--mono);font-size:.75rem;color:var(--faint);margin-top:.6rem;}
+
+  .tally{display:flex;flex-wrap:wrap;gap:.75rem;}
+  .tile{background:var(--surface);border:1px solid var(--line);border-radius:6px;
+        padding:.7rem 1rem;min-width:7.5rem;}
+  .tile b{display:block;font-size:1.6rem;font-weight:650;font-variant-numeric:tabular-nums;
+          line-height:1.1;}
+  .tile span{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);}
+
+  h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.11em;color:var(--faint);
+     font-weight:650;margin:0 0 .9rem;padding-bottom:.5rem;border-bottom:1px solid var(--line);}
+
+  .item{background:var(--surface);border:1px solid var(--line);border-radius:6px;
+        padding:1.05rem 1.15rem;margin-bottom:.85rem;}
+  .itop{display:flex;align-items:baseline;gap:.65rem;flex-wrap:wrap;margin-bottom:.5rem;}
+  .ttl{font-weight:600;flex:1;min-width:14rem;}
+  .pill{font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;font-weight:650;
+        padding:.16rem .5rem;border-radius:3px;white-space:nowrap;}
+  .p-stop{background:var(--stop-bg);color:var(--stop);}
+  .p-warn{background:var(--warn-bg);color:var(--warn);}
+  .item dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:.3rem .9rem;
+           font-size:.92rem;}
+  .item dt{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);
+           padding-top:.2rem;white-space:nowrap;}
+  .item dd{margin:0;color:var(--soft);}
+  .item dd code{font-family:var(--mono);font-size:.85em;background:var(--accent-bg);
+                color:var(--ink);padding:.08em .32em;border-radius:3px;}
+
+  .scroll{overflow-x:auto;}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;}
+  th,td{text-align:left;padding:.55rem .7rem;border-bottom:1px solid var(--line);
+        vertical-align:top;}
+  th{font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);
+     font-weight:650;}
+  td.what{min-width:15rem;}
+  td.out{color:var(--soft);}
+
+  .note{font-size:.84rem;color:var(--soft);background:var(--surface);
+        border:1px solid var(--line);border-left:3px solid var(--accent);
+        border-radius:0 6px 6px 0;padding:.85rem 1rem;}
+  .note strong{color:var(--ink);}
+  ul.solid{margin:0;padding-left:1.1rem;color:var(--soft);font-size:.92rem;}
+  ul.solid li{margin-bottom:.35rem;}
+  ul.solid b{color:var(--ink);font-weight:600;}
+</style>
+
+<div class="wrap"><div class="col">
+
+  <div class="head">
+    <h1>Testbed status</h1>
+    <p>Victoria&nbsp;3 PM &amp; Tech Rehaul — what is open, what is settled, and what is waiting on a decision. Rebuilt as the session moves; not a running document.</p>
+    <!-- date · telemetry schema · git head -->
+    <div class="stamp">DATE · telemetry schema vN · head SHA</div>
+  </div>
+
+  <!-- 1. TALLY. Drop any tile whose count is zero rather than showing a 0. -->
+  <div class="tally">
+    <div class="tile"><b>N</b><span>Open</span></div>
+    <div class="tile"><b>N</b><span>Awaiting you</span></div>
+    <div class="tile"><b>N</b><span>Closed</span></div>
+  </div>
+
+  <!-- 2. OPEN WORK. Every entry needs a concrete NEXT STEP; without one it is a wish, not work.
+       Delete this whole section if empty and replace it with the "nothing is blocked" note. -->
+  <section>
+    <h2>Open work</h2>
+    <div class="item">
+      <div class="itop">
+        <span class="ttl">TITLE</span>
+        <span class="pill p-stop">STATUS</span>
+      </div>
+      <dl>
+        <dt>Goal</dt><dd>What this would let us answer.</dd>
+        <dt>Blocker</dt><dd>What is actually in the way, with the measurement that showed it.</dd>
+        <dt>Next</dt><dd>The concrete next action, and whose call it is.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- 3. AWAITING YOU. Items whose next move is the user's: a deferred decision, or a
+       recommendation of mine they have not ruled on. Say plainly what is being asked. -->
+  <section>
+    <h2>Awaiting you</h2>
+    <div class="item">
+      <div class="itop">
+        <span class="ttl">TITLE</span>
+        <span class="pill p-warn">Deferred / One decision</span>
+      </div>
+      <dl>
+        <dt>What</dt><dd>The finding or proposal, with numbers.</dd>
+        <dt>Action</dt><dd>What you would do about it.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- 4. VERIFIED WORKING. The solid ground, each with the number that makes it checkable.
+       This is what stops a board of problems reading as a project in trouble. -->
+  <section>
+    <h2>Verified working</h2>
+    <ul class="solid">
+      <li><b>Claim.</b> The measurement that backs it.</li>
+    </ul>
+  </section>
+
+  <!-- 5. CLOSED. Outcomes in plain language - a result, never a reference. -->
+  <section>
+    <h2>Closed this session</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Item</th><th>Outcome</th></tr></thead>
+        <tbody>
+          <tr><td class="what">What it was</td><td class="out">What actually came of it.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="note">
+    <strong>About this board.</strong> Rebuilt from current state whenever the picture moves and
+    republished to the same link, so entries move between sections and the counts change during a
+    session. Deliberately disposable: the durable records are <code>FINDINGS.md</code> for results,
+    <code>TESTBED_METRICS.md</code> for what the instrument can measure, <code>MODDING_NOTES.md</code>
+    for engine and tooling traps, and <code>BUGS_AND_FIXES.md</code> for root causes. If something
+    here is not in one of those, the doc is missing it.
+  </div>
+
+</div></div>

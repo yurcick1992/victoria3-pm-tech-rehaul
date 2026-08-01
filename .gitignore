@@ -39,5 +39,14 @@ tools/testbed/sessions/
 tools/testbed/runs/
 tools/testbed/batches/
 
+# Generated status board (CLAUDE.md -> Status board). It is a VIEW rebuilt from current state each
+# session and published as an Artifact - never a document that accumulates, so it must not be
+# committed or it will rot into a stale second source of truth. Normally it is written to the
+# scratchpad, outside the repo entirely; these patterns are the safety net for when it is not.
+# The TEMPLATE is deliberately NOT ignored - it is the reusable shell, and carries no state.
+status_board*.html
+STATUS_BOARD*.html
+!tools/status_board.template.html
+
 # mod/ and most of tools/ are source and belong on GitHub.
 # The deployed mod excludes docs/tools automatically because the junction points at mod/ only.
