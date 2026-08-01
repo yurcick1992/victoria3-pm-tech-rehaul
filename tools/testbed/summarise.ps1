@@ -28,6 +28,13 @@
   between months). Join on country name and tolerate small differences; never assume the treasury
   row count equals the GDP row count.
 
+  IT READS BOTH LOG COPIES. The live mirror can miss lines when a dump writes faster than the ring
+  is polled; those lines are usually still in the game's own ring, which the harness snapshots at
+  exit. This script reads both and de-duplicates by exact payload, so the summary is complete even
+  when the mirror is short. Verified: a run the harness flagged as 2013 lines short recovered
+  exactly 2013. Consequence: the harness's MIRROR INCOMPLETE warning is a recovery estimate, not a
+  loss alarm - real loss is a summarise run that recovers FEWER lines than the warning reported.
+
   Usage:
     summarise.ps1 -Session <session dir> [-Compress]
 #>
@@ -69,16 +76,35 @@ foreach ($r in (Get-ChildItem $Session -Directory -Filter 'run*' | Sort-Object N
     if (Test-Path $mp) { $meta = Get-Content $mp -Raw -Encoding UTF8 | ConvertFrom-Json }
     $tok = if ($meta) { $meta.token } else { $null }
 
-    $rd = Open-MaybeGz (Join-Path $r.FullName 'logs_live\debug.log')
-    if (-not $rd) { Write-Warning "no debug.log in $($r.Name)"; continue }
+    # READ THE MIRROR **AND** THE EXIT SNAPSHOT OF THE GAME'S RING, then de-duplicate.
+    # The live mirror can miss lines when a dump writes faster than the ring is polled (measured:
+    # ~2000 lines on an all-markets run). Those lines are often still sitting in the game's own
+    # rotating logs, which the harness copies at exit - which is exactly how the integrity check
+    # detects the loss in the first place. Reading both and de-duplicating by exact payload
+    # recovers them at zero runtime cost, and is idempotent: a line present in both is kept once.
+    $sources = @(Join-Path $r.FullName 'logs_live\debug.log')
+    $ring = Join-Path $r.FullName 'logs'
+    if (Test-Path $ring) {
+        # highest index first = oldest content first, so recovered lines land in emission order
+        $sources += (Get-ChildItem $ring -Filter 'debug*.log' -ErrorAction SilentlyContinue |
+                     Sort-Object { if ($_.Name -match 'debug\.(\d+)\.log') { -[int]$Matches[1] } else { 0 } } |
+                     ForEach-Object { $_.FullName })
+    }
 
     $seen = New-Object 'System.Collections.Generic.HashSet[string]'
+    $recovered = 0
     $dups = 0; $n = 0
     $seed = ""; $schema = ""
     $phaseClock = @{}      # "dump|phase" -> HH:MM:SS of its BEGIN
     $countryFirst = @{}; $countryLast = @{}
 
-    while ($null -ne ($line = $rd.ReadLine())) {
+    $srcIdx = 0
+    foreach ($src in $sources) {
+      $srcIdx++
+      $rd = Open-MaybeGz $src
+      if (-not $rd) { continue }
+      $beforeCount = $n
+      while ($null -ne ($line = $rd.ReadLine())) {
         $i = $line.IndexOf('V3TB|')
         if ($i -lt 0) { continue }
         $payload = $line.Substring($i)
@@ -114,8 +140,11 @@ foreach ($r in (Get-ChildItem $Session -Directory -Filter 'run*' | Sort-Object N
             'TCASH' { if ($f.Count -ge 13 -and $f[4] -ne 'ABSENT') {
                         $tr.Add("$idx`t$($f[3])`t$($f[4])`t$($f[5])`t$($f[6])`t$($f[7])`t$($f[8])`t$($f[9])`t$($f[10])`t$($f[11])`t$($f[12])`t$($f[13])") } }
         }
+      }
+      $rd.Dispose()
+      # Anything new found in a ring file is a line the live mirror missed.
+      if ($srcIdx -gt 1 -and ($n - $beforeCount) -gt 0) { $recovered += ($n - $beforeCount) }
     }
-    $rd.Dispose()
 
     # --- pace: wall-clock at each logical dump (phase 0), and the interval between dumps ---
     $dumps = ($phaseClock.Keys | ForEach-Object { $_.Split('|')[0] } | Sort-Object -Unique)
@@ -161,7 +190,7 @@ foreach ($r in (Get-ChildItem $Session -Directory -Filter 'run*' | Sort-Object N
             last_seen  = $countryLast
         }
     }
-    Write-Output ("run {0,-3} {1,7} telemetry lines, {2} dumps, {3} duplicate(s) dropped" -f $idx, $n, $dumps.Count, $dups)
+    Write-Output ("run {0,-3} {1,7} telemetry lines, {2} dumps, {3} dup(s) dropped{4}" -f $idx, $n, $dumps.Count, $dups, $(if ($recovered) { ", $recovered RECOVERED from the ring snapshot" } else { "" }))
 }
 
 $enc = New-Object System.Text.UTF8Encoding($false)

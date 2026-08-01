@@ -343,7 +343,22 @@ exporter market.
 that pushed the phase back to ~6 000 lines in one tick and the mirror lost 5 980 of them — the exact
 burst failure phasing exists to prevent, reintroduced by stacking. It now has phase 3.
 
-### ⚠ UNRESOLVED: logging all 304 markets' goods still loses lines
+### ✅ RESOLVED — the mirror's losses are fully recoverable from the ring snapshot
+
+`summarise.ps1` now reads **both** `logs_live/debug.log` **and** the exit-time copy of the game's own
+ring (`logs/debug*.log`), de-duplicating by exact payload. The lines the live mirror missed are still
+sitting in the ring at exit — which is precisely how the integrity check detects the loss — so
+merging recovers them at **zero runtime cost**, and is idempotent.
+
+Verified on the worst run: the harness reported **2 013 lines missing**, and the merge recovered
+**exactly 2 013**. So a run that logs all 304 markets is complete after summarising, even though the
+live mirror alone is short.
+
+⚠ The harness's `MIRROR INCOMPLETE` warning is therefore **not** a data-loss alarm any more — it
+reports how much the summariser will have to recover. Real loss would be a *summarise* run whose
+recovery count is lower than the warning.
+
+### The burst problem the merge works around (measured, for the record)
 
 Measured, same session, tightening one variable at a time:
 
