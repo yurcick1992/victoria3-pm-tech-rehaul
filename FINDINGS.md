@@ -88,6 +88,85 @@ transcript rather than from data.
 
 ---
 
+## F7 — Bankruptcies +49 %; industrialisation faster early, slower late. Neither traces to prices.
+
+**Claim.** Against the vanilla control: the mod produces **1.49× the bankruptcies** (383 ± 41 vs
+257 ± 34, Welch t = 4.66), and its industrial **capacity** crosses over — ahead of vanilla until
+~1896, then behind, ending at **69 % of vanilla's manufacturing levels** in 1935. **Paper is
++30–35 pp dearer than vanilla in every market; tools only ~+10 pp.** But the tempting causal
+chains — dear paper → bankruptcies, dear tools → slow industry — are **not supported** by this
+data, and the tools one is contradicted by it.
+
+### Late-game prices (% of base)
+
+| | 1906 vanilla | 1906 mod | 1935 vanilla | 1935 mod |
+|---|--:|--:|--:|--:|
+| **paper** GBR | 114 % | **144 %** | 106 % | **136 %** |
+| paper FRA | 109 % | 137 % | 128 % | 153 % |
+| paper RUS | 126 % | 159 % | 112 % | 147 % |
+| paper TUR | 146 % | 156 % | 127 % | 157 % |
+| **tools** GBR | 98 % | 112 % | 94 % | 96 % |
+| tools FRA | 110 % | 122 % | 102 % | 121 % |
+| tools RUS | 112 % | 121 % | 112 % | 106 % |
+
+Paper is dearer in the mod in **every market at both dates**, by ~30–35 pp. Tools are dearer by
+~10 pp and at GBR 1935 the gap has essentially closed (94 → 96 %).
+
+### Bankruptcies
+
+| | mod (n=5) | vanilla (n=3) | ratio | Welch t |
+|---|--:|--:|--:|--:|
+| **bankruptcies** | 383.4 ± 41.3 | 257.3 ± 34.3 | **1.49×** | **4.66** |
+| defaults (entries) | 3006 ± 499 | 2198 ± 604 | 1.37× | 1.95 *(n.s.)* |
+| war starts | 879 | 782 | 1.12× | — |
+
+The bankruptcy gap is solid. Note bankruptcies separate more cleanly than defaults, which is what
+you would expect if the mod pushes marginal states past the point of no return rather than merely
+making them wobble.
+
+### Industrialisation — the crossover
+
+World manufacturing, mod as a share of vanilla:
+
+| | 1836 | 1856 | 1876 | 1896 | 1916 | 1935 |
+|---|--:|--:|--:|--:|--:|--:|
+| **buildings** | 101 % | 151 % | 165 % | 166 % | 164 % | 150 % |
+| **levels** | 100 % | **123 %** | 114 % | 100 % | 86 % | **69 %** |
+
+⚠ **Count is the wrong measure and is structurally inflated**: the mod has 67 tier buildings where
+vanilla has ~22, so one industry necessarily spreads across more building *types*. **Levels are
+industrial capacity**, and they tell the real story: the mod industrialises **faster than vanilla
+until ~1896**, then falls behind, ending 31 % short.
+
+### Why the price hypotheses do NOT hold
+
+- **Tools → slow industry: contradicted.** Tools run only ~10 pp above vanilla, and the mod is
+  *ahead* on capacity (123 % at 1856) during the very period when tools are already elevated. A
+  10 pp input-price gap cannot produce a 31 % capacity shortfall while the same gap coexists with
+  a 23 % capacity *surplus* forty years earlier. The crossover shape points instead at the mod's
+  own mechanism: each tier must be **constructed**, so capital, not tool prices, is the constraint
+  — which is what the design intends.
+- **Paper → bankruptcies: unsupported, though not refuted.** Both effects are real and both are
+  large, but nothing here links them. Paper is one input among many, and there are strong
+  competing explanations for the bankruptcies: per-tier construction costs, an economy 58 % of
+  vanilla's by 1935 (F6) servicing comparable obligations, and 12 % more wars.
+
+**What would actually test it:** the treasury telemetry (v5) now logs `GetPrincipal`, interest,
+subsidies and the full expense breakdown per tracked country — so a repeat with **both arms on
+v5** could show whether bankrupting countries are the paper-hungry ones and whether their expense
+mix is input-cost-driven. That is a direct test; the present data only establishes the two facts
+side by side.
+
+### What it does NOT say
+
+- **Not that paper is harmless.** Paper is under-built in the mod (F6) *and* over-priced (here).
+  It is a real defect worth fixing regardless of whether it drives bankruptcies.
+- **Asymmetric n** (5 vs 3) and different schemas (v3 vs v5). The bankruptcy separation is large
+  enough to survive that; the defaults comparison is not significant and should not be quoted.
+- **Building counts must never be compared across arms** without the levels caveat above.
+
+---
+
 ## F6 — The vanilla baseline: low trade and high self-supply are VANILLA traits, not mod effects
 
 **Claim.** With a real vanilla arm finally measured, **F3's headline was reading vanilla's own
