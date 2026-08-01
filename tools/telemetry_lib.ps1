@@ -45,11 +45,11 @@
 #   v6  + POP line per country per dump (metric `population`): total workforce, peasant workforce,
 #       slave workforce, dependents, mean state unemployment rate, total population. Rides inside
 #       the existing every_country pass. UNVALIDATED until probed in-game.
-#   v8  + ORIGINS: who supplied whom, per good, per importer market. Exporters pinned by
-#       `every_market = { limit = { owner = c:X } }` - a scope-path argument voids. Own phase (p3).
 #   v7  PHASED dumps (one logical dump emitted over 3 consecutive months, cutting the per-tick
 #       log burst to ~1/3) + tag-scoping removed: treasury per EVERY country, market goods per
 #       EVERY market. Country sets can differ slightly between phases - join on name.
+#   v8  + ORIGINS: who supplied whom, per good, per importer market. Exporters pinned by
+#       `every_market = { limit = { owner = c:X } }` - a scope-path argument voids. Own phase (p3).
 $script:TELEMETRY_VERSION = 8
 
 function Get-TelemetryVersion { return $script:TELEMETRY_VERSION }
