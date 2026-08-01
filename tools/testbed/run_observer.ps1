@@ -239,7 +239,12 @@ function Add-TailChunk {
     $parts = ($State.Buf + $Text) -split "`r?`n"
     for ($i = 0; $i -lt $parts.Count - 1; $i++) {
         $line = $parts[$i]
-        if ($State.Seen2 -ne $null -and $line.Contains('V3TB|')) {
+        # $null MUST be on the LEFT. `$hashset -ne $null` makes PowerShell treat the left operand as
+        # a COLLECTION and FILTER it, returning the non-null elements - so an EMPTY set yields an
+        # empty result, which is falsy, and the guard is false forever. That is exactly what happened:
+        # the set started empty, the branch never ran, nothing was ever added, and the de-duplication
+        # silently did nothing while reporting 0 (measured: 4244 duplicates reached the mirror anyway).
+        if ($null -ne $State.Seen2 -and $line.Contains('V3TB|')) {
             $key = $line.Substring($line.IndexOf('V3TB|'))
             if (-not $State.Seen2.Add($key)) { $State.Dups++; continue }
             # Runaway guard: stop tracking rather than exhaust memory on a very long run.

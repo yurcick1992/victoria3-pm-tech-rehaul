@@ -103,6 +103,18 @@ copies with only the header line swapped from `l_english:` to `l_<lang>:`.
   room for is silently best-fitted or dropped. Verified on this ru-RU/CP1251 machine: an `é` injected into
   a tier name came back out of `solve_be_targets.ps1 -Write` as a plain `e`, with no error and no warning.
   Every config writer now uses `WriteAllText`; keep it that way.
+- **Put `$null` on the LEFT of a null check, always.** `$collection -ne $null` does not test for null —
+  PowerShell treats the left operand as a collection and **filters** it, returning the non-null
+  elements. An **empty** collection therefore yields an empty result, which is **falsy**. Measured:
+  ```
+  $hs = New-Object 'System.Collections.Generic.HashSet[string]'
+  [bool]($hs -ne $null)   # False   <- empty set
+  [bool]($null -ne $hs)   # True    <- correct
+  ```
+  This produced a genuinely nasty bug in `run_observer.ps1`: a de-duplication guard written as
+  `if ($State.Seen2 -ne $null -and …)` never ran, because the set started empty; nothing was ever
+  added to it, so it stayed empty, so the branch stayed dead — **self-perpetuating, and it reported
+  0 duplicates while 4 244 reached the mirror.** Write `$null -ne $x`.
 - **Write vanilla numbers with `InvariantCulture`.** PM goods quantities can be fractional (`0.5`, `0.33` in
   the subsistence / urban-centre / agro files). On a non-English Windows, plain string interpolation of a
   double emits `0,5` — which V3 cannot parse, and which only breaks on *that* machine. `build.ps1` routes

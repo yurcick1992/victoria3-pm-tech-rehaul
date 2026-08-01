@@ -124,11 +124,6 @@ tools/                  dev tooling — NOT shipped in the mod
   testbed/wait_for_session.ps1  the wake-up signal for a batch launched into its own window (which the
                         agent harness cannot see). Run it with run_in_background; returns DONE on
                         completion, RUNNING on a heartbeat, DEAD (exit 2) if the game vanished
-  testbed/extract_country_state.ps1  post-hoc harvester for the country_state metric block (GDP / BLD /
-                        LVL / WORLD) -> country_state.tsv + buildings.tsv + world.tsv at the session root.
-                        NEEDED because run_observer parses only MARKET/G lines (markets.tsv) and EV lines
-                        (events.tsv); country_state reaches debug.log but nothing harvests it inline. Fold
-                        into the observer when convenient, then this becomes a back-fill tool only
   testbed/run_schedule.ps1  THE entry point for all measurement: ordered schedule JSON -> build each run via
                         build.ps1 -> run -> harvest -> cross-run markets_all.tsv. Interactive p/r/s/x control;
                         crash policy. Never call the builder directly for test data. Specs in
@@ -785,6 +780,28 @@ the game.
   game version they ran on. Keep it honest about limits: a stated confound (F2's time-of-day
   ordering) or an unmeasured question (F1's per-good dispersion) belongs in the doc, not dropped
   because it complicates the headline.
+- **Status board — REBUILD it, never maintain it.** When a session has added or discussed enough that
+  the open/closed picture has moved, publish a **fresh** status board as an Artifact. It is a *view*,
+  generated from the current state; it is **not** a document that accumulates. Do not carry numbering,
+  wording or entries across sessions, and do not commit it — the durable records are `FINDINGS.md`
+  (results), `TESTBED_METRICS.md` (what the instrument can do), `MODDING_NOTES.md` (engine gotchas)
+  and `BUGS_AND_FIXES.md` (root causes). If a board entry says something not captured in one of those,
+  **the doc is missing it — go fix the doc**, because the board is disposable and the doc is not.
+  Build it from these sections, in this order:
+    1. **Tally** — blocked / open / awaiting-the-user / closed counts.
+    2. **Open work** — one entry each, with *goal, blocker, consequence, next step*. An entry with no
+       concrete next step is not open work, it is a wish; drop it or turn it into one.
+    3. **Waiting on you** — items where the next move is the user's (a deferred decision, a
+       recommendation of mine they have not ruled on). Say plainly what is being asked.
+    4. **Verified working** — the solid ground, with the numbers that make it checkable. This section
+       is what stops a board of problems reading as a project in trouble.
+    5. **Closed** — a compact table.
+  Two rules on wording, both learned the hard way:
+    - **State outcomes in plain language, never as a reference.** "F3, F4, F5" is not an outcome; "the
+      BE ladder does not yet produce specialisation" is. A reader should never have to open another
+      file to learn what happened.
+    - **Say where the id came from.** Session task ids (`#4`, `#11`) do not survive into a new session,
+      so a board that shows them must say so, or it silently invites the user to cite a dead number.
 - **Missing-reference cataloguing (the `MISSING_*` family).** Replacing/splitting a vanilla entity can make
   vanilla script or the building's own fields stop matching. **We catalogue every such case rather than fix it
   piecemeal — one strategic batch pass later.** Document *all* missing references this way, one focused
