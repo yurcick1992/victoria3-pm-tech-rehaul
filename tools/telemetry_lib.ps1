@@ -248,7 +248,7 @@ function New-TelemetryScript {
     foreach ($date in $dates) {
         $n++
         $name = "v3tb_dump_$n"
-        $dumpNames += $name
+        # (phase names are appended below, one per emitted phase)
 
         # one-month trigger window: on_monthly_pulse fires on the 1st, so this is hit exactly once
         $p = $date.Split('.')
@@ -257,6 +257,16 @@ function New-TelemetryScript {
         if ($nm -gt 12) { $nm = 1; $ny = $y + 1 }
         $next = "{0}.{1}.1" -f $ny, $nm
 
+        # PHASES. A dump used to emit everything in ONE tick: ~1.96 MB, which is 78% of the game's
+        # whole 5x512KB log ring, so several segments rotated away before the harness could read
+        # them (measured 2026-08-01: 6015 telemetry lines lost). No poll rate fixes that - you
+        # cannot read a ring faster than it is destroyed. So each metric block now fires in a
+        # DIFFERENT MONTH, cutting the peak burst to roughly a third.
+        #
+        # The log line keeps the ORIGINAL dump date, so a "1836.2.1 snapshot" is still one logical
+        # snapshot even though its parts are emitted across 1836.2.1 / .3.1 / .4.1. on_monthly_pulse
+        # is the only verified pulse, so months are the finest slicing available.
+        $phaseBlocks = @{ 0 = ""; 1 = ""; 2 = "" }
         $blocks = ""
 
         # ---- per-country state: GDP, ownership, and building counts by category ----
@@ -288,34 +298,26 @@ function New-TelemetryScript {
 			}
 			else = { debug_log = "V3TB|$Token|WORLD|$date|NO_GBR" }
 "@
+            $phaseBlocks[1] += $blocks; $blocks = ""   # country/pop data -> its own month
         }
 
         if ($metrics -contains "market_goods") {
-            foreach ($tag in $tags) {
-                $blocks += @"
+            # EVERY market, not one per tracked tag. A market is identified by its own name plus its
+            # owner, so nothing is lost by dropping the tag list - and shared markets (EIC in the
+            # British market) are no longer logged once per member, which was pure duplication.
+            $blocks += @"
 
-			# ---- $tag : per-good market state ----
-			if = {
-				limit = { exists = c:$tag }
-				c:$tag = {
-					if = {
-						limit = { exists = market_capital.market }
-						market_capital.market = {
-							debug_log = "V3TB|$Token|MARKET|$date|$tag|[THIS.GetMarket.GetNameNoFormatting]|owner=[THIS.GetMarket.GetOwner.GetNameNoFormatting]|member=[PREV.GetCountry.GetNameNoFormatting]"
-							every_market_goods = {
-								debug_log = "V3TB|$Token|G|$date|$tag|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketSellOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketPrice|2]|[THIS.GetMarketGoods.GetGoods.GetMarketImports|2]|[THIS.GetMarketGoods.GetGoods.GetMarketExports|2]|[THIS.GetMarketGoods.GetGoods.GetMarketProduction|2]"
-							}
-						}
-					}
-					else = { debug_log = "V3TB|$Token|MARKET_NOT_FOUND|$date|$tag|country exists but has no market" }
+			every_market = {
+				debug_log = "V3TB|$Token|MARKET|$date|[THIS.GetMarket.GetNameNoFormatting]|owner=[THIS.GetMarket.GetOwner.GetNameNoFormatting]"
+				every_market_goods = {
+					debug_log = "V3TB|$Token|G|$date|[PREV.GetMarket.GetNameNoFormatting]|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketSellOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketPrice|2]|[THIS.GetMarketGoods.GetGoods.GetMarketImports|2]|[THIS.GetMarketGoods.GetGoods.GetMarketExports|2]|[THIS.GetMarketGoods.GetGoods.GetMarketProduction|2]"
 				}
 			}
-			else = { debug_log = "V3TB|$Token|MARKET_NOT_FOUND|$date|$tag|no such country" }
 "@
-            }
+            $phaseBlocks[0] += $blocks; $blocks = ""   # market goods -> its own month (the big one)
         }
 
-        # ---- TREASURY (production): the in-game budget panel, per TRACKED country.
+        # ---- TREASURY (production): the in-game budget panel, per country.
         # Every function below was verified in-game 2026-07-31 (probe sessions 20260731_232310 and
         # _232749): all 9 cash + 8 revenue + 17 expense functions returned values, zero data errors.
         # Bundled into four lines rather than one-per-line because they are proven; the field order
@@ -336,26 +338,25 @@ function New-TelemetryScript {
                        'GetInterestPayment','GetConstructionGoodsExpenses',
                        'GetGovernmentSlavesExpenses','GetMilitarySlavesExpenses',
                        'PredictTreatyExpenses','PredictDiplomaticPactsExpenses')
-            foreach ($tag in $tags) {
-                $cashL = ($cashF | ForEach-Object { "[THIS.GetCountry.$_|2]" }) -join '|'
-                $revL  = ($revF  | ForEach-Object { "[THIS.GetCountry.$_|2]" }) -join '|'
-                $expL  = ($expF  | ForEach-Object { "[THIS.GetCountry.$_|2]" }) -join '|'
-                $blocks += @"
+            # EVERY country, not a tracked-tag list. Tags were always a volume workaround; with the
+            # mirror fixed there is no reason to pre-select who is interesting, and pre-selecting
+            # decides the analysis before the data exists. Country identity is the NAME (there is no
+            # tag data function - TESTBED_METRICS section 3).
+            $cashL = ($cashF | ForEach-Object { "[THIS.GetCountry.$_|2]" }) -join '|'
+            $revL  = ($revF  | ForEach-Object { "[THIS.GetCountry.$_|2]" }) -join '|'
+            $expL  = ($expF  | ForEach-Object { "[THIS.GetCountry.$_|2]" }) -join '|'
+            $blocks += @"
 
-			if = {
-				limit = { exists = c:$tag }
-				c:$tag = {
-					debug_log = "V3TB|$Token|TCASH|$date|$tag|$cashL"
-					debug_log = "V3TB|$Token|TREV|$date|$tag|$revL"
-					debug_log = "V3TB|$Token|TEXP|$date|$tag|$expL"
-					# Trade capacity comes off the MARKET, so no state/building iteration is needed.
-					# Trade-centre levels DO need it - that is the only sub-country scope here.
-					debug_log = "V3TB|$Token|TRADE|$date|$tag|[THIS.GetCountry.GetMarket.GetCountryTradeCapacity(THIS.GetCountry.Self)]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_bld_tradecenter')]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_lvl_tradecenter')]"
-				}
+			every_country = {
+				debug_log = "V3TB|$Token|TCASH|$date|[THIS.GetCountry.GetNameNoFormatting]|$cashL"
+				debug_log = "V3TB|$Token|TREV|$date|[THIS.GetCountry.GetNameNoFormatting]|$revL"
+				debug_log = "V3TB|$Token|TEXP|$date|[THIS.GetCountry.GetNameNoFormatting]|$expL"
+				# Trade capacity comes off the MARKET, so no state/building iteration is needed.
+				# Trade-centre levels DO need it - that is the only sub-country scope here.
+				debug_log = "V3TB|$Token|TRADE|$date|[THIS.GetCountry.GetNameNoFormatting]|[THIS.GetCountry.GetMarket.GetCountryTradeCapacity(THIS.GetCountry.Self)]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_bld_tradecenter')]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_lvl_tradecenter')]"
 			}
-			else = { debug_log = "V3TB|$Token|TCASH|$date|$tag|ABSENT" }
 "@
-            }
+            $phaseBlocks[2] += $blocks; $blocks = ""   # treasury -> its own month
         }
 
         # ---- TREASURY PROBE: one data function per line, so a failure voids only its own line
@@ -424,6 +425,41 @@ function New-TelemetryScript {
             }
         }
 
+        # ---- TRADE-ROUTE PROBE: what does a trade-route scope expose for LOGGING?
+        # every_trade_route is a MARKET-scope iterator over routes that EXIST, so it is sparse by
+        # construction - the right shape for import origins, versus ~305x305xgoods for the cross
+        # product. Vanilla uses it (events/test_events.txt, commented out) with goods / importer /
+        # owner as TRIGGERS; whether the scope offers printable fields is unknown, and there is no
+        # trade-route GUI panel to copy a call from. One candidate per line.
+        if ($metrics -contains "route_probe") {
+            $blocks += @"
+
+			c:GBR = {
+				market_capital.market = {
+					debug_log = "V3TB|$Token|RP|$date|mkt|[THIS.GetMarket.GetNameNoFormatting]"
+					every_trade_route = {
+						debug_log = "V3TB|$Token|RP|$date|r_goods|[THIS.GetTradeRoute.GetGoods.GetKey]"
+						debug_log = "V3TB|$Token|RP|$date|r_qty|[THIS.GetTradeRoute.GetQuantity|2]"
+						debug_log = "V3TB|$Token|RP|$date|r_imp|[THIS.GetTradeRoute.GetImporter.GetNameNoFormatting]"
+						debug_log = "V3TB|$Token|RP|$date|r_exp|[THIS.GetTradeRoute.GetExporter.GetNameNoFormatting]"
+						debug_log = "V3TB|$Token|RP|$date|r_owner|[THIS.GetTradeRoute.GetOwner.GetNameNoFormatting]"
+						debug_log = "V3TB|$Token|RP|$date|r_this|[THIS.GetNameNoFormatting]"
+					}
+					# NET-vs-GROSS, the open question in TESTBED_METRICS 2.5: for one good, the
+					# market's own totals beside the per-source breakdown. If gross - exports equals
+					# the total, GetMarketImports is net and every import share we have quoted is too.
+					every_market_goods = {
+						limit = { is_goods = GetGoods('silk') }
+						debug_log = "V3TB|$Token|RP|$date|ng_tot|silk|imports=[THIS.GetMarketGoods.GetGoods.GetMarketImports|2]|exports=[THIS.GetMarketGoods.GetGoods.GetMarketExports|2]"
+					}
+					every_market = {
+						debug_log = "V3TB|$Token|RP|$date|ng_src|silk|[THIS.GetMarket.GetNameNoFormatting]|[PREV.GetMarket.GetImportedAmountFromMarket(THIS.GetMarket.Self, GetGoods('silk').Self)|2]"
+					}
+				}
+			}
+"@
+        }
+
         # ---- PROBE: one uncertain data function per line, so a failure voids only its own line.
         # Every probe prints something whose value we already KNOW (a name) next to the number,
         # because a silent empty value is the dangerous failure mode (TESTBED_METRICS.md).
@@ -481,20 +517,35 @@ function New-TelemetryScript {
 "@
         }
 
-        $dumpBody += @"
+        # Anything not explicitly phased (probes, one-offs) rides in phase 0 with market goods.
+        $phaseBlocks[0] = $blocks + $phaseBlocks[0]
 
-$name = {
+        for ($ph = 0; $ph -lt 3; $ph++) {
+            if (-not $phaseBlocks[$ph].Trim()) { continue }
+            # shift the TRIGGER by $ph months; the logged date stays $date
+            $sm = $m + $ph; $sy = $y
+            while ($sm -gt 12) { $sm -= 12; $sy++ }
+            $start = "{0}.{1}.1" -f $sy, $sm
+            $em = $sm + 1; $ey = $sy
+            if ($em -gt 12) { $em = 1; $ey++ }
+            $end = "{0}.{1}.1" -f $ey, $em
+            $pname = "${name}_p$ph"
+            $dumpNames += $pname
+            $dumpBody += @"
+
+$pname = {
 	trigger = {
-		game_date >= "$date"
-		NOT = { game_date >= "$next" }
+		game_date >= "$start"
+		NOT = { game_date >= "$end" }
 	}
 	effect = {
-		debug_log = "V3TB|$Token|BEGIN|$date|[TimeKeeper.GetCurrentDate.GetString]"
-$blocks
-		debug_log = "V3TB|$Token|END|$date|[TimeKeeper.GetCurrentDate.GetString]"
+		debug_log = "V3TB|$Token|BEGIN|$date|p$ph|[TimeKeeper.GetCurrentDate.GetString]"
+$($phaseBlocks[$ph])
+		debug_log = "V3TB|$Token|END|$date|p$ph|[TimeKeeper.GetCurrentDate.GetString]"
 	}
 }
 "@
+        }
     }
 
     # one-off events. on_country_default is ENTERING DEFAULT, not bankruptcy - see TESTBED_METRICS.
@@ -505,6 +556,9 @@ $blocks
 on_country_default = { on_actions = { v3tb_ev_default } }
 on_diplomatic_play_started = { on_actions = { v3tb_ev_dipplay } }
 on_diplo_play_war_start = { on_actions = { v3tb_ev_warstart } }
+on_revolution_start = { on_actions = { v3tb_ev_revolt } }
+on_secession_start = { on_actions = { v3tb_ev_secession } }
+on_civil_war_won = { on_actions = { v3tb_ev_civilwarwon } }
 on_peace_agreement_signed_war_leader = { on_actions = { v3tb_ev_peace } }
 on_capitulation = { on_actions = { v3tb_ev_capit } }
 
@@ -512,6 +566,22 @@ on_capitulation = { on_actions = { v3tb_ev_capit } }
 # fires for every play including those resolved without fighting.
 v3tb_ev_warstart = {
 	effect = { debug_log = "V3TB|$Token|EV|WARSTART|[SCOPE.sCountry('initiator').GetNameNoFormatting]|[SCOPE.sCountry('target').GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
+}
+
+# Revolutions and civil wars as EVENTS. The v4 STATE flags sample an instant, and civil wars are
+# transient: over 1836-1856 the event log held 267 distinct revolt tags while 12 snapshots caught
+# 8 episodes (~3%). Flags answer "was this country distorted AT this snapshot"; these answer "how
+# many revolutions happened and to whom". Both are wanted.
+# ⚠ Root scope for each of these is UNPROBED - GetRootScope.GetCountry is the common pattern but
+# on_diplomatic_play_started has no country root, so these may need initiator/target instead.
+v3tb_ev_revolt = {
+	effect = { debug_log = "V3TB|$Token|EV|REVOLT|[SCOPE.GetRootScope.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
+}
+v3tb_ev_secession = {
+	effect = { debug_log = "V3TB|$Token|EV|SECESSION|[SCOPE.GetRootScope.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
+}
+v3tb_ev_civilwarwon = {
+	effect = { debug_log = "V3TB|$Token|EV|CIVILWARWON|[SCOPE.GetRootScope.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 }
 
 # TRUE bankruptcy, as distinct from entering default. There is NO bankruptcy on_action, so we poll

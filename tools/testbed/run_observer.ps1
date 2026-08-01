@@ -179,7 +179,9 @@ function New-Tail {
     # again, so its first ~120 chars (which begin with a timestamp) identify it for good.
     return @{ Path = $Path; Pos = $len; Buf = ""; Writer = $writer; Lines = 0L
               Sig = (Get-SegmentSig $Path); Seen = (New-Object 'System.Collections.Generic.HashSet[string]')
-              Lost = 0L }
+              Lost = 0L
+              # Seen2 de-duplicates V3TB lines across re-read segments; Dups counts what it caught.
+              Seen2 = (New-Object 'System.Collections.Generic.HashSet[string]'); Dups = 0L }
 }
 
 function Get-SegmentSig {
@@ -226,12 +228,25 @@ function Read-Chunk {
 
 function Add-TailChunk {
     # Split a chunk into complete lines, emit + mirror them, keep any trailing partial.
+    #
+    # DE-DUPLICATES telemetry lines. The multi-rotation drain can re-read a segment in a narrow
+    # window (measured 2026-08-01: 2202 duplicate lines in one run), which inflates every count
+    # taken off the mirror. Only V3TB lines are tracked - they are what analysis consumes, and
+    # bounding the set to them keeps memory sane. The game's own chatter is passed through
+    # untouched, since duplicate engine log lines are harmless and tracking them all is not.
     param($State, [string]$Text, $Lines)
     if (-not $Text) { return }
     $parts = ($State.Buf + $Text) -split "`r?`n"
     for ($i = 0; $i -lt $parts.Count - 1; $i++) {
-        $null = $Lines.Add($parts[$i])
-        if ($State.Writer) { $State.Writer.WriteLine($parts[$i]); $State.Lines++ }
+        $line = $parts[$i]
+        if ($State.Seen2 -ne $null -and $line.Contains('V3TB|')) {
+            $key = $line.Substring($line.IndexOf('V3TB|'))
+            if (-not $State.Seen2.Add($key)) { $State.Dups++; continue }
+            # Runaway guard: stop tracking rather than exhaust memory on a very long run.
+            if ($State.Seen2.Count -gt 4000000) { $State.Seen2 = $null }
+        }
+        $null = $Lines.Add($line)
+        if ($State.Writer) { $State.Writer.WriteLine($line); $State.Lines++ }
     }
     $State.Buf = $parts[$parts.Count - 1]
 }
@@ -986,6 +1001,9 @@ try {
             Write-Log  "  the harvest for this run is missing data - do not treat it as complete" "WARN"
         } elseif ($missed -eq 0) {
             Write-Log "  mirror integrity OK (every telemetry line in the ring is in the mirror)"
+        }
+        if ($tailDebug.Dups -gt 0) {
+            Write-Log ("  de-duplicated {0} re-read telemetry line(s) (multi-rotation drain)" -f $tailDebug.Dups)
         }
     }
 
