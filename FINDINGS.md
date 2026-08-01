@@ -29,7 +29,8 @@ thing forever.
 | **v2** | builder-owned generator; market goods gain imports / exports / production; one-off events (DEFAULT, DIPPLAY, PEACE, CAPIT) | — |
 | **v3** | **+ country_state** (per-country GDP, foreign-owned GDP, GDP abroad, market; building counts + levels by category; world GDP); market line gains owner + member; events gain WARSTART and true BANKRUPTCY | **F3, F4, F5** |
 | **v4** | **+ STATE** per country per dump: `at_war` / `civil_war` / `revolutionary` / `in_default` | — |
-| **v5** | **+ TREASURY** per tracked country: the in-game budget panel (cash/credit, 8 revenue lines, 17 expense lines) + country trade capacity and trade-centre levels | — |
+| **v5** | **+ TREASURY** per tracked country: the in-game budget panel (cash/credit, 8 revenue lines, 17 expense lines) + country trade capacity and trade-centre levels | **F6, F7** (vanilla arm) |
+| **v6** | **+ POP** per country: workforce total / peasants / slaves, dependents, mean state unemployment rate, total population — the capital-scarcity measure | — *(unprobed)* |
 
 ### Data-integrity note (the 2026-07-31 mirror bug does NOT affect F3/F4/F5)
 

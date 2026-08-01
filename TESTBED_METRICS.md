@@ -22,6 +22,7 @@ record the bump here *and* in the FINDINGS numbering table.
 | **v3** | country_state (GDP, foreign-owned GDP, GDP abroad, market; building counts + levels by category; world GDP); market owner + member; events WARSTART + true BANKRUPTCY |
 | **v4** | STATE per country per dump: `at_war` / `civil_war` / `revolutionary` / `in_default` |
 | **v5** | TREASURY per **tracked** country: TCASH / TREV / TEXP (the in-game budget panel, §3.5) + TRADE (country trade capacity + trade-centre count/levels, §3.6) |
+| **v6** | POP per country per dump (§3.7): workforce total / peasants / slaves, dependents, mean state unemployment rate, total population — **unvalidated until probed** |
 
 ⚠ **v1–v3 carry no war state**, so a country-level snapshot from them can be distorted by a war or
 civil war with no way to detect it after the fact. See FINDINGS.md for which findings that affects.
@@ -437,7 +438,40 @@ building-category counts (§3.1) are the remaining case: they iterate
 building-count function (`GetBuildingTypeLevels` exists in the exe but not on Country). If cost
 matters, restrict those counts to the tracked tags rather than all ~285 countries.
 
-### 3.7 War start and true bankruptcy
+### 3.7 Population / workforce (v6) — ⚠ IMPLEMENTED, NOT YET PROBED
+
+The capital-scarcity measure: what share of a country's workforce sits in subsistence or idle
+rather than gainfully employed. Vanilla late-game advanced economies drive peasants and unemployed
+to ~0, which the mod is meant to prevent.
+
+Emitted as a `POP` line inside the **existing** `every_country` pass (a second sweep would double
+the per-country cost for nothing):
+
+| field | source | confidence |
+|---|---|---|
+| total workforce | `every_scope_state × every_scope_pop { add = workforce }` | `workforce` is a pop-scope numeric trigger (`common/trigger_localization`) — likely |
+| peasant workforce | same, `limit = { is_pop_type = peasants }` | `is_pop_type` is the vanilla filter idiom (491 uses) — likely |
+| slave workforce | same, `is_pop_type = slaves` | likely |
+| dependents | `add = dependents` | `dependents` is also a pop-scope trigger — likely |
+| **unemployment rate** | mean `state_unemployment_rate` over states | see caveat below |
+| total population | `Country.GetTotalPopulation` | Country-scope data function — verified in GUI |
+
+**Gainfully employed** is then derived: `workforce_total − peasants − slaves − unemployed`.
+
+⚠ **There is NO unemployed-COUNT keyword.** `state_unemployment_rate` (state scope) is the only
+handle, so the rate field reproduces **vanilla's own estimate** from
+`common/script_values/je_values.txt` (`mon_unemployment_estimate`) — the unweighted mean across
+states. Vanilla's own comment there says the trigger "is way off actual unemployment rate" and
+doubles it; **we do not double, and report the raw mean.** Treat it as directional, not a count.
+A true count would need `State.GetNumUnemployedWorkingAdults`, which is a **data function** and so
+cannot be summed inside a script value.
+
+Two candidate unemployed-count keywords (`is_unemployed` as a pop filter, `unemployed_workforce`
+as a pop numeric) are **guesses that appear nowhere in vanilla script**; they live in the isolated
+probe-values file so a bad keyword cannot take the working values down with it. If either works,
+the split becomes exact.
+
+### 3.8 War start and true bankruptcy
 - **`on_diplo_play_war_start`** — a diplomatic play that actually became a war, with
   `SCOPE.sCountry('initiator')` / `('target')`. Distinct from `on_diplomatic_play_started`, which fires
   for every play including those settled without fighting.

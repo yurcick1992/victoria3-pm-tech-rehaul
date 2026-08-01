@@ -42,7 +42,10 @@
 #   v5  + TREASURY, per TRACKED country: TCASH (gold, principal, credit, balance, investment pool,
 #       unrealized taxes, weekly expenses), TREV (8 revenue lines), TEXP (17 expense lines) - the
 #       in-game budget panel - and TRADE (country trade capacity + trade-centre count/levels).
-$script:TELEMETRY_VERSION = 5
+#   v6  + POP line per country per dump (metric `population`): total workforce, peasant workforce,
+#       slave workforce, dependents, mean state unemployment rate, total population. Rides inside
+#       the existing every_country pass. UNVALIDATED until probed in-game.
+$script:TELEMETRY_VERSION = 6
 
 function Get-TelemetryVersion { return $script:TELEMETRY_VERSION }
 
@@ -147,6 +150,36 @@ v3tb_revolutionary = { value = 0
 v3tb_in_default = { value = 0
 	if = { limit = { in_default = yes } value = 1 } }
 
+# ---- POPULATION / WORKFORCE ----
+# The capital-scarcity measure: how much of a country's workforce is in subsistence (peasants) or
+# idle, versus gainfully employed. Vanilla late-game advanced economies run peasants and unemployed
+# to ~0, which the mod is meant to prevent by making modernisation cost capital.
+#
+# `workforce` and `dependents` are pop-scope numeric triggers (common/trigger_localization), so they
+# work as script-value keywords under every_scope_pop. `is_pop_type` is the vanilla filter idiom.
+v3tb_wf_total = { value = 0
+	every_scope_state = { every_scope_pop = { add = workforce } } }
+v3tb_wf_peasants = { value = 0
+	every_scope_state = { every_scope_pop = {
+		limit = { is_pop_type = peasants }
+		add = workforce } } }
+v3tb_wf_slaves = { value = 0
+	every_scope_state = { every_scope_pop = {
+		limit = { is_pop_type = slaves }
+		add = workforce } } }
+v3tb_dependents = { value = 0
+	every_scope_state = { every_scope_pop = { add = dependents } } }
+
+# Unemployment. There is NO unemployed-count keyword; `state_unemployment_rate` (state scope) is
+# the only handle, so this reproduces VANILLA'S OWN estimate from common/script_values/je_values.txt
+# (mon_unemployment_estimate): the unweighted mean rate across states. Vanilla's comment there says
+# the trigger "is way off actual unemployment rate" and doubles it - we do NOT double, and report
+# the raw mean. Treat it as directional, not a count. An actual count would need
+# State.GetNumUnemployedWorkingAdults, which is a data function and cannot be summed in a script value.
+v3tb_unemp_rate = { value = 0
+	every_scope_state = { add = state_unemployment_rate }
+	if = { limit = { num_states > 0 } divide = num_states } }
+
 # Trade centres. `level` is the only building-scope numeric keyword confirmed working, so levels
 # and count are the reliable measures; staffing is probed separately (see New-TelemetryProbeValues).
 v3tb_bld_tradecenter = { value = 0
@@ -183,6 +216,16 @@ v3tb_tc_employed = { value = 0
 	every_scope_state = { every_scope_building = {
 		limit = { is_building_type = building_trade_center }
 		add = employment } } }
+
+# An actual UNEMPLOYED COUNT would beat the rate estimate. Both of these are guesses at a pop-scope
+# employment trigger; neither appears in vanilla script. If one works, the workforce split becomes
+# exact instead of "total minus peasants, with a separate rate".
+v3tb_unemp_count_a = { value = 0
+	every_scope_state = { every_scope_pop = {
+		limit = { is_unemployed = yes }
+		add = workforce } } }
+v3tb_unemp_count_b = { value = 0
+	every_scope_state = { every_scope_pop = { add = unemployed_workforce } } }
 "@
 }
 
@@ -230,7 +273,12 @@ function New-TelemetryScript {
 				# Own line: war/civil-war state can distort a country's economy by orders of
 				# magnitude, so a snapshot is uninterpretable without it. Kept OUT of the GDP line
 				# so that if one of these voids, the GDP row still survives.
-				debug_log = "V3TB|$Token|STATE|$date|[THIS.GetCountry.GetNameNoFormatting]|war=[THIS.GetCountry.MakeScope.ScriptValue('v3tb_at_war')]|civil=[THIS.GetCountry.MakeScope.ScriptValue('v3tb_civil_war')]|revol=[THIS.GetCountry.MakeScope.ScriptValue('v3tb_revolutionary')]|default=[THIS.GetCountry.MakeScope.ScriptValue('v3tb_in_default')]"
+				debug_log = "V3TB|$Token|STATE|$date|[THIS.GetCountry.GetNameNoFormatting]|war=[THIS.GetCountry.MakeScope.ScriptValue('v3tb_at_war')]|civil=[THIS.GetCountry.MakeScope.ScriptValue('v3tb_civil_war')]|revol=[THIS.GetCountry.MakeScope.ScriptValue('v3tb_revolutionary')]|default=[THIS.GetCountry.MakeScope.ScriptValue('v3tb_in_default')]"$(if ($metrics -contains "population") {
+				# Rides inside the SAME every_country pass as GDP/BLD/LVL - a second sweep would
+				# double the per-country cost for nothing. pop = total_population (verified country
+				# keyword); wf_* are workforce sums; unemp_rate is vanilla's own state-mean estimate.
+				"`r`n`t`t`t`tdebug_log = `"V3TB|$Token|POP|$date|[THIS.GetCountry.GetNameNoFormatting]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_wf_total')]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_wf_peasants')]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_wf_slaves')]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_dependents')]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_unemp_rate')]|[THIS.GetCountry.GetTotalPopulation]`""
+			})
 			}
 			# World GDP once per dump (the script value itself iterates every country, so calling it
 			# inside every_country would be O(n^2)). Analysis can also just sum the GDP lines.
