@@ -22,7 +22,7 @@ record the bump here *and* in the FINDINGS numbering table.
 | **v3** | country_state (GDP, foreign-owned GDP, GDP abroad, market; building counts + levels by category; world GDP); market owner + member; events WARSTART + true BANKRUPTCY |
 | **v4** | STATE per country per dump: `at_war` / `civil_war` / `revolutionary` / `in_default` |
 | **v5** | TREASURY per **tracked** country: TCASH / TREV / TEXP (the in-game budget panel, §3.5) + TRADE (country trade capacity + trade-centre count/levels, §3.6) |
-| **v6** | POP per country per dump (§3.7): workforce total / peasants / slaves, dependents, mean state unemployment rate, total population — **unvalidated until probed** |
+| **v6** | POP per country per dump (§3.7): workforce total / peasants / slaves, dependents, mean state unemployment rate, total population — **VERIFIED** |
 
 ⚠ **v1–v3 carry no war state**, so a country-level snapshot from them can be distorted by a war or
 civil war with no way to detect it after the fact. See FINDINGS.md for which findings that affects.
@@ -438,7 +438,33 @@ building-category counts (§3.1) are the remaining case: they iterate
 building-count function (`GetBuildingTypeLevels` exists in the exe but not on Country). If cost
 matters, restrict those counts to the tracked tags rather than all ~285 countries.
 
-### 3.7 Population / workforce (v6) — ⚠ IMPLEMENTED, NOT YET PROBED
+### 3.7 Population / workforce (v6) — VERIFIED (probed 1836.2.1, session `20260801_114934_pop-probe`)
+
+Measured, and it reconciles: **workforce + dependents = total population to within 0.03 %** in all
+three countries probed, which is a strong check that the pop sweep sees every pop exactly once.
+
+| 1836 | workforce | peasants | peasant % | employed % | unemp % |
+|---|--:|--:|--:|--:|--:|
+| Britain | 7 779 018 | 4 030 230 | 51.8 % | 47.0 % | 1.22 % |
+| France | 10 387 977 | 6 839 529 | 65.8 % | 32.6 % | 1.54 % |
+| Qing | 91 721 014 | 82 743 610 | **90.2 %** | 9.5 % | 0.30 % |
+
+The ordering is exactly right for 1836 (Britain least agrarian, Qing most), so the metric is
+measuring what it claims. `GetInactivePopulation` came back within 4 110 of the dependents sum, so
+the two are effectively the same quantity — prefer `dependents`, which needs no extra call.
+
+⚠️ **`is_unemployed` DOES NOT EXIST, and its failure mode is the dangerous one.** The script value
+`limit = { is_unemployed = yes }` returned **exactly the unfiltered workforce total** (7 779 018 for
+Britain — identical to `v3tb_wf_total`), not zero and not an error. **An invalid trigger inside a
+`limit` is silently ignored, so the limit becomes a no-op and the script value returns the total.**
+That is worse than the empty-value hazard at the top of this doc: the number looks plausible.
+
+**Rule: every limit-based script value must be sanity-checked against its unfiltered twin.** A
+filtered sum that equals the total is a failed filter, not a real result. (The working filters do
+discriminate: peasants 4.0 M < workforce 7.8 M; `bg_manufacturing` 28 < 259 buildings;
+`building_trade_center` 12 < 259.) `unemployed_workforce` failed cleanly, returning 0.
+
+### 3.7.1 Field sources
 
 The capital-scarcity measure: what share of a country's workforce sits in subsistence or idle
 rather than gainfully employed. Vanilla late-game advanced economies drive peasants and unemployed

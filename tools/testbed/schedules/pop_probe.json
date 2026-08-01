@@ -1,0 +1,33 @@
+{
+    "label":  "pop-probe",
+    "defaults":  {
+                     "autosave_interval":  "five_year",
+                     "tags":  [
+                                  "GBR",
+                                  "FRA",
+                                  "CHI"
+                              ],
+                     "metrics":  [
+                                     "treasury_probe",
+                                     "population",
+                                     "country_state"
+                                 ],
+                     "timeout_minutes":  20
+                 },
+    "runs":  [
+                 {
+                     "until":  "1836.4.1",
+                     "setup":  "ctl",
+                     "dump_dates":  [
+                                        "1836.2.1",
+                                        "1836.3.1"
+                                    ]
+                 }
+             ],
+    "schedule_version":  1,
+    "setups":  {
+                   "ctl":  {
+                               "kind":  "control"
+                           }
+               }
+}

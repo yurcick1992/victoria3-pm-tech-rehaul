@@ -405,6 +405,13 @@ function New-TelemetryScript {
                 # Country-level trade capacity via the MARKET - no sub-country iteration at all.
                 # Form copied from gui/market_panel.gui: Market.GetCountryTradeCapacity(Country.Self)
                 $lines += "`r`n`t`t`t`t`tdebug_log = `"V3TB|$Token|TP|$date|$tag|TC|capacity_mkt|[THIS.GetCountry.GetMarket.GetCountryTradeCapacity(THIS.GetCountry.Self)]`""
+                # v6 population: the solid workforce sums plus the two speculative unemployed-count
+                # keywords, each on its own line so a bad guess only voids itself.
+                foreach ($pv in @('v3tb_wf_total','v3tb_wf_peasants','v3tb_wf_slaves','v3tb_dependents','v3tb_unemp_rate','v3tb_unemp_count_a','v3tb_unemp_count_b')) {
+                    $lines += "`r`n`t`t`t`t`tdebug_log = `"V3TB|$Token|TP|$date|$tag|POP|$pv|[THIS.GetCountry.MakeScope.ScriptValue('$pv')]`""
+                }
+                $lines += "`r`n`t`t`t`t`tdebug_log = `"V3TB|$Token|TP|$date|$tag|POP|total_pop_fn|[THIS.GetCountry.GetTotalPopulation]`""
+                $lines += "`r`n`t`t`t`t`tdebug_log = `"V3TB|$Token|TP|$date|$tag|POP|inactive_fn|[THIS.GetCountry.GetInactivePopulation]`""
                 $blocks += @"
 
 			if = {
