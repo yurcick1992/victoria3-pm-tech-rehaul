@@ -88,6 +88,97 @@ transcript rather than from data.
 
 ---
 
+## F6 — The vanilla baseline: low trade and high self-supply are VANILLA traits, not mod effects
+
+**Claim.** With a real vanilla arm finally measured, **F3's headline was reading vanilla's own
+behaviour.** Vanilla markets are just as self-supplied as the mod's (tools: GBR 97→108 %, FRA
+88→91 %, RUS 87→83 %) and vanilla trade intensity is just as low (2.3 % → 4.7 %). The mod did not
+fail to break something it was supposed to break — **the base game was already there.** What the
+mod *does* do is shrink the economy: Britain's market is **58 % of vanilla's by 1935**, compounding
+from parity at 1836.
+
+### Evidence
+
+Vanilla control, **n=3**, 1836→1935, telemetry v5, session
+`tools/testbed/sessions/20260801_001026_vanilla-n3-v5`. All 3 runs reached 1935.3.1 with 11/11
+dumps, mirror integrity OK. Compared against the mod arm (n=5, v3,
+`20260731_103246_be-defaults-n5`) on **identical tags and dump dates**.
+
+**Trade intensity** (imports ÷ buy orders, all tracked markets):
+
+| | 1836 | 1856 | 1876 | 1896 | 1916 | 1935 |
+|---|--:|--:|--:|--:|--:|--:|
+| vanilla | 2.3 % | 2.7 % | 3.6 % | 4.4 % | 5.7 % | 4.7 % |
+| mod | 2.2 % | 2.7 % | 2.6 % | 3.8 % | 5.2 % | **6.6 %** |
+
+Indistinguishable, with the mod marginally *higher* by 1935. **Vanilla V3 simply does not trade
+much**, so the specialisation channel was never open for the BE ladder to exploit.
+
+**Self-supply share** (production ÷ buy orders), tools:
+
+| tag | vanilla 1836→1935 | mod 1836→1935 |
+|---|---|---|
+| GBR | 97 % → 108 % | 80 % → 106 % |
+| FRA | 88 % → 91 % | 75 % → 70 % |
+| RUS | 87 % → 83 % | 62 % → 89 % |
+| CHI | 67 % → 115 % | 54 % → 96 % |
+
+**British market size** (summed buy orders, the F1 metric), mod as a share of vanilla:
+
+| | 1836 | 1876 | 1906 | 1935 |
+|---|--:|--:|--:|--:|
+| vanilla | 70 372 | 257 962 | 673 866 | 1 221 460 |
+| mod | 76 643 | 211 642 | 466 339 | 708 773 |
+| **mod ÷ vanilla** | **109 %** | **82 %** | **69 %** | **58 %** |
+
+This is F1's compounding shrinkage, now measured on the **real mod** rather than the tiering stub,
+against a **contemporaneous** vanilla arm rather than a remembered one.
+
+### Paper is a genuine mod-specific defect
+
+The one place the mod clearly diverges from vanilla in kind, not just degree:
+
+| paper self-supply | 1836 | 1876 | 1906 | 1935 |
+|---|--:|--:|--:|--:|
+| vanilla GBR | 65 % | 79 % | 85 % | **93 %** |
+| mod GBR | 59 % | 58 % | 58 % | **63 %** |
+| vanilla CHI | 97 % | 55 % | — | **124 %** |
+| mod CHI | 98 % | 55 % | 57 % | **59 %** |
+
+Vanilla's paper supply **catches up** over the century; the mod's stays flat at ~60 % while paper
+prices sit ~150 % of base (F3). **Paper is under-built in the mod specifically** — the first
+concrete balance defect this batch has produced, and it is actionable: check the paper tiers'
+volumes.
+
+### Run time — no telemetry tax, and the mod really is faster
+
+| arm | schema | runs | mean |
+|---|---|---|--:|
+| vanilla (F2, remembered) | v1 | 5 | 161 min ± 18 |
+| **vanilla (this batch)** | **v5** | 3 | **157 min** (150 / 150 / 171) |
+| mod | v3 | 5 | 132 min |
+
+**v5 costs essentially nothing over v1** (157 vs 161, inside the noise) even though it adds the
+treasury block, per-country STATE, and building counts over ~285 countries. So the ~16 % mod
+speed-up (132 vs 157) is a real economy-size effect, not instrumentation — and it now replicates
+F2's 14 % with a fresh vanilla measurement on a different night, which also blunts F2's
+time-of-day confound.
+
+### What it does NOT say
+
+- **Not "the mod is pointless".** It shrinks the economy substantially and compounds. It simply
+  does not move *specialisation*, because vanilla's trade share is ~2–5 % and that ceiling is not
+  something the BE ladder can lift.
+- **Not a matched-schema time comparison.** The mod arm ran v3, this vanilla v5. v5≈v1 in cost
+  makes the comparison safe, but a strict test would run both arms on one schema.
+- **n=3 vs n=5, and F5 applies**: at 1935 the cross-run CV is ~64 %, so the 58 % ratio is a
+  central estimate, not a tight one. The *direction* and the monotone compounding are the solid
+  parts.
+- **Vanilla here is v5 and pre-dates no war-state filtering** — unlike F1–F5 it *does* carry
+  STATE flags, so its country-level cells can be war-filtered; the mod arm's cannot.
+
+---
+
 ## F5 — Runs are near-identical at 1836 and diverge ~6 pp per decade after that
 
 **Claim.** Cross-run spread in market size is **0.8 % at 1836** and **64 % at 1935**. Divergence
@@ -197,6 +288,12 @@ queued vanilla baseline run would deliver, at no extra cost.
 ---
 
 ## F3 — The BE ladder does NOT produce specialisation: markets stay self-supplied
+
+> ⚠ **SUPERSEDED IN PART BY F6.** F3 had no vanilla arm, and the vanilla arm (F6) shows that
+> **vanilla behaves the same way**: ~90 % self-supply and 2–5 % trade intensity are base-game
+> traits, not mod effects. Read F3's numbers as accurate descriptions of the mod that do **not**
+> isolate anything the mod caused. The parts of F3 that survive independently are the per-good
+> composition shifts and the paper shortfall (which F6 confirms is mod-specific).
 
 **Claim.** Under the mod's current BE defaults, laggard markets do **not** lose their manufacturing
 to efficient producers. Domestic production still covers **60–96 %** of domestic demand in every

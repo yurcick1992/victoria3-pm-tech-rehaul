@@ -684,6 +684,18 @@ the game.
   from an interactive one, and an entire overnight batch ran with the STOP file as its only control.
   ⚠ `run_schedule.ps1` takes **no `-Label`** (the label comes from the schedule JSON); passing it kills
   the launch instantly, which is exactly how the above happened.
+- **ALWAYS pair a batch launch with `tools/testbed/wait_for_session.ps1` in the BACKGROUND.** The
+  visible window that keeps the keys alive is invisible to the agent harness, so nothing signals when
+  the batch ends — on 2026-08-01 a finished 8-hour batch sat unnoticed for ~2 h. The waiter supplies
+  the missing signal: run it with the tool's `run_in_background` (which *is* harness-tracked), and its
+  exit wakes the agent. It returns on whichever comes first — **DONE** (session finished),
+  **RUNNING** (the `-MaxMinutes` heartbeat, default 30; just re-launch it to keep waiting), or
+  **DEAD** (exit 2 — no game process and no completion marker, after a 90 s grace for the
+  between-runs build gap). The heartbeat is the point: without it, a hung run would never wake
+  anyone, because the completion signal is exactly what a hang withholds.
+  ```
+  powershell -ExecutionPolicy Bypass -File tools\testbed\wait_for_session.ps1 -Session tools\testbed\sessions\<stamp> -MaxMinutes 30
+  ```
 - **Telemetry belongs to the BUILDER, not the harness.** `tools/telemetry_lib.ps1` is the single
   generator of testbed logging script; `build.ps1` dot-sources it and emits
   `common/on_actions/zzz_v3tb_telemetry.txt` into whatever mod it builds. Flags: **`-Telemetry <spec.json>`**

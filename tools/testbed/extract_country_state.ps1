@@ -48,13 +48,21 @@ foreach ($r in $runs) {
     $metaPath = Join-Path $r.FullName 'meta.json'
     if (Test-Path $metaPath) { $tok = (Get-Content $metaPath -Raw -Encoding UTF8 | ConvertFrom-Json).token }
 
+    # DE-DUPLICATE. The mirror's multi-rotation drain can re-read a segment in a narrow window
+    # (measured: one dump of run 1 appeared twice), so the same telemetry line can be written to
+    # the mirror more than once. The lines are byte-identical, so keeping the first occurrence is
+    # lossless. Consumers must not count raw lines without doing this.
+    $seen = New-Object 'System.Collections.Generic.HashSet[string]'
+    $dups = 0
     $n = 0
     foreach ($line in [System.IO.File]::ReadLines($log, [System.Text.Encoding]::UTF8)) {
         $i = $line.IndexOf('V3TB|')
         if ($i -lt 0) { continue }
-        $f = $line.Substring($i).Split('|')
+        $payload = $line.Substring($i)
+        $f = $payload.Split('|')
         if ($f.Count -lt 4) { continue }
         if ($tok -and $f[1] -ne $tok) { continue }
+        if (-not $seen.Add($payload)) { $dups++; continue }
         switch ($f[2]) {
             'GDP'   { if ($f.Count -ge 10) { $cs.Add("$idx`t$($f[3])`t$($f[4])`t$($f[5])`t$($f[6])`t$($f[7])`t$($f[8])`t$($f[9])"); $n++ } }
             'BLD'   { if ($f.Count -ge 11) { $bl.Add("$idx`t$($f[3])`t$($f[4])`tbld`t$($f[5])`t$($f[6])`t$($f[7])`t$($f[8])`t$($f[9])`t$($f[10])"); $n++ } }
@@ -69,7 +77,7 @@ foreach ($r in $runs) {
             }
         }
     }
-    Write-Output ("run {0,-3} {1,6} rows" -f $idx, $n)
+    Write-Output ("run {0,-3} {1,6} rows{2}" -f $idx, $n, $(if ($dups) { "  ($dups duplicate line(s) dropped)" } else { "" }))
 }
 
 $enc = New-Object System.Text.UTF8Encoding($false)
