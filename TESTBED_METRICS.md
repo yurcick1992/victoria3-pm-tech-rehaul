@@ -316,16 +316,40 @@ returned `0.00` for all 1 167 sources was reading a mirror that was silently dro
 lines — the non-zero rows were among the lost ones. **Any measurement taken before the mirror fixes
 should be re-checked before it is trusted.**
 
+**The working form, and its three constraints.** For a given **(importer market, exporter market,
+good)** you can pull a value:
+```
+c:GBR = { market_capital.market = {          # importer = PREV
+    every_market = {                          # exporter = THIS, all ~305 of them
+        debug_log = "…|[THIS.GetMarket.GetNameNoFormatting]|
+                     [PREV.GetMarket.GetImportedAmountFromMarket(THIS.GetMarket.Self, GetGoods('silk').Self)|2]"
+    } } }
+```
+1. **The good must be a LITERAL key** — `GetGoods('silk')`. Passing an *iterated* good as an
+   argument fails (§3.3: `GetMarketGoods(<goods>)` voids its line), so the goods list has to be
+   enumerated in the generated script, never looped.
+2. **The importer is whatever market block you are inside** (`PREV`), so it is reachable per named
+   country but not iterated cheaply.
+3. **The exporter side comes from `every_market`**, i.e. you get all ~305 sources and filter at
+   analysis time. Cost is therefore **305 lines per (importer × good) pair** — pinning the exporter
+   directly, to collapse that to one line, is **UNPROBED**.
+
+⚠ `GetExportedAmountToMarket` (the reverse direction) is listed above but has **never been probed**.
+
 ⚠ **`every_trade_route` yields NOTHING here.** Proven with a constant marker line inside the loop (a
 line with no data function cannot void): the enclosing `c:GBR` and `market_capital.market` markers
 each printed once, the in-loop marker printed **zero** times. The iterator parses but produces no
 iterations in this context, so **origins must come from the `PREV` market×market form**, not routes.
 
-**On net-vs-gross:** no good in the British market had both imports *and* exports at this date —
-they appear mutually exclusive per good per market, which would make the distinction moot. Combined
-with the exact reconciliation above, the likeliest explanation for the old "+4.96" discrepancy is
-the same mirror loss. Not proven — a market where one good both imports and exports would settle
-it — but it is no longer a reason to distrust import shares.
+**On net-vs-gross — still open, but bounded.** ⚠ An earlier draft of this section claimed imports
+and exports are mutually exclusive per good per market, inferred from the British market at one
+date. **That is wrong.** Checked across 50 370 market-good-snapshot rows (all 304 markets, 10
+dumps): **7 rows have both** — Prussia importing 55 tea while exporting 5, Portugal 70 iron in and
+52.5 out, the USA 1.5 fine art both ways.
+
+So the net-vs-gross distinction is real, not moot. But it can only matter where both flows exist,
+which is **0.01 % of rows and 0.2 % of importing rows** — so no import share computed so far moves
+materially. The old "+4.96" discrepancy is still most plausibly the mirror loss.
 
 ⚠ **Superseded — the original open question, kept for the record:** Every total comes back a whole number
 (104 / 105 / 65 / 216 / 130) while the breakdowns are fractional, and Russian tobacco's breakdown exceeds
