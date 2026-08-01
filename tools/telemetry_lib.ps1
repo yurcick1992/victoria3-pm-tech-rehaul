@@ -569,6 +569,11 @@ on_monthly_pulse = {
 v3tb_boot = {
 	effect = {
 		debug_log = "V3TB|$Token|BOOT|v$script:TELEMETRY_VERSION|[TimeKeeper.GetCurrentDate.GetString]"
+		# The RNG seed this run used. GetGlobalRandomSeed is a bare GLOBAL data function - vanilla
+		# renders it in the loading screen via INGAME_RNG_SEED, so it works in any loc string.
+		# GetGlobalRandomSeedString is the CUSTOM seed text, empty unless the custom_rng_seed game
+		# rule is set to use_custom_rng_seed. Own line: if either fails, BOOT still survives.
+		debug_log = "V3TB|$Token|SEED|[GetGlobalRandomSeed]|custom=[GetGlobalRandomSeedString]"
 	}
 }
 $dumpBody$events
