@@ -408,3 +408,41 @@ The vanilla-PM→tier mapping should live in the config (add a `vanilla_pm` fiel
 - `aliases = { … }` on a building preserves the plural/alt keys other files use.
 - Referenced secondary PMGs (automation, luxury, canning, …) stay defined in vanilla — we only
   reference them, so their base ("off") PMs come along unchanged.
+
+## RNG seed: readable, not settable headlessly
+
+**You can log which seed a run used; you cannot choose it.** Settled 2026-08-01 by experiment,
+including a manual lobby test — don't re-litigate it without new evidence.
+
+**Reading it (works).** The telemetry emits at boot:
+```
+V3TB|<token>|SEED|[GetGlobalRandomSeed]|custom=[GetGlobalRandomSeedString]
+```
+`GetGlobalRandomSeed` is a bare **global** data function — vanilla renders it on the loading screen
+via `INGAME_RNG_SEED` — so it resolves in any loc string, `debug_log` included. Verified:
+`SEED|466290526|custom=`. Runs are therefore identifiable by seed even though the seed is not
+chosen.
+
+**Setting it (does not work).** The custom seed is a **lobby-only** input, and `-handsoff` is
+precisely the flag that skips the lobby:
+
+- The game rule `custom_rng_seed` can be flipped to `use_custom_rng_seed` in
+  `player/game_rules/presets.txt`, but **the flag alone changes nothing** — two runs with it set
+  produced seeds 466290526 and 1921701894.
+- **No command-line argument exists.** The exe's arg tables around `handsoff`, `continuelastsave`
+  and `gdpr-compliant` contain no seed option. ⚠ Web sources claim a `random_seed` CLI argument —
+  **they are wrong**: `random_seed` is a *savegame gamestate field* (its binary neighbours are
+  `random_count`, `adjacency`, `topology`).
+- **A mod cannot supply the value.** `game_rules.md` permits only `default`, `apply_modifier` and
+  `flag` per setting. There is no value field.
+- The value is delivered by a runtime command, `set_custom_rng_seed_command`, in the same family as
+  `set_ready_command` / `sync_players_command`.
+- **Where it actually persists:** the **save only**. A manual lobby run with seed `123ABTEST`, then
+  a hash diff of all 9 794 files under `Documents/Paradox Interactive/Victoria 3` before and after
+  (including after a clean exit), found the string inside the zipped `gamestate` — next to the
+  game-rules list and a session GUID — and **in no config file at all**. `presets.txt` gained only
+  the flag.
+
+**Consequence.** Same-seed A/B is unavailable, so the telemetry tax stays *bounded* ("no detectable
+difference", ~±12 % resolution) rather than measured. The only route to a fixed seed is **resuming a
+save**, which carries its own seed — available if ever needed, not currently used.
