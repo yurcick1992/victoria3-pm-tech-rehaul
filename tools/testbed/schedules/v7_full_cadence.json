@@ -1,0 +1,41 @@
+{
+    "label":  "v7-full-cadence",
+    "defaults":  {
+                     "autosave_interval":  "five_year",
+                     "tags":  [
+                                  "GBR"
+                              ],
+                     "metrics":  [
+                                     "market_goods",
+                                     "country_state",
+                                     "population",
+                                     "events",
+                                     "treasury"
+                                 ],
+                     "timeout_minutes":  35
+                 },
+    "runs":  [
+                 {
+                     "until":  "1854.5.1",
+                     "setup":  "ctl",
+                     "dump_dates":  [
+                                        "1836.2.1",
+                                        "1838.2.1",
+                                        "1840.2.1",
+                                        "1842.2.1",
+                                        "1844.2.1",
+                                        "1846.2.1",
+                                        "1848.2.1",
+                                        "1850.2.1",
+                                        "1852.2.1",
+                                        "1854.2.1"
+                                    ]
+                 }
+             ],
+    "schedule_version":  1,
+    "setups":  {
+                   "ctl":  {
+                               "kind":  "control"
+                           }
+               }
+}
