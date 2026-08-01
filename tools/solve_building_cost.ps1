@@ -26,6 +26,10 @@
 #>
 param(
     [string]$Repo = (Split-Path $PSScriptRoot -Parent),
+    # The config to solve. CLAUDE.md always claimed all three solvers took -Config; this one did
+    # not, so an alternate balance set could only be solved by faking a whole -Repo tree - and a
+    # careless call silently rewrote the canonical config instead.
+    [string]$Config = "",
     [string]$Game = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game" }),
     [double]$WagePct      = 0.25,   # wages as a fraction of TOTAL cost (goods + wages)
     [double]$MarginPct    = 0.20,   # net profit as a fraction of total operating cost
@@ -64,7 +68,9 @@ $poundPerPoint = $conGoodsVal / $conAdd
 Write-Output ("Money/construction-point = {0:N0} (PM {1}: {2:N0}/wk goods / {3} pts/wk)" -f $poundPerPoint, $ConstructionPm, $conGoodsVal, $conAdd)
 
 # --- solve building_cost per tier ---
-$cfg = Get-Content (Join-Path $Repo 'config\mod_config.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+if (-not $Config) { $Config = Join-Path $Repo 'config\mod_config.json' }
+$cfgPath = (Resolve-Path -LiteralPath $Config).Path
+$cfg = Get-Content $cfgPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $horizon = $PaybackYears * $WeeksPerYear   # weeks of profit the build cost must equal
 $report = @()
 foreach ($ind in $cfg.industries) {
@@ -87,8 +93,8 @@ foreach ($ind in $cfg.industries) {
 }
 
 $json = $cfg | ConvertTo-Json -Depth 30 -Compress
-[System.IO.File]::WriteAllText((Join-Path $Repo 'config\mod_config.json'), $json, (New-Object System.Text.UTF8Encoding($false)))
-Write-Output ("Solved building_cost for {0} tiers across {1} industries -> config\mod_config.json" -f $report.Count, $cfg.industries.Count)
+[System.IO.File]::WriteAllText($cfgPath, $json, (New-Object System.Text.UTF8Encoding($false)))
+Write-Output ("Solved building_cost for {0} tiers across {1} industries -> {2}" -f $report.Count, $cfg.industries.Count, $cfgPath)
 $basisDesc = if ($Basis -eq 'output') { "$($MarginPct.ToString('P0')) of output value" } else { "$($MarginPct.ToString('P0')) return on total cost" }
 Write-Output ("Model: {0}yr payback, {1} basis ({2}), {3:P0} wages, {4} wk/yr." -f $PaybackYears, $Basis, $basisDesc, $WagePct, $WeeksPerYear)
 $report | Format-Table -AutoSize | Out-String | Write-Output
