@@ -316,6 +316,51 @@ returned `0.00` for all 1 167 sources was reading a mirror that was silently dro
 lines — the non-zero rows were among the lost ones. **Any measurement taken before the mirror fixes
 should be re-checked before it is trusted.**
 
+### Origins — the production form (v8), and the volume wall behind it
+
+**The exporter CAN be pinned — by filtering the iteration, not by an argument.** Probed
+2026-08-01 (`20260801_185552`) against a known value. Five scope-path argument forms **all void**:
+`c:CHI.market_capital.market[.GetMarket].Self` fails as an argument in both directions, and so does
+`GetExportedAmountToMarket` in every form tried. What works is a filtered iteration:
+
+```
+c:GBR = { market_capital.market = {              # importer = PREV
+    every_market = {
+        limit = { OR = { owner = c:CHI  owner = c:FRA … } }    # exporter, pinned by owner
+        debug_log = "…|[THIS.GetMarket.GetNameNoFormatting]|silk|
+                     [PREV.GetMarket.GetImportedAmountFromMarket(THIS.GetMarket.Self, GetGoods('silk').Self)|2]"
+    } } }
+```
+So cost is **importers × exporters × goods**, not importers × 305 × goods. Verified in production
+shape: 8 importers × 8 exporters × 10 goods = **640 lines per dump**, of which 33 were non-zero —
+e.g. Britain ← Qing market: tea 352.38, silk 130.01; Britain ← Ottoman: tea 77.34.
+
+⚠ **Drop self-pairs in analysis.** A market "importing from itself" returns a non-zero value
+(Austria ← Austrian Market tea 2.16). Meaning unknown; exclude rows where importer market ==
+exporter market.
+
+⚠ **Each heavy block needs its OWN phase.** Origins was first put in phase 0 beside market goods;
+that pushed the phase back to ~6 000 lines in one tick and the mirror lost 5 980 of them — the exact
+burst failure phasing exists to prevent, reintroduced by stacking. It now has phase 3.
+
+### ⚠ UNRESOLVED: logging all 304 markets' goods still loses lines
+
+Measured, same session, tightening one variable at a time:
+
+| configuration | telemetry lines lost |
+|---|--:|
+| origins lumped into phase 0 | 5 980 |
+| origins in its own phase, 800 ms poll | 3 815 |
+| origins in its own phase, **200 ms poll** | **2 013** |
+
+Market goods alone is ~5 300 lines (~0.93 MB) in a single tick — two ring segments — and the ring is
+**not configurable** (no define, no setting). So this is not closed, and a run logging all markets
+should be treated as ~2 000 lines short until it is.
+
+**Most promising fix, untried:** have `summarise.ps1` merge `logs_live/` **with the exit-time
+`logs/` ring copy** and de-duplicate. The ring still holds what the mirror missed — that is how the
+loss is detected in the first place — so merging should recover most of it at zero runtime cost.
+
 **The working form, and its three constraints.** For a given **(importer market, exporter market,
 good)** you can pull a value:
 ```

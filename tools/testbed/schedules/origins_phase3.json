@@ -1,0 +1,50 @@
+{
+    "label":  "origins-phase3",
+    "defaults":  {
+                     "autosave_interval":  "five_year",
+                     "tags":  [
+                                  "GBR",
+                                  "FRA",
+                                  "RUS",
+                                  "CHI",
+                                  "AUS",
+                                  "USA",
+                                  "PRU",
+                                  "TUR"
+                              ],
+                     "metrics":  [
+                                     "origins",
+                                     "market_goods",
+                                     "country_state"
+                                 ],
+                     "timeout_minutes":  20,
+                     "origin_goods":  [
+                                          "tools",
+                                          "steel",
+                                          "clothes",
+                                          "paper",
+                                          "silk",
+                                          "tea",
+                                          "opium",
+                                          "coal",
+                                          "iron",
+                                          "glass"
+                                      ]
+                 },
+    "runs":  [
+                 {
+                     "until":  "1838.6.1",
+                     "setup":  "ctl",
+                     "dump_dates":  [
+                                        "1836.2.1",
+                                        "1837.2.1"
+                                    ]
+                 }
+             ],
+    "schedule_version":  1,
+    "setups":  {
+                   "ctl":  {
+                               "kind":  "control"
+                           }
+               }
+}

@@ -774,7 +774,10 @@ try {
                 Start-Sleep -Seconds 3
                 break
             }
-            Start-Sleep -Milliseconds 800
+            # 200ms, not 800: a single market-goods dump writes ~0.93 MB (two ring segments) in one
+            # tick, so a slow poll lets segments age out before the drain sees them. Measured at
+            # 800ms: 3815 telemetry lines lost. Polling is cheap; losing a dump is not.
+            Start-Sleep -Milliseconds 200
         }
 
         # drain whatever the game wrote between the last poll and its exit, then close

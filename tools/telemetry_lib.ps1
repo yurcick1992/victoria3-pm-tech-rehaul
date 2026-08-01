@@ -45,10 +45,12 @@
 #   v6  + POP line per country per dump (metric `population`): total workforce, peasant workforce,
 #       slave workforce, dependents, mean state unemployment rate, total population. Rides inside
 #       the existing every_country pass. UNVALIDATED until probed in-game.
+#   v8  + ORIGINS: who supplied whom, per good, per importer market. Exporters pinned by
+#       `every_market = { limit = { owner = c:X } }` - a scope-path argument voids. Own phase (p3).
 #   v7  PHASED dumps (one logical dump emitted over 3 consecutive months, cutting the per-tick
 #       log burst to ~1/3) + tag-scoping removed: treasury per EVERY country, market goods per
 #       EVERY market. Country sets can differ slightly between phases - join on name.
-$script:TELEMETRY_VERSION = 7
+$script:TELEMETRY_VERSION = 8
 
 function Get-TelemetryVersion { return $script:TELEMETRY_VERSION }
 
@@ -57,6 +59,7 @@ function Get-TelemetryDefaults {
         dump_dates = @("1840.1.1")
         tags       = @("GBR", "FRA")
         metrics    = @("market_goods")
+        origin_goods = @()
     }
 }
 
@@ -66,7 +69,7 @@ function Read-TelemetrySpec {
     if ($Path) {
         if (-not (Test-Path $Path)) { throw "telemetry spec not found: $Path" }
         $j = Get-Content $Path -Raw -Encoding UTF8 | ConvertFrom-Json
-        foreach ($k in @("dump_dates", "tags", "metrics")) {
+        foreach ($k in @("dump_dates", "tags", "metrics", "origin_goods")) {
             if ($j.PSObject.Properties.Name -contains $k -and $j.$k) { $spec[$k] = @($j.$k) }
         }
     }
@@ -269,7 +272,7 @@ function New-TelemetryScript {
         # The log line keeps the ORIGINAL dump date, so a "1836.2.1 snapshot" is still one logical
         # snapshot even though its parts are emitted across 1836.2.1 / .3.1 / .4.1. on_monthly_pulse
         # is the only verified pulse, so months are the finest slicing available.
-        $phaseBlocks = @{ 0 = ""; 1 = ""; 2 = "" }
+        $phaseBlocks = @{ 0 = ""; 1 = ""; 2 = ""; 3 = "" }
         $blocks = ""
 
         # ---- per-country state: GDP, ownership, and building counts by category ----
@@ -428,6 +431,77 @@ function New-TelemetryScript {
             }
         }
 
+        # ---- ORIGINS (production): who supplied whom, per good.
+        # The exporter CANNOT be pinned by a scope-path argument - every such form voids (probed
+        # 2026-08-01, session 20260801_185552: c:CHI.market_capital.market[.GetMarket].Self as an
+        # argument fails in all five variants tried, in both directions). The market argument must
+        # come from an ITERATED scope. But the iteration can be FILTERED, which achieves the same
+        # thing: `every_market = { limit = { owner = c:X } }` yields exactly that one market.
+        # So cost is importers x exporters x goods, not importers x 305 x goods.
+        # ⚠ The good must be a LITERAL key - an iterated good passed as an argument voids (§3.3) -
+        # so the goods list is enumerated here at build time.
+        if ($metrics -contains "origins") {
+            $ogoods = @($Spec.origin_goods)
+            if (-not $ogoods -or -not $ogoods[0]) {
+                $ogoods = @('tools','steel','clothes','paper','glass','coal','iron','silk','tea','opium')
+            }
+            $ownerLimit = "OR = { " + (($tags | ForEach-Object { "owner = c:$_" }) -join ' ') + " }"
+            foreach ($imp in $tags) {
+                $goodLines = ""
+                foreach ($g in $ogoods) {
+                    $goodLines += "`r`n`t`t`t`t`t`t`tdebug_log = `"V3TB|$Token|ORIG|$date|$imp|[THIS.GetMarket.GetNameNoFormatting]|$g|[PREV.GetMarket.GetImportedAmountFromMarket(THIS.GetMarket.Self, GetGoods('$g').Self)|2]`""
+                }
+                $blocks += @"
+
+			if = {
+				limit = { exists = c:$imp }
+				c:$imp = {
+					market_capital.market = {
+						every_market = {
+							limit = { $ownerLimit }$goodLines
+						}
+					}
+				}
+			}
+"@
+            }
+            # Origins gets its OWN month. Lumping it into phase 0 with market goods put ~6000 lines
+            # in one tick and the mirror lost 5980 of them (measured 20260801_185936) - the same
+            # burst failure phasing exists to prevent, reintroduced by stacking two heavy blocks.
+            $phaseBlocks[3] += $blocks; $blocks = ""
+        }
+
+        # ---- ORIGINS PROBE: can the EXPORTER be pinned, instead of iterating all ~305 markets?
+        # ORACLE: at 1836.2.1 the British market imports 120.80 silk from the Qing market (verified
+        # by the iterating form, which reconciled exactly to the reported 125.00 total). Any form
+        # below that prints 120.80 is correct; anything else is wrong or void. One per line.
+        if ($metrics -contains "origins_probe") {
+            $blocks += @"
+
+			debug_log = "V3TB|$Token|OP|$date|m_top|reached-top"
+			# A: fully qualified, no enclosing scope at all - if this works, a triple costs ONE line
+			debug_log = "V3TB|$Token|OP|$date|A_full|[c:GBR.market_capital.market.GetMarket.GetImportedAmountFromMarket(c:CHI.market_capital.market.GetMarket.Self, GetGoods('silk').Self)|2]"
+			# B: same, but the argument without .GetMarket
+			debug_log = "V3TB|$Token|OP|$date|B_noGetMarket|[c:GBR.market_capital.market.GetMarket.GetImportedAmountFromMarket(c:CHI.market_capital.market.Self, GetGoods('silk').Self)|2]"
+			# C: reverse direction, fully qualified - GetExportedAmountToMarket has NEVER been probed
+			debug_log = "V3TB|$Token|OP|$date|C_reverse|[c:CHI.market_capital.market.GetMarket.GetExportedAmountToMarket(c:GBR.market_capital.market.GetMarket.Self, GetGoods('silk').Self)|2]"
+			c:GBR = {
+				market_capital.market = {
+					debug_log = "V3TB|$Token|OP|$date|m_inner|reached-inner"
+					# D: pinned exporter from inside the importer's market scope
+					debug_log = "V3TB|$Token|OP|$date|D_this|[THIS.GetMarket.GetImportedAmountFromMarket(c:CHI.market_capital.market.GetMarket.Self, GetGoods('silk').Self)|2]"
+					# E: reverse from inside the importer scope
+					debug_log = "V3TB|$Token|OP|$date|E_thisexp|[THIS.GetMarket.GetExportedAmountToMarket(c:CHI.market_capital.market.GetMarket.Self, GetGoods('silk').Self)|2]"
+					# F: control - the iterating form that IS verified, filtered to the Qing market
+					every_market = {
+						limit = { owner = c:CHI }
+						debug_log = "V3TB|$Token|OP|$date|F_iter|[THIS.GetMarket.GetNameNoFormatting]|[PREV.GetMarket.GetImportedAmountFromMarket(THIS.GetMarket.Self, GetGoods('silk').Self)|2]"
+					}
+				}
+			}
+"@
+        }
+
         # ---- TRADE-ROUTE PROBE: what does a trade-route scope expose for LOGGING?
         # every_trade_route is a MARKET-scope iterator over routes that EXIST, so it is sparse by
         # construction - the right shape for import origins, versus ~305x305xgoods for the cross
@@ -531,7 +605,7 @@ function New-TelemetryScript {
         # Anything not explicitly phased (probes, one-offs) rides in phase 0 with market goods.
         $phaseBlocks[0] = $blocks + $phaseBlocks[0]
 
-        for ($ph = 0; $ph -lt 3; $ph++) {
+        for ($ph = 0; $ph -lt 4; $ph++) {
             if (-not $phaseBlocks[$ph].Trim()) { continue }
             # shift the TRIGGER by $ph months; the logged date stays $date
             $sm = $m + $ph; $sy = $y
