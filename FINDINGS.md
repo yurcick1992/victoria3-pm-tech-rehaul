@@ -90,6 +90,78 @@ transcript rather than from data.
 
 ---
 
+## F9 — The curves: divergence is immediate and steady, and world GDP is the one reliable lens
+
+**Claim.** Read as trajectories rather than endpoints, three things change the picture. The mod's
+gap to vanilla **opens immediately and widens every decade** — it is not a late-game cliff. The
+paper BE−20 change is **economically invisible at world level**. And **world GDP is stable enough
+to trust at n=3 while country- and market-level series are not**, which decides what any future
+batch can actually answer.
+
+### World GDP, all 11 dumps
+
+| | 1836 | 1846 | 1856 | 1866 | 1876 | 1886 | 1896 | 1906 | 1916 | 1926 | 1935 |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| vanilla (M) | 373 | 524 | 670 | 820 | 974 | 1197 | 1525 | 1968 | 2518 | 3448 | 4261 |
+| mod base (M) | 362 | 489 | 619 | 717 | 832 | 964 | 1188 | 1450 | 1759 | 2185 | 2740 |
+| **mod ÷ vanilla** | 97 % | 93 % | 92 % | 87 % | 85 % | 81 % | 78 % | 74 % | 70 % | 63 % | **64 %** |
+| paper−20 ÷ mod | 102 % | 99 % | 98 % | 98 % | 97 % | 100 % | 95 % | 97 % | 99 % | 100 % | 101 % |
+
+**The shortfall starts at once** — 7 % behind by 1846, 15 % by 1876 — and compounds smoothly with
+no inflection. So "the mod economy is smaller" is not a late-game phenomenon to be explained by
+late-game mechanics; it is present from the first decade.
+
+**Paper BE−20 did nothing at world level**: within ±5 % of the mod baseline at every date, no
+trend. Whatever it fixed in paper supply (F8) did not reach GDP.
+
+### World GDP is trustworthy at n=3; almost nothing else is
+
+Within-arm spread (max ÷ min across that arm's runs):
+
+| | 1836 | 1876 | 1906 | 1935 |
+|---|--:|--:|--:|--:|
+| vanilla | 1.00× | 1.15× | 1.19× | 1.07× |
+| mod base | 1.01× | 1.12× | 1.41× | 1.59× |
+| paper−20 | 1.01× | 1.11× | 1.08× | 1.38× |
+
+Compare a **single market** at 1935 in the same runs: 9.55 / 17.70 / 33.81 M, a **3.5×** spread.
+**Aggregate over everything and the noise cancels; look at one market or one country and it does
+not.** This is the practical rule for reading any of these batches.
+
+### Country-level GDP is mostly unusable — from attrition, not noise
+
+Runs in which each country still exists (vanilla / mod / paper, of 3 / 5 / 3):
+
+| | 1836 | 1856 | 1876 | 1896 | 1935 |
+|---|---|---|---|---|---|
+| Russia | 3/5/2 | 3/5/3 | 3/5/3 | 3/5/3 | 3/3/3 |
+| USA | 3/5/2 | 3/5/3 | 3/5/3 | 3/5/3 | 3/5/3 |
+| Great Britain | 3/5/2 | 2/3/3 | 2/3/3 | 2/2/3 | 2/2/3 |
+| Great Qing | 3/5/2 | 3/5/2 | 2/4/2 | 1/3/2 | 1/3/0 |
+| Prussia | 3/5/2 | 3/3/2 | 3/2/1 | 0/0/0 | 0/0/0 |
+| France | 3/5/2 | 0/1/0 | 0/0/0 | 0/0/0 | 0/0/0 |
+
+**Only the USA and Russia survive everywhere.** France stops being "France" almost immediately in
+every arm; Prussia becomes Germany; Britain is absent from a third of the vanilla runs. A country
+series that quietly drops to 2 runs is not a comparison, and averaging over the survivors
+selects for countries that did well.
+
+**The one country-level signal large enough to survive that:** the mod's **USA runs ~2× vanilla** —
+210 % at 1896, 200 % at 1935, and 175 / 146 % in the paper arm. Present in all runs at all dates,
+so it is not attrition. Unexplained, and worth a look: something about the tier split is very good
+for the United States specifically.
+
+### ⚠ Data quality: the v8 arm lost 2 of 33 country dumps
+
+`country_state` rows per dump: vanilla min 200, mod min 196 — both clean. **The v8 paper arm has
+two badly short dumps** (run 1 at 1846 = 58 rows, run 3 at 1836 = 141, against ~283 expected). So
+despite phased dumps, 200 ms polling and ring recovery, the heaviest telemetry still occasionally
+loses most of a phase. Market-level rows in the same arm look intact, so **F8's paper numbers are
+unaffected**, but country-level cells from those two dumps must be excluded. Any future batch
+should check rows-per-dump before analysis, not after.
+
+---
+
 ## F8 — Lowering paper BE by 20 pp helps, but does not fix the shortfall
 
 **Claim.** Cutting every paper tier's `target_be` by 20 pp and re-solving volumes moves paper
