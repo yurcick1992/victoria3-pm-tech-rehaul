@@ -24,6 +24,8 @@ record the bump here *and* in the FINDINGS numbering table.
 | **v5** | TREASURY per **tracked** country: TCASH / TREV / TEXP (the in-game budget panel, §3.5) + TRADE (country trade capacity + trade-centre count/levels, §3.6) |
 | **v6** | POP per country per dump (§3.7): workforce total / peasants / slaves, dependents, mean state unemployment rate, total population — **VERIFIED** |
 | **v7** | **PHASED DUMPS** + tag-scoping removed: treasury sweeps every country, market goods every market (~304). One logical dump is emitted across **three consecutive months** (§3.9) |
+| **v8** | ORIGINS: who supplied whom, per good, per importer market (own phase, p3) |
+| **v9** | urban-centre count/levels per country; `market_goods_scoped` (market sweep restricted to the spec's tags); `scenario_probe` (per-building enumeration, pop SoL by stratum, three early-read hooks) + the first `events/` file the builder emits — see §4 |
 
 ## ⚠ v7: one dump is spread over three months — group by the LOGGED date
 
@@ -36,6 +38,27 @@ So each metric block now fires in a different month — `p0` market goods, `p1` 
 BEGIN/END phase pairs present.
 
 The **logged** date is the logical one, so grouping by `dump_date` remains correct. But:
+
+⚠⚠ **The logged date is NOT when the value was sampled.** Phase `p` fires `p` months *after* the
+date it stamps on every line, so a metric's numbers are from `dump_date + p months`:
+
+| phase | metrics | sampled at |
+|---|---|---|
+| 0 | `market_goods`, `market_goods_scoped` | the dump date exactly |
+| 1 | `country_state`, `population`, `scenario`, `construction` | **+1 month** |
+| 2 | `treasury` | **+2 months** |
+| 3 | `origins`, `active_pms` | **+3 months** |
+
+This is harmless for grouping and for anything that barely moves, and **wrong for anything that
+does**. Measured 2026-08-02: urban-centre production methods stamped `1836.2.1` are really the
+1836.5.1 state, and by May ~110 levels have switched on `pm_public_trams` that were not running in
+January — so a "February" reading showed public transport that February does not have. Likewise the
+standard-of-living and urban-centre *levels* in `config/measured_1836.json`, stamped 1836.2.1, are
+the 1836.3.1 state.
+
+**Rule: when a phased metric feeds a dated model, either put it in phase 0 or subtract the phase from
+the label.** And a run's `until` must be at least `last dump date + p + 1 months`, or the block never
+fires at all — an `until` of 1838.4.1 silently discarded a 1838.2.1 phase-3 dump.
 
 ⚠ **The country set can differ slightly between phases.** Phases are a month apart, so countries
 annexed in between appear in one phase and not another — measured 285 countries in `p1` against
@@ -654,6 +677,115 @@ the split becomes exact.
 - **Bankruptcy** (as opposed to entering default) has no on_action, so the telemetry polls the
   `declared_bankruptcy` static modifier monthly and latches it per country with a `v3tb_bk_seen`
   variable, clearing the latch when the modifier goes. That logs each declaration once.
+
+## 4. Scenario calibration (v9)
+
+Built to answer one question: **where does the balance UI's scenario panel differ from the game's own
+1836 market, and why.** The comparison itself needs no new instrument — see §4.1 — so v9 only adds the
+things that are *not* in the game files.
+
+### 4.1 The orders reconcile — and that gives a pop-free test of the building model ✅ VERIFIED
+
+Measured on the British market, 1836.2.1, every good:
+
+```
+sell_orders = production + imports          (+ treaty goods_transfer INTO the market)
+```
+
+Exact on every good (fish 2100.35 = 2088.35 + 12; fabric 6064.24 = 5564.24 + 500). The one apparent
+exception is **wine** — sell 40.20, production 20.20, imports 0.00 — and the missing 20.00 is the
+`goods_transfer` treaty article that `extract_presets.ps1` already carries as `nonsell.wine = 20`.
+So a treaty transfer lands in **sell orders but not in `GetMarketImports`**.
+
+The like-for-like comparison against the UI is therefore:
+
+| UI quantity | in-game |
+|---|---|
+| building inputs + pop demand + `ADDBUY` | `buy_orders − exports` |
+| building outputs + `ADDSELL` | `sell_orders − imports` |
+
+⚠ The buy-side half is **inferred by symmetry** — that exports sit *inside* buy orders has not been
+verified. Everything on the sell side has.
+
+**Why this matters more than it looks:** §3.3 says orders cannot be decomposed by channel, which
+seemed to make "is it pops or is it buildings" unanswerable. It isn't — **pops never sell**, so the
+supply side is a channel-pure test of the building model, and the demand residual after subtracting a
+verified building model is pop demand.
+
+### 4.2 What v9 adds
+
+All probed 2026-08-02 (session `20260802_110757`) and **all verified**, except where marked ❌:
+
+| metric | what | status |
+|---|---|---|
+| `v3tb_bld_urban_center` / `v3tb_lvl_urban_center` | urban-centre count + levels per country | ✅ GBR 9 buildings / 89 levels |
+| `market_goods_scoped` | market sweep restricted to the spec's `tags` | ✅ |
+| `boot_dump` | market goods + `SCEN` emitted from `on_game_started_after_lobby` — **the day-0 read** | ✅ the market is fully initialised at day 0 |
+| `building_inventory` | `BINV`: one line per building, every country — type key, level, employment %, employee cap, state; scheduled to day 7 to keep its ~6 400-line burst off the day-0 tick | ✅ |
+| `scenario` | `SCEN` + `MKT` per country: urban-centre count/levels, people-weighted SoL and workforce per stratum, and the country's market | ✅ |
+
+**Per-building fields — what works and what voids:**
+
+| call | |
+|---|---|
+| `THIS.GetBuilding.GetBuildingType.GetKey` | ✅ the type key |
+| `THIS.GetBuilding.GetType.GetKey` | ❌ voids |
+| `THIS.GetBuilding.GetExpansionLevel` | ✅ **this is the level** |
+| `THIS.GetBuilding.GetLevel` | ❌ voids |
+| `THIS.GetBuilding.GetEmploymentPercentage` · `GetEmployeeCap` · `GetState.GetNameNoFormatting` | ✅ |
+| `THIS.GetBuilding.GetState.GetCountry.GetNameNoFormatting` | ✅ — the owning country inline, which `PREV` cannot give (it reaches the *state*, one scope up, not the country) |
+
+`GetExpansionLevel` was reconciled against the script-value level sum rather than assumed: 8 logged
+GBR urban centres summed to 87 while `v3tb_lvl_urban_center` reported 89 over 9 buildings — one
+2-level building lost to the log ring, not a different quantity.
+
+**Pop standard of living:**
+
+| call | |
+|---|---|
+| `standard_of_living` as a pop-scope script-value keyword | ✅ |
+| `wealth` at pop scope | ✅ but returns **the same number** as `standard_of_living` — one quantity, not two |
+| nested `add = { value = x multiply = y }` in a script value | ✅ — this is what makes a people-weighted mean possible |
+| `pop_size` at pop scope | ❌ does not exist; weight by `workforce` |
+
+Cross-checked: GBR's people-weighted mean SoL came to **10.13** against `GetAverageSoLByPopulation`'s
+**10.23**, from an independent code path.
+
+**Urban centres are the reason for the building enumeration.** The game raises them itself from state
+urbanization by an engine-side rule that is **not in the game files** (`common/building_groups` gives
+urbanization per building *level*, but not the divisor), so the scenario panel cannot compute them and
+the level count has to be measured. The count/levels script values are the guaranteed floor; the
+enumeration, if it works, additionally gives per-building **employment**, which is what lets the UI's
+full-employment assumption be checked rather than assumed.
+
+### 4.3 The early-read problem, and the three hooks
+
+The scenario preset is derived from the **history files**, i.e. the start state before any AI has
+acted. The earliest readable market is therefore the most comparable one — afterwards PM switches and
+construction pull the game away from history. **`on_monthly_pulse` is the finest pulse vanilla has**
+(there is no weekly one; the full list is monthly/yearly × global/country/character/state, plus
+half-yearly, five-year and decade country variants). So the candidates are:
+
+1. **day 0** — `on_game_started_after_lobby`. May read an uninitialised market; a row of zeros here is
+   a *result*, not a failure.
+2. **day 7** — a scheduled `trigger_event = { id = … days = 7 }` fired from the game-start hook. This
+   is the only way to reach a non-month-boundary date, and it is why the builder now emits an
+   `events/` file at all.
+3. **1836.1.1** — a monthly pulse on the start date itself, which may simply not fire.
+
+All three log the **same line** (British market, grain, buy/sell/price) so whichever works can be
+compared against the others directly.
+
+⚠ **Duplicate script-value keys are a silent override.** `v3tb_wf_peasants` / `v3tb_wf_slaves` already
+exist in the production values file, so the per-stratum denominators are named `v3tb_swf_*`. Two files
+defining the same key would let a *probe* file quietly redefine a production metric.
+
+⚠ **A verified value must MOVE out of the probe file, not be copied.** `zzz_v3tb_probe_values.txt` is
+only emitted when a *probe* metric asks for it, so a production schedule that requests `scenario` but
+no probe gets a mod with no such script values — and `MakeScope.ScriptValue` on a missing value
+returns **0, not an error**. Measured the hard way in session `20260802_111721`: every country logged
+SoL 0 while the urban-centre fields beside them were correct, because the SoL values were still in the
+probe file. They now live in `New-TelemetryScriptValues`. **When a probe graduates, move it.**
 
 ## Not resolved
 

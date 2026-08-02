@@ -13,6 +13,135 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## A loop variable read before it is assigned gives the PREVIOUS iteration's data (2026-08-02)
+
+**Symptom.** Russia's scenario preset came out running `pm_free_urban_clergy` in its urban centres,
+which is plainly wrong — Russia's own measurement is `pm_state_urban_clergy` 38 levels against
+`pm_free_urban_clergy` 1. Britain came out with `pm_no_street_lighting` (44 levels) over
+`pm_gas_streetlights` (89). The majority-pick logic was correct in isolation: replayed against
+Britain's own numbers it returns `pm_gas_streetlights`.
+
+**Root cause.** In `extract_presets.ps1`'s per-preset loop, `$meas = Get-Measured $p` was assigned
+about two-thirds of the way down — **after** the urban-centre block that reads it. PowerShell does not
+error on a variable read before assignment inside a loop; it returns whatever the *previous iteration*
+left there. So each preset picked its urban-centre methods from the market before it in the list:
+Russia (4th) used the Qing's (3rd) numbers, where free clergy leads 104 to 2; Britain (2nd) used
+France's, where `no_street_lighting` leads 43 to 17. The first preset got `$null` and silently fell
+back to the law-based inference.
+
+**Why it survived review.** The failure is *plausible* rather than absurd — every value is a real
+production method that some market really runs — and it was masked by a coincidence: France's
+amenities majority is `pm_market_squares`, which is also Britain's, so the one field anybody spot-
+checked looked correct.
+
+**Fix.** `$meas = Get-Measured $p` is now the first statement in the loop, with a comment saying why.
+
+**Prevention.** Assign every per-iteration variable at the **top** of the loop body, not next to its
+first use. And when a derived field looks wrong for one entity, check whether it belongs to a
+*neighbouring* entity before assuming the logic is wrong — the arithmetic here was never at fault.
+
+---
+
+## The wrong PM trigger makes every filter match everything (2026-08-02)
+
+**Symptom.** A probe asking which production methods urban centres run reported that **all 13
+candidate PMs were active on all 224 urban centres**, at identical level totals (599 each) —
+including mutually exclusive ones from the same PMG (`pm_no_street_lighting` *and*
+`pm_gas_streetlights` *and* `pm_electric_streetlights`).
+
+**Root cause.** The filter was
+
+```
+limit = { is_building_type = building_urban_center  is_production_method_active = pm_gas_streetlights }
+```
+
+`is_production_method_active` is a **STATE**-scope trigger taking a *block*
+(`{ building_type = X  production_method = Y }`); the **building**-scope trigger is
+`has_active_production_method = pm_x`, which vanilla uses exactly this way inside `any_scope_building`
+(155 uses against 61 of the other). An invalid trigger inside a `limit` is **silently ignored**, so the
+limit degenerated to `is_building_type` alone and every PM matched every urban centre.
+
+**Fix.** `has_active_production_method = <pm>`, bare key, building scope.
+
+**Prevention — the sanity check was already written down and it caught this.** TESTBED_METRICS §3.7
+records the same failure mode for `is_unemployed` and states the rule: *a filtered result that equals
+its unfiltered twin is a failed filter, not a measurement*. Here the tell was even louder — identical
+counts across mutually exclusive alternatives. **Any multi-candidate probe must compare candidates
+against each other before the numbers are believed**, because this class of bug produces plausible
+numbers rather than errors or zeros.
+
+---
+
+## A script value that does not exist returns 0, not an error (2026-08-02)
+
+**Symptom.** A measurement run logged **standard of living = 0 for every one of ~285 countries**,
+while the urban-centre count and levels sitting on the *same line* were correct (GBR 9 / 89, France
+18 / 60). No error in `error.log`, no data-error line, nothing to notice.
+
+**Root cause.** `v3tb_solw_*` / `v3tb_swf_*` were still defined in `zzz_v3tb_probe_values.txt`, which
+`build.ps1` emits **only when a probe metric asks for it**. The schedule requested the production
+`scenario` metric and no probe, so the mod shipped without those script values — and
+`MakeScope.ScriptValue('<missing>')` returns **0**, exactly like a real zero.
+
+This is the same class as the `is_unemployed` hazard in TESTBED_METRICS §3.7: the dangerous failure
+is not the loud one, it is the plausible number.
+
+**Fix.** Moved them into `New-TelemetryScriptValues` (the always-emitted file) via
+`Get-StratumSolValues`, and left a comment in the probe file saying where they went and why —
+**moved, not copied**, because two files defining one script-value key is a silent override.
+
+**Prevention.** A rule rather than a check, because there is nothing to check against: **when a
+probe graduates to production, MOVE it out of the probe file in the same pass**. And when a metric
+is added to a schedule, confirm the value it reads is in a file that schedule actually emits. A
+sanity-check helps too: a filtered aggregate that comes back as a clean `0` for *every* country is a
+missing value, not a measurement.
+
+---
+
+## A data function used as SCRIPT silently deletes the rest of the file (2026-08-02)
+
+**Symptom.** A probe run harvested **nothing**: `markets.tsv` had only its header, and `debug.log` held
+no `BEGIN`, no `G` rows, no country lines — for a mod whose telemetry file plainly contained all three
+dumps. The only V3TB output was one line, printed by the *trigger* logger with its data functions
+**unresolved**: `jomini_trigger_impl.cpp: Trigger, V3TB|…|EARLY|boot|[TimeKeeper.GetCurrentDate.GetString]|…: true`.
+
+**Root cause.** A new game-start block filtered a goods iteration with
+
+```
+every_market_goods = { limit = { is_goods = GetGoods('grain') }   # ← WRONG
+```
+
+`GetGoods('x')` is a **loc-string data function**. It is valid only inside the quoted text of a
+`debug_log`; in script it is a parse error. And Paradox does not skip the bad statement — **it abandons
+the file from the error onward**. The three dumps were defined *below* that block, so all of them
+ceased to exist:
+
+```
+Unknown trigger type: ), near line: 36" in file: "common/on_actions/zzz_v3tb_telemetry.txt" near line: 38
+Error: "Unexpected token: v3tb_dump_1_p0, …"        ← every dump, gone
+No on_action scripted with tag v3tb_dump_1_p0 cannot link
+```
+
+The single surviving line was the *unparsed* text being evaluated as a trigger, which is why it printed
+its data functions literally and appended `: true`.
+
+**Fix.** Drop the filter — the good's key is on every line anyway, so filtering at analysis time costs
+nothing and carries no parse risk. The same construct was sitting **latent in the pre-existing `probe`
+metric** (`is_goods = GetGoods('tools')`), which would have destroyed any run that used it; fixed too.
+
+**Prevention — `Test-TelemetryScript` in `tools/telemetry_lib.ps1`, called from `build.ps1`.** It strips
+every double-quoted string and every comment from each generated line and throws if what remains
+contains a `Something(` call or a `[`. Unit-checked both ways: a normal `debug_log` line passes, the bad
+`limit` is caught. **The point is to fail at BUILD time**, because the in-game cost of this mistake is a
+whole measurement run plus its load time — and the failure looks like "the metric returned nothing",
+not like a syntax error.
+
+**Generalise it:** the damage here came from *position*, not severity. A malformed line near the TOP of a
+generated file destroys everything below it, so a new block added at the top of `zzz_v3tb_telemetry.txt`
+is far more dangerous than the same block added at the bottom.
+
+---
+
 ## Recurring themes (read first)
 
 1. **The builder's PM emitter is a WHITELIST.** When we regenerate a tier's main PM

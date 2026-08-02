@@ -94,7 +94,9 @@ MISSING_BUILDING_CONDITIONS.md catalogue of special conditional fields (e.g. a c
 config/mod_config.json      THE THING YOU EDIT — industries → tiers (tech, target_be, natural_year, output, inputs, building_cost, wage_pct?, employment, names, vanilla_pm, vanilla_pm_aliases?, state_infrastructure?, ship_construction?, ai_value?, output_override?); industry flags source_file?/clone_from_vanilla?/follows_be?/no_mass_be? (new-economy); plus top-level building_ai_value (map building_key→ai_value for PRESERVED buildings in owned files, e.g. trade center), pm_goods (map pm_key→{in:{good:qty},out:{good:qty}} — per-PM goods overrides applied to the owned PM files; any building's PM), and building_subsidies (map building_key→AI subsidy policy; see below)
 config/start_exceptions.json manual 1836-start overrides (force_tier / remove, scoped by country/state) — editable
 config/start_baseline.json   GENERATED inventory of the vanilla 1836 start (per-industry/tier/country + drift check)
-config/presets.json          WHICH scenario presets to generate (id/label/group/country + optional market_add/market_drop, sol) — editable
+config/presets.json          WHICH scenario presets to generate (id/label/group/country + optional market_add/market_drop, sol, measured_market) — editable
+config/pop_distribution.json FITTED within-need consumption distribution (need → good → share), replacing the vanilla `weight` field — which is not an allocation rule (the game allocates by SUPPLY SHARE) and cost 12 pp of scenario demand accuracy. ONE market-independent distribution by design, solved across all 7 preset markets against config/measured_1836.json; re-derive with the balance UI's **fit pops** button and paste the printed JSON back. Absent ⇒ the UI falls back to `weight` per need
+config/measured_1836.json    GENERATED (tools/extract_measured.ps1, from a testbed session) and COMMITTED: the four things the game FILES cannot answer — per market TRADE (imports/exports per good), SoL per stratum, MILITARY building levels, and urban-centre levels as a cross-check. Read by extract_presets.ps1; optional (a clone without it still builds, just without those). ⚠ Regenerate after a game patch — a stale table is silently wrong, not obviously missing
 tools/                  dev tooling — NOT shipped in the mod
   build.ps1             builder: config → generates all mod/ files + all-language loc + ladder_tiers.txt + 1836 start, then lints
   solve_be_targets.ps1  re-derives every tier's target_be + natural_year from its tech's vanilla era (date ladder; BALANCE_FRAMEWORK §8.1)
@@ -104,6 +106,13 @@ tools/                  dev tooling — NOT shipped in the mod
   telemetry_lib.ps1     THE one generator of testbed telemetry script; dot-sourced by build.ps1 so the vanilla
                         control and every modded arm instrument IDENTICALLY (a control that logs differently is not a control)
   extract_icons.ps1     converts the vanilla goods icons (.dds) → ui/icons.js (base64 PNGs) for the scenario panel; regenerated each build. ui/icons.js is GITIGNORED — it is Paradox art, never committed or shipped; the UI degrades to text-only without it
+  extract_measured.ps1  testbed session → config/measured_1836.json: the measured 1836 reference the
+                        presets need and the game files cannot give (trade, SoL by stratum, military
+                        levels, urban-centre cross-check). Run it after a game patch, pointing at a
+                        run built with metrics `boot_dump`/`scenario`/`building_inventory`. Reads at
+                        **1836.2.1, not day 0** — construction goods spend is exactly £0 on day 0
+                        (the sector has not ticked yet), so day 0 is history-faithful but
+                        economically unfinished (FINDINGS F14)
   extract_presets.ps1   derives the scenario panel's market PRESETS from the vanilla 1836 start (config/presets.json → ui/presets.js): per country market, its buildings (re-tiered) + the PMs vanilla runs, treaty goods transfers, and the population split into consumption classes, plus the buy-package / pop-need tables the UI needs; regenerated each build
   audit_pm_refs.ps1     scans vanilla events/JEs/effects for references to main PMs our split relocated → MISSING_PM_REFERENCES.md (diagnostic; not run by build)
   convert_history.ps1   1836 start converter: re-tiers vanilla starting factories, applies start_exceptions.json
@@ -145,6 +154,7 @@ mod/                    THE DEPLOYABLE MOD — GENERATED, do not hand-edit
   common/production_methods/<vanilla name>.txt           (generated: WHOLE-FILE replacement, but ONLY for the vanilla PM files we actually CHANGE — secondary-PM gate remap + per-PM `pm_goods` overrides. A file we would copy verbatim is NOT emitted: owning it would freeze that vanilla file against the next patch and ship bytes we didn't author, for nothing. Today that means `01_industry.txt` alone. See below)
   common/history/buildings/*.txt                         (generated: the re-tiered 1836 start; replaces vanilla via replace_paths)
   common/on_actions/zzz_pm_rehaul_diag.txt               (generated: self-diagnostic tripwire; logs PM_TECH_REHAUL init marker to debug.log at game start — see MODDING_NOTES → Self-diagnostics)
+  events/zzz_v3tb_probe.txt                              (generated, TESTBED ONLY — the only events/ file the builder ever emits, and only when a telemetry metric asks. Exists because `on_monthly_pulse` is the finest pulse vanilla has: a reading BETWEEN month boundaries is unreachable from an on_action, so a scheduled `trigger_event = { days = N }` is the only route. Never present in a normal build)
   localization/<lang>/replace/zzz_pm_rehaul_l_<lang>.yml (generated for all 11 languages; replace/ so name overrides win)
 ```
 
@@ -432,9 +442,73 @@ the game.
   subject types share the overlord's by default; `grant_own_market` is the exception, resolved transitively, e.g.
   GBR → BIC → its Indian puppets); its **buildings** are every `create_building` in `common/history/buildings`
   owned by a member, counted in **levels** and mapped onto **our tier building** via the active vanilla main PM;
+  **PRINCIPLE — diverge from the history files only where they cannot answer.** Everything the history files
+  contain is taken from them; measurement (`config/measured_1836.json`) covers exactly four things they do
+  not hold: what a market **trades**, each stratum's **standard of living**, the pop class **split**, and
+  which **production methods urban centres run**. Two things that *looked* like they needed measuring did
+  not — **military battalions** are in `common/history/military_formations` (goods from each combat unit
+  type's `upkeep_modifier`, *not* from barracks or logistics centres, whose PMs carry no goods at all), and
+  **urban-centre levels** are derivable (F13). When adding a scenario input, check history first.
+  **Pop class split: SIZE from history, SHARES measured.** History cannot give the split — only 690 of
+  4 454 `create_pop` blocks name a `pop_type`, the engine assigning the rest from available jobs at init.
+  Deriving it from building jobs (as this used to) inverted the dependency, so the pop side inherited every
+  building-side error; the worst was **manor houses**, inferred from `add_ownership` at a **tenth** of the
+  real count. They carry no goods, so it was invisible in market orders while flowing straight into the
+  **upper** class, which buys the most per head. Britain's upper class was 268 707 and is 967 616.
   **no trade-route trade** is assumed, only `goods_transfer` treaty articles in force in 1836 (a transfer **out**
   of the market is an extra **buy** order, a transfer **in** an extra **sell** order).
-  **Pop demand** is computed **live in the UI** (`popDemand()`), not baked into the preset: the preset carries the
+  **Each pop need's money is split across its goods by the game's DOCUMENTED rule** (`needSplit()`;
+  vic3.paradoxwikis.com/Needs): `market share = (sell orders − 0.5 × NON-POP buy orders) / Σ over the
+  need's goods`; `purchase weight = weight × market share`, clamped to the entry's
+  `min_supply_share`/`max_supply_share`; `units = (need money / base price) × purchase weight / Σ`.
+  ⚠ The **−0.5 × non-pop buy orders** term is the one that matters most and is the least guessable —
+  a good industry consumes heavily is correspondingly less available to pops, and omitting it over-fed
+  grain by half (same-run Belgian test: pop demand error 30.3 % → **16.2 %**, F22).
+  ⚠ The bounds **clamp**. The wiki says market share "has no effect" outside them, which reads as
+  reverting to bare `weight`, and that is measurably wrong: liquor is ~95 % of Belgium's intoxicants
+  supply and the reverting reading predicts 102 against 201 observed, where clamping gives 199.
+  Goods are equivalent **per pound, not per unit** — a higher base price fulfils the same need with
+  fewer units, which is why units come from money ÷ base price. **No fitted
+  numbers, and nothing stored per scenario.** It is not circular and not a time series: pops never
+  sell, so supply does not depend on pop demand, and the split is one pass over the scenario's own
+  sell orders. ⚠ **February, not May** — the same rule
+  scored against May 1836 is worse, so the substitution lag does not pay for the construction
+  drift a wider gap brings in.
+  **In-stratum SoL spread (`SOL_SPREAD` = 8).** A stratum is not one wealth level, and buy packages are
+  steps, so each class's people are spread uniformly over ±8 levels around its mean rather than
+  collapsed onto it. One global constant, not a per-market fit (fitting the width per market buys
+  ~0.5 pp and is deliberately not done).
+  **⚠ HOW ACCURATE THIS ACTUALLY IS — state it plainly, do not round it away.** Scored against the
+  game's **own** pop-consumption figures (`consumption_breakdown` telemetry, not a residual) across
+  seven 1836 markets, mean absolute error is **18.5 %** of pop spending at base prices. The ladder
+  behind that: 49.8 % flat-SoL + fitted weights → 48.2 % measured per-stratum SoL → 25.7 % adding this
+  supply-share split → **18.5 %** adding the spread → 16.7 % if every pop's TRUE SoL is used instead
+  (so the stratum abstraction costs ~1.8 pp and is kept). **These are MEAN errors — individual goods
+  and individual markets are worse**: Japan sits at ~33 % and is a genuine ~1.8× level shortfall that
+  is still unexplained, while Russia and the USA reach ~8–10 %.
+  **The likely culprit is the within-need substitution.** Forcing the predicted total to match the
+  measured total recovers only 0.5 pp (16.7 → 16.2), so the money is right and its *distribution* is
+  wrong. Per-need, the money placed on the wrong good runs **heating 20 %, basic_food 16 %,
+  intoxicants 15 %**, against 0 % for needs with a single unlocked good. What cannot be separated from
+  the order book: 17 of 35 goods belong to **two** needs (meat and fruit are `basic_food` *and*
+  `luxury_food`; opium is `intoxicants` *and* `leisure`), so no need has an observable budget and
+  "wrong budget per need" cannot be told apart from "wrong split within need". See FINDINGS F24.
+  `config/pop_distribution.json` survives only as the **fallback** for a need with no supply at all in
+  the scenario (an empty market must still split sanely); the `fit pops` button re-derives that
+  fallback. It is no longer the model.
+  *(Historical: the fitted market-independent vector this replaced, and the vanilla `weight` field
+  before it — `weight` is not an allocation rule and cost 12 pp on its own.)* `weight` is not an allocation
+  rule — the game allocates by *supply share*, bounded per entry by `max_supply_share` — and using it gave
+  British grain 17 % of the food budget where the real share is ~79 %, understating British grain demand by
+  7 900 units. The fitted split is **market-independent by design** (a supply-share rule would make the
+  panel's demand depend on its own supply) and is solved across all 7 preset markets against the measured
+  order book: mean absolute demand error **49.1 % → 37.0 %**, six markets of seven improving (FINDINGS F15).
+  Re-derive with the **fit pops** button in the preset bar, which prints the JSON to the console; it is
+  session-only until pasted into the config, because a design input belongs in version control.
+  ⚠ The fit is **weighted per market** (each normalised by its own total demand). Unweighted, Britain and
+  the Qing set the answer for everyone and France and the USA get *worse* — that difference is the whole
+  content of "one rule for every country", so don't change the weighting without re-reading F15.
+  **Pop demand** is otherwise computed **live in the UI** (`popDemand()`), not baked into the preset: the preset carries the
   population split into **upper / middle / lower / slaves / peasants**, each class buys the **buy package**
   (`common/buy_packages`) of its wealth level — the **SoL** fields in the bar, default 35 / 16 / 9 — scaled by
   people ÷ `POP_SIZE_PACKAGE` (10 000), by the **per-head dependent factor** (needs are per *working adult*;
@@ -449,6 +523,14 @@ the game.
   calibration multiplier, default 1).
   **The population itself is editable** — one field per class (`upper / middle / lower / slaves / peasants`) in the
   preset bar, showing the derived total; a preset reloads them, and you can then push them around by hand.
+  **SoL is per stratum, five fields, and a preset fills them from measurement** (`config/measured_1836.json`):
+  peasants and slaves carry their **own** wealth level rather than borrowing the lower class's, because the
+  measured spread cannot be expressed otherwise — peasants run 4.5 in Japan against 12.1 in France, and in
+  Britain they sit *above* labourers (F12).
+  **Hovering a scenario supply or demand number gives its breakdown by source** — `paper — 840 supply from
+  2 building type(s) / Sulfite Pulping Paper Mills (T2) 10×60 = 600 / …` for the building columns, and the
+  per-**pop-need** split for the pops column (a need is the unit the money is budgeted to, so it is the one
+  that tells you where to look when a good is wrong).
   **Per-good unlock toggles** ("Pops may buy") cover every good any pop need lists (`pop_model.need_goods`, 35
   today), next to an editable **year**. **This is a START STATE the preset seeds and the user then owns — nothing
   more.** Nothing here is emitted, and the mod has **no tech-gating of PMs or goods in the UI**; don't extend this
@@ -481,10 +563,40 @@ the game.
   disallowed by an active law, and either ungated or unlocked by one the country has — so Russia/Qing run
   `pm_serfdom`, France `pm_peasant_proprietorship`, Britain `pm_serfdom_no`, and everyone gets home workshops
   rather than the collectivized-agriculture variant the PMG happens to list first.
-  **Known model gap (reported in the apply banner):** **urban centres** are still missing — their level count
-  comes from state urbanization by an engine-side rule that is not in the game files (`common/building_groups`
-  gives urbanization *per building level*, but not the divisor). Their absence understates services supply,
-  wood/glass demand and the middle class. An editable **Build cost** column
+  - **Urban centres** — **solved** (FINDINGS F13; the divisor was the missing piece and it is **100**).
+    A state raises `floor(state urbanization / 100)` levels, where each building level contributes its
+    `building_group`'s `urbanization` **except** groups flagged `is_subsistence`, which contribute
+    nothing. Verified exact on **774 of 783 states**; the nine misses are all under-predictions from the
+    technology/law urbanization bonus, which we deliberately ignore (base techs). The floor is taken
+    **per state and then summed** — flooring the market total once would hand a large market the rounding
+    loss of every state at once. A tier building contributes exactly what the vanilla building it replaced
+    did, because the lookup is keyed on `vanilla_pm`'s base building, not on the tier key. PMs are chosen
+    by the market leader's laws (`Select-LawPm`), like the other never-created buildings.
+  - **Military buildings** (barracks, conscription/logistics centres) come from `config/measured_1836.json`,
+    not history: the engine sizes them to the army, so history carries 31 British barrack levels against
+    705 in game (F14).
+  - **THROUGHPUT** is a per-building-type multiplier on inputs *and* outputs, measured with
+    `Building.GetThroughputBonusCurrent` — the same call the building panel renders — so it is **read,
+    not summed from sub-factors and not fitted**. Belgium's steel mill runs **+31.5 %**, mostly its
+    John Cockerill company bonus. Economy of scale is only the first slice: `building_throughput_add
+    = 0.01` per level (from level 1, capped at 20) for groups flagged `economy_of_scale`; 1 555
+    buildings world-wide match that exactly and 3 033 have no bonus at all (owner, military, trade,
+    infrastructure). It has its own **Thru** column, is editable, and is **never emitted** — the game
+    computes its own.
+  - **SECONDARY production methods** are measured too: history's `activate_production_methods` lists
+    fewer than the game runs, which is why Belgium's fruit and luxury clothes had no source at all.
+    ⚠ The rule is **most popular by levels, per PMG per building type per market — a deliberate
+    distortion**: a country whose farms split 51/49 is rendered as if all ran the winner. The
+    extractor prints a **near-tie warning** whenever the winner holds under 65 % of levels, because
+    that is exactly where it misleads. Belgium's wheat farms are a 4-vs-4 tie, and "no secondary" won
+    — which is why its fruit is still zero.
+
+  **A scenario contains BUILDINGS, not raw order adjustments.** Anything that consumes or produces goods is
+  represented as a building with a count, so it shows up in the sheet, in the hover breakdown, and in the
+  per-building arithmetic. The only non-building columns are the two **trade** columns — treaty
+  `goods_transfer` articles plus the market's actual trade-route flows, filled in by a preset and editable
+  for manual tinkering. **Trade centres consume merchant marine and nothing else**; the goods that move
+  *through* them are trade, and belong in the trade column. An editable **Build cost** column
   (construction points → `required_construction`, with a muted "model N" hint that turns amber when the
   stored value diverges from what `solve_building_cost.ps1` would set), a read-only **Payback** column
   (years = build cost × £720/point ÷ annual net profit at the current prices; wages per the row's

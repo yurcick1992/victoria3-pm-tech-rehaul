@@ -32,6 +32,8 @@ thing forever.
 | **v5** | **+ TREASURY** per tracked country: the in-game budget panel (cash/credit, 8 revenue lines, 17 expense lines) + country trade capacity and trade-centre levels | **F6, F7** (vanilla arm) |
 | **v6** | **+ POP** per country: workforce, peasants, slaves, dependents, unemployment rate, total population — the capital-scarcity measure | — |
 | **v7** | **PHASED dumps** (one logical dump over 3 months, cutting the per-tick log burst to ~1/3) + tag-scoping removed: every country, every market | — |
+| **v8** | **+ ORIGINS**: who supplied whom, per good, per importer market (own phase) | **F9** |
+| **v9** | **+ urban-centre levels** and **people-weighted SoL per stratum** per country; **day-0 read** at game start; **building inventory** (type/level/employment) at day 7; `market_goods_scoped`; construction/government/military goods spend; ACTIVE PMs per building | **F11–F22** (F10 used v7 data) |
 
 ### Data-integrity note (the 2026-07-31 mirror bug does NOT affect F3/F4/F5)
 
@@ -87,6 +89,1006 @@ change — see CLAUDE.md → *Testbed sessions are never deleted*. This file exi
 that rule did not: the 26 hours of runs behind the first finding below were deleted in the
 `runs/`→`sessions/` consolidation (`b6f77cb`), and the numbers had to be reconstructed from a chat
 transcript rather than from data.
+
+---
+
+## F24 — All five pop-consumption approaches, re-scored against measured consumption. The within-need rule is the big win; per-pop SoL is not needed
+
+**Claim.** Scored against directly-measured pop consumption, within one run, across six markets:
+the mean absolute error falls **45.1 → 44.0 → 24.7 → 19.4 → 17.8** across the five approaches. The
+step that matters is replacing fitted market-independent weights with the game's documented
+supply-share rule (44.0 → 24.7). Using every pop's true SoL instead of a ±8 spread around the
+stratum mean is worth **1.6 pp**, so the stratum abstraction stays.
+
+Session `20260802_233029_rescore-direct`, dump 1836.2.1, one market per run:
+
+**Error is MONETARY**: `Σ|predicted − measured| × base price ÷ Σ measured × base price`, over goods
+that appear in some pop need. It aggregates (never a mean of per-good percentages, which would let a
+2-unit good outweigh a 10 000-unit one) and weights by value, because a unit of grain and a unit of
+luxury clothes are not comparable quantities — only their money is. The figure reads as *the share
+of the market's pop spending we get wrong*. Unit-weighted ⑤ is shown alongside: the two agree
+closely (17.6 vs 17.4 mean), so the conclusions do not depend on the weighting.
+
+| market | ① flat SoL + unified weights | ② measured strata SoL + unified | ③ + wiki supply-share split | ④ + in-strata spread ±8 | ⑤ per pop, true SoL |
+|---|--:|--:|--:|--:|--:|
+| BEL | 46.1 / 47.6 | 44.9 / 45.4 | 25.5 / 22.7 | 16.5 / 13.8 | **14.8 / 9.4** |
+| JAP | 47.7 / 48.4 | 49.8 / 50.5 | 38.2 / 37.8 | 33.3 / 32.9 | **34.1 / 33.7** |
+| FRA | 70.5 / 69.0 | 68.4 / 66.4 | 39.3 / 38.8 | 26.0 / 26.4 | **20.9 / 22.6** |
+| USA | 67.7 / 67.4 | 64.5 / 63.7 | 19.5 / 21.1 | 12.7 / 12.5 | **10.4 / 10.4** |
+| RUS | 30.1 / 30.7 | 29.3 / 30.0 | 16.2 / 15.8 | 12.5 / 12.1 | **8.2 / 8.4** |
+| CHI | 36.3 / 36.1 | 34.4 / 34.3 | 19.8 / 19.7 | 12.8 / 13.1 | **14.4 / 14.2** |
+| AUS | 50.9 / 48.7 | 48.2 / 45.6 | 24.2 / 21.7 | 18.3 / 16.6 | **17.3 / 15.5** |
+| **mean** | **49.8** | **48.2** | **25.7** | **18.5** | **16.7** |
+
+Paired runs now agree tightly (USA 10.4/10.4, RUS 8.2/8.4, CHI 14.4/14.2), which is the best
+evidence the extraction is sound — before the parser fixes below, the same pairs diverged widely and
+that divergence was being read as genuine run-to-run variance.
+
+**Where the remaining money is** (⑤, pooled across markets, thousands of £ of absolute error):
+opium 139, liquor 118, grain 101, fruit 70, clothes 69, meat 65, wine 59, tea 56. Two needs:
+`basic_food` (grain, meat, fruit) and `popneed_leisure` (opium, liquor, wine, tea), where the Qing
+(opium 684 vs 2080) and France (liquor over-fed, wine under-fed) dominate.
+
+**The measured target is stable, so this is real model error.** Between two runs of the same market,
+the measured pop consumption itself differs by **BEL 4.5%, JAP 4.7%, AUS 2.5%** — concentrated in
+small goods (Belgium sugar 5 vs 14, luxury_clothes 16 vs 7). So a few points of ⑤ are irreducible
+target variance, but the bulk is not.
+
+**Belgium per good at ⑤** (predicted / measured, best run, 10.4% overall): clothes 248/247,
+furniture 183/184, transportation 86/85, services 187/180, liquor 204/211, coal 72/76 — then
+**grain 420/342 (+23%)** and **meat 112/146 (−23%)**, both `popneed_basic_food`. Most of the market
+is now within a few percent and the residual is one need's internal split.
+
+**ADOPTED: approach ④** — measured per-stratum SoL, a ±8 in-stratum spread, and the supply-share
+split (`SOL_SPREAD` in `ui/builder.html`). ⑤ is 1.8 pp better but needs per-pop telemetry the UI
+cannot have; ④ gets most of it from one global constant. The panel is therefore accurate to
+**~18.5 % of pop spending on average, not exactly**, and that figure is a **mean** — Japan is ~33 %,
+Russia and the USA ~8–10 %.
+
+**The residual is distribution, not level, and the within-need split is the likely culprit.** Forcing
+each prediction's total to match the measured total recovers only **0.5 pp** (16.7 → 16.2 at ⑤), so
+the money is right and its allocation is wrong. Money misplaced *within* a need: heating 20.4%,
+basic_food 15.9%, intoxicants 14.7%, crude_items 10.7%, stimulants 10.2%, luxury_food 10.0% — and
+0.0% for `standard_clothing`, `services`, `free_movement`, `communication`, which have one unlocked
+good and so nothing to misallocate.
+
+⚠ **The budget/split decomposition is NOT identifiable from the order book.** 17 of 35 goods belong
+to two needs (meat, fruit, groceries are `basic_food` *and* `luxury_food`; opium is `intoxicants`
+*and* `leisure`; wine is `intoxicants` *and* `luxury_drinks`), and no need has an all-unambiguous
+good set — so there is no observable "money that went to need X", and "wrong budget per need" cannot
+be separated from "a shared good pulled around by the other need". `luxury_drinks` shows the pattern:
+3.6% misplaced internally but 19% cluster error. Separating them needs the per-pop-type split inside
+the breakdown's base64 payload, which the parser does not decode.
+
+**What it does NOT say.** Britain was never in this batch (65 market members). Japan is ~33% and
+remains unexplained — it is a level shortfall (−30% total bias), unlike every other market. One dump
+date, one game version.
+
+**Two instrument traps this batch exposed** (both silent, both would have gone unnoticed):
+- The breakdown renders large values **abbreviated** — `17.1K`, `1.29M`. A bare numeric parse reads
+  17.1 for 17100. Small markets never trigger it, which is why it looked right on Belgium and made
+  the Qing read a 1288% error.
+- **Positional attribution across a rotating log is the dangerous one.** A breakdown entry carries
+  no good name — the good is known only from the `BEGIN` marker that opened its block — so the
+  parser tracks state. The game's log is a ring (`debug.3 → debug.2 → debug.1 → debug.log`, oldest
+  first) *plus* a `logs_live` mirror repeating every line. Reading those in filename order
+  interleaves blocks and credits one good's entries to another: that produced "artillery pop =
+  1420" on a good whose block is in fact **empty**, and changed 13 pop-need goods besides. Worse,
+  the leaked block state also **swallowed `POP1` lines** (they fell inside a still-open block and
+  were skipped), which is what made large markets read 25–64% population coverage. Fix: read files
+  in true chronological order, reset block state at each file boundary (a block split by a rotation
+  is dropped, not mis-attributed), and never reopen a good already captured. Restricting the scope
+  to pop-need goods would have *hidden* this rather than fixed it — the same mis-attribution was
+  corrupting goods inside the scope.
+- Match on the **tail** of each entry line, never across the whole line: the readable value and
+  source follow a multi-KB base64 blob, so a `.*` pattern happily pairs a "Pop" in one place with a
+  "Consumption" in another. `v; +` cannot occur inside base64 (`;` and space are outside its
+  alphabet), so its last occurrence locates the tail exactly.
+- Pop lines are **evicted by the breakdown's burst** in the same tick. Coverage ranged from 24.7% to
+  100% across runs of the same market. Runs are now gated on total population against the preset
+  (≥99.5%) before scoring — without that gate, an under-populated run silently under-predicts
+  everything and looks like model error.
+
+---
+
+## F23 — Pop consumption is DIRECTLY readable. Measured against it, the building model is right (5.3%) and the pop model is wrong (23%) — the reverse of what the residual method implied
+
+**Claim.** `Goods.GetMarketBuyOrdersBreakdown` resolves inside a `debug_log` and returns the market
+panel's buy-orders breakdown **by source**, including an explicit **Pop Consumption** entry and a
+per-building-type split. Pop demand therefore no longer has to be derived as a residual. Measured
+that way at 1836.2.1: **Belgium's building demand is 5.3% off and its pop demand 23.0% off**; Japan's
+pop demand is **61.9%** off and systematically ~1.8× under.
+
+**Why it matters.** The building model, never before validated directly, is good — 5.3% across a
+whole market.
+
+⚠ **Correction (see F24).** This finding first claimed the residual method "flattered" the pop
+model, citing Belgium 14.6% residual-scored against 23.0% direct. That compared **two different
+approaches**: 14.6% was the per-pop approach scored on the residual, 23.0% was the *live UI model*
+(point per-stratum SoL) scored directly. Scoring the **same** approach both ways gives 14.6%
+residual vs **13.9%** direct. The residual target was substantially sound; it is noisier on goods
+the buildings dominate, but it was not biased in the way claimed. F24 re-scores every approach
+directly.
+
+**Belgium, 1836.2.1** (session `20260802_231205_consumption-probe`, run001, 1 run):
+
+| good | buy | pop measured | pop ours | buildings measured | buildings ours |
+|---|--:|--:|--:|--:|--:|
+| grain | 530 | 336 | **476** | 194 | 197 |
+| fabric | 463 | 0 | 0 | 463 | 486 |
+| wood | 477 | 72 | 82 | 405 | 425 |
+| iron | 322 | 0 | 0 | 317 | 294 |
+| coal | 283 | 70 | 76 | 213 | 217 |
+| tools | 279 | 0 | 0 | 279 | 276 |
+| clothes | 247 | 239 | 228 | 3 | 0 |
+| liquor | 194 | 194 | 199 | 0 | 0 |
+| furniture | 172 | 172 | 185 | 0 | 0 |
+| meat | 167 | 143 | **109** | 11 | 0 |
+| services | 166 | 166 | 147 | 0 | 0 |
+| groceries | 115 | 97 | **70** | 1 | 0 |
+| transportation | 79 | 79 | **43** | 0 | 0 |
+| fruit | 46 | 46 | **1** | 0 | 0 |
+
+Totals: **pop 23.0%, buildings 5.3%.**
+
+**Japan, same tick** — pop demand is roughly uniformly ~1.8× ours: clothes 879/486, liquor 601/330,
+fruit 425/199, tobacco 420/258, groceries 387/204, services 521/368, transportation 281/182,
+luxury_clothes 105/19, oil 95/31. But **furniture 384/383 and meat 34/32 match**, so it is not a
+clean scalar. Japan's building error reads 148.5%, driven by two goods on small volumes (silk 61
+measured vs 0 ours, tools 43 vs 14).
+
+**What it does NOT say.** One run, one date, two markets — the other five are unmeasured this way.
+The 5.3% building figure is Belgium only, the market with the fewest buildings and the one whose
+inputs were hand-checked; it does not license the building model everywhere, and Japan's 148.5%
+warns against assuming it. Nothing here explains *why* Japan's pops buy ~1.8× what the model says —
+F-level cause is still open, and the peasant `consumption_mult` was already excluded as the cause
+(six of seven markets independently prefer the vanilla 0.05; only Japan wants 0.20).
+
+**Instrument notes.** The call returns *formatted tooltip text*, not a scalar: each entry is a long
+physical line whose readable tail carries the number and the source, with the nested detail as a
+base64 blob. It is parseable (`scratchpad/parse_breakdown.ps1`) but it is not a clean row. The blob
+also contains a **per-pop-type** split (Belgium grain: laborers +144, soldiers +25.2, farmers +22.1,
+shopkeepers +21.5, peasants +18.3, machinists +17.4, clerks +16.7, …) which is not yet extracted.
+`Building.GetConsumption(GetGoods('x'))` also resolves and gives exact per-building draw on a good.
+
+---
+
+## F22 — The within-need rule was missing the non-pop suppression term. Adding it halves pop demand error
+
+**Claim.** The game's documented within-need allocation subtracts **half of a good's NON-POP buy
+orders** from its sell orders before computing market share — a good that industry consumes heavily
+is correspondingly less available to pops. We did not model that term. Adding it takes Belgium's
+same-run pop demand error from **30.3 % to 16.2 %**, and the eight-market figure from 33.0 % to
+**25.2 %**.
+
+**The documented rule** (vic3.paradoxwikis.com/Needs):
+
+```
+market share    = (sell orders − 0.5 × non-pop buy orders) / Σ over the need's goods
+purchase weight = weight × market share, clamped to [min_supply_share, max_supply_share]
+units           = (need money / base price) × purchase weight / Σ purchase weights
+```
+
+Goods are therefore equivalent **per pound, not per unit** — a higher base price fulfils the same
+need with fewer units. Our model already divided by base price, so that half was right; the market
+share was not.
+
+**Measured on Belgium, everything from ONE run** — that run's pops, its SoLs, its order book, its
+supply — so between-run divergence cannot enter:
+
+| band semantics | non-pop subtraction | spread 0 | spread ±10 | true per-pop SoL |
+|---|---|--:|--:|--:|
+| clamp | no *(what we had)* | 39.1 % | 29.0 % | 30.3 % |
+| **clamp** | **yes** | **23.0 %** | **16.6 %** | **16.2 %** |
+| "no effect outside band" | no | 48.9 % | 39.3 % | 41.2 % |
+| "no effect outside band" | yes | 37.0 % | 30.5 % | 31.2 % |
+
+**The bounds CLAMP; they do not disable.** The wiki summarises them as "market share has no effect if
+it goes outside their range", which reads as reverting to bare `weight`. That is measurably wrong:
+liquor is ~95 % of Belgium's intoxicants supply, and the reverting reading drops its predicted demand
+from **199 to 102** against an observed **201**. Clamping reproduces it. Where documentation and
+measurement disagree, this file records the measurement.
+
+**Per-good at the best configuration** (clamp + subtraction, true per-pop SoL):
+
+| good | observed | predicted | | good | observed | predicted |
+|---|--:|--:|---|---|--:|--:|
+| coal | 75 | 74 | | liquor | 201 | 199 |
+| luxury furniture | 39 | 39 | | coffee | 50 | 48 |
+| tea | 52 | 48 | | clothes | 250 | 240 |
+| furniture | 186 | 179 | | fruit | 43 | 38 |
+| **grain** | 340 | **415** | | **groceries** | 109 | **76** |
+
+**On the in-stratum spread.** With the correct rule the spread is worth **6.8 pp** (23.0 % → 16.2 %),
+down from ~11 pp under the wrong rule — and ±10 lands at 16.6 % against the true distribution's
+16.2 %, i.e. **within 0.4 pp of ground truth**. So it remains a faithful shorthand rather than a
+fitted cover, but it is now a second-order term. It is still **not implemented**.
+
+**What it does NOT say.** 16 % remains at true per-pop SoL, so this is not the last defect. Grain is
+still +22 % and groceries −30 %. And the residual method itself breaks where our *building* demand
+exceeds the run's whole order book — Belgium's wood and fabric show an observed residual of exactly
+zero, which turns a building-side error into an apparent pop-side one; those goods are uninformative
+here, not evidence.
+
+**Session.** `20260802_204326_belgium-popsol` (run001 throughout, n=3 available).
+
+---
+
+## F21 — At n=20 the reference is tight, and the residual is REAL model error, not noise
+
+**Claim.** Twenty runs of the Belgian market put the median per-good buy-order coefficient of
+variation at **5.6 %**, with standard errors near 1 % for the goods that matter. Against that
+reference our error on the **25 stable goods is 16.8 %** — roughly three times their noise. So the
+remaining gap is genuine modelling error and is chaseable. **This corrects F20**, whose n=3 sample
+overstated the noise and led me to suggest the floor had been reached.
+
+**Reference precision, Belgian market 1836.2.1, n=20:**
+
+| | buy orders | sell orders |
+|---|--:|--:|
+| median CV | **5.6 %** | higher, and skewed |
+| p90 CV | 29.5 % | — |
+| SE at n=20, typical big good | **~1 %** | ~1–2 % |
+
+Stable to ~1 %: grain (CV 2.4 %), services (1.4 %), furniture (1.3 %), coal (2.7 %), clothes (3.2 %),
+wood (3.8 %), hardwood (0.4 %), merchant marine (1.1 %), sulfur (0 %). Genuinely noisy, all small:
+opium 115 %, silk 113 %, luxury clothes 95 %, tobacco 30 %, fruit 27 %, sugar 24 %. The n=3 sample
+that produced F20's 26 % fabric spread reads 15.7 % at n=20 — small-sample inflation.
+
+**Error split by whether the good is stable:**
+
+| | goods | our mean absolute error |
+|---|--:|--:|
+| stable (CV < 10 %) | 25 | **16.8 %** |
+| noisy (CV ≥ 10 %) | 10 | 42.7 % |
+
+**Belgium, four numbers, n=20 reference:** demand **4 636** against **4 531**, supply **4 047**
+against **4 123** — 22.0 % and 12.0 % per-good error.
+
+**The residual has a clear signature.** Among stable goods, worst first (their own noise in brackets):
+
+| good | ours | game | error | noise |
+|---|--:|--:|--:|--:|
+| coffee | 25 | 49 | **−49 %** | 4 % |
+| tea | 26 | 50 | **−48 %** | 5 % |
+| grain | 697 | 521 | **+34 %** | 2 % |
+| luxury furniture | 36 | 54 | −34 % | 6 % |
+| meat | 111 | 156 | −29 % | 7 % |
+| wood | 567 | 449 | **+26 %** | 4 % |
+| furniture | 140 | 182 | −23 % | 1 % |
+| clothes | 203 | 249 | −18 % | 3 % |
+| services | 147 | 176 | −16 % | 1 % |
+
+**Grain and wood are over; nearly everything else is under.** That is the signature of the within-need
+allocation still over-concentrating on the bulk staple, even with supply-share weighting — not of
+random error, and not of a level/budget problem (F15 established the total money is right). Coffee and
+tea both at −48 %, with 4–5 % noise, point specifically at `popneed_stimulants`.
+
+**What it does NOT say.** One market, one date. The stable/noisy split uses a 10 % CV cut-off chosen
+for convenience, not derived. It does not explain why grain and wood specifically survive the
+supply-share correction, which is the obvious next question.
+
+**Session.** `tools/testbed/sessions/20260802_194226_belgium-n20` (20 runs, 1836→1836.6.1).
+
+---
+
+## F20 — ⚠ Partly superseded by F21 — the measured reference is noisy, but less than n=3 suggested
+
+⚠ **Read F21 first.** The claim below is directionally right but the MAGNITUDE is overstated: it rests
+on n=3, and at n=20 the median per-good buy CV is 5.6%, not 10-30%. The conclusion drawn here - that
+single-digit accuracy was unreachable - was wrong, and F21 corrects it.
+
+**Claim.** At the **same date, same config, same mod**, a market's per-good buy and sell orders differ
+substantially from run to run. This is the same magnitude as the modelling error being chased, so
+below a certain point the reference — not the model — is the limiting factor.
+
+**Belgian market, 1836.2.1, three runs of one schedule** (`20260802_171235_belgium-check`):
+
+| good | run 1 | run 2 | run 3 | spread |
+|---|--:|--:|--:|--:|
+| fabric buy | 349 | 459 | 441 | **26 %** |
+| fabric sell | 170 | 220 | 219 | **29 %** |
+| wood sell | 315 | 392 | 392 | **24 %** |
+| iron buy | 311 | 319 | 277 | 14 % |
+| grain sell | 518 | 517 | 457 | 13 % |
+| grain buy | 528 | 535 | 492 | 8 % |
+| **iron sell** | **254** | **254** | **254** | **0 %** |
+
+**It is not uniform noise.** Iron sell is identical to the unit across runs while fabric moves by a
+quarter — so the variance is specific to goods whose first-month supply depends on AI decisions
+(which secondary a farm runs, what gets built), not a general measurement wobble.
+
+**Consequences, and they are not small:**
+
+1. **Single-digit per-good accuracy is unreachable at small n.** With a 25 % spread, n=5 leaves a
+   standard error near 11 % — above the target regardless of how good the model is.
+2. **Comparisons across sessions with different run counts are invalid.** This is what made a
+   genuinely correct fix (throughput + secondary PMs) appear to change nothing: the "game" column had
+   moved underneath it. Two sessions of the same schedule disagreed on Belgian iron sell by 254 vs
+   334 simply because they averaged different runs.
+3. **Accuracy should be judged per good, against that good's own variance** — "we model this
+   correctly" and "this good is inherently unstable at the 1836 start" are different statements and
+   are now separable.
+
+**A real averaging bug this exposed.** `extract_measured.ps1` divided *every* accumulator by the total
+run count. The moment two sessions with different metric sets were pooled, that was wrong: throughput,
+present in only 2 of 5 runs, would have been reported at 40 % of its true value. Each key is now
+divided by the number of runs **that key** appeared in — legitimate because lines are de-duplicated
+within a run, so an occurrence count is a run count.
+
+**What it does NOT say.** One market, one date, n=3 for the spread itself — the spread figures are
+themselves noisy estimates of noise. It does not identify *which* AI decisions drive the variance, nor
+whether larger markets are proportionally quieter (Belgium is small, and small markets should be
+noisier; that is untested).
+
+**Session.** `20260802_171235_belgium-check` (n=3) against `20260802_190643_throughput-secondaries`
+(n=2).
+
+---
+
+## F19 — Supply-share allocation beats the fitted vector with ZERO fitted parameters: 39.6 % → 29.4 %
+
+**Claim.** Replacing the fitted market-independent within-need vector with **the game's own rule** —
+each good takes a share proportional to `weight × its share of that need's supply in this market`,
+clamped to the entry's `min_supply_share` / `max_supply_share` — cuts per-good pop demand error from
+**39.6 % to 29.4 %**, and **every one of eight markets improves**. It uses no fitted numbers at all.
+
+**It is not circular and not a time series.** Pops never sell, so market supply does not depend on pop
+demand: the allocation is a single pass over the scenario's own sell orders, which the panel already
+computes. No fixed point, no iteration, no per-scenario stored profile.
+
+| market | fitted fixed vector | supply share | **weight × supply share** |
+|---|--:|--:|--:|
+| France | 63.6 % | 55.0 % | **44.8 %** |
+| Britain | 41.2 % | 47.9 % | **37.1 %** |
+| Russia | 31.0 % | 27.8 % | **19.5 %** |
+| Qing | 29.9 % | 24.2 % | **19.6 %** |
+| Austria | 52.9 % | 53.9 % | **44.3 %** |
+| Japan | 48.1 % | 36.4 % | **35.9 %** |
+| USA | 57.1 % | 39.2 % | **31.0 %** |
+| Belgium | 54.7 % | 61.1 % | **50.3 %** |
+| **total** | **39.6 %** | 36.8 % | **29.4 %** |
+
+`weight` matters: plain supply share alone scores 36.8 % and makes Britain, Austria and Belgium
+*worse*. Two other forms were tried and rejected — supply share raised to 0.5 (40.4 %) and to 1.5
+(45.0 %), both worse than the baseline.
+
+**February is the right target; the substitution lag does not help.** Scored against the May 1836
+order book instead, the same rule gives **33.6 %** and the fitted vector 43.5 % — both worse. The
+degradation is consistent with new construction contaminating a wider gap.
+
+| | vs February | vs May |
+|---|--:|--:|
+| fitted vector | 39.6 % | 43.5 % |
+| supply share × weight | **29.4 %** | 33.6 % |
+
+**Implemented** (`needSplit()` in `ui/builder.html`), and it *removes* state rather than adding it:
+`config/pop_distribution.json` is no longer the model, only a fallback for a need with no supply at
+all in the scenario. Live figure 29.3 %, matching the experiment.
+
+**What it does NOT say.** It does **not** hit the observed numbers — 29 % per-good error remains, so
+this closes about a quarter of the gap, not the gap. Three things are still in it:
+
+1. **Stratum averaging** (approximation 1), deliberately retained: five SoL buckets stand in for a
+   real distribution over pops.
+2. **The formula is inferred, not sourced.** `weight × supply share`, clamped, is the best of four
+   candidates tested against the order book — the engine's actual rule is not in the game files and
+   this is not the same as knowing it.
+3. **The supply fed into the allocation is our own model's supply**, which F17 measured as 12 % out
+   per good. So this figure is an **upper bound**: fixing the two known supply defects — unactivated
+   secondary production methods, and throughput bonuses modelled as zero — should improve pop demand
+   as a side effect, because the allocation reads supply as its input.
+
+**Session.** No new game time; scored against `20260802_171235_belgium-check` (February) and
+`20260802_132252_construction-ramp` (May).
+
+---
+
+## F18 — ⚠ RETRACTED AS A RECOMMENDATION. A per-class within-need split scores 28 % better held out, but the game has no such dimension — it is a proxy for supply share
+
+**Status.** The measurement stands; the conclusion drawn from it does not. Recorded in full because
+the *way* it was wrong is the useful part.
+
+**What the game actually does** (verified against the files, 1.13.9):
+
+| file | conditions on | does NOT condition on |
+|---|---|---|
+| `common/buy_packages` | wealth level only | pop type, culture, religion — no reference to any of them |
+| `common/pop_needs` | nothing — only `entry` / `goods` / `weight` / `min_supply_share` / `max_supply_share` / `default` | pop type **and wealth** |
+| `common/pop_types` | `consumption_mult` (peasants 0.05) | — a scalar on the whole package, not a different basket |
+
+So **consumption is a function of wealth level alone**: a labourer who reaches SoL 25 buys exactly
+what a capitalist at SoL 25 buys. And — the part that kills the proposal — **the within-need split has
+no wealth dimension either**. `weight` and the supply-share bounds are per-(need, good) constants; the
+only thing that varies the split is **supply share**, a market property identical for every pop in
+that market.
+
+So neither "per class" nor "per SoL" corresponds to anything in the engine.
+
+**What the 28 % therefore was.** Class mix varies across markets, class mix correlates with market
+development, and development correlates with the supply mix that genuinely drives the split. The
+per-class parameterisation was a **back-door proxy for market supply share** — precisely the
+market-dependence the design excludes on purpose.
+
+⚠ **The methodological lesson: leave-one-out validation tests predictive TRANSFER, not MECHANISM.** A
+proxy that correlates with market development transfers perfectly well to an unseen market of similar
+composition and scores well. Held-out performance was presented here as though it established the
+model was *right*; it established only that it *predicts*. For a model whose whole purpose is to be
+mechanistically defensible, that is not the same thing, and no amount of validation substitutes for
+checking the game files.
+
+**The measurement, retained.** Splitting a pop need's money by a (class × need) distribution rather
+than one shared per-need distribution cuts held-out weighted error by **28.2 %** (31.5 % in-sample).
+
+**First, the model shape, because it is easy to state backwards.** The money each need receives
+**already varies by standard of living** — that is `common/buy_packages`, a wealth level → {need → £}
+table we take from the game verbatim. What is currently shared across all wealth levels is our
+**fitted within-need split across goods**. So the missing dimension is not "per need" — it is the
+goods split varying by class:
+
+| | today | proposed |
+|---|---|---|
+| £ per need, per SoL | game's `buy_packages` | unchanged |
+| goods split within a need | one fitted vector per need | one per **(class, need)** |
+
+**Result**, weighted least squares over the eight 1836 markets, 232 market×good observations:
+
+| model | parameters | in-sample SSE | leave-one-market-out SSE |
+|---|--:|--:|--:|
+| per need | 44 | 1 628.6 | 2 454.9 |
+| per (class × need) | 220 | 1 114.9 | **1 761.6** |
+| | | −31.5 % | **−28.2 %** |
+
+220 parameters against 232 observations is close to one per data point, so the in-sample number alone
+would be worthless — the held-out figure is what makes this real. That the two agree to ~3 pp says the
+extra parameters are capturing class-specific consumption rather than memorising markets.
+
+**Why it should work, mechanically.** A peasant and a capitalist facing the same food budget do not
+buy the same basket, and the current model forces them to. The classes also differ enough *between*
+markets — Belgium is a third peasant, the Qing nine tenths — for the fit to separate them.
+
+**What it does NOT say.** It is not an implementation — the experiment computed predictions outside
+`popDemand()`, so nothing in the live model changed, and nothing should be built on it as stated. It
+inherits F17's caveat too: the fit target is a residual against a building model that is itself 12 %
+out on supply.
+
+**Where this leaves the design.** Three options, none of them the above:
+
+1. **Keep the single market-independent per-need split.** Mechanically honest; its ceiling is now
+   measured at roughly F17's 26 % demand / 12 % supply. The residual is structural, not tunable.
+2. **Compute the split from supply share** — the actual mechanism. Narrower than the substitution
+   modelling that was ruled out: in a *static* scenario, supply is fixed and known, so this is one
+   pass over the panel's own sell orders. No time series, no feedback, no iteration.
+3. **Adopt a proxy knowingly**, documented as a fitted correlate rather than a mechanism.
+
+**Session.** No game time; computed against `20260802_171235_belgium-check` via the seven other presets.
+
+---
+
+## F17 — Belgium: the residual is NOT all pop demand. Four sources, and two are on the supply side
+
+**Claim.** Using Belgium (one country, two states, 151 building levels) as a hand-checkable case: the
+scenario's totals are close — demand 4 461 against 4 554, supply 3 855 against 4 114 — but **per-good**
+error is 26 % on demand and **12 % on supply**. Supply is pop-free, so that 12 % cannot be pop demand.
+Four distinct sources, none of which is the building inventory or employment.
+
+**The four numbers** (Belgian market, Feb 1836, measured n=3):
+
+| | scenario | game |
+|---|--:|--:|
+| demand (buy orders) | 4 461 | 4 554 |
+| supply (sell orders) | 3 855 | 4 114 |
+
+⚠ Read the totals as coincidence, not accuracy: over- and under-shoots cancel. Σ&#124;per-good err&#124;
+is 1 191 of 4 554 demand (26.1 %) and 482 of 4 114 supply (11.7 %).
+
+**What is NOT a source.**
+
+- **Building inventory** — every level difference against the game's own is a building with **no
+  goods**: manor houses (16 vs 72), barracks (0 vs 24), conscription and logistics centres. The
+  goods-bearing buildings match exactly, bar subsistence (122 vs 128) and urban centres (9 vs 11).
+- **Employment** — every Belgian building reads 0.99–1.00. The full-employment assumption is sound.
+- **Population** — 4 147 468, matching history exactly; each class exactly 4× its measured workforce.
+
+**Source 1 — the within-need distribution (largest).** Grain demand 794 against 518 (+53 %) while
+meat 51/156, groceries 31/115 and transportation 39/101 are each under by two thirds. Belgium is a
+market where grain does *not* dominate supply, so a market-independent split misfires exactly where
+the design says it can.
+
+**Source 2 — secondary production methods the preset never activates.** Two goods have **no source at
+all** in the scenario: **fruit 0 against 62**, **luxury clothes 3 against 32**. Fruit comes from the
+orchard PMs (`pm_apple_orchards` and friends, a secondary PMG on farms); luxury clothes from
+`pm_craftsman_sewing` on textile mills. Both buildings are present with the right level counts — only
+the secondary PM is missing. The error runs both ways: subsistence contributes 31 clothes the game
+does not show, from a home-workshops PM Belgium may not run.
+
+**Source 3 — throughput modifiers, which the panel does not model at all.** Our supply is
+systematically under for multi-level buildings:
+
+| | scenario | game | implied |
+|---|--:|--:|--:|
+| iron | 240 | 254 | ×1.06 |
+| tools | 204 | 231 | ×1.13 |
+| coal | 200 | 230 | ×1.15 |
+| wood | 306 | 366 | ×1.20 |
+| steel | 130 | 171 | ×1.31 |
+
+**Economy of scale is confirmed and quantified**: the `economy_of_scale` static modifier is
+`building_throughput_add = 0.01` per level above 1, capped at 20 levels
+(`building_economy_of_scale_level_cap_add`), applying to any group flagged `economy_of_scale = yes`
+(manufacturing, agriculture, ranching, …). It predicts iron exactly — 6 levels → +5 %, 240 → 252
+against 254 measured — but not steel at +31 %, so technology and law throughput bonuses sit on top.
+⚠ It applies **per building, per state**: Belgium's 7 logging levels are two buildings of 3 and 4, so
+they earn less than one building of 7 would.
+
+**Source 4 — subsistence and urban-centre level counts**, both small: −6 subsistence levels (−4.7 %)
+and −2 urban centres. Subsistence explains about 3 of wood's 60-unit gap; it is **not** the wood
+story, which is throughput.
+
+**What it does NOT say.** One market, one date. It does not quantify how much of the 26 % demand
+error is source 1 versus a knock-on from sources 2 and 3 (a good the panel under-supplies is also a
+good whose pop demand was fitted against a contaminated residual). It does not identify which
+technologies or laws supply the throughput beyond economy of scale.
+
+**Session.** `tools/testbed/sessions/20260802_171235_belgium-check` (n=3, 1836→1836.6.1).
+
+---
+
+## F16 — Urban centres do not run the production methods the extractor assumed, on two PMGs of four
+
+**Claim.** Measured directly: urban centres world-wide run `pm_market_squares` on more than half
+their levels, `pm_gas_streetlights` on a quarter, and `pm_free_urban_clergy` on five sixths. The
+scenario extractor was inferring `pm_market_stalls` / `pm_no_street_lighting` / `pm_state_urban_clergy`
+from the market leader's laws — wrong on **amenities** and **urban clergy**, and wrong on **street
+lighting** for the developed markets. Those PMs decide services output and coal demand, which are
+two of the largest remaining scenario errors.
+
+**World-wide levels by active PM** (599 urban-centre levels, four PMGs, so each PMG's rows sum to 599):
+
+| PMG | active PMs, by levels |
+|---|---|
+| amenities | `pm_market_squares` **344** · `pm_market_stalls` 255 |
+| street lighting | `pm_no_street_lighting` **450** · `pm_gas_streetlights` 149 |
+| public transport | `pm_no_public_transport` **599** (all) |
+| urban clergy | `pm_free_urban_clergy` **500** · `pm_state_urban_clergy` 99 |
+
+Per market it varies in exactly the way that matters — the British market runs
+`pm_gas_streetlights` on 89 of 133 levels and `pm_market_squares` on 89, while Russia runs
+`pm_market_stalls` on all 39 and splits its clergy almost evenly.
+
+**Method note that is the real finding.** The first attempt reported **all 13 candidate PMs active on
+all 224 urban centres** at identical level totals, including mutually exclusive ones from the same
+PMG. The filter used `is_production_method_active`, which is a **state**-scope trigger taking a block;
+the building-scope trigger is **`has_active_production_method = <pm>`**. An invalid trigger inside a
+`limit` is silently ignored, so the limit degenerated to `is_building_type` and everything matched.
+The corrected run returns exactly 896 lines = 224 buildings × 4 PMGs. See BUGS_AND_FIXES.
+
+**On the level count.** Feeding the buildings history never creates (military 2 urbanization/level,
+companies 5) into the per-state sum moved the British market's urbanization from 12 396 to 12 880
+points but left the level count at 97, because military buildings are spread thinly enough that most
+states' share is floored away. The residual against the measured 128 is therefore the
+technology/law urbanization bonus, which the model omits by instruction — consistent with F13's
+per-state result, where Britain was the one country the rule under-predicted.
+
+**What it does NOT say.** It does not yet show an error reduction: the measured PMs reached
+`ui/presets.js` but the majority-pick has a bug on `pmg_street_lighting` (it selects the 44-level
+`pm_no_street_lighting` over the 89-level `pm_gas_streetlights`, while the structurally identical
+amenities case picks correctly), so the re-score is not trustworthy and is not reported here. One
+date, one game version.
+
+**Run-to-run stability, n=5** (`20260802_153817_uc-pms-n5`), world-wide levels per PM:
+
+| PM | mean | min | max | spread |
+|---|--:|--:|--:|--:|
+| `pm_free_urban_clergy` | 500.0 | 498 | 502 | 0.8 % |
+| `pm_no_street_lighting` | 449.8 | 447 | 452 | 1.1 % |
+| `pm_gas_streetlights` | 149.4 | 148 | 151 | 2.0 % |
+| `pm_market_stalls` | 255.8 | 253 | 263 | 3.9 % |
+| `pm_state_urban_clergy` | 99.2 | 97 | 101 | 4.0 % |
+| `pm_market_squares` | 343.4 | 332 | 349 | 5.0 % |
+| `pm_no_public_transport` | 489.0 | 469 | 508 | 8.0 % |
+| **`pm_public_trams`** | **110.2** | **92** | **133** | **37.2 %** |
+
+Everything except public transport is reproducible to a few per cent — one run is enough. **Trams are
+the exception and swing by a third between runs**, so any statement about public transport needs n>1.
+
+⚠ **These are NOT February numbers.** `active_pms` rides **phase 3**, which fires three months after
+the date it stamps, so lines labelled `1836.2.1` are the **1836.5.1** state. That is why trams appear
+here at ~110 levels and are entirely absent from the January sample (`20260802_145506`, a day-3
+event): public transport switches on somewhere between January and May. The presets deliberately use
+the **January** sample, being the closest available to the Feb-1836 reference — but no sample sits
+exactly on it. The same offset applies to the standard-of-living and urban-centre *levels* in
+`config/measured_1836.json` (phase 1, so 1836.3.1 stamped as 1836.2.1). See TESTBED_METRICS.
+
+⚠ **The 1838 comparison was NOT collected**, through a scheduling mistake of mine: the same phase-3
+offset put the 1838.2.1 dump's emission at 1838.5.1, past the run's `until` of 1838.4.1. **A phased
+metric needs `until` ≥ last dump + phase + 1 months.** Whether the reading stays representative two
+years in is still unmeasured.
+
+**Session.** `tools/testbed/sessions/20260802_145506_urban-centres` (2 runs, 1836→1836.4.1) and
+`20260802_153817_uc-pms-n5` (n=5). The earlier `20260802_145136_urban-centres` is the failed-filter
+run, kept per the never-delete rule.
+
+---
+
+## F15 — A fitted, market-independent consumption distribution cuts scenario demand error from 49 % to 37 %
+
+**Claim.** Replacing the vanilla `weight` field with coefficients **fitted across all seven 1836
+markets** takes mean absolute demand error from **49.1 % to 37.0 %** of the game's own buy orders,
+improving six markets of seven. The remaining error is no longer the allocation rule.
+
+**Method.** Orders cannot be decomposed by channel in-game, so observed pop demand is recovered by
+subtraction using the panel's own building model — `buy_orders − building demand − trade out` —
+which is legitimate only because the building side was verified first (F14). With the shares
+constrained to sum to 1 per need, predicted demand is **linear** in them:
+
+```
+predicted(m,g) = Σ_need spend(m,need) · s(need,g) / price(g)
+```
+
+so the fit is a projected-gradient solve over 203 market×good observations and 15 needs, with the
+simplex constraint reimposed each step. All seven markets share one unlock set in 1836, so the
+normalisation set is identical everywhere and the constraint is exact.
+
+| market | vanilla `weight` split | fitted | |
+|---|--:|--:|---|
+| Great Britain | 40.9 % | **31.1 %** | |
+| France | 37.3 % | **36.1 %** | |
+| Russia | 46.5 % | **27.1 %** | |
+| Qing | 66.4 % | **45.7 %** | |
+| Austria | 37.4 % | **31.7 %** | |
+| Japan | 58.1 % | **47.8 %** | |
+| USA | 30.9 % | 36.1 % | ⚠ worse |
+| **total** | **49.1 %** | **37.0 %** | |
+
+**Weighting matters, and it is a design choice not a technicality.** Fitting on raw summed squared
+error lets Britain and the Qing set the answer for all seven: it scores 38.1 % overall but makes
+**France (37.3 → 41.9 %) and the USA (30.9 → 44.0 %) worse**. Normalising each market by its own
+total demand scores 37.0 % *and* spreads the improvement. Both are recorded because the difference
+is the whole content of "one rule for every country, fitted on a large set".
+
+**What the fit says, against what `weight` said** — the coefficients are interpretable and match the
+diagnosis in F10 independently:
+
+| need | fitted | vanilla `weight` share | |
+|---|---|---|---|
+| `popneed_basic_food` → grain | **0.788** | 0.17 | grain is ~74 % of British food supply |
+| `popneed_simple_clothing` → fabric | **0** | 0.50 | pops buy clothes, not fabric, when clothes exist |
+| `popneed_luxury_drinks` → wine | **0** | 0.31 | Britain has almost no wine |
+| `popneed_free_movement` → transportation | 1.0 | 1.0 | unchanged (sole unlocked entry) |
+
+**It generalises — leave-one-market-out.** Refitting on six markets and scoring the seventh, which
+the fit never saw:
+
+| held-out market | `weight` split | fitted, in-sample | **fitted, held out** |
+|---|--:|--:|--:|
+| Great Britain | 40.9 % | 31.1 % | **33.2 %** |
+| Russia | 46.5 % | 27.1 % | **29.2 %** |
+| Qing | 66.4 % | 45.7 % | **53.5 %** |
+| Austria | 37.4 % | 31.7 % | **32.5 %** |
+| Japan | 58.1 % | 47.8 % | **48.4 %** |
+| France | 37.3 % | 36.1 % | 38.1 % ⚠ |
+| USA | 30.9 % | 36.1 % | 40.7 % ⚠ |
+| **mean** | **45.4 %** | **36.5 %** | **39.4 %** |
+
+Out-of-sample error is 39.4 % against 45.4 % for the `weight` split, and the overfit gap is only
+**2.9 pp** — so the distribution is capturing something real about pop consumption, not memorising
+seven markets. Five of seven improve on a market the fit never saw; France and the USA are the two
+where a market-independent rule cannot help, in-sample or out.
+
+**What it does NOT say.** It is a *market-independent* distribution by construction, so it cannot
+reproduce the game's actual supply-share allocation — the France and USA regressions are that limit
+showing, not a solver failure. One date, one game version, one config, n=1 per market. And the fit
+inherits every building-side error as pop coefficients: the residual is now concentrated in goods
+whose *supply* the panel also gets wrong.
+
+**Where the remaining 37 % sits** (summed over all seven markets):
+
+| good | Σ&#124;err&#124; | game demand | error |
+|---|--:|--:|--:|
+| services | 11 969 | 16 101 | 74 % |
+| grain | 9 280 | 44 760 | 21 % |
+| transportation | 7 826 | 9 649 | 81 % |
+| wood | 5 725 | 34 031 | 17 % |
+| clothes | 4 639 | 16 503 | 28 % |
+| groceries | 3 597 | 3 873 | 93 % |
+
+Services and transportation together are 20 % of the whole remaining error, and both are **urban
+centre** goods — the derived level count is 25–30 % short on developed markets (F13) and the PMs
+those levels run are chosen by law rather than measured. That, not the pop model, is the next thing
+to fix.
+
+**Session.** No new game time; fitted against `20260802_112116_scenario-calib` via
+`config/measured_1836.json`. Coefficients in `config/pop_distribution.json`; re-runnable from the
+balance UI's **fit pops** button.
+
+---
+
+## F14 — The history-derived scenario reproduces the game's economic buildings almost exactly; the misses are four named categories
+
+**Claim.** Walking `common/history/buildings` and mapping onto our tier keys reproduces the game's
+own 1836 inventory to **within about 0.5 % of levels** for economic buildings. Every material
+mismatch falls into four categories, none of them "the extractor is wrong".
+
+**Method.** The measured `BINV` inventory (type, level, employment, state, country for all 6 428
+buildings) aggregated per market, against each preset's own building list.
+
+| market | scenario levels | game | Σ&#124;diff&#124; | of which military | companies | monuments | **economic residual** |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| British | 1 359 | 2 381 | 1 032 | 998 | 28 | 1 | **5** |
+| French | 628 | 930 | 310 | 300 | 5 | 1 | **4** |
+| Russian | 645 | 944 | 307 | 297 | 5 | 1 | **4** |
+| Qing | 1 144 | 1 712 | 570 | 567 | 0 | 2 | **1** |
+
+The economic residual is ±1–3 levels on a handful of types (wheat farm +3, coal mine +1, government
+administration +2, university +1, naval administration +1). **So the answer to "is the regular,
+non-pop, non-urban, non-military, non-subsistence side isolated and correct" is yes.**
+
+The four categories that do differ:
+
+1. **Military** — the engine sizes barracks and logistics/conscription centres to the army rather
+   than reading them from history: 31 British barrack levels in history against **705** in game.
+2. **Companies** (`building_company_*`) — 5–28 levels per market, flavour buildings.
+3. **Monuments** — one level each (Taj Mahal, Forbidden City, Saint Basil's, Easter Island heads).
+4. **Inferred buildings**, which are a different problem: **manor houses are out by 10×** (British
+   market 426 against 4 755, Qing 526 against 9 470) and subsistence by ~40 % (British farms 1 738
+   against 2 939). Manor houses carry no goods, so they do not move market orders — but they *do*
+   employ aristocrats, and the preset derives its **upper class** from building jobs, so this feeds
+   straight into pop demand.
+
+**Second half — construction is not running on day 0, which overturns F11's recommendation.**
+Measured `GetConstructionGoodsExpenses`, £/week:
+
+| | Jan 1 | Feb 1 | Mar 1 | Apr 1 | May 1 |
+|---|--:|--:|--:|--:|--:|
+| Great Britain | **0.00** | 48 182 | 46 746 | 48 388 | 50 709 |
+| France | **0.00** | 22 324 | 21 910 | 20 693 | 18 610 |
+| Great Qing | **0.00** | 14 904 | 15 806 | 15 525 | 15 800 |
+| Russia | **0.00** | 8 836 | 4 669 | 22 391 | 35 854 |
+
+Exactly zero for every country on day 0 — the construction sector has not run a weekly tick yet.
+This is an initialisation artefact, not the AI queue filling up as F11 supposed. Since the scenario
+panel models every building at full utilisation, **day 0 is history-faithful but economically
+unfinished, and 1836.2.1 is the correct calibration date.** Corroborating: for the fifteen goods no
+pop need lists — pure building demand — the panel's error against Feb (Σ&#124;err&#124; 1 958 on a
+base of 18 419, 11 %) is smaller than against day 0 (2 217), and iron specifically goes from +497
+over at day 0 to +214 at Feb.
+
+⚠ **Russia's construction is volatile** (4 669 → 35 854 over four months), so any single-date reading
+of Russian construction demand carries that noise; Britain, France and the Qing are stable from Feb.
+
+**What it does NOT say.** It does not say the *recipes* are right — only the building counts. The
+11 % residual on pop-free goods is unexplained and concentrated in hardwood (−380), fabric (−371),
+silk (−246), clippers (−189) and merchant marine (−123). n=1 per market.
+
+**Session.** `20260802_112116_scenario-calib` (inventory) and `20260802_132252_construction-ramp`
+(the spend series, one run, 1836→1836.7).
+
+---
+
+## F13 — The urban-centre rule: floor(state urbanization / 100), subsistence excluded
+
+**Claim.** The engine raises **one urban-centre level per 100 urbanization in a state**, where each
+building level contributes its `building_group`'s `urbanization` value and groups flagged
+`is_subsistence` contribute **nothing**. Verified **exact on 774 of 783 states (98.9 %)**.
+
+This closes the gap CLAUDE.md recorded as unmodellable ("`common/building_groups` gives urbanization
+per building level, but not the divisor") — the divisor is 100, and it is applied per state, so the
+scenario extractor can now compute urban centres from the game files alone.
+
+**Method.** Predicted from the measured `BINV` inventory, scored against the measured
+`v3tb_lvl_urban_center`; both from the same run, so no cross-version error.
+
+| variant | result |
+|---|---|
+| all building groups, urbanization inherited through `parent_group` | predicted 2 314 against 601 actual — **4× over** |
+| …excluding `is_subsistence` groups | **exact on 774/783 states** |
+
+Subsistence is the whole difference: those groups declare no `urbanization` of their own and inherit
+`bg_agriculture`'s 5, which for the Qing alone turned 8 719 rice-farm levels into 435 phantom urban
+centres. Corroborating the threshold from the other side: every state with urbanization but **no**
+urban centre has urbanization ≤ 99.
+
+**The nine misses are all under-predictions** — Great Britain 11 levels, Upper Canada 1, France 1 —
+i.e. the technology/law urbanization bonus, which the model deliberately ignores ("assume base
+techs"). So a developed country gets slightly fewer urban centres in the scenario than in game.
+
+**Applied to the presets** (derived from the history inventory, so also missing the military
+buildings that carry urbanization 2/level):
+
+| market | derived | measured | | market | derived | measured |
+|---|--:|--:|---|---|--:|--:|
+| Japanese | 11 | 11 | | Russian | 30 | 38 |
+| Austrian | 26 | 33 | | French | 47 | 61 |
+| American | 27 | 32 | | Qing | 92 | 107 |
+| | | | | British | 97 | 129 |
+
+**What it does NOT say.** It does not model the tech/law bonus, so it under-predicts developed
+markets by design. It says nothing about which **production methods** those urban centres run — the
+extractor picks them by the market leader's laws, the same way it picks subsistence PMs, and that is
+unverified against the game. Measured at one date, one game version (1.13.9).
+
+**Session.** `20260802_112116_scenario-calib`.
+
+---
+
+## F12 — Measured urban centres and SoL: real, but together they close under a fifth of the gap
+
+**Claim.** The two model gaps that were *nameable in advance* — missing urban centres and the flat
+35/16/9 standard of living — are both real and now measured. Applied to the British market they cut
+the **supply** error by 17.5 % and the **demand** error by 3.7 %. That leaves the allocation rule
+(F10) as the dominant term, and confirms it is not an artefact of those two omissions.
+
+**Measured at day 0, per market** (mod arm; SoL is people-weighted within each stratum, summed over
+every country sharing the market):
+
+| market | urban-centre levels | upper | middle | lower | peasants | slaves |
+|---|--:|--:|--:|--:|--:|--:|
+| British | **134** | 35.4 | 19.5 | 7.1 | 9.4 | 7.9 |
+| Qing | 106 | 38.2 | 18.7 | 7.4 | 9.3 | — |
+| French | 60 | 32.2 | 16.0 | 7.7 | **12.1** | — |
+| Russian | 39 | 32.7 | 15.9 | 8.0 | 8.6 | 8.0 |
+| Austrian | 33 | 31.3 | 15.5 | 7.0 | **6.6** | — |
+| American | 32 | 35.6 | 15.6 | 9.8 | 10.2 | 8.0 |
+| Japanese | 11 | 33.3 | 17.8 | 7.6 | **4.5** | — |
+
+*(preset assumption: 35 / 16 / 9, with peasants and slaves both taking the lower level)*
+
+The **lower** class is 7.0–9.8 everywhere, i.e. the flat 9 overstates it in six markets of seven.
+**Peasants** are the wild term — 4.5 in Japan against 12.1 in France, a factor of 2.7 — and the UI
+cannot express that at all today, because `popDemand()` hardcodes peasants and slaves to `SOL.lower`.
+Giving those two classes their own level is a prerequisite for using this data.
+
+**Effect, British market, against the day-0 reference:**
+
+| step | Σ&#124;demand err&#124; | Σ&#124;supply err&#124; |
+|---|--:|--:|
+| baseline (as shipped) | 33 796 | 12 987 |
+| + urban centres at 134 levels | 33 796 | **10 709** (−17.5 %) |
+| + measured SoL 35 / 20 / 7 | **32 541** (−3.7 %) | 10 709 |
+
+Urban centres move **only** the supply side, because their default PM set (`pm_market_stalls`,
+`pm_no_street_lighting`, `pm_no_public_transport`) buys nothing — 134 levels × 15 services = 2 010,
+against a services supply gap of 3 742. So they explain about half of that one good's gap and none of
+the transportation demand gap, which was the other thing they were expected to explain.
+
+**What it does NOT say.** It does not identify what the remaining 15 % supply error is (10 709 of
+70 517) — urban centres were the only *known* missing building type, so the rest is either a wrong
+building count, wrong recipes, or the full-employment assumption. The UC figure is a level count, not
+a PM assignment: which amenities/lighting/transport PMs those levels actually run is not logged, and
+that determines what they buy. n=1 per market at one date.
+
+**Session.** `tools/testbed/sessions/20260802_112116_scenario-calib` (4 runs: 2 mod, 2 control,
+1836→1836.4.1, schema v9). The stopped predecessor `20260802_111721_scenario-calib` logged SoL as 0
+for every country — see BUGS_AND_FIXES.md — and is kept per the never-delete rule.
+
+---
+
+## F10 — The scenario panel's demand gap is STRUCTURAL, not a calibration constant
+
+**Claim.** The balance UI's scenario panel understates 1836 market demand by 18–44 % and supply by
+12–20 %, and **no scalar coefficient can fix it**: the multiplier on pop demand that minimises
+per-good error is *smaller than 1* for Britain, even though Britain's total demand is 31 % short.
+The error is in the **within-need allocation rule**, not in any averaging constant.
+
+**Method.** No game time: the UI (`ui/builder.html`) was driven headlessly, each preset applied, and
+its aggregates compared to the modded arm of session `20260801_225108_paper-be20-n3` at 1836.2.1.
+The comparison is legitimate because the market columns reconcile exactly (`sell_orders =
+production + imports + treaty transfers in`; see TESTBED_METRICS §4.1), so the like-for-like pairs
+are **UI demand ↔ `buy_orders − exports`** and **UI supply ↔ `sell_orders − imports`**.
+
+| market | UI demand | game | UI supply | game | Σ&#124;err&#124; demand | Σ&#124;err&#124; supply |
+|---|--:|--:|--:|--:|--:|--:|
+| GBR | 51 835 | 74 663 | 59 986 | 70 719 | 33 302 | 13 530 |
+| FRA | 20 970 | 25 487 | 20 481 | 23 195 | 9 916 | 4 119 |
+| RUS | 19 164 | 24 745 | 24 344 | 28 966 | 11 826 | 5 584 |
+| CHI | 45 104 | 80 222 | 73 680 | 91 594 | 54 412 | 18 171 |
+
+**The negative result, which is the useful part.** Grid-searching one multiplier `k` on all pop
+demand per market:
+
+| market | `k` matching the TOTAL | `k` minimising Σ&#124;err&#124; | Σ&#124;err&#124; before → after |
+|---|--:|--:|--:|
+| GBR | 1.90 | **0.85** | 33 302 → 33 020 (−0.8 %) |
+| FRA | 1.52 | 1.10 | 9 916 → 9 825 (−0.9 %) |
+| RUS | 1.50 | 1.10 | 11 826 → 11 761 (−0.5 %) |
+| CHI | 2.16 | 1.65 | 54 412 → 52 118 (−4.2 %) |
+
+**Cause, with the arithmetic.** The game splits a pop need's money across its candidate goods by
+**supply share**, bounded by each entry's `max_supply_share`; the UI splits by the entry's `weight`.
+`popneed_basic_food` is grain 0.85 / fish 1 / meat 1 / fruit 1 / groceries 1.15, each capped at 0.9.
+In the British market grain's share of the food goods' supply is ≈74 %; splitting by weight gives it
+0.85/5.00 = 17 %. That one line is the largest single error in the table:
+
+| good | UI | game | mechanism |
+|---|--:|--:|---|
+| grain | 3 413 | 11 282 | grain dominates food supply; weight-splitting gives it a fifth |
+| fabric | 10 383 (1 419 from pops) | 8 965 (**0** from pops) | pops buy clothes, not fabric, when clothes are supplied |
+| oil | 716 | 57 | `popneed_heating` split by weight rather than supply |
+| wine (GBR) | 217 | 27 | ignores the 0.33 cap *and* Britain's near-zero wine supply |
+
+**Two model gaps confirmed on the side.** Urban centres are absent from every preset
+(`BLDNUM['building_urban_center'] = 0`), and their default PMs output `services 15 + transportation
+2` per level — which is where Britain's −3 742 services supply gap lives. And **military
+consumption is missing entirely**: 31 GBR barrack levels select only `pmg_training →
+pm_no_organization` and produce no goods at all, against a real 636 small arms / 87 ammunition / 60
+artillery of demand.
+
+**What it does NOT say.** It does not say what the right coefficients are — only that a scalar
+cannot be them. It does not separate building-model error from pop-model error on the demand side
+(the supply side is pop-free, the demand side is not). It is n=1 per market, one date, one config.
+And it carries a known confound: the UI's `reconcileToWageModel` re-solves volumes on load, so the
+UI's recipes are not byte-identical to the config's (textile T1 fabric is 60 in the config, 66 in the
+UI) — the fit proper must be run against a mod built from a UI-exported config.
+
+**Session.** No new session; UI + `20260801_225108_paper-be20-n3` (1836.2.1, run 1).
+
+---
+
+## F11 — The 1836 start moves within weeks, and the day-0 read is the only clean reference
+
+**Claim.** `on_game_started_after_lobby` reads a **fully initialised market** at 1 January 1836, and
+that is the earliest reading obtainable — `on_monthly_pulse` does **not** fire on 1836.1.1. It
+matters: by 1836.2.1, the date every previous session used, the AI's construction queue has already
+moved the industrial inputs by up to a quarter.
+
+**British market buy orders, mod arm, indexed to the day-0 read:**
+
+| good | day 0 | day 7 | 1836.2.1 | 1836.3.1 |
+|---|--:|--:|--:|--:|
+| iron | 1 193.6 | +9.6 % | **+25.7 %** | +3.4 % |
+| small arms | 791.1 | −10.5 % | **−17.3 %** | −21.1 % |
+| engines | 85.0 | +6.5 % | +13.7 % | +18.1 % |
+| artillery | 67.0 | +1.0 % | +11.1 % | **+33.1 %** |
+| groceries | 1 602.3 | −0.6 % | +8.6 % | +19.8 % |
+| tools | 1 871.5 | +3.4 % | +7.6 % | +7.3 % |
+| wood | 6 479.3 | +5.0 % | +6.0 % | +0.3 % |
+| fruit | 1 381.6 | −0.4 % | +4.4 % | +24.7 % |
+| grain | 11 591.4 | −1.1 % | −3.3 % | −6.1 % |
+| clothes | 5 238.7 | −0.2 % | −0.2 % | −0.9 % |
+
+Most goods move under 2 % by 1836.2.1; the ones that move are precisely the construction and
+military inputs. Day 7 is close to day 0 (worst case −10.5 %), so a week-1 read would also have been
+usable — but day 0 is available and strictly better.
+
+**Instrument results from the same probe** (all verified in-game, 1.13.9):
+
+| call | result |
+|---|---|
+| `THIS.GetBuilding.GetBuildingType.GetKey` | ✅ `building_urban_center` |
+| `THIS.GetBuilding.GetType.GetKey` | ❌ voids the line |
+| `THIS.GetBuilding.GetExpansionLevel` | ✅ **is the level** — 8 logged GBR urban centres summed to 87, the script-value sum said 89 over 9 buildings, i.e. exactly one 2-level building lost to the log ring |
+| `THIS.GetBuilding.GetLevel` | ❌ voids |
+| `THIS.GetBuilding.GetEmploymentPercentage` / `GetEmployeeCap` / `GetState.GetNameNoFormatting` | ✅ |
+| `standard_of_living` as a pop-scope script-value keyword | ✅ |
+| `wealth` at pop scope | ✅ but returned **exactly the same number** as `standard_of_living` (12 729 over 841 GBR pop objects) — treat as one quantity, not two |
+| nested `add = { value = x multiply = y }` in a script value | ✅ — GBR people-weighted mean SoL 10.13 against `GetAverageSoLByPopulation` 10.23, an independent cross-check |
+| `pop_size` at pop scope | ❌ does not exist |
+| `trigger_event = { days = 7 }` from the game-start hook | ✅ fired 8 January 1836 |
+
+**Measured GBR SoL by stratum (1836.2.1), against the preset's fixed 35 / 16 / 9:**
+
+| stratum | measured | preset assumption |
+|---|--:|--:|
+| upper | 31.7 | 35 |
+| middle | 17.9 | 16 |
+| lower | 8.1 | 9 |
+| peasants | **10.0** | 9 (uses the lower level) |
+| slaves | — (GBR has none) | 9 |
+
+British peasants are *better* off than British labourers, which the single-lower-level assumption
+cannot express. Urban centres: **GBR 9 buildings / 89 levels** (mod arm) and 90 (control) — the arms
+already differ by one level a month in.
+
+**What it does NOT say.** The drift table is one market, one run per arm, and 1836 only; it does not
+establish that day-0 stays the right reference for any later date. Employment was sampled on only a
+handful of buildings (0.95–1.00) — enough to suggest the full-employment assumption is roughly right
+at the start, not enough to assert it. And the SoL figures are GBR alone.
+
+**Session.** `tools/testbed/sessions/20260802_110757_scenario-probe` (2 runs, mod + control,
+1836→1836.4.1). The preceding session `20260802_110400_scenario-probe` is the same schedule with the
+telemetry broken by a parse error — kept, per the never-delete rule, and explained in
+BUGS_AND_FIXES.md.
 
 ---
 
