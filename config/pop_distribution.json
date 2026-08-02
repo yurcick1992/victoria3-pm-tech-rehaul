@@ -1,0 +1,31 @@
+{
+  "_comment": "FITTED within-need consumption distribution: how each pop need's money is split across the goods that need lists. Replaces the vanilla `weight` field, which is not an allocation rule at all -- the game allocates by SUPPLY SHARE (bounded per entry by max/min_supply_share), so weight-splitting gave British grain 17% of the food budget where the real share is ~77%. See FINDINGS F15.",
+  "_how": "Derived by the balance UI's 'fit pops' button (fitPopDistribution() in ui/builder.html), a projected-gradient solve over the seven 1836 markets in config/presets.json against the measured order book in config/measured_1836.json. Observed pop demand is recovered by subtraction -- buy_orders minus our building demand minus trade out -- which is only legitimate because the building side was verified first (FINDINGS F14). One MARKET-INDEPENDENT distribution by design: a supply-share rule would make the panel's demand depend on its own supply.",
+  "_weighting": "Fitted with each market normalised by its own total demand ('market' mode), so a large market cannot set the answer for all seven. Unweighted fitting made France and the USA worse while helping the Qing; the weighted fit improves six markets of seven.",
+  "_validation": "Leave-one-market-out: refitting on six markets and scoring the seventh gives 39.4% mean absolute error against 45.4% for the vanilla weight split, an overfit gap of under 3 points.",
+  "_regenerate": "Open the balance UI, press 'fit pops', then paste the JSON it prints to the console. Re-run after a game patch changes buy packages, pop needs, or the 1836 start -- and after any change to the BUILDING side, since observed pop demand is measured as a residual against it.",
+  "_fit": {
+    "markets": ["gbr_1836", "fra_1836", "rus_1836", "chi_1836", "aus_1836", "jap_1836", "usa_1836"],
+    "reference_date": "1836.2.1",
+    "inputs": "pop split measured, urban centres derived with measured PMs, military battalions from history",
+    "mean_abs_error_weight_split": "48.2%",
+    "mean_abs_error_fitted": "36.3%"
+  },
+  "distribution": {
+    "popneed_basic_food":       { "grain": 0.7732, "fish": 0.0731, "meat": 0.0454, "fruit": 0.0863, "groceries": 0.022 },
+    "popneed_simple_clothing":  { "fabric": 0, "clothes": 1 },
+    "popneed_standard_clothing":{ "clothes": 1 },
+    "popneed_crude_items":      { "wood": 0.0132, "furniture": 0.9868 },
+    "popneed_household_items":  { "furniture": 0.9143, "glass": 0, "paper": 0.0857 },
+    "popneed_heating":          { "wood": 0.5087, "fabric": 0.2715, "coal": 0.2198, "oil": 0 },
+    "popneed_services":         { "services": 1 },
+    "popneed_intoxicants":      { "liquor": 0.6047, "tobacco": 0.128, "opium": 0.2631, "wine": 0.0043 },
+    "popneed_luxury_drinks":    { "tea": 1, "coffee": 0, "wine": 0 },
+    "popneed_free_movement":    { "transportation": 1 },
+    "popneed_communication":    { "transportation": 1 },
+    "popneed_luxury_food":      { "meat": 0.8923, "fruit": 0, "groceries": 0.1077, "sugar": 0 },
+    "popneed_luxury_items":     { "silk": 0, "luxury_clothes": 0.4478, "luxury_furniture": 0.5522, "porcelain": 0 },
+    "popneed_leisure":          { "services": 1, "fine_art": 0, "small_arms": 0, "opium": 0, "clippers": 0 },
+    "popneed_stimulants":       { "sugar": 0.027, "tea": 0.5503, "coffee": 0, "tobacco": 0.4226 }
+  }
+}

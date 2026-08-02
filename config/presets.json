@@ -1,16 +1,74 @@
-{
-  "_comment": "Scenario presets to GENERATE from the vanilla 1836 start (tools/extract_presets.ps1 -> ui/presets.js). Each entry is one country's WHOLE MARKET: the lead country plus every subject that shares its market (all subject types share the overlord's market unless a `grant_own_market` pact exists — read live from common/history/diplomacy/00_subject_relationships.txt). 'market_add' / 'market_drop' are manual overrides on that member list (tags, no c: prefix). 'sol' is the per-class wealth level whose buy package the class consumes (defaults below); pop demand is then scaled in the UI by the session 'vanilla-fit' knob. The UI always offers a built-in 'Empty' preset on top of these.",
-  "defaults": {
-    "sol": { "upper": 35, "middle": 16, "lower": 9 },
-    "_year_comment": "Scenario year. Which goods pops may want defaults from this ALONE (a good is available once some building x PM that makes it can exist anywhere — a market imports what it cannot produce, so this is deliberately NOT the lead country's research). Per preset: 'year', plus 'unlock_add' / 'unlock_drop' arrays to force individual goods on/off for anything the calendar can't know (e.g. \"unlock_drop\": [\"clippers\"] for a landlocked market).",
-    "year": 1836,
-    "_class_mult_comment": "Optional overrides for how much of its buy package a class brings to the market. Omitted classes use the game's own numbers where they exist: peasants = consumption_mult from common/pop_types/peasants.txt (0.05). 'slaves' is our modelling choice — the game has no consumption_mult for them.",
-    "class_mult": { "slaves": 0.5 }
-  },
-  "presets": [
-    { "id": "fra_1836", "label": "France 1836", "group": "Vanilla 1836 · 1830-SoL pops", "country": "FRA" },
-    { "id": "gbr_1836", "label": "UK 1836",     "group": "Vanilla 1836 · 1830-SoL pops", "country": "GBR" },
-    { "id": "rus_1836", "label": "Russia 1836", "group": "Vanilla 1836 · 1830-SoL pops", "country": "RUS" },
-    { "id": "chi_1836", "label": "Qing 1836",   "group": "Vanilla 1836 · 1830-SoL pops", "country": "CHI" }
-  ]
+﻿{
+    "_comment":  "Scenario presets to GENERATE from the vanilla 1836 start (tools/extract_presets.ps1 -\u003e ui/presets.js). Each entry is one country\u0027s WHOLE MARKET: the lead country plus every subject that shares its market (all subject types share the overlord\u0027s market unless a `grant_own_market` pact exists — read live from common/history/diplomacy/00_subject_relationships.txt). \u0027market_add\u0027 / \u0027market_drop\u0027 are manual overrides on that member list (tags, no c: prefix). \u0027sol\u0027 is the per-class wealth level whose buy package the class consumes (defaults below); pop demand is then scaled in the UI by the session \u0027vanilla-fit\u0027 knob. The UI always offers a built-in \u0027Empty\u0027 preset on top of these.",
+    "defaults":  {
+                     "sol":  {
+                                 "upper":  35,
+                                 "middle":  16,
+                                 "lower":  9
+                             },
+                     "_year_comment":  "Scenario year. Which goods pops may want defaults from this ALONE (a good is available once some building x PM that makes it can exist anywhere — a market imports what it cannot produce, so this is deliberately NOT the lead country\u0027s research). Per preset: \u0027year\u0027, plus \u0027unlock_add\u0027 / \u0027unlock_drop\u0027 arrays to force individual goods on/off for anything the calendar can\u0027t know (e.g. \"unlock_drop\": [\"clippers\"] for a landlocked market).",
+                     "year":  1836,
+                     "_class_mult_comment":  "Optional overrides for how much of its buy package a class brings to the market. Omitted classes use the game\u0027s own numbers where they exist: peasants = consumption_mult from common/pop_types/peasants.txt (0.05). \u0027slaves\u0027 is our modelling choice — the game has no consumption_mult for them.",
+                     "class_mult":  {
+                                        "slaves":  0.5
+                                    }
+                 },
+    "presets":  [
+                    {
+                        "id":  "fra_1836",
+                        "label":  "France 1836",
+                        "group":  "Vanilla 1836 · 1830-SoL pops",
+                        "country":  "FRA",
+                        "measured_market":  "French Market"
+                    },
+                    {
+                        "id":  "gbr_1836",
+                        "label":  "UK 1836",
+                        "group":  "Vanilla 1836 · 1830-SoL pops",
+                        "country":  "GBR",
+                        "measured_market":  "British Market"
+                    },
+                    {
+                        "id":  "rus_1836",
+                        "label":  "Russia 1836",
+                        "group":  "Vanilla 1836 · 1830-SoL pops",
+                        "country":  "RUS",
+                        "measured_market":  "Russian Market"
+                    },
+                    {
+                        "id":  "chi_1836",
+                        "label":  "Qing 1836",
+                        "group":  "Vanilla 1836 · 1830-SoL pops",
+                        "country":  "CHI",
+                        "measured_market":  "Qing Market"
+                    },
+                    {
+                        "id":  "aus_1836",
+                        "label":  "Austria 1836",
+                        "group":  "Vanilla 1836 · 1830-SoL pops",
+                        "country":  "AUS",
+                        "measured_market":  "Austrian Market"
+                    },
+                    {
+                        "id":  "jap_1836",
+                        "label":  "Japan 1836",
+                        "group":  "Vanilla 1836 · 1830-SoL pops",
+                        "country":  "JAP",
+                        "measured_market":  "Japanese Market"
+                    },
+                    {
+                        "id":  "usa_1836",
+                        "label":  "USA 1836",
+                        "group":  "Vanilla 1836 · 1830-SoL pops",
+                        "country":  "USA",
+                        "measured_market":  "American Market"
+                    },
+                    {
+                        "id":  "bel_1836",
+                        "label":  "Belgium 1836",
+                        "group":  "Vanilla 1836 · 1830-SoL pops",
+                        "country":  "BEL",
+                        "measured_market":  "Belgian Market"
+                    }
+                ]
 }

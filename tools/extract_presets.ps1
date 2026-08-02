@@ -68,6 +68,63 @@ foreach ($n in $bBlocks.Keys) {
 # What's left over is what the subsistence buildings cover.
 $ARABLE_GROUPS = @('bg_agriculture','bg_ranching','bg_plantations')
 
+# ---------------------------------------------------------------- urbanization -> urban centres
+# History never creates urban centres; the game raises them from each STATE's urbanization. The rule
+# is `floor(state urbanization / 100)`, where every building level contributes its building group's
+# `urbanization`, EXCEPT groups flagged `is_subsistence` - those declare no urbanization of their own
+# and would otherwise inherit bg_agriculture's 5, which is wrong by a factor of five for an agrarian
+# country. Both halves were VERIFIED against the game's own level counts (FINDINGS F13): exact on
+# 774 of 783 states. The nine misses are Great Britain (11 levels), Upper Canada and France (1 each),
+# all UNDER-predictions - that is the technology/law urbanization bonus, which we deliberately ignore
+# ("assume base techs"), so a developed country gets slightly fewer urban centres here than in-game.
+#
+# Groups inherit through `parent_group`, so both lookups walk up the chain.
+$URBAN_PER_LEVEL = 100
+$grpUrb = @{}; $grpParent = @{}; $grpSubs = @{}
+foreach ($f in (Get-ChildItem (Join-Path $Game 'common\building_groups') -Filter *.txt)) {
+    $cur = $null; $depth = 0
+    foreach ($l in (Get-Content -LiteralPath $f.FullName)) {
+        $line = ($l -replace '#.*$', '')
+        if ($line -match '^\s*(bg_[A-Za-z0-9_]+)\s*=\s*\{') { $cur = $Matches[1]; $depth = 1; continue }
+        if (-not $cur) { continue }
+        $depth += ([regex]::Matches($line, '\{')).Count - ([regex]::Matches($line, '\}')).Count
+        if ($line -match '^\s*parent_group\s*=\s*(bg_[A-Za-z0-9_]+)') { $grpParent[$cur] = $Matches[1] }
+        if ($line -match '^\s*urbanization\s*=\s*(\d+)')              { $grpUrb[$cur] = [int]$Matches[1] }
+        if ($line -match '^\s*is_subsistence\s*=\s*yes')              { $grpSubs[$cur] = $true }
+        if ($depth -le 0) { $cur = $null }
+    }
+}
+function Get-GroupChainValue($g, $tbl) {
+    $seen = @{}
+    while ($g -and -not $seen[$g]) {
+        if ($tbl.ContainsKey($g)) { return $tbl[$g] }
+        $seen[$g] = $true; $g = $grpParent[$g]
+    }
+    return $null
+}
+function Get-Urbanization($bkey) {
+    $g = $bldGroup[$bkey]
+    if (-not $g) { return 0 }
+    if (Get-GroupChainValue $g $grpSubs) { return 0 }
+    $v = Get-GroupChainValue $g $grpUrb
+    if ($null -eq $v) { return 0 }
+    return [int]$v
+}
+$URBAN_CENTER = 'building_urban_center'
+
+# Display name -> STATE_ key. The telemetry logs a state by its localised NAME (there is no state-key
+# data function, the same limitation as country tags), while history works in STATE_ keys - so the
+# measured per-state corrections can only be joined onto the derived per-state urbanization through
+# the localisation. Getting this wrong would not error; it would silently give each correction its own
+# floor bucket, where a state's worth of military urbanization rounds to zero.
+$stateKeyByName = @{}
+$stateLoc = Join-Path $Game 'localization\english\map\states_l_english.yml'
+if (Test-Path $stateLoc) {
+    foreach ($l in (Get-Content -LiteralPath $stateLoc -Encoding UTF8)) {
+        if ($l -match '^\s*(STATE_[A-Z0-9_]+)\s*:\s*\d*\s*"(.*)"\s*$') { $stateKeyByName[$Matches[2]] = $Matches[1] }
+    }
+} else { Warn "state localisation not found - measured per-state corrections cannot be joined" }
+
 $gBlocks = Get-TopBlocks (Join-Path $Game 'common\production_method_groups') 'pmg_'
 $pmgPms = @{}; $pmToPmg = @{}
 foreach ($n in $gBlocks.Keys) {
@@ -417,6 +474,49 @@ foreach ($r in $script:ownRows) {
 }
 Write-Output ("  ownership buildings implied from add_ownership: {0}" -f (($ownTypes.Keys | Sort-Object) -join ', '))
 
+# ---------------------------------------------------------------- military: units, from HISTORY
+# Army goods are NOT on the barracks or the logistics centre - both of those have production methods
+# with no goods at all. They are on the COMBAT UNIT TYPE, as `upkeep_modifier { goods_input_*_add }`
+# per battalion. And the battalions themselves are in the history files
+# (common/history/military_formations: `combat_unit = { type = unit_type:X  count = N }`), so the
+# whole military side is derivable without measuring anything.
+$unitGoods = @{}    # unit type -> good -> qty per battalion (peacetime upkeep)
+$unitGroup = @{}
+foreach ($f in (Get-ChildItem (Join-Path $Game 'common\combat_unit_types') -Filter *.txt)) {
+    $cur = $null; $inUpkeep = $false; $depth = 0
+    foreach ($l in (Get-Content -LiteralPath $f.FullName)) {
+        $line = ($l -replace '#.*$', '')
+        if ($line -match '^\s*(combat_unit_type_[a-z0-9_]+)\s*=\s*\{') { $cur = $Matches[1]; $unitGoods[$cur] = [ordered]@{}; $inUpkeep = $false; continue }
+        if (-not $cur) { continue }
+        if ($line -match '^\s*group\s*=\s*(combat_unit_group_[a-z0-9_]+)') { $unitGroup[$cur] = $Matches[1] }
+        if ($line -match '^\s*upkeep_modifier\s*=\s*\{') { $inUpkeep = $true; $depth = 1; continue }
+        if ($inUpkeep) {
+            $depth += ([regex]::Matches($line, '\{')).Count - ([regex]::Matches($line, '\}')).Count
+            if ($line -match 'goods_input_([a-z_]+)_add\s*=\s*(-?[0-9.]+)') { $unitGoods[$cur][$Matches[1]] = [double]$Matches[2] }
+            if ($depth -le 0) { $inUpkeep = $false }
+        }
+    }
+}
+# battalions per country per unit type
+$unitsOf = @{}
+$mfDir = Join-Path $Game 'common\history\military_formations'
+if (Test-Path $mfDir) {
+    foreach ($f in (Get-ChildItem $mfDir -Filter *.txt)) {
+        $tag = $null; $ut = $null
+        foreach ($l in (Get-Content -LiteralPath $f.FullName)) {
+            $line = ($l -replace '#.*$', '')
+            if ($line -match '^\s*c:([A-Z0-9_]+)\s*\??=\s*\{') { $tag = $Matches[1]; continue }
+            if ($line -match 'type\s*=\s*unit_type:(combat_unit_type_[a-z0-9_]+)') { $ut = $Matches[1]; continue }
+            if ($ut -and $tag -and $line -match '^\s*count\s*=\s*(\d+)') {
+                $unitsOf["$tag|$ut"] = ($unitsOf["$tag|$ut"] + 0) + [int]$Matches[1]
+                $ut = $null
+            }
+        }
+    }
+} else { Warn "common/history/military_formations not found - the scenario will carry no military units" }
+Write-Output ("  military: {0} unit type(s) with upkeep goods, {1} country-unit entries from history" -f `
+    (($unitGoods.Keys | Where-Object { $unitGoods[$_].Count -gt 0 }).Count), $unitsOf.Count)
+
 # ---------------------------------------------------------------- vanilla 1836 pops
 $script:popRows = New-Object System.Collections.Generic.List[object]
 $popHandler = {
@@ -437,6 +537,25 @@ foreach ($f in (Get-ChildItem (Join-Path $Game 'common\history\pops') -Filter *.
 $presetCfgPath = Join-Path $Repo 'config\presets.json'
 $presetCfg = Get-Content -LiteralPath $presetCfgPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $defSol = $presetCfg.defaults.sol
+
+# ---------------------------------------------------------------- measured 1836 reference (optional)
+# Four things the game FILES cannot answer, measured once and committed: what a market actually
+# trades, each stratum's standard of living, and how many military buildings the engine raised.
+# Optional on purpose - a fresh clone with no measurement still produces working presets, just
+# without those. See tools/extract_measured.ps1.
+$measured = $null
+$measuredPath = Join-Path $Repo 'config\measured_1836.json'
+if (Test-Path $measuredPath) {
+    $measured = Get-Content -LiteralPath $measuredPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    Write-Output ("  measured reference: {0} market(s), {1}, game {2}" -f `
+        ($measured.markets.PSObject.Properties.Name).Count, $measured._meta.date, $measured._meta.game_version)
+} else {
+    Warn "config/measured_1836.json missing - presets will carry no trade, no measured SoL and no military buildings"
+}
+function Get-Measured($p) {
+    if (-not $measured -or -not $p.measured_market) { return $null }
+    return $measured.markets.($p.measured_market)
+}
 
 # every good any pop need can be satisfied with - the UI renders one unlock toggle per entry
 $needGoods = New-Object System.Collections.Generic.List[string]
@@ -465,6 +584,12 @@ foreach ($g in $needGoods) {
 
 $out = New-Object System.Collections.Generic.List[object]
 foreach ($p in $presetCfg.presets) {
+    # ⚠ FIRST thing in the loop. This used to be assigned two thirds of the way down, AFTER the
+    # urban-centre block that reads it - so that block silently used the PREVIOUS preset's market.
+    # It failed quietly and plausibly: Russia inherited the Qing's urban-centre methods (free clergy
+    # 104 levels against state 2) and came out with free urban clergy, when its own capital runs
+    # state clergy. A per-iteration variable read before assignment is a stale value, not an error.
+    $meas = Get-Measured $p
     $lead = $p.country
     $members = New-Object System.Collections.Generic.List[string]
     foreach ($m in (Get-MarketMembers $lead)) { $members.Add($m) }
@@ -474,13 +599,24 @@ foreach ($p in $presetCfg.presets) {
 
     # --- buildings: levels per (tier-mapped) key + the PM vanilla runs there (majority by levels) ---
     $levelsByKey = @{}; $pmVotes = @{}
-    $jobs = @{}; $agriUsed = @{}
+    $jobs = @{}; $agriUsed = @{}; $urbByState = @{}
     foreach ($r in $script:bldRows) {
         if (-not $memberSet.ContainsKey($r.country)) { continue }
         $levelsByKey[$r.key] = ($levelsByKey[$r.key] + 0) + $r.levels
         # arable land this state's real farms/ranches/plantations occupy (the rest is subsistence)
         if ($r.state -and ($ARABLE_GROUPS -contains $bldGroup[$r.vanilla])) {
             $ak = "$($r.state)|$($r.country)"; $agriUsed[$ak] = ($agriUsed[$ak] + 0) + $r.levels
+        }
+        # urbanization, accumulated PER STATE because the urban-centre count is a per-state floor
+        if ($r.state) {
+            # Keyed on the VANILLA building, not our tier key - $bldGroup only knows vanilla, and
+            # more importantly this is what makes "a tier provides as much urbanization as the
+            # vanilla building it replaced" true by construction rather than by a copied constant.
+            $u = Get-Urbanization $r.vanilla
+            if ($u -gt 0) {
+                $uk = "$($r.state)|$($r.country)"
+                $urbByState[$uk] = ($urbByState[$uk] + 0) + $r.levels * $u
+            }
         }
         # Which PMG each activated PM belongs to is resolved WITHIN THIS BUILDING's PMGs: several PMs are
         # shared across buildings (pm_simple_farming, pm_tools_disabled, ... appear in every farm's PMGs),
@@ -527,15 +663,40 @@ foreach ($p in $presetCfg.presets) {
             if ($s -and $cls.Contains($s)) { $cls[$s] += $r.size }   # explicitly seeded professions
         }
     }
-    foreach ($t in $jobs.Keys) {
-        if ($t -eq 'slaves') { continue }        # slave POPS are explicit in history; don't double-count their jobs
-        $s = $STRATA[$t]
-        if (-not $s) { Warn "unknown pop type '$t' (treated as lower) - check the STRATA map after a patch"; $s = 'lower' }
-        if ($s -eq 'peasants') { continue }      # peasants are the remainder, never job-derived
-        if ($cls.Contains($s)) { $cls[$s] += $jobs[$t] / (Get-WorkRatio $t) }
+    # The class split does NOT come from building jobs any more.
+    #
+    # It used to: employment of each building's active PMs, divided by the working-adult ratio, gave
+    # people per profession. That inverted the dependency - the pop side inherited every error in the
+    # building side, and the worst of those was manor houses, inferred from `add_ownership` at a tenth
+    # of the real count (British market 426 levels against 4 755). Manor houses carry no goods, so the
+    # error was invisible in market orders while flowing straight into the UPPER class, which buys the
+    # most per head.
+    #
+    # History cannot supply the split either - only 690 of 4 454 `create_pop` blocks name a pop_type,
+    # because the engine assigns the rest from available jobs at init. So: SIZE from history (which has
+    # it), SHARES from measurement (which is the only place the answer exists). Minimum necessary.
+    $splitSrc = 'jobs (no measurement)'
+    $wbs = $(if ($meas) { $meas.workforce_by_stratum } else { $null })
+    $wTot = 0.0
+    if ($wbs) { foreach ($s in @('upper','middle','lower','peasants','slaves')) { $wTot += [double]($wbs.$s) } }
+    if ($wTot -gt 0) {
+        # Workforce shares stand in for people shares: working_adult_ratio is the base 0.25 for every
+        # stratum here (peasants included - they script no override), so the two are proportional.
+        foreach ($s in @('upper','middle','lower')) { $cls[$s] = $totalPop * [double]($wbs.$s) / $wTot }
+        $slavePop = [int]($totalPop * [double]($wbs.slaves) / $wTot)
+        $peasants = [math]::Max(0, $totalPop - $cls.upper - $cls.middle - $cls.lower - $slavePop)
+        $splitSrc = "measured $($measured._meta.date)"
+    } else {
+        foreach ($t in $jobs.Keys) {
+            if ($t -eq 'slaves') { continue }    # slave POPS are explicit in history; don't double-count their jobs
+            $s = $STRATA[$t]
+            if (-not $s) { Warn "unknown pop type '$t' (treated as lower) - check the STRATA map after a patch"; $s = 'lower' }
+            if ($s -eq 'peasants') { continue }  # peasants are the remainder, never job-derived
+            if ($cls.Contains($s)) { $cls[$s] += $jobs[$t] / (Get-WorkRatio $t) }
+        }
+        $employed = $cls.upper + $cls.middle + $cls.lower + $slavePop
+        $peasants = [math]::Max(0, $totalPop - $employed)
     }
-    $employed = $cls.upper + $cls.middle + $cls.lower + $slavePop
-    $peasants = [math]::Max(0, $totalPop - $employed)
 
     # --- subsistence buildings: the PEASANTS are the supply ---
     # History never creates these; the game raises one per state covering the arable land the real
@@ -590,6 +751,108 @@ foreach ($p in $presetCfg.presets) {
         $buildings[$k] = $lvl; $pmsByKey[$k] = $subsPms[$k]; $subsLevels += $lvl
     }
 
+    # --- urban centres: one level per 100 urbanization, floored PER STATE then summed ---
+    # Note the floor has to be taken state by state: summing first and flooring once would hand a
+    # large market the rounding loss of every state at once. Their PMs are chosen the same way the
+    # other never-created buildings are (Select-LawPm, by the market leader's laws) - history has no
+    # line to read, and the alternative, measuring capitals in-game, would make presets.js depend on
+    # a game RUN rather than the game FILES.
+    # Buildings history never creates carry urbanization too - military 2/level, companies 5 - and
+    # leaving them out was most of the derived shortfall on developed markets. They come from the
+    # measured reference per STATE, because the floor is per state and a market total cannot be
+    # apportioned back. Keyed by state NAME here (the measurement has no state ids), so a state whose
+    # name the history walker spells differently simply contributes nothing rather than mis-crediting
+    # another state.
+    $extraUnjoined = 0
+    if ($meas -and $meas.extra_by_state) {
+        foreach ($sp in $meas.extra_by_state.PSObject.Properties) {
+            $stKey = $stateKeyByName[$sp.Name]
+            foreach ($bp in $sp.Value.PSObject.Properties) {
+                $u = Get-Urbanization $bp.Name
+                if ($u -le 0) { continue }
+                $pts = [int]$bp.Value * $u
+                if (-not $stKey) { $extraUnjoined += $pts; continue }
+                # find the bucket this state already has in THIS market (a state can be split, so the
+                # key carries the owner too); fall back to a market-scoped bucket for the state.
+                $hit = $null
+                foreach ($uk in @($urbByState.Keys)) { if ($uk -like "$stKey|*") { $hit = $uk; break } }
+                if (-not $hit) { $hit = "$stKey|extra" }
+                $urbByState[$hit] = ($urbByState[$hit] + 0) + $pts
+            }
+        }
+    }
+    $ucLevels = 0
+    foreach ($uk in $urbByState.Keys) { $ucLevels += [math]::Floor($urbByState[$uk] / $URBAN_PER_LEVEL) }
+    $ucLevels = [int]$ucLevels
+    if ($ucLevels -gt 0) {
+        # PMs: MEASURED where available, majority by levels within each PMG. Inferring them from the
+        # market leader's laws (the way subsistence PMs are chosen) got two PMGs of four wrong -
+        # real urban centres largely run `pm_market_squares` rather than stalls, many run
+        # `pm_gas_streetlights` (which buys coal), and most run `pm_free_urban_clergy` rather than
+        # state. Those are exactly the goods the panel was short on.
+        $leadLaws = if ($lawsOf.ContainsKey($lead)) { $lawsOf[$lead] } else { @{} }
+        $ucSel = [ordered]@{}
+        $ucPmSrc = 'laws'
+        $ucMeas = $(if ($meas) { $meas.urban_center_pm_levels } else { $null })
+        foreach ($pmg in $bldPmgs[$URBAN_CENTER]) {
+            $pm = $null
+            if ($ucMeas) {
+                $best = -1
+                foreach ($cand in $pmgPms[$pmg]) {
+                    $v = $ucMeas.$cand
+                    if ($null -ne $v -and [double]$v -gt $best) { $best = [double]$v; $pm = $cand }
+                }
+                if ($pm) { $ucPmSrc = 'measured' }
+            }
+            if (-not $pm) { $pm = Select-LawPm $pmg $leadLaws }
+            if ($pm) { $ucSel[$pmg] = $pm }
+        }
+        $buildings[$URBAN_CENTER] = $ucLevels
+        $pmsByKey[$URBAN_CENTER] = $ucSel
+    }
+
+    # --- SECONDARY production methods, measured ---
+    # The preset takes secondaries from history's `activate_production_methods`, and the game runs
+    # more than history lists - Belgium's fruit and luxury clothes had no source in the scenario at
+    # all. Most popular PM per PMG per building, by levels.
+    # ⚠ DISTORTION BY CONSTRUCTION: a country whose farms split 51/49 between two secondaries is
+    # rendered as if all of them ran the winner. The margin is reported below so a near-tie is
+    # visible rather than silently flattened - that is where this misleads.
+    $secApplied = 0; $secClose = New-Object System.Collections.Generic.List[string]
+    if ($meas -and $meas.secondary_pm_levels) {
+        foreach ($bp in $meas.secondary_pm_levels.PSObject.Properties) {
+            $bkey = $bp.Name
+            if (-not $buildings.Contains($bkey)) { continue }          # not in this scenario
+            $lv = @{}; foreach ($q in $bp.Value.PSObject.Properties) { $lv[$q.Name] = [double]$q.Value }
+            $vanillaKey = $bkey
+            foreach ($vk in $baseIndustry.Keys) { if ($pmMap[$baseIndustry[$vk]].Values | Where-Object { $_.tier_key -eq $bkey }) { $vanillaKey = $vk; break } }
+            foreach ($pmg in $bldPmgs[$vanillaKey]) {
+                $cands = @($pmgPms[$pmg] | Where-Object { $lv.ContainsKey($_) })
+                if ($cands.Count -eq 0) { continue }
+                $best = $null; $bestV = -1; $second = 0
+                foreach ($c in $cands) { if ($lv[$c] -gt $bestV) { $second = $bestV; $bestV = $lv[$c]; $best = $c } elseif ($lv[$c] -gt $second) { $second = $lv[$c] } }
+                if (-not $best -or $bestV -le 0) { continue }
+                if (-not $pmsByKey.Contains($bkey)) { $pmsByKey[$bkey] = [ordered]@{} }
+                $pmsByKey[$bkey][$pmg] = $best
+                $secApplied++
+                if ($second -gt 0 -and ($bestV / ($bestV + $second)) -lt 0.65) {
+                    $secClose.Add(("{0}/{1}: {2} {3:N0} vs {4:N0}" -f $bkey, $pmg, $best, $bestV, $second))
+                }
+            }
+        }
+    }
+
+    # --- THROUGHPUT per building type, measured ---
+    # Read off the building (Building.GetThroughputBonusCurrent), not summed from technology + law +
+    # company sub-factors. Level-weighted mean per type. Applied in the UI as a multiplier on that
+    # building's goods, shown in its own column, and never emitted to the game.
+    $thru = [ordered]@{}
+    if ($meas -and $meas.throughput) {
+        foreach ($tp in $meas.throughput.PSObject.Properties) {
+            if ($buildings.Contains($tp.Name) -and [double]$tp.Value -ne 0) { $thru[$tp.Name] = [math]::Round([double]$tp.Value, 4) }
+        }
+    }
+
     $year = if ($p.year) { [int]$p.year } elseif ($presetCfg.defaults.year) { [int]$presetCfg.defaults.year } else { $START_YEAR }
     # --- which pop-need goods pops may want here ---
     # Default is purely the preset's YEAR (a market imports what it can't make, so this is not the lead
@@ -600,15 +863,58 @@ foreach ($p in $presetCfg.presets) {
     if ($p.unlock_add)  { foreach ($g in $p.unlock_add)  { if ($unlocked -notcontains $g) { $unlocked.Add($g) } } }
     if ($p.unlock_drop) { foreach ($g in $p.unlock_drop) { [void]$unlocked.Remove($g) } }
 
-    $sol = if ($p.sol) { $p.sol } else { $defSol }
 
-    # --- non-building orders: intergovernmental goods transfers (no trade routes, per spec) ---
+    # --- standard of living per class ---
+    # Measured per stratum where available. The flat 35/16/9 could not be right for Britain and the
+    # Qing at once, and peasants are the extreme case: 4.5 in Japan against 12.1 in France. Peasants
+    # and slaves get their OWN level rather than borrowing the lower class's.
+    $sol = if ($p.sol) { $p.sol } else { $defSol }
+    $solOut = [ordered]@{ upper = [int]$sol.upper; middle = [int]$sol.middle; lower = [int]$sol.lower }
+    $solOut['peasants'] = $solOut['lower']; $solOut['slaves'] = $solOut['lower']
+    $solSrc = 'config default'
+    if ($meas -and $meas.sol) {
+        foreach ($s in @('upper','middle','lower','peasants','slaves')) {
+            $v = $meas.sol.$s
+            # A stratum the market does not have is emitted as absent, not as 0 - a hard zero would
+            # silently mean "buys the wealth-0 package" instead of "there is nobody here".
+            if ($null -ne $v -and $v -gt 0) { $solOut[$s] = [int][math]::Round([double]$v) }
+        }
+        $solSrc = "measured $($measured._meta.date)"
+    }
+
+    # --- military UNITS, from history ---
+    # NOT the measured barrack levels this used to carry. Barracks and logistics centres have no
+    # goods on their production methods at all, so their level count buys nothing but urbanization -
+    # which the per-state correction already handles. The goods live on the battalions, and the
+    # battalions are in the history files, so nothing here needs measuring.
+    $units = [ordered]@{}
+    $milAdded = 0
+    foreach ($k in ($unitsOf.Keys | Sort-Object)) {
+        $parts = $k -split '\|'
+        if (-not $memberSet.ContainsKey($parts[0])) { continue }
+        $units[$parts[1]] = ($units[$parts[1]] + 0) + $unitsOf[$k]
+        $milAdded += $unitsOf[$k]
+    }
+
+    # --- non-building orders: TRADE ---
+    # Treaty `goods_transfer` articles plus the market's actual trade-route flows. Both live inside
+    # the game's own order book already (sell = production + imports + transfers in), so carrying
+    # them here makes the scenario's totals comparable to the game's raw orders. Buildings are never
+    # represented here - a consumer that is a building belongs in the buildings column as a building.
     $nonbuy = [ordered]@{}; $nonsell = [ordered]@{}; $tnotes = New-Object System.Collections.Generic.List[string]
     foreach ($t in $transfers) {
         $inSrc = $memberSet.ContainsKey($t.src); $inDst = $memberSet.ContainsKey($t.dst)
         if ($inSrc -and $inDst) { continue }        # internal to the market: nets out
         if ($inSrc) { $nonbuy[$t.good]  = ($nonbuy[$t.good]  + 0) + $t.qty; $tnotes.Add("-$($t.qty) $($t.good) -> $($t.dst) ($($t.treaty))") }
         if ($inDst) { $nonsell[$t.good] = ($nonsell[$t.good] + 0) + $t.qty; $tnotes.Add("+$($t.qty) $($t.good) <- $($t.src) ($($t.treaty))") }
+    }
+    $tradeGoods = 0
+    if ($meas) {
+        # ⚠ Treaty transfers are NOT added on top: the measured imports/exports are the market's
+        # whole external flow, transfers included (the engine reports a transfer inside sell orders).
+        # Adding both would double-count every treaty good, so measurement wins where it exists.
+        foreach ($tp in $meas.trade_out.PSObject.Properties) { $nonbuy[$tp.Name]  = [math]::Round([double]$tp.Value, 2); $tradeGoods++ }
+        foreach ($tp in $meas.trade_in.PSObject.Properties)  { $nonsell[$tp.Name] = [math]::Round([double]$tp.Value, 2); $tradeGoods++ }
     }
 
     $out.Add([ordered]@{
@@ -621,7 +927,7 @@ foreach ($p in $presetCfg.presets) {
             upper = [int][math]::Round($cls.upper); middle = [int][math]::Round($cls.middle); lower = [int][math]::Round($cls.lower)
             slaves = [int]$slavePop; peasants = [int][math]::Round($peasants)
         }
-        sol = [ordered]@{ upper = [int]$sol.upper; middle = [int]$sol.middle; lower = [int]$sol.lower }
+        sol = $solOut
         year = $year
         unlocked = $unlocked.ToArray()
         subsistence = [ordered]@{
@@ -632,12 +938,24 @@ foreach ($p in $presetCfg.presets) {
             levels = $subsLevels
         }
         nonbuy = $nonbuy; nonsell = $nonsell
+        units = $units
+        throughput = $thru
+        # The game's own order book for this market, carried so the UI can FIT against it: observed
+        # pop demand is `buy - our building demand - trade out`, which cannot be reconstructed from
+        # the netted numbers alone. Absent when there is no measured reference.
+        measured = $(if ($meas) { [ordered]@{ date = $measured._meta.date; buy = $meas.buy; sell = $meas.sell; production = $meas.production } } else { $null })
         notes = $tnotes.ToArray()
     })
     Write-Output ("  {0,-14} market {1,-3} tags | {2,5} building levels | pop {3,12:N0} (u {4:N0} / m {5:N0} / l {6:N0} / slv {7:N0} / peas {8:N0})" -f `
         $p.id, $members.Count, ($levelsByKey.Values | Measure-Object -Sum).Sum, $totalPop, $cls.upper, $cls.middle, $cls.lower, $slavePop, $peasants)
     Write-Output ("                 subsistence: free arable {0:N0} -> {1:N0} peasant jobs, workforce {2:N0} => staffing {3:P0}, emitted {4:N0} staffed levels" -f `
         (($subsArable.Values | Measure-Object -Sum).Sum), $subsCapacity, $peasantWork, $staffing, $subsLevels)
+    Write-Output ("                 urban centres: {0:N0} urbanization over {1:N0} states => {2:N0} levels{3}" -f `
+        (($urbByState.Values | Measure-Object -Sum).Sum), $urbByState.Count, $ucLevels,
+        $(if ($meas) { " (measured {0})" -f $meas.urban_center_levels } else { "" }))
+    if ($secClose.Count -gt 0) { Write-Output ("                 SEC near-tie (most-popular distorts): {0}" -f (($secClose.ToArray() | Select-Object -First 3) -join "; ")) }
+    Write-Output ("                 SoL [{0}] u{1}/m{2}/l{3}/peas{4}/slv{5} | military {6:N0} battalions | trade on {7} good(s)" -f `
+        $solSrc, $solOut.upper, $solOut.middle, $solOut.lower, $solOut.peasants, $solOut.slaves, $milAdded, $tradeGoods)
 }
 
 # ---------------------------------------------------------------- write ui/presets.js
@@ -671,6 +989,20 @@ $popModel = [ordered]@{
     working_adult_ratio = $WORK_RATIO_BASE
     dependent_consumption_ratio = $DEPENDENT_CONSUMPTION
     class_mult = $classMult
+    # The FITTED within-need split (config/pop_distribution.json), replacing the vanilla `weight`
+    # field. `weight` is not an allocation rule - the game allocates a need's money by SUPPLY SHARE -
+    # and using it understated British grain demand by 7 900 units. Absent => the UI falls back to
+    # `weight` per need, so a need the fit never saw still behaves.
+    distribution = $(
+        $dp = Join-Path $Repo 'config\pop_distribution.json'
+        if (Test-Path $dp) { (Get-Content -LiteralPath $dp -Raw -Encoding UTF8 | ConvertFrom-Json).distribution }
+        else { Warn "config/pop_distribution.json missing - pop demand falls back to the vanilla weight split"; $null })
+    # Peacetime goods per battalion, from each combat unit type's upkeep_modifier. The UI renders
+    # two rows per type - mobilised and not - because mobilisation changes consumption by orders of
+    # magnitude; they are clones for now, so the mobilised row costs the same until the mobilisation
+    # options are modelled.
+    unit_goods = $unitGoods
+    unit_group = $unitGroup
     need_goods = $needGoods.ToArray()   # every good pop needs can be met with (one UI unlock toggle each)
     available_from = $availableFrom     # good -> earliest year it can exist at all (0 = always)
     buy_packages = $buyPackages
