@@ -90,6 +90,78 @@ transcript rather than from data.
 
 ---
 
+## F8 — Lowering paper BE by 20 pp helps, but does not fix the shortfall
+
+**Claim.** Cutting every paper tier's `target_be` by 20 pp and re-solving volumes moves paper
+supply in the right direction — **pooled across all markets, self-supply rises 61 % → 64 % at 1935**
+against vanilla's 95 % — and pulls prices back toward vanilla. In the major markets the effect is
+several times larger. But **3 pp against a 34 pp gap is not a fix**, and one major market moved the
+wrong way.
+
+### The change
+
+Paper only; all 64 non-paper tiers restored to canonical, verified by diff (three lines differ).
+Volumes re-solved from the new targets, build costs re-solved on the 10-year payback at BE+20 pp.
+
+| tier | BE | inputs before | inputs after |
+|---|--:|---|---|
+| T1 | 115 → **95** | wood 51 | wood 43 |
+| T2 | 90 → **70** | sulfur 11, wood 35 | sulfur 9, wood 26 |
+| T3 | 90 → **70** | dye 13, sulfur 13, wood 40 | dye 9, sulfur 9, wood 28 |
+
+Build costs are unchanged — correct, not an oversight: on the output basis cost keys off *output*
+value, and only inputs moved.
+
+### Evidence
+
+Session `20260801_225108_paper-be20-n3`, **n=3**, 1836→1935, 11 dumps, all complete, no crashes.
+Compared against the mod baseline (`20260731_103246_be-defaults-n5`, n=5) and vanilla
+(`20260801_001026_vanilla-n3-v5`, n=3).
+
+**Paper self-supply (production ÷ buy), pooled over ALL markets** — the stable measure:
+
+| | 1836 | 1856 | 1876 | 1896 | 1916 | 1935 |
+|---|--:|--:|--:|--:|--:|--:|
+| vanilla | 83 % | 53 % | 77 % | 82 % | 86 % | **95 %** |
+| mod baseline | 78 % | 52 % | 56 % | 59 % | 57 % | **61 %** |
+| **paper BE−20** | 84 % | 59 % | 58 % | 62 % | 62 % | **64 %** |
+
+**Per major market at 1935** (self-supply, and paper price as % of base):
+
+| market | vanilla | mod | BE−20 | | price vanilla | mod | BE−20 |
+|---|--:|--:|--:|---|--:|--:|--:|
+| British | 98 % | 60 % | **76 %** | | 102 % | 138 % | **125 %** |
+| French | 74 % | 65 % | **79 %** | | 128 % | 153 % | **121 %** |
+| Russian | 88 % | 62 % | **70 %** | | 112 % | 147 % | **133 %** |
+| Qing | 124 % | 59 % | **40 %** ⚠ | | 98 % | 153 % | **171 %** ⚠ |
+
+Britain +16 pp, France +14 pp (now above vanilla), Russia +8 pp, Prussia +13 pp at 1876. **Qing went
+backwards**, −19 pp with prices rising — and its market vanishes entirely by 1935 in this arm, so
+that cell is as likely to be collapse as economics.
+
+### What it does NOT say
+
+- **Not a fix.** The pooled gain is 3 pp against a 34 pp gap to vanilla. The per-market majors look
+  much better, but the world as a whole barely moved — pooling is the honest number.
+- **Nothing about the wider economy.** At n=3 the late game is uninterpretable: at 1906 the British
+  Market appears in **one of three runs** (Britain lost or renamed it in the others), and at 1935 its
+  size spans 9.55 / 17.70 / 33.81 M — a 3.5× range, consistent with F5's ~64 % CV. Any claim that
+  this change grew or shrank the economy would be reading noise.
+- ⚠ **Cross-arm market-size sums are invalid unless deduped.** The older arms logged *tags*, and
+  several tags share one market (GBR, BIC and IND all map to the British Market), so a naive sum
+  triple-counts it; the v8 arm logs each market once. Compare named markets, deduped, or not at all.
+- **Three different telemetry schemas** (mod v3, vanilla v5, this v8). The market-goods fields are
+  identical across them, so per-good comparisons hold; anything relying on newer metrics does not.
+
+### What would settle it
+
+The direction is right, so the open question is dose, not sign. A −40 pp arm would show whether the
+relationship is roughly linear (predicting ~67 % pooled) or whether something else binds. Worth
+pairing with the wood/sulfur supply, since paper's inputs may themselves be the constraint —
+the origins data now logged for wood, sulfur and dye is exactly the check.
+
+---
+
 ## F7 — Bankruptcies +49 %; industrialisation faster early, slower late. Neither traces to prices.
 
 **Claim.** Against the vanilla control: the mod produces **1.49× the bankruptcies** (383 ± 41 vs
