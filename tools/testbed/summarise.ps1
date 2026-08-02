@@ -146,6 +146,33 @@ foreach ($r in (Get-ChildItem $Session -Directory -Filter 'run*' | Sort-Object N
       if ($srcIdx -gt 1 -and ($n - $beforeCount) -gt 0) { $recovered += ($n - $beforeCount) }
     }
 
+    # --- COMPLETENESS GATE ---------------------------------------------------------------
+    # A dump can arrive PARTIAL: the v8 arm lost most of two country phases (58 and 141 rows
+    # against ~283) even with phased dumps, 200 ms polling and ring recovery. A short dump is
+    # indistinguishable from real attrition unless it is flagged - "France is missing" reads as
+    # a country that stopped existing, when it may just be a lost line. So measure it here,
+    # BEFORE anything is analysed, and put it in summary.json where the analysis will see it.
+    $rowsPerDump = @{}
+    foreach ($row in $cs) {
+        if ($row -like "run`tdump*") { continue }
+        $p = $row.Split("`t")
+        if ($p.Count -lt 2 -or $p[0] -ne "$idx") { continue }
+        $rowsPerDump[$p[1]] = 1 + $(if ($rowsPerDump.ContainsKey($p[1])) { $rowsPerDump[$p[1]] } else { 0 })
+    }
+    $peak = 0; foreach ($v in $rowsPerDump.Values) { if ($v -gt $peak) { $peak = $v } }
+    # Country counts fall naturally as states are annexed, so compare against this run's OWN peak
+    # rather than a fixed number, and only cry foul well below any plausible attrition curve.
+    $short = @()
+    foreach ($d in ($rowsPerDump.Keys | Sort-Object)) {
+        if ($peak -gt 0 -and $rowsPerDump[$d] -lt [int]($peak * 0.6)) {
+            $short += [ordered]@{ dump = $d; rows = $rowsPerDump[$d]; expected_at_least = [int]($peak*0.6) }
+        }
+    }
+    if ($short.Count -gt 0) {
+        Write-Warning ("run {0}: {1} PARTIAL dump(s) - {2}. Exclude these from country-level analysis." -f `
+            $idx, $short.Count, (($short | ForEach-Object { "$($_.dump)=$($_.rows) rows" }) -join ', '))
+    }
+
     # --- pace: wall-clock at each logical dump (phase 0), and the interval between dumps ---
     $dumps = ($phaseClock.Keys | ForEach-Object { $_.Split('|')[0] } | Sort-Object -Unique)
     $pace = @()
@@ -183,6 +210,11 @@ foreach ($r in (Get-ChildItem $Session -Directory -Filter 'run*' | Sort-Object N
             error_log_lines = $(if ($meta) { $meta.error_log_lines } else { $null })
             telemetry_lines = $n
             duplicates_dropped = $dups
+            lines_recovered_from_ring = $recovered
+            # Country rows seen per dump, and any dump far below this run's own peak. A non-empty
+            # partial_dumps list means those country-dates are incomplete, NOT that countries died.
+            country_rows_per_dump = $rowsPerDump
+            partial_dumps = $short
         }
         pace = $pace
         countries = [ordered]@{

@@ -343,6 +343,25 @@ exporter market.
 that pushed the phase back to ~6 000 lines in one tick and the mirror lost 5 980 of them — the exact
 burst failure phasing exists to prevent, reintroduced by stacking. It now has phase 3.
 
+### Completeness gate — a partial dump is now loud, not silent
+
+Recovery (below) fixes most loss, but not all: the v8 arm still lost most of two country phases
+(58 and 141 rows against ~283). **A short dump is indistinguishable from real attrition** — "France
+is missing" reads as a country that ceased to exist when it may just be a lost line — so
+`summarise.ps1` now measures country rows per dump against **that run's own peak** (country counts
+fall naturally as states are annexed, so a fixed threshold would misfire) and flags anything under
+60 %:
+
+```
+WARNING: run 1: 1 PARTIAL dump(s) - 1846.2.1=58 rows. Exclude these from country-level analysis.
+```
+
+The list also lands in `summary.json` under `integrity.partial_dumps`, with
+`country_rows_per_dump` beside it, so the analysis sees it without anyone remembering to look.
+Verified: it flags both known-bad dumps in the v8 arm and stays silent on the clean v5 arm.
+
+**Check this before analysing, not after.** F9's country-attrition table was read once without it.
+
 ### ✅ RESOLVED — the mirror's losses are fully recoverable from the ring snapshot
 
 `summarise.ps1` now reads **both** `logs_live/debug.log` **and** the exit-time copy of the game's own
