@@ -1,0 +1,17 @@
+{
+  "schedule_version": 1,
+  "label": "construction-ramp",
+  "_why": "Does the construction sector run at full throughput from the start, or ramp? The scenario panel models every building at full utilisation, so if construction spends nothing on day 0 and climbs over the first weeks, the panel is right for the settled state and wrong for day 0 - which decides which date the scenario is calibrated against. Also carries government and military goods spend, for the same reason.",
+  "defaults": {
+    "tags": ["GBR", "FRA", "RUS", "AUS", "CHI", "JAP", "USA"],
+    "metrics": ["boot_dump", "market_goods_scoped", "market_goods", "construction", "scenario"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 20
+  },
+  "setups": {
+    "mod": { "kind": "config", "config": "config/mod_config.json", "lint": false }
+  },
+  "runs": [
+    { "setup": "mod", "until": "1836.7.1", "dump_dates": ["1836.2.1", "1836.3.1", "1836.4.1", "1836.5.1"] }
+  ]
+}

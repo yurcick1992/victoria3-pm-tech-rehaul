@@ -1,0 +1,21 @@
+{
+  "schedule_version": 1,
+  "label": "scenario-calib",
+  "_why": "Reference data for calibrating the balance UI's scenario panel against the game's own 1836 market. The comparison is: UI building inputs + pops vs (buy_orders - exports), and UI building outputs vs (sell_orders - imports) - pops never sell, so the supply side is a pop-free test of the building model. Read at DAY 0 (on_game_started_after_lobby), because by 1836.2.1 the AI's construction queue has already moved iron +25.7% and small arms -17.3% (probe 20260802_110757). Adds urban-centre levels and people-weighted SoL per stratum, neither of which is derivable from the game files, plus a full building inventory with employment at day 7.",
+  "defaults": {
+    "tags": ["GBR", "FRA", "RUS", "AUS", "CHI", "JAP", "USA"],
+    "metrics": ["boot_dump", "building_inventory", "market_goods_scoped", "market_goods", "scenario"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 20
+  },
+  "setups": {
+    "mod": { "kind": "config", "config": "config/mod_config.json", "lint": false },
+    "ctl": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"] },
+    { "setup": "ctl", "until": "1836.4.1", "dump_dates": ["1836.2.1"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"] },
+    { "setup": "ctl", "until": "1836.4.1", "dump_dates": ["1836.2.1"] }
+  ]
+}

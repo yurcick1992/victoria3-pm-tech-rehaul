@@ -1,0 +1,18 @@
+{
+  "schedule_version": 1,
+  "label": "urban-centres",
+  "_why": "Urban centres are the largest remaining block of scenario error after the consumption fit (FINDINGS F15): services and transportation together are a fifth of what is left, and both are urban-centre goods. Two unknowns: which production methods those levels actually run (the extractor currently guesses from the market leader's laws), and whether feeding military buildings into the urbanization sum closes the 25-30% level shortfall. This run measures the active PMs of every urban centre in the world, plus a fresh inventory and Feb order book to re-fit against.",
+  "defaults": {
+    "tags": ["GBR", "FRA", "RUS", "AUS", "CHI", "JAP", "USA"],
+    "metrics": ["boot_dump", "active_pms", "building_inventory", "market_goods_scoped", "market_goods", "scenario", "construction"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 20
+  },
+  "setups": {
+    "mod": { "kind": "config", "config": "config/mod_config.json", "lint": false }
+  },
+  "runs": [
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"] }
+  ]
+}

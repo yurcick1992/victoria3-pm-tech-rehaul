@@ -1,0 +1,17 @@
+{
+  "schedule_version": 1,
+  "label": "belgium-feb-may",
+  "_why": "Does the Feb->May direction help? Supply-share substitution is not instant, so a calculation fed February supply may describe a later month's demand better. Four monthly snapshots in ONE run, each pairing that month's pops, SoLs, supply and order book - so the comparison is strictly within-run and within-instant, and any movement is the game's own settling rather than run divergence.",
+  "_note": "pop_sol now rides phase 0 with the market goods so pops and orders are read at the SAME tick. It was phase 2, which paired February pops with April orders.",
+  "defaults": {
+    "tags": ["BEL"],
+    "metrics": ["boot_dump", "market_goods_scoped", "market_goods", "scenario", "pop_sol"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 25
+  },
+  "setups": { "mod": { "kind": "config", "config": "config/mod_config.json", "lint": false } },
+  "runs": [
+    { "setup": "mod", "until": "1836.7.1", "dump_dates": ["1836.2.1", "1836.3.1", "1836.4.1", "1836.5.1", "1836.6.1"] },
+    { "setup": "mod", "until": "1836.7.1", "dump_dates": ["1836.2.1", "1836.3.1", "1836.4.1", "1836.5.1", "1836.6.1"] }
+  ]
+}

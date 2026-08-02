@@ -1,0 +1,25 @@
+{
+  "schedule_version": 1,
+  "label": "allmarkets-popsol",
+  "_why": "One run carrying, at the SAME tick, every ingredient the approach-comparison table needs: per-pop SoL, the markets' order books, and the scenario aggregates. Every approach is then scored strictly within one run, so none is compared against a reference the others did not see.",
+  "_note": "Tags list EVERY member country of each market, not just the lead, so the per-pop data covers 100% of the pops behind the observed orders - no coverage scaling and no assumption that subjects resemble their overlord. The British market is deliberately absent: its 65 members would pull in all of India, ~15k pop lines in one tick, which exceeds the whole 2.5MB log ring and would be lost irrecoverably.",
+  "defaults": {
+    "tags": ["BEL",
+             "FRA", "PLY",
+             "RUS", "ALK", "FIN", "KZH", "OZH", "UBD", "UZH",
+             "CHI", "KOR", "LAN", "TIB",
+             "AUS", "CRO", "HUN", "KRA", "TRS",
+             "JAP", "EZO", "RYU",
+             "USA", "LIB", "SEQ"],
+    "metrics": ["boot_dump", "market_goods_scoped", "scenario", "pop_sol"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 25
+  },
+  "setups": {
+    "mod": { "kind": "config", "config": "config/mod_config.json" }
+  },
+  "runs": [
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"] }
+  ]
+}

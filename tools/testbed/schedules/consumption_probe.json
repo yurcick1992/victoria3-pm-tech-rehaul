@@ -1,0 +1,18 @@
+{
+  "schedule_version": 1,
+  "label": "consumption-probe",
+  "_why": "Tests whether pop consumption can be read DIRECTLY instead of as a residual. Our scenario calibration derives pop demand as (buy orders - our modelled building demand - trade), so every building-model error is scored as pop error; the market panel splits buy orders by source with pop consumption as an explicit entry. If GetMarketBuyOrdersBreakdown resolves in a debug_log, both modelled terms are replaced by the game's own numbers.",
+  "_note": "Belgium (the clean, hand-checkable market) and Japan (the one market whose error is a ~1.6x level shortfall rather than distribution noise). Short span - the probe only needs one dump to answer whether the calls resolve.",
+  "defaults": {
+    "tags": ["BEL", "JAP"],
+    "metrics": ["market_goods_scoped", "consumption_probe"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 15
+  },
+  "setups": {
+    "mod": { "kind": "config", "config": "config/mod_config.json" }
+  },
+  "runs": [
+    { "setup": "mod", "until": "1836.3.1", "dump_dates": ["1836.2.1"] }
+  ]
+}

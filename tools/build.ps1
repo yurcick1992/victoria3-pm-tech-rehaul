@@ -145,7 +145,15 @@ if ($telemetryOn) {
     $telemetryValues = New-TelemetryScriptValues
     # Probe values live in their own file so an unverified keyword cannot take the working ones
     # down with it (a script-values file that fails to parse loses everything in it).
-    $telemetryProbeValues = $(if (@($telemetrySpec.metrics) -contains 'treasury_probe') { New-TelemetryProbeValues } else { $null })
+    $telemetryProbeValues = $(if (@($telemetrySpec.metrics) -match '^(treasury_probe|scenario_probe)$') { New-TelemetryProbeValues } else { $null })
+    # Events are the third file of the instrument, and the only one the builder emits under events/.
+    # Needed because on_monthly_pulse is the finest pulse vanilla has: a reading between month
+    # boundaries can only come from a scheduled event. $null unless a metric asks for it.
+    $telemetryEvents = New-TelemetryEvents -Spec $telemetrySpec -Token $tok
+    # Fail the BUILD, not the run: a data function written as script kills the rest of the file, and
+    # the cost of finding that out in-game is a whole measurement run. See Test-TelemetryScript.
+    Test-TelemetryScript -Text $telemetryText -What 'zzz_v3tb_telemetry.txt'
+    if ($telemetryEvents) { Test-TelemetryScript -Text $telemetryEvents -What 'zzz_v3tb_probe.txt' }
 }
 
 # -ControlOnly: the CONTROL ARM. A complete, loadable mod whose only content is telemetry -
@@ -168,6 +176,11 @@ if ($ControlOnly) {
     New-Item -ItemType Directory -Force -Path $svDir | Out-Null
     [System.IO.File]::WriteAllText((Join-Path $svDir 'zzz_v3tb_values.txt'), $telemetryValues, (New-Object System.Text.UTF8Encoding($true)))
     if ($telemetryProbeValues) { [System.IO.File]::WriteAllText((Join-Path $svDir 'zzz_v3tb_probe_values.txt'), $telemetryProbeValues, (New-Object System.Text.UTF8Encoding($true))) }
+    if ($telemetryEvents) {
+        $evDir = Join-Path $modAbs 'events'
+        New-Item -ItemType Directory -Force -Path $evDir | Out-Null
+        [System.IO.File]::WriteAllText((Join-Path $evDir 'zzz_v3tb_probe.txt'), $telemetryEvents, (New-Object System.Text.UTF8Encoding($true)))
+    }
     Write-Output ""
     Write-Output "CONTROL BUILD: vanilla + telemetry only -> $modRel"
     Write-Output "  dump dates: $($telemetrySpec.dump_dates -join ', ')"
@@ -644,6 +657,7 @@ if ($telemetryOn) {
     WriteText "$modRel\common\on_actions\zzz_v3tb_telemetry.txt" $telemetryText $bom
     WriteText "$modRel\common\script_values\zzz_v3tb_values.txt" $telemetryValues $bom
     if ($telemetryProbeValues) { WriteText "$modRel\common\script_values\zzz_v3tb_probe_values.txt" $telemetryProbeValues $bom }
+    if ($telemetryEvents) { WriteText "$modRel\events\zzz_v3tb_probe.txt" $telemetryEvents $bom }
     Write-Output "telemetry: dump $($telemetrySpec.dump_dates -join ', ') for $($telemetrySpec.tags -join '+') [$($telemetrySpec.metrics -join ', ')]"
 }
 

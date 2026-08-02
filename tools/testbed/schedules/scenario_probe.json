@@ -1,0 +1,19 @@
+{
+  "schedule_version": 1,
+  "label": "scenario-probe",
+  "_why": "Verifies the unverified half of the scenario-calibration instrument BEFORE spending the measurement runs: per-building enumeration (urban-centre levels + employment), pop standard-of-living by stratum, and which of the three early-read hooks (day 0 / day 7 / a 1836.1.1 monthly pulse) actually fires. Two arms because the control must instrument identically; both stop at 1836.4.1.",
+  "defaults": {
+    "tags": ["GBR", "FRA", "RUS", "AUS", "CHI", "JAP", "USA"],
+    "metrics": ["market_goods_scoped", "scenario_probe"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 20
+  },
+  "setups": {
+    "mod": { "kind": "config", "config": "config/mod_config.json", "lint": false },
+    "ctl": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.1.1", "1836.2.1", "1836.3.1"] },
+    { "setup": "ctl", "until": "1836.4.1", "dump_dates": ["1836.1.1", "1836.2.1", "1836.3.1"] }
+  ]
+}

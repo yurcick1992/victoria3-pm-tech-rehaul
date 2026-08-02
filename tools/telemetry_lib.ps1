@@ -50,7 +50,12 @@
 #       EVERY market. Country sets can differ slightly between phases - join on name.
 #   v8  + ORIGINS: who supplied whom, per good, per importer market. Exporters pinned by
 #       `every_market = { limit = { owner = c:X } }` - a scope-path argument voids. Own phase (p3).
-$script:TELEMETRY_VERSION = 8
+#   v9  + URBAN CENTRE counts/levels per country (verified is_building_type mechanism), and the
+#       `scenario_probe` metric: the unverified half of the scenario-calibration instrument -
+#       per-building enumeration (type/level/employment), pop standard-of-living by stratum, and
+#       the three candidate EARLY-READ hooks (game start, a day-7 scheduled event, a 1836.1.1
+#       monthly pulse). Adds an events/ file, the first the builder has ever emitted.
+$script:TELEMETRY_VERSION = 9
 
 function Get-TelemetryVersion { return $script:TELEMETRY_VERSION }
 
@@ -156,6 +161,15 @@ v3tb_revolutionary = { value = 0
 v3tb_in_default = { value = 0
 	if = { limit = { in_default = yes } value = 1 } }
 
+# Per-POP values, read via MakeScope.ScriptValue on the pop scope. Belt-and-braces beside the data
+# functions: `standard_of_living` is verified as a pop-scope script-value KEYWORD (it is what the
+# per-stratum SoL sums use), whereas Pop.GetFormattedStandardOfLiving is a GUI accessor that may
+# return decorated text. Whichever survives, one of them gives the real distribution.
+v3tb_pop_sol = { value = 0
+	add = standard_of_living }
+v3tb_pop_wf = { value = 0
+	add = workforce }
+
 # ---- POPULATION / WORKFORCE ----
 # The capital-scarcity measure: how much of a country's workforce is in subsistence (peasants) or
 # idle, versus gainfully employed. Vanilla late-game advanced economies run peasants and unemployed
@@ -196,8 +210,72 @@ v3tb_lvl_tradecenter = { value = 0
 	every_scope_state = { every_scope_building = {
 		limit = { is_building_type = building_trade_center }
 		add = level } } }
+
+# ---- URBAN CENTRES ----
+# The scenario panel cannot model these: the game raises them itself from state urbanization by an
+# engine-side rule that is NOT in the game files (common/building_groups gives urbanization per
+# building LEVEL, but not the divisor). So the level count has to be MEASURED. This uses the same
+# verified is_building_type mechanism as the trade-centre counts, and is therefore the guaranteed
+# floor under the richer per-building enumeration probed by `scenario_probe`.
+# ---- STANDARD OF LIVING BY STRATUM ----
+# The scenario panel otherwise gives every market the same per-class wealth level (35/16/9), which
+# cannot be right for Britain and the Qing at once. VERIFIED 2026-08-02 (session 20260802_110757):
+# `standard_of_living` resolves as a pop-scope script-value keyword, and the nested value block
+# below works - GBR's people-weighted mean came to 10.13 against GetAverageSoLByPopulation's 10.23,
+# an independent cross-check. So these live in the PRODUCTION values file, not the probe one.
+# ⚠ `wealth` at pop scope returns the SAME number as `standard_of_living`; they are one quantity.
+#
+# The strata are the SAME buckets extract_presets.ps1 uses ($STRATA) - the fitted consumption
+# distribution is keyed by them, so a different bucketing here would silently mis-key it.
+# Denominators are `v3tb_swf_*`, deliberately NOT `v3tb_wf_*`: those already exist above, and two
+# definitions of one script-value key is a silent override.
+#
+# STRATUM_VALUES_MARKER (the per-stratum pairs are appended here by the generator)
+
+v3tb_bld_urban_center = { value = 0
+	every_scope_state = { every_scope_building = {
+		limit = { is_building_type = building_urban_center }
+		add = 1 } } }
+v3tb_lvl_urban_center = { value = 0
+	every_scope_state = { every_scope_building = {
+		limit = { is_building_type = building_urban_center }
+		add = level } } }
 "@
+    $sv = $sv -replace '# STRATUM_VALUES_MARKER.*', (Get-StratumSolValues)
     return $sv
+}
+
+function Get-StratumSolValues {
+    <#
+      People-weighted SoL and workforce per stratum, as script-value text. Shared by the production
+      values file (where these belong, now that they are verified) - see the marker it replaces.
+    #>
+    $strata = [ordered]@{
+        upper    = @('aristocrats','capitalists')
+        middle   = @('clerks','shopkeepers','engineers','bureaucrats','academics','clergymen','officers')
+        lower    = @('laborers','farmers','machinists','soldiers')
+        peasants = @('peasants')
+        slaves   = @('slaves')
+    }
+    $out = @()
+    foreach ($s in $strata.Keys) {
+        $lim = if ($strata[$s].Count -eq 1) {
+            "is_pop_type = $($strata[$s][0])"
+        } else {
+            "OR = { " + (($strata[$s] | ForEach-Object { "is_pop_type = $_" }) -join ' ') + " }"
+        }
+        $out += @"
+v3tb_solw_$s = { value = 0
+	every_scope_state = { every_scope_pop = {
+		limit = { $lim }
+		add = { value = standard_of_living  multiply = workforce } } } }
+v3tb_swf_$s = { value = 0
+	every_scope_state = { every_scope_pop = {
+		limit = { $lim }
+		add = workforce } } }
+"@
+    }
+    return ($out -join "`r`n")
 }
 
 function New-TelemetryProbeValues {
@@ -208,7 +286,7 @@ function New-TelemetryProbeValues {
       share a file with the working values, or a bad guess here would silently zero the building
       counts that F3 depends on.
     #>
-    return @"
+    $sv = @"
 # AUTO-GENERATED by tools/telemetry_lib.ps1 - PROBE VALUES, unverified keywords. See TESTBED_METRICS.
 
 # Is `trade_capacity` a state-scope script-value keyword? GetTradeCapacity is a State DATA function
@@ -232,6 +310,124 @@ v3tb_unemp_count_a = { value = 0
 		add = workforce } } }
 v3tb_unemp_count_b = { value = 0
 	every_scope_state = { every_scope_pop = { add = unemployed_workforce } } }
+
+# ---- STANDARD OF LIVING BY STRATUM (scenario calibration) ----
+# The scenario panel gives every market the same per-class wealth level (35/16/9), which cannot be
+# right for Britain and the Qing at once. `standard_of_living` and `wealth` are pop-scope numeric
+# TRIGGERS (common/trigger_localization), which is the same evidence that made `workforce` and
+# `dependents` work as script-value keywords - but that is an inference, not a verification.
+#
+# Two things are being probed at once, so they are kept separate:
+#   1. does `standard_of_living` resolve at pop scope at all (v3tb_sol_sum_probe, unweighted);
+#   2. does a NESTED value block (`add = { value = x  multiply = y }`) work in a script value,
+#      which is what a people-weighted mean needs. If it does not, the unweighted sums plus the
+#      pop counts still give a per-pop-object mean, which is a usable fallback.
+# `pop_size` is a third guess: `workforce` counts working adults only, and consumption is per head.
+v3tb_sol_sum_probe = { value = 0
+	every_scope_state = { every_scope_pop = { add = standard_of_living } } }
+v3tb_popobj_count = { value = 0
+	every_scope_state = { every_scope_pop = { add = 1 } } }
+# (`pop_size` was probed 2026-08-02 and does NOT exist: "Failed to find a valid event target link
+# 'pop_size'". Removed - a known-bad value adds error.log noise every run and can mask a new one.)
+v3tb_wealth_sum_probe = { value = 0
+	every_scope_state = { every_scope_pop = { add = wealth } } }
+v3tb_sol_wsum_probe = { value = 0
+	every_scope_state = { every_scope_pop = {
+		add = { value = standard_of_living  multiply = workforce } } } }
+"@
+    # ⚠ The per-stratum v3tb_solw_* / v3tb_swf_* values are NOT here. They were probed from this file
+    # and, once verified, MOVED to New-TelemetryScriptValues - because a probe file is only emitted
+    # when a probe metric asks for it, and leaving them here meant a production schedule that did not
+    # request a probe silently logged SoL as 0 for every country (measured, session
+    # 20260802_111721). Defining them in both places would be worse still: two files defining one
+    # script-value key is a silent override.
+    return $sv
+}
+
+function Get-MarketGoodsBlock {
+    <#
+      The market sweep, as one reusable block, because it is now emitted from TWO places: the
+      monthly-pulse dumps and the game-start (day-0) read. $Scoped restricts it to the markets owned
+      by $Tags - see the note at its call site in the dump body.
+    #>
+    param([string]$Token, [string]$Date, $Tags, [bool]$Scoped)
+    $lim = if ($Scoped) {
+        "`r`n`t`t`t`tlimit = { OR = { " + (($Tags | ForEach-Object { "owner = c:$_" }) -join ' ') + " } }"
+    } else { "" }
+    return @"
+
+			every_market = {$lim
+				debug_log = "V3TB|$Token|MARKET|$Date|[THIS.GetMarket.GetNameNoFormatting]|owner=[THIS.GetMarket.GetOwner.GetNameNoFormatting]"
+				every_market_goods = {
+					debug_log = "V3TB|$Token|G|$Date|[PREV.GetMarket.GetNameNoFormatting]|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketSellOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketPrice|2]|[THIS.GetMarketGoods.GetGoods.GetMarketImports|2]|[THIS.GetMarketGoods.GetGoods.GetMarketExports|2]|[THIS.GetMarketGoods.GetGoods.GetMarketProduction|2]"
+				}
+			}
+"@
+}
+
+function Get-ScenarioBlock {
+    <#
+      SCEN: one line per country carrying everything the balance UI's scenario panel cannot derive
+      from the game FILES - urban-centre count/levels (the engine raises them from urbanization by a
+      rule that is not in the files) and people-weighted standard of living per stratum (the panel
+      otherwise gives every market the same 35/16/9).
+
+      EVERY country, not a tag list: the scenario is a MARKET, and a market is a lead country plus
+      its subjects, so a 7-tag sweep would miss most of the British market. The market each country
+      belongs to comes off the MKT line beside it.
+
+      All of these were verified 2026-08-02 (probe session 20260802_110757), so they are bundled into
+      one line rather than one-per-line - the field order below IS the parsing contract; append at
+      the END, never insert.
+    #>
+    param([string]$Token, [string]$Date)
+    $sol = @('upper','middle','lower','peasants','slaves') |
+           ForEach-Object { "[THIS.GetCountry.MakeScope.ScriptValue('v3tb_solw_$_')]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_swf_$_')]" }
+    return @"
+
+			every_country = {
+				debug_log = "V3TB|$Token|MKT|$Date|[THIS.GetCountry.GetNameNoFormatting]|[THIS.GetCountry.GetMarket.GetNameNoFormatting]|[THIS.GetCountry.GetTotalPopulation]"
+				debug_log = "V3TB|$Token|SCEN|$Date|[THIS.GetCountry.GetNameNoFormatting]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_bld_urban_center')]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_lvl_urban_center')]|$($sol -join '|')"
+			}
+"@
+}
+
+function Get-BuildingInventoryBlock {
+    <#
+      One line per BUILDING, every country: type key, level, employment, employee cap, state.
+
+      This is what turns "the scenario panel is missing urban centres" into an exact per-market level
+      count, and what lets the panel's FULL-EMPLOYMENT assumption be checked rather than assumed.
+
+      ⚠ Field choices are probe results, not guesses (session 20260802_110757):
+        - the type key is `GetBuildingType.GetKey`; `GetType.GetKey` VOIDS the line;
+        - the level is `GetExpansionLevel`; `GetLevel` VOIDS. Reconciled against the script-value
+          level sum (8 logged urban centres summed to 87, the script value said 89 over 9 buildings -
+          i.e. one line lost to the log ring, not a different quantity).
+
+      ⚠ Country attribution is belt-and-braces. `PREV` reaches ONE enclosing scope, which here is the
+      STATE, not the country - so the country has to come from `GetState.GetCountry`, which is a GUI
+      function (39 uses) but is NOT verified in a loc string. If it voids it takes the whole BINV line
+      with it, so a per-country MARKER line is emitted as well: 285 extra lines buys a reconstruction
+      path (marker order + state name) for the case where the inline field fails.
+    #>
+    param([string]$Token, [string]$Date)
+    return @"
+			every_country = {
+				debug_log = "V3TB|$Token|BINVC|$Date|[THIS.GetCountry.GetNameNoFormatting]"
+				every_scope_state = {
+					every_scope_building = {
+						debug_log = "V3TB|$Token|BINV|$Date|[THIS.GetBuilding.GetState.GetCountry.GetNameNoFormatting]|[THIS.GetBuilding.GetBuildingType.GetKey]|[THIS.GetBuilding.GetExpansionLevel]|[THIS.GetBuilding.GetEmploymentPercentage|2]|[THIS.GetBuilding.GetEmployeeCap]|[THIS.GetBuilding.GetState.GetNameNoFormatting]"
+						# THROUGHPUT, on its OWN line so that if these two void they take only
+						# themselves and not the inventory. `building_details_panel.gui` renders the
+						# throughput row from exactly these, so the realised bonus can be READ per
+						# building instead of summed from technology + law + company sub-factors or
+						# backed out of order differences. `Current` vs `Target` because the bonus
+						# ramps: a company bonus that is fully in by February would show them equal.
+						debug_log = "V3TB|$Token|THRU|$Date|[THIS.GetBuilding.GetState.GetCountry.GetNameNoFormatting]|[THIS.GetBuilding.GetBuildingType.GetKey]|[THIS.GetBuilding.GetExpansionLevel]|[THIS.GetBuilding.GetThroughputBonusCurrent|4]|[THIS.GetBuilding.GetThroughputBonusTarget|4]"
+					}
+				}
+			}
 "@
 }
 
@@ -307,20 +503,122 @@ function New-TelemetryScript {
             $phaseBlocks[1] += $blocks; $blocks = ""   # country/pop data -> its own month
         }
 
-        if ($metrics -contains "market_goods") {
+        if ($metrics -contains "market_goods" -or $metrics -contains "market_goods_scoped") {
             # EVERY market, not one per tracked tag. A market is identified by its own name plus its
             # owner, so nothing is lost by dropping the tag list - and shared markets (EIC in the
             # British market) are no longer logged once per member, which was pure duplication.
-            $blocks += @"
+            #
+            # `market_goods_scoped` restricts the sweep to the markets OWNED by the spec's tags. That
+            # is not an optimisation, it is what lets a heavy second metric share the same tick: the
+            # full sweep is ~5300 lines, and stacking anything on top of it reproduces the burst that
+            # cost 5980 lines (TESTBED_METRICS: "each heavy block needs its OWN phase"). Phasing is
+            # the general answer, but it moves the second block a MONTH away - and for a start-state
+            # calibration the whole point is that every number is read at the same instant.
+            $blocks += Get-MarketGoodsBlock -Token $Token -Date $date -Tags $tags `
+                                            -Scoped ($metrics -contains "market_goods_scoped")
+            $phaseBlocks[0] += $blocks; $blocks = ""   # market goods -> its own month (the big one)
+        }
 
-			every_market = {
-				debug_log = "V3TB|$Token|MARKET|$date|[THIS.GetMarket.GetNameNoFormatting]|owner=[THIS.GetMarket.GetOwner.GetNameNoFormatting]"
-				every_market_goods = {
-					debug_log = "V3TB|$Token|G|$date|[PREV.GetMarket.GetNameNoFormatting]|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketSellOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketPrice|2]|[THIS.GetMarketGoods.GetGoods.GetMarketImports|2]|[THIS.GetMarketGoods.GetGoods.GetMarketExports|2]|[THIS.GetMarketGoods.GetGoods.GetMarketProduction|2]"
+        # ---- SCENARIO (v9): urban-centre levels + SoL per stratum, per country. Rides in phase 1
+        # with the other per-country work, since it is the same every_country shape.
+        if ($metrics -contains "scenario") {
+            $blocks += Get-ScenarioBlock -Token $Token -Date $date
+            $phaseBlocks[1] += $blocks; $blocks = ""
+        }
+
+        # ---- ACTIVE PMs of urban centres, per state. Phase 3 (its own month) so its ~900 lines do
+        # not share a tick with anything heavy. In the dump body rather than a one-off event so it
+        # fires at EVERY dump date - the question "is the 1836 reading representative?" needs a
+        # second date to answer, and the state name on each line lets the capital state be selected
+        # at analysis time from history's own `capital = STATE_X`.
+        if ($metrics -contains "active_pms") {
+            $blocks += Get-ActivePmBlock -Token $Token -Date $date -Building 'building_urban_center' `
+                -Pms @('pm_market_stalls','pm_market_squares','pm_covered_markets','pm_arcades',
+                       'pm_no_street_lighting','pm_gas_streetlights','pm_electric_streetlights',
+                       'pm_no_public_transport','pm_public_trams','pm_public_motor_carriages',
+                       'pm_state_urban_clergy','pm_free_urban_clergy','pm_no_urban_clergy')
+            # SECONDARY PMs on ordinary buildings. The preset takes secondaries from history's
+            # `activate_production_methods`, and the game runs more than history lists: Belgium's
+            # fruit (0 against 62) and luxury clothes (3 against 32) have no source in the scenario
+            # at all, though the buildings that make them are present at the right level counts.
+            # These are the two PMGs that carry them. `pm_no_*` is swept too - knowing a building
+            # runs the OFF method is as informative as knowing it runs the ON one, and it is what
+            # tells a real zero from a lost line.
+            foreach ($b in @('building_wheat_farm','building_rye_farm','building_maize_farm','building_millet_farm','building_rice_farm')) {
+                $blocks += Get-ActivePmBlock -Token $Token -Date $date -Building $b `
+                    -Pms @('pm_no_secondary','pm_citrus_orchards','pm_sugar_beets','pm_apple_orchards','pm_fig_orchards')
+            }
+            foreach ($b in @('building_textile_mill','building_textile_mill_dye','building_textile_mill_sewing','building_textile_mill_electric')) {
+                $blocks += Get-ActivePmBlock -Token $Token -Date $date -Building $b `
+                    -Pms @('pm_no_luxury_clothes','pm_craftsman_sewing','pm_elastics')
+            }
+            $phaseBlocks[3] += $blocks; $blocks = ""
+        }
+
+        # ---- PER-POP standard of living. One line per pop for the tracked tags.
+        # The scenario collapses each stratum to a single wealth level, and buy packages are STEP
+        # functions in wealth - a need simply is not in the package below a certain level - so that
+        # collapse cannot buy anything a stratum's mean pop would not buy. Spreading each stratum over
+        # a band instead cut pop demand error 33% -> 25%, but a fitted band width is a knob, not a
+        # model. This measures the REAL distribution so the approximation can be validated against it
+        # rather than tuned: if per-pop SoL reproduces the observed orders, the band is a fair
+        # shorthand for something real; if it does not, the band is hiding a different defect.
+        #
+        # ⚠ Field names are unverified, hence one per line: a void kills only itself. The GUI uses
+        # Pop.GetPopType / GetNumWorkforce / GetDependentsSize / GetFormattedStandardOfLiving, but a
+        # `Formatted` accessor may return decorated text rather than a number.
+        if ($metrics -contains "pop_sol") {
+            foreach ($tag in $tags) {
+                $blocks += @"
+
+			if = {
+				limit = { exists = c:$tag }
+				c:$tag = {
+					every_scope_state = {
+						every_scope_pop = {
+							# ⚠ Every line repeats state + workforce as a DISCRIMINATOR. Two pops with
+							# the same value emit byte-identical lines, and the log de-duplication that
+							# protects every other metric would silently collapse them - destroying
+							# exactly the distribution this is here to measure. Analysis of these lines
+							# must also read logs_live ONLY and never de-duplicate.
+							# ONE line per pop carrying everything. The earlier split across three lines
+							# forced a join on (state, workforce), and that join is unsound: pops share
+							# those values, so it cross-products, and any row that fails to match takes
+							# a default pop type. Belgium's ~600k peasants carry consumption_mult 0.05,
+							# so defaulting them to laborers doubled predicted demand. No join, no
+							# default, no ambiguity - at the cost that a void here kills the whole pop.
+							debug_log = "V3TB|$Token|POP1|$date|$tag|[THIS.GetPop.GetState.GetNameNoFormatting]|[THIS.GetPop.GetNumWorkforce]|[THIS.GetPop.GetDependentsSize]|[THIS.GetPop.MakeScope.ScriptValue('v3tb_pop_sol')]|[THIS.GetPop.GetPopType.GetName]"
+							# SoL via a script value on the POP scope. The earlier attempt wrote
+							# THIS.MakeScope and voided: the working form takes the typed accessor
+							# first, exactly as THIS.GetCountry.MakeScope.ScriptValue does for countries.
+							# POP TYPE, three candidate forms, one per line. GetPopType.GetKey voided;
+							# the GUI only ever renders Pop.GetPopType directly. Without a type the
+							# peasant consumption_mult (0.05) cannot be applied, and peasants are most
+							# of this population - so this field is load-bearing, not decoration.
+						}
+					}
 				}
 			}
 "@
-            $phaseBlocks[0] += $blocks; $blocks = ""   # market goods -> its own month (the big one)
+            }
+            # ⚠ Phase 0, with the market goods — NOT its own phase. A phased metric fires `phase`
+            # months after the date it stamps, so putting pops in phase 2 paired February pops with
+            # April orders. Comparing a calculation against the orders it should reproduce requires
+            # both to be read at the SAME instant; that is the entire point of this metric.
+            $phaseBlocks[0] += $blocks; $blocks = ""
+        }
+
+        # ---- CONSTRUCTION / GOVERNMENT / MILITARY goods spend, per country. Cheap (one line each)
+        # and it answers whether a building the scenario models at full utilisation actually runs
+        # at full utilisation. Phase 1, beside the other per-country work.
+        if ($metrics -contains "construction") {
+            $blocks += @"
+
+			every_country = {
+				debug_log = "V3TB|$Token|CON|$date|[THIS.GetCountry.GetNameNoFormatting]|[THIS.GetCountry.GetConstructionGoodsExpenses|2]|[THIS.GetCountry.GetGovernmentGoodsExpenses|2]|[THIS.GetCountry.GetMilitaryGoodsExpenses|2]"
+			}
+"@
+            $phaseBlocks[1] += $blocks; $blocks = ""
         }
 
         # ---- TREASURY (production): the in-game budget panel, per country.
@@ -502,6 +800,91 @@ function New-TelemetryScript {
 "@
         }
 
+        # ---- SCENARIO PROBE (v9): the unverified half of the scenario-calibration instrument.
+        # Three separate questions, kept apart so one failure does not mask another:
+        #   A. can a BUILDING be enumerated and described (type key, level, employment)? That is what
+        #      turns "the UI is missing urban centres" into an exact level count, and lets the
+        #      full-employment assumption be checked instead of assumed.
+        #   B. does `standard_of_living` resolve at pop scope, and can it be people-weighted?
+        #   C. the guaranteed FALLBACK - urban-centre count/levels via the verified script-value
+        #      mechanism. If A fails entirely we still get the number the scenario panel needs.
+        # Every block opens with a CONSTANT marker: a line with no data function cannot void, so a
+        # missing marker means the block never ran, whereas a missing data line means that call failed.
+        if ($metrics -contains "scenario_probe") {
+            # A - per-building fields. Probed on urban centres (the building we actually need) plus a
+            # control type history DOES create, so "no rows" can be told from "wrong function".
+            $bFields = [ordered]@{
+                type      = '[THIS.GetBuilding.GetBuildingType.GetKey]'
+                type2     = '[THIS.GetBuilding.GetType.GetKey]'
+                name      = '[THIS.GetBuilding.GetNameNoFormatting]'
+                level     = '[THIS.GetBuilding.GetLevel]'
+                explevel  = '[THIS.GetBuilding.GetExpansionLevel]'
+                emppct    = '[THIS.GetBuilding.GetEmploymentPercentage|2]'
+                empcap    = '[THIS.GetBuilding.GetEmployeeCap]'
+                state     = '[THIS.GetBuilding.GetState.GetNameNoFormatting]'
+            }
+            foreach ($bt in @('building_urban_center','building_textile_mill')) {
+                $fl = ""
+                foreach ($k in $bFields.Keys) {
+                    $fl += "`r`n`t`t`t`t`t`t`tdebug_log = `"V3TB|$Token|SP|$date|B|$bt|$k|$($bFields[$k])`""
+                }
+                $blocks += @"
+
+			if = {
+				limit = { exists = c:GBR }
+				c:GBR = {
+					debug_log = "V3TB|$Token|SP|$date|B|$bt|m_country|reached-GBR"
+					every_scope_state = {
+						every_scope_building = {
+							limit = { is_building_type = $bt }
+							debug_log = "V3TB|$Token|SP|$date|B|$bt|m_building|reached-building"$fl
+						}
+					}
+				}
+			}
+"@
+            }
+            # B + C - per tracked country: the SoL probes (unverified keywords, isolated file) beside
+            # the urban-centre counts (verified mechanism). One line per value: a bad keyword voids
+            # only itself, so a partial failure still teaches which half works.
+            $solVals = @('v3tb_sol_sum_probe','v3tb_popobj_count',
+                         'v3tb_wealth_sum_probe','v3tb_sol_wsum_probe') +
+                       @('upper','middle','lower','peasants','slaves' | ForEach-Object { "v3tb_solw_$_"; "v3tb_swf_$_" })
+            foreach ($tag in $tags) {
+                $lines = "`r`n`t`t`t`t`tdebug_log = `"V3TB|$Token|SP|$date|$tag|m_tag|[THIS.GetCountry.GetNameNoFormatting]`""
+                foreach ($v in $solVals) {
+                    $lines += "`r`n`t`t`t`t`tdebug_log = `"V3TB|$Token|SP|$date|$tag|SOL|$v|[THIS.GetCountry.MakeScope.ScriptValue('$v')]`""
+                }
+                foreach ($v in @('v3tb_bld_urban_center','v3tb_lvl_urban_center')) {
+                    $lines += "`r`n`t`t`t`t`tdebug_log = `"V3TB|$Token|SP|$date|$tag|UC|$v|[THIS.GetCountry.MakeScope.ScriptValue('$v')]`""
+                }
+                $blocks += @"
+
+			if = {
+				limit = { exists = c:$tag }
+				c:$tag = {$lines
+				}
+			}
+			else = { debug_log = "V3TB|$Token|SP|$date|$tag|ABSENT|-|-" }
+"@
+            }
+            # D - the market read, in the SAME form the early hooks use, so a boot-time or day-7
+            # value can be compared against a known-good monthly-pulse one rather than to nothing.
+            $blocks += @"
+
+			if = {
+				limit = { exists = c:GBR }
+				c:GBR = {
+					market_capital.market = {
+						every_market_goods = {
+							debug_log = "V3TB|$Token|SP|$date|EARLY|pulse|[TimeKeeper.GetCurrentDate.GetString]|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketSellOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketPrice|2]"
+						}
+					}
+				}
+			}
+"@
+        }
+
         # ---- TRADE-ROUTE PROBE: what does a trade-route scope expose for LOGGING?
         # every_trade_route is a MARKET-scope iterator over routes that EXIST, so it is sparse by
         # construction - the right shape for import origins, versus ~305x305xgoods for the cross
@@ -548,6 +931,76 @@ function New-TelemetryScript {
         # ---- PROBE: one uncertain data function per line, so a failure voids only its own line.
         # Every probe prints something whose value we already KNOW (a name) next to the number,
         # because a silent empty value is the dangerous failure mode (TESTBED_METRICS.md).
+        if ($metrics -contains "consumption_breakdown") {
+            # THE direct read of pop consumption. `GetMarketBuyOrdersBreakdown` returns the market
+            # panel's buy-orders split BY SOURCE - an explicit Pop Consumption entry, a per-pop-type
+            # split beneath it, and one entry per building type. Before this, pop demand could only
+            # be had as a residual (buy - our modelled buildings - trade), which scored building
+            # error as pop error; measured directly it turned out the residual FLATTERED the pop
+            # model (Belgium 14.6% residual-scored vs 23.0% true). See FINDINGS F23.
+            #
+            # ⚠ VOLUME. The return is formatted tooltip text carrying a base64 payload per entry -
+            # several KB per good. The game's log ring is 5x512 KB shared by every run, so scope
+            # this to a FEW markets per run: seven markets in one run overflows the ring and the
+            # loss is irrecoverable, not merely slow.
+            $ownerLim = ($tags | ForEach-Object { "owner = c:$_" }) -join ' '
+            $blocks += @"
+
+			debug_log = "V3TB|$Token|CP|C0start|$Date"
+			every_market = {
+				limit = { OR = { $ownerLim } }
+				every_market_goods = {
+					debug_log = "V3TB|$Token|CP|C2|$Date|[PREV.GetMarket.GetNameNoFormatting]|[THIS.GetMarketGoods.GetGoods.GetKey]|BEGIN"
+					debug_log = "[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrdersBreakdown]"
+					debug_log = "V3TB|$Token|CP|C2end|[THIS.GetMarketGoods.GetGoods.GetKey]"
+				}
+			}
+			debug_log = "V3TB|$Token|CP|C2done|$Date"
+"@
+        }
+
+        if ($metrics -contains "consumption_probe") {
+            # The market panel splits a good's buy orders BY SOURCE, with pop consumption as an
+            # explicit entry - which is the one thing our scenario calibration has only ever had as
+            # a residual (buy - our modelled buildings - trade). If these resolve, both modelled
+            # terms can be replaced by the game's own numbers.
+            #
+            # ORDER IS DEFENSIVE. A data function that does not resolve abandons the REST OF THE
+            # FILE, so the cheap/likely-good call goes first, the risky formatted-string call last,
+            # and an 'ok' marker follows each: a missing marker names the exact call that voided.
+            $blocks += @"
+
+			# ---- C0: file reached the probe at all ----
+			debug_log = "V3TB|$Token|CP|C0start|ok"
+
+			# ---- C1: per-building consumption of one good (Building.GetConsumption(Goods)) ----
+			# gui/building_details_panel.gui renders its input rows from exactly this call, so the
+			# per-building draw on a good is READABLE rather than inferred from our recipe model.
+			every_country = {
+				limit = { OR = { this = c:BEL this = c:JAP } }
+				every_scope_state = {
+					every_scope_building = {
+						debug_log = "V3TB|$Token|CP|C1|[THIS.GetBuilding.GetState.GetCountry.GetNameNoFormatting]|[THIS.GetBuilding.GetBuildingType.GetKey]|[THIS.GetBuilding.GetExpansionLevel]|grain|[THIS.GetBuilding.GetConsumption(GetGoods('grain'))|2]"
+					}
+				}
+			}
+			debug_log = "V3TB|$Token|CP|C1end|ok"
+
+			# ---- C2: the buy-orders breakdown string itself ----
+			# Returns FORMATTED TOOLTIP TEXT (newlines + markup), not a scalar, so it will land in
+			# the log as multiple physical lines. BEGIN/END fence it for the parser.
+			every_market = {
+				limit = { OR = { owner = c:BEL owner = c:JAP } }
+				every_market_goods = {
+					debug_log = "V3TB|$Token|CP|C2|[PREV.GetMarket.GetNameNoFormatting]|[THIS.GetMarketGoods.GetGoods.GetKey]|BEGIN"
+					debug_log = "[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrdersBreakdown]"
+					debug_log = "V3TB|$Token|CP|C2end|[THIS.GetMarketGoods.GetGoods.GetKey]"
+				}
+			}
+			debug_log = "V3TB|$Token|CP|C2done|ok"
+"@
+        }
+
         if ($metrics -contains "probe") {
             $blocks += @"
 
@@ -585,8 +1038,10 @@ function New-TelemetryScript {
 					debug_log = "V3TB|$Token|P|P3buy|[THIS.GetMarket.GetMarketGoods(GetGoods('tools').Self).GetMarketBuyOrders|2]"
 					debug_log = "V3TB|$Token|P|P3addimp|[THIS.GetMarket.GetWorldMarketAdditionalImportsToMarket|2]"
 					debug_log = "V3TB|$Token|P|P3addexp|[THIS.GetMarket.GetWorldMarketAdditionalExportsFromMarket|2]"
+					# NO `limit` - `is_goods = GetGoods('tools')` was a parse error that abandoned the
+					# rest of the file (data functions are loc-string-only). The good's key is on
+					# every line, so filtering at analysis time costs nothing. See BUGS_AND_FIXES.md.
 					every_market_goods = {
-						limit = { is_goods = GetGoods('tools') }
 						debug_log = "V3TB|$Token|P|P3g_addimp|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetWorldMarketAdditionalImportsToMarket|2]"
 						debug_log = "V3TB|$Token|P|P3g_addexp|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetWorldMarketAdditionalExportsFromMarket|2]"
 						debug_log = "V3TB|$Token|P|P3g_balance|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetMarketBuyAndSellOrdersBalance|2]"
@@ -707,6 +1162,51 @@ v3tb_ev_capit = {
 "@
     }
 
+    # ---- what rides in the GAME-START effect.
+    # Assembled here as a plain string rather than inline in the return: a here-string nested inside
+    # a $(...) subexpression inside another here-string does not parse in Windows PowerShell.
+    $bootExtra = ""
+    if ($metrics -contains 'boot_dump') {
+        # THE DAY-0 READ - the reference snapshot for scenario calibration, and a measured choice
+        # rather than a convenience. The scenario preset is derived from the HISTORY FILES, i.e. the
+        # state before any AI has acted, and the game leaves that state fast: measured 2026-08-02 on
+        # the British market, day 0 -> 1836.2.1 moved iron buy orders +25.7%, small arms -17.3%,
+        # engines +13.7%, artillery +11.1%, tools +7.6% as the AI's construction queue filled. Most
+        # goods move under 2%, but the ones that move are exactly the industrial inputs at issue.
+        # `on_monthly_pulse` does NOT fire on 1836.1.1 (verified: only the 1836.2.1 and 1836.3.1
+        # windows produced a BEGIN), so this hook is the earliest read that exists.
+        $bootExtra += "`r`n`t`tdebug_log = `"V3TB|$Token|BEGIN|1836.1.1|boot|[TimeKeeper.GetCurrentDate.GetString]`""
+        $bootExtra += (Get-MarketGoodsBlock -Token $Token -Date '1836.1.1' -Tags $tags -Scoped ($metrics -contains 'market_goods_scoped'))
+        $bootExtra += (Get-ScenarioBlock -Token $Token -Date '1836.1.1')
+        if ($metrics -contains 'construction') {
+            # Is the construction sector at full throughput at the start, or does it ramp?
+            # The scenario panel assumes FULL utilisation for every building, so if construction
+            # spends nothing on day 0 and ramps over the first weeks, the panel's iron/tools/wood
+            # demand is right for the settled state and wrong for day 0 - which decides which date
+            # the scenario should be calibrated against. £/week of goods bought by construction,
+            # from the budget panel's own function (§3.5).
+            $bootExtra += "`r`n`t`tevery_country = {`r`n`t`t`tdebug_log = `"V3TB|$Token|CON|1836.1.1|[THIS.GetCountry.GetNameNoFormatting]|[THIS.GetCountry.GetConstructionGoodsExpenses|2]|[THIS.GetCountry.GetGovernmentGoodsExpenses|2]|[THIS.GetCountry.GetMilitaryGoodsExpenses|2]`"`r`n`t`t}"
+        }
+        $bootExtra += "`r`n`t`tdebug_log = `"V3TB|$Token|END|1836.1.1|boot|[TimeKeeper.GetCurrentDate.GetString]`""
+    }
+    if ($metrics -contains 'building_inventory') {
+        # Scheduled to day 7 rather than emitted here: ~6000 lines is a 1 MB burst and the log ring
+        # is 5x512 KB, so stacking it on the day-0 tick is the exact failure phasing exists to
+        # prevent. Buildings barely move in a week (construction takes months) while market numbers
+        # do - so the week's delay is paid by the thing that can afford it.
+        $bootExtra += "`r`n`t`tif = {`r`n`t`t`tlimit = { exists = c:GBR }`r`n`t`t`tc:GBR = { trigger_event = { id = v3tb_probe.2 days = 7 } }`r`n`t`t}"
+    }
+    # (active_pms used to fire from a day-3 event; it now rides phase 3 of the dump body so it fires
+    # at every dump date rather than only at the start.)
+    if ($metrics -contains 'scenario_probe') {
+        # The three candidate EARLY-READ hooks, all logging the same line so they can be compared:
+        # here (day 0), a scheduled event (day 7), and a 1836.1.1 monthly pulse.
+        # ⚠ NO `limit` on the goods iteration - `GetGoods('grain')` is a loc-string data function and
+        # is a parse error in script, which abandons the rest of the file. See BUGS_AND_FIXES.md.
+        $probeLine = "V3TB|$Token|SP|boot|EARLY|boot|[TimeKeeper.GetCurrentDate.GetString]|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketSellOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketPrice|2]"
+        $bootExtra += "`r`n`t`tif = {`r`n`t`t`tlimit = { exists = c:GBR }`r`n`t`t`tc:GBR = {`r`n`t`t`t`tmarket_capital.market = {`r`n`t`t`t`t`tevery_market_goods = {`r`n`t`t`t`t`t`tdebug_log = `"$probeLine`"`r`n`t`t`t`t`t}`r`n`t`t`t`t}`r`n`t`t`t`ttrigger_event = { id = v3tb_probe.1 days = 7 }`r`n`t`t`t}`r`n`t`t}"
+    }
+
     return @"
 # AUTO-GENERATED by tools/telemetry_lib.ps1 via build.ps1 - do not edit by hand.
 # TELEMETRY SCHEMA v$script:TELEMETRY_VERSION
@@ -728,9 +1228,142 @@ v3tb_boot = {
 		# renders it in the loading screen via INGAME_RNG_SEED, so it works in any loc string.
 		# GetGlobalRandomSeedString is the CUSTOM seed text, empty unless the custom_rng_seed game
 		# rule is set to use_custom_rng_seed. Own line: if either fails, BOOT still survives.
-		debug_log = "V3TB|$Token|SEED|[GetGlobalRandomSeed]|custom=[GetGlobalRandomSeedString]"
+		debug_log = "V3TB|$Token|SEED|[GetGlobalRandomSeed]|custom=[GetGlobalRandomSeedString]"$bootExtra
 	}
 }
 $dumpBody$events
+"@
+}
+
+function Test-TelemetryScript {
+    <#
+      Build-time tripwire for the ONE failure mode that costs a whole run's telemetry silently.
+
+      Data functions (`GetGoods('grain')`, `THIS.GetCountry.GetGDP`, ...) live ONLY inside loc
+      strings - the quoted text of a debug_log. Writing one as SCRIPT is a parse error, and Paradox
+      abandons a file FROM THE ERROR ONWARD: on 2026-08-02 a `limit = { is_goods = GetGoods('grain') }`
+      in the game-start block took all three dumps defined below it with it, and the run harvested
+      nothing. The game says so in error.log, but by then the run is spent.
+
+      So: strip every double-quoted string from each generated line and require that what remains
+      contains no `Something(` call and no `[`. Throws with the offending lines; returns nothing.
+      Cheap, and it fails at BUILD time instead of after 40 s of loading plus the run.
+    #>
+    param([string]$Text, [string]$What)
+    $bad = @()
+    $n = 0
+    foreach ($line in ($Text -split "`r?`n")) {
+        $n++
+        $stripped = [regex]::Replace($line, '"[^"]*"', '""')
+        $stripped = ($stripped -replace '#.*$', '')
+        if ($stripped -match '[A-Za-z]\w*\s*\(' -or $stripped -match '\[') {
+            $bad += "  ${What}:${n}: $($line.Trim())"
+        }
+    }
+    if ($bad.Count) {
+        throw ("TELEMETRY GUARD: data function used as SCRIPT (it is loc-string-only). Paradox " +
+               "abandons the file from the error onward, so everything below would be lost:`n" +
+               ($bad -join "`n"))
+    }
+}
+
+function Get-ActivePmBlock {
+    <#
+      Which PRODUCTION METHOD a building is actually running, per country.
+
+      There is no data function that returns a building's active PMs - `GetProductionMethodsDesc` is a
+      tooltip, not a value - so the only route is to ask the question backwards: iterate the buildings,
+      FILTER on `is_production_method_active = <literal>`, and emit a line when it matches. One pass per
+      candidate PM, but each pass is filtered, so the output is one line per (building, active PM), not
+      per candidate.
+
+      Needed because urban centres are never in the history files: the scenario extractor guesses their
+      PMs from the market leader's laws, and services + transportation - both urban-centre goods - are
+      the largest remaining block of scenario error (FINDINGS F15).
+
+      ⚠ The trigger is `has_active_production_method` (BUILDING scope, bare PM key). NOT
+      `is_production_method_active`, which is STATE scope and takes a block
+      `{ building_type = X  production_method = Y }`. Using the wrong one does not error - an invalid
+      trigger inside a `limit` is silently ignored, the limit becomes a no-op, and EVERY candidate PM
+      matches EVERY building. Measured 2026-08-02: 13 PMs each "active" on all 224 urban centres, at
+      identical level totals. Sanity-check accordingly: if every candidate returns the same count, the
+      filter failed (TESTBED_METRICS 3.7).
+    #>
+    param([string]$Token, [string]$Date, [string]$Building, $Pms)
+    $body = ""
+    foreach ($pm in $Pms) {
+        $body += @"
+
+				every_scope_state = {
+					every_scope_building = {
+						limit = { is_building_type = $Building  has_active_production_method = $pm }
+						debug_log = "V3TB|$Token|APM|$Date|[THIS.GetBuilding.GetState.GetCountry.GetNameNoFormatting]|$Building|$pm|[THIS.GetBuilding.GetExpansionLevel]|[THIS.GetBuilding.GetState.GetNameNoFormatting]"
+					}
+				}
+"@
+    }
+    return @"
+			every_country = {$body
+			}
+"@
+}
+
+function New-TelemetryEvents {
+    <#
+      Returns the text of events/zzz_v3tb_probe.txt, or $null when no metric needs it.
+
+      This is the ONLY events file the builder emits, and it exists for one reason: on_monthly_pulse
+      is the finest pulse vanilla exposes, so a reading between month boundaries is unreachable from
+      an on_action. A scheduled event is - `trigger_event = { id = ... days = 7 }` from the game-start
+      hook lands on 1836.1.8.
+
+      hidden = yes so it never shows a pop-up in an observer game (and needs no localization).
+    #>
+    param($Spec, [string]$Token)
+    $metrics = @($Spec.metrics)
+    $wantProbe = $metrics -contains 'scenario_probe'
+    $wantInv   = $metrics -contains 'building_inventory'
+    if (-not ($wantProbe -or $wantInv -or ($metrics -contains 'active_pms'))) { return $null }
+    $body = ""
+    if ($wantProbe) { $body += @"
+
+# EARLY READ, hook 3 of 3: a day-7 scheduled event. Fired from v3tb_boot.
+v3tb_probe.1 = {
+	type = country_event
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		market_capital.market = {
+			every_market_goods = {
+				debug_log = "V3TB|$Token|SP|day7|EARLY|day7|[TimeKeeper.GetCurrentDate.GetString]|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketSellOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketPrice|2]"
+			}
+		}
+	}
+}
+"@ }
+    if ($wantInv) { $body += @"
+
+# The building inventory, fired from v3tb_boot with days = 7 to keep its ~6000-line burst off the
+# day-0 tick. The event is scoped to one country but its effect sweeps every_country.
+v3tb_probe.2 = {
+	type = country_event
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+$(Get-BuildingInventoryBlock -Token $Token -Date '1836.1.8')
+	}
+}
+"@ }
+    return @"
+# AUTO-GENERATED by tools/telemetry_lib.ps1 via build.ps1 - do not edit by hand.
+# Scheduled-event telemetry: the only route to a reading BETWEEN month boundaries, and the place
+# heavy blocks go so they do not share a tick with the day-0 market read. See telemetry_lib.ps1.
+
+namespace = v3tb_probe
+$body
 "@
 }

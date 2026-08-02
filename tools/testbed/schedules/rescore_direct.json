@@ -1,0 +1,31 @@
+{
+  "schedule_version": 1,
+  "label": "rescore-direct",
+  "_why": "Re-scores all five pop-consumption approaches against DIRECTLY MEASURED pop consumption instead of the residual (buy - our modelled buildings - trade). The residual target scored building error as pop error and, measured directly, flattered the pop model rather than merely adding noise (FINDINGS F23), so every earlier column value needs redoing.",
+  "_note": "ONE market per run. The breakdown returns multi-KB formatted text per good; at two markets per run the debug log hit 2.1 MB against a 5x512 KB ring and the block was cut off after 43 of ~72 goods (no C2done marker). One market lands near 1 MB and completes. Each run carries that market's member countries' per-pop SoL AND its breakdown at the SAME tick, so the per-pop column is scored strictly within one run; each market runs twice so the between-run spread of the measured target can be separated from model error.",
+  "defaults": {
+    "metrics": ["market_goods_scoped", "scenario", "pop_sol", "consumption_breakdown"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 20,
+    "tags": ["BEL"]
+  },
+  "setups": {
+    "mod": { "kind": "config", "config": "config/mod_config.json" }
+  },
+  "runs": [
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["BEL"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["BEL"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["JAP", "EZO", "RYU"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["JAP", "EZO", "RYU"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["FRA", "PLY"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["FRA", "PLY"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["USA", "LIB", "SEQ"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["USA", "LIB", "SEQ"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["RUS", "ALK", "FIN", "KZH", "OZH", "UBD", "UZH"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["RUS", "ALK", "FIN", "KZH", "OZH", "UBD", "UZH"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["CHI", "KOR", "LAN", "TIB"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["CHI", "KOR", "LAN", "TIB"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["AUS", "CRO", "HUN", "KRA", "TRS"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["AUS", "CRO", "HUN", "KRA", "TRS"] }
+  ]
+}
