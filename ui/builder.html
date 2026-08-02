@@ -349,7 +349,7 @@
 // ---------- constants ----------
 const TIERCOL = {0:"#5b6b7d",1:"var(--tier1)",2:"var(--tier2)",3:"var(--tier3)",4:"var(--tier4)",5:"var(--tier5)"};   // tier 0 = untiered (reference)
 // shared column layout for BOTH the industry tables and the reference tables, so every column lines up.
-const MTABLE_COLS='<colgroup><col class="c-tier"><col class="c-bld"><col class="c-num"><col class="c-in"><col class="c-out"><col class="c-wf"><col class="c-tgt"><col class="c-be"><col class="c-io"><col class="c-bc"><col class="c-pb"><col class="c-act"></colgroup>';
+const MTABLE_COLS='<colgroup><col class="c-tier"><col class="c-bld"><col class="c-num"><col class="c-num"><col class="c-in"><col class="c-out"><col class="c-wf"><col class="c-tgt"><col class="c-be"><col class="c-io"><col class="c-bc"><col class="c-pb"><col class="c-act"></colgroup>';
 const TARGET_TOL = 6;   // pp: |BE − target_be| ≤ TOL shows green (matches the linter tolerance)
 // ---- workforce wages: wages stem from the actual workforce employed, not a fraction of goods ----
 // Each employee's weekly wage = BASE_WAGE × the pop type's vanilla wage_weight (common/pop_types/*.txt).
@@ -529,7 +529,12 @@ const EMPTY_POPS = {total:0, upper:0, middle:0, lower:0, slaves:0, peasants:0};
 const EMPTY_PRESET = { id:'empty', label:'Empty', group:'Reset', buildings:{}, pms:{}, nonbuy:{}, nonsell:{},
   pops:EMPTY_POPS, market:[], notes:[], year:1836 };
 let POPS   = Object.assign({}, EMPTY_POPS);           // people per consumption class (editable in the preset bar)
-let SOL    = {upper:35, middle:16, lower:9};          // the wealth level whose buy package each class consumes
+// The wealth level whose buy package each class consumes. Peasants and slaves have their OWN level:
+// they used to borrow the lower class's, which cannot express the measured spread (peasants run 4.5
+// in Japan against 12.1 in France, and are ABOVE labourers in Britain).
+let SOL    = {upper:35, middle:16, lower:9, peasants:9, slaves:9};
+const SOLCLASSES = ['upper','middle','lower','peasants','slaves'];
+function solOf(c){ const v=SOL[c]; return (v!=null&&v>0)?v:SOL.lower; }
 let POPFIT = 1;                                       // "vanilla-fit" multiplier on ALL pop consumption (calibration knob)
 // Goods pops are allowed to want. The default follows the scenario YEAR alone — a good is available
 // once some building × PM that makes it can exist anywhere, because a market imports what it cannot
@@ -554,30 +559,254 @@ function presetList(){ return [EMPTY_PRESET].concat(HAVE_PRESETS ? PRE.presets :
 //     substitution — a fixed distribution over what technology makes possible, per the design brief;
 //   * a need with nothing unlocked falls back to its `default` good (so a need can never silently vanish);
 //   * money → quantity at BASE price, and the result is scaled by the vanilla-fit knob.
-function popDemand(){
-  const out={};
-  if(!popTotal()) return out;
-  const cm=POPM.class_mult||{}, PK=POPM.buy_packages||{}, ND=POPM.needs||{};
+// `detail`, when passed, is filled as good -> [{need, money, qty}] so the scenario panel can show
+// where a good's pop demand came from. Kept as an optional out-parameter rather than a second
+// function so there is exactly ONE implementation of the demand arithmetic to keep correct.
+// Must pass the same supply the aggregate used, or the hover breakdown would explain a different
+// number than the column shows.
+function popDemandDetail(){
+  const d={}, a=scenarioAggregates(), supply={}, nonpop={};
+  [...Object.keys(a.outAgg), ...Object.keys(ADDSELL)].forEach(g=>supply[g]=(a.outAgg[g]||0)+(ADDSELL[g]||0));
+  [...Object.keys(a.inAgg), ...Object.keys(ADDBUY)].forEach(g=>nonpop[g]=(a.inAgg[g]||0)+(ADDBUY[g]||0));
+  popDemand(d, supply, nonpop); return d;
+}
+// Half-width of the standard-of-living spread applied INSIDE each stratum. A stratum is not one
+// wealth level: its pops sit on a range, and buy packages are steps, so collapsing them onto the
+// mean systematically misreads the basket. Each class's people are spread uniformly over
+// [mean-SOL_SPREAD, mean+SOL_SPREAD] (floored at 1).
+//
+// ONE global constant, not a fitted per-market vector, and it is worth 7 pp: scored against the
+// game's own pop-consumption figures across seven 1836 markets, mean error is 25.7% at the bare
+// stratum mean and 18.5% with this spread. Using every pop's TRUE measured SoL instead scores
+// 16.7% - so the spread recovers most of what per-pop data would give, for one number.
+// Per-market fitting of the width buys ~0.5 pp over the global 8 and is deliberately not done.
+// See FINDINGS F24.
+const SOL_SPREAD=8;
+// £/week each pop NEED is budgeted, for the current population and SoL. Split out of popDemand
+// because the distribution fit needs exactly this vector and must not compute it a second way.
+function popSpend(){
+  const spend={};
+  if(!popTotal()) return spend;
+  const cm=POPM.class_mult||{}, PK=POPM.buy_packages||{};
   const wr=(POPM.working_adult_ratio!=null?POPM.working_adult_ratio:0.25);
   const head=wr+(1-wr)*(POPM.dependent_consumption_ratio!=null?POPM.dependent_consumption_ratio:0.5);  // 0.625
-  const spend={};   // pop need -> £ per week
-  [['upper',SOL.upper],['middle',SOL.middle],['lower',SOL.lower],['slaves',SOL.lower],['peasants',SOL.lower]]
+  const steps=2*SOL_SPREAD+1;
+  [['upper',solOf('upper')],['middle',solOf('middle')],['lower',solOf('lower')],['slaves',solOf('slaves')],['peasants',solOf('peasants')]]
     .forEach(([cls,lvl])=>{
       const n=POPS[cls]||0; if(!(n>0)) return;
-      const pkg=PK[String(lvl)]; if(!pkg) return;
-      const units=n*head*(cm[cls]!=null?cm[cls]:1)/(POPM.pop_size_package||10000);
-      for(const nd in pkg) spend[nd]=(spend[nd]||0)+pkg[nd]*units;
+      const units=n*head*(cm[cls]!=null?cm[cls]:1)/(POPM.pop_size_package||10000)/steps;
+      for(let k=-SOL_SPREAD;k<=SOL_SPREAD;k++){
+        const pkg=PK[String(Math.max(1,Math.round(lvl+k)))]; if(!pkg) continue;
+        for(const nd in pkg) spend[nd]=(spend[nd]||0)+pkg[nd]*units;
+      }
     });
+  return spend;
+}
+// How a need's money splits across its goods. This is the GAME'S OWN RULE, not a fitted vector:
+// each good takes a share proportional to `weight × its share of the need's supply in this market`,
+// clamped to the entry's own `min_supply_share` / `max_supply_share` and renormalised.
+//
+// It needs no fixed point and no time series. Pops never sell, so supply does not depend on pop
+// demand - the allocation is one pass over the scenario's own sell orders, exactly the numbers the
+// panel already shows. Nothing is stored per scenario.
+//
+// Measured against the game's 1836 order book over eight markets: per-good pop demand error
+// 39.6% with a fitted market-independent vector, **29.4%** with this, and every market improves
+// (FINDINGS F19). Scored against May rather than February it is worse (33.6%), so the substitution
+// lag does not help - February is the right target.
+//
+// `supply` is good -> sell orders. Falls back to POPDIST, then to the vanilla `weight`, when a need
+// has no supply at all in this scenario (an empty market must still produce a sane split).
+// THE GAME'S DOCUMENTED RULE (vic3.paradoxwikis.com/Needs):
+//
+//   market share   = (sell orders − 0.5 × NON-POP buy orders) / Σ over the need's goods
+//   purchase weight= weight × market share, with market share clamped to the entry's
+//                    [min_supply_share, max_supply_share]
+//   units          = (need money / base price) × purchase weight / Σ purchase weights
+//
+// ⚠ The `− 0.5 × non-pop buy orders` term is the one that matters most and is the least guessable:
+// a good that industry consumes heavily has its market share SUPPRESSED for pops. Grain is the case
+// in point — abundant, but bought hard by mills — and leaving the term out over-fed grain by half.
+// Measured on Belgium within one run, against that run's own pops and order book: pop demand error
+// 30.3 % without it, **16.2 % with it** (FINDINGS F22).
+//
+// ⚠ The bounds CLAMP the market share. The wiki's summary says market share "has no effect" outside
+// the range, which reads as reverting to bare `weight` — that is measurably wrong: liquor is ~95 %
+// of Belgium's intoxicants supply, and reverting drops its predicted demand from 199 to 102 against
+// an observed 201. Clamping reproduces it.
+//
+// Units come from money ÷ base price, so goods are equivalent per POUND, not per unit — a higher
+// base price fulfils the same need with fewer units.
+function needSplit(nd, def, supply, nonpop){
+  const es=(def.entries||[]).filter(e=>UNLOCKED.has(e.g));
+  if(!es.length) return null;
+  const eff=es.map(e=>Math.max(0, ((supply||{})[e.g]||0) - 0.5*((nonpop||{})[e.g]||0)));
+  const tot=eff.reduce((a,b)=>a+b,0);
+  let pw;
+  if(tot>0){
+    pw=es.map((e,i)=>{
+      const ms=Math.min(e.max!=null?e.max:1, Math.max(e.min||0, eff[i]/tot));
+      return (e.w!=null?e.w:1)*ms;
+    });
+  } else {
+    // No supply at all for this need in the scenario: fall back to the stored distribution, then to
+    // the vanilla weight, so an empty market still splits sanely instead of collapsing to nothing.
+    pw=es.map(e=>{ const d=POPDIST[nd]; return (d&&d[e.g]!=null)?d[e.g]:(e.w||0); });
+  }
+  const s=pw.reduce((a,b)=>a+b,0);
+  if(!(s>0)) return null;
+  return es.map((e,i)=>({g:e.g, s:pw[i]/s}));
+}
+function popDemand(detail, supply, nonpop){
+  const out={};
+  const note=(g,need,money,qty)=>{ if(!detail) return; (detail[g]=detail[g]||[]).push({need,money,qty}); };
+  if(!popTotal()) return out;
+  const ND=POPM.needs||{};
+  const spend=popSpend();
   for(const nd in spend){
     const def=ND[nd], money=spend[nd]*POPFIT;
     if(!def||!(money>0)) continue;
-    const es=(def.entries||[]).filter(e=>UNLOCKED.has(e.g) && (e.w||0)>0);
-    const W=es.reduce((s,e)=>s+(e.w||0),0);
-    if(!(W>0)){ const g=def.def; if(g) out[g]=(out[g]||0)+money/(PRICES[g]||1); continue; }
-    es.forEach(e=>{ out[e.g]=(out[e.g]||0)+money*e.w/W/(PRICES[e.g]||1); });
+    // A share of exactly 0 is a real answer ("pops do not buy fabric when the market supplies
+    // clothes"), so a zero simply contributes nothing rather than being filtered out earlier.
+    const split=needSplit(nd, def, supply, nonpop);
+    if(!split){ const g=def.def; if(g){ const q=money/(PRICES[g]||1); out[g]=(out[g]||0)+q; note(g,nd+' (fallback)',money,q); } continue; }
+    split.forEach(e=>{ if(!(e.s>0)) return;
+      const m=money*e.s, q=m/(PRICES[e.g]||1); out[e.g]=(out[e.g]||0)+q; note(e.g,nd,m,q); });
   }
   return out;
 }
+// ---------------------------------------------------------------- fitted consumption distribution
+// How a pop need's money is split across the goods that need lists. The game does this by SUPPLY
+// SHARE, bounded per entry by max/min_supply_share; we deliberately do NOT model that, because a
+// market-dependent split would make the scenario panel's demand depend on its own supply. Instead we
+// use ONE market-independent distribution, fitted across all seven 1836 markets.
+//
+// The `weight` field was the obvious stand-in and is badly wrong: `popneed_basic_food` weights grain
+// 0.85 of 5.00, but grain is ~74% of British food supply, so weight-splitting understated British
+// grain demand by 7 900 units - the single largest error in the whole panel. See FINDINGS F10.
+//
+// POPDIST[need][good] = relative share. Missing need => fall back to the `weight` field, so a need
+// the fit never saw still behaves sensibly. Shares are renormalised over the goods currently
+// UNLOCKED, exactly as the weights were.
+let POPDIST = (POPM.distribution && Object.keys(POPM.distribution).length) ? JSON.parse(JSON.stringify(POPM.distribution)) : {};
+// POPDIST is now only a FALLBACK, used when a need has no supply at all in the scenario (an empty
+// market still has to produce a sane split). The live rule is needSplit() — supply share, the way
+// the game does it — so config/pop_distribution.json is no longer the model, and the `fit pops`
+// button below is kept only to re-derive that fallback.
+// ---- the FIT ------------------------------------------------------------------------------------
+// Solves for POPDIST across every preset that carries a measured order book.
+//
+// The observation. Orders cannot be decomposed by channel in-game (TESTBED_METRICS 3.3), so pop
+// demand is recovered by SUBTRACTION, using the panel's own building model:
+//     observed_pop(m,g) = buy_orders(m,g) − building demand(m,g) − trade out(m,g)
+// which is why the building side had to be verified first (FINDINGS F14): any error there lands in
+// the pop coefficients instead of being visible as a building error.
+//
+// The model is LINEAR in the shares once they are constrained to sum to 1 per need:
+//     predicted_pop(m,g) = Σ_need spend(m,need) · s(need,g) / price(g)
+// The seven 1836 markets share one unlock set, so the normalisation set is the same everywhere and
+// that constraint is exact rather than an approximation.
+//
+// Objective: squared error in QUANTITY, because quantity is what the market balance and the price
+// formula act on. Money-weighted would let a few expensive goods dominate a market whose prices are
+// set by grain.
+// weight modes. `abs` sums raw squared quantity error, which lets the two largest markets set the
+// answer for all seven — measured: it improves the Qing and Russia while making France and the USA
+// worse. `market` normalises each market by its own total demand so every market pulls equally,
+// which is what "one rule for every country, fitted on a large set" actually asks for.
+const FITW = {
+  abs:    () => 1,
+  market: (r, tot) => 1 / Math.max(1, tot[r.market]),
+};
+function collectFitRows(mode){
+  const rows=[];   // one per (market, good with any pop need)
+  const savedPops=Object.assign({},POPS), savedSol=Object.assign({},SOL);
+  const savedBld=Object.assign({},BLDNUM), savedYear=YEAR;
+  presetList().forEach(p=>{
+    if(!p.measured || !p.measured.buy) return;
+    applyScenarioPreset(p.id);
+    const spend=popSpend(), agg=scenarioAggregates();
+    const inNeed={};
+    for(const nd in (POPM.needs||{})) (POPM.needs[nd].entries||[]).forEach(e=>{ if(UNLOCKED.has(e.g)) inNeed[e.g]=true; });
+    Object.keys(inNeed).forEach(g=>{
+      const obs=(p.measured.buy[g]||0)-(agg.inAgg[g]||0)-(ADDBUY[g]||0);
+      rows.push({market:p.id, g, obs, spend, price:(PRICES[g]||1)});
+    });
+  });
+  // leave the sheet as we found it — the fit is an analysis, not a scenario change
+  POPS=savedPops; SOL=savedSol; Object.keys(BLDNUM).forEach(k=>delete BLDNUM[k]); Object.assign(BLDNUM,savedBld); YEAR=savedYear;
+  const tot={}; rows.forEach(r=>{ tot[r.market]=(tot[r.market]||0)+Math.abs(r.obs); });
+  const wf=FITW[mode||'market']||FITW.market;
+  rows.forEach(r=>{ r.w=wf(r,tot); });
+  return rows;
+}
+// Euclidean projection onto the probability simplex (Duchi et al.) — the standard way to keep the
+// shares non-negative AND summing to one after an unconstrained gradient step.
+function projectSimplex(v){
+  const n=v.length; if(!n) return v;
+  const u=v.slice().sort((a,b)=>b-a);
+  let css=0, rho=-1, theta=0;
+  for(let i=0;i<n;i++){ css+=u[i]; const t=(css-1)/(i+1); if(u[i]-t>0){ rho=i; theta=t; } }
+  if(rho<0) theta=(css-1)/n;
+  return v.map(x=>Math.max(0,x-theta));
+}
+function fitPopDistribution(opts){
+  opts=opts||{};
+  const iters=opts.iters||4000, lr=opts.lr||1e-4;
+  const rows=collectFitRows(opts.weight);
+  if(!rows.length) return {error:'no preset carries a measured order book'};
+  const ND=POPM.needs||{};
+  // parameters: for each need, its unlocked goods
+  const needs=[], idx={};
+  for(const nd in ND){
+    const gs=(ND[nd].entries||[]).filter(e=>UNLOCKED.has(e.g)).map(e=>e.g);
+    if(!gs.length) continue;
+    idx[nd]=needs.length; needs.push({nd, gs, s:gs.map(()=>1/gs.length)});
+  }
+  const share=(nd,g)=>{ const k=idx[nd]; if(k==null) return 0; const N=needs[k]; const i=N.gs.indexOf(g); return i<0?0:N.s[i]; };
+  const predict=r=>{ let q=0; for(const nd in r.spend) q+=r.spend[nd]*share(nd,r.g); return q/r.price; };
+  const sse=()=>rows.reduce((a,r)=>{ const d=predict(r)-r.obs; return a+r.w*d*d; },0);
+  const before=sse();
+  for(let it=0; it<iters; it++){
+    const grad=needs.map(N=>N.gs.map(()=>0));
+    rows.forEach(r=>{
+      const d=r.w*(predict(r)-r.obs)*2/r.price;
+      for(const nd in r.spend){
+        const k=idx[nd]; if(k==null) continue;
+        const i=needs[k].gs.indexOf(r.g); if(i<0) continue;
+        grad[k][i]+=d*r.spend[nd];
+      }
+    });
+    // scale-free step: the gradient magnitude spans orders of magnitude between a need worth
+    // £40 000/week and one worth £40, so a single raw learning rate cannot serve both.
+    needs.forEach((N,k)=>{
+      const g=grad[k]; const norm=Math.sqrt(g.reduce((a,x)=>a+x*x,0))||1;
+      N.s=projectSimplex(N.s.map((x,i)=>x-lr*iters*g[i]/norm/Math.sqrt(it+1)));
+    });
+  }
+  const after=sse();
+  const dist={};
+  needs.forEach(N=>{ dist[N.nd]={}; N.gs.forEach((g,i)=>{ dist[N.nd][g]=Math.round(N.s[i]*1e4)/1e4; }); });
+  return {dist, rmseBefore:Math.sqrt(before/rows.length), rmseAfter:Math.sqrt(after/rows.length), rows:rows.length, needs:needs.length};
+}
+// ---------------------------------------------------------------- MILITARY -----------------------
+// The one place the "one building, one row" convention is broken on purpose: each land unit type gets
+// TWO rows, mobilised and not. Mobilisation changes a battalion's goods consumption by orders of
+// magnitude, so it has to be a visible setting rather than a number baked into one row.
+//
+// ⚠ The goods are on the COMBAT UNIT TYPE (`upkeep_modifier`), not on barracks or logistics centres —
+// both of those run production methods with no goods at all. Battalion counts come from
+// `common/history/military_formations`, so nothing here is measured.
+//
+// PLACEHOLDER, deliberately: the two rows are clones. A mobilised battalion currently costs exactly
+// what a garrisoned one does, because the mobilisation options are not modelled yet. The row exists so
+// the structure is right and the cost can be filled in without rearranging the sheet.
+const UNITG = (POPM && POPM.unit_goods) || {};   // rides in pop_model, beside the other generated tables
+const UNITNUM = {};        // "<unit type>|peace" / "|mob" -> battalions (session-only)
+function unitTypes(){ return Object.keys(UNITG).filter(u=>Object.keys(UNITG[u]||{}).length); }
+function unitRowKey(u, mob){ return u + '|' + (mob?'mob':'peace'); }
+function unitLabel(u){ return prettyKey(u.replace(/^combat_unit_type_/,'')); }
+function unitGoodsIO(u){ return {in:Object.assign({}, UNITG[u]||{}), out:{}}; }
 let PRICES_LOCKED = true;   // price panel lock. ON (default) = prices are manual/frozen; OFF = computed from orders.
 // Victoria 3 market price (vic3.paradoxwikis.com/Market):
 //   price = base × [ 1 + 0.75 × clamp( (BUY − SELL) / min(BUY,SELL), ±1 ) ]  → 25%..175% of base.
@@ -603,21 +832,82 @@ function tierGoodsIO(i,t){
 }
 // aggregate BUILDING buy(input)/sell(output) orders across every building × its Number. Reference buildings use
 // their full selected-PM goods (selGoods already sums all selected PMs). Returns {inAgg, outAgg} per good.
+// THROUGHPUT, per building type. Read off the building in-game (Building.GetThroughputBonusCurrent)
+// rather than summed from technology + law + company sub-factors, and carried by the preset. It
+// scales a building's inputs AND outputs together — Belgium's steel mill runs +31.5%, mostly the
+// John Cockerill company bonus, and economy of scale alone (+1% per level, capped at 20) accounts
+// for only the first point of it. Session-only and never emitted: the game computes its own.
+const THRU = {};        // building key -> bonus, e.g. 0.315
+function thruMult(b){ return 1 + (THRU[b]||0); }
 function scenarioAggregates(){
   const inAgg={}, outAgg={};
-  IND.forEach(i=>i.tiers.forEach(t=>{ const n=BLDNUM[t.key]||0; if(!n) return; const g=tierGoodsIO(i,t);
+  IND.forEach(i=>i.tiers.forEach(t=>{ const n=(BLDNUM[t.key]||0)*thruMult(t.key); if(!n) return; const g=tierGoodsIO(i,t);
     for(const k in g.in)  inAgg[k]  = (inAgg[k] ||0)+n*g.in[k];
     for(const k in g.out) outAgg[k] = (outAgg[k]||0)+n*g.out[k]; }));
-  refBuildings().forEach(b=>{ const n=BLDNUM[b]||0; if(!n) return; const g=selGoods(refSel(b));
+  refBuildings().forEach(b=>{ const n=(BLDNUM[b]||0)*thruMult(b); if(!n) return; const g=selGoods(refSel(b));
     for(const k in g.in)  inAgg[k]  = (inAgg[k] ||0)+n*g.in[k];
     for(const k in g.out) outAgg[k] = (outAgg[k]||0)+n*g.out[k]; });
-  return {inAgg, outAgg, pop:popDemand()};
+  // Battalions take no throughput bonus - the upkeep modifier is per battalion, not per building.
+  unitTypes().forEach(u=>{ const g=unitGoodsIO(u);
+    [false,true].forEach(mob=>{ const n=UNITNUM[unitRowKey(u,mob)]||0; if(!n) return;
+      for(const k in g.in) inAgg[k] = (inAgg[k]||0)+n*g.in[k]; }); });
+  // Pop demand LAST, and fed this scenario's own sell orders: the within-need split follows supply
+  // share, the way the game does it. Not circular - pops never sell, so outAgg is already final.
+  // ⚠ Union of building output AND trade, not just outAgg: a good the market only IMPORTS has no
+  // building output at all, and keying off outAgg alone made it invisible to the allocation - it got
+  // zero supply share and therefore zero pop demand. Belgium's coffee showed 0 demand against 49.
+  const supply={};
+  [...Object.keys(outAgg), ...Object.keys(ADDSELL)].forEach(g=>supply[g]=(outAgg[g]||0)+(ADDSELL[g]||0));
+  // NON-POP buy orders: buildings plus trade out. The market-share rule subtracts half of these, so
+  // a good industry consumes heavily is less available to pops. inAgg is final at this point —
+  // pops are computed last and never appear in it, so there is no circularity.
+  const nonpop={};
+  [...Object.keys(inAgg), ...Object.keys(ADDBUY)].forEach(g=>nonpop[g]=(inAgg[g]||0)+(ADDBUY[g]||0));
+  return {inAgg, outAgg, pop:popDemand(null, supply, nonpop)};
 }
 function scenarioBuySell(agg, g){
   return { buy:(agg.inAgg[g]||0)+((agg.pop||{})[g]||0)+(ADDBUY[g]||0), sell:(agg.outAgg[g]||0)+(ADDSELL[g]||0) };
 }
+// WHICH buildings make up a scenario order, as a tooltip. A bare total ("paper 160") is not
+// actionable: the question a reader always has next is which buildings it came from, and until now
+// the only way to answer it was to scan every card by hand. Returns the same arithmetic the column
+// does — count × per-level quantity = contribution — so the lines visibly add up to the header.
+// side: 'in' (buy) or 'out' (sell).
+function scenBreakdown(g, side){
+  const parts=[];
+  IND.forEach(i=>i.tiers.forEach(t=>{
+    const n=BLDNUM[t.key]||0; if(!n) return;
+    const q=tierGoodsIO(i,t)[side][g]; if(!q) return;
+    parts.push({name:`${t.name} (T${t.tier})`, n, q});
+  }));
+  refBuildings().forEach(b=>{
+    const n=BLDNUM[b]||0; if(!n) return;
+    const q=selGoods(refSel(b))[side][g]; if(!q) return;
+    parts.push({name:prettyKey(b), n, q});
+  });
+  unitTypes().forEach(u=>{ const q=unitGoodsIO(u)[side][g]; if(!q) return;
+    [false,true].forEach(mob=>{ const n=UNITNUM[unitRowKey(u,mob)]||0; if(!n) return;
+      parts.push({name:unitLabel(u)+(mob?' (mobilised)':''), n, q}); }); });
+  if(!parts.length) return `${g} — no ${side==='in'?'building demand':'building supply'} in this scenario`;
+  parts.sort((a,b)=>Math.abs(b.n*b.q)-Math.abs(a.n*a.q));
+  const tot=parts.reduce((s,p)=>s+p.n*p.q,0);
+  const lines=parts.slice(0,24).map(p=>`  ${p.name}  ${p.n}×${round(p.q)} = ${round(p.n*p.q)}`);
+  if(parts.length>24) lines.push(`  …and ${parts.length-24} more`);
+  return `${g} — ${round(tot)} ${side==='in'?'demand':'supply'} from ${parts.length} building type(s)\n` + lines.join('\n');
+}
+// Pop demand, per NEED rather than per class: a need is what the money is actually budgeted to, and
+// it is the unit the consumption distribution is defined over — so this is the breakdown that tells
+// you which need to look at when a good is wrong.
+function popBreakdown(g){
+  const d=popDemandDetail(); const rows=(d[g]||[]).filter(r=>r.qty>0.005);
+  if(!rows.length) return `${g} — no pop demand (not listed by any unlocked pop need)`;
+  rows.sort((a,b)=>b.qty-a.qty);
+  const tot=rows.reduce((s,r)=>s+r.qty,0);
+  return `${g} — ${round(tot)} pop demand\n` + rows.map(r=>`  ${r.need}  £${round(r.money)} ÷ £${PRICES[g]||1} = ${round(r.qty)}`).join('\n');
+}
 // the Number column cell — same markup for tier rows and reference rows (BLDNUM keyed by building key).
-function numCellHTML(key){ return `<td class="num numcell"><input type="number" min="0" step="1" value="${BLDNUM[key]||0}" data-bldnum="${esc(key)}" title="Number of this building in the scenario"></td>`; }
+function numCellHTML(key){ return `<td class="num numcell"><input type="number" min="0" step="1" value="${BLDNUM[key]||0}" data-bldnum="${esc(key)}" title="Number of this building in the scenario"></td>`
+  + `<td class="num numcell"><input type="number" step="0.01" value="${THRU[key]!=null?THRU[key]:0}" data-thru="${esc(key)}" title="Throughput bonus — scales this building's inputs AND outputs together. A preset fills it from the game's own reading per building type (economy of scale + technology + laws + company bonuses combined), so it is measured, not fitted. Session-only, never emitted: the game computes its own."></td>`; }
 // when UNLOCKED, push the scenario's computed price (%) into thresholds for every priced good. Returns whether
 // it did anything (i.e. prices are live). Callers then re-render the price panel + downstream profit cells.
 function syncScenarioPrices(agg){
@@ -832,16 +1122,15 @@ function presetBarHTML(){
   const cm=POPM.class_mult||{};
   const popFields=POPCLASSES.map(c=>{
     const m=(cm[c]!=null?cm[c]:1);
-    return `<label title="${esc(c)}: people. Buys the wealth-${SOL[c==='slaves'||c==='peasants'?'lower':c]} package${m!==1?` × ${m}`:''}."
+    return `<label title="${esc(c)}: people. Buys the wealth-${solOf(c)} package${m!==1?` × ${m}`:''}."
       >${c}<input type="number" min="0" step="1000" value="${POPS[c]||0}" data-pop="${c}"></label>`; }).join('');
   const chips=unlockChipsHTML();
   return `<div class="presetbar">${btns}
     <div class="pknobs">
       <label title="Calibration knob: scales ALL pop consumption. Our pop model is a simplification of the game's, so use this to fit a preset's demand to what vanilla actually shows.">pop demand fit ×<input type="number" min="0" step="0.05" value="${POPFIT}" data-popfit></label>
-      <span class="sollbl" title="The wealth level whose buy package each class consumes (common/buy_packages). Slaves buy the lower-class package × ${cm.slaves!=null?cm.slaves:0.5}, peasants × ${cm.peasants!=null?cm.peasants:0.05} (the game's own consumption_mult).">SoL
-        <label>upper<input type="number" min="1" max="99" step="1" value="${SOL.upper}" data-sol="upper"></label>
-        <label>middle<input type="number" min="1" max="99" step="1" value="${SOL.middle}" data-sol="middle"></label>
-        <label>lower<input type="number" min="1" max="99" step="1" value="${SOL.lower}" data-sol="lower"></label>
+      <button class="minibtn" data-fitpops title="Re-solve the within-need consumption distribution across EVERY preset that carries a measured order book, then print it for config/pop_distribution.json. Observed pop demand is buy orders minus our building demand minus trade, so the building side has to be right first. Each market is normalised by its own total demand so a large market cannot set the answer for all of them. Session-only until you paste the result into the config.">fit pops</button>
+      <span class="sollbl" title="The wealth level whose buy package each class consumes (common/buy_packages). A preset fills these from the MEASURED per-stratum standard of living of its market, so peasants and slaves carry their own level rather than the lower class's. On top of the package, slaves buy × ${cm.slaves!=null?cm.slaves:0.5} and peasants × ${cm.peasants!=null?cm.peasants:0.05} (the game's own consumption_mult).">SoL
+        ${SOLCLASSES.map(c=>`<label>${c}<input type="number" min="1" max="99" step="1" value="${solOf(c)}" data-sol="${c}"></label>`).join('')}
       </span>
     </div>
     <div class="pknobs poprow"><span class="plbl">Population</span>${popFields}
@@ -857,10 +1146,10 @@ function renderScenario(){
   const row=g=>{ const inv=agg.inAgg[g]||0, outv=agg.outAgg[g]||0, popv=(agg.pop||{})[g]||0, {buy,sell}=scenarioBuySell(agg,g);
     return `<tr data-good="${esc(g)}">
       <td><div class="gcell">${goodIcon(g)}<span><span class="gname">${esc(g)}</span><br><span class="gbase">base £${PRICES[g]||'?'}</span></span></div></td>
-      <td class="num grpcol"><span id="scin_${esc(g)}">${round(inv)}</span></td>
-      <td class="num popcell"><span id="scpop_${esc(g)}">${round(popv)}</span></td>
+      <td class="num grpcol" title="${esc(scenBreakdown(g,'in'))}"><span id="scin_${esc(g)}">${round(inv)}</span></td>
+      <td class="num popcell" title="${esc(popBreakdown(g))}"><span id="scpop_${esc(g)}">${round(popv)}</span></td>
       <td class="num"><input type="number" min="0" step="1" value="${ADDBUY[g]||0}" data-addbuy="${esc(g)}"></td>
-      <td class="num grpcol"><span id="scout_${esc(g)}">${round(outv)}</span></td>
+      <td class="num grpcol" title="${esc(scenBreakdown(g,'out'))}"><span id="scout_${esc(g)}">${round(outv)}</span></td>
       <td class="num"><input type="number" min="0" step="1" value="${ADDSELL[g]||0}" data-addsell="${esc(g)}"></td>
       <td class="num grpcol" id="scbalc_${esc(g)}">${scenBalInner(g,buy,sell)}</td>
       <td class="num grpcol" id="scpxc_${esc(g)}">${scenPriceInner(g)}</td></tr>`; };
@@ -876,11 +1165,11 @@ function renderScenario(){
           <span class="pxhdlbl">Price ${toggle}</span>
           <span class="pxgbp pxhdsub">£</span>
           <span class="pxpct">${btn}<span class="pxsuf">%</span></span></div></th></tr>
-      <tr><th class="num grpcol" title="Σ building inputs × Number">buildings</th>
+      <tr><th class="num grpcol" title="Σ building inputs × Number — hover a cell for the per-building breakdown">buildings</th>
         <th class="num" title="what the preset's population buys: buy package of each class's wealth level, split across each pop need's goods by the market's supply share, × the vanilla-fit knob. Read-only — it follows the pops, the knob and the sell orders.">pops</th>
-        <th class="num" title="extra NON-POP buy orders: intergovernmental treaty transfers out of this market (filled in by a preset), or anything else you dial in">non-pops</th>
-        <th class="num grpcol" title="Σ building outputs × Number">buildings</th>
-        <th class="num" title="extra sell orders — treaty transfers INTO this market (filled in by a preset), or anything you dial in. Pops never sell.">+ extra</th></tr></thead><tbody>`
+        <th class="num" title="TRADE out of this market: treaty goods transfers plus trade-route exports. A preset fills this in; it stays editable for manual tinkering. Everything that is a BUILDING belongs in the buildings column as a building, not here.">trade</th>
+        <th class="num grpcol" title="Σ building outputs × Number — hover a cell for the per-building breakdown">buildings</th>
+        <th class="num" title="TRADE into this market: treaty goods transfers plus trade-route imports. A preset fills this in; it stays editable. Pops never sell, so this is the only non-building sell source.">trade</th></tr></thead><tbody>`
     + scenGroups().map(gr=>{ const collapsed=SCENFOLD.has(gr.title);
         return `<tr class="grphd" data-scenfold="${esc(gr.title)}" title="click to fold / unfold"><td colspan="8"><span class="caret">${collapsed?'▸':'▾'}</span> ${esc(gr.title)}</td></tr>`
           + (collapsed?'':gr.goods.map(row).join('')); }).join('')
@@ -918,6 +1207,12 @@ function applyScenarioPreset(id){
   Object.keys(REFSEL).forEach(k=>delete REFSEL[k]);                        // reference PMs back to their defaults
   IND.forEach(i=>i.tiers.forEach(t=>{ t._sec=initSel(i.secondary_pmgs); })); // our tiers' secondaries back to base
   for(const k in (p.buildings||{})) BLDNUM[k]=p.buildings[k];
+  // battalions: the peacetime row takes history's count, the mobilised row starts empty — 1836 is a
+  // peace year, and a preset that silently mobilised everyone would misprice every military good.
+  Object.keys(UNITNUM).forEach(k=>delete UNITNUM[k]);
+  for(const u in (p.units||{})) UNITNUM[unitRowKey(u,false)] = p.units[u];
+  Object.keys(THRU).forEach(k=>delete THRU[k]);
+  for(const b in (p.throughput||{})) THRU[b]=p.throughput[b];
   for(const g in (p.nonbuy ||{})) ADDBUY[g] =p.nonbuy[g];
   for(const g in (p.nonsell||{})) ADDSELL[g]=p.nonsell[g];
   const byKey={}; IND.forEach(i=>i.tiers.forEach(t=>byKey[t.key]=t));
@@ -1027,7 +1322,7 @@ function industryCard(i){
     <div class="bd" style="display:${i._open?'':'none'}"><table class="mtable">
       ${MTABLE_COLS}
       <thead><tr>
-      <th>Tier</th><th>Building</th><th class="num" title="How many of this building exist in the scenario. Drives the scenario panel's buy/sell orders (input×N = buy, output×N = sell).">No.</th><th>Inputs (qty) + wages</th><th>Output</th>
+      <th>Tier</th><th>Building</th><th class="num" title="How many of this building exist in the scenario. Drives the scenario panel's buy/sell orders (input×N = buy, output×N = sell).">No.</th><th class="num" title="Throughput bonus, measured in game per building type: economy of scale + technology + laws + company bonuses, combined. Scales inputs AND outputs together. Never emitted.">Thru</th><th>Inputs (qty) + wages</th><th>Output</th>
       <th title="Workforce (employment by profession). Read-only visualization — not editable or emitted from the UI.">Workforce</th>
       <th class="num" title="Edit to re-solve this tier's input volumes to hit that FULL break-even">Target</th>
       <th class="num" title="FULL break-even output price % — where output revenue = input goods + wages (inputs at base)">BE output prices @ 100% input prices</th>
@@ -1318,7 +1613,7 @@ function refCatCard(catId, blds){ const open=REFGRPOPEN.has(catId), locked=!REFU
     ? '<div class="muted" style="font-size:11px;padding:6px 12px">Trade, ports &amp; railways keep <b>vanilla</b> values (different economics); only <b>power plants</b> will follow our BE ladder.</div>' : '';
   const body = open ? `${note}<table class="mtable">
       ${MTABLE_COLS}
-      <thead><tr><th>Tier</th><th>Building</th><th class="num" title="How many of this building exist in the scenario. Drives the scenario panel's buy/sell orders.">No.</th><th>Inputs (qty)</th><th>Output</th><th>Workforce</th><th class="num">Target</th><th class="num">BE output prices @ 100% input prices</th><th class="num">Profit @ prices</th><th class="num">Build cost</th><th class="num">Payback</th><th class="num">→X</th></tr></thead>
+      <thead><tr><th>Tier</th><th>Building</th><th class="num" title="How many of this building exist in the scenario. Drives the scenario panel's buy/sell orders.">No.</th><th class="num" title="Throughput bonus, measured in game per building type: economy of scale + technology + laws + company bonuses, combined. Scales inputs AND outputs together. Never emitted.">Thru</th><th>Inputs (qty)</th><th>Output</th><th>Workforce</th><th class="num">Target</th><th class="num">BE output prices @ 100% input prices</th><th class="num">Profit @ prices</th><th class="num">Build cost</th><th class="num">Payback</th><th class="num">→X</th></tr></thead>
       <tbody>${blds.map(refRow).join('')}</tbody></table>` : '';
   return `<div class="card refcard${locked?' locked':''}"><div class="hd ind-hd" data-refgrp="${esc(catId)}"><span class="caret">${open?'▾':'▸'}</span> ${esc(catLabel(catId))} <span class="tag">${blds.length} building${blds.length!==1?'s':''}${locked?' · locked':''}</span>
       <span class="spacer"></span>
@@ -1344,7 +1639,39 @@ function renderReference(){
     html+=`<div class="refcluster">${cl.label}</div>`;
     list.forEach(c=>{ html+=refCatCard(c,cats[c]); });
   });
+  html += militaryCard();
   root.innerHTML=html;
+}
+// The military card. Two rows per land unit type — mobilised and not — which is the one deliberate
+// break from "one building, one row": mobilisation moves a battalion's consumption by orders of
+// magnitude, so it has to be visible rather than folded into a single number.
+function militaryCard(){
+  const types=unitTypes(); if(!types.length) return '';
+  const rows=[];
+  types.forEach(u=>[false,true].forEach(mob=>{
+    const key=unitRowKey(u,mob), n=UNITNUM[key]||0, g=UNITG[u]||{};
+    const goods=Object.keys(g).map(k=>`<div class="goodrow"><span>${esc(k)}</span><span class="num">${round(g[k])}</span></div>`).join('')
+      || '<span class="muted">—</span>';
+    rows.push(`<tr${n?'':' class="muted"'}>
+      <td><span class="pill" style="background:${TIERCOL[0]}" title="a combat unit type, not a building — goods come from its upkeep_modifier">U</span></td>
+      <td>${esc(unitLabel(u))}${mob?' <b>(mobilised)</b>':''}<div class="muted" style="font-size:11px">${esc(u)}</div></td>
+      <td class="num"><input type="number" min="0" step="1" value="${n}" data-unitnum="${esc(key)}"></td>
+      <td>${goods}</td><td><span class="muted">—</span></td>
+      <td class="num"><span class="muted">—</span></td><td class="num"><span class="muted">—</span></td>
+      <td class="num"><span class="muted">—</span></td><td class="num"><span class="muted">—</span></td>
+      <td class="num"><span class="muted">—</span></td><td class="num"><span class="muted">—</span></td></tr>`);
+  }));
+  return `<div class="refcluster">Military — battalions, not buildings</div>
+    <div class="refnote">Peacetime goods per battalion, from each combat unit type's <code>upkeep_modifier</code>
+    — <b>not</b> from barracks or logistics centres, whose production methods carry no goods at all. Counts come
+    from <code>common/history/military_formations</code>. <b>The mobilised row is a clone for now</b>: a mobilised
+    battalion costs exactly what a garrisoned one does until the mobilisation options are modelled, so the row is
+    structure, not yet a result. A preset fills the peacetime row and leaves mobilised at zero (1836 is a peace year).</div>
+    <div class="card"><table><colgroup>${MTABLE_COLS}</colgroup>
+      <thead><tr><th></th><th>Unit type</th><th class="num">Battalions</th><th>Input / battalion</th><th>Output</th>
+      <th class="num">Target</th><th class="num">BE</th><th class="num">Profit</th><th class="num">Build cost</th>
+      <th class="num">Payback</th><th class="num">Workforce</th></tr></thead>
+      <tbody>${rows.join('')}</tbody></table></div>`;
 }
 function renderRefRow(b){ const tr=document.querySelector(`tr[data-refbld="${b}"]`); if(tr) tr.outerHTML=refRow(b); }
 // refresh a reference building's three linked wage fields + its BE/Profit (never the field being typed in).
@@ -1387,6 +1714,8 @@ document.addEventListener('input', e=>{
   const el=e.target;
   // ---- scenario inputs: building Number, and per-good extra buy/sell orders (session-only) ----
   if(el.dataset.bldnum!==undefined){ BLDNUM[el.dataset.bldnum]=Math.max(0,+el.value||0); updateScenario(); return; }
+  if(el.dataset.thru!==undefined){ THRU[el.dataset.thru]=+el.value||0; updateScenario(); return; }
+  if(el.dataset.unitnum!==undefined){ UNITNUM[el.dataset.unitnum]=Math.max(0,+el.value||0); updateScenario(); return; }
   else if(el.dataset.addbuy!==undefined){ ADDBUY[el.dataset.addbuy]=Math.max(0,+el.value||0); updateScenario(); return; }
   else if(el.dataset.addsell!==undefined){ ADDSELL[el.dataset.addsell]=Math.max(0,+el.value||0); updateScenario(); return; }
   // pop-consumption knobs: the vanilla-fit multiplier, the per-class wealth levels, the pop counts (session-only)
@@ -1485,6 +1814,19 @@ document.addEventListener('click', e=>{
   if(rb){ if(!rb.disabled) resetPricesTo100(); return; }
   const pb=e.target.closest && e.target.closest('[data-preset]');
   if(pb){ applyScenarioPreset(pb.dataset.preset); return; }
+  if(e.target.closest && e.target.closest('[data-fitpops]')){
+    const r=fitPopDistribution({iters:6000, lr:1e-4, weight:'market'});
+    if(r.error){ banner('warn', r.error); return; }
+    POPDIST=r.dist;
+    // Printed rather than downloaded: the fit is a design input that belongs in version control, so
+    // it goes through config/pop_distribution.json and a rebuild, not through session state.
+    console.log('pop_distribution.json →\n' + JSON.stringify({distribution:r.dist}, null, 2));
+    banner('info', `Fitted the consumption distribution over ${r.rows} market×good observations `
+      + `(${r.needs} pop needs). RMSE ${round(r.rmseBefore)} → ${round(r.rmseAfter)}. `
+      + `Session-only — the JSON is on the browser console; paste it into config/pop_distribution.json to keep it.`);
+    updateScenario(); renderAll();
+    return;
+  }
   const fold=e.target.closest('[data-scenfold]');
   if(fold){ const t=fold.dataset.scenfold; SCENFOLD.has(t)?SCENFOLD.delete(t):SCENFOLD.add(t); renderScenario(); }
 });
