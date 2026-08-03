@@ -13,6 +13,49 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## A fitted slope is not a structural constant — don't extrapolate one when the theory gives it (2026-08-03)
+
+**Symptom.** The published SoL → base-wage rule (FINDINGS F26) predicted **0.4098 £/wk** where the
+game measures **0.2133** (Attica 1935, lower-stratum SoL 18.99) — **+92 %**. Its SoL-16 entry was
+nearly double the truth. Everything inside the observed range looked fine.
+
+**Root cause — and it is not "fitted linearly".** The form was `SoL = a + b·ln(base)`, i.e.
+log-linear, so the base was already exponential in SoL, growing ×`exp(1/b)` per level. The error was
+leaving **`b` free** when the buy-package table *fixes* it: package cost grows ×1.1002 per wealth
+level with **r² = 1.0000**, so the structural slope is `1/ln(1.1) = 10.49`. A free fit returned
+**5.56** — ×1.196 per level instead of ×1.1 — and that was extrapolated six levels past its data.
+
+**Why the free fit was flat, since the data is sound.** Fitted on **SoL ≥ 10 alone the slope
+recovers to 10.01**. The flattening lives in the low-SoL region, where economies are subsistence-
+dominated and living standard is largely decoupled from wages; ordinary attenuation (noise and
+heterogeneity in the x-variable bias a regression slope toward zero) adds to it. So 5.56 is a
+defensible *predictive* slope across the observed range and a badly biased estimate of the
+*structural* one. **The two are not interchangeable, and only the structural one may be
+extrapolated.**
+
+**What makes this bad rather than unlucky.** The same document already stated the answer. It said
+"the buy-package table is EXACTLY exponential, so this is a definition, not a result" and, further
+down, "`b` should be 1/ln(1.1) = 10.49 … measured `b` is 5.61 rising to 7.75". The discrepancy was
+observed, explained away with a narrative ("economies becoming more wage-based"), and then published
+anyway. **A factor-of-two gap against a known constant is a test to run, not a phenomenon to
+describe.**
+
+**Fix.** Constrain the slope and fit only the intercept:
+`base £/wk = exp((SoL − 37.43) / 10.49)`. It beats the free fit *everywhere* — median error 17 % vs
+19 % overall, **9 % vs 50 %** in the high-SoL tail — so the constraint cost nothing even in-sample.
+
+**Detect/prevent.**
+- **When theory supplies a coefficient, fit the intercept and fix the slope**, then check the free
+  fit against it. If they disagree materially, that disagreement is the finding.
+- **Never invert a free-fitted slope outside its data range.** Inside the range a regression predicts;
+  outside it, only a structural relationship does.
+- **Re-fit on the sub-range you actually care about.** Here `SoL ≥ 10` would have exposed the whole
+  problem in one line, because it returns the theoretical value.
+- **Treat a narrative explanation of a numeric gap as a red flag.** If the story cannot be turned into
+  a test, it is covering the gap rather than closing it.
+
+---
+
 ## A scope that is correct at the start date is not therefore BOUNDED over time (2026-08-03)
 
 **Symptom.** A 100-year batch was launched with a per-pop sweep scoped to "the whole Belgian market",
