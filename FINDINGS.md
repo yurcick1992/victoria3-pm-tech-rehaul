@@ -224,6 +224,65 @@ from wages. Measured `b` is 5.61 (1836) rising to 7.75 (1935) — SoL responds *
 table alone implies, because wages are not the only income and the workforce ratio varies. The rise
 toward 10.49 is economies becoming more wage-based over the century.
 
+### ✅ THE RULE TO USE — working-strata SoL → BASE WAGE (the UI's own knob)
+
+This is the finalised form for **seeding scenarios at dates and countries we have not measured**
+("rich ~1860", "runners-up ~1900", "extraction economy ~1930"). It outputs the **base wage in
+£/week for a weight-1 employee** — exactly what the balance UI's Workforce panel takes — so no
+further conversion is needed.
+
+`base = exp((SoL − a) / b)`, workforce-weighted fits pooled over 1836 + 1935:
+
+| stratum scope | a | b | r² | people-wtd err | valid SoL domain (p5–p95, observed) |
+|---|--:|--:|--:|--:|---|
+| **lower** (laborers, farmers, machinists, soldiers) | 23.23 | 4.89 | 0.815 | 16 % | 5.8–14.0 (2.3–18.8) |
+| **working (lower+middle)** | **32.07** | **7.81** | **0.832** | **11 %** | 6.3–16.1 (2.8–21.5) |
+| **middle** (clerks, shopkeepers, engineers, clergymen, bureaucrats, academics, officers) | 39.87 | 8.85 | 0.823 | **9 %** | 15.2–23.1 (13.5–26.4) |
+
+⚠ **Workforce-weighted, and that is not cosmetic.** The unweighted fit is dominated by ~70 tiny
+colonial states and sits systematically *below* every major nation (Belgium −18 %, Austria −19 %,
+Britain −16 %). Weighting by workforce is what makes it usable for the countries scenarios are built
+around.
+
+**base wage, £/week per weight-1 employee** (×52 for £/year):
+
+| SoL | 6 | 8 | 10 | 12 | 14 | 16 | 18 | 20 | 22 | 24 | 26 |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| **lower** | 0.0295 | 0.0444 | 0.0668 | 0.1006 | 0.1514 | *0.2280* | *0.3432* | — | — | — | — |
+| **working** | 0.0355 | 0.0459 | 0.0593 | 0.0766 | 0.0989 | 0.1278 | 0.1650 | *0.2132* | *0.2754* | — | — |
+| **middle** | — | — | — | — | — | 0.0674 | 0.0845 | 0.1059 | 0.1328 | 0.1664 | 0.2086 |
+
+*Italic = outside the p5–p95 domain; the `lower` curve is the steepest (b = 4.89) and blows up fast
+past SoL 16 — at SoL 30 it returns £3.99/wk, which is nonsense. Prefer the **working** row, and use
+`middle` when the scenario pins a middle-stratum SoL.*
+
+**Checked against every measured anchor** (working scope, predicted vs measured base):
+
+| | SoL | measured | predicted | err |
+|---|--:|--:|--:|--:|
+| France 1836 | 9.14 | 0.05368 | 0.05310 | **−1 %** |
+| Qing 1836 | 9.02 | 0.05037 | 0.05228 | +4 % |
+| Austria 1836 | 9.14 | 0.05062 | 0.05306 | +5 % |
+| Netherlands 1935 | 12.19 | 0.08310 | 0.07849 | −6 % |
+| USA 1836 | 10.92 | 0.07265 | 0.06668 | −8 % |
+| Great Britain 1836 | 9.89 | 0.06451 | 0.05842 | −9 % |
+| German Empire 1935 | 14.09 | 0.08932 | 0.10008 | +12 % |
+| Belgium 1836 / 1935 | 10.84 / 11.50 | 0.07645 / 0.08565 | 0.06601 / 0.07183 | −14 % / −16 % |
+| Austria 1935 | 11.46 | 0.08577 | 0.07145 | −17 % |
+| Russia 1836 | 9.55 | 0.04699 | 0.05595 | **+19 %** |
+
+**Worst case ±19 %, most within ±10 %.** The 1935 anchors skew negative (the rule under-predicts a
+mature economy's base by ~15 %), so for a late-game scenario it is defensible to add ~15 % on top.
+
+**Also useful for setting the scenario's SoL fields:** the observed vanilla range is **lower 6–14**
+and **middle 15–23**. A scenario that puts the middle stratum below ~13 or the lower stratum above
+~19 is outside anything these runs produced.
+
+⚠ **Why this needs no further wage logging.** The rule takes SoL and returns a base wage, and SoL is
+cheap to log at scale — the `WSTR` line is one line per country per dump and carries all five strata
+(TESTBED_METRICS §5.7). Future scenario work needs **extensive SoL logs, not per-pop wage sweeps**;
+the expensive per-pop measurement was needed once, to fit this, and does not need repeating.
+
 ### Late-game wages for the major nations — MEASURED, not inferred
 
 ⚠ **Prefer these over any inversion.** The tables above exist for markets and dates with no
