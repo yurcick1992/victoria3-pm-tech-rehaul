@@ -68,7 +68,13 @@
                         "measured_market":  "Belgian Market"
                     },
                     {
-                        "_comment":  "PLACEHOLDER scenarios - synthetic, NOT derived from any country. One level of every ordinary building so that every production chain is present exactly once, which is what BE-solving wants. Deliberately uniform and deliberately crude: diversify them later. A `placeholder` block replaces `country`/`measured_market` entirely. lower_sol drives everything: middle = 1.5x, upper = 3x (per the user's rule), the slave basket comes from the game's SLAVE_BASKET_* clamp on lower_sol, and the base wage comes from FINDINGS F26, base = exp((SoL-37.43)/10.49).",
+                        "_comment":  "PLACEHOLDER scenarios - synthetic, NOT derived from any country. One level of every ordinary building so that every production chain is present exactly once, which is what BE-solving wants. Deliberately uniform and deliberately crude: diversify them later. A `placeholder` block replaces `country`/`measured_market` entirely. lower_sol is ALWAYS the LOWER stratum's standard of living and drives everything: middle = 1.5x, upper = 3x (per the user's rule), the slave basket comes from the game's SLAVE_BASKET_* clamp on lower_sol, and the base wage comes from FINDINGS F26, base = exp((SoL-37.43)/10.49).",
+                        "id":  "ph_sol8",
+                        "label":  "Placeholder SoL 8",
+                        "group":  "Placeholder · 1 of each building",
+                        "placeholder":  { "lower_sol":  8 }
+                    },
+                    {
                         "id":  "ph_sol10",
                         "label":  "Placeholder SoL 10",
                         "group":  "Placeholder · 1 of each building",
@@ -85,6 +91,12 @@
                         "label":  "Placeholder SoL 14",
                         "group":  "Placeholder · 1 of each building",
                         "placeholder":  { "lower_sol":  14 }
+                    },
+                    {
+                        "id":  "ph_sol16",
+                        "label":  "Placeholder SoL 16",
+                        "group":  "Placeholder · 1 of each building",
+                        "placeholder":  { "lower_sol":  16 }
                     },
                     {
                         "id":  "ph_sol18",
