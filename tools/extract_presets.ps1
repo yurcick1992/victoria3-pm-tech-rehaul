@@ -583,7 +583,115 @@ foreach ($g in $needGoods) {
 }
 
 $out = New-Object System.Collections.Generic.List[object]
+
+# ---------------------------------------------------------------- PLACEHOLDER (synthetic) presets
+# Not derived from any country: one level of every ordinary building, so every production chain is
+# present exactly once. That is what BE-solving wants - a chain that appears zero times cannot be
+# balanced, and one that appears 40 times drowns the rest.
+#
+# What is deliberately EXCLUDED, and why each:
+#   - `unique` buildings and the monument/canal groups  -> one-off wonders, not part of any chain;
+#   - military groups                                    -> "no army" (units are empty too);
+#   - `building_urban_center`                            -> DERIVED below from urbanization, not placed;
+#   - subsistence groups                                 -> DERIVED below from the peasants.
+# Urban centres and subsistence still appear in `buildings`; they are computed rather than set to 1,
+# which is what "keep deriving normally" means.
+function New-PlaceholderPreset($p, $defs, $needGoods, $availableFrom) {
+    $ph = $p.placeholder
+    $lowerSol = [double]$ph.lower_sol
+
+    $exGroups = @{}; foreach ($g in $defs.exclude_groups) { $exGroups[$g] = $true }
+    $exBld    = @{}; foreach ($b in $defs.exclude_buildings) { $exBld[$b] = $true }
+
+    $buildings = [ordered]@{}
+    $urbTotal = 0
+    foreach ($b in ($bBlocks.Keys | Sort-Object)) {
+        if ($exBld.ContainsKey($b)) { continue }
+        if (($bBlocks[$b] -join ' ') -match 'unique\s*=\s*yes') { continue }
+        $g = $bldGroup[$b]
+        if (-not $g) { continue }
+        # walk the parent chain so a child of an excluded group is excluded too
+        $skip = $false; $walk = $g; $seen = @{}
+        while ($walk -and -not $seen[$walk]) { if ($exGroups.ContainsKey($walk)) { $skip = $true; break }; $seen[$walk] = $true; $walk = $grpParent[$walk] }
+        if ($skip) { continue }
+        if (Get-GroupChainValue $g $grpSubs) { continue }      # subsistence: derived, not placed
+        $buildings[$b] = 1
+        $urbTotal += (Get-Urbanization $b)
+    }
+    # our TIER-1 buildings that have no vanilla anchor (the steamer chain) - tier 1 only, by design
+    foreach ($ind in $cfg.industries) {
+        if ($ind.disabled) { continue }
+        $t1 = @($ind.tiers)[0]
+        if ($t1 -and $t1.key -and -not $buildings.Contains($t1.key)) { $buildings[$t1.key] = 1; $urbTotal += (Get-Urbanization $t1.key) }
+    }
+
+    # --- derived: subsistence from the PEASANTS (the peasants ARE this supply, CLAUDE.md) ---
+    $peasants = [double]$defs.pops.peasants
+    $peasantWork = $peasants * $WORK_RATIO_BASE
+    $subsLevels = [int][math]::Round($peasantWork / 5000.0)
+    if ($subsLevels -gt 0) { $buildings['building_subsistence_farm'] = $subsLevels }
+
+    # --- derived: urban centres from total urbanization, the same floor(urb/100) rule as F13 ---
+    $ucLevels = [int][math]::Floor($urbTotal / $URBAN_PER_LEVEL)
+    if ($ucLevels -gt 0) { $buildings[$URBAN_CENTER] = $ucLevels }
+
+    # --- unlocked goods ---
+    $steps = $defs.unlock_steps.($ph.unlock)
+    $unlocked = New-Object System.Collections.Generic.List[string]
+    if ($null -eq $steps) {
+        foreach ($g in $needGoods) { $unlocked.Add($g) }              # "all"
+    } else {
+        $extra = @{}; foreach ($g in $steps) { $extra[$g] = $true }
+        foreach ($g in $needGoods) {
+            $from = $availableFrom[$g]
+            if (-not $from -or [int]$from -le 1836 -or $extra.ContainsKey($g)) { $unlocked.Add($g) }
+        }
+    }
+
+    $pops = $defs.pops
+    $total = [int]($pops.lower + $pops.peasants + $pops.middle + $pops.upper + $pops.slaves)
+    # base wage from FINDINGS F26: the slope is the buy-package curve's own exponent, 1/ln(1.1).
+    $baseWage = [math]::Round([math]::Exp(($lowerSol - 37.43) / 10.49), 6)
+
+    return [ordered]@{
+        id = $p.id; label = $p.label; group = $p.group; country = $null
+        base_wage = $baseWage
+        base_wage_note = ("placeholder: from lower-stratum SoL {0} via FINDINGS F26, base = exp((SoL-37.43)/10.49)" -f $lowerSol)
+        market = @()
+        buildings = $buildings
+        pms = [ordered]@{}                                   # empty => the UI resets every PMG to its base PM
+        pops = [ordered]@{ total = $total; upper = [int]$pops.upper; middle = [int]$pops.middle
+                           lower = [int]$pops.lower; slaves = [int]$pops.slaves; peasants = [int]$pops.peasants }
+        sol = [ordered]@{
+            lower    = [int][math]::Round($lowerSol)
+            middle   = [int][math]::Round($lowerSol * [double]$defs.middle_sol_mult)
+            upper    = [int][math]::Round($lowerSol * [double]$defs.upper_sol_mult)
+            peasants = [int][math]::Round($lowerSol + [double]$defs.peasant_sol_offset)
+            slaves   = [int][math]::Round($lowerSol)
+        }
+        year = [int]$ph.year
+        unlocked = $unlocked.ToArray()
+        subsistence = [ordered]@{ free_arable = 0; capacity_jobs = [int]$peasantWork
+                                  peasant_workforce = [int]$peasantWork; staffing = 1.0; levels = $subsLevels }
+        nonbuy = [ordered]@{}; nonsell = [ordered]@{}
+        units = [ordered]@{}                                 # no army
+        throughput = [ordered]@{}
+        measured = $null
+        notes = @("Synthetic placeholder - not a real country. One level of each ordinary building; urban centres and subsistence derived; no army, no trade, base PMs throughout.")
+    }
+}
+
 foreach ($p in $presetCfg.presets) {
+    # PLACEHOLDER presets are synthetic and share none of the country-derived machinery below.
+    if ($p.PSObject.Properties.Name -contains 'placeholder' -and $p.placeholder) {
+        $ph = New-PlaceholderPreset $p $presetCfg.placeholder_defaults $needGoods $availableFrom
+        $out.Add($ph)
+        Write-Output ("  {0,-12} PLACEHOLDER  SoL lower/mid/upper {1}/{2}/{3}  {4} building type(s) + {5} subsistence + {6} urban centre  base wage {7:N4}/wk  {8} of {9} pop goods unlocked" -f `
+            $p.id, $ph.sol.lower, $ph.sol.middle, $ph.sol.upper,
+            ($ph.buildings.Keys.Count - 2), $ph.subsistence.levels, $ph.buildings[$URBAN_CENTER],
+            $ph.base_wage, $ph.unlocked.Count, $needGoods.Count)
+        continue
+    }
     # ⚠ FIRST thing in the loop. This used to be assigned two thirds of the way down, AFTER the
     # urban-centre block that reads it - so that block silently used the PREVIOUS preset's market.
     # It failed quietly and plausibly: Russia inherited the Qing's urban-centre methods (free clergy

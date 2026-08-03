@@ -94,7 +94,7 @@ MISSING_BUILDING_CONDITIONS.md catalogue of special conditional fields (e.g. a c
 config/mod_config.json      THE THING YOU EDIT — industries → tiers (tech, target_be, natural_year, output, inputs, building_cost, wage_pct?, employment, names, vanilla_pm, vanilla_pm_aliases?, state_infrastructure?, ship_construction?, ai_value?, output_override?); industry flags source_file?/clone_from_vanilla?/follows_be?/no_mass_be? (new-economy); plus top-level building_ai_value (map building_key→ai_value for PRESERVED buildings in owned files, e.g. trade center), pm_goods (map pm_key→{in:{good:qty},out:{good:qty}} — per-PM goods overrides applied to the owned PM files; any building's PM), and building_subsidies (map building_key→AI subsidy policy; see below)
 config/start_exceptions.json manual 1836-start overrides (force_tier / remove, scoped by country/state) — editable
 config/start_baseline.json   GENERATED inventory of the vanilla 1836 start (per-industry/tier/country + drift check)
-config/presets.json          WHICH scenario presets to generate (id/label/group/country + optional market_add/market_drop, sol, measured_market) — editable
+config/presets.json          WHICH scenario presets to generate (id/label/group/country + optional market_add/market_drop, sol, measured_market) — editable. A preset carrying a **`placeholder`** block instead of `country` is **SYNTHETIC**: not derived from any country, one level of every ordinary building so each production chain is present exactly once (what BE-solving wants). See `placeholder_defaults` for the shared pops, the SoL multipliers and the exclusion lists
 config/pop_distribution.json FITTED within-need consumption distribution (need → good → share), replacing the vanilla `weight` field — which is not an allocation rule (the game allocates by SUPPLY SHARE) and cost 12 pp of scenario demand accuracy. ONE market-independent distribution by design, solved across all 7 preset markets against config/measured_1836.json; re-derive with the balance UI's **fit pops** button and paste the printed JSON back. Absent ⇒ the UI falls back to `weight` per need
 config/measured_1836.json    GENERATED (tools/extract_measured.ps1, from a testbed session) and COMMITTED: the things the game FILES cannot answer — per market TRADE (imports/exports per good), SoL per stratum, MILITARY building levels, urban-centre levels as a cross-check, and per market **WAGES** (`-WagesOnly`, a MERGE-only mode that rewrites just the `wages` block and leaves every other field untouched, because a wages session carries none of the other metrics and a full run over it would blank them). The wages block holds `base_weekly_labour` (the UI's base £/wk knob, **measured**), the per-profession spread that shows how well one base wage describes that market, the game's own per-state average annual wage (mean/median/min/max), the workforce ratio, and a per-pop-type table. Read by extract_presets.ps1; optional (a clone without it still builds, just without those). ⚠ Regenerate after a game patch — a stale table is silently wrong, not obviously missing
 tools/                  dev tooling — NOT shipped in the mod
@@ -449,6 +449,19 @@ the game.
   **PM selections** (both our tiers' secondaries and the explorer's `REFSEL`, reset to defaults first, then set to
   what vanilla actually runs there). Always present: a built-in **Empty** preset that zeroes everything — it works
   even without `ui/presets.js`.
+  **PLACEHOLDER presets (`ph_sol10/12/14/18/20`)** are synthetic — no country, no trade, no army, base
+  PMs throughout, and **one level of every ordinary building** so every chain appears exactly once.
+  Excluded: `unique` buildings and the monument/canal groups (one-off wonders), the military groups
+  (no army), and **company headquarters** (they exist only once a company is formed). Manor houses and
+  financial districts stay — ordinary ownership buildings that employ the upper stratum and carry no
+  market goods. **Urban centres and subsistence are still DERIVED, not placed at 1**: subsistence from
+  the peasants (`peasants × 0.25 ÷ 5000` staffed levels) and urban centres by the F13 rule
+  (`floor(Σ urbanization / 100)`) — 50 and 6 levels at the current pop counts. Pops are 1 M lower /
+  1 M peasants / 100 k middle / 10 k upper / 0 slaves; within-stratum variation is the UI's own
+  `SOL_SPREAD`, not something the preset carries. SoL is **lower = the scenario's number, middle ×1.5,
+  upper ×3**, and the **base wage comes from FINDINGS F26** (`exp((SoL−37.43)/10.49)`), so these are
+  the first presets whose wage is derived rather than measured. Goods unlock in steps: basic /
+  +steamers / +electricity / everything. Deliberately uniform and crude — meant to be diversified.
   **PRINCIPLE — a preset is a one-off overwrite, not a mode you sit in.** The instant you touch a field the
   scenario is your own, so **nothing in the panel may claim you are "in" a preset**: no active-button highlight, no
   standing description of the market / subsistence / lock state. Everything a preset knows about itself —

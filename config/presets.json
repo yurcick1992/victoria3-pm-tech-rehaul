@@ -69,6 +69,51 @@
                         "group":  "Vanilla 1836 · 1830-SoL pops",
                         "country":  "BEL",
                         "measured_market":  "Belgian Market"
+                    },
+                    {
+                        "_comment":  "PLACEHOLDER scenarios - synthetic, NOT derived from any country. One level of every ordinary building so that every production chain is present exactly once, which is what BE-solving wants. Deliberately uniform and deliberately crude: diversify them later. A `placeholder` block replaces `country`/`measured_market` entirely. lower_sol drives everything: middle = 1.5x, upper = 3x (per the user's rule), and the base wage comes from FINDINGS F26, base = exp((SoL-37.43)/10.49). `unlock` is one of basic | steamers | electricity | all.",
+                        "id":  "ph_sol10",
+                        "label":  "Placeholder SoL 10",
+                        "group":  "Placeholder · 1 of each building",
+                        "placeholder":  { "lower_sol":  10, "unlock":  "basic", "year":  1836 }
+                    },
+                    {
+                        "id":  "ph_sol12",
+                        "label":  "Placeholder SoL 12",
+                        "group":  "Placeholder · 1 of each building",
+                        "placeholder":  { "lower_sol":  12, "unlock":  "steamers", "year":  1862 }
+                    },
+                    {
+                        "id":  "ph_sol14",
+                        "label":  "Placeholder SoL 14",
+                        "group":  "Placeholder · 1 of each building",
+                        "placeholder":  { "lower_sol":  14, "unlock":  "electricity", "year":  1862 }
+                    },
+                    {
+                        "id":  "ph_sol18",
+                        "label":  "Placeholder SoL 18",
+                        "group":  "Placeholder · 1 of each building",
+                        "placeholder":  { "lower_sol":  18, "unlock":  "all", "year":  1888 }
+                    },
+                    {
+                        "id":  "ph_sol20",
+                        "label":  "Placeholder SoL 20",
+                        "group":  "Placeholder · 1 of each building",
+                        "placeholder":  { "lower_sol":  20, "unlock":  "all", "year":  1888 }
                     }
-                ]
+                ],
+    "placeholder_defaults":  {
+                     "_comment":  "Shared by every `placeholder` preset. Pops are flat counts; within-stratum variation is the UI's own SOL_SPREAD, not something the preset carries. peasant_sol_offset is added to lower_sol - measured 1836 puts peasants within ~0.5 of the lower stratum either way (Belgium +0.5, Austria -0.4), so 0 is the honest default rather than a guess.",
+                     "pops":  { "lower":  1000000, "peasants":  1000000, "middle":  100000, "upper":  10000, "slaves":  0 },
+                     "middle_sol_mult":  1.5,
+                     "upper_sol_mult":  3.0,
+                     "peasant_sol_offset":  0,
+                     "_exclude_comment":  "Company headquarters are excluded as SPECIAL: they exist only once a company is formed, so they are not part of any ordinary chain. Manor houses and financial districts are kept - they are ordinary ownership buildings, they employ the upper stratum this scenario has, and they carry no market goods either way.",
+                     "exclude_groups":  [ "bg_monuments", "bg_monuments_hidden", "bg_canals",
+                                          "bg_army", "bg_army_logistics_center", "bg_conscription",
+                                          "bg_naval_administration", "bg_naval_fortification", "bg_naval_logistics_center",
+                                          "bg_company_headquarter", "bg_company_regional_headquarter" ],
+                     "exclude_buildings":  [ "building_urban_center" ],
+                     "unlock_steps":  { "basic":  [], "steamers":  [ "steamers" ], "electricity":  [ "steamers", "electricity" ], "all":  null }
+                 }
 }
