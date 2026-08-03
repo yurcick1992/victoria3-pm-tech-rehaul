@@ -42,7 +42,7 @@ building_art_academy = {
 		pmg_ownership_building_art_academy
 		pmg_principle_freedom_of_movement_3
 	}
-	required_construction = 5
+	required_construction = 145
 	ai_value = 1000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
@@ -59,7 +59,7 @@ building_art_academy_realist = {
 		pmg_ownership_building_art_academy
 		pmg_principle_freedom_of_movement_3
 	}
-	required_construction = 290
+	required_construction = 230
 	ai_value = 1000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
@@ -76,7 +76,7 @@ building_art_academy_photographic = {
 		pmg_ownership_building_art_academy
 		pmg_principle_freedom_of_movement_3
 	}
-	required_construction = 795
+	required_construction = 320
 	ai_value = 1000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
@@ -93,7 +93,7 @@ building_art_academy_film = {
 		pmg_ownership_building_art_academy
 		pmg_principle_freedom_of_movement_3
 	}
-	required_construction = 1465
+	required_construction = 490
 	ai_value = 1000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
@@ -113,7 +113,7 @@ building_power_plant = {
 		pmg_main_power_early
 	}
 
-	required_construction = 65
+	required_construction = 110
 
 	ai_value = {
 		value = 1000
@@ -157,7 +157,7 @@ building_power_plant_coal = {
 		pmg_main_power_coal
 	}
 
-	required_construction = 115
+	required_construction = 215
 
 	ai_value = {
 		value = 1000
@@ -201,7 +201,7 @@ building_power_plant_oil = {
 		pmg_main_power_oil
 	}
 
-	required_construction = 125
+	required_construction = 345
 
 	ai_value = {
 		value = 1000

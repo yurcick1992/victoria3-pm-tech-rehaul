@@ -4,8 +4,8 @@
   A "preset" fills the balance UI's scenario panel in one click: every building of one country's
   WHOLE MARKET (count + the PMs vanilla actually runs), the non-building buy/sell orders from
   intergovernmental goods transfers, and the market's population split into consumption classes.
-  The UI turns the class counts into pop BUY orders live (buy packages x pop needs x supply share),
-  scaled by its session "vanilla-fit" knob - see ui/builder.html and CLAUDE.md.
+  The UI turns the class counts into pop BUY orders live (buy packages x pop needs x supply share)
+  - see ui/builder.html and CLAUDE.md.
 
   Everything here is DERIVED FROM THE LIVE GAME, so a patch is a one-command refresh (build.ps1 runs
   it). It never touches config/ or mod/. Which presets to emit lives in config/presets.json.
@@ -26,8 +26,10 @@
                   jobs (building levels x the employment of its active PMs) / working_adult_ratio give
                   the employed people per profession, bucketed into upper / middle / lower strata;
                   slaves come from the explicit `pop_type = slaves` pops; peasants are the remainder.
-                  The per-class consumption norms (wealth levels + the slave/peasant multipliers) and
-                  the buy-package / pop-need tables travel with the file so the UI can do the goods math.
+                  The per-class consumption norms (wealth levels + the peasant multiplier) and the
+                  buy-package / pop-need tables travel with the file so the UI can do the goods math.
+                  SLAVES are not a consuming class: the game has the BUILDING buy them a basket
+                  (SLAVE_BASKET_* defines), so only their head count and `working_adult_ratio` travel.
 
   Usage:  powershell -ExecutionPolicy Bypass -File tools\extract_presets.ps1 [-Game "<...\Victoria 3\game>"]
 #>
@@ -57,12 +59,10 @@ function Warn($msg) { Write-Output ("  WARN: {0}" -f $msg) }
 
 # ---------------------------------------------------------------- vanilla reference (buildings/PMGs/PMs)
 $bBlocks = Get-TopBlocks (Join-Path $Game 'common\buildings') 'building_'
-$bldPmgs = @{}; $bldGroup = @{}; $bldTech = @{}
+$bldPmgs = @{}; $bldGroup = @{}
 foreach ($n in $bBlocks.Keys) {
     $bldPmgs[$n] = @(Get-ListTokens $bBlocks[$n] 'production_method_groups' 'pmg_')
     if (($bBlocks[$n] -join ' ') -match 'building_group\s*=\s*(bg_[A-Za-z0-9_]+)') { $bldGroup[$n] = $Matches[1] }
-    # the tech gate is often on the BUILDING, not on its PMs (power plant -> electricity, electrics -> telephones)
-    $bldTech[$n] = @(Get-ListTokens $bBlocks[$n] 'unlocking_technologies' '')
 }
 # Building groups whose levels occupy ARABLE LAND (the `arable_resources` a state region lists).
 # What's left over is what the subsistence buildings cover.
@@ -135,15 +135,9 @@ foreach ($n in $gBlocks.Keys) {
 }
 
 $pBlocks = Get-TopBlocks (Join-Path $Game 'common\production_methods') ''
-$pmEmp = @{}; $pmGated = @{}; $pmLaws = @{}; $pmTech = @{}; $pmTechList = @{}; $pmOut = @{}
+$pmEmp = @{}; $pmGated = @{}; $pmLaws = @{}; $pmTech = @{}
 foreach ($n in $pBlocks.Keys) {
     $e = @{}
-    $pmTechList[$n] = @(Get-ListTokens $pBlocks[$n] 'unlocking_technologies' '')
-    $og = @{}
-    foreach ($l in $pBlocks[$n]) {
-        if ($l -match 'goods_output_([a-z_]+)_add\s*=\s*(-?\d+(?:\.\d+)?)' -and (Get-Num $Matches[2]) -gt 0) { $og[$Matches[1]] = $true }
-    }
-    $pmOut[$n] = $og
     # law gates matter for the buildings history never creates (subsistence, manor houses): which PM is
     # active there is decided by the owner's LAWS, not by a history line. Collect both gate lists.
     $unlock = New-Object System.Collections.Generic.List[string]
@@ -194,44 +188,33 @@ function Select-LawPm($pmg, $laws) {
     return (Get-BasePm $pmg)
 }
 
-# ---------------------------------------------------------------- when can a good exist? (by YEAR)
-# Whether pops can want a good is a question about the CALENDAR, not about one country's research: a
-# market imports what it cannot make. So availability is derived per good from the earliest year any
-# building x PM that outputs it could exist - i.e. the start year of the earliest ERA whose techs
-# unlock it. Vanilla dates the eras in comments (`era_2 = { #1836-1861 }`), which is the only place
-# those years appear, so we parse them and fall back to a static ladder if the format ever changes.
-$techEra = @{}
-$techBlocks = Get-TopBlocks (Join-Path $Game 'common\technology\technologies') ''
-foreach ($n in $techBlocks.Keys) {
-    if (($techBlocks[$n] -join ' ') -match 'era\s*=\s*era_(\d+)') { $techEra[$n] = [int]$Matches[1] }
-}
-$ERA_YEAR_FALLBACK = @{ 1 = 0; 2 = 1836; 3 = 1862; 4 = 1887; 5 = 1911 }
-$eraYear = @{}
-foreach ($f in (Get-ChildItem (Join-Path $Game 'common\technology\eras') -Filter *.txt)) {
-    $cur = $null
-    foreach ($l in (Get-Content -LiteralPath $f.FullName)) {
-        if ($l -match '^\s*era_(\d+)\s*=') {
-            $cur = [int]$Matches[1]
-            # "#Pre-1836" = always available by our 1836+ scenarios; "#1836-1861" = starts 1836
-            if     ($l -match '#\s*Pre-\d{4}')  { $eraYear[$cur] = 0 }
-            elseif ($l -match '#\s*(\d{4})')    { $eraYear[$cur] = [int]$Matches[1] }
-        }
+# NOTE - REMOVED: the per-good "when can this exist?" ladder (tech era -> year -> a per-preset
+# `unlocked` set, rendered as the UI's "Pops may buy" toggles). It was redundant once the within-need
+# split started following SUPPLY SHARE: a good the market does not supply already takes a zero share
+# and drops out on its own, so gating it a second time by calendar year only let the two disagree.
+# ---------------------------------------------------------------- slave consumption basket
+# Slaves buy nothing. The BUILDING that employs them buys them a consumer-goods basket, and the market
+# screen reports it as its own order channel. Read the defines live so a patch cannot leave the UI
+# quietly running on last version's numbers; the UI carries the same values as its fallback.
+$slaveBasket = [ordered]@{ default = 8.0; min = 1.0; max = 12.0; scaled_min = 0.5; scaled_max = 1.0
+                           subsistence_mult = 0.05 }
+$defFile = Join-Path $Game 'common\defines\00_defines.txt'
+if (Test-Path $defFile) {
+    $defTxt = Get-Content -LiteralPath $defFile -Raw
+    $keys = [ordered]@{ 'DEFAULT'='default'; 'MIN'='min'; 'MAX'='max'; 'SCALED_MIN'='scaled_min'
+                        'SCALED_MAX'='scaled_max'; 'SUBSISTENCE_GOODS_MULT'='subsistence_mult' }
+    foreach ($k in $keys.Keys) {
+        if ($defTxt -match ("SLAVE_BASKET_{0}\s*=\s*(-?[0-9.]+)" -f $k)) { $slaveBasket[$keys[$k]] = [double]$Matches[1] }
+        else { Warn "SLAVE_BASKET_$k not found in common/defines - using $($slaveBasket[$keys[$k]])" }
     }
-}
-foreach ($e in $ERA_YEAR_FALLBACK.Keys) {
-    if (-not $eraYear.ContainsKey($e)) { Warn "era_$e has no year comment - using fallback $($ERA_YEAR_FALLBACK[$e])"; $eraYear[$e] = $ERA_YEAR_FALLBACK[$e] }
-}
-# earliest year a tech gate can be satisfied; an empty gate list is always satisfied
-function Get-GateYear($techList) {
-    if (-not $techList -or $techList.Count -eq 0) { return 0 }
-    $best = $null
-    foreach ($t in $techList) {
-        $e = $techEra[$t]; if (-not $e) { continue }
-        $y = $eraYear[$e]
-        if ($null -eq $best -or $y -lt $best) { $best = $y }
-    }
-    if ($null -eq $best) { return 9999 }   # gated by a tech we can't date: treat as unavailable
-    return $best
+} else { Warn "common/defines/00_defines.txt not found - slave basket falls back to hardcoded defines" }
+# The basket level a building buys for its slaves, given the LOWEST NON-SLAVE WEALTH in it (we use the
+# market's lower stratum). Default 8, floored by SCALED_MIN x that wealth, capped by SCALED_MAX x it.
+function Get-SlaveBasketLevel($lowestNonSlaveWealth) {
+    $w  = [double]$lowestNonSlaveWealth
+    $lo = [math]::Max([double]$slaveBasket.min, [double]$slaveBasket.scaled_min * $w)
+    $hi = [math]::Max($lo, [math]::Min([double]$slaveBasket.max, [double]$slaveBasket.scaled_max * $w))
+    return [int][math]::Max(1, [math]::Round([math]::Min([math]::Max([double]$slaveBasket.default, $lo), $hi)))
 }
 # ---------------------------------------------------------------- active laws per country (1836)
 $lawsOf = @{}
@@ -557,31 +540,6 @@ function Get-Measured($p) {
     return $measured.markets.($p.measured_market)
 }
 
-# every good any pop need can be satisfied with - the UI renders one unlock toggle per entry
-$needGoods = New-Object System.Collections.Generic.List[string]
-foreach ($n in $popNeeds.Keys) {
-    foreach ($e in $popNeeds[$n].entries) { if ($needGoods -notcontains $e.g) { $needGoods.Add($e.g) } }
-}
-# The year each good becomes possible ANYWHERE: the earliest year some building x PM that outputs it
-# can run (both gates satisfied). 0 = always. Country-independent on purpose - a market can import a
-# good it cannot make itself, so availability is a property of the calendar, not of one country's research.
-$availableFrom = [ordered]@{}
-foreach ($g in $needGoods) {
-    $best = 9999
-    foreach ($b in $bldPmgs.Keys) {
-        $by = Get-GateYear $bldTech[$b]
-        if ($by -ge $best) { continue }
-        foreach ($pmg in $bldPmgs[$b]) {
-            foreach ($pm in $pmgPms[$pmg]) {
-                if (-not $pmOut[$pm] -or -not $pmOut[$pm].ContainsKey($g)) { continue }
-                $y = [math]::Max($by, (Get-GateYear $pmTechList[$pm]))
-                if ($y -lt $best) { $best = $y }
-            }
-        }
-    }
-    $availableFrom[$g] = $best
-}
-
 $out = New-Object System.Collections.Generic.List[object]
 
 # ---------------------------------------------------------------- PLACEHOLDER (synthetic) presets
@@ -596,7 +554,7 @@ $out = New-Object System.Collections.Generic.List[object]
 #   - subsistence groups                                 -> DERIVED below from the peasants.
 # Urban centres and subsistence still appear in `buildings`; they are computed rather than set to 1,
 # which is what "keep deriving normally" means.
-function New-PlaceholderPreset($p, $defs, $needGoods, $availableFrom) {
+function New-PlaceholderPreset($p, $defs) {
     $ph = $p.placeholder
     $lowerSol = [double]$ph.lower_sol
 
@@ -635,19 +593,6 @@ function New-PlaceholderPreset($p, $defs, $needGoods, $availableFrom) {
     $ucLevels = [int][math]::Floor($urbTotal / $URBAN_PER_LEVEL)
     if ($ucLevels -gt 0) { $buildings[$URBAN_CENTER] = $ucLevels }
 
-    # --- unlocked goods ---
-    $steps = $defs.unlock_steps.($ph.unlock)
-    $unlocked = New-Object System.Collections.Generic.List[string]
-    if ($null -eq $steps) {
-        foreach ($g in $needGoods) { $unlocked.Add($g) }              # "all"
-    } else {
-        $extra = @{}; foreach ($g in $steps) { $extra[$g] = $true }
-        foreach ($g in $needGoods) {
-            $from = $availableFrom[$g]
-            if (-not $from -or [int]$from -le 1836 -or $extra.ContainsKey($g)) { $unlocked.Add($g) }
-        }
-    }
-
     $pops = $defs.pops
     $total = [int]($pops.lower + $pops.peasants + $pops.middle + $pops.upper + $pops.slaves)
     # base wage from FINDINGS F26: the slope is the buy-package curve's own exponent, 1/ln(1.1).
@@ -661,16 +606,15 @@ function New-PlaceholderPreset($p, $defs, $needGoods, $availableFrom) {
         buildings = $buildings
         pms = [ordered]@{}                                   # empty => the UI resets every PMG to its base PM
         pops = [ordered]@{ total = $total; upper = [int]$pops.upper; middle = [int]$pops.middle
-                           lower = [int]$pops.lower; slaves = [int]$pops.slaves; peasants = [int]$pops.peasants }
+                           lower = [int]$pops.lower; peasants = [int]$pops.peasants; slaves = [int]$pops.slaves }
         sol = [ordered]@{
             lower    = [int][math]::Round($lowerSol)
             middle   = [int][math]::Round($lowerSol * [double]$defs.middle_sol_mult)
             upper    = [int][math]::Round($lowerSol * [double]$defs.upper_sol_mult)
             peasants = [int][math]::Round($lowerSol + [double]$defs.peasant_sol_offset)
-            slaves   = [int][math]::Round($lowerSol)
+            # the SLAVE BASKET level, by the game's own rule off the lower stratum (see $slaveBasket)
+            slaves   = Get-SlaveBasketLevel $lowerSol
         }
-        year = [int]$ph.year
-        unlocked = $unlocked.ToArray()
         subsistence = [ordered]@{ free_arable = 0; capacity_jobs = [int]$peasantWork
                                   peasant_workforce = [int]$peasantWork; staffing = 1.0; levels = $subsLevels }
         nonbuy = [ordered]@{}; nonsell = [ordered]@{}
@@ -684,12 +628,12 @@ function New-PlaceholderPreset($p, $defs, $needGoods, $availableFrom) {
 foreach ($p in $presetCfg.presets) {
     # PLACEHOLDER presets are synthetic and share none of the country-derived machinery below.
     if ($p.PSObject.Properties.Name -contains 'placeholder' -and $p.placeholder) {
-        $ph = New-PlaceholderPreset $p $presetCfg.placeholder_defaults $needGoods $availableFrom
+        $ph = New-PlaceholderPreset $p $presetCfg.placeholder_defaults
         $out.Add($ph)
-        Write-Output ("  {0,-12} PLACEHOLDER  SoL lower/mid/upper {1}/{2}/{3}  {4} building type(s) + {5} subsistence + {6} urban centre  base wage {7:N4}/wk  {8} of {9} pop goods unlocked" -f `
+        Write-Output ("  {0,-12} PLACEHOLDER  SoL lower/mid/upper {1}/{2}/{3}  {4} building type(s) + {5} subsistence + {6} urban centre  base wage {7:N4}/wk" -f `
             $p.id, $ph.sol.lower, $ph.sol.middle, $ph.sol.upper,
             ($ph.buildings.Keys.Count - 2), $ph.subsistence.levels, $ph.buildings[$URBAN_CENTER],
-            $ph.base_wage, $ph.unlocked.Count, $needGoods.Count)
+            $ph.base_wage)
         continue
     }
     # ⚠ FIRST thing in the loop. This used to be assigned two thirds of the way down, AFTER the
@@ -961,24 +905,19 @@ foreach ($p in $presetCfg.presets) {
         }
     }
 
-    $year = if ($p.year) { [int]$p.year } elseif ($presetCfg.defaults.year) { [int]$presetCfg.defaults.year } else { $START_YEAR }
-    # --- which pop-need goods pops may want here ---
-    # Default is purely the preset's YEAR (a market imports what it can't make, so this is not the lead
-    # country's tech). `unlock_add` / `unlock_drop` in config/presets.json then override per preset, for
-    # anything the calendar can't know - e.g. "no clippers" for a landlocked market.
-    $unlocked = New-Object System.Collections.Generic.List[string]
-    foreach ($g in $needGoods) { if ($availableFrom[$g] -le $year) { $unlocked.Add($g) } }
-    if ($p.unlock_add)  { foreach ($g in $p.unlock_add)  { if ($unlocked -notcontains $g) { $unlocked.Add($g) } } }
-    if ($p.unlock_drop) { foreach ($g in $p.unlock_drop) { [void]$unlocked.Remove($g) } }
-
-
     # --- standard of living per class ---
     # Measured per stratum where available. The flat 35/16/9 could not be right for Britain and the
     # Qing at once, and peasants are the extreme case: 4.5 in Japan against 12.1 in France. Peasants
-    # and slaves get their OWN level rather than borrowing the lower class's.
+    # get their OWN level rather than borrowing the lower class's.
+    #
+    # `slaves` is NOT a standard of living the UI spends against - it is the SLAVE BASKET level the
+    # employing buildings buy. Derived from the lower stratum by the game's own clamp, then overwritten
+    # by the measured slave SoL where there is one, because that measurement IS the realised basket
+    # (1836 reads 7-9 against the rule's 8, so the two agree).
     $sol = if ($p.sol) { $p.sol } else { $defSol }
     $solOut = [ordered]@{ upper = [int]$sol.upper; middle = [int]$sol.middle; lower = [int]$sol.lower }
-    $solOut['peasants'] = $solOut['lower']; $solOut['slaves'] = $solOut['lower']
+    $solOut['peasants'] = $solOut['lower']
+    $solOut['slaves']   = Get-SlaveBasketLevel $solOut['lower']
     $solSrc = 'config default'
     if ($meas -and $meas.sol) {
         foreach ($s in @('upper','middle','lower','peasants','slaves')) {
@@ -1064,11 +1003,9 @@ foreach ($p in $presetCfg.presets) {
         pops = [ordered]@{
             total = [int]$totalPop
             upper = [int][math]::Round($cls.upper); middle = [int][math]::Round($cls.middle); lower = [int][math]::Round($cls.lower)
-            slaves = [int]$slavePop; peasants = [int][math]::Round($peasants)
+            peasants = [int][math]::Round($peasants); slaves = [int]$slavePop
         }
         sol = $solOut
-        year = $year
-        unlocked = $unlocked.ToArray()
         subsistence = [ordered]@{
             free_arable = [int][math]::Round(($subsArable.Values | Measure-Object -Sum).Sum)
             capacity_jobs = [int][math]::Round($subsCapacity)
@@ -1113,10 +1050,11 @@ $meta = [ordered]@{
 # Class multipliers: how much of its wealth level's buy package a class actually brings to the market.
 #   peasants - the game's OWN number (`consumption_mult` in common/pop_types/peasants.txt, 0.05: most of a
 #              peasant's needs are met inside the subsistence building and never reach the market);
-#   slaves   - a modelling choice (the game has no consumption_mult for slaves), overridable in presets.json;
 #   the rest - full participation.
+# ⚠ NO ENTRY FOR SLAVES, deliberately. There used to be an invented 0.5, which halved a channel the
+# game does not run through pop consumption at all: slaves buy nothing, their employing building buys
+# them a basket. That basket is its own thing (see $slaveBasket) and takes no class multiplier.
 $classMult = [ordered]@{ upper = 1.0; middle = 1.0; lower = 1.0
-    slaves = 0.5
     peasants = $(if ($consumptionMult.ContainsKey('peasants')) { $consumptionMult['peasants'] } else { 0.05 }) }
 if ($presetCfg.defaults.class_mult) {
     foreach ($k in $presetCfg.defaults.class_mult.PSObject.Properties.Name) { $classMult[$k] = [double]$presetCfg.defaults.class_mult.$k }
@@ -1128,10 +1066,13 @@ $popModel = [ordered]@{
     working_adult_ratio = $WORK_RATIO_BASE
     dependent_consumption_ratio = $DEPENDENT_CONSUMPTION
     class_mult = $classMult
-    # The FITTED within-need split (config/pop_distribution.json), replacing the vanilla `weight`
-    # field. `weight` is not an allocation rule - the game allocates a need's money by SUPPLY SHARE -
-    # and using it understated British grain demand by 7 900 units. Absent => the UI falls back to
-    # `weight` per need, so a need the fit never saw still behaves.
+    # Slaves override the base ratio (common/pop_types/slaves.txt), so their basket is bought for a
+    # different working-adult / dependent mix than everyone else's: 0.75 per head against 0.625.
+    slave_working_adult_ratio = $(if ($workRatio.ContainsKey('slaves') -and $null -ne $workRatio['slaves']) { $workRatio['slaves'] } else { 0.5 })
+    slave_basket = $slaveBasket     # SLAVE_BASKET_* from common/defines - the level a BUILDING buys for its slaves
+    # The FITTED within-need split (config/pop_distribution.json). Now only the FALLBACK, for a need
+    # with no supply at all in a scenario: the live rule is the game's own SUPPLY SHARE. Absent => the
+    # UI falls back further, to the vanilla `weight` per need.
     distribution = $(
         $dp = Join-Path $Repo 'config\pop_distribution.json'
         if (Test-Path $dp) { (Get-Content -LiteralPath $dp -Raw -Encoding UTF8 | ConvertFrom-Json).distribution }
@@ -1142,8 +1083,6 @@ $popModel = [ordered]@{
     # options are modelled.
     unit_goods = $unitGoods
     unit_group = $unitGroup
-    need_goods = $needGoods.ToArray()   # every good pop needs can be met with (one UI unlock toggle each)
-    available_from = $availableFrom     # good -> earliest year it can exist at all (0 = always)
     buy_packages = $buyPackages
     needs = $popNeeds
 }

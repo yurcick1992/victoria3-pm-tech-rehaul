@@ -20,7 +20,10 @@
     padding:6px 11px;font:inherit;cursor:pointer}
   button:hover,select:hover{border-color:var(--accent)}
   button.primary{background:var(--accent);color:#0a0e14;border-color:var(--accent);font-weight:650}
-  main{padding:16px;max-width:1400px;margin:0 auto}
+  /* Table width: the industry tables' fixed columns sum to 1356px, which overflowed the old 1400px
+     `main` by 18px — a ~1% scrollbar on every card, all annoyance and no use. Widened instead of
+     scrolled (see the per-card overflow rule below). */
+  main{padding:16px;max-width:1520px;margin:0 auto}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden}
   .card>.hd{padding:9px 14px;background:var(--panel2);border-bottom:1px solid var(--line);
     font-weight:650;display:flex;align-items:center;gap:10px;cursor:pointer}
@@ -37,8 +40,10 @@
      deliberately mirrors the in-game market screen (see .scen below). */
   td.num,th.num{font-variant-numeric:tabular-nums}
   .mtable{table-layout:fixed}
-  /* let a wide table scroll inside its card instead of clipping the right-hand columns on narrow screens */
-  .card[data-ind]>.bd, .card.refcard>.bd{overflow-x:auto}
+  /* NO per-card horizontal scroll at normal widths: `main` is wide enough for the fixed columns, so the
+     bar only ever showed ~18px of travel. It comes back only on a genuinely narrow window, where the
+     alternative is the card's overflow:hidden silently clipping the right-hand columns. */
+  @media (max-width:1420px){ .card[data-ind]>.bd, .card.refcard>.bd{overflow-x:auto} }
   .mtable col.c-tier{width:52px}
   .mtable col.c-bld{width:184px}
   .mtable col.c-num{width:54px}
@@ -185,7 +190,7 @@
   .scentoggle input{width:auto}
   #resetThr:disabled{opacity:.4;cursor:default}
   /* ----- scenario PRESET bar: a wrapping strip of market presets (built to hold a couple dozen),
-     plus the pop-consumption knobs (vanilla-fit multiplier + the per-class wealth levels). ----- */
+     plus the market's own knobs: the per-class wealth levels, the pop counts and the base wage. ----- */
   .presetbar{padding:2px 0 10px;border-bottom:1px solid var(--line);margin-bottom:8px}
   .presetbar .pgrp{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:6px}
   .presetbar .plbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);
@@ -195,28 +200,30 @@
   .presetbar .pknobs{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:8px;font-size:12px;color:var(--muted)}
   .presetbar .pknobs label{display:inline-flex;align-items:center;gap:4px}
   .presetbar .pknobs input{width:56px;text-align:right}
-  .presetbar .pknobs .sollbl{display:inline-flex;align-items:center;gap:6px}
-  .presetbar .poprow input{width:88px}
-  .presetbar .uchips{gap:5px 6px;margin-top:6px}
-  .uchip{display:inline-flex;align-items:center;gap:4px;padding:1px 7px 1px 5px;border:1px solid var(--line);
-    border-radius:20px;font-size:11px;color:var(--muted);background:var(--panel2);cursor:pointer;user-select:none}
-  .uchip.on{color:var(--ink);border-color:#3d4756}
-  .uchip input{width:auto;margin:0;cursor:pointer}
+  /* SoL and Population are the SAME five classes in the SAME order (upper · middle · lower · peasants ·
+     slaves), so they share one grid template and every class sits in one column across both rows. */
+  .presetbar .clsrow{display:grid;grid-template-columns:86px repeat(5,136px) 1fr;gap:4px 8px;
+    align-items:center;margin-top:8px;font-size:12px;color:var(--muted)}
+  .presetbar .clsrow label{display:flex;align-items:center;justify-content:space-between;gap:5px}
+  .presetbar .clsrow input{width:76px;text-align:right}
+  .presetbar .clsrow .rowend{display:flex;align-items:center;gap:8px;white-space:nowrap}
   .scen td.popcell{color:var(--ink);font-variant-numeric:tabular-nums}
   /* hover-highlight a building's goods on its own row in the scenario panel (inputs red, output green) */
   .scen tr[data-good].hl-in{background:rgba(232,115,90,.20)}
   .scen tr[data-good].hl-out{background:rgba(78,201,143,.20)}
-  /* workforce panel: base wage (weekly↔yearly) + per-profession weekly wages */
-  .wfrow{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
-  .wfbase{flex:none}
-  .wfbaselbl{font-size:13px;margin-bottom:5px}
+  /* Base wage: lives in the preset bar directly under the population row (the wage is a property of the
+     market, like its pops), and above every building — which is what it prices. */
+  .presetbar #workforcePanel{margin-top:10px;padding-top:9px;border-top:1px solid var(--line)}
+  .wfrow{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center}
+  .wfbase{flex:none;display:flex;align-items:center;gap:10px}
+  .wfbaselbl{font-size:12px;min-width:76px}
   .wfbaseinputs{display:flex;align-items:center;gap:8px}
-  .wfbaseinputs label{display:flex;align-items:center;gap:4px;background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:4px 8px}
+  .wfbaseinputs label{display:flex;align-items:center;gap:4px;background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:3px 8px}
   .wfbaseinputs input{width:66px}
   .wfbaseinputs .eq{color:var(--muted);font-weight:700}
-  .wfprofs{flex:1;min-width:280px}
-  .wfhd{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin:0 0 5px}
-  .wfgrid{display:flex;flex-wrap:wrap;gap:6px}
+  .wfprofs{flex:1;min-width:280px;display:flex;align-items:center;gap:10px}
+  .wfhd{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);flex:none;max-width:118px;line-height:1.25}
+  .wfgrid{display:flex;flex-wrap:wrap;gap:4px}
   .wprof{display:inline-flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:2px 8px;font-size:12px}
   .wprof .pn{color:var(--muted)}
   .wprof .pw{font-variant-numeric:tabular-nums;font-weight:600}
@@ -315,15 +322,13 @@
   </div>
 
   <div class="card">
-    <div class="hd" data-toggle="scen">Scenario panel — buy/sell orders &amp; prices <span class="tag">— building inputs = BUY orders, outputs = SELL orders (each building's goods × its <b>Number</b>). A <b>preset</b> fills the whole scenario from one country's vanilla 1836 market (buildings, PMs, treaty transfers, pops); <b>pops</b> buy orders are derived from those pops and scaled by the <b>vanilla-fit</b> knob, and <b>non-pops</b> is yours to dial in. The <b>price</b> column's toggle switches between <b>locked</b> (edit each % by hand) and <b>auto</b> (recomputed live from orders: price = base × [1 + 0.75·clamp((buy−sell)/min(buy,sell), ±1)], propagated to every building). Click a section header to fold it. Hover an industry below to flag its goods here.</span></div>
+    <div class="hd" data-toggle="scen">Scenario panel — buy/sell orders &amp; prices <span class="tag">— building inputs = BUY orders, outputs = SELL orders (each building's goods × its <b>Number</b>). A <b>preset</b> fills the whole scenario from one country's vanilla 1836 market (buildings, PMs, treaty transfers, pops, base wage); <b>pops</b> buy orders are derived from those pops and their SoL (plus the baskets buildings buy for their slaves — hover for that part), and <b>trade</b> is yours to dial in. The <b>price</b> column's toggle switches between <b>locked</b> (edit each % by hand) and <b>auto</b> (recomputed live from orders: price = base × [1 + 0.75·clamp((buy−sell)/min(buy,sell), ±1)], propagated to every building). Click a section header to fold it. Hover an industry below to flag its goods here.</span></div>
     <div class="bd scen" id="scenarioBody"></div>
   </div>
 
-  <div class="card">
-    <div class="hd" data-toggle="wf">Workforce panel — base wage <span class="tag">— wages now come from each building's workforce × the base wage per profession (weight = vanilla <code>wage_weight</code>, non-discriminated). Changing it recomputes every building's BE / profit.</span></div>
-    <div class="bd" id="workforcePanel"></div>
-  </div>
-
+  <!-- The base wage lives INSIDE the scenario panel, directly under the population row (see
+       presetBarHTML): it is a property of the market being modelled, and it must sit above the
+       buildings whose wages it prices. -->
   <div id="industries"></div>
   <div id="econref"></div>
   <div id="reference"></div>
@@ -524,51 +529,113 @@ const ADDSELL = {};   // good -> extra sell orders (treaty transfers in, or dial
 const PRE = window.PMPRESETS || null;                 // generated by tools/extract_presets.ps1 (may be absent)
 const HAVE_PRESETS = !!(PRE && PRE.presets && PRE.presets.length);
 const POPM = (PRE && PRE.pop_model) || { pop_size_package:10000, class_mult:{}, buy_packages:{}, needs:{} };
-const EMPTY_POPS = {total:0, upper:0, middle:0, lower:0, slaves:0, peasants:0};
+const EMPTY_POPS = {total:0, upper:0, middle:0, lower:0, peasants:0, slaves:0};
 // The built-in preset: always available, even without presets.js. Clears the whole scenario.
 const EMPTY_PRESET = { id:'empty', label:'Empty', group:'Reset', buildings:{}, pms:{}, nonbuy:{}, nonsell:{},
-  pops:EMPTY_POPS, market:[], notes:[], year:1836 };
+  pops:EMPTY_POPS, market:[], notes:[] };
 let POPS   = Object.assign({}, EMPTY_POPS);           // people per consumption class (editable in the preset bar)
-// The wealth level whose buy package each class consumes. Peasants and slaves have their OWN level:
-// they used to borrow the lower class's, which cannot express the measured spread (peasants run 4.5
-// in Japan against 12.1 in France, and are ABOVE labourers in Britain).
-let SOL    = {upper:35, middle:16, lower:9, peasants:9, slaves:9};
-const SOLCLASSES = ['upper','middle','lower','peasants','slaves'];
+// The wealth level whose buy package each class consumes. Peasants have their OWN level: they used to
+// borrow the lower class's, which cannot express the measured spread (peasants run 4.5 in Japan against
+// 12.1 in France, and are ABOVE labourers in Britain). `slaves` is the SLAVE BASKET level — see below.
+let SOL    = {upper:35, middle:16, lower:9, peasants:9, slaves:8};
+// ONE class order, used by the SoL row, the population row and the report: upper · middle · lower ·
+// peasants · slaves. Two lists in two orders is how the panel ended up with its rows misaligned.
+const CLASSES = ['upper','middle','lower','peasants','slaves'];
 function solOf(c){ const v=SOL[c]; return (v!=null&&v>0)?v:SOL.lower; }
-let POPFIT = 1;                                       // "vanilla-fit" multiplier on ALL pop consumption (calibration knob)
-// Goods pops are allowed to want. The default follows the scenario YEAR alone — a good is available
-// once some building × PM that makes it can exist anywhere, because a market imports what it cannot
-// produce itself, so this is deliberately not any one country's research. A preset seeds the year and
-// may force individual goods on/off (`unlock_add`/`unlock_drop` in config/presets.json); from there the
-// toggles are yours. A locked good drops out of its pop need and that need's money re-splits over the rest.
-const NEED_GOODS = (POPM.need_goods||[]);
-const AVAIL = POPM.available_from||{};          // good -> earliest year it can exist (0 = always)
-let YEAR = 1836;                                // scenario year (session-only; set by a preset)
-function goodsForYear(y){ return NEED_GOODS.filter(g=>(AVAIL[g]||0)<=y); }
-const UNLOCKED = new Set(goodsForYear(YEAR));
-const POPCLASSES = ['upper','middle','lower','slaves','peasants'];
-function popTotal(){ return POPCLASSES.reduce((s,c)=>s+(POPS[c]||0),0); }
+// ---- SLAVES ARE NOT A CONSUMING POP CLASS -------------------------------------------------------
+// The game never has a slave buy anything. The BUILDING buys a consumer-goods basket for the slaves it
+// employs, and the market screen shows that as its own order channel ("$ORDERS$ purchased for slaves",
+// GOODS_SLAVE_CONSUMPTION_MARKET_ORDERS) — which is why it gets its own column here instead of being
+// folded into `pops`, where it was invisible.
+//
+// The basket is a WEALTH LEVEL, from `common/defines` (NDefines|NEconomy):
+//     SLAVE_BASKET_DEFAULT 8, clamped to
+//       [ max(SLAVE_BASKET_MIN 1,  SLAVE_BASKET_SCALED_MIN 0.5 × lowest non-slave wealth in the building),
+//         min(SLAVE_BASKET_MAX 12, SLAVE_BASKET_SCALED_MAX 1.0 × lowest non-slave wealth) ]
+// so at a lower-class SoL of 8 it is exactly 8, and it only moves once the building's poorest free
+// workers move. `SOL.slaves` IS that basket level: a preset seeds it from the market's MEASURED slave
+// standard of living, which is the realised basket (1836 reads 7-9 against the rule's 8).
+//
+// Two numbers that were wrong while slaves rode the pop path, both now fixed:
+//   * per head: slaves declare their OWN `working_adult_ratio = 0.5` (common/pop_types/slaves.txt),
+//     so the per-head factor is 0.5 + 0.5×0.5 = 0.75, not the 0.625 the base 0.25 ratio gives;
+//   * there is NO consumption multiplier. The 0.5 we used to apply was invented, and the game has no
+//     `consumption_mult` for slaves at all (peasants' 0.05 is real; slaves' 0.5 was not).
+//
+// NOT applied: SOL_SPREAD. A stratum is a spread of wealth levels, but the basket is a single clamped
+// number per building, and spreading it would push part of the population past the max the game allows.
+const SLAVE_WORK_RATIO = (POPM.slave_working_adult_ratio!=null ? POPM.slave_working_adult_ratio : 0.5);
+// ---- WHERE the slaves work, which is what decides the size of the channel ---------------------
+// `SLAVE_BASKET_SUBSISTENCE_GOODS_MULT = 0.05`: a slave in a SUBSISTENCE building costs its owner a
+// twentieth of the basket, because subsistence meets those needs in kind. That term dominates —
+// modelling the full basket for every slave over-predicted the American market's measured slave
+// purchases by 3.9× (FINDINGS F27) — so the scenario has to say which slaves are where.
+//
+// It is DERIVED, not a knob, from the same residual-employment logic the peasant/subsistence model
+// already uses: buildings hire first, subsistence absorbs whoever is left.
+//   unqualified jobs U  = laborer + farmer jobs in the scenario's NON-subsistence buildings
+//   free pool F         = the LOWER stratum's working adults, who would otherwise fill them
+//   surplus jobs        = max(0, U − F), competed for by slaves and peasants
+//   slaves in real jobs = surplus × slaveWorkforce / (slaveWorkforce + peasantWorkforce)
+// and the basket multiplier is that share plus 0.05 of the rest. It self-scales the way the
+// subsistence model does: more industry ⇒ more slaves in real jobs ⇒ more market demand.
+//
+// ⚠ Two stated assumptions, neither fitted. (1) Slaves fill LABORER and FARMER jobs — a slave cannot
+// take a manor house's aristocrat seat, so comparing all jobs against all free workers would mix
+// strata. (2) Slaves and peasants split the surplus in proportion to their workforce, the neutral
+// choice: "slaves first" gives the USA 0.38 and "peasants first" gives 0.05, and the measurement
+// (0.225 of the full basket by units, 0.259 by money) sits between those, close to proportional.
+// Scored: this rule gives the USA **0.209** against a measured 0.225, and Britain **0.05** — where
+// the independent residual test also wanted ~0. Both from files, with no per-market tuning.
+const SLAVE_SUBSISTENCE_MULT = ((POPM.slave_basket||{}).subsistence_mult!=null
+  ? POPM.slave_basket.subsistence_mult : 0.05);
+const UNQUALIFIED_PROFS = ['laborers','farmers'];   // the jobs slaves and peasants compete for
+function isSubsistenceBuilding(b){
+  if(!HAVE_VAN) return /subsistence/.test(b);
+  const g=(VAN.buildings[b]||{}).group||'';
+  return GRPCAT[g]==='subsistence' || /subsistence/.test(g) || /subsistence/.test(b);
+}
+// share of the scenario's slaves employed in non-subsistence buildings (0..1)
+function slaveRealShare(){
+  const slaveWork=(POPS.slaves||0)*SLAVE_WORK_RATIO;
+  if(!(slaveWork>0)) return 0;
+  const wr=(POPM.working_adult_ratio!=null?POPM.working_adult_ratio:0.25);
+  let U=0;
+  const add=emp=>{ for(const p in (emp||{})) if(UNQUALIFIED_PROFS.indexOf(p)>=0) U+=emp[p]; };
+  IND.forEach(i=>i.tiers.forEach(t=>{ const n=BLDNUM[t.key]||0; if(!n) return;
+    const e=tierEmp(t), s={}; for(const p in e) s[p]=e[p]*n; add(s); }));
+  refBuildings().forEach(b=>{ const n=BLDNUM[b]||0; if(!n || isSubsistenceBuilding(b)) return;
+    const e=selEmp(refSel(b)), s={}; for(const p in e) s[p]=e[p]*n; add(s); });
+  const surplus=Math.max(0, U-(POPS.lower||0)*wr);
+  const peasWork=(POPS.peasants||0)*wr;
+  const mine=surplus*(slaveWork/Math.max(1e-9, slaveWork+peasWork));
+  return Math.min(1, mine/slaveWork);
+}
+// the basket multiplier the whole slave population averages out to
+function slaveBasketMult(){ const r=slaveRealShare(); return r + SLAVE_SUBSISTENCE_MULT*(1-r); }
+function popTotal(){ return CLASSES.reduce((s,c)=>s+(POPS[c]||0),0); }
 function presetList(){ return [EMPTY_PRESET].concat(HAVE_PRESETS ? PRE.presets : []); }
 // Pop BUY orders, straight out of the game's own tables:
 //   * each class buys the BUY PACKAGE of its wealth level, scaled by people / POP_SIZE_PACKAGE, by the
 //     per-head DEPENDENT factor (needs are per working adult; dependents need half → 0.25 + 0.75×0.5 =
 //     0.625 per head) and by its class multiplier (peasants 0.05 — the game's own `consumption_mult`:
 //     most of a peasant's needs are met inside the subsistence building and never reach the market);
-//   * each pop NEED's money is split across the goods that need lists, by the game's own `weight`,
-//     restricted to the goods currently UNLOCKED (the toggles in the preset bar). No supply-share
-//     substitution — a fixed distribution over what technology makes possible, per the design brief;
-//   * a need with nothing unlocked falls back to its `default` good (so a need can never silently vanish);
-//   * money → quantity at BASE price, and the result is scaled by the vanilla-fit knob.
+//   * each pop NEED's money is split across the goods that need lists, by SUPPLY SHARE — the game's own
+//     rule (needSplit below). Every good the need lists is a candidate; one the market does not supply
+//     simply takes no share, which is what "pops buy whatever is on the market" means. There is no
+//     availability gate: a market imports what it cannot make, and an unsupplied good self-excludes.
+//   * a need whose goods are all unsupplied falls back to the stored distribution, then to `weight`;
+//   * money → quantity at BASE price.
 // `detail`, when passed, is filled as good -> [{need, money, qty}] so the scenario panel can show
-// where a good's pop demand came from. Kept as an optional out-parameter rather than a second
+// where a good's demand came from. Kept as an optional out-parameter rather than a second
 // function so there is exactly ONE implementation of the demand arithmetic to keep correct.
 // Must pass the same supply the aggregate used, or the hover breakdown would explain a different
 // number than the column shows.
-function popDemandDetail(){
+function demandDetail(which){
   const d={}, a=scenarioAggregates(), supply={}, nonpop={};
   [...Object.keys(a.outAgg), ...Object.keys(ADDSELL)].forEach(g=>supply[g]=(a.outAgg[g]||0)+(ADDSELL[g]||0));
   [...Object.keys(a.inAgg), ...Object.keys(ADDBUY)].forEach(g=>nonpop[g]=(a.inAgg[g]||0)+(ADDBUY[g]||0));
-  popDemand(d, supply, nonpop); return d;
+  spendToGoods(which==='slave'?slaveSpend():popSpend(), d, supply, nonpop); return d;
 }
 // Half-width of the standard-of-living spread applied INSIDE each stratum. A stratum is not one
 // wealth level: its pops sit on a range, and buy packages are steps, so collapsing them onto the
@@ -582,18 +649,19 @@ function popDemandDetail(){
 // Per-market fitting of the width buys ~0.5 pp over the global 8 and is deliberately not done.
 // See FINDINGS F24.
 const SOL_SPREAD=8;
-// £/week each pop NEED is budgeted, for the current population and SoL. Split out of popDemand
-// because the distribution fit needs exactly this vector and must not compute it a second way.
+function depRatio(){ return (POPM.dependent_consumption_ratio!=null?POPM.dependent_consumption_ratio:0.5); }
+// £/week each pop NEED is budgeted, for the current population and SoL. Split out of the demand
+// arithmetic because the distribution fit needs exactly this vector and must not compute it a second way.
+// SLAVES ARE NOT HERE — their basket is a building purchase, see slaveSpend().
 function popSpend(){
   const spend={};
-  if(!popTotal()) return spend;
   const cm=POPM.class_mult||{}, PK=POPM.buy_packages||{};
   const wr=(POPM.working_adult_ratio!=null?POPM.working_adult_ratio:0.25);
-  const head=wr+(1-wr)*(POPM.dependent_consumption_ratio!=null?POPM.dependent_consumption_ratio:0.5);  // 0.625
+  const head=wr+(1-wr)*depRatio();  // 0.625
   const steps=2*SOL_SPREAD+1;
-  [['upper',solOf('upper')],['middle',solOf('middle')],['lower',solOf('lower')],['slaves',solOf('slaves')],['peasants',solOf('peasants')]]
-    .forEach(([cls,lvl])=>{
+  ['upper','middle','lower','peasants'].forEach(cls=>{
       const n=POPS[cls]||0; if(!(n>0)) return;
+      const lvl=solOf(cls);
       const units=n*head*(cm[cls]!=null?cm[cls]:1)/(POPM.pop_size_package||10000)/steps;
       for(let k=-SOL_SPREAD;k<=SOL_SPREAD;k++){
         const pkg=PK[String(Math.max(1,Math.round(lvl+k)))]; if(!pkg) continue;
@@ -602,6 +670,19 @@ function popSpend(){
     });
   return spend;
 }
+// £/week budgeted per NEED for the goods bought FOR the slaves — one buy package at the basket level,
+// no spread, scaled by how many of them are in real buildings rather than subsistence (see above).
+function slaveSpend(){
+  const spend={}, n=POPS.slaves||0; if(!(n>0)) return spend;
+  const pkg=(POPM.buy_packages||{})[String(Math.max(1,Math.round(solOf('slaves'))))]; if(!pkg) return spend;
+  const head=SLAVE_WORK_RATIO+(1-SLAVE_WORK_RATIO)*depRatio();   // 0.75
+  const units=n*head*slaveBasketMult()/(POPM.pop_size_package||10000);
+  for(const nd in pkg) spend[nd]=pkg[nd]*units;
+  return spend;
+}
+// pop + slave money per need, which is what the distribution fit sees: the observed order book cannot
+// tell the two channels apart, and both are split across a need's goods by the same rule.
+function allSpend(){ const s=popSpend(), t=slaveSpend(); for(const k in t) s[k]=(s[k]||0)+t[k]; return s; }
 // How a need's money splits across its goods. This is the GAME'S OWN RULE, not a fitted vector:
 // each good takes a share proportional to `weight × its share of the need's supply in this market`,
 // clamped to the entry's own `min_supply_share` / `max_supply_share` and renormalised.
@@ -637,8 +718,11 @@ function popSpend(){
 //
 // Units come from money ÷ base price, so goods are equivalent per POUND, not per unit — a higher
 // base price fulfils the same need with fewer units.
+// EVERY good the need lists is a candidate. There is no availability gate: an unsupplied good scores a
+// market share of 0 and drops out on its own, which is both the game's behaviour and the reason the old
+// per-good "pops may buy" toggles were redundant.
 function needSplit(nd, def, supply, nonpop){
-  const es=(def.entries||[]).filter(e=>UNLOCKED.has(e.g));
+  const es=(def.entries||[]);
   if(!es.length) return null;
   const eff=es.map(e=>Math.max(0, ((supply||{})[e.g]||0) - 0.5*((nonpop||{})[e.g]||0)));
   const tot=eff.reduce((a,b)=>a+b,0);
@@ -657,14 +741,14 @@ function needSplit(nd, def, supply, nonpop){
   if(!(s>0)) return null;
   return es.map((e,i)=>({g:e.g, s:pw[i]/s}));
 }
-function popDemand(detail, supply, nonpop){
+// Turn a per-need money vector into per-good quantities. Shared by pop demand and the slave basket:
+// same needs, same split rule, different payer.
+function spendToGoods(spend, detail, supply, nonpop){
   const out={};
   const note=(g,need,money,qty)=>{ if(!detail) return; (detail[g]=detail[g]||[]).push({need,money,qty}); };
-  if(!popTotal()) return out;
   const ND=POPM.needs||{};
-  const spend=popSpend();
   for(const nd in spend){
-    const def=ND[nd], money=spend[nd]*POPFIT;
+    const def=ND[nd], money=spend[nd];
     if(!def||!(money>0)) continue;
     // A share of exactly 0 is a real answer ("pops do not buy fabric when the market supplies
     // clothes"), so a zero simply contributes nothing rather than being filtered out earlier.
@@ -676,18 +760,16 @@ function popDemand(detail, supply, nonpop){
   return out;
 }
 // ---------------------------------------------------------------- fitted consumption distribution
-// How a pop need's money is split across the goods that need lists. The game does this by SUPPLY
-// SHARE, bounded per entry by max/min_supply_share; we deliberately do NOT model that, because a
-// market-dependent split would make the scenario panel's demand depend on its own supply. Instead we
-// use ONE market-independent distribution, fitted across all seven 1836 markets.
+// A market-independent split of each pop need's money across the goods that need lists, fitted across
+// all seven 1836 markets. HISTORICAL: it was the model until needSplit() started following the game's
+// own supply-share rule, and it survives only as the fallback for a need with no supply at all.
 //
 // The `weight` field was the obvious stand-in and is badly wrong: `popneed_basic_food` weights grain
 // 0.85 of 5.00, but grain is ~74% of British food supply, so weight-splitting understated British
 // grain demand by 7 900 units - the single largest error in the whole panel. See FINDINGS F10.
 //
 // POPDIST[need][good] = relative share. Missing need => fall back to the `weight` field, so a need
-// the fit never saw still behaves sensibly. Shares are renormalised over the goods currently
-// UNLOCKED, exactly as the weights were.
+// the fit never saw still behaves sensibly.
 let POPDIST = (POPM.distribution && Object.keys(POPM.distribution).length) ? JSON.parse(JSON.stringify(POPM.distribution)) : {};
 // POPDIST is now only a FALLBACK, used when a need has no supply at all in the scenario (an empty
 // market still has to produce a sane split). The live rule is needSplit() — supply share, the way
@@ -721,20 +803,22 @@ const FITW = {
 function collectFitRows(mode){
   const rows=[];   // one per (market, good with any pop need)
   const savedPops=Object.assign({},POPS), savedSol=Object.assign({},SOL);
-  const savedBld=Object.assign({},BLDNUM), savedYear=YEAR;
+  const savedBld=Object.assign({},BLDNUM);
   presetList().forEach(p=>{
     if(!p.measured || !p.measured.buy) return;
     applyScenarioPreset(p.id);
-    const spend=popSpend(), agg=scenarioAggregates();
+    // pop money AND slave-basket money: the measured order book cannot separate the two channels, so
+    // the fit must predict their sum or it would be asked to explain demand it was not shown.
+    const spend=allSpend(), agg=scenarioAggregates();
     const inNeed={};
-    for(const nd in (POPM.needs||{})) (POPM.needs[nd].entries||[]).forEach(e=>{ if(UNLOCKED.has(e.g)) inNeed[e.g]=true; });
+    for(const nd in (POPM.needs||{})) (POPM.needs[nd].entries||[]).forEach(e=>{ inNeed[e.g]=true; });
     Object.keys(inNeed).forEach(g=>{
       const obs=(p.measured.buy[g]||0)-(agg.inAgg[g]||0)-(ADDBUY[g]||0);
       rows.push({market:p.id, g, obs, spend, price:(PRICES[g]||1)});
     });
   });
   // leave the sheet as we found it — the fit is an analysis, not a scenario change
-  POPS=savedPops; SOL=savedSol; Object.keys(BLDNUM).forEach(k=>delete BLDNUM[k]); Object.assign(BLDNUM,savedBld); YEAR=savedYear;
+  POPS=savedPops; SOL=savedSol; Object.keys(BLDNUM).forEach(k=>delete BLDNUM[k]); Object.assign(BLDNUM,savedBld);
   const tot={}; rows.forEach(r=>{ tot[r.market]=(tot[r.market]||0)+Math.abs(r.obs); });
   const wf=FITW[mode||'market']||FITW.market;
   rows.forEach(r=>{ r.w=wf(r,tot); });
@@ -756,10 +840,10 @@ function fitPopDistribution(opts){
   const rows=collectFitRows(opts.weight);
   if(!rows.length) return {error:'no preset carries a measured order book'};
   const ND=POPM.needs||{};
-  // parameters: for each need, its unlocked goods
+  // parameters: for each need, every good it lists
   const needs=[], idx={};
   for(const nd in ND){
-    const gs=(ND[nd].entries||[]).filter(e=>UNLOCKED.has(e.g)).map(e=>e.g);
+    const gs=(ND[nd].entries||[]).map(e=>e.g);
     if(!gs.length) continue;
     idx[nd]=needs.length; needs.push({nd, gs, s:gs.map(()=>1/gs.length)});
   }
@@ -851,8 +935,9 @@ function scenarioAggregates(){
   unitTypes().forEach(u=>{ const g=unitGoodsIO(u);
     [false,true].forEach(mob=>{ const n=UNITNUM[unitRowKey(u,mob)]||0; if(!n) return;
       for(const k in g.in) inAgg[k] = (inAgg[k]||0)+n*g.in[k]; }); });
-  // Pop demand LAST, and fed this scenario's own sell orders: the within-need split follows supply
-  // share, the way the game does it. Not circular - pops never sell, so outAgg is already final.
+  // Pop demand and the slave basket LAST, and fed this scenario's own sell orders: the within-need
+  // split follows supply share, the way the game does it. Not circular - neither channel ever sells,
+  // so outAgg is already final.
   // ⚠ Union of building output AND trade, not just outAgg: a good the market only IMPORTS has no
   // building output at all, and keying off outAgg alone made it invisible to the allocation - it got
   // zero supply share and therefore zero pop demand. Belgium's coffee showed 0 demand against 49.
@@ -861,12 +946,18 @@ function scenarioAggregates(){
   // NON-POP buy orders: buildings plus trade out. The market-share rule subtracts half of these, so
   // a good industry consumes heavily is less available to pops. inAgg is final at this point —
   // pops are computed last and never appear in it, so there is no circularity.
+  // ⚠ The slave basket is technically a BUILDING purchase, so on a strict reading it belongs in this
+  // term too — but it is computed from the same market share it would then feed, and chasing that
+  // fixed point buys nothing at 1836 slave counts. Both channels are allocated against the same
+  // building+trade order book instead, which keeps one pass and one explanation.
   const nonpop={};
   [...Object.keys(inAgg), ...Object.keys(ADDBUY)].forEach(g=>nonpop[g]=(inAgg[g]||0)+(ADDBUY[g]||0));
-  return {inAgg, outAgg, pop:popDemand(null, supply, nonpop)};
+  return {inAgg, outAgg, pop:spendToGoods(popSpend(), null, supply, nonpop),
+                         slave:spendToGoods(slaveSpend(), null, supply, nonpop)};
 }
 function scenarioBuySell(agg, g){
-  return { buy:(agg.inAgg[g]||0)+((agg.pop||{})[g]||0)+(ADDBUY[g]||0), sell:(agg.outAgg[g]||0)+(ADDSELL[g]||0) };
+  return { buy:(agg.inAgg[g]||0)+((agg.pop||{})[g]||0)+((agg.slave||{})[g]||0)+(ADDBUY[g]||0),
+           sell:(agg.outAgg[g]||0)+(ADDSELL[g]||0) };
 }
 // WHICH buildings make up a scenario order, as a tooltip. A bare total ("paper 160") is not
 // actionable: the question a reader always has next is which buildings it came from, and until now
@@ -895,15 +986,32 @@ function scenBreakdown(g, side){
   if(parts.length>24) lines.push(`  …and ${parts.length-24} more`);
   return `${g} — ${round(tot)} ${side==='in'?'demand':'supply'} from ${parts.length} building type(s)\n` + lines.join('\n');
 }
-// Pop demand, per NEED rather than per class: a need is what the money is actually budgeted to, and
-// it is the unit the consumption distribution is defined over — so this is the breakdown that tells
-// you which need to look at when a good is wrong.
+// Demand per NEED rather than per class: a need is what the money is actually budgeted to, and it is
+// the unit the consumption distribution is defined over — so this is the breakdown that tells you
+// which need to look at when a good is wrong.
+//
+// The SLAVE part is reported here rather than in a column of its own. It is a genuinely separate
+// channel in the game (a building's purchase, not a pop's), but it is small, zero in most markets,
+// and a permanent column for it costs every reader width on every row — so the column is the total
+// and the split lives one hover away.
 function popBreakdown(g){
-  const d=popDemandDetail(); const rows=(d[g]||[]).filter(r=>r.qty>0.005);
-  if(!rows.length) return `${g} — no pop demand (not listed by any unlocked pop need)`;
-  rows.sort((a,b)=>b.qty-a.qty);
-  const tot=rows.reduce((s,r)=>s+r.qty,0);
-  return `${g} — ${round(tot)} pop demand\n` + rows.map(r=>`  ${r.need}  £${round(r.money)} ÷ £${PRICES[g]||1} = ${round(r.qty)}`).join('\n');
+  const dp=demandDetail('pop'), ds=demandDetail('slave');
+  const rows=(dp[g]||[]).filter(r=>r.qty>0.005);
+  const slv=(ds[g]||[]).filter(r=>r.qty>0.005);
+  const totP=rows.reduce((s,r)=>s+r.qty,0), totS=slv.reduce((s,r)=>s+r.qty,0);
+  if(!rows.length && !slv.length) return `${g} — no pop demand (no pop need that lists it has money on it here)`;
+  rows.sort((a,b)=>b.qty-a.qty); slv.sort((a,b)=>b.qty-a.qty);
+  let out=`${g} — ${round(totP+totS)} demanded by pops\n`
+    + rows.map(r=>`  ${r.need}  £${round(r.money)} ÷ £${PRICES[g]||1} = ${round(r.qty)}`).join('\n');
+  if(totS>0.005){
+    const share=slaveRealShare();
+    out += `\n\n  of which ${round(totS)} is PURCHASED FOR SLAVES — the game's own separate channel:\n`
+      + `  a building buys its slaves a wealth-${Math.round(solOf('slaves'))} basket, not the slaves themselves.\n`
+      + `  ${fmtPop(POPS.slaves)} slaves × ${Math.round(share*100)}% in real buildings (the rest in subsistence,\n`
+      + `  at ×${SLAVE_SUBSISTENCE_MULT}) ⇒ ×${Math.round(slaveBasketMult()*1000)/1000} of a full basket\n`
+      + slv.map(r=>`    ${r.need}  £${round(r.money)} ÷ £${PRICES[g]||1} = ${round(r.qty)}`).join('\n');
+  }
+  return out;
 }
 // the Number column cell — same markup for tier rows and reference rows (BLDNUM keyed by building key).
 function numCellHTML(key){ return `<td class="num numcell"><input type="number" min="0" step="1" value="${BLDNUM[key]||0}" data-bldnum="${esc(key)}" title="Number of this building in the scenario"></td>`
@@ -1017,8 +1125,7 @@ function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;',
 
 // ---------- rendering ----------
 function render(){
-  renderScenario();         // syncs AUTO prices into thresholds first, so the tier/reference cells below use them
-  renderWorkforcePanel();
+  renderScenario();         // syncs AUTO prices into thresholds first (and fills the base-wage row it owns)
   renderIndustries();
   attachIndustryUI();
   renderViz();
@@ -1033,11 +1140,12 @@ function profGridHTML(){
 function renderWorkforcePanel(){
   const el=document.getElementById('workforcePanel'); if(!el) return;
   el.innerHTML = `<div class="wfrow">
-    <div class="wfbase"><div class="wfbaselbl"><b>Base wage</b> <span class="muted">(laborers, weight 1)</span></div>
+    <div class="wfbase" title="Wages come from each building's WORKFORCE × this base wage per profession (weight = the vanilla wage_weight, non-discriminated). Changing it recomputes every building's BE / profit. Non-locked groups inherit it; locked groups keep the wage they were tuned at. A preset sets it from its market's measured pops.">
+      <div class="wfbaselbl"><b>Base wage</b><br><span class="muted">laborers, weight 1</span></div>
       <div class="wfbaseinputs"><label><input type="number" min="0" step="0.001" value="${BASE_WAGE}" data-basewage="wk"> <span class="u">£/week</span></label>
         <span class="eq">=</span>
         <label><input type="number" min="0" step="0.1" value="${round2(BASE_WAGE*WEEKS_PER_YEAR)}" data-basewage="yr"> <span class="u">£/year</span></label></div></div>
-    <div class="wfprofs"><div class="wfhd">weekly wage per profession (base × wage_weight)</div><div class="wfgrid">${profGridHTML()}</div></div>
+    <div class="wfprofs"><div class="wfhd">weekly £ per profession<br>(base × wage_weight)</div><div class="wfgrid">${profGridHTML()}</div></div>
   </div>`;
 }
 // Changing the SHEET base wage: NON-LOCKED groups inherit it (their own base wage is cleared so they follow
@@ -1105,45 +1213,45 @@ function scenBalInner(g, buy, sell){ const bal=sell-buy, cls=scenBalCls(bal), mx
 // ----- preset bar: one button per saved market, plus the pop-consumption knobs -----
 function fmtPop(n){ n=+n||0;
   return n>=1e6 ? (n/1e6).toFixed(n>=1e7?0:1)+'M' : (n>=1e4 ? Math.round(n/1e3)+'k' : String(round(n))); }
-// The unlock chips, re-rendered on their own so the year field keeps focus. No summary line: everything
-// a preset knows about itself is reported ONCE in the banner when it is applied (see applyScenarioPreset).
-function unlockChipsHTML(){
-  return NEED_GOODS.map(g=>{ const from=AVAIL[g]||0, on=UNLOCKED.has(g);
-    const when = from ? `exists from ${from}` : 'always available';
-    return `<label class="uchip${on?' on':''}" title="${esc(g)} — ${when}. Whether pops can want it: off = it drops out of every pop need that lists it, and that need's money re-splits over the rest."><input type="checkbox" data-unlock="${esc(g)}"${on?' checked':''}>${esc(g)}</label>`; }).join('');
-}
+// SoL and Population are ONE grid template so each class sits in one column across both rows, in one
+// order (upper · middle · lower · peasants · slaves). The base wage follows directly underneath: it is a
+// property of the market being modelled, and it belongs above the buildings whose wages it prices.
 function presetBarHTML(){
   const groups=[], byGroup={};
   presetList().forEach(p=>{ const g=p.group||'Presets'; if(!byGroup[g]){ byGroup[g]=[]; groups.push(g); } byGroup[g].push(p); });
   const btns=groups.map(g=>`<div class="pgrp"><span class="plbl">${esc(g)}</span>`
       + byGroup[g].map(p=>`<button class="pbtn" data-preset="${esc(p.id)}"
-          title="One-off overwrite: replaces every building Number, the non-pop buy/sell orders, the pop counts, the year and the PM selections with ${esc(p.label)}. Nothing stays 'in' the preset afterwards — edit freely.">${esc(p.label)}</button>`).join('')
+          title="One-off overwrite: replaces every building Number, the non-pop buy/sell orders, the pop counts, the base wage and the PM selections with ${esc(p.label)}. Nothing stays 'in' the preset afterwards — edit freely.">${esc(p.label)}</button>`).join('')
       + `</div>`).join('');
   const cm=POPM.class_mult||{};
-  const popFields=POPCLASSES.map(c=>{
-    const m=(cm[c]!=null?cm[c]:1);
-    return `<label title="${esc(c)}: people. Buys the wealth-${solOf(c)} package${m!==1?` × ${m}`:''}."
-      >${c}<input type="number" min="0" step="1000" value="${POPS[c]||0}" data-pop="${c}"></label>`; }).join('');
-  const chips=unlockChipsHTML();
+  const solTitle=c=> c==='slaves'
+    ? `slaves: the SLAVE BASKET level — the wealth level of consumer goods a BUILDING buys for the slaves it employs. `
+      + `The game clamps it to [max(1, 0.5 × lowest non-slave wealth), min(12, lowest non-slave wealth)] around a default of 8 `
+      + `(SLAVE_BASKET_* in common/defines), so it tracks the poorest free workers. A preset seeds it from this market's `
+      + `MEASURED slave standard of living, which is the basket the game actually bought.`
+    : `${c}: the wealth level whose buy package this class consumes (common/buy_packages). A preset fills it from the `
+      + `MEASURED standard of living of that stratum${c==='peasants'?`, which is why peasants carry their own level rather than the lower class's — they run 4.5 in Japan against 12.1 in France`:''}.`
+      + `${(cm[c]!=null&&cm[c]!==1)?` On top of the package this class buys × ${cm[c]} (the game's own consumption_mult).`:''}`;
+  const solFields=CLASSES.map(c=>`<label title="${esc(solTitle(c))}"><span>${c}</span><input type="number" min="1" max="99" step="1" value="${solOf(c)}" data-sol="${c}"></label>`).join('');
+  const popFields=CLASSES.map(c=>{
+    const t = c==='slaves'
+      ? `slaves: people. They buy nothing themselves — the buildings that employ them buy a wealth-${solOf('slaves')} basket on their behalf, `
+        + `and only for the ${Math.round(slaveRealShare()*100)}% of them this scenario's buildings have unqualified jobs for; the rest are in subsistence at ×${SLAVE_SUBSISTENCE_MULT}. `
+        + `Net ×${Math.round(slaveBasketMult()*1000)/1000} of a full basket, folded into the pops buy column (hover a cell to see that part on its own).`
+      : `${c}: people. Buys the wealth-${solOf(c)} package${(cm[c]!=null&&cm[c]!==1)?` × ${cm[c]}`:''}.`;
+    return `<label title="${esc(t)}"><span>${c}</span><input type="number" min="0" step="1000" value="${POPS[c]||0}" data-pop="${c}"></label>`; }).join('');
   return `<div class="presetbar">${btns}
-    <div class="pknobs">
-      <label title="Calibration knob: scales ALL pop consumption. Our pop model is a simplification of the game's, so use this to fit a preset's demand to what vanilla actually shows.">pop demand fit ×<input type="number" min="0" step="0.05" value="${POPFIT}" data-popfit></label>
-      <button class="minibtn" data-fitpops title="Re-solve the within-need consumption distribution across EVERY preset that carries a measured order book, then print it for config/pop_distribution.json. Observed pop demand is buy orders minus our building demand minus trade, so the building side has to be right first. Each market is normalised by its own total demand so a large market cannot set the answer for all of them. Session-only until you paste the result into the config.">fit pops</button>
-      <span class="sollbl" title="The wealth level whose buy package each class consumes (common/buy_packages). A preset fills these from the MEASURED per-stratum standard of living of its market, so peasants and slaves carry their own level rather than the lower class's. On top of the package, slaves buy × ${cm.slaves!=null?cm.slaves:0.5} and peasants × ${cm.peasants!=null?cm.peasants:0.05} (the game's own consumption_mult).">SoL
-        ${SOLCLASSES.map(c=>`<label>${c}<input type="number" min="1" max="99" step="1" value="${solOf(c)}" data-sol="${c}"></label>`).join('')}
-      </span>
-    </div>
-    <div class="pknobs poprow"><span class="plbl">Population</span>${popFields}
-      <span class="muted">= <b id="popTotal">${fmtPop(popTotal())}</b> total</span></div>
-    <div class="pknobs uchips"><span class="plbl">Pops may buy</span>
-      <label title="Scenario year. Sets which goods exist yet — editing it re-derives the toggles below (a market imports what it can't make, so this is a calendar question, not a research one). Toggle individual goods afterwards.">year<input type="number" min="1700" max="2000" step="1" value="${YEAR}" data-year></label>
-      <span id="uchips">${chips}</span></div></div>`;
+    <div class="pknobs clsrow"><span class="plbl">SoL</span>${solFields}
+      <span class="rowend"><button class="minibtn" data-fitpops title="Re-solve the within-need consumption distribution across EVERY preset that carries a measured order book, then print it for config/pop_distribution.json. Observed demand is buy orders minus our building demand minus trade, so the building side has to be right first. Each market is normalised by its own total demand so a large market cannot set the answer for all of them. Session-only until you paste the result into the config — and note it is only the FALLBACK now: the live split is supply share.">fit pops</button></span></div>
+    <div class="pknobs clsrow"><span class="plbl">Population</span>${popFields}
+      <span class="rowend muted">= <b id="popTotal">${fmtPop(popTotal())}</b> total</span></div>
+    <div id="workforcePanel"></div></div>`;
 }
 function renderScenario(){
   const el=document.getElementById('scenarioBody'); if(!el) return;
   const agg=scenarioAggregates();
   syncScenarioPrices(agg);   // AUTO: thresholds ← orders before rendering (LOCKED: no-op)
-  const row=g=>{ const inv=agg.inAgg[g]||0, outv=agg.outAgg[g]||0, popv=(agg.pop||{})[g]||0, {buy,sell}=scenarioBuySell(agg,g);
+  const row=g=>{ const inv=agg.inAgg[g]||0, outv=agg.outAgg[g]||0, popv=((agg.pop||{})[g]||0)+((agg.slave||{})[g]||0), {buy,sell}=scenarioBuySell(agg,g);
     return `<tr data-good="${esc(g)}">
       <td><div class="gcell">${goodIcon(g)}<span><span class="gname">${esc(g)}</span><br><span class="gbase">base £${PRICES[g]||'?'}</span></span></div></td>
       <td class="num grpcol" title="${esc(scenBreakdown(g,'in'))}"><span id="scin_${esc(g)}">${round(inv)}</span></td>
@@ -1158,7 +1266,7 @@ function renderScenario(){
   const btn=`<button id="resetThr" ${PRICES_LOCKED?'':'disabled'} title="Set every good's price to 100% of base (only when locked)">100</button>`;
   el.innerHTML = presetBarHTML() + `<table><thead>
       <tr><th rowspan="2">Good</th>
-        <th class="num grpcol" colspan="3" title="BUY orders: what buildings consume, what the market's pops consume, plus anything extra you dial in">Buy orders</th>
+        <th class="num grpcol" colspan="3" title="BUY orders: what buildings consume, what the market's pops consume (including the baskets bought for its slaves), plus anything extra you dial in">Buy orders</th>
         <th class="num grpcol" colspan="2" title="SELL orders: what buildings produce, plus anything extra you dial in">Sell orders</th>
         <th class="num grpcol" rowspan="2" title="sell − buy. Gold = surplus (abundance), blue = deficit.">Balance</th>
         <th class="num grpcol" rowspan="2"><div class="pxrow">
@@ -1166,7 +1274,7 @@ function renderScenario(){
           <span class="pxgbp pxhdsub">£</span>
           <span class="pxpct">${btn}<span class="pxsuf">%</span></span></div></th></tr>
       <tr><th class="num grpcol" title="Σ building inputs × Number — hover a cell for the per-building breakdown">buildings</th>
-        <th class="num" title="what the preset's population buys: buy package of each class's wealth level, split across each pop need's goods by the market's supply share, × the vanilla-fit knob. Read-only — it follows the pops, the knob and the sell orders.">pops</th>
+        <th class="num" title="what the market's population buys: the buy package of each class's wealth level, split across each pop need's goods by that good's share of the market's supply. Includes the baskets buildings buy for their slaves (the game's separate 'purchased for slaves' channel) — hover a cell to see that part on its own. Read-only: it follows the pops, their SoL and the sell orders.">pops</th>
         <th class="num" title="TRADE out of this market: treaty goods transfers plus trade-route exports. A preset fills this in; it stays editable for manual tinkering. Everything that is a BUILDING belongs in the buildings column as a building, not here.">trade</th>
         <th class="num grpcol" title="Σ building outputs × Number — hover a cell for the per-building breakdown">buildings</th>
         <th class="num" title="TRADE into this market: treaty goods transfers plus trade-route imports. A preset fills this in; it stays editable. Pops never sell, so this is the only non-building sell source.">trade</th></tr></thead><tbody>`
@@ -1174,23 +1282,25 @@ function renderScenario(){
         return `<tr class="grphd" data-scenfold="${esc(gr.title)}" title="click to fold / unfold"><td colspan="8"><span class="caret">${collapsed?'▸':'▾'}</span> ${esc(gr.title)}</td></tr>`
           + (collapsed?'':gr.goods.map(row).join('')); }).join('')
     + `</tbody></table>`;
+  renderWorkforcePanel();   // its container lives inside presetBarHTML, so it must be filled after this
 }
 // Everything a preset knows about itself, reported ONCE when it is applied. A preset is a one-off
 // overwrite, not a mode you sit in — the moment you touch a field the scenario is your own, so none of
 // this may live in the panel where it would keep claiming otherwise.
 function presetReportHTML(p){
   const mk=(p.market||[]), sb=p.subsistence;
-  const locked=NEED_GOODS.filter(g=>!UNLOCKED.has(g));
   const rows=[];
   if(mk.length) rows.push(['Market', `<b>${esc(mk.slice(0,10).join(' '))}</b>${mk.length>10?` <span class="muted">+${mk.length-10} more</span>`:''}`]);
   rows.push(['Buildings', `${Object.keys(p.buildings||{}).length} types, ${Object.values(p.buildings||{}).reduce((s,v)=>s+v,0)} levels — PM selections follow what vanilla runs there`]);
-  rows.push(['Pops', `${fmtPop(popTotal())} — upper ${fmtPop(POPS.upper)} · middle ${fmtPop(POPS.middle)} · lower ${fmtPop(POPS.lower)}`
-    + `${POPS.slaves?` · slaves ${fmtPop(POPS.slaves)}`:''} · peasants ${fmtPop(POPS.peasants)}`]);
+  rows.push(['Pops', `${fmtPop(popTotal())} — upper ${fmtPop(POPS.upper)} · middle ${fmtPop(POPS.middle)} · lower ${fmtPop(POPS.lower)} · peasants ${fmtPop(POPS.peasants)}`
+    + `${POPS.slaves?` · slaves ${fmtPop(POPS.slaves)}`:''}`]);
+  if(POPS.slaves) rows.push(['Slaves', `They buy nothing — the buildings that employ them buy a <b>wealth-${solOf('slaves')}</b> basket on their behalf. `
+    + `This market's buildings have unqualified jobs for <b>${Math.round(slaveRealShare()*100)}%</b> of them; the rest work subsistence, where the game `
+    + `multiplies the basket by ${SLAVE_SUBSISTENCE_MULT}. Net <b>×${Math.round(slaveBasketMult()*1000)/1000}</b> of a full basket, inside the pops buy column.`]);
   if(sb) rows.push(['Subsistence', `${fmtPop(sb.levels)} staffed levels — ${fmtPop(sb.peasant_workforce)} peasant workers on `
     + `${fmtPop(sb.free_arable)} free arable land (capacity ${fmtPop(sb.capacity_jobs)} jobs ⇒ <b>${Math.round((sb.staffing||0)*100)}%</b> staffed). `
     + `Their output is workforce-scaled, so the peasants <i>are</i> that supply.`]);
   if(p.notes&&p.notes.length) rows.push(['Treaties', esc(p.notes.join(' · '))]);
-  rows.push([`Year ${YEAR}`, locked.length ? `${locked.length} of ${NEED_GOODS.length} pop goods don’t exist yet: ${esc(locked.join(', '))}` : 'every pop good exists']);
   rows.push(['Prices', PRICES_LOCKED ? 'LOCKED — untick “locked” in the price column to price this market' : 'auto — recomputed from these orders']);
   // The wage is reported here, once, like everything else a preset knows about itself — the panel
   // must never carry a standing "you are in preset X" claim (see the preset PRINCIPLE in CLAUDE.md).
@@ -1198,13 +1308,18 @@ function presetReportHTML(p){
     ? `<b>£${(+p.base_wage).toFixed(4)}/wk</b> (£${round2(p.base_wage*WEEKS_PER_YEAR)}/yr) per weight-1 employee — `
       + `${esc(p.base_wage_note||'measured from this market’s own pops')}. Locked groups kept the wage they were tuned at.`
     : `left at £${round2(BASE_WAGE)}/wk — ${esc(p.base_wage_note||'no measured wage for this market')}`]);
-  rows.push(['Not modelled', `<b>urban centres</b> (services out, wood + glass in) — the game derives their level count from state `
-    + `urbanization by an engine-side rule that isn’t in the game files, so services supply, wood/glass demand and the middle class are understated.`]);
+  // Urban centres ARE modelled (FINDINGS F13 solved the rule; the divisor is 100). What remains is a
+  // small, one-directional UNDER-count — never call this "not modelled".
+  rows.push(['Urban centres', `<b>${round(p.buildings&&p.buildings.building_urban_center||0)} levels</b>, derived — history never creates them, so they come from `
+    + `<code>floor(state urbanization / 100)</code>, summed per state (FINDINGS F13: exact on 774 of 783 states). `
+    + `The nine misses are all UNDER-counts: we assume base techs and ignore the technology/law urbanization bonus, so a `
+    + `developed market gets slightly too few. Services supply and wood/glass demand are understated by that much, never overstated.`]);
   return `Applied <b>${esc(p.label)}</b> — a one-off overwrite; edit anything from here.`
     + `<dl>${rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>`;
 }
-// Apply a saved market: OVERWRITE the building numbers, the non-building orders, the population, the year
-// and the PM selections (a preset records the PMs vanilla actually runs). All of it is session state.
+// Apply a saved market: OVERWRITE the building numbers, the non-building orders, the population, the
+// per-stratum SoL, the base wage and the PM selections (a preset records the PMs vanilla actually
+// runs). All of it is session state.
 function applyScenarioPreset(id){
   const p=presetList().find(x=>x.id===id); if(!p) return;
   Object.keys(BLDNUM).forEach(k=>delete BLDNUM[k]);
@@ -1232,14 +1347,10 @@ function applyScenarioPreset(id){
   // BASE WAGE — measured per market (config/measured_1836.json → ui/presets.js). A market's wage level
   // is as much a property of the scenario as its pops or its prices, and it was a guessed 0.04/wk until
   // it was measured. Applied through recomputeWages() rather than by assigning BASE_WAGE, so it obeys
-  // the same rule as typing in the Workforce panel: unlocked groups inherit, LOCKED groups keep the
+  // the same rule as typing in the base-wage row: unlocked groups inherit, LOCKED groups keep the
   // wage they were tuned at. A preset with no measured wage leaves the sheet's wage alone.
   let wageOld=null;
   if(p.base_wage>0 && p.base_wage!==BASE_WAGE){ wageOld=BASE_WAGE; BASE_WAGE=p.base_wage; }
-  // which goods exist in the preset's YEAR, plus whatever it forces on/off (unlock_add / unlock_drop)
-  YEAR = p.year || YEAR;
-  UNLOCKED.clear();
-  (p.unlocked || goodsForYear(YEAR)).forEach(g=>UNLOCKED.add(g));
   render();
   if(wageOld!=null) recomputeWages(wageOld);
   banner('info', p.id==='empty'
@@ -1262,7 +1373,7 @@ function updateScenario(){
   const agg=scenarioAggregates();
   Object.keys(PRICES).forEach(g=>{ const ie=document.getElementById(`scin_${g}`);  if(ie) ie.textContent=round(agg.inAgg[g]||0);
     const oe=document.getElementById(`scout_${g}`); if(oe) oe.textContent=round(agg.outAgg[g]||0);
-    const pe=document.getElementById(`scpop_${g}`); if(pe) pe.textContent=round((agg.pop||{})[g]||0);
+    const pe=document.getElementById(`scpop_${g}`); if(pe) pe.textContent=round(((agg.pop||{})[g]||0)+((agg.slave||{})[g]||0));
     const bc=document.getElementById(`scbalc_${g}`); if(bc){ const {buy,sell}=scenarioBuySell(agg,g); bc.innerHTML=scenBalInner(g,buy,sell); } });
   if(!PRICES_LOCKED){
     syncScenarioPrices(agg);        // thresholds ← orders
@@ -1659,33 +1770,38 @@ function renderReference(){
 // The military card. Two rows per land unit type — mobilised and not — which is the one deliberate
 // break from "one building, one row": mobilisation moves a battalion's consumption by orders of
 // magnitude, so it has to be visible rather than folded into a single number.
+const MIL_CAT='__military';   // folds through the same REFGRPOPEN set the building categories use
 function militaryCard(){
   const types=unitTypes(); if(!types.length) return '';
+  const open=REFGRPOPEN.has(MIL_CAT);
   const rows=[];
   types.forEach(u=>[false,true].forEach(mob=>{
     const key=unitRowKey(u,mob), n=UNITNUM[key]||0, g=UNITG[u]||{};
     const goods=Object.keys(g).map(k=>`<div class="goodrow"><span>${esc(k)}</span><span class="num">${round(g[k])}</span></div>`).join('')
       || '<span class="muted">—</span>';
+    const dash='<td class="num"><span class="muted">—</span></td>';
     rows.push(`<tr${n?'':' class="muted"'}>
       <td><span class="pill" style="background:${TIERCOL[0]}" title="a combat unit type, not a building — goods come from its upkeep_modifier">U</span></td>
       <td>${esc(unitLabel(u))}${mob?' <b>(mobilised)</b>':''}<div class="muted" style="font-size:11px">${esc(u)}</div></td>
-      <td class="num"><input type="number" min="0" step="1" value="${n}" data-unitnum="${esc(key)}"></td>
-      <td>${goods}</td><td><span class="muted">—</span></td>
-      <td class="num"><span class="muted">—</span></td><td class="num"><span class="muted">—</span></td>
-      <td class="num"><span class="muted">—</span></td><td class="num"><span class="muted">—</span></td>
-      <td class="num"><span class="muted">—</span></td><td class="num"><span class="muted">—</span></td></tr>`);
+      <td class="num numcell"><input type="number" min="0" step="1" value="${n}" data-unitnum="${esc(key)}"></td>
+      ${dash}<td>${goods}</td><td><span class="muted">—</span></td><td><span class="muted">—</span></td>
+      ${dash}${dash}${dash}${dash}${dash}<td></td></tr>`);
   }));
-  return `<div class="refcluster">Military — battalions, not buildings</div>
-    <div class="refnote">Peacetime goods per battalion, from each combat unit type's <code>upkeep_modifier</code>
+  const note=`<div class="refnote">Peacetime goods per battalion, from each combat unit type's <code>upkeep_modifier</code>
     — <b>not</b> from barracks or logistics centres, whose production methods carry no goods at all. Counts come
     from <code>common/history/military_formations</code>. <b>The mobilised row is a clone for now</b>: a mobilised
     battalion costs exactly what a garrisoned one does until the mobilisation options are modelled, so the row is
-    structure, not yet a result. A preset fills the peacetime row and leaves mobilised at zero (1836 is a peace year).</div>
-    <div class="card"><table><colgroup>${MTABLE_COLS}</colgroup>
-      <thead><tr><th></th><th>Unit type</th><th class="num">Battalions</th><th>Input / battalion</th><th>Output</th>
-      <th class="num">Target</th><th class="num">BE</th><th class="num">Profit</th><th class="num">Build cost</th>
-      <th class="num">Payback</th><th class="num">Workforce</th></tr></thead>
-      <tbody>${rows.join('')}</tbody></table></div>`;
+    structure, not yet a result. A preset fills the peacetime row and leaves mobilised at zero (1836 is a peace year).</div>`;
+  const active=types.reduce((s,u)=>s+(UNITNUM[unitRowKey(u,false)]||0)+(UNITNUM[unitRowKey(u,true)]||0),0);
+  // Foldable like every building category — it is a long table, and a scenario with no army has nothing in it.
+  const body = open ? `${note}<table class="mtable">${MTABLE_COLS}
+      <thead><tr><th></th><th>Unit type</th><th class="num">Battalions</th><th class="num"></th><th>Input / battalion</th><th>Output</th>
+      <th>Workforce</th><th class="num">Target</th><th class="num">BE</th><th class="num">Profit</th><th class="num">Build cost</th>
+      <th class="num">Payback</th><th class="num">→X</th></tr></thead>
+      <tbody>${rows.join('')}</tbody></table>` : '';
+  return `<div class="refcluster">Military — battalions, not buildings</div>
+    <div class="card refcard"><div class="hd ind-hd" data-refgrp="${MIL_CAT}"><span class="caret">${open?'▾':'▸'}</span> Battalions <span class="tag">${types.length} unit type${types.length!==1?'s':''} · ${round(active)} battalion${active===1?'':'s'} in this scenario</span></div>
+    <div class="bd" style="display:${open?'':'none'};padding:0">${body}</div></div>`;
 }
 function renderRefRow(b){ const tr=document.querySelector(`tr[data-refbld="${b}"]`); if(tr) tr.outerHTML=refRow(b); }
 // refresh a reference building's three linked wage fields + its BE/Profit (never the field being typed in).
@@ -1732,20 +1848,11 @@ document.addEventListener('input', e=>{
   if(el.dataset.unitnum!==undefined){ UNITNUM[el.dataset.unitnum]=Math.max(0,+el.value||0); updateScenario(); return; }
   else if(el.dataset.addbuy!==undefined){ ADDBUY[el.dataset.addbuy]=Math.max(0,+el.value||0); updateScenario(); return; }
   else if(el.dataset.addsell!==undefined){ ADDSELL[el.dataset.addsell]=Math.max(0,+el.value||0); updateScenario(); return; }
-  // pop-consumption knobs: the vanilla-fit multiplier, the per-class wealth levels, the pop counts (session-only)
-  else if(el.dataset.popfit!==undefined){ POPFIT=Math.max(0,+el.value||0); updateScenario(); return; }
+  // pop-consumption knobs: the per-class wealth levels (slaves = the basket level) and the pop counts
   else if(el.dataset.sol!==undefined){ SOL[el.dataset.sol]=Math.max(1,Math.min(99,Math.round(+el.value||1))); updateScenario(); return; }
   else if(el.dataset.pop!==undefined){
     POPS[el.dataset.pop]=Math.max(0,Math.round(+el.value||0));
     const tt=document.getElementById('popTotal'); if(tt) tt.textContent=fmtPop(popTotal());
-    updateScenario(); return; }
-  else if(el.dataset.year!==undefined){   // scenario year → re-derive which goods exist (manual toggles reset)
-    YEAR=Math.round(+el.value||0);
-    UNLOCKED.clear(); goodsForYear(YEAR).forEach(g=>UNLOCKED.add(g));
-    const box=document.getElementById('uchips'); if(box) box.innerHTML=unlockChipsHTML();
-    const locked=NEED_GOODS.filter(g=>!UNLOCKED.has(g));
-    banner('info', `Year <b>${YEAR}</b> — re-derived which goods pops may want (any manual toggles are reset). `
-      + (locked.length ? `${locked.length} don’t exist yet: ${esc(locked.join(', '))}.` : `Everything exists.`));
     updateScenario(); return; }
   if(el.dataset.input!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.inputs[el.dataset.input]=+el.value||0; updateComputed(); updateScenario(); }
   else if(el.dataset.out!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.output_qty=+el.value||0; updateComputed(); updateScenario(); }
@@ -1845,13 +1952,6 @@ document.addEventListener('click', e=>{
   if(fold){ const t=fold.dataset.scenfold; SCENFOLD.has(t)?SCENFOLD.delete(t):SCENFOLD.add(t); renderScenario(); }
 });
 document.addEventListener('change', e=>{ if(e.target.id==='lockPrices') setPricesLocked(e.target.checked); });
-// per-good unlock toggles: flip whether pops may want a good, then re-split every need that lists it
-document.addEventListener('change', e=>{
-  const g=e.target.dataset && e.target.dataset.unlock; if(g===undefined) return;
-  if(e.target.checked) UNLOCKED.add(g); else UNLOCKED.delete(g);
-  e.target.closest('.uchip').classList.toggle('on', e.target.checked);
-  updateScenario();
-});
 
 // ---------- preset ----------
 // "Restore defaults" — reset each in-scope UNLOCKED group to its as-loaded config values (same state a

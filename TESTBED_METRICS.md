@@ -523,14 +523,49 @@ is O(n²) — once per dump from a single country scope. Verified world GDP 1836
 shared market legible: 1836 `BIC` (East India Company) logs `British Market | owner=Great Britain |
 member=East India Company`. ⚠ Note `IND` in 1836 is **Indore**, not an India successor.
 
-### 3.3 ❌ Orders CANNOT be decomposed by channel
-There is no data function splitting a market's buy/sell orders into trade-centre trade vs treaty
-transfers vs pop/industry demand. All of these fail (each voids its line):
-`GetWorldMarketAdditionalImportsToMarket`, `GetWorldMarketAdditionalExportsFromMarket` (on Market *and*
-on Goods), `GetMarketBuyAndSellOrdersBalance` (on Goods), and `GetMarketGoods(<goods>)` — **a data
-function taking a goods argument does not work here**.
+### 3.3 ⚠️ Orders decompose by channel ONLY through the tooltip string
+**Correction — this section used to say flatly that orders cannot be decomposed. They can, via
+`Goods.GetMarketBuyOrdersBreakdown` (metric `consumption_breakdown`, used by FINDINGS F23/F24/F27).**
+Every *scalar* route still fails, and each voids its line: `GetWorldMarketAdditionalImportsToMarket`,
+`GetWorldMarketAdditionalExportsFromMarket` (on Market *and* on Goods),
+`GetMarketBuyAndSellOrdersBalance` (on Goods), and `GetMarketGoods(<goods>)` — **a data function
+taking a goods argument does not work here**.
 
-What you CAN get is the **domestic-vs-traded split**, which is the specialisation measure:
+#### `GetMarketBuyOrdersBreakdown` — VERIFIED, and expensive
+Returns the market panel's buy-orders split **by source** as formatted tooltip text: an explicit
+**Pop Consumption** entry with a per-pop-type split under it, one entry per **building type**, and a
+**`N purchased for Slaves`** line (loc `GOODS_SLAVE_CONSUMPTION_MARKET_ORDERS`) — the slave-basket
+channel, which is a *building* purchase and appears nowhere else. This is what replaced the residual
+method (`buy − our modelled buildings − trade`), which scored building error as pop error.
+
+Five things about it are load-bearing. **Every one of them fails silently** — the parse returns
+plausible numbers rather than an error — which is why `tools/testbed/analyse_slave_basket.ps1` exists
+rather than a grep.
+- **It is text, not a number.** The call lands in the log as many physical lines, each carrying a
+  multi-KB base64 payload. Fence it with your own `BEGIN` / `end` markers around the call.
+- **One market per run.** Two markets pushed the debug log to 2.1 MB against the 5×512 KB ring and
+  the block was cut off after 43 of ~72 goods. Even a single market usually loses its tail, so **run
+  each market twice and union the goods** — the runs truncate at different points.
+- **⚠ Grep for `purchased for`, NEVER the full phrase.** The rendered line is, byte for byte,
+  `<21>v; +2.61<21>! purchased for <22>slaves! Slaves` — 0x15 fences the value, 0x16 precedes the
+  interpolated `$slaves$` concept. Searching for `purchased for slaves` matches nothing and returns a
+  silent zero, and so does requiring `!` to follow the digits directly. Same trap for any other line
+  whose loc string interpolates a `$concept$`.
+- **⚠ A block only counts if it CLOSED.** The ring truncates the last block, and its fence then
+  swallows every value logged afterwards — one good came out with nine values and a 400 % spread while
+  its neighbours had one each. Discard unterminated blocks.
+- **⚠⚠ A fence is not proof of which good a value belongs to.** At British-market volume the log
+  mirror interleaves, putting values inside the wrong block: one run had five slave lines inside
+  `wine` while `furniture` and `fabric` — which do have slave purchases — showed none, and the parse
+  reported `tools`, not a pop need at all, at 7 units. **Verify**: each block's payload opens with
+  `Current total: <buy orders>`, and the run's own `G|` line carries `GetMarketBuyOrders` per good; if
+  they disagree the block is not the good its fence claims, and a block holding more than one
+  candidate value cannot be resolved at all. Build that reference table **across the whole session** —
+  the breakdown's own volume can push a run's `G|` lines out of the ring entirely (both American runs
+  of session `20260803_134507` lost every one of theirs), and runs in one session are the same arm at
+  the same date, so another run's buy orders are the same quantity (per-good spread 0–5 %).
+
+What you CAN get as plain scalars is the **domestic-vs-traded split**, which is the specialisation measure:
 per good, `GetMarketProduction` (made at home), `GetMarketImports`, `GetMarketExports`, against
 `GetMarketBuyOrders`. So *import share* = `imports / buy_orders` and *self-supply share* =
 `production / buy_orders`. Treaty-transfer volume is **not separable** from trade-route volume — both
@@ -714,10 +749,13 @@ The like-for-like comparison against the UI is therefore:
 ⚠ The buy-side half is **inferred by symmetry** — that exports sit *inside* buy orders has not been
 verified. Everything on the sell side has.
 
-**Why this matters more than it looks:** §3.3 says orders cannot be decomposed by channel, which
+**Why this matters more than it looks:** no *scalar* call decomposes orders by channel (§3.3), which
 seemed to make "is it pops or is it buildings" unanswerable. It isn't — **pops never sell**, so the
 supply side is a channel-pure test of the building model, and the demand residual after subtracting a
-verified building model is pop demand.
+verified building model is pop demand. ⚠ That residual is the **weaker** of the two routes and should
+now be the fallback: `GetMarketBuyOrdersBreakdown` (§3.3) reads the split directly, and the residual
+**flatters** whatever pop model it scores by absorbing building-side error into it (Belgium 14.6 %
+residual-scored against 23.0 % measured directly, F23). Where the two disagree, believe the direct read.
 
 ### 4.2 What v9 adds
 

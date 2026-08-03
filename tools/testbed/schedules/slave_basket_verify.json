@@ -1,0 +1,23 @@
+{
+  "schedule_version": 1,
+  "label": "slave-basket-verify",
+  "_why": "FINDINGS F27 models slave consumption as a BUILDING purchase (SLAVE_BASKET_* defines) whose size is set by how many slaves work non-subsistence buildings; slaves in subsistence get SLAVE_BASKET_SUBSISTENCE_GOODS_MULT = 0.05 of the basket. The derivation was calibrated against DIRECTLY MEASURED 'purchased for slaves' figures for the AMERICAN market only (session 20260802_233029 runs 007/008), where it lands at 0.209 against a measured 0.225. Its boldest untested claim is BRITAIN: none of the market's 10.5M slaves (rural India) reach a real building, so the channel collapses to the 0.05 floor - supported so far only by the weaker residual test. This batch measures the British market directly.",
+  "_note": "ONE market per run, per the 20260802_233029 note: Goods.GetMarketBuyOrdersBreakdown returns multi-KB formatted tooltip text per good and two markets in one run overflowed the 5x512KB log ring. Even one market usually loses its tail, and each run truncates at a DIFFERENT good, so each market runs several times and the goods are unioned. GBR gets 4 runs because it is the unmeasured case and its good coverage matters most; USA gets 2 more to extend the 34-of-72-good coverage the existing session gave (notably oil, glass and wine, which the model predicts but no run has yet captured). Arm is config/mod_config.json unchanged, i.e. the same build as the session the American numbers came from, so old and new runs are comparable. PARSING: the line renders as '<value>! purchased for ' + a format-control byte + 'slaves! Slaves' - grep 'purchased for', never the full phrase, or it silently returns nothing.",
+  "defaults": {
+    "metrics": ["market_goods_scoped", "scenario", "pop_sol", "consumption_breakdown"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 20,
+    "tags": ["GBR"]
+  },
+  "setups": {
+    "mod": { "kind": "config", "config": "config/mod_config.json" }
+  },
+  "runs": [
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["GBR"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["GBR"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["GBR"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["GBR"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["USA"] },
+    { "setup": "mod", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["USA"] }
+  ]
+}

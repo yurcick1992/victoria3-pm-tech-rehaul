@@ -1,16 +1,13 @@
-﻿{
-    "_comment":  "Scenario presets to GENERATE from the vanilla 1836 start (tools/extract_presets.ps1 -\u003e ui/presets.js). Each entry is one country\u0027s WHOLE MARKET: the lead country plus every subject that shares its market (all subject types share the overlord\u0027s market unless a `grant_own_market` pact exists — read live from common/history/diplomacy/00_subject_relationships.txt). \u0027market_add\u0027 / \u0027market_drop\u0027 are manual overrides on that member list (tags, no c: prefix). \u0027sol\u0027 is the per-class wealth level whose buy package the class consumes (defaults below); pop demand is then scaled in the UI by the session \u0027vanilla-fit\u0027 knob. The UI always offers a built-in \u0027Empty\u0027 preset on top of these.",
+{
+    "_comment":  "Scenario presets to GENERATE from the vanilla 1836 start (tools/extract_presets.ps1 -> ui/presets.js). Each entry is one country's WHOLE MARKET: the lead country plus every subject that shares its market (all subject types share the overlord's market unless a `grant_own_market` pact exists — read live from common/history/diplomacy/00_subject_relationships.txt). 'market_add' / 'market_drop' are manual overrides on that member list (tags, no c: prefix). 'sol' is the per-class wealth level whose buy package the class consumes (defaults below) — except 'slaves', which is not a standard of living the pops spend against but the SLAVE BASKET level the employing buildings buy: derived from the lower stratum by the game's own SLAVE_BASKET_* clamp, then overwritten by the measured slave SoL where there is one (that measurement IS the realised basket). The UI always offers a built-in 'Empty' preset on top of these.",
     "defaults":  {
                      "sol":  {
                                  "upper":  35,
                                  "middle":  16,
                                  "lower":  9
                              },
-                     "_year_comment":  "Scenario year. Which goods pops may want defaults from this ALONE (a good is available once some building x PM that makes it can exist anywhere — a market imports what it cannot produce, so this is deliberately NOT the lead country\u0027s research). Per preset: \u0027year\u0027, plus \u0027unlock_add\u0027 / \u0027unlock_drop\u0027 arrays to force individual goods on/off for anything the calendar can\u0027t know (e.g. \"unlock_drop\": [\"clippers\"] for a landlocked market).",
-                     "year":  1836,
-                     "_class_mult_comment":  "Optional overrides for how much of its buy package a class brings to the market. Omitted classes use the game\u0027s own numbers where they exist: peasants = consumption_mult from common/pop_types/peasants.txt (0.05). \u0027slaves\u0027 is our modelling choice — the game has no consumption_mult for them.",
+                     "_class_mult_comment":  "Optional overrides for how much of its buy package a class brings to the market. Omitted classes use the game's own numbers where they exist: peasants = consumption_mult from common/pop_types/peasants.txt (0.05). There is deliberately NO 'slaves' entry — slaves buy nothing, so they are not on this path at all; the building that employs them buys them a basket, and that basket takes no class multiplier.",
                      "class_mult":  {
-                                        "slaves":  0.5
                                     }
                  },
     "presets":  [
@@ -71,35 +68,35 @@
                         "measured_market":  "Belgian Market"
                     },
                     {
-                        "_comment":  "PLACEHOLDER scenarios - synthetic, NOT derived from any country. One level of every ordinary building so that every production chain is present exactly once, which is what BE-solving wants. Deliberately uniform and deliberately crude: diversify them later. A `placeholder` block replaces `country`/`measured_market` entirely. lower_sol drives everything: middle = 1.5x, upper = 3x (per the user's rule), and the base wage comes from FINDINGS F26, base = exp((SoL-37.43)/10.49). `unlock` is one of basic | steamers | electricity | all.",
+                        "_comment":  "PLACEHOLDER scenarios - synthetic, NOT derived from any country. One level of every ordinary building so that every production chain is present exactly once, which is what BE-solving wants. Deliberately uniform and deliberately crude: diversify them later. A `placeholder` block replaces `country`/`measured_market` entirely. lower_sol drives everything: middle = 1.5x, upper = 3x (per the user's rule), the slave basket comes from the game's SLAVE_BASKET_* clamp on lower_sol, and the base wage comes from FINDINGS F26, base = exp((SoL-37.43)/10.49).",
                         "id":  "ph_sol10",
                         "label":  "Placeholder SoL 10",
                         "group":  "Placeholder · 1 of each building",
-                        "placeholder":  { "lower_sol":  10, "unlock":  "basic", "year":  1836 }
+                        "placeholder":  { "lower_sol":  10 }
                     },
                     {
                         "id":  "ph_sol12",
                         "label":  "Placeholder SoL 12",
                         "group":  "Placeholder · 1 of each building",
-                        "placeholder":  { "lower_sol":  12, "unlock":  "steamers", "year":  1862 }
+                        "placeholder":  { "lower_sol":  12 }
                     },
                     {
                         "id":  "ph_sol14",
                         "label":  "Placeholder SoL 14",
                         "group":  "Placeholder · 1 of each building",
-                        "placeholder":  { "lower_sol":  14, "unlock":  "electricity", "year":  1862 }
+                        "placeholder":  { "lower_sol":  14 }
                     },
                     {
                         "id":  "ph_sol18",
                         "label":  "Placeholder SoL 18",
                         "group":  "Placeholder · 1 of each building",
-                        "placeholder":  { "lower_sol":  18, "unlock":  "all", "year":  1888 }
+                        "placeholder":  { "lower_sol":  18 }
                     },
                     {
                         "id":  "ph_sol20",
                         "label":  "Placeholder SoL 20",
                         "group":  "Placeholder · 1 of each building",
-                        "placeholder":  { "lower_sol":  20, "unlock":  "all", "year":  1888 }
+                        "placeholder":  { "lower_sol":  20 }
                     }
                 ],
     "placeholder_defaults":  {
@@ -113,7 +110,6 @@
                                           "bg_army", "bg_army_logistics_center", "bg_conscription",
                                           "bg_naval_administration", "bg_naval_fortification", "bg_naval_logistics_center",
                                           "bg_company_headquarter", "bg_company_regional_headquarter" ],
-                     "exclude_buildings":  [ "building_urban_center" ],
-                     "unlock_steps":  { "basic":  [], "steamers":  [ "steamers" ], "electricity":  [ "steamers", "electricity" ], "all":  null }
+                     "exclude_buildings":  [ "building_urban_center" ]
                  }
 }

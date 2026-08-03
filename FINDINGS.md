@@ -93,6 +93,170 @@ transcript rather than from data.
 
 ---
 
+## F27 — Slaves are not consumers: the BUILDING buys them a basket, and most 1836 slaves are in subsistence, where it is worth a twentieth. Measured directly, not inferred
+
+**The claim.** Victoria 3 never has a slave buy anything. `SLAVE_BASKET_*` in `common/defines` makes
+the **employing building** buy a consumer-goods basket on its slaves' behalf, and the market screen
+reports it as its own order channel (`GOODS_SLAVE_CONSUMPTION_MARKET_ORDERS`, *"purchased for
+slaves"*). The dominant term is **`SLAVE_BASKET_SUBSISTENCE_GOODS_MULT = 0.05`**: a slave working a
+subsistence building costs its owner a twentieth of the basket. Applying the full basket to every
+slave over-predicts the American market's **directly measured** slave purchases by **3.9×** in money.
+Deciding where the slaves work from the scenario's own buildings — buildings hire first, subsistence
+absorbs the rest — gives a multiplier of **0.209 for the USA and 0.05 for Britain**, with no fitted
+parameter, against **0.224 and 0.044** implied by direct measurement. Predicted volumes land at
+**94 %** and **114 %** of measured. Both large markets were measured, in two independent sessions.
+
+### The rule, from the game files
+
+| Define | Value | Meaning |
+|---|--:|---|
+| `SLAVE_BASKET_DEFAULT` | 8 | wealth level of the basket a building buys for its slaves |
+| `SLAVE_BASKET_MIN` / `SLAVE_BASKET_MAX` | 1 / 12 | absolute bounds |
+| `SLAVE_BASKET_SCALED_MIN` / `_SCALED_MAX` | 0.5 / 1.0 | × the **lowest non-slave wealth in the building**; the higher of MIN/SCALED_MIN and the lower of MAX/SCALED_MAX apply |
+| **`SLAVE_BASKET_SUBSISTENCE_GOODS_MULT`** | **0.05** | **slaves in a subsistence building get a twentieth of it** |
+| `working_adult_ratio` (`common/pop_types/slaves.txt`) | **0.5** | slaves override the 0.25 base ⇒ per head 0.5 + 0.5×0.5 = **0.75** |
+| `consumption_mult` (slaves) | *absent* | the game has none — the 0.5 the panel used to apply was invented |
+
+Level = `clamp(8, max(1, 0.5×lowest non-slave wealth), min(12, lowest non-slave wealth))`. At a
+lower-stratum SoL of 8 that is exactly 8, and the derived level matches the **measured** 1836 slave
+standard of living in every market (rule 8 vs measured 7–8) — the cross-check that the measurement
+*is* the realised basket.
+
+### The measurement — the game's own "purchased for slaves", per good
+
+`Goods.GetMarketBuyOrdersBreakdown` splits a market's buy orders by source and carries an explicit
+*"N purchased for Slaves"* line. Two sessions, both at **1836.2.1**, same arm (`config/mod_config.json`
+unchanged), read with `tools/testbed/analyse_slave_basket.ps1`:
+
+- `20260802_233029_rescore-direct` — American, French, Russian, Qing markets (2 runs each)
+- `20260803_134507_slave-basket-verify` — **British** ×4, American ×2
+
+**Every block is verified before it is believed.** The value line does not name its good; only the
+surrounding fence does, and at British volume the log mirror puts values in the wrong block. So each
+block's own `Current total:` is checked against that good's `GetMarketBuyOrders` from the same run's
+`G|` line, and a block carrying more than one candidate value is discarded rather than guessed at.
+Without that check the parse invented a 68-unit `luxury_furniture` line for the USA and a 7-unit
+`tools` line for Britain — `tools` is not a pop need at all.
+
+### The result: the derived multiplier predicts both large markets
+
+| market | slaves | derived mult | measured units | predicted units | pred ÷ meas | multiplier the measurement implies |
+|---|--:|--:|--:|--:|--:|--:|
+| **usa_1836** | 3 588 244 | **0.209** | 386.9 | 362.1 | **0.94** | 0.224 |
+| **gbr_1836** | 10 508 690 | **0.05** | 318.4 | 364.1 | **1.14** | 0.044 |
+| fra_1836 | 41 747 | 0.05 | 12.9 | 1.6 | 0.12 | 0.415 |
+| rus_1836 | 43 490 | 0.05 | 0.9 | 1.9 | 2.10 | 0.024 |
+
+Like-for-like: each row sums only the goods that market's runs actually verified. The USA's set
+excludes grain and fish, which failed verification in the runs that saw them; the later batch measured
+them at 176 and 60.9 (unverified — those two runs lost their `G|` lines to the ring) against 199.4 and
+69.8 predicted, which would put the USA at 624 measured vs 631 predicted, or **1.01**.
+
+**Britain is the case that matters most and it lands.** The derivation predicts the 0.05 floor out of a
+possible 0.05–1.00, purely from the observation that Britain's free lower stratum (6.9 M working
+adults) already exceeds every unqualified job in the market (4.8 M), so none of its 10.5 M rural-India
+slaves reach a real building. The measurement implies **0.044**. Note the absolute number is still
+large — 318 units — precisely because there are 10.5 M of them; "the multiplier is at the floor" and
+"the channel is negligible" are different statements, and only the first is true.
+
+Per-good, British Market (mean of the runs that verified it, spread across runs in brackets):
+
+| good | measured | | good | measured |
+|---|--:|---|---|--:|
+| grain | 111.5 (1.8 %) | | groceries | 8.50 (2.5 %) |
+| clothes | 42.7 (1.6 %) | | meat | 7.25 (0 %) |
+| furniture | 36.4 (2.2 %) | | tea | 4.11 (5.1 %) |
+| fish | 24.6 | | coffee | 3.20 (2.2 %) |
+| coal | 23.55 (3.4 %) | | sugar | 2.99 (4.0 %) |
+| fruit | 19.6 | | oil | 0.78 (2.6 %) |
+| opium | 15.0 | | wine | 0.04 (0 %) |
+| tobacco | 9.50 (2.2 %) | | | |
+| wood | 8.63 | | **total** | **318.4** over 16 goods |
+
+Run-to-run spread is 0–5 % on every good that more than one run verified, so the four runs are
+measuring one quantity, not four.
+
+### Where it fails, and why that is acceptable
+
+France and Russia hold nearly the same number of slaves (41.7 k vs 43.5 k) and consume **14× apart**
+(12.9 units vs 0.9). The model gives both the 0.05 floor and is wrong on both — 8× low on France, 2×
+high on Russia. The cause is that the share is computed **market-wide**: France's slaves are
+concentrated in colonial plantations while its free workers are in the metropole, and aggregating the
+two washes the concentration out. Britain has the same structure and does not suffer from it only
+because its slaves genuinely have no jobs to reach.
+
+This is accepted rather than fixed because of where the error sits: the two markets it spoils hold
+**0.4 % of the world's slaves** and their entire slave channel is 13 units, against 705 for the USA and
+Britain. A per-state or per-region share would fix it and would cost the scenario model a whole
+dimension it does not otherwise have.
+
+### Cross-check on the independent residual metric (F19/F22 method, 8 markets)
+
+| market | slaves | old (invented 0.5 mult) | full basket | **derived split** |
+|---|--:|--:|--:|--:|
+| fra_1836 | 41 747 | 31.0 % | 31.0 % | 31.0 % |
+| gbr_1836 | 10 508 690 | 22.5 % | 28.9 % | **18.5 %** |
+| rus_1836 | 43 490 | 17.4 % | 17.4 % | 17.4 % |
+| chi_1836 | 0 | 17.6 % | 17.6 % | 17.6 % |
+| aus_1836 | 0 | 24.2 % | 24.2 % | 24.2 % |
+| jap_1836 | 0 | 35.0 % | 35.0 % | 35.0 % |
+| usa_1836 | 3 588 244 | 13.0 % | 24.3 % | 14.8 % |
+| bel_1836 | 0 | 21.2 % | 21.2 % | 21.2 % |
+| **mean** | | 22.7 % | 25.0 % | **22.5 %** |
+
+The derived split is the best of the three and the only one that is not a guess. The USA reads *worse*
+on this metric than the invented multiplier did (13.0 → 14.8 %) while reading far *better* against the
+direct measurement — F23 already established that the residual flatters the pop model by absorbing
+building-side error, so where the two disagree the direct measurement is the one to believe.
+
+### Two assumptions, both stated, neither fitted
+
+1. **Slaves fill laborer and farmer jobs.** A slave cannot take a manor house's aristocrat seat, so
+   comparing *all* jobs against *all* free workers would mix strata. Using all jobs instead gives the
+   USA 0.235 rather than 0.209 — the measured 0.224 sits between the two, so the choice is worth
+   about ±12 % and either is defensible.
+2. **Slaves and peasants split the surplus in proportion to their workforce.** The neutral choice:
+   "slaves hired first" gives the USA 0.383 and "peasants first" gives 0.05, and the measurement sits
+   near the proportional answer rather than either extreme.
+
+### Confidence
+
+**High for the rule and for both large markets.** The defines are read from the files; the basket level
+independently reproduces the measured slave SoL in all eight markets; the channel is measured directly
+rather than inferred, in two independent sessions, with per-block verification and 0–5 % run-to-run
+spread; and the derivation predicts 0.209 and 0.05 against measured 0.224 and 0.044 without a fitted
+parameter. **Low for markets with few, geographically concentrated slaves** — see France above.
+
+### What it does NOT say
+
+- **Not that the model is accurate per good.** The basket's *shape* is still wrong in the same way pop
+  demand is (F24's within-need substitution problem). Totals are what has been checked.
+- **Nothing about later dates.** Everything here is 1836.2.1. Emancipation, industrialisation and slave
+  imports all move the share of slaves in real buildings; the rule is built to follow that, but it has
+  not been checked at any other date.
+- **Nothing about the Qing.** The measurement shows 2.7 units of slave purchases in the Qing market and
+  our preset gives it zero slaves — a small discrepancy in the history-derived slave count, not in this
+  rule. It is 2.7 units against a market consuming hundreds of thousands; left alone deliberately.
+- **The per-good coverage is partial.** The ring truncates each run at a different good and verification
+  discards more, so a market's measured total is a lower bound over the goods that survived, compared
+  against the model restricted to exactly those goods.
+
+### Instrument note
+
+Three traps, all of which produce silent plausible numbers rather than errors — now handled in
+`tools/testbed/analyse_slave_basket.ps1` and recorded in TESTBED_METRICS §3.3:
+
+1. The line renders as `<21>v; +2.61<21>! purchased for <22>slaves! Slaves`. **Grep `purchased for`,
+   never the full phrase**, and do not require `!` to follow the digits.
+2. **A block only counts if it closed.** The ring truncates the last block, whose fence then swallows
+   everything after it — nine values under one good.
+3. **A fence is not proof.** Verify each block's `Current total:` against that good's `GetMarketBuyOrders`
+   from the run's own `G|` line, and discard blocks holding more than one candidate. Build the reference
+   table across the whole session: the breakdown's volume can push a run's `G|` lines out of the ring
+   entirely, and both American runs of the 2026-08-03 batch lost every one of theirs.
+
+---
+
 ## F26 — Wages are far more unequal than standard of living, and the gap widens. Income predicts SoL through the buy-package table to about ±1 level, which is enough to seed a late-game wage from a target SoL
 
 **The claim.** Wage dispersion is **1.5–2× SoL dispersion** among comparable professions (6–24×

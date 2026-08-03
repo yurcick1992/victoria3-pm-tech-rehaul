@@ -94,7 +94,7 @@ MISSING_BUILDING_CONDITIONS.md catalogue of special conditional fields (e.g. a c
 config/mod_config.json      THE THING YOU EDIT — industries → tiers (tech, target_be, natural_year, output, inputs, building_cost, wage_pct?, employment, names, vanilla_pm, vanilla_pm_aliases?, state_infrastructure?, ship_construction?, ai_value?, output_override?); industry flags source_file?/clone_from_vanilla?/follows_be?/no_mass_be? (new-economy); plus top-level building_ai_value (map building_key→ai_value for PRESERVED buildings in owned files, e.g. trade center), pm_goods (map pm_key→{in:{good:qty},out:{good:qty}} — per-PM goods overrides applied to the owned PM files; any building's PM), and building_subsidies (map building_key→AI subsidy policy; see below)
 config/start_exceptions.json manual 1836-start overrides (force_tier / remove, scoped by country/state) — editable
 config/start_baseline.json   GENERATED inventory of the vanilla 1836 start (per-industry/tier/country + drift check)
-config/presets.json          WHICH scenario presets to generate (id/label/group/country + optional market_add/market_drop, sol, measured_market) — editable. A preset carrying a **`placeholder`** block instead of `country` is **SYNTHETIC**: not derived from any country, one level of every ordinary building so each production chain is present exactly once (what BE-solving wants). See `placeholder_defaults` for the shared pops, the SoL multipliers and the exclusion lists
+config/presets.json          WHICH scenario presets to generate (id/label/group/country + optional market_add/market_drop, sol, measured_market) — editable. A preset carrying a **`placeholder`** block instead of `country` is **SYNTHETIC**: not derived from any country, one level of every ordinary building so each production chain is present exactly once (what BE-solving wants). See `placeholder_defaults` for the shared pops, the SoL multipliers and the exclusion lists. Note `sol.slaves` is the **slave basket level** (what buildings buy for them), not a standard of living, and `defaults.class_mult` deliberately has **no** `slaves` entry — slaves are not on the pop-consumption path at all
 config/pop_distribution.json FITTED within-need consumption distribution (need → good → share), replacing the vanilla `weight` field — which is not an allocation rule (the game allocates by SUPPLY SHARE) and cost 12 pp of scenario demand accuracy. ONE market-independent distribution by design, solved across all 7 preset markets against config/measured_1836.json; re-derive with the balance UI's **fit pops** button and paste the printed JSON back. Absent ⇒ the UI falls back to `weight` per need
 config/measured_1836.json    GENERATED (tools/extract_measured.ps1, from a testbed session) and COMMITTED: the things the game FILES cannot answer — per market TRADE (imports/exports per good), SoL per stratum, MILITARY building levels, urban-centre levels as a cross-check, and per market **WAGES** (`-WagesOnly`, a MERGE-only mode that rewrites just the `wages` block and leaves every other field untouched, because a wages session carries none of the other metrics and a full run over it would blank them). The wages block holds **`base_weekly_wage`** — the UI's base £/wk knob, measured, on the F26 basis: **laborers + farmers + machinists, EMPLOYED pops only** (the three professions actually paid a building's market wage; state-salaried and owner professions are excluded, and an unemployed pop would put workers in the wage-unit denominator with nothing in the numerator). Beside it: `base_weekly_labour` on the **superseded** 11-profession basis, kept only for continuity with earlier findings and **not** to be fed to a scenario; the per-profession spread; the game's own per-state average annual wage (mean/median/min/max); the workforce ratio; and a per-pop-type table. Read by extract_presets.ps1; optional (a clone without it still builds, just without those). ⚠ Regenerate after a game patch — a stale table is silently wrong, not obviously missing
 tools/                  dev tooling — NOT shipped in the mod
@@ -137,6 +137,16 @@ tools/                  dev tooling — NOT shipped in the mod
                         de-duplicates per-pop lines blindly — it uses each country's `WC` pop-object count
                         as the expected line count, takes a complete single source where one exists, and
                         reports the shortfall where none does
+  testbed/analyse_slave_basket.ps1  analysis for the `consumption_breakdown` metric's **"purchased for slaves"**
+                        line — the only readable measurement of the slave channel (FINDINGS F27). Like
+                        analyse_wages it filters by each run's OWN token, and it adds a per-block INTEGRITY
+                        CHECK that is load-bearing: the value line does not name its good, only its fence
+                        does, and at British-market volume the log mirror puts values in the wrong block. So
+                        each block's `Current total:` is verified against that good's `GetMarketBuyOrders`
+                        from the run's own `G|` line (reference table built session-wide, because the
+                        breakdown's volume can push a run's `G|` lines out of the ring entirely), and a block
+                        holding more than one candidate is discarded rather than guessed at. Without it the
+                        parse invents goods the game never reported
   testbed/wait_for_session.ps1  the wake-up signal for a batch launched into its own window (which the
                         agent harness cannot see). Run it with run_in_background; returns DONE on
                         completion, RUNNING on a heartbeat, DEAD (exit 2) if the game vanished
@@ -345,7 +355,9 @@ the game.
 - **Balance UI (for Claude-less iteration):** one-click **`balance-ui.cmd`** (or
   `powershell -ExecutionPolicy Bypass -File tools\ui.ps1`) opens a browser editor (`ui/builder.html`)
   showing every building × tier with editable **main-PM** input/output volumes. **Wages now stem from the
-  building's WORKFORCE**, not a fraction of goods: a **Workforce panel** (right under the scenario panel) sets one
+  building's WORKFORCE**, not a fraction of goods: a **base-wage row** — inside the scenario panel, directly
+  under the Population row and above every building, because the wage is a property of the market being
+  modelled and it prices the buildings below it — sets one
   global **base wage** in two linked terms — **£/week ↔ £/year** (yearly = ×52; V3 is inconsistent about which
   it shows) — and lists each profession's weekly wage = `base × wage_weight` (the vanilla `common/pop_types`
   weights: laborers 1, machinists/clerks/soldiers 1.5, farmers 2, shopkeepers/engineers/clergymen 3,
@@ -418,11 +430,13 @@ the game.
   building in a hypothetical market; default 0, keyed by building key for tiers *and* reference buildings). The
   **Scenario panel** (which **replaced the old price panel** — it now owns pricing) is **styled after the in-game
   market screen**: a **goods pictogram** + name/base price, then a two-row grouped header —
-  **Buy orders** (buildings | pops | non-pops) · **Sell orders** (buildings | + extra) · **Balance** · **Price** — with
+  **Buy orders** (buildings | pops | trade) · **Sell orders** (buildings | trade) · **Balance** · **Price** — with
   thin proportional bars under Balance and Price. Buy = each building's active-PM **inputs** × its Number, Sell =
-  its **outputs** × Number (secondary reductions net out); **pops** is the derived population demand (read-only,
-  see the preset section below) and **non-pops** (default 0) is everything else — treaty transfers a preset fills
-  in, or anything you dial in by hand. Pops never sell, so the sell side keeps a single **+ extra** column.
+  its **outputs** × Number (secondary reductions net out); **pops** is the derived population demand *plus* the
+  baskets buildings buy for their slaves (read-only, and the hover splits the two — see the preset section
+  below); **trade**
+  (default 0) is everything else — treaty transfers a preset fills
+  in, or anything you dial in by hand. Pops never sell, so the sell side keeps a single **trade** column.
   **Colour** (gold `#d9a441` / blue `#5c9ede`): **gold = abundance** (sell > buy) **and below-base price**,
   **blue = deficit and above-base price** — surplus and a low price always co-occur, so a row reads as one market
   state. ⚠ The game itself appears to colour by **sign** (a *high* price is gold there); we colour by meaning —
@@ -445,7 +459,8 @@ the game.
   PM selections.
   **Scenario presets (the preset bar).** A wrapping button strip at the top of the scenario panel (sized to hold a
   couple of dozen entries, grouped by the preset's `group`). Clicking one **completely overwrites** the scenario:
-  every building **Number**, the **non-pop** buy + sell orders, the **population**, the **year**, *and* the
+  every building **Number**, the **non-pop** buy + sell orders, the **population**, the per-stratum **SoL**, the
+  **base wage**, *and* the
   **PM selections** (both our tiers' secondaries and the explorer's `REFSEL`, reset to defaults first, then set to
   what vanilla actually runs there). Always present: a built-in **Empty** preset that zeroes everything — it works
   even without `ui/presets.js`.
@@ -460,14 +475,14 @@ the game.
   1 M peasants / 100 k middle / 10 k upper / 0 slaves; within-stratum variation is the UI's own
   `SOL_SPREAD`, not something the preset carries. SoL is **lower = the scenario's number, middle ×1.5,
   upper ×3**, and the **base wage comes from FINDINGS F26** (`exp((SoL−37.43)/10.49)`), so these are
-  the first presets whose wage is derived rather than measured. Goods unlock in steps: basic /
-  +steamers / +electricity / everything. Deliberately uniform and crude — meant to be diversified.
+  the first presets whose wage is derived rather than measured. Deliberately uniform and crude — meant
+  to be diversified.
   **PRINCIPLE — a preset is a one-off overwrite, not a mode you sit in.** The instant you touch a field the
   scenario is your own, so **nothing in the panel may claim you are "in" a preset**: no active-button highlight, no
   standing description of the market / subsistence / lock state. Everything a preset knows about itself —
-  market members, building types + levels, the pop split, the subsistence staffing sum, treaty transfers, which
-  goods the year locks, the price-lock state, the urban-centre gap — is reported **once, in the banner**, by
-  `presetReportHTML()` when it is applied (a changed **year** reports there too). The bar itself holds only live
+  market members, building types + levels, the pop split, the subsistence staffing sum, treaty transfers,
+  the price-lock state, the measured base wage, the derived urban-centre count — is reported **once, in the
+  banner**, by `presetReportHTML()` when it is applied. The bar itself holds only live
   controls. Keep it that way when adding preset features. The rest come from **`ui/presets.js`**, generated by `tools/extract_presets.ps1` from the live
   vanilla 1836 start (so they refresh on a game patch), and **which** presets exist is `config/presets.json`
   (id/label/group/country, optional `market_add`/`market_drop` and `sol`). Derivation, per spec:
@@ -490,10 +505,13 @@ the game.
   **upper** class, which buys the most per head. Britain's upper class was 268 707 and is 967 616.
   **no trade-route trade** is assumed, only `goods_transfer` treaty articles in force in 1836 (a transfer **out**
   of the market is an extra **buy** order, a transfer **in** an extra **sell** order).
-  **Each pop need's money is split across its goods by the game's DOCUMENTED rule** (`needSplit()`;
+  **Each pop need's money is split across ALL its goods by the game's DOCUMENTED rule** (`needSplit()`;
   vic3.paradoxwikis.com/Needs): `market share = (sell orders − 0.5 × NON-POP buy orders) / Σ over the
   need's goods`; `purchase weight = weight × market share`, clamped to the entry's
   `min_supply_share`/`max_supply_share`; `units = (need money / base price) × purchase weight / Σ`.
+  Every good the need lists is a candidate — an unsupplied one scores zero and drops out by itself,
+  which is why there is no separate availability gate. The **slave basket** goes through the same
+  split, fed the same supply and non-pop order book in the same pass.
   ⚠ The **−0.5 × non-pop buy orders** term is the one that matters most and is the least guessable —
   a good industry consumes heavily is correspondingly less available to pops, and omitting it over-fed
   grain by half (same-run Belgian test: pop demand error 30.3 % → **16.2 %**, F22).
@@ -522,7 +540,7 @@ the game.
   **The likely culprit is the within-need substitution.** Forcing the predicted total to match the
   measured total recovers only 0.5 pp (16.7 → 16.2), so the money is right and its *distribution* is
   wrong. Per-need, the money placed on the wrong good runs **heating 20 %, basic_food 16 %,
-  intoxicants 15 %**, against 0 % for needs with a single unlocked good. What cannot be separated from
+  intoxicants 15 %**, against 0 % for needs with a single available good. What cannot be separated from
   the order book: 17 of 35 goods belong to **two** needs (meat and fruit are `basic_food` *and*
   `luxury_food`; opium is `intoxicants` *and* `leisure`), so no need has an observable budget and
   "wrong budget per need" cannot be told apart from "wrong split within need". See FINDINGS F24.
@@ -541,42 +559,66 @@ the game.
   ⚠ The fit is **weighted per market** (each normalised by its own total demand). Unweighted, Britain and
   the Qing set the answer for everyone and France and the USA get *worse* — that difference is the whole
   content of "one rule for every country", so don't change the weighting without re-reading F15.
-  **Pop demand** is otherwise computed **live in the UI** (`popDemand()`), not baked into the preset: the preset carries the
-  population split into **upper / middle / lower / slaves / peasants**, each class buys the **buy package**
+  **Pop demand** is otherwise computed **live in the UI** (`popSpend()` → `spendToGoods()`), not baked into the
+  preset: the preset carries the
+  population split into **upper / middle / lower / peasants / slaves**, each class buys the **buy package**
   (`common/buy_packages`) of its wealth level — the **SoL** fields in the bar, default 35 / 16 / 9 — scaled by
   people ÷ `POP_SIZE_PACKAGE` (10 000), by the **per-head dependent factor** (needs are per *working adult*;
   dependents need `DEPENDENT_CONSUMPTION_RATIO` = half ⇒ `0.25 + 0.75×0.5` = **0.625** per head) and by its class
   multiplier (**peasants ×0.05** — the game's own `consumption_mult` in `common/pop_types/peasants.txt`: most of a
-  peasant's needs are met inside the subsistence building and never reach the market; **slaves ×0.5** is ours,
-  overridable via `defaults.class_mult` in `config/presets.json`). Each **pop need**'s money is split across the
-  goods that need lists, by the game's own `weight` (`common/pop_needs`), **restricted to the goods currently
-  unlocked** — a deliberately flat distribution over what technology makes possible, with **no supply-share
-  substitution** (a need with nothing unlocked falls back to its `default` good, so a need can never silently
-  vanish). Money → quantity at **base price**, then scaled by the **`pop demand fit ×`** knob (the "vanilla-fit"
-  calibration multiplier, default 1).
-  **The population itself is editable** — one field per class (`upper / middle / lower / slaves / peasants`) in the
+  peasant's needs are met inside the subsistence building and never reach the market; overridable via
+  `defaults.class_mult` in `config/presets.json`). Each **pop need**'s money is split across **every** good that
+  need lists, by the market's own supply share (`needSplit()`, below). Money → quantity at **base price**.
+  **There is no "pop demand fit ×" knob and no per-good availability gate** — both are gone, and neither should
+  come back. The fit multiplier was a global scalar on all pop consumption from before the model was calibrated,
+  and F24 showed forcing the predicted total onto the measured total buys only 0.5 pp, so it had nothing left to
+  correct. The **"Pops may buy" toggles + scenario year** were redundant against supply share: a good the market
+  does not supply already takes a zero share and drops out on its own, so the calendar gate could only make the
+  two disagree.
+  **SLAVES ARE NOT A CONSUMING CLASS** (FINDINGS F27). The game never has a slave buy anything: the **building
+  that employs them buys a consumer-goods basket** on their behalf, and the market screen reports it as its own
+  order channel (`GOODS_SLAVE_CONSUMPTION_MARKET_ORDERS`, *"purchased for slaves"*). The panel computes it
+  separately (`slaveSpend()`), then **folds it into the `pops` buy column** — it is a genuinely separate channel
+  but a small and usually-zero one, and a permanent column for it costs every reader width on every row, so the
+  column is the total and **hovering a pops cell breaks the slave part out** in absolute numbers.
+  The basket is a **wealth level**, from `common/defines`: `SLAVE_BASKET_DEFAULT` 8, clamped to
+  `[max(MIN 1, SCALED_MIN 0.5 × lowest non-slave wealth), min(MAX 12, SCALED_MAX 1.0 × that wealth)]` — so the
+  **`slaves` field in the SoL row is that basket level**, not a standard of living, and a preset seeds it from the
+  market's measured slave SoL (which *is* the realised basket: the rule's 8 against a measured 7–8). Per head it
+  uses slaves' **own** `working_adult_ratio = 0.5` ⇒ **0.75**, and **no class multiplier** — the game has no
+  `consumption_mult` for slaves, so the 0.5 that used to be applied was invented.
+  **The dominant term is WHERE THE SLAVES WORK** — `SLAVE_BASKET_SUBSISTENCE_GOODS_MULT = 0.05` makes a slave in
+  a subsistence building cost a twentieth of the basket, and applying the full basket to everyone over-predicts
+  the American market's **directly measured** slave purchases by 3.9×. So the share is **derived**
+  (`slaveRealShare()`), by the same residual-employment logic the peasant/subsistence model uses — buildings hire
+  first, subsistence absorbs the rest:
+  `unqualified jobs (laborers+farmers) in non-subsistence buildings − lower stratum × 0.25` is the surplus, split
+  between slaves and peasants in proportion to their workforce; the basket multiplier is that share plus 0.05 of
+  the rest. It **self-scales**: more industry ⇒ more slaves in real jobs ⇒ more market demand. **Both large slave
+  markets were measured directly and it holds**: the USA derives **0.209** against a measured 0.224 (volumes 94 %
+  of measured) and Britain **0.05** against 0.044 (114 %) — Britain's free lower stratum already exceeds every
+  unqualified job in the market, so none of its 10.5 M rural-India slaves reach a real building.
+  ⚠ Two stated assumptions, neither fitted: slaves fill **laborer/farmer** jobs (using all jobs instead gives the
+  USA 0.235 — the measurement sits between), and slaves/peasants split the surplus **proportionally** ("slaves
+  first" gives 0.383, "peasants first" 0.05). Don't replace either with a global fudge factor.
+  ⚠ **The share is computed MARKET-WIDE, and that is its known failure mode**: France and Russia hold near-identical
+  slave counts but consume 14× apart, because France's slaves sit in colonial plantations while its free workers
+  sit in the metropole, and the market-level aggregate washes that out. Accepted deliberately — those two markets
+  hold 0.4 % of the world's slaves and 13 units of demand between them. See F27.
+  **The population itself is editable** — one field per class (`upper / middle / lower / peasants / slaves`) in the
   preset bar, showing the derived total; a preset reloads them, and you can then push them around by hand.
   **SoL is per stratum, five fields, and a preset fills them from measurement** (`config/measured_1836.json`):
-  peasants and slaves carry their **own** wealth level rather than borrowing the lower class's, because the
+  peasants carry their **own** wealth level rather than borrowing the lower class's, because the
   measured spread cannot be expressed otherwise — peasants run 4.5 in Japan against 12.1 in France, and in
-  Britain they sit *above* labourers (F12).
+  Britain they sit *above* labourers (F12). **The SoL row and the Population row are ONE class order**
+  (`CLASSES`, upper · middle · lower · peasants · slaves) on one CSS grid template, so each class sits in one
+  column across both — keep it that way; two lists in two orders is how they came to disagree.
   **Hovering a scenario supply or demand number gives its breakdown by source** — `paper — 840 supply from
   2 building type(s) / Sulfite Pulping Paper Mills (T2) 10×60 = 600 / …` for the building columns, and the
-  per-**pop-need** split for the pops column (a need is the unit the money is budgeted to, so it is the one
-  that tells you where to look when a good is wrong).
-  **Per-good unlock toggles** ("Pops may buy") cover every good any pop need lists (`pop_model.need_goods`, 35
-  today), next to an editable **year**. **This is a START STATE the preset seeds and the user then owns — nothing
-  more.** Nothing here is emitted, and the mod has **no tech-gating of PMs or goods in the UI**; don't extend this
-  into one. The default is **the calendar, never a country's research** — a market imports what it cannot make, so
-  a good is available once *some* building × PM that outputs it could exist **anywhere**: `pop_model.available_from`
-  = the earliest year satisfying both the building's and the PM's `unlocking_technologies`, using the **era start
-  years vanilla writes in comments** in `common/technology/eras` (`era_2 = { #1836-1861 }` → 1836; era 1 "Pre-1836"
-  → always). Today that dates **steamers + electricity to 1862** and **automobiles, telephones, radios, aeroplanes
-  to 1887**; everything else is always available, so all four 1836 presets lock the same six goods. Editing the
-  **year** re-derives the whole set; per-preset forcing lives in `config/presets.json` as `unlock_add` /
-  `unlock_drop` (e.g. `"unlock_drop": ["clippers"]` for a landlocked market) — that is the hook for anything the
-  calendar cannot know. Toggling one good re-splits every need that lists it. The pops column,
-  the knob, the SoL fields, the pop counts and the unlock set are all **session-only**.
+  per-**pop-need** split for the pops column (a need is the unit the money is budgeted to, so it is
+  the one that tells you where to look when a good is wrong), **with the slave-basket part broken out below it**
+  in absolute numbers together with the share and multiplier that produced it.
+  The pops column, the SoL fields and the pop counts are all **session-only**.
   **Buildings the history files never create are inferred**, because two of them dominate the supply side:
   - **Subsistence farms** (`bg_subsistence_*`) — *the peasants ARE this supply*. The game raises one per state on
     the arable land the real farms/ranches/plantations leave free (`arable_land` and `subsistence_building` in
@@ -715,7 +757,9 @@ the game.
   (infrastructure, pollution, bureaucracy, trade capacity, ship construction, …) and **workforce** read-only,
   and informational **BE** + **Profit@thr**. **Each category is locked by default** (a
   🔒 that excludes it from future mass tools — still fully editable; the amber bar without the dimming);
-  unlock to include it. **Goods edits are config-backed and emitted**: they persist to the top-level
+  unlock to include it. The **Military** card (battalions, not buildings — two rows per combat unit type,
+  mobilised and not) is a category card like any other: same 13-column layout, **foldable** through the same
+  `REFGRPOPEN` set, collapsed by default with its unit-type and battalion counts in the header. **Goods edits are config-backed and emitted**: they persist to the top-level
   **`pm_goods`** map, which the builder writes into the owned production-methods files, so an edit to a PM
   applies to **every** building that uses it (our tier main PMs stay per-tier; every *other* PM — reference
   buildings' PMs *and* our tiers' secondary PMs, editable both in the reference table and on the tier cards

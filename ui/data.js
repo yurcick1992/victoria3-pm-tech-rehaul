@@ -56,7 +56,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/bakeries.dds",
                                              "target_be":  115,
                                              "natural_year":  1836,
-                                             "building_cost":  245
+                                             "building_cost":  195
                                          },
                                          {
                                              "key":  "building_food_industry_sweetener",
@@ -80,7 +80,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/sweeteners.dds",
                                              "target_be":  115,
                                              "natural_year":  1836,
-                                             "building_cost":  370
+                                             "building_cost":  295
                                          },
                                          {
                                              "key":  "building_food_industry_baking_powder",
@@ -105,7 +105,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/baking_powder.dds",
                                              "target_be":  90,
                                              "natural_year":  1848,
-                                             "building_cost":  220
+                                             "building_cost":  440
                                          }
                                      ]
                        },
@@ -150,7 +150,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/handsewn_clothes.dds",
                                              "target_be":  115,
                                              "natural_year":  1836,
-                                             "building_cost":  245
+                                             "building_cost":  195
                                          },
                                          {
                                              "key":  "building_textile_mill_dye",
@@ -174,7 +174,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/dye_workshops.dds",
                                              "target_be":  115,
                                              "natural_year":  1836,
-                                             "building_cost":  375
+                                             "building_cost":  295
                                          },
                                          {
                                              "key":  "building_textile_mill_sewing",
@@ -200,7 +200,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/sewing_machines.dds",
                                              "target_be":  75,
                                              "natural_year":  1848,
-                                             "building_cost":  545
+                                             "building_cost":  440
                                          },
                                          {
                                              "key":  "building_textile_mill_electric",
@@ -228,7 +228,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/electric_sewing_machines.dds",
                                              "target_be":  40,
                                              "natural_year":  1899,
-                                             "building_cost":  1950
+                                             "building_cost":  660
                                          }
                                      ]
                        },
@@ -274,7 +274,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/furniture_handicraft.dds",
                                              "target_be":  115,
                                              "natural_year":  1836,
-                                             "building_cost":  245
+                                             "building_cost":  195
                                          },
                                          {
                                              "key":  "building_furniture_manufactory_lathe",
@@ -300,7 +300,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/lathes.dds",
                                              "target_be":  100,
                                              "natural_year":  1836,
-                                             "building_cost":  15
+                                             "building_cost":  295
                                          },
                                          {
                                              "key":  "building_furniture_manufactory_mechanized",
@@ -326,7 +326,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/mechanized_workshops.dds",
                                              "target_be":  75,
                                              "natural_year":  1848,
-                                             "building_cost":  545
+                                             "building_cost":  440
                                          }
                                      ]
                        },
@@ -367,7 +367,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/forest_glass.dds",
                                              "target_be":  115,
                                              "natural_year":  1836,
-                                             "building_cost":  215
+                                             "building_cost":  175
                                          },
                                          {
                                              "key":  "building_glassworks_leaded",
@@ -391,7 +391,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/leaded_glass.dds",
                                              "target_be":  115,
                                              "natural_year":  1836,
-                                             "building_cost":  325
+                                             "building_cost":  260
                                          },
                                          {
                                              "key":  "building_glassworks_crystal",
@@ -415,7 +415,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/crystal_glass.dds",
                                              "target_be":  90,
                                              "natural_year":  1848,
-                                             "building_cost":  195
+                                             "building_cost":  395
                                          },
                                          {
                                              "key":  "building_glassworks_plastics",
@@ -440,7 +440,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/houseware_plastics.dds",
                                              "target_be":  40,
                                              "natural_year":  1899,
-                                             "building_cost":  1755
+                                             "building_cost":  585
                                          }
                                      ]
                        },
@@ -486,7 +486,7 @@ window.PMDATA = {
                                              "ai_value":  2000,
                                              "target_be":  95,
                                              "natural_year":  1836,
-                                             "building_cost":  45
+                                             "building_cost":  175
                                          },
                                          {
                                              "key":  "building_tooling_workshop_pig_iron",
@@ -511,7 +511,7 @@ window.PMDATA = {
                                              "ai_value":  2000,
                                              "target_be":  95,
                                              "natural_year":  1836,
-                                             "building_cost":  75
+                                             "building_cost":  260
                                          },
                                          {
                                              "key":  "building_tooling_workshop_steel",
@@ -537,7 +537,7 @@ window.PMDATA = {
                                              "ai_value":  2000,
                                              "target_be":  55,
                                              "natural_year":  1848,
-                                             "building_cost":  890
+                                             "building_cost":  395
                                          },
                                          {
                                              "key":  "building_tooling_workshop_rubber",
@@ -563,7 +563,7 @@ window.PMDATA = {
                                              "ai_value":  2000,
                                              "target_be":  30,
                                              "natural_year":  1874,
-                                             "building_cost":  2045
+                                             "building_cost":  585
                                          }
                                      ]
                        },
@@ -607,7 +607,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/pulp_pressing.dds",
                                              "target_be":  115,
                                              "natural_year":  1836,
-                                             "building_cost":  215
+                                             "building_cost":  175
                                          },
                                          {
                                              "key":  "building_paper_mill_sulfite",
@@ -631,7 +631,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/sulfite_pulping.dds",
                                              "target_be":  90,
                                              "natural_year":  1848,
-                                             "building_cost":  125
+                                             "building_cost":  260
                                          },
                                          {
                                              "key":  "building_paper_mill_bleached",
@@ -657,7 +657,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/bleached_paper.dds",
                                              "target_be":  90,
                                              "natural_year":  1848,
-                                             "building_cost":  200
+                                             "building_cost":  390
                                          }
                                      ]
                        },
@@ -704,7 +704,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/chemical_fertilizers.dds",
                                              "target_be":  90,
                                              "natural_year":  1848,
-                                             "building_cost":  215
+                                             "building_cost":  390
                                          },
                                          {
                                              "key":  "building_chemical_plant_improved",
@@ -729,7 +729,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/improved_fertilizer.dds",
                                              "target_be":  65,
                                              "natural_year":  1874,
-                                             "building_cost":  1050
+                                             "building_cost":  585
                                          },
                                          {
                                              "key":  "building_chemical_plant_nitrogen",
@@ -755,7 +755,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/nitrogen_fixation.dds",
                                              "target_be":  40,
                                              "natural_year":  1899,
-                                             "building_cost":  2645
+                                             "building_cost":  880
                                          }
                                      ]
                        },
@@ -799,7 +799,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/leblanc_process.dds",
                                              "target_be":  75,
                                              "natural_year":  1848,
-                                             "building_cost":  440
+                                             "building_cost":  360
                                          },
                                          {
                                              "key":  "building_explosives_factory_ammonia",
@@ -825,7 +825,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/ammonia_soda_process.dds",
                                              "target_be":  75,
                                              "natural_year":  1848,
-                                             "building_cost":  645
+                                             "building_cost":  540
                                          },
                                          {
                                              "key":  "building_explosives_factory_vacuum",
@@ -851,7 +851,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/vaccum_evaporation.dds",
                                              "target_be":  50,
                                              "natural_year":  1874,
-                                             "building_cost":  2030
+                                             "building_cost":  815
                                          },
                                          {
                                              "key":  "building_explosives_factory_brine",
@@ -878,7 +878,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/vaccum_brine_electrolysis.dds",
                                              "target_be":  40,
                                              "natural_year":  1899,
-                                             "building_cost":  3670
+                                             "building_cost":  1220
                                          }
                                      ]
                        },
@@ -927,7 +927,7 @@ window.PMDATA = {
                                              "wage_pct":  0.23,
                                              "target_be":  115,
                                              "natural_year":  1836,
-                                             "building_cost":  590
+                                             "building_cost":  470
                                          },
                                          {
                                              "key":  "building_steel_mill_bessemer",
@@ -952,7 +952,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/bessemer_process.dds",
                                              "target_be":  90,
                                              "natural_year":  1848,
-                                             "building_cost":  355
+                                             "building_cost":  710
                                          },
                                          {
                                              "key":  "building_steel_mill_open_hearth",
@@ -977,7 +977,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/open_hearth_process.dds",
                                              "target_be":  65,
                                              "natural_year":  1874,
-                                             "building_cost":  1830
+                                             "building_cost":  1055
                                          },
                                          {
                                              "key":  "building_steel_mill_electric_arc",
@@ -1003,7 +1003,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/electric_arc_process.dds",
                                              "target_be":  40,
                                              "natural_year":  1899,
-                                             "building_cost":  4755
+                                             "building_cost":  1580
                                          }
                                      ]
                        },
@@ -1046,7 +1046,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/steamworks.dds",
                                              "target_be":  75,
                                              "natural_year":  1848,
-                                             "building_cost":  425
+                                             "building_cost":  345
                                          },
                                          {
                                              "key":  "building_motor_industry_electric",
@@ -1071,7 +1071,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/electric_engines.dds",
                                              "target_be":  40,
                                              "natural_year":  1899,
-                                             "building_cost":  1555
+                                             "building_cost":  520
                                          },
                                          {
                                              "key":  "building_motor_industry_diesel",
@@ -1096,7 +1096,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/diesel_engines.dds",
                                              "target_be":  25,
                                              "natural_year":  1923,
-                                             "building_cost":  2895
+                                             "building_cost":  780
                                          }
                                      ]
                        },
@@ -1145,7 +1145,7 @@ window.PMDATA = {
                                              "ship_construction":  5,
                                              "target_be":  115,
                                              "natural_year":  1836,
-                                             "building_cost":  435
+                                             "building_cost":  345
                                          },
                                          {
                                              "key":  "building_shipyard_complex",
@@ -1173,7 +1173,7 @@ window.PMDATA = {
                                              "ship_construction":  10,
                                              "target_be":  75,
                                              "natural_year":  1848,
-                                             "building_cost":  630
+                                             "building_cost":  520
                                          }
                                      ]
                        },
@@ -1220,7 +1220,7 @@ window.PMDATA = {
                                              "ship_construction":  15,
                                              "target_be":  50,
                                              "natural_year":  1874,
-                                             "building_cost":  1660
+                                             "building_cost":  655
                                          },
                                          {
                                              "key":  "building_shipyard_arc_welding",
@@ -1247,7 +1247,7 @@ window.PMDATA = {
                                              "ship_construction":  20,
                                              "target_be":  25,
                                              "natural_year":  1923,
-                                             "building_cost":  3755
+                                             "building_cost":  990
                                          }
                                      ]
                        },
@@ -1294,7 +1294,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/automobiles.dds",
                                              "target_be":  40,
                                              "natural_year":  1899,
-                                             "building_cost":  1310
+                                             "building_cost":  435
                                          },
                                          {
                                              "key":  "building_automotive_industry_mass",
@@ -1320,7 +1320,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/standardized_automobiles.dds",
                                              "target_be":  25,
                                              "natural_year":  1923,
-                                             "building_cost":  2425
+                                             "building_cost":  650
                                          }
                                      ]
                        },
@@ -1366,7 +1366,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/muskets.dds",
                                              "target_be":  115,
                                              "natural_year":  1836,
-                                             "building_cost":  325
+                                             "building_cost":  260
                                          },
                                          {
                                              "key":  "building_arms_industry_rifles",
@@ -1391,7 +1391,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/rifles.dds",
                                              "target_be":  75,
                                              "natural_year":  1848,
-                                             "building_cost":  490
+                                             "building_cost":  390
                                          },
                                          {
                                              "key":  "building_arms_industry_repeaters",
@@ -1417,7 +1417,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/repeaters.dds",
                                              "target_be":  50,
                                              "natural_year":  1874,
-                                             "building_cost":  1490
+                                             "building_cost":  590
                                          },
                                          {
                                              "key":  "building_arms_industry_bolt_action",
@@ -1444,7 +1444,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/bolt_action_rifles.dds",
                                              "target_be":  40,
                                              "natural_year":  1899,
-                                             "building_cost":  2645
+                                             "building_cost":  875
                                          }
                                      ]
                        },
@@ -1487,7 +1487,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/artillery_production.dds",
                                              "target_be":  115,
                                              "natural_year":  1836,
-                                             "building_cost":  315
+                                             "building_cost":  255
                                          },
                                          {
                                              "key":  "building_artillery_foundry_smoothbore",
@@ -1512,7 +1512,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/smoothbores.dds",
                                              "target_be":  90,
                                              "natural_year":  1848,
-                                             "building_cost":  175
+                                             "building_cost":  385
                                          },
                                          {
                                              "key":  "building_artillery_foundry_breech",
@@ -1538,7 +1538,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/breech_loading_artillery_production.dds",
                                              "target_be":  50,
                                              "natural_year":  1874,
-                                             "building_cost":  1430
+                                             "building_cost":  565
                                          },
                                          {
                                              "key":  "building_artillery_foundry_recoiled",
@@ -1564,7 +1564,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/recoil_mechanism_artillery_production.dds",
                                              "target_be":  40,
                                              "natural_year":  1899,
-                                             "building_cost":  2555
+                                             "building_cost":  850
                                          }
                                      ]
                        },
@@ -1612,7 +1612,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/percussion_caps.dds",
                                              "target_be":  75,
                                              "natural_year":  1848,
-                                             "building_cost":  440
+                                             "building_cost":  360
                                          },
                                          {
                                              "key":  "building_munition_plant_shells",
@@ -1637,7 +1637,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/explosive_shells.dds",
                                              "target_be":  50,
                                              "natural_year":  1874,
-                                             "building_cost":  1365
+                                             "building_cost":  540
                                          }
                                      ]
                        },
@@ -1684,7 +1684,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/synthetic_dyes.dds",
                                              "target_be":  50,
                                              "natural_year":  1874,
-                                             "building_cost":  1140
+                                             "building_cost":  460
                                          }
                                      ]
                        },
@@ -1730,7 +1730,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/telephones.dds",
                                              "target_be":  40,
                                              "natural_year":  1899,
-                                             "building_cost":  1835
+                                             "building_cost":  605
                                          }
                                      ]
                        },
@@ -1773,7 +1773,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/power_plant.dds",
                                              "target_be":  60,
                                              "natural_year":  1874,
-                                             "building_cost":  65
+                                             "building_cost":  110
                                          },
                                          {
                                              "key":  "building_power_plant_coal",
@@ -1798,7 +1798,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/coal_fired_plant.dds",
                                              "target_be":  50,
                                              "natural_year":  1899,
-                                             "building_cost":  115
+                                             "building_cost":  215
                                          },
                                          {
                                              "key":  "building_power_plant_oil",
@@ -1823,7 +1823,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/oil_fired_plant.dds",
                                              "target_be":  35,
                                              "natural_year":  1923,
-                                             "building_cost":  125
+                                             "building_cost":  345
                                          }
                                      ]
                        },
@@ -2073,7 +2073,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/traditional_art.dds",
                                              "target_be":  100,
                                              "natural_year":  1836,
-                                             "building_cost":  5
+                                             "building_cost":  145
                                          },
                                          {
                                              "key":  "building_art_academy_realist",
@@ -2094,7 +2094,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/realist_art.dds",
                                              "target_be":  75,
                                              "natural_year":  1848,
-                                             "building_cost":  290
+                                             "building_cost":  230
                                          },
                                          {
                                              "key":  "building_art_academy_photographic",
@@ -2116,7 +2116,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/photographic_art.dds",
                                              "target_be":  50,
                                              "natural_year":  1874,
-                                             "building_cost":  795
+                                             "building_cost":  320
                                          },
                                          {
                                              "key":  "building_art_academy_film",
@@ -2139,7 +2139,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/film_art.dds",
                                              "target_be":  40,
                                              "natural_year":  1899,
-                                             "building_cost":  1465
+                                             "building_cost":  490
                                          }
                                      ]
                        }
