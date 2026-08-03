@@ -234,15 +234,47 @@ exactly what the balance UI's Workforce panel takes, no conversion needed.
 pooled over 1836 + 1935:
 
 ```
-base £/wk  =  exp( (SoL − 23.96) / 5.56 )        <-- USE THIS for building-level modelling
+base £/wk  =  exp( (SoL − 37.43) / 10.49 )       <-- USE THIS for building-level modelling
+             = base(ref) × 1.1^(SoL − SoL(ref))
 ```
 
-| SoL | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 |
-|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| **base £/wk** | 0.0330 | 0.0395 | 0.0473 | 0.0567 | 0.0678 | 0.0812 | 0.0972 | 0.1164 | 0.1393 | 0.1667 | *0.1996* | *0.2389* |
-| **base £/yr** | 1.72 | 2.06 | 2.46 | 2.95 | 3.53 | 4.22 | 5.05 | 6.05 | 7.24 | 8.67 | *10.38* | *12.42* |
+**The slope is not fitted — it is `1/ln(1.1) = 10.49`, the buy-package curve's own exponent.**
+Forcing it there beats a free fit *everywhere*: median error **17 % vs 19 %** across all data, and
+**9 % vs 50 %** in the high-SoL tail. Per level the base grows exactly **×1.1**.
 
-Valid domain **SoL 5.2–13.9** (p5–p95; observed 2.3–19.0). *Italic = extrapolated.*
+| SoL | 5 | 6 | 8 | 10 | 12 | 14 | **16** | **18** | **20** | 22 |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| **base £/wk** | 0.0454 | 0.0500 | 0.0605 | 0.0732 | 0.0885 | 0.1071 | **0.1297** | **0.1569** | **0.1898** | 0.2297 |
+| **base £/yr** | 2.36 | 2.60 | 3.14 | 3.81 | 4.60 | 5.57 | **6.74** | **8.16** | **9.87** | 11.95 |
+
+Observations run SoL 2.3–19.0, so **16 and 18 are interpolation, not extrapolation**; only 20+ is
+beyond the data, and it is on a slope the consumption table fixes rather than one inferred from the
+low end.
+
+⚠⚠ **A free-slope fit must NOT be extrapolated, and this is why.** Fitted across all data the slope
+comes out **b = 5.56** — the base appearing to grow ~19.6 % per SoL level instead of 10 %. Fitted on
+**SoL ≥ 10 alone it comes out b = 10.01**, i.e. the theoretical value recovers itself once the
+low-SoL region is dropped. The flat global slope is an artefact of the bottom end, and carrying it
+upward is catastrophic: at Attica's measured SoL 18.99 / base 0.2133, the `b = 5.56` rule predicts
+**0.4098, +92 % wrong**, while the fixed-slope rule gives 0.1724 (−19 %). The old table's
+SoL-16 value of 0.2389 was nearly double the truth.
+
+**The high-SoL evidence, in full** (lower-stratum SoL ≥ 12, employed base, all 11 observations):
+
+| | SoL | base £/wk | | | SoL | base £/wk |
+|---|--:|--:|---|---|--:|--:|
+| Sulu 1935 | 12.31 | 0.0975 | | Nova Scotia 1836 | 13.50 | 0.0998 |
+| Jambi 1935 | 12.54 | 0.0884 | | Oyo 1935 | 13.91 | 0.1163 |
+| Brunei 1935 | 12.84 | 0.1151 | | Benin 1935 | 14.14 | 0.1186 |
+| Limburg 1935 | 13.36 | 0.0993 | | Lanfang 1836 | 14.86 | 0.1587 |
+| Kutai 1935 | 13.47 | 0.0852 | | Siak 1935 | 14.92 | 0.1179 |
+| | | | | **Attica 1935** | **18.99** | **0.2133** |
+
+⚠ **Attica is the only observation above SoL 15**, with 203 067 workers. The rule under-predicts it
+by 19 %. Anchoring the intercept on it exactly gives `a = 35.20` and **SoL 16 / 18 / 20 → 0.1604 /
+0.1940 / 0.2348**, about 24 % above the recommended row. Treat that as the upper end of a band: one
+country is thin evidence, but it is the only evidence up there, and it points the same direction as
+every other 1935 anchor (the rule under-predicts mature economies).
 SoL is measured over **all** lower-stratum pops (what a scenario types in); the base is measured over
 the **employed** ones (what a building actually pays).
 
@@ -253,16 +285,15 @@ lower-stratum pops, holding 18.3 % of the lower-stratum workforce, have effectiv
 income.** The employed-only base runs **1.00–1.38× the all-pops base (mean 1.15×)** — Austria 1836
 +38 %, Britain +23 %, the Qing +27 %, while the USA and Austria 1935 are unaffected.
 
-⚠ **And it makes the FIT worse, for a real reason: SoL embeds unemployment and the employed wage does
-not.** Against the all-pops variant (`SoL = 23.39 + 5.01·ln(base)`, r² 0.829, median 16 %), the
-employed-only fit is r² 0.730, **median 19 %, p90 51 %**. That is the honest cost of asking for the
-right quantity: a country with high unemployment has a low SoL at any given employed wage, so SoL
-predicts the *unemployment-diluted* base better than the one a building pays. Predicting the all-pops
-base and multiplying by 1.15 is the same functional form with a shifted intercept, so it is not a way
-out — the uncertainty is real, not a choice of algebra.
+⚠ **Excluding them loosens the fit, for a real reason: SoL embeds unemployment and the employed wage
+does not.** A country with high unemployment has a low SoL at any given employed wage, so SoL
+predicts the *unemployment-diluted* base more tightly than the one a building pays. Predicting the
+all-pops base and multiplying by 1.15 is the same functional form with a shifted intercept, so there
+is no algebraic escape — the uncertainty is real. **With the fixed slope this costs little**: the
+recommended rule still lands at **median 17 %** across all data.
 
-**In practice this matters less than ±19 % sounds.** Wages are a minority of a building's operating
-cost under the workforce model, so a 20 % wage error is a low-single-digit error on total cost and BE.
+**In practice this matters less than ±17 % sounds.** Wages are a minority of a building's operating
+cost under the workforce model, so a 17 % wage error is a low-single-digit error on total cost and BE.
 
 **Why only this stratum — the decision, and its real justification.** The lower stratum is the one
 whose pay *is* the market wage that buildings hand out. The middle stratum is not: **bureaucrats,
@@ -271,27 +302,38 @@ than any building's wage bill, and **shopkeepers are owners**. **Soldiers are ex
 reason** — the military-wage law, not the market — and dropping them is measurably better, cutting
 the p90 error from 54 % to 38 % at unchanged median. Peasants and slaves were never in scope.
 
-⚠ **This costs accuracy, and the cost should be known.** The lower-only rule is *worse* than the
-lower+middle rule it replaces: median error 16 % vs 11 %, worst anchor **−37 % vs −19 %**. It is
-adopted anyway because the lower+middle fit was tighter around a quantity that **is not a market
-wage**, and a tight fit to the wrong thing is worse than a loose fit to the right one.
+⚠ **One caveat on the lower stratum itself:** its workforce income is *mostly* wage, not purely so —
+lower-stratum pops can draw dividends under some economic laws, and when employed by urban centres.
+It does not move these numbers materially, but "pure wage" would be too strong.
+
+⚠ **Restricting to the lower stratum did cost fit quality** — against the lower+middle rule it
+replaces, median error was 16 % vs 11 % on the free-slope form. Adopted anyway, because the tighter
+lower+middle fit was around a quantity that **is not a market wage** (the middle stratum's workforce
+income is wage + ~15 % dividends, and its state-salaried professions do not track any building's wage
+bill). A tight fit to the wrong thing is worse than a loose fit to the right one. The fixed-slope
+form then recovers most of the gap anyway, at median 17 %.
 
 | anchor | SoL | measured base | rule | err |
 |---|--:|--:|--:|--:|
-| USA 1836 | 9.94 | 0.07078 | 0.06809 | **−4 %** |
-| Austria 1836 | 7.21 | 0.04399 | 0.03942 | −10 % |
-| France 1836 | 7.63 | 0.04955 | 0.04291 | −13 % |
-| Qing 1836 | 6.54 | 0.03039 | 0.03451 | +14 % |
-| Netherlands 1935 | 9.95 | 0.07896 | 0.06822 | −14 % |
-| Great Britain 1836 | 7.69 | 0.05251 | 0.04339 | −17 % |
-| German Empire 1935 | 11.32 | 0.07644 | 0.08975 | +17 % |
-| Russia 1836 | 7.97 | 0.03836 | 0.04595 | +20 % |
-| Austria 1935 | 9.94 | 0.08609 | 0.06809 | −21 % |
-| Belgium 1836 | 9.20 | 0.07532 | 0.05869 | −22 % |
-| Belgium 1935 | 9.30 | 0.09460 | 0.05995 | **−37 %** |
+| France 1836 | 7.63 | 0.0590 | 0.0584 | **−1 %** |
+| USA 1836 | 9.94 | 0.0709 | 0.0728 | +3 % |
+| Austria 1836 | 7.21 | 0.0608 | 0.0561 | −8 % |
+| Great Britain 1836 | 7.69 | 0.0646 | 0.0587 | −9 % |
+| Netherlands 1935 | 9.95 | 0.0823 | 0.0728 | −12 % |
+| Belgium 1836 | 9.20 | 0.0781 | 0.0678 | −13 % |
+| German Empire 1935 | 11.32 | 0.0962 | 0.0830 | −14 % |
+| Austria 1935 | 9.94 | 0.0863 | 0.0728 | −16 % |
+| Attica 1935 | 18.99 | 0.2133 | 0.1724 | −19 % |
+| Great Qing 1836 | 6.54 | 0.0386 | 0.0526 | **+36 %** |
+| Russia 1836 | 7.97 | 0.0427 | 0.0603 | **+41 %** |
+| Belgium 1935 | 9.30 | 0.1080 | 0.0685 | **−37 %** |
 
-The rule **under-predicts mature economies** (every 1935 anchor except the German Empire is
-negative), so a late-game scenario can defensibly scale up by ~20 %.
+The rule **under-predicts every 1935 anchor** (−12 % to −37 %), so a late-game scenario can
+defensibly scale up by ~20 %. The two large positives are both **poor, agrarian 1836** economies
+(Russia +41 %, Qing +36 %) where the rule over-predicts — so at the bottom of the range, scale
+*down*. Belgium 1935 (−37 %) remains the worst single case in either direction; it is also the
+country whose workforce ratio is most depressed (0.23), and its lower stratum is genuinely paid
+above what its living standard implies.
 
 **Other strata's SoL is for CONSUMPTION only, never for wages.** Set upper/middle SoL in a scenario
 to drive what those pops buy; do not invert them for a wage.
