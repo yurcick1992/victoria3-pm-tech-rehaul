@@ -123,6 +123,20 @@ if ($WagesOnly) {
     $bill = @{}; $units = @{}; $workers = @{}; $wfSum = @{}; $totSum = @{}
     $solNum = @{}; $incSum = @{}; $depIncSum = @{}; $expSum = @{}; $pwSeen = @{}; $pwTok = @{}
     $tBill = @{}; $tUnits = @{}; $tWork = @{}; $tTot = @{}     # keyed market|typeid
+    # --- THE CANONICAL MARKET WAGE (FINDINGS F26) -------------------------------------------------
+    # laborers + farmers + machinists, EMPLOYED pops only. Both restrictions are corrections, not
+    # preferences:
+    #   - only these three are paid the MARKET wage a building hands out. Bureaucrats, academics,
+    #     clergymen and officers are state-salaried on the government-wage law, soldiers on the
+    #     military-wage law, and shopkeepers are owners whose workforce income is wage + ~15%
+    #     dividends. Dropping soldiers alone cut the p90 fit error from 54% to 38%.
+    #   - an UNEMPLOYED pop contributes workers to the wage-unit denominator and nothing to the
+    #     numerator, so including it deflates the wage. 14.9% of lower-stratum pops, holding 18.3%
+    #     of that workforce, have effectively zero workforce income; excluding them raises the base
+    #     by 1.00-1.38x (mean 1.15x).
+    $WAGE_PROFS = @('laborers','farmers','machinists')
+    $EMPLOYED_MIN = 0.005          # implied per-pop base £/wk below this = not actually employed
+    $wBill = @{}; $wUnits = @{}; $wWork = @{}; $wSol = @{}
     foreach ($l in $lines) {
         $p = $l -split '\|'
         if ($p[2] -ne 'PW' -or $p[3] -ne $Date) { continue }
@@ -147,6 +161,17 @@ if ($WagesOnly) {
         $tUnits[$k] = ($tUnits[$k] + 0) + $wfv * $w
         $tWork[$k] = ($tWork[$k] + 0) + $wfv
         $tTot[$k]  = ($tTot[$k]  + 0) + $tot
+        # canonical market wage: the three market-paid professions, employed pops only
+        if ($WAGE_PROFS -contains $PT[$ti]) {
+            $u = $wfv * $w
+            if ($u -gt 0 -and ($wi / $u) -ge $EMPLOYED_MIN) {
+                $wBill[$m]  = ($wBill[$m]  + 0) + $wi
+                $wUnits[$m] = ($wUnits[$m] + 0) + $u
+            }
+            # SoL is measured over ALL of them, employed or not - that is what a scenario types in
+            $wWork[$m] = ($wWork[$m] + 0) + $wfv
+            $wSol[$m]  = ($wSol[$m]  + 0) + [double]$p[12] * $wfv
+        }
     }
 
     # --- state average annual wage, the game's own per-state figure (Q1's "between states" spread)
@@ -212,8 +237,19 @@ if ($WagesOnly) {
                 $lBill += $tBill[$k]; $lUnits += $tUnits[$k]; $lWork += $tWork[$k]
                 $lBases += ($tBill[$k] / $tUnits[$k] * 52)
             }
+            # ---- THE CANONICAL FIGURE: what the scenario presets consume ----
+            if ($wUnits[$m] -gt 0) {
+                $bw = $wBill[$m] / $wUnits[$m]
+                $w.base_weekly_wage = [math]::Round($bw, 6)
+                $w.base_annual_wage = [math]::Round($bw * 52, 4)
+                $w.wage_basis = 'laborers+farmers+machinists, employed only (FINDINGS F26)'
+                if ($wWork[$m] -gt 0) { $w.wage_stratum_sol = [math]::Round($wSol[$m] / $wWork[$m], 3) }
+            }
             if ($lUnits -gt 0) {
                 $lb = $lBill / $lUnits
+                # ⚠ SUPERSEDED basis, kept for continuity with earlier findings: 11 professions
+                # including soldiers and the state-salaried middle stratum, and including the
+                # unemployed. Do not feed this to a scenario - use base_weekly_wage.
                 $w.base_weekly_labour = [math]::Round($lb, 6)
                 $w.base_annual_labour = [math]::Round($lb * 52, 4)
                 # How well ONE base wage describes this market: the spread of the per-type bases that

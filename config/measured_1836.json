@@ -13,7 +13,7 @@
                                      "urban_center_pms":  "1836.1.4 (day-3 event) when taken from a probe session, or 1836.2.1 + 3 months (phase 3) from the dump body"
                                  },
                   "wages_from":  {
-                                     "generated":  "2026-08-03T08:11:11",
+                                     "generated":  "2026-08-03T12:04:39",
                                      "date":  "1836.2.1",
                                      "runs":  5,
                                      "sessions":  [
@@ -1325,6 +1325,10 @@
                                                          "workforce_ratio":  0.2619,
                                                          "wage_share_of_income":  0.2642,
                                                          "mean_sol_workforce_weighted":  9.467,
+                                                         "base_weekly_wage":  0.059626,
+                                                         "base_annual_wage":  3.1005,
+                                                         "wage_basis":  "laborers+farmers+machinists, employed only (FINDINGS F26)",
+                                                         "wage_stratum_sol":  6.925,
                                                          "base_weekly_labour":  0.06322,
                                                          "base_annual_labour":  3.2875,
                                                          "labour_base_spread":  {
@@ -2022,6 +2026,10 @@
                                                           "workforce_ratio":  0.25,
                                                           "wage_share_of_income":  0.253,
                                                           "mean_sol_workforce_weighted":  5.2,
+                                                          "base_weekly_wage":  0.069705,
+                                                          "base_annual_wage":  3.6246,
+                                                          "wage_basis":  "laborers+farmers+machinists, employed only (FINDINGS F26)",
+                                                          "wage_stratum_sol":  7.954,
                                                           "base_weekly_labour":  0.072655,
                                                           "base_annual_labour":  3.7781,
                                                           "labour_base_spread":  {
@@ -3651,6 +3659,10 @@
                                                          "workforce_ratio":  0.25,
                                                          "wage_share_of_income":  0.4804,
                                                          "mean_sol_workforce_weighted":  10.416,
+                                                         "base_weekly_wage":  0.078136,
+                                                         "base_annual_wage":  4.0631,
+                                                         "wage_basis":  "laborers+farmers+machinists, employed only (FINDINGS F26)",
+                                                         "wage_stratum_sol":  9.197,
                                                          "base_weekly_labour":  0.076448,
                                                          "base_annual_labour":  3.9753,
                                                          "labour_base_spread":  {
@@ -4588,6 +4600,10 @@
                                                         "workforce_ratio":  0.3,
                                                         "wage_share_of_income":  0.3609,
                                                         "mean_sol_workforce_weighted":  11.362,
+                                                        "base_weekly_wage":  0.058839,
+                                                        "base_annual_wage":  3.0596,
+                                                        "wage_basis":  "laborers+farmers+machinists, employed only (FINDINGS F26)",
+                                                        "wage_stratum_sol":  7.624,
                                                         "base_weekly_labour":  0.053618,
                                                         "base_annual_labour":  2.7881,
                                                         "labour_base_spread":  {
@@ -6161,6 +6177,10 @@
                                                          "workforce_ratio":  0.2963,
                                                          "wage_share_of_income":  0.2706,
                                                          "mean_sol_workforce_weighted":  9.378,
+                                                         "base_weekly_wage":  0.04346,
+                                                         "base_annual_wage":  2.2599,
+                                                         "wage_basis":  "laborers+farmers+machinists, employed only (FINDINGS F26)",
+                                                         "wage_stratum_sol":  8.019,
                                                          "base_weekly_labour":  0.047923,
                                                          "base_annual_labour":  2.492,
                                                          "labour_base_spread":  {
@@ -8888,6 +8908,10 @@
                                                       "workforce_ratio":  0.25,
                                                       "wage_share_of_income":  0.1772,
                                                       "mean_sol_workforce_weighted":  8.664,
+                                                      "base_weekly_wage":  0.038596,
+                                                      "base_annual_wage":  2.007,
+                                                      "wage_basis":  "laborers+farmers+machinists, employed only (FINDINGS F26)",
+                                                      "wage_stratum_sol":  6.606,
                                                       "base_weekly_labour":  0.050436,
                                                       "base_annual_labour":  2.6227,
                                                       "labour_base_spread":  {
@@ -10238,6 +10262,10 @@
                                                           "workforce_ratio":  0.2815,
                                                           "wage_share_of_income":  0.5501,
                                                           "mean_sol_workforce_weighted":  10.151,
+                                                          "base_weekly_wage":  0.070386,
+                                                          "base_annual_wage":  3.6601,
+                                                          "wage_basis":  "laborers+farmers+machinists, employed only (FINDINGS F26)",
+                                                          "wage_stratum_sol":  9.889,
                                                           "base_weekly_labour":  0.072298,
                                                           "base_annual_labour":  3.7595,
                                                           "labour_base_spread":  {
@@ -11721,6 +11749,10 @@
                                                           "workforce_ratio":  0.2995,
                                                           "wage_share_of_income":  0.3061,
                                                           "mean_sol_workforce_weighted":  7.7,
+                                                          "base_weekly_wage":  0.060633,
+                                                          "base_annual_wage":  3.1529,
+                                                          "wage_basis":  "laborers+farmers+machinists, employed only (FINDINGS F26)",
+                                                          "wage_stratum_sol":  7.195,
                                                           "base_weekly_labour":  0.050855,
                                                           "base_annual_labour":  2.6444,
                                                           "labour_base_spread":  {

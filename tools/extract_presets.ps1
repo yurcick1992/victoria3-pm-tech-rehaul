@@ -1001,11 +1001,15 @@ foreach ($p in $presetCfg.presets) {
     # Peasants are out for the opposite reason - subsistence is not a market wage.
     $baseWage = $null; $baseWageNote = $null
     if ($meas -and $meas.wages) {
-        if ($null -ne $meas.wages.base_weekly_labour) {
-            $baseWage = [double]$meas.wages.base_weekly_labour
-            $sp = $meas.wages.labour_base_spread
-            if ($sp) {
-                $baseWageNote = "measured across $($sp.types) professions, which agree to within £$($sp.min)-$($sp.max)/yr (cv $($sp.cv))"
+        if ($null -ne $meas.wages.base_weekly_wage) {
+            # The canonical measured wage: laborers + farmers + machinists, EMPLOYED only (F26).
+            # ⚠ NOT `base_weekly_labour`, which this used to read - that is the superseded 11-profession
+            # basis including soldiers, the state-salaried middle stratum and the unemployed, and it
+            # overstates the market wage a building pays.
+            $baseWage = [double]$meas.wages.base_weekly_wage
+            $baseWageNote = "measured from laborers/farmers/machinists in employment (F26 basis)"
+            if ($null -ne $meas.wages.wage_stratum_sol) {
+                $baseWageNote += "; that stratum's SoL here is $($meas.wages.wage_stratum_sol)"
             }
         } elseif ($meas.wages.state_annual_wage) {
             # No per-pop rows for this market ⇒ no wage-weight-normalised base. Emit NOTHING rather
