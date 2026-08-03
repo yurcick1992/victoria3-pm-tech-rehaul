@@ -224,6 +224,46 @@ from wages. Measured `b` is 5.61 (1836) rising to 7.75 (1935) — SoL responds *
 table alone implies, because wages are not the only income and the workforce ratio varies. The rise
 toward 10.49 is economies becoming more wage-based over the century.
 
+### Late-game wages for the major nations — MEASURED, not inferred
+
+⚠ **Prefer these over any inversion.** The tables above exist for markets and dates with no
+measurement; where a measurement exists it wins outright. These are `State.GetAverageAnnualWage`
+averaged over each country's states, paired with `GetAverageSoLByPopulation`, at **1935.1.1**, run 1:
+
+| country (1935) | population | mean SoL | states | wage £/yr per **worker** |
+|---|--:|--:|--:|--:|
+| Great Qing | 492 667 885 | 8.39 | 42 | **1.56** |
+| Russia | 142 765 388 | 10.21 | 198 | **2.20** |
+| United States of America | 115 467 616 | 18.31 | 148 | **9.02** |
+| British Republic | 87 094 341 | 22.01 | 40 | **7.92** |
+| Great Britain | 78 508 384 | 19.02 | 36 | **5.38** |
+| French Republic | 56 526 397 | 10.00 | 28 | **2.16** |
+| French Commune | 53 635 475 | 15.03 | 25 | **4.42** |
+| Republic of Japan | 52 169 868 | 9.52 | 23 | **1.95** |
+| Canada | 26 672 510 | 14.24 | 23 | 8.32 |
+| Sardinia-Piedmont | 8 755 399 | 19.69 | 3 | 11.40 |
+
+Against **1836** (F25, per-state mean): Qing 0.32 → 1.56 (**4.9×**), Russia 0.51 → 2.20 (4.3×),
+USA 1.45 → 9.02 (6.2×), Britain 0.77 → 5.38 (7.0×), France 1.01 → 2.16 (2.1×), Japan 1.23 → 1.95
+(1.6×). **A century of vanilla multiplies the per-worker wage by roughly 2–7×**, and the ordering is
+not preserved — Britain overtakes France by a wide margin, Japan barely moves.
+
+⚠ **Three things this table is not.**
+1. **It is a per-WORKER wage, not the UI's base wage.** To get the base, divide by the market's mean
+   wage weight — measured 0.52 (Austria) to 0.74 (Belgium) in 1836, and not measured for these
+   countries at 1935. So the base is roughly `wage ÷ 0.5…0.75`, a ±20 % band, unless per-pop rows are
+   collected for that country.
+2. **The country set has diverged.** By 1935 these runs contain a *British Republic* and a *French
+   Commune* alongside Great Britain and the French Republic; "France" is two countries with SoL 10.00
+   and 15.03. There is no single vanilla late-game France to target.
+3. **n=1 for this table** (run 1 only), and 1935 country identity is run-specific.
+
+**The only countries with a true measured late-game BASE wage** — the ones with per-pop coverage at
+1935 — are: Austria **0.0858 £/wk**, German Empire **0.0893**, Belgium **0.0857**, Netherlands
+**0.0927** (labour base; F25). Against their 1836 values (Austria 0.0509, Belgium 0.0765) that is a
+**1.2–1.7×** rise in the base — much flatter than the 2–7× rise in the per-worker wage, because the
+professional mix shifts toward higher `wage_weight` jobs over the century.
+
 **Checked against the measurement:** Belgium 1935 has a labour wage of £7.49/yr per worker and a
 ratio of 0.2323 ⇒ £0.0335 per head per week ⇒ table level ≈ 14, against an **actual SoL of 12.4**.
 The gap is 1.6 levels, matching the +1.17 bias. So the recipe reproduces the measured case to about
