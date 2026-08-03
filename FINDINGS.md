@@ -230,19 +230,39 @@ For **seeding scenarios at dates and countries we have not measured** ("rich ~18
 ~1900", "extraction economy ~1930"). Output is the **base wage in £/week for a weight-1 employee** —
 exactly what the balance UI's Workforce panel takes, no conversion needed.
 
-**Fitted on LABORERS + FARMERS + MACHINISTS only.** Workforce-weighted, pooled over 1836 + 1935,
-n = 72 country-dates:
+**Fitted on LABORERS + FARMERS + MACHINISTS only, and on EMPLOYED pops only.** Workforce-weighted,
+pooled over 1836 + 1935:
 
 ```
-base £/wk  =  exp( (SoL − 23.39) / 5.01 )        r² = 0.829
+base £/wk  =  exp( (SoL − 23.96) / 5.56 )        <-- USE THIS for building-level modelling
 ```
 
 | SoL | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| **base £/wk** | 0.0254 | 0.0310 | 0.0378 | 0.0462 | 0.0564 | 0.0689 | 0.0841 | 0.1027 | 0.1255 | 0.1532 | *0.1871* | *0.2285* |
-| **base £/yr** | 1.32 | 1.61 | 1.97 | 2.40 | 2.93 | 3.58 | 4.38 | 5.34 | 6.52 | 7.97 | *9.73* | *11.88* |
+| **base £/wk** | 0.0330 | 0.0395 | 0.0473 | 0.0567 | 0.0678 | 0.0812 | 0.0972 | 0.1164 | 0.1393 | 0.1667 | *0.1996* | *0.2389* |
+| **base £/yr** | 1.72 | 2.06 | 2.46 | 2.95 | 3.53 | 4.22 | 5.05 | 6.05 | 7.24 | 8.67 | *10.38* | *12.42* |
 
 Valid domain **SoL 5.2–13.9** (p5–p95; observed 2.3–19.0). *Italic = extrapolated.*
+SoL is measured over **all** lower-stratum pops (what a scenario types in); the base is measured over
+the **employed** ones (what a building actually pays).
+
+⚠ **Excluding the unemployed is a correction, not a refinement.** The base is
+`Σ(workforce income) / Σ(workforce × wage_weight)`, so an unemployed pop puts workers in the
+denominator and nothing in the numerator and **deflates the measured wage**. Measured: **14.9 % of
+lower-stratum pops, holding 18.3 % of the lower-stratum workforce, have effectively zero workforce
+income.** The employed-only base runs **1.00–1.38× the all-pops base (mean 1.15×)** — Austria 1836
++38 %, Britain +23 %, the Qing +27 %, while the USA and Austria 1935 are unaffected.
+
+⚠ **And it makes the FIT worse, for a real reason: SoL embeds unemployment and the employed wage does
+not.** Against the all-pops variant (`SoL = 23.39 + 5.01·ln(base)`, r² 0.829, median 16 %), the
+employed-only fit is r² 0.730, **median 19 %, p90 51 %**. That is the honest cost of asking for the
+right quantity: a country with high unemployment has a low SoL at any given employed wage, so SoL
+predicts the *unemployment-diluted* base better than the one a building pays. Predicting the all-pops
+base and multiplying by 1.15 is the same functional form with a shifted intercept, so it is not a way
+out — the uncertainty is real, not a choice of algebra.
+
+**In practice this matters less than ±19 % sounds.** Wages are a minority of a building's operating
+cost under the workforce model, so a 20 % wage error is a low-single-digit error on total cost and BE.
 
 **Why only this stratum — the decision, and its real justification.** The lower stratum is the one
 whose pay *is* the market wage that buildings hand out. The middle stratum is not: **bureaucrats,
@@ -285,9 +305,18 @@ runs produced.
 The three fits differ far more than they should if SoL is a pure function of wealth. Three
 explanations were tested against the data and **none survives**:
 
-1. **"The middle stratum earns mostly non-wage income."** Refuted, and backwards: measured
-   workforce-income share of total pop income is **lower 62.6 %, middle 86.4 %, upper 100.0 %**. It is
-   the *lower* stratum that draws most heavily on non-workforce income (dependent income, ~37 %).
+1. **"The middle stratum earns mostly non-wage income."** Refuted as stated, though the underlying
+   worry is sound. ⚠ **"Workforce income" is the game's term for what the working ADULTS bring in,
+   not for wages** — for an owner pop it is *dividends*. So the measured shares
+   (**lower 64.7 %, middle 86.4 %, upper 100.0 %**) do not say what they appear to: the upper stratum
+   reads 100 % because its dependants earn nothing and its dividends count as workforce income, paid
+   by manor houses, financial districts and company HQs — buildings with no inputs, outputs or profit
+   motive, and not what we model at all. In-game inspection puts a middle-stratum shopkeeper at ~80 %
+   workforce income of which **~85 % is wage and ~15 % dividends**, and an employed labourer at ~80 %
+   workforce income that is **wages only**. The lower stratum's aggregate reads 64.7 % rather than
+   ~80 % because it includes the unemployed; restricted to employed pops it rises to **69.6 %**.
+   **The real consequence is the one acted on above:** the lower stratum's workforce income is a pure
+   wage, the middle's is wage + dividends, so only the lower stratum can measure a base wage.
 2. **"`wage_weight` explains it — a middle job pays 3–4× a laborer's at the same base, so the strata
    are one curve seen through a multiplier."** Refuted: re-fitting on **income per head**, which
    already contains that multiplier, does *not* collapse them — lower `a=35.58, b=7.33` against middle
