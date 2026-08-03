@@ -224,59 +224,80 @@ from wages. Measured `b` is 5.61 (1836) rising to 7.75 (1935) — SoL responds *
 table alone implies, because wages are not the only income and the workforce ratio varies. The rise
 toward 10.49 is economies becoming more wage-based over the century.
 
-### ✅ THE RULE TO USE — working-strata SoL → BASE WAGE (the UI's own knob)
+### ✅ THE RULE TO USE — LOWER-stratum SoL → BASE WAGE (the UI's own knob)
 
-This is the finalised form for **seeding scenarios at dates and countries we have not measured**
-("rich ~1860", "runners-up ~1900", "extraction economy ~1930"). It outputs the **base wage in
-£/week for a weight-1 employee** — exactly what the balance UI's Workforce panel takes — so no
-further conversion is needed.
+For **seeding scenarios at dates and countries we have not measured** ("rich ~1860", "runners-up
+~1900", "extraction economy ~1930"). Output is the **base wage in £/week for a weight-1 employee** —
+exactly what the balance UI's Workforce panel takes, no conversion needed.
 
-`base = exp((SoL − a) / b)`, workforce-weighted fits pooled over 1836 + 1935:
+**Fitted on LABORERS + FARMERS + MACHINISTS only.** Workforce-weighted, pooled over 1836 + 1935,
+n = 72 country-dates:
 
-| stratum scope | a | b | r² | people-wtd err | valid SoL domain (p5–p95, observed) |
-|---|--:|--:|--:|--:|---|
-| **lower** (laborers, farmers, machinists, soldiers) | 23.23 | 4.89 | 0.815 | 16 % | 5.8–14.0 (2.3–18.8) |
-| **working (lower+middle)** | **32.07** | **7.81** | **0.832** | **11 %** | 6.3–16.1 (2.8–21.5) |
-| **middle** (clerks, shopkeepers, engineers, clergymen, bureaucrats, academics, officers) | 39.87 | 8.85 | 0.823 | **9 %** | 15.2–23.1 (13.5–26.4) |
+```
+base £/wk  =  exp( (SoL − 23.39) / 5.01 )        r² = 0.829
+```
 
-⚠ **Workforce-weighted, and that is not cosmetic.** The unweighted fit is dominated by ~70 tiny
-colonial states and sits systematically *below* every major nation (Belgium −18 %, Austria −19 %,
-Britain −16 %). Weighting by workforce is what makes it usable for the countries scenarios are built
-around.
+| SoL | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| **base £/wk** | 0.0254 | 0.0310 | 0.0378 | 0.0462 | 0.0564 | 0.0689 | 0.0841 | 0.1027 | 0.1255 | 0.1532 | *0.1871* | *0.2285* |
+| **base £/yr** | 1.32 | 1.61 | 1.97 | 2.40 | 2.93 | 3.58 | 4.38 | 5.34 | 6.52 | 7.97 | *9.73* | *11.88* |
 
-**base wage, £/week per weight-1 employee** (×52 for £/year):
+Valid domain **SoL 5.2–13.9** (p5–p95; observed 2.3–19.0). *Italic = extrapolated.*
 
-| SoL | 6 | 8 | 10 | 12 | 14 | 16 | 18 | 20 | 22 | 24 | 26 |
-|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| **lower** | 0.0295 | 0.0444 | 0.0668 | 0.1006 | 0.1514 | *0.2280* | *0.3432* | — | — | — | — |
-| **working** | 0.0355 | 0.0459 | 0.0593 | 0.0766 | 0.0989 | 0.1278 | 0.1650 | *0.2132* | *0.2754* | — | — |
-| **middle** | — | — | — | — | — | 0.0674 | 0.0845 | 0.1059 | 0.1328 | 0.1664 | 0.2086 |
+**Why only this stratum — the decision, and its real justification.** The lower stratum is the one
+whose pay *is* the market wage that buildings hand out. The middle stratum is not: **bureaucrats,
+academics, clergymen and officers are state-salaried**, tracking the government-wage-level law rather
+than any building's wage bill, and **shopkeepers are owners**. **Soldiers are excluded for the same
+reason** — the military-wage law, not the market — and dropping them is measurably better, cutting
+the p90 error from 54 % to 38 % at unchanged median. Peasants and slaves were never in scope.
 
-*Italic = outside the p5–p95 domain; the `lower` curve is the steepest (b = 4.89) and blows up fast
-past SoL 16 — at SoL 30 it returns £3.99/wk, which is nonsense. Prefer the **working** row, and use
-`middle` when the scenario pins a middle-stratum SoL.*
+⚠ **This costs accuracy, and the cost should be known.** The lower-only rule is *worse* than the
+lower+middle rule it replaces: median error 16 % vs 11 %, worst anchor **−37 % vs −19 %**. It is
+adopted anyway because the lower+middle fit was tighter around a quantity that **is not a market
+wage**, and a tight fit to the wrong thing is worse than a loose fit to the right one.
 
-**Checked against every measured anchor** (working scope, predicted vs measured base):
-
-| | SoL | measured | predicted | err |
+| anchor | SoL | measured base | rule | err |
 |---|--:|--:|--:|--:|
-| France 1836 | 9.14 | 0.05368 | 0.05310 | **−1 %** |
-| Qing 1836 | 9.02 | 0.05037 | 0.05228 | +4 % |
-| Austria 1836 | 9.14 | 0.05062 | 0.05306 | +5 % |
-| Netherlands 1935 | 12.19 | 0.08310 | 0.07849 | −6 % |
-| USA 1836 | 10.92 | 0.07265 | 0.06668 | −8 % |
-| Great Britain 1836 | 9.89 | 0.06451 | 0.05842 | −9 % |
-| German Empire 1935 | 14.09 | 0.08932 | 0.10008 | +12 % |
-| Belgium 1836 / 1935 | 10.84 / 11.50 | 0.07645 / 0.08565 | 0.06601 / 0.07183 | −14 % / −16 % |
-| Austria 1935 | 11.46 | 0.08577 | 0.07145 | −17 % |
-| Russia 1836 | 9.55 | 0.04699 | 0.05595 | **+19 %** |
+| USA 1836 | 9.94 | 0.07078 | 0.06809 | **−4 %** |
+| Austria 1836 | 7.21 | 0.04399 | 0.03942 | −10 % |
+| France 1836 | 7.63 | 0.04955 | 0.04291 | −13 % |
+| Qing 1836 | 6.54 | 0.03039 | 0.03451 | +14 % |
+| Netherlands 1935 | 9.95 | 0.07896 | 0.06822 | −14 % |
+| Great Britain 1836 | 7.69 | 0.05251 | 0.04339 | −17 % |
+| German Empire 1935 | 11.32 | 0.07644 | 0.08975 | +17 % |
+| Russia 1836 | 7.97 | 0.03836 | 0.04595 | +20 % |
+| Austria 1935 | 9.94 | 0.08609 | 0.06809 | −21 % |
+| Belgium 1836 | 9.20 | 0.07532 | 0.05869 | −22 % |
+| Belgium 1935 | 9.30 | 0.09460 | 0.05995 | **−37 %** |
 
-**Worst case ±19 %, most within ±10 %.** The 1935 anchors skew negative (the rule under-predicts a
-mature economy's base by ~15 %), so for a late-game scenario it is defensible to add ~15 % on top.
+The rule **under-predicts mature economies** (every 1935 anchor except the German Empire is
+negative), so a late-game scenario can defensibly scale up by ~20 %.
 
-**Also useful for setting the scenario's SoL fields:** the observed vanilla range is **lower 6–14**
-and **middle 15–23**. A scenario that puts the middle stratum below ~13 or the lower stratum above
-~19 is outside anything these runs produced.
+**Other strata's SoL is for CONSUMPTION only, never for wages.** Set upper/middle SoL in a scenario
+to drive what those pops buy; do not invert them for a wage.
+
+**Observed vanilla SoL ranges**, for setting the scenario's own fields: **lower 5–14, middle 15–23,
+working combined 6–16**. A scenario putting the middle stratum below ~13 is outside anything these
+runs produced.
+
+#### ⚠ Why the strata disagree is still UNEXPLAINED — three hypotheses, all refuted
+
+The three fits differ far more than they should if SoL is a pure function of wealth. Three
+explanations were tested against the data and **none survives**:
+
+1. **"The middle stratum earns mostly non-wage income."** Refuted, and backwards: measured
+   workforce-income share of total pop income is **lower 62.6 %, middle 86.4 %, upper 100.0 %**. It is
+   the *lower* stratum that draws most heavily on non-workforce income (dependent income, ~37 %).
+2. **"`wage_weight` explains it — a middle job pays 3–4× a laborer's at the same base, so the strata
+   are one curve seen through a multiplier."** Refuted: re-fitting on **income per head**, which
+   already contains that multiplier, does *not* collapse them — lower `a=35.58, b=7.33` against middle
+   `a=46.43, b=10.59`.
+3. **"The workforce ratio is the missing term — the same wage supports fewer people where the ratio is
+   low."** Refuted: adding it makes the fit *worse*, r² 0.829 → 0.790 and median error 16 % → 19 %.
+
+So the stratum dependence is real, measured, and unaccounted for. **Do not build anything on an
+assumed mechanism for it**; use the lower-stratum rule empirically and treat its ±20 % as the honest
+uncertainty.
 
 ⚠ **Why this needs no further wage logging.** The rule takes SoL and returns a base wage, and SoL is
 cheap to log at scale — the `WSTR` line is one line per country per dump and carries all five strata
