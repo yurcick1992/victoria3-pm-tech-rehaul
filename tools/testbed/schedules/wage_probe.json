@@ -1,0 +1,18 @@
+{
+  "schedule_version": 1,
+  "label": "wage-probe",
+  "_why": "Before paying for three 100-year runs, establish that the wage questions are instrumentable at all. Five separate questions, deliberately kept apart so one failure cannot mask another: (A) does `every_country = { limit = { market = c:BEL.market } }` enumerate a WHOLE MARKET - vanilla uses `market = ROOT.market` as a country trigger but never with a c:TAG right-hand side, and never inside a loc-string context; (B) does State.GetAverageAnnualWage resolve - it is the single number Q1 asks for and gui/budget_panel.gui is the only evidence it exists; (C) do the per-pop income fields resolve, and does GetIncome really split into GetWorkforceIncome + GetDependentIncome - wages are only part of pop income and the split is the whole point; (D) HOW MANY POPS are in the two whole markets, which is the sizing measurement that decides whether per-pop x 2 markets x 7 dumps fits one phase or must be split; (E) the ABSENT path, exercised for real because GER does not exist in 1836.",
+  "_cost": "One control run, 1836.2.1 -> 1836.4.1. ~40s load + ~2 in-game months, so a couple of minutes.",
+  "defaults": {
+    "tags": ["BEL", "AUS"],
+    "metrics": ["wage_probe"],
+    "autosave_interval": "never",
+    "timeout_minutes": 20
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"] }
+  ]
+}

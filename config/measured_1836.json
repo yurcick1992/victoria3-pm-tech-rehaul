@@ -11,6 +11,26 @@
                                      "sol_and_urban":  "1836.2.1 + 1 month (phase 1)",
                                      "military_and_extra_by_state":  "1836.1.8 (day-7 event)",
                                      "urban_center_pms":  "1836.1.4 (day-3 event) when taken from a probe session, or 1836.2.1 + 3 months (phase 3) from the dump body"
+                                 },
+                  "wages_from":  {
+                                     "generated":  "2026-08-03T08:11:11",
+                                     "date":  "1836.2.1",
+                                     "runs":  5,
+                                     "sessions":  [
+                                                      "C:\\claude-code\\victoria 3 PM and tech rehaul\\tools\\testbed\\sessions\\20260803_030101_wages-n3\\run001_vanilla",
+                                                      "C:\\claude-code\\victoria 3 PM and tech rehaul\\tools\\testbed\\sessions\\20260803_030101_wages-n3\\run002_vanilla",
+                                                      "C:\\claude-code\\victoria 3 PM and tech rehaul\\tools\\testbed\\sessions\\20260803_080453_wages-q1-allmarkets\\run001_vanilla",
+                                                      "C:\\claude-code\\victoria 3 PM and tech rehaul\\tools\\testbed\\sessions\\20260803_080453_wages-q1-allmarkets\\run002_vanilla",
+                                                      "C:\\claude-code\\victoria 3 PM and tech rehaul\\tools\\testbed\\sessions\\20260803_080453_wages-q1-allmarkets\\run003_vanilla"
+                                                  ],
+                                     "tokens":  [
+                                                    "20260803_030101s001",
+                                                    "20260803_030101s002",
+                                                    "20260803_080453s001",
+                                                    "20260803_080453s002",
+                                                    "20260803_080453s003"
+                                                ],
+                                     "sampled_at":  "1836.2.1 exactly - the wages metric is entirely phase 0, so nothing here drifts"
                                  }
               },
     "markets":  {
@@ -1289,7 +1309,133 @@
                                                                         "lower":  7292558,
                                                                         "peasants":  37531386,
                                                                         "slaves":  2769793
-                                                                    }
+                                                                    },
+                                           "wages":  {
+                                                         "state_annual_wage":  {
+                                                                                   "states":  125,
+                                                                                   "mean":  1.0484,
+                                                                                   "median":  0.6084,
+                                                                                   "min":  0.0249,
+                                                                                   "max":  6.4682
+                                                                               },
+                                                         "base_weekly":  0.063158,
+                                                         "base_annual":  3.2842,
+                                                         "per_worker_annual":  1.4216,
+                                                         "mean_wage_weight":  0.4329,
+                                                         "workforce_ratio":  0.2619,
+                                                         "wage_share_of_income":  0.2642,
+                                                         "mean_sol_workforce_weighted":  9.467,
+                                                         "base_weekly_labour":  0.06322,
+                                                         "base_annual_labour":  3.2875,
+                                                         "labour_base_spread":  {
+                                                                                    "types":  11,
+                                                                                    "min":  2.1554,
+                                                                                    "max":  7.739,
+                                                                                    "cv":  0.4005
+                                                                                },
+                                                         "excluded_from_labour_base":  [
+                                                                                           "capitalists (dividends, not wages)",
+                                                                                           "aristocrats (rent, not wages)",
+                                                                                           "peasants (subsistence, not a market wage)",
+                                                                                           "slaves (wage_weight 0)"
+                                                                                       ],
+                                                         "by_pop_type":  {
+                                                                             "laborers":  {
+                                                                                              "workforce":  6158357,
+                                                                                              "annual_per_worker":  2.1554,
+                                                                                              "base_annual":  2.1554,
+                                                                                              "workforce_ratio":  0.2686
+                                                                                          },
+                                                                             "farmers":  {
+                                                                                             "workforce":  480853,
+                                                                                             "annual_per_worker":  5.1181,
+                                                                                             "base_annual":  2.559,
+                                                                                             "workforce_ratio":  0.2659
+                                                                                         },
+                                                                             "machinists":  {
+                                                                                                "workforce":  232307,
+                                                                                                "annual_per_worker":  5.4871,
+                                                                                                "base_annual":  3.6581,
+                                                                                                "workforce_ratio":  0.2885
+                                                                                            },
+                                                                             "clerks":  {
+                                                                                            "workforce":  310377,
+                                                                                            "annual_per_worker":  5.9012,
+                                                                                            "base_annual":  3.9341,
+                                                                                            "workforce_ratio":  0.2839
+                                                                                        },
+                                                                             "shopkeepers":  {
+                                                                                                 "workforce":  340726,
+                                                                                                 "annual_per_worker":  12.2541,
+                                                                                                 "base_annual":  4.0847,
+                                                                                                 "workforce_ratio":  0.2814
+                                                                                             },
+                                                                             "engineers":  {
+                                                                                               "workforce":  46879,
+                                                                                               "annual_per_worker":  10.1631,
+                                                                                               "base_annual":  3.3877,
+                                                                                               "workforce_ratio":  0.2975
+                                                                                           },
+                                                                             "clergymen":  {
+                                                                                               "workforce":  509209,
+                                                                                               "annual_per_worker":  23.2171,
+                                                                                               "base_annual":  7.739,
+                                                                                               "workforce_ratio":  0.2614
+                                                                                           },
+                                                                             "bureaucrats":  {
+                                                                                                 "workforce":  90923,
+                                                                                                 "annual_per_worker":  13.2193,
+                                                                                                 "base_annual":  3.3048,
+                                                                                                 "workforce_ratio":  0.2661
+                                                                                             },
+                                                                             "academics":  {
+                                                                                               "workforce":  6501,
+                                                                                               "annual_per_worker":  13.0156,
+                                                                                               "base_annual":  3.2539,
+                                                                                               "workforce_ratio":  0.2977
+                                                                                           },
+                                                                             "officers":  {
+                                                                                              "workforce":  40350,
+                                                                                              "annual_per_worker":  15.798,
+                                                                                              "base_annual":  3.1596,
+                                                                                              "workforce_ratio":  0.2767
+                                                                                          },
+                                                                             "soldiers":  {
+                                                                                              "workforce":  799009,
+                                                                                              "annual_per_worker":  4.4722,
+                                                                                              "base_annual":  2.9814,
+                                                                                              "workforce_ratio":  0.2653
+                                                                                          },
+                                                                             "aristocrats":  {
+                                                                                                 "workforce":  239605,
+                                                                                                 "annual_per_worker":  82.6096,
+                                                                                                 "base_annual":  16.5219,
+                                                                                                 "workforce_ratio":  0.2586
+                                                                                             },
+                                                                             "capitalists":  {
+                                                                                                 "workforce":  15787,
+                                                                                                 "annual_per_worker":  306.3754,
+                                                                                                 "base_annual":  61.2751,
+                                                                                                 "workforce_ratio":  0.2967
+                                                                                             },
+                                                                             "peasants":  {
+                                                                                              "workforce":  37441409,
+                                                                                              "annual_per_worker":  0.1099,
+                                                                                              "base_annual":  0.5497,
+                                                                                              "workforce_ratio":  0.255
+                                                                                          },
+                                                                             "slaves":  {
+                                                                                            "workforce":  2218214,
+                                                                                            "annual_per_worker":  0,
+                                                                                            "base_annual":  null,
+                                                                                            "workforce_ratio":  0.4038
+                                                                                        }
+                                                                         },
+                                                         "pops_expected":  2936,
+                                                         "pops_logged":  3213,
+                                                         "runs_per_pop":  1,
+                                                         "source":  "per_pop"
+                                                     }
                                        },
                     "Luccan Market":  {
                                           "trade_in":  {
@@ -1860,7 +2006,121 @@
                                                                          "lower":  818769,
                                                                          "peasants":  7145790,
                                                                          "slaves":  0
-                                                                     }
+                                                                     },
+                                            "wages":  {
+                                                          "state_annual_wage":  {
+                                                                                    "states":  14,
+                                                                                    "mean":  1.2555,
+                                                                                    "median":  0.7912,
+                                                                                    "min":  0.5096,
+                                                                                    "max":  3.5297
+                                                                                },
+                                                          "base_weekly":  0.063902,
+                                                          "base_annual":  3.3229,
+                                                          "per_worker_annual":  1.2551,
+                                                          "mean_wage_weight":  0.3777,
+                                                          "workforce_ratio":  0.25,
+                                                          "wage_share_of_income":  0.253,
+                                                          "mean_sol_workforce_weighted":  5.2,
+                                                          "base_weekly_labour":  0.072655,
+                                                          "base_annual_labour":  3.7781,
+                                                          "labour_base_spread":  {
+                                                                                     "types":  10,
+                                                                                     "min":  2.4424,
+                                                                                     "max":  6.0107,
+                                                                                     "cv":  0.315
+                                                                                 },
+                                                          "excluded_from_labour_base":  [
+                                                                                            "capitalists (dividends, not wages)",
+                                                                                            "aristocrats (rent, not wages)",
+                                                                                            "peasants (subsistence, not a market wage)",
+                                                                                            "slaves (wage_weight 0)"
+                                                                                        ],
+                                                          "by_pop_type":  {
+                                                                              "laborers":  {
+                                                                                               "workforce":  691578,
+                                                                                               "annual_per_worker":  3.6952,
+                                                                                               "base_annual":  3.6952,
+                                                                                               "workforce_ratio":  0.25
+                                                                                           },
+                                                                              "farmers":  {
+                                                                                              "workforce":  79016,
+                                                                                              "annual_per_worker":  6.1243,
+                                                                                              "base_annual":  3.0621,
+                                                                                              "workforce_ratio":  0.25
+                                                                                          },
+                                                                              "machinists":  {
+                                                                                                 "workforce":  6815,
+                                                                                                 "annual_per_worker":  9.016,
+                                                                                                 "base_annual":  6.0107,
+                                                                                                 "workforce_ratio":  0.25
+                                                                                             },
+                                                                              "clerks":  {
+                                                                                             "workforce":  24164,
+                                                                                             "annual_per_worker":  3.9843,
+                                                                                             "base_annual":  2.6562,
+                                                                                             "workforce_ratio":  0.2499
+                                                                                         },
+                                                                              "shopkeepers":  {
+                                                                                                  "workforce":  36113,
+                                                                                                  "annual_per_worker":  12.8307,
+                                                                                                  "base_annual":  4.2769,
+                                                                                                  "workforce_ratio":  0.2499
+                                                                                              },
+                                                                              "engineers":  {
+                                                                                                "workforce":  250,
+                                                                                                "annual_per_worker":  15.3485,
+                                                                                                "base_annual":  5.1162,
+                                                                                                "workforce_ratio":  0.2495
+                                                                                            },
+                                                                              "clergymen":  {
+                                                                                                "workforce":  84212,
+                                                                                                "annual_per_worker":  14.8658,
+                                                                                                "base_annual":  4.9553,
+                                                                                                "workforce_ratio":  0.25
+                                                                                            },
+                                                                              "bureaucrats":  {
+                                                                                                  "workforce":  11103,
+                                                                                                  "annual_per_worker":  9.7696,
+                                                                                                  "base_annual":  2.4424,
+                                                                                                  "workforce_ratio":  0.2499
+                                                                                              },
+                                                                              "officers":  {
+                                                                                               "workforce":  14603,
+                                                                                               "annual_per_worker":  15.1725,
+                                                                                               "base_annual":  3.0345,
+                                                                                               "workforce_ratio":  0.25
+                                                                                           },
+                                                                              "soldiers":  {
+                                                                                               "workforce":  44410,
+                                                                                               "annual_per_worker":  4.5281,
+                                                                                               "base_annual":  3.0187,
+                                                                                               "workforce_ratio":  0.25
+                                                                                           },
+                                                                              "aristocrats":  {
+                                                                                                  "workforce":  43774,
+                                                                                                  "annual_per_worker":  51.8726,
+                                                                                                  "base_annual":  10.3745,
+                                                                                                  "workforce_ratio":  0.2498
+                                                                                              },
+                                                                              "capitalists":  {
+                                                                                                  "workforce":  150,
+                                                                                                  "annual_per_worker":  182.2316,
+                                                                                                  "base_annual":  36.4463,
+                                                                                                  "workforce_ratio":  0.25
+                                                                                              },
+                                                                              "peasants":  {
+                                                                                               "workforce":  7146256,
+                                                                                               "annual_per_worker":  0.3533,
+                                                                                               "base_annual":  1.7665,
+                                                                                               "workforce_ratio":  0.25
+                                                                                           }
+                                                                          },
+                                                          "pops_expected":  337,
+                                                          "pops_logged":  336,
+                                                          "runs_per_pop":  1,
+                                                          "source":  "per_pop"
+                                                      }
                                         },
                     "Hawaiian Market":  {
                                             "trade_in":  {
@@ -3375,7 +3635,127 @@
                                                                         "lower":  346122,
                                                                         "peasants":  605123,
                                                                         "slaves":  0
-                                                                    }
+                                                                    },
+                                           "wages":  {
+                                                         "state_annual_wage":  {
+                                                                                   "states":  2,
+                                                                                   "mean":  1.8259,
+                                                                                   "median":  1.9668,
+                                                                                   "min":  0.4196,
+                                                                                   "max":  3.133
+                                                                               },
+                                                         "base_weekly":  0.088988,
+                                                         "base_annual":  4.6274,
+                                                         "per_worker_annual":  3.4268,
+                                                         "mean_wage_weight":  0.7405,
+                                                         "workforce_ratio":  0.25,
+                                                         "wage_share_of_income":  0.4804,
+                                                         "mean_sol_workforce_weighted":  10.416,
+                                                         "base_weekly_labour":  0.076448,
+                                                         "base_annual_labour":  3.9753,
+                                                         "labour_base_spread":  {
+                                                                                    "types":  11,
+                                                                                    "min":  3.4012,
+                                                                                    "max":  4.5453,
+                                                                                    "cv":  0.0966
+                                                                                },
+                                                         "excluded_from_labour_base":  [
+                                                                                           "capitalists (dividends, not wages)",
+                                                                                           "aristocrats (rent, not wages)",
+                                                                                           "peasants (subsistence, not a market wage)",
+                                                                                           "slaves (wage_weight 0)"
+                                                                                       ],
+                                                         "by_pop_type":  {
+                                                                             "laborers":  {
+                                                                                              "workforce":  250046,
+                                                                                              "annual_per_worker":  3.914,
+                                                                                              "base_annual":  3.914,
+                                                                                              "workforce_ratio":  0.25
+                                                                                          },
+                                                                             "farmers":  {
+                                                                                             "workforce":  30602,
+                                                                                             "annual_per_worker":  7.4852,
+                                                                                             "base_annual":  3.7426,
+                                                                                             "workforce_ratio":  0.25
+                                                                                         },
+                                                                             "machinists":  {
+                                                                                                "workforce":  26550,
+                                                                                                "annual_per_worker":  6.3019,
+                                                                                                "base_annual":  4.2013,
+                                                                                                "workforce_ratio":  0.25
+                                                                                            },
+                                                                             "clerks":  {
+                                                                                            "workforce":  27968,
+                                                                                            "annual_per_worker":  5.646,
+                                                                                            "base_annual":  3.764,
+                                                                                            "workforce_ratio":  0.25
+                                                                                        },
+                                                                             "shopkeepers":  {
+                                                                                                 "workforce":  28220,
+                                                                                                 "annual_per_worker":  13.6358,
+                                                                                                 "base_annual":  4.5453,
+                                                                                                 "workforce_ratio":  0.25
+                                                                                             },
+                                                                             "engineers":  {
+                                                                                               "workforce":  7778,
+                                                                                               "annual_per_worker":  13.1337,
+                                                                                               "base_annual":  4.3779,
+                                                                                               "workforce_ratio":  0.2499
+                                                                                           },
+                                                                             "clergymen":  {
+                                                                                               "workforce":  10556,
+                                                                                               "annual_per_worker":  12.9156,
+                                                                                               "base_annual":  4.3052,
+                                                                                               "workforce_ratio":  0.25
+                                                                                           },
+                                                                             "bureaucrats":  {
+                                                                                                 "workforce":  3680,
+                                                                                                 "annual_per_worker":  15.0088,
+                                                                                                 "base_annual":  3.7522,
+                                                                                                 "workforce_ratio":  0.2499
+                                                                                             },
+                                                                             "academics":  {
+                                                                                               "workforce":  500,
+                                                                                               "annual_per_worker":  14.672,
+                                                                                               "base_annual":  3.668,
+                                                                                               "workforce_ratio":  0.2499
+                                                                                           },
+                                                                             "officers":  {
+                                                                                              "workforce":  2750,
+                                                                                              "annual_per_worker":  17.0062,
+                                                                                              "base_annual":  3.4012,
+                                                                                              "workforce_ratio":  0.2499
+                                                                                          },
+                                                                             "soldiers":  {
+                                                                                              "workforce":  36341,
+                                                                                              "annual_per_worker":  5.2233,
+                                                                                              "base_annual":  3.4822,
+                                                                                              "workforce_ratio":  0.25
+                                                                                          },
+                                                                             "aristocrats":  {
+                                                                                                 "workforce":  3700,
+                                                                                                 "annual_per_worker":  39.8475,
+                                                                                                 "base_annual":  7.9695,
+                                                                                                 "workforce_ratio":  0.25
+                                                                                             },
+                                                                             "capitalists":  {
+                                                                                                 "workforce":  2125,
+                                                                                                 "annual_per_worker":  289.0726,
+                                                                                                 "base_annual":  57.8145,
+                                                                                                 "workforce_ratio":  0.25
+                                                                                             },
+                                                                             "peasants":  {
+                                                                                              "workforce":  606333,
+                                                                                              "annual_per_worker":  0.5558,
+                                                                                              "base_annual":  2.7788,
+                                                                                              "workforce_ratio":  0.25
+                                                                                          }
+                                                                         },
+                                                         "pops_expected":  180,
+                                                         "pops_logged":  178,
+                                                         "runs_per_pop":  2,
+                                                         "source":  "per_pop"
+                                                     }
                                        },
                     "Touggourtian Market":  {
                                                 "trade_in":  {
@@ -4192,7 +4572,133 @@
                                                                        "lower":  3030428,
                                                                        "peasants":  6872800,
                                                                        "slaves":  12550
-                                                                   }
+                                                                   },
+                                          "wages":  {
+                                                        "state_annual_wage":  {
+                                                                                  "states":  30,
+                                                                                  "mean":  1.0069,
+                                                                                  "median":  1.0088,
+                                                                                  "min":  0.0379,
+                                                                                  "max":  2.8875
+                                                                              },
+                                                        "base_weekly":  0.064102,
+                                                        "base_annual":  3.3333,
+                                                        "per_worker_annual":  2.0597,
+                                                        "mean_wage_weight":  0.6179,
+                                                        "workforce_ratio":  0.3,
+                                                        "wage_share_of_income":  0.3609,
+                                                        "mean_sol_workforce_weighted":  11.362,
+                                                        "base_weekly_labour":  0.053618,
+                                                        "base_annual_labour":  2.7881,
+                                                        "labour_base_spread":  {
+                                                                                   "types":  11,
+                                                                                   "min":  2.4077,
+                                                                                   "max":  3.9246,
+                                                                                   "cv":  0.1178
+                                                                               },
+                                                        "excluded_from_labour_base":  [
+                                                                                          "capitalists (dividends, not wages)",
+                                                                                          "aristocrats (rent, not wages)",
+                                                                                          "peasants (subsistence, not a market wage)",
+                                                                                          "slaves (wage_weight 0)"
+                                                                                      ],
+                                                        "by_pop_type":  {
+                                                                            "laborers":  {
+                                                                                             "workforce":  2354860,
+                                                                                             "annual_per_worker":  2.4077,
+                                                                                             "base_annual":  2.4077,
+                                                                                             "workforce_ratio":  0.3
+                                                                                         },
+                                                                            "farmers":  {
+                                                                                            "workforce":  306979,
+                                                                                            "annual_per_worker":  6.1948,
+                                                                                            "base_annual":  3.0974,
+                                                                                            "workforce_ratio":  0.3
+                                                                                        },
+                                                                            "machinists":  {
+                                                                                               "workforce":  118069,
+                                                                                               "annual_per_worker":  4.4444,
+                                                                                               "base_annual":  2.9629,
+                                                                                               "workforce_ratio":  0.3
+                                                                                           },
+                                                                            "clerks":  {
+                                                                                           "workforce":  151571,
+                                                                                           "annual_per_worker":  4.1427,
+                                                                                           "base_annual":  2.7618,
+                                                                                           "workforce_ratio":  0.3
+                                                                                       },
+                                                                            "shopkeepers":  {
+                                                                                                "workforce":  142134,
+                                                                                                "annual_per_worker":  9.4023,
+                                                                                                "base_annual":  3.1341,
+                                                                                                "workforce_ratio":  0.3
+                                                                                            },
+                                                                            "engineers":  {
+                                                                                              "workforce":  19678,
+                                                                                              "annual_per_worker":  9.0412,
+                                                                                              "base_annual":  3.0137,
+                                                                                              "workforce_ratio":  0.3
+                                                                                          },
+                                                                            "clergymen":  {
+                                                                                              "workforce":  104782,
+                                                                                              "annual_per_worker":  11.7738,
+                                                                                              "base_annual":  3.9246,
+                                                                                              "workforce_ratio":  0.3
+                                                                                          },
+                                                                            "bureaucrats":  {
+                                                                                                "workforce":  41635,
+                                                                                                "annual_per_worker":  12.2435,
+                                                                                                "base_annual":  3.0609,
+                                                                                                "workforce_ratio":  0.3
+                                                                                            },
+                                                                            "academics":  {
+                                                                                              "workforce":  3750,
+                                                                                              "annual_per_worker":  12.667,
+                                                                                              "base_annual":  3.1667,
+                                                                                              "workforce_ratio":  0.3
+                                                                                          },
+                                                                            "officers":  {
+                                                                                             "workforce":  18491,
+                                                                                             "annual_per_worker":  15.1908,
+                                                                                             "base_annual":  3.0382,
+                                                                                             "workforce_ratio":  0.3001
+                                                                                         },
+                                                                            "soldiers":  {
+                                                                                             "workforce":  256920,
+                                                                                             "annual_per_worker":  4.5281,
+                                                                                             "base_annual":  3.0187,
+                                                                                             "workforce_ratio":  0.3
+                                                                                         },
+                                                                            "aristocrats":  {
+                                                                                                "workforce":  40895,
+                                                                                                "annual_per_worker":  47.6716,
+                                                                                                "base_annual":  9.5343,
+                                                                                                "workforce_ratio":  0.3
+                                                                                            },
+                                                                            "capitalists":  {
+                                                                                                "workforce":  8025,
+                                                                                                "annual_per_worker":  326.63,
+                                                                                                "base_annual":  65.326,
+                                                                                                "workforce_ratio":  0.3001
+                                                                                            },
+                                                                            "peasants":  {
+                                                                                             "workforce":  6864268,
+                                                                                             "annual_per_worker":  0.5034,
+                                                                                             "base_annual":  2.5168,
+                                                                                             "workforce_ratio":  0.3
+                                                                                         },
+                                                                            "slaves":  {
+                                                                                           "workforce":  6254,
+                                                                                           "annual_per_worker":  0,
+                                                                                           "base_annual":  null,
+                                                                                           "workforce_ratio":  0.2993
+                                                                                       }
+                                                                        },
+                                                        "pops_expected":  999,
+                                                        "pops_logged":  999,
+                                                        "runs_per_pop":  1,
+                                                        "source":  "per_pop"
+                                                    }
                                       },
                     "Ottoman Market":  {
                                            "trade_in":  {
@@ -5639,7 +6145,133 @@
                                                                         "lower":  3024991,
                                                                         "peasants":  14096846,
                                                                         "slaves":  12910
-                                                                    }
+                                                                    },
+                                           "wages":  {
+                                                         "state_annual_wage":  {
+                                                                                   "states":  96,
+                                                                                   "mean":  0.509,
+                                                                                   "median":  0.3088,
+                                                                                   "min":  0.015,
+                                                                                   "max":  3.8474
+                                                                               },
+                                                         "base_weekly":  0.046547,
+                                                         "base_annual":  2.4204,
+                                                         "per_worker_annual":  1.1877,
+                                                         "mean_wage_weight":  0.4907,
+                                                         "workforce_ratio":  0.2963,
+                                                         "wage_share_of_income":  0.2706,
+                                                         "mean_sol_workforce_weighted":  9.378,
+                                                         "base_weekly_labour":  0.047923,
+                                                         "base_annual_labour":  2.492,
+                                                         "labour_base_spread":  {
+                                                                                    "types":  11,
+                                                                                    "min":  1.2405,
+                                                                                    "max":  3.8649,
+                                                                                    "cv":  0.3004
+                                                                                },
+                                                         "excluded_from_labour_base":  [
+                                                                                           "capitalists (dividends, not wages)",
+                                                                                           "aristocrats (rent, not wages)",
+                                                                                           "peasants (subsistence, not a market wage)",
+                                                                                           "slaves (wage_weight 0)"
+                                                                                       ],
+                                                         "by_pop_type":  {
+                                                                             "laborers":  {
+                                                                                              "workforce":  2454532,
+                                                                                              "annual_per_worker":  2.0615,
+                                                                                              "base_annual":  2.0615,
+                                                                                              "workforce_ratio":  0.297
+                                                                                          },
+                                                                             "farmers":  {
+                                                                                             "workforce":  240081,
+                                                                                             "annual_per_worker":  3.9108,
+                                                                                             "base_annual":  1.9554,
+                                                                                             "workforce_ratio":  0.2977
+                                                                                         },
+                                                                             "machinists":  {
+                                                                                                "workforce":  79880,
+                                                                                                "annual_per_worker":  2.9122,
+                                                                                                "base_annual":  1.9415,
+                                                                                                "workforce_ratio":  0.2957
+                                                                                            },
+                                                                             "clerks":  {
+                                                                                            "workforce":  77662,
+                                                                                            "annual_per_worker":  5.7974,
+                                                                                            "base_annual":  3.8649,
+                                                                                            "workforce_ratio":  0.2936
+                                                                                        },
+                                                                             "shopkeepers":  {
+                                                                                                 "workforce":  157391,
+                                                                                                 "annual_per_worker":  9.0394,
+                                                                                                 "base_annual":  3.0131,
+                                                                                                 "workforce_ratio":  0.2955
+                                                                                             },
+                                                                             "engineers":  {
+                                                                                               "workforce":  2680,
+                                                                                               "annual_per_worker":  3.7216,
+                                                                                               "base_annual":  1.2405,
+                                                                                               "workforce_ratio":  0.2839
+                                                                                           },
+                                                                             "clergymen":  {
+                                                                                               "workforce":  314903,
+                                                                                               "annual_per_worker":  10.6858,
+                                                                                               "base_annual":  3.5619,
+                                                                                               "workforce_ratio":  0.2968
+                                                                                           },
+                                                                             "bureaucrats":  {
+                                                                                                 "workforce":  19409,
+                                                                                                 "annual_per_worker":  10.7325,
+                                                                                                 "base_annual":  2.6831,
+                                                                                                 "workforce_ratio":  0.289
+                                                                                             },
+                                                                             "academics":  {
+                                                                                               "workforce":  2001,
+                                                                                               "annual_per_worker":  12.0007,
+                                                                                               "base_annual":  3.0002,
+                                                                                               "workforce_ratio":  0.2926
+                                                                                           },
+                                                                             "officers":  {
+                                                                                              "workforce":  12943,
+                                                                                              "annual_per_worker":  12.1328,
+                                                                                              "base_annual":  2.4266,
+                                                                                              "workforce_ratio":  0.2966
+                                                                                          },
+                                                                             "soldiers":  {
+                                                                                              "workforce":  268250,
+                                                                                              "annual_per_worker":  3.5848,
+                                                                                              "base_annual":  2.3898,
+                                                                                              "workforce_ratio":  0.2959
+                                                                                          },
+                                                                             "aristocrats":  {
+                                                                                                 "workforce":  157336,
+                                                                                                 "annual_per_worker":  45.0421,
+                                                                                                 "base_annual":  9.0084,
+                                                                                                 "workforce_ratio":  0.2876
+                                                                                             },
+                                                                             "capitalists":  {
+                                                                                                 "workforce":  3950,
+                                                                                                 "annual_per_worker":  154.1284,
+                                                                                                 "base_annual":  30.8257,
+                                                                                                 "workforce_ratio":  0.2947
+                                                                                             },
+                                                                             "peasants":  {
+                                                                                              "workforce":  14074595,
+                                                                                              "annual_per_worker":  0.0498,
+                                                                                              "base_annual":  0.2491,
+                                                                                              "workforce_ratio":  0.2964
+                                                                                          },
+                                                                             "slaves":  {
+                                                                                            "workforce":  6530,
+                                                                                            "annual_per_worker":  0,
+                                                                                            "base_annual":  null,
+                                                                                            "workforce_ratio":  0.2529
+                                                                                        }
+                                                                         },
+                                                         "pops_expected":  1628,
+                                                         "pops_logged":  1626,
+                                                         "runs_per_pop":  1,
+                                                         "source":  "per_pop"
+                                                     }
                                        },
                     "Rwandan Market":  {
                                            "trade_in":  {
@@ -8240,7 +8872,115 @@
                                                                      "lower":  7270991,
                                                                      "peasants":  87123747,
                                                                      "slaves":  0
-                                                                 }
+                                                                 },
+                                        "wages":  {
+                                                      "state_annual_wage":  {
+                                                                                "states":  52,
+                                                                                "mean":  0.3177,
+                                                                                "median":  0.2524,
+                                                                                "min":  0.0234,
+                                                                                "max":  1.4331
+                                                                            },
+                                                      "base_weekly":  0.04582,
+                                                      "base_annual":  2.3826,
+                                                      "per_worker_annual":  0.8095,
+                                                      "mean_wage_weight":  0.3398,
+                                                      "workforce_ratio":  0.25,
+                                                      "wage_share_of_income":  0.1772,
+                                                      "mean_sol_workforce_weighted":  8.664,
+                                                      "base_weekly_labour":  0.050436,
+                                                      "base_annual_labour":  2.6227,
+                                                      "labour_base_spread":  {
+                                                                                 "types":  10,
+                                                                                 "min":  1.3285,
+                                                                                 "max":  5.3948,
+                                                                                 "cv":  0.5098
+                                                                             },
+                                                      "excluded_from_labour_base":  [
+                                                                                        "capitalists (dividends, not wages)",
+                                                                                        "aristocrats (rent, not wages)",
+                                                                                        "peasants (subsistence, not a market wage)",
+                                                                                        "slaves (wage_weight 0)"
+                                                                                    ],
+                                                      "by_pop_type":  {
+                                                                          "laborers":  {
+                                                                                           "workforce":  6045738,
+                                                                                           "annual_per_worker":  1.555,
+                                                                                           "base_annual":  1.555,
+                                                                                           "workforce_ratio":  0.25
+                                                                                       },
+                                                                          "farmers":  {
+                                                                                          "workforce":  591144,
+                                                                                          "annual_per_worker":  3.1884,
+                                                                                          "base_annual":  1.5942,
+                                                                                          "workforce_ratio":  0.25
+                                                                                      },
+                                                                          "machinists":  {
+                                                                                             "workforce":  34552,
+                                                                                             "annual_per_worker":  8.0923,
+                                                                                             "base_annual":  5.3948,
+                                                                                             "workforce_ratio":  0.25
+                                                                                         },
+                                                                          "clerks":  {
+                                                                                         "workforce":  299931,
+                                                                                         "annual_per_worker":  3.7989,
+                                                                                         "base_annual":  2.5326,
+                                                                                         "workforce_ratio":  0.25
+                                                                                     },
+                                                                          "shopkeepers":  {
+                                                                                              "workforce":  230333,
+                                                                                              "annual_per_worker":  8.982,
+                                                                                              "base_annual":  2.994,
+                                                                                              "workforce_ratio":  0.25
+                                                                                          },
+                                                                          "engineers":  {
+                                                                                            "workforce":  1000,
+                                                                                            "annual_per_worker":  3.9855,
+                                                                                            "base_annual":  1.3285,
+                                                                                            "workforce_ratio":  0.2499
+                                                                                        },
+                                                                          "clergymen":  {
+                                                                                            "workforce":  1016582,
+                                                                                            "annual_per_worker":  15.412,
+                                                                                            "base_annual":  5.1373,
+                                                                                            "workforce_ratio":  0.25
+                                                                                        },
+                                                                          "bureaucrats":  {
+                                                                                              "workforce":  162371,
+                                                                                              "annual_per_worker":  9.5732,
+                                                                                              "base_annual":  2.3933,
+                                                                                              "workforce_ratio":  0.25
+                                                                                          },
+                                                                          "officers":  {
+                                                                                           "workforce":  16840,
+                                                                                           "annual_per_worker":  11.9797,
+                                                                                           "base_annual":  2.3959,
+                                                                                           "workforce_ratio":  0.2499
+                                                                                       },
+                                                                          "soldiers":  {
+                                                                                           "workforce":  524667,
+                                                                                           "annual_per_worker":  3.5796,
+                                                                                           "base_annual":  2.3864,
+                                                                                           "workforce_ratio":  0.25
+                                                                                       },
+                                                                          "aristocrats":  {
+                                                                                              "workforce":  473974,
+                                                                                              "annual_per_worker":  82.5528,
+                                                                                              "base_annual":  16.5106,
+                                                                                              "workforce_ratio":  0.2499
+                                                                                          },
+                                                                          "peasants":  {
+                                                                                           "workforce":  87082044,
+                                                                                           "annual_per_worker":  0.0562,
+                                                                                           "base_annual":  0.2811,
+                                                                                           "workforce_ratio":  0.25
+                                                                                       }
+                                                                      },
+                                                      "pops_expected":  1284,
+                                                      "pops_logged":  1279,
+                                                      "runs_per_pop":  1,
+                                                      "source":  "per_pop"
+                                                  }
                                     },
                     "Omani Market":  {
                                          "trade_in":  {
@@ -9482,7 +10222,133 @@
                                                                          "lower":  1638851,
                                                                          "peasants":  1580009,
                                                                          "slaves":  1015026
-                                                                     }
+                                                                     },
+                                            "wages":  {
+                                                          "state_annual_wage":  {
+                                                                                    "states":  41,
+                                                                                    "mean":  1.4498,
+                                                                                    "median":  1.5277,
+                                                                                    "min":  0.0322,
+                                                                                    "max":  6.1167
+                                                                                },
+                                                          "base_weekly":  0.083773,
+                                                          "base_annual":  4.3562,
+                                                          "per_worker_annual":  3.0657,
+                                                          "mean_wage_weight":  0.7038,
+                                                          "workforce_ratio":  0.2815,
+                                                          "wage_share_of_income":  0.5501,
+                                                          "mean_sol_workforce_weighted":  10.151,
+                                                          "base_weekly_labour":  0.072298,
+                                                          "base_annual_labour":  3.7595,
+                                                          "labour_base_spread":  {
+                                                                                     "types":  11,
+                                                                                     "min":  3.2648,
+                                                                                     "max":  4.7619,
+                                                                                     "cv":  0.1573
+                                                                                 },
+                                                          "excluded_from_labour_base":  [
+                                                                                            "capitalists (dividends, not wages)",
+                                                                                            "aristocrats (rent, not wages)",
+                                                                                            "peasants (subsistence, not a market wage)",
+                                                                                            "slaves (wage_weight 0)"
+                                                                                        ],
+                                                          "by_pop_type":  {
+                                                                              "laborers":  {
+                                                                                               "workforce":  1268127,
+                                                                                               "annual_per_worker":  3.6486,
+                                                                                               "base_annual":  3.6486,
+                                                                                               "workforce_ratio":  0.25
+                                                                                           },
+                                                                              "farmers":  {
+                                                                                              "workforce":  271061,
+                                                                                              "annual_per_worker":  6.9656,
+                                                                                              "base_annual":  3.4828,
+                                                                                              "workforce_ratio":  0.25
+                                                                                          },
+                                                                              "machinists":  {
+                                                                                                 "workforce":  72189,
+                                                                                                 "annual_per_worker":  6.854,
+                                                                                                 "base_annual":  4.5693,
+                                                                                                 "workforce_ratio":  0.2499
+                                                                                             },
+                                                                              "clerks":  {
+                                                                                             "workforce":  102436,
+                                                                                             "annual_per_worker":  5.1742,
+                                                                                             "base_annual":  3.4495,
+                                                                                             "workforce_ratio":  0.25
+                                                                                         },
+                                                                              "shopkeepers":  {
+                                                                                                  "workforce":  88970,
+                                                                                                  "annual_per_worker":  13.7994,
+                                                                                                  "base_annual":  4.5998,
+                                                                                                  "workforce_ratio":  0.2499
+                                                                                              },
+                                                                              "engineers":  {
+                                                                                                "workforce":  16949,
+                                                                                                "annual_per_worker":  12.0927,
+                                                                                                "base_annual":  4.0309,
+                                                                                                "workforce_ratio":  0.2499
+                                                                                            },
+                                                                              "clergymen":  {
+                                                                                                "workforce":  41693,
+                                                                                                "annual_per_worker":  14.2857,
+                                                                                                "base_annual":  4.7619,
+                                                                                                "workforce_ratio":  0.2499
+                                                                                            },
+                                                                              "bureaucrats":  {
+                                                                                                  "workforce":  45449,
+                                                                                                  "annual_per_worker":  13.24,
+                                                                                                  "base_annual":  3.31,
+                                                                                                  "workforce_ratio":  0.25
+                                                                                              },
+                                                                              "academics":  {
+                                                                                                "workforce":  2501,
+                                                                                                "annual_per_worker":  13.0698,
+                                                                                                "base_annual":  3.2675,
+                                                                                                "workforce_ratio":  0.2499
+                                                                                            },
+                                                                              "officers":  {
+                                                                                               "workforce":  2271,
+                                                                                               "annual_per_worker":  16.3366,
+                                                                                               "base_annual":  3.2673,
+                                                                                               "workforce_ratio":  0.25
+                                                                                           },
+                                                                              "soldiers":  {
+                                                                                               "workforce":  27814,
+                                                                                               "annual_per_worker":  4.8972,
+                                                                                               "base_annual":  3.2648,
+                                                                                               "workforce_ratio":  0.25
+                                                                                           },
+                                                                              "aristocrats":  {
+                                                                                                  "workforce":  19000,
+                                                                                                  "annual_per_worker":  63.9452,
+                                                                                                  "base_annual":  12.789,
+                                                                                                  "workforce_ratio":  0.25
+                                                                                              },
+                                                                              "capitalists":  {
+                                                                                                  "workforce":  5775,
+                                                                                                  "annual_per_worker":  269.674,
+                                                                                                  "base_annual":  53.9348,
+                                                                                                  "workforce_ratio":  0.25
+                                                                                              },
+                                                                              "peasants":  {
+                                                                                               "workforce":  1564224,
+                                                                                               "annual_per_worker":  0.4967,
+                                                                                               "base_annual":  2.4835,
+                                                                                               "workforce_ratio":  0.2502
+                                                                                           },
+                                                                              "slaves":  {
+                                                                                             "workforce":  1013750,
+                                                                                             "annual_per_worker":  0,
+                                                                                             "base_annual":  null,
+                                                                                             "workforce_ratio":  0.5
+                                                                                         }
+                                                                          },
+                                                          "pops_expected":  1030,
+                                                          "pops_logged":  1020,
+                                                          "runs_per_pop":  1,
+                                                          "source":  "per_pop"
+                                                      }
                                         },
                     "Chitrali Market":  {
                                             "trade_in":  {
@@ -10839,7 +11705,127 @@
                                                                          "lower":  1942304,
                                                                          "peasants":  7641810,
                                                                          "slaves":  0
-                                                                     }
+                                                                     },
+                                            "wages":  {
+                                                          "state_annual_wage":  {
+                                                                                    "states":  22,
+                                                                                    "mean":  0.8294,
+                                                                                    "median":  0.8374,
+                                                                                    "min":  0.3504,
+                                                                                    "max":  1.6473
+                                                                                },
+                                                          "base_weekly":  0.051972,
+                                                          "base_annual":  2.7025,
+                                                          "per_worker_annual":  1.4149,
+                                                          "mean_wage_weight":  0.5235,
+                                                          "workforce_ratio":  0.2995,
+                                                          "wage_share_of_income":  0.3061,
+                                                          "mean_sol_workforce_weighted":  7.7,
+                                                          "base_weekly_labour":  0.050855,
+                                                          "base_annual_labour":  2.6444,
+                                                          "labour_base_spread":  {
+                                                                                     "types":  11,
+                                                                                     "min":  2.1034,
+                                                                                     "max":  4.1543,
+                                                                                     "cv":  0.2312
+                                                                                 },
+                                                          "excluded_from_labour_base":  [
+                                                                                            "capitalists (dividends, not wages)",
+                                                                                            "aristocrats (rent, not wages)",
+                                                                                            "peasants (subsistence, not a market wage)",
+                                                                                            "slaves (wage_weight 0)"
+                                                                                        ],
+                                                          "by_pop_type":  {
+                                                                              "laborers":  {
+                                                                                               "workforce":  1583416,
+                                                                                               "annual_per_worker":  2.1034,
+                                                                                               "base_annual":  2.1034,
+                                                                                               "workforce_ratio":  0.2995
+                                                                                           },
+                                                                              "farmers":  {
+                                                                                              "workforce":  104514,
+                                                                                              "annual_per_worker":  6.368,
+                                                                                              "base_annual":  3.184,
+                                                                                              "workforce_ratio":  0.2994
+                                                                                          },
+                                                                              "machinists":  {
+                                                                                                 "workforce":  39180,
+                                                                                                 "annual_per_worker":  5.5537,
+                                                                                                 "base_annual":  3.7025,
+                                                                                                 "workforce_ratio":  0.2998
+                                                                                             },
+                                                                              "clerks":  {
+                                                                                             "workforce":  87237,
+                                                                                             "annual_per_worker":  4.4402,
+                                                                                             "base_annual":  2.9601,
+                                                                                             "workforce_ratio":  0.2986
+                                                                                         },
+                                                                              "shopkeepers":  {
+                                                                                                  "workforce":  92437,
+                                                                                                  "annual_per_worker":  9.5914,
+                                                                                                  "base_annual":  3.1971,
+                                                                                                  "workforce_ratio":  0.299
+                                                                                              },
+                                                                              "engineers":  {
+                                                                                                "workforce":  5250,
+                                                                                                "annual_per_worker":  12.4629,
+                                                                                                "base_annual":  4.1543,
+                                                                                                "workforce_ratio":  0.3
+                                                                                            },
+                                                                              "clergymen":  {
+                                                                                                "workforce":  179652,
+                                                                                                "annual_per_worker":  11.332,
+                                                                                                "base_annual":  3.7773,
+                                                                                                "workforce_ratio":  0.2997
+                                                                                            },
+                                                                              "bureaucrats":  {
+                                                                                                  "workforce":  25319,
+                                                                                                  "annual_per_worker":  9.4186,
+                                                                                                  "base_annual":  2.3547,
+                                                                                                  "workforce_ratio":  0.3
+                                                                                              },
+                                                                              "academics":  {
+                                                                                                "workforce":  3251,
+                                                                                                "annual_per_worker":  10.8666,
+                                                                                                "base_annual":  2.7167,
+                                                                                                "workforce_ratio":  0.291
+                                                                                            },
+                                                                              "officers":  {
+                                                                                               "workforce":  6737,
+                                                                                               "annual_per_worker":  11.6833,
+                                                                                               "base_annual":  2.3367,
+                                                                                               "workforce_ratio":  0.3
+                                                                                           },
+                                                                              "soldiers":  {
+                                                                                               "workforce":  203746,
+                                                                                               "annual_per_worker":  3.4344,
+                                                                                               "base_annual":  2.2896,
+                                                                                               "workforce_ratio":  0.3
+                                                                                           },
+                                                                              "aristocrats":  {
+                                                                                                  "workforce":  92304,
+                                                                                                  "annual_per_worker":  38.4274,
+                                                                                                  "base_annual":  7.6855,
+                                                                                                  "workforce_ratio":  0.2825
+                                                                                              },
+                                                                              "capitalists":  {
+                                                                                                  "workforce":  2542,
+                                                                                                  "annual_per_worker":  225.9187,
+                                                                                                  "base_annual":  45.1837,
+                                                                                                  "workforce_ratio":  0.2954
+                                                                                              },
+                                                                              "peasants":  {
+                                                                                               "workforce":  7640600,
+                                                                                               "annual_per_worker":  0.1937,
+                                                                                               "base_annual":  0.9685,
+                                                                                               "workforce_ratio":  0.2997
+                                                                                           }
+                                                                          },
+                                                          "pops_expected":  900,
+                                                          "pops_logged":  902,
+                                                          "runs_per_pop":  2,
+                                                          "source":  "per_pop"
+                                                      }
                                         },
                     "Bornu Market":  {
                                          "trade_in":  {

@@ -1,0 +1,25 @@
+{
+  "schedule_version": 1,
+  "label": "wages-q1-allmarkets",
+  "_why": "Q1 asks for the base wage of ALL EIGHT tracked markets at Feb 1836. The n=3 batch emits per-pop lines for the Belgian and Austrian markets only (that is what Q2 needs, and what the volume budget allows over seven dumps), so for the other six it yields only the game's per-state average annual wage - a per-WORKER figure, not the per-wage-UNIT base the balance sheet actually uses. Converting between them needs each market's workforce composition by pop type, which only the per-pop lines carry, and the two known markets show the conversion factor is not transferable: Belgium's mean wage weight is 0.74 against Austria's 0.52. So the six remaining markets need one per-pop read of their own.",
+  "_shape": "1836.2.1 only, and split across THREE runs by market subset rather than one run sweeping all eight. All eight together is ~9 800 pop lines in a single tick; the largest burst survived to date is 6 940. Splitting keeps each tick near the Belgian/Austrian batch's ~1 100-4 000 and lets each run's WC pop-object counts verify their own completeness. Splitting by RUN rather than by phase is deliberate - a phase fires a month later, and pop objects were measured growing ~10% in one month, which would put each market's wage on a different date.",
+  "_cost": "3 control runs, 1836.2.1 -> 1836.4.1. About two minutes each.",
+  "_requires": "The `wages` metric must read its deep-market list from the spec (`wage_pop_markets`) instead of the hardcoded BEL/AUS pair. That edit is QUEUED behind session 20260803_014037_wages-n3 - editing telemetry_lib.ps1 mid-batch would give runs 2 and 3 a different instrument from run 1.",
+  "defaults": {
+    "tags": ["BEL", "AUS", "GBR", "FRA", "RUS", "CHI", "JAP", "USA"],
+    "metrics": ["wages"],
+    "autosave_interval": "never",
+    "timeout_minutes": 20
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"],
+      "wage_pop_markets": { "GBR": ["GBR"] } },
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"],
+      "wage_pop_markets": { "RUS": ["RUS"], "CHI": ["CHI"] } },
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"],
+      "wage_pop_markets": { "FRA": ["FRA"], "USA": ["USA"], "JAP": ["JAP"] } }
+  ]
+}

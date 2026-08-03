@@ -13,6 +13,59 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## A scope that is correct at the start date is not therefore BOUNDED over time (2026-08-03)
+
+**Symptom.** A 100-year batch was launched with a per-pop sweep scoped to "the whole Belgian market",
+verified correct and cheap at 1836 (178 pops, 3 states). At the 1850 dump the same sweep tried to emit
+**20 686** lines and only **5 212** survived the log ring.
+
+**Root cause.** `market = c:BEL.market` was never wrong — it was *unbounded*. **Which market a country
+belongs to changes**: by 1850 Belgium had joined the **British** market, so the scope silently expanded
+from one country to 65, including all of British India. Every surviving line was individually valid,
+which is what made it dangerous — nothing looked broken, the data was simply a 75 % subset chosen by
+ring position rather than by chance, and therefore biased in an unknown direction.
+
+**Why the sizing done beforehand did not catch it.** Volume was measured properly, with an
+untruncatable script value rather than by counting the sweep's own lines — but it was measured **only
+at the start date**. The growth being guarded against was assumed to be *pop growth* (a smooth ~2-3×
+over a century); the actual growth was a *scope change* (a 110× step at one date).
+
+**Fix.** Scope the per-pop sweep to the lead country **and its subjects**, keeping the market test
+alongside as a guard:
+```
+limit = { market = c:%TAG%.market   OR = { this = c:%TAG%  is_subject_of = c:%TAG% } }
+```
+The market test stays because **an invalid trigger inside a `limit` is silently ignored** — had
+`is_subject_of` not resolved, the limit would have become a no-op and swept all ~285 countries. With
+the verified test present, that failure degrades to the old behaviour instead of destroying the run.
+Lead+subjects is also the better *unit*: a trajectory needs one fixed economy tracked across a
+century, not one that silently becomes another.
+
+**Detect/prevent.**
+- **Ask of any sweep scope: what makes this bounded in 1935, not just in 1836?** Market membership,
+  subject status, alliance and market-lead all change; a tag and its subject tree are far stabler.
+- **Make each dump prove its own completeness.** The `WC` line carries a pop-object count derived
+  independently of the pop lines, which is the only reason this was caught mid-run at 1850 rather
+  than at 08:00 with six hours spent.
+- **Check the completeness of an early mid-run dump before letting a long batch run to term.** The
+  batch was stopped after ~35 min and relaunched, costing half an hour instead of six.
+- **Test a filter on the case where the hypotheses differ.** BEL and AUS could not verify the fix at
+  all — at 1836 their market *is* lead+subjects, so both designs give identical counts. `BIC` was the
+  discriminating case (inside the 3 242-pop British market, own subject tree ⇒ 1 696).
+
+### Companion trap: StrictMode makes an absent property a terminating error
+
+Threading the new `wage_pop_markets` field through `run_schedule.ps1` used
+`$defaults.wage_pop_markets` as a fallback. `run_schedule.ps1` runs under `Set-StrictMode`, where
+reading a property an object does not have **throws** rather than yielding `$null` — so every
+schedule that simply *omitted* the field (the normal case, since the metric has its own default)
+aborted before its first run. The failure surfaced only as a launched window that vanished; the
+diagnosis was to run the scheduler in the foreground and read the actual error. **Guard both sides of
+a defaults lookup with `PSObject.Properties.Name -contains`, and when a background launch produces no
+session, re-run it in the foreground rather than re-launching it again.**
+
+---
+
 ## A loop variable read before it is assigned gives the PREVIOUS iteration's data (2026-08-02)
 
 **Symptom.** Russia's scenario preset came out running `pm_free_urban_clergy` in its urban centres,

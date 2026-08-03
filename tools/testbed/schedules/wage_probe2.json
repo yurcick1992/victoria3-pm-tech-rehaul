@@ -1,0 +1,18 @@
+{
+  "schedule_version": 1,
+  "label": "wage-probe2",
+  "_why": "Probe 1 verified the pop-income and state-wage calls but could not SIZE the per-pop sweep: it counted its own lines and got 181 Belgian pops against 976 known from session 20260802_222826, because those lines are precisely what the log ring truncates - so the count measured the truncation. This run sizes it with `v3tb_popobj_count`, one untruncatable line per country, across all eight tracked markets. It also settles the Netherlands tag (probe 1 reported NED ABSENT in 1836, which is wrong for a country that plainly exists - the definition file says NET) and whether a state can name its own country inline, which decides whether the state-wage sweep is self-contained or needs marker-order reconstruction.",
+  "_cost": "One control run, 1836.2.1 -> 1836.4.1. A couple of minutes.",
+  "defaults": {
+    "tags": ["BEL", "AUS", "GBR", "FRA", "RUS", "CHI", "JAP", "USA"],
+    "metrics": ["wage_probe2"],
+    "autosave_interval": "never",
+    "timeout_minutes": 20
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"] }
+  ]
+}

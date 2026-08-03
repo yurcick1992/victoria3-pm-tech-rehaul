@@ -96,7 +96,7 @@ config/start_exceptions.json manual 1836-start overrides (force_tier / remove, s
 config/start_baseline.json   GENERATED inventory of the vanilla 1836 start (per-industry/tier/country + drift check)
 config/presets.json          WHICH scenario presets to generate (id/label/group/country + optional market_add/market_drop, sol, measured_market) — editable
 config/pop_distribution.json FITTED within-need consumption distribution (need → good → share), replacing the vanilla `weight` field — which is not an allocation rule (the game allocates by SUPPLY SHARE) and cost 12 pp of scenario demand accuracy. ONE market-independent distribution by design, solved across all 7 preset markets against config/measured_1836.json; re-derive with the balance UI's **fit pops** button and paste the printed JSON back. Absent ⇒ the UI falls back to `weight` per need
-config/measured_1836.json    GENERATED (tools/extract_measured.ps1, from a testbed session) and COMMITTED: the four things the game FILES cannot answer — per market TRADE (imports/exports per good), SoL per stratum, MILITARY building levels, and urban-centre levels as a cross-check. Read by extract_presets.ps1; optional (a clone without it still builds, just without those). ⚠ Regenerate after a game patch — a stale table is silently wrong, not obviously missing
+config/measured_1836.json    GENERATED (tools/extract_measured.ps1, from a testbed session) and COMMITTED: the things the game FILES cannot answer — per market TRADE (imports/exports per good), SoL per stratum, MILITARY building levels, urban-centre levels as a cross-check, and per market **WAGES** (`-WagesOnly`, a MERGE-only mode that rewrites just the `wages` block and leaves every other field untouched, because a wages session carries none of the other metrics and a full run over it would blank them). The wages block holds `base_weekly_labour` (the UI's base £/wk knob, **measured**), the per-profession spread that shows how well one base wage describes that market, the game's own per-state average annual wage (mean/median/min/max), the workforce ratio, and a per-pop-type table. Read by extract_presets.ps1; optional (a clone without it still builds, just without those). ⚠ Regenerate after a game patch — a stale table is silently wrong, not obviously missing
 tools/                  dev tooling — NOT shipped in the mod
   build.ps1             builder: config → generates all mod/ files + all-language loc + ladder_tiers.txt + 1836 start, then lints
   solve_be_targets.ps1  re-derives every tier's target_be + natural_year from its tech's vanilla era (date ladder; BALANCE_FRAMEWORK §8.1)
@@ -113,7 +113,7 @@ tools/                  dev tooling — NOT shipped in the mod
                         **1836.2.1, not day 0** — construction goods spend is exactly £0 on day 0
                         (the sector has not ticked yet), so day 0 is history-faithful but
                         economically unfinished (FINDINGS F14)
-  extract_presets.ps1   derives the scenario panel's market PRESETS from the vanilla 1836 start (config/presets.json → ui/presets.js): per country market, its buildings (re-tiered) + the PMs vanilla runs, treaty goods transfers, and the population split into consumption classes, plus the buy-package / pop-need tables the UI needs; regenerated each build
+  extract_presets.ps1   derives the scenario panel's market PRESETS from the vanilla 1836 start (config/presets.json → ui/presets.js): per country market, its buildings (re-tiered) + the PMs vanilla runs, treaty goods transfers, the population split into consumption classes, and the **measured base wage** for that market (`base_wage` / `base_wage_note`; absent when the market has no per-pop measurement, in which case the UI leaves the sheet wage alone rather than substituting the per-worker state average, which is a different quantity), plus the buy-package / pop-need tables the UI needs; regenerated each build
   audit_pm_refs.ps1     scans vanilla events/JEs/effects for references to main PMs our split relocated → MISSING_PM_REFERENCES.md (diagnostic; not run by build)
   convert_history.ps1   1836 start converter: re-tiers vanilla starting factories, applies start_exceptions.json
   extract_start.ps1     baseline extractor: vanilla start → start_baseline.json (inventory + version-drift alarm)
@@ -130,6 +130,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         / logs .gz (~5 MB, archive). **The summary is a CACHE; the raw log is the record** —
                         the script re-runs over .gz archives, so a field added later is back-filled, not
                         lost. That is what makes compressing safe under the never-delete rule
+  testbed/analyse_wages.sh  analysis for the `wages` metric (base wage / wage+SoL trajectory / workforce
+                        ratio). Two things in it are load-bearing, not detail: it filters every line by the
+                        run's OWN token from meta.json (the log ring carries other sessions' lines — one run
+                        folder held 976 foreign pop lines for a 187-pop country), and it never
+                        de-duplicates per-pop lines blindly — it uses each country's `WC` pop-object count
+                        as the expected line count, takes a complete single source where one exists, and
+                        reports the shortfall where none does
   testbed/wait_for_session.ps1  the wake-up signal for a batch launched into its own window (which the
                         agent harness cannot see). Run it with run_in_background; returns DONE on
                         completion, RUNNING on a heartbeat, DEAD (exit 2) if the game vanished
@@ -344,6 +351,19 @@ the game.
   weights: laborers 1, machinists/clerks/soldiers 1.5, farmers 2, shopkeepers/engineers/clergymen 3,
   bureaucrats/academics 4, officers/aristocrats/capitalists 5, peasants 0.2, slaves 0; everyone
   non-discriminated). A building's **wage units** = `Σ (employees × wage_weight)` and its wage `W = base × units`.
+  **The base wage is now MEASURED, not guessed.** It was a flat `0.04` £/wk; vanilla 1836 reads **0.0490
+  for the Austrian market and 0.0741 for the Belgian**, so the guess was ~46% low for an industrial one.
+  A **preset carries its market's `base_wage`** (from `config/measured_1836.json` → `ui/presets.js`) and
+  applies it through `recomputeWages()`, so it obeys the same rule as typing in the panel: unlocked
+  groups inherit, **locked groups keep the wage they were tuned at**. A preset with no measured wage
+  leaves the sheet's wage alone rather than resetting it, and says so in the banner.
+  ⚠ The stored figure is the **LABOUR** base. Capitalists (£59.66/yr) and aristocrats (£7.55) draw
+  dividends and rent through the same income field as a labourer's £3.79 wage, and folding them in
+  inflates Belgium's base from £3.85 to £4.55/yr with money no building ever pays; peasants are excluded
+  because subsistence is not a market wage. Across the eleven working professions the implied base agrees
+  to within ±13% (Belgium cv 0.081) — the game confirming the `base × wage_weight` model the sheet already
+  assumed. Austria's cv is 0.189, it being five countries sharing one market, so a single base describes
+  some markets better than others. See TESTBED_METRICS §5 and FINDINGS.
   Every building keeps its **own base wage**, so the wages row (bottom of the Input cell) has **three
   mutually-dependent editable fields**: **base £/wk** ⇄ **total £** ⇄ **% of total cost**. Edit any one and the
   other two follow (`W = base·units`; `base = W/units`; `% → W = p/(1−p)·goods → base`). Two rules make this
@@ -830,6 +850,12 @@ the game.
   Before adding a metric, read `TESTBED_METRICS.md`.
   ⚠ `telemetry_lib.ps1` deliberately sets **no** `Set-StrictMode`: it is dot-sourced, and StrictMode
   applies to the *caller's* scope — switching it on broke the builder's own property tests.
+  ⚠⚠ **NEVER edit `telemetry_lib.ps1` or `build.ps1` while a batch is running.** `run_schedule.ps1`
+  rebuilds the mod **before every run**, so an edit lands in run 2 and run 3 but not run 1 — and the
+  arms silently stop being comparable, which is the one failure a control design cannot survive. This
+  includes edits that look cosmetic, such as bumping `$script:TELEMETRY_VERSION`. Queue them and apply
+  them once the session reports SCHEDULE DONE; if a doc has to describe the new state meanwhile, say
+  which session is affected (see TESTBED_METRICS' v10 note).
 - **ALL measurement goes through `tools/testbed/run_schedule.ps1 -Schedule <x.json>`.** This is the entry
   point: it owns *schedule JSON → build each run's mod via `build.ps1` → run it → harvest*. **Never invoke
   the builder directly to produce test data** — that bypasses the record of what was built and why. (Calling

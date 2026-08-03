@@ -33,7 +33,8 @@ thing forever.
 | **v6** | **+ POP** per country: workforce, peasants, slaves, dependents, unemployment rate, total population — the capital-scarcity measure | — |
 | **v7** | **PHASED dumps** (one logical dump over 3 months, cutting the per-tick log burst to ~1/3) + tag-scoping removed: every country, every market | — |
 | **v8** | **+ ORIGINS**: who supplied whom, per good, per importer market (own phase) | **F9** |
-| **v9** | **+ urban-centre levels** and **people-weighted SoL per stratum** per country; **day-0 read** at game start; **building inventory** (type/level/employment) at day 7; `market_goods_scoped`; construction/government/military goods spend; ACTIVE PMs per building | **F11–F22** (F10 used v7 data) |
+| **v9** | **+ urban-centre levels** and **people-weighted SoL per stratum** per country; **day-0 read** at game start; **building inventory** (type/level/employment) at day 7; `market_goods_scoped`; construction/government/military goods spend; ACTIVE PMs per building | **F11–F24** |
+| **v10** | **+ WAGES**: `SW` state average annual wage / subsistence / unemployed working adults per state; `WC` pop-object count, states, population, mean SoL per country; `WSTR` per-stratum SoL + workforce, dependents and total population per country; `PW` per POP — income split into workforce/dependent, expenses, workforce ratio, pop type — at the **endpoint dumps only** (TESTBED_METRICS §5.7) | **F25, F26** |
 
 ### Data-integrity note (the 2026-07-31 mirror bug does NOT affect F3/F4/F5)
 
@@ -89,6 +90,387 @@ change — see CLAUDE.md → *Testbed sessions are never deleted*. This file exi
 that rule did not: the 26 hours of runs behind the first finding below were deleted in the
 `runs/`→`sessions/` consolidation (`b6f77cb`), and the numbers had to be reconstructed from a chat
 transcript rather than from data.
+
+---
+
+## F26 — Wages are far more unequal than standard of living, and the gap widens. Income predicts SoL through the buy-package table to about ±1 level, which is enough to seed a late-game wage from a target SoL
+
+**The claim.** Wage dispersion is **1.5–2× SoL dispersion** among comparable professions (6–24×
+across all pops), and over a century **wage inequality rises while SoL inequality does not**. A
+target SoL can be turned back into a realistic wage to **~15 % median error — but only per stratum**;
+the same inference from a country's *mean* SoL is worthless (r² = 0.03 at 1836).
+
+⚠ **The buy-package table is EXACTLY exponential, so "SoL is logarithmic in income" is a definition,
+not a result.** Fitted over levels 1–50: `pkg = 136.6 × 1.1002^level`, **r² = 1.0000** — a flat
+**10.0 % per level**, holding to four decimals all the way to level 99. An earlier draft of this
+finding presented the log relationship as a discovery; it is built into the table. The only
+empirical questions are **how tight** the fit is and **what the coefficients are**, and those are
+below.
+
+### Dispersion — coefficient of variation, workforce-weighted, across pops within a market
+
+| 1836 market | wage CV (all) | SoL CV (all) | ratio | wage CV (labour only) | SoL CV (labour) | ratio |
+|---|--:|--:|--:|--:|--:|--:|
+| Belgian | 4.33 | 0.366 | **11.8×** | 0.712 | 0.442 | **1.61×** |
+| Austrian | 6.06 | 0.500 | 12.1× | 1.033 | 0.630 | 1.64× |
+| French | 5.15 | 0.359 | 14.3× | 0.920 | 0.610 | 1.51× |
+| British | 7.46 | 0.395 | 18.9× | 1.454 | 0.725 | 2.01× |
+| Russian | 5.26 | 0.345 | 15.2× | 1.060 | 0.499 | 2.12× |
+| Qing | 7.76 | 0.323 | **24.1×** | 1.288 | 0.644 | 2.00× |
+| American | 3.96 | 0.371 | 10.7× | 0.781 | 0.402 | 1.94× |
+| Japanese | 3.72 | 0.652 | 5.7× | 0.830 | 0.565 | 1.47× |
+
+The "all pops" column is dominated by capitalists (see F25); the **labour-only column is the honest
+comparison**, and even there wages are **1.5–2.1× more dispersed than SoL**.
+
+**Over the century the two move apart.** Labour-only, 1836 → 1935:
+
+| | wage CV | SoL CV |
+|---|---|---|
+| Belgium | 0.712 → **1.018** | 0.442 → 0.432 |
+| Austria | 1.033 → **2.556** | 0.630 → 0.543 |
+
+**Wage inequality grows (1.4× in Belgium, 2.5× in Austria) while SoL inequality is flat or slightly
+narrower.** The compression is the buy-package curve doing its job.
+
+### Does income predict SoL through the wealth/consumption table?
+
+Prediction rule, no fitted parameters: *predicted level = the highest L whose package a pop can
+afford*, `PKG(L) × 0.625 / 10 000 ≤ weekly income per head` (0.625 = working adults consume 1,
+dependants `DEPENDENT_CONSUMPTION_RATIO` 0.5).
+
+| date | n pops | mean abs err | **people-weighted** | bias | within ±1 | within ±2 |
+|---|--:|--:|--:|--:|--:|--:|
+| 1836.2.1 | 10 635 | 3.61 levels | **1.20 levels** | **+0.15** | 37 % | 58 % |
+| 1935.1.1 | 13 015 | 4.14 levels | **2.04 levels** | +1.17 | 33 % | 53 % |
+
+**Correlation of log(income per head) with actual SoL: r = 0.893 (1836) and 0.933 (1935), r² = 0.80
+and 0.87.** So the *relationship* is strong and monotone; the residual is calibration, not noise.
+
+Two things make this usable:
+- **The unweighted error (3.6 levels) is much worse than the people-weighted one (1.2).** The large
+  misses are tiny pops — capitalists and other owner pops, whose income is not a wage (F25). For a
+  scenario panel, where everything is people-weighted demand, the relevant figure is **~1.2 levels**.
+- **At 1836 the rule is essentially unbiased (+0.15).** By 1935 it over-predicts by +1.17 levels,
+  i.e. late-game pops sit *lower* than their income alone implies — consistent with the workforce
+  ratio having drifted down (F25 Q3), so the same per-worker wage supports fewer people.
+
+### The inverse — target SoL → implied wage (for seeding a late-game scenario)
+
+Per-head weekly cost of the package, and the per-worker annual wage that supports it **if all income
+is wages and the workforce ratio is 0.25**:
+
+| SoL | pkg £/wk per 10 000 | £/head/wk | implied £/yr per worker |
+|--:|--:|--:|--:|
+| 5 | 221 | 0.0138 | 2.87 |
+| 8 | 290 | 0.0181 | 3.77 |
+| 10 | 355 | 0.0222 | 4.62 |
+| 12 | 429 | 0.0268 | 5.58 |
+| 14 | 519 | 0.0324 | 6.75 |
+| 16 | 629 | 0.0393 | 8.18 |
+| 18 | 761 | 0.0476 | 9.89 |
+| 20 | 921 | 0.0576 | 11.97 |
+| 25 | 1 502 | 0.0939 | 19.53 |
+| 30 | 2 428 | 0.1518 | 31.56 |
+| 35 | 3 919 | 0.2449 | 50.95 |
+| 40 | 6 215 | 0.3884 | 80.80 |
+
+**Recipe, with the bias applied:** to hit an observed SoL *S*, read the table at **S + 1.2** (late
+game) or **S + 0.15** (1836), then divide by the market's actual workforce ratio ÷ 0.25, then divide
+by its mean wage weight (0.52 Austria … 0.74 Belgium) to get the **base** wage the UI wants.
+
+### Inferring a wage from a KNOWN SoL — works per stratum, fails per country
+
+The practical question is the inverse one: given the SoL a scenario should have, what wage produces
+it? Fitting `SoL = a + b·ln(wage)` on the measured sample gives two very different answers depending
+on what is averaged.
+
+**Country mean SoL vs country mean state wage** (681 country-dates, all 8 markets, 7 dates):
+
+| date | n | r² | | date | n | r² |
+|---|--:|--:|---|---|--:|--:|
+| 1836 | 90 | **0.032** | | 1900 | 107 | 0.613 |
+| 1850 | 95 | 0.166 | | 1918 | 113 | 0.635 |
+| 1865 | 96 | 0.353 | | 1935 | 74 | 0.746 |
+| 1880 | 106 | 0.447 | | pooled | 681 | 0.553 |
+
+**At 1836 a country's mean SoL says essentially nothing about its wages** (r² = 0.03), and the
+relationship only becomes usable late. The reason is compositional: in 1836 most people are peasants
+whose living standard comes from *subsistence output*, not wages, and the mean also folds in owners
+living on dividends. Leave-one-date-out inversion gives median wage errors of **33–74 %** and means
+of 56–469 %. **Do not use it.**
+
+**Lower stratum only** — laborers, farmers, machinists, soldiers — pairing that stratum's own SoL
+with its own wage, per country:
+
+| date | n countries | fit | r² | median inversion error | p90 |
+|---|--:|---|--:|--:|--:|
+| 1836.2.1 | 89 | SoL = 2.77 + 5.61·ln(wage) | **0.770** | **16 %** | 43 % |
+| 1935.1.1 | 16 | SoL = −1.45 + 7.75·ln(wage) | **0.815** | **13 %** | 24 % |
+
+`wage = exp((SoL − a) / b)`, £/year per worker:
+
+| lower-stratum SoL | 8 | 10 | 12 | 14 | 16 | 18 |
+|---|--:|--:|--:|--:|--:|--:|
+| **1836** | 2.54 | 3.63 | 5.18 | 7.40 | 10.57 | 15.11 |
+| **1935** | 3.38 | 4.38 | 5.67 | 7.33 | 9.49 | 12.29 |
+
+The two epochs **cross at SoL ≈ 13–14** and diverge away from it: the 1935 curve is flatter, so an
+1836 rule extrapolated to a rich late-game population overstates the wage badly (SoL 18: 15.11 vs
+12.29, +23 %). **Use the epoch-appropriate row.**
+
+⚠ Note `b` should be **1/ln(1.1) = 10.49** if SoL were purely the package inversion with all income
+from wages. Measured `b` is 5.61 (1836) rising to 7.75 (1935) — SoL responds *less* to wages than the
+table alone implies, because wages are not the only income and the workforce ratio varies. The rise
+toward 10.49 is economies becoming more wage-based over the century.
+
+**Checked against the measurement:** Belgium 1935 has a labour wage of £7.49/yr per worker and a
+ratio of 0.2323 ⇒ £0.0335 per head per week ⇒ table level ≈ 14, against an **actual SoL of 12.4**.
+The gap is 1.6 levels, matching the +1.17 bias. So the recipe reproduces the measured case to about
+half a level.
+
+### Method
+
+Same data as F25: 23 650 per-pop rows across `20260803_030101_wages-n3` (n=2, 1836 + 1935) and
+`20260803_080453_wages-q1-allmarkets` (1836, six markets). Buy packages read from
+`ui/presets.js` `pop_model.buy_packages` (levels 1–99), which `extract_presets.ps1` takes from
+vanilla `common/buy_packages`.
+
+### ⚠ What this does NOT say
+
+- **It is not a causal model of the engine.** The game computes wealth with a progression term
+  (`Pop.GetWealthProgression` — "progress towards next wealth level"), so a pop moves gradually and a
+  snapshot catches pops mid-transition. Some of the ±1 level residual is that lag, not model error.
+- **The inverse recipe assumes all income is wages.** For any stratum with dividends or rent
+  (capitalists, aristocrats) it is wrong by the size of the non-wage share, which F25 shows can be
+  15×. Use it for **labour** strata only.
+- **Bias is measured at exactly two dates.** +0.15 at 1836 and +1.17 at 1935; the shape in between is
+  unmeasured (mid-run dumps carry no per-pop rows, TESTBED_METRICS §5.7).
+- **CV across pops is not CV across states or people.** A market with many small poor pops and few
+  large rich ones will report differently under a different weighting; these are workforce-weighted.
+
+---
+
+## F25 — Vanilla wages, measured. The `base × wage_weight` model the balance sheet assumes is the game's own; owners must be excluded from it; and the workforce ratio is a COUNTRY property, not the constant the defines imply
+
+**The claim.** The balance UI prices a building's wage bill as `base × Σ(employees × wage_weight)`
+with `base` a **guessed 0.04 £/wk**. Measured across eight 1836 markets, the model is right and the
+number was low: the true base runs **0.0479 (Russia) to 0.0765 (Belgium) £/wk**, i.e. **1.2× to
+1.9× the guess**, and the eleven working professions within a market agree on it to within ±5–13 %
+in the tightest markets. Two corrections matter: **owner pop types must be excluded** (they inflate
+the base by up to 24 %), and the **workforce ratio is 0.25 only in some countries** — others run
+0.30 at the same instant.
+
+### Q1 — base wage per market, 1836.2.1 (the number now in `config/measured_1836.json`)
+
+`base` = Σ(workforce income) ÷ Σ(workforce × wage_weight), over the **eleven labour professions**
+(laborers, farmers, machinists, clerks, shopkeepers, engineers, clergymen, bureaucrats, academics,
+officers, soldiers). Pooled over the runs listed under *Method*.
+
+| market | base £/wk | base £/yr | per-profession base spread £/yr | cv | all-pops base £/yr | game's own per-state mean £/yr |
+|---|--:|--:|---|--:|--:|--:|
+| **Belgian** | **0.07645** | 3.98 | 3.40 – 4.55 | **0.097** | 4.63 | 1.79 |
+| **Japanese** | 0.07266 | 3.78 | 2.44 – 6.01 | 0.315 | 3.32 | 1.23 |
+| **American** | 0.07230 | 3.76 | 3.26 – 4.76 | 0.157 | 4.36 | 1.45 |
+| **British** | 0.06322 | 3.29 | 2.16 – 7.74 | **0.401** | 3.28 | 0.77 |
+| **French** | 0.05362 | 2.79 | 2.41 – 3.92 | 0.118 | 3.33 | 1.01 |
+| **Austrian** | 0.05086 | 2.64 | 2.10 – 4.15 | 0.231 | 2.70 | 0.82 |
+| **Qing** | 0.05044 | 2.62 | 1.33 – 5.39 | **0.510** | 2.38 | 0.32 |
+| **Russian** | 0.04792 | 2.49 | 1.24 – 3.86 | 0.300 | 2.42 | 0.51 |
+
+Spread across markets is **1.60×**. Every market is **above** the UI's 0.04 default.
+
+⚠ **The last column is a different quantity and must not be substituted for the base.**
+`State.GetAverageAnnualWage` is money per **worker**; the base is money per **unit of wage_weight**.
+The conversion factor is the market's mean wage weight, which is *not* constant — 0.74 in Belgium
+against 0.52 in Austria — so there is no way to derive one from the other. This is why six of the
+eight markets needed their own per-pop run.
+
+### The model check — and why owners are excluded
+
+If the game really pays `base × wage_weight`, then dividing each profession's per-worker wage by its
+`wage_weight` must give the same number for every profession. **Belgium 1836, £/yr:**
+
+| profession | wage_weight | per worker | implied base |
+|---|--:|--:|--:|
+| laborers | 1 | 3.79 | **3.79** |
+| farmers | 2 | 7.58 | **3.79** |
+| machinists | 1.5 | 6.01 | **4.01** |
+| clerks | 1.5 | 5.36 | **3.58** |
+| shopkeepers | 3 | 13.14 | **4.38** |
+| engineers | 3 | 12.10 | **4.04** |
+| clergymen | 3 | 12.42 | **4.14** |
+| bureaucrats | 4 | 14.78 | **3.70** |
+| academics | 4 | 14.43 | **3.61** |
+| officers | 5 | 17.05 | **3.41** |
+| soldiers | 1.5 | 5.13 | **3.42** |
+| — | | | |
+| *aristocrats* | 5 | *37.76* | *7.55* |
+| *capitalists* | 5 | *298.30* | *59.66* |
+| *peasants* | 0.2 | *0.56* | *2.79* |
+
+Eleven professions land in **3.41 – 4.38** (cv 0.097). **Capitalists land at 59.66** — 15× the
+labourer figure — because `Pop.GetWorkforceIncome` for an owner pop is **dividends and rent**, not a
+wage. Aristocrats (7.55) are the same effect at smaller scale. Peasants (2.79) are excluded for the
+opposite reason: subsistence output is not a market wage. Folding all three in moves Belgium's base
+from **3.98 → 4.63 £/yr (+16 %)** and the Americas' from 3.76 → 4.36 (+16 %) with money no building
+ever pays out.
+
+⚠ **A single base describes some markets far better than others.** Belgium cv 0.097 (one country);
+Britain 0.401 and the Qing 0.510 (huge multi-region markets). Treat a single base wage for the
+British or Qing market as an average over genuinely different wage regimes, not as a tight constant.
+
+### Q2 — trajectory, 1836 → 1935 (vanilla, per-stratum, people-weighted)
+
+**Belgium (run 2 — the run where Belgium survives under its own tag throughout):**
+
+| | 1836 | 1850 | 1865 | 1880 | 1900 | 1918 | 1935 |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| mean SoL | 10.50 | 10.62 | 11.35 | 12.03 | **13.79** | 13.33 | 11.35 |
+| upper | 37.64 | 38.65 | 43.07 | 48.43 | 57.07 | 54.52 | 52.69 |
+| middle | 16.54 | 16.03 | 16.36 | 17.13 | 18.19 | 18.61 | 16.07 |
+| lower | 9.52 | 8.55 | 9.02 | 10.28 | 11.79 | 11.73 | 9.35 |
+| peasants | 9.99 | 10.69 | 11.56 | 10.98 | 10.03 | 9.07 | 8.19 |
+| workforce ratio | 0.2500 | 0.2499 | 0.2500 | 0.2499 | 0.2399 | 0.2429 | **0.2323** |
+
+Living standards **peak around 1900 and fall back**, and the upper stratum pulls away throughout
+(37.6 → 57.1 at peak) while peasants decline monotonically after 1865. Base wage over the same span:
+**3.93 → 4.82 £/yr** (run 1) and **4.03 → 4.45** (run 2).
+
+**Austria (run 1 — Austria survives under its own tag):** mean SoL 7.89 → 6.48 → 9.67 → 9.81 → 7.56
+→ 9.85 → 10.43; workforce ratio 0.2999 → 0.2891 → 0.2995 → 0.2993 → 0.2993 → 0.2954 → 0.2956; base
+wage 2.64 → 4.46 £/yr.
+
+**Per-pop distribution at the endpoints** (workforce-weighted percentiles, run 1):
+
+| | mean | p10 | median | p90 | max |
+|---|--:|--:|--:|--:|--:|
+| Austria 1836 | 7.67 | 6 | 7 | 11 | 57 |
+| Austria 1935 | 10.35 | 8 | 9 | 15 | 54 |
+| Belgium 1836 | 10.33 | 6 | 10 | 13 | 62 |
+| Belgian mkt 1935 *(anchored on NET)* | 12.60 | 8 | 11 | 20 | 75 |
+
+### Q3 — the workforce ratio is a law-set TARGET that pops drift toward, not a fixed country property
+
+⚠ **An earlier draft of this finding called it "a +0.05 country-level modifier, stable over the
+century". That was wrong about the mechanism and wrong about the stability**, and the correction
+matters because it changes what a late-game scenario should assume. What the ratio actually is:
+
+`WORKING_ADULT_RATIO_BASE = 0.25` is a **target**, not a value — `common/pop_types/pop_types.md`
+describes `working_adult_ratio` as "the proportion of this profession that **tends to be** part of the
+Workforce", and `WORKING_ADULT_RATIO_SKEW_MAXIMUM = 2.0` exists precisely because a skewed ratio
+"tends to correct itself". The target is moved by **laws**, chiefly **Rights of Women**
+(`state_working_adult_ratio_add` = **+0.05 / +0.1 / +0.15 / +0.3** across its tiers), plus welfare
+(**−0.01**) and the trade-union interest-group traits (**+0.05**).
+
+**At 1836 the start state sits exactly ON target, which is why the numbers look clean.** Measured
+per profession — the reason to trust this reading is that *every* profession in a single-country
+group returns the same figure to four decimals:
+
+| 1836 group | laborers | machinists | clerks | peasants | aristocrats |
+|---|--:|--:|--:|--:|--:|
+| Belgium | 0.2500 | 0.2500 | 0.2500 | 0.2500 | 0.2500 |
+| Japan | 0.2500 | 0.2500 | 0.2499 | 0.2500 | 0.2498 |
+| USA | 0.2500 | 0.2499 | 0.2500 | 0.2502 | 0.2500 |
+| Qing | 0.2500 | 0.2500 | 0.2500 | 0.2500 | 0.2499 |
+| **France** | **0.3000** | **0.3000** | **0.3000** | **0.3000** | **0.3000** |
+| Austria *(+4 subjects)* | 0.2995 | 0.2998 | 0.2986 | 0.2997 | 0.2825 |
+| Russia *(+6 subjects)* | 0.2970 | 0.2957 | 0.2936 | 0.2964 | 0.2876 |
+| Britain *(+64 subjects)* | 0.2686 | 0.2885 | 0.2839 | 0.2550 | 0.2586 |
+
+So the earlier "intermediate" values were never intermediate *targets* — Britain 0.2619 and the USA
+0.2815 are **mixtures**, a per-pop sweep spanning many countries some of which carry the law and some
+of which do not. Krakow reads 0.2500 inside an Austrian market otherwise at 0.30, which is the same
+effect one level down.
+
+⚠ **Note the pop-type overrides are NOT visible at 1836.** `aristocrats` declares
+`working_adult_ratio = 0.2` and `slaves` 0.5, yet Belgian aristocrats read 0.2500 and French ones
+0.3000 — the same as every other profession in their country. Whatever the type override does, it is
+not what the initialised state reflects.
+
+**By 1935 nothing is on a clean value — but there is NO systematic downward drift.** Across every
+country with per-pop coverage at 1935 (16 countries, 139 M people):
+
+| country | ratio | | country | ratio | | country | ratio |
+|---|--:|---|---|--:|---|---|--:|
+| Limburg | 0.3218 | | German Empire | 0.2709 | | Siak | 0.2468 |
+| Brunei | 0.3089 | | Attica | 0.2698 | | Jambi | 0.2352 |
+| **Austria** | **0.2956** | | Oyo | 0.2518 | | **Belgium** | **0.2323** |
+| Kutai / Tidore / Sulu / Benin | 0.278–0.279 | | Trucial Coast | 0.2472 | | Ottoman Empire | 0.2232 |
+| | | | | | | **Netherlands** | **0.1963** |
+
+**Pooled: 0.2518 — essentially the 0.25 base.** The spread runs 0.196 to 0.322; low countries and
+high countries roughly cancel.
+
+Per country and profession, 1836 → 1935:
+
+| | laborers | machinists | clerks | peasants | aristocrats |
+|---|--:|--:|--:|--:|--:|
+| Austria 1836 | 0.3000 | 0.3000 | 0.3000 | 0.3000 | 0.2904 |
+| **Austria 1935** | **0.2926** | 0.2840 | 0.2897 | 0.2990 | 0.2706 |
+| Belgium 1836 | 0.2500 | 0.2500 | 0.2500 | 0.2500 | 0.2500 |
+| **Belgium 1935** | **0.2300** | 0.2269 | 0.2311 | 0.2338 | 0.2381 |
+| German Empire 1935 | 0.2719 | 0.2619 | 0.2549 | 0.2741 | 0.2483 |
+| Netherlands 1935 | 0.1989 | 0.1798 | 0.1815 | 0.1898 | 0.2219 |
+
+**Austria essentially held its target for a century** (0.3000 → 0.2926–0.2990). Belgium slipped ~0.02.
+The Netherlands is the genuine low outlier. So the ratio behaves as a target that most countries sit
+near, with individual countries pulled off it — consistent with prolonged backward law choices and
+with wars converting workers into dependants, both of which apply to the Low Countries in these runs.
+
+⚠⚠ **CORRECTION — an earlier draft claimed "everything has drifted DOWN by 0.02–0.03 in every
+profession" and warned against modelling the late game as "0.25 plus the law bonus". Both were
+wrong, and the cause was an analysis error worth remembering:** the numbers were grouped by the
+telemetry's **group label** (`AUS` / `BEL`) rather than by country. The successor chain (§5.3 of
+TESTBED_METRICS) re-anchors when a lead tag dies, so at 1935 the `AUS` label covered **Austria in run
+1 and the German Empire in run 2**, and `BEL` covered **the Netherlands in run 1 and Belgium in run
+2**. Pooling them averaged two different countries into one fictitious "drift". **A group label is
+not an entity — always key a cross-run aggregate on the country name, and check the anchor.**
+
+**For scenario work:** use **0.25 / 0.30 at 1836** (exact, and the law tier tells you which) and
+**~0.25 late-game as the central value**, with a real per-country spread of roughly **0.20–0.32**.
+Do not treat a single country's late-game figure as representative.
+
+**Verified in-game.** The user reloaded the 1935.1.1 autosave from run 2 and checked Wallonia's
+shopkeeper pops against the telemetry: the readings match. Wallonia (ratio 0.2278–0.2408 across its
+22 shopkeeper pops) is a **low outlier**, not the norm — visual inspection of other countries and
+states showed higher participation, which the 16-country table above independently confirms.
+
+### Method
+
+- **Arm:** CONTROL (`build.ps1 -ControlOnly`) — vanilla economy + telemetry. Schema **v10**.
+- **Trajectory:** `tools/testbed/sessions/20260803_030101_wages-n3`, **n=2** runs, 1836.2.1 →
+  1935.6.1, dumps at 1836.2.1 / 1850 / 1865 / 1880 / 1900 / 1918 / 1935.1.1. (n=2 not 3: runs took
+  ~2 h 35 rather than the 1 h 50 projected — F4's late-game slowdown — so a third run would have
+  started past the session's 07:00 cutoff.)
+- **Q1 for the six markets without per-pop coverage in the batch:**
+  `tools/testbed/sessions/20260803_080453_wages-q1-allmarkets`, 3 short runs at 1836.2.1 only.
+- **Completeness is verified, not assumed:** every per-pop dump carries an independent pop-object
+  count (`WC`). At 1836 all eight markets came back within 0.6 % of expected (e.g. Belgian 178/180,
+  French 999/999, Russian 1626/1628).
+- Instrument construction and its four probe sessions: TESTBED_METRICS §5.
+
+### ⚠ What this does NOT say
+
+- **Nothing about the mod.** Both runs are vanilla. Whether the tier split moves wages is unmeasured.
+- **n=2, and the two runs diverge politically, not just statistically.** Run-to-run variance here is
+  dominated by *who conquers whom*, so the two runs are two histories rather than two samples of one.
+  The 1836 figures agree tightly (Austria 0.05071 vs 0.05100, Belgium 0.07548 vs 0.07742) because the
+  start state is near-deterministic; **the trajectory numbers carry no meaningful error bar.**
+- ⚠ **Austria is not a stable century-long subject.** In run 1 it fell from 20 750 355 people (1836)
+  to **1 225 974** (1850), losing Hungary, Croatia-Slavonia, Transylvania and Krakow; its state count
+  went 27 → 2. In run 2 it ceased to exist by 1935 and the successor chain anchored on **GER**. Its
+  post-1850 trajectory is a rump state's. Belgium is the more trustworthy series — and even Belgium
+  formed *United Belgian States* mid-run in run 1 and was gone by 1935, where the chain anchored on
+  **NET**. **Always read the anchor and population columns beside a trajectory number.**
+- **No per-pop distribution between the endpoints.** A dump larger than ~1 500 lines loses most of
+  itself to the log ring and cannot be recovered mid-run (TESTBED_METRICS §5.7), so 1850–1918 carry
+  per-stratum aggregates only. The mid-run rows above are 5 strata, not a per-person histogram.
+- **The wage/dividend split inside `GetWorkforceIncome` is not observable.** Owners are excluded by
+  pop *type*, which is a proxy: any dividend income accruing to a non-owner profession is still
+  counted as wage.
+- **`wage_pct` in the config is untouched.** The solvers, linter and builder still use the legacy
+  fraction-of-cost wage; only the UI consumes the measured base (CLAUDE.md → transitional note).
 
 ---
 

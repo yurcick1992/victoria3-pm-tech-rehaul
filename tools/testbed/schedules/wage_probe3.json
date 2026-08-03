@@ -1,0 +1,20 @@
+{
+  "schedule_version": 1,
+  "label": "wage-probe3",
+  "_why": "Does `is_subject_of = c:TAG` actually filter, or is it silently ignored? An invalid trigger inside a `limit` is a NO-OP rather than an error (TESTBED_METRICS 3.7), so a broken test would leave only the market limit - which is precisely the unbounded sweep this change exists to prevent. BEL and AUS cannot answer it: at 1836 their market IS their lead plus subjects, so both designs give the same count. BIC discriminates. The East India Company sits INSIDE the 3 242-pop British market but has its own small subject tree, so: filter works => a few hundred pops; filter ignored => exactly 3 242.",
+  "_expected": "BEL 187 (no subjects), AUS 895 (Hungary + Croatia-Slavonia + Transylvania + Krakow), BIC well under 3 242. Each group's own WC lines give the independent expected count to check against.",
+  "_cost": "One control run, 1836.2.1 -> 1836.4.1. About two minutes.",
+  "defaults": {
+    "tags": ["BEL", "AUS", "GBR"],
+    "metrics": ["wages"],
+    "wage_pop_markets": { "BEL": ["BEL"], "AUS": ["AUS"], "BIC": ["BIC"] },
+    "autosave_interval": "never",
+    "timeout_minutes": 20
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"] }
+  ]
+}

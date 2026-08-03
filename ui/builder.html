@@ -1192,6 +1192,12 @@ function presetReportHTML(p){
   if(p.notes&&p.notes.length) rows.push(['Treaties', esc(p.notes.join(' · '))]);
   rows.push([`Year ${YEAR}`, locked.length ? `${locked.length} of ${NEED_GOODS.length} pop goods don’t exist yet: ${esc(locked.join(', '))}` : 'every pop good exists']);
   rows.push(['Prices', PRICES_LOCKED ? 'LOCKED — untick “locked” in the price column to price this market' : 'auto — recomputed from these orders']);
+  // The wage is reported here, once, like everything else a preset knows about itself — the panel
+  // must never carry a standing "you are in preset X" claim (see the preset PRINCIPLE in CLAUDE.md).
+  rows.push(['Base wage', p.base_wage>0
+    ? `<b>£${(+p.base_wage).toFixed(4)}/wk</b> (£${round2(p.base_wage*WEEKS_PER_YEAR)}/yr) per weight-1 employee — `
+      + `${esc(p.base_wage_note||'measured from this market’s own pops')}. Locked groups kept the wage they were tuned at.`
+    : `left at £${round2(BASE_WAGE)}/wk — ${esc(p.base_wage_note||'no measured wage for this market')}`]);
   rows.push(['Not modelled', `<b>urban centres</b> (services out, wood + glass in) — the game derives their level count from state `
     + `urbanization by an engine-side rule that isn’t in the game files, so services supply, wood/glass demand and the middle class are understated.`]);
   return `Applied <b>${esc(p.label)}</b> — a one-off overwrite; edit anything from here.`
@@ -1223,11 +1229,19 @@ function applyScenarioPreset(id){
   }
   POPS=Object.assign({}, EMPTY_POPS, p.pops||{});
   if(p.sol) SOL=Object.assign({}, p.sol);
+  // BASE WAGE — measured per market (config/measured_1836.json → ui/presets.js). A market's wage level
+  // is as much a property of the scenario as its pops or its prices, and it was a guessed 0.04/wk until
+  // it was measured. Applied through recomputeWages() rather than by assigning BASE_WAGE, so it obeys
+  // the same rule as typing in the Workforce panel: unlocked groups inherit, LOCKED groups keep the
+  // wage they were tuned at. A preset with no measured wage leaves the sheet's wage alone.
+  let wageOld=null;
+  if(p.base_wage>0 && p.base_wage!==BASE_WAGE){ wageOld=BASE_WAGE; BASE_WAGE=p.base_wage; }
   // which goods exist in the preset's YEAR, plus whatever it forces on/off (unlock_add / unlock_drop)
   YEAR = p.year || YEAR;
   UNLOCKED.clear();
   (p.unlocked || goodsForYear(YEAR)).forEach(g=>UNLOCKED.add(g));
   render();
+  if(wageOld!=null) recomputeWages(wageOld);
   banner('info', p.id==='empty'
     ? 'Scenario cleared — every building Number, the non-pop orders and the population are back to zero.'
     : presetReportHTML(p));

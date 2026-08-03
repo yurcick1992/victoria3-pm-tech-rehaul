@@ -1,0 +1,25 @@
+{
+  "schedule_version": 1,
+  "label": "wages-n3",
+  "_why": "Vanilla wage and standard-of-living behaviour, which the balance UI models but has never measured. Q1: the average base wage across the STATES of each tracked market at Feb 1836, to seed the scenario presets (wages are model-only and never emitted, but every profit and payback number in the sheet rests on them). Q2: how wages and SoL move over a full campaign, as a DISTRIBUTION rather than a capital-state figure - per-pop for the whole Belgian and Austrian markets. Q3: the workforce ratio (1 - dependent share), which the defines call WORKING_ADULT_RATIO_BASE = 0.25 but also say pop types and country modifiers override, and which a skew term lets drift - so it is measured, not assumed.",
+  "_arm": "CONTROL (build.ps1 -ControlOnly): vanilla economy plus telemetry. The question is what the BASE GAME does, since that is what the UI is calibrated against.",
+  "_burst": "PER-POP LINES ARE EMITTED ONLY AT THE FIRST AND LAST DUMP. Measured limit, not a preference: a dump is written in ONE tick and the log ring is 5x512KB, so a burst that fills a segment rotates mid-write and the live mirror loses what rotated. Session 20260803_022027 run 1 measured it as a threshold - the 1836 dump (1 529 lines) came back 1039/1039 complete, while ~3 400-line dumps at 1850 and 1865 returned 5 % and 19 %. The usual rescue does not apply either: the exit-time ring snapshot holds only what is still in the ring AT EXIT, which after a run to 1935 is the 1930s, so a mid-run dump is gone permanently AND gone as a biased subset (whichever lines rotation spared). The trajectory therefore rides on WC + SW + WSTR (~800 lines per dump, comfortably inside a segment) and the full per-pop distribution is taken at the endpoints. WSTR carries per-stratum SoL and workforce plus dependents and total population per country, which is what answers Q2's standard-of-living half and Q3 at every date. Verified in probe 20260803_025834: the middle dump emitted 70 WC + 164 SW + 6 WSTR and zero per-pop lines, the endpoints emitted everything.",
+  "_dates": "Every block is in phase 0, so every number carries the date it is stamped with and no reading drifts. A 1836.1.1 dump is NOT requested: validation session 20260803_013525 confirmed it never fires, since on_monthly_pulse does not tick on the start date itself (TESTBED_METRICS 4.3 suspected this; it is now measured). 1935.1.1 with an until of 1935.6.1 leaves five months of margin.",
+  "_sizing": "Measured with an untruncatable script value, never by counting the sweep's own lines: Belgium 187 pop objects, Austria + its subjects 895. Only BEL and AUS get per-pop lines; the other six markets get one line per country and one per state (~90 WC + ~410 SW at 1836). Phase 0 carries ~1 100 PW in total, well under the ~6 000-line bursts that have caused loss.",
+  "_scope_fix": "Per-pop covers the lead country AND ITS SUBJECTS, not the whole shared market. The first attempt at this batch (session 20260803_014037, stopped after run 1) used the whole market and it does not stay bounded: by 1850 Belgium had joined the BRITISH market, so the sweep tried to emit 20 686 pop lines in one tick and 5 212 survived the ring. A 75 % loss decided by ring position is not a sample, and it would have made the entire Belgian trajectory from 1850 on unusable. Lead + subjects is also the more meaningful unit for a trajectory - a fixed economy tracked across a century rather than one that silently becomes a different one. The whole market is still observed per country and per state. Verified discriminating in probe 20260803_021616: anchored on BIC the sweep returns 1 696 pops across its 45 Indian subjects, not the 3 242 of the British market it belongs to.",
+  "_cost": "3 runs x 1836.1.1 -> 1935.6.1, roughly 2-2.5 h each.",
+  "defaults": {
+    "tags": ["BEL", "AUS", "GBR", "FRA", "RUS", "CHI", "JAP", "USA"],
+    "metrics": ["wages"],
+    "autosave_interval": "five_year",
+    "timeout_minutes": 240
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1935.6.1", "dump_dates": ["1836.2.1","1850.1.1","1865.1.1","1880.1.1","1900.1.1","1918.1.1","1935.1.1"] },
+    { "setup": "vanilla", "until": "1935.6.1", "dump_dates": ["1836.2.1","1850.1.1","1865.1.1","1880.1.1","1900.1.1","1918.1.1","1935.1.1"] },
+    { "setup": "vanilla", "until": "1935.6.1", "dump_dates": ["1836.2.1","1850.1.1","1865.1.1","1880.1.1","1900.1.1","1918.1.1","1935.1.1"] }
+  ]
+}

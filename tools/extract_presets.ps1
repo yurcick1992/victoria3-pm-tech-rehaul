@@ -882,6 +882,32 @@ foreach ($p in $presetCfg.presets) {
         $solSrc = "measured $($measured._meta.date)"
     }
 
+    # --- BASE WAGE, measured (config/measured_1836.json -> each market's `wages` block) ---
+    # The UI prices a building's wage bill as base x SUM(employees x wage_weight). `base` was a
+    # guessed 0.04/wk that had never been measured, and it is a per-MARKET quantity, so the preset
+    # is exactly where it belongs. Measured 1836: Austria 0.049/wk, Belgium 0.074/wk.
+    #
+    # ⚠ The LABOUR base, never the all-pops one. Capitalists (£59.66/yr) and aristocrats (£7.55)
+    # draw dividends and rent through the same income field as a labourer's £3.79 wage, and folding
+    # them in inflates Belgium's base from £3.85 to £4.55 a year with money no building ever pays.
+    # Peasants are out for the opposite reason - subsistence is not a market wage.
+    $baseWage = $null; $baseWageNote = $null
+    if ($meas -and $meas.wages) {
+        if ($null -ne $meas.wages.base_weekly_labour) {
+            $baseWage = [double]$meas.wages.base_weekly_labour
+            $sp = $meas.wages.labour_base_spread
+            if ($sp) {
+                $baseWageNote = "measured across $($sp.types) professions, which agree to within £$($sp.min)-$($sp.max)/yr (cv $($sp.cv))"
+            }
+        } elseif ($meas.wages.state_annual_wage) {
+            # No per-pop rows for this market ⇒ no wage-weight-normalised base. Emit NOTHING rather
+            # than substituting the per-state average: that is money per WORKER, a different
+            # quantity, and using it would overstate the base by the market's mean wage weight
+            # (0.52 in Austria, 0.74 in Belgium - so not a constant that could be corrected for).
+            $baseWageNote = "not measured for this market - only the game's per-state average is available (£$($meas.wages.state_annual_wage.mean)/yr per worker, which is not a base wage)"
+        }
+    }
+
     # --- military UNITS, from history ---
     # NOT the measured barrack levels this used to carry. Barracks and logistics centres have no
     # goods on their production methods at all, so their level count buys nothing but urbanization -
@@ -919,6 +945,7 @@ foreach ($p in $presetCfg.presets) {
 
     $out.Add([ordered]@{
         id = $p.id; label = $p.label; group = $p.group; country = $lead
+        base_wage = $baseWage; base_wage_note = $baseWageNote
         market = @($members.ToArray() | Sort-Object)
         buildings = $buildings
         pms = $pmsByKey

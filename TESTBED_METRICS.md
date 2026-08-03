@@ -26,6 +26,13 @@ record the bump here *and* in the FINDINGS numbering table.
 | **v7** | **PHASED DUMPS** + tag-scoping removed: treasury sweeps every country, market goods every market (~304). One logical dump is emitted across **three consecutive months** (§3.9) |
 | **v8** | ORIGINS: who supplied whom, per good, per importer market (own phase, p3) |
 | **v9** | urban-centre count/levels per country; `market_goods_scoped` (market sweep restricted to the spec's tags); `scenario_probe` (per-building enumeration, pop SoL by stratum, three early-read hooks) + the first `events/` file the builder emits — see §4 |
+| **v10** | `wages` (§5): `WC` per country + `SW` per state of every tracked market + `WSTR` per-stratum SoL/workforce/dependents per country + `PW` per POP of the deep markets (**endpoint dumps only**, §5.7) — state average annual wage, pop income split into workforce/dependent, and the measured workforce ratio. Plus `wage_probe` … `wage_probe4`. New script values `v3tb_popobj_count` (graduated from the probe file), `v3tb_state_count`, `v3tb_poptype_id` |
+
+⚠ **Sessions `20260803_014037` and `20260803_022027` stamp v9 while carrying early v10 content**, and
+both were stopped part-way (see §5.6 and §5.7 — they are the *evidence* for those two rules, not
+usable measurement runs). Read their schema from `schedule.json`, not the `BOOT` line. The constant
+was bumped once the machine was free: **never edit `telemetry_lib.ps1` while a batch is running**, as
+every run rebuilds the mod from it and runs 2–3 would stop being the same arm as run 1.
 
 ## ⚠ v7: one dump is spread over three months — group by the LOGGED date
 
@@ -786,6 +793,214 @@ no probe gets a mod with no such script values — and `MakeScope.ScriptValue` o
 returns **0, not an error**. Measured the hard way in session `20260802_111721`: every country logged
 SoL 0 while the urban-centre fields beside them were correct, because the SoL values were still in the
 probe file. They now live in `New-TelemetryScriptValues`. **When a probe graduates, move it.**
+
+## 5. Wages, pop income and the workforce ratio (v10)
+
+Probed 2026-08-03 across three sessions — `20260803_012437` (calls), `20260803_013054` (sizing +
+attribution) and `20260803_013903` (assembled metric). Built to answer three questions the balance
+UI models but had never measured: the **base wage** its profit and payback arithmetic rests on, how
+**wages and SoL** move over a campaign, and the **workforce ratio** (1 − dependent share).
+
+### 5.1 Wages live on the STATE, not the country
+
+| call | scope | |
+|---|---|---|
+| **`GetAverageAnnualWage`** | **State** | ✅ the in-game budget-panel figure. Belgium 1836: Wallonia 3.14, Flanders 1.98, Belgian Gelre 0.42 |
+| `GetAverageAnnualWage` | Country | ❌ **VOIDS** — there is no country-level wage |
+| `GetNumSubsistenceWorkingAdults` | State | ✅ Flanders 391 050 |
+| `GetNumUnemployedWorkingAdults` | State | ✅ Flanders 14 352, Wallonia 0 |
+| `GetState.GetCountry.GetNameNoFormatting` | State | ✅ — so a state names its own country inline, and the state sweep needs no marker-order reconstruction |
+
+Because the country-level call voids, **a market's average wage must be built up from states.** That
+is not a workaround, it is the shape of the quantity: Belgium's three states span 7.5× at the start.
+
+### 5.2 Pop income — VERIFIED, and it decomposes exactly
+
+All on **Pop** scope. Measured on one Belgian machinist pop (workforce 500):
+
+| call | value | |
+|---|--:|---|
+| `GetIncome` | 84.2477 | weekly, total |
+| **`GetWorkforceIncome`** | 65.4832 | **the wage** |
+| `GetDependentIncome` | 18.7644 | |
+| `GetExpenses` | 81.3864 | |
+| `GetMoney` | 2.8612 | net |
+| `GetNumWorkforce` / `GetDependentsSize` / `GetTotalSize` | 2000 / 6000 / 8000 | |
+
+Two identities hold **exactly**, so two of these fields are redundant and are not emitted:
+`GetIncome = GetWorkforceIncome + GetDependentIncome` (84.2477 = 65.4832 + 18.7644) and
+`GetMoney = GetIncome − GetExpenses`. Likewise `workforce + dependents = GetTotalSize`.
+
+❌ **Voids or useless:** `GetWorksAt.GetBuildingType.GetKey` voids (use `GetBuilding.GetBuildingType.GetKey`,
+which works — a Belgian machinist reads `building_arms_industry`). `GetSocialClass` resolves but
+returns **empty**. `GetPopType.GetKey` voids.
+
+⚠ **`GetPopType.GetName` resolves but returns a ~90-byte tooltip blob**
+(`tooltippable_name tooltip:dw_948111401,CK841UIDAAA=,DATA_POP_TYPE_NAME_TOOLTIP,PopTypeTooltip
+machinists! Machinists!!`), not a key. On the one metric whose binding constraint is log volume that
+is megabytes of noise, so the type is emitted as a **small integer** via a `v3tb_poptype_id` script
+value (`is_pop_type` chain). The order in `Get-WagePopTypes` **is the on-disk encoding — append
+only**; inserting a type silently re-labels every session already recorded.
+
+### 5.3 Whole markets can be enumerated — `market = c:TAG.market`
+
+`every_country = { limit = { market = c:BEL.market } }` **works**. Vanilla uses `market = ROOT.market`
+as a country trigger (`01_silkworm_diseases.txt`) but never with a `c:TAG` right-hand side, so this
+needed probing. Verified it filters rather than silently becoming a no-op: it returned **Belgium
+alone** for the Belgian market and **Austria + Hungary + Croatia-Slavonia + Transylvania + Krakow**
+for the Austrian, not all ~285 countries.
+
+⚠ **The Netherlands is `NET`, not `NED`.** `c:NED` reports ABSENT in 1836 for a country that plainly
+exists — the silent-empty failure mode in its purest form. `common/country_definitions/00_countries.txt`
+has `NET`. `GER` correctly reports ABSENT in 1836, which exercises the successor path for real.
+
+### 5.4 SIZE a per-pop sweep with a script value, never by counting its own lines
+
+`v3tb_popobj_count` (`every_scope_state = { every_scope_pop = { add = 1 } }`) is one line per country
+and is the number of PW lines that country will emit — so it is the completeness check **for the very
+lines whose truncation it is guarding against**.
+
+Probe 1 tried to size the sweep by counting its own output and got **181 Belgian pops against a true
+187**, because those lines are exactly what the ring truncates. Measured 1836 sizes:
+
+| market | pop objects | states |
+|---|--:|--:|
+| Belgian | 187 | 3 |
+| Austrian | 895 | 27 |
+| British (65 members) | ~3 400 | 136 |
+| Russian | ~1 633 | 96 |
+| all 8 tracked | ~9 800 | ~410 |
+
+⚠ **A cross-session line is not a cross-session bug — it is the ring.** Session
+`20260802_222826/run001` holds **976 Belgian pop lines stamped with session `20260802_215913`'s
+token**, across five dump dates, for a country with 187 pops. The token exists for exactly this;
+**any per-pop analysis must filter on the run's own token from `meta.json`** or its counts are
+fiction. `tools/testbed/analyse_wages.sh` does.
+
+### 5.5 ⚠ Phases were actively WRONG here — one dump, one tick
+
+The usual rule is "each heavy block gets its own phase". For this metric that rule **broke the
+measurement**, and the reason generalises.
+
+Validation session `20260803_013525` ran the two markets in phases 0 and 1. Austria's per-pop sweep
+returned **549 pops against the 504 its own `WC` line counted one month earlier** — not log loss:
+**pop objects are created as pops migrate and promote, ~10 % of them within a single month.** So the
+phase split meant the completeness check compared two different populations and could never come out
+equal, and a state's wage sat a month away from the pops earning it.
+
+Re-run in a single phase, four of six countries matched **exactly** (Austria 504/504, Croatia-Slavonia
+60/60, Krakow 21/21, Transylvania 82/82), with Hungary 3 short and Belgium 1 — ~0.4 % residual line
+loss, now *detectable* rather than confounded.
+
+**Rule: phase to avoid a burst, but never phase apart two quantities that must be read at the same
+instant — and a completeness check is always one of those.** This metric is small enough
+(~1 500 lines/dump at 1836) that the burst was never the real risk.
+
+### 5.6 ⚠⚠ "The whole market" is NOT a bounded scope — pin per-pop sweeps to lead + subjects
+
+The most expensive lesson of this batch, and it generalises to any per-object sweep scoped by market.
+
+`every_country = { limit = { market = c:BEL.market } }` is correct and it filters properly (§5.3).
+It is also **unbounded over time**, because *which* market a country belongs to changes. Measured in
+session `20260803_014037_wages-n3` (stopped after run 1):
+
+| dump | what `c:BEL.market` meant | pops expected | PW lines survived |
+|---|---|--:|--:|
+| 1836.2.1 | Belgian Market — Belgium alone | 178 | 177 ✓ |
+| 1850.1.1 | **British Market** — Belgium had joined it, 65 members | **20 686** | **5 212** ✗ |
+
+**A 75 % loss is not a sample.** Which lines survive is decided by ring position, not by chance, so
+the surviving 5 212 are biased in an unknown direction — the entire Belgian trajectory from 1850
+onwards would have been unusable, and *silently* so, since every line present is individually valid.
+
+**Fix: scope per-pop sweeps to the lead country AND ITS SUBJECTS**, keeping the market test as a
+guard:
+
+```
+limit = {
+    market = c:%TAG%.market
+    OR = { this = c:%TAG%  is_subject_of = c:%TAG% }
+}
+```
+
+Two reasons the market test stays. First, **an invalid trigger in a `limit` is silently ignored**
+(§3.7), so if `is_subject_of` had not resolved, the limit would have collapsed to a no-op and swept
+all ~285 countries — ~100 k lines. With the verified market test present, that failure degrades to
+the old behaviour instead of destroying the run. Second, lead+subjects is the better *unit*: a
+trajectory needs a fixed economy tracked across a century, not one that silently becomes a different
+one.
+
+⚠ **BEL and AUS cannot verify this filter** — at 1836 their market *is* their lead plus subjects, so
+both designs return the same count. Probe `20260803_021616` used **BIC**, which sits inside the
+3 242-pop British market with its own subject tree: the filtered sweep returned **1 696 pops across
+its 45 Indian subject states**, correctly excluding Great Britain, the Cape, Ceylon and Canada.
+**When testing a filter, pick the case where the two hypotheses actually differ.**
+
+The whole market is still observed — by the `WC` (per country) and `SW` (per state) lines, which
+cost one line each and are unaffected by this.
+
+### 5.7 ⚠⚠ A MID-RUN dump has a hard size budget: ~1 500 lines, and no recovery
+
+Distinct from §5.6 (that was a scope defect; this is a channel limit that applies to **every** heavy
+metric on a long run). Measured in session `20260803_022027_wages-n3` run 1:
+
+| dump | lines emitted in the tick | pops logged / expected | |
+|---|--:|---|---|
+| 1836.2.1 | ~1 529 | **1 039 / 1 039** | complete ✓ |
+| 1850.1.1 | ~3 400 | 115 / ~2 176 | **5 %** |
+| 1865.1.1 | ~3 400 | 473 / ~2 500 | **19 %** |
+
+**It is a threshold, not a gradient.** A dump is written in a single tick; the ring is 5×512 KB, so
+~1 500 lines (≈200 KB) fits inside a segment while ~3 400 (≈440 KB) fills one and rotates
+mid-burst — and the live mirror loses whatever rotated.
+
+⚠⚠ **And the standard rescue does not apply to a long run.** §"the mirror's losses are fully
+recoverable from the ring snapshot" holds only for what is *still in the ring at exit*. After a run
+to 1935 the ring holds the 1930s; the 1850 dump rotated away ~85 in-game years earlier. **A mid-run
+dump in a century-long campaign is unrecoverable** — and unrecoverable as a *biased* subset
+(whichever lines rotation spared), which is worse than an obviously missing one.
+
+**Design rule that follows: put the trajectory on cheap lines and the distribution at the endpoints.**
+- Every dump: aggregates only. Here `WC` (per country), `SW` (per state) and `WSTR` (per-stratum SoL
+  + workforce + dependents + total population, one line per country) — ~800 lines, safely inside a
+  segment.
+- First and last dump: add the full per-object sweep. The first is proven complete; the last is close
+  enough to exit that the ring snapshot still holds it.
+
+Verified in probe `20260803_025834`: the middle dump emitted 70 `WC` + 164 `SW` + 6 `WSTR` and **zero**
+per-pop lines; both endpoints emitted everything.
+
+**Loss is concentrated at the HEAD of a big tick, and decreases monotonically toward the tail.**
+Measured on the 1836 dump of `20260803_030101` (~1 600 lines, emitted in the order WSTR → WC → SW → PW):
+
+| block | position | captured |
+|---|---|--:|
+| `WSTR` | 1st | **0 of 6** |
+| `WC` | 2nd | 60 of ~90 |
+| `SW` | 3rd | 310 of ~400 |
+| `PW` | last | **1 076 of ~1 090** |
+
+So **emit the small, load-bearing lines LAST** when a tick is large — the tail is what survives. (In
+this batch it cost nothing: `WSTR` at 1836 is derivable from the per-pop lines beside it, and the
+mid-run dumps are small enough to be complete throughout. But a metric whose only copy of something
+sits at the head of a 1 500-line tick will lose it.)
+
+⚠ **A country is not a stable observation target across a century.** Same run: Austria went from
+20 750 355 people in 1836 to **1 225 974 by 1850**, having lost Hungary, Croatia-Slavonia,
+Transylvania and Krakow — so its "trajectory" after 1850 is a rump state's, not the Austrian
+economy's. The successor chain (§5.3) only fires when the tag ceases to exist *entirely*, which this
+is not. Always carry population and pop-object counts alongside a trajectory so a collapse is visible
+rather than read as an economic result.
+
+⚠ This retroactively bears on any earlier long run carrying a heavy per-dump metric — `market_goods`
+is ~5 300 lines per dump. `summarise.ps1`'s `integrity.partial_dumps` gate exists for exactly this;
+**read it before analysing a long run**, and treat a flagged dump as absent rather than as a sample.
+
+### 5.8 A 1836.1.1 dump NEVER FIRES
+
+`on_monthly_pulse` does not tick on the start date itself, so a dump requested at `1836.1.1` produces
+nothing at all. §4.3 listed this as a candidate early-read hook and suspected it; it is now measured.
+**The earliest usable monthly dump is 1836.2.1.**
 
 ## Not resolved
 

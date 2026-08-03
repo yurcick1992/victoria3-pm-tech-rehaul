@@ -1,0 +1,18 @@
+{
+  "schedule_version": 1,
+  "label": "wage-validate",
+  "_why": "Dress rehearsal for the production `wages` metric before three ~100-year runs are committed to it. Probes 1 and 2 verified the individual CALLS; this verifies the assembled metric - both phases fire, both dump dates fire, the anchor/else_if successor chain picks the right country, the pop-type integer decodes, and WC/SW/PW all carry real values. It is also not a throwaway: at 1836.2.1 it IS Q1's measurement at n=1, so if the long batch is cut short the base-wage answer already exists.",
+  "_cost": "One control run, 1836.1.1 + 1836.2.1 -> 1836.5.1. About three minutes.",
+  "defaults": {
+    "tags": ["BEL", "AUS", "GBR", "FRA", "RUS", "CHI", "JAP", "USA"],
+    "metrics": ["wages"],
+    "autosave_interval": "never",
+    "timeout_minutes": 20
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1836.5.1", "dump_dates": ["1836.1.1", "1836.2.1"] }
+  ]
+}

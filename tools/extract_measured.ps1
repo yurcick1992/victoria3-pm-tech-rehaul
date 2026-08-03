@@ -38,7 +38,12 @@ param(
     [Parameter(Mandatory=$true)][string[]]$Session,
     [string]$Date = '1836.2.1',
     [string]$Repo,
-    [string]$Out
+    [string]$Out,
+    # MERGE-ONLY mode for the `wages` metric. A wages session carries none of the other metrics, so
+    # a normal run over it would write a measured table that is empty everywhere else - and this file
+    # is one whose staleness is "silently wrong, not obviously missing". So -WagesOnly reads the
+    # existing file, replaces only each market's `wages` block, and leaves every other field alone.
+    [switch]$WagesOnly
 )
 $ErrorActionPreference = 'Stop'
 # $PSScriptRoot is not reliably populated inside a param() default here, so resolve it in the body.
@@ -83,6 +88,202 @@ foreach ($runDir in $runDirs) {
     Write-Output ("  {0}: {1:N0} distinct lines (token {2})" -f (Split-Path $runDir -Leaf), $n, $token)
 }
 Write-Output ("averaging over {0} run(s), {1:N0} lines total" -f $runCount, $lines.Count)
+
+# ================================================================ WAGES (merge-only)
+if ($WagesOnly) {
+    # wage_weight per pop type, indexed by the integer on each PW line (Get-WagePopTypes in
+    # tools/telemetry_lib.ps1 defines the order; index 0 means "a type that list does not know").
+    # Values are common/pop_types/*.txt. ⚠ Keep in step with Get-WagePopTypes - it is append-only.
+    $PT = @('unknown','laborers','farmers','machinists','clerks','shopkeepers','engineers',
+            'clergymen','bureaucrats','academics','officers','soldiers','aristocrats',
+            'capitalists','peasants','slaves')
+    $WW = @(0, 1, 2, 1.5, 1.5, 3, 3, 3, 4, 4, 5, 1.5, 5, 5, 0.2, 0)
+
+    # country -> market, from the WC line (this metric does not emit MKT)
+    # ⚠ Per-run counts are averaged by the number of runs that ACTUALLY CARRY that market, not by
+    # the total run count. Runs differ in which markets they sweep per-pop (the deep-market list is
+    # per schedule), so dividing a market's pop lines by every run understates it by exactly the
+    # factor of runs that never swept it - which reads as a 5x shortfall in the completeness column
+    # for a market that is in fact complete. The token is field 1 of every line, so run identity is
+    # available per line without threading it through.
+    $mOf = @{}; $popObj = @{}; $wcTok = @{}
+    foreach ($l in $lines) {
+        $p = $l -split '\|'
+        if ($p[2] -ne 'WC' -or $p[3] -ne $Date) { continue }
+        $mOf[$p[5]] = $p[6]
+        $popObj["$($p[5])"] = ($popObj["$($p[5])"] + 0) + [double]$p[7]
+        if (-not $wcTok.ContainsKey($p[6])) { $wcTok[$p[6]] = @{} }
+        $wcTok[$p[6]][$p[1]] = $true
+    }
+    if (-not $mOf.Count) { throw "no WC lines at $Date - is this a `wages` session, and is the date right?" }
+
+    # --- per-market accumulators. Everything reported is a RATIO of two sums, which is what makes
+    # this robust to the ~0.4% per-pop line loss the ring still causes: a lost pop removes its wage
+    # bill AND its wage units, so the quotient barely moves, whereas a raw total would be short.
+    $bill = @{}; $units = @{}; $workers = @{}; $wfSum = @{}; $totSum = @{}
+    $solNum = @{}; $incSum = @{}; $depIncSum = @{}; $expSum = @{}; $pwSeen = @{}; $pwTok = @{}
+    $tBill = @{}; $tUnits = @{}; $tWork = @{}; $tTot = @{}     # keyed market|typeid
+    foreach ($l in $lines) {
+        $p = $l -split '\|'
+        if ($p[2] -ne 'PW' -or $p[3] -ne $Date) { continue }
+        $m = $mOf[$p[6]]; if (-not $m) { continue }
+        $ti = [int]$p[8]; $w = $WW[$ti]
+        $wfv = [double]$p[9]; $tot = [double]$p[11]
+        $wi = [double]$p[14]
+        $bill[$m]    = ($bill[$m]    + 0) + $wi
+        $units[$m]   = ($units[$m]   + 0) + $wfv * $w
+        $workers[$m] = ($workers[$m] + 0) + $wfv
+        $wfSum[$m]   = ($wfSum[$m]   + 0) + $wfv
+        $totSum[$m]  = ($totSum[$m]  + 0) + $tot
+        $solNum[$m]  = ($solNum[$m]  + 0) + [double]$p[12] * $wfv
+        $incSum[$m]  = ($incSum[$m]  + 0) + [double]$p[13]
+        $depIncSum[$m] = ($depIncSum[$m] + 0) + [double]$p[15]
+        $expSum[$m]  = ($expSum[$m]  + 0) + [double]$p[16]
+        $pwSeen[$m]  = ($pwSeen[$m]  + 0) + 1
+        if (-not $pwTok.ContainsKey($m)) { $pwTok[$m] = @{} }
+        $pwTok[$m][$p[1]] = $true
+        $k = "$m|$ti"
+        $tBill[$k] = ($tBill[$k] + 0) + $wi
+        $tUnits[$k] = ($tUnits[$k] + 0) + $wfv * $w
+        $tWork[$k] = ($tWork[$k] + 0) + $wfv
+        $tTot[$k]  = ($tTot[$k]  + 0) + $tot
+    }
+
+    # --- state average annual wage, the game's own per-state figure (Q1's "between states" spread)
+    $stW = @{}
+    foreach ($l in $lines) {
+        $p = $l -split '\|'
+        if ($p[2] -ne 'SW' -or $p[3] -ne $Date) { continue }
+        $m = $mOf[$p[5]]; if (-not $m) { continue }
+        if (-not $stW.ContainsKey($m)) { $stW[$m] = New-Object System.Collections.Generic.List[double] }
+        $stW[$m].Add([double]$p[7])
+    }
+
+    $existing = $null
+    if (Test-Path $Out) { $existing = Get-Content $Out -Raw -Encoding UTF8 | ConvertFrom-Json }
+    if (-not $existing) { throw "-WagesOnly merges into an existing $Out; none found" }
+
+    $touched = 0; $report = @()
+    foreach ($m in ($mOf.Values | Sort-Object -Unique)) {
+        $w = [ordered]@{}
+        if ($stW.ContainsKey($m) -and $stW[$m].Count) {
+            $v = @($stW[$m] | Sort-Object)
+            # ⚠ [int] in PowerShell rounds half-to-EVEN, so [int](3/2) is 2, not 1 - which silently
+            # took the wrong element and reported Belgium's median as its maximum. Floor explicitly.
+            $mid = [int][math]::Floor($v.Count / 2)
+            $w.state_annual_wage = [ordered]@{
+                # ⚠ UNWEIGHTED across states - the game exposes no per-state worker count to weight
+                # by, so this is "the average between states" literally. The weighted figure is
+                # `base_weekly` below, which comes from the pops themselves.
+                states = [int][math]::Round($v.Count / $runCount)
+                mean   = [math]::Round((($v | Measure-Object -Sum).Sum / $v.Count), 4)
+                median = [math]::Round(($(if ($v.Count % 2) { $v[$mid] } else { ($v[$mid-1] + $v[$mid]) / 2 })), 4)
+                min    = [math]::Round($v[0], 4)
+                max    = [math]::Round($v[$v.Count - 1], 4)
+            }
+        }
+        if ($units[$m] -gt 0) {
+            $bw = $bill[$m] / $units[$m]
+            $w.base_weekly = [math]::Round($bw, 6)
+            $w.base_annual = [math]::Round($bw * 52, 4)
+            $w.per_worker_annual = [math]::Round($bill[$m] / $workers[$m] * 52, 4)
+            $w.mean_wage_weight  = [math]::Round($units[$m] / $workers[$m], 4)
+            $w.workforce_ratio   = [math]::Round($wfSum[$m] / $totSum[$m], 4)
+            $w.wage_share_of_income = [math]::Round($bill[$m] / $incSum[$m], 4)
+            $w.mean_sol_workforce_weighted = [math]::Round($solNum[$m] / $wfSum[$m], 3)
+            # --- THE NUMBER THE BALANCE SHEET WANTS, and why it is not `base_weekly`.
+            # Measured Belgium 1836: base_annual per pop type is 3.79 laborers, 3.79 farmers, 4.01
+            # machinists, 3.58 clerks, 4.38 shopkeepers, 4.04 engineers, 4.14 clergymen, 3.70
+            # bureaucrats, 3.61 academics, 3.41 officers, 3.42 soldiers - a tight cluster, which is
+            # the game confirming that it really does pay wage = base x wage_weight.
+            # Then aristocrats 7.55 and CAPITALISTS 59.66. Those two are not wages: GetWorkforceIncome
+            # for an owner pop is dividends and rent, and folding them into one market-wide average
+            # inflates the base by ~15% with money no building ever pays out. Peasants (2.79) are
+            # excluded for the opposite reason - their consumption is met inside the subsistence
+            # building and never priced as a market wage.
+            # So `base_weekly_labour` is the figure to seed the UI with; `base_weekly` is kept beside
+            # it as the raw all-pops number so the difference stays visible rather than assumed away.
+            $LABOUR = @('laborers','farmers','machinists','clerks','shopkeepers','engineers',
+                        'clergymen','bureaucrats','academics','officers','soldiers')
+            $lBill = 0.0; $lUnits = 0.0; $lWork = 0.0; $lBases = @()
+            foreach ($ti in (0..($PT.Count - 1))) {
+                $k = "$m|$ti"
+                if ($LABOUR -notcontains $PT[$ti] -or -not $tUnits.ContainsKey($k) -or $tUnits[$k] -le 0) { continue }
+                $lBill += $tBill[$k]; $lUnits += $tUnits[$k]; $lWork += $tWork[$k]
+                $lBases += ($tBill[$k] / $tUnits[$k] * 52)
+            }
+            if ($lUnits -gt 0) {
+                $lb = $lBill / $lUnits
+                $w.base_weekly_labour = [math]::Round($lb, 6)
+                $w.base_annual_labour = [math]::Round($lb * 52, 4)
+                # How well ONE base wage describes this market: the spread of the per-type bases that
+                # should all be the same number. A small CV is the model holding; a large one says a
+                # single base is hiding something.
+                $mu = ($lBases | Measure-Object -Average).Average
+                $sd = if ($lBases.Count -gt 1) {
+                    [math]::Sqrt((($lBases | ForEach-Object { ($_ - $mu) * ($_ - $mu) } | Measure-Object -Sum).Sum) / ($lBases.Count - 1))
+                } else { 0 }
+                $w.labour_base_spread = [ordered]@{
+                    types = $lBases.Count
+                    min   = [math]::Round(($lBases | Measure-Object -Minimum).Minimum, 4)
+                    max   = [math]::Round(($lBases | Measure-Object -Maximum).Maximum, 4)
+                    cv    = $(if ($mu -gt 0) { [math]::Round($sd / $mu, 4) } else { $null })
+                }
+                $w.excluded_from_labour_base = @('capitalists (dividends, not wages)',
+                    'aristocrats (rent, not wages)', 'peasants (subsistence, not a market wage)', 'slaves (wage_weight 0)')
+            }
+            $w.by_pop_type = [ordered]@{}
+            foreach ($ti in (0..($PT.Count - 1))) {
+                $k = "$m|$ti"; if (-not $tWork.ContainsKey($k) -or $tWork[$k] -le 0) { continue }
+                $w.by_pop_type[$PT[$ti]] = [ordered]@{
+                    workforce       = [int][math]::Round($tWork[$k] / [math]::Max(1, $pwTok[$m].Count))
+                    annual_per_worker = [math]::Round($tBill[$k] / $tWork[$k] * 52, 4)
+                    base_annual     = $(if ($tUnits[$k] -gt 0) { [math]::Round($tBill[$k] / $tUnits[$k] * 52, 4) } else { $null })
+                    workforce_ratio = [math]::Round($tWork[$k] / $tTot[$k], 4)
+                }
+            }
+            # Completeness, carried WITH the numbers rather than left in a console log: the WC line
+            # counts pop objects independently of the PW lines, so a short dump is visible here.
+            $nWc = [math]::Max(1, $wcTok[$m].Count)
+            $nPw = [math]::Max(1, $pwTok[$m].Count)
+            $w.pops_expected = [int][math]::Round((($mOf.Keys | Where-Object { $mOf[$_] -eq $m } |
+                                ForEach-Object { $popObj[$_] } | Measure-Object -Sum).Sum) / $nWc)
+            $w.pops_logged   = [int][math]::Round($pwSeen[$m] / $nPw)
+            $w.runs_per_pop  = $nPw
+            $w.source = 'per_pop'
+        } else {
+            $w.source = 'state_average_only'
+            $w._note  = 'No per-pop lines for this market, so no wage-weight-normalised base wage. Only the game per-state average annual wage (per WORKER) is available.'
+        }
+        if ($existing.markets.PSObject.Properties.Name -contains $m) {
+            $existing.markets.$m | Add-Member -NotePropertyName wages -NotePropertyValue $w -Force
+            $touched++
+            $report += ,@($m, $w)
+        } else {
+            Write-Warning "market '$m' has wage data but is not in $Out - skipped"
+        }
+    }
+    $existing._meta | Add-Member -NotePropertyName wages_from -NotePropertyValue ([ordered]@{
+        generated = (Get-Date).ToString('s'); date = $Date
+        runs = $runCount; sessions = @($runDirs); tokens = @($tokens)
+        sampled_at = "$Date exactly - the wages metric is entirely phase 0, so nothing here drifts"
+    }) -Force
+    [System.IO.File]::WriteAllText($Out, ($existing | ConvertTo-Json -Depth 9), (New-Object System.Text.UTF8Encoding($false)))
+    Write-Output ("merged wages into {0} market(s) -> {1}" -f $touched, $Out)
+    foreach ($r in $report) {
+        $m = $r[0]; $w = $r[1]
+        if ($w.source -eq 'per_pop') {
+            Write-Output ("  {0,-18} LABOUR base {1,8:N5}/wk ({2,6:N2}/yr, spread {3:N2}-{4:N2} cv {5:N3}) | all-pops base {6,6:N2}/yr | wf ratio {7:N4} | pops {8}/{9}" -f `
+                $m, $w.base_weekly_labour, $w.base_annual_labour,
+                $w.labour_base_spread.min, $w.labour_base_spread.max, $w.labour_base_spread.cv,
+                $w.base_annual, $w.workforce_ratio, $w.pops_logged, $w.pops_expected)
+        } else {
+            Write-Output ("  {0,-18} state-average only: mean £{1,6:N3}/yr over {2} state(s)" -f `
+                $m, $w.state_annual_wage.mean, $w.state_annual_wage.states)
+        }
+    }
+    exit 0
+}
 
 # ---------------------------------------------------------------- country -> market
 $marketOf = @{}

@@ -1,0 +1,18 @@
+{
+  "schedule_version": 1,
+  "label": "wage-probe4",
+  "_why": "Verifies the redesign that moves the trajectory onto cheap lines. Two things: (1) the new WSTR line emits real values - it bundles six script values and two data functions, and one bad call voids the WHOLE line, which would silently cost Q2 its mid-date standard-of-living and Q3 its workforce ratio; (2) a MIDDLE dump really does emit WSTR/WC/SW and no per-pop lines, while the first and last emit everything. Generation was already checked; this checks the game agrees.",
+  "_cost": "One control run, three dumps inside 14 in-game months. About two minutes.",
+  "defaults": {
+    "tags": ["BEL", "AUS", "GBR"],
+    "metrics": ["wages"],
+    "autosave_interval": "never",
+    "timeout_minutes": 20
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1837.3.1", "dump_dates": ["1836.2.1", "1836.6.1", "1837.1.1"] }
+  ]
+}

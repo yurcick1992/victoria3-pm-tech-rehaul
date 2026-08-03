@@ -120,6 +120,16 @@ foreach ($r in $runs) {
     $plan += [ordered]@{
         index = $i; setup = $sid; until = $until; dump_dates = $dumps
         tags = @(Val $r "tags" $defTags); metrics = @(Val $r "metrics" $defMetrics)
+        # Which markets get PER-POP lines (metric `wages`): group -> successor chain. An OBJECT, so
+        # it is passed through as-is rather than through the array-coercing Val defaults above.
+        # ⚠ Both lookups are guarded: this script runs under StrictMode, where reading a property an
+        # object does not have is a terminating error, not $null. A schedule that simply omits this
+        # field is the NORMAL case (the metric has its own default), so an unguarded
+        # `$defaults.wage_pop_markets` aborts every such schedule before its first run.
+        wage_pop_markets = $(
+            if     ($r.PSObject.Properties.Name -contains 'wage_pop_markets')        { $r.wage_pop_markets }
+            elseif ($defaults -and $defaults.PSObject.Properties.Name -contains 'wage_pop_markets') { $defaults.wage_pop_markets }
+            else   { $null })
         autosave = Val $r "autosave_interval" $defAutosave
         timeout  = [int](Val $r "timeout_minutes" $defTimeout)
     }
@@ -193,6 +203,7 @@ foreach ($p in $plan) {
     # telemetry spec for this run - the builder bakes it into whatever mod it makes
     $specFile = Join-Path $runDir "telemetry.json"
     $spec = [ordered]@{ dump_dates = $p.dump_dates; tags = $p.tags; metrics = $p.metrics }
+    if ($p.wage_pop_markets) { $spec['wage_pop_markets'] = $p.wage_pop_markets }
     [System.IO.File]::WriteAllText($specFile, ($spec | ConvertTo-Json -Depth 6), $Utf8)
 
     Log "=== run $($p.index)/$($plan.Count): setup '$($p.setup)' -> $($p.until) ==="

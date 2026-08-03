@@ -55,7 +55,12 @@
 #       per-building enumeration (type/level/employment), pop standard-of-living by stratum, and
 #       the three candidate EARLY-READ hooks (game start, a day-7 scheduled event, a 1836.1.1
 #       monthly pulse). Adds an events/ file, the first the builder has ever emitted.
-$script:TELEMETRY_VERSION = 9
+#   v10 + WAGES (metric `wages`, TESTBED_METRICS §5): WC per country + SW per state of every tracked
+#       market + PW per POP of the deep markets. State average annual wage, pop income split into
+#       workforce/dependent, and the measured workforce ratio. Deep markets are the LEAD COUNTRY AND
+#       ITS SUBJECTS, not the whole market - see Get-WageBlock for why. New script values
+#       v3tb_popobj_count (graduated from the probe file), v3tb_state_count, v3tb_poptype_id.
+$script:TELEMETRY_VERSION = 10
 
 function Get-TelemetryVersion { return $script:TELEMETRY_VERSION }
 
@@ -76,6 +81,11 @@ function Read-TelemetrySpec {
         $j = Get-Content $Path -Raw -Encoding UTF8 | ConvertFrom-Json
         foreach ($k in @("dump_dates", "tags", "metrics", "origin_goods")) {
             if ($j.PSObject.Properties.Name -contains $k -and $j.$k) { $spec[$k] = @($j.$k) }
+        }
+        # An OBJECT, not an array (group -> successor chain), so it cannot go through the @() loop
+        # above - that would flatten it to a list of property bags and lose the group names.
+        if ($j.PSObject.Properties.Name -contains 'wage_pop_markets' -and $j.wage_pop_markets) {
+            $spec['wage_pop_markets'] = $j.wage_pop_markets
         }
     }
     foreach ($d in $spec.dump_dates) {
@@ -170,6 +180,17 @@ v3tb_pop_sol = { value = 0
 v3tb_pop_wf = { value = 0
 	add = workforce }
 
+# POP-OBJECT COUNT per country. Not a population figure - a count of pop OBJECTS, which is exactly
+# the number of log lines a per-pop sweep of that country will emit. That makes it the sizing
+# instrument for any per-pop metric: one line that cannot be truncated, versus counting the
+# thousands of lines whose truncation is the very thing being guarded against.
+# (Graduated from zzz_v3tb_probe_values.txt, and REMOVED there - two files defining one script-value
+#  key is a silent override, and the probe file is only emitted when a probe metric asks for it.)
+v3tb_popobj_count = { value = 0
+	every_scope_state = { every_scope_pop = { add = 1 } } }
+v3tb_state_count = { value = 0
+	every_scope_state = { add = 1 } }
+
 # ---- POPULATION / WORKFORCE ----
 # The capital-scarcity measure: how much of a country's workforce is in subsistence (peasants) or
 # idle, versus gainfully employed. Vanilla late-game advanced economies run peasants and unemployed
@@ -242,6 +263,8 @@ v3tb_lvl_urban_center = { value = 0
 		add = level } } }
 "@
     $sv = $sv -replace '# STRATUM_VALUES_MARKER.*', (Get-StratumSolValues)
+    $sv += "`r`n`r`n# Pop TYPE as an integer - see Get-WagePopTypes for why the name is not used.`r`n"
+    $sv += (Get-WagePopTypeValue)
     return $sv
 }
 
@@ -325,8 +348,9 @@ v3tb_unemp_count_b = { value = 0
 # `pop_size` is a third guess: `workforce` counts working adults only, and consumption is per head.
 v3tb_sol_sum_probe = { value = 0
 	every_scope_state = { every_scope_pop = { add = standard_of_living } } }
-v3tb_popobj_count = { value = 0
-	every_scope_state = { every_scope_pop = { add = 1 } } }
+# (`v3tb_popobj_count` GRADUATED to New-TelemetryScriptValues - it is the sizing instrument for the
+#  per-pop wage metric and must exist for schedules that request no probe at all. Defining it here
+#  as well would be a silent override, so it is removed rather than copied.)
 # (`pop_size` was probed 2026-08-02 and does NOT exist: "Failed to find a valid event target link
 # 'pop_size'". Removed - a known-bad value adds error.log noise every run and can mask a new one.)
 v3tb_wealth_sum_probe = { value = 0
@@ -429,6 +453,349 @@ function Get-BuildingInventoryBlock {
 				}
 			}
 "@
+}
+
+function Get-WagePopFields {
+    <#
+      The per-pop field list for the WAGE metric, as an ordered map of label -> loc expression.
+      ONE definition, used by BOTH the probe (one field per line, so a void kills only itself) and
+      the production block (all fields on one line, once each has been verified). That is the same
+      discipline the pop_sol metric arrived at the hard way: a production line must never carry a
+      field whose behaviour was learned from a DIFFERENT expression.
+
+      Q1 wants the base wage the balance UI models as W = base x SUM(employees x wage_weight). The
+      route to it is per-pop: base = GetWorkforceIncome / GetNumWorkforce / wage_weight(pop type),
+      with wage_weight read from common/pop_types at analysis time. So the pop TYPE is load-bearing,
+      not decoration - without it the per-worker wage cannot be normalised to a base.
+
+      Q3 wants the workforce ratio, which is 1 - dependent share. `WORKING_ADULT_RATIO_BASE = 0.25`
+      is the define, but the same file says it "can be overridden by pop type definition and country
+      modifiers" (aristocrats 0.2, slaves 0.5) and `WORKING_ADULT_RATIO_SKEW_MAXIMUM = 2.0` lets it
+      drift and self-correct - so it is a measured quantity, not a constant. GetNumWorkforce and
+      GetDependentsSize already give it; GetTotalSize is the independent cross-check.
+    #>
+    return [ordered]@{
+        country  = '[THIS.GetPop.GetCountry.GetNameNoFormatting]'
+        state    = '[THIS.GetPop.GetState.GetNameNoFormatting]'
+        poptype  = '[THIS.GetPop.GetPopType.GetName]'
+        wf       = '[THIS.GetPop.GetNumWorkforce]'
+        dep      = '[THIS.GetPop.GetDependentsSize]'
+        total    = '[THIS.GetPop.GetTotalSize]'
+        sol      = "[THIS.GetPop.MakeScope.ScriptValue('v3tb_pop_sol')]"
+        income   = '[THIS.GetPop.GetIncome|4]'
+        wfincome = '[THIS.GetPop.GetWorkforceIncome|4]'
+        depinc   = '[THIS.GetPop.GetDependentIncome|4]'
+        expenses = '[THIS.GetPop.GetExpenses|4]'
+        money    = '[THIS.GetPop.GetMoney|4]'
+    }
+}
+
+function Get-WagePopTypes {
+    <#
+      The pop types, in the order that DEFINES the numeric code emitted on every per-pop wage line.
+      ⚠ APPEND ONLY. The index is the on-disk encoding: inserting a type renumbers every type after
+      it and silently re-labels the pops of every session already recorded.
+
+      Why a code at all: Pop.GetPopType.GetName resolves, but returns a ~90-byte tooltip blob
+      ("tooltippable_name tooltip:dw_948111401,CK841UIDAAA=,DATA_POP_TYPE_NAME_TOOLTIP,
+      PopTypeTooltip machinists! Machinists!!") rather than a key - and GetPopType.GetKey voids.
+      At ~5 000 pops x 8 dumps that blob is megabytes of noise on the one metric whose binding
+      constraint is log volume, so the type is emitted as a small integer instead.
+
+      The type is load-bearing, not decoration: the base wage Q1 asks for is
+      per-worker wage / wage_weight, and wage_weight is a property of the pop type
+      (common/pop_types: laborers 1, machinists/clerks/soldiers 1.5, farmers 2,
+      shopkeepers/engineers/clergymen 3, bureaucrats/academics 4, officers/aristocrats/capitalists 5,
+      peasants 0.2, slaves 0).
+    #>
+    return @('laborers','farmers','machinists','clerks','shopkeepers','engineers','clergymen',
+             'bureaucrats','academics','officers','soldiers','aristocrats','capitalists',
+             'peasants','slaves')
+}
+
+function Get-WagePopTypeValue {
+    <#
+      v3tb_poptype_id: the pop's type as an integer, 1-based over Get-WagePopTypes (0 = a type this
+      list does not know, which a game patch adding a pop type would produce - a loud 0 beats a
+      silent mislabel).
+    #>
+    $t = Get-WagePopTypes
+    $body = ""
+    for ($i = 0; $i -lt $t.Count; $i++) {
+        $body += "`r`n`tif = { limit = { is_pop_type = $($t[$i]) } value = $($i + 1) }"
+    }
+    return "v3tb_poptype_id = { value = 0$body }"
+}
+
+function Get-WageBlock {
+    <#
+      The production wage/SoL metric. Three lines, each answering one of the three questions:
+
+        WC  per country of every tracked market - pop-OBJECT count, state count, population, mean
+            SoL. The pop-object count is the sizing field: it is exactly how many PW lines that
+            country will emit, so a truncated dump is detectable from within the dump itself.
+        SW  per state of every tracked market - State.GetAverageAnnualWage (Q1), plus subsistence
+            and unemployed working adults, which are what make a state average interpretable (a
+            state that is mostly subsistence has a low average wage for a reason that is not "wages
+            are low").
+        PW  per POP, for the DEEP groups only - the full distribution behind Q2 and Q3.
+
+      Every field here was verified in probe session 20260803_012437; nothing is carried on faith.
+      What that probe also established, and what shapes this block:
+        - Country.GetAverageAnnualWage VOIDS. The wage is a STATE quantity, so Q1's market average
+          has to be built from states, not read off the country.
+        - GetIncome splits EXACTLY into GetWorkforceIncome + GetDependentIncome (84.2477 =
+          65.4832 + 18.7644), and GetMoney is GetIncome - GetExpenses (2.8612). So `money` is not
+          emitted - it is derivable, and bytes are the constraint here.
+        - workforce + dependents = GetTotalSize exactly (2000 + 6000 = 8000), which is Q3's
+          workforce ratio measured rather than assumed from WORKING_ADULT_RATIO_BASE = 0.25.
+
+      ⚠ PW lines must never be de-duplicated in analysis. Two pops with identical values emit
+      byte-identical lines, and collapsing them destroys the distribution this exists to measure.
+    #>
+    param([string]$Token, [string]$Date, $Groups, $Tags)
+
+    # Returned SPLIT, not as one string: the per-pop sweep of one market is the heavy block, and
+    # each heavy block needs its own phase (TESTBED_METRICS - stacking two of them is exactly the
+    # burst that cost 5 980 lines). The caller puts `markets` and the FIRST group in phase 0 and
+    # each further group in its own later phase.
+    $out = ""
+    # ---- WSTR: per-stratum SoL and workforce, plus dependents and total population, for every
+    # country of the DEEP groups. All existing verified script values, ~1 line per country - which
+    # is the point: this is what carries Q2 and Q3 at the dates where the per-pop sweep cannot fit
+    # in the log ring (see the budget note at the call site). A stratum with no workforce emits 0
+    # on both halves, so "nobody here" and "SoL zero" stay distinguishable at analysis time.
+    $strataPairs = @('upper','middle','lower','peasants','slaves') |
+        ForEach-Object { "[THIS.GetCountry.MakeScope.ScriptValue('v3tb_solw_$_')]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_swf_$_')]" }
+    foreach ($g in $Groups.Keys) {
+        $head = @($Groups[$g])[0]
+        $out += @"
+
+			if = {
+				limit = { exists = c:$head }
+				every_country = {
+					limit = {
+						market = c:$head.market
+						OR = { this = c:$head  is_subject_of = c:$head }
+					}
+					debug_log = "V3TB|$Token|WSTR|$Date|$g|[THIS.GetCountry.GetNameNoFormatting]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_wf_total')]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_dependents')]|[THIS.GetCountry.GetTotalPopulation]|[THIS.GetCountry.GetAverageSoLByPopulation|4]|$($strataPairs -join '|')"
+				}
+			}
+"@
+    }
+
+    # ---- WC + SW: every tracked market, by membership. `market = c:TAG.market` as a country-scope
+    # trigger is vanilla's own idiom (01_silkworm_diseases.txt) and was verified here in probe 1:
+    # it returned Belgium alone for the Belgian market and Austria + Hungary + Croatia-Slavonia +
+    # Transylvania + Krakow for the Austrian, rather than sweeping all ~285 countries.
+    foreach ($t in $Tags) {
+        $out += @"
+
+			debug_log = "V3TB|$Token|WMKT|$Date|$t|start"
+			if = {
+				limit = { exists = c:$t }
+				every_country = {
+					limit = { market = c:$t.market }
+					debug_log = "V3TB|$Token|WC|$Date|$t|[THIS.GetCountry.GetNameNoFormatting]|[THIS.GetCountry.GetMarket.GetNameNoFormatting]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_popobj_count')]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_state_count')]|[THIS.GetCountry.GetTotalPopulation]|[THIS.GetCountry.GetAverageSoLByPopulation|4]"
+					every_scope_state = {
+						debug_log = "V3TB|$Token|SW|$Date|$t|[THIS.GetState.GetCountry.GetNameNoFormatting]|[THIS.GetState.GetNameNoFormatting]|[THIS.GetState.GetAverageAnnualWage|4]|[THIS.GetState.GetNumSubsistenceWorkingAdults]|[THIS.GetState.GetNumUnemployedWorkingAdults]"
+					}
+				}
+			}
+			else = { debug_log = "V3TB|$Token|WMKT|$Date|$t|ABSENT" }
+"@
+    }
+
+    $markets = $out
+    $popBlocks = [ordered]@{}
+
+    # ---- PW: per-pop, per DEEP group. Each group names its lead tag and a SUCCESSOR to fall back
+    # on if the lead is annexed or formed away over a 100-year run - the market is the unit of
+    # interest, so what matters is that the same economic area keeps being observed under a name
+    # that identifies it, not that a particular tag survives.
+    foreach ($g in $Groups.Keys) {
+        $out = ""
+        $chain = @($Groups[$g])
+        # ⚠ NOT the whole market — the lead country AND ITS SUBJECTS. Measured the hard way in
+        # session 20260803_014037: by 1850 Belgium has joined the BRITISH market, so
+        # `market = c:BEL.market` legitimately expanded to all ~65 British members and the sweep
+        # tried to emit 20 686 pop lines in one tick. 5 212 survived the log ring. A 75 % loss is
+        # not a sample — which lines survive is decided by ring position, not by chance — so the
+        # whole Belgian trajectory from 1850 on would have been unusable.
+        #
+        # Pinning to lead + subjects keeps a FIXED economic unit comparable across a century, which
+        # is what a trajectory needs, and keeps volume bounded (1836: Belgium 187 alone, Austria 895
+        # with Hungary/Croatia-Slavonia/Transylvania/Krakow — identical to the whole-market figures,
+        # because at the start those markets ARE the lead plus its subjects). The whole market is
+        # still observed at country and state granularity by the WC and SW lines above, which cost
+        # one line each and are unaffected.
+        #
+        # The market limit is KEPT alongside as a guard, not for redundancy: an invalid trigger
+        # inside a `limit` is silently IGNORED (TESTBED_METRICS §3.7), so if `is_subject_of` did not
+        # resolve, the limit would collapse to a no-op and sweep all ~285 countries — ~100k lines.
+        # With the verified market test still present, that failure degrades to today's behaviour
+        # instead of destroying the run.
+        $body = @"
+					every_country = {
+						limit = {
+							market = c:%ANCHOR%.market
+							OR = { this = c:%ANCHOR%  is_subject_of = c:%ANCHOR% }
+						}
+						every_scope_state = {
+							every_scope_pop = {
+								debug_log = "V3TB|$Token|PW|$Date|$g|%ANCHOR%|[THIS.GetPop.GetCountry.GetNameNoFormatting]|[THIS.GetPop.GetState.GetNameNoFormatting]|[THIS.GetPop.MakeScope.ScriptValue('v3tb_poptype_id')]|[THIS.GetPop.GetNumWorkforce]|[THIS.GetPop.GetDependentsSize]|[THIS.GetPop.GetTotalSize]|[THIS.GetPop.MakeScope.ScriptValue('v3tb_pop_sol')]|[THIS.GetPop.GetIncome|4]|[THIS.GetPop.GetWorkforceIncome|4]|[THIS.GetPop.GetDependentIncome|4]|[THIS.GetPop.GetExpenses|4]"
+							}
+						}
+					}
+"@
+        $out += "`r`n`r`n`t`t`tdebug_log = `"V3TB|$Token|PWG|$Date|$g|start`""
+        $first = $true
+        foreach ($tag in $chain) {
+            $kw = if ($first) { "if" } else { "else_if" }; $first = $false
+            $out += @"
+
+			$kw = {
+				limit = { exists = c:$tag }
+				debug_log = "V3TB|$Token|PWG|$Date|$g|anchor|$tag"
+$($body -replace '%ANCHOR%', $tag)
+			}
+"@
+        }
+        $out += @"
+
+			else = { debug_log = "V3TB|$Token|PWG|$Date|$g|ABSENT|$($chain -join '/')" }
+"@
+        $popBlocks[$g] = $out
+    }
+    return [pscustomobject]@{ markets = $markets; pops = $popBlocks }
+}
+
+function Get-WageProbeBlock {
+    <#
+      WAGE PROBE. Answers, before any long run is paid for, whether the three questions are even
+      instrumentable:
+
+        A. MARKET MEMBERSHIP - can `every_country = { limit = { market = c:BEL.market } }` enumerate
+           a whole market? Vanilla uses `market = ROOT.market` as a country trigger
+           (01_silkworm_diseases.txt), but never with a `c:TAG.market` right-hand side, and never in
+           a loc-string context. If this fails the whole-market scope collapses to a tag list.
+        B. STATE WAGE - State.GetAverageAnnualWage is what gui/budget_panel.gui renders, and it is
+           the single number Q1 asks for. Probed with the state NAME beside it, because a silent
+           empty value is the dangerous failure mode (TESTBED_METRICS, top).
+        C. POP INCOME - every field in Get-WagePopFields, one per line. Wages are only part of pop
+           income (a capitalist's dividends dwarf them), so GetIncome / GetWorkforceIncome /
+           GetDependentIncome are probed together: the split is the point, not the total.
+        D. VOLUME - one marker line per pop across BOTH whole markets. This is not a by-product, it
+           IS the sizing measurement: the user's chosen granularity is every pop of two whole
+           markets across seven dumps to 1936, and the ring is 5x512KB. Counting the pops now is
+           what tells us whether that fits in one phase or needs splitting.
+        E. SUCCESSORS - `exists` on BEL/NED and AUS/GER. GER does not exist in 1836, so this also
+           exercises the ABSENT path that a 100-year run will need when a tag is annexed or formed
+           away.
+
+      Every block opens with a CONSTANT marker line: a line with no data function cannot void, so a
+      missing marker means the block never ran, whereas a missing data line means that call failed.
+      Without the marker those two cases are indistinguishable.
+    #>
+    param([string]$Token, [string]$Date, $Groups)
+    $out = ""
+    foreach ($g in $Groups.Keys) {
+        $lead = $Groups[$g]
+        # -- E: existence of the lead tag and its designated successor, one line each --
+        foreach ($t in $lead) {
+            $out += @"
+
+			if = {
+				limit = { exists = c:$t }
+				c:$t = { debug_log = "V3TB|$Token|WP|$Date|$g|EXISTS|$t|[THIS.GetCountry.GetNameNoFormatting]" }
+			}
+			else = { debug_log = "V3TB|$Token|WP|$Date|$g|ABSENT|$t|-" }
+"@
+        }
+        $head = $lead[0]
+        # -- A + D: whole-market enumeration, and one marker per pop to size the burst --
+        $out += @"
+
+			debug_log = "V3TB|$Token|WP|$Date|$g|m_market|start-$head"
+			if = {
+				limit = { exists = c:$head }
+				every_country = {
+					limit = { market = c:$head.market }
+					debug_log = "V3TB|$Token|WP|$Date|$g|MEMBER|[THIS.GetCountry.GetNameNoFormatting]|[THIS.GetCountry.GetMarket.GetNameNoFormatting]|[THIS.GetCountry.GetTotalPopulation]"
+					every_scope_state = {
+						every_scope_pop = {
+							debug_log = "V3TB|$Token|WP|$Date|$g|PCOUNT|[THIS.GetPop.GetCountry.GetNameNoFormatting]|[THIS.GetPop.GetState.GetNameNoFormatting]|[THIS.GetPop.GetNumWorkforce]"
+						}
+					}
+				}
+			}
+"@
+    }
+
+    # -- B: state-scope wage fields, on the FIRST group's lead country only (few states, and the
+    # question is whether the call resolves at all, not what Belgium's wage is).
+    $probeTag = $Groups[@($Groups.Keys)[0]][0]
+    $stFields = [ordered]@{
+        name       = '[THIS.GetState.GetNameNoFormatting]'
+        avgwage    = '[THIS.GetState.GetAverageAnnualWage|4]'
+        subsist_wa = '[THIS.GetState.GetNumSubsistenceWorkingAdults]'
+        unemp_wa   = '[THIS.GetState.GetNumUnemployedWorkingAdults]'
+    }
+    $stLines = ""
+    foreach ($k in $stFields.Keys) {
+        $stLines += "`r`n`t`t`t`t`t`tdebug_log = `"V3TB|$Token|WP|$Date|ST|$k|[THIS.GetState.GetNameNoFormatting]|$($stFields[$k])`""
+    }
+    $out += @"
+
+			if = {
+				limit = { exists = c:$probeTag }
+				c:$probeTag = {
+					debug_log = "V3TB|$Token|WP|$Date|ST|m_country|reached-$probeTag"
+					# Country-scope average wage: budget_panel renders it on STATE, but if Country
+					# carries it too, Q1 collapses from a state sweep to one line per country.
+					debug_log = "V3TB|$Token|WP|$Date|CO|avgwage|[THIS.GetCountry.GetAverageAnnualWage|4]"
+					debug_log = "V3TB|$Token|WP|$Date|CO|avgsol|[THIS.GetCountry.GetAverageSoLByPopulation|4]"
+					every_scope_state = {$stLines
+					}
+				}
+			}
+"@
+
+    # -- C: per-pop income fields, one per line, restricted to the CAPITAL state so the probe stays
+    # small. The capital holds every stratum, including capitalists and aristocrats - which is the
+    # case that matters, since for them wages are a minor share of income and the whole point is to
+    # see the split rather than a single total.
+    $pfLines = ""
+    foreach ($k in (Get-WagePopFields).Keys) {
+        $pfLines += "`r`n`t`t`t`t`t`t`tdebug_log = `"V3TB|$Token|WP|$Date|PF|$k|[THIS.GetPop.GetState.GetNameNoFormatting]|[THIS.GetPop.GetPopType.GetName]|[THIS.GetPop.GetNumWorkforce]|$((Get-WagePopFields)[$k])`""
+    }
+    # Extra candidates that are NOT in the production field list - probed only to see whether they
+    # would add anything. Each is a separate line, so a void costs nothing but itself.
+    $extra = [ordered]@{
+        employed  = '[THIS.GetPop.IsEmployed]'
+        solfmt    = '[THIS.GetPop.GetFormattedStandardOfLiving]'
+        socclass  = '[THIS.GetPop.GetSocialClass]'
+        worksat   = '[THIS.GetPop.GetWorksAt.GetBuildingType.GetKey]'
+        bldtype   = '[THIS.GetPop.GetBuilding.GetBuildingType.GetKey]'
+        wealth_sv = "[THIS.GetPop.MakeScope.ScriptValue('v3tb_pop_wf')]"
+    }
+    foreach ($k in $extra.Keys) {
+        $pfLines += "`r`n`t`t`t`t`t`t`tdebug_log = `"V3TB|$Token|WP|$Date|PX|$k|[THIS.GetPop.GetState.GetNameNoFormatting]|[THIS.GetPop.GetPopType.GetName]|[THIS.GetPop.GetNumWorkforce]|$($extra[$k])`""
+    }
+    $out += @"
+
+			if = {
+				limit = { exists = c:$probeTag }
+				c:$probeTag = {
+					capital = {
+						debug_log = "V3TB|$Token|WP|$Date|PF|m_state|[THIS.GetState.GetNameNoFormatting]"
+						every_scope_pop = {$pfLines
+						}
+					}
+				}
+			}
+"@
+    return $out
 }
 
 function New-TelemetryScript {
@@ -605,6 +972,117 @@ function New-TelemetryScript {
             # months after the date it stamps, so putting pops in phase 2 paired February pops with
             # April orders. Comparing a calculation against the orders it should reproduce requires
             # both to be read at the SAME instant; that is the entire point of this metric.
+            $phaseBlocks[0] += $blocks; $blocks = ""
+        }
+
+        # ---- WAGES (Q1 base wage / Q2 wage+SoL trajectory / Q3 workforce ratio).
+        # EVERYTHING IN PHASE 0 - deliberately, against the usual "each heavy block gets its own
+        # phase" rule, because here the phases were doing more harm than the burst they prevent.
+        #
+        # Measured in validation session 20260803_013525, which ran the two markets in phases 0 and
+        # 1: Austria's per-pop sweep returned 549 pops against the 501 its own WC line counted a
+        # month earlier. That is not log loss - pop OBJECTS are created as pops migrate and promote,
+        # ~10% of them inside one month - and it makes the phase split actively wrong here. The WC
+        # count is the completeness check for the PW lines, so the two must be read in the SAME
+        # tick or the check compares two different populations and can never come out equal. It
+        # also means a state wage and the pops earning it would be a month apart.
+        #
+        # Affordable because this metric is small: ~190 (BEL) + ~900 (AUS) PW lines + ~410 SW +
+        # ~90 WC at 1836, against the ~6 000-line bursts that have actually caused loss - and a
+        # 6 940-line per-pop tick has already been survived (session 20260802_222826).
+        # ⚠ If the deep-group list ever grows, re-measure before assuming this still fits.
+        if ($metrics -contains "wages") {
+            # Deep markets come from the spec (`wage_pop_markets`), defaulting to the pair the
+            # questions named. Each entry is group -> ordered SUCCESSOR CHAIN: the first tag that
+            # still exists anchors the sweep, so a market stays observed when its lead is annexed or
+            # formed away. ⚠ The Netherlands is NET, not NED - c:NED matches nothing and reports
+            # ABSENT for a country that plainly exists (probed 20260803_013054).
+            $wGroups = [ordered]@{ BEL = @('BEL','NET'); AUS = @('AUS','GER') }
+            if ($Spec.wage_pop_markets) {
+                $wGroups = [ordered]@{}
+                foreach ($pr in $Spec.wage_pop_markets.PSObject.Properties) { $wGroups[$pr.Name] = @($pr.Value) }
+            }
+            $w = Get-WageBlock -Token $Token -Date $date -Tags $tags -Groups $wGroups
+            $phaseBlocks[0] += $w.markets
+            # ---- PER-POP ONLY AT THE ENDPOINT DUMPS. This is a hard instrument limit, measured, not
+            # a preference. A dump's lines are written in ONE tick, and the game's log ring is
+            # 5x512KB: a burst that fills a segment rotates mid-write and the live mirror loses what
+            # rotated. Measured in session 20260803_022027 (run 1):
+            #     1836 dump, 1 529 lines -> 1 039 / 1 039 pops  COMPLETE
+            #     1850 dump, ~3 400 lines ->   115 / ~2 176      5 %
+            #     1865 dump, ~3 400 lines ->   473 / ~2 500     19 %
+            # It is a THRESHOLD, not a gradient - ~1 500 lines fits inside a segment, ~3 400 does not.
+            # And the usual rescue does not apply: the exit-time ring snapshot recovers only what is
+            # still in the ring AT EXIT, which for a 1935 run means the 1930s. A mid-run dump in a
+            # century-long campaign is gone for good, and gone as a BIASED subset (whichever lines
+            # rotation spared), which is worse than missing.
+            #
+            # So the trajectory rides on the cheap lines - WC, SW and WSTR, ~800 per dump, well
+            # inside a segment - and the full per-pop distribution is taken at the FIRST dump (proven
+            # complete) and the LAST (close enough to exit that the ring snapshot still holds it).
+            # ⚠ If a dump date is added, the endpoints move. Check the completeness columns.
+            $isEndpoint = ($date -eq $dates[0]) -or ($date -eq $dates[-1])
+            if ($isEndpoint) { foreach ($g in $w.pops.Keys) { $phaseBlocks[0] += $w.pops[$g] } }
+        }
+
+        # ---- WAGE PROBE: are wages, pop income and whole-market pop enumeration instrumentable?
+        # Phase 0, so its numbers carry the date they are stamped with - the probe's own volume
+        # count is only useful if it is the volume at a KNOWN date.
+        if ($metrics -contains "wage_probe") {
+            $blocks += Get-WageProbeBlock -Token $Token -Date $date `
+                -Groups ([ordered]@{ BEL = @('BEL','NED'); AUS = @('AUS','GER') })
+            $phaseBlocks[0] += $blocks; $blocks = ""
+        }
+
+        # ---- WAGE PROBE 2: SIZING and ATTRIBUTION, both learned the hard way from probe 1.
+        # Probe 1 tried to size the per-pop sweep by counting its own lines, and the count came back
+        # 181 Belgian pops against 976 known from an earlier session - because the sweep's lines are
+        # exactly what the log ring truncates, so counting them measures the truncation, not the
+        # population. `v3tb_popobj_count` is one line per country and cannot be truncated that way.
+        # Also settles (a) whether the Netherlands tag is NET (probe 1 showed NED ABSENT in 1836,
+        # when the Netherlands plainly exists) and (b) whether a STATE can name its own country
+        # inline, which decides whether the state-wage sweep needs marker-line reconstruction.
+        if ($metrics -contains "wage_probe2") {
+            foreach ($t in @('NET','NED','GER','BEL','AUS')) {
+                $blocks += @"
+
+			if = {
+				limit = { exists = c:$t }
+				c:$t = { debug_log = "V3TB|$Token|W2|$date|TAG|$t|[THIS.GetCountry.GetNameNoFormatting]" }
+			}
+			else = { debug_log = "V3TB|$Token|W2|$date|TAG|$t|ABSENT" }
+"@
+            }
+            foreach ($t in $tags) {
+                $blocks += @"
+
+			debug_log = "V3TB|$Token|W2|$date|m_size|start-$t"
+			if = {
+				limit = { exists = c:$t }
+				every_country = {
+					limit = { market = c:$t.market }
+					debug_log = "V3TB|$Token|W2|$date|SIZE|$t|[THIS.GetCountry.GetNameNoFormatting]|[THIS.GetCountry.GetMarket.GetNameNoFormatting]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_popobj_count')]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_state_count')]|[THIS.GetCountry.GetTotalPopulation]"
+				}
+			}
+"@
+            }
+            # ATTRIBUTION: can a state name its own country from inside a nested every_country sweep?
+            # If it can, the state-wage sweep is one self-contained line per state. If it voids, the
+            # country has to be reconstructed from marker-line ORDER across a burst that may lose
+            # lines - which is exactly the fragility to find out about now rather than later.
+            $blocks += @"
+
+			debug_log = "V3TB|$Token|W2|$date|m_attr|start"
+			every_country = {
+				limit = { market = c:BEL.market }
+				debug_log = "V3TB|$Token|W2|$date|ATTRC|[THIS.GetCountry.GetNameNoFormatting]"
+				every_scope_state = {
+					debug_log = "V3TB|$Token|W2|$date|ATTR_inline|[THIS.GetState.GetNameNoFormatting]|[THIS.GetState.GetCountry.GetNameNoFormatting]"
+					debug_log = "V3TB|$Token|W2|$date|ATTR_prev|[THIS.GetState.GetNameNoFormatting]|[PREV.GetCountry.GetNameNoFormatting]"
+					debug_log = "V3TB|$Token|W2|$date|ATTR_mkt|[THIS.GetState.GetNameNoFormatting]|[THIS.GetState.GetCountry.GetMarket.GetNameNoFormatting]"
+				}
+			}
+"@
             $phaseBlocks[0] += $blocks; $blocks = ""
         }
 
