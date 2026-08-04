@@ -1198,9 +1198,16 @@ function renderWorkforcePanel(){
       <div class="wfbaseinputs"><label><input type="number" min="0" step="0.001" value="${BASE_WAGE}" data-basewage="wk"> <span class="u">£/week</span></label>
         <span class="eq">=</span>
         <label><input type="number" min="0" step="0.1" value="${round2(BASE_WAGE*WEEKS_PER_YEAR)}" data-basewage="yr"> <span class="u">£/year</span></label></div></div>
+    <div class="wfbase" title="Share of a population that actually works. NOT a constant — it rises as economies industrialise (child labour, dependency patterns, women entering waged work). Drives the job pool, every stratum's headcount from employment, subsistence staffing, and the per-head dependent factor in pop demand. The era presets carry their own value (0.25 / 0.25 / 0.30 / 0.33 / 0.40); edit it here to see what a different assumption does.">
+      <div class="wfbaselbl"><b>Working adults</b><br><span class="muted">share of population</span></div>
+      <div class="wfbaseinputs"><label><input type="number" min="0.05" max="1" step="0.01" value="${round2(workRatio())}" data-workratio="1"> <span class="u">of pop</span></label></div></div>
     <div class="wfprofs"><div class="wfhd">weekly £ per profession<br>(base × wage_weight)</div><div class="wfgrid">${profGridHTML()}</div></div>
   </div>`;
 }
+// THE WORKING-ADULT RATIO, as one editable number. It lives on POPM because that is where every consumer of
+// it already reads from (pop demand's per-head dependent factor, the job pool, subsistence staffing) — so
+// there is one value, not a UI copy that can drift from the model's.
+function workRatio(){ return (POPM.working_adult_ratio!=null ? POPM.working_adult_ratio : 0.25); }
 // Changing the SHEET base wage: NON-LOCKED groups inherit it (their own base wage is cleared so they follow
 // the sheet again); LOCKED groups keep their current wage — pinned to the OLD sheet value if they were only
 // following it. Then update the linked field + per-profession grid in place (keep focus) and recompute.
@@ -1414,6 +1421,8 @@ function applyScenarioPreset(id){
   IND.forEach(i=>i.tiers.forEach(t=>{ t._baseWage=null; }));
   let wageOld=null;
   if(p.base_wage>0 && p.base_wage!==BASE_WAGE){ BASE_WAGE=p.base_wage; }
+  // the working-adult share is a property of the era being modelled, so a preset carries its own
+  if(p.working_adult_ratio>0) POPM.working_adult_ratio=p.working_adult_ratio;
   // PRICES. A solved era preset carries the prices its own order book produces, and the whole design is
   // that they are REALISED, not chosen — so seed them and then UNLOCK, which makes the panel recompute
   // them from the orders in front of you. If the scenario is right the two agree; if they don't, that
@@ -2185,6 +2194,10 @@ document.addEventListener('input', e=>{
     updateScenario(); return; }
   if(el.dataset.input!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.inputs[el.dataset.input]=+el.value||0; updateComputed(); updateScenario(); }
   else if(el.dataset.out!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.output_qty=+el.value||0; updateComputed(); updateScenario(); }
+  else if(el.dataset.workratio!==undefined){   // working-adult share — one value, on POPM, no UI copy
+    POPM.working_adult_ratio = Math.max(0.05, Math.min(1, +el.value||0.25));
+    renderScenario(); updateComputed(); return;
+  }
   else if(el.dataset.basewage!==undefined){    // SHEET base wage — weekly ↔ yearly; inherited by non-locked groups
     const old=BASE_WAGE;
     if(el.dataset.basewage==='yr') BASE_WAGE=Math.max(0,(+el.value||0)/WEEKS_PER_YEAR);

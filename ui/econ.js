@@ -490,6 +490,8 @@
       S.IND.forEach(i => i.tiers.forEach(t => { t._baseWage = null; }));
       let wageOld = null;
       if(p.base_wage > 0 && p.base_wage !== S.BASE_WAGE){ S.BASE_WAGE = p.base_wage; }
+      // the working-adult share is a property of the era being modelled, so a preset carries its own
+      if(p.working_adult_ratio > 0) POPM.working_adult_ratio = p.working_adult_ratio;
       return wageOld;
     }
 

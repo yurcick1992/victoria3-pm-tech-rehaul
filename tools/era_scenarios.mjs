@@ -1527,6 +1527,7 @@ for (let e = 0; e < FIT.eras.length; e++) {
     group: 'Era ladder · solved, prices unlocked',
     country: null,
     base_wage: cfg.base_wage,
+    working_adult_ratio: WORK_RATIO,
     base_wage_note: `era ${meta.era} lower-stratum SoL ${cfg.sol} via FINDINGS F26, base = exp((SoL−37.43)/10.49)`,
     market: [],
     buildings: { ...S.BLDNUM },

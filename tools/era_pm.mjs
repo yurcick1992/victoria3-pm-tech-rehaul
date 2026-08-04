@@ -17,6 +17,20 @@
 // law-neutral member, so "hold no laws" leaves the default sitting on `slave_exploitation_*`).
 export const SCENARIO_LAWS = new Set(['law_slavery_banned', 'law_commercialized_agriculture']);
 
+// ---------------------------------------------------------------------------------------------------
+// PRODUCTION METHODS THE SOLVER MAY NOT SELECT, whatever the arithmetic says.
+//
+// `slave_exploitation_*` is already excluded by the two-law stance (`law_slavery_banned`). Its sibling
+// `worker_exploitation_*` is NOT — it is legal under every law we hold, and it is cheap, so a
+// profit-maximising solver picks it every time. A scenario meant to describe "an unexceptional modern
+// country" should not be built on coerced labour just because the margin is better, so it is forbidden
+// outright rather than argued about per era. Every one of these PMGs carries `default_labour`, so
+// forbidding them always leaves a legal option — no PMG is left with an empty candidate set.
+//
+// `lectors_tobacco` is excluded on the same "not a normal method" basis: it is a flavour method (a reader
+// paid to read to cigar rollers), not something a scenario should lean on.
+const FORBIDDEN_PM_RE = /^worker_exploitation_|^lectors_tobacco$/;
+
 export function makePmRules(E, S) {
   const TECH_ERA = S.VAN.tech_era || {};
   // a PM with no unlocking technology is a base PM: always available
@@ -32,6 +46,7 @@ export function makePmRules(E, S) {
     return g.some(req => presentPms.has(req) || (PM_REPLACED_BY[req] && presentPms.has(PM_REPLACED_BY[req])));
   }
   function pmAvailable(pm) {
+    if (FORBIDDEN_PM_RE.test(pm)) return false;
     const r = S.VAN.pms[pm] || {};
     if (r.regions || r.company || r.identity || r.religion) return false;
     if (r.laws && !r.laws.some(l => SCENARIO_LAWS.has(l))) return false;
