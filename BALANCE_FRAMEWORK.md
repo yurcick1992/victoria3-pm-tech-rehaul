@@ -1476,3 +1476,112 @@ hand-set case and is labelled as such rather than dressed up.
 flag, so they are placed, priced and scored exactly like real tiers — which is the intent, but was an
 unexamined assumption. Now **reported per era**: 0 / 0 / 2 / 9 / 22 present. A reader can see how much of a
 late-era scenario rests on tiers the game cannot currently have.
+
+---
+
+## 10.24 The population chain — professions drive buildings (2026-08-04)
+
+```
+productive buildings -> their workforce
+that workforce       -> the other professions, in vanilla proportions
+                        (slaves 0 . peasants by era share . soldiers from the army)
+GDP                  -> CONSTRUCTION            (10% of gross output, section 10.20)
+peasants             -> subsistence levels, split across the subsistence TYPES
+GDP                  -> battalions -> SOLDIERS
+those professions    -> the non-economic / autoscaling buildings that employ them
+and back             -> productive building counts, chasing profit goals under the constraints
+```
+
+**The direction is the point.** Support buildings used to be placed at a fixed **share of building levels**
+(ownership 32%, government 6%, trade 3.5%), and the strata were read off whatever employment that produced
+— so "how many aristocrats exist" was decided by an arbitrary constant. Now the professions are the
+quantity with a claim to be right, and the buildings are sized to employ them. That also retires the weak
+ownership-share restriction the constraints audit flagged.
+
+**MEASURED, not chosen** — each non-productive profession's workforce as a ratio of total *productive*
+workforce, median across the eight vanilla 1836 markets: clerks 0.0529, bureaucrats 0.0174, clergymen
+0.0164, shopkeepers 0.0121, aristocrats 0.0078, capitalists 0.0028, officers 0.0024, academics 0.0015.
+Laborers and machinists are excluded because their buildings are sized by their own rules (construction at
+10% of GDP, urban centres by urbanization); soldiers because they come from the army.
+
+### A profession has SEVERAL employers, and some are productive
+
+⚠⚠ Sizing a building from a profession's whole target double-counts everyone already employed elsewhere,
+and any building that is nobody's designated source is never placed at all. **Academics are 100% university
+in vanilla; universities were in no list, so they were permanently empty** while art academies quietly
+employed academics the model never accounted for. Bureaucrats defaulted wholly to government administration
+for the same reason.
+
+Each designated building is now sized from `target - what every OTHER placed building already employs of
+that profession`, **including productive ones**, iterated four times because these buildings supply each
+other's professions. Measured shares of each profession's non-productive employment (1836):
+
+| profession | where it actually works |
+|---|---|
+| academics | university 100% |
+| aristocrats | manor house 63.3% · government administration 36.7% |
+| bureaucrats | government administration 98.6% · construction 1.4% |
+| capitalists | financial district 100% |
+| clergymen | manor house 47.6% · government administration 33.1% · urban centre 16.5% · university 2.7% |
+| clerks | urban centre 50.2% · government administration 27% · trade centre 18.9% |
+| shopkeepers | urban centre 69.8% · trade centre 20.7% · financial district 9.5% |
+
+Professions with no designated building (clergymen, shopkeepers, officers) fall out of the buildings placed
+for others — which is what the vanilla data says actually happens. Universities now appear: 16–47 levels.
+
+⚠ These are **1836** shares, not late-game ones. No session carries the `building_inventory` metric, so
+late-game telemetry does not exist yet; swap these numbers in when it does.
+
+### Subsistence is split across TYPES
+
+Every peasant used to land in `building_subsistence_farm`. Vanilla's mix, by level share, is rice farm
+59.7%, farm 37.4%, pasture 2.5%, orchard 0.2%, fishing village 0.2%. The split is applied by **workforce**,
+not by levels, because a rice paddy holds twice what a farm does. ⚠ This is the WORLD 1836 mix and is
+therefore rice-heavy — vanilla's proportion as specified, not a temperate-country one.
+
+### SOLDIERS EXISTED NOWHERE, and now do
+
+**No military building was placed in any scenario.** V3 puts a barracks' manpower in the *battalions* it
+hosts — `building_barrack` carries no employment at all, and its PMs carry no goods — so nothing ever
+created a soldier. The scenarios ran armies of 545–879 battalions that bought small arms and ammunition
+while employing nobody, paying no wages and eating nothing.
+
+A battalion is **1 000 serving soldiers**; they are working adults, so the people behind them are
+`1 000 / working-adult ratio`. Barracks are placed 1:1 with battalions — free, since they employ nobody and
+consume nothing.
+
+| era | battalions | soldier people | inside a lower stratum of |
+|---|---|---|---|
+| 1836 | 545 | 2.18 M | 33.5 M |
+| 1870 | 759 | 3.04 M | 50.8 M |
+| 1900 | 793 | 2.64 M | 41.6 M |
+| 1920 | 879 | 2.66 M | 38.4 M |
+| 1935 | 845 | 2.11 M | 32.5 M |
+
+⚠ **Ordering is the chain**: `setArmy` must run *before* `setPops`, or the soldier count is always one
+iteration stale — which in a damped loop reads as a permanent undercount rather than as a lag.
+
+### Known circularities, stated rather than hidden
+
+The chain closes on itself twice, deliberately: productive buildings -> professions -> buildings ->
+productive buildings, and GDP -> army -> soldiers -> consumption -> GDP. Both are fixed-point iterations,
+and the second is *positive* feedback. They are damped by the same machinery as everything else.
+
+## 10.25 Write-cycle convergence — three causes found, two fixed
+
+Section 10.16 recorded that repeated `--write` -> re-run cycles wandered (47 / 51 / 51 / 48). Three causes:
+
+1. **The recipe MIX drifted.** Inputs were rescaled in place and each good rounded to 0.1, so every re-solve
+   quantised the proportions differently and `--write` saved the drift for the next run to inherit.
+   **Fixed**: the solve scales a canonical *ratio*, frozen into the config as `input_ratio`. The 22 invented
+   (`model_only`) tiers have no vanilla recipe to fall back on, which is exactly why freezing was needed.
+2. **The starting SCALE was an input.** Each run opened from the previous run's volumes, took a different
+   trajectory through a search containing discrete choices (PM selection, integer counts) and could settle
+   in a different basin. **Fixed**: every tier is reset to `ratio x X0` before the solve, X0 fixed by the
+   4:1 cap — a definition, not a remembered number. Stored volumes are now purely an output.
+3. **Floating-point renormalisation.** A frozen ratio was re-normalised on load; its sum is
+   1.0000000000000002, so it shifted by an ulp every generation. **Fixed**: used verbatim.
+
+**Eras 1 and 2 are now exactly stable across every write cycle**, and a single run is deterministic.
+**Eras 3–5 still move** and the config hash still churns, so this is *not yet* a strict fixed point and the
+remaining cause is unidentified. Do not quote a single figure from eras 3–5 as "the" score.

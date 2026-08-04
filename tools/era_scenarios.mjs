@@ -66,7 +66,8 @@ const ARMY_MIX = {
 //   productive buildings → their workforce
 //   that workforce       → the other professions, in vanilla proportions
 //                          (slaves 0 · peasants by era share · soldiers from the army)
-//   peasants             → subsistence levels
+//   GDP                  → CONSTRUCTION (10% of gross output)
+//   peasants             → subsistence levels, split across the subsistence TYPES
 //   GDP                  → battalions → SOLDIERS
 //   those professions    → the non-economic / autoscaling buildings that employ them
 //   and back             → productive building counts, chasing the profit goals under the constraints
@@ -84,13 +85,48 @@ const PROF_RATIO = {
   clerks: 0.0529, bureaucrats: 0.0174, clergymen: 0.0164, shopkeepers: 0.0121,
   aristocrats: 0.0078, capitalists: 0.0028, officers: 0.0024, academics: 0.0015,
 };
-// Which support building supplies which profession — sized so its employment meets the target above.
+// WHICH BUILDING IS SIZED FROM WHICH PROFESSION — and, crucially, only for the REMAINDER.
+//
+// ⚠⚠ A PROFESSION USUALLY HAS SEVERAL EMPLOYERS, AND SOME OF THEM ARE PRODUCTIVE. Sizing a building from a
+// profession's whole target double-counts everyone already employed elsewhere, and any building that is not
+// somebody's designated source is never placed at all. That is not hypothetical: **academics are 100%
+// university in vanilla, universities were in nobody's list, so universities were permanently empty** while
+// art academies quietly employed academics that the model never accounted for. Bureaucrats defaulted
+// wholly to government administration for the same reason.
+//
+// So each designated building is sized from `target − what every OTHER placed building already employs of
+// that profession`, iterated a few times because the buildings supply each other's professions (government
+// administration alone supplies 36.7% of aristocrats and 27% of clerks).
+//
+// MEASURED shares of each profession's non-productive employment, across the eight vanilla 1836 markets:
+//   academics    university 100%
+//   aristocrats  manor_house 63.3% · government_administration 36.7%
+//   bureaucrats  government_administration 98.6% · construction 1.4%
+//   capitalists  financial_district 100%
+//   clergymen    manor_house 47.6% · government_administration 33.1% · urban_center 16.5% · university 2.7%
+//   clerks       urban_center 50.2% · government_administration 27% · trade_center 18.9%
+//   shopkeepers  urban_center 69.8% · trade_center 20.7% · financial_district 9.5%
+// Professions with NO designated building (clergymen, shopkeepers, officers) fall out of the buildings
+// placed for others — which is what the vanilla data says actually happens.
+//
+// ⚠ These are 1836 shares, not late-game ones. No session carries the `building_inventory` metric, so
+// late-game telemetry does not exist yet (see CLAUDE.md); swap these numbers in when it does.
 const PROF_SOURCE = [
   { prof: 'bureaucrats', bld: 'building_government_administration' },
   { prof: 'aristocrats', bld: 'building_manor_house' },
   { prof: 'capitalists', bld: 'building_financial_district' },
+  { prof: 'academics',   bld: 'building_university' },
   { prof: 'clerks',      bld: 'building_trade_center' },
 ];
+// Peasants spread over the subsistence TYPES in vanilla proportion rather than all landing on one.
+// Measured shares of subsistence levels: rice farm 59.7%, farm 37.4%, pasture 2.5%, orchard 0.2%,
+// fishing village 0.2%. ⚠ This is the WORLD 1836 mix and is therefore rice-heavy (Asia dominates the
+// count); it is vanilla's proportion as asked for, not a temperate-country one.
+const SUBSISTENCE_MIX = {
+  building_subsistence_rice_farm: 0.597, building_subsistence_farm: 0.374,
+  building_subsistence_pasture: 0.025, building_subsistence_orchard: 0.002,
+  building_subsistence_fishing_village: 0.002,
+};
 // A battalion is 1 000 serving soldiers. The POP behind it is larger: soldiers are working adults like any
 // other profession, so the people (with dependents) are 1 000 ÷ the working-adult ratio — 4 000 at 0.25.
 const SOLDIERS_PER_BATTALION = 1000;
@@ -1284,12 +1320,30 @@ function buildScenario(eIx) {
     // Each target profession count is the productive workforce × its measured vanilla ratio; the building
     // that supplies it is then placed at target ÷ its own per-level employment of that profession.
     const wProd = productiveWorkforce();
-    for (const { prof, bld } of PROF_SOURCE) {
-      if (!S.VAN.buildings[bld]) continue;
-      const per = (E.selEmp(E.refSel(bld)) || {})[prof] || 0;
-      if (!(per > 0)) continue;                       // this building does not employ that profession
-      const want = wProd * (PROF_RATIO[prof] || 0);
-      S.BLDNUM[bld] = Math.max(1, Math.round(want / per));
+    const sized = PROF_SOURCE.filter(x => S.VAN.buildings[x.bld]);
+    // seed so the first pass has something to subtract against
+    for (const { bld } of sized) if (!(S.BLDNUM[bld] > 0)) S.BLDNUM[bld] = 1;
+    // How much of a profession EVERY placed building employs, optionally ignoring one building — that is
+    // the "employed elsewhere" term each designated building is sized against.
+    const employedOf = (prof, except) => {
+      let n = 0;
+      for (const i of S.IND) for (const t of i.tiers) { const c = S.BLDNUM[t.key] || 0;
+        if (c) n += (E.tierEmp(t)[prof] || 0) * c; }
+      for (const b of E.refBuildings()) { const c = S.BLDNUM[b] || 0;
+        if (!c || b === except || E.isSubsistenceBuilding(b)) continue;
+        n += ((E.selEmp(E.refSel(b)) || {})[prof] || 0) * c; }
+      return n;
+    };
+    // Iterated, because these buildings supply each other's professions (government administration alone
+    // provides 36.7% of aristocrats and 27% of clerks), so one pass would over- or under-shoot.
+    for (let pass = 0; pass < 4; pass++) {
+      for (const { prof, bld } of sized) {
+        const per = (E.selEmp(E.refSel(bld)) || {})[prof] || 0;
+        if (!(per > 0)) continue;                     // this building does not employ that profession
+        const want = wProd * (PROF_RATIO[prof] || 0);
+        const elsewhere = employedOf(prof, bld);      // includes PRODUCTIVE employers — e.g. art academies
+        S.BLDNUM[bld] = Math.max(1, Math.round(Math.max(0, want - elsewhere) / per));
+      }
     }
     // URBAN CENTRES — derived, never placed: floor(Σ urbanization / 100), FINDINGS F13.
     let urb = 0;
@@ -1332,9 +1386,23 @@ function buildScenario(eIx) {
       peasants: Math.round(peasants), slaves: 0,
       soldiers: Math.round(soldierWorkforce / WORK_RATIO),   // reported; already inside `lower`
     };
-    // subsistence follows the peasants: staffed-level equivalent, the way the placeholder presets do it
-    const lvl = Math.max(0, Math.round(peasants * WORK_RATIO / SUBSISTENCE_JOBS_PER_LEVEL));
-    if (lvl > 0) S.BLDNUM.building_subsistence_farm = lvl;
+    // SUBSISTENCE FOLLOWS THE PEASANTS, spread over the TYPES in vanilla proportion rather than all landing
+    // on one. Each type is sized by its own jobs-per-level (rice paddies hold twice what a farm does), so
+    // the split is by WORKFORCE share, not by level share — putting every peasant in `subsistence_farm`
+    // both misstated the mix and mis-stated the level count.
+    const peasantWork = peasants * WORK_RATIO;
+    let placed = 0;
+    for (const b in SUBSISTENCE_MIX) {
+      if (!S.VAN.buildings[b]) continue;
+      const per = E.empTotal(E.selEmp(E.refSel(b))) || SUBSISTENCE_JOBS_PER_LEVEL;
+      const lvl = Math.max(0, Math.round(peasantWork * SUBSISTENCE_MIX[b] / per));
+      if (lvl > 0) { S.BLDNUM[b] = lvl; placed += lvl * per; }
+    }
+    // nothing matched (a stripped vanilla?) — fall back to the single farm rather than losing the peasants
+    if (!(placed > 0)) {
+      const lvl = Math.max(0, Math.round(peasantWork / SUBSISTENCE_JOBS_PER_LEVEL));
+      if (lvl > 0) S.BLDNUM.building_subsistence_farm = lvl;
+    }
   }
   function setArmy() {
     Object.keys(S.UNITNUM).forEach(k => delete S.UNITNUM[k]);

@@ -1222,6 +1222,10 @@ the game.
   `balance_ui_snapshot.html` at the repo root; copy that over the published file path before republishing.
   Republishing the scratchpad copy without refreshing it ships the previous build — which has happened, and
   is invisible from the outside because the page still looks current.
+  ⚠ **STAMP IT IN UTC, EXPLICITLY.** Both the snapshot and the status board carry their generation time as
+  **`yyyy-mm-dd, HH:MM UTC`** — the zone spelled out, not implied, and to the minute. A bare timestamp on a
+  detached page is read in the reader's own zone and can be hours out, and telling someone how stale the
+  thing is is the entire job of the stamp.
   ⚠ **SHOW that it happened.** Report the regeneration in the reply — the banner timestamp, or that the
   published copy matches the repo copy. A regeneration buried inside a chained command is invisible to the
   reader, who then has to take it on trust or ask. This has already gone wrong once: `bundle_ui.mjs` was run

@@ -100,7 +100,10 @@ html = html
   .replace(/<\/head>\s*<body>/i, '')
   .replace(/<\/body>\s*<\/html>\s*$/i, '');
 
-const stamp = new Date().toISOString().slice(0, 16).replace('T', ' ');
+// ⚠ ALWAYS UTC, ALWAYS SAID OUT LOUD. A bare "2026-08-04 14:32" on a detached page is read in the reader's
+// own zone and can be hours out; a snapshot's whole job is to tell you how old it is.
+const utcStamp = () => new Date().toISOString().replace('T', ', ').slice(0, 17) + ' UTC';
+const stamp = utcStamp();
 html += `
 <script>
 /* added by tools/bundle_ui.mjs — standalone-copy adjustments */
@@ -132,7 +135,7 @@ const mb = n => (n / 1048576).toFixed(2) + ' MB';
 // read through `| head -1` inside a chained build command — a leading "\n" makes head print the blank and
 // swallow the confirmation, so the step looks like it never ran. It has already caused exactly that
 // confusion once. Keep the first line of output meaningful.
-console.log(`SNAPSHOT WRITTEN  ${OUT}  (${mb(Buffer.byteLength(html))})  ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`);
+console.log(`SNAPSHOT WRITTEN  ${OUT}  (${mb(Buffer.byteLength(html))})  ${stamp}`);
 for (const [f, n] of sizes) console.log(`    inlined  ui/${f.padEnd(12)} ${mb(n)}`);
 for (const o of OMIT)       console.log(`    omitted  ui/${o.file.padEnd(12)} ${o.why}`);
 console.log(`\nOpen it in any browser, or hand it to someone — it needs no server and no network.\n`);
