@@ -115,6 +115,11 @@ const CONSTRUCTION_BLD = 'building_construction_sector';
 const PROFIT_CAP_ON = process.env.ERA_PROFIT_CAP !== '0';
 const PROFIT_CAP = +(process.env.ERA_PROFIT_CAP_PCT || 0.25);
 const PROFIT_CAP_STEPS = +(process.env.ERA_PROFIT_CAP_STEPS || 400);
+// The futility guard: stop growing a producer when a step did not actually lower its margin (its good is
+// pinned at the 25% price floor, so supply cannot move it). Separately revertable — `ERA_PROFIT_CAP_FUTILITY=0`
+// restores the un-guarded behaviour, which is worth being able to reproduce: without it `tea_plantation`
+// consumed all 400 steps in era 1 and still read 294%.
+const PROFIT_CAP_FUTILITY = process.env.ERA_PROFIT_CAP_FUTILITY !== '0';
 // ===================================================================================================
 // EXTRACTION AND AGRICULTURE HAVE NO PROFIT TARGET — THEY HAVE A BAND.
 //
@@ -205,7 +210,19 @@ const SUPPORT_BLD = {
   trade:        ['building_trade_center'],
   construction: ['building_construction_sector'],
 };
-const WORK_RATIO = (S.POPM.working_adult_ratio != null ? S.POPM.working_adult_ratio : 0.25);
+// WORKING-ADULT RATIO — PER ERA, not the engine's flat 0.25.
+//
+// The share of a population that actually works is not a constant: it rises as economies industrialise,
+// child labour and dependency patterns change, and women enter waged work. The game's `WORKING_ADULT_RATIO_BASE`
+// is one number because the engine varies it by other means; for a scenario premise a per-era figure is
+// closer to the truth and is the sort of thing that should be visible and arguable.
+//
+// ⚠ Eras 3-5 are the values specified (1900 / 1920 / "1925"→ our era 5). Eras 1-2 are NOT specified and are
+// left at the engine base — say so rather than inventing a trend backwards.
+// ⚠ Set on S.POPM as well as here, so ui/econ.js's pop-demand maths (the per-head dependent factor) uses
+// the SAME number. Changing only the solver's copy would silently desync the two halves of the model.
+const WORK_RATIO_BY_ERA = [0.25, 0.25, 0.30, 0.33, 0.40];
+let WORK_RATIO = WORK_RATIO_BY_ERA[0];
 const SUBSISTENCE_JOBS_PER_LEVEL = 5000;
 const URBAN_PER_LEVEL = 100;   // FINDINGS F13
 // Which professions land in which consumption stratum (V3's own strata).
@@ -548,6 +565,8 @@ function targetPrice(good, era) {
 
 function buildScenario(eIx) {
   const era = FIT.eras[eIx].era;
+  WORK_RATIO = WORK_RATIO_BY_ERA[eIx];
+  S.POPM.working_adult_ratio = WORK_RATIO;   // keep ui/econ.js's pop maths on the same number
   // ---- prices, wage, SoL --------------------------------------------------------------------------
   for (const g in S.PRICES) S.thresholds[g] = FIT.prices[eIx][g] != null ? FIT.prices[eIx][g] : 100;
   S.BASE_WAGE = FIT.eras[eIx].base_wage;
@@ -981,16 +1000,32 @@ function buildScenario(eIx) {
   //
   // The rule: any era-appropriate manufacturing tier earning more than +25% is built one level at a time
   // until it drops under the cap. A fat margin in a market anyone can enter is not an equilibrium.
-  const tuned = {}, capBlocked = new Set();
+  // ⚠ WHEN GROWTH TURNS OUT TO BE FUTILE, UNWIND THE WHOLE RUN — not just the step that revealed it.
+  // The margin can keep falling for a while and then stall (the good reaches the 25% price floor), so by
+  // the time the guard fires the producer may already carry many levels that bought nothing. Dropping only
+  // the last one leaves the scenario in the middle of a growth spurt it has just decided was pointless.
+  // `growStart` remembers the count each producer had before this rule first touched it, so the revert
+  // goes back to the beginning of the run.
+  const tuned = {}, capBlocked = new Set(), growStart = {};
   if (PROFIT_CAP_ON) {
     for (let step = 0; step < PROFIT_CAP_STEPS; step++) {
+      // WHICH tier grows: of every TIER TYPE currently over the cap, the MOST PROFITABLE one, one level at
+      // a time. Stated that way rather than as "an industry over the cap grows", which left it ambiguous
+      // what happens when several qualify at once.
+      //
+      // ⚠ It considers EVERY placed tier, not only the era-appropriate one. Normally the top tier is the
+      // most profitable and so is the one that grows — which is the intent — but where an older tier is the
+      // fattest, that is precisely the ladder being inverted, and expanding it is what competes its margin
+      // away. Restricting the search to the top tier would leave the actual offender untouched.
       let best = null, bestP = PROFIT_CAP;
       for (const p of placement) {
-        const cur = p.rows[0].t;
-        if (cur.era !== era || p.ind.follows_be === false || capBlocked.has(p.ind.id)) continue;
-        if (!(S.BLDNUM[cur.key] > 0)) continue;
-        const pr = E.TPthr(p.ind, cur) / 100;
-        if (isFinite(pr) && pr > bestP) { best = { ind: p.ind, t: cur }; bestP = pr; }
+        if (p.ind.follows_be === false) continue;
+        for (const r of p.rows) {
+          const t = r.t;
+          if (t.era > era || !(S.BLDNUM[t.key] > 0) || capBlocked.has(t.key)) continue;
+          const pr = E.TPthr(p.ind, t) / 100;
+          if (isFinite(pr) && pr > bestP) { best = { ind: p.ind, t }; bestP = pr; }
+        }
       }
       // ...and the RAW BAND, in the SAME loop. Growing a raw producer cuts its good's price, which can push
       // a sibling producer of the same good below zero — so the upper and lower bounds have to be enforced
@@ -1015,6 +1050,7 @@ function buildScenario(eIx) {
       }
       if (rawGrow && (!best || rawGrowP > bestP - PROFIT_CAP)) {
         const prevR = minCount[rawGrow] || 0, tpBefore = E.refEcon(rawGrow).tp;
+        if (growStart[rawGrow] == null) growStart[rawGrow] = S.BLDNUM[rawGrow] || 0;
         minCount[rawGrow] = (S.BLDNUM[rawGrow] || 0) + 1;
         settle(); syncPrices();
         // ⚠ STOP IF GROWING DOES NOT ACTUALLY HELP. If the good is already pinned at the 25% price floor,
@@ -1023,22 +1059,39 @@ function buildScenario(eIx) {
         // ALL 400 steps in era 1 and still read 294%. A rule that cannot reach its goal must say so and
         // stop, not grind.
         const tpAfter = E.refEcon(rawGrow).tp;
-        if (ceilingBreaches() > beforeC || !(tpAfter < tpBefore - 0.25)) {
-          minCount[rawGrow] = prevR; capBlocked.add(rawGrow); settle(); syncPrices();
+        const futile = PROFIT_CAP_FUTILITY && !(tpAfter < tpBefore - 0.25);
+        if (ceilingBreaches() > beforeC || futile) {
+          // ceiling breach: undo this step. FUTILE: undo the entire run back to where it started.
+          minCount[rawGrow] = futile ? growStart[rawGrow] : prevR;
+          capBlocked.add(rawGrow); settle(); syncPrices();
+          if (futile) delete tuned[rawGrow.replace(/^building_/, '')];
         } else tuned[rawGrow.replace(/^building_/, '')] = (tuned[rawGrow.replace(/^building_/, '')] || 0) + 1;
         continue;
       }
       if (!best) break;
       const k = best.t.key, prev = minCount[k] || 0;
+      const tpB = E.TPthr(best.ind, best.t);
+      if (growStart[k] == null) growStart[k] = S.BLDNUM[k] || 0;
       minCount[k] = (S.BLDNUM[k] || 0) + 1;               // one level at a time, as specified
       settle(); syncPrices();
+      // the futility guard applies to manufacturing too: if its own good is floored, more capacity cannot
+      // move the margin and the run is unwound to where it began
+      const tpA = E.TPthr(best.ind, best.t);
+      if (PROFIT_CAP_FUTILITY && !(tpA < tpB - 0.25)) {
+        minCount[k] = growStart[k]; capBlocked.add(k); settle(); syncPrices();
+        const lbl = best.t.era === era ? best.ind.id : `${best.ind.id} e${best.t.era}`;
+        delete tuned[lbl];
+        continue;
+      }
       if (ceilingBreaches() > beforeC) {
         // the extra capacity pushed one of its own inputs to the +75% band edge — the ceiling outranks
-        // this rule, so put the level back and stop growing this industry
-        minCount[k] = prev; capBlocked.add(best.ind.id);
+        // this rule, so put the level back and stop growing THIS TIER (not the whole industry: another
+        // tier of it may still have room)
+        minCount[k] = prev; capBlocked.add(k);
         settle(); syncPrices();
       } else {
-        tuned[best.ind.id] = (tuned[best.ind.id] || 0) + 1;
+        const label = best.t.era === era ? best.ind.id : `${best.ind.id} e${best.t.era}`;
+        tuned[label] = (tuned[label] || 0) + 1;
       }
     }
   }
