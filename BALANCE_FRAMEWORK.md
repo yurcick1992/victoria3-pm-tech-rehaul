@@ -1205,6 +1205,73 @@ source. Drops are modest and plausible — `vineyard` and `rice_farm` in every e
 **It also improved illogicality**, 48 → 41 total and 33 → 28 net: dropping unviable raw producers raises raw
 prices, which is exactly the gap the manufacturing ladders need.
 
+### 10.20 THE CONSTRUCTION SECTOR BUILT EVERYTHING OUT OF WOOD, IN EVERY ERA
+
+**The largest single distortion found so far, and it ran for the whole project.** Every era's construction
+sector sat on `pm_wooden_buildings` — the *era-0* method, 75 wood and 25 fabric per level — at 74–92 levels,
+in 1935 exactly as in 1836.
+
+**Why the optimiser could not fix it.** `optimisePMs` ranks a method by the building's profit margin. The
+construction sector **sells nothing** (its output is construction points, a modifier, not a priced good), so
+its margin is undefined, every candidate scores identically, and the incumbent — a PMG's first and most
+primitive entry — never moves. The same hole applies to government administration and the military buildings.
+
+**What it cost:**
+- Construction bought **no iron, steel, glass, explosives, tools or electricity in any scenario.**
+- It inflated wood demand by thousands of units. Wood was pinned at the **175 ceiling in four of five eras**,
+  and §10.14.3's logging-camp diagnosis, while real, was treating a symptom: the missing demand-side half
+  was here.
+- Era-1 iron demand read 704 where the true figure is several thousand, which is why the iron mine looked
+  unviable and had to be protected under §10.18.
+
+**Two rules, and the construction sector gets both.**
+
+1. **A building with no priced output runs the most ADVANCED method its technology allows** — it cannot be
+   ranked by profit, so it must be told. Applies to government administration and the military buildings.
+   ⚠ "Most advanced" is by **tech era, not list position**: `pmg_transportation_building_logging_camp` ends
+   on `pm_log_carts`, the primitive one.
+2. **The construction sector's method is HARDCODED per era and the solver takes it as given.** A frame
+   material is a fact about the era, not a market outcome, and nothing should be able to drift it:
+   **iron frame (e1, e2) → steel frame (e3, e4) → arc welded (e5)**.
+
+**Its LEVEL COUNT is not solved either — it is a share of GDP.** A construction sector sells nothing, so no
+margin steers it, and a share of *building levels* was the wrong unit anyway: what a country spends on
+building things is a share of what it produces. `CONSTRUCTION_GDP_SHARE` = **5%** of gross output, and the
+count follows from that and its goods bill. No circularity — it produces no priced good, so it contributes
+nothing to the gross output it is measured against.
+
+**Calibrated against vanilla**, under this same accounting (construction goods bill ÷ gross output value, on
+the vanilla 1836 markets): Qing 0.66%, Russia 1.19%, Japan 1.61%, Britain 2.28%, France 3.76%, Austria
+4.13%, USA 4.63%, Belgium 6.30% — median ~3.0%, industrialised markets 2.3–6.3%. **5% sits inside the
+observed range at its industrial end**, because raising the capital cost of modernising is the point of the
+mod. A design choice, stated as one.
+
+⚠ **Era 4 is steel frame, not arc welded**, which differs from the initial expectation. Vanilla gates
+`pm_arc_welded_buildings` on the `arc_welding` technology, which sits in **vanilla's era 5**, and this
+project's standing rule is that technology is the one gate the solver satisfies freely, with the vanilla era
+remapped 1:1 (§10.8). Overriding it here would be the solver helping itself to a technology, which is the
+exact class of thing §10.8 exists to stop. Historically defensible too: arc welding existed in the 1920s but
+did not become the normal way to frame a building until later.
+
+**Effect on prices** (before → after):
+
+| | e1 | e2 | e3 | e4 | e5 |
+|---|---|---|---|---|---|
+| iron | **25 → 100** | 102 | 101 | 99 | 105 |
+| wood | 158 → 135 | **175 → 154** | **175 → 141** | **175 → 126** | **175 → 111** |
+
+⚠ **Two traps hit while wiring this, both worth remembering.** (a) The hardcoded PM must be set *before*
+anything checks whether the building is present — the count is now derived from the goods bill, so guarding
+the method on `BLDNUM > 0` deadlocks the two and ships a scenario with **no construction sector at all**.
+(b) `ui/econ.js`'s `refEcon()` does **not** return `Ith`/`Oth`, though `builder.html`'s copy of the same
+function does (the fork noted in CLAUDE.md); reading `per.Ith` gave `undefined`, a zero cost, and the same
+empty result. Compute the goods bill explicitly rather than depending on the forked half's return shape.
+
+Illogicality lands at 51 total / 33 net, inside the write-cycle wander (§10.16), so this is **not a scoring
+win and should not be reported as one**. It is a **correctness** win: the scenarios now contain a
+construction sector that buys what a construction sector buys, and raw producers are viable in four of five
+eras **without dropping any**, where before the rule had to remove several.
+
 ### 10.19 The pop-need weights are CORRECT — and the art-academy explanation in this document was not
 
 **Checked, because a wrong weight here would invalidate every demand number.** All **52 entries across 15

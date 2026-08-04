@@ -60,7 +60,34 @@ const ARMY_MIX = {
 // 1836 markets (see the header). Construction is raised from vanilla's ~0.7% because raising it is the
 // whole point of the mod — modernising has to be BUILT — and it is the one number here that is a design
 // choice rather than an observation. It is a knob; say so when reporting.
-const SUPPORT_SHARE = { ownership: 0.32, government: 0.06, trade: 0.035, construction: 0.015 };
+const SUPPORT_SHARE = { ownership: 0.32, government: 0.06, trade: 0.035 };
+// ---------------------------------------------------------------------------------------------------
+// CONSTRUCTION IS SIZED BY ITS SHARE OF GDP, NOT BY A SHARE OF BUILDING LEVELS, and its method is FIXED.
+//
+// A construction sector's level count is not something the market solves for: it sells nothing, so no
+// margin steers it, and a level share is the wrong unit anyway — what a country spends on building things
+// is a share of what it produces. So the count is derived from a target share of gross output, and the
+// solver takes both that and the method as given.
+//
+// MEASURED AGAINST VANILLA, under this same accounting (construction goods bill ÷ gross output value, at
+// base prices, on the vanilla 1836 markets): Qing 0.66%, Russia 1.19%, Japan 1.61%, Britain 2.28%,
+// France 3.76%, Austria 4.13%, USA 4.63%, Belgium 6.30% — median ~3.0%, industrialised markets 2.3–6.3%.
+// We take 5%: inside the observed range and at its industrial end, because raising the capital cost of
+// modernising is the point of the mod. It is a design choice, and it is stated as one.
+const CONSTRUCTION_GDP_SHARE = +(process.env.ERA_CONSTRUCTION_SHARE || 0.05);
+// THE METHOD IS HARDCODED PER ERA. It cannot be chosen by profit (no priced output) and it should not be
+// left to drift; a construction sector's frame material is a fact about the era, not a market outcome.
+// ⚠ ERA 4 IS STEEL FRAME, NOT ARC WELDED. Vanilla gates `pm_arc_welded_buildings` on the `arc_welding`
+// technology, which sits in vanilla's era 5, and §10.8's standing rule is that technology is the one gate
+// the solver satisfies freely with the vanilla era remapped 1:1. Historically defensible too — arc welding
+// existed in the 1920s but did not become the normal way to frame a building until later. Change this one
+// line to `pm_arc_welded_buildings` if era 4 should have it anyway.
+const CONSTRUCTION_PM = {
+  1: 'pm_iron_frame_buildings', 2: 'pm_iron_frame_buildings',
+  3: 'pm_steel_frame_buildings', 4: 'pm_steel_frame_buildings',
+  5: 'pm_arc_welded_buildings',
+};
+const CONSTRUCTION_BLD = 'building_construction_sector';
 // THROUGHPUT, as a flat average per sector. A real market's bonus is per building type and measured
 // (economy of scale + technology + laws + company bonuses); these synthetic scenarios have no companies
 // and no laws to measure, so a representative average stands in. It is NOT cosmetic: throughput scales a
@@ -324,6 +351,50 @@ function refTargetFor(b) {
 // ===================================================================================================
 const rules = makePmRules(E, S);
 
+// A BUILDING WITH NO PRICED OUTPUT CANNOT BE RANKED BY PROFIT — so it must be told what to run.
+//
+// `optimisePMs` scores a method by the building's margin. For a building that sells nothing — the
+// construction sector above all, but also government administration and the military buildings — that
+// margin is undefined, every candidate ties, and the incumbent therefore never moves. The incumbent is the
+// PMG's first entry, which is the most primitive method in the group.
+//
+// ⚠⚠ THE COST OF THAT WAS LARGE AND IT RAN FOR THE WHOLE PROJECT. Every era's construction sector sat on
+// `pm_wooden_buildings`, the *era-0* method: 75 wood and 25 fabric per level, at 74–92 levels, in 1935 as
+// much as in 1836. So construction never bought iron, steel, glass, explosives, tools or electricity in any
+// scenario, while inflating wood demand by thousands of units — which is most of the "wood famine" earlier
+// blamed on logging camps, and the reason era-1 iron demand was 704 when the real figure is several
+// thousand. A country that builds its factories out of wood in 1935 is not a country.
+//
+// The rule: such a building runs the most ADVANCED method its technology allows.
+// ⚠ "Most advanced" is by TECH ERA, not by position in the list. The last entry is often not the newest —
+// `pmg_transportation_building_logging_camp` ends on `pm_log_carts`, which is the primitive one.
+function advanceNonMarketPMs(era) {
+  // The construction sector's method is STATED, not derived — and it is set unconditionally, before
+  // anything checks whether the building is present. It has to be: its level count is now derived FROM
+  // its goods bill (sizeConstruction), so the method must be known while the count is still zero.
+  // Guarding this on `BLDNUM > 0` deadlocked the two and shipped a scenario with no construction at all.
+  {
+    const cs = S.VAN.buildings[CONSTRUCTION_BLD];
+    if (cs) {
+      const want = CONSTRUCTION_PM[era], sel = E.refSel(CONSTRUCTION_BLD);
+      for (const pmg of (cs.pmgs || [])) if (((S.VAN.pmgs[pmg] || {}).pms || []).includes(want)) sel[pmg] = want;
+    }
+  }
+  for (const b of E.refBuildings()) {
+    if (!(S.BLDNUM[b] > 0)) continue;
+    const out = E.selGoods(E.refSel(b)).out;
+    if (Object.keys(out).some(g => out[g] > 0 && S.PRICES[g])) continue;   // sells something: profit ranks it
+    const sel = E.refSel(b), info = S.VAN.buildings[b] || {};
+    for (const pmg of (info.pmgs || [])) {
+      const cand = rules.candidates(pmg, era, new Set(Object.values(sel)));
+      if (!cand.length) continue;
+      let best = cand[0], bestEra = rules.pmEra(cand[0]);
+      for (const pm of cand) { const e = rules.pmEra(pm); if (e >= bestEra) { bestEra = e; best = pm; } }
+      sel[pmg] = best;
+    }
+  }
+}
+
 // good -> first era any tier of ours produces it (manufactured), else null (raw / secondary)
 const GOOD_FIRST_ERA = {};
 for (const i of S.IND) {
@@ -536,7 +607,29 @@ function buildScenario(eIx) {
   const infeasible = new Map();   // industry id -> {got, tgt} where even the O/4 recipe misses the target
   capped.clear();
   let jobs = 0, popNonPeasant = 0, peasants = 0, gdp = 0;
-  const settle = () => { applyCounts(); addSupport(); applyThroughput(); setPops(); setArmy(); };
+  // ⚠ advanceNonMarketPMs runs inside settle(), not once at the start: addSupport() places the construction
+  // sector and the other non-selling buildings on every settle, and optimisePMs can evict a selection back
+  // to a PMG's first (most primitive) entry. Anywhere less often and the wooden-buildings default creeps
+  // back in unnoticed — which is exactly how it survived this long.
+  const settle = () => { applyCounts(); addSupport(); applyThroughput(); advanceNonMarketPMs(era);
+                         sizeConstruction(); setPops(); setArmy(); };
+  // Construction levels follow the TARGET SHARE OF GROSS OUTPUT, not a share of building levels.
+  // No circularity: the construction sector produces no priced good, so it contributes nothing to the
+  // gross output it is sized against.
+  function sizeConstruction() {
+    if (!S.VAN.buildings[CONSTRUCTION_BLD]) return;
+    let gross = 0;
+    for (const i of S.IND) for (const t of i.tiers) { const c = S.BLDNUM[t.key] || 0; if (c) gross += c * E.thruMult(t.key) * E.outputValue(i, t, true); }
+    for (const b of E.refBuildings()) { const c = S.BLDNUM[b] || 0; if (!c || b === CONSTRUCTION_BLD) continue;
+      gross += c * E.thruMult(b) * E.goodsVal(E.selGoods(E.refSel(b)).out, true); }
+    // ⚠ Compute the goods bill directly rather than via refEcon(): ui/econ.js's refEcon does NOT return
+    // `Ith`/`Oth` (builder.html's copy of the same function does — the fork noted in CLAUDE.md), so reading
+    // `per.Ith` here silently produced `undefined`, a zero cost, and a scenario with NO construction sector
+    // at all. Depending on the return shape of the forked half of the model is not worth the brevity.
+    const cost = E.thruMult(CONSTRUCTION_BLD) * E.goodsVal(E.selGoods(E.refSel(CONSTRUCTION_BLD)).in, true);
+    if (!(cost > 0) || !(gross > 0)) return;
+    S.BLDNUM[CONSTRUCTION_BLD] = Math.max(1, Math.round(CONSTRUCTION_GDP_SHARE * gross / cost));
+  }
 
   // COUNTS CHASE THE PRICE PATH, not the margin. A good trading ABOVE its target is under-supplied, so
   // build more of it; below, build fewer. This is a live error signal for the whole run, unlike the
