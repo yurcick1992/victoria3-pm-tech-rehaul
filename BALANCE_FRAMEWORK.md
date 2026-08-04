@@ -1324,11 +1324,40 @@ targets +20% and agriculture +10%; they are running at **medians of 52–66%** w
 residual as concentrated in raw producers — but the check names it instead of leaving it as "significant
 variance accepted".
 
-**The obvious next move is to apply the same free-entry logic to extraction and agriculture**, which is
-where the fat margins actually are. It was scoped to manufacturing deliberately; the numbers say the raw
-side is the bigger offender. ⚠ It interacts with §10.18: growing a raw producer cuts its price and could
-push a *sibling* producer of the same good below zero, which §10.18 would then drop. The two rules would
-have to be run together rather than in sequence.
+### 10.22 EXTRACTION AND AGRICULTURE HAVE NO TARGET — THEY HAVE A BAND (2026-08-04)
+
+**Superseding the +20% / +10% raw targets.** A target says "this number should be 20%", and for raw
+producers that was never true or useful: a good has ONE price and several producers of differing
+productivity, so **at most one of them can ever sit on a target** and the rest were permanently logged as
+misses no lever could fix. That was essentially the whole of §10.6's residual.
+
+A band says what would actually be *wrong* — a mine running at a loss (nobody would operate it) or one
+printing money (nobody would leave it alone). Between those, spread is real productivity difference and is
+left alone rather than fought.
+
+| | band |
+|---|---|
+| extraction | **0% … +400%** |
+| agriculture | **0% … +200%** |
+
+Extraction gets the wider ceiling because it genuinely runs enormous ratios — a coal mine consumes almost
+nothing but tools — the same reason §10.9's value-added cap exempts it. Both bounds are enforced **in the
+same loop** as §10.21's free entry, because they interact: growing a raw producer cuts its good's price and
+can push a *sibling* producer below zero, so enforcing them in sequence has each pass undo the other.
+
+**The effect on the profit-target score is large**, because the unmeetable half of it is gone:
+8/8, 11/14, 9/17, 14/18, 15/18 within 8pp, mean miss 2–13pp (was ~30–65pp with raw producers scored).
+
+**Result: eras 4 and 5 have all 22 present producers inside the band.** Three violations remain, each
+reported with its reason rather than left bare:
+- `tea_plantation` 294% (e1) and 235% (e2) — **its good is already at the 25% price floor, so extra supply
+  cannot move the margin at all.**
+- `rubber_plantation` −50% (e3) — kept as the market's only rubber source (§10.18).
+
+⚠ **A rule that cannot reach its goal must say so and stop.** Before that guard existed, `tea_plantation`
+consumed **all 400 tuner steps** in era 1 and still read 294%: the price was pinned at the floor, so every
+level added achieved exactly nothing. The tuner now checks that a growth step actually *lowered* the margin
+and blocks the producer when it did not.
 
 ### 10.19 The pop-need weights are CORRECT — and the art-academy explanation in this document was not
 

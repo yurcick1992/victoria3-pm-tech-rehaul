@@ -113,6 +113,8 @@ manufacturing fine (27→58% across eras), **raw-sector profits NOT** — median
 +20%/+10%, 10–12 producers over +50% every era. Applying the same rule to extraction/agriculture is the
 obvious next move, but it must run *together* with §10.18, not after it.
 
+**⭐ RAW PRODUCERS HAVE A BAND, NOT A TARGET (§10.22).** Extraction **0…+400%**, agriculture **0…+200%** — the old +20%/+10% targets are GONE (a good has one price and several producers, so at most one could ever sit on a target; the rest were permanent unfixable misses). Both bounds are enforced in the SAME loop as §10.21, because growing a producer can push a sibling below zero. ⚠ A rule that cannot reach its goal must stop: if a growth step does not lower the margin (the good is pinned at the 25% floor) the producer is blocked — `tea_plantation` once ate all 400 tuner steps achieving nothing.
+
 **⭐ HARD CONSTRAINT — NO LOSS-MAKING RAW PRODUCER MAY BE PRESENT (§10.18).** No extraction or agriculture
 building in a scenario may run at a loss; the rule is on *non-zero* producers, so the remedy is not to build
 it. Enforced greedily and minimally (drop the worst, re-converge, look again), **gold exempt** (one-sided

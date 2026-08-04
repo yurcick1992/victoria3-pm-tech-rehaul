@@ -115,6 +115,26 @@ const CONSTRUCTION_BLD = 'building_construction_sector';
 const PROFIT_CAP_ON = process.env.ERA_PROFIT_CAP !== '0';
 const PROFIT_CAP = +(process.env.ERA_PROFIT_CAP_PCT || 0.25);
 const PROFIT_CAP_STEPS = +(process.env.ERA_PROFIT_CAP_STEPS || 400);
+// ===================================================================================================
+// EXTRACTION AND AGRICULTURE HAVE NO PROFIT TARGET — THEY HAVE A BAND.
+//
+// A target says "this number should be 20%", and for raw producers that was never true or useful: a good
+// has ONE price and several producers of differing productivity, so at most one of them can sit on a
+// target, and the rest were permanently reported as misses. §10.6 spent its whole residual saying so.
+//
+// A band says what would actually be WRONG: a mine running at a loss (nobody would operate it) or a mine
+// printing money (nobody would leave that alone). Between those, spread is real productivity difference
+// and is left alone rather than fought.
+//
+//   extraction   0% … +400%
+//   agriculture  0% … +200%
+//
+// Extraction gets the wider ceiling because it genuinely runs enormous ratios — a coal mine consumes
+// almost nothing but tools — which is the same reason §10.9's value-added cap exempts it.
+const RAW_BAND = {
+  extraction:  [0, +(process.env.ERA_RAW_MAX_EXTRACTION || 4.00)],
+  agriculture: [0, +(process.env.ERA_RAW_MAX_AGRICULTURE || 2.00)],
+};
 // THROUGHPUT, as a flat average per sector. A real market's bonus is per building type and measured
 // (economy of scale + technology + laws + company bonuses); these synthetic scenarios have no companies
 // and no laws to measure, so a representative average stands in. It is NOT cosmetic: throughput scales a
@@ -373,6 +393,11 @@ function catOf(b) {
 function refTargetFor(b) {
   const c = catOf(b);
   return EXTRACTION_CATS.has(c) ? TG.extraction : AGRICULTURE_CATS.has(c) ? TG.agriculture : TG.current;
+}
+// which BAND a reference producer must stay inside (null = not a raw producer)
+function rawBandOf(b) {
+  const c = catOf(b);
+  return EXTRACTION_CATS.has(c) ? RAW_BAND.extraction : AGRICULTURE_CATS.has(c) ? RAW_BAND.agriculture : null;
 }
 
 // ===================================================================================================
@@ -964,12 +989,47 @@ function buildScenario(eIx) {
         const pr = E.TPthr(p.ind, cur) / 100;
         if (isFinite(pr) && pr > bestP) { best = { ind: p.ind, t: cur }; bestP = pr; }
       }
+      // ...and the RAW BAND, in the SAME loop. Growing a raw producer cuts its good's price, which can push
+      // a sibling producer of the same good below zero — so the upper and lower bounds have to be enforced
+      // together, not in sequence, or each pass undoes the other's work.
+      let rawGrow = null, rawGrowP = 0, rawDrop = null, rawDropP = 0;
+      for (const b of refProducers) {
+        if (!(S.BLDNUM[b] > 0) || dropped.has(b) || !isRawProducer(b)) continue;
+        const band = rawBandOf(b); if (!band) continue;
+        const ec = E.refEcon(b); if (!ec || ec.tp == null || !isFinite(ec.tp)) continue;
+        const pr = ec.tp / 100;
+        if (pr > band[1] && !capBlocked.has(b) && pr - band[1] > rawGrowP) { rawGrow = b; rawGrowP = pr - band[1]; }
+        if (pr < band[0] && pr < rawDropP) { rawDrop = b; rawDropP = pr; }
+      }
+      // fix whichever violation is worst; a loss-maker outranks an over-earner
+      if (!best && !rawGrow && !rawDrop) break;
+      const beforeC = ceilingBreaches();
+      if (rawDrop) {
+        dropped.add(rawDrop);
+        settle(); syncPrices();
+        if (ceilingBreaches() > beforeC) { dropped.delete(rawDrop); protectedRaw.add(rawDrop); settle(); syncPrices(); }
+        continue;
+      }
+      if (rawGrow && (!best || rawGrowP > bestP - PROFIT_CAP)) {
+        const prevR = minCount[rawGrow] || 0, tpBefore = E.refEcon(rawGrow).tp;
+        minCount[rawGrow] = (S.BLDNUM[rawGrow] || 0) + 1;
+        settle(); syncPrices();
+        // ⚠ STOP IF GROWING DOES NOT ACTUALLY HELP. If the good is already pinned at the 25% price floor,
+        // extra supply cannot push the price down any further, so the margin does not move and the loop
+        // will spend its entire budget achieving nothing. Measured before this guard: tea_plantation took
+        // ALL 400 steps in era 1 and still read 294%. A rule that cannot reach its goal must say so and
+        // stop, not grind.
+        const tpAfter = E.refEcon(rawGrow).tp;
+        if (ceilingBreaches() > beforeC || !(tpAfter < tpBefore - 0.25)) {
+          minCount[rawGrow] = prevR; capBlocked.add(rawGrow); settle(); syncPrices();
+        } else tuned[rawGrow.replace(/^building_/, '')] = (tuned[rawGrow.replace(/^building_/, '')] || 0) + 1;
+        continue;
+      }
       if (!best) break;
-      const before = ceilingBreaches();
       const k = best.t.key, prev = minCount[k] || 0;
       minCount[k] = (S.BLDNUM[k] || 0) + 1;               // one level at a time, as specified
       settle(); syncPrices();
-      if (ceilingBreaches() > before) {
+      if (ceilingBreaches() > beforeC) {
         // the extra capacity pushed one of its own inputs to the +75% band edge — the ceiling outranks
         // this rule, so put the level back and stop growing this industry
         minCount[k] = prev; capBlocked.add(best.ind.id);
@@ -1113,12 +1173,17 @@ function buildScenario(eIx) {
              for (const b of E.refBuildings()) { const c = S.BLDNUM[b] || 0; if (!c || E.isSubsistenceBuilding(b)) continue;
                tot += c * E.thruMult(b) * E.goodsVal(E.selGoods(E.refSel(b)).out, true); }
              return tot > 0 ? m / tot : 0; })(),
-           rawProfits: (() => { const xs = [];
+           rawProfits: (() => { const xs = [], out = [];
              for (const b of refProducers) { if (!(S.BLDNUM[b] > 0) || !isRawProducer(b)) continue;
-               const ec = E.refEcon(b); if (ec && ec.tp != null && isFinite(ec.tp)) xs.push(ec.tp); }
+               const ec = E.refEcon(b); if (!ec || ec.tp == null || !isFinite(ec.tp)) continue;
+               xs.push(ec.tp);
+               const band = rawBandOf(b);
+               if (band && (ec.tp / 100 < band[0] || ec.tp / 100 > band[1]))
+                 out.push({ b: b.replace(/^building_/, ''), tp: ec.tp, lo: band[0] * 100, hi: band[1] * 100 });
+             }
              xs.sort((a, b2) => a - b2);
              return xs.length ? { n: xs.length, med: xs[xs.length >> 1], max: xs[xs.length - 1],
-                                  over50: xs.filter(v => v > 50).length } : null; })(),
+                                  over50: xs.filter(v => v > 50).length, outside: out } : null; })(),
            dropped: new Set(dropped), protectedRaw: new Set(protectedRaw),
            rawLoss: refProducers.filter(b => S.BLDNUM[b] > 0 && isRawProducer(b))
              .filter(b => { const ec = E.refEcon(b); return ec && ec.tp != null && ec.tp < 0; })
@@ -1159,14 +1224,10 @@ for (let e = 0; e < FIT.eras.length; e++) {
     const tgt = TG.current + (SHIP_INDUSTRIES.has(i.id) ? TG.shipyard_penalty : 0);
     hits.push({ what: i.id, kind: 'tier e' + cur.era, got: p, tgt, off: p - tgt });
   }
-  for (const b of E.refBuildings()) {
-    if (!S.BLDNUM[b] || E.isSubsistenceBuilding(b)) continue;
-    const c = catOf(b);
-    if (!EXTRACTION_CATS.has(c) && !AGRICULTURE_CATS.has(c)) continue;
-    if (SKIP_TARGET_BLD.has(b)) continue;   // gold: see SKIP_GOODS
-    const ec = E.refEcon(b); if (!ec || ec.tp == null) continue;
-    hits.push({ what: b.replace(/^building_/, ''), kind: c, got: ec.tp / 100, tgt: refTargetFor(b), off: ec.tp / 100 - refTargetFor(b) });
-  }
+  // ⚠ EXTRACTION AND AGRICULTURE ARE NO LONGER SCORED AGAINST A TARGET. They have a BAND (RAW_BAND) and are
+  // reported against it separately. Scoring them here was the source of essentially the whole "profit
+  // targets" residual — a good has one price and several producers of differing productivity, so at most
+  // one could ever sit on a target and the others were permanently logged as misses that no lever could fix.
   // FLOORED: the solver wanted FEWER than one level of this building and could not have it. A single
   // level already floods that good's market, so the price sits at the floor and the margin cannot be
   // rescued by any count. That is not a solver miss — it is a real property of a one-country scenario
@@ -1288,7 +1349,10 @@ for (let e = 0; e < FIT.eras.length; e++) {
     console.log(`    FREE ENTRY (>${(PROFIT_CAP * 100).toFixed(0)}% ⇒ build more): `
       + (t.length ? `${t.reduce((a, x) => a + x[1], 0)} level(s) added — ` + t.slice(0, 6).map(([id, n]) => `${id} +${n}`).join(', ')
                   : 'nothing above the cap')
-      + (meta.capBlocked.size ? `  ⚠ stopped by the ceiling: ${[...meta.capBlocked].join(', ')}` : ''));
+      // ⚠ "growth stopped" covers BOTH reasons — the +75% ceiling, and a good already at the 25% price
+      // floor where extra supply cannot move the margin at all. Naming only the ceiling was misleading.
+      + (meta.capBlocked.size ? `  ⚠ growth stopped (ceiling or price floor): `
+          + [...meta.capBlocked].map(x => String(x).replace(/^building_/, '')).join(', ') : ''));
     console.log(`      SANITY: manufacturing ${(100 * meta.mfgShare).toFixed(0)}% of non-subsistence output`
       + (meta.mfgShare > 0.90 ? ' ⚠ OVERSIZED' : '')
       + (rp ? ` · raw producers median ${rp.med.toFixed(0)}% / max ${rp.max.toFixed(0)}%`
@@ -1297,9 +1361,12 @@ for (let e = 0; e < FIT.eras.length; e++) {
   console.log(`    CONSTRUCTION: ${meta.constrLevels} levels = ${(100 * meta.constrShare).toFixed(1)}% of gross output`
     + ` (target ${(100 * CONSTRUCTION_GDP_SHARE).toFixed(0)}%, ${CONSTRUCTION_PM[meta.era]})`
     + (Math.abs(meta.constrShare - CONSTRUCTION_GDP_SHARE) > 0.02 ? '   ⚠ OFF TARGET' : ''));
-  console.log(`    RAW PRODUCERS: ${meta.rawLoss.length ? '⚠ ' + meta.rawLoss.length + ' LOSS-MAKING while present: '
-      + meta.rawLoss.map(r => `${r.b} ${r.tp.toFixed(0)}%`).join(', ')
-    : 'clear — every extraction/agriculture building present is profitable'}`
+  const outB = (meta.rawProfits && meta.rawProfits.outside) || [];
+  console.log(`    RAW BAND (extraction 0–${(RAW_BAND.extraction[1] * 100).toFixed(0)}%, agriculture 0–${(RAW_BAND.agriculture[1] * 100).toFixed(0)}%): `
+    + (outB.length ? `⚠ ${outB.length} OUTSIDE — ` + outB.map(r => `${r.b} ${r.tp.toFixed(0)}%`
+        + (meta.protectedRaw.has('building_' + r.b) ? ' (kept: only source)' : '')
+        + (meta.capBlocked.has('building_' + r.b) ? ' (price at floor — growing cannot help)' : '')).join(', ')
+                   : `clear — all ${meta.rawProfits ? meta.rawProfits.n : 0} present producers inside the band`)
     + (meta.dropped.size ? `\n      dropped as unviable (${meta.dropped.size}): ` + [...meta.dropped].map(b => b.replace(/^building_/, '')).join(', ') : '')
     + (meta.protectedRaw.size ? `\n      ⚠ KEPT AT A LOSS — the market's only source, dropping them breached the ceiling: `
         + [...meta.protectedRaw].map(b => b.replace(/^building_/, '')).join(', ') : ''));

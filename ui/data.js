@@ -46,7 +46,7 @@ window.PMDATA = {
                                              "tech":  "manufacturies",
                                              "output_qty":  45,
                                              "inputs":  {
-                                                            "grain":  37.6
+                                                            "grain":  38
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -54,7 +54,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/bakeries.dds",
-                                             "target_be":  74,
+                                             "target_be":  75,
                                              "natural_year":  1750,
                                              "building_cost":  195,
                                              "era":  1,
@@ -70,8 +70,8 @@ window.PMDATA = {
                                              "tech":  "distillation",
                                              "output_qty":  70,
                                              "inputs":  {
-                                                            "grain":  98.5,
-                                                            "sugar":  1.1
+                                                            "grain":  107.8,
+                                                            "sugar":  0.3
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -80,7 +80,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/sweeteners.dds",
-                                             "target_be":  127,
+                                             "target_be":  137,
                                              "natural_year":  1850,
                                              "building_cost":  295,
                                              "era":  2,
@@ -96,8 +96,8 @@ window.PMDATA = {
                                              "tech":  "baking_powder",
                                              "output_qty":  108,
                                              "inputs":  {
-                                                            "grain":  132,
-                                                            "sugar":  0.3
+                                                            "grain":  124,
+                                                            "sugar":  0.1
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -107,7 +107,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/baking_powder.dds",
-                                             "target_be":  109,
+                                             "target_be":  102,
                                              "natural_year":  1900,
                                              "building_cost":  440,
                                              "era":  3,
@@ -123,7 +123,7 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  168,
                                              "inputs":  {
-                                                            "grain":  146.4,
+                                                            "grain":  150.9,
                                                             "sugar":  0.1
                                                         },
                                              "employment":  {
@@ -134,7 +134,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/baking_powder.dds",
-                                             "target_be":  78,
+                                             "target_be":  80,
                                              "natural_year":  1925,
                                              "building_cost":  null
                                          }
@@ -172,7 +172,7 @@ window.PMDATA = {
                                              "tech":  "manufacturies",
                                              "output_qty":  45,
                                              "inputs":  {
-                                                            "fabric":  70.7
+                                                            "fabric":  72.1
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -180,7 +180,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/handsewn_clothes.dds",
-                                             "target_be":  140,
+                                             "target_be":  142,
                                              "natural_year":  1750,
                                              "building_cost":  195,
                                              "era":  1,
@@ -196,8 +196,8 @@ window.PMDATA = {
                                              "tech":  "lathe",
                                              "output_qty":  70,
                                              "inputs":  {
-                                                            "dye":  4.3,
-                                                            "fabric":  76.1
+                                                            "dye":  4.9,
+                                                            "fabric":  81.6
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -206,7 +206,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/dye_workshops.dds",
-                                             "target_be":  108,
+                                             "target_be":  116,
                                              "natural_year":  1850,
                                              "building_cost":  295,
                                              "era":  2,
@@ -222,9 +222,9 @@ window.PMDATA = {
                                              "tech":  "mechanized_workshops",
                                              "output_qty":  108,
                                              "inputs":  {
-                                                            "dye":  11.9,
-                                                            "fabric":  78.5,
-                                                            "tools":  2.8
+                                                            "dye":  17.7,
+                                                            "fabric":  108.3,
+                                                            "tools":  3.2
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -234,7 +234,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/sewing_machines.dds",
-                                             "target_be":  89,
+                                             "target_be":  124,
                                              "natural_year":  1900,
                                              "building_cost":  440,
                                              "era":  3,
@@ -250,10 +250,10 @@ window.PMDATA = {
                                              "tech":  "electrical_capacitors",
                                              "output_qty":  168,
                                              "inputs":  {
-                                                            "dye":  23.3,
-                                                            "electricity":  13.2,
-                                                            "fabric":  63,
-                                                            "tools":  13.2
+                                                            "dye":  22.9,
+                                                            "electricity":  12.3,
+                                                            "fabric":  62.7,
+                                                            "tools":  12.3
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -264,7 +264,7 @@ window.PMDATA = {
                                              "pollution":  0,
                                              "required_input_goods":  "electricity",
                                              "texture":  "gfx/interface/icons/production_method_icons/electric_sewing_machines.dds",
-                                             "target_be":  82,
+                                             "target_be":  80,
                                              "natural_year":  1925,
                                              "building_cost":  660,
                                              "era":  4,
@@ -304,8 +304,8 @@ window.PMDATA = {
                                              "tech":  "manufacturies",
                                              "output_qty":  45,
                                              "inputs":  {
-                                                            "fabric":  0.2,
-                                                            "wood":  61.2
+                                                            "fabric":  0.1,
+                                                            "wood":  61.7
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -313,7 +313,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/furniture_handicraft.dds",
-                                             "target_be":  121,
+                                             "target_be":  122,
                                              "natural_year":  1750,
                                              "building_cost":  195,
                                              "era":  1,
@@ -331,7 +331,7 @@ window.PMDATA = {
                                              "inputs":  {
                                                             "fabric":  0.1,
                                                             "tools":  0.1,
-                                                            "wood":  89
+                                                            "wood":  91.5
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -341,7 +341,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/lathes.dds",
-                                             "target_be":  113,
+                                             "target_be":  117,
                                              "natural_year":  1850,
                                              "building_cost":  295,
                                              "era":  2,
@@ -357,9 +357,9 @@ window.PMDATA = {
                                              "tech":  "mechanized_workshops",
                                              "output_qty":  108,
                                              "inputs":  {
-                                                            "fabric":  8.8,
-                                                            "tools":  8.8,
-                                                            "wood":  54.1
+                                                            "fabric":  11.6,
+                                                            "tools":  11.6,
+                                                            "wood":  85.6
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -369,7 +369,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/mechanized_workshops.dds",
-                                             "target_be":  66,
+                                             "target_be":  99,
                                              "natural_year":  1900,
                                              "building_cost":  440,
                                              "era":  3,
@@ -385,9 +385,9 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  168,
                                              "inputs":  {
-                                                            "fabric":  11.1,
-                                                            "tools":  11.1,
-                                                            "wood":  104
+                                                            "fabric":  13.3,
+                                                            "tools":  13.3,
+                                                            "wood":  110.8
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -397,7 +397,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/mechanized_workshops.dds",
-                                             "target_be":  73,
+                                             "target_be":  80,
                                              "natural_year":  1925,
                                              "building_cost":  null
                                          }
@@ -431,7 +431,7 @@ window.PMDATA = {
                                              "tech":  "manufacturies",
                                              "output_qty":  30,
                                              "inputs":  {
-                                                            "wood":  27.4
+                                                            "wood":  28
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -439,7 +439,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/forest_glass.dds",
-                                             "target_be":  61,
+                                             "target_be":  62,
                                              "natural_year":  1750,
                                              "building_cost":  175,
                                              "era":  1,
@@ -455,8 +455,8 @@ window.PMDATA = {
                                              "tech":  "lathe",
                                              "output_qty":  47,
                                              "inputs":  {
-                                                            "lead":  18.2,
-                                                            "wood":  18.2
+                                                            "lead":  22,
+                                                            "wood":  22
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -465,7 +465,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/leaded_glass.dds",
-                                             "target_be":  77,
+                                             "target_be":  94,
                                              "natural_year":  1850,
                                              "building_cost":  260,
                                              "era":  2,
@@ -481,7 +481,7 @@ window.PMDATA = {
                                              "tech":  "crystal_glass",
                                              "output_qty":  72,
                                              "inputs":  {
-                                                            "lead":  48.7
+                                                            "lead":  59.1
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -491,7 +491,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/crystal_glass.dds",
-                                             "target_be":  90,
+                                             "target_be":  109,
                                              "natural_year":  1900,
                                              "building_cost":  395,
                                              "era":  3,
@@ -507,8 +507,8 @@ window.PMDATA = {
                                              "tech":  "plastics",
                                              "output_qty":  112,
                                              "inputs":  {
-                                                            "lead":  37.5,
-                                                            "oil":  26.3
+                                                            "lead":  38.4,
+                                                            "oil":  24.6
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -518,7 +518,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  15,
                                              "texture":  "gfx/interface/icons/production_method_icons/houseware_plastics.dds",
-                                             "target_be":  76,
+                                             "target_be":  75,
                                              "natural_year":  1925,
                                              "building_cost":  585,
                                              "era":  4,
@@ -534,8 +534,8 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  173,
                                              "inputs":  {
-                                                            "lead":  51,
-                                                            "oil":  35.1
+                                                            "lead":  51.5,
+                                                            "oil":  35.3
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -545,7 +545,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  15,
                                              "texture":  "gfx/interface/icons/production_method_icons/houseware_plastics.dds",
-                                             "target_be":  66,
+                                             "target_be":  67,
                                              "natural_year":  1940,
                                              "building_cost":  null
                                          }
@@ -582,7 +582,7 @@ window.PMDATA = {
                                              "tech":  "manufacturies",
                                              "output_qty":  30,
                                              "inputs":  {
-                                                            "wood":  47.6
+                                                            "wood":  48.7
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -591,7 +591,7 @@ window.PMDATA = {
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/crude_tools.dds",
                                              "ai_value":  2000,
-                                             "target_be":  106,
+                                             "target_be":  108,
                                              "natural_year":  1750,
                                              "building_cost":  175,
                                              "era":  1,
@@ -607,8 +607,8 @@ window.PMDATA = {
                                              "tech":  "steelworking",
                                              "output_qty":  47,
                                              "inputs":  {
-                                                            "iron":  21.7,
-                                                            "wood":  30.6
+                                                            "iron":  21.5,
+                                                            "wood":  31.7
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -618,7 +618,7 @@ window.PMDATA = {
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/pig_iron_tools.dds",
                                              "ai_value":  2000,
-                                             "target_be":  105,
+                                             "target_be":  106,
                                              "natural_year":  1850,
                                              "building_cost":  260,
                                              "era":  2,
@@ -634,8 +634,8 @@ window.PMDATA = {
                                              "tech":  "mechanical_tools",
                                              "output_qty":  72,
                                              "inputs":  {
-                                                            "steel":  19.5,
-                                                            "wood":  37.2
+                                                            "steel":  19.2,
+                                                            "wood":  38
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -662,8 +662,8 @@ window.PMDATA = {
                                              "tech":  "vulcanization",
                                              "output_qty":  112,
                                              "inputs":  {
-                                                            "rubber":  16.1,
-                                                            "steel":  48.5
+                                                            "rubber":  16.9,
+                                                            "steel":  48.6
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -674,7 +674,7 @@ window.PMDATA = {
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/steel_tools.dds",
                                              "ai_value":  2000,
-                                             "target_be":  91,
+                                             "target_be":  92,
                                              "natural_year":  1925,
                                              "building_cost":  585,
                                              "era":  4,
@@ -690,7 +690,7 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  173,
                                              "inputs":  {
-                                                            "rubber":  24,
+                                                            "rubber":  25.5,
                                                             "steel":  75.1
                                                         },
                                              "employment":  {
@@ -701,7 +701,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/steel_tools.dds",
-                                             "target_be":  91,
+                                             "target_be":  92,
                                              "natural_year":  1940,
                                              "building_cost":  null,
                                              "ai_value":  2000
@@ -738,7 +738,7 @@ window.PMDATA = {
                                              "tech":  "manufacturies",
                                              "output_qty":  40,
                                              "inputs":  {
-                                                            "wood":  46.9
+                                                            "wood":  48.3
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -746,7 +746,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/pulp_pressing.dds",
-                                             "target_be":  104,
+                                             "target_be":  107,
                                              "natural_year":  1750,
                                              "building_cost":  175,
                                              "era":  1,
@@ -762,8 +762,8 @@ window.PMDATA = {
                                              "tech":  "mechanical_tools",
                                              "output_qty":  62,
                                              "inputs":  {
-                                                            "sulfur":  23.6,
-                                                            "wood":  23.6
+                                                            "sulfur":  21.9,
+                                                            "wood":  21.9
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -772,7 +772,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  3,
                                              "texture":  "gfx/interface/icons/production_method_icons/sulfite_pulping.dds",
-                                             "target_be":  118,
+                                             "target_be":  110,
                                              "natural_year":  1850,
                                              "building_cost":  260,
                                              "era":  2,
@@ -788,9 +788,9 @@ window.PMDATA = {
                                              "tech":  "chemical_bleaching",
                                              "output_qty":  96,
                                              "inputs":  {
-                                                            "dye":  16.7,
-                                                            "sulfur":  16.7,
-                                                            "wood":  16.7
+                                                            "dye":  17,
+                                                            "sulfur":  17,
+                                                            "wood":  17
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -800,7 +800,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/bleached_paper.dds",
-                                             "target_be":  85,
+                                             "target_be":  87,
                                              "natural_year":  1900,
                                              "building_cost":  390,
                                              "era":  3,
@@ -816,9 +816,9 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  149,
                                              "inputs":  {
-                                                            "dye":  24,
-                                                            "sulfur":  24,
-                                                            "wood":  24
+                                                            "dye":  24.6,
+                                                            "sulfur":  24.6,
+                                                            "wood":  24.6
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -828,7 +828,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/bleached_paper.dds",
-                                             "target_be":  79,
+                                             "target_be":  81,
                                              "natural_year":  1925,
                                              "building_cost":  null
                                          },
@@ -842,9 +842,9 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  231,
                                              "inputs":  {
-                                                            "dye":  34,
-                                                            "sulfur":  34,
-                                                            "wood":  34
+                                                            "dye":  36.7,
+                                                            "sulfur":  36.7,
+                                                            "wood":  36.7
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -854,7 +854,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/bleached_paper.dds",
-                                             "target_be":  72,
+                                             "target_be":  78,
                                              "natural_year":  1940,
                                              "building_cost":  null
                                          }
@@ -890,8 +890,8 @@ window.PMDATA = {
                                              "tech":  "intensive_agriculture",
                                              "output_qty":  90,
                                              "inputs":  {
-                                                            "iron":  7.5,
-                                                            "sulfur":  7.5
+                                                            "iron":  29.2,
+                                                            "sulfur":  29.2
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -901,7 +901,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/chemical_fertilizers.dds",
-                                             "target_be":  33,
+                                             "target_be":  130,
                                              "natural_year":  1850,
                                              "building_cost":  390,
                                              "era":  2,
@@ -917,8 +917,8 @@ window.PMDATA = {
                                              "tech":  "improved_fertilizer",
                                              "output_qty":  140,
                                              "inputs":  {
-                                                            "iron":  40.5,
-                                                            "sulfur":  40.5
+                                                            "iron":  53.4,
+                                                            "sulfur":  53.4
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -928,7 +928,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/improved_fertilizer.dds",
-                                             "target_be":  116,
+                                             "target_be":  153,
                                              "natural_year":  1900,
                                              "building_cost":  585,
                                              "era":  3,
@@ -944,9 +944,9 @@ window.PMDATA = {
                                              "tech":  "nitrogen_fixation",
                                              "output_qty":  216,
                                              "inputs":  {
-                                                            "iron":  46,
-                                                            "oil":  24.5,
-                                                            "sulfur":  50.1
+                                                            "iron":  44.5,
+                                                            "oil":  24.9,
+                                                            "sulfur":  48.1
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -956,7 +956,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  15,
                                              "texture":  "gfx/interface/icons/production_method_icons/nitrogen_fixation.dds",
-                                             "target_be":  110,
+                                             "target_be":  107,
                                              "natural_year":  1925,
                                              "building_cost":  880,
                                              "era":  4,
@@ -972,9 +972,9 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  335,
                                              "inputs":  {
-                                                            "iron":  51.1,
-                                                            "oil":  36.2,
-                                                            "sulfur":  68.7
+                                                            "iron":  51.5,
+                                                            "oil":  36.1,
+                                                            "sulfur":  68.8
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1017,8 +1017,8 @@ window.PMDATA = {
                                              "tech":  "intensive_agriculture",
                                              "output_qty":  50,
                                              "inputs":  {
-                                                            "fertilizer":  62.5,
-                                                            "sulfur":  62.5
+                                                            "fertilizer":  30.6,
+                                                            "sulfur":  30.6
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1028,7 +1028,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/leblanc_process.dds",
-                                             "target_be":  267,
+                                             "target_be":  131,
                                              "natural_year":  1850,
                                              "building_cost":  360,
                                              "era":  2,
@@ -1044,9 +1044,9 @@ window.PMDATA = {
                                              "tech":  "nitroglycerin",
                                              "output_qty":  78,
                                              "inputs":  {
-                                                            "fertilizer":  30.8,
-                                                            "paper":  30.8,
-                                                            "sulfur":  30.8
+                                                            "fertilizer":  25,
+                                                            "paper":  25,
+                                                            "sulfur":  25
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1056,7 +1056,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  15,
                                              "texture":  "gfx/interface/icons/production_method_icons/ammonia_soda_process.dds",
-                                             "target_be":  116,
+                                             "target_be":  94,
                                              "natural_year":  1900,
                                              "building_cost":  540,
                                              "era":  3,
@@ -1072,9 +1072,9 @@ window.PMDATA = {
                                              "tech":  "dynamite",
                                              "output_qty":  120,
                                              "inputs":  {
-                                                            "fertilizer":  50.5,
-                                                            "paper":  23.3,
-                                                            "sulfur":  50.5
+                                                            "fertilizer":  50.1,
+                                                            "paper":  22.1,
+                                                            "sulfur":  50.1
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1084,7 +1084,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  20,
                                              "texture":  "gfx/interface/icons/production_method_icons/vaccum_evaporation.dds",
-                                             "target_be":  105,
+                                             "target_be":  104,
                                              "natural_year":  1925,
                                              "building_cost":  815,
                                              "era":  4,
@@ -1100,10 +1100,10 @@ window.PMDATA = {
                                              "tech":  "electrical_capacitors",
                                              "output_qty":  186,
                                              "inputs":  {
-                                                            "electricity":  29.6,
-                                                            "fertilizer":  73.7,
-                                                            "paper":  43,
-                                                            "sulfur":  54.8
+                                                            "electricity":  28,
+                                                            "fertilizer":  68.8,
+                                                            "paper":  41.4,
+                                                            "sulfur":  51.5
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1113,7 +1113,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  25,
                                              "texture":  "gfx/interface/icons/production_method_icons/vaccum_brine_electrolysis.dds",
-                                             "target_be":  102,
+                                             "target_be":  96,
                                              "natural_year":  1940,
                                              "building_cost":  1220,
                                              "era":  5,
@@ -1180,8 +1180,8 @@ window.PMDATA = {
                                              "tech":  "bessemer_process",
                                              "output_qty":  101,
                                              "inputs":  {
-                                                            "coal":  31.1,
-                                                            "iron":  55
+                                                            "coal":  68.2,
+                                                            "iron":  122.1
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1191,7 +1191,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  15,
                                              "texture":  "gfx/interface/icons/production_method_icons/bessemer_process.dds",
-                                             "target_be":  83,
+                                             "target_be":  183,
                                              "natural_year":  1850,
                                              "building_cost":  710,
                                              "era":  2,
@@ -1207,8 +1207,8 @@ window.PMDATA = {
                                              "tech":  "open_hearth_process",
                                              "output_qty":  156,
                                              "inputs":  {
-                                                            "coal":  46.7,
-                                                            "iron":  135.2
+                                                            "coal":  50.7,
+                                                            "iron":  144.7
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1218,7 +1218,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  20,
                                              "texture":  "gfx/interface/icons/production_method_icons/open_hearth_process.dds",
-                                             "target_be":  116,
+                                             "target_be":  125,
                                              "natural_year":  1900,
                                              "building_cost":  1055,
                                              "era":  3,
@@ -1234,9 +1234,9 @@ window.PMDATA = {
                                              "tech":  "electric_arc_process",
                                              "output_qty":  242,
                                              "inputs":  {
-                                                            "coal":  40.3,
-                                                            "electricity":  40.3,
-                                                            "iron":  161.5
+                                                            "coal":  39,
+                                                            "electricity":  39,
+                                                            "iron":  159.9
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1246,7 +1246,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  25,
                                              "texture":  "gfx/interface/icons/production_method_icons/electric_arc_process.dds",
-                                             "target_be":  98,
+                                             "target_be":  96,
                                              "natural_year":  1925,
                                              "building_cost":  1580,
                                              "era":  4,
@@ -1262,9 +1262,9 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  375,
                                              "inputs":  {
-                                                            "coal":  63.2,
-                                                            "electricity":  63.2,
-                                                            "iron":  199.8
+                                                            "coal":  60.9,
+                                                            "electricity":  60.9,
+                                                            "iron":  189
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1274,7 +1274,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  25,
                                              "texture":  "gfx/interface/icons/production_method_icons/electric_arc_process.dds",
-                                             "target_be":  84,
+                                             "target_be":  80,
                                              "natural_year":  1940,
                                              "building_cost":  null
                                          }
@@ -1307,7 +1307,7 @@ window.PMDATA = {
                                              "tech":  "atmospheric_engine",
                                              "output_qty":  40,
                                              "inputs":  {
-                                                            "steel":  43.9
+                                                            "steel":  30.7
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1317,7 +1317,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/steamworks.dds",
-                                             "target_be":  122,
+                                             "target_be":  85,
                                              "natural_year":  1850,
                                              "building_cost":  345,
                                              "era":  2,
@@ -1333,8 +1333,8 @@ window.PMDATA = {
                                              "tech":  "electric_railway",
                                              "output_qty":  62,
                                              "inputs":  {
-                                                            "electricity":  31.5,
-                                                            "steel":  33.7
+                                                            "electricity":  30.9,
+                                                            "steel":  34.9
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1344,7 +1344,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/electric_engines.dds",
-                                             "target_be":  94,
+                                             "target_be":  96,
                                              "natural_year":  1900,
                                              "building_cost":  520,
                                              "era":  3,
@@ -1360,8 +1360,8 @@ window.PMDATA = {
                                              "tech":  "compression_ignition",
                                              "output_qty":  96,
                                              "inputs":  {
-                                                            "oil":  54.3,
-                                                            "steel":  54.3
+                                                            "oil":  50.7,
+                                                            "steel":  50.7
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1371,7 +1371,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/diesel_engines.dds",
-                                             "target_be":  113,
+                                             "target_be":  106,
                                              "natural_year":  1925,
                                              "building_cost":  780,
                                              "era":  4,
@@ -1387,8 +1387,8 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  149,
                                              "inputs":  {
-                                                            "oil":  77.6,
-                                                            "steel":  77.6
+                                                            "oil":  79.7,
+                                                            "steel":  79.7
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1398,7 +1398,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/diesel_engines.dds",
-                                             "target_be":  104,
+                                             "target_be":  107,
                                              "natural_year":  1940,
                                              "building_cost":  null
                                          }
@@ -1435,8 +1435,8 @@ window.PMDATA = {
                                              "tech":  "navigation",
                                              "output_qty":  40,
                                              "inputs":  {
-                                                            "fabric":  37.5,
-                                                            "wood":  88.9
+                                                            "fabric":  48.1,
+                                                            "wood":  112.4
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1447,7 +1447,7 @@ window.PMDATA = {
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/wooden_ships.dds",
                                              "ship_construction":  5,
-                                             "target_be":  140,
+                                             "target_be":  178,
                                              "natural_year":  1750,
                                              "building_cost":  345,
                                              "era":  1,
@@ -1463,10 +1463,10 @@ window.PMDATA = {
                                              "tech":  "screw_frigate",
                                              "output_qty":  62,
                                              "inputs":  {
-                                                            "engines":  1.4,
-                                                            "fabric":  73.7,
-                                                            "hardwood":  73.7,
-                                                            "wood":  73.7
+                                                            "engines":  0.9,
+                                                            "fabric":  66.3,
+                                                            "hardwood":  66.3,
+                                                            "wood":  66.3
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1477,7 +1477,7 @@ window.PMDATA = {
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/reinforced_wooden_ships.dds",
                                              "ship_construction":  10,
-                                             "target_be":  214,
+                                             "target_be":  192,
                                              "natural_year":  1850,
                                              "building_cost":  520,
                                              "era":  2,
@@ -1543,9 +1543,9 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  101,
                                              "inputs":  {
-                                                            "coal":  34.1,
-                                                            "engines":  34.1,
-                                                            "steel":  101.1
+                                                            "coal":  28.9,
+                                                            "engines":  28.9,
+                                                            "steel":  92.1
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1555,7 +1555,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/reinforced_steam_ships.dds",
-                                             "target_be":  153,
+                                             "target_be":  136,
                                              "natural_year":  1900,
                                              "building_cost":  null,
                                              "ship_construction":  15
@@ -1570,9 +1570,9 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  156,
                                              "inputs":  {
-                                                            "coal":  42.4,
-                                                            "engines":  42.4,
-                                                            "steel":  135.5
+                                                            "coal":  40.9,
+                                                            "engines":  40.9,
+                                                            "steel":  127.3
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1582,7 +1582,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/reinforced_steam_ships.dds",
-                                             "target_be":  129,
+                                             "target_be":  123,
                                              "natural_year":  1925,
                                              "building_cost":  null,
                                              "ship_construction":  15
@@ -1597,9 +1597,9 @@ window.PMDATA = {
                                              "tech":  "arc_welding",
                                              "output_qty":  242,
                                              "inputs":  {
-                                                            "electricity":  211.7,
-                                                            "engines":  54.7,
-                                                            "steel":  211.7
+                                                            "electricity":  196.3,
+                                                            "engines":  51,
+                                                            "steel":  196.3
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1610,7 +1610,7 @@ window.PMDATA = {
                                              "pollution":  20,
                                              "texture":  "gfx/interface/icons/production_method_icons/arc_welded_steam_ships.dds",
                                              "ship_construction":  20,
-                                             "target_be":  159,
+                                             "target_be":  148,
                                              "natural_year":  1940,
                                              "building_cost":  990,
                                              "era":  5,
@@ -1675,9 +1675,9 @@ window.PMDATA = {
                                              "tech":  "compression_ignition",
                                              "output_qty":  47,
                                              "inputs":  {
-                                                            "engines":  27.8,
-                                                            "oil":  27.8,
-                                                            "rubber":  27.8
+                                                            "engines":  28,
+                                                            "oil":  28,
+                                                            "rubber":  28
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1687,7 +1687,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/standardized_automobiles.dds",
-                                             "target_be":  110,
+                                             "target_be":  111,
                                              "natural_year":  1925,
                                              "building_cost":  650,
                                              "era":  4,
@@ -1703,9 +1703,9 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  72,
                                              "inputs":  {
-                                                            "engines":  34.1,
-                                                            "oil":  34.1,
-                                                            "rubber":  34.1
+                                                            "engines":  34,
+                                                            "oil":  34,
+                                                            "rubber":  34
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1751,8 +1751,8 @@ window.PMDATA = {
                                              "tech":  "gunsmithing",
                                              "output_qty":  30,
                                              "inputs":  {
-                                                            "hardwood":  30.1,
-                                                            "iron":  30.1
+                                                            "hardwood":  29.8,
+                                                            "iron":  29.8
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1761,7 +1761,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/muskets.dds",
-                                             "target_be":  178,
+                                             "target_be":  177,
                                              "natural_year":  1750,
                                              "building_cost":  260,
                                              "era":  1,
@@ -1777,9 +1777,9 @@ window.PMDATA = {
                                              "tech":  "rifling",
                                              "output_qty":  47,
                                              "inputs":  {
-                                                            "hardwood":  39.2,
-                                                            "steel":  39.2,
-                                                            "tools":  2.1
+                                                            "hardwood":  22.5,
+                                                            "steel":  22.5,
+                                                            "tools":  0.8
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1788,7 +1788,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/rifles.dds",
-                                             "target_be":  171,
+                                             "target_be":  97,
                                              "natural_year":  1850,
                                              "building_cost":  390,
                                              "era":  2,
@@ -1804,9 +1804,9 @@ window.PMDATA = {
                                              "tech":  "repeaters",
                                              "output_qty":  72,
                                              "inputs":  {
-                                                            "hardwood":  24,
-                                                            "steel":  28.1,
-                                                            "tools":  24
+                                                            "hardwood":  21.2,
+                                                            "steel":  27.3,
+                                                            "tools":  21.2
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1816,7 +1816,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/repeaters.dds",
-                                             "target_be":  103,
+                                             "target_be":  94,
                                              "natural_year":  1900,
                                              "building_cost":  590,
                                              "era":  3,
@@ -1832,10 +1832,10 @@ window.PMDATA = {
                                              "tech":  "bolt_action_rifles",
                                              "output_qty":  112,
                                              "inputs":  {
-                                                            "hardwood":  24.5,
-                                                            "oil":  24.5,
-                                                            "steel":  24.5,
-                                                            "tools":  24.5
+                                                            "hardwood":  24,
+                                                            "oil":  24,
+                                                            "steel":  24,
+                                                            "tools":  24
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1845,7 +1845,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/bolt_action_rifles.dds",
-                                             "target_be":  83,
+                                             "target_be":  81,
                                              "natural_year":  1925,
                                              "building_cost":  875,
                                              "era":  4,
@@ -1861,10 +1861,10 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  173,
                                              "inputs":  {
-                                                            "hardwood":  36.1,
-                                                            "oil":  36.1,
-                                                            "steel":  36.1,
-                                                            "tools":  36.1
+                                                            "hardwood":  41.9,
+                                                            "oil":  41.9,
+                                                            "steel":  41.9,
+                                                            "tools":  41.9
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1874,7 +1874,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/bolt_action_rifles.dds",
-                                             "target_be":  79,
+                                             "target_be":  91,
                                              "natural_year":  1940,
                                              "building_cost":  null
                                          }
@@ -1907,8 +1907,8 @@ window.PMDATA = {
                                              "tech":  "artillery",
                                              "output_qty":  25,
                                              "inputs":  {
-                                                            "hardwood":  27.9,
-                                                            "iron":  27.9
+                                                            "hardwood":  27.6,
+                                                            "iron":  27.6
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1917,7 +1917,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/artillery_production.dds",
-                                             "target_be":  170,
+                                             "target_be":  168,
                                              "natural_year":  1750,
                                              "building_cost":  255,
                                              "era":  1,
@@ -1933,8 +1933,8 @@ window.PMDATA = {
                                              "tech":  "shell_gun",
                                              "output_qty":  39,
                                              "inputs":  {
-                                                            "hardwood":  22.7,
-                                                            "iron":  52.8
+                                                            "hardwood":  20.6,
+                                                            "iron":  47.8
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1944,7 +1944,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/smoothbores.dds",
-                                             "target_be":  147,
+                                             "target_be":  134,
                                              "natural_year":  1850,
                                              "building_cost":  385,
                                              "era":  2,
@@ -1960,9 +1960,9 @@ window.PMDATA = {
                                              "tech":  "breech_loading_artillery",
                                              "output_qty":  60,
                                              "inputs":  {
-                                                            "hardwood":  15.5,
-                                                            "steel":  33.6,
-                                                            "tools":  15.5
+                                                            "hardwood":  15.6,
+                                                            "steel":  33.3,
+                                                            "tools":  15.6
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1972,7 +1972,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/breech_loading_artillery_production.dds",
-                                             "target_be":  93,
+                                             "target_be":  92,
                                              "natural_year":  1900,
                                              "building_cost":  565,
                                              "era":  3,
@@ -1988,9 +1988,9 @@ window.PMDATA = {
                                              "tech":  "automatic_machine_guns",
                                              "output_qty":  93,
                                              "inputs":  {
-                                                            "oil":  33,
-                                                            "steel":  33,
-                                                            "tools":  33
+                                                            "oil":  31.1,
+                                                            "steel":  31.1,
+                                                            "tools":  31.1
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2000,7 +2000,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/recoil_mechanism_artillery_production.dds",
-                                             "target_be":  88,
+                                             "target_be":  83,
                                              "natural_year":  1925,
                                              "building_cost":  850,
                                              "era":  4,
@@ -2016,9 +2016,9 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  144,
                                              "inputs":  {
-                                                            "oil":  53.7,
-                                                            "steel":  53.7,
-                                                            "tools":  53.7
+                                                            "oil":  50.1,
+                                                            "steel":  50.1,
+                                                            "tools":  50.1
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2028,7 +2028,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/recoil_mechanism_artillery_production.dds",
-                                             "target_be":  92,
+                                             "target_be":  86,
                                              "natural_year":  1940,
                                              "building_cost":  null
                                          }
@@ -2065,8 +2065,8 @@ window.PMDATA = {
                                              "tech":  "percussion_cap",
                                              "output_qty":  50,
                                              "inputs":  {
-                                                            "explosives":  19.8,
-                                                            "lead":  19.8
+                                                            "explosives":  21.9,
+                                                            "lead":  21.9
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2076,7 +2076,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/percussion_caps.dds",
-                                             "target_be":  95,
+                                             "target_be":  105,
                                              "natural_year":  1850,
                                              "building_cost":  360,
                                              "era":  2,
@@ -2092,8 +2092,8 @@ window.PMDATA = {
                                              "tech":  "dynamite",
                                              "output_qty":  78,
                                              "inputs":  {
-                                                            "explosives":  33.5,
-                                                            "lead":  33.5
+                                                            "explosives":  37.4,
+                                                            "lead":  37.4
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2103,7 +2103,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  15,
                                              "texture":  "gfx/interface/icons/production_method_icons/explosive_shells.dds",
-                                             "target_be":  103,
+                                             "target_be":  115,
                                              "natural_year":  1900,
                                              "building_cost":  540,
                                              "era":  3,
@@ -2119,8 +2119,8 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  120,
                                              "inputs":  {
-                                                            "explosives":  45.3,
-                                                            "lead":  45.3
+                                                            "explosives":  49.3,
+                                                            "lead":  49.3
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2130,7 +2130,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  15,
                                              "texture":  "gfx/interface/icons/production_method_icons/explosive_shells.dds",
-                                             "target_be":  91,
+                                             "target_be":  99,
                                              "natural_year":  1925,
                                              "building_cost":  null
                                          },
@@ -2144,8 +2144,8 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  186,
                                              "inputs":  {
-                                                            "explosives":  55.8,
-                                                            "lead":  55.8
+                                                            "explosives":  64.3,
+                                                            "lead":  64.3
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2155,7 +2155,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  15,
                                              "texture":  "gfx/interface/icons/production_method_icons/explosive_shells.dds",
-                                             "target_be":  72,
+                                             "target_be":  83,
                                              "natural_year":  1940,
                                              "building_cost":  null
                                          }
@@ -2191,8 +2191,8 @@ window.PMDATA = {
                                              "tech":  "aniline",
                                              "output_qty":  80,
                                              "inputs":  {
-                                                            "fertilizer":  78.6,
-                                                            "sulfur":  78.6
+                                                            "fertilizer":  21,
+                                                            "sulfur":  21
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2202,7 +2202,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/synthetic_dyes.dds",
-                                             "target_be":  262,
+                                             "target_be":  70,
                                              "natural_year":  1850,
                                              "building_cost":  460,
                                              "era":  2,
@@ -2218,8 +2218,8 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  124,
                                              "inputs":  {
-                                                            "fertilizer":  55.1,
-                                                            "sulfur":  55.1
+                                                            "fertilizer":  48,
+                                                            "sulfur":  48
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2229,7 +2229,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/synthetic_dyes.dds",
-                                             "target_be":  118,
+                                             "target_be":  103,
                                              "natural_year":  1900,
                                              "building_cost":  null
                                          },
@@ -2243,8 +2243,8 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  192,
                                              "inputs":  {
-                                                            "fertilizer":  80.7,
-                                                            "sulfur":  80.7
+                                                            "fertilizer":  88.9,
+                                                            "sulfur":  88.9
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2253,7 +2253,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/synthetic_dyes.dds",
-                                             "target_be":  112,
+                                             "target_be":  123,
                                              "natural_year":  1925,
                                              "building_cost":  null
                                          },
@@ -2267,8 +2267,8 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  298,
                                              "inputs":  {
-                                                            "fertilizer":  123.2,
-                                                            "sulfur":  123.2
+                                                            "fertilizer":  106.4,
+                                                            "sulfur":  106.4
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2277,7 +2277,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/synthetic_dyes.dds",
-                                             "target_be":  110,
+                                             "target_be":  95,
                                              "natural_year":  1940,
                                              "building_cost":  null
                                          }
@@ -2339,10 +2339,10 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  93,
                                              "inputs":  {
-                                                            "iron":  39.6,
-                                                            "lead":  39.6,
-                                                            "rubber":  39.6,
-                                                            "tools":  22.9
+                                                            "iron":  37.8,
+                                                            "lead":  37.8,
+                                                            "rubber":  37.8,
+                                                            "tools":  21.7
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2352,7 +2352,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/telephones.dds",
-                                             "target_be":  116,
+                                             "target_be":  111,
                                              "natural_year":  1925,
                                              "building_cost":  null
                                          },
@@ -2366,10 +2366,10 @@ window.PMDATA = {
                                              "model_only":  true,
                                              "output_qty":  144,
                                              "inputs":  {
-                                                            "iron":  55.4,
-                                                            "lead":  55.4,
-                                                            "rubber":  55.4,
-                                                            "tools":  25.4
+                                                            "iron":  54.4,
+                                                            "lead":  54.4,
+                                                            "rubber":  54.4,
+                                                            "tools":  24.1
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2379,7 +2379,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/telephones.dds",
-                                             "target_be":  101,
+                                             "target_be":  99,
                                              "natural_year":  1940,
                                              "building_cost":  null
                                          }
@@ -2411,9 +2411,9 @@ window.PMDATA = {
                                              "output_override":  25,
                                              "output_qty":  25,
                                              "inputs":  {
-                                                            "coal":  6.3,
-                                                            "engines":  6.3,
-                                                            "wood":  6.3
+                                                            "coal":  6.1,
+                                                            "engines":  6.1,
+                                                            "wood":  6.1
                                                         },
                                              "employment":  {
                                                                 "laborers":  500,
@@ -2422,7 +2422,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  25,
                                              "texture":  "gfx/interface/icons/production_method_icons/power_plant.dds",
-                                             "target_be":  123,
+                                             "target_be":  119,
                                              "natural_year":  1900,
                                              "building_cost":  110,
                                              "era":  3,
@@ -2439,8 +2439,8 @@ window.PMDATA = {
                                              "output_override":  50,
                                              "output_qty":  50,
                                              "inputs":  {
-                                                            "coal":  31.9,
-                                                            "engines":  7.9
+                                                            "coal":  32.1,
+                                                            "engines":  8.6
                                                         },
                                              "employment":  {
                                                                 "laborers":  350,
@@ -2449,7 +2449,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  50,
                                              "texture":  "gfx/interface/icons/production_method_icons/coal_fired_plant.dds",
-                                             "target_be":  127,
+                                             "target_be":  131,
                                              "natural_year":  1925,
                                              "building_cost":  215,
                                              "era":  4,
@@ -2466,8 +2466,8 @@ window.PMDATA = {
                                              "output_override":  80,
                                              "output_qty":  80,
                                              "inputs":  {
-                                                            "engines":  9.4,
-                                                            "oil":  38.3
+                                                            "engines":  10.3,
+                                                            "oil":  38.2
                                                         },
                                              "employment":  {
                                                                 "laborers":  200,
@@ -2476,7 +2476,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  40,
                                              "texture":  "gfx/interface/icons/production_method_icons/oil_fired_plant.dds",
-                                             "target_be":  116,
+                                             "target_be":  119,
                                              "natural_year":  1940,
                                              "building_cost":  345,
                                              "era":  5,
