@@ -41,7 +41,10 @@ and opens the editor in your browser. You can:
 - watch **break-even** and **profitability** update live, and flip the **ladder chart** between the two
   with a radio: *break-even* (what a recipe needs, independent of any scenario) or *profit* (what each tier
   actually earns at the current prices and wages — a line sloping down to the right means newer factories
-  are earning less than older ones, which is the thing this mod exists to prevent),
+  are earning less than older ones, which is the thing this mod exists to prevent); a second radio switches
+  between *raw* (one line per industry) and *aggregated* (the four sectors — extraction, agriculture,
+  manufacturing from raw inputs, manufacturing from manufactured inputs — as box plots with an
+  output-weighted centre),
 - read the **Ladder check** panel, which counts the three ways a tech ladder can be incoherent and updates
   as you tinker — it only ever counts buildings your scenario actually contains,
 - switch **secondary production methods** (automation, luxury, …) and see the effect on break-even,

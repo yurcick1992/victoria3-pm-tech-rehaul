@@ -868,7 +868,24 @@ the game.
   to the right in profit view IS an inverted ladder. ⚠ The two views disagree by design — a tier can sit
   exactly on its BE target and still lose money once its output price falls; reading either alone as "the
   ladder" is the mistake. A **hollow dot** in either view means the scenario contains none of that building
-  (same presence rule as the Ladder check). Plus config-part save/load (version-tolerant), and snapshot history. **Payback
+  (same presence rule as the Ladder check).
+  **A SECOND, independent dimension: raw ⇄ aggregated.** *Raw* is one line per industry (as above).
+  *Aggregated* collapses everything into the mod's **four standard sectors** — the same split
+  `era_scenarios.mjs` reports its composition in, so chart and report can be read against each other:
+  **extraction & logging** (mining/gold/logging/oil/rubber), **agriculture, fishing & whaling**
+  (farms/plantations/ranching/fishing), **manufacturing from raw inputs** and **manufacturing from
+  manufactured inputs** — the last two split **per TIER** by whether that tier's recipe consumes a good our
+  own ladder makes (identical test to the solver's `mfg_high`/`mfg_low`). Drawn as **box plots** (whiskers
+  min–max, box IQR, thin line median) with a **◆ output-weighted centre**: each member weighted by what it
+  contributes to the scenario's output value, so the big producers set the position and an unbuilt building
+  weighs nothing. ⚠ The centre falls back to a plain median when *nothing in that box is built* (a later
+  era's tier, say) and is then drawn **hollow ◇** — a filled marker there would claim a weighting the
+  scenario never supplied. ⚠ **Extraction and agriculture are UNTIERED** (vanilla buildings, outside the
+  tiering scope): they repeat unchanged in every tier column as a flat baseline to read each manufacturing
+  tier against, and that flatness is the honest statement that they have no ladder.
+  The aggregation shape is **explicitly provisional** — box-plots-plus-weighted-centre is a starting point,
+  not a settled choice.
+  Plus config-part save/load (version-tolerant), and snapshot history. **Payback
   tools** (selectable X years) come in two actions at three levels: **$ = set build cost** (fix prices,
   set build cost so payback = X) and **% = set prices** (fix build cost, scale that industry's output +
   input prices by one factor — keeping the IO ratio + input mix — so an anchor tier's payback = X; flags

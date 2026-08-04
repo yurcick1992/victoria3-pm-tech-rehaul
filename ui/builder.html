@@ -334,6 +334,7 @@
   <div class="card">
     <div class="hd" data-toggle="viz">Ladder
       <span class="vizmode" id="vizMode"><label><input type="radio" name="vizmode" value="be" checked> break-even</label><label><input type="radio" name="vizmode" value="profit"> profit</label></span>
+      <span class="vizmode" id="vizShape"><label><input type="radio" name="vizshape" value="raw" checked> raw</label><label><input type="radio" name="vizshape" value="agg"> aggregated</label></span>
       <span class="tag" id="vizTag"></span></div>
     <div class="bd" id="vizBody"><div id="viz"></div>
       <div class="legend" id="vizLegend"></div>
@@ -1672,7 +1673,39 @@ function renderLadderCheck(){
 // ⚠ They will disagree, and that is the point: a tier can sit exactly on its break-even target and still
 // lose money once its output good's price falls. Reading either as "the ladder" alone is the mistake.
 let VIZMODE = 'be';
+// ---------- second dimension: RAW (one line per industry) or AGGREGATED (four sector boxplots) --------
+// The four groups are the mod's standard sector split, the same one tools/era_scenarios.mjs reports its
+// composition in, so the chart and that report can be read against each other.
+//
+// ⚠ TWO OF THE FOUR GROUPS HAVE NO TIERS. Extraction and agriculture are vanilla reference buildings,
+// untiered by design and outside the tiering scope. They are drawn AT EVERY TIER — the same members, the
+// same values, repeated across the axis — so each of them reads as a flat baseline band that the
+// manufacturing boxes beside it can be compared against tier by tier. They are deliberately NOT collapsed
+// into one slot of their own: the question this chart answers is "how does tier N of manufacturing stand
+// against the raw sectors", and that is easiest to see when the comparison is repeated in every column.
+// Their flatness is honest — it says these sectors have no tier progression.
+let VIZSHAPE = 'raw';
 const VIZ_COLORS = ["#5aa9ff","#4ec98f","#e6b455","#e8735a","#b98cff","#57c7d4"];
+// The four sectors, in the order they are drawn. `tiered` decides which axis slot they occupy.
+const VIZ_GROUPS = [
+  { key:'extraction', label:'Extraction & logging',            color:'#b98cff', tiered:false,
+    cats:['mining','gold_fields','logging','oil','rubber'] },
+  { key:'agri',       label:'Agriculture, fishing & whaling',  color:'#4ec98f', tiered:false,
+    cats:['farms','plantations','ranching','fishing_whaling'] },
+  { key:'mfg_raw',    label:'Manufacturing — raw inputs',      color:'#e6b455', tiered:true },
+  { key:'mfg_mfg',    label:'Manufacturing — manufactured inputs', color:'#5aa9ff', tiered:true },
+];
+// A tier belongs to "manufactured inputs" if ANY good it consumes is one OUR ladder produces — the same
+// test tools/era_scenarios.mjs uses for its mfg_high / mfg_low split. Classified per TIER, not per
+// industry, because a ladder can cross the line as it modernises.
+function manufacturedGoods(){ const s=new Set(); IND.forEach(i=>i.tiers.forEach(t=>s.add(tierOut(i,t)))); return s; }
+function tierSector(t, manu){ return Object.keys(t.inputs||{}).some(g=>manu.has(g)) ? 'mfg_mfg' : 'mfg_raw'; }
+// Five-number summary with linear-interpolation quantiles.
+function boxStats(vals){
+  const v=[...vals].sort((a,b)=>a-b), n=v.length; if(!n) return null;
+  const q=p=>{ const h=(n-1)*p, lo=Math.floor(h), hi=Math.ceil(h); return v[lo]+(v[hi]-v[lo])*(h-lo); };
+  return { n, min:v[0], q1:q(0.25), med:q(0.5), q3:q(0.75), max:v[n-1] };
+}
 const VIZ_TAG = {
   be: '— FULL break-even at BASE input prices: the output price (% of base) at which revenue = input goods'
     + ' + wages. A property of the recipe, not of the scenario. Lower = survives cheaper markets.'
@@ -1682,8 +1715,43 @@ const VIZ_TAG = {
     + ' an era-appropriate tier; below the solid <b>0%</b> line the tier is losing money. A line sloping'
     + ' DOWN to the right is an inverted ladder.',
 };
+const VIZ_TAG_AGG = ' <b>Aggregated</b>: the mod\'s four standard sectors as box plots (whiskers min–max,'
+  + ' box the interquartile range, thin line the median), with the ◆ marking each box\'s'
+  + ' <b>output-weighted centre</b> — every member weighted by what it actually contributes to the'
+  + ' scenario\'s output value, so the big producers set the position and a building nobody has built does'
+  + ' not. The line joins those centres across tiers. <b>Extraction and agriculture are UNTIERED</b>'
+  + ' (vanilla buildings, outside the tiering scope), so they repeat unchanged in every column — a flat'
+  + ' baseline to read each manufacturing tier against, and their flatness says they have no ladder.';
+// Gather every member of every sector, with its value and its OUTPUT WEIGHT (what it contributes to the
+// scenario's output value at current prices). The weight is what makes the aggregate honest: a sector's
+// centre is set by the buildings that actually exist, and a building nobody has built weighs nothing.
+function vizSectorData(valOf){
+  const manu=manufacturedGoods();
+  const g={}; VIZ_GROUPS.forEach(gr=>g[gr.key]={ tiered:{}, flat:[] });
+  IND.forEach(i=>i.tiers.forEach(t=>{
+    const v=valOf.tier(i,t); if(!isFinite(v)) return;
+    const key=tierSector(t,manu), w=(BLDNUM[t.key]||0)*thruMult(t.key)*outputValue(i,t,true);
+    (g[key].tiered[t.tier]=g[key].tiered[t.tier]||[]).push({ v, w:Math.max(0,w||0), name:`${i.id} T${t.tier}` });
+  }));
+  const catToGroup={}; VIZ_GROUPS.forEach(gr=>(gr.cats||[]).forEach(c=>catToGroup[c]=gr.key));
+  refBuildings().forEach(b=>{
+    const key=catToGroup[catOf(b)]; if(!key) return;
+    const ec=refEcon(b); const v=valOf.ref(ec); if(v==null||!isFinite(v)) return;
+    g[key].flat.push({ v, w:Math.max(0,(BLDNUM[b]||0)*(ec.Oth||0)), name:b.replace(/^building_/,'') });
+  });
+  return g;
+}
+// Output-weighted centre; falls back to the plain median when nothing in the set is built, so an empty
+// or partial scenario still shows a sensible marker instead of nothing.
+function weightedCentre(rows){
+  const W=rows.reduce((a,r)=>a+r.w,0);
+  if(W>0) return { v:rows.reduce((a,r)=>a+r.v*r.w,0)/W, weighted:true };
+  const s=boxStats(rows.map(r=>r.v)); return s?{ v:s.med, weighted:false }:null;
+}
 function renderViz(){
-  const tagEl=document.getElementById('vizTag'); if(tagEl) tagEl.innerHTML=VIZ_TAG[VIZMODE];
+  const tagEl=document.getElementById('vizTag');
+  if(tagEl) tagEl.innerHTML = VIZ_TAG[VIZMODE] + (VIZSHAPE==='agg' ? VIZ_TAG_AGG : '');
+  if(VIZSHAPE==='agg') return renderVizAggregated();
   const W=Math.min(1360, (document.getElementById('viz').clientWidth||900)), H=300, padL=44, padB=26, padT=12, padR=12;
   const maxTier=Math.max(...IND.map(i=>i.tiers.length));
   const profit = VIZMODE==='profit';
@@ -1748,6 +1816,80 @@ function renderViz(){
   document.getElementById('vizLegend').innerHTML =
     IND.map((i,ix)=>`<span><span class="swatch" style="background:${VIZ_COLORS[ix%VIZ_COLORS.length]}"></span>${esc(i.id)}</span>`).join('')
     + `<span style="margin-left:6px">○ = not in the current scenario</span>`;
+}
+
+// ---------- AGGREGATED: the four standard sectors as box plots, per tier ------------------------------
+function renderVizAggregated(){
+  const W=Math.min(1360,(document.getElementById('viz').clientWidth||900)), H=300, padL=44, padB=26, padT=12, padR=12;
+  const maxTier=Math.max(...IND.map(i=>i.tiers.length));
+  const profit=VIZMODE==='profit';
+  const data=vizSectorData({ tier:(i,t)=>profit?TPthr(i,t):BE(i,t), ref:ec=>profit?ec.tp:ec.BE });
+
+  // every value that will be drawn, for the axis
+  const all=[];
+  VIZ_GROUPS.forEach(gr=>{ const d=data[gr.key];
+    d.flat.forEach(r=>all.push(r.v));
+    Object.values(d.tiered).forEach(rows=>rows.forEach(r=>all.push(r.v))); });
+  let yMin=25,yMax=175,ticks=[25,50,75,100,125,150,175];
+  if(profit){
+    let lo=Math.min(0,...all), hi=Math.max(20,...all);
+    const step=(hi-lo)>400?100:(hi-lo)>200?50:25;
+    yMin=Math.floor(lo/step)*step; yMax=Math.ceil(hi/step)*step;
+    if(yMax-yMin<step*2) yMax=yMin+step*2;
+    ticks=[]; for(let v=yMin;v<=yMax+1e-9;v+=step) ticks.push(Math.round(v));
+  }
+  const y=v=>padT+(1-(v-yMin)/(yMax-yMin))*(H-padT-padB);
+  const cy=v=>y(Math.max(yMin,Math.min(yMax,v)));
+  const slotW=(W-padL-padR)/maxTier, xSlot=t=>padL+(t-0.5)*slotW;
+  const n=VIZ_GROUPS.length, bw=Math.min(26,slotW*0.17);
+  const bx=(t,j)=>xSlot(t)+(j-(n-1)/2)*(slotW*0.21);
+
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" font-family="system-ui" font-size="11">`;
+  for(let t=1;t<=maxTier;t++) s+=`<text x="${xSlot(t)}" y="${H-8}" text-anchor="middle" fill="#93a1b3">T${t}</text>`;
+  ticks.forEach(v=>{ s+=`<line x1="${padL}" y1="${y(v)}" x2="${W-padR}" y2="${y(v)}" stroke="#2e3947" stroke-width="1"/>
+    <text x="${padL-6}" y="${y(v)+3}" text-anchor="end" fill="#5f6c7d">${v}%</text>`; });
+  if(profit){
+    s+=`<line x1="${padL}" y1="${y(0)}" x2="${W-padR}" y2="${y(0)}" stroke="#7d8899" stroke-width="1.5"/>`;
+    if(20<=yMax&&20>=yMin) s+=`<line x1="${padL}" y1="${y(20)}" x2="${W-padR}" y2="${y(20)}" stroke="#4ec98f" stroke-width="1" stroke-dasharray="5 4" opacity="0.75"/>`;
+  }
+
+  const centres={};
+  VIZ_GROUPS.forEach((gr,j)=>{
+    centres[gr.key]=[];
+    for(let t=1;t<=maxTier;t++){
+      // an untiered sector repeats unchanged in every column (see VIZ_GROUPS)
+      const rows = gr.tiered ? (data[gr.key].tiered[t]||[]) : data[gr.key].flat;
+      const st=boxStats(rows.map(r=>r.v)); if(!st) continue;
+      const c=weightedCentre(rows), x0=bx(t,j);
+      const fmt=v=>v.toFixed(0)+'%';
+      const tip=`${gr.label}${gr.tiered?' — Tier '+t:' — untiered (same in every column)'}`
+        + `|${st.n} building type(s)`
+        + `|median ${fmt(st.med)} · IQR ${fmt(st.q1)}–${fmt(st.q3)} · range ${fmt(st.min)}–${fmt(st.max)}`
+        + (c?`|◆ ${c.weighted?'output-weighted centre':'median (nothing built — no weights)'} ${fmt(c.v)}`:'');
+      s+=`<line x1="${x0}" y1="${cy(st.max)}" x2="${x0}" y2="${cy(st.min)}" stroke="${gr.color}" stroke-width="1" opacity="0.75"/>`;
+      s+=`<line x1="${x0-bw*0.3}" y1="${cy(st.max)}" x2="${x0+bw*0.3}" y2="${cy(st.max)}" stroke="${gr.color}" stroke-width="1" opacity="0.75"/>`;
+      s+=`<line x1="${x0-bw*0.3}" y1="${cy(st.min)}" x2="${x0+bw*0.3}" y2="${cy(st.min)}" stroke="${gr.color}" stroke-width="1" opacity="0.75"/>`;
+      s+=`<rect x="${x0-bw/2}" y="${cy(st.q3)}" width="${bw}" height="${Math.max(1,cy(st.q1)-cy(st.q3))}" fill="${gr.color}" fill-opacity="0.22" stroke="${gr.color}" stroke-width="1"/>`;
+      s+=`<line x1="${x0-bw/2}" y1="${cy(st.med)}" x2="${x0+bw/2}" y2="${cy(st.med)}" stroke="${gr.color}" stroke-width="1.5"/>`;
+      if(c){ centres[gr.key].push({x:x0,y:cy(c.v),weighted:c.weighted});
+        // ◆ the output-weighted centre — the one mark that says where the sector actually SITS, as opposed
+        // to where its unweighted spread happens to be. Stroked so it stays legible on top of its own box.
+        // ⚠ HOLLOW when nothing in that box is built: the weights are all zero, so it is a plain median
+        // standing in. That happens constantly — a tier of a later era, or a sector the scenario skips —
+        // and a filled marker there would claim a weighting the scenario never supplied.
+        s+=`<path d="M ${x0} ${cy(c.v)-5} L ${x0+5} ${cy(c.v)} L ${x0} ${cy(c.v)+5} L ${x0-5} ${cy(c.v)} Z"`
+          + ` fill="${c.weighted?gr.color:'var(--panel)'}" stroke="${c.weighted?'#0e131b':gr.color}" stroke-width="${c.weighted?1:1.5}"/>`; }
+      s+=`<rect x="${x0-bw/2-3}" y="${cy(st.max)-3}" width="${bw+6}" height="${Math.max(8,cy(st.min)-cy(st.max)+6)}" fill="transparent" data-tip="${esc(tip)}" style="cursor:help"/>`;
+    }
+  });
+  // join the centres so the aggregate ladder reads as a shape, like the raw view's per-industry lines
+  VIZ_GROUPS.forEach(gr=>{ const p=centres[gr.key];
+    if(p.length>1) s+=`<polyline fill="none" stroke="${gr.color}" stroke-width="1.5" stroke-dasharray="${gr.tiered?'':'4 3'}" opacity="0.85" points="${p.map(q=>q.x+','+q.y).join(' ')}"/>`; });
+  s+=`</svg>`;
+  document.getElementById('viz').innerHTML=s;
+  document.getElementById('vizLegend').innerHTML =
+    VIZ_GROUPS.map(gr=>`<span><span class="swatch" style="background:${gr.color}"></span>${esc(gr.label)}${gr.tiered?'':' <span style="opacity:.7">(untiered)</span>'}</span>`).join('')
+    + `<span style="margin-left:6px">◆ = output-weighted centre · ◇ = median (nothing built there) · box = IQR · whiskers = min–max</span>`;
 }
 // ---------- viz hover tooltips (dots + target-band rects; appear 2s after hover starts) ----------
 // Event-delegated on #viz so it survives every renderViz re-render. Content is stored raw in each
@@ -2372,6 +2514,11 @@ document.querySelectorAll('.hd[data-toggle]').forEach(h=>h.onclick=()=>{ const b
   if(box){
     box.addEventListener('click', e=>e.stopPropagation());
     box.addEventListener('change', e=>{ if(e.target.name==='vizmode'){ VIZMODE=e.target.value; renderViz(); } });
+  }
+  const shp=document.getElementById('vizShape');
+  if(shp){
+    shp.addEventListener('click', e=>e.stopPropagation());
+    shp.addEventListener('change', e=>{ if(e.target.name==='vizshape'){ VIZSHAPE=e.target.value; renderViz(); } });
   }
 }
 
