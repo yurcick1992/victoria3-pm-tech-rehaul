@@ -1199,6 +1199,20 @@ the game.
   game version they ran on. Keep it honest about limits: a stated confound (F2's time-of-day
   ordering) or an unmeasured question (F1's per-good dispersion) belongs in the doc, not dropped
   because it complicates the headline.
+- **Published UI snapshot — REGENERATE AND REPUBLISH IT WHENEVER THE SHEET CHANGES.** Once a snapshot has
+  been published in a session (`tools/bundle_ui.mjs` → Artifact), it stops being a one-off and becomes a
+  live deliverable: the user is reading it while you work, and it is the *only* view they have when away
+  from this machine. So after **any** change that alters what it shows — a solver `--write`, a `build.ps1`
+  run, or an edit to `ui/builder.html` / `ui/econ.js` — regenerate it and **republish to the SAME artifact
+  URL** (pass the same file path; do not mint a new one). Do it unprompted, in the same pass as the change,
+  exactly like the status board.
+  ⚠ **Regenerate from the repo copy, not the scratchpad one.** `bundle_ui.mjs` writes
+  `balance_ui_snapshot.html` at the repo root; copy that over the published file path before republishing.
+  Republishing the scratchpad copy without refreshing it ships the previous build — which has happened, and
+  is invisible from the outside because the page still looks current.
+  ⚠ **A stale snapshot is worse than none.** It carries its own timestamp and reads as authoritative, so a
+  reader has no way to tell it is describing an economy that no longer exists. If you cannot regenerate it
+  (build broken, mid-refactor), say so rather than leaving the old one standing.
 - **Status board — REBUILD it UNPROMPTED, never maintain it.** Publish a status board as an
   Artifact, and **republish it to the same URL the moment the picture moves — during the session,
   not at the end, and without being asked.** Closing an item, hitting a blocker or handing a

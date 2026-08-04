@@ -12,6 +12,10 @@
 // page says so in a banner with its own timestamp — because the failure mode of a detached copy is
 // someone reading last week's numbers and believing them. Regenerate rather than trusting an old one.
 //
+// ⚠ ONCE PUBLISHED IN A SESSION, REGENERATE AND REPUBLISH AFTER EVERY CHANGE THAT ALTERS WHAT IT SHOWS —
+// a solver `--write`, a build, or an edit to ui/builder.html or ui/econ.js. See CLAUDE.md → "Published UI
+// snapshot". A stale snapshot reads as authoritative and gives its reader no way to tell.
+//
 // ⚠ ui/icons.js IS DELIBERATELY EXCLUDED, and this is not a size decision. It is Paradox art converted
 // from the game's .dds files, gitignored precisely because the repo is public (see .gitignore), and a
 // snapshot is something you hand to someone else — so shipping it here would leak exactly what that
