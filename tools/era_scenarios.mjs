@@ -390,10 +390,13 @@ function catOf(b) {
   if (info.unique && !PMECON.GRPCAT[info.group]) return 'unique';
   return PMECON.GRPCAT[info.group] || ('grp_' + (info.group || 'other'));
 }
-function refTargetFor(b) {
-  const c = catOf(b);
-  return EXTRACTION_CATS.has(c) ? TG.extraction : AGRICULTURE_CATS.has(c) ? TG.agriculture : TG.current;
-}
+// ⚠ `refTargetFor()` USED TO LIVE HERE and is deliberately gone. It returned TG.extraction (+20%) or
+// TG.agriculture (+10%) for a raw producer, and §10.22 replaced those targets with a band — after which
+// nothing called it. `TG.extraction`, `TG.agriculture`, `TG.minus1`, `TG.minus2` and `TG.plateau` remain in
+// config/era_prices.json but are READ BY NOTHING in this solver: the obsolescence targets they encoded are
+// now expressed as the sign tests in the illogicality criterion (§10.11), and the raw ones as a band.
+// They are left in the file because era_solver.mjs (the balance-only reference view) still fits against
+// them; they are not inputs here.
 // which BAND a reference producer must stay inside (null = not a raw producer)
 function rawBandOf(b) {
   const c = catOf(b);
