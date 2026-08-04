@@ -72,9 +72,18 @@ const SUPPORT_SHARE = { ownership: 0.32, government: 0.06, trade: 0.035 };
 // MEASURED AGAINST VANILLA, under this same accounting (construction goods bill ÷ gross output value, at
 // base prices, on the vanilla 1836 markets): Qing 0.66%, Russia 1.19%, Japan 1.61%, Britain 2.28%,
 // France 3.76%, Austria 4.13%, USA 4.63%, Belgium 6.30% — median ~3.0%, industrialised markets 2.3–6.3%.
-// We take 5%: inside the observed range and at its industrial end, because raising the capital cost of
-// modernising is the point of the mod. It is a design choice, and it is stated as one.
-const CONSTRUCTION_GDP_SHARE = +(process.env.ERA_CONSTRUCTION_SHARE || 0.05);
+// We take 10% — ABOVE the vanilla range, deliberately and with eyes open.
+//
+// ⚠ BE HONEST ABOUT WHAT THIS KNOB IS. Neither investment nor government spending is simulated here, so the
+// construction sector is the one thing in the scenario that is pure DEMAND with no supply: it buys goods
+// and sells nothing. That makes it a demand injection, and it means almost any average profitability could
+// be manufactured just by pumping it. So this number must be a stated premise, never a lever to tune the
+// margins with — if a target is ever "achieved" by raising it, nothing has been achieved.
+//
+// 10% is roughly double vanilla's industrial end, which is the intended direction (modernising has to be
+// BUILT, and raising the demand for capital is the mod's whole point), and it is written down here rather
+// than discovered in the numbers.
+const CONSTRUCTION_GDP_SHARE = +(process.env.ERA_CONSTRUCTION_SHARE || 0.10);
 // THE METHOD IS HARDCODED PER ERA. It cannot be chosen by profit (no priced output) and it should not be
 // left to drift; a construction sector's frame material is a fact about the era, not a market outcome.
 // ⚠ ERA 4 IS STEEL FRAME, NOT ARC WELDED. Vanilla gates `pm_arc_welded_buildings` on the `arc_welding`
@@ -616,6 +625,22 @@ function buildScenario(eIx) {
   // Construction levels follow the TARGET SHARE OF GROSS OUTPUT, not a share of building levels.
   // No circularity: the construction sector produces no priced good, so it contributes nothing to the
   // gross output it is sized against.
+  //
+  // ⚠ IT IS RE-SIZED ON EVERY SETTLE, and that is the point. It is not part of the price/count feedback —
+  // it is never steered toward a margin and never enters `scaleOf` — but it must not be computed ONCE
+  // either. The economy grows by large factors during a solve, and a count fixed from an early, small GDP
+  // would leave the shipped scenario nowhere near its stated share. Recomputing costs nothing and makes
+  // staleness impossible by construction. The ACHIEVED share is reported per era so this is checkable
+  // rather than assumed.
+  function constructionShare() {
+    const n = S.BLDNUM[CONSTRUCTION_BLD] || 0; if (!n) return 0;
+    const cost = n * E.thruMult(CONSTRUCTION_BLD) * E.goodsVal(E.selGoods(E.refSel(CONSTRUCTION_BLD)).in, true);
+    let gross = 0;
+    for (const i of S.IND) for (const t of i.tiers) { const c = S.BLDNUM[t.key] || 0; if (c) gross += c * E.thruMult(t.key) * E.outputValue(i, t, true); }
+    for (const b of E.refBuildings()) { const c = S.BLDNUM[b] || 0; if (!c || b === CONSTRUCTION_BLD) continue;
+      gross += c * E.thruMult(b) * E.goodsVal(E.selGoods(E.refSel(b)).out, true); }
+    return gross > 0 ? cost / gross : 0;
+  }
   function sizeConstruction() {
     if (!S.VAN.buildings[CONSTRUCTION_BLD]) return;
     let gross = 0;
@@ -1021,6 +1046,7 @@ function buildScenario(eIx) {
 
   return { eIx, era, jobs, gdp, peasants, popNonPeasant, scaleOf, pmResult, share, gross, popBoost,
            jointDrift, jointDriftGood, jointDriftN, pmSettled,
+           constrShare: constructionShare(), constrLevels: S.BLDNUM[CONSTRUCTION_BLD] || 0,
            dropped: new Set(dropped), protectedRaw: new Set(protectedRaw),
            rawLoss: refProducers.filter(b => S.BLDNUM[b] > 0 && isRawProducer(b))
              .filter(b => { const ec = E.refEcon(b); return ec && ec.tp != null && ec.tp < 0; })
@@ -1181,6 +1207,11 @@ for (let e = 0; e < FIT.eras.length; e++) {
     b.src = src;
   }
   meta.breach = breach;
+  // The ACHIEVED share, not the target — this is the check that the count tracked a growing GDP instead of
+  // being fixed from an early, small one.
+  console.log(`    CONSTRUCTION: ${meta.constrLevels} levels = ${(100 * meta.constrShare).toFixed(1)}% of gross output`
+    + ` (target ${(100 * CONSTRUCTION_GDP_SHARE).toFixed(0)}%, ${CONSTRUCTION_PM[meta.era]})`
+    + (Math.abs(meta.constrShare - CONSTRUCTION_GDP_SHARE) > 0.02 ? '   ⚠ OFF TARGET' : ''));
   console.log(`    RAW PRODUCERS: ${meta.rawLoss.length ? '⚠ ' + meta.rawLoss.length + ' LOSS-MAKING while present: '
       + meta.rawLoss.map(r => `${r.b} ${r.tp.toFixed(0)}%`).join(', ')
     : 'clear — every extraction/agriculture building present is profitable'}`

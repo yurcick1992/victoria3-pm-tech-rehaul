@@ -1236,15 +1236,28 @@ primitive entry — never moves. The same hole applies to government administrat
 
 **Its LEVEL COUNT is not solved either — it is a share of GDP.** A construction sector sells nothing, so no
 margin steers it, and a share of *building levels* was the wrong unit anyway: what a country spends on
-building things is a share of what it produces. `CONSTRUCTION_GDP_SHARE` = **5%** of gross output, and the
+building things is a share of what it produces. `CONSTRUCTION_GDP_SHARE` = **10%** of gross output, and the
 count follows from that and its goods bill. No circularity — it produces no priced good, so it contributes
 nothing to the gross output it is measured against.
 
-**Calibrated against vanilla**, under this same accounting (construction goods bill ÷ gross output value, on
-the vanilla 1836 markets): Qing 0.66%, Russia 1.19%, Japan 1.61%, Britain 2.28%, France 3.76%, Austria
-4.13%, USA 4.63%, Belgium 6.30% — median ~3.0%, industrialised markets 2.3–6.3%. **5% sits inside the
-observed range at its industrial end**, because raising the capital cost of modernising is the point of the
-mod. A design choice, stated as one.
+⚠⚠ **BE HONEST ABOUT WHAT THIS KNOB IS.** Neither investment nor government spending is simulated here, so
+the construction sector is the one thing in a scenario that is **pure demand with no supply**. That makes it
+a demand injection, and it means **almost any average profitability could be manufactured just by pumping
+it**. It must therefore be a *stated premise*, never a lever to tune margins with: if a profit target is
+ever "achieved" by raising this number, nothing has been achieved. It is written down here rather than
+discovered in the numbers.
+
+**Vanilla, under this same accounting** (construction goods bill ÷ gross output value, on the vanilla 1836
+markets): Qing 0.66%, Russia 1.19%, Japan 1.61%, Britain 2.28%, France 3.76%, Austria 4.13%, USA 4.63%,
+Belgium 6.30% — median ~3.0%, industrialised markets 2.3–6.3%. **10% is roughly double vanilla's industrial
+end, deliberately**: modernising has to be *built*, and raising the demand for capital is the mod's point.
+
+⚠ **It is re-sized on EVERY settle, and the achieved share is reported per era.** It takes no part in the
+price/count feedback — it is never steered toward a margin and never enters `scaleOf` — but it must not be
+computed once either: the economy grows by large factors during a solve, and a count fixed from an early,
+small GDP would leave the shipped scenario nowhere near its stated share. Achieved: **9.4% / 9.7% / 10.0% /
+10.0%** in eras 2–5. **Era 1 lands at 6.9% and is flagged `OFF TARGET`** — its construction inputs re-price
+after the last sizing, which is a symptom of era 1 not converging (§10.16), not of a stale count.
 
 ⚠ **Era 4 is steel frame, not arc welded**, which differs from the initial expectation. Vanilla gates
 `pm_arc_welded_buildings` on the `arc_welding` technology, which sits in **vanilla's era 5**, and this
