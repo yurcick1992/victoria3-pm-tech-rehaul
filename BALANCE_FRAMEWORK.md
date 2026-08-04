@@ -1775,3 +1775,99 @@ reported honestly and is the next thing to look at, not a number to explain away
 ⚠ **The response surface is jagged** — flat 8 gives 45, flat 10 gives 50, flat 15 gives 45. That is the
 integer floor again, and it means a tuning result worth 1–3 points is not a result. The five-point rule
 still applies to *design* changes even though the write cycle is now exactly reproducible.
+
+## 10.29 WHY THE LATE-ERA LOSS-MAKERS LOSE — a debut good is trapped at the price floor (2026-08-05)
+
+Every industry the run calls **INSOLVENT** ("even the 4:1 recipe misses target") is also **floored at
+1 level**, and the two are the same fact: the tier is selling more than the market wants at any price, so
+its output good sits at the 25% band edge and no recipe can cover the cost. Measured directly off the
+shipped order book:
+
+| era | good | buy | sell | price |
+|---|---|---|---|---|
+| 1836 | steel | **0** | 78 | 25 |
+| 1900 | telephones | 18 | 72 | 25 |
+| 1900 | automobiles | 20 | 36 | 41 |
+| 1900 | fine_art | 8 | 54 | 25 |
+| 1920 | fine_art | 15 | 84 | 25 |
+| 1935 | fine_art | 40 | 130 | 25 |
+
+**Era-1 steel has literally no buyer.** The earliest tier that eats steel is `motor_industry` in era 2, and
+so are `arms_industry_rifles` and `shipyard_metal`; the construction sector only moves to
+`pm_steel_frame_buildings` in era 3. So an 1836 market contains a steel mill and nothing that buys from
+it — which is faithful to vanilla (1836 tooling runs on iron) but is scored as "the era-appropriate tier
+loses money".
+
+### 10.29.1 Two plausible remedies, both measured, both wrong
+
+**Scaling the market does not help — it is scale-invariant.** §10.12's remedy for the integer floor is a
+bigger market, so the floor was made a knob (`ERA_MIN_LEVELS_MULT`) and swept. At ×4 the era-3 market goes
+from 89.7 M people to 308 M and 10 k building levels to 33 k, and **era-3 telephones are still at exactly
+25 and automobiles at exactly 41**, with electrics still floored and still insolvent (best −27% against
+−29%). Supply and demand grow together, so a tier that wants 0.3 levels at one scale wants 0.3 at four
+times the scale. §10.12's own first sentence says this; the floor only bites when the wanted fraction
+crosses 1, and for these industries it never does.
+
+| min-levels × | illogicality (excl) | per era | price path | targets <8pp |
+|---|---|---|---|---|
+| **1** (shipped) | 44 (27) | 3 / 4 / 9 / 14 / 14 | 67/97 | 73/86 |
+| 2 | 50 (34) | 3 / 4 / 9 / 17 / 17 | 65/97 | 70/84 |
+| 3 | 45 (29) | 2 / 4 / 9 / 13 / 17 | 69/97 | 71/85 |
+| 4 | 42 (27) | 2 / 4 / 8 / 10 / 18 | 72/97 | 81/86 |
+
+**Cutting the debut tier's output does not help either — it makes the industry worse.** Setting electrics
+and automotive tier-1 output to their measured era-3 demand (60 → 20 and 30 → 20) and letting
+`build_era_ladder` rescale the chain scores **40 (25)**, apparently four points better. It is not a fix:
+era-3 telephones are **still at 25**, and electrics goes from −29% to **−62%**. The improvement came from
+era 5 and from reshuffling elsewhere, and era-4 telephones over-corrected to 175. Reverted.
+
+The reason is the demand rule itself. Pop money is allocated **by supply share** (F22, the game's own
+documented rule): a need's budget is split across its goods by `(sell − 0.5 × non-pop buy) / Σ`. So cutting
+a good's supply cuts its share of the budget, which cuts its demand — the oversupply ratio barely moves,
+and the industry is smaller *and* poorer. **A debut good cannot be priced up from either direction.**
+
+### 10.29.2 The actual mechanism, and it is vanilla's
+
+The trap is what a debut good shares its need with:
+
+* `popneed_communication` = **{ transportation, telephones }**
+* `popneed_free_movement` = **{ transportation, automobiles }**
+
+`transportation` is sold in enormous quantity by urban centres, railways and ports — hundreds of levels of
+each — so a new good's share of its own need is a rounding error, and it receives almost none of the
+budget however much or little of it exists.
+
+The institutional demand that would break the tie **exists, and arrives an era late**:
+
+| PM | building | buys | unlocking tech | vanilla era |
+|---|---|---|---|---|
+| `pm_switch_boards` | government administration | 5 telephones / level | `central_planning` | era 4 |
+| `pm_public_motor_carriages` | urban centre | automobiles | `combustion_engine` | era 4 |
+
+Our era-3 scenario holds **196 levels of government administration and 427 urban centres**, all correctly
+running the previous method. That is 980 telephones of demand sitting one era later than the factory that
+makes them — against a total measured era-3 telephone demand of **18**. The gap is vanilla's own tech
+tree, not our era mapping: the electrics industry unlocks one era before the government starts buying
+telephones.
+
+### 10.29.3 What is left, stated as a choice rather than resolved
+
+This accounts for the largest single block of remaining illogicality — electrics, automotive and the art
+academy are three of roughly five loss-makers in each of eras 3–5. Nothing here is a solver defect, so
+none of it was "fixed":
+
+1. **Accept it and say so.** A debut industry is unprofitable until its consumers arrive; that is real
+   economic history and arguably what the mod should model. It costs illogicality points because the
+   criterion cannot tell "the ladder is broken" from "this good has no market yet".
+2. **Give the criterion a notion of a debut tier**, the way §10.17 already exempts a building the scenario
+   does not contain. ⚠ Dangerous: §10.17 exists precisely because zeroing things out lowers the count, and
+   an exemption written to make a number look better is the same move.
+3. **Do not place an industry whose output good has NO buyer at all** — a strictly narrower rule than
+   §10.18's, keyed on zero demand rather than on unprofitability. It would drop only the era-1 steel mill
+   (buy 0) and is economically unarguable: a factory with no customers would not be built. Worth about one
+   point.
+
+⚠ **§10.19's arithmetic and the order book disagree about fine_art** and that should be re-checked before
+anything is built on either. §10.19 argues the binding constraint is that fine_art costs £200, so even 84%
+of the leisure budget buys only 96 units against one academy's 14.4 — i.e. demand *exceeds* supply. The
+shipped order book says the opposite in every era: 8 against 54, 15 against 84, 40 against 130.

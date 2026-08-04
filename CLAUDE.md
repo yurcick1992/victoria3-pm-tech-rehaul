@@ -98,6 +98,13 @@ residual 5/12/4/9/1, profit targets **75 of 86 within 8pp at a mean miss of 5.7p
 result, even though re-running reproduces it exactly.
 ⚠ **PM choice still never settles** — with prices converged, that is now a genuine discrete limit cycle in
 the method choice and is the next thing to look at.
+⚠ **THE LARGEST REMAINING BLOCK IS NOT A BALANCE PROBLEM (§10.29).** Every insolvent industry is *floored
+at 1 level* and pinned at the 25% price band edge: era-1 steel has **zero** buyers (its first consumer is
+an era-2 tier), and era-3 telephones read buy 18 against sell 72 because they share `popneed_communication`
+with `transportation`, which is sold in vast quantity. Two obvious remedies were measured and **both fail**
+— a 4× bigger market leaves the prices *identical* (supply and demand scale together), and cutting the
+debut tier's output makes the industry **worse** (−29% → −62%), because pop money is allocated by supply
+share, so less supply buys less demand. Do not re-try either; §10.29 states the remaining options.
 
 ⚠ **Older illogicality figures in the docs are void, not merely stale** (BALANCE_FRAMEWORK §10.14.1): the
 solver used to re-solve recipes *after* its final price sync, so it reported profits at prices its own
@@ -270,6 +277,8 @@ tools/                  dev tooling — NOT shipped in the mod
                         ERA_RATIO (=frozen restores the losing recipe-mix precedence, §10.25.2),
                         ERA_COUNT_DEADBAND / _OUT (the count controller's hysteresis band, 8→15pp; 0 = off
                         and it limit-cycles forever, §10.28), ERA_SETTLE_TRACE=1 (per-iteration residual),
+                        ERA_MIN_LEVELS_MULT (scales the market-size floor; swept in §10.29 and it does NOT
+                        move the floored industries — the trap is scale-invariant),
                         ERA_CEIL_BOOST, ERA_CEIL_PM, ERA_JOINT, ERA_PROBE (the removed forward probe, kept
                         only so its damage can be re-measured — leave it off)
   econ_host.mjs         loads ui/econ.js + the generated ui/*.js under Node — supplies the state containers the

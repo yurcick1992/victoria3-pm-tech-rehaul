@@ -290,7 +290,14 @@ const GDP_SHARE_WARN = 0.25;
 // reaching ten median levels needed a country of 529M — bigger than Qing China, and not "a reasonably
 // modern country" by any reading. Five is enough to make the two-eras-stale tier (fixed at one level)
 // negligible against the two main tiers, which is all the floor was ever for.
-const MIN_MAIN_LEVELS_BY_ERA = [5, 5, 10, 10, 10];
+// ⚠ THE FLOOR IS ALSO WHAT DECIDES WHICH INDUSTRIES ARE INSOLVENT, which is not obvious from the sentence
+// above. A tier reported "floored at 1 level — market too small for even one" is not merely small: it is
+// selling more than the market wants at any price, so its good sits at the 25% band edge and the industry
+// cannot cover its costs at ANY recipe. Every insolvent industry in the run is one of these. Scaling the
+// market raises that tier's demand with everything else, so it can finally hold the fraction it wants.
+// ERA_MIN_LEVELS_MULT scales the whole ladder for A/B measurement; 1 = the values below.
+const MIN_LEVELS_MULT = +(process.env.ERA_MIN_LEVELS_MULT || 1);
+const MIN_MAIN_LEVELS_BY_ERA = [5, 5, 10, 10, 10].map(v => Math.round(v * MIN_LEVELS_MULT));
 // Place one level of the NEXT era's tier as a forward probe. Kept only as a switch to re-measure the
 // defect it caused (see `placement` below); it is off, and should stay off.
 const PROBE = process.env.ERA_PROBE === '1';
