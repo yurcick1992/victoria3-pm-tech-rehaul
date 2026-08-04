@@ -73,6 +73,17 @@ be imposed); extraction/logging **+20%**, agriculture **+10%**, with significant
 **Shipyards carry a further −30pp on all of them**, because none of their income from naval ship
 construction is modelled. A plateaued industry's last tier holds **+5%** forever.
 
+**⭐ THE GOAL A SCENARIO SET MUST CLEAR IS "ILLOGICALITY" — BALANCE_FRAMEWORK §10.11.** Those profit
+targets are a *means*; illogicality is the end, and it is what says whether the tech ladder actually
+works. Three faults, counted per industry per scenario and summing: (1) the era-appropriate tier **loses
+money**, (2) a **two-eras-stale** tier still turns a profit, (3) the ladder is **inverted** — the newest
+tier earns less than the one below it. Acceptable: **~0** for (1) and (3), **in the teens** for (2),
+**excluding shipyards and art academies** (both have targets they cannot meet by construction).
+`tools/era_scenarios.mjs` prints the count per era with the offending industries named.
+Current state: **39 points, 28 excluding the excused** — NOT yet acceptable. The residue is concentrated
+in the deep chains, and **the agreed fix has never been implemented: BALANCE_FRAMEWORK §10.13, the third
+price band.** Run that before concluding anything about the mod's premise.
+
 **Wage share is not a free variable** (`W = base wage × Σ employees × wage_weight`, both pinned), and it
 lands at 10–40% of total cost. So obsolescence is **price-driven**: what kills an old building is its
 output price falling while its input prices do not. That is why the ladder works best for industries

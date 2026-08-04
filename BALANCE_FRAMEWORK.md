@@ -879,7 +879,27 @@ rule constrains a ratio rather than a level. It measures **worse** (51 illogical
 time): the debut era then has no anchor at all and every later era inherits whatever it drifted to. An
 absolute path re-anchors each era independently.
 
-### 10.11 Illogicality: the scoring metric and where it stands
+### 10.11 ILLOGICALITY — the acceptance criterion a scenario set must clear
+
+**This is the goal, not a diagnostic.** A scenario set is not ready to build on until it clears the bar
+below. It exists because "the balance looks about right" is unfalsifiable, and because every earlier
+target — break-even ladders, profit percentages, price paths — measured a *means* rather than the end.
+The end is that the tech ladder visibly works: the newest tier pays, the one below it is marginal, the one
+below that is driven out. Illogicality counts the times that fails.
+
+| fault | acceptable total, all five eras | rationale |
+|---|---|---|
+| era-appropriate tier **loses money** | **~0** | a country's best available factory must be worth building |
+| **two-eras-stale** tier still profitable | **in the teens** | some survivors are realistic; a market full of them is not |
+| ladder **inverted** (newest earns less than the tier below) | **~0** | this one contradicts the mod's whole premise |
+
+**Shipyards and art academies are excluded from the bar** (see below) — they are counted and reported, but
+they do not have to clear it.
+
+⚠ It is a COUNT, not a magnitude: a tier two eras stale at +1% scores the same as one at +50%. That is
+deliberate — the question is whether the ladder holds, not by how much — but it means the metric cannot
+rank two near-equal configurations, and a magnitude-weighted variant would be the thing to add if tuning
+ever needs finer resolution than this gives.
 
 Three faults, counted per industry per scenario, summing (a top tier that is both loss-making and beaten
 by the tier below it scores 2, because those are two separate things wrong with it):
@@ -927,3 +947,33 @@ of 10 billion people on the first attempt.
 
 ⚠ The honest cost: era 1 needs a very large market to clear that floor with 78% of its population in
 subsistence. It is a **world-scale market**, not a single country, and should be described that way.
+
+### 10.13 OPEN: the third price band, chosen and never implemented
+
+The remaining illogicality sits almost entirely in the **deep chains** — synthetics, electrics,
+automotive, and behind them steel, explosives, fertilizer, paper. Their inputs are themselves
+manufactured, so §10.10's price path deflates input and output *together* and leaves no gap for
+obsolescence to open. This was predicted before any code was written (§10.4) and remains the single
+largest structural gap.
+
+**The agreed fix has never been built.** A third price band was chosen early on: raw goods flat,
+**intermediates deflating slowly**, finished goods deflating fast. Every price path since has instead
+treated all manufactured goods identically — `targetPrice()` applies one `PRICE_START`/`PRICE_DECAY` to
+everything with a tier. Restoring the split is a small change to that one function:
+
+- **raw** (extraction, agriculture) — flat at 100, as now
+- **intermediate** (steel, tools, engines, electricity, fertilizer, paper, glass, explosives, dye) —
+  a slower decay, so a deep chain's input bill holds up while its output falls
+- **finished** (groceries, clothes, furniture, automobiles, telephones, fine_art, small_arms, …) —
+  the current fast decay
+
+⚠ Some goods are both, depending on era and on who is buying — `paper` is an input to explosives and a
+consumer good; `engines` feeds ports, railways and automotive. Expect the split to need a judgement call
+per good rather than a clean rule, and record the calls.
+
+**Run this before concluding anything about the mod's premise.** The premise makes one falsifiable claim —
+that a price gap between a tier's output and its inputs can push obsolete buildings out — and that claim
+is *demonstrated* wherever the gap exists (manufactured 156 → 73 against raw near 100; stale-profitable
+down to 8; era 5 from 21 illogical points to 5). What is unproven is whether it holds for chains that eat
+their own sector's output, which is roughly nine industries of twenty-two. That is the question the third
+band answers, and it is narrower than "does the premise work".
