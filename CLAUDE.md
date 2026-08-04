@@ -80,17 +80,24 @@ money**, (2) a **two-eras-stale** tier still turns a profit, (3) the ladder is *
 tier earns less than the one below it. Acceptable: **~0** for (1) and (3), **in the teens** for (2),
 **excluding shipyards and art academies** (both have targets they cannot meet by construction).
 `tools/era_scenarios.mjs` prints the count per era with the offending industries named.
-**Current state: 53 points, 38 excluding the excused (5 / 4 / 12 / 17 / 15 per era; 3 / 3 / 8 / 13 / 11
-excluded) — NOT yet acceptable.**
+**Current state: 46 points, 29 excluding the excused (3 / 4 / 9 / 15 / 15 per era) — NOT yet acceptable.**
 It is **live in the balance UI** as the **Ladder check** panel, from ONE shared implementation
 (`ladderFaults()` in `ui/econ.js`, called by both the UI and the solver). It scores only the buildings a
 scenario actually CONTAINS — an absent industry or a tier at Number 0 is never a fault and never the
 comparison partner for one — so zeroing things out while tinkering can only lower the count (§10.17).
 ✅ **The write cycle is a STRICT FIXED POINT** (BALANCE_FRAMEWORK §10.25, closed 2026-08-05): config,
-presets and the printed report come back byte-identical after every `--write` → re-run, so the number above
-is quotable and a change of any size is measurable. It got there by making the recipe MIX come from the
-vanilla recipes alone — the run prints `RECIPE MIX: own 67 · below 22` and warns if any tier ever reads its
-mix from the previous write.
+presets and the printed report come back byte-identical after every `--write` → re-run. It got there by
+making the recipe MIX come from the vanilla recipes alone — the run prints `RECIPE MIX: own 67 · below 22`
+and warns if any tier ever reads its mix from the previous write.
+✅ **The count/price loop now CONVERGES** (§10.28): it used to limit-cycle forever at a 19–94pp residual,
+because a proportional controller cannot settle integer building counts (a good wanting 6.4 levels toggles
+6/7, worth ~20pp of price). A **deadband with hysteresis — stop chasing at 8pp, resume at 15pp** — fixed it:
+residual 5/12/4/9/1, profit targets **75 of 86 within 8pp at a mean miss of 5.7pp** (was 60/85 at 11.0pp).
+⚠ **The score is reproducible but the response surface is JAGGED** — deadband 8 scores 45, 10 scores 50,
+15 scores 45. So the five-point rule still applies to *design* changes: a result worth 1–3 points is not a
+result, even though re-running reproduces it exactly.
+⚠ **PM choice still never settles** — with prices converged, that is now a genuine discrete limit cycle in
+the method choice and is the next thing to look at.
 
 ⚠ **Older illogicality figures in the docs are void, not merely stale** (BALANCE_FRAMEWORK §10.14.1): the
 solver used to re-solve recipes *after* its final price sync, so it reported profits at prices its own
@@ -262,6 +269,8 @@ tools/                  dev tooling — NOT shipped in the mod
                         CEILING pass/fail (§10.15) and ILLOGICALITY. Env knobs, all for A/B measurement rather
                         than configuration: PRICE_START / PRICE_DECAY / PRICE_DECAY_INT / PRICE_FLOOR(_INT),
                         ERA_RATIO (=frozen restores the losing recipe-mix precedence, §10.25.2),
+                        ERA_COUNT_DEADBAND / _OUT (the count controller's hysteresis band, 8→15pp; 0 = off
+                        and it limit-cycles forever, §10.28), ERA_SETTLE_TRACE=1 (per-iteration residual),
                         ERA_CEIL_BOOST, ERA_CEIL_PM, ERA_JOINT, ERA_PROBE (the removed forward probe, kept
                         only so its damage can be re-measured — leave it off)
   econ_host.mjs         loads ui/econ.js + the generated ui/*.js under Node — supplies the state containers the

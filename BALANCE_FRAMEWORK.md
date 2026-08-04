@@ -1682,3 +1682,74 @@ file cannot be regenerated from its own inputs.
 ⚠ It also matters for the ladder itself, because **`port` is a named repeat offender** — 2-eras-stale
 profitable in eras 3/4/5 and inverted in 4/5 — and its output ladder is currently ×2.2 then ×1.5 rather
 than ×1.5 throughout. A tier-2 port producing 20 where the ladder wants 14 is a tier-2 that is too good.
+
+## 10.28 THE COUNT CONTROLLER LIMIT-CYCLED — it needed a deadband, not more passes (2026-08-05)
+
+`era_scenarios.mjs` claims to end in a joint fixed point over prices, PM choice, recipes and counts
+(§10.14.1). It did not. Every era printed `PM optimality: ⚠ NEVER SETTLED` and a **continuous residual of
+19–94pp** — the amount the *largest-moving price still changed on the very last iteration of the final
+settle*. The scenario being reported was one arbitrary phase of an oscillation.
+
+**It was not a matter of iterations.** Tracing the residual per iteration shows it never decays at all:
+
+```
+era 4 (last 20 of 40):  19 19 19 20 20 19 12 19 19 19 20 20 19 19 20 20 20 20 …
+era 5 (last 20 of 40):  26 26 26 13 25 27 27 27 27 28 28 27 15 26 27 27 27 26 …
+```
+
+A flat band of constant amplitude is the signature of a **proportional controller driving a quantised
+plant**. `stepCounts` moves each good's producers by `(realised/target)^gain`, but **building counts are
+integers**, and at these market sizes one level of a thinly-produced good is worth ~20pp of price. A good
+whose ideal count is 6.4 levels toggles 6 / 7 forever. The largest movers are exactly the goods with
+fewest producers — clippers, explosives, fertilizer, automobiles, artillery, silk. `ERA_JOINT=24` tripled
+the passes, still never settled, and scored slightly *worse* (55 against 53). This is the integer floor of
+§10.12 showing up in the controller rather than in the prices.
+
+### 10.28.1 The fix: a deadband with hysteresis — enter at 8pp, leave at 15pp
+
+The price path is a target with a **stated tolerance**: the report itself calls a good realised when it is
+within 15pp. Movement inside that tolerance is not signal, so the controller now stops chasing it.
+
+A *flat* band cannot do both jobs, and the sweep says so plainly. Narrow tracks well and still cycles; wide
+converges and stops tracking:
+
+| deadband | illogicality (excl) | residual per era | price path | profit targets <8pp | mean off |
+|---|---|---|---|---|---|
+| **0** (as shipped) | 53 (38) | 65 / 39 / 37 / 20 / 26 | 66/97 | 60/85 | 11.0pp |
+| 5 | 52 (36) | 58 / 96 / 17 / 19 / 28 | 66/97 | 65/84 | 9.3pp |
+| 8 | **45 (30)** | 61 / 85 / 3 / 19 / 28 | **71/97** | 70/84 | 7.1pp |
+| 10 | 50 (34) | 61 / 82 / 35 / 4 / 11 | 68/97 | 66/84 | 7.4pp |
+| 15 | **45 (31)** | 4 / 96 / 1 / 9 / 6 | 60/97 | 69/83 | 6.8pp |
+| 20 | 46 (29) | 6 / 2 / 5 / 16 / 10 | 51/97 | 70/82 | 5.8pp |
+| 25 | 60 (44) | 2 / 105 / 8 / 6 / 11 | 43/97 | 67/84 | 7.4pp |
+| 35 | 68 (52) | 41 / 91 / 4 / 1 / 3 | 37/97 | 69/82 | 6.0pp |
+
+So the band a good must **enter** is narrow and the band it must **leave** is wide: it is pursued until
+comfortably on the path, then tolerates drift before being pursued again. Measured across four hysteresis
+pairs, **8 → 15 wins on every secondary criterion at an illogicality that is statistically tied for best**:
+
+| variant | illogicality (excl) | residual per era | price path | profit targets <8pp | mean off |
+|---|---|---|---|---|---|
+| flat 8 | 45 (30) | 61 / 85 / 3 / 19 / 28 | 71/97 | 70/84 | 7.1pp |
+| flat 20 | 46 (29) | 6 / 2 / 5 / 16 / 10 | 51/97 | 70/82 | 5.8pp |
+| hysteresis 5→20 | 49 (32) | 1 / 20 / 10 / 1 / 27 | 67/97 | 71/85 | 6.1pp |
+| **hysteresis 8→15** | **46 (29)** | **5 / 12 / 4 / 9 / 1** | 65/97 | **75/86** | **5.7pp** |
+| hysteresis 8→20 | 52 (36) | 61 / 4 / 1 / 3 / 1 | 62/97 | 69/84 | 7.2pp |
+| hysteresis 10→25 | 51 (35) | 47 / 27 / 14 / 3 / 1 | 56/97 | 72/85 | 6.1pp |
+
+It is the **only** variant that converges in all five eras while holding tracking, and its profit targets
+are far the best: **75 of 86 industries within 8pp of target, mean miss 5.7pp**, against 60/85 at 11.0pp
+with no band at all. Landed and re-solved, the shipped configuration scores **46 points, 29 excluding
+shipyards and art academies** (3 / 4 / 9 / 15 / 15), and remains a strict write-cycle fixed point.
+
+⚠ **The price-path column is partly tautological** and must not be read as a straight regression: the
+report scores a good realised at 15pp and the knob is measured in the same units, so a band of 20 or 35 is
+*defined* to miss it. Compare bands against each other, not against the criterion they are made of.
+
+⚠ **PM choice still never settles.** With prices now converged, the remaining `⚠ NEVER SETTLED` is a
+genuine discrete limit cycle in the method choice, not the continuous half chasing a moving target. It is
+reported honestly and is the next thing to look at, not a number to explain away.
+
+⚠ **The response surface is jagged** — flat 8 gives 45, flat 10 gives 50, flat 15 gives 45. That is the
+integer floor again, and it means a tuning result worth 1–3 points is not a result. The five-point rule
+still applies to *design* changes even though the write cycle is now exactly reproducible.

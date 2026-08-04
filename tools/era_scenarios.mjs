@@ -677,6 +677,13 @@ const CEIL_TARGET = 160;        // what the count feedback aims restricted goods
 const CEIL_BOOST = process.env.ERA_CEIL_BOOST !== '0';   // counts: a breach outranks the revenue-weighted mean
 const CEIL_PM    = process.env.ERA_CEIL_PM    !== '0';   // PM choice: a breach outranks profit
 const JOINT_PASSES = +(process.env.ERA_JOINT || 8);      // price/PM/recipe fixed-point passes (1 = the old single pass)
+const SETTLE_TRACE = process.env.ERA_SETTLE_TRACE === '1';   // print the continuous residual per iteration
+// Deadband on the count controller, in pp of base price, WITH HYSTERESIS: a good is parked once its price
+// is within COUNT_DEADBAND of the path and stays parked until it drifts past COUNT_DEADBAND_OUT. 0 = off
+// (the old always-chase behaviour, which limit-cycles forever). See stepCounts for the measurements.
+const COUNT_DEADBAND = process.env.ERA_COUNT_DEADBAND != null ? +process.env.ERA_COUNT_DEADBAND : 8;
+const COUNT_DEADBAND_OUT = process.env.ERA_COUNT_DEADBAND_OUT != null ? +process.env.ERA_COUNT_DEADBAND_OUT
+                                                                     : Math.max(COUNT_DEADBAND, 15);
 const RESTRICTED = new Set();
 for (const i of S.IND) {
   for (const t of i.tiers) {
@@ -957,12 +964,42 @@ function buildScenario(eIx) {
   // Hoisted out of the main loop so the FINAL JOINT SETTLE can use the same lever. It used to be inline,
   // which meant the joint settle ran with counts FROZEN — and counts are exactly what absorbs the movement
   // in this system, so freezing them left {price, PM, recipe} oscillating with nothing to damp it.
+  const parked = new Set();   // goods currently inside the deadband — see stepCounts
   function stepCounts(gain, rescalePow) {
     const goodF = {};
     for (const g in S.PRICES) {
       if (SKIP_GOODS.has(g)) continue;
       const want = targetPrice(g, era), got = S.thresholds[g];
       if (!(want > 0) || !(got > 0)) continue;
+      // ⚠ DEADBAND — DO NOT CHASE A PRICE THAT IS ALREADY INSIDE THE TARGET'S OWN TOLERANCE.
+      //
+      // Building counts are INTEGERS, so this is a proportional controller driving a quantised plant, and
+      // without a deadband it limit-cycles forever: a good whose ideal count is 6.4 levels toggles 6/7
+      // every iteration, and at these market sizes one level is worth ~20pp of price. Traced over the final
+      // settle, the residual never decayed at all — era 4 sat at exactly 19-20pp and era 5 at 26-27pp for
+      // every one of 40 iterations, with the largest mover a good with very few producers (clippers,
+      // explosives, fertilizer, automobiles, artillery). More passes do not help: ERA_JOINT=24 tripled the
+      // work and still never settled.
+      //
+      // The price path is a target with a STATED tolerance — the report itself scores a good as realised
+      // when it is within 15pp — so movement inside that band is not signal to chase. Freezing the factor
+      // there gives the loop somewhere to stop that is defined by the design rather than by where the
+      // iteration happened to be cut off. `ERA_COUNT_DEADBAND=0` restores the old always-chase behaviour.
+      //
+      // ⚠ THE BAND HAS HYSTERESIS, and a plain one will not do both jobs at once. Measured over a sweep of
+      // eight widths: a NARROW band (8pp) tracks the path best of anything tried (71 of 97 goods realised,
+      // against 66 with no band at all) but still limit-cycles, because a good sitting just outside it is
+      // chased, overshoots, and comes back; a WIDE band (20pp) converges every era but tracks worst
+      // (51 of 97), since it simply stops chasing. So the band a good must ENTER is narrow and the one it
+      // must LEAVE is wide: it is pursued until comfortably on the path, then tolerates drift before being
+      // pursued again. Wider still is not a trade at all — 25 and 35 lose on both counts (60 and 68
+      // illogicality points against 45) because the counts barely move.
+      const err = Math.abs(got - want);
+      if (COUNT_DEADBAND > 0) {
+        if (parked.has(g)) { if (err > COUNT_DEADBAND_OUT) parked.delete(g); }
+        else if (err <= COUNT_DEADBAND) parked.add(g);
+        if (parked.has(g)) { goodF[g] = 1; continue; }
+      }
       goodF[g] = clamp(Math.pow(got / want, gain), 0.6, 1.7);
     }
     // The insolvency test still runs — it is what tells us an industry cannot reach its target at ANY
@@ -1139,6 +1176,7 @@ function buildScenario(eIx) {
         if (x > 5) dn++;
         if (x > d) { d = x; dg = g; }
       }
+      if (SETTLE_TRACE) console.log(`      settle e${era} j=${j} d=${d.toFixed(1)} (${dg}) moving=${dn}`);
     }
     return { d, dg, dn };
   };
