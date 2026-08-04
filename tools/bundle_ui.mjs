@@ -128,7 +128,11 @@ html += `
 
 writeFileSync(OUT, html, 'utf8');
 const mb = n => (n / 1048576).toFixed(2) + ' MB';
-console.log(`\nSNAPSHOT WRITTEN  ${OUT}  (${mb(Buffer.byteLength(html))})`);
+// ⚠ NO leading blank line. This is the line that proves the snapshot was regenerated, and it is routinely
+// read through `| head -1` inside a chained build command — a leading "\n" makes head print the blank and
+// swallow the confirmation, so the step looks like it never ran. It has already caused exactly that
+// confusion once. Keep the first line of output meaningful.
+console.log(`SNAPSHOT WRITTEN  ${OUT}  (${mb(Buffer.byteLength(html))})  ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`);
 for (const [f, n] of sizes) console.log(`    inlined  ui/${f.padEnd(12)} ${mb(n)}`);
 for (const o of OMIT)       console.log(`    omitted  ui/${o.file.padEnd(12)} ${o.why}`);
 console.log(`\nOpen it in any browser, or hand it to someone — it needs no server and no network.\n`);

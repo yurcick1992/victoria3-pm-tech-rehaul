@@ -1220,6 +1220,11 @@ the game.
   `balance_ui_snapshot.html` at the repo root; copy that over the published file path before republishing.
   Republishing the scratchpad copy without refreshing it ships the previous build — which has happened, and
   is invisible from the outside because the page still looks current.
+  ⚠ **SHOW that it happened.** Report the regeneration in the reply — the banner timestamp, or that the
+  published copy matches the repo copy. A regeneration buried inside a chained command is invisible to the
+  reader, who then has to take it on trust or ask. This has already gone wrong once: `bundle_ui.mjs` was run
+  through `| head -1`, its output began with a blank line, and the confirmation was swallowed, so a snapshot
+  that HAD been regenerated looked skipped.
   ⚠ **A stale snapshot is worse than none.** It carries its own timestamp and reads as authoritative, so a
   reader has no way to tell it is describing an economy that no longer exists. If you cannot regenerate it
   (build broken, mid-refactor), say so rather than leaving the old one standing.
