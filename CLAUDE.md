@@ -103,6 +103,16 @@ every industry — an anachronism scored by nothing that supplied 61% of era-1 s
 good), and a **glutted by-product vetoing a starved input** in the count feedback (which shrank logging
 523→124 levels while wood starved).
 
+**⭐ POST-SOLVE SCENARIO TUNER — FREE ENTRY (§10.21).** *Not part of the solve*: when it runs, recipes, PM
+selections and volumes are FINAL and must not move — it adjusts **building counts only** and re-prices, which
+is why it must never call `contSettle()` (that re-solves recipes). Any era-appropriate manufacturing tier over
+**+25%** is built one level at a time until it drops under the cap. **Revertable: `ERA_PROFIT_CAP=0`.** The
++75% ceiling outranks it — a step that breaches it is undone and that industry stops growing. Sanity check
+printed per era: manufacturing share of output (⚠ >90%) and raw-producer profits. ⚠ Current verdict:
+manufacturing fine (27→58% across eras), **raw-sector profits NOT** — medians 52–66% against targets of
++20%/+10%, 10–12 producers over +50% every era. Applying the same rule to extraction/agriculture is the
+obvious next move, but it must run *together* with §10.18, not after it.
+
 **⭐ HARD CONSTRAINT — NO LOSS-MAKING RAW PRODUCER MAY BE PRESENT (§10.18).** No extraction or agriculture
 building in a scenario may run at a loss; the rule is on *non-zero* producers, so the remedy is not to build
 it. Enforced greedily and minimally (drop the worst, re-converge, look again), **gold exempt** (one-sided

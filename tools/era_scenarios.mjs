@@ -97,6 +97,24 @@ const CONSTRUCTION_PM = {
   5: 'pm_arc_welded_buildings',
 };
 const CONSTRUCTION_BLD = 'building_construction_sector';
+// ===================================================================================================
+// FREE ENTRY: A MANUFACTURING INDUSTRY EARNING MORE THAN +25% GROWS UNTIL IT DOESN'T.
+//
+// An industry sitting on an unusually fat margin in a market anyone can enter is not an equilibrium — the
+// margin should be competed away by new capacity. So each era-appropriate manufacturing tier above the cap
+// is built ONE LEVEL AT A TIME until it drops under it.
+//
+// ⚠ FULLY REVERTABLE: `ERA_PROFIT_CAP=0` disables it entirely and the solve returns to its previous
+// behaviour. Kept as a switch on purpose — this is a rule whose consequences are judged after the fact
+// (does it produce an economy that is 90% factories? does it starve the raw sectors into fat margins?),
+// so being able to take it back out without unpicking anything is part of the design.
+//
+// ⚠ THE +75% CEILING STILL BINDS AND OUTRANKS IT. Growing a manufacturer raises its demand for inputs, so
+// a step that pushes a consumable good to the band edge is undone and that industry stops growing — the
+// same precedence already used when dropping loss-making raw producers.
+const PROFIT_CAP_ON = process.env.ERA_PROFIT_CAP !== '0';
+const PROFIT_CAP = +(process.env.ERA_PROFIT_CAP_PCT || 0.25);
+const PROFIT_CAP_STEPS = +(process.env.ERA_PROFIT_CAP_STEPS || 400);
 // THROUGHPUT, as a flat average per sector. A real market's bonus is per building type and measured
 // (economy of scale + technology + laws + company bonuses); these synthetic scenarios have no companies
 // and no laws to measure, so a representative average stands in. It is NOT cosmetic: throughput scales a
@@ -578,6 +596,7 @@ function buildScenario(eIx) {
   // about −68% at any size. That is an artifact of not modelling gold as money, not a loss anyone is
   // choosing to take, and dropping every gold mine would delete gold from the economy to fix a number.
   const dropped = new Set();
+  const minCount = {};          // tier key -> floor imposed by the post-solve free-entry tuner
   const isRawProducer = b => {
     if (SKIP_TARGET_BLD.has(b)) return false;
     const c = catOf(b);
@@ -590,7 +609,12 @@ function buildScenario(eIx) {
       // NOT floored at MIN_MAIN_LEVELS. Forcing ten levels of an industry a market only needs two of
       // makes it oversupplied by construction, crashes its price and guarantees a loss — the floor has to
       // be reached by making the ECONOMY bigger, not by overbuilding one industry into it. See popBoost.
-      for (const r of p.rows) S.BLDNUM[r.t.key] = r.fixed != null ? r.fixed : Math.max(1, Math.round(s * r.weight));
+      for (const r of p.rows) {
+        const base = r.fixed != null ? r.fixed : Math.max(1, Math.round(s * r.weight));
+        // `minCount` is the POST-SOLVE TUNER's floor (free entry, below). During the solve it is empty, so
+        // this is a no-op; afterwards it holds counts the tuner added and the solver must not undo.
+        S.BLDNUM[r.t.key] = Math.max(base, minCount[r.t.key] || 0);
+      }
     }
     for (const b of refProducers) { if (dropped.has(b)) continue; S.BLDNUM[b] = Math.max(1, Math.round(scaleOf['R:' + b])); }
   };
@@ -921,6 +945,41 @@ function buildScenario(eIx) {
       conv = contSettle(20, 0.15);
     }
   }
+  // ---- POST-SOLVE SCENARIO TUNER: free entry ---------------------------------------------------------
+  // ⚠ THIS IS NOT PART OF THE SOLVE. The solve is finished by this point — recipes, PM selections and
+  // volumes are FINAL and must not move. The tuner adjusts one thing only, BUILDING COUNTS, and re-prices
+  // after each step. That is why it does not call contSettle(): contSettle re-solves input recipes, which
+  // would undo the solve it is supposed to be tuning.
+  //
+  // The rule: any era-appropriate manufacturing tier earning more than +25% is built one level at a time
+  // until it drops under the cap. A fat margin in a market anyone can enter is not an equilibrium.
+  const tuned = {}, capBlocked = new Set();
+  if (PROFIT_CAP_ON) {
+    for (let step = 0; step < PROFIT_CAP_STEPS; step++) {
+      let best = null, bestP = PROFIT_CAP;
+      for (const p of placement) {
+        const cur = p.rows[0].t;
+        if (cur.era !== era || p.ind.follows_be === false || capBlocked.has(p.ind.id)) continue;
+        if (!(S.BLDNUM[cur.key] > 0)) continue;
+        const pr = E.TPthr(p.ind, cur) / 100;
+        if (isFinite(pr) && pr > bestP) { best = { ind: p.ind, t: cur }; bestP = pr; }
+      }
+      if (!best) break;
+      const before = ceilingBreaches();
+      const k = best.t.key, prev = minCount[k] || 0;
+      minCount[k] = (S.BLDNUM[k] || 0) + 1;               // one level at a time, as specified
+      settle(); syncPrices();
+      if (ceilingBreaches() > before) {
+        // the extra capacity pushed one of its own inputs to the +75% band edge — the ceiling outranks
+        // this rule, so put the level back and stop growing this industry
+        minCount[k] = prev; capBlocked.add(best.ind.id);
+        settle(); syncPrices();
+      } else {
+        tuned[best.ind.id] = (tuned[best.ind.id] || 0) + 1;
+      }
+    }
+  }
+
   // ⚠ NO trailing convergence here. The loop breaks only after a contSettle(30) that found no offender, so
   // it already ends on a converged state that satisfies the constraint — and running one more settle after
   // the check is exactly the mistake this loop was restructured to avoid: it moved era-3's wheat, maize and
@@ -1047,6 +1106,19 @@ function buildScenario(eIx) {
   return { eIx, era, jobs, gdp, peasants, popNonPeasant, scaleOf, pmResult, share, gross, popBoost,
            jointDrift, jointDriftGood, jointDriftN, pmSettled,
            constrShare: constructionShare(), constrLevels: S.BLDNUM[CONSTRUCTION_BLD] || 0,
+           tuned: { ...tuned }, capBlocked: new Set(capBlocked),
+           // the two things the free-entry rule has to be judged on afterwards
+           mfgShare: (() => { let m = 0, tot = 0;
+             for (const i of S.IND) for (const t of i.tiers) { const c = S.BLDNUM[t.key] || 0; if (c) { const v = c * E.thruMult(t.key) * E.outputValue(i, t, true); m += v; tot += v; } }
+             for (const b of E.refBuildings()) { const c = S.BLDNUM[b] || 0; if (!c || E.isSubsistenceBuilding(b)) continue;
+               tot += c * E.thruMult(b) * E.goodsVal(E.selGoods(E.refSel(b)).out, true); }
+             return tot > 0 ? m / tot : 0; })(),
+           rawProfits: (() => { const xs = [];
+             for (const b of refProducers) { if (!(S.BLDNUM[b] > 0) || !isRawProducer(b)) continue;
+               const ec = E.refEcon(b); if (ec && ec.tp != null && isFinite(ec.tp)) xs.push(ec.tp); }
+             xs.sort((a, b2) => a - b2);
+             return xs.length ? { n: xs.length, med: xs[xs.length >> 1], max: xs[xs.length - 1],
+                                  over50: xs.filter(v => v > 50).length } : null; })(),
            dropped: new Set(dropped), protectedRaw: new Set(protectedRaw),
            rawLoss: refProducers.filter(b => S.BLDNUM[b] > 0 && isRawProducer(b))
              .filter(b => { const ec = E.refEcon(b); return ec && ec.tp != null && ec.tp < 0; })
@@ -1209,6 +1281,19 @@ for (let e = 0; e < FIT.eras.length; e++) {
   meta.breach = breach;
   // The ACHIEVED share, not the target — this is the check that the count tracked a growing GDP instead of
   // being fixed from an early, small one.
+  // The free-entry tuner, and the two numbers it has to be judged on.
+  if (PROFIT_CAP_ON) {
+    const t = Object.entries(meta.tuned).sort((a, b) => b[1] - a[1]);
+    const rp = meta.rawProfits;
+    console.log(`    FREE ENTRY (>${(PROFIT_CAP * 100).toFixed(0)}% ⇒ build more): `
+      + (t.length ? `${t.reduce((a, x) => a + x[1], 0)} level(s) added — ` + t.slice(0, 6).map(([id, n]) => `${id} +${n}`).join(', ')
+                  : 'nothing above the cap')
+      + (meta.capBlocked.size ? `  ⚠ stopped by the ceiling: ${[...meta.capBlocked].join(', ')}` : ''));
+    console.log(`      SANITY: manufacturing ${(100 * meta.mfgShare).toFixed(0)}% of non-subsistence output`
+      + (meta.mfgShare > 0.90 ? ' ⚠ OVERSIZED' : '')
+      + (rp ? ` · raw producers median ${rp.med.toFixed(0)}% / max ${rp.max.toFixed(0)}%`
+             + (rp.over50 ? ` (${rp.over50} over +50%)` : '') : ''));
+  }
   console.log(`    CONSTRUCTION: ${meta.constrLevels} levels = ${(100 * meta.constrShare).toFixed(1)}% of gross output`
     + ` (target ${(100 * CONSTRUCTION_GDP_SHARE).toFixed(0)}%, ${CONSTRUCTION_PM[meta.era]})`
     + (Math.abs(meta.constrShare - CONSTRUCTION_GDP_SHARE) > 0.02 ? '   ⚠ OFF TARGET' : ''));

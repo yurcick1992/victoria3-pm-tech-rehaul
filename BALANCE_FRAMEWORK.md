@@ -1285,6 +1285,51 @@ win and should not be reported as one**. It is a **correctness** win: the scenar
 construction sector that buys what a construction sector buys, and raw producers are viable in four of five
 eras **without dropping any**, where before the rule had to remove several.
 
+### 10.21 FREE ENTRY — a manufacturing industry over +25% grows until it isn't (post-solve tuner)
+
+**This is a SCENARIO TUNER, not part of the solve.** By the time it runs the solve is finished: recipes, PM
+selections and volumes are **final and must not move**. It adjusts exactly one thing — **building counts** —
+and re-prices after each step. That is why it does not call `contSettle()`: that would re-solve input
+recipes and undo the solve it exists to tune.
+
+**The rule.** Any era-appropriate manufacturing tier earning more than **+25%** is built **one level at a
+time** until it drops under the cap. A fat margin in a market anyone can enter is not an equilibrium.
+
+⚠ **Fully revertable** — `ERA_PROFIT_CAP=0` disables it and the solve returns to its previous behaviour.
+That is deliberate: this is a rule whose consequences are judged *after the fact*, so being able to take it
+back out without unpicking anything is part of the design. `ERA_PROFIT_CAP_PCT` moves the cap.
+
+⚠ **The +75% industrial ceiling still binds and outranks it.** Growing a manufacturer raises its demand for
+inputs, so a step that pushes a consumable good to the band edge is undone and that industry stops growing —
+the same precedence used when dropping loss-making raw producers (§10.18).
+
+**It is gentle in practice:** 1 / 17 / 4 / 5 / 5 levels added across the five eras.
+
+#### The sanity check — one pass, one fail
+
+| era | manufacturing share of non-subsistence output | raw producers: median / max profit | over +50% |
+|---|---|---|---|
+| 1 | 27% | 66% / 294% | 10 |
+| 2 | 35% | 54% / 235% | 10 |
+| 3 | 47% | 64% / 175% | 10 |
+| 4 | 56% | 52% / 174% | 10 |
+| 5 | 58% | 54% / 151% | 12 |
+
+✅ **Manufacturing is not oversized.** 27% → 58% across the eras, nowhere near the 90% alarm, and that
+progression is what industrialisation ought to look like.
+
+❌ **Raw-sector profits are too high, and this is now the clearest open defect in the scenarios.** Extraction
+targets +20% and agriculture +10%; they are running at **medians of 52–66%** with **10–12 producers above
++50% in every era**, and maxima of 150–290%. It is not *caused* by free entry — §10.6 always reported the
+residual as concentrated in raw producers — but the check names it instead of leaving it as "significant
+variance accepted".
+
+**The obvious next move is to apply the same free-entry logic to extraction and agriculture**, which is
+where the fat margins actually are. It was scoped to manufacturing deliberately; the numbers say the raw
+side is the bigger offender. ⚠ It interacts with §10.18: growing a raw producer cuts its price and could
+push a *sibling* producer of the same good below zero, which §10.18 would then drop. The two rules would
+have to be run together rather than in sequence.
+
 ### 10.19 The pop-need weights are CORRECT — and the art-academy explanation in this document was not
 
 **Checked, because a wrong weight here would invalidate every demand number.** All **52 entries across 15
