@@ -46,11 +46,19 @@
   @media (max-width:1420px){ .card[data-ind]>.bd, .card.refcard>.bd{overflow-x:auto} }
   .mtable col.c-tier{width:52px}
   .mtable col.c-bld{width:184px}
-  .mtable col.c-num{width:54px}
+  .mtable col.c-num{width:64px}   /* fits 4 digits: scenario counts reach the hundreds and beyond */
   /* the Number cell: the global input width (58px) + the 8px cell padding overflowed this narrow
      column, spilling into Inputs. Tight padding + a border-box input that fills the cell fixes it. */
   .mtable td.numcell{padding-left:6px;padding-right:6px}
   .mtable td.numcell input[type=number]{width:100%;box-sizing:border-box;text-align:left;padding:3px 4px}
+  /* ⚠ KILL THE SPINNERS. A number input reserves ~16px for its stepper arrows, which at a 54px column left
+     room for two digits — so a scenario with 145 construction sectors or 325 urban centres DISPLAYED "14"
+     and "32". The value was right, the pixels were lying, and a misread building count is indistinguishable
+     from a solver bug when you are reading the sheet. Removing the steppers also stops the scroll wheel
+     silently changing a count you are only scrolling past. */
+  .mtable td.numcell input[type=number]{-moz-appearance:textfield;appearance:textfield}
+  .mtable td.numcell input[type=number]::-webkit-outer-spin-button,
+  .mtable td.numcell input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
   .mtable col.c-out{width:206px}
   .mtable col.c-in{width:204px}
   .mtable col.c-tgt{width:92px}
