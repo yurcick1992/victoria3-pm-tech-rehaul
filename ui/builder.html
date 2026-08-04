@@ -1702,12 +1702,29 @@ const VIZ_GROUPS = [
     cats:['farms','plantations','ranching','fishing_whaling'] },
   { key:'mfg_raw',    label:'Manufacturing — raw inputs',      color:'#e6b455', tiered:true },
   { key:'mfg_mfg',    label:'Manufacturing — manufactured inputs', color:'#5aa9ff', tiered:true },
+  // Infrastructure is its own sector, not a kind of manufacturing: ports, railways and power stations sell
+  // a service (merchant marine, transportation, electricity) rather than a manufactured good, and their
+  // economics are driven by the network they serve. They are now solved on the same terms as everything
+  // else, so they belong on the chart — but lumping them in with factories would misread both.
+  { key:'infra',      label:'Infrastructure & power',          color:'#57c7d4', tiered:true,
+    industries:['port','railway','power'] },
+  // ⚠ URBAN CENTRES SELL GOODS AND WERE BEING LOST. They produce `services` and `transportation` — services
+  // is among the largest flows in the economy and there are 265–325 levels of them — yet they fell in no
+  // sector at all, so the aggregate view silently omitted them. Untiered, like extraction and agriculture.
+  // (The one remaining omission is `gran_teatro_de_la_habana`, a unique monument that sells fine_art;
+  // uniques are one-off wonders excluded from these scenarios by design. Gold is deliberately out of scope.)
+  { key:'services',   label:'Urban services',                  color:'#a9b2c0', tiered:false,
+    cats:['service'] },
 ];
+const INFRA_INDUSTRIES = new Set(['port','railway','power']);
 // A tier belongs to "manufactured inputs" if ANY good it consumes is one OUR ladder produces — the same
 // test tools/era_scenarios.mjs uses for its mfg_high / mfg_low split. Classified per TIER, not per
 // industry, because a ladder can cross the line as it modernises.
 function manufacturedGoods(){ const s=new Set(); IND.forEach(i=>i.tiers.forEach(t=>s.add(tierOut(i,t)))); return s; }
-function tierSector(t, manu){ return Object.keys(t.inputs||{}).some(g=>manu.has(g)) ? 'mfg_mfg' : 'mfg_raw'; }
+function tierSector(t, manu, indId){
+  if(INFRA_INDUSTRIES.has(indId)) return 'infra';
+  return Object.keys(t.inputs||{}).some(g=>manu.has(g)) ? 'mfg_mfg' : 'mfg_raw';
+}
 // Five-number summary with linear-interpolation quantiles.
 function boxStats(vals){
   const v=[...vals].sort((a,b)=>a-b), n=v.length; if(!n) return null;
@@ -1738,7 +1755,7 @@ function vizSectorData(valOf){
   const g={}; VIZ_GROUPS.forEach(gr=>g[gr.key]={ tiered:{}, flat:[] });
   IND.forEach(i=>i.tiers.forEach(t=>{
     const v=valOf.tier(i,t); if(!isFinite(v)) return;
-    const key=tierSector(t,manu), w=(BLDNUM[t.key]||0)*thruMult(t.key)*outputValue(i,t,true);
+    const key=tierSector(t,manu,i.id), w=(BLDNUM[t.key]||0)*thruMult(t.key)*outputValue(i,t,true);
     (g[key].tiered[t.tier]=g[key].tiered[t.tier]||[]).push({ v, w:Math.max(0,w||0), name:`${i.id} T${t.tier}` });
   }));
   const catToGroup={}; VIZ_GROUPS.forEach(gr=>(gr.cats||[]).forEach(c=>catToGroup[c]=gr.key));
@@ -1849,8 +1866,9 @@ function renderVizAggregated(){
   const y=v=>padT+(1-(v-yMin)/(yMax-yMin))*(H-padT-padB);
   const cy=v=>y(Math.max(yMin,Math.min(yMax,v)));
   const slotW=(W-padL-padR)/maxTier, xSlot=t=>padL+(t-0.5)*slotW;
-  const n=VIZ_GROUPS.length, bw=Math.min(26,slotW*0.17);
-  const bx=(t,j)=>xSlot(t)+(j-(n-1)/2)*(slotW*0.21);
+  // spacing adapts to the number of sectors — with six groups a fixed 0.21-of-a-slot pitch overlapped
+  const n=VIZ_GROUPS.length, pitch=slotW*0.78/n, bw=Math.min(22,pitch*0.78);
+  const bx=(t,j)=>xSlot(t)+(j-(n-1)/2)*pitch;
 
   let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" font-family="system-ui" font-size="11">`;
   for(let t=1;t<=maxTier;t++) s+=`<text x="${xSlot(t)}" y="${H-8}" text-anchor="middle" fill="#93a1b3">T${t}</text>`;
