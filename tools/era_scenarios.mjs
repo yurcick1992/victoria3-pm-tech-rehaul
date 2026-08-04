@@ -60,7 +60,45 @@ const ARMY_MIX = {
 // 1836 markets (see the header). Construction is raised from vanilla's ~0.7% because raising it is the
 // whole point of the mod — modernising has to be BUILT — and it is the one number here that is a design
 // choice rather than an observation. It is a knob; say so when reporting.
-const SUPPORT_SHARE = { ownership: 0.32, government: 0.06, trade: 0.035 };
+// ===================================================================================================
+// THE POPULATION CHAIN — professions drive buildings, not the other way round.
+//
+//   productive buildings → their workforce
+//   that workforce       → the other professions, in vanilla proportions
+//                          (slaves 0 · peasants by era share · soldiers from the army)
+//   peasants             → subsistence levels
+//   GDP                  → battalions → SOLDIERS
+//   those professions    → the non-economic / autoscaling buildings that employ them
+//   and back             → productive building counts, chasing the profit goals under the constraints
+//
+// The direction matters. Support buildings used to be placed at a fixed SHARE OF BUILDING LEVELS, and the
+// strata then read off whatever employment that produced — so "how many aristocrats exist" was decided by
+// an arbitrary 32%-of-levels constant. Now the professions are the quantity with a claim to be right, and
+// the buildings are sized to employ them.
+//
+// MEASURED, not chosen: the ratio of each non-productive profession's workforce to the total PRODUCTIVE
+// workforce, median across the eight vanilla 1836 markets. Soldiers are excluded here — they come from the
+// army — and so are laborers/machinists, which belong to buildings sized by their own rules (construction
+// at 10% of GDP, urban centres by urbanization). Vanilla's own soldier ratio would have been 0.0216.
+const PROF_RATIO = {
+  clerks: 0.0529, bureaucrats: 0.0174, clergymen: 0.0164, shopkeepers: 0.0121,
+  aristocrats: 0.0078, capitalists: 0.0028, officers: 0.0024, academics: 0.0015,
+};
+// Which support building supplies which profession — sized so its employment meets the target above.
+const PROF_SOURCE = [
+  { prof: 'bureaucrats', bld: 'building_government_administration' },
+  { prof: 'aristocrats', bld: 'building_manor_house' },
+  { prof: 'capitalists', bld: 'building_financial_district' },
+  { prof: 'clerks',      bld: 'building_trade_center' },
+];
+// A battalion is 1 000 serving soldiers. The POP behind it is larger: soldiers are working adults like any
+// other profession, so the people (with dependents) are 1 000 ÷ the working-adult ratio — 4 000 at 0.25.
+const SOLDIERS_PER_BATTALION = 1000;
+// Barracks host the battalions. They employ nobody and consume nothing in our extract (V3 puts a barracks'
+// manpower in the battalions themselves and its goods in each combat unit's upkeep), so placing them costs
+// the model nothing and gives the soldiers somewhere to be seen.
+const BARRACK_BLD = 'building_barrack';
+const BATTALIONS_PER_BARRACK = 1;
 // ---------------------------------------------------------------------------------------------------
 // CONSTRUCTION IS SIZED BY ITS SHARE OF GDP, NOT BY A SHARE OF BUILDING LEVELS, and its method is FIXED.
 //
@@ -281,10 +319,50 @@ function solveInputsAt(ind, t, target) {
   // the only ones it never touched: art academy sat at 500:1 and paper e3 at 245:1 through every rebuild.
   // The right answer for an insolvent tier is the CHEAPEST LEGAL recipe (exactly the cap), plus a report
   // that it cannot reach its target; the remedy is a smaller share of the market, not a thinner recipe.
-  let scale = wantI > 0 ? wantI / haveI : minScale;
-  if (scale < minScale) { scale = minScale; capped.add(t.key); } else capped.delete(t.key);
+  // ⚠⚠ SOLVE FROM THE CANONICAL RATIO, NOT FROM THE CURRENT NUMBERS. This is the fix for the write-cycle
+  // wander (§10.16), and it is why the solve is now independent of where it started.
+  //
+  // The old form rescaled `t.inputs` in place and rounded each good to 0.1. That COMPOUNDS: every re-solve
+  // quantises each input separately, so the input MIX drifts slightly each generation — and since `--write`
+  // saves the result and the next run begins from it, the drift accumulated ACROSS RUNS. That is exactly
+  // why write → re-run scored 47 / 51 / 51 / 48 instead of one number four times.
+  //
+  // `_ratio` is captured ONCE from the config and never rewritten. The recipe is then always
+  // `ratio × X`, with X solved directly from the target bill — same prices in, same recipe out, however
+  // many times the config has been written.
+  // ⚠ THE RATIO MUST COME FROM SOMETHING THE SOLVE NEVER WRITES. Taking it from `t.inputs` is not enough:
+  // `--write` saves the solved inputs, so the next run recovers a ratio that already carries the previous
+  // run's rounding, and the mix drifts generation by generation. The VANILLA recipe is invariant — and it
+  // is the canonical source anyway (§8: inputs are solved "keeping vanilla input ratios").
+  // Three sources, in order of how invariant they are:
+  //   1. `input_ratio` frozen in the config — set once and never re-derived;
+  //   2. the VANILLA recipe (§8's canonical source), for the 67 tiers that have a `vanilla_pm`;
+  //   3. the current inputs, for the 22 INVENTED (`model_only`) tiers that have no vanilla counterpart —
+  //      which is precisely why (1) exists: without a frozen copy those 22 re-derived their ratio from
+  //      inputs the previous `--write` had already rounded, and the mix drifted every generation.
+  if (!t._ratio) {
+    t._ratio = {};
+    const van = t.vanilla_pm ? (E.pmRec(t.vanilla_pm).in || {}) : {};
+    const keys = Object.keys(t.inputs);
+    const frozen = t.input_ratio && keys.length && keys.every(g => t.input_ratio[g] > 0) ? t.input_ratio : null;
+    const useVan = !frozen && keys.length > 0 && keys.every(g => van[g] > 0);
+    const src = frozen || (useVan ? van : t.inputs);
+    let s0 = 0;
+    for (const g of keys) s0 += (src[g] || 0);
+    for (const g of keys) t._ratio[g] = s0 > 0 ? (src[g] || 0) / s0 : 0;
+  }
+  let unitMkt = 0, unitBase = 0;
+  for (const g in t._ratio) {
+    const pr = S.PRICES[g] || 0;
+    unitMkt  += t._ratio[g] * pr * ((S.thresholds[g] ?? 100) / 100);
+    unitBase += t._ratio[g] * pr;
+  }
+  if (!(unitMkt > 0) || !(unitBase > 0)) return false;
+  const Xmin = (Obase / ioCapFor(ind.id)) / unitBase;    // the 4:1 ceiling, in ratio units
+  let X = wantI > 0 ? wantI / unitMkt : Xmin;
+  if (X < Xmin) { X = Xmin; capped.add(t.key); } else capped.delete(t.key);
   for (const g of Object.keys(t.inputs)) {
-    t.inputs[g] = Math.max(minMainInput(ind, g), Math.round(t.inputs[g] * scale * 10) / 10);
+    t.inputs[g] = Math.max(minMainInput(ind, g), Math.round(t._ratio[g] * X * 10) / 10);
   }
   return true;
 }
@@ -742,8 +820,11 @@ function buildScenario(eIx) {
   // sector and the other non-selling buildings on every settle, and optimisePMs can evict a selection back
   // to a PMG's first (most primitive) entry. Anywhere less often and the wooden-buildings default creeps
   // back in unnoticed — which is exactly how it survived this long.
+  // ⚠ ORDER IS THE CHAIN. setArmy must run BEFORE setPops, because the army now produces SOLDIERS and
+  // setPops turns them into people: the other way round and the soldier count is always one iteration
+  // stale, which in a damped loop reads as a permanent undercount rather than as a lag.
   const settle = () => { applyCounts(); addSupport(); applyThroughput(); advanceNonMarketPMs(era);
-                         sizeConstruction(); setPops(); setArmy(); };
+                         sizeConstruction(); setArmy(); setPops(); };
   // Construction levels follow the TARGET SHARE OF GROSS OUTPUT, not a share of building levels.
   // No circularity: the construction sector produces no priced good, so it contributes nothing to the
   // gross output it is sized against.
@@ -1191,17 +1272,24 @@ function buildScenario(eIx) {
       n += c * E.empTotal(E.selEmp(E.refSel(b))); }
     return n;
   }
+  // PRODUCTIVE workforce: our tiers plus the raw producers. The quantity everything else is scaled from.
+  function productiveWorkforce() {
+    let n = 0;
+    for (const i of S.IND) for (const t of i.tiers) { const c = S.BLDNUM[t.key] || 0; if (c) n += c * E.empTotal(E.tierEmp(t)); }
+    for (const b of refProducers) { const c = S.BLDNUM[b] || 0; if (c) n += c * E.empTotal(E.selEmp(E.refSel(b))); }
+    return n;
+  }
   function addSupport() {
-    // non-subsistence levels placed so far drive the support shares
-    let base = 0;
-    for (const i of S.IND) for (const t of i.tiers) base += S.BLDNUM[t.key] || 0;
-    for (const b of refProducers) base += S.BLDNUM[b] || 0;
-    for (const kind in SUPPORT_SHARE) {
-      const list = SUPPORT_BLD[kind].filter(b => S.VAN.buildings[b]);
-      if (!list.length) continue;
-      const total = Math.max(1, Math.round(base * SUPPORT_SHARE[kind] / (1 - Object.values(SUPPORT_SHARE).reduce((a, c) => a + c, 0))));
-      const each = Math.max(1, Math.round(total / list.length));
-      for (const b of list) S.BLDNUM[b] = each;
+    // SIZE THE SUPPORT BUILDINGS FROM THE PROFESSIONS THEY EMPLOY, not from a share of building levels.
+    // Each target profession count is the productive workforce × its measured vanilla ratio; the building
+    // that supplies it is then placed at target ÷ its own per-level employment of that profession.
+    const wProd = productiveWorkforce();
+    for (const { prof, bld } of PROF_SOURCE) {
+      if (!S.VAN.buildings[bld]) continue;
+      const per = (E.selEmp(E.refSel(bld)) || {})[prof] || 0;
+      if (!(per > 0)) continue;                       // this building does not employ that profession
+      const want = wProd * (PROF_RATIO[prof] || 0);
+      S.BLDNUM[bld] = Math.max(1, Math.round(want / per));
     }
     // URBAN CENTRES — derived, never placed: floor(Σ urbanization / 100), FINDINGS F13.
     let urb = 0;
@@ -1221,6 +1309,19 @@ function buildScenario(eIx) {
     for (const i of S.IND) for (const t of i.tiers) { const c = S.BLDNUM[t.key] || 0; if (c) addEmp(E.tierEmp(t), c); }
     for (const b of E.refBuildings()) { const c = S.BLDNUM[b] || 0; if (!c || E.isSubsistenceBuilding(b)) continue;
       addEmp(E.selEmp(E.refSel(b)), c); }
+    // SOLDIERS COME FROM THE ARMY, not from a building. V3 puts a barracks' manpower in the battalions it
+    // hosts, which is why `building_barrack` carries no employment at all — so a scenario that placed no
+    // military buildings had ZERO soldiers while its 800 battalions bought small arms and ate nothing.
+    // A battalion is 1 000 serving soldiers; they are working adults, so the people behind them are
+    // 1 000 ÷ the working-adult ratio. They are lower-stratum consumers like any other wage earner.
+    const battalions = Object.values(S.UNITNUM).reduce((a, c) => a + c, 0);
+    const soldierWorkforce = battalions * SOLDIERS_PER_BATTALION;
+    byStratum.lower += soldierWorkforce;
+    // …and give them somewhere to be: barracks host the battalions, employ nobody and consume nothing, so
+    // placing them adds no goods demand and no double-counted wages.
+    if (S.VAN.buildings[BARRACK_BLD] && battalions > 0)
+      S.BLDNUM[BARRACK_BLD] = Math.max(1, Math.round(battalions / BATTALIONS_PER_BARRACK));
+
     const nonPeasant = (byStratum.lower + byStratum.middle + byStratum.upper) / WORK_RATIO;
     peasants = nonPeasant * PEASANT_SHARE[eIx] / Math.max(1e-9, 1 - PEASANT_SHARE[eIx]);
     S.POPS = {
@@ -1229,6 +1330,7 @@ function buildScenario(eIx) {
       middle: Math.round(byStratum.middle / WORK_RATIO),
       upper: Math.round(byStratum.upper / WORK_RATIO),
       peasants: Math.round(peasants), slaves: 0,
+      soldiers: Math.round(soldierWorkforce / WORK_RATIO),   // reported; already inside `lower`
     };
     // subsistence follows the peasants: staffed-level equivalent, the way the placeholder presets do it
     const lvl = Math.max(0, Math.round(peasants * WORK_RATIO / SUBSISTENCE_JOBS_PER_LEVEL));
@@ -1328,6 +1430,42 @@ function buildScenario(eIx) {
 }
 
 // ===================================================================================================
+// ===================================================================================================
+// CANONICAL START — the solve must not depend on the numbers the LAST solve happened to write.
+//
+// Freezing the recipe MIX (`input_ratio`) stopped the proportions drifting, but the stored SCALE was still
+// an input: run N wrote slightly different volumes from run N−1, so run N+1 opened with a different order
+// book, took a different trajectory through a search containing discrete choices (PM selection, integer
+// counts) and could settle in a different basin. That is the whole of the write-cycle wander.
+//
+// So every tier is reset to `ratio × X0` before anything else runs, with X0 fixed by the 4:1 value-added
+// cap — a definition, not a remembered number. The config's stored volumes are now purely an OUTPUT of the
+// solve; nothing about the previous run survives into the next one.
+for (const i of S.IND) {
+  for (const t of i.tiers) {
+    const keys = Object.keys(t.inputs || {});
+    if (!keys.length) continue;
+    const van = t.vanilla_pm ? (E.pmRec(t.vanilla_pm).in || {}) : {};
+    const frozen = t.input_ratio && keys.every(g => t.input_ratio[g] > 0) ? t.input_ratio : null;
+    const useVan = !frozen && keys.every(g => van[g] > 0);
+    // ⚠ A FROZEN ratio is used VERBATIM. Re-normalising it each load shifts it by an ulp every
+    // generation (its sum is 1.0000000000000002, not 1), which never settles and occasionally tips a
+    // discrete choice — a config that never reaches a fixed point for purely floating-point reasons.
+    let s0 = 0; for (const g of keys) s0 += ((frozen || (useVan ? van : t.inputs))[g] || 0);
+    if (!(s0 > 0)) continue;
+    t._ratio = {};
+    if (frozen) { for (const g of keys) t._ratio[g] = frozen[g]; }
+    else { const src = useVan ? van : t.inputs;
+           for (const g of keys) t._ratio[g] = Math.round(((src[g] || 0) / s0) * 1e6) / 1e6; }
+    const outGood = E.tierOut(i, t);
+    const Obase = t.output_qty * (S.PRICES[outGood] || 0);
+    let unitBase = 0; for (const g of keys) unitBase += t._ratio[g] * (S.PRICES[g] || 0);
+    if (!(Obase > 0) || !(unitBase > 0)) continue;
+    const X0 = (Obase / ioCapFor(i.id)) / unitBase;
+    for (const g of keys) t.inputs[g] = Math.max(minMainInput(i, g), Math.round(t._ratio[g] * X0 * 10) / 10);
+  }
+}
+
 const out = [];
 const META = [];
 const ERAS_HDR = () => FIT.eras.map(x => W('e' + x.era, 10)).join('');
@@ -1598,6 +1736,10 @@ if (WRITE) {
   for (const ind of cfg.industries) for (const t of ind.tiers) {
     const solved = byKey[t.key]; if (!solved || ind.follows_be === false) continue;
     t.inputs = { ...solved.inputs };
+    // FREEZE THE RECIPE SHAPE. Only the SCALE of a recipe is solved; its proportions are an input to the
+    // solve, not an output of it. Persisting them means a re-run cannot recover a slightly different mix
+    // from the rounding of the numbers it just wrote — which is what made the write cycle wander.
+    if (solved._ratio && Object.keys(solved._ratio).length) t.input_ratio = { ...solved._ratio };
     // restate the legacy BE target so lint_profitability.awk keeps working as a DRIFT GUARD
     const outGood = t.output_good || ind.output_good;
     const Obase = t.output_qty * (S.PRICES[outGood] || 0);
