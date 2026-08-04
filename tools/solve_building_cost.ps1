@@ -78,6 +78,7 @@ foreach ($ind in $cfg.industries) {
     $n = 0
     foreach ($t in $ind.tiers) {
         $n++
+        if ($t.model_only) { continue }   # not emitted, so it has no required_construction to solve
         $I = 0.0; foreach ($p in $t.inputs.PSObject.Properties) { $I += [double]$p.Value * $prices[$p.Name] }
         $outGood = if ($t.output_good) { $t.output_good } else { $ind.output_good }
         $O = [double]$t.output_qty * $prices[$outGood]

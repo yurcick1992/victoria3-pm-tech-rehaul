@@ -626,3 +626,304 @@ T2, artillery T3) — an expected property of the "return on cost" reading.
 All assumptions are the solver's parameters (`WagePct`, `MarginPct`, `PaybackYears`, `WeeksPerYear`,
 `RoundTo`, `ConstructionPm`); re-solve with one command after playtest tuning.
 
+
+---
+
+## 10. The five-era ladder — SUPERSEDES §3 and §8 for every tiered industry
+
+**Status: current method.** §3's break-even ladder and §8's volume methodology priced every good at
+100% of base and solved break-even against that. That is precisely the assumption this mod exists to
+stop making — a tech lead only matters if prices move. Everything below replaces it. §9's
+building-cost model is unaffected.
+
+### 10.1 The eras
+
+The mod's own five technology eras, anchored at **~1750 / 1850 / 1900 / 1925 / 1940** — wider than the
+game's window at the front, contracting towards the back, because technical progress accelerates after
+the industrial revolution. **No industry has two tiers on one era.** 89 tiers over 22 industries:
+67 real + 22 `model_only` (modelled, not emitted — no unlocking technology exists yet).
+
+`output(k) = vanilla tier-1 output × 1.5^k` over the industry's own ladder, exempting `follows_be:false`
+industries (port, railway keep vanilla volumes) and any tier with `output_override` (power). Employment
+for invented tiers holds headcount and moves 10% of it laborers→machinists and 5% machinists→engineers
+per era — which reproduces vanilla's own T3→T4 step exactly for textile, glass and steel.
+
+Ladders that stop early carry `ladder_end`:
+- **`plateau`** (food, textile, furniture, port) — the last tier is permanent. Its good's price must
+  therefore hold that tier at **+5%** rather than deflate past it, which makes the good relatively
+  dearer over time. Baumol's cost disease falls out of the model rather than being put in.
+- **`extinct`** (sail shipyards) — the industry is allowed to die; no floor.
+
+### 10.2 Targets
+
+| what | target |
+|---|---|
+| era-appropriate tier | **+20%** |
+| one era stale | **−5%** |
+| two eras stale | **−30%** (a CHECK, not a constraint — see below) |
+| plateaued industry's last tier, after its era | **+5%** |
+| extraction / logging | **+20%** |
+| agriculture | **+10%** |
+| **shipyards — both chains** | **−30pp on every line above** |
+
+Shipyards are penalised because **none of their income from naval ship construction is modelled**: the
+`country_ship_construction_add` a shipyard grants is real value the market price of clippers/steamers
+does not represent. Without the penalty they are priced as if that were free.
+
+**−5% at one era and −30% at two are not independently satisfiable.** Two eras of the drift that
+produces −5% compounds to about −11%. Only one of the two can be imposed; the two-era figure is
+reported, not enforced.
+
+### 10.3 Why prices are realised, never prescribed
+
+Deriving a price path from profit margins alone (which `tools/era_solver.mjs` still does, as a
+reference view) produces numbers **no market composition can reach**. Steel at 150% of base in era 1 is
+the clearest case: an era-1 economy has no steel consumer at all — era-1 tooling is wood, era-1 arms are
+iron and hardwood — so steel sits at the 25% floor however the market is arranged.
+
+So `tools/era_scenarios.mjs` never assigns a price. It reads what the order book produces (the game's
+own formula, on the scenario's own orders) and moves the one lever it has — **building counts** — until
+the profit targets hold at whatever prices result. Supply and margin move opposite ways, so the feedback
+is: earning more than target ⇒ build more ⇒ price falls ⇒ margin falls.
+
+Two things set the scale, and they are different questions. **Ratios** between buildings come from that
+feedback and are scale-free. **Absolute size** comes from the population, which is the one exogenous
+number: total pop and peasant share per era, with every count then scaled so the buildings employ
+exactly the working adults the non-peasant population provides.
+
+### 10.4 Wage share is not a free variable
+
+`W = base wage × Σ(employees × wage_weight)`, and both employment (vanilla, ~5000/level) and the base
+wage (the era's SoL, via F26) are pinned. Measured across the config it lands at **10–40% of total
+cost**. So obsolescence is **price-driven**, not wage-driven: what kills an old building is its output
+price falling while its input prices do not. The ladder therefore works best for industries eating
+**raw** inputs (food←grain, glass←wood, steel←iron+coal) and weakest for those eating **manufactured**
+ones (motor←steel, automotive←engines), whose inputs deflate alongside their outputs.
+
+### 10.5 Two invariants the solve must respect
+
+- **One price rule per good per era.** `dye` is a plantation good until synthetics exists and a
+  manufactured one afterwards. Running both rules at once made it converge to a stable *blend* that
+  satisfied neither target — synthetics read −30% where −5% was asked.
+- **The negative-goods floor.** A tier's main input can never be solved below the largest reduction its
+  own secondary PMs can apply, or the building's total input for that good goes negative and
+  `lint_negative_goods.awk` rejects the build. The invariant is hard and the profit target is soft, so
+  the floor wins and the tier misses slightly.
+
+### 10.6 Results (2026-08-03)
+
+Converged: 0.000% price movement in the final iteration; PM selections settled at iteration 20 of 120
+(frozen after 60), so no limit cycle. No tier infeasible — inputs never go negative and no price pins at
+the engine band.
+
+Profit targets at the **realised** prices, per era, counting only buildings the solver could actually
+steer:
+
+| era | year | within 8pp | mean abs. miss | floored at 1 level |
+|---|---|---|---|---|
+| 1 | 1836 | 19/22 | 3.8pp | 14 |
+| 2 | 1870 | 25/30 | 6.3pp | 12 |
+| 3 | 1900 | 33/40 | 7.1pp | 5 |
+| 4 | 1920 | 30/40 | 4.7pp | 5 |
+| 5 | 1935 | 33/41 | 3.2pp | 4 |
+
+**Every tiered industry is on target in every era.** The entire residual is in raw producers, where
+significant variance is accepted by design: a good has ONE price but several producers of differing
+productivity (grain has five farms), so at most one can sit exactly on its own target.
+
+**"Floored"** is a distinct category, not a miss: the solver wanted *fewer than one level* of that
+building and could not have it. A single level already floods that good's market, the price sits at the
+floor, and no count can rescue the margin. It is a real property of a one-country scenario with no
+exports — art academies, vineyards and opium plantations are floored in every era. It shrinks as the
+economy grows (14 → 4 from era 1 to era 5), which is the expected direction.
+
+**Gold is excluded entirely.** No pop need lists it and no building consumes it, so its order book is
+one-sided by construction and its mines read −68% at any scale. A target that cannot be moved by the
+only lever available is not a target.
+
+### 10.7 What automation does, un-asked
+
+PMs are chosen per era by availability (the PM's own unlocking technology, vanilla era remapped 1:1)
+and then by profit, with hysteresis (a switch must beat the incumbent by >2%, and selection freezes
+after three sweeps). The emergent result: **automation turns itself on only at era 5** — assembly
+lines, mechanised looms, automated bakeries, automatic bottle blowers — because that is when labour
+finally becomes dear relative to the engines and electricity it consumes. Nothing asserts this.
+
+It has a cost worth naming: automation also rescues *old* tiers, which is why six of the seven
+"two eras stale" misses in the reference fit sit specifically at era 5.
+
+### 10.8 Which production methods the solver may use
+
+Vanilla gates production methods **eight** ways; the first version of this solver modelled three. The
+result was not subtle — it selected `pm_herring_meal_farming_building_rice_farm` (gated on
+`geographic_region_japan`) and `slave_exploitation_*` (violent-treatment plantation methods) for scenarios
+containing zero slaves.
+
+The rule now:
+
+| gate | treatment |
+|---|---|
+| `unlocking_technologies` | satisfied by era (vanilla era remapped 1:1 onto ours) |
+| `unlocking_production_methods` | satisfied only by a main PM present in the same building |
+| `unlocking_principles` (power bloc) | never satisfied |
+| `unlocking_identity`, `unlocking_company_categories`, `unlocking_geographic_regions`, `unlocking_religions` | never satisfied |
+| `unlocking_laws` | satisfied only by a law in `SCENARIO_LAWS` |
+| `disallowing_laws` | blocks only if it names a law in `SCENARIO_LAWS` |
+
+`SCENARIO_LAWS = { law_slavery_banned, law_commercialized_agriculture }`.
+
+**Why two laws and not zero.** The two law-gate kinds point in opposite directions — `unlocking_laws`
+means "you must hold this", `disallowing_laws` means "you must not". Treating both as unfulfilled is not
+the neutral choice; it is incoherent, and it lands worse than either alternative:
+
+- **automation switches off.** Every automation PM (`pm_automated_bakery`, `pm_mechanized_looms`,
+  `pm_automatic_bottle_blowers`, the `assembly_lines_*` family — 12 in total) carries
+  `disallowing_laws = { law_industry_banned }`, a law an industrial country would never hold. The design
+  brief requires automation to be choosable, so losing it is a direct contradiction.
+- **slave exploitation switches on.** 25 PMGs have **no law-neutral member** — vanilla forces a flavour.
+  That includes every plantation labour group (cotton, sugar, coffee, dye, tea, banana, rubber) and every
+  subsistence group. With no laws held, the candidate set is empty and the UI's own default stands, which
+  for those groups is `slave_exploitation_*`.
+
+Two laws a modern country holds by definition is the smallest stance that yields no serfdom, no slavery,
+no geographic or company special cases — and working automation. With it, exactly one PMG still has no
+legal option (`pmg_ownership_building_company_headquarter`), and company headquarters are excluded from
+these scenarios anyway.
+
+**These PMs are not removed from the balance UI.** A human can still select any of them and read the
+arithmetic. The restriction is on the solver, which has to build a scenario out of what an unexceptional
+country can actually run.
+
+**`tools/verify_pms.mjs` audits it.** It re-reads `common/production_methods` directly rather than our
+own extract — so a bug in the extractor cannot hide behind it — and fails if any selected PM is not a
+real vanilla PM or could not legally be run. Current result: **156 distinct PMs selected across the five
+presets, none unreal, none illegal.**
+
+⚠ Watch the **UTF-8 BOM** when parsing those files. Every one starts with one, so the FIRST production
+method in each file is invisible to a naive `^name = {` match. That made six perfectly real PMs
+(`pm_simple_farming`, `default_building_subsistence_farm`, `coffee_plantation_dry_process`, …) look
+hallucinated on this check's first run. An **empty** gate block is likewise not a gate — vanilla ships
+`unlocking_geographic_regions = { }` on `coffee_plantation_dry_process`, restricting nothing.
+
+### 10.9 The value-added ceiling — 4:1, manufacturing only
+
+**A manufacturing recipe may not turn £1 of inputs into more than £4 of output, at BASE prices.**
+Extraction and agriculture are exempt: they are location- and labour-constrained rather than
+input-constrained, and legitimately run enormous ratios (a coal mine consumes almost nothing but tools).
+
+**Why it is needed.** Profit targets alone do not determine a recipe. Any output/input ratio can be made
+to hit any margin by moving the other lever, so the solver was free to satisfy "+20%" by hollowing out the
+recipe instead of by sizing the industry properly — and it did. Before the ceiling, 24 of 82 tiers
+breached 4:1, including **art academy at 500:1, paper e3 at 245:1 (£11 of inputs for £2,700 of paper),
+synthetics e2 at 133:1 and automotive e4 at 64:1**. A building with almost no input costs is cheap to run
+in every later era, never becomes obsolete, and inverts the whole ladder. That was the visible symptom:
+in 1935, synthetics read e2 +36% / e3 +31% / e4 +23% / e5 +14% — older tiers beating newer ones.
+
+**It is an ECONOMIC anchor, not a physical one.** A "unit" of a V3 good is arbitrary and the game folds
+product quality into quantity, so there is no real-world productivity figure to calibrate against. The
+ceiling sidesteps that entirely: it says value added cannot exceed 75% of output value, and never needs to
+know what a unit is.
+
+**It costs nothing at base prices.** A +20% margin needs `I + W ≤ O/1.2`; with `I ≥ O/4` that is
+`W ≤ 0.583·O`. The highest wage share anywhere in the ladder is `0.30·O`, so there is ~2× headroom.
+
+**It converts insolvency into a closed-form test.** With the recipe floored at `O/4`, the best margin a
+tier can reach at market prices is fixed:
+
+```
+margin_max = (p·O − q·O/4 − W) / (q·O/4 + W)
+```
+
+`p` = what its output fetches, `q` = its input price index. If `margin_max < target`, the industry cannot
+hit its target at ANY recipe, and the only remedy is a smaller share of the market so its own price rises.
+No search required. This is what turns "the solver quietly produced a factory with no inputs" into a
+condition detectable before any damage is done, and it is the phase-1 feasibility signal a general
+equilibrium solve needs.
+
+⚠ **The clamp must apply to the INSOLVENT branch too.** `solveInputsAt` originally returned early when the
+target was unreachable, which left the previously-hollowed recipe in place — so the exact tiers the ceiling
+exists to catch were the only ones it never touched. An insolvent tier now gets the **cheapest legal
+recipe** (exactly the cap) plus a report that it cannot reach its target.
+
+**Persistently insolvent industries** (art academy in every era; shipyards in 1, 4, 5; synthetics in 2–3;
+electrics and automotive in 3; steel in 1) are the honest output of that test: in a closed one-country
+market with no exports, these cannot reach their target at any recipe or any size.
+
+### 10.10 Counts are driven by PRICES, not by margin — the degeneracy that made the solver inert
+
+**The bug.** `solveInputsAt` pins every era-appropriate tier to exactly its profit target, every iteration.
+The count feedback was `count *= 1 + gain·(profit − target)`. If profit *is* the target by construction,
+that is `1 + gain·0` — **the count solver multiplied by one and did nothing for the entire run**. It was
+visible in the output and went unread for several rounds: every top tier in the 1935 scenario reported
+exactly +20% — glass, tooling, paper, fertilizer, steel, motor, automotive, munition, electrics, all
+identical. Counts were set by nothing but the initial guess and the population rescale, which is why
+tools sat at 134% of base with demand 47% over supply and nothing corrected it.
+
+Two levers were aimed at the same number, so one of them was inert. **Counts now target PRICES and inputs
+target MARGIN**, and neither can cancel the other.
+
+**The price path is not arbitrary — it is what the obsolescence targets arithmetically require.** A tier
+whose inputs were solved to its target at its own era's price `P_old` earns `1.2·P/P_old − 1` later, so
+−5% one era on needs `P/P_old = 0.79` and −30% two eras on needs `0.583` (≈0.76/era). The top tier cannot
+survive below roughly 66% of base, because the 4:1 ceiling stops it cutting inputs further
+(`P ≥ 1.2·(0.25 + W/O)`, with `W/O ≈ 0.3` measured).
+
+Swept over 27 combinations; **`PRICE_START` dominates** (every 155 row beat every 130 and 140 row). Best:
+
+```
+PRICE_START 155   PRICE_DECAY 0.82   PRICE_FLOOR 75
+```
+
+⚠ A **relative** target — "0.82 × the previous era's realised price" — looks more principled, since the
+rule constrains a ratio rather than a level. It measures **worse** (51 illogical points against 45 at the
+time): the debut era then has no anchor at all and every later era inherits whatever it drifted to. An
+absolute path re-anchors each era independently.
+
+### 10.11 Illogicality: the scoring metric and where it stands
+
+Three faults, counted per industry per scenario, summing (a top tier that is both loss-making and beaten
+by the tier below it scores 2, because those are two separate things wrong with it):
+
+1. the era-appropriate tier loses money
+2. a two-eras-stale tier still turns a profit — it should have been driven out
+3. the era-appropriate tier earns less than the tier one era below it — the ladder runs backwards
+
+**Shipyards and art academies are excused.** Shipyards carry a deliberate −30pp target because no
+naval-construction income is modelled, so one at −10% is exactly on target; art academies cannot be sized
+by margin at all, because `fine_art`'s budget is fixed and extra academies only destroy their own price.
+
+| | total | loss-making | stale-profitable | inverted |
+|---|---|---|---|---|
+| start of this pass | 73–77 | 24 | 22 | 27 |
+| **now** | **35** (24 net) | **6** | **8** | **10** |
+
+Per era: 2 / 7 / 12 / 9 / 5. Era 5 fell from 21 to 5.
+
+**What moved it, in order of contribution:** price-driven counts (the fix above), the integer-floor
+scale-up (§10.12), vanilla-calibrated peasant shares (F28), and removing the shipyard false positive.
+
+**What did NOT move it:** the output multiplier. Swept 1.50 / 1.55 / 1.60 → 73 / 77 / 74, flat within
+noise, and raising it makes the ladder inversion *worse* (27 → 32) because more supply depresses the price
+of the good the top tier sells most of. A fixed-price argument for raising it does not survive contact
+with an endogenous-price solver.
+
+**The residue clusters in the deep chains** — synthetics, electrics, automotive, and to a lesser extent
+steel, food, paper, explosives, fertilizer. These are exactly the industries identified at the outset as
+structurally hardest: their inputs are themselves manufactured, so input and output prices deflate
+together and the obsolescence mechanism has little to bite on.
+
+### 10.12 The integer floor, and why scaling the market up is a real fix
+
+Every price here is a ratio of buy to sell orders, so multiplying the whole economy changes nothing —
+**except that a tier wanting 0.4 levels cannot have them and must sit at 1**, flooding its own market.
+That integer floor is the only non-proportional thing in the model. Measured in era 1 before the fix: one
+steel e1 plus one steel e2 sold 199 against a buy of 40, with pops buying no steel at all; groceries 162
+against 74; paper 122 against 47.
+
+The market is therefore scaled up until the **MEDIAN** era-appropriate industry reaches
+`MIN_MAIN_LEVELS_BY_ERA` (5 / 5 / 10 / 10 / 10). ⚠ **Median, not minimum** — art academies and vineyards
+want fewer than one level at *any* scale, so chasing the minimum never terminates and produced a country
+of 10 billion people on the first attempt.
+
+⚠ The honest cost: era 1 needs a very large market to clear that floor with 78% of its population in
+subsistence. It is a **world-scale market**, not a single country, and should be described that way.

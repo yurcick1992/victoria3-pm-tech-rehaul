@@ -75,6 +75,7 @@ foreach ($i in $cfg.industries) {
   $ti = 0
   foreach ($t in $i.tiers) {
     $ti++
+    if ($t.model_only) { continue }   # no unlocking tech to read an era from — the era ladder sets these
     $ins = @(); if ($t.inputs) { $ins = $t.inputs.PSObject.Properties.Name }
     $man = @($ins | Where-Object { $MFG_GOODS -contains $_ })
     $hasMfg = $man.Count -gt 0

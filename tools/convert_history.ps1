@@ -35,6 +35,9 @@ Remove-Item (Join-Path $outDir '*.txt') -Force -ErrorAction SilentlyContinue
 
 $cfgPath = if ($Config) { (Resolve-Path -LiteralPath $Config).Path } else { Join-Path $Repo 'config\mod_config.json' }
 $cfg = Get-Content -LiteralPath $cfgPath -Raw -Encoding UTF8 | ConvertFrom-Json
+# model_only tiers are not emitted as buildings, so the 1836 start can never place one. Dropping them here
+# also keeps `force_tier`'s bounds check (tiers.Count) honest — it must count BUILDABLE tiers.
+foreach ($ind in $cfg.industries) { $ind.tiers = @($ind.tiers | Where-Object { -not $_.model_only }) }
 $maps = Get-SplitMaps $cfg
 $baseIndustry = $maps.baseIndustry; $pmMap = $maps.pmMap; $industryById = $maps.industryById
 

@@ -59,6 +59,11 @@ function Get-SplitMaps($cfg) {
         foreach ($t in $ind.tiers) {
             $n++
             if ($n -eq 1) { $baseIndustry[$t.key] = $ind.id }
+            # A MODEL-ONLY tier has no vanilla_pm by definition — it replaces no base-game production
+            # method, so nothing in a vanilla history file can ever map onto it. Skip it rather than
+            # indexing the map with $null (which throws), but keep $n counting so the tier NUMBERS that
+            # `force_tier` and the converter use still match the config's own ladder.
+            if (-not $t.vanilla_pm) { continue }
             $entry = @{ tier_key = $t.key; new_pm = $t.pm_key; tier = $n }
             $pmMap[$ind.id][$t.vanilla_pm] = $entry
             # extra vanilla main PMs that also map to this tier (e.g. an undeveloped port's pm_anchorage → T1)

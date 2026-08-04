@@ -31,8 +31,84 @@ Everything below — "one main PM", "a building per tier", the profitability lad
    and "tech matters" goals.)
 3. **Profitability ladder.** Outputs/inputs are re-sloped so a tier-N building can't stay
    profitable once tier-(N+2) buildings flood the market — so a tech lead actually pushes
-   laggards out. Governed by a break-even ladder in `BALANCE_FRAMEWORK.md` (the balance
-   source of truth).
+   laggards out. Governed by `BALANCE_FRAMEWORK.md` (the balance source of truth).
+
+## THE FIVE-ERA LADDER (current method — supersedes the BE targets)
+
+The mod has its **own five technology eras**, anchored at **~1750 / 1850 / 1900 / 1925 / 1940** —
+deliberately wider than the game's window at the front and **contracting** towards the back, because
+technical progress accelerates after the industrial revolution. **No industry has two tiers on one era.**
+89 tiers over 22 industries: 67 real + **22 `model_only`** (modelled but NOT emitted, because the game
+has no unlocking technology for them yet — the builder gets a filtered config, `ui/data.js` gets the
+complete one). Some ladders stop early, recorded per industry as **`ladder_end`**: `plateau` (food,
+textile, furniture, port — the last tier is permanent, so its good's price must hold that tier up rather
+than deflate past it, which is Baumol's cost disease falling out of the model) or `extinct` (sail
+shipyards — the industry is allowed to die).
+
+**Balance is now solved as one interdependent economy with prices UNLOCKED, not against fixed prices.**
+The old per-tier `target_be` ladder (era anchors, the H1 input discount) is **superseded**: it priced
+every good at 100% of base, which is exactly the assumption the rehaul is trying to stop making.
+`target_be` survives only as a **derived drift guard** so `lint_profitability.awk` still catches an
+accidental hand-edit; it is no longer a design input, and `solve_be_targets.ps1` / `solve_volumes.ps1` /
+`solve_building_cost.ps1` are legacy for tiers on this ladder.
+
+The pipeline (**Node ≥ 24 required**, `C:\Program Files\nodejs`):
+```
+node tools/build_era_ladder.mjs --write   # structure: eras, invented tiers, ×1.5 output ladder
+node tools/era_scenarios.mjs   --write    # THE solve: prices, volumes, counts, pops, army
+powershell -File tools/build.ps1
+```
+`tools/era_solver.mjs` is the **balance-only reference view** (margins alone, no scenario) and writes
+`config/era_prices.json`; `tools/era_scenarios.mjs` is authoritative and overwrites its volumes.
+
+**Why prices are realised rather than prescribed.** Deriving a price path from profit margins alone
+produces numbers no market composition can reach — steel at 150% of base in era 1 is unreachable because
+an era-1 economy has *no steel consumer at all*. So the solver never assigns a price. It reads what the
+order book produces (the game's own formula, on the scenario's own orders) and moves the one lever it
+has, **building counts**, until the profit targets hold at whatever prices result.
+
+**Targets:** era-appropriate tier **+20%**, one era stale **−5%**, two eras stale **−30%** (the third is
+a *check*, not a constraint — two eras of the −5% drift compounds to about −11%, so the two cannot both
+be imposed); extraction/logging **+20%**, agriculture **+10%**, with significant variance accepted.
+**Shipyards carry a further −30pp on all of them**, because none of their income from naval ship
+construction is modelled. A plateaued industry's last tier holds **+5%** forever.
+
+**Wage share is not a free variable** (`W = base wage × Σ employees × wage_weight`, both pinned), and it
+lands at 10–40% of total cost. So obsolescence is **price-driven**: what kills an old building is its
+output price falling while its input prices do not. That is why the ladder works best for industries
+eating **raw** inputs and weakest for those eating **manufactured** ones.
+
+**WHICH PRODUCTION METHODS THE SOLVER MAY USE.** Vanilla gates PMs **eight** ways and we originally
+modelled three, so the solver helped itself to a Japan-only rice method and to violent slave-exploitation
+plantations in scenarios containing zero slaves. The rule now:
+- **Technology** is the only gate the solver satisfies freely (the PM's own `unlocking_technologies`, its
+  vanilla era remapped 1:1 onto ours).
+- **Every other `unlocking_*` is NEVER satisfied** — no power-bloc principle or identity, no company
+  category, no geographic region, no state religion.
+- **Law gates are read against a deliberate two-law stance**, in the direction vanilla means them:
+  `SCENARIO_LAWS = { law_slavery_banned, law_commercialized_agriculture }`. `unlocking_laws` needs one of
+  ours; `disallowing_laws` blocks only if it names one of ours.
+
+⚠ The two-law stance is **not** a softening of "assume nothing is fulfilled" — it is what makes that
+instruction *coherent*. The two gate kinds point opposite ways, so treating both as unfulfilled lands
+somewhere worse than either: automation switches **off** (every automation PM carries
+`disallowing_laws = { law_industry_banned }`, a law an industrial country would never hold) and slave
+exploitation switches **on** (25 PMGs, including every plantation labour group, have no law-neutral
+member, so "hold no laws" leaves the default sitting on `slave_exploitation_*`). Two named laws a modern
+country has by definition is the smallest stance that yields no serfdom, no slavery, no exotic
+special cases — and working automation.
+
+⚠ These PMs are **not** removed from the balance UI. A human can still select any of them and read the
+arithmetic; the restriction is on the **solver**, which must build a scenario from what an unexceptional
+country can run. Verify with **`node tools/verify_pms.mjs`**, which re-reads the game files directly
+(not our extract, so an extractor bug cannot hide) and fails if any selected PM is unreal or illegal.
+
+⚠ **Two hard invariants the solve must respect**, both learned by breaking them:
+- **One price rule per good per era.** `dye` is a plantation good until synthetics exists and a
+  manufactured one after; running both rules made it converge to a *blend* satisfying neither.
+- **The negative-goods floor.** A tier's main input can never be solved below the largest reduction its
+  own secondary PMs can apply, or the building's total input for that good goes negative. The invariant
+  is hard and the profit target is soft, so the floor wins and the tier misses slightly.
 
 Scope now: **all manufacturing + the new-economy chains + the art academy** — 22 config industries / 67 tier
 buildings. The new-economy chains (infra + electricity) are `power` (electricity, **on the BE ladder**), `port`
@@ -91,6 +167,12 @@ ON_GAME_UPDATE.md       what to re-run / re-check after a Victoria 3 patch (vers
 BUGS_AND_FIXES.md       root-cause log of non-obvious fixed bugs — NOT auto-loaded; CONSULT when investigating a new bug or after a patch
 MISSING_PM_REFERENCES.md catalogue of vanilla events/JEs/effects that reference a main PM our tier split relocated (they error+return false → missed flavor). GENERATED by tools/audit_pm_refs.ps1; strategic fix deferred
 MISSING_BUILDING_CONDITIONS.md catalogue of special conditional fields (e.g. a conditional ai_value block) inside vanilla buildings we replace/split that our emitted building drops. Hand-maintained; directly fixable but batch-deferred (distinct from MISSING_PM_REFERENCES, which is external refs)
+config/era_prices.json      GENERATED by tools/era_solver.mjs and COMMITTED: the balance-only view — each good's price
+                        per era (% of base) and the PMs a country of that era runs. Reference, not authoritative:
+                        tools/era_scenarios.mjs re-solves against REALISED prices and overwrites the volumes
+config/era_presets.json     GENERATED by tools/era_scenarios.mjs and COMMITTED: the five solved era scenarios
+                        (buildings/pops/units/sol/prices), passed through by extract_presets.ps1 into ui/presets.js.
+                        Committed because a scenario is a design input, not an artifact
 config/mod_config.json      THE THING YOU EDIT — industries → tiers (tech, target_be, natural_year, output, inputs, building_cost, wage_pct?, employment, names, vanilla_pm, vanilla_pm_aliases?, state_infrastructure?, ship_construction?, ai_value?, output_override?); industry flags source_file?/clone_from_vanilla?/follows_be?/no_mass_be? (new-economy); plus top-level building_ai_value (map building_key→ai_value for PRESERVED buildings in owned files, e.g. trade center), pm_goods (map pm_key→{in:{good:qty},out:{good:qty}} — per-PM goods overrides applied to the owned PM files; any building's PM), and building_subsidies (map building_key→AI subsidy policy; see below)
 config/start_exceptions.json manual 1836-start overrides (force_tier / remove, scoped by country/state) — editable
 config/start_baseline.json   GENERATED inventory of the vanilla 1836 start (per-industry/tier/country + drift check)
@@ -99,6 +181,25 @@ config/pop_distribution.json FITTED within-need consumption distribution (need �
 config/measured_1836.json    GENERATED (tools/extract_measured.ps1, from a testbed session) and COMMITTED: the things the game FILES cannot answer — per market TRADE (imports/exports per good), SoL per stratum, MILITARY building levels, urban-centre levels as a cross-check, and per market **WAGES** (`-WagesOnly`, a MERGE-only mode that rewrites just the `wages` block and leaves every other field untouched, because a wages session carries none of the other metrics and a full run over it would blank them). The wages block holds **`base_weekly_wage`** — the UI's base £/wk knob, measured, on the F26 basis: **laborers + farmers + machinists, EMPLOYED pops only** (the three professions actually paid a building's market wage; state-salaried and owner professions are excluded, and an unemployed pop would put workers in the wage-unit denominator with nothing in the numerator). Beside it: `base_weekly_labour` on the **superseded** 11-profession basis, kept only for continuity with earlier findings and **not** to be fed to a scenario; the per-profession spread; the game's own per-state average annual wage (mean/median/min/max); the workforce ratio; and a per-pop-type table. Read by extract_presets.ps1; optional (a clone without it still builds, just without those). ⚠ Regenerate after a game patch — a stale table is silently wrong, not obviously missing
 tools/                  dev tooling — NOT shipped in the mod
   build.ps1             builder: config → generates all mod/ files + all-language loc + ladder_tiers.txt + 1836 start, then lints
+  --- the five-era pipeline (Node ≥ 24; see "THE FIVE-ERA LADDER" above) ---
+  build_era_ladder.mjs  STRUCTURE: stamps each tier's era from an explicit per-industry spec, mints the 22
+                        model_only tiers, applies the ×1.5 output ladder. IDEMPOTENT (drops previously invented
+                        tiers first), so run it BEFORE era_scenarios, never after — it discards their volumes
+  era_solver.mjs        BALANCE-ONLY reference view: derives a price path from profit margins alone, no scenario.
+                        Writes config/era_prices.json. Superseded for volumes by era_scenarios
+  era_scenarios.mjs     THE solve: prices realised from the order book, tier volumes + building counts + pops +
+                        army solved together per era. Writes config/era_presets.json AND the volumes back to
+                        config/mod_config.json
+  econ_host.mjs         loads ui/econ.js + the generated ui/*.js under Node — supplies the state containers the
+                        browser would. Contains NO model of its own
+  econ_selftest.mjs     regression check for ui/econ.js against MEASURED numbers already in the docs (F26/F27,
+                        the V3 price formula anchors). Run it after touching ui/econ.js
+  verify_pms.mjs        audits every PM the era presets select: is it a REAL vanilla PM, and could this
+                        country legally run it? Reads common/production_methods DIRECTLY rather than our
+                        extract, so an extractor bug cannot hide behind it. Exits non-zero on any failure.
+                        ⚠ It strips the UTF-8 BOM: every PM file starts with one, so the FIRST production
+                        method in each file is invisible to a naive `^name = {` match — which made six real
+                        PMs look hallucinated on this check's first run
   solve_be_targets.ps1  re-derives every tier's target_be + natural_year from its tech's vanilla era (date ladder; BALANCE_FRAMEWORK §8.1)
   solve_volumes.ps1     re-derives every tier's output/input volumes from vanilla recipes + target_be (BALANCE_FRAMEWORK §8)
   solve_building_cost.ps1 re-derives every tier's building_cost (construction points) from a 10yr-payback model (BALANCE_FRAMEWORK §9)
@@ -162,7 +263,14 @@ tools/                  dev tooling — NOT shipped in the mod
   lint_profitability.awk / ladder_tiers.txt   BE-vs-ladder linter (ladder_tiers.txt is GENERATED; prices come
                         from goods_prices.tsv via `-v PRICES=`, never a copy inside the awk)
   lint_negative_goods.awk negative-goods invariant linter (no PM combination drives a good's building total < 0)
-ui/                     browser balance editor — builder.html (hand-authored) + data.js + vanilla.js + presets.js + icons.js (all GENERATED each build; icons.js is gitignored game art)
+ui/                     browser balance editor — builder.html (hand-authored) + econ.js (hand-authored) + data.js +
+                        vanilla.js + presets.js + icons.js (the last four GENERATED each build; icons.js is gitignored game art)
+  econ.js               THE economic model, hand-authored, shared by builder.html AND the Node solvers. One
+                        implementation of the pop-demand rules (F13/F19/F22/F24/F26/F27), the V3 price formula,
+                        wages-from-workforce and the scenario order book — a second copy would drift, and these
+                        are measured results, not conventions. Pure model: no DOM, no formatting.
+                        ⚠ builder.html still carries its own identical copy of these ~260 lines; collapsing that
+                        fork is an open task. Until then, change BOTH or neither.
 mod/                    THE DEPLOYABLE MOD — GENERATED, do not hand-edit
   .metadata/metadata.json                                (hand-maintained, except the mod `name` which the builder suffixes with the build time; has replace_paths for history)
   common/buildings/{01_industry,06_urban_center,11_private_infrastructure}.txt   (generated: WHOLE-FILE replacements of vanilla — 06/11 own the new-economy chains — see MODDING_NOTES)
@@ -363,8 +471,11 @@ the game.
   weights: laborers 1, machinists/clerks/soldiers 1.5, farmers 2, shopkeepers/engineers/clergymen 3,
   bureaucrats/academics 4, officers/aristocrats/capitalists 5, peasants 0.2, slaves 0; everyone
   non-discriminated). A building's **wage units** = `Σ (employees × wage_weight)` and its wage `W = base × units`.
-  **The base wage is now MEASURED, not guessed.** It was a flat `0.04` £/wk; vanilla 1836 reads **0.0490
-  for the Austrian market and 0.0741 for the Belgian**, so the guess was ~46% low for an industrial one.
+  **The base wage is now MEASURED, not guessed.** It was a flat `0.04` £/wk; on the canonical F26 basis
+  (`base_weekly_wage` — laborers + farmers + machinists, EMPLOYED pops only) vanilla 1836 reads **0.0606
+  for the Austrian market and 0.0781 for the Belgian**, so the guess was ~34% low for Austria and ~49% low
+  for an industrial market. (The superseded 11-profession basis, `base_weekly_labour`, read 0.0490 / 0.0741
+  — kept in `measured_1836.json` only for continuity with earlier findings, never fed to a scenario.)
   A **preset carries its market's `base_wage`** (from `config/measured_1836.json` → `ui/presets.js`) and
   applies it through `recomputeWages()`, so it obeys the same rule as typing in the panel: unlocked
   groups inherit, **locked groups keep the wage they were tuned at**. A preset with no measured wage
@@ -423,9 +534,14 @@ the game.
   **full** break-even + per-good-threshold **full
   profitability** ((output − inputs − wages)/(inputs + wages), shown as **% and weekly £**). Each Input/Output
   cell ends in a **subtotal** — `total in` (input goods **+ wages**) and `total out` (priced goods only; the
-  non-goods block below it has no £) — so a row reads as one equation: *in − out ⇒ profit*. Subtotals are at
-  **base** prices (they sum the rows above them) while the Profit column is at the **current prices** (the scenario
-  panel's price column), so they line up exactly at the default 100% prices.
+  non-goods block below it has no £) — so a row reads as one equation: *in − out ⇒ profit*.
+  **EVERY £ IN A BUILDING ROW IS AT THE CURRENT SCENARIO PRICES, INCLUDING THROUGHPUT** — each goods row and both
+  subtotals (`mval()`), so `total out − total in` equals the Profit column **exactly**, always. Wages are the one
+  term throughput does NOT scale (it moves goods, not the workforce — which is precisely why it lifts the margin).
+  ⚠ These used to be at **base** prices with no throughput, which agrees with the Profit column only at 100% prices
+  and no bonus. Once era presets began unlocking prices and setting throughput, the subtotals and the profit
+  disagreed on screen by default with nothing to explain the gap (a furniture tier showed in £2691 / out £2850
+  beside a profit of £2141). Do not reintroduce a base-price subtotal without a second, clearly-labelled row.
   **Scenario panel + market prices (session-only).** Every building row has a **Number** column (count of that
   building in a hypothetical market; default 0, keyed by building key for tiers *and* reference buildings). The
   **Scenario panel** (which **replaced the old price panel** — it now owns pricing) is **styled after the in-game

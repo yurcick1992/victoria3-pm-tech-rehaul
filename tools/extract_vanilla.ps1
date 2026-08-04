@@ -59,6 +59,24 @@ $pBlocks = Get-TopBlocks (Join-Path $Game 'common\production_methods') ''
 $pms = [ordered]@{}
 foreach ($name in $pBlocks.Keys) {
     $in = [ordered]@{}; $out = [ordered]@{}; $emp = [ordered]@{}; $mods = [ordered]@{}; $gated = $false
+    # A PM's own unlocking technology. Needed to answer "which secondary PM would a country of this era
+    # actually be running?" — without it, a model has to guess from the PM's position in its group, and
+    # would hand an 1836 farm its 1900 fertilizer method. Paired with the $techEra table below.
+    $pmTech = if (($pBlocks[$name] -join ' ') -match 'unlocking_technologies\s*=\s*\{\s*([A-Za-z0-9_]+)') { $Matches[1] } else { $null }
+    # A few secondary PMs are gated behind a MAIN PM being present in the same building (pm_bone_china,
+    # pm_elastics, pm_precision_tools). Anything choosing PMs has to respect that or it will switch on a
+    # secondary the building cannot actually run.
+    $pmGate = @(Get-ListTokens $pBlocks[$name] 'unlocking_production_methods' '')
+    # EVERY OTHER GATE a PM can carry. Vanilla uses eight mechanisms and we used to model three, so the
+    # PM chooser happily selected a Japan-only rice method and slave-exploitation plantations for a
+    # country with no slaves. Captured here so anything picking PMs can evaluate them properly.
+    $pmLaws     = @(Get-ListTokens $pBlocks[$name] 'unlocking_laws' '')
+    $pmNoLaws   = @(Get-ListTokens $pBlocks[$name] 'disallowing_laws' '')
+    $pmRegions  = @(Get-ListTokens $pBlocks[$name] 'unlocking_geographic_regions' '')
+    $pmCompany  = @(Get-ListTokens $pBlocks[$name] 'unlocking_company_categories' '')
+    $pmIdentity = @(Get-ListTokens $pBlocks[$name] 'unlocking_identity' '')
+    $pmRel      = @(Get-ListTokens $pBlocks[$name] 'unlocking_religions' '')
+    $pmNoRel    = @(Get-ListTokens $pBlocks[$name] 'disallowing_religions' '')
     # Goods values are NOT always integers: subsistence / urban-centre / agro PMs use fractions
     # (grain 1.0, fabric 0.5, meat 0.33, ...). Matching only \d+ silently truncated those to 0.
     foreach ($l in $pBlocks[$name]) {
@@ -70,11 +88,51 @@ foreach ($name in $pBlocks.Keys) {
     }
     $rec = [ordered]@{ in = $in; out = $out; emp = $emp; mods = $mods }
     if ($gated) { $rec.gated = $true }
+    if ($pmTech) { $rec.tech = $pmTech }
+    if ($pmGate.Count -gt 0) { $rec.gate = $pmGate }
+    if ($pmLaws.Count     -gt 0) { $rec.laws     = $pmLaws }
+    if ($pmNoLaws.Count   -gt 0) { $rec.nolaws   = $pmNoLaws }
+    if ($pmRegions.Count  -gt 0) { $rec.regions  = $pmRegions }
+    if ($pmCompany.Count  -gt 0) { $rec.company  = $pmCompany }
+    if ($pmIdentity.Count -gt 0) { $rec.identity = $pmIdentity }
+    if ($pmRel.Count      -gt 0) { $rec.religion = $pmRel }
+    if ($pmNoRel.Count    -gt 0) { $rec.noreligion = $pmNoRel }
     $pms[$name] = $rec
 }
 
+# --- technology -> era, read LIVE from the game (same source solve_be_targets.ps1 uses) ---
+$techEra = [ordered]@{}
+$techDir = Join-Path $Game 'common\technology\technologies'
+if (Test-Path $techDir) {
+    foreach ($f in (Get-ChildItem $techDir -Filter *.txt)) {
+        $cur = $null
+        foreach ($ln in (Get-Content -LiteralPath $f.FullName -Encoding UTF8)) {
+            if ($ln -match '^\s*([a-z][A-Za-z0-9_]*)\s*=\s*\{') { $cur = $Matches[1]; continue }
+            if ($null -ne $cur -and $ln -match '^\s*era\s*=\s*era_(\d)') { $techEra[$cur] = [int]$Matches[1]; $cur = $null }
+        }
+    }
+}
+
+# --- building groups: urbanization + the subsistence flag + the parent chain ---
+# Needed to apply the F13 urban-centre rule outside PowerShell: a state raises floor(urbanization / 100)
+# levels, where every building level contributes its group's `urbanization` EXCEPT groups flagged
+# `is_subsistence`, which contribute nothing. Both fields INHERIT down the parent chain, so the chain has
+# to ship too — a child group usually declares neither. Verified exact on 774 of 783 states (FINDINGS F13).
+# tools/extract_presets.ps1 parses the same three fields for the same rule; keep them in step.
+$groups = [ordered]@{}
+foreach ($f in (Get-ChildItem (Join-Path $Game 'common\building_groups') -Filter *.txt)) {
+    $cur = $null
+    foreach ($line in (Get-Content -LiteralPath $f.FullName -Encoding UTF8)) {
+        if ($line -match '^\s*(bg_[A-Za-z0-9_]+)\s*=\s*\{') { $cur = $Matches[1]; if (-not $groups.Contains($cur)) { $groups[$cur] = [ordered]@{} }; continue }
+        if (-not $cur) { continue }
+        if ($line -match '^\s*parent_group\s*=\s*(bg_[A-Za-z0-9_]+)') { $groups[$cur].parent = $Matches[1] }
+        if ($line -match '^\s*urbanization\s*=\s*(\d+)')              { $groups[$cur].urbanization = [int]$Matches[1] }
+        if ($line -match '^\s*is_subsistence\s*=\s*yes')              { $groups[$cur].subsistence = $true }
+    }
+}
+
 # --- write ui/vanilla.js ---
-$payload = [ordered]@{ buildings = $buildings; pmgs = $pmgs; pms = $pms }
+$payload = [ordered]@{ buildings = $buildings; pmgs = $pmgs; pms = $pms; groups = $groups; tech_era = $techEra }
 $json = $payload | ConvertTo-Json -Depth 12 -Compress
 $body = "// AUTO-GENERATED by tools/extract_vanilla.ps1 - vanilla building/PMG/PM reference for the balance UI.`n" +
         "// Read-only; regenerated from the live game on every canonical build.`n" +

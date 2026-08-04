@@ -422,7 +422,9 @@ const VANILLA_CONSTRUCTION = { construction_cost_low:200, construction_cost_medi
 // "Restore defaults" preset, so both produce identical fresh state.
 function makeTiers(i){ return i.tiers.map((t,ix)=>({
     key:t.key, name:t.name, tier:ix+1, output_qty:+t.output_qty, target_be:+t.target_be,
-    tech:t.tech, natural_year:(t.natural_year!=null?+t.natural_year:null),   // unlock tech + its era's representative year (solve_be_targets.ps1)
+    tech:t.tech, natural_year:(t.natural_year!=null?+t.natural_year:null),   // unlock tech + its era's representative year
+    era:(t.era!=null?+t.era:null),     // the mod's own five-era ladder — NOT the tier's position in its industry
+    model_only:!!t.model_only,         // modelled but not emitted (no unlocking technology exists yet)
     output_good:t.output_good,   // optional per-tier override (e.g. shipyard clippers→steamers)
     vanilla_pm:t.vanilla_pm,     // base-game main PM this tier replaces (used by "Bring to vanilla")
     building_cost:(t.building_cost!=null?+t.building_cost:null),   // construction points (→ required_construction)
@@ -490,7 +492,7 @@ function buildingCostModel(i,t){
 // input cost at BASE (labor is a fixed cost, it doesn't swing with input good market prices).
 function storedBuildCost(i,t){ return (t.building_cost!=null?t.building_cost:buildingCostModel(i,t)); }
 function capitalCost(i,t){ return storedBuildCost(i,t)*BCM.poundPerPoint; }
-function weeklyProfit(i,t){ return outputValue(i,t,true) - inputValue(t,true) - wageCost(t); }
+function weeklyProfit(i,t){ const k=thruMult(t.key); return k*outputValue(i,t,true) - k*inputValue(t,true) - wageCost(t); }
 function paybackYears(i,t){ const p=weeklyProfit(i,t); return p>0 ? capitalCost(i,t)/(BCM.weeksPerYear*p) : Infinity; }
 function fmtPayback(y){ return !isFinite(y) ? '∞' : (y>=99.5 ? '99+' : (y<10?y.toFixed(1):Math.round(y))+'y'); }
 // ---- payback actions (shared by tier / group / worksheet levels) ----
@@ -1015,7 +1017,9 @@ function popBreakdown(g){
 }
 // the Number column cell — same markup for tier rows and reference rows (BLDNUM keyed by building key).
 function numCellHTML(key){ return `<td class="num numcell"><input type="number" min="0" step="1" value="${BLDNUM[key]||0}" data-bldnum="${esc(key)}" title="Number of this building in the scenario"></td>`
-  + `<td class="num numcell"><input type="number" step="0.01" value="${THRU[key]!=null?THRU[key]:0}" data-thru="${esc(key)}" title="Throughput bonus — scales this building's inputs AND outputs together. A preset fills it from the game's own reading per building type (economy of scale + technology + laws + company bonuses combined), so it is measured, not fitted. Session-only, never emitted: the game computes its own."></td>`; }
+  // ⚠ Shown and typed as a PERCENT (20 = +20%); stored as a fraction (0.20). The stored form is what every
+  // calculation uses, so the conversion lives here and nowhere else.
+  + `<td class="num numcell"><input type="number" step="1" value="${round((THRU[key]!=null?THRU[key]:0)*100)}" data-thru="${esc(key)}" title="Throughput bonus as a PERCENT (20 = +20%) — scales this building's inputs AND outputs together, but NOT its wages, which is why it improves the margin. A preset fills it from the game's own reading per building type (economy of scale + technology + laws + company bonuses combined). Session-only, never emitted: the game computes its own."></td>`; }
 // when UNLOCKED, push the scenario's computed price (%) into thresholds for every priced good. Returns whether
 // it did anything (i.e. prices are live). Callers then re-render the price panel + downstream profit cells.
 function syncScenarioPrices(agg){
@@ -1032,6 +1036,14 @@ function tierOut(i,t){ return t.output_good || i.output_good; }
 function pmRec(pm){ const v=VAN.pms[pm]||{in:{},out:{},emp:{},mods:{}}; const o=REFEDIT[pm];
   return o ? {in:o.in||v.in, out:o.out||v.out, emp:v.emp, mods:v.mods} : v; }   // REFEDIT = session goods overrides (explorer editing)
 function goodsVal(map, useThr){ let v=0; for(const g in (map||{})){ v += map[g]*(PRICES[g]||0)*(useThr?(thresholds[g]??100)/100:1); } return v; }
+// THE MONEY A BUILDING ROW SHOWS IS AT SCENARIO PRICES, INCLUDING THROUGHPUT. Every £ in the Input and
+// Output cells — each goods row and both subtotals — is what this building actually pays and earns in the
+// loaded scenario, so the row reads as one equation: total in − total out = the Profit column.
+// It used to show BASE prices with no throughput, which is only the same thing at 100% prices and no
+// bonus; with an era preset applied (prices unlocked, throughput set) the subtotals and the profit
+// disagreed on screen with nothing to explain why. Wages are NOT scaled — throughput moves goods, not the
+// workforce, which is exactly why it improves the margin.
+function mval(good, qty, bldKey){ return qty*(PRICES[good]||0)*((thresholds[good]??100)/100)*thruMult(bldKey); }
 // value of the input/output goods of a set of selected PMs (sel = {pmg: pm})
 function selInVal(sel, useThr){ let v=0; for(const pg in (sel||{})) v += goodsVal(pmRec(sel[pg]).in, useThr); return v; }
 function selOutVal(sel, useThr){ let v=0; for(const pg in (sel||{})) v += goodsVal(pmRec(sel[pg]).out, useThr); return v; }
@@ -1052,7 +1064,7 @@ function outputValue(i,t, useThr){ const og=tierOut(i,t); return t.output_qty*(P
 // One EDITABLE good row wired to the shared pm_goods override (data-refedit), keyed by a context key
 // (a tier's building key, or a reference building key). Same markup as a main good row; `secondary` adds
 // the ↳ marker used on tier cards to distinguish a secondary-PM contribution from the tier's main output.
-function editGoodRow(ctxKey, pm, dir, good, qty, secondary){ const val=qty*(PRICES[good]||0);
+function editGoodRow(ctxKey, pm, dir, good, qty, secondary){ const val=mval(good, qty, ctxKey);
   return `<div class="goodrow${secondary?' sec':''}" title="${esc(good)} from ${esc(prettyPm(pm))} — editing changes this PM's goods everywhere it's used (saved via pm_goods)"><span class="g">${esc(good)}</span>
     <span class="amt"><input type="number" step="any" value="${qty}" data-refedit="${esc(ctxKey)}" data-pm="${esc(pm)}" data-dir="${dir}" data-good="${esc(good)}"><span class="u"></span><span class="v muted" id="rv_${ctxKey}_${pm}_${dir}_${good}">£${round(val)}</span></span></div>`; }
 // input-goods (dir='in') or output-goods (dir='out') contributed by the tier's ACTIVE (non-base) secondary PMs.
@@ -1089,9 +1101,11 @@ function empRows(m){ return Object.entries(m||{}).map(([k,v])=>`<div class="brk"
 function empBreak(m){ return Object.entries(m||{}).map(([k,v])=>`${k} ${v}`).join(', '); }
 function selEmp(sel){ const e={}; for(const pg in (sel||{})){ const r=VAN.pms[sel[pg]]; if(r&&r.emp) for(const k in r.emp) e[k]=(e[k]||0)+r.emp[k]; } return e; }
 // FULL break-even: output price (% of base) at which full profit (input goods + wages) = 0.
-function BE(i,t){ const O=outputValue(i,t,false); return O>0 ? (inputValue(t,false)+wageCost(t))/O*100 : 0; }
+// THROUGHPUT is in the profit, not only the order book: it scales goods but NOT the workforce, so it
+// raises the margin (wages are the one cost that doesn't grow with it). revenue = k·O, cost = k·I + W.
+function BE(i,t){ const k=thruMult(t.key), O=k*outputValue(i,t,false); return O>0 ? (k*inputValue(t,false)+wageCost(t))/O*100 : 0; }
 // FULL profitability at the current price panel: (O − I − W)/(I + W). Wages at base (fixed labor).
-function TPthr(i,t){ const I=inputValue(t,true), W=wageCost(t); const C=I+W; return C>0 ? (outputValue(i,t,true)-C)/C*100 : 0; }
+function TPthr(i,t){ const k=thruMult(t.key), I=k*inputValue(t,true), W=wageCost(t); const C=I+W; return C>0 ? (k*outputValue(i,t,true)-C)/C*100 : 0; }
 // re-solve a tier's input volumes (keeping recipe proportions) so its FULL break-even hits target_be.
 // Wages W are now FIXED by the workforce, so (I + W)/O = target  =>  I = target/100 * O − W.
 // Only the MAIN recipe (t.inputs) scales: an active secondary PM's inputs are its own recipe, so they are
@@ -1349,8 +1363,27 @@ function applyScenarioPreset(id){
   // it was measured. Applied through recomputeWages() rather than by assigning BASE_WAGE, so it obeys
   // the same rule as typing in the base-wage row: unlocked groups inherit, LOCKED groups keep the
   // wage they were tuned at. A preset with no measured wage leaves the sheet's wage alone.
+  // WAGE OVERRIDES ARE CLEARED BY A PRESET. A preset is a one-off overwrite of the whole market, so the
+  // market's wage has to reach every building in it. The lock rule in recomputeWages() pins a LOCKED
+  // group to the wage it was tuned at — right for protecting hand-tuning from the global knob, wrong
+  // here, because REFERENCE CATEGORIES ARE LOCKED BY DEFAULT and were never tuned. The effect was that
+  // applying an era preset moved our tier buildings to the era's wage and left every farm, mine and
+  // plantation at the sheet's old one, so half the economy was priced at a wage the solver never used
+  // (rye farms sat at £0.04/wk against the solver's £0.1297, which inverts every automation choice —
+  // tractors only pay when labour is dear).
+  Object.keys(REFBASE).forEach(k=>delete REFBASE[k]);
+  IND.forEach(i=>i.tiers.forEach(t=>{ t._baseWage=null; }));
   let wageOld=null;
-  if(p.base_wage>0 && p.base_wage!==BASE_WAGE){ wageOld=BASE_WAGE; BASE_WAGE=p.base_wage; }
+  if(p.base_wage>0 && p.base_wage!==BASE_WAGE){ BASE_WAGE=p.base_wage; }
+  // PRICES. A solved era preset carries the prices its own order book produces, and the whole design is
+  // that they are REALISED, not chosen — so seed them and then UNLOCK, which makes the panel recompute
+  // them from the orders in front of you. If the scenario is right the two agree; if they don't, that
+  // disagreement is the thing worth seeing. Without this the panel showed every good at 100% of base and
+  // every profit figure was answering a question the solve never asked.
+  if(p.prices){
+    Object.keys(PRICES).forEach(g=>{ if(p.prices[g]!=null) thresholds[g]=p.prices[g]; });
+    PRICES_LOCKED=false;
+  }
   render();
   if(wageOld!=null) recomputeWages(wageOld);
   banner('info', p.id==='empty'
@@ -1447,7 +1480,7 @@ function industryCard(i){
     <div class="bd" style="display:${i._open?'':'none'}"><table class="mtable">
       ${MTABLE_COLS}
       <thead><tr>
-      <th>Tier</th><th>Building</th><th class="num" title="How many of this building exist in the scenario. Drives the scenario panel's buy/sell orders (input×N = buy, output×N = sell).">No.</th><th class="num" title="Throughput bonus, measured in game per building type: economy of scale + technology + laws + company bonuses, combined. Scales inputs AND outputs together. Never emitted.">Thru</th><th>Inputs (qty) + wages</th><th>Output</th>
+      <th>Tier</th><th>Building</th><th class="num" title="How many of this building exist in the scenario. Drives the scenario panel's buy/sell orders (input×N = buy, output×N = sell).">No.</th><th class="num" title="Throughput bonus as a PERCENT (20 = +20%), measured in game per building type: economy of scale + technology + laws + company bonuses, combined. Scales inputs AND outputs together, but NOT wages. Never emitted.">Thru %</th><th>Inputs (qty) + wages</th><th>Output</th>
       <th title="Workforce (employment by profession). Read-only visualization — not editable or emitted from the UI.">Workforce</th>
       <th class="num" title="Edit to re-solve this tier's input volumes to hit that FULL break-even">Target</th>
       <th class="num" title="FULL break-even output price % — where output revenue = input goods + wages (inputs at base)">BE output prices @ 100% input prices</th>
@@ -1478,19 +1511,19 @@ function wfCell(emp){ const tot=empTotal(emp);
 function tierRow(i,t){
   const be=BE(i,t), tp=TPthr(i,t), outG=tierOut(i,t);
   const inputs = Object.entries(t.inputs).map(([g,q])=>`<div class="goodrow" title="${esc(g)}: qty × base price £${PRICES[g]||'?'}"><span class="g">${esc(g)}</span>
-    <span class="amt"><input type="number" min="0" step="1" value="${q}" data-ind="${i.id}" data-tier="${t.tier}" data-input="${esc(g)}"><span class="u"></span><span class="v muted" id="gv_${i.id}_${t.tier}_${g}">£${round(q*(PRICES[g]||0))}</span></span></div>`).join('')
+    <span class="amt"><input type="number" min="0" step="1" value="${q}" data-ind="${i.id}" data-tier="${t.tier}" data-input="${esc(g)}"><span class="u"></span><span class="v muted" id="gv_${i.id}_${t.tier}_${g}">£${round(mval(g,q,t.key))}</span></span></div>`).join('')
     + secGoodRows(i,t,'in')   // editable input goods from active secondary PMs (↳)
     // wages sit at the BOTTOM of the input cell, fenced off — a MODELLING-only term (not a good, not emitted).
     // Wrapped so updateComputed() can refresh it live when goods or the base wage change.
     + wageRowHTML(`${i.id}_${t.tier}`, tierBaseWage(t), wageUnits(tierEmp(t)), inputValue(t,false), `data-ind="${i.id}" data-tier="${t.tier}"`)
-    + subtotalRow(`isub_${i.id}_${t.tier}`, 'total in', inputValue(t,false)+wageCost(t), 'total input cost at BASE prices: input goods + wages');
+    + subtotalRow(`isub_${i.id}_${t.tier}`, 'total in', thruMult(t.key)*inputValue(t,true)+wageCost(t), 'Total weekly input cost at the CURRENT scenario prices, including the throughput bonus on goods: input goods + wages. Wages are not scaled by throughput — it moves goods, not the workforce. total in − total out = the Profit column.');
   const outputs = `<div class="goodrow" title="${esc(outG)}: qty × base price £${PRICES[outG]||'?'}"><span class="g">${esc(outG)}</span>
-      <span class="amt"><input type="number" min="1" step="1" value="${t.output_qty}" data-ind="${i.id}" data-tier="${t.tier}" data-out="1"><span class="u"></span><span class="v muted" id="ov_${i.id}_${t.tier}">£${round(t.output_qty*(PRICES[outG]||0))}</span></span></div>`
+      <span class="amt"><input type="number" min="1" step="1" value="${t.output_qty}" data-ind="${i.id}" data-tier="${t.tier}" data-out="1"><span class="u"></span><span class="v muted" id="ov_${i.id}_${t.tier}">£${round(mval(outG,t.output_qty,t.key))}</span></span></div>`
     + secGoodRows(i,t,'out')   // read-only output goods from active secondary PMs (incl. negative main-good reductions)
     + nonGoodsRows(i,t)
-    + subtotalRow(`osub_${i.id}_${t.tier}`, 'total out', outputValue(i,t,false), 'total output revenue at BASE prices — priced goods only (the non-goods above carry no £)');
+    + subtotalRow(`osub_${i.id}_${t.tier}`, 'total out', thruMult(t.key)*outputValue(i,t,true), 'Total weekly output revenue at the CURRENT scenario prices, including the throughput bonus — priced goods only (the non-goods above carry no £).');
   return `<tr data-ind="${esc(i.id)}" data-tier="${t.tier}">
-    <td><span class="pill" style="background:${TIERCOL[t.tier]||'#666'}">${t.tier}</span></td>
+    <td><span class="pill" style="background:${TIERCOL[t.era||t.tier]||'#666'}" title="${t.era?`Era ${t.era} of the mod's five-era ladder (~${t.natural_year}). NOT this tier's position in its own industry — synthetics starts at era 2, so its first building is e2, not T1.`:'tier'}">${t.era?'e'+t.era:t.tier}</span>${t.model_only?'<div class="muted" style="font-size:9px" title="modelled but NOT emitted — no unlocking technology exists for it yet">model</div>':''}</td>
     <td>${esc(t.name)}<div class="muted" style="font-size:11px">${esc(t.key)}</div><div class="muted" style="font-size:10px" title="natural unlock date = this tier's tech era">${t.natural_year?'~'+t.natural_year+' · ':''}${esc(t.tech||'')}</div>
       <div class="aivrow" title="Base AI construction desire (building ai_value). Blank = engine default ${AIVAL_DEFAULT}. Emitted as the building's ai_value when set.">ai_value <input type="number" min="0" step="50" value="${t.ai_value!=null?t.ai_value:''}" placeholder="${AIVAL_DEFAULT}" data-ind="${i.id}" data-tier="${t.tier}" data-aiv="1"></div>
       ${subsidyRowHTML(t.key)}
@@ -1533,11 +1566,11 @@ function updateComputed(){
     const icell=document.getElementById(`tp_${i.id}_${t.tier}`);
     if(icell) icell.innerHTML = profitCell(i,t,tp);   // % + weekly £
     // refresh each input good's £ (qty × base price), the output good's £, and the wages £ (all at base)
-    for(const g of Object.keys(t.inputs)){ const gv=document.getElementById(`gv_${i.id}_${t.tier}_${g}`); if(gv) gv.textContent='£'+round(t.inputs[g]*(PRICES[g]||0)); }
-    const ov=document.getElementById(`ov_${i.id}_${t.tier}`); if(ov) ov.textContent='£'+round(t.output_qty*(PRICES[tierOut(i,t)]||0));
+    for(const g of Object.keys(t.inputs)){ const gv=document.getElementById(`gv_${i.id}_${t.tier}_${g}`); if(gv) gv.textContent='£'+round(mval(g,t.inputs[g],t.key)); }
+    const ov=document.getElementById(`ov_${i.id}_${t.tier}`); if(ov) ov.textContent='£'+round(mval(tierOut(i,t),t.output_qty,t.key));
     // cell subtotals: in (goods + wages) and out (priced goods), both at BASE prices
-    const isb=document.getElementById(`isub_${i.id}_${t.tier}`); if(isb) isb.textContent='£'+round(inputValue(t,false)+wageCost(t));
-    const osb=document.getElementById(`osub_${i.id}_${t.tier}`); if(osb) osb.textContent='£'+round(outputValue(i,t,false));
+    const isb=document.getElementById(`isub_${i.id}_${t.tier}`); if(isb) isb.textContent='£'+round(thruMult(t.key)*inputValue(t,true)+wageCost(t));
+    const osb=document.getElementById(`osub_${i.id}_${t.tier}`); if(osb) osb.textContent='£'+round(thruMult(t.key)*outputValue(i,t,true));
     // wages: keep the three linked fields (base ⇄ £ ⇄ %) in sync, never touching the one being typed in
     setWageFields(`${i.id}_${t.tier}`, tierBaseWage(t), wageCost(t), inputValue(t,false));
     const bccell=document.getElementById(`bc_${i.id}_${t.tier}`);   // refresh the muted model hint (not the editable value)
@@ -1677,11 +1710,11 @@ function catLabel(c){ return CATLABEL[c] || prettyGroup(c.replace(/^grp_/,'')); 
 function refCats(){ const map={}; refBuildings().forEach(b=>{ const c=catOf(b); (map[c]=map[c]||[]).push(b); }); return map; }
 function refSel(b){ const info=VAN.buildings[b], sel=REFSEL[b]||(REFSEL[b]={});
   (info.pmgs||[]).forEach(pg=>{ if(!sel[pg]) sel[pg]=basePm(pg); }); return sel; }
-function refEcon(b){ const g=selGoods(refSel(b));
-  const I=goodsVal(g.in,false), O=goodsVal(g.out,false), W=wageUnits(selEmp(refSel(b)))*refBaseWage(b);   // workforce × this building's base wage
-  const Ith=goodsVal(g.in,true), Oth=goodsVal(g.out,true);
-  return { I, O, W, goods:g, BE:(O>0?(I+W)/O*100:null), tp:((I+W)>0&&O>0?(Oth-(Ith+W))/(Ith+W)*100:null),
-           p:(O>0?Oth-(Ith+W):null) };   // weekly £ profit at the current price panel (null = no market output)
+function refEcon(b){ const g=selGoods(refSel(b)), k=thruMult(b);   // throughput scales goods, not the workforce
+  const I=k*goodsVal(g.in,false), O=k*goodsVal(g.out,false), W=wageUnits(selEmp(refSel(b)))*refBaseWage(b);   // workforce × this building's base wage
+  const Ith=k*goodsVal(g.in,true), Oth=k*goodsVal(g.out,true);
+  return { I, O, W, Ith, Oth, goods:g, BE:(O>0?(I+W)/O*100:null), tp:((I+W)>0&&O>0?(Oth-(Ith+W))/(Ith+W)*100:null),
+           p:(O>0?Oth-(Ith+W):null) };   // Ith/Oth are at CURRENT prices incl. throughput — what the row shows
 }
 // PM selectors for a reference building (one dropdown per PMG), placed under the building name — same
 // look as our tier cards' secondary-PM selectors.
@@ -1721,8 +1754,8 @@ function refRow(b){ const info=VAN.buildings[b], e=refEcon(b);
       ${subsidyRowHTML(b)}
       ${refPmSelectors(b)}</td>
     ${numCellHTML(b)}
-    <td class="cellbot"><div class="cw">${inG}${wageRowHTML(esc(b), refBaseWage(b), wageUnits(selEmp(refSel(b))), e.I, `data-refbld="${esc(b)}"`)}${subtotalRow(`isub_${esc(b)}`,'total in',e.I+e.W,'total input cost at BASE prices: input goods + wages')}</div></td>
-    <td class="cellbot"><div class="cw">${outG}${nong}${(!outG&&!nong)?dash:''}${outG?subtotalRow(`osub_${esc(b)}`,'total out',e.O,'total output revenue at BASE prices — priced goods only (the non-goods above carry no £)'):''}</div></td>
+    <td class="cellbot"><div class="cw">${inG}${wageRowHTML(esc(b), refBaseWage(b), wageUnits(selEmp(refSel(b))), e.I, `data-refbld="${esc(b)}"`)}${subtotalRow(`isub_${esc(b)}`,'total in',e.Ith+e.W,'Total weekly input cost at the CURRENT scenario prices, including the throughput bonus on goods: input goods + wages. Wages are not scaled by throughput. total in − total out = the Profit column.')}</div></td>
+    <td class="cellbot"><div class="cw">${outG}${nong}${(!outG&&!nong)?dash:''}${outG?subtotalRow(`osub_${esc(b)}`,'total out',e.Oth,'Total weekly output revenue at the CURRENT scenario prices, including the throughput bonus — priced goods only (the non-goods above carry no £).'):''}</div></td>
     <td class="wfcell">${wfCell(selEmp(refSel(b)))}</td>
     <td class="num">${dash}</td>
     <td class="num"><span class="be ${beCls}" id="refbe_${b}" title="full break-even (input goods + wages) ÷ priced output; — = no market output">${beTxt}</span></td>
@@ -1738,7 +1771,7 @@ function refCatCard(catId, blds){ const open=REFGRPOPEN.has(catId), locked=!REFU
     ? '<div class="muted" style="font-size:11px;padding:6px 12px">Trade, ports &amp; railways keep <b>vanilla</b> values (different economics); only <b>power plants</b> will follow our BE ladder.</div>' : '';
   const body = open ? `${note}<table class="mtable">
       ${MTABLE_COLS}
-      <thead><tr><th>Tier</th><th>Building</th><th class="num" title="How many of this building exist in the scenario. Drives the scenario panel's buy/sell orders.">No.</th><th class="num" title="Throughput bonus, measured in game per building type: economy of scale + technology + laws + company bonuses, combined. Scales inputs AND outputs together. Never emitted.">Thru</th><th>Inputs (qty)</th><th>Output</th><th>Workforce</th><th class="num">Target</th><th class="num">BE output prices @ 100% input prices</th><th class="num">Profit @ prices</th><th class="num">Build cost</th><th class="num">Payback</th><th class="num">→X</th></tr></thead>
+      <thead><tr><th>Tier</th><th>Building</th><th class="num" title="How many of this building exist in the scenario. Drives the scenario panel's buy/sell orders.">No.</th><th class="num" title="Throughput bonus as a PERCENT (20 = +20%), measured in game per building type: economy of scale + technology + laws + company bonuses, combined. Scales inputs AND outputs together, but NOT wages. Never emitted.">Thru %</th><th>Inputs (qty)</th><th>Output</th><th>Workforce</th><th class="num">Target</th><th class="num">BE output prices @ 100% input prices</th><th class="num">Profit @ prices</th><th class="num">Build cost</th><th class="num">Payback</th><th class="num">→X</th></tr></thead>
       <tbody>${blds.map(refRow).join('')}</tbody></table>` : '';
   return `<div class="card refcard${locked?' locked':''}"><div class="hd ind-hd" data-refgrp="${esc(catId)}"><span class="caret">${open?'▾':'▸'}</span> ${esc(catLabel(catId))} <span class="tag">${blds.length} building${blds.length!==1?'s':''}${locked?' · locked':''}</span>
       <span class="spacer"></span>
@@ -1814,8 +1847,8 @@ function refreshRefEconCells(b, e){
   e = e || refEcon(b);
   const rbe=document.getElementById(`refbe_${b}`); if(rbe){ rbe.textContent=e.BE!=null?`${round(e.BE)}%`:'—'; rbe.className='be '+(e.BE!=null?(e.BE<=175?'ok':'off'):'muted'); }
   const rtp=document.getElementById(`reftp_${b}`); if(rtp) rtp.innerHTML=refProfitHTML(e);
-  const isb=document.getElementById(`isub_${b}`); if(isb) isb.textContent='£'+round(e.I+e.W);
-  const osb=document.getElementById(`osub_${b}`); if(osb) osb.textContent='£'+round(e.O);
+  const isb=document.getElementById(`isub_${b}`); if(isb) isb.textContent='£'+round(e.Ith+e.W);
+  const osb=document.getElementById(`osub_${b}`); if(osb) osb.textContent='£'+round(e.Oth);
 }
 // write the three linked wage fields from the model, skipping whichever the user is typing in
 function setWageFields(idSuffix, base, W, goodsCost){
@@ -1844,7 +1877,7 @@ document.addEventListener('input', e=>{
   const el=e.target;
   // ---- scenario inputs: building Number, and per-good extra buy/sell orders (session-only) ----
   if(el.dataset.bldnum!==undefined){ BLDNUM[el.dataset.bldnum]=Math.max(0,+el.value||0); updateScenario(); return; }
-  if(el.dataset.thru!==undefined){ THRU[el.dataset.thru]=+el.value||0; updateScenario(); return; }
+  if(el.dataset.thru!==undefined){ THRU[el.dataset.thru]=(+el.value||0)/100; updateScenario(); return; }   // typed as %, stored as a fraction
   if(el.dataset.unitnum!==undefined){ UNITNUM[el.dataset.unitnum]=Math.max(0,+el.value||0); updateScenario(); return; }
   else if(el.dataset.addbuy!==undefined){ ADDBUY[el.dataset.addbuy]=Math.max(0,+el.value||0); updateScenario(); return; }
   else if(el.dataset.addsell!==undefined){ ADDSELL[el.dataset.addsell]=Math.max(0,+el.value||0); updateScenario(); return; }
@@ -1882,7 +1915,7 @@ document.addEventListener('input', e=>{
   else if(el.dataset.refedit!==undefined){    // explorer building goods edit (session override)
     const b=el.dataset.refedit, pm=el.dataset.pm, dir=el.dataset.dir, good=el.dataset.good;
     refEditSet(pm,dir,good,el.value);
-    const rv=document.getElementById(`rv_${b}_${pm}_${dir}_${good}`); if(rv) rv.textContent='£'+round((+el.value||0)*(PRICES[good]||0));
+    const rv=document.getElementById(`rv_${b}_${pm}_${dir}_${good}`); if(rv) rv.textContent='£'+round(mval(good,(+el.value||0),b));
     // refresh this reference row's BE / Profit / subtotals (no-op when b is a tier key, not a reference row)
     if(document.getElementById(`refbe_${b}`)) refreshRefEconCells(b);
     updateComputed();   // the PM may be a secondary on our tiers — refresh their BE/profit/payback too
@@ -2213,17 +2246,23 @@ document.querySelectorAll('.hd[data-toggle]').forEach(h=>h.onclick=()=>{ const b
 // This is a UI-side reconcile; it does not change the config on disk until you Export / Build now.
 // TRANSITIONAL: once the solvers/linter/builder move off wage_pct onto workforce wages, the config will already
 // be on target and this becomes a no-op. See CLAUDE.md → Balance UI (transitional note).
-(function reconcileToWageModel(){
-  const inds=beTargets();
-  const r=solveGroupsToTarget(inds);
-  inds.forEach(i=>i.tiers.forEach(t=>{ t.building_cost=buildingCostModel(i,t); }));   // build costs follow at load
-  render();
-  banner(r.unsolvable.length?'warn':'info',
-    `Loaded: re-solved ${r.tiers} tier(s) across ${r.groups} group(s) to their Target break-even at the standard wage (base £${round2(BASE_WAGE)}/wk), and set build cost from the payback model. `
-    + `The stored config was solved under the legacy wage model, so its volumes read ~10–20 pp under target here.`
-    + (r.unsolvable.length?` Could NOT reach target on ${r.unsolvable.length} tier(s): ${r.unsolvable.slice(0,6).join(', ')}${r.unsolvable.length>6?` +${r.unsolvable.length-6} more`:''}.`:'')
-    + beSkipNote());
-})();
+// REMOVED: reconcileToWageModel().
+//
+// It re-solved every unlocked group to its stored `target_be` AT BASE PRICES on every page load. That was
+// right while the config's volumes came from the legacy wage model and every good was assumed to trade at
+// 100%. It is now actively wrong: tools/era_scenarios.mjs solves each tier against the prices its own era
+// actually produces, and `target_be` is only a derived drift guard. Re-solving at base prices threw those
+// volumes away before they could be read — synthetics' era-5 tier is stored at fertilizer 179 / sulfur 114
+// and the panel was showing 230 / 146, which is why the profit column disagreed with the solver and why
+// later tiers looked worse than earlier ones.
+//
+// The config is now authoritative. Load it and show it.
+// ⚠ render() is THE initial draw for the whole sheet — the industry cards, the break-even ladder and the
+// scenario panel. It happened to live inside the reconcile IIFE that used to sit here, so deleting that
+// left a page with nothing but its headers. Nothing else calls it at start-up.
+render();
+banner('info', 'Loaded the solved config as-is. Volumes come from tools/era_scenarios.mjs, fitted against '
+  + 'each era’s own prices — apply an “Era ladder” preset to see them at those prices rather than at base.');
 initVizTooltips();
 window.addEventListener('resize', renderViz);
 </script>

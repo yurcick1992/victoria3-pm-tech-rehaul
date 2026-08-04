@@ -2538,3 +2538,118 @@ F1 is immune to this confound whichever way it resolves.
 - **The game is already at maximum speed.** `gui/timemanip.gui` binds the five speed buttons to
   `SetGameSpeed(0)`…`SetGameSpeed(4)`, so the log's `Changing game speed to: 4` **is** the UI's
   speed 5. There is no throughput left on that lever.
+
+## F28 — Vanilla GDP per capita for developed countries, 1836–1935. Our era ladder matches it closely through 1920 and runs ~11–20% rich at 1935
+
+**Session** `tools/testbed/sessions/20260803_220658_vanilla-percapita-n3` — vanilla control, n=3,
+1836→1935, 11 dumps, metrics `country_state`+`population`+`market_goods`+`wages`+`events`, 12 major tags.
+3/3 runs completed, no crashes, 8h21m. Figures below are the **mean of the three runs**.
+
+**Why it was needed.** The earlier vanilla long run (`20260801_001026_vanilla-n3-v5`) logged GDP but NOT
+population, so its numbers could never be turned into per-capita — and its only unbroken series was the
+USA. Without this, the mod's output ladder could not be calibrated against anything.
+
+### GDP per capita (country GDP ÷ country population)
+
+| | 1836 | 1856 | 1876 | 1896 | 1916 | 1935 |
+|---|---|---|---|---|---|---|
+| Belgium | 0.83 | 1.35 | 1.66 | 2.75 | 4.34 | **5.11** |
+| German Empire | — | — | 1.24 | 2.37 | 4.44 | **4.79** |
+| Great Britain | 0.97 | 1.62 | 2.42 | 3.16 | 4.48 | **4.76** |
+| United States | 1.04 | 1.03 | 1.11 | 1.18 | 1.94 | **4.07** |
+| Austria | 0.47 | 0.63 | 0.98 | 1.66 | 2.71 | **3.92** |
+| France | 0.65 | 0.65 | — | 0.98 | 0.80 | **1.48** |
+| Prussia | 0.70 | 0.91 | 1.29 | — | — | — |
+
+### Peasant share of POPULATION (peasant workforce ÷ working-adult ratio 0.25, ÷ total pop)
+
+| | 1836 | 1876 | 1916 | 1935 |
+|---|---|---|---|---|
+| German Empire | — | 56% | 6% | **0%** |
+| Great Britain | 62% | 45% | 14% | **2%** |
+| Austria | 88% | 67% | 20% | **4%** |
+| Belgium | 58% | 42% | 10% | **10%** |
+| United States | 38% | 60% | 46% | **26%** |
+| France | 79% | — | 59% | **51%** |
+
+### Against our era scenarios (OUTPUT_MULT 1.55)
+
+| our era | ours | nearest vanilla dump | vanilla developed band |
+|---|---|---|---|
+| 1 (1836) | 0.66 | 1836 | 0.47 – 1.04 ✅ mid-band |
+| 2 (1870) | 1.40 | 1866 | 0.75 – 2.01 ✅ mid-band |
+| 3 (1900) | 3.04 | 1896 | 1.18 – 3.16 ✅ at GB (3.16) |
+| 4 (1920) | 4.54 | 1916 | 1.94 – 4.48 ✅ at GB/Germany (4.48/4.44) |
+| 5 (1935) | 5.70 | 1935 | 3.92 – 5.11 ⚠ **11% over Belgium, 19% over Germany** |
+
+**The match is close through 1920 and only era 5 runs rich.** Eras 3 and 4 land almost exactly on
+Great Britain. So the 1.55 output ladder is not broadly wrong; if anything is, it is the top rung.
+
+**Two things worth keeping.**
+
+1. **Per-capita GROWTH is faster than any vanilla country.** Ours 0.66 → 5.70 = **8.6×**; Belgium 6.2×,
+   Great Britain 4.9×, German Empire 4.9× (from 1866). We start poorer and finish richer.
+2. **We are richer per capita while carrying MORE peasants.** Ours is 12% peasant at 1935 against
+   Germany's 0% and Britain's 2%. So our non-peasant workers must be markedly more productive than
+   vanilla's to reach a higher per-capita figure with a bigger agrarian drag. That, not the headline
+   level, is where the ladder is doing something vanilla does not.
+
+### What it does NOT say
+
+- **France is an outlier at 1.48** and should not be read as a developed-country datum — it is partitioned
+  or collapsed by late game in these runs. Same caution for any country whose tag changes.
+- **Great Britain is de-emphasised by design** (per the schedule's `_analysis_note`): its subject system
+  puts much of its economy and population in the market rather than the country. It is included because
+  it happens to agree with Germany and Belgium here, not as a lead witness.
+- **Nothing here validates the ORDERS side.** Whether GDP and total market orders can be used
+  interchangeably for calibration is still open; `market_goods` is in this session but the comparison
+  must be made at MATCHED SCOPE (summed GDP of a market's members vs that market's orders — see
+  TESTBED_METRICS §5.5b), and market membership moves over the campaign so the grouping has to be rebuilt
+  per dump. Not yet done.
+- **The `wages` per-profession table is collected but not analysed.** Use `tools/testbed/analyse_wages.sh`.
+
+## F29 — GDP and market orders are NOT interchangeable. The ratio swings 22–55 between markets and over time, and it puts a ±50% uncertainty on F28's per-capita comparison
+
+Same session as F28 (`20260803_220658_vanilla-percapita-n3`), n=3. Measured at **matched scope** per
+TESTBED_METRICS §5.5b — summed GDP of a market's member countries against that market's own sell-order
+value, with membership regrouped per dump from the GDP line's market field.
+
+### GDP ÷ weekly sell-order value
+
+| dump | British | French | Russian | American | Austrian |
+|---|---|---|---|---|---|
+| 1836 | 37 | 34 | 55 | 35 | 35 |
+| 1866 | 90 | 34 | 42 | 30 | **245** |
+| 1886 | 29 | 31 | 30 | 22 | 46 |
+| 1906 | 30 | 26 | 34 | 24 | 56 |
+| 1926 | 21 | 25 | 23 | 22 | 56 |
+| 1935 | 41 | 45 | 43 | 46 | **763** |
+
+**The answer to "can they be used interchangeably" is no.** Excluding Austria the ratio still runs 21–90,
+mostly 22–46, and it moves *within a single market over time* (British 90 → 21 → 41). There is no stable
+constant to convert one into the other.
+
+**Austria is unusable** (245, 207, 763). Those are years where its member set collapses or changes
+mid-dump while GDP is still attributed — the moving-membership hazard of §5.5b showing up as a number
+rather than as an error.
+
+### ⚠ This weakens F28's headline
+
+F28 compared our scenarios to vanilla by annualising our **weekly gross-output proxy at ×52**. But the
+measured ratio says vanilla's GDP is only **~30× weekly sell orders**, not 52 — i.e. vanilla's GDP is a
+value-added-like quantity, materially smaller than gross output. Converting ours on the measured factor
+instead:
+
+| conversion used | our 1935 per capita | vanilla 1935 band (3.92–5.11) |
+|---|---|---|
+| ×52 (F28 as written) | 5.70 | 11–19% **over** |
+| ×43 (the 1935 ratios) | 4.72 | **in band** |
+| ×30 (long-run median) | 3.29 | 16–36% **under** |
+
+So the true position is somewhere between "slightly under" and "slightly over", and **F28's "11–19% over"
+should be read as one end of a range, not a result.** The 1.55-vs-1.5 calibration argument rests on a
+number with ±50% of slack in it and cannot presently distinguish them.
+
+**What would settle it:** the definition of `GetGDP` — whether it is gross output, value added, or
+something else. That is a documentation/probe question, not a measurement one, and it is cheap compared
+to re-running anything.

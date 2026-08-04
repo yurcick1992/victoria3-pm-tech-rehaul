@@ -934,6 +934,34 @@ loss, now *detectable* rather than confounded.
 instant — and a completeness check is always one of those.** This metric is small enough
 (~1 500 lines/dump at 1836) that the burst was never the real risk.
 
+### 5.5b ⚠ NEVER divide a MARKET quantity by a COUNTRY quantity
+
+A scope-pairing rule for **analysis**, not for collection, and it is easy to get wrong because the two
+numbers sit in adjacent columns of the same session.
+
+`market_goods` logs **per MARKET**. `country_state` (and the `population` block riding inside it) logs
+**per COUNTRY**. A market spans however many countries share it — every subject that has not been granted
+its own market, plus customs-union partners — so **market orders ÷ country population is a category
+error**. It silently inflates any per-capita figure by the ratio of market members to the one country you
+divided by.
+
+This is *not* a Great Britain quirk. GBR is merely the worst case (its Indian subjects put most of the
+British Market's population outside the country), which is exactly why it is the one people notice and
+then wrongly assume is special.
+
+The fix is available in the data: the `GDP` line's **last field is the country's MARKET NAME**, so
+countries can be grouped into their market and summed. The three valid pairings:
+
+| numerator | denominator | valid? |
+|---|---|---|
+| country GDP | that country's population | ✅ |
+| market orders | Σ population of that market's member countries | ✅ |
+| Σ GDP of a market's members | that market's orders | ✅ — the only correct way to compare the two |
+| market orders | one member country's population | ❌ |
+
+⚠ Membership **changes over a campaign** (annexation, subject grants, customs unions), so the grouping has
+to be redone **per dump**, not fixed at 1836 — the same moving-membership trap as §5.6 below.
+
 ### 5.6 ⚠⚠ "The whole market" is NOT a bounded scope — pin per-pop sweeps to lead + subjects
 
 The most expensive lesson of this batch, and it generalises to any per-object sweep scoped by market.

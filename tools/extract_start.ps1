@@ -26,6 +26,8 @@ if (-not (Test-Path $histDir)) { throw "History dir not found: $histDir (set -Ga
 
 $cfgPath = if ($Config) { (Resolve-Path -LiteralPath $Config).Path } else { Join-Path $Repo 'config\mod_config.json' }
 $cfg = Get-Content -LiteralPath $cfgPath -Raw -Encoding UTF8 | ConvertFrom-Json
+# the 1836 baseline inventories BUILDABLE tiers only — a model_only tier can never appear in a start file
+foreach ($ind in $cfg.industries) { $ind.tiers = @($ind.tiers | Where-Object { -not $_.model_only }) }
 $maps = Get-SplitMaps $cfg
 $baseIndustry = $maps.baseIndustry; $pmMap = $maps.pmMap
 

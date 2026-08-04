@@ -1,0 +1,20 @@
+{
+  "schedule_version": 1,
+  "label": "vanilla-percapita-n3",
+  "_why": "VANILLA GDP PER CAPITA for developed countries, which no existing session can give. 20260801_001026_vanilla-n3-v5 ran this exact span with country_state but WITHOUT the population metric, so its GDP figures can never be turned into per-capita — and the only long unbroken vanilla series in it is the USA, which is still 46% peasant in 1935 and is therefore not a developed economy at all. That gap is what makes the mod's output ladder impossible to calibrate: we do not know how rich a peasantless vanilla leader actually is. Adding `population` (which rides inside the same every_country pass as GDP, so it costs one extra debug_log per country per dump, not a second sweep) closes it.\n\nAlso carries `wages` for the per-pop-type table, i.e. people by PROFESSION, and keeps `market_goods` so that GDP and total market orders can be checked against each other on the SAME run — the open question of whether the two are interchangeable for calibration cannot be answered from two different sessions.\n\nTags and dump dates are IDENTICAL to 20260801_001026_vanilla-n3-v5 so the two are directly comparable and the new run can be read as that session plus population.",
+  "_analysis_note": "DE-EMPHASISE GREAT BRITAIN when reading this. Its subject system means most of its economy and population sit in the British Market rather than the country, so its per-capita figures describe an empire, not the kind of single developed economy the era scenarios model. Prefer FRA / PRU / GER / NGF / AUS, and treat USA with care (46% peasant in 1935 in the earlier vanilla run — developed by GDP, not by structure).",
+  "defaults": {
+    "tags": ["GBR", "FRA", "PRU", "GER", "NGF", "AUS", "RUS", "USA", "CHI", "BIC", "IND", "TUR"],
+    "metrics": ["country_state", "population", "market_goods", "wages", "events"],
+    "autosave_interval": "five_year",
+    "timeout_minutes": 300
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1935.3.1", "dump_dates": ["1836.2.1","1846.2.1","1856.2.1","1866.2.1","1876.2.1","1886.2.1","1896.2.1","1906.2.1","1916.2.1","1926.2.1","1935.2.1"] },
+    { "setup": "vanilla", "until": "1935.3.1", "dump_dates": ["1836.2.1","1846.2.1","1856.2.1","1866.2.1","1876.2.1","1886.2.1","1896.2.1","1906.2.1","1916.2.1","1926.2.1","1935.2.1"] },
+    { "setup": "vanilla", "until": "1935.3.1", "dump_dates": ["1836.2.1","1846.2.1","1856.2.1","1866.2.1","1876.2.1","1886.2.1","1896.2.1","1906.2.1","1916.2.1","1926.2.1","1935.2.1"] }
+  ]
+}

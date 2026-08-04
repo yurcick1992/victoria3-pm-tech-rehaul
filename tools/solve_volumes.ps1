@@ -76,7 +76,9 @@ foreach ($ind in $cfg.industries) {
 
     $n = 0
     foreach ($t in $ind.tiers) {
-        $n++
+        $n++   # BEFORE the skip: the ×mult ladder is indexed over the WHOLE five-era ladder, so a
+               # model_only tier still consumes its rung even though this solver does not touch it.
+        if ($t.model_only) { continue }   # no vanilla_pm and no tech — tools/era_solver.mjs owns these
         $outGood = if ($t.output_good) { $t.output_good } else { $ind.output_good }
         $outQty = if ($null -ne $t.output_override) { [int]$t.output_override }
                   elseif ($n -eq 1) { $baseOut }

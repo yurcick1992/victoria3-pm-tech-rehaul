@@ -210,6 +210,24 @@ Newest first. Append here as we discover more couplings to vanilla.
     industries / 67 tier buildings**; the harness autosave default is **`five_year`** (not `never`) and the
     autosave enum row here quoted the *wrong* exe enum; the grace prompt is **60 s** (not 30 s); the removed
     `run_batch.ps1` was still referenced.
+- **2026-08-03** — **The five-era ladder replaces the BE-target system** (BALANCE_FRAMEWORK §10).
+  Balance is now solved as one interdependent economy with prices UNLOCKED, by a Node pipeline.
+  **New requirement: Node ≥ 24** (`C:\Program Files\nodejs`) — the PowerShell tools alone can no longer
+  reproduce the balance. **New vanilla couplings, all read live and re-derived on rebuild:**
+  `extract_vanilla.ps1` now also dumps **every gate a PM can carry** — `unlocking_laws`, `disallowing_laws`,
+  `unlocking_geographic_regions`, `unlocking_company_categories`, `unlocking_identity`, `unlocking_religions`,
+  `disallowing_religions` — because the solver must never select a PM this country could not run. Verify with
+  `node tools/verify_pms.mjs` after any patch: it reads the game files directly and fails on an unreal or
+  illegal selection. Specifically it also dumps (a) **per-PM `unlocking_technologies`** plus a **tech→era table**
+  from `common/technology/technologies`, used to decide which production method a country of a given era
+  actually runs; (b) **per-PM `unlocking_production_methods`** gates; (c) **`common/building_groups`**
+  urbanization / `is_subsistence` / parent chain, so the F13 urban-centre rule can run outside PowerShell.
+  A patch that moves a tech between eras, adds a PM gate, or changes a group's urbanization now moves the
+  solved balance — **re-run `node tools/era_scenarios.mjs --write` after any patch**, then `build.ps1`.
+  Run order: `build_era_ladder.mjs --write` → `era_scenarios.mjs --write` → `build.ps1`, never the
+  reverse: build_era_ladder is idempotent by DISCARDING model_only tiers, which throws away their volumes.
+  `solve_be_targets.ps1` / `solve_volumes.ps1` / `solve_building_cost.ps1` are now **legacy** for tiered
+  industries, and `target_be` is a derived drift guard rather than a design input.
 - **2026-08-03** — **Slave consumption is a BUILDING purchase, and the scenario panel now reads two new vanilla
   places for it.** Slaves buy nothing; the employing building buys them a basket. New couplings, both read live by
   `extract_presets.ps1`: **`common/defines/00_defines.txt` → `SLAVE_BASKET_DEFAULT/_MIN/_MAX/_SCALED_MIN/
