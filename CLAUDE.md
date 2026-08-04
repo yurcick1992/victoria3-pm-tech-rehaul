@@ -80,7 +80,7 @@ money**, (2) a **two-eras-stale** tier still turns a profit, (3) the ladder is *
 tier earns less than the one below it. Acceptable: **~0** for (1) and (3), **in the teens** for (2),
 **excluding shipyards and art academies** (both have targets they cannot meet by construction).
 `tools/era_scenarios.mjs` prints the count per era with the offending industries named.
-**Current state: 46 points, 29 excluding the excused (3 / 4 / 9 / 15 / 15 per era) — NOT yet acceptable.**
+**Current state: 44 points, 27 excluding the excused (3 / 4 / 9 / 14 / 14 per era) — NOT yet acceptable.**
 It is **live in the balance UI** as the **Ladder check** panel, from ONE shared implementation
 (`ladderFaults()` in `ui/econ.js`, called by both the UI and the solver). It scores only the buildings a
 scenario actually CONTAINS — an absent industry or a tier at Number 0 is never a fault and never the
@@ -179,9 +179,8 @@ country can run. Verify with **`node tools/verify_pms.mjs`**, which re-reads the
 Scope now: **all manufacturing + the new-economy chains + the art academy** — 22 config industries / 67 tier
 buildings. The new-economy chains (infra + electricity) are `power` (electricity), `port` and `railway` —
 **all three now on the BE ladder on regular terms** (commit `0cdc041` dropped `follows_be: false` from port
-and railway; they are solved, targeted and scored like any other industry). ⚠ Their `output_qty` is
-nonetheless still the **vanilla** volume, not the ×1.5 ladder, because `build_era_ladder.mjs` has not been
-re-run since — see BALANCE_FRAMEWORK §10.27. They
+and railway; they are solved, targeted and scored like any other industry, and since 2026-08-05 they carry
+the ×1.5 output ladder like everything else — BALANCE_FRAMEWORK §10.27). They
 live in other vanilla files (`06_urban_center`, `11_private_infrastructure`) and are emitted by
 **clone-and-swap** (see below); `trade_center` is deliberately left vanilla. **`art_academy`** (fine_art,
 `bg_arts`, on the BE ladder) is a normal split (not clone) sourced from `06_urban_center`; its 4 tiers are the

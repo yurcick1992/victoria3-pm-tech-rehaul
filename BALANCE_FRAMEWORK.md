@@ -1680,8 +1680,30 @@ the stored volumes are the output of a pipeline step nobody has executed against
 file cannot be regenerated from its own inputs.
 
 ⚠ It also matters for the ladder itself, because **`port` is a named repeat offender** — 2-eras-stale
-profitable in eras 3/4/5 and inverted in 4/5 — and its output ladder is currently ×2.2 then ×1.5 rather
+profitable in eras 3/4/5 and inverted in 4/5 — and its output ladder was ×2.2 then ×1.5 rather
 than ×1.5 throughout. A tier-2 port producing 20 where the ladder wants 14 is a tier-2 that is too good.
+
+### 10.27.1 RESOLVED — the pipeline was run, and it is now a strict fixed point end to end
+
+`build_era_ladder.mjs --write` was run and the ×1.5 ladder applied to both industries. Measured against
+the state before it, on an otherwise identical configuration:
+
+| | illogicality (excl) | per era | residual per era | price path | targets <8pp |
+|---|---|---|---|---|---|
+| vanilla port/railway volumes | 46 (29) | 3 / 4 / 9 / 15 / 15 | 5 / 12 / 4 / 9 / 1 | 65/97 | 75/86 |
+| **×1.5 ladder applied** | **44 (27)** | 3 / 4 / 9 / 14 / 14 | 5 / 12 / 1 / 2 / 6 | 67/97 | 73/86 |
+
+Two points is inside the jaggedness of §10.28 and is **not** the reason to keep it. The reason is that
+**the whole documented pipeline is now idempotent**: `build_era_ladder.mjs --write` followed by
+`era_scenarios.mjs --write`, run twice in succession, returns `config/mod_config.json` byte-identical and
+prints an identical report. Before, step 1 of the pipeline changed the file the repository was shipping.
+
+⚠ `build_era_ladder.mjs` on its own is still not a no-op after a solve, and is not meant to be: it re-mints
+the 22 `model_only` tiers and so discards their solved volumes by design. That is why the pipeline order is
+ladder → scenarios and never the reverse. What is now stable is the *pair*.
+
+⚠ Port is still an offender — two eras stale and inverted in eras 4 and 5. Its output ladder was one cause,
+not the cause.
 
 ## 10.28 THE COUNT CONTROLLER LIMIT-CYCLED — it needed a deadband, not more passes (2026-08-05)
 
