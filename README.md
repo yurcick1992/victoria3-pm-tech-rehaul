@@ -48,13 +48,14 @@ and opens the editor in your browser. You can:
   unlocked groups to the loaded config, or **Bring to vanilla** to reset split buildings toward their
   base-game recipes + ai_value,
 - load a **market preset** in the scenario panel — one click fills the whole scenario with a country's
-  vanilla 1836 market (France / UK / Russia / Qing, or Empty): its buildings and the production methods
+  vanilla 1836 market (France / UK / Russia / Qing, or Empty), or one of the five **solved era scenarios**
+  (1836 / 1870 / 1900 / 1920 / 1935): its buildings and the production methods
   the base game runs there, its **subsistence farms** (staffed by the peasant population, which is where
   most 1836 food comes from), its treaty goods transfers, and its population. Buy orders then split into
-  **buildings | pops | non-pops**, with editable **population** counts per class, per-good **"pops may buy"**
-  toggles driven by a scenario **year** (1836 locks automobiles, electricity, telephones, radios,
-  aeroplanes, steamers) and a
-  **pop demand fit ×** knob to calibrate pop consumption,
+  **buildings | pops | trade**, with editable **population** counts and **standard of living** per class.
+  Pop demand is derived live from those pops, each need's money splitting across its goods by the market's
+  own supply share — the rule the game itself uses — so a good the market does not supply drops out on its
+  own,
 - switch a tier's **secondary PMs** (selectors under the building name) — their goods distribute into the
   Input/Output columns as editable `↳` rows (shared via `pm_goods`), their non-goods outputs
   (infrastructure/pollution) and employment show read-only; the **Workforce** column tracks the selected PMs,
@@ -67,6 +68,16 @@ and opens the editor in your browser. You can:
 > Why a server is needed only for *Build now*: a web page cannot run programs on your PC (a hard
 > browser security rule). The server just invokes the same `tools\build.ps1` — no logic is
 > duplicated in the browser.
+
+**Take the sheet with you: double-click [`balance-snapshot.cmd`](balance-snapshot.cmd).** It writes
+`balance_ui_snapshot.html` at the repo root — the whole editor and its data folded into **one file**
+that needs no server, no network and no checkout, so you can read or tune the balance on another
+machine, or hand it to someone. Everything computes live (presets, prices, profitability, the payback
+and break-even tools) and **Export mod_config.json** works, so the round trip is *tune → export → bring
+the file back*. **Build now** is disabled in it, and the goods pictograms are left out (they are game
+art). It is a **snapshot, not a mirror**: it carries the balance as of the moment you made it and says
+so in a dated banner, so regenerate it rather than trusting an old one — and it refuses to run at all
+if you have not rebuilt since the last config change.
 
 ## What you edit
 

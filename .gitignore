@@ -13,6 +13,11 @@ config/start_baseline.json
 # public) and they are never shipped in mod/. The UI degrades gracefully if this file is absent.
 ui/icons.js
 
+# Self-contained balance-UI snapshots (tools/bundle_ui.mjs / balance-snapshot.cmd). Generated on
+# demand from whatever ui/ currently holds, so committing one would be a second, silently stale copy
+# of the config - and it is ~0.7 MB of inlined build output besides. Regenerate, never commit.
+balance_ui_snapshot*.html
+
 # Alternate/throwaway build outputs from build.ps1 -SaveTo <name> (mod_<name>/) and -DryRun
 # (mod_dryrun_<pid>/, auto-deleted). Only the canonical mod/ is source. Note the trailing-slash
 # and mod_ prefix keep the real mod/ tracked.
