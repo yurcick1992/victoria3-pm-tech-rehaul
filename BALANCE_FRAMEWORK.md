@@ -1951,13 +1951,27 @@ newer tier swaps cheap coal for oil, so the ×1.57 extra output does not cover t
 the same shape twice over (coal → electricity → oil).
 
 ⚠ **This is not a recipe that can be hand-tuned away**, because the tier that would need tuning is the one
-the solver deliberately leaves alone. The candidate remedies, none tried:
+the solver deliberately leaves alone — and leaving it alone is correct.
 
-1. **Re-solve older tiers to a stale target** (−5% one era back, −30% two back) instead of leaving them
-   frozen. That is what §10.2's stale targets describe, and nothing currently applies them to a tier once
-   it stops being current — the same declared-but-unimplemented shape as §10.30.
-2. **Let the price path deflate a good faster when its consumers move off it**, so an abandoned input does
-   not become a windfall for whoever still eats it.
-3. Accept inversion in industries whose inputs are themselves ladder goods, and say so in the criterion.
+⚠⚠ **AND THE OBVIOUS REMEDY DOES NOT EXIST.** "Re-solve the older tier to §10.2's stale target (−5% one era
+back, −30% two back)" is the first thing anyone will reach for, and it is **incoherent**: a tier has ONE
+stored recipe, and a recipe is a property of the technology, not of the era you are looking at it from.
+Solving `port_industrial` to −5% in era 4 would overwrite the recipe that made it +20% in era 3, where it
+is the era-appropriate tier. That is why only the current tier is solved. Do not implement it.
 
-(1) is the obvious first thing to measure and is the recommended next step for the ladder.
+Stated properly, the constraint is this: **for a fixed output ladder and a given price path, a tier's whole
+profit trajectory is determined by one number** — its input scale. Pin that number at one era and every
+other era follows from prices alone. So obsolescence is not a free parameter, and the honest options are:
+
+1. **Solve each tier against its whole lifetime rather than one era** — a least-squares fit of the single
+   input scale against +20% when current, −5% one era on, −30% two on, accepting a compromise on all three.
+   This is coherent but needs an outer iteration across eras, because era N's solve would have to see
+   era N+1's prices, and the eras are currently solved in sequence. A real architectural change.
+2. **Stop a good's price from becoming a windfall for whoever still eats it** once its main consumers move
+   on. Port's inversion is `steamers` at 142 then 50; nothing in the model connects that collapse to the
+   fact that the tier still buying steamers is obsolete.
+3. Accept inversion in industries whose inputs are themselves ladder goods — which §10.4 already predicts
+   in general terms — and say so in the criterion rather than in a footnote.
+
+⚠ Note that (2) is *not* the price-path sweep closed in §10.13. That swept the decay **parameters** of the
+prescribed path; this is about a **realised** price collapsing 92pp between two eras on the supply side.
