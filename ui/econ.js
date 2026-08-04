@@ -431,7 +431,14 @@
         state_infrastructure:(t.state_infrastructure != null ? +t.state_infrastructure : null),
         ship_construction:(t.ship_construction != null ? +t.ship_construction : null),
         _sec:initSel((i.secondary_pmgs||[]).filter(pg => S.VAN.pmgs[pg])),
-        inputs:Object.fromEntries(Object.entries(t.inputs).map(([g,q]) => [g,+q]))
+        inputs:Object.fromEntries(Object.entries(t.inputs).map(([g,q]) => [g,+q])),
+        // ⚠ THE FROZEN RECIPE MIX MUST SURVIVE INTO THE MODEL. tools/era_scenarios.mjs solves only the
+        // SCALE of a recipe and takes its proportions from an invariant source; `input_ratio` is that
+        // source for the 22 model_only tiers, which have no vanilla recipe to fall back on. Dropping it
+        // here made the solver's "frozen" branch unreachable, so those 22 re-derived their mix from the
+        // inputs the previous `--write` had rounded — the last remaining channel of the write-cycle
+        // wander (BALANCE_FRAMEWORK §10.25).
+        input_ratio:(t.input_ratio ? Object.fromEntries(Object.entries(t.input_ratio).map(([g,q]) => [g,+q])) : null)
       })); }
     // Normalise the config's industries into the editable model. Returns a fresh array; the caller pushes
     // it into S.IND (mutated in place, so every alias of that array stays valid).

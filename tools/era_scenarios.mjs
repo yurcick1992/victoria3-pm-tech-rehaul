@@ -329,6 +329,65 @@ const stratumOf = p => (STRATUM.lower.includes(p) ? 'lower' : STRATUM.middle.inc
                       : STRATUM.upper.includes(p) ? 'upper' : null);
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+// ===================================================================================================
+// THE CANONICAL RECIPE MIX — ONE definition, used by every place that needs it.
+//
+// The solve owns a recipe's SCALE and nothing else; its PROPORTIONS are an input (BALANCE_FRAMEWORK §8:
+// inputs are solved "keeping vanilla input ratios"). So the mix must come from something the solve never
+// writes — otherwise `--write` saves a rounded copy, the next run recovers a slightly different mix from
+// it, and the config never reaches a fixed point. That is the whole of the write-cycle wander (§10.25),
+// and two of its three causes were closed by freezing the mix into `input_ratio`.
+//
+// ⚠ THE THIRD CAUSE WAS THAT THE FROZEN COPY NEVER ARRIVED. `ui/econ.js`'s `makeTiers` did not carry
+// `input_ratio` into the model, so `t.input_ratio` was always undefined here and the "frozen" branch was
+// unreachable dead code. The 67 tiers with a vanilla recipe were fine — they fell through to it, and it
+// is invariant, which is exactly why eras 1-2 looked stable. The 22 model_only tiers have no vanilla
+// recipe, fell all the way through to `t.inputs`, and re-derived their mix from the previous `--write`'s
+// rounding every single generation. Eras 3-5 are where those 22 live.
+//
+// Precedence, most invariant first:
+//   1. this tier's OWN vanilla recipe — a game file, so it cannot drift;
+//   2. the vanilla recipe of the nearest REAL tier below it in the same industry. A model_only tier's
+//      goods set is not its own invention: `build_era_ladder.mjs` copies it from that tier when it mints
+//      the tier, so that tier's vanilla mix IS this tier's mix, by construction — and it is invariant
+//      where a frozen copy of a solved number is not;
+//   3. the frozen `input_ratio` in the config, used VERBATIM (re-normalising it shifts it by an ulp per
+//      generation, because its sum is 1.0000000000000002, not 1);
+//   4. the current inputs — reachable only for a tier no solve has ever written.
+//
+// ERA_RATIO=frozen restores the documented-but-never-executed order (frozen outranks vanilla) so the two
+// can be measured against each other rather than argued about. It is an A/B switch, not configuration.
+const RATIO_MODE = process.env.ERA_RATIO || 'vanilla';
+function ratioFor(ind, t) {
+  const keys = Object.keys(t.inputs || {});
+  if (!keys.length) return null;
+  const covers = src => !!src && keys.every(g => src[g] > 0);
+  const vanOf = x => (x && x.vanilla_pm) ? (E.pmRec(x.vanilla_pm).in || {}) : null;
+  const below = () => (ind.tiers || [])
+    .filter(x => x !== t && (x.era ?? 0) < (t.era ?? 0) && covers(vanOf(x)))
+    .sort((a, b) => (b.era ?? 0) - (a.era ?? 0))[0];
+  const cand = { own: () => vanOf(t), below, frozen: () => t.input_ratio, inputs: () => t.inputs };
+  const order = RATIO_MODE === 'frozen' ? ['frozen', 'own', 'inputs'] : ['own', 'below', 'frozen', 'inputs'];
+  for (const name of order) {
+    let src = cand[name]();
+    if (name === 'below') src = vanOf(src);           // `below` yields a tier, not a recipe
+    if (!covers(src)) continue;
+    t._ratioSrc = name;
+    RATIO_SRC[name] = (RATIO_SRC[name] || 0) + 1;
+    // A FROZEN ratio is used verbatim; anything derived is normalised once and pinned to 6 decimals, so
+    // the same source always produces the identical object however many times it is re-derived.
+    if (name === 'frozen') return { ...src };
+    let s0 = 0; for (const g of keys) s0 += (src[g] || 0);
+    if (!(s0 > 0)) continue;
+    const r = {}; for (const g of keys) r[g] = Math.round(((src[g] || 0) / s0) * 1e6) / 1e6;
+    return r;
+  }
+  return null;
+}
+// Which source each tier's mix actually came from. Printed, because "the frozen branch is dead code" was
+// invisible for weeks precisely because nothing ever said which branch ran.
+const RATIO_SRC = {};
 // Re-solve a tier's INPUT volumes so it earns `target` at the CURRENT thresholds. Output is never
 // touched — the ×1.5-per-tier ladder is the mod's structure, and inputs are the lever (BALANCE_FRAMEWORK
 // §8). An active secondary PM's inputs are its own recipe, so they are held fixed and netted off first.
@@ -369,26 +428,12 @@ function solveInputsAt(ind, t, target) {
   // `_ratio` is captured ONCE from the config and never rewritten. The recipe is then always
   // `ratio × X`, with X solved directly from the target bill — same prices in, same recipe out, however
   // many times the config has been written.
-  // ⚠ THE RATIO MUST COME FROM SOMETHING THE SOLVE NEVER WRITES. Taking it from `t.inputs` is not enough:
-  // `--write` saves the solved inputs, so the next run recovers a ratio that already carries the previous
-  // run's rounding, and the mix drifts generation by generation. The VANILLA recipe is invariant — and it
-  // is the canonical source anyway (§8: inputs are solved "keeping vanilla input ratios").
-  // Three sources, in order of how invariant they are:
-  //   1. `input_ratio` frozen in the config — set once and never re-derived;
-  //   2. the VANILLA recipe (§8's canonical source), for the 67 tiers that have a `vanilla_pm`;
-  //   3. the current inputs, for the 22 INVENTED (`model_only`) tiers that have no vanilla counterpart —
-  //      which is precisely why (1) exists: without a frozen copy those 22 re-derived their ratio from
-  //      inputs the previous `--write` had already rounded, and the mix drifted every generation.
+  // ⚠ THE RATIO MUST COME FROM SOMETHING THE SOLVE NEVER WRITES — see `ratioFor` above, which is the one
+  // definition of that. This branch only fires for a tier the canonical-start pass skipped.
   if (!t._ratio) {
-    t._ratio = {};
-    const van = t.vanilla_pm ? (E.pmRec(t.vanilla_pm).in || {}) : {};
-    const keys = Object.keys(t.inputs);
-    const frozen = t.input_ratio && keys.length && keys.every(g => t.input_ratio[g] > 0) ? t.input_ratio : null;
-    const useVan = !frozen && keys.length > 0 && keys.every(g => van[g] > 0);
-    const src = frozen || (useVan ? van : t.inputs);
-    let s0 = 0;
-    for (const g of keys) s0 += (src[g] || 0);
-    for (const g of keys) t._ratio[g] = s0 > 0 ? (src[g] || 0) / s0 : 0;
+    const r = ratioFor(ind, t);
+    if (!r) return false;
+    t._ratio = r;
   }
   let unitMkt = 0, unitBase = 0;
   for (const g in t._ratio) {
@@ -1530,18 +1575,9 @@ for (const i of S.IND) {
   for (const t of i.tiers) {
     const keys = Object.keys(t.inputs || {});
     if (!keys.length) continue;
-    const van = t.vanilla_pm ? (E.pmRec(t.vanilla_pm).in || {}) : {};
-    const frozen = t.input_ratio && keys.every(g => t.input_ratio[g] > 0) ? t.input_ratio : null;
-    const useVan = !frozen && keys.every(g => van[g] > 0);
-    // ⚠ A FROZEN ratio is used VERBATIM. Re-normalising it each load shifts it by an ulp every
-    // generation (its sum is 1.0000000000000002, not 1), which never settles and occasionally tips a
-    // discrete choice — a config that never reaches a fixed point for purely floating-point reasons.
-    let s0 = 0; for (const g of keys) s0 += ((frozen || (useVan ? van : t.inputs))[g] || 0);
-    if (!(s0 > 0)) continue;
-    t._ratio = {};
-    if (frozen) { for (const g of keys) t._ratio[g] = frozen[g]; }
-    else { const src = useVan ? van : t.inputs;
-           for (const g of keys) t._ratio[g] = Math.round(((src[g] || 0) / s0) * 1e6) / 1e6; }
+    const r = ratioFor(i, t);
+    if (!r) continue;
+    t._ratio = r;
     const outGood = E.tierOut(i, t);
     const Obase = t.output_qty * (S.PRICES[outGood] || 0);
     let unitBase = 0; for (const g of keys) unitBase += t._ratio[g] * (S.PRICES[g] || 0);
@@ -1549,6 +1585,17 @@ for (const i of S.IND) {
     const X0 = (Obase / ioCapFor(i.id)) / unitBase;
     for (const g of keys) t.inputs[g] = Math.max(minMainInput(i, g), Math.round(t._ratio[g] * X0 * 10) / 10);
   }
+}
+// SAY WHICH BRANCH RAN. `frozen` sat unreachable for weeks because nothing reported it; a source line is
+// the cheapest possible guard against the same thing happening to the next one. `inputs` is the only
+// entry here that carries state from the previous `--write` — it must read 0.
+{
+  const order = ['own', 'below', 'frozen', 'inputs'];
+  const drift = RATIO_SRC.inputs || 0;
+  console.log(`\nRECIPE MIX (ERA_RATIO=${RATIO_MODE}): `
+    + order.filter(k => RATIO_SRC[k]).map(k => `${k} ${RATIO_SRC[k]}`).join(' · ')
+    + (drift ? `   ⚠ ${drift} tier(s) took their mix from the LAST WRITE — the write cycle cannot converge`
+             : '   — no tier reads its mix from the previous run'));
 }
 
 const out = [];

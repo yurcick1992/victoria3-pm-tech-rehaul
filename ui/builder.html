@@ -475,7 +475,10 @@ function makeTiers(i){ return i.tiers.map((t,ix)=>({
     state_infrastructure:(t.state_infrastructure!=null?+t.state_infrastructure:null),
     ship_construction:(t.ship_construction!=null?+t.ship_construction:null),
     _sec:initSel((i.secondary_pmgs||[]).filter(pg=>VAN.pmgs[pg])),   // per-tier secondary-PM selection (session-only, default base)
-    inputs:Object.fromEntries(Object.entries(t.inputs).map(([g,q])=>[g,+q]))
+    inputs:Object.fromEntries(Object.entries(t.inputs).map(([g,q])=>[g,+q])),
+    // frozen recipe MIX — the solver owns it (only the SCALE is solved); carried so an export keeps it
+    // consistent with the inputs beside it. See ui/econ.js makeTiers and BALANCE_FRAMEWORK §10.25.
+    input_ratio:(t.input_ratio?Object.fromEntries(Object.entries(t.input_ratio).map(([g,q])=>[g,+q])):null)
   })); }
 const IND = window.PMDATA.config.industries.filter(i => !i.disabled).map(i => ({
   id:i.id, output_good:i.output_good,
@@ -2529,6 +2532,13 @@ function mergedConfig(){
   cfg.industries.forEach(i=>{ const mi=IND.find(x=>x.id===i.id); if(!mi) return;   // skip disabled/hidden industries (left as-is)
     i.tiers.forEach(t=>{ const mt=mi.tiers.find(x=>x.key===t.key); if(!mt) return;
       t.output_qty=mt.output_qty; t.target_be=mt.target_be; t.inputs=mt.inputs;
+      // KEEP THE FROZEN MIX CONSISTENT WITH THE INPUTS BESIDE IT. `input_ratio` is the recipe's
+      // proportions; the era solver re-solves only the SCALE and takes the mix from here (for a
+      // model_only tier this is the only source there is). Exporting hand-edited inputs while leaving a
+      // stale ratio in place would let the next solve silently revert the edit, so restate it.
+      { const gs=Object.keys(mt.inputs||{}); let s=0; for(const g of gs) s+=+mt.inputs[g]||0;
+        if(gs.length && s>0){ const r={}; for(const g of gs) r[g]=Math.round(((+mt.inputs[g]||0)/s)*1e6)/1e6; t.input_ratio=r; }
+        else delete t.input_ratio; }
       if(mt.building_cost!=null) t.building_cost=mt.building_cost;
       if(mt.wage_pct!=null) t.wage_pct=mt.wage_pct;
       if(mt.ai_value!=null) t.ai_value=mt.ai_value; else delete t.ai_value; }); });

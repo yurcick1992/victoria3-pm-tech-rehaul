@@ -80,15 +80,17 @@ money**, (2) a **two-eras-stale** tier still turns a profit, (3) the ladder is *
 tier earns less than the one below it. Acceptable: **~0** for (1) and (3), **in the teens** for (2),
 **excluding shipyards and art academies** (both have targets they cannot meet by construction).
 `tools/era_scenarios.mjs` prints the count per era with the offending industries named.
-**Current state: 48 points, 33 excluding the excused (2 / 7 / 12 / 14 / 13 per era) — NOT yet acceptable.**
+**Current state: 53 points, 38 excluding the excused (5 / 4 / 12 / 17 / 15 per era; 3 / 3 / 8 / 13 / 11
+excluded) — NOT yet acceptable.**
 It is **live in the balance UI** as the **Ladder check** panel, from ONE shared implementation
 (`ladderFaults()` in `ui/econ.js`, called by both the UI and the solver). It scores only the buildings a
 scenario actually CONTAINS — an absent industry or a tier at Number 0 is never a fault and never the
 comparison partner for one — so zeroing things out while tinkering can only lower the count (§10.17).
-⚠ **A single run is deterministic, but repeated `--write` → re-run cycles are NOT** (47 / 51 / 51 / 48):
-the solve is path-dependent on the recipes it starts from. Quote the number as *this configuration's
-score*, never as *the solver's answer*, and treat converging that cycle as a prerequisite for tuning
-anything against the metric.
+✅ **The write cycle is a STRICT FIXED POINT** (BALANCE_FRAMEWORK §10.25, closed 2026-08-05): config,
+presets and the printed report come back byte-identical after every `--write` → re-run, so the number above
+is quotable and a change of any size is measurable. It got there by making the recipe MIX come from the
+vanilla recipes alone — the run prints `RECIPE MIX: own 67 · below 22` and warns if any tier ever reads its
+mix from the previous write.
 
 ⚠ **Older illogicality figures in the docs are void, not merely stale** (BALANCE_FRAMEWORK §10.14.1): the
 solver used to re-solve recipes *after* its final price sync, so it reported profits at prices its own
@@ -168,8 +170,11 @@ country can run. Verify with **`node tools/verify_pms.mjs`**, which re-reads the
   is hard and the profit target is soft, so the floor wins and the tier misses slightly.
 
 Scope now: **all manufacturing + the new-economy chains + the art academy** — 22 config industries / 67 tier
-buildings. The new-economy chains (infra + electricity) are `power` (electricity, **on the BE ladder**), `port`
-and `railway` (both `follows_be: false` — kept on **vanilla economics**, informational BE only). They
+buildings. The new-economy chains (infra + electricity) are `power` (electricity), `port` and `railway` —
+**all three now on the BE ladder on regular terms** (commit `0cdc041` dropped `follows_be: false` from port
+and railway; they are solved, targeted and scored like any other industry). ⚠ Their `output_qty` is
+nonetheless still the **vanilla** volume, not the ×1.5 ladder, because `build_era_ladder.mjs` has not been
+re-run since — see BALANCE_FRAMEWORK §10.27. They
 live in other vanilla files (`06_urban_center`, `11_private_infrastructure`) and are emitted by
 **clone-and-swap** (see below); `trade_center` is deliberately left vanilla. **`art_academy`** (fine_art,
 `bg_arts`, on the BE ladder) is a normal split (not clone) sourced from `06_urban_center`; its 4 tiers are the
@@ -256,6 +261,7 @@ tools/                  dev tooling — NOT shipped in the mod
                         of them. Prints, per era: profit targets, PRICE PATH realisation, the INDUSTRIAL
                         CEILING pass/fail (§10.15) and ILLOGICALITY. Env knobs, all for A/B measurement rather
                         than configuration: PRICE_START / PRICE_DECAY / PRICE_DECAY_INT / PRICE_FLOOR(_INT),
+                        ERA_RATIO (=frozen restores the losing recipe-mix precedence, §10.25.2),
                         ERA_CEIL_BOOST, ERA_CEIL_PM, ERA_JOINT, ERA_PROBE (the removed forward probe, kept
                         only so its damage can be re-measured — leave it off)
   econ_host.mjs         loads ui/econ.js + the generated ui/*.js under Node — supplies the state containers the
@@ -499,8 +505,9 @@ the game.
   (construction) — everything else verbatim (`New-ClonedBuilding` in build.ps1). It also needs
   **`source_file`** (the vanilla `common/buildings/*.txt` we whole-file-own for it — `06_urban_center` for
   power, `11_private_infrastructure` for port/railway; the builder now owns **01 + 06 + 11**). Two more
-  industry flags: **`follows_be: false`** (port/railway — stay on vanilla volumes: the volume / BE-target /
-  building-cost solvers skip them, the linter ladder skips them, the building name omits the BE target) and
+  industry flags: **`follows_be: false`** (stay on vanilla volumes: the volume / BE-target / building-cost
+  solvers skip them, the linter ladder skips them, the building name omits the BE target — **no industry
+  carries it today**; port and railway lost it in `0cdc041` and are on the ladder like everything else) and
   **`no_mass_be: true`** (all three — excluded from the linter ladder and, in the UI, locked-by-default so
   the mass BE tools + preset never touch them). Per-tier **`state_infrastructure`** is emitted as a
   workforce-scaled `state_infrastructure_add` (ports/railways produce infrastructure). Power is on the BE
