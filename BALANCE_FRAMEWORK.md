@@ -1924,3 +1924,40 @@ It was kept anyway, on three grounds, and the disagreement is recorded rather th
 one below it, which for port is era 4 against era 3 — `port_modern` (steamers + oil) against
 `port_industrial` (steamers + coal). Port is still inverted in eras 4 and 5 and the era-1 tier was never
 the reason. That is the next thing to look at for port, and it is a recipe question, not a scenario one.
+
+## 10.31 WHY PORT AND RAILWAY RUN BACKWARDS — the old tier floats, the new one is pinned (2026-08-05)
+
+Inversion (§10.11 fault 3) should be ~0 and is 4–5 per late era. After §10.30 removed the clipper
+subsidy, the survivors are **port** and **railway** in both eras 4 and 5, plus tooling and paper. The
+mechanism is one asymmetry, and it is general rather than specific to these industries:
+
+**Only the era-appropriate tier is re-solved.** `solveInputsAt` runs on the current tier each iteration and
+pins it to exactly its target (+20%). Every older tier keeps the recipe it was given when *it* was current,
+and its profit then **floats** with prices. So the newest tier cannot rise above target, while the one
+below it can rise without limit.
+
+The only force pushing an older tier down is its **output** price decaying faster than its inputs (§10.4).
+That fails precisely when a tier's inputs are manufactured goods on the same deflating ladder — which
+§10.4 already warns about in general terms. Port is the clean case:
+
+| tier | era | recipe | output |
+|---|---|---|---|
+| `port_industrial` | 3 | steamers 3.5 + coal 3.5 | 14 |
+| `port_modern` | 4 | steamers 4.3 + oil 8.6 | 22 |
+
+`steamers` costs **142% of base in era 3 and 50% in era 4**. Both tiers buy steamers, but only the era-4
+tier is re-pinned to +20% after that collapse; the era-3 tier simply keeps the windfall. On top of that the
+newer tier swaps cheap coal for oil, so the ×1.57 extra output does not cover the dearer input. Railway is
+the same shape twice over (coal → electricity → oil).
+
+⚠ **This is not a recipe that can be hand-tuned away**, because the tier that would need tuning is the one
+the solver deliberately leaves alone. The candidate remedies, none tried:
+
+1. **Re-solve older tiers to a stale target** (−5% one era back, −30% two back) instead of leaving them
+   frozen. That is what §10.2's stale targets describe, and nothing currently applies them to a tier once
+   it stops being current — the same declared-but-unimplemented shape as §10.30.
+2. **Let the price path deflate a good faster when its consumers move off it**, so an abandoned input does
+   not become a windfall for whoever still eats it.
+3. Accept inversion in industries whose inputs are themselves ladder goods, and say so in the criterion.
+
+(1) is the obvious first thing to measure and is the recommended next step for the ladder.
