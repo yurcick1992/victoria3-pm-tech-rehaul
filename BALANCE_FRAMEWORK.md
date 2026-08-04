@@ -1489,6 +1489,8 @@ GDP                  -> CONSTRUCTION            (10% of gross output, section 10
 peasants             -> subsistence levels, split across the subsistence TYPES
 GDP                  -> battalions -> SOLDIERS
 those professions    -> the non-economic / autoscaling buildings that employ them
+all of the above     -> URBAN CENTRES (floor(sum of urbanization / 100), FINDINGS F13) - LAST, because
+                        every building placed above contributes urbanization
 and back             -> productive building counts, chasing profit goals under the constraints
 ```
 
@@ -1585,3 +1587,19 @@ Section 10.16 recorded that repeated `--write` -> re-run cycles wandered (47 / 5
 **Eras 1 and 2 are now exactly stable across every write cycle**, and a single run is deterministic.
 **Eras 3–5 still move** and the config hash still churns, so this is *not yet* a strict fixed point and the
 remaining cause is unidentified. Do not quote a single figure from eras 3–5 as "the" score.
+
+### 10.26 Population by profession (2026-08-04)
+
+The class row is three wealth strata plus peasants and slaves, which is the unit **consumption** is computed
+on — a buy package is a wealth level, not a job. But nobody thinks in strata; they think "how many
+bureaucrats". So each scenario now carries `pops_by_profession`, and the balance UI shows it as a row under
+the population row.
+
+⚠ **Professions are additive DETAIL, never a second source of truth.** The class counts are their SUM and are
+**read-only** whenever professions are present, so the two cannot disagree on screen. Editing a profession
+recomputes its stratum, which flows into pop demand exactly as a class edit used to. Verified: the twelve
+professions sum to 47 856 970 against strata of 47 856 970 in era 4, and moving bureaucrats by +1 000 000
+moves the middle class by exactly that and back.
+
+Soldiers appear here as a profession like any other, which is what makes the army visible in the population
+rather than only in the order book.

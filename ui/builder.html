@@ -1299,13 +1299,48 @@ function presetBarHTML(){
         + `and only for the ${Math.round(slaveRealShare()*100)}% of them this scenario's buildings have unqualified jobs for; the rest are in subsistence at ×${SLAVE_SUBSISTENCE_MULT}. `
         + `Net ×${Math.round(slaveBasketMult()*1000)/1000} of a full basket, folded into the pops buy column (hover a cell to see that part on its own).`
       : `${c}: people. Buys the wealth-${solOf(c)} package${(cm[c]!=null&&cm[c]!==1)?` × ${cm[c]}`:''}.`;
-    return `<label title="${esc(t)}"><span>${c}</span><input type="number" min="0" step="1000" value="${POPS[c]||0}" data-pop="${c}"></label>`; }).join('');
+    // ⚠ When professions are known the class counts are DERIVED — they are sums, and editing them would
+    // silently contradict the professions they are made of. Read-only then, editable only as a fallback.
+    const ro = HAVE_POPPROF ? ' readonly title="derived: sum of the professions below"' : '';
+    return `<label title="${esc(t)}"><span>${c}</span><input type="number" min="0" step="1000" value="${POPS[c]||0}" data-pop="${c}"${ro}></label>`; }).join('');
   return `<div class="presetbar">${btns}
     <div class="pknobs clsrow"><span class="plbl">SoL</span>${solFields}
       <span class="rowend"><button class="minibtn" data-fitpops title="Re-solve the within-need consumption distribution across EVERY preset that carries a measured order book, then print it for config/pop_distribution.json. Observed demand is buy orders minus our building demand minus trade, so the building side has to be right first. Each market is normalised by its own total demand so a large market cannot set the answer for all of them. Session-only until you paste the result into the config — and note it is only the FALLBACK now: the live split is supply share.">fit pops</button></span></div>
     <div class="pknobs clsrow"><span class="plbl">Population</span>${popFields}
       <span class="rowend muted">= <b id="popTotal">${fmtPop(popTotal())}</b> total</span></div>
+    ${profPanelHTML()}
     <div id="workforcePanel"></div></div>`;
+}
+// ---------- POPULATION BY PROFESSION ----------------------------------------------------------------
+// The class row above is three wealth strata plus peasants and slaves, which is the unit CONSUMPTION is
+// computed on — a buy package is a wealth level, not a job. But nobody thinks in strata: they think "how
+// many bureaucrats". So the professions are shown explicitly and the classes become their SUM.
+//
+// ⚠ Professions are additive DETAIL, never a second source of truth. Editing one recomputes its class;
+// the classes themselves go read-only so the two can never disagree on screen.
+let POPPROF = {};
+let HAVE_POPPROF = false;
+// which stratum each profession belongs to — peasants and slaves are classes in their own right
+const PROF_STRATUM = { laborers:'lower', farmers:'lower', machinists:'lower', soldiers:'lower', servicemen:'lower',
+  shopkeepers:'middle', clerks:'middle', engineers:'middle', bureaucrats:'middle', academics:'middle',
+  clergymen:'middle', officers:'middle', aristocrats:'upper', capitalists:'upper' };
+const PROF_ORDER = ['laborers','farmers','machinists','soldiers','servicemen','clerks','shopkeepers','engineers',
+  'bureaucrats','academics','clergymen','officers','aristocrats','capitalists'];
+// classes are the sums; peasants and slaves pass through untouched
+function popsFromProfessions(){
+  if(!HAVE_POPPROF) return;
+  const s={upper:0,middle:0,lower:0};
+  for(const p in POPPROF){ const st=PROF_STRATUM[p]; if(st) s[st]+=(POPPROF[p]||0); }
+  POPS={...POPS, upper:Math.round(s.upper), middle:Math.round(s.middle), lower:Math.round(s.lower),
+        peasants:Math.round(POPPROF.peasants||0), slaves:Math.round(POPPROF.slaves||0)};
+}
+function profPanelHTML(){
+  if(!HAVE_POPPROF) return '';
+  const fields=PROF_ORDER.filter(p=>POPPROF[p]!=null).map(p=>{
+    const st=PROF_STRATUM[p]||'—';
+    return `<label title="${esc(p)}: people. Wage weight ${WAGE_WEIGHT[p]||0}; consumes as the ${st} stratum, at that stratum's standard of living. Editing this updates the ${st} class above, which is its sum.">`
+      + `<span>${esc(p)}</span><input type="number" min="0" step="1000" value="${POPPROF[p]||0}" data-popprof="${esc(p)}"></label>`; }).join('');
+  return `<div class="pknobs clsrow"><span class="plbl" title="Population by PROFESSION. The classes above are the sums of these — consumption is still computed per stratum, because a buy package is a wealth level rather than a job.">By profession</span>${fields}</div>`;
 }
 function renderScenario(){
   const el=document.getElementById('scenarioBody'); if(!el) return;
@@ -1423,6 +1458,10 @@ function applyScenarioPreset(id){
   if(p.base_wage>0 && p.base_wage!==BASE_WAGE){ BASE_WAGE=p.base_wage; }
   // the working-adult share is a property of the era being modelled, so a preset carries its own
   if(p.working_adult_ratio>0) POPM.working_adult_ratio=p.working_adult_ratio;
+  // per-profession populations, when the preset carries them; the class row then becomes their sum
+  if(p.pops_by_profession && Object.keys(p.pops_by_profession).length){
+    POPPROF={...p.pops_by_profession}; HAVE_POPPROF=true; popsFromProfessions();
+  } else { POPPROF={}; HAVE_POPPROF=false; }
   // PRICES. A solved era preset carries the prices its own order book produces, and the whole design is
   // that they are REALISED, not chosen — so seed them and then UNLOCK, which makes the panel recompute
   // them from the orders in front of you. If the scenario is right the two agree; if they don't, that
@@ -2194,6 +2233,10 @@ document.addEventListener('input', e=>{
     updateScenario(); return; }
   if(el.dataset.input!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.inputs[el.dataset.input]=+el.value||0; updateComputed(); updateScenario(); }
   else if(el.dataset.out!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.output_qty=+el.value||0; updateComputed(); updateScenario(); }
+  else if(el.dataset.popprof!==undefined){     // a profession count — the class above is its sum
+    POPPROF[el.dataset.popprof]=Math.max(0,+el.value||0);
+    popsFromProfessions(); renderScenario(); updateComputed(); return;
+  }
   else if(el.dataset.workratio!==undefined){   // working-adult share — one value, on POPM, no UI copy
     POPM.working_adult_ratio = Math.max(0.05, Math.min(1, +el.value||0.25));
     renderScenario(); updateComputed(); return;

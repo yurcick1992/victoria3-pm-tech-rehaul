@@ -70,6 +70,9 @@ const ARMY_MIX = {
 //   peasants             → subsistence levels, split across the subsistence TYPES
 //   GDP                  → battalions → SOLDIERS
 //   those professions    → the non-economic / autoscaling buildings that employ them
+//   all of the above     → URBAN CENTRES (floor(Σ urbanization / 100), FINDINGS F13) — LAST, because every
+//                          building placed above contributes urbanization, so they can only be counted
+//                          once everything else exists
 //   and back             → productive building counts, chasing the profit goals under the constraints
 //
 // The direction matters. Support buildings used to be placed at a fixed SHARE OF BUILDING LEVELS, and the
@@ -851,7 +854,7 @@ function buildScenario(eIx) {
   let popBoost = 1;
   const infeasible = new Map();   // industry id -> {got, tgt} where even the O/4 recipe misses the target
   capped.clear();
-  let jobs = 0, popNonPeasant = 0, peasants = 0, gdp = 0;
+  let jobs = 0, popNonPeasant = 0, peasants = 0, gdp = 0, POPPROF = {};
   // ⚠ advanceNonMarketPMs runs inside settle(), not once at the start: addSupport() places the construction
   // sector and the other non-selling buildings on every settle, and optimisePMs can evict a selection back
   // to a PMG's first (most primitive) entry. Anywhere less often and the wooden-buildings default creeps
@@ -1359,7 +1362,13 @@ function buildScenario(eIx) {
   function setPops() {
     // strata from the employment mix, peasants from the era's share, subsistence from the peasants
     const byStratum = { lower: 0, middle: 0, upper: 0 };
-    const addEmp = (emp, c) => { for (const p in emp) { const s = stratumOf(p); if (s) byStratum[s] += emp[p] * c; } };
+    // …and the same employment kept PER PROFESSION, so a scenario can be read at the level people actually
+    // think in ("how many bureaucrats?") instead of only as three strata. Strata remain the unit consumption
+    // is computed on — a buy package is a wealth level, not a job — so these are additive detail that must
+    // sum back to them, never a second source of truth.
+    const byProf = {};
+    const addEmp = (emp, c) => { for (const p in emp) { const s = stratumOf(p); if (s) byStratum[s] += emp[p] * c;
+      if (emp[p]) byProf[p] = (byProf[p] || 0) + emp[p] * c; } };
     for (const i of S.IND) for (const t of i.tiers) { const c = S.BLDNUM[t.key] || 0; if (c) addEmp(E.tierEmp(t), c); }
     for (const b of E.refBuildings()) { const c = S.BLDNUM[b] || 0; if (!c || E.isSubsistenceBuilding(b)) continue;
       addEmp(E.selEmp(E.refSel(b)), c); }
@@ -1371,6 +1380,7 @@ function buildScenario(eIx) {
     const battalions = Object.values(S.UNITNUM).reduce((a, c) => a + c, 0);
     const soldierWorkforce = battalions * SOLDIERS_PER_BATTALION;
     byStratum.lower += soldierWorkforce;
+    byProf.soldiers = (byProf.soldiers || 0) + soldierWorkforce;
     // …and give them somewhere to be: barracks host the battalions, employ nobody and consume nothing, so
     // placing them adds no goods demand and no double-counted wages.
     if (S.VAN.buildings[BARRACK_BLD] && battalions > 0)
@@ -1386,6 +1396,12 @@ function buildScenario(eIx) {
       peasants: Math.round(peasants), slaves: 0,
       soldiers: Math.round(soldierWorkforce / WORK_RATIO),   // reported; already inside `lower`
     };
+    // PEOPLE per profession (workforce ÷ working-adult ratio), plus the two classes that are not employment:
+    // peasants stand on their own, slaves are zero by the scenario's law stance.
+    POPPROF = {};
+    for (const p in byProf) POPPROF[p] = Math.round(byProf[p] / WORK_RATIO);
+    POPPROF.peasants = Math.round(peasants);
+    POPPROF.slaves = 0;
     // SUBSISTENCE FOLLOWS THE PEASANTS, spread over the TYPES in vanilla proportion rather than all landing
     // on one. Each type is sized by its own jobs-per-level (rice paddies hold twice what a farm does), so
     // the split is by WORKFORCE share, not by level share — putting every peasant in `subsistence_farm`
@@ -1469,6 +1485,7 @@ function buildScenario(eIx) {
   return { eIx, era, jobs, gdp, peasants, popNonPeasant, scaleOf, pmResult, share, gross, popBoost,
            jointDrift, jointDriftGood, jointDriftN, pmSettled,
            constrShare: constructionShare(), constrLevels: S.BLDNUM[CONSTRUCTION_BLD] || 0,
+           popProf: { ...POPPROF },
            tuned: { ...tuned }, capBlocked: new Set(capBlocked), fixedRef: { ...fixedRef },
            modelOnlyPlaced: (() => { let n = 0, tot = 0;
              for (const i of S.IND) for (const t of i.tiers) if (t.model_only) { tot++; if (S.BLDNUM[t.key] > 0) n++; }
@@ -1740,6 +1757,7 @@ for (let e = 0; e < FIT.eras.length; e++) {
     pms: (() => { const o = {}; for (const i of S.IND) for (const t of i.tiers) if (S.BLDNUM[t.key]) o[t.key] = { ...t._sec };
                   for (const b in S.REFSEL) if (S.BLDNUM[b]) o[b] = { ...S.REFSEL[b] }; return o; })(),
     pops: { ...S.POPS },
+    pops_by_profession: { ...meta.popProf },
     sol: { ...S.SOL },
     units: (() => { const o = {}; for (const k in S.UNITNUM) o[k.replace(/\|peace$/, '')] = S.UNITNUM[k]; return o; })(),
     nonbuy: {}, nonsell: {},
