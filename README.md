@@ -38,7 +38,12 @@ launcher**, add **“PM and Tech Rehaul”** to a playset, and Play.
 and opens the editor in your browser. You can:
 
 - edit input/output **volumes** and **wages** for every building × tier,
-- watch **break-even** and **profitability** update live,
+- watch **break-even** and **profitability** update live, and flip the **ladder chart** between the two
+  with a radio: *break-even* (what a recipe needs, independent of any scenario) or *profit* (what each tier
+  actually earns at the current prices and wages — a line sloping down to the right means newer factories
+  are earning less than older ones, which is the thing this mod exists to prevent),
+- read the **Ladder check** panel, which counts the three ways a tech ladder can be incoherent and updates
+  as you tinker — it only ever counts buildings your scenario actually contains,
 - switch **secondary production methods** (automation, luxury, …) and see the effect on break-even,
 - browse **every vanilla building** in the all-buildings explorer — same card/table look as the tiered
   industries (pick production methods and **edit any good's input/output**; non-goods outputs like

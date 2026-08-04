@@ -859,7 +859,16 @@ the game.
   stored value diverges from what `solve_building_cost.ps1` would set), a read-only **Payback** column
   (years = build cost × £720/point ÷ annual net profit at the current prices; wages per the row's
   wage %, at base input cost; **∞** when unprofitable at current prices), a
-  break-even-ladder chart, config-part save/load (version-tolerant), and snapshot history. **Payback
+  **ladder chart with TWO SWITCHABLE VIEWS** (a radio in its header; they answer different questions and
+  neither replaces the other, so keep both): **break-even** — full BE at BASE input prices, a property of the
+  RECIPE alone and therefore scenario-independent, with each tier's target band shaded; and **profit** — the
+  margin each tier actually earns at the current scenario's realised prices, PMs, throughput and wages
+  (identical to the row's Profit column, cross-checked), y-axis auto-scaled to the data and always including
+  **0%** (drawn solid, the viability line) plus a dashed **+20%** era-appropriate target. A line sloping DOWN
+  to the right in profit view IS an inverted ladder. ⚠ The two views disagree by design — a tier can sit
+  exactly on its BE target and still lose money once its output price falls; reading either alone as "the
+  ladder" is the mistake. A **hollow dot** in either view means the scenario contains none of that building
+  (same presence rule as the Ladder check). Plus config-part save/load (version-tolerant), and snapshot history. **Payback
   tools** (selectable X years) come in two actions at three levels: **$ = set build cost** (fix prices,
   set build cost so payback = X) and **% = set prices** (fix build cost, scale that industry's output +
   input prices by one factor — keeping the IO ratio + input mix — so an anchor tier's payback = X; flags
