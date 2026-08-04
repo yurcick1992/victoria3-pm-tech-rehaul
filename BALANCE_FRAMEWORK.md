@@ -1147,14 +1147,57 @@ figures in §10.6 and §10.11**, which were measured in the non-final state.
 | | total | loss-making | stale-profitable | inverted | ceiling breaches |
 |---|---|---|---|---|---|
 | previous configuration, corrected accounting | 65 (54 net) | 27 | 17 | 21 | 11 |
-| **now** | **43 (30 net)** | 15 | 15 | 13 | **0** |
+| **now** | **48 (33 net)** | 19 | 15 | 14 | **0** |
 
-Per era: 2 / 5 / 12 / 11 / 13. Price-path realisation 64/88 tiered goods within 15pp, from 54/88.
-The solve is now a **fixed point with respect to its own write**: re-running after `--write` reproduces
-every figure exactly, which the previous state did not.
+Per era: 2 / 7 / 12 / 14 / 13. Price-path realisation 59/88 tiered goods within 15pp, from 54/88.
+
+⚠⚠ **THE SOLVE IS NOT A FIXED POINT ACROSS ITS OWN WRITE, and an earlier claim here that it was is
+RETRACTED.** That check was invalid: `era_scenarios.mjs` sourced its config from `ui/data.js`, which is
+*build output*, so `--write` followed by a re-run silently re-read the **previous** values and reproduced
+its numbers exactly — which is precisely what a converged fixed point looks like. Once the build caught up,
+the figures moved by nine points. `tools/econ_host.mjs` now loads `config/mod_config.json` directly, so
+write → re-run has no build step inside it (see BUGS_AND_FIXES).
+
+With that closed, the honest picture is:
+- **A single run is deterministic** — three consecutive runs give 2/7/12/14/13 every time.
+- **Repeated write → re-run cycles are not.** Measured over four cycles: 47, 51, 51, 48 total. The solve
+  is **path-dependent on the recipes it starts from**: it re-solves them from whatever the config holds,
+  writes the result back, and the next run starts somewhere else. It wanders in the high forties rather
+  than diverging, but "48" is a point in that wander, not a converged value.
+
+So quote this number as *the current configuration's score*, never as *the solver's answer*. Making the
+write cycle converge is open work, and it is a prerequisite for tuning anything against this metric.
 
 Adopted path: `PRICE_START 155 · PRICE_DECAY 0.82 · PRICE_DECAY_INT 0.86 · PRICE_FLOOR 75`.
 
+### 10.17 The criterion is now LIVE IN THE BALANCE UI
+
+The rule has exactly **one** implementation — `ladderFaults()` in `ui/econ.js` — called by both
+`tools/era_scenarios.mjs` and the balance UI's **Ladder check** panel. The criterion that decides whether
+the ladder works cannot have two definitions.
+
+**It is scored on the buildings the scenario actually CONTAINS**, which is what makes it safe to watch
+while tinkering:
+
+- an industry with **no buildings at all** contributes **zero**, however bad its arithmetic looks;
+- a tier whose **Number is 0** is invisible — never a fault itself, and never the comparison partner
+  for one;
+- **`inverted` requires both** the best tier present *and* a lower one present. A missing lower tier can
+  never inflate the count;
+- **`stale-profitable` is measured in ERA DISTANCE** (≥2) from the best tier present, not by position in
+  a list, so a gap in the ladder cannot promote a one-era-old tier into a "two-eras-stale" one.
+
+Zeroing things out can therefore only ever *lower* the count. Verified in the UI: emptying `tooling`
+takes era 4 from 12 to 11 and drops its fault; keeping only the newest shipyard tier removes its
+`inverted` fault rather than inflating it; emptying the whole scenario reports 0 problems, 0 industries.
+
+⚠ **The panel and the solver's report answer slightly different questions, and will not always agree
+industry-for-industry.** The panel scores the **stored** state — the config's recipes and the preset's
+counts and prices, i.e. what was actually shipped. The solver's report scores the state it **just
+re-derived** in that run. At era 4 both give 14 points, but two industries land in different categories.
+That is the path-dependence above, seen from the side; it is not a disagreement about the rule.
+
 **The bar in §10.11 is still not met** — ~0 loss-making and ~0 inverted, teens for stale-profitable. Net
-loss-making is 15 and net inverted 13, both well above ~0. What is now true that was not before: the
-measurement is honest, the hard constraint holds, and the price path has been eliminated as the lever.
+loss-making is 19 and net inverted 14, both well above ~0. What is now true that was not before: the
+measurement is honest, the hard constraint holds, the criterion is visible live in the UI, and the price
+path has been eliminated as the lever.

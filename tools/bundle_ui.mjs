@@ -37,7 +37,12 @@ const STALE_OK = argv.includes('--stale-ok');
 // The generated files builder.html pulls in, in its own order. Named explicitly rather than globbed:
 // a new <script src> appearing in builder.html should FAIL here (below) rather than be silently dropped
 // from the bundle, which would produce a page that loads and is quietly missing a whole data set.
-const INLINE = ['data.js', 'vanilla.js', 'presets.js'];
+// econ.js is HAND-AUTHORED rather than generated, but it is loaded the same way and the snapshot needs
+// it — the Ladder check panel calls PMECON.ladderFaults().
+const INLINE = ['econ.js', 'data.js', 'vanilla.js', 'presets.js'];
+// ...and only the GENERATED ones can be stale against the config. Checking econ.js too made editing the
+// model — which does not touch config/mod_config.json — look like an out-of-date build.
+const GENERATED = ['data.js', 'vanilla.js', 'presets.js'];
 const OMIT = [{ file: 'icons.js', why: 'Paradox art (.gitignore\'d) — never redistributed' }];
 
 // ---- staleness: ui/*.js are BUILD OUTPUT, so a snapshot taken without building first ships whatever
@@ -45,7 +50,7 @@ const OMIT = [{ file: 'icons.js', why: 'Paradox art (.gitignore\'d) — never re
 const cfg = join(REPO, 'config', 'mod_config.json');
 if (existsSync(cfg)) {
   const cfgAt = statSync(cfg).mtimeMs;
-  const stale = INLINE.filter(f => existsSync(join(UI, f)) && statSync(join(UI, f)).mtimeMs < cfgAt);
+  const stale = GENERATED.filter(f => existsSync(join(UI, f)) && statSync(join(UI, f)).mtimeMs < cfgAt);
   if (stale.length) {
     const msg = `ui/${stale.join(', ui/')} ${stale.length > 1 ? 'are' : 'is'} OLDER than config/mod_config.json`;
     if (!STALE_OK) {

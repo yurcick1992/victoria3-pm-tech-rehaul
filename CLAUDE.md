@@ -80,7 +80,15 @@ money**, (2) a **two-eras-stale** tier still turns a profit, (3) the ladder is *
 tier earns less than the one below it. Acceptable: **~0** for (1) and (3), **in the teens** for (2),
 **excluding shipyards and art academies** (both have targets they cannot meet by construction).
 `tools/era_scenarios.mjs` prints the count per era with the offending industries named.
-**Current state: 43 points, 30 excluding the excused (2 / 5 / 12 / 11 / 13 per era) — NOT yet acceptable.**
+**Current state: 48 points, 33 excluding the excused (2 / 7 / 12 / 14 / 13 per era) — NOT yet acceptable.**
+It is **live in the balance UI** as the **Ladder check** panel, from ONE shared implementation
+(`ladderFaults()` in `ui/econ.js`, called by both the UI and the solver). It scores only the buildings a
+scenario actually CONTAINS — an absent industry or a tier at Number 0 is never a fault and never the
+comparison partner for one — so zeroing things out while tinkering can only lower the count (§10.17).
+⚠ **A single run is deterministic, but repeated `--write` → re-run cycles are NOT** (47 / 51 / 51 / 48):
+the solve is path-dependent on the recipes it starts from. Quote the number as *this configuration's
+score*, never as *the solver's answer*, and treat converging that cycle as a prerequisite for tuning
+anything against the metric.
 
 ⚠ **Older illogicality figures in the docs are void, not merely stale** (BALANCE_FRAMEWORK §10.14.1): the
 solver used to re-solve recipes *after* its final price sync, so it reported profits at prices its own
@@ -231,7 +239,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         ERA_CEIL_BOOST, ERA_CEIL_PM, ERA_JOINT, ERA_PROBE (the removed forward probe, kept
                         only so its damage can be re-measured — leave it off)
   econ_host.mjs         loads ui/econ.js + the generated ui/*.js under Node — supplies the state containers the
-                        browser would. Contains NO model of its own
+                        browser would. Contains NO model of its own.
+                        ⚠ The CONFIG comes from config/mod_config.json DIRECTLY, not from the copy embedded in
+                        ui/data.js: data.js is build output, so sourcing it there put a build step inside the
+                        solvers' own write→read loop and made `--write` + re-run silently re-read the PREVIOUS
+                        values (see BUGS_AND_FIXES). data.js still supplies prices + the vanilla extract
   econ_selftest.mjs     regression check for ui/econ.js against MEASURED numbers already in the docs (F26/F27,
                         the V3 price formula anchors). Run it after touching ui/econ.js
   verify_pms.mjs        audits every PM the era presets select: is it a REAL vanilla PM, and could this
@@ -316,7 +328,11 @@ tools/                  dev tooling — NOT shipped in the mod
   lint_negative_goods.awk negative-goods invariant linter (no PM combination drives a good's building total < 0)
 ui/                     browser balance editor — builder.html (hand-authored) + econ.js (hand-authored) + data.js +
                         vanilla.js + presets.js + icons.js (the last four GENERATED each build; icons.js is gitignored game art)
-  econ.js               THE economic model, hand-authored, shared by builder.html AND the Node solvers. One
+  econ.js               THE economic model, hand-authored, shared by builder.html AND the Node solvers. Also
+                        the ONE implementation of **`ladderFaults()`** — the illogicality criterion (§10.11)
+                        — called by both `tools/era_scenarios.mjs` and the UI's **Ladder check** panel, since
+                        the rule that decides whether the ladder works cannot have two definitions. It scores
+                        only buildings a scenario CONTAINS (§10.17). builder.html now loads econ.js for it. One
                         implementation of the pop-demand rules (F13/F19/F22/F24/F26/F27), the V3 price formula,
                         wages-from-workforce and the scenario order book — a second copy would drift, and these
                         are measured results, not conventions. Pure model: no DOM, no formatting.

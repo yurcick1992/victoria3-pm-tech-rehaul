@@ -955,31 +955,18 @@ for (let e = 0; e < FIT.eras.length; e++) {
   //   1. the era-appropriate tier loses money
   //   2. a two-eras-stale tier still turns a profit (it should have been driven out)
   //   3. the era-appropriate tier earns LESS than the tier one era below it (the ladder runs backwards)
-  const ill = { insolvent: [], stale_profitable: [], inverted: [] };
-  for (const i of S.IND) {
-    if (i.follows_be === false) continue;
-    const av = [...i.tiers].sort((a, b) => a.era - b.era).filter(t => t.era <= meta.era && S.BLDNUM[t.key] > 0);
-    if (!av.length) continue;
-    const cur = av[av.length - 1], m1 = av[av.length - 2], m2 = av[av.length - 3];
-    const pc = E.TPthr(i, cur) / 100;
-    // ⚠ "Insolvent" means losing money it was NOT meant to lose. Shipyards carry a deliberate −30pp
-    // penalty because none of their naval-construction income is modelled, so their target is negative by
-    // construction and a shipyard sitting at −10% is exactly on target, not a fault. Counting it was a
-    // false positive worth 1–2 points per era.
-    const curTgt = TG.current + (SHIP_INDUSTRIES.has(i.id) ? TG.shipyard_penalty : 0);
-    if (pc < Math.min(0, curTgt)) ill.insolvent.push(i.id);
-    if (m2 && E.TPthr(i, m2) / 100 > 0) ill.stale_profitable.push(i.id);
-    if (m1 && pc < E.TPthr(i, m1) / 100) ill.inverted.push(i.id);
-  }
+  // ⚠ ONE implementation of this rule, in ui/econ.js, shared with the balance UI — the criterion that
+  // decides whether the ladder works cannot have two definitions. It judges on the buildings actually
+  // PRESENT, so a tier the scenario does not contain is never a fault and never inflates a comparison.
+  const illRaw = PMECON.ladderFaults(S.IND, {
+    countOf: t => (S.BLDNUM[t.key] || 0),
+    profitOf: (i, t) => E.TPthr(i, t) / 100,
+    // the era-current tier's own target, floored at 0: a shipyard at −10% is on target, not a fault
+    lossFloor: i => Math.min(0, currentTargetFor(i)),
+  });
+  const ill = { insolvent: illRaw.loss, stale_profitable: illRaw.stale, inverted: illRaw.inverted };
   meta.ill = ill;
-  const illTot = ill.insolvent.length + ill.stale_profitable.length + ill.inverted.length;
-  // EXCUSED by design: shipyards run at a negative target because naval-construction income is not
-  // modelled, and art academies cannot be sized by margin at all (fine_art's budget is fixed, so extra
-  // academies only destroy their own price). Counted separately so the headline reflects real faults.
-  const EXCUSED = new Set(['shipyard', 'shipyard_steam', 'art_academy']);
-  const ex = n => n.filter(x => EXCUSED.has(x)).length;
-  const net = (ill.insolvent.length - ex(ill.insolvent)) + (ill.stale_profitable.length - ex(ill.stale_profitable))
-            + (ill.inverted.length - ex(ill.inverted));
+  const illTot = illRaw.total, net = illRaw.net;
   console.log(`    ILLOGICAL: ${illTot} point(s) (${net} excluding shipyards/art academies) — loss-making `
     + `${ill.insolvent.length} [${ill.insolvent.join(' ') || '-'}], 2-eras-stale profitable `
     + `${ill.stale_profitable.length} [${ill.stale_profitable.join(' ') || '-'}], inverted `

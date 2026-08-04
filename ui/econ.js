@@ -509,6 +509,70 @@
     };
   }
 
+  // =================================================================================================
+  // ILLOGICALITY — the acceptance criterion (BALANCE_FRAMEWORK §10.11), as ONE implementation shared by
+  // the balance UI and tools/era_scenarios.mjs. The rule is what says whether the tech ladder works, so
+  // two copies of it would be two different answers to the only question that matters.
+  //
+  // Three faults, counted per industry and SUMMING — a top tier that both loses money and is beaten by
+  // the tier below it scores 2, because those are two separate things wrong with it:
+  //   1. loss-making      the best tier present loses money
+  //   2. stale-profitable a tier two or more eras behind it still turns a profit
+  //   3. inverted         the best tier present earns less than the one below it
+  //
+  // ⚠⚠ PRESENCE IS THE GATE, AND IT IS NOT A DETAIL. Everything here is judged on the buildings the
+  // scenario ACTUALLY CONTAINS, never on the config's tier list. A scenario is a thing you tinker with:
+  // industries get zeroed out, tiers get set to 0, whole eras get emptied. In any of those cases the
+  // arithmetic is still computable — a tier with no buildings still has a recipe and still reports a
+  // margin — and counting it would report problems about factories that do not exist. So:
+  //   * an industry with NO buildings at all contributes ZERO, however bad its numbers look;
+  //   * a tier with count 0 is invisible: never a fault itself, and never the comparison partner
+  //     for one;
+  //   * `inverted` needs BOTH the best tier and a lower one present. No lower tier ⇒ no comparison
+  //     ⇒ no fault. It must never be inflated by an absent building;
+  //   * `stale-profitable` is measured in ERA DISTANCE from the best tier present (≥2), not by position
+  //     in a list, so a gap in the ladder cannot turn a one-era-old tier into a "two-eras-stale" one.
+  //
+  // `profitOf` returns a FRACTION (0.2 = +20%), matching TPthr()/100.
+  const LADDER_EXCUSED = new Set(['shipyard', 'shipyard_steam', 'art_academy']);
+  // A shipyard at −10% is ON TARGET, not a fault: shipyards carry a deliberate −30pp penalty on a +20%
+  // target because none of their income from naval ship construction is modelled (§10.2). Art academies
+  // are excused wholesale rather than by threshold — fine_art's budget is fixed, so extra academies only
+  // destroy their own price and no margin target is meaningful.
+  const LADDER_LOSS_FLOOR = { shipyard: -0.10, shipyard_steam: -0.10 };
+
+  function ladderFaults(industries, opts) {
+    const o = opts || {};
+    const countOf = o.countOf, profitOf = o.profitOf;
+    const lossFloor = o.lossFloor || (ind => Math.min(0, LADDER_LOSS_FLOOR[ind.id] || 0));
+    const skip = o.skip || (ind => ind.follows_be === false);
+    const out = { loss: [], stale: [], inverted: [], byIndustry: {}, total: 0, net: 0, scored: 0 };
+    for (const ind of industries) {
+      if (skip(ind)) continue;
+      // PRESENT tiers only, ascending by era. This one filter is what makes the count safe to look at
+      // while editing a scenario.
+      const present = ind.tiers.filter(t => countOf(t) > 0).sort((a, b) => a.era - b.era);
+      if (!present.length) continue;                       // industry absent ⇒ nothing to judge
+      out.scored++;
+      const cur = present[present.length - 1];
+      const below = present[present.length - 2];           // may be undefined — then no comparison
+      const faults = [];
+      const pc = profitOf(ind, cur);
+      if (isFinite(pc) && pc < lossFloor(ind)) { out.loss.push(ind.id); faults.push('loss'); }
+      // two-eras-stale, by ERA DISTANCE; any qualifying tier is enough, counted once per industry
+      if (present.some(t => cur.era - t.era >= 2 && profitOf(ind, t) > 0)) {
+        out.stale.push(ind.id); faults.push('stale');
+      }
+      if (below && isFinite(pc) && pc < profitOf(ind, below)) { out.inverted.push(ind.id); faults.push('inverted'); }
+      if (faults.length) out.byIndustry[ind.id] = faults;
+    }
+    out.total = out.loss.length + out.stale.length + out.inverted.length;
+    const ex = list => list.filter(id => !LADDER_EXCUSED.has(id)).length;
+    out.net = ex(out.loss) + ex(out.stale) + ex(out.inverted);
+    return out;
+  }
+
   return { createEcon, WAGE_WEIGHT, WAGE_PROFS, WEEKS_PER_YEAR, AIVAL_DEFAULT,
-           CLASSES, EMPTY_POPS, SOL_SPREAD, UNQUALIFIED_PROFS, GRPCAT, BCM, round };
+           CLASSES, EMPTY_POPS, SOL_SPREAD, UNQUALIFIED_PROFS, GRPCAT, BCM, round,
+           ladderFaults, LADDER_EXCUSED, LADDER_LOSS_FLOOR };
 });

@@ -36,7 +36,17 @@ export function loadEcon({ quiet = false } = {}) {
   const require = createRequire(import.meta.url);
   const PMECON = require(join(UI, 'econ.js'));
 
-  const cfg = win.PMDATA.config;
+  // ⚠ THE CONFIG COMES FROM config/mod_config.json, NOT from ui/data.js — even though data.js embeds a
+  // copy of it. data.js is BUILD OUTPUT: it only matches the config after a build. The solvers WRITE
+  // mod_config.json and then read their own result back, so sourcing it from data.js put a build step
+  // inside that loop, and re-running without one silently re-read the PREVIOUS values. That is not a
+  // theoretical hazard: it made `era_scenarios --write` followed by a re-run reproduce its numbers
+  // exactly and look like a converged fixed point, when in fact the second run had never seen the first
+  // one's output. Once the build caught up, the figures moved by nine points.
+  // data.js is still the source of PRICES (goods_prices.tsv) and of the vanilla extract beside it.
+  let cfg = win.PMDATA.config;
+  try { cfg = JSON.parse(readFileSync(join(REPO, 'config', 'mod_config.json'), 'utf8')); }
+  catch { /* no config on disk (a bare ui/ checkout) — fall back to the copy inside data.js */ }
   const PRE = win.PMPRESETS || null;
   const POPM = (PRE && PRE.pop_model) || { pop_size_package: 10000, class_mult: {}, buy_packages: {}, needs: {} };
 
