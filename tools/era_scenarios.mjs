@@ -118,6 +118,9 @@ const GDP_SHARE_WARN = 0.25;
 // modern country" by any reading. Five is enough to make the two-eras-stale tier (fixed at one level)
 // negligible against the two main tiers, which is all the floor was ever for.
 const MIN_MAIN_LEVELS_BY_ERA = [5, 5, 10, 10, 10];
+// Place one level of the NEXT era's tier as a forward probe. Kept only as a switch to re-measure the
+// defect it caused (see `placement` below); it is off, and should stay off.
+const PROBE = process.env.ERA_PROBE === '1';
 // Ceiling on how far the population may be scaled to clear that floor. Generous, because the binding
 // constraint is an integer and the required factor is genuinely large in the early eras — but finite, so
 // a scenario that cannot converge fails loudly at a big number instead of running to infinity.
@@ -272,9 +275,26 @@ const isUrban = b => b === 'building_urban_center';
 // and the top tier cannot survive below ~66% of base, because the 4:1 ceiling stops it cutting inputs
 // any further (P ≥ 1.2·(0.25 + W/O), with W/O ≈ 0.3 measured). Hence: start high, fall ~24% per era,
 // floor at 66. RAW goods stay flat — nobody tiers a coal mine, so there is no obsolescence to drive.
+//
+// THREE BANDS, not two (BALANCE_FRAMEWORK §10.13). One decay for every manufactured good deflates a deep
+// chain's INPUTS and its OUTPUT together, which leaves obsolescence nothing to bite on: automotive eats
+// engines, steel and tools, so if all four fall 18% per era its stale tier's margin never moves. Giving
+// intermediates a slower decay opens the gap the mechanism needs.
+//
+// ⚠ The two bands pull in OPPOSITE directions and the balance between them is the whole design question.
+// A slow intermediate decay is what squeezes the industries that EAT intermediates — and it simultaneously
+// spares the stale tiers of the industries that MAKE them, because steel's own obsolescence driver is its
+// output price falling against flat raw inputs. Neither band can be set without the other in view.
+// What keeps both liveable is that WAGES DO NOT DEFLATE: the base wage rises with the era's SoL (0.0605 →
+// 0.1297 over the five eras, ~1.46× per two eras) while an old tier's output is fixed, so a fixed cost
+// that grows carries part of the obsolescence load and neither band has to carry all of it.
 const PRICE_START = +(process.env.PRICE_START || 155);
 const PRICE_DECAY = +(process.env.PRICE_DECAY || 0.82);
 const PRICE_FLOOR = +(process.env.PRICE_FLOOR || 75);
+// Intermediates: their own start, decay and floor. Defaults are the solved values (see §10.13).
+const PRICE_START_INT = +(process.env.PRICE_START_INT || PRICE_START);
+const PRICE_DECAY_INT = +(process.env.PRICE_DECAY_INT || 0.86);
+const PRICE_FLOOR_INT = +(process.env.PRICE_FLOOR_INT || PRICE_FLOOR);
 const PRICE_RAW = 100;
 
 const TG = FIT.targets;
@@ -313,6 +333,67 @@ for (const i of S.IND) {
     if (GOOD_FIRST_ERA[g] == null || t.era < GOOD_FIRST_ERA[g]) GOOD_FIRST_ERA[g] = t.era;
   }
 }
+// ===================================================================================================
+// THE INDUSTRIAL PRICE CEILING — a HARD constraint, not a target.
+//
+// **No good that manufacturing can consume may reach +75% (the engine's 175% band ceiling).** −75% is
+// fine, and +75% is fine for a purely consumer good; what is not acceptable is an INPUT pinned at the
+// ceiling. At that point the market has run out of any ability to signal scarcity — the price cannot rise
+// further however short the good is — so every industry downstream is priced against a wall, its recipe
+// is solved against a number that is an artifact of the band rather than of the market, and the count
+// feedback receives no gradient at all.
+//
+// SCOPE, deliberately simple: a good is restricted if it is an input to ANY production method reachable
+// in any of our industry buildings — main recipes and every secondary PMG, across every era. "Consumable
+// by industry", not "consumed by industry right now": a good that some era's method could buy is treated
+// as restricted in all of them, because the alternative is a set that changes underfoot as the PM
+// optimiser moves.
+const CEILING = 175;            // the engine's own band edge
+const CEIL_TARGET = 160;        // what the count feedback aims restricted goods AT MOST at, to leave slack
+// The three levers that enforce it, individually switchable so each one's contribution can be measured
+// rather than asserted. All ON; the switches exist for the A/B, not as configuration.
+const CEIL_BOOST = process.env.ERA_CEIL_BOOST !== '0';   // counts: a breach outranks the revenue-weighted mean
+const CEIL_PM    = process.env.ERA_CEIL_PM    !== '0';   // PM choice: a breach outranks profit
+const JOINT_PASSES = +(process.env.ERA_JOINT || 8);      // price/PM/recipe fixed-point passes (1 = the old single pass)
+const RESTRICTED = new Set();
+for (const i of S.IND) {
+  for (const t of i.tiers) {
+    for (const g in t.inputs) if (t.inputs[g] > 0) RESTRICTED.add(g);
+    for (const pmg of (i.secondary_pmgs || [])) {
+      const grp = S.VAN.pmgs[pmg]; if (!(grp && grp.pms)) continue;
+      for (const pm of grp.pms) { const r = E.pmRec(pm); for (const g in (r.in || {})) if (r.in[g] > 0) RESTRICTED.add(g); }
+    }
+  }
+}
+// ---------------------------------------------------------------------------------------------------
+// WHICH BAND A GOOD IS IN — derived from the config, not from a hand-written list, so it follows the
+// ladder rather than having to be maintained alongside it.
+//
+//   INTERMEDIATE = a tiered good that some LADDER industry eats as an input.
+//   FINISHED     = every other tiered good (its demand is pops, the army, or construction).
+//   RAW          = anything no tier of ours produces.
+//
+// The rule is the mechanism stated word for word: a good is an intermediate exactly when a tier's output
+// price is another tier's input price, which is the coupling the third band exists to break.
+//
+// ⚠ `follows_be: false` consumers DO NOT COUNT. Port and railway are held on vanilla economics and are not
+// on the ladder, so their appetite cannot define a band. That single exclusion settles clippers and
+// steamers mechanically — port is their only industrial buyer, and they are otherwise pop leisure goods.
+//
+// ⚠ RECORDED JUDGEMENT CALL — GLASS. §10.13 listed glass as an intermediate on the strength of the name.
+// The config disagrees: no tier of ours consumes glass, its demand is popneed_household_items, and it is
+// therefore FINISHED here. Deriving the split rather than transcribing the list is what caught it.
+const BAND = {};                       // good -> 'intermediate' | 'finished' | 'raw'
+{
+  const eaten = new Set();
+  for (const i of S.IND) {
+    if (i.follows_be === false) continue;
+    for (const t of i.tiers) for (const g in t.inputs) if (t.inputs[g] > 0) eaten.add(g);
+  }
+  for (const g in S.PRICES) {
+    BAND[g] = GOOD_FIRST_ERA[g] == null ? 'raw' : eaten.has(g) ? 'intermediate' : 'finished';
+  }
+}
 // Realised prices per era, filled in as the eras are built in order. The RATIO between consecutive eras
 // is what the obsolescence rule actually constrains, so the target is relative to what the previous era
 // truly cleared at — not an absolute level.
@@ -329,7 +410,14 @@ const REALISED = [];
 function targetPrice(good, era) {
   const f = GOOD_FIRST_ERA[good];
   if (f == null) return PRICE_RAW;                       // raw / secondary: no ladder to drive
-  return Math.max(PRICE_FLOOR, PRICE_START * Math.pow(PRICE_DECAY, Math.max(0, era - f)));
+  const age = Math.max(0, era - f);
+  const p = BAND[good] === 'intermediate'
+    ? Math.max(PRICE_FLOOR_INT, PRICE_START_INT * Math.pow(PRICE_DECAY_INT, age))
+    : Math.max(PRICE_FLOOR, PRICE_START * Math.pow(PRICE_DECAY, age));
+  // A restricted good's path may not ASK for a price near the ceiling. PRICE_START of 155-175 in a good's
+  // debut era is exactly such an ask, and the feedback would then be satisfied by the very state the
+  // constraint forbids.
+  return RESTRICTED.has(good) ? Math.min(CEIL_TARGET, p) : p;
 }
 
 function buildScenario(eIx) {
@@ -344,22 +432,34 @@ function buildScenario(eIx) {
   for (const b in FIT.pms[eIx].refs) S.REFSEL[b] = { ...FIT.pms[eIx].refs[b] };
 
   // ---- which of our tiers this era runs, and in what proportion ----------------------------------
-  // Era-appropriate and one-era-old at EQUAL LEVEL COUNTS (the brief), one level of the two-era-old tier
-  // so the sheet shows its arithmetic without its orders mattering, and one level of the NEXT era's tier
-  // as a forward probe — the 1836 scenario has nothing below it, so without this it could never show the
-  // ladder from both sides.
+  // Era-appropriate and one-era-old at EQUAL LEVEL COUNTS (the brief), and one level of the two-era-old
+  // tier so the sheet shows its arithmetic — that one has to be present, because "is the two-eras-stale
+  // tier still profitable" is one of the three illogicality faults and an absent building cannot be
+  // scored.
+  //
+  // ⚠ THE FORWARD PROBE IS GONE, AND IT WAS THE LARGEST SINGLE DEFECT IN THESE SCENARIOS. One level of the
+  // NEXT era's tier used to be placed in every industry, to "show the ladder from both sides". It was
+  // scored by nothing — every check here filters to `era <= this era` — so it contributed supply and no
+  // information. For a mature industry that was harmless. For a YOUNG one it was fatal: the probe is a
+  // ×1.5-bigger plant than the tier it sits beside, so in a debut era it supplied MORE THAN HALF the
+  // market, drove the good to the 25% floor, and made the era-appropriate tier read insolvent — after
+  // which the count feedback saw an over-supplied good, tried to build fewer, and could not, because one
+  // level is the floor. Measured before removal: era-1 steel sold 199 against a buy of 36 with the era-2
+  // Bessemer probe supplying 101 of it; era-3 automobiles sold 92 against 45; era-3 telephones 184
+  // against 32. All three were the goods reported as "insolvent at these prices".
+  // It was also an anachronism on its own terms — a Bessemer converter (1856) standing in the 1836
+  // scenario, and mass-production car plants in 1900.
   const placement = [];   // {ind, tiers:[{t, weight}]}
   for (const i of S.IND) {
     const sorted = [...i.tiers].sort((a, b) => a.era - b.era);
     const avail = sorted.filter(t => t.era <= era);
     if (!avail.length) continue;
     const cur = avail[avail.length - 1], m1 = avail[avail.length - 2], m2 = avail[avail.length - 3];
-    const p1 = sorted.find(t => t.era > era);
     const fx = FIXED_COUNTS[i.id];
     const rows = [{ t: cur, weight: fx ? 0 : 1, fixed: fx ? fx.cur : undefined }];
     if (m1) rows.push({ t: m1, weight: fx ? 0 : 1, fixed: fx ? fx.m1 : undefined });
     if (m2) rows.push({ t: m2, weight: 0, fixed: fx ? fx.m2 : 1 });
-    if (p1) rows.push({ t: p1, weight: 0, fixed: 1 });
+    if (PROBE) { const p1 = sorted.find(t => t.era > era); if (p1) rows.push({ t: p1, weight: 0, fixed: 1 }); }
     placement.push({ ind: i, rows });
   }
 
@@ -420,6 +520,77 @@ function buildScenario(eIx) {
   capped.clear();
   let jobs = 0, popNonPeasant = 0, peasants = 0, gdp = 0;
   const settle = () => { applyCounts(); addSupport(); applyThroughput(); setPops(); setArmy(); };
+
+  // COUNTS CHASE THE PRICE PATH, not the margin. A good trading ABOVE its target is under-supplied, so
+  // build more of it; below, build fewer. This is a live error signal for the whole run, unlike the
+  // margin gap, which `solveInputsAt` zeroes out every iteration.
+  //
+  // ⚠ The adjustment is PER GOOD, not per building, and that distinction is load-bearing. Grain has five
+  // producers (rye/wheat/rice/maize/millet farms) sharing ONE price, so at most one of them can sit on its
+  // own target. Nudging each toward its own margin makes them fight: the efficient farm grows, the price
+  // falls, the inefficient one shrinks toward the floor and reads −65% forever. Averaging the gap over a
+  // good's producers, weighted by what each contributes, moves them together and leaves the spread between
+  // them as what it actually is — a real difference in productivity, not a solver artifact.
+  //
+  // Hoisted out of the main loop so the FINAL JOINT SETTLE can use the same lever. It used to be inline,
+  // which meant the joint settle ran with counts FROZEN — and counts are exactly what absorbs the movement
+  // in this system, so freezing them left {price, PM, recipe} oscillating with nothing to damp it.
+  function stepCounts(gain, rescalePow) {
+    const goodF = {};
+    for (const g in S.PRICES) {
+      if (SKIP_GOODS.has(g)) continue;
+      const want = targetPrice(g, era), got = S.thresholds[g];
+      if (!(want > 0) || !(got > 0)) continue;
+      goodF[g] = clamp(Math.pow(got / want, gain), 0.6, 1.7);
+    }
+    // The insolvency test still runs — it is what tells us an industry cannot reach its target at ANY
+    // recipe, which is worth reporting even though counts no longer key off it.
+    for (const p of placement) {
+      const cur = p.rows[0].t;
+      if (p.ind.follows_be === false) continue;
+      const tgt = currentTargetFor(p.ind);
+      const mm = maxMargin(p.ind, cur);
+      if (mm < tgt) infeasible.set(p.ind.id, { got: mm, tgt }); else infeasible.delete(p.ind.id);
+    }
+    // apply each good's factor to every building that makes it, weighted by how much of that building's
+    // revenue the good represents (a livestock ranch making meat AND fabric follows both, in proportion)
+    //
+    // ⚠ THE CEILING OVERRIDES THE AVERAGE, and it has to. The weighted mean is the right rule for two goods
+    // that merely disagree, and the WRONG one when a building makes a starved good and a glutted one at
+    // once: the two factors cancel, the building never grows, and the starved good stays starved. That is
+    // not hypothetical — it is what happened to WOOD. A logging camp running `pm_increased_hardwood` makes
+    // wood (pinned at the 175 ceiling) and hardwood (dumped at the 25 floor); the mean sat below 1, so the
+    // solver SHRANK logging from 523 levels to 124 across eras 2→5 while wood's shortage tripled.
+    // A restricted good at the ceiling is a hard constraint being violated, so it wins outright.
+    const applyF = (key, goodsOut) => {
+      let num = 0, den = 0, forced = 0;
+      for (const g in goodsOut) {
+        if (!(goodsOut[g] > 0) || goodF[g] == null) continue;
+        const w = goodsOut[g] * (S.PRICES[g] || 0);
+        num += w * Math.log(goodF[g]); den += w;
+        if (CEIL_BOOST && RESTRICTED.has(g) && S.thresholds[g] >= CEIL_TARGET) forced = Math.max(forced, 1 + gain / 2);
+      }
+      if (!(den > 0)) return;
+      scaleOf[key] = clamp(scaleOf[key] * Math.max(Math.exp(num / den), forced), 0.02, 1e7);
+    };
+    for (const p of placement) {
+      const io = E.tierGoodsIO(p.ind, p.rows[0].t);
+      applyF('I:' + p.ind.id, io.out);
+    }
+    for (const b of refProducers) applyF('R:' + b, E.selGoods(E.refSel(b)).out);
+
+    // Then rescale EVERYTHING uniformly so the buildings employ exactly the working adults the
+    // population provides. Uniform, so it cannot disturb the ratios the step above just set — this sets
+    // the SIZE of the economy, not its shape.
+    jobs = totalJobs();
+    popNonPeasant = POP_TOTAL[eIx] * popBoost * (1 - PEASANT_SHARE[eIx]);
+    const jobPool = popNonPeasant * WORK_RATIO;
+    if (jobs > 0) {
+      const f = clamp(jobPool / jobs, 0.5, 2.0);
+      for (const k in scaleOf) scaleOf[k] *= Math.pow(f, rescalePow);
+    }
+  }
+
   for (let round = 0; round < 4; round++) {
   for (let iter = 0; iter < 220; iter++) {
     settle();
@@ -457,54 +628,7 @@ function buildScenario(eIx) {
     // gap over a good's producers, weighted by what each contributes, moves them together and leaves the
     // spread between them as what it actually is — a real difference in productivity, not a solver
     // artifact. It also means "significant variance is OK" is honoured rather than fought.
-    const gain = iter < 10 ? 0.8 : (iter < 60 ? 0.35 : 0.15);
-    // COUNTS CHASE THE PRICE PATH, not the margin. A good trading ABOVE its target is under-supplied, so
-    // build more of it; below, build fewer. This is a live error signal for the whole run, unlike the
-    // margin gap, which `solveInputsAt` zeroes out every iteration.
-    const goodF = {};
-    for (const g in S.PRICES) {
-      if (SKIP_GOODS.has(g)) continue;
-      const want = targetPrice(g, era), got = S.thresholds[g];
-      if (!(want > 0) || !(got > 0)) continue;
-      goodF[g] = clamp(Math.pow(got / want, gain), 0.6, 1.7);
-    }
-    // The insolvency test still runs — it is what tells us an industry cannot reach its target at ANY
-    // recipe, which is worth reporting even though counts no longer key off it.
-    for (const p of placement) {
-      const cur = p.rows[0].t;
-      if (p.ind.follows_be === false) continue;
-      const tgt = currentTargetFor(p.ind);
-      const mm = maxMargin(p.ind, cur);
-      if (mm < tgt) infeasible.set(p.ind.id, { got: mm, tgt }); else infeasible.delete(p.ind.id);
-    }
-    // apply each good's factor to every building that makes it, weighted by how much of that building's
-    // revenue the good represents (a livestock ranch making meat AND fabric follows both, in proportion)
-    const applyF = (key, goodsOut) => {
-      let num = 0, den = 0;
-      for (const g in goodsOut) {
-        if (!(goodsOut[g] > 0) || goodF[g] == null) continue;
-        const w = goodsOut[g] * (S.PRICES[g] || 0);
-        num += w * Math.log(goodF[g]); den += w;
-      }
-      if (!(den > 0)) return;
-      scaleOf[key] = clamp(scaleOf[key] * Math.exp(num / den), 0.02, 1e7);
-    };
-    for (const p of placement) {
-      const io = E.tierGoodsIO(p.ind, p.rows[0].t);
-      applyF('I:' + p.ind.id, io.out);
-    }
-    for (const b of refProducers) applyF('R:' + b, E.selGoods(E.refSel(b)).out);
-
-    // Then rescale EVERYTHING uniformly so the buildings employ exactly the working adults the
-    // population provides. Uniform, so it cannot disturb the ratios the step above just set — this sets
-    // the SIZE of the economy, not its shape.
-    jobs = totalJobs();
-    popNonPeasant = POP_TOTAL[eIx] * popBoost * (1 - PEASANT_SHARE[eIx]);
-    const jobPool = popNonPeasant * WORK_RATIO;
-    if (jobs > 0) {
-      const f = clamp(jobPool / jobs, 0.5, 2.0);
-      for (const k in scaleOf) scaleOf[k] *= Math.pow(f, iter < 10 ? 1.0 : 0.5);
-    }
+    stepCounts(iter < 10 ? 0.8 : (iter < 60 ? 0.35 : 0.15), iter < 10 ? 1.0 : 0.5);
   }
   settle();
   // THE INTEGER FLOOR IS THE ONLY NON-PROPORTIONAL THING IN THIS MODEL, which is what makes scaling the
@@ -529,29 +653,108 @@ function buildScenario(eIx) {
     popBoost = Math.min(POP_BOOST_CAP, popBoost * Math.min(3, MIN_MAIN_LEVELS / Math.max(1, med)));
   }
   }
-  settle();
-  { const agg = E.scenarioAggregates();
-    for (const g in S.PRICES) { const { buy, sell } = E.scenarioBuySell(agg, g); S.thresholds[g] = E.priceMultPct(buy, sell); } }
-
-  // THE HARD RULE: at the prices this market actually produces, every building must be running the most
-  // profitable secondary methods available to it. Phase A chose PMs against its own fitted prices, which
-  // are not these — so the choice has to be re-made here, or the scenario asserts an optimum it does not
-  // have. Any pair that will not settle is a genuine limit cycle and is reported by name, never hidden.
-  const pmResult = optimisePMs({
-    E, S, rules, era,
-    profitOfTier: (i, t) => { const k = E.thruMult(t.key), I = k * E.inputValue(t, true), Wc = E.wageCost(t), C = I + Wc;
-      return C > 0 ? (k * E.outputValue(i, t, true) - C) / C : -1; },
-    profitOfRef: b => { const ec = E.refEcon(b); return (ec && ec.tp != null) ? ec.tp / 100 : -1; },
-  });
-  settle();
-  { const agg = E.scenarioAggregates();
-    for (const g in S.PRICES) { const { buy, sell } = E.scenarioBuySell(agg, g); S.thresholds[g] = E.priceMultPct(buy, sell); } }
-
-  // Re-solve inputs one final time at the settled prices, for the tiers whose era this is.
-  for (const p of placement) {
-    const cur = p.rows[0].t;
-    if (cur.era === era && p.ind.follows_be !== false) solveInputsAt(p.ind, cur, currentTargetFor(p.ind));
+  // ---- THE FINAL JOINT SETTLE -----------------------------------------------------------------------
+  // Prices, PM selections and input recipes are three mutually dependent things, and this used to be
+  // three single passes over them in a fixed order — which guaranteed that whichever ran LAST invalidated
+  // the other two. Concretely: the last act was re-solving every era-current tier's recipe, which changes
+  // what those buildings buy, which changes prices — so the scenario SHIPPED a price table that its own
+  // recipes contradicted. It was measurable rather than theoretical: era-1 iron reported at the 175
+  // ceiling while the shipped order book said buy 831 against sell 990, a price of 86.
+  //
+  // So iterate the three to a joint fixed point instead, and report the residual movement rather than
+  // letting the order of the passes decide the answer.
+  const syncPrices = () => {
+    const a = E.scenarioAggregates();
+    for (const g in S.PRICES) { const { buy, sell } = E.scenarioBuySell(a, g); S.thresholds[g] = E.priceMultPct(buy, sell); }
+  };
+  // THE CEILING GOVERNS PM CHOICE TOO, and it has to — otherwise the optimiser walks straight into it.
+  // A building's most profitable method is not always one the market can live with: `pmg_hardwood` on the
+  // logging camp is the proof. It is a bistable switch with NO stable side under a profit-only rule —
+  // `pm_increased_hardwood` cuts wood output from 60 to 20 per level and pins WOOD at the ceiling, while
+  // `pm_no_hardwood` removes the market's only hardwood supply and pins HARDWOOD at it. The two trade
+  // places forever (measured: a 150pp residual in the joint settle, and profit of 213% vs 34% between
+  // them), because the model runs ONE method per building type per market where a real market runs a mix.
+  //
+  // Scoring the constraint alongside profit resolves it without naming any building: the middle method
+  // `pm_hardwood` is the only one that leaves both goods inside the band, so it wins on the penalty even
+  // though it loses on profit. That is the right answer and it is arrived at by the rule, not by hand.
+  const breachCount = () => {
+    if (!CEIL_PM) return 0;
+    const a = E.scenarioAggregates();
+    let n = 0;
+    for (const g of RESTRICTED) {
+      const { buy, sell } = E.scenarioBuySell(a, g);
+      if (buy > 0 && E.priceMultPct(buy, sell) >= CEILING) n++;
+    }
+    return n;
+  };
+  // Weight it far above any profit difference: this is a constraint, not a preference. Profit only ever
+  // breaks ties between selections that breach the ceiling equally often.
+  const CEIL_PENALTY = 100;
+  let pmResult = { cycles: [], settled: true, passes: 0 };
+  let pmSettled = false;
+  // ⚠ THE INNER LOOP MUST CONVERGE WITH PMs HELD FIXED. Prices, recipes and counts are continuous and do
+  // converge against a fixed method choice — that is exactly why the main loop freezes PM selection for its
+  // last stretch. Re-opening the discrete choice on every pass, which is what this did first, guarantees it
+  // never settles: a single PM flip moves a price by up to 150pp, so the continuous variables are chasing a
+  // target that jumps before they arrive. Converge the continuous part, THEN re-check the discrete part.
+  // The continuous half: prices, recipes and counts, with the method choice held fixed. Returns how far
+  // the LAST iteration still moved — the honest convergence measure, uncontaminated by any PM flip.
+  const contSettle = (iters, gain) => {
+    let d = 0, dg = null, dn = 0;
+    for (let j = 0; j < iters; j++) {
+      const b0 = { ...S.thresholds };
+      settle(); syncPrices();
+      for (const p of placement) {
+        const cur = p.rows[0].t;
+        if (cur.era === era && p.ind.follows_be !== false) solveInputsAt(p.ind, cur, currentTargetFor(p.ind));
+      }
+      stepCounts(gain, 0.5);
+      settle(); syncPrices();
+      d = 0; dn = 0; dg = null;
+      for (const g in S.PRICES) {
+        const x = Math.abs((S.thresholds[g] || 0) - (b0[g] || 0));
+        if (x > 5) dn++;
+        if (x > d) { d = x; dg = g; }
+      }
+    }
+    return { d, dg, dn };
+  };
+  let conv = { d: 0, dg: null, dn: 0 };
+  for (let k = 0; k < JOINT_PASSES; k++) {
+    conv = contSettle(40, 0.15);
+    // THE HARD RULE: at the prices this market actually produces, every building must be running the most
+    // profitable secondary methods available to it. Phase A chose PMs against its own fitted prices, which
+    // are not these — so the choice has to be re-made here, or the scenario asserts an optimum it does not
+    // have. Any pair that will not settle is a genuine limit cycle and is reported by name, never hidden.
+    const r = optimisePMs({
+      E, S, rules, era,
+      profitOfTier: (i, t) => { const k2 = E.thruMult(t.key), I = k2 * E.inputValue(t, true), Wc = E.wageCost(t), C = I + Wc;
+        const p = C > 0 ? (k2 * E.outputValue(i, t, true) - C) / C : -1;
+        return p - CEIL_PENALTY * breachCount(); },
+      profitOfRef: b => { const ec = E.refEcon(b); const p = (ec && ec.tp != null) ? ec.tp / 100 : -1;
+        return p - CEIL_PENALTY * breachCount(); },
+    });
+    const pmMoved = !(r.passes === 1 && r.settled);
+    pmResult = { cycles: [...pmResult.cycles, ...r.cycles], settled: r.settled, passes: pmResult.passes + r.passes };
+    pmSettled = !pmMoved;
+    if (!pmMoved) break;
   }
+  // ⚠⚠ INVARIANT — NOTHING IS REPORTED OR SHIPPED FROM A NON-FINAL STATE.
+  // Every number this tool prints, and every field of the preset it writes, is read from the state left
+  // here: counts, PM selections, recipes and prices all mutually consistent, with nothing mutated
+  // afterwards. Do not add a step after this point that changes any of them — that is precisely the bug
+  // this replaced, where the last act was re-solving recipes AFTER the final price sync, so the scenario
+  // reported (and shipped) a price table its own recipes contradicted. Era-1 iron read at the 175 ceiling
+  // while the shipped order book said buy 831 against sell 990, a price of 86.
+  //
+  // The final convergence runs with the method choice FIXED, so the last thing to move is continuous.
+  conv = contSettle(40, 0.15);
+  // ⚠ Report the COUNT as well as the max. The worst-drifting good is almost always a thin-market
+  // passenger — luxury_furniture, porcelain, fruit, all of them secondary-PM outputs with an order book
+  // small enough that one building type's method flips them between the 25 and 175 band edges. Taking the
+  // max alone makes a converged economy look divergent because of a good nothing depends on.
+  const jointDrift = conv.d, jointDriftGood = conv.dg, jointDriftN = conv.dn;
 
   // ---- helpers that ride on the current counts ----------------------------------------------------
   function totalJobs() {
@@ -667,6 +870,7 @@ function buildScenario(eIx) {
   }
 
   return { eIx, era, jobs, gdp, peasants, popNonPeasant, scaleOf, pmResult, share, gross, popBoost,
+           jointDrift, jointDriftGood, jointDriftN, pmSettled,
            infeasible: new Map(infeasible), capped: new Set(capped), sec, ore };
 }
 
@@ -675,6 +879,13 @@ const out = [];
 const META = [];
 const ERAS_HDR = () => FIT.eras.map(x => W('e' + x.era, 10)).join('');
 console.log('\n=========== PHASE B — five scenarios, prices unlocked ===========');
+{
+  const band = k => Object.keys(BAND).filter(g => BAND[g] === k && GOOD_FIRST_ERA[g] != null).sort();
+  console.log(`\nPRICE BANDS (§10.13) — finished ${PRICE_START}·${PRICE_DECAY}^age floor ${PRICE_FLOOR}`
+    + ` · intermediate ${PRICE_START_INT}·${PRICE_DECAY_INT}^age floor ${PRICE_FLOOR_INT} · raw flat ${PRICE_RAW}`);
+  console.log('  intermediate (a ladder industry eats it): ' + band('intermediate').join(' '));
+  console.log('  finished (demand is pops / the army):      ' + band('finished').join(' '));
+}
 for (let e = 0; e < FIT.eras.length; e++) {
   const meta = buildScenario(e);
   META.push(meta);
@@ -729,7 +940,9 @@ for (let e = 0; e < FIT.eras.length; e++) {
   console.log('      worst: ' + scored.slice(0, 7).map(h => `${h.what} ${(h.got * 100).toFixed(0)}%/${(h.tgt * 100).toFixed(0)}%`).join('  '));
   if (floored.length) console.log('      floored: ' + floored.map(h => h.what).join(', '));
   // the hard PM rule, and the composition check
-  console.log(`    PM optimality: ${meta.pmResult.settled ? 'SETTLED' : 'DID NOT SETTLE'} after ${meta.pmResult.passes} pass(es)`
+  console.log(`    PM optimality: ${meta.pmSettled ? 'SETTLED at the realised prices' : '⚠ NEVER SETTLED'} (${meta.pmResult.passes} pass(es));`
+    + ` continuous residual ${meta.jointDrift}pp`
+    + (meta.jointDriftN ? ` (${meta.jointDriftN} good(s) still moving >5pp, worst ${meta.jointDriftGood})` : ' — converged')
     + (meta.pmResult.cycles.length ? `  ⚠ ${meta.pmResult.cycles.length} limit cycle(s): `
         + meta.pmResult.cycles.slice(0, 3).map(c => `${c.building.replace(/^building_/, '')}/${c.pmg.replace(/^pmg_/, '')}`).join(', ') : ''));
   if (meta.capped.size) console.log(`    value-added ceiling (${MFG_IO_CAP}:1) binds on ${meta.capped.size} tier(s): `
@@ -778,6 +991,58 @@ for (let e = 0; e < FIT.eras.length; e++) {
   const px = Object.keys(S.PRICES).filter(g => S.thresholds[g] !== 100).sort((a, b) => S.thresholds[b] - S.thresholds[a]);
   console.log('      dearest: ' + px.slice(0, 6).map(g => `${g} ${S.thresholds[g]}`).join('  ')
             + '   cheapest: ' + px.slice(-6).map(g => `${g} ${S.thresholds[g]}`).join('  '));
+  // ---- DID THE PRICE PATH ACTUALLY HAPPEN? ----------------------------------------------------------
+  // The obsolescence arithmetic is entirely a story about prices MOVING, so a price path that the market
+  // never realises makes every refinement of that path meaningless. Counts are the only lever, and they
+  // are bounded below by ONE LEVEL and bounded either side by the engine's own 25–175% band — so "the
+  // target was missed" and "the target was unreachable" are different failures and have to be told apart.
+  const track = [];
+  for (const g in S.PRICES) {
+    // ⚠ Only goods that EXIST in this era. A good whose industry debuts later has no producer and no
+    // consumer, so its price sits at a default 100 that means nothing, and scoring it against the path
+    // manufactures failures — automobiles and telephones "missing 155" in 1836 is the diagnostic
+    // mis-reading an empty market, not the market mis-pricing anything.
+    if (SKIP_GOODS.has(g) || GOOD_FIRST_ERA[g] == null || GOOD_FIRST_ERA[g] > meta.era) continue;
+    track.push({ g, want: Math.round(targetPrice(g, meta.era)), got: S.thresholds[g], band: BAND[g] });
+  }
+  meta.track = track;
+  const off = track.filter(t => Math.abs(t.got - t.want) > 15).sort((a, b) => Math.abs(b.got - b.want) - Math.abs(a.got - a.want));
+  const pinned = track.filter(t => t.got >= 175 || t.got <= 25);
+  console.log(`    PRICE PATH: ${track.length - off.length}/${track.length} tiered goods within 15pp of the path`
+    + (pinned.length ? `, ${pinned.length} PINNED at the 25/175 band edge` : '')
+    + (off.length ? '\n      adrift: ' + off.slice(0, 8).map(t => `${t.g} ${t.got}(want ${t.want})`).join('  ') : ''));
+  // ---- THE INDUSTRIAL CEILING: a hard constraint, reported as pass/fail, never averaged away ----------
+  // Two failures with the same symptom and completely different remedies, so they are separated here:
+  // a good with producers is under-BUILT (counts can fix it), a good with NO producer at all cannot be
+  // fixed by any count and needs either a producer placed or the market to import it.
+  const breach = [];
+  for (const g of RESTRICTED) {
+    if (S.thresholds[g] < CEILING) continue;
+    const { buy, sell } = E.scenarioBuySell(agg, g);
+    if (!(buy > 0)) continue;                       // nobody is actually buying it: not a real breach
+    breach.push({ g, buy, sell, orphan: !(sell > 0) });
+  }
+  breach.sort((a, b) => b.buy - a.buy);
+  // Name the PRODUCERS and the method each is running. "Under-built" and "throttled by its own production
+  // method" look identical in the price and need opposite remedies — more levels, or a different PM.
+  for (const b of breach) {
+    const src = [];
+    for (const bl of E.refBuildings()) {
+      const c = S.BLDNUM[bl] || 0; if (!c) continue;
+      const o = E.selGoods(E.refSel(bl)).out; if (!(o[b.g] > 0)) continue;
+      src.push(`${bl.replace(/^building_/, '')} ${c}×${o[b.g]}`);
+    }
+    for (const i of S.IND) for (const t of i.tiers) {
+      const c = S.BLDNUM[t.key] || 0; if (!c) continue;
+      const o = E.tierGoodsIO(i, t).out; if (!(o[b.g] > 0)) continue;
+      src.push(`${t.key.replace(/^building_/, '')} ${c}×${Math.round(o[b.g])}`);
+    }
+    b.src = src;
+  }
+  meta.breach = breach;
+  console.log(`    INDUSTRIAL CEILING: ${breach.length ? '⚠ ' + breach.length + ' consumable good(s) AT +75%' : 'clear — no consumable good at +75%'}`);
+  for (const b of breach) console.log(`      ${b.g} buy ${fmtN(b.buy)} / sell ${fmtN(b.sell)}`
+    + (b.orphan ? '   ⚠ NO PRODUCER AT ALL — no count can fix this' : '   from ' + b.src.join(', ')));
 
   out.push({
     id: `era${meta.era}_${cfg.year}`,

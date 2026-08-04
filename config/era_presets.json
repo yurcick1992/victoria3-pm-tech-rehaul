@@ -11,29 +11,17 @@
    "market": [],
    "buildings": {
     "building_food_industry": 1,
-    "building_food_industry_sweetener": 1,
-    "building_textile_mill": 11,
-    "building_textile_mill_dye": 1,
-    "building_furniture_manufactory": 5,
-    "building_furniture_manufactory_lathe": 1,
-    "building_glassworks": 3,
-    "building_glassworks_leaded": 1,
-    "building_tooling_workshop": 144,
-    "building_tooling_workshop_pig_iron": 1,
+    "building_textile_mill": 37,
+    "building_furniture_manufactory": 12,
+    "building_glassworks": 1,
+    "building_tooling_workshop": 121,
     "building_paper_mill": 1,
-    "building_paper_mill_sulfite": 1,
     "building_steel_mill": 1,
-    "building_steel_mill_bessemer": 1,
     "building_shipyard": 6,
-    "building_shipyard_complex": 1,
-    "building_arms_industry": 26,
-    "building_arms_industry_rifles": 1,
-    "building_artillery_foundry": 9,
-    "building_artillery_foundry_smoothbore": 1,
-    "building_port": 84,
-    "building_port_industrial": 1,
+    "building_arms_industry": 23,
+    "building_artillery_foundry": 10,
+    "building_port": 72,
     "building_art_academy": 2,
-    "building_art_academy_realist": 1,
     "building_rye_farm": 1,
     "building_wheat_farm": 1,
     "building_rice_farm": 1,
@@ -41,38 +29,33 @@
     "building_millet_farm": 1,
     "building_livestock_ranch": 1,
     "building_vineyard": 1,
-    "building_coal_mine": 161,
+    "building_coal_mine": 26,
     "building_iron_mine": 64,
     "building_lead_mine": 1,
     "building_sulfur_mine": 1,
-    "building_gold_mine": 1366,
-    "building_gold_field": 1366,
-    "building_coffee_plantation": 21,
+    "building_gold_mine": 1089,
+    "building_gold_field": 1089,
+    "building_coffee_plantation": 18,
     "building_cotton_plantation": 1,
     "building_opium_plantation": 1,
-    "building_tea_plantation": 21,
-    "building_tobacco_plantation": 240,
+    "building_tea_plantation": 18,
+    "building_tobacco_plantation": 200,
     "building_sugar_plantation": 1,
     "building_banana_plantation": 1,
-    "building_silk_plantation": 22,
-    "building_logging_camp": 59,
-    "building_fishing_wharf": 1332,
-    "building_whaling_station": 62,
-    "building_manor_house": 1413,
-    "building_financial_district": 1413,
-    "building_government_administration": 530,
-    "building_trade_center": 309,
-    "building_construction_sector": 132,
-    "building_urban_center": 494,
-    "building_subsistence_farm": 21014
+    "building_silk_plantation": 8,
+    "building_logging_camp": 193,
+    "building_fishing_wharf": 1089,
+    "building_whaling_station": 107,
+    "building_manor_house": 1179,
+    "building_financial_district": 1179,
+    "building_government_administration": 442,
+    "building_trade_center": 258,
+    "building_construction_sector": 111,
+    "building_urban_center": 412,
+    "building_subsistence_farm": 17545
    },
    "pms": {
     "building_food_industry": {
-     "pmg_canning": "pm_disabled_canning",
-     "pmg_distillery": "pm_pot_stills",
-     "pmg_automation_building_food_industry": "pm_manual_dough_processing"
-    },
-    "building_food_industry_sweetener": {
      "pmg_canning": "pm_disabled_canning",
      "pmg_distillery": "pm_disabled_distillery",
      "pmg_automation_building_food_industry": "pm_manual_dough_processing"
@@ -81,65 +64,32 @@
      "pmg_luxury_building_textile_mill": "pm_no_luxury_clothes",
      "pmg_automation_building_textile_mill": "pm_traditional_looms"
     },
-    "building_textile_mill_dye": {
-     "pmg_luxury_building_textile_mill": "pm_no_luxury_clothes",
-     "pmg_automation_building_textile_mill": "pm_traditional_looms"
-    },
     "building_furniture_manufactory": {
-     "pmg_luxury_building_furniture_manufactory": "pm_no_luxuries",
-     "pmg_automation_building_furniture_manufactory": "pm_automation_disabled"
-    },
-    "building_furniture_manufactory_lathe": {
-     "pmg_luxury_building_furniture_manufactory": "pm_no_luxuries",
+     "pmg_luxury_building_furniture_manufactory": "pm_luxury_furniture",
      "pmg_automation_building_furniture_manufactory": "pm_automation_disabled"
     },
     "building_glassworks": {
-     "pmg_luxury_building_glassworks": "pm_ceramics",
-     "pmg_glassblowing": "pm_manual_glassblowing"
-    },
-    "building_glassworks_leaded": {
      "pmg_luxury_building_glassworks": "pm_disabled_ceramics",
      "pmg_glassblowing": "pm_manual_glassblowing"
     },
     "building_tooling_workshop": {
      "pmg_automation_building_tooling_workshop": "pm_automation_disabled"
     },
-    "building_tooling_workshop_pig_iron": {
-     "pmg_automation_building_tooling_workshop": "pm_automation_disabled"
-    },
     "building_paper_mill": {
-     "pmg_automation_building_paper_mill": "pm_automation_disabled"
-    },
-    "building_paper_mill_sulfite": {
      "pmg_automation_building_paper_mill": "pm_automation_disabled"
     },
     "building_steel_mill": {
      "pmg_automation_building_steel_mill": "pm_automation_disabled"
     },
-    "building_steel_mill_bessemer": {
-     "pmg_automation_building_steel_mill": "pm_automation_disabled"
-    },
     "building_shipyard": {},
-    "building_shipyard_complex": {},
     "building_arms_industry": {
-     "pmg_automation_building_arms_industry": "pm_automation_disabled"
-    },
-    "building_arms_industry_rifles": {
      "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
     "building_artillery_foundry": {
      "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
-    "building_artillery_foundry_smoothbore": {
-     "pmg_automation_building_arms_industry": "pm_automation_disabled"
-    },
     "building_port": {},
-    "building_port_industrial": {},
     "building_art_academy": {
-     "pmg_ownership_building_art_academy": "pm_traditional_patronage",
-     "pmg_principle_freedom_of_movement_3": "pm_freedom_of_movement_no_effect"
-    },
-    "building_art_academy_realist": {
      "pmg_ownership_building_art_academy": "pm_traditional_patronage",
      "pmg_principle_freedom_of_movement_3": "pm_freedom_of_movement_no_effect"
     },
@@ -265,7 +215,7 @@
     },
     "building_logging_camp": {
      "pmg_base_building_logging_camp": "pm_saw_mills",
-     "pmg_hardwood": "pm_increased_hardwood",
+     "pmg_hardwood": "pm_hardwood",
      "pmg_equipment": "pm_no_equipment",
      "pmg_transportation_building_logging_camp": "pm_road_carts"
     },
@@ -298,11 +248,11 @@
     }
    },
    "pops": {
-    "total": 538810000,
-    "lower": 100116400,
-    "middle": 17856600,
-    "upper": 565200,
-    "peasants": 420271800,
+    "total": 449879091,
+    "lower": 83573800,
+    "middle": 14928000,
+    "upper": 471600,
+    "peasants": 350905691,
     "slaves": 0
    },
    "sol": {
@@ -313,36 +263,24 @@
     "slaves": 8
    },
    "units": {
-    "combat_unit_type_line_infantry": 1909,
-    "combat_unit_type_cannon_artillery": 636
+    "combat_unit_type_line_infantry": 1419,
+    "combat_unit_type_cannon_artillery": 473
    },
    "nonbuy": {},
    "nonsell": {},
    "throughput": {
     "building_food_industry": 0.2,
-    "building_food_industry_sweetener": 0.2,
     "building_textile_mill": 0.2,
-    "building_textile_mill_dye": 0.2,
     "building_furniture_manufactory": 0.2,
-    "building_furniture_manufactory_lathe": 0.2,
     "building_glassworks": 0.2,
-    "building_glassworks_leaded": 0.2,
     "building_tooling_workshop": 0.2,
-    "building_tooling_workshop_pig_iron": 0.2,
     "building_paper_mill": 0.2,
-    "building_paper_mill_sulfite": 0.2,
     "building_steel_mill": 0.2,
-    "building_steel_mill_bessemer": 0.2,
     "building_shipyard": 0.2,
-    "building_shipyard_complex": 0.2,
     "building_arms_industry": 0.2,
-    "building_arms_industry_rifles": 0.2,
     "building_artillery_foundry": 0.2,
-    "building_artillery_foundry_smoothbore": 0.2,
     "building_port": 0.2,
-    "building_port_industrial": 0.2,
     "building_art_academy": 0.2,
-    "building_art_academy_realist": 0.2,
     "building_rye_farm": 0.1,
     "building_wheat_farm": 0.1,
     "building_rice_farm": 0.1,
@@ -370,70 +308,70 @@
    "prices": {
     "ironclads": 100,
     "luxury_clothes": 175,
-    "oil": 108,
-    "meat": 93,
+    "oil": 107,
+    "meat": 84,
     "automobiles": 100,
     "gold": 25,
     "grain": 87,
-    "artillery": 175,
+    "artillery": 143,
     "manowars": 100,
     "telephones": 100,
-    "silk": 89,
+    "silk": 102,
     "radios": 100,
-    "paper": 88,
+    "paper": 94,
     "tools": 155,
-    "luxury_furniture": 175,
+    "luxury_furniture": 100,
     "explosives": 100,
-    "groceries": 105,
-    "fruit": 83,
-    "fabric": 96,
+    "groceries": 96,
+    "fruit": 76,
+    "fabric": 108,
     "fine_art": 25,
     "fertilizer": 100,
-    "engines": 175,
+    "engines": 100,
     "fish": 100,
-    "hardwood": 175,
+    "hardwood": 63,
     "wine": 25,
-    "clippers": 150,
+    "clippers": 160,
     "ammunition": 100,
-    "lead": 101,
-    "steamers": 175,
+    "lead": 25,
+    "steamers": 100,
     "transportation": 175,
-    "sugar": 109,
+    "sugar": 74,
     "services": 25,
-    "coal": 100,
-    "clothes": 175,
-    "sulfur": 91,
+    "coal": 99,
+    "clothes": 155,
+    "sulfur": 25,
     "rubber": 100,
-    "tea": 101,
-    "coffee": 101,
-    "iron": 175,
-    "furniture": 166,
+    "tea": 99,
+    "coffee": 99,
+    "iron": 102,
+    "furniture": 156,
     "tobacco": 100,
     "tanks": 100,
-    "dye": 175,
+    "dye": 100,
     "aeroplanes": 100,
-    "glass": 114,
+    "glass": 119,
     "merchant_marine": 100,
     "opium": 25,
     "electricity": 100,
     "steel": 25,
     "porcelain": 175,
-    "wood": 158,
+    "wood": 132,
     "liquor": 96,
-    "small_arms": 169
+    "small_arms": 154
    },
    "subsistence": {
     "free_arable": 0,
-    "capacity_jobs": 105067950,
-    "peasant_workforce": 105067950,
+    "capacity_jobs": 87726423,
+    "peasant_workforce": 87726423,
     "staffing": 1,
-    "levels": 21014
+    "levels": 17545
    },
    "measured": null,
    "notes": [
     "Synthetic era-1 scenario, solved by tools/era_solver.mjs + tools/era_scenarios.mjs.",
     "Prices are SOLVED, not chosen — untick \"locked\" in the price column to see the market reproduce them.",
-    "Population 538.8M with 78% peasants is the scenario's premise; every building count follows from it.",
+    "Population 449.9M with 78% peasants is the scenario's premise; every building count follows from it.",
     "Army is 5% of a GROSS-output GDP proxy, in era-appropriate battalions only."
    ]
   },
@@ -448,134 +386,99 @@
    "buildings": {
     "building_food_industry_sweetener": 1,
     "building_food_industry": 1,
-    "building_food_industry_baking_powder": 1,
-    "building_textile_mill_dye": 58,
-    "building_textile_mill": 58,
-    "building_textile_mill_sewing": 1,
-    "building_furniture_manufactory_lathe": 22,
-    "building_furniture_manufactory": 22,
-    "building_furniture_manufactory_mechanized": 1,
-    "building_glassworks_leaded": 20,
-    "building_glassworks": 20,
-    "building_glassworks_crystal": 1,
-    "building_tooling_workshop_pig_iron": 148,
-    "building_tooling_workshop": 148,
-    "building_tooling_workshop_steel": 1,
+    "building_textile_mill_dye": 33,
+    "building_textile_mill": 33,
+    "building_furniture_manufactory_lathe": 12,
+    "building_furniture_manufactory": 12,
+    "building_glassworks_leaded": 14,
+    "building_glassworks": 14,
+    "building_tooling_workshop_pig_iron": 60,
+    "building_tooling_workshop": 60,
     "building_paper_mill_sulfite": 1,
     "building_paper_mill": 1,
-    "building_paper_mill_bleached": 1,
     "building_chemical_plant": 1,
-    "building_chemical_plant_improved": 1,
-    "building_explosives_factory": 1,
-    "building_explosives_factory_ammonia": 1,
+    "building_explosives_factory": 13,
     "building_steel_mill_bessemer": 2,
     "building_steel_mill": 2,
-    "building_steel_mill_open_hearth": 1,
-    "building_motor_industry": 5,
-    "building_motor_industry_electric": 1,
-    "building_shipyard_complex": 27,
-    "building_shipyard": 27,
+    "building_motor_industry": 3,
+    "building_shipyard_complex": 2,
+    "building_shipyard": 2,
     "building_shipyard_metal": 1,
-    "building_shipyard_metal_turbine": 1,
-    "building_arms_industry_rifles": 15,
-    "building_arms_industry": 15,
-    "building_arms_industry_repeaters": 1,
-    "building_artillery_foundry_smoothbore": 6,
-    "building_artillery_foundry": 6,
-    "building_artillery_foundry_breech": 1,
-    "building_munition_plant": 8,
-    "building_munition_plant_shells": 1,
-    "building_synthetics_plant": 1,
-    "building_synthetics_plant_indigo": 1,
-    "building_port": 69,
-    "building_port_industrial": 1,
-    "building_railway": 28,
-    "building_railway_steam": 1,
+    "building_arms_industry_rifles": 8,
+    "building_arms_industry": 8,
+    "building_artillery_foundry_smoothbore": 3,
+    "building_artillery_foundry": 3,
+    "building_munition_plant": 5,
+    "building_synthetics_plant": 2,
+    "building_port": 41,
+    "building_railway": 17,
     "building_art_academy_realist": 2,
     "building_art_academy": 2,
-    "building_art_academy_photographic": 1,
-    "building_rye_farm": 29,
+    "building_rye_farm": 77,
     "building_wheat_farm": 1,
     "building_rice_farm": 1,
     "building_maize_farm": 1,
     "building_millet_farm": 1,
-    "building_livestock_ranch": 23,
+    "building_livestock_ranch": 84,
     "building_vineyard": 1,
-    "building_coal_mine": 241,
-    "building_iron_mine": 82,
-    "building_lead_mine": 12,
-    "building_sulfur_mine": 5,
-    "building_gold_mine": 609,
-    "building_gold_field": 609,
-    "building_coffee_plantation": 42,
-    "building_cotton_plantation": 276,
+    "building_coal_mine": 117,
+    "building_iron_mine": 37,
+    "building_lead_mine": 6,
+    "building_sulfur_mine": 9,
+    "building_gold_mine": 222,
+    "building_gold_field": 222,
+    "building_coffee_plantation": 24,
+    "building_cotton_plantation": 108,
     "building_opium_plantation": 1,
-    "building_tea_plantation": 42,
-    "building_tobacco_plantation": 259,
+    "building_tea_plantation": 24,
+    "building_tobacco_plantation": 132,
     "building_sugar_plantation": 1,
     "building_banana_plantation": 1,
-    "building_silk_plantation": 9,
-    "building_logging_camp": 523,
-    "building_fishing_wharf": 727,
+    "building_silk_plantation": 5,
+    "building_logging_camp": 205,
+    "building_fishing_wharf": 743,
     "building_whaling_station": 1,
-    "building_manor_house": 1188,
-    "building_financial_district": 1188,
-    "building_government_administration": 446,
-    "building_trade_center": 260,
-    "building_construction_sector": 111,
-    "building_urban_center": 490,
-    "building_subsistence_farm": 6449
+    "building_manor_house": 669,
+    "building_financial_district": 669,
+    "building_government_administration": 251,
+    "building_trade_center": 146,
+    "building_construction_sector": 63,
+    "building_urban_center": 266,
+    "building_subsistence_farm": 3585
    },
    "pms": {
     "building_food_industry": {
-     "pmg_canning": "pm_cannery_fish",
-     "pmg_distillery": "pm_disabled_distillery",
+     "pmg_canning": "pm_cannery",
+     "pmg_distillery": "pm_patent_stills",
      "pmg_automation_building_food_industry": "pm_manual_dough_processing"
     },
     "building_food_industry_sweetener": {
-     "pmg_canning": "pm_cannery_fish",
-     "pmg_distillery": "pm_disabled_distillery",
-     "pmg_automation_building_food_industry": "pm_manual_dough_processing"
-    },
-    "building_food_industry_baking_powder": {
-     "pmg_canning": "pm_disabled_canning",
-     "pmg_distillery": "pm_disabled_distillery",
+     "pmg_canning": "pm_cannery",
+     "pmg_distillery": "pm_patent_stills",
      "pmg_automation_building_food_industry": "pm_manual_dough_processing"
     },
     "building_textile_mill": {
-     "pmg_luxury_building_textile_mill": "pm_craftsman_sewing",
+     "pmg_luxury_building_textile_mill": "pm_no_luxury_clothes",
      "pmg_automation_building_textile_mill": "pm_traditional_looms"
     },
     "building_textile_mill_dye": {
-     "pmg_luxury_building_textile_mill": "pm_craftsman_sewing",
-     "pmg_automation_building_textile_mill": "pm_traditional_looms"
-    },
-    "building_textile_mill_sewing": {
      "pmg_luxury_building_textile_mill": "pm_no_luxury_clothes",
      "pmg_automation_building_textile_mill": "pm_traditional_looms"
     },
     "building_furniture_manufactory": {
-     "pmg_luxury_building_furniture_manufactory": "pm_no_luxuries",
+     "pmg_luxury_building_furniture_manufactory": "pm_luxury_furniture",
      "pmg_automation_building_furniture_manufactory": "pm_automation_disabled"
     },
     "building_furniture_manufactory_lathe": {
-     "pmg_luxury_building_furniture_manufactory": "pm_no_luxuries",
-     "pmg_automation_building_furniture_manufactory": "pm_automation_disabled"
-    },
-    "building_furniture_manufactory_mechanized": {
-     "pmg_luxury_building_furniture_manufactory": "pm_no_luxuries",
+     "pmg_luxury_building_furniture_manufactory": "pm_luxury_furniture",
      "pmg_automation_building_furniture_manufactory": "pm_automation_disabled"
     },
     "building_glassworks": {
-     "pmg_luxury_building_glassworks": "pm_disabled_ceramics",
+     "pmg_luxury_building_glassworks": "pm_ceramics",
      "pmg_glassblowing": "pm_manual_glassblowing"
     },
     "building_glassworks_leaded": {
-     "pmg_luxury_building_glassworks": "pm_disabled_ceramics",
-     "pmg_glassblowing": "pm_manual_glassblowing"
-    },
-    "building_glassworks_crystal": {
-     "pmg_luxury_building_glassworks": "pm_disabled_ceramics",
+     "pmg_luxury_building_glassworks": "pm_ceramics",
      "pmg_glassblowing": "pm_manual_glassblowing"
     },
     "building_tooling_workshop": {
@@ -584,48 +487,30 @@
     "building_tooling_workshop_pig_iron": {
      "pmg_automation_building_tooling_workshop": "pm_automation_disabled"
     },
-    "building_tooling_workshop_steel": {
-     "pmg_automation_building_tooling_workshop": "pm_automation_disabled"
-    },
     "building_paper_mill": {
      "pmg_automation_building_paper_mill": "pm_automation_disabled"
     },
     "building_paper_mill_sulfite": {
      "pmg_automation_building_paper_mill": "pm_automation_disabled"
     },
-    "building_paper_mill_bleached": {
-     "pmg_automation_building_paper_mill": "pm_automation_disabled"
-    },
     "building_chemical_plant": {},
-    "building_chemical_plant_improved": {},
     "building_explosives_factory": {},
-    "building_explosives_factory_ammonia": {},
     "building_steel_mill": {
      "pmg_automation_building_steel_mill": "pm_automation_disabled"
     },
     "building_steel_mill_bessemer": {
      "pmg_automation_building_steel_mill": "pm_automation_disabled"
     },
-    "building_steel_mill_open_hearth": {
-     "pmg_automation_building_steel_mill": "pm_automation_disabled"
-    },
     "building_motor_industry": {
-     "pmg_automation_building_motor_industry": "pm_automation_disabled"
-    },
-    "building_motor_industry_electric": {
      "pmg_automation_building_motor_industry": "pm_automation_disabled"
     },
     "building_shipyard": {},
     "building_shipyard_complex": {},
     "building_shipyard_metal": {},
-    "building_shipyard_metal_turbine": {},
     "building_arms_industry": {
      "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
     "building_arms_industry_rifles": {
-     "pmg_automation_building_arms_industry": "pm_automation_disabled"
-    },
-    "building_arms_industry_repeaters": {
      "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
     "building_artillery_foundry": {
@@ -634,28 +519,15 @@
     "building_artillery_foundry_smoothbore": {
      "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
-    "building_artillery_foundry_breech": {
-     "pmg_automation_building_arms_industry": "pm_automation_disabled"
-    },
     "building_munition_plant": {
-     "pmg_automation_building_munition_plant": "pm_automation_disabled"
-    },
-    "building_munition_plant_shells": {
      "pmg_automation_building_munition_plant": "pm_automation_disabled"
     },
     "building_synthetics_plant": {
      "pmg_synthetic_silk": "pm_no_artificial_fibers"
     },
-    "building_synthetics_plant_indigo": {
-     "pmg_synthetic_silk": "pm_no_artificial_fibers"
-    },
     "building_port": {},
-    "building_port_industrial": {},
     "building_railway": {
      "pmg_passenger_trains": "pm_wooden_passenger_carriages"
-    },
-    "building_railway_steam": {
-     "pmg_passenger_trains": "pm_no_passenger_trains"
     },
     "building_art_academy": {
      "pmg_ownership_building_art_academy": "pm_traditional_patronage",
@@ -665,38 +537,34 @@
      "pmg_ownership_building_art_academy": "pm_traditional_patronage",
      "pmg_principle_freedom_of_movement_3": "pm_freedom_of_movement_no_effect"
     },
-    "building_art_academy_photographic": {
-     "pmg_ownership_building_art_academy": "pm_traditional_patronage",
-     "pmg_principle_freedom_of_movement_3": "pm_freedom_of_movement_no_effect"
-    },
     "building_rye_farm": {
-     "pmg_base_building_rye_farm": "pm_soil_enriching_farming",
+     "pmg_base_building_rye_farm": "pm_simple_farming",
      "pmg_secondary_building_rye_farm": "pm_potatoes",
      "pmg_harvesting_process_building_rye_farm": "pm_tools_disabled"
     },
     "building_wheat_farm": {
-     "pmg_base_building_wheat_farm": "pm_soil_enriching_farming",
+     "pmg_base_building_wheat_farm": "pm_simple_farming",
      "pmg_secondary_building_wheat_farm": "pm_citrus_orchards",
      "pmg_harvesting_process_building_wheat_farm": "pm_tools_disabled"
     },
     "building_rice_farm": {
-     "pmg_base_building_rice_farm": "pm_soil_enriching_farming_building_rice_farm",
+     "pmg_base_building_rice_farm": "pm_simple_farming_building_rice_farm",
      "pmg_secondary_building_rice_farm": "pm_fig_orchards_building_rice_farm",
      "pmg_harvesting_process_building_rice_farm": "pm_tools_disabled"
     },
     "building_maize_farm": {
-     "pmg_base_building_maize_farm": "pm_soil_enriching_farming",
+     "pmg_base_building_maize_farm": "pm_simple_farming",
      "pmg_secondary_building_maize_farm": "pm_citrus_orchards",
      "pmg_harvesting_process_building_maize_farm": "pm_tools_disabled"
     },
     "building_millet_farm": {
-     "pmg_base_building_millet_farm": "pm_soil_enriching_farming",
+     "pmg_base_building_millet_farm": "pm_simple_farming",
      "pmg_secondary_building_millet_farm": "pm_fig_orchards",
      "pmg_harvesting_process_building_millet_farm": "pm_tools_disabled"
     },
     "building_livestock_ranch": {
      "pmg_base_building_livestock_ranch": "pm_slaughterhouses",
-     "pmg_sheep_ranch": "pm_simple_ranch",
+     "pmg_sheep_ranch": "pm_sheep_farms",
      "pmg_fencing": "pm_standard_fences",
      "pmg_refrigeration_building_livestock_ranch": "pm_unrefrigerated"
     },
@@ -730,7 +598,7 @@
     },
     "building_gold_mine": {
      "pmg_mining_equipment_building_gold_mine": "pm_condensing_engine_pump_building_gold_mine",
-     "pmg_explosives_building_gold_mine": "pm_no_explosives",
+     "pmg_explosives_building_gold_mine": "pm_nitroglycerin_building_gold_mine",
      "pmg_steam_automation_building_gold_mine": "pm_no_steam_automation",
      "pmg_train_automation_building_gold_mine": "pm_road_carts"
     },
@@ -791,12 +659,12 @@
     },
     "building_logging_camp": {
      "pmg_base_building_logging_camp": "pm_saw_mills",
-     "pmg_hardwood": "pm_increased_hardwood",
+     "pmg_hardwood": "pm_hardwood",
      "pmg_equipment": "pm_no_equipment",
      "pmg_transportation_building_logging_camp": "pm_road_carts"
     },
     "building_fishing_wharf": {
-     "pmg_base_building_fishing_wharf": "pm_fishing_trawlers",
+     "pmg_base_building_fishing_wharf": "pm_simple_fishing",
      "pmg_refrigeration_building_fishing_wharf": "pm_unrefrigerated"
     },
     "building_whaling_station": {
@@ -824,11 +692,11 @@
     }
    },
    "pops": {
-    "total": 234520444,
-    "lower": 86913000,
-    "middle": 18146000,
-    "upper": 475200,
-    "peasants": 128986244,
+    "total": 130372000,
+    "lower": 48544600,
+    "middle": 9855200,
+    "upper": 267600,
+    "peasants": 71704600,
     "slaves": 0
    },
    "sol": {
@@ -839,60 +707,42 @@
     "slaves": 8
    },
    "units": {
-    "combat_unit_type_skirmish_infantry": 1158,
-    "combat_unit_type_mobile_artillery": 386
+    "combat_unit_type_skirmish_infantry": 504,
+    "combat_unit_type_mobile_artillery": 168
    },
    "nonbuy": {},
    "nonsell": {},
    "throughput": {
     "building_food_industry": 0.2,
     "building_food_industry_sweetener": 0.2,
-    "building_food_industry_baking_powder": 0.2,
     "building_textile_mill": 0.2,
     "building_textile_mill_dye": 0.2,
-    "building_textile_mill_sewing": 0.2,
     "building_furniture_manufactory": 0.2,
     "building_furniture_manufactory_lathe": 0.2,
-    "building_furniture_manufactory_mechanized": 0.2,
     "building_glassworks": 0.2,
     "building_glassworks_leaded": 0.2,
-    "building_glassworks_crystal": 0.2,
     "building_tooling_workshop": 0.2,
     "building_tooling_workshop_pig_iron": 0.2,
-    "building_tooling_workshop_steel": 0.2,
     "building_paper_mill": 0.2,
     "building_paper_mill_sulfite": 0.2,
-    "building_paper_mill_bleached": 0.2,
     "building_chemical_plant": 0.2,
-    "building_chemical_plant_improved": 0.2,
     "building_explosives_factory": 0.2,
-    "building_explosives_factory_ammonia": 0.2,
     "building_steel_mill": 0.2,
     "building_steel_mill_bessemer": 0.2,
-    "building_steel_mill_open_hearth": 0.2,
     "building_motor_industry": 0.2,
-    "building_motor_industry_electric": 0.2,
     "building_shipyard": 0.2,
     "building_shipyard_complex": 0.2,
     "building_shipyard_metal": 0.2,
-    "building_shipyard_metal_turbine": 0.2,
     "building_arms_industry": 0.2,
     "building_arms_industry_rifles": 0.2,
-    "building_arms_industry_repeaters": 0.2,
     "building_artillery_foundry": 0.2,
     "building_artillery_foundry_smoothbore": 0.2,
-    "building_artillery_foundry_breech": 0.2,
     "building_munition_plant": 0.2,
-    "building_munition_plant_shells": 0.2,
     "building_synthetics_plant": 0.2,
-    "building_synthetics_plant_indigo": 0.2,
     "building_port": 0.2,
-    "building_port_industrial": 0.2,
     "building_railway": 0.2,
-    "building_railway_steam": 0.2,
     "building_art_academy": 0.2,
     "building_art_academy_realist": 0.2,
-    "building_art_academy_photographic": 0.2,
     "building_rye_farm": 0.1,
     "building_wheat_farm": 0.1,
     "building_rice_farm": 0.1,
@@ -919,71 +769,71 @@
    },
    "prices": {
     "ironclads": 100,
-    "luxury_clothes": 25,
-    "oil": 58,
-    "meat": 107,
+    "luxury_clothes": 175,
+    "oil": 39,
+    "meat": 79,
     "automobiles": 100,
     "gold": 25,
-    "grain": 89,
+    "grain": 98,
     "artillery": 134,
     "manowars": 100,
     "telephones": 100,
-    "silk": 175,
+    "silk": 97,
     "radios": 100,
-    "paper": 86,
-    "tools": 128,
-    "luxury_furniture": 175,
-    "explosives": 175,
-    "groceries": 121,
-    "fruit": 100,
-    "fabric": 97,
+    "paper": 103,
+    "tools": 134,
+    "luxury_furniture": 73,
+    "explosives": 157,
+    "groceries": 93,
+    "fruit": 89,
+    "fabric": 99,
     "fine_art": 25,
-    "fertilizer": 121,
-    "engines": 154,
+    "fertilizer": 135,
+    "engines": 152,
     "fish": 100,
-    "hardwood": 25,
+    "hardwood": 40,
     "wine": 25,
-    "clippers": 128,
-    "ammunition": 175,
-    "lead": 111,
+    "clippers": 119,
+    "ammunition": 151,
+    "lead": 119,
     "steamers": 25,
-    "transportation": 101,
-    "sugar": 70,
-    "services": 43,
-    "coal": 112,
-    "clothes": 175,
-    "sulfur": 83,
+    "transportation": 100,
+    "sugar": 115,
+    "services": 45,
+    "coal": 101,
+    "clothes": 128,
+    "sulfur": 95,
     "rubber": 100,
-    "tea": 101,
-    "coffee": 101,
-    "iron": 100,
+    "tea": 100,
+    "coffee": 100,
+    "iron": 104,
     "furniture": 175,
-    "tobacco": 102,
+    "tobacco": 101,
     "tanks": 100,
-    "dye": 113,
+    "dye": 148,
     "aeroplanes": 100,
-    "glass": 113,
-    "merchant_marine": 101,
-    "opium": 41,
-    "electricity": 175,
-    "steel": 157,
-    "porcelain": 175,
-    "wood": 175,
-    "liquor": 114,
-    "small_arms": 144
+    "glass": 138,
+    "merchant_marine": 99,
+    "opium": 25,
+    "electricity": 100,
+    "steel": 85,
+    "porcelain": 81,
+    "wood": 147,
+    "liquor": 100,
+    "small_arms": 128
    },
    "subsistence": {
     "free_arable": 0,
-    "capacity_jobs": 32246561,
-    "peasant_workforce": 32246561,
+    "capacity_jobs": 17926150,
+    "peasant_workforce": 17926150,
     "staffing": 1,
-    "levels": 6449
+    "levels": 3585
    },
    "measured": null,
    "notes": [
     "Synthetic era-2 scenario, solved by tools/era_solver.mjs + tools/era_scenarios.mjs.",
     "Prices are SOLVED, not chosen — untick \"locked\" in the price column to see the market reproduce them.",
-    "Population 234.5M with 55% peasants is the scenario's premise; every building count follows from it.",
+    "Population 130.4M with 55% peasants is the scenario's premise; every building count follows from it.",
     "Army is 5% of a GROSS-output GDP proxy, in era-appropriate battalions only."
    ]
   },
@@ -996,111 +846,90 @@
    "base_wage_note": "era 3 lower-stratum SoL 12 via FINDINGS F26, base = exp((SoL−37.43)/10.49)",
    "market": [],
    "buildings": {
-    "building_food_industry_baking_powder": 8,
-    "building_food_industry_sweetener": 8,
+    "building_food_industry_baking_powder": 7,
+    "building_food_industry_sweetener": 7,
     "building_food_industry": 1,
-    "building_food_industry_mechanised": 1,
-    "building_textile_mill_sewing": 38,
-    "building_textile_mill_dye": 38,
+    "building_textile_mill_sewing": 32,
+    "building_textile_mill_dye": 32,
     "building_textile_mill": 1,
-    "building_textile_mill_electric": 1,
     "building_furniture_manufactory_mechanized": 29,
     "building_furniture_manufactory_lathe": 29,
     "building_furniture_manufactory": 1,
-    "building_furniture_manufactory_sprayed": 1,
-    "building_glassworks_crystal": 21,
-    "building_glassworks_leaded": 21,
+    "building_glassworks_crystal": 18,
+    "building_glassworks_leaded": 18,
     "building_glassworks": 1,
-    "building_glassworks_plastics": 1,
-    "building_tooling_workshop_steel": 152,
-    "building_tooling_workshop_pig_iron": 152,
+    "building_tooling_workshop_steel": 108,
+    "building_tooling_workshop_pig_iron": 108,
     "building_tooling_workshop": 1,
-    "building_tooling_workshop_rubber": 1,
-    "building_paper_mill_bleached": 1,
-    "building_paper_mill_sulfite": 1,
+    "building_paper_mill_bleached": 5,
+    "building_paper_mill_sulfite": 5,
     "building_paper_mill": 1,
-    "building_paper_mill_kraft": 1,
-    "building_chemical_plant_improved": 7,
-    "building_chemical_plant": 7,
-    "building_chemical_plant_nitrogen": 1,
-    "building_explosives_factory_ammonia": 2,
-    "building_explosives_factory": 2,
-    "building_explosives_factory_vacuum": 1,
-    "building_steel_mill_open_hearth": 23,
-    "building_steel_mill_bessemer": 23,
+    "building_chemical_plant_improved": 4,
+    "building_chemical_plant": 4,
+    "building_explosives_factory_ammonia": 22,
+    "building_explosives_factory": 22,
+    "building_steel_mill_open_hearth": 17,
+    "building_steel_mill_bessemer": 17,
     "building_steel_mill": 1,
-    "building_steel_mill_electric_arc": 1,
-    "building_motor_industry_electric": 12,
-    "building_motor_industry": 12,
-    "building_motor_industry_diesel": 1,
+    "building_motor_industry_electric": 10,
+    "building_motor_industry": 10,
     "building_shipyard_complex": 1,
     "building_shipyard": 1,
-    "building_shipyard_metal_turbine": 5,
-    "building_shipyard_metal": 5,
-    "building_shipyard_metal_oil_fired": 1,
+    "building_shipyard_metal_turbine": 6,
+    "building_shipyard_metal": 6,
     "building_automotive_industry": 1,
-    "building_automotive_industry_mass": 1,
     "building_arms_industry_repeaters": 15,
     "building_arms_industry_rifles": 15,
     "building_arms_industry": 1,
-    "building_arms_industry_bolt_action": 1,
     "building_artillery_foundry_breech": 5,
     "building_artillery_foundry_smoothbore": 5,
     "building_artillery_foundry": 1,
-    "building_artillery_foundry_recoiled": 1,
     "building_munition_plant_shells": 10,
     "building_munition_plant": 10,
-    "building_munition_plant_drawn_brass": 1,
     "building_synthetics_plant_indigo": 3,
     "building_synthetics_plant": 3,
-    "building_synthetics_plant_viscose": 1,
     "building_electrics_industry": 1,
-    "building_electrics_industry_radio": 1,
-    "building_power_plant": 41,
-    "building_power_plant_coal": 1,
-    "building_port_industrial": 18,
-    "building_port": 18,
-    "building_port_modern": 1,
-    "building_railway_steam": 27,
-    "building_railway": 27,
-    "building_railway_electric": 1,
+    "building_power_plant": 37,
+    "building_port_industrial": 17,
+    "building_port": 17,
+    "building_railway_steam": 26,
+    "building_railway": 26,
     "building_art_academy_photographic": 2,
     "building_art_academy_realist": 2,
     "building_art_academy": 1,
-    "building_art_academy_film": 1,
-    "building_rye_farm": 198,
-    "building_wheat_farm": 5,
-    "building_rice_farm": 4,
-    "building_maize_farm": 4,
-    "building_millet_farm": 4,
-    "building_livestock_ranch": 74,
+    "building_rye_farm": 202,
+    "building_wheat_farm": 7,
+    "building_rice_farm": 2,
+    "building_maize_farm": 7,
+    "building_millet_farm": 7,
+    "building_livestock_ranch": 72,
     "building_vineyard": 1,
-    "building_coal_mine": 359,
-    "building_iron_mine": 166,
-    "building_lead_mine": 36,
-    "building_sulfur_mine": 19,
-    "building_gold_mine": 513,
-    "building_gold_field": 513,
-    "building_coffee_plantation": 53,
-    "building_cotton_plantation": 85,
+    "building_coal_mine": 316,
+    "building_iron_mine": 136,
+    "building_lead_mine": 33,
+    "building_sulfur_mine": 36,
+    "building_gold_mine": 373,
+    "building_gold_field": 373,
+    "building_coffee_plantation": 66,
+    "building_cotton_plantation": 91,
     "building_opium_plantation": 1,
-    "building_tea_plantation": 53,
-    "building_tobacco_plantation": 126,
+    "building_tea_plantation": 66,
+    "building_tobacco_plantation": 110,
     "building_sugar_plantation": 8,
     "building_banana_plantation": 1,
-    "building_silk_plantation": 44,
-    "building_logging_camp": 420,
-    "building_rubber_plantation": 2,
-    "building_fishing_wharf": 260,
-    "building_whaling_station": 6,
+    "building_silk_plantation": 38,
+    "building_logging_camp": 329,
+    "building_rubber_plantation": 1,
+    "building_fishing_wharf": 266,
+    "building_whaling_station": 1,
     "building_oil_rig": 2,
-    "building_manor_house": 1064,
-    "building_financial_district": 1064,
-    "building_government_administration": 399,
-    "building_trade_center": 233,
-    "building_construction_sector": 100,
-    "building_urban_center": 472,
-    "building_subsistence_farm": 1909
+    "building_manor_house": 918,
+    "building_financial_district": 918,
+    "building_government_administration": 344,
+    "building_trade_center": 201,
+    "building_construction_sector": 86,
+    "building_urban_center": 408,
+    "building_subsistence_farm": 1702
    },
    "pms": {
     "building_food_industry": {
@@ -1118,57 +947,40 @@
      "pmg_distillery": "pm_patent_stills",
      "pmg_automation_building_food_industry": "pm_manual_dough_processing"
     },
-    "building_food_industry_mechanised": {
-     "pmg_canning": "pm_disabled_canning",
-     "pmg_distillery": "pm_disabled_distillery",
-     "pmg_automation_building_food_industry": "pm_manual_dough_processing"
-    },
     "building_textile_mill": {
-     "pmg_luxury_building_textile_mill": "pm_no_luxury_clothes",
+     "pmg_luxury_building_textile_mill": "pm_craftsman_sewing",
      "pmg_automation_building_textile_mill": "pm_traditional_looms"
     },
     "building_textile_mill_dye": {
-     "pmg_luxury_building_textile_mill": "pm_no_luxury_clothes",
+     "pmg_luxury_building_textile_mill": "pm_craftsman_sewing",
      "pmg_automation_building_textile_mill": "pm_traditional_looms"
     },
     "building_textile_mill_sewing": {
-     "pmg_luxury_building_textile_mill": "pm_no_luxury_clothes",
-     "pmg_automation_building_textile_mill": "pm_traditional_looms"
-    },
-    "building_textile_mill_electric": {
-     "pmg_luxury_building_textile_mill": "pm_no_luxury_clothes",
+     "pmg_luxury_building_textile_mill": "pm_craftsman_sewing",
      "pmg_automation_building_textile_mill": "pm_traditional_looms"
     },
     "building_furniture_manufactory": {
-     "pmg_luxury_building_furniture_manufactory": "pm_no_luxuries",
+     "pmg_luxury_building_furniture_manufactory": "pm_luxury_furniture",
      "pmg_automation_building_furniture_manufactory": "pm_automation_disabled"
     },
     "building_furniture_manufactory_lathe": {
-     "pmg_luxury_building_furniture_manufactory": "pm_no_luxuries",
+     "pmg_luxury_building_furniture_manufactory": "pm_luxury_furniture",
      "pmg_automation_building_furniture_manufactory": "pm_automation_disabled"
     },
     "building_furniture_manufactory_mechanized": {
-     "pmg_luxury_building_furniture_manufactory": "pm_no_luxuries",
-     "pmg_automation_building_furniture_manufactory": "pm_automation_disabled"
-    },
-    "building_furniture_manufactory_sprayed": {
-     "pmg_luxury_building_furniture_manufactory": "pm_no_luxuries",
+     "pmg_luxury_building_furniture_manufactory": "pm_luxury_furniture",
      "pmg_automation_building_furniture_manufactory": "pm_automation_disabled"
     },
     "building_glassworks": {
-     "pmg_luxury_building_glassworks": "pm_disabled_ceramics",
+     "pmg_luxury_building_glassworks": "pm_ceramics",
      "pmg_glassblowing": "pm_manual_glassblowing"
     },
     "building_glassworks_leaded": {
-     "pmg_luxury_building_glassworks": "pm_disabled_ceramics",
+     "pmg_luxury_building_glassworks": "pm_ceramics",
      "pmg_glassblowing": "pm_manual_glassblowing"
     },
     "building_glassworks_crystal": {
-     "pmg_luxury_building_glassworks": "pm_disabled_ceramics",
-     "pmg_glassblowing": "pm_manual_glassblowing"
-    },
-    "building_glassworks_plastics": {
-     "pmg_luxury_building_glassworks": "pm_disabled_ceramics",
+     "pmg_luxury_building_glassworks": "pm_ceramics",
      "pmg_glassblowing": "pm_manual_glassblowing"
     },
     "building_tooling_workshop": {
@@ -1180,9 +992,6 @@
     "building_tooling_workshop_steel": {
      "pmg_automation_building_tooling_workshop": "pm_automation_disabled"
     },
-    "building_tooling_workshop_rubber": {
-     "pmg_automation_building_tooling_workshop": "pm_automation_disabled"
-    },
     "building_paper_mill": {
      "pmg_automation_building_paper_mill": "pm_automation_disabled"
     },
@@ -1192,15 +1001,10 @@
     "building_paper_mill_bleached": {
      "pmg_automation_building_paper_mill": "pm_automation_disabled"
     },
-    "building_paper_mill_kraft": {
-     "pmg_automation_building_paper_mill": "pm_automation_disabled"
-    },
     "building_chemical_plant": {},
     "building_chemical_plant_improved": {},
-    "building_chemical_plant_nitrogen": {},
     "building_explosives_factory": {},
     "building_explosives_factory_ammonia": {},
-    "building_explosives_factory_vacuum": {},
     "building_steel_mill": {
      "pmg_automation_building_steel_mill": "pm_automation_disabled"
     },
@@ -1210,29 +1014,17 @@
     "building_steel_mill_open_hearth": {
      "pmg_automation_building_steel_mill": "pm_automation_disabled"
     },
-    "building_steel_mill_electric_arc": {
-     "pmg_automation_building_steel_mill": "pm_automation_disabled"
-    },
     "building_motor_industry": {
      "pmg_automation_building_motor_industry": "pm_automation_disabled"
     },
     "building_motor_industry_electric": {
      "pmg_automation_building_motor_industry": "pm_automation_disabled"
     },
-    "building_motor_industry_diesel": {
-     "pmg_automation_building_motor_industry": "pm_automation_disabled"
-    },
     "building_shipyard": {},
     "building_shipyard_complex": {},
     "building_shipyard_metal": {},
     "building_shipyard_metal_turbine": {},
-    "building_shipyard_metal_oil_fired": {},
     "building_automotive_industry": {
-     "pmg_aeroplanes": "pm_no_aeroplane_production",
-     "pmg_tanks": "pm_no_tank_production",
-     "pmg_automation_building_automotive_industry": "pm_automation_disabled"
-    },
-    "building_automotive_industry_mass": {
      "pmg_aeroplanes": "pm_no_aeroplane_production",
      "pmg_tanks": "pm_no_tank_production",
      "pmg_automation_building_automotive_industry": "pm_automation_disabled"
@@ -1246,9 +1038,6 @@
     "building_arms_industry_repeaters": {
      "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
-    "building_arms_industry_bolt_action": {
-     "pmg_automation_building_arms_industry": "pm_automation_disabled"
-    },
     "building_artillery_foundry": {
      "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
@@ -1258,16 +1047,10 @@
     "building_artillery_foundry_breech": {
      "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
-    "building_artillery_foundry_recoiled": {
-     "pmg_automation_building_arms_industry": "pm_automation_disabled"
-    },
     "building_munition_plant": {
      "pmg_automation_building_munition_plant": "pm_automation_disabled"
     },
     "building_munition_plant_shells": {
-     "pmg_automation_building_munition_plant": "pm_automation_disabled"
-    },
-    "building_munition_plant_drawn_brass": {
      "pmg_automation_building_munition_plant": "pm_automation_disabled"
     },
     "building_synthetics_plant": {
@@ -1276,28 +1059,17 @@
     "building_synthetics_plant_indigo": {
      "pmg_synthetic_silk": "pm_no_artificial_fibers"
     },
-    "building_synthetics_plant_viscose": {
-     "pmg_synthetic_silk": "pm_no_artificial_fibers"
-    },
     "building_electrics_industry": {
      "pmg_radios_category": "pm_no_radios"
     },
-    "building_electrics_industry_radio": {
-     "pmg_radios_category": "pm_no_radios"
-    },
     "building_power_plant": {},
-    "building_power_plant_coal": {},
     "building_port": {},
     "building_port_industrial": {},
-    "building_port_modern": {},
     "building_railway": {
      "pmg_passenger_trains": "pm_steel_passenger_carriages"
     },
     "building_railway_steam": {
      "pmg_passenger_trains": "pm_steel_passenger_carriages"
-    },
-    "building_railway_electric": {
-     "pmg_passenger_trains": "pm_no_passenger_trains"
     },
     "building_art_academy": {
      "pmg_ownership_building_art_academy": "pm_traditional_patronage",
@@ -1311,34 +1083,30 @@
      "pmg_ownership_building_art_academy": "pm_traditional_patronage",
      "pmg_principle_freedom_of_movement_3": "pm_freedom_of_movement_no_effect"
     },
-    "building_art_academy_film": {
-     "pmg_ownership_building_art_academy": "pm_traditional_patronage",
-     "pmg_principle_freedom_of_movement_3": "pm_freedom_of_movement_no_effect"
-    },
     "building_rye_farm": {
-     "pmg_base_building_rye_farm": "pm_fertilization",
+     "pmg_base_building_rye_farm": "pm_simple_farming",
      "pmg_secondary_building_rye_farm": "pm_potatoes",
-     "pmg_harvesting_process_building_rye_farm": "pm_steam_threshers"
+     "pmg_harvesting_process_building_rye_farm": "pm_tools_disabled"
     },
     "building_wheat_farm": {
      "pmg_base_building_wheat_farm": "pm_fertilization",
      "pmg_secondary_building_wheat_farm": "pm_citrus_orchards",
-     "pmg_harvesting_process_building_wheat_farm": "pm_steam_threshers"
+     "pmg_harvesting_process_building_wheat_farm": "pm_tools_disabled"
     },
     "building_rice_farm": {
-     "pmg_base_building_rice_farm": "pm_fertilization_building_rice_farm",
+     "pmg_base_building_rice_farm": "pm_simple_farming_building_rice_farm",
      "pmg_secondary_building_rice_farm": "pm_fig_orchards_building_rice_farm",
      "pmg_harvesting_process_building_rice_farm": "pm_tools_disabled"
     },
     "building_maize_farm": {
      "pmg_base_building_maize_farm": "pm_fertilization",
      "pmg_secondary_building_maize_farm": "pm_citrus_orchards",
-     "pmg_harvesting_process_building_maize_farm": "pm_steam_threshers"
+     "pmg_harvesting_process_building_maize_farm": "pm_tools_disabled"
     },
     "building_millet_farm": {
      "pmg_base_building_millet_farm": "pm_fertilization",
      "pmg_secondary_building_millet_farm": "pm_fig_orchards",
-     "pmg_harvesting_process_building_millet_farm": "pm_steam_threshers"
+     "pmg_harvesting_process_building_millet_farm": "pm_tools_disabled"
     },
     "building_livestock_ranch": {
      "pmg_base_building_livestock_ranch": "pm_slaughterhouses",
@@ -1376,7 +1144,7 @@
     },
     "building_gold_mine": {
      "pmg_mining_equipment_building_gold_mine": "pm_condensing_engine_pump_building_gold_mine",
-     "pmg_explosives_building_gold_mine": "pm_no_explosives",
+     "pmg_explosives_building_gold_mine": "pm_dynamite_building_gold_mine",
      "pmg_steam_automation_building_gold_mine": "pm_no_steam_automation",
      "pmg_train_automation_building_gold_mine": "pm_road_carts"
     },
@@ -1384,8 +1152,8 @@
      "pmg_base_building_gold_field": "default_building_gold_field"
     },
     "building_coffee_plantation": {
-     "pmg_base_building_coffee_plantation": "coffee_plantation_wet_process_mechanical",
-     "pmg_drying_coffee_plantation": "coffee_plantation_mechanical_drying",
+     "pmg_base_building_coffee_plantation": "coffee_plantation_dry_process",
+     "pmg_drying_coffee_plantation": "coffee_plantation_patio_drying",
      "pmg_coffee_exploitation": "worker_exploitation_coffee",
      "pmg_train_automation_building_coffee_plantation": "pm_road_carts"
     },
@@ -1437,7 +1205,7 @@
     },
     "building_logging_camp": {
      "pmg_base_building_logging_camp": "pm_saw_mills",
-     "pmg_hardwood": "pm_increased_hardwood",
+     "pmg_hardwood": "pm_hardwood",
      "pmg_equipment": "pm_no_equipment",
      "pmg_transportation_building_logging_camp": "pm_road_carts"
     },
@@ -1479,11 +1247,11 @@
     }
    },
    "pops": {
-    "total": 127241143,
-    "lower": 69478300,
-    "middle": 19164900,
-    "upper": 425600,
-    "peasants": 38172343,
+    "total": 113454000,
+    "lower": 62051800,
+    "middle": 16998800,
+    "upper": 367200,
+    "peasants": 34036200,
     "slaves": 0
    },
    "sol": {
@@ -1494,8 +1262,8 @@
     "slaves": 8
    },
    "units": {
-    "combat_unit_type_trench_infantry": 821,
-    "combat_unit_type_shrapnel_artillery": 274
+    "combat_unit_type_trench_infantry": 686,
+    "combat_unit_type_shrapnel_artillery": 229
    },
    "nonbuy": {},
    "nonsell": {},
@@ -1503,75 +1271,54 @@
     "building_food_industry": 0.2,
     "building_food_industry_sweetener": 0.2,
     "building_food_industry_baking_powder": 0.2,
-    "building_food_industry_mechanised": 0.2,
     "building_textile_mill": 0.2,
     "building_textile_mill_dye": 0.2,
     "building_textile_mill_sewing": 0.2,
-    "building_textile_mill_electric": 0.2,
     "building_furniture_manufactory": 0.2,
     "building_furniture_manufactory_lathe": 0.2,
     "building_furniture_manufactory_mechanized": 0.2,
-    "building_furniture_manufactory_sprayed": 0.2,
     "building_glassworks": 0.2,
     "building_glassworks_leaded": 0.2,
     "building_glassworks_crystal": 0.2,
-    "building_glassworks_plastics": 0.2,
     "building_tooling_workshop": 0.2,
     "building_tooling_workshop_pig_iron": 0.2,
     "building_tooling_workshop_steel": 0.2,
-    "building_tooling_workshop_rubber": 0.2,
     "building_paper_mill": 0.2,
     "building_paper_mill_sulfite": 0.2,
     "building_paper_mill_bleached": 0.2,
-    "building_paper_mill_kraft": 0.2,
     "building_chemical_plant": 0.2,
     "building_chemical_plant_improved": 0.2,
-    "building_chemical_plant_nitrogen": 0.2,
     "building_explosives_factory": 0.2,
     "building_explosives_factory_ammonia": 0.2,
-    "building_explosives_factory_vacuum": 0.2,
     "building_steel_mill": 0.2,
     "building_steel_mill_bessemer": 0.2,
     "building_steel_mill_open_hearth": 0.2,
-    "building_steel_mill_electric_arc": 0.2,
     "building_motor_industry": 0.2,
     "building_motor_industry_electric": 0.2,
-    "building_motor_industry_diesel": 0.2,
     "building_shipyard": 0.2,
     "building_shipyard_complex": 0.2,
     "building_shipyard_metal": 0.2,
     "building_shipyard_metal_turbine": 0.2,
-    "building_shipyard_metal_oil_fired": 0.2,
     "building_automotive_industry": 0.2,
-    "building_automotive_industry_mass": 0.2,
     "building_arms_industry": 0.2,
     "building_arms_industry_rifles": 0.2,
     "building_arms_industry_repeaters": 0.2,
-    "building_arms_industry_bolt_action": 0.2,
     "building_artillery_foundry": 0.2,
     "building_artillery_foundry_smoothbore": 0.2,
     "building_artillery_foundry_breech": 0.2,
-    "building_artillery_foundry_recoiled": 0.2,
     "building_munition_plant": 0.2,
     "building_munition_plant_shells": 0.2,
-    "building_munition_plant_drawn_brass": 0.2,
     "building_synthetics_plant": 0.2,
     "building_synthetics_plant_indigo": 0.2,
-    "building_synthetics_plant_viscose": 0.2,
     "building_electrics_industry": 0.2,
-    "building_electrics_industry_radio": 0.2,
     "building_power_plant": 0.2,
-    "building_power_plant_coal": 0.2,
     "building_port": 0.2,
     "building_port_industrial": 0.2,
-    "building_port_modern": 0.2,
     "building_railway": 0.2,
     "building_railway_steam": 0.2,
-    "building_railway_electric": 0.2,
     "building_art_academy": 0.2,
     "building_art_academy_realist": 0.2,
     "building_art_academy_photographic": 0.2,
-    "building_art_academy_film": 0.2,
     "building_rye_farm": 0.1,
     "building_wheat_farm": 0.1,
     "building_rice_farm": 0.1,
@@ -1600,71 +1347,71 @@
    },
    "prices": {
     "ironclads": 100,
-    "luxury_clothes": 175,
-    "oil": 104,
+    "luxury_clothes": 50,
+    "oil": 80,
     "meat": 101,
     "automobiles": 25,
     "gold": 25,
-    "grain": 100,
-    "artillery": 109,
+    "grain": 107,
+    "artillery": 108,
     "manowars": 100,
     "telephones": 25,
-    "silk": 82,
+    "silk": 99,
     "radios": 100,
-    "paper": 77,
-    "tools": 105,
-    "luxury_furniture": 175,
-    "explosives": 159,
+    "paper": 117,
+    "tools": 114,
+    "luxury_furniture": 50,
+    "explosives": 132,
     "groceries": 104,
-    "fruit": 101,
-    "fabric": 106,
+    "fruit": 96,
+    "fabric": 99,
     "fine_art": 25,
-    "fertilizer": 120,
-    "engines": 133,
-    "fish": 101,
-    "hardwood": 25,
+    "fertilizer": 141,
+    "engines": 138,
+    "fish": 100,
+    "hardwood": 51,
     "wine": 25,
-    "clippers": 109,
-    "ammunition": 135,
-    "lead": 106,
-    "steamers": 127,
+    "clippers": 105,
+    "ammunition": 126,
+    "lead": 101,
+    "steamers": 126,
     "transportation": 100,
-    "sugar": 101,
-    "services": 62,
-    "coal": 105,
-    "clothes": 144,
-    "sulfur": 105,
-    "rubber": 84,
-    "tea": 101,
-    "coffee": 101,
-    "iron": 101,
-    "furniture": 138,
-    "tobacco": 101,
+    "sugar": 98,
+    "services": 64,
+    "coal": 100,
+    "clothes": 175,
+    "sulfur": 100,
+    "rubber": 25,
+    "tea": 100,
+    "coffee": 100,
+    "iron": 103,
+    "furniture": 159,
+    "tobacco": 100,
     "tanks": 100,
-    "dye": 89,
+    "dye": 133,
     "aeroplanes": 100,
-    "glass": 104,
-    "merchant_marine": 104,
-    "opium": 36,
-    "electricity": 157,
-    "steel": 107,
-    "porcelain": 175,
-    "wood": 175,
-    "liquor": 102,
-    "small_arms": 108
+    "glass": 121,
+    "merchant_marine": 101,
+    "opium": 34,
+    "electricity": 153,
+    "steel": 110,
+    "porcelain": 60,
+    "wood": 148,
+    "liquor": 101,
+    "small_arms": 100
    },
    "subsistence": {
     "free_arable": 0,
-    "capacity_jobs": 9543086,
-    "peasant_workforce": 9543086,
+    "capacity_jobs": 8509050,
+    "peasant_workforce": 8509050,
     "staffing": 1,
-    "levels": 1909
+    "levels": 1702
    },
    "measured": null,
    "notes": [
     "Synthetic era-3 scenario, solved by tools/era_solver.mjs + tools/era_scenarios.mjs.",
     "Prices are SOLVED, not chosen — untick \"locked\" in the price column to see the market reproduce them.",
-    "Population 127.2M with 30% peasants is the scenario's premise; every building count follows from it.",
+    "Population 113.5M with 30% peasants is the scenario's premise; every building count follows from it.",
     "Army is 5% of a GROSS-output GDP proxy, in era-appropriate battalions only."
    ]
   },
@@ -1677,118 +1424,101 @@
    "base_wage_note": "era 4 lower-stratum SoL 14 via FINDINGS F26, base = exp((SoL−37.43)/10.49)",
    "market": [],
    "buildings": {
-    "building_food_industry_mechanised": 32,
-    "building_food_industry_baking_powder": 32,
+    "building_food_industry_mechanised": 27,
+    "building_food_industry_baking_powder": 27,
     "building_food_industry_sweetener": 1,
     "building_textile_mill_electric": 50,
     "building_textile_mill_sewing": 50,
     "building_textile_mill_dye": 1,
-    "building_furniture_manufactory_sprayed": 33,
-    "building_furniture_manufactory_mechanized": 33,
+    "building_furniture_manufactory_sprayed": 35,
+    "building_furniture_manufactory_mechanized": 35,
     "building_furniture_manufactory_lathe": 1,
-    "building_glassworks_plastics": 23,
-    "building_glassworks_crystal": 23,
+    "building_glassworks_plastics": 22,
+    "building_glassworks_crystal": 22,
     "building_glassworks_leaded": 1,
-    "building_glassworks_ribbon": 1,
-    "building_tooling_workshop_rubber": 104,
-    "building_tooling_workshop_steel": 104,
+    "building_tooling_workshop_rubber": 94,
+    "building_tooling_workshop_steel": 94,
     "building_tooling_workshop_pig_iron": 1,
-    "building_tooling_workshop_carbide": 1,
-    "building_paper_mill_kraft": 5,
-    "building_paper_mill_bleached": 5,
+    "building_paper_mill_kraft": 4,
+    "building_paper_mill_bleached": 4,
     "building_paper_mill_sulfite": 1,
-    "building_paper_mill_highspeed": 1,
-    "building_chemical_plant_nitrogen": 20,
-    "building_chemical_plant_improved": 20,
+    "building_chemical_plant_nitrogen": 14,
+    "building_chemical_plant_improved": 14,
     "building_chemical_plant": 1,
-    "building_chemical_plant_reforming": 1,
-    "building_explosives_factory_vacuum": 12,
-    "building_explosives_factory_ammonia": 12,
+    "building_explosives_factory_vacuum": 13,
+    "building_explosives_factory_ammonia": 13,
     "building_explosives_factory": 1,
-    "building_explosives_factory_brine": 1,
-    "building_steel_mill_electric_arc": 29,
-    "building_steel_mill_open_hearth": 29,
+    "building_steel_mill_electric_arc": 25,
+    "building_steel_mill_open_hearth": 25,
     "building_steel_mill_bessemer": 1,
-    "building_steel_mill_strip_mill": 1,
-    "building_motor_industry_diesel": 18,
-    "building_motor_industry_electric": 18,
+    "building_motor_industry_diesel": 17,
+    "building_motor_industry_electric": 17,
     "building_motor_industry": 1,
-    "building_motor_industry_welded_diesel": 1,
     "building_shipyard_complex": 1,
     "building_shipyard": 1,
-    "building_shipyard_metal_oil_fired": 1,
-    "building_shipyard_metal_turbine": 1,
+    "building_shipyard_metal_oil_fired": 2,
+    "building_shipyard_metal_turbine": 2,
     "building_shipyard_metal": 1,
-    "building_shipyard_arc_welding": 1,
-    "building_automotive_industry_mass": 3,
-    "building_automotive_industry": 3,
-    "building_automotive_industry_transfer_line": 1,
-    "building_arms_industry_bolt_action": 10,
-    "building_arms_industry_repeaters": 10,
+    "building_automotive_industry_mass": 4,
+    "building_automotive_industry": 4,
+    "building_arms_industry_bolt_action": 11,
+    "building_arms_industry_repeaters": 11,
     "building_arms_industry_rifles": 1,
-    "building_arms_industry_stamped": 1,
-    "building_artillery_foundry_recoiled": 4,
-    "building_artillery_foundry_breech": 4,
+    "building_artillery_foundry_recoiled": 5,
+    "building_artillery_foundry_breech": 5,
     "building_artillery_foundry_smoothbore": 1,
-    "building_artillery_foundry_autofrettage": 1,
-    "building_munition_plant_drawn_brass": 9,
-    "building_munition_plant_shells": 9,
+    "building_munition_plant_drawn_brass": 10,
+    "building_munition_plant_shells": 10,
     "building_munition_plant": 1,
-    "building_munition_plant_automatic": 1,
-    "building_synthetics_plant_viscose": 7,
-    "building_synthetics_plant_indigo": 7,
+    "building_synthetics_plant_viscose": 6,
+    "building_synthetics_plant_indigo": 6,
     "building_synthetics_plant": 1,
-    "building_synthetics_plant_polyamide": 1,
     "building_electrics_industry_radio": 1,
     "building_electrics_industry": 1,
-    "building_electrics_industry_electronics": 1,
-    "building_power_plant_coal": 46,
-    "building_power_plant": 46,
-    "building_power_plant_oil": 1,
+    "building_power_plant_coal": 45,
+    "building_power_plant": 45,
     "building_port_modern": 9,
     "building_port_industrial": 9,
     "building_port": 1,
-    "building_railway_electric": 20,
-    "building_railway_steam": 20,
+    "building_railway_electric": 22,
+    "building_railway_steam": 22,
     "building_railway": 1,
-    "building_railway_diesel": 1,
     "building_art_academy_film": 2,
     "building_art_academy_photographic": 2,
     "building_art_academy_realist": 1,
-    "building_art_academy_sound_film": 1,
-    "building_rye_farm": 135,
-    "building_wheat_farm": 41,
-    "building_rice_farm": 126,
-    "building_maize_farm": 12,
-    "building_millet_farm": 12,
-    "building_livestock_ranch": 40,
+    "building_rye_farm": 274,
+    "building_wheat_farm": 8,
+    "building_rice_farm": 20,
+    "building_maize_farm": 8,
+    "building_millet_farm": 8,
+    "building_livestock_ranch": 72,
     "building_vineyard": 1,
-    "building_coal_mine": 276,
-    "building_iron_mine": 176,
-    "building_lead_mine": 52,
-    "building_sulfur_mine": 71,
-    "building_gold_mine": 219,
-    "building_gold_field": 219,
-    "building_coffee_plantation": 62,
-    "building_cotton_plantation": 121,
+    "building_coal_mine": 292,
+    "building_iron_mine": 173,
+    "building_lead_mine": 50,
+    "building_sulfur_mine": 63,
+    "building_gold_mine": 242,
+    "building_gold_field": 242,
+    "building_coffee_plantation": 63,
+    "building_cotton_plantation": 107,
     "building_opium_plantation": 1,
-    "building_tea_plantation": 62,
-    "building_tobacco_plantation": 31,
-    "building_sugar_plantation": 30,
+    "building_tea_plantation": 63,
+    "building_tobacco_plantation": 30,
+    "building_sugar_plantation": 26,
     "building_banana_plantation": 1,
-    "building_silk_plantation": 52,
-    "building_logging_camp": 157,
-    "building_rubber_plantation": 38,
-    "building_fishing_wharf": 59,
-    "building_whaling_station": 24,
-    "building_oil_rig": 25,
-    "building_manor_house": 830,
-    "building_financial_district": 830,
-    "building_government_administration": 311,
-    "building_trade_center": 182,
-    "building_construction_sector": 78,
-    "building_urban_center": 412,
-    "building_subsistence_farm": 480
+    "building_silk_plantation": 51,
+    "building_logging_camp": 219,
+    "building_rubber_plantation": 37,
+    "building_fishing_wharf": 90,
+    "building_whaling_station": 25,
+    "building_oil_rig": 22,
+    "building_manor_house": 855,
+    "building_financial_district": 855,
+    "building_government_administration": 320,
+    "building_trade_center": 187,
+    "building_construction_sector": 80,
+    "building_urban_center": 411,
+    "building_subsistence_farm": 481
    },
    "pms": {
     "building_food_industry_sweetener": {
@@ -1802,12 +1532,12 @@
      "pmg_automation_building_food_industry": "pm_manual_dough_processing"
     },
     "building_food_industry_mechanised": {
-     "pmg_canning": "pm_disabled_canning",
+     "pmg_canning": "pm_vacuum_canning",
      "pmg_distillery": "pm_patent_stills",
      "pmg_automation_building_food_industry": "pm_manual_dough_processing"
     },
     "building_textile_mill_dye": {
-     "pmg_luxury_building_textile_mill": "pm_no_luxury_clothes",
+     "pmg_luxury_building_textile_mill": "pm_craftsman_sewing",
      "pmg_automation_building_textile_mill": "pm_traditional_looms"
     },
     "building_textile_mill_sewing": {
@@ -1815,19 +1545,19 @@
      "pmg_automation_building_textile_mill": "pm_traditional_looms"
     },
     "building_textile_mill_electric": {
-     "pmg_luxury_building_textile_mill": "pm_no_luxury_clothes",
+     "pmg_luxury_building_textile_mill": "pm_craftsman_sewing",
      "pmg_automation_building_textile_mill": "pm_traditional_looms"
     },
     "building_furniture_manufactory_lathe": {
-     "pmg_luxury_building_furniture_manufactory": "pm_no_luxuries",
+     "pmg_luxury_building_furniture_manufactory": "pm_luxury_furniture",
      "pmg_automation_building_furniture_manufactory": "pm_automation_disabled"
     },
     "building_furniture_manufactory_mechanized": {
-     "pmg_luxury_building_furniture_manufactory": "pm_no_luxuries",
+     "pmg_luxury_building_furniture_manufactory": "pm_luxury_furniture",
      "pmg_automation_building_furniture_manufactory": "pm_automation_disabled"
     },
     "building_furniture_manufactory_sprayed": {
-     "pmg_luxury_building_furniture_manufactory": "pm_no_luxuries",
+     "pmg_luxury_building_furniture_manufactory": "pm_luxury_furniture",
      "pmg_automation_building_furniture_manufactory": "pm_automation_disabled"
     },
     "building_glassworks_leaded": {
@@ -1842,10 +1572,6 @@
      "pmg_luxury_building_glassworks": "pm_ceramics",
      "pmg_glassblowing": "pm_manual_glassblowing"
     },
-    "building_glassworks_ribbon": {
-     "pmg_luxury_building_glassworks": "pm_disabled_ceramics",
-     "pmg_glassblowing": "pm_manual_glassblowing"
-    },
     "building_tooling_workshop_pig_iron": {
      "pmg_automation_building_tooling_workshop": "pm_automation_disabled"
     },
@@ -1853,9 +1579,6 @@
      "pmg_automation_building_tooling_workshop": "pm_automation_disabled"
     },
     "building_tooling_workshop_rubber": {
-     "pmg_automation_building_tooling_workshop": "pm_automation_disabled"
-    },
-    "building_tooling_workshop_carbide": {
      "pmg_automation_building_tooling_workshop": "pm_automation_disabled"
     },
     "building_paper_mill_sulfite": {
@@ -1867,17 +1590,12 @@
     "building_paper_mill_kraft": {
      "pmg_automation_building_paper_mill": "pm_automation_disabled"
     },
-    "building_paper_mill_highspeed": {
-     "pmg_automation_building_paper_mill": "pm_automation_disabled"
-    },
     "building_chemical_plant": {},
     "building_chemical_plant_improved": {},
     "building_chemical_plant_nitrogen": {},
-    "building_chemical_plant_reforming": {},
     "building_explosives_factory": {},
     "building_explosives_factory_ammonia": {},
     "building_explosives_factory_vacuum": {},
-    "building_explosives_factory_brine": {},
     "building_steel_mill_bessemer": {
      "pmg_automation_building_steel_mill": "pm_automation_disabled"
     },
@@ -1885,9 +1603,6 @@
      "pmg_automation_building_steel_mill": "pm_automation_disabled"
     },
     "building_steel_mill_electric_arc": {
-     "pmg_automation_building_steel_mill": "pm_automation_disabled"
-    },
-    "building_steel_mill_strip_mill": {
      "pmg_automation_building_steel_mill": "pm_automation_disabled"
     },
     "building_motor_industry": {
@@ -1899,26 +1614,17 @@
     "building_motor_industry_diesel": {
      "pmg_automation_building_motor_industry": "pm_automation_disabled"
     },
-    "building_motor_industry_welded_diesel": {
-     "pmg_automation_building_motor_industry": "pm_automation_disabled"
-    },
     "building_shipyard": {},
     "building_shipyard_complex": {},
     "building_shipyard_metal": {},
     "building_shipyard_metal_turbine": {},
     "building_shipyard_metal_oil_fired": {},
-    "building_shipyard_arc_welding": {},
     "building_automotive_industry": {
      "pmg_aeroplanes": "pm_no_aeroplane_production",
      "pmg_tanks": "pm_no_tank_production",
      "pmg_automation_building_automotive_industry": "pm_automation_disabled"
     },
     "building_automotive_industry_mass": {
-     "pmg_aeroplanes": "pm_no_aeroplane_production",
-     "pmg_tanks": "pm_no_tank_production",
-     "pmg_automation_building_automotive_industry": "pm_automation_disabled"
-    },
-    "building_automotive_industry_transfer_line": {
      "pmg_aeroplanes": "pm_no_aeroplane_production",
      "pmg_tanks": "pm_no_tank_production",
      "pmg_automation_building_automotive_industry": "pm_automation_disabled"
@@ -1932,9 +1638,6 @@
     "building_arms_industry_bolt_action": {
      "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
-    "building_arms_industry_stamped": {
-     "pmg_automation_building_arms_industry": "pm_automation_disabled"
-    },
     "building_artillery_foundry_smoothbore": {
      "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
@@ -1942,9 +1645,6 @@
      "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
     "building_artillery_foundry_recoiled": {
-     "pmg_automation_building_arms_industry": "pm_automation_disabled"
-    },
-    "building_artillery_foundry_autofrettage": {
      "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
     "building_munition_plant": {
@@ -1956,9 +1656,6 @@
     "building_munition_plant_drawn_brass": {
      "pmg_automation_building_munition_plant": "pm_automation_disabled"
     },
-    "building_munition_plant_automatic": {
-     "pmg_automation_building_munition_plant": "pm_automation_disabled"
-    },
     "building_synthetics_plant": {
      "pmg_synthetic_silk": "pm_rayon"
     },
@@ -1968,21 +1665,14 @@
     "building_synthetics_plant_viscose": {
      "pmg_synthetic_silk": "pm_rayon"
     },
-    "building_synthetics_plant_polyamide": {
-     "pmg_synthetic_silk": "pm_no_artificial_fibers"
-    },
     "building_electrics_industry": {
      "pmg_radios_category": "pm_radios"
     },
     "building_electrics_industry_radio": {
      "pmg_radios_category": "pm_radios"
     },
-    "building_electrics_industry_electronics": {
-     "pmg_radios_category": "pm_no_radios"
-    },
     "building_power_plant": {},
     "building_power_plant_coal": {},
-    "building_power_plant_oil": {},
     "building_port": {},
     "building_port_industrial": {},
     "building_port_modern": {},
@@ -1995,9 +1685,6 @@
     "building_railway_electric": {
      "pmg_passenger_trains": "pm_steel_passenger_carriages"
     },
-    "building_railway_diesel": {
-     "pmg_passenger_trains": "pm_no_passenger_trains"
-    },
     "building_art_academy_realist": {
      "pmg_ownership_building_art_academy": "pm_traditional_patronage",
      "pmg_principle_freedom_of_movement_3": "pm_freedom_of_movement_no_effect"
@@ -2007,10 +1694,6 @@
      "pmg_principle_freedom_of_movement_3": "pm_freedom_of_movement_no_effect"
     },
     "building_art_academy_film": {
-     "pmg_ownership_building_art_academy": "pm_traditional_patronage",
-     "pmg_principle_freedom_of_movement_3": "pm_freedom_of_movement_no_effect"
-    },
-    "building_art_academy_sound_film": {
      "pmg_ownership_building_art_academy": "pm_traditional_patronage",
      "pmg_principle_freedom_of_movement_3": "pm_freedom_of_movement_no_effect"
     },
@@ -2135,8 +1818,8 @@
      "pmg_government_administration_religious_administration": "pm_religious_bureaucrats"
     },
     "building_logging_camp": {
-     "pmg_base_building_logging_camp": "pm_saw_mills",
-     "pmg_hardwood": "pm_increased_hardwood",
+     "pmg_base_building_logging_camp": "pm_electric_saw_mills",
+     "pmg_hardwood": "pm_hardwood",
      "pmg_equipment": "pm_no_equipment",
      "pmg_transportation_building_logging_camp": "pm_road_carts"
     },
@@ -2146,11 +1829,11 @@
      "pmg_train_automation_building_rubber_plantation": "pm_road_carts"
     },
     "building_fishing_wharf": {
-     "pmg_base_building_fishing_wharf": "pm_fishing_trawlers",
+     "pmg_base_building_fishing_wharf": "pm_steam_trawlers",
      "pmg_refrigeration_building_fishing_wharf": "pm_unrefrigerated"
     },
     "building_whaling_station": {
-     "pmg_base_building_whaling_station": "pm_wooden_whaling_ships",
+     "pmg_base_building_whaling_station": "pm_steam_whaling_ships",
      "pmg_refrigeration_building_whaling_station": "pm_unrefrigerated"
     },
     "building_oil_rig": {
@@ -2178,11 +1861,11 @@
     }
    },
    "pops": {
-    "total": 80049318,
-    "lower": 53656648,
-    "middle": 16454752,
-    "upper": 332000,
-    "peasants": 9605918,
+    "total": 80197273,
+    "lower": 52775900,
+    "middle": 17455700,
+    "upper": 342000,
+    "peasants": 9623673,
     "slaves": 0
    },
    "sol": {
@@ -2193,8 +1876,8 @@
     "slaves": 8
    },
    "units": {
-    "combat_unit_type_squad_infantry": 599,
-    "combat_unit_type_siege_artillery": 200
+    "combat_unit_type_squad_infantry": 611,
+    "combat_unit_type_siege_artillery": 204
    },
    "nonbuy": {},
    "nonsell": {},
@@ -2211,73 +1894,56 @@
     "building_glassworks_leaded": 0.2,
     "building_glassworks_crystal": 0.2,
     "building_glassworks_plastics": 0.2,
-    "building_glassworks_ribbon": 0.2,
     "building_tooling_workshop_pig_iron": 0.2,
     "building_tooling_workshop_steel": 0.2,
     "building_tooling_workshop_rubber": 0.2,
-    "building_tooling_workshop_carbide": 0.2,
     "building_paper_mill_sulfite": 0.2,
     "building_paper_mill_bleached": 0.2,
     "building_paper_mill_kraft": 0.2,
-    "building_paper_mill_highspeed": 0.2,
     "building_chemical_plant": 0.2,
     "building_chemical_plant_improved": 0.2,
     "building_chemical_plant_nitrogen": 0.2,
-    "building_chemical_plant_reforming": 0.2,
     "building_explosives_factory": 0.2,
     "building_explosives_factory_ammonia": 0.2,
     "building_explosives_factory_vacuum": 0.2,
-    "building_explosives_factory_brine": 0.2,
     "building_steel_mill_bessemer": 0.2,
     "building_steel_mill_open_hearth": 0.2,
     "building_steel_mill_electric_arc": 0.2,
-    "building_steel_mill_strip_mill": 0.2,
     "building_motor_industry": 0.2,
     "building_motor_industry_electric": 0.2,
     "building_motor_industry_diesel": 0.2,
-    "building_motor_industry_welded_diesel": 0.2,
     "building_shipyard": 0.2,
     "building_shipyard_complex": 0.2,
     "building_shipyard_metal": 0.2,
     "building_shipyard_metal_turbine": 0.2,
     "building_shipyard_metal_oil_fired": 0.2,
-    "building_shipyard_arc_welding": 0.2,
     "building_automotive_industry": 0.2,
     "building_automotive_industry_mass": 0.2,
-    "building_automotive_industry_transfer_line": 0.2,
     "building_arms_industry_rifles": 0.2,
     "building_arms_industry_repeaters": 0.2,
     "building_arms_industry_bolt_action": 0.2,
-    "building_arms_industry_stamped": 0.2,
     "building_artillery_foundry_smoothbore": 0.2,
     "building_artillery_foundry_breech": 0.2,
     "building_artillery_foundry_recoiled": 0.2,
-    "building_artillery_foundry_autofrettage": 0.2,
     "building_munition_plant": 0.2,
     "building_munition_plant_shells": 0.2,
     "building_munition_plant_drawn_brass": 0.2,
-    "building_munition_plant_automatic": 0.2,
     "building_synthetics_plant": 0.2,
     "building_synthetics_plant_indigo": 0.2,
     "building_synthetics_plant_viscose": 0.2,
-    "building_synthetics_plant_polyamide": 0.2,
     "building_electrics_industry": 0.2,
     "building_electrics_industry_radio": 0.2,
-    "building_electrics_industry_electronics": 0.2,
     "building_power_plant": 0.2,
     "building_power_plant_coal": 0.2,
-    "building_power_plant_oil": 0.2,
     "building_port": 0.2,
     "building_port_industrial": 0.2,
     "building_port_modern": 0.2,
     "building_railway": 0.2,
     "building_railway_steam": 0.2,
     "building_railway_electric": 0.2,
-    "building_railway_diesel": 0.2,
     "building_art_academy_realist": 0.2,
     "building_art_academy_photographic": 0.2,
     "building_art_academy_film": 0.2,
-    "building_art_academy_sound_film": 0.2,
     "building_rye_farm": 0.1,
     "building_wheat_farm": 0.1,
     "building_rice_farm": 0.1,
@@ -2306,71 +1972,71 @@
    },
    "prices": {
     "ironclads": 100,
-    "luxury_clothes": 139,
-    "oil": 112,
-    "meat": 108,
-    "automobiles": 127,
+    "luxury_clothes": 71,
+    "oil": 101,
+    "meat": 101,
+    "automobiles": 126,
     "gold": 25,
-    "grain": 109,
+    "grain": 103,
     "artillery": 86,
     "manowars": 100,
     "telephones": 25,
-    "silk": 81,
+    "silk": 102,
     "radios": 175,
-    "paper": 80,
-    "tools": 82,
-    "luxury_furniture": 175,
-    "explosives": 107,
-    "groceries": 97,
-    "fruit": 76,
-    "fabric": 105,
+    "paper": 98,
+    "tools": 99,
+    "luxury_furniture": 71,
+    "explosives": 111,
+    "groceries": 90,
+    "fruit": 89,
+    "fabric": 100,
     "fine_art": 25,
-    "fertilizer": 105,
-    "engines": 104,
-    "fish": 113,
-    "hardwood": 25,
+    "fertilizer": 117,
+    "engines": 114,
+    "fish": 101,
+    "hardwood": 89,
     "wine": 25,
-    "clippers": 175,
-    "ammunition": 105,
-    "lead": 100,
-    "steamers": 25,
-    "transportation": 100,
-    "sugar": 97,
-    "services": 93,
-    "coal": 96,
-    "clothes": 90,
-    "sulfur": 102,
-    "rubber": 104,
-    "tea": 99,
-    "coffee": 99,
-    "iron": 99,
-    "furniture": 89,
+    "clippers": 25,
+    "ammunition": 107,
+    "lead": 101,
+    "steamers": 111,
+    "transportation": 101,
+    "sugar": 100,
+    "services": 95,
+    "coal": 100,
+    "clothes": 100,
+    "sulfur": 103,
+    "rubber": 101,
+    "tea": 100,
+    "coffee": 100,
+    "iron": 101,
+    "furniture": 97,
     "tobacco": 100,
     "tanks": 100,
-    "dye": 100,
+    "dye": 118,
     "aeroplanes": 100,
-    "glass": 79,
-    "merchant_marine": 99,
-    "opium": 50,
-    "electricity": 116,
-    "steel": 87,
-    "porcelain": 123,
-    "wood": 175,
-    "liquor": 94,
-    "small_arms": 85
+    "glass": 88,
+    "merchant_marine": 101,
+    "opium": 52,
+    "electricity": 135,
+    "steel": 98,
+    "porcelain": 94,
+    "wood": 104,
+    "liquor": 92,
+    "small_arms": 87
    },
    "subsistence": {
     "free_arable": 0,
-    "capacity_jobs": 2401480,
-    "peasant_workforce": 2401480,
+    "capacity_jobs": 2405918,
+    "peasant_workforce": 2405918,
     "staffing": 1,
-    "levels": 480
+    "levels": 481
    },
    "measured": null,
    "notes": [
     "Synthetic era-4 scenario, solved by tools/era_solver.mjs + tools/era_scenarios.mjs.",
     "Prices are SOLVED, not chosen — untick \"locked\" in the price column to see the market reproduce them.",
-    "Population 80.0M with 12% peasants is the scenario's premise; every building count follows from it.",
+    "Population 80.2M with 12% peasants is the scenario's premise; every building count follows from it.",
     "Army is 5% of a GROSS-output GDP proxy, in era-appropriate battalions only."
    ]
   },
@@ -2383,43 +2049,43 @@
    "base_wage_note": "era 5 lower-stratum SoL 16 via FINDINGS F26, base = exp((SoL−37.43)/10.49)",
    "market": [],
    "buildings": {
-    "building_food_industry_mechanised": 55,
-    "building_food_industry_baking_powder": 55,
+    "building_food_industry_mechanised": 59,
+    "building_food_industry_baking_powder": 59,
     "building_food_industry_sweetener": 1,
-    "building_textile_mill_electric": 73,
-    "building_textile_mill_sewing": 73,
+    "building_textile_mill_electric": 77,
+    "building_textile_mill_sewing": 77,
     "building_textile_mill_dye": 1,
-    "building_furniture_manufactory_sprayed": 48,
-    "building_furniture_manufactory_mechanized": 48,
+    "building_furniture_manufactory_sprayed": 51,
+    "building_furniture_manufactory_mechanized": 51,
     "building_furniture_manufactory_lathe": 1,
-    "building_glassworks_ribbon": 24,
-    "building_glassworks_plastics": 24,
+    "building_glassworks_ribbon": 26,
+    "building_glassworks_plastics": 26,
     "building_glassworks_crystal": 1,
     "building_tooling_workshop_carbide": 64,
     "building_tooling_workshop_rubber": 64,
     "building_tooling_workshop_steel": 1,
-    "building_paper_mill_highspeed": 3,
-    "building_paper_mill_kraft": 3,
+    "building_paper_mill_highspeed": 2,
+    "building_paper_mill_kraft": 2,
     "building_paper_mill_bleached": 1,
-    "building_chemical_plant_reforming": 16,
-    "building_chemical_plant_nitrogen": 16,
+    "building_chemical_plant_reforming": 13,
+    "building_chemical_plant_nitrogen": 13,
     "building_chemical_plant_improved": 1,
-    "building_explosives_factory_brine": 9,
-    "building_explosives_factory_vacuum": 9,
+    "building_explosives_factory_brine": 7,
+    "building_explosives_factory_vacuum": 7,
     "building_explosives_factory_ammonia": 1,
     "building_steel_mill_strip_mill": 27,
     "building_steel_mill_electric_arc": 27,
     "building_steel_mill_open_hearth": 1,
-    "building_motor_industry_welded_diesel": 30,
-    "building_motor_industry_diesel": 30,
+    "building_motor_industry_welded_diesel": 27,
+    "building_motor_industry_diesel": 27,
     "building_motor_industry_electric": 1,
     "building_shipyard_complex": 1,
     "building_shipyard": 1,
     "building_shipyard_arc_welding": 3,
     "building_shipyard_metal_oil_fired": 3,
     "building_shipyard_metal_turbine": 1,
-    "building_automotive_industry_transfer_line": 11,
-    "building_automotive_industry_mass": 11,
+    "building_automotive_industry_transfer_line": 10,
+    "building_automotive_industry_mass": 10,
     "building_automotive_industry": 1,
     "building_arms_industry_stamped": 8,
     "building_arms_industry_bolt_action": 8,
@@ -2430,57 +2096,57 @@
     "building_munition_plant_automatic": 8,
     "building_munition_plant_drawn_brass": 8,
     "building_munition_plant_shells": 1,
-    "building_synthetics_plant_polyamide": 8,
-    "building_synthetics_plant_viscose": 8,
+    "building_synthetics_plant_polyamide": 7,
+    "building_synthetics_plant_viscose": 7,
     "building_synthetics_plant_indigo": 1,
     "building_electrics_industry_electronics": 1,
     "building_electrics_industry_radio": 1,
     "building_electrics_industry": 1,
-    "building_power_plant_oil": 52,
-    "building_power_plant_coal": 52,
+    "building_power_plant_oil": 51,
+    "building_power_plant_coal": 51,
     "building_power_plant": 1,
     "building_port_modern": 10,
     "building_port_industrial": 10,
     "building_port": 1,
-    "building_railway_diesel": 52,
-    "building_railway_electric": 52,
+    "building_railway_diesel": 54,
+    "building_railway_electric": 54,
     "building_railway_steam": 1,
     "building_art_academy_sound_film": 2,
     "building_art_academy_film": 2,
     "building_art_academy_photographic": 1,
-    "building_rye_farm": 14,
-    "building_wheat_farm": 116,
-    "building_rice_farm": 6,
-    "building_maize_farm": 116,
-    "building_millet_farm": 116,
-    "building_livestock_ranch": 85,
+    "building_rye_farm": 15,
+    "building_wheat_farm": 120,
+    "building_rice_farm": 5,
+    "building_maize_farm": 120,
+    "building_millet_farm": 120,
+    "building_livestock_ranch": 93,
     "building_vineyard": 1,
-    "building_coal_mine": 98,
-    "building_iron_mine": 182,
-    "building_lead_mine": 48,
-    "building_sulfur_mine": 57,
-    "building_gold_mine": 173,
-    "building_gold_field": 173,
-    "building_coffee_plantation": 91,
-    "building_cotton_plantation": 151,
+    "building_coal_mine": 103,
+    "building_iron_mine": 197,
+    "building_lead_mine": 51,
+    "building_sulfur_mine": 56,
+    "building_gold_mine": 161,
+    "building_gold_field": 161,
+    "building_coffee_plantation": 95,
+    "building_cotton_plantation": 154,
     "building_opium_plantation": 1,
-    "building_tea_plantation": 91,
+    "building_tea_plantation": 95,
     "building_tobacco_plantation": 9,
-    "building_sugar_plantation": 43,
+    "building_sugar_plantation": 45,
     "building_banana_plantation": 1,
-    "building_silk_plantation": 90,
-    "building_logging_camp": 124,
-    "building_rubber_plantation": 66,
-    "building_fishing_wharf": 43,
-    "building_whaling_station": 104,
-    "building_oil_rig": 118,
-    "building_manor_house": 886,
-    "building_financial_district": 886,
-    "building_government_administration": 332,
-    "building_trade_center": 194,
-    "building_construction_sector": 83,
-    "building_urban_center": 432,
-    "building_subsistence_farm": 146
+    "building_silk_plantation": 97,
+    "building_logging_camp": 218,
+    "building_rubber_plantation": 71,
+    "building_fishing_wharf": 45,
+    "building_whaling_station": 95,
+    "building_oil_rig": 126,
+    "building_manor_house": 926,
+    "building_financial_district": 926,
+    "building_government_administration": 347,
+    "building_trade_center": 203,
+    "building_construction_sector": 87,
+    "building_urban_center": 447,
+    "building_subsistence_farm": 153
    },
    "pms": {
     "building_food_industry_sweetener": {
@@ -2515,11 +2181,11 @@
      "pmg_automation_building_furniture_manufactory": "pm_automation_disabled"
     },
     "building_furniture_manufactory_mechanized": {
-     "pmg_luxury_building_furniture_manufactory": "pm_no_luxuries",
+     "pmg_luxury_building_furniture_manufactory": "pm_luxury_furniture",
      "pmg_automation_building_furniture_manufactory": "pm_automation_disabled"
     },
     "building_furniture_manufactory_sprayed": {
-     "pmg_luxury_building_furniture_manufactory": "pm_no_luxuries",
+     "pmg_luxury_building_furniture_manufactory": "pm_luxury_furniture",
      "pmg_automation_building_furniture_manufactory": "pm_automation_disabled"
     },
     "building_glassworks_crystal": {
@@ -2670,27 +2336,27 @@
     },
     "building_rye_farm": {
      "pmg_base_building_rye_farm": "pm_chemical_fertilizer",
-     "pmg_secondary_building_rye_farm": "pm_potatoes",
+     "pmg_secondary_building_rye_farm": "pm_apple_orchards",
      "pmg_harvesting_process_building_rye_farm": "pm_compression_ignition_tractors"
     },
     "building_wheat_farm": {
      "pmg_base_building_wheat_farm": "pm_chemical_fertilizer",
-     "pmg_secondary_building_wheat_farm": "pm_no_secondary",
+     "pmg_secondary_building_wheat_farm": "pm_citrus_orchards",
      "pmg_harvesting_process_building_wheat_farm": "pm_compression_ignition_tractors"
     },
     "building_rice_farm": {
      "pmg_base_building_rice_farm": "pm_chemical_fertilizer_building_rice_farm",
-     "pmg_secondary_building_rice_farm": "pm_no_secondary",
+     "pmg_secondary_building_rice_farm": "pm_fig_orchards_building_rice_farm",
      "pmg_harvesting_process_building_rice_farm": "pm_steam_threshers_building_rice_farm"
     },
     "building_maize_farm": {
      "pmg_base_building_maize_farm": "pm_chemical_fertilizer",
-     "pmg_secondary_building_maize_farm": "pm_no_secondary",
+     "pmg_secondary_building_maize_farm": "pm_citrus_orchards",
      "pmg_harvesting_process_building_maize_farm": "pm_compression_ignition_tractors"
     },
     "building_millet_farm": {
      "pmg_base_building_millet_farm": "pm_chemical_fertilizer",
-     "pmg_secondary_building_millet_farm": "pm_no_secondary",
+     "pmg_secondary_building_millet_farm": "pm_fig_orchards",
      "pmg_harvesting_process_building_millet_farm": "pm_compression_ignition_tractors"
     },
     "building_livestock_ranch": {
@@ -2789,8 +2455,8 @@
      "pmg_government_administration_religious_administration": "pm_religious_bureaucrats"
     },
     "building_logging_camp": {
-     "pmg_base_building_logging_camp": "pm_saw_mills",
-     "pmg_hardwood": "pm_increased_hardwood",
+     "pmg_base_building_logging_camp": "pm_electric_saw_mills",
+     "pmg_hardwood": "pm_hardwood",
      "pmg_equipment": "pm_no_equipment",
      "pmg_transportation_building_logging_camp": "pm_road_carts"
     },
@@ -2804,7 +2470,7 @@
      "pmg_refrigeration_building_fishing_wharf": "pm_unrefrigerated"
     },
     "building_whaling_station": {
-     "pmg_base_building_whaling_station": "pm_wooden_whaling_ships",
+     "pmg_base_building_whaling_station": "pm_steam_whaling_ships",
      "pmg_refrigeration_building_whaling_station": "pm_unrefrigerated"
     },
     "building_oil_rig": {
@@ -2832,11 +2498,11 @@
     }
    },
    "pops": {
-    "total": 73070417,
-    "lower": 51553844,
-    "middle": 18239356,
-    "upper": 354400,
-    "peasants": 2922817,
+    "total": 76723750,
+    "lower": 53681344,
+    "middle": 19603056,
+    "upper": 370400,
+    "peasants": 3068950,
     "slaves": 0
    },
    "sol": {
@@ -2847,8 +2513,8 @@
     "slaves": 8
    },
    "units": {
-    "combat_unit_type_mechanized_infantry": 536,
-    "combat_unit_type_heavy_tank": 179
+    "combat_unit_type_mechanized_infantry": 550,
+    "combat_unit_type_heavy_tank": 183
    },
    "nonbuy": {},
    "nonsell": {},
@@ -2946,71 +2612,71 @@
    },
    "prices": {
     "ironclads": 100,
-    "luxury_clothes": 104,
-    "oil": 111,
-    "meat": 108,
-    "automobiles": 83,
+    "luxury_clothes": 87,
+    "oil": 100,
+    "meat": 101,
+    "automobiles": 90,
     "gold": 25,
-    "grain": 110,
-    "artillery": 78,
+    "grain": 114,
+    "artillery": 80,
     "manowars": 100,
     "telephones": 25,
-    "silk": 103,
+    "silk": 100,
     "radios": 175,
-    "paper": 73,
-    "tools": 71,
-    "luxury_furniture": 175,
-    "explosives": 91,
-    "groceries": 85,
-    "fruit": 175,
+    "paper": 81,
+    "tools": 86,
+    "luxury_furniture": 87,
+    "explosives": 107,
+    "groceries": 81,
+    "fruit": 52,
     "fabric": 100,
     "fine_art": 25,
-    "fertilizer": 83,
-    "engines": 89,
-    "fish": 101,
-    "hardwood": 25,
-    "wine": 25,
-    "clippers": 175,
-    "ammunition": 77,
-    "lead": 102,
-    "steamers": 25,
-    "transportation": 99,
-    "sugar": 104,
-    "services": 123,
-    "coal": 79,
+    "fertilizer": 98,
+    "engines": 101,
+    "fish": 100,
+    "hardwood": 104,
+    "wine": 27,
+    "clippers": 25,
+    "ammunition": 80,
+    "lead": 105,
+    "steamers": 75,
+    "transportation": 100,
+    "sugar": 100,
+    "services": 126,
+    "coal": 100,
     "clothes": 79,
-    "sulfur": 102,
-    "rubber": 102,
+    "sulfur": 98,
+    "rubber": 99,
     "tea": 100,
     "coffee": 100,
-    "iron": 98,
-    "furniture": 67,
+    "iron": 99,
+    "furniture": 77,
     "tobacco": 99,
-    "tanks": 171,
-    "dye": 86,
+    "tanks": 175,
+    "dye": 98,
     "aeroplanes": 100,
-    "glass": 64,
-    "merchant_marine": 96,
-    "opium": 67,
-    "electricity": 101,
-    "steel": 80,
-    "porcelain": 147,
-    "wood": 175,
+    "glass": 72,
+    "merchant_marine": 100,
+    "opium": 70,
+    "electricity": 114,
+    "steel": 85,
+    "porcelain": 134,
+    "wood": 99,
     "liquor": 87,
-    "small_arms": 76
+    "small_arms": 80
    },
    "subsistence": {
     "free_arable": 0,
-    "capacity_jobs": 730704,
-    "peasant_workforce": 730704,
+    "capacity_jobs": 767238,
+    "peasant_workforce": 767238,
     "staffing": 1,
-    "levels": 146
+    "levels": 153
    },
    "measured": null,
    "notes": [
     "Synthetic era-5 scenario, solved by tools/era_solver.mjs + tools/era_scenarios.mjs.",
     "Prices are SOLVED, not chosen — untick \"locked\" in the price column to see the market reproduce them.",
-    "Population 73.1M with 4% peasants is the scenario's premise; every building count follows from it.",
+    "Population 76.7M with 4% peasants is the scenario's premise; every building count follows from it.",
     "Army is 5% of a GROSS-output GDP proxy, in era-appropriate battalions only."
    ]
   }

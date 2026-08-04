@@ -80,9 +80,27 @@ money**, (2) a **two-eras-stale** tier still turns a profit, (3) the ladder is *
 tier earns less than the one below it. Acceptable: **~0** for (1) and (3), **in the teens** for (2),
 **excluding shipyards and art academies** (both have targets they cannot meet by construction).
 `tools/era_scenarios.mjs` prints the count per era with the offending industries named.
-Current state: **39 points, 28 excluding the excused** — NOT yet acceptable. The residue is concentrated
-in the deep chains, and **the agreed fix has never been implemented: BALANCE_FRAMEWORK §10.13, the third
-price band.** Run that before concluding anything about the mod's premise.
+**Current state: 43 points, 30 excluding the excused (2 / 5 / 12 / 11 / 13 per era) — NOT yet acceptable.**
+
+⚠ **Older illogicality figures in the docs are void, not merely stale** (BALANCE_FRAMEWORK §10.14.1): the
+solver used to re-solve recipes *after* its final price sync, so it reported profits at prices its own
+recipes contradicted. The previous configuration scored 65/54 under corrected accounting where it had
+reported 35/24. **Never report or ship from a non-finalised state** — the solve now iterates prices, PM
+choice, recipes and counts to a joint fixed point and reports only what it ships.
+
+⚠ **The third price band (§10.13) is CLOSED — built, swept over 64 combinations, and within noise.** Do not
+spend more effort tuning the price path; the gradient is not there. What paid was fixing three scenario
+defects (§10.14): the non-final reporting above, the **forward probe** (a level of the *next* era's tier in
+every industry — an anachronism scored by nothing that supplied 61% of era-1 steel and floored every debut
+good), and a **glutted by-product vetoing a starved input** in the count feedback (which shrank logging
+523→124 levels while wood starved).
+
+**⭐ HARD CONSTRAINT — THE INDUSTRIAL PRICE CEILING (§10.15).** No good that manufacturing can consume may
+reach **+75%** (the engine's 175% band edge). −75% is fine; +75% is fine for a purely consumer good. An
+input pinned at the ceiling means the market can no longer signal scarcity at all, so everything downstream
+is priced against a wall. Enforced in the price path (restricted goods capped at 160), in the counts (a
+breach outranks the revenue-weighted mean) and in **PM choice** (scored `profit − 100 × breaches`, so the
+constraint decides and profit only breaks ties). Currently **clear in all five eras**, from 11 breaches.
 
 **Wage share is not a free variable** (`W = base wage × Σ employees × wage_weight`, both pinned), and it
 lands at 10–40% of total cost. So obsolescence is **price-driven**: what kills an old building is its
@@ -165,6 +183,11 @@ extraction. (The wage layer is now folded into the ladder.)
 CLAUDE.md               this file — goals + how to work
 README.md               user-facing setup (play the mod, launch the editor) — for GitHub visitors
 balance-ui.cmd          one-click launcher for the balance editor (double-click; runs tools\ui.ps1)
+balance-snapshot.cmd    one-click SELF-CONTAINED SNAPSHOT of the editor (runs tools\bundle_ui.mjs) →
+                        balance_ui_snapshot.html at the repo root (GITIGNORED). One file, no server, no
+                        network — for reading/tuning the sheet away from this machine or handing to
+                        someone. It is a SNAPSHOT, not a mirror: it carries the config as of the moment it
+                        was written and says so in a dated banner
 BALANCE_FRAMEWORK.md    balance methodology, targets, vanilla baseline, applied changes (SOURCE OF TRUTH)
 MODDING_NOTES.md        Victoria 3 engine/tooling gotchas (localization, load order, error.log, …)
 TESTBED_METRICS.md      what the testbed CAN and CANNOT log — in-game-VERIFIED data-function syntax for
@@ -200,7 +223,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         Writes config/era_prices.json. Superseded for volumes by era_scenarios
   era_scenarios.mjs     THE solve: prices realised from the order book, tier volumes + building counts + pops +
                         army solved together per era. Writes config/era_presets.json AND the volumes back to
-                        config/mod_config.json
+                        config/mod_config.json. Ends in a JOINT FIXED POINT over prices/PMs/recipes/counts and
+                        reports ONLY that final state (§10.14.1) — do not add a step after it that mutates any
+                        of them. Prints, per era: profit targets, PRICE PATH realisation, the INDUSTRIAL
+                        CEILING pass/fail (§10.15) and ILLOGICALITY. Env knobs, all for A/B measurement rather
+                        than configuration: PRICE_START / PRICE_DECAY / PRICE_DECAY_INT / PRICE_FLOOR(_INT),
+                        ERA_CEIL_BOOST, ERA_CEIL_PM, ERA_JOINT, ERA_PROBE (the removed forward probe, kept
+                        only so its damage can be re-measured — leave it off)
   econ_host.mjs         loads ui/econ.js + the generated ui/*.js under Node — supplies the state containers the
                         browser would. Contains NO model of its own
   econ_selftest.mjs     regression check for ui/econ.js against MEASURED numbers already in the docs (F26/F27,
@@ -231,6 +260,17 @@ tools/                  dev tooling — NOT shipped in the mod
   extract_start.ps1     baseline extractor: vanilla start → start_baseline.json (inventory + version-drift alarm)
   history_lib.ps1       shared vanilla parsing: ONE history walker (Invoke-HistoryWalk; Walk-HistoryFile = rewriting mode, Read-HistoryBlocks = read-only mode) + Get-TopBlocks / Get-ListTokens / Get-Num, used by the converter, every extractor and the volume solvers
   ui.ps1                balance-UI server: serves ui/ at localhost:8777 + POST /api/build (writes config, runs build)
+  bundle_ui.mjs         inlines ui/builder.html + data.js + vanilla.js + presets.js into ONE standalone page
+                        (`node tools/bundle_ui.mjs [--out <path>] [--stale-ok]`, or balance-snapshot.cmd).
+                        ⚠ **ui/icons.js is deliberately EXCLUDED** — Paradox art, gitignored because the repo
+                        is public, and a snapshot is something you hand to someone else; the panel already
+                        degrades to text-only good names. "Build now" is disabled in the copy (it POSTs to
+                        ui.ps1); **Export mod_config.json still works**, so the round trip is tune → export →
+                        bring the file back. Two guards, both exit non-zero: it REFUSES to bundle when
+                        ui/*.js is older than config/mod_config.json (a snapshot of the previous build's
+                        numbers is the failure mode worth preventing — `--stale-ok` overrides), and it fails
+                        if builder.html loads a `<script src>` not listed in its INLINE/OMIT lists, rather
+                        than silently shipping a page missing a whole data set
   testbed/run_observer.ps1  the GAME driver, called BY run_schedule (a hand run is a DIAGNOSTIC, not an
                         experiment — it has no build step): launches the game headless (no launcher), plays to
                         a date, harvests, quits; owns crash-resume + the p/r/s/x keys. Telemetry always comes

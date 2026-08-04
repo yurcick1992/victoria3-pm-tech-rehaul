@@ -13,6 +13,50 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## The solver reported and shipped a state it had already invalidated (2026-08-04)
+
+**Symptom.** Era-1 `iron` was flagged at the +75% price ceiling while the very same scenario's order book
+said buy 831 against sell 990 — which is a price of **86**, not 175. Era-1 `hardwood` did the same. Two of
+three reported ceiling breaches were goods in surplus.
+
+**Root cause.** `buildScenario` ended with three single passes in a fixed order: sync prices → optimise PMs
+→ sync prices → **re-solve every era-current tier's input recipe**. The recipe re-solve changes what those
+buildings buy, which changes the order book, which changes prices — and nothing ran afterwards. So the
+`S.thresholds` table that was reported, and written into `config/era_presets.json` as the scenario's
+`prices`, described the market *before* the recipes it was shipped alongside. Whichever pass ran last
+silently invalidated the other two.
+
+**Why it went unnoticed for so long.** It never produces an error or an implausible-looking number in
+isolation — it produces a *self-consistent-looking* report whose parts were computed at different moments.
+It also flattered the headline metric, which is the worst possible failure mode for a yardstick: illogicality
+read 35 total / 24 net, and the same configuration under corrected accounting scores **65 / 54**. Every
+tuning decision taken against the old number was taken against noise.
+
+**Fix.** The closing sequence is now a joint fixed point: the continuous variables (prices, recipes, counts)
+are iterated to convergence with the PM choice **held fixed**, then the PM choice is re-checked at the prices
+they produced, and the pair repeats. The state that is reported is the state that is shipped, with nothing
+mutated after it. Written up as an invariant in `tools/era_scenarios.mjs` and in BALANCE_FRAMEWORK §10.14.1:
+**never report or ship from a non-finalised state.**
+
+**Prevent next time.** Any solver that alternates between coupled variables must end on a *convergence*, not
+on a pass. If a step changes something a previously computed output depended on, either re-run it or do not
+report that output. The instrument now prints its own residual per era, so a non-converged solve says so.
+
+**Related, found in the same pass** (both BALANCE_FRAMEWORK §10.14):
+
+- **The forward probe.** Every industry placed one level of the *next* era's tier, "to show the ladder from
+  both sides". It was scored by nothing — every check filters to `era <= this era` — and being a ×1.5-bigger
+  plant it supplied **61% of era-1 steel**, most of era-3 automobiles and most of era-3 telephones. Those
+  three goods sank to the 25% floor and were precisely the ones reported "insolvent at these prices". It was
+  also an anachronism (a Bessemer converter in 1836). *Lesson: a display-only element that participates in
+  the simulation is not display-only.*
+- **A glutted by-product vetoing a starved input.** Building counts follow the revenue-weighted geometric
+  mean of their goods' price errors, so a logging camp making ceiling-priced `wood` and floor-priced
+  `hardwood` had the two cancel: the solver **shrank logging from 523 levels to 124** while wood's shortage
+  tripled. *Lesson: averaging is the wrong aggregator when one of the terms is a constraint violation.*
+
+---
+
 ## A fitted slope is not a structural constant — don't extrapolate one when the theory gives it (2026-08-03)
 
 **Symptom.** The published SoL → base-wage rule (FINDINGS F26) predicted **0.4098 £/wk** where the

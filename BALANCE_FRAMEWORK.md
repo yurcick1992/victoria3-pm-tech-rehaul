@@ -710,7 +710,11 @@ ones (motor←steel, automotive←engines), whose inputs deflate alongside their
   `lint_negative_goods.awk` rejects the build. The invariant is hard and the profit target is soft, so
   the floor wins and the tier misses slightly.
 
-### 10.6 Results (2026-08-03)
+### 10.6 Results (2026-08-03) — ⚠ SUPERSEDED, and measured in a non-final state (§10.14.1)
+
+**Do not quote these numbers.** They were read off a state whose prices and recipes disagreed, and the
+"converged" claim below measured only the main loop, not the closing passes that followed it. Current
+results are §10.16.
 
 Converged: 0.000% price movement in the final iteration; PM selections settled at iteration 20 of 120
 (frozen after 60), so no limit cycle. No tier infeasible — inputs never go negative and no price pins at
@@ -912,12 +916,18 @@ by the tier below it scores 2, because those are two separate things wrong with 
 naval-construction income is modelled, so one at −10% is exactly on target; art academies cannot be sized
 by margin at all, because `fine_art`'s budget is fixed and extra academies only destroy their own price.
 
+⚠⚠ **THE FIGURES IN THIS SECTION ARE SUPERSEDED AND WERE MEASURED WRONG — see §10.14.1.** They were taken
+from a state in which the solver had re-solved its recipes *after* its final price sync, so the profits
+being counted were evaluated at prices those recipes contradicted. Under corrected accounting the same
+configuration scores 65 total / 54 net, not 35/24. **Current state is §10.16.** The fault definitions,
+the acceptance bar and the reasoning below all stand; only the numbers are void.
+
 | | total | loss-making | stale-profitable | inverted |
 |---|---|---|---|---|
 | start of this pass | 73–77 | 24 | 22 | 27 |
-| **now** | **35** (24 net) | **6** | **8** | **10** |
+| ~~then reported as~~ | ~~35 (24 net)~~ | ~~6~~ | ~~8~~ | ~~10~~ |
 
-Per era: 2 / 7 / 12 / 9 / 5. Era 5 fell from 21 to 5.
+~~Per era: 2 / 7 / 12 / 9 / 5. Era 5 fell from 21 to 5.~~
 
 **What moved it, in order of contribution:** price-driven counts (the fix above), the integer-floor
 scale-up (§10.12), vanilla-calibrated peasant shares (F28), and removing the shipyard false positive.
@@ -948,7 +958,53 @@ of 10 billion people on the first attempt.
 ⚠ The honest cost: era 1 needs a very large market to clear that floor with 78% of its population in
 subsistence. It is a **world-scale market**, not a single country, and should be described that way.
 
-### 10.13 OPEN: the third price band, chosen and never implemented
+### 10.13 CLOSED: the third price band was built, measured, and is NOT the lever (2026-08-04)
+
+**Implemented, swept, kept — but it does not do what it was chosen to do.** The hypothesis below was that
+the remaining illogicality sat in the deep chains because one decay rate deflates a chain's inputs and its
+output together, and that giving intermediates a slower decay would open the gap obsolescence needs. It was
+the single largest outstanding item in this document. It is now built (`targetPrice()` in
+`tools/era_scenarios.mjs`) and the answer is that **the band separation is within noise**.
+
+**How the split is decided — derived, not transcribed.** A tiered good is an **intermediate** if any ladder
+industry (`follows_be !== false`) eats it as an input, and **finished** otherwise; anything no tier produces
+is **raw** and stays flat at 100. That is the mechanism stated literally: a good is an intermediate exactly
+when one tier's output price is another tier's input price, which is the coupling the band exists to break.
+
+| band | goods |
+|---|---|
+| intermediate | dye, electricity, engines, explosives, fertilizer, paper, steel, tools |
+| finished | ammunition, artillery, automobiles, clippers, clothes, fine_art, furniture, glass, groceries, small_arms, steamers, telephones |
+
+Two calls worth recording, both settled by the derivation rather than by hand:
+- **glass is FINISHED**, not intermediate as the original list guessed. No tier of ours consumes glass; its
+  demand is `popneed_household_items`. Deriving the split rather than transcribing the list caught it.
+- **clippers and steamers are FINISHED.** Their only industrial buyer is `port`, which is `follows_be: false`
+  — held on vanilla economics and not on the ladder — so its appetite cannot define a band. They are
+  otherwise pop leisure goods.
+
+**The measurement.** 64 combinations of `PRICE_START` × `PRICE_DECAY` × `PRICE_DECAY_INT` under the
+corrected solver (§10.14). Net illogicality across the whole grid runs 28–47 with no systematic gradient in
+`PRICE_DECAY_INT`: 0.78, 0.82 and 0.86 all appear among the best rows and all appear among the worst. The
+adopted `155 / 0.82 / 0.86` scores 30 net; the same start and decay with **no** separation at all
+(`0.82 / 0.82`) scores 31. That difference is smaller than the surface's own jaggedness — neighbouring
+parameter values routinely differ by 5 points, because counts are integers and the PM choice is discrete.
+
+**Why it cannot work, in hindsight.** The two bands pull in opposite directions and roughly cancel. A slow
+intermediate decay squeezes the stale tiers of industries that **eat** intermediates (automotive, electrics,
+textile) — the intended effect, and it is real. It simultaneously **spares** the stale tiers of the
+industries that **make** them (steel, tooling, motor, paper, fertilizer, explosives, synthetics), because
+those industries' own obsolescence driver is their output price falling against flat *raw* inputs. Taking it
+to the extreme makes this unmistakable: at `PRICE_DECAY_INT = 1.0` (intermediates never deflate) the
+stale-profitable fault rises from 10 to 26. There are about as many industries on one side as the other, so
+the sum barely moves.
+
+**What actually moved the number** was not the price path at all — it was three defects in how the scenario
+was built and reported (§10.14). The band is kept because it is principled and costs nothing, not because it
+is load-bearing. **Do not spend further effort tuning the price path**; the gradient is not there.
+
+<details>
+<summary>The original hypothesis, kept for the record</summary>
 
 The remaining illogicality sits almost entirely in the **deep chains** — synthetics, electrics,
 automotive, and behind them steel, explosives, fertilizer, paper. Their inputs are themselves
@@ -977,3 +1033,128 @@ is *demonstrated* wherever the gap exists (manufactured 156 → 73 against raw n
 down to 8; era 5 from 21 illogical points to 5). What is unproven is whether it holds for chains that eat
 their own sector's output, which is roughly nine industries of twenty-two. That is the question the third
 band answers, and it is narrower than "does the premise work".
+
+</details>
+
+---
+
+## 10.14 The three defects that were actually costing the scenarios (2026-08-04)
+
+Chasing §10.13 turned up three defects in how a scenario is *built and reported*. None is a balance
+question; together they were worth far more than any price path.
+
+### 10.14.1 The solver reported and shipped a NON-FINAL state
+
+**The single worst of the three, because it corrupts the yardstick rather than the economy.** The closing
+sequence was three single passes in a fixed order — sync prices, optimise PMs, sync prices, re-solve
+recipes — so whichever ran *last* invalidated the other two. The last was the recipe re-solve, which changes
+what every era-current building buys, which changes prices. **The scenario therefore reported profits, and
+shipped a `prices` table, that its own recipes contradicted.** Measurable, not theoretical: era-1 `iron` was
+recorded at the 175 ceiling while the shipped order book said buy 831 against sell 990 — a price of 86.
+
+Every illogicality figure in §10.11 and §10.6 was measured in that state and is **not comparable** with
+anything measured after this. Under corrected accounting the same configuration scores **65 total / 54 net**,
+where it had reported 38/35.
+
+**The fix is an invariant, not a patch.** Prices, PM selections, recipes and counts are iterated to a joint
+fixed point, and the state that is reported is the state that is shipped, with nothing mutated afterwards.
+The final convergence runs with the PM choice **held fixed**, so the last thing to move is continuous.
+The rule for anyone extending this: **never report or ship from a non-finalised state.**
+
+⚠ The continuous part converges (residual 9–25pp in eras 1, 3, 4, 5); the **discrete** part does not.
+`optimisePMs` never reaches a state where no building wants to switch, because thin-market goods
+(luxury_furniture, porcelain, fruit, silk) flip between the 25 and 175 band edges when a single building
+type changes method. This is now **reported per era** rather than being invisible. It is a real property of
+running one PM per building type per market where a real market runs a mix.
+
+### 10.14.2 The forward probe — an anachronism that broke every debut era
+
+Each industry placed **one level of the NEXT era's tier**, to "show the ladder from both sides". It was
+scored by nothing — every check filters to `era <= this era` — so it contributed supply and no information.
+Harmless for a mature industry; fatal for a young one, because the probe is a ×1.5-*bigger* plant than the
+tier beside it:
+
+| era | good | supply | demand | of which the probe |
+|---|---|---|---|---|
+| 1 | steel | 199 | 36 | `steel_mill_bessemer` 101 of 166 (61%) |
+| 3 | automobiles | 92 | 45 | `automotive_industry_mass`, more than the era-3 tier |
+| 3 | telephones | 184 | 32 | `electrics_industry_radio`, more than the era-3 tier |
+
+All three were exactly the goods reported as "insolvent at these prices". The good sank to the 25% floor,
+the era-appropriate tier read insolvent, and the count feedback then saw an over-supplied good and tried to
+build *fewer* — which it could not, one level being the floor. It then poisoned the *later* eras too: the
+tier had been given the cheapest legal recipe while its price was floored, so when the price recovered it
+became the profitable old tier that should have died (`stale_profitable`, `inverted`).
+
+It was also false on its own terms — a Bessemer converter (1856) standing in the 1836 scenario. **Removed.**
+It also created the ceiling breaches of §10.14.3 that had *no producer at all*, by putting a building that
+consumes dye/engines/steamers/electricity into an era where nothing makes them.
+
+### 10.14.3 A glutted by-product could veto a starved input
+
+Building counts follow the revenue-weighted geometric mean of their goods' price errors — right for two
+goods that merely disagree, **wrong** when one good is starved and another glutted: the factors cancel and
+the building never grows.
+
+**WOOD is the case.** A logging camp running `pm_increased_hardwood` makes 20 wood and 20 hardwood per level
+instead of 60 wood. Wood pinned at the 175 ceiling, hardwood dumped at the 25 floor, mean below 1 — so the
+solver **shrank logging from 523 levels to 124** across eras 2→5 while wood's shortage tripled (era 5: buy
+14 511 against sell 2 801). Wood feeds furniture, paper, tooling and glass, and pop heating besides.
+
+Worse, `pmg_hardwood` is **bistable under a profit-only rule and has no stable side**: at the realised prices
+`pm_no_hardwood` earns 213% against the incumbent's 34%, but switching removes the market's only hardwood
+supply and pins *hardwood* at the ceiling instead. The two trade places forever (measured: a 150pp residual).
+
+Both are fixed by §10.15's constraint rather than by naming any building.
+
+---
+
+## 10.15 THE INDUSTRIAL PRICE CEILING — a hard constraint
+
+**No good that manufacturing can consume may reach +75% (the engine's 175% band ceiling).** −75% is
+acceptable, and +75% is acceptable for a purely consumer good. What is not acceptable is an **input** pinned
+at the ceiling: there the market has run out of any ability to signal scarcity — the price cannot rise
+further however short the good is — so every industry downstream is priced against a wall, its recipe is
+solved against a number that is an artifact of the band rather than of the market, and the count feedback
+gets no gradient at all.
+
+**Scope, deliberately simple:** a good is restricted if it is an input to **any** production method reachable
+in any of our industry buildings — main recipes and every secondary PMG, across every era. "Consumable by
+industry", not "consumed right now": treating it as era-dependent would make the set change underfoot as the
+PM optimiser moves. 25 goods: `clippers coal dye electricity engines explosives fabric fertilizer fish glass
+grain hardwood iron lead meat oil paper rubber silk steamers steel sugar sulfur tools wood`.
+
+Enforced in three places, each individually switchable (`ERA_CEIL_BOOST`, `ERA_CEIL_PM`) so its contribution
+can be measured rather than asserted:
+
+1. **The price path may not ask for it.** A restricted good's target is capped at `CEIL_TARGET` = 160.
+2. **Counts: a breach outranks the weighted mean.** A restricted good at the ceiling forces its producers to
+   grow regardless of what its co-products are doing — the fix for §10.14.3's wood.
+3. **PM choice: a breach outranks profit.** A method selection is scored `profit − 100 × breaches`, so the
+   constraint decides and profit only breaks ties. This resolves the hardwood bistability **without naming
+   any building**: the middle method `pm_hardwood` is the only one leaving both goods inside the band, so it
+   wins on the penalty though it loses on profit. That is the right answer, reached by the rule.
+
+**Result: clear in all five eras** — no consumable good at +75% anywhere, from 11 breaches before.
+Reported per era as pass/fail, and a breach names its producers, because "under-built" (counts can fix it)
+and "no producer at all" (no count can) look identical in the price and need opposite remedies.
+
+### 10.16 Where the scenarios now stand (2026-08-04)
+
+Measured under the corrected, self-consistent accounting of §10.14.1. **Not comparable with the older
+figures in §10.6 and §10.11**, which were measured in the non-final state.
+
+| | total | loss-making | stale-profitable | inverted | ceiling breaches |
+|---|---|---|---|---|---|
+| previous configuration, corrected accounting | 65 (54 net) | 27 | 17 | 21 | 11 |
+| **now** | **43 (30 net)** | 15 | 15 | 13 | **0** |
+
+Per era: 2 / 5 / 12 / 11 / 13. Price-path realisation 64/88 tiered goods within 15pp, from 54/88.
+The solve is now a **fixed point with respect to its own write**: re-running after `--write` reproduces
+every figure exactly, which the previous state did not.
+
+Adopted path: `PRICE_START 155 · PRICE_DECAY 0.82 · PRICE_DECAY_INT 0.86 · PRICE_FLOOR 75`.
+
+**The bar in §10.11 is still not met** — ~0 loss-making and ~0 inverted, teens for stale-profitable. Net
+loss-making is 15 and net inverted 13, both well above ~0. What is now true that was not before: the
+measurement is honest, the hard constraint holds, and the price path has been eliminated as the lever.
