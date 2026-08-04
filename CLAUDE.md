@@ -103,6 +103,14 @@ every industry — an anachronism scored by nothing that supplied 61% of era-1 s
 good), and a **glutted by-product vetoing a starved input** in the count feedback (which shrank logging
 523→124 levels while wood starved).
 
+**⭐ HARD CONSTRAINT — NO LOSS-MAKING RAW PRODUCER MAY BE PRESENT (§10.18).** No extraction or agriculture
+building in a scenario may run at a loss; the rule is on *non-zero* producers, so the remedy is not to build
+it. Enforced greedily and minimally (drop the worst, re-converge, look again), **gold exempt** (one-sided
+order book by construction). ⚠ **It can collide with the ceiling below, and the ceiling wins**: dropping the
+era-1 iron mine left 1836 with 704 iron demand and zero iron supply, so a drop that breaches the ceiling is
+undone and the building is kept and **reported by name**. ⚠ Each round must *begin* from a converged state —
+checking and then settling lets the state drift back over the line after the check.
+
 **⭐ HARD CONSTRAINT — THE INDUSTRIAL PRICE CEILING (§10.15).** No good that manufacturing can consume may
 reach **+75%** (the engine's 175% band edge). −75% is fine; +75% is fine for a purely consumer good. An
 input pinned at the ceiling means the market can no longer signal scarcity at all, so everything downstream
@@ -695,6 +703,13 @@ the game.
   Every good the need lists is a candidate — an unsupplied one scores zero and drops out by itself,
   which is why there is no separate availability gate. The **slave basket** goes through the same
   split, fed the same supply and non-pop order book in the same pass.
+  ✅ **The weights are VERIFIED correct against the game files** (2026-08-04): all **52 entries across 15
+  needs** match `common/pop_needs/00_pop_needs.txt` exactly — every `weight`, `max_supply_share`,
+  `min_supply_share` and `default` — and **29 of the 52 carry a non-default weight**, so this was a real
+  thing to get wrong. Re-check after a patch. ⚠ But the art-academy story built on top of it was wrong:
+  `fine_art`'s budget is **not** fixed (it grows from 2% to 84% of the leisure need as academies are added);
+  the binding constraint is that fine_art costs **£200**, so even 84% of that budget buys 96 units while one
+  academy level makes 14.4. See BALANCE_FRAMEWORK §10.19 — the lever is academy OUTPUT, not the demand model.
   ⚠ The **−0.5 × non-pop buy orders** term is the one that matters most and is the least guessable —
   a good industry consumes heavily is correspondingly less available to pops, and omitting it over-fed
   grain by half (same-run Belgian test: pop demand error 30.3 % → **16.2 %**, F22).

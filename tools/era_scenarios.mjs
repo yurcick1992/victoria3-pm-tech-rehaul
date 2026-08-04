@@ -486,6 +486,23 @@ function buildScenario(eIx) {
   for (const b of refProducers) scaleOf['R:' + b] = 10;
   S.POPS = { total: 0, upper: 0, middle: 0, lower: 0, peasants: 0, slaves: 0 };
 
+  // ===================================================================================================
+  // NO LOSS-MAKING RAW PRODUCER MAY BE PRESENT. A scenario that places a mine, a logging camp, a farm or
+  // a plantation and has it run at a loss is not a picture of an economy — nobody operates one. The rule
+  // is on NON-ZERO producers, which names its own escape: the remedy is not to build it. That is also the
+  // economically honest one, and it is self-limiting, because removing a producer RAISES its good's price
+  // and can make the remaining ones (or a rival good's) viable.
+  //
+  // ⚠ GOLD IS EXEMPT, for the same reason it is exempt from profit targets (SKIP_GOODS): no pop need lists
+  // it and no building consumes it, so its order book is one-sided by construction and its mines read
+  // about −68% at any size. That is an artifact of not modelling gold as money, not a loss anyone is
+  // choosing to take, and dropping every gold mine would delete gold from the economy to fix a number.
+  const dropped = new Set();
+  const isRawProducer = b => {
+    if (SKIP_TARGET_BLD.has(b)) return false;
+    const c = catOf(b);
+    return EXTRACTION_CATS.has(c) || AGRICULTURE_CATS.has(c);
+  };
   const applyCounts = () => {
     Object.keys(S.BLDNUM).forEach(k => delete S.BLDNUM[k]);
     for (const p of placement) {
@@ -495,7 +512,7 @@ function buildScenario(eIx) {
       // be reached by making the ECONOMY bigger, not by overbuilding one industry into it. See popBoost.
       for (const r of p.rows) S.BLDNUM[r.t.key] = r.fixed != null ? r.fixed : Math.max(1, Math.round(s * r.weight));
     }
-    for (const b of refProducers) S.BLDNUM[b] = Math.max(1, Math.round(scaleOf['R:' + b]));
+    for (const b of refProducers) { if (dropped.has(b)) continue; S.BLDNUM[b] = Math.max(1, Math.round(scaleOf['R:' + b])); }
   };
   // THROUGHPUT per building, by sector. Applied to everything the scenario places, and carried in the
   // preset so the UI shows the same margins the solve used.
@@ -678,8 +695,7 @@ function buildScenario(eIx) {
   // Scoring the constraint alongside profit resolves it without naming any building: the middle method
   // `pm_hardwood` is the only one that leaves both goods inside the band, so it wins on the penalty even
   // though it loses on profit. That is the right answer and it is arrived at by the rule, not by hand.
-  const breachCount = () => {
-    if (!CEIL_PM) return 0;
+  const ceilingBreaches = () => {
     const a = E.scenarioAggregates();
     let n = 0;
     for (const g of RESTRICTED) {
@@ -688,6 +704,7 @@ function buildScenario(eIx) {
     }
     return n;
   };
+  const breachCount = () => CEIL_PM ? ceilingBreaches() : 0;
   // Weight it far above any profit difference: this is a constraint, not a preference. Profit only ever
   // breaks ties between selections that breach the ceiling equally often.
   const CEIL_PENALTY = 100;
@@ -749,7 +766,47 @@ function buildScenario(eIx) {
   // while the shipped order book said buy 831 against sell 990, a price of 86.
   //
   // The final convergence runs with the method choice FIXED, so the last thing to move is continuous.
-  conv = contSettle(40, 0.15);
+  // ---- enforce "no loss-making raw producer is present" -----------------------------------------------
+  // Greedy and MINIMAL: drop the single worst offender, re-converge, look again. Dropping one raises its
+  // good's price, which routinely rescues the others sharing that price — so removing them all at once
+  // would delete producers the constraint never actually required. Monotone (a drop is never undone), so
+  // it terminates; capped anyway, and what it removed is reported.
+  //
+  // ⚠⚠ THE TWO HARD CONSTRAINTS CAN CONFLICT, AND THE CEILING WINS. Dropping a producer removes supply, so
+  // it can push a good manufacturing consumes to the +75% ceiling — or leave it with NO producer at all.
+  // Measured the first time this ran unguarded: dropping the era-1 iron mine left 1836 with 704 iron
+  // demand and zero iron supply, and dropping the era-3 rubber plantation did the same to rubber. A market
+  // with no iron in it is a worse falsehood than a marginal iron mine, so a drop that breaches the ceiling
+  // is UNDONE and the building is protected. Those are reported by name: a raw producer that must run at a
+  // loss because it is the market's only source is a real finding about the scenario, not something to
+  // quietly absorb.
+  //
+  // ⚠ EACH ROUND STARTS FROM A CONVERGED STATE, and that ordering is the whole correctness of this loop.
+  // Checking the constraint and THEN running a final convergence lets the state drift back across the line
+  // after the check — measured: era-3 wheat/maize/millet settled at −6% and era 2 picked up two ceiling
+  // breaches, both AFTER the loop had declared itself satisfied. Converge, then check, then act.
+  const protectedRaw = new Set();
+  for (let guard = 0; guard < 20; guard++) {
+    conv = contSettle(30, 0.15);
+    let worst = null, worstP = 0;
+    for (const b of refProducers) {
+      if (!(S.BLDNUM[b] > 0) || dropped.has(b) || protectedRaw.has(b) || !isRawProducer(b)) continue;
+      const ec = E.refEcon(b); if (!ec || ec.tp == null || !isFinite(ec.tp)) continue;
+      if (ec.tp < 0 && ec.tp < worstP) { worst = b; worstP = ec.tp; }
+    }
+    if (!worst) break;
+    const before = ceilingBreaches();
+    dropped.add(worst);
+    conv = contSettle(20, 0.15);
+    if (ceilingBreaches() > before) {          // the drop broke the market — put it back and keep it
+      dropped.delete(worst); protectedRaw.add(worst);
+      conv = contSettle(20, 0.15);
+    }
+  }
+  // ⚠ NO trailing convergence here. The loop breaks only after a contSettle(30) that found no offender, so
+  // it already ends on a converged state that satisfies the constraint — and running one more settle after
+  // the check is exactly the mistake this loop was restructured to avoid: it moved era-3's wheat, maize and
+  // millet farms back to −1% after they had been declared clear.
   // ⚠ Report the COUNT as well as the max. The worst-drifting good is almost always a thin-market
   // passenger — luxury_furniture, porcelain, fruit, all of them secondary-PM outputs with an order book
   // small enough that one building type's method flips them between the 25 and 175 band edges. Taking the
@@ -871,6 +928,10 @@ function buildScenario(eIx) {
 
   return { eIx, era, jobs, gdp, peasants, popNonPeasant, scaleOf, pmResult, share, gross, popBoost,
            jointDrift, jointDriftGood, jointDriftN, pmSettled,
+           dropped: new Set(dropped), protectedRaw: new Set(protectedRaw),
+           rawLoss: refProducers.filter(b => S.BLDNUM[b] > 0 && isRawProducer(b))
+             .filter(b => { const ec = E.refEcon(b); return ec && ec.tp != null && ec.tp < 0; })
+             .map(b => ({ b: b.replace(/^building_/, ''), tp: E.refEcon(b).tp })),
            infeasible: new Map(infeasible), capped: new Set(capped), sec, ore };
 }
 
@@ -1027,6 +1088,12 @@ for (let e = 0; e < FIT.eras.length; e++) {
     b.src = src;
   }
   meta.breach = breach;
+  console.log(`    RAW PRODUCERS: ${meta.rawLoss.length ? '⚠ ' + meta.rawLoss.length + ' LOSS-MAKING while present: '
+      + meta.rawLoss.map(r => `${r.b} ${r.tp.toFixed(0)}%`).join(', ')
+    : 'clear — every extraction/agriculture building present is profitable'}`
+    + (meta.dropped.size ? `\n      dropped as unviable (${meta.dropped.size}): ` + [...meta.dropped].map(b => b.replace(/^building_/, '')).join(', ') : '')
+    + (meta.protectedRaw.size ? `\n      ⚠ KEPT AT A LOSS — the market's only source, dropping them breached the ceiling: `
+        + [...meta.protectedRaw].map(b => b.replace(/^building_/, '')).join(', ') : ''));
   console.log(`    INDUSTRIAL CEILING: ${breach.length ? '⚠ ' + breach.length + ' consumable good(s) AT +75%' : 'clear — no consumable good at +75%'}`);
   for (const b of breach) console.log(`      ${b.g} buy ${fmtN(b.buy)} / sell ${fmtN(b.sell)}`
     + (b.orphan ? '   ⚠ NO PRODUCER AT ALL — no count can fix this' : '   from ' + b.src.join(', ')));

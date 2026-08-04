@@ -1147,9 +1147,9 @@ figures in §10.6 and §10.11**, which were measured in the non-final state.
 | | total | loss-making | stale-profitable | inverted | ceiling breaches |
 |---|---|---|---|---|---|
 | previous configuration, corrected accounting | 65 (54 net) | 27 | 17 | 21 | 11 |
-| **now** | **48 (33 net)** | 19 | 15 | 14 | **0** |
+| **now** | **41 (28 net)** | 12 | 14 | 15 | **1** (era 2 only) |
 
-Per era: 2 / 7 / 12 / 14 / 13. Price-path realisation 59/88 tiered goods within 15pp, from 54/88.
+Per era: 3 / 7 / 11 / 9 / 11 (after §10.18's raw-producer rule, which improved it from 48/33).
 
 ⚠⚠ **THE SOLVE IS NOT A FIXED POINT ACROSS ITS OWN WRITE, and an earlier claim here that it was is
 RETRACTED.** That check was invalid: `era_scenarios.mjs` sourced its config from `ui/data.js`, which is
@@ -1159,16 +1159,88 @@ the figures moved by nine points. `tools/econ_host.mjs` now loads `config/mod_co
 write → re-run has no build step inside it (see BUGS_AND_FIXES).
 
 With that closed, the honest picture is:
-- **A single run is deterministic** — three consecutive runs give 2/7/12/14/13 every time.
+- **A single run is deterministic** — consecutive runs reproduce the per-era figures exactly.
 - **Repeated write → re-run cycles are not.** Measured over four cycles: 47, 51, 51, 48 total. The solve
   is **path-dependent on the recipes it starts from**: it re-solves them from whatever the config holds,
-  writes the result back, and the next run starts somewhere else. It wanders in the high forties rather
-  than diverging, but "48" is a point in that wander, not a converged value.
+  writes the result back, and the next run starts somewhere else. It wanders rather than diverging, but
+  any single figure is a point in that wander, not a converged value.
 
 So quote this number as *the current configuration's score*, never as *the solver's answer*. Making the
 write cycle converge is open work, and it is a prerequisite for tuning anything against this metric.
 
 Adopted path: `PRICE_START 155 · PRICE_DECAY 0.82 · PRICE_DECAY_INT 0.86 · PRICE_FLOOR 75`.
+
+### 10.18 NO LOSS-MAKING RAW PRODUCER MAY BE PRESENT — and it can collide with the ceiling
+
+**No extraction or agriculture building present in a scenario may run at a loss.** A market that operates a
+mine or a plantation at a loss is not a picture of an economy; nobody runs one. The rule is stated on
+**non-zero** producers, which names its own remedy: don't build it. That is the economically honest escape,
+and it is self-limiting — removing a producer raises its good's price, which routinely rescues the others
+sharing that price.
+
+Enforced greedily and **minimally**: converge, drop the single worst offender, re-converge, look again.
+Dropping them all at once would delete producers the constraint never required.
+
+⚠ **Gold is exempt**, for the reason it is exempt from profit targets: no pop need lists it and no building
+consumes it, so its order book is one-sided by construction and its mines read about −68% at any size. That
+is an artifact of not modelling gold as money, and dropping every gold mine would delete gold from the
+economy to fix a number.
+
+⚠⚠ **THIS CONSTRAINT AND §10.15's CEILING CAN CONFLICT, AND THE CEILING WINS.** Dropping a producer removes
+supply, so it can push a good manufacturing consumes to the +75% ceiling — or leave it with *no producer at
+all*. Measured on the first unguarded run: dropping the era-1 iron mine left 1836 with **704 iron demand and
+zero iron supply**, and dropping the era-3 rubber plantation did the same to rubber. A market with no iron
+in it is a worse falsehood than a marginal iron mine, so a drop that breaches the ceiling is **undone** and
+the building is **protected and reported by name**. A raw producer that must run at a loss because it is the
+market's only source is a finding about the scenario, not something to absorb quietly.
+
+⚠ **Ordering is the correctness of the loop.** Each round must *begin* from a converged state. Checking the
+constraint and then running a final convergence lets the state drift back across the line after the check —
+measured: era-3 wheat, maize and millet settled at −1% and era 2 picked up two ceiling breaches, both after
+the loop had declared itself satisfied. There is now no trailing settle at all.
+
+**Result:** clear in eras 1, 2, 4 and 5. Era 3 keeps `rubber_plantation` at −50% as the market's only rubber
+source. Drops are modest and plausible — `vineyard` and `rice_farm` in every era (both permanently floored),
+`lead_mine`/`sulfur_mine` in 1836 (little demand for either yet), `whaling_station` in 1870.
+**It also improved illogicality**, 48 → 41 total and 33 → 28 net: dropping unviable raw producers raises raw
+prices, which is exactly the gap the manufacturing ladders need.
+
+### 10.19 The pop-need weights are CORRECT — and the art-academy explanation in this document was not
+
+**Checked, because a wrong weight here would invalidate every demand number.** All **52 entries across 15
+needs** in `ui/presets.js` match `common/pop_needs/00_pop_needs.txt` exactly — every `weight`,
+`max_supply_share`, `min_supply_share` and `default`. **29 of the 52 carry a non-default weight**, so this
+was a real thing to get wrong, and it is not wrong. Re-check with the diff any time the game patches.
+
+The split rule matches the wiki: `purchase weight = weight × clamp(market share, min, max)`.
+⚠ The wiki's own phrasing is ambiguous — it renders as `weight ⋅ (min < market share < max)`, which reads
+either as a **clamp** or as a **boolean gate**. The two differ enormously for a high-weight, low-supply good
+like `fine_art` (weight 4). The clamp reading is the one measurement supports: Belgian liquor is ~95% of its
+market's intoxicant supply, and clamping predicts 199 against 201 observed where the alternative gives 102.
+
+**But the reason this document gave for art academies is wrong.** §10.11 and `FIXED_COUNTS` rest on the claim
+that *"fine_art's budget is fixed, so extra academies only destroy their own price"*. It is not fixed —
+under the supply-share rule, more academies raise fine_art's share of `popneed_leisure` and therefore its
+money. Measured on the era-3 scenario:
+
+| academies | fine_art buy / sell | price | share of the leisure budget |
+|---|---|---|---|
+| 1 | 2 / 14 | 25% | 2.1% |
+| 10 | 20 / 144 | 25% | 17.5% |
+| 50 | 59 / 720 | 25% | 51.6% |
+| 250 | 96 / 3600 | 25% | 84.2% |
+
+**The real constraint is unit volume against a high base price.** `fine_art` costs **£200**, the dearest
+consumer good, and units bought = money ÷ base price — so even 84% of the entire leisure budget (£19,209)
+buys only **96 units**. One era-3 academy level produces **14.4**. Demand rises roughly 2.4 units per
+academy while supply rises 14.4, so supply outruns demand about 6:1 at every count and the price sits on the
+25% floor from the first level onward. The whole leisure need could absorb only ~8 academy levels even if
+fine_art displaced services entirely.
+
+So the conclusion (academies cannot be sized by margin) stands, the mechanism is different, and **the lever
+is their output volume, not the demand model** — one level currently produces over 10% of the entire leisure
+budget's worth of art. That is the thing to change if academies should be viable; `FIXED_COUNTS` is a
+stopgap around a number that is simply too large.
 
 ### 10.17 The criterion is now LIVE IN THE BALANCE UI
 
