@@ -1871,3 +1871,56 @@ none of it was "fixed":
 anything is built on either. §10.19 argues the binding constraint is that fine_art costs £200, so even 84%
 of the leisure budget buys only 96 units against one academy's 14.4 — i.e. demand *exceeds* supply. The
 shipped order book says the opposite in every era: 8 against 54, 15 against 84, 40 against 130.
+
+## 10.30 "EXTINCT" NOW MEANS THE INDUSTRY ACTUALLY DIES — and the chain dies with it (2026-08-05)
+
+`ladder_end: extinct` was implemented as *"no price floor"* and nothing more (§10.23). So the scenario went
+on placing **sail shipyards in 1920 and 1935, one level per tier, running at −84%**. That is not a dying
+industry, it is a subsidised one, and nobody would operate it for a single year let alone a century.
+
+**It did real damage downstream.** Those levels keep `clippers` supplied at the 25% floor, and the era-1
+port eats clippers. In 1920 the oldest port tier earned **+95%** against the era-appropriate tier's +54%:
+a perfectly inverted ladder, bought with an input the model had already declared obsolete. §10.4 says
+obsolescence is price-driven — an old building dies because *its output* price falls while its inputs do
+not — and an old tier whose *input* is itself an extinct good runs the mechanism exactly backwards.
+
+**The horizon is the mod's own.** A tier two eras stale is meant to be gone (§10.11 fault 2), so an extinct
+industry is no longer placed once it is two eras past its last tier. Sail shipyards therefore persist
+through era 3 (winding down, at a loss, as they should) and are absent from eras 4 and 5.
+`ERA_EXTINCT_GRACE` makes the horizon measurable; `-1` restores the old always-present behaviour.
+
+### 10.30.1 Removing the producer alone is WORSE than leaving it — the chain must be finished
+
+Measured, in order:
+
+| | illogicality (excl) | per era | industrial ceiling |
+|---|---|---|---|
+| shipyards kept alive (before) | 44 (27) | 3 / 4 / 9 / 14 / 14 | clear |
+| extinct industry dropped, nothing else | 40 (27) | 3 / 4 / 9 / 12 / 12 | ⚠ **BREACHED in eras 4 and 5** |
+| **+ its consumers dropped too** | **42 (29)** | 3 / 4 / 9 / 12 / 14 | clear |
+
+Dropping the shipyards on their own left the era-1 port **still buying clippers from nobody**, which put
+clippers on the +75% ceiling in both late eras — a hard constraint (§10.15) that had been clear in all
+five. A building whose input has no supplier anywhere in the market does not run at an infinite price; it
+does not run. So a tier is no longer placed once every producer of one of its inputs is extinct.
+
+### 10.30.2 The honest cost: this is +2 on the number that matters
+
+**The excluded count went UP, 27 → 29**, and the acceptance target is stated on the excluded count. The
+total fell 44 → 42, but most of that is shipyard faults disappearing along with the shipyards, and those
+were already excused. In era 5 the fault count is unchanged at 14 and the composition shifted: `shipyard`
+left the inverted list and `tooling` entered it.
+
+It was kept anyway, on three grounds, and the disagreement is recorded rather than smoothed over:
+
+1. It implements a rule the documents already claimed. A −84% industry held alive for a century is not a
+   defensible scenario at any score.
+2. The alternative that scores best (40) **violates a hard constraint**, and the ceiling outranks the
+   metric everywhere else in this document.
+3. Two points is inside the jaggedness measured in §10.28 (deadband 8 → 45, 10 → 50, 15 → 45), so it is
+   not distinguishable from a re-shuffle.
+
+⚠ **The clipper subsidy was NOT port's inversion fault.** Fault (3) compares the newest tier against the
+one below it, which for port is era 4 against era 3 — `port_modern` (steamers + oil) against
+`port_industrial` (steamers + coal). Port is still inverted in eras 4 and 5 and the era-1 tier was never
+the reason. That is the next thing to look at for port, and it is a recipe question, not a scenario one.

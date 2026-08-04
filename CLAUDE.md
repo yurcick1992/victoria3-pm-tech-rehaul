@@ -43,7 +43,10 @@ has no unlocking technology for them yet — the builder gets a filtered config,
 complete one). Some ladders stop early, recorded per industry as **`ladder_end`**: `plateau` (food,
 textile, furniture, port — the last tier is permanent, so its good's price must hold that tier up rather
 than deflate past it, which is Baumol's cost disease falling out of the model) or `extinct` (sail
-shipyards — the industry is allowed to die).
+shipyards — the industry **actually dies**: no price floor, *and* it is not placed in a scenario two eras
+past its last tier, *and* neither is any tier whose input it was the only source of. Making only the first
+half true left a −84% shipyard alive in 1935 feeding an era-1 port that then out-earned the modern one —
+BALANCE_FRAMEWORK §10.30).
 
 **Balance is now solved as one interdependent economy with prices UNLOCKED, not against fixed prices.**
 The old per-tier `target_be` ladder (era anchors, the H1 input discount) is **superseded**: it priced
@@ -80,7 +83,9 @@ money**, (2) a **two-eras-stale** tier still turns a profit, (3) the ladder is *
 tier earns less than the one below it. Acceptable: **~0** for (1) and (3), **in the teens** for (2),
 **excluding shipyards and art academies** (both have targets they cannot meet by construction).
 `tools/era_scenarios.mjs` prints the count per era with the offending industries named.
-**Current state: 44 points, 27 excluding the excused (3 / 4 / 9 / 14 / 14 per era) — NOT yet acceptable.**
+**Current state: 42 points, 29 excluding the excused (3 / 4 / 9 / 12 / 14 per era) — NOT yet acceptable.**
+⚠ The excluded count rose 27 → 29 when `extinct` was made real (§10.30.2) — kept deliberately, because the
+variant that scored 40 breached the industrial ceiling and the ceiling outranks the metric.
 It is **live in the balance UI** as the **Ladder check** panel, from ONE shared implementation
 (`ladderFaults()` in `ui/econ.js`, called by both the UI and the solver). It scores only the buildings a
 scenario actually CONTAINS — an absent industry or a tier at Number 0 is never a fault and never the
@@ -279,6 +284,8 @@ tools/                  dev tooling — NOT shipped in the mod
                         and it limit-cycles forever, §10.28), ERA_SETTLE_TRACE=1 (per-iteration residual),
                         ERA_MIN_LEVELS_MULT (scales the market-size floor; swept in §10.29 and it does NOT
                         move the floored industries — the trap is scale-invariant),
+                        ERA_EXTINCT_GRACE (eras past its last tier before an `extinct` industry stops being
+                        placed, default 2; -1 restores the old always-present behaviour, §10.30),
                         ERA_CEIL_BOOST, ERA_CEIL_PM, ERA_JOINT, ERA_PROBE (the removed forward probe, kept
                         only so its damage can be re-measured — leave it off)
   econ_host.mjs         loads ui/econ.js + the generated ui/*.js under Node — supplies the state containers the

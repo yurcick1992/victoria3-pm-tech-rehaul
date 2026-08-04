@@ -742,6 +742,36 @@ for (const i of S.IND) {
 }
 const EXTINCT_GOODS = new Set();
 for (const i of S.IND) if (i.ladder_end === 'extinct') for (const t of i.tiers) EXTINCT_GOODS.add(E.tierOut(i, t));
+// ⚠ "ALLOWED TO DIE" HAS TO MEAN IT ACTUALLY DIES. Removing the price floor was only half of it: the
+// scenario went on placing sail shipyards in 1920 and 1935 at one level per tier, running at −84%, and
+// that is not a dying industry — it is a subsidised one. It also did real damage downstream. Those levels
+// keep CLIPPERS supplied at the 25% floor, and the era-1 port eats clippers: in 1920 the oldest port tier
+// earned +95% against the era-appropriate tier's +54%, a perfectly inverted ladder bought with an input
+// that had been made nearly free by an industry the model had already declared extinct.
+// The horizon is the mod's own: a tier TWO eras stale is meant to be gone (§10.11 fault 2), so an extinct
+// industry is not placed once it is two eras past its last tier. ERA_EXTINCT_GRACE makes it measurable.
+const EXTINCT_GRACE = process.env.ERA_EXTINCT_GRACE != null ? +process.env.ERA_EXTINCT_GRACE : 2;
+const EXTINCT_LAST_ERA = {};           // industry id -> era of its last tier
+for (const i of S.IND) if (i.ladder_end === 'extinct') EXTINCT_LAST_ERA[i.id] = Math.max(...i.tiers.map(t => t.era));
+const extinctBy = (indId, era) => EXTINCT_LAST_ERA[indId] != null
+  && EXTINCT_GRACE >= 0 && era - EXTINCT_LAST_ERA[indId] >= EXTINCT_GRACE;
+// ⚠ AND THE CHAIN HAS TO BE FINISHED, or removing the producer is worse than leaving it. Dropping the sail
+// shipyards on its own left the era-1 port still buying clippers from nobody, which put clippers on the
+// +75% ceiling in 1920 and 1935 — a HARD constraint (§10.15), and one that had been clear in all five
+// eras. A building whose input has no supplier anywhere in the market does not run at an infinite price;
+// it does not run. So a tier is not placed either, once every producer of one of its inputs is extinct.
+const goneGoods = era => {
+  const gone = new Set();
+  for (const g of EXTINCT_GOODS) {
+    let alive = false;
+    for (const i of S.IND) {
+      if (extinctBy(i.id, era)) continue;
+      if (i.tiers.some(t => t.era <= era && E.tierOut(i, t) === g)) { alive = true; break; }
+    }
+    if (!alive) gone.add(g);
+  }
+  return gone;
+};
 
 const BAND = {};                       // good -> 'intermediate' | 'finished' | 'raw'
 {
@@ -816,9 +846,12 @@ function buildScenario(eIx) {
   // It was also an anachronism on its own terms — a Bessemer converter (1856) standing in the 1836
   // scenario, and mass-production car plants in 1900.
   const placement = [];   // {ind, tiers:[{t, weight}]}
+  const GONE = goneGoods(era);      // goods whose every producer is extinct by now
   for (const i of S.IND) {
+    if (extinctBy(i.id, era)) continue;                  // declared extinct and two eras past its end
     const sorted = [...i.tiers].sort((a, b) => a.era - b.era);
-    const avail = sorted.filter(t => t.era <= era);
+    const avail = sorted.filter(t => t.era <= era
+      && !Object.keys(t.inputs || {}).some(g => GONE.has(g)));   // its input has no supplier left
     if (!avail.length) continue;
     const cur = avail[avail.length - 1], m1 = avail[avail.length - 2], m2 = avail[avail.length - 3];
     const fx = FIXED_COUNTS[i.id];
