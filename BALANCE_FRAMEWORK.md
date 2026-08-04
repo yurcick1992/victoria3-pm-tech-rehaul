@@ -1427,3 +1427,52 @@ That is the path-dependence above, seen from the side; it is not a disagreement 
 loss-making is 19 and net inverted 14, both well above ~0. What is now true that was not before: the
 measurement is honest, the hard constraint holds, the criterion is visible live in the UI, and the price
 path has been eliminated as the lever.
+
+---
+
+## 10.23 `ladder_end`, fixed-count producers, model_only — the declared-but-absent rules, now built (2026-08-04)
+
+Closing the gaps the §10.21 audit found. Each was design the documents asserted and the solver never did.
+
+### plateau and extinct are enforced
+
+**`plateau`** (food, textile, furniture, port — three that matter, port being infrastructure): the last tier
+is permanent, so **its good's price stops deflating when the ladder stops**. Implemented in `targetPrice()`
+by capping the good's "age" at its last tier's era. Without it the model demanded that a permanent tier keep
+pace with obsolescence that has nowhere left to come from. Holding the price is what makes **Baumol's cost
+disease fall out of the model** rather than being asserted: a sector whose productivity stops improving
+becomes relatively dearer as the rest of the economy moves on.
+
+**`extinct`** (sail shipyards): no floor at all, so the good keeps deflating past the point where anyone
+would build one. That was already the behaviour — it is now *explicit*, which matters because "we chose not
+to floor it" and "we never implemented flooring" look identical from outside. Measured: clippers now run
+132 / 175 / 91 / **25 / 25** across the eras. The industry dies, visibly.
+
+### Fixed-count reference producers, which may only shrink
+
+The dye plantation was **deleted from every scenario** so synthetics would be dye's only source. That was
+wrong in era 1, where synthetics does not exist and the plantation is the historically correct supplier, and
+crude everywhere else because it *decided* the outcome instead of letting the market reach it.
+
+Now: a stated count (**10**, a placeholder — see below) exists from era 1 and persists, **unless it cannot
+turn a profit, in which case it sheds one level at a time** until profitable or gone. Obsolescence happening
+rather than asserted — synthetics arrives, dye's price falls, plantations retreat as far as the market pushes.
+
+⚠ **The ceiling guards the shrink**, and era 1 proved why: with synthetics absent the plantation is dye's
+*only* source, so shrinking to zero left dye with demand and no supply, pinned at the band edge. Retreat now
+stops where the market still has a supplier. Result: **era 1 supports 1 plantation** (1836 dye demand is
+tiny), **eras 2–5 hold all 10**.
+
+⚠ A fixed-count producer is exempt from the raw band's **upper** bound — it is hand-placed and may only
+shrink, so growing it is not an available remedy. Reported as exempt, not as a violation.
+
+⚠⚠ **THE COUNT IS A PLACEHOLDER.** 10 is reasonable-looking, not derived. "How many of an untiered producer
+should exist" is intended to become a proper constraint for every industry; until then this is the one
+hand-set case and is labelled as such rather than dressed up.
+
+### model_only tiers are now visible
+
+22 of 89 tiers are modelled but never emitted (no unlocking technology exists). The solver never read the
+flag, so they are placed, priced and scored exactly like real tiers — which is the intent, but was an
+unexamined assumption. Now **reported per era**: 0 / 0 / 2 / 9 / 22 present. A reader can see how much of a
+late-era scenario rests on tiers the game cannot currently have.

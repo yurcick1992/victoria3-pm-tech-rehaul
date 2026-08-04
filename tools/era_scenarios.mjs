@@ -187,7 +187,24 @@ const FIXED_COUNTS = { art_academy: { cur: 2, m1: 2, m2: 1 } };
 // Reference producers deliberately kept OUT of these scenarios. Natural dye is removed so that synthetics
 // is the ONLY source of dye — the industry exists to replace it, and leaving the plantation in place left
 // synthetics competing with a supplier it is supposed to have destroyed (it read best-case −35% in 1870).
-const EXCLUDE_REF = new Set(['building_dye_plantation']);
+const EXCLUDE_REF = new Set();
+// ===================================================================================================
+// FIXED-COUNT REFERENCE PRODUCERS — placed at a stated number rather than solved, and allowed to SHRINK.
+//
+// The dye plantation is the case this exists for. It used to be deleted from every scenario so that
+// synthetics would be dye's only source — which was wrong in era 1, where synthetics does not exist yet
+// and the plantation is the historically correct supplier, and crude everywhere else because it decided
+// the outcome instead of letting the market reach it.
+//
+// The rule now: a stated number exists from era 1 and persists unchanged into every later era, UNLESS it
+// cannot turn a profit under any of its methods — in which case it loses one level at a time until it is
+// profitable or gone. That is obsolescence happening rather than being asserted: synthetics arrives, dye's
+// price falls, and the plantations retreat exactly as far as the market pushes them.
+//
+// ⚠ THE COUNT IS A PLACEHOLDER. 10 is a reasonable-looking number, not a derived one. The intent is that
+// "how many of an untiered producer should exist" becomes a proper constraint for every industry later;
+// until then this is the one hand-set case, and it is labelled as such rather than dressed up.
+const FIXED_REF_COUNT = { building_dye_plantation: 10 };
 // A scenario where one industry is most of the economy is broken, however well its own margin solves.
 const GDP_SHARE_WARN = 0.25;
 // The era-appropriate tier and the one below it need enough levels that the two-eras-stale tier (fixed at
@@ -526,6 +543,30 @@ for (const i of S.IND) {
 // ⚠ RECORDED JUDGEMENT CALL — GLASS. §10.13 listed glass as an intermediate on the strength of the name.
 // The config disagrees: no tier of ours consumes glass, its demand is popneed_household_items, and it is
 // therefore FINISHED here. Deriving the split rather than transcribing the list is what caught it.
+// ===================================================================================================
+// `ladder_end` — PLATEAU AND EXTINCT, now actually enforced (§10.1 declared this; nothing implemented it).
+//
+// **plateau** (food, textile, furniture, port): the last tier is PERMANENT — no better factory is ever
+// invented. Its good's price must therefore stop deflating when the ladder stops, or the model quietly
+// demands that a permanent tier keep pace with obsolescence that has nowhere left to come from. Holding
+// the price is what makes Baumol's cost disease fall out of the model instead of being asserted: a sector
+// whose productivity stops improving becomes relatively dearer as the rest of the economy moves on.
+//
+// **extinct** (sail shipyards): no floor at all — the industry is allowed to die, and its good keeps
+// deflating past the point where anyone would build one. That was already the behaviour; it is now
+// explicit rather than accidental, which matters because "we chose not to floor it" and "we never
+// implemented flooring" look identical from the outside.
+const PLATEAU_LAST_ERA = {};           // good -> era of the permanent last tier
+for (const i of S.IND) {
+  if (i.ladder_end !== 'plateau') continue;
+  for (const t of i.tiers) {
+    const g = E.tierOut(i, t);
+    if (PLATEAU_LAST_ERA[g] == null || t.era > PLATEAU_LAST_ERA[g]) PLATEAU_LAST_ERA[g] = t.era;
+  }
+}
+const EXTINCT_GOODS = new Set();
+for (const i of S.IND) if (i.ladder_end === 'extinct') for (const t of i.tiers) EXTINCT_GOODS.add(E.tierOut(i, t));
+
 const BAND = {};                       // good -> 'intermediate' | 'finished' | 'raw'
 {
   const eaten = new Set();
@@ -553,7 +594,11 @@ const REALISED = [];
 function targetPrice(good, era) {
   const f = GOOD_FIRST_ERA[good];
   if (f == null) return PRICE_RAW;                       // raw / secondary: no ladder to drive
-  const age = Math.max(0, era - f);
+  // ⚠ A PLATEAUED good stops ageing when its ladder does. Past the last tier's era there is no newer,
+  // cheaper factory to price against, so the path holds instead of deflating into a tier that can never
+  // be superseded.
+  const last = PLATEAU_LAST_ERA[good];
+  const age = Math.max(0, (last != null ? Math.min(era, last) : era) - f);
   const p = BAND[good] === 'intermediate'
     ? Math.max(PRICE_FLOOR_INT, PRICE_START_INT * Math.pow(PRICE_DECAY_INT, age))
     : Math.max(PRICE_FLOOR, PRICE_START * Math.pow(PRICE_DECAY, age));
@@ -643,6 +688,7 @@ function buildScenario(eIx) {
   // about −68% at any size. That is an artifact of not modelling gold as money, not a loss anyone is
   // choosing to take, and dropping every gold mine would delete gold from the economy to fix a number.
   const dropped = new Set();
+  const fixedRef = { ...FIXED_REF_COUNT };   // stated counts; shrink one level at a time when unprofitable
   const minCount = {};          // tier key -> floor imposed by the post-solve free-entry tuner
   const isRawProducer = b => {
     if (SKIP_TARGET_BLD.has(b)) return false;
@@ -663,7 +709,12 @@ function buildScenario(eIx) {
         S.BLDNUM[r.t.key] = Math.max(base, minCount[r.t.key] || 0);
       }
     }
-    for (const b of refProducers) { if (dropped.has(b)) continue; S.BLDNUM[b] = Math.max(1, Math.round(scaleOf['R:' + b])); }
+    for (const b of refProducers) {
+      if (dropped.has(b)) continue;
+      // a fixed-count producer is placed at its stated number, never at the solved one
+      if (fixedRef[b] != null) { if (fixedRef[b] > 0) S.BLDNUM[b] = fixedRef[b]; continue; }
+      S.BLDNUM[b] = Math.max(1, Math.round(scaleOf['R:' + b]));
+    }
   };
   // THROUGHPUT per building, by sector. Applied to everything the scenario places, and carried in the
   // preset so the UI shows the same margins the solve used.
@@ -1033,6 +1084,9 @@ function buildScenario(eIx) {
       let rawGrow = null, rawGrowP = 0, rawDrop = null, rawDropP = 0;
       for (const b of refProducers) {
         if (!(S.BLDNUM[b] > 0) || dropped.has(b) || !isRawProducer(b)) continue;
+        // A FIXED-COUNT producer is hand-placed by design and may only ever shrink, never grow — so the
+        // band's UPPER bound does not apply to it. Reported as exempt rather than as a violation.
+        if (fixedRef[b] != null) continue;
         const band = rawBandOf(b); if (!band) continue;
         const ec = E.refEcon(b); if (!ec || ec.tp == null || !isFinite(ec.tp)) continue;
         const pr = ec.tp / 100;
@@ -1040,8 +1094,31 @@ function buildScenario(eIx) {
         if (pr < band[0] && pr < rawDropP) { rawDrop = b; rawDropP = pr; }
       }
       // fix whichever violation is worst; a loss-maker outranks an over-earner
-      if (!best && !rawGrow && !rawDrop) break;
+      // A FIXED-COUNT producer that cannot turn a profit sheds ONE level, then we look again. It shrinks
+      // rather than being dropped outright, because the question is how far the market pushes it back, not
+      // whether it survives — and it may well stabilise partway.
+      let shrink = null;
+      for (const b in fixedRef) {
+        if (!(fixedRef[b] > 0) || !(S.BLDNUM[b] > 0)) continue;
+        const ec = E.refEcon(b);
+        if (ec && ec.tp != null && isFinite(ec.tp) && ec.tp < 0) { shrink = b; break; }
+      }
+      if (!best && !rawGrow && !rawDrop && !shrink) break;
       const beforeC = ceilingBreaches();
+      if (shrink) {
+        // ⚠ THE CEILING GUARDS THE SHRINK TOO. In era 1 the plantation is dye's ONLY source — synthetics
+        // does not exist yet — so shrinking it to zero left dye with demand and no supply, pinned at the
+        // band edge. Retreat stops at the point where the market still has a supplier.
+        const prevN = fixedRef[shrink];
+        fixedRef[shrink] -= 1;
+        if (fixedRef[shrink] <= 0) dropped.add(shrink);
+        settle(); syncPrices();
+        if (ceilingBreaches() > beforeC) {
+          fixedRef[shrink] = prevN; dropped.delete(shrink); protectedRaw.add(shrink);
+          settle(); syncPrices();
+        }
+        continue;
+      }
       if (rawDrop) {
         dropped.add(rawDrop);
         settle(); syncPrices();
@@ -1222,7 +1299,10 @@ function buildScenario(eIx) {
   return { eIx, era, jobs, gdp, peasants, popNonPeasant, scaleOf, pmResult, share, gross, popBoost,
            jointDrift, jointDriftGood, jointDriftN, pmSettled,
            constrShare: constructionShare(), constrLevels: S.BLDNUM[CONSTRUCTION_BLD] || 0,
-           tuned: { ...tuned }, capBlocked: new Set(capBlocked),
+           tuned: { ...tuned }, capBlocked: new Set(capBlocked), fixedRef: { ...fixedRef },
+           modelOnlyPlaced: (() => { let n = 0, tot = 0;
+             for (const i of S.IND) for (const t of i.tiers) if (t.model_only) { tot++; if (S.BLDNUM[t.key] > 0) n++; }
+             return { placed: n, total: tot }; })(),
            // the two things the free-entry rule has to be judged on afterwards
            mfgShare: (() => { let m = 0, tot = 0;
              for (const i of S.IND) for (const t of i.tiers) { const c = S.BLDNUM[t.key] || 0; if (c) { const v = c * E.thruMult(t.key) * E.outputValue(i, t, true); m += v; tot += v; } }
@@ -1234,7 +1314,7 @@ function buildScenario(eIx) {
                const ec = E.refEcon(b); if (!ec || ec.tp == null || !isFinite(ec.tp)) continue;
                xs.push(ec.tp);
                const band = rawBandOf(b);
-               if (band && (ec.tp / 100 < band[0] || ec.tp / 100 > band[1]))
+               if (band && (ec.tp / 100 < band[0] || (ec.tp / 100 > band[1] && FIXED_REF_COUNT[b] == null)))
                  out.push({ b: b.replace(/^building_/, ''), tp: ec.tp, lo: band[0] * 100, hi: band[1] * 100 });
              }
              xs.sort((a, b2) => a - b2);
@@ -1413,6 +1493,17 @@ for (let e = 0; e < FIT.eras.length; e++) {
       + (meta.mfgShare > 0.90 ? ' ⚠ OVERSIZED' : '')
       + (rp ? ` · raw producers median ${rp.med.toFixed(0)}% / max ${rp.max.toFixed(0)}%`
              + (rp.over50 ? ` (${rp.over50} over +50%)` : '') : ''));
+  }
+  // Fixed-count producers, and how far the market pushed them back. Plus model_only visibility: those tiers
+  // are modelled but never emitted (no unlocking technology exists), so a reader has to be told they are in
+  // here — they are priced and scored exactly like real tiers, which is the intent but not self-evident.
+  {
+    const fr = Object.entries(meta.fixedRef);
+    if (fr.length) console.log(`    FIXED-COUNT PRODUCERS: `
+      + fr.map(([b, n]) => `${b.replace(/^building_/, '')} ${n}/${FIXED_REF_COUNT[b]}`
+          + (n < FIXED_REF_COUNT[b] ? (n === 0 ? ' (driven out)' : ' (pushed back)') : '')).join(', '));
+    const mo = meta.modelOnlyPlaced;
+    console.log(`    MODEL-ONLY TIERS: ${mo.placed} of ${mo.total} present — modelled and scored here, never emitted to the game`);
   }
   console.log(`    CONSTRUCTION: ${meta.constrLevels} levels = ${(100 * meta.constrShare).toFixed(1)}% of gross output`
     + ` (target ${(100 * CONSTRUCTION_GDP_SHARE).toFixed(0)}%, ${CONSTRUCTION_PM[meta.era]})`
