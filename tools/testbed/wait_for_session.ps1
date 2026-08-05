@@ -20,13 +20,26 @@
   forever on a signal that is not coming. With it, the longest anyone is ever in the dark is
   -MaxMinutes.
 
+  ⚠ DEAD IS NOT INSTANT, AND MUST NOT BE. Between runs the game is gone and there is no completion
+  marker yet - identical to the DEAD signature - while the observer parses the whole log mirror.
+  That scales with the mirror: ~7 minutes for 496 MB (measured 2026-08-05), against the 90 s this
+  used to allow. It reported DEAD on a healthy batch, and acting on it would have restarted a
+  1836-1936 run from 1836. The grace is now -DeadGraceSeconds (default 900) and it re-checks
+  throughout, returning to normal waiting the moment the game reappears or the schedule finishes.
+
   Usage:
-    wait_for_session.ps1 -Session <dir> [-MaxMinutes 30] [-PollSeconds 30]
+    wait_for_session.ps1 -Session <dir> [-MaxMinutes 30] [-PollSeconds 30] [-DeadGraceSeconds 900]
 #>
 param(
     [Parameter(Mandatory=$true)][string]$Session,
     [int]$MaxMinutes = 30,
-    [int]$PollSeconds = 30
+    [int]$PollSeconds = 30,
+    # How long the game may be absent before this calls the session DEAD. It is NOT just the
+    # build gap between runs - the dominant case is the post-run HARVEST, which parses the whole
+    # log mirror and scales with it. Measured 2026-08-05: a 496 MB mirror took ~7 minutes, against
+    # the 90 s this used to allow, so a perfectly healthy batch reported DEAD and acting on that
+    # would have restarted a 1836-1936 run from scratch. 900 s covers a ~1 GB mirror with room.
+    [int]$DeadGraceSeconds = 900
 )
 $ErrorActionPreference = 'Stop'
 
@@ -59,13 +72,20 @@ while ($true) {
 
     $alive = $null -ne (Get-Process victoria3 -ErrorAction SilentlyContinue)
     if (-not $alive) {
-        # No game and no completion marker. Could be the gap between runs (the scheduler is
-        # building the next mod, ~1 min), so tolerate a short absence before crying wolf.
-        Start-Sleep -Seconds 90
-        $stillDead = $null -eq (Get-Process victoria3 -ErrorAction SilentlyContinue)
-        $nowDone = (Test-Path $log) -and (Select-String -Path $log -Pattern 'SCHEDULE DONE' -Quiet -ErrorAction SilentlyContinue)
-        if ($stillDead -and -not $nowDone) {
-            Write-Output "DEAD - no victoria3 process and no SCHEDULE DONE marker"
+        # No game and no completion marker. That is ALSO what the normal gap between runs looks
+        # like - the scheduler harvesting the finished run (minutes, scaling with mirror size) and
+        # then building the next mod (~1 min). So wait out the grace, re-checking as we go, and
+        # bail out early the moment the game comes back or the schedule reports done.
+        $graceEnd = (Get-Date).AddSeconds($DeadGraceSeconds)
+        $recovered = $false
+        while ((Get-Date) -lt $graceEnd) {
+            Start-Sleep -Seconds $PollSeconds
+            if ($null -ne (Get-Process victoria3 -ErrorAction SilentlyContinue)) { $recovered = $true; break }
+            if ((Test-Path $log) -and (Select-String -Path $log -Pattern 'SCHEDULE DONE' -Quiet -ErrorAction SilentlyContinue)) { $recovered = $true; break }
+        }
+        if (-not $recovered) {
+            Write-Output ("DEAD - no victoria3 process and no SCHEDULE DONE marker for {0}s" -f $DeadGraceSeconds)
+            Write-Output "  (a long HARVEST looks identical - check run.log for 'run N finished' before acting)"
             Write-Output ((Get-Content $log -ErrorAction SilentlyContinue | Select-Object -Last 5) -join "`n")
             exit 2
         }
