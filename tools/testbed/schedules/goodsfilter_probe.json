@@ -1,0 +1,37 @@
+﻿{
+    "schedule_version":  1,
+    "label":  "goodsfilter-probe",
+    "_why":  "Probe ONLY: can every_market_goods be filtered to a named good? No vanilla script does it, so two candidate triggers (is_goods = g:X and goods = g:X) each get their own block. Whichever fires and names only that good wins. Decides whether the pop-vs-building split is affordable at monthly cadence.",
+    "_note":  "Uses grain, which exists from 1836, so the answer arrives at the first dump. One year is enough.",
+    "defaults":  {
+                     "metrics":  [
+                                     "consumption_goods"
+                                 ],
+                     "autosave_interval":  "yearly",
+                     "timeout_minutes":  25,
+                     "tags":  [
+                                  "BEL"
+                              ]
+                 },
+    "setups":  {
+                   "mod":  {
+                               "kind":  "config",
+                               "config":  "config/mod_config.json"
+                           }
+               },
+    "runs":  [
+                 {
+                     "setup":  "mod",
+                     "until":  "1836.5.1",
+                     "dump_dates":  [
+                                        "1836.2.1"
+                                    ],
+                     "tags":  [
+                                  "BEL"
+                              ],
+                     "breakdown_goods":  [
+                                             "grain"
+                                         ]
+                 }
+             ]
+}

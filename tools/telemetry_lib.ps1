@@ -70,6 +70,7 @@ function Get-TelemetryDefaults {
         tags       = @("GBR", "FRA")
         metrics    = @("market_goods")
         origin_goods = @()
+        breakdown_goods = @()      # goods the `consumption_goods` metric restricts its breakdown to
     }
 }
 
@@ -79,7 +80,7 @@ function Read-TelemetrySpec {
     if ($Path) {
         if (-not (Test-Path $Path)) { throw "telemetry spec not found: $Path" }
         $j = Get-Content $Path -Raw -Encoding UTF8 | ConvertFrom-Json
-        foreach ($k in @("dump_dates", "tags", "metrics", "origin_goods")) {
+        foreach ($k in @("dump_dates", "tags", "metrics", "origin_goods", "breakdown_goods")) {
             if ($j.PSObject.Properties.Name -contains $k -and $j.$k) { $spec[$k] = @($j.$k) }
         }
         # An OBJECT, not an array (group -> successor chain), so it cannot go through the @() loop
@@ -1436,6 +1437,27 @@ function New-TelemetryScript {
 			debug_log = "V3TB|$Token|CP|C2done|$Date"
 "@
         }
+
+        # ---- CONSUMPTION BREAKDOWN, RESTRICTED TO NAMED GOODS (v11).
+        #
+        # WHY. The compact market line carries a good's TOTAL buy orders and no channel split, so it cannot
+        # say whether a debut good's early demand is pops or buildings - and that distinction is the whole
+        # question (BALANCE_FRAMEWORK 10.35). The full `consumption_breakdown` answers it but sweeps every
+        # good at ~1 MB per market per dump, which bursts the log ring and evicts the very series being
+        # measured. Restricted to a handful of goods it is affordable at MONTHLY cadence: a few blocks per
+        # dump instead of ~70.
+        #
+        # ⚠⚠ THERE IS NO WAY TO RESTRICT THE BUY-ORDERS BREAKDOWN TO NAMED GOODS. Both routes were built
+        # and probed and BOTH FAIL, and the failure mode is worse than the documented one - see
+        # TESTBED_METRICS §3.3.1. Do not try either again:
+        #   * `limit = { is_goods = g:X }` / `limit = { goods = g:X }` inside `every_market_goods`
+        #     (probe 20260805_140913) - fires zero times, no error names the trigger.
+        #   * `THIS.GetMarket.GetMarketGoods(GetGoods('X').Self).GetMarketBuyOrdersBreakdown`
+        #     (probes 20260805_141239 / _141614) - takes the WHOLE on_action down with it. The plain-string
+        #     fences around it never printed either, and `BEGIN` went from 321 occurrences in a working run
+        #     to zero, with NOTHING in error.log.
+        # So `consumption_breakdown` stays all-goods, and the way to afford it is a SPARSE DATE LIST (and
+        # ideally one market), not a goods filter.
 
         if ($metrics -contains "consumption_probe") {
             # The market panel splits a good's buy orders BY SOURCE, with pop consumption as an

@@ -2297,6 +2297,30 @@ of a genuine inconsistency. `telephone` carries no production methods at all: te
 `pm_telephones` (tech `radio`) and *bought* by `pm_switch_boards` (tech `central_planning`), so moving
 electrics' customer would be a fresh historical judgement, not a repair. Left alone deliberately.
 
+### 10.35.1a ⚠ THE LOCALITY ABSTRACTION — what our model does not represent at all (user, 2026-08-05)
+
+**Every model here behaves as if the whole economy were a single state.** The game is not: it has states
+inside markets, markets inside a world, and goods that move between them under rules we do not implement.
+This is a **deliberate, permanent simplification** — there will be no multi-state model in the balance UI,
+just as there is no multi-PM-per-building selection — but it must be held in mind when reading any
+measurement, because effects we attribute to a demand rule may be locality artifacts.
+
+⚠ **It is the reason a token demand against zero local supply is NOT automatically evidence against
+`needSplit`.** A completely zero-supply good plausibly does take its true zero share, exactly as we model
+it; what our single-state view cannot represent is a good that is supplied *somewhere else*.
+
+**Open questions, none of them answered, recorded so they are not silently assumed away:**
+1. Does one **market** receiving a need-fulfilling good make *other* markets' pops start demanding it? If
+   so, is that additionally **tech-gated on the receiving side**, and how does the gate behave for a market
+   shared by several countries with different technologies?
+2. Does one **state** receiving a good make other states' pops demand it — **uniformly or not**? And are
+   `local` goods (`services`, `transportation`, `electricity`) an exception, since they cannot move between
+   states at all?
+
+⚠ Any reading of a market-level order book inherits this. In particular the six years of unmet British
+steamer demand (§10.35.1b) cannot be attributed to a production-method switch, to pop behaviour, or to a
+locality effect on the evidence we have — the market line carries no channel split and no state detail.
+
 ### 10.35.2 MEASURED — it is not a win in any variant. Parked, default OFF
 
 | variant | points | excluding excused | per era |

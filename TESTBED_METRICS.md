@@ -1133,3 +1133,26 @@ for that when writing an analyser, and re-check the mapping after a patch that r
 voids the entire line it sits in, and the country+date half was the part that could not be risked — had all
 four fields shared a line, the failure would have produced *nothing at all* and looked like the on_action
 not firing. Only once every function resolved were they merged into the single line above.
+
+### 3.3.1 ⚠ THE BREAKDOWN CANNOT BE RESTRICTED TO NAMED GOODS — both routes probed and FAILED (v11)
+
+`GetMarketBuyOrdersBreakdown` is the only channel split there is (§3.3), and it is ~1 MB per market per
+dump for **all** goods. The obvious economy — ask for it on two or three goods only — **does not exist**.
+Two routes were built and probed; both fail, and one fails in a way that is worth knowing about.
+
+| route | probe | result |
+|---|---|---|
+| `limit = { is_goods = g:X }` inside `every_market_goods` | `20260805_140913` | fires **zero** times; no error names the trigger |
+| `limit = { goods = g:X }` inside `every_market_goods` | `20260805_140913` | same |
+| `THIS.GetMarket.GetMarketGoods(GetGoods('X').Self).GetMarketBuyOrdersBreakdown` | `20260805_141239`, `_141614` | **takes the whole on_action down** |
+
+⚠⚠ **THE SECOND FAILURE MODE IS NOT "ONE BAD FUNCTION VOIDS ITS LINE".** It voids the **entire
+`on_action`**. The block was fenced with plain string `debug_log`s that contain no data functions at all,
+and *they did not print either*: `BEGIN` went from **321** occurrences in a working run to **zero**, and
+`error.log` said **nothing**. So a bad data function in one `debug_log` can silently delete every other
+line in the same effect — including lines that are provably safe. When probing a new data function, put it
+in an on_action **of its own**, not merely on a line of its own.
+
+**The affordable shape is therefore a SPARSE DATE LIST, not a goods filter** — and ideally one market per
+run, since the cost is per market per dump. Aim it at dates a cheap `market_goods_scoped` run has already
+identified, rather than sampling blind.
