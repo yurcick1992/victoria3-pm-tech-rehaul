@@ -2211,4 +2211,70 @@ have been captured before it will judge — a verified block with no pop entry b
 
 **What is still open.** The observation that started this — a new good's demand and price spike in game —
 remains unexplained and is still worth explaining; `max_supply_share` simply is not the mechanism. §10.29
-lists what else is on the table for electrics and automotive.
+lists what else is on the table for electrics and automotive. **→ §10.35 answers it, and it is not a demand
+mechanism at all.**
+
+---
+
+## 10.35 A DEBUT GOOD'S CUSTOMER IS A BUILDING, AND WE WITHHELD IT — measured, fix built, NOT yet re-solved (2026-08-05)
+
+**⭐ THE FINDING (verified, not proposed).** In vanilla each of these goods has **exactly one** building
+customer, and in the base game it arrives *with* the good:
+
+| good | its only building customer | where | qty | unlocked by |
+|---|---|---|--:|---|
+| `automobiles` | `pm_public_motor_carriages` | **urban centres** (`pmg_public_transport`) | 1/level | `combustion_engine` |
+| `telephones` | `pm_switch_boards` | government administration | 5/level | `central_planning` |
+
+Urban centres number in the **hundreds of levels** per market, so `combustion_engine` — the very technology
+that lets a country build a car plant — simultaneously creates hundreds of units of automobile demand.
+That is the demand a newly-invented good gets in game, and it is **not a pop mechanism**, which is why
+§10.34's search through the pop model found nothing.
+
+**What our ladder does to it.** Three industries are placed one era EARLIER than their vanilla unlocking
+technology as deliberate historical corrections. But production-method availability (`era_pm.mjs`) and
+vanilla-building availability (`era_scenarios.mjs`) both gate on the technology's **own vanilla era,
+remapped 1:1**. So the factory moves and everything else that technology unlocks stays behind. Read off the
+**shipped** `config/era_presets.json`:
+
+```
+era3_1900   automotive T1 x1 makes 30 automobiles | electrics T1 x1 makes 60 telephones
+            building demand REACHABLE this era:  automobiles 0   telephones 0
+            (its 335 urban centres run pm_public_trams; gov admin runs no switchboards)
+era4_1920   automotive x22 makes 711 | electrics x20 makes 1398
+            building demand reachable:  automobiles 330   telephones 770
+```
+
+Era 3 is a **dead era by construction** for both: they produce into a market where no building is permitted
+to buy from them, pops give them a rounding error, they sit floored at 1 level — and then era 4 switches the
+customers on and the same industries jump to 22 and 20 levels. **That is the whole of §10.29's insolvency,
+and no demand model could have fixed it.**
+
+⚠ **The deeper cause is that our eras and vanilla's are not the same scale.** Ours anchor at
+1750/1850/1900/1925/1940; vanilla's run pre-1836 / 1836-61 / 1862-86 / 1887-1911 / 1911-36. So our era 3
+(1900) sits inside *vanilla's era 4*, and the pipeline's 1:1 remap is an approximation that mis-sorts
+exactly the late-era technologies. The hand-moves are not the disease, they are where the mismatch bites.
+
+### 10.35.1 The fix — built, default OFF, not yet measured
+
+`tools/era_tech_sync.mjs`, enabled with **`ERA_TECH_SYNC=1`**. One technology gets one era: a tier's own
+unlocking technology is made available in the era the ladder placed that tier, and everything else that
+technology unlocks moves with it. Derived from the config, so the historical judgement stays stated once.
+
+⚠ **It only ever LOWERS an era, and that asymmetry is the whole correctness of it.** The forced direction
+is "the factory's own technology must exist where the factory does". The reverse is not forced — a
+technology being available earlier than some tier that uses it is normal — and applying it withdraws
+methods that are currently correctly available. Written the naive way ("whenever the two differ") the rule
+made **18** changes, 12 of them unforced, including pushing every dynamite method out of era 3. Taking the
+minimum leaves the **6** that are forced: `combustion_engine` 4→3, `telephone` 4→3, `electric_railway` 4→3,
+`compression_ignition` 5→4, `gantry_cranes` 3→2, `aniline` 3→2.
+
+**It fixes automotive and does NOT fix electrics** — stated plainly because the two look alike and are not.
+`combustion_engine` carries `pm_public_motor_carriages` into era 3 with the car plant, which is the repair
+of a genuine inconsistency. `telephone` carries no production methods at all: telephones are *made* by
+`pm_telephones` (tech `radio`) and *bought* by `pm_switch_boards` (tech `central_planning`), so moving
+electrics' customer would be a fresh historical judgement, not a repair. Left alone deliberately.
+
+⚠ **NOT YET RE-SOLVED.** The illogicality count under `ERA_TECH_SYNC=1` is unmeasured — the solve was
+deferred rather than run against a measurement batch holding the machine. Until it is measured the default
+stays OFF, and this section must not be read as a shipped change.

@@ -26,6 +26,11 @@ const WRITE = process.argv.includes('--write');
 // The mod's own era anchors. Contracting on purpose: 100 years, then 50, then 25, then 15.
 export const ERA_YEAR = { 1: 1750, 2: 1850, 3: 1900, 4: 1925, 5: 1940 };
 
+// ⚠ The "one technology, one era" correction that pairs with SPEC's historical moves below lives in
+// `tools/era_tech_sync.mjs`, NOT here: this module runs its whole build at import time and keys off
+// `--write`, the same flag `era_scenarios --write` uses, so importing it from the scenario solver would
+// silently re-mint the invented tiers and discard the volumes that solver had just produced.
+
 // Output per tier. Raised from 1.50 to 1.55 (so 1.55^4 = 5.77x from era 1 to era 5, against 5.06x before)
 // to close the tier inversion: wages were growing 1.31 per era against revenue's 1.23, so each successive
 // tier was structurally worse off than the one below it.

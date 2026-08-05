@@ -23,9 +23,13 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadEcon, REPO } from './econ_host.mjs';
 import { makePmRules, optimisePMs } from './era_pm.mjs';
+import { applyTechEraCorrections } from './era_tech_sync.mjs';
 
 const WRITE = process.argv.includes('--write');
-const { E, S, PMECON } = loadEcon({ quiet: true });
+const { E, S, PMECON, config: CFG_RAW } = loadEcon({ quiet: true });
+// ONE TECHNOLOGY, ONE ERA — see build_era_ladder.mjs. Must run BEFORE anything reads S.VAN.tech_era, which
+// is every production-method and vanilla-building gate below. Off unless ERA_TECH_SYNC=1.
+applyTechEraCorrections(S, CFG_RAW);
 const FIT = JSON.parse(readFileSync(join(REPO, 'config', 'era_prices.json'), 'utf8'));
 
 // ===================================================================================================
