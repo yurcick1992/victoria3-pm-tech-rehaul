@@ -13,6 +13,55 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## ⚠ OPEN — crash resume has NEVER worked: 4 of 4 full campaigns died mid-run and every resume started a fresh 1836 game (2026-08-06)
+
+**Symptom.** **No 1836→1936 campaign has ever completed.** Every full-length run on record, across two
+different arms and two nights, ended the same way:
+
+| session | arm | reached | target | resumes | outcome |
+|---|---|---|---|---|---|
+| `20260805_150128_debut-good-full-v11` run 1 | `config` | 1925.3.1 | 1936.1.1 | 1 | resume started a fresh game |
+| `20260805_150128_debut-good-full-v11` run 2 | `config` | 1927.4.1 | 1936.1.1 | 1 | resume started a fresh game |
+| `20260805_234555_vanilla-retest` run 17 | `control` | 1893.3.1 | 1936.1.1 | 1 | resume started a fresh game |
+| `20260805_234555_vanilla-retest` run 18 | `control` | 1867.3.1 | 1936.1.1 | 1 | resume started a fresh game |
+
+`self_quit` is **false** in all four — the game never reached its target date and quit itself. Five CTD
+minidumps were written on the night of 2026-08-05/06 alone.
+
+**The guard works; the resume does not.** `Test-OwnSaveIsNewest` and the landed-clock check both fire
+correctly and refuse to splice a foreign timeline into the data — that is why nothing silently corrupt
+has shipped. But the resume they are guarding is **0 for 4**.
+
+**⭐ LEADING HYPOTHESIS, NOT YET TESTED: `-handsoff` overrides `-continuelastsave`.** The resume launches
+`victoria3.exe -continuelastsave -gdpr-compliant -handsoff -disable_renderframeifneeded
+-run_until=<date>`. `-handsoff` is documented (MODDING_NOTES) as *auto-starting an observer game at the
+1836 bookmark* — which is exactly what the resumes do. The tell is run 18: its resume landed at
+**1836.1.1**, the bookmark start itself, not at some nearby autosave. Run 17 landed at 1846.3.2, which
+is consistent with a fresh game that had already run a few minutes before the harness sampled its clock.
+
+**How to test it cheaply** (a few minutes of game time, no batch): launch a short run, kill
+`victoria3.exe` mid-run, and let the harness resume — then read the resumed clock. Then repeat with
+`-handsoff` dropped from the resume launch only. If the second lands on the autosave, the conflict is
+confirmed and the fix is to omit `-handsoff` when `-continuelastsave` is present.
+
+**Why it went unnoticed.** The failure is *reported* — `abandoned_reason` says exactly what happened —
+but it is reported per run in `meta.json`, and the harness still exits 0 and logs `run N finished: ok`,
+so a schedule of many runs looks healthy at the session level. Nothing aggregates "did this campaign
+actually reach its target date".
+
+⚠ **What this does to existing data.** Contamination is at the **early** end, not the late end: the
+fresh game re-dumps early dates and the harness keeps the later value, so the *original* timeline's
+early dumps are overwritten (81 rows in run 17, 165 in run 18). Dates after the crash simply do not
+exist. So a late-campaign reading such as F33's 1920–1924 telephone rows is from the original timeline
+and is not spliced — but **any run's earliest years may be from the restart**, and every such run is
+truncated well short of 1936.
+
+**Prevention.** Two things are missing and both are cheap: a **session-level summary of runs that did
+not reach their target date** (today you have to open each `meta.json`), and treating `self_quit: false`
+on a full-length run as a loud failure rather than a field nobody reads.
+
+---
+
 ## `c:TAG` on a country that no longer exists is an ERROR, not `false` — and our own telemetry emits 574 000 of them per campaign (2026-08-06)
 
 **Symptom.** A pure **vanilla control** run — no mod content at all beyond telemetry — wrote **574 455
