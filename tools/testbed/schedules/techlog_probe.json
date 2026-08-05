@@ -1,0 +1,36 @@
+﻿{
+    "schedule_version":  1,
+    "label":  "techlog-probe",
+    "_why":  "Probe ONLY: does on_acquired_technology fire for every country, and which spelling of the scope:technology accessor resolves? Three candidates are emitted on separate lines so a bad one voids only itself. No vanilla localization uses scope:technology, so this cannot be settled by reading the game files.",
+    "_note":  "Round 2. Round 1 settled the scope: SCOPE.sTechnology(\u0027technology\u0027) RESOLVES, only the getter failed (engine: could not find data system function \u0027GetKey\u0027). These three are method-name candidates on that confirmed scope. One in-game year suffices - 436 acquisitions fire at the 1836 start alone.",
+    "defaults":  {
+                     "metrics":  [
+                                     "market_goods_scoped",
+                                     "tech_log"
+                                 ],
+                     "autosave_interval":  "yearly",
+                     "timeout_minutes":  25,
+                     "tags":  [
+                                  "GBR"
+                              ]
+                 },
+    "setups":  {
+                   "mod":  {
+                               "kind":  "config",
+                               "config":  "config/mod_config.json"
+                           }
+               },
+    "runs":  [
+                 {
+                     "setup":  "mod",
+                     "until":  "1837.1.1",
+                     "dump_dates":  [
+                                        "1837.1.1",
+                                        "1840.1.1"
+                                    ],
+                     "tags":  [
+                                  "GBR"
+                              ]
+                 }
+             ]
+}

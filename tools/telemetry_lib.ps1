@@ -60,7 +60,7 @@
 #       workforce/dependent, and the measured workforce ratio. Deep markets are the LEAD COUNTRY AND
 #       ITS SUBJECTS, not the whole market - see Get-WageBlock for why. New script values
 #       v3tb_popobj_count (graduated from the probe file), v3tb_state_count, v3tb_poptype_id.
-$script:TELEMETRY_VERSION = 10
+$script:TELEMETRY_VERSION = 11
 
 function Get-TelemetryVersion { return $script:TELEMETRY_VERSION }
 
@@ -1566,6 +1566,41 @@ $($phaseBlocks[$ph])
         }
     }
 
+    # ---- TECH LOG: every technology acquired, by every country, as an EVENT (v11).
+    #
+    # WHY IT IS EVENT-DRIVEN AND NOT A SNAPSHOT. The question it answers - does a good's first buy order
+    # coincide with someone RESEARCHING it? - needs the date a technology was acquired, worldwide. Sampling
+    # "who has what" per dump would be ~200 countries x ~180 technologies per date, which is unaffordable at
+    # monthly cadence and still only resolves to the sampling grid. `on_acquired_technology` fires once per
+    # acquisition with Root = the country and scope:technology = what they got, so the whole world's
+    # research history costs one line per real event and is exact to the day.
+    #
+    # ✅ ALL THREE DATA FUNCTIONS ARE PROBED WORKING, which is why they may share one line. No vanilla
+    # localization uses scope:technology, so none of this could be settled by reading the game files; it
+    # took two probe runs (sessions 20260805_131202 and _131733_techlog-probe):
+    #   * `SCOPE.sTechnology('technology')` resolves as a scope, but **`.GetKey` DOES NOT EXIST** on it
+    #     ("Could not find data system function 'GetKey'"), and `SCOPE.GetTechnology` has no promote at all.
+    #   * `.GetNameNoFormatting` is the getter → `Enclosure`, `Standing Army`. `.GetName` also works but
+    #     returns the tooltip markup wrapper; `.GetType` fails.
+    # ⚠ IT YIELDS THE DISPLAY NAME, NOT THE KEY. There is no key accessor on this scope, so a consumer that
+    # needs `combustion_engine` rather than "Combustion Engine" must map through the game's localization.
+    # ⚠ The first round put each candidate on its OWN line precisely because one bad data function voids the
+    # whole line, and the country+date half was the part that could not be risked. Keep that discipline when
+    # adding a field here: probe on a separate line, merge only once it resolves.
+    $techlog = ""
+    if ($metrics -contains "tech_log") {
+        $techlog = @"
+
+on_acquired_technology = { on_actions = { v3tb_ev_tech } }
+
+v3tb_ev_tech = {
+	effect = {
+		debug_log = "V3TB|$Token|TECH|[SCOPE.GetRootScope.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|[SCOPE.sTechnology('technology').GetNameNoFormatting]"
+	}
+}
+"@
+    }
+
     # one-off events. on_country_default is ENTERING DEFAULT, not bankruptcy - see TESTBED_METRICS.
     $events = ""
     if ($metrics -contains "events") {
@@ -1709,7 +1744,7 @@ v3tb_boot = {
 		debug_log = "V3TB|$Token|SEED|[GetGlobalRandomSeed]|custom=[GetGlobalRandomSeedString]"$bootExtra
 	}
 }
-$dumpBody$events
+$dumpBody$events$techlog
 "@
 }
 

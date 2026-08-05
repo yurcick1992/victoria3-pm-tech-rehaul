@@ -2,10 +2,11 @@
     "schedule_version":  1,
     "label":  "debut-good-demand-full",
     "_why":  "Where does a NEWLY INVENTED good\u0027s demand come from? FINDINGS F28 eliminated the only named mechanism (max_supply_share does NOT hand a debut good a share of its need), so the largest block in the ladder - electrics and automotive insolvent from birth - has no candidate explanation. Watches the order book month by month across every good\u0027s first appearance.",
-    "_note":  "FULL CAMPAIGN 1836-\u003e1936, restarted from day 0 rather than extending the earlier 1910 batch, because both the telemetry cadence and the span changed. The goods that can actually settle the question are era_4: telephones (tech radio) and automobiles (combustion_engine), vanilla era_4 = 1887-1911, plus radios in popneed_luxury_items. The earlier 1910 run reached 1893 without any of them appearing, so the span is for safety. WHY THOSE GOODS: they sit in the only pop needs small enough to read a share effect off - communication and free_movement have TWO goods each, luxury_items five and no state-local incumbent. Steamers, the one clean debut inside the old span, sits in popneed_leisure which has NINE goods including state-local services, so it cannot answer the share question. Electricity is local = yes (state good, not tradable between states) and rubber is not pop-consumed, so neither is admissible either. DEMAND-side by design: the good may be invented in a country we do not watch, so what matters is the first month a watched market BUYS it. Prior result to confirm and extend: in the 1910 run steamers demand PRECEDED local production by 6-7 years in all three markets, and jumped ~47x in the month supply appeared. ONE metric only - consumption_breakdown would give the pop-vs-building split but is ~1MB per market per dump and bursts, evicting the very series being measured; channel attribution is a separate short run now that the dates are known.",
+    "_note":  "FULL CAMPAIGN 1836-\u003e1936, restarted from day 0 rather than extending the earlier 1910 batch, because both the telemetry cadence and the span changed. The goods that can actually settle the question are era_4: telephones (tech radio) and automobiles (combustion_engine), vanilla era_4 = 1887-1911, plus radios in popneed_luxury_items. The earlier 1910 run reached 1893 without any of them appearing, so the span is for safety. WHY THOSE GOODS: they sit in the only pop needs small enough to read a share effect off - communication and free_movement have TWO goods each, luxury_items five and no state-local incumbent. Steamers, the one clean debut inside the old span, sits in popneed_leisure which has NINE goods including state-local services, so it cannot answer the share question. Electricity is local = yes (state good, not tradable between states) and rubber is not pop-consumed, so neither is admissible either. DEMAND-side by design: the good may be invented in a country we do not watch, so what matters is the first month a watched market BUYS it. Prior result to confirm and extend: in the 1910 run steamers demand PRECEDED local production by 6-7 years in all three markets, and jumped ~47x in the month supply appeared. ONE metric only - consumption_breakdown would give the pop-vs-building split but is ~1MB per market per dump and bursts, evicting the very series being measured; channel attribution is a separate short run now that the dates are known. TECH LOG (v11) added: on_acquired_technology fires per acquisition with Root = the country and scope:technology = the tech, so the whole world\u0027s research history costs one line per real event and is exact to the day - no snapshotting. This is what tells us whether a good\u0027s first buy order coincides with someone RESEARCHING it, which the order book alone cannot say. Accessor probed over two runs: SCOPE.sTechnology(\u0027technology\u0027).GetNameNoFormatting (GetKey does not exist on that scope); it yields the DISPLAY name, so mapping to a tech key needs the game\u0027s localization.",
     "defaults":  {
                      "metrics":  [
-                                     "market_goods_scoped"
+                                     "market_goods_scoped",
+                                     "tech_log"
                                  ],
                      "autosave_interval":  "yearly",
                      "timeout_minutes":  200,
@@ -1077,7 +1078,11 @@
                                   "GBR",
                                   "USA",
                                   "RUS"
-                              ]
+                              ],
+                     "metrics":  [
+                                     "market_goods_scoped",
+                                     "tech_log"
+                                 ]
                  },
                  {
                      "setup":  "mod",
@@ -2134,7 +2139,11 @@
                                   "GBR",
                                   "USA",
                                   "RUS"
-                              ]
+                              ],
+                     "metrics":  [
+                                     "market_goods_scoped",
+                                     "tech_log"
+                                 ]
                  }
              ]
 }

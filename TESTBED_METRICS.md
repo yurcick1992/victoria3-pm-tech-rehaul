@@ -28,6 +28,8 @@ record the bump here *and* in the FINDINGS numbering table.
 | **v9** | urban-centre count/levels per country; `market_goods_scoped` (market sweep restricted to the spec's tags); `scenario_probe` (per-building enumeration, pop SoL by stratum, three early-read hooks) + the first `events/` file the builder emits — see §4 |
 | **v10** | `wages` (§5): `WC` per country + `SW` per state of every tracked market + `WSTR` per-stratum SoL/workforce/dependents per country + `PW` per POP of the deep markets (**endpoint dumps only**, §5.7) — state average annual wage, pop income split into workforce/dependent, and the measured workforce ratio. Plus `wage_probe` … `wage_probe4`. New script values `v3tb_popobj_count` (graduated from the probe file), `v3tb_state_count`, `v3tb_poptype_id` |
 
+| **v11** | `tech_log` (§6): **TECH** — every technology acquired, by every country, as an EVENT rather than a snapshot. One line per real acquisition, exact to the day |
+
 ⚠ **Sessions `20260803_014037` and `20260803_022027` stamp v9 while carrying early v10 content**, and
 both were stopped part-way (see §5.6 and §5.7 — they are the *evidence* for those two rules, not
 usable measurement runs). Read their schema from `schedule.json`, not the `BOOT` line. The constant
@@ -1086,3 +1088,48 @@ nothing at all. §4.3 listed this as a candidate early-read hook and suspected i
 `GetIncorporatedLiteracyRate` (0.53) · `GetAverageSoLByPopulation` (10.23) · `GetGoldReserves` ·
 `GetWeeklyBalance` · `GetInvestmentPool` · `GetTotalForeignConstructions` · `GetMarket` ·
 `GetInactivePopulation` · `GetPoliticallyInvolvedPopulation`
+
+---
+
+## 6. Technology acquisition, as an EVENT (v11) — VERIFIED
+
+`tech_log` emits one line the moment any country acquires any technology:
+
+```
+V3TB|<token>|TECH|<country>|<date>|<technology display name>
+V3TB|20260805_132101s001|TECH|Oregon|January 1, 1836|Egalitarianism
+```
+
+Hook: **`on_acquired_technology`** (a vanilla code on_action; `Root` = the country, `scope:technology` =
+the technology type acquired). Merged with vanilla's own entry through the documented append form,
+`on_acquired_technology = { on_actions = { v3tb_ev_tech } }`.
+
+**Why event-driven, not sampled.** The question it answers — does a good's first buy order coincide with
+someone *researching* it? — needs acquisition dates world-wide. Snapshotting "who has what" per dump would
+be ~200 countries x ~180 technologies per date, unaffordable at monthly cadence and still only as precise
+as the sampling grid. The event form costs **one line per real acquisition** and is exact to the day. The
+1836 start alone fires ~1 800 lines (every country's starting technologies), and that is the bulk of it.
+
+### 6.1 The accessor, and what does NOT work
+
+⚠ **No vanilla localization uses `scope:technology`**, so none of this was readable off the game files; it
+took two probe runs (`20260805_131202_techlog-probe`, `20260805_131733_techlog-probe`).
+
+| expression | result |
+|---|---|
+| `SCOPE.sTechnology('technology').GetNameNoFormatting` | ✅ `Enclosure`, `Standing Army` — **use this** |
+| `SCOPE.sTechnology('technology').GetName` | ⚠ works, but returns the tooltip markup wrapper |
+| `SCOPE.sTechnology('technology').GetKey` | ❌ *"Could not find data system function 'GetKey'"* — the scope resolves, the method does not exist |
+| `SCOPE.sTechnologyType('technology').GetKey` | ❌ |
+| `SCOPE.GetTechnology.GetKey` | ❌ *"Could not find promote for 'GetTechnology'"* |
+| `SCOPE.GetRootScope.GetCountry.GetNameNoFormatting` | ✅ the acquiring country |
+| `TimeKeeper.GetCurrentDate.GetString` | ✅ `January 1, 1836` |
+
+⚠ **It yields the DISPLAY NAME, not the key.** There is no key accessor on this scope, so a consumer that
+needs `combustion_engine` rather than "Combustion Engine" must map through the game's localization. Budget
+for that when writing an analyser, and re-check the mapping after a patch that renames a technology.
+
+⚠ **The probe put each candidate on its OWN LINE, and that is the reusable lesson.** One bad data function
+voids the entire line it sits in, and the country+date half was the part that could not be risked — had all
+four fields shared a line, the failure would have produced *nothing at all* and looked like the on_action
+not firing. Only once every function resolved were they merged into the single line above.
