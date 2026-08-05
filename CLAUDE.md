@@ -118,13 +118,29 @@ only other producer-before-consumer gap is `steamers` (made era 2, first eaten e
 an era late" gap: the building was moved by hand, the PMs that buy its output were left on vanilla's era.
 **Four candidate fixes were measured and none is a clear win** (moving the engine industry to era 1 → 47;
 moving railway too → 51; the no-buyer rule → 39 dropped / 45 zeroed, the better figure again coming from a
-defect). Shipped: accept it. **The steamers half is now FIXED** by giving port a five-era ladder (§10.33).
-⚠ **THE MOST PROMISING OPEN LEAD IS §10.34**: `max_supply_share` is a cap on how much of a need ONE good
-may fill (transportation is capped at 75% of `popneed_communication`, which entitles telephones to the
-other 25% the moment they exist — the bootstrapping a new good visibly gets in game). `needSplit()` clamps
-the **raw supply share** and then re-normalises, which hands the capped money straight back and moves the
-answer by 0.3pp. The wiki is obsolete *and* self-contradictory on this, so the decisive test is re-scoring
-both readings against the F24 consumption telemetry — session `20260802_233029_rescore-direct` is intact.
+defect). **The steamers half is now FIXED** by giving port a five-era ladder (§10.33), and **§10.35 supplies
+the fix for the rest** — see below.
+❌ **§10.34 IS CLOSED, REJECTED ON MEASUREMENT.** The `max_supply_share` lead (that the cap entitles a debut
+good to a share of its need) is **wrong**: scored against the game's own consumption telemetry over seven
+1836 markets it fits **worse in all seven** (20.0% → 24.2% mean error), and the case it needs is contradicted
+head-on — Russian heating caps wood with scarce oil beside it, and the reading gives oil ~17% of the heating
+budget where the game gives it **0.8%**. Nothing changed in the model. Re-derive with
+`tools/testbed/score_pop_split.mjs`; FINDINGS **F28**. Do not re-open it.
+⭐ **§10.35 ANSWERS IT INSTEAD, AND IT IS NOT A DEMAND MECHANISM.** In vanilla each of these goods has
+**exactly one** building customer, arriving *with* the good: automobiles are bought by
+`pm_public_motor_carriages` in **urban centres** (hundreds of levels per market, 1 each) on
+**`combustion_engine` — the same tech that unlocks the car plant**; telephones by `pm_switch_boards` in
+government administration (5/level). Our ladder moves the *factory* an era early but PM availability still
+gates on the tech's **vanilla era remapped 1:1**, so the customers stay behind. Off the shipped presets:
+era 3 makes 30 automobiles and 60 telephones against **zero** reachable building demand and is floored at
+1 level; era 4 switches the customers on (330 / 770) and the same industries jump to 22 and 20 levels.
+⚠ The deeper cause: **our eras and vanilla's are different year scales** (ours 1750/1850/1900/1925/1940,
+vanilla's pre-1836 / 1836-61 / 1862-86 / 1887-1911 / 1911-36), so our era 3 sits inside vanilla's era 4 and
+the 1:1 remap mis-sorts precisely the late techs. Fix built as **`tools/era_tech_sync.mjs`**
+(**`ERA_TECH_SYNC=1`**, **default OFF and NOT yet re-solved**): one tech, one era. It **only ever LOWERS** —
+the naive "whenever they differ" rule made 18 changes, 12 unforced, including pushing every dynamite PM out
+of era 3; the minimum leaves the 6 that are forced. **It fixes automotive and does NOT fix electrics**,
+whose customer hangs off `central_planning`, a different tech — moving that is a fresh judgement call.
 NOT started, and `needSplit` is a measured result, so do not replace it on reasoning alone.
 
 ⚠ **Older illogicality figures in the docs are void, not merely stale** (BALANCE_FRAMEWORK §10.14.1): the
@@ -286,6 +302,15 @@ tools/                  dev tooling — NOT shipped in the mod
   build_era_ladder.mjs  STRUCTURE: stamps each tier's era from an explicit per-industry spec, mints the 22
                         model_only tiers, applies the ×1.5 output ladder. IDEMPOTENT (drops previously invented
                         tiers first), so run it BEFORE era_scenarios, never after — it discards their volumes
+  era_tech_sync.mjs     ONE TECHNOLOGY, ONE ERA (§10.35). A tier's own unlocking tech is made available in the
+                        era the ladder placed that tier, and everything else that tech unlocks moves with it —
+                        which is what stops a hand-moved industry producing into an era where its only
+                        building customer is still locked. **`ERA_TECH_SYNC=1`, default OFF, unmeasured.**
+                        ⚠ It only ever LOWERS an era; the reverse direction is not forced and withdraws PMs
+                        that are correctly available. ⚠ Deliberately NOT inside build_era_ladder.mjs despite
+                        belonging there conceptually: that module runs its build at import time and keys off
+                        `--write`, the same flag `era_scenarios --write` uses, so importing it from the
+                        scenario solver would re-mint the invented tiers and discard its own volumes
   era_solver.mjs        BALANCE-ONLY reference view: derives a price path from profit margins alone, no scenario.
                         Writes config/era_prices.json. Superseded for volumes by era_scenarios
   era_scenarios.mjs     THE solve: prices realised from the order book, tier volumes + building counts + pops +
