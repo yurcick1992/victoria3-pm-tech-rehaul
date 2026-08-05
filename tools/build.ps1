@@ -442,6 +442,50 @@ foreach ($rel in $ownedRels) {
     WriteText "$modRel\$relWin" (($bOut -join "`n") + "`n") $bom
 }
 
+# --- pop_needs: scale the WEIGHT of chosen goods inside every need they appear in -----------------
+# `weight` is the base weight a good gets in a need, modulated by its share of the market's sell orders
+# (the mechanic is documented in a header comment in vanilla's own 00_pop_needs.txt - read it before
+# touching this). It is the one lever on how a need's money splits between competing goods.
+#
+# Config: top-level `pop_need_weight_mult`, a map good -> multiplier, applied to EVERY entry for that
+# good across ALL needs. Absent or empty => the file is NOT emitted at all and pop needs stay vanilla,
+# on the same principle as the production-method files: owning a file we would copy verbatim freezes it
+# against the next patch and ships bytes we did not author, for nothing.
+#
+# ⚠ WHOLE-FILE replacement of a SINGLE vanilla file (`00_pop_needs.txt`), so a game patch that adds a
+# need or changes a weight is silently overridden until this is rebuilt. Listed in ON_GAME_UPDATE.
+$relPN = 'common\pop_needs\00_pop_needs.txt'
+$pnMult = @{}
+if ($cfg.pop_need_weight_mult) { foreach ($p in $cfg.pop_need_weight_mult.PSObject.Properties) { $pnMult[$p.Name] = [double]$p.Value } }
+if ($pnMult.Count -eq 0) {
+    Write-Output "pop needs: no weight multipliers configured - staying vanilla (file not emitted)"
+} else {
+    $srcPN = Join-Path $Game $relPN
+    if (-not (Test-Path -LiteralPath $srcPN)) {
+        Write-Output "note: $relPN not found in game - skipping pop-need weight scaling"
+    } else {
+        $pnLines = Get-Content -LiteralPath $srcPN
+        $pOut = New-Object System.Collections.Generic.List[string]
+        $pOut.Add($genHeader.TrimEnd())
+        $curGood = $null; $changed = 0
+        foreach ($l in $pnLines) {
+            $line = $l
+            if ($l -match '^\s*goods\s*=\s*([a-z0-9_]+)') { $curGood = $Matches[1] }
+            elseif ($l -match '^(\s*)weight\s*=\s*([0-9.]+)\s*$' -and $curGood -and $pnMult.ContainsKey($curGood)) {
+                $nw = [double]$Matches[2] * $pnMult[$curGood]
+                # trailing zeros trimmed: the game parses either, but a diff against vanilla should read clean
+                $line = "{0}weight = {1}" -f $Matches[1], ($nw.ToString('0.####', [Globalization.CultureInfo]::InvariantCulture))
+                $changed++
+            }
+            elseif ($l -match '^\s*entry\s*=\s*\{') { $curGood = $null }
+            $pOut.Add($line)
+        }
+        WriteText "$modRel\$relPN" (($pOut -join "`n") + "`n") $bom
+        Write-Output ("pop needs: scaled {0} weight line(s) across {1} good(s) -> {2}" -f $changed, $pnMult.Count, $relPN)
+        foreach ($k in ($pnMult.Keys | Sort-Object)) { Write-Output ("    {0} x{1}" -f $k, $pnMult[$k]) }
+    }
+}
+
 # --- ai_strategies: REPLACE 01_admin_strategies.txt to control AI SUBSIDY POLICY ------------------
 # The `subsidies` block inside an ai_strategy is the AI's subsidy DECISION RULE (must_have /
 # wants_to_have / nice_to_have) - NOT a per-building flag. It is the only durable way to make the AI
