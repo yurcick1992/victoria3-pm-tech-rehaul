@@ -393,6 +393,15 @@ tools/                  dev tooling — NOT shipped in the mod
                         ZERO, not a miss, or the model is never charged for demand it invents.
                         ⚠ Its `--need` and cap-violation views must see EVERY good of a need before they
                         judge — the ring truncates, and a partial denominator invents violations
+  testbed/analyse_debut_goods.mjs  what a good's order book does in the months AFTER it first appears —
+                        the reader for a long dense-cadence `market_goods_scoped` run
+                        (`schedules/debut_good_demand.json`). Finds each (market, good) series that is ZERO
+                        at the first dump and non-zero later — a good already trading in 1836 is not a
+                        debut — and prints the window around it. ⚠ **Demand-side by design**: a good can be
+                        invented in a country we do not watch, so it keys on the first month a market BUYS
+                        it, not the first month anyone makes it, and reports the ORDER of the two. Demand
+                        before local production means the market imported it, which is the case that says
+                        most about where a debut good's demand comes from
   testbed/wait_for_session.ps1  the wake-up signal for a batch launched into its own window (which the
                         agent harness cannot see). Run it with run_in_background; returns DONE on
                         completion, RUNNING on a heartbeat, DEAD (exit 2) if the game vanished
