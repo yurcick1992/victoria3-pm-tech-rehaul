@@ -2132,6 +2132,16 @@ to one era instead of three. ⚠ Era 2's continuous residual rose from 12pp to 4
 > it **0.8 %** (9.4 units measured against 140.8 predicted). The game does not redistribute a cap's
 > leftover to a barely-supplied alternative, so this is not the route to a debut good's demand.
 >
+> ⚠⚠ **REOPENED 2026-08-05 — FINDINGS F30.** Everything above stands *for the needs F28 measured*, but it
+> is **not** the whole answer. F28's data is 1836, where `free_movement` and `communication` each have
+> exactly ONE supplied good (F24 reports 0.0% error for them for that reason), so **the configuration that
+> matters — a capped incumbent competing with a debut good — was never in the sample.** Measured in a 1903
+> campaign it goes the other way: the **shipped** reading cannot generate the observed automobile demand
+> at all, implying 100 662 units of transportation pop demand against a market total of 19 459 (5.2×).
+> So 1836 heating refutes the final-share reading and 1903 free_movement refutes the raw clamp: **neither
+> is the rule.** Do not read this section as "settled in favour of the raw clamp"; read it as "the raw
+> clamp wins on multi-good needs and loses on two-good ones, and we do not yet know why."
+>
 > The rest of this section is the case as it was argued BEFORE the test, kept because the reasoning was
 > good and only the measurement could settle it — which is the point.
 

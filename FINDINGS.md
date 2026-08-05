@@ -93,6 +93,58 @@ transcript rather than from data.
 
 ---
 
+## F30 — ⚠ NEITHER READING OF `max_supply_share` CAN BE THE RULE. 1836 heating refutes one, 1903 free_movement refutes the other — and F28 could not have seen the second
+
+**Claim.** The shipped reading of `max_supply_share` — clamp the RAW supply share, weight it, renormalise
+(F28's winner) — is **arithmetically impossible** in a two-good need whose incumbent is capped. The
+alternative F28 rejected is possible there. Since F28's own evidence still stands, **neither reading is a
+global rule**, and the question is now better posed than it was: what behaves like a cap in one
+configuration and not the other?
+
+**There is no authored minimum to appeal to.** `min_supply_share` is non-zero on exactly **7 entries in the
+whole game** — `furniture` (household_items), `meat` and `fruit` (luxury_food), and `silk`,
+`luxury_clothes`, `luxury_furniture`, `porcelain` (luxury_items), all at 0.1. It is **0 for `automobiles`,
+`telephones`, `radios` and `steamers`**. So a debut good's demand spike is not a floor effect.
+
+**The test needs no new telemetry**, only an upper bound the order book already carries: a good's pop
+demand cannot exceed its **total** buy orders. British Market, 1903.3.1, session
+`20260805_150128_debut-good-full-v11` run 1:
+
+```
+transportation   sell 15 394.04   TOTAL buy orders 19 459.14
+automobiles      sell    295.62   POP demand 948.32 units = £94 832   (verified breakdown block)
+free_movement    entries: transportation w1 max 0.75 · automobiles w1.25 max 1.0   (both min 0)
+```
+
+| reading | automobiles' share | implied need budget | implied transportation POP demand | verdict |
+|---|--:|--:|--:|---|
+| **A — shipped** (clamp the raw share) | 3.04 % | £3 114 686 | **100 662 units** | **IMPOSSIBLE — 5.2× the market's entire transportation buy orders** |
+| **B — final-share cap** (F28 rejected) | 25.00 % | £379 328 | 9 483 units | possible — 49 % of all transportation bought |
+
+⚠ Automobiles also sit in `popneed_leisure`, so some of the 948 units belong there rather than to
+free_movement. That shifts the arithmetic **against** reading A, not for it: leisure has nine goods and is
+dominated by `services`, so reading A allocates automobiles even less of it.
+
+**Why this does not simply overturn F28.** F28's measurement was on **1836** markets, where
+`free_movement` and `communication` each have exactly **one** supplied good — which is precisely why F24
+reports **0.0 % error** for those needs. **F28 never tested a capped incumbent competing with a second
+good.** Its evidence came from `heating`, `basic_food` and `intoxicants`, and there the final-share reading
+fails hard: Russian heating is **79 % wood** and Qing **66 %** against wood's `max` of **0.5**, which
+reading B forbids outright.
+
+**So both readings are refuted, each by a case the other cannot explain:**
+- 1836 heating ⇒ a good exceeds its cap ⇒ **not** a final-share cap.
+- 1903 free_movement ⇒ a debut good gets demand the raw-share reading cannot generate ⇒ **not** a raw clamp.
+
+**What it does NOT say.** One market, one date, one seed — run 2 and telephones (`popneed_communication`,
+the same two-good/capped-incumbent shape) are the replications and had not completed when this was written.
+It does not identify the real rule; it only shows that neither candidate survives both cases. It does not
+revisit F28's numbers, which remain correct for the needs F28 actually measured. And it assumes a good's
+pop demand cannot exceed its total buy orders — true by construction, since pops are one channel of that
+total.
+
+---
+
 ## F29 — A debut good's pop demand is PROPORTIONAL to its supply, not floored — and the constant is need-dependent, 0.1× in a nine-good need against 3.2× in a two-good one ⚠ REPLICATION PENDING
 
 **Claim.** Watching every good's first appearance in a full 1836→1936 campaign, with the pop/building

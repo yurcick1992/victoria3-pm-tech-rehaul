@@ -120,12 +120,20 @@ an era late" gap: the building was moved by hand, the PMs that buy its output we
 moving railway too → 51; the no-buyer rule → 39 dropped / 45 zeroed, the better figure again coming from a
 defect). **The steamers half is now FIXED** by giving port a five-era ladder (§10.33), and **§10.35 supplies
 the fix for the rest** — see below.
-❌ **§10.34 IS CLOSED, REJECTED ON MEASUREMENT.** The `max_supply_share` lead (that the cap entitles a debut
-good to a share of its need) is **wrong**: scored against the game's own consumption telemetry over seven
-1836 markets it fits **worse in all seven** (20.0% → 24.2% mean error), and the case it needs is contradicted
-head-on — Russian heating caps wood with scarce oil beside it, and the reading gives oil ~17% of the heating
-budget where the game gives it **0.8%**. Nothing changed in the model. Re-derive with
-`tools/testbed/score_pop_split.mjs`; FINDINGS **F28**. Do not re-open it.
+⚠ **§10.34 — REOPENED, and the answer is that NEITHER reading is the rule (FINDINGS F30, 2026-08-05).**
+F28 remains correct for what it measured: scored over seven **1836** markets the final-share reading fits
+**worse in all seven** (20.0% → 24.2%), and Russian heating is 79% wood against wood's 0.5 cap, which that
+reading forbids. **But F28 could not test the case that matters**: in 1836 `free_movement` and
+`communication` each have exactly ONE supplied good, which is why F24 reports 0.0% error for them.
+Measured in a 1903 campaign, the **shipped** reading is *arithmetically impossible* there — 948 units of
+automobile pop demand would require **100 662 units** of transportation pop demand against a market whose
+**entire** transportation buy orders are 19 459, a 5.2× overshoot. The final-share reading is consistent
+(9 483 units, 49% of the market). So: **1836 heating refutes the final-share reading; 1903 free_movement
+refutes the raw clamp.** The real rule is neither, and finding it is open work.
+⚠ **There is no authored floor to appeal to**: `min_supply_share` is non-zero on **7 entries in the whole
+game** (furniture, meat, fruit, silk, luxury_clothes, luxury_furniture, porcelain — all 0.1) and is **0 for
+automobiles, telephones, radios and steamers**. Re-derive the 1836 half with
+`tools/testbed/score_pop_split.mjs`, the 1903 half with `tools/testbed/analyse_debut_mechanism.mjs`.
 ⭐ **§10.35 ANSWERS IT INSTEAD, AND IT IS NOT A DEMAND MECHANISM.** In vanilla each of these goods has
 **exactly one** building customer, arriving *with* the good: automobiles are bought by
 `pm_public_motor_carriages` in **urban centres** (hundreds of levels per market, 1 each) on
