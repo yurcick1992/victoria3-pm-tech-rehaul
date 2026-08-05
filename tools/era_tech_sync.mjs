@@ -51,7 +51,20 @@
 // approximation, and it is what puts our era 3 (1900) below vanilla's era 4 (1887-1911) even where the
 // years agree. That is the deeper reason these six exist; this function repairs the consequence, not the
 // mapping. Model-only tiers are skipped — they have no unlocking technology by definition.
-export function techEraCorrections(cfg, vanillaTechEra) {
+// ⚠ AND ONLY WHERE THE TECHNOLOGY ACTUALLY GATES A CUSTOMER FOR THAT TIER'S OWN GOOD. This is the second
+// half of the narrowing, and it is what makes the rule a repair rather than a re-balance. The defect being
+// fixed is specific: one technology unlocks both a producer and a consumer of the same good, and we put
+// them in different eras. A technology that merely happens to gate a tier we moved is NOT that defect, and
+// lowering it just makes unrelated methods available early.
+//
+// Measured, and this is why the test exists: the broad version (every forced lowering, all six) scores
+// **49 points / 36 excluding**, against the shipped **41 / 30** — WORSE. It does fix what it was aimed at —
+// automotive leaves era 3's loss-making list exactly as predicted — but `aniline`, `gantry_cranes`,
+// `electric_railway`, `compression_ignition` and `telephone` ride along and newly break explosives,
+// shipyard_steam and synthetics. Only `combustion_engine` gates a customer of its own tier's good
+// (`pm_public_motor_carriages` buys `automobiles`), so only it survives this test.
+export function techEraCorrections(cfg, vanillaTechEra, VAN) {
+  const pms = (VAN && VAN.pms) || {};
   const out = {};
   for (const ind of (cfg.industries || [])) {
     if (ind.disabled) continue;
@@ -59,8 +72,14 @@ export function techEraCorrections(cfg, vanillaTechEra) {
       if (!t.tech || t.model_only || !(t.era > 0)) continue;
       const van = vanillaTechEra[t.tech];
       if (van == null || van <= t.era) continue;                 // already available — nothing forced
+      const good = t.output_good || ind.output_good;
+      if (!good) continue;
+      // does anything else this same technology unlocks BUY that good?
+      const customer = Object.entries(pms).find(([, r]) => r && r.tech === t.tech && ((r.in || {})[good] > 0));
+      if (!customer) continue;
       const prev = out[t.tech];
-      if (!prev || t.era < prev.to) out[t.tech] = { from: van, to: t.era, industry: ind.id };
+      if (!prev || t.era < prev.to)
+        out[t.tech] = { from: van, to: t.era, industry: ind.id, good, customer: customer[0] };
     }
   }
   return out;
@@ -73,7 +92,12 @@ export function techEraCorrections(cfg, vanillaTechEra) {
 // behaviour, so it has to earn that on the illogicality count first rather than on the argument above.
 export function applyTechEraCorrections(S, cfg, { quiet = false } = {}) {
   if (process.env.ERA_TECH_SYNC !== '1') return {};
-  const corr = techEraCorrections(cfg, S.VAN.tech_era || {});
+  const corr = techEraCorrections(cfg, S.VAN.tech_era || {}, S.VAN);
+  // ERA_TECH_SYNC_ONLY=a,b restricts to named technologies — purely for A/B, to separate one correction's
+  // effect from the others'. The customer test above does NOT isolate automotive on its own: ports buy
+  // steamers and trains buy engines, so `gantry_cranes` and `electric_railway` pass it too.
+  const only = (process.env.ERA_TECH_SYNC_ONLY || '').split(',').map(s => s.trim()).filter(Boolean);
+  if (only.length) for (const k of Object.keys(corr)) if (!only.includes(k)) delete corr[k];
   for (const tech in corr) S.VAN.tech_era[tech] = corr[tech].to;
   if (!quiet && Object.keys(corr).length)
     console.log('TECH ERA SYNC: ' + Object.entries(corr)

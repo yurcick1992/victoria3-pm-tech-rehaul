@@ -137,10 +137,18 @@ era 3 makes 30 automobiles and 60 telephones against **zero** reachable building
 ⚠ The deeper cause: **our eras and vanilla's are different year scales** (ours 1750/1850/1900/1925/1940,
 vanilla's pre-1836 / 1836-61 / 1862-86 / 1887-1911 / 1911-36), so our era 3 sits inside vanilla's era 4 and
 the 1:1 remap mis-sorts precisely the late techs. Fix built as **`tools/era_tech_sync.mjs`**
-(**`ERA_TECH_SYNC=1`**, **default OFF and NOT yet re-solved**): one tech, one era. It **only ever LOWERS** —
-the naive "whenever they differ" rule made 18 changes, 12 unforced, including pushing every dynamite PM out
-of era 3; the minimum leaves the 6 that are forced. **It fixes automotive and does NOT fix electrics**,
-whose customer hangs off `central_planning`, a different tech — moving that is a fresh judgement call.
+(**`ERA_TECH_SYNC=1`**, **default OFF**): one tech, one era. It **only ever LOWERS** — the naive "whenever
+they differ" rule made 18 changes, 12 unforced, including pushing every dynamite PM out of era 3; the
+minimum leaves the 6 that are forced.
+❌ **MEASURED AND PARKED — not a win in any variant** (§10.35.2): all six → **49/36**, `combustion_engine`
+alone → **41/31**, against the shipped **41/30**. The aimed-at effect is real (automotive leaves era 3's
+loss-making list, era 4 goes 10 → 8) but era 3 worsens 12 → 14 and the net is a wash inside the jagged
+surface. Do not ship it on the argument alone.
+⚠⚠ **AND ITS PREMISE ABOUT IN-GAME TIMING IS UNVERIFIED.** A tech gate makes `pm_public_motor_carriages`
+*selectable*; whether urban centres actually switch to it is an **AI decision that plausibly lags until pop
+demand has already built**. The model-side half stands regardless (a PM the era gate forbids can never be
+selected, so era 3 has zero *reachable* building demand), but the "in vanilla the customer arrives with the
+good" reading does not. `schedules/debut_good_demand.json` is measuring the real sequence.
 NOT started, and `needSplit` is a measured result, so do not replace it on reasoning alone.
 
 ⚠ **Older illogicality figures in the docs are void, not merely stale** (BALANCE_FRAMEWORK §10.14.1): the

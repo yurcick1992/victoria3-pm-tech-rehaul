@@ -2218,8 +2218,19 @@ mechanism at all.**
 
 ## 10.35 A DEBUT GOOD'S CUSTOMER IS A BUILDING, AND WE WITHHELD IT — measured, fix built, NOT yet re-solved (2026-08-05)
 
-**⭐ THE FINDING (verified, not proposed).** In vanilla each of these goods has **exactly one** building
-customer, and in the base game it arrives *with* the good:
+⚠⚠ **CORRECTION, 2026-08-05 (user).** An earlier draft of this section claimed the customer "arrives with
+the good" in game. **That was an inference from the technology gate and it is not established.** Unlocking
+`pm_public_motor_carriages` only makes it *selectable*; whether urban centres actually switch to it is an AI
+decision, and it very plausibly lags until pop demand has already built up. The claim below is therefore
+about **availability**, which is all a tech gate can tell you. What the game actually does — the order in
+which demand, price and the method switch move — is being measured (`schedules/debut_good_demand.json`), and
+until that lands nothing here should be read as the in-game sequence.
+⚠ The **model-side** half is unaffected by this, because it is about availability by construction: a method
+the era gate forbids can never be selected, so era 3 genuinely has zero *reachable* building demand
+whatever the AI would have chosen.
+
+**THE FINDING.** In vanilla each of these goods has **exactly one** building customer, and the technology
+that unlocks the good also unlocks that customer:
 
 | good | its only building customer | where | qty | unlocked by |
 |---|---|---|--:|---|
@@ -2275,6 +2286,28 @@ of a genuine inconsistency. `telephone` carries no production methods at all: te
 `pm_telephones` (tech `radio`) and *bought* by `pm_switch_boards` (tech `central_planning`), so moving
 electrics' customer would be a fresh historical judgement, not a repair. Left alone deliberately.
 
-⚠ **NOT YET RE-SOLVED.** The illogicality count under `ERA_TECH_SYNC=1` is unmeasured — the solve was
-deferred rather than run against a measurement batch holding the machine. Until it is measured the default
-stays OFF, and this section must not be read as a shipped change.
+### 10.35.2 MEASURED — it is not a win in any variant. Parked, default OFF
+
+| variant | points | excluding excused | per era |
+|---|--:|--:|---|
+| **shipped (off)** | **41** | **30** | 3/4/12/10/12 |
+| all six forced corrections | 49 | 36 | 3/7/13/15/11 |
+| + customer test (drops `aniline`, `telephone`) | 49 | 36 | 3/7/13/15/11 |
+| `combustion_engine` alone | **41** | **31** | 3/4/14/8/12 |
+| `combustion_engine` + `compression_ignition` | 46 | 35 | 3/4/14/14/11 |
+
+**The aimed-at effect is real and visible**: under the correction `automotive` leaves era 3's loss-making
+list exactly as predicted, and era 4 improves 10 → 8. But the money moves rather than appearing — era 3
+worsens 12 → 14 — and the best variant lands on 41/31 against 41/30, i.e. **a wash, well inside the jagged
+response surface** (§10.28: deadband 8 scores 45, 10 scores 50, 15 scores 45). By the five-point rule that
+is not a result.
+
+⚠ **The customer test does NOT isolate automotive**, which is why `ERA_TECH_SYNC_ONLY` exists: ports buy
+`steamers` and trains buy `engines`, so `gantry_cranes` and `electric_railway` satisfy "this technology also
+gates a customer of the tier's good" just as `combustion_engine` does. Only an explicit allow-list separates
+them, and that is a measurement knob, not a design.
+
+**Left OFF and parked.** The reasoning behind it still looks right, and the one thing it was aimed at does
+happen — but it does not pay for itself, and its premise about *in-game* timing is exactly what the
+correction at the head of this section says is unverified. Revisit once the run says what the game actually
+does; do not ship it on the argument alone.
