@@ -96,8 +96,11 @@ const SPEC = {
   art_academy: { eras:[1,2,3,4], invent:[ {era:5, slug:'sound_film', name:'Sound Film Art Academies', pm:'Sound and Colour Film'} ],
                  note:'romanticism -> realism -> photography (1839) -> film 1895 -> sound 1927 / Technicolor 1935. "Output per worker" is barely meaningful here; the ladder is for consistency.' },
   // --- OFF the break-even ladder (follows_be:false) — vanilla economics, informational only ----------
-  port:        { eras:[1,3,4], invent:[],
-                 note:'OFF-LADDER. Eras 2 and 5 have no port tier, so those scenarios use the best tier at or below them. Ports are exempt from the profit targets, so the gap costs nothing today — invent tiers here only if ports ever join the ladder.' },
+  port:        { eras:[1,3,4], invent:[ {era:2, slug:'steam', name:'Steamship Ports', pm:'Steamship Bunkering',
+                                         inputs:{ steamers:2, coal:2 }, state_infrastructure:4},
+                                        {era:5, slug:'motor', name:'Motor Ship Ports', pm:'Mechanised Cargo Handling',
+                                         state_infrastructure:6} ],
+                 note:'ON the ladder since 0cdc041, so it now needs a tier in EVERY era like any other industry — eras 2 and 5 are invented. ⚠ The era-2 tier is the reason the invent spec can carry its own `inputs`: iron screw steamers arrive in era 2 (shipyard_metal), so an 1870 port bunkers STEAMERS, not the 1836 port\'s clippers, and seeding it from the tier below would have got that backwards. It also closes the last producer-before-consumer gap in the model — steamers were made in era 2 and first eaten in era 3 (BALANCE_FRAMEWORK §10.32.1).' },
   railway:     { eras:[2,3,4,5], invent:[],
                  note:'OFF-LADDER. Vanilla’s four tiers map one-to-one onto eras 2-5.' },
 };
@@ -116,7 +119,8 @@ const SPEC = {
 const LADDER_END = {
   food: 'plateau', textile: 'plateau', furniture: 'plateau',
   shipyard: 'extinct',           // superseded by shipyard_steam, which is a separate chain
-  port: 'plateau',               // off the BE ladder anyway, but it must not be treated as dying
+  // port WAS 'plateau' — it now has an invented era-5 tier, so it reaches the end of the ladder like any
+  // other industry and needs no price floor propping its last tier up.
 };
 
 // Skill-mix step for an INVENTED tier: hold headcount constant and move 10% of it from laborers to
@@ -186,6 +190,16 @@ for (const ind of cfg.industries) {
     if (below.state_infrastructure != null) t.state_infrastructure = below.state_infrastructure;
     if (below.ship_construction != null) t.ship_construction = below.ship_construction;
     if (below.ai_value != null) t.ai_value = below.ai_value;
+    // ⚠ AN INVENTED TIER MAY NEED A DIFFERENT RECIPE, NOT JUST A BIGGER ONE. Seeding from the tier below
+    // is right when the invented tier is the same technology done better, and WRONG when the era it lands
+    // in has changed what the industry consumes — the era-2 port is the case: steamers exist from era 2,
+    // so a port minted there must eat steamers, not the era-1 port's clippers. `inputs` in the spec
+    // replaces the seed outright; the ×1.5 ladder below still sets its SCALE.
+    // (era_scenarios' `ratioFor` then falls through to the frozen ratio for such a tier by itself, because
+    // no real tier below it has a vanilla recipe covering these goods — which is exactly what that
+    // fallback is for.)
+    if (inv.inputs) { t.inputs = { ...inv.inputs }; t._specInputs = true; }
+    if (inv.state_infrastructure != null) t.state_infrastructure = inv.state_infrastructure;
     ind.tiers.push(t);
     invented++;
   }
@@ -207,7 +221,9 @@ for (const ind of cfg.industries) {
     // the UI shows this; restate it onto the mod's OWN era anchors rather than vanilla's tech-era years
     t.natural_year = ERA_YEAR[t.era];
     // an invented tier's seeded inputs should at least keep the recipe's shape at the new scale
-    if (t.model_only) {
+    // ⚠ …unless the spec gave it a recipe of its OWN (`inv.inputs`), which this would otherwise overwrite
+    // with the tier below's goods — silently undoing the whole point of the override.
+    if (t.model_only && !t._specInputs) {
       const belowIx = k - 1;
       if (belowIx >= 0) {
         const prev = ind.tiers[belowIx];
@@ -215,6 +231,7 @@ for (const ind of cfg.industries) {
         t.inputs = Object.fromEntries(Object.entries(prev.inputs).map(([g, q]) => [g, Math.max(1, Math.round(q * scale))]));
       }
     }
+    delete t._specInputs;      // transient: must not reach the config
     rows.push({
       ind: ind.id, era: t.era, k: k + 1, key: t.key, name: t.name,
       out: t.output_qty, good: t.output_good || ind.output_good,

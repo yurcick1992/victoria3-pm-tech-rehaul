@@ -2058,3 +2058,113 @@ is the zeroing one, and it is worse than doing nothing.
 because it is a decision about what a scenario should contain rather than a defect fix — and because
 every arm that touches era 1's composition blows the continuous residual from 5pp to 61pp, which would
 undo §10.28.
+
+## 10.33 PORTS GET A FIVE-ERA LADDER — and it closes the steamers gap (2026-08-05)
+
+Port had three tiers at eras 1, 3 and 4, a ×2.2-then-×1.5 output ladder, and `ladder_end: plateau`. It has
+been rebuilt as a normal five-era industry: **9 / 14 / 22 / 34 / 52** on the standard ×1.5 ladder, with
+eras 2 and 5 invented (`model_only`, so not emitted) and the plateau flag dropped, since it now reaches
+era 5 like any other industry.
+
+| era | tier | inputs | infra |
+|---|---|---|---|
+| 1 | `port` | clippers 5.7 | 3 |
+| 2 | `port_steam` *(invented)* | **steamers 2 + coal 2** | 4 |
+| 3 | `port_industrial` | steamers 3.5 + coal 3.5 | 4 |
+| 4 | `port_modern` | steamers 4.8 + oil 9.5 | 5 |
+| 5 | `port_motor` *(invented)* | steamers 7 + oil 15 | 6 |
+
+### 10.33.1 An invented tier can now carry its OWN recipe, and this is why it had to
+
+`build_era_ladder.mjs` mints an invented tier by copying the goods of the tier below it, which is right
+when the new tier is the same technology done better and **wrong when the era it lands in has changed what
+the industry consumes**. The era-2 port is exactly that: iron screw steamers arrive in era 2
+(`shipyard_metal`), so an 1870 port bunkers steamers, not the 1836 port's clippers. The `invent` spec
+therefore accepts `inputs` (and `state_infrastructure`), used verbatim, with the ×1.5 ladder still setting
+the scale. ⚠ Step 3 of the ladder had to be taught about it too — it re-derives an invented tier's inputs
+from the tier below and would have silently undone the override.
+
+`ratioFor` then does the right thing with no special case: no real tier below the era-2 port has a vanilla
+recipe covering `{steamers, coal}`, so it falls through to the frozen `input_ratio` — the first time that
+fallback has ever been load-bearing. The run now prints `RECIPE MIX: own 67 · below 23 · frozen 1`.
+
+### 10.33.2 What it bought
+
+**The steamers producer-before-consumer gap (§10.32.1) is closed.** Era-2 steamers were the worst
+oversupply in the model at 23× — buy 3 against sell 78, pinned at the 25 floor. They now read
+**buy 652 / sell 936, price 67**.
+
+**Port's ladder is no longer inverted.** It has left the inverted list in every era. In 1935 the five
+tiers read **−32% / −26% / +11% / +11% / +22%**, and in 1920 **−19% / −24% / +10% / +20%** — old tiers
+losing money, the era-appropriate one on target, which is what the ladder is supposed to do and what port
+conspicuously did not do before (§10.31: the era-1 port earned +95% against the modern one's +54%).
+
+**Headline metric: 42 (29) → 41 (30).** Flat, and the excluded count is one worse. Eras 4 and 5 improve
+(12 → 10 and 14 → 12) and era 3 gets worse (9 → 12), where a single level of the era-1 port still earns
++131% on clippers that the dying sail shipyards leave at the 25 floor — the §10.31 windfall, now confined
+to one era instead of three. ⚠ Era 2's continuous residual rose from 12pp to 47pp; the era-2 port is a new
+92-level building and the count controller has not fully settled it.
+
+## 10.34 THE `max_supply_share` CLAMP IS APPLIED TO THE WRONG QUANTITY — researched, not yet fixed (2026-08-05)
+
+**The hypothesis being tested** (raised by the user): in game, a newly-invented good's demand and price
+spike on arrival, supporting several factories immediately; in our model a debut good's demand is a token
+amount. Something must give a new good a floor share of its need.
+
+**There is such a mechanism, and we have it in the data already** — but it is applied to the wrong
+quantity, so it does nothing.
+
+`popneed_communication` is `{ transportation (weight 1, max_supply_share 0.75), telephones (weight 2,
+max 1.0) }`, and `popneed_free_movement` is `{ transportation (max 0.75), automobiles (weight 1.25,
+max 1.0) }`. **Transportation cannot exceed 75% of either need.** Read as a cap on the FINAL share, that
+entitles telephones to 25% of the communication budget from the moment they exist — precisely the
+bootstrapping the hypothesis predicts, and in a large market that is hundreds of buy orders.
+
+**What `needSplit()` does instead** (`ui/econ.js`): it clamps the *raw supply share*, then multiplies by
+weight, then **re-normalises** — which hands the capped money straight back:
+
+```
+transportation raw share 0.999 → clamped to 0.75 → × weight 1   = 0.750
+telephones     raw share 0.001 → not clamped     → × weight 2   = 0.002
+normalised:    transportation 99.7%,  telephones 0.3%
+```
+
+The cap moves the answer by a third of a percent. A field Paradox bothered to author for 52 entries
+cannot plausibly do that.
+
+**The wiki is obsolete and self-contradictory, so it is not the evidence.** Its own page says both "the
+maximum *weight* that can be applied to a good based on market Sell Order share" (our reading) and "a
+maximum of 40% of the Basic Food need can be satiated with Meat" (the final-share reading). Its numbers
+are stale — it says meat is 40% of basic food and furniture a 5% minimum of household items, where the
+shipped files say **0.9** and **0.1**. The game's own tooltip is the better clue: it renders
+`GoodsList.GetPopConsumptionRatio` as *"X% of the need is filled with good Y"* — the final share.
+
+**The internal evidence points the same way.** Under the final-share reading every clamp in the file is a
+sensible design statement: no single food is more than 90% of a diet; wood at most 50% of heating; wine at
+most 25% of intoxicants; each luxury item at least 10%. Under our reading, `popneed_basic_food` gives all
+five goods `max 0.9`, which with five goods can almost never bind — an inert setting on the most important
+need in the game.
+
+⚠ **F24's calibration has NO POWER on this.** It reports misallocation of "0.0% for `standard_clothing`,
+`services`, `free_movement`, `communication`, which have one unlocked good and so nothing to misallocate" —
+telephones and automobiles do not exist in 1836. But the needs it names as our WORST errors are exactly the
+ones with binding clamps: **heating 20.4%** (wood 0.5 / fabric 0.25 / coal 0.8), **basic_food 15.9%**
+(all five at 0.9), **intoxicants 14.7%** (wine 0.25). So the 1836 data *can* discriminate — it simply has
+never been asked to.
+
+### 10.34.1 What to do, in order — NOT started
+
+1. **Re-score the two readings against the F24 measurement.** Session `20260802_233029_rescore-direct` is
+   intact. If the final-share reading lowers heating / basic_food / intoxicants error, that is the answer
+   and it comes from the game's own consumption telemetry rather than from a wiki.
+2. **Implement it as capped-proportional allocation**, not a clamp-then-normalise: allocate by
+   `weight × supply share`, clamp each good's FINAL share to `[min, max]`, redistribute the excess among
+   the unclamped goods, iterate. ⚠ Caps must yield when infeasible — a need with one available good must
+   still give it 100%, or money vanishes and F24's four single-good needs stop matching.
+3. **Only then re-measure illogicality.** If it is right, electrics and automotive stop being structurally
+   insolvent, since it is the same mechanism for both (§10.29) — but it must be adopted because it matches
+   the game, not because it improves the score.
+
+⚠ Do not treat this as settled. It is a well-evidenced hypothesis with a decisive test that has not been
+run. `needSplit` is a MEASURED result (F22/F24), and replacing it on reasoning alone would be exactly the
+move this document keeps warning about.

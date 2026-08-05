@@ -41,7 +41,7 @@ technical progress accelerates after the industrial revolution. **No industry ha
 89 tiers over 22 industries: 67 real + **22 `model_only`** (modelled but NOT emitted, because the game
 has no unlocking technology for them yet — the builder gets a filtered config, `ui/data.js` gets the
 complete one). Some ladders stop early, recorded per industry as **`ladder_end`**: `plateau` (food,
-textile, furniture, port — the last tier is permanent, so its good's price must hold that tier up rather
+textile, furniture — the last tier is permanent, so its good's price must hold that tier up rather
 than deflate past it, which is Baumol's cost disease falling out of the model) or `extinct` (sail
 shipyards — the industry **actually dies**: no price floor, *and* it is not placed in a scenario two eras
 past its last tier, *and* neither is any tier whose input it was the only source of. Making only the first
@@ -83,7 +83,7 @@ money**, (2) a **two-eras-stale** tier still turns a profit, (3) the ladder is *
 tier earns less than the one below it. Acceptable: **~0** for (1) and (3), **in the teens** for (2),
 **excluding shipyards and art academies** (both have targets they cannot meet by construction).
 `tools/era_scenarios.mjs` prints the count per era with the offending industries named.
-**Current state: 42 points, 29 excluding the excused (3 / 4 / 9 / 12 / 14 per era) — NOT yet acceptable.**
+**Current state: 41 points, 30 excluding the excused (3 / 4 / 12 / 10 / 12 per era) — NOT yet acceptable.**
 ⚠ The excluded count rose 27 → 29 when `extinct` was made real (§10.30.2) — kept deliberately, because the
 variant that scored 40 breached the industrial ceiling and the ceiling outranks the metric.
 It is **live in the balance UI** as the **Ladder check** panel, from ONE shared implementation
@@ -118,7 +118,14 @@ only other producer-before-consumer gap is `steamers` (made era 2, first eaten e
 an era late" gap: the building was moved by hand, the PMs that buy its output were left on vanilla's era.
 **Four candidate fixes were measured and none is a clear win** (moving the engine industry to era 1 → 47;
 moving railway too → 51; the no-buyer rule → 39 dropped / 45 zeroed, the better figure again coming from a
-defect). Shipped: accept it.
+defect). Shipped: accept it. **The steamers half is now FIXED** by giving port a five-era ladder (§10.33).
+⚠ **THE MOST PROMISING OPEN LEAD IS §10.34**: `max_supply_share` is a cap on how much of a need ONE good
+may fill (transportation is capped at 75% of `popneed_communication`, which entitles telephones to the
+other 25% the moment they exist — the bootstrapping a new good visibly gets in game). `needSplit()` clamps
+the **raw supply share** and then re-normalises, which hands the capped money straight back and moves the
+answer by 0.3pp. The wiki is obsolete *and* self-contradictory on this, so the decisive test is re-scoring
+both readings against the F24 consumption telemetry — session `20260802_233029_rescore-direct` is intact.
+NOT started, and `needSplit` is a measured result, so do not replace it on reasoning alone.
 
 ⚠ **Older illogicality figures in the docs are void, not merely stale** (BALANCE_FRAMEWORK §10.14.1): the
 solver used to re-solve recipes *after* its final price sync, so it reported profits at prices its own
