@@ -8,7 +8,7 @@
 //   const agg = E.scenarioAggregates();
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { dirname, join } from 'node:path';
+import { dirname, isAbsolute, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
 
@@ -44,9 +44,31 @@ export function loadEcon({ quiet = false } = {}) {
   // exactly and look like a converged fixed point, when in fact the second run had never seen the first
   // one's output. Once the build caught up, the figures moved by nine points.
   // data.js is still the source of PRICES (goods_prices.tsv) and of the vanilla extract beside it.
+  //
+  // ⚠ `MOD_CONFIG` OVERRIDES WHICH CONFIG THE MODEL SPEAKS FOR, AND IT MATTERS FOR ARM-MATCHING.
+  // The pop split reads the SCENARIO'S OWN sell orders and non-pop buy orders, which come from the
+  // scenario's buildings × the config's recipes. So scoring the model against a measured session only
+  // means anything when the config describes the SAME economy the game was running:
+  //   * a `config` arm (our tiered mod)  -> config/mod_config.json, the default. Model and game agree,
+  //     because extract_presets maps vanilla 1836 history onto our tier buildings and convert_history
+  //     makes the game's own 1836 start that same re-tiering.
+  //   * a `control` arm (true vanilla)   -> MOD_CONFIG=config/mod_config.vanilla_stub.json, whose tiers
+  //     carry the VANILLA recipes. Predicting with our recipes against a vanilla game compares two
+  //     different economies and the resulting error is not the pop model's.
+  // Absolute or repo-relative. Getting this wrong is silent: the run scores, the number is just answering
+  // a question nobody asked.
   let cfg = win.PMDATA.config;
-  try { cfg = JSON.parse(readFileSync(join(REPO, 'config', 'mod_config.json'), 'utf8')); }
-  catch { /* no config on disk (a bare ui/ checkout) — fall back to the copy inside data.js */ }
+  const cfgRel = process.env.MOD_CONFIG || join('config', 'mod_config.json');
+  const cfgPath = isAbsolute(cfgRel) ? cfgRel : join(REPO, cfgRel);
+  try {
+    cfg = JSON.parse(readFileSync(cfgPath, 'utf8').replace(/^﻿/, ''));
+    if (!quiet && process.env.MOD_CONFIG) console.error(`econ_host: config <- ${cfgRel}`);
+  } catch (e) {
+    // An EXPLICIT override that cannot be read is a mistake, not a fallback: silently scoring the
+    // default config under a flag asking for another one is exactly the failure this guard exists for.
+    if (process.env.MOD_CONFIG) throw new Error(`MOD_CONFIG=${cfgRel} could not be read: ${e.message}`);
+    /* no config on disk (a bare ui/ checkout) — fall back to the copy inside data.js */
+  }
   const PRE = win.PMPRESETS || null;
   const POPM = (PRE && PRE.pop_model) || { pop_size_package: 10000, class_mult: {}, buy_packages: {}, needs: {} };
 

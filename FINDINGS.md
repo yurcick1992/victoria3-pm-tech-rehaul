@@ -639,6 +639,42 @@ units of supply. **Moderate on (3)**, which rests on one good in one need in one
 
 ## F31 — `max_supply_share` bounds the RAW supply share, not the final share of the need. The alternative reading is worse in all seven markets, and the bootstrap it would give a debut good is directly contradicted
 
+**Arm** originally `config` (our tiered mod), session `20260802_233029_rescore-direct` · schema v9 ·
+**🟢 ARM-FREE — CONFIRMED ON TRUE VANILLA 2026-08-06, see the replication box below.**
+
+> ### ✅ REPLICATED ON THE VANILLA CONTROL ARM (2026-08-06)
+>
+> Re-measured on `{kind: control}` — vanilla + telemetry, `deviates_from_vanilla: []` — session
+> `20260805_234555_vanilla-retest` runs 1–14, the same seven markets, two runs each, same dump date,
+> same scorer. **The model side was moved to `config/mod_config.vanilla_stub.json`** (via the new
+> `MOD_CONFIG` env override), because the split reads the scenario's own sell orders and predicting
+> with *our* recipes against a *vanilla* game compares two different economies.
+>
+> | market | config-arm `raw` | **vanilla `raw`** | config-arm `final` | **vanilla `final`** | raw wins? |
+> |---|--:|--:|--:|--:|:--:|
+> | BEL | 18.3 | **26.0** | 25.6 | **44.9** | ✅ |
+> | JAP | 36.2 | **42.1** | 37.5 | **42.7** | ✅ |
+> | FRA | 29.2 | **12.1** | 34.5 | **13.2** | ✅ |
+> | USA | 19.2 | **12.3** | 23.2 | **13.4** | ✅ |
+> | RUS | 19.4 | **10.0** | 25.2 | **18.3** | ✅ |
+> | CHI | 17.6 | **10.1** | 20.7 | **15.7** | ✅ |
+> | AUS | 18.1 | **11.0** | 18.4 | **12.4** | ✅ |
+> | **mean** | **20.0** | **17.7** | **24.2** | **22.9** | **7 / 7** |
+>
+> **The conclusion holds unchanged: `raw` beats `final` in all seven markets, on both arms.** That is
+> what F31 claims, and it is now measured twice on two different economies.
+>
+> ⚠ **Read the PAIRED comparison, not the levels.** The two sessions differ in arm *and* seed *and*
+> model config, so `20.0 → 17.7` confounds three things and is **not** evidence that the pop model is
+> better on vanilla. What is clean is the within-session contrast, because `raw` and `final` are scored
+> on byte-identical measured data — and that contrast points the same way both times.
+>
+> ⚠ Per-market levels moved a lot and not uniformly: France, the USA, Russia, the Qing and Austria all
+> roughly halved, while **Belgium got worse (18.3 → 26.0) and Japan stayed the worst market (42.1)**.
+> Japan remains the unexplained ~1.8× level shortfall F24 flagged; it is not an arm artefact.
+> ⚠ The rigorous refutation test still does not fire — no unshared good is measured above its own cap —
+> so this still rests on the fit, exactly as it did before.
+
 **Claim.** The pop-need fields `max_supply_share` / `min_supply_share` admit two readings, and they are
 not close in effect. Bounding the **raw supply share** before the weighting and renormalisation — what the
 model already shipped — errs by **20.0 %** of pop spending across seven 1836 markets. Bounding each good's

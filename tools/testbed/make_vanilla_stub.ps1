@@ -119,6 +119,20 @@ foreach ($ind in $cfg.industries) {
     if (-not $baseVan) { $skipped += "$($ind.id): no vanilla building '$baseKey' (all-new chain) - cost/ai_value left as configured" }
 
     foreach ($t in $ind.tiers) {
+        # ⚠ A TIER MAY LEGITIMATELY HAVE NO `vanilla_pm`, and this script predates that. The five-era
+        # ladder mints `model_only` tiers - modelled but never emitted, because the game has no technology
+        # that would unlock them - and those have no vanilla production method to be brought back to by
+        # construction. There is nothing to do for them here, which is correct: they are not in the game,
+        # so they cannot differ from it.
+        # ⚠ The guard must be an EXISTENCE test, not `-not $t.vanilla_pm`: this script runs under
+        # StrictMode 2.0, where reading an absent property is a TERMINATING error rather than $null, so
+        # the bare read below used to abort the whole run with "The property 'vanilla_pm' cannot be found".
+        $hasVanPm = $t.PSObject.Properties.Name -contains 'vanilla_pm' -and $t.vanilla_pm
+        if (-not $hasVanPm) {
+            $isModelOnly = $t.PSObject.Properties.Name -contains 'model_only' -and $t.model_only
+            $skipped += "$($ind.id)/$($t.key): no vanilla_pm$(if ($isModelOnly) { ' (model_only - not in the game at all)' } else { ' - CHECK THIS, a real tier should have one' })"
+            continue
+        }
         if (-not $recipes.ContainsKey($t.vanilla_pm)) {
             $skipped += "$($ind.id)/$($t.key): no vanilla recipe for $($t.vanilla_pm) - left as configured"
             continue
