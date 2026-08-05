@@ -490,3 +490,11 @@ the four shipyard tiers. Audited every tiered `vanilla_pm` for `country_modifier
 
 **Detect/prevent.** This is the canonical Theme-#1 case: the emitter whitelist dropped a modifier. When
 tiering any building, dump its `vanilla_pm`s and look for modifier blocks the emitter doesn't carry.
+
+**⚠ SEQUEL (2026-08-05).** The advice above — *drop the filter, the good's key is on every line, filter at
+analysis time* — was rediscovered the hard way at a cost of three probe runs, because this file was not
+consulted before instrumenting. A second, **quieter** variant of the same trap was found in the process
+and is written up in TESTBED_METRICS §3.3.1: putting the goods accessor inside a `debug_log` **string**
+rather than in script position parses and links cleanly, logs nothing anywhere, and simply makes the whole
+on_action produce **no output** — plain-string fences on the same effect included. Line-level fencing does
+not contain it; probe an unverified data function in an on_action of its own.

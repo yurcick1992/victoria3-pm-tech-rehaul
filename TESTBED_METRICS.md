@@ -1146,12 +1146,24 @@ Two routes were built and probed; both fail, and one fails in a way that is wort
 | `limit = { goods = g:X }` inside `every_market_goods` | `20260805_140913` | same |
 | `THIS.GetMarket.GetMarketGoods(GetGoods('X').Self).GetMarketBuyOrdersBreakdown` | `20260805_141239`, `_141614` | **takes the whole on_action down** |
 
-⚠⚠ **THE SECOND FAILURE MODE IS NOT "ONE BAD FUNCTION VOIDS ITS LINE".** It voids the **entire
-`on_action`**. The block was fenced with plain string `debug_log`s that contain no data functions at all,
-and *they did not print either*: `BEGIN` went from **321** occurrences in a working run to **zero**, and
-`error.log` said **nothing**. So a bad data function in one `debug_log` can silently delete every other
-line in the same effect — including lines that are provably safe. When probing a new data function, put it
-in an on_action **of its own**, not merely on a line of its own.
+⚠⚠ **THIS WAS ALREADY KNOWN AND THE PROBES WERE AVOIDABLE.** `BUGS_AND_FIXES.md` → *"A data function used
+as SCRIPT silently deletes the rest of the file"* (2026-08-02) records **this very construct**,
+`every_market_goods = { limit = { is_goods = GetGoods('grain') } }`, and its conclusion is the answer:
+**drop the filter — the good's key is on every line anyway, so filtering at ANALYSIS time costs nothing and
+carries no parse risk.** Consult that file before probing a new data function; these three probes cost ~40
+minutes of run time to rediscover advice already written down.
+
+⚠ **The two failures are nonetheless DIFFERENT, and only one is documented there.** The 2026-08-02 case is
+a data function in **script** position: a parse error, loud, and the file is abandoned from that point on
+(`Unknown trigger type`, `cannot link`). What happened here is quieter and is the new part: the accessor
+sat inside a `debug_log` **string**, so the file parsed and linked cleanly — `v3tb_boot` ran from line 16,
+no error anywhere in `error.log`, `game.log` or `warning.log` — and the dump on_action simply **produced no
+output at all**. The plain-string fences around the bad line did not print either, and `BEGIN` went from
+**321** occurrences in a working run to **zero**. The effect appears to be validated as a whole and
+silently no-op'd; no error message for it could be obtained, so that mechanism is inferred, not proven.
+
+**Practical rule either way:** probe an unverified data function in an **on_action of its own**, not merely
+on a line of its own. A line-level fence does not contain this failure.
 
 **The affordable shape is therefore a SPARSE DATE LIST, not a goods filter** — and ideally one market per
 run, since the cost is per market per dump. Aim it at dates a cheap `market_goods_scoped` run has already
