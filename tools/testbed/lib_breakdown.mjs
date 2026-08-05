@@ -22,7 +22,16 @@
 //     market-tick can exceed the whole ring, so no single dump is complete. Callers must UNION across
 //     dumps and runs; treat an absent good as unmeasured, never as zero. (Measured 2026-08-05: 24вЂ“33 of
 //     ~44 goods captured per market-dump.)
-import { readFileSync } from 'node:fs';
+// ⚠ STREAMED, NOT read whole. A campaign mirror is 500 MB+ and two of them at once exhausted a 4 GB heap
+// (`readFileSync().split()` materialises millions of line strings). Every reader here is async and walks
+// the file line by line; do not "simplify" it back to a slurp.
+import { createReadStream } from 'node:fs';
+import { createInterface } from 'node:readline';
+
+async function eachLine(path, fn) {
+  const rl = createInterface({ input: createReadStream(path, { encoding: 'utf8' }), crlfDelay: Infinity });
+  for await (const line of rl) fn(line);
+}
 
 const MUL = { '': 1, K: 1e3, M: 1e6, B: 1e9 };
 export const strip = s => s.replace(/[\x00-\x1f\x7f]/g, '');
@@ -40,22 +49,26 @@ export function tailValue(line, signed) {
 // вљ  Built across ALL runs of a session on purpose: a breakdown burst can push a run's own order-book lines
 // out of the ring entirely, and such a run would then verify to nothing. Runs in one session are the same
 // arm, so another run's figure for the same market/good/era is the same quantity.
-// ⚠ KEYED BY DATE TOO, and that is not a detail. A good's buy orders move constantly, so checking an 1850
+// ⚠ KEYED BY DATE, and that is not a detail. A good's buy orders move constantly, so checking an 1850
 // breakdown against "whatever figure for this market and good was read last" compares two different years:
 // it rejects sound blocks wholesale (measured: 2049 mismatches against 200 accepted) and, worse, would
 // ACCEPT a mis-attributed block whenever two unrelated values happen to coincide. The breakdown's dump date
 // is deliberately one of the monthly order-book dates, so an exact same-date comparison is available.
-export function buyOrderTable(logPaths, tokens) {
+//
+// ⚠⚠ AND STRICTLY PER RUN. An earlier version pooled every run in the session, on the reasoning that runs
+// are the same arm and one whose `G|` lines were evicted could borrow another's. That reasoning dies the
+// moment the key includes a DATE: different seeds hold different values on the same date, so pooling makes
+// run 2 overwrite run 1 and the verification rejects almost everything (measured: 2704 verified blocks
+// collapsed to 786, with 3168 total-mismatches, purely from adding a second run).
+export async function buyOrderTable(logPath, token) {
   const t = new Map();
-  for (let i = 0; i < logPaths.length; i++) {
-    const tok = tokens[i];
-    for (const ln of readFileSync(logPaths[i], 'utf8').split('\n')) {
-      if (ln.length >= 400) continue;
-      let m = ln.match(new RegExp(`\\|${tok}\\|G\\|([^|]+)\\|([^|]+)\\|([^|]+)\\|([0-9.]+)\\|`));
-      if (!m) m = ln.match(new RegExp(`\\|${tok}\\|GW\\|([^|]+)\\|([^|]+)\\|([^|]+)\\|([0-9.]+)\\|`));
-      if (m) t.set(`${m[1]}\t${m[2]}\t${m[3]}`, parseFloat(m[4]));
-    }
-  }
+  const reG = new RegExp(`\\|${token}\\|G\\|([^|]+)\\|([^|]+)\\|([^|]+)\\|([0-9.]+)\\|`);
+  const reW = new RegExp(`\\|${token}\\|GW\\|([^|]+)\\|([^|]+)\\|([^|]+)\\|([0-9.]+)\\|`);
+  await eachLine(logPath, ln => {
+    if (ln.length >= 400) return;
+    const m = ln.match(reG) || ln.match(reW);
+    if (m) t.set(`${m[1]}\t${m[2]}\t${m[3]}`, parseFloat(m[4]));
+  });
   return t;
 }
 
@@ -63,7 +76,7 @@ export function buyOrderTable(logPaths, tokens) {
 //   [{ date, market, good, total, pop, buildings: [{name, v}], slaves }]
 // `pop` is the "Pop Consumption" channel; `buildings` each named building-type entry; `slaves` the
 // "purchased for slaves" line (a BUILDING purchase the game reports as its own channel вЂ” FINDINGS F27).
-export function readBreakdown(logPath, token, buyOf, { tolerance = 0.02 } = {}) {
+export async function readBreakdown(logPath, token, buyOf, { tolerance = 0.02 } = {}) {
   const reBeg = new RegExp(`\\|${token}\\|CP\\|C2\\|([^|]+)\\|([^|]+)\\|([^|]+)\\|BEGIN`);
   const reEnd = new RegExp(`\\|${token}\\|CP\\|C2end\\|`);
   const reAny = /\|CP\|C2(end|done|start)?\|/;
@@ -86,7 +99,7 @@ export function readBreakdown(logPath, token, buyOf, { tolerance = 0.02 } = {}) 
     out.push({ date, market: mkt, good, total, pop: pop || 0, slaves: slaves || 0, buildings: blds });
     stats.ok++;
   };
-  for (const ln of readFileSync(logPath, 'utf8').split('\n')) {
+  await eachLine(logPath, ln => {
     const short = ln.length < 400;
     let m;
     if (short && (m = ln.match(reBeg))) {
@@ -98,16 +111,16 @@ export function readBreakdown(logPath, token, buyOf, { tolerance = 0.02 } = {}) 
       commit(); reset();
     } else if (good) {
       if (total == null) {
-        const t = tailValue(ln, false);
-        if (t && /^v; [0-9.]+[KMB]?!?$/.test(strip(t.tail))) { total = t.v; continue; }
+        const t0 = tailValue(ln, false);
+        if (t0 && /^v; [0-9.]+[KMB]?!?$/.test(strip(t0.tail))) { total = t0.v; return; }
       }
       const t = tailValue(ln, true);
-      if (!t) continue;
+      if (!t) return;
       if (/Pop.{0,4}Consumption\s*$/.test(t.tail)) { popN++; if (popN === 1) pop = t.v; }
       else if (/purchased for/.test(t.tail)) slaves = t.v;
       else { const b = t.tail.match(/BuildingTypeTooltip\s+(.+?)\s*$/); if (b) blds.push({ name: b[1], v: t.v }); }
     }
-  }
+  });
   commit();
   return { blocks: out, stats };
 }

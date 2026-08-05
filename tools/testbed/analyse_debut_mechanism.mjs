@@ -14,7 +14,8 @@
 //
 //   node tools/testbed/analyse_debut_mechanism.mjs --session tools/testbed/sessions/<stamp>_<label>
 //        [--goods steamers,telephones,automobiles,radios] [--game <path>]
-import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync, createReadStream } from 'node:fs';
+import { createInterface } from 'node:readline';
 import { join, isAbsolute } from 'node:path';
 import { loadEcon, REPO } from '../econ_host.mjs';
 import { buyOrderTable, readBreakdown } from './lib_breakdown.mjs';
@@ -68,7 +69,7 @@ const plan = runs.map(r => ({
 if (!plan.length) { console.error('no run logs'); process.exit(1); }
 console.log(`session ${SDIR.split(/[\\/]/).pop()} · ${plan.length} run(s)\n`);
 
-const buyOf = buyOrderTable(plan.map(p => p.log), plan.map(p => p.token));
+// ⚠ per-run reference tables — see lib_breakdown. Pooling them across seeds destroyed the verification.
 
 // tech: display name -> earliest date seen anywhere, and who had it
 const techFirst = new Map();
@@ -82,11 +83,12 @@ for (const p of plan) {
   // ⚠ SPLIT ON /\r?\n/, NOT '\n'. The game's log is CRLF, and JavaScript's `.` does NOT match `\r` — it is
   // a line terminator — so any `$`-anchored capture fails on every single line while `includes()` on the
   // same text succeeds. That reads as "the metric never fired": 19 604 TECH lines present, 0 matched.
-  const txt = readFileSync(p.log, 'utf8').split(/\r?\n/);
+  // ⚠ STREAMED, not slurped: two 500 MB mirrors read whole exhausted a 4 GB heap.
+  const txt = createInterface({ input: createReadStream(p.log, { encoding: 'utf8' }), crlfDelay: Infinity });
   const reT = new RegExp(`\\|${p.token}\\|TECH\\|([^|]+)\\|([^|]+)\\|(.+)$`);
   const reG = new RegExp(`\\|${p.token}\\|G\\|([^|]+)\\|([^|]+)\\|([^|]+)\\|([0-9.]+)\\|([0-9.]+)\\|[0-9.]+\\|[0-9.]+\\|[0-9.]+\\|([0-9.]+)`);
   const reW = new RegExp(`\\|${p.token}\\|GW\\|([^|]+)\\|([^|]+)\\|([^|]+)\\|([0-9.]+)\\|([0-9.]+)\\|[0-9.]+\\|([0-9.]+)`);
-  for (const ln of txt) {
+  for await (const ln of txt) {
     if (ln.length >= 600) continue;
     let m;
     if ((m = ln.match(reT))) {
@@ -105,7 +107,8 @@ for (const p of plan) {
       if (+prod > 0) { const cur = wideFirst.get(good); if (!cur || dnum(date) < dnum(cur.date)) wideFirst.set(good, { date, market: mkt }); }
     }
   }
-  const { blocks, stats } = readBreakdown(p.log, p.token, buyOf);
+  const buyOf = await buyOrderTable(p.log, p.token);
+  const { blocks, stats } = await readBreakdown(p.log, p.token, buyOf);
   console.log(`  ${p.run}: ${blocks.length} verified breakdown blocks (dropped ${stats.dropped}, total-mismatch ${stats.badTotal}, no reference ${stats.noRef})`);
   for (const b of blocks) splits.push({ run: p.run, ...b });
 }

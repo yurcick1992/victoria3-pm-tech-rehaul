@@ -183,11 +183,38 @@ consuming method adopted before any production existed — but far more extreme,
 can arrive before the producer" is a property of the base game, which §10.35 should not have attributed
 solely to our hand-moved industries.
 
-**What it does NOT say.** One seed — run 2 is the replication and had not completed when this was written.
-It does not identify the real rule; it only shows that neither candidate survives both cases. It does not
-revisit F28's numbers, which remain correct for the needs F28 actually measured. And it assumes a good's
-pop demand cannot exceed its total buy orders — true by construction, since pops are one channel of that
-total.
+### ✅ REPLICATED ACROSS SEEDS — and reading B now fails inside the SAME campaign
+
+Both runs are complete and are **different histories**: `combustion_engine` world-first 1899.9 (Free States
+of America) in run 1 against **1897.12 (German Empire)** in run 2, and the automobile debut **1901.6**
+against **1910.12** — nine years apart, so none of this is a date coincidence.
+
+| | automobiles | telephones |
+|---|---|---|
+| **run 1** | **26 / 26** impossible under A | **5 / 5** impossible |
+| **run 2** | **16 / 16** impossible under A | 1 / 3 impossible |
+| | **48 of 50 observations impossible under reading A**, by 1.1×–3.7× | |
+
+⚠⚠ **AND READING B IS IMPOSSIBLE IN 9 OF THE SAME 50** — run 1's British automobiles from 1919 on, where
+pop demand exceeds even the 25 % a final-share cap would permit. **So both readings are refuted inside a
+single campaign**, with no appeal to F28's 1836 data needed. That closes the escape route of blaming the
+conflict on an era or dataset difference: the real rule is neither candidate, and it can exceed a hard
+25 % ceiling.
+
+The two `ok` telephone rows in run 2 (89 and 200 units) are small-demand cases where reading A happens to
+fit. Recorded; they do not rescue it.
+
+**A quantified bonus — the AI's adoption lag.** In run 1 the urban-centre method that consumes automobiles
+(`pm_public_motor_carriages`) contributes **zero** until ~**1906**, then becomes the top building buyer —
+roughly **seven years** after `combustion_engine` existed. Pops carry 100 % of the demand in the interim
+(1902–03), and the split settles near 52–60 % pops by 1907–08. So "the consumer method unlocks with the
+technology" is true on paper and badly false in practice.
+
+**What it does NOT say.** It does not identify the real rule — only that neither candidate survives. It
+does not revisit F28's numbers, which remain correct for the needs F28 measured. It assumes a good's pop
+demand cannot exceed its total buy orders, true by construction since pops are one channel of that total.
+⚠ **Run 2 ended at 1925.3, not 1936**, after two CTDs and a resume the guard correctly refused
+(BUGS_AND_FIXES 2026-08-05), so the final decade is unobserved in both runs.
 
 ---
 
