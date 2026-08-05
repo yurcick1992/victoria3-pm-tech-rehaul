@@ -125,19 +125,19 @@ the fix for the rest** — see below.
 weight applied to this good based on market Sell Order share"*, `max_supply_share` *"the maximum weight
 that can be applied … relative supply above this amount will have no further impact"*, `min_supply_share`
 *"a minimum of this multiplier of the base weight … regardless of its market Sell Order share"*. That is
-**exactly what `needSplit()` does**, and **F28 measured the same conclusion independently** against the
+**exactly what `needSplit()` does**, and **F31 measured the same conclusion independently** against the
 game's own consumption telemetry. ⚠ **The comment alone would not settle it** — shipped statements can be
 confidently wrong, and a comment that was true when written rots silently after the code moves. It carries
 weight here only because an independent measurement agrees with it. **Read that file before theorising**
 (cheap hypotheses), **and corroborate before believing** (docs are not evidence on their own).
-⚠ F30 briefly claimed to refute it; that claim is **RETRACTED** — an argument that concludes the documented
+⚠ F33 briefly claimed to refute it; that claim is **RETRACTED** — an argument that concludes the documented
 rule is impossible is a broken argument. Its measurements stand, its inference does not. The live question
 is now **why our implementation of the documented rule yields so much less demand than the game does**,
 with the `local` goods abstraction (§10.35.1a) the leading suspect. Superseded text follows:
-⚠ **§10.34 — the reopening (RETRACTED, kept for the record) (FINDINGS F30, 2026-08-05).**
-F28 remains correct for what it measured: scored over seven **1836** markets the final-share reading fits
+⚠ **§10.34 — the reopening (RETRACTED, kept for the record) (FINDINGS F33, 2026-08-05).**
+F31 remains correct for what it measured: scored over seven **1836** markets the final-share reading fits
 **worse in all seven** (20.0% → 24.2%), and Russian heating is 79% wood against wood's 0.5 cap, which that
-reading forbids. **But F28 could not test the case that matters**: in 1836 `free_movement` and
+reading forbids. **But F31 could not test the case that matters**: in 1836 `free_movement` and
 `communication` each have exactly ONE supplied good, which is why F24 reports 0.0% error for them.
 Measured in a 1903 campaign, the **shipped** reading is *arithmetically impossible* there — 948 units of
 automobile pop demand would require **100 662 units** of transportation pop demand against a market whose
@@ -368,7 +368,7 @@ tools/                  dev tooling — NOT shipped in the mod
                         solvers' own write→read loop and made `--write` + re-run silently re-read the PREVIOUS
                         values (see BUGS_AND_FIXES). data.js still supplies prices + the vanilla extract
   econ_selftest.mjs     regression check for ui/econ.js against MEASURED numbers already in the docs (F26/F27,
-                        the V3 price formula anchors, and F28's two readings of the supply-share bounds —
+                        the V3 price formula anchors, and F31's two readings of the supply-share bounds —
                         above all that a cap YIELDS when no good with supply can absorb what it displaces).
                         Run it after touching ui/econ.js
   verify_pms.mjs        audits every PM the era presets select: is it a REAL vanilla PM, and could this
@@ -440,7 +440,7 @@ tools/                  dev tooling — NOT shipped in the mod
                         consumption (`consumption_breakdown`): monetary error per market on the F24 basis,
                         within-need misallocation, and a per-good diff. Runs the model under each
                         `S.SPLIT_MODE` in turn (`--modes raw,final`) so two readings of one rule are scored
-                        on byte-identical measured data. Built for FINDINGS F28; not specific to it — any
+                        on byte-identical measured data. Built for FINDINGS F31; not specific to it — any
                         later change to the pop model is re-scored the same way. It reads a session's logs
                         directly, with the same four safeguards `analyse_slave_basket` needs (own-token
                         filter, block verified against the run's `G|` buy orders, K/M/B suffixes, tail-only
@@ -856,7 +856,7 @@ the game.
   reverting to bare `weight`, and that is measurably wrong: liquor is ~95 % of Belgium's intoxicants
   supply and the reverting reading predicts 102 against 201 observed, where clamping gives 199.
   ✅ **WHAT the bounds clamp is SETTLED — the RAW supply share, not the final share of the need**
-  (FINDINGS F28, BALANCE_FRAMEWORK §10.34, 2026-08-05). The rival reading — cap each good's final share and
+  (FINDINGS F31, BALANCE_FRAMEWORK §10.34, 2026-08-05). The rival reading — cap each good's final share and
   hand the excess to the goods still unclamped — was built, and scored against the game's own consumption
   telemetry it is worse in **all seven** 1836 markets: **20.0 % → 24.2 %** mean error. It survives only as
   the A/B switch **`S.SPLIT_MODE = 'final'`** (default `'raw'`), re-scorable with
@@ -1174,7 +1174,7 @@ the game.
   *which* one), the **span**, **n**, the **metrics**, and **what is being compared against what**. If any
   of that is unstated, ASK. Do not infer it from what the last batch happened to use.
   ⚠ **This rule is written in a wasted day (2026-08-05).** A full day of debut-good measurement — five
-  launches, ~6 h of game time, findings F29/F30 — was run on `config/mod_config.json`, the old tiered mod,
+  launches, ~6 h of game time, findings F32/F33 — was run on `config/mod_config.json`, the old tiered mod,
   because that is what the previous balance batch used. The user's expectation was vanilla + telemetry. The
   result satisfies **neither** purpose: it is not the design we are moving towards, and it is not a clean
   reference either, since it differs from vanilla in GDP, workforce composition and an unbounded amount

@@ -23,7 +23,7 @@
 // Measured on the shipped scenarios: era 3 makes 30 automobiles and 60 telephones against a reachable
 // building demand of ZERO for both; era 4 switches the customers on (330 automobiles, 770 telephones) and
 // the same industries go from 1 level to 22. That is the whole of their insolvency (BALANCE_FRAMEWORK
-// §10.29), and no demand model could have fixed it — consistent with FINDINGS F28 finding nothing wrong
+// §10.29), and no demand model could have fixed it — consistent with FINDINGS F31 finding nothing wrong
 // with the demand model.
 //
 // THE CORRECTION therefore belongs on the TECHNOLOGY, not on the building: if we judge a technology to

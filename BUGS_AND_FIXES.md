@@ -513,7 +513,7 @@ run 1 finished: 8098.5s wall over 2 attempt(s), in-game 1925.3.1, exit resume st
 one it found was 24 in-game years behind where the run actually was. Splicing that in would have produced a
 single "run" whose series jumped backwards — silent, plausible corruption of exactly the kind the order
 book cannot self-diagnose. The harness refused it and kept the 89 years it had (1836→1925.3), which was
-enough to carry FINDINGS F29/F30.
+enough to carry FINDINGS F32/F33.
 
 ⚠ **Suspect the telemetry volume before the mod.** This configuration writes ~500 MB per run; the earlier
 1910-span runs at ~250 MB did not crash. Not established, but the correlation is the first thing to test if
@@ -527,7 +527,7 @@ against a 90 s grace. It looked like a dead batch and was a healthy one. Check `
 ## The answer was in a shipped comment all along (2026-08-05)
 
 **Symptom.** A full day of inference — two solver A/Bs, three probe runs, a 2x1836-1936 campaign — spent
-deciding what `max_supply_share` bounds, ending in a finding (F30) that BOTH candidate readings were
+deciding what `max_supply_share` bounds, ending in a finding (F33) that BOTH candidate readings were
 refuted.
 
 **Root cause.** Nobody read the top of the file. `game/common/pop_needs/00_pop_needs.txt` opens with four
@@ -548,10 +548,10 @@ file you are about to reverse-engineer costs seconds.
 ⚠⚠ **BUT DOCUMENTATION IS A HYPOTHESIS SOURCE, NOT AN ANSWER.** The reason to read it first is that it is
 CHEAP, not that it is authoritative. Developers ship confidently wrong statements, and — worse — leave
 statements that were true at publication and quietly stopped being true when the code moved. A stale
-comment is more dangerous than an absent one, because it reads as settled. The wiki being unreliable (F28:
+comment is more dangerous than an absent one, because it reads as settled. The wiki being unreliable (F31:
 self-contradictory, two stale numbers) is a specific case of a general problem, not a reason to treat
 in-repo text as different in kind. Correct use: **take the hypothesis from the docs, then confirm it
-against telemetry.** The `00_pop_needs.txt` comment can be leaned on here only because F28 had already
+against telemetry.** The `00_pop_needs.txt` comment can be leaned on here only because F31 had already
 measured the same conclusion independently — two agreeing sources, not one official one.
 
 ⚠ The measurements are not wasted: they stand as observations and they raised the real question, which is

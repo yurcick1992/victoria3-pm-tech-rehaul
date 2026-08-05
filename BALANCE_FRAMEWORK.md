@@ -2123,7 +2123,7 @@ to one era instead of three. ⚠ Era 2's continuous residual rose from 12pp to 4
 > **20.0 %** of pop spending and clamping the FINAL share errs by **24.2 %** — worse in **all seven**
 > markets, none improving. **Nothing changed in the model.** The alternative survives only as an A/B
 > switch, `S.SPLIT_MODE = 'final'`, so the result can be re-derived rather than taken on trust. The
-> committed scorer is **`tools/testbed/score_pop_split.mjs`**; the full numbers are **FINDINGS F28**.
+> committed scorer is **`tools/testbed/score_pop_split.mjs`**; the full numbers are **FINDINGS F31**.
 >
 > ⚠ **This also refutes the mechanism, not just the fit.** The reason to want the final-share reading was
 > that it hands a newly-invented good a guaranteed slice of its need — the bootstrap electrics and
@@ -2132,8 +2132,8 @@ to one era instead of three. ⚠ Era 2's continuous residual rose from 12pp to 4
 > it **0.8 %** (9.4 units measured against 140.8 predicted). The game does not redistribute a cap's
 > leftover to a barely-supplied alternative, so this is not the route to a debut good's demand.
 >
-> ⚠⚠ **REOPENED 2026-08-05 — FINDINGS F30.** Everything above stands *for the needs F28 measured*, but it
-> is **not** the whole answer. F28's data is 1836, where `free_movement` and `communication` each have
+> ⚠⚠ **REOPENED 2026-08-05 — FINDINGS F33.** Everything above stands *for the needs F31 measured*, but it
+> is **not** the whole answer. F31's data is 1836, where `free_movement` and `communication` each have
 > exactly ONE supplied good (F24 reports 0.0% error for them for that reason), so **the configuration that
 > matters — a capped incumbent competing with a debut good — was never in the sample.** Measured in a 1903
 > campaign it goes the other way: the **shipped** reading cannot generate the observed automobile demand
@@ -2250,7 +2250,7 @@ until that lands nothing here should be read as the in-game sequence.
 the era gate forbids can never be selected, so era 3 genuinely has zero *reachable* building demand
 whatever the AI would have chosen.
 
-⚠⚠ **AND THE BASE GAME DOES THIS TO ITSELF** (FINDINGS F30, measured 2026-08-05). "The consumer arrives
+⚠⚠ **AND THE BASE GAME DOES THIS TO ITSELF** (FINDINGS F33, measured 2026-08-05). "The consumer arrives
 before the producer" is **not** peculiar to our hand-moved industries. `pm_switch_boards` — the government
 method that buys telephones — is gated on **`central_planning`**, a *different* technology from the one
 that unlocks telephone production. In a measured campaign Britain acquired `central_planning` in **1901**,
@@ -2355,11 +2355,11 @@ larger share than the market-wide aggregate implies.
 
 **This single change reconciles every observation of 2026-08-05 without discarding any of them:**
 - the documented rule stands, and our implementation of the *formula* is right;
-- **F28/F24's good fit on 1836 needs** follows, because heating, food and clothing are all tradable, so
+- **F31/F24's good fit on 1836 needs** follows, because heating, food and clothing are all tradable, so
   market-wide ≈ local;
 - **the two needs that break — `free_movement` and `communication` — are exactly the two whose incumbent is
   local**, which is otherwise an odd coincidence;
-- **F30's impossibility dissolves**: pops never needed 100 662 units of transport, because transportation's
+- **F33's impossibility dissolves**: pops never needed 100 662 units of transport, because transportation's
   share was never ~97 % in the states where the automobiles were actually bought.
 
 ### ⚠⚠ 10.35.1a(ii) THE TWO HYPOTHESES ARE OBSERVATIONALLY EQUIVALENT — and what resolves them

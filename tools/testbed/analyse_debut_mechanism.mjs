@@ -1,7 +1,7 @@
 // analyse_debut_mechanism.mjs — WHERE DOES A NEWLY INVENTED GOOD'S DEMAND COME FROM?
 //
 // Our model gives a debut good almost no demand, so its first factory is insolvent and the industry never
-// starts (BALANCE_FRAMEWORK §10.29/§10.35). FINDINGS F28 eliminated the only named mechanism. This reads
+// starts (BALANCE_FRAMEWORK §10.29/§10.35). FINDINGS F31 eliminated the only named mechanism. This reads
 // the answer off a full campaign instead, by lining up four signals that must come from ONE run:
 //
 //   1. the monthly order book of the deep markets  — WHEN demand and production start

@@ -61,7 +61,7 @@ near('     price formula: buy = 1.667 × sell', E.priceMultPct(1667, 1000), 150,
 const food = S.IND.find(i => i.id === 'food');
 near('     food T1 wage units', E.wageUnits(E.tierEmp(food.tiers[0])), 6000, 0);
 
-// ---- F28 / §10.34: the two readings of `max_supply_share`. 'raw' is what ships; 'final' is the rejected
+// ---- F31 / §10.34: the two readings of `max_supply_share`. 'raw' is what ships; 'final' is the rejected
 // alternative, kept as an A/B switch. These pin the behaviour that made the comparison meaningful — above
 // all the YIELD rule, without which a need whose other goods do not exist yet silently loses its budget.
 const NC = S.POPM.needs.popneed_communication;

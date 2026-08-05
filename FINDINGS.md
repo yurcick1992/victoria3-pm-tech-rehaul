@@ -93,7 +93,7 @@ transcript rather than from data.
 
 ---
 
-## F30 — ⚠⚠ DEMOTED THE SAME DAY: THE GAME SHIPS THE RULE IN A COMMENT, AND IT IS THE ONE WE ALREADY IMPLEMENT. This finding's arithmetic must therefore be wrong
+## F33 — ⚠⚠ DEMOTED THE SAME DAY: THE GAME SHIPS THE RULE IN A COMMENT, AND IT IS THE ONE WE ALREADY IMPLEMENT. This finding's arithmetic must therefore be wrong
 
 > **READ THIS FIRST.** Everything below was written before anyone looked at the top of
 > `game/common/pop_needs/00_pop_needs.txt`. It documents the mechanic outright:
@@ -107,22 +107,22 @@ transcript rather than from data.
 > ```
 >
 > That is **reading A** — clamp the sell-order share to `[min, max]`, multiply by the base weight — which
-> is exactly what `needSplit()` implements and what **F28** independently measured as the better fit.
+> is exactly what `needSplit()` implements and what **F31** independently measured as the better fit.
 >
 > ⚠ **A SHIPPED COMMENT IS EVIDENCE, NOT PROOF.** Developers publish confidently wrong statements, and
 > comments that were true when written rot silently after the code moves — this one could describe a
 > mechanic that changed patches ago. It does not by itself settle anything. What makes it weighty here is
-> **corroboration**: the comment and F28's measurement are independent lines of evidence that agree, and
-> F28 was scored against the game's own consumption telemetry across seven markets. Two independent
+> **corroboration**: the comment and F31's measurement are independent lines of evidence that agree, and
+> F31 was scored against the game's own consumption telemetry across seven markets. Two independent
 > agreeing sources against one contested inference is why the balance tips.
 >
-> **So the honest state is a three-way conflict, not a verdict.** The comment says reading A. F28's
-> measurement says reading A. F30's arithmetic below says reading A is impossible. **At least one of the
-> three is wrong**, the weight of evidence is against F30, and its conclusion is therefore **not safe to
+> **So the honest state is a three-way conflict, not a verdict.** The comment says reading A. F31's
+> measurement says reading A. F33's arithmetic below says reading A is impossible. **At least one of the
+> three is wrong**, the weight of evidence is against F33, and its conclusion is therefore **not safe to
 > build on** — but "the argument must be broken because the devs wrote it down" would be the wrong reason
 > to drop it.
 >
-> **Two candidate flaws in F30, both UNTESTED** — named so they can be checked, not asserted as the answer:
+> **Two candidate flaws in F33, both UNTESTED** — named so they can be checked, not asserted as the answer:
 > 1. **`transportation` is a `local` good** (§10.35.1a). The whole argument rests on one bound — a good's
 >    pop demand cannot exceed its market-wide buy orders — and every impossibility below is measured
 >    against that single number. Since a local good does not move between states, it is not established
@@ -131,7 +131,7 @@ transcript rather than from data.
 >    implied budget. My earlier claim that this "shifts the arithmetic against reading A" was asserted, not
 >    derived, and is wrong in the direction that matters: a smaller `free_movement` share implies a smaller
 >    budget and less transportation demand. ⚠ Note this does **not** dispose of the telephone cases, which
->    are single-need and where the same impossibility appears — so flaw 2 alone cannot explain F30 away.
+>    are single-need and where the same impossibility appears — so flaw 2 alone cannot explain F33 away.
 >
 > ⚠ **The observations themselves stand** — 948 automobiles and 2 400 telephones of pop demand are measured
 > facts, verified blocks, replicated across seeds. What collapses is the inference drawn from them. The
@@ -145,16 +145,16 @@ transcript rather than from data.
 > ⚠⚠ **But read them as HYPOTHESIS SOURCES, not as answers.** The rule is *check the docs first because
 > they are cheap*, not *believe the docs because they are official*. A shipped statement can be wrong, and
 > a stale one is worse than wrong because it was once true and nobody corrected it. The correct use is:
-> take the hypothesis from the docs, then confirm it against telemetry — which is what F28 happens to have
+> take the hypothesis from the docs, then confirm it against telemetry — which is what F31 happens to have
 > already done here, and why this particular comment can be leaned on.
 
 ### The original argument, retained for the record (its conclusion is retracted)
 
-## F30 (original) — NEITHER READING OF `max_supply_share` CAN BE THE RULE. 1836 heating refutes one, 1903 free_movement refutes the other — and F28 could not have seen the second
+### F33.1 (the original argument, conclusion RETRACTED) — "neither reading of `max_supply_share` can be the rule"
 
 **Claim.** The shipped reading of `max_supply_share` — clamp the RAW supply share, weight it, renormalise
-(F28's winner) — is **arithmetically impossible** in a two-good need whose incumbent is capped. The
-alternative F28 rejected is possible there. Since F28's own evidence still stands, **neither reading is a
+(F31's winner) — is **arithmetically impossible** in a two-good need whose incumbent is capped. The
+alternative F31 rejected is possible there. Since F31's own evidence still stands, **neither reading is a
 global rule**, and the question is now better posed than it was: what behaves like a cap in one
 configuration and not the other?
 
@@ -176,15 +176,15 @@ free_movement    entries: transportation w1 max 0.75 · automobiles w1.25 max 1.
 | reading | automobiles' share | implied need budget | implied transportation POP demand | verdict |
 |---|--:|--:|--:|---|
 | **A — shipped** (clamp the raw share) | 3.04 % | £3 114 686 | **100 662 units** | **IMPOSSIBLE — 5.2× the market's entire transportation buy orders** |
-| **B — final-share cap** (F28 rejected) | 25.00 % | £379 328 | 9 483 units | possible — 49 % of all transportation bought |
+| **B — final-share cap** (F31 rejected) | 25.00 % | £379 328 | 9 483 units | possible — 49 % of all transportation bought |
 
 ⚠ Automobiles also sit in `popneed_leisure`, so some of the 948 units belong there rather than to
 free_movement. That shifts the arithmetic **against** reading A, not for it: leisure has nine goods and is
 dominated by `services`, so reading A allocates automobiles even less of it.
 
-**Why this does not simply overturn F28.** F28's measurement was on **1836** markets, where
+**Why this does not simply overturn F31.** F31's measurement was on **1836** markets, where
 `free_movement` and `communication` each have exactly **one** supplied good — which is precisely why F24
-reports **0.0 % error** for those needs. **F28 never tested a capped incumbent competing with a second
+reports **0.0 % error** for those needs. **F31 never tested a capped incumbent competing with a second
 good.** Its evidence came from `heating`, `basic_food` and `intoxicants`, and there the final-share reading
 fails hard: Russian heating is **79 % wood** and Qing **66 %** against wood's `max` of **0.5**, which
 reading B forbids outright.
@@ -254,7 +254,7 @@ against **1910.12** — nine years apart, so none of this is a date coincidence.
 
 ⚠⚠ **AND READING B IS IMPOSSIBLE IN 9 OF THE SAME 50** — run 1's British automobiles from 1919 on, where
 pop demand exceeds even the 25 % a final-share cap would permit. **So both readings are refuted inside a
-single campaign**, with no appeal to F28's 1836 data needed. That closes the escape route of blaming the
+single campaign**, with no appeal to F31's 1836 data needed. That closes the escape route of blaming the
 conflict on an era or dataset difference: the real rule is neither candidate, and it can exceed a hard
 25 % ceiling.
 
@@ -268,14 +268,14 @@ roughly **seven years** after `combustion_engine` existed. Pops carry 100 % of t
 technology" is true on paper and badly false in practice.
 
 **What it does NOT say.** It does not identify the real rule — only that neither candidate survives. It
-does not revisit F28's numbers, which remain correct for the needs F28 measured. It assumes a good's pop
+does not revisit F31's numbers, which remain correct for the needs F31 measured. It assumes a good's pop
 demand cannot exceed its total buy orders, true by construction since pops are one channel of that total.
 ⚠ **Run 2 ended at 1925.3, not 1936**, after two CTDs and a resume the guard correctly refused
 (BUGS_AND_FIXES 2026-08-05), so the final decade is unobserved in both runs.
 
 ---
 
-> # 🛑 F29 AND F30 ARE PROVISIONAL — THEY WERE MEASURED ON THE WRONG ARM AND MUST BE RE-RUN
+> # 🛑 F32 AND F33 ARE PROVISIONAL — THEY WERE MEASURED ON THE WRONG ARM AND MUST BE RE-RUN
 >
 > **User ruling, 2026-08-05:** running the old tiered config for this work is **indefensible**. It serves
 > no approach — it is not the design we are moving towards (the "vanilla PMs in separate buildings" shape
@@ -283,7 +283,7 @@ demand cannot exceed its total buy orders, true by construction since pops are o
 > workforce composition at least**, and in an unbounded amount besides. A measurement of *the game's*
 > consumer behaviour has to be taken on **vanilla + telemetry**.
 >
-> **Status of everything below: DO NOT BUILD ON IT.** Treat F29 and F30, and the debut-mechanism results
+> **Status of everything below: DO NOT BUILD ON IT.** Treat F32 and F33, and the debut-mechanism results
 > inside them, as hypotheses awaiting re-measurement on `{kind: control}`. Some will hold — the mechanic is
 > engine-level and the needs data was vanilla throughout — and some will not, particularly anything whose
 > magnitude depends on the economy: supply shares, price levels, demand volumes, which buildings appear as
@@ -298,6 +298,24 @@ demand cannot exceed its total buy orders, true by construction since pops are o
 >
 > ## ⚠⚠ WHICH ARM EACH SESSION RAN — record this in every finding, it was recorded in none
 >
+> **⭐ THE AUDIT, 2026-08-05. Of 32 findings, 24 rest on the `config` (our-mod) arm.** Last true-vanilla
+> session: **`20260803_220658_vanilla-percapita-n3`**. Everything measured after it is `config`.
+>
+> | arm | findings |
+> |---|---|
+> | **`config` — RECHECK** | F33, F32, F31, F27, F24, F23, F22, F21, F20, F19, F18, F17, F16, F15, F14, F13, F12, F11, F10, F8, F6, F5, F4, F3 |
+> | `control` — vanilla, stands | F29, F28, F26, F25, F1 |
+> | cites no run — simulation/solver only | F9, F7, F2 |
+>
+> ⚠ **User ruling: essentially all of the `config` column needs re-checking against a true-vanilla run**,
+> excepting only findings about solver behaviour, which involve no game. That includes things that
+> *should not* depend on the mod — the AI's willingness to run a method consuming a good with no supply,
+> and goods substitution behaving contrary to its documentation. **If those turn out to differ under the
+> mod, that is itself weird and worth documenting**, so re-measure rather than assume.
+> ⚠ Several are load-bearing for the balance UI, not just curiosities: F13 (the urban-centre rule), F15
+> (the fitted consumption distribution), F19/F22/F24 (the within-need split), F27 (the slave basket) are
+> all wired into `ui/econ.js` and its presets.
+>
 > Raised by the user 2026-08-05 ("all the runs were supposed to be vanilla+telemetry"). The record is a
 > **mix**, and no finding states its arm. From each session's `schedule.json`:
 >
@@ -306,7 +324,7 @@ demand cannot exceed its total buy orders, true by construction since pops are o
 > | **`control`** (vanilla + telemetry) | all of 1 Aug (mirror-fix, pop-probe, seed-flag, route, fat-logging, phased-dump, v7-cadence, origins ×5), the whole **3 Aug wages** series, `vanilla-percapita-n3` |
 > | **`config`** (our full tiered mod) | 31 Jul + 2 Aug balance/scenario work **including `rescore-direct`**, and everything on 5 Aug |
 >
-> **⭐ F24 and F28 come from `20260802_233029_rescore-direct`, which is the `config` arm — our mod.** That
+> **⭐ F24 and F31 come from `20260802_233029_rescore-direct`, which is the `config` arm — our mod.** That
 > is **not** an error, and probably the right choice: `extract_presets.ps1` builds the UI's presets by
 > mapping vanilla 1836 history **onto our tier buildings**, and the game's own 1836 start is that same
 > re-tiering (`convert_history`). Model and game therefore describe the SAME economy. Scoring our-tier
@@ -316,7 +334,7 @@ demand cannot exceed its total buy orders, true by construction since pops are o
 > arm cannot be interpreted years later, and "which arm" changes what the number means. **State the arm in
 > every finding from now on.**
 >
-> ⚠⚠ **EVERY MEASUREMENT IN F29/F30 WAS TAKEN IN A WORLD RUNNING OUR MOD. THERE IS NO VANILLA CONTROL.**
+> ⚠⚠ **EVERY MEASUREMENT IN F32/F33 WAS TAKEN IN A WORLD RUNNING OUR MOD. THERE IS NO VANILLA CONTROL.**
 > Raised by the user 2026-08-05 on seeing tiered buildings in the observer. Confirmed from each session's
 > `schedule.json`: all of `20260805_115022`, `_132101`, `_150128` and the `weight-x10` run were built from
 > `config/mod_config.json` (or a copy of it), i.e. the full tier split — 53 tier buildings, our production
@@ -326,7 +344,7 @@ demand cannot exceed its total buy orders, true by construction since pops are o
 > **What this does and does not touch:**
 > - ✅ The demand-split MECHANIC is engine-level, and the mod did not emit `common/pop_needs` at all until
 >   the weight experiment — so needs, weights and caps were exactly vanilla in every earlier run.
-> - ✅ F30's arithmetic uses supply and demand from the SAME run, so it is internally consistent whatever
+> - ✅ F33's arithmetic uses supply and demand from the SAME run, so it is internally consistent whatever
 >   buildings exist.
 > - ✅ The ×10 result is a within-family before/after, and its baseline came from the same mod.
 > - ⚠ **But the ECONOMY is not vanilla's.** Different buildings, different production, hence different
@@ -337,7 +355,7 @@ demand cannot exceed its total buy orders, true by construction since pops are o
 > `config_sha256: null`** — the two fields CLAUDE.md requires to be machine-read. Provenance had to be
 > reconstructed from `schedule.json`. Fix pending.
 
-## F29 — A debut good's pop demand is PROPORTIONAL to its supply, not floored — and the constant is need-dependent, 0.1× in a nine-good need against 3.2× in a two-good one ⚠ REPLICATION PENDING
+## F32 — A debut good's pop demand is PROPORTIONAL to its supply, not floored — and the constant is need-dependent, 0.1× in a nine-good need against 3.2× in a two-good one ⚠ REPLICATION PENDING
 
 **Claim.** Watching every good's first appearance in a full 1836→1936 campaign, with the pop/building
 channel split and the worldwide technology log in the same run:
@@ -429,7 +447,7 @@ units of supply. **Moderate on (3)**, which rests on one good in one need in one
 
 ---
 
-## F28 — `max_supply_share` bounds the RAW supply share, not the final share of the need. The alternative reading is worse in all seven markets, and the bootstrap it would give a debut good is directly contradicted
+## F31 — `max_supply_share` bounds the RAW supply share, not the final share of the need. The alternative reading is worse in all seven markets, and the bootstrap it would give a debut good is directly contradicted
 
 **Claim.** The pop-need fields `max_supply_share` / `min_supply_share` admit two readings, and they are
 not close in effect. Bounding the **raw supply share** before the weighting and renormalisation — what the
