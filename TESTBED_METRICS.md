@@ -1168,3 +1168,27 @@ on a line of its own. A line-level fence does not contain this failure.
 **The affordable shape is therefore a SPARSE DATE LIST, not a goods filter** — and ideally one market per
 run, since the cost is per market per dump. Aim it at dates a cheap `market_goods_scoped` run has already
 identified, rather than sampling blind.
+
+### 3.3.2 NEXT TIME: restrict the breakdown to POP-CONSUMABLE goods — desirable, and not yet possible
+
+**The design that should be used** (user, 2026-08-05): emit the channel split only for goods pops can
+consume, or narrower still, only for goods sharing a **need** with the goods under investigation. Of ~53
+traded goods, 35 appear in some pop need, and the needs relevant to one question are far fewer — the
+`communication` / `free_movement` / `luxury_items` / `leisure` set is on the order of 15 goods. That is a
+~3x saving on the single most expensive metric, and it would turn a partially-truncated yearly dump into a
+complete one.
+
+⚠ **IT CANNOT BE BUILT TODAY, and the reason is §3.3.1**: there is no known way to filter
+`every_market_goods`. Both candidate triggers fire zero times, and addressing a good directly kills the
+on_action. Note the asymmetry with the order book, where `BUGS_AND_FIXES`'s advice — *the good's key is on
+every line, filter at analysis time* — is entirely correct and costs nothing: for the breakdown the cost
+**is the emission**, so analysis-time filtering saves no ring space at all.
+
+**The concrete unblocking probe**, whenever this is next worth an hour: *no valid trigger of any kind has
+ever been found for the `market_goods` scope*. We have only ever tested goods-identity triggers. If some
+quantity trigger works there — anything of the shape "buy orders above zero", for instance — the filter
+becomes possible and this design opens up. Probe it in an **on_action of its own** (§3.3.1), because a bad
+trigger there is silent.
+
+**Until then the levers are markets, dates and goods-at-analysis — not goods-at-emission.** Budget the
+split as: one market per tick, a sparse date list, and union across dumps and runs.
