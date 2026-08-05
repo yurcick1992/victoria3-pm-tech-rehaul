@@ -304,20 +304,73 @@
     //
     // `supply` is good -> sell orders. Falls back to POPDIST, then to the vanilla `weight`, when a need has
     // no supply at all in this scenario (an empty market must still produce a sane split).
+    // ⚠ WHAT `max_supply_share` / `min_supply_share` ARE A BOUND *ON* IS AN OPEN QUESTION, and the two
+    // readings are not close. `S.SPLIT_MODE` selects between them so the difference can be MEASURED
+    // rather than argued (BALANCE_FRAMEWORK §10.34); it is an A/B switch, not a setting to configure.
+    //
+    //   'raw'   (default, the shipped reading) — the bound clamps the RAW supply share, which is then
+    //           multiplied by weight and renormalised. ⚠ The renormalisation largely cancels the clamp:
+    //           with one supplied good the cap shrinks its score and the total by the same factor, so
+    //           transportation capped at 0.75 still lands on 99.7% of `popneed_communication`.
+    //   'final' — the bound clamps each good's FINAL share of the need. Capped-proportional allocation:
+    //           allocate by weight × supply share, clamp the resulting share to [min,max], hand the
+    //           excess to the goods still unclamped, repeat. Under this reading transportation's 0.75
+    //           entitles telephones to the other 25% from the moment anyone makes any, which is the
+    //           demand a newly-invented good visibly gets in game.
+    //
+    // ⚠ CAPS YIELD WHEN NOTHING CAN ABSORB THE MONEY. A cap only redistributes to goods with effective
+    // supply above zero; if every such good is already at its ceiling the remainder goes back to them in
+    // proportion, ceilings ignored. Without this a need whose other goods do not exist yet — 1836
+    // communication, free_movement, services, standard_clothing all have exactly one — would lose part of
+    // its budget to a good nobody can sell, and F24's four zero-error single-good needs would break.
+    // The rule keys on eff > 0, so a good the formula zeroes out (heavily industrially consumed) is
+    // treated as unable to absorb, exactly as it already is in the 'raw' path.
     function needSplit(nd, def, supply, nonpop){
       const es = (def.entries||[]);
       if(!es.length) return null;
       const eff = es.map(e => Math.max(0, ((supply||{})[e.g]||0) - 0.5*((nonpop||{})[e.g]||0)));
       const tot = eff.reduce((a,b) => a + b, 0);
-      let pw;
-      if(tot > 0){
-        pw = es.map((e,i) => {
-          const ms = Math.min(e.max != null ? e.max : 1, Math.max(e.min||0, eff[i]/tot));
-          return (e.w != null ? e.w : 1)*ms;
-        });
-      } else {
-        pw = es.map(e => { const d = S.POPDIST[nd]; return (d && d[e.g] != null) ? d[e.g] : (e.w||0); });
+      if(!(tot > 0)){
+        const pw = es.map(e => { const d = S.POPDIST[nd]; return (d && d[e.g] != null) ? d[e.g] : (e.w||0); });
+        const s = pw.reduce((a,b) => a + b, 0);
+        if(!(s > 0)) return null;
+        return es.map((e,i) => ({g:e.g, s:pw[i]/s}));
       }
+      if(S.SPLIT_MODE === 'final'){
+        // score = weight × supply share, UNCLAMPED; the bounds act on the normalised result below.
+        const base = es.map((e,i) => (e.w != null ? e.w : 1)*(eff[i]/tot));
+        const live = es.map((e,i) => eff[i] > 0 && base[i] > 0);
+        let pool = 0; for(let i = 0; i < es.length; i++) if(live[i]) pool += base[i];
+        if(!(pool > 0)) return null;
+        const sh = es.map((e,i) => live[i] ? base[i]/pool : 0);
+        const fixed = es.map(() => false);
+        // Clamp the worst violator, redistribute what it gave up (or took) across the goods still free,
+        // and look again. One good is settled per pass, so it terminates in at most `es.length` passes.
+        for(let pass = 0; pass < es.length; pass++){
+          let hit = -1, over = 0;
+          for(let i = 0; i < es.length; i++){
+            if(!live[i] || fixed[i]) continue;
+            const hi = es[i].max != null ? es[i].max : 1, lo = es[i].min || 0;
+            const d = sh[i] > hi ? sh[i] - hi : (sh[i] < lo ? sh[i] - lo : 0);
+            if(Math.abs(d) > Math.abs(over) + 1e-12){ over = d; hit = i; }
+          }
+          if(hit < 0) break;
+          const hi = es[hit].max != null ? es[hit].max : 1, lo = es[hit].min || 0;
+          sh[hit] = over > 0 ? hi : lo; fixed[hit] = true;
+          let free = 0; for(let i = 0; i < es.length; i++) if(live[i] && !fixed[i]) free += sh[i];
+          if(free > 0){ for(let i = 0; i < es.length; i++) if(live[i] && !fixed[i]) sh[i] += over*sh[i]/free; }
+          else break;                                     // nothing free left to take it — the yield below
+        }
+        // YIELD: whatever the ceilings could not place (or the floors over-placed) goes back to the goods
+        // that can actually supply it, in proportion. See the note above.
+        let sum = 0; for(let i = 0; i < es.length; i++) sum += sh[i];
+        if(!(sum > 0)) return null;
+        return es.map((e,i) => ({g:e.g, s:sh[i]/sum}));
+      }
+      const pw = es.map((e,i) => {
+        const ms = Math.min(e.max != null ? e.max : 1, Math.max(e.min||0, eff[i]/tot));
+        return (e.w != null ? e.w : 1)*ms;
+      });
       const s = pw.reduce((a,b) => a + b, 0);
       if(!(s > 0)) return null;
       return es.map((e,i) => ({g:e.g, s:pw[i]/s}));

@@ -2105,7 +2105,25 @@ conspicuously did not do before (§10.31: the era-1 port earned +95% against the
 to one era instead of three. ⚠ Era 2's continuous residual rose from 12pp to 47pp; the era-2 port is a new
 92-level building and the count controller has not fully settled it.
 
-## 10.34 THE `max_supply_share` CLAMP IS APPLIED TO THE WRONG QUANTITY — researched, not yet fixed (2026-08-05)
+## 10.34 THE `max_supply_share` CLAMP — hypothesis RAISED, TESTED and REJECTED (2026-08-05)
+
+> **⭐ RESULT FIRST: the shipped reading is right and the alternative is wrong.** Scored against the game's
+> own consumption telemetry over seven 1836 markets, clamping the RAW supply share (what we ship) errs by
+> **20.0 %** of pop spending and clamping the FINAL share errs by **24.2 %** — worse in **all seven**
+> markets, none improving. **Nothing changed in the model.** The alternative survives only as an A/B
+> switch, `S.SPLIT_MODE = 'final'`, so the result can be re-derived rather than taken on trust. The
+> committed scorer is **`tools/testbed/score_pop_split.mjs`**; the full numbers are **FINDINGS F28**.
+>
+> ⚠ **This also refutes the mechanism, not just the fit.** The reason to want the final-share reading was
+> that it hands a newly-invented good a guaranteed slice of its need — the bootstrap electrics and
+> automotive need. 1836 contains that exact configuration: Russian heating, where wood is capped at 0.5 and
+> **oil** is present but scarce. The reading predicts oil takes ~17 % of the heating budget; the game gives
+> it **0.8 %** (9.4 units measured against 140.8 predicted). The game does not redistribute a cap's
+> leftover to a barely-supplied alternative, so this is not the route to a debut good's demand.
+>
+> The rest of this section is the case as it was argued BEFORE the test, kept because the reasoning was
+> good and only the measurement could settle it — which is the point.
+
 
 **The hypothesis being tested** (raised by the user): in game, a newly-invented good's demand and price
 spike on arrival, supporting several factories immediately; in our model a debut good's demand is a token
@@ -2152,19 +2170,45 @@ ones with binding clamps: **heating 20.4%** (wood 0.5 / fabric 0.25 / coal 0.8),
 (all five at 0.9), **intoxicants 14.7%** (wine 0.25). So the 1836 data *can* discriminate — it simply has
 never been asked to.
 
-### 10.34.1 What to do, in order — NOT started
+### 10.34.1 How it was tested, and what came back
 
-1. **Re-score the two readings against the F24 measurement.** Session `20260802_233029_rescore-direct` is
-   intact. If the final-share reading lowers heating / basic_food / intoxicants error, that is the answer
-   and it comes from the game's own consumption telemetry rather than from a wiki.
-2. **Implement it as capped-proportional allocation**, not a clamp-then-normalise: allocate by
-   `weight × supply share`, clamp each good's FINAL share to `[min, max]`, redistribute the excess among
-   the unclamped goods, iterate. ⚠ Caps must yield when infeasible — a need with one available good must
-   still give it 100%, or money vanishes and F24's four single-good needs stop matching.
-3. **Only then re-measure illogicality.** If it is right, electrics and automotive stop being structurally
-   insolvent, since it is the same mechanism for both (§10.29) — but it must be adopted because it matches
-   the game, not because it improves the score.
+All three steps ran. Step 2 was built exactly as specified — capped-proportional allocation, iterating
+clamp-and-redistribute, with **caps yielding** when nothing that can actually supply the good is left to
+absorb the money (the user's ruling: yield when the alternatives have *exactly zero* supply, not merely
+little). `tools/econ_selftest.mjs` pins that yield rule, the bootstrap it produces, and the fact that the
+two readings agree exactly where no cap binds.
 
-⚠ Do not treat this as settled. It is a well-evidenced hypothesis with a decisive test that has not been
-run. `needSplit` is a MEASURED result (F22/F24), and replacing it on reasoning alone would be exactly the
-move this document keeps warning about.
+| | shipped (`raw`) | alternative (`final`) |
+|---|--:|--:|
+| BEL | 18.3 | 25.6 |
+| JAP | 36.2 | 37.5 |
+| FRA | 29.2 | 34.5 |
+| USA | 19.2 | 23.2 |
+| RUS | 19.4 | 25.2 |
+| CHI | 17.6 | 20.7 |
+| AUS | 18.1 | 18.4 |
+| **mean** | **20.0** | **24.2** |
+
+Step 3 was therefore never reached: a reading that fits the game worse cannot be adopted for what it would
+do to the illogicality score, which is the trap this document keeps naming.
+
+**Why it fails is legible, not statistical.** The caps Paradox authored sit BELOW the concentration the
+game actually shows, so binding them forces a diversification that does not happen: Russian heating is
+79 % wood against a 0.5 cap, Qing heating 67 %. Under the final-share reading the excess has to go
+somewhere, and it lands on goods the market barely has — Russian oil 9.4 measured against 140.8 predicted,
+Qing tobacco 255 against 776, French coffee 126 against 205. The needs with the tightest caps degrade
+most: heating **+11.1 pp** of within-need misallocation, luxury items **+6.5**, crude items **+5.1**.
+Three needs improve slightly (intoxicants −2.8, leisure −1.1, simple clothing −1.0) and that is all.
+
+**One rigorous test was attempted and did NOT fire, which is worth recording.** For a good belonging to
+exactly one need, measured money is unambiguously that need's, and the sum over the need's goods
+upper-bounds its budget — so `m_g / Σ` is a hard *lower* bound on the good's share. Any such good measured
+above its own cap would refute the final-share reading outright, whatever the rest of the model does.
+**No good clears that bar**, so the refutation rests on the fit, not on a contradiction. ⚠ The check is in
+the scorer and it initially reported four violations, all artifacts: the log ring truncates, and summing
+only the goods that survived under-states the denominator. It now requires **every** good of the need to
+have been captured before it will judge — a verified block with no pop entry being a real zero.
+
+**What is still open.** The observation that started this — a new good's demand and price spike in game —
+remains unexplained and is still worth explaining; `max_supply_share` simply is not the mechanism. §10.29
+lists what else is on the table for electrics and automotive.

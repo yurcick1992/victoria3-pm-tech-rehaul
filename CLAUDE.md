@@ -313,7 +313,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         solvers' own write→read loop and made `--write` + re-run silently re-read the PREVIOUS
                         values (see BUGS_AND_FIXES). data.js still supplies prices + the vanilla extract
   econ_selftest.mjs     regression check for ui/econ.js against MEASURED numbers already in the docs (F26/F27,
-                        the V3 price formula anchors). Run it after touching ui/econ.js
+                        the V3 price formula anchors, and F28's two readings of the supply-share bounds —
+                        above all that a cap YIELDS when no good with supply can absorb what it displaces).
+                        Run it after touching ui/econ.js
   verify_pms.mjs        audits every PM the era presets select: is it a REAL vanilla PM, and could this
                         country legally run it? Reads common/production_methods DIRECTLY rather than our
                         extract, so an extractor bug cannot hide behind it. Exits non-zero on any failure.
@@ -379,6 +381,18 @@ tools/                  dev tooling — NOT shipped in the mod
                         breakdown's volume can push a run's `G|` lines out of the ring entirely), and a block
                         holding more than one candidate is discarded rather than guessed at. Without it the
                         parse invents goods the game never reported
+  testbed/score_pop_split.mjs  THE scorer for the pop-consumption model against DIRECTLY MEASURED
+                        consumption (`consumption_breakdown`): monetary error per market on the F24 basis,
+                        within-need misallocation, and a per-good diff. Runs the model under each
+                        `S.SPLIT_MODE` in turn (`--modes raw,final`) so two readings of one rule are scored
+                        on byte-identical measured data. Built for FINDINGS F28; not specific to it — any
+                        later change to the pop model is re-scored the same way. It reads a session's logs
+                        directly, with the same four safeguards `analyse_slave_basket` needs (own-token
+                        filter, block verified against the run's `G|` buy orders, K/M/B suffixes, tail-only
+                        matching), plus one of its own: a verified block with **no** pop entry is a real
+                        ZERO, not a miss, or the model is never charged for demand it invents.
+                        ⚠ Its `--need` and cap-violation views must see EVERY good of a need before they
+                        judge — the ring truncates, and a partial denominator invents violations
   testbed/wait_for_session.ps1  the wake-up signal for a batch launched into its own window (which the
                         agent harness cannot see). Run it with run_in_background; returns DONE on
                         completion, RUNNING on a heartbeat, DEAD (exit 2) if the game vanished
@@ -777,6 +791,16 @@ the game.
   ⚠ The bounds **clamp**. The wiki says market share "has no effect" outside them, which reads as
   reverting to bare `weight`, and that is measurably wrong: liquor is ~95 % of Belgium's intoxicants
   supply and the reverting reading predicts 102 against 201 observed, where clamping gives 199.
+  ✅ **WHAT the bounds clamp is SETTLED — the RAW supply share, not the final share of the need**
+  (FINDINGS F28, BALANCE_FRAMEWORK §10.34, 2026-08-05). The rival reading — cap each good's final share and
+  hand the excess to the goods still unclamped — was built, and scored against the game's own consumption
+  telemetry it is worse in **all seven** 1836 markets: **20.0 % → 24.2 %** mean error. It survives only as
+  the A/B switch **`S.SPLIT_MODE = 'final'`** (default `'raw'`), re-scorable with
+  **`tools/testbed/score_pop_split.mjs`**. ⚠ It also **refutes the mechanism it was wanted for**: the point
+  was to hand a debut good a guaranteed slice of its need, and 1836 holds that exact case — Russian heating
+  caps wood at 0.5 with scarce oil beside it, and the reading gives oil ~17 % of the budget where the game
+  gives it **0.8 %**. Whatever produces a new good's demand spike in game, it is not this. Do not re-run
+  this experiment; do not adopt the final-share reading for what it would do to the illogicality score.
   Goods are equivalent **per pound, not per unit** — a higher base price fulfils the same need with
   fewer units, which is why units come from money ÷ base price. **No fitted
   numbers, and nothing stored per scenario.** It is not circular and not a time series: pops never

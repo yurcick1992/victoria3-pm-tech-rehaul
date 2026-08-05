@@ -61,5 +61,30 @@ near('     price formula: buy = 1.667 × sell', E.priceMultPct(1667, 1000), 150,
 const food = S.IND.find(i => i.id === 'food');
 near('     food T1 wage units', E.wageUnits(E.tierEmp(food.tiers[0])), 6000, 0);
 
+// ---- F28 / §10.34: the two readings of `max_supply_share`. 'raw' is what ships; 'final' is the rejected
+// alternative, kept as an A/B switch. These pin the behaviour that made the comparison meaningful — above
+// all the YIELD rule, without which a need whose other goods do not exist yet silently loses its budget.
+const NC = S.POPM.needs.popneed_communication;
+const splitOf = (mode, supply) => {
+  S.SPLIT_MODE = mode;
+  const r = E.needSplit('popneed_communication', NC, supply, {}) || [];
+  S.SPLIT_MODE = 'raw';
+  return Object.fromEntries(r.map(x => [x.g, x.s]));
+};
+near('     split: telephones unmade → raw yields 100%',
+  splitOf('raw', { transportation: 1000, telephones: 0 }).transportation, 1, 0);
+near('     split: telephones unmade → final YIELDS too',
+  splitOf('final', { transportation: 1000, telephones: 0 }).transportation, 1, 0,
+  'caps must yield when nothing with supply can absorb the money');
+near('     split: one tiny producer, raw ≈ cancels the cap',
+  splitOf('raw', { transportation: 1000, telephones: 1 }).transportation, 0.997, 0.001,
+  'the 0.75 cap moves it 0.3pp — §10.34');
+near('     split: one tiny producer, final binds at the cap',
+  splitOf('final', { transportation: 1000, telephones: 1 }).telephones, 0.25, 0.001,
+  'the bootstrap the rejected reading would give a debut good');
+near('     split: uncapped case — the modes agree',
+  splitOf('final', { transportation: 1000, telephones: 1000 }).telephones
+  - splitOf('raw', { transportation: 1000, telephones: 1000 }).telephones, 0, 1e-9);
+
 console.log(fails ? `\n${fails} CHECK(S) FAILED` : '\nALL CHECKS PASSED');
 process.exit(fails ? 1 : 0);

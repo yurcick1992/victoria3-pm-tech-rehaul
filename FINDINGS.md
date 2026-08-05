@@ -93,6 +93,85 @@ transcript rather than from data.
 
 ---
 
+## F28 — `max_supply_share` bounds the RAW supply share, not the final share of the need. The alternative reading is worse in all seven markets, and the bootstrap it would give a debut good is directly contradicted
+
+**Claim.** The pop-need fields `max_supply_share` / `min_supply_share` admit two readings, and they are
+not close in effect. Bounding the **raw supply share** before the weighting and renormalisation — what the
+model already shipped — errs by **20.0 %** of pop spending across seven 1836 markets. Bounding each good's
+**final share of the need**, implemented as capped-proportional allocation, errs by **24.2 %**, and is
+worse in **all seven** markets. The shipped reading stands; **nothing in the model changed**.
+
+Session `20260802_233029_rescore-direct` (re-used, not re-run), dump 1836.2.1, one market per run, two
+runs per market. Error is monetary on the F24 basis: `Σ|predicted − measured| × base price ÷ Σ measured ×
+base price`, over goods appearing in some pop need. Scorer: `tools/testbed/score_pop_split.mjs`
+(committed — F24's equivalent was ad hoc and did not survive, which is why this had to be rebuilt).
+
+| market | shipped (`raw`) | alternative (`final`) | Δ |
+|---|--:|--:|--:|
+| BEL | 18.3 | 25.6 | +7.3 |
+| JAP | 36.2 | 37.5 | +1.3 |
+| FRA | 29.2 | 34.5 | +5.3 |
+| USA | 19.2 | 23.2 | +4.0 |
+| RUS | 19.4 | 25.2 | +5.8 |
+| CHI | 17.6 | 20.7 | +3.1 |
+| AUS | 18.1 | 18.4 | +0.3 |
+| **mean** | **20.0** | **24.2** | **+4.2** |
+
+(Best-coverage run per market; the breakdown truncates and each run loses a different tail. The shipped
+column reproduces F24's published 18.5 % for the same approach to within 1.5 pp — the gap is that this
+scores against the preset's stored measured SoL and pops rather than each run's own, and over whichever
+goods that run preserved. Both arms see byte-identical measured data, so the comparison is paired.)
+
+**Why it fails is legible, not statistical.** The authored caps sit BELOW the concentration the game
+actually shows, so binding them forces a diversification that does not occur. Measured share of the
+heating goods' money: **Russia wood 79.1 %** and **Qing wood 66.5 %**, both against a `max_supply_share`
+of **0.5**. Under the final-share reading the excess must go somewhere, and it lands on goods the market
+barely has. Biggest per-good money shifts (units, best run):
+
+| market | good | measured | `raw` | `final` |
+|---|---|--:|--:|--:|
+| RUS | oil | 9.4 | 20.6 | **140.8** |
+| CHI | tobacco | 255 | 383 | **776** |
+| CHI | wood | 4640 | 3956 | **3304** |
+| RUS | wood | 1800 | 1437 | **900** |
+| CHI | silk | 837 | 886 | **1272** |
+| FRA | coffee | 126 | 95 | **205** |
+| FRA | porcelain | 40 | 83 | **161** |
+| RUS | silk | 45 | 114 | **251** |
+
+Within-need misallocation moves the same way: heating **6.3 → 17.4 %**, luxury items **6.3 → 12.8**,
+crude items **3.8 → 8.9**, stimulants **7.5 → 10.3**. Three needs improve — intoxicants **22.0 → 19.2**,
+leisure **15.7 → 14.6**, simple clothing **3.4 → 2.4** — and basic food and luxury food are unmoved.
+
+**⭐ The mechanism is refuted, not merely the fit.** The reason to want the final-share reading was that it
+gives a newly-invented good a guaranteed slice of its need the moment anyone makes any — the bootstrap
+electrics and automotive lack (§10.29). 1836 contains that exact configuration: **Russian heating**, where
+wood is capped and **oil** exists but is scarce. The reading predicts oil takes ~17 % of the heating
+budget; the game gives it **0.8 %**. Whatever produces a debut good's demand spike in game, it is not the
+redistribution of a capped good's leftover share.
+
+**What it does NOT say.** It does not say the caps are inert — under the shipped reading they still bind
+the raw share, which F22 measured as worth real accuracy on liquor. It does not explain the in-game demand
+spike for a new good; that observation stands unexplained. It does not test any reading in which the cap
+bounds the final share but the remainder is redistributed by some *other* rule than proportionally among
+the unclamped goods — only the natural implementation was built. One dump date, one game version, and the
+same seven markets as F24, so it inherits F24's limits: Japan is ~36 % under either reading and remains a
+level shortfall nobody has explained, and Britain was never in this batch.
+
+**⚠ A rigorous refutation was attempted and did not fire.** For a good in exactly one need, measured money
+is unambiguously that need's, and the sum over the need's goods upper-bounds the need's budget — so
+`m_g / Σ` lower-bounds the good's true share. Any good measured above its own cap would refute the
+final-share reading outright. **No good clears that bar**, so the conclusion rests on the fit. The check is
+in the scorer, and it is worth knowing that it first reported four violations at "100 % of their need",
+every one an artifact of the log ring truncating the *other* goods of that need and shrinking the
+denominator. It now refuses to judge a need unless every one of its goods was captured.
+
+**Confidence: high on the comparison, moderate on the absolute levels.** The comparison is paired,
+reproducible from committed code against an intact session, and one-directional across seven markets. The
+absolute error levels carry F24's known caveats.
+
+---
+
 ## F27 — Slaves are not consumers: the BUILDING buys them a basket, and most 1836 slaves are in subsistence, where it is worth a twentieth. Measured directly, not inferred
 
 **The claim.** Victoria 3 never has a slave buy anything. `SLAVE_BASKET_*` in `common/defines` makes

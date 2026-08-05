@@ -764,22 +764,55 @@ function allSpend(){ const s=popSpend(), t=slaveSpend(); for(const k in t) s[k]=
 // EVERY good the need lists is a candidate. There is no availability gate: an unsupplied good scores a
 // market share of 0 and drops out on its own, which is both the game's behaviour and the reason the old
 // per-good "pops may buy" toggles were redundant.
+// ⚠ WHAT THE BOUNDS ARE A BOUND *ON* IS AN OPEN QUESTION — see the long note on `needSplit` in
+// ui/econ.js and BALANCE_FRAMEWORK §10.34. 'raw' clamps the supply share before renormalising (which
+// largely cancels the clamp); 'final' clamps each good's FINAL share of the need and hands the excess
+// to the goods still unclamped, yielding when nothing with supply can absorb it. A/B switch for
+// measurement, not a setting: this copy must stay identical to econ.js's.
+let SPLIT_MODE='raw';
 function needSplit(nd, def, supply, nonpop){
   const es=(def.entries||[]);
   if(!es.length) return null;
   const eff=es.map(e=>Math.max(0, ((supply||{})[e.g]||0) - 0.5*((nonpop||{})[e.g]||0)));
   const tot=eff.reduce((a,b)=>a+b,0);
-  let pw;
-  if(tot>0){
-    pw=es.map((e,i)=>{
-      const ms=Math.min(e.max!=null?e.max:1, Math.max(e.min||0, eff[i]/tot));
-      return (e.w!=null?e.w:1)*ms;
-    });
-  } else {
+  if(!(tot>0)){
     // No supply at all for this need in the scenario: fall back to the stored distribution, then to
     // the vanilla weight, so an empty market still splits sanely instead of collapsing to nothing.
-    pw=es.map(e=>{ const d=POPDIST[nd]; return (d&&d[e.g]!=null)?d[e.g]:(e.w||0); });
+    const pw=es.map(e=>{ const d=POPDIST[nd]; return (d&&d[e.g]!=null)?d[e.g]:(e.w||0); });
+    const s=pw.reduce((a,b)=>a+b,0);
+    if(!(s>0)) return null;
+    return es.map((e,i)=>({g:e.g, s:pw[i]/s}));
   }
+  if(SPLIT_MODE==='final'){
+    const base=es.map((e,i)=>(e.w!=null?e.w:1)*(eff[i]/tot));
+    const live=es.map((e,i)=>eff[i]>0 && base[i]>0);
+    let pool=0; for(let i=0;i<es.length;i++) if(live[i]) pool+=base[i];
+    if(!(pool>0)) return null;
+    const sh=es.map((e,i)=>live[i]?base[i]/pool:0);
+    const fixed=es.map(()=>false);
+    for(let pass=0; pass<es.length; pass++){
+      let hit=-1, over=0;
+      for(let i=0;i<es.length;i++){
+        if(!live[i]||fixed[i]) continue;
+        const hi=es[i].max!=null?es[i].max:1, lo=es[i].min||0;
+        const d = sh[i]>hi ? sh[i]-hi : (sh[i]<lo ? sh[i]-lo : 0);
+        if(Math.abs(d)>Math.abs(over)+1e-12){ over=d; hit=i; }
+      }
+      if(hit<0) break;
+      const hi=es[hit].max!=null?es[hit].max:1, lo=es[hit].min||0;
+      sh[hit]= over>0?hi:lo; fixed[hit]=true;
+      let free=0; for(let i=0;i<es.length;i++) if(live[i]&&!fixed[i]) free+=sh[i];
+      if(free>0){ for(let i=0;i<es.length;i++) if(live[i]&&!fixed[i]) sh[i]+=over*sh[i]/free; }
+      else break;
+    }
+    let sum=0; for(let i=0;i<es.length;i++) sum+=sh[i];
+    if(!(sum>0)) return null;
+    return es.map((e,i)=>({g:e.g, s:sh[i]/sum}));
+  }
+  const pw=es.map((e,i)=>{
+    const ms=Math.min(e.max!=null?e.max:1, Math.max(e.min||0, eff[i]/tot));
+    return (e.w!=null?e.w:1)*ms;
+  });
   const s=pw.reduce((a,b)=>a+b,0);
   if(!(s>0)) return null;
   return es.map((e,i)=>({g:e.g, s:pw[i]/s}));
