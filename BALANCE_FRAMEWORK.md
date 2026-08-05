@@ -2362,6 +2362,43 @@ larger share than the market-wide aggregate implies.
 - **F30's impossibility dissolves**: pops never needed 100 662 units of transport, because transportation's
   share was never ~97 % in the states where the automobiles were actually bought.
 
+### ⚠⚠ 10.35.1a(ii) THE TWO HYPOTHESES ARE OBSERVATIONALLY EQUIVALENT — and what resolves them
+
+**"The newcomer's weight is understated" and "transportation's share is overstated" are the same equation.**
+A need's budget is unobserved, so from the newcomer's demand alone only the RATIO of purchase weights is
+recoverable: raising `w_new` and lowering `ms_transportation` move the newcomer's share identically. Every
+"required weight" figure below can be re-read as a required transportation share, and the data cannot
+attribute the discrepancy to numerator or denominator.
+
+**Solved for the weight** (documented formula, market-wide supply, transport pops capped at half the
+market), over 49 observations across both runs:
+
+| good | documented weight | required weight, median | multiplier |
+|---|--:|--:|--:|
+| `automobiles` | 1.25 | **~4.9** | 3.9× (2.8–12.7) |
+| `telephones` | 2.0 | **~4.8** | 2.4× (1.0–3.9) |
+
+⚠ **Note what clusters: the ABSOLUTE weight (~4.8 for both), not the multiplier (3.9× vs 2.4×).** A
+per-good weight error gives no reason for two different goods to need the *same* corrected weight; a shared
+error in their shared incumbent does. Suggestive of the transportation reading — but only suggestive, since
+the two are equivalent as above.
+
+⚠ A first attempt to separate them (solving each need for the transportation share it implies, then
+comparing the two needs at the same date and market) is **NOT valid as run**: it capped transport's pop
+demand at half the market *independently per need*, double-counting, when transportation serves both needs
+and the constraint is on their SUM. Its 0.29–0.93 disagreement is therefore uninterpretable.
+
+**⭐ WHAT ACTUALLY RESOLVES IT: transportation's OWN pop demand**, which pins the budgets and makes the
+system over-determined (transport serves two needs, so three observed demands against two budgets leaves a
+spare equation to test the formula with). **That measurement is obtainable** — the channel split verified
+43 transportation blocks in run 1 and 24 in run 2 (e.g. British 1853: total 8 220, pops 7 700). But
+truncation left only **2 dumps** where transportation and a newcomer were captured together, one per run,
+which is too thin.
+
+**So the next run is well specified**: the channel split on **ONE market**, a short date list around the
+newcomer's debut, and nothing else competing for the log ring — which should capture every good in the
+need at every dump instead of 24–33 of ~44. That is a cheap, targeted run, not another full campaign.
+
 ⚠ **HYPOTHESIS, not a finding.** It is cheap to falsify: it predicts our accuracy should degrade as a
 local good's weight in a need grows. F24's per-need error table already exists to test that, and `heating`
 is the natural case — it contains `electricity`, a local good, alongside four tradables. ⚠ Note we will
