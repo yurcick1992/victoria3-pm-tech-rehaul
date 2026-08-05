@@ -2340,6 +2340,35 @@ it; what our single-state view cannot represent is a good that is supplied *some
 steamer demand (§10.35.1b) cannot be attributed to a production-method switch, to pop behaviour, or to a
 locality effect on the evidence we have — the market line carries no channel split and no state detail.
 
+### ⭐ 10.35.1a(i) THE LEADING HYPOTHESIS: we apply the right formula at the wrong GRANULARITY
+
+**Not that the rule is wrong — that we feed it market-wide supply where the game may use local supply.**
+The pop-needs fields are *moddable data the engine reads*, so their documented contract is comparatively
+trustworthy (a field modders set must behave as described or mods break) — which is a stronger warrant than
+prose about hidden behaviour, though still not proof. Take the formula as correct, then ask what supply
+figure goes into it.
+
+`needSplit()` uses **market-wide** sell orders. But `transportation`, `services` and `electricity` are
+`local`: a pop consumes only its own state's supply. If the game computes each good's supply share against
+**local** supply, then wherever transportation is thin, a tradable newcomer like `automobiles` takes a far
+larger share than the market-wide aggregate implies.
+
+**This single change reconciles every observation of 2026-08-05 without discarding any of them:**
+- the documented rule stands, and our implementation of the *formula* is right;
+- **F28/F24's good fit on 1836 needs** follows, because heating, food and clothing are all tradable, so
+  market-wide ≈ local;
+- **the two needs that break — `free_movement` and `communication` — are exactly the two whose incumbent is
+  local**, which is otherwise an odd coincidence;
+- **F30's impossibility dissolves**: pops never needed 100 662 units of transport, because transportation's
+  share was never ~97 % in the states where the automobiles were actually bought.
+
+⚠ **HYPOTHESIS, not a finding.** It is cheap to falsify: it predicts our accuracy should degrade as a
+local good's weight in a need grows. F24's per-need error table already exists to test that, and `heating`
+is the natural case — it contains `electricity`, a local good, alongside four tradables. ⚠ Note we will
+NOT build a multi-state model regardless (§10.35.1a); the point of confirming this is to know what our
+market-level numbers systematically get wrong, and possibly to correct the share input for local goods
+rather than to simulate states.
+
 ### 10.35.2 MEASURED — it is not a win in any variant. Parked, default OFF
 
 | variant | points | excluding excused | per era |
