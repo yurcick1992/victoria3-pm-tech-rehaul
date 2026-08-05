@@ -4299,5 +4299,6 @@
       ],
       "timeout_minutes": 260
     }
-  ]
+  ],
+  "_arm_naming_warning": "⚠ ARM NAMING: the vanilla_x10 setup is spelled {kind: control, config: ...} because that is the only shape the builder offered on 2026-08-06. IT IS NOT A CONTROL - it carries common/pop_needs/00_pop_needs.txt. That is a known architectural violation (CLAUDE.md -> -ControlOnly), to be replaced by {kind: overlay}. Report any finding from it with arm OVERLAY, never control. The plain vanilla setup in this same schedule IS a true control and carries zero gameplay content."
 }

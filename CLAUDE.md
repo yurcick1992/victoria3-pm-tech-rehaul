@@ -1181,9 +1181,10 @@ the game.
   MODDING_NOTES → Self-diagnostics.
 - **🛑 HARD RULE — A RUN'S CONFIGURATION MUST BE UNAMBIGUOUS BEFORE IT LAUNCHES. CLARIFY UNTIL CERTAIN.**
   A request to "run X" is **not** a specification. Before any launch, state back — and get agreement on —
-  **which ARM** — `{kind: control}` = vanilla + telemetry; `{kind: control, config: <path>}` = vanilla +
-  telemetry + **only** that config's `pop_need_weight_mult`, the one gameplay change a control arm may
-  carry; or `{kind: config, config: <path>}` = a full modded build, and *which* one — plus the **span**,
+  **which ARM** — `{kind: control}` = vanilla + telemetry and **nothing else, ever**; `{kind: config,
+  config: <path>}` = a full modded build, and *which* one; plus, once the ❌ below is fixed,
+  `{kind: overlay, config: <path>}` = vanilla + telemetry + a small declared overlay, which is **not a
+  control** and must never be reported as one — plus the **span**,
   **n**, the **metrics**, and **what is being compared against what**. If any
   of that is unstated, ASK. Do not infer it from what the last batch happened to use.
   ✅ **The arm is now RECORDED, machine-read, in every run's `build_state.json`** (schema v2):
@@ -1311,16 +1312,38 @@ the game.
   **`-ControlOnly`** — the **vanilla control arm**: a complete, loadable mod whose *only* content is that
   telemetry file plus metadata (no buildings, PMs, localization or history). `-ControlOnly` requires
   `-SaveTo`/`-DryRun` so it can never overwrite the canonical `mod/`.
-  ⚠ **ONE EXCEPTION, and it is deliberate: `-ControlOnly -Config <path>` also emits
-  `common/pop_needs/00_pop_needs.txt`** when that config carries `pop_need_weight_mult` — nothing else is
-  read from the config. That makes **"vanilla + exactly one named change"** buildable, which is what a
-  treatment arm against a vanilla control has to be; before 2026-08-06 the control branch short-circuited
-  above the emitter, so the pop-need weight experiment could only be run on top of the whole tiered mod,
-  confounding the very thing it measured. With no `pop_need_weight_mult` the file is not emitted and the
-  arm is pure vanilla. The build prints `!! NOT PURE VANILLA` when it carries it, and
-  `build_state.json` records `arm: control+pop_needs`. **Do not widen this** — a control arm that
-  quietly accumulates content stops being a control. `config/vanilla_weight_x10.json` is the model: one
-  key, and a comment saying why nothing may be added to it.
+  🛑 **HARD RULE — THE ONLY THING A CONTROL MAY VARY IS ITS TELEMETRY.** (User, 2026-08-06.) A control
+  arm carries **no gameplay content of any kind**. Not one file, not one field, not "just one small
+  well-guarded exception". If an arm needs a gameplay change, however small, it is **not a control** and
+  must not be built by, named after, or documented alongside `-ControlOnly`.
+  ❌ **THIS IS CURRENTLY VIOLATED AND MUST BE FIXED BEFORE THE NEXT COMMIT TO `build.ps1`.** On
+  2026-08-06 `-ControlOnly -Config <path>` was made to also emit `common/pop_needs/00_pop_needs.txt`
+  when that config carries `pop_need_weight_mult`, so that a pop-need weight experiment could run against
+  vanilla instead of on top of the whole tiered mod. The *motivation* was right and the arm it produces is
+  a real, useful thing — vanilla + telemetry + one declared file. **The implementation is wrong**: it was
+  bolted onto the one flag whose entire purpose is to guarantee the absence of gameplay content, so the
+  flag's name now lies. Warnings in the build output do not repair that — a guard is read by whoever opens
+  the code, the *name* is read by everyone, and a reader who sees `{kind: control}` in a schedule can no
+  longer assume vanilla. That is precisely the class of failure the 2026-08-05 wrong-arm day was.
+  **THE FIX — a third arm, not a control with fluff. Not yet done:**
+    1. **`-ControlOnly` gets its invariant back, enforced not documented.** It emits metadata + telemetry
+       and *nothing else*, and it **throws** if handed a `-Config` carrying any content-producing key.
+       A flag that guarantees an absence must fail loudly rather than quietly widen.
+    2. **A separate `-Overlay -Config <path>`**, schedule `{kind: overlay, config: X}`: vanilla +
+       telemetry + a **declared, enumerable** overlay. The config names which emitters may run; anything
+       not on that list is refused rather than silently skipped, so the arm's content is exactly what the
+       config says and is readable without running it.
+    3. **It reports itself as its own thing** — `arm: overlay+<what>`, `deviates_from_vanilla` listing
+       the files — and is never described as a control in a schedule `_why`, a finding, or a board.
+    4. **Both keep sharing the ONE telemetry generator.** That was always the only thing arms were meant
+       to hold in common, and it is what makes them comparable.
+  ⚠ **The right shape is a list of content emitters that each arm opts into, not a chain of
+  short-circuits.** The current bug exists because emission is a straight-line script with an early
+  `exit 0` in the middle: the only way to add content to the control was to move an emitter above the
+  exit, which is why a gameplay file ended up on the wrong side of the guarantee.
+  ⚠ **Sessions run on 2026-08-05/06 record `arm: control+pop_needs`.** After the rename that value means
+  **overlay**. Do not back-fill it into their `build_state.json` — a session artifact is a historical
+  record, not a cache.
   **Why the builder owns this:** an experiment's arms must instrument *identically* or the control isn't a
   control — one generator guarantees that (verified: control and modded builds emit byte-identical
   telemetry apart from the build-timestamp comment). **`telemetry_lib.ps1` is the ONLY generator**: the
@@ -1344,9 +1367,11 @@ the game.
   measurements.) The `runs` list is **explicit and ordered**, so any sequence works including repeats and
   alternation (`A@1841, B@1841, A@1841, B@1846`); each run carries its **index**, and the schedule JSON is
   copied verbatim into the session folder so a result always traces back to its plan. Setups are
-  `{kind: control}` (vanilla + telemetry, via `build.ps1 -ControlOnly`), `{kind: control, config: <path>}`
-  (the same, plus that config's `pop_need_weight_mult` and nothing else — see `-ControlOnly` above), or
-  `{kind: config, config: <path>}`.
+  `{kind: control}` (vanilla + telemetry, via `build.ps1 -ControlOnly`) or `{kind: config, config: <path>}`.
+  ❌ **`{kind: control, config: <path>}` exists today and is the architectural violation flagged under
+  `-ControlOnly` above** — it builds vanilla + telemetry + a pop-need weight file while still calling
+  itself a control. It is to be replaced by `{kind: overlay, config: <path>}`, a third kind that is
+  honestly named. Until then, any finding from such a run states its arm as **overlay**, not control.
   ⚠ **EVERY telemetry spec key must be listed in the plan entry that `Resolve-Setup` builds, or it is
   silently dropped** — the key reaches neither the builder nor the mod, and the run then looks like the
   *metric* failed rather than the plumbing. That cost a probe run on 2026-08-05 (`breakdown_dates`,
