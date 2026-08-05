@@ -136,8 +136,34 @@ reading B forbids outright.
 - 1836 heating ⇒ a good exceeds its cap ⇒ **not** a final-share cap.
 - 1903 free_movement ⇒ a debut good gets demand the raw-share reading cannot generate ⇒ **not** a raw clamp.
 
-**What it does NOT say.** One market, one date, one seed — run 2 and telephones (`popneed_communication`,
-the same two-good/capped-incumbent shape) are the replications and had not completed when this was written.
+### ✅ REPLICATED ON TELEPHONES, and that case is CLEANER than automobiles
+
+`popneed_communication` = `transportation` (w1, **max 0.75**) + `telephones` (w2, max 1.0). ⚠ **Telephones
+belong to exactly ONE need**, so unlike automobiles there is no ambiguity about which need their pop demand
+came from — the arithmetic is unconditional. British Market, five consecutive yearly dumps:
+
+| date | telephone POP demand | reading A implies transportation pop | market's TOTAL transportation buy | A | B |
+|---|--:|--:|--:|---|---|
+| 1920.3 | 2 | 41 184 | 36 654 | **impossible 1.1×** | ok (0 %) |
+| 1921.3 | 1 030 | 68 005 | 35 271 | **impossible 1.9×** | ok (20 %) |
+| 1922.3 | 1 540 | 62 444 | 34 970 | **impossible 1.8×** | ok (31 %) |
+| 1923.3 | 2 120 | 42 418 | 35 893 | **impossible 1.2×** | ok (41 %) |
+| 1924.3 | 2 400 | 44 407 | 34 721 | **impossible 1.3×** | ok (48 %) |
+
+**Reading A fails all five**, and it keeps failing as telephone supply grows and its A-share rises from
+0.01 % to 11.2 % — the shortfall is structural, not a boundary case. ⚠ The margins are far tighter than
+automobiles' 5.2× (1.1–1.9× here), so telephones would not on their own be decisive; taken with automobiles
+in a different need they are.
+
+**Both channels are real and large for telephones**, unlike either earlier good: 1917.3 is 100 % buildings
+(**Government Administration** — the `pm_switch_boards` consumer, exactly as the game files predicted),
+1920.3 is 100 % pops, and by 1923–24 it settles at ~62 % pops against ~38 % buildings (Government
+Administration and Trade Center).
+
+**Technology:** `telephone` world-first **1919.4.8** (Great Britain) → British market buying **1910.6**
+(⚠ *before* the tech — unexplained, and it is the one number here that does not fit), production **1920.3**.
+
+**What it does NOT say.** One seed — run 2 is the replication and had not completed when this was written.
 It does not identify the real rule; it only shows that neither candidate survives both cases. It does not
 revisit F28's numbers, which remain correct for the needs F28 actually measured. And it assumes a good's
 pop demand cannot exceed its total buy orders — true by construction, since pops are one channel of that
