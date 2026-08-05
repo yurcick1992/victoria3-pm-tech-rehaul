@@ -93,7 +93,46 @@ transcript rather than from data.
 
 ---
 
-## F30 — ⚠ NEITHER READING OF `max_supply_share` CAN BE THE RULE. 1836 heating refutes one, 1903 free_movement refutes the other — and F28 could not have seen the second
+## F30 — ⚠⚠ DEMOTED THE SAME DAY: THE GAME SHIPS THE RULE IN A COMMENT, AND IT IS THE ONE WE ALREADY IMPLEMENT. This finding's arithmetic must therefore be wrong
+
+> **READ THIS FIRST.** Everything below was written before anyone looked at the top of
+> `game/common/pop_needs/00_pop_needs.txt`. It documents the mechanic outright:
+>
+> ```
+> # weight            The base weight that is applied to this good based on market Sell Order share
+> # max_supply_share  The maximum weight that can be applied to this good based on market Sell Order
+> #                   share, relative supply above this amount will have no further impact on base weight
+> # min_supply_share  If above 0, a minimum of this multiplier of the base weight will be applied to a
+> #                   good regardless of its market Sell Order share
+> ```
+>
+> That is **reading A** — clamp the sell-order share to `[min, max]`, multiply by the base weight — which
+> is exactly what `needSplit()` implements and what **F28** independently measured as the better fit. So
+> the documented rule and our implementation agree, and **the impossibility argument below concludes that
+> the documented rule cannot be true. It is therefore the argument that is broken, not the rule.**
+>
+> **Where the error most likely is: `transportation`.** The whole argument rests on one bound — a good's
+> pop demand cannot exceed its market-wide buy orders. `transportation` is a **`local` good** (§10.35.1a):
+> it does not move between states, so pops in each state consume only their own state's supply, and it is
+> not established that the market-level `GetMarketBuyOrders` we compared against means what the bound
+> assumes. Every impossibility below is measured *against that one number*. A second candidate: automobiles
+> sit in **two** needs, so attributing all their pop demand to `free_movement` inflates the implied budget —
+> the earlier claim that this "shifts the arithmetic against reading A" was asserted, not derived, and is
+> wrong in the direction that matters (a smaller `free_movement` share means a smaller implied budget).
+>
+> ⚠ **The observations themselves stand** — 948 automobiles and 2 400 telephones of pop demand are measured
+> facts, verified blocks, replicated across seeds. What collapses is the inference drawn from them. The
+> real open question is no longer "which reading is right" but **"why does our implementation of the
+> documented rule produce so much less demand than the game does"**, and locality is the leading suspect.
+>
+> ⚠ **Process lesson, and the expensive one of the day:** this was found by asking "is it certain there is
+> no game code with answers?" — after a full day of inference. **Search the shipped files for
+> documentation before measuring.** Paradox ships `readme.md` files in several `common/` subfolders and
+> header comments in others; the answer here was four lines above data I had already read twice.
+
+### The original argument, retained for the record (its conclusion is retracted)
+
+## F30 (original) — NEITHER READING OF `max_supply_share` CAN BE THE RULE. 1836 heating refutes one, 1903 free_movement refutes the other — and F28 could not have seen the second
 
 **Claim.** The shipped reading of `max_supply_share` — clamp the RAW supply share, weight it, renormalise
 (F28's winner) — is **arithmetically impossible** in a two-good need whose incumbent is capped. The

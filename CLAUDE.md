@@ -120,7 +120,17 @@ an era late" gap: the building was moved by hand, the PMs that buy its output we
 moving railway too → 51; the no-buyer rule → 39 dropped / 45 zeroed, the better figure again coming from a
 defect). **The steamers half is now FIXED** by giving port a five-era ladder (§10.33), and **§10.35 supplies
 the fix for the rest** — see below.
-⚠ **§10.34 — REOPENED, and the answer is that NEITHER reading is the rule (FINDINGS F30, 2026-08-05).**
+✅ **§10.34 IS SETTLED, AND THE GAME SAYS SO ITSELF.** `game/common/pop_needs/00_pop_needs.txt` documents
+the mechanic in a header comment: `weight` is *"the base weight applied to this good based on market Sell
+Order share"*, `max_supply_share` *"the maximum weight that can be applied … relative supply above this
+amount will have no further impact"*, `min_supply_share` *"a minimum of this multiplier of the base weight
+… regardless of its market Sell Order share"*. That is **exactly what `needSplit()` does** and what F28
+measured. **Do not re-open it, and read that file before theorising.**
+⚠ F30 briefly claimed to refute it; that claim is **RETRACTED** — an argument that concludes the documented
+rule is impossible is a broken argument. Its measurements stand, its inference does not. The live question
+is now **why our implementation of the documented rule yields so much less demand than the game does**,
+with the `local` goods abstraction (§10.35.1a) the leading suspect. Superseded text follows:
+⚠ **§10.34 — the reopening (RETRACTED, kept for the record) (FINDINGS F30, 2026-08-05).**
 F28 remains correct for what it measured: scored over seven **1836** markets the final-share reading fits
 **worse in all seven** (20.0% → 24.2%), and Russian heating is 79% wood against wood's 0.5 cap, which that
 reading forbids. **But F28 could not test the case that matters**: in 1836 `free_movement` and

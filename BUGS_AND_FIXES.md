@@ -523,3 +523,29 @@ long runs keep dying — halve the breakdown cadence and see.
 marker is the DEAD signature, but between runs the observer is parsing the mirror — ~7 minutes for 496 MB
 against a 90 s grace. It looked like a dead batch and was a healthy one. Check `run.log` for
 `run N finished` before believing it; see CLAUDE.md → wait_for_session.
+
+## The answer was in a shipped comment all along (2026-08-05)
+
+**Symptom.** A full day of inference — two solver A/Bs, three probe runs, a 2x1836-1936 campaign — spent
+deciding what `max_supply_share` bounds, ending in a finding (F30) that BOTH candidate readings were
+refuted.
+
+**Root cause.** Nobody read the top of the file. `game/common/pop_needs/00_pop_needs.txt` opens with four
+comment lines documenting the mechanic outright: `weight` is the base weight applied *based on market Sell
+Order share*, `max_supply_share` is the maximum weight applicable on that basis (*"relative supply above
+this amount will have no further impact on base weight"*), `min_supply_share` a minimum multiplier of the
+base weight regardless of share. That is the reading we already implement.
+
+I had read the DATA in that file twice — verifying all 52 entries against our extract on 2026-08-04, and
+listing every `min_supply_share` on 2026-08-05 — and both times started at the first `popneed_` block,
+four lines below the answer.
+
+**Fix / rule.** **Search the shipped files for documentation before measuring.** Paradox ships `readme.md`
+in several `common/` subfolders (`acceptance_statuses`, `laws`, `social_classes`, `social_hierarchies`,
+`dynamic_treaty_names`), `_on_actions.md`, and header comments in others. A grep for `^#` at the head of a
+file you are about to reverse-engineer costs seconds. The wiki being unreliable (F28) is not a reason to
+skip the game's own files — it is a reason to prefer them.
+
+⚠ The measurements are not wasted: they stand as observations and they raised the real question, which is
+why our implementation of the documented rule produces far less demand than the game does. But the day
+would have started there rather than ended there.
