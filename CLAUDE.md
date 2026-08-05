@@ -1248,6 +1248,13 @@ the game.
   ```
   powershell -ExecutionPolicy Bypass -File tools\testbed\wait_for_session.ps1 -Session tools\testbed\sessions\<stamp> -MaxMinutes 30
   ```
+  ⚠ **DEAD IS A FALSE POSITIVE DURING A LONG HARVEST.** Between runs the game is gone and there is no
+  completion marker yet, which is exactly the DEAD signature — but the observer is parsing the mirror, and
+  that takes **minutes** on a big one (measured 2026-08-05: a 496 MB mirror took ~7 min, against the
+  waiter's 90 s grace). Before treating DEAD as real, check `run.log`'s tail for a `run N finished` line and
+  whether the harness PowerShell is still alive; a batch that looks dead may simply be writing
+  `markets.tsv`. Do NOT relaunch the schedule on a DEAD alone — that is how a healthy batch gets killed and
+  restarted from 1836.
 - **Telemetry belongs to the BUILDER, not the harness.** `tools/telemetry_lib.ps1` is the single
   generator of testbed logging script; `build.ps1` dot-sources it and emits
   `common/on_actions/zzz_v3tb_telemetry.txt` into whatever mod it builds. Flags: **`-Telemetry <spec.json>`**

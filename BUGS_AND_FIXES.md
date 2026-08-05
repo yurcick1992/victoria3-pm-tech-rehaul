@@ -498,3 +498,28 @@ and is written up in TESTBED_METRICS §3.3.1: putting the goods accessor inside 
 rather than in script position parses and links cleanly, logs nothing anywhere, and simply makes the whole
 on_action produce **no output** — plain-string fences on the same effect included. Line-level fencing does
 not contain it; probe an unverified data function in an on_action of its own.
+
+## Two CTDs in one long run, and a resume guard that earned its keep (2026-08-05)
+
+**Symptom.** A 1836→1936 run with heavy telemetry (496 MB mirror) crashed twice — `crashes\victoria3_*`
+minidumps at 16:38 and 17:16. After the second, the harness logged:
+
+```
+resume landed at 1882.2.12, far behind 1906.4.1 - fresh game, abandoning run 1
+run 1 finished: 8098.5s wall over 2 attempt(s), in-game 1925.3.1, exit resume started a fresh game
+```
+
+**This is the guard working, not a bug.** `-continuelastsave` loads the newest save ON THE MACHINE, and the
+one it found was 24 in-game years behind where the run actually was. Splicing that in would have produced a
+single "run" whose series jumped backwards — silent, plausible corruption of exactly the kind the order
+book cannot self-diagnose. The harness refused it and kept the 89 years it had (1836→1925.3), which was
+enough to carry FINDINGS F29/F30.
+
+⚠ **Suspect the telemetry volume before the mod.** This configuration writes ~500 MB per run; the earlier
+1910-span runs at ~250 MB did not crash. Not established, but the correlation is the first thing to test if
+long runs keep dying — halve the breakdown cadence and see.
+
+⚠ **`wait_for_session.ps1` reports DEAD during the post-run harvest.** No game process plus no completion
+marker is the DEAD signature, but between runs the observer is parsing the mirror — ~7 minutes for 496 MB
+against a 90 s grace. It looked like a dead batch and was a healthy one. Check `run.log` for
+`run N finished` before believing it; see CLAUDE.md → wait_for_session.
