@@ -275,6 +275,27 @@ demand cannot exceed its total buy orders, true by construction since pops are o
 
 ---
 
+> # 🛑 F29 AND F30 ARE PROVISIONAL — THEY WERE MEASURED ON THE WRONG ARM AND MUST BE RE-RUN
+>
+> **User ruling, 2026-08-05:** running the old tiered config for this work is **indefensible**. It serves
+> no approach — it is not the design we are moving towards (the "vanilla PMs in separate buildings" shape
+> is being dropped), and it is not a clean reference either, because it differs from vanilla in **GDP and
+> workforce composition at least**, and in an unbounded amount besides. A measurement of *the game's*
+> consumer behaviour has to be taken on **vanilla + telemetry**.
+>
+> **Status of everything below: DO NOT BUILD ON IT.** Treat F29 and F30, and the debut-mechanism results
+> inside them, as hypotheses awaiting re-measurement on `{kind: control}`. Some will hold — the mechanic is
+> engine-level and the needs data was vanilla throughout — and some will not, particularly anything whose
+> magnitude depends on the economy: supply shares, price levels, demand volumes, which buildings appear as
+> buyers, and the AI's adoption timing.
+>
+> ⚠ The buyer identified in the steamers result is literally `Tier 2. Industrial Port` — one of OUR
+> buildings. That alone shows the arm was wrong for the question as framed.
+>
+> **The re-run is specified in the handover for the next session.** The rule that should have prevented
+> this is now in CLAUDE.md: *a run's configuration must be unambiguous before it launches — clarify until
+> certain.*
+>
 > ## ⚠⚠ WHICH ARM EACH SESSION RAN — record this in every finding, it was recorded in none
 >
 > Raised by the user 2026-08-05 ("all the runs were supposed to be vanilla+telemetry"). The record is a

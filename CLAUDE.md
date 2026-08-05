@@ -1168,6 +1168,21 @@ the game.
   (logs `PM_TECH_REHAUL WARN …` on failure), then have the user run the game (init fires at the 1836 start;
   ~1 in-game day, or to 01.02.1837 for a first pulse) and read back `debug.log` + `error.log`. See
   MODDING_NOTES → Self-diagnostics.
+- **🛑 HARD RULE — A RUN'S CONFIGURATION MUST BE UNAMBIGUOUS BEFORE IT LAUNCHES. CLARIFY UNTIL CERTAIN.**
+  A request to "run X" is **not** a specification. Before any launch, state back — and get agreement on —
+  **which ARM** (`{kind: control}` = vanilla + telemetry, or `{kind: config}` = a named config file, and
+  *which* one), the **span**, **n**, the **metrics**, and **what is being compared against what**. If any
+  of that is unstated, ASK. Do not infer it from what the last batch happened to use.
+  ⚠ **This rule is written in a wasted day (2026-08-05).** A full day of debut-good measurement — five
+  launches, ~6 h of game time, findings F29/F30 — was run on `config/mod_config.json`, the old tiered mod,
+  because that is what the previous balance batch used. The user's expectation was vanilla + telemetry. The
+  result satisfies **neither** purpose: it is not the design we are moving towards, and it is not a clean
+  reference either, since it differs from vanilla in GDP, workforce composition and an unbounded amount
+  else. Everything measured that way needs re-running before it can be trusted.
+  ⚠ **"Which arm" is not a detail — it decides what the number MEANS.** A measurement of *the game's*
+  behaviour must be on vanilla; a measurement of *our economy's* behaviour must be on our config; and the
+  two answer different questions. **State the arm in the schedule's `_why`, and in every finding it
+  produces.** A finding that names its session but not its arm is uninterpretable later.
 - **NEVER launch a game run without the user's explicit go-ahead — and ask for the whole batch in ONE
   request.** Game time is the one cost here that cannot be optimized away: every run pays ~40 s of load
   plus roughly a minute per in-game year, and it monopolizes the machine. Three rules:
