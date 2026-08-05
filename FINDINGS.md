@@ -275,6 +275,26 @@ demand cannot exceed its total buy orders, true by construction since pops are o
 
 ---
 
+> ## ⚠⚠ WHICH ARM EACH SESSION RAN — record this in every finding, it was recorded in none
+>
+> Raised by the user 2026-08-05 ("all the runs were supposed to be vanilla+telemetry"). The record is a
+> **mix**, and no finding states its arm. From each session's `schedule.json`:
+>
+> | arm | sessions |
+> |---|---|
+> | **`control`** (vanilla + telemetry) | all of 1 Aug (mirror-fix, pop-probe, seed-flag, route, fat-logging, phased-dump, v7-cadence, origins ×5), the whole **3 Aug wages** series, `vanilla-percapita-n3` |
+> | **`config`** (our full tiered mod) | 31 Jul + 2 Aug balance/scenario work **including `rescore-direct`**, and everything on 5 Aug |
+>
+> **⭐ F24 and F28 come from `20260802_233029_rescore-direct`, which is the `config` arm — our mod.** That
+> is **not** an error, and probably the right choice: `extract_presets.ps1` builds the UI's presets by
+> mapping vanilla 1836 history **onto our tier buildings**, and the game's own 1836 start is that same
+> re-tiering (`convert_history`). Model and game therefore describe the SAME economy. Scoring our-tier
+> presets against a *vanilla* arm would have introduced the mismatch, not removed it.
+>
+> ⚠ **The defect is that none of this was written down.** A finding that cites a session by name but not by
+> arm cannot be interpreted years later, and "which arm" changes what the number means. **State the arm in
+> every finding from now on.**
+>
 > ⚠⚠ **EVERY MEASUREMENT IN F29/F30 WAS TAKEN IN A WORLD RUNNING OUR MOD. THERE IS NO VANILLA CONTROL.**
 > Raised by the user 2026-08-05 on seeing tiered buildings in the observer. Confirmed from each session's
 > `schedule.json`: all of `20260805_115022`, `_132101`, `_150128` and the `weight-x10` run were built from
