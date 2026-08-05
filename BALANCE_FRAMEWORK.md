@@ -1975,3 +1975,86 @@ other era follows from prices alone. So obsolescence is not a free parameter, an
 
 ⚠ Note that (2) is *not* the price-path sweep closed in §10.13. That swept the decay **parameters** of the
 prescribed path; this is about a **realised** price collapsing 92pp between two eras on the supply side.
+
+## 10.32 HOW MANY INDUSTRIES HAVE NO MARKET YET — the answer is one, and four fixes were measured (2026-08-05)
+
+§10.29 left three options on the table and the question "is steel the only case". Both are now answered
+by measurement rather than argument.
+
+### 10.32.1 Which goods actually have no market
+
+Scored off the shipped order book, every good supplied at ≥2× its own demand:
+
+| era | good | buy | sell | ratio |
+|---|---|---|---|---|
+| all five | gold | 0 | 1 164 – 4 963 | **no buyer** — exempt by construction (§10.18) |
+| 1836 | **steel** | **0** | 78 | **no buyer at all** |
+| 1836 | fine_art | 0 | 12 | 27× |
+| 1836 | dye | 6 | 33 | 5.5× |
+| 1870 | **steamers** | 3 | 78 | **23×** |
+| 1900 | telephones | 18 | 72 | 3.9× |
+| 1900 | rubber | 14 | 44 | 3.2× |
+| 1920/35 | fine_art | 14 / 41 | 84 / 130 | 6× / 3× |
+
+**Strictly zero-buyer: steel in era 1, and nothing else** (gold aside). But the *producer-before-consumer*
+pattern has exactly **two** instances, both one era wide:
+
+| good | first produced | first eaten | by |
+|---|---|---|---|
+| `steel` | e1 `steel_mill` | e2 | `motor_industry` |
+| `steamers` | e2 `shipyard_metal` | e3 | `port_industrial` |
+
+`steamers` is the worse ratio of the two (23× against steel's infinite-but-tiny 78 units) and is **not** a
+zero-buyer case, because pops buy steamers through `popneed_leisure`. Everything else in the table is the
+supply-share trap of §10.29, not a missing consumer.
+
+### 10.32.2 Three industries are placed an era EARLIER than their vanilla tech — deliberately
+
+Checking every industry's debut era against its vanilla building's unlocking technology: **19 of 22 match
+exactly.** The three that do not are all placed one era early, and they are precisely the offenders:
+
+| industry | our era | vanilla tech | vanilla era | the spec's stated reason |
+|---|---|---|---|---|
+| `synthetics` | 2 | `aniline` | 3 | "Perkin's mauveine is 1856, not 1874" |
+| `electrics` | 3 | `telephone` | 4 | "Bell 1876, first exchange 1878" |
+| `automotive` | 3 | `combustion_engine` | 4 | "Curved Dash 1901, per the design brief" |
+
+These are **conscious historical corrections, not oversights**, and they are the direct cause of §10.29's
+"the consumer arrives an era late": `pm_switch_boards` is gated on `central_planning` (era 4) and
+`pm_public_motor_carriages` on `combustion_engine` (era 4 — the *identical* tech the automotive building
+needs). The gap is not vanilla's. It is ours: **the building was moved earlier by hand and the PMs that
+buy its output were left on the 1:1 vanilla era remap.** Whether to move those consumer PMs too is a design
+decision, and the cleanest statement of the open question.
+
+### 10.32.3 Four candidate fixes, all measured, none a clear win
+
+| arm | illogicality (excl) | per era | residual per era | targets <8pp |
+|---|---|---|---|---|
+| **as shipped** | **42 (29)** | 3 / 4 / 9 / 12 / 14 | 5 / 12 / 1 / 12 / 4 | 72/86 |
+| motor industry → era 1 | 47 (37) | 3 / 6 / 12 / 16 / 10 | 61 / 99 / 5 / 3 / 12 | 69/85 |
+| motor **and** railway → era 1 | 51 (37) | 3 / 10 / 15 / 12 / 11 | 138 / 136 / 28 / 13 / 12 | 62/85 |
+| no-buyer rule, industry dropped | 39 (29) | 2 / 7 / 8 / 11 / 11 | 61 / 34 / 3 / 13 / 15 | 70/86 |
+| no-buyer rule, industry zeroed | 45 (32) | 2 / 7 / 11 / 12 / 13 | 61 / 97 / 4 / 12 / 2 | 65/83 |
+
+**Moving the engine industry to era 1 does not fix steel — it moves the hole to engines.** One motor level
+buys 39.8 steel against a supply of 78, which is still a 2:1 glut and still the price floor, and the motor
+industry is then itself floored with `engines` adrift at 25 (want 155). Adding railway at era 1 as well
+**does** fix it — steel leaves the adrift list entirely and era 1's score is unchanged at 3 (1 excluding) —
+but era 2 loses its railway tier and pays 4 → 10, the residual explodes to 138/136, and the mean target
+miss triples to 17.5pp. ⚠ It is also an anachronism on the project's own terms: `atmospheric_engine` and
+`railways` are both **vanilla era 2**, and the forward probe was deleted in §10.14.2 for exactly this.
+(A historical case *could* be made — Newcomen 1712, Watt 1776, against an era-1 anchor of ~1750 — which
+would make it the same kind of correction as the three above. It would need the same explicit argument in
+the spec, not a numerical justification.)
+
+**The no-buyer rule works and does not pay for itself.** Era 1 drops from 3 to 2 as predicted, and no
+other era improves. Note which variant scores better and why: *dropping* the industry outright scores 39
+against *zeroing* it at 45 — but dropping it also removes it from `placement`, which is what drives
+`solveInputsAt`, so its recipe is never solved and the era where it does have a market inherits the
+canonical start. The better number comes from a defect, exactly as in §10.25.2. The correct implementation
+is the zeroing one, and it is worse than doing nothing.
+
+**Shipped: option 1, accept it.** The rule is built and kept behind `ERA_NO_BUYER=1`, default **off**,
+because it is a decision about what a scenario should contain rather than a defect fix — and because
+every arm that touches era 1's composition blows the continuous residual from 5pp to 61pp, which would
+undo §10.28.

@@ -751,6 +751,9 @@ for (const i of S.IND) if (i.ladder_end === 'extinct') for (const t of i.tiers) 
 // The horizon is the mod's own: a tier TWO eras stale is meant to be gone (§10.11 fault 2), so an extinct
 // industry is not placed once it is two eras past its last tier. ERA_EXTINCT_GRACE makes it measurable.
 const EXTINCT_GRACE = process.env.ERA_EXTINCT_GRACE != null ? +process.env.ERA_EXTINCT_GRACE : 2;
+// §10.29 option 3, built and measured but DEFAULT OFF — it is a design decision about what a scenario
+// should contain, not a defect fix, and it did not pay for itself (§10.32). ERA_NO_BUYER=1 turns it on.
+const NO_BUYER = process.env.ERA_NO_BUYER === '1';   // withhold an industry whose good has no buyer at all
 const EXTINCT_LAST_ERA = {};           // industry id -> era of its last tier
 for (const i of S.IND) if (i.ladder_end === 'extinct') EXTINCT_LAST_ERA[i.id] = Math.max(...i.tiers.map(t => t.era));
 const extinctBy = (indId, era) => EXTINCT_LAST_ERA[indId] != null
@@ -760,6 +763,47 @@ const extinctBy = (indId, era) => EXTINCT_LAST_ERA[indId] != null
 // +75% ceiling in 1920 and 1935 — a HARD constraint (§10.15), and one that had been clear in all five
 // eras. A building whose input has no supplier anywhere in the market does not run at an infinite price;
 // it does not run. So a tier is not placed either, once every producer of one of its inputs is extinct.
+// ===================================================================================================
+// NO INDUSTRY IS PLACED BEFORE ITS GOOD HAS A BUYER OF ANY KIND (§10.29 option 3).
+//
+// A factory with no customers is not built. This is the mirror of the extinct rule above and is
+// deliberately much NARROWER than §10.18's "no loss-making producer may be present": the test is ZERO
+// demand, not poor demand, so it cannot be used to quietly delete an industry that is merely struggling.
+//
+// A good has a buyer if ANY of these is true: a tier of ours eats it at or below this era; a vanilla
+// reference building eats it; a battalion's upkeep eats it; or POPS buy it (it appears in a pop need).
+// Measured against the shipped order book, exactly one good fails all four in one era: **era-1 steel**,
+// which reads buy 0 against sell 78, because the earliest tier that eats steel is `motor_industry` in
+// era 2 and construction only moves to steel frames in era 3. `steamers` has the same one-era producer/
+// consumer gap but is NOT caught, and correctly so — pops buy steamers through `popneed_leisure`, so its
+// market is thin rather than absent. Gold is exempt for the same reason it is exempt from §10.18: its
+// order book is one-sided by construction.
+const POP_GOODS = new Set();
+for (const need in (S.POPM.needs || {})) {
+  for (const e of ((S.POPM.needs[need] || {}).entries || [])) if (e.g) POP_GOODS.add(e.g);
+}
+if (!POP_GOODS.size) throw new Error('pop-need goods came back empty — the no-buyer rule would withhold every consumer industry');
+const UNIT_GOODS = new Set();
+for (const u of (E.unitTypes ? E.unitTypes() : [])) {
+  const io = E.unitGoodsIO ? E.unitGoodsIO(u) : null;
+  for (const g in ((io && io.in) || {})) UNIT_GOODS.add(g);
+}
+const NO_BUYER_EXEMPT = new Set(['gold']);
+const firstConsumerEra = {};   // good -> earliest era any BUILDING of ours eats it
+for (const i of S.IND) for (const t of i.tiers) for (const g in (t.inputs || {}))
+  if (firstConsumerEra[g] == null || t.era < firstConsumerEra[g]) firstConsumerEra[g] = t.era;
+const hasNoBuyer = (good, era) => {
+  if (!good || NO_BUYER_EXEMPT.has(good)) return false;
+  if (POP_GOODS.has(good) || UNIT_GOODS.has(good)) return false;
+  if (firstConsumerEra[good] != null && firstConsumerEra[good] <= era) return false;
+  // a vanilla reference building may eat it — check the ones this era can actually contain
+  for (const b of E.refBuildings()) {
+    const bt = (S.VAN.buildings[b] || {}).tech;
+    if (bt && (S.VAN.tech_era || {})[bt] > era) continue;
+    if ((E.selGoods(E.refSel(b)).in || {})[good] > 0) return false;
+  }
+  return true;
+};
 const goneGoods = era => {
   const gone = new Set();
   for (const g of EXTINCT_GOODS) {
@@ -846,6 +890,7 @@ function buildScenario(eIx) {
   // It was also an anachronism on its own terms — a Bessemer converter (1856) standing in the 1836
   // scenario, and mass-production car plants in 1900.
   const placement = [];   // {ind, tiers:[{t, weight}]}
+  const noBuyer = [];     // industries withheld because nothing in this era buys their good
   const GONE = goneGoods(era);      // goods whose every producer is extinct by now
   for (const i of S.IND) {
     if (extinctBy(i.id, era)) continue;                  // declared extinct and two eras past its end
@@ -853,11 +898,19 @@ function buildScenario(eIx) {
     const avail = sorted.filter(t => t.era <= era
       && !Object.keys(t.inputs || {}).some(g => GONE.has(g)));   // its input has no supplier left
     if (!avail.length) continue;
+    // ⚠ WITHHELD IS NOT THE SAME AS ABSENT. An industry nothing buys from is pinned to ZERO levels rather
+    // than dropped from `placement`, because the placement list is also what drives `solveInputsAt`: drop
+    // it and the tier's recipe is never solved at all, so the era in which it DOES have a market inherits
+    // whatever the canonical start left behind. Measured — dropping it outright cost era 2 three points
+    // and blew the continuous residual from 12pp to 34pp. At zero levels §10.17 already excludes it from
+    // the criterion, which is the whole effect wanted.
+    const withheld = NO_BUYER && hasNoBuyer(E.tierOut(i, avail[avail.length - 1]), era);
+    if (withheld) noBuyer.push(i.id);
     const cur = avail[avail.length - 1], m1 = avail[avail.length - 2], m2 = avail[avail.length - 3];
     const fx = FIXED_COUNTS[i.id];
-    const rows = [{ t: cur, weight: fx ? 0 : 1, fixed: fx ? fx.cur : undefined }];
-    if (m1) rows.push({ t: m1, weight: fx ? 0 : 1, fixed: fx ? fx.m1 : undefined });
-    if (m2) rows.push({ t: m2, weight: 0, fixed: fx ? fx.m2 : 1 });
+    const rows = [{ t: cur, weight: (fx || withheld) ? 0 : 1, fixed: withheld ? 0 : (fx ? fx.cur : undefined) }];
+    if (m1) rows.push({ t: m1, weight: (fx || withheld) ? 0 : 1, fixed: withheld ? 0 : (fx ? fx.m1 : undefined) });
+    if (m2) rows.push({ t: m2, weight: 0, fixed: withheld ? 0 : (fx ? fx.m2 : 1) });
     if (PROBE) { const p1 = sorted.find(t => t.era > era); if (p1) rows.push({ t: p1, weight: 0, fixed: 1 }); }
     placement.push({ ind: i, rows });
   }
@@ -1634,7 +1687,7 @@ function buildScenario(eIx) {
            rawLoss: refProducers.filter(b => S.BLDNUM[b] > 0 && isRawProducer(b))
              .filter(b => { const ec = E.refEcon(b); return ec && ec.tp != null && ec.tp < 0; })
              .map(b => ({ b: b.replace(/^building_/, ''), tp: E.refEcon(b).tp })),
-           infeasible: new Map(infeasible), capped: new Set(capped), sec, ore };
+           infeasible: new Map(infeasible), capped: new Set(capped), sec, ore, noBuyer };
 }
 
 // ===================================================================================================
@@ -1852,6 +1905,9 @@ for (let e = 0; e < FIT.eras.length; e++) {
           + (n < FIXED_REF_COUNT[b] ? (n === 0 ? ' (driven out)' : ' (pushed back)') : '')).join(', '));
     const mo = meta.modelOnlyPlaced;
     console.log(`    MODEL-ONLY TIERS: ${mo.placed} of ${mo.total} present — modelled and scored here, never emitted to the game`);
+    // Withholding an industry is a strong act, so it is always named — never silent.
+    if (meta.noBuyer && meta.noBuyer.length) console.log(`    NOT PLACED (nothing in this era buys their good): `
+      + meta.noBuyer.join(', '));
   }
   console.log(`    CONSTRUCTION: ${meta.constrLevels} levels = ${(100 * meta.constrShare).toFixed(1)}% of gross output`
     + ` (target ${(100 * CONSTRUCTION_GDP_SHARE).toFixed(0)}%, ${CONSTRUCTION_PM[meta.era]})`

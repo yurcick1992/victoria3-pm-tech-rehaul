@@ -110,6 +110,15 @@ with `transportation`, which is sold in vast quantity. Two obvious remedies were
 — a 4× bigger market leaves the prices *identical* (supply and demand scale together), and cutting the
 debut tier's output makes the industry **worse** (−29% → −62%), because pop money is allocated by supply
 share, so less supply buys less demand. Do not re-try either; §10.29 states the remaining options.
+⚠ **§10.32 answers "how many industries have no market yet": exactly ONE** — era-1 steel (gold aside). The
+only other producer-before-consumer gap is `steamers` (made era 2, first eaten era 3), and pops buy those.
+**19 of 22 industries sit exactly on their vanilla unlocking tech's era**; the three that do not —
+`synthetics`, `electrics`, `automotive` — are placed one era EARLY by deliberate historical correction in
+`build_era_ladder.mjs`, and are precisely the offenders. That is the true source of the "consumer arrives
+an era late" gap: the building was moved by hand, the PMs that buy its output were left on vanilla's era.
+**Four candidate fixes were measured and none is a clear win** (moving the engine industry to era 1 → 47;
+moving railway too → 51; the no-buyer rule → 39 dropped / 45 zeroed, the better figure again coming from a
+defect). Shipped: accept it.
 
 ⚠ **Older illogicality figures in the docs are void, not merely stale** (BALANCE_FRAMEWORK §10.14.1): the
 solver used to re-solve recipes *after* its final price sync, so it reported profits at prices its own
@@ -286,6 +295,8 @@ tools/                  dev tooling — NOT shipped in the mod
                         move the floored industries — the trap is scale-invariant),
                         ERA_EXTINCT_GRACE (eras past its last tier before an `extinct` industry stops being
                         placed, default 2; -1 restores the old always-present behaviour, §10.30),
+                        ERA_NO_BUYER=1 (withhold an industry whose good has no buyer of any kind — built,
+                        measured, DEFAULT OFF because it does not pay for itself, §10.32),
                         ERA_CEIL_BOOST, ERA_CEIL_PM, ERA_JOINT, ERA_PROBE (the removed forward probe, kept
                         only so its damage can be re-measured — leave it off)
   econ_host.mjs         loads ui/econ.js + the generated ui/*.js under Node — supplies the state containers the
