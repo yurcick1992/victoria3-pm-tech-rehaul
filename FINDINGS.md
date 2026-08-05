@@ -131,6 +131,72 @@ transcript rather than from data.
 
 ---
 
+## F36 — The pop-need `weight` field is a live and powerful lever: ×10 takes a good from 37 % to 91 % of its need, on true vanilla, in the one need whose budget is observable
+
+**Arm** treatment `overlay` — vanilla + telemetry + `common/pop_needs/00_pop_needs.txt` only,
+`config/vanilla_weight_x10.json`, sha `a954f342c1157db4` · control `control` — vanilla + telemetry,
+`deviates_from_vanilla: []` · session `20260805_234555_vanilla-retest`, runs 17–19 · schema v12 ·
+🟢 **ARM-FREE** (both arms are vanilla; the treatment differs from the control in four weight lines).
+⚠ `build_state.json` records the treatment as `control+pop_needs` — see CLAUDE.md, that string means
+**overlay** and the naming is a known violation being fixed.
+
+**Claim.** Multiplying `luxury_furniture`'s `weight` by 10 in every need it appears in moves its share of
+`popneed_luxury_items` from **36.6 % to 91.4 %** of the need's measured pop spending — a **2.5×** share
+increase — while all three competitors fall. The field documented in vanilla's own header comment is
+real, live, and strong enough to be a design lever.
+
+**Why this need, and why n=1 per arm is enough.** Per **F35**, no pop need has an observable budget —
+except `popneed_luxury_items` before radios exist, whose four goods (silk, luxury_clothes,
+luxury_furniture, porcelain) are each single-need with no `local` good among them, so they *are* the
+need's whole measured money. And a **share inside one need** is robust to the two arms being different
+histories, which absolute units are not. `luxury_furniture` also trades from **1836**, which is why this
+survived campaigns that all died early (see the resume bug in BUGS_AND_FIXES).
+
+British Market, yearly channel-split dumps, **12 complete control dates against 9 treatment dates**.
+A date is scored only when **all four** goods were captured — every dump is partially truncated at a
+different good, and a partial denominator invents share movement out of nothing.
+
+| good | control | ×10 treatment | Δ pp | ratio |
+|---|--:|--:|--:|--:|
+| **luxury_furniture** (treated) | **36.56** | **91.42** | **+54.86** | **2.50** |
+| luxury_clothes | 40.27 | 3.59 | −36.68 | 0.09 |
+| silk | 15.90 | 2.41 | −13.49 | 0.15 |
+| porcelain | 7.27 | 1.57 | −5.70 | 0.22 |
+
+**Consistent with the documented rule, but NOT a precise test of it.** Reading A (clamp the raw supply
+share, multiply by weight, renormalise) predicts `10×36.56 / (10×36.56 + 63.44)` = **85.2 %** against
+**91.4 %** observed. The gap is comfortably inside what two different histories explain: the arms have
+different supply shares, so the control's 36.6 % is not the treatment arm's own untreated baseline. The
+same caveat kills any reading of the three competitors' *non-uniform* fall (0.09× / 0.15× / 0.22×, where
+pure renormalisation wants one common factor) — it is seed difference, not evidence about the formula.
+**To test the formula rather than the lever you need the baseline and the treatment in the same history**,
+which no design here provides.
+
+**Replicates the earlier tiered-arm measurement at the endpoint.** The same experiment on
+`config/mod_config.x10.json` (our full tiered mod, 2026-08-05) gave **17 % → 92 %**. Tonight's vanilla
+figure is **36.6 % → 91.4 %**: the *endpoint* agrees closely, the *baseline* does not — exactly what
+differing arms should do to a starting share while leaving a saturating lever's ceiling alone.
+
+**Confidence: high on the claim, low on the coefficient.** The effect is enormous, one-directional, and
+measured on verified blocks with a completeness gate. What is *not* established is the exact functional
+form, the response at any other multiplier, or whether the same holds in a need with a `local` or shared
+good in it.
+
+**What it does NOT say.** It says nothing about `steamers` or `automobiles`, the other two goods carrying
+the multiplier — both live in messy needs and both arrive after the campaigns died. It does not
+establish a dose–response: one point is not a curve, so it cannot say what multiplier is *right* for a
+design that wants a debut good to attract demand. It does not show that moving a weight is a *good* idea
+— only that it works. And it does not touch the question F33 was really about, which is whether pop
+demand for a **brand-new** good behaves like this at all.
+
+**Instrument note.** `tools/testbed/analyse_weight_lever.mjs` (committed). ⚠ Its first version keyed
+cells by **date alone**, which silently merged the session's fourteen single-market 1836 runs — Belgian
+silk beside Japanese porcelain — into the control arm. Caught before publication; the fix is to key by
+market *and* date and pin to one market. It moved the control baseline only 35.0 → 36.6 because the
+1836 dates were mostly dropped as partial anyway, which is exactly why it would have been easy to miss.
+
+---
+
 ## F35 — NO pop need in the game has an observable budget. All 15 share a good with another need — so "measured demand ⇒ need budget ⇒ implied demand for a sibling good" has no clean case anywhere
 
 **Arm** — none; read directly from `common/pop_needs/00_pop_needs.txt` and `common/goods/00_goods.txt`,
