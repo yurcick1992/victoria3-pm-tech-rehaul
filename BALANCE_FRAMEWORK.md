@@ -2250,6 +2250,15 @@ until that lands nothing here should be read as the in-game sequence.
 the era gate forbids can never be selected, so era 3 genuinely has zero *reachable* building demand
 whatever the AI would have chosen.
 
+⚠⚠ **AND THE BASE GAME DOES THIS TO ITSELF** (FINDINGS F30, measured 2026-08-05). "The consumer arrives
+before the producer" is **not** peculiar to our hand-moved industries. `pm_switch_boards` — the government
+method that buys telephones — is gated on **`central_planning`**, a *different* technology from the one
+that unlocks telephone production. In a measured campaign Britain acquired `central_planning` in **1901**,
+switched a building onto switchboards, and demanded telephones from **1910** — nine years before the
+`telephone` technology existed **anywhere on Earth** (world-first 1919.4, first production 1920.9, imports
+zero throughout). So this section's diagnosis was right about the mechanism and wrong to treat it as
+self-inflicted: our era remap makes an existing vanilla pattern worse, it does not create it.
+
 **THE FINDING.** In vanilla each of these goods has **exactly one** building customer, and the technology
 that unlocks the good also unlocks that customer:
 

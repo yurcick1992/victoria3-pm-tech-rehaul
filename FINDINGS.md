@@ -160,8 +160,28 @@ in a different need they are.
 1920.3 is 100 % pops, and by 1923–24 it settles at ~62 % pops against ~38 % buildings (Government
 Administration and Trade Center).
 
-**Technology:** `telephone` world-first **1919.4.8** (Great Britain) → British market buying **1910.6**
-(⚠ *before* the tech — unexplained, and it is the one number here that does not fit), production **1920.3**.
+**⭐ Technology, and the sharpest example of the whole mechanism.** British buying starts **1910.6**, NINE
+YEARS before the `telephone` technology exists anywhere. That was first flagged as an unexplained anomaly;
+it is not one, and the obvious escape — "another country invented it and exported" — is **ruled out by
+measurement**:
+
+| check | result |
+|---|---|
+| countries ever acquiring `telephone` | **6**, and **Great Britain is world-first**, 1919.4.8 |
+| first telephone production ANYWHERE (50-market sweep) | **1920.9**, British Market |
+| British order book at 1910.6 | buy **0.01**, sell 0, **imports 0**, production 0 |
+
+The world genuinely held **zero** telephones in 1910. The cause is that **the consuming method and the
+producing method hang off DIFFERENT technologies**: `pm_switch_boards` (government administration, 5
+telephones per level) is gated on **`central_planning`, which Britain acquired 1901.1** — eighteen years
+before the telephone. So the AI switched a building onto a method that demands a good **nobody on Earth
+could make**, and that demand stood for nine years (0.01 units 1910 → 5 units by 1917, 100 % buildings,
+top buyer Government Administration) until production finally arrived in 1920.3.
+
+⚠ **This is VANILLA's own tech structure, not our era remapping.** It is the same shape as steamers — a
+consuming method adopted before any production existed — but far more extreme, and it means "the consumer
+can arrive before the producer" is a property of the base game, which §10.35 should not have attributed
+solely to our hand-moved industries.
 
 **What it does NOT say.** One seed — run 2 is the replication and had not completed when this was written.
 It does not identify the real rule; it only shows that neither candidate survives both cases. It does not
