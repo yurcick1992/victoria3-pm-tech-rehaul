@@ -93,6 +93,76 @@ transcript rather than from data.
 
 ---
 
+## F29 — A debut good's pop demand is PROPORTIONAL to its supply, not floored — and the constant is need-dependent, 0.1× in a nine-good need against 3.2× in a two-good one ⚠ REPLICATION PENDING
+
+**Claim.** Watching every good's first appearance in a full 1836→1936 campaign, with the pop/building
+channel split and the worldwide technology log in the same run:
+
+1. **Zero supply gives EXACTLY zero pop demand** — 4 of 4 dumps, including dumps where buildings were
+   buying that same good. There is **no floor and no jump**: the hypothesis that pop demand snaps to a
+   minimum as soon as token supply exists is **refuted**.
+2. **With supply, pop demand scales with it**, at a roughly constant fraction across three orders of
+   magnitude of supply.
+3. **But that fraction depends on the NEED**, and by ~30×. That is the finding that matters.
+
+Session `20260805_150128_debut-good-full-v11`, run 1 (⚠ run 2 not yet complete — see limits).
+
+**Steamers (`popneed_leisure`, NINE goods, dominated by state-local `services`):**
+
+| market | supply | pop demand | pops ÷ supply |
+|---|--:|--:|--:|
+| American | 0 | **0.000** | — |
+| American | 3.5 | 0.09 | 0.026 |
+| American | 7 | 0.26–0.38 | 0.037–0.054 |
+| American | 10.5 | 0.45 | 0.043 |
+| British | 0 | **0.000** | — |
+| British | 526 | 53.5 | 0.102 |
+| British | 1 679 | 200 | 0.119 |
+
+**Automobiles (`popneed_free_movement`, TWO goods, incumbent the state-local `transportation`):**
+British 1903.3 — supply **296**, pop demand **948**, i.e. **3.2×**, and the split is **100 % pops**
+(208/208 in 1902.3, 948/948 in 1903.3). The urban-centre method that consumes automobiles
+(`pm_public_motor_carriages`) contributed **exactly zero** four years after the technology existed.
+
+**⭐ So the same rule yields 0.1× in one need and 3.2× in another.** The need where a debut good gets
+enormous pop demand is precisely the one whose incumbent is a **`local`** good — which our model feeds
+market-wide sell orders and treats as an ordinary tradable (§10.35.1a). That is now the leading suspect
+for why our debut goods read buy ≈ 0.25 × sell at the price floor while the game reads 2–3 × sell at the
+ceiling.
+
+**The demand channel differs by good, and both channels are real:**
+- **steamers** — the early buyer is a **building**, `pm_industrial_port`, whose method unlocks on
+  `gantry_cranes`, the *same technology* that unlocks steamer production. Pops are 0.0 % for five years
+  and reach only ~3 % of the good's own orders.
+- **automobiles** — the early buyer is **pops, ~100 %**, with the building channel at zero.
+
+**Technology timing (from the worldwide tech log, exact to the day):** `gantry_cranes` world-first
+**1857.10.1** (United States of America) → American market begins buying steamers **1858.5.1**, seven
+months later, with zero production and zero imports. `combustion_engine` world-first **1899.9.1** (Free
+States of America) → all three watched markets begin buying automobiles **1901.6.1**.
+
+**Both debut goods sit pinned at the +75 % price ceiling** while demand exceeds supply — 122.5 for
+steamers, 175.0 for automobiles. Note this is the case §10.15 already **exempts** (see its scope note):
+it is not evidence against that constraint.
+
+**What it does NOT say.**
+- ⚠ **One run, one seed. Run 2 is the replication and had not finished when this was written.** Dates are
+  seed-specific and must not be quoted as if general; the *mechanism* is what is expected to carry.
+- The **need share** of automobiles is NOT computed: `transportation`'s breakdown block never verified at
+  the same dump as automobiles', so the denominator is missing. The 3.2× above is pops ÷ *supply*, not a
+  share of the need.
+- Telephones and radios had not appeared — `radio` was unresearched by 1903. `popneed_communication` is
+  the direct replication of the automobiles configuration (two goods, `transportation` incumbent) and is
+  the cleanest remaining test.
+- Nothing here tests the locality questions of §10.35.1a; it only makes them the leading suspect.
+- The two American dumps at 1906/1908 show supply present with pop demand 0, unexplained and not
+  investigated.
+
+**Confidence: high on (1) and (2)** — zero-at-zero is 4 of 4 and the proportionality spans 3.5 → 1 679
+units of supply. **Moderate on (3)**, which rests on one good in one need in one run.
+
+---
+
 ## F28 — `max_supply_share` bounds the RAW supply share, not the final share of the need. The alternative reading is worse in all seven markets, and the bootstrap it would give a debut good is directly contradicted
 
 **Claim.** The pop-need fields `max_supply_share` / `min_supply_share` admit two readings, and they are
