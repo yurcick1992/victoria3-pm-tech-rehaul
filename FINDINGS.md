@@ -275,6 +275,27 @@ demand cannot exceed its total buy orders, true by construction since pops are o
 
 ---
 
+> ⚠⚠ **EVERY MEASUREMENT IN F29/F30 WAS TAKEN IN A WORLD RUNNING OUR MOD. THERE IS NO VANILLA CONTROL.**
+> Raised by the user 2026-08-05 on seeing tiered buildings in the observer. Confirmed from each session's
+> `schedule.json`: all of `20260805_115022`, `_132101`, `_150128` and the `weight-x10` run were built from
+> `config/mod_config.json` (or a copy of it), i.e. the full tier split — 53 tier buildings, our production
+> methods, our recipes. The harness supports a real control (`build.ps1 -ControlOnly`, `{kind: control}`)
+> and it was **never used today**.
+>
+> **What this does and does not touch:**
+> - ✅ The demand-split MECHANIC is engine-level, and the mod did not emit `common/pop_needs` at all until
+>   the weight experiment — so needs, weights and caps were exactly vanilla in every earlier run.
+> - ✅ F30's arithmetic uses supply and demand from the SAME run, so it is internally consistent whatever
+>   buildings exist.
+> - ✅ The ×10 result is a within-family before/after, and its baseline came from the same mod.
+> - ⚠ **But the ECONOMY is not vanilla's.** Different buildings, different production, hence different
+>   supply shares, price levels and demand magnitudes. So a sentence of the form *"in Victoria 3, a debut
+>   good gets X"* is really *"in our modded 1.13, it gets X"*. Read every absolute number here that way.
+>
+> ⚠ Also found while checking: **`build_state.json` records `built_from_config: ""` and
+> `config_sha256: null`** — the two fields CLAUDE.md requires to be machine-read. Provenance had to be
+> reconstructed from `schedule.json`. Fix pending.
+
 ## F29 — A debut good's pop demand is PROPORTIONAL to its supply, not floored — and the constant is need-dependent, 0.1× in a nine-good need against 3.2× in a two-good one ⚠ REPLICATION PENDING
 
 **Claim.** Watching every good's first appearance in a full 1836→1936 campaign, with the pop/building
