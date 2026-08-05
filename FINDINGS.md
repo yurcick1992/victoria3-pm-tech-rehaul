@@ -68,11 +68,49 @@ segmented out or excluded instead of silently averaged in.
 
 One `##` section per finding, newest first. Every entry states:
 
+- **Arm** — see below. A stamp line directly under the heading, before anything else.
 - **Claim** — one sentence, with the effect size.
 - **Evidence** — arms, n **per arm**, span, dates, the numbers. Name the session folder.
 - **Confidence** — and what would raise it.
 - **What it does NOT say** — the over-reading to avoid. This line is not optional; a finding
   without stated limits gets quoted later as if it had none.
+
+### ⭐ THE ARM STAMP — one line, inside the finding, and a TRANSFER GRADE
+
+Every finding carries a stamp directly under its heading. **Inside the entry, not in a table at the
+top of the file**: findings get quoted into `CLAUDE.md`, into commit messages and into chat, and a
+provenance note that does not travel with the text is a provenance note that will be lost.
+
+```
+**Arm** `control` · vanilla + telemetry · session `20260805_233952_filter-probe` · schema v12 · 🟢 ARM-FREE
+```
+
+**The grade, not the arm, is what a reader acts on.** "Which arm" is provenance; the question that
+decides whether a number is usable is *would a different arm move it, and does that matter for what
+I am about to do*. Three grades:
+
+| grade | meaning | what to do with it |
+|---|---|---|
+| 🟢 **ARM-FREE** | a property of the engine, or read from the shipped game files, that no mod under test could move | use it; the arm is provenance only |
+| 🟡 **ARM-BOUND** | true *within* its arm and correct there, but it does not transfer | use it for that arm; never quote it as a fact about vanilla |
+| 🔴 **ARM-SUSPECT** | meant as a statement about the engine, but measured on an arm that could have moved it | do not build on it until re-measured |
+
+⚠ **The middle grade is the one doing the work, and dropping it over-states the damage.** A wrong
+arm is not automatically a defect. F19/F22/F24 measure *how accurate our sheet is*, and
+`extract_presets.ps1` maps vanilla 1836 history **onto our tier buildings** while `convert_history`
+makes the game's own 1836 start that same re-tiering — so under the `config` arm model and game
+describe the **same** economy, and scoring against a vanilla arm would have *introduced* a mismatch
+rather than removed one. Those findings are 🟡, not 🔴: correct, and narrower than their headlines
+imply. Calling them contaminated invites either a pointless re-run or throwing away good work.
+
+**Say what would move it, in one clause** — "the mod changes supply shares, which is an input to
+this number" is actionable; "measured on the mod, take with a pinch of salt" is not.
+
+⚠ **`build_state.json` records the arm from schema v2 on** (`deterministic.arm` +
+`deviates_from_vanilla`, read off the BUILT MOD rather than off the flags it was asked for, so the
+two cannot disagree). Sessions written under schema v1 have no such field and their arm must be
+read from their `schedule.json` — **do not back-fill it into an old `build_state.json`**, which is a
+historical record, not a cache.
 
 **Findings outlive their raw data, so the numbers live HERE, in full.** Do not write "see the
 session folder for the table" — copy the table in. Sessions are retained (see below), but a
@@ -90,6 +128,70 @@ change — see CLAUDE.md → *Testbed sessions are never deleted*. This file exi
 that rule did not: the 26 hours of runs behind the first finding below were deleted in the
 `runs/`→`sessions/` consolidation (`b6f77cb`), and the numbers had to be reconstructed from a chat
 transcript rather than from data.
+
+---
+
+## F34 — `every_market_goods` CAN be filtered. Quantity and property triggers both work; goods IDENTITY does not, now on four independent attempts
+
+**Arm** `control` · vanilla + telemetry, `deviates_from_vanilla: []` · session
+`20260805_233952_filter-probe`, 1 run, 47 s · schema v12 · 🟢 **ARM-FREE** — this is the engine's
+script layer; no mod under test could change which triggers exist.
+
+**Claim.** `TESTBED_METRICS` §3.3.2's blocking premise — *"no valid trigger of any kind has ever
+been found for the `market_goods` scope"* — is **false**. A `limit` inside `every_market_goods`
+works, and cuts the iteration by **43 → 5 goods** on a property trigger. What does not work is
+selecting a good **by identity**, which now has four independent failures. **⚠ The filter is
+nonetheless NOT applied to the channel split, for a reason given below that is not about cost.**
+
+**Why this was worth 47 seconds.** The channel split (`GetMarketBuyOrdersBreakdown`) is the most
+expensive metric there is, ~1 MB per market per dump, and it truncates: the 2026-08-05 batch lost
+24–33 of 44 goods per dump. Every previous attempt to restrict it used a goods-*identity* trigger.
+But `common/alert_types/00_alert_types.txt` runs blocks under `script_context = player_market_goods`
+with **quantity and property** triggers, and `common/trigger_localization/00_trigger_localization.txt`
+catalogues every trigger in the game — so the family's existence was readable from the files before
+any run. (Same lesson as F33: **read the shipped files first, they are cheap**.)
+
+**Evidence.** British Market, 1836.2.1. Five candidates, each in its own on_action, each fenced
+`start`/`end` so "works" / "matches nothing" / "died mid-block" / "never ran" are distinguishable.
+All five printed both fences, so none was fatal. Counts are distinct goods after de-duplicating the
+log mirror:
+
+| id | `limit` | goods | verdict |
+|---|---|--:|---|
+| `base` | *(none)* | **43** | baseline — the British market trades 43 goods at this date |
+| `bo0` | `market_goods_buy_orders > 0` | **42** | ✅ **works** — excludes exactly `gold`, which genuinely has zero buy orders |
+| `so0` | `market_goods_sell_orders > 0` | 43 | parses; nothing to exclude (every traded good has sell orders) |
+| `gov` | `is_consumed_by_government_buildings = yes` | **5** | ✅ **works, and cuts hard** — `fabric iron paper tools wood` |
+| `geq` | `goods_equal = g:automobiles` | 43 | ❌ **does not filter** — matched everything, so it is a no-op here, not an identity test |
+
+`bo0` is the clean proof: it excluded **one** good and that good is the one with no buy orders. That
+is the trigger doing its job, not a coincidence. `gov` returning exactly the government-goods set is
+the second, independent confirmation.
+
+**⭐ THE FILTER IS DELIBERATELY NOT USED, and the reason is measurement validity, not cost.**
+The obvious application — put `market_goods_buy_orders > 0` on the breakdown to stop emitting empty
+blocks — would **silently weaken the pop-model scoring**. `score_pop_split.mjs` treats *a verified
+block with no pop entry as a real ZERO*, which is what charges the model for demand it invents on
+goods nobody buys; F31 needed exactly that guard. Filtering those goods out removes the cases the
+model is most likely to get wrong. A saving of 1 good in 43 is not worth blunting the scorer.
+
+**And the filter that would actually pay does not exist.** The design §3.3.2 wanted is *restrict the
+split to pop-consumable goods*. There is **no `is_consumed_by_pops` trigger** — the game has
+`is_consumed_by_government_buildings` and `is_consumed_by_military_buildings` and nothing for pops.
+So the ~3× saving that would turn a truncated dump into a complete one is still unavailable, and the
+real lever remains what it already was: **fewer dates and one market per tick, not fewer goods.**
+
+**Confidence: high.** Directly measured, one date, and both positive results are independently
+checkable against known facts (gold has no buy orders; the government-goods set is in the files).
+Raising it further would need a second date, which would tell us nothing new about whether a trigger
+parses.
+
+**What it does NOT say.** It does not say the breakdown can be aimed at a chosen good — it cannot,
+and `goods_equal` is now the **fourth** failed route after `is_goods`, `goods`, and direct
+`GetMarketGoods(GetGoods('X'))` addressing (§3.3.1). It does not say `so0` is inert; that case had
+nothing to exclude, so it is untested rather than negative. It does not measure the saving in a
+**late-game** market, where more goods trade and `bo0` would exclude fewer still. It says nothing
+about whether these triggers work in any other scope.
 
 ---
 

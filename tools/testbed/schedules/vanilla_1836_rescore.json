@@ -1,0 +1,32 @@
+{
+  "schedule_version": 1,
+  "label": "vanilla-1836-rescore",
+  "_why": "RE-TAKES on TRUE VANILLA the 1836 pop-consumption measurement behind F19/F22/F23/F24/F27/F31. Every one of those was measured on session 20260802_233029_rescore-direct, which is the CONFIG arm - our full tiered mod. This schedule is that schedule with one field changed: the arm.",
+  "_note": "ARM: {kind: control} = vanilla + telemetry, NOTHING else. Deliberately a byte-for-byte mirror of rescore_direct.json in markets, member tags, dates, metrics and runs-per-market, so the two sessions are PAIRED and any difference is the arm rather than the design. ⚠ SCORING IS NOT AUTOMATIC: score_pop_split.mjs predicts from ui/presets.js + config/mod_config.json, i.e. OUR recipes. Against a vanilla game that is a mismatch - see FINDINGS' arm note, which argues (correctly) that the config arm was the RIGHT place to measure 'how accurate is our sheet'. So score this session with the model on config/mod_config.vanilla_stub.json, and separately with the game's own measured sell orders fed in, which isolates needSplit() from building-model error entirely. What this session settles is the ENGINE-RULE half - F31's raw-vs-final reading, F27's slave basket, F13's urban centres - which must hold on vanilla or it is not a rule about the game.",
+  "_instrument": "ONE market per run. The breakdown returns multi-KB formatted text per good; at two markets per run the debug log hit 2.1 MB against a 5x512 KB ring and was cut off after 43 of ~72 goods. Each market runs TWICE: the between-run spread of the measured target (F24 saw 2.5-4.7%) is what separates measurement noise from model error, and each run truncates at a different good so two runs union more coverage. Tags list every MEMBER country of the market, not just the lead, so per-pop SoL covers 100% of the pops behind the observed orders. The British market is deliberately absent - its 65 members pull in all of India, ~15k pop lines in one tick, exceeding the whole ring.",
+  "defaults": {
+    "metrics": ["market_goods_scoped", "scenario", "pop_sol", "consumption_breakdown"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 20,
+    "tags": ["BEL"]
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["BEL"] },
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["BEL"] },
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["JAP", "EZO", "RYU"] },
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["JAP", "EZO", "RYU"] },
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["FRA", "PLY"] },
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["FRA", "PLY"] },
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["USA", "LIB", "SEQ"] },
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["USA", "LIB", "SEQ"] },
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["RUS", "ALK", "FIN", "KZH", "OZH", "UBD", "UZH"] },
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["RUS", "ALK", "FIN", "KZH", "OZH", "UBD", "UZH"] },
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["CHI", "KOR", "LAN", "TIB"] },
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["CHI", "KOR", "LAN", "TIB"] },
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["AUS", "CRO", "HUN", "KRA", "TRS"] },
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"], "tags": ["AUS", "CRO", "HUN", "KRA", "TRS"] }
+  ]
+}

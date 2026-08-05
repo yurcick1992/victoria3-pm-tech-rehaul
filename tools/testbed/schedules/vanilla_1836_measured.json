@@ -1,0 +1,25 @@
+{
+  "schedule_version": 1,
+  "label": "vanilla-1836-measured",
+  "_why": "REGENERATES config/measured_1836.json ON VANILLA. The committed file was generated from session 20260802_190643_throughput-secondaries, which is the CONFIG arm - our full tiered mod. That is unambiguously wrong for this file, whatever one concludes about the other findings: measured_1836.json exists to hold the four things the vanilla HISTORY FILES cannot answer about the VANILLA 1836 start - what a market trades, each stratum's standard of living, the pop-class split, and which PMs urban centres run. Measured under the mod it describes the mod's 1836, not vanilla's, and it feeds every scenario preset in the balance UI through extract_presets.ps1.",
+  "_note": "ARM: {kind: control} = vanilla + telemetry. Mirrors allmarkets_popsol.json in tags, metrics and dates, changing only the arm and adding building_inventory, which extract_measured.ps1 wants and which allmarkets_popsol did not carry. ⚠ The wages block inside measured_1836.json is ALREADY clean - it came from the 3 Aug wages series, which ran on the control arm - so regenerate WITHOUT -WagesOnly and let the existing wages block stand: extract_measured merges rather than overwrites it. Two runs because some fields are not deterministic between runs (urban-centre tram levels swing by a third) and one dropped dump would otherwise cost the whole table.",
+  "defaults": {
+    "tags": ["BEL",
+             "FRA", "PLY",
+             "RUS", "ALK", "FIN", "KZH", "OZH", "UBD", "UZH",
+             "CHI", "KOR", "LAN", "TIB",
+             "AUS", "CRO", "HUN", "KRA", "TRS",
+             "JAP", "EZO", "RYU",
+             "USA", "LIB", "SEQ"],
+    "metrics": ["boot_dump", "market_goods_scoped", "scenario", "pop_sol", "building_inventory"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 25
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"] },
+    { "setup": "vanilla", "until": "1836.4.1", "dump_dates": ["1836.2.1"] }
+  ]
+}

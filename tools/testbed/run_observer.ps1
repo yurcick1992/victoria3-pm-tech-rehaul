@@ -461,11 +461,34 @@ function Write-BuildState {
         $agentic = Get-Content $Notes -Raw -Encoding UTF8 | ConvertFrom-Json
     }
 
+    # ---- THE ARM. Read off the BUILT MOD, not off the flags it was asked for, so it cannot disagree
+    # with what actually loaded. This is the field whose absence cost 2026-08-05: a full day of
+    # measurement ran on the tiered mod when vanilla was wanted, and no artifact recorded which.
+    #   control            - vanilla + telemetry, no gameplay content
+    #   control+pop_needs  - vanilla + telemetry + a pop-need weight rescaling, and NOTHING else
+    #   config             - a full modded build (buildings, PMs, history, …)
+    # A `deviates_from_vanilla` list names every gameplay file the arm carries, so "how far from
+    # vanilla is this" is answerable without re-deriving it from the config.
+    $arm = "unknown"; $deviates = @()
+    if ($ModPath -and (Test-Path $ModPath)) {
+        $isControl = ($modMeta -and $modMeta.id -eq "com.yurcick.v3_testbed_control")
+        foreach ($probe in @('common\buildings','common\production_methods','common\history',
+                             'common\pop_needs','common\ai_strategies','localization')) {
+            if (Test-Path (Join-Path $ModPath $probe)) { $deviates += ($probe -replace '\\','/') }
+        }
+        $arm = if (-not $isControl) { "config" }
+               elseif ($deviates -contains 'common/pop_needs') { "control+pop_needs" }
+               elseif ($deviates.Count -eq 0) { "control" }
+               else { "control+UNEXPECTED" }
+    }
+
     $state = [ordered]@{
-        schema_version = 1
+        schema_version = 2
         generated      = (Get-Date).ToString("s")
         session        = $Stamp
         deterministic  = [ordered]@{
+            arm            = $arm
+            deviates_from_vanilla = $deviates
             mod_under_test = $(if ($ModPath) { [ordered]@{
                                     path = $ModPath; metadata = $modMeta
                                     fingerprint = (Get-DirFingerprint $ModPath)

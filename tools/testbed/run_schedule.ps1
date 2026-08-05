@@ -179,8 +179,20 @@ function Resolve-Setup {
     $modName = "sched_$($Id -replace '[^A-Za-z0-9._-]','_')"
     $args = @("-ExecutionPolicy","Bypass","-File",$Builder,"-SaveTo",$modName,
               "-Telemetry",$SpecFile,"-TelemetryToken",$Token)
+    $cfg = $null
     switch ($kind) {
-        "control" { $args += "-ControlOnly" }
+        "control" {
+            $args += "-ControlOnly"
+            # A control arm may optionally name a config, and the builder will then read EXACTLY ONE
+            # thing out of it: `pop_need_weight_mult`. That is what makes "vanilla + one named change"
+            # expressible as an arm. Omit `config` and the arm is pure vanilla + telemetry.
+            $cfgSpec = Val $Spec "config" $null
+            if ($cfgSpec) {
+                $cfg = RepoPath $cfgSpec
+                if (-not (Test-Path $cfg)) { throw "setup '$Id': config not found: $cfg" }
+                $args += @("-Config", $cfg)
+            }
+        }
         "config"  {
             $cfg = RepoPath (Val $Spec "config" "config/mod_config.json")
             if (-not (Test-Path $cfg)) { throw "setup '$Id': config not found: $cfg" }
@@ -196,7 +208,12 @@ function Resolve-Setup {
         }
         default   { throw "setup '$Id': unknown kind '$kind'" }
     }
-    return @{ Args = $args; ModPath = (Join-Path $Repo "mod_$modName"); Kind = $kind }
+    # Config is returned so it can be handed to the observer as -BuildConfig. Without that,
+    # build_state.json records `built_from_config: ""` and `config_sha256: null` - the two fields
+    # CLAUDE.md requires to be machine-read, and precisely the two that would have caught the
+    # 2026-08-05 wrong-arm day, where which arm each session ran had to be reconstructed by hand
+    # from schedule.json. See run_observer.ps1's build_state block.
+    return @{ Args = $args; ModPath = (Join-Path $Repo "mod_$modName"); Kind = $kind; Config = $cfg }
 }
 
 $index = @()
@@ -251,6 +268,9 @@ foreach ($p in $plan) {
                  "-Stamp",$stamp,
                  "-TelemetryToken",$token,
                  "-Label","$label/#$($p.index) $($p.setup)")
+    # PROVENANCE: the arm this run was built from, machine-read into build_state.json. A control arm
+    # with no config passes nothing, and build_state then reads as the pure-vanilla arm it is.
+    if ($resolved.Config) { $obsArgs += @("-BuildConfig",$resolved.Config) }
     & powershell @obsArgs
     $rc = $LASTEXITCODE
 

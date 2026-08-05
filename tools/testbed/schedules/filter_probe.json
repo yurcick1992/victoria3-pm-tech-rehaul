@@ -1,0 +1,18 @@
+{
+  "schedule_version": 1,
+  "label": "filter-probe",
+  "_why": "THE UNBLOCKING PROBE of TESTBED_METRICS 3.3.2: can every_market_goods be restricted at all? Every previous attempt used a goods-IDENTITY trigger and all of them failed (3.3.1). Vanilla's own common/alert_types runs blocks under script_context = player_market_goods using QUANTITY and PROPERTY triggers instead - market_goods_buy_orders > 0, is_consumed_by_government_buildings = yes - and common/trigger_localization catalogues the whole family. If any of them fires, the channel split (~1 MB per market per dump, and it truncates every run) becomes restrictable, which changes the metric spec of the overnight batch that follows.",
+  "_note": "ARM: {kind: control} = vanilla + telemetry. Nothing here depends on the mod, and the whole point of this session is that the arm is stated. Five candidates, each in its OWN on_action, ordered safest-first, each fenced start/end so the four possible outcomes are distinguishable: works / parses-but-matches-nothing / died-mid-block / never-ran. 'base' is unfiltered and MUST be read first - without its count there is no denominator and 'the filter works' cannot be told from 'the market is small'. 'geq' (goods_equal = g:automobiles) is last because it is the jackpot and the most likely to be fatal: a fatal block abandons the rest of the FILE, so anything after it would be lost.",
+  "defaults": {
+    "metrics": ["market_goods_scoped", "filter_probe"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 15,
+    "tags": ["GBR"]
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1836.3.1", "dump_dates": ["1836.2.1"] }
+  ]
+}

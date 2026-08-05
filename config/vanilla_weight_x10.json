@@ -1,0 +1,8 @@
+{
+  "_comment": "TREATMENT ARM for the pop-need weight experiment: VANILLA + TELEMETRY + THIS AND NOTHING ELSE. Used as {kind: control, config: config/vanilla_weight_x10.json}, which makes build.ps1 emit common/pop_needs/00_pop_needs.txt with these multipliers applied and no other gameplay content whatsoever - no buildings, no production methods, no history, no localization. Its control is the SAME schedule's plain {kind: control} runs. Do NOT add industries or any other key here: the whole value of this arm is that it differs from vanilla in exactly one file. The multipliers match config/mod_config.x10.json so the two experiments are comparable, except that this one is not confounded by the tier split.",
+  "pop_need_weight_mult": {
+    "luxury_furniture": 10,
+    "steamers": 10,
+    "automobiles": 10
+  }
+}

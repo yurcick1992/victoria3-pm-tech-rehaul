@@ -1170,9 +1170,17 @@ the game.
   MODDING_NOTES → Self-diagnostics.
 - **🛑 HARD RULE — A RUN'S CONFIGURATION MUST BE UNAMBIGUOUS BEFORE IT LAUNCHES. CLARIFY UNTIL CERTAIN.**
   A request to "run X" is **not** a specification. Before any launch, state back — and get agreement on —
-  **which ARM** (`{kind: control}` = vanilla + telemetry, or `{kind: config}` = a named config file, and
-  *which* one), the **span**, **n**, the **metrics**, and **what is being compared against what**. If any
+  **which ARM** — `{kind: control}` = vanilla + telemetry; `{kind: control, config: <path>}` = vanilla +
+  telemetry + **only** that config's `pop_need_weight_mult`, the one gameplay change a control arm may
+  carry; or `{kind: config, config: <path>}` = a full modded build, and *which* one — plus the **span**,
+  **n**, the **metrics**, and **what is being compared against what**. If any
   of that is unstated, ASK. Do not infer it from what the last batch happened to use.
+  ✅ **The arm is now RECORDED, machine-read, in every run's `build_state.json`** (schema v2):
+  `deterministic.arm` is `control` / `control+pop_needs` / `config`, and `deviates_from_vanilla` lists
+  every gameplay directory the built mod actually carries. Both are read **off the built mod**, not off
+  the flags it was asked for, so they cannot disagree with what loaded. `built_from_config` +
+  `config_sha256` are populated too — `run_schedule.ps1` never passed `-BuildConfig` before 2026-08-06,
+  which is exactly why the wrong-arm day had to be reconstructed by hand from `schedule.json`.
   ⚠ **This rule is written in a wasted day (2026-08-05).** A full day of debut-good measurement — five
   launches, ~6 h of game time, findings F32/F33 — was run on `config/mod_config.json`, the old tiered mod,
   because that is what the previous balance batch used. The user's expectation was vanilla + telemetry. The
@@ -1292,6 +1300,16 @@ the game.
   **`-ControlOnly`** — the **vanilla control arm**: a complete, loadable mod whose *only* content is that
   telemetry file plus metadata (no buildings, PMs, localization or history). `-ControlOnly` requires
   `-SaveTo`/`-DryRun` so it can never overwrite the canonical `mod/`.
+  ⚠ **ONE EXCEPTION, and it is deliberate: `-ControlOnly -Config <path>` also emits
+  `common/pop_needs/00_pop_needs.txt`** when that config carries `pop_need_weight_mult` — nothing else is
+  read from the config. That makes **"vanilla + exactly one named change"** buildable, which is what a
+  treatment arm against a vanilla control has to be; before 2026-08-06 the control branch short-circuited
+  above the emitter, so the pop-need weight experiment could only be run on top of the whole tiered mod,
+  confounding the very thing it measured. With no `pop_need_weight_mult` the file is not emitted and the
+  arm is pure vanilla. The build prints `!! NOT PURE VANILLA` when it carries it, and
+  `build_state.json` records `arm: control+pop_needs`. **Do not widen this** — a control arm that
+  quietly accumulates content stops being a control. `config/vanilla_weight_x10.json` is the model: one
+  key, and a comment saying why nothing may be added to it.
   **Why the builder owns this:** an experiment's arms must instrument *identically* or the control isn't a
   control — one generator guarantees that (verified: control and modded builds emit byte-identical
   telemetry apart from the build-timestamp comment). **`telemetry_lib.ps1` is the ONLY generator**: the
@@ -1315,7 +1333,13 @@ the game.
   measurements.) The `runs` list is **explicit and ordered**, so any sequence works including repeats and
   alternation (`A@1841, B@1841, A@1841, B@1846`); each run carries its **index**, and the schedule JSON is
   copied verbatim into the session folder so a result always traces back to its plan. Setups are
-  `{kind: control}` (vanilla + telemetry, via `build.ps1 -ControlOnly`) or `{kind: config, config: <path>}`.
+  `{kind: control}` (vanilla + telemetry, via `build.ps1 -ControlOnly`), `{kind: control, config: <path>}`
+  (the same, plus that config's `pop_need_weight_mult` and nothing else — see `-ControlOnly` above), or
+  `{kind: config, config: <path>}`.
+  ⚠ **EVERY telemetry spec key must be listed in the plan entry that `Resolve-Setup` builds, or it is
+  silently dropped** — the key reaches neither the builder nor the mod, and the run then looks like the
+  *metric* failed rather than the plumbing. That cost a probe run on 2026-08-05 (`breakdown_dates`,
+  `breakdown_tags`, `wide_dates`, `wide_tags` all emitted nothing until they were added).
   **The mod is rebuilt for every run, never cached** — builds are deterministic (same config + same vanilla
   ⇒ same output) and take ~1 min, whereas caching would hide a setup that isn't reproducible. The only
   nondeterminism in a build artifact is the timestamp the builder stamps into the mod `name`, so any

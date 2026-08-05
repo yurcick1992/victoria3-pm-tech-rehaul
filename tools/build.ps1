@@ -143,6 +143,64 @@ if ($isAlt) {
     Copy-Item -LiteralPath $srcMeta -Destination $dstMeta -Force
 }
 
+# --- pop_needs: scale the WEIGHT of chosen goods inside every need they appear in -----------------
+# `weight` is the base weight a good gets in a need, modulated by its share of the market's sell orders
+# (the mechanic is documented in a header comment in vanilla's own 00_pop_needs.txt - read it before
+# touching this). It is the one lever on how a need's money splits between competing goods.
+#
+# Config: top-level `pop_need_weight_mult`, a map good -> multiplier, applied to EVERY entry for that
+# good across ALL needs. Absent or empty => the file is NOT emitted at all and pop needs stay vanilla,
+# on the same principle as the production-method files: owning a file we would copy verbatim freezes it
+# against the next patch and ships bytes we did not author, for nothing.
+#
+# ⚠ WHOLE-FILE replacement of a SINGLE vanilla file (`00_pop_needs.txt`), so a game patch that adds a
+# need or changes a weight is silently overridden until this is rebuilt. Listed in ON_GAME_UPDATE.
+#
+# ⚠ DEFINED HERE, ABOVE THE -ControlOnly SHORT-CIRCUIT, AND ON PURPOSE. The control arm must be able to
+# carry this ONE change and nothing else: "vanilla + a weight rescaling" is the treatment arm of the
+# pop-need weight experiment, and until 2026-08-06 it was not buildable at all, because -ControlOnly
+# exits before the emitter ever ran. It writes directly rather than through WriteText/$bom, which are
+# defined further down, for the same reason. Game content must be UTF-8 WITH BOM (the lexer warns
+# otherwise), which is what $true to UTF8Encoding buys.
+function Write-PopNeedWeights($cfgObj, $gameDir, $modRoot, $header, $relLabel) {
+    $relPN = 'common\pop_needs\00_pop_needs.txt'
+    $pnMult = @{}
+    if ($cfgObj -and $cfgObj.pop_need_weight_mult) {
+        foreach ($p in $cfgObj.pop_need_weight_mult.PSObject.Properties) { $pnMult[$p.Name] = [double]$p.Value }
+    }
+    if ($pnMult.Count -eq 0) {
+        Write-Output "pop needs: no weight multipliers configured - staying vanilla (file not emitted)"
+        return
+    }
+    $srcPN = Join-Path $gameDir $relPN
+    if (-not (Test-Path -LiteralPath $srcPN)) {
+        Write-Output "note: $relPN not found in game - skipping pop-need weight scaling"
+        return
+    }
+    $pnLines = Get-Content -LiteralPath $srcPN
+    $pOut = New-Object System.Collections.Generic.List[string]
+    $pOut.Add($header.TrimEnd())
+    $curGood = $null; $changed = 0
+    foreach ($l in $pnLines) {
+        $line = $l
+        if ($l -match '^\s*goods\s*=\s*([a-z0-9_]+)') { $curGood = $Matches[1] }
+        elseif ($l -match '^(\s*)weight\s*=\s*([0-9.]+)\s*$' -and $curGood -and $pnMult.ContainsKey($curGood)) {
+            $nw = [double]$Matches[2] * $pnMult[$curGood]
+            # trailing zeros trimmed: the game parses either, but a diff against vanilla should read clean
+            $line = "{0}weight = {1}" -f $Matches[1], ($nw.ToString('0.####', [Globalization.CultureInfo]::InvariantCulture))
+            $changed++
+        }
+        elseif ($l -match '^\s*entry\s*=\s*\{') { $curGood = $null }
+        $pOut.Add($line)
+    }
+    $dstPN = Join-Path $modRoot $relPN
+    New-Item -ItemType Directory -Force -Path (Split-Path $dstPN -Parent) | Out-Null
+    [System.IO.File]::WriteAllText($dstPN, (($pOut -join "`n") + "`n"), (New-Object System.Text.UTF8Encoding($true)))
+    Write-Output ("pop needs: scaled {0} weight line(s) across {1} good(s) -> {2}\{3}" -f $changed, $pnMult.Count, $relLabel, $relPN)
+    foreach ($k in ($pnMult.Keys | Sort-Object)) { Write-Output ("    {0} x{1}" -f $k, $pnMult[$k]) }
+    if ($changed -eq 0) { Write-Output "WARN: pop_need_weight_mult named $($pnMult.Count) good(s) but matched NO weight line - check the good keys" }
+}
+
 # ---------------------------------------------------------------- telemetry ----
 # Telemetry is generated HERE, by the one shared module, for every arm of an experiment - the
 # vanilla control and any modded build alike. That is what makes a control valid: arms that
@@ -196,12 +254,24 @@ if ($ControlOnly) {
         New-Item -ItemType Directory -Force -Path $evDir | Out-Null
         [System.IO.File]::WriteAllText((Join-Path $evDir 'zzz_v3tb_probe.txt'), $telemetryEvents, (New-Object System.Text.UTF8Encoding($true)))
     }
+    # The ONE piece of gameplay content a control arm may carry, and only when the config it was given
+    # explicitly asks for it: the pop-need weight rescaling. That makes "vanilla + exactly one named
+    # change" buildable, which is what a treatment arm against a vanilla control has to be. With no
+    # `pop_need_weight_mult` in the config this emits nothing and the arm stays pure vanilla.
+    Write-PopNeedWeights $cfg $Game $modAbs $genHeader $modRel
+    $pnEmitted = Test-Path -LiteralPath (Join-Path $modAbs 'common\pop_needs\00_pop_needs.txt')
     Write-Output ""
     Write-Output "CONTROL BUILD: vanilla + telemetry only -> $modRel"
     Write-Output "  dump dates: $($telemetrySpec.dump_dates -join ', ')"
     Write-Output "  tags      : $($telemetrySpec.tags -join ', ')"
     Write-Output "  metrics   : $($telemetrySpec.metrics -join ', ')"
-    Write-Output "  (no buildings, no production methods, no localization, no history)"
+    if ($pnEmitted) {
+        # ASCII on purpose: this line lands in build.log, which is read back through tooling that
+        # decodes UTF-8 as CP1251 on this machine, and a mangled warning is a warning nobody reads.
+        Write-Output "  !! NOT PURE VANILLA: carries common/pop_needs/00_pop_needs.txt from $(Split-Path $cfgPath -Leaf)"
+    } else {
+        Write-Output "  (no buildings, no production methods, no localization, no history, no pop needs)"
+    }
     exit 0
 }
 
@@ -442,49 +512,11 @@ foreach ($rel in $ownedRels) {
     WriteText "$modRel\$relWin" (($bOut -join "`n") + "`n") $bom
 }
 
-# --- pop_needs: scale the WEIGHT of chosen goods inside every need they appear in -----------------
-# `weight` is the base weight a good gets in a need, modulated by its share of the market's sell orders
-# (the mechanic is documented in a header comment in vanilla's own 00_pop_needs.txt - read it before
-# touching this). It is the one lever on how a need's money splits between competing goods.
-#
-# Config: top-level `pop_need_weight_mult`, a map good -> multiplier, applied to EVERY entry for that
-# good across ALL needs. Absent or empty => the file is NOT emitted at all and pop needs stay vanilla,
-# on the same principle as the production-method files: owning a file we would copy verbatim freezes it
-# against the next patch and ships bytes we did not author, for nothing.
-#
-# ⚠ WHOLE-FILE replacement of a SINGLE vanilla file (`00_pop_needs.txt`), so a game patch that adds a
-# need or changes a weight is silently overridden until this is rebuilt. Listed in ON_GAME_UPDATE.
-$relPN = 'common\pop_needs\00_pop_needs.txt'
-$pnMult = @{}
-if ($cfg.pop_need_weight_mult) { foreach ($p in $cfg.pop_need_weight_mult.PSObject.Properties) { $pnMult[$p.Name] = [double]$p.Value } }
-if ($pnMult.Count -eq 0) {
-    Write-Output "pop needs: no weight multipliers configured - staying vanilla (file not emitted)"
-} else {
-    $srcPN = Join-Path $Game $relPN
-    if (-not (Test-Path -LiteralPath $srcPN)) {
-        Write-Output "note: $relPN not found in game - skipping pop-need weight scaling"
-    } else {
-        $pnLines = Get-Content -LiteralPath $srcPN
-        $pOut = New-Object System.Collections.Generic.List[string]
-        $pOut.Add($genHeader.TrimEnd())
-        $curGood = $null; $changed = 0
-        foreach ($l in $pnLines) {
-            $line = $l
-            if ($l -match '^\s*goods\s*=\s*([a-z0-9_]+)') { $curGood = $Matches[1] }
-            elseif ($l -match '^(\s*)weight\s*=\s*([0-9.]+)\s*$' -and $curGood -and $pnMult.ContainsKey($curGood)) {
-                $nw = [double]$Matches[2] * $pnMult[$curGood]
-                # trailing zeros trimmed: the game parses either, but a diff against vanilla should read clean
-                $line = "{0}weight = {1}" -f $Matches[1], ($nw.ToString('0.####', [Globalization.CultureInfo]::InvariantCulture))
-                $changed++
-            }
-            elseif ($l -match '^\s*entry\s*=\s*\{') { $curGood = $null }
-            $pOut.Add($line)
-        }
-        WriteText "$modRel\$relPN" (($pOut -join "`n") + "`n") $bom
-        Write-Output ("pop needs: scaled {0} weight line(s) across {1} good(s) -> {2}" -f $changed, $pnMult.Count, $relPN)
-        foreach ($k in ($pnMult.Keys | Sort-Object)) { Write-Output ("    {0} x{1}" -f $k, $pnMult[$k]) }
-    }
-}
+# --- pop_needs -----------------------------------------------------------------------------------
+# The emitter itself lives near the top of this script (Write-PopNeedWeights), ABOVE the -ControlOnly
+# short-circuit, so the vanilla control arm can carry this one change and nothing else. See it there
+# for what it does and why the file is not emitted at all when no multiplier is configured.
+Write-PopNeedWeights $cfg $Game $modAbs $genHeader $modRel
 
 # --- ai_strategies: REPLACE 01_admin_strategies.txt to control AI SUBSIDY POLICY ------------------
 # The `subsidies` block inside an ai_strategy is the AI's subsidy DECISION RULE (must_have /

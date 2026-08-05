@@ -1,0 +1,9 @@
+{
+  "schedule_version": 1,
+  "label": "x10-arm-check",
+  "_why": "SMOKE TEST of the treatment arm's PLUMBING, not a measurement. {kind: control, config: ...} is a new setup shape (added 2026-08-06 so a vanilla control can carry a pop-need weight rescaling and nothing else). Its first real use is run 19 of vanilla_retest, ~7 h into an overnight batch - which is the worst possible place to discover that Resolve-Setup drops the -Config argument. One minute here buys that.",
+  "_check": "PASS = build_state.json records arm 'control+pop_needs' with deviates_from_vanilla ['common/pop_needs'], and the emitted 00_pop_needs.txt differs from vanilla in exactly 4 weight lines.",
+  "defaults": { "metrics": ["market_goods_scoped"], "autosave_interval": "yearly", "timeout_minutes": 15, "tags": ["GBR"] },
+  "setups": { "vanilla_x10": { "kind": "control", "config": "config/vanilla_weight_x10.json" } },
+  "runs": [ { "setup": "vanilla_x10", "until": "1836.3.1", "dump_dates": ["1836.2.1"] } ]
+}

@@ -60,7 +60,7 @@
 #       workforce/dependent, and the measured workforce ratio. Deep markets are the LEAD COUNTRY AND
 #       ITS SUBJECTS, not the whole market - see Get-WageBlock for why. New script values
 #       v3tb_popobj_count (graduated from the probe file), v3tb_state_count, v3tb_poptype_id.
-$script:TELEMETRY_VERSION = 11
+$script:TELEMETRY_VERSION = 12
 
 function Get-TelemetryVersion { return $script:TELEMETRY_VERSION }
 
@@ -871,6 +871,68 @@ $nm2 = {
             }
         }
     }
+    # ---- FILTER PROBE (v12): can `every_market_goods` be restricted AT ALL? ------------------------
+    # THE UNBLOCKING PROBE named in TESTBED_METRICS §3.3.2. The channel split is the single most
+    # expensive metric there is (~1 MB per market per dump, and it truncates), and the obvious economy -
+    # emit it only for the goods under investigation - has never been available: §3.3.1 records that
+    # `is_goods` and `goods` both fire ZERO times in this scope, and addressing a good directly through
+    # `GetMarketGoods(GetGoods('X'))` takes the whole on_action down silently.
+    #
+    # ⚠ WHAT WAS NEVER TESTED IS THE ONLY THING VANILLA ACTUALLY DOES HERE. Every earlier attempt used a
+    # goods-IDENTITY trigger. But `common/alert_types/00_alert_types.txt` runs blocks under
+    # `script_context = player_market_goods` with QUANTITY and PROPERTY triggers - `market_goods_buy_orders
+    # > 0`, `market_goods_pricier > 0.25`, `is_consumed_by_government_buildings = yes` - and
+    # `common/trigger_localization/00_trigger_localization.txt` (which catalogues EVERY trigger in the
+    # game, so this is a complete list rather than a usage sample) confirms the family exists and reads
+    # `[GOODS.GetName]` / `[MARKET.GetName]` off its scope. That is a market_goods-scope trigger.
+    #
+    # ⚠ There is NO `is_consumed_by_pops`. The pop-consumable restriction §3.3.2 actually wanted is not
+    # in the game's trigger set, so the best available filters are economic, not by-need.
+    #
+    # ONE ON_ACTION PER CANDIDATE, ORDERED SAFEST-FIRST, EACH FENCED. A bad trigger in script position
+    # abandons the rest of the FILE from that point (BUGS_AND_FIXES, 2026-08-02), and a bad data function
+    # inside a debug_log string silently no-ops the whole on_action with nothing in error.log (§3.3.1).
+    # The fences separate the three outcomes that otherwise look alike:
+    #   start + N lines + end  -> the filter WORKS, and N vs the baseline says how much it saves
+    #   start + 0 lines + end  -> parses but matches nothing (the `is_goods` failure mode)
+    #   start, no end          -> died mid-block; everything after it in the file is gone too
+    #   neither                -> never ran at all
+    if ($metrics -contains "filter_probe") {
+        $fpTag = if ($tags.Count) { $tags[0] } else { 'GBR' }
+        # id => the limit body. '' is the unfiltered BASELINE and must come first: without its count the
+        # others have no denominator and "the filter works" cannot be told from "the market is small".
+        $fpCases = [ordered]@{
+            'base' = ''
+            'bo0'  = 'market_goods_buy_orders > 0'
+            'so0'  = 'market_goods_sell_orders > 0'
+            'gov'  = 'is_consumed_by_government_buildings = yes'
+            'geq'  = 'goods_equal = g:automobiles'
+        }
+        foreach ($fpId in $fpCases.Keys) {
+            $bx++
+            $lim = $fpCases[$fpId]
+            $limLine = if ($lim) { "`r`n`t`t`t`tlimit = { $lim }" } else { "" }
+            $nm2 = "v3tb_fp_$fpId"
+            $extraNames += $nm2
+            $extraBody += @"
+
+$nm2 = {
+	trigger = { game_date >= "$($dates[0])" }
+	effect = {
+		debug_log = "V3TB|$Token|FP|$fpId|start|[TimeKeeper.GetCurrentDate.GetString]"
+		every_market = {
+			limit = { owner = c:$fpTag }
+			every_market_goods = {$limLine
+				debug_log = "V3TB|$Token|FP|$fpId|hit|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketSellOrders|2]"
+			}
+		}
+		debug_log = "V3TB|$Token|FP|$fpId|end|ok"
+	}
+}
+"@
+        }
+    }
+
     # The wide sweep: order book only, no split, on its own (yearly) dates over a long tag list. Cheap
     # per dump (~53 lines per market) and it is what says whether some country outside the deep-sampled
     # markets produced a good first. Ruling countries out by name is legitimate here - Qing, Persia or

@@ -30,6 +30,8 @@ record the bump here *and* in the FINDINGS numbering table.
 
 | **v11** | `tech_log` (§6): **TECH** — every technology acquired, by every country, as an EVENT rather than a snapshot. One line per real acquisition, exact to the day |
 
+| **v12** | `filter_probe` (§3.3.0): **FP** — five candidate `limit` bodies inside `every_market_goods`, each in its own on_action and fenced `start`/`end`, answering whether that scope can be filtered at all. Diagnostic only; emits nothing unless asked for | **F34** |
+
 ⚠ **Sessions `20260803_014037` and `20260803_022027` stamp v9 while carrying early v10 content**, and
 both were stopped part-way (see §5.6 and §5.7 — they are the *evidence* for those two rules, not
 usable measurement runs). Read their schema from `schedule.json`, not the `BOOT` line. The constant
@@ -1134,7 +1136,36 @@ voids the entire line it sits in, and the country+date half was the part that co
 four fields shared a line, the failure would have produced *nothing at all* and looked like the on_action
 not firing. Only once every function resolved were they merged into the single line above.
 
-### 3.3.1 ⚠ THE BREAKDOWN CANNOT BE RESTRICTED TO NAMED GOODS — both routes probed and FAILED (v11)
+### 3.3.0 ✅ RESOLVED (v12) — a `limit` DOES work in `every_market_goods`; what fails is goods IDENTITY
+
+**§3.3.1 and §3.3.2 below were written on a premise that is now refuted** and are kept for their
+detail, not their conclusion. §3.3.2 said *"no valid trigger of any kind has ever been found for the
+`market_goods` scope"*. That was true only because every attempt had used a goods-**identity**
+trigger. Session `20260805_233952_filter-probe` (arm `control`, 47 s, FINDINGS **F34**) tested the
+quantity and property triggers vanilla itself uses under `script_context = player_market_goods`:
+
+| `limit` | goods (British Market, 1836.2.1) | |
+|---|--:|---|
+| *(none)* | 43 | baseline |
+| `market_goods_buy_orders > 0` | **42** | ✅ works — excludes exactly `gold`, which has zero buy orders |
+| `market_goods_sell_orders > 0` | 43 | parses; nothing to exclude at this date |
+| `is_consumed_by_government_buildings = yes` | **5** | ✅ works — `fabric iron paper tools wood` |
+| `goods_equal = g:automobiles` | 43 | ❌ no-op — matched everything; identity still unavailable |
+
+**Where to look for more:** `common/trigger_localization/00_trigger_localization.txt` catalogues
+**every** trigger in the game, and `common/alert_types/00_alert_types.txt` shows which ones run in a
+`market_goods` scope. Both are cheaper than a probe run — read them before probing.
+
+⚠⚠ **BUT DO NOT PUT A FILTER ON THE CHANNEL SPLIT.** The saving is small (1 good in 43) and the cost
+is not: `score_pop_split.mjs` counts *a verified block with no pop entry* as a **real zero**, which
+is what charges the pop model for demand it invents on goods nobody buys. Filtering zero-buy-order
+goods out deletes exactly the cases the model is most likely to fail. See F34.
+
+⚠ **The filter that would pay still does not exist.** There is **no `is_consumed_by_pops`** trigger —
+only the government and military variants — so §3.3.2's "restrict to pop-consumable goods" is still
+unbuildable, and the levers remain **dates and markets, not goods**.
+
+### 3.3.1 ⚠ THE BREAKDOWN CANNOT BE RESTRICTED TO NAMED GOODS BY IDENTITY — four routes probed, all FAILED (v11–v12)
 
 `GetMarketBuyOrdersBreakdown` is the only channel split there is (§3.3), and it is ~1 MB per market per
 dump for **all** goods. The obvious economy — ask for it on two or three goods only — **does not exist**.
@@ -1145,6 +1176,7 @@ Two routes were built and probed; both fail, and one fails in a way that is wort
 | `limit = { is_goods = g:X }` inside `every_market_goods` | `20260805_140913` | fires **zero** times; no error names the trigger |
 | `limit = { goods = g:X }` inside `every_market_goods` | `20260805_140913` | same |
 | `THIS.GetMarket.GetMarketGoods(GetGoods('X').Self).GetMarketBuyOrdersBreakdown` | `20260805_141239`, `_141614` | **takes the whole on_action down** |
+| `limit = { goods_equal = g:X }` inside `every_market_goods` | `20260805_233952` | parses and runs, but matches **every** good — a no-op, not a filter (F34) |
 
 ⚠⚠ **THIS WAS ALREADY KNOWN AND THE PROBES WERE AVOIDABLE.** `BUGS_AND_FIXES.md` → *"A data function used
 as SCRIPT silently deletes the rest of the file"* (2026-08-02) records **this very construct**,
@@ -1178,17 +1210,28 @@ traded goods, 35 appear in some pop need, and the needs relevant to one question
 ~3x saving on the single most expensive metric, and it would turn a partially-truncated yearly dump into a
 complete one.
 
-⚠ **IT CANNOT BE BUILT TODAY, and the reason is §3.3.1**: there is no known way to filter
-`every_market_goods`. Both candidate triggers fire zero times, and addressing a good directly kills the
-on_action. Note the asymmetry with the order book, where `BUGS_AND_FIXES`'s advice — *the good's key is on
+⚠ **STILL CANNOT BE BUILT — but the reason has CHANGED, and it is no longer §3.3.1.**
+The unblocking probe proposed here was run (**§3.3.0**, session `20260805_233952`, FINDINGS **F34**) and
+it **succeeded**: quantity and property triggers *do* work in `every_market_goods` — `market_goods_buy_orders
+> 0` and `is_consumed_by_government_buildings = yes` both filter correctly, the latter cutting 43 goods to
+5. So "no trigger works in this scope" is refuted and this paragraph's original premise is void.
+
+**What blocks the design now is narrower and probably permanent: there is no `is_consumed_by_pops`
+trigger.** The game ships `is_consumed_by_government_buildings` and `is_consumed_by_military_buildings`
+and no pop equivalent, and `common/trigger_localization/00_trigger_localization.txt` — which catalogues
+every trigger in the game — has nothing else that selects a good by who eats it. Selecting the goods of a
+given *need* would require goods identity, which is the one thing that has never worked (§3.3.1, now four
+failed routes).
+
+⚠⚠ **AND EVEN THE FILTERS THAT DO WORK MUST NOT BE PUT ON THE BREAKDOWN.** `score_pop_split.mjs` treats a
+verified block with **no pop entry** as a real **zero** — that is what charges the pop model for demand it
+invents on goods nobody buys, and F31 depended on it. Excluding zero-buy-order goods would delete exactly
+the cases the model is most likely to get wrong, to save 1 good in 43. Measurement validity outranks ring
+space here.
+
+Note the asymmetry with the order book, where `BUGS_AND_FIXES`'s advice — *the good's key is on
 every line, filter at analysis time* — is entirely correct and costs nothing: for the breakdown the cost
 **is the emission**, so analysis-time filtering saves no ring space at all.
 
-**The concrete unblocking probe**, whenever this is next worth an hour: *no valid trigger of any kind has
-ever been found for the `market_goods` scope*. We have only ever tested goods-identity triggers. If some
-quantity trigger works there — anything of the shape "buy orders above zero", for instance — the filter
-becomes possible and this design opens up. Probe it in an **on_action of its own** (§3.3.1), because a bad
-trigger there is silent.
-
-**Until then the levers are markets, dates and goods-at-analysis — not goods-at-emission.** Budget the
+**So the levers remain markets, dates and goods-at-analysis — not goods-at-emission.** Budget the
 split as: one market per tick, a sparse date list, and union across dumps and runs.

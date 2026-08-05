@@ -13,6 +13,39 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## The provenance field that would have caught a wasted day was never populated — the scheduler simply did not pass it (2026-08-06)
+
+**Symptom.** A full day of measurement (2026-08-05, five launches, ~6 h of game time, findings F32/F33)
+ran on `config/mod_config.json` — our full tiered mod — when the question being asked was about the base
+game. Nobody noticed until the results were read closely and the "buyer" of a debut good turned out to be
+`Tier 2. Industrial Port`, one of our own buildings. Reconstructing **which arm each historical session
+ran** then required opening every session's `schedule.json` by hand.
+
+**Root cause — and it is not the human error it looks like.** `build_state.json` exists precisely to
+record this, and CLAUDE.md requires its `deterministic` half to be machine-read. But
+`run_observer.ps1` wrote `built_from_config = $BuildConfig` from a parameter that
+**`run_schedule.ps1` never passed**. `Resolve-Setup` resolved the config path, put it into the *builder's*
+argument list, and then threw it away — it returned `@{ Args; ModPath; Kind }` with no `Config`. So every
+scheduled run in the project's history recorded `built_from_config: ""` and `config_sha256: null`. The
+guard was designed, built, documented, and inert.
+
+**Fix.** `Resolve-Setup` returns `Config`; `run_schedule.ps1` appends `-BuildConfig` to the observer
+args when it is set. And `build_state.json` (now **schema v2**) additionally records
+`deterministic.arm` (`control` / `control+pop_needs` / `config`) and `deviates_from_vanilla` — the list
+of gameplay directories the mod actually contains.
+
+**⭐ The prevention lesson, which is the general one.** The new fields are derived **from the built mod on
+disk**, not from the flags the builder was asked for. A flag records an *intention*; the artifact records
+what actually loaded, and only the second can contradict a mistaken intention. When adding a provenance
+field, ask what it would say if the code above it were wrong — if the answer is "the same thing", it is
+decoration.
+
+**How to detect it recurred.** `deterministic.arm` must never be `unknown`, and a `config`-arm run must
+have a non-null `config_sha256`. Historical sessions are schema v1 and have neither; read their arm from
+`schedule.json` and **do not back-fill** — an old `build_state.json` is a historical record, not a cache.
+
+---
+
 ## A solver read BUILD OUTPUT and wrote SOURCE, so its convergence check verified nothing (2026-08-04)
 
 **Symptom.** `node tools/era_scenarios.mjs --write` followed immediately by a re-run reproduced every
