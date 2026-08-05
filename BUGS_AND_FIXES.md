@@ -13,6 +13,54 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## `c:TAG` on a country that no longer exists is an ERROR, not `false` — and our own telemetry emits 574 000 of them per campaign (2026-08-06)
+
+**Symptom.** A pure **vanilla control** run — no mod content at all beyond telemetry — wrote **574 455
+lines to `error.log`** over one 1836→1936 campaign, of which **48 659** name our own
+`common/on_actions/zzz_v3tb_telemetry.txt`. The message is `Invalid right side during comparison 'c'`.
+A second run was already at **145 549** lines by in-game 1854. The same campaign CTD'd at 1871, and the
+previous night's batch on a different arm CTD'd twice, both times with the same metric enabled.
+
+**Root cause.** The `market_goods_wide` sweep (§ TESTBED_METRICS, the "who made it first anywhere" metric)
+emits a fixed 50-tag filter:
+
+```
+every_market = { limit = { OR = { owner = c:GBR owner = c:USA … owner = c:TEX owner = c:CAL … } } }
+```
+
+**About twenty of those tags stop existing during a normal campaign** — TUS, SIC, PAP, BAV, SAX, WUR,
+BAD, HAN, HES, MEC, OLD, KRA, WAL, MOL, TEX, CAL, DAI, HAW … are annexed or form into successors. In
+Jomini script `c:TAG` on an absent country does **not** evaluate to false; it raises a script-system
+error. And because the filter sits inside `every_market`, **the whole `OR` is re-evaluated once per
+market** — so the cost is roughly *dead tags × markets × dump dates*, i.e. ~20 × ~300 × 97.
+
+**Fix (prepared, NOT yet applied — a batch was running, and `telemetry_lib.ps1` may never be edited
+mid-batch).** Guard every tag with its own existence test, the idiom the boot block already uses:
+
+```
+limit = { OR = { AND = { exists = c:GBR owner = c:GBR }  AND = { exists = c:USA owner = c:USA }  … } }
+```
+
+**Why it went unnoticed for so long.** Nothing *fails*. The metric emits correct lines for every country
+that does exist, the run completes, the TSV looks right — the only symptom is a log file nobody reads
+because `error.log` is expected to carry vanilla's own noise. The harness records `error_log_lines` in
+`meta.json` and it had been climbing for weeks.
+
+⚠ **Whether it CAUSES the crashes is still unproven** and should not be asserted. What is established:
+it is a real defect, it is ours, it is enormous, and it is the largest single contributor to a log volume
+the previous night already flagged as the first suspect for two CTDs. Fixing it is worth doing on its own
+merits; if the crashes stop, that is evidence, not proof.
+
+**How to detect it recurred.** `meta.json` → `error_log_lines`. A control-arm run should be in the low
+thousands (vanilla's own noise), not the hundreds of thousands. Anything naming
+`zzz_v3tb_telemetry.txt` in `error.log` is ours by definition and should be zero.
+
+**⭐ The general lesson.** A country tag hardcoded in telemetry is a **time bomb on a long campaign**: it
+is valid at 1836 and invalid by 1900. Any metric that names countries must either guard with `exists` or
+iterate and filter on a property instead of on identity.
+
+---
+
 ## The provenance field that would have caught a wasted day was never populated — the scheduler simply did not pass it (2026-08-06)
 
 **Symptom.** A full day of measurement (2026-08-05, five launches, ~6 h of game time, findings F32/F33)

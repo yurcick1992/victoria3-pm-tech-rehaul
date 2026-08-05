@@ -32,6 +32,26 @@ record the bump here *and* in the FINDINGS numbering table.
 
 | **v12** | `filter_probe` (§3.3.0): **FP** — five candidate `limit` bodies inside `every_market_goods`, each in its own on_action and fenced `start`/`end`, answering whether that scope can be filtered at all. Diagnostic only; emits nothing unless asked for | **F34** |
 
+### ⚠⚠ A HARDCODED COUNTRY TAG IS A TIME BOMB ON A LONG CAMPAIGN
+
+`c:TAG` on a country that **no longer exists** does not evaluate to false — it raises a script-system
+error. Tags valid at 1836 are routinely gone by 1900 (annexed, or formed into a successor), so any
+metric that names countries starts erroring partway through a campaign and never stops.
+
+**It is silent by construction.** Nothing fails: the metric still emits correct lines for the countries
+that do exist, the run completes, the TSV looks right. The only trace is in `error.log`, which nobody
+reads because it is expected to carry vanilla's own noise.
+
+**Measured cost, `market_goods_wide`'s 50-tag filter, one 1836→1936 control run** (session
+`20260805_234555_vanilla-retest`): **574 455** `error.log` lines, **48 659** of them naming our own
+telemetry file. The filter sits inside `every_market`, so the whole `OR` is re-evaluated **per market** —
+roughly *dead tags × markets × dump dates*.
+
+**Rule:** guard every named tag with its own existence test, the idiom the boot block already uses —
+`OR = { AND = { exists = c:GBR owner = c:GBR } … }` — or iterate and filter on a **property** instead of
+on identity. **Check `meta.json` → `error_log_lines` after any run**: a control arm should be in the low
+thousands; hundreds of thousands means a metric is erroring every tick. See BUGS_AND_FIXES.
+
 ⚠ **Sessions `20260803_014037` and `20260803_022027` stamp v9 while carrying early v10 content**, and
 both were stopped part-way (see §5.6 and §5.7 — they are the *evidence* for those two rules, not
 usable measurement runs). Read their schema from `schedule.json`, not the `BOOT` line. The constant
