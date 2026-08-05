@@ -1118,6 +1118,17 @@ further however short the good is — so every industry downstream is priced aga
 solved against a number that is an artifact of the band rather than of the market, and the count feedback
 gets no gradient at all.
 
+⚠ **THIS IS A SCOPE DECISION, NOT A CLAIM ABOUT THE GAME** (user, 2026-08-05). Those prices are entirely
+reachable in play and the engine is content to sit at them. We exclude them because a pinned input inflicts
+effects on **non-pop consumers that this model deliberately does not represent**, and a scenario in that
+state is not a stable one worth balancing against. So a measurement showing the game holding a good at the
+ceiling is **not** evidence against this constraint — expect to see it, and check first whether the good had
+any non-pop consumer at that moment. Observed 1857–63: the British market held **steamers** at the ceiling
+for six years on ~2 units of demand and zero supply, which is the *exempt* case, since nothing industrial
+was buying steamers there yet. (`steamers` is nonetheless on the restricted list below, because ports eat it
+in our ladder — "consumable by industry" is deliberately era-independent, see Scope.) This note exists
+because that observation was briefly written up as the game contradicting the rule, which it is not.
+
 **Scope, deliberately simple:** a good is restricted if it is an input to **any** production method reachable
 in any of our industry buildings — main recipes and every secondary PMG, across every era. "Consumable by
 industry", not "consumed right now": treating it as era-dependent would make the set change underfoot as the
