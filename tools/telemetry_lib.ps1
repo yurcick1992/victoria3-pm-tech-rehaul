@@ -70,7 +70,10 @@ function Get-TelemetryDefaults {
         tags       = @("GBR", "FRA")
         metrics    = @("market_goods")
         origin_goods = @()
-        breakdown_goods = @()      # goods the `consumption_goods` metric restricts its breakdown to
+        breakdown_dates = @()      # sparse dates for `breakdown_sparse` (the pop/non-pop channel split)
+        breakdown_tags  = @()      # markets for it, ONE PER TICK - two in one tick truncates the ring
+        wide_dates      = @()      # dates for `market_goods_wide` (order book only, long tag list)
+        wide_tags       = @()      # the "plausibly advanced" countries worth a yearly world check
     }
 }
 
@@ -80,7 +83,8 @@ function Read-TelemetrySpec {
     if ($Path) {
         if (-not (Test-Path $Path)) { throw "telemetry spec not found: $Path" }
         $j = Get-Content $Path -Raw -Encoding UTF8 | ConvertFrom-Json
-        foreach ($k in @("dump_dates", "tags", "metrics", "origin_goods", "breakdown_goods")) {
+        foreach ($k in @("dump_dates", "tags", "metrics", "origin_goods",
+                         "breakdown_dates", "breakdown_tags", "wide_dates", "wide_tags")) {
             if ($j.PSObject.Properties.Name -contains $k -and $j.$k) { $spec[$k] = @($j.$k) }
         }
         # An OBJECT, not an array (group -> successor chain), so it cannot go through the @() loop
@@ -811,6 +815,93 @@ function New-TelemetryScript {
     $dates   = @($Spec.dump_dates)
     $tags    = @($Spec.tags)
     $metrics = @($Spec.metrics)
+
+    # ---- SPARSE CHANNEL SPLIT + WIDE YEARLY SWEEP (v11) --------------------------------------------
+    # Two things the ordinary dump loop cannot express, both required together by the question in
+    # BALANCE_FRAMEWORK §10.35: WHO buys a debut good, and whether anyone anywhere made it first.
+    #
+    # ⚠ WHY THEY CANNOT RIDE THE DUMP LOOP. That loop applies one date list and one tag list to every
+    # metric. The channel split costs ~1 MB per market per tick, so at the monthly cadence the order book
+    # needs it would be ~1 GB per market per campaign; and two markets in ONE tick is already known to
+    # truncate the ring mid-block (the rescore session lost 29 of ~72 goods that way). So the split gets
+    # its OWN sparse date list, and each market fires in its own month — one megabyte per tick, never two.
+    #
+    # ⚠ AND WHY IT MUST BE IN THE SAME RUN, not a targeted follow-up: dates discovered in one run do not
+    # transfer to another. Seeds differ, so "go back and sample 1863" is meaningless in a fresh campaign.
+    # The split has to be recorded alongside the observation or it cannot be recovered at all.
+    $addMonths = {
+        param([string]$d, [int]$k)
+        $p = $d.Split('.'); $y = [int]$p[0]; $m = [int]$p[1] + $k
+        while ($m -gt 12) { $m -= 12; $y++ }
+        "{0}.{1}.1" -f $y, $m
+    }
+    $extraNames = @(); $extraBody = ""; $bx = 0
+    if ($metrics -contains "breakdown_sparse" -and $Spec.breakdown_dates) {
+        $bdTags = if ($Spec.breakdown_tags) { @($Spec.breakdown_tags) } else { $tags }
+        foreach ($bd in @($Spec.breakdown_dates)) {
+            $mi = 0
+            foreach ($mtag in $bdTags) {
+                $bx++
+                $fire = & $addMonths $bd $mi
+                $stop = & $addMonths $bd ($mi + 1)
+                $nm2  = "v3tb_bd_$bx"
+                $extraNames += $nm2
+                $extraBody += @"
+
+$nm2 = {
+	trigger = {
+		game_date >= "$fire"
+		NOT = { game_date >= "$stop" }
+	}
+	effect = {
+		debug_log = "V3TB|$Token|CP|C0start|$bd"
+		every_market = {
+			limit = { owner = c:$mtag }
+			every_market_goods = {
+				debug_log = "V3TB|$Token|CP|C2|$bd|[PREV.GetMarket.GetNameNoFormatting]|[THIS.GetMarketGoods.GetGoods.GetKey]|BEGIN"
+				debug_log = "[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrdersBreakdown]"
+				debug_log = "V3TB|$Token|CP|C2end|[THIS.GetMarketGoods.GetGoods.GetKey]"
+			}
+		}
+		debug_log = "V3TB|$Token|CP|C2done|$bd"
+	}
+}
+"@
+                $mi++
+            }
+        }
+    }
+    # The wide sweep: order book only, no split, on its own (yearly) dates over a long tag list. Cheap
+    # per dump (~53 lines per market) and it is what says whether some country outside the deep-sampled
+    # markets produced a good first. Ruling countries out by name is legitimate here - Qing, Persia or
+    # Buganda are not going to be first to automobiles - so the list is a hand-picked "plausibly advanced"
+    # set rather than all ~304 markets, which would be ~5 300 lines a dump.
+    if ($metrics -contains "market_goods_wide" -and $Spec.wide_dates -and $Spec.wide_tags) {
+        $wideLim = (@($Spec.wide_tags) | ForEach-Object { "owner = c:$_" }) -join ' '
+        foreach ($wd in @($Spec.wide_dates)) {
+            $bx++
+            $stop = & $addMonths $wd 1
+            $nm2 = "v3tb_wide_$bx"
+            $extraNames += $nm2
+            $extraBody += @"
+
+$nm2 = {
+	trigger = {
+		game_date >= "$wd"
+		NOT = { game_date >= "$stop" }
+	}
+	effect = {
+		every_market = {
+			limit = { OR = { $wideLim } }
+			every_market_goods = {
+				debug_log = "V3TB|$Token|GW|$wd|[PREV.GetMarket.GetNameNoFormatting]|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketSellOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketPrice|2]|[THIS.GetMarketGoods.GetGoods.GetMarketProduction|2]"
+			}
+		}
+	}
+}
+"@
+        }
+    }
 
     $dumpNames = @()
     $dumpBody  = ""
@@ -1753,7 +1844,7 @@ on_game_started_after_lobby = {
 }
 
 on_monthly_pulse = {
-	on_actions = { $($dumpNames -join ' ')$(if ($metrics -contains 'events') { ' v3tb_bankruptcy_poll' }) }
+	on_actions = { $($dumpNames -join ' ')$(if ($extraNames.Count) { ' ' + ($extraNames -join ' ') })$(if ($metrics -contains 'events') { ' v3tb_bankruptcy_poll' }) }
 }
 
 v3tb_boot = {
@@ -1766,7 +1857,7 @@ v3tb_boot = {
 		debug_log = "V3TB|$Token|SEED|[GetGlobalRandomSeed]|custom=[GetGlobalRandomSeedString]"$bootExtra
 	}
 }
-$dumpBody$events$techlog
+$dumpBody$extraBody$events$techlog
 "@
 }
 

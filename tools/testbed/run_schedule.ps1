@@ -130,6 +130,16 @@ foreach ($r in $runs) {
             if     ($r.PSObject.Properties.Name -contains 'wage_pop_markets')        { $r.wage_pop_markets }
             elseif ($defaults -and $defaults.PSObject.Properties.Name -contains 'wage_pop_markets') { $defaults.wage_pop_markets }
             else   { $null })
+        # ⚠ EVERY TELEMETRY SPEC KEY MUST BE LISTED HERE OR IT IS SILENTLY DROPPED. The plan entry is
+        # the only thing that reaches the builder; a key present in the schedule JSON but absent here
+        # simply never arrives, the mod builds without that block, and the run looks like the metric
+        # failed rather than like the plumbing did. That cost a probe run on 2026-08-05 (the sparse
+        # breakdown and wide sweep both emitted nothing until these four were added). Same guarded
+        # lookup as wage_pop_markets, for the same StrictMode reason.
+        breakdown_dates = $(Val $r "breakdown_dates" @(Val $defaults "breakdown_dates" @()))
+        breakdown_tags  = $(Val $r "breakdown_tags"  @(Val $defaults "breakdown_tags"  @()))
+        wide_dates      = $(Val $r "wide_dates"      @(Val $defaults "wide_dates"      @()))
+        wide_tags       = $(Val $r "wide_tags"       @(Val $defaults "wide_tags"       @()))
         autosave = Val $r "autosave_interval" $defAutosave
         timeout  = [int](Val $r "timeout_minutes" $defTimeout)
     }
@@ -204,6 +214,9 @@ foreach ($p in $plan) {
     $specFile = Join-Path $runDir "telemetry.json"
     $spec = [ordered]@{ dump_dates = $p.dump_dates; tags = $p.tags; metrics = $p.metrics }
     if ($p.wage_pop_markets) { $spec['wage_pop_markets'] = $p.wage_pop_markets }
+    foreach ($k in @('breakdown_dates','breakdown_tags','wide_dates','wide_tags')) {
+        if ($p.$k -and @($p.$k).Count) { $spec[$k] = @($p.$k) }
+    }
     [System.IO.File]::WriteAllText($specFile, ($spec | ConvertTo-Json -Depth 6), $Utf8)
 
     Log "=== run $($p.index)/$($plan.Count): setup '$($p.setup)' -> $($p.until) ==="

@@ -1,0 +1,58 @@
+﻿{
+    "schedule_version":  1,
+    "label":  "v11-shape-probe",
+    "_why":  "Probe ONLY: do the new sparse channel-split blocks and the wide yearly sweep actually emit? One market per tick by construction - two in one tick truncates the ring.",
+    "_note":  "GBR breakdown fires 1836.5, USA 1836.6, wide sweep 1836.8. Runs to 1836.10 so all three windows pass.",
+    "defaults":  {
+                     "metrics":  [
+                                     "market_goods_scoped",
+                                     "tech_log",
+                                     "breakdown_sparse",
+                                     "market_goods_wide"
+                                 ],
+                     "autosave_interval":  "yearly",
+                     "timeout_minutes":  25,
+                     "tags":  [
+                                  "GBR",
+                                  "USA",
+                                  "RUS"
+                              ]
+                 },
+    "setups":  {
+                   "mod":  {
+                               "kind":  "config",
+                               "config":  "config/mod_config.json"
+                           }
+               },
+    "runs":  [
+                 {
+                     "setup":  "mod",
+                     "until":  "1836.10.1",
+                     "dump_dates":  [
+                                        "1836.2.1"
+                                    ],
+                     "tags":  [
+                                  "GBR",
+                                  "USA",
+                                  "RUS"
+                              ],
+                     "breakdown_dates":  [
+                                             "1836.5.1"
+                                         ],
+                     "breakdown_tags":  [
+                                            "GBR",
+                                            "USA"
+                                        ],
+                     "wide_dates":  [
+                                        "1836.8.1"
+                                    ],
+                     "wide_tags":  [
+                                       "GBR",
+                                       "USA",
+                                       "FRA",
+                                       "PRU",
+                                       "AUS"
+                                   ]
+                 }
+             ]
+}
