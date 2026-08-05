@@ -107,18 +107,31 @@ transcript rather than from data.
 > ```
 >
 > That is **reading A** — clamp the sell-order share to `[min, max]`, multiply by the base weight — which
-> is exactly what `needSplit()` implements and what **F28** independently measured as the better fit. So
-> the documented rule and our implementation agree, and **the impossibility argument below concludes that
-> the documented rule cannot be true. It is therefore the argument that is broken, not the rule.**
+> is exactly what `needSplit()` implements and what **F28** independently measured as the better fit.
 >
-> **Where the error most likely is: `transportation`.** The whole argument rests on one bound — a good's
-> pop demand cannot exceed its market-wide buy orders. `transportation` is a **`local` good** (§10.35.1a):
-> it does not move between states, so pops in each state consume only their own state's supply, and it is
-> not established that the market-level `GetMarketBuyOrders` we compared against means what the bound
-> assumes. Every impossibility below is measured *against that one number*. A second candidate: automobiles
-> sit in **two** needs, so attributing all their pop demand to `free_movement` inflates the implied budget —
-> the earlier claim that this "shifts the arithmetic against reading A" was asserted, not derived, and is
-> wrong in the direction that matters (a smaller `free_movement` share means a smaller implied budget).
+> ⚠ **A SHIPPED COMMENT IS EVIDENCE, NOT PROOF.** Developers publish confidently wrong statements, and
+> comments that were true when written rot silently after the code moves — this one could describe a
+> mechanic that changed patches ago. It does not by itself settle anything. What makes it weighty here is
+> **corroboration**: the comment and F28's measurement are independent lines of evidence that agree, and
+> F28 was scored against the game's own consumption telemetry across seven markets. Two independent
+> agreeing sources against one contested inference is why the balance tips.
+>
+> **So the honest state is a three-way conflict, not a verdict.** The comment says reading A. F28's
+> measurement says reading A. F30's arithmetic below says reading A is impossible. **At least one of the
+> three is wrong**, the weight of evidence is against F30, and its conclusion is therefore **not safe to
+> build on** — but "the argument must be broken because the devs wrote it down" would be the wrong reason
+> to drop it.
+>
+> **Two candidate flaws in F30, both UNTESTED** — named so they can be checked, not asserted as the answer:
+> 1. **`transportation` is a `local` good** (§10.35.1a). The whole argument rests on one bound — a good's
+>    pop demand cannot exceed its market-wide buy orders — and every impossibility below is measured
+>    against that single number. Since a local good does not move between states, it is not established
+>    that market-level `GetMarketBuyOrders` means what the bound assumes.
+> 2. **Automobiles sit in TWO needs**, so attributing all their pop demand to `free_movement` inflates the
+>    implied budget. My earlier claim that this "shifts the arithmetic against reading A" was asserted, not
+>    derived, and is wrong in the direction that matters: a smaller `free_movement` share implies a smaller
+>    budget and less transportation demand. ⚠ Note this does **not** dispose of the telephone cases, which
+>    are single-need and where the same impossibility appears — so flaw 2 alone cannot explain F30 away.
 >
 > ⚠ **The observations themselves stand** — 948 automobiles and 2 400 telephones of pop demand are measured
 > facts, verified blocks, replicated across seeds. What collapses is the inference drawn from them. The
@@ -129,6 +142,11 @@ transcript rather than from data.
 > no game code with answers?" — after a full day of inference. **Search the shipped files for
 > documentation before measuring.** Paradox ships `readme.md` files in several `common/` subfolders and
 > header comments in others; the answer here was four lines above data I had already read twice.
+> ⚠⚠ **But read them as HYPOTHESIS SOURCES, not as answers.** The rule is *check the docs first because
+> they are cheap*, not *believe the docs because they are official*. A shipped statement can be wrong, and
+> a stale one is worse than wrong because it was once true and nobody corrected it. The correct use is:
+> take the hypothesis from the docs, then confirm it against telemetry — which is what F28 happens to have
+> already done here, and why this particular comment can be leaned on.
 
 ### The original argument, retained for the record (its conclusion is retracted)
 

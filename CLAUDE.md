@@ -120,12 +120,16 @@ an era late" gap: the building was moved by hand, the PMs that buy its output we
 moving railway too → 51; the no-buyer rule → 39 dropped / 45 zeroed, the better figure again coming from a
 defect). **The steamers half is now FIXED** by giving port a five-era ladder (§10.33), and **§10.35 supplies
 the fix for the rest** — see below.
-✅ **§10.34 IS SETTLED, AND THE GAME SAYS SO ITSELF.** `game/common/pop_needs/00_pop_needs.txt` documents
-the mechanic in a header comment: `weight` is *"the base weight applied to this good based on market Sell
-Order share"*, `max_supply_share` *"the maximum weight that can be applied … relative supply above this
-amount will have no further impact"*, `min_supply_share` *"a minimum of this multiplier of the base weight
-… regardless of its market Sell Order share"*. That is **exactly what `needSplit()` does** and what F28
-measured. **Do not re-open it, and read that file before theorising.**
+✅ **§10.34: TWO INDEPENDENT SOURCES AGREE ON THE READING WE SHIP.**
+`game/common/pop_needs/00_pop_needs.txt` documents the mechanic in a header comment: `weight` is *"the base
+weight applied to this good based on market Sell Order share"*, `max_supply_share` *"the maximum weight
+that can be applied … relative supply above this amount will have no further impact"*, `min_supply_share`
+*"a minimum of this multiplier of the base weight … regardless of its market Sell Order share"*. That is
+**exactly what `needSplit()` does**, and **F28 measured the same conclusion independently** against the
+game's own consumption telemetry. ⚠ **The comment alone would not settle it** — shipped statements can be
+confidently wrong, and a comment that was true when written rots silently after the code moves. It carries
+weight here only because an independent measurement agrees with it. **Read that file before theorising**
+(cheap hypotheses), **and corroborate before believing** (docs are not evidence on their own).
 ⚠ F30 briefly claimed to refute it; that claim is **RETRACTED** — an argument that concludes the documented
 rule is impossible is a broken argument. Its measurements stand, its inference does not. The live question
 is now **why our implementation of the documented rule yields so much less demand than the game does**,

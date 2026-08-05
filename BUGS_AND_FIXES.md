@@ -543,8 +543,16 @@ four lines below the answer.
 **Fix / rule.** **Search the shipped files for documentation before measuring.** Paradox ships `readme.md`
 in several `common/` subfolders (`acceptance_statuses`, `laws`, `social_classes`, `social_hierarchies`,
 `dynamic_treaty_names`), `_on_actions.md`, and header comments in others. A grep for `^#` at the head of a
-file you are about to reverse-engineer costs seconds. The wiki being unreliable (F28) is not a reason to
-skip the game's own files — it is a reason to prefer them.
+file you are about to reverse-engineer costs seconds.
+
+⚠⚠ **BUT DOCUMENTATION IS A HYPOTHESIS SOURCE, NOT AN ANSWER.** The reason to read it first is that it is
+CHEAP, not that it is authoritative. Developers ship confidently wrong statements, and — worse — leave
+statements that were true at publication and quietly stopped being true when the code moved. A stale
+comment is more dangerous than an absent one, because it reads as settled. The wiki being unreliable (F28:
+self-contradictory, two stale numbers) is a specific case of a general problem, not a reason to treat
+in-repo text as different in kind. Correct use: **take the hypothesis from the docs, then confirm it
+against telemetry.** The `00_pop_needs.txt` comment can be leaned on here only because F28 had already
+measured the same conclusion independently — two agreeing sources, not one official one.
 
 ⚠ The measurements are not wasted: they stand as observations and they raised the real question, which is
 why our implementation of the documented rule produces far less demand than the game does. But the day
