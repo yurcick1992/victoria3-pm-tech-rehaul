@@ -134,6 +134,17 @@ weight here only because an independent measurement agrees with it. **Read that 
 rule is impossible is a broken argument. Its measurements stand, its inference does not. The live question
 is now **why our implementation of the documented rule yields so much less demand than the game does**,
 with the `local` goods abstraction (§10.35.1a) the leading suspect. Superseded text follows:
+⭐ **AND F35 SAYS WHY NO AMOUNT OF THAT ARITHMETIC COULD EVER HAVE SETTLED IT.** F33's telephone case was
+called "unconditional" because telephones sit in exactly one need. **A single-need good is not a
+single-good need** (user, 2026-08-06): `communication` is `telephones` + `transportation`, and
+`transportation` is both multi-need and `local` — the very good flaw 1 is about. A census of the shipped
+file shows this is structural: **all 15 pop needs share a good with another need, so NO need's budget is
+observable from the order book**, and that budget is the quantity the whole argument runs through.
+⇒ **The level of a share can never identify the rule; only a PERTURBATION can.** That promotes the
+pop-need weight lever from "is `weight` live?" to the only available route, and makes
+**`popneed_luxury_items` the one clean venue in the game** — silk / luxury_clothes / luxury_furniture /
+porcelain are each single-need with no local good, so its budget IS observable until radios exist, and
+`luxury_furniture` trades from 1836. Design perturbation experiments there, not on telephones.
 ⚠ **§10.34 — the reopening (RETRACTED, kept for the record) (FINDINGS F33, 2026-08-05).**
 F31 remains correct for what it measured: scored over seven **1836** markets the final-share reading fits
 **worse in all seven** (20.0% → 24.2%), and Russian heating is 79% wood against wood's 0.5 cap, which that

@@ -131,6 +131,71 @@ transcript rather than from data.
 
 ---
 
+## F35 — NO pop need in the game has an observable budget. All 15 share a good with another need — so "measured demand ⇒ need budget ⇒ implied demand for a sibling good" has no clean case anywhere
+
+**Arm** — none; read directly from `common/pop_needs/00_pop_needs.txt` and `common/goods/00_goods.txt`,
+game version as shipped. 🟢 **ARM-FREE**, and not even a run: this is the shipped data.
+
+**Claim.** Every one of the **15** pop needs contains at least one good that also appears in another
+need. Since a good's measured consumption cannot be attributed between the needs that share it, **no
+need's budget is observable from the order book** — which is the quantity F33's whole argument
+depends on. **One near-exception exists and it is the only one:** `popneed_luxury_items` is fully
+observable *until radios are invented*, and it is the need tonight's treatment arm perturbs.
+
+**Why it was checked.** F33's telephone section claimed its arithmetic was "unconditional" because
+telephones sit in exactly one need. Raised by the user, 2026-08-06: **a single-need good does not
+make a single-good need.** `popneed_communication` is `telephones` + `transportation`, and
+`transportation` is *both* multi-need *and* `local` — so it is the good flaw 1 was already about. The
+telephone case is less ambiguous than automobiles, not clean. That correction is applied to F33.
+
+**The census.** `*` = the good appears in more than one need. `local` goods (`services`,
+`transportation`, `electricity`) are marked because a market-wide buy-orders total may not bound a
+good that does not move between states.
+
+| need | goods | budget observable? |
+|---|---|---|
+| `simple_clothing` | fabric\*, clothes\* | no |
+| `crude_items` | wood\*, furniture\* | no |
+| `basic_food` | grain, fish, meat\*, fruit\*, groceries\* | no |
+| `heating` | wood\*, fabric\*, coal, oil, **electricity** ᴸ | no |
+| `household_items` | furniture\*, glass, paper | no |
+| `standard_clothing` | clothes\* | no — its one good is shared with `simple_clothing` |
+| `services` | **services\*** ᴸ | no — shared with `leisure`, and local |
+| `intoxicants` | liquor, tobacco\*, opium\*, wine\* | no |
+| `luxury_drinks` | tea\*, coffee\*, wine\* | no |
+| `free_movement` | **transportation\*** ᴸ, automobiles\* | no |
+| `communication` | **transportation\*** ᴸ, telephones | no |
+| `luxury_food` | meat\*, fruit\*, groceries\*, sugar\* | no |
+| **`luxury_items`** | silk, luxury_clothes, luxury_furniture, porcelain, radios\* | **YES until radios exist** |
+| `leisure` | **services\*** ᴸ, fine_art, small_arms, aeroplanes, automobiles\*, radios\*, opium\*, clippers, steamers | no |
+| `stimulants` | sugar\*, tea\*, coffee\*, tobacco\* | no |
+
+**⭐ The consequence for test design, and it is the useful half.** If no need's budget is observable,
+then the *level* of a good's share can never identify the allocation rule — only a **perturbation**
+can, because the response to a known change is observable even when the baseline is not. That is
+exactly what the pop-need weight lever does, and it upgrades the ×10 experiment from "is `weight`
+live?" to **the only available route to the rule**.
+
+**⭐ And the best available case is already in tonight's batch, by luck rather than design.** Of the
+three goods carrying the ×10 multiplier, `luxury_furniture` sits in `luxury_items`, whose other early
+members — silk, luxury_clothes, porcelain — are **each single-need**, with **no local good** among
+them. Before radios arrive that need's budget is fully observable, and `luxury_furniture` exists from
+**1836**, so the answer arrives in the first minutes of the run rather than eighty years in. The
+other two multipliers land in far messier needs: `steamers` in `leisure` (9 goods, one local, four
+shared) and `automobiles` in both `free_movement` and `leisure`, being multi-need itself.
+
+**Confidence: certain, for what it is.** It is a census of a shipped data file, not an inference —
+re-derivable in seconds and only invalidated by a patch that edits `00_pop_needs.txt`.
+
+**What it does NOT say.** It does not say the needs are *unmodellable* — `needSplit()` predicts every
+need without knowing any budget; what is unobservable is the budget as a *measured* quantity to
+argue from. It does not say a good's share is unidentifiable in principle, only that it cannot be
+read off one dump of the order book. It does not establish that `local` actually breaks the
+market-wide bound — that remains flaw 1, still untested. And it says nothing about whether the goods
+in a need are the goods pops *actually* buy; it is a reading of the file, not of behaviour.
+
+---
+
 ## F34 — `every_market_goods` CAN be filtered. Quantity and property triggers both work; goods IDENTITY does not, now on four independent attempts
 
 **Arm** `control` · vanilla + telemetry, `deviates_from_vanilla: []` · session
@@ -234,6 +299,11 @@ about whether these triggers work in any other scope.
 >    derived, and is wrong in the direction that matters: a smaller `free_movement` share implies a smaller
 >    budget and less transportation demand. ⚠ Note this does **not** dispose of the telephone cases, which
 >    are single-need and where the same impossibility appears — so flaw 2 alone cannot explain F33 away.
+> 3. **The need is not single-good even when the good is single-need** (user, 2026-08-06). `communication`
+>    is `telephones` + `transportation`, and `transportation` is the good flaw 1 is about *and* is itself
+>    multi-need. So flaw 1 was never telephone-proof, and the telephone case is **not** the clean control
+>    the section below claimed. **F35** shows this is not a quirk of `communication`: **no need in the
+>    game has an observable budget**, so this style of inference has no clean case anywhere.
 >
 > ⚠ **The observations themselves stand** — 948 automobiles and 2 400 telephones of pop demand are measured
 > facts, verified blocks, replicated across seeds. What collapses is the inference drawn from them. The
@@ -299,7 +369,25 @@ reading B forbids outright.
 
 `popneed_communication` = `transportation` (w1, **max 0.75**) + `telephones` (w2, max 1.0). ⚠ **Telephones
 belong to exactly ONE need**, so unlike automobiles there is no ambiguity about which need their pop demand
-came from — the arithmetic is unconditional. British Market, five consecutive yearly dumps:
+came from.
+
+> ⚠⚠ **"THE ARITHMETIC IS UNCONDITIONAL" — WITHDRAWN (user, 2026-08-06).** Telephones being single-need
+> removes **one** ambiguity, not the others. **The need is not telephone-only**: its other member is
+> `transportation`, which is *both* multi-need (`free_movement` too) *and* `local`. So every remaining
+> objection survives into the telephone case —
+> 1. going from measured telephone money to the **need's budget** requires telephones' share, which
+>    depends on `transportation`'s supply share, which is not independently pinned;
+> 2. the bound is `implied transportation pop demand` vs the market's **total** transportation buy
+>    orders, and transportation is a `local` good, so it is not established that a market-wide total is
+>    the right denominator (this is flaw 1, and it was never telephone-proof);
+> 3. transportation's own measured demand **cannot be split** between its two needs, so there is no
+>    cross-check available.
+>
+> **F35 makes this structural rather than incidental: NO need in the game has an observable budget** —
+> all 15 contain at least one multi-need good. The telephone case is *less bad* than automobiles, not
+> clean. Read the five rows below as an observation whose inference is still open.
+
+British Market, five consecutive yearly dumps:
 
 | date | telephone POP demand | reading A implies transportation pop | market's TOTAL transportation buy | A | B |
 |---|--:|--:|--:|---|---|
