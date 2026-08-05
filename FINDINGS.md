@@ -101,6 +101,24 @@ channel split and the worldwide technology log in the same run:
 1. **Zero supply gives EXACTLY zero pop demand** — 4 of 4 dumps, including dumps where buildings were
    buying that same good. There is **no floor and no jump**: the hypothesis that pop demand snaps to a
    minimum as soon as token supply exists is **refuted**.
+
+⚠ **THE REFUTATION HAS TO BE IN SHARE-OF-NEED TERMS, NOT UNITS** (user, and the first draft of this
+finding got it wrong). A "minimum demand threshold" is naturally a floor on a good's share of its need, so
+demand in units cannot test it — the need's own size varies by market and era. With the denominator
+(`popneed_leisure` money at the same dump, ≥4 of 9 goods captured) the share **rises monotonically with
+supply over three orders of magnitude**, which is proportional allocation and not a floor:
+
+| steamer supply | 0 (×3) | 3.5 | 4.8 | 7 | 526 | 1 679 |
+|---|--:|--:|--:|--:|--:|--:|
+| **share of the leisure need** | **0.000 %** | 0.035 % | 0.073 % | 0.080–0.103 % | 0.788 % | **1.943 %** |
+
+⚠ The denominator is PARTIAL (4–5 of 9 goods captured), which *understates* need money and therefore
+*overstates* every share — read the percentages as upper bounds. It cannot manufacture a monotone trend
+across that range, so the shape is sound even though the levels are not exact.
+
+⚠⚠ **TWO ROWS BREAK PROPORTIONALITY AS WELL AS THE FLOOR**: American 1908 (supply 8.9) and 1911
+(supply 11.9) both show pop demand of **exactly zero**. Unexplained, not investigated, and recorded
+because it is evidence against the simple reading this finding otherwise supports.
 2. **With supply, pop demand scales with it**, at a roughly constant fraction across three orders of
    magnitude of supply.
 3. **But that fraction depends on the NEED**, and by ~30×. That is the finding that matters.
@@ -150,7 +168,11 @@ it is not evidence against that constraint.
   seed-specific and must not be quoted as if general; the *mechanism* is what is expected to carry.
 - The **need share** of automobiles is NOT computed: `transportation`'s breakdown block never verified at
   the same dump as automobiles', so the denominator is missing. The 3.2× above is pops ÷ *supply*, not a
-  share of the need.
+  share of the need. ⚠ **So for automobiles the floor hypothesis is UNTESTED, not refuted** — the
+  refutation above rests on steamers alone, where a denominator exists. Automobiles also never appear at
+  zero supply in a watched market (they arrive already carrying imports), so they cannot show the
+  zero-to-token transition at all. Import supply is supply; that is not the limitation. The limitation is
+  purely the missing denominator.
 - Telephones and radios had not appeared — `radio` was unresearched by 1903. `popneed_communication` is
   the direct replication of the automobiles configuration (two goods, `transportation` incumbent) and is
   the cleanest remaining test.
