@@ -202,21 +202,56 @@ From `common/buy_packages`, `communication` is **zero below wealth 20** and **0.
 
 A binding cap therefore predicts ratio = 3 + 4·(C/F) ≈ **4.4**. Measured 3.05 solves instead to
 automobiles ≈ **33 %** of the need — *above* the complement. Transportation's raw supply share stays
-above 0.75 throughout (0.9999 at 1907.3, 0.9573 at 1912, 0.8673 at 1935), so **the cap does bind and
-still does not produce 25 %**.
+above 0.75 throughout (0.9999 at 1907.3, 0.9573 at 1912, 0.8673 at 1935), so the cap **does** bind.
 
-**Confidence: high on both refutations, moderate on the 33 %.** The refutations rest on directly
-measured zeros — a verified `pop 0` block and 57 months of zero American buy orders — which no
-modelling assumption can move. The 33 % depends on an *estimated* aggregate C/F of ~0.35; for a binding
-cap to be consistent with 3.05, C/F would have to be **0.0125**, which requires essentially all
-free-movement spending to come from pops below wealth 20, where communication is zero. The rich
-dominate both needs, so that is very hard to reach — but it is inference, not measurement.
+> ### ⚠⚠ THE 33 % IS INFERENCE, AND THE DIRECT READING IS 24.7 % — WHICH IS THE CAP COMPLEMENT
+> (User challenge, 2026-08-06, and it lands.) Taking the measured numbers with **no** correction —
+> i.e. assuming all of transportation's pop money is `free_movement` — automobiles' share is
+> **`£239 000 / (£239 000 + £729 000)` = 24.7 %**. That is a **lower bound** on the true share, and it
+> sits **0.3 pp from the 25 % complement**. An unconstrained calculation has no reason to land there.
+>
+> So the one measurement admits **two readings, and the data cannot separate them**:
+>
+> | reading | requires | automobile share |
+> |---|---|--:|
+> | **cap binds, `communication` budget is tiny in 1912 Britain** | aggregate `C/F` ≈ **0.0125** | **25 %** |
+> | cap does not bind, `communication` budget is as the packages suggest | aggregate `C/F` ≈ 0.35 | ~33 % |
+>
+> `C/F` is a **population-weighted** quantity and this run carries no SoL metric, so it was *estimated*,
+> not measured. `communication` is zero below wealth 20, so a poor population drives `C/F` toward zero —
+> the first row is not absurd, it just needs most free-movement spending to come from sub-20 pops.
+>
+> ⭐ **THE REFUTATIONS ABOVE ARE UNAFFECTED** — they rest on measured zeros (a verified `pop 0` block at
+> the debut, 57 months of zero American telephone demand), which no budget assumption can move. What is
+> now open is only the **level after onset**.
+>
+> ⭐ **THE REFINED HYPOTHESIS THIS RAISES** (user): demand onsets ~a month after local supply, climbs to
+> **25 %**, then **sits at 25 % as a FLOOR** for as long as the ordinary weight×supply-share calculation
+> would give less than that — taking over only once supply is large enough to earn more. Under it, the
+> 24.7 % reading is not a coincidence at all. ⚠ It also predicts automobiles sit at 25 % for the **whole
+> remaining campaign**: reading A gives them 6.6 % at 1912 and still only **18.1 %** at 1935, never
+> overtaking the floor.
+>
+> ⚠ **This run cannot test that, and the reason is structural rather than bad luck.** Only **one** date
+> has both goods verified: `transportation` survives the truncation in **early** dumps (1851–1912),
+> automobiles only in **late** ones (1907–1927), and a dump keeps a mean of 25.4 of ~44 goods. Run 2
+> truncates in the same order and will not fix it.
+> ⭐ **RUN 3 DISCRIMINATES, and it is already queued.** It is the overlay arm with automobiles at ×10
+> weight. At the **debut** (supply share 0.0001) reading A gives automobiles **0.17 %** even at ×10,
+> while a 25 % floor still gives **25 %** — a 150× separation on the first post-onset dump.
 
-**What it does NOT say.** It does not identify the actual rule: reading A predicts ~6.7 % at 1912
-against ~33 % measured, so **A under-predicts as badly as B over-predicts at the debut**, and both
-remain refuted (F33's original position, arrived at from cleaner data). It rests on **one seed** —
-run 2 is the replication and had not reached 1907 when this was written. Only **one** date has both
-goods verified in the breakdown, because every dump truncates at a different good. And the
+**Confidence: high on both refutations, NONE on the post-onset level.** The refutations rest on directly
+measured zeros — a verified `pop 0` block at the debut and 57 months of zero American telephone demand —
+which no modelling assumption can move. **The level after onset is genuinely open**: the direct reading
+is 24.7 % (the cap complement), the communication-corrected reading is ~33 %, and separating them needs
+a population-weighted budget ratio this run did not measure.
+
+**What it does NOT say.** ⚠ **It does NOT say a 25 % floor is refuted** — an earlier draft of this entry
+said so on the strength of the ~33 %, and that was inference dressed as measurement. It does not
+identify the actual rule either: reading A gives 6.6 % at 1912 against a measured ≥24.7 %, so A
+under-predicts regardless of which reading of the level is right. It rests on **one seed** — run 2 is
+the replication and had not reached 1907 when this was written — and on **one** date for the level,
+because the breakdown's truncation keeps `transportation` and `automobiles` in disjoint eras. And the
 `transportation` half carries the unresolved `local`-good caveat (§10.35.1a): it is not established
 that market-level orders mean for a local good what they mean for a tradeable one.
 
