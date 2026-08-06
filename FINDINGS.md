@@ -412,11 +412,42 @@ above 0.75 throughout (0.9999 at 1907.3, 0.9573 at 1912, 0.8673 at 1935), so the
 > is structural: `transportation` survives in early dumps and `automobiles` in late ones, so overlaps
 > are rare by construction, not by luck.
 
-**Confidence: high throughout, after run 2.** The refutations rest on directly measured zeros — a
-verified `pop 0` block at the debut and 57 months of zero American telephone demand — which no modelling
-assumption can move. The **level** question, briefly open on run 1 alone, is settled by run 2 bracketing
-it: 0.008 % three months after the debut and ≥ 31.6 % six years later, with a 2.16 ratio at the later
-date that no binding cap can produce. ⚠ Three dates, two seeds, one market.
+**Confidence: high on the two refutations, and the LEVEL question is REOPENED (2026-08-06).** The
+refutations rest on directly measured zeros — a verified `pop 0` block at the debut and 57 months of
+zero American telephone demand — which no modelling assumption can move.
+
+> ### ⚠⚠ THE LEVEL FIGURES ABOVE ARE INFLATED — automobiles are in TWO needs and only one was corrected
+>
+> Every "observed automobile share of `free_movement`" in this entry credits **all** of automobiles'
+> measured pop money to that need. **Automobiles are also in `popneed_leisure`** (weight 1,
+> `max_supply_share` 0.25), whose budget is 0.40–0.80 × free_movement's. The same objection was applied
+> to `transportation` throughout — and calling the result a lower bound — but never to automobiles,
+> where it cuts the **other** way. (User, 2026-08-06.)
+>
+> Modelled with `needSplit()` on both needs at the run's own supply, automobiles take **20–25 % of
+> leisure** late on, leaving only **45–67 %** of their money as free-movement spending:
+>
+> | run | date | raw observed | **corrected** | vs 25 % |
+> |---|---|--:|--:|---|
+> | 1 | 1912.3 | 23.8–25.5 | **15.5–20.2** | below |
+> | 1 | 1915.3 | 33.8–35.9 | **20.2–27.0** | straddles |
+> | 1 | 1927.3 | 43.5–45.8 | **27.8–36.0** | above |
+> | 2 | 1915.3 | 29.6–31.6 | **18.4–24.4** | **below** |
+> | 2 | 1920.3 | 49.0–51.3 | **32.8–41.5** | above |
+> | 2 | 1924.3 | 50.1–52.4 | **33.7–42.5** | above |
+>
+> ⇒ The overshoot shrinks from **2.05×** to **1.35–1.70×**, and several mid-period dates now straddle or
+> fall **below** 25 % — including run 2's 1915, cited above as decisive. **That is consistent with a
+> 25 % floor**, which this entry had claimed to refute.
+>
+> ⚠ **The correction is still one-sided.** `transportation` is in `communication`, which reduces *its*
+> free-movement money and pushes automobiles' share back **up**. Applying both leaves the truth
+> somewhere **between** the raw and corrected columns, and pinning it needs both needs' budgets —
+> population-weighted, and unmeasured in these runs.
+>
+> **So the level after onset is OPEN, not settled.** What survives unchanged: demand starts at zero,
+> follows local supply, and ramps over years. What does not: any claim about where it ends up relative
+> to 25 %. Tool: `tools/testbed/split_auto_between_needs.mjs`.
 
 **What it does NOT say.** ⚠ It does **not** identify the actual rule. Both candidates are now refuted —
 the floor by 0.008 % at three months, reading A by being 100× too high there and 2.6–3.7× too low five
