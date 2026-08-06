@@ -153,9 +153,34 @@ it is a real defect, it is ours, it is enormous, and it is the largest single co
 the previous night already flagged as the first suspect for two CTDs. Fixing it is worth doing on its own
 merits; if the crashes stop, that is evidence, not proof.
 
-**How to detect it recurred.** `meta.json` → `error_log_lines`. A control-arm run should be in the low
-thousands (vanilla's own noise), not the hundreds of thousands. Anything naming
-`zzz_v3tb_telemetry.txt` in `error.log` is ours by definition and should be zero.
+**How to detect it recurred.** Anything naming `zzz_v3tb_telemetry.txt` in `error.log` is ours by
+definition and should be **zero** — *but count it inside the run's own wall-clock window*, see below.
+
+⚠⚠ **`meta.json` → `error_log_lines` IS NOT A PER-RUN NUMBER — do not use it as one** (found
+2026-08-06, session `resume_diag`, correcting what this entry first said). That session was a 20-minute
+control run with a **41-line** telemetry file, and it reported **41 237** error lines. Breaking them
+down by the timestamp each line carries:
+
+| stamped | lines | whose |
+|---|--:|---|
+| `02:xx` | **21 139** | the *previous* session's run 19, which ended at 02:52 |
+| `10:xx` | 886 | this run's actual window |
+| of those, ours | **0** | this run's telemetry errored **not once** |
+
+The give-away was that the errors cite `zzz_v3tb_telemetry.txt:20954` while this run's telemetry file
+is **41 lines long**. The mirror had inherited the previous session's ring content wholesale.
+
+**⭐ THE GENERAL RULE, and this is the third place the same trap has bitten.** The game's logs are a
+shared rotating ring, so **anything read out of them must be filtered by the run's own identity**:
+- **telemetry lines** — filtered by the per-run **token**. Protected, and have been for a while.
+- **the in-game clock** — was **not** filtered; fixed by the line's own `[HH:MM:SS]` (see the resume
+  entry above).
+- **error counts** — still **not** filtered. Same fix: count only lines stamped inside the run's window.
+
+⚠ It also means the per-run error volumes quoted at the top of this entry (574 455 / 145 549 / 313 508)
+are **upper bounds, not measurements** — they include whatever the ring still held. The *defect* is
+confirmed regardless, because the erroring lines are unambiguously the 50-tag `OR` block and those line
+numbers belong to those runs' own telemetry files. It is the magnitudes that are unreliable.
 
 **⭐ The general lesson.** A country tag hardcoded in telemetry is a **time bomb on a long campaign**: it
 is valid at 1836 and invalid by 1900. Any metric that names countries must either guard with `exists` or
