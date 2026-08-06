@@ -168,6 +168,17 @@ from that market's order book and building flows, with no free parameters:
 | **American** | 13 943 | **2.559 pp** |
 | British | 18 226 | 8.201 pp |
 
+**Replicated on three consecutive annual gamestates of the same campaign, nothing refitted:**
+
+| market | 1923 | 1924 | 1925 |
+|---|--:|--:|--:|
+| **American** | **2.514 pp** | **2.638 pp** | **2.559 pp** |
+| British | 6.332 pp | 5.938 pp | 8.201 pp |
+
+Each year is a separate save, separately melted, with its own building flows, its own culture obsessions
+and its own order book. The American figure moves by 0.12 pp across three years — the rule is not tuned to
+an instant.
+
 Per need, American market: luxury_items **0.22**, basic_food **0.43**, luxury_food **0.60**,
 simple_clothing **0.65**, crude_items **0.72**, household_items **0.73**, intoxicants **0.91**,
 standard_clothing **1.33**, stimulants 4.64, luxury_drinks 18.30 pp.
