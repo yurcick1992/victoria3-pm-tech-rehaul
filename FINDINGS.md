@@ -1112,6 +1112,14 @@ the unclamped goods — only the natural implementation was built. One dump date
 same seven markets as F24, so it inherits F24's limits: Japan is ~36 % under either reading and remains a
 level shortfall nobody has explained, and Britain was never in this batch.
 
+⚠⚠ **THE HEATING COUNTER-EVIDENCE IN THIS ENTRY IS NOT CLEAN (noted 2026-08-06).** F31 and F33 both
+lean on *Russian heating is 79 % wood against wood's 0.5 cap, which the final-share reading forbids*.
+**`wood` sits in TWO needs** — `popneed_heating` and `popneed_crude_items` — so its measured money
+cannot be attributed to heating alone and that 79 % is inflated by construction, exactly the objection
+F35 generalises. The comparison between the two readings is unaffected (both are scored on the same
+measured data), but the heating example should not be used as a standalone refutation of the
+final-share reading. See F37 for arguments that do not depend on it.
+
 **⚠ A rigorous refutation was attempted and did not fire.** For a good in exactly one need, measured money
 is unambiguously that need's, and the sum over the need's goods upper-bounds the need's budget — so
 `m_g / Σ` lower-bounds the good's true share. Any good measured above its own cap would refute the
