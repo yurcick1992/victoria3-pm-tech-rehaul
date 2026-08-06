@@ -2481,9 +2481,14 @@ Each is measured in F40, so the omission is a decision with a known size, not a 
 - **`local` goods.** Their substitution supply is the state's own plus
   `(1 − the state's GDP share) × 0.25 ×` the market's production
   (`LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR`). ⭐ This is the mechanism behind the previously unexplained
-  `transportation ÷ 1.6–2`, and it **partly answers §10.35.1a**: the locality abstraction is not merely a
-  simplification we tolerate, it is a named term of the game's own formula that we do not carry. Adding it
-  needs a per-state GDP share, which the extractor does not yet produce.
+  `transportation ÷ 1.6–2`, measured on three dates to within 2–8 % where ignoring it is out by 2.2× every
+  year (F40).
+  ✅ **And our model needs no change for it.** §10.35.1a's single-state abstraction is not a liability here:
+  a model whose one state *is* the whole market has a GDP share of 1, the augmentation term goes to zero,
+  and the effective supply is the state's own — which is the market's. So `needSplit` using market supply
+  for a local good is **exactly right for the world we model**, and the 2.2× gap is a property of comparing
+  it against one state of a real multi-state game, not an error in the rule we ship.
+  ⚠ It would matter the moment the balance UI ever grew states, which it deliberately will not.
 
 ### 10.36.3 ⚠ The debut ramp is SUPPLY, not a rate limiter — a claim I made and then measured
 

@@ -979,12 +979,15 @@ the game.
   ✅ **The "units, not money / current, not base price" correction F39 once demanded is WITHDRAWN** — F39's
   own corrected box already retracted it against the savegame, and F40 confirms the shipped reading
   (`units ∝ purchase weight / BASE price`) directly. Do not reintroduce it.
-  ⚠ **`local` goods (services, transportation, electricity) are the one part of the rule we do NOT
-  implement.** Their substitution supply is not the market's: per `LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR`
-  = 0.25 it is *the state's own supply plus (1 − the state's GDP share) × 0.25 × the market's production*,
-  "only for goods substitution supply and not for price calculations". ⭐ **That is the mechanism behind the
-  unexplained `transportation ÷ 1.6–2`** the previous session could not name — it was never a divisor, it
-  was this augmentation being smaller than full market supply. It is not circular and not a time series:
+  ✅ **`local` goods (services, transportation, electricity) need NO change on our side, and that is a
+  result rather than an omission.** In the game their substitution supply is *the state's own plus
+  (1 − the state's GDP share) × 0.25 × the market's production*
+  (`LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR`, "only for goods substitution supply and not for price
+  calculations") — ⭐ the mechanism behind the unexplained `transportation ÷ 1.6–2` the previous session
+  could not name; it was never a divisor. **But a model whose one state IS the whole market has a GDP share
+  of 1, so the augmentation term vanishes and the effective supply is the market's** — which is what
+  `needSplit` already uses. The 2.2× gap is a property of comparing our model against *one state* of a real
+  multi-state game, not an error in the rule we ship. It is not circular and not a time series:
   pops never sell, so supply does not depend on pop demand, and the split is one pass over the scenario's
   own sell orders. ⚠ **February, not May** — the same rule scored against May 1836 is worse, so the
   substitution lag does not pay for the construction drift a wider gap brings in.
