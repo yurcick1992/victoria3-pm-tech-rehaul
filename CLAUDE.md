@@ -1268,6 +1268,26 @@ the game.
   `crashes\victoria3_*` minidump, never by exit code. Resume is guarded three ways (own-save-is-newest, and
   the resumed clock landing neither ahead nor at a fresh 1836 start), because `-continuelastsave` loads the
   newest save *on the machine* and will otherwise splice in a foreign timeline; see MODDING_NOTES.
+  ✅ **VERIFIED 2026-08-06 (session `resume_diag`): the resume works and KEEPS OBSERVER MODE.** Killed at
+  1837.3.5, it came back at 1837.3.2 — the last autosave — with `continue_game.json` reading
+  `"desc": "Observing Great Britain"`. A silent hand-off to a human player would corrupt every later
+  measurement while looking like a normal run; it does not happen. `-handsoff` does **not** override
+  `-continuelastsave`, and `continuelastsave` is a real flag (it is in the exe's string pool).
+  ⭐ **FALLBACK LADDER when a resume produces a fresh 1836 game** (i.e. the load failed): retry the same
+  autosave **twice**, then **quarantine it** into the run folder and step back to the previous one; if
+  *that* also fails, stop and record `resume failed from two different autosaves` rather than walking
+  the whole ring. ⚠ Quarantining is not a preference, it is the **only** way to choose a save —
+  `-loadsave=<path>` is rejected by the exe, so the engine always takes the newest. The moved file is
+  **kept**, and `meta.json` → `quarantined_saves` records its byte size against its siblings: much
+  smaller than its neighbours confirms the leading hypothesis (a CTD landing mid-autosave-write leaves a
+  truncated `.v3` that exists, is newest, and fails to load); the same size refutes it.
+  ⚠⚠ **THE RESUME VERDICT MUST NOT BE READ FROM A STALE TAIL.** The game rotates its logs at startup and
+  the tail keeps reading against the old file's offset, so for ~100 s after any launch it serves the
+  PREVIOUS session's ticks — measured: `in-game 1877.2.13` reported while the game was at 1836.2. Every
+  verdict keys on `$firstTick`, so this is how a *successful* resume gets thrown away (very probably what
+  killed run 19 of the vanilla-retest batch). Fixed by trusting each tick line's **own `[HH:MM:SS]`
+  stamp** and ignoring anything older than the attempt — no rotation detection needed. See
+  BUGS_AND_FIXES.
   **To stop:** press **`q`** (finish this run, then stop) or **`x`** (stop now) in the harness console at
   any time — no need to kill the game. A `tools/testbed/STOP` file does the same and is the fallback when
   the harness was launched headlessly (an agent-launched background job has no console).

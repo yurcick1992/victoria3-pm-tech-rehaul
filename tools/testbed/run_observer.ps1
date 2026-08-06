@@ -704,6 +704,10 @@ try {
         $attempt = 0; $resumes = 0; $abandoned = ""
         $attemptLog = @()
         $earlyDeaths = 0; $sameSaveTries = 0; $lastResumeSave = ""
+        # Resume fallback ladder, per run: how many times a resume produced a FRESH 1836 game (i.e. the
+        # load failed), and whether we have already quarantined the newest autosave and stepped back.
+        $freshStarts = 0; $steppedBack = $false
+        $script:QuarantinedSaves = @()
 
         # ---- attempt loop: one pass per launch, extra passes are crash resumes ----
         while ($true) {
@@ -741,7 +745,27 @@ try {
             }
             foreach ($line in (Read-Tail $tailTick)) {
                 if ($line -match "Processing Tick: ([0-9]+\.[0-9]+\.[0-9]+)") {
-                    $lastTick = $Matches[1]
+                    # ⚠ CAPTURE FIRST: the staleness test below runs its own -match, which overwrites
+                    # $Matches. Reading the tick after it yields the HOUR, not the date.
+                    $tickHere = $Matches[1]
+                    # ⚠⚠ TRUST THE LINE'S OWN WALL CLOCK, NOT ITS ARRIVAL. The game ROTATES its logs at
+                    # startup, and the tail keeps reading against an offset established on the old,
+                    # much larger file - so for ~100 s after ANY launch it serves the PREVIOUS
+                    # session's content. Measured 2026-08-06: the harness reported in-game 1877.2.13
+                    # while the game's own tick log said 1836.2.
+                    # This is not cosmetic. $firstTick is what every resume verdict below keys on, so
+                    # a stale sample there abandons a resume that in fact succeeded - which is very
+                    # probably what threw away run 19 of the vanilla-retest batch ("loaded a save
+                    # ahead of the run" from a tail still serving that run's own pre-crash 1881).
+                    # Each line carries `[HH:MM:SS]`, so the fix needs no rotation detection: ignore
+                    # any line stamped before this attempt started. See BUGS_AND_FIXES.
+                    if ($line -match '^\[(\d{2}):(\d{2}):(\d{2})\]') {
+                        $lineClock = [int]$Matches[1] * 3600 + [int]$Matches[2] * 60 + [int]$Matches[3]
+                        $startClock = $attemptStart.Hour * 3600 + $attemptStart.Minute * 60 + $attemptStart.Second
+                        # a run may cross midnight; only treat as stale when it is behind AND not a wrap
+                        if ($lineClock -lt $startClock -and ($startClock - $lineClock) -lt 43200) { continue }
+                    }
+                    $lastTick = $tickHere
                     if (-not $firstTick) { $firstTick = $lastTick }
                 }
             }
@@ -843,9 +867,50 @@ try {
                 break
             }
             if ($wanted - $landed -gt 20000) {   # >2 in-game years back = not our autosave
-                Write-Log "resume landed at $firstTick, far behind $tickAtStart - fresh game, abandoning run $run" "WARN"
-                $abandoned = "resume started a fresh game"
-                break
+                # THE LOAD FAILED and -handsoff began a fresh 1836 game (MODDING_NOTES verifies that a
+                # failed load does exactly this). The leading suspect is a CTD that landed DURING an
+                # autosave write, leaving a .v3 that exists, is newest, passes Test-OwnSaveIsNewest -
+                # and is truncated.
+                #
+                # ⭐ SO STEP BACK ONE SAVE RATHER THAN GIVING UP (user, 2026-08-06). Two attempts on the
+                # newest save first, because a one-off failure may be transient; then quarantine it so
+                # the previous autosave becomes the newest and -continuelastsave picks that up instead.
+                # ⚠ MOVING THE FILE IS THE ONLY WAY TO CHOOSE A SAVE. `-loadsave=<path>` is REJECTED by
+                # the exe ("Could not load save game ... Going to main menu.", MODDING_NOTES), so the
+                # save cannot be named - the engine always takes the newest. Quarantining is therefore
+                # the mechanism, and it has a second payoff: the suspect file is KEPT, so its size
+                # against its siblings is direct evidence for or against the truncation hypothesis.
+                $freshStarts++
+                if ($freshStarts -ge 2) {
+                    $bad = Test-OwnSaveIsNewest $runStart
+                    if ($bad -and -not $steppedBack) {
+                        $sizes = @(Get-ChildItem $SaveDir -Filter *.v3 -ErrorAction SilentlyContinue |
+                                   Sort-Object LastWriteTime -Descending | Select-Object -First 4)
+                        $quarantine = Join-Path $runDir ("quarantined_" + $bad.Name)
+                        Move-Item -LiteralPath $bad.FullName -Destination $quarantine -Force
+                        $sizeNote = ($sizes | ForEach-Object { "{0}={1:N0}B" -f $_.Name, $_.Length }) -join ' '
+                        Write-Log "resume failed twice from $($bad.Name) - QUARANTINED it and stepping back one autosave" "WARN"
+                        Write-Log "  save sizes at quarantine: $sizeNote  (a much smaller newest = truncated by a mid-write crash)" "WARN"
+                        $script:QuarantinedSaves += @{ name = $bad.Name; bytes = $bad.Length; kept_at = $quarantine; sizes = $sizeNote }
+                        $steppedBack = $true
+                        # count it: this ladder `continue`s past the normal $resumes++ near the bottom
+                        # of the loop, and an uncounted retry would both dodge -MaxResumes and make
+                        # meta.json under-report how hard the run fought to stay alive.
+                        $resumes++
+                        $firstTick = ""; $lastTick = $tickAtStart
+                        continue      # retry, now against the previous autosave
+                    }
+                    # Either there was nothing to quarantine, or we already stepped back once and the
+                    # save before it ALSO failed. Two different autosaves failing is not a mid-write
+                    # truncation - something broader is wrong. Stop rather than walking the whole ring.
+                    Write-Log "resume failed from two different autosaves - the save set looks unusable, ending run $run" "ALERT"
+                    $abandoned = "resume failed from two different autosaves"
+                    break
+                }
+                Write-Log "resume landed at $firstTick, far behind $tickAtStart - load failed (attempt $freshStarts of 2 on this save)" "WARN"
+                $resumes++
+                $firstTick = ""; $lastTick = $tickAtStart
+                continue
             }
             if ((ConvertTo-DateNum $lastTick) -le $wanted) {
                 Write-Log "resume made no progress (still $lastTick) - abandoning run $run" "WARN"
@@ -1007,6 +1072,10 @@ try {
             wall_seconds = $wallSec; args = $gameArgs; dump_dates = $DumpDates; until_date = $UntilDate
             reached_ingame_date = $lastTick; self_quit = ((-not $timedOut) -and (-not $abandoned)); timed_out = $timedOut
             attempts = $attempt; resumes = $resumes; abandoned_reason = $abandoned
+            # Saves the fallback ladder moved aside, with their byte sizes against their siblings.
+            # This is the EVIDENCE for the mid-write-truncation hypothesis: a quarantined file that is
+            # much smaller than the autosaves around it confirms it; one the same size refutes it.
+            quarantined_saves = $script:QuarantinedSaves
             attempt_log = $attemptLog; autosave_interval = $AutosaveInterval
             mod_loaded = $modLoaded; mod_init_marker = $modInit
             dump_complete = $sawEnd; dumps_seen = @($dumpsSeen.Keys | Sort-Object); dump_date_ingame = $ingameDate
