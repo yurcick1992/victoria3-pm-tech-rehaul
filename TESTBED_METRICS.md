@@ -1205,33 +1205,45 @@ and grows with supply. A quantity computed instantaneously from wealth, prices a
 **jump** the moment supply appeared. Gradual onset is a drift signature, so there is very likely a
 persisted consumption state somewhere — just not per pop.
 
-⭐ **THE LEADING CANDIDATE IS THE 177 BLOCKS** (below), and the reason they matched neither the order book
-nor instantaneous demand may be the answer rather than a problem: a *lagged* or *smoothed* quantity
-matches neither by construction. Within a save the two fields differ by a median of only **10.3 %** —
-far too close for buy vs sell, and exactly the signature of two samples of one slowly-moving quantity.
-⚠ A cross-save test was attempted and is **inconclusive**: block ids are POSITIONAL and the block counts
-differ between saves (177 / 176 / 182), so the ~70 % cross-save drift measured could be pure
-misalignment. **The unlock is a stable block identifier** — find the record that ENCLOSES a goods block
-and names its country or market. Note `0x5501 = { "luxury_furniture" "automobiles" … }` is a *different*
-structure (a good-name list, probably obsessions or prestige goods) and is not it.
+✅ **RESOLVED 2026-08-07, and both halves of the paragraph above were wrong.** The persisted consumption
+state **does** exist and it is not the 177 blocks: it is
+`states.database.<id>.pop_needs.<CULTURE id>.pop_need_entry_data[need].weights{ <good idx> = <purchase
+weight> }` — the game's own computed purchase weight, per state, per culture, per need, per good. 888
+states × 15 needs in a 1925 save. Read it with `melted_pop_need_weights.mjs`.
+❌ **And the drift that motivated the search is not drift.** F40 measured the stored weight against the
+value the rule computes from the same gamestate's supply: it sits on its target every year, with no lag.
+A debut good's gradual onset is its **supply** growing, not a smoothed demand state catching up.
+⭐ `0x5501 = { "luxury_furniture" "automobiles" … }` is a culture's **obsessions** — runtime state, not the
+file's 1836 list, and reading the file instead put a 1925 culture 220 pp wrong.
 
 **The pops shown in the game's panel are not findable in the save at that granularity.** Of five pops read
 in-game (Midlands ×3, Cornwall, Lowlands — each with profession, culture, religion, wealth and size), only
 **one** matches a save record on all five attributes. The displayed figures are display-time aggregations.
 ⚠ Note `english` is not a culture — the game's internal name is **`british`** (index 15); `scottish` is 289.
 
-**The 177 blocks `save_market_goods.mjs` finds are pop-needs goods but are UNIDENTIFIED.** Their good list
-is exactly 34 of the 35 goods in `common/pop_needs` and nothing else (only `radios` absent), so they are
-pop-side. But the two numeric fields match **neither** the market order book (best block: transportation
-26 298 / 23 809 against a telemetry 27 952 / 32 501) **nor** pop demand (automobiles 7 940 / 7 188 near the
-7 520 read, but telephones 616 / 557 against 1 440). Across all 4 854 records the two fields track each
-other far too closely to be an order book — B/A mean 1.029, never outside 0.50–1.45.
+✅ **The 177 blocks are IDENTIFIED (2026-08-07): they are the AI's `consumption_tax` evaluation.** Each
+record is `{ type=consumption_tax  goods="<good>"  direction=increase_spending  country=<id>
+priority={ priority=must_have  score_before_random=A  score=B }  cost=100  valid=yes|no }`. That is why
+their good list is exactly the pop-needs universe (those are the taxable consumer goods), and why A and B
+track each other to a mean ratio of 1.029 — B is A plus a small random tiebreak. **Not an order book, not
+consumption.** `save_market_goods.mjs` is misnamed and reports these; it should not be used for market data.
 
-⇒ **THE SAVE'S ROLE IS INPUTS, NOT OUTPUTS.** It gives every pop's exact size and wealth level — which is
-what the need budgets and the wealth thresholds of F38 rest on, and what previously had to be swept. The
-**observable** for testing a consumption rule stays the `consumption_breakdown` telemetry, and
-`tools/testbed/score_pop_split.mjs` already scores a model against it. Testing the F39 rule variants means
-feeding that scorer the save's exact wealth distribution — it does not need the save's market data at all.
+⚠ **THE MARKET ORDER BOOK IS NOT IN A SAVE AT ALL.** The market database holds only `owner` per market
+(two lines per record). Buy and sell orders are recomputed on load.
+
+⇒ ⭐ **BUT THE SAVE STILL GIVES BOTH SIDES OF THE ORDER BOOK, because every BUILDING is persisted with its
+realised recipe**: `building_manager.database.<id>` carries `building`, `levels`, `state`,
+`input_goods={ goods={ <idx>={ value=X  prestige_goods={a b c} } } }` and the matching `output_goods`.
+Summing those per market gives **supply**, **non-pop demand** and the **prestige share of supply** for the
+same gamestate the purchase weights come from. Read it with `melted_building_goods.mjs`; validated against
+the run's own telemetry at a mean 8.3 % on production (the residual is market-membership, not missed
+buildings — the reader reaches 886 of 888 states).
+
+⇒ **SO THE SAVE'S ROLE IS NO LONGER "INPUTS, NOT OUTPUTS".** It supplies the inputs (every pop's exact size
+and wealth, which F38's thresholds rest on), the mechanism's own answer (the purchase weights), and the
+flows to feed it. F40 reconstructed a gamestate's weights from its own buildings to **1.12 pp** with no
+telemetry other than the order book's prices. `consumption_breakdown` telemetry remains the observable for
+the *budget* half — how much money each need gets — which the save does not persist.
 
 ## Not resolved
 
