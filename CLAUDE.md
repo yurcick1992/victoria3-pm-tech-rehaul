@@ -1291,9 +1291,17 @@ the game.
   the missing signal: run it with the tool's `run_in_background` (which *is* harness-tracked), and its
   exit wakes the agent. It returns on whichever comes first — **DONE** (session finished),
   **RUNNING** (the `-MaxMinutes` heartbeat, default 30; just re-launch it to keep waiting), or
-  **DEAD** (exit 2 — no game process and no completion marker, after a 90 s grace for the
-  between-runs build gap). The heartbeat is the point: without it, a hung run would never wake
-  anyone, because the completion signal is exactly what a hang withholds.
+  **DEAD** (exit 2 — no game process and no completion marker, after a **`-DeadGraceSeconds` grace,
+  default 900**, re-checked throughout rather than slept blind). The heartbeat is the point: without
+  it, a hung run would never wake anyone, because the completion signal is exactly what a hang
+  withholds.
+  ⚠ **Do not confuse the two graces — they are different timers on different scripts.** This one is
+  the **waiter's DEAD grace** (`wait_for_session.ps1 -DeadGraceSeconds`, **900 s**, raised from 90 s
+  because a long harvest looks exactly like a dead session). The other is the **observer's crash
+  grace** (`run_observer.ps1 -StopGraceSeconds`, **still 60 s**) — how long an unexplained game exit
+  waits for a keypress before being treated as a CTD and resumed. ⚠ That 60 s only applies when the
+  harness **has an interactive console**; launched headlessly it logs *"no interactive console -
+  cannot ask; treating as a crash"* and resumes within a second or two.
   ```
   powershell -ExecutionPolicy Bypass -File tools\testbed\wait_for_session.ps1 -Session tools\testbed\sessions\<stamp> -MaxMinutes 30
   ```

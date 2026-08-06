@@ -32,17 +32,45 @@ minidumps were written on the night of 2026-08-05/06 alone.
 correctly and refuse to splice a foreign timeline into the data — that is why nothing silently corrupt
 has shipped. But the resume they are guarding is **0 for 4**.
 
-**⭐ LEADING HYPOTHESIS, NOT YET TESTED: `-handsoff` overrides `-continuelastsave`.** The resume launches
-`victoria3.exe -continuelastsave -gdpr-compliant -handsoff -disable_renderframeifneeded
--run_until=<date>`. `-handsoff` is documented (MODDING_NOTES) as *auto-starting an observer game at the
-1836 bookmark* — which is exactly what the resumes do. The tell is run 18: its resume landed at
-**1836.1.1**, the bookmark start itself, not at some nearby autosave. Run 17 landed at 1846.3.2, which
-is consistent with a fresh game that had already run a few minutes before the harness sampled its clock.
+**❌ THE `-handsoff` HYPOTHESIS IS DISPROVEN — TESTED 2026-08-06, session `resume_diag`.** It was
+proposed here that `-handsoff` overrides `-continuelastsave` and starts a fresh 1836 observer game.
+**It does not.** A short control run was killed mid-flight and the harness's own resume path was
+allowed to run:
 
-**How to test it cheaply** (a few minutes of game time, no batch): launch a short run, kill
-`victoria3.exe` mid-run, and let the harness resume — then read the resumed clock. Then repeat with
-`-handsoff` dropped from the resume launch only. If the second lands on the autosave, the conflict is
-confirmed and the fix is to omit `-handsoff` when `-continuelastsave` is present.
+| | |
+|---|---|
+| killed at | 1837.3.5, with an autosave from that same second |
+| resumed at | **1837.3.2** — the last autosave, three in-game days back. Correct. |
+| session mode after resume | **observer**, `continue_game.json` → `"desc": "Observing Great Britain"` |
+
+So `-continuelastsave` (a) is a real flag — it is present in the exe's string pool, which also rules
+out a silent no-op — (b) loads the autosave with `-handsoff` present, and (c) **keeps observer mode**
+rather than handing control to a player. Autosaves are fine too: at `monthly` they fired every ~5 s of
+wall time, 28 MB each.
+
+**⭐ SO THE FAILURE IS NARROWER THAN THIS ENTRY FIRST CLAIMED.** Resume works for a **clean kill, early
+in a short run, with a fresh small save**. All four real failures were the opposite on every axis: a
+genuine CTD, late in a 100-year campaign, `yearly` autosaves, and much larger save files.
+
+**⭐ NEW LEADING HYPOTHESIS, UNTESTED: the CTD lands DURING an autosave write, leaving a truncated
+`.v3`.** An autosave stalls the game and writes 28–95 MB; a crash mid-write leaves a file that exists,
+is newest, and passes `Test-OwnSaveIsNewest` — but fails to load. And MODDING_NOTES already records the
+consequence: *a failed load plus `-handsoff` starts a fresh 1836 game* (verified there against a bad
+`-loadsave=` path). Run 18 landing on exactly **1836.1.1** is precisely that signature.
+**How to test:** after any real CTD, check the newest `.v3` for a truncated size against its siblings
+before resuming — and if it is short, resume from the one before it instead.
+
+**⚠ A SECOND, SEPARATE BUG FOUND BY THE SAME RUN — the harness's clock reading is STALE AT STARTUP.**
+For the first ~100 seconds the harness reported `in-game 1877.2.13` while the game was demonstrably at
+**1836.2** (its own `dedicated_server.log` said so). 1877 was the *previous night's* content: the game
+rotates its logs at startup, and the tail keeps reading from an offset established against the old,
+much larger file, so it sees nothing new until the fresh log grows past that point. Even once caught up
+it lags the real clock by ~3 in-game months.
+**This is not cosmetic.** Every resume verdict — "landed far behind", "loaded a save ahead of the run" —
+is computed from exactly this reading. A stale sample at the moment of the check would produce a wrong
+verdict and abandon a resume that in fact succeeded, which means **the four abandoned campaigns may
+have been abandoned wrongly.** Fix the tail to detect rotation (inode/size shrink) and reset its offset,
+and do not judge a resume until the tail has produced a line newer than the relaunch.
 
 **Why it went unnoticed.** The failure is *reported* — `abandoned_reason` says exactly what happened —
 but it is reported per run in `meta.json`, and the harness still exits 0 and logs `run N finished: ok`,
