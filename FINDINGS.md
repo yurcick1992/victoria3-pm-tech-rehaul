@@ -172,11 +172,15 @@ Per need, American market: luxury_items **0.22**, basic_food **0.43**, luxury_fo
 simple_clothing **0.65**, crude_items **0.72**, household_items **0.73**, intoxicants **0.91**,
 standard_clothing **1.33**, stimulants 4.64, luxury_drinks 18.30 pp.
 
-⚠ **Britain is worse because MY market aggregation is worse, not because the rule is.** The British market
-spans 24 countries and my state→country→market mapping under-counts its colonial supply badly — tea reads
-47 % and tobacco 53 % of the production the telemetry reports for the same market, which corrupts both the
-non-pop sum and the prestige share. The American market is one country, aggregates cleanly, and scores
-2.56 pp. Fixing the British membership is open work, not a defect in the rule.
+⚠ **Britain is worse because MY market aggregation is worse, not because the rule is — and the cause is now
+named exactly.** A save gives **every country its own `market` object**, and the game folds a subject's
+market into its overlord's; the save records no membership list, so grouping states by their country's raw
+`market` id splits the British market apart. Traced to a single good: Britain's telemetry reports 10 977 tea
+produced, my market-0 sum gives 5 175, and the missing **5 801 is exactly STATE_MADRAS**, whose owner MHR
+carries `market=67109134` against Britain's `market=0`. Tobacco loses the same way (53 % of telemetry).
+That corrupts both the non-pop sum and the prestige share, which is where Britain's two worst needs sit.
+The American market is one country, aggregates cleanly, and scores 2.56 pp. ⚠ It is **not** a missing-
+buildings bug — the extractor reaches 886 of 888 states. Merging subject markets (from `pacts`) is open work.
 
 ### THE TERMS, EACH IDENTIFIED ON ITS OWN
 
