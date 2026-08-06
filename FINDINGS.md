@@ -158,6 +158,15 @@ building's `input_goods` in that market, read out of the same save as the weight
 criterion asked for: *the derivation rules applied to real observed supply and non-pop demand must give the
 real observed pop demand.*
 
+⚠ **THE CRITERION HAS TWO LEVELS AND THIS FINDING MOVES ONE OF THEM.** Pop demand in units is
+`need budget × within-need split ÷ base price`. This finding is the **split**, and the split is now
+reproduced from a gamestate's own supply and non-pop demand to **2.8 pp**, against nothing but the game's
+own stored answer. The **budget** — how much money each of the 15 needs gets, from wealth levels and buy
+packages — is the other half, is untouched here, and end-to-end still carries most of the remaining error:
+scored against measured consumption in 1836 the total is **18.3 %** (down from 20.0 %). So the substitution
+question is answered; "hit the consumption numbers" is not finished, and what is left of it is now
+demonstrably on the **budget** side rather than the split.
+
 ### THE HEADLINE
 
 Predicting the stored purchase weight for **every** (state × culture × need × good) entry in a market,
