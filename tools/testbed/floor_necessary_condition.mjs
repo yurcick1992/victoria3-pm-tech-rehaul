@@ -67,14 +67,21 @@ for (const r of readdirSync(SDIR).filter(d => /^run\d+_/.test(d)).sort()) {
   if (!rows.length) { console.log(`${r}: no month has both goods being bought`); continue; }
   const bad = rows.filter(x => x.ratio < THRESHOLD);
   const first = rows[0], firstBad = bad[0];
-  console.log(`${r}   ${rows.length} month(s) with both goods bought, ${first.date} -> ${rows[rows.length-1].date}`);
-  console.log(`   first month both bought : ${first.date}  ratio ${first.ratio.toFixed(1)}`);
-  console.log(`   months violating the floor's necessary condition: ${bad.length}`);
-  if (firstBad) console.log(`   FIRST VIOLATION        : ${firstBad.date}  ratio ${firstBad.ratio.toFixed(2)}  (transp buy ${firstBad.transp_buy} vs auto buy ${firstBad.auto_buy})`);
-  // a compact trajectory: yearly samples so the shape is visible without hundreds of rows
+  console.log(`\n${'='.repeat(96)}`);
+  console.log(`  ${r}  —  ${rows.length} month(s) with both goods bought, ${first.date} to ${rows[rows.length-1].date}`);
+  console.log(`  ${bad.length} of them violate the floor's necessary condition` +
+              (firstBad ? `, first at ${firstBad.date}` : ''));
+  console.log('='.repeat(96));
+  // ⚠ A RATIO MUST SHOW ITS OWN NUMERATOR AND DENOMINATOR (user, 2026-08-06). A bare "1907: 2033" is
+  // unreadable without carrying the definition in your head, and a reader who mis-remembers which way
+  // up it goes reads the whole trajectory backwards.
   const seen = new Set();
   const traj = rows.filter(x => { const y = x.date.split('.')[0]; if (seen.has(y)) return false; seen.add(y); return true; });
-  console.log('   trajectory (first month of each year):');
-  console.log('     ' + traj.map(x => `${x.date.split('.')[0]}:${x.ratio.toFixed(1)}${x.ratio < THRESHOLD ? '*' : ''}`).join('  '));
-  console.log('     (* = below the threshold, so the cap CANNOT be binding that month)\n');
+  console.table(traj.map(x => ({
+    date: x.date,
+    'NUMERATOR transportation buy orders': x.transp_buy,
+    'DENOMINATOR automobiles buy orders':  x.auto_buy,
+    'ratio (transp / auto)':               +x.ratio.toFixed(2),
+    'floor needs >= 5.70':                 x.ratio < THRESHOLD ? 'VIOLATED' : 'ok'
+  })));
 }

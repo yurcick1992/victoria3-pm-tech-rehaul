@@ -1127,6 +1127,16 @@ the game.
   browser can't run programs). Everything else works **frontend-only**: opening `ui/builder.html`
   directly still edits + previews + **Export mod_config.json** (then run `build.ps1` yourself).
   User-facing setup lives in `README.md`.
+- **PRINCIPLE — A REPORTED RATIO CARRIES ITS OWN NUMERATOR AND DENOMINATOR.** (User, 2026-08-06.) If the
+  headline metric of a table is a ratio, the table shows **both terms as their own columns**, and the
+  ratio column names its direction (`ratio = transp ÷ auto`, not `ratio`). A bare `1907: 2033` forces the
+  reader to carry the definition in their head, and a reader who mis-remembers which way up it goes reads
+  the entire trajectory backwards. ⚠ **This is not only a presentation rule — the terms carry the
+  finding.** A compact one-line trajectory of `transportation ÷ automobiles` looked like the incumbent
+  being displaced; printing both columns showed transportation buying nearly flat (×1.66 over 29 years)
+  while automobile buying went ×829, i.e. the ratio collapses because the newcomer grows. That was
+  invisible until the denominator was on the page. Same rule for any derived figure whose inputs are not
+  obvious: **show what it was computed from.**
 - **PRINCIPLE — column alignment: LEFT unless there's a reason.** In the building tables every column aligns
   **left** (`th,td` default); the `.num` class now only requests **tabular figures**, it does *not* force
   right-alignment. Right-alignment is **opt-in**, and only justified where a cell holds a **label → value pair**

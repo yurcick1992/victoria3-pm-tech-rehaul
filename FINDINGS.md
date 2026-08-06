@@ -277,12 +277,42 @@ above 0.75 throughout (0.9999 at 1907.3, 0.9573 at 1912, 0.8673 at 1935), so the
 > with `POPMIN = 0.57`, the **measured low end** of pops' share of automobile buy orders (89–99 % in
 > early years), so the test is conservative — it can under-report violations, never invent one.
 >
-> | run | trajectory of `transportation_BUY / automobiles_BUY`, first month of each year |
-> |---|---|
-> | 1 | 1907:**2033** 1908:156 1909:42 1910:28 1911:22 1912:14.5 1913:10.3 1914:5.8 · 1915:5.5\* 1920:5.4\* 1925:4.5\* 1930:4.7\* 1936:**4.1\*** |
-> | 2 | 1908:**145** 1909:141 1910:19 1911:11 1912:9.5 1913:8.3 1914:6.9 1915:6.4 1916:5.7 · 1917:4.8\* 1920:3.4\* 1925:3.4\* 1933:**3.5\*** |
+> **RUN 1** — British Market, first month of each year. **259 of 342 months violate the condition**,
+> first at 1914.3.1.
 >
-> `*` = below 5.70. **259 violating months in run 1, 201 in run 2.**
+> | date | transportation buy orders (numerator) | automobiles buy orders (denominator) | ratio = transp ÷ auto | vs 5.70 |
+> |---|--:|--:|--:|---|
+> | 1907.4 | 35 806 | 17.6 | **2033.25** | ok |
+> | 1908.1 | 37 220 | 238.9 | 155.78 | ok |
+> | 1910.1 | 37 614 | 1 344.3 | 27.98 | ok |
+> | 1912.1 | 38 000 | 2 612.7 | 14.54 | ok |
+> | 1914.1 | 40 224 | 6 958.9 | 5.78 | ok |
+> | **1915.1** | 45 764 | 8 356.8 | **5.48** | **VIOLATED** |
+> | 1920.1 | 52 257 | 9 661.7 | 5.41 | VIOLATED |
+> | 1925.1 | 51 879 | 11 515.4 | 4.51 | VIOLATED |
+> | 1930.1 | 58 042 | 12 245.7 | 4.74 | VIOLATED |
+> | 1936.1 | 59 338 | 14 588.8 | **4.07** | VIOLATED |
+>
+> **RUN 2** — second seed. **201 of 284 months violate**, first at 1916.2.1.
+>
+> | date | transportation buy orders (numerator) | automobiles buy orders (denominator) | ratio = transp ÷ auto | vs 5.70 |
+> |---|--:|--:|--:|---|
+> | 1908.12 | 22 712 | 157.0 | **144.66** | ok |
+> | 1910.1 | 21 329 | 1 100.3 | 19.39 | ok |
+> | 1912.1 | 23 616 | 2 473.4 | 9.55 | ok |
+> | 1914.1 | 23 606 | 3 409.2 | 6.92 | ok |
+> | 1916.1 | 24 426 | 4 248.0 | 5.75 | ok |
+> | **1917.1** | 23 583 | 4 868.8 | **4.84** | **VIOLATED** |
+> | 1920.1 | 24 600 | 7 316.5 | 3.36 | VIOLATED |
+> | 1925.1 | 30 349 | 9 043.4 | 3.36 | VIOLATED |
+> | 1930.1 | 36 979 | 9 819.8 | 3.77 | VIOLATED |
+> | 1933.1 | 38 398 | 11 022.0 | **3.48** | VIOLATED |
+>
+> ⭐ **THE COLUMNS SAY WHICH SIDE MOVES, AND IT IS THE DENOMINATOR.** Transportation buying is nearly
+> flat across the whole span — ×1.66 in run 1 (35 806 → 59 338), ×1.69 in run 2 — while automobile
+> buying goes ×829 (17.6 → 14 589) and ×70. The ratio collapses because the newcomer grows, not because
+> the incumbent is displaced. (A compact one-line version of this table hid that entirely, which is why
+> a ratio is shown here with both of its terms.)
 >
 > ⭐ **THE DECISIVE FEATURE IS THAT THE RATIO DOES NOT STOP AT THE THRESHOLD.** A binding cap holds
 > automobiles at 25 %, which pins this ratio at 5.70; it would flatten there. Instead it passes straight
