@@ -232,28 +232,57 @@ above 0.75 throughout (0.9999 at 1907.3, 0.9573 at 1912, 0.8673 at 1935), so the
 > remaining campaign**: reading A gives them 6.6 % at 1912 and still only **18.1 %** at 1935, never
 > overtaking the floor.
 >
-> ⚠ **This run cannot test that, and the reason is structural rather than bad luck.** Only **one** date
-> has both goods verified: `transportation` survives the truncation in **early** dumps (1851–1912),
-> automobiles only in **late** ones (1907–1927), and a dump keeps a mean of 25.4 of ~44 goods. Run 2
-> truncates in the same order and will not fix it.
-> ⭐ **RUN 3 DISCRIMINATES, and it is already queued.** It is the overlay arm with automobiles at ×10
-> weight. At the **debut** (supply share 0.0001) reading A gives automobiles **0.17 %** even at ×10,
-> while a 25 % floor still gives **25 %** — a 150× separation on the first post-onset dump.
+> ## ✅ SETTLED BY RUN 2 — 25 % IS NEITHER A FLOOR NOR A PLATEAU, AND READING A FAILS TOO
+>
+> Run 2 (same session, second seed, automobiles debut **1908.12** rather than 1907.3) supplies two more
+> verified dates and they bracket run 1's:
+>
+> | run | date | months since local debut | auto supply share | **measured share, LOWER BOUND** | reading A | floor |
+> |---|---|--:|--:|--:|--:|--:|
+> | 2 | 1909.3 | 3 | 0.50 % | **0.008 %** | 0.83 % | 25 % |
+> | 1 | 1912.3 | 60 | 4.27 % | **24.7 %** | 6.6 % | 25 % |
+> | 2 | 1915.3 | 75 | 8.36 % | **≥ 31.6 %** | 12.2 % | 25 % |
+>
+> **The floor is refuted at 1909.** Three months after automobiles first sold in Britain there is real
+> supply (79.1 units) and real buying (176.6) — and pop demand is **0.4 units, £36**, against £432 000
+> of transportation. A floor would have to place ~£108 000 there. It places 0.008 % of the need.
+>
+> **25 % is not a plateau either.** At 1915 the transportation : automobiles money ratio is **2.16**,
+> *below* 3 — which makes a binding cap **arithmetically impossible**, since transportation's
+> `free_movement` share alone would have to exceed its measured total across *both* its needs.
+>
+> ⇒ **Run 1's 24.7 % was the trajectory crossing 25 % on the way up, not resting on it.** A single
+> datapoint invited exactly that misreading, and it took a second seed to see through it.
+>
+> ⚠⚠ **AND READING A FAILS IN A WAY NEITHER READING PREDICTS.** Measured sits **100× BELOW** A at three
+> months, then **3.7×** and **2.6× ABOVE** it at five and six years. A static supply-share formula
+> cannot produce that ordering. The shape is a **multi-year ramp that starts far below the static
+> prediction and later overshoots it** — which is not what any candidate rule on the table describes,
+> and is the thing worth investigating next. (All three figures are **lower bounds**: they assume
+> transportation's pop money is entirely `free_movement`, so the true shares — and the late overshoot —
+> are larger.)
+>
+> ⚠ Still only **three** dates, from two seeds, all British Market. The truncation is structural:
+> `transportation` survives in early dumps and `automobiles` in late ones, so overlaps are rare by
+> construction, not by luck.
 
-**Confidence: high on both refutations, NONE on the post-onset level.** The refutations rest on directly
-measured zeros — a verified `pop 0` block at the debut and 57 months of zero American telephone demand —
-which no modelling assumption can move. **The level after onset is genuinely open**: the direct reading
-is 24.7 % (the cap complement), the communication-corrected reading is ~33 %, and separating them needs
-a population-weighted budget ratio this run did not measure.
+**Confidence: high throughout, after run 2.** The refutations rest on directly measured zeros — a
+verified `pop 0` block at the debut and 57 months of zero American telephone demand — which no modelling
+assumption can move. The **level** question, briefly open on run 1 alone, is settled by run 2 bracketing
+it: 0.008 % three months after the debut and ≥ 31.6 % six years later, with a 2.16 ratio at the later
+date that no binding cap can produce. ⚠ Three dates, two seeds, one market.
 
-**What it does NOT say.** ⚠ **It does NOT say a 25 % floor is refuted** — an earlier draft of this entry
-said so on the strength of the ~33 %, and that was inference dressed as measurement. It does not
-identify the actual rule either: reading A gives 6.6 % at 1912 against a measured ≥24.7 %, so A
-under-predicts regardless of which reading of the level is right. It rests on **one seed** — run 2 is
-the replication and had not reached 1907 when this was written — and on **one** date for the level,
+**What it does NOT say.** ⚠ It does **not** identify the actual rule. Both candidates are now refuted —
+the floor by 0.008 % at three months, reading A by being 100× too high there and 2.6–3.7× too low five
+years on — and **what replaces them is unknown**. The measured shape is a multi-year ramp that
+undershoots then overshoots the static formula; nothing on the table predicts that, and this entry
+deliberately stops at describing it. It rests on **three dates from two seeds, all British Market**,
 because the breakdown's truncation keeps `transportation` and `automobiles` in disjoint eras. And the
 `transportation` half carries the unresolved `local`-good caveat (§10.35.1a): it is not established
 that market-level orders mean for a local good what they mean for a tradeable one.
+⚠ An earlier draft claimed ~33 % as *the* level and called the floor refuted on that basis; that was
+inference dressed as measurement, was challenged, and is superseded by the bracketing above — which
+reaches the same verdict on the floor for an entirely different and much better reason.
 
 ---
 
