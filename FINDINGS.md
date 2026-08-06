@@ -131,7 +131,7 @@ transcript rather than from data.
 
 ---
 
-## F40 — ⭐⭐ **THE WITHIN-NEED SUBSTITUTION RULE, SOLVED AND MEASURED END TO END.** A gamestate's own supply and non-pop demand reproduce that same gamestate's stored purchase weights to **2.56 pp** across 13 943 entries. Availability is **`(sell − ½ × non-pop demand) × BASE price`**, and five further terms are each identified separately
+## F40 — ⭐⭐ **THE WITHIN-NEED SUBSTITUTION RULE, SOLVED AND MEASURED END TO END.** A gamestate's own supply and non-pop demand reproduce that same gamestate's stored purchase weights to **1.12 pp** across 13 943 entries. Availability is **`(sell − ½ × non-pop demand) × BASE price`**, and five further terms are each identified separately
 
 **Arm** `overlay` (the ×10 pop-need-weight build), read from the melted 1925 autosave of session
 `20260806_110926_vanilla-retest-2` run003, paired with that run's own `market_goods_scoped` telemetry at
@@ -211,7 +211,7 @@ standard_clothing **1.33**, stimulants 4.64, luxury_drinks 18.30 pp.
 established, and the obvious candidate was tested and FAILED.** What is certain is the symptom: against the
 run's own telemetry at the same instant, my market-0 sums reach only 47 % of Britain's tea and 53 % of its
 tobacco, so both the non-pop total and the prestige share are wrong for exactly the goods in Britain's two
-worst needs. The American market is one country and scores 2.56 pp on the identical rule.
+worst needs. The American market is one country and scores 1.12 pp on the identical rule.
 
 ❌ **The failed hypothesis, recorded because it looked airtight.** A save gives every country its own
 `market` object and no membership list, and Britain's missing 5 801 tea is *exactly* STATE_MADRAS, whose
