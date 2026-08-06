@@ -36,7 +36,7 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 >
 > Same night, run 2 of the same batch: crashed at 1875, 1901, 1927, 1929 and 1932, **recovered from
 > every one**, and was then stopped by `-MaxResumes` at **1933.3.1** — three in-game years short of
-> 1936, after 2 h 21 m. , .
+> 1936, after 2 h 21 m. `abandoned_reason: "resume budget exhausted"`, `self_quit: false`.
 >
 > That is a different failure from the one this entry was written about: nothing was mis-judged and
 > nothing was thrown away, the counter simply ran out. **Raised 5 → 12.** Safe to raise because two
@@ -44,7 +44,11 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 > permanent failure, and 3 before any autosave exists aborts the whole schedule — so this counter only
 > limits how many *distinct* points a run may recover from. ⚠ Not free: each resume replays up to one
 > autosave interval, so a run approaching the new cap is reporting a stability problem, not a budget
-> one. Watch  in .
+> one. Watch `resumes` in `meta.json`.
+>
+> ⚠ **Measured crash rate, for planning:** **4 and 6 CTDs per century** across the two control
+> campaigns — roughly one per 15–25 in-game years, and all of them recovered. Crashes are now a cost in
+> replayed minutes rather than a threat to the run.
 >
 > ⚠ **This does not prove the four earlier campaigns were each wrongly abandoned** — different crashes,
 > different saves, and their evidence was never recorded. What it does establish is that the
