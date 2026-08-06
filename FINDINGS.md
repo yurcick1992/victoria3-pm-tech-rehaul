@@ -482,6 +482,13 @@ measurement**:
 |---|---|
 | countries ever acquiring `telephone` | **6**, and **Great Britain is world-first**, 1919.4.8 |
 | first telephone production ANYWHERE (50-market sweep) | **1920.9**, British Market |
+
+> ⚠⚠ **THE "ANYWHERE" IS WEAKER THAN IT READS (found 2026-08-06, TESTBED_LANDMINES L11).** Two of the
+> sweep's fifty tags are wrong: **`QIN` is not a country at all** (the Qing is `CHI`) and **`COL` is
+> British Columbia** (Colombia is `CLM`). So the sweep covered **48** countries, **China not among
+> them** — and China is the largest economy in the game. "First anywhere" should be read as "first
+> among the 48 tags that resolved". The Qing producing telephones before Britain is unlikely, which is
+> why this weakens the claim rather than overturning it — but it was never actually tested.
 | British order book at 1910.6 | buy **0.01**, sell 0, **imports 0**, production 0 |
 
 The world genuinely held **zero** telephones in 1910. The cause is that **the consuming method and the

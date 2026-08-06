@@ -59,6 +59,43 @@ closed.
 | L8 | The emitted telemetry changed and the schema version did not | AUTO |
 | L9 | Reading the shared log ring without filtering by the run's own identity | AUTO (regression) + OPEN |
 | L10 | Editing the generator while a batch is running | MANUAL |
+| L11 | A named tag that is not the country you think it is | **PROPOSED — AUTO, detector not yet written** |
+
+---
+
+### L11 — a named tag that is not the country you think it is · PROPOSED (AUTO)
+
+**The failure.** A metric names countries by three-letter tag. A tag that resolves to **no** country
+errors every tick and silently covers nothing; a tag that resolves to a **different** country covers
+the wrong thing and looks entirely healthy. Neither shows up as a failure: the sweep runs, rows appear
+for the tags that do resolve, and the missing country is simply never in the output.
+
+**Found 2026-08-06, in `market_goods_wide`'s 50-tag list — two of the fifty are wrong:**
+
+| tag in the list | what it actually is | intended |
+|---|---|---|
+| **`QIN`** | **not a country at all** — no definition exists | the Qing, which is **`CHI`** |
+| **`COL`** | **British Columbia** (`capital = STATE_BRITISH_COLUMBIA`) | Colombia, which is **`CLM`** |
+
+⚠ **The Qing is the largest economy in the game, and the wide sweep has never covered it.** That sweep
+exists to answer *"did anyone, anywhere, produce this good first?"* — so **FINDINGS F33's "first
+telephone production ANYWHERE (50-market sweep) = 1920.9, British Market" is weaker than it reads**: it
+is first among the 48 tags that resolved, China not among them. The other 194 error lines per campaign
+(L1's residual) are all `Failed to find country! Country: QIN` — not an annexation, a tag that never
+existed.
+
+**Detector (straightforward, not yet written).** Every `c:TAG` in the emitted telemetry must match a
+country defined in `common/country_definitions/*.txt`. That catches `QIN` outright. It cannot catch
+`COL`, because British Columbia is a perfectly real country — **only a human comparing intent against
+`capital = STATE_…` catches that one**, which is why the entry also asks that any tag list carry a
+comment naming what each unobvious tag is.
+
+**How it happened, twice in one hour.** A three-letter tag was *assumed* to name a country without
+being checked — first by the agent, asserting `DNK` was Denmark in a comparison of small nations (it is
+an African minor owning `STATE_EQUATORIA`; Denmark is `DEN` and owns **eight** states including
+Greenland, Iceland, the West Indies, the Gold Coast, Madras and Pegu), then discovered in the shipped
+tag list. **Resolve a tag against the game files before believing it**, exactly as with everything else
+here.
 
 ---
 
