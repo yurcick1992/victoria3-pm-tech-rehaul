@@ -282,20 +282,24 @@ real open question**; the rest are settled, and the fourth is settled *against* 
 
 - ⚠ **STILL OPEN: why the British market aggregates short.** See the box above — the symptom is measured,
   the obvious cause was tested and failed, and America's clean 2.5 pp means it is not systematic.
-- ✅ **The obsession floor is SOLVED** (it was the last loose sub-term). It is a floor on the **purchase
-  weight**, not on the share, and it has two branches:
+- ✅ **The obsession floor is SOLVED, with no exceptions.** It is a floor on the **purchase weight**, not on
+  the share, and it is clamped at BOTH ends:
   ```
-  purchase weight  ≥  max( obsession_demand_min × max_supply_share × weight ,  obsession_demand_min² )
+  purchase weight  ≥  clamp( obsession_demand_min × max_supply_share × weight ,
+                             obsession_demand_min² ,  obsession_demand_min )
   ```
-  Scored over three gamestates and every obsessed entry: **60 sit exactly on it, 884 sit above it** (their
-  computed share won, so the floor is slack) and **3 below** — all three the same case, `leisure`/`fine_art`,
-  which reads 0.5 against a floor of 2.0 and does not move across the three years. 30 more entries are zero
-  because the good has no supply at all: **an obsession cannot invent supply.**
-  The squared branch is what produces the values that looked anomalous: wine in `intoxicants` has weight
-  0.25 and a 0.25 cap, so its first branch is 0.047 and the floor is 0.75² = **0.5625** — which divided by
-  its 0.25 weight is the share **2.25** that read as impossible. Same for `luxury_food`/sugar and
-  `leisure`/small_arms at 0.5² = 0.25.
-  ⚠ Still a per-culture term our scenario model has no dimension for, so it does not block the mod.
+  Scored over three gamestates and every obsessed entry with non-zero weight: **63 sit exactly on it, 884
+  sit above it** (their computed share won, so the floor is slack) and **none below**. 30 more entries are
+  zero because the good has no supply at all — **an obsession cannot invent supply.**
+
+  | | what it catches | example |
+  |---|---|---|
+  | lower bound `obsMin²` | a good whose own `weight × cap` is tiny | wine in `intoxicants`: 0.25 × 0.25 = 0.0625, floored to 0.75² = **0.5625**, which ÷ its 0.25 weight is the share **2.25** that read as impossible |
+  | upper bound `obsMin` | the one good whose weight is large | `fine_art` in `leisure`: 0.5 × 1.0 × 4 = 2.0, capped to **0.5** |
+
+  ⚠ The intermediate form `max(obsMin × cap × weight, obsMin²)` fits 60 of 63 and fails only on `fine_art`;
+  the clamped form fits all 63. Still a per-culture term our scenario model has no dimension for, so it does
+  not block the mod.
 - **`local` goods are excluded from the headline** — but the rule for them is now identified AND checked.
   Per `LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR = 0.25` their substitution supply is the state's own plus
   `(1 − the state's GDP share) × 0.25 ×` the market's production, "*only for goods substitution supply and

@@ -133,11 +133,15 @@ for (const cell of cells.values()) {
     const r = cell.gs[i], e = nd.entries[r.good] || { max: 1, min: 0 };
     let s = Math.min(Math.max(av[i] / S, e.min), e.max);
     s *= 1 + nd.prestige * pshare(r.good);
-    // the obsession floor is on the PURCHASE WEIGHT (= weight x share), with a squared branch that binds
-    // when the good's own weight x cap is small: pw >= max(obsMin x max x weight, obsMin^2). Divided
-    // through by the weight to stay in share terms. 60 entries sit exactly on it across three gamestates.
-    if (cult.obs.includes(r.good) && (e.w || 0) > 0)
-      s = Math.max(s, Math.max(nd.obsMin * e.max, (nd.obsMin * nd.obsMin) / e.w));
+    // the obsession floor is on the PURCHASE WEIGHT (= weight x share), and it is CLAMPED at both ends:
+    //     pw  >=  clamp( obsMin x max_supply_share x weight ,  obsMin^2 ,  obsMin )
+    // The lower bound catches goods whose own weight x cap is tiny (wine: 0.25 x 0.25); the upper bound
+    // catches the one good whose weight is large (fine_art: 4). Across three gamestates 63 entries sit
+    // EXACTLY on it, 884 above it, and none below. Divided through by the weight to stay in share terms.
+    if (cult.obs.includes(r.good) && (e.w || 0) > 0) {
+      const oM = nd.obsMin;
+      s = Math.max(s, Math.min(Math.max(oM * e.max * e.w, oM * oM), oM) / e.w);
+    }
     if (taboo.includes(r.good)) s *= 0.5;
     const err = Math.abs(s - r.share);
     // --no-culture scores the MECHANISM only: obsession and taboo are per-culture terms our scenario

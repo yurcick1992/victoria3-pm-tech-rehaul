@@ -940,7 +940,7 @@ the game.
   dimension for them**; each is measured and written up in F40 so the omission is a choice, not an oversight:
   the **prestige-goods** multiplier (`1 + prestige_goods_demand_increase × prestige share of supply`;
   measured against the save to 0.6 pp on five goods), culture **obsession** (a floor on the PURCHASE WEIGHT of
-  `max(obsession_demand_min × max_supply_share × weight, obsession_demand_min²)`) and religion **taboo** (`× 0.5`, exact). ⚠ **Obsessions are
+  `clamp(obsession_demand_min × max_supply_share × weight, obsession_demand_min², obsession_demand_min)`) and religion **taboo** (`× 0.5`, exact). ⚠ **Obsessions are
   RUNTIME state, not file content** — the game adds and drops them all campaign, so reading them from
   `common/cultures` puts a 1925 culture 220 pp wrong.
   ⚠ **The weights the save stores are per (state, CULTURE).** A rate limiter also exists
