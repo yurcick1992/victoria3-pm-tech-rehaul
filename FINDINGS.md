@@ -327,6 +327,36 @@ above 0.75 throughout (0.9999 at 1907.3, 0.9573 at 1912, 0.8673 at 1935), so the
 > then — only that it cannot have been binding later. What rules out the early floor is the measured
 > share itself: 0.008 % at three months, 24.7 % at five years.
 >
+> ### ⭐ IS `weight` APPLIED CORRECTLY? YES — AND IT CANNOT CLOSE THE GAP EITHER
+>
+> Asked directly (user, 2026-08-06), because reading A's failure would be uninteresting if it were just
+> our arithmetic. The shipped path is `weight × clamp(share, min, max)`, normalised — matching the game's
+> own header comment term for term: *weight* is the base weight applied **based on** sell-order share;
+> *max_supply_share* clamps the share **before** the multiply (*"no further impact on base weight"*);
+> *min_supply_share* floors it, so the effective weight is at least `weight × min`.
+>
+> Rather than assert that, every plausible alternative was enumerated against the 1915 measurement
+> (`tools/testbed/check_reading_a.mjs`):
+>
+> | how `weight` is applied | predicted automobile share |
+> |---|--:|
+> | **shipped** — `weight × clamp(within-need share)`, non-pop subtracted | **9.40 %** |
+> | without the −0.5 × non-pop term | 12.23 % |
+> | without the `max_supply_share` clamp | 7.67 % |
+> | `weight` ignored entirely | 7.67 % |
+> | `weight` × supply, share taken after (applied too early) | 7.67 % |
+> | clamp applied *after* the weight | 9.40 % |
+> | **MEASURED (lower bound)** | **31.6 %** |
+>
+> **No mis-application closes a 3.4× gap.** The weight is doing real work — removing it costs 1.7 pp —
+> but the whole family of readings lives in 7.7–12.2 %.
+>
+> ⭐ **THE SENSITIVITY IS THE USEFUL NUMBER.** For the shipped rule to produce the measurement,
+> automobiles would need a supply share of **27.7 %** (measured **8.36 %**), *or* an effective weight of
+> **5.56** instead of 1.25 — a **4.5×** increase. So the observed behaviour looks like a good whose
+> effective weight is several times its nominal one, which is a sharper statement of the anomaly than
+> "reading A under-predicts" and is directly testable: run 3 sets automobiles to ×10 (weight 12.5).
+>
 > ⚠ The three breakdown dates remain only **three**, from two seeds, all British Market. The truncation
 > is structural: `transportation` survives in early dumps and `automobiles` in late ones, so overlaps
 > are rare by construction, not by luck.

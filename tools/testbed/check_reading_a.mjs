@@ -49,9 +49,44 @@ console.log('  automobile share of free_movement, LOWER BOUND: ' + (100 * mA / (
 console.log('  (a LOWER bound because it credits ALL transportation pop money to free_movement;');
 console.log('   whatever popneed_communication takes makes the true automobile share HIGHER)');
 
-// What supply share would reading A need in order to explain the measurement?
+// ---------------------------------------------------------------------------------------------
+// IS `weight` APPLIED CORRECTLY? (user, 2026-08-06) Rather than assert that it is, enumerate every
+// plausible way it could be applied and show what each predicts. If the shipped one is wrong, one of
+// the alternatives should land near the measurement; none does.
 const target = mA / (mA + mT);
-const need = (0.75 * target) / (1.25 * (1 - target));
-console.log('\nSENSITIVITY — for reading A to produce the measured share, automobiles would need a');
-console.log('  supply share of ' + (100 * need).toFixed(1) + '% (with transportation pinned at its 0.75 cap).');
-console.log('  Measured supply share is ' + (100 * rawShare).toFixed(2) + '%.');
+const effT = sell.transportation - 0.5 * nonpop.transportation;
+const effA = sell.automobiles    - 0.5 * nonpop.automobiles;
+const share = (a, b) => a / (a + b);
+const norm  = (a, b) => a / (a + b);
+const V = [];
+// 1. SHIPPED: clamp the within-need supply share, then multiply by weight.
+{ const sT = Math.min(0.75, share(effT, effA)), sA = Math.min(1, share(effA, effT));
+  V.push(['shipped — weight × clamp(within-need share), non-pop subtracted', norm(1.25 * sA, 1.0 * sT)]); }
+// 2. Same, but WITHOUT the -0.5 × non-pop term (which the shipped comment does not mention).
+{ const sT = Math.min(0.75, share(sell.transportation, sell.automobiles)), sA = share(sell.automobiles, sell.transportation);
+  V.push(['no non-pop subtraction', norm(1.25 * sA, 1.0 * sT)]); }
+// 3. No clamp at all — weight × raw share.
+{ const sT = share(effT, effA), sA = share(effA, effT);
+  V.push(['no max_supply_share clamp', norm(1.25 * sA, 1.0 * sT)]); }
+// 4. Weight NOT applied — clamped shares normalised alone.
+{ const sT = Math.min(0.75, share(effT, effA)), sA = Math.min(1, share(effA, effT));
+  V.push(['weight ignored entirely', norm(sA, sT)]); }
+// 5. Weight applied to SUPPLY before the share is taken, rather than to the share.
+{ const wT = 1.0 * effT, wA = 1.25 * effA;
+  V.push(['weight × supply, then share (weight applied too early)', norm(wA, wT)]); }
+// 6. Clamp applied to the WEIGHTED value rather than to the share.
+{ const wT = Math.min(0.75, 1.0 * share(effT, effA)), wA = Math.min(1, 1.25 * share(effA, effT));
+  V.push(['clamp applied AFTER the weight', norm(wA, wT)]); }
+console.log('\nEVERY PLAUSIBLE WEIGHT APPLICATION, against the measurement');
+console.table(V.map(([label, s]) => ({
+  'how weight is applied': label,
+  'predicted automobile share': (100 * s).toFixed(2) + '%',
+  'measured (lower bound)':     (100 * target).toFixed(1) + '%',
+  'explains it?':               s >= target ? 'yes' : 'no — too low'
+})));
+const needShare = (0.75 * target) / (1.25 * (1 - target));
+const needW     = (0.75 * target) / (share(effA, effT) * (1 - target));
+console.log('SENSITIVITY — what would have to be true for the SHIPPED rule to produce the measurement:');
+console.log('  automobiles would need a supply share of ' + (100 * needShare).toFixed(1) +
+            '% (measured: ' + (100 * rawShare).toFixed(2) + '%)');
+console.log('  …or a weight of ' + needW.toFixed(2) + ' instead of 1.25 (a ' + (needW / 1.25).toFixed(1) + '× increase)');
