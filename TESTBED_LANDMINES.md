@@ -189,10 +189,16 @@ wrong arm.
 disagree with what loaded, then require every emitted path to be one of `.metadata`,
 `common/on_actions`, `common/script_values`, `events`. Anything else fails **by name**.
 
-⚠ **This currently passes only because the pop-needs emitter is off by default.** The architectural
-violation `CLAUDE.md` records — `-ControlOnly -Config <path>` emitting `common/pop_needs/…` — is
-**not fixed**; the detector will catch it the moment a config turns it on, which is better than
-nothing and is not the same as the fix. The fix is the third arm (`-Overlay`), still to be built.
+✅ **The architectural fix landed the same day** (see `CLAUDE.md` → the three arms): `-ControlOnly`
+now **throws** if handed a config carrying gameplay content, and the overlay arm — vanilla +
+telemetry + one *declared* change — is its own flag with its own mod id
+(`com.yurcick.v3_testbed_overlay`).
+
+⚠ **Which means L7 keys on honesty, and that is deliberate.** The detector only applies to a mod
+claiming the control id, so an overlay that lied about being a control would trip it, and one that
+says what it is passes for the right reason. The guard and the naming hold each other up; neither
+alone is sufficient, and a future arm that carries content while borrowing the control id is exactly
+what this catches.
 
 ---
 
