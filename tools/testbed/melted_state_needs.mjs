@@ -1,6 +1,12 @@
 // melted_state_needs.mjs — per-STATE pop-need purchase weights out of a melted Victoria 3 save,
 // labelled with the state's region name and owning country.
 //
+// ⛔ SUPERSEDED by melted_pop_need_weights.mjs. This reader NUMBERS the entries inside `pop_needs={ … }`
+// 0,1,2,… and throws the real key away — but the keys are CULTURE ids and are not consecutive, so the
+// counter merges distinct cultures under one label and makes one state look like several unexplained
+// "groups". Culture matters: an obsession floors a good's entry and a religion's taboo halves it
+// (FINDINGS F40). Use the newer reader; this one is kept only so older TSVs remain reproducible.
+//
 //   node tools/testbed/melted_state_needs.mjs <melted.txt> [--tsv out.tsv] [--region STATE_MIDLANDS]
 //
 // ⭐ WHY. `pop_needs` lives inside the STATE record (`states.database.<id>`), which also carries
