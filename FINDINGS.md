@@ -314,10 +314,38 @@ above 0.75 throughout (0.9999 at 1907.3, 0.9573 at 1912, 0.8673 at 1935), so the
 > the incumbent is displaced. (A compact one-line version of this table hid that entirely, which is why
 > a ratio is shown here with both of its terms.)
 >
-> ⭐ **THE DECISIVE FEATURE IS THAT THE RATIO DOES NOT STOP AT THE THRESHOLD.** A binding cap holds
-> automobiles at 25 %, which pins this ratio at 5.70; it would flatten there. Instead it passes straight
-> through — 1914 → 1915 in run 1, 1916 → 1917 in run 2 — and keeps falling to ~4.1 and ~3.5. Both seeds,
-> same shape.
+> ⭐ **THE DECISIVE FEATURE IS THAT THE RATIO DOES NOT STOP AT THE THRESHOLD.** A binding cap pins this
+> ratio; it would flatten. Instead it passes straight through — 1914 → 1915 in run 1, 1916 → 1917 in
+> run 2 — and keeps falling to ~4.1 and ~3.5. Both seeds, same shape.
+>
+> ### ⚠⚠ READ THE ANOMALY FROM TRANSPORTATION'S SIDE — AUTOMOBILES WERE NEVER THE CONSTRAINED GOOD
+>
+> (User, 2026-08-06: *"how does MORE consumption than the supposed clamp violate anything?"* It does
+> not, and the earlier framing here was wrong.) **Automobiles' `max_supply_share` is 1.0** — no binding
+> ceiling at all — so them taking 31.6 % breaches nothing. The cap constrains **transportation**, at
+> 0.75. And in a **two-good** need the clamped excess has nowhere to go but the other good, so a binding
+> cap forces **exactly** 75/25 rather than "at least 25 % for the newcomer".
+>
+> | | transportation's share of `free_movement` |
+> |---|--:|
+> | reading A predicts | 90.6 % |
+> | reading B predicts (cap binding) | 75.0 % |
+> | **MEASURED (upper bound)** | **≤ 68.4 %** |
+>
+> ⇒ **The anomaly is that transportation is UNDER-consumed against every reading.** Automobiles are the
+> residual, not the cause. Every "violation" counted above is transportation falling below its
+> floor-implied share, which is why the signal is a ratio *below* the threshold.
+>
+> ⭐ **AND THAT PROMOTES THE ONE UNTESTED CONFOUND TO LEADING CANDIDATE.** `transportation` is one of
+> only **three** `local` goods in the game (with `services` and `electricity`), and every calculation
+> here assumes market-wide sell orders mean the same for it as for a tradeable good. If availability is
+> really evaluated per state, states thin on transportation would give automobiles a larger share, and
+> the market-level aggregate would look exactly like this. BALANCE_FRAMEWORK §10.35.1a has flagged this
+> since before any of these measurements; it has still never been tested, and it is now the most likely
+> explanation rather than a footnote.
+> ⚠ It would also explain the *shape*: transportation's local availability improves as railways and
+> ports spread, so the gap between a market-wide calculation and a per-state one would narrow over
+> decades — which is the multi-year ramp, from the other side.
 >
 > ⭐ **AND THE SHAPE ITSELF IS THE ANSWER TO "HOW SOON":** a smooth, monotonic climb over roughly seven
 > years — from ~2000:1 at the debut to the 25 % level around **1914–1916** — with no step, no plateau,

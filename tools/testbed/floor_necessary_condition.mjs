@@ -39,9 +39,43 @@ if (!SESSION) { console.error('usage: floor_necessary_condition.mjs --session <d
 const SDIR = join(REPO, SESSION.replace(/^[.\\/]+/, ''));
 
 const PT = 30, PA = 100;                     // base prices, read from the game and verified
-const THRESHOLD = (PA / PT) * 3 * POPMIN;    // transportation_BUY / automobiles_BUY must be at least this
-console.log(`market ${MARKET} · POPMIN ${POPMIN} (measured low end of pops' share of automobile buy orders)`);
-console.log(`floor requires  transportation_BUY / automobiles_BUY  >=  ${THRESHOLD.toFixed(2)}\n`);
+const UNIT_LINE = (PA / PT) * 3;             // the 25% clamp, expressed as a POP-DEMAND UNIT ratio
+const THRESHOLD = UNIT_LINE * POPMIN;        // the same line, degraded into a buy-order proxy
+
+// ⚠⚠ TWO DIFFERENT NUMBERS, AND THE EARLIER VERSION OF THIS TOOL PRESENTED ONE AS THE OTHER
+// (user, 2026-08-06: "5.70 means what specifically? Where would the clamp of 25% be?").
+//
+//   THE CLAMP ITSELF is a ratio of 3 : 1 in MONEY (75 % ÷ 25 %), which is 10 : 1 in POP-DEMAND UNITS,
+//   because automobiles cost £100 against transportation's £30 and 3 × (100/30) = 10. Where the
+//   channel split captured both goods, that line can be tested EXACTLY, with no assumption at all.
+//
+//   5.70 IS NOT THAT LINE. It is 10 × POPMIN — the same condition degraded into something the monthly
+//   ORDER BOOK can answer, by bounding pop demand below by POPMIN × buy orders. It is deliberately
+//   CONSERVATIVE: everything under it is certainly a violation, but the true crossing happens EARLIER,
+//   at a ratio between 5.70 and 10 depending on what fraction of each good's buying is pops.
+//
+// So read the buy-order table as "when is a violation CERTAIN", not "when did automobiles pass 25 %".
+//
+// ⚠⚠ AND READ IT FROM TRANSPORTATION'S SIDE, NOT AUTOMOBILES' (user, 2026-08-06: "how does MORE
+// consumption than the supposed clamp violate anything?"). It does not — and automobiles were never the
+// constrained good. Their `max_supply_share` is **1.0**; they have no binding ceiling whatsoever.
+// What the cap constrains is TRANSPORTATION, at 0.75. In a TWO-good need the clamped excess has nowhere
+// to go but the other good, so a binding cap forces EXACTLY 75/25 rather than "at least 25 % for the
+// newcomer". The measurement is therefore inconsistent because transportation comes in BELOW 75 %
+// (≤ 68.4 % at 1915), not because automobiles came in above 25 %.
+// ⇒ The anomaly is **transportation being under-consumed** relative to every reading (A predicts 90.6 %,
+//   B predicts 75.0 %, measured ≤ 68.4 %). Automobiles are the residual, not the cause.
+// ⇒ That points at the one confound flagged and never tested: `transportation` is one of only three
+//   `local` goods, and this whole calculation assumes market-wide sell orders mean the same for it as
+//   for a tradeable good. If availability is really evaluated per state, states thin on transportation
+//   would hand automobiles a larger share, and the market-level aggregate would look exactly like this.
+//   See BALANCE_FRAMEWORK §10.35.1a.
+console.log(`market ${MARKET}`);
+console.log(`  the 25% clamp, exactly:  transportation : automobiles = 3 : 1 in MONEY`);
+console.log(`                        =  ${UNIT_LINE.toFixed(1)} : 1 in POP-DEMAND UNITS (automobiles £${PA} vs transportation £${PT})`);
+console.log(`  conservative proxy    :  transportation_BUY / automobiles_BUY >= ${THRESHOLD.toFixed(2)}  (= ${UNIT_LINE.toFixed(1)} × POPMIN ${POPMIN})`);
+console.log(`  POPMIN is the measured LOW end of pops' share of automobile buy orders, so a breach below`);
+console.log(`  ${THRESHOLD.toFixed(2)} is certain — but automobiles cross 25% somewhere ABOVE it, nearer ${UNIT_LINE.toFixed(1)}.\n`);
 
 const ymd = d => { const p = String(d).split('.'); return +p[0] + (+p[1] - 1) / 12; };
 
