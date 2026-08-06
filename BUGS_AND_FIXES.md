@@ -66,11 +66,36 @@ For the first ~100 seconds the harness reported `in-game 1877.2.13` while the ga
 rotates its logs at startup, and the tail keeps reading from an offset established against the old,
 much larger file, so it sees nothing new until the fresh log grows past that point. Even once caught up
 it lags the real clock by ~3 in-game months.
-**This is not cosmetic.** Every resume verdict — "landed far behind", "loaded a save ahead of the run" —
-is computed from exactly this reading. A stale sample at the moment of the check would produce a wrong
-verdict and abandon a resume that in fact succeeded, which means **the four abandoned campaigns may
-have been abandoned wrongly.** Fix the tail to detect rotation (inode/size shrink) and reset its offset,
-and do not judge a resume until the tail has produced a line newer than the relaunch.
+**This is not cosmetic, and the mechanism is exact.** All three resume verdicts are computed from
+**`$firstTick`** — *the first tick observed after the relaunch* — which is sampled in precisely the
+window where the tail is still serving the previous session's content:
+
+```
+$landed = ConvertTo-DateNum $firstTick        # ← stale for ~100 s after any relaunch
+if ($landed -gt $wanted)              → "resume loaded a save ahead of the run"
+if ($wanted - $landed -gt 20000)      → "resume started a fresh game"
+```
+
+⚠ **Run 19's abandonment has an obvious stale-read explanation.** It was killed at 1854.3.1 and
+abandoned as *"resume loaded a save ahead of the run"*. A stale tail serves content from near the END
+of the pre-rotation file — i.e. that run's own latest pre-crash date, ~1881 — so `landed > wanted`
+fires and a perfectly good resume is discarded as a foreign save. That is the same shape as the
+diagnostic's 1877-for-1836 misread.
+
+**⭐ THE FIX, and the log makes it easy: every tick line carries its own wall clock.**
+
+```
+[10:18:02][jominiapplication.cpp:539]: Processing Tick: 1836.10.15.6
+```
+
+So **do not judge a resume until a tick line appears whose own timestamp is later than the relaunch**,
+and ignore every line older than that. That is robust without needing to detect rotation at all. Detect
+rotation as well (size shrink / handle identity) so the *progress display* stops lying, but the verdict
+must key on the line's timestamp, not on arrival order.
+
+⚠ **Whether each of the four campaigns was wrongly abandoned cannot be recovered after the fact** — the
+verdict was recorded, the evidence behind it was not. Treat the "resume never works" conclusion as
+**unproven in both directions** until the harness is fixed and a real CTD is observed under it.
 
 **Why it went unnoticed.** The failure is *reported* — `abandoned_reason` says exactly what happened —
 but it is reported per run in `meta.json`, and the harness still exits 0 and logs `run N finished: ok`,
