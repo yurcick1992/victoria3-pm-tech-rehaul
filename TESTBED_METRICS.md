@@ -52,6 +52,15 @@ roughly *dead tags × markets × dump dates*.
 on identity. **Check `meta.json` → `error_log_lines` after any run**: a control arm should be in the low
 thousands; hundreds of thousands means a metric is erroring every tick. See BUGS_AND_FIXES.
 
+✅ **FIXED AND NOW ENFORCED (2026-08-06).** Every filter goes through **one** function —
+`Get-GuardedOwnerLimit` (and `Get-GuardedCountryBlock` for a scope switch) — because the idiom written
+out per site is what let it be reintroduced nineteen times. **Landmine L1 in `TESTBED_LANDMINES.md`**,
+checked mechanically by `tools/preflight.ps1` against the EMITTED files on every build.
+⚠ The hand fix covered 6 sites and the detector then found **13 more**, including a `this = c:TAG`
+form nobody had considered — read that gap as the reason the check exists.
+⚠ `error_log_lines` is **not a per-run number** (landmine L9): it includes whatever the shared ring
+still held. Lines naming `zzz_v3tb_telemetry.txt` are ours by definition and should be **zero**.
+
 ⚠ **Sessions `20260803_014037` and `20260803_022027` stamp v9 while carrying early v10 content**, and
 both were stopped part-way (see §5.6 and §5.7 — they are the *evidence* for those two rules, not
 usable measurement runs). Read their schema from `schedule.json`, not the `BOOT` line. The constant

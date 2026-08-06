@@ -186,6 +186,22 @@ numbers belong to those runs' own telemetry files. It is the magnitudes that are
 is valid at 1836 and invalid by 1900. Any metric that names countries must either guard with `exists` or
 iterate and filter on a property instead of on identity.
 
+**✅ FIXED 2026-08-06, and the class is now enforced.** Every tag filter goes through one function
+(`Get-GuardedOwnerLimit` / `Get-GuardedCountryBlock` in `telemetry_lib.ps1`) — writing the idiom out per
+site is exactly how it got reintroduced at nineteen of them. The emitted script text changed; the
+emitted **data** did not, since a dead tag produced no lines before and produces none now, so
+`TELEMETRY_VERSION` stayed at **12**.
+⚠ **The hand fix was not the fix.** Six sites were corrected by reading the code; the new detector then
+found **13 more**, including a `this = c:TAG` form that had not been considered at all. Two of the
+survivors (`consumption_probe` on BEL/JAP, the `probe` metric on GBR/FRA/CHI) are exactly the
+long-campaign shape the entry is about.
+⚠ **Stated assumption, not proof:** guarding is treated as behaviour-preserving because the metric
+demonstrably emitted correct lines for countries that existed — i.e. the errored sub-trigger was already
+acting as false. It was **not** separately verified that an errored comparison inside an `OR` never
+evaluated *true*; if it did, pre-fix runs logged extra markets.
+⇒ **`TESTBED_LANDMINES.md` L1**, checked by `tools/preflight.ps1` against the emitted files inside every
+build. That register is where this class of defect — the ones where nothing fails — is now enumerated.
+
 ---
 
 ## The provenance field that would have caught a wasted day was never populated — the scheduler simply did not pass it (2026-08-06)

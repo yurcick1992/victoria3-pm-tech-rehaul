@@ -103,6 +103,31 @@ $defTimeout  = [int](Val $defaults "timeout_minutes" 360)
 
 # ---- validate everything BEFORE building or launching anything ----
 $setupNames = @($setups.PSObject.Properties | ForEach-Object { $_.Name })
+
+# ⚠ SETUP SHAPE IS VALIDATED HERE, NOT LAZILY IN Resolve-Setup. Resolve-Setup runs per run, inside the
+# execution loop and AFTER the -WhatIf return - so a malformed setup used only by the last run of an
+# overnight schedule was not reported until that run began, hours in, and -WhatIf could not surface it
+# at all. This header says "validate everything BEFORE building or launching anything"; it now does.
+foreach ($sn in $setupNames) {
+    $sp = $setups.$sn
+    $sk = Val $sp "kind" "config"
+    $sc = Val $sp "config" $null
+    switch ($sk) {
+        "control" {
+            if ($sc) { throw "setup '$sn': kind 'control' takes no 'config' - a control arm carries no gameplay content. Use kind 'overlay' for vanilla + one declared change." }
+        }
+        "overlay" {
+            if (-not $sc) { throw "setup '$sn': kind 'overlay' requires a 'config' naming what the overlay is" }
+            if (-not (Test-Path (RepoPath $sc))) { throw "setup '$sn': config not found: $(RepoPath $sc)" }
+        }
+        "config"  {
+            if ($sc -and -not (Test-Path (RepoPath $sc))) { throw "setup '$sn': config not found: $(RepoPath $sc)" }
+        }
+        "recipe"  { throw "setup '$sn': kind 'recipe' is not implemented yet - use kind 'config' with a prepared config file" }
+        default   { throw "setup '$sn': unknown kind '$sk'" }
+    }
+}
+
 $plan = @()
 $i = 0
 foreach ($r in $runs) {
@@ -153,6 +178,19 @@ foreach ($r in $runs) {
     }
 }
 
+# ---- PREFLIGHT, repo half, BEFORE the estimate is printed ----
+# Game time is the one cost that cannot be recovered. The per-build half of preflight runs inside
+# build.ps1 and would catch an emitted landmine anyway - but it would catch it after this script has
+# already announced an 8-hour estimate. The repo-level entries (a spec key the scheduler drops,
+# telemetry changed without a schema bump, an unfiltered log reader) need no built mod, so they gate
+# here in about two seconds. See TESTBED_LANDMINES.md.
+& (Join-Path (Split-Path $PSScriptRoot -Parent) 'preflight.ps1') -RepoOnly -Quiet
+if ($LASTEXITCODE -ne 0) {
+    $global:LASTEXITCODE = 0
+    throw "PREFLIGHT FAILED - see the landmine IDs above and TESTBED_LANDMINES.md. Nothing was built and nothing launched."
+}
+$global:LASTEXITCODE = 0
+
 # ---- plan report + estimate ----
 $years = 0; foreach ($p in $plan) { $years += ([int]$p.until.Split('.')[0] - 1836) }
 $estMin = [int]($years * 85 / 60)          # ~85 s per in-game year, measured on a 1836-1935 run
@@ -190,16 +228,23 @@ function Resolve-Setup {
     $cfg = $null
     switch ($kind) {
         "control" {
-            $args += "-ControlOnly"
-            # A control arm may optionally name a config, and the builder will then read EXACTLY ONE
-            # thing out of it: `pop_need_weight_mult`. That is what makes "vanilla + one named change"
-            # expressible as an arm. Omit `config` and the arm is pure vanilla + telemetry.
-            $cfgSpec = Val $Spec "config" $null
-            if ($cfgSpec) {
-                $cfg = RepoPath $cfgSpec
-                if (-not (Test-Path $cfg)) { throw "setup '$Id': config not found: $cfg" }
-                $args += @("-Config", $cfg)
+            # PURE vanilla + telemetry, no gameplay content whatsoever. A config here is a mistake,
+            # not a feature: the builder throws if one carries content, and accepting the argument
+            # at all was how the guarantee got lost in the first place. Use `kind: overlay`.
+            if (Val $Spec "config" $null) {
+                throw "setup '$Id': kind 'control' takes no 'config' - a control arm carries no gameplay content. Use kind 'overlay' for vanilla + one declared change."
             }
+            $args += "-ControlOnly"
+        }
+        "overlay"  {
+            # ⚠ NOT A CONTROL. Vanilla + telemetry + a small DECLARED overlay, today exactly the
+            # config's `pop_need_weight_mult` and nothing else. It exists so a treatment against a
+            # vanilla control is expressible without pretending to be one; build_state records
+            # `arm: overlay+<what>`, and no finding from it may be reported as a control.
+            $cfg = RepoPath (Val $Spec "config" "")
+            if (-not $cfg)               { throw "setup '$Id': kind 'overlay' requires a 'config' naming what the overlay is" }
+            if (-not (Test-Path $cfg))   { throw "setup '$Id': config not found: $cfg" }
+            $args += @("-Overlay", "-Config", $cfg)
         }
         "config"  {
             $cfg = RepoPath (Val $Spec "config" "config/mod_config.json")

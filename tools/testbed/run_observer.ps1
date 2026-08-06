@@ -465,21 +465,30 @@ function Write-BuildState {
     # with what actually loaded. This is the field whose absence cost 2026-08-05: a full day of
     # measurement ran on the tiered mod when vanilla was wanted, and no artifact recorded which.
     #   control            - vanilla + telemetry, no gameplay content
-    #   control+pop_needs  - vanilla + telemetry + a pop-need weight rescaling, and NOTHING else
+    #   overlay+<what>     - vanilla + telemetry + a small DECLARED overlay. NOT a control.
     #   config             - a full modded build (buildings, PMs, history, …)
+    # ⚠ Sessions before 2026-08-06 record `control+pop_needs` for what is now `overlay+pop_needs`.
+    # Read that value as overlay; do NOT back-fill it into their build_state.json, which is a
+    # historical record rather than a cache.
     # A `deviates_from_vanilla` list names every gameplay file the arm carries, so "how far from
     # vanilla is this" is answerable without re-deriving it from the config.
     $arm = "unknown"; $deviates = @()
     if ($ModPath -and (Test-Path $ModPath)) {
         $isControl = ($modMeta -and $modMeta.id -eq "com.yurcick.v3_testbed_control")
+        $isOverlay = ($modMeta -and $modMeta.id -eq "com.yurcick.v3_testbed_overlay")
         foreach ($probe in @('common\buildings','common\production_methods','common\history',
                              'common\pop_needs','common\ai_strategies','localization')) {
             if (Test-Path (Join-Path $ModPath $probe)) { $deviates += ($probe -replace '\\','/') }
         }
-        $arm = if (-not $isControl) { "config" }
-               elseif ($deviates -contains 'common/pop_needs') { "control+pop_needs" }
+        $arm = if ($isOverlay) {
+                   # name WHAT the overlay is, not merely that there is one - "overlay" alone would
+                   # be as uninterpretable later as the bare session name that started all this.
+                   $what = ($deviates | ForEach-Object { ($_ -split '/')[-1] }) -join '+'
+                   $(if ($what) { "overlay+$what" } else { "overlay+EMPTY" })
+               }
+               elseif (-not $isControl) { "config" }
                elseif ($deviates.Count -eq 0) { "control" }
-               else { "control+UNEXPECTED" }
+               else { "control+UNEXPECTED" }   # a control carrying content: the builder should have thrown
     }
 
     $state = [ordered]@{

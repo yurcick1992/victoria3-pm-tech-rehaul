@@ -31,6 +31,7 @@
 param(
     [string]$Mod,                       # built mod root to inspect; default <repo>\mod
     [switch]$UpdateFingerprint,         # rewrite tools\telemetry_fingerprint.json from current code (L8)
+    [switch]$RepoOnly,                  # only the checks that need no built mod (for a pre-batch gate)
     [switch]$WarnOnly,                  # print the report but always exit 0
     [switch]$Quiet                      # only print FAIL/WARN lines
 )
@@ -455,16 +456,20 @@ function Test-LmL9 {
 }
 
 # --------------------------------------------------------------------------- driver ----
+# `Artifact` = needs a BUILT mod to read. The rest read the repo and can therefore gate a batch
+# BEFORE anything is built, which is the difference between failing in two seconds and failing after
+# the first run's build.
 $CHECKS = @(
-    @{ Id = 'L1'; Fn = { Test-LmL1 } },
-    @{ Id = 'L2'; Fn = { Test-LmL2 } },
-    @{ Id = 'L4'; Fn = { Test-LmL4 } },
-    @{ Id = 'L5'; Fn = { Test-LmL5 } },
-    @{ Id = 'L6'; Fn = { Test-LmL6 } },
-    @{ Id = 'L7'; Fn = { Test-LmL7 } },
-    @{ Id = 'L8'; Fn = { Test-LmL8 } },
-    @{ Id = 'L9'; Fn = { Test-LmL9 } }
+    @{ Id = 'L1'; Artifact = $true;  Fn = { Test-LmL1 } },
+    @{ Id = 'L2'; Artifact = $true;  Fn = { Test-LmL2 } },
+    @{ Id = 'L4'; Artifact = $true;  Fn = { Test-LmL4 } },
+    @{ Id = 'L5'; Artifact = $false; Fn = { Test-LmL5 } },
+    @{ Id = 'L6'; Artifact = $true;  Fn = { Test-LmL6 } },
+    @{ Id = 'L7'; Artifact = $true;  Fn = { Test-LmL7 } },
+    @{ Id = 'L8'; Artifact = $false; Fn = { Test-LmL8 } },
+    @{ Id = 'L9'; Artifact = $false; Fn = { Test-LmL9 } }
 )
+if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 
 foreach ($c in $CHECKS) {
     try { & $c.Fn }
@@ -477,8 +482,9 @@ foreach ($c in $CHECKS) {
 $fails = @($script:Results | Where-Object { $_.Status -eq 'FAIL' })
 $warns = @($script:Results | Where-Object { $_.Status -eq 'WARN' })
 
+$against = $(if ($RepoOnly) { 'the repo (pre-batch gate)' } else { Split-Path $Mod -Leaf })
 Write-Output ""
-Write-Output "PREFLIGHT - TESTBED_LANDMINES.md walked against $(Split-Path $Mod -Leaf)"
+Write-Output "PREFLIGHT - TESTBED_LANDMINES.md walked against $against"
 foreach ($r in $script:Results) {
     if ($Quiet -and $r.Status -in @('PASS', 'N/A')) { continue }
     Write-Output ("  {0,-3} {1,-5} {2}" -f $r.Id, $r.Status, $r.Title)

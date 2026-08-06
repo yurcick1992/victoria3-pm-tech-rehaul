@@ -44,6 +44,9 @@
 #>
 param([switch]$NoLint, [switch]$NoDeploy, [string]$Config, [switch]$DryRun, [string]$SaveTo,
       [string]$Telemetry, [switch]$TelemetryOn, [string]$TelemetryToken, [switch]$ControlOnly,
+      # -Overlay: vanilla + telemetry + a small DECLARED gameplay overlay. NOT a control - it gets its
+      # own mod id so preflight's L7 can tell them apart, and it must never be reported as one.
+      [switch]$Overlay,
       [switch]$NoPreflight)
 $ErrorActionPreference = 'Stop'
 $INV = [System.Globalization.CultureInfo]::InvariantCulture
@@ -233,12 +236,36 @@ if ($telemetryOn) {
 # -ControlOnly: the CONTROL ARM. A complete, loadable mod whose only content is telemetry -
 # no tier buildings, no production methods, no localization, no history. Everything the game
 # sees is vanilla except the logging, which is byte-identical to what the modded arms carry.
-if ($ControlOnly) {
-    if (-not $isAlt) { throw "-ControlOnly must be combined with -SaveTo <name> or -DryRun; it must never overwrite the canonical mod/." }
+#
+# -Overlay: THE THIRD ARM, and NOT a control. Vanilla + telemetry + a small DECLARED overlay -
+# today exactly one thing, the pop-need weight rescaling. It exists because a treatment against a
+# vanilla control has to be "vanilla plus one named change", and for one day that was bolted onto
+# -ControlOnly itself, which made the flag's name lie (user, 2026-08-06: "the only thing that's
+# acceptable to add to a control and still call it control is a different telemetry approach").
+# It carries its OWN metadata id, which is what lets preflight's L7 tell the two apart: L7 requires
+# a control to emit nothing but the instrument directories, and an overlay is simply not a control
+# so the check does not apply to it. Naming the arm honestly is what makes the guardrail work.
+if ($ControlOnly -or $Overlay) {
+    if ($ControlOnly -and $Overlay) { throw "-ControlOnly and -Overlay are different arms; pass exactly one." }
+    $armFlag = $(if ($Overlay) { '-Overlay' } else { '-ControlOnly' })
+    if (-not $isAlt) { throw "$armFlag must be combined with -SaveTo <name> or -DryRun; it must never overwrite the canonical mod/." }
+    # ⚠ THE CONTROL'S GUARANTEE IS ENFORCED, NOT DOCUMENTED. A flag that promises the ABSENCE of
+    # gameplay content must FAIL when handed content, never quietly widen to accommodate it - that
+    # is precisely how the guarantee was lost. Use -Overlay for an arm that is meant to carry a
+    # change; the error names it so the fix is obvious.
+    if ($ControlOnly -and $cfg -and $cfg.PSObject.Properties.Name -contains 'pop_need_weight_mult' -and $cfg.pop_need_weight_mult) {
+        throw "-ControlOnly was given a config carrying pop_need_weight_mult ($(Split-Path $cfgPath -Leaf)). A control arm carries NO gameplay content - that is the whole guarantee. Use -Overlay for vanilla + one declared change."
+    }
     $meta = Get-Content $dstMeta -Raw -Encoding UTF8 | ConvertFrom-Json
-    $meta.name = "V3 Testbed Control (vanilla + telemetry, built $(Get-Date -Format 'yyyy-MM-dd HH:mm'))"
-    $meta.id = "com.yurcick.v3_testbed_control"
-    $meta.short_description = "Vanilla control arm: telemetry only, no gameplay content."
+    if ($Overlay) {
+        $meta.name = "V3 Testbed Overlay (vanilla + telemetry + declared overlay, built $(Get-Date -Format 'yyyy-MM-dd HH:mm'))"
+        $meta.id = "com.yurcick.v3_testbed_overlay"
+        $meta.short_description = "NOT a control: vanilla + telemetry + a small declared gameplay overlay."
+    } else {
+        $meta.name = "V3 Testbed Control (vanilla + telemetry, built $(Get-Date -Format 'yyyy-MM-dd HH:mm'))"
+        $meta.id = "com.yurcick.v3_testbed_control"
+        $meta.short_description = "Vanilla control arm: telemetry only, no gameplay content."
+    }
     if ($meta.PSObject.Properties.Name -contains 'replace_paths') { $meta.PSObject.Properties.Remove('replace_paths') }
     [System.IO.File]::WriteAllText($dstMeta, ($meta | ConvertTo-Json -Depth 12), (New-Object System.Text.UTF8Encoding($false)))
     # WriteText/$bom are defined further down the script, so write directly here.
@@ -255,21 +282,33 @@ if ($ControlOnly) {
         New-Item -ItemType Directory -Force -Path $evDir | Out-Null
         [System.IO.File]::WriteAllText((Join-Path $evDir 'zzz_v3tb_probe.txt'), $telemetryEvents, (New-Object System.Text.UTF8Encoding($true)))
     }
-    # The ONE piece of gameplay content a control arm may carry, and only when the config it was given
-    # explicitly asks for it: the pop-need weight rescaling. That makes "vanilla + exactly one named
-    # change" buildable, which is what a treatment arm against a vanilla control has to be. With no
-    # `pop_need_weight_mult` in the config this emits nothing and the arm stays pure vanilla.
-    Write-PopNeedWeights $cfg $Game $modAbs $genHeader $modRel
-    $pnEmitted = Test-Path -LiteralPath (Join-Path $modAbs 'common\pop_needs\00_pop_needs.txt')
+    # THE OVERLAY, and only for -Overlay. A control never reaches this with content: the guard at the
+    # top of this block throws first, so the absence is enforced rather than merely intended.
+    # ⚠ ONE DECLARED THING ONLY. If a second overlay kind is ever added, it must be named in the
+    # config and refused when not on the allow-list - an arm that quietly accumulates content is the
+    # failure this whole split exists to prevent, and it would be just as bad under a new name.
+    $pnEmitted = $false
+    if ($Overlay) {
+        Write-PopNeedWeights $cfg $Game $modAbs $genHeader $modRel
+        $pnEmitted = Test-Path -LiteralPath (Join-Path $modAbs 'common\pop_needs\00_pop_needs.txt')
+        if (-not $pnEmitted) {
+            throw "-Overlay was given $(Split-Path $cfgPath -Leaf), which produced no overlay at all. An overlay arm that carries nothing is a control wearing the wrong name - pass -ControlOnly, or give it a config with pop_need_weight_mult."
+        }
+    }
     Write-Output ""
-    Write-Output "CONTROL BUILD: vanilla + telemetry only -> $modRel"
+    if ($Overlay) {
+        Write-Output "OVERLAY BUILD (NOT a control): vanilla + telemetry + a declared overlay -> $modRel"
+    } else {
+        Write-Output "CONTROL BUILD: vanilla + telemetry only -> $modRel"
+    }
     Write-Output "  dump dates: $($telemetrySpec.dump_dates -join ', ')"
     Write-Output "  tags      : $($telemetrySpec.tags -join ', ')"
     Write-Output "  metrics   : $($telemetrySpec.metrics -join ', ')"
     if ($pnEmitted) {
         # ASCII on purpose: this line lands in build.log, which is read back through tooling that
         # decodes UTF-8 as CP1251 on this machine, and a mangled warning is a warning nobody reads.
-        Write-Output "  !! NOT PURE VANILLA: carries common/pop_needs/00_pop_needs.txt from $(Split-Path $cfgPath -Leaf)"
+        Write-Output "  overlay: common/pop_needs/00_pop_needs.txt from $(Split-Path $cfgPath -Leaf)"
+        Write-Output "  !! THIS IS NOT A CONTROL ARM - never report a result from it as one."
     } else {
         Write-Output "  (no buildings, no production methods, no localization, no history, no pop needs)"
     }

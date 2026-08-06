@@ -23,8 +23,18 @@ powershell -ExecutionPolicy Bypass -File tools\solve_building_cost.ps1
 powershell -ExecutionPolicy Bypass -File tools\build.ps1        # regen + convert 1836 start + lint + deploy
 ```
 
-`build.ps1` must end with **LINT PASSED** and **MOD CHECKS PASSED**. Then do the **manual checks**
-below (they are *not* automated), load a game, and read `error.log` (see `MODDING_NOTES.md`).
+`build.ps1` must end with **LINT PASSED**, **MOD CHECKS PASSED** and **PREFLIGHT PASSED**. Then do the
+**manual checks** below (they are *not* automated), load a game, and read `error.log` (see
+`MODDING_NOTES.md`).
+
+⚠ **PREFLIGHT WILL FAIL ON A PATCH THAT RENAMES COUNTRY TAGS OR SCRIPT VALUES**, and that is the point —
+see `TESTBED_LANDMINES.md`. Two entries are patch-sensitive:
+- **L1** guards named tags with `exists`. If a patch removes a tag we name (e.g. a formable changes), the
+  guard keeps the game quiet but the metric silently stops covering that country — check the tag lists in
+  the schedules, not just that preflight is green.
+- **L8** compares the emitted telemetry against a stored hash. It does **not** move on a game patch (it
+  hashes our generator's output, not vanilla), so a failure after a patch means *our* code changed, not
+  the game.
 
 Tip: dry-run first (`build.ps1 -DryRun`) to validate a patch without touching the deployed `mod/`.
 

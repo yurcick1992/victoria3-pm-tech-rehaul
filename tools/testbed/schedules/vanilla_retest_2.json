@@ -2,7 +2,7 @@
   "schedule_version": 1,
   "label": "vanilla-retest-2",
   "_why": "RE-RUN of the three campaigns. The first attempt (20260805_234555) truncated at 1867-1893 against a 1936 target, so automobiles (~1900) and telephones (~1920) were never reached and every late-game question is still open. Two things changed since: our telemetry no longer errors on dead country tags (the guarded owner filter, ~49k error lines per campaign removed), and the resume verdict no longer reads a stale clock, which is what discarded at least one working resume.",
-  "_arms": "vanilla = {kind: control}: vanilla + telemetry, ZERO gameplay content. vanilla_x10 = {kind: control, config: config/vanilla_weight_x10.json}: vanilla + telemetry + common/pop_needs/00_pop_needs.txt and nothing else. ⚠ THE SECOND IS NOT A CONTROL despite how it is spelled - build_state records arm control+pop_needs, which after the pending rename means OVERLAY. Report it as the treatment arm. Its control is runs 1-2 of THIS session.",
+  "_arms": "vanilla = {kind: control}: vanilla + telemetry, ZERO gameplay content - the builder now THROWS if a control is handed a config carrying content, so the guarantee is enforced rather than intended. vanilla_x10 = {kind: overlay, config: config/vanilla_weight_x10.json}: vanilla + telemetry + common/pop_needs/00_pop_needs.txt and nothing else. IT IS NOT A CONTROL and carries its own mod id so preflight can tell them apart; build_state records arm overlay+pop_needs. Its control is runs 1-2 of THIS session.",
   "_belgium": "BELGIUM ADDED to the closely-tracked set (user, 2026-08-06), in the order book AND in the channel split. It is the best-modelled market we have (18.3% pop-spend error against 42% for Japan) and the one the 1836 calibration rests on. The channel split stays at TWO markets rather than three: each market fires in its OWN month (the generator staggers by ), so there is no per-tick ring collision, but each one still adds ~1 MB per breakdown date to a log volume that is the leading suspect for the crashes.",
   "_what_this_is_for": "The open questions all need late-game data. Does a debut good pop demand track its supply; who actually buys it; how long the AI takes to adopt a consuming method; and above all whether a two-good need caps its incumbent at 0.75 and hands the newcomer the 0.25 complement. That last one needs BOTH goods of a need verified at the SAME date in the SAME run - a whole campaign yielded exactly one such observation last time, which is why the split now covers two markets.",
   "defaults": {
@@ -22,7 +22,7 @@
       "kind": "control"
     },
     "vanilla_x10": {
-      "kind": "control",
+      "kind": "overlay",
       "config": "config/vanilla_weight_x10.json"
     }
   },
