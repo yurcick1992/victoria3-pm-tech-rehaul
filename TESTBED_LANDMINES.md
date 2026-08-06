@@ -88,6 +88,23 @@ are data functions resolved by a different subsystem, which fails differently �
 error, not a comparison error. Whether *that* also floods is **unmeasured**; the count is printed
 each run so it stays visible rather than forgotten.
 
+**✅ MEASURED 2026-08-06 — the guard removes 99.6%, and the residual is irreducible while tags are
+named at all.** First guarded campaign (`20260806_110926_vanilla-retest-2` run 1, control arm, to
+in-game 1882), counting only lines stamped inside the run's own window (L9):
+
+| our error, in-window | before | after |
+|---|--:|--:|
+| `Invalid right side during comparison 'c'` | 48 659 | **0** |
+| `Failed to find country! Country: QIN` (`eventtargetlinks.cpp`) | — | **194** |
+
+⚠ **`exists = c:X` does not silence everything, and cannot.** The residual comes from
+`eventtargetlinks.cpp`, i.e. **resolving** the scope link — which `exists` must do in order to test
+it. So the guard removes the *comparison* error and leaves the *resolution* notice. 194 lines over 46
+in-game years is ~4/year against 48 659, so this is a rounding error rather than a flood, but it means
+**"anything naming our telemetry should be zero" is not reachable by guarding**; only by not naming
+tags. Read the detection rule as *zero comparison errors*, and treat a `Failed to find country` count
+that grows beyond a few hundred as the signal instead.
+
 ⚠ **Stated assumption, not proof:** guarding is treated as behaviour-preserving because the evidence
 says the metric emitted correct lines for every country that did exist, i.e. the errored sub-trigger
 was already behaving as false. It has not been separately verified that an errored comparison inside
