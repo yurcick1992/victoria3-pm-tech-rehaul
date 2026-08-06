@@ -68,3 +68,8 @@ STATUS_BOARD*.html
 # Third-party binaries fetched into the tree (rakaly melter). Not ours to redistribute; the
 # EXACT release and how to re-fetch it are recorded in TESTBED_METRICS.md so the repo can be retraced.
 tools/vendor/
+
+# melted saves + their extracts: hundreds of MB, reproducible from the archived .v3
+tools/testbed/_score_work/
+tools/testbed/saves_debut/
+tools/testbed/saves_x10_extra/

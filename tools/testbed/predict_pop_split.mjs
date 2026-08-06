@@ -87,9 +87,14 @@ if (OBSF) {
 
 const BG = readFileSync(BG_TSV, 'utf8').split('\n').filter(Boolean);
 const bh = BG[0].split('\t'), bi = Object.fromEntries(bh.map((x, i) => [x, i]));
-const nonpop = new Map(), prodM = new Map(), prestM = new Map(), stateMarket = new Map();
+// ⚠ KEY ON THE STATE ID, NOT THE REGION NAME. Several state records can share a region (a split
+// state owned by two countries), so a region-keyed map silently keeps only the last — and a region-keyed
+// CELL merged their rows, listing one good three times and dividing its share by three.
+const nonpop = new Map(), prodM = new Map(), prestM = new Map(), stateMarket = new Map(), regionMarket = new Map();
 for (let i = 1; i < BG.length; i++) {
-  const c = BG[i].split('\t'); stateMarket.set(c[bi.region], c[bi.market]);
+  const c = BG[i].split('\t');
+  stateMarket.set(c[bi.state], c[bi.market]);
+  regionMarket.set(c[bi.region], c[bi.market]);
   const k = c[bi.market] + '|' + c[bi.good];
   nonpop.set(k, (nonpop.get(k) || 0) + +c[bi.input]);
   prodM.set(k, (prodM.get(k) || 0) + +c[bi.output]);
@@ -108,7 +113,7 @@ for (let i = 1; i < BG.length; i++) {
   wPrest.set(c[bi.good], (wPrest.get(c[bi.good]) || 0) + +(c[bi.prestige_out] || 0));
 }
 const worldRate = g => { const o = wProd.get(g) || 0; return o > 0 ? Math.min(1, (wPrest.get(g) || 0) / o) : 0; };
-const MID = stateMarket.get(PROBE);
+const MID = regionMarket.get(PROBE);
 const M = readFileSync(MKT_TSV, 'utf8').split('\n').filter(Boolean);
 const mh = M[0].split('\t'), mi = Object.fromEntries(mh.map((x, i) => [x, i]));
 const OB = {};
@@ -133,13 +138,13 @@ const h = L[0].split('\t'), ix = Object.fromEntries(h.map((x, i) => [x, i]));
 const cells = new Map();
 for (let i = 1; i < L.length; i++) {
   const c = L[i].split('\t');
-  if (stateMarket.get(c[ix.region]) !== MID) continue;
-  const k = c[ix.region] + '|' + c[ix.key] + '|' + c[ix.need];
+  if (stateMarket.get(c[ix.state]) !== MID) continue;
+  const k = c[ix.state] + '|' + c[ix.key] + '|' + c[ix.need];
   if (!cells.has(k)) cells.set(k, { region: c[ix.region], key: +c[ix.key], need: c[ix.need], gs: [] });
   cells.get(k).gs.push({ good: c[ix.good], share: +c[ix.share] });
 }
 
-let tot = 0, n = 0, totL = 0, nL = 0;
+let tot = 0, n = 0, totL = 0, nL = 0, emptyCells = 0;
 const worst = [];
 const perNeed = {};
 for (const cell of cells.values()) {
@@ -149,6 +154,11 @@ for (const cell of cells.values()) {
   const av = cell.gs.map(r => avail(r.good));
   const S = av.reduce((a, b) => a + b, 0);
   if (!(S > 0)) continue;
+  // ⚠ A (state, culture, need) whose EVERY entry is zero is not a mis-prediction: it means no pop of that
+  // culture in that state consumes that need at all — needs switch on at wealth thresholds (F38), so a
+  // poor community simply has no entry. The rule is about how a need's money splits; a need with no money
+  // has no split to get wrong. --keep-empty scores them anyway, as errors, for comparison.
+  if (!args.includes('--keep-empty') && cell.gs.every(r => r.share === 0)) { emptyCells++; continue; }
   for (let i = 0; i < cell.gs.length; i++) {
     const r = cell.gs[i], e = nd.entries[r.good] || { max: 1, min: 0 };
     let s = Math.min(Math.max(av[i] / S, e.min), e.max);
@@ -193,6 +203,7 @@ if (ONEG) {
   process.exit(0);
 }
 console.log(`market '${MARKET}' (save market id ${MID}) @ ${DATE}, run ${RUN} · c1 = ${C1}`);
+console.log(`empty (state,culture,need) cells skipped - the need is not consumed there: ${emptyCells}`);
 console.log(`state x culture x need x good entries scored: ${n} non-local, ${nL} containing a local good`);
 console.log(`\n⭐ MEAN ABSOLUTE ERROR OF THE PREDICTED SHARE: ${(tot / n * 100).toFixed(3)} pp   (local-good needs, excluded: ${(totL / nL * 100).toFixed(2)} pp)`);
 console.log('\nper need:');

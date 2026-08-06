@@ -75,7 +75,11 @@ for await (const line of rl) {
   if (section === 'countries') {
     const sm = /^(\d+)=\{$/.exec(t);
     if (sm && depth === 2) curId = +sm[1];
-    else if (curId !== null) {
+    else if (curId !== null && depth === 3) {
+      // ⚠ DEPTH GUARD, and it is load-bearing. The match is on the TRIMMED line, so without it any nested
+      // `market=` anywhere inside the country record wins — and taking the first put the USA, the
+      // Netherlands and the Dutch East Indies in one market at 1904, which is how STATE_ACEH ended up
+      // being scored against the American order book. A country's own market is a top-level field only.
       const mm = /^market=(\d+)$/.exec(t); if (mm && !countryMarket.has(curId)) countryMarket.set(curId, +mm[1]);
       const dm = /^definition="([A-Z_]+)"$/.exec(t); if (dm && !countryTag.has(curId)) countryTag.set(curId, dm[1]);
     }

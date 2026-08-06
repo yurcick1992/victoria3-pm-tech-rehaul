@@ -929,9 +929,9 @@ the game.
   ```
   **Availability is a VALUE, not a unit count** — that is the one thing this changes and it is the whole of
   it. Measured against the purchase weights a savegame stores: a gamestate's own supply and non-pop demand
-  reproduce that same gamestate's weights to **1.12 pp over 13 943 entries** (American market, 1925) with
-  every term switched on, 0.88 pp counting only the entries no culture touches — replicated on three
-  consecutive gamestates and with 8 of the 10 needs under 1.33 pp. `S.AVAIL_MODE = 'units'` restores the old count-based reading as an A/B switch.
+  reproduce that same gamestate's weights to **0.82 pp over 16 863 entries** (VANILLA, American market, 1904) with
+  every term switched on — replicated on four gamestates across two arms and two decades (0.66-0.82 pp
+  American, 1.13-2.46 pp British) with every need under 1.45 pp. `S.AVAIL_MODE = 'units'` restores the old count-based reading as an A/B switch.
   ⭐ It is confirmed by a second, independent measurement: re-scored against the game's own 1836 pop
   **consumption** telemetry it improves the mean absolute error across 7 markets from **20.0 % to 18.3 %**.
   Every good the need lists is a candidate — an unsupplied one scores zero and drops out by itself,

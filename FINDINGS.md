@@ -131,7 +131,7 @@ transcript rather than from data.
 
 ---
 
-## F40 — ⭐⭐ **THE WITHIN-NEED SUBSTITUTION RULE, SOLVED AND MEASURED END TO END.** A gamestate's own supply and non-pop demand reproduce that same gamestate's stored purchase weights to **1.12 pp** across 13 943 entries. Availability is **`(sell − ½ × non-pop demand) × BASE price`**, and five further terms are each identified separately
+## F40 — ⭐⭐ **THE WITHIN-NEED SUBSTITUTION RULE, SOLVED AND MEASURED END TO END.** A gamestate's own supply and non-pop demand reproduce that same gamestate's stored purchase weights to **0.82 pp** across 16 863 entries, on a VANILLA campaign. Availability is **`(sell − ½ × non-pop demand) × BASE price`**, and five further terms are each identified separately
 
 **Arm** `overlay` (the ×10 pop-need-weight build), read from the melted 1925 autosave of session
 `20260806_110926_vanilla-retest-2` run003, paired with that run's own `market_goods_scoped` telemetry at
@@ -160,7 +160,7 @@ real observed pop demand.*
 
 ⚠ **THE CRITERION HAS TWO LEVELS AND THIS FINDING MOVES ONE OF THEM.** Pop demand in units is
 `need budget × within-need split ÷ base price`. This finding is the **split**, and the split is now
-reproduced from a gamestate's own supply and non-pop demand to **1.1 pp**, against nothing but the game's
+reproduced from a gamestate's own supply and non-pop demand to **0.8 pp**, against nothing but the game's
 own stored answer. The **budget** — how much money each of the 15 needs gets, from wealth levels and buy
 packages — is the other half, is untouched here, and end-to-end still carries most of the remaining error:
 scored against measured consumption in 1836 the total is **18.3 %** (down from 20.0 %). So the substitution
@@ -172,25 +172,25 @@ demonstrably on the **budget** side rather than the split.
 Predicting the stored purchase weight for **every** (state × culture × need × good) entry in a market,
 from that market's order book and building flows, with no free parameters:
 
-| market, 1925 | entries scored | every term on | mechanism only |
-|---|--:|--:|--:|
-| **American** | 13 943 | **1.117 pp** | **0.880 pp** |
-| British | 18 226 | — | 8.390 pp |
+Mean absolute error of the predicted share, **every term switched on**, over every
+(state × culture × need × good) entry the market contains:
 
-"Every term on" applies the prestige multiplier, the obsession floor and the taboo halving as well;
-"mechanism only" drops the entries a culture touches, which is the part our scenario model can represent.
+| gamestate | arm | market | entries | error |
+|---|---|---|--:|--:|
+| **1904.1.1** | **control (vanilla)** | American | 16 863 | **0.819 pp** |
+| 1923.1.1 | overlay (×10) | American | — | **0.764 pp** |
+| 1924.1.1 | overlay (×10) | American | — | **0.778 pp** |
+| 1925.1.1 | overlay (×10) | American | 13 943 | **0.658 pp** |
+| 1923.1.1 | overlay (×10) | British | — | 1.450 pp |
+| 1924.1.1 | overlay (×10) | British | — | 1.131 pp |
+| 1925.1.1 | overlay (×10) | British | 18 226 | 2.464 pp |
 
-**Replicated on three consecutive annual gamestates of the same campaign, nothing refitted:**
-
-| American market | 1923 | 1924 | 1925 |
-|---|--:|--:|--:|
-| mechanism only (obsessed / tabooed entries excluded) | **0.924 pp** | **1.002 pp** | **0.880 pp** |
-| **every entry, culture terms included** | **1.176 pp** | **1.241 pp** | **1.117 pp** |
-| British market, mechanism only | 6.627 pp | 5.937 pp | 8.390 pp |
-
-Per need at 1925, every term on: luxury_items **0.22**, basic_food **0.44**, luxury_food **0.61**,
-simple_clothing **0.65**, crude_items **0.72**, household_items **0.73**, intoxicants **1.17**,
-standard_clothing **1.33**, stimulants 1.93, luxury_drinks 4.17 pp.
+⭐ **Four gamestates, two arms, two markets, two decades apart, nothing refitted between them.** The
+vanilla 1904 reading is the independent one: a different campaign, unmodified pop-need weights, and a save
+whose date coincides exactly with a telemetry dump. Per need there: crude_items **0.056**,
+standard_clothing **0.091**, simple_clothing **0.380**, stimulants **0.656**, intoxicants **0.773**,
+basic_food **0.777**, luxury_items **0.856**, household_items **0.862**, luxury_food **1.320**,
+luxury_drinks **1.443** pp.
 
 Each year is a separate save, separately melted, with its own building flows, its own culture obsessions
 and its own order book. The American figure moves by 0.12 pp across three years — the rule is not tuned to
@@ -207,24 +207,35 @@ Per need, American market: luxury_items **0.22**, basic_food **0.43**, luxury_fo
 simple_clothing **0.65**, crude_items **0.72**, household_items **0.73**, intoxicants **0.91**,
 standard_clothing **1.33**, stimulants 4.64, luxury_drinks 18.30 pp.
 
-⚠ **Britain is worse because MY market aggregation is worse, not because the rule is — but the CAUSE is NOT
-established, and the obvious candidate was tested and FAILED.** What is certain is the symptom: against the
-run's own telemetry at the same instant, my market-0 sums reach only 47 % of Britain's tea and 53 % of its
-tobacco, so both the non-pop total and the prestige share are wrong for exactly the goods in Britain's two
-worst needs. The American market is one country and scores 1.12 pp on the identical rule.
+⚠⚠ **BRITAIN'S ERROR WAS A BUG IN MY OWN SCORER, AND IT COST TWO WRONG DIAGNOSES.** Britain read
+6.6 / 5.9 / 8.4 pp against America's 1.2, and I twice explained it as a market-aggregation problem — once
+naming a cause (subject markets), once withdrawing that and calling the cause unknown. **Both were wrong.**
 
-❌ **The failed hypothesis, recorded because it looked airtight.** A save gives every country its own
-`market` object and no membership list, and Britain's missing 5 801 tea is *exactly* STATE_MADRAS, whose
-owner MHR carries `market=67109134` against Britain's `market=0` — so "subjects' markets must be merged into
-the overlord's" reads as obviously right. Built it from `pacts` (76 subject pacts, `first` = overlord,
-2 `grant_own_market` exceptions) and **it makes the fit worse, not better**: mean |save output ÷ telemetry
-production − 1| over the British market's 47 goods goes **8.3 % → 20.5 %**, with goods that were right
-pushed far above 1 (wood 1.35, hardwood 1.61, engines 1.54, porcelain 3.81). It adds exactly **one** member,
-Canada — which the telemetry's British Market evidently does not contain. So a dominion does *not* simply
-share its overlord's market, and MHR's tea is not in Britain's market either, which means the 5 801
-coincidence was a coincidence. Kept behind `--merge-subjects`, default OFF.
-⚠ It is **not** a missing-buildings bug either — the extractor reaches 886 of 888 states. The aggregation
-error is real, its size is known, and its mechanism is open.
+The real fault: **142 of 675 state regions carry more than one state record** — a split state owned by two
+countries — and my scorer keyed its cells on the region NAME. Rows from the several records merged into one
+cell, so a need's good list was repeated two or three times, its availability total was multiplied, and
+every share in it was divided by the same factor. `STATE_ACEH` has three records; its single-good
+`standard_clothing` therefore predicted 0.47362 where the identical market predicted 1.42085 for a
+state with one record — a factor of exactly 3, which is what finally gave it away. **Two states of one
+market cannot legitimately predict different values for a single-good need**, and that impossibility sat in
+the output for hours before I read it.
+
+Keying on the state **id** fixes it: Britain goes **6.6 / 5.9 / 8.4 → 1.45 / 1.13 / 2.46 pp** and America
+**1.18 / 1.24 / 1.12 → 0.76 / 0.78 / 0.66**. Britain was hit hardest because Britain has the most split
+states — its colonies.
+
+⚠ **The aggregation gap is real but small.** My market sums still reach only 47 % of Britain's tea and 53 %
+of its tobacco against the run's own telemetry, and Britain still scores worse than America. That residual
+is genuine and unexplained; it is simply not what was producing the 8 pp.
+
+❌ **The failed hypothesis, kept because it looked airtight.** A save gives every country its own `market`
+object and no membership list, and Britain's missing 5 801 tea is *exactly* STATE_MADRAS, whose owner MHR
+carries `market=67109134` against Britain's `market=0` — so "subjects' markets must be merged into the
+overlord's" reads as obviously right. Built from `pacts` (76 subject pacts, `first` = overlord, 2
+`grant_own_market` exceptions) it makes the fit **worse**: mean |save output ÷ telemetry production − 1|
+over the British market's 47 goods goes **8.3 % → 20.5 %**. It adds exactly one member, Canada, which the
+telemetry's British Market evidently does not contain. Kept behind `--merge-subjects`, default OFF.
+⚠ It is **not** a missing-buildings bug either — the extractor reaches 886 of 888 states.
 
 ### THE TERMS, EACH IDENTIFIED ON ITS OWN
 

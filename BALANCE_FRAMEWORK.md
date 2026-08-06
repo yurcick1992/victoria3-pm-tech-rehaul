@@ -2447,9 +2447,9 @@ purchase weight = base weight(need,g) × clamp( raw , min_supply_share , max_sup
 units           = need money × (purchase weight / Σ purchase weights) / base price(g)
 ```
 
-A gamestate's own supply and non-pop demand reproduce that same gamestate's stored weights to **1.12 pp
-across 13 943 entries** in the American market with every term on (0.88 pp over the entries no culture
-touches) — 8 of its 10 needs under 1.33 pp, replicated on three consecutive gamestates.
+A gamestate's own supply and non-pop demand reproduce that same gamestate's stored weights to **0.82 pp
+across 16 863 entries** in a VANILLA 1904 gamestate with every term on — replicated on four gamestates
+across two arms and two decades (0.66-0.82 pp American, 1.13-2.46 pp British), every need under 1.45 pp.
 
 ### 10.36.1 What actually changed in `needSplit`, and what did not
 
