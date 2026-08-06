@@ -139,14 +139,30 @@ for (const cell of cells.values()) {
     // --no-culture scores the MECHANISM only: obsession and taboo are per-culture terms our scenario
     // model has no dimension for, and the obsession FLOOR is not fully resolved (see FINDINGS F40).
     if (args.includes('--no-culture') && (cult.obs.includes(r.good) || taboo.includes(r.good))) continue;
+    // ⚠ local-good needs are kept in `worst` (flagged) so --good can still trace them; they are excluded
+    // from the headline, not from the record — telephones lives in a need that contains transportation.
+    worst.push({ ...cell, good: r.good, obs: r.share, pred: s, err, local: isLocal });
     if (isLocal) { totL += err; nL++; }
     else {
       tot += err; n++;
       (perNeed[cell.need] = perNeed[cell.need] || { e: 0, n: 0 }).e += err;
       perNeed[cell.need].n++;
-      worst.push({ ...cell, good: r.good, obs: r.share, pred: s, err });
     }
   }
+}
+// --good/--need: print one entry's observed-vs-predicted instead of the whole market. Looped over a run's
+// quarterly saves this is the DEBUT TRAJECTORY — how far the stored share lags the share the rule computes,
+// which is the rate limiter (MAX_DEMAND_ADJUSTMENT_*) made visible rather than inferred.
+const ONEG = argOf('--good', ''), ONEN = argOf('--need', '');
+if (ONEG) {
+  const rows = worst.filter(w => w.good === ONEG && (!ONEN || w.need === ONEN) && w.region === PROBE);
+  if (!rows.length) console.log(`${DATE}\t${ONEG}\t-\t-\t(not present in ${PROBE})`);
+  for (const r of rows) {
+    const o = OB[r.good];
+    console.log(`${DATE}\t${r.need}\t${r.good}\tobserved ${r.obs.toFixed(5)}\ttarget ${r.pred.toFixed(5)}\t` +
+      `lag ${((r.obs - r.pred) * 100).toFixed(2)} pp\tsell ${o ? o.sell.toFixed(0) : '-'}\tnonpop ${(nonpop.get(MID + '|' + r.good) || 0).toFixed(0)}`);
+  }
+  process.exit(0);
 }
 console.log(`market '${MARKET}' (save market id ${MID}) @ ${DATE}, run ${RUN} · c1 = ${C1}`);
 console.log(`state x culture x need x good entries scored: ${n} non-local, ${nL} containing a local good`);
@@ -156,5 +172,5 @@ for (const [k, v] of Object.entries(perNeed).sort((a, b) => a[1].e / a[1].n - b[
   console.log(`  ${k.padEnd(20)} ${(v.e / v.n * 100).toFixed(3).padStart(8)} pp   over ${v.n} entries`);
 worst.sort((a, b) => b.err - a.err);
 console.log('\nworst 15 entries:');
-for (const w of worst.slice(0, 15))
+for (const w of worst.filter(x => !x.local).slice(0, 15))
   console.log(`  ${w.region.padEnd(24)} ${(CULT[w.key]?.name ?? w.key).padEnd(14)} ${w.need.padEnd(16)} ${w.good.padEnd(14)} observed ${w.obs.toFixed(5)} predicted ${w.pred.toFixed(5)}  ${(w.err * 100).toFixed(2)} pp`);

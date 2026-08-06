@@ -270,12 +270,22 @@ tea/`stimulants` 0.375, liquor/`intoxicants` 0.5625, coffee/`luxury_drinks` 0.56
   against a predicted 0.1875, because its base weight is 0.25 and 0.25 × 2.25 = 0.5625. `leisure`
   small_arms (0.25) and `luxury_food` sugar (0.25) miss too. Eleven combos fit `obsMin × max`, six do not.
   It is a per-culture term our scenario model has no dimension for, so it does not block the mod.
-- **`local` goods are excluded from the headline.** Their substitution supply is not the market's: per
-  `LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR = 0.25` it is the state's own supply plus
+- **`local` goods are excluded from the headline** — but the rule for them is now identified AND checked.
+  Per `LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR = 0.25` their substitution supply is the state's own plus
   `(1 − the state's GDP share) × 0.25 ×` the market's production, "*only for goods substitution supply and
   not for price calculations*". ⭐ **That is the mechanism behind the handover's unexplained
   `transportation ÷ 1.6–2`** — it was never a divisor, it was this augmentation being smaller than full
-  market supply. Implementing it needs the state GDP share, which is not extracted yet.
+  market supply.
+  ⭐ **And it very nearly closes numerically.** Midlands telephones read a stored share of **0.21214** at
+  1925 against **0.09732** predicted from market-wide transportation — a factor of 2.5 apart. Inverting the
+  observed share for the transportation availability it implies gives an effective supply of **10 237
+  units**; the defines' formula, using Midlands' own supply of 1 719 and the market's 32 929, gives
+  **9 951** at a state GDP share of 0 and **9 540** at 5 %. So the augmentation accounts for the gap to
+  within **3–7 %**, where ignoring it is out by 150 %.
+  ⚠ It also says the **deduction is state-level for a local good**: using the market's non-pop demand
+  (18 107) instead of Midlands' own (1 700) would require an effective supply of 18 440, which the formula
+  cannot reach at any GDP share. Implementing it needs a per-state GDP share, which the extractor does not
+  produce yet.
 - **The stored weight is a LAGGED value, not the instantaneous target.**
   `MAX_DEMAND_ADJUSTMENT_BASE_AMOUNT = 0.01`, `MAX_DEMAND_ADJUSTMENT_SCALED_AMOUNT = 0.09`,
   `MAX_DEMAND_ADJUSTMENT_SCALE = 1.0` — "*controls how much a pop can change demand of a substitutable
