@@ -133,7 +133,11 @@ for (const cell of cells.values()) {
     const r = cell.gs[i], e = nd.entries[r.good] || { max: 1, min: 0 };
     let s = Math.min(Math.max(av[i] / S, e.min), e.max);
     s *= 1 + nd.prestige * pshare(r.good);
-    if (cult.obs.includes(r.good)) s = Math.max(s, nd.obsMin * e.max);
+    // the obsession floor is on the PURCHASE WEIGHT (= weight x share), with a squared branch that binds
+    // when the good's own weight x cap is small: pw >= max(obsMin x max x weight, obsMin^2). Divided
+    // through by the weight to stay in share terms. 60 entries sit exactly on it across three gamestates.
+    if (cult.obs.includes(r.good) && (e.w || 0) > 0)
+      s = Math.max(s, Math.max(nd.obsMin * e.max, (nd.obsMin * nd.obsMin) / e.w));
     if (taboo.includes(r.good)) s *= 0.5;
     const err = Math.abs(s - r.share);
     // --no-culture scores the MECHANISM only: obsession and taboo are per-culture terms our scenario

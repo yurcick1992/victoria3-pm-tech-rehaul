@@ -170,14 +170,16 @@ from that market's order book and building flows, with no free parameters:
 
 **Replicated on three consecutive annual gamestates of the same campaign, nothing refitted:**
 
-| market | 1923 | 1924 | 1925 |
+| American market | 1923 | 1924 | 1925 |
 |---|--:|--:|--:|
-| **American** | **2.514 pp** | **2.638 pp** | **2.559 pp** |
-| British | 6.332 pp | 5.938 pp | 8.201 pp |
+| mechanism only (obsessed / tabooed entries excluded) | **2.514 pp** | **2.638 pp** | **2.559 pp** |
+| **every entry, culture terms included** | **2.754 pp** | **2.861 pp** | **2.775 pp** |
+| British market, mechanism only | 6.332 pp | 5.938 pp | 8.201 pp |
 
 Each year is a separate save, separately melted, with its own building flows, its own culture obsessions
 and its own order book. The American figure moves by 0.12 pp across three years — the rule is not tuned to
-an instant.
+an instant. ⭐ **Including the culture terms costs only 0.22 pp**, which is itself the check on them: a
+wrong obsession floor or taboo multiplier would make the number worse, not almost unchanged.
 
 Per need, American market: luxury_items **0.22**, basic_food **0.43**, luxury_food **0.60**,
 simple_clothing **0.65**, crude_items **0.72**, household_items **0.73**, intoxicants **0.91**,
