@@ -93,6 +93,26 @@ hand on a major patch.
    - A good whose icon is missing renders a dashed placeholder box in the scenario panel (its name and
      price still show), so a gap is visible rather than silent.
 
+1b. **The pop-need substitution constants — `common/defines/00_defines.txt`.** The rule the balance model
+   implements (FINDINGS F40, BALANCE_FRAMEWORK §10.36) reads six defines, none of them mirrored in our
+   config, all of them silent if Paradox re-tunes them:
+   - `TABOO_DEMAND_MULT` (0.5) — a religion's taboo halves that good's entry. Measured exact.
+   - `DEFAULT_OBSESSION_DEMAND_MIN` (0.5) / `DEFAULT_OBSESSION_DEMAND_MULT` (1.5) — the obsession floor,
+     overridden per need in `common/pop_needs` (`intoxicants`, `luxury_drinks`, `luxury_items` use 0.75 /
+     1.75; `leisure` 0.5 / 2.0).
+   - `DEFAULT_PRESTIGE_GOODS_DEMAND_INCREASE` (0.5) — likewise overridden per need (0.75 in three, 1.0 in
+     `leisure`). Its scaling input is the prestige share of the good's supply, so **`common/prestige_goods`
+     is a coupling too**: a patch that adds a prestige variant to a good silently changes that good's pop
+     demand. 40 base goods carry one today.
+   - `LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR` (0.25) — the local-goods augmentation we do **not**
+     implement; if this changes, the size of that known gap changes with it.
+   - `MAX_DEMAND_ADJUSTMENT_BASE_AMOUNT` (0.01) / `_SCALED_AMOUNT` (0.09) / `_SCALE` (1.0) — the rate limit
+     that makes a debut good's share ramp rather than jump. We do not model it, but every measurement taken
+     against a savegame's stored weights is a *lagged* value because of it.
+   ⚠ Also version-sensitive: **`common/cultures`** obsession lists are only the 1836 starting set (the game
+   adds and drops them at runtime), and **`common/religions`** taboo lists. The measurement tooling reads
+   both from the *save*, not the files — keep it that way.
+
 2. **UI £/point constant — `ui/builder.html`, `BCM.poundPerPoint = 720`.** Static; used only for the
    UI's muted "model N" build-cost hint. Will go **stale if the construction iron PM recipe changes**.
    The *stored* `building_cost` values shown are always correct (they come from the config), and
@@ -403,6 +423,13 @@ Newest first. Append here as we discover more couplings to vanilla.
   metal/arc PM would be **unmapped** — but none exist at 1836 (those techs post-date the start), so the
   whole shipyard stock converts cleanly to clippers. If a future patch ships a later bookmark with
   metal/arc shipyards, add `vanilla_pm` routing or a `start_exceptions` rule for them.
+- **2026-08-07** — **The pop-need substitution rule was solved against savegame state** (FINDINGS F40).
+  The balance model now reads six `common/defines` constants it never touched before, plus
+  `common/prestige_goods`; see Manual item 1b. `ui/econ.js` changed one line — availability is
+  `(sell − 0.5 × non-pop demand) × BASE price`, a value rather than a unit count — and
+  `econ_selftest.mjs` gained nine regression cases taken from a measured 1925 gamestate, so a patch that
+  moves any of those constants will show up as a failing selftest rather than as silent drift.
+
 - **2026-07-14** — Wages made explicit. Break-even is now **wage-inclusive** (full BE = (I + wage_pct·I)/O,
   default wage_pct 0.33); the ladder was re-based onto the full-BE scale (light 140/115/90/65, tools one
   tier lower, heavy/mil 120/95/65/40, single-PM 65). `ladder_tiers.txt` gained a 4th `wage_pct` column;
