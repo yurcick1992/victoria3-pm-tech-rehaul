@@ -948,9 +948,19 @@ the game.
   (`MAX_DEMAND_ADJUSTMENT_BASE_AMOUNT` 0.01 + `_SCALED_AMOUNT` 0.09 per update), but ❌ **it is NOT what
   makes a debut good ramp** — measured over three saves, the observed share sits on its computed target
   every year (0.11497 vs 0.11195, 0.15474 vs 0.16900, 0.21214 vs 0.21738) with no accumulating lag.
-  ⭐ **The "debut spike" is just supply**: the target rises because the new good's supply rises. That is
-  what F32 and F37 already measured from the order book. **Stop looking for a demand mechanism that
-  favours a newcomer — there isn't one, in either direction.**
+  ⭐ **THE "DEBUT SPIKE" IS ANSWERED, on vanilla, across the ramp.** Automobiles first trade in the
+  American market at 1902.1.1; by 1904 the game gives them **38.4 %** of `free_movement` on 513 units
+  against transportation's 8 550. Two ordinary terms produce all of it: automobiles cost **£100** against
+  transportation's £30 and availability is a *value*, and **transportation is `local`** so a state sees its
+  own supply plus a quarter of the market's. The local-corrected target tracks the whole ramp
+  (0.068/0.049 · 0.402/0.384 · 0.415/0.412) where market-wide transportation is out by ~1.9× throughout,
+  and it **plateaus** rather than climbing. **Stop looking for a demand mechanism that favours a newcomer —
+  there isn't one, in either direction.**
+  ⚠⚠ **BUT THIS IS THE ONE PLACE OUR MODEL DIVERGES MATERIALLY.** Our scenarios are single-state, so
+  `needSplit` gives a local good its full market supply and a debut good only **21.9 %** where the game
+  gives 38.4 %. For any need containing a `local` good — `free_movement`, `communication`, `leisure`,
+  `services`, `heating` — **our model UNDER-states a debut good's share**. One-directional, quantified, and
+  worth remembering when the era ladder reports that a new industry has no customers (§10.32).
   ✅ **The weights are VERIFIED correct against the game files** (2026-08-04): all **52 entries across 15
   needs** match `common/pop_needs/00_pop_needs.txt` exactly — every `weight`, `max_supply_share`,
   `min_supply_share` and `default` — and **29 of the 52 carry a non-default weight**, so this was a real

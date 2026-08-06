@@ -2507,3 +2507,42 @@ game’s own stored weights.
 showed the final-share reading of `max_supply_share` does not, and §10.32’s “consumer arrives an era late”
 problem is therefore still a *supply-and-customer* problem, not a demand-rule one. Do not go looking for a
 demand mechanism again.
+
+### 10.36.4 ⭐⭐ THE DEBUT SPIKE, ANSWERED — and the one place our abstraction bites
+
+Measured on the **vanilla control** campaign, where automobiles first trade in the American market at
+**1902.1.1**. By 1904 the game gives automobiles **38.4 %** of `popneed_free_movement` on **513** units of
+supply, against transportation's **8 550** — a sixteen-fold supply difference producing a three-to-two
+share. That is the "spike", and two ordinary terms produce all of it:
+
+1. **Availability is a value.** Automobiles cost £100 against transportation's £30, so 513 automobiles are
+   worth 51 299 and the share is computed on that.
+2. **Transportation is `local`.** A state sees its own supply plus a quarter of the market's
+   (`LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR`), so New York's effective transportation supply is about
+   **2 650**, not 8 550.
+
+| date | automobiles supplied | target, MARKET transportation | target, LOCAL transportation | observed |
+|---|--:|--:|--:|--:|
+| 1902.4.1 | 83 | 0.02883 | 0.06840 | **0.04906** |
+| 1904.1.1 | 513 | 0.21919 | 0.40166 | **0.38380** |
+| 1906.1.1 | 903 | 0.22105 | 0.41521 | **0.41228** |
+
+⇒ **No anomaly and no special debut mechanism.** A newly invented good punches above its supply because it
+is expensive and its competitor is local — and it **plateaus** rather than climbing.
+
+### 10.36.5 ⚠⚠ THE KNOWN, ONE-DIRECTIONAL BIAS THIS LEAVES IN OUR SCENARIOS
+
+§10.36.2 says the local-goods rule needs no implementation because our one state *is* the market. That is
+right for the *market's* arithmetic and **wrong for a debut good's share**: the game's pops live in states,
+and a state sees far less of a local good than the market holds. Our model therefore gives a local good its
+full market supply and a debut good **21.9 %** where the game gives **38.4 %**.
+
+**Affected needs are exactly those containing a `local` good**: `free_movement` (transportation),
+`communication` (transportation), `leisure` (services), `services`, `heating` (electricity).
+
+⇒ **Our scenarios UNDER-state a new good's pop demand in those needs, by roughly the factor the local rule
+removes (~1.9× in the case measured).** This is worth holding against §10.32's "consumer arrives an era
+late" conclusion: part of what looks like a missing customer for `automobiles`, `telephones` and
+`electricity` is our own abstraction understating the pop side. It does **not** rescue the era-1 steel case
+(steel is in no pop need at all), but it does mean the automotive and telephone shortfalls are smaller in
+the game than in our model.
