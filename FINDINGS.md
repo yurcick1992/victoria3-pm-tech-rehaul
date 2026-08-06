@@ -263,8 +263,13 @@ wine 0.035867 → **0.017933**, Hindu meat 0.09541 → **0.04762**. Culture **ob
 see the box below, where it is scored over every obsessed entry of three gamestates: 60 sit exactly on it,
 884 above it, 3 below.
 
-### ⚠ TWO THINGS THAT ARE NOT SETTLED
+### THE REMAINING TERMS — two solved after the headline was written, one corrected, one still open
 
+The headline above is the mechanism. These are the terms around it. ⚠ **Only the first of the four is a
+real open question**; the rest are settled, and the fourth is settled *against* something I had claimed.
+
+- ⚠ **STILL OPEN: why the British market aggregates short.** See the box above — the symptom is measured,
+  the obvious cause was tested and failed, and America's clean 2.5 pp means it is not systematic.
 - ✅ **The obsession floor is SOLVED** (it was the last loose sub-term). It is a floor on the **purchase
   weight**, not on the share, and it has two branches:
   ```
@@ -285,16 +290,16 @@ see the box below, where it is scored over every obsessed entry of three gamesta
   not for price calculations*". ⭐ **That is the mechanism behind the handover's unexplained
   `transportation ÷ 1.6–2`** — it was never a divisor, it was this augmentation being smaller than full
   market supply.
-  ⭐ **And it very nearly closes numerically.** Midlands telephones read a stored share of **0.21214** at
-  1925 against **0.09732** predicted from market-wide transportation — a factor of 2.5 apart. Inverting the
-  observed share for the transportation availability it implies gives an effective supply of **10 237
-  units**; the defines' formula, using Midlands' own supply of 1 719 and the market's 32 929, gives
-  **9 951** at a state GDP share of 0 and **9 540** at 5 %. So the augmentation accounts for the gap to
-  within **3–7 %**, where ignoring it is out by 150 %.
-  ⚠ It also says the **deduction is state-level for a local good**: using the market's non-pop demand
-  (18 107) instead of Midlands' own (1 700) would require an effective supply of 18 440, which the formula
-  cannot reach at any GDP share. Implementing it needs a per-state GDP share, which the extractor does not
-  produce yet.
+  ⭐ **And it closes numerically on three dates** — the table in the next item. Applied to Midlands
+  `communication`, the target goes from 0.0495 / 0.0709 / 0.0973 (market-wide transportation, out by 2.2×
+  every year) to 0.11195 / 0.16900 / 0.21738 against observations of 0.11497 / 0.15474 / 0.21214.
+  ⚠ It also fixes the deduction's **scope**: for a local good the non-pop demand is the STATE's. Using the
+  market's 18 107 instead of Midlands' own 1 700 would require an effective supply of 18 440, which the
+  formula cannot reach at any GDP share.
+  ✅ **And our model needs no change for it.** A model whose one state *is* the whole market has a GDP share
+  of 1, the augmentation term goes to zero, and the effective supply is the market's — which is what
+  `needSplit` already uses. The 2.2× gap is a property of comparing our single-state abstraction against one
+  state of a real multi-state game, not an error in the rule we ship (BALANCE_FRAMEWORK §10.36.2).
 - **A rate limiter exists, but it is NOT what makes a debut good ramp.**
   `MAX_DEMAND_ADJUSTMENT_BASE_AMOUNT = 0.01`, `MAX_DEMAND_ADJUSTMENT_SCALED_AMOUNT = 0.09`,
   `MAX_DEMAND_ADJUSTMENT_SCALE = 1.0` — "*controls how much a pop can change demand of a substitutable
@@ -325,12 +330,18 @@ see the box below, where it is scored over every obsessed entry of three gamesta
   global fit for availability silently invents the scale between them — which is exactly the 1.8× offset
   that made an early regression look like a per-need effect. Every test here is therefore *within* a need.
 
-**What it does NOT say.** (1) It says nothing about the between-need budget — how a pop's money is divided
-across the 15 needs is the buy-package/wealth model and is untouched here. (2) The `local` goods rule is
-identified from the defines but not measured. (3) The obsession floor is measured, not solved. (4) It is one
-instant of one campaign in two markets; the 1923 and 1924 saves on disk are an unused replication.
-(5) The prestige share is measured from domestic production only, so an imported prestige good is missed —
-the likely cause of American `luxury_drinks` at 18.3 pp.
+**What it does NOT say.**
+1. **Nothing about the between-need budget.** How a pop's money is divided across the 15 needs is the
+   buy-package / wealth model, and it is untouched here. This finding is entirely *within* a need.
+2. **It is one campaign.** Three consecutive gamestates of it, in two markets — but one campaign, of the
+   **overlay** arm. A vanilla replication is collected but not yet scored.
+3. **The prestige share is measured from DOMESTIC production only**, so an imported prestige good is
+   invisible to it. That is the leading suspect for American `luxury_drinks` at 18.3 pp — wine, tea and
+   coffee are exactly the goods the USA imports.
+4. **The British aggregation gap is unexplained**, and one plausible explanation was tested and failed.
+5. **`leisure`/`fine_art` violates the obsession floor** in all three gamestates and is not accounted for.
+6. It says nothing about how a pop's demand responds *over time* to a shock, only that at annual sampling
+   the stored weight sits on its computed target.
 
 Reproduce: `melted_pop_need_weights.mjs` → `melted_building_goods.mjs` → `melted_cultures.mjs`, then
 `predict_pop_split.mjs <needs> <bgoods> <markets_all> --obsessions <cultures> --market "American Market"
