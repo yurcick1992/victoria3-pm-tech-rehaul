@@ -32,6 +32,20 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 > Under the old code these two crashes would have been sampled during the ~100 s window where the tail
 > still serves the previous session's content, and abandoned.
 >
+> ### ⚠ AND THE FIX MOVED THE BOTTLENECK: the resume BUDGET is now what ends a campaign
+>
+> Same night, run 2 of the same batch: crashed at 1875, 1901, 1927, 1929 and 1932, **recovered from
+> every one**, and was then stopped by `-MaxResumes` at **1933.3.1** — three in-game years short of
+> 1936, after 2 h 21 m. , .
+>
+> That is a different failure from the one this entry was written about: nothing was mis-judged and
+> nothing was thrown away, the counter simply ran out. **Raised 5 → 12.** Safe to raise because two
+> separate guards already bound the pathological cases — 3 crashes from the *same* autosave is a
+> permanent failure, and 3 before any autosave exists aborts the whole schedule — so this counter only
+> limits how many *distinct* points a run may recover from. ⚠ Not free: each resume replays up to one
+> autosave interval, so a run approaching the new cap is reporting a stability problem, not a budget
+> one. Watch  in .
+>
 > ⚠ **This does not prove the four earlier campaigns were each wrongly abandoned** — different crashes,
 > different saves, and their evidence was never recorded. What it does establish is that the
 > configuration the old entry called untested — *a real CTD, late in a long campaign* — resumes fine.

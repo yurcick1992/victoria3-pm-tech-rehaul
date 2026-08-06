@@ -91,7 +91,20 @@ param(
     [string]   $AutosaveInterval = "five_year",
     # How many times a single run may be resumed from its last autosave after an abnormal exit.
     # 0 disables resuming (an abnormal exit then just ends the run).
-    [int]      $MaxResumes = 5,
+    #
+    # ⚠ RAISED 5 -> 12 ON MEASURED CRASH RATES (2026-08-06). Once the resume verdict stopped reading a
+    # stale clock, resumes began SUCCEEDING - and the cap immediately became the binding constraint
+    # instead. Measured over one night of century-long control runs: run 1 crashed 4 times and finished
+    # 1936; run 2 crashed 6 times (1875, 1901, 1927, 1929, 1932 …), recovered from every one, and was
+    # then cut off by this budget at **1933.3.1**, three in-game years short of its target. Losing 97 %
+    # of a 2½-hour campaign to a counter is the wrong trade.
+    # ⚠ A HIGH BUDGET CANNOT LOOP FOREVER, which is what makes raising it safe: 3 crashes from the SAME
+    # autosave is a separate permanent-failure guard, and 3 before any autosave exists aborts the whole
+    # schedule. This counter only limits how many DISTINCT points a run may recover from.
+    # ⚠ It is not free either - each resume replays up to one autosave interval, so a run needing many
+    # of them is telling you something about stability. Watch `resumes` in meta.json; if it approaches
+    # this number again, the crash rate is the problem, not the cap.
+    [int]      $MaxResumes = 12,
     # On an abnormal exit with NO crash artifact, wait this long for a keypress before deciding
     # it was a crash rather than you. Any key = you did it = stop the batch.
     [int]      $StopGraceSeconds = 60,
