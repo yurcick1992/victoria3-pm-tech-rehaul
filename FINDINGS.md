@@ -169,15 +169,15 @@ demonstrably on the **budget** side rather than the split.
 
 ### THE HEADLINE
 
-Predicting the stored purchase weight for **every** (state × culture × need × good) entry in a market,
-from that market's order book and building flows, with no free parameters:
-
 Mean absolute error of the predicted share, **every term switched on**, over every
-(state × culture × need × good) entry the market contains:
+(state × culture × need × good) entry the market contains — predicted from that market's order book and
+its buildings' flows, with no free parameters:
 
 | gamestate | arm | market | entries | error |
 |---|---|---|--:|--:|
+| **1902.4.1** | **control (vanilla)** | American | 16 302 | **0.581 pp** |
 | **1904.1.1** | **control (vanilla)** | American | 16 863 | **0.819 pp** |
+| **1906.1.1** | **control (vanilla)** | American | 17 193 | **0.788 pp** |
 | 1923.1.1 | overlay (×10) | American | — | **0.764 pp** |
 | 1924.1.1 | overlay (×10) | American | — | **0.778 pp** |
 | 1925.1.1 | overlay (×10) | American | 13 943 | **0.658 pp** |
@@ -185,16 +185,17 @@ Mean absolute error of the predicted share, **every term switched on**, over eve
 | 1924.1.1 | overlay (×10) | British | — | 1.131 pp |
 | 1925.1.1 | overlay (×10) | British | 18 226 | 2.464 pp |
 
-⭐ **Four gamestates, two arms, two markets, two decades apart, nothing refitted between them.** The
-vanilla 1904 reading is the independent one: a different campaign, unmodified pop-need weights, and a save
-whose date coincides exactly with a telemetry dump. Per need there: crude_items **0.056**,
+⭐ **Six gamestates, two arms, two markets, two decades apart, nothing refitted between them.** The three
+vanilla readings are the independent ones: a different campaign, unmodified pop-need weights, and save
+dates that coincide exactly with telemetry dumps — and 1902.4.1 sits three months after automobiles first
+traded, i.e. inside the debut window the whole question was about. Per need there: crude_items **0.056**,
 standard_clothing **0.091**, simple_clothing **0.380**, stimulants **0.656**, intoxicants **0.773**,
 basic_food **0.777**, luxury_items **0.856**, household_items **0.862**, luxury_food **1.320**,
 luxury_drinks **1.443** pp.
 
-Each year is a separate save, separately melted, with its own building flows, its own culture obsessions
-and its own order book. The American figure moves by 0.12 pp across three years — the rule is not tuned to
-an instant. ⭐ **Including the culture terms costs only 0.25 pp**, which is itself the check on them: a
+Each row is a separate save, separately melted, with its own building flows, its own culture obsessions
+and its own order book. Across six of them the figure never leaves 0.58–0.82 pp on the clean market — the
+rule is not tuned to an instant, an arm, or a decade. ⭐ **Including the culture terms costs only 0.25 pp**, which is itself the check on them: a
 wrong obsession floor or taboo multiplier would make the number worse, not almost unchanged.
 
 ⭐ **The last big step was fixing an INPUT, not the rule.** Valuing a market's imported supply at the
@@ -236,6 +237,50 @@ overlord's" reads as obviously right. Built from `pacts` (76 subject pacts, `fir
 over the British market's 47 goods goes **8.3 % → 20.5 %**. It adds exactly one member, Canada, which the
 telemetry's British Market evidently does not contain. Kept behind `--merge-subjects`, default OFF.
 ⚠ It is **not** a missing-buildings bug either — the extractor reaches 886 of 888 states.
+
+### ⭐⭐ THE AUTOMOBILE "SPIKE", ANSWERED
+
+The question this session started from: when automobiles appear, pop demand for them jumps to a level that
+looks too large for any supply-share rule. Measured on the **vanilla** campaign, where automobiles first
+trade in the American market at **1902.1.1** (sell 0.3 against 44 units of buy orders):
+
+At **1904.1.1**, with only **513** units of automobiles supplied, the game gives automobiles **38.4 %** of
+`popneed_free_movement` — against 61.6 % for transportation, a good supplied at **8 550**. A sixteen-fold
+supply difference produces a three-to-two share. That is the spike, and **two ordinary terms produce all of
+it**:
+
+1. **Base price.** Automobiles cost £100 against transportation's £30, and availability is a *value*. 513
+   automobiles are worth 51 299; the share is computed on that, not on 513.
+2. **Transportation is a `local` good.** A state does not see the market's 8 550 — it sees its own supply
+   plus a quarter of the market's. New York's own is 513, so its effective transportation supply is about
+   **2 650**, not 8 550.
+
+Inverting the observed 0.38380 for the transportation availability it implies gives an effective supply of
+**2 849 units**; the defines' formula gives **2 650** at a state GDP share of 0. **Within 7.5 %** — and this
+is a *second* confirmation of that rule, on a different market, arm, decade, need and good from the
+telephone case.
+
+**Across the whole ramp** (New York, `free_movement`, automobiles' share):
+
+| date | automobiles supplied | target using MARKET transportation | target using LOCAL transportation | observed |
+|---|--:|--:|--:|--:|
+| 1902.4.1 | 83 | 0.02883 | 0.06840 | **0.04906** |
+| 1904.1.1 | 513 | 0.21919 | 0.40166 | **0.38380** |
+| 1906.1.1 | 903 | 0.22105 | 0.41521 | **0.41228** |
+
+⇒ **There is no anomaly and no special debut mechanism.** A newly invented good looks like it punches above
+its supply because it is **expensive** and because its competitor is **local**. And it does not keep
+climbing: 0.049 → 0.384 → 0.412 is a fast rise to a **plateau**, set by the availability ratio once the
+local competitor's effective supply stops being the binding term. ⚠ The 1902 row overshoots (0.068 against
+0.049) — the one place a lag at the very moment of debut would show, and the only hint of one anywhere in
+this finding.
+
+⚠⚠ **AND THIS IS THE ONE PLACE OUR MODEL WILL DIVERGE MATERIALLY.** Our scenarios are single-state, so
+`needSplit` gives transportation its full market supply and automobiles only **21.9 %** where the game gives
+38.4 %. For any need containing a `local` good — `free_movement`, `communication`, `leisure`, `services`,
+`heating` — **our model UNDER-states a debut good's share, by roughly the factor the local rule removes**.
+That is a known, quantified, one-directional bias, and it is worth remembering when the era ladder says a
+new industry has no customers.
 
 ### THE TERMS, EACH IDENTIFIED ON ITS OWN
 
