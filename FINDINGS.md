@@ -243,9 +243,11 @@ above 0.75 throughout (0.9999 at 1907.3, 0.9573 at 1912, 0.8673 at 1935), so the
 > | 1 | 1912.3 | 60 | 4.27 % | **24.7 %** | 6.6 % | 25 % |
 > | 2 | 1915.3 | 75 | 8.36 % | **≥ 31.6 %** | 12.2 % | 25 % |
 >
-> **The floor is refuted at 1909.** Three months after automobiles first sold in Britain there is real
-> supply (79.1 units) and real buying (176.6) — and pop demand is **0.4 units, £36**, against £432 000
-> of transportation. A floor would have to place ~£108 000 there. It places 0.008 % of the need.
+> ⚠ **1909 does NOT refute the floor** (user, 2026-08-06 — correcting an over-read in the first draft of
+> this box). Automobiles debuted in run 2 at **1908.12**, so 1909.3 is **three months in**, which is
+> exactly the "still climbing toward the floor" case the hypothesis allows. What it refutes is an
+> *instantaneous* clamp, which run 1's `pop 0` at the debut month had already settled. The refutation
+> below is the **shape**, not any single read.
 >
 > **25 % is not a plateau either.** At 1915 the transportation : automobiles money ratio is **2.16**,
 > *below* 3 — which makes a binding cap **arithmetically impossible**, since transportation's
@@ -262,9 +264,42 @@ above 0.75 throughout (0.9999 at 1907.3, 0.9573 at 1912, 0.8673 at 1935), so the
 > transportation's pop money is entirely `free_movement`, so the true shares — and the late overshoot —
 > are larger.)
 >
-> ⚠ Still only **three** dates, from two seeds, all British Market. The truncation is structural:
-> `transportation` survives in early dumps and `automobiles` in late ones, so overlaps are rare by
-> construction, not by luck.
+> ### ⭐ THE MONTHLY TRAJECTORY — a necessary condition testable from the ORDER BOOK alone
+>
+> Three scattered dates cannot show a shape, and the channel split cannot supply more (it truncates
+> ~40 % of goods per dump and keeps `transportation` early, `automobiles` late). So the floor is tested
+> instead through a condition needing only the order book, which is **monthly and never truncates**:
+>
+> ```
+> cap binds  ⇒  transportation_pop_money(free_movement) = 3 × automobiles_pop_money
+>            ⇒  transportation_BUY / automobiles_BUY  ≥  (100/30) × 3 × POPMIN  =  5.70
+> ```
+> with `POPMIN = 0.57`, the **measured low end** of pops' share of automobile buy orders (89–99 % in
+> early years), so the test is conservative — it can under-report violations, never invent one.
+>
+> | run | trajectory of `transportation_BUY / automobiles_BUY`, first month of each year |
+> |---|---|
+> | 1 | 1907:**2033** 1908:156 1909:42 1910:28 1911:22 1912:14.5 1913:10.3 1914:5.8 · 1915:5.5\* 1920:5.4\* 1925:4.5\* 1930:4.7\* 1936:**4.1\*** |
+> | 2 | 1908:**145** 1909:141 1910:19 1911:11 1912:9.5 1913:8.3 1914:6.9 1915:6.4 1916:5.7 · 1917:4.8\* 1920:3.4\* 1925:3.4\* 1933:**3.5\*** |
+>
+> `*` = below 5.70. **259 violating months in run 1, 201 in run 2.**
+>
+> ⭐ **THE DECISIVE FEATURE IS THAT THE RATIO DOES NOT STOP AT THE THRESHOLD.** A binding cap holds
+> automobiles at 25 %, which pins this ratio at 5.70; it would flatten there. Instead it passes straight
+> through — 1914 → 1915 in run 1, 1916 → 1917 in run 2 — and keeps falling to ~4.1 and ~3.5. Both seeds,
+> same shape.
+>
+> ⭐ **AND THE SHAPE ITSELF IS THE ANSWER TO "HOW SOON":** a smooth, monotonic climb over roughly seven
+> years — from ~2000:1 at the debut to the 25 % level around **1914–1916** — with no step, no plateau,
+> and no sign of a level being held. Tool: `tools/testbed/floor_necessary_condition.mjs`.
+>
+> ⚠ **Necessary, not sufficient.** Satisfaction in the early years does not show the cap *was* binding
+> then — only that it cannot have been binding later. What rules out the early floor is the measured
+> share itself: 0.008 % at three months, 24.7 % at five years.
+>
+> ⚠ The three breakdown dates remain only **three**, from two seeds, all British Market. The truncation
+> is structural: `transportation` survives in early dumps and `automobiles` in late ones, so overlaps
+> are rare by construction, not by luck.
 
 **Confidence: high throughout, after run 2.** The refutations rest on directly measured zeros — a
 verified `pop 0` block at the debut and 57 months of zero American telephone demand — which no modelling
