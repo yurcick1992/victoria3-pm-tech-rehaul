@@ -160,7 +160,7 @@ real observed pop demand.*
 
 ⚠ **THE CRITERION HAS TWO LEVELS AND THIS FINDING MOVES ONE OF THEM.** Pop demand in units is
 `need budget × within-need split ÷ base price`. This finding is the **split**, and the split is now
-reproduced from a gamestate's own supply and non-pop demand to **2.8 pp**, against nothing but the game's
+reproduced from a gamestate's own supply and non-pop demand to **1.1 pp**, against nothing but the game's
 own stored answer. The **budget** — how much money each of the 15 needs gets, from wealth levels and buy
 packages — is the other half, is untouched here, and end-to-end still carries most of the remaining error:
 scored against measured consumption in 1836 the total is **18.3 %** (down from 20.0 %). So the substitution
@@ -174,8 +174,8 @@ from that market's order book and building flows, with no free parameters:
 
 | market, 1925 | entries scored | every term on | mechanism only |
 |---|--:|--:|--:|
-| **American** | 13 943 | **2.775 pp** | **2.559 pp** |
-| British | 18 226 | — | 8.201 pp |
+| **American** | 13 943 | **1.117 pp** | **0.880 pp** |
+| British | 18 226 | — | 8.390 pp |
 
 "Every term on" applies the prestige multiplier, the obsession floor and the taboo halving as well;
 "mechanism only" drops the entries a culture touches, which is the part our scenario model can represent.
@@ -184,14 +184,24 @@ from that market's order book and building flows, with no free parameters:
 
 | American market | 1923 | 1924 | 1925 |
 |---|--:|--:|--:|
-| mechanism only (obsessed / tabooed entries excluded) | **2.514 pp** | **2.638 pp** | **2.559 pp** |
-| **every entry, culture terms included** | **2.754 pp** | **2.861 pp** | **2.775 pp** |
-| British market, mechanism only | 6.332 pp | 5.938 pp | 8.201 pp |
+| mechanism only (obsessed / tabooed entries excluded) | **0.924 pp** | **1.002 pp** | **0.880 pp** |
+| **every entry, culture terms included** | **1.176 pp** | **1.241 pp** | **1.117 pp** |
+| British market, mechanism only | 6.627 pp | 5.937 pp | 8.390 pp |
+
+Per need at 1925, every term on: luxury_items **0.22**, basic_food **0.44**, luxury_food **0.61**,
+simple_clothing **0.65**, crude_items **0.72**, household_items **0.73**, intoxicants **1.17**,
+standard_clothing **1.33**, stimulants 1.93, luxury_drinks 4.17 pp.
 
 Each year is a separate save, separately melted, with its own building flows, its own culture obsessions
 and its own order book. The American figure moves by 0.12 pp across three years — the rule is not tuned to
-an instant. ⭐ **Including the culture terms costs only 0.22 pp**, which is itself the check on them: a
+an instant. ⭐ **Including the culture terms costs only 0.25 pp**, which is itself the check on them: a
 wrong obsession floor or taboo multiplier would make the number worse, not almost unchanged.
+
+⭐ **The last big step was fixing an INPUT, not the rule.** Valuing a market's imported supply at the
+world's prestige rate for that good — rather than crediting only its own production, which reads zero
+prestige for anything it imports — took the American market from 2.51 / 2.64 / 2.56 pp to
+**0.92 / 1.00 / 0.88**, and its worst need from 18.3 pp to 4.2. Britain, which exports rather than imports,
+is unchanged by it. `--domestic-prestige` restores the blind reading.
 
 Per need, American market: luxury_items **0.22**, basic_food **0.43**, luxury_food **0.60**,
 simple_clothing **0.65**, crude_items **0.72**, household_items **0.73**, intoxicants **0.91**,
@@ -351,18 +361,12 @@ real open question**; the rest are settled, and the fourth is settled *against* 
    buy-package / wealth model, and it is untouched here. This finding is entirely *within* a need.
 2. **It is one campaign.** Three consecutive gamestates of it, in two markets — but one campaign, of the
    **overlay** arm. A vanilla replication is collected but not yet scored.
-3. **The prestige share is measured from DOMESTIC production only**, so an imported prestige good is
-   invisible to it. ✅ **Checked, and it accounts for the single worst need in the clean market.** American
-   `luxury_drinks` scores 18.3 pp, and its three goods split exactly along that line: **wine** is domestic
-   (production 28, imports 0) and lands at 0.00489 observed against 0.00503 predicted — essentially exact;
-   **tea** is 100 % imported (production **0**, imports 3 310) and reads 0.95823 against 0.59849; **coffee**
-   is 88 % imported and reads 0.56414 against 0.39649. Those two ratios imply prestige fractions of 80 %
-   and 56 %, which is the right order for tea and coffee bought from markets we independently measured as
-   heavily prestige. So the residual is a **known blind spot in my measurement of one input**, not a gap in
-   the rule — and the American figure would improve if imported prestige were counted.
+3. **Imported prestige is approximated, not resolved.** A market that imports a good now credits that part
+   at the WORLD average prestige rate rather than at the actual exporter’s, because the save does not say
+   where a given import came from. It is the right direction and it is worth 1.7 pp — but it is an
+   approximation, and `luxury_drinks` at 4.2 pp is where it still shows.
 4. **The British aggregation gap is unexplained**, and one plausible explanation was tested and failed.
-5. **`leisure`/`fine_art` violates the obsession floor** in all three gamestates and is not accounted for.
-6. It says nothing about how a pop's demand responds *over time* to a shock, only that at annual sampling
+5. It says nothing about how a pop's demand responds *over time* to a shock, only that at annual sampling
    the stored weight sits on its computed target.
 
 Reproduce: `melted_pop_need_weights.mjs` → `melted_building_goods.mjs` → `melted_cultures.mjs`, then

@@ -95,6 +95,19 @@ for (let i = 1; i < BG.length; i++) {
   prodM.set(k, (prodM.get(k) || 0) + +c[bi.output]);
   prestM.set(k, (prestM.get(k) || 0) + +(c[bi.prestige_out] || 0));
 }
+// ⭐ IMPORTED PRESTIGE. The prestige share is measured from a market's own production, so a good it
+// IMPORTS reads 0 prestige however prestigious it is abroad — which is exactly the American luxury_drinks
+// residual (tea: production 0, imports 3 310). --world-prestige values the imported part at the WORLD's
+// prestige rate for that good. Off by default: it is a correction to an INPUT, so it must be measured
+// before it is believed.
+const WORLDP = !args.includes('--domestic-prestige');
+const wProd = new Map(), wPrest = new Map();
+for (let i = 1; i < BG.length; i++) {
+  const c = BG[i].split('	');
+  wProd.set(c[bi.good], (wProd.get(c[bi.good]) || 0) + +c[bi.output]);
+  wPrest.set(c[bi.good], (wPrest.get(c[bi.good]) || 0) + +(c[bi.prestige_out] || 0));
+}
+const worldRate = g => { const o = wProd.get(g) || 0; return o > 0 ? Math.min(1, (wPrest.get(g) || 0) / o) : 0; };
 const MID = stateMarket.get(PROBE);
 const M = readFileSync(MKT_TSV, 'utf8').split('\n').filter(Boolean);
 const mh = M[0].split('\t'), mi = Object.fromEntries(mh.map((x, i) => [x, i]));
@@ -106,7 +119,14 @@ for (let i = 1; i < M.length; i++) {
 }
 const avail = g => OB[g] ? Math.max(0, OB[g].sell - C1 * (nonpop.get(MID + '|' + g) || 0)) * (BASEP[g] ?? 0) : 0;
 // prestige share of the market's supply for this good
-const pshare = g => { const p = prestM.get(MID + '|' + g) || 0, o = prodM.get(MID + '|' + g) || 0; return o > 0 ? Math.min(1, p / o) : 0; };
+const pshare = g => {
+  const p = prestM.get(MID + '|' + g) || 0, o = prodM.get(MID + '|' + g) || 0;
+  if (!WORLDP) return o > 0 ? Math.min(1, p / o) : 0;
+  const sell = OB[g] ? OB[g].sell : 0;
+  const imported = Math.max(0, sell - o);
+  const tot = o + imported;
+  return tot > 0 ? Math.min(1, (p + imported * worldRate(g)) / tot) : 0;
+};
 
 const L = readFileSync(NEEDS_TSV, 'utf8').split('\n').filter(Boolean);
 const h = L[0].split('\t'), ix = Object.fromEntries(h.map((x, i) => [x, i]));
