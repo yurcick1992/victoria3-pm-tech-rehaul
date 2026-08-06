@@ -256,20 +256,27 @@ gaps are the British aggregation problem above, in the direction it predicts.
 
 **6. Culture and religion, isolated by comparing two cultures of ONE state** — same market, same instant, so
 availability cannot differ. Religion **taboo** halves the entry exactly (`TABOO_DEMAND_MULT = 0.5`): Shiite
-wine 0.035867 → **0.017933**, Hindu meat 0.09541 → **0.04762**. Culture **obsession** imposes a floor equal
-to `obsession_demand_min × max_supply_share`, exact in eleven distinct (need, good) combinations —
-meat/`basic_food` 0.45, meat/`luxury_food` 0.375, tobacco/`stimulants` 0.375, tea/`luxury_drinks` 0.5625,
-tea/`stimulants` 0.375, liquor/`intoxicants` 0.5625, coffee/`luxury_drinks` 0.5625, coffee/`stimulants`
-0.375, sugar/`stimulants` 0.375, fruit/`basic_food` 0.45, fruit/`luxury_food` 0.375.
+wine 0.035867 → **0.017933**, Hindu meat 0.09541 → **0.04762**. Culture **obsession** imposes a floor on the
+**purchase weight** of `max( obsession_demand_min × max_supply_share × weight , obsession_demand_min² )` —
+see the box below, where it is scored over every obsessed entry of three gamestates: 60 sit exactly on it,
+884 above it, 3 below.
 
-### ⚠ THREE THINGS THAT ARE NOT SETTLED
+### ⚠ TWO THINGS THAT ARE NOT SETTLED
 
-- **The obsession floor has an exception class.** In the three needs with `obsession_demand_min = 0.75`
-  (`intoxicants`, `luxury_drinks`, `luxury_items`) the floor lands on a constant **purchase weight of
-  0.5625** for every good regardless of its own weight and cap — wine in `intoxicants` reads share **2.25**
-  against a predicted 0.1875, because its base weight is 0.25 and 0.25 × 2.25 = 0.5625. `leisure`
-  small_arms (0.25) and `luxury_food` sugar (0.25) miss too. Eleven combos fit `obsMin × max`, six do not.
-  It is a per-culture term our scenario model has no dimension for, so it does not block the mod.
+- ✅ **The obsession floor is SOLVED** (it was the last loose sub-term). It is a floor on the **purchase
+  weight**, not on the share, and it has two branches:
+  ```
+  purchase weight  ≥  max( obsession_demand_min × max_supply_share × weight ,  obsession_demand_min² )
+  ```
+  Scored over three gamestates and every obsessed entry: **60 sit exactly on it, 884 sit above it** (their
+  computed share won, so the floor is slack) and **3 below** — all three the same case, `leisure`/`fine_art`,
+  which reads 0.5 against a floor of 2.0 and does not move across the three years. 30 more entries are zero
+  because the good has no supply at all: **an obsession cannot invent supply.**
+  The squared branch is what produces the values that looked anomalous: wine in `intoxicants` has weight
+  0.25 and a 0.25 cap, so its first branch is 0.047 and the floor is 0.75² = **0.5625** — which divided by
+  its 0.25 weight is the share **2.25** that read as impossible. Same for `luxury_food`/sugar and
+  `leisure`/small_arms at 0.5² = 0.25.
+  ⚠ Still a per-culture term our scenario model has no dimension for, so it does not block the mod.
 - **`local` goods are excluded from the headline** — but the rule for them is now identified AND checked.
   Per `LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR = 0.25` their substitution supply is the state's own plus
   `(1 − the state's GDP share) × 0.25 ×` the market's production, "*only for goods substitution supply and

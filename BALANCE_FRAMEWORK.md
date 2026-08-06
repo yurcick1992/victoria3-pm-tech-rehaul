@@ -2476,7 +2476,7 @@ Each is measured in F40, so the omission is a decision with a known size, not a 
   the increase being 0.5 by default and 0.75 / 1.0 in four needs. Measured against the save's own prestige
   output to within 0.6 pp on fish, coffee, opium and grain. Our scenarios contain no prestige goods, so the
   factor is 1 — but it is why a British `standard_clothing` entry reads 1.4065 where the rule alone gives 1.
-- **Culture obsession** (a floor of `obsession_demand_min × max_supply_share`) and **religion taboo**
+- **Culture obsession** (a floor on the purchase weight of `max(obsMin × max_supply_share × weight, obsMin²)`) and **religion taboo**
   (`× 0.5`, exact). We have no culture dimension and will not add one.
 - **`local` goods.** Their substitution supply is the state's own plus
   `(1 − the state's GDP share) × 0.25 ×` the market's production
