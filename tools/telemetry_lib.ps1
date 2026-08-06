@@ -373,6 +373,44 @@ v3tb_sol_wsum_probe = { value = 0
     return $sv
 }
 
+function Get-GuardedOwnerLimit {
+    <#
+      THE one way to build an `owner = c:TAG` filter. Landmine L1 (TESTBED_LANDMINES.md).
+
+      `c:TAG` on a country that no longer exists does NOT evaluate to false in Jomini - it raises
+      `Invalid right side during comparison 'c'`. About twenty of the tags a metric list names are
+      annexed or superseded during a normal campaign, and because these filters sit inside
+      `every_market` the whole OR is re-evaluated once per market, so the cost is dead tags x
+      markets x dump dates: 48 659 error lines from our own telemetry in one campaign, measured
+      2026-08-06.
+
+      So every named tag carries its own existence test. `AND = { exists = c:X owner = c:X }` is
+      true in exactly the cases `owner = c:X` was true before, and quiet in the cases that used to
+      error - the emitted DATA is unchanged, only the noise is gone.
+
+      Deliberately a function rather than the idiom written out at each site: this was reintroduced
+      at NINETEEN sites because each one built its own filter string.
+
+      $Compare is the trigger the tag is fed to - `owner` in a market scope, `this` in a country
+      scope. The landmine is the resolution of `c:TAG`, not the comparison it feeds, so both need
+      the same guard. (`owner` is measured; `this` is guarded on the same reasoning rather than on
+      its own measurement - the cost of guarding is nil and the mechanism is identical.)
+    #>
+    param($Tags, [string]$Compare = 'owner')
+    $terms = @($Tags) | ForEach-Object { "AND = { exists = c:$_ $Compare = c:$_ }" }
+    return "OR = { " + ($terms -join ' ') + " }"
+}
+
+function Get-GuardedCountryBlock {
+    <#
+      Entering a named country's scope - `c:GBR = { ... }` - with its existence test. Same landmine
+      L1, different shape: this one is not a filter but a scope switch, and on a dead tag it errors
+      once per evaluation just the same.
+    #>
+    param([string]$Tag, [string]$Body, [string]$Indent = "`t`t`t")
+    return "$Indent" + "if = {`r`n$Indent`tlimit = { exists = c:$Tag }`r`n$Indent`tc:$Tag = {$Body`r`n$Indent`t}`r`n$Indent}"
+}
+
 function Get-MarketGoodsBlock {
     <#
       The market sweep, as one reusable block, because it is now emitted from TWO places: the
@@ -381,7 +419,7 @@ function Get-MarketGoodsBlock {
     #>
     param([string]$Token, [string]$Date, $Tags, [bool]$Scoped)
     $lim = if ($Scoped) {
-        "`r`n`t`t`t`tlimit = { OR = { " + (($Tags | ForEach-Object { "owner = c:$_" }) -join ' ') + " } }"
+        "`r`n`t`t`t`tlimit = { $(Get-GuardedOwnerLimit $Tags) }"
     } else { "" }
     return @"
 
@@ -856,7 +894,7 @@ $nm2 = {
 	effect = {
 		debug_log = "V3TB|$Token|CP|C0start|$bd"
 		every_market = {
-			limit = { owner = c:$mtag }
+			limit = { $(Get-GuardedOwnerLimit @($mtag)) }
 			every_market_goods = {
 				debug_log = "V3TB|$Token|CP|C2|$bd|[PREV.GetMarket.GetNameNoFormatting]|[THIS.GetMarketGoods.GetGoods.GetKey]|BEGIN"
 				debug_log = "[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrdersBreakdown]"
@@ -921,7 +959,7 @@ $nm2 = {
 	effect = {
 		debug_log = "V3TB|$Token|FP|$fpId|start|[TimeKeeper.GetCurrentDate.GetString]"
 		every_market = {
-			limit = { owner = c:$fpTag }
+			limit = { $(Get-GuardedOwnerLimit @($fpTag)) }
 			every_market_goods = {$limLine
 				debug_log = "V3TB|$Token|FP|$fpId|hit|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketSellOrders|2]"
 			}
@@ -939,7 +977,7 @@ $nm2 = {
     # Buganda are not going to be first to automobiles - so the list is a hand-picked "plausibly advanced"
     # set rather than all ~304 markets, which would be ~5 300 lines a dump.
     if ($metrics -contains "market_goods_wide" -and $Spec.wide_dates -and $Spec.wide_tags) {
-        $wideLim = (@($Spec.wide_tags) | ForEach-Object { "owner = c:$_" }) -join ' '
+        $wideLim = Get-GuardedOwnerLimit @($Spec.wide_tags)
         foreach ($wd in @($Spec.wide_dates)) {
             $bx++
             $stop = & $addMonths $wd 1
@@ -954,7 +992,7 @@ $nm2 = {
 	}
 	effect = {
 		every_market = {
-			limit = { OR = { $wideLim } }
+			limit = { $wideLim }
 			every_market_goods = {
 				debug_log = "V3TB|$Token|GW|$wd|[PREV.GetMarket.GetNameNoFormatting]|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketSellOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketPrice|2]|[THIS.GetMarketGoods.GetGoods.GetMarketProduction|2]"
 			}
@@ -1375,7 +1413,7 @@ $nm2 = {
             if (-not $ogoods -or -not $ogoods[0]) {
                 $ogoods = @('tools','steel','clothes','paper','glass','coal','iron','silk','tea','opium')
             }
-            $ownerLimit = "OR = { " + (($tags | ForEach-Object { "owner = c:$_" }) -join ' ') + " }"
+            $ownerLimit = Get-GuardedOwnerLimit $tags
             foreach ($imp in $tags) {
                 $goodLines = ""
                 foreach ($g in $ogoods) {
@@ -1415,7 +1453,7 @@ $nm2 = {
 			debug_log = "V3TB|$Token|OP|$date|B_noGetMarket|[c:GBR.market_capital.market.GetMarket.GetImportedAmountFromMarket(c:CHI.market_capital.market.Self, GetGoods('silk').Self)|2]"
 			# C: reverse direction, fully qualified - GetExportedAmountToMarket has NEVER been probed
 			debug_log = "V3TB|$Token|OP|$date|C_reverse|[c:CHI.market_capital.market.GetMarket.GetExportedAmountToMarket(c:GBR.market_capital.market.GetMarket.Self, GetGoods('silk').Self)|2]"
-			c:GBR = {
+			if = { limit = { exists = c:GBR } c:GBR = {
 				market_capital.market = {
 					debug_log = "V3TB|$Token|OP|$date|m_inner|reached-inner"
 					# D: pinned exporter from inside the importer's market scope
@@ -1424,11 +1462,11 @@ $nm2 = {
 					debug_log = "V3TB|$Token|OP|$date|E_thisexp|[THIS.GetMarket.GetExportedAmountToMarket(c:CHI.market_capital.market.GetMarket.Self, GetGoods('silk').Self)|2]"
 					# F: control - the iterating form that IS verified, filtered to the Qing market
 					every_market = {
-						limit = { owner = c:CHI }
+						limit = { $(Get-GuardedOwnerLimit @('CHI')) }
 						debug_log = "V3TB|$Token|OP|$date|F_iter|[THIS.GetMarket.GetNameNoFormatting]|[PREV.GetMarket.GetImportedAmountFromMarket(THIS.GetMarket.Self, GetGoods('silk').Self)|2]"
 					}
 				}
-			}
+			} }
 "@
         }
 
@@ -1464,7 +1502,7 @@ $nm2 = {
 
 			if = {
 				limit = { exists = c:GBR }
-				c:GBR = {
+				if = { limit = { exists = c:GBR } c:GBR = {
 					debug_log = "V3TB|$Token|SP|$date|B|$bt|m_country|reached-GBR"
 					every_scope_state = {
 						every_scope_building = {
@@ -1472,7 +1510,7 @@ $nm2 = {
 							debug_log = "V3TB|$Token|SP|$date|B|$bt|m_building|reached-building"$fl
 						}
 					}
-				}
+				} }
 			}
 "@
             }
@@ -1506,13 +1544,13 @@ $nm2 = {
 
 			if = {
 				limit = { exists = c:GBR }
-				c:GBR = {
+				if = { limit = { exists = c:GBR } c:GBR = {
 					market_capital.market = {
 						every_market_goods = {
 							debug_log = "V3TB|$Token|SP|$date|EARLY|pulse|[TimeKeeper.GetCurrentDate.GetString]|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketSellOrders|2]|[THIS.GetMarketGoods.GetGoods.GetMarketPrice|2]"
 						}
 					}
-				}
+				} }
 			}
 "@
         }
@@ -1526,7 +1564,7 @@ $nm2 = {
         if ($metrics -contains "route_probe") {
             $blocks += @"
 
-			c:GBR = {
+			if = { limit = { exists = c:GBR } c:GBR = {
 				# CONSTANT MARKERS FIRST. A line with no data function in it CANNOT void, so if a
 				# marker is missing the enclosing block did not run - whereas a missing data line
 				# means that call failed. Without these two cases are indistinguishable, which is
@@ -1556,7 +1594,7 @@ $nm2 = {
 						debug_log = "V3TB|$Token|RP|$date|ng_src|silk|[THIS.GetMarket.GetNameNoFormatting]|[PREV.GetMarket.GetImportedAmountFromMarket(THIS.GetMarket.Self, GetGoods('silk').Self)|2]"
 					}
 				}
-			}
+			} }
 "@
         }
 
@@ -1575,12 +1613,12 @@ $nm2 = {
             # several KB per good. The game's log ring is 5x512 KB shared by every run, so scope
             # this to a FEW markets per run: seven markets in one run overflows the ring and the
             # loss is irrecoverable, not merely slow.
-            $ownerLim = ($tags | ForEach-Object { "owner = c:$_" }) -join ' '
+            $ownerLim = Get-GuardedOwnerLimit $tags
             $blocks += @"
 
 			debug_log = "V3TB|$Token|CP|C0start|$Date"
 			every_market = {
-				limit = { OR = { $ownerLim } }
+				limit = { $ownerLim }
 				every_market_goods = {
 					debug_log = "V3TB|$Token|CP|C2|$Date|[PREV.GetMarket.GetNameNoFormatting]|[THIS.GetMarketGoods.GetGoods.GetKey]|BEGIN"
 					debug_log = "[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrdersBreakdown]"
@@ -1630,7 +1668,7 @@ $nm2 = {
 			# gui/building_details_panel.gui renders its input rows from exactly this call, so the
 			# per-building draw on a good is READABLE rather than inferred from our recipe model.
 			every_country = {
-				limit = { OR = { this = c:BEL this = c:JAP } }
+				limit = { $(Get-GuardedOwnerLimit @('BEL','JAP') -Compare 'this') }
 				every_scope_state = {
 					every_scope_building = {
 						debug_log = "V3TB|$Token|CP|C1|[THIS.GetBuilding.GetState.GetCountry.GetNameNoFormatting]|[THIS.GetBuilding.GetBuildingType.GetKey]|[THIS.GetBuilding.GetExpansionLevel]|grain|[THIS.GetBuilding.GetConsumption(GetGoods('grain'))|2]"
@@ -1643,7 +1681,7 @@ $nm2 = {
 			# Returns FORMATTED TOOLTIP TEXT (newlines + markup), not a scalar, so it will land in
 			# the log as multiple physical lines. BEGIN/END fence it for the parser.
 			every_market = {
-				limit = { OR = { owner = c:BEL owner = c:JAP } }
+				limit = { $(Get-GuardedOwnerLimit @('BEL','JAP')) }
 				every_market_goods = {
 					debug_log = "V3TB|$Token|CP|C2|[PREV.GetMarket.GetNameNoFormatting]|[THIS.GetMarketGoods.GetGoods.GetKey]|BEGIN"
 					debug_log = "[THIS.GetMarketGoods.GetGoods.GetMarketBuyOrdersBreakdown]"
@@ -1659,7 +1697,7 @@ $nm2 = {
 
 			# ---- P1: every_country iteration + country identity ----
 			every_country = {
-				limit = { OR = { this = c:GBR this = c:FRA this = c:CHI } }
+				limit = { $(Get-GuardedOwnerLimit @('GBR','FRA','CHI') -Compare 'this') }
 				debug_log = "V3TB|$Token|P|P1name|[THIS.GetCountry.GetNameNoFormatting]"
 				debug_log = "V3TB|$Token|P|P1gdp|[THIS.GetCountry.GetNameNoFormatting]|[THIS.GetCountry.GetGDP|2]"
 				debug_log = "V3TB|$Token|P|P1tag|[THIS.GetCountry.GetTag]"
@@ -1672,7 +1710,7 @@ $nm2 = {
 
 			# ---- P2: per-category building counts via MakeScope.ScriptValue inside every_country ----
 			every_country = {
-				limit = { OR = { this = c:GBR this = c:FRA } }
+				limit = { $(Get-GuardedOwnerLimit @('GBR','FRA') -Compare 'this') }
 				debug_log = "V3TB|$Token|P|P2total|[THIS.GetCountry.GetNameNoFormatting]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_bld_total')]"
 				debug_log = "V3TB|$Token|P|P2mfg|[THIS.GetCountry.GetNameNoFormatting]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_bld_mfg')]"
 				debug_log = "V3TB|$Token|P|P2extract|[THIS.GetCountry.GetNameNoFormatting]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_bld_extract')]"
@@ -1684,7 +1722,7 @@ $nm2 = {
 			}
 
 			# ---- P3: market channel decomposition (the 3-way split) ----
-			c:GBR = {
+			if = { limit = { exists = c:GBR } c:GBR = {
 				market_capital.market = {
 					debug_log = "V3TB|$Token|P|P3mktname|[THIS.GetMarket.GetNameNoFormatting]"
 					debug_log = "V3TB|$Token|P|P3owner|[THIS.GetMarket.GetOwner.GetNameNoFormatting]"
@@ -1700,7 +1738,7 @@ $nm2 = {
 						debug_log = "V3TB|$Token|P|P3g_balance|[THIS.GetMarketGoods.GetGoods.GetKey]|[THIS.GetMarketGoods.GetGoods.GetMarketBuyAndSellOrdersBalance|2]"
 					}
 				}
-			}
+			} }
 
 			# ---- P4: tag survival - a country that does NOT exist must log, not vanish ----
 			if = { limit = { exists = c:GER } c:GER = { debug_log = "V3TB|$Token|P|P4ger|exists|[THIS.GetCountry.GetNameNoFormatting]" } }

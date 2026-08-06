@@ -43,7 +43,8 @@
   -DryRun and -SaveTo are mutually exclusive. Both leave the canonical mod/ untouched.
 #>
 param([switch]$NoLint, [switch]$NoDeploy, [string]$Config, [switch]$DryRun, [string]$SaveTo,
-      [string]$Telemetry, [switch]$TelemetryOn, [string]$TelemetryToken, [switch]$ControlOnly)
+      [string]$Telemetry, [switch]$TelemetryOn, [string]$TelemetryToken, [switch]$ControlOnly,
+      [switch]$NoPreflight)
 $ErrorActionPreference = 'Stop'
 $INV = [System.Globalization.CultureInfo]::InvariantCulture
 function Fmt($v) { return ([double]$v).ToString($INV) }   # locale-safe number -> string
@@ -271,6 +272,18 @@ if ($ControlOnly) {
         Write-Output "  !! NOT PURE VANILLA: carries common/pop_needs/00_pop_needs.txt from $(Split-Path $cfgPath -Leaf)"
     } else {
         Write-Output "  (no buildings, no production methods, no localization, no history, no pop needs)"
+    }
+    # PREFLIGHT on the control arm too. It exits early - that early exit is the same one CLAUDE.md
+    # names as the reason a gameplay file ended up on the wrong side of the -ControlOnly guarantee -
+    # so a check placed only at the bottom of the script would never see the one arm whose whole
+    # promise is "carries nothing". L7 is precisely that promise, checked against the emitted files.
+    if (-not $NoPreflight) {
+        & (Join-Path $PSScriptRoot 'preflight.ps1') -Mod $modAbs -Quiet
+        if ($LASTEXITCODE -ne 0) {
+            $global:LASTEXITCODE = 0
+            throw "PREFLIGHT FAILED - see the landmine IDs above and TESTBED_LANDMINES.md."
+        }
+        $global:LASTEXITCODE = 0
     }
     exit 0
 }
@@ -821,6 +834,22 @@ if ($problems.Count -gt 0) {
     throw "Post-build mod checks failed ($($problems.Count) problem(s))."
 }
 Write-Output "MOD CHECKS PASSED: $modRel is a complete build."
+
+# --- PREFLIGHT: walk TESTBED_LANDMINES.md against what we just emitted ---
+# Invoke-ModChecks answers "is this build COMPLETE". Preflight answers "does this build carry a known
+# landmine" - the failures where nothing fails: a c:TAG that errors half a million times once its
+# country is annexed, a script value that reads zero instead of erroring, telemetry that changed
+# without a schema bump. Those are invisible to every other check we run, which is why this one
+# throws rather than warns. -NoPreflight exists for a broken detector, not for a hurry.
+if (-not $NoPreflight) {
+    & (Join-Path $PSScriptRoot 'preflight.ps1') -Mod $modAbs -Quiet
+    if ($LASTEXITCODE -ne 0) {
+        $global:LASTEXITCODE = 0
+        if ($DryRun) { Remove-Item $modAbs -Recurse -Force -ErrorAction SilentlyContinue; Write-Output "Dry-run folder deleted." }
+        throw "PREFLIGHT FAILED - see the landmine IDs above and TESTBED_LANDMINES.md. Override with -NoPreflight only if the DETECTOR is wrong."
+    }
+    $global:LASTEXITCODE = 0
+}
 
 # --- dry run: we proved a full build works; delete the throwaway folder and stop (never deploy) ---
 if ($DryRun) {

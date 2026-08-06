@@ -136,10 +136,18 @@ foreach ($r in $runs) {
         # failed rather than like the plumbing did. That cost a probe run on 2026-08-05 (the sparse
         # breakdown and wide sweep both emitted nothing until these four were added). Same guarded
         # lookup as wage_pop_markets, for the same StrictMode reason.
+        #
+        # ⚠ THIS COMMENT WAS ALREADY HERE AND `origin_goods` STILL SLIPPED THROUGH - it was read by
+        # Read-TelemetrySpec, requested by three schedules, and listed nowhere here, so every
+        # scheduled origins run silently fell back to the hardcoded goods list. Found 2026-08-06 by
+        # tools/preflight.ps1, which now checks this mechanically (landmine L5). A warning at the
+        # right place is not a guardrail; the check is. Add the key BOTH here and in the spec writer
+        # below, and preflight will confirm it.
         breakdown_dates = $(Val $r "breakdown_dates" @(Val $defaults "breakdown_dates" @()))
         breakdown_tags  = $(Val $r "breakdown_tags"  @(Val $defaults "breakdown_tags"  @()))
         wide_dates      = $(Val $r "wide_dates"      @(Val $defaults "wide_dates"      @()))
         wide_tags       = $(Val $r "wide_tags"       @(Val $defaults "wide_tags"       @()))
+        origin_goods    = $(Val $r "origin_goods"    @(Val $defaults "origin_goods"    @()))
         autosave = Val $r "autosave_interval" $defAutosave
         timeout  = [int](Val $r "timeout_minutes" $defTimeout)
     }
@@ -231,7 +239,7 @@ foreach ($p in $plan) {
     $specFile = Join-Path $runDir "telemetry.json"
     $spec = [ordered]@{ dump_dates = $p.dump_dates; tags = $p.tags; metrics = $p.metrics }
     if ($p.wage_pop_markets) { $spec['wage_pop_markets'] = $p.wage_pop_markets }
-    foreach ($k in @('breakdown_dates','breakdown_tags','wide_dates','wide_tags')) {
+    foreach ($k in @('breakdown_dates','breakdown_tags','wide_dates','wide_tags','origin_goods')) {
         if ($p.$k -and @($p.$k).Count) { $spec[$k] = @($p.$k) }
     }
     [System.IO.File]::WriteAllText($specFile, ($spec | ConvertTo-Json -Depth 6), $Utf8)
