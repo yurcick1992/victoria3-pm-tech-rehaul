@@ -535,6 +535,14 @@ tools/                  dev tooling — NOT shipped in the mod
                         validate_split_rule.mjs (clamps, prestige and culture terms, isolated),
                         solve_need_availability.mjs / fit_availability.mjs / identify_availability.mjs /
                         invert_deduction.mjs (the identification path, kept for re-derivation)
+  testbed/saves_debut/     ⚠ **KEEP — 356 quarterly autosaves of one VANILLA campaign, 1836.1 → 1921.1**
+                        (9.2 GB, gitignored). The same never-delete rule as `sessions/` applies and for the
+                        same reason: it is a historical observation, not reproducible measurement — a
+                        different seed gives a different world, and a patch gives a different game. It is
+                        the evidence behind F40's vanilla replication and behind the automobile debut
+                        (first traded 1902.1.1). Label any of them without melting via
+                        `map_saves_to_dates.mjs`, which joins the archiver's log to the observer's ticks.
+                        `_score_work/` beside it is a scratch dir for melts and IS disposable
   testbed/archive_autosaves.ps1  copies every autosave the engine writes into a keep-forever archive
                         BEFORE its slot is reused. ⚠ Two hazards, both hit in practice: the engine ROTATES
                         slots by RENAMING, so a per-name dedupe archives the same save up to five times
