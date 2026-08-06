@@ -1,0 +1,42 @@
+{
+  "schedule_version": 1,
+  "label": "popsplit-debut-vanilla",
+  "_why": "GROUND THE POP-NEED SPLIT IN A GAMESTATE. The criterion (user, 2026-08-07) is a WITHIN-GAMESTATE reconstruction: from one save's own supply, its own non-pop demand and its own prices, our rule must reproduce that same save's pop demand. The three melted 1923/24/25 saves already on disk answer it for a mature economy; this run supplies the stress case - the window in which automobiles and telephones DEBUT, where a supply-share rule is least constrained and where every previous reading has been anomalous.",
+  "_arm": "CONTROL. {kind: control} = build.ps1 -ControlOnly: vanilla + telemetry, zero gameplay content. This is deliberate and load-bearing: the question is what THE GAME's split rule is, so the pop-need weights must be vanilla's own. The x10 saves in tools/testbed/saves_x10_1925 are the OVERLAY arm and their base weights are mod-altered; they are the perturbation set, not the reference.",
+  "_instrument": "THE SAVEGAME IS THE PRIMARY INSTRUMENT, telemetry is the cross-check. states.database.<id>.pop_needs stores the game's OWN computed purchase weights, which exist nowhere else. Autosave cadence is quarteryear so the debut ramp is sampled four times a year; tools/testbed/archive_autosaves.ps1 must be running alongside, because the engine keeps only three autosave slots and overwrites them.",
+  "_telemetry_note": "market_goods_scoped at annual dumps, dense through the debut window. Its job is to let a save-derived supply/demand field be validated against an independent instrument at the same date - the discipline that caught F39's bad solve.",
+  "defaults": {
+    "metrics": ["market_goods_scoped"],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 260,
+    "tags": ["GBR", "USA", "BEL"]
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    {
+      "setup": "vanilla",
+      "until": "1921.1.1",
+      "dump_dates": [
+        "1837.1.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1",
+        "1885.1.1", "1888.1.1", "1890.1.1", "1891.1.1", "1892.1.1", "1893.1.1",
+        "1894.1.1", "1895.1.1", "1896.1.1", "1897.1.1", "1898.1.1", "1899.1.1",
+        "1900.1.1", "1900.4.1", "1900.7.1", "1900.10.1",
+        "1901.1.1", "1901.4.1", "1901.7.1", "1901.10.1",
+        "1902.1.1", "1902.4.1", "1902.7.1", "1902.10.1",
+        "1903.1.1", "1903.4.1", "1903.7.1", "1903.10.1",
+        "1904.1.1", "1904.4.1", "1904.7.1", "1904.10.1",
+        "1905.1.1", "1905.4.1", "1905.7.1", "1905.10.1",
+        "1906.1.1", "1906.7.1", "1907.1.1", "1907.7.1",
+        "1908.1.1", "1908.7.1", "1909.1.1", "1909.7.1",
+        "1910.1.1", "1910.7.1", "1911.1.1", "1911.7.1",
+        "1912.1.1", "1912.7.1", "1913.1.1", "1913.7.1",
+        "1914.1.1", "1914.7.1", "1915.1.1", "1915.7.1",
+        "1916.1.1", "1916.7.1", "1917.1.1", "1917.7.1",
+        "1918.1.1", "1918.7.1", "1919.1.1", "1919.7.1",
+        "1920.1.1", "1920.4.1", "1920.7.1", "1920.10.1"
+      ]
+    }
+  ]
+}

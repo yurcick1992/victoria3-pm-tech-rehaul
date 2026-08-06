@@ -131,6 +131,158 @@ transcript rather than from data.
 
 ---
 
+## F40 — ⭐⭐ **THE WITHIN-NEED SUBSTITUTION RULE, SOLVED AND MEASURED END TO END.** A gamestate's own supply and non-pop demand reproduce that same gamestate's stored purchase weights to **2.56 pp** across 13 943 entries. Availability is **`(sell − ½ × non-pop demand) × BASE price`**, and five further terms are each identified separately
+
+**Arm** `overlay` (the ×10 pop-need-weight build), read from the melted 1925 autosave of session
+`20260806_110926_vanilla-retest-2` run003, paired with that run's own `market_goods_scoped` telemetry at
+the same dump date · 🟢 **ARM-FREE for the mechanism**: `pop_need_weight_mult` rescales the *base weight*
+of three goods only (luxury_furniture, steamers, automobiles), and the base weight divides out of every
+quantity below; the extractor is given the arm's own weights so the recovered share is correct.
+The headline number is the **American** market, which the overlay does not touch differently from Britain.
+
+### THE RULE
+
+```
+availability(g) = ( market sell orders(g) − 0.5 × non-pop demand(g) ) × BASE price(g)
+raw(need,g)     = availability(g) / Σ availability over the need's own goods
+share           = clamp( raw , min_supply_share(need,g) , max_supply_share(need,g) )
+share          *= 1 + prestige_goods_demand_increase(need) × prestige share of that good's supply
+if the culture is OBSESSED with g :  share = max( share , obsession_demand_min(need) × max_supply_share )
+if the religion TABOOS g          :  share *= 0.5                       ( TABOO_DEMAND_MULT )
+stored purchase weight            =  base weight(need,g) × share
+units bought                      ∝  purchase weight / BASE price(g)    ( F39 )
+```
+
+**Every input is one gamestate's own.** Non-pop demand is not inferred or fitted — it is the sum of every
+building's `input_goods` in that market, read out of the same save as the weights. That is what the user's
+criterion asked for: *the derivation rules applied to real observed supply and non-pop demand must give the
+real observed pop demand.*
+
+### THE HEADLINE
+
+Predicting the stored purchase weight for **every** (state × culture × need × good) entry in a market,
+from that market's order book and building flows, with no free parameters:
+
+| market | entries scored | mean absolute error of the share |
+|---|--:|--:|
+| **American** | 13 943 | **2.559 pp** |
+| British | 18 226 | 8.201 pp |
+
+Per need, American market: luxury_items **0.22**, basic_food **0.43**, luxury_food **0.60**,
+simple_clothing **0.65**, crude_items **0.72**, household_items **0.73**, intoxicants **0.91**,
+standard_clothing **1.33**, stimulants 4.64, luxury_drinks 18.30 pp.
+
+⚠ **Britain is worse because MY market aggregation is worse, not because the rule is.** The British market
+spans 24 countries and my state→country→market mapping under-counts its colonial supply badly — tea reads
+47 % and tobacco 53 % of the production the telemetry reports for the same market, which corrupts both the
+non-pop sum and the prestige share. The American market is one country, aggregates cleanly, and scores
+2.56 pp. Fixing the British membership is open work, not a defect in the rule.
+
+### THE TERMS, EACH IDENTIFIED ON ITS OWN
+
+**1. The form `share = availability(good) / D(need)`.** Recovered without assuming anything about what
+availability is: within a need the stored shares *are* the availability ratios, and a good sitting in two
+needs pins `D(n1)/D(n2)` by itself. Three goods shared by `basic_food` and `luxury_food` give that ratio as
+**0.76643 / 0.76645 / 0.76648** (groceries / meat / fruit) — agreement to five digits, from a rule that could
+have disagreed.
+
+**2. Availability is `supply × BASE price`, not units and not current price.** Within-need, on fully clean
+needs (British `luxury_food`, four goods): `sell × base` 0.59 pp, `sell × current` 5.39 pp, `sell` alone
+8.15 pp. American `basic_food`, five goods: `sell × base` **1.63 pp** against `sell` 5.43 pp.
+
+**3. The deduction is HALF the non-pop demand, and exports are NOT deducted.** Sweeping both coefficients
+over the fully clean cells (mean |share error|, pp):
+
+| c₂ (exports) \ c₁ (non-pop) | 0 | 0.25 | 0.4 | **0.5** | 0.6 | 0.75 | 1.0 |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| **0** | 7.83 | 6.55 | 5.61 | **4.92** | 5.18 | 6.74 | 9.07 |
+| 0.25 | 7.98 | 6.76 | 5.87 | 5.20 | 5.42 | 6.97 | 9.30 |
+| 0.5 | 8.27 | 7.06 | 6.17 | 5.50 | 5.70 | 7.25 | 9.58 |
+| 1.0 | 8.93 | 7.73 | 6.85 | 6.18 | 6.32 | 7.89 | 10.25 |
+
+Fitted **per cell** instead of pooled, 51 of 58 clean cells fit under 1 pp and their best c₁ clusters on
+0.500: `crude_items` 0.490–0.515 over 15 state groups, American `basic_food` 0.490–0.530, British
+`luxury_food` 0.42–0.55, `household_items` 0.560–0.565. The single cleanest reading is British
+`crude_items`: furniture has **zero** industrial demand and wood 19 535, and the observed 0.22514 / 0.77485
+split needs c₁ = **0.507**.
+
+**4. `max_supply_share` and `min_supply_share` clamp the RAW share, exactly.** In one state at one instant:
+transportation → **0.75000** (its max) in `communication` while its 0.3752 in `free_movement` is untouched;
+furniture → **0.75** in `household_items`; luxury_furniture → **0.50**; silk and porcelain → **0.10** (their
+min) from raw 0.05225 and 0.01809. This confirms F31 directly rather than by scoring.
+
+**5. The prestige-goods multiplier is real and measurable.** `DEFAULT_PRESTIGE_GOODS_DEMAND_INCREASE = 0.5`,
+overridden to 0.75 in `intoxicants`/`luxury_drinks`/`luxury_items` and 1.0 in `leisure`. The save records
+each building's prestige output separately, so the fraction can be measured and compared with the fraction
+the stored weight implies:
+
+| good | prestige share measured in the save | implied by the stored weight |
+|---|--:|--:|
+| fish | 83.3 % | 83.6 % |
+| coffee | 63.2 % | 63.8 % (`luxury_drinks`, +0.75) · 62.6 % (`stimulants`, +0.5) |
+| opium | 80.8 % | 80.4 % |
+| grain | 8.6 % | 8.5 % |
+| clothes | 87.3 % | 81.3 % |
+| tobacco | 21.3 % | 12.2 % |
+| sugar, meat, fruit, groceries, wood, furniture, wine, luxury_clothes | 0 % | −0.5 % … +1.0 % |
+
+Coffee is the load-bearing row: the *same* measured 63 % predicts two different multipliers in two needs
+because those needs carry different `prestige_goods_demand_increase`, and both land. The clothes and tobacco
+gaps are the British aggregation problem above, in the direction it predicts.
+
+**6. Culture and religion, isolated by comparing two cultures of ONE state** — same market, same instant, so
+availability cannot differ. Religion **taboo** halves the entry exactly (`TABOO_DEMAND_MULT = 0.5`): Shiite
+wine 0.035867 → **0.017933**, Hindu meat 0.09541 → **0.04762**. Culture **obsession** imposes a floor equal
+to `obsession_demand_min × max_supply_share`, exact in eleven distinct (need, good) combinations —
+meat/`basic_food` 0.45, meat/`luxury_food` 0.375, tobacco/`stimulants` 0.375, tea/`luxury_drinks` 0.5625,
+tea/`stimulants` 0.375, liquor/`intoxicants` 0.5625, coffee/`luxury_drinks` 0.5625, coffee/`stimulants`
+0.375, sugar/`stimulants` 0.375, fruit/`basic_food` 0.45, fruit/`luxury_food` 0.375.
+
+### ⚠ THREE THINGS THAT ARE NOT SETTLED
+
+- **The obsession floor has an exception class.** In the three needs with `obsession_demand_min = 0.75`
+  (`intoxicants`, `luxury_drinks`, `luxury_items`) the floor lands on a constant **purchase weight of
+  0.5625** for every good regardless of its own weight and cap — wine in `intoxicants` reads share **2.25**
+  against a predicted 0.1875, because its base weight is 0.25 and 0.25 × 2.25 = 0.5625. `leisure`
+  small_arms (0.25) and `luxury_food` sugar (0.25) miss too. Eleven combos fit `obsMin × max`, six do not.
+  It is a per-culture term our scenario model has no dimension for, so it does not block the mod.
+- **`local` goods are excluded from the headline.** Their substitution supply is not the market's: per
+  `LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR = 0.25` it is the state's own supply plus
+  `(1 − the state's GDP share) × 0.25 ×` the market's production, "*only for goods substitution supply and
+  not for price calculations*". ⭐ **That is the mechanism behind the handover's unexplained
+  `transportation ÷ 1.6–2`** — it was never a divisor, it was this augmentation being smaller than full
+  market supply. Implementing it needs the state GDP share, which is not extracted yet.
+- **The stored weight is a LAGGED value, not the instantaneous target.**
+  `MAX_DEMAND_ADJUSTMENT_BASE_AMOUNT = 0.01`, `MAX_DEMAND_ADJUSTMENT_SCALED_AMOUNT = 0.09`,
+  `MAX_DEMAND_ADJUSTMENT_SCALE = 1.0` — "*controls how much a pop can change demand of a substitutable
+  goods in a single update*". This is why F39 saw Midlands telephones drift 0.1150 → 0.1547 → 0.2121 over
+  three years and why a debut good ramps instead of jumping: **the ramp is the adjustment limiter, not a
+  demand mechanism.** It also explains residuals of one to two per cent on fast-moving goods.
+
+### ⚠⚠ TWO THINGS THAT WOULD HAVE WASTED THE SESSION, AND DID NOT ONLY BECAUSE THEY WERE CHECKED
+
+- **Obsessions are RUNTIME STATE.** `common/cultures` holds the 1836 set; the game adds and drops them all
+  campaign (`OBSESSION_SPAWN_CHANCE`, `MAX_NUM_OBSESSIONS`, the prohibition event). Scoring against the file
+  put Australian wine 220 pp wrong — Australia is obsessed with tea *and* wine in 1925 and with neither in
+  the file. Read them from the save (`melted_cultures.mjs`): 105 of 317 cultures carry one in 1925.
+- **The needs are not linked into one graph.** The 15 needs split into components that share no good, so a
+  global fit for availability silently invents the scale between them — which is exactly the 1.8× offset
+  that made an early regression look like a per-need effect. Every test here is therefore *within* a need.
+
+**What it does NOT say.** (1) It says nothing about the between-need budget — how a pop's money is divided
+across the 15 needs is the buy-package/wealth model and is untouched here. (2) The `local` goods rule is
+identified from the defines but not measured. (3) The obsession floor is measured, not solved. (4) It is one
+instant of one campaign in two markets; the 1923 and 1924 saves on disk are an unused replication.
+(5) The prestige share is measured from domestic production only, so an imported prestige good is missed —
+the likely cause of American `luxury_drinks` at 18.3 pp.
+
+Reproduce: `melted_pop_need_weights.mjs` → `melted_building_goods.mjs` → `melted_cultures.mjs`, then
+`predict_pop_split.mjs <needs> <bgoods> <markets_all> --obsessions <cultures> --market "American Market"
+--probe STATE_NEW_YORK --no-culture`. Term-by-term: `within_need_test.mjs`, `fit_substitution_rule.mjs
+--sweep`, `validate_split_rule.mjs`.
+
+---
+
 ## F39 — ✅ **OUR WITHIN-NEED SPLIT FORMULA IS CORRECT**, confirmed against the game's OWN stored purchase weights. `units ∝ purchase weight / BASE price` reproduces four observations across three states and two needs to within 2 %
 
 > ⭐⭐ **READ THIS FIRST — THE FINDING BELOW WAS REWRITTEN AFTER THE SAVEGAME WAS MELTED.** Earlier

@@ -43,6 +43,8 @@ const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 && args[i + 1
 const SESSION = argOf('--session', '');
 const TSV     = argOf('--tsv', '');
 const MODES   = argOf('--modes', 'raw,final').split(',').map(s => s.trim()).filter(Boolean);
+// F40: availability is a VALUE (supply x base price), not a unit count. 'units' is the old reading.
+const AVAIL   = argOf('--avail', 'value');
 const PERGOOD = args.includes('--per-good');
 if (!SESSION) { console.error('usage: score_pop_split.mjs --session <dir> [--tsv f] [--modes raw,final] [--per-good]'); process.exit(1); }
 const SDIR = join(REPO, SESSION.replace(/^[.\\/]+/, ''));
@@ -180,6 +182,7 @@ function predict(mode, presetId) {
   const p = presets.find(x => x.id === presetId);
   if (!p) return null;
   S.SPLIT_MODE = mode;
+  S.AVAIL_MODE = AVAIL;
   E.applyPreset(p);
   return E.scenarioAggregates().pop || {};
 }

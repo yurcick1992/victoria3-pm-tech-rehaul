@@ -770,10 +770,15 @@ function allSpend(){ const s=popSpend(), t=slaveSpend(); for(const k in t) s[k]=
 // to the goods still unclamped, yielding when nothing with supply can absorb it. A/B switch for
 // measurement, not a setting: this copy must stay identical to econ.js's.
 let SPLIT_MODE='raw';
+// ⭐⭐ AVAILABILITY IS A VALUE, NOT A COUNT (FINDINGS F40): the quantity normalised over a need is
+// (sell − ½ × non-pop demand) × BASE PRICE. Measured against the purchase weights a savegame stores.
+// 'units' restores the old count-based reading for A/B measurement. Keep identical to econ.js's copy.
+let AVAIL_MODE='value';
 function needSplit(nd, def, supply, nonpop){
   const es=(def.entries||[]);
   if(!es.length) return null;
-  const eff=es.map(e=>Math.max(0, ((supply||{})[e.g]||0) - 0.5*((nonpop||{})[e.g]||0)));
+  const val = AVAIL_MODE==='units' ? (()=>1) : (g=>(PRICES[g]||0));
+  const eff=es.map(e=>Math.max(0, ((supply||{})[e.g]||0) - 0.5*((nonpop||{})[e.g]||0)) * val(e.g));
   const tot=eff.reduce((a,b)=>a+b,0);
   if(!(tot>0)){
     // No supply at all for this need in the scenario: fall back to the stored distribution, then to

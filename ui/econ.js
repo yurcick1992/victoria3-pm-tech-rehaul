@@ -325,10 +325,19 @@
     // its budget to a good nobody can sell, and F24's four zero-error single-good needs would break.
     // The rule keys on eff > 0, so a good the formula zeroes out (heavily industrially consumed) is
     // treated as unable to absorb, exactly as it already is in the 'raw' path.
+    // ⭐⭐ AVAILABILITY IS A VALUE, NOT A COUNT (FINDINGS F40, measured 2026-08-07). The quantity that gets
+    // normalised over a need is `(sell orders − ½ × non-pop demand) × BASE PRICE`, not the unit residual.
+    // Measured directly against the purchase weights a savegame stores: within a fully clean need,
+    // `sell × base` scores 0.59 pp against `sell` alone at 8.15 pp (British luxury_food, 4 goods) and
+    // 1.63 pp against 5.43 pp (American basic_food, 5 goods). It is the same statement the game's own
+    // localisation makes — "goods with a higher base price will contribute more to fulfilling a pop need…
+    // a single unit of groceries is equivalent to several units of grain".
+    // `S.AVAIL_MODE = 'units'` restores the old count-based reading for A/B measurement; it is not a setting.
     function needSplit(nd, def, supply, nonpop){
       const es = (def.entries||[]);
       if(!es.length) return null;
-      const eff = es.map(e => Math.max(0, ((supply||{})[e.g]||0) - 0.5*((nonpop||{})[e.g]||0)));
+      const val = S.AVAIL_MODE === 'units' ? (() => 1) : (g => (S.PRICES[g]||0));
+      const eff = es.map(e => Math.max(0, ((supply||{})[e.g]||0) - 0.5*((nonpop||{})[e.g]||0)) * val(e.g));
       const tot = eff.reduce((a,b) => a + b, 0);
       if(!(tot > 0)){
         const pw = es.map(e => { const d = S.POPDIST[nd]; return (d && d[e.g] != null) ? d[e.g] : (e.w||0); });

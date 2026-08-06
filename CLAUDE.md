@@ -509,6 +509,38 @@ tools/                  dev tooling — NOT shipped in the mod
                         exist below wealth 20 and only 7.9 % of the world reaches it (FINDINGS F38).
                         ⚠ Field meanings are HYPOTHESES until independently confirmed; the confirmed set
                         and what confirmed it are tabulated in TESTBED_METRICS §7
+  --- the MELTED-save readers (rakaly melt -> plaintext with real field names). These are what solved
+      the pop-need split (FINDINGS F40); they read STATE, so they need no telemetry of their own ---
+  testbed/melted_pop_need_weights.mjs  the game's OWN computed purchase weight per (state, CULTURE, need,
+                        good), out of `states.database.<id>.pop_needs`. Divide by the base weight from
+                        common/pop_needs and you recover the SUPPLY SHARE the game actually used — a
+                        quantity that exists nowhere else and cannot be derived from the order book.
+                        ⚠ Supersedes melted_state_needs.mjs, which numbered the entries 0,1,2… and threw
+                        the real key away; the keys are CULTURE ids and are not consecutive, so the
+                        counter merged distinct cultures under one label
+  testbed/melted_building_goods.mjs  per-state SUPPLY and NON-POP DEMAND, from every building's
+                        `input_goods` / `output_goods`, plus the prestige share of each output.
+                        ⭐ The market order book is NOT persisted in a save (the market database holds only
+                        `owner`), but the buildings are — so the pair the substitution rule consumes can be
+                        rebuilt for the SAME gamestate the weights come from. Validated against the run's
+                        own telemetry: production matches to ~8 % mean
+  testbed/melted_cultures.mjs  the culture database and its CURRENT obsessions. ⚠ OBSESSIONS ARE RUNTIME
+                        STATE — common/cultures holds only the 1836 set and the game adds and drops them
+                        all campaign; reading the file instead of the save put Australian wine 220 pp wrong
+  testbed/predict_pop_split.mjs  THE end-to-end check: predict every stored purchase weight in a market
+                        from that market's own supply, non-pop demand and prestige supply. `--no-culture`
+                        scores the mechanism alone. Supporting single-term tools: within_need_test.mjs
+                        (candidate availability forms, inside one need — no cross-need scale to invent),
+                        fit_substitution_rule.mjs --sweep (the deduction coefficients),
+                        validate_split_rule.mjs (clamps, prestige and culture terms, isolated),
+                        solve_need_availability.mjs / fit_availability.mjs / identify_availability.mjs /
+                        invert_deduction.mjs (the identification path, kept for re-derivation)
+  testbed/archive_autosaves.ps1  copies every autosave the engine writes into a keep-forever archive
+                        BEFORE its slot is reused. ⚠ Two hazards, both hit in practice: the engine ROTATES
+                        slots by RENAMING, so a per-name dedupe archives the same save up to five times
+                        and fills the disk; and a 45 MB write is not atomic, so a file is only copied once
+                        its size and mtime have been stable for -StableSeconds. Run it alongside a batch
+                        whenever the saves, not the logs, are the instrument
   testbed/wait_for_session.ps1  the wake-up signal for a batch launched into its own window (which the
                         agent harness cannot see). Run it with run_in_background; returns DONE on
                         completion, RUNNING on a heartbeat, DEAD (exit 2) if the game vanished
@@ -887,13 +919,34 @@ the game.
   **upper** class, which buys the most per head. Britain's upper class was 268 707 and is 967 616.
   **no trade-route trade** is assumed, only `goods_transfer` treaty articles in force in 1836 (a transfer **out**
   of the market is an extra **buy** order, a transfer **in** an extra **sell** order).
-  **Each pop need's money is split across ALL its goods by the game's DOCUMENTED rule** (`needSplit()`;
-  vic3.paradoxwikis.com/Needs): `market share = (sell orders − 0.5 × NON-POP buy orders) / Σ over the
-  need's goods`; `purchase weight = weight × market share`, clamped to the entry's
-  `min_supply_share`/`max_supply_share`; `units = (need money / base price) × purchase weight / Σ`.
+  ⭐⭐ **Each pop need's money is split across ALL its goods by a rule that is now SOLVED AND MEASURED
+  END TO END — FINDINGS F40 (2026-08-07)** (`needSplit()`):
+  ```
+  availability(g) = ( market sell orders(g) − 0.5 × NON-POP demand(g) ) × BASE price(g)
+  raw share       = availability(g) / Σ availability over the need's own goods
+  purchase weight = base weight(need,g) × clamp( raw , min_supply_share , max_supply_share )
+  units           = need money × (purchase weight / Σ purchase weights) / base price(g)
+  ```
+  **Availability is a VALUE, not a unit count** — that is the one thing this changes and it is the whole of
+  it. Measured against the purchase weights a savegame stores: a gamestate's own supply and non-pop demand
+  reproduce that same gamestate's weights to **2.56 pp over 13 943 entries** (American market, 1925), 8 of
+  10 needs under 1.35 pp. `S.AVAIL_MODE = 'units'` restores the old count-based reading as an A/B switch.
+  ⭐ It is confirmed by a second, independent measurement: re-scored against the game's own 1836 pop
+  **consumption** telemetry it improves the mean absolute error across 7 markets from **20.0 % to 18.3 %**.
   Every good the need lists is a candidate — an unsupplied one scores zero and drops out by itself,
   which is why there is no separate availability gate. The **slave basket** goes through the same
   split, fed the same supply and non-pop order book in the same pass.
+  ⚠ **Three terms of the game's real rule are deliberately NOT modelled, because our scenario has no
+  dimension for them**; each is measured and written up in F40 so the omission is a choice, not an oversight:
+  the **prestige-goods** multiplier (`1 + prestige_goods_demand_increase × prestige share of supply`;
+  measured against the save to 0.6 pp on five goods), culture **obsession** (a floor of
+  `obsession_demand_min × max_supply_share`) and religion **taboo** (`× 0.5`, exact). ⚠ **Obsessions are
+  RUNTIME state, not file content** — the game adds and drops them all campaign, so reading them from
+  `common/cultures` puts a 1925 culture 220 pp wrong.
+  ⚠ **The weights the save stores are per (state, CULTURE) and are LAGGED, not the instantaneous target**
+  (`MAX_DEMAND_ADJUSTMENT_BASE_AMOUNT` 0.01 + `_SCALED_AMOUNT` 0.09 per update). ⭐ **That is what the
+  "debut spike" actually is** — a good's share ramps toward its target over years because the adjustment
+  is rate-limited, not because any demand mechanism favours a newcomer.
   ✅ **The weights are VERIFIED correct against the game files** (2026-08-04): all **52 entries across 15
   needs** match `common/pop_needs/00_pop_needs.txt` exactly — every `weight`, `max_supply_share`,
   `min_supply_share` and `default` — and **29 of the 52 carry a non-default weight**, so this was a real
@@ -920,26 +973,18 @@ the game.
   Goods are equivalent **per pound, not per unit** — a higher base price fulfils the same need with
   fewer units, which is why units come from money ÷ base price. **No fitted
   numbers, and nothing stored per scenario.**
-  ❌ **BOTH HALVES OF THAT LAST SENTENCE ARE NOW MEASURED WRONG — FINDINGS F39 (2026-08-06), NOT YET
-  IMPLEMENTED.** Read directly off the game's own pop panel in three states of one market at one instant:
-  the purchase weight splits **UNITS, not money** (`units_g ∝ pw_g`, so
-  `money_share_g = pw_g·price_g / Σ(pw·price)`), and the price is the **CURRENT LOCAL price, not base**.
-  Evidence: the three states' *money* shares span 34–58 % while their *unit* shares are constant at
-  79.4–79.8 %, the whole spread being a local-price artifact (Cornwall's transportation surplus prices it
-  at £12.72 against £31–32 in the two deficit states); at base price the unit shares are **not** constant
-  (75.4 / 54.8 / 76.0). Four independent solves for transportation's market supply then agree to **1.4 %**,
-  including one on a different need with a tenfold-inflated weight.
-  ⚠ **The error is ZERO when every price sits at base and grows with price dispersion** — which is why
-  F24's 18.5 % (measured in 1836 markets, near base) never surfaced it, and why it bites hardest in the
-  late-era scenarios the ladder is solved against. Fixing it changes every scenario's pop demand, so it
-  wants its own pass with `econ_selftest.mjs` extended to those three states first.
-  ✅ **It also CLEARS the `local` goods suspicion (§10.35.1a):** `transportation` is aggregated to
-  **market** level for the split (≈8 800 for GBR) despite being a `local` good, so the state-level
-  abstraction was never the mechanism — the units/money inversion was. It is not circular and not a time series: pops never
-  sell, so supply does not depend on pop demand, and the split is one pass over the scenario's own
-  sell orders. ⚠ **February, not May** — the same rule
-  scored against May 1836 is worse, so the substitution lag does not pay for the construction
-  drift a wider gap brings in.
+  ✅ **The "units, not money / current, not base price" correction F39 once demanded is WITHDRAWN** — F39's
+  own corrected box already retracted it against the savegame, and F40 confirms the shipped reading
+  (`units ∝ purchase weight / BASE price`) directly. Do not reintroduce it.
+  ⚠ **`local` goods (services, transportation, electricity) are the one part of the rule we do NOT
+  implement.** Their substitution supply is not the market's: per `LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR`
+  = 0.25 it is *the state's own supply plus (1 − the state's GDP share) × 0.25 × the market's production*,
+  "only for goods substitution supply and not for price calculations". ⭐ **That is the mechanism behind the
+  unexplained `transportation ÷ 1.6–2`** the previous session could not name — it was never a divisor, it
+  was this augmentation being smaller than full market supply. It is not circular and not a time series:
+  pops never sell, so supply does not depend on pop demand, and the split is one pass over the scenario's
+  own sell orders. ⚠ **February, not May** — the same rule scored against May 1836 is worse, so the
+  substitution lag does not pay for the construction drift a wider gap brings in.
   **In-stratum SoL spread (`SOL_SPREAD` = 8).** A stratum is not one wealth level, and buy packages are
   steps, so each class's people are spread uniformly over ±8 levels around its mean rather than
   collapsed onto it. One global constant, not a per-market fit (fitting the width per market buys

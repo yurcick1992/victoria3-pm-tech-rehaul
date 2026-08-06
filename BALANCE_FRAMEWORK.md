@@ -2431,3 +2431,67 @@ them, and that is a measurement knob, not a design.
 happen — but it does not pay for itself, and its premise about *in-game* timing is exactly what the
 correction at the head of this section says is unverified. Revisit once the run says what the game actually
 does; do not ship it on the argument alone.
+
+---
+
+## 10.36 ⭐⭐ THE WITHIN-NEED SUBSTITUTION RULE IS SOLVED — and it changes one thing in our model
+
+**FINDINGS F40 (2026-08-07).** The rule the game uses to divide a pop need's money across its substitutable
+goods is now measured end to end, against the purchase weights a **savegame stores** rather than against
+anything inferred from an order book:
+
+```
+availability(g) = ( market sell orders(g) − 0.5 × NON-POP demand(g) ) × BASE price(g)
+raw share       = availability(g) / Σ availability over the need's own goods
+purchase weight = base weight(need,g) × clamp( raw , min_supply_share , max_supply_share )
+units           = need money × (purchase weight / Σ purchase weights) / base price(g)
+```
+
+A gamestate's own supply and non-pop demand reproduce that same gamestate's stored weights to **2.56 pp
+across 13 943 entries** in the American market — 8 of its 10 needs under 1.35 pp.
+
+### 10.36.1 What actually changed in `needSplit`, and what did not
+
+**One line.** Availability is now a **value** (`supply × base price`) where it used to be a **unit count**.
+Everything else the model already did was right: the −0.5 non-pop deduction (F22), the clamp acting on the
+RAW share rather than the final one (F31), and `units ∝ purchase weight / base price` (F39).
+
+Measured both ways, on two independent instruments pointing in the same direction:
+
+| test | count-based (old) | value-based (F40) |
+|---|--:|--:|
+| within a fully clean need — British `luxury_food`, 4 goods | 8.15 pp | **0.59 pp** |
+| within a fully clean need — American `basic_food`, 5 goods | 5.43 pp | **1.63 pp** |
+| 1836 pop **consumption** telemetry, mean over 7 markets | 20.0 % | **18.3 %** |
+
+⚠ **The 1836 line is the one that matters for confidence.** The change was derived from 1925 savegame
+weights and then scored against a different instrument, in a different decade, in a different arm — and it
+improved. `S.AVAIL_MODE = 'units'` restores the old reading for A/B measurement; it is not a setting.
+
+### 10.36.2 Three terms of the real rule we deliberately do NOT model
+
+Each is measured in F40, so the omission is a decision with a known size, not a gap:
+
+- **Prestige goods** — `share × (1 + prestige_goods_demand_increase × prestige share of that good's supply)`,
+  the increase being 0.5 by default and 0.75 / 1.0 in four needs. Measured against the save's own prestige
+  output to within 0.6 pp on fish, coffee, opium and grain. Our scenarios contain no prestige goods, so the
+  factor is 1 — but it is why a British `standard_clothing` entry reads 1.4065 where the rule alone gives 1.
+- **Culture obsession** (a floor of `obsession_demand_min × max_supply_share`) and **religion taboo**
+  (`× 0.5`, exact). We have no culture dimension and will not add one.
+- **`local` goods.** Their substitution supply is the state's own plus
+  `(1 − the state's GDP share) × 0.25 ×` the market's production
+  (`LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR`). ⭐ This is the mechanism behind the previously unexplained
+  `transportation ÷ 1.6–2`, and it **partly answers §10.35.1a**: the locality abstraction is not merely a
+  simplification we tolerate, it is a named term of the game's own formula that we do not carry. Adding it
+  needs a per-state GDP share, which the extractor does not yet produce.
+
+### 10.36.3 ⭐ The "debut spike" is not a demand mechanism
+
+`MAX_DEMAND_ADJUSTMENT_BASE_AMOUNT` (0.01) and `MAX_DEMAND_ADJUSTMENT_SCALED_AMOUNT` (0.09) rate-limit how
+far a pop's demand for a substitutable good may move **per update**. So a good's stored share *ramps* toward
+its computed target over years instead of jumping to it. That is what F37 saw as a gradual debut onset and
+what F39 saw as Midlands telephones drifting 0.1150 → 0.1547 → 0.2121 across three annual saves.
+
+⇒ **Nothing hands a newly invented good a bootstrap share.** F31 already showed the final-share reading of
+`max_supply_share` does not, and §10.32's "consumer arrives an era late" problem is therefore still a
+*supply-and-customer* problem, not a demand-rule one. Do not go looking for a demand mechanism again.

@@ -76,15 +76,46 @@ near('     split: telephones unmade → raw yields 100%',
 near('     split: telephones unmade → final YIELDS too',
   splitOf('final', { transportation: 1000, telephones: 0 }).transportation, 1, 0,
   'caps must yield when nothing with supply can absorb the money');
+// ⚠ the expected number MOVED with F40's value-weighted availability, and the test's point did not: one
+// unit of telephones (base 70) now carries 2.33x the availability of one unit of transportation (base 30),
+// so the same 1000-vs-1 supply is a slightly less lopsided split. 0.997 was the count-based reading.
 near('     split: one tiny producer, raw ≈ cancels the cap',
-  splitOf('raw', { transportation: 1000, telephones: 1 }).transportation, 0.997, 0.001,
-  'the 0.75 cap moves it 0.3pp — §10.34');
+  splitOf('raw', { transportation: 1000, telephones: 1 }).transportation, 0.9938, 0.001,
+  'the 0.75 cap moves it 0.6pp — §10.34');
 near('     split: one tiny producer, final binds at the cap',
   splitOf('final', { transportation: 1000, telephones: 1 }).telephones, 0.25, 0.001,
   'the bootstrap the rejected reading would give a debut good');
 near('     split: uncapped case — the modes agree',
   splitOf('final', { transportation: 1000, telephones: 1000 }).telephones
   - splitOf('raw', { transportation: 1000, telephones: 1000 }).telephones, 0, 1e-9);
+
+// ---- F40: the split rule against a MEASURED GAMESTATE. Supply is that market's sell orders and non-pop
+// demand is the sum of every building's input_goods, both read out of the 1925 save + its own telemetry
+// (session 20260806_110926_vanilla-retest-2 run003). The expected values are the game's OWN stored purchase
+// weights for that state, converted from `share` to the money share needSplit returns (money ∝ weight×share).
+// ⭐ American basic_food is the discriminating case: grain and fish are base 20 against 30 for the other
+// three, so a count-based availability gets it wrong (5.43 pp) where a value-based one does not (1.63 pp).
+const splitNeed = (need, supply, nonpop) => {
+  const def = S.POPM.needs[need];
+  const r = E.needSplit(need, def, supply, nonpop) || [];
+  return Object.fromEntries(r.map(x => [x.g, x.s]));
+};
+{
+  const s = splitNeed('popneed_basic_food',
+    { grain: 10405.34, fish: 2917.77, groceries: 6948.63, meat: 1201.18, fruit: 1138.68 },
+    { grain: 4455.6, fish: 440.7, groceries: 822.5, meat: 293.8, fruit: 0 });
+  const want = { grain: 0.28724, fish: 0.11094, groceries: 0.46611, meat: 0.06518, fruit: 0.07054 };
+  for (const g of Object.keys(want))
+    near(`     F40  American basic_food 1925 — ${g}`, s[g], want[g], 0.02, 'the game\'s own stored purchase weight');
+}
+{
+  const s = splitNeed('popneed_luxury_food',
+    { groceries: 5103.87, meat: 5467.65, fruit: 15935.76, sugar: 18035.08 },
+    { groceries: 880.4, meat: 227.9, fruit: 0, sugar: 1494.5 });
+  const want = { groceries: 0.20355, meat: 0.19620, fruit: 0.34788, sugar: 0.25237 };
+  for (const g of Object.keys(want))
+    near(`     F40  British luxury_food 1925 — ${g}`, s[g], want[g], 0.02, 'the game\'s own stored purchase weight');
+}
 
 console.log(fails ? `\n${fails} CHECK(S) FAILED` : '\nALL CHECKS PASSED');
 process.exit(fails ? 1 : 0);
