@@ -106,9 +106,10 @@ hand on a major patch.
      demand. 40 base goods carry one today.
    - `LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR` (0.25) — the local-goods augmentation we do **not**
      implement; if this changes, the size of that known gap changes with it.
-   - `MAX_DEMAND_ADJUSTMENT_BASE_AMOUNT` (0.01) / `_SCALED_AMOUNT` (0.09) / `_SCALE` (1.0) — the rate limit
-     that makes a debut good's share ramp rather than jump. We do not model it, but every measurement taken
-     against a savegame's stored weights is a *lagged* value because of it.
+   - `MAX_DEMAND_ADJUSTMENT_BASE_AMOUNT` (0.01) / `_SCALED_AMOUNT` (0.09) / `_SCALE` (1.0) — how far a pop's
+     demand for a substitutable good may move per update. We do not model it, and at annual sampling it does
+     **not** bind: a stored weight sits on its computed target (F40). ⚠ If a patch tightened these, stored
+     weights would start trailing and every save-based measurement would need a lag term.
    ⚠ Also version-sensitive: **`common/cultures`** obsession lists are only the 1836 starting set (the game
    adds and drops them at runtime), and **`common/religions`** taboo lists. The measurement tooling reads
    both from the *save*, not the files — keep it that way.
