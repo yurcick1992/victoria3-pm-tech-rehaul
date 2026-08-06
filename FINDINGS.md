@@ -295,12 +295,25 @@ see the box below, where it is scored over every obsessed entry of three gamesta
   (18 107) instead of Midlands' own (1 700) would require an effective supply of 18 440, which the formula
   cannot reach at any GDP share. Implementing it needs a per-state GDP share, which the extractor does not
   produce yet.
-- **The stored weight is a LAGGED value, not the instantaneous target.**
+- **A rate limiter exists, but it is NOT what makes a debut good ramp.**
   `MAX_DEMAND_ADJUSTMENT_BASE_AMOUNT = 0.01`, `MAX_DEMAND_ADJUSTMENT_SCALED_AMOUNT = 0.09`,
   `MAX_DEMAND_ADJUSTMENT_SCALE = 1.0` — "*controls how much a pop can change demand of a substitutable
-  goods in a single update*". This is why F39 saw Midlands telephones drift 0.1150 → 0.1547 → 0.2121 over
-  three years and why a debut good ramps instead of jumping: **the ramp is the adjustment limiter, not a
-  demand mechanism.** It also explains residuals of one to two per cent on fast-moving goods.
+  goods in a single update*" — so a stored weight is in principle a trailing value.
+  ❌ **I claimed that was the explanation for the debut ramp, and measuring it says otherwise.** Applying
+  the local-goods rule to Midlands `communication` over the three saves:
+
+  | | telephone sell | transportation state supply | target | observed | miss |
+  |---|--:|--:|--:|--:|--:|
+  | 1923 | 819 | 1 718 | 0.11195 | 0.11497 | +2.7 % |
+  | 1924 | 1 151 | 1 435 | 0.16900 | 0.15474 | −8.4 % |
+  | 1925 | 1 480 | 1 719 | 0.21738 | 0.21214 | −2.4 % |
+
+  **The observed share sits on its target every year, with no accumulating lag.** The ramp F39 recorded as
+  0.1150 → 0.1547 → 0.2121 is the *target itself* rising as telephone supply nearly doubles — which is what
+  F32 and F37 already said and what this now confirms mechanically. The limiter is real and would bite on a
+  faster shock; it does not explain a debut.
+  ⭐ This is also the **local-goods rule confirmed on three dates rather than one**: without it the target
+  reads 0.0495 / 0.0709 / 0.0973 against those observations, out by a factor of 2.2 every year.
 
 ### ⚠⚠ TWO THINGS THAT WOULD HAVE WASTED THE SESSION, AND DID NOT ONLY BECAUSE THEY WERE CHECKED
 

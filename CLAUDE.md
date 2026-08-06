@@ -943,10 +943,13 @@ the game.
   `max(obsession_demand_min × max_supply_share × weight, obsession_demand_min²)`) and religion **taboo** (`× 0.5`, exact). ⚠ **Obsessions are
   RUNTIME state, not file content** — the game adds and drops them all campaign, so reading them from
   `common/cultures` puts a 1925 culture 220 pp wrong.
-  ⚠ **The weights the save stores are per (state, CULTURE) and are LAGGED, not the instantaneous target**
-  (`MAX_DEMAND_ADJUSTMENT_BASE_AMOUNT` 0.01 + `_SCALED_AMOUNT` 0.09 per update). ⭐ **That is what the
-  "debut spike" actually is** — a good's share ramps toward its target over years because the adjustment
-  is rate-limited, not because any demand mechanism favours a newcomer.
+  ⚠ **The weights the save stores are per (state, CULTURE).** A rate limiter also exists
+  (`MAX_DEMAND_ADJUSTMENT_BASE_AMOUNT` 0.01 + `_SCALED_AMOUNT` 0.09 per update), but ❌ **it is NOT what
+  makes a debut good ramp** — measured over three saves, the observed share sits on its computed target
+  every year (0.11497 vs 0.11195, 0.15474 vs 0.16900, 0.21214 vs 0.21738) with no accumulating lag.
+  ⭐ **The "debut spike" is just supply**: the target rises because the new good's supply rises. That is
+  what F32 and F37 already measured from the order book. **Stop looking for a demand mechanism that
+  favours a newcomer — there isn't one, in either direction.**
   ✅ **The weights are VERIFIED correct against the game files** (2026-08-04): all **52 entries across 15
   needs** match `common/pop_needs/00_pop_needs.txt` exactly — every `weight`, `max_supply_share`,
   `min_supply_share` and `default` — and **29 of the 52 carry a non-default weight**, so this was a real

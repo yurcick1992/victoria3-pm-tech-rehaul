@@ -2485,13 +2485,19 @@ Each is measured in F40, so the omission is a decision with a known size, not a 
   simplification we tolerate, it is a named term of the game's own formula that we do not carry. Adding it
   needs a per-state GDP share, which the extractor does not yet produce.
 
-### 10.36.3 ⭐ The "debut spike" is not a demand mechanism
+### 10.36.3 ⚠ The debut ramp is SUPPLY, not a rate limiter — a claim I made and then measured
 
 `MAX_DEMAND_ADJUSTMENT_BASE_AMOUNT` (0.01) and `MAX_DEMAND_ADJUSTMENT_SCALED_AMOUNT` (0.09) rate-limit how
-far a pop's demand for a substitutable good may move **per update**. So a good's stored share *ramps* toward
-its computed target over years instead of jumping to it. That is what F37 saw as a gradual debut onset and
-what F39 saw as Midlands telephones drifting 0.1150 → 0.1547 → 0.2121 across three annual saves.
+far a pop’s demand for a substitutable good may move per update, so a stored weight is in principle a
+trailing value. I took that to be the explanation for a debut good ramping instead of jumping. **It is not.**
 
-⇒ **Nothing hands a newly invented good a bootstrap share.** F31 already showed the final-share reading of
-`max_supply_share` does not, and §10.32's "consumer arrives an era late" problem is therefore still a
-*supply-and-customer* problem, not a demand-rule one. Do not go looking for a demand mechanism again.
+Applying the local-goods rule to Midlands `communication` across the three 1923/24/25 saves, the observed
+share sits on its computed target every year — 0.11497 against 0.11195, 0.15474 against 0.16900, 0.21214
+against 0.21738 — with no accumulating lag. The ramp is the **target** rising as telephone supply goes
+819 → 1 151 → 1 480. That is exactly what F32 and F37 measured from the order book, now confirmed from the
+game’s own stored weights.
+
+⇒ **Nothing hands a newly invented good a bootstrap share, and nothing holds it back either.** F31 already
+showed the final-share reading of `max_supply_share` does not, and §10.32’s “consumer arrives an era late”
+problem is therefore still a *supply-and-customer* problem, not a demand-rule one. Do not go looking for a
+demand mechanism again.
