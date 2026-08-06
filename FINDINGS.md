@@ -163,10 +163,13 @@ real observed pop demand.*
 Predicting the stored purchase weight for **every** (state × culture × need × good) entry in a market,
 from that market's order book and building flows, with no free parameters:
 
-| market | entries scored | mean absolute error of the share |
-|---|--:|--:|
-| **American** | 13 943 | **2.559 pp** |
-| British | 18 226 | 8.201 pp |
+| market, 1925 | entries scored | every term on | mechanism only |
+|---|--:|--:|--:|
+| **American** | 13 943 | **2.775 pp** | **2.559 pp** |
+| British | 18 226 | — | 8.201 pp |
+
+"Every term on" applies the prestige multiplier, the obsession floor and the taboo halving as well;
+"mechanism only" drops the entries a culture touches, which is the part our scenario model can represent.
 
 **Replicated on three consecutive annual gamestates of the same campaign, nothing refitted:**
 
