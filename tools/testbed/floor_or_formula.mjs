@@ -27,7 +27,12 @@ const args = process.argv.slice(2);
 const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 && args[i + 1] ? args[i + 1] : d; };
 const SESSION = argOf('--session', '');
 const MARKET  = argOf('--market', 'British Market');
-if (!SESSION) { console.error('usage: floor_or_formula.mjs --session <dir> [--market M]'); process.exit(1); }
+// ⚠ The overlay arm multiplies automobiles' pop-need weight, so reading A must be computed with the
+// weight that arm actually ran. Pass --auto-weight-mult 10 for the ×10 arm; the default 1 is the
+// control's nominal 1.25. Comparing an overlay run against the control's weight would make the lever
+// look like an anomaly when it is simply the treatment doing what it was set to do.
+const WMULT   = parseFloat(argOf('--auto-weight-mult', '1'));
+if (!SESSION) { console.error('usage: floor_or_formula.mjs --session <dir> [--market M] [--auto-weight-mult N]'); process.exit(1); }
 const SDIR = join(REPO, SESSION.replace(/^[.\\/]+/, ''));
 const PT = 30, PA = 100, FT_LO = 0.617, FT_HI = 0.676;
 
@@ -59,7 +64,8 @@ for (const r of readdirSync(SDIR).filter(d => /^run\d+_/.test(d)).sort()) {
     if (!(v.transportation.sell > 0) || !(v.automobiles.sell > 0)) continue;
     const sA = v.automobiles.sell / (v.automobiles.sell + v.transportation.sell);
     const sT = 1 - sA;
-    const A  = 100 * (1.25 * sA) / (Math.min(sT, 0.75) + 1.25 * sA);
+    const W = 1.25 * WMULT;
+    const A  = 100 * (W * sA) / (Math.min(sT, 0.75) + W * sA);
     const mA = fA * v.automobiles.buy * PA;
     const obsLo = 100 * mA / (mA + FT_HI * v.transportation.buy * PT);
     const obsHi = 100 * mA / (mA + FT_LO * v.transportation.buy * PT);

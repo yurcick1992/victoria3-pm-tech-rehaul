@@ -131,6 +131,320 @@ transcript rather than from data.
 
 ---
 
+## F39 — ✅ **OUR WITHIN-NEED SPLIT FORMULA IS CORRECT**, confirmed against the game's OWN stored purchase weights. `units ∝ purchase weight / BASE price` reproduces four observations across three states and two needs to within 2 %
+
+> ⭐⭐ **READ THIS FIRST — THE FINDING BELOW WAS REWRITTEN AFTER THE SAVEGAME WAS MELTED.** Earlier
+> versions of F39 claimed our model was wrong in two, then four, ways. **That was my error, not the
+> model's.** The melted save stores the game's own computed purchase weights per state
+> (`states.database.<id>.pop_needs`), and against them `needSplit()` / `spendToGoods()` as documented in
+> CLAUDE.md come out **right**:
+>
+> **`units_g ∝ pw_g / base_price_g`**, hence **`money_share_g = pw_g·(price_g/base_g) / Σ`**
+>
+> | state (need) | local transp. price | predicted transp. share | observed | error |
+> |---|--:|--:|--:|--:|
+> | Midlands (communication) | £31.22 | 57.8 % | 56.7 % | 1.9 % |
+> | Lowlands (communication) | £32.39 | 58.4 % | 57.5 % | 1.5 % |
+> | Cornwall (communication) | £12.72 | 34.7 % | 34.2 % | 1.4 % |
+> | Midlands (free_movement) | £31.22 | 3.12 % | 3.10 % | 0.8 % |
+>
+> **Cornwall's 23 pp deviation is entirely its transportation price** (£12.72 against £31–32, from a local
+> surplus) — its stored weights are almost identical to the other two states'. That is the same
+> conclusion the three-state comparison reached, now with the mechanism named.
+>
+> **The stored weights also confirm two things directly**, no inference required:
+> - **Supply shares sum to 1 over the need's own goods.** Dividing each weight by its base weight gives
+>   free_movement 0.3752 + 0.6209 = **0.996**, communication 0.7879 + 0.2121 = **1.0000**.
+> - **`max_supply_share` clamps the RAW share** (F31's reading, now direct): transportation's raw 0.7879
+>   is clipped to exactly **0.75000** in communication, while its 0.3752 in free_movement is untouched —
+>   the same good capped in one need and slack in another, same state, same instant.
+>
+> **And the weights DRIFT**, which is what F37's gradual debut onset was seeing (user's hypothesis,
+> confirmed): Midlands telephones' share runs **0.1150 → 0.1547 → 0.2121** over the 1923/24/25 saves,
+> ~35 %/year, while transportation stays pinned at the 0.75 cap throughout.
+>
+> ⚠ **WHAT WENT WRONG, because the pattern repeated three times.** Each wrong version was built by
+> *inferring* the split from money shares, and each inference was internally consistent while being
+> wrong — a four-way agreement to 1.4 % that shared its own two errors, an α≈1/3 power law that
+> cross-validated across two needs, a per-state α that fitted two states. **Every one of them collapsed
+> the moment an independent measurement arrived.** The lesson is not "check your arithmetic"; it is that
+> *self-consistency across variants of one calculation carries no evidential weight at all*, and the
+> project had the independent source — the savegame — available the whole time.
+>
+> The superseded text is kept below for the record. Where it contradicts the box above, the box wins.
+
+## F39 (superseded) — the inference-based version, kept for the record
+
+**Arm** `overlay` — the ×10 build, read live in-game at **January 1925, GBR market** (user observation,
+2026-08-06) · 🟢 **ARM-FREE for the mechanism.** `pop_need_weight_mult` is keyed by GOOD, not by need, so
+automobiles is ×10 in **both** needs it appears in (`free_movement` 1.25 → 12.5, `leisure` 1 → 10).
+`communication` holds transportation + telephones, neither reweighted — vanilla. The result below is
+confirmed on both, which is itself a check: the ×10 need and the vanilla need agree.
+
+**Why this source beats everything before it.** F35 established that no pop need has an observable budget
+from the order book, because all 15 share a good with another need. **The pop panel reports the split per
+need directly** — the exact quantity every previous argument had to infer.
+
+### THE RESULT
+
+Three states of one market, one instant, `popneed_communication` (transportation + telephones), each read
+from one engineer pop:
+
+| state | MAPI | local transp. supply | local transp. price | **money** share transp. | **unit** share transp. |
+|---|---|--:|--:|--:|--:|
+| Midlands | 95 % | 1 710 (vs 1 803 demand) | £31.22 | 56.8 % | **79.8 %** |
+| Cornwall | 100 % | 930 (vs 526 demand) | £12.72 | 34.2 % | **79.4 %** |
+| Lowlands | 95 % | 922 (vs 1 020 demand) | £32.39 | 57.5 % | **79.7 %** |
+
+**Money shares span 34–58 %. Unit shares are constant at 79.4–79.8 %.** Cornwall's local surplus makes
+its transportation cost £12.72 against £31–32 in the two deficit states, and that price difference is the
+*entire* source of the money-share variation.
+
+⇒ **TWO CORRECTIONS TO OUR MODEL, both load-bearing:**
+
+1. **The purchase weight splits UNITS, not MONEY.** We compute `money_g = M · pw_g/Σpw`, then
+   `units_g = money_g / base_price_g`. The game sets `units_g ∝ pw_g` and money follows —
+   `money_share_g = pw_g·price_g / Σ(pw·price)`.
+2. **The price is the CURRENT LOCAL price, not the base price.** Recomputing the unit shares at base
+   price gives **75.4 / 54.8 / 76.0 %** — *not* constant, so base price is independently excluded by the
+   same three readings.
+
+### ⭐ THE SUPPLY SHARE IS MARKET-LEVEL, AND `local` DOES NOT CHANGE THAT
+
+Two independent confirmations, one of which does not use the split at all:
+
+1. **The unit share is constant across three states whose local supplies differ 1 710 / 930 / 922.** A
+   state-dependent quantity cannot produce a state-independent share.
+2. ⭐ **The telemetry reports transportation market-wide directly.** `market_goods_scoped` on the same
+   run at the same date gives GBR transportation **sell 32 501 · buy 27 952**, even though the market
+   *screen* shows nothing for a `local` good. The same dump matches the user's screen readings for the
+   tradeable goods (telephones sell 1 479.7 vs 1 480; automobiles 5 351.8 vs 5 390), so it is the same
+   market at the same instant.
+
+⇒ **`transportation` IS aggregated to market level for the split** even though it is a `local` good.
+BALANCE_FRAMEWORK §10.35.1a named the `local` goods abstraction as the leading suspect for our
+under-prediction. **It is not the mechanism.** The units/money inversion above is.
+
+### ❌ AND THE SAME TELEMETRY FALSIFIED THIS FINDING'S OWN FIRST SOLVE — two errors, corrected
+
+The first version of F39 solved transportation's market supply four ways and got **8 627 – 8 875, ±1.4 %**,
+which read as a powerful confirmation. Checking it against the order book the run itself logged broke it:
+
+**(i) THE 0.75 CAP BINDS, and the solve assumed it did not.** Unclamped, the observed unit share needs
+`s_T/s_P` = 7.90 ⇒ T = 8 847 — but that implies `s_T` = **0.888**, far above transportation's
+`max_supply_share` of **0.75**. A solve whose answer violates its own premise is void. With the cap
+binding, `pw_T` = 0.75 is *fixed* and the observed share instead pins `s_P` = 0.0949, i.e. **T/P = 9.53**.
+
+**(ii) THE NON-POP DEDUCTION IS THE FULL NON-POP BUY, NOT HALF.** ⚠ First, a labelling error worth naming:
+the solved quantity is **not supply** — it is `sell − k·non-pop buy`, and F39 originally called it "market
+supply", which made it read as an absurd claim about how much transportation Britain produces. Supply is
+**32 501** and is not in dispute (the user independently judged it right for the railway and urban-centre
+count, and "certainly not under 20 000"). The quantity that enters the split is a **residual**.
+
+The three read states give the non-pop share of transportation buy orders directly — **86.7 %** (Midlands
+94.2 %, Lowlands 81.0 %, Cornwall 71.9 %) — so the residual can be computed from the order book and
+compared with what the observed share requires under the binding cap:
+
+| deduction | telephone metric | T metric **required** | T metric **from the order book** | agreement |
+|---|--:|--:|--:|--:|
+| **half** (F22's `sell − 0.5·non-pop`) | 1 120 | 10 676 | 20 386 | **1.91 ×** |
+| **full** (`sell − 1.0·non-pop`) | 760 | 7 244 | **8 272** | **1.14 ×** |
+
+Half is out by ~2 × *and* is independently impossible (it needs 43 650 of non-pop buy against a 27 952
+total). Full agrees to 14 %, about what a three-state sample of an 86.7 % share should scatter by. It also
+carries to the *other* need unfitted: it predicts a free_movement transportation unit share of **14.4 %**
+against **13.8 %** observed, and correctly leaves that need's cap slack (`s_T` = 0.677 < 0.75).
+
+⭐ **And it has a clean meaning:** `sell − non-pop buy` is **what is left for pops once industry has taken
+its share** — 32 501 − 24 230 = **8 267 available**, against roughly **3 700** of market-wide pop
+transportation demand. Supply comfortably exceeds pop demand, which is the sane regime and is why the
+0.75 cap binds.
+
+⚠ **This contradicts F22**, which fitted the 0.5 coefficient by improving Belgian pop-demand error from
+30.3 % to 16.2 %. **But F22 was fitted under BOTH of the mis-specifications this finding corrects** —
+money-split and base-price — so the 0.5 may simply have been absorbing them. **Neither coefficient is
+settled; this is now an open question, not a correction.** Re-deriving it is a job for
+`score_pop_split.mjs` *after* the units/current-price fix lands, so the coefficient is fitted against a
+correctly specified model rather than compensating for a broken one.
+
+⚠⚠ **THE METHOD POINT: the ±1.4 % agreement was real and still meant nothing.** All four solves shared
+the same two errors, so they moved together and agreed with each other while jointly disagreeing with the
+order book. **Internal consistency across variants of one calculation is not evidence** — the check that
+mattered was against an independent measurement, and that measurement was already on disk.
+
+### ⚠ WHAT THIS SUPERSEDES — three intermediate claims made and withdrawn the same day
+
+Kept, because each was wrong in an instructive way:
+
+1. **"The split is decisively market-level"** (from Midlands alone). Overclaimed: zero local supply only
+   excludes α = 1, since a blend still scores through the market term. Right answer, wrong warrant.
+2. **"α > 0, per-state, α_Midlands ≈ 0.64–0.75"** (from Midlands + Cornwall). The two states' *money*
+   shares differ by 22.5 pp, which under a money-split model forces a large local weight. **The
+   difference was a price artifact.** Two states could not tell the readings apart; the third could.
+3. **"A state-independent coefficient `c_L/c_M` ≈ 3.43 fits to 1.5 %."** This rested on **assuming**
+   Cornwall's unread transportation supply equalled its consumption, reasoning that a `local` good cannot
+   be imported so supply must track demand. **A local good is not forced to match its demand — Cornwall
+   overbuilt it by 77 % (930 against 526).** With the real figure the constants are 3.409 and 1.573, a
+   factor of 2.17 apart.
+
+⚠⚠ **THE METHOD LESSONS, which cost more than the arithmetic.** (i) **A wrong assumption did not add
+noise, it manufactured a confirmation** — the spurious 1.5 % agreement looked like strong evidence
+precisely because one parameter against two observations should leave a degree of freedom. **Ask for the
+missing number; do not derive it from a plausible premise** (user, 2026-08-06). (ii) **Two data points
+could not distinguish a real state-dependence from a price artifact.** The third state settled it
+immediately and cost one panel read. When a model needs a per-case parameter, that is the signal to get
+another case, not to fit the parameter.
+
+### CONSEQUENCES FOR THE MOD
+
+- `needSplit()` / `spendToGoods()` in `ui/econ.js` (and the duplicated copy in `builder.html`) implement
+  **both** halves wrongly. Fixing them changes every scenario's pop demand.
+- The error is **zero when all prices sit at base** and grows with price dispersion — which is exactly why
+  F24's 18.5 % was measured in 1836 markets near base and why this never surfaced there. It matters most
+  in the late-game, high-dispersion scenarios the era ladder is solved against.
+- Direction: for a good trading **above** base we currently **over**-state its unit demand, and under it,
+  **under**-state. Automobiles in this market are at 156 % of base.
+- ⚠ **Not yet implemented.** The change is well-supported but touches the core of the scenario model; it
+  wants its own pass, with `econ_selftest.mjs` extended to these three states first.
+
+**What it does NOT say.** (1) It does not establish how the game aggregates a `local` good to market
+level, only that it does and that the total is ≈8 800 for GBR transportation. (2) All three states are one
+market at one instant; the units/money result is structural and should hold generally, but the ≈8 800 is
+specific. (3) It says nothing about `min_supply_share`/`max_supply_share` behaviour — no cap binds in any
+of these readings, and that deserves a check of its own. (4) `leisure` was read once and is not used in
+the solve.
+
+### ⭐ VANILLA AUTOMOBILE DEMAND — the control run had it all along
+
+Everything above about automobiles is ×10-arm. The **control** runs of the same session carry the
+market-level order book for vanilla, which had been overlooked:
+
+| date | arm | auto buy | auto sell | auto price | transp buy | transp sell | auto ÷ transp buy |
+|---|---|--:|--:|--:|--:|--:|--:|
+| 1925.1 | **vanilla** | 11 515 | 7 400 | 141.71 | 51 879 | 47 014 | **0.222** |
+| 1925.1 | ×10 | 9 466 | 5 352 | 157.64 | 27 952 | 32 501 | **0.339** |
+| 1936.1 | **vanilla** | 14 589 | 9 274 | 142.97 | 59 338 | 57 250 | **0.246** |
+
+⚠ **Levels are NOT comparable across runs** — they are different campaigns and vanilla's Britain is
+**1.85 × larger** on transportation. Normalising to transportation buy, the ×10 arm carries **1.53 ×** the
+automobile demand of vanilla. ⚠ That is a ratio of *total* buy orders, most of which is pop demand for
+automobiles (80 % in the read state) but is **not** the within-need share, and the two campaigns differ
+in supply as well as weight. **Vanilla's within-need automobile share is still unmeasured** — it needs one
+pop panel read on a vanilla save, which no longer exists (autosaves are overwritten per slot).
+
+**Confidence: high** for the units-not-money and current-not-base-price results — they rest only on the
+constancy of unit shares across three states, which involves no supply metric, no weight and no cap.
+**Retracted** for the ±1.4 % four-way solve and its ≈8 800 (see above). **Open**: the non-pop deduction
+coefficient, and vanilla's within-need automobile share.
+
+Reproduce: `node tools/testbed/check_midlands_split.mjs` — observations embedded with their arms.
+
+---
+
+## F38 — Three pop needs DO NOT EXIST below wealth 20, and only **7.9 %** of the world reaches it. Telephones sit in one of them, so ~92 % of humanity has no telephone budget at all — before any supply-share rule is consulted
+
+**Arm** `overlay` — vanilla + telemetry + `pop_need_weight_mult` ×10 on the **goods** `automobiles`,
+`steamers`, `luxury_furniture` (the multiplier is keyed by good, so it lands in every need each appears
+in — `free_movement` and `leisure` for automobiles; `popneed_communication` is untouched) ·
+session `20260806_110926_vanilla-retest-2` run 3, autosave at **1925** · 🟡 **ARM-BOUND for the
+population, 🟢 ARM-FREE for the mechanism.** The wealth *thresholds* are read from vanilla
+`common/buy_packages` and hold on any arm; the *distribution* of pops across wealth is this campaign's,
+and a ×10 communication reweight is in it. Re-read on a pure control before quoting the 7.9 % as vanilla.
+
+**Source is a SAVEGAME, not telemetry** — a first for this project. Method, tooling and format notes in
+`tools/testbed/save_extract.mjs` / `lib_savebin.mjs` / `save_pops.mjs` / `save_summary.mjs`.
+
+> ⚠⚠ **TWO NUMBERS BELOW WERE CORRECTED AFTER THE SAVE WAS MELTED (2026-08-06).** They came from a
+> hand-decoded field name that was wrong; `rakaly melt --format vic3` gives the real names.
+>
+> | | as first reported | correct |
+> |---|--:|--:|
+> | world population | 1 429 847 144 | **1 923 896 283** |
+> | workforce ratio | 0.346 | **0.257** |
+> | reach wealth 20 | 7.9 % | **7.8 %** |
+> | mean wealth | 10.96 | **10.95** |
+>
+> `0x573a` is **`dependents`**, not pop size — total population is `workforce + dependents`. ⚠ **The wrong
+> value passed a plausibility check**: 1.43 bn looks like a reasonable 1925 world population, which is
+> exactly why it survived. A total that looks right is not confirmation.
+>
+> ⇒ **The headline is unaffected** — wealth is a property of the pop record and workforce and dependents
+> share it, so the reweighting moves the distribution by ~0.1 pp. **But the dependent-factor claim is
+> WITHDRAWN**: at a 0.257 ratio the factor is **0.629**, essentially the sheet's documented 0.625, so
+> there is no "7.6 % more pop money" and the sheet was right.
+
+**Claim.** `common/buy_packages` defines 98 wealth levels, and several pop needs are simply **absent**
+from the package below a threshold. Measured against every pop's own wealth level in the 1925 save
+(138 881 records, 1 429 847 144 people):
+
+| need | first appears at wealth | people who reach it | share of world |
+|---|--:|--:|--:|
+| simple_clothing · basic_food · heating · intoxicants | 1 | 1 429 847 144 | 100.0 % |
+| crude_items | 5 | 1 212 895 288 | 84.8 % |
+| stimulants | 6 | 1 189 918 706 | 83.2 % |
+| household_items · standard_clothing · services · **free_movement** | 10 | 993 395 960 | 69.5 % |
+| luxury_drinks · luxury_items | 15 | 279 467 440 | 19.5 % |
+| **communication** · luxury_food · **leisure** | 20 | 112 550 283 | **7.9 %** |
+
+**Why it matters.** BALANCE_FRAMEWORK §10.29 attributes era-3 telephones reading buy 18 against sell 72
+to `popneed_communication` being *shared* with `transportation`. The sharing is real, but it is the
+second-order term: the **first**-order term is that 92.1 % of the world cannot buy telephones at any
+price, because the need does not appear in their buy package. Automobiles are less exposed — they are in
+`free_movement` (69.5 %) as well as `leisure` (7.9 %).
+
+**This is a demand-side wealth threshold, not a demand mechanism**, and it is the first explanation of
+the debut-good problem that does not require the supply-share rule to be misread.
+
+**⭐ It also retires a sweep.** F37 could not close because C/F — `communication` money over
+`free_movement` money — is wealth-dependent (0 below 20, then 0.34–0.80) and the wealth mix was unknown,
+so it was swept. Summed over every pop at its own level:
+
+| quantity | value |
+|---|--:|
+| `popneed_communication` | 1 941 435 |
+| `popneed_free_movement` | 3 451 849 |
+| **C/F** | **0.5624** |
+| F37's binding-cap prediction `3 + 4·(C/F)` | **5.25** |
+| measured transportation : automobiles, 1912.3 | 3.05 |
+
+3.05 against 5.25 means the cap does **not** bind — the same conclusion F37 reached, now from an
+independent quantity instead of a range.
+
+**⭐ REPLICATED ACROSS THREE CONSECUTIVE AUTOSAVES** — so C/F is not a knife-edge value read once:
+
+| autosave | people | mean wealth | reach wealth 10 | reach wealth 20 | C/F |
+|---|--:|--:|--:|--:|--:|
+| oldest | 1 411 132 943 | 10.78 | 68.5 % | **7.0 %** | 0.5568 |
+| middle | 1 420 547 156 | 10.85 | 69.4 % | **7.5 %** | 0.5614 |
+| newest (1925) | 1 429 847 144 | 10.96 | 69.5 % | **7.9 %** | 0.5624 |
+
+Everything drifts in one direction and slowly: the world is getting richer, and the share able to buy a
+telephone at all is climbing about **half a percentage point per snapshot** off a base near 7 %. C/F
+moves 0.557 → 0.562, i.e. **±0.5 %** — far tighter than the 0.34–0.80 range it replaces.
+
+**Other measured values** (same save): people-weighted mean wealth **10.96**; wealth band 10–19 holds
+**61.6 %** of the world (52.4 % peasants, 26.4 % laborers); mean wealth by profession runs capitalists
+**58.1** → aristocrats **36.4** → clergy/bureaucrats/shopkeepers ~**21** → farmers/machinists/clerks
+~**15** → peasants **10.6** → soldiers **8.7** → slaves **5.8**. Realised workforce ratio **0.346**
+against `WORKING_ADULT_RATIO_BASE` 0.25, consistent with F25's "law-set target pops drift toward"; the
+dependent factor is therefore **0.673**, not the sheet's 0.625 — **7.6 % more pop money, scaling every
+need equally, so it moves LEVELS and never SHARES.**
+
+**What it does NOT say.** (1) Nothing per-market: the pop record carries its state, but the state→country
+map lives past the ~104 MB point where the binary reader's brace balance drifts, so **every number here is
+WORLD-WIDE**. F37 measured the *British* market, which is richer, so C/F there is higher than 0.5624 and
+the 5.25 is a lower bound on the prediction. (2) It does not say what sets a pop's wealth — only what a
+pop at a given wealth may buy. (3) It says nothing about the `local`-goods confound (§10.35.1a), which
+needs per-state supply from the same unreachable region. (4) The 7.9 % is this campaign at this date on a
+reweighted arm; the *thresholds* are vanilla and fixed, the *share* is not.
+
+**Confidence: high for the thresholds** (read directly from game files, and the wealth field is confirmed
+three ways — 317 cultures matching the field's 0–316 range, world population summing to 1.43 bn, and the
+profession wealth ordering coming out exactly as the game presents it). **Medium for the shares**, which
+inherit the arm.
+
+---
+
 ## F37 — A debut good's pop demand starts at EXACTLY ZERO and grows with supply. There is no clamp on token supply — neither local nor global — and the incumbent's cap does not hand the newcomer its complement
 
 **Arm** `control` — vanilla + telemetry, `deviates_from_vanilla: []` · session

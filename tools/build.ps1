@@ -211,7 +211,11 @@ function Write-PopNeedWeights($cfgObj, $gameDir, $modRoot, $header, $relLabel) {
 # instrument differently are not comparable. See TESTBED_METRICS.md before adding a metric.
 . (Join-Path $PSScriptRoot 'telemetry_lib.ps1')
 
-$telemetryOn = $TelemetryOn -or $Telemetry -or $ControlOnly
+# ⚠ -Overlay BELONGS IN THIS LIST for the same reason -ControlOnly does: both arms are built to be
+# MEASURED, and both write their telemetry inside the early-exit branch below. Omitting it (as this line
+# did when -Overlay was added, 2026-08-06) leaves $telemetryText undefined and the branch writes an empty
+# file — a silent instrument failure on an arm whose whole purpose is instrumentation.
+$telemetryOn = $TelemetryOn -or $Telemetry -or $ControlOnly -or $Overlay
 $telemetrySpec = $null
 if ($telemetryOn) {
     $telemetrySpec = Read-TelemetrySpec $Telemetry

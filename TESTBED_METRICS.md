@@ -1101,10 +1101,143 @@ is ~5 300 lines per dump. `summarise.ps1`'s `integrity.partial_dumps` gate exist
 nothing at all. §4.3 listed this as a candidate early-read hook and suspected it; it is now measured.
 **The earliest usable monthly dump is 1836.2.1.**
 
+## 7. THE SAVEGAME — a SECOND instrument, and the right one for STATE (2026-08-06)
+
+Everything above logs through the game's script layer, which is why it is a *keyhole*: a metric must be
+expressible as a data function, must survive `every_market_goods` filtering (§F34), and lands in a
+rotating log ring that truncates. **A savegame has no such limits — it is the whole world state at one
+instant**, and it is written anyway, by the autosave the harness already configures.
+
+**Use the save for STATE, the log for PROCESS.** A save is a snapshot: it cannot show a trajectory, an
+event, or anything between autosaves. The log is a time series and cannot show detail the script layer
+does not expose. They are complements, and the questions that stalled were state questions asked through
+a process instrument.
+
+**Format** (established by inspection, not documentation — see `save_extract.mjs`):
+
+| Region | Contents |
+|---|---|
+| bytes 0–23 | ASCII header, e.g. `SAV0103316c71b10000049b\n` |
+| bytes 24–1202 | metadata in Clausewitz binary — country, government, DLC, game rules, **mod name** |
+| byte 1203 → EOF | a ZIP with exactly one entry, `gamestate` |
+
+A 1925 autosave is **45.5 MB** and inflates to **259 MB** (5.7×), so everything downstream must stream.
+The gamestate is **binary-tokenised**: little-endian uint16 tokens, of which a few are structural
+(`0x0001 =`, `0x0003 {`, `0x0004 }`, `0x000C` int32, `0x0014` uint32, `0x000D` fixed, `0x000E` bool,
+`0x000F`/`0x0017` string, `0x0167` int64, `0x0290` fixed64) and the rest are **field names whose ID→name
+table ships in the executable, not the save**. So structure and every value are readable; field *meanings*
+are not, and must be identified empirically. **There is no text-save option** — the exe carries no
+`save_as_text`/`plaintext` flag and `pdx_settings.json` has no save-format key. Checked, so nobody
+re-checks.
+
+### ⭐ DO NOT HAND-DECODE — MELT THE SAVE (settled 2026-08-06)
+
+**`rakaly melt --format vic3` converts the whole binary save to plaintext with REAL FIELD NAMES, in
+1.9 seconds.** A 45.5 MB `.v3` becomes **316 MB** of readable text. No token table, no brace-depth
+problem, and everything past the 104 MB point becomes readable — which hand-decoding never reached.
+
+```
+tools/vendor/rakaly/rakaly.exe melt --format vic3 --unknown-key stringify -o <out>.txt <save>.v3
+```
+
+**Dependency, stated so the repo can be retraced:** the [rakaly CLI](https://github.com/rakaly/cli),
+release **v0.8.19**, asset `rakaly-0.8.19-x86_64-pc-windows-msvc.zip` (2 035 299 bytes), unpacked to
+`tools/vendor/rakaly/`. It is **gitignored, not committed** — it is a third-party binary and not ours to
+redistribute. Re-fetch with `gh release download v0.8.19 --repo rakaly/cli --pattern '*windows-msvc.zip'`.
+⚠ Its README lists only EU4/CK3/HOI4/Imperator; **`--format vic3` is supported anyway** — the README is
+stale, so check `melt --help` rather than the docs. Built on [jomini](https://github.com/rakaly/jomini);
+tokens are compiled into the release, so nothing needs extracting from the game executable.
+
+⚠ **The hand-written reader's brace drift is a KNOWN FORMAT QUIRK, not a mistake in the arithmetic.**
+jomini's changelog names it: v0.16.2 *"an object within several arrays would be decoded as a hidden
+object instead of a regular object"*, and v0.13.2 an empty-object header that must be recognised and
+skipped. "Hidden objects" are containers the byte stream implies rather than braces — exactly how a
+cursor stays byte-aligned while depth drifts. `lib_savebin.mjs` is kept for streaming scans that do not
+need depth; **for anything structural, melt first.**
+
+**⚠⚠ FIELD NAMES GUESSED FROM THE BINARY WERE WRONG, AND PLAUSIBLY SO.** The melted text gives them
+directly. Corrections in bold:
+
+| token | what it ACTUALLY is | what I had guessed |
+|---|---|---|
+| `0x00e1` | `type` (profession) | ✓ correct |
+| `0x2fd5` | `workforce` | ✓ correct |
+| `0x573a` | **`dependents`** | ❌ "pop size" |
+| `0x2819` | **`location`** | ❌ "state" |
+| `0x330b` | **`assimilation_culture`** | ❌ "workplace building" |
+| `0x5f73` | **`political_movement_support`** | ✓ correctly ruled out as consumption |
+| `0x5afb` | `interest_group_support_data` | — |
+| `0x27dd` | `culture` | ✓ correct |
+| `0x27e3` | `religion` | ✓ correct |
+| `0x5556` | `wealth` | ✓ correct |
+
+Also present per pop: **`wealth_progress`**, **`previous_quality_of_life`**, `num_literate`,
+`qualifications` — i.e. the save **does** persist drift state, which is what the "consumption is
+recomputed each tick" overclaim missed.
+
+⇒ **TOTAL POPULATION IS `workforce + dependents` = 1 923 896 283**, not the 1 429 847 144 I reported.
+The workforce ratio is **0.257** — essentially `WORKING_ADULT_RATIO_BASE` 0.25, *not* a drifted 0.346 —
+so the dependent factor is **0.629** against the sheet's documented 0.625, and the "7.6 % more pop money"
+claim is withdrawn. ⚠ **The bad guess passed a plausibility check**: 1.43 bn looks like a reasonable 1925
+world population, which is exactly why it survived. A total that looks right is not confirmation.
+
+**The 177 blocks are AI BUDGET DECISIONS, not consumption**: `type=consumption_tax goods="transportation"
+direction=increase_spending priority={ score_before_random=0.36353 score=0.37616 }`. The two fields are a
+score either side of a random nudge, in fixed point — which is why their ratio sat at 1.03.
+
+**Tools:** `save_extract.mjs` (`.v3` → gamestate) · `lib_savebin.mjs` (THE reader) · `save_survey.mjs`
+(structure/token census) · `save_dump_records.mjs` (raw record shape around an anchor string) ·
+`save_pops.mjs` (pop + country tables → TSV) · `save_summary.mjs` (the readable summary: wealth
+distribution, need budgets, wealth thresholds per need) · `save_market_goods.mjs` (the 177 pop-needs-goods
+blocks — ⚠ reports only, the two fields are NOT identified; see below).
+
+### WHAT IS AND IS NOT IN A SAVE — partial, 2026-08-06
+
+**Per-POP consumption is not stored.** The only candidate field in the pop record, `0x5f73`, holds
+**2–8 entries** keyed by typed handles (`0x01000049`, `0x03000400`, …) — interest-group membership or
+jobs. A per-good consumption map would carry ~35 entries (the pop-needs universe) or ~53 (all goods).
+Confident about this one: the field is far too small, on every pop inspected.
+
+⚠⚠ **BUT "THE GAME RECOMPUTES CONSUMPTION EACH TICK SO NOTHING IS PERSISTED" WAS AN OVERCLAIM, AND IT IS
+PROBABLY WRONG** (user, 2026-08-06). **Consumption appears to DRIFT rather than resolve instantly**, and
+this project already measured the evidence: F37 found a debut good's pop demand starts at *exactly zero*
+and grows with supply. A quantity computed instantaneously from wealth, prices and supply shares would
+**jump** the moment supply appeared. Gradual onset is a drift signature, so there is very likely a
+persisted consumption state somewhere — just not per pop.
+
+⭐ **THE LEADING CANDIDATE IS THE 177 BLOCKS** (below), and the reason they matched neither the order book
+nor instantaneous demand may be the answer rather than a problem: a *lagged* or *smoothed* quantity
+matches neither by construction. Within a save the two fields differ by a median of only **10.3 %** —
+far too close for buy vs sell, and exactly the signature of two samples of one slowly-moving quantity.
+⚠ A cross-save test was attempted and is **inconclusive**: block ids are POSITIONAL and the block counts
+differ between saves (177 / 176 / 182), so the ~70 % cross-save drift measured could be pure
+misalignment. **The unlock is a stable block identifier** — find the record that ENCLOSES a goods block
+and names its country or market. Note `0x5501 = { "luxury_furniture" "automobiles" … }` is a *different*
+structure (a good-name list, probably obsessions or prestige goods) and is not it.
+
+**The pops shown in the game's panel are not findable in the save at that granularity.** Of five pops read
+in-game (Midlands ×3, Cornwall, Lowlands — each with profession, culture, religion, wealth and size), only
+**one** matches a save record on all five attributes. The displayed figures are display-time aggregations.
+⚠ Note `english` is not a culture — the game's internal name is **`british`** (index 15); `scottish` is 289.
+
+**The 177 blocks `save_market_goods.mjs` finds are pop-needs goods but are UNIDENTIFIED.** Their good list
+is exactly 34 of the 35 goods in `common/pop_needs` and nothing else (only `radios` absent), so they are
+pop-side. But the two numeric fields match **neither** the market order book (best block: transportation
+26 298 / 23 809 against a telemetry 27 952 / 32 501) **nor** pop demand (automobiles 7 940 / 7 188 near the
+7 520 read, but telephones 616 / 557 against 1 440). Across all 4 854 records the two fields track each
+other far too closely to be an order book — B/A mean 1.029, never outside 0.50–1.45.
+
+⇒ **THE SAVE'S ROLE IS INPUTS, NOT OUTPUTS.** It gives every pop's exact size and wealth level — which is
+what the need budgets and the wealth thresholds of F38 rest on, and what previously had to be swept. The
+**observable** for testing a consumption rule stays the `consumption_breakdown` telemetry, and
+`tools/testbed/score_pop_split.mjs` already scores a model against it. Testing the F39 rule variants means
+feeding that scorer the save's exact wealth distribution — it does not need the save's market data at all.
+
 ## Not resolved
 
 | Want | Status |
 |---|---|
+| **State → country, from a save** | Blocked by the ~104 MB brace drift above. Unlocks per-market pop analysis (F38 is world-wide only) and per-state supply of a `local` good (§10.35.1a). Next step is a bisect for the first offset where a known-good structure breaks — *not* more token-frequency counting, which has already been tried and cleared the obvious suspects. |
 | **Construction throughput / capacity per country** | Not found on `Country`. `GetConstructionsInCountry` belongs to `ConstructionPanel`, not Country; `GetConstruction`, `GetConstructionCapacity`, `GetBaseConstructionSpeed`, `GetConstructionEfficiency` all fail on Country. Script-value keyword `construction` is not a valid event target link either. Routes left: count buildings under construction by iteration, or find the panel-free function. |
 | Money / treasury as a script value | `money_amount` is not a valid keyword. But **`GetGoldReserves`** (`1 234 152.66`) and **`GetWeeklyBalance`** (`-31 421.45`) work as data functions on Country. |
 | Total population as a data function | No `GetPopulation`/`GetPopulationCount`. Use the script-value keyword **`total_population`** (verified: 25 951 649), or `GetInactivePopulation` + `GetPoliticallyInvolvedPopulation`. |

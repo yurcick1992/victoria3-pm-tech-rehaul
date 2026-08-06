@@ -33,15 +33,20 @@ const { E, S } = loadEcon({ quiet: true });
 const args = process.argv.slice(2);
 const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 && args[i + 1] ? args[i + 1] : d; };
 const SESSION = argOf('--session', ''), MARKET = argOf('--market', 'British Market');
-if (!SESSION) { console.error('usage: split_auto_between_needs.mjs --session <dir> [--market M]'); process.exit(1); }
+// ⚠ The overlay arm scales automobiles' weight in EVERY need it appears in — free_movement 1.25 → 12.5
+// AND leisure 1 → 10. So the correction must use the arm's own weights: a ×10 arm pulls MORE of its
+// automobile money into leisure, not less, and correcting it with the control's weights would understate
+// that. Pass --auto-weight-mult 10 for the ×10 arm.
+const WMULT = parseFloat(argOf('--auto-weight-mult', '1'));
+if (!SESSION) { console.error('usage: split_auto_between_needs.mjs --session <dir> [--market M] [--auto-weight-mult N]'); process.exit(1); }
 const SDIR = join(REPO, SESSION.replace(/^[.\\/]+/, ''));
 
 // verbatim from common/pop_needs/00_pop_needs.txt
-const FM = { entries: [ { g:'transportation', w:1, max:0.75, min:0 }, { g:'automobiles', w:1.25, max:1.0, min:0 } ] };
+const FM = { entries: [ { g:'transportation', w:1, max:0.75, min:0 }, { g:'automobiles', w:1.25*WMULT, max:1.0, min:0 } ] };
 const LEI = { entries: [
   { g:'services',    w:0.1,  max:1.0,  min:0 }, { g:'fine_art',  w:4,    max:1.0,  min:0 },
   { g:'small_arms',  w:0.75, max:0.25, min:0 }, { g:'aeroplanes',w:1,    max:0.2,  min:0 },
-  { g:'automobiles', w:1,    max:0.25, min:0 }, { g:'radios',    w:1,    max:0.2,  min:0 },
+  { g:'automobiles', w:1*WMULT, max:0.25, min:0 }, { g:'radios',    w:1,    max:0.2,  min:0 },
   { g:'opium',       w:0.5,  max:0.5,  min:0 }, { g:'clippers',  w:1,    max:0.25, min:0 },
   { g:'steamers',    w:0.75, max:0.25, min:0 } ] };
 const LR_LO = 0.40, LR_HI = 0.80;                    // leisure budget ÷ free_movement budget

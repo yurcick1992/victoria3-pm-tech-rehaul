@@ -44,6 +44,15 @@ tools/testbed/sessions/
 tools/testbed/runs/
 tools/testbed/batches/
 
+# Savegames pulled aside for analysis, and everything derived from them. Same rule as sessions/:
+# ignored because it is ENORMOUS, not because it is disposable - one 1925 autosave is 45 MB and its
+# gamestate inflates to 259 MB, so a folder of three is comfortably over 800 MB. A save is a
+# historical observation too (that campaign, that seed, that game version), so do not delete these
+# during a cleanup; the READINGS go in FINDINGS.md. The readers themselves (tools/testbed/save_*.mjs,
+# lib_savebin.mjs) ARE source and stay tracked.
+tools/testbed/saves_*/
+*.gamestate
+
 # Generated status board (CLAUDE.md -> Status board). It is a VIEW rebuilt from current state each
 # session and published as an Artifact - never a document that accumulates, so it must not be
 # committed or it will rot into a stale second source of truth. Normally it is written to the
@@ -55,3 +64,7 @@ STATUS_BOARD*.html
 
 # mod/ and most of tools/ are source and belong on GitHub.
 # The deployed mod excludes docs/tools automatically because the junction points at mod/ only.
+
+# Third-party binaries fetched into the tree (rakaly melter). Not ours to redistribute; the
+# EXACT release and how to re-fetch it are recorded in TESTBED_METRICS.md so the repo can be retraced.
+tools/vendor/

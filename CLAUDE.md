@@ -491,6 +491,24 @@ tools/                  dev tooling — NOT shipped in the mod
                         it, not the first month anyone makes it, and reports the ORDER of the two. Demand
                         before local production means the market imported it, which is the case that says
                         most about where a debut good's demand comes from
+  --- THE SAVEGAME READER: a SECOND instrument, for STATE rather than PROCESS (TESTBED_METRICS §7) ---
+  testbed/save_extract.mjs   a `.v3` save -> its `gamestate` (ASCII header + metadata + a one-entry ZIP;
+                        45.5 MB inflates to 259 MB, so everything downstream STREAMS). There is no
+                        text-save option — checked, so nobody re-checks
+  testbed/lib_savebin.mjs    THE reader for Clausewitz binary — one implementation, like lib_breakdown.
+                        ⚠⚠ TRUSTED ONLY BEFORE ~104 MB: brace depth is stable through the pop table, then
+                        drifts (a rare token with an unconsumed payload) and ends at depth 146. The
+                        states/buildings/market databases live past the drift, which is why per-market pop
+                        analysis and per-state `local` goods supply are NOT yet available
+  testbed/save_survey.mjs    structure + token census — what is in a gamestate and where
+  testbed/save_dump_records.mjs  the raw token sequence around an anchor string, to read a record's shape
+  testbed/save_pops.mjs      the POP TABLE (+ the country tag table, which rides along because a pop
+                        carries its owner as an INDEX and is unlabelled without it) -> TSV
+  testbed/save_summary.mjs   THE readable summary: wealth distribution, need budgets, and the WEALTH
+                        THRESHOLD PER NEED — three needs (communication, leisure, luxury_food) do not
+                        exist below wealth 20 and only 7.9 % of the world reaches it (FINDINGS F38).
+                        ⚠ Field meanings are HYPOTHESES until independently confirmed; the confirmed set
+                        and what confirmed it are tabulated in TESTBED_METRICS §7
   testbed/wait_for_session.ps1  the wake-up signal for a batch launched into its own window (which the
                         agent harness cannot see). Run it with run_in_background; returns DONE on
                         completion, RUNNING on a heartbeat, DEAD (exit 2) if the game vanished
@@ -901,7 +919,23 @@ the game.
   this experiment; do not adopt the final-share reading for what it would do to the illogicality score.
   Goods are equivalent **per pound, not per unit** — a higher base price fulfils the same need with
   fewer units, which is why units come from money ÷ base price. **No fitted
-  numbers, and nothing stored per scenario.** It is not circular and not a time series: pops never
+  numbers, and nothing stored per scenario.**
+  ❌ **BOTH HALVES OF THAT LAST SENTENCE ARE NOW MEASURED WRONG — FINDINGS F39 (2026-08-06), NOT YET
+  IMPLEMENTED.** Read directly off the game's own pop panel in three states of one market at one instant:
+  the purchase weight splits **UNITS, not money** (`units_g ∝ pw_g`, so
+  `money_share_g = pw_g·price_g / Σ(pw·price)`), and the price is the **CURRENT LOCAL price, not base**.
+  Evidence: the three states' *money* shares span 34–58 % while their *unit* shares are constant at
+  79.4–79.8 %, the whole spread being a local-price artifact (Cornwall's transportation surplus prices it
+  at £12.72 against £31–32 in the two deficit states); at base price the unit shares are **not** constant
+  (75.4 / 54.8 / 76.0). Four independent solves for transportation's market supply then agree to **1.4 %**,
+  including one on a different need with a tenfold-inflated weight.
+  ⚠ **The error is ZERO when every price sits at base and grows with price dispersion** — which is why
+  F24's 18.5 % (measured in 1836 markets, near base) never surfaced it, and why it bites hardest in the
+  late-era scenarios the ladder is solved against. Fixing it changes every scenario's pop demand, so it
+  wants its own pass with `econ_selftest.mjs` extended to those three states first.
+  ✅ **It also CLEARS the `local` goods suspicion (§10.35.1a):** `transportation` is aggregated to
+  **market** level for the split (≈8 800 for GBR) despite being a `local` good, so the state-level
+  abstraction was never the mechanism — the units/money inversion was. It is not circular and not a time series: pops never
   sell, so supply does not depend on pop demand, and the split is one pass over the scenario's own
   sell orders. ⚠ **February, not May** — the same rule
   scored against May 1836 is worse, so the substitution lag does not pay for the construction
