@@ -131,6 +131,97 @@ transcript rather than from data.
 
 ---
 
+## F37 — A debut good's pop demand starts at EXACTLY ZERO and grows with supply. There is no clamp on token supply — neither local nor global — and the incumbent's cap does not hand the newcomer its complement
+
+**Arm** `control` — vanilla + telemetry, `deviates_from_vanilla: []` · session
+`20260806_110926_vanilla-retest-2` run 1, the **first campaign ever to reach 1936** (`self_quit: true`,
+4 resumes) · schema v12 · 🟢 **ARM-FREE** (pure vanilla; nothing here depends on our mod).
+
+**Claim.** Two hypotheses were put (user, 2026-08-06): that a token supply **on the market**, or a token
+supply **anywhere**, clamps pop demand for a debut good to 25 % of its need — the complement of the
+incumbent's `max_supply_share = 0.75` in a two-good need. **Both are refuted.** Demand begins at
+**zero**, appears with **local** supply, and grows smoothly with it: automobiles go from ~**0.3 %** of
+`popneed_free_movement` at debut to ~**33 %** five years later.
+
+### The global-trigger hypothesis: refuted twice, and the telephone case is enormous
+
+| good | first supply, British Market | first **buy order**, American Market | months of zero American demand |
+|---|---|---|--:|
+| automobiles | 1907.3 | 1908.2 | **11** |
+| telephones | 1922.7 | **1927.4** | **57** |
+
+Buy orders capture import-fed demand, so this is not a supply-routing artefact: there was no demand to
+route. Had a token supply anywhere clamped everyone to 25 %, American pops would have demanded
+telephones from 1922.7.
+
+### The local-trigger hypothesis: the timing is right, the level is not
+
+Demand does appear with **local** supply — same month for telephones in both markets and for American
+automobiles, one month later for British automobiles. But there is no clamp. British Market, monthly:
+
+| date | automobiles sell | automobiles buy | transportation sell |
+|---|--:|--:|--:|
+| **1907.3** | **1.1** | **0.0** | 21 579.8 |
+| 1907.4 | 5.0 | 17.6 | 21 623.2 |
+| 1907.5 | 12.6 | 42.3 | 21 592.8 |
+| 1907.6 | 24.3 | 88.9 | 21 580.3 |
+| 1907.12 | 48.6 | 188.3 | 21 917.8 |
+| 1908.2 | 67.0 | 269.4 | 22 230.7 |
+| 1908.12 | 350.7 | 1 050.6 | 22 882.8 |
+
+At the debut month the **verified breakdown block reads `pop 0, total 0`** against 1.1 units of supply.
+Pop demand then climbs smoothly, buy tracking sell at a stable ~3–4×:
+
+| date | automobile POP demand | total buy | pop share of buy |
+|---|--:|--:|--:|
+| 1907.3 | **0** | 0 | — |
+| 1910.3 | 1 480 | 1 490 | 99.3 % |
+| 1912.3 | 2 390 | 2 680 | 89.2 % |
+| 1915.3 | 4 760 | 8 280 | 57.5 % |
+| 1920.3 | 6 050 | 9 710 | 62.3 % |
+| 1923.3 | 7 510 | 10 900 | 68.9 % |
+
+At 1907.4 automobiles are worth £1 760 against a transportation market of ~£650 000 — order **0.3 %** of
+the need, not 25 %.
+
+### ⚠ THE ONE PIECE OF EVIDENCE THAT LOOKS LIKE CONFIRMATION, AND WHY IT IS NOT
+
+At 1912.3.1 the measured money ratio transportation : automobiles is **3.05**, and a binding 0.75 cap
+predicts exactly **3**. Stopping there would confirm the hypothesis. It fails because **transportation
+also draws from `popneed_communication`**, so the ratio must exceed 3 by whatever that need contributes.
+From `common/buy_packages`, `communication` is **zero below wealth 20** and **0.34–0.80 ×
+`free_movement`** above it:
+
+| wealth | free_movement | communication | C/F |
+|---|--:|--:|--:|
+| 15 | 20 | 0 | 0.000 |
+| 20 | 40 | 16 | 0.400 |
+| 25 | 74 | 25 | 0.338 |
+| 30 | 165 | 63 | 0.382 |
+| 40 | 562 | 450 | 0.801 |
+
+A binding cap therefore predicts ratio = 3 + 4·(C/F) ≈ **4.4**. Measured 3.05 solves instead to
+automobiles ≈ **33 %** of the need — *above* the complement. Transportation's raw supply share stays
+above 0.75 throughout (0.9999 at 1907.3, 0.9573 at 1912, 0.8673 at 1935), so **the cap does bind and
+still does not produce 25 %**.
+
+**Confidence: high on both refutations, moderate on the 33 %.** The refutations rest on directly
+measured zeros — a verified `pop 0` block and 57 months of zero American buy orders — which no
+modelling assumption can move. The 33 % depends on an *estimated* aggregate C/F of ~0.35; for a binding
+cap to be consistent with 3.05, C/F would have to be **0.0125**, which requires essentially all
+free-movement spending to come from pops below wealth 20, where communication is zero. The rich
+dominate both needs, so that is very hard to reach — but it is inference, not measurement.
+
+**What it does NOT say.** It does not identify the actual rule: reading A predicts ~6.7 % at 1912
+against ~33 % measured, so **A under-predicts as badly as B over-predicts at the debut**, and both
+remain refuted (F33's original position, arrived at from cleaner data). It rests on **one seed** —
+run 2 is the replication and had not reached 1907 when this was written. Only **one** date has both
+goods verified in the breakdown, because every dump truncates at a different good. And the
+`transportation` half carries the unresolved `local`-good caveat (§10.35.1a): it is not established
+that market-level orders mean for a local good what they mean for a tradeable one.
+
+---
+
 ## F36 — The pop-need `weight` field is a live and powerful lever: ×10 takes a good from 37 % to 91 % of its need, on true vanilla, in the one need whose budget is observable
 
 **Arm** treatment `overlay` — vanilla + telemetry + `common/pop_needs/00_pop_needs.txt` only,
