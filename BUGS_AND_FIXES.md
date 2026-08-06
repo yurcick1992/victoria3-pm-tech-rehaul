@@ -13,7 +13,34 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
-## ⚠ OPEN — crash resume has NEVER worked: 4 of 4 full campaigns died mid-run and every resume started a fresh 1836 game (2026-08-06)
+## ✅ CLOSED — crash resume was working all along; the HARNESS was throwing it away on a stale clock reading (2026-08-06)
+
+> ### ✅ CONFIRMED IN THE FIELD, same day, first guarded campaign
+> `20260806_110926_vanilla-retest-2` run 1, control arm. **Two genuine CTDs, both recovered, run
+> continuing past both:**
+>
+> | | crashed at | crash dump | outcome |
+> |---|---|---|---|
+> | 1st | 1889.3.1 | `victoria3_01260706_121501` | resumed, continued |
+> | 2nd | 1899.3.1 | `victoria3_01260706_123032` | resumed, continued |
+>
+> Reached **1917.4** — 28 in-game years past the first crash, and past **1893**, the best any campaign
+> had ever managed. No `resume started a fresh game`, no abandonment.
+>
+> **What changed is the VERDICT, not the resume.** The only relevant fix between the two nights is that
+> `$firstTick` is now judged against each tick line's own `[HH:MM:SS]` rather than its arrival order.
+> Under the old code these two crashes would have been sampled during the ~100 s window where the tail
+> still serves the previous session's content, and abandoned.
+>
+> ⚠ **This does not prove the four earlier campaigns were each wrongly abandoned** — different crashes,
+> different saves, and their evidence was never recorded. What it does establish is that the
+> configuration the old entry called untested — *a real CTD, late in a long campaign* — resumes fine.
+> The mid-write-truncation hypothesis remains plausible but is now **unnecessary** to explain anything
+> observed, and the fallback ladder built for it has still never fired.
+
+**Original entry, kept because its evidence stands and its conclusion is the instructive part:**
+
+## ⚠ (superseded) crash resume has NEVER worked: 4 of 4 full campaigns died mid-run and every resume started a fresh 1836 game (2026-08-06)
 
 **Symptom.** **No 1836→1936 campaign has ever completed.** Every full-length run on record, across two
 different arms and two nights, ended the same way:
