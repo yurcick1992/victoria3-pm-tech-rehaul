@@ -1,17 +1,28 @@
-// floor_necessary_condition.mjs — a MONTHLY test of whether the 25% floor can be binding.
+// test_cap_binding_prediction.mjs — MONTHLY test of the split that a BINDING cap would predict.
 //
-//   node tools/testbed/floor_necessary_condition.mjs --session <dir> [--market "British Market"]
+//   node tools/testbed/test_cap_binding_prediction.mjs --session <dir> [--market "British Market"]
+//
+// ⚠⚠ NOTHING HERE IS A CONSTRAINT VIOLATION. This file was called `floor_necessary_condition.mjs`
+// until the user pointed out there is no floor at all (2026-08-06). `max_supply_share` is a CEILING.
+// Transportation's is 0.75 and it measures ≤ 68.4 %; automobiles' is 1.0 and they measure ≥ 31.6 %.
+// **Both goods sit inside every bound the game file specifies — nothing is breached, by either good.**
+//
+// What this tests is a PREDICTION, not a bound. Under the final-share reading, transportation's
+// uncapped weighted share is ~92 %, so the cap binds; and in a TWO-good need the clamped excess has
+// nowhere to go but the other good, so the split is forced to EXACTLY 75/25. That exact number is
+// falsifiable, and it is what the ratio below checks. A reading below the line does not mean a rule was
+// broken — it means the 75/25 prediction does not describe the data.
 //
 // THE PROBLEM. Pop demand is only readable from the channel split, which truncates ~40% of goods per
 // dump and keeps `transportation` in early dumps and `automobiles` in late ones — so across two whole
 // campaigns only THREE dates carry both. Three scattered points cannot show the shape of a trajectory,
-// and a single point at three months cannot distinguish "the floor is refuted" from "it is still
-// climbing toward the floor" (user, 2026-08-06 — a fair objection to an over-read).
+// and a single point at three months cannot distinguish "the 25 % level is never held" from "it is
+// still climbing toward it" (user, 2026-08-06 — a fair objection to an over-read).
 //
-// ⭐ THE WAY ROUND IT: test a NECESSARY CONDITION that needs only the ORDER BOOK, which is monthly and
-// never truncates.
+// ⭐ THE WAY ROUND IT: test the 75/25 PREDICTION against something the ORDER BOOK can answer, since it
+// is monthly and never truncates.
 //
-//   If the 0.75 cap binds, transportation takes 3/4 of free_movement and automobiles 1/4, so
+//   If the cap binds, the split is forced to 75/25, so
 //        transportation_pop_money(free_movement) = 3 x automobiles_pop_money.
 //   transportation's pop money across BOTH its needs is >= its free_movement part, so
 //        transportation_pop_money(total) >= 3 x automobiles_pop_money.
@@ -23,9 +34,9 @@
 //
 // ⚠ POPMIN is the ONLY assumption, and it is measured rather than guessed: across every verified
 // automobile block in these sessions, pops are 57-99% of automobile buy orders. Using the LOW end makes
-// the test conservative — it can only under-report violations, never invent one.
-// ⚠ A violation is decisive; satisfaction is NOT. The condition is necessary, not sufficient, exactly
-// as the ratio>=3 test was: transportation's other need can absorb any surplus.
+// the test conservative — it can only under-report disagreements, never invent one.
+// ⚠ A DISAGREEMENT is decisive; agreement is NOT. Passing does not show the split IS 75/25 —
+// transportation's other need can absorb any surplus, exactly as with the ratio>=3 test.
 import { readdirSync, existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { REPO } from '../econ_host.mjs';
@@ -35,7 +46,7 @@ const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 && args[i + 1
 const SESSION = argOf('--session', '');
 const MARKET  = argOf('--market', 'British Market');
 const POPMIN  = parseFloat(argOf('--popmin', '0.57'));
-if (!SESSION) { console.error('usage: floor_necessary_condition.mjs --session <dir> [--market M] [--popmin f]'); process.exit(1); }
+if (!SESSION) { console.error('usage: test_cap_binding_prediction.mjs --session <dir> [--market M] [--popmin f]'); process.exit(1); }
 const SDIR = join(REPO, SESSION.replace(/^[.\\/]+/, ''));
 
 const PT = 30, PA = 100;                     // base prices, read from the game and verified
@@ -51,10 +62,10 @@ const THRESHOLD = UNIT_LINE * POPMIN;        // the same line, degraded into a b
 //
 //   5.70 IS NOT THAT LINE. It is 10 × POPMIN — the same condition degraded into something the monthly
 //   ORDER BOOK can answer, by bounding pop demand below by POPMIN × buy orders. It is deliberately
-//   CONSERVATIVE: everything under it is certainly a violation, but the true crossing happens EARLIER,
+//   CONSERVATIVE: everything under it certainly disagrees with 75/25, but the true crossing is EARLIER,
 //   at a ratio between 5.70 and 10 depending on what fraction of each good's buying is pops.
 //
-// So read the buy-order table as "when is a violation CERTAIN", not "when did automobiles pass 25 %".
+// So read the buy-order table as "from when is 75/25 CERTAINLY wrong", not "when did automobiles pass 25 %".
 //
 // ⚠⚠ AND READ IT FROM TRANSPORTATION'S SIDE, NOT AUTOMOBILES' (user, 2026-08-06: "how does MORE
 // consumption than the supposed clamp violate anything?"). It does not — and automobiles were never the
@@ -103,7 +114,7 @@ for (const r of readdirSync(SDIR).filter(d => /^run\d+_/.test(d)).sort()) {
   const first = rows[0], firstBad = bad[0];
   console.log(`\n${'='.repeat(96)}`);
   console.log(`  ${r}  —  ${rows.length} month(s) with both goods bought, ${first.date} to ${rows[rows.length-1].date}`);
-  console.log(`  ${bad.length} of them violate the floor's necessary condition` +
+  console.log(`  ${bad.length} of them disagree with the 75/25 prediction` +
               (firstBad ? `, first at ${firstBad.date}` : ''));
   console.log('='.repeat(96));
   // ⚠ A RATIO MUST SHOW ITS OWN NUMERATOR AND DENOMINATOR (user, 2026-08-06). A bare "1907: 2033" is
@@ -112,10 +123,11 @@ for (const r of readdirSync(SDIR).filter(d => /^run\d+_/.test(d)).sort()) {
   const seen = new Set();
   const traj = rows.filter(x => { const y = x.date.split('.')[0]; if (seen.has(y)) return false; seen.add(y); return true; });
   console.table(traj.map(x => ({
-    date: x.date,
-    'NUMERATOR transportation buy orders': x.transp_buy,
-    'DENOMINATOR automobiles buy orders':  x.auto_buy,
-    'ratio (transp / auto)':               +x.ratio.toFixed(2),
-    'floor needs >= 5.70':                 x.ratio < THRESHOLD ? 'VIOLATED' : 'ok'
+    'date': x.date,
+    'transportation buy orders (numerator)': x.transp_buy,
+    'automobiles buy orders (denominator)':  x.auto_buy,
+    'ratio = transportation / automobiles':  +x.ratio.toFixed(2),
+    [`can the split be 75/25? (needs ratio >= ${THRESHOLD.toFixed(2)})`]:
+        x.ratio < THRESHOLD ? 'NO - automobiles are above 25%' : 'possible'
   })));
 }

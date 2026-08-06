@@ -349,7 +349,30 @@ above 0.75 throughout (0.9999 at 1907.3, 0.9573 at 1912, 0.8673 at 1935), so the
 >
 > ⭐ **AND THE SHAPE ITSELF IS THE ANSWER TO "HOW SOON":** a smooth, monotonic climb over roughly seven
 > years — from ~2000:1 at the debut to the 25 % level around **1914–1916** — with no step, no plateau,
-> and no sign of a level being held. Tool: `tools/testbed/floor_necessary_condition.mjs`.
+> and no sign of a level being held. Tool: `tools/testbed/test_cap_binding_prediction.mjs`.
+>
+> ### ⚠ 5.70 IS A CONSERVATIVE PROXY, NOT THE 25 % LINE — the real line MOVES
+>
+> (User: *"what would give precisely the 25 % line?"*) On the buy-order axis the exact line is
+> **`10 × fA / fT`**, where `fA` and `fT` are each good's **pop share of its own buy orders** — the 10
+> being the clamp in pop-demand units (3:1 in money × £100/£30), and the fractions converting an axis
+> made of *total* buying into one made of *pop* buying. Both are measured from the same verified blocks:
+>
+> | run | date | automobiles pop ÷ buy | transportation pop ÷ buy | **exact 25 % line** | measured ratio | verdict | share |
+> |---|---|--:|--:|--:|--:|---|--:|
+> | 1 | 1912.3 | 0.892 | 0.643 | **13.87** | 14.10 | below 25 % | 24.7 % |
+> | 2 | 1909.3 | 0.002 | 0.676 | **0.03** | 121.02 | below 25 % | 0.0 % |
+> | 2 | 1915.3 | 0.542 | 0.617 | **8.78** | 6.34 | **ABOVE 25 %** | 31.6 % |
+>
+> The line swings **0.03 → 13.87**, so a flat 5.70 understates how early automobiles pass 25 %. It also
+> cross-checks the share calculation exactly — at 1912 the ratio sits just above its line and the share
+> is independently 24.7 %. Tool: `tools/testbed/exact_25pct_line.mjs`.
+>
+> ⭐ **AND THE POP-FRACTION COLUMN CARRIES ITS OWN FINDING: A DEBUT GOOD IS TAKEN UP BY BUILDINGS
+> FIRST.** Three months after run 2's debut, automobiles are **99.8 % bought by buildings and 0.2 % by
+> pops**. By 1912 pops are **89 %**; by 1915 they fall back to **54 %** as building demand grows again.
+> So "who buys a debut good" has a shape too — buildings, then pops, then both — and it was invisible
+> until the pop fraction was put on the page rather than folded into a constant.
 >
 > ⚠ **Necessary, not sufficient.** Satisfaction in the early years does not show the cap *was* binding
 > then — only that it cannot have been binding later. What rules out the early floor is the measured
