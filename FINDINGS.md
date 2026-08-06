@@ -172,15 +172,24 @@ Per need, American market: luxury_items **0.22**, basic_food **0.43**, luxury_fo
 simple_clothing **0.65**, crude_items **0.72**, household_items **0.73**, intoxicants **0.91**,
 standard_clothing **1.33**, stimulants 4.64, luxury_drinks 18.30 pp.
 
-⚠ **Britain is worse because MY market aggregation is worse, not because the rule is — and the cause is now
-named exactly.** A save gives **every country its own `market` object**, and the game folds a subject's
-market into its overlord's; the save records no membership list, so grouping states by their country's raw
-`market` id splits the British market apart. Traced to a single good: Britain's telemetry reports 10 977 tea
-produced, my market-0 sum gives 5 175, and the missing **5 801 is exactly STATE_MADRAS**, whose owner MHR
-carries `market=67109134` against Britain's `market=0`. Tobacco loses the same way (53 % of telemetry).
-That corrupts both the non-pop sum and the prestige share, which is where Britain's two worst needs sit.
-The American market is one country, aggregates cleanly, and scores 2.56 pp. ⚠ It is **not** a missing-
-buildings bug — the extractor reaches 886 of 888 states. Merging subject markets (from `pacts`) is open work.
+⚠ **Britain is worse because MY market aggregation is worse, not because the rule is — but the CAUSE is NOT
+established, and the obvious candidate was tested and FAILED.** What is certain is the symptom: against the
+run's own telemetry at the same instant, my market-0 sums reach only 47 % of Britain's tea and 53 % of its
+tobacco, so both the non-pop total and the prestige share are wrong for exactly the goods in Britain's two
+worst needs. The American market is one country and scores 2.56 pp on the identical rule.
+
+❌ **The failed hypothesis, recorded because it looked airtight.** A save gives every country its own
+`market` object and no membership list, and Britain's missing 5 801 tea is *exactly* STATE_MADRAS, whose
+owner MHR carries `market=67109134` against Britain's `market=0` — so "subjects' markets must be merged into
+the overlord's" reads as obviously right. Built it from `pacts` (76 subject pacts, `first` = overlord,
+2 `grant_own_market` exceptions) and **it makes the fit worse, not better**: mean |save output ÷ telemetry
+production − 1| over the British market's 47 goods goes **8.3 % → 20.5 %**, with goods that were right
+pushed far above 1 (wood 1.35, hardwood 1.61, engines 1.54, porcelain 3.81). It adds exactly **one** member,
+Canada — which the telemetry's British Market evidently does not contain. So a dominion does *not* simply
+share its overlord's market, and MHR's tea is not in Britain's market either, which means the 5 801
+coincidence was a coincidence. Kept behind `--merge-subjects`, default OFF.
+⚠ It is **not** a missing-buildings bug either — the extractor reaches 886 of 888 states. The aggregation
+error is real, its size is known, and its mechanism is open.
 
 ### THE TERMS, EACH IDENTIFIED ON ITS OWN
 

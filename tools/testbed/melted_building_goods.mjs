@@ -42,6 +42,14 @@ const pout = new Map();
 let section = '', depth = 0;
 let curState = null, curCountry = null, curId = null;
 let bState = null, bBuilding = null, bLevels = 0, side = '', inGoods = false, curGood = null, inPrestige = false;
+// ⭐ A SAVE GIVES EVERY COUNTRY ITS OWN `market` OBJECT and records no membership list, so grouping states
+// by that raw id SPLITS a market that contains subjects — Britain lost STATE_MADRAS's 5 801 tea that way,
+// exactly the gap against its own telemetry. A subject shares its overlord's market unless it holds a
+// `grant_own_market` pact, so the membership has to be rebuilt from `pacts` and resolved transitively.
+// In a pact, `first` is the OVERLORD and `second` the subject (checked: country 1 is `first` for GBR's).
+const SUBJECT = new Set(['puppet', 'protectorate', 'colony', 'vassal', 'dominion', 'tributary', 'personal_union']);
+const overlord = new Map(), ownMarket = new Set();
+let pFirst = null, pSecond = null, pAct = null, pT = false;
 
 const rl = createInterface({ input: createReadStream(SRC, { encoding: 'utf8' }), crlfDelay: Infinity });
 for await (const line of rl) {
@@ -49,6 +57,7 @@ for await (const line of rl) {
   if (section === '') {
     if (t === 'states={') { section = 'states'; depth = 1; }
     else if (t === 'country_manager={') { section = 'countries'; depth = 1; }
+    else if (t === 'pacts={') { section = 'pacts'; depth = 1; }
     else if (t === 'building_manager={') { section = 'buildings'; depth = 1; }
     continue;
   }
@@ -71,6 +80,22 @@ for await (const line of rl) {
       const dm = /^definition="([A-Z_]+)"$/.exec(t); if (dm && !countryTag.has(curId)) countryTag.set(curId, dm[1]);
     }
     depth += opens - closes; if (depth <= 0) { section = ''; curId = null; }
+    continue;
+  }
+  if (section === 'pacts') {
+    if (t === 'targets={') pT = true;
+    else if (pT) {
+      const f = /^first=(\d+)$/.exec(t); if (f) pFirst = +f[1];
+      const s = /^second=(\d+)$/.exec(t); if (s) pSecond = +s[1];
+      if (t === '}') pT = false;
+    }
+    const a = /^action="([a-z_]+)"$/.exec(t); if (a) pAct = a[1];
+    if (t === '}' && depth === 3) {
+      if (SUBJECT.has(pAct) && pFirst !== null && pSecond !== null) overlord.set(pSecond, pFirst);
+      if (pAct === 'grant_own_market' && pSecond !== null) ownMarket.add(pSecond);
+      pFirst = pSecond = pAct = null;
+    }
+    depth += opens - closes; if (depth <= 0) section = '';
     continue;
   }
   // buildings
@@ -109,12 +134,25 @@ for await (const line of rl) {
   if (depth <= 0) { section = ''; }
 }
 
+// ❌ MEASURED AND OFF BY DEFAULT. Merging a subject's market into its overlord's is the obvious reading of
+// how V3 markets work, and against the run's own telemetry it is WORSE, not better: mean |save output /
+// telemetry production − 1| over the British market's 47 goods goes 8.3 % → 20.5 %, and goods that were
+// right go far ABOVE 1 (wood 1.35, hardwood 1.61, engines 1.54). It adds exactly one member — Canada —
+// which the telemetry's British Market evidently does not contain, so a dominion does NOT simply share the
+// overlord's market. Kept behind --merge-subjects so the result can be re-derived, not deleted.
+const MERGE = args.includes('--merge-subjects');
+const marketRoot = c => {
+  if (!MERGE) return countryMarket.get(c) ?? '';
+  let cur = c, hops = 0;
+  while (cur != null && !ownMarket.has(cur) && overlord.has(cur) && hops++ < 16) cur = overlord.get(cur);
+  return countryMarket.get(cur) ?? countryMarket.get(c) ?? '';
+};
 const rows = ['state\tregion\tcountry\ttag\tmarket\tgood\tinput\toutput\tprestige_out'];
 const keys = new Set([...inp.keys(), ...outp.keys()]);
 for (const k of [...keys].sort()) {
   const [s, g] = k.split('|');
   const c = stateCountry.get(+s);
-  rows.push([s, stateRegion.get(+s) ?? '', c ?? '', countryTag.get(c) ?? '', countryMarket.get(c) ?? '', g,
+  rows.push([s, stateRegion.get(+s) ?? '', c ?? '', countryTag.get(c) ?? '', marketRoot(c), g,
   (inp.get(k) || 0).toFixed(3), (outp.get(k) || 0).toFixed(3), (pout.get(k) || 0).toFixed(3)].join('\t'));
 }
 if (TSV) { writeFileSync(TSV, rows.join('\n') + '\n'); console.log(`${rows.length - 1} state-good rows -> ${TSV}`); }
