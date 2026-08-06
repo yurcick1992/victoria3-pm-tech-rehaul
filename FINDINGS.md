@@ -352,8 +352,14 @@ real open question**; the rest are settled, and the fourth is settled *against* 
 2. **It is one campaign.** Three consecutive gamestates of it, in two markets — but one campaign, of the
    **overlay** arm. A vanilla replication is collected but not yet scored.
 3. **The prestige share is measured from DOMESTIC production only**, so an imported prestige good is
-   invisible to it. That is the leading suspect for American `luxury_drinks` at 18.3 pp — wine, tea and
-   coffee are exactly the goods the USA imports.
+   invisible to it. ✅ **Checked, and it accounts for the single worst need in the clean market.** American
+   `luxury_drinks` scores 18.3 pp, and its three goods split exactly along that line: **wine** is domestic
+   (production 28, imports 0) and lands at 0.00489 observed against 0.00503 predicted — essentially exact;
+   **tea** is 100 % imported (production **0**, imports 3 310) and reads 0.95823 against 0.59849; **coffee**
+   is 88 % imported and reads 0.56414 against 0.39649. Those two ratios imply prestige fractions of 80 %
+   and 56 %, which is the right order for tea and coffee bought from markets we independently measured as
+   heavily prestige. So the residual is a **known blind spot in my measurement of one input**, not a gap in
+   the rule — and the American figure would improve if imported prestige were counted.
 4. **The British aggregation gap is unexplained**, and one plausible explanation was tested and failed.
 5. **`leisure`/`fine_art` violates the obsession floor** in all three gamestates and is not accounted for.
 6. It says nothing about how a pop's demand responds *over time* to a shock, only that at annual sampling
