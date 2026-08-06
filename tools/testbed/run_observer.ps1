@@ -89,22 +89,30 @@ param(
     # WARNING: this OVERWRITES the player's own autosave*.v3 slots. See MODDING_NOTES.
     [ValidateSet("never", "monthly", "quarteryear", "halfyear", "five_year", "yearly")]
     [string]   $AutosaveInterval = "five_year",
-    # How many times a single run may be resumed from its last autosave after an abnormal exit.
-    # 0 disables resuming (an abnormal exit then just ends the run).
+    # How many times a run may be resumed FROM THE SAME AUTOSAVE before that save is declared poisoned
+    # and the run abandoned. 0 disables resuming (an abnormal exit then just ends the run).
     #
-    # ⚠ RAISED 5 -> 12 ON MEASURED CRASH RATES (2026-08-06). Once the resume verdict stopped reading a
-    # stale clock, resumes began SUCCEEDING - and the cap immediately became the binding constraint
-    # instead. Measured over one night of century-long control runs: run 1 crashed 4 times and finished
-    # 1936; run 2 crashed 6 times (1875, 1901, 1927, 1929, 1932 …), recovered from every one, and was
-    # then cut off by this budget at **1933.3.1**, three in-game years short of its target. Losing 97 %
-    # of a 2½-hour campaign to a counter is the wrong trade.
-    # ⚠ A HIGH BUDGET CANNOT LOOP FOREVER, which is what makes raising it safe: 3 crashes from the SAME
-    # autosave is a separate permanent-failure guard, and 3 before any autosave exists aborts the whole
-    # schedule. This counter only limits how many DISTINCT points a run may recover from.
-    # ⚠ It is not free either - each resume replays up to one autosave interval, so a run needing many
-    # of them is telling you something about stability. Watch `resumes` in meta.json; if it approaches
-    # this number again, the crash rate is the problem, not the cap.
-    [int]      $MaxResumes = 12,
+    # ⚠⚠ THIS COUNTS CONSECUTIVE RETRIES OF ONE SAVE, NOT RESUMES IN TOTAL (semantics changed
+    # 2026-08-06, user). Reaching the next autosave RESETS it, so a healthy run that crashes repeatedly
+    # at DIFFERENT points is never cut off by a budget - only a run that cannot get past one specific
+    # save is, which is the only case where retrying is futile.
+    #
+    # WHY IT CHANGED. It used to cap resumes in total, at 5. Once the resume verdict stopped reading a
+    # stale clock and resumes began succeeding, that total immediately became the binding constraint:
+    # run 2 of `20260806_110926_vanilla-retest-2` crashed at 1875, 1901, 1927, 1929 and 1932, recovered
+    # from EVERY one, and was then cut off at **1933.3.1** — three in-game years short of its target,
+    # after 2 h 21 m. Nothing had gone wrong; a counter ran out. Measured crash rate is 4–6 CTDs per
+    # century, so any fixed total is either too small for a long run or too large to catch a poisoned
+    # save. Per-save is the distinction that actually matters.
+    #
+    # ⚠ IT STILL CANNOT LOOP. Resetting requires reaching the NEXT autosave, i.e. real forward progress
+    # of about one autosave interval — so the number of resets is bounded by the campaign length
+    # (~100 with `yearly`), and the run ends at its target date regardless. A run that crashes without
+    # progressing keeps the same save key and is stopped after this many tries.
+    # ⚠ Each retry replays up to one autosave interval, so `resumes` in meta.json is still worth
+    # watching: it is now a stability signal rather than a budget, and a large value means the run
+    # spent real time re-treading ground.
+    [int]      $MaxResumes = 3,
     # On an abnormal exit with NO crash artifact, wait this long for a keypress before deciding
     # it was a crash rather than you. Any key = you did it = stop the batch.
     [int]      $StopGraceSeconds = 60,
@@ -940,9 +948,15 @@ try {
                 break
             }
         }
-        if ($resumes -ge $MaxResumes) {
-            Write-Log "run ${run}: $MaxResumes resume(s) already used - giving up at $lastTick" "WARN"
-            $abandoned = "resume budget exhausted"
+        # ⚠ THERE IS DELIBERATELY NO CAP ON TOTAL RESUMES. A run that keeps crashing at DIFFERENT points
+        # is a run that keeps making progress, and cutting it off wastes everything it earned - that is
+        # exactly what a total budget of 5 did to a campaign at 1933.3.1 after it had recovered from six
+        # separate crashes. The futile case is retrying ONE save forever, and that is bounded below by
+        # $MaxResumes instead. Termination is not at risk: resetting the per-save counter requires
+        # reaching the next autosave, so progress is monotonic and the run stops at its target date.
+        if ($MaxResumes -le 0) {
+            Write-Log "run ${run}: resuming is disabled (-MaxResumes 0) - giving up at $lastTick" "WARN"
+            $abandoned = "resuming disabled"
             break
         }
 
@@ -968,13 +982,20 @@ try {
             continue
         }
 
-        # Three consecutive resumes that all restart from the SAME save = the save itself is
-        # poisoned; retrying it again would just loop.
+        # ⭐ THE ONLY RESUME BUDGET THERE IS, and it is PER SAVE. A different save key means the run
+        # reached the next autosave since the last resume - real forward progress - so the counter
+        # resets and the run may keep recovering indefinitely. The same key means it crashed without
+        # getting past that save, and retrying it again would just loop.
         $saveKey = $ownSave.LastWriteTime.ToString("s")
-        if ($saveKey -eq $lastResumeSave) { $sameSaveTries++ } else { $sameSaveTries = 1; $lastResumeSave = $saveKey }
-        if ($sameSaveTries -ge 3) {
-            Write-Log "run ${run}: 3 crashes from the same autosave - permanent failure, moving to the next run" "ALERT"
-            $abandoned = "3 crashes from the same save"
+        if ($saveKey -eq $lastResumeSave) {
+            $sameSaveTries++
+        } else {
+            if ($sameSaveTries -gt 1) { Write-Log "  progressed to a new autosave - per-save retry counter reset (was $sameSaveTries)" }
+            $sameSaveTries = 1; $lastResumeSave = $saveKey
+        }
+        if ($sameSaveTries -ge $MaxResumes) {
+            Write-Log "run ${run}: $MaxResumes crash(es) from the SAME autosave without progressing - permanent failure, moving to the next run" "ALERT"
+            $abandoned = "$MaxResumes crashes from the same save"
             break
         }
 
