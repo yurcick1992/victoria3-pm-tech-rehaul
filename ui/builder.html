@@ -1106,11 +1106,17 @@ function scenBreakdown(g, side){
   // ⚠ Small per-level quantities need DECIMALS, or the line reads as broken arithmetic: a subsistence
   // pasture making 0.25 grain per level printed `41×0 = 10`. Round only where rounding is harmless.
   const fq=q=>Math.abs(q)>=10?String(round(q)):String(Math.round(q*100)/100);
-  const lines=parts.slice(0,24).map(p=>`  ${p.name}  ${p.n}×${fq(p.q)}${p.thr!==1?` ×${Math.round(p.thr*1000)/1000}`:''} = ${round(val(p))}`);
+  // ⚠⚠ LABEL THE TERMS. `41×0.25 = 10` beside `49×37 ×1.1 = 1994` was read as a 0.25 THROUGHPUT on
+  // subsistence — reasonably, because the two `×` meant different things and only one of them was a
+  // multiplier of the building rather than of its recipe. `lvl` and `thru` say which is which. (The 0.25
+  // is real and is vanilla's own `goods_output_grain_add` for a subsistence pasture: it mostly makes meat
+  // and fabric, and subsistence takes no throughput bonus at all.)
+  const lines=parts.slice(0,24).map(p=>`  ${p.name}  ${p.n} lvl × ${fq(p.q)}${p.thr!==1?` × ${Math.round(p.thr*1000)/1000} thru`:''} = ${round(val(p))}`);
   if(parts.length>24) lines.push(`  …and ${parts.length-24} more`);
   const anyThr=parts.some(p=>p.thr!==1);
-  return `${g} — ${round(tot)} ${side==='in'?'demand':'supply'} from ${parts.length} building type(s)\n` + lines.join('\n')
-    + (anyThr?`\n  (×N is that building's throughput — the scenario column includes it, so these lines add up to the total above)`:'');
+  return `${g} — ${round(tot)} ${side==='in'?'demand':'supply'} from ${parts.length} building type(s)\n`
+    + `  levels × per-level ${side==='in'?'input':'output'}${anyThr?' × throughput':''}:\n` + lines.join('\n')
+    + (anyThr?`\n  (throughput is the building's own bonus; the scenario column includes it, so these lines add up to the total above)`:'');
 }
 // Demand per NEED rather than per class: a need is what the money is actually budgeted to, and it is
 // the unit the consumption distribution is defined over — so this is the breakdown that tells you
