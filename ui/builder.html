@@ -1086,16 +1086,17 @@ function scenBreakdown(g, side){
   IND.forEach(i=>i.tiers.forEach(t=>{
     const n=BLDNUM[t.key]||0; if(!n) return;
     const q=tierGoodsIO(i,t)[side][g]; if(!q) return;
-    parts.push({name:`${t.name} (T${t.tier})`, n, q, thr:thruMult(t.key)});
+    parts.push({name:`${t.name} (T${t.tier})`, n, q, thr:thruMult(t.key), u:'lvl'});
   }));
   refBuildings().forEach(b=>{
     const n=BLDNUM[b]||0; if(!n) return;
     const q=selGoods(refSel(b))[side][g]; if(!q) return;
-    parts.push({name:prettyKey(b), n, q, thr:thruMult(b)});
+    parts.push({name:prettyKey(b), n, q, thr:thruMult(b), u:'lvl'});
   });
   unitTypes().forEach(u=>{ const q=unitGoodsIO(u)[side][g]; if(!q) return;
     [false,true].forEach(mob=>{ const n=UNITNUM[unitRowKey(u,mob)]||0; if(!n) return;
-      parts.push({name:unitLabel(u)+(mob?' (mobilised)':''), n, q, thr:1}); }); });
+      // battalions are counted in BATTALIONS, not levels — and take no throughput (upkeep is per battalion)
+      parts.push({name:unitLabel(u)+(mob?' (mobilised)':''), n, q, thr:1, u:'bn'}); }); });
   if(!parts.length) return `${g} — no ${side==='in'?'building demand':'building supply'} in this scenario`;
   const val=p=>p.n*p.q*p.thr;
   parts.sort((a,b)=>Math.abs(val(b))-Math.abs(val(a)));
@@ -1103,20 +1104,28 @@ function scenBreakdown(g, side){
   // Show the throughput factor on the line whenever it is not 1, so the arithmetic is checkable rather
   // than just correct — a reader who multiplies count × quantity and gets a different number is owed
   // the reason on the same line.
-  // ⚠ Small per-level quantities need DECIMALS, or the line reads as broken arithmetic: a subsistence
-  // pasture making 0.25 grain per level printed `41×0 = 10`. Round only where rounding is harmless.
-  const fq=q=>Math.abs(q)>=10?String(round(q)):String(Math.round(q*100)/100);
-  // ⚠⚠ LABEL THE TERMS. `41×0.25 = 10` beside `49×37 ×1.1 = 1994` was read as a 0.25 THROUGHPUT on
-  // subsistence — reasonably, because the two `×` meant different things and only one of them was a
-  // multiplier of the building rather than of its recipe. `lvl` and `thru` say which is which. (The 0.25
-  // is real and is vanilla's own `goods_output_grain_add` for a subsistence pasture: it mostly makes meat
-  // and fabric, and subsistence takes no throughput bonus at all.)
-  const lines=parts.slice(0,24).map(p=>`  ${p.name}  ${p.n} lvl × ${fq(p.q)}${p.thr!==1?` × ${Math.round(p.thr*1000)/1000} thru`:''} = ${round(val(p))}`);
+  // ⚠ THE PER-UNIT FIGURE KEEPS DECIMALS AT EVERY MAGNITUDE, because the line has to multiply out ON
+  // SIGHT. Rounding it to a whole number above 10 broke 47 of 316 lines in the 1900 scenario — a car
+  // plant eating 13.86 oil printed `12 lvl × 14 × 1.20 thru = 200`, and 12×14×1.2 is 202. Small values
+  // had the same fault more visibly (`41 × 0` for a subsistence pasture's 0.25 grain). Two decimals
+  // reproduce every total in the sheet to within a unit; trailing zeros are dropped so whole numbers
+  // still read as whole numbers.
+  const fq=q=>String(Math.round(q*100)/100);
+  // ⚠⚠ LABEL THE TERMS, AND PRINT THROUGHPUT ON EVERY LINE — including ×1.00, where it changes nothing.
+  // `41×0.25 = 10` beside `49×37 ×1.1 = 1994` was read as a 0.25 THROUGHPUT on subsistence: the two `×`
+  // meant different things on adjacent lines, and only one of them scaled the building rather than its
+  // recipe. Labelling them fixed that, but printing the term only when it bites left a second ambiguity —
+  // an ABSENT term reads as "not applicable here" just as easily as "one", and the reader has to know
+  // which buildings can carry a bonus to tell those apart. Every line now carries all three factors, so
+  // the shape of the arithmetic never changes and every line multiplies out on sight.
+  // ⚠ This is why battalions and non-production buildings print `× 1.00 thru` too: they genuinely take no
+  // throughput (a battalion's upkeep is per battalion, not per building), and stating that is the point.
+  const lines=parts.slice(0,24).map(p=>`  ${p.name}  ${p.n} ${p.u} × ${fq(p.q)} × ${p.thr.toFixed(2)} thru = ${round(val(p))}`);
   if(parts.length>24) lines.push(`  …and ${parts.length-24} more`);
-  const anyThr=parts.some(p=>p.thr!==1);
   return `${g} — ${round(tot)} ${side==='in'?'demand':'supply'} from ${parts.length} building type(s)\n`
-    + `  levels × per-level ${side==='in'?'input':'output'}${anyThr?' × throughput':''}:\n` + lines.join('\n')
-    + (anyThr?`\n  (throughput is the building's own bonus; the scenario column includes it, so these lines add up to the total above)`:'');
+    + `  count × per-unit ${side==='in'?'input':'output'} × throughput:\n` + lines.join('\n')
+    + `\n  (throughput is the building's own bonus and the scenario column includes it; 1.00 = none, which is`
+    + `\n   always the case for subsistence, battalions and non-production buildings)`;
 }
 // Demand per NEED rather than per class: a need is what the money is actually budgeted to, and it is
 // the unit the consumption distribution is defined over — so this is the breakdown that tells you
