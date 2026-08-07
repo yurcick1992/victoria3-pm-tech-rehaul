@@ -4640,8 +4640,18 @@ Every entry in a `(state, culture, need)` cell whose need contains a local good 
 | 1920.1.1 | GBR | 5.260 | **0.928** | 18 487 |
 | **mean** | | **4.226** | **0.835** | |
 
-**Better in 16 of 16, by a mean factor of 5.1.** The non-local headline is untouched (0.819 pp at
-1904 USA under every mode), as it must be — the factor only ever applies to the three local goods.
+**Better in 16 of 16.** ⚠ A win count is not an effect size, so: every cell improves by **1.66 to 4.92 pp**
+(mean 3.39), a factor of **3.42× to 7.82×** (mean 5.39). The smallest win is 1901.7 USA, 2.078 → 0.422.
+
+⭐ **The two distributions are COMPLETELY DISJOINT.** Worst cell after the fix **1.586**; best cell before it
+**2.078**. So no cell exists where the unaugmented reading was even competitive — this is not a mean dragged
+up by a few large wins, and no per-market or per-date caveat can be hiding in it.
+
+⭐⭐ **THE SIZE THAT MATTERS: local goods stopped being the model's weak spot.** The **non-local** needs — the
+ones this change cannot touch — score **0.819 pp** at 1904 USA, and are untouched under every mode, as they
+must be. The local-good needs were **3.958** there, i.e. **4.8× worse than the rest of the model**, and are
+now **0.784** — marginally *better* than it. The fix does not merely improve those needs; it removes them as
+an outlier class.
 
 ### The derived 0.40 sits on the empirical optimum
 
