@@ -215,6 +215,25 @@
   .presetbar .clsrow label{display:flex;align-items:center;justify-content:space-between;gap:5px}
   .presetbar .clsrow input{width:76px;text-align:right}
   .presetbar .clsrow .rowend{display:flex;align-items:center;gap:8px;white-space:nowrap}
+  /* BY PROFESSION is a DIFFERENT SHAPE and must not borrow .clsrow's grid. That grid is
+     `86px repeat(5,136px) 1fr` because SoL and Population have exactly five classes and share a column
+     per class. Professions are FOURTEEN: under .clsrow the 7th landed in the stretchy 1fr (shopkeepers'
+     field flew to the right margin) and 8+ wrapped into implicit auto-width columns, where a long number
+     overran the next label — "2936515bureaucrats". So it gets its own wrapping grid, with the row label
+     lifted OUT of the grid flow so it cannot occupy a cell on the second line. */
+  .presetbar .profrow{display:flex;align-items:flex-start;gap:8px;margin-top:8px;font-size:12px;color:var(--muted)}
+  .presetbar .profrow>.plbl{flex:none;min-width:72px;padding-top:4px}
+  .presetbar .profgrid{flex:1;min-width:0;display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:4px 12px}
+  .presetbar .profgrid label{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0}
+  .presetbar .profgrid label>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .presetbar .profgrid input{width:90px;flex:none;text-align:right}
+  /* Kill the steppers: they are drawn INSIDE the box and reserve ~16px, and these fields hold
+     eight-digit populations. Same failure the Number column had — the value is right and the pixels
+     lie — plus a stray scroll over the row silently editing a pop count. */
+  .presetbar .profgrid input[type=number]{-moz-appearance:textfield;appearance:textfield}
+  .presetbar .profgrid input[type=number]::-webkit-outer-spin-button,
+  .presetbar .profgrid input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
   .scen td.popcell{color:var(--ink);font-variant-numeric:tabular-nums}
   /* hover-highlight a building's goods on its own row in the scenario panel (inputs red, output green) */
   .scen tr[data-good].hl-in{background:rgba(232,115,90,.20)}
@@ -355,7 +374,7 @@
   </div>
 
   <div class="card">
-    <div class="hd" data-toggle="scen">Scenario panel — buy/sell orders &amp; prices <span class="tag">— building inputs = BUY orders, outputs = SELL orders (each building's goods × its <b>Number</b>). A <b>preset</b> fills the whole scenario from one country's vanilla 1836 market (buildings, PMs, treaty transfers, pops, base wage); <b>pops</b> buy orders are derived from those pops and their SoL (plus the baskets buildings buy for their slaves — hover for that part), and <b>trade</b> is yours to dial in. The <b>price</b> column's toggle switches between <b>locked</b> (edit each % by hand) and <b>auto</b> (recomputed live from orders: price = base × [1 + 0.75·clamp((buy−sell)/min(buy,sell), ±1)], propagated to every building). Click a section header to fold it. Hover an industry below to flag its goods here.</span></div>
+    <div class="hd" data-toggle="scen">Scenario panel — buy/sell orders &amp; prices <span class="tag">— building inputs = BUY orders, outputs = SELL orders (each building's goods × its <b>Number</b>). A <b>preset</b> fills the whole scenario from one country's vanilla 1836 market (buildings, PMs, treaty transfers, pops, base wage); <b>pops</b> buy orders are derived from those pops and their SoL (plus the baskets buildings buy for their slaves — hover for that part), and <b>trade</b> is yours to dial in. The <b>price</b> column's toggle switches between <b>locked</b> (edit each % by hand) and <b>auto</b> (recomputed live from orders: price = base × [1 + 0.75·clamp((buy−sell)/min(buy,sell), ±1)], propagated to every building). Click a section header to fold it. Hover an industry below to flag its goods here. <b>A design choice worth knowing:</b> <b>services</b>, <b>transportation</b> and <b>electricity</b> are <i>local</i> goods — in the game a state's substitution supply is its own production plus (1 − its GDP share) × 0.25 of the market's, so a pop never sees the whole market's stock of one. This sheet is a single state, and treating it as the <i>whole</i> market is the one case where that rule does nothing — so it models a <b>representative</b> state instead: a fifth of the country's GDP holding a fifth of the local supply, ⇒ <b>×0.40</b> on those three goods' availability. It changes how each need <b>splits</b>, never how much money a need has, so whatever a local good gives up its competitors gain. Measured against eight vanilla savegames' own stored purchase weights it cuts the error on the affected needs from 4.23 to 0.84 points; hover a local good's <b>pops</b> cell for the arithmetic. Revertible in the model as <code>LOCAL_MULT&nbsp;=&nbsp;1</code>.</span></div>
     <div class="bd scen" id="scenarioBody"></div>
   </div>
 
@@ -1402,7 +1421,9 @@ function profPanelHTML(){
     const st=PROF_STRATUM[p]||'—';
     return `<label title="${esc(p)}: people. Wage weight ${WAGE_WEIGHT[p]||0}; consumes as the ${st} stratum, at that stratum's standard of living. Editing this updates the ${st} class above, which is its sum.">`
       + `<span>${esc(p)}</span><input type="number" min="0" step="1000" value="${POPPROF[p]||0}" data-popprof="${esc(p)}"></label>`; }).join('');
-  return `<div class="pknobs clsrow"><span class="plbl" title="Population by PROFESSION. The classes above are the sums of these — consumption is still computed per stratum, because a buy package is a wealth level rather than a job.">By profession</span>${fields}</div>`;
+  // ⚠ NOT .clsrow — see the CSS. Five classes and fourteen professions are different shapes, and sharing
+  // the class grid is what threw shopkeepers to the right margin and overlapped engineers with bureaucrats.
+  return `<div class="profrow"><span class="plbl" title="Population by PROFESSION. The classes above are the sums of these — consumption is still computed per stratum, because a buy package is a wealth level rather than a job.">By profession</span><div class="profgrid">${fields}</div></div>`;
 }
 function renderScenario(){
   const el=document.getElementById('scenarioBody'); if(!el) return;
