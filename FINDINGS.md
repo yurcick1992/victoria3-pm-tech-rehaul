@@ -4539,6 +4539,37 @@ for peasants is correct and stays.**
 ⚠ **A PEASANT IS THEREFORE A TERRIBLE WORKED EXAMPLE** (user), and the pop-level walkthrough in F40 uses a
 laborer instead. Two channels are in play for peasants and only one reaches the market.
 
+### ⭐⭐ THE POP PANEL PAYS THE CURRENT PRICE, BUT BUYS A BASE-PRICE QUANTITY
+
+The panel shows both a count and a money figure, and they are not the same statement. For the same
+peasant pop 8884 the user read **count 0.07, money £13.8**. The prediction:
+
+```
+size                     = 477 163 + 0.5 × 1 463 552          = 1 208 939
+free_movement money      = £3 × 1 208 939 / 10 000            = £362.68
+reaching the market      = × 0.05  (peasant consumption_mult) = £18.13
+automobiles share        = 0.47975 / 1.09594                  = 43.775 %
+allocated at BASE price  = £18.13 × 0.43775                   = £7.94
+UNITS                    = £7.94 / £100 base                  = 0.0794
+PAID at the market price = 0.0794 × £175.00                   = £13.89
+```
+
+Observed £13.8 implies **0.0789 units**; predicted **0.0794**. **0.67 % apart**, and the displayed count
+of 0.07 agrees.
+
+⇒ **The buy package and the split determine a QUANTITY, computed against BASE prices; the pop then pays
+whatever the market charges for it.** Automobiles sat at £175 — the +75 % band edge — which is the whole
+of the gap between the £7.94 allocated and the £13.89 paid.
+
+⭐ This is a THIRD independent confirmation of `units ∝ purchase weight / BASE price` (after F39's stored
+weights and F40's market aggregates), and it arrives from the opposite direction: the panel's money figure
+only reconciles if the quantity was fixed without reference to the current price. It is also exactly what
+the game's own text describes — *"if the pop cannot afford their pop needs they will still purchase them,
+and the shortfall reduces their wealth"*.
+
+⚠ For our model this changes nothing on the ORDER BOOK, which is in units. It matters only if we ever
+model pop wealth, where the pound figure is what depletes it.
+
 **What it does NOT say.** Per-GOOD pop consumption is still not stored — only the per-pop need total. The
 other 12 fields of `weekly_budget` remain unidentified; only the large negative one is pinned, and that by
 two independent pops agreeing with the package table.
