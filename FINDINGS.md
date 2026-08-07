@@ -4466,34 +4466,33 @@ to re-running anything.
 
 ---
 
-## F41 — ⚠ OPEN, NOT A RESULT: a save stores a per-pop `weekly_budget`, and its expense line matches the buy package to 8 % — for a PEASANT pop our model would have multiplied by 0.05
+## F41 — ✅ A save stores a per-pop `weekly_budget`, and its expense line IS the need allocation. For PEASANTS only 5 % of it reaches the market, which confirms `consumption_mult` and locates where it applies
 
 **Arm** control (vanilla), 1904.1.1 gamestate of session `20260807_005246_popsplit-debut-vanilla`.
+Resolved by the user reading the same pop in game (2026-08-07).
 
-Chasing a pop-level check for F40, the melted pop record turned out to carry
-`weekly_budget = { 13 numbers }`. For pop **8884** — peasants, STATE_NEW_YORK, yankee, protestant,
-wealth 10, workforce 477 163, dependents 1 463 552 — the large negative entry reads **−39 644**, and the
-buy package predicts:
+The melted pop record carries `weekly_budget = { 13 numbers }`. Its large negative entry is the money the
+pop allocates to **needs**, and the buy package predicts it directly:
 
-```
-size            = 477 163 + 0.5 × 1 463 552              = 1 208 939 package-equivalents
-wealth_10 total = £355 per 10 000                        (10 needs)
-predicted spend = £355 × 1 208 939 / 10 000              = £42 917
-observed        = weekly_budget expense line             =  39 644     ratio 1.083
-```
+| pop | type | wealth | size (wf + ½ dep) | package total | **predicted £** | **observed £** | ratio |
+|---|---|--:|--:|--:|--:|--:|--:|
+| 8875 | laborers | 14 | 441 161 | £519 / 10 000 | **22 896** | **21 579** | **1.061** |
+| 8884 | peasants | 10 | 1 208 939 | £355 / 10 000 | **42 917** | **39 644** | **1.083** |
 
-⚠⚠ **THIS IS NOT YET A FINDING, FOR TWO REASONS.**
-1. **The 13 fields are unlabelled** and "the big negative one is goods expenditure" is a guess. An 8 %
-   match is suggestive, not identification — the same discipline F39 had to learn.
-2. ⭐ **If it IS goods expenditure, it contradicts something we ship.** Our model applies
-   `consumption_mult = 0.05` to peasants (CLAUDE.md, from `common/pop_types/peasants.txt`), which would
-   predict **£2 146**, not £42 917. The observed 39 644 is the FULL package. Either the multiplier does not
-   apply to a pop's own budget line (the subsistence building buying on their behalf being a separate
-   channel), or our reading of it is wrong.
+⭐ **So the buy-package budget model is right to ~6–8 % at the level of a single pop** — a much tighter
+check than the market aggregates, and it needs no split rule at all.
 
-**Next:** identify the 13 fields against a pop whose income and spending are known from the panel, then
-re-check the peasant multiplier specifically. Until then do **not** change `class_mult` in
-`config/presets.json` on the strength of this.
+⭐⭐ **AND THE PEASANT MULTIPLIER IS CONFIRMED, WITH ITS LOCATION.** The user read pop 8884 in game: of the
+£39.6k it allocates to needs, **exactly 5 % is actually spent on goods and becomes buy orders**. So
+`consumption_mult = 0.05` (from `common/pop_types/peasants.txt`) applies **after** the need allocation, at
+the point money becomes market demand — the rest is met inside the subsistence building and never reaches
+the order book. ⚠ This is the opposite of what the first draft of this finding suspected: the multiplier is
+not contradicted by the `weekly_budget` line, it simply is not applied to it. **Our `class_mult` of 0.05
+for peasants is correct and stays.**
 
-**What it does NOT say.** It says nothing about per-GOOD pop consumption, which is still not stored — only
-a per-pop total. F40's per-good work continues to rest on the stored purchase weights.
+⚠ **A PEASANT IS THEREFORE A TERRIBLE WORKED EXAMPLE** (user), and the pop-level walkthrough in F40 uses a
+laborer instead. Two channels are in play for peasants and only one reaches the market.
+
+**What it does NOT say.** Per-GOOD pop consumption is still not stored — only the per-pop need total. The
+other 12 fields of `weekly_budget` remain unidentified; only the large negative one is pinned, and that by
+two independent pops agreeing with the package table.
