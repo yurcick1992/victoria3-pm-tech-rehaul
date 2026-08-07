@@ -4653,6 +4653,105 @@ must be. The local-good needs were **3.958** there, i.e. **4.8× worse than the 
 now **0.784** — marginally *better* than it. The fix does not merely improve those needs; it removes them as
 an outlier class.
 
+### ⭐ THE SHARES THEMSELVES — old prediction, new prediction, observed, all from the one gamestate
+
+A pp figure says how far off we are and not what either side claimed. American market, 1904.1.1, mean over
+511 state×culture cells per row; the share is the game's OWN stored per-entry value (the clamped supply
+share the purchase weight is built from, **not** the final money split). ⚠ The observed column is
+byte-identical under both modes — verified, because it is a property of the save and any disagreement would
+mean the two runs are not comparable. `--local off|scaled:0.4 --shares` reproduces it.
+
+| need | good | OLD pred | **NEW pred** | **OBSERVED** | old err | new err |
+|---|---|--:|--:|--:|--:|--:|
+| free_movement | **automobiles** | 0.2192 | **0.4124** | **0.3768** | 15.76 | 3.56 |
+| free_movement | transportation | 0.7500 | 0.5876 | 0.6232 | 12.68 | 3.56 |
+| leisure | **services** | 0.4873 | **0.2755** | **0.2319** | 25.55 | 4.36 |
+| leisure | small_arms | 0.1220 | 0.1608 | 0.1676 | 4.56 | 0.68 |
+| leisure | steamers | 0.2096 | 0.2500 | 0.2500 | 4.04 | **0.00** |
+| leisure | opium | 0.0793 | 0.1113 | 0.1194 | 4.01 | 0.81 |
+| leisure | clippers | 0.0527 | 0.0744 | 0.0799 | 2.73 | 0.55 |
+| leisure | automobiles | 0.0610 | 0.0862 | 0.0863 | 2.53 | **0.01** |
+| leisure | fine_art | 0.0377 | 0.0533 | 0.0561 | 1.85 | 0.29 |
+| heating | electricity | 0.0137 | 0.0055 | 0.0067 | 0.70 | 0.12 |
+| heating | coal | 0.2595 | 0.2617 | 0.2637 | 0.42 | 0.20 |
+| heating | wood | 0.2141 | 0.2159 | 0.2165 | 0.24 | 0.06 |
+| heating | oil | 0.0443 | 0.0446 | 0.0454 | 0.11 | 0.08 |
+| heating | fabric | 0.3602 | 0.3602 | 0.3600 | 0.02 | 0.02 |
+| communication | transportation | 0.7500 | 0.7500 | 0.7500 | 0.00 | 0.00 |
+| communication | telephones | 0.0000 | 0.0000 | 0.0000 | 0.00 | 0.00 |
+| services | services | 1.0000 | 1.0000 | 1.0000 | 0.00 | 0.00 |
+
+⭐ **`leisure/services` was the real damage, and fixing one good fixed six.** We gave services **48.7 %** of
+the leisure need against the game's **23.2 %**, and every good competing with it was starved by exactly that
+surplus. Steamers and automobiles in leisure now land at **0.00** and **0.01 pp**.
+⭐ **`free_movement` is §10.36.4's case, reproduced**: the old 0.2192 is precisely the 21.9 % that section
+quotes against the game's 38.4 %.
+⚠⚠ **THE RESIDUAL CHANGED SIGN — the new reading OVER-corrects.** Automobiles go 0.2192 → 0.4124 against an
+observed 0.3768, and leisure's services land at 0.2755 against 0.2319. So the error did not merely shrink
+from 15.76 to 3.56 pp, it crossed over. That is almost certainly what the sweep was detecting when it put
+the optimum at 0.35 rather than 0.40 — a slightly larger discount would pull both back. The over-correction
+is small and inside the derivation's noise, but the remaining bias is now **upward** on a debut good's share
+where it used to be downward, and anything reading §10.36.5's "our scenarios UNDER-state a new good's pop
+demand" must not assume that direction still holds.
+⚠ The bottom rows are the control: `communication` cannot move (transportation is pinned at its 0.75 cap)
+and `services` is a single-good need. The factor correctly does nothing there — which is also why 1836 could
+not test it.
+
+
+### ⭐⭐ IN UNITS, PER STATE — the end product, three readings side by side
+
+Shares are an intermediate. `tools/testbed/state_good_units.mjs` joins the per-cell splits to the melt's
+own per-pop budgets and prints ABSOLUTE UNITS. ⚠ **The budget term is identical in all three columns**, so
+the comparison isolates the split and the budget's own ~18 % error (F24) shifts all three together. GAME
+here is the game's stored split on the game's own pops — the order-book measurement (F42) exists only at
+MARKET level, because that is the only level at which an order book exists.
+
+**New York and Midlands — real order book (their markets were instrumented):**
+
+| state | good | 1904 OLD / NEW / **GAME** | 1912 OLD / NEW / **GAME** | 1920 OLD / NEW / **GAME** |
+|---|---|---|---|---|
+| NY | transportation | 631 / 536 / **550** | 611 / 497 / **503** | 638 / 532 / **528** |
+| NY | services | 1126 / 1106 / **1104** | 1235 / 1214 / **1212** | 1499 / 1480 / **1476** |
+| NY | automobiles | 53 / 85 / **80** | 139 / 184 / **182** | 253 / 278 / **292** |
+| NY | small_arms | 100 / 85 / **84** | 99 / 80 / **80** | 121 / 114 / **104** |
+| NY | electricity | 9.7 / 4.0 / **4.4** | 8.2 / 3.3 / **4.1** | 9.0 / 3.6 / **4.7** |
+| Midlands | transportation | 903 / 821 / **830** | 1245 / 1066 / **1094** | 983 / 768 / **785** |
+| Midlands | services | 1947 / 1934 / **1933** | 2736 / 2714 / **2713** | 2602 / 2583 / **2580** |
+| Midlands | automobiles | 28 / 53 / **50** | 81 / 135 / **127** | 116 / 181 / **177** |
+| Midlands | small_arms | 9.2 / 9.6 / **9.6** | 16.2 / 16.9 / **16.3** | 11.7 / 12.2 / **12.1** |
+| Midlands | electricity | 3.3 / 1.3 / **1.3** | 6.1 / 2.4 / **2.6** | 13.4 / 5.5 / **6.4** |
+
+**Mean |ratio − 1| over those 30 comparisons: 36.1 % → 4.3 %, an 8.4× improvement, closer in 29 of 30.**
+Worst single cell 162 % → 23 %. The two goods carrying it are automobiles (under-fed by a third to a half)
+and electricity (over-fed 2–2.6×).
+
+⚠⚠ **TWO SPLIT-STATE / WRONG-MARKET TRAPS, both hit in practice and both silent:**
+- **Flanders is a SPLIT STATE**: the Belgian half sits in a **Spanish**-led market (SPA/CUB/PHI/BEL), the
+  Dutch half in the American one. A first pass captured only the Dutch half — the smaller one — and looked
+  entirely plausible. The region-summing in `state_good_units` is what makes both halves count.
+- **Texas is MEXICAN in this campaign**, not American, and `--probe STATE_UTAH` silently resolved to the
+  American market because the region→market lookup is LAST-WINS and Utah is split too. Verify a probe is
+  wholly inside the market you meant.
+Neither market was instrumented, so both use `--supply-from-save` (production, not sell orders — no
+imports). **Those rows are a different instrument and are not comparable with the two above.**
+
+| state | good | 1912 OLD / NEW / **GAME** | 1920 OLD / NEW / **GAME** |
+|---|---|---|---|
+| Flanders | transportation | 521 / 442 / **419** | 716 / 608 / **516** |
+| Flanders | automobiles | 54 / 82 / **86** | 78 / 115 / **156** |
+| Flanders | electricity | 7.7 / 3.1 / **3.0** | 5.8 / 2.4 / **2.5** |
+| Flanders | small_arms | 69 / 58 / **36** | 68 / 64 / **41** |
+| Texas | transportation | 13.3 / 13.3 / **13.3** | 28.8 / 28.8 / **15.6** |
+| Texas | automobiles | 0.0 / 0.0 / **0.0** | 0.0 / 0.0 / **4.3** |
+
+⚠ **Texas automobiles predict ZERO against 4.3** — Mexico produces no cars, so a production-based order book
+sees none available and the game's pops are buying imports. The fallback's blind spot, not the split.
+⚠ **Texas transportation is UNCHANGED by the fix** (28.8 → 28.8): it is the only supplied good in its needs
+there, so the multiplier cancels — the same blindness that made 1836 untestable, in a live market.
+⚠ **Flanders small_arms stays ~1.6× over** under both readings. Unexplained; the largest residual here.
+⚠ **Electricity now UNDER-shoots** (NY 3.6 against 4.7 in 1920) where it over-shot 2× before — the same
+over-correction the share table shows, and consistent with the sweep preferring 0.35.
+
 ### The derived 0.40 sits on the empirical optimum
 
 Swept over the whole 16-cell panel:

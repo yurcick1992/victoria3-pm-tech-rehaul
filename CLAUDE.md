@@ -543,6 +543,10 @@ tools/                  dev tooling — NOT shipped in the mod
                         WHOLE availability), `fixed:<f>` (on supply only — ⚠ zeroes electricity out below
                         f≈0.3 and DROPS those entries, so its low end is not comparable), `state`, and
                         `gdp` (the real per-state rule with GDP proxied by output-value share).
+                        **`--shares`** emits the SHARES per (need, good) as TSV instead of an aggregate
+                        error — run it under two `--local` modes and join on the observed column, which is a
+                        property of the save and must come back identical or the runs are not comparable. An
+                        error figure cannot distinguish a 0.49-vs-0.23 miss from a 0.05-vs-0.02 one.
                         Supporting single-term tools: within_need_test.mjs
                         (candidate availability forms, inside one need — no cross-need scale to invent),
                         fit_substitution_rule.mjs --sweep (the deduction coefficients),
@@ -1021,6 +1025,12 @@ the game.
   `local` good (`free_movement`, `communication`, `leisure`, `services`, `heating`). The 0.40 multiplier
   above closes it. ⚠ It does **not** rescue §10.32's era-1 steel case: steel is in no pop need at all, so no
   pop-demand correction can reach it.
+  ⚠⚠ **THE RESIDUAL NOW POINTS THE OTHER WAY — 0.40 slightly OVER-corrects.** Read as shares: automobiles in
+  `free_movement` predicted **0.2192** before and **0.4124** now, against an observed **0.3768**; leisure's
+  services land at 0.2755 against 0.2319. The miss fell 15.8 pp → 3.6 pp *and changed sign*. So "our model
+  under-states a debut good's share" is a **pre-F43** statement and must not be carried forward. ⭐ The
+  biggest single gain was `leisure/services` (48.7 % predicted against 23.2 % observed), which was starving
+  six competing goods at once; steamers and automobiles in leisure now land at 0.00 and 0.01 pp.
   ✅ **The weights are VERIFIED correct against the game files** (2026-08-04): all **52 entries across 15
   needs** match `common/pop_needs/00_pop_needs.txt` exactly — every `weight`, `max_supply_share`,
   `min_supply_share` and `default` — and **29 of the 52 carry a non-default weight**, so this was a real

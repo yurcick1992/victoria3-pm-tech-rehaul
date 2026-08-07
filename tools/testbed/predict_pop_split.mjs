@@ -174,6 +174,15 @@ function nonpopFor(g, st) {
   if (LOCALMODE !== 'off' && LOCAL.has(g) && LOCALNP === 'state') return stateIn.get(st + '|' + g) || 0;
   return nonpop.get(MID + '|' + g) || 0;
 }
+// --supply-from-save: build the order book from the SAVE's own production instead of the run's telemetry.
+// The only reason this exists is markets the telemetry never logged — this campaign instruments USA, GBR
+// and BEL, so a state that ended up in, say, the Mexican market has stored weights but no order book.
+// ⚠ Production is NOT sell orders: it excludes imports and stockpile movement. F40 measured the two
+// agreeing to ~8 % mean, so this is a usable fallback and NOT interchangeable with the telemetry path.
+// Any figure produced this way must say so.
+if (args.includes('--supply-from-save')) {
+  for (const [k, v] of prodM) { const [mk, g] = k.split('|'); if (mk === MID) OB[g] = { sell: v, buy: 0, price: 0, exports: 0, production: v }; }
+}
 const avail = (g, st) => {
   if (!OB[g]) return 0;
   const base = Math.max(0, supplyFor(g, st) - C1 * nonpopFor(g, st)) * (BASEP[g] ?? 0);
@@ -250,6 +259,34 @@ for (const cell of cells.values()) {
 // --good/--need: print one entry's observed-vs-predicted instead of the whole market. Looped over a run's
 // quarterly saves this is the DEBUT TRAJECTORY — how far the stored share lags the share the rule computes,
 // which is the rate limiter (MAX_DEMAND_ADJUSTMENT_*) made visible rather than inferred.
+// --shares: the SHARES themselves, per (need, good), rather than an aggregate error. A pp figure says how
+// far off we are; it does not say what either side actually claimed, and a reader cannot tell a 0.78-vs-0.55
+// miss from a 0.05-vs-0.02 one. Emits TSV so two runs under different --local modes can be joined against
+// ONE observed column — the observed value is a property of the save, so it is identical across modes and
+// any disagreement in that column means the two runs are not comparable.
+// ⚠ Means are over (state, culture) cells, weighted EQUALLY per cell — the same basis the error metric uses.
+// --dump-cells: every scored (state, culture, need, good) with its predicted and stored share, as TSV.
+// This is what turns a share into UNITS: state_good_units.mjs joins it to the melt's per-pop budgets.
+// Emitted rather than recomputed elsewhere so the split arithmetic has exactly one implementation.
+if (args.includes('--dump-cells')) {
+  console.log(['state', 'region', 'culture', 'need', 'good', 'w', 'pred', 'obs'].join('\t'));
+  for (const w of worst)
+    console.log(`${w.state}\t${w.region}\t${w.key}\t${w.need}\t${w.good}\t${(NEED[w.need]?.entries[w.good]?.w ?? 1)}\t${w.pred.toFixed(6)}\t${w.obs.toFixed(6)}`);
+  process.exit(0);
+}
+if (args.includes('--shares')) {
+  const agg = new Map();
+  for (const w of worst) {
+    if (!w.local) continue;                       // only the needs the local rule can move
+    const k = w.need + '\t' + w.good;
+    if (!agg.has(k)) agg.set(k, { n: 0, obs: 0, pred: 0 });
+    const a = agg.get(k); a.n++; a.obs += w.obs; a.pred += w.pred;
+  }
+  console.log(['need', 'good', 'n', 'observed', 'predicted'].join('\t'));
+  for (const [k, a] of [...agg].sort())
+    console.log(`${k}\t${a.n}\t${(a.obs / a.n).toFixed(5)}\t${(a.pred / a.n).toFixed(5)}`);
+  process.exit(0);
+}
 const ONEG = argOf('--good', ''), ONEN = argOf('--need', '');
 if (ONEG) {
   const rows = worst.filter(w => w.good === ONEG && (!ONEN || w.need === ONEN) && w.region === PROBE);

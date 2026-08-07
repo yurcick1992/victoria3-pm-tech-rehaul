@@ -2556,6 +2556,12 @@ late" conclusion: part of what looks like a missing customer for `automobiles`, 
 (steel is in no pop need at all), but it does mean the automotive and telephone shortfalls are smaller in
 the game than in our model.
 
+⚠⚠ **DO NOT CARRY THAT DIRECTION FORWARD — F43 REVERSED IT.** The shipped 0.40 discount slightly
+**over**-corrects: automobiles in `free_movement` now predict 0.4124 against an observed 0.3768, where they
+used to predict 0.2192. So the residual bias in the local-containing needs is now **upward** and small
+(~3.6 pp), not downward and large (~15.8 pp). Anything reasoning from "our model under-states a debut good"
+is reasoning from the pre-F43 model. See §10.37.2.
+
 ## 10.37 ⭐⭐ THE `local` GOODS FIX — we model a REPRESENTATIVE state, not the degenerate whole-market one
 
 **FINDINGS F43 (2026-08-07).** This closes §10.36.5 and withdraws §10.36.2's "no change needed".
@@ -2598,6 +2604,16 @@ themselves store. Local-good needs, mean absolute error of the predicted share:
 ⭐ **The derived value lands 0.026 pp off the best constant available.** It was reached from the game's
 formula plus two stated assumptions and *then* checked against the sweep — it is not fitted, and re-fitting
 it to 0.35 would trade a derivation for 0.03 pp. The non-local half of the score is untouched (0.819 pp).
+
+⚠ **The residual CHANGED SIGN: 0.40 slightly over-corrects.** Read as shares rather than as an error (the
+table in F43), automobiles in `free_movement` go 0.2192 → **0.4124** against an observed **0.3768**, and
+`leisure`'s services land at 0.2755 against 0.2319. The miss fell from 15.8 pp to 3.6 pp *and crossed over*.
+That is very likely what the sweep was detecting when it preferred 0.35. Two consequences: the remaining
+bias in these needs is now **upward**, reversing §10.36.5's direction; and 0.35–0.40 should be re-examined
+against shares, not only against mean error, if this is ever revisited.
+⭐ **The single largest gain is `leisure/services`, and it fixed six goods at once**: we gave services 48.7 %
+of that need against the game's 23.2 %, and small_arms, steamers, opium, clippers, fine_art and automobiles
+were each starved by exactly that surplus. Steamers and automobiles in leisure now land at 0.00 and 0.01 pp.
 
 ⚠ **The factor multiplies the WHOLE availability**, `f × (supply − 0.5 × non-pop) × base`, not the supply
 alone. Scaling supply while deducting a whole market's industrial demand drives electricity to zero and
