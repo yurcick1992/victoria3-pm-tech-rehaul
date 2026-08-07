@@ -33,6 +33,9 @@ const DATE = argOf('--date', ''), RUN = argOf('--run', '1');
 const GAME = argOf('--game', 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game');
 const DEP = +argOf('--dependent-factor', '0.5');      // DEPENDENT_CONSUMPTION_RATIO
 const PKG = +argOf('--pop-size-package', '10000');    // POP_SIZE_PACKAGE
+// ⭐ consumption_mult from common/pop_types. Peasants allocate a full need budget but only a fraction of
+// it becomes MARKET demand — the rest is met inside the subsistence building (F41, confirmed in game).
+const CLASSMULT = { peasants: +argOf('--peasant-mult', '1') };
 const strip = s => s.replace(/^\uFEFF/, '');
 
 const BASEP = {};
@@ -91,8 +94,9 @@ const flush = () => {
   const size = (cur.workforce || 0) + DEP * (cur.dependents || 0);
   if (!(size > 0)) { cur = null; return; }
   const pk = PACK[cur.wealth] || {};
+  const cm = CLASSMULT[cur.type] != null ? CLASSMULT[cur.type] : 1;
   for (const nd of NEEDS_OF) {
-    const money = (pk[nd] || 0) * size / PKG;
+    const money = (pk[nd] || 0) * size / PKG * cm;
     if (!(money > 0)) continue;
     moneyByNeed[nd] = (moneyByNeed[nd] || 0) + money;
     const k = cur.state + '|' + cur.culture + '|' + nd;
@@ -114,7 +118,7 @@ for await (const line of rl) {
   if (!sec) { if (t === 'pops={') { sec = true; depth = 1; } continue; }
   const o = (t.match(/\{/g) || []).length, c = (t.match(/\}/g) || []).length;
   const m = /^(\d+)=\{$/.exec(t);
-  if (m && depth === 2) { flush(); cur = { state: null, wealth: null, culture: null, workforce: 0, dependents: 0 }; }
+  if (m && depth === 2) { flush(); cur = { state: null, wealth: null, culture: null, workforce: 0, dependents: 0, type: null }; }
   else if (cur) {
     let x;
     if ((x = /^location=(\d+)$/.exec(t))) cur.state = +x[1];
@@ -122,6 +126,7 @@ for await (const line of rl) {
     else if ((x = /^culture=(\d+)$/.exec(t))) cur.culture = +x[1];
     else if ((x = /^workforce=(\d+)$/.exec(t))) cur.workforce = +x[1];
     else if ((x = /^dependents=(\d+)$/.exec(t))) cur.dependents = +x[1];
+    else if ((x = /^type="([a-z_]+)"$/.exec(t))) cur.type = x[1];
   }
   depth += o - c;
   if (depth <= 0) { flush(); break; }

@@ -4466,6 +4466,52 @@ to re-running anything.
 
 ---
 
+## F42 — ⭐⭐ THE WHOLE MARKET, 31 GOODS, PREDICTED TO **2.7 %** — and the peasant multiplier is what makes it work. It applies AFTER the need allocation, and without it every staple is over-predicted 1.4–2.2×
+
+**Arm** control (vanilla), American market, 1904.1.1 and 1920.1.1 gamestates of session
+. Predicted with F40’s split + the buy-package budget from the
+save’s own pops; measured as .
+
+### 1904: every pop-need good the market trades
+
+**Mean absolute error 2.7 %, median 1.9 %, 27 of 31 goods within 5 %.** Nothing fitted.
+
+| ratio band | goods |
+|---|---|
+| 0.99–1.01 | furniture, paper, services, transportation, automobiles, silk, luxury_clothes, luxury_furniture, porcelain, clothes |
+| 0.95–0.99 | fabric, wood, grain, fish, meat, fruit, groceries, coal, oil, liquor, tobacco, opium, tea, coffee, sugar, fine_art, small_arms, clippers, steamers |
+| below 0.95 | glass 0.866, electricity 0.786 |
+
+### The peasant multiplier is the difference between that and nonsense
+
+| good | measured | predicted, no multiplier | predicted, ×0.05 on peasants |
+|---|--:|--:|--:|
+| grain | 4 216.5 | 7 105.0 (**1.69×**) | 4 136.1 (0.98) |
+| fish | 6 107.5 | 10 279.7 (**1.68×**) | 5 991.6 (0.98) |
+| fabric | 1 959.7 | 4 333.5 (**2.21×**) | 1 912.0 (0.98) |
+| wood | 2 352.3 | 5 279.2 (**2.24×**) | 2 325.1 (0.99) |
+| clothes | 7 754.5 | 10 872.6 (**1.40×**) | 7 702.1 (0.99) |
+| tobacco | 5 286.4 | 8 356.4 (**1.58×**) | 5 171.3 (0.98) |
+
+Mean error across those ten staples: **73 % → 2.0 %**. ⚠ **Automobiles barely move** (1.033 → 0.996):
+peasants sit at low wealth, where  is £3 of a £355 package, so they are a rounding error in
+car demand and the whole story in food. A test on one good would have missed this.
+
+### 1920: a uniform −19 % plus a construction-shaped hole
+
+Mean error **26 %**, but the shape is informative rather than random: **25 of 32 goods sit in 0.69–0.86,
+averaging 0.815** — a roughly uniform shortfall — while seven sit far below: **electricity 0.214, coal
+0.364, oil 0.424, glass 0.524, paper 0.560, wood 0.610, sugar 0.619**. Those seven are exactly the goods a
+**construction sector** eats. ⇒ The leading hypothesis is that  still
+charges pops for demand channels the building records do not carry (construction projects, government,
+military), and that 1904 America simply was not building enough for it to show. **Not tested.**
+
+**What it does NOT say.** (1) One market, one campaign, two dates. (2) The 1920 residual is diagnosed by
+the shape of the miss, not measured. (3) It says nothing about Britain, whose market aggregation is still
+the open item of F40.
+
+---
+
 ## F41 — ✅ A save stores a per-pop `weekly_budget`, and its expense line IS the need allocation. For PEASANTS only 5 % of it reaches the market, which confirms `consumption_mult` and locates where it applies
 
 **Arm** control (vanilla), 1904.1.1 gamestate of session `20260807_005246_popsplit-debut-vanilla`.
