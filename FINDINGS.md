@@ -131,6 +131,164 @@ transcript rather than from data.
 
 ---
 
+## F44 — ⭐⭐ THE WIKI'S FIVE FORMULAE, SCORED. Three confirm us (one of them settling a question we thought the wiki argued *against* us on), **one is refuted 32 of 32**, and the page's prose hands us **two things we did not have**
+
+**Source** `https://vic3.paradoxwikis.com/Needs`, page tagged `{{Version|1.13}}` — our game version. Read
+as **raw wikitext** (`?action=raw`), not as rendered HTML, because all five formulae are `<math>` blocks
+that render to images and are invisible to a text scrape. **Exhaustive by construction**: the raw source
+holds exactly **5 `<math>` blocks and 3 `[[File:]]` images**, counted mechanically; all three images are
+wealth-vs-need graphs stamped `{{SVersion|1.10}}`, not formulae. Everything else that renders as an image
+is a `{{icon}}`/`{{sol}}` pictogram.
+
+**Arm** control (**pure vanilla + telemetry**), session `20260807_005246_popsplit-debut-vanilla`, the same
+eight melted gamestates 1901.7.1 → 1920.1.1 × American and British markets that F43 used. Scored against
+the purchase weights the savegames themselves store. Instrument `tools/testbed/predict_pop_split.mjs`,
+which reproduces F40/F43 exactly on this bench (1904.1.1 USA: 16 863 non-local entries, **0.819 pp**;
+9 709 local entries, **0.784 pp**) before any switch is thrown.
+
+### Verdict per formula
+
+| # | Wiki formula | Verdict |
+|---|---|---|
+| 1 | `units × base price` ≥ £500 obsession threshold | ✅ confirmed (`MIN_DEMAND_VALUE_FOR_NEW_OBSESSION = 500`); not modelled — no culture dimension |
+| 2 | `units = (buy pkg ÷ base price) × (weight ÷ Σweight) × ((workforce + dependents×0.5) ÷ 10000)` | ✅ **confirms us exactly** |
+| 3 | `purchase weight = weight × ( min < market share < max )` | ✅ **confirms our clamp** — and contradicts the same page's prose |
+| 4 | `market share = (sell − ½ non-pop) ÷ Σ(sell − ½ non-pop)`, in **units** | ❌ **REFUTED, 32 of 32** |
+| 5 | local goods `+ 0.25 × (1 − state's % of market GDP)` | ✅ **confirms F43's 0.40** as supply augmentation; ❌ refuted read literally as a weight |
+
+### ❌ Formula 4 — the wiki's market share carries no base price. Ours does, and the game agrees with ours
+
+The page states the case twice: the formula itself is a pure unit ratio, and the lead section says pops
+*"never consider either the base price or market price of goods in choosing which goods to purchase in
+what amounts"*. That is **F40's central claim inverted**. ⚠ It is also self-inconsistent — the page's own
+formula 2 divides by base price, so base price demonstrably changes amounts.
+
+Scored on the game's stored weights, `--avail value` (shipped) against `--avail units` (the wiki), same
+entries both arms, `--no-culture --local scaled:0.4`, mean absolute error of the predicted share in pp:
+
+| date | market | non-local **value** | non-local *units* | local **value** | local *units* |
+|---|---|--:|--:|--:|--:|
+| 1901.7.1 | USA | **0.406** | 2.378 | **0.418** | 2.221 |
+| 1901.7.1 | GBR | **0.136** | 2.954 | **0.533** | 2.912 |
+| 1902.4.1 | USA | **0.530** | 2.530 | **0.634** | 2.568 |
+| 1902.4.1 | GBR | **0.209** | 3.158 | **0.379** | 2.742 |
+| 1904.1.1 | USA | **0.771** | 2.896 | **0.781** | 4.498 |
+| 1904.1.1 | GBR | **0.107** | 3.243 | **0.688** | 3.901 |
+| 1906.1.1 | USA | **0.733** | 2.599 | **0.635** | 5.101 |
+| 1906.1.1 | GBR | **0.069** | 3.160 | **0.768** | 4.977 |
+| 1908.1.1 | USA | **0.886** | 2.621 | **0.806** | 4.909 |
+| 1908.1.1 | GBR | **1.093** | 3.840 | **1.403** | 5.123 |
+| 1912.1.1 | USA | **0.482** | 2.646 | **0.733** | 7.367 |
+| 1912.1.1 | GBR | **0.267** | 3.132 | **0.869** | 4.663 |
+| 1916.1.1 | USA | **0.592** | 2.486 | **0.899** | 6.819 |
+| 1916.1.1 | GBR | **0.587** | 3.257 | **1.198** | 5.274 |
+| 1920.1.1 | USA | **0.894** | 2.751 | **1.588** | 7.156 |
+| 1920.1.1 | GBR | **0.230** | 3.125 | **0.910** | 5.681 |
+| **mean** | | **0.500** | **2.924** | **0.828** | **4.745** |
+
+**Better in 32 of 32 comparisons** (16 market-dates × the two halves), by **5.85×** on non-local needs and
+**5.73×** on local ones. ⭐ **The distributions are completely disjoint on both halves**: worst value cell
+1.093 against best units cell 2.378 (non-local), worst 1.588 against best 2.221 (local). No date, market or
+need class exists where the wiki's reading is even competitive, so no subset caveat can be hiding in it.
+
+⇒ **F40 stands unchanged, and is now the better-evidenced of the two.** Do not adopt the units reading.
+`--avail units` (and `S.AVAIL_MODE = 'units'` in `ui/econ.js`) exist to re-score this, not to configure it.
+
+### ✅ Formula 3 — the wiki's PICTURE agrees with us; the wiki's PROSE is what disagreed
+
+We had recorded the wiki as *stating a rule we had measured to be wrong*: its prose says the bounds mean
+market share **"has no effect if [it] goes outside their range"**, which reads as reverting to a bare
+`weight`, and F31 measured that reading worse in all seven 1836 markets (20.0 % → 24.2 %). But the prose is
+a gloss on formula 3, and **formula 3 itself writes a clamp** — `weight × ( min < market share < max )`,
+the share constrained to lie inside the bounds. That is exactly `needSplit`'s `'raw'` mode.
+
+⇒ **This is a correction to our reading of the source, not to our model.** The wiki is now a **third**
+independent agreement with the shipped clamp, alongside the `00_pop_needs.txt` header comment and F31's
+own measurement. Anything in our docs saying "the wiki says … and that is measurably wrong" must scope
+that to the page's *prose*.
+
+### ✅ Formula 5 — confirms F43's 0.40, and refutes the sentence's literal wording
+
+The page: *"Local-only goods receive an additional weight equal to `0.25 · (1 − State's percentage of
+market GDP)`. For example, in a state that has 20 % of the market's GDP, local goods receive an additional
+0.2 weight."* Read as an augmentation of **substitution supply** — which is what the define's own name and
+comment say (`LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR`, *"only for goods substitution supply and not for
+price calculations"*) — this is **F43's derivation term for term**, and the page independently picks the
+**same 20 % representative state**: own 0.20 + (1 − 0.20) × 0.25 = **0.40**.
+
+Read literally as an additive on the *weight*, it fails. American market 1904.1.1, local-good needs:
+
+| reading | mean abs err |
+|---|--:|
+| **shipped** — `× 0.40` on availability (`--local scaled:0.4`) | **0.781 pp** |
+| no augmentation at all (`--local off`) | 3.970 pp |
+| **wiki-literal** — `+ 0.25 × (1 − GDP share)` added to the share (`--local off --local-add`) | **6.581 pp** |
+| wiki-additive on top of per-state supply (`--local gdp --local-add`) | 8.603 pp |
+| real per-state rule, GDP proxied by gross-output share (`--local gdp`) | 7.615 pp |
+
+The literal reading is **worse than applying no correction at all**. ⚠ Note the last row: the *real* per-state
+rule scores 7.615 pp with our GDP **proxy** — so the proxy, not the rule, is what fails there. The save's
+own GDP field is still not extracted, and that remains the honest way to test formula 5 directly.
+
+### ⭐ Two things the page's prose gives us that we did not have
+
+**1. Obsessions and taboos move the NEED'S BUDGET, not just the within-need split.** The page: *"both
+obsessions and taboos affect the total value of needs that contain that good by ±25 % … taken from or
+distributed to other needs' values so that the total buy package for a wealth level remains the same."*
+**Confirmed in the game files** — `OBSESSION_POP_NEED_EXPENSE_MULT = 0.25`, `TABOO_POP_NEED_EXPENSE_MULT
+= -0.25`, *"scaled by number of obsessions, money is given or taken from other needs"*. Our docs describe
+obsession/taboo only as within-need weight terms. It is still a **no-op for us** (our scenarios have no
+culture dimension), but the recorded omission was **half the mechanism**. Also new: `MAX_NUM_OBSESSIONS = 3`.
+
+**2. An empty need buys its DEFAULT good, exclusively.** *"If no good for a need category is sold in a
+market, pops purchase the default good."* `needSplit` instead falls back to `config/pop_distribution.json`,
+then to the vanilla `weight` vector. The default good is already carried in our own data (`"def"` per need
+in `ui/presets.js`, emitted by `extract_presets.ps1:311`) and is simply unused on that path. A concrete,
+cheap divergence — **not yet fixed**, because it changes scenario demand and so must be measured through
+the era solve rather than shipped on an argument.
+
+### ⚠ Where the page is simply wrong on numbers — check the defines, not the wiki
+
+| page says | game defines say | scored |
+|---|---|---|
+| obsession sets min weight **1** and multiplies total weight **×2** | `DEFAULT_OBSESSION_DEMAND_MIN = 0.5`, `DEFAULT_OBSESSION_DEMAND_MULT = 1.5`, **no pop need overrides either** | ours **0.264–0.944 pp**, wiki's **1.516–3.459 pp**, 6 of 6 cells (`--obs derived` vs `--obs wiki`) |
+| prestige goods raise weight in **direct proportion** to market share (⇒ coefficient 1.0) | `DEFAULT_PRESTIGE_GOODS_DEMAND_INCREASE = 0.5`, *"scaled by how much of the **local** supply is prestige goods"* | we already use 0.5 ✅; the *local*-supply scoping is an open point — we use market supply |
+
+Obsession A/B in full (mean abs err of the predicted share, pp, culture terms scored **in**):
+
+| date | market | ours (0.5 floor) | wiki (min 1, ×2) |
+|---|---|--:|--:|
+| 1904.1.1 | USA | **0.819** | 3.209 |
+| 1904.1.1 | GBR | **0.264** | 1.616 |
+| 1912.1.1 | USA | **0.542** | 3.083 |
+| 1912.1.1 | GBR | **0.431** | 1.763 |
+| 1920.1.1 | USA | **0.944** | 3.459 |
+| 1920.1.1 | GBR | **0.408** | 1.516 |
+
+### ✅ Confirmed with no change to anything
+
+The **52-entry needs table is 52 / 52 exact** against `common/pop_needs/00_pop_needs.txt` — every weight,
+`max_supply_share`, `min_supply_share`, base price and default good, re-verified here. The `wealth_10` buy
+package is quoted verbatim correctly. Peasants at **5 %** of buy packages, the **3:1** dependent ratio and
+`DEPENDENT_CONSUMPTION_RATIO = 0.5`, `POP_SIZE_PACKAGE = 10000`, the **1 %–10 % per week** substitution rate
+limiter, and *"not purchased … unless that good has a minimum supply share"* (which our clamp already
+produces) all match what we ship.
+
+⭐ **So the page is careful with DATA and unreliable on DERIVED claims.** Its table is perfect and its two
+numeric assertions about obsessions and prestige are both wrong; its clamp picture is right and its clamp
+prose is wrong. **Read the wiki for pointers, score it before believing it** — the same rule §10.34 already
+states for the shipped file's header comment.
+
+### What it does NOT say
+
+It does **not** revisit F42 (whole-market demand to 2.7 %), F27 (the slave basket — the page is silent on
+slaves), F38 (need wealth thresholds), or anything about prices, wages or the era ladder. It does **not**
+re-test the `local` multiplier's *magnitude*: 0.40 remains derived-then-measured, and F43's over-correction
+(automobiles 0.4124 predicted against 0.3768 observed) is untouched by anything here. And it does **not**
+license the wiki's prose as evidence anywhere it was not scored above.
+
+---
+
 ## F40 — ⭐⭐ **THE WITHIN-NEED SUBSTITUTION RULE, SOLVED AND MEASURED END TO END.** A gamestate's own supply and non-pop demand reproduce that same gamestate's stored purchase weights to **0.82 pp** across 16 863 entries, on a VANILLA campaign. Availability is **`(sell − ½ × non-pop demand) × BASE price`**, and five further terms are each identified separately
 
 **Arm** `overlay` (the ×10 pop-need-weight build), read from the melted 1925 autosave of session

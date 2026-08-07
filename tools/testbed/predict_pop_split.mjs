@@ -183,9 +183,19 @@ function nonpopFor(g, st) {
 if (args.includes('--supply-from-save')) {
   for (const [k, v] of prodM) { const [mk, g] = k.split('|'); if (mk === MID) OB[g] = { sell: v, buy: 0, price: 0, exports: 0, production: v }; }
 }
+// `--avail units` weights availability by UNIT COUNT instead of value — the reading the wiki's
+// `market share of good` formula states (vic3.paradoxwikis.com/Needs), which carries no base price and
+// whose page text says pops "never consider either the base price or market price of goods in choosing
+// which goods to purchase". F40 measured the VALUE reading against the game's own stored weights, so this
+// exists to re-score the wiki's claim on the same entries rather than argue about it. Mirrors
+// `S.AVAIL_MODE` in ui/econ.js. Default `value` = what we ship.
+const AVAILMODE = argOf('--avail', 'value');
+const LOCALADD = args.includes('--local-add');
+const OBSMODE = argOf('--obs', 'derived');
+const availPrice = g => AVAILMODE === 'units' ? 1 : (BASEP[g] ?? 0);
 const avail = (g, st) => {
   if (!OB[g]) return 0;
-  const base = Math.max(0, supplyFor(g, st) - C1 * nonpopFor(g, st)) * (BASEP[g] ?? 0);
+  const base = Math.max(0, supplyFor(g, st) - C1 * nonpopFor(g, st)) * availPrice(g);
   return (localScaled != null && LOCAL.has(g)) ? localScaled * base : base;
 };
 // prestige share of the market's supply for this good
@@ -226,16 +236,32 @@ for (const cell of cells.values()) {
   if (!args.includes('--keep-empty') && cell.gs.every(r => r.share === 0)) { emptyCells++; continue; }
   for (let i = 0; i < cell.gs.length; i++) {
     const r = cell.gs[i], e = nd.entries[r.good] || { max: 1, min: 0 };
-    let s = Math.min(Math.max(av[i] / S, e.min), e.max);
+    // --local-add scores the WIKI's literal wording for the local rule: "Local-only goods receive an
+    // additional weight equal to 0.25 * (1 - State's percentage of market GDP)", i.e. an ADDITIVE term on
+    // the share rather than the supply multiplier we ship. Applied before the clamp, market supply
+    // unaugmented. It is the one reading of that sentence our model does not already implement.
+    let raw = av[i] / S;
+    if (LOCALADD && LOCAL.has(r.good)) {
+      const share = (marketVal.get(MID) || 0) > 0 ? (stateVal.get(cell.state) || 0) / marketVal.get(MID) : 0;
+      raw += LOCAL_GDP_FACTOR * (1 - Math.min(1, share));
+    }
+    let s = Math.min(Math.max(raw, e.min), e.max);
     s *= 1 + nd.prestige * pshare(r.good);
     // the obsession floor is on the PURCHASE WEIGHT (= weight x share), and it is CLAMPED at both ends:
     //     pw  >=  clamp( obsMin x max_supply_share x weight ,  obsMin^2 ,  obsMin )
     // The lower bound catches goods whose own weight x cap is tiny (wine: 0.25 x 0.25); the upper bound
     // catches the one good whose weight is large (fine_art: 4). Across three gamestates 63 entries sit
     // EXACTLY on it, 884 above it, and none below. Divided through by the weight to stay in share terms.
+    // `--obs wiki` scores the wiki's statement instead: "Obsessions set the minimum weight of a good to 1
+    // and multiply its total weight by x2" — i.e. purchase weight = max(2 x weight x share, 1). Both its
+    // constants disagree with the shipped defines (DEFAULT_OBSESSION_DEMAND_MIN = 0.5,
+    // DEFAULT_OBSESSION_DEMAND_MULT = 1.5, and no pop need overrides either), so it is scored, not argued.
     if (cult.obs.includes(r.good) && (e.w || 0) > 0) {
-      const oM = nd.obsMin;
-      s = Math.max(s, Math.min(Math.max(oM * e.max * e.w, oM * oM), oM) / e.w);
+      if (OBSMODE === 'wiki') s = Math.max(2 * s, 1 / e.w);
+      else {
+        const oM = nd.obsMin;
+        s = Math.max(s, Math.min(Math.max(oM * e.max * e.w, oM * oM), oM) / e.w);
+      }
     }
     if (taboo.includes(r.good)) s *= 0.5;
     const err = Math.abs(s - r.share);

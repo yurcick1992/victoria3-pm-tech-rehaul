@@ -990,9 +990,21 @@ the game.
   American, 1.13-2.46 pp British) with every need under 1.45 pp. `S.AVAIL_MODE = 'units'` restores the old count-based reading as an A/B switch.
   ⭐ It is confirmed by a second, independent measurement: re-scored against the game's own 1836 pop
   **consumption** telemetry it improves the mean absolute error across 7 markets from **20.0 % to 18.3 %**.
+  ⭐⭐ **THE VALUE READING SURVIVED ITS SHARPEST CHALLENGE (F44, 2026-08-07).** The 1.13 wiki's
+  `market share of good` formula carries **no base price** and the page says outright that pops "never
+  consider either the base price or market price … in choosing which goods to purchase in what amounts" —
+  F40 inverted. Re-scored on the game's stored weights, `--avail units` is worse in **32 of 32** cells
+  (16 vanilla market-dates × non-local/local), **5.85×** and **5.73×** on the means (0.500 vs 2.924 pp,
+  0.828 vs 4.745 pp), with the two distributions **completely disjoint**. Do not adopt the units reading;
+  the switch exists to re-score it, not to configure it.
   Every good the need lists is a candidate — an unsupplied one scores zero and drops out by itself,
   which is why there is no separate availability gate. The **slave basket** goes through the same
   split, fed the same supply and non-pop order book in the same pass.
+  ⚠ **KNOWN DIVERGENCE — an EMPTY need should buy its DEFAULT good, exclusively** (F44). When a need has no
+  supply at all in the scenario, `needSplit` falls back to `config/pop_distribution.json` and then to the
+  vanilla `weight` vector; the game buys the need's `default` good and nothing else. The default is already
+  in our data (`"def"` per need in `ui/presets.js`, from `extract_presets.ps1`) and simply unused on that
+  path. **Not fixed** — it moves scenario demand, so it needs measuring through the era solve first.
   ⭐⭐ **THE `local` GOODS MULTIPLIER IS THE ONE THING F43 ADDS (2026-08-07, BALANCE_FRAMEWORK §10.37).**
   `services`, `transportation` and `electricity` are `local = yes`: a state's *substitution* supply is its
   own production plus `(1 − its GDP share) × 0.25 ×` the market's. We used to give them the market's whole
@@ -1019,6 +1031,18 @@ the game.
   `clamp(obsession_demand_min × max_supply_share × weight, obsession_demand_min², obsession_demand_min)`) and religion **taboo** (`× 0.5`, exact). ⚠ **Obsessions are
   RUNTIME state, not file content** — the game adds and drops them all campaign, so reading them from
   `common/cultures` puts a 1925 culture 220 pp wrong.
+  ⚠⚠ **THE OBSESSION/TABOO OMISSION IS TWICE AS BIG AS THAT — there is a SECOND, CROSS-NEED channel** (F44,
+  2026-08-07). Besides the within-need weight term above, an obsession or taboo moves **the whole NEED'S
+  BUDGET by ±25 %** — `OBSESSION_POP_NEED_EXPENSE_MULT = 0.25` / `TABOO_POP_NEED_EXPENSE_MULT = -0.25`,
+  *"scaled by number of obsessions, money is given or taken from other needs"*, so the pop's total buy
+  package is unchanged and the money moves BETWEEN needs. Still a no-op for us (no culture dimension), but
+  it is not the same no-op we had recorded. Also `MAX_NUM_OBSESSIONS = 3`.
+  ⚠ **Trust the DEFINES over the wiki on these constants**: the wiki states obsession = "min weight 1, ×2",
+  where the game ships `DEFAULT_OBSESSION_DEMAND_MIN = 0.5` / `DEFAULT_OBSESSION_DEMAND_MULT = 1.5` with
+  **no pop need overriding either**, and the wiki's numbers score 1.5–3.5 pp against our 0.3–0.9 pp in 6 of
+  6 cells. Likewise prestige is `1 + 0.5 × share`, not the wiki's "direct proportion" (⇒ 1.0), which we
+  already had right — though the define scopes that share to **local** supply where we use the market's, an
+  open point.
   ⚠ **The weights the save stores are per (state, CULTURE).** A rate limiter also exists
   (`MAX_DEMAND_ADJUSTMENT_BASE_AMOUNT` 0.01 + `_SCALED_AMOUNT` 0.09 per update), but ❌ **it is NOT what
   makes a debut good ramp** — measured over three saves, the observed share sits on its computed target
@@ -1053,9 +1077,14 @@ the game.
   ⚠ The **−0.5 × non-pop buy orders** term is the one that matters most and is the least guessable —
   a good industry consumes heavily is correspondingly less available to pops, and omitting it over-fed
   grain by half (same-run Belgian test: pop demand error 30.3 % → **16.2 %**, F22).
-  ⚠ The bounds **clamp**. The wiki says market share "has no effect" outside them, which reads as
-  reverting to bare `weight`, and that is measurably wrong: liquor is ~95 % of Belgium's intoxicants
+  ⚠ The bounds **clamp**. The wiki's **prose** says market share "has no effect" outside them, which reads
+  as reverting to bare `weight`, and that is measurably wrong: liquor is ~95 % of Belgium's intoxicants
   supply and the reverting reading predicts 102 against 201 observed, where clamping gives 199.
+  ⭐ **But the wiki's own FORMULA agrees with us** (F44): the `<math>` block that prose is glossing writes
+  `purchase weight = weight × ( min < market share < max )` — a clamp. So the wiki is a **third** agreement
+  with the shipped reading, next to the `00_pop_needs.txt` header comment and F31. Scope any "the wiki says
+  otherwise" remark to the page's prose. ⚠ **The page's formulae render as IMAGES**; a text scrape misses
+  all five. Read it as raw wikitext (`?action=raw`).
   ✅ **WHAT the bounds clamp is SETTLED — the RAW supply share, not the final share of the need**
   (FINDINGS F31, BALANCE_FRAMEWORK §10.34, 2026-08-05). The rival reading — cap each good's final share and
   hand the excess to the goods still unclamped — was built, and scored against the game's own consumption
