@@ -535,6 +535,22 @@ tools/                  dev tooling — NOT shipped in the mod
                         validate_split_rule.mjs (clamps, prestige and culture terms, isolated),
                         solve_need_availability.mjs / fit_availability.mjs / identify_availability.mjs /
                         invert_deduction.mjs (the identification path, kept for re-derivation)
+  testbed/score_save.ps1   ONE COMMAND per gamestate: melt an archived autosave, run all three readers,
+                        score it. `-Keep` keeps the 250 MB melt for follow-up work; without it the melt
+                        is deleted. ⚠ It reads the date from the melt anchored at COLUMN 0 — a save is
+                        full of nested `date=` fields and a whitespace-tolerant pattern reads 1.1.1
+  testbed/predict_good_demand.mjs  PREDICTED vs MEASURED pop demand for one good, in UNITS — the end
+                        product, where a purchase weight is only an intermediate. Adds the BUDGET half:
+                        every pop's wealth and size from the save × `common/buy_packages`, × the stored
+                        split, ÷ base price. `--explain` prints the whole arithmetic (per need, the ten
+                        biggest state×culture cells, and one pop end to end); `--peasant-mult` A/Bs the
+                        `consumption_mult`. ⚠ **Measured pop demand is `buy − building input − EXPORTS`**
+                        — exports sit in the buy orders, and forgetting them charged the USA's 4 092
+                        exported cars to its own pops (F42)
+  testbed/debut_series.mjs  a debut good and its need-mate across many gamestates, in RAW UNITS, with the
+                        share rebuilt one term at a time against the game's own stored value. Written
+                        because the automobile story reads BACKWARDS as a ratio — see the ratio principle
+                        above
   testbed/saves_debut/     ⚠ **KEEP — 356 quarterly autosaves of one VANILLA campaign, 1836.1 → 1921.1**
                         (9.2 GB, gitignored). The same never-delete rule as `sessions/` applies and for the
                         same reason: it is a historical observation, not reproducible measurement — a
@@ -945,6 +961,17 @@ the game.
   Every good the need lists is a candidate — an unsupplied one scores zero and drops out by itself,
   which is why there is no separate availability gate. The **slave basket** goes through the same
   split, fed the same supply and non-pop order book in the same pass.
+  ⚠⚠ **WHAT IS IMPLEMENTED vs ONLY DOCUMENTED — check this before trusting a scenario number.**
+  `needSplit()` implements the **core rule** and nothing else: value-weighted availability, the −0.5
+  non-pop deduction, and the min/max clamp. Already present from earlier work: the peasant
+  `class_mult` 0.05 and the 0.625 dependent factor. **Four measured terms are deliberately absent**
+  (`grep prestige\|obsession\|taboo\|LOCAL_GOODS ui/econ.js` returns nothing):
+  - **prestige goods**, **culture obsession**, **religion taboo** — genuine no-ops here: our scenarios
+    contain no prestige goods and the model has no culture dimension. Safe to leave out.
+  - ⚠ **the `local` goods augmentation is NOT a no-op and is the one real gap.** §10.36.2 says our
+    single-state abstraction makes it vanish, and that is right for the *market's* arithmetic and
+    **wrong for a debut good's share** — see §10.36.5. Our model gives a debut good **21.9 %** of
+    `free_movement` where the game gives **38.4 %**.
   ⚠ **Three terms of the game's real rule are deliberately NOT modelled, because our scenario has no
   dimension for them**; each is measured and written up in F40 so the omission is a choice, not an oversight:
   the **prestige-goods** multiplier (`1 + prestige_goods_demand_increase × prestige share of supply`;
