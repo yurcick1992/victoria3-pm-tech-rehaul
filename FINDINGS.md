@@ -275,6 +275,69 @@ local competitor's effective supply stops being the binding term. ⚠ The 1902 r
 0.049) — the one place a lag at the very moment of debut would show, and the only hint of one anywhere in
 this finding.
 
+#### The full series, both goods in raw units (`debut_series.mjs`)
+
+American market, New York, `popneed_free_movement`. **Residual = market buy orders − every building's
+input demand − exports**, i.e. what is left for pops; the building term is summed from each save's own
+records. Automobiles are £100 at base, transportation £30.
+
+| date | auto sell | auto buy | auto bldgs | **auto residual** | transp sell | transp buy | transp bldgs | **transp residual** |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|
+| 1901.7.1 | 0.0 | 0.0 | 0 | **0.0** | 7 345 | 10 332 | 3 567 | **6 764** |
+| 1902.4.1 | 83.3 | 163.0 | 57 | **105.6** | 8 028 | 10 819 | 3 804 | **7 015** |
+| 1904.1.1 | 513.0 | 1 182.2 | 0 | **762.2** | 8 550 | 10 617 | 4 916 | **5 701** |
+| 1906.1.1 | 902.7 | 1 623.7 | 311 | **953.2** | 11 741 | 12 268 | 5 922 | **6 346** |
+| 1908.1.1 | 1 290.5 | 2 254.4 | 599 | **1 211.2** | 13 872 | 13 943 | 6 732 | **7 210** |
+| 1912.1.1 | 2 294.2 | 3 996.3 | 956 | **2 524.4** | 16 896 | 15 729 | 8 723 | **7 005** |
+| 1916.1.1 | 5 475.0 | 7 821.6 | 891 | **4 494.9** | 19 985 | 18 675 | 10 147 | **8 528** |
+| 1920.1.1 | 7 462.9 | 10 533.5 | 1 378 | **5 063.3** | 23 627 | 21 662 | 12 063 | **9 599** |
+
+**And the share, built up one term at a time**, against the stored value the game actually used:
+
+| date | naive unit supply share | + valued at base price | + transportation seen LOCALLY | × measured prestige | **OBSERVED (save)** |
+|---|--:|--:|--:|--:|--:|
+| 1902.4.1 | 1.03 % | 2.88 % | 6.84 % | 6.84 % | **4.91 %** |
+| 1904.1.1 | 5.66 % | 21.92 % | 40.17 % | 40.17 % | **38.38 %** |
+| 1906.1.1 | 7.14 % | 22.10 % | 41.52 % | 41.52 % | **41.23 %** |
+| 1908.1.1 | 8.51 % | 23.92 % | 44.87 % | 44.87 % | **44.28 %** |
+| 1912.1.1 | 11.96 % | 32.57 % | 53.75 % | 80.62 % | **79.91 %** |
+| 1916.1.1 | 21.50 % | 52.93 % | 72.75 % | 109.13 % | **107.55 %** |
+| 1920.1.1 | 24.00 % | 56.20 % | 75.59 % | 113.39 % | **112.25 %** |
+
+#### ⭐⭐ THE 25 % COMPLEMENT IS NOT HANDED OVER — READ IT OFF THE PRE-DEBUT ROW
+
+Both goods' stored shares, same series. Transportation's `max_supply_share` is 0.75:
+
+| date | automobiles | transportation | **sum** |
+|---|--:|--:|--:|
+| 1901.7.1 (nothing made yet) | 0.00 % | **75.00 %** | **75.00 %** |
+| 1902.4.1 | 4.91 % | **75.00 %** | 79.91 % |
+| 1904.1.1 | 38.38 % | 61.62 % | 100.00 % |
+| 1908.1.1 | 44.28 % | 55.72 % | 100.00 % |
+
+⭐ **Before automobiles exist, transportation sits on its 0.75 cap and the other 25 % goes to NOBODY** — the
+need's weights sum to 0.75, not 1. Three months after the debut automobiles hold **4.91 %** and
+transportation is *still* on 0.75: the newcomer took its own share, and the cap's complement was never
+available to take. Only at 1904, when automobiles' own raw share had grown past 0.25, does transportation
+fall below its cap and the pair sum to exactly 1. **This is F31 and F37 confirmed from the persisted state
+rather than inferred from orders.**
+
+#### And in `leisure`, where automobiles has a 0.25 cap of its OWN
+
+| date | automobiles stored share | note |
+|---|--:|---|
+| 1902.4.1 | 0.88 % | uncapped |
+| 1904.1.1 | 8.31 % | uncapped |
+| 1908.1.1 | 12.08 % | uncapped |
+| 1912.1.1 | 39.24 % | uncapped raw 19.62 % × 2.0 prestige |
+| 1916.1.1 | **50.00 %** | **capped: 0.25 × 2.0** |
+| 1920.1.1 | **50.00 %** | **capped: 0.25 × 2.0** |
+
+⭐ **50.00 % exactly.** `leisure` carries `prestige_goods_demand_increase = 1.0`, Ford makes 100 % of American
+automobiles prestige by 1912, so the multiplier is 2.0 — and 0.25 × 2.0 = 0.50. One number confirming the
+cap, the prestige term, and the order they are applied in (**clamp first, prestige after**, or the result
+could never exceed 0.25).
+
 ⚠⚠ **AND THIS IS THE ONE PLACE OUR MODEL WILL DIVERGE MATERIALLY.** Our scenarios are single-state, so
 `needSplit` gives transportation its full market supply and automobiles only **21.9 %** where the game gives
 38.4 %. For any need containing a `local` good — `free_movement`, `communication`, `leisure`, `services`,
