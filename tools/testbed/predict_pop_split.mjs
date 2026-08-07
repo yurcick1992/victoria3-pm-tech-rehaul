@@ -91,6 +91,9 @@ const bh = BG[0].split('\t'), bi = Object.fromEntries(bh.map((x, i) => [x, i]));
 // state owned by two countries), so a region-keyed map silently keeps only the last — and a region-keyed
 // CELL merged their rows, listing one good three times and dividing its share by three.
 const nonpop = new Map(), prodM = new Map(), prestM = new Map(), stateMarket = new Map(), regionMarket = new Map();
+// PER-STATE supply and non-pop demand — the quantities the local-goods rule is defined on. The maps above
+// are market-wide sums; these keep the state dimension the rule needs and nothing else uses.
+const stateOut = new Map(), stateIn = new Map(), stateVal = new Map(), marketVal = new Map();
 for (let i = 1; i < BG.length; i++) {
   const c = BG[i].split('\t');
   stateMarket.set(c[bi.state], c[bi.market]);
@@ -99,6 +102,14 @@ for (let i = 1; i < BG.length; i++) {
   nonpop.set(k, (nonpop.get(k) || 0) + +c[bi.input]);
   prodM.set(k, (prodM.get(k) || 0) + +c[bi.output]);
   prestM.set(k, (prestM.get(k) || 0) + +(c[bi.prestige_out] || 0));
+  const sk = c[bi.state] + '|' + c[bi.good];
+  stateOut.set(sk, (stateOut.get(sk) || 0) + +c[bi.output]);
+  stateIn.set(sk, (stateIn.get(sk) || 0) + +c[bi.input]);
+  // GDP PROXY: the state's share of its market's gross output VALUE. ⚠ This is gross output, not GDP —
+  // the save's own GDP field is not extracted — so every `gdp` result below is a proxy and says so.
+  const v = +c[bi.output] * (BASEP[c[bi.good]] ?? 0);
+  stateVal.set(c[bi.state], (stateVal.get(c[bi.state]) || 0) + v);
+  marketVal.set(c[bi.market], (marketVal.get(c[bi.market]) || 0) + v);
 }
 // ⭐ IMPORTED PRESTIGE. The prestige share is measured from a market's own production, so a good it
 // IMPORTS reads 0 prestige however prestigious it is abroad — which is exactly the American luxury_drinks
@@ -122,7 +133,52 @@ for (let i = 1; i < M.length; i++) {
   if (c[mi.run_index] !== RUN || c[mi.dump_date] !== DATE || c[mi.tag] !== MARKET) continue;
   OB[c[mi.good]] = { sell: +c[mi.sell_orders], buy: +c[mi.buy_orders], price: +c[mi.price], exports: +c[mi.exports], production: +c[mi.production] };
 }
-const avail = g => OB[g] ? Math.max(0, OB[g].sell - C1 * (nonpop.get(MID + '|' + g) || 0)) * (BASEP[g] ?? 0) : 0;
+// ---------------------------------------------------------------- LOCAL GOODS
+// `services`, `transportation` and `electricity` are `local = yes`. Their SUBSTITUTION supply (and only
+// that — not the price calculation) is the STATE's own, augmented so a local good can still compete in a
+// large market:  eff = state's own + (1 - the state's GDP share) x LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR
+// x the market's production. `--local` picks which reading to score, so the choice is measured:
+//
+//   off        the market's sell orders, unaugmented — what `ui/econ.js` ships, and what a single-state
+//              model implies. Local needs are excluded from the headline under this mode (the old default).
+//   gdp        the real rule, with the state's GDP share PROXIED by its share of market gross output value.
+//   fixed:<f>  supply = f x market production, one constant for every state, with the non-pop deduction
+//              left market-wide. ⚠ Below f ~ 0.3 this drives availability to zero for goods industry eats
+//              heavily (electricity), which DROPS those entries and makes the low end incomparable.
+//   scaled:<f> eff = f x (market supply - 0.5 x market non-pop) — the factor applied to the whole
+//              availability, so supply and the industrial demand deducted from it scale TOGETHER. This is
+//              the form a single-state model can adopt honestly: our one state is a scaled-down market,
+//              not a state with a market's worth of industry sitting inside it. No zeroing artefact.
+//   state      the state's own supply alone, no augmentation — the lower bound, to size the augmentation.
+const LOCAL_GDP_FACTOR = 0.25;
+const LOCALMODE = argOf('--local', 'off');
+const localFixed = LOCALMODE.startsWith('fixed:') ? +LOCALMODE.slice(6) : null;
+const localScaled = LOCALMODE.startsWith('scaled:') ? +LOCALMODE.slice(7) : null;
+// Supply SIDE of a good as one state sees it, in units.
+function supplyFor(g, st) {
+  const mkt = OB[g] ? OB[g].sell : 0;
+  if (LOCALMODE === 'off' || !LOCAL.has(g)) return mkt;
+  const own = stateOut.get(st + '|' + g) || 0;
+  if (LOCALMODE === 'state') return own;
+  if (localFixed != null) return localFixed * mkt;
+  if (LOCALMODE === 'gdp') {
+    const share = (marketVal.get(MID) || 0) > 0 ? (stateVal.get(st) || 0) / marketVal.get(MID) : 0;
+    return own + (1 - Math.min(1, share)) * LOCAL_GDP_FACTOR * mkt;
+  }
+  return mkt;
+}
+// Non-pop demand deducted from it. `--local-nonpop state` deducts the STATE's own industrial demand
+// instead of the market's — the reading that is symmetric with a state-scoped supply. Measured, not assumed.
+const LOCALNP = argOf('--local-nonpop', 'market');
+function nonpopFor(g, st) {
+  if (LOCALMODE !== 'off' && LOCAL.has(g) && LOCALNP === 'state') return stateIn.get(st + '|' + g) || 0;
+  return nonpop.get(MID + '|' + g) || 0;
+}
+const avail = (g, st) => {
+  if (!OB[g]) return 0;
+  const base = Math.max(0, supplyFor(g, st) - C1 * nonpopFor(g, st)) * (BASEP[g] ?? 0);
+  return (localScaled != null && LOCAL.has(g)) ? localScaled * base : base;
+};
 // prestige share of the market's supply for this good
 const pshare = g => {
   const p = prestM.get(MID + '|' + g) || 0, o = prodM.get(MID + '|' + g) || 0;
@@ -140,18 +196,18 @@ for (let i = 1; i < L.length; i++) {
   const c = L[i].split('\t');
   if (stateMarket.get(c[ix.state]) !== MID) continue;
   const k = c[ix.state] + '|' + c[ix.key] + '|' + c[ix.need];
-  if (!cells.has(k)) cells.set(k, { region: c[ix.region], key: +c[ix.key], need: c[ix.need], gs: [] });
+  if (!cells.has(k)) cells.set(k, { state: c[ix.state], region: c[ix.region], key: +c[ix.key], need: c[ix.need], gs: [] });
   cells.get(k).gs.push({ good: c[ix.good], share: +c[ix.share] });
 }
 
 let tot = 0, n = 0, totL = 0, nL = 0, emptyCells = 0;
 const worst = [];
-const perNeed = {};
+const perNeed = {}, perNeedL = {};
 for (const cell of cells.values()) {
   const nd = NEED[cell.need]; if (!nd) continue;
   const cult = CULT[cell.key] || { obs: [], religion: '' }, taboo = RELTABOO[cult.religion] || [];
   const isLocal = cell.gs.some(r => LOCAL.has(r.good));
-  const av = cell.gs.map(r => avail(r.good));
+  const av = cell.gs.map(r => avail(r.good, cell.state));
   const S = av.reduce((a, b) => a + b, 0);
   if (!(S > 0)) continue;
   // ⚠ A (state, culture, need) whose EVERY entry is zero is not a mis-prediction: it means no pop of that
@@ -180,8 +236,11 @@ for (const cell of cells.values()) {
     // ⚠ local-good needs are kept in `worst` (flagged) so --good can still trace them; they are excluded
     // from the headline, not from the record — telephones lives in a need that contains transportation.
     worst.push({ ...cell, good: r.good, obs: r.share, pred: s, err, local: isLocal });
-    if (isLocal) { totL += err; nL++; }
-    else {
+    if (isLocal) {
+      totL += err; nL++;
+      (perNeedL[cell.need] = perNeedL[cell.need] || { e: 0, n: 0 }).e += err;
+      perNeedL[cell.need].n++;
+    } else {
       tot += err; n++;
       (perNeed[cell.need] = perNeed[cell.need] || { e: 0, n: 0 }).e += err;
       perNeed[cell.need].n++;
@@ -208,6 +267,11 @@ console.log(`state x culture x need x good entries scored: ${n} non-local, ${nL}
 console.log(`\n⭐ MEAN ABSOLUTE ERROR OF THE PREDICTED SHARE: ${(tot / n * 100).toFixed(3)} pp   (local-good needs, excluded: ${(totL / nL * 100).toFixed(2)} pp)`);
 console.log('\nper need:');
 for (const [k, v] of Object.entries(perNeed).sort((a, b) => a[1].e / a[1].n - b[1].e / b[1].n))
+  console.log(`  ${k.padEnd(20)} ${(v.e / v.n * 100).toFixed(3).padStart(8)} pp   over ${v.n} entries`);
+// The local half is the point of `--local`, so print it as its own headline rather than one aside. It is
+// scored on the SAME entries under every mode, so the modes are directly comparable.
+console.log(`\n⭐ LOCAL-GOOD NEEDS  (--local ${LOCALMODE}, nonpop ${LOCALNP}):  ${(totL / nL * 100).toFixed(3)} pp   over ${nL} entries`);
+for (const [k, v] of Object.entries(perNeedL).sort((a, b) => a[1].e / a[1].n - b[1].e / b[1].n))
   console.log(`  ${k.padEnd(20)} ${(v.e / v.n * 100).toFixed(3).padStart(8)} pp   over ${v.n} entries`);
 worst.sort((a, b) => b.err - a.err);
 console.log('\nworst 15 entries:');

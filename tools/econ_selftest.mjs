@@ -79,15 +79,36 @@ near('     split: telephones unmade → final YIELDS too',
 // ⚠ the expected number MOVED with F40's value-weighted availability, and the test's point did not: one
 // unit of telephones (base 70) now carries 2.33x the availability of one unit of transportation (base 30),
 // so the same 1000-vs-1 supply is a slightly less lopsided split. 0.997 was the count-based reading.
+// ⚠ It moved AGAIN with F43's local-goods discount, for the same kind of reason: transportation is
+// `local`, so its 1000 units count as 400 here. 0.9938 was the undiscounted reading.
 near('     split: one tiny producer, raw ≈ cancels the cap',
-  splitOf('raw', { transportation: 1000, telephones: 1 }).transportation, 0.9938, 0.001,
-  'the 0.75 cap moves it 0.6pp — §10.34');
+  splitOf('raw', { transportation: 1000, telephones: 1 }).transportation, 0.9848, 0.001,
+  'the 0.75 cap moves it 1.5pp — §10.34');
 near('     split: one tiny producer, final binds at the cap',
   splitOf('final', { transportation: 1000, telephones: 1 }).telephones, 0.25, 0.001,
   'the bootstrap the rejected reading would give a debut good');
 near('     split: uncapped case — the modes agree',
   splitOf('final', { transportation: 1000, telephones: 1000 }).telephones
   - splitOf('raw', { transportation: 1000, telephones: 1000 }).telephones, 0, 1e-9);
+
+// ---- F43 / §10.37: the LOCAL-GOODS discount. `transportation` is `local`, so a state sees 0.40 of the
+// market's supply of it; `telephones` is not and is untouched. Pinned two ways, because the constant and
+// the SET it applies to are separate things to get wrong.
+{
+  const sup = { transportation: 1000, telephones: 500 };
+  const disc = splitOf('raw', sup).telephones;
+  S.LOCAL_MULT = 1;                                  // the pre-F43 reading, for the A/B
+  const naive = splitOf('raw', sup).telephones;
+  S.LOCAL_MULT = null;
+  // transportation 1000×30×0.4 = 12000 vs telephones 500×70 = 35000 → raw 0.2553/0.7447, ×weights 1/2.
+  near('     F43  local discount: transportation is discounted', disc, 0.8536, 0.001,
+    'a local good counts at 0.40 of market supply in the substitution calc');
+  // undiscounted: 30000 vs 35000 → raw 0.4615/0.5385, ×weights 1/2 → telephones 1.0769/1.5385.
+  near('     F43  local discount: OFF matches the old reading', naive, 0.7000, 0.001,
+    'S.LOCAL_MULT = 1 restores the unaugmented reading');
+  near('     F43  the discount is DIRECTIONAL — it favours the non-local good',
+    disc > naive ? 1 : 0, 1, 0, 'this is why a debut good was under-served');
+}
 
 // ---- F40: the split rule against a MEASURED GAMESTATE. Supply is that market's sell orders and non-pop
 // demand is the sum of every building's input_goods, both read out of the 1925 save + its own telemetry

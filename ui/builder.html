@@ -774,11 +774,20 @@ let SPLIT_MODE='raw';
 // (sell − ½ × non-pop demand) × BASE PRICE. Measured against the purchase weights a savegame stores.
 // 'units' restores the old count-based reading for A/B measurement. Keep identical to econ.js's copy.
 let AVAIL_MODE='value';
+// ⭐ LOCAL GOODS (FINDINGS F43, BALANCE_FRAMEWORK §10.37). services / transportation / electricity are
+// `local = yes`: a state's substitution supply is its OWN production plus (1 − its GDP share) × 0.25 of
+// the market's. Our scenario is one state that IS the market, so we model a REPRESENTATIVE state —
+// a fifth of the country's GDP holding a fifth of the local supply — giving 0.2 + 0.8×0.25 = 0.40.
+// Measured at 0.835 pp against 4.226 pp unaugmented over 16 vanilla market-dates. Keep identical to
+// econ.js's copy; LOCAL_MULT=1 is the A/B, not a setting.
+const LOCAL_GOODS=new Set(['services','transportation','electricity']);
+let LOCAL_MULT=0.2+(1-0.2)*0.25;
 function needSplit(nd, def, supply, nonpop){
   const es=(def.entries||[]);
   if(!es.length) return null;
   const val = AVAIL_MODE==='units' ? (()=>1) : (g=>(PRICES[g]||0));
-  const eff=es.map(e=>Math.max(0, ((supply||{})[e.g]||0) - 0.5*((nonpop||{})[e.g]||0)) * val(e.g));
+  const loc = g => LOCAL_GOODS.has(g) ? LOCAL_MULT : 1;
+  const eff=es.map(e=>Math.max(0, ((supply||{})[e.g]||0) - 0.5*((nonpop||{})[e.g]||0)) * val(e.g) * loc(e.g));
   const tot=eff.reduce((a,b)=>a+b,0);
   if(!(tot>0)){
     // No supply at all for this need in the scenario: fall back to the stored distribution, then to

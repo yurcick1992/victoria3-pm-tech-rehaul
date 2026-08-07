@@ -71,6 +71,34 @@
 
   const round = x => Math.floor(x + 0.5);
 
+  // ---- LOCAL GOODS (BALANCE_FRAMEWORK §10.37, FINDINGS F43) --------------------------------------
+  // `services`, `transportation` and `electricity` carry `local = yes` in common/goods. Their
+  // SUBSTITUTION supply — and only that, never the price calculation — is not the market's: a state sees
+  // its OWN production plus `(1 − the state's GDP share) × LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR ×`
+  // the market's, the factor being 0.25.
+  //
+  // Our scenario is ONE state that IS the whole market, so the augmentation term used to vanish and we
+  // fed a local good its full market supply. That is right for the market's arithmetic and WRONG for the
+  // pops, who live in states — it handed local goods a share no real state ever sees, and correspondingly
+  // starved everything competing with them (a debut good got 21.9 % of `free_movement` against the game's
+  // 38.4 %). The fix is to model a REPRESENTATIVE state rather than the degenerate whole-market one:
+  //
+  //   state's own supply   = LOCAL_OWN_SHARE  × the market's        (a state holds a fifth of it)
+  //   state's GDP share    = LOCAL_STATE_GDP                        (a state is a fifth of the country)
+  //   ⇒ multiplier         = 0.2 + (1 − 0.2) × 0.25                 = 0.40
+  //
+  // ⭐ MEASURED, not assumed (F43): scored against the purchase weights eight VANILLA gamestates store,
+  // over two markets × eight dates 1901-1920, the local-good needs err **0.835 pp** at 0.40 against
+  // **4.226 pp** unaugmented — better in 16 of 16 market-dates. A sweep puts the empirical optimum at
+  // 0.35-0.40 (0.809 pp), so the derived value sits inside the noise of the best constant available.
+  // ⚠ The factor multiplies the WHOLE availability (supply minus the non-pop deduction), not the supply
+  // alone: our one state is a scaled-down market, so its industry scales with its production. Scaling
+  // supply alone while deducting a whole market's industrial demand drives electricity to zero.
+  // `S.LOCAL_MULT = 1` restores the old unaugmented reading for A/B measurement; it is not a setting.
+  const LOCAL_GOODS = new Set(['services', 'transportation', 'electricity']);
+  const LOCAL_STATE_GDP = 0.2, LOCAL_OWN_SHARE = 0.2, LOCAL_GDP_FACTOR = 0.25;
+  const LOCAL_MULT_DEFAULT = LOCAL_OWN_SHARE + (1 - LOCAL_STATE_GDP) * LOCAL_GDP_FACTOR;   // = 0.40
+
   // =================================================================================================
   function createEcon(S) {
     // S.PRICES, S.VAN, S.HAVE_VAN, S.IND, S.thresholds, S.BLDNUM, S.ADDBUY, S.ADDSELL, S.THRU,
@@ -337,7 +365,10 @@
       const es = (def.entries||[]);
       if(!es.length) return null;
       const val = S.AVAIL_MODE === 'units' ? (() => 1) : (g => (S.PRICES[g]||0));
-      const eff = es.map(e => Math.max(0, ((supply||{})[e.g]||0) - 0.5*((nonpop||{})[e.g]||0)) * val(e.g));
+      // A `local` good is discounted to what one state actually sees of it — see LOCAL_MULT_DEFAULT above.
+      const lm = S.LOCAL_MULT != null ? S.LOCAL_MULT : LOCAL_MULT_DEFAULT;
+      const loc = g => LOCAL_GOODS.has(g) ? lm : 1;
+      const eff = es.map(e => Math.max(0, ((supply||{})[e.g]||0) - 0.5*((nonpop||{})[e.g]||0)) * val(e.g) * loc(e.g));
       const tot = eff.reduce((a,b) => a + b, 0);
       if(!(tot > 0)){
         const pw = es.map(e => { const d = S.POPDIST[nd]; return (d && d[e.g] != null) ? d[e.g] : (e.w||0); });

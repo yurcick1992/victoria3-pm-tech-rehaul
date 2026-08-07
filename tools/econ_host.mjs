@@ -98,6 +98,13 @@ export function loadEcon({ quiet = false } = {}) {
     get POPDIST() { return POPDIST; }, set POPDIST(v) { POPDIST = v; },
   };
   Object.keys(S.PRICES).forEach(g => { S.thresholds[g] = 100; });
+  // A/B knob for the local-goods discount (FINDINGS F43). `LOCAL_MULT=1` restores the pre-F43 reading, in
+  // which a local good counted at its full market supply. Same status as SPLIT_MODE / AVAIL_MODE: it
+  // exists so the change can be MEASURED against what it replaced, not so it can be configured.
+  if (process.env.LOCAL_MULT) {
+    S.LOCAL_MULT = +process.env.LOCAL_MULT;
+    if (!quiet) console.error(`econ_host: LOCAL_MULT <- ${S.LOCAL_MULT}`);
+  }
 
   const E = PMECON.createEcon(S);
   S.IND.push(...E.buildIND(cfg.industries));
