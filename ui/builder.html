@@ -1101,6 +1101,18 @@ function popBreakdown(g){
       + `  at ×${SLAVE_SUBSISTENCE_MULT}) ⇒ ×${Math.round(slaveBasketMult()*1000)/1000} of a full basket\n`
       + slv.map(r=>`    ${r.need}  £${round(r.money)} ÷ £${PRICES[g]||1} = ${round(r.qty)}`).join('\n');
   }
+  // ⭐ SAY WHEN THE LOCAL DISCOUNT IS IN PLAY (F43). Without this the panel silently shows a local good at
+  // roughly 40% of the demand the old model gave, and a reader has nothing to explain the change — the
+  // discount is the least guessable term in the split and the one most likely to be read as a bug.
+  // It is stated on the goods it applies TO; every other good in the same need is affected only through
+  // the renormalisation, which the per-need lines above already show.
+  if(LOCAL_GOODS.has(g) && LOCAL_MULT!==1){
+    out += `\n\n  ⓘ ${g} is a LOCAL good, so its availability counts at ×${LOCAL_MULT} here.\n`
+      + `  Pops live in STATES: a state sees its own production plus (1−its GDP share)×0.25 of the\n`
+      + `  market's. This sheet is one state, so it models a representative one — a fifth of the\n`
+      + `  country's GDP holding a fifth of the local supply ⇒ 0.2 + 0.8×0.25 = 0.40.\n`
+      + `  It changes the SPLIT of each need, not the money: goods competing with ${g} gain what it loses.`;
+  }
   return out;
 }
 // the Number column cell — same markup for tier rows and reference rows (BLDNUM keyed by building key).
