@@ -110,35 +110,62 @@ const bg = BASEP[GOOD], br = BASEP[RIVAL];
 console.log(`\n${MARKET} · ${PROBE} · popneed_${NEED} · base prices: ${GOOD} £${bg}, ${RIVAL} £${br}` +
   (LOCAL.has(RIVAL) ? `   (⚠ ${RIVAL} is a LOCAL good)` : ''));
 
-console.log(`\n=== 1. THE ORDER BOOK, both goods, raw units ===`);
-console.log(`date        | ${GOOD.padEnd(9)} sell     buy  bldgs  residual | ${RIVAL.padEnd(9)} sell     buy   bldgs  residual`);
-for (const x of rows)
-  console.log(`${x.date.padEnd(11)} | ${' '.repeat(10)}${f(x.g.sell, 8, 1)}${f(x.g.buy, 8, 1)}${f(x.npG, 7, 0)}${f(x.g.buy - x.npG - x.g.exports, 10, 1)} |` +
-    `${' '.repeat(10)}${f(x.r.sell, 8, 0)}${f(x.r.buy, 8, 0)}${f(x.npR, 8, 0)}${f(x.r.buy - x.npR - x.r.exports, 10, 0)}`);
+// per-need prestige increase and the entry bounds, so the last two steps are not hand-waved
+const PN = {};
+for (const m of strip(readFileSync(join(GAME, 'common/pop_needs/00_pop_needs.txt'), 'utf8')).matchAll(/^popneed_([a-z_]*)\s*=\s*\{([\s\S]*?)\n\}/gm)) {
+  const b = m[2], e = {};
+  for (const x of b.matchAll(/entry\s*=\s*\{([\s\S]*?)\}/g)) {
+    const g = /goods\s*=\s*([a-z_]+)/.exec(x[1]); if (!g) continue;
+    e[g[1]] = { max: +(/max_supply_share\s*=\s*([\d.]+)/.exec(x[1])?.[1] ?? 1), min: +(/min_supply_share\s*=\s*([\d.]+)/.exec(x[1])?.[1] ?? 0) };
+  }
+  PN[m[1]] = { e, prestige: +(/prestige_goods_demand_increase\s*=\s*([\d.]+)/.exec(b)?.[1] ?? 0.5) };
+}
+const ND = PN[NEED] || { e: {}, prestige: 0.5 };
+const eG = ND.e[GOOD] || { max: 1, min: 0 }, eR = ND.e[RIVAL] || { max: 1, min: 0 };
 
-console.log(`\n=== 2. THE SAME TWO GOODS AS RESIDUAL DEMAND VALUED AT BASE PRICE (£) ===`);
-console.log(`  the shares below are of VALUE, so this is the quantity they are shares of`);
-console.log(`date        | ${GOOD.padEnd(14)} £ | ${RIVAL.padEnd(14)} £ |  ${GOOD}'s % of the two`);
+console.log(`\n=== 1. ${GOOD.toUpperCase()} — every number MEASURED, then the one derived quantity ===`);
+console.log(`  tradeable, so its availability uses the MARKET's sell orders and the MARKET's building demand`);
+console.log(`date        |   sell |    buy |  bldg |  sell-0.5*bldg |  x £${bg} = availability`);
 for (const x of rows) {
-  const vg = (x.g.buy - x.npG - x.g.exports) * bg, vr = (x.r.buy - x.npR - x.r.exports) * br;
-  console.log(`${x.date.padEnd(11)} | ${f(vg, 16, 0)} | ${f(vr, 16, 0)} | ${pc(vg / (vg + vr), 20)}`);
+  const u = Math.max(0, x.g.sell - 0.5 * x.npG);
+  console.log(`${x.date.padEnd(11)} |${f(x.g.sell, 8, 1)} |${f(x.g.buy, 7, 1)} |${f(x.npG, 6, 0)} |${f(u, 15, 1)} |${f(u * bg, 16, 0)}`);
 }
 
-console.log(`\n=== 3. WHAT SHARE OF THE NEED ${GOOD.toUpperCase()} GETS, step by step ===`);
-console.log(`date        | naive unit | + valued at | + ${RIVAL} seen | x prestige |  OBSERVED  | vs the`);
-console.log(`            | supply share| base price  |    LOCALLY     |  (measured)| (from save)| 25% line`);
+console.log(`\n=== 2. ${RIVAL.toUpperCase()} — same, but it is a ${LOCAL.has(RIVAL) ? 'LOCAL' : 'tradeable'} good ===`);
+if (LOCAL.has(RIVAL)) {
+  console.log(`  so the state sees its OWN supply + 0.25 x the market's production, and deducts its OWN`);
+  console.log(`  building demand (LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR = 0.25, state GDP share taken as 0)`);
+  console.log(`date        | mkt sell | mkt prod | ${PROBE.replace('STATE_', '').slice(0, 8).padEnd(8)} own | own bldg |  own+0.25*prod | -0.5*bldg | x £${br} = avail`);
+  for (const x of rows) {
+    const eff = x.ownS + 0.25 * x.prodR, u = Math.max(0, eff - 0.5 * x.ownNP);
+    console.log(`${x.date.padEnd(11)} |${f(x.r.sell, 9, 0)} |${f(x.prodR, 9, 0)} |${f(x.ownS, 12, 0)} |${f(x.ownNP, 9, 0)} |${f(eff, 15, 0)} |${f(u, 10, 0)} |${f(u * br, 15, 0)}`);
+  }
+} else {
+  console.log(`date        |   sell |    buy |  bldg |  sell-0.5*bldg |  x £${br} = availability`);
+  for (const x of rows) {
+    const u = Math.max(0, x.r.sell - 0.5 * x.npR);
+    console.log(`${x.date.padEnd(11)} |${f(x.r.sell, 8, 0)} |${f(x.r.buy, 7, 0)} |${f(x.npR, 6, 0)} |${f(u, 15, 0)} |${f(u * br, 16, 0)}`);
+  }
+}
+
+console.log(`\n=== 3. THE FORMULA, END TO END — nothing here is fitted ===`);
+console.log(`  raw = avail(${GOOD}) / (avail(${GOOD}) + avail(${RIVAL}));  clamp to [${eG.min}, ${eG.max}];  x (1 + ${ND.prestige} x prestige share)`);
+console.log(`date        | avail ${GOOD.slice(0, 6).padEnd(6)} £ | avail ${RIVAL.slice(0, 6).padEnd(6)} £ |    raw | clamped | prestige |  PREDICTED |  OBSERVED | miss`);
 for (const x of rows) {
-  const naive = x.g.sell + x.r.sell > 0 ? x.g.sell / (x.g.sell + x.r.sell) : 0;
   const aG = Math.max(0, x.g.sell - 0.5 * x.npG) * bg;
-  const aRm = Math.max(0, x.r.sell - 0.5 * x.npR) * br;
   const eff = x.ownS + 0.25 * x.prodR;
-  const aRl = Math.max(0, eff - 0.5 * x.ownNP) * br;
-  const local = aG + aRl > 0 ? aG / (aG + aRl) : 0;
-  console.log(`${x.date.padEnd(11)} | ${pc(naive, 11)} | ${pc(aG + aRm > 0 ? aG / (aG + aRm) : 0, 11)} | ${pc(local, 14)} | ` +
-    `${pc(local * (1 + 0.5 * x.prestG), 10)} | ${pc(x.sG, 10)} | ${x.sG > 0.25 ? 'ABOVE' : 'below'}`);
+  const aR = LOCAL.has(RIVAL) ? Math.max(0, eff - 0.5 * x.ownNP) * br : Math.max(0, x.r.sell - 0.5 * x.npR) * br;
+  const raw = aG + aR > 0 ? aG / (aG + aR) : 0;
+  const cl = Math.min(Math.max(raw, eG.min), eG.max);
+  const mult = 1 + ND.prestige * x.prestG;
+  const pred = cl * mult;
+  console.log(`${x.date.padEnd(11)} |${f(aG, 15, 0)} |${f(aR, 15, 0)} |${pc(raw, 7)} |${pc(cl, 8)} |${('x' + mult.toFixed(2)).padStart(9)} |${pc(pred, 11)} |${pc(x.sG, 10)} |${((pred - x.sG) * 100).toFixed(2).padStart(6)} pp`);
 }
-console.log(`\n=== 4. BOTH GOODS' STORED SHARES (they are what the game actually used) ===`);
-console.log(`date        | ${GOOD.padEnd(14)} | ${RIVAL.padEnd(14)} |  sum  | ${GOOD} prestige share of supply`);
+
+console.log(`\n=== 4. THE RIVAL'S OWN SHARE, and what the pair sums to ===`);
+console.log(`  ${RIVAL}'s max_supply_share is ${eR.max}. If the cap's complement were handed to the newcomer,`);
+console.log(`  the pair would always sum to 1 — watch the pre-debut row.`);
+console.log(`date        | ${GOOD.padEnd(14)} | ${RIVAL.padEnd(14)} |  sum   | ${GOOD} prestige share of supply`);
 for (const x of rows)
   console.log(`${x.date.padEnd(11)} | ${pc(x.sG, 14)} | ${pc(x.sR, 14)} | ${pc(x.sG + x.sR, 6)} | ${pc(x.prestG, 12)}`);
 console.log(`\n"the 25% line" = what ${RIVAL}'s max_supply_share of 0.75 would leave if the cap bound and the`);

@@ -275,34 +275,59 @@ local competitor's effective supply stops being the binding term. ⚠ The 1902 r
 0.049) — the one place a lag at the very moment of debut would show, and the only hint of one anywhere in
 this finding.
 
-#### The full series, both goods in raw units (`debut_series.mjs`)
+#### The full series as a PROOF, not a narration (`debut_series.mjs`)
 
-American market, New York, `popneed_free_movement`. **Residual = market buy orders − every building's
-input demand − exports**, i.e. what is left for pops; the building term is summed from each save's own
-records. Automobiles are £100 at base, transportation £30.
+⚠ **An earlier version of this table reported a "residual" of `buy − buildings − exports`** — an attempt at
+"what pops actually bought". That is the wrong quantity to show (user, 2026-08-07): it is narrative, and it
+is **not what the formula consumes**. The formula's input is the **availability**, `sell − 0.5 × building
+demand`, valued at base price. Everything below is either MEASURED or is that one derived quantity.
 
-| date | auto sell | auto buy | auto bldgs | **auto residual** | transp sell | transp buy | transp bldgs | **transp residual** |
-|---|--:|--:|--:|--:|--:|--:|--:|--:|
-| 1901.7.1 | 0.0 | 0.0 | 0 | **0.0** | 7 345 | 10 332 | 3 567 | **6 764** |
-| 1902.4.1 | 83.3 | 163.0 | 57 | **105.6** | 8 028 | 10 819 | 3 804 | **7 015** |
-| 1904.1.1 | 513.0 | 1 182.2 | 0 | **762.2** | 8 550 | 10 617 | 4 916 | **5 701** |
-| 1906.1.1 | 902.7 | 1 623.7 | 311 | **953.2** | 11 741 | 12 268 | 5 922 | **6 346** |
-| 1908.1.1 | 1 290.5 | 2 254.4 | 599 | **1 211.2** | 13 872 | 13 943 | 6 732 | **7 210** |
-| 1912.1.1 | 2 294.2 | 3 996.3 | 956 | **2 524.4** | 16 896 | 15 729 | 8 723 | **7 005** |
-| 1916.1.1 | 5 475.0 | 7 821.6 | 891 | **4 494.9** | 19 985 | 18 675 | 10 147 | **8 528** |
-| 1920.1.1 | 7 462.9 | 10 533.5 | 1 378 | **5 063.3** | 23 627 | 21 662 | 12 063 | **9 599** |
+**Automobiles** — tradeable, so market sell orders and market building demand:
 
-**And the share, built up one term at a time**, against the stored value the game actually used:
-
-| date | naive unit supply share | + valued at base price | + transportation seen LOCALLY | × measured prestige | **OBSERVED (save)** |
+| date | sell | **buy (measured)** | bldg | sell − 0.5·bldg | × £100 = availability |
 |---|--:|--:|--:|--:|--:|
-| 1902.4.1 | 1.03 % | 2.88 % | 6.84 % | 6.84 % | **4.91 %** |
-| 1904.1.1 | 5.66 % | 21.92 % | 40.17 % | 40.17 % | **38.38 %** |
-| 1906.1.1 | 7.14 % | 22.10 % | 41.52 % | 41.52 % | **41.23 %** |
-| 1908.1.1 | 8.51 % | 23.92 % | 44.87 % | 44.87 % | **44.28 %** |
-| 1912.1.1 | 11.96 % | 32.57 % | 53.75 % | 80.62 % | **79.91 %** |
-| 1916.1.1 | 21.50 % | 52.93 % | 72.75 % | 109.13 % | **107.55 %** |
-| 1920.1.1 | 24.00 % | 56.20 % | 75.59 % | 113.39 % | **112.25 %** |
+| 1901.7.1 | 0.0 | **0.0** | 0 | 0.0 | 0 |
+| 1902.4.1 | 83.3 | **163.0** | 57 | 54.6 | 5 456 |
+| 1904.1.1 | 513.0 | **1 182.2** | 0 | 513.0 | 51 299 |
+| 1906.1.1 | 902.7 | **1 623.7** | 311 | 747.4 | 74 744 |
+| 1908.1.1 | 1 290.5 | **2 254.4** | 599 | 990.9 | 99 088 |
+| 1912.1.1 | 2 294.2 | **3 996.3** | 956 | 1 816.3 | 181 631 |
+| 1916.1.1 | 5 475.0 | **7 821.6** | 891 | 5 029.7 | 502 967 |
+| 1920.1.1 | 7 462.9 | **10 533.5** | 1 378 | 6 773.8 | 677 385 |
+
+**Transportation** — `local`, so the state's own supply + 0.25 × market production, less the state's own
+building demand:
+
+| date | mkt sell | mkt prod | NY own | NY bldg | own + 0.25·prod | − 0.5·bldg | × £30 = availability |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| 1901.7.1 | 7 345 | 7 346 | 426 | 43 | 2 262 | 2 241 | 67 225 |
+| 1902.4.1 | 8 028 | 8 028 | 495 | 50 | 2 502 | 2 477 | 74 310 |
+| 1904.1.1 | 8 550 | 8 550 | 513 | 206 | 2 650 | 2 547 | 76 418 |
+| 1906.1.1 | 11 741 | 11 741 | 736 | 324 | 3 671 | 3 509 | 105 273 |
+| 1908.1.1 | 13 872 | 13 872 | 772 | 364 | 4 240 | 4 058 | 121 731 |
+| 1912.1.1 | 16 896 | 16 897 | 1 294 | 617 | 5 518 | 5 210 | 156 288 |
+| 1916.1.1 | 19 985 | 19 994 | 1 625 | 690 | 6 624 | 6 279 | 188 369 |
+| 1920.1.1 | 23 627 | 23 627 | 1 737 | 706 | 7 643 | 7 290 | 218 710 |
+
+**The formula end to end.** `raw = availA/(availA + availT)`, clamp to automobiles' [0, 1], × (1 + 0.5 ×
+prestige share of supply). Nothing fitted:
+
+| date | avail auto £ | avail transp £ | raw | clamped | prestige | **PREDICTED** | **OBSERVED** | miss |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|
+| 1901.7.1 | 0 | 67 225 | 0.00 % | 0.00 % | ×1.00 | **0.00 %** | **0.00 %** | 0.00 pp |
+| 1902.4.1 | 5 456 | 74 310 | 6.84 % | 6.84 % | ×1.00 | **6.84 %** | **4.91 %** | 1.93 pp |
+| 1904.1.1 | 51 299 | 76 418 | 40.17 % | 40.17 % | ×1.00 | **40.17 %** | **38.38 %** | 1.79 pp |
+| 1906.1.1 | 74 744 | 105 273 | 41.52 % | 41.52 % | ×1.00 | **41.52 %** | **41.23 %** | 0.29 pp |
+| 1908.1.1 | 99 088 | 121 731 | 44.87 % | 44.87 % | ×1.00 | **44.87 %** | **44.28 %** | 0.60 pp |
+| 1912.1.1 | 181 631 | 156 288 | 53.75 % | 53.75 % | ×1.50 | **80.62 %** | **79.91 %** | 0.72 pp |
+| 1916.1.1 | 502 967 | 188 369 | 72.75 % | 72.75 % | ×1.50 | **109.13 %** | **107.55 %** | 1.58 pp |
+| 1920.1.1 | 677 385 | 218 710 | 75.59 % | 75.59 % | ×1.50 | **113.39 %** | **112.25 %** | 1.14 pp |
+
+⚠ **The `buy` column cannot be turned into a per-need check, and that is F35, not an oversight.** Market buy
+orders for automobiles span *both* the needs automobiles sits in (`free_movement` and `leisure`), and
+transportation's span `free_movement` and `communication`, so no measured order total belongs to one need.
+That is precisely why the **stored share** is the observable this finding rests on: it is per need, and the
+game computed it.
 
 #### ⭐⭐ THE 25 % COMPLEMENT IS NOT HANDED OVER — READ IT OFF THE PRE-DEBUT ROW
 
