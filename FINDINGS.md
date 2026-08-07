@@ -4469,8 +4469,8 @@ to re-running anything.
 ## F42 — ⭐⭐ THE WHOLE MARKET, 31 GOODS, PREDICTED TO **2.7 %** — and the peasant multiplier is what makes it work. It applies AFTER the need allocation, and without it every staple is over-predicted 1.4–2.2×
 
 **Arm** control (vanilla), American market, 1904.1.1 and 1920.1.1 gamestates of session
-. Predicted with F40’s split + the buy-package budget from the
-save’s own pops; measured as .
+`20260807_005246_popsplit-debut-vanilla`. Predicted with F40's split + the buy-package budget from the
+save's own pops; measured as `market buy orders − building input − exports`.
 
 ### 1904: every pop-need good the market trades
 
@@ -4494,7 +4494,7 @@ save’s own pops; measured as .
 | tobacco | 5 286.4 | 8 356.4 (**1.58×**) | 5 171.3 (0.98) |
 
 Mean error across those ten staples: **73 % → 2.0 %**. ⚠ **Automobiles barely move** (1.033 → 0.996):
-peasants sit at low wealth, where  is £3 of a £355 package, so they are a rounding error in
+peasants sit at low wealth, where `free_movement` is £3 of a £355 package, so they are a rounding error in
 car demand and the whole story in food. A test on one good would have missed this.
 
 ### 1920: a uniform −19 % plus a construction-shaped hole
@@ -4502,7 +4502,7 @@ car demand and the whole story in food. A test on one good would have missed thi
 Mean error **26 %**, but the shape is informative rather than random: **25 of 32 goods sit in 0.69–0.86,
 averaging 0.815** — a roughly uniform shortfall — while seven sit far below: **electricity 0.214, coal
 0.364, oil 0.424, glass 0.524, paper 0.560, wood 0.610, sugar 0.619**. Those seven are exactly the goods a
-**construction sector** eats. ⇒ The leading hypothesis is that  still
+**construction sector** eats. ⇒ The leading hypothesis is that `buy − building input − exports` still
 charges pops for demand channels the building records do not carry (construction projects, government,
 military), and that 1904 America simply was not building enough for it to show. **Not tested.**
 
