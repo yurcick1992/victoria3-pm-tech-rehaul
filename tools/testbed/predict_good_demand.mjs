@@ -84,6 +84,7 @@ for (let i = 1; i < W.length; i++) {
 // ---- stream the melt's pop table ----
 let sec = false, depth = 0, inPop = false;
 let cur = null, units = 0, popsUsed = 0, moneyByNeed = {};
+const unitsByNeed = {}, goodMoneyByNeed = {}, byCell = new Map(); let example = null;
 const flush = () => {
   if (!cur || cur.state == null || cur.wealth == null) { cur = null; return; }
   if (stateMarket.get(String(cur.state)) !== MID) { cur = null; return; }
@@ -97,7 +98,13 @@ const flush = () => {
     const k = cur.state + '|' + cur.culture + '|' + nd;
     const tot = cellSum.get(k), mine = cellGood.get(k);
     if (!(tot > 0) || !(mine > 0)) continue;
-    units += money * (mine / tot) / (BASEP[GOOD] || 1);
+    const gm = money * (mine / tot), u = gm / (BASEP[GOOD] || 1);
+    units += u;
+    unitsByNeed[nd] = (unitsByNeed[nd] || 0) + u;
+    goodMoneyByNeed[nd] = (goodMoneyByNeed[nd] || 0) + gm;
+    const ck = nd + "|" + cur.state + "|" + cur.culture;
+    const e = byCell.get(ck) || { money: 0, units: 0, pw: mine, tot: tot }; e.money += money; e.units += u; byCell.set(ck, e);
+    if (!example && nd === NEEDS_OF[0] && size > 3000) example = { wealth: cur.wealth, size, wf: cur.workforce, dep: cur.dependents, state: cur.state, culture: cur.culture, pkg: pk[nd], money, mine, tot, gm, u };
   }
   popsUsed++; cur = null;
 };
@@ -139,3 +146,38 @@ const fmt = v => v == null ? '—' : v.toFixed(1);
 console.log([DATE || '?', GOOD, MARKET, fmt(measured), fmt(units), measured ? (units / measured).toFixed(3) : '—',
   fmt(buy), fmt(bldg), fmt(exp), fmt(sell), popsUsed, NEEDS_OF.join('+'),
   Object.entries(moneyByNeed).map(([k, v]) => k + '=£' + v.toFixed(0)).join(' ')].join('\t'));
+
+if (args.includes('--explain')) {
+  console.log('');
+  console.log('=== WHERE THE NUMBER COMES FROM ===');
+  console.log('good: ' + GOOD + '  base price £' + BASEP[GOOD] + '   needs it belongs to: ' + NEEDS_OF.join(', '));
+  console.log('pops of this market with a size and a wealth level: ' + popsUsed);
+  console.log('');
+  console.log('need              pop money £   -> to ' + GOOD + ' £   effective share      units = £/' + BASEP[GOOD]);
+  let tm = 0, tg = 0, tu = 0;
+  for (const nd of NEEDS_OF) {
+    const m = moneyByNeed[nd] || 0, g = goodMoneyByNeed[nd] || 0, u = unitsByNeed[nd] || 0;
+    tm += m; tg += g; tu += u;
+    console.log(nd.padEnd(17) + m.toFixed(0).padStart(11) + g.toFixed(0).padStart(14) + ((g / m * 100).toFixed(2) + '%').padStart(16) + u.toFixed(1).padStart(20));
+  }
+  console.log('TOTAL'.padEnd(17) + tm.toFixed(0).padStart(11) + tg.toFixed(0).padStart(14) + ((tg / tm * 100).toFixed(2) + '%').padStart(16) + tu.toFixed(1).padStart(20));
+  console.log('');
+  console.log('=== the ten (state, culture) cells contributing most, and their stored weights ===');
+  const top = [...byCell].sort((a, b) => b[1].units - a[1].units).slice(0, 10);
+  console.log('need            state  culture |   money £ |  pw(' + GOOD + ') |  sum pw |   share |   units');
+  for (const [k, v] of top) {
+    const [nd, st, cu] = k.split('|');
+    console.log(nd.padEnd(15) + st.padStart(6) + cu.padStart(9) + ' |' + v.money.toFixed(0).padStart(10) + ' |' +
+      v.pw.toFixed(5).padStart(12) + ' |' + v.tot.toFixed(5).padStart(9) + ' |' + ((v.pw / v.tot * 100).toFixed(2) + '%').padStart(8) + ' |' + v.units.toFixed(1).padStart(8));
+  }
+  if (example) {
+    console.log('');
+    console.log('=== one pop, all the way through (' + NEEDS_OF[0] + ') ===');
+    console.log('  workforce ' + example.wf + ' + 0.5 x ' + example.dep + ' dependents = ' + example.size.toFixed(1) + ' package-equivalents');
+    console.log('  wealth level ' + example.wealth + ' -> buy_package popneed_' + NEEDS_OF[0] + ' = £' + example.pkg);
+    console.log('  money  = £' + example.pkg + ' x ' + example.size.toFixed(1) + ' / 10000            = £' + example.money.toFixed(2));
+    console.log('  share  = ' + example.mine.toFixed(5) + ' / ' + example.tot.toFixed(5) + ' (state ' + example.state + ', culture ' + example.culture + ') = ' + (example.mine / example.tot * 100).toFixed(2) + '%');
+    console.log('  spend  = £' + example.money.toFixed(2) + ' x ' + (example.mine / example.tot).toFixed(5) + '           = £' + example.gm.toFixed(2));
+    console.log('  units  = £' + example.gm.toFixed(2) + ' / £' + BASEP[GOOD] + '                        = ' + example.u.toFixed(4) + ' ' + GOOD);
+  }
+}
