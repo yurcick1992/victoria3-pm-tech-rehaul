@@ -83,9 +83,17 @@ money**, (2) a **two-eras-stale** tier still turns a profit, (3) the ladder is *
 tier earns less than the one below it. Acceptable: **~0** for (1) and (3), **in the teens** for (2),
 **excluding shipyards and art academies** (both have targets they cannot meet by construction).
 `tools/era_scenarios.mjs` prints the count per era with the offending industries named.
-**Current state: 41 points, 30 excluding the excused (3 / 4 / 12 / 10 / 12 per era) — NOT yet acceptable.**
+**Current state: 43 points, 30 excluding the excused (3 / 9 / 9 / 8 / 14 per era) — NOT yet acceptable.**
 ⚠ The excluded count rose 27 → 29 when `extinct` was made real (§10.30.2) — kept deliberately, because the
 variant that scored 40 breached the industrial ceiling and the ceiling outranks the metric.
+⚠ 41 → 43 is the `local` goods fix (F43, §10.37) and is **inside the jaggedness**, not a regression: the
+same config scores 38–48 across a deadband sweep alone. The fix ships on measurement (0.835 pp against
+4.226 pp on the game's own stored weights, 16 of 16), not on the score. Its aimed-at effect is real —
+`electrics` leaves the loss-making list in eras 4 and 5 and those eras improve 12 → 9 and 11 → 8 — and
+eras 2 and 5 pay for it.
+⚠ **Two levers that lower the count are REJECTED and must stay rejected**: `ERA_NO_BUYER=1` (35/24) buys
+its gain with §10.32.3's known defect, and `ERA_COUNT_DEADBAND=10` (38/26) is a one-point spike in a
+~3-point band whose neighbours 9 and 11 score 41 and 39.
 It is **live in the balance UI** as the **Ladder check** panel, from ONE shared implementation
 (`ladderFaults()` in `ui/econ.js`, called by both the UI and the solver). It scores only the buildings a
 scenario actually CONTAINS — an absent industry or a tier at Number 0 is never a fault and never the
@@ -529,7 +537,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         all campaign; reading the file instead of the save put Australian wine 220 pp wrong
   testbed/predict_pop_split.mjs  THE end-to-end check: predict every stored purchase weight in a market
                         from that market's own supply, non-pop demand and prestige supply. `--no-culture`
-                        scores the mechanism alone. Supporting single-term tools: within_need_test.mjs
+                        scores the mechanism alone. **`--local <mode>`** scores the LOCAL-GOODS readings
+                        against each other and prints their error as its own headline (F43): `off` (market
+                        supply, the pre-F43 reading), `scaled:<f>` (the shipped form — the factor on the
+                        WHOLE availability), `fixed:<f>` (on supply only — ⚠ zeroes electricity out below
+                        f≈0.3 and DROPS those entries, so its low end is not comparable), `state`, and
+                        `gdp` (the real per-state rule with GDP proxied by output-value share).
+                        Supporting single-term tools: within_need_test.mjs
                         (candidate availability forms, inside one need — no cross-need scale to invent),
                         fit_substitution_rule.mjs --sweep (the deduction coefficients),
                         validate_split_rule.mjs (clamps, prestige and culture terms, isolated),
@@ -946,10 +960,12 @@ the game.
   ⭐⭐ **Each pop need's money is split across ALL its goods by a rule that is now SOLVED AND MEASURED
   END TO END — FINDINGS F40 (2026-08-07)** (`needSplit()`):
   ```
-  availability(g) = ( market sell orders(g) − 0.5 × NON-POP demand(g) ) × BASE price(g)
+  availability(g) = ( market sell orders(g) − 0.5 × NON-POP demand(g) ) × BASE price(g) × LOCAL(g)
   raw share       = availability(g) / Σ availability over the need's own goods
   purchase weight = base weight(need,g) × clamp( raw , min_supply_share , max_supply_share )
   units           = need money × (purchase weight / Σ purchase weights) / base price(g)
+
+  LOCAL(g)        = 0.40 if g is `local` (services, transportation, electricity), else 1
   ```
   **Availability is a VALUE, not a unit count** — that is the one thing this changes and it is the whole of
   it. Measured against the purchase weights a savegame stores: a gamestate's own supply and non-pop demand
@@ -961,17 +977,25 @@ the game.
   Every good the need lists is a candidate — an unsupplied one scores zero and drops out by itself,
   which is why there is no separate availability gate. The **slave basket** goes through the same
   split, fed the same supply and non-pop order book in the same pass.
+  ⭐⭐ **THE `local` GOODS MULTIPLIER IS THE ONE THING F43 ADDS (2026-08-07, BALANCE_FRAMEWORK §10.37).**
+  `services`, `transportation` and `electricity` are `local = yes`: a state's *substitution* supply is its
+  own production plus `(1 − its GDP share) × 0.25 ×` the market's. We used to give them the market's whole
+  supply on the argument that our one state IS the market — true, and the wrong question, because pops live
+  in states and a state that is the whole market is the one state the rule does nothing for. We now model a
+  **representative** state — a fifth of the GDP holding a fifth of the local supply — giving
+  `0.2 + 0.8 × 0.25 = 0.40`. **Measured on eight PURE-VANILLA gamestates × two markets: local-good needs err
+  0.835 pp against 4.226 pp unaugmented, better in 16 of 16**, with the derived 0.40 landing 0.03 pp off the
+  swept optimum. ⚠ It multiplies the **whole availability**, not the supply alone — scaling supply while
+  deducting a whole market's industry zeroes electricity out. `S.LOCAL_MULT = 1` (env `LOCAL_MULT=1`) is the
+  A/B, not a setting. ⚠ On the era ladder it is **neutral** (41/28 → 43/30, inside the jaggedness); it ships
+  because it is closer to the game, not because it scores better.
   ⚠⚠ **WHAT IS IMPLEMENTED vs ONLY DOCUMENTED — check this before trusting a scenario number.**
-  `needSplit()` implements the **core rule** and nothing else: value-weighted availability, the −0.5
-  non-pop deduction, and the min/max clamp. Already present from earlier work: the peasant
-  `class_mult` 0.05 and the 0.625 dependent factor. **Four measured terms are deliberately absent**
-  (`grep prestige\|obsession\|taboo\|LOCAL_GOODS ui/econ.js` returns nothing):
-  - **prestige goods**, **culture obsession**, **religion taboo** — genuine no-ops here: our scenarios
-    contain no prestige goods and the model has no culture dimension. Safe to leave out.
-  - ⚠ **the `local` goods augmentation is NOT a no-op and is the one real gap.** §10.36.2 says our
-    single-state abstraction makes it vanish, and that is right for the *market's* arithmetic and
-    **wrong for a debut good's share** — see §10.36.5. Our model gives a debut good **21.9 %** of
-    `free_movement` where the game gives **38.4 %**.
+  `needSplit()` implements the **core rule**: value-weighted availability, the −0.5 non-pop deduction, the
+  min/max clamp, and the `local` multiplier above. Already present from earlier work: the peasant
+  `class_mult` 0.05 and the 0.625 dependent factor. **Three measured terms are deliberately absent**
+  (`grep prestige\|obsession\|taboo ui/econ.js` returns nothing) — **prestige goods**, **culture obsession**
+  and **religion taboo**, all genuine no-ops here: our scenarios contain no prestige goods and the model has
+  no culture dimension. Safe to leave out.
   ⚠ **Three terms of the game's real rule are deliberately NOT modelled, because our scenario has no
   dimension for them**; each is measured and written up in F40 so the omission is a choice, not an oversight:
   the **prestige-goods** multiplier (`1 + prestige_goods_demand_increase × prestige share of supply`;
@@ -991,11 +1015,12 @@ the game.
   (0.068/0.049 · 0.402/0.384 · 0.415/0.412) where market-wide transportation is out by ~1.9× throughout,
   and it **plateaus** rather than climbing. **Stop looking for a demand mechanism that favours a newcomer —
   there isn't one, in either direction.**
-  ⚠⚠ **BUT THIS IS THE ONE PLACE OUR MODEL DIVERGES MATERIALLY.** Our scenarios are single-state, so
-  `needSplit` gives a local good its full market supply and a debut good only **21.9 %** where the game
-  gives 38.4 %. For any need containing a `local` good — `free_movement`, `communication`, `leisure`,
-  `services`, `heating` — **our model UNDER-states a debut good's share**. One-directional, quantified, and
-  worth remembering when the era ladder reports that a new industry has no customers (§10.32).
+  ✅ **THIS WAS THE ONE PLACE OUR MODEL DIVERGED MATERIALLY, AND IT IS NOW FIXED (F43).** Our scenarios are
+  single-state, so `needSplit` used to give a local good its full market supply and a debut good only
+  **21.9 %** where the game gives 38.4 % — under-stating a new good's share in every need containing a
+  `local` good (`free_movement`, `communication`, `leisure`, `services`, `heating`). The 0.40 multiplier
+  above closes it. ⚠ It does **not** rescue §10.32's era-1 steel case: steel is in no pop need at all, so no
+  pop-demand correction can reach it.
   ✅ **The weights are VERIFIED correct against the game files** (2026-08-04): all **52 entries across 15
   needs** match `common/pop_needs/00_pop_needs.txt` exactly — every `weight`, `max_supply_share`,
   `min_supply_share` and `default` — and **29 of the 52 carry a non-default weight**, so this was a real

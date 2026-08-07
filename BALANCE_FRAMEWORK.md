@@ -2484,12 +2484,16 @@ Each is measured in F40, so the omission is a decision with a known size, not a 
   (`LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR`). ⭐ This is the mechanism behind the previously unexplained
   `transportation ÷ 1.6–2`, measured on three dates to within 2–8 % where ignoring it is out by 2.2× every
   year (F40).
-  ✅ **And our model needs no change for it.** §10.35.1a's single-state abstraction is not a liability here:
-  a model whose one state *is* the whole market has a GDP share of 1, the augmentation term goes to zero,
-  and the effective supply is the state's own — which is the market's. So `needSplit` using market supply
-  for a local good is **exactly right for the world we model**, and the 2.2× gap is a property of comparing
-  it against one state of a real multi-state game, not an error in the rule we ship.
-  ⚠ It would matter the moment the balance UI ever grew states, which it deliberately will not.
+  ❌ **"And our model needs no change for it" — WITHDRAWN, and the correction is §10.37 (F43, 2026-08-07).**
+  The argument ran: a model whose one state *is* the whole market has a GDP share of 1, so the augmentation
+  term goes to zero and market supply is already right. Every step of that is true and the conclusion is
+  still wrong, because it answers the wrong question. What the substitution rule needs is not what the
+  *market* holds but what a **pop** sees — and pops live in states. A state that is the whole market is not
+  a representative state; it is precisely the one state for which the local rule does nothing.
+  ⇒ We now model a **representative** state instead: a fifth of the country's GDP holding a fifth of the
+  local supply, giving `0.2 + (1 − 0.2) × 0.25 = 0.40` of market supply. Measured against eight vanilla
+  gamestates' stored weights it cuts local-good-need error from **4.23 pp to 0.84 pp**, better in 16 of 16
+  market-dates. See §10.37.
 
 ### 10.36.3 ⚠ The debut ramp is SUPPLY, not a rate limiter — a claim I made and then measured
 
@@ -2530,11 +2534,16 @@ share. That is the "spike", and two ordinary terms produce all of it:
 ⇒ **No anomaly and no special debut mechanism.** A newly invented good punches above its supply because it
 is expensive and its competitor is local — and it **plateaus** rather than climbing.
 
-### 10.36.5 ⚠⚠ THE KNOWN, ONE-DIRECTIONAL BIAS THIS LEAVES IN OUR SCENARIOS
+### 10.36.5 ✅ THE ONE-DIRECTIONAL BIAS THIS LEFT IN OUR SCENARIOS — DIAGNOSED HERE, FIXED IN §10.37
 
-§10.36.2 says the local-goods rule needs no implementation because our one state *is* the market. That is
+> **STATUS: CLOSED (F43, 2026-08-07).** This section identified the bias correctly and did not act on it;
+> §10.37 is the acting. It is kept because the diagnosis is what the fix was built from, and because the
+> reasoning error it corrects — answering "what does the market hold" when the question was "what does a
+> pop see" — is worth being able to re-read. The numbers below describe the model **before** the fix.
+
+§10.36.2 said the local-goods rule needs no implementation because our one state *is* the market. That is
 right for the *market's* arithmetic and **wrong for a debut good's share**: the game's pops live in states,
-and a state sees far less of a local good than the market holds. Our model therefore gives a local good its
+and a state sees far less of a local good than the market holds. Our model therefore gave a local good its
 full market supply and a debut good **21.9 %** where the game gives **38.4 %**.
 
 **Affected needs are exactly those containing a `local` good**: `free_movement` (transportation),
@@ -2546,3 +2555,82 @@ late" conclusion: part of what looks like a missing customer for `automobiles`, 
 `electricity` is our own abstraction understating the pop side. It does **not** rescue the era-1 steel case
 (steel is in no pop need at all), but it does mean the automotive and telephone shortfalls are smaller in
 the game than in our model.
+
+## 10.37 ⭐⭐ THE `local` GOODS FIX — we model a REPRESENTATIVE state, not the degenerate whole-market one
+
+**FINDINGS F43 (2026-08-07).** This closes §10.36.5 and withdraws §10.36.2's "no change needed".
+
+### 10.37.1 The rule and the constant
+
+`services`, `transportation` and `electricity` carry `local = yes` in `common/goods`. Their **substitution**
+supply — explicitly *"only for goods substitution supply and not for price calculations"* — is:
+
+```
+effective supply(state) = the state's OWN production
+                        + ( 1 − the state's GDP share ) × LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR
+                          × the MARKET's production                       (the factor being 0.25)
+```
+
+Our scenario has no state dimension, so it cannot compute a share. It can, however, stop pretending its one
+state is the *whole market* — the single state for which this rule is a no-op — and model a **representative**
+one instead:
+
+```
+the state's own supply = 0.20 × the market's
+the state's GDP share  = 0.20
+⇒ multiplier           = 0.20 + (1 − 0.20) × 0.25 = 0.40
+```
+
+`needSplit` multiplies a local good's **availability** by 0.40. `S.LOCAL_MULT = 1` restores the old reading
+(env `LOCAL_MULT=1` through `econ_host`); it is an A/B switch, not a setting.
+
+### 10.37.2 Measured, on the game's own stored weights
+
+Eight **pure vanilla** gamestates 1901–1920 × two markets, scored against the purchase weights the saves
+themselves store. Local-good needs, mean absolute error of the predicted share:
+
+| arm | panel mean | worst cell | better in |
+|---|--:|--:|--:|
+| unaugmented (1.00) — the old reading | 4.226 pp | 5.650 | — |
+| **0.40 — derived, shipped** | **0.835 pp** | 1.586 | **16 / 16** |
+| 0.35 — the empirical optimum | 0.809 pp | 1.473 | 16 / 16 |
+
+⭐ **The derived value lands 0.026 pp off the best constant available.** It was reached from the game's
+formula plus two stated assumptions and *then* checked against the sweep — it is not fitted, and re-fitting
+it to 0.35 would trade a derivation for 0.03 pp. The non-local half of the score is untouched (0.819 pp).
+
+⚠ **The factor multiplies the WHOLE availability**, `f × (supply − 0.5 × non-pop) × base`, not the supply
+alone. Scaling supply while deducting a whole market's industrial demand drives electricity to zero and
+**drops those entries from the score**, which makes the low end of that variant incomparable rather than
+merely worse. It is also the right statement about the world: our one state is a scaled-down market, so its
+industry scales with its production.
+
+### 10.37.3 What it does to the ladder: nothing, and that is the honest headline
+
+Both arms re-solved to their own **strict fixed point**:
+
+| arm | illogicality | excluding excused | per era |
+|---|--:|--:|---|
+| unaugmented | 41 | 28 | 2 / 5 / 12 / 11 / 11 |
+| **0.40, shipped** | **43** | **30** | 3 / 9 / 9 / 8 / 14 |
+
+**+2 points is inside the jaggedness** (§10.28 — a deadband sweep spans 38–48 on this same config), so by
+the five-point rule this is neither gain nor loss. It ships because it is **measurably closer to the game**,
+not because it scores better. ⭐ The aimed-at mechanism does work: `electrics` leaves the loss-making list in
+**both** era 4 and era 5, and eras 3 and 4 improve 12 → 9 and 11 → 8; eras 2 and 5 pay for it (5 → 9, 11 → 14).
+
+⚠ **Two apparent improvements were measured and REJECTED**, and it matters that they were rejected rather
+than shipped:
+- `ERA_NO_BUYER=1` scores **35 / 24**. §10.32.3 already established why: its better variant *drops* the
+  industry from `placement`, so its recipe is never solved. The gain is the known defect.
+- `ERA_COUNT_DEADBAND=10` scores **38 / 26**, but 9 and 11 score 41 and 39 — a ~3-point band with a
+  one-point spike at its centre. Re-tuning a **convergence** parameter on the illogicality score is exactly
+  the noise-chasing §10.28 warns about. (It *is* better on the smoother criterion — 79/87 profit targets
+  within 8pp against 74/85, era 2's mean miss 16.4 → 7.4 pp — but it also introduces two `tobacco_plantation`
+  limit cycles in era 4, and one good number inside a noisy band is not a reason to move a settled knob.)
+
+### 10.37.4 What this does NOT resolve
+
+The `local` correction raises a debut good's pop demand in the five affected needs; it does **not** touch
+§10.32's era-1 steel case, because steel is in no pop need at all. The three unmodelled terms of F40
+(prestige, obsession, taboo) remain unmodelled, all three still no-ops for our scenarios.

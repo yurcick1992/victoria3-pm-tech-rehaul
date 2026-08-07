@@ -4573,3 +4573,142 @@ model pop wealth, where the pound figure is what depletes it.
 **What it does NOT say.** Per-GOOD pop consumption is still not stored — only the per-pop need total. The
 other 12 fields of `weekly_budget` remain unidentified; only the large negative one is pinned, and that by
 two independent pops agreeing with the package table.
+
+---
+
+## F43 — ⭐⭐ THE `local` GOODS CORRECTION. A state sees **0.40** of its market's supply of a local good, and applying that constant cuts the local-good needs' error from **4.23 pp to 0.84 pp** — better in **16 of 16** vanilla market-dates
+
+**Arm** control (**pure vanilla + telemetry**), session `20260807_005246_popsplit-debut-vanilla`, eight
+melted gamestates 1901.7.1 → 1920.1.1, American and British markets. Scored against the purchase weights
+the savegames themselves store. Instrument: `tools/testbed/predict_pop_split.mjs --local <mode>`.
+
+⚠ **ARM VERIFIED THREE WAYS, because a reweighted save would silently answer a different question.** Each
+save's own `mods={}` header reads exactly one mod, `"V3 Testbed Control (vanilla + telemetry)"`;
+`build_state.json` records `arm: control` with `deviates_from_vanilla: []` and mod id
+`com.yurcick.v3_testbed_control`; and the schedule's `_arm` note sets the `x10` overlay saves aside as
+"the perturbation set, not the reference". The reweighted saves live in `tools/testbed/saves_x10_1925/`
+and were not used.
+
+### The rule, and why our model was wrong about it
+
+`services`, `transportation` and `electricity` carry `local = yes`. Their **substitution** supply — and
+only that, never the price calculation — is not the market's:
+
+```
+effective supply(state) = the state's OWN production
+                        + ( 1 − the state's GDP share ) × 0.25 × the MARKET's production
+```
+
+(`LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR = 0.25`, `common/defines/00_defines.txt`.)
+
+§10.36.2 concluded our model needed no change, because our one state *is* the whole market, so its GDP
+share is 1 and the augmentation vanishes. **That reasoning is sound and its conclusion is wrong**, for the
+reason §10.36.5 identified but did not act on: the quantity that matters is not the market's arithmetic,
+it is what a **pop** sees, and pops live in states. A state that is the whole market is not a
+representative state — it is the one state for which the local rule does nothing.
+
+### The fix: model a representative state, not the degenerate one
+
+```
+the state's own supply = 0.20 × the market's      (a state holds a fifth of the local supply)
+the state's GDP share  = 0.20                     (a state is a fifth of the country)
+=> multiplier          = 0.20 + (1 - 0.20) × 0.25 = 0.40
+```
+
+### Measured: local-good needs, mean absolute error of the predicted share
+
+Every entry in a `(state, culture, need)` cell whose need contains a local good — `free_movement`,
+`communication`, `leisure`, `services`, `heating`. Both arms score the **same entries**.
+
+| date | market | unaugmented (1.00) | **F43 (0.40)** | entries |
+|---|---|--:|--:|--:|
+| 1901.7.1 | USA | 2.078 | **0.422** | 9 177 |
+| 1901.7.1 | GBR | 3.183 | **0.537** | 19 380 |
+| 1902.4.1 | USA | 2.513 | **0.637** | 9 386 |
+| 1902.4.1 | GBR | 2.989 | **0.382** | 19 741 |
+| 1904.1.1 | USA | 3.958 | **0.784** | 9 709 |
+| 1904.1.1 | GBR | 3.777 | **0.697** | 19 950 |
+| 1906.1.1 | USA | 4.362 | **0.638** | 9 899 |
+| 1906.1.1 | GBR | 4.698 | **0.783** | 20 216 |
+| 1908.1.1 | USA | 4.225 | **0.807** | 10 298 |
+| 1908.1.1 | GBR | 4.917 | **1.420** | 19 931 |
+| 1912.1.1 | USA | 5.650 | **0.735** | 10 393 |
+| 1912.1.1 | GBR | 4.520 | **0.883** | 20 425 |
+| 1916.1.1 | USA | 4.957 | **0.900** | 9 975 |
+| 1916.1.1 | GBR | 5.106 | **1.215** | 20 881 |
+| 1920.1.1 | USA | 5.429 | **1.586** | 10 184 |
+| 1920.1.1 | GBR | 5.260 | **0.928** | 18 487 |
+| **mean** | | **4.226** | **0.835** | |
+
+**Better in 16 of 16, by a mean factor of 5.1.** The non-local headline is untouched (0.819 pp at
+1904 USA under every mode), as it must be — the factor only ever applies to the three local goods.
+
+### The derived 0.40 sits on the empirical optimum
+
+Swept over the whole 16-cell panel:
+
+| factor | panel mean | worst cell |
+|---|--:|--:|
+| 0.30 | 1.016 | 1.779 |
+| **0.35** | **0.809** | 1.473 |
+| **0.40 (derived)** | **0.835** | 1.586 |
+| 0.50 | 1.411 | 2.281 |
+| 1.00 (unaugmented) | 4.226 | 5.650 |
+
+The best constant available is 0.35 at 0.809 pp; the **derived** 0.40 is 0.026 pp behind it. ⭐ The value
+was reached from the game's own formula and two stated assumptions, *then* found to sit inside the noise
+of the empirical optimum — it is not fitted, and it should not be re-fitted to 0.35 for 0.03 pp.
+
+### ⚠ THE FACTOR MULTIPLIES THE WHOLE AVAILABILITY, NOT THE SUPPLY ALONE
+
+`avail = f × (supply − 0.5 × non-pop demand) × base price`, **not** `(f × supply − 0.5 × non-pop) × base`.
+Both were built and measured, and the difference is not cosmetic:
+
+| f | supply only | whole availability |
+|---|--:|--:|
+| 0.25 | 7.812 ⚠ | 2.015 |
+| 0.30 | 6.150 | **1.311** |
+| 0.40 | 3.198 | **0.784** |
+| 0.50 | 1.931 | **1.019** |
+
+Scaling supply while still deducting a **whole market's** industrial demand from it drives electricity's
+availability to zero, which **drops those entries from the score entirely** — the 0.25 row is computed
+over 8 687 entries against 9 709 for the others, so the low end of that column is not even comparable.
+The symmetric form is also the right statement about the world: our one state is a scaled-down market, so
+its industry scales with its production.
+
+### What it does NOT say
+
+1. **One campaign, two markets.** Eight dates, but one playthrough and one seed.
+2. **The GDP share is proxied, and scored worse than the constant.** Implementing the real per-state rule
+   with GDP proxied by the state's share of market gross output value scores **7.583 pp** — worse than
+   both the constant (3.198) and doing nothing (3.958), on the supply-only form. That is a statement about
+   the proxy, not about the game's rule: gross output value is not GDP, and the save's own GDP field is
+   not extracted. **Do not read this as evidence against the documented rule** — F40 already reproduced
+   that rule to 2–8 % on three dates using real state supply.
+3. It says nothing about markets other than the American and British, nor about 1836, where the question
+   is **untestable**: `free_movement`, `communication` and `services` each have exactly one supplied good
+   that year, so their split is 100 % whatever the factor, and only `leisure` is live.
+4. The three terms F40 left unmodelled (prestige, obsession, taboo) are still unmodelled here.
+
+### Effect on the era ladder: a correctness win that is illogicality-NEUTRAL
+
+Both arms re-solved to their **own strict fixed point** (config and presets byte-identical on re-run):
+
+| arm | total | excluding excused | per era |
+|---|--:|--:|---|
+| unaugmented (`LOCAL_MULT=1`) | **41** | **28** | 2 / 5 / 12 / 11 / 11 |
+| **F43 (0.40), shipped** | **43** | **30** | 3 / 9 / 9 / 8 / 14 |
+
+**+2 points, which is inside the noise** — a deadband sweep alone spans 38–48 on the same config, so by
+the project's own five-point rule this is neither a gain nor a loss. ⭐ **But the aimed-at mechanism is
+visible and it works**: `electrics` disappears from the loss-making list in **both** era 4 and era 5,
+where it sat in the baseline, and eras 3 and 4 improve 12 → 9 and 11 → 8. The cost falls on eras 2 and 5
+(5 → 9, 11 → 14). It is shipped because it is **measurably closer to the game**, not because it lowers
+the score.
+
+⚠ **Two levers that appear to lower the count were rejected, both deliberately.** `ERA_NO_BUYER=1` scores
+**35 / 24**, but §10.32.3 already established that its better variant *drops* the industry from
+`placement` so its recipe is never solved — the gain is the known defect, not a fix. `ERA_COUNT_DEADBAND=10`
+scores **38 / 26**, but its neighbours 9 and 11 score 41 and 39: a ~3-point band with a one-point spike at
+its centre, i.e. exactly the jagged surface §10.28 warns about. Neither is shipped.

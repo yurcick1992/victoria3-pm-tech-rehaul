@@ -104,8 +104,15 @@ hand on a major patch.
      `leisure`). Its scaling input is the prestige share of the good's supply, so **`common/prestige_goods`
      is a coupling too**: a patch that adds a prestige variant to a good silently changes that good's pop
      demand. 40 base goods carry one today.
-   - `LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR` (0.25) — the local-goods augmentation we do **not**
-     implement; if this changes, the size of that known gap changes with it.
+   - `LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR` (0.25) — ⭐ **NOW IMPLEMENTED (F43, §10.37)**, so this is
+     a live coupling rather than a documented gap. It feeds the constant `LOCAL_MULT_DEFAULT` in
+     `ui/econ.js` (mirrored in `ui/builder.html`): `0.2 + (1 − 0.2) × 0.25 = 0.40`, the share of market
+     supply a representative state sees of a `local` good. ⚠ **Two things move it and both are silent:**
+     this define, and **which goods carry `local = yes` in `common/goods/00_goods.txt`** — today exactly
+     `services`, `transportation` and `electricity`, hardcoded as `LOCAL_GOODS` in both files. A patch that
+     flags a fourth good `local` would leave it at full market supply with nothing failing. **Re-check both
+     after a patch**, and re-run `node tools/econ_selftest.mjs` (its `F43` cases pin the constant *and* the
+     set). The two 0.2 assumptions are ours, not the game's, and are re-derivable per F43's sweep.
    - `MAX_DEMAND_ADJUSTMENT_BASE_AMOUNT` (0.01) / `_SCALED_AMOUNT` (0.09) / `_SCALE` (1.0) — how far a pop's
      demand for a substitutable good may move per update. We do not model it, and at annual sampling it does
      **not** bind: a stored weight sits on its computed target (F40). ⚠ If a patch tightened these, stored
