@@ -323,11 +323,46 @@ prestige share of supply). Nothing fitted:
 | 1916.1.1 | 502 967 | 188 369 | 72.75 % | 72.75 % | ×1.50 | **109.13 %** | **107.55 %** | 1.58 pp |
 | 1920.1.1 | 677 385 | 218 710 | 75.59 % | 75.59 % | ×1.50 | **113.39 %** | **112.25 %** | 1.14 pp |
 
-⚠ **The `buy` column cannot be turned into a per-need check, and that is F35, not an oversight.** Market buy
-orders for automobiles span *both* the needs automobiles sits in (`free_movement` and `leisure`), and
-transportation's span `free_movement` and `communication`, so no measured order total belongs to one need.
-That is precisely why the **stored share** is the observable this finding rests on: it is per need, and the
-game computed it.
+#### ⭐⭐ MEASURED AND PREDICTED AUTOMOBILE DEMAND, IN UNITS, SIDE BY SIDE
+
+A share is an intermediate and can exceed 1; the end product is units (user, 2026-08-07). Predicting them
+needs the need's **budget**, which the save also carries — every pop's wealth, size, culture and state —
+so the whole chain can be computed from one gamestate plus `common/buy_packages`:
+
+```
+units(good) = Σ over pops, over the needs the good is in:
+                buy_package[pop wealth][need] × (workforce + 0.5 × dependents)/10 000
+              × purchase weight(good) / Σ purchase weights over the need     ← the save's own numbers
+              / base price(good)
+```
+
+**Measured pop demand = market buy orders − building input demand − exports.**
+
+| date | **measured** | **predicted** | ratio | buy | buildings | exports | supply |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| 1901.7.1 | — | 0.0 | — | — | 0 | 0 | — |
+| 1902.4.1 | **105.6** | **91.1** | 0.86 | 163.0 | 57.4 | 0 | 83.3 |
+| 1904.1.1 | **762.2** | **787.6** | **1.03** | 1 182.2 | 0 | 420 | 513.0 |
+| 1906.1.1 | **953.2** | **976.7** | **1.03** | 1 623.7 | 310.5 | 360 | 902.7 |
+| 1908.1.1 | **1 211.2** | **1 188.1** | **0.98** | 2 254.4 | 599.2 | 444 | 1 290.5 |
+| 1912.1.1 | **2 524.4** | **2 577.1** | **1.02** | 3 996.3 | 955.9 | 516 | 2 294.2 |
+| 1916.1.1 | **4 494.9** | **3 043.5** | 0.68 | 7 821.6 | 890.7 | 2 436 | 5 475.0 |
+| 1920.1.1 | **5 063.3** | **4 091.3** | 0.81 | 10 533.5 | 1 378.2 | 4 092 | 7 462.9 |
+
+⭐ **Four consecutive readings, 1904 to 1912, land within 3.3 %** — from a rule with no fitted parameter, on
+a good that did not exist in 1901. ⚠ 1916 and 1920 under-predict by 32 % and 19 %; both are dates where
+automobiles' `leisure` entry sits on its 0.25 cap, and the cause is not established.
+
+⚠⚠ **EXPORTS ARE IN THE BUY ORDERS, and missing that is worth more than the whole remaining error.**
+Charging the USA's 4 092 exported automobiles to its own pops made 1920 read 0.45 of prediction. The
+control is that low-export goods were already fine at the same instant: **furniture 1.03, liquor 1.19,
+grain 0.90, coffee 0.85** — so a uniformly low budget model was excluded before the export term was
+looked for.
+
+⚠ **The `buy` column still cannot be split by need, and that is F35.** Automobiles' orders span
+`free_movement` *and* `leisure`, transportation's span `free_movement` and `communication`, so no measured
+order total belongs to one need — which is why the per-need work above rests on the **stored share**
+instead. The units table gets around it only by summing a good over *all* the needs it belongs to.
 
 #### ⭐⭐ THE 25 % COMPLEMENT IS NOT HANDED OVER — READ IT OFF THE PRE-DEBUT ROW
 
