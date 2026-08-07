@@ -4463,3 +4463,37 @@ number with ±50% of slack in it and cannot presently distinguish them.
 **What would settle it:** the definition of `GetGDP` — whether it is gross output, value added, or
 something else. That is a documentation/probe question, not a measurement one, and it is cheap compared
 to re-running anything.
+
+---
+
+## F41 — ⚠ OPEN, NOT A RESULT: a save stores a per-pop `weekly_budget`, and its expense line matches the buy package to 8 % — for a PEASANT pop our model would have multiplied by 0.05
+
+**Arm** control (vanilla), 1904.1.1 gamestate of session `20260807_005246_popsplit-debut-vanilla`.
+
+Chasing a pop-level check for F40, the melted pop record turned out to carry
+`weekly_budget = { 13 numbers }`. For pop **8884** — peasants, STATE_NEW_YORK, yankee, protestant,
+wealth 10, workforce 477 163, dependents 1 463 552 — the large negative entry reads **−39 644**, and the
+buy package predicts:
+
+```
+size            = 477 163 + 0.5 × 1 463 552              = 1 208 939 package-equivalents
+wealth_10 total = £355 per 10 000                        (10 needs)
+predicted spend = £355 × 1 208 939 / 10 000              = £42 917
+observed        = weekly_budget expense line             =  39 644     ratio 1.083
+```
+
+⚠⚠ **THIS IS NOT YET A FINDING, FOR TWO REASONS.**
+1. **The 13 fields are unlabelled** and "the big negative one is goods expenditure" is a guess. An 8 %
+   match is suggestive, not identification — the same discipline F39 had to learn.
+2. ⭐ **If it IS goods expenditure, it contradicts something we ship.** Our model applies
+   `consumption_mult = 0.05` to peasants (CLAUDE.md, from `common/pop_types/peasants.txt`), which would
+   predict **£2 146**, not £42 917. The observed 39 644 is the FULL package. Either the multiplier does not
+   apply to a pop's own budget line (the subsistence building buying on their behalf being a separate
+   channel), or our reading of it is wrong.
+
+**Next:** identify the 13 fields against a pop whose income and spending are known from the panel, then
+re-check the peasant multiplier specifically. Until then do **not** change `class_mult` in
+`config/presets.json` on the strength of this.
+
+**What it does NOT say.** It says nothing about per-GOOD pop consumption, which is still not stored — only
+a per-pop total. F40's per-good work continues to rest on the stored purchase weights.
