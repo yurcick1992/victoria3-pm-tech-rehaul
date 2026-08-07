@@ -1380,9 +1380,12 @@ function presetBarHTML(){
         + `and only for the ${Math.round(slaveRealShare()*100)}% of them this scenario's buildings have unqualified jobs for; the rest are in subsistence at ×${SLAVE_SUBSISTENCE_MULT}. `
         + `Net ×${Math.round(slaveBasketMult()*1000)/1000} of a full basket, folded into the pops buy column (hover a cell to see that part on its own).`
       : `${c}: people. Buys the wealth-${solOf(c)} package${(cm[c]!=null&&cm[c]!==1)?` × ${cm[c]}`:''}.`;
-    // ⚠ When professions are known the class counts are DERIVED — they are sums, and editing them would
-    // silently contradict the professions they are made of. Read-only then, editable only as a fallback.
-    const ro = HAVE_POPPROF ? ' readonly title="derived: sum of the professions below"' : '';
+    // ⚠⚠ A STRATUM IS ALWAYS A TOTAL, NEVER AN INPUT. The class counts are the SUM of the professions
+    // below and are therefore ALWAYS read-only — there is no fallback where they become editable. That
+    // fallback used to exist (it keyed on whether the preset carried professions) and it inverted the
+    // model: with no professions the derived quantity became the source of truth, and the profession row
+    // vanished entirely, so the sheet silently changed shape depending on which preset you had loaded.
+    const ro = ' readonly title="Derived — the sum of the professions below. Edit those."';
     return `<label title="${esc(t)}"><span>${c}</span><input type="number" min="0" step="1000" value="${POPS[c]||0}" data-pop="${c}"${ro}></label>`; }).join('');
   return `<div class="presetbar">${btns}
     <div class="pknobs clsrow"><span class="plbl">SoL</span>${solFields}
@@ -1399,27 +1402,40 @@ function presetBarHTML(){
 //
 // ⚠ Professions are additive DETAIL, never a second source of truth. Editing one recomputes its class;
 // the classes themselves go read-only so the two can never disagree on screen.
+// ⚠⚠ POPPROF IS THE SOURCE OF TRUTH FOR POPULATION, ALWAYS — the strata are its sum and nothing else.
+// It is therefore ALWAYS fully populated (every profession, zero where there are none) and the row is
+// ALWAYS rendered. There is deliberately no "do we have professions?" flag any more: one used to gate
+// both the row's existence and whether the strata were editable, so a preset carrying no professions
+// silently turned the sheet into a different, contradictory model where a stratum was an input.
+// Seeded below from PROF_ORDER so the row exists on a bare page load, before any preset is applied.
 let POPPROF = {};
-let HAVE_POPPROF = false;
 // which stratum each profession belongs to — peasants and slaves are classes in their own right
 const PROF_STRATUM = { laborers:'lower', farmers:'lower', machinists:'lower', soldiers:'lower', servicemen:'lower',
   shopkeepers:'middle', clerks:'middle', engineers:'middle', bureaucrats:'middle', academics:'middle',
   clergymen:'middle', officers:'middle', aristocrats:'upper', capitalists:'upper' };
+// ⚠ peasants and slaves are IN this list. They are strata in their own right, so they have no entry in
+// PROF_STRATUM — but with the class row read-only they must still be editable somewhere, and this is the
+// only population input left. A "split" of one is still the sum of its professions.
 const PROF_ORDER = ['laborers','farmers','machinists','soldiers','servicemen','clerks','shopkeepers','engineers',
-  'bureaucrats','academics','clergymen','officers','aristocrats','capitalists'];
-// classes are the sums; peasants and slaves pass through untouched
+  'bureaucrats','academics','clergymen','officers','aristocrats','capitalists','peasants','slaves'];
+POPPROF = Object.fromEntries(PROF_ORDER.map(k=>[k,0]));
+// classes are the sums; peasants and slaves pass through as themselves
 function popsFromProfessions(){
-  if(!HAVE_POPPROF) return;
   const s={upper:0,middle:0,lower:0};
   for(const p in POPPROF){ const st=PROF_STRATUM[p]; if(st) s[st]+=(POPPROF[p]||0); }
   POPS={...POPS, upper:Math.round(s.upper), middle:Math.round(s.middle), lower:Math.round(s.lower),
         peasants:Math.round(POPPROF.peasants||0), slaves:Math.round(POPPROF.slaves||0)};
 }
 function profPanelHTML(){
-  if(!HAVE_POPPROF) return '';
-  const fields=PROF_ORDER.filter(p=>POPPROF[p]!=null).map(p=>{
-    const st=PROF_STRATUM[p]||'—';
-    return `<label title="${esc(p)}: people. Wage weight ${WAGE_WEIGHT[p]||0}; consumes as the ${st} stratum, at that stratum's standard of living. Editing this updates the ${st} class above, which is its sum.">`
+  // ⚠ EVERY profession, ALWAYS — never filtered to the ones that happen to be non-zero. A field that
+  // appears and disappears with the loaded preset is not a model, it is a moving target: you could not
+  // type a bureaucrat into a market that had none, and the row vanished entirely for a preset carrying
+  // no professions at all. Zero is a value here, not an absence.
+  const fields=PROF_ORDER.map(p=>{
+    const st=PROF_STRATUM[p]||p;                                  // peasants/slaves are their own stratum
+    const how=PROF_STRATUM[p] ? `consumes as the ${st} stratum, at that stratum's standard of living. Editing this updates the ${st} class above, which is its sum.`
+                              : `${p} are a stratum in their own right — this field IS the ${p} class above.`;
+    return `<label title="${esc(p)}: people. Wage weight ${WAGE_WEIGHT[p]||0}; ${esc(how)}">`
       + `<span>${esc(p)}</span><input type="number" min="0" step="1000" value="${POPPROF[p]||0}" data-popprof="${esc(p)}"></label>`; }).join('');
   // ⚠ NOT .clsrow — see the CSS. Five classes and fourteen professions are different shapes, and sharing
   // the class grid is what threw shopkeepers to the right margin and overlapped engineers with bureaucrats.
@@ -1541,10 +1557,23 @@ function applyScenarioPreset(id){
   if(p.base_wage>0 && p.base_wage!==BASE_WAGE){ BASE_WAGE=p.base_wage; }
   // the working-adult share is a property of the era being modelled, so a preset carries its own
   if(p.working_adult_ratio>0) POPM.working_adult_ratio=p.working_adult_ratio;
-  // per-profession populations, when the preset carries them; the class row then becomes their sum
-  if(p.pops_by_profession && Object.keys(p.pops_by_profession).length){
-    POPPROF={...p.pops_by_profession}; HAVE_POPPROF=true; popsFromProfessions();
-  } else { POPPROF={}; HAVE_POPPROF=false; }
+  // ---- POPULATION. The professions are the input and the strata are their sum, for EVERY preset.
+  // Every profession is always present (0 where there are none), so the row never changes shape.
+  POPPROF = Object.fromEntries(PROF_ORDER.map(k=>[k,0]));
+  if(p.pops_by_profession) for(const k in p.pops_by_profession) POPPROF[k]=+p.pops_by_profession[k]||0;
+  else if(p.pops){
+    // ⚠ A preset with no professions would otherwise zero the market out. Every generated preset carries
+    // them now (tools/extract_presets.ps1), so this is the path for a HAND-WRITTEN or older saved preset:
+    // put each stratum on its most representative profession so the totals survive, and say so, because
+    // the profession MIX is then fabricated even though the strata are right — and the mix drives wages.
+    const rep={lower:'laborers',middle:'clerks',upper:'aristocrats'};
+    for(const c in rep) if(p.pops[c]>0) POPPROF[rep[c]]=+p.pops[c]||0;
+    POPPROF.peasants=+p.pops.peasants||0; POPPROF.slaves=+p.pops.slaves||0;
+    banner('warn',`<b>${esc(p.label||p.id)}</b> carries no per-profession population, so each class was put on one representative profession `
+      + `(lower→laborers, middle→clerks, upper→aristocrats). The class totals are right; the profession MIX is not, `
+      + `and it is what prices wages. Re-run <code>tools\\build.ps1</code> to regenerate the presets with real professions.`);
+  }
+  popsFromProfessions();
   // PRICES. A solved era preset carries the prices its own order book produces, and the whole design is
   // that they are REALISED, not chosen — so seed them and then UNLOCK, which makes the panel recompute
   // them from the orders in front of you. If the scenario is right the two agree; if they don't, that
@@ -2310,10 +2339,10 @@ document.addEventListener('input', e=>{
   else if(el.dataset.addsell!==undefined){ ADDSELL[el.dataset.addsell]=Math.max(0,+el.value||0); updateScenario(); return; }
   // pop-consumption knobs: the per-class wealth levels (slaves = the basket level) and the pop counts
   else if(el.dataset.sol!==undefined){ SOL[el.dataset.sol]=Math.max(1,Math.min(99,Math.round(+el.value||1))); updateScenario(); return; }
-  else if(el.dataset.pop!==undefined){
-    POPS[el.dataset.pop]=Math.max(0,Math.round(+el.value||0));
-    const tt=document.getElementById('popTotal'); if(tt) tt.textContent=fmtPop(popTotal());
-    updateScenario(); return; }
+  // ⚠ NO `data-pop` WRITE PATH. A stratum is the SUM of its professions and is never assigned to; the
+  // inputs are readonly, so this cannot fire from the UI, and the handler is gone so that removing the
+  // readonly attribute later cannot silently reintroduce a second, contradicting source of truth. The
+  // population write path is `data-popprof` below, and only that.
   if(el.dataset.input!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.inputs[el.dataset.input]=+el.value||0; updateComputed(); updateScenario(); }
   else if(el.dataset.out!==undefined){ const[i,t]=findTier(el.dataset.ind,el.dataset.tier); t.output_qty=+el.value||0; updateComputed(); updateScenario(); }
   else if(el.dataset.popprof!==undefined){     // a profession count — the class above is its sum

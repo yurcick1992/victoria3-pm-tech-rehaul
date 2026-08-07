@@ -352,6 +352,13 @@ config/start_exceptions.json manual 1836-start overrides (force_tier / remove, s
 config/start_baseline.json   GENERATED inventory of the vanilla 1836 start (per-industry/tier/country + drift check)
 config/presets.json          WHICH scenario presets to generate (id/label/group/country + optional market_add/market_drop, sol, measured_market) — editable. A preset carrying a **`placeholder`** block instead of `country` is **SYNTHETIC**: not derived from any country, one level of every ordinary building so each production chain is present exactly once (what BE-solving wants). See `placeholder_defaults` for the shared pops, the SoL multipliers and the exclusion lists. Note `sol.slaves` is the **slave basket level** (what buildings buy for them), not a standard of living, and `defaults.class_mult` deliberately has **no** `slaves` entry — slaves are not on the pop-consumption path at all
 config/pop_distribution.json FITTED within-need consumption distribution (need → good → share), replacing the vanilla `weight` field — which is not an allocation rule (the game allocates by SUPPLY SHARE) and cost 12 pp of scenario demand accuracy. ONE market-independent distribution by design, solved across all 7 preset markets against config/measured_1836.json; re-derive with the balance UI's **fit pops** button and paste the printed JSON back. Absent ⇒ the UI falls back to `weight` per need
+config/measured_1836_professions.json GENERATED (tools/testbed/melted_pops_by_profession.mjs, from a melted VANILLA
+                        1836.4.1 autosave) and COMMITTED: population BY PROFESSION per COUNTRY — the source the
+                        balance sheet's population row is edited on, and which its wealth strata are the SUM of.
+                        Per country, not per market, because market membership is extract_presets.ps1's job and a
+                        second save-derived definition of it would drift silently. ⚠ A pop's size here is
+                        `workforce + dependents`; measured_1836.json's `by_pop_type` holds WORKFORCE, about a
+                        quarter of it — they are different quantities, do not substitute one for the other
 config/measured_1836.json    GENERATED (tools/extract_measured.ps1, from a testbed session) and COMMITTED: the things the game FILES cannot answer — per market TRADE (imports/exports per good), SoL per stratum, MILITARY building levels, urban-centre levels as a cross-check, and per market **WAGES** (`-WagesOnly`, a MERGE-only mode that rewrites just the `wages` block and leaves every other field untouched, because a wages session carries none of the other metrics and a full run over it would blank them). The wages block holds **`base_weekly_wage`** — the UI's base £/wk knob, measured, on the F26 basis: **laborers + farmers + machinists, EMPLOYED pops only** (the three professions actually paid a building's market wage; state-salaried and owner professions are excluded, and an unemployed pop would put workers in the wage-unit denominator with nothing in the numerator). Beside it: `base_weekly_labour` on the **superseded** 11-profession basis, kept only for continuity with earlier findings and **not** to be fed to a scenario; the per-profession spread; the game's own per-state average annual wage (mean/median/min/max); the workforce ratio; and a per-pop-type table. Read by extract_presets.ps1; optional (a clone without it still builds, just without those). ⚠ Regenerate after a game patch — a stale table is silently wrong, not obviously missing
 tools/                  dev tooling — NOT shipped in the mod
   build.ps1             builder: config → generates all mod/ files + all-language loc + ladder_tiers.txt + 1836 start, then lints
@@ -532,6 +539,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         `owner`), but the buildings are — so the pair the substitution rule consumes can be
                         rebuilt for the SAME gamestate the weights come from. Validated against the run's
                         own telemetry: production matches to ~8 % mean
+  testbed/melted_pops_by_profession.mjs  POPULATION BY PROFESSION per country, out of a melt -> the
+                        committed `config/measured_1836_professions.json`. Written because the balance
+                        sheet edits population by profession and sums the strata from it, and nothing in
+                        history or telemetry supplied that split. ⚠ Size is `workforce + dependents`, and
+                        an unattributable pop (a state with no owner) is REPORTED, never dropped
   testbed/melted_cultures.mjs  the culture database and its CURRENT obsessions. ⚠ OBSESSIONS ARE RUNTIME
                         STATE — common/cultures holds only the 1836 set and the game adds and drops them
                         all campaign; reading the file instead of the save put Australian wine 220 pp wrong
@@ -1152,8 +1164,28 @@ the game.
   slave counts but consume 14× apart, because France's slaves sit in colonial plantations while its free workers
   sit in the metropole, and the market-level aggregate washes that out. Accepted deliberately — those two markets
   hold 0.4 % of the world's slaves and 13 units of demand between them. See F27.
-  **The population itself is editable** — one field per class (`upper / middle / lower / peasants / slaves`) in the
-  preset bar, showing the derived total; a preset reloads them, and you can then push them around by hand.
+  ⭐⭐ **POPULATION IS EDITED BY PROFESSION, AND A STRATUM IS ALWAYS THEIR SUM — never an input.** The
+  **By profession** row carries **all 16 pop types** (`PROF_ORDER`, peasants and slaves included — they are
+  strata in their own right, so with the class row read-only this is the only place to set them), and it is
+  **always rendered with every field present, zero included**. The class row (`upper / middle / lower /
+  peasants / slaves`) is **always read-only** and always the sum; there is no `data-pop` write path at all,
+  so removing the `readonly` attribute cannot silently reintroduce a second source of truth.
+  ⚠ **This used to be conditional and it inverted the model.** A `HAVE_POPPROF` flag gated *both* whether
+  the profession row existed *and* whether the strata were editable, so a preset carrying no professions
+  made the DERIVED quantity the input and the profession row vanish entirely — the sheet silently changed
+  shape depending on which preset was loaded. The flag is gone; do not reintroduce a conditional here.
+  **Every generated preset now carries `pops_by_profession`**, from
+  **`config/measured_1836_professions.json`** (per COUNTRY, summed over the preset's own market members —
+  market membership stays `extract_presets.ps1`'s job, from history, so there is no second definition of
+  it). Placeholders have no country, so their authored stratum totals are split by the **world's own
+  within-stratum profession shares** from the same gamestate — one documented rule, not a per-preset
+  invention. A hand-written preset with only classes still loads: each class goes onto one representative
+  profession (lower→laborers, middle→clerks, upper→aristocrats) and the UI **warns in the banner** that the
+  totals are right but the profession *mix* is fabricated — and the mix is what prices wages.
+  ✅ The two sources cross-check: derived strata vs each preset's independently-derived `pops` agree to
+  **0–1 %** in six of eight country markets. ⚠ **The USA is out by 12–15 % on every stratum and −43 % on
+  slaves, and Russia/France by 63–90 % on slaves** — two independent derivations disagreeing, not yet
+  explained; the save's 2.03 M US slaves is the historically plausible one.
   **SoL is per stratum, five fields, and a preset fills them from measurement** (`config/measured_1836.json`):
   peasants carry their **own** wealth level rather than borrowing the lower class's, because the
   measured spread cannot be expressed otherwise — peasants run 4.5 in Japan against 12.1 in France, and in

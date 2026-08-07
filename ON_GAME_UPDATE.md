@@ -121,6 +121,19 @@ hand on a major patch.
    adds and drops them at runtime), and **`common/religions`** taboo lists. The measurement tooling reads
    both from the *save*, not the files — keep it that way.
 
+1c. **Population by profession — `config/measured_1836_professions.json`.** GENERATED from a **melted
+   vanilla 1836.4.1 autosave** by `tools/testbed/melted_pops_by_profession.mjs`, and it is the source the
+   balance sheet's whole population model rests on: professions are the input and the wealth strata are
+   their sum. **Regenerate after a patch that moves starting populations** — a stale table is silently
+   wrong rather than obviously missing, exactly like `measured_1836.json`. It also encodes two things the
+   engine owns: the **pop type list** (16 today) and which **stratum** each consumes as (`$PROF_STRATUM`
+   in `extract_presets.ps1`, mirrored as `PROF_STRATUM` in `ui/builder.html` — **change both or neither**).
+   A patch adding a pop type would leave it at zero everywhere with nothing failing.
+   ⚠ It reads at **1836.4.1**, three months in, because that is the earliest archived autosave — whereas
+   `measured_1836.json` reads at **1836.2.1**. The two-month gap is why the derived strata and each
+   preset's own `pops` block do not agree to the person; they agree to 0–1 % in six of eight markets, and
+   the USA (12–15 %) and the Russian/French slave counts (63–90 %) are **unexplained**, not drift.
+
 2. **UI £/point constant — `ui/builder.html`, `BCM.poundPerPoint = 720`.** Static; used only for the
    UI's muted "model N" build-cost hint. Will go **stale if the construction iron PM recipe changes**.
    The *stored* `building_cost` values shown are always correct (they come from the config), and

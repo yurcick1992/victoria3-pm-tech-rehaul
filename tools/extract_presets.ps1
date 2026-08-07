@@ -535,6 +535,83 @@ if (Test-Path $measuredPath) {
 } else {
     Warn "config/measured_1836.json missing - presets will carry no trade, no measured SoL and no military buildings"
 }
+# --- POPULATION BY PROFESSION (config/measured_1836_professions.json) -------------------------------
+# ⭐ The balance sheet edits population BY PROFESSION and treats the three wealth strata as their SUM.
+# Without a per-profession source the sheet had to fall back to editable strata, which inverts the model —
+# it makes the derived quantity the input. This table supplies the professions, per COUNTRY, read from a
+# melted VANILLA 1836.4.1 gamestate (tools/testbed/melted_pops_by_profession.mjs).
+# ⚠ Per COUNTRY on purpose: market membership is decided here, from HISTORY, and a second save-derived
+# definition of who is in a market would drift from it silently.
+# ⚠ A pop's size is workforce + dependents. Do NOT substitute measured_1836.json's `by_pop_type`, which
+# holds WORKFORCE — about a quarter of the people.
+$professions = $null
+$professionsPath = Join-Path $Repo 'config\measured_1836_professions.json'
+if (Test-Path $professionsPath) {
+    $professions = Get-Content -LiteralPath $professionsPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    Write-Output ("  profession reference: {0} countries, {1}" -f `
+        ($professions.countries.PSObject.Properties.Name).Count, $professions.date)
+} else {
+    Warn "config/measured_1836_professions.json missing - presets carry no per-profession pops, and the UI will have nothing to derive its strata from"
+}
+# Sum the profession table over a market's member tags. Returns $null when nothing is known, so the
+# caller can omit the field rather than emit a misleading all-zero split.
+function Get-ProfessionPops($memberTags) {
+    if (-not $professions) { return $null }
+    $acc = [ordered]@{}; $any = $false
+    foreach ($tag in $memberTags) {
+        $rec = $professions.countries.$tag
+        if (-not $rec) { continue }
+        $any = $true
+        foreach ($pr in $rec.PSObject.Properties) {
+            $acc[$pr.Name] = [int](($acc[$pr.Name] + 0) + $pr.Value)
+        }
+    }
+    if (-not $any) { return $null }
+    return $acc
+}
+# Which stratum each profession consumes as. MUST match PROF_STRATUM in ui/builder.html — the sheet sums
+# professions into strata with this same map, and a disagreement would make the UI's totals contradict the
+# preset's own `pops` block.
+$PROF_STRATUM = @{
+    laborers='lower'; farmers='lower'; machinists='lower'; soldiers='lower'; servicemen='lower'
+    shopkeepers='middle'; clerks='middle'; engineers='middle'; bureaucrats='middle'; academics='middle'
+    clergymen='middle'; officers='middle'; aristocrats='upper'; capitalists='upper'
+}
+# World-wide within-stratum profession shares, from the same gamestate. Used ONLY by the synthetic
+# placeholder presets, which author stratum totals and have no country to look professions up from.
+$script:WorldProfShare = $null
+function Get-WorldProfShare {
+    if ($script:WorldProfShare) { return $script:WorldProfShare }
+    if (-not $professions) { return $null }
+    $sum = @{}
+    foreach ($cn in $professions.countries.PSObject.Properties) {
+        foreach ($pr in $cn.Value.PSObject.Properties) { $sum[$pr.Name] = ($sum[$pr.Name] + 0) + $pr.Value }
+    }
+    $byStratum = @{}
+    foreach ($k in $sum.Keys) { $st = $PROF_STRATUM[$k]; if ($st) { $byStratum[$st] = ($byStratum[$st] + 0) + $sum[$k] } }
+    $share = @{}
+    foreach ($k in $sum.Keys) {
+        $st = $PROF_STRATUM[$k]
+        if ($st -and $byStratum[$st] -gt 0) { $share[$k] = [double]$sum[$k] / $byStratum[$st] }
+    }
+    $script:WorldProfShare = $share
+    return $share
+}
+# Split authored stratum totals across professions by those world shares. Peasants and slaves are strata
+# of their own and pass through as themselves — a "split" of one.
+function Split-StrataToProfessions($pops) {
+    $share = Get-WorldProfShare
+    if (-not $share) { return $null }
+    $out = [ordered]@{}
+    foreach ($k in ($share.Keys | Sort-Object { -$share[$_] })) {
+        $st = $PROF_STRATUM[$k]
+        $n = [int][math]::Round([double]$pops.$st * $share[$k])
+        if ($n -gt 0) { $out[$k] = $n }
+    }
+    if ([int]$pops.peasants -gt 0) { $out['peasants'] = [int]$pops.peasants }
+    if ([int]$pops.slaves   -gt 0) { $out['slaves']   = [int]$pops.slaves }
+    return $out
+}
 function Get-Measured($p) {
     if (-not $measured -or -not $p.measured_market) { return $null }
     return $measured.markets.($p.measured_market)
@@ -607,6 +684,12 @@ function New-PlaceholderPreset($p, $defs) {
         pms = [ordered]@{}                                   # empty => the UI resets every PMG to its base PM
         pops = [ordered]@{ total = $total; upper = [int]$pops.upper; middle = [int]$pops.middle
                            lower = [int]$pops.lower; peasants = [int]$pops.peasants; slaves = [int]$pops.slaves }
+        # A placeholder has no country, so there is nothing to look its professions up from. The stratum
+        # totals it DOES author are split by the WORLD's own within-stratum profession shares, taken from
+        # the same 1836 gamestate — one rule for every placeholder, applied to numbers the preset already
+        # chose. It is a derivation, not a per-preset invention, and it keeps the sheet's invariant
+        # (strata are the SUM of professions) true for these presets too.
+        pops_by_profession = (Split-StrataToProfessions $pops)
         sol = [ordered]@{
             lower    = [int][math]::Round($lowerSol)
             middle   = [int][math]::Round($lowerSol * [double]$defs.middle_sol_mult)
@@ -648,6 +731,8 @@ foreach ($p in $presetCfg.presets) {
     if ($p.market_add)  { foreach ($m in $p.market_add)  { if ($members -notcontains $m) { $members.Add($m) } } }
     if ($p.market_drop) { foreach ($m in $p.market_drop) { [void]$members.Remove($m) } }
     $memberSet = @{}; foreach ($m in $members) { $memberSet[$m] = $true }
+    $profPops = Get-ProfessionPops $members
+    if (-not $profPops) { Warn ("{0}: no per-profession pops for any market member - the sheet will have nothing to derive its strata from" -f $p.id) }
 
     # --- buildings: levels per (tier-mapped) key + the PM vanilla runs there (majority by levels) ---
     $levelsByKey = @{}; $pmVotes = @{}
@@ -1005,6 +1090,11 @@ foreach ($p in $presetCfg.presets) {
             upper = [int][math]::Round($cls.upper); middle = [int][math]::Round($cls.middle); lower = [int][math]::Round($cls.lower)
             peasants = [int][math]::Round($peasants); slaves = [int]$slavePop
         }
+        # The professions the UI derives its strata from. Emitted beside `pops` rather than replacing it:
+        # the two come from DIFFERENT sources (pops from history + measurement at 1836.2.1, professions
+        # from a 1836.4.1 gamestate), so they will not agree to the person, and `pops` stays as the
+        # cross-check. The UI treats the professions as the input and recomputes the strata.
+        pops_by_profession = $profPops
         sol = $solOut
         subsistence = [ordered]@{
             free_arable = [int][math]::Round(($subsArable.Values | Measure-Object -Sum).Sum)
