@@ -2364,15 +2364,12 @@ for (let e = 0; e < FIT.eras.length; e++) {
     if (sh.length) console.log('    SHRUNK (loss-making, capped one level at a time): ' + sh.sort((a, b) => b[1] - a[1])
       .map(([k, n]) => k.replace(/^building_/, '') + ' −' + n).join(', '));
   }
-  {
-    const p = meta.profit || {};
-    console.log(`    PROFITABILITY (every building that sells goods): net £${fmtN(Math.round(p.net||0))}/wk`
-      + ` · losses £${fmtN(Math.round(p.loss||0))}/wk across ${p.losers||0} building type(s), ${p.winners||0} profitable`
-      + ` · losses are ${p.net > 0 ? ((p.loss / p.net) * 100).toFixed(0) : '∞'}% of net`
-      + (p.exNet || p.exLoss ? `\n      of which ${EXCUSED_LABEL}: net £${fmtN(Math.round(p.exNet||0))}/wk · losses £${fmtN(Math.round(p.exLoss||0))}/wk` : '')
-      + (p.auNet || p.auLoss ? `\n      GOLD, excluded from both figures above (nothing buys it, so its price is pinned at the floor):`
-                             + ` net £${fmtN(Math.round(p.auNet||0))}/wk · losses £${fmtN(Math.round(p.auLoss||0))}/wk` : ''));
-  }
+  // ⚠⚠ THE PER-ERA PROFITABILITY LINE IS GONE ON PURPOSE. It was computed HERE, inside the era pass, and
+  // that is too early to mean anything: a tier recipe is solved in the era where its tier is DOMINANT, so
+  // era N still holds an UNSOLVED recipe for the era-(N+1) rung standing in its scenario, and unsolved
+  // recipes are leaner. Measured against a replay of the shipped presets it agreed EXACTLY at era 0 (no
+  // leading tier) and era 5 (nothing left to solve) and overstated everything between — net £1.80M against
+  // a true £0.40M at 1900, 4.5x. See the FINAL PROFIT PASS after the era loop.
   console.log(`    CONSTRUCTION: ${meta.constrLevels} levels = ${(100 * meta.constrShare).toFixed(1)}% of GDP`
     + ` (target ${(100 * CONSTRUCTION_GDP_SHARE).toFixed(0)}%, ${CONSTRUCTION_PM[meta.era]})`
     + (Math.abs(meta.constrShare - CONSTRUCTION_GDP_SHARE) > 0.02 ? '   ⚠ OFF TARGET' : ''));
@@ -2457,6 +2454,99 @@ for (let e = 0; e < FIT.eras.length; e++) {
 // SECTOR COMPOSITION across all five scenarios, at realised prices. The question this answers is not
 // "did each margin solve" but "does this look like an economy" — and it is the one to hold against
 // vanilla telemetry, because vanilla's own sector split is measurable and ours is not obviously right.
+// ===================================================================================================
+// ⭐⭐ THE FINAL PROFIT PASS — the ONLY place profit totals are reported, and it runs after EVERYTHING.
+//
+// "Reported profit totals should be provided not only after the recipes, but after the recipes AND the
+// counts are settled. Anything else is useless." (user, 2026-08-08.) This replays each era's SHIPPED
+// preset — the exact object written to config/era_presets.json, so counts, prices, production methods,
+// throughput, pops and wages are all the final ones — against the now-final recipe book in S.IND.
+//
+// ⚠ WHY IT CANNOT LIVE INSIDE THE ERA PASS. A tier's recipe is solved once, in the era where that tier is
+// DOMINANT. So while era N is running, the era-(N+1) rung standing in its scenario still carries an
+// UNSOLVED recipe, and unsolved recipes are leaner. The old in-pass line agreed EXACTLY with a replay at
+// era 0 (which has no leading tier) and era 5 (where nothing is left to solve) and overstated every era
+// between — £1.80M against a true £0.40M at 1900, 4.5x. Same defect as §10.39.3, second occurrence.
+//
+// ⚠ WHAT THIS STILL DOES NOT FIX, and it is the deeper half: era N's COUNTS were themselves chosen
+// against those provisional downstream recipes. Replaying gives honest profits FOR THE STATE THAT SHIPS,
+// which is what the report must describe — but the state that ships was reached through a sequentially
+// inconsistent solve. Fixing that needs an OUTER loop over the era sequence (solve all six, re-solve all
+// six against the final recipes, repeat). `JOINT_PASSES` is a within-era fixed point and does not do it.
+// ===================================================================================================
+{
+  const isGold = b => /gold/.test(b);
+  const rows = [];
+  for (const ep of out) {
+    // restore this era's shipped scenario exactly
+    S.BASE_WAGE = ep.base_wage;
+    S.POPS = { ...ep.pops };
+    S.SOL = { ...ep.sol };
+    Object.keys(S.BLDNUM).forEach(k => delete S.BLDNUM[k]);
+    for (const b in ep.buildings) S.BLDNUM[b] = ep.buildings[b];
+    Object.keys(S.THRU).forEach(k => delete S.THRU[k]);
+    for (const b in ep.throughput) S.THRU[b] = ep.throughput[b];
+    for (const g in ep.prices) S.thresholds[g] = ep.prices[g];
+    Object.keys(S.REFSEL).forEach(k => delete S.REFSEL[k]);
+    const tierKey = new Map();
+    for (const i of S.IND) for (const t of i.tiers) tierKey.set(t.key, t);
+    for (const b in (ep.pms || {})) {
+      const t = tierKey.get(b);
+      if (t) t._sec = { ...ep.pms[b] }; else S.REFSEL[b] = { ...ep.pms[b] };
+    }
+    Object.keys(S.UNITNUM).forEach(k => delete S.UNITNUM[k]);
+    for (const u in (ep.units || {})) S.UNITNUM[u + '|peace'] = ep.units[u];
+
+    let net = 0, loss = 0, winners = 0, losers = 0, exNet = 0, exLoss = 0;
+    const worst = [];
+    const take = (p, excused, what) => {
+      if (!isFinite(p)) return;
+      net += p;
+      if (p < 0) { loss -= p; losers++; worst.push({ what, p }); } else winners++;
+      if (excused) { exNet += p; if (p < 0) exLoss -= p; }
+    };
+    const seen = new Set();
+    for (const i of S.IND) {
+      const ex = PMECON.LADDER_EXCUSED.has(i.id);
+      for (const t of i.tiers) {
+        seen.add(t.key);
+        const n = S.BLDNUM[t.key] || 0; if (!(n > 0)) continue;
+        const io = E.tierGoodsIO(i, t); if (!Object.keys(io.out || {}).length) continue;
+        take(n * E.weeklyProfit(i, t), ex, t.key.replace(/^building_/, ''));
+      }
+    }
+    for (const b in S.BLDNUM) {
+      const n = S.BLDNUM[b] || 0; if (!(n > 0) || seen.has(b) || isGold(b)) continue;
+      const ec = E.refEcon(b); if (!ec || ec.p == null) continue;
+      if (!Object.keys((ec.goods || {}).out || {}).length) continue;
+      take(n * ec.p, false, b.replace(/^building_/, ''));
+    }
+    worst.sort((a, b) => a.p - b.p);
+    rows.push({ id: ep.label, net, loss, winners, losers, exNet, exLoss, worst: worst.slice(0, 4) });
+  }
+
+  console.log('\n=========== PROFITABILITY — replayed on the SHIPPED state, recipes AND counts final ===========\n');
+  console.log('  era            net £/wk     losses £/wk   loss-makers   profitable   losses % of net');
+  let tn = 0, tl = 0, tw = 0, tp = 0;
+  for (const r of rows) {
+    tn += r.net; tl += r.loss; tw += r.losers; tp += r.winners;
+    console.log('  ' + r.id.padEnd(14)
+      + fmtN(Math.round(r.net)).padStart(12) + fmtN(Math.round(r.loss)).padStart(16)
+      + String(r.losers).padStart(14) + String(r.winners).padStart(13)
+      + ((r.net > 0 ? (100 * r.loss / r.net).toFixed(0) + '%' : '∞')).padStart(17));
+  }
+  console.log('  ' + 'TOTAL'.padEnd(14) + fmtN(Math.round(tn)).padStart(12) + fmtN(Math.round(tl)).padStart(16)
+    + String(tw).padStart(14) + String(tp).padStart(13)
+    + ((tn > 0 ? (100 * tl / tn).toFixed(1) + '%' : '∞')).padStart(17));
+  console.log('\n  biggest loss-makers per era');
+  for (const r of rows)
+    console.log('  ' + r.id.padEnd(14) + (r.worst.length
+      ? r.worst.map(w => `${w.what} ${fmtN(Math.round(w.p))}`).join('  ') : '(none)'));
+  console.log('\n  ⚠ Gold is excluded everywhere (it is not in the model at all — §10.40.5).');
+  console.log('  ⚠ These supersede any per-era profit figure: those were computed mid-solve, before the');
+  console.log('    later eras had settled the recipes of the tiers standing in the earlier ones.');
+}
+
 console.log('\n=========== SECTOR COMPOSITION — share of total output value, at realised prices ===========\n');
 const SEC_LABEL = { mfg_high: 'manufacturing (mfg inputs)', mfg_low: 'manufacturing (raw inputs)',
                     agri: 'agriculture + fish/whaling', logging: 'logging', ore: 'ore, oil & rubber', other: 'other' };

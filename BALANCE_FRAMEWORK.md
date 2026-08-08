@@ -2988,3 +2988,70 @@ prints as breached is a bug in the constraint rather than a property of the econ
 reason the landmine register exists: a constraint nobody checks is a constraint that silently stops being
 applied. It also names anything sitting *at* a cap, since a binding constraint is a fact about the scenario
 worth seeing.
+
+## 10.41 PROFIT TOTALS ARE REPORTED ONCE, AFTER EVERYTHING — recipes AND counts
+
+**2026-08-08.** *"Reported profit totals should be provided not only after the recipes, but after the
+recipes AND the counts are settled. Anything else is useless."* (user.) Correct, and the first version of
+this metric failed it twice over.
+
+### 10.41.1 The same defect as §10.39.3, in a second place
+
+`profitTotals()` ran **inside** the per-era pass. A tier's recipe is solved once, in the era where that tier
+is DOMINANT — so while era N runs, the era-(N+1) rung standing in its scenario still carries an **unsolved**
+recipe, and unsolved recipes are leaner. Scored against a replay of the shipped presets:
+
+| | 1780 | 1836 | 1870 | 1900 | 1920 | 1945 |
+|---|--:|--:|--:|--:|--:|--:|
+| in-pass report | £0.01M | £0.09M | £0.40M | **£1.80M** | £4.80M | £8.10M |
+| replay of shipped state | £0.01M | £0.06M | £0.08M | **£0.40M** | £2.45M | £8.10M |
+
+⭐ **Exact agreement at era 0 and era 5 and divergence everywhere between** — era 0 has no leading tier, era
+5 has nothing left to solve. That signature identified the cause, exactly as it did in §10.39.3. The
+overstatement reached **4.5×** at 1900.
+
+⚠ §10.39.3 was diagnosed and fixed for the profit-TARGET line hours earlier, and the same defect was
+shipped in `profitTotals` in the same session because nobody asked whether it generalised. **When a defect
+is found in one report line, sweep every other line computed at the same point.**
+
+### 10.41.2 What ships
+
+The per-era profitability line is **removed**, and one **FINAL PROFIT PASS** runs after the whole era loop.
+It replays each era's SHIPPED preset — the exact object written to `config/era_presets.json`, so counts,
+prices, PM selections, throughput, pops and wages are all final — against the final recipe book. Verified
+against an independent replay script: identical to the pound.
+
+Two disagreeing numbers is the trap, so there is now only one.
+
+### 10.41.3 ⚠⚠ What this does NOT fix — the solve is sequentially inconsistent
+
+Replaying gives honest profits **for the state that ships**. But era N's **counts** were themselves chosen
+against those provisional downstream recipes, so the shipped state was reached through an inconsistent
+solve. `JOINT_PASSES` (`ERA_JOINT`, default 8) is a fixed point **within** one era and does not address
+this; there is no outer loop over the era sequence.
+
+The real fix is an outer iteration — solve all six eras, re-solve all six against the now-final recipes,
+repeat until the whole set is stable — and it is **not built**. The existing "strict fixed point" check does
+not catch it either: that verifies `--write` twice is byte-identical, and this inconsistency is
+deterministic, so it reproduces perfectly while still being wrong.
+
+### 10.41.4 The state it reports, and one thing it immediately found
+
+| era | net £/wk | losses £/wk | loss-makers | profitable | losses % of net |
+|---|--:|--:|--:|--:|--:|
+| 1780 | 10k | 3k | 9 | 23 | 29% |
+| 1836 | 60k | 18k | 22 | 45 | 30% |
+| **1870** | **83k** | **132k** | 36 | 42 | ⚠⚠ **158%** |
+| **1900** | 400k | 346k | 43 | 43 | ⚠ **87%** |
+| 1920 | 2.4M | 258k | 32 | 57 | 11% |
+| 1945 | 8.1M | 241k | 41 | 50 | 3% |
+| **TOTAL** | **11.1M** | **998k** | 183 | 260 | **9.0%** |
+
+**1870 is the worst era in the set: its loss-makers lose more than the whole economy earns.** 1900 is at
+87%. Both were invisible while the in-pass figure was reporting 5× and 4.5× those net values.
+
+⚠ The pass also names the biggest loss-makers per era, and that immediately shows **loss-making farms**
+(`millet_farm −84k` at 1900, `wheat_farm −49k` and `subsistence_rice_farm −24k` at 1920) — which §10.18
+forbids outright. The leading suspect is §10.40.6's joint agriculture scaling: scaling every farm down
+together to hold the 3 000 bound moves supply and can push individuals below zero, and §10.18's drop rule
+runs before it and is not re-checked. **Not confirmed.**
