@@ -2650,3 +2650,87 @@ than shipped:
 The `local` correction raises a debut good's pop demand in the five affected needs; it does **not** touch
 §10.32's era-1 steel case, because steel is in no pop need at all. The three unmodelled terms of F40
 (prestige, obsession, taboo) remain unmodelled, all three still no-ops for our scenarios.
+
+## 10.38 ⭐⭐ THE LOSS-MAKING REDUCTION, and the guard that was silently a budget
+
+**2026-08-08.** Raw producers have had a downward rule since §10.18 (a loss-maker is *dropped*).
+Manufacturing had none at all: a tier losing money simply sat at whatever size the job-pool rescale gave
+it, because building counts are the **dependent** variable here — every settle rescales them so total
+employment equals the pool the population provides.
+
+### 10.38.1 The rule
+
+Converge; take the tier losing money by the **largest margin**; cut **one level**; **cap** it there so the
+rescale cannot undo it; re-converge; look again. A tier stops at **one level** — the industry is never
+deleted, because "unprofitable" and "absent" are different statements, and §10.17 stops scoring a tier at
+zero anyway. Revertable: `ERA_SHRINK_LOSSMAKERS=0`.
+
+**The cap is what makes it stick.** Cutting without capping is a no-op — the next settle grows the industry
+straight back to refill the job pool. With the cap the labour goes elsewhere instead, which is the whole
+point: **this redistributes the workforce, it cannot shrink it.**
+
+**Shipyards carry their −30pp handicap here too** (§10.30's `TG.shipyard_penalty`), on both the test and
+the comparison, so a −35% shipyard ranks as −5%. Without it the rule reads a shipyard as the worst
+loss-maker in the economy at a margin that is, for a shipyard, par, and cuts it first every single era.
+
+### 10.38.2 ⚠⚠ `SHRINK_STEPS` IS A SAFETY NET, AND AT 60 IT WAS A BUDGET
+
+The loop's real stopping condition is `if (!worst) break` — it terminates on its own once nothing is losing
+money above one level. At 60 it never reached that state in era 5, a 26k-level economy: it stopped at step
+60 of the **543** that era wants, having reached only the second entry of a **thirteen-industry** hand-off.
+
+Measured, era 5 alone, at three budgets:
+
+| steps | 60 | 400 | **2000 (converged at 543)** |
+|---|--:|--:|--:|
+| losses/wk | £643k | £137k | **£17k** |
+| losses as % of net | 10% | 2% | **0%** |
+| loss-making types | 26 | 27 | **21** |
+| profitable types | 53 | 52 | **58** |
+| net/wk | £6.6M | £6.6M | £6.5M |
+| GDP | £722.5M | £724.1M | £718.4M |
+| illogicality (era 5) | 11 (8 excl) | 11 (8 excl) | **9 (6 excl)** |
+
+**Whole-ladder illogicality 58 → 56, and 46 → 44 excluding.** Era 5 lost one inversion and one
+two-eras-stale-profitable fault — `port` and `railway` both dropped off those lists, because the stale
+rungs causing them were finally reached. That is **above the five-point rule on the excluded count** and is
+therefore a real result, not jaggedness.
+
+It cost **0.6% of GDP and £100k/wk of net profit to remove £626k/wk of losses**. Strongly positive, not
+free — worth stating, because the rule redistributes labour into capacity that earns slightly less in
+aggregate than the loss-makers grossed.
+
+⚠⚠ **ERAS 0–4 NEVER REVEALED THIS.** They use **0 / 4 / 2 / 2 / 13** steps, so the guard bound in exactly
+one era and nothing else in the report moved when it was raised. **A guard that binds in one place looks
+like a converged solve everywhere else** — which is the general lesson, not a fact about this constant.
+
+### 10.38.3 Why era 5 needs so much more than any other era
+
+Era 5 is **the only scenario whose top two rungs are not both meant to be profitable.** The placement rule
+gives `weight: 1` to the leading tier and `weight: 1` to the one below — **equal level counts**. With
+`lead = [0,2,3,4,5,5]` those two are the *leading* and *dominant* tiers everywhere else, targeted +20% and
++5%. There is no tier 6, so at era 5 `lead == dominant` and the equal-weight partner slides down onto the
+**one-era-stale** rung, which the design intends to be dying:
+
+```
+scenario 1900   motor  e3:10@-2%    e4:10@+4%     pair = (dominant, leading)
+scenario 1920   motor  e4:27@+5%    e5:27@+37%    pair = (dominant, leading)
+scenario 1945   motor  e4:159@-18%  e5:159@+7%    pair = (ONE-ERA-STALE, dominant)
+```
+
+So era 5 begins with roughly half its capacity on rungs running −13% to −23%, and the reduction has to walk
+all of it down. **This is the ladder working, not failing** — e4 at −18% beside e5 at +7% is exactly the
+obsolescence signal the mod exists to produce. The defect was only that the scenario *placed* that rung at
+full scale and then was not allowed to correct it.
+
+⚠ **This also means "total losses" is not a clean health metric.** It counts a dying tail — which the design
+wants — the same as an industry that cannot pay for itself. Split by role, era 5 at 60 steps had £791k of
+its £900k gross loss on **stale tails** and only one loss-making *newest* tier (`shipyard_steam`, excused).
+Losses **on newest tiers only** is the metric that separates them.
+
+### 10.38.4 If the runtime needs fixing
+
+Era 5 now does ~543 `contSettle` calls instead of 60 (six-era run ~5 min → ~12 min). The fix is a
+**coarse-to-fine step** — cut ~5% of a tier's levels while it is deep in the red, one level near the
+boundary — not a lower guard. ⚠ It must be checked to land in the **same terminal state**: a coarse step can
+overshoot the point where an industry stops being worst, which changes the hand-off order.

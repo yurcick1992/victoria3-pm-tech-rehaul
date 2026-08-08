@@ -225,6 +225,48 @@ era-1 iron mine left 1836 with 704 iron demand and zero iron supply, so a drop t
 undone and the building is kept and **reported by name**. ⚠ Each round must *begin* from a converged state —
 checking and then settling lets the state drift back over the line after the check.
 
+**⭐⭐ GDP IS `52 × weekly VALUE ADDED`, MEASURED — NOT GROSS OUTPUT (FINDINGS F45).** Value added = building
+outputs − building **inputs**, at market prices; pops and trade are on neither side, because value added is a
+production-side quantity. Confirmed against the `gdp` series three vanilla melted savegames persist, read
+beside those same saves' `input_goods`/`output_goods`: **52.44 (1901) · 51.44 (1912) · 49.94 (1920)**.
+⚠ **Gross output is a MOVING TARGET** — it double-counts every intermediate, so its ratio to GDP falls
+**×48.5 (1836) → ×36.7 (1935)** as chains lengthen. Anything calibrated on gross output is calibrated against
+a quantity whose meaning changes across the very period the ladder spans; that is why this exists.
+The **army (5%)** and **construction (15%)** budgets are shares of GDP, rebased off gross output. Reference,
+measured off a vanilla 1901 gamestate — construction's goods bill as a share of GDP: FRA 20.1% · RUS 19.9% ·
+USA 15.3% · GBR 14.1% · BEL 8.8% · JAP 4.5%. Implemented once, in `ui/econ.js`'s `scenarioValueAdded()` /
+`scenarioGDP()`, and shown in the UI's scenario summary as GDP and GDP per capita.
+
+**⭐ LOSS-MAKING MANUFACTURING SHRINKS (§10.38).** Raw producers are *dropped* (§10.18); manufacturing had no
+downward rule at all, so a loss-maker sat at whatever size the job-pool rescale gave it. Now: converge, take
+the tier losing money by the **largest margin**, cut **one level**, **CAP** it there so the rescale cannot undo
+it, re-converge, look again. A tier stops at **one level** — "unprofitable" and "absent" are different
+statements, and §10.17 stops scoring a tier at zero anyway. The cap is what makes it stick: cutting without
+capping is a no-op, because counts are the DEPENDENT variable (full employment by construction) and the next
+settle regrows it. **This redistributes the workforce; it cannot shrink it.** Shipyards carry their −30pp
+handicap on both the test and the comparison, or the rule cuts them first every era at a margin that is, for a
+shipyard, par. Revertable: `ERA_SHRINK_LOSSMAKERS=0`.
+⚠⚠ **`ERA_SHRINK_STEPS` IS A SAFETY NET, NOT A BUDGET — AND AT 60 IT WAS A BUDGET.** The loop stops on its own
+(`if (!worst) break`) once nothing is losing money above one level. Era 5 wants **543** steps and got 60,
+stopping at the second entry of a thirteen-industry hand-off. Raising it to **2000** took era 5's losses
+**£643k → £17k/wk** (10% → 0% of net), losers 26 → 21, profitable 53 → 58, and whole-ladder illogicality
+**58 → 56 / 46 → 44 excluding** — above the five-point rule, so a real result. Cost: 0.6% of GDP and £100k/wk
+of net profit, and era 5 now does ~543 `contSettle` calls (six-era run ~5 → ~12 min).
+⚠ **Eras 0–4 use 0/4/2/2/13 steps and so revealed nothing** — a guard that binds in ONE place looks like a
+converged solve everywhere else. If the runtime needs fixing, use a **coarse-to-fine step** (≈5% of levels
+while deep in the red, one level near the boundary) and check it lands in the same terminal state; do not
+lower the guard.
+⚠ **"Total losses" is therefore not a clean health metric** — it counts a dying tail, which the design *wants*,
+the same as an industry that cannot pay for itself. At 60 steps era 5 had £791k of its £900k gross loss on
+**stale tails** and exactly one loss-making *newest* tier (an excused shipyard). Losses **on newest tiers
+only** is what separates them.
+⚠ **Era 5 is the only scenario whose top two rungs are not both meant to be profitable**, which is why it needs
+so much more shrinking than any other. The placement rule gives `weight: 1` to the leading tier and to the one
+below; with `lead = [0,2,3,4,5,5]` those are the *leading* and *dominant* tiers everywhere else (+20% / +5%),
+but there is no tier 6, so at era 5 the partner slides down onto the **one-era-stale** rung and half the
+capacity starts at −13% to −23%. That is the ladder working, not failing — the defect was only that the
+scenario placed a dying rung at full scale and could not correct it.
+
 **⭐ HARD CONSTRAINT — THE INDUSTRIAL PRICE CEILING (§10.15).** No good that manufacturing can consume may
 reach **+75%** (the engine's 175% band edge). −75% is fine; +75% is fine for a purely consumer good. An
 input pinned at the ceiling means the market can no longer signal scarcity at all, so everything downstream
@@ -408,6 +450,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         placed, default 2; -1 restores the old always-present behaviour, §10.30),
                         ERA_NO_BUYER=1 (withhold an industry whose good has no buyer of any kind — built,
                         measured, DEFAULT OFF because it does not pay for itself, §10.32),
+                        ERA_SHRINK_LOSSMAKERS=0 (turn the loss-making manufacturing reduction off) and
+                        ERA_SHRINK_STEPS (its guard, default 2000 — a SAFETY NET, not a budget; the loop
+                        self-terminates, and era 5 needs 543 of them. §10.38),
                         ERA_CEIL_BOOST, ERA_CEIL_PM, ERA_JOINT, ERA_PROBE (the removed forward probe, kept
                         only so its damage can be re-measured — leave it off)
   econ_host.mjs         loads ui/econ.js + the generated ui/*.js under Node — supplies the state containers the

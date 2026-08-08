@@ -131,6 +131,49 @@ transcript rather than from data.
 
 ---
 
+## F45 — ⭐⭐ **GDP IS `52 × weekly VALUE ADDED`, MEASURED AGAINST THE GAME'S OWN PERSISTED SERIES.** It is NOT gross output, and the difference is not a constant — the gross:GDP ratio falls **48.5× → 36.7×** from 1836 to 1935 as production chains lengthen. This settles F29's open question
+
+**What it says.** The game's `gdp` is the market-price value of production **reduced by the value of
+goods used as inputs** — value added, on the production side only. Annual GDP is 52× the weekly figure.
+
+**Evidence.** The `gdp` series a savegame persists, read beside the *same* saves' building
+`input_goods` / `output_goods` (so the two sides come from one gamestate, not from two instruments):
+
+| melted vanilla gamestate | median GDP ÷ weekly value added |
+|---|---|
+| 1901 | **52.44** |
+| 1912 | **51.44** |
+| 1920 | **49.94** |
+
+Three independent gamestates landing on 52, 51 and 50 against a hypothesis of exactly 52. The drift
+below 52 in the later two is unexplained and small; it is not enough to prefer any other integer.
+
+**⚠ Gross output is a MOVING TARGET, which is the practical reason this mattered.** Gross double-counts
+every intermediate, so its ratio to GDP depends on how long the production chains are — measured
+**×48.5 in 1836 falling to ×36.7 in 1935**. Anything calibrated against gross output is calibrated
+against a quantity whose meaning changes over the very period the ladder spans.
+
+**⚠ Pops and trade are on neither side.** Value added is production-side: what buildings make minus what
+buildings consume. Pop demand is final consumption.
+
+**Reference shares of GDP, measured off a vanilla 1901 gamestate** — construction's goods bill as a share
+of that country's GDP: **FRA 20.1% · RUS 19.9% · USA 15.3% · GBR 14.1% · BEL 8.8% · JAP 4.5%.**
+
+**What it does NOT say.** It does not establish the *formula* the engine evaluates — only that value added
+× 52 reproduces the stored series to within ~4%. It says nothing about how GDP enters minting, prestige or
+any other consumer of it. And the 1836 gross:GDP figure comes from a different measurement basis than the
+1901–1920 ratios above; the two should not be combined into a single trend line.
+
+**Confidence** high for the definition (three gamestates, one hypothesis, no competing candidate within
+range); medium for the exact 52 (the observed 49.94–52.44 spread is real and unexplained).
+
+**What changed because of it.** `ui/econ.js` gained `scenarioValueAdded()` / `scenarioGDP()`; the era
+solver's **army (5%)** and **construction (15%)** budgets were rebased from gross output onto GDP — a
+different base as well as a different number; and the UI's scenario summary reports GDP and GDP per capita
+directly. Supersedes the "GDP proxy" language that stood in `setArmy()`.
+
+---
+
 ## F44 — ⭐⭐ THE WIKI'S FIVE FORMULAE, SCORED. Three confirm us (one of them settling a question we thought the wiki argued *against* us on), **one is refuted 32 of 32**, and the page's prose hands us **two things we did not have**
 
 **Source** `https://vic3.paradoxwikis.com/Needs`, page tagged `{{Version|1.13}}` — our game version. Read

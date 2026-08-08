@@ -445,6 +445,40 @@
         for(const g in r.out) outm[g] = (outm[g]||0) + r.out[g]; }
       return {in:inm, out:outm};
     }
+    // ⭐⭐ GDP — THE GAME'S OWN DEFINITION, MEASURED, NOT A PROXY.
+    //   annual GDP = 52 x weekly VALUE ADDED,  value added = building outputs - building INPUTS, at market
+    //   prices. The wiki states it ("the market price value of national production reduced by the value of
+    //   goods used as inputs"), and it is confirmed against the game's OWN persisted `gdp` series read out
+    //   of three vanilla melted savegames beside the same saves' building input_goods/output_goods:
+    //   median GDP / weekly value added = 52.44 (1901) · 51.44 (1912) · 49.94 (1920).
+    // ⚠ IT IS NOT GROSS OUTPUT. Gross double-counts every intermediate, so its ratio to GDP FALLS as
+    //   production chains lengthen — measured x48.5 in 1836 down to x36.7 in 1935. Anything calibrated
+    //   against gross output is calibrated against a moving target; that is why this exists.
+    // ⚠ POPS AND TRADE ARE NOT IN IT. Value added is a production-side quantity: what buildings make minus
+    //   what buildings consume. Pop demand is final consumption and belongs on neither side.
+    // ⭐ THE SCENARIO'S SHAPE — every building it contains, in the mod's seven standard sectors.
+    // ONE classifier, shared by the UI summary and anything else that needs it, so "manufacturing from
+    // raw inputs" cannot come to mean two things. Per TIER, not per industry: a ladder legitimately
+    // crosses from raw to manufactured inputs as it modernises.
+    // ⚠ EVERY building with a non-zero count lands somewhere. `other` is a real sector (government,
+    // ownership, trade, construction, urban centres, universities), not a bin for things we failed to
+    // classify — so the result also reports `otherGroups`, the vanilla building_groups that landed
+    // there, which is what you read to check nothing fell through by accident.
+    // ⚠ Infrastructure (port/railway/power) is classified by the SAME input test as any other tier
+    // rather than getting a sector of its own: power eats coal and lands in raw, railway eats engines
+    // and lands in manufactured. That is a deliberate choice, not an oversight.
+    const SCEN_SECTORS = ['subsistence','agriculture','extraction','mfg_raw','mfg_mfg','military','other'];
+    const AGRI_CATS = { farms:1, plantations:1, ranching:1, fishing_whaling:1 };
+    const EXTRACT_CATS = { mining:1, logging:1, oil:1, rubber:1, gold_fields:1 };
+    function scenarioValueAdded(agg){                       // £/week
+      const a = agg || scenarioAggregates();
+      let v = 0;
+      for (const g in S.PRICES) v += (((a.outAgg[g]||0) - (a.inAgg[g]||0)) * mval1(g));
+      return v;
+    }
+    function scenarioGDP(agg){ return scenarioValueAdded(agg) * WEEKS_PER_YEAR; }   // £/year
+    // one good's unit price at the CURRENT scenario prices
+    function mval1(g){ return (S.PRICES[g]||0) * ((S.thresholds[g] ?? 100)/100); }
     function scenarioAggregates(){
       const inAgg = {}, outAgg = {};
       S.IND.forEach(i => i.tiers.forEach(t => { const n = (S.BLDNUM[t.key]||0)*thruMult(t.key); if(!n) return;
@@ -606,6 +640,7 @@
       solOf, popTotal, depRatio, slaveRealShare, slaveBasketMult,
       popSpend, slaveSpend, allSpend, needSplit, spendToGoods,
       thruMult, tierGoodsIO, scenarioAggregates, scenarioBuySell, demandDetail,
+      scenarioValueAdded, scenarioGDP,
       priceMultPct, syncPricesFromOrders,
       SLAVE_WORK_RATIO, SLAVE_SUBSISTENCE_MULT,
     };
@@ -643,6 +678,48 @@
   // destroy their own price and no margin target is meaningful.
   const LADDER_LOSS_FLOOR = { shipyard: -0.10, shipyard_steam: -0.10 };
 
+  // ⭐ THE SCENARIO'S SHAPE — every building it contains, in the mod's seven standard sectors.
+  // A PURE function taking callbacks, exactly like ladderFaults below and for exactly the same reason:
+  // builder.html carries its own copy of the model's state, so a function that closed over `S` here
+  // would be unreachable from the sheet and would end up implemented twice. "Manufacturing from raw
+  // inputs" must not come to mean two things.
+  // ⚠ EVERY building with a non-zero count lands somewhere. `other` is a REAL sector (government,
+  // ownership, trade, construction, urban centres, universities), not a bin for unclassified things —
+  // so the result also reports `otherGroups`, the vanilla building_groups that landed there, which is
+  // what you read to confirm nothing fell through by accident.
+  // ⚠ Infrastructure (port/railway/power) is classified by the SAME input test as any other tier rather
+  // than getting a sector of its own: power eats coal and lands in raw, railway eats engines and lands
+  // in manufactured. Deliberate, not an oversight.
+  const SCEN_SECTORS = ['subsistence','agriculture','extraction','mfg_raw','mfg_mfg','military','other'];
+  const AGRI_CATS = { farms:1, plantations:1, ranching:1, fishing_whaling:1 };
+  const EXTRACT_CATS = { mining:1, logging:1, oil:1, rubber:1, gold_fields:1 };
+  function scenarioSummary(industries, opts) {
+    const o = opts || {};
+    const countOf = o.countOf, outGood = o.tierOut, refs = o.refBuildings || (() => []);
+    const groupOf = o.groupOf || (() => ''), isSub = o.isSubsistence || (() => false);
+    const sectors = {}; for (const k of SCEN_SECTORS) sectors[k] = { levels: 0, types: 0 };
+    const otherGroups = {};
+    const manu = new Set();
+    for (const i of industries) for (const t of i.tiers) manu.add(outGood(i, t));
+    for (const i of industries) for (const t of i.tiers) {
+      const n = countOf(t) || 0; if (!(n > 0)) continue;
+      const k = Object.keys(t.inputs || {}).some(g => manu.has(g)) ? 'mfg_mfg' : 'mfg_raw';
+      sectors[k].levels += n; sectors[k].types++;
+    }
+    for (const b of refs()) {
+      const n = (o.countOfRef ? o.countOfRef(b) : 0) || 0; if (!(n > 0)) continue;
+      const grp = groupOf(b) || '', cat = GRPCAT[grp] || '';
+      let k;
+      if (isSub(b)) k = 'subsistence';
+      else if (AGRI_CATS[cat]) k = 'agriculture';
+      else if (EXTRACT_CATS[cat]) k = 'extraction';
+      else if (cat === 'military_consumers' || /^bg_(army|conscription|naval)/.test(grp)) k = 'military';
+      else { k = 'other'; otherGroups[grp] = (otherGroups[grp] || 0) + n; }
+      sectors[k].levels += n; sectors[k].types++;
+    }
+    return { sectors, order: SCEN_SECTORS, otherGroups };
+  }
+
   function ladderFaults(industries, opts) {
     const o = opts || {};
     const countOf = o.countOf, profitOf = o.profitOf;
@@ -676,5 +753,5 @@
 
   return { createEcon, WAGE_WEIGHT, WAGE_PROFS, WEEKS_PER_YEAR, AIVAL_DEFAULT,
            CLASSES, EMPTY_POPS, SOL_SPREAD, UNQUALIFIED_PROFS, GRPCAT, BCM, round,
-           ladderFaults, LADDER_EXCUSED, LADDER_LOSS_FLOOR };
+           ladderFaults, scenarioSummary, LADDER_EXCUSED, LADDER_LOSS_FLOOR };
 });

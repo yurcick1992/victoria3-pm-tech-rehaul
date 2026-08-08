@@ -296,6 +296,19 @@
   .ind-hd{display:flex;align-items:center;gap:6px}
   .ind-hd .spacer{flex:1}
   .minibtn{font-size:11px;padding:1px 6px;line-height:1.6}
+  /* scenario summary: what the market IS, between the pops that staff it and the prices it produces */
+  .presetbar .scensum{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch;margin-top:10px;
+    padding-top:9px;border-top:1px solid var(--line)}
+  .presetbar .scensum .plbl{align-self:center}
+  .secchip{display:inline-flex;flex-direction:column;gap:0;background:var(--panel2);
+    border:1px solid var(--line);border-radius:7px;padding:3px 9px;min-width:96px}
+  .secchip .sn{font-size:9.5px;text-transform:uppercase;letter-spacing:.3px;color:var(--muted);white-space:nowrap}
+  .secchip .sv{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+  .secchip .st{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .secchip.zero{opacity:.4}
+  .secchip.tot{border-color:#3d4a5c}
+  .secchip.gdp{border-color:var(--good)}
+  .secchip.gdp .sv{color:var(--good)}
   /* RED = writes the RECIPE BOOK (emitted to the game). Everything else only moves the scenario. */
   button.recipe{background:#3d1717;border-color:#8a3030;color:#ffc2c2}
   button.recipe:hover:not(:disabled){background:#521e1e;border-color:#b04040}
@@ -1326,6 +1339,7 @@ function render(){
   // here for a full re-render (page load, book switch, preset), and there for a live field edit.
   refreshRecipeButtons();
   refreshPresetButtons();
+  renderScenSummary();
 }
 // ---------- workforce panel: the global base wage (weekly ↔ yearly) + per-profession weekly wages ----------
 function round2(x){ return Math.round(x*100)/100; }
@@ -1454,7 +1468,8 @@ function presetBarHTML(){
     <div class="pknobs clsrow"><span class="plbl">Population</span>${popFields}
       <span class="rowend muted">= <b id="popTotal">${fmtPop(popTotal())}</b> total</span></div>
     ${profPanelHTML()}
-    <div id="workforcePanel"></div></div>`;
+    <div id="workforcePanel"></div>
+    <div id="scenSummary"></div></div>`;
 }
 // ---------- POPULATION BY PROFESSION ----------------------------------------------------------------
 // The class row above is three wealth strata plus peasants and slaves, which is the unit CONSUMPTION is
@@ -1486,6 +1501,64 @@ function popsFromProfessions(){
   for(const p in POPPROF){ const st=PROF_STRATUM[p]; if(st) s[st]+=(POPPROF[p]||0); }
   POPS={...POPS, upper:Math.round(s.upper), middle:Math.round(s.middle), lower:Math.round(s.lower),
         peasants:Math.round(POPPROF.peasants||0), slaves:Math.round(POPPROF.slaves||0)};
+}
+// SCENARIO SUMMARY — what this market IS, in one line, plus its GDP. Sits between the population and the
+// prices because it is the bridge: the pops above staff these buildings, and the buildings below set the
+// prices. Counts LEVELS (the unit everything else in the sheet is denominated in), with the number of
+// distinct building TYPES in brackets.
+const SEC_LBL = { subsistence:'subsistence', agriculture:'agriculture, fishing &amp; whaling',
+  extraction:'extraction &amp; logging', mfg_raw:'mfg — raw inputs', mfg_mfg:'mfg — mfg inputs',
+  military:'military', other:'other non-economic' };
+const SEC_TIP = {
+  subsistence: 'Subsistence farms/pastures/paddies. Not placed by history — derived from the peasants (see CLAUDE.md), and their goods are workforce-scaled, so this is the STAFFED-level equivalent.',
+  agriculture: 'Farms, plantations, ranching, fishing and whaling. Untiered — vanilla buildings, outside the tiering scope.',
+  extraction: 'Mines, logging camps, oil, rubber, gold. Untiered.',
+  mfg_raw: 'Our tier buildings whose recipe consumes NO good our own ladder makes.',
+  mfg_mfg: 'Our tier buildings that consume at least one good our ladder makes — classified per TIER, since a ladder crosses the line as it modernises. Port, railway and power fall here or in raw by the same test rather than getting a sector of their own.',
+  military: 'Barracks, conscription and logistics centres. They employ the army but carry NO goods — unit upkeep sits on the battalions.',
+  other: 'Government, universities, trade centres, manor houses, financial districts, construction and urban centres. A real sector, not a leftover bin.',
+};
+function renderScenSummary(){
+  const el = document.getElementById('scenSummary'); if(!el) return;
+  // the ONE definition lives in ui/econ.js; this hands it the sheet's own state, exactly as the
+  // ladder-check panel does with ladderFaults.
+  const s = PMECON.scenarioSummary(IND, {
+    countOf: t => BLDNUM[t.key] || 0,
+    tierOut: (i, t) => tierOut(i, t),
+    refBuildings, countOfRef: b => BLDNUM[b] || 0,
+    groupOf: b => (VAN.buildings[b] || {}).group || '',
+    isSubsistence: isSubsistenceBuilding,
+  });
+  // GDP = 52 x weekly value added, at the CURRENT scenario prices
+  const agg = scenarioAggregates();
+  let va = 0; for (const g in PRICES) va += (((agg.outAgg[g] || 0) - (agg.inAgg[g] || 0)) * (PRICES[g] || 0) * ((thresholds[g] ?? 100) / 100));
+  s.valueAdded = va; s.gdp = va * 52;
+  // ⚠ SEPARATORS AND A UNIT ON EVERY NUMBER. Nine digits in a row do not read, and a bare second
+  // number is a riddle — the small line is the count of distinct building TYPES, which was only ever
+  // said in a tooltip nobody has reason to open.
+  const sep = n => Math.round(n).toLocaleString('en-GB');
+  const cells = s.order.map(k=>{
+    const v = s.sectors[k];
+    return `<span class="secchip${v.levels?'':' zero'}" title="${esc(SEC_TIP[k]||'')}">`
+      + `<span class="sn">${SEC_LBL[k]}</span><span class="sv">${sep(v.levels)}</span>`
+      + `<span class="st">${v.types} type${v.types===1?'':'s'}</span></span>`; }).join('');
+  const tot = s.order.reduce((x,k)=>x+s.sectors[k].levels,0);
+  const totTypes = s.order.reduce((x,k)=>x+s.sectors[k].types,0);
+  // per head — on TOTAL population, with the non-peasant figure alongside because the two answer
+  // different questions and our scenarios move the peasant share a long way between eras.
+  const pop = CLASSES.reduce((x,c)=>x+(POPS[c]||0),0);
+  const nonPeas = pop - (POPS.peasants||0) - (POPS.slaves||0);
+  const pc  = pop > 0 ? s.gdp/pop : 0;
+  const pcn = nonPeas > 0 ? s.gdp/nonPeas : 0;
+  el.innerHTML = `<div class="scensum"><span class="plbl">summary</span>`
+    + cells
+    + `<span class="secchip tot" title="Every building level in the scenario, all sectors."><span class="sn">total levels</span><span class="sv">${sep(tot)}</span><span class="st">${totTypes} types</span></span>`
+    + `<span class="secchip gdp" title="GDP = 52 x weekly VALUE ADDED (every building's output value minus its input value, at the CURRENT scenario prices). The game's own definition — confirmed against three vanilla savegames' persisted gdp series, median ratio 52.44 / 51.44 / 49.94. NOT gross output, which double-counts intermediates and runs 1.7-2.5x higher.">`
+    + `<span class="sn">GDP / year</span><span class="sv">£${sep(s.gdp)}</span>`
+    + `<span class="st">£${sep(s.valueAdded)}/wk added</span></span>`
+    + `<span class="secchip gdp" title="Annual GDP divided by the scenario's population. The smaller line divides by the NON-PEASANT population instead (excluding peasants and slaves) — the more comparable figure across eras, because the peasant share falls from 80% to 4% and drags the headline number with it.">`
+    + `<span class="sn">GDP / capita</span><span class="sv">£${pc.toFixed(2)}</span>`
+    + `<span class="st">£${pcn.toFixed(2)} non-peasant</span></span></div>`;
 }
 function profPanelHTML(){
   // ⚠ EVERY profession, ALWAYS — never filtered to the ones that happen to be non-zero. A field that
@@ -1677,6 +1750,11 @@ function updateScenario(){
     updateComputed();               // tier cells + (via refreshScenPrices) the price column
     refBuildings().forEach(b=>{ if(document.getElementById(`refbe_${b}`)) refreshRefEconCells(b); });   // reference rows
   } else refreshScenPrices();       // locked: balance moved, so the price bar/colour may still change
+  // ⚠ AFTER the price sync, never before. GDP is value added at the CURRENT prices, and in auto mode the
+  // prices are recomputed from the order book a few lines up — rendering first showed the sector counts
+  // correctly but a GDP one update stale, which only surfaces when you undo an edit and the number does
+  // not come back.
+  renderScenSummary();
 }
 // price lock toggle + reset, shared by the delegated handlers below.
 function setPricesLocked(locked){

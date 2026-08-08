@@ -42,6 +42,13 @@ const pout = new Map();
 let section = '', depth = 0;
 let curState = null, curCountry = null, curId = null;
 let bState = null, bBuilding = null, bLevels = 0, side = '', inGoods = false, curGood = null, inPrestige = false;
+// ⭐ --by-building keeps the BUILDING TYPE in the key instead of summing it away. `bBuilding` was already
+// parsed and then discarded, so every flow was attributed to a state and a good but never to what produced
+// it — which makes "what share of GDP is construction, army, navy?" unanswerable from the output even
+// though the melt holds the answer. Opt-in: it changes the row granularity, and the default shape is what
+// the pop-split scorers consume.
+const BYBLD = process.argv.slice(2).includes('--by-building');
+const gkey = () => (BYBLD ? bState + '|' + (bBuilding || '?') + '|' + curGood : bState + '|' + curGood);
 // ⭐ A SAVE GIVES EVERY COUNTRY ITS OWN `market` OBJECT and records no membership list, so grouping states
 // by that raw id SPLITS a market that contains subjects — Britain lost STATE_MADRAS's 5 801 tea that way,
 // exactly the gap against its own telemetry. A subject shares its overlord's market unless it holds a
@@ -117,12 +124,12 @@ for await (const line of rl) {
         if (t === '}') inPrestige = false;
         else if (side === 'out' && curGood && bState !== null && /^[\d.\- ]+$/.test(t)) {
           const v = t.split(/\s+/).reduce((a, b) => a + (+b || 0), 0);
-          if (v) { const k = bState + '|' + curGood; pout.set(k, (pout.get(k) || 0) + v); }
+          if (v) { const k = gkey(); pout.set(k, (pout.get(k) || 0) + v); }
         }
       } else {
         const vm = /^value=([\-\d.]+)$/.exec(t);
         if (vm && curGood && bState !== null) {
-          const map = side === 'in' ? inp : outp, k = bState + '|' + curGood;
+          const map = side === 'in' ? inp : outp, k = gkey();
           map.set(k, (map.get(k) || 0) + +vm[1]);
         }
       }
@@ -151,12 +158,13 @@ const marketRoot = c => {
   while (cur != null && !ownMarket.has(cur) && overlord.has(cur) && hops++ < 16) cur = overlord.get(cur);
   return countryMarket.get(cur) ?? countryMarket.get(c) ?? '';
 };
-const rows = ['state\tregion\tcountry\ttag\tmarket\tgood\tinput\toutput\tprestige_out'];
+const rows = [ (BYBLD ? 'state	region	country	tag	market	building	good	input	output	prestige_out'
+                      : 'state	region	country	tag	market	good	input	output	prestige_out') ];
 const keys = new Set([...inp.keys(), ...outp.keys()]);
 for (const k of [...keys].sort()) {
-  const [s, g] = k.split('|');
+  const parts = k.split('|'); const s = parts[0], b = BYBLD ? parts[1] : null, g = parts[parts.length - 1];
   const c = stateCountry.get(+s);
-  rows.push([s, stateRegion.get(+s) ?? '', c ?? '', countryTag.get(c) ?? '', marketRoot(c), g,
+  rows.push([s, stateRegion.get(+s) ?? '', c ?? '', countryTag.get(c) ?? '', marketRoot(c), ...(BYBLD ? [b] : []), g,
   (inp.get(k) || 0).toFixed(3), (outp.get(k) || 0).toFixed(3), (pout.get(k) || 0).toFixed(3)].join('\t'));
 }
 if (TSV) { writeFileSync(TSV, rows.join('\n') + '\n'); console.log(`${rows.length - 1} state-good rows -> ${TSV}`); }

@@ -269,7 +269,10 @@ const BATTALIONS_PER_BARRACK = 1;
 // 10% is roughly double vanilla's industrial end, which is the intended direction (modernising has to be
 // BUILT, and raising the demand for capital is the mod's whole point), and it is written down here rather
 // than discovered in the numbers.
-const CONSTRUCTION_GDP_SHARE = +(process.env.ERA_CONSTRUCTION_SHARE || 0.10);
+// 15% of GDP (value added), raised from 10% of GROSS OUTPUT — a different base as well as a different
+// number. MEASURED off a vanilla 1901 gamestate, construction's goods bill as a share of that country's
+// GDP: FRA 20.1% · RUS 19.9% · USA 15.3% · GBR 14.1% · BEL 8.8% · JAP 4.5%. 15% sits with the large powers.
+const CONSTRUCTION_GDP_SHARE = +(process.env.ERA_CONSTRUCTION_SHARE || 0.15);
 // THE METHOD IS HARDCODED PER ERA. It cannot be chosen by profit (no priced output) and it should not be
 // left to drift; a construction sector's frame material is a fact about the era, not a market outcome.
 // ⚠ ERA 4 IS STEEL FRAME, NOT ARC WELDED. Vanilla gates `pm_arc_welded_buildings` on the `arc_welding`
@@ -301,6 +304,31 @@ const CONSTRUCTION_BLD = 'building_construction_sector';
 const PROFIT_CAP_ON = process.env.ERA_PROFIT_CAP !== '0';
 const PROFIT_CAP = +(process.env.ERA_PROFIT_CAP_PCT || 0.25);
 const PROFIT_CAP_STEPS = +(process.env.ERA_PROFIT_CAP_STEPS || 400);
+// One-level cuts the loss-making reduction may make per era. Each costs a full re-converge, so this is a
+// runtime knob as much as a behavioural one.
+//
+// ⚠⚠ IT IS A SAFETY NET, NOT A BUDGET — AND AT 60 IT WAS A BUDGET. The loop's real stopping condition is
+// `if (!worst) break`: it terminates on its own once nothing is losing money above one level. At 60 it
+// never got there in era 5, which is a 26k-level economy — it stopped at step 60 of the 543 that era
+// wants, having reached only the second entry of a thirteen-industry hand-off. Measured, era 5 alone:
+//
+//     steps        60          400        2000 (converged at 543)
+//     losses    £643k/wk    £137k/wk        £17k/wk
+//     % of net     10%          2%             0%
+//     losers       26          27             21   (profitable 53 -> 52 -> 58)
+//     illogical  11 (8)      11 (8)          9 (6)
+//
+// It also cost 0.6% of GDP and £100k/wk of net profit to remove £626k/wk of losses, and dropped two
+// illogicality points (era 5's `port` inversion and `railway` staying profitable two eras stale) — both
+// caused by stale rungs the reduction had not been allowed to reach.
+// ⚠ ERAS 0-4 NEVER REVEALED THIS: they use 0/4/2/2/13 steps, so the guard binds in exactly one era and
+// nothing else in the report moved when it was raised. A guard that binds in one place looks like a
+// converged solve everywhere else.
+// The cost is runtime — era 5 now does ~543 `contSettle` calls instead of 60 (six-era run ~5min -> ~12min).
+// If that needs fixing, do it with a COARSE-TO-FINE step (cut ~5% of levels while deep in the red, one
+// level near the boundary), not by lowering this: a coarse step can overshoot the hand-off point, so it
+// must be checked to land in the same terminal state.
+const SHRINK_STEPS = +(process.env.ERA_SHRINK_STEPS || 2000);
 // The futility guard: stop growing a producer when a step did not actually lower its margin (its good is
 // pinned at the 25% price floor, so supply cannot move it). Separately revertable — `ERA_PROFIT_CAP_FUTILITY=0`
 // restores the un-guarded behaviour, which is worth being able to reproduce: without it `tea_plantation`
@@ -1113,6 +1141,12 @@ function buildScenario(eIx) {
   const dropped = new Set();
   const fixedRef = { ...FIXED_REF_COUNT };   // stated counts; shrink one level at a time when unprofitable
   const minCount = {};          // tier key -> floor imposed by the post-solve free-entry tuner
+  // ⚠ AND A CEILING, which is what makes a reduction stick. Building counts are the DEPENDENT variable
+  // here: every settle rescales them all so total employment equals the job pool the population provides
+  // (full employment by construction). So cutting an industry without capping it is a no-op — the next
+  // settle grows it straight back to refill the pool. With the cap the labour goes elsewhere instead,
+  // which is the whole point: this REDISTRIBUTES the workforce, it cannot shrink it.
+  const maxCount = {};          // tier key -> ceiling imposed by the loss-making reduction below
   const isRawProducer = b => {
     if (SKIP_TARGET_BLD.has(b)) return false;
     const c = catOf(b);
@@ -1129,7 +1163,8 @@ function buildScenario(eIx) {
         const base = r.fixed != null ? r.fixed : lvl(s * r.weight);
         // `minCount` is the POST-SOLVE TUNER's floor (free entry, below). During the solve it is empty, so
         // this is a no-op; afterwards it holds counts the tuner added and the solver must not undo.
-        S.BLDNUM[r.t.key] = Math.max(base, minCount[r.t.key] || 0);
+        S.BLDNUM[r.t.key] = Math.min(Math.max(base, minCount[r.t.key] || 0),
+                                     maxCount[r.t.key] != null ? maxCount[r.t.key] : Infinity);
       }
     }
     for (const b of refProducers) {
@@ -1160,7 +1195,7 @@ function buildScenario(eIx) {
   let popBoost = 1;
   const infeasible = new Map();   // industry id -> {got, tgt} where even the O/4 recipe misses the target
   capped.clear();
-  let jobs = 0, popNonPeasant = 0, peasants = 0, gdp = 0, POPPROF = {};
+  let jobs = 0, popNonPeasant = 0, peasants = 0, gdp = 0, grossOut = 0, POPPROF = {};
   // ⚠ advanceNonMarketPMs runs inside settle(), not once at the start: addSupport() places the construction
   // sector and the other non-selling buildings on every settle, and optimisePMs can evict a selection back
   // to a PMG's first (most primitive) entry. Anywhere less often and the wooden-buildings default creeps
@@ -1180,28 +1215,55 @@ function buildScenario(eIx) {
   // would leave the shipped scenario nowhere near its stated share. Recomputing costs nothing and makes
   // staleness impossible by construction. The ACHIEVED share is reported per era so this is checkable
   // rather than assumed.
+  // Construction's own goods bill as a share of GDP — the SAME base vanilla's figures were measured on,
+  // which means GDP net of construction's own drag (it consumes goods and produces no priced good).
+  // ⭐ TWO PROFITABILITY TOTALS, in £/week, over the ECONOMIC industries only — our tiered buildings plus
+  // the raw producers, excluding shipyards and art academies (both carry targets they cannot meet by
+  // construction) and excluding everything non-economic (military, government, ownership, construction,
+  // urban centres, subsistence), which earns nothing by design.
+  //   net   — every building's profit summed, losses included. "Is this economy making money at all?"
+  //   loss  — the losers alone. Two economies with the same net can hide very different amounts of it.
+  // Reported, not targeted: they say what the illogicality count cannot, which is HOW BIG the failures are
+  // rather than how many industries have one.
+  function profitTotals() {
+    let net = 0, loss = 0, winners = 0, losers = 0;
+    for (const i of S.IND) {
+      if (PMECON.LADDER_EXCUSED.has(i.id)) continue;     // shipyards + art academies: targets they cannot meet
+      if (i.follows_be === false) continue;
+      for (const t of i.tiers) {
+        const n = S.BLDNUM[t.key] || 0; if (!(n > 0)) continue;
+        const p = n * E.weeklyProfit(i, t); if (!isFinite(p)) continue;
+        net += p; if (p < 0) { loss -= p; losers++; } else winners++;
+      }
+    }
+    for (const b of refProducers) {
+      const n = S.BLDNUM[b] || 0; if (!(n > 0) || !isRawProducer(b)) continue;
+      const ec = E.refEcon(b); if (!ec || ec.p == null) continue;   // refEcon already gives weekly £ at thresholds
+      const p = n * ec.p;
+      if (!isFinite(p)) continue;
+      net += p; if (p < 0) { loss -= p; losers++; } else winners++;
+    }
+    return { net, loss, winners, losers };
+  }
+  function constrCost() {
+    const n = S.BLDNUM[CONSTRUCTION_BLD] || 0;
+    return n * E.thruMult(CONSTRUCTION_BLD) * E.goodsVal(E.selGoods(E.refSel(CONSTRUCTION_BLD)).in, true);
+  }
   function constructionShare() {
-    const n = S.BLDNUM[CONSTRUCTION_BLD] || 0; if (!n) return 0;
-    const cost = n * E.thruMult(CONSTRUCTION_BLD) * E.goodsVal(E.selGoods(E.refSel(CONSTRUCTION_BLD)).in, true);
-    let gross = 0;
-    for (const i of S.IND) for (const t of i.tiers) { const c = S.BLDNUM[t.key] || 0; if (c) gross += c * E.thruMult(t.key) * E.outputValue(i, t, true); }
-    for (const b of E.refBuildings()) { const c = S.BLDNUM[b] || 0; if (!c || b === CONSTRUCTION_BLD) continue;
-      gross += c * E.thruMult(b) * E.goodsVal(E.selGoods(E.refSel(b)).out, true); }
-    return gross > 0 ? cost / gross : 0;
+    const gdpNow = E.scenarioValueAdded();          // already net of construction
+    return gdpNow > 0 ? constrCost() / gdpNow : 0;
   }
   function sizeConstruction() {
     if (!S.VAN.buildings[CONSTRUCTION_BLD]) return;
-    let gross = 0;
-    for (const i of S.IND) for (const t of i.tiers) { const c = S.BLDNUM[t.key] || 0; if (c) gross += c * E.thruMult(t.key) * E.outputValue(i, t, true); }
-    for (const b of E.refBuildings()) { const c = S.BLDNUM[b] || 0; if (!c || b === CONSTRUCTION_BLD) continue;
-      gross += c * E.thruMult(b) * E.goodsVal(E.selGoods(E.refSel(b)).out, true); }
-    // ⚠ Compute the goods bill directly rather than via refEcon(): ui/econ.js's refEcon does NOT return
-    // `Ith`/`Oth` (builder.html's copy of the same function does — the fork noted in CLAUDE.md), so reading
-    // `per.Ith` here silently produced `undefined`, a zero cost, and a scenario with NO construction sector
-    // at all. Depending on the return shape of the forked half of the model is not worth the brevity.
+    // ⚠ SOLVE, DON'T ASSIGN. The target is a share of GDP, and construction is IN GDP as a negative — its
+    // goods bill reduces value added. So `bill = s x (V0 - bill)`, i.e. bill = s x V0 / (1 + s), where V0
+    // is value added EXCLUDING construction. Setting bill = s x V0 instead overshoots, and the reported
+    // share then never matches the target it was sized to — which is exactly what it did.
+    const v0 = E.scenarioValueAdded() + constrCost();     // add back what construction currently costs
     const cost = E.thruMult(CONSTRUCTION_BLD) * E.goodsVal(E.selGoods(E.refSel(CONSTRUCTION_BLD)).in, true);
-    if (!(cost > 0) || !(gross > 0)) return;
-    S.BLDNUM[CONSTRUCTION_BLD] = lvl(CONSTRUCTION_GDP_SHARE * gross / cost);
+    if (!(cost > 0) || !(v0 > 0)) return;
+    const bill = CONSTRUCTION_GDP_SHARE * v0 / (1 + CONSTRUCTION_GDP_SHARE);
+    S.BLDNUM[CONSTRUCTION_BLD] = lvl(bill / cost);
   }
 
   // COUNTS CHASE THE PRICE PATH, not the margin. A good trading ABOVE its target is under-supplied, so
@@ -1505,6 +1567,40 @@ function buildScenario(eIx) {
       conv = contSettle(20, 0.15);
     }
   }
+  // ---- LOSS-MAKING MANUFACTURING SHRINKS ------------------------------------------------------------
+  // Raw producers already have this (§10.18) and are DROPPED outright; manufacturing had no downward rule
+  // at all, so a loss-maker simply sat at whatever size the job-pool rescale gave it.
+  // Converge, take the tier losing money by the LARGEST margin, cut one level, CAP it there so the
+  // rescale cannot undo it, re-converge, look again. A tier stops at ONE level — the industry is never
+  // deleted, because "unprofitable" and "absent" are different statements and §10.17 stops scoring a
+  // tier at zero anyway. Revertable: ERA_SHRINK_LOSSMAKERS=0.
+  const SHRINK_ON = process.env.ERA_SHRINK_LOSSMAKERS !== '0';
+  const shrunk = {};
+  if (SHRINK_ON) {
+    for (let guard = 0; guard < SHRINK_STEPS; guard++) {
+      conv = contSettle(20, 0.15);
+      let worst = null, worstP = 0;
+      for (const p of placement) {
+        if (p.ind.follows_be === false) continue;
+        for (const r of p.rows) {
+          const t = r.t, n = S.BLDNUM[t.key] || 0;
+          if (!(n > 1) || r.fixed != null) continue;     // never below one level; hand-placed stay put
+          // ⚠ A SHIPYARD AT −30% IS BREAKING EVEN. None of its income from naval ship construction is
+          // modelled, which is why every target it has carries TG.shipyard_penalty (−30pp). The same
+          // deduction has to apply HERE, or the rule reads a shipyard as the worst loss-maker in the
+          // economy at a margin that is, for a shipyard, par — and cuts it first every single era.
+          // Comparisons use the handicapped figure too, so a −35% shipyard ranks as −5%.
+          const tp = E.TPthr(p.ind, t) / 100 - (SHIP_INDUSTRIES.has(p.ind.id) ? TG.shipyard_penalty : 0);
+          if (isFinite(tp) && tp < 0 && tp < worstP) { worst = t; worstP = tp; }
+        }
+      }
+      if (!worst) break;
+      maxCount[worst.key] = Math.max(1, Math.floor((S.BLDNUM[worst.key] || 1) - 1));
+      shrunk[worst.key] = (shrunk[worst.key] || 0) + 1;
+    }
+    conv = contSettle(30, 0.15);
+  }
+
   // ---- POST-SOLVE SCENARIO TUNER: free entry ---------------------------------------------------------
   // ⚠ THIS IS NOT PART OF THE SOLVE. The solve is finished by this point — recipes, PM selections and
   // volumes are FINAL and must not move. The tuner adjusts one thing only, BUILDING COUNTS, and re-prices
@@ -1780,10 +1876,19 @@ function buildScenario(eIx) {
     // GDP proxy: the value of everything the market's buildings produce, at this era's prices. It is a
     // GROSS-output proxy, not value added — stated rather than hidden, because 5% of GDP means nothing
     // without saying which GDP.
-    gdp = 0;
-    for (const i of S.IND) for (const t of i.tiers) { const c = S.BLDNUM[t.key] || 0; if (c) gdp += c * E.outputValue(i, t, true); }
+    // ⚠ GDP IS VALUE ADDED, NOT GROSS OUTPUT — measured; see ui/econ.js's scenarioGDP.
+    // `gdp` here stays WEEKLY because every budget below it is a weekly goods bill. A share of ANNUAL GDP
+    // is the same number: 5% of (52 x weekly VA) spent over 52 weeks is 5% of weekly VA, so the 52 cancels
+    // and the percentage can be read straight off vanilla's own figures.
+    // REFERENCE, measured off a vanilla 1901 gamestate as a share of that country's GDP:
+    //   army goods bill  GBR 1.8% · USA 0.5% · FRA 4.6% · RUS 3.4% · BEL 2.1% · JAP 2.3%
+    // ⚠ Those are LOGISTICS ONLY — barracks and conscription centres carry no goods at all (unit upkeep
+    // sits on the battalions), so vanilla's true military share is higher by whatever the units eat.
+    gdp = E.scenarioValueAdded();
+    grossOut = 0;
+    for (const i of S.IND) for (const t of i.tiers) { const c = S.BLDNUM[t.key] || 0; if (c) grossOut += c * E.outputValue(i, t, true); }
     for (const b of E.refBuildings()) { const c = S.BLDNUM[b] || 0; if (!c) continue;
-      gdp += c * E.goodsVal(E.selGoods(E.refSel(b)).out, true); }
+      grossOut += c * E.goodsVal(E.selGoods(E.refSel(b)).out, true); }
     const budget = gdp * ARMY_GDP_SHARE;
     const mix = ARMY_MIX[era] || ARMY_MIX[5];
     let unitCost = 0;
@@ -1839,7 +1944,8 @@ function buildScenario(eIx) {
 
   return { eIx, era, jobs, gdp, peasants, popNonPeasant, scaleOf, pmResult, share, gross, popBoost,
            jointDrift, jointDriftGood, jointDriftN, pmSettled,
-           constrShare: constructionShare(), constrLevels: S.BLDNUM[CONSTRUCTION_BLD] || 0,
+           constrShare: constructionShare(), constrLevels: S.BLDNUM[CONSTRUCTION_BLD] || 0, gross: grossOut, shrunk,
+           profit: profitTotals(),
            popProf: { ...POPPROF },
            tuned: { ...tuned }, capBlocked: new Set(capBlocked), fixedRef: { ...fixedRef },
            modelOnlyPlaced: (() => { let n = 0, tot = 0;
@@ -1964,7 +2070,7 @@ for (let e = 0; e < FIT.eras.length; e++) {
   console.log(`    buildings ${fmtN(levels)} levels (${fmtN(subs)} subsistence, ${fmtN(S.BLDNUM.building_urban_center || 0)} urban centres)  jobs ${fmtN(meta.jobs)}`);
   const milS = militaryProfessionSplit(meta.era);
   const milPm = MIL_SPLIT_PM || '(none)';
-  console.log(`    GDP proxy £${fmtN(Math.round(meta.gdp))}/wk   army ${fmtN(Object.values(S.UNITNUM).reduce((a, c) => a + c, 0))} battalions at ${Math.round(ARMY_GDP_SHARE * 100)}% of it`
+  console.log(`    GDP £${fmtN(Math.round(meta.gdp * 52))}/yr (value added x52; gross output £${fmtN(Math.round(meta.gross))}/wk)   army ${fmtN(Object.values(S.UNITNUM).reduce((a, c) => a + c, 0))} battalions at ${Math.round(ARMY_GDP_SHARE * 100)}% of GDP`
     + `, split ${Object.entries(milS).map(([p, v]) => p + ' ' + Math.round(v * 100) + '%').join(' / ')} by ${milPm.replace(/^pm_/, '')}`);
   const floored = hits.filter(h => h.floored);
   console.log(`    PROFIT TARGETS at the realised prices: ${onTgt}/${scored.length} within 8pp, mean |off| ${(meanOff * 100).toFixed(1)}pp`
@@ -2091,7 +2197,18 @@ for (let e = 0; e < FIT.eras.length; e++) {
     if (meta.noBuyer && meta.noBuyer.length) console.log(`    NOT PLACED (nothing in this era buys their good): `
       + meta.noBuyer.join(', '));
   }
-  console.log(`    CONSTRUCTION: ${meta.constrLevels} levels = ${(100 * meta.constrShare).toFixed(1)}% of gross output`
+  {
+    const sh = Object.entries(meta.shrunk || {});
+    if (sh.length) console.log('    SHRUNK (loss-making, capped one level at a time): ' + sh.sort((a, b) => b[1] - a[1])
+      .map(([k, n]) => k.replace(/^building_/, '') + ' −' + n).join(', '));
+  }
+  {
+    const p = meta.profit || {};
+    console.log(`    PROFITABILITY (economic only, excl. shipyards/art academies): net £${fmtN(Math.round(p.net||0))}/wk`
+      + ` · losses £${fmtN(Math.round(p.loss||0))}/wk across ${p.losers||0} building type(s), ${p.winners||0} profitable`
+      + ` · losses are ${p.net > 0 ? ((p.loss / p.net) * 100).toFixed(0) : '∞'}% of net`);
+  }
+  console.log(`    CONSTRUCTION: ${meta.constrLevels} levels = ${(100 * meta.constrShare).toFixed(1)}% of GDP`
     + ` (target ${(100 * CONSTRUCTION_GDP_SHARE).toFixed(0)}%, ${CONSTRUCTION_PM[meta.era]})`
     + (Math.abs(meta.constrShare - CONSTRUCTION_GDP_SHARE) > 0.02 ? '   ⚠ OFF TARGET' : ''));
   const outB = (meta.rawProfits && meta.rawProfits.outside) || [];
