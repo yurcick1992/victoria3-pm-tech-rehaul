@@ -205,6 +205,10 @@
     font-weight:700;margin-right:4px;min-width:72px}
   .presetbar .pbtn{padding:3px 10px;font-size:12px;border-radius:7px}
   .presetbar .pbtn.on{background:var(--accent);border-color:var(--accent);color:#0f1319;font-weight:700}
+  /* .same = the scenario ALREADY equals what this button would set. Derived every render from the live
+     state, so it disappears the instant anything diverges — it never claims you are "in" a preset. */
+  .presetbar .pbtn.same{border-color:var(--good);color:var(--good);box-shadow:inset 0 0 0 1px var(--good)}
+  .presetbar .pbtn.same::after{content:" ✓";font-weight:700}
   .presetbar .pknobs{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:8px;font-size:12px;color:var(--muted)}
   .presetbar .pknobs label{display:inline-flex;align-items:center;gap:4px}
   .presetbar .pknobs input{width:56px;text-align:right}
@@ -292,6 +296,13 @@
   .ind-hd{display:flex;align-items:center;gap:6px}
   .ind-hd .spacer{flex:1}
   .minibtn{font-size:11px;padding:1px 6px;line-height:1.6}
+  /* RED = writes the RECIPE BOOK (emitted to the game). Everything else only moves the scenario. */
+  button.recipe{background:#3d1717;border-color:#8a3030;color:#ffc2c2}
+  button.recipe:hover:not(:disabled){background:#521e1e;border-color:#b04040}
+  /* .same = pressing it would change nothing. DERIVED from the state each updateComputed(), never tracked. */
+  button.recipe.same{opacity:.42;font-style:italic}
+  button.recipe:disabled{opacity:.3;cursor:not-allowed}
+  .recipelbl{font-size:11px;color:#8a3030;letter-spacing:.06em;text-transform:uppercase;margin-right:2px}
   .lockbtn{font-size:13px;padding:0 6px}
   .mtable col.c-act{width:58px}
   .tieract{display:flex;gap:3px;justify-content:flex-end}
@@ -334,11 +345,15 @@
   <h1>PM &amp; Tech Rehaul — Balance UI</h1>
   <span class="tag muted">Manufacturing industry PMs</span>
   <span class="sp"></span>
+  <span class="recipelbl" title="The sheet is two things: a RECIPE BOOK (emitted to the game) and a SCENARIO (session-only). These two buttons switch the book; everything red writes it.">recipes</span>
+  <button id="recipeVanilla" class="recipe" title="WHOLE SHEET, ignores locks: set every tier's output + inputs to its vanilla_pm's base-game recipe and drop every pm_goods override. Tiers we invented have no vanilla PM, so theirs is interpolated along the ×1.5 ladder from the nearest anchored tier. Does NOT touch the scenario (building counts, pops, wages, PM selections, prices).">vanilla</button>
+  <button id="recipeMod" class="recipe" title="WHOLE SHEET, ignores locks: restore every tier's output + inputs and every pm_goods override from the mod config as loaded. Does NOT touch the scenario.">mod</button>
+  <span class="sp"></span>
   <select id="presetScope" title="Scope for the preset and payback tools"></select>
   <button id="applyPreset" title="Reset in-scope UNLOCKED groups to the loaded config defaults (target BE, volumes, build cost, ai_value, secondary PMs) — like a page refresh but honoring current locks">Restore defaults</button>
   <button id="bringVanilla" title="Bring in-scope UNLOCKED split buildings back to vanilla: each tier's output+inputs = its vanilla_pm's recipe, and ai_value = the pre-split vanilla building's value. Secondaries reset to base. Honors current locks.">Bring to vanilla</button>
   <span class="sp"></span>
-  <button id="solveBE" title="WHOLE SHEET (skips locked &amp; off-ladder groups): re-solve every unlocked tier's INPUT volumes (keeping recipe proportions; output untouched) so its FULL break-even hits its Target, using the CURRENT standard wage. Build cost is deliberately NOT touched — use 'sheet $→X' for that.">solve → targets</button>
+  <button id="solveBE" class="recipe" title="WHOLE SHEET (skips locked &amp; off-ladder groups): re-solve every unlocked tier's INPUT volumes (keeping recipe proportions; output untouched) so its FULL break-even hits its Target, using the CURRENT standard wage. Build cost is deliberately NOT touched — use 'sheet $→X' for that.">solve → targets</button>
   <button id="beMinus" title="WHOLE SHEET (skips locked &amp; off-ladder groups): lower every unlocked tier's Target break-even by 10 pp. Volumes are NOT re-solved — press 'solve → targets' to apply.">targets −10pp</button>
   <button id="bePlus" title="WHOLE SHEET (skips locked &amp; off-ladder groups): raise every unlocked tier's Target break-even by 10 pp. Volumes are NOT re-solved — press 'solve → targets' to apply.">targets +10pp</button>
   <span class="sp"></span>
@@ -446,6 +461,13 @@ function pmGated(pm){ const r=VAN.pms&&VAN.pms[pm]; return !!(r&&r.gated); }
 // only if every PM is gated (shouldn't happen).
 function basePm(pmg){ const g=VAN.pmgs[pmg]; if(!(g&&g.pms&&g.pms.length)) return undefined;
   return g.pms.find(p=>!pmGated(p)) || g.pms[0]; }
+// ⚠ HOW A TIER IS LABELLED. `t.tier` is a 1-based POSITION in its industry and is used as a DOM key and
+// in data- attributes, so it must not change. It is NOT the design's tier number: with era 0 in play, arms
+// runs e0..e5 so its ERA-2 rung is position 3 and used to render as "T3" — which is how a Rifle works
+// showed up looking like a t3 building in the 1836 scenario. Worse, the position is not even comparable
+// between industries: fertilizer starts at era 2, so ITS era-2 rung is position 1.
+// Everything USER-FACING therefore labels by era. Only ids and lookups use `t.tier`.
+const tlab = t => (t && t.era != null ? 'e' + t.era : 'T' + (t ? t.tier : '?'));
 function initSel(pmgs){ const s={}; (pmgs||[]).forEach(pg=>{ const b=basePm(pg); if(b) s[pg]=b; }); return s; }
 // normalize industries into an editable model
 const AIVAL_DEFAULT = 1000;   // PRODUCTION_BUILDING_BASE_VALUE — engine default when a building scripts no ai_value
@@ -1000,7 +1022,10 @@ function unitTypes(){ return Object.keys(UNITG).filter(u=>Object.keys(UNITG[u]||
 function unitRowKey(u, mob){ return u + '|' + (mob?'mob':'peace'); }
 function unitLabel(u){ return prettyKey(u.replace(/^combat_unit_type_/,'')); }
 function unitGoodsIO(u){ return {in:Object.assign({}, UNITG[u]||{}), out:{}}; }
-let PRICES_LOCKED = true;   // price panel lock. ON (default) = prices are manual/frozen; OFF = computed from orders.
+// PRICE PANEL LOCK. OFF BY DEFAULT — prices are REALISED from the order book, which is the whole design;
+// a locked panel shows numbers the scenario in front of you did not produce. Locking is the deliberate
+// act (pin a price and see what it does), not the resting state. Applies on load AND to every preset.
+let PRICES_LOCKED = false;
 // Victoria 3 market price (vic3.paradoxwikis.com/Market):
 //   price = base × [ 1 + 0.75 × clamp( (BUY − SELL) / min(BUY,SELL), ±1 ) ]  → 25%..175% of base.
 // We return the multiplier as a PERCENT (100 = base), which is exactly what `thresholds` stores, so the whole
@@ -1086,7 +1111,7 @@ function scenBreakdown(g, side){
   IND.forEach(i=>i.tiers.forEach(t=>{
     const n=BLDNUM[t.key]||0; if(!n) return;
     const q=tierGoodsIO(i,t)[side][g]; if(!q) return;
-    parts.push({name:`${t.name} (T${t.tier})`, n, q, thr:thruMult(t.key), u:'lvl'});
+    parts.push({name:`${t.name} (${tlab(t)})`, n, q, thr:thruMult(t.key), u:'lvl'});
   }));
   refBuildings().forEach(b=>{
     const n=BLDNUM[b]||0; if(!n) return;
@@ -1282,7 +1307,7 @@ function beSkipNote(){ const n=IND.filter(i=>i.locked||!i.follows_be).length; re
 // Re-solve every tier of the given groups to its target_be. Returns counts + the tiers that couldn't reach it.
 function solveGroupsToTarget(inds){
   let tiers=0; const unsolvable=[];
-  inds.forEach(i=>i.tiers.forEach(t=>{ if(solveTierToTarget(i,t)) tiers++; else unsolvable.push(`${i.id} T${t.tier}`); }));
+  inds.forEach(i=>i.tiers.forEach(t=>{ if(solveTierToTarget(i,t)) tiers++; else unsolvable.push(`${i.id} ${tlab(t)}`); }));
   return { tiers, groups:inds.length, unsolvable };
 }
 function onTarget(t,be){ return Math.abs(be - t.target_be) <= TARGET_TOL; }   // green if BE within tolerance of its target
@@ -1297,6 +1322,10 @@ function render(){
   renderLadderCheck();      // the acceptance criterion, on whatever the scenario currently holds
   renderPresetScope();
   renderReference();
+  // ⚠ render() does NOT call updateComputed(), so the recipe badge has to be refreshed from BOTH:
+  // here for a full re-render (page load, book switch, preset), and there for a live field edit.
+  refreshRecipeButtons();
+  refreshPresetButtons();
 }
 // ---------- workforce panel: the global base wage (weekly ↔ yearly) + per-profession weekly wages ----------
 function round2(x){ return Math.round(x*100)/100; }
@@ -1442,13 +1471,13 @@ function presetBarHTML(){
 // Seeded below from PROF_ORDER so the row exists on a bare page load, before any preset is applied.
 let POPPROF = {};
 // which stratum each profession belongs to — peasants and slaves are classes in their own right
-const PROF_STRATUM = { laborers:'lower', farmers:'lower', machinists:'lower', soldiers:'lower', servicemen:'lower',
+const PROF_STRATUM = { laborers:'lower', farmers:'lower', machinists:'lower', soldiers:'lower',
   shopkeepers:'middle', clerks:'middle', engineers:'middle', bureaucrats:'middle', academics:'middle',
   clergymen:'middle', officers:'middle', aristocrats:'upper', capitalists:'upper' };
 // ⚠ peasants and slaves are IN this list. They are strata in their own right, so they have no entry in
 // PROF_STRATUM — but with the class row read-only they must still be editable somewhere, and this is the
 // only population input left. A "split" of one is still the sum of its professions.
-const PROF_ORDER = ['laborers','farmers','machinists','soldiers','servicemen','clerks','shopkeepers','engineers',
+const PROF_ORDER = ['laborers','farmers','machinists','soldiers','clerks','shopkeepers','engineers',
   'bureaucrats','academics','clergymen','officers','aristocrats','capitalists','peasants','slaves'];
 POPPROF = Object.fromEntries(PROF_ORDER.map(k=>[k,0]));
 // classes are the sums; peasants and slaves pass through as themselves
@@ -1546,7 +1575,9 @@ function presetReportHTML(p){
 // Apply a saved market: OVERWRITE the building numbers, the non-building orders, the population, the
 // per-stratum SoL, the base wage and the PM selections (a preset records the PMs vanilla actually
 // runs). All of it is session state.
-function applyScenarioPreset(id){
+// `quiet` is for the badge probe below: apply the preset into the live state but draw nothing and say
+// nothing. It exists so the probe can use THIS function rather than a parallel reader of the preset JSON.
+function applyScenarioPreset(id, quiet){
   const p=presetList().find(x=>x.id===id); if(!p) return;
   Object.keys(BLDNUM).forEach(k=>delete BLDNUM[k]);
   Object.keys(ADDBUY).forEach(k=>delete ADDBUY[k]);
@@ -1601,7 +1632,7 @@ function applyScenarioPreset(id){
     const rep={lower:'laborers',middle:'clerks',upper:'aristocrats'};
     for(const c in rep) if(p.pops[c]>0) POPPROF[rep[c]]=+p.pops[c]||0;
     POPPROF.peasants=+p.pops.peasants||0; POPPROF.slaves=+p.pops.slaves||0;
-    banner('warn',`<b>${esc(p.label||p.id)}</b> carries no per-profession population, so each class was put on one representative profession `
+    if(!quiet) banner('warn',`<b>${esc(p.label||p.id)}</b> carries no per-profession population, so each class was put on one representative profession `
       + `(lower→laborers, middle→clerks, upper→aristocrats). The class totals are right; the profession MIX is not, `
       + `and it is what prices wages. Re-run <code>tools\\build.ps1</code> to regenerate the presets with real professions.`);
   }
@@ -1611,10 +1642,12 @@ function applyScenarioPreset(id){
   // them from the orders in front of you. If the scenario is right the two agree; if they don't, that
   // disagreement is the thing worth seeing. Without this the panel showed every good at 100% of base and
   // every profit figure was answering a question the solve never asked.
-  if(p.prices){
-    Object.keys(PRICES).forEach(g=>{ if(p.prices[g]!=null) thresholds[g]=p.prices[g]; });
-    PRICES_LOCKED=false;
-  }
+  if(p.prices) Object.keys(PRICES).forEach(g=>{ if(p.prices[g]!=null) thresholds[g]=p.prices[g]; });
+  // EVERY preset unlocks, not just the ones carrying prices. A preset is a whole market, and the price a
+  // market produces is part of what it is — leaving a hand-locked price standing over someone else's
+  // order book shows a number nothing in view produced.
+  PRICES_LOCKED=false;
+  if(quiet){ if(wageOld!=null) recomputeWages(wageOld); return; }
   render();
   if(wageOld!=null) recomputeWages(wageOld);
   banner('info', p.id==='empty'
@@ -1754,7 +1787,7 @@ function tierRow(i,t){
     + nonGoodsRows(i,t)
     + subtotalRow(`osub_${i.id}_${t.tier}`, 'total out', thruMult(t.key)*outputValue(i,t,true), 'Total weekly output revenue at the CURRENT scenario prices, including the throughput bonus — priced goods only (the non-goods above carry no £).');
   return `<tr data-ind="${esc(i.id)}" data-tier="${t.tier}">
-    <td><span class="pill" style="background:${TIERCOL[t.era||t.tier]||'#666'}" title="${t.era?`Era ${t.era} of the mod's five-era ladder (~${t.natural_year}). NOT this tier's position in its own industry — synthetics starts at era 2, so its first building is e2, not T1.`:'tier'}">${t.era?'e'+t.era:t.tier}</span>${t.model_only?'<div class="muted" style="font-size:9px" title="modelled but NOT emitted — no unlocking technology exists for it yet">model</div>':''}</td>
+    <td><span class="pill" style="background:${TIERCOL[t.era||t.tier]||'#666'}" title="${t.era?`Era ${t.era} of the mod's six-era ladder, 1780-1945 (~${t.natural_year}). This is the ERA, never a position in its own industry: automotive starts at era 3, so its first building is e3. The in-game name says the same thing ("Era 3. …").`:'tier'}">${t.era?'e'+t.era:t.tier}</span>${t.model_only?'<div class="muted" style="font-size:9px" title="modelled but NOT emitted — no unlocking technology exists for it yet">model</div>':''}</td>
     <td>${esc(t.name)}<div class="muted" style="font-size:11px">${esc(t.key)}</div><div class="muted" style="font-size:10px" title="natural unlock date = this tier's tech era">${t.natural_year?'~'+t.natural_year+' · ':''}${esc(t.tech||'')}</div>
       <div class="aivrow" title="Base AI construction desire (building ai_value). Blank = engine default ${AIVAL_DEFAULT}. Emitted as the building's ai_value when set.">ai_value <input type="number" min="0" step="50" value="${t.ai_value!=null?t.ai_value:''}" placeholder="${AIVAL_DEFAULT}" data-ind="${i.id}" data-tier="${t.tier}" data-aiv="1"></div>
       ${subsidyRowHTML(t.key)}
@@ -1789,6 +1822,8 @@ function bcCell(i,t){
     <div class="muted" style="font-size:10px${stale?';color:#e6b455':''}" title="${stale?'stored value differs from the current model — re-run solve_building_cost.ps1 to sync':'matches the model'}">model ${model}</div>`;
 }
 function updateComputed(){
+  refreshRecipeButtons();   // derived, not tracked — see the recipe-book block
+  refreshPresetButtons(true);   // debounced: a full probe of every preset is ~100ms
   IND.forEach(i=>i.tiers.forEach(t=>{
     const be=BE(i,t), tp=TPthr(i,t);
     const bcell=document.getElementById(`be_${i.id}_${t.tier}`);
@@ -1948,7 +1983,7 @@ function vizSectorData(valOf){
   IND.forEach(i=>i.tiers.forEach(t=>{
     const v=valOf.tier(i,t); if(!isFinite(v)) return;
     const key=tierSector(t,manu,i.id), w=(BLDNUM[t.key]||0)*thruMult(t.key)*outputValue(i,t,true);
-    (g[key].tiered[t.tier]=g[key].tiered[t.tier]||[]).push({ v, w:Math.max(0,w||0), name:`${i.id} T${t.tier}` });
+    (g[key].tiered[t.tier]=g[key].tiered[t.tier]||[]).push({ v, w:Math.max(0,w||0), name:`${i.id} ${tlab(t)}` });
   }));
   const catToGroup={}; VIZ_GROUPS.forEach(gr=>(gr.cats||[]).forEach(c=>catToGroup[c]=gr.key));
   refBuildings().forEach(b=>{
@@ -2148,6 +2183,223 @@ function refEditSet(pm,dir,good,val){ const v=VAN.pms[pm]||{in:{},out:{}};
 const REFUNLOCK = new Set();          // reference categories the user has UNLOCKED (default = all locked)
 const REFBASE = {};                   // reference building key -> its own base wage (£/wk); absent ⇒ follows the sheet BASE_WAGE
 const REFGRPOPEN = new Set();         // expanded category cards
+// =====================================================================================================
+// RECIPE BOOKS — the sheet is TWO things in a trenchcoat, and this is the seam.
+//
+//   * the RECIPE BOOK: every tier's output_qty + inputs, and the `pm_goods` overrides. This is what the
+//     builder EMITS to the game. Two of them exist: `vanilla` and `mod`.
+//   * the SCENARIO: building counts, pops, wages, workforce ratios, PM selections, prices. Session-only,
+//     never emitted, and it must be switchable without disturbing the recipe book underneath it.
+//
+// Everything that writes a recipe is marked RED in the UI. Scenario presets deliberately write none.
+//
+// ⚠⚠ ONE DEFINITION OF "A RECIPE", USED BY BOTH THE WRITER AND THE FINGERPRINT.
+// `recipeSnapshot()` is the only place that says which fields constitute a recipe. `recipeApply()` writes
+// exactly that shape back, and `recipeKey()` hashes exactly that shape. Add a field to the snapshot and
+// both the button and the "would this change anything?" badge pick it up automatically. If these were two
+// lists, a field added to the writer and forgotten in the fingerprint would make the badge LIE — silently,
+// and only for the field somebody just added. Same reasoning as ladderFaults() having one implementation.
+function recipeSnapshot(inds, refedit){
+  const o = { t:{}, g:{} };
+  inds.forEach(i => i.tiers.forEach(t => {
+    o.t[t.key] = { o:+t.output_qty || 0, i:Object.fromEntries(Object.entries(t.inputs||{}).map(([g,q])=>[g,+q])) };
+  }));
+  for (const pm in (refedit||{})) o.g[pm] = JSON.parse(JSON.stringify(refedit[pm]));
+  return o;
+}
+// Canonical string: keys sorted at every level, numbers rounded to the precision the sheet actually edits
+// at (0.1), so a float wobble from a re-solve cannot read as a difference the user can neither see nor fix.
+function recipeKey(s){
+  const n = v => (Math.round((+v||0)*10)/10).toFixed(1);
+  const goods = m => Object.keys(m||{}).sort().map(g => g+':'+n(m[g])).join(',');
+  const t = Object.keys(s.t).sort().map(k => k+'='+n(s.t[k].o)+'|'+goods(s.t[k].i)).join(';');
+  const g = Object.keys(s.g).sort().map(pm => pm+'{'+goods((s.g[pm]||{}).in)+'>'+goods((s.g[pm]||{}).out)+'}').join(';');
+  return t+'##'+g;
+}
+function recipeApply(snap){
+  IND.forEach(i => i.tiers.forEach(t => {
+    const r = snap.t[t.key]; if(!r) return;                 // a tier the book has no entry for is left alone
+    t.output_qty = r.o;
+    t.inputs = Object.fromEntries(Object.entries(r.i).map(([g,q])=>[g,+q]));
+  }));
+  Object.keys(REFEDIT).forEach(k => delete REFEDIT[k]);
+  for (const pm in snap.g) REFEDIT[pm] = JSON.parse(JSON.stringify(snap.g[pm]));
+}
+// ---- the MOD book: the config exactly as loaded, captured once and never mutated ----------------------
+const MOD_BOOK = recipeSnapshot(
+  window.PMDATA.config.industries.map(i => ({ tiers: i.tiers })),
+  window.PMDATA.config.pm_goods || {});
+// ---- the VANILLA book --------------------------------------------------------------------------------
+// Each tier's own `vanilla_pm` recipe. Tiers we invented have no vanilla PM at all, so their entry is
+// INTERPOLATED: take the nearest tier that does have one and scale by the ×1.5 ladder over the tier gap.
+// That is the same rule build_era_ladder.mjs uses to seed an invented tier, so the two agree by
+// construction rather than by coincidence.
+const LADDER_R = 1.5;
+function vanillaBook(){
+  const o = { t:{}, g:{} };                                  // g stays EMPTY: no pm_goods override IS vanilla
+  IND.forEach(i => {
+    const anchored = i.tiers.map((t,ix) => ({ t, ix, rec:(t.vanilla_pm ? VAN.pms[t.vanilla_pm] : null) }))
+                            .filter(x => x.rec);
+    if(!anchored.length) return;                             // nothing vanilla-backed: leave the whole industry alone
+    i.tiers.forEach((t,ix) => {
+      let src = null, gap = 0;
+      const exact = anchored.find(x => x.ix === ix);
+      if(exact){ src = exact; }
+      else {                                                 // nearest anchored tier, then scale over the gap
+        src = anchored.reduce((best,x) => (Math.abs(x.ix-ix) < Math.abs(best.ix-ix) ? x : best), anchored[0]);
+        gap = ix - src.ix;
+      }
+      const f = Math.pow(LADDER_R, gap);
+      const rec = src.rec;
+      const out = (rec.out && rec.out[tierOut(i,src.t)] != null) ? +rec.out[tierOut(i,src.t)] : +t.output_qty;
+      o.t[t.key] = {
+        o: Math.round(out*f*10)/10,
+        i: Object.fromEntries(Object.entries(rec.in||{}).map(([g,q]) => [g, Math.round(+q*f*10)/10])),
+      };
+    });
+  });
+  return o;
+}
+// ---- the badge: is the sheet ALREADY on this book? ---------------------------------------------------
+// Derived, never tracked. A dirty flag maintained by each mutation site fails silently the first time
+// somebody adds an edit path and forgets it; a comparison recomputed from the state itself cannot.
+// Cost is a few thousand numbers hashed once per updateComputed() — microseconds, and no DOM is touched.
+let VAN_BOOK_KEY = null;
+function currentRecipeKey(){ return recipeKey(recipeSnapshot(IND, REFEDIT)); }
+// =====================================================================================================
+// "THE SCENARIO ALREADY IS THIS PRESET" — the same derived badge the recipe buttons carry.
+//
+// ⚠ THIS LOOKS LIKE THE THING CLAUDE.md FORBIDS, AND IT IS NOT. The standing rule is that a preset is a
+// one-off overwrite, not a mode you sit in, so nothing may CLAIM you are "in" a preset. What that rule is
+// actually protecting against is a STICKY highlight: click era3, edit two fields, and the button still
+// insists you are on era3. This asserts nothing about history — it is recomputed from the live state and
+// disappears the moment anything diverges. It cannot go stale, which is the property the rule wanted.
+//
+// ⚠⚠ A PRESET'S FINGERPRINT IS TAKEN THROUGH THE REAL APPLY PATH, not by reading the preset object.
+// applyScenarioPreset() writes fourteen different things (counts, orders, units, throughput, PM selections
+// on both tiers and reference buildings, pops by profession, strata, SoL, base wage, wage overrides, the
+// working-adult ratio, prices and the price lock). A parallel reader of the preset JSON would have to
+// mirror all of that and would drift from it on the first change. So: save the world, apply the preset
+// QUIETLY, fingerprint the result, put the world back. The badge then cannot disagree with the button.
+const SCEN_MAPS = ['BLDNUM', 'ADDBUY', 'ADDSELL', 'REFSEL', 'UNITNUM', 'THRU', 'REFBASE', 'thresholds'];
+function scenGet(n){ return { BLDNUM, ADDBUY, ADDSELL, REFSEL, UNITNUM, THRU, REFBASE, thresholds }[n]; }
+// ONE definition of "the scenario", used by the fingerprint AND by save/restore — so a field added to one
+// is present in the others by construction. Same discipline as recipeSnapshot().
+// ⚠⚠ THE SNAPSHOT IS FAITHFUL AND COMPLETE — NEVER FILTER ANYTHING OUT OF IT. It is what
+// scenarioRestore() puts back, so a field dropped here is a field DESTROYED on the next probe. That is
+// not hypothetical: excluding auto-mode `thresholds` for the fingerprint's sake emptied the live price
+// table on every refresh, which auto-mode's own recompute silently repaired — until you locked the panel
+// and every price read £NaN. Normalisation for COMPARISON belongs in scenarioKey(), below.
+function scenarioSnapshot(){
+  const o = {};
+  for (const n of SCEN_MAPS) o[n] = JSON.parse(JSON.stringify(scenGet(n)));
+  o.POPS = JSON.parse(JSON.stringify(POPS));
+  o.SOL = JSON.parse(JSON.stringify(SOL));
+  o.POPPROF = JSON.parse(JSON.stringify(POPPROF));
+  o.BASE_WAGE = BASE_WAGE;
+  o.LOCKED = !!PRICES_LOCKED;
+  o.WAR = POPM.working_adult_ratio;
+  o.sec = {}; o.bw = {};
+  IND.forEach(i => i.tiers.forEach(t => { o.sec[t.key] = { ...(t._sec || {}) }; o.bw[t.key] = t._baseWage; }));
+  return o;
+}
+function scenarioRestore(s){
+  for (const n of SCEN_MAPS) { const m = scenGet(n);
+    Object.keys(m).forEach(k => delete m[k]); Object.assign(m, s[n]); }
+  POPS = JSON.parse(JSON.stringify(s.POPS));
+  SOL = JSON.parse(JSON.stringify(s.SOL));
+  POPPROF = JSON.parse(JSON.stringify(s.POPPROF));
+  BASE_WAGE = s.BASE_WAGE;
+  PRICES_LOCKED = s.LOCKED;
+  POPM.working_adult_ratio = s.WAR;
+  IND.forEach(i => i.tiers.forEach(t => { t._sec = { ...(s.sec[t.key] || {}) }; t._baseWage = s.bw[t.key]; }));
+}
+// Canonical string. Numbers are rounded to the precision the sheet edits at, so a float wobble from a
+// derived recompute (pops from professions, prices from the order book) cannot read as a difference the
+// user can neither see nor undo.
+function scenarioKey(s){
+  // ⚠ NOT every scenario value is a number — PM selections are STRINGS. `+('pm_automation') || 0` turned
+  // every one of them into "0", so switching a production method changed nothing the fingerprint could see.
+  const n = v => (v == null ? 'x' : typeof v === 'string' ? v
+                : (Math.round((+v || 0) * 1000) / 1000).toString());
+  const map = m => Object.keys(m || {}).sort().filter(k => {
+      const v = m[k]; return !(v === 0 || v == null || (typeof v === 'object' && !Object.keys(v).length));
+    }).map(k => k + ':' + (typeof m[k] === 'object' ? map(m[k]) : n(m[k]))).join(',');
+  // ⚠ THE LOCK TOGGLE IS A VIEW SETTING, NOT SCENARIO STATE — it is deliberately absent from the key.
+  // Flipping locked/auto changes how a price is DECIDED, not what the market is, so it must not disturb
+  // the badge. Any actual PRICE CHANGE still does: `thresholds` is compared unconditionally, and the probe
+  // runs the same derived sync a render would (see presetWouldChangeNothing), so a hand-edited price in
+  // locked mode reads as different from the auto value the preset would produce.
+  // `REFSEL` is normalised for comparison only — the snapshot itself stays intact. refSel() fills each
+  // PMG's base PM the first time a reference building is RENDERED, so it is populated after a click and
+  // empty after a probe; only a selection that DIFFERS from the default carries information.
+  const view = { ...s };
+  view.REFSEL = {};
+  for (const b in (s.REFSEL || {})) {
+    const def = initSel(((VAN.buildings || {})[b] || {}).pmgs || []), keep = {};
+    for (const pg in (s.REFSEL[b] || {})) if (s.REFSEL[b][pg] !== def[pg]) keep[pg] = s.REFSEL[b][pg];
+    if (Object.keys(keep).length) view.REFSEL[b] = keep;
+  }
+  return SCEN_MAPS.map(x => map(view[x])).join('|') + '#' + map(view.POPS) + '#' + map(view.SOL) + '#' + map(view.POPPROF)
+    + '#' + n(view.BASE_WAGE) + '#' + n(view.WAR) + '#' + map(view.sec) + '#' + map(view.bw);
+}
+// ⚠ NO PER-PRESET CACHE, AND THAT IS THE POINT. A preset writes prices only if it carries them, SoL only
+// if it carries one, a base wage only if it was measured — so the state it LEAVES depends on the state it
+// STARTS from, and a single stored fingerprint per preset is wrong for every one of them. Applying from
+// HERE also makes the badge mean the right thing: not "this equals some canonical form of the preset" but
+// "pressing this would change nothing", which is the only claim worth showing.
+function presetWouldChangeNothing(id, cur){
+  const save = scenarioSnapshot();
+  // ⚠ SYNC THE PRICES THE WAY A RENDER WOULD. In auto mode `thresholds` are computed from the order book
+  // by renderScenario()/updateScenario(), which the quiet probe skips — so without this the probe's prices
+  // are whatever the preset happened to carry and every auto-priced preset differs from itself. Doing it
+  // here (rather than excluding prices from the comparison) is what lets a PRICE EDIT still clear the badge.
+  try { applyScenarioPreset(id, true); syncScenarioPrices(); return scenarioKey(scenarioSnapshot()) === cur; }
+  finally { scenarioRestore(save); }
+}
+// Probing all ~22 presets costs ~100 ms, which is fine on a render and far too slow per keystroke. So the
+// full pass runs immediately on render() and DEBOUNCED from updateComputed(). A badge that lags a typed
+// digit by a fifth of a second is honest; one that stutters the field you are typing in is not.
+let PRESET_BADGE_TIMER = null;
+function refreshPresetButtons(debounced){
+  if (debounced) { clearTimeout(PRESET_BADGE_TIMER);
+    PRESET_BADGE_TIMER = setTimeout(() => refreshPresetButtons(false), 200); return; }
+  const btns = document.querySelectorAll('.presetbar .pbtn[data-preset]');
+  if (!btns.length) return;
+  const cur = scenarioKey(scenarioSnapshot());
+  btns.forEach(b => { let same = false;
+    try { same = presetWouldChangeNothing(b.dataset.preset, cur); } catch (e) { same = false; }
+    b.classList.toggle('same', same); });
+}
+
+function refreshRecipeButtons(){
+  const cur = currentRecipeKey();
+  const vb = document.getElementById('recipeVanilla'), mb = document.getElementById('recipeMod');
+  if(mb) mb.classList.toggle('same', cur === recipeKey(MOD_BOOK));
+  if(vb){
+    if(!HAVE_VAN){ vb.disabled = true; vb.classList.remove('same'); }
+    else { if(VAN_BOOK_KEY == null) VAN_BOOK_KEY = recipeKey(vanillaBook());
+           vb.disabled = false; vb.classList.toggle('same', cur === VAN_BOOK_KEY); }
+  }
+}
+function switchRecipes(which){
+  if(which === 'vanilla' && !HAVE_VAN){
+    banner('warn','Vanilla reference unavailable — run <code>tools\\build.ps1</code> to generate <code>ui/vanilla.js</code> first.'); return; }
+  const book = which === 'vanilla' ? vanillaBook() : MOD_BOOK;
+  const before = currentRecipeKey();
+  recipeApply(book);
+  render();
+  const after = currentRecipeKey();
+  const interp = which === 'vanilla'
+    ? IND.reduce((n,i) => n + i.tiers.filter(t => !t.vanilla_pm).length, 0) : 0;
+  banner(before === after ? 'info' : 'warn',
+    `Recipe book → <b>${which}</b>. Every tier's output + inputs and all <code>pm_goods</code> overrides `
+    + `now come from ${which === 'vanilla' ? 'the base game' : 'the loaded mod config'}.`
+    + (interp ? ` ${interp} tier(s) have no vanilla PM and were interpolated along the ×${LADDER_R} ladder.` : '')
+    + ` The scenario — building counts, pops, wages, PM selections, prices — is untouched.`
+    + (before === after ? ' (The sheet was already on this book, so nothing changed.)' : ''));
+}
+
 function refBuildings(){ return HAVE_VAN ? Object.keys(VAN.buildings).filter(b=>!OURS.has(b)) : []; }
 function prettyGroup(g){ return String(g).replace(/^bg_/,'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); }
 
@@ -2487,13 +2739,23 @@ document.addEventListener('change', e=>{ if(e.target.id==='lockPrices') setPrice
 // page refresh produces), from the pristine window.PMDATA.config. Locked groups are left untouched.
 // (A page refresh restores ALL defaults AND resets lockedness; this button restores defaults but honors
 // current locks. More named presets will come later; this one is just the reset.)
+document.getElementById('recipeVanilla').onclick=()=>switchRecipes('vanilla');
+document.getElementById('recipeMod').onclick=()=>switchRecipes('mod');
 document.getElementById('applyPreset').onclick=()=>{
   const scope=document.getElementById('presetScope').value;
   const inScope = scope==='__all'?IND:IND.filter(i=>i.id===scope);
   const targets = inScope.filter(i=>!i.locked);
   const lockedSkipped = inScope.length - targets.length;
   const src = window.PMDATA.config.industries;
-  targets.forEach(ind=>{ const s=src.find(x=>x.id===ind.id); if(s) ind.tiers = makeTiers(s); });
+  // ⚠ RECIPES DELIBERATELY EXCLUDED. This used to rebuild every tier from the pristine config, which
+  // silently reset output_qty + inputs — i.e. it was a recipe-book switch wearing a scenario button's
+  // clothes. The recipe book now has its own two RED buttons; this one restores everything else.
+  targets.forEach(ind=>{ const s=src.find(x=>x.id===ind.id); if(!s) return;
+    const fresh = makeTiers(s);
+    ind.tiers.forEach((t,ix)=>{ const f=fresh[ix]; if(!f) return;
+      t.target_be=f.target_be; t.building_cost=f.building_cost; t.ai_value=f.ai_value;
+      t._sec=initSel(ind.secondary_pmgs); });
+  });
   render();
   banner(lockedSkipped?'warn':'info', `Restored defaults for ${targets.length} group(s) (${scope==='__all'?'all industries':scope}) — target BE, volumes, build cost, ai_value & secondary PMs reset to the loaded config.`
     + (lockedSkipped?` Skipped ${lockedSkipped} locked group(s).`:''));
@@ -2516,12 +2778,9 @@ document.getElementById('bringVanilla').onclick=()=>{
     const src=srcInds.find(x=>x.id===ind.id);                   // the pre-split building had ONE flat required_construction
     const vanCost=src && src.building ? VANILLA_CONSTRUCTION[src.building.required_construction] : null;
     ind.tiers.forEach(t=>{
-      const rec=t.vanilla_pm?VAN.pms[t.vanilla_pm]:null;
-      if(rec){ const og=tierOut(ind,t);
-        if(rec.out && rec.out[og]!=null) t.output_qty=+rec.out[og];
-        t.inputs=Object.fromEntries(Object.entries(rec.in||{}).map(([g,q])=>[g,+q]));
-        tiersSet++;
-      } else noPm.push(`${ind.id} T${t.tier}`);
+      // ⚠ RECIPES DELIBERATELY EXCLUDED — see "recipes: vanilla" (red). This button is now about the
+      // fields that are neither recipe nor scenario: construction desire, build cost, secondary defaults.
+      if(t.vanilla_pm && VAN.pms[t.vanilla_pm]) tiersSet++; else noPm.push(`${ind.id} ${tlab(t)}`);
       t.ai_value=vanAiv;
       if(vanCost!=null) t.building_cost=vanCost;                // GUIDELINE: bring EVERYTHING editable/emittable to vanilla
       t._sec=initSel(ind.secondary_pmgs);                       // reset secondaries to inert base
@@ -2567,7 +2826,7 @@ function readX(){ return +document.getElementById('pbYears').value||10; }
 document.getElementById('pbFixPrices').onclick=()=>{
   const X=readX(); const targets=IND.filter(i=>!i.locked);
   let set=0; const skip=[]; const locked=IND.length-targets.length;
-  targets.forEach(i=>i.tiers.forEach(t=>{ applyBuildCost(i,t,X) ? set++ : skip.push(`${i.id} T${t.tier}`); }));
+  targets.forEach(i=>i.tiers.forEach(t=>{ applyBuildCost(i,t,X) ? set++ : skip.push(`${i.id} ${tlab(t)}`); }));
   render();
   banner((skip.length||locked)?'warn':'info',
     `Sheet: set Build cost on ${set} tier(s) for a ${X}-yr payback at current prices.`
@@ -2599,7 +2858,7 @@ document.addEventListener('click', e=>{
   if(pb.dataset.tier!=null){                                   // ----- tier level -----
     const t=i.tiers.find(z=>z.tier==pb.dataset.tier);
     if(act==='cost'){ const ok=applyBuildCost(i,t,X);
-      banner(ok?'info':'warn', ok?`${i.id} T${t.tier}: Build cost set for a ${X}-yr payback.`:`${i.id} T${t.tier}: unprofitable at current prices — raise its output price first.`); }
+      banner(ok?'info':'warn', ok?`${i.id} ${tlab(t)}: Build cost set for a ${X}-yr payback.`:`${i.id} ${tlab(t)}: unprofitable at current prices — raise its output price first.`); }
     else { const r=applyPricesAnchor(i,t,X);
       banner(r.ok?(r.oob?'warn':'info'):'warn', r.ok?`Scaled ${i.id} prices so T${t.tier} payback = ${X} yrs${r.oob?' (some prices left the band, flagged red)':''}.`:`${i.id} T${t.tier}: can't reach ${X} yrs by uniform price scaling (IO ≤ 0 at current prices).`); }
   } else {                                                     // ----- group level -----

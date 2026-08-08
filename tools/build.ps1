@@ -497,7 +497,14 @@ foreach ($ind in $cfg.industries) {
         # follows_be:false industries (ports, railways) stay on vanilla economics, so their name omits
         # the BE target (BE is not the design handle for them).
         $beLabel = if ($ind.follows_be -eq $false) { "" } else { ". BE target $([math]::Round($actualBe))%" }
-        $locBody += " $($t.key):0 `"Tier $tierNo. $($t.name)$beLabel`""
+        # ⚠ THE NUMBER A PLAYER READS IS THE ERA, NOT A POSITION. It used to be `$tierNo`, a 1-based count
+        # of EMITTED tiers, which meant the same digit described different vintages in different industries:
+        # the automotive industry's first building is era 3, and it shipped as "Tier 1". It also disagreed
+        # with the UI (which labels by era) and with the config. The era is the design's own number and the
+        # one every other surface uses, so it is what the name says. An industry legitimately starts at
+        # "Era 3" or "Era 4" — that IS the statement, not a gap to hide.
+        $eraNo = if ($null -ne $t.era) { [int]$t.era } else { $tierNo }
+        $locBody += " $($t.key):0 `"Era $eraNo. $($t.name)$beLabel`""
         $locBody += " $($t.key)_lens_option:0 `"Expand $D$($t.key)$D`""
         $locBody += " $($t.pmg_key):0 `"$($t.pm_name)`""
         $locBody += " $($t.pm_key):0 `"$($t.pm_name)`""

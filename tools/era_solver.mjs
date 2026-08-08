@@ -42,18 +42,73 @@ const CFG = join(REPO, 'config', 'mod_config.json');
 // ===================================================================================================
 // The five scenarios. `sol` is the LOWER stratum's standard of living, which drives the base wage via
 // FINDINGS F26 and every class's buy package (middle ×1.5, upper ×3, as the placeholder presets do).
+// ⚠ WHAT AN ERA YEAR MEANS: by that year a technologically advanced country holds ALL the techs of the
+// previous eras and about HALF the techs of this one. It is a median unlock date, not a gate — the techs
+// are researchable earlier, and the year may sit past the game's own 1936 end without anything breaking.
+// Era 5 is 1945 on that reading and implies nothing about the war.
+//
+// ⭐ SIX SCENARIOS, AND A SCENARIO'S DOMINANT TIER LAGS ITS LEADING TIER BY ONE.
+//
+// `era` is the scenario index, NOT the tier era. `lead` is the newest tier the scenario may contain; the
+// tier below it is the workhorse that carries most of the levels, and the one below that is dying.
+//
+//   scenario   leading (minority)   dominant (bulk)   tail (dying)
+//   1780             —                    t1              t0
+//   1836            t2                    t1              t0  (token)
+//   1870            t3                    t2              t1
+//   1900            t4                    t3              t2
+//   1920            t5                    t4              t3
+//   1945             —                    t5              t4
+//
+// WHY. The old five-scenario ladder made the era-appropriate tier the dominant one on the day it unlocked,
+// so the 1836 scenario held tier 1 and nothing else — a 1750 economy wearing an 1836 label. Vanilla's own
+// 1836 start runs 46% of the USA's tiered levels at tier 1, 45% at tier 2 and 9% at tier 3: a new method
+// arrives as a minority and takes a generation to become the bulk. That lag is the whole change.
+//
+// ⚠ It is NOT achieved by imposing counts — the solver still sizes every tier by profit. It is achieved by
+// the TARGETS: the leading tier is the growth business (+20%), the dominant tier is a profitable workhorse
+// being competed down (+5%), the tail is dying (−20%). A dominant tier held at the old −5% would shrink,
+// not dominate, so the target ladder had to move with the placement rule.
 export const ERAS = [
-  { era: 1, year: 1836, sol: 8,  label: 'a reasonably modern country, c.1836' },
-  { era: 2, year: 1870, sol: 10, label: 'c.1870' },
-  { era: 3, year: 1900, sol: 12, label: 'c.1900' },
-  { era: 4, year: 1920, sol: 14, label: 'c.1920' },
-  { era: 5, year: 1935, sol: 16, label: 'c.1935' },
+  // ⚠ ERA 0 IS A SINGLE RUNG, DELIBERATELY. `lead: 0` means the 1780 scenario contains t0 and nothing
+  // else. It read `lead: 1` and that was an error of mine: the newest AVAILABLE tier is taken as the
+  // scenario's frontier, so t1 became the +20% target and the recipe that gets solved — i.e. 1820
+  // technology dominant in 1780, forty years before its own median unlock. It is also where era 0's eight
+  // "inverted ladder" faults came from: two rungs that barely coexisted, forced to share a market.
+  // With one rung era 0 cannot exhibit a ladder at all, which is the point — it asks one question,
+  // "can a pre-industrial economy pay for itself?", and cannot answer any other.
+  // ⚠ SoL 3.75, not 6: the brief is a base wage two-thirds of 1836's, and F26 locks wage to SoL
+  // (base = exp((SoL−37.43)/10.49)), so 3.747 is what two-thirds MEANS. It follows that 1780 pops also
+  // CONSUME less — the two cannot be moved apart without breaking a measured relation.
+  // ⚠ SoL 7 with an EXPLICIT wage — the one entry that does not take F26's derived value.
+  // The brief is "1836's standard of living minus a point, wages two thirds of 1836's", and those are
+  // independent in this model: popSpend() reads POPS/SOL/buy-packages and never reads BASE_WAGE, while
+  // BASE_WAGE only ever prices a building's workforce. Nothing sums wages into pop income, so the pair
+  // cannot contradict itself here. Deriving the wage from SoL (F26) would have forced SoL 3.75 to get a
+  // two-thirds wage, which is a starving population, not a poor one.
+  // ⚠ It DOES depart from a measured relation: F26 fitted wage-to-SoL on the real game, so this scenario
+  // asserts a pair vanilla would not produce. Fine for a synthetic era premise, NOT fine if a scenario is
+  // ever scored against measured game data — say so before doing that.
+  { era: 0, year: 1780, sol: 7, base_wage: 0.040317, lead: 0, label: 'pre-industrial, c.1780' },
+  { era: 1, year: 1836, sol: 8,  lead: 2, label: 'a reasonably modern country, c.1836' },
+  { era: 2, year: 1870, sol: 10, lead: 3, label: 'c.1870' },
+  { era: 3, year: 1900, sol: 12, lead: 4, label: 'c.1900' },
+  { era: 4, year: 1920, sol: 14, lead: 5, label: 'c.1920' },
+  { era: 5, year: 1945, sol: 16, lead: 5, label: 'c.1945' },
 ];
 // FINDINGS F26: the slope is the buy-package curve's own exponent, 1/ln(1.1).
 export const baseWage = sol => Math.exp((sol - 37.43) / 10.49);
 
 // Profit targets, as a fraction. "current" = the newest tier a country of this era can build.
-const TARGET = { current: 0.20, minus1: -0.05, minus2: -0.30 };
+// ⚠ THE VALUES MOVED WITH THE PLACEMENT RULE (see ERAS above); the KEYS still mean what they say —
+// `current` is the LEADING tier, `minus1` the one below it, `minus2` two below.
+// Under the old rule the leading tier was also the dominant one, so `minus1` described a tier already on
+// its way out and −5% was right. Now the tier one below the leading one is the WORKHOLD that carries most
+// of the market's levels, and a workhorse held at −5% shrinks instead of dominating — the count solver
+// sizes by profit, so a negative target on the bulk of the economy contradicts the placement it is meant
+// to produce. +5% keeps it worth running and still clearly behind the leader; the tail absorbs the
+// obsolescence at −20% instead of −30%, because it is now only two rungs from the frontier, not three.
+const TARGET = { current: 0.20, minus1: 0.05, minus2: -0.20 };
 // A PLATEAUED industry's last tier is the best that will ever exist, so it cannot be allowed to go
 // unprofitable — but holding it at the full `current` target props its own older tiers up with it (the
 // price is the only thing they share), and obsolescence stops dead. +5% is the compromise: still worth
@@ -300,7 +355,7 @@ function tierTarget(L, age) {
 const P = ERAS.map(() => { const o = {}; for (const g in S.PRICES) o[g] = 100; return o; });
 
 function setEraPrices(eIx) { for (const g in S.PRICES) S.thresholds[g] = P[eIx][g]; }
-function setEraWage(eIx) { S.BASE_WAGE = baseWage(ERAS[eIx].sol); }
+function setEraWage(eIx) { S.BASE_WAGE = (ERAS[eIx].base_wage != null ? ERAS[eIx].base_wage : baseWage(ERAS[eIx].sol)); }
 
 // value of a goods map at era eIx's prices
 const valAt = (map, eIx) => { let v = 0; for (const g in map) v += map[g] * (S.PRICES[g] || 0) * (P[eIx][g] / 100); return v; };
@@ -370,6 +425,21 @@ function priceForRawTarget(good, eIx) {
 // Chosen per ERA, because availability and profitability both move with the era: automation only pays
 // once labour is dear relative to the engines and electricity it consumes, which is exactly the
 // behaviour the design wants to emerge rather than be asserted.
+// ⭐ WHICH SCENARIO A TIER IS SOLVED IN: THE ONE WHERE IT IS DOMINANT, i.e. scenario N holds tier N as its
+// workhorse. That is one scenario per tier and one tier per scenario, so every rung is solved exactly once
+// and none is orphaned.
+//
+// ⚠ IT USED TO BE `era - 1` — the scenario where the tier LEADS — and that broke twice. First on era 0:
+// a t0 tier gave index -1 and killed the solver outright. Then on the lead sequence [0,2,3,4,5,5], where
+// `lead` never equals 1, so TIER 1 LED NOWHERE: it was solved against the 1780 market that no longer
+// contains it, and read at 1836 prices it came out ~100% over target. Era 1's 68pp mean miss was that.
+//
+// ⚠⚠ AND SOLVING THE LEADING TIER WAS BACKWARDS ANYWAY. It tunes the token minority to +20% and lets the
+// workhorse float. Tuning the WORKHORSE to a modest +5% instead lets the ladder emerge from the output
+// ladder rather than being asserted: the leading tier is the same good at the same price with better
+// technology and a flat wage bill, so it floats ABOVE on its own, and the tail floats below as the price
+// path deflates under it. Three separate target numbers stop fighting each other.
+const eIxOf = e => Math.max(0, Math.min(ERAS.length - 1, e));
 const PMSEL = ERAS.map(() => ({ tiers: {}, refs: {} }));   // era -> {tiers:{key:{pmg:pm}}, refs:{b:{pmg:pm}}}
 
 function chooseEraPMs(eIx) {
@@ -532,8 +602,8 @@ for (let iter = 0; iter < ITERS; iter++) {
   lastReport = [];
   for (const L of LADDER) {
     if (!L.follows) continue;                  // ports/railways stay on vanilla economics
-    restorePMs(L.era - 1);
-    const r = solveInputs(L, L.era - 1, tierTarget(L, 0));
+    restorePMs(eIxOf(L.era));
+    const r = solveInputs(L, eIxOf(L.era), tierTarget(L, 1));   // 1 = the DOMINANT target (+5%)
     lastReport.push({ L, r });
   }
   // residual: the largest relative price move this iteration, and where it was
@@ -593,7 +663,7 @@ for (const i of S.IND) {
       if (bad) misses.push({ id: i.id, era: L.era, at: x.era, age, got: p, tgt });
       return W((p >= 0 ? '+' : '') + (p * 100).toFixed(0) + '%' + (bad ? '!' : ' '), 9);
     });
-    setEraPrices(L.era - 1); setEraWage(L.era - 1); restorePMs(L.era - 1);
+    setEraPrices(eIxOf(L.era)); setEraWage(eIxOf(L.era)); restorePMs(eIxOf(L.era));
     const Iv = E.inputValue(t, true), Wv = E.wageCost(t);
     const wsh = (Iv + Wv) > 0 ? Wv / (Iv + Wv) : 1;
     const ins = Object.entries(t.inputs).map(([g, q]) => `${g} ${q}`).join(', ');
@@ -725,7 +795,7 @@ if (WRITE) {
       + 'SOLVED, not chosen: raw goods from the extraction/agriculture profit target, manufactured goods from '
       + 'the obsolescence rule, secondary-PM goods from their own marginal economics. See the file header of '
       + 'tools/era_solver.mjs for why the system is determined.',
-    eras: ERAS.map(x => ({ ...x, base_wage: +baseWage(x.sol).toFixed(6) })),
+    eras: ERAS.map(x => ({ ...x, base_wage: +(x.base_wage != null ? x.base_wage : baseWage(x.sol)).toFixed(6) })),
     targets: { current: TARGET.current, minus1: TARGET.minus1, minus2: TARGET.minus2,
                plateau: PLATEAU_TARGET, shipyard_penalty: SHIPYARD_PENALTY,
                extraction: RAW_TARGET.extraction, agriculture: RAW_TARGET.agriculture },

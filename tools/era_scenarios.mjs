@@ -38,22 +38,72 @@ const FIT = JSON.parse(readFileSync(join(REPO, 'config', 'era_prices.json'), 'ut
 // Total population and the peasant share, per era. A developed country growing through the period, and
 // shedding peasants as industry absorbs them — the brief's "we're supposed to lose peasants share as the
 // game progresses". Both are exogenous: they are the scenario's premise, not an output.
-const POP_TOTAL   = [20e6, 26e6, 34e6, 40e6, 46e6];
-// MEASURED off vanilla, not chosen (FINDINGS F28, peasant workforce ÷ 0.25 ÷ total pop, developed
-// countries): 1836 Austria 88% / Prussia 83% / France 79% / Britain 62% / Belgium 58%; 1870 ~55%;
-// 1900 ~30%; 1920 ~12%; 1935 0-10%.
+// ⭐ POPULATION IS THE SCENARIO'S PREMISE AND IT IS AUTHORITATIVE AGAIN. Broadly realistic totals for ONE
+// US-like country carried from 1780 to 1945 — the six scenarios are meant to read as one country growing,
+// not as six unrelated markets. Chosen, not derived; they are a design input.
+const POP_TOTAL   = [5e6, 13e6, 40e6, 75e6, 105e6, 150e6];
+// ⚠⚠ AND `popBoost` NO LONGER OVERRIDES THEM. It used to scale this number until the median main tier
+// cleared MIN_MAIN_LEVELS, which at era 1 meant ×9.5 — so the premise the solve actually ran was 190M
+// against a stated 20M, and the stated number was decoration. The floor and the premise disagreed and the
+// floor silently won. Now the premise wins and the floor is reported instead (see the "floored at 1 level"
+// line per era), because a scenario whose population nobody chose cannot be argued with.
 //
-// The old 60/45/30/20/12 was wrong at BOTH ends and it is the root of the era-1 failure. The job pool
-// forces full employment of the non-peasant population, so a 60% peasant share in 1836 makes the country
-// as industrial as Britain — the most industrialised on earth — which floods every manufactured market:
-// groceries, paper, steel and services all sat at the 25% price FLOOR while wood sat at the 175% ceiling,
-// and the wage bill reached 73% of gross output. At that point +20% is arithmetically unreachable
-// (cost ≤ 0.833·O, wages alone 0.73·O, leaving 0.10·O for inputs against a 4:1 ceiling demanding 0.25·O).
-const PEASANT_SHARE = [0.78, 0.55, 0.30, 0.12, 0.04];
+// ⚠ WHAT THIS DOES *NOT* FIX, measured: the model is SCALE-INVARIANT. Every price in it is a ratio of buy
+// to sell orders, so multiplying the whole market changes nothing except which tiers can hold a fraction
+// of a level. Pinning the population moved per-capita GDP by ~2% (growth ×5.62 -> ×5.61) while the
+// population itself moved 6x. Do not expect a population change to move a margin; expect it to move which
+// industries are stuck at one level.
+// ⭐ FRACTIONAL BUILDING LEVELS — the one lever that decouples POPULATION from BALANCE.
+//
+// §10.29's integer floor is the ONLY non-proportional thing in this model: every price is a ratio of buy
+// to sell orders, so scaling the whole market changes nothing EXCEPT that a tier wanting 0.4 levels cannot
+// have them and must sit at 1, flooding its own good until the price pins at a band edge and no recipe can
+// clear any target. That is why a small market breaks and a huge one does not — and why the populations
+// had to be absurd to make the balance work.
+//
+// A scenario is an abstraction, not a save game. Nothing downstream requires an integer: the count is a
+// multiplier on an order book, and we already model subsistence at FRACTIONAL staffed-level equivalents
+// for exactly this reason. Allowing a fraction here makes the model fully scale-invariant, which means the
+// population becomes a free NARRATIVE choice instead of a balance parameter fighting the floor.
+// `ERA_FRAC_LEVELS=0` restores the integer floor for A/B.
+// ⚠ DEFAULT OFF. A building level is an integer in the game and a scenario that reports 0.86 factories is
+// describing something that cannot exist — that outranks the metric. MEASURED cost of insisting on
+// integers: illogicality 43 (32 excluding) -> 48 (38), plus one industrial-ceiling breach returning at
+// era 1. It also REDISTRIBUTES rather than uniformly worsening — era 5 goes 15 -> 7 while eras 0-2 get
+// worse — so the 5-point total is inside the jaggedness the five-point rule warns about anyway.
+// `ERA_FRAC_LEVELS=1` restores fractions for A/B; it is what decouples population from balance, so it is
+// the switch to reach for when asking "is this a scale problem?".
+const FRAC_LEVELS = process.env.ERA_FRAC_LEVELS === '1';
+const MIN_LEVEL = FRAC_LEVELS ? 0.01 : 1;
+const lvl = x => FRAC_LEVELS ? Math.max(MIN_LEVEL, Math.round(x * 100) / 100) : Math.max(1, Math.round(x));
+const POP_BOOST_ON = process.env.ERA_POP_BOOST === '1';   // the old behaviour, for A/B only
+// ⭐ A US-LIKE PATH, because the POPULATION is US-like and the two have to describe one country.
+//
+// ⚠ THE OLD NUMBERS WERE CONTINENTAL EUROPE. FINDINGS F28 measured 1836 Austria 88% / Prussia 83% /
+// France 79% / Britain 62% / Belgium 58% — and the USA is not in that list because it is the outlier:
+// measured 33.7% of workforce in 1836, less than half of Austria's. Asserting an Austrian peasant share
+// on top of an American population is what starved the early scenarios: the peasant share is what decides
+// how much INDUSTRIAL workforce a given headcount yields, and at 0.78 a 13M country produced 0.89M
+// workers where a real 1836 USA of 15.8M produced 4.7M. Roughly 3x the industrial base is recovered here
+// at exactly the same population.
+//
+//                              1780   1836   1870   1900   1920   1945
+//   ours (share of population)  0.80   0.45   0.35   0.22   0.12   0.04
+//   USA measured (of workforce)   -    0.337  0.478  0.416  0.281  0.040
+//   GBR measured (of workforce)   -    0.520  0.445  0.247  0.117  0.024
+//
+// The USA's own path is NOT monotone — it rises to 1870 and stays high to 1900, because the frontier was
+// still absorbing farmers while the east industrialised. We take a smooth decline instead: this is one
+// idealised advanced country, not a replay of American settlement, and a scenario ladder whose peasant
+// share goes UP in the middle would make every era-2/3 comparison read backwards.
+// 1780 has no vanilla counterpart at all (the game starts in 1836) and is a judgement: pre-industrial,
+// overwhelmingly agrarian, but not so much so that it cannot staff a workshop economy.
+const PEASANT_SHARE = [0.80, 0.45, 0.35, 0.22, 0.12, 0.04];
 // Share of GDP spent on the ARMY's goods upkeep, and the battalion mix. Era-appropriate weaponry only:
 // a 1935 army is not line infantry. 3 infantry battalions per artillery/armour battalion.
 const ARMY_GDP_SHARE = 0.05;
 const ARMY_MIX = {
+  0: [['combat_unit_type_line_infantry', 3], ['combat_unit_type_cannon_artillery', 1]],
   1: [['combat_unit_type_line_infantry', 3], ['combat_unit_type_cannon_artillery', 1]],
   2: [['combat_unit_type_skirmish_infantry', 3], ['combat_unit_type_mobile_artillery', 1]],
   3: [['combat_unit_type_trench_infantry', 3], ['combat_unit_type_shrapnel_artillery', 1]],
@@ -88,9 +138,30 @@ const ARMY_MIX = {
 // workforce, median across the eight vanilla 1836 markets. Soldiers are excluded here — they come from the
 // army — and so are laborers/machinists, which belong to buildings sized by their own rules (construction
 // at 10% of GDP, urban centres by urbanization). Vanilla's own soldier ratio would have been 0.0216.
-const PROF_RATIO = {
+const PROF_RATIO_1836 = {
   clerks: 0.0529, bureaucrats: 0.0174, clergymen: 0.0164, shopkeepers: 0.0121,
   aristocrats: 0.0078, capitalists: 0.0028, officers: 0.0024, academics: 0.0015,
+};
+// ⭐ THE NON-PRODUCTIVE WEDGE (`ERA_PROF_RAMP=k`, default 1 = today's behaviour, i.e. no ramp).
+//
+// The ratios above are an 1836 measurement applied UNCHANGED to all five eras, which is the one thing the
+// comment below already admits is wrong. A real economy moves people OUT of production and into clerking,
+// administration and services as it industrialises, and that shift is what lets output per PRODUCTIVE
+// worker grow much faster than output per head — the wedge between the two quantities.
+//
+// `k` is the factor at ERA 5; eras in between are interpolated geometrically from 1.0 at era 1. Applied to
+// every entry, because the whole non-productive block moves together and we have no per-profession
+// late-game measurement to say otherwise (no session carries `building_inventory` past 1836).
+//
+// ⚠ IT IS NOT A FREE DIAL. These people are employed, so they enter the non-peasant population (diluting
+// per-head output, which is the point) — but they also CONSUME, at middle- and upper-stratum buy packages,
+// and government administration buys paper and telephones. So the numerator moves too, and the net effect
+// has to be measured rather than assumed from the denominator alone.
+const PROF_RAMP = +(process.env.ERA_PROF_RAMP || 1);
+let PROF_RATIO = { ...PROF_RATIO_1836 };
+const setProfRatio = eIx => {
+  const f = Math.pow(PROF_RAMP, eIx / 4);
+  PROF_RATIO = Object.fromEntries(Object.entries(PROF_RATIO_1836).map(([k, v]) => [k, v * f]));
 };
 // WHICH BUILDING IS SIZED FROM WHICH PROFESSION — and, crucially, only for the REMAINDER.
 //
@@ -141,6 +212,40 @@ const SOLDIERS_PER_BATTALION = 1000;
 // manpower in the battalions themselves and its goods in each combat unit's upkeep), so placing them costs
 // the model nothing and gives the soldiers somewhere to be seen.
 const BARRACK_BLD = 'building_barrack';
+// HOW THE ARMY'S MANPOWER SPLITS BY PROFESSION — read from the barracks' active training PM, never guessed.
+// ⚠ No PM in the game employs soldiers or officers through `building_employment_*_add`, which is why a
+// scan for their employers finds none and both look like professions that do not exist. They come from
+// `profession_ratio`, which tools/extract_vanilla.ps1 now carries into ui/vanilla.js as `prof`.
+let MIL_SPLIT_WARNED = false, MIL_SPLIT_PM = null;
+// ⚠ IT PICKS THE PM ITSELF rather than reading the barracks' current selection, and that is not
+// belt-and-braces. advanceNonMarketPMs() skips any building at zero levels, and the barracks is placed by
+// setPops() — which runs AFTER it in the settle order — so the selection is whatever the first pass left
+// there. Every era came out on `no_organization` (97/3), including 1935, which should be running
+// `nco_incorporation` (80/20). Choosing here, by the same "latest era-available candidate" rule the rest
+// of the solver uses, makes the answer independent of settle order.
+function militaryProfessionSplit(era) {
+  const info = S.VAN.buildings[BARRACK_BLD] || {};
+  let best = null, bestEra = -1;
+  for (const pmg of (info.pmgs || [])) {
+    for (const pm of rules.candidates(pmg, era, new Set())) {
+      const r = S.VAN.pms[pm] || {};
+      if (!r.prof || !Object.keys(r.prof).length) continue;
+      const e = rules.pmEra(pm);
+      if (e >= bestEra) { bestEra = e; best = pm; }
+    }
+  }
+  if (best) {
+    const pr = S.VAN.pms[best].prof;
+    const tot = Object.values(pr).reduce((a, b) => a + b, 0);
+    if (tot > 0) { MIL_SPLIT_PM = best;
+      return Object.fromEntries(Object.entries(pr).map(([p, v]) => [p, v / tot])); }
+  }
+  // Fail LOUD and fall back to the old behaviour, rather than inventing a ratio that looks plausible.
+  if (!MIL_SPLIT_WARNED) { MIL_SPLIT_WARNED = true;
+    console.log('    ⚠ barracks training PM carries no profession_ratio — army filed as 100% soldiers.'
+      + ' Re-run tools/build.ps1 so ui/vanilla.js carries the `prof` block.'); }
+  return { soldiers: 1 };
+}
 const BATTALIONS_PER_BARRACK = 1;
 // ---------------------------------------------------------------------------------------------------
 // CONSTRUCTION IS SIZED BY ITS SHARE OF GDP, NOT BY A SHARE OF BUILDING LEVELS, and its method is FIXED.
@@ -301,7 +406,7 @@ const GDP_SHARE_WARN = 0.25;
 // market raises that tier's demand with everything else, so it can finally hold the fraction it wants.
 // ERA_MIN_LEVELS_MULT scales the whole ladder for A/B measurement; 1 = the values below.
 const MIN_LEVELS_MULT = +(process.env.ERA_MIN_LEVELS_MULT || 1);
-const MIN_MAIN_LEVELS_BY_ERA = [5, 5, 10, 10, 10].map(v => Math.round(v * MIN_LEVELS_MULT));
+const MIN_MAIN_LEVELS_BY_ERA = [5, 5, 5, 10, 10, 10].map(v => Math.round(v * MIN_LEVELS_MULT));
 // Place one level of the NEXT era's tier as a forward probe. Kept only as a switch to re-measure the
 // defect it caused (see `placement` below); it is off, and should stay off.
 const PROBE = process.env.ERA_PROBE === '1';
@@ -326,13 +431,15 @@ const SUPPORT_BLD = {
 // left at the engine base — say so rather than inventing a trend backwards.
 // ⚠ Set on S.POPM as well as here, so ui/econ.js's pop-demand maths (the per-head dependent factor) uses
 // the SAME number. Changing only the solver's copy would silently desync the two halves of the model.
-const WORK_RATIO_BY_ERA = [0.25, 0.25, 0.30, 0.33, 0.40];
+const WORK_RATIO_BY_ERA = [0.25, 0.25, 0.25, 0.30, 0.33, 0.40];
 let WORK_RATIO = WORK_RATIO_BY_ERA[0];
 const SUBSISTENCE_JOBS_PER_LEVEL = 5000;
 const URBAN_PER_LEVEL = 100;   // FINDINGS F13
 // Which professions land in which consumption stratum (V3's own strata).
 const STRATUM = {
-  lower:  ['laborers', 'farmers', 'machinists', 'soldiers', 'servicemen'],
+  // ⚠ NO `servicemen`. The game's own defines say SERVICEMEN_POP_TYPE = "soldiers" — "servicemen" is
+  // V3's word for enlisted military pops, not a pop type; common/pop_types holds 15, and none is it.
+  lower:  ['laborers', 'farmers', 'machinists', 'soldiers'],
   middle: ['shopkeepers', 'clerks', 'engineers', 'bureaucrats', 'academics', 'clergymen', 'officers'],
   upper:  ['aristocrats', 'capitalists'],
 };
@@ -589,6 +696,23 @@ const SKIP_GOODS = new Set(['gold']);
 const SKIP_TARGET_BLD = new Set(['building_gold_mine', 'building_gold_field']);
 // profit target for the ERA-CURRENT tier of an industry (the one whose margin the price has to deliver)
 function currentTargetFor(ind) { return TG.current + (SHIP_INDUSTRIES.has(ind.id) ? TG.shipyard_penalty : 0); }
+// …and for the tier a scenario is actually built around. The DOMINANT tier is the one solved (see
+// era_solver's eIxOf): tune the workhorse, let the leading tier float above it and the tail below.
+// ⭐ A PLATEAUED INDUSTRY'S LAST TIER IS ITS DOMINANT TIER FOREVER.
+// Past its ladder's end no rung matches the scenario era, so the dominant lookup found NOTHING and the
+// whole industry went unsolved — food, textile and furniture reached 1945 carrying recipes fitted at eras
+// 3 and 4 against a wage 21% lower, and whether their rungs came out correctly ordered was luck. For food
+// it did not: e4 read 0% against e3's +7%, the newest tier losing to the one below it.
+// PLATEAU_TARGET was already 0.05 and the dominant target is 0.05, so this makes the two rules one rule
+// rather than two ideas that happened to agree.
+function domTierOf(p, era) {
+  const exact = p.rows.find(r => r.t.era === era);
+  if (exact) return exact.t;
+  if (p.ind.ladder_end !== 'plateau' || !p.rows.length) return null;
+  const best = p.rows[0].t;                       // rows[0] is the highest tier this scenario contains
+  return (era > best.era) ? best : null;
+}
+function dominantTargetFor(ind) { return TG.minus1 + (SHIP_INDUSTRIES.has(ind.id) ? TG.shipyard_penalty : 0); }
 // ...and for a reference producer, by the UI's taxonomy
 const EXTRACTION_CATS = new Set(['mining', 'logging', 'oil', 'rubber', 'fishing_whaling']);
 const AGRICULTURE_CATS = new Set(['farms', 'plantations', 'ranching']);
@@ -695,6 +819,26 @@ const SETTLE_TRACE = process.env.ERA_SETTLE_TRACE === '1';   // print the contin
 const COUNT_DEADBAND = process.env.ERA_COUNT_DEADBAND != null ? +process.env.ERA_COUNT_DEADBAND : 8;
 const COUNT_DEADBAND_OUT = process.env.ERA_COUNT_DEADBAND_OUT != null ? +process.env.ERA_COUNT_DEADBAND_OUT
                                                                      : Math.max(COUNT_DEADBAND, 15);
+// ⚠⚠ VANILLA TECH ERAS START AT 1; OUR SCENARIO INDEX NOW STARTS AT 0. The gate below used to read
+// `tech_era[bt] > era`, which was right while era 1 was the earliest scenario — and silently became
+// "exclude everything" the moment era 0 existed, because every tech-gated building is vanilla era 1 or
+// later. It cost 1780 its ENTIRE raw sector: 23 of 25 raw producers excluded (every farm, ranch and
+// plantation on `enclosure`, every mine on `shaft_mining`, gold on `prospecting`, whaling on
+// `navigation`), leaving logging and fishing. Hence iron and coal sitting at the +75% ceiling with
+// sell = 0, and hence arms at +410% buying iron from a market that had no mines.
+//
+// The right mapping is the one the tier remap already uses: vanilla era 1 covers our tiers t0 AND t1
+// (it is "pre-1836", and 1780 is pre-1836), and vanilla eras 2..5 map 1:1 onto t2..t5. A building is
+// available in a scenario when the tier its tech maps to is within that scenario's LEADING tier.
+const vanTier = e => (e == null ? 0 : (e <= 1 ? 1 : e));
+const leadOfEra = e => { const c = FIT.eras[e]; return (c && c.lead != null) ? c.lead : e; };
+// ⚠ FLOORED AT 1, AND THAT IS NOT A FUDGE. This gate governs VANILLA REFERENCE buildings — mines, farms,
+// plantations — not our tiers, which `placement` handles via LEAD_TIER. Vanilla era 1 means "pre-1836",
+// and EVERY one of our scenarios is 1780 or later, so era-1 techs are available in all of them including
+// era 0. Keying this on the leading TIER instead re-broke 1780 the moment era 0 became a single-rung
+// scenario (lead 0 < tier 1), taking its mines and farms away again and putting iron and coal straight
+// back on the +75% ceiling with no producer.
+const techAllowed = (bt, era) => !bt || vanTier((S.VAN.tech_era || {})[bt]) <= Math.max(1, leadOfEra(era));
 const RESTRICTED = new Set();
 for (const i of S.IND) {
   for (const t of i.tiers) {
@@ -803,7 +947,7 @@ const hasNoBuyer = (good, era) => {
   // a vanilla reference building may eat it — check the ones this era can actually contain
   for (const b of E.refBuildings()) {
     const bt = (S.VAN.buildings[b] || {}).tech;
-    if (bt && (S.VAN.tech_era || {})[bt] > era) continue;
+    if (!techAllowed(bt, era)) continue;
     if ((E.selGoods(E.refSel(b)).in || {})[good] > 0) return false;
   }
   return true;
@@ -864,7 +1008,16 @@ function targetPrice(good, era) {
 
 function buildScenario(eIx) {
   const era = FIT.eras[eIx].era;
+  // The newest TIER this scenario may contain. Falls back to `era` so a stale era_prices.json (written
+  // before the six-scenario ladder) still runs with the old one-tier-per-era behaviour rather than
+  // silently placing nothing.
+  const LEAD_TIER = FIT.eras[eIx].lead != null ? FIT.eras[eIx].lead : era;
+  // A tier's recipe is solved ONCE, in the FIRST scenario where it leads. Tier 5 leads in both 1920 and
+  // 1935, and solving it in both would let the later scenario silently rewrite the recipe the earlier one
+  // reported its margins at — the §10.14.1 "reported a state it does not ship" failure, in a new place.
+  const SOLVE_HERE = eIx === 0 || (FIT.eras[eIx - 1].lead != null ? FIT.eras[eIx - 1].lead : eIx) !== LEAD_TIER;
   WORK_RATIO = WORK_RATIO_BY_ERA[eIx];
+  setProfRatio(eIx);                         // the non-productive wedge, ramped per era (ERA_PROF_RAMP)
   S.POPM.working_adult_ratio = WORK_RATIO;   // keep ui/econ.js's pop maths on the same number
   // ---- prices, wage, SoL --------------------------------------------------------------------------
   for (const g in S.PRICES) S.thresholds[g] = FIT.prices[eIx][g] != null ? FIT.prices[eIx][g] : 100;
@@ -899,7 +1052,11 @@ function buildScenario(eIx) {
   for (const i of S.IND) {
     if (extinctBy(i.id, era)) continue;                  // declared extinct and two eras past its end
     const sorted = [...i.tiers].sort((a, b) => a.era - b.era);
-    const avail = sorted.filter(t => t.era <= era
+    // ⚠ THE CEILING IS THE SCENARIO'S LEADING TIER, NOT ITS OWN INDEX. A scenario's dominant tier lags its
+    // leading tier by one (see ERAS in era_solver.mjs), so scenario 1 (1836) may hold up to tier 2 while
+    // tier 1 remains the bulk. Reading `t.era <= era` here is what made the 1836 scenario a pure tier-1
+    // economy — a 1750 market wearing an 1836 label — against a vanilla 1836 start that is 45% tier 2.
+    const avail = sorted.filter(t => t.era <= LEAD_TIER
       && !Object.keys(t.inputs || {}).some(g => GONE.has(g)));   // its input has no supplier left
     if (!avail.length) continue;
     // ⚠ WITHHELD IS NOT THE SAME AS ABSENT. An industry nothing buys from is pinned to ZERO levels rather
@@ -927,7 +1084,7 @@ function buildScenario(eIx) {
     // Drake's well post-dates by 23 years, and with rubber plantations a century early. `buildings[b].tech`
     // is the vanilla unlocking technology; its era is remapped 1:1 onto ours like every other tech gate.
     const bt = (S.VAN.buildings[b] || {}).tech;
-    if (bt && (S.VAN.tech_era || {})[bt] > era) return false;
+    if (!techAllowed(bt, era)) return false;
     if (E.isSubsistenceBuilding(b) || isUrban(b) || isMilitary(b) || isSupport(b)) return false;
     if ((S.VAN.buildings[b] || {}).unique) return false;
     const out = E.selGoods(E.refSel(b)).out;
@@ -969,7 +1126,7 @@ function buildScenario(eIx) {
       // makes it oversupplied by construction, crashes its price and guarantees a loss — the floor has to
       // be reached by making the ECONOMY bigger, not by overbuilding one industry into it. See popBoost.
       for (const r of p.rows) {
-        const base = r.fixed != null ? r.fixed : Math.max(1, Math.round(s * r.weight));
+        const base = r.fixed != null ? r.fixed : lvl(s * r.weight);
         // `minCount` is the POST-SOLVE TUNER's floor (free entry, below). During the solve it is empty, so
         // this is a no-op; afterwards it holds counts the tuner added and the solver must not undo.
         S.BLDNUM[r.t.key] = Math.max(base, minCount[r.t.key] || 0);
@@ -979,7 +1136,7 @@ function buildScenario(eIx) {
       if (dropped.has(b)) continue;
       // a fixed-count producer is placed at its stated number, never at the solved one
       if (fixedRef[b] != null) { if (fixedRef[b] > 0) S.BLDNUM[b] = fixedRef[b]; continue; }
-      S.BLDNUM[b] = Math.max(1, Math.round(scaleOf['R:' + b]));
+      S.BLDNUM[b] = lvl(scaleOf['R:' + b]);
     }
   };
   // THROUGHPUT per building, by sector. Applied to everything the scenario places, and carried in the
@@ -1044,7 +1201,7 @@ function buildScenario(eIx) {
     // at all. Depending on the return shape of the forked half of the model is not worth the brevity.
     const cost = E.thruMult(CONSTRUCTION_BLD) * E.goodsVal(E.selGoods(E.refSel(CONSTRUCTION_BLD)).in, true);
     if (!(cost > 0) || !(gross > 0)) return;
-    S.BLDNUM[CONSTRUCTION_BLD] = Math.max(1, Math.round(CONSTRUCTION_GDP_SHARE * gross / cost));
+    S.BLDNUM[CONSTRUCTION_BLD] = lvl(CONSTRUCTION_GDP_SHARE * gross / cost);
   }
 
   // COUNTS CHASE THE PRICE PATH, not the margin. A good trading ABOVE its target is under-supplied, so
@@ -1169,9 +1326,11 @@ function buildScenario(eIx) {
     // At those prices, the era-current tier of each industry re-solves its INPUT volumes to hit its
     // target. This is the same lever Phase A used; it just now runs against realised prices.
     for (const p of placement) {
-      const cur = p.rows[0].t;
-      if (cur.era !== era || p.ind.follows_be === false) continue;
-      solveInputsAt(p.ind, cur, currentTargetFor(p.ind));
+      // the DOMINANT tier of this scenario — the one whose era IS this era. Exactly one per industry,
+      // and the only rung this scenario tunes.
+      const dom = domTierOf(p, era);
+      if (!dom || p.ind.follows_be === false) continue;
+      solveInputsAt(p.ind, dom, dominantTargetFor(p.ind));
     }
 
     // COUNTS chase the profit target. Supply and margin move opposite ways, so: earning more than the
@@ -1205,7 +1364,9 @@ function buildScenario(eIx) {
     if (!mains.length) break;
     const med = mains[Math.floor(mains.length / 2)];
     const MIN_MAIN_LEVELS = MIN_MAIN_LEVELS_BY_ERA[eIx];
-    if (med >= MIN_MAIN_LEVELS || popBoost >= POP_BOOST_CAP) break;
+    // Under the USA anchor the population is the measurement, so it may not be scaled to clear the
+    // integer floor — the floor is exactly what the anchor is replacing.
+    if (!POP_BOOST_ON || med >= MIN_MAIN_LEVELS || popBoost >= POP_BOOST_CAP) break;
     popBoost = Math.min(POP_BOOST_CAP, popBoost * Math.min(3, MIN_MAIN_LEVELS / Math.max(1, med)));
   }
   }
@@ -1263,7 +1424,8 @@ function buildScenario(eIx) {
       settle(); syncPrices();
       for (const p of placement) {
         const cur = p.rows[0].t;
-        if (cur.era === era && p.ind.follows_be !== false) solveInputsAt(p.ind, cur, currentTargetFor(p.ind));
+        const dm = domTierOf(p, era);
+        if (dm && p.ind.follows_be !== false) solveInputsAt(p.ind, dm, dominantTargetFor(p.ind));
       }
       stepCounts(gain, 0.5);
       settle(); syncPrices();
@@ -1525,7 +1687,7 @@ function buildScenario(eIx) {
         if (!(per > 0)) continue;                     // this building does not employ that profession
         const want = wProd * (PROF_RATIO[prof] || 0);
         const elsewhere = employedOf(prof, bld);      // includes PRODUCTIVE employers — e.g. art academies
-        S.BLDNUM[bld] = Math.max(1, Math.round(Math.max(0, want - elsewhere) / per));
+        S.BLDNUM[bld] = lvl(Math.max(0, want - elsewhere) / per);
       }
     }
     // URBAN CENTRES — derived, never placed: floor(Σ urbanization / 100), FINDINGS F13.
@@ -1558,9 +1720,22 @@ function buildScenario(eIx) {
     // A battalion is 1 000 serving soldiers; they are working adults, so the people behind them are
     // 1 000 ÷ the working-adult ratio. They are lower-stratum consumers like any other wage earner.
     const battalions = Object.values(S.UNITNUM).reduce((a, c) => a + c, 0);
-    const soldierWorkforce = battalions * SOLDIERS_PER_BATTALION;
-    byStratum.lower += soldierWorkforce;
-    byProf.soldiers = (byProf.soldiers || 0) + soldierWorkforce;
+    const milWorkforce = battalions * SOLDIERS_PER_BATTALION;
+    // ⚠ 1 000 per battalion is TOTAL manpower and it is NOT all soldiers. Vanilla splits it in the
+    // barracks' own training PM — `profession_ratio = { soldiers = 97 officers = 3 }`, running to 75/25
+    // as the method improves. advanceNonMarketPMs() has already put the barracks on the NEWEST method the
+    // era allows (later ones are strictly better and always taken), so reading the ratio off the live
+    // selection makes the split era-correct for free instead of hard-coding a second copy of a vanilla number.
+    // ⚠ OFFICERS ARE MIDDLE STRATUM, soldiers LOWER. Omitting them did not lose people — it filed 3-25%
+    // of the army in the wrong, poorer consumption class, so the scenario under-bought middle-class goods.
+    const milSplit = militaryProfessionSplit(era);
+    let soldierWorkforce = 0;
+    for (const p in milSplit) {
+      const n = milWorkforce * milSplit[p], st = stratumOf(p);
+      if (st) byStratum[st] += n;
+      if (n) byProf[p] = (byProf[p] || 0) + n;
+      if (p === 'soldiers') soldierWorkforce = n;
+    }
     // …and give them somewhere to be: barracks host the battalions, employ nobody and consume nothing, so
     // placing them adds no goods demand and no double-counted wages.
     if (S.VAN.buildings[BARRACK_BLD] && battalions > 0)
@@ -1787,7 +1962,10 @@ for (let e = 0; e < FIT.eras.length; e++) {
   console.log(`\n--- era ${meta.era}  (${cfg.year}, "${cfg.label}")  SoL ${cfg.sol}  base wage £${cfg.base_wage.toFixed(4)}/wk`);
   console.log(`    pops ${fmtN(S.POPS.total)}  = upper ${fmtN(S.POPS.upper)} · middle ${fmtN(S.POPS.middle)} · lower ${fmtN(S.POPS.lower)} · peasants ${fmtN(S.POPS.peasants)} (${Math.round(100 * S.POPS.peasants / S.POPS.total)}%)`);
   console.log(`    buildings ${fmtN(levels)} levels (${fmtN(subs)} subsistence, ${fmtN(S.BLDNUM.building_urban_center || 0)} urban centres)  jobs ${fmtN(meta.jobs)}`);
-  console.log(`    GDP proxy £${fmtN(Math.round(meta.gdp))}/wk   army ${fmtN(Object.values(S.UNITNUM).reduce((a, c) => a + c, 0))} battalions at ${Math.round(ARMY_GDP_SHARE * 100)}% of it`);
+  const milS = militaryProfessionSplit(meta.era);
+  const milPm = MIL_SPLIT_PM || '(none)';
+  console.log(`    GDP proxy £${fmtN(Math.round(meta.gdp))}/wk   army ${fmtN(Object.values(S.UNITNUM).reduce((a, c) => a + c, 0))} battalions at ${Math.round(ARMY_GDP_SHARE * 100)}% of it`
+    + `, split ${Object.entries(milS).map(([p, v]) => p + ' ' + Math.round(v * 100) + '%').join(' / ')} by ${milPm.replace(/^pm_/, '')}`);
   const floored = hits.filter(h => h.floored);
   console.log(`    PROFIT TARGETS at the realised prices: ${onTgt}/${scored.length} within 8pp, mean |off| ${(meanOff * 100).toFixed(1)}pp`
     + (floored.length ? `  (+${floored.length} floored at 1 level — market too small for even one)` : ''));

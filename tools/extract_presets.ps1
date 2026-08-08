@@ -573,7 +573,7 @@ function Get-ProfessionPops($memberTags) {
 # professions into strata with this same map, and a disagreement would make the UI's totals contradict the
 # preset's own `pops` block.
 $PROF_STRATUM = @{
-    laborers='lower'; farmers='lower'; machinists='lower'; soldiers='lower'; servicemen='lower'
+    laborers='lower'; farmers='lower'; machinists='lower'; soldiers='lower'
     shopkeepers='middle'; clerks='middle'; engineers='middle'; bureaucrats='middle'; academics='middle'
     clergymen='middle'; officers='middle'; aristocrats='upper'; capitalists='upper'
 }

@@ -79,6 +79,22 @@ foreach ($name in $pBlocks.Keys) {
     $pmNoRel    = @(Get-ListTokens $pBlocks[$name] 'disallowing_religions' '')
     # Goods values are NOT always integers: subsistence / urban-centre / agro PMs use fractions
     # (grain 1.0, fabric 0.5, meat 0.33, ...). Matching only \d+ silently truncated those to 0.
+    # PROFESSION RATIO — how a MILITARY building splits its manpower between soldiers and officers.
+    # ⚠ This is NOT `building_employment_*_add`, and that is why it was invisible: no PM in the entire
+    # game employs `soldiers` or `officers` through the normal employment path, so a scan for employers
+    # finds none and the professions look like they simply do not exist. They come from
+    # `profession_ratio = { soldiers = 97 officers = 3 }` inside the barracks/naval training PMs, which
+    # ranges 97/3 -> 75/25 as the training method improves. Without it every scenario has ZERO officers,
+    # and officers are a MIDDLE-stratum consumer.
+    $prof = [ordered]@{}; $inProf = $false
+    foreach ($l in $pBlocks[$name]) {
+        if ($inProf) {
+            if ($l -match '\}') { $inProf = $false }
+            elseif ($l -match '^\s*([a-z][a-z0-9_]*)\s*=\s*(\d+(?:\.\d+)?)\s*$') { $prof[$Matches[1]] = Get-Num $Matches[2] }
+            continue
+        }
+        if ($l -match 'profession_ratio\s*=\s*\{') { $inProf = $true; continue }
+    }
     foreach ($l in $pBlocks[$name]) {
         if     ($l -match 'goods_input_([a-z_]+)_add\s*=\s*(-?\d+(?:\.\d+)?)')  { $in[$Matches[1]]  = Get-Num $Matches[2] }
         elseif ($l -match 'goods_output_([a-z_]+)_add\s*=\s*(-?\d+(?:\.\d+)?)') { $out[$Matches[1]] = Get-Num $Matches[2] }
@@ -87,6 +103,7 @@ foreach ($name in $pBlocks.Keys) {
         elseif ($l -match 'unlocking_principles\s*=')                        { $gated = $true }  # power-bloc-gated (only active with a bloc principle) — UI must not default to it
     }
     $rec = [ordered]@{ in = $in; out = $out; emp = $emp; mods = $mods }
+    if ($prof.Count -gt 0) { $rec.prof = $prof }
     if ($gated) { $rec.gated = $true }
     if ($pmTech) { $rec.tech = $pmTech }
     if ($pmGate.Count -gt 0) { $rec.gate = $pmGate }

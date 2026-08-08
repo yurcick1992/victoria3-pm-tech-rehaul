@@ -914,7 +914,11 @@ the game.
   effects — a building contributes exactly its listed in/out × Number. The good-group **sections are individually
   foldable** (click the section header; `SCENFOLD` set). The **price column header carries the two price controls**
   (replacing the removed panel's lock toggle + reset button), wired by **event delegation** since the panel
-  re-renders: a **`locked` checkbox** (default **ON**) and a **`100%` button**. **Locked** = prices are manual —
+  re-renders: a **`locked` checkbox** (default **OFF**) and a **`100%` button**. ⚠ **Prices are UNLOCKED by
+  default — on load and after EVERY preset**, including presets that carry no prices of their own. Realised
+  prices are the whole design; a locked panel shows numbers the scenario in front of you did not produce, and
+  leaving a hand-locked price standing over someone else's order book is worse still. Locking is the
+  deliberate act (pin a price, see what it does), not the resting state. **Locked** = prices are manual —
   each price cell is an editable **% of base** (the old price-panel behaviour, now inline); the `100%` button
   (enabled only when locked) resets every good to 100%. **Auto** (unchecked) = prices are computed live from the
   orders via the **actual V3 formula** `price = base × [1 + 0.75·clamp((BUY−SELL)/min(BUY,SELL), ±1)]` (25–175%
@@ -946,8 +950,31 @@ the game.
   the first presets whose wage is derived rather than measured. Deliberately uniform and crude — meant
   to be diversified.
   **PRINCIPLE — a preset is a one-off overwrite, not a mode you sit in.** The instant you touch a field the
-  scenario is your own, so **nothing in the panel may claim you are "in" a preset**: no active-button highlight, no
-  standing description of the market / subsistence / lock state. Everything a preset knows about itself —
+  scenario is your own, so **nothing in the panel may claim you are "in" a preset**: no STICKY active-button
+  highlight, no standing description of the market / subsistence / lock state.
+  ⚠ **What this forbids is an assertion that can go STALE, not the fact itself.** A preset button carries a
+  **`.same` ✓ badge** meaning *"pressing this would change nothing"* — DERIVED from the live state on every
+  render, so it vanishes the instant anything diverges and returns if you undo. It never claims you are "in"
+  anything and it cannot lie, which is the property the rule was protecting. Built exactly like the recipe
+  badge: `scenarioSnapshot()` is the one definition of the scenario, shared by the fingerprint AND by
+  save/restore. Three things it had to learn, each of which produced a wrong badge first:
+  (1) **a preset's result depends on the state it is applied from** — several write prices, SoL, base wage or
+  the working-adult ratio only when they carry one — so there is NO per-preset cache; the probe applies the
+  preset *from here* through the real `applyScenarioPreset(id, quiet)` and asks whether the state moved;
+  (2) **in AUTO price mode `thresholds` are derived, not state** (render recomputes them from the order
+  book), and the quiet probe does not render — so the probe calls **`syncScenarioPrices()` itself**. Prices
+  are then compared **unconditionally**, which is what keeps a price EDIT clearing the badge, while the
+  **lock toggle is deliberately NOT in the key at all**: locked-vs-auto changes how a price is *decided*,
+  not what the market *is*, so flipping it must leave the badge alone.
+  ⚠⚠ **An earlier attempt excluded prices from the SNAPSHOT instead, and that was destructive** — the
+  snapshot is what `scenarioRestore()` puts back, so a field filtered out of it is a field **destroyed** on
+  the next probe. It emptied the live price table on every refresh; auto mode's own recompute silently
+  repaired it, so the damage only surfaced once the panel was **locked** and every price read **£NaN**. The
+  snapshot is faithful and complete; normalisation for comparison happens in the fingerprint;
+  (3) **`REFSEL` is part scenario, part lazy default** — `refSel()` fills each PMG's base PM the first time a
+  reference building is RENDERED, so it is populated after a click and empty after a quiet probe; entries
+  equal to the default are normalised away. Full pass over ~22 presets costs ~50 ms, so it runs immediately
+  from `render()` and **debounced 200 ms** from `updateComputed()`. Everything a preset knows about itself —
   market members, building types + levels, the pop split, the subsistence staffing sum, treaty transfers,
   the price-lock state, the measured base wage, the derived urban-centre count — is reported **once, in the
   banner**, by `presetReportHTML()` when it is applied. The bar itself holds only live
@@ -1320,23 +1347,50 @@ the game.
   group's Tier-1). **Group locks:** each card header has a 🔒 lock toggle (plus toolbar `🔒 all` / `🔓
   all`); a locked group is **excluded from every mass editor** — the **Restore-defaults** preset, the sheet
   payback buttons, and its own group/tier payback buttons (which grey out) — while manual field edits stay
-  allowed. Locks are UI-session state (reset on reload). The **Restore defaults** button resets each in-scope
-  **unlocked** group to its as-loaded config values (target BE, volumes, build cost, ai_value, secondary PMs)
-  — i.e. what a page refresh produces, but honoring current locks (a page refresh restores all defaults **and**
-  lockedness). The **Bring to vanilla** button (same scope selector + lock honoring) resets each in-scope
-  **unlocked** split building *toward base-game values*: every tier's output+inputs become its `vanilla_pm`'s
-  recipe (read live from `vanilla.js`), its `ai_value` becomes the **pre-split vanilla building's** value
+  allowed. Locks are UI-session state (reset on reload).
+  **⭐⭐ THE SHEET IS TWO THINGS IN A TRENCHCOAT, AND THE SEAM IS NOW EXPLICIT.** One is the **RECIPE BOOK** —
+  every tier's `output_qty` + `inputs` and the `pm_goods` overrides, i.e. exactly what the builder EMITS to
+  the game. The other is the **SCENARIO** — building counts, pops, wages, workforce ratios, PM selections,
+  prices — which is session-only and never emitted. Two recipe books exist, switched by the two **red**
+  buttons at the front of the header: **`recipes: vanilla`** (every tier's `vanilla_pm` recipe read live from
+  `vanilla.js`; a tier we invented has no vanilla PM, so its entry is **interpolated** along the ×1.5 ladder
+  from the nearest anchored tier — the same rule `build_era_ladder.mjs` seeds an invented tier with, so the
+  two agree by construction) and **`recipes: mod`** (the config as loaded). Both are **whole-sheet and ignore
+  locks** — which book you are on is a mode, not a per-group tuning decision — and neither touches the
+  scenario.
+  **RED MEANS IT WRITES THE RECIPE BOOK.** Exactly three buttons are red: the two above and **`solve →
+  targets`**. Everything else moves the scenario only. ⚠ **Scenario presets write no recipes at all** and
+  must stay that way — `applyScenarioPreset` touches `BLDNUM`, `REFSEL`, `_sec`, `POPS`, `SOL` and wages,
+  and nothing else.
+  **The "would this change anything?" badge is DERIVED, never tracked.** A recipe button dims (`.same`,
+  italic) when the sheet already holds that book. It is a comparison of canonical fingerprints recomputed
+  from the state itself — a few thousand numbers, no DOM, microseconds — called from **both** `render()`
+  (page load, book switch, preset) and `updateComputed()` (live field edit), because `render()` does **not**
+  call `updateComputed()`. ⚠ **`recipeSnapshot()` is the ONE definition of what a recipe is**, and both the
+  writer (`recipeApply`) and the fingerprint (`recipeKey`) consume that same shape. Keep it that way: two
+  lists would let a field added to the writer and forgotten in the fingerprint make the badge **lie**,
+  silently, for exactly the field somebody just added. Same reasoning as `ladderFaults()` having one
+  implementation. A maintained dirty-flag was rejected for the same reason — proof it is derived: undo a
+  manual edit and `.same` comes back, which a flag would never do.
+  The **Restore defaults** button resets each in-scope
+  **unlocked** group to its as-loaded config values (target BE, build cost, ai_value, secondary PMs)
+  — honoring current locks. ⚠ It **no longer touches volumes**: rebuilding tiers from the pristine config
+  silently reset `output_qty` + `inputs`, i.e. it was a recipe-book switch wearing a scenario button's
+  clothes. Use the red `recipes: mod` for those. The **Bring to vanilla** button (same scope selector + lock
+  handling) resets each in-scope
+  **unlocked** split building *toward base-game values*: its `ai_value` becomes the **pre-split vanilla building's** value
   (Tier-1 key = the vanilla base building; blank = engine default, e.g. tooling → 2000), its **`building_cost`**
   becomes the pre-split building's flat `required_construction` (the vanilla `construction_cost_*` script value:
   low 200 / medium 400 / high 600 / very_high 800 — `VANILLA_CONSTRUCTION` in the UI, mirror
   `common/script_values/building_values.txt`), and its secondaries reset to base. `target_be` is left as-is, so
   BE then reflects vanilla economics (usually off-target/amber — expected).
-  **GUIDELINE — what "Bring to vanilla" must (not) touch:** it brings **everything** back to vanilla **except**
+  **GUIDELINE — what "Bring to vanilla" must (not) touch:** it brings back to vanilla **everything that is
+  neither recipe nor scenario** — `ai_value`, `building_cost`, secondary defaults — **except**
   (1) the *tier split itself* (the per-tier buildings that replaced one vanilla building stay split — this
   button is about values, not structure), and (2) any field the UI does **not** yet make editable **and**
-  emittable (today: **workforce**/`employment`). Everything else that is editable+emittable — output, inputs,
-  `ai_value`, `building_cost`, secondary-PM goods — must reset to the base-game value. Uphold this as we add
-  fields: when a field becomes editable+emittable, wire it into Bring-to-vanilla too. *(Future: give every
+  emittable (today: **workforce**/`employment`). ⚠ **Output, inputs and `pm_goods` are NO LONGER its job** —
+  they are the recipe book's, and `recipes: vanilla` owns them. Uphold this as we add
+  fields: when a field becomes editable+emittable, wire it into whichever of the two it belongs to. *(Future: give every
   building a "vanilla root" — the recorded base-game values — so any building, not just the tier-split ones,
   can be brought to vanilla.)* More named presets will come later. **Base `ai_value`**
   (building AI construction desire) is editable everywhere: on **our tier rows** (per-tier `ai_value` in the
@@ -1429,8 +1483,16 @@ the game.
   every language file, because untranslated keys show as raw `<key>` placeholders for non-English
   players (no reliable English fallback). This is handled by the builder; you never write loc by
   hand. See MODDING_NOTES.md → Localization. In-game building names are auto-formatted as
-  `Tier N. <name>. BE target <actual on-build full BE>%` (e.g. "Tier 1. Bakery Food Industries. BE target 140%";
+  `Era N. <name>. BE target <actual on-build full BE>%` (e.g. "Era 1. Bakery Food Industries. BE target 140%";
   BE here is the wage-inclusive full break-even).
+  ⚠⚠ **N IS THE ERA, NEVER A POSITION — in the game, in the UI and in the config alike.** It used to be a
+  1-based count of emitted tiers, which made the same digit mean different vintages in different industries:
+  the automotive industry's first building is era 3 and shipped as "Tier 1", while arms' era-2 rung shipped
+  as "Tier 2" and rendered as "T3" in the scenario panel. Three numberings, all disagreeing. **An industry
+  legitimately starts at "Era 3" or "Era 4" and that IS the statement** — the missing lower rungs are the
+  claim that the industry did not exist yet, not a gap to be papered over by renumbering from 1.
+  ⚠ The UI's `t.tier` field survives as a 1-based DOM key and `data-` attribute ONLY; every user-facing
+  label goes through `tlab(t)` and reads the era. Do not print `t.tier`.
 - **After an in-game load, check `error.log`** (see MODDING_NOTES.md) — the linter checks
   economics, not engine errors. The builder also emits a **self-diagnostic** on_action
   (`mod/common/on_actions/zzz_pm_rehaul_diag.txt`) that logs a `PM_TECH_REHAUL: init OK … (build <ts>)`
