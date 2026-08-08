@@ -332,6 +332,31 @@ const SHRINK_STEPS = +(process.env.ERA_SHRINK_STEPS || 2000);
 // May the reduction cut URBAN CENTRES as well as our tiers? See the F13 block in `addSupport` for why
 // their entitlement is a ceiling rather than a count. `ERA_URBAN_SHRINK=0` restores the old behaviour.
 const URBAN_SHRINK = process.env.ERA_URBAN_SHRINK !== '0';
+
+// ⭐⭐ SCALE LIMITS — HARD SOLVER CONSTRAINTS on how many of a thing a country may hold (user, 2026-08-08).
+// The count controller has no notion of a resource deposit, so a good whose price keeps asking for supply
+// keeps getting it. These are the bound.
+// ⚠ They are JUDGEMENT CALLS, stated as such, and deliberately NOT derived from vanilla's
+// `capped_resources`: that file distinguishes potential slots from slots exploitable at a given date, and
+// reading one as the other is how a check like this becomes confidently wrong.
+// ⚠ WHALING IS THE ONE THAT NEEDED THIS. It produces OIL and is ungated by technology, so the controller
+// used it as an unbounded substitute oil source exactly when oil demand exploded: the series across the six
+// eras ran 2 / 19 / 1 / 9 / 47 / **440**, which is not a trajectory but a quantity nothing was bounding —
+// and historically whaling was in steep DECLINE by 1945, so 440 is the wrong sign as well as the wrong
+// magnitude. The others are guardrails; this one is a fix.
+const SCALE_LIMIT = { whaling: 30, fishing: 100, oreOrLogging: 1000, plantation: 300, agriculture: 3000 };
+const scaleCat = b => PMECON.GRPCAT[(S.VAN.buildings[b] || {}).group || ''] || '';
+const isScaleAgri = b => { const c = scaleCat(b); return c === 'farms' || c === 'plantations' || c === 'ranching'; };
+// The per-building ceiling. `Infinity` for anything these bounds do not name, so an unlisted building is
+// unconstrained rather than silently pinned at a default.
+const scaleCapOf = b => {
+  if (/whaling/.test(b)) return SCALE_LIMIT.whaling;
+  if (/fishing/.test(b)) return SCALE_LIMIT.fishing;
+  const c = scaleCat(b);
+  if (c === 'mining' || c === 'oil' || c === 'rubber' || c === 'logging') return SCALE_LIMIT.oreOrLogging;
+  if (c === 'plantations') return SCALE_LIMIT.plantation;   // per TYPE — 400 tea plantations is implausible
+  return Infinity;                                          // even where total acreage is not
+};
 // The futility guard: stop growing a producer when a step did not actually lower its margin (its good is
 // pinned at the 25% price floor, so supply cannot move it). Separately revertable — `ERA_PROFIT_CAP_FUTILITY=0`
 // restores the un-guarded behaviour, which is worth being able to reproduce: without it `tea_plantation`
@@ -1208,7 +1233,17 @@ function buildScenario(eIx) {
       if (dropped.has(b)) continue;
       // a fixed-count producer is placed at its stated number, never at the solved one
       if (fixedRef[b] != null) { if (fixedRef[b] > 0) S.BLDNUM[b] = fixedRef[b]; continue; }
-      S.BLDNUM[b] = lvl(scaleOf['R:' + b]);
+      S.BLDNUM[b] = Math.min(lvl(scaleOf['R:' + b]), scaleCapOf(b));
+    }
+    // ⭐ THE COMBINED AGRICULTURE BOUND is joint, so it cannot be a per-building clamp: if the total is
+    // over, every non-subsistence farm/plantation/ranch is scaled down together, which preserves the mix
+    // the price feedback chose and only removes the excess.
+    let agriTot = 0;
+    for (const b in S.BLDNUM) if (isScaleAgri(b)) agriTot += S.BLDNUM[b] || 0;
+    if (agriTot > SCALE_LIMIT.agriculture) {
+      const k = SCALE_LIMIT.agriculture / agriTot;
+      for (const b in S.BLDNUM) if (isScaleAgri(b) && S.BLDNUM[b] > 0)
+        S.BLDNUM[b] = Math.max(1, Math.floor(S.BLDNUM[b] * k));
     }
   };
   // THROUGHPUT per building, by sector. Applied to everything the scenario places, and carried in the
@@ -2350,6 +2385,36 @@ for (let e = 0; e < FIT.eras.length; e++) {
     + (meta.dropped.size ? `\n      dropped as unviable (${meta.dropped.size}): ` + [...meta.dropped].map(b => b.replace(/^building_/, '')).join(', ') : '')
     + (meta.protectedRaw.size ? `\n      ⚠ KEPT AT A LOSS — the market's only source, dropping them breached the ceiling: `
         + [...meta.protectedRaw].map(b => b.replace(/^building_/, '')).join(', ') : ''));
+  // ⭐ SCALE SANITY — now a VERIFICATION that the hard constraints in SCALE_LIMIT held, not a warning.
+  // The caps bind inside applyCounts, so anything printed here is a BUG in the constraint rather than a
+  // property of the economy. Kept because a constraint nobody checks is a constraint that silently stops
+  // being applied — the same reasoning as the landmine register.
+  {
+    const AGRI_LIM = SCALE_LIMIT.agriculture;
+    let wh = 0, fi = 0, agri = 0; const ore = {}, plant = {};
+    for (const b in S.BLDNUM) {
+      const n = S.BLDNUM[b] || 0; if (!(n > 0)) continue;
+      const c = scaleCat(b);
+      if (/whaling/.test(b)) wh += n;
+      else if (/fishing/.test(b)) fi += n;
+      else if (c === 'mining' || c === 'oil' || c === 'rubber' || c === 'logging') ore[b] = (ore[b] || 0) + n;
+      else if (isScaleAgri(b)) { agri += n; if (c === 'plantations') plant[b] = (plant[b] || 0) + n; }
+    }
+    const bad = [];
+    if (wh > SCALE_LIMIT.whaling) bad.push(`whaling ${wh}`);
+    if (fi > SCALE_LIMIT.fishing) bad.push(`fishing ${fi}`);
+    for (const b in ore) if (ore[b] > SCALE_LIMIT.oreOrLogging) bad.push(`${b.replace(/^building_/, '')} ${ore[b]}`);
+    for (const b in plant) if (plant[b] > SCALE_LIMIT.plantation) bad.push(`${b.replace(/^building_/, '')} ${plant[b]}`);
+    if (agri > AGRI_LIM) bad.push(`agriculture combined ${agri}`);
+    const at = [];
+    if (wh === SCALE_LIMIT.whaling) at.push(`whaling ${wh}`);
+    if (fi === SCALE_LIMIT.fishing) at.push(`fishing ${fi}`);
+    for (const b in ore) if (ore[b] === SCALE_LIMIT.oreOrLogging) at.push(`${b.replace(/^building_/, '')} ${ore[b]}`);
+    for (const b in plant) if (plant[b] === SCALE_LIMIT.plantation) at.push(`${b.replace(/^building_/, '')} ${plant[b]}`);
+    console.log(`    SCALE LIMITS (whaling ${SCALE_LIMIT.whaling} · fishing ${SCALE_LIMIT.fishing} · each ore/logging ${SCALE_LIMIT.oreOrLogging} · each plantation ${SCALE_LIMIT.plantation} · agriculture ${AGRI_LIM}): `
+      + (bad.length ? `⚠⚠ BREACHED — ${bad.join(', ')} (the cap failed to apply; this is a bug)`
+                    : at.length ? `held; AT the cap: ${at.join(', ')}` : 'held, nothing near a cap'));
+  }
   console.log(`    INDUSTRIAL CEILING: ${breach.length ? '⚠ ' + breach.length + ' consumable good(s) AT +75%' : 'clear — no consumable good at +75%'}`);
   for (const b of breach) console.log(`      ${b.g} buy ${fmtN(b.buy)} / sell ${fmtN(b.sell)}`
     + (b.orphan ? '   ⚠ NO PRODUCER AT ALL — no count can fix this' : '   from ' + b.src.join(', ')));

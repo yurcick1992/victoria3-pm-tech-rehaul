@@ -249,12 +249,27 @@ population, supplying **£2.28M of loss against £0.48M from the whole rest of t
 not belong in the model.** Its workforce is negligible and the job-pool rescale absorbs it.
 ⚠ Do not "fix" gold by giving it a buyer, a price floor or another exemption; it is out, and the
 `auNet`/`auLoss` line in `profitTotals` is kept purely as a **tripwire** that prints if one ever returns.
-⚠ **The USA — which these scenarios are referenced against throughout — has ZERO gold deposits in vanilla**
-(`map_data/state_regions`; the whole world holds 89). The right number of gold mines here was never "few",
-it was none. ⭐ And measured against vanilla's own caps the rest of extraction is FINE without a cap of its
-own — coal 0.4x the USA cap, logging 0.3x, oil 0.6x, iron 1.5x — because a working price signal bounds a
-count on its own. Gold ran away precisely because it had no signal at all. A deposit budget is therefore a
-low-priority addition, not a missing safeguard (§10.40.6).
+⚠ **The USA — which these scenarios are referenced against throughout — has ZERO gold deposits in vanilla.**
+The right number of gold mines here was never "few", it was none.
+
+**⭐⭐ SCALE LIMITS — HARD SOLVER CONSTRAINTS on building counts (§10.40.6).** The count controller has no
+notion of a resource deposit, so a good whose price keeps asking for supply keeps getting it. `SCALE_LIMIT`
+bounds it: **whaling 30 · fishing 100 · each ore/logging building 1000 · each plantation TYPE 300 ·
+non-subsistence agriculture combined 3000**. The first four are per-building clamps in `applyCounts`; the
+agriculture bound is **joint**, so an over-total scales every farm/plantation/ranch down together and
+preserves the crop mix the price feedback chose. Per plantation TYPE, because 400 tea plantations is
+implausible even where the total acreage is not.
+⚠ **Judgement calls, stated as such** — deliberately NOT derived from vanilla's `capped_resources`, which
+distinguishes *potential* slots from slots *exploitable at a given date*, and reading one as the other is
+how such a check becomes confidently wrong.
+⚠⚠ **WHALING IS WHY THIS EXISTS.** It produces **oil** and is **ungated by technology**, so the controller
+used it as an unbounded substitute oil source exactly when oil demand exploded — the count ran
+**2 / 19 / 1 / 9 / 47 / 440** across the six eras, when whaling was historically in steep **decline** by
+1945, so 440 was the wrong sign as well as the wrong magnitude. The other bounds are guardrails; this one is
+a fix. Also caught: fishing 106 at 1920 and iron 1 251 at 1945.
+⚠ The report's **SCALE LIMITS** line is a **verification, not a warning** — the caps bind during the solve,
+so a breach printed there is a bug in the constraint rather than a property of the economy. It also names
+anything sitting *at* a cap, since a binding constraint is a fact about the scenario worth seeing.
 
 **⭐⭐ GDP IS `52 × weekly VALUE ADDED`, MEASURED — NOT GROSS OUTPUT (FINDINGS F45).** Value added = building
 outputs − building **inputs**, at market prices; pops and trade are on neither side, because value added is a

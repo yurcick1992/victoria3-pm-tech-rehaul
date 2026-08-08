@@ -2934,41 +2934,57 @@ like a neutral widening and is not: it silently admits buildings whose margin is
 firms (subsistence). Each needs a stated position. A metric's population is part of its definition, and
 widening it is a change of measurement, not a change of coverage.
 
-### 10.40.6 There is no resource-deposit cap — but measured against vanilla's, only GOLD was ridiculous
+### 10.40.6 SCALE LIMITS — hard solver constraints on building counts, and the 440 whaling stations
 
-The removal was prompted by disbelief at one number in passing — *"there's no 527 gold mine slots in the
-whole world, I doubt there's 53"* — followed by the fair challenge that a major country plausibly holds
-hundreds or thousands of most other slots, so ordinary profit feedback might be keeping us sane anyway.
+Removing gold raised the wider question of what bounds an extraction count at all. Nothing did: the count
+controller has no notion of a resource deposit, so a good whose price keeps asking for supply keeps getting
+it.
 
-**Both halves are right, and the second is the more important one.** Vanilla stores the caps explicitly in
-`map_data/state_regions/*.txt` (`capped_resources`, plus `resource = { … undiscovered_amount }` for the
-discoverable ones). Summed:
+⚠ **An attempt to score this against vanilla's own `capped_resources` was made and is DELIBERATELY NOT
+KEPT.** Vanilla distinguishes *potential* slots from slots *exploitable at a given date*
+(`resource = { … undiscovered_amount }`, plus discovery gating), and reading one as the other is exactly how
+a check like this becomes confidently wrong. Set aside rather than refined.
 
-| resource | world cap | USA cap | our 1945 scenario | vs USA cap |
-|---|--:|--:|--:|--:|
-| coal mine | 10 018 | 1 164 | 483 | **0.4×** |
-| logging camp | 8 126 | 892 | 223 | **0.3×** |
-| iron mine | 7 619 | 633 | 971 | ⚠ **1.5×** |
-| **gold mine** | **89** | **0** | **527** | ⚠⚠ **∞** |
-| oil rig (deposits) | 9 204 | 1 260 | 775 | 0.6× |
-| lead / sulfur / fishing / whaling | 2 796 / 3 219 / 2 788 / 297 | 249 / 294 / 159 / 44 | — | — |
+**What ships instead is a set of stated judgement calls, enforced as HARD CONSTRAINTS in `applyCounts`** —
+not warnings. `SCALE_LIMIT`:
 
-⭐ **So the profit feedback IS doing the bounding almost everywhere.** Three of the four extraction
-industries with real counts sit at **0.3–0.6× the USA's own cap** without any cap being modelled. Only iron
-is over, at 1.5×, which is an overshoot worth watching rather than an absurdity.
+| bound | limit |
+|---|--:|
+| whaling stations | 30 |
+| fishing wharves | 100 |
+| each ore or logging building, separately | 1 000 |
+| each plantation type, separately | 300 |
+| non-subsistence agriculture, combined | 3 000 |
 
-⚠⚠ **Gold is the exception, and the reason is exactly why it was removed: the USA has ZERO gold deposits in
-vanilla**, and the world holds 89. Our scenario built 527. Since these scenarios are USA-referenced
-throughout, the correct number of gold mines was never "few" — it was **none**.
+The first four are per-building clamps. **The agriculture bound is joint**, so it cannot be a clamp: when the
+total is over, every farm, plantation and ranch is scaled down *together*, preserving the crop mix the price
+feedback chose and removing only the excess.
 
-⭐⭐ **THE GENERAL LESSON IS NOT "ADD A CAP", IT IS WHERE A CAP WOULD MATTER.** A count is bounded by its
-good's price feedback wherever that feedback works; gold ran away precisely because it had *no* working
-signal (no buyer ⇒ price pinned at the floor ⇒ nothing the controller does changes anything). **The cap
-matters exactly where the price signal is broken, and nowhere else** — so a deposit budget is a low-priority
-addition, not the missing safeguard it looked like before these numbers were in hand.
+⚠ **Per plantation TYPE, not combined** — 400 tea plantations is implausible even where the total acreage is
+not, and a combined bound would hide it behind the other twelve crops.
 
-⚠ **Retracted:** an earlier draft of this section called extraction "unbounded by construction" and told the
-reader not to treat raw-sector shares as meaningful. That was written from the gold case alone and the table
-above does not support it. Iron at 1.5× is the one real overshoot. **§10.40's separate "ore, oil & rubber is
-25.7% of 1945 output" anomaly is therefore still unexplained** — this was a candidate cause and the
-measurement declines it.
+#### ⭐⭐ Whaling is the one that needed this, and it is a fix rather than a guardrail
+
+Whaling stations produce **oil** and are **ungated by technology**, so the controller used them as an
+unbounded substitute oil source exactly when oil demand exploded. Across the six eras the count ran:
+
+```
+2  ·  19  ·  1  ·  9  ·  47  ·  440
+```
+
+That is not a trajectory, it is a quantity nothing was bounding — and historically whaling was in steep
+**decline** by 1945, so 440 stations is the wrong *sign* as well as the wrong magnitude.
+
+**Before the constraints** (measured on the shipped scenarios): whaling **47** at 1920 and **440** at 1945,
+fishing **106** at 1920, iron **1 251** at 1945. Everything else was inside — coal peaked at 568, logging at
+223, agriculture combined at 2 346.
+
+**After:** every era reports `SCALE LIMITS … held`. 1920 sits at the whaling cap; 1945 sits at whaling,
+iron and oil-rig caps. Whole-ladder illogicality moved **54 → 52** (47 excluding shipyards), so the
+constraints cost nothing on the criterion and are not carried on that basis anyway.
+
+⚠ **The report line is now a VERIFICATION, not a warning.** The caps bind during the solve, so anything it
+prints as breached is a bug in the constraint rather than a property of the economy. It is kept for the same
+reason the landmine register exists: a constraint nobody checks is a constraint that silently stops being
+applied. It also names anything sitting *at* a cap, since a binding constraint is a fact about the scenario
+worth seeing.
