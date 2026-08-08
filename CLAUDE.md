@@ -231,11 +231,24 @@ obvious next move, but it must run *together* with §10.18, not after it.
 
 **⭐ HARD CONSTRAINT — NO LOSS-MAKING RAW PRODUCER MAY BE PRESENT (§10.18).** No extraction or agriculture
 building in a scenario may run at a loss; the rule is on *non-zero* producers, so the remedy is not to build
-it. Enforced greedily and minimally (drop the worst, re-converge, look again), **gold exempt** (one-sided
+it. Enforced greedily and minimally (drop the worst, re-converge, look again), **gold — see below** (one-sided
 order book by construction). ⚠ **It can collide with the ceiling below, and the ceiling wins**: dropping the
 era-1 iron mine left 1836 with 704 iron demand and zero iron supply, so a drop that breaches the ceiling is
 undone and the building is kept and **reported by name**. ⚠ Each round must *begin* from a converged state —
 checking and then settling lets the state drift back over the line after the check.
+
+**⭐⭐ GOLD IS NOT IN THE MODEL AT ALL (§10.40.5, 2026-08-08).** `building_gold_mine` and `building_gold_field`
+are in `EXCLUDE_REF`, so **no scenario contains either**. In the real game gold is minted into the treasury;
+this model has no treasury, so gold is a good with producers and **no consumer whatsoever** — its order book
+is one-sided by construction, its price sits pinned at the 25% floor in every era, and every gold mine runs
+at about **−62%** regardless of what the rest of the economy does.
+⚠ **It was exempted four separate ways before it was removed** — `SKIP_GOODS`, `NO_BUYER_EXEMPT`,
+`SKIP_TARGET_BLD`, and §10.18 above — and it *still* leaked into the first profit metric that widened its
+population, supplying **£2.28M of loss against £0.48M from the whole rest of the economy** (4.7× the signal;
+92% of era 4's reported losses on its own). **A quantity that needs a special case everywhere it appears does
+not belong in the model.** Its workforce is negligible and the job-pool rescale absorbs it.
+⚠ Do not "fix" gold by giving it a buyer, a price floor or another exemption; it is out, and the
+`auNet`/`auLoss` line in `profitTotals` is kept purely as a **tripwire** that prints if one ever returns.
 
 **⭐⭐ GDP IS `52 × weekly VALUE ADDED`, MEASURED — NOT GROSS OUTPUT (FINDINGS F45).** Value added = building
 outputs − building **inputs**, at market prices; pops and trade are on neither side, because value added is a
@@ -1158,6 +1171,21 @@ the game.
   `fine_art`'s budget is **not** fixed (it grows from 2% to 84% of the leisure need as academies are added);
   the binding constraint is that fine_art costs **£200**, so even 84% of that budget buys 96 units while one
   academy level makes 14.4. See BALANCE_FRAMEWORK §10.19 — the lever is academy OUTPUT, not the demand model.
+  ⭐⭐ **AND THE LEVER TURNED OUT TO BE NEITHER — IT WAS A HAND-PINNED COUNT (§10.40, 2026-08-08).** The
+  solver carried `FIXED_COUNTS = { art_academy: {cur:2, m1:2, m2:1} }`, so the count controller's ONLY lever
+  was a constant for this industry and it could never close fine_art's gap to its own price path: **117% of
+  base realised at era 5 against a path asking 75%**, 42pp adrift, for as long as the pin existed. Removing
+  it puts fine_art **on the path in both era 4 and era 5** and takes `art_academy` out of era 5's inverted
+  list. The observed "old academies are wildly more profitable than new ones" (era-3 +115% against era-5
+  +2%) was **manufactured by the pin**: each tier's recipe is solved once at its own era's price, so a
+  rising output price flatters every older rung. Solving them normally is now the default
+  (`ERA_ART_NORMAL=0` restores all three exceptions — the pin, a 10:1 value-added cap, and exclusion from
+  the ladder criterion).
+  ⚠ **Solving them normally and SCORING them normally are different decisions.** The illogicality excusal
+  exists because countries build academies for **prestige**, which this model does not represent at all —
+  that argument is untouched by this result, and the excusal is kept. The report now prints which set it
+  excused (`excluding shipyards` vs `excluding shipyards/art academies`) so the two can never be silently
+  confused again.
   ⚠ The **−0.5 × non-pop buy orders** term is the one that matters most and is the least guessable —
   a good industry consumes heavily is correspondingly less available to pops, and omitting it over-fed
   grain by half (same-run Belgian test: pop demand error 30.3 % → **16.2 %**, F22).
@@ -1339,6 +1367,17 @@ the game.
     loss of every state at once. A tier building contributes exactly what the vanilla building it replaced
     did, because the lookup is keyed on `vanilla_pm`'s base building, not on the tier key. PMs are chosen
     by the market leader's laws (`Select-LawPm`), like the other never-created buildings.
+    ⚠⚠ **IN THE ERA SOLVER THAT FORMULA IS A CEILING, NOT A COUNT (§10.40; `ERA_URBAN_SHRINK=0` reverts).**
+    F13 measures how many levels urbanization *entitles* a market to; the game then staffs them out of
+    whoever is available, so an urban centre that cannot pay its way **sheds employment** rather than
+    standing fully manned at a loss. Our model has no employment scaling, so holding the entitlement AND
+    full employment modelled a building that would not exist — measured margins **1780 −19% · 1836 −49% ·
+    1870 −2% · 1900 −2% · 1920 +17% · 1945 +15%**. The loss-making reduction may now cut urban centres like
+    any other building, and the level count is `min(entitlement, cap)`. It behaves exactly as the mechanism
+    predicts: it cuts in **1780 (3→1), 1836 (27→18), 1870 and 1900**, and leaves 1920 and 1945 untouched
+    because there the cap genuinely binds. 1836's economy-wide losses fell **£21k → £14k/wk**.
+    ⚠ This is an approximation of employment scaling by level count, not the real thing. Modelling
+    per-building employment properly would be better and is not done.
   - **Military buildings** (barracks, conscription/logistics centres) come from `config/measured_1836.json`,
     not history: the engine sizes them to the army, so history carries 31 British barrack levels against
     705 in game (F14).

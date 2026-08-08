@@ -329,6 +329,9 @@ const PROFIT_CAP_STEPS = +(process.env.ERA_PROFIT_CAP_STEPS || 400);
 // level near the boundary), not by lowering this: a coarse step can overshoot the hand-off point, so it
 // must be checked to land in the same terminal state.
 const SHRINK_STEPS = +(process.env.ERA_SHRINK_STEPS || 2000);
+// May the reduction cut URBAN CENTRES as well as our tiers? See the F13 block in `addSupport` for why
+// their entitlement is a ceiling rather than a count. `ERA_URBAN_SHRINK=0` restores the old behaviour.
+const URBAN_SHRINK = process.env.ERA_URBAN_SHRINK !== '0';
 // The futility guard: stop growing a producer when a step did not actually lower its margin (its good is
 // pinned at the 25% price floor, so supply cannot move it). Separately revertable — `ERA_PROFIT_CAP_FUTILITY=0`
 // restores the un-guarded behaviour, which is worth being able to reproduce: without it `tea_plantation`
@@ -390,18 +393,52 @@ const MFG_IO_CAP = 4;
 // ...but not to INFINITY. A per-industry override of the ratio: art academies may run up to 10:1 rather
 // than 4:1, which keeps them recognisably a building that buys canvas and tools rather than one that
 // conjures paintings out of nothing.
-const IO_CAP_OVERRIDE = { art_academy: 10 };
+// ⚠ ART ACADEMIES ARE NOW SOLVED LIKE ANY OTHER INDUSTRY (`ERA_ART_NORMAL=0` restores the exceptions).
+// The three exceptions below — a 10:1 value-added cap, hand-pinned counts, and exclusion from the ladder
+// criterion — were each defensible on their own and together made the industry unobservable: its counts
+// could not respond to price, so nothing could correct it, and nothing scored it either.
+const ART_NORMAL = process.env.ERA_ART_NORMAL !== '0';
+const IO_CAP_OVERRIDE = ART_NORMAL ? {} : { art_academy: 10 };
 const ioCapFor = id => IO_CAP_OVERRIDE[id] || MFG_IO_CAP;
 // Industries whose scenario presence is FIXED rather than solved. Art academies cannot be sized by the
 // profit feedback: fine_art is not supply-clamped (max_supply_share = 1) and carries the highest weight in
 // popneed_leisure, so once it absorbs that budget every extra academy adds supply against fixed money and
 // simply destroys its own price. Sizing it by margin therefore has no stable answer — it is pinned by
 // hand instead, and left insolvent if that is where it lands.
-const FIXED_COUNTS = { art_academy: { cur: 2, m1: 2, m2: 1 } };
+// ⭐⭐ AND THIS IS THE ONE THAT MATTERED. Pinning the counts is precisely why the count controller could
+// never close fine_art's 42pp gap to its own price path (117% realised against a path asking 75%): the
+// controller's ONLY lever is building counts, and for this industry they were constants. The price then
+// rose across the whole ladder, and since each tier's recipe is solved once at its own era's price, every
+// older tier came out looking spectacular — era-3 academy +115% against era-5's +2%. The inversion was
+// manufactured by the pin, not by the demand model.
+// ⚠ The original reasoning is not wrong, and is why this is a switch rather than a deletion: fine_art is
+// unclamped (`max_supply_share = 1`) and carries the highest weight in `popneed_leisure`, so extra
+// academies really do bid down their own price with no floor under them. If that turns out to have no
+// stable answer, the pin comes back — but it has to be MEASURED failing, not assumed to.
+const FIXED_COUNTS = ART_NORMAL ? {} : { art_academy: { cur: 2, m1: 2, m2: 1 } };
+// The third exception: exclusion from the ladder criterion itself. `LADDER_EXCUSED` lives in ui/econ.js
+// because the criterion must have ONE implementation (§10.11) — so this MUTATES that one set rather than
+// forking it. The UI is a separate process and keeps the shipped rule.
+// ⚠ The excusal exists for a reason that is NOT "art academies are hard to balance": countries build them
+// for PRESTIGE, which this model does not represent at all, so a country will hold academies that no margin
+// justifies. That argument survives this experiment intact — what is being tested is only whether SOLVING
+// them normally is possible, which is a different question from whether SCORING them normally is fair.
+if (ART_NORMAL) PMECON.LADDER_EXCUSED.delete('art_academy');
+const EXCUSED_LABEL = ART_NORMAL ? 'shipyards' : 'shipyards/art academies';
 // Reference producers deliberately kept OUT of these scenarios. Natural dye is removed so that synthetics
 // is the ONLY source of dye — the industry exists to replace it, and leaving the plantation in place left
 // synthetics competing with a supplier it is supposed to have destroyed (it read best-case −35% in 1870).
-const EXCLUDE_REF = new Set();
+// ⭐⭐ GOLD IS OUT OF THE MODEL ENTIRELY (user, 2026-08-08). Not exempted, not reported separately — ABSENT.
+// Nothing here buys gold: in the real game it is minted into the treasury, and this model has no treasury,
+// so its order book is one-sided by construction. Its price therefore sits pinned at the 25% floor in every
+// era and every gold mine runs at about −62% no matter what the rest of the economy does. Half-measures had
+// already accumulated around it — `SKIP_GOODS`, `NO_BUYER_EXEMPT`, `SKIP_TARGET_BLD`, an exemption from
+// §10.18's solvency rule — and it still leaked into the first widened profit metric, where it supplied
+// **£2.28M of loss against £0.48M from the entire rest of the economy**, 4.7× the signal it was meant to
+// measure and 92% of era 4's reported losses on its own.
+// ⚠ A quantity that needs an exemption everywhere it appears does not belong in the model. Its workforce is
+// negligible (the job-pool rescale absorbs it) and its goods feed nothing.
+const EXCLUDE_REF = new Set(['building_gold_mine', 'building_gold_field']);
 // ===================================================================================================
 // FIXED-COUNT REFERENCE PRODUCERS — placed at a stated number rather than solved, and allowed to SHRINK.
 //
@@ -1225,25 +1262,50 @@ function buildScenario(eIx) {
   //   loss  — the losers alone. Two economies with the same net can hide very different amounts of it.
   // Reported, not targeted: they say what the illogicality count cannot, which is HOW BIG the failures are
   // rather than how many industries have one.
+  // ⭐ THE WHOLE PRODUCING ECONOMY, not a selected part of it. Every building in the scenario that SELLS
+  // goods counts — our tiers (shipyards and art academies included), raw producers, urban centres,
+  // subsistence, everything. A building with no goods output (government administration, barracks) has no
+  // margin to report and is skipped, which is the only exclusion.
+  //   net  = sum of every producer's weekly profit, losses DEDUCTED from the winners
+  //   loss = sum of the loss-makers alone, winners ignored
+  // The two are deliberately not derivable from each other: net says whether the economy pays for itself,
+  // loss says how much of it is being carried. A rise in both at once is an economy growing while its tail
+  // rots, and one number cannot show that.
+  // ⚠ `excl` repeats net/loss over the LADDER_EXCUSED industries only, so the figures quoted earlier in
+  // this project stay comparable when the excused set changes underneath them.
+  // ⚠⚠ GOLD IS REPORTED SEPARATELY, NEVER FOLDED IN. Nothing in the model buys gold, so its order book is
+  // one-sided by construction, its price sits pinned at the 25% floor in every era, and every gold mine
+  // runs at about −62% no matter what the economy does. `SKIP_TARGET_BLD` already exempts exactly these two
+  // buildings from §10.18's no-loss-making-raw-producer rule for this reason; a loss metric without the
+  // same exemption measures the artifact instead of the economy.
+  // Measured, over the six eras: gold contributes **£2.28M** of loss against **£0.48M** from everything
+  // else — 83% of the total, and it drowned the signal completely on this metric's first outing.
+  // ⚠ Reported, not dropped: a number removed silently is a number nobody can check.
   function profitTotals() {
-    let net = 0, loss = 0, winners = 0, losers = 0;
+    let net = 0, loss = 0, winners = 0, losers = 0, exNet = 0, exLoss = 0, auNet = 0, auLoss = 0;
+    const take = (p, excused, gold) => {
+      if (!isFinite(p)) return;
+      if (gold) { auNet += p; if (p < 0) auLoss -= p; return; }
+      net += p; if (p < 0) { loss -= p; losers++; } else winners++;
+      if (excused) { exNet += p; if (p < 0) exLoss -= p; }
+    };
     for (const i of S.IND) {
-      if (PMECON.LADDER_EXCUSED.has(i.id)) continue;     // shipyards + art academies: targets they cannot meet
-      if (i.follows_be === false) continue;
+      const excused = PMECON.LADDER_EXCUSED.has(i.id);
       for (const t of i.tiers) {
         const n = S.BLDNUM[t.key] || 0; if (!(n > 0)) continue;
-        const p = n * E.weeklyProfit(i, t); if (!isFinite(p)) continue;
-        net += p; if (p < 0) { loss -= p; losers++; } else winners++;
+        const io = E.tierGoodsIO(i, t);
+        if (!Object.keys(io.out || {}).length) continue;             // sells nothing -> no margin to report
+        take(n * E.weeklyProfit(i, t), excused);
       }
     }
-    for (const b of refProducers) {
-      const n = S.BLDNUM[b] || 0; if (!(n > 0) || !isRawProducer(b)) continue;
-      const ec = E.refEcon(b); if (!ec || ec.p == null) continue;   // refEcon already gives weekly £ at thresholds
-      const p = n * ec.p;
-      if (!isFinite(p)) continue;
-      net += p; if (p < 0) { loss -= p; losers++; } else winners++;
+    const seen = new Set(S.IND.flatMap(i => i.tiers.map(t => t.key)));
+    for (const b in S.BLDNUM) {
+      const n = S.BLDNUM[b] || 0; if (!(n > 0) || seen.has(b)) continue;
+      const ec = E.refEcon(b); if (!ec || ec.p == null) continue;    // refEcon gives weekly £ at thresholds
+      if (!Object.keys((ec.goods || {}).out || {}).length) continue;
+      take(n * ec.p, false, SKIP_TARGET_BLD.has(b));
     }
-    return { net, loss, winners, losers };
+    return { net, loss, winners, losers, exNet, exLoss, auNet, auLoss };
   }
   function constrCost() {
     const n = S.BLDNUM[CONSTRUCTION_BLD] || 0;
@@ -1580,6 +1642,18 @@ function buildScenario(eIx) {
     for (let guard = 0; guard < SHRINK_STEPS; guard++) {
       conv = contSettle(20, 0.15);
       let worst = null, worstP = 0;
+      // ⭐ URBAN CENTRES ARE A CANDIDATE TOO. Their level count is an ENTITLEMENT from urbanization
+      // (F13), not a decision — but the game staffs that entitlement out of who is available, so a
+      // loss-making urban centre sheds employment instead of standing fully manned. With no employment
+      // scaling in the model, cutting levels is the available approximation of the same thing. Keyed by
+      // building rather than by tier, hence the `worst` bookkeeping below carries a KEY, not a tier.
+      if (URBAN_SHRINK) {
+        const n = S.BLDNUM.building_urban_center || 0;
+        const ec = n > 1 ? E.refEcon('building_urban_center') : null;
+        if (ec && ec.tp != null && isFinite(ec.tp) && ec.tp / 100 < 0 && ec.tp / 100 < worstP) {
+          worst = { key: 'building_urban_center' }; worstP = ec.tp / 100;
+        }
+      }
       for (const p of placement) {
         if (p.ind.follows_be === false) continue;
         for (const r of p.rows) {
@@ -1787,9 +1861,23 @@ function buildScenario(eIx) {
       }
     }
     // URBAN CENTRES — derived, never placed: floor(Σ urbanization / 100), FINDINGS F13.
+    // ⚠⚠ THAT FORMULA IS A CEILING, NOT A COUNT (`ERA_URBAN_SHRINK=0` restores it as a count). F13
+    // measures how many levels urbanization ENTITLES a market to, and the game staffs them out of whoever
+    // is available — an urban centre that cannot pay its way sheds employment rather than standing fully
+    // manned at a loss. Our model has no employment scaling, so holding the entitlement AND full
+    // employment modelled a building that would not exist: measured margins ran 1780 −19%, 1836 −49%,
+    // 1870 −2%, 1900 −2%, 1920 +17%, 1945 +15%. The two middle eras happen to sit on the zero-profit
+    // equilibrium the real rule implies; 1836 is a −49% building held fully staffed, over-supplying
+    // services and transportation for that entire scenario.
+    // So the reduction below may now cut urban centres like anything else, and this line takes the
+    // MINIMUM of the entitlement and whatever cap the reduction has imposed. Where the cap does not bind,
+    // the behaviour is exactly F13's.
     let urb = 0;
     for (const b in S.BLDNUM) { if (isUrban(b)) continue; urb += (S.BLDNUM[b] || 0) * urbanizationOf(ourVanillaAnchor(b)); }
-    S.BLDNUM.building_urban_center = Math.max(1, Math.floor(urb / URBAN_PER_LEVEL));
+    const urbEntitled = Math.max(1, Math.floor(urb / URBAN_PER_LEVEL));
+    S.BLDNUM.building_urban_center = URBAN_SHRINK
+      ? Math.min(urbEntitled, maxCount.building_urban_center != null ? maxCount.building_urban_center : Infinity)
+      : urbEntitled;
   }
   // a tier building urbanizes exactly as much as the vanilla building it replaced
   function ourVanillaAnchor(b) {
@@ -2144,7 +2232,7 @@ for (let e = 0; e < FIT.eras.length; e++) {
   const ill = { insolvent: illRaw.loss, stale_profitable: illRaw.stale, inverted: illRaw.inverted };
   meta.ill = ill;
   const illTot = illRaw.total, net = illRaw.net;
-  console.log(`    ILLOGICAL: ${illTot} point(s) (${net} excluding shipyards/art academies) — loss-making `
+  console.log(`    ILLOGICAL: ${illTot} point(s) (${net} excluding ${EXCUSED_LABEL}) — loss-making `
     + `${ill.insolvent.length} [${ill.insolvent.join(' ') || '-'}], 2-eras-stale profitable `
     + `${ill.stale_profitable.length} [${ill.stale_profitable.join(' ') || '-'}], inverted `
     + `${ill.inverted.length} [${ill.inverted.join(' ') || '-'}]`);
@@ -2243,9 +2331,12 @@ for (let e = 0; e < FIT.eras.length; e++) {
   }
   {
     const p = meta.profit || {};
-    console.log(`    PROFITABILITY (economic only, excl. shipyards/art academies): net £${fmtN(Math.round(p.net||0))}/wk`
+    console.log(`    PROFITABILITY (every building that sells goods): net £${fmtN(Math.round(p.net||0))}/wk`
       + ` · losses £${fmtN(Math.round(p.loss||0))}/wk across ${p.losers||0} building type(s), ${p.winners||0} profitable`
-      + ` · losses are ${p.net > 0 ? ((p.loss / p.net) * 100).toFixed(0) : '∞'}% of net`);
+      + ` · losses are ${p.net > 0 ? ((p.loss / p.net) * 100).toFixed(0) : '∞'}% of net`
+      + (p.exNet || p.exLoss ? `\n      of which ${EXCUSED_LABEL}: net £${fmtN(Math.round(p.exNet||0))}/wk · losses £${fmtN(Math.round(p.exLoss||0))}/wk` : '')
+      + (p.auNet || p.auLoss ? `\n      GOLD, excluded from both figures above (nothing buys it, so its price is pinned at the floor):`
+                             + ` net £${fmtN(Math.round(p.auNet||0))}/wk · losses £${fmtN(Math.round(p.auLoss||0))}/wk` : ''));
   }
   console.log(`    CONSTRUCTION: ${meta.constrLevels} levels = ${(100 * meta.constrShare).toFixed(1)}% of GDP`
     + ` (target ${(100 * CONSTRUCTION_GDP_SHARE).toFixed(0)}%, ${CONSTRUCTION_PM[meta.era]})`

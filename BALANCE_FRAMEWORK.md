@@ -2784,3 +2784,178 @@ all six eras after the whole solve is finished.** Not built.
 ⚠ This is **§10.14.1 recurring**: that section closed "never report or ship from a non-finalised state" for
 **prices**. It was still open for **recipes**, and nothing detected it for months because the only rows
 affected were ones nothing had been scoring.
+
+## 10.40 TWO PINS REMOVED: urban-centre levels and art-academy counts
+
+**2026-08-08.** Both are the same kind of defect — a quantity the solver was told rather than allowed to
+solve — and in both cases the pin was defensible when it was written and had become the thing preventing
+the mechanism around it from working.
+
+### 10.40.1 Urban centres: F13's formula is a CEILING, not a count
+
+F13 measures how many levels urbanization **entitles** a market to. The game staffs that entitlement out of
+whoever is available, so an urban centre that cannot pay its way sheds employment rather than standing
+fully manned at a loss. Our model has no employment scaling, so holding the entitlement *and* full
+employment modelled a building that would not exist:
+
+| | 1780 | 1836 | 1870 | 1900 | 1920 | 1945 |
+|---|--:|--:|--:|--:|--:|--:|
+| urban-centre margin | −19% | **−49%** | −2% | −2% | +17% | +15% |
+
+⭐ **Two of those are already the zero-profit equilibrium the real rule implies** (1870, 1900), and two are
+legitimately above it because the entitlement binds (1920, 1945). **1836 is the broken one** — a −49%
+building held fully staffed, over-supplying services and transportation for that whole scenario.
+
+The loss-making reduction (§10.38) may now cut urban centres, and the count is `min(entitlement, cap)`.
+Measured, it cuts exactly where the mechanism says it should and nowhere else:
+
+```
+1780  3 → 1     1836  27 → 18     1870 −1     1900 −4     1920 untouched     1945 untouched
+```
+
+1836's economy-wide losses fell **£21k → £14k/wk**. `ERA_URBAN_SHRINK=0` reverts.
+
+⚠ This approximates employment scaling **by level count**, which is not the same thing. Real per-building
+employment scaling would be better and is not built.
+
+### 10.40.2 ⭐⭐ Art academies: the count pin WAS the inversion
+
+The solver carried three exceptions for `art_academy`: a 10:1 value-added cap (against 4:1), exclusion from
+the ladder criterion, and — the one that mattered — **`FIXED_COUNTS = { art_academy: {cur:2, m1:2, m2:1} }`**.
+
+The count controller's only lever is building counts. For this industry they were constants, so it could
+never close fine_art's gap to its own price path:
+
+| | era 4 | era 5 |
+|---|---|---|
+| pinned | 56% of base (path wants 85%) | **117% (path wants 75%)** — 42pp adrift |
+| solved normally | **on path** | **on path** |
+
+**And that gap is what produced the inversion.** Each tier's recipe is solved once, at its own era's price
+(§10.39.3), so an output price that *rises* across the ladder flatters every older rung — era-3 academy
+**+115%** against era-5's **+2%**. Removing the pin takes `art_academy` out of era 5's inverted list
+(inverted 5 → 2). ⚠ **The observed inversion was manufactured by the pin, not by the demand model** — which
+supersedes §10.19's conclusion that the lever was academy OUTPUT.
+
+⚠ The original reasoning is not wrong and is why this is a switch (`ERA_ART_NORMAL=0`) rather than a
+deletion: fine_art is unclamped (`max_supply_share = 1`) and carries the highest weight in `popneed_leisure`,
+so extra academies really can bid down their own price with no floor. That failure mode has to be **measured
+happening** before the pin comes back.
+
+⚠⚠ **SOLVING them normally and SCORING them normally are separate decisions, and only the first is taken.**
+The illogicality excusal exists because countries build academies for **prestige**, which this model does
+not represent at all — untouched by this result, and kept. The report now names its excused set.
+
+### 10.40.3 Measured, four variants
+
+| variant | illogicality (total) | net/wk | losses/wk | losers | targets | mean \|off\| |
+|---|--:|--:|--:|--:|--:|--:|
+| A baseline | 56 | £11.92M | £2.46M | 126 | 70/84 | 5.5pp |
+| B urban only | 54 | £12.10M | £2.50M | 128 | 71/85 | 5.3pp |
+| C art only | 55 | £11.90M | £2.64M | 134 | 65/79 | 4.7pp |
+| **D both — shipped** | **50** | **£12.12M** | £2.63M | 128 | 68/82 | **4.0pp** |
+
+⚠⚠ **THE net AND losses COLUMNS ABOVE ARE CONTAMINATED BY GOLD — see §10.40.5.** They were measured before
+the metric exempted it, and **83% of every loss figure in them is gold**, which loses money by construction
+in every scenario. Use them only for the *relative* A→D comparison, and not even confidently for that, since
+gold mine counts differ between variants. The illogicality and target columns are unaffected. The decision to
+ship D rests on §10.40.1–2's mechanisms, not on these two columns.
+
+⚠ **Only the TOTAL column compares across all four.** "Excluding" means shipyards + art academies in A/B
+and shipyards alone in C/D, because normalising art academies removes them from the excused set. This is
+exactly the sort of silently-shifting denominator §10.39 was about, hence the report now prints the set.
+
+⚠ **The −6 clears the five-point rule but is a SUM of per-era moves that individually do not** (1836 13→12,
+1870 9→6, 1900 12→**13**, 1945 9→6), and C alone reaches only 55 while D reaches 50 — an interaction not
+distinguishable from jaggedness. **It ships on the two confirmed mechanisms above, not on the 6 points.**
+
+⚠ **The cost is real and concentrated:** era 1900 worsens on both metrics — illogicality 12 → 13 and losses
+**£576k → £713k** — and it is art normalisation that does it (C alone: £732k at 1900). Economy-wide losses
+rise 7% while net profit rises 1.7%.
+
+### 10.40.4 The new profitability metric
+
+`profitTotals()` now covers **every building in the scenario that sells goods** — our tiers including
+shipyards and art academies, raw producers, urban centres, subsistence — excluding only buildings with no
+goods output at all, which have no margin to report. It returns two numbers that are deliberately not
+derivable from one another:
+
+- **net** — every producer's weekly profit, losses deducted from the winners: does the economy pay for itself?
+- **loss** — the loss-makers alone, winners ignored: how much of it is being carried?
+
+A rise in both at once is an economy growing while its tail rots, and a single figure cannot show that.
+`exNet` / `exLoss` repeat the pair over the excused industries so earlier figures stay comparable when the
+excused set changes underneath them.
+
+### 10.40.5 ⚠⚠ The new metric's first outing measured GOLD, not the economy
+
+Caught immediately, by the reader noticing that losses had gone from tens of thousands per week to millions
+and asking how. The economy had not changed; the **metric** had, and it swept in a building whose losses are
+definitional.
+
+**Nothing in the model buys gold.** Its order book is one-sided by construction, so its price sits pinned at
+the **25% floor in every era** and every gold mine runs at about **−62%** regardless of what anything else
+does. `SKIP_TARGET_BLD` already exempts `building_gold_mine` and `building_gold_field` from §10.18's
+no-loss-making-raw-producer rule for exactly this reason — the new loss metric simply had no equivalent.
+
+Decomposed over the six eras:
+
+| | 1780 | 1836 | 1870 | 1900 | 1920 | 1945 | total |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| losses, our tiers | £3k | £16k | £42k | £105k | £53k | £193k | **£0.41M** |
+| losses, other producers | £0k | £0k | £0k | £8k | £31k | £29k | **£0.07M** |
+| **real losses** | £3k | £17k | £42k | £113k | £84k | £222k | **£0.48M** |
+| **GOLD — artifact** | £0k | £8k | £130k | £680k | **£1 021k** | £441k | **£2.28M** |
+
+**£2.28M against £0.48M: the artifact was 4.7× the signal**, and at 1920 gold alone was 92% of the era's
+reported losses. Every mine that is not gold is comfortably profitable — 1920 reads lead +48%, sulfur +74%,
+iron +35%, coal +48%.
+
+**First fix — insufficient.** Gold was scored into its own pair (`auNet` / `auLoss`) and printed on its own
+line rather than dropped, on the principle that a number removed silently is a number nobody can check.
+
+⭐⭐ **Final fix — GOLD IS OUT OF THE MODEL ENTIRELY** (user's call, and the right one). `EXCLUDE_REF` now
+holds `building_gold_mine` and `building_gold_field`, so no scenario contains either. The exemption approach
+was treating a symptom: gold had *already* accumulated `SKIP_GOODS`, `NO_BUYER_EXEMPT`, `SKIP_TARGET_BLD`
+and an exemption from §10.18's solvency rule, and it still leaked into the first metric that widened its
+population. **A quantity that needs a special case everywhere it appears does not belong in the model.**
+
+In the real game gold is minted into the treasury; this model has no treasury, so gold is a good with
+producers and no consumer — the one thing the price formula cannot represent. Its workforce is negligible
+and the job-pool rescale absorbs it; its output fed nothing.
+
+⚠ The `auNet`/`auLoss` reporting is **kept** even though it must now always be zero. It costs nothing, it
+prints only when non-zero, and it is therefore a tripwire: if a gold building ever reappears in a scenario,
+the line comes back rather than the loss quietly rejoining the total.
+
+⚠ **The general lesson is about metric scope, not about gold.** "Every building that sells goods" sounds
+like a neutral widening and is not: it silently admits buildings whose margin is a modelling artifact
+(gold), buildings carrying a deliberate handicap (shipyards, −30pp), and buildings that are not really
+firms (subsistence). Each needs a stated position. A metric's population is part of its definition, and
+widening it is a change of measurement, not a change of coverage.
+
+### 10.40.6 ⚠⚠ Gold was the visible case of a structural gap: THERE IS NO RESOURCE-DEPOSIT CAP
+
+The removal was prompted by a reader's disbelief at one number in passing — *"there's no 527 gold mine slots
+in the whole world, I doubt there's 53"* — and the check confirms it outright. Summed across the eight
+shipped country presets, i.e. the major powers of the world, the **vanilla 1836 start holds:**
+
+| | gold mines | coal mines | iron mines |
+|---|--:|--:|--:|
+| whole vanilla world (8 markets) | **12** | 97 | 81 |
+| our 1920 scenario, one country | **527** | 456 | 280 |
+| our 1945 scenario, one country | — (removed) | 483 | 971 |
+
+**Vanilla bounds every extraction building by its state's resource deposits. Our count controller has no
+such bound**, so extraction grows without limit whenever a good's price signal asks for more. Gold made it
+obvious because gold deposits do not grow with industrialisation and its price feedback was broken as well —
+but coal, iron and oil sit on the same unbounded lever, and a country holding **971 iron mine levels** is
+not a country any version of this game can produce.
+
+⭐ **This is the likely explanation for §10.40's open "ore, oil & rubber is 25.7% of 1945 output value"
+anomaly**, which had no candidate cause before. Real developed economies run low single digits.
+
+**Not fixed.** The remedy is a per-good extraction ceiling — a deposit budget the count controller may not
+exceed — and it is a genuine design addition, not a bug fix. ⚠ Until it exists, treat every extraction level
+count in these scenarios as unbounded-by-construction, and do not read the raw-sector share of output as
+meaningful.
