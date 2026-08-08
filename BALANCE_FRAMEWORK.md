@@ -2934,28 +2934,41 @@ like a neutral widening and is not: it silently admits buildings whose margin is
 firms (subsistence). Each needs a stated position. A metric's population is part of its definition, and
 widening it is a change of measurement, not a change of coverage.
 
-### 10.40.6 ⚠⚠ Gold was the visible case of a structural gap: THERE IS NO RESOURCE-DEPOSIT CAP
+### 10.40.6 There is no resource-deposit cap — but measured against vanilla's, only GOLD was ridiculous
 
-The removal was prompted by a reader's disbelief at one number in passing — *"there's no 527 gold mine slots
-in the whole world, I doubt there's 53"* — and the check confirms it outright. Summed across the eight
-shipped country presets, i.e. the major powers of the world, the **vanilla 1836 start holds:**
+The removal was prompted by disbelief at one number in passing — *"there's no 527 gold mine slots in the
+whole world, I doubt there's 53"* — followed by the fair challenge that a major country plausibly holds
+hundreds or thousands of most other slots, so ordinary profit feedback might be keeping us sane anyway.
 
-| | gold mines | coal mines | iron mines |
-|---|--:|--:|--:|
-| whole vanilla world (8 markets) | **12** | 97 | 81 |
-| our 1920 scenario, one country | **527** | 456 | 280 |
-| our 1945 scenario, one country | — (removed) | 483 | 971 |
+**Both halves are right, and the second is the more important one.** Vanilla stores the caps explicitly in
+`map_data/state_regions/*.txt` (`capped_resources`, plus `resource = { … undiscovered_amount }` for the
+discoverable ones). Summed:
 
-**Vanilla bounds every extraction building by its state's resource deposits. Our count controller has no
-such bound**, so extraction grows without limit whenever a good's price signal asks for more. Gold made it
-obvious because gold deposits do not grow with industrialisation and its price feedback was broken as well —
-but coal, iron and oil sit on the same unbounded lever, and a country holding **971 iron mine levels** is
-not a country any version of this game can produce.
+| resource | world cap | USA cap | our 1945 scenario | vs USA cap |
+|---|--:|--:|--:|--:|
+| coal mine | 10 018 | 1 164 | 483 | **0.4×** |
+| logging camp | 8 126 | 892 | 223 | **0.3×** |
+| iron mine | 7 619 | 633 | 971 | ⚠ **1.5×** |
+| **gold mine** | **89** | **0** | **527** | ⚠⚠ **∞** |
+| oil rig (deposits) | 9 204 | 1 260 | 775 | 0.6× |
+| lead / sulfur / fishing / whaling | 2 796 / 3 219 / 2 788 / 297 | 249 / 294 / 159 / 44 | — | — |
 
-⭐ **This is the likely explanation for §10.40's open "ore, oil & rubber is 25.7% of 1945 output value"
-anomaly**, which had no candidate cause before. Real developed economies run low single digits.
+⭐ **So the profit feedback IS doing the bounding almost everywhere.** Three of the four extraction
+industries with real counts sit at **0.3–0.6× the USA's own cap** without any cap being modelled. Only iron
+is over, at 1.5×, which is an overshoot worth watching rather than an absurdity.
 
-**Not fixed.** The remedy is a per-good extraction ceiling — a deposit budget the count controller may not
-exceed — and it is a genuine design addition, not a bug fix. ⚠ Until it exists, treat every extraction level
-count in these scenarios as unbounded-by-construction, and do not read the raw-sector share of output as
-meaningful.
+⚠⚠ **Gold is the exception, and the reason is exactly why it was removed: the USA has ZERO gold deposits in
+vanilla**, and the world holds 89. Our scenario built 527. Since these scenarios are USA-referenced
+throughout, the correct number of gold mines was never "few" — it was **none**.
+
+⭐⭐ **THE GENERAL LESSON IS NOT "ADD A CAP", IT IS WHERE A CAP WOULD MATTER.** A count is bounded by its
+good's price feedback wherever that feedback works; gold ran away precisely because it had *no* working
+signal (no buyer ⇒ price pinned at the floor ⇒ nothing the controller does changes anything). **The cap
+matters exactly where the price signal is broken, and nowhere else** — so a deposit budget is a low-priority
+addition, not the missing safeguard it looked like before these numbers were in hand.
+
+⚠ **Retracted:** an earlier draft of this section called extraction "unbounded by construction" and told the
+reader not to treat raw-sector shares as meaningful. That was written from the gold case alone and the table
+above does not support it. Iron at 1.5× is the one real overshoot. **§10.40's separate "ore, oil & rubber is
+25.7% of 1945 output" anomaly is therefore still unexplained** — this was a candidate cause and the
+measurement declines it.
