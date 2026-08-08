@@ -2734,3 +2734,53 @@ Era 5 now does ~543 `contSettle` calls instead of 60 (six-era run ~5 min → ~12
 **coarse-to-fine step** — cut ~5% of a tier's levels while it is deep in the red, one level near the
 boundary — not a lower guard. ⚠ It must be checked to land in the **same terminal state**: a coarse step can
 overshoot the point where an industry stops being worst, which changes the hand-off order.
+
+## 10.39 THE PROFIT-TARGET OBJECTIVE WAS GRADING ITSELF AGAINST THE WRONG NUMBER
+
+**2026-08-08.** A bookkeeping fix, with no change to the economy whatsoever — the same solve, the same
+config, the same presets, only the yardstick corrected. Recorded because the *size* of it is the point.
+
+### 10.39.1 What was wrong
+
+The six-era rework (§ "dominant-tier solving") made each scenario hold **two** tuned rungs: the **leading**
+tier (era+1, `TG.current` +20%) and the **dominant** tier (era N, `TG.minus1` +5%). The report's
+`PROFIT TARGETS` line was inherited from the five-era ladder, where the highest tier present *was* the
+era-appropriate one — so it picked the highest tier at or below the era (the **dominant** one) and graded it
+against **`TG.current`, +20%**.
+
+The solver had been aiming that rung at **+5%** ever since the dominant-solve change. Every era therefore
+carried a **systematic ~15pp phantom miss**, and it was most of what the metric reported.
+
+### 10.39.2 What it was hiding
+
+| era | before (dominant vs +20%) | after (dominant vs +5%) |
+|---|--:|--:|
+| 1780 | 0/0 · 0.0pp | 0/0 · 0.0pp (9 floored) |
+| 1836 | 1/5 · 11.9pp | **5/6 · 4.1pp** |
+| 1870 | 2/11 · 24.6pp | **7/16 · 16.6pp** |
+| 1900 | 2/18 · 18.7pp | **17/20 · 7.7pp** |
+| 1920 | 0/21 · 18.1pp | **20/21 · 3.7pp** |
+| 1945 | 0/21 · 15.4pp | **21/21 · 0.6pp** |
+| **total** | **5/76** | **70/84** |
+
+Era 5's clustering at 4–5% margins — which read as a total failure at `0/21` — was the solve landing on its
+target almost exactly. ⭐ **The metric was reporting the solver's success as its worst result.**
+
+⚠ The remaining real misses are now legible instead of buried: **era 2's `steel −65%` and `arms +66%`**, and
+**era 3's `synthetics −48%` / `fertilizer −41%`**. Those are the genuine work.
+
+### 10.39.3 Why the leading tier still cannot be scored here
+
+The obvious completion — also grade the leading tier against +20% — was built, and it is **invalid in the
+per-era report**. A tier's recipe is solved exactly once, in the era where it is dominant, so at era N the
+era-(N+1) rung still carries an unsolved recipe. Measured on `tooling e2` at era 1: the report saw
+`{iron 6.4, wood 9.6}` → 201% where the config converges to `{iron 16.8, wood 25.1}` → 50%, with prices,
+wage, employment, throughput, levels and secondary PM all identical.
+
+Era 0 (leading == dominant) and era 5 (nothing left to solve) were the only eras that agreed with the
+shipped preset — which is what identified the cause. **Scoring the leading tier requires a final pass over
+all six eras after the whole solve is finished.** Not built.
+
+⚠ This is **§10.14.1 recurring**: that section closed "never report or ship from a non-finalised state" for
+**prices**. It was still open for **recipes**, and nothing detected it for months because the only rows
+affected were ones nothing had been scoring.

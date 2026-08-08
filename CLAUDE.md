@@ -70,11 +70,23 @@ an era-1 economy has *no steel consumer at all*. So the solver never assigns a p
 order book produces (the game's own formula, on the scenario's own orders) and moves the one lever it
 has, **building counts**, until the profit targets hold at whatever prices result.
 
-**Targets:** era-appropriate tier **+20%**, one era stale **−5%**, two eras stale **−30%** (the third is
-a *check*, not a constraint — two eras of the −5% drift compounds to about −11%, so the two cannot both
-be imposed); extraction/logging **+20%**, agriculture **+10%**, with significant variance accepted.
-**Shipyards carry a further −30pp on all of them**, because none of their income from naval ship
-construction is modelled. A plateaued industry's last tier holds **+5%** forever.
+**Targets — A SCENARIO HAS TWO TUNED RUNGS, NOT ONE, AND THEY HAVE DIFFERENT TARGETS.** Since the six-era
+rework each scenario holds a **LEADING** tier (era+1 — the newest technology that exists anywhere; `lead =
+[0,2,3,4,5,5]`) and a **DOMINANT** tier (era N — the workhorse, most of the capacity):
+- **leading `TG.current` +20%** · **dominant `TG.minus1` +5%** · **one era stale `TG.minus2` −20%**.
+- A **plateaued** industry's last tier holds `TG.plateau` **+5%** forever.
+- **Shipyards carry a further −30pp on all of them**, because none of their income from naval ship
+  construction is modelled.
+- Extraction and agriculture have a **band**, not a target (§10.22).
+⚠⚠ **THE ERA-APPROPRIATE TIER IS THE DOMINANT ONE AND ITS TARGET IS +5%, NOT +20%.** The old five-era text
+here read "era-appropriate +20%, one era stale −5%, two eras stale −30%", which describes a ladder whose top
+rung present was the era-appropriate one. That is no longer the shape, and the stale wording outlived the
+change: the report graded the dominant tier against +20% while the solver aimed it at +5%, a **systematic
+15pp phantom miss in every era**. Fixing the yardstick alone moved the objective from **5/76 to 70/84 within
+8pp** with the economy completely unchanged (BUGS_AND_FIXES, 2026-08-08).
+⚠ **The LEADING tier is currently scored by nothing**, and cannot be scored in the per-era report: its
+recipe is solved in the *next* era, so at report time it is not final. That needs a post-solve pass over all
+six eras — see the same entry.
 
 **⭐ THE GOAL A SCENARIO SET MUST CLEAR IS "ILLOGICALITY" — BALANCE_FRAMEWORK §10.11.** Those profit
 targets are a *means*; illogicality is the end, and it is what says whether the tech ladder actually

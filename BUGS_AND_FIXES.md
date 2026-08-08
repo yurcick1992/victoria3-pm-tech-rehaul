@@ -13,6 +13,49 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## The per-era report scored a tier whose recipe that run had not solved yet — and read it 4x too profitable (2026-08-08)
+
+**Symptom.** After the profit-target line was changed to also score the scenario's LEADING tier (the era+1
+rung), eras 1–4 reported absurd margins — `railway 708%`, `port 608%`, `arms 291%`, `tooling 201%` — while
+era 0 and era 5 looked fine. Replaying the SHIPPED preset for the same scenarios gave 603%, 196%, 82%, 50%.
+Everything else in those era blocks was byte-identical between the two runs (GDP, illogicality, price path,
+composition), so it was demonstrably the same solve.
+
+**Root cause. A tier's recipe is solved exactly ONCE, in the era where that tier is DOMINANT.** So when era
+N prints its report, the era-(N+1) tier sitting in its scenario still carries an **unsolved** recipe — era
+N+1 has not run yet. Dumping both sides for `tooling e2` at era 1:
+
+```
+report (live, era 1):    in = { iron  6.4, wood  9.6 }  ->  201%
+config it converges to:  in = { iron 16.8, wood 25.1 }  ->   50%
+```
+
+A uniform 2.62× on the inputs, with **prices, wage, employment, throughput, level count and secondary PM
+all identical** — which is what ruled out every other explanation in turn.
+
+**Why exactly two eras looked right, and why that was the clue.** Era 0's leading tier IS its dominant tier
+(`lead = [0,2,3,4,5,5]`), so it had no such row; era 5 is last, so by the time it reports every tier has
+been solved. Those were precisely the two eras that agreed with the shipped config — the pattern named the
+cause before any dump did.
+
+**Fix.** The per-era line scores only the DOMINANT tier (plus a plateaued industry's permanent top tier).
+Scoring the leading tier needs a FINAL pass over all six eras after the whole solve is finished; until that
+exists, the report scores only what is final at the moment it prints.
+
+**Detect / prevent.** This is BALANCE_FRAMEWORK §10.14.1's rule — *never report from a non-finalised state*
+— surviving for **recipes** after it had been fixed for **prices**. General check: **before scoring anything
+in a per-era report, ask whether a LATER era still writes to it.** The cheap detector is the one that worked
+here — replay the shipped preset and diff every scored row against the report; any row that disagrees is
+being reported from a state that is not shipped.
+
+⚠ **A second, quieter bug rode along.** The `floored` test keys on `h.kind.startsWith('tier')` to choose
+between an `I:<industry>` and an `R:building_<name>` lookup. Renaming `kind` to the row's role sent every
+lookup down the reference branch, so nothing was ever detected as floored and era 1's seven floored
+industries silently became genuine misses — inflating the very metric being fixed. A string-prefix contract
+between two sites 40 lines apart, with no assertion on either end.
+
+---
+
 ## ✅ CLOSED — crash resume was working all along; the HARNESS was throwing it away on a stale clock reading (2026-08-06)
 
 > ### ✅ CONFIRMED IN THE FIELD, same day, first guarded campaign

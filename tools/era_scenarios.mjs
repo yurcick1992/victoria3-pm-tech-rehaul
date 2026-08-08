@@ -2035,16 +2035,53 @@ for (let e = 0; e < FIT.eras.length; e++) {
 
   // THE OBJECTIVE: did the era-current tiers and the raw producers land on their profit targets, at the
   // prices this scenario's own order book produces? Everything else is commentary.
+  // ⚠⚠ SCORE EACH TIER AGAINST THE TARGET IT WAS SOLVED TO. A scenario holds two tuned rungs, not one, and
+  // they have DIFFERENT targets (see ERAS/`lead` in era_solver.mjs):
+  //   LEADING tier  (era == LEAD_TIER)  — the newest technology in the world  -> TG.current  (+20%)
+  //   DOMINANT tier (era == this era)   — the workhorse, what the era mostly runs -> TG.minus1 (+5%)
+  // At era 5 there is no tier 6, so lead == dominant and the industry contributes ONE row, not two.
+  //
+  // ⚠ THIS LINE USED TO GRADE THE DOMINANT TIER AGAINST +20%, and that was a leftover from the five-era
+  // ladder, where the top tier present WAS the era-appropriate one. After the switch to solving each rung
+  // where it is dominant, the solver aimed the workhorse at +5% while this scored it against +20% — a
+  // SYSTEMATIC ~15pp phantom miss in every era, which is most of what "mean |off|" was reporting. Era 5's
+  // worst list read `steel 3%/20% railway 3%/20% automotive 3%/20%`: three industries sitting ON their
+  // actual target, reported as 15-17pp misses, and the era scored 0/21 within 8pp.
+  // The rule: the report grades what the solve aimed at, or it is measuring its own bookkeeping.
   const hits = [];
+  const LEAD = FIT.eras[meta.eIx].lead != null ? FIT.eras[meta.eIx].lead : meta.era;   // as `placement` reads it
   for (const i of S.IND) {
-    const avail = [...i.tiers].sort((a, b) => a.era - b.era).filter(t => t.era <= meta.era);
-    if (!avail.length || i.follows_be === false) continue;
-    const cur = avail[avail.length - 1];
-    if (!S.BLDNUM[cur.key]) continue;
-    const p = E.TPthr(i, cur) / 100;                      // throughput-aware, same as the solve
-    if (!isFinite(p)) continue;
-    const tgt = TG.current + (SHIP_INDUSTRIES.has(i.id) ? TG.shipyard_penalty : 0);
-    hits.push({ what: i.id, kind: 'tier e' + cur.era, got: p, tgt, off: p - tgt });
+    if (i.follows_be === false) continue;
+    const sorted = [...i.tiers].sort((a, b) => a.era - b.era);
+    const ship = SHIP_INDUSTRIES.has(i.id) ? TG.shipyard_penalty : 0;
+    const score = (t, tgt, role) => {
+      if (!t || !S.BLDNUM[t.key]) return;
+      const p = E.TPthr(i, t) / 100;                       // throughput-aware, same as the solve
+      if (!isFinite(p)) return;
+      // ⚠ `kind` MUST keep the `tier ` prefix — the floored test below keys on it to build `I:<industry>`
+      // vs `R:building_<name>`. Renaming it to the role silently sent every lookup to the reference branch,
+      // so nothing was ever detected as floored and era 1's seven floored industries became genuine misses.
+      hits.push({ what: i.id, kind: 'tier e' + t.era, role, got: p, tgt: tgt + ship, off: p - (tgt + ship) });
+    };
+    // ⚠⚠ THE LEADING TIER IS DELIBERATELY *NOT* SCORED HERE, and this is not an oversight. A tier's recipe
+    // is solved exactly once, in the era where it is DOMINANT — so when era N reports, the era-(N+1) tier
+    // it holds still carries an UNSOLVED recipe, and scoring it measures a state that will not ship.
+    // Measured: at era 1 the tooling e2 tier reads inputs {iron 6.4, wood 9.6} and a margin of 201%, where
+    // the config it converges to holds {iron 16.8, wood 25.1} and 50% — a uniform 2.62x, with prices,
+    // wage, employment, throughput, levels and secondary PM all identical. Era 0 (no leading tier) and era
+    // 5 (nothing left to solve) were the only two eras that agreed with the shipped config.
+    // This is §10.14.1's rule surviving for RECIPES after it was fixed for prices.
+    // ⇒ Scoring the leading tier needs a FINAL pass over every era after the whole solve is done. Until
+    // that exists, the per-era line scores only what is final at the moment it prints.
+    const dom = sorted.find(t => t.era === meta.era);
+    score(dom, TG.minus1, 'dom');
+    // A PLATEAUED industry has neither: its ladder ended below this era, and its last tier is PERMANENT
+    // rather than stale (CLAUDE.md — the good's price holds it up instead of deflating past it). Score it
+    // against the plateau target, or the industry silently contributes nothing to its own era's objective.
+    if (!dom && sorted.length) {
+      const last = sorted[sorted.length - 1];
+      if (last.era < meta.era) score(last, TG.plateau != null ? TG.plateau : TG.minus1, 'plat');
+    }
   }
   // ⚠ EXTRACTION AND AGRICULTURE ARE NO LONGER SCORED AGAINST A TARGET. They have a BAND (RAW_BAND) and are
   // reported against it separately. Scoring them here was the source of essentially the whole "profit
@@ -2059,6 +2096,8 @@ for (let e = 0; e < FIT.eras.length; e++) {
     const key = h.kind.startsWith('tier') ? 'I:' + h.what : 'R:building_' + h.what;
     h.floored = (meta.scaleOf[key] != null && meta.scaleOf[key] < 0.95 && h.off < 0);
   }
+  if (process.env.ERA_HITS) console.log('HITS e' + meta.era + ' LEAD=' + LEAD + '  ' +
+    hits.map(h => `${h.what}[${h.kind}]=${(h.got * 100).toFixed(0)}%`).join(' '));
   const scored = hits.filter(h => !h.floored);
   const onTgt = scored.filter(h => Math.abs(h.off) <= 0.08).length;
   const meanOff = scored.reduce((a, h) => a + Math.abs(h.off), 0) / Math.max(1, scored.length);
