@@ -53,8 +53,38 @@ between an `I:<industry>` and an `R:building_<name>` lookup. Renaming `kind` to 
 lookup down the reference branch, so nothing was ever detected as floored and era 1's seven floored
 industries silently became genuine misses — inflating the very metric being fixed. A string-prefix contract
 between two sites 40 lines apart, with no assertion on either end.
+### ⚠⚠ IT RECURRED THE SAME DAY, IN `profitTotals()`, AND THE FIX ABOVE IS WHY IT WAS FOUND
+
+Hours after the above was diagnosed and fixed for the profit-TARGET line, the **same defect shipped in the
+new `profitTotals()` metric**, which was being written in the same session and also ran inside the per-era
+pass. It summed every tier in the scenario — including the leading tier, whose recipe the next era had not
+solved. Scored against a replay of the shipped presets:
+
+| | 1780 | 1836 | 1870 | 1900 | 1920 | 1945 |
+|---|--:|--:|--:|--:|--:|--:|
+| in-pass report | £0.01M | £0.09M | £0.40M | **£1.80M** | £4.80M | £8.10M |
+| replay of shipped state | £0.01M | £0.06M | £0.08M | **£0.40M** | £2.45M | £8.10M |
+
+**Same fingerprint** — exact agreement at era 0 and era 5, divergence everywhere between — which is what
+identified it in seconds the second time. Overstated by **4.5×** at 1900, and it hid the fact that era 1870's
+loss-makers lose more than the whole era earns (losses 158% of net).
+
+**Fix:** the per-era line is removed entirely and a single FINAL PROFIT PASS runs after the whole era loop,
+replaying each shipped preset against the final recipe book (BALANCE_FRAMEWORK §10.41).
+
+⭐ **THE RULE THIS ESTABLISHES: when a defect is found in one report line, SWEEP EVERY OTHER LINE COMPUTED
+AT THE SAME POINT.** The first fix was correct, well documented, and did nothing to prevent the second
+occurrence, because it was written as a fix to *that line* rather than as a property of *that position in
+the solve*. Anything computed inside the per-era pass is computed before the later eras have settled the
+recipes of the tiers standing in the earlier ones.
+
+⚠ And a limit worth stating: the final pass makes the REPORT honest, not the SOLVE. Era N's counts were
+themselves chosen against the provisional downstream recipes, and no outer loop over the era sequence
+exists. The strict fixed-point check cannot catch that — the inconsistency is deterministic, so it
+reproduces byte-identically while still being wrong.
 
 ---
+
 
 ## ✅ CLOSED — crash resume was working all along; the HARNESS was throwing it away on a stale clock reading (2026-08-06)
 
