@@ -3190,7 +3190,14 @@ from now on, and the **integer polish** (below) attacks the amplifier itself.
 - **The manor-house problem**: ownership professions are an 1836-frozen share of the productive
   workforce (PROF_RATIO), so manor houses are the biggest building in every economy including 1945.
   Direction under discussion: tie aristocrats to the LAND economy, capitalists to industrial capital,
-  white-collar to a ramp — era-appropriate anchors instead of one frozen vector.
+  white-collar to a ramp — era-appropriate anchors instead of one frozen vector. ⭐ **No game run
+  needed to fit them** (user, 2026-08-09): the `saves_debut` archive (356 vanilla autosaves,
+  1836→1921) supplies the whole trajectory — professions per country via
+  `melted_pops_by_profession.mjs`, building levels by type via `melted_building_goods.mjs` (it
+  already parses `levels=N` per building; extend it ~20 lines to emit level totals per type per
+  country), and the save's own `gdp` series (F45's source). Sample ~9 saves at decade intervals,
+  extract the USA (the scenarios' reference country); era 5 stays an extrapolation — the campaign
+  ends 1921 and vanilla ends 1936 anyway.
 - **Grain collapses at era 3 in every configuration** — the subsistence/market interface (subsistence
   supplies grain at zero opportunity cost); needs its own session.
 - **PM choice still never settles** (hysteresis deferred; best-of-cycle freezing designed, unbuilt).
