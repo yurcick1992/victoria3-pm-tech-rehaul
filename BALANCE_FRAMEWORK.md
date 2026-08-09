@@ -3161,10 +3161,28 @@ from now on, and the **integer polish** (below) attacks the amplifier itself.
 
 ### 10.42.5 Pending rulings and open work
 
-- **ERA_WAGE_RAMP** (default off): the strongest stale-rung killer measured (+2.1M net at zero fault
-  cost in the matrix), re-measured WITHOUT the rejected drift under the raw price band; awaiting the
-  design ruling with those numbers.
-- **The 1780 prune list** (explained in plain terms; awaiting ruling).
+- **ERA_WAGE_RAMP is DEAD** (ruled by measurement, 2026-08-09): without the rejected drift it bankrupts
+  the economy even under the ±30pp raw band (losses £9.4M/wk, net negative; the jitter seed corroborates
+  at £2.0M). Both halves of the Baumol pair are gone; its job — killing stale rungs — is already done by
+  stale-first reduction + the outer loop (era-5 newest-rung losses are £0 without it).
+- **The 1780 prune, refined by the buyer test (user + measurement, 2026-08-09).** The all-five prune
+  orphaned real demand: the ARMY buys small arms and artillery at 1780 (22+7 battalions; arms trade at 94
+  with the industry present), and the UNIVERSITY buys paper in every era (`pm_scholastic_education`, the
+  era-0 base method, eats 5/level; government administration joins from 1836 — its era-0
+  `pm_simple_organization` is genuinely paperless, per vanilla). The solver's own ceiling tripwire caught
+  it: pruned-1780 pinned paper (buy 5 / sell 0, NO PRODUCER) and artillery at 175. The candidate list is
+  therefore **steel + glass only** (the two goods with no buyer of any kind at 1780); measuring, then the
+  user rules.
+- **THE ELECTRICITY PASS (user, 2026-08-09 — QUEUED, do not start until the ruled set's effects are
+  measured).** Era-3's urban-centre lighting PM flips from CONSUMING 3 electricity to PRODUCING 1
+  (municipal generation embedded in the urban centre), offset by a labour shift laborers → engineers
+  sized to be roughly economically neutral at BASE electricity price and era-3 wages. Declared scope:
+  **this will likely be the only PM change ever made to pre-existing non-manufacturing industries.**
+  Implementation prerequisites: the goods half is a `pm_goods` override (existing mechanism); the
+  employment half needs a per-PM employment override the builder does not yet have (extend `pm_goods` to
+  employment or own the PM's file). Interactions to re-measure when it lands: electricity gains a supply
+  source outside `power` wherever urban centres stand (the chain rule must treat it as a producer), and
+  urban-centre economics change materially (they become electricity sellers).
 - **The manor-house problem**: ownership professions are an 1836-frozen share of the productive
   workforce (PROF_RATIO), so manor houses are the biggest building in every economy including 1945.
   Direction under discussion: tie aristocrats to the LAND economy, capitalists to industrial capital,
