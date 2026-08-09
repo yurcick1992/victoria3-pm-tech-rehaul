@@ -3730,6 +3730,23 @@ engine's hard 25–175% band. An era-gated adoption rule (mandate) is the vanill
 not an artificial one; the vanilla-paced variant would put rail on mines/oil/logging from era 3 and
 leave 1870 on road carts (vanilla 1876 adoption was still low).
 
+❌ **A SHIPYARD-STYLE TARGET HANDICAP FOR RAILWAY IS MEASURED AND IT HURTS (`ERA_RAIL_PENALTY=-0.10`,
+seed 8, 2026-08-09; knob kept at default 0).** The user's question — would a −10pp railway target
+(the −30pp shipyard pattern) substitute for the freight ruling? Against the shipped derived-bounds
+state: faults 72 (61) → **74 (63)**, losses £178k → **£292k**, net £12.3M → **£11.8M**, ceiling
+6/6 → 5/6, macro residuals 15 → **17** — and railway's mapped share FELL at every era it exists:
+0.11→0.05% @1870, −0.00→**−0.56%** @1900, 1.70→0.84% @1920, 1.16→0.61% @1945. The mechanism is the
+prediction confirmed, and it is instructive: (1) the count controller sizes railway off transportation
+ORDERS, which no scoring change creates, so the handicap cannot add demand; (2) what it CAN do is make
+`solveInputsAt` solve the dominant railway recipe to −5% instead of +5% — ~10% of revenue MORE inputs
+per level — so every railway level produces LESS gross product; (3) the spared-from-shrink and
+macro-grown levels (e3 grew +17) then carry that value-poorer recipe, and at final prices the 1900
+railway sector is outright value-DESTROYING (−0.56% of the mapped economy). The shipyard handicap is
+right because it compensates REAL income the model cannot see (naval construction); pre-mandate
+railway has no hidden income — freight revenue does not exist in the modelled market — so the handicap
+asserts income that is not there and the machinery converts the assertion into input-richer,
+value-poorer railways. Do not ship it; the knob stays for re-measurement only.
+
 ## 10.47.2 The bounds are DERIVED from the real US, on the mapped commodity economy (user-ruled 2026-08-09)
 
 The first bounds tables were broad hand calibrations. The user replaced the method: **look up the
