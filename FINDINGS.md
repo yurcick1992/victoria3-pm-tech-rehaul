@@ -5068,3 +5068,67 @@ saves_debut finding). The USA-shape-transfers-to-the-median-level assumption is 
 (shopkeepers differ ×4–5 between the USA and the European 1836 median, so LEVELS demonstrably do not
 transfer; shapes are assumed to). Era 5 is not data. And it says nothing about whether vanilla's own
 trajectory is HISTORICAL — bureaucrats halving is the game's behaviour, not the world's.
+
+## F47 — ⭐⭐ VANILLA ADOPTS RAIL FREIGHT AGAINST THE WAGE ARITHMETIC: 9 → 1,261 rail-freight raw producers (58%) between 1838 and 1912, while wages grew only ~×1.3. Freight adoption in the game is NOT a profit decision, and a profit-only solver will never reproduce it
+
+**Claim.** In the vanilla campaign, raw producers switch their transportation PMGs from `pm_road_carts`
+to the rail-freight methods (`pm_rail_transport_mine`, `pm_steam_rail_transport`, the logging/oil
+variants, `pm_tanker_cars`) at massive scale across 1838→1912 — **at wage levels where the strict
+per-building profit comparison says road carts are better**. Simultaneously, vanilla's own wage/wealth
+trajectory over the same 75 years is nearly as flat as our scenario ladder's, so "our wages are too low"
+does NOT explain our solver's refusal to adopt freight: vanilla refuses the same arithmetic and adopts
+anyway.
+
+**Arm and instruments.** VANILLA — the `saves_debut` archive (one vanilla campaign, quarterly
+autosaves). Saves used: `0001` (melted, **1838.4.1**), `0005`/`0061`/`0181` (pop tables via
+`save_extract.mjs` + `save_pops.mjs`; dated by sequence ≈ 1837/1851/1881), `0301` (melted via rakaly,
+**1912.4.1** — date read from the melt at column 0). PM adoption counted by occurrence of the quoted PM
+names in the melts; the per-class split by streaming the 1912 melt and attributing each PM line to the
+enclosing `building="..."` block.
+
+**Adoption numbers (world, count of building instances):**
+
+| PM | 1838.4.1 | 1912.4.1 |
+|---|---|---|
+| pm_road_carts | 991 | 895 |
+| pm_rail_transport_mine | 7 | 348 |
+| pm_steam_rail_transport | 2 | 687 |
+| pm_rail_transport_building_logging_camp | — | 213 |
+| pm_rail_transport_building_oil_rig | — | 2 |
+| pm_tanker_cars | — | 11 |
+| pm_log_carts | — | 34 |
+| **rail share of raw producers** | **~1%** | **~58%** |
+
+Per class at 1912: **mines 72% rail** (348 vs 138 road) · **oil rigs 81%** (13 vs 3) · **logging 63%**
+(247 vs 145) · **plantations 51%** (588 vs 564) — mines and oil are decisively rail, plantations sit at
+the crossover.
+
+**The wage trajectory over the same span** (USA pops, workforce-weighted mean wealth, F26 wage basis =
+laborers+farmers+machinists; tokens per TESTBED_METRICS §7 — `0x2fd5` workforce, `0x5556` wealth):
+
+| save | ≈date | wage-basis mean wealth | laborers | farmers | machinists | F26-implied base £/wk |
+|---|---|---|---|---|---|---|
+| 0005 | ~1837 | 9.0 | 8.5 | 13.9 | 12.8 | 0.066 |
+| 0061 | ~1851 | 10.5 | 10.1 | 15.2 | 12.1 | 0.077 |
+| 0181 | ~1881 | 12.3 | 11.5 | 16.8 | 14.9 | 0.091 |
+| 0301 | 1912.4.1 | 12.6 | 11.3 | 20.1 | 15.4 | 0.094 |
+
+Vanilla laborers gain ~2.8 wealth levels in 75 years — an F26-implied wage growth of ~×1.4, the same
+flatness as our scenario ladder (0.0605→0.0885 over 1836→1900). Meanwhile the flip arithmetic (measured
+on our shipped presets, the optimiser's own scoring with its 2pp hysteresis): rail freight beats road
+carts only at **×1.8–2.6 the 1900 base wage** (per building: tobacco/logging ×1.8–1.85, coal ×2.0,
+iron/sulfur ×2.5), **×3.9–6 at 1870**, and even at 1920 the shipped rail adoption is a frozen phase of
+a bistable limit cycle, not an equilibrium — at 1920's wage a mine's break-even transportation price is
+~65% of base while railways need ~95+ to live, so the two sides' viability bands do not overlap at any
+wage on the ladder.
+
+**What it does NOT say.** It does not say what vanilla's AI actually optimises when it switches PMs
+(observed behaviour only — the mechanism could be tech-availability eagerness, throughput heuristics,
+or anything else); it does not say the adoption is PROFITABLE for vanilla's buildings (unmeasured
+there); the ~1837/1851/1881 dates are sequence-position estimates (only 1838.4.1 and 1912.4.1 are read
+from melts); the USA pop attribution in the pop tables is partial (≈3–7.6M attributed vs a much larger
+true USA population — per-profession wealth MEANS are the quantity used, and a bias from partial
+attribution is possible); and it is one campaign of one world (the standard saves_debut caveat). The
+wealth→wage conversion leans on F26's 1836 cross-sectional fit applied over time, which is exactly the
+kind of extrapolation F26 itself warns about — here it only needs to support "flat, not ×2+", which the
+raw wealth levels show directly.

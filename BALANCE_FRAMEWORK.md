@@ -3715,6 +3715,21 @@ earlier rail), and 1870's explosives squeeze clears while 1836 picks up small gl
 A ruling, not a default: it re-prices the entire raw sector from 1870 (−£150–200/level), so it ships
 only if the user rules that a railway-age mine ships by rail as a matter of era, like street lighting.
 
+⭐⭐ **F47 SETTLES THE "IS THE MANDATE ARTIFICIAL?" HALF (measured 2026-08-09).** Vanilla itself adopts
+rail freight against the wage arithmetic: 9 rail-freight raw producers in 1838 → **1,261 (58%) by
+1912** — mines 72%, oil 81%, logging 63%, plantations 51% — while vanilla's own wage/wealth trajectory
+over those 75 years is as flat as our ladder's (USA laborers gain ~2.8 wealth levels; F26-implied wage
+×~1.4). The flip arithmetic on our presets needs ×1.8–2.6 the 1900 wage (×3.9–6 at 1870), and even the
+shipped 1920 adoption is a frozen phase of a bistable limit cycle (a mine's break-even transportation
+price at 1920 wages is ~65% of base; railways need ~95+ — the viability bands never overlap on the
+current wage path). So freight adoption in the game we mod is NOT a profit decision, a profit-only
+solver can never reproduce it, and "raise wages until it flips" both departs from vanilla's measured
+wages and re-runs the measured ERA_WAGE_RAMP bankruptcy (§10.42.5) — wage shares of raw-producer cost
+are 32–100%, and the ore-price rise a doubled wage demands cannot even be expressed inside the
+engine's hard 25–175% band. An era-gated adoption rule (mandate) is the vanilla-faithful mechanism,
+not an artificial one; the vanilla-paced variant would put rail on mines/oil/logging from era 3 and
+leave 1870 on road carts (vanilla 1876 adoption was still low).
+
 ## 10.47.2 The bounds are DERIVED from the real US, on the mapped commodity economy (user-ruled 2026-08-09)
 
 The first bounds tables were broad hand calibrations. The user replaced the method: **look up the
