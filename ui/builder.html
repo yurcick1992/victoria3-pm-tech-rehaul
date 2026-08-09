@@ -438,6 +438,7 @@
 "use strict";
 // ---------- constants ----------
 const TIERCOL = {0:"#5b6b7d",1:"var(--tier1)",2:"var(--tier2)",3:"var(--tier3)",4:"var(--tier4)",5:"var(--tier5)"};   // tier 0 = untiered (reference)
+const ERA0COL = "#8a7d5b";   // era 0 of OUR ladder — deliberately NOT the untiered grey, so an "e0" pill can never be mistaken for a reference building's "0"
 // shared column layout for BOTH the industry tables and the reference tables, so every column lines up.
 const MTABLE_COLS='<colgroup><col class="c-tier"><col class="c-bld"><col class="c-num"><col class="c-num"><col class="c-in"><col class="c-out"><col class="c-wf"><col class="c-tgt"><col class="c-be"><col class="c-io"><col class="c-bc"><col class="c-pb"><col class="c-act"></colgroup>';
 const TARGET_TOL = 6;   // pp: |BE − target_be| ≤ TOL shows green (matches the linter tolerance)
@@ -1817,7 +1818,7 @@ function attachIndustryUI(){
 function industryCard(i){
   const rows = i.tiers.map(t=>tierRow(i,t)).join('');
   const dis = i.locked?'disabled':'';
-  return `<div class="card${i.locked?' locked':''}" data-ind="${esc(i.id)}"><div class="hd ind-hd"><span class="caret">${i._open?'▾':'▸'}</span> ${esc(i.id)} <span class="tag">→ ${esc(i.output_good)}${i.tiers[0]&&i.tiers[0].natural_year?' · unlocks ~'+i.tiers[0].natural_year:''} · click to fold/unfold</span>
+  return `<div class="card${i.locked?' locked':''}" data-ind="${esc(i.id)}"><div class="hd ind-hd"><span class="caret">${i._open?'▾':'▸'}</span> ${esc(i.id)} <span class="tag">→ ${esc(i.output_good)}${i.tiers[0]&&i.tiers[0].tech_year!=null?' · onset ~'+i.tiers[0].tech_year:''} · click to fold/unfold</span>
       <span class="spacer"></span>
       <button class="minibtn" data-pb="cost" data-ind="${esc(i.id)}" ${dis} title="This group: set every tier's Build cost so payback = X yrs at current prices (fix prices)">group $→X</button>
       <button class="minibtn" data-pb="price" data-ind="${esc(i.id)}" ${dis} title="This group: scale its output+input prices so Tier-1 payback = X yrs (fix build cost)">group %→X</button>
@@ -1869,8 +1870,8 @@ function tierRow(i,t){
     + nonGoodsRows(i,t)
     + subtotalRow(`osub_${i.id}_${t.tier}`, 'total out', thruMult(t.key)*outputValue(i,t,true), 'Total weekly output revenue at the CURRENT scenario prices, including the throughput bonus — priced goods only (the non-goods above carry no £).');
   return `<tr data-ind="${esc(i.id)}" data-tier="${t.tier}">
-    <td><span class="pill" style="background:${TIERCOL[t.era||t.tier]||'#666'}" title="${t.era?`Era ${t.era} of the mod's six-era ladder, 1780-1945 (~${t.natural_year}). This is the ERA, never a position in its own industry: automotive starts at era 3, so its first building is e3. The in-game name says the same thing ("Era 3. …").`:'tier'}">${t.era?'e'+t.era:t.tier}</span>${t.model_only?'<div class="muted" style="font-size:9px" title="modelled but NOT emitted — no unlocking technology exists for it yet">model</div>':''}</td>
-    <td>${esc(t.name)}<div class="muted" style="font-size:11px">${esc(t.key)}</div><div class="muted" style="font-size:10px" title="natural unlock date = this tier's tech era">${t.natural_year?'~'+t.natural_year+' · ':''}${esc(t.tech||'')}</div>
+    <td><span class="pill" style="background:${t.era===0?ERA0COL:(TIERCOL[t.era!=null?t.era:t.tier]||'#666')}" title="${t.era!=null?`Era ${t.era} of the mod's six-era ladder, 1780-1945. This is the ERA, never a position in its own industry: automotive starts at era 3, so its first building is e3. The in-game name says the same thing ("Era ${t.era}. …").${t.tech_year!=null?` First commercially deployable ~${t.tech_year} (tech_year, §10.44) — the date gate places this tier in scenarios from that year on.`:''}`:'tier'}">${t.era!=null?'e'+t.era:t.tier}</span>${t.tech_year!=null?`<div class="muted" style="font-size:10px" title="tech_year: the year this slot's technology was first commercially deployable — what the §10.44 date gate places by">${t.tech_year}</div>`:''}${t.model_only?'<div class="muted" style="font-size:9px" title="modelled but NOT emitted — no unlocking technology exists for it yet">model</div>':''}</td>
+    <td>${esc(t.name)}<div class="muted" style="font-size:11px">${esc(t.key)}</div><div class="muted" style="font-size:10px" title="unlocking technology (vanilla)">${esc(t.tech||'')}</div>
       <div class="aivrow" title="Base AI construction desire (building ai_value). Blank = engine default ${AIVAL_DEFAULT}. Emitted as the building's ai_value when set.">ai_value <input type="number" min="0" step="50" value="${t.ai_value!=null?t.ai_value:''}" placeholder="${AIVAL_DEFAULT}" data-ind="${i.id}" data-tier="${t.tier}" data-aiv="1"></div>
       ${subsidyRowHTML(t.key)}
       ${secSelectors(i,t)}</td>
@@ -2945,7 +2946,7 @@ document.addEventListener('click', e=>{
     else { const r=applyPricesAnchor(i,t,X);
       banner(r.ok?(r.oob?'warn':'info'):'warn', r.ok?`Scaled ${i.id} prices so T${t.tier} payback = ${X} yrs${r.oob?' (some prices left the band, flagged red)':''}.`:`${i.id} T${t.tier}: can't reach ${X} yrs by uniform price scaling (IO ≤ 0 at current prices).`); }
   } else {                                                     // ----- group level -----
-    if(act==='cost'){ let set=0; const skip=[]; i.tiers.forEach(t=>{ applyBuildCost(i,t,X)?set++:skip.push('T'+t.tier); });
+    if(act==='cost'){ let set=0; const skip=[]; i.tiers.forEach(t=>{ applyBuildCost(i,t,X)?set++:skip.push(tlab(t)); });
       banner(skip.length?'warn':'info', `${i.id}: set Build cost on ${set} tier(s) for a ${X}-yr payback.`+(skip.length?` Skipped ${skip.join(', ')} (unprofitable now).`:'')); }
     else { const r=applyPricesAnchor(i,i.tiers[0],X);
       banner(r.ok?(r.oob?'warn':'info'):'warn', r.ok?`${i.id}: scaled prices so Tier-1 payback = ${X} yrs${r.oob?' (some prices left the band, flagged red)':''}.`:`${i.id}: Tier-1 unprofitable at current prices — can't anchor by price scaling.`); }

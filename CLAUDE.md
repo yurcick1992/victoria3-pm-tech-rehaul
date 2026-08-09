@@ -426,7 +426,11 @@ tier's `target_be` = the era anchor for its unlocking tech's era, minus an early
   eras 4–5, where those intermediate markets have matured to ~base.
 
 Targets are derived by **`tools/solve_be_targets.ps1`** (reads each tech's era live from vanilla, writes
-per-tier `target_be` + `natural_year`); the UI shows the natural unlock year per tier and per industry.
+per-tier `target_be` + `natural_year`). ⚠ Since §10.44 the UI shows **`tech_year`** (the slot's real
+onset, under each era pill and as the industry header's "onset ~YYYY") — `natural_year` (the era
+anchor) is config-only, carried through export but no longer displayed. The era pill always reads
+`e0`–`e5` (era 0 included — a falsy-zero check once made e0 tiers display their 1-based position in the
+tier-1 colour; e0 now has its own bronze, distinct from the untiered reference grey "0").
 Volumes then follow the §8 methodology (tier-1 output = vanilla output, ×1.5 per tier, inputs solved from
 the full-BE goal with wages folded in).
 **Shipyards are enabled and split by output good** into two output-good-consistent 2-tier chains (the
