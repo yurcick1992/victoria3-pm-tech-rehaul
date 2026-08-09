@@ -43,7 +43,7 @@ const FORBIDDEN_PM_RE = /^worker_exploitation_|^lectors_tobacco$/;
 const MANDATED_PMGS = {
   pmg_street_lighting: [
     ['pm_electric_streetlights', 3],   // electrical_generation — era 3 (its recipe is the rehauled
-                                       // municipal-generation method: +1 electricity, −1 coal, engineers)
+                                       // municipal-generation method: +1 electricity, −2 coal, engineers)
     ['pm_gas_streetlights', 1],        // hand-assigned era 1: Pall Mall 1807, widespread 1820s+
     ['pm_no_street_lighting', 0],
   ],

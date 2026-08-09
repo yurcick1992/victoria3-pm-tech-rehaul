@@ -122,7 +122,7 @@ pm_electric_streetlights = {
 
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_coal_add = 1
+			goods_input_coal_add = 2
 			goods_output_services_add = 10
 			goods_output_electricity_add = 1
 		}

@@ -101,16 +101,18 @@ leading rung's PROVISIONAL recipe and under-counted by ~40 points (52 reported v
 shipped state). Quote the `FINAL-STATE ILLOGICALITY` line, never the per-era sum alone — and no profit
 figure before 2026-08-09 is comparable to later ones without adding shipyards back (they are excluded
 from the totals now, reported on their own line, like gold).
-**Current state under the ruled set (§10.42.4) + the 1780 prune + the ELECTRICITY PASS (§10.43, shipped
-2026-08-09): final-state illogicality 72 (61 excluding shipyards), per era 4/13/15/17/12/11 · losses
-£218k/wk ≈ 1.8% of net · net £12.3M/wk · era-5 newest-rung losses £0 · INDUSTRIAL CEILING CLEAR IN ALL
-SIX ERAS in all four runs (the era-2 engines breach — the last residual — does not reproduce;
-closed-by-observation, attribution not pinned) · electricity path 151/139/121 across e3/e4/e5, era-3
-supply = 306 urban-centre levels + 36 leading coal plants · railways 117 levels at 1945, still floored
-at 1 in eras 3–4. Ensemble seeds 8/9/10: 72/81/76 (61/72/67) / £218–347k / £11.7–12.3M.** The pass costs
-a real but modest ≈+13 faults / ≈−1.3M net vs the pre-pass baseline (64 (55) / £169k / £13.6M; seeds
-58–68 (50–59) / £155–242k / £12.0–14.0M) — the standalone power sector is smaller and eras 4–5 pay more
-for electricity, which is §10.43's structural intent, not a tuning miss. The pre-campaign state on
+**Current state under the ruled set (§10.42.4) + the 1780 prune + the ELECTRICITY PASS at the RULED
+2-coal recipe (§10.43, shipped 2026-08-09): final-state illogicality 66 (57 excluding shipyards), per
+era 4/12/15/19/8/8 · losses £247k/wk ≈ 2.0% of net · net £12.3M/wk · era-5 newest-rung losses £0 ·
+INDUSTRIAL CEILING CLEAR IN ALL SIX ERAS in all five runs of the pass (the era-2 engines breach — the
+last residual — does not reproduce; closed-by-observation, attribution not pinned) · electricity path
+151/145/122 across e3/e4/e5, era-3 supply = 303 urban-centre levels + 37 leading coal plants · railways
+still floored at 1 in eras 3–4. The 1-coal ensemble (seeds 8/9/10) spanned 72/81/76 (61/72/67) /
+£218–347k / £11.7–12.3M and the 2-coal default sits inside that spread — future A/B work compares
+against THESE numbers.** The pass costs ≈+10 faults / ≈−1.3M net vs the pre-pass baseline (64 (55) /
+£169k / £13.6M; seeds 58–68 (50–59) / £155–242k / £12.0–14.0M) — the standalone power sector is smaller
+and eras 4–5 pay more for electricity, which is §10.43's structural intent, RATIFIED by the user with
+the coal ruling. The pre-campaign state on
 the same metric was 94 (84) and £868k losses. 1780's remaining faults (furniture, tooling, paper,
 artillery — food cleared in the shipped run) are honest tiny-market statements — industries with real
 buyers, each losing £86–300/wk at one floored level.
@@ -900,7 +902,8 @@ the game.
   (`building_power_plant`, the vanilla key so `has_building` references keep matching; tech
   `steam_turbine`, era 4) and oil-fired (era 5). The vanilla era-3 "Early Power Plant" tier is GONE: the
   1900 generation of plant was the municipal engine-house, which the urban centre's MANDATED
-  electric-streetlights method now models (`pm_goods`: +1 electricity out, −1 coal in; `pm_employment`:
+  electric-streetlights method now models (`pm_goods`: +1 electricity out, −2 coal in (ruled; 1 coal
+  left the mandate too profitable, 3 would force a loss-maker — §10.43.2); `pm_employment`:
   250 engineers, laborers gone — the streetlight PMG is a solver PREREQUISITE per era via
   `MANDATED_PMGS` in era_pm.mjs: none @0, gas @1-2, electric @3+, never an economic choice). Power is
   DEBUT-EXEMPT so the era-3 scenario may still place coal plants as its LEADING rung (the 1900s' first

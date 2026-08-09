@@ -3255,19 +3255,26 @@ A future in-game unique building for the great dams stays open as mod content; i
    flagged as its own task; the fork also lacks the coerced-labour ban, a real drift the "one copy" rule
    predicted).
 2. **The municipal-generation method** — `pm_electric_streetlights` overridden via `pm_goods`
-   (in: 1 coal · out: 10 services + **1 electricity**; was in: 3 electricity · out: 10 services) and the
-   new **`pm_employment`** (250 engineers; was 200 laborers + 50 engineers). `required_input_goods =
+   (in: **2 coal** · out: 10 services + **1 electricity**; was in: 3 electricity · out: 10 services) and
+   the new **`pm_employment`** (250 engineers; was 200 laborers + 50 engineers). `required_input_goods =
    electricity` is dropped by the builder — a producer gated on its own product being already in the
    market would deadlock the game's PM selector (MODDING_NOTES).
-   **The labor-shift arithmetic, stated honestly:** the flip is worth **+£90/level at base prices**
-   (3 elec no longer bought = +90, 1 elec now sold = +30, 1 coal now bought = −30). A 1:1
-   laborers→engineers shift adds `N × base wage × 2` of wages; covering £90 at the era-3 base wage
-   (£0.0885/wk) needs N≈508 — but the method only HAS 200 laborers, and drawing the building's base pool
-   negative is forbidden (arcades + motor carriages already exhaust it: 1000 − 1000 laborers). So ALL 200
-   shift (the method becomes pure engineers) and that covers **£35.4 of the £90** at era-3 wages (£51.9
-   at era-5 wages); the residual ~£55/level accrues to urban-centre margin. Exact neutrality is
-   unreachable inside the method's own headcount — recorded as a fact, not papered over; raising the
-   engineer count beyond 250 or the coal input beyond 1 are the levers if the residual reads badly.
+   **The neutrality arithmetic (coal ruled to 2, user 2026-08-09):** the flip's gross value is
+   **+£120/level at base prices** (3 elec no longer bought = +90, 1 elec now sold = +30); the offsets are
+   coal (£30 each) and the labor shift. A 1:1 laborers→engineers shift adds `N × base wage × 2`, and the
+   method's own headcount caps N at 200 (drawing the building's base pool negative is forbidden —
+   arcades + motor carriages already exhaust it: 1000 − 1000 laborers), so the shift covers `400 × base
+   wage`. Residual per level = `120 − 30·coal − 400w`:
+   | coal | era 3 (w .0885) | era 4 (.1071) | era 5 (.1297) |
+   |---|---|---|---|
+   | 1 | +£54.6 | +£47.1 | +£38.1 |
+   | **2 (ruled)** | **+£24.6** | **+£17.1** | **+£8.1** |
+   | 3 | −£5.4 | −£12.9 | −£21.9 |
+   **2 coal does not close the gap completely** — but it is the right side to stop on: the residual is a
+   modest UC gain (~2pp of a level's output) that DECAYS toward zero as wages rise, while 3 coal would
+   make the MANDATED method a strict loss-maker at every era, worsening over time — a mandate must not
+   force a money-loser. Raising the engineer count above 250 remains the lever if exact era-3 neutrality
+   is ever wanted.
 3. **Power = [coal @4, oil @5]** in `build_era_ladder.mjs`'s spec and the config; the era-3 "Early Power
    Plant" tier is deleted. The coal tier inherits the **vanilla key `building_power_plant`** (5 vanilla
    script files reference it — the key must survive) with tech swapped to `steam_turbine`; nothing in
@@ -3319,8 +3326,15 @@ industry modernises, never pinned at the band edge.
 |---|---|---|---|
 | baseline (ruled set + prune), default | 64 (55 excl) | 169k | 13.6M |
 | baseline verification seeds | 58–68 (50–59) | 155–242k | 12.0–14.0M |
-| **electricity pass, default (ships)** | **72 (61)** · per era 4/13/15/17/12/11 | **218k** (1.8%) | **12.3M** |
-| electricity pass, seeds 8/9/10 | 72/81/76 (61/72/67) | 218/347/319k | 12.3/11.7/12.2M |
+| electricity pass @1 coal, default | 72 (61) · per era 4/13/15/17/12/11 | 218k (1.8%) | 12.3M |
+| electricity pass @1 coal, seeds 8/9/10 | 72/81/76 (61/72/67) | 218/347/319k | 12.3/11.7/12.2M |
+| **@2 coal (RULED, ships)** | **66 (57)** · per era 4/12/15/19/8/8 | **247k** (2.0%) | **12.3M** |
+
+The 2-coal re-solve (the user's coal ruling) landed INSIDE the 1-coal ensemble's spread on every metric
+— the fault improvement 72→66 is reshuffle, not a coal effect — with the same qualitative state:
+ceiling clear 6/6, era-3 = 303 UC generators + 37 leading stations, electricity 151/145/122, era-4/5
+faults notably lower (8/8) and era-3 a little higher (19). These are the REFERENCE numbers for future
+A/B work (the user ratified the pass's structural cost with the coal ruling).
 
 **The cost is real but modest — median ≈ +13 faults, ≈ +100k losses, ≈ −1.3M net** (the ensembles
 barely overlap, so this is signal, not the ±10/±250k/±0.4M jitter). It has two visible sources: (1)
@@ -3330,8 +3344,9 @@ now loss-making + inverted at era 4 (electric railway eats 10 electricity/level,
 electrics/synthetics linger on the 2-eras-stale-profitable lists; (2) urban centres got richer (the
 uncovered £55/level residual plus electricity revenue), so more of the F13 entitlement survives the
 loss cut (279 → 306 UC levels at era 3) and services supply grows accordingly. Era-5 newest-rung
-losses stay **£0**; railways reach **117 levels at 1945** (93 diesel + 23 electric + 1 steam; ~89
-before), still floored at 1 level in eras 3–4 — the railway question stays open and now has its
+losses stay **£0**; railways at 1945 read 117 levels in the 1-coal run and **86 in the shipped 2-coal
+run** (~89 at baseline — the count is volatile across re-solves and none of these differences is
+signal), still floored at 1 level in eras 3–4 — the railway question stays open and now has its
 electricity interaction on the record.
 
 ⭐ **The one residual ceiling breach is GONE: the INDUSTRIAL CEILING is clear in all six eras in ALL
