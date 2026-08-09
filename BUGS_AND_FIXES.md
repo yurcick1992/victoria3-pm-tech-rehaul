@@ -13,6 +13,76 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## The in-era illogicality count was fiction — it scored recipes that never ship (2026-08-09)
+
+**Symptom.** The headline illogicality read 52 (47 excluding shipyards) while a replay of the criterion on
+the SHIPPED presets — final recipes, final counts — read **94 (84)**. Under the outer era iteration the
+in-era count "worsened" to ~90 and converged to the replayed one.
+
+**Root cause.** The same §10.14.1/§10.39.3/§10.41.1 defect in its fourth home: `ladderFaults` judges the
+newest PRESENT tier, and during era N that leading rung still carries its provisional (leanest-legal,
+canonical-start) recipe — lean recipes look profitable, so fault 1 (loss-making) and fault 3 (inverted)
+were systematically under-counted mid-ladder. The truth was always ~94; "52" measured a state no one ships.
+
+**Fix.** The criterion is now ALSO replayed on the shipped state (`FINAL-STATE ILLOGICALITY`), together
+with leading/dominant-rung scoring and a losses-by-vintage split; the final-state figure is the headline,
+and the outer iteration (ERA_OUTER, default 3) closes the gap at its source by re-solving every era against
+the final recipe book.
+
+**Detect next time.** Any number computed inside the era pass is suspect until it agrees with a replay of
+the shipped preset — the fingerprint of this defect family is exact agreement at era 0 and era 5 with
+divergence between.
+
+## The urban-centre reduction is what broke 1870 and 1900 (2026-08-09)
+
+**Symptom.** The 2026-08-08 handover's open item: 1870's net fell 0.43M → 0.08M and 1900's 1.33M → 0.40M
+somewhere in the gold/urban/art batch, losses tripling, attribution contaminated.
+
+**Root cause.** `ERA_URBAN_SHRINK` cut urban centres at ANY loss. At 1870/1900 they sat at −2%, so each cut
+bought almost nothing — while counts are the dependent variable (full employment by construction), so every
+cut poured clerks into productive industry and flooded all markets at once. Measured: turning only that
+knob off restored 1870 to net 208k / losses 37k and 1900 to 1.4M / 111k. The art-academy change was
+innocent (reverting it made losses AND faults worse).
+
+**Fix.** Two-stage. First a loss floor (`ERA_URBAN_FLOOR=-0.10`: cut only below −10%) recovered the two
+eras while keeping 1836's −49% case cut. Then the ruled set's outer iteration + unified enforcement
+absorbed the breaking mechanism entirely — under them the floor, the unconditional cut and never-cutting
+are statistically indistinguishable — so the special case was REMOVED again (default 0, cut at any loss,
+same rule as manufacturing) and the knob remains as the A/B instrument.
+
+## A raw-only solvency re-check recreated the phase-ordering bug it existed to close (2026-08-09)
+
+**Symptom.** In the first full combination run, era 5 shipped `chemical_plant_reforming` at **116 levels ×
+−46% = £448k/wk** — 60% of the era's losses in one building type — while the report's own reduction had
+terminated cleanly.
+
+**Root cause.** The new post-tuner §10.18 re-check dropped/shrank raw producers AFTER the manufacturing
+reduction had finished. Prices moved out from under the reduction's last check, fertilizer went deep
+underwater, and no rule that could cut manufacturing was still running. Same failure class as §10.18's
+"each round must begin from a converged state": any enforcement phase that runs after another phase's
+final check can invalidate it.
+
+**Fix.** ONE unified counts-only enforcement loop over every rule at once (raw solvency, manufacturing
+losses, urban floor) — worst violation first, settle + re-price after each step, terminate only when
+everything is clean simultaneously. Era-5 losses under the same combination fell 728k → 127k.
+
+**Detect next time.** When adding any post-solve rule, ask what other rule's terminal check it can
+invalidate; if the answer is anything, it belongs inside the shared loop, not after it.
+
+## The scale-limit verification counted subsistence fishing villages against the commercial cap (2026-08-09)
+
+**Symptom.** `SCALE LIMITS … ⚠⚠ BREACHED — fishing 102 (the cap failed to apply; this is a bug)` the
+moment the fishing wharf sat at its cap of 100.
+
+**Root cause.** The verification summed every building matching `/fishing/`, and
+`building_subsistence_fishing_village` matched — but subsistence buildings are sized from the peasants and
+were never subject to the caps, so 100 wharf + 2 villages printed a phantom breach. Enforcement was
+correct throughout; only the check lied.
+
+**Fix.** The verification skips subsistence buildings, matching what `applyCounts` actually caps.
+
+---
+
 ## The per-era report scored a tier whose recipe that run had not solved yet — and read it 4x too profitable (2026-08-08)
 
 **Symptom.** After the profit-target line was changed to also score the scenario's LEADING tier (the era+1

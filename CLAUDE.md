@@ -58,8 +58,8 @@ accidental hand-edit; it is no longer a design input, and `solve_be_targets.ps1`
 The pipeline (**Node ≥ 24 required**, `C:\Program Files\nodejs`):
 ```
 node tools/build_era_ladder.mjs --write   # structure: eras, invented tiers, ×1.5 output ladder
-node tools/era_scenarios.mjs   --write    # THE solve: prices, volumes, counts, pops, army
-powershell -File tools/build.ps1
+node tools/era_scenarios.mjs   --write    # THE solve: prices, volumes, counts, pops, army (~25–35 min:
+powershell -File tools/build.ps1          #   3 outer passes + final-pass integer polish, §10.42.4)
 ```
 `tools/era_solver.mjs` is the **balance-only reference view** (margins alone, no scenario) and writes
 `config/era_prices.json`; `tools/era_scenarios.mjs` is authoritative and overwrites its volumes.
@@ -95,17 +95,23 @@ money**, (2) a **two-eras-stale** tier still turns a profit, (3) the ladder is *
 tier earns less than the one below it. Acceptable: **~0** for (1) and (3), **in the teens** for (2),
 **excluding shipyards and art academies** (both have targets they cannot meet by construction).
 `tools/era_scenarios.mjs` prints the count per era with the offending industries named.
-**Current state: 43 points, 30 excluding the excused (3 / 9 / 9 / 8 / 14 per era) — NOT yet acceptable.**
-⚠ The excluded count rose 27 → 29 when `extinct` was made real (§10.30.2) — kept deliberately, because the
-variant that scored 40 breached the industrial ceiling and the ceiling outranks the metric.
-⚠ 41 → 43 is the `local` goods fix (F43, §10.37) and is **inside the jaggedness**, not a regression: the
-same config scores 38–48 across a deadband sweep alone. The fix ships on measurement (0.835 pp against
-4.226 pp on the game's own stored weights, 16 of 16), not on the score. Its aimed-at effect is real —
-`electrics` leaves the loss-making list in eras 4 and 5 and those eras improve 12 → 9 and 11 → 8 — and
-eras 2 and 5 pay for it.
-⚠ **Two levers that lower the count are REJECTED and must stay rejected**: `ERA_NO_BUYER=1` (35/24) buys
-its gain with §10.32.3's known defect, and `ERA_COUNT_DEADBAND=10` (38/26) is a one-point spike in a
-~3-point band whose neighbours 9 and 11 score 41 and 39.
+⚠⚠ **THE HEADLINE COUNT IS THE FINAL-STATE ONE** (BUGS_AND_FIXES 2026-08-09): the in-era line reads the
+leading rung's PROVISIONAL recipe and under-counted by ~40 points (52 reported vs 94 replayed on the
+shipped state). Quote the `FINAL-STATE ILLOGICALITY` line, never the per-era sum alone — and no profit
+figure before 2026-08-09 is comparable to later ones without adding shipyards back (they are excluded
+from the totals now, reported on their own line, like gold).
+**Current state under the ruled set (§10.42.4), across the verification seeds: final-state illogicality
+58–68 (50–59 excluding shipyards) · losses £155–242k/wk ≈ 1–2% of net · net £12.0–14.0M/wk · era-5
+newest-rung losses £0 · grain four types at 1945 · rice zero by ruling · one residual ceiling breach
+(era-2 engines, under-built after the chain rule withheld the electric rung — open).** The shipped
+`--write` state is the 68 (57) / £155k / £14.0M point. The pre-campaign state on the same metric was
+94 (84) and £868k losses.
+⚠ Older counts in this file's history (43/30, 52/47) are the in-era metric on the old defaults — void for
+comparison on both grounds.
+⚠ **Two levers that lower the count are REJECTED and must stay rejected**: `ERA_NO_BUYER=1` buys its gain
+with §10.32.3's known defect, and deadband retuning is a spike in a jagged band (§10.42.2's calibration:
+±10 faults / ±250k losses / ±0.4M net from no-op changes on the old defaults — design changes are judged
+on 3-seed ensembles, `ERA_JOINT` 8/9/10).
 It is **live in the balance UI** as the **Ladder check** panel, from ONE shared implementation
 (`ladderFaults()` in `ui/econ.js`, called by both the UI and the solver). It scores only the buildings a
 scenario actually CONTAINS — an absent industry or a tier at Number 0 is never a fault and never the
@@ -116,13 +122,17 @@ making the recipe MIX come from the vanilla recipes alone — the run prints `RE
 and warns if any tier ever reads its mix from the previous write.
 ✅ **The count/price loop now CONVERGES** (§10.28): it used to limit-cycle forever at a 19–94pp residual,
 because a proportional controller cannot settle integer building counts (a good wanting 6.4 levels toggles
-6/7, worth ~20pp of price). A **deadband with hysteresis — stop chasing at 8pp, resume at 15pp** — fixed it:
-residual 5/12/4/9/1, profit targets **75 of 86 within 8pp at a mean miss of 5.7pp** (was 60/85 at 11.0pp).
-⚠ **The score is reproducible but the response surface is JAGGED** — deadband 8 scores 45, 10 scores 50,
-15 scores 45. So the five-point rule still applies to *design* changes: a result worth 1–3 points is not a
-result, even though re-running reproduces it exactly.
-⚠ **PM choice still never settles** — with prices converged, that is now a genuine discrete limit cycle in
-the method choice and is the next thing to look at.
+6/7, worth ~20pp of price). A **deadband with hysteresis — stop chasing at 8pp, resume at 15pp** — fixed
+it. ⭐ **Raw goods now carry a ±30pp BAND instead** (§10.42.4, user design): inside it the controller
+leaves them alone entirely, so raw prices float with scarcity rather than being steered back to base;
+nothing prescribes a raw price path (the drift idea is REJECTED).
+⚠ **The response surface is JAGGED and now CALIBRATED** (§10.42.2): no-op controls swing ±10 faults /
+±250k losses / ±0.4M net, so design changes are judged on 3-seed jitter ensembles (`ERA_JOINT` 8/9/10),
+and the final-pass **integer polish** (±1-level greedy moves on the global objective) attacks the
+amplifier at its source.
+⚠ **PM choice still never settles** — a genuine discrete limit cycle in the method choice. Raising the
+optimiser's hysteresis (`ERA_PM_MINGAIN` 0.02→0.10) measured well inside combinations and is deferred by
+ruling until the ruled set beds in; best-of-cycle freezing remains the designed fix.
 ⚠ **THE LARGEST REMAINING BLOCK IS NOT A BALANCE PROBLEM (§10.29).** Every insolvent industry is *floored
 at 1 level* and pinned at the 25% price band edge: era-1 steel has **zero** buyers (its first consumer is
 an era-2 tier), and era-3 telephones read buy 18 against sell 72 because they share `popneed_communication`
@@ -270,6 +280,9 @@ a fix. Also caught: fishing 106 at 1920 and iron 1 251 at 1945.
 ⚠ The report's **SCALE LIMITS** line is a **verification, not a warning** — the caps bind during the solve,
 so a breach printed there is a bug in the constraint rather than a property of the economy. It also names
 anything sitting *at* a cap, since a binding constraint is a fact about the scenario worth seeing.
+⚠ The verification **skips subsistence buildings** (they are sized from the peasants, never capped) — it
+used to count `subsistence_fishing_village` against the commercial fishing cap and printed a phantom
+"fishing 102 BREACHED" the moment the wharf sat at 100 (BUGS_AND_FIXES 2026-08-09).
 
 **⭐⭐ GDP IS `52 × weekly VALUE ADDED`, MEASURED — NOT GROSS OUTPUT (FINDINGS F45).** Value added = building
 outputs − building **inputs**, at market prices; pops and trade are on neither side, because value added is a
@@ -283,25 +296,22 @@ measured off a vanilla 1901 gamestate — construction's goods bill as a share o
 USA 15.3% · GBR 14.1% · BEL 8.8% · JAP 4.5%. Implemented once, in `ui/econ.js`'s `scenarioValueAdded()` /
 `scenarioGDP()`, and shown in the UI's scenario summary as GDP and GDP per capita.
 
-**⭐ LOSS-MAKING MANUFACTURING SHRINKS (§10.38).** Raw producers are *dropped* (§10.18); manufacturing had no
-downward rule at all, so a loss-maker sat at whatever size the job-pool rescale gave it. Now: converge, take
-the tier losing money by the **largest margin**, cut **one level**, **CAP** it there so the rescale cannot undo
-it, re-converge, look again. A tier stops at **one level** — "unprofitable" and "absent" are different
-statements, and §10.17 stops scoring a tier at zero anyway. The cap is what makes it stick: cutting without
-capping is a no-op, because counts are the DEPENDENT variable (full employment by construction) and the next
-settle regrows it. **This redistributes the workforce; it cannot shrink it.** Shipyards carry their −30pp
-handicap on both the test and the comparison, or the rule cuts them first every era at a margin that is, for a
-shipyard, par. Revertable: `ERA_SHRINK_LOSSMAKERS=0`.
-⚠⚠ **`ERA_SHRINK_STEPS` IS A SAFETY NET, NOT A BUDGET — AND AT 60 IT WAS A BUDGET.** The loop stops on its own
-(`if (!worst) break`) once nothing is losing money above one level. Era 5 wants **543** steps and got 60,
-stopping at the second entry of a thirteen-industry hand-off. Raising it to **2000** took era 5's losses
-**£643k → £17k/wk** (10% → 0% of net), losers 26 → 21, profitable 53 → 58, and whole-ladder illogicality
-**58 → 56 / 46 → 44 excluding** — above the five-point rule, so a real result. Cost: 0.6% of GDP and £100k/wk
-of net profit, and era 5 now does ~543 `contSettle` calls (six-era run ~5 → ~12 min).
-⚠ **Eras 0–4 use 0/4/2/2/13 steps and so revealed nothing** — a guard that binds in ONE place looks like a
-converged solve everywhere else. If the runtime needs fixing, use a **coarse-to-fine step** (≈5% of levels
-while deep in the red, one level near the boundary) and check it lands in the same terminal state; do not
-lower the guard.
+**⭐ LOSS-MAKING MANUFACTURING SHRINKS (§10.38, semantics updated by §10.42.4).** Raw producers shed levels
+(§10.18 via `ERA_RAW_SHRINK`); manufacturing had no downward rule at all, so a loss-maker sat at whatever
+size the job-pool rescale gave it. Now: converge, take the worst loss-maker — **stale rungs first**
+(`ERA_SHRINK_STALE_FIRST`, user directive: obsolete capacity is the first victim, era-exact the last
+resort) — cut **coarse-to-fine** (`ERA_SHRINK_COARSE`: ~5% of levels while worse than −10%, one level near
+the boundary), **CAP** it there so the rescale cannot undo it, re-converge, look again. A tier stops at
+**one level** — "unprofitable" and "absent" are different statements, and §10.17 stops scoring a tier at
+zero anyway. The cap is what makes it stick: counts are the DEPENDENT variable (full employment by
+construction) and an uncapped cut regrows on the next settle. **This redistributes the workforce; it
+cannot shrink it.** Shipyards carry their −30pp handicap on both the test and the comparison, or the rule
+cuts them first every era at a margin that is, for a shipyard, par. Revertable: `ERA_SHRINK_LOSSMAKERS=0`.
+⚠⚠ **`ERA_SHRINK_STEPS` IS A SAFETY NET, NOT A BUDGET (default 6000)** — the loop stops on its own
+(`if (!worst) break`). It was 60 (a budget that bound only in era 5, §10.38.2), then 2000, which the outer
+iteration made a budget AGAIN (pass-2 era 5 wanted more than 2000 fine steps and shipped £387k of
+un-shrunk losses) — hence coarse stepping as default and 6000 as the net. A guard that binds in ONE place
+looks like a converged solve everywhere else; never lower it to fix runtime.
 ⚠ **"Total losses" is therefore not a clean health metric** — it counts a dying tail, which the design *wants*,
 the same as an industry that cannot pay for itself. At 60 steps era 5 had £791k of its £900k gross loss on
 **stale tails** and exactly one loss-making *newest* tier (an excused shipyard). Losses **on newest tiers
@@ -481,26 +491,37 @@ tools/                  dev tooling — NOT shipped in the mod
   era_solver.mjs        BALANCE-ONLY reference view: derives a price path from profit margins alone, no scenario.
                         Writes config/era_prices.json. Superseded for volumes by era_scenarios
   era_scenarios.mjs     THE solve: prices realised from the order book, tier volumes + building counts + pops +
-                        army solved together per era. Writes config/era_presets.json AND the volumes back to
-                        config/mod_config.json. Ends in a JOINT FIXED POINT over prices/PMs/recipes/counts and
-                        reports ONLY that final state (§10.14.1) — do not add a step after it that mutates any
-                        of them. Prints, per era: profit targets, PRICE PATH realisation, the INDUSTRIAL
-                        CEILING pass/fail (§10.15) and ILLOGICALITY. Env knobs, all for A/B measurement rather
-                        than configuration: PRICE_START / PRICE_DECAY / PRICE_DECAY_INT / PRICE_FLOOR(_INT),
-                        ERA_RATIO (=frozen restores the losing recipe-mix precedence, §10.25.2),
-                        ERA_COUNT_DEADBAND / _OUT (the count controller's hysteresis band, 8→15pp; 0 = off
-                        and it limit-cycles forever, §10.28), ERA_SETTLE_TRACE=1 (per-iteration residual),
-                        ERA_MIN_LEVELS_MULT (scales the market-size floor; swept in §10.29 and it does NOT
-                        move the floored industries — the trap is scale-invariant),
-                        ERA_EXTINCT_GRACE (eras past its last tier before an `extinct` industry stops being
-                        placed, default 2; -1 restores the old always-present behaviour, §10.30),
-                        ERA_NO_BUYER=1 (withhold an industry whose good has no buyer of any kind — built,
-                        measured, DEFAULT OFF because it does not pay for itself, §10.32),
-                        ERA_SHRINK_LOSSMAKERS=0 (turn the loss-making manufacturing reduction off) and
-                        ERA_SHRINK_STEPS (its guard, default 2000 — a SAFETY NET, not a budget; the loop
-                        self-terminates, and era 5 needs 543 of them. §10.38),
-                        ERA_CEIL_BOOST, ERA_CEIL_PM, ERA_JOINT, ERA_PROBE (the removed forward probe, kept
-                        only so its damage can be re-measured — leave it off)
+                        army solved together per era, then THE OUTER ITERATION (default 3 passes) re-runs the
+                        whole era sequence against the final recipe book — a tier's recipe is solved once, in
+                        the era where it is dominant, so a single pass chooses counts against provisional
+                        recipes (§10.41.3/§10.42). Full run ~25–35 min. Writes config/era_presets.json AND the
+                        volumes back to config/mod_config.json. Ends in a JOINT FIXED POINT over
+                        prices/PMs/recipes/counts and reports ONLY that final state (§10.14.1) — do not add a
+                        step after it that mutates any of them. Prints, per era: profit targets, PRICE PATH
+                        realisation, the INDUSTRIAL CEILING pass/fail (§10.15) and ILLOGICALITY — plus, after
+                        the loop, the FINAL PROFIT PASS whose FINAL-STATE ILLOGICALITY is the headline metric
+                        (the in-era count reads provisional recipes — BUGS_AND_FIXES 2026-08-09).
+                        ⭐ THE RULED-SET DEFAULTS (all §10.42.4, each with a revert knob): ERA_OUTER=3 +
+                        ERA_SHRINK_COARSE (coarse-to-fine reduction), the unified post-solve enforcement pass
+                        (ERA_RAW_SHRINK — §10.18 sheds levels, not types), ERA_STALE_W=0.25,
+                        ERA_SHRINK_STALE_FIRST (stale rungs die first), the DEBUT GUARD + forward-chain rule
+                        (ERA_DEBUT_GUARD, exempt railway/shipyard_steam/motor pending their era-1 tiers),
+                        ERA_URBAN_FLOOR=-0.10, the RICE BAN (ERA_ALLOW_RICE=1 restores),
+                        ERA_RAW_PRICE_BAND=30 (raw prices float ±30pp; no prescribed path),
+                        ERA_CONSTR_RAMP (8→18% of GDP by era), ERA_POLISH (final-pass ±1-level polish) and
+                        SHIPYARDS EXCLUDED from the headline profit totals (own line, like gold's tripwire).
+                        Measurement-only knobs, unchanged: PRICE_START / PRICE_DECAY / PRICE_DECAY_INT /
+                        PRICE_FLOOR(_INT), ERA_RATIO (=frozen restores the losing recipe-mix precedence,
+                        §10.25.2), ERA_COUNT_DEADBAND / _OUT (manufactured goods' hysteresis band, 8→15pp;
+                        0 = off and it limit-cycles forever, §10.28), ERA_SETTLE_TRACE=1,
+                        ERA_MIN_LEVELS_MULT (§10.29 — the trap is scale-invariant), ERA_EXTINCT_GRACE
+                        (§10.30), ERA_NO_BUYER=1 (measured, stays off, §10.32), ERA_SHRINK_LOSSMAKERS=0,
+                        ERA_SHRINK_STEPS (default 6000 — a SAFETY NET, not a budget; §10.38),
+                        ERA_WAGE_RAMP (Baumol wage growth — PENDING a design ruling, §10.42.5),
+                        ERA_PM_MINGAIN (PM hysteresis — deferred by ruling), ERA_PRUNE (1780 — pending),
+                        ERA_LEAD_W (stays 1 by ruling), ERA_RAW_DRIFT (REJECTED by ruling; knob kept for
+                        A/B only), ERA_CEIL_BOOST, ERA_CEIL_PM, ERA_JOINT (also the jitter seed for
+                        3-run ensembles), ERA_PROBE (the removed forward probe — leave it off)
   econ_host.mjs         loads ui/econ.js + the generated ui/*.js under Node — supplies the state containers the
                         browser would. Contains NO model of its own.
                         ⚠ The CONFIG comes from config/mod_config.json DIRECTLY, not from the copy embedded in

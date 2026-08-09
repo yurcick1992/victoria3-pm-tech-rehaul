@@ -3055,3 +3055,120 @@ deterministic, so it reproduces perfectly while still being wrong.
 forbids outright. The leading suspect is §10.40.6's joint agriculture scaling: scaling every farm down
 together to hold the 3 000 bound moves supply and can push individuals below zero, and §10.18's drop rule
 runs before it and is not re-checked. **Not confirmed.**
+⚠ Resolved in §10.42: the actual mechanism was the type-drop-on-a-shared-price (wheat/maize/rye dropped in
+turn, millet left as the protected sole source) plus the missing final re-check; both are closed by the
+level-shedding rule and the unified enforcement pass.
+
+## 10.42 ⭐⭐ THE 122-RUN MEASUREMENT CAMPAIGN AND THE RULED SET (2026-08-09)
+
+One overnight campaign — 31 single-knob runs, an 87-cell combination matrix (leave-one-out, all core
+pairs, champion variants, half-combos, 35 stratified random subsets; 58 min at concurrency 12, zero
+failures), and jitter ensembles for the finalists — followed by explicit user rulings, shipped as the
+solver's new DEFAULTS. Every default carries a revert knob; the knob is the A/B instrument, the default
+is the decision. The raw reports lived in the session scratchpad; the durable numbers are here.
+
+### 10.42.1 Metric honesty: the in-era illogicality count was measuring provisional recipes
+
+The criterion judges the newest PRESENT tier, and during era N the leading rung still carries its
+canonical-start (leanest-legal) recipe — so the headline read **52 (47 excl)** while the same criterion
+replayed on the SHIPPED state read **94 (84)**. The report now prints the **final-state illogicality**,
+scores the **leading rungs** against +20% (the §10.39.3 gap: they sat 29/79 within 8pp, mean |off| 38pp,
+enforced by nothing), and splits losses **by vintage** (newest rungs = failure; stale tails = the design
+working; the old-default era 2 had £117k of its £132k losses on NEWEST rungs). The final-state figure is
+the headline everywhere now; BUGS_AND_FIXES has the entry.
+
+### 10.42.2 The noise floor, calibrated — and the two response rules
+
+Two near-no-op controls (count deadband 8→9; one extra settle pass) swing **total losses 703k–1.1M,
+final illogicality 85–105, net 11.0–11.8M** on the old defaults. Single-run deltas inside ~±10 faults /
+±250k losses / ±0.4M net certify nothing. What certifies: magnitude far outside the bands, and
+mechanistic localization (a fault list losing exactly the industries a rule withheld; a loss column going
+to exactly zero). Design changes are therefore scored on **3-run jitter ensembles** (ERA_JOINT 8/9/10)
+from now on, and the **integer polish** (below) attacks the amplifier itself.
+
+### 10.42.3 The interaction findings (the matrix's five results)
+
+1. **The outer era iteration is the enabling substrate.** In-combo marginal +17 faults / +659k losses /
+   +4.4M net — and every core placement/constraint PAIR measured without it is **anti-synergistic**
+   (lead+debut −29 faults/−624k against what its singles promised; stale+urban −960k; lead+stale
+   −24/−438k). Singles' standalone gains were substantially reshuffle luck; with the outer loop
+   underneath, the same knobs turn cooperative. Nothing that changes scenario contents ships without it.
+2. **PM hysteresis (0.02→0.10) is redeemed in combos** — within noise as a single, present in every top
+   matrix cell, improving faults, losses and net when added to the champion. Deferred (user ruling)
+   until after the core set beds in; the limit cycle's designed fix remains best-of-cycle freezing.
+3. **The 1780 prune is redeemed in combos** — terrible standalone (reshuffle), best fault bucket of the
+   matrix inside the champion, era 0 going 7 faults → 1. Its headline advantage melts under jitter; the
+   era-0 cleanup is mechanistic and survives. Pending a design ruling on the list.
+4. **Two knobs dissolve inside the combo**: the stale placement weight (its dying-rung job is done by
+   outer + the reduction) and the leading placement weight (its value was hedging the sequential
+   inconsistency). The leading weight was ALSO rejected as a premise by ruling — the scenario is not
+   "day 1 after the unlock" — and stays 1.
+5. **Composition invariants across all 113 configurations**: ore/oil/rubber over 25% of 1945 output in
+   every cell except slope-1.4+construction-ramp (the slope is the only lever found; slope stays 1.5 by
+   ruling); commercial grain always collapses at era 3 (the subsistence/market interface, open);
+   railways healthy (670–860 levels at 1945) in every outer combo; fractional levels are catastrophic
+   in combos (8.5M losses — the enforcement rules stop catching runaway losers) and are closed for good.
+
+### 10.42.4 THE RULED SET — what now ships as defaults (user, 2026-08-09)
+
+- **ERA_OUTER=3 + ERA_SHRINK_COARSE** — the sequential-inconsistency fix (§10.41.3's outer loop) with
+  §10.38.4's coarse-to-fine step, which the outer workload makes mandatory (pass 2's era 5 wanted more
+  than 2000 fine steps). Passes plateau by 3: further passes wander ±40k, less than run noise.
+  `ERA_SHRINK_STEPS` default 6000 stays a safety net, not a budget. Full-run cost: ~25–35 min.
+- **The unified post-solve enforcement pass** — raw solvency, manufacturing losses and the urban floor in
+  ONE counts-only loop, worst violation first, because any phase running after another phase's final
+  check can invalidate it (BUGS_AND_FIXES: the 116-level −46% fertilizer plant the raw-only version
+  shipped; era-5 losses under the same combination fell 728k → 127k when unified).
+- **ERA_STALE_W=0.25** — a rung already stale when placed (era 5, plateau overhang) is a remnant, not
+  half the market.
+- **ERA_SHRINK_STALE_FIRST** — the reduction cuts stale rungs before era-exact ones (user directive:
+  obsolete capacity is the first victim of the process, era-exact capacity the last resort).
+- **The debut guard + forward-chain rule** — an industry whose earliest tier is newer than the era is not
+  placed (exempt until their era-1 tiers are minted: railway, steam shipyards, engines — the three
+  remaining deliberate anachronisms), and a tier whose INPUT's producers cannot exist yet is not placed
+  either (the mirror of §10.30's "the chain has to be finished"; measured case: the engine industry's
+  era-3 electric-machining rung stood in 1870 demanding 97 electricity while `power`, also era 3, was
+  guard-withheld — a buyer against a wall at the +75% ceiling). A good listed in any pop need never
+  counts as buyer-less — that was already `hasNoBuyer`'s semantics and is now stated as the rule.
+- **ERA_RAW_SHRINK** — §10.18 sheds LEVELS (25% steps, floor 1, then the type), because the type-drop on
+  a shared price removed wheat, maize and rye in turn and left millet the only — protected, loss-making —
+  grain source (§10.41.4's farms). Grain diversity now survives into era 4.
+- **No urban-centre special case after all (ERA_URBAN_FLOOR default 0).** The −0.10 floor was built as
+  the fix for the unconditional cut breaking 1870/1900 (BUGS_AND_FIXES) — but that mechanism belonged to
+  the OLD single-pass solve. Under the ruled set the three variants (floor −0.10 / floor 0 / never cut)
+  are statistically indistinguishable (58–69 faults, 155–242k losses, inside the jitter spread), so the
+  special case is removed per the user's "why only urban centres" objection; centres are cut at any loss
+  like manufacturing. The knob remains as the A/B instrument.
+- **THE RICE BAN** — the solver places NO rice producers (commercial or subsistence; the subsistence mix
+  renormalises over the rest): a US-like temperate country is not a paddy economy, and paddy output was
+  flooding the rice market and bankrupting every commercial rice farm in every era. The UI is untouched;
+  `ERA_ALLOW_RICE=1` restores, and a future two-mode solver may reintroduce rice properly.
+- **ERA_RAW_PRICE_BAND=30** — raw goods get a ±30pp float around base in the count controller instead of
+  the 8pp deadband: inside the band the controller leaves them alone, so scarcity may move them; nothing
+  prescribes a path. (Replaces the REJECTED raw-price drift: no prescribed raw trajectory, and raw
+  prices are expected near base "not too far too often".)
+- **ERA_CONSTR_RAMP** — construction 8/10/12/15/17/18% of GDP by era instead of flat 15% (real capital
+  formation's GDP share roughly doubled-to-tripled from the 1830s to the 1900s–20s; the level stays
+  deliberately above both vanilla and reality because capital hunger is the mod's point).
+- **THE INTEGER POLISH** (`ERA_POLISH`, final pass only) — greedy ±1-level moves on our tiers, re-priced
+  per trial, kept only when the lexicographic objective (faults excluding excused → losses → net)
+  strictly improves with no new ceiling breach. The approved attack on the ±1-level jaggedness at its
+  source.
+- **SHIPYARDS ARE OUT OF THE HEADLINE PROFIT METRICS** — reported on their own line, exactly like gold's
+  tripwire, because their book losses measure the unmodelled naval-construction income, not the economy.
+  The −30pp target handicap stays; the criterion excusal stays. ⚠ This is a metric POPULATION change —
+  no profit figure before 2026-08-09 is comparable to one after without adding shipyards back.
+
+### 10.42.5 Pending rulings and open work
+
+- **ERA_WAGE_RAMP** (default off): the strongest stale-rung killer measured (+2.1M net at zero fault
+  cost in the matrix), re-measured WITHOUT the rejected drift under the raw price band; awaiting the
+  design ruling with those numbers.
+- **The 1780 prune list** (explained in plain terms; awaiting ruling).
+- **The manor-house problem**: ownership professions are an 1836-frozen share of the productive
+  workforce (PROF_RATIO), so manor houses are the biggest building in every economy including 1945.
+  Direction under discussion: tie aristocrats to the LAND economy, capitalists to industrial capital,
+  white-collar to a ramp — era-appropriate anchors instead of one frozen vector.
+- **Grain collapses at era 3 in every configuration** — the subsistence/market interface (subsistence
+  supplies grain at zero opportunity cost); needs its own session.
+- **PM choice still never settles** (hysteresis deferred; best-of-cycle freezing designed, unbuilt).

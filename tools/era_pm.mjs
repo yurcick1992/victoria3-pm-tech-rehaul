@@ -31,6 +31,17 @@ export const SCENARIO_LAWS = new Set(['law_slavery_banned', 'law_commercialized_
 // paid to read to cigar rollers), not something a scenario should lean on.
 const FORBIDDEN_PM_RE = /^worker_exploitation_|^lectors_tobacco$/;
 
+// ⚗ EXPERIMENT KNOB (2026-08-09, default empty = no-op): ERA_FORBID_PMS="pm_a@3,pm_b" forbids named PMs
+// from a given era ONWARD (no @era = all eras). Exists to measure narrative vetoes — e.g. urban centres
+// running `pm_no_public_transport` in 1945, which is what the railway "recovery" currently rides on.
+const FORBID_FROM = (() => {
+  const m = {};
+  for (const kv of (process.env.ERA_FORBID_PMS || '').split(',').filter(Boolean)) {
+    const [pm, e] = kv.split('@'); m[pm] = e == null || e === '' ? 0 : +e;
+  }
+  return m;
+})();
+
 export function makePmRules(E, S) {
   const TECH_ERA = S.VAN.tech_era || {};
   // a PM with no unlocking technology is a base PM: always available
@@ -55,7 +66,8 @@ export function makePmRules(E, S) {
   }
   function candidates(pmg, era, presentPms) {
     const g = S.VAN.pmgs[pmg]; if (!(g && g.pms)) return [];
-    return g.pms.filter(pm => !E.pmGated(pm) && pmAvailable(pm) && pmEra(pm) <= era && pmGateOk(pm, presentPms));
+    return g.pms.filter(pm => !E.pmGated(pm) && pmAvailable(pm) && pmEra(pm) <= era && pmGateOk(pm, presentPms)
+      && !(FORBID_FROM[pm] != null && era >= FORBID_FROM[pm]));
   }
   return { pmEra, pmGateOk, pmAvailable, candidates };
 }
@@ -71,7 +83,11 @@ export function makePmRules(E, S) {
 // The one permitted exception is a genuine LIMIT CYCLE: switching a PM moves prices enough that switching
 // back becomes attractive, and the pair never settles. Those are not silently tolerated — they are
 // returned in `cycles` so every one can be reported by name.
-export function optimisePMs({ E, S, rules, era, profitOfTier, profitOfRef, minGain = 0.02, maxPasses = 6 }) {
+// ⚗ ERA_PM_MINGAIN (default 0.02) — the optimiser's hysteresis, exposed for the "PM choice never settles"
+// experiment: a switch must beat the incumbent by more than this, so raising it trades optimality for
+// stability of the discrete choice.
+export function optimisePMs({ E, S, rules, era, profitOfTier, profitOfRef,
+                              minGain = +(process.env.ERA_PM_MINGAIN || 0.02), maxPasses = 6 }) {
   const cycles = [];
   const seen = new Map();   // "building|pmg" -> Set of PMs already tried, to spot a repeat
   let moved = true, pass = 0;
