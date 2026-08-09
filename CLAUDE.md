@@ -563,6 +563,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         ERA_SHRINK_STEPS (default 6000 — a SAFETY NET, not a budget; §10.38),
                         ERA_WAGE_RAMP (Baumol wage growth — DEAD by measurement, §10.42.5),
                         ERA_PM_MINGAIN (PM hysteresis — deferred by ruling),
+                        ERA_RAIL_PENALTY (default 0 — shipyard-style target handicap for railway,
+                        measurement-only: it cannot create transportation ORDERS, so it cannot fix the
+                        freight gap; §10.47 discussion),
                         ERA_PRUNE (default steel@0,glass@0 — the ruled 1780 prune; empty reverts),
                         ERA_PROF_WEDGE (default ON — §10.45/F46: per-profession era multipliers on the
                         1836 vector, measured from the saves_debut USA campaign; =0 restores the frozen

@@ -976,6 +976,16 @@ const RAW_DRIFT = +(process.env.ERA_RAW_DRIFT || 1);
 
 const TG = FIT.targets;
 const SHIP_INDUSTRIES = new Set(['shipyard', 'shipyard_steam']);
+// ⚗ ERA_RAIL_PENALTY (measurement knob, default 0 = no-op; user question 2026-08-09): a shipyard-style
+// profitability handicap for RAILWAY, e.g. -0.10. Applied wherever the shipyard penalty is — the
+// recipe targets, the loss-shrink comparison, and (via currentTargetFor) the ladder-fault loss floor —
+// but railway is NOT excluded from the profit totals. Exists to measure whether a target handicap can
+// substitute for the freight ruling; the mechanical prediction says no (the count controller sizes
+// railway off transportation ORDERS, which no scoring change creates, and a lower target solves a
+// RICHER recipe, lowering gross product per level — §10.47 discussion).
+const RAIL_PENALTY = +(process.env.ERA_RAIL_PENALTY || 0);
+const indPenalty = ind => (SHIP_INDUSTRIES.has(ind.id) ? TG.shipyard_penalty : 0)
+                        + (ind.id === 'railway' ? RAIL_PENALTY : 0);
 // GOLD IS MONEY, NOT A GOOD. No pop need lists it and no building consumes it, so its order book is
 // one-sided by construction: all sell, no buy, price pinned to the 25% floor, and its mines read −68%
 // no matter how few of them there are. Excluding it is not a fudge — a target that cannot be moved by
@@ -984,7 +994,7 @@ const SHIP_INDUSTRIES = new Set(['shipyard', 'shipyard_steam']);
 const SKIP_GOODS = new Set(['gold']);
 const SKIP_TARGET_BLD = new Set(['building_gold_mine', 'building_gold_field']);
 // profit target for the ERA-CURRENT tier of an industry (the one whose margin the price has to deliver)
-function currentTargetFor(ind) { return TG.current + (SHIP_INDUSTRIES.has(ind.id) ? TG.shipyard_penalty : 0); }
+function currentTargetFor(ind) { return TG.current + indPenalty(ind); }
 // …and for the tier a scenario is actually built around. The DOMINANT tier is the one solved (see
 // era_solver's eIxOf): tune the workhorse, let the leading tier float above it and the tail below.
 // ⭐ A PLATEAUED INDUSTRY'S LAST TIER IS ITS DOMINANT TIER FOREVER.
@@ -1001,7 +1011,7 @@ function domTierOf(p, era) {
   const best = p.rows[0].t;                       // rows[0] is the highest tier this scenario contains
   return (era > best.era) ? best : null;
 }
-function dominantTargetFor(ind) { return TG.minus1 + (SHIP_INDUSTRIES.has(ind.id) ? TG.shipyard_penalty : 0); }
+function dominantTargetFor(ind) { return TG.minus1 + indPenalty(ind); }
 // ...and for a reference producer, by the UI's taxonomy
 const EXTRACTION_CATS = new Set(['mining', 'logging', 'oil', 'rubber', 'fishing_whaling']);
 const AGRICULTURE_CATS = new Set(['farms', 'plantations', 'ranching']);
@@ -2081,7 +2091,7 @@ function buildScenario(eIx, finalPass) {
           // deduction has to apply HERE, or the rule reads a shipyard as the worst loss-maker in the
           // economy at a margin that is, for a shipyard, par — and cuts it first every single era.
           // Comparisons use the handicapped figure too, so a −35% shipyard ranks as −5%.
-          const tp = E.TPthr(p.ind, t) / 100 - (SHIP_INDUSTRIES.has(p.ind.id) ? TG.shipyard_penalty : 0);
+          const tp = E.TPthr(p.ind, t) / 100 - indPenalty(p.ind);
           if (!isFinite(tp) || tp >= 0) continue;
           if (SHRINK_STALE_FIRST && t.era < era) { if (tp < worstStaleP) { worstStale = t; worstStaleP = tp; } }
           if (tp < worstP) { worst = t; worstP = tp; }
@@ -2262,7 +2272,7 @@ function buildScenario(eIx, finalPass) {
         for (const r of p.rows) {
           const t = r.t, n = S.BLDNUM[t.key] || 0;
           if (!(n > 1) || r.fixed != null || protectedMfg.has(t.key)) continue;
-          const tp = E.TPthr(p.ind, t) / 100 - (SHIP_INDUSTRIES.has(p.ind.id) ? TG.shipyard_penalty : 0);
+          const tp = E.TPthr(p.ind, t) / 100 - indPenalty(p.ind);
           if (!isFinite(tp) || tp >= 0) continue;
           if (SHRINK_STALE_FIRST && t.era < era && tp < worstStaleP) { worstStale = t.key; worstStaleP = tp; }
           if (tp < worstP) { worst = t.key; worstP = tp; kind = 'mfg'; }
@@ -3028,7 +3038,7 @@ for (let e = 0; e < FIT.eras.length; e++) {
   for (const i of S.IND) {
     if (i.follows_be === false) continue;
     const sorted = [...i.tiers].sort((a, b) => a.era - b.era);
-    const ship = SHIP_INDUSTRIES.has(i.id) ? TG.shipyard_penalty : 0;
+    const ship = indPenalty(i);
     const score = (t, tgt, role) => {
       if (!t || !S.BLDNUM[t.key]) return;
       const p = E.TPthr(i, t) / 100;                       // throughput-aware, same as the solve
@@ -3433,7 +3443,7 @@ for (let e = 0; e < FIT.eras.length; e++) {
       if (i.follows_be === false) continue;
       const present = i.tiers.filter(t => (S.BLDNUM[t.key] || 0) > 0).sort((a, b) => a.era - b.era);
       if (!present.length) continue;
-      const ship = SHIP_INDUSTRIES.has(i.id) ? TG.shipyard_penalty : 0;
+      const ship = indPenalty(i);
       const newest = present[present.length - 1];
       const dom = present.find(t => t.era === eraN) || (newest.era < eraN ? newest : null);
       if (newest.era > eraN) {
