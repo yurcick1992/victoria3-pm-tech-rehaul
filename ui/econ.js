@@ -549,6 +549,11 @@
         key:t.key, name:t.name, tier:ix+1, output_qty:+t.output_qty, target_be:+t.target_be,
         tech:t.tech, natural_year:(t.natural_year != null ? +t.natural_year : null),
         era:(t.era != null ? +t.era : null),          // the mod's own 5-era ladder (independent of vanilla tech eras)
+        // ⚠ THE DATE GATE'S INPUT MUST SURVIVE INTO THE MODEL (§10.44) — same lesson as input_ratio
+        // below: a config field the model drops is a solver branch that silently never runs. The
+        // scenario solver THROWS on a missing tech_year rather than falling back, which is how this
+        // omission was caught in minutes instead of shipping.
+        tech_year:(t.tech_year != null ? +t.tech_year : null),
         model_only:!!t.model_only,                     // modelled but NOT emitted (no real unlocking tech yet)
         output_good:t.output_good,                     // optional per-tier override (e.g. shipyard clippers→steamers)
         vanilla_pm:t.vanilla_pm,                       // base-game main PM this tier replaces

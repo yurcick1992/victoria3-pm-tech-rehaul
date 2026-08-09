@@ -38,10 +38,20 @@ Everything below — "one main PM", "a building per tier", the profitability lad
 The mod has its **own five technology eras**, anchored at **~1750 / 1850 / 1900 / 1925 / 1940** —
 deliberately wider than the game's window at the front and **contracting** towards the back, because
 technical progress accelerates after the industrial revolution. **No industry has two tiers on one era.**
-99 tiers over 22 industries: 66 real + **33 `model_only`** (modelled but NOT emitted, because the game
+100 tiers over 22 industries: 67 real + **33 `model_only`** (modelled but NOT emitted, because the game
 has no unlocking technology for them yet — the builder gets a filtered config, `ui/data.js` gets the
 complete one; the count is `build_era_ladder.mjs`'s own summary line — an earlier "89/67/22" here had
-gone stale against the spec). Some ladders stop early, recorded per industry as **`ladder_end`**: `plateau` (food,
+gone stale against the spec).
+⭐⭐ **EVERY TIER ALSO CARRIES `tech_year` — THE DATE GATE (§10.44, user-ruled 2026-08-09).** The year
+the SLOT's technology was first commercially deployable, transcribed from the spec's own dated notes
+(date the slot, not the vanilla PM's decorative name), stamped by `build_era_ladder.mjs`, which throws
+on a missing date or an arrival-order violation. A scenario places a tier iff `tech_year ≤ its calendar
+year` — replacing the "leading rung" era arithmetic, which had put **~50–58% of tier-output value on
+NEXT-ERA technology in every middle scenario** (census: level-parity leading rungs, tooling 105/105 at
+1900). "Leading" survives only as a CLASSIFICATION (a present tier with era > scenario era reports as
+the lead rung, target +20%); placement is the calendar's. The debut guard and its exemption list are
+retired to the legacy path (`ERA_DATE_GATE=0`): railway 1825, steam shipyards 1843, engines 1820 and
+power 1900 all stand on their own dates. Vanilla PMs stay era-gated (a named scope cut). Some ladders stop early, recorded per industry as **`ladder_end`**: `plateau` (food,
 textile, furniture — the last tier is permanent, so its good's price must hold that tier up rather
 than deflate past it, which is Baumol's cost disease falling out of the model) or `extinct` (sail
 shipyards — the industry **actually dies**: no price floor, *and* it is not placed in a scenario two eras
@@ -58,12 +68,15 @@ accidental hand-edit; it is no longer a design input, and `solve_be_targets.ps1`
 
 The pipeline (**Node ≥ 24 required**, `C:\Program Files\nodejs`):
 ```
-node tools/build_era_ladder.mjs --write   # structure: eras, invented tiers, ×1.5 output ladder
-node tools/era_scenarios.mjs   --write    # THE solve: prices, volumes, counts, pops, army (~25–35 min:
+node tools/build_era_ladder.mjs --write   # structure: eras, tech_year dates (§10.44), invented tiers, ×1.5 ladder
+node tools/era_solver.mjs --write         # refresh era_prices.json (the FIT the scenario solve seeds from)
+node tools/era_scenarios.mjs   --write    # THE solve: prices, volumes, counts, pops, army (~15–35 min:
 powershell -File tools/build.ps1          #   3 outer passes + final-pass integer polish, §10.42.4)
 ```
 `tools/era_solver.mjs` is the **balance-only reference view** (margins alone, no scenario) and writes
 `config/era_prices.json`; `tools/era_scenarios.mjs` is authoritative and overwrites its volumes.
+⚠ The FIRST scenario solve after a ladder rebuild prints the RECIPE MIX ⚠ (re-minted tiers lose their
+frozen ratios; its own `--write` re-freezes them) — the SECOND run is clean (see the fixed-point note).
 
 **Why prices are realised rather than prescribed.** Deriving a price path from profit margins alone
 produces numbers no market composition can reach — steel at 150% of base in era 1 is unreachable because
@@ -71,9 +84,10 @@ an era-1 economy has *no steel consumer at all*. So the solver never assigns a p
 order book produces (the game's own formula, on the scenario's own orders) and moves the one lever it
 has, **building counts**, until the profit targets hold at whatever prices result.
 
-**Targets — A SCENARIO HAS TWO TUNED RUNGS, NOT ONE, AND THEY HAVE DIFFERENT TARGETS.** Since the six-era
-rework each scenario holds a **LEADING** tier (era+1 — the newest technology that exists anywhere; `lead =
-[0,2,3,4,5,5]`) and a **DOMINANT** tier (era N — the workhorse, most of the capacity):
+**Targets — A SCENARIO HAS TWO TUNED RUNGS, NOT ONE, AND THEY HAVE DIFFERENT TARGETS.** A scenario may
+hold a **LEADING** rung (a present tier with era > the scenario era — since §10.44 it is there only when
+its `tech_year` has actually arrived, not by the retired `lead = [0,2,3,4,5,5]` era rule, which now
+matters only on the `ERA_DATE_GATE=0` legacy path) and a **DOMINANT** tier (era N — the workhorse):
 - **leading `TG.current` +20%** · **dominant `TG.minus1` +5%** · **one era stale `TG.minus2` −20%**.
 - A **plateaued** industry's last tier holds `TG.plateau` **+5%** forever.
 - **Shipyards carry a further −30pp on all of them**, because none of their income from naval ship
@@ -101,18 +115,20 @@ leading rung's PROVISIONAL recipe and under-counted by ~40 points (52 reported v
 shipped state). Quote the `FINAL-STATE ILLOGICALITY` line, never the per-era sum alone — and no profit
 figure before 2026-08-09 is comparable to later ones without adding shipyards back (they are excluded
 from the totals now, reported on their own line, like gold).
-**Current state under the ruled set (§10.42.4) + the 1780 prune + the ELECTRICITY PASS at the RULED
-2-coal recipe (§10.43, shipped 2026-08-09): final-state illogicality 66 (57 excluding shipyards), per
-era 4/12/15/19/8/8 · losses £247k/wk ≈ 2.0% of net · net £12.3M/wk · era-5 newest-rung losses £0 ·
-INDUSTRIAL CEILING CLEAR IN ALL SIX ERAS in all five runs of the pass (the era-2 engines breach — the
-last residual — does not reproduce; closed-by-observation, attribution not pinned) · electricity path
-151/145/122 across e3/e4/e5, era-3 supply = 303 urban-centre levels + 37 leading coal plants · railways
-still floored at 1 in eras 3–4. The 1-coal ensemble (seeds 8/9/10) spanned 72/81/76 (61/72/67) /
-£218–347k / £11.7–12.3M and the 2-coal default sits inside that spread — future A/B work compares
-against THESE numbers.** The pass costs ≈+10 faults / ≈−1.3M net vs the pre-pass baseline (64 (55) /
-£169k / £13.6M; seeds 58–68 (50–59) / £155–242k / £12.0–14.0M) — the standalone power sector is smaller
-and eras 4–5 pay more for electricity, which is §10.43's structural intent, RATIFIED by the user with
-the coal ruling. The pre-campaign state on
+**Current state under the ruled set (§10.42.4) + the 1780 prune + the ELECTRICITY PASS (§10.43, 2-coal
+ruled) + the DATE GATE (§10.44, shipped 2026-08-09): final-state illogicality 64 (53 excluding
+shipyards), per era 9/8/9/14/13/11 · losses £159k/wk ≈ 1.3% of net · net £11.8M/wk · ensemble (seeds
+8/9/10 — the default IS seed 8): 64/74/68 (53/63/57) / £145–175k / £11.4–11.8M · calendar-anachronistic
+output 0% by construction (the pre-gate state carried 49–58% of tier-output value on next-era
+technology; 1836's honest era-2 share landed at 46.6% against vanilla's independently measured 45%
+tier-2 start) · CEILING: eras 1–5 clear in 2 of 3 seeds — seed 10 resurfaces the marginal era-2
+engines under-build (REOPENED), and era 0 carries a structural hardwood+iron pair in every seed (the
+"1780 cannot pay for itself" knot made concrete: wood floats in-band at ~129 while hardwood caps at
+175, so the ungated wood→hardwood conversion can never pay; goes to the 1780 session) · electricity
+path unchanged in character (scarce → deflating), era-3 = urban-centre generation + the 1900-dated coal
+turbine stations.** Versus the pre-gate state (66 (57) / £247k / £12.3M / 6/6): faults same-to-better,
+losses −30–50%, net ~4% smaller — the smaller economy is the honest one (the deleted half-economy of
+next-era capacity ran on ×1.5 recipes). Future A/B work compares against THESE numbers. The pre-campaign state on
 the same metric was 94 (84) and £868k losses. 1780's remaining faults (furniture, tooling, paper,
 artillery — food cleared in the shipped run) are honest tiny-market statements — industries with real
 buyers, each losing £86–300/wk at one floored level.
@@ -519,8 +535,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         ERA_SHRINK_COARSE (coarse-to-fine reduction), the unified post-solve enforcement pass
                         (ERA_RAW_SHRINK — §10.18 sheds levels, not types), ERA_STALE_W=0.25,
                         ERA_SHRINK_STALE_FIRST (stale rungs die first), the DEBUT GUARD + forward-chain rule
-                        (ERA_DEBUT_GUARD, exempt railway/shipyard_steam/motor pending their era-1 tiers
-                        + power PERMANENTLY — its debut rung is embedded in urban centres, §10.43),
+                        (ERA_DATE_GATE — §10.44: a tier is placeable iff its tech_year ≤ the scenario
+                        YEAR; the leading-rung era arithmetic, the debut guard and its whole exemption
+                        list are LEGACY, read only under ERA_DATE_GATE=0),
                         ERA_URBAN_FLOOR=-0.10, the RICE BAN (ERA_ALLOW_RICE=1 restores),
                         ERA_RAW_PRICE_BAND=30 (raw prices float ±30pp; no prescribed path),
                         ERA_CONSTR_RAMP (8→18% of GDP by era), ERA_POLISH (final-pass ±1-level polish) and
@@ -898,16 +915,18 @@ the game.
   the mass BE tools + preset never touch them). Per-tier **`state_infrastructure`** is emitted as a
   workforce-scaled `state_infrastructure_add` (ports/railways produce infrastructure). Power is on the BE
   ladder normally (electricity output; `output_override` keeps its vanilla per-tier electricity).
-  ⭐ **POWER STARTS AT ERA 4 (§10.43, the electricity pass, 2026-08-09):** two tiers — coal-fired
+  ⭐ **POWER = THREE TIERS, NO GAPS (§10.43 + §10.44, 2026-08-09):** coal-fired turbine station
   (`building_power_plant`, the vanilla key so `has_building` references keep matching; tech
-  `steam_turbine`, era 4) and oil-fired (era 5). The vanilla era-3 "Early Power Plant" tier is GONE: the
-  1900 generation of plant was the municipal engine-house, which the urban centre's MANDATED
-  electric-streetlights method now models (`pm_goods`: +1 electricity out, −2 coal in (ruled; 1 coal
-  left the mandate too profitable, 3 would force a loss-maker — §10.43.2); `pm_employment`:
-  250 engineers, laborers gone — the streetlight PMG is a solver PREREQUISITE per era via
-  `MANDATED_PMGS` in era_pm.mjs: none @0, gas @1-2, electric @3+, never an economic choice). Power is
-  DEBUT-EXEMPT so the era-3 scenario may still place coal plants as its LEADING rung (the 1900s' first
-  turbine stations); hydro is deliberately NOT a market industry (small-scale folds into the UC
+  `steam_turbine` — deliberate-early; **era 3, tech_year 1900**, Elberfeld), **pulverized-coal**
+  (`building_power_plant_pulverized` — an ALL-NEW tier like the steamer chain, NO vanilla PM; tech
+  `electrical_capacitors` as the closest grid-equipment gate; era 4, year 1920) and oil-fired (era 5,
+  year 1925). The vanilla era-3 "Early Power Plant" tier is GONE: the 1900 MUNICIPAL engine-house is
+  modelled inside urban centres via the MANDATED electric-streetlights method (`pm_goods`: +1
+  electricity out, −2 coal in (ruled; 1 coal left the mandate too profitable, 3 would force a
+  loss-maker — §10.43.2); `pm_employment`: 250 engineers, laborers gone — the streetlight PMG is a
+  solver PREREQUISITE per era via `MANDATED_PMGS` in era_pm.mjs: none @0, gas @1-2, electric @3+, never
+  an economic choice). No debut exemption — the DATE GATE (§10.44) places the coal station at 1900 on
+  its own year; hydro is deliberately NOT a market industry (small-scale folds into the UC
   narrative, large-scale is a site-specific megaproject like a canal, outside the scenario model). Their PMs
   are our own copies (editable), so `solve_volumes` reads **every** `common/production_methods` file, not
   just `01_industry`. `trade_center` stays vanilla (no tiers). `1836` ports/railways are re-tiered by

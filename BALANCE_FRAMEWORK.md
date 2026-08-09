@@ -3313,6 +3313,127 @@ industries, now including its one deliberate extension (the power industry restr
 investigation concluded in) — the mechanism (`pm_goods`/`pm_employment`/mandates) is general, the
 LICENSE to use it on non-manufacturing vanilla buildings is not.
 
+⚠ **§10.43's two-tier power shape (coal @4 + oil @5, debut-exempt) lived for a few hours** — the user's
+leading-rung challenge (§10.44) superseded it the same day: power is back to THREE tiers with the coal
+turbine station AT era 3 (its honest date), a new pulverized-coal era-4 tier, and no exemption, because
+the date gate needs none. Everything else in §10.43 (the lighting mandate, the municipal-generation
+method at 2 coal, the hydro narrative, `pm_employment`, the writer semantics) stands unchanged.
+
+## 10.44 The date gate (2026-08-09) — a tier stands where its technology existed, and the leading rung dies
+
+**The user's challenge:** "the techs of era X are not discovered at exactly era X−1's scenario — there
+should be NONE of them." The census that settled it, run on the shipped presets:
+
+| scenario | industries with an era>N rung present | levels on them | share of tier-output value |
+|---|---|---|---|
+| 1780 | 0 | 0 | 0% |
+| 1836 | 15 | 34 | **56.3%** |
+| 1870 | 17 | 113 | **56.8%** |
+| 1900 | 21 | 474 | **58.2%** |
+| 1920 | 18 | 652 | **49.4%** |
+| 1945 | 0 (no era 6) | 0 | 0% |
+
+The "leading rung" was framed as a foothold; the solve made it HALF THE ECONOMY — level parity with the
+dominant rung (1900: tooling 105/105, steel 48/47, port 74/76) carrying more than half of each
+industry's output on a ×1.5 recipe. The one measurement on the other side — vanilla's own 1836 start is
+45% tier-2 capacity, which is why the strict `era ≤ scenario era` version was rejected as "a 1750
+market wearing an 1836 label" — turns out to be an argument about YEARS, not eras: the "era-2" capacity
+standing in the real 1836 is 1830s–40s technology, contemporary with the date. Eras are wide bands;
+scenario years sit inside them; the era⇒era rule could not tell 1842-tech-at-1836 (honest) from
+1925-plant-at-1900 (fake).
+
+### 10.44.1 The rule
+
+Every tier carries **`tech_year`** — the year the SLOT'S technology was first **commercially
+deployable** (a building of this kind could exist; how much of it exists stays the count controller's
+job). A tier is placeable in a scenario iff `tech_year ≤ the scenario year`. Consequences:
+
+- **"Leading" stops being a category.** What stands in 1900 is what existed by 1900. The era label
+  still CLASSIFIES a rung (a present tier with era > scenario era reports as the lead rung and aims at
+  `TG.current` +20%; the era-exact tier keeps `TG.minus1` +5%) — the positional target structure is
+  unchanged, only placement moved from era arithmetic to the calendar.
+- **The debut guard and its whole exemption list retire from the main path.** An industry whose
+  technology has not arrived has no placeable tier and is simply absent; railway (1825), steam
+  shipyards (1843), the engine trade (1820) and power (1900 — municipal generation inside urban centres
+  before that) all resolve on their own dates, with no hand-waving. `ERA_DEBUT_GUARD`/`ERA_DEBUT_EXEMPT`
+  survive only on the legacy path (`ERA_DATE_GATE=0` reverts the gate).
+- **Date the slot, not the vanilla PM's decorative name.** Vanilla gates rubber-grip tooling on
+  vulcanization (1844); the slot it occupies is the high-speed-steel machine shop (1901). The spec's own
+  per-industry notes — the research that assigned the eras — supply the dates; each entry now carries a
+  `years:[…]` array and each invented tier a `year:`, stamped into the config as `tech_year` by
+  `build_era_ladder.mjs`, which also THROWS on a missing date and on arrival-order violations (a higher
+  rung must not arrive at an earlier scenario than its predecessor; RAW years may invert where no
+  scenario year separates them — photography 1839 vs realism 1850 both arrive at 1870, deliberate and
+  inert).
+- **Scope cut, named:** vanilla PRODUCTION METHODS (secondaries, reference buildings) stay on the era
+  remap. Dating our 100 tiers kills the 50%-of-output anachronism; dating vanilla's several hundred PMs
+  would be a much larger pass for a much smaller error — a later tightening if a specific PM reads wrong.
+
+### 10.44.2 The judgment calls worth knowing (the full table lives in the spec)
+
+- **Excluded from 1900 deliberately:** high-speed steel tooling (demonstrated 1900, tools on sale
+  1901 → `1901`), electric-arc steel (Héroult 1900, first commercial steel plants 1903-06 → `1903`),
+  electric-drive garment plants (`1905`). These were the census's biggest anachronisms.
+- **Included at their scenarios deliberately:** series automobile production `1899` (De Dion-Bouton
+  built ~400 cars in 1900 — automotive STANDS at the 1900 scenario, where the era anchor alone would
+  have excluded it), mainline electric railways `1895` (Baltimore & Ohio), broadcast radio `1920`
+  (KDKA — lands exactly on its scenario), the coal turbine station `1900` (Elberfeld).
+- **The 1836 measured transition survives as dates:** dye/calico works 1830, machine paper mills 1830,
+  shell guns 1830, percussion caps 1830, railways 1825, engine works 1820 — but superphosphate is
+  `1842`, so vanilla-1836 fertilizer capacity is recorded as vanilla's own anachronism and the industry
+  now debuts at 1870.
+- **1780 gains second rungs honestly:** manufactory-scale food (1750), glass cones (1750), toolshops
+  (1770), paper mills (1750), gun quarters (1770), cannon foundries (1750) all predate 1780 — the old
+  "era 0 is a single rung, deliberately" ruling is superseded by the calendar.
+- **Power = three tiers, no gaps (user ruling):** Coal-Fired `1900` @e3 (tech `steam_turbine`,
+  deliberate-early), **Pulverized-Coal `1920` @e4** — a NEW all-new tier (tech `electrical_capacitors`
+  as the closest grid-equipment gate, no vanilla PM, like the steamer chain), Oil-Fired `1925` @e5.
+
+### 10.44.3 Measured results (default + ERA_JOINT 8/9/10; the default IS seed 8's jitter)
+
+**The census transformed exactly as intended.** Share of tier-output value on rungs whose ERA exceeds
+the scenario's, before → after the gate: 1836 **56.3% → 46.6%**, 1870 **56.8% → 40.5%**, 1900
+**58.2% → 5.2%**, 1920 **49.4% → 0%**, 1945 0% → 0%. Two readings matter:
+- **Calendar anachronism is now 0% by construction everywhere** — what remains of the "era>N" share is
+  tiers whose tech DATES genuinely precede the scenario (1900's 5.2% is bolt-action 1886, recoil
+  carriages 1897, kraft 1890, electric railway 1895, film 1896; 1836's 46.6% is 1815–1832 technology).
+- ⭐ **1836's era-2 share landed at 46.6% against vanilla's independently measured 45% tier-2 start.**
+  The dates were assigned slot-by-slot from the historical notes with no fitting — reproducing the one
+  measured anchor this closely is the strongest external validation the placement rule has ever had.
+  (1780 now holds e1 manufactory rungs for six trades, honestly — the "era 0 is a single rung" ruling
+  is superseded by the calendar.)
+
+| | final-state illogicality | losses £/wk | net £/wk | ceiling |
+|---|---|---|---|---|
+| pre-gate (2-coal ruled, §10.43.3) | 66 (57) | 247k | 12.3M | clear 6/6 |
+| **date gate, default (ships)** | **64 (53)** · per era 9/8/9/14/13/11 | **159k** (1.3%) | **11.8M** | 5/6 |
+| date gate, seeds 8/9/10 | 64/74/68 (53/63/57) | 159/175/145k | 11.8/11.4/11.5M | 5/5/4 |
+
+**Faults same-to-better, losses distinctly better (−30–50%), net ~4% smaller** — the smaller economy is
+the honest one: the deleted half-economy of next-era capacity ran on ×1.5 recipes that padded output.
+
+**The ceiling column, stated precisely:**
+- **Eras 1–5 are clear in seeds 8 and 9.** Seed 10 resurfaces the old **era-2 engines under-build**
+  (buy 229 / sell 96 from 2 levels) — the §10.42.5 breach the electricity pass had closed-by-observation
+  in 4/4 runs; it is marginal and seed-dependent, and is hereby REOPENED as flagged ("reopen if a later
+  ensemble resurfaces it").
+- **Era 0 carries a structural pair in every seed — the 1780 knot, now mechanically understood.**
+  `hardwood buy ~56–73 / sell 0`: the 1780 shipyard (honestly placed, tech_year 1700) eats hardwood;
+  hardwood's producer is the UNGATED logging conversion `pm_hardwood` (−25 wood → +10 hardwood), which
+  the optimiser correctly refuses because wood floats at ~129 inside the ±30 raw band while hardwood is
+  capped at 175 — the conversion destroys value at any legal price, so "no count can fix this" is
+  literally true. `iron buy ~58 / sell 22` from a single mine sits in the same tiny-market never-settled
+  PM cycle. Every dial that would clear these breaks a ruled design (the raw band, the ceiling, honest
+  dates); this is the "1780 cannot pay for itself" open item made concrete, not a date-gate defect, and
+  it goes to the 1780 session, not to a tuning patch.
+
+**Found and fixed on the way** (BUGS_AND_FIXES, 2026-08-09): `makeTiers` dropping `tech_year` (the
+`input_ratio` whitelist defect class recurring — caught in minutes because the gate THROWS instead of
+falling back); the chain rule was ONE-PASS and a two-link chain slipped through (date-gated 1836:
+fertilizer 1842 → explosives dropped → munition shipped pinned at the ceiling; the filter now iterates
+to a fixed point); furniture's e1 date moved 1770 → 1800 inside its honest range on the input-chain
+tie-break (its recipe eats hardwood, unproducible at 1780).
+
 ### 10.43.3 Measured results (default run + ERA_JOINT 8/9/10 ensemble, 2026-08-09)
 
 **The design landed as specified.** Lighting per era: none / gas / gas / electric×3 (mandated, both

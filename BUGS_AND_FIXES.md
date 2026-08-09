@@ -13,6 +13,39 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## The date gate's first runs: a field the model drops, and a wall that didn't propagate (2026-08-09)
+
+Three defects surfaced in the first two runs of §10.44's date gate, each caught by a deliberate loud
+failure rather than by shipping wrong numbers.
+
+**1. `makeTiers` dropped `tech_year` — the `input_ratio` defect class, recurring.** The solver THREW
+("building_food_industry_artisanal has no tech_year") although the config plainly carried the field:
+`ui/econ.js`'s `makeTiers()` copies a FIELD WHITELIST from config tiers into the model, and any new
+config field is silently absent until added there — exactly how `input_ratio` once made the frozen-mix
+branch unreachable dead code (§10.25). Fixed in both copies (econ.js + builder.html's fork). The reason
+this cost minutes instead of a shipped defect: the gate THROWS on a missing date instead of falling
+back to era arithmetic. A fallback would have run the old placement silently under the new flag.
+**Detect next time:** when adding a config field the solver reads, grep `makeTiers` FIRST — it is the
+choke point every tier field passes through, in two copies.
+
+**2. The chain rule was one-pass, and a two-link chain slipped through.** At the date-gated 1836 the
+explosives factory is correctly dropped (its FERTILIZER input debuts 1842 — superphosphate's honest
+date), but the munition plant had already passed its own explosives check against a producer list built
+BEFORE any drop — and shipped with `explosives buy 49 / sell 0` pinned at the ceiling, the exact
+"buyer whose supplier cannot exist" the rule exists to prevent. The rule's producer set is now rebuilt
+after every drop and the filter iterates to a fixed point (bounded by the tier count). The date gate
+did not create the defect — it created the first chain of length two (fertilizer→explosives→munition)
+the one-pass version ever faced.
+
+**3. A date inside the honest range can still be the wrong date — the 1780 hardwood pin.** Furniture's
+e1 manufactory dated 1770 placed at 1780, and its recipe eats HARDWOOD — produced only by a tech-gated
+logging secondary the 1780 scenario cannot run, and invisible to the chain rule (hardwood is not a
+tiered good, so `GOOD_FIRST_ERA` has no entry and `unproducible()` waves it through by design).
+`hardwood buy 73 / sell 0 — NO PRODUCER AT ALL`. The authoring fix: the honest range for manufactory
+joinery is 1770 (Gillows-scale London) to ~1800 (provincial manufactory scale); WITHIN an honest range
+the tie-break is input-chain producibility → 1800. Recorded in the spec note. The general limitation —
+the chain rule guards tiered goods only — stands, documented, with the ceiling tripwire as its detector.
+
 ## The pm_goods writer and the model disagreed on what an override IS (2026-08-09, latent — found by inspection)
 
 **Symptom.** None — that is the point. `pm_goods` was empty, so nothing had ever exercised the divergence.

@@ -515,6 +515,7 @@ const VANILLA_CONSTRUCTION = { construction_cost_low:200, construction_cost_medi
 function makeTiers(i){ return i.tiers.map((t,ix)=>({
     key:t.key, name:t.name, tier:ix+1, output_qty:+t.output_qty, target_be:+t.target_be,
     tech:t.tech, natural_year:(t.natural_year!=null?+t.natural_year:null),   // unlock tech + its era's representative year
+    tech_year:(t.tech_year!=null?+t.tech_year:null),   // §10.44 date gate: year the slot's tech was first deployable (carried through on export)
     era:(t.era!=null?+t.era:null),     // the mod's own five-era ladder — NOT the tier's position in its industry
     model_only:!!t.model_only,         // modelled but not emitted (no unlocking technology exists yet)
     output_good:t.output_good,   // optional per-tier override (e.g. shipyard clippers→steamers)

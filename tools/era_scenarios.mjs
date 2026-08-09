@@ -397,14 +397,21 @@ const URBAN_SHRINK = process.env.ERA_URBAN_SHRINK !== '0';
 //        era-minus-one industries must not be systemically prevalent. =1 reverts.
 //   ERA_LEAD_W (default 1)     — the leading rung keeps EQUAL weight by design ruling: the scenario is not
 //        "day 1 after the unlock", so the newest technology may hold real capacity. Kept as a knob only.
-//   ERA_DEBUT_GUARD (default ON) — the leading rung may EXTEND a ladder but never START one: an industry
-//        whose earliest available tier is newer than the scenario era did not exist yet and is not placed.
-//        ERA_DEBUT_EXEMPT (default railway,shipyard_steam,motor,power) spares industries that genuinely
-//        existed before their earliest standalone tier. Three are missing an invented era-1 tier;
-//        POWER's exemption is PERMANENT and principled (§10.43): its debut rung is EMBEDDED in urban
-//        centres (the mandated electric-streetlights method generates municipal electricity from era 3),
-//        so the standalone ladder starts at era 4 by design and the era-3 scenario may still place the
-//        era-4 coal plant as its leading rung — the 1900s' first turbine stations. =0 reverts.
+//   ERA_DATE_GATE (default ON — §10.44, user-ruled 2026-08-09) — a tier is placeable iff its
+//        `tech_year` (stamped by build_era_ladder from the spec's dated notes: the year the slot's
+//        technology was first commercially deployable) is <= the SCENARIO YEAR. This replaces the
+//        leading-rung era arithmetic, which put ~50-58% of tier-output value on NEXT-ERA technology in
+//        every middle scenario (the census that killed it: level-parity leading rungs — tooling 105/105,
+//        steel 48/47 at 1900 — each carrying MORE than half the industry's output on a ×1.5 recipe).
+//        "Leading" stops being a category; what stands in 1900 is what existed by 1900. Era labels keep
+//        classifying rungs (a present tier with era > scenario era still reports as the lead rung and
+//        aims at TG.current). =0 reverts to the era ceiling + debut guard below.
+//   ERA_DEBUT_GUARD (LEGACY — only read when ERA_DATE_GATE=0) — the leading rung may EXTEND a ladder but
+//        never START one. Under the date gate both its job and its exemption list are done properly by
+//        the dates themselves: railway (1825), steam shipyards (1843), the engine trade (1820) and power
+//        (1900, embedded in urban centres before that) all resolve without hand-waving.
+//        ERA_DEBUT_EXEMPT (default railway,shipyard_steam,motor,power) spares industries on the legacy
+//        path only. =0 reverts the guard there.
 //   ERA_RAW_SHRINK (default ON) — §10.18 sheds LEVELS (25% at a time, floor 1, then the type) instead of
 //        dropping a whole TYPE outright. The type-drop, applied to one shared price, removed wheat, maize
 //        and rye one after another and left millet as the only — protected, loss-making — grain source.
@@ -446,6 +453,7 @@ const URBAN_SHRINK = process.env.ERA_URBAN_SHRINK !== '0';
 const OUTER = Math.max(1, Math.round(+(process.env.ERA_OUTER || 3)));
 const LEAD_W = +(process.env.ERA_LEAD_W || 1);
 const STALE_W = +(process.env.ERA_STALE_W || 0.25);
+const DATE_GATE = process.env.ERA_DATE_GATE !== '0';
 const DEBUT_GUARD = process.env.ERA_DEBUT_GUARD !== '0';
 const DEBUT_EXEMPT = new Set((process.env.ERA_DEBUT_EXEMPT != null ? process.env.ERA_DEBUT_EXEMPT
   : 'railway,shipyard_steam,motor,power').split(',').filter(Boolean));
@@ -1242,14 +1250,13 @@ function targetPrice(good, era) {
 
 function buildScenario(eIx, finalPass) {
   const era = FIT.eras[eIx].era;
-  // The newest TIER this scenario may contain. Falls back to `era` so a stale era_prices.json (written
-  // before the six-scenario ladder) still runs with the old one-tier-per-era behaviour rather than
-  // silently placing nothing.
+  // The newest TIER this scenario may contain — LEGACY path only (ERA_DATE_GATE=0). Falls back to `era`
+  // so a stale era_prices.json (written before the six-scenario ladder) still runs with the old
+  // one-tier-per-era behaviour rather than silently placing nothing.
   const LEAD_TIER = FIT.eras[eIx].lead != null ? FIT.eras[eIx].lead : era;
-  // A tier's recipe is solved ONCE, in the FIRST scenario where it leads. Tier 5 leads in both 1920 and
-  // 1935, and solving it in both would let the later scenario silently rewrite the recipe the earlier one
-  // reported its margins at — the §10.14.1 "reported a state it does not ship" failure, in a new place.
-  const SOLVE_HERE = eIx === 0 || (FIT.eras[eIx - 1].lead != null ? FIT.eras[eIx - 1].lead : eIx) !== LEAD_TIER;
+  // The scenario YEAR — what the date gate places against (§10.44).
+  const SCEN_YEAR = FIT.eras[eIx].year;
+  if (DATE_GATE && SCEN_YEAR == null) throw new Error(`era_prices.json carries no year for era ${era} — re-run era_solver.mjs`);
   WORK_RATIO = WORK_RATIO_BY_ERA[eIx];
   setProfRatio(eIx);                         // the non-productive wedge, ramped per era (ERA_PROF_RAMP)
   S.POPM.working_adult_ratio = WORK_RATIO;   // keep ui/econ.js's pop maths on the same number
@@ -1296,7 +1303,13 @@ function buildScenario(eIx, finalPass) {
     // leading tier by one (see ERAS in era_solver.mjs), so scenario 1 (1836) may hold up to tier 2 while
     // tier 1 remains the bulk. Reading `t.era <= era` here is what made the 1836 scenario a pure tier-1
     // economy — a 1750 market wearing an 1836 label — against a vanilla 1836 start that is 45% tier 2.
-    const avail0 = sorted.filter(t => t.era <= LEAD_TIER
+    // THE DATE GATE (§10.44): what a scenario may contain is what EXISTED by its calendar year — a tier
+    // whose technology was first deployable in 1901 does not stand in 1900, however good its margin.
+    // Under the legacy path the ceiling is the leading TIER (era arithmetic; see the ⚠ below).
+    if (DATE_GATE) for (const t of sorted) {
+      if (t.tech_year == null) throw new Error(`${t.key} has no tech_year — re-run build_era_ladder.mjs --write`);
+    }
+    const avail0 = sorted.filter(t => (DATE_GATE ? t.tech_year <= SCEN_YEAR : t.era <= LEAD_TIER)
       && !Object.keys(t.inputs || {}).some(g => GONE.has(g)));   // its input has no supplier left
     if (!avail0.length) continue;
     // ⚠ WITHHELD IS NOT THE SAME AS ABSENT. An industry nothing buys from is pinned to ZERO levels rather
@@ -1307,10 +1320,11 @@ function buildScenario(eIx, finalPass) {
     // the criterion, which is the whole effect wanted.
     let withheld = NO_BUYER && hasNoBuyer(E.tierOut(i, avail0[avail0.length - 1]), era);
     if (withheld) noBuyer.push(i.id);
-    // THE DEBUT GUARD (default ON) — the leading rung may extend a ladder but never start one: an industry
-    // whose EARLIEST available tier is newer than this era did not exist yet. Zero-pinned, not dropped, for
-    // the same reason as `withheld` above.
-    if (DEBUT_GUARD && !DEBUT_EXEMPT.has(i.id) && avail0[0].era > era) { withheld = true; debutHeld.push(i.id); }
+    // THE DEBUT GUARD — LEGACY path only: under the date gate an industry whose technology has not
+    // arrived has an empty avail0 and is simply absent, which is the guard's job done properly (and
+    // without the exemption list: railway 1825, steam shipyards 1843, engines 1820, power 1900 all
+    // predate or meet their scenarios on their own dates).
+    if (!DATE_GATE && DEBUT_GUARD && !DEBUT_EXEMPT.has(i.id) && avail0[0].era > era) { withheld = true; debutHeld.push(i.id); }
     if (PRUNE[i.id] && PRUNE[i.id].has(era)) { withheld = true; prunedHeld.push(i.id); }
     plan.push({ i, sorted, avail0, withheld });
   }
@@ -1340,19 +1354,34 @@ function buildScenario(eIx, finalPass) {
       }
     }
   }
-  const tierProducible = new Set();
-  for (const { i, avail0, withheld } of plan) {
-    if (withheld) continue;
-    for (const t of avail0) tierProducible.add(E.tierOut(i, t));
+  // ⚠ THE WALL PROPAGATES — the chain filter iterates to a FIXED POINT. One pass checked every tier
+  // against a producer list built BEFORE any drop, so a chain of length two slipped through: at 1836
+  // (date-gated) the explosives factory is dropped because its fertilizer input debuts in 1842 — but the
+  // munition plant had already passed its explosives check against the pre-drop list, and shipped with
+  // buy 49 / sell 0 explosives pinned at the ceiling. Drop, rebuild the producible set, re-check, until
+  // nothing moves; the loop is bounded by the tier count.
+  const chainDropped = new Set();      // tier keys chain-dropped so far
+  for (let guard = 0; guard < 200; guard++) {
+    const tierProducible = new Set();
+    for (const { i, avail0, withheld } of plan) {
+      if (withheld) continue;
+      for (const t of avail0) if (!chainDropped.has(t.key)) tierProducible.add(E.tierOut(i, t));
+    }
+    const unproducible = g => GOOD_FIRST_ERA[g] != null && !tierProducible.has(g) && !refProducible.has(g);
+    let moved = false;
+    for (const { i, avail0, withheld } of plan) {
+      if (withheld) continue;
+      for (const t of avail0) {
+        if (chainDropped.has(t.key)) continue;
+        const bad = Object.keys(t.inputs || {}).filter(unproducible);
+        if (bad.length) { chainDropped.add(t.key); chainHeld.push(`${t.key.replace(/^building_/, '')} (needs ${bad.join(',')})`); moved = true; }
+      }
+    }
+    if (!moved) break;
   }
-  const unproducible = g => GOOD_FIRST_ERA[g] != null && !tierProducible.has(g) && !refProducible.has(g);
   // PASS 2 — build the rows from the chain-filtered tier lists.
   for (const { i, sorted, avail0, withheld } of plan) {
-    const avail = avail0.filter(t => {
-      const bad = Object.keys(t.inputs || {}).filter(unproducible);
-      if (bad.length) { chainHeld.push(`${t.key.replace(/^building_/, '')} (needs ${bad.join(',')})`); return false; }
-      return true;
-    });
+    const avail = avail0.filter(t => !chainDropped.has(t.key));
     if (!avail.length) continue;
     const cur = avail[avail.length - 1], m1 = avail[avail.length - 2], m2 = avail[avail.length - 3];
     const fx = FIXED_COUNTS[i.id];
