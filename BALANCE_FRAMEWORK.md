@@ -3582,3 +3582,135 @@ re-minted tiers' frozen `input_ratio` is discarded by `build_era_ladder --write`
 next solve's `--write`); the state after it reads `own 66 · below 23 · frozen 10 — no tier reads its
 mix from the previous run`, and a full `--write` → re-run byte-identity check was run on the shipped
 state (see CLAUDE.md's fixed-point note for the transient rule).
+
+## 10.47 The macroscenario — explicit reasonability constraints (user, 2026-08-09)
+
+**The problem it names:** the solve can satisfy every margin target, track the price path, clear the
+ceiling — and still ship a scenario that is not a picture of the country it claims to describe. The
+case that forced it: **three total railway levels in the 1900 scenario**, every one of them on target.
+The count controller was doing its job (transportation sat on its path), §10.38 was doing its job
+(loss-makers shrank), and the composite was still absurd, because nothing in the solve knew that a
+large 1900 economy *has railways*. The margins are means; the scenario is the end.
+
+**The design:** the six scenarios describe ONE chosen country — a large, autarkic, US-like,
+industry-oriented economy. That choice already governs the solver in scattered places (the population
+premise, the peasant shares, the rice ban, the temperate-leaning subsistence mix); `tools/era_macro.mjs`
+makes its REASONABILITY half explicit, as per-era bounds at three levels, applied from 1836 on
+(**1780 is exempt** — the bounds are industrial-era reasoning and the workshop economy predates them):
+
+1. **Professions** — share of total population per profession. **Verified only**: professions are
+   downstream of building employment and the measured wedge (§10.45), so there is no honest lever left
+   to enforce with; a breach printed here means a design input drifted. (The user's "likely already
+   covered" was right — the shipped state passes every profession bound in every era.)
+2. **Industry categories** — share of GDP per category, the UI's own sector split (mfg-from-mfg-inputs
+   / mfg-from-raw / extraction & logging / agriculture incl. fishing & whaling). **Enforced** through
+   counts.
+3. **Industry types** — share of GDP per config industry, all tiers combined. **Enforced** through
+   counts. This is the level that forbids the dead-railway state (railway ∈ [1%, 15%] of GDP from
+   1870).
+
+**Bounds are on GROSS PRODUCT (value added), by ruling** — building outputs minus building inputs at
+market prices, the same production-side quantity GDP is measured with (F45), so a bound reads
+`VA_industry / GDP`. Not gross output: gross output cannot see that a building destroys value.
+Consequences, stated: an industry with **negative pre-wage balance has negative gross product and can
+never reach a positive floor by growing** (growth adds negative VA and makes the share worse), so
+enforcement never grows a negative-VA tier, blocks the industry, and prints it on the standing
+**NEGATIVE GROSS PRODUCT** line — that list is a *findings feed*, not noise (steel@1836,
+artillery/explosives@1870 are debut-era squeezes of the §10.29 family; shipyards are permanent by
+construction, their naval income being unmodelled, and are excused). And since the model's GDP is net
+of construction's and the army's goods bills, category shares can top 100% — the bounds are calibrated
+on that same denominator and must not be "corrected" against real-world national accounts.
+
+**The bounds themselves are broad judgement calls, stated as such** (SCALE_LIMIT doctrine), calibrated
+on the shipped 2026-08-09 presets so today's state passes wherever it is defensible: the failures they
+manufacture on the shipped state are exactly railway@1870 (0.09%), railway@1900 (0.00%) and the
+negative-VA list. A floor applies only where the industry can exist — the date gate, the chain rule,
+ERA_PRUNE and the extinct rule all outrank it (`placement`'s `withheld` flag is the gate), and `lo = 0`
+means *no floor at all*. Caps always apply. Future macroscenarios (a small trade-oriented country) are
+additional entries in `MACROS`, selected by `ERA_MACRO=<id>` — never edits to `usa`.
+
+**Enforcement semantics** (in `era_scenarios.mjs`, right after the unified §10.18/§10.38 recheck and
+before the integer polish — the ordering is the precedence: a reasonability floor outranks a margin,
+and nothing downstream may undo it, so the polish carries a macro guard on the GAP SUM, which catches
+a move that deepens an existing breach where a breach COUNT would not):
+- post-solve count moves only (minCount/maxCount, rawCap for reference producers), settle + re-price
+  after every step — recipes and PM selections are final, `contSettle` is forbidden here (§10.21's
+  rule);
+- **floors grow the present tier with the best VA per level** (never a negative one), 25% of levels a
+  step; **caps cut the oldest tier above one level first** (stale capacity dies first — §10.38's
+  directive);
+- **category moves pick members by the same tests and are undone if they push a member industry out of
+  its own band** — the aggregate is never fixed by breaking a concrete bound. Category bounds sit far
+  from the shipped state, so this path is dormant; if a bound is ever narrowed to where it binds,
+  revisit the §10.18 interaction first;
+- guards with the usual precedence: a step that breaches the +75% ceiling is undone and the bound
+  blocked; a step that does not move the share is undone; a run that never moved the share at all is
+  fully unwound (§10.21's futility doctrine — levels that bought nothing are junk), while partial
+  progress is kept and the shortfall reported ("stalled at X%").
+
+**Reporting:** a per-era `MACRO` block (moves kept, residual breaches, blocked bounds with reasons,
+profession verification, the negative-VA line) and — the headline — a **MACRO REASONABILITY** block in
+the final profit pass, computed on the SHIPPED state where recipes are final, because the in-era view
+reads provisional leading-rung recipes (the §10.14.1/§10.39.3 lesson applies here too: the smoke run
+grew railway@1870 to its floor in-era, and the final-state replay showed the same rung negative once
+its era-3 recipe was final — only the outer iteration reconciles the two).
+
+**Found and fixed on the way** (BUGS_AND_FIXES 2026-08-09): `applyCounts` never honoured `minCount`
+for reference producers, so every §10.22 upper-band growth step on a raw producer was a silent no-op —
+the margin never moved, the futility guard read that as "pinned at the floor", and the producer was
+permanently blocked after one wasted step. The upper half of the raw band was unenforceable the whole
+time it has existed. Fixed in the same pass (the macro layer needs the lever for its raw-category
+floors); measured together with the layer below.
+
+### 10.47.1 Measured results (macro layer + minCount fix, default + ERA_MACRO=0 + seeds 9/10, 2026-08-09)
+
+| | final-state illogicality | losses £/wk | net £/wk | ceiling | macro residual |
+|---|---|---|---|---|---|
+| baseline cf21acb (seeds 8/9/10) | 66/82/64 (55/70/54) | 175/279/182k | 12.5/11.6/12.2M | 6 / 5 / 5 of 6 | — |
+| minCount fix only (ERA_MACRO=0, seed 8) | 69 (58) · 9/8/15/17/12/8 | 177k | 12.5M | 6/6 | — |
+| **fix + macro (ships, seed 8)** | **72 (61)** · 9/8/17/18/12/8 | **174k** (1.4%) | **12.5M** | **6/6** | **3** |
+| fix + macro, seeds 9/10 | 85 (73) / 68 (58) | 300k / 184k | 11.5M / 12.1M | 5/6 / 5/6 | 9 / 5 |
+
+**Metrically: a consistent +4–6 faults on every seed** — slightly above pure reshuffle, but the
+ensembles overlap heavily and losses, net and the ceiling are unchanged (the default still clears all
+six eras). About half the shift is the minCount fix alone (66→69 on seed 8, all of it era 2 — the raw
+sector re-equilibrating now that over-band growth actually works), the rest the macro layer's kept
+railway levels running slightly unprofitable. The layer is a ruled CONSTRAINT, not an optimisation —
+this is the price of forbidding the degenerate composition, and it is small.
+
+**What the layer did on the shipped default:** grew railway +2 @1870 and +3 @1900 (banked progress,
+then stalled honestly); professions pass everywhere; categories pass everywhere; **3 residual
+breaches** — explosives@1870 (−0.53%, negative gross product), railway@1870 (0.27% < 1%),
+railway@1900 (0.02% < 1%). Seeds add marginal edge cases of the same two families (motor/glass/munition
+debut-era negatives; a 0.43%-vs-0.50% textile floor miss at e4 on seed 9; railway@e4 0.04% on seed 10
+and railway@e5 −0.01% on seed 9 — the railway story is jagged late but structural early).
+
+**⭐ THE RAILWAY WALL, mechanically pinned (the §10.47 discussion item).** Growing railway at 1870/1900
+is futile by measurement, not by guess: transportation demand there is POP-ONLY (~900/~1,400 units)
+and urban centres already cover much of it, so a railway level's gross product collapses as the sector
+grows — measured on the shipped state, VA/level **+£536 at 3 levels → +£71 at 10 → −£377 at 20**
+(1870), with engines pinned at the 175 ceiling on the way; the reachable share maxes at ~0.3% (1870) /
+~0.02–0.55% (1900, seed-dependent) against the 1% floor. **The missing ingredient is freight.** At
+1920 raw producers buy ~17,900 units of transportation through vanilla's rail-transport methods
+(`pm_rail_transport_mine`, `pm_steam_rail_transport`, logging/oil variants — all tech `railways`, our
+era 2, so AVAILABLE from 1870) and railway jumps to ~336 levels; at 1870/1900 the optimiser correctly
+refuses them, because in this model they are pure wage arbitrage — ~£150–200/level of transportation
+bought against ~£150 of laborers' wages saved at 1870's base wage — and the trade only turns positive
+as wages rise toward 1920. Vanilla models freight as labour-saving automation; our scenarios inherit
+that abstraction, so the 1870–1900 railway age cannot happen in them without a ruling. Candidate
+remedies for the user: (a) mandate rail freight on raw producers from era 2 (the street-lighting
+precedent; measured as an experiment arm via `ERA_FORBID_PMS=pm_road_carts@2`), (b) lower the middle-era
+railway floors to what a pop-only market supports, (c) model a real freight channel (a new mechanism).
+
+**Remedy (a) MEASURED — the freight mandate arm (`ERA_FORBID_PMS=pm_road_carts@2`, seed 8, one run,
+NOT shipped):** faults **70 (59)** — slightly better than the shipped default's 72 (61) — losses
+£273k (+£100k, the freight bill landing on marginal producers), net £12.0M (−0.5M), ceiling 5/6 (the
+one breach is at 1836, clippers + a lead orphan — seed-class artifacts of a different solve
+trajectory, not freight effects; the mandate starts at 1870). **Railway per era: ~1.0% @1870 · 0.90%
+@1900 · 0.95% @1920 — and the macro pass made NO count moves there: with freight demand real, the
+ordinary price/count machinery builds the railway sector on its own**, and the macro floor decays into
+a verification that misses by 0.01–0.10pp on a deliberately broad bound. Two second-order effects to
+weigh: the 1920 railway boom flattens (0.95% vs 2.13% — the whole system re-equilibrates around
+earlier rail), and 1870's explosives squeeze clears while 1836 picks up small glass/motor negatives.
+A ruling, not a default: it re-prices the entire raw sector from 1870 (−£150–200/level), so it ships
+only if the user rules that a railway-age mine ships by rail as a matter of era, like street lighting.

@@ -116,20 +116,25 @@ shipped state). Quote the `FINAL-STATE ILLOGICALITY` line, never the per-era sum
 figure before 2026-08-09 is comparable to later ones without adding shipyards back (they are excluded
 from the totals now, reported on their own line, like gold).
 **Current state under the ruled set (§10.42.4) + the 1780 prune + the ELECTRICITY PASS (§10.43, 2-coal
-ruled) + the DATE GATE (§10.44) + the WEDGE and the 1780 RULINGS (§10.45/§10.46, all shipped
-2026-08-09): final-state illogicality 66 (55 excluding shipyards), per era 9/8/12/17/12/8 · losses
-£175k/wk ≈ 1.4% of net · net £12.5M/wk · **THE DEFAULT CLEARS THE INDUSTRIAL CEILING IN ALL SIX ERAS**
-· ensemble (seeds 8/9/10 — the default IS seed 8): 66/82/64 (55/70/54) / £175–279k / £11.6–12.5M,
-seeds 9/10 each carrying ONE marginal named breach (era-2 engines two-sided squeeze; a lead
-drop-then-pin at buy 16) · calendar-anachronistic output 0% by construction; 1836's honest era-2 share
-46.6% vs vanilla's measured 45% · hardwood TRADE-SUPPLIED where ruled (72 @1780, 525 @1836; every
+ruled) + the DATE GATE (§10.44) + the WEDGE and the 1780 RULINGS (§10.45/§10.46) + the MACROSCENARIO
+LAYER and the minCount-for-refs fix (§10.47, all shipped 2026-08-09): final-state illogicality 72 (61
+excluding shipyards), per era 9/8/17/18/12/8 · losses £174k/wk ≈ 1.4% of net · net £12.5M/wk · **THE
+DEFAULT CLEARS THE INDUSTRIAL CEILING IN ALL SIX ERAS** · ensemble (seeds 8/9/10 — the default IS
+seed 8): 72/85/68 (61/73/58) / £174–300k / £11.5–12.5M — a consistent +4–6 faults per seed over the
+pre-macro baseline (66/82/64), roughly half the minCount fix re-equilibrating the raw sector and half
+the constraint's own price, with losses/net/ceiling unchanged · MACRO residual breaches 3 on the
+default (explosives@1870 negative gross product; railway 0.27% @1870 / 0.02% @1900 against 1% floors —
+the RAILWAY WALL, §10.47.1: freight is wage-arbitrage in this model and does not pay before 1920
+wages; awaiting a ruling) · calendar-anachronistic output 0% by construction; 1836's honest era-2 share
+46.6% vs vanilla's measured 45% · hardwood TRADE-SUPPLIED where ruled (72 @1780, ~490 @1836; every
 other good domestic — the condition-based version of that rule shipped an all-imports iron economy and
 is recorded VOID, §10.46.1) · ownership professions follow the MEASURED wedge (F46: aristocrats fall to
-0.59×/0.35× by eras 4/5, clerks+shopkeepers double, bureaucrats halve — vanilla's own path) · the
+0.59×/0.35× by eras 4/5, clerks+shopkeepers double, bureaucrats halve — vanilla's own path), and every
+profession share passes its §10.47 bound in every era · the
 futility guard knows which price pin it is looking at, and the dye placeholder pin is gone.** Future
 A/B work compares against THESE numbers. The pre-campaign state on
 the same metric was 94 (84) and £868k losses. 1780's remaining faults (furniture, tooling, paper,
-artillery — food cleared in the shipped run) are honest tiny-market statements — industries with real
+arms, artillery in the current run) are honest tiny-market statements — industries with real
 buyers, each losing £86–300/wk at one floored level.
 ⚠ Older counts in this file's history (43/30, 52/47) are the in-era metric on the old defaults — void for
 comparison on both grounds.
@@ -568,7 +573,29 @@ tools/                  dev tooling — NOT shipped in the mod
                         ceiling guard and shipped 1900 with ALL its iron imported (§10.46.1). The §10.21
                         futility guard fires only at the price FLOOR, never at the ceiling (the
                         1780-iron/era-2-engines bug), and FIXED_REF_COUNT is EMPTY (the
-                        10-dye-plantation placeholder pin is gone)
+                        10-dye-plantation placeholder pin is gone).
+                        ⭐⭐ THE MACROSCENARIO (ERA_MACRO, default usa — §10.47, user-ruled 2026-08-09):
+                        explicit reasonability bounds from tools/era_macro.mjs, applied 1836+ (1780
+                        exempt) — the governance layer the rice ban and the US population premise
+                        already belonged to. Three levels: profession shares of population (VERIFIED
+                        only), industry-CATEGORY GDP shares and per-INDUSTRY GDP shares (both ENFORCED
+                        post-solve through counts, before the polish, which carries a macro guard).
+                        Shares are of GROSS PRODUCT (value added) by ruling — so an industry with
+                        negative pre-wage balance can never reach a floor by growing; enforcement
+                        blocks it and the NEGATIVE GROSS PRODUCT report line is the standing discussion
+                        list. Floors are waived where placement withholds the industry (date gate /
+                        prune / chain / extinct outrank), lo=0 = no floor; the headline check is the
+                        MACRO REASONABILITY block in the final profit pass (in-era lines read
+                        provisional lead-rung recipes). ERA_MACRO=0 disables; ERA_MACRO_STEPS caps
+                        moves (default 400). Railway ∈ [1%,15%] of GDP from 1870 is the bound that
+                        forbids the three-levels-in-1900 state that prompted the layer
+  era_macro.mjs         the macroscenario bounds themselves (professions / categories / industries per
+                        era, percent of GDP or population) + activeMacro()/macroBounds()/validateMacro().
+                        Pure data + helpers, validated fail-loud against the live model at solver start;
+                        a future macroscenario is a NEW entry in MACROS selected by ERA_MACRO=<id>,
+                        never an edit to `usa`. Bounds are broad judgement calls calibrated on the
+                        shipped 2026-08-09 presets (SCALE_LIMIT doctrine: catch degeneracy, don't
+                        sculpt — the price/count feedback stays the sculptor)
   econ_host.mjs         loads ui/econ.js + the generated ui/*.js under Node — supplies the state containers the
                         browser would. Contains NO model of its own.
                         ⚠ The CONFIG comes from config/mod_config.json DIRECTLY, not from the copy embedded in

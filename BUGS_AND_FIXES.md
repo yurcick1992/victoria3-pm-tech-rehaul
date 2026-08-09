@@ -13,6 +13,32 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## The tuner's raw-growth lever never reached the counts — `minCount` ignored for reference producers (2026-08-09)
+
+**Symptom.** The raw sector's upper band (§10.22, extraction ≤ +400% / agriculture ≤ +200%) never came
+down: §10.21's own sanity line reported "raw producers median 52–66% … 10–12 producers over +50% every
+era" for as long as it has printed, and the FREE ENTRY line essentially never named a plantation or
+mine among what it grew. The one recorded raw-growth story — `tea_plantation` eating all 400 tuner
+steps "achieving nothing" — was attributed to its price being pinned at the 25% floor.
+
+**Root cause.** The tuner grows a producer by raising `minCount[key]` and re-settling. `applyCounts`
+honours `minCount` in its TIER branch — and its REFERENCE branch (mines, farms, plantations) computed
+`min(lvl(scaleOf), scaleCapOf, rawCap)` with **no `minCount` term at all**. So every raw growth step
+was a no-op: settle recomputed the same count, the margin came back unmoved, and the futility guard —
+which reads an unmoved margin as "pinned at the floor" — unwound the (empty) run and `capBlocked` the
+producer after one wasted step. The upper half of the raw band was **unenforceable the entire time it
+has existed**, and the tea story was misdiagnosed: any ref candidate would have "achieved nothing",
+tea was merely picked first. (Pre-futility-guard, the same no-op is why tea could burn 400 steps.)
+
+**Fix.** The ref branch is now `min(max(lvl(scaleOf), minCount||0), scaleCapOf, rawCap)` — the same
+shape as the tier branch, caps still outranking the floor. Found while building §10.47's macroscenario
+enforcement, which needed the same lever for raw-category floors; measured together with it (§10.47.1).
+
+**Detect/prevent.** A lever is only known to work when its effect has been SEEN: after wiring any new
+count-space rule, force one step and confirm the count actually moved before trusting the rule's
+reports. The futility guard's "nothing moved" is indistinguishable from "the lever is disconnected" —
+which is the same lesson as the ceiling-pin entry below, one bug further upstream.
+
 ## The futility guard blocked growth at the CEILING it was needed for (2026-08-09)
 
 **Symptom.** The 1780 iron mine sat at 1 level, 419% margin, its good pinned at the 175 ceiling with
