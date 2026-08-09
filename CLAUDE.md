@@ -100,12 +100,14 @@ leading rung's PROVISIONAL recipe and under-counted by ~40 points (52 reported v
 shipped state). Quote the `FINAL-STATE ILLOGICALITY` line, never the per-era sum alone — and no profit
 figure before 2026-08-09 is comparable to later ones without adding shipyards back (they are excluded
 from the totals now, reported on their own line, like gold).
-**Current state under the ruled set (§10.42.4), across the verification seeds: final-state illogicality
-58–68 (50–59 excluding shipyards) · losses £155–242k/wk ≈ 1–2% of net · net £12.0–14.0M/wk · era-5
-newest-rung losses £0 · grain four types at 1945 · rice zero by ruling · one residual ceiling breach
-(era-2 engines, under-built after the chain rule withheld the electric rung — open).** The shipped
-`--write` state is the 68 (57) / £155k / £14.0M point. The pre-campaign state on the same metric was
-94 (84) and £868k losses.
+**Current state under the ruled set (§10.42.4) + the 1780 prune (steel/glass, ruled 2026-08-09):
+final-state illogicality 64 (55 excluding shipyards), per era 5/12/13/15/10/9 · losses £169k/wk ≈ 1% of
+net · net £13.6M/wk · era-5 newest-rung losses £0 · grain four types at 1945 · rice zero by ruling · one
+residual ceiling breach (era-2 engines, under-built after the chain rule withheld the electric rung —
+open). Verification seeds spanned 58–68 (50–59) / £155–242k / £12.0–14.0M.** The pre-campaign state on
+the same metric was 94 (84) and £868k losses. 1780's five remaining faults (food, furniture, tooling,
+paper, artillery) are honest tiny-market statements — industries with real buyers, each losing
+£150–350/wk at one floored level.
 ⚠ Older counts in this file's history (43/30, 52/47) are the in-era metric on the old defaults — void for
 comparison on both grounds.
 ⚠ **Two levers that lower the count are REJECTED and must stay rejected**: `ERA_NO_BUYER=1` buys its gain
@@ -517,8 +519,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         ERA_MIN_LEVELS_MULT (§10.29 — the trap is scale-invariant), ERA_EXTINCT_GRACE
                         (§10.30), ERA_NO_BUYER=1 (measured, stays off, §10.32), ERA_SHRINK_LOSSMAKERS=0,
                         ERA_SHRINK_STEPS (default 6000 — a SAFETY NET, not a budget; §10.38),
-                        ERA_WAGE_RAMP (Baumol wage growth — PENDING a design ruling, §10.42.5),
-                        ERA_PM_MINGAIN (PM hysteresis — deferred by ruling), ERA_PRUNE (1780 — pending),
+                        ERA_WAGE_RAMP (Baumol wage growth — DEAD by measurement, §10.42.5),
+                        ERA_PM_MINGAIN (PM hysteresis — deferred by ruling),
+                        ERA_PRUNE (default steel@0,glass@0 — the ruled 1780 prune; empty reverts),
                         ERA_LEAD_W (stays 1 by ruling), ERA_RAW_DRIFT (REJECTED by ruling; knob kept for
                         A/B only), ERA_CEIL_BOOST, ERA_CEIL_PM, ERA_JOINT (also the jitter seed for
                         3-run ensembles), ERA_PROBE (the removed forward probe — leave it off)

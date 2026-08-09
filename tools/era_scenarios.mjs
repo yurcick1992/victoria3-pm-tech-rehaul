@@ -434,7 +434,9 @@ const URBAN_SHRINK = process.env.ERA_URBAN_SHRINK !== '0';
 //   ERA_WAGE_RAMP (default 1 = off) — extra wage growth ×f^era on top of the SoL-driven base. PENDING a
 //        design ruling: it is the strongest stale-rung killer measured (+2.1M net at zero fault cost) but
 //        interacts with raw-sector solvency; measured with the price band replacing the rejected drift.
-//   ERA_PRUNE=a@0,b@0          — named industries not placed at named eras (the 1780 experiment; pending).
+//   ERA_PRUNE (default steel@0,glass@0 — RULED) — industries not placed at named eras. The 1780 prune,
+//        refined by the buyer test: only goods with NO buyer of any kind at that era qualify.
+//        ERA_PRUNE= (empty) reverts to no pruning.
 //   ERA_SUBS_MIX=temperate     — optional hand-authored temperate subsistence mix; with rice banned the
 //        default world mix renormalises to ~93% grain farms anyway, so this is now nearly equivalent.
 const OUTER = Math.max(1, Math.round(+(process.env.ERA_OUTER || 3)));
@@ -446,8 +448,16 @@ const DEBUT_EXEMPT = new Set((process.env.ERA_DEBUT_EXEMPT != null ? process.env
 const WAGE_RAMP = +(process.env.ERA_WAGE_RAMP || 1);
 const RAW_SHRINK = process.env.ERA_RAW_SHRINK !== '0';
 const RAW_RECHECK = RAW_SHRINK || process.env.ERA_RAW_RECHECK === '1';
-const PRUNE = (() => { const m = {}; for (const kv of (process.env.ERA_PRUNE || '').split(',').filter(Boolean)) {
-  const [id, e] = kv.split('@'); (m[id] = m[id] || new Set()).add(+e); } return m; })();
+// Default: the RULED 1780 prune (user, 2026-08-09) — steel and glass are the two goods with no buyer of
+// any kind at 1780 (steel's first consumer is era-2 machinery; glass has only a pop need that SoL-7 pops
+// fund with nothing), so their industries are not placed there. Paper, arms and artillery STAY: the
+// university buys paper in every era (pm_scholastic_education, 5/level), the army buys small arms and
+// artillery (pruning them pinned orphaned demand at 175 — the ceiling tripwire caught it).
+// ERA_PRUNE= (empty) reverts to no pruning; any other spec replaces the list.
+const PRUNE = (() => { const m = {};
+  const spec = process.env.ERA_PRUNE != null ? process.env.ERA_PRUNE : 'steel@0,glass@0';
+  for (const kv of spec.split(',').filter(Boolean)) {
+    const [id, e] = kv.split('@'); (m[id] = m[id] || new Set()).add(+e); } return m; })();
 const SHRINK_COARSE = process.env.ERA_SHRINK_COARSE !== '0';
 const URBAN_FLOOR = +(process.env.ERA_URBAN_FLOOR || 0);
 const ALLOW_RICE = process.env.ERA_ALLOW_RICE === '1';
