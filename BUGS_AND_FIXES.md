@@ -13,6 +13,31 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## The futility guard blocked growth at the CEILING it was needed for (2026-08-09)
+
+**Symptom.** The 1780 iron mine sat at 1 level, 419% margin, its good pinned at the 175 ceiling with
+buy 58 / sell 22 — and the count machinery never grew it, run after run, seed after seed. The era-2
+engines under-build (buy 229 / sell 96 from 2 levels) resurfaced with the same signature after the date
+gate. The user's read — "the iron mines themselves are profitable, why is there only one of them? It can
+be some systemic weirdness" — was exactly right.
+
+**Root cause.** §10.21's futility guard exists for the 25% price FLOOR: a producer whose good is floored
+cannot move its own margin by growing, so growth steps are unwound and the producer `capBlocked` — the
+guard's own comment says "pinned at the 25% price floor". The implementation never checked WHICH pin:
+at the 175 CEILING with demand far above supply, one growth level often leaves buy/sell ≥ 1.6, the price
+stays pinned, the margin does not move — and the guard read that as futility and PERMANENTLY blocked the
+one producer the hard ceiling constraint needed grown. Whether a seed hit it depended on whether an
+intermediate state crossed the 1.6 line during the tuner — hence the seed-dependence of the engines
+breach.
+
+**Fix.** Both branches (raw and manufacturing) skip the futility verdict when the producer's output good
+sits at ≥174.5% — there "margin did not move" means "not enough growth yet", and the ceiling-breach undo
+remains the only brake.
+
+**Detect next time.** A profitable producer at minimum size whose good is at the TOP band edge is the
+fingerprint — the report already prints both halves (`RAW BAND … OUTSIDE` + `INDUSTRIAL CEILING … from
+<building> N×M`); read them together.
+
 ## The date gate's first runs: a field the model drops, and a wall that didn't propagate (2026-08-09)
 
 Three defects surfaced in the first two runs of §10.44's date gate, each caught by a deliberate loud

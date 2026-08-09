@@ -3434,6 +3434,107 @@ fertilizer 1842 → explosives dropped → munition shipped pinned at the ceilin
 to a fixed point); furniture's e1 date moved 1770 → 1800 inside its honest range on the input-chain
 tie-break (its recipe eats hardwood, unproducible at 1780).
 
+## 10.45 The wedge, measured (2026-08-09) — per-profession era multipliers replace the frozen 1836 vector
+
+The manor-house problem (§10.42.5): the eight non-productive professions were an 1836-frozen share of
+the productive workforce, so manor houses stayed the biggest building in every economy including 1945,
+and `ERA_PROF_RAMP` (a single uniform factor) was the only dial. **FINDINGS F46 measured the real
+trajectories** — nine melted saves of one vanilla USA campaign at decade intervals, 1836→1920, each
+profession ÷ the productive workforce (the full series is in F46; the raw extracts are one melt away
+from the saves_debut archive).
+
+**Shipped:** `PROF_MULT_BY_ERA` — per-profession multipliers on the committed eight-market-median 1836
+anchors (`PROF_RATIO_1836` is untouched: the SHAPE is the USA's, the LEVEL stays calibrated — stated
+assumption, since levels demonstrably do not transfer across countries: USA shopkeepers are ×4–5 the
+European median):
+
+| profession | e0 (backcast) | e1 | e2 (1866/76) | e3 (1896/06) | e4 (1920) | e5 (extrapolated) |
+|---|--:|--:|--:|--:|--:|--:|
+| clerks | 0.70 | 1.00 | 1.55 | 1.78 | 2.13 | 2.70 |
+| bureaucrats | 1.20 | 1.00 | 1.05 | 0.78 | 0.53 | 0.45 |
+| clergymen | 1.00 | 1.00 | 1.51 | 1.49 | 1.16 | 1.00 |
+| shopkeepers | 0.70 | 1.00 | 1.47 | 1.90 | 2.13 | 2.50 |
+| aristocrats | 1.10 | 1.00 | 1.39 | 1.08 | 0.59 | 0.35 |
+| capitalists | 0.30 | 1.00 | 1.61 | 2.47 | 2.46 | 2.80 |
+| officers | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
+| academics | 0.70 | 1.00 | 8.40 | 4.00 | 2.13 | 1.80 |
+
+The design intent lands as data: aristocrats (manor houses) fall to 0.59× by era 4 and 0.35× by era 5 —
+the land economy's decline, WITH a real 1866 peak on the way — while capitalists (financial districts)
+×2.5 and the white-collar block doubles. Bureaucrats HALVE, which is vanilla's own behaviour and is
+followed deliberately (the model mirrors the game it mods). Academics' ×8.4 era-2 spike is vanilla's
+university boom — volatile but measured, from a 0.15%-of-workforce base. `ERA_PROF_WEDGE=0` reverts to
+the flat vector; `ERA_PROF_RAMP` still multiplies on top for experiments. Era 0/5 are judgment calls
+marked in the code; the original three-anchor idea (tie aristocrats to the modelled land share, etc.)
+was set aside for the measured per-era table — model-coupled anchors can come later if the per-era
+table proves too rigid, and the F46 series is the data either would be fitted to.
+
+## 10.46 Post-gate rulings (user, 2026-08-09): imports where no producer can exist, the ceiling-futility bug, the dye pin
+
+Three rulings on §10.44.3's residuals, all in one re-solve:
+
+1. **TRADE-SUPPLIED GOODS — "add trade supply exactly where demand is," scoped to an EXPLICIT LIST.**
+   A good on `TRADE_SUPPLY_GOODS` (today: **hardwood only**) that buildings demand with no building
+   supply is imported: trade sell orders are set equal to demand on EVERY re-price, so supply = demand
+   and the price sits at 100% of base however demand moves; the import withdraws itself the moment a
+   domestic producer appears, and the report prints a TRADE-SUPPLIED line naming every import.
+   ⚠⚠ **THE SCOPE IS A LIST BECAUSE THE CONDITION VERSION WAS MEASURED AND IT WAS A DISASTER.** The
+   first implementation imported ANY non-ladder good with building demand and zero building supply —
+   which DISARMED the "kept at a loss — the market's only source" ceiling guard: dropping the last iron
+   mine no longer breached the ceiling (imports flooded in at 100), so the raw-drop machinery cascaded
+   and the solve shipped 1900 with its ENTIRE 25,520-unit iron supply imported, era-5 rubber 16,572
+   imported, and the army's tanks bought abroad. One run, caught by the TRADE-SUPPLIED report line the
+   rule prints about itself. The ruling covers structural WALLS (hardwood: the ungated wood→hardwood
+   conversion can never pay while wood floats in-band under hardwood's 175 cap — no count, price or
+   method choice can fix it), not transient supply gaps; a wall is a design finding, and each one is
+   named on the list by hand.
+2. **THE CEILING-FUTILITY BUG** ("iron is a bigger and weirder problem... can be some systemic
+   weirdness" — confirmed). §10.21's futility guard was written for the 25% FLOOR ("extra supply cannot
+   push the price down any further") but fired on ANY unmoved margin — including a good pinned at the
+   175 CEILING with demand far above supply, where one growth step is not yet enough to unpin the price.
+   The guard then `capBlocked` the producer PERMANENTLY — blocking exactly the growth the hard ceiling
+   constraint requires. The 1780 iron mine (1 level, 419%, buy 58 / sell 22, forever) and the reopened
+   era-2 engines under-build (buy 229 / sell 96) both carry this signature, in the raw and manufacturing
+   branches respectively. Fix: the guard fires only when the producer's output is NOT pinned at the top
+   band edge, in both branches.
+3. **THE DYE PIN IS GONE.** `FIXED_REF_COUNT = { building_dye_plantation: 10 }` was a self-declared
+   placeholder from before the count controller, the raw band and level-shedding existed ("10 is a
+   reasonable-looking number, not a derived one") — the same class as the art academy's removed
+   FIXED_COUNTS (§10.40). At 1780 it stood at 10/10 with barely any profit. The controller now sizes
+   dye plantations like any plantation; the mechanism remains, empty.
+
+Also folded into the same re-solve: the reference solver's fork of the PM rules is DELETED —
+`era_solver.mjs` consumes `makePmRules` from era_pm.mjs (with an `onLawDisallowed` reporting hook), so
+the coerced-labour ban, the veto knob, the mandate and the gate remap arrive in both solvers from one
+implementation, and there is no second copy left to drift.
+
+### 10.46.1 Measured results (wedge §10.45 + all three rulings + the solver dedup, one re-solve)
+
+| | final-state illogicality | losses £/wk | net £/wk | ceiling |
+|---|---|---|---|---|
+| date-gate baseline (§10.44.3) | 64 (53) · seeds 64/74/68 | 159k · 145–175k | 11.8M · 11.4–11.8M | 5/5/4 of 6 |
+| **combined (ships)** | **66 (55)** · per era 9/8/12/17/12/8 | **175k** (1.4%) | **12.5M** | **6/6** |
+| combined, seeds 9/10 | 82 (70) / 64 (54) | 279k / 182k | 11.6M / 12.2M | 5/6 / 5/6 |
+
+**The wedge + fixes are metrically neutral-to-positive and structurally strictly better.** Faults sit in
+the same jagged band (seed 9's 82 is the spread's high edge; seed 10's 64 its low); net is UP ~0.7M on
+the default — and the DEFAULT run clears the ceiling in all six eras for the first time since the date
+gate landed: hardwood imports where ruled (72 units at 1780, 525 at 1836 — furniture and shipyards buy
+it; every other good domestic), the 1780 iron mine grows freely now the futility guard knows which pin
+it is looking at, and dye plantations are market-sized. The seed residuals, both marginal and named:
+seed 9 re-shows the **era-2 engines squeeze** — now UNDERSTOOD rather than mysterious: with the futility
+fix the growth path is open, but growing the engine industry at 1870 pushes its own inputs to the
+ceiling (the cap-on-breach brake, working as designed), while not growing it pins engines — a genuine
+two-sided 1870 statement, not a stuck dial; seed 10 shows a one-off lead drop-then-pin (buy 16 / sell 0
+— the §10.18 drop's only-source undo checks breaches at drop time only, and this pin formed later).
+Both stay on the open list at low concern per the user's ruling ("we're not done structurally, so the
+particular values are of low concern").
+
+⚠ **The first run of the combined state is a lesson recorded in item 1's scope note**: the
+condition-based import rule shipped 1900 with all 25,520 units of iron imported before the explicit
+list replaced it. Its numbers (73 (63) / £204k / £10.1M) are VOID for comparison — that economy bought
+its metals abroad.
+
 ### 10.43.3 Measured results (default run + ERA_JOINT 8/9/10 ensemble, 2026-08-09)
 
 **The design landed as specified.** Lighting per era: none / gas / gas / electric×3 (mandated, both

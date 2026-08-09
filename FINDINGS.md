@@ -5022,3 +5022,49 @@ the score.
 `placement` so its recipe is never solved — the gain is the known defect, not a fix. `ERA_COUNT_DEADBAND=10`
 scores **38 / 26**, but its neighbours 9 and 11 score 41 and 39: a ~3-point band with a one-point spike at
 its centre, i.e. exactly the jagged surface §10.28 warns about. Neither is shipped.
+
+## F46 — ⭐ THE OWNERSHIP-PROFESSION WEDGE, MEASURED 1836→1920: clerks and shopkeepers double, aristocrats rise then fall to 0.59×, bureaucrats HALVE. The 1836-frozen `PROF_RATIO` vector was wrong in a different direction for almost every profession
+
+**Arm: none — savegame archaeology, no run.** Source: the `saves_debut` archive (356 quarterly autosaves
+of ONE vanilla campaign, 1836→1921, game version of 2026-08-07) — nine saves at decade intervals melted
+with rakaly and read by `melted_pops_by_profession.mjs`, plus the committed
+`config/measured_1836_professions.json` as the 1836 point. Each profession's population ÷ the PRODUCTIVE
+workforce (all professions outside the eight, minus peasants, slaves and soldiers — the same denominator
+`PROF_RATIO_1836` uses). Sizes are workforce+dependents; the dependent factor is uniform across these
+professions, so it cancels in the ratio.
+
+**The USA series (ratio to productive workforce), in full:**
+
+| year | prodWF | clerks | bureaucrats | clergymen | shopkeepers | aristocrats | capitalists | officers | academics |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| 1836 | 6.35M | 0.0655 | 0.0283 | 0.0255 | 0.0564 | 0.0114 | 0.0037 | 0.0015 | 0.0016 |
+| 1846 | 6.82M | 0.0688 | 0.0247 | 0.0293 | 0.0607 | 0.0128 | 0.0032 | 0.0020 | 0.0059 |
+| 1856 | 7.14M | 0.0840 | 0.0302 | 0.0342 | 0.0702 | 0.0147 | 0.0038 | 0.0021 | 0.0107 |
+| 1866 | 8.25M | 0.1089 | 0.0284 | 0.0386 | 0.0787 | 0.0163 | 0.0072 | 0.0018 | 0.0138 |
+| 1876 | 9.82M | 0.0941 | 0.0311 | 0.0383 | 0.0874 | 0.0155 | 0.0047 | 0.0021 | 0.0131 |
+| 1886 | 13.8M | 0.1050 | 0.0295 | 0.0396 | 0.0985 | 0.0159 | 0.0091 | 0.0021 | 0.0094 |
+| 1896 | 17.9M | 0.1117 | 0.0245 | 0.0343 | 0.1070 | 0.0126 | 0.0098 | 0.0021 | 0.0079 |
+| 1906 | 29.3M | 0.1221 | 0.0198 | 0.0419 | 0.1071 | 0.0120 | 0.0085 | 0.0014 | 0.0049 |
+| 1916 | 39.7M | 0.1203 | 0.0158 | 0.0300 | 0.1177 | 0.0073 | 0.0058 | 0.0026 | 0.0039 |
+| 1920 | 46.2M | 0.1398 | 0.0151 | 0.0296 | 0.1201 | 0.0067 | 0.0091 | 0.0015 | 0.0034 |
+
+**What it says.** The white-collar ramp is real and profession-specific, not a uniform factor: clerks
+×2.13 and shopkeepers ×2.13 by 1920 (still rising), capitalists ×2.5 (noisy), clergymen up ~1.5× to a
+1906 peak then ebbing. **Aristocrats rise to an 1866 peak (×1.43) before falling to 0.59×** — the land
+economy's decline, with the early rise a genuine feature. **Bureaucrats HALVE** (0.0283→0.0151) —
+vanilla under-builds government relative to workforce growth, and the model mirrors the game it mods.
+Academics surge ×8 to an 1866–76 peak (vanilla's university boom) and thin to ×2 by 1920 — the most
+volatile series, from the smallest base.
+
+**Shipped as** `PROF_MULT_BY_ERA` in era_scenarios.mjs (§10.45): per-profession multipliers on the
+committed eight-market-median 1836 anchors — the SHAPE is the USA's, the 1836 LEVEL stays calibrated.
+Era 2 reads the 1866/1876 mean, era 3 the 1896/1906 mean, era 4 the 1920 point; era 0 is a backcast and
+era 5 an extrapolation (the campaign ends 1921), both judgment calls. `ERA_PROF_WEDGE=0` reverts to the
+flat vector; `ERA_PROF_RAMP` still multiplies on top.
+
+**What it does NOT say.** One campaign, one country, one game version — no seed ensemble exists for
+save-based trajectories, and a different world would give different numbers (the same caveat as every
+saves_debut finding). The USA-shape-transfers-to-the-median-level assumption is stated, not tested
+(shopkeepers differ ×4–5 between the USA and the European 1836 median, so LEVELS demonstrably do not
+transfer; shapes are assumed to). Era 5 is not data. And it says nothing about whether vanilla's own
+trajectory is HISTORICAL — bureaucrats halving is the game's behaviour, not the world's.

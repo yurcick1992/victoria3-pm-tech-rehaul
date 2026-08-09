@@ -116,19 +116,18 @@ shipped state). Quote the `FINAL-STATE ILLOGICALITY` line, never the per-era sum
 figure before 2026-08-09 is comparable to later ones without adding shipyards back (they are excluded
 from the totals now, reported on their own line, like gold).
 **Current state under the ruled set (§10.42.4) + the 1780 prune + the ELECTRICITY PASS (§10.43, 2-coal
-ruled) + the DATE GATE (§10.44, shipped 2026-08-09): final-state illogicality 64 (53 excluding
-shipyards), per era 9/8/9/14/13/11 · losses £159k/wk ≈ 1.3% of net · net £11.8M/wk · ensemble (seeds
-8/9/10 — the default IS seed 8): 64/74/68 (53/63/57) / £145–175k / £11.4–11.8M · calendar-anachronistic
-output 0% by construction (the pre-gate state carried 49–58% of tier-output value on next-era
-technology; 1836's honest era-2 share landed at 46.6% against vanilla's independently measured 45%
-tier-2 start) · CEILING: eras 1–5 clear in 2 of 3 seeds — seed 10 resurfaces the marginal era-2
-engines under-build (REOPENED), and era 0 carries a structural hardwood+iron pair in every seed (the
-"1780 cannot pay for itself" knot made concrete: wood floats in-band at ~129 while hardwood caps at
-175, so the ungated wood→hardwood conversion can never pay; goes to the 1780 session) · electricity
-path unchanged in character (scarce → deflating), era-3 = urban-centre generation + the 1900-dated coal
-turbine stations.** Versus the pre-gate state (66 (57) / £247k / £12.3M / 6/6): faults same-to-better,
-losses −30–50%, net ~4% smaller — the smaller economy is the honest one (the deleted half-economy of
-next-era capacity ran on ×1.5 recipes). Future A/B work compares against THESE numbers. The pre-campaign state on
+ruled) + the DATE GATE (§10.44) + the WEDGE and the 1780 RULINGS (§10.45/§10.46, all shipped
+2026-08-09): final-state illogicality 66 (55 excluding shipyards), per era 9/8/12/17/12/8 · losses
+£175k/wk ≈ 1.4% of net · net £12.5M/wk · **THE DEFAULT CLEARS THE INDUSTRIAL CEILING IN ALL SIX ERAS**
+· ensemble (seeds 8/9/10 — the default IS seed 8): 66/82/64 (55/70/54) / £175–279k / £11.6–12.5M,
+seeds 9/10 each carrying ONE marginal named breach (era-2 engines two-sided squeeze; a lead
+drop-then-pin at buy 16) · calendar-anachronistic output 0% by construction; 1836's honest era-2 share
+46.6% vs vanilla's measured 45% · hardwood TRADE-SUPPLIED where ruled (72 @1780, 525 @1836; every
+other good domestic — the condition-based version of that rule shipped an all-imports iron economy and
+is recorded VOID, §10.46.1) · ownership professions follow the MEASURED wedge (F46: aristocrats fall to
+0.59×/0.35× by eras 4/5, clerks+shopkeepers double, bureaucrats halve — vanilla's own path) · the
+futility guard knows which price pin it is looking at, and the dye placeholder pin is gone.** Future
+A/B work compares against THESE numbers. The pre-campaign state on
 the same metric was 94 (84) and £868k losses. 1780's remaining faults (furniture, tooling, paper,
 artillery — food cleared in the shipped run) are honest tiny-market statements — industries with real
 buyers, each losing £86–300/wk at one floored level.
@@ -552,9 +551,20 @@ tools/                  dev tooling — NOT shipped in the mod
                         ERA_WAGE_RAMP (Baumol wage growth — DEAD by measurement, §10.42.5),
                         ERA_PM_MINGAIN (PM hysteresis — deferred by ruling),
                         ERA_PRUNE (default steel@0,glass@0 — the ruled 1780 prune; empty reverts),
+                        ERA_PROF_WEDGE (default ON — §10.45/F46: per-profession era multipliers on the
+                        1836 vector, measured from the saves_debut USA campaign; =0 restores the frozen
+                        vector; ERA_PROF_RAMP still multiplies on top),
                         ERA_LEAD_W (stays 1 by ruling), ERA_RAW_DRIFT (REJECTED by ruling; knob kept for
                         A/B only), ERA_CEIL_BOOST, ERA_CEIL_PM, ERA_JOINT (also the jitter seed for
-                        3-run ensembles), ERA_PROBE (the removed forward probe — leave it off)
+                        3-run ensembles), ERA_PROBE (the removed forward probe — leave it off).
+                        ⭐ TRADE-SUPPLIED GOODS (§10.46): goods on the EXPLICIT TRADE_SUPPLY_GOODS list
+                        (today: hardwood only) with building demand and no building supply are IMPORTED
+                        (trade sell = demand every re-price ⇒ price 100) — the 1780 hardwood ruling.
+                        ⚠ A LIST, NEVER a condition: the condition version disarmed the only-source
+                        ceiling guard and shipped 1900 with ALL its iron imported (§10.46.1). The §10.21
+                        futility guard fires only at the price FLOOR, never at the ceiling (the
+                        1780-iron/era-2-engines bug), and FIXED_REF_COUNT is EMPTY (the
+                        10-dye-plantation placeholder pin is gone)
   econ_host.mjs         loads ui/econ.js + the generated ui/*.js under Node — supplies the state containers the
                         browser would. Contains NO model of its own.
                         ⚠ The CONFIG comes from config/mod_config.json DIRECTLY, not from the copy embedded in

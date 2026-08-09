@@ -33,7 +33,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadEcon, REPO } from './econ_host.mjs';
-import { mandatedPick } from './era_pm.mjs';
+import { makePmRules } from './era_pm.mjs';
 
 const WRITE = process.argv.includes('--write');
 const CFG = join(REPO, 'config', 'mod_config.json');
@@ -165,22 +165,11 @@ function catOf(b) {
 // from the PM's own unlocking technology and that technology's vanilla era, both now carried in
 // vanilla.js. Vanilla eras map 1:1 onto ours — the brief asks for secondary PMs to unlock "about the same
 // as vanilla", and a straight remap is the only reading of that which needs no further invention.
-// A PM with no unlocking technology is a base PM: always available.
-const TECH_ERA = S.VAN.tech_era || {};
-function pmEra(pm) { const r = S.VAN.pms[pm]; if (!r || !r.tech) return 0; return TECH_ERA[r.tech] ?? 0; }
-// A PM gated behind a MAIN PM (pm_bone_china, pm_elastics, pm_precision_tools) is only legal when that
-// main PM is actually present in the same building. Our tier split renamed those main PMs, so the check
-// accepts either the vanilla name or the tier that replaced it.
-function pmGateOk(pm, presentPms) {
-  const g = (S.VAN.pms[pm] || {}).gate;
-  if (!g || !g.length) return true;
-  return g.some(req => presentPms.has(req) || vanillaPmReplacedBy(req, presentPms));
-}
-const PM_REPLACED_BY = {};   // vanilla main PM -> our tier's pm_key
-for (const i of S.IND) for (const t of i.tiers) if (t.vanilla_pm) PM_REPLACED_BY[t.vanilla_pm] = t.pm_key;
-function vanillaPmReplacedBy(req, presentPms) {
-  const mine = PM_REPLACED_BY[req]; return !!mine && presentPms.has(mine);
-}
+// ⚠ THE RULES COME FROM era_pm.mjs AND ONLY FROM THERE — the local fork this file carried is DELETED
+// (2026-08-09). It had already drifted exactly as era_pm's header predicted: it lacked the
+// coerced-labour ban (worker_exploitation_* was selectable here and forbidden in the authoritative
+// solver) and the ERA_FORBID_PMS veto knob. Do not reimplement any of pmEra/pmGateOk/pmAvailable/
+// candidates in this file; extend era_pm.mjs (it takes hooks for reporting needs — see below).
 // ---------------------------------------------------------------------------------------------------
 // WHAT COUNTRY IS THIS, EXACTLY?
 //
@@ -222,37 +211,21 @@ function vanillaPmReplacedBy(req, presentPms) {
 // exploitation ON (25 PMGs, including every plantation labour group, have no law-neutral member at all,
 // so "hold no laws" leaves the default sitting on `slave_exploitation_*`).
 //
-// So the country holds exactly TWO laws, both of which a "reasonably modern country" has by definition:
-const SCENARIO_LAWS = new Set(['law_slavery_banned', 'law_commercialized_agriculture']);
+// So the country holds exactly TWO laws, both of which a "reasonably modern country" has by definition —
+// the set itself LIVES IN era_pm.mjs (`SCENARIO_LAWS`), where the one shared rules implementation reads
+// it; this comment block stays here as the design rationale's long form.
 // That is the smallest stance that makes the scenario coherent. It buys: no serfdom, no slave
 // exploitation, no violent-treatment plantation methods — and working automation.
-// `disallowedOnly` records PMs rejected for a `disallowing_laws` clause, for the report.
+// `disallowedOnly` records PMs rejected for a `disallowing_laws` clause, for the report (filled by the
+// shared rules via the hook). `noUngated` = PMGs where EVERY option is gated, so the strict rule cannot
+// be satisfied at all. These are real: the serfdom, urban-clergy and bureaucrat groups have no
+// law-neutral member — vanilla makes you pick a flavour. The solver leaves whatever the UI's own default
+// (basePm) chose and says so, rather than silently selecting a gated PM and calling it legal.
 const disallowedOnly = new Set();
-// PMGs where EVERY option is gated, so the strict rule cannot be satisfied at all. These are real: the
-// serfdom, urban-clergy and bureaucrat groups have no law-neutral member — vanilla makes you pick a
-// flavour. The solver leaves whatever the UI's own default (basePm) chose and says so here, rather than
-// silently selecting a gated PM and calling it legal.
 const noUngated = new Set();
-function pmAvailable(pm) {
-  const r = S.VAN.pms[pm] || {};
-  // unlocking_* other than technology: NEVER satisfied. No power bloc, no company, no geographic
-  // region, no state religion — the solver may not help itself to a special case.
-  if (r.regions || r.company || r.identity || r.religion) return false;
-  // a law gate is read against the two laws above, in the direction vanilla means it
-  if (r.laws && !r.laws.some(l => SCENARIO_LAWS.has(l))) return false;
-  if (r.nolaws && r.nolaws.some(l => SCENARIO_LAWS.has(l))) { disallowedOnly.add(pm); return false; }
-  return true;
-}
-// Candidate PMs of a PMG for a country of `era`: available by tech, by law/region/company/identity, not
-// power-bloc gated, and with any unlocking_production_methods gate satisfied.
-// ⚠ This is a pre-era_pm.mjs FORK of the shared candidates() (dedup debt — era_pm's header says one
-// copy, and this is the second). The MANDATE at least is consulted from the one shared ladder.
-function candidates(pmg, era, presentPms) {
-  const mand = mandatedPick(pmg, era);
-  if (mand) return mand;
-  const g = S.VAN.pmgs[pmg]; if (!(g && g.pms)) return [];
-  return g.pms.filter(pm => !E.pmGated(pm) && pmAvailable(pm) && pmEra(pm) <= era && pmGateOk(pm, presentPms));
-}
+// ONE implementation (era_pm.mjs), at last — the mandate, the coerced-labour ban, the veto knob and the
+// gate remap all arrive together, and there is no second copy left to drift.
+const { candidates } = makePmRules(E, S, { onLawDisallowed: pm => disallowedOnly.add(pm) });
 // Hysteresis: a switch must beat the incumbent by more than this, and selection freezes after
 // PM_PASSES sweeps. Both exist to stop the flip-flop where switching a PM moves prices enough to make
 // switching back look best — a limit cycle the fit would never leave.

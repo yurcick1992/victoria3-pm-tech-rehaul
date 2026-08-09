@@ -172,10 +172,36 @@ const PROF_RATIO_1836 = {
 // and government administration buys paper and telephones. So the numerator moves too, and the net effect
 // has to be measured rather than assumed from the denominator alone.
 const PROF_RAMP = +(process.env.ERA_PROF_RAMP || 1);
+// ⭐⭐ THE WEDGE IS NOW MEASURED, PER PROFESSION (§10.45, 2026-08-09 — `ERA_PROF_WEDGE=0` reverts to the
+// flat 1836 vector). Multipliers on PROF_RATIO_1836 per era, fitted from the saves_debut archive: nine
+// melted saves of ONE vanilla USA campaign at decade intervals 1846-1920 plus the committed 1836
+// professions config, each profession's workforce ÷ the productive workforce (everything outside these
+// eight, minus peasants/slaves/soldiers — the same denominator PROF_RATIO_1836 used). The SHAPE is the
+// USA's; the 1836 LEVEL stays the committed eight-market median, so the calibrated anchor is untouched
+// and only the trajectory is new. Scenario eras read the nearest decades (era 2 = mean of 1866/1876,
+// era 3 = 1896/1906); era 0 is a backcast and era 5 an extrapolation (the campaign ends 1921), both
+// judgment calls stated per line. The raw series lives in §10.45.
+// What the data says, in one line each: clerks and shopkeepers DOUBLE (the white-collar ramp is real);
+// aristocrats rise to an 1866 peak then fall to 0.59× by 1920 (the land economy's decline, with the
+// early rise a real feature of the data); capitalists ×2.5; bureaucrats HALVE (vanilla's own path — the
+// game under-builds government late, and the model mirrors the game it mods); clergymen rise then ebb;
+// academics boom mid-century (vanilla's university surge — volatile but real) and thin out after.
+const PROF_MULT_BY_ERA = {
+  clerks:      [0.70, 1.00, 1.55, 1.78, 2.13, 2.70],
+  bureaucrats: [1.20, 1.00, 1.05, 0.78, 0.53, 0.45],
+  clergymen:   [1.00, 1.00, 1.51, 1.49, 1.16, 1.00],
+  shopkeepers: [0.70, 1.00, 1.47, 1.90, 2.13, 2.50],
+  aristocrats: [1.10, 1.00, 1.39, 1.08, 0.59, 0.35],
+  capitalists: [0.30, 1.00, 1.61, 2.47, 2.46, 2.80],
+  officers:    [1.00, 1.00, 1.00, 1.00, 1.00, 1.00],
+  academics:   [0.70, 1.00, 8.40, 4.00, 2.13, 1.80],
+};
+const PROF_WEDGE = process.env.ERA_PROF_WEDGE !== '0';
 let PROF_RATIO = { ...PROF_RATIO_1836 };
 const setProfRatio = eIx => {
   const f = Math.pow(PROF_RAMP, eIx / 4);
-  PROF_RATIO = Object.fromEntries(Object.entries(PROF_RATIO_1836).map(([k, v]) => [k, v * f]));
+  PROF_RATIO = Object.fromEntries(Object.entries(PROF_RATIO_1836).map(([k, v]) =>
+    [k, v * f * (PROF_WEDGE && PROF_MULT_BY_ERA[k] ? PROF_MULT_BY_ERA[k][eIx] : 1)]));
 };
 // WHICH BUILDING IS SIZED FROM WHICH PROFESSION — and, crucially, only for the REMAINDER.
 //
@@ -624,10 +650,24 @@ if (process.env.ERA_ALLOW_RICE !== '1') EXCLUDE_REF.add('building_rice_farm');
 // profitable or gone. That is obsolescence happening rather than being asserted: synthetics arrives, dye's
 // price falls, and the plantations retreat exactly as far as the market pushes them.
 //
-// ⚠ THE COUNT IS A PLACEHOLDER. 10 is a reasonable-looking number, not a derived one. The intent is that
-// "how many of an untiered producer should exist" becomes a proper constraint for every industry later;
-// until then this is the one hand-set case, and it is labelled as such rather than dressed up.
-const FIXED_REF_COUNT = { building_dye_plantation: 10 };
+// ⚠ THE DYE PIN IS GONE (user, 2026-08-09 — "10 dye plantations with barely any profit makes no
+// sense"). It was a self-declared placeholder from before the count controller, the raw band and the
+// level-shedding existed; those now size dye plantations like any plantation, and the pin had become
+// the same class of defect as the art academy's FIXED_COUNTS (§10.40): a hand constant the machinery
+// could never correct. The mechanism stays (a future hand-set producer would go here), empty.
+const FIXED_REF_COUNT = {};
+// ⚠ TRADE SUPPLY IS AN EXPLICIT LIST, NOT A CONDITION — learned the expensive way. The first version
+// imported ANY non-ladder good with building demand and zero building supply, and that DISARMED the
+// "kept at a loss — the market's only source" ceiling guard: dropping the last iron mine no longer
+// breached the ceiling (imports flooded in at 100), so the drop machinery cascaded and the solve shipped
+// 1900 with its ENTIRE 25,520-unit iron supply imported, rubber 16,572 and even the army's tanks bought
+// abroad. The ruling was for goods whose production is a structural WALL (hardwood: the ungated
+// wood→hardwood conversion can never pay while wood floats in-band under hardwood's price cap) — not for
+// goods whose producers were transiently absent mid-solve. Walls are design findings; name them here.
+const TRADE_SUPPLY_GOODS = new Set(['hardwood']);
+// Goods the CURRENT era actually imports. Module-level so the per-era report can print it; cleared at
+// each era's build.
+const tradeSupplied = new Set();
 // A scenario where one industry is most of the economy is broken, however well its own margin solves.
 const GDP_SHARE_WARN = 0.25;
 // The era-appropriate tier and the one below it need enough levels that the two-eras-stale tier (fixed at
@@ -1712,11 +1752,38 @@ function buildScenario(eIx, finalPass) {
     }
   }
 
+  // ⭐ TRADE-SUPPLIED GOODS (user ruling, 2026-08-09 — the 1780 hardwood wall). A NON-LADDER good that
+  // buildings demand but NO building supplies is imported: trade sell orders are set equal to the demand
+  // EVERY iteration, so supply = demand and the price sits at exactly 100% of base however demand moves.
+  // Scope, deliberately narrow: GOOD_FIRST_ERA[g] == null (a good our tier ladder makes must still obey
+  // the chain rule — imports must not quietly disarm the "buyer whose supplier cannot exist" wall) and
+  // building demand only (a pop-only good with no supply is a consumer-goods statement, and +75% is legal
+  // there). The 1780 case: the shipyard eats hardwood, whose ungated wood→hardwood conversion can never
+  // pay while wood floats in-band below hardwood's price cap — a wall no count can fix, so the market
+  // imports. If a domestic producer appears in a later iteration, the import is withdrawn the same tick.
+  // (`tradeSupplied` is module-level: the per-era report prints it, and the NEXT era's build clears it —
+  // the solver never had trade orders before this rule, so nothing else resets S.ADDSELL between eras.)
+  for (const g of tradeSupplied) delete S.ADDSELL[g];
+  tradeSupplied.clear();
+  const syncTradeSupply = agg => {
+    for (const g of tradeSupplied) {
+      if ((agg.outAgg[g] || 0) > 0 || !((agg.inAgg[g] || 0) > 0)) { delete S.ADDSELL[g]; tradeSupplied.delete(g); }
+    }
+    for (const g of TRADE_SUPPLY_GOODS) {
+      if (GOOD_FIRST_ERA[g] != null) continue;       // a ladder good must never be importable
+      const bBuy = agg.inAgg[g] || 0, bSell = agg.outAgg[g] || 0;
+      if (bBuy > 0 && bSell === 0) {
+        const { buy } = E.scenarioBuySell(agg, g);   // buy side never includes ADDSELL, no recursion
+        S.ADDSELL[g] = buy; tradeSupplied.add(g);    // sell = the whole demand ⇒ price = 100% of base
+      }
+    }
+  };
   for (let round = 0; round < 4; round++) {
   for (let iter = 0; iter < 220; iter++) {
     settle();
     // PRICES: whatever this scenario's own order book produces, by the game's formula. Never assigned.
     const agg = E.scenarioAggregates();
+    syncTradeSupply(agg);
     for (const g in S.PRICES) { const { buy, sell } = E.scenarioBuySell(agg, g); S.thresholds[g] = E.priceMultPct(buy, sell); }
 
     // PM CHOICE BELONGS INSIDE THE LOOP. Re-optimising after the counts have settled invalidates them —
@@ -1790,6 +1857,9 @@ function buildScenario(eIx, finalPass) {
   // letting the order of the passes decide the answer.
   const syncPrices = () => {
     const a = E.scenarioAggregates();
+    // trade-supplied goods track demand through EVERY re-price — the tuner and the enforcement passes
+    // re-settle after the main loop, and an import frozen at the old demand would drift off 100%.
+    syncTradeSupply(a);
     for (const g in S.PRICES) { const { buy, sell } = E.scenarioBuySell(a, g); S.thresholds[g] = E.priceMultPct(buy, sell); }
   };
   // THE CEILING GOVERNS PM CHOICE TOO, and it has to — otherwise the optimiser walks straight into it.
@@ -2072,13 +2142,21 @@ function buildScenario(eIx, finalPass) {
         if (growStart[rawGrow] == null) growStart[rawGrow] = S.BLDNUM[rawGrow] || 0;
         minCount[rawGrow] = (S.BLDNUM[rawGrow] || 0) + 1;
         settle(); syncPrices();
-        // ⚠ STOP IF GROWING DOES NOT ACTUALLY HELP. If the good is already pinned at the 25% price floor,
+        // ⚠ STOP IF GROWING DOES NOT ACTUALLY HELP. If the good is already pinned at the 25% price FLOOR,
         // extra supply cannot push the price down any further, so the margin does not move and the loop
         // will spend its entire budget achieving nothing. Measured before this guard: tea_plantation took
         // ALL 400 steps in era 1 and still read 294%. A rule that cannot reach its goal must say so and
         // stop, not grind.
+        // ⚠⚠ ONLY AT THE FLOOR. The guard used to fire on ANY unmoved margin — including a good pinned at
+        // the 175 CEILING with demand far above supply, where one level of growth is not yet enough to
+        // unpin the price. There "margin did not move" means "not enough growth YET", and the permanent
+        // capBlocked it imposed was blocking exactly the producer the hard ceiling constraint needs grown:
+        // the 1780 iron mine sat at 1 level / 419% / buy 58 vs sell 22 forever, and the era-2 engines
+        // under-build (§10.42.5, reopened) carries the same signature in the manufacturing branch below.
         const tpAfter = E.refEcon(rawGrow).tp;
-        const futile = PROFIT_CAP_FUTILITY && !(tpAfter < tpBefore - 0.25);
+        const outPinnedHigh = (() => { const o = E.selGoods(E.refSel(rawGrow)).out;
+          for (const g in o) if (o[g] > 0 && (S.thresholds[g] ?? 100) >= 174.5) return true; return false; })();
+        const futile = PROFIT_CAP_FUTILITY && !(tpAfter < tpBefore - 0.25) && !outPinnedHigh;
         if (ceilingBreaches() > beforeC || futile) {
           // ceiling breach: undo this step. FUTILE: undo the entire run back to where it started.
           minCount[rawGrow] = futile ? growStart[rawGrow] : prevR;
@@ -2094,9 +2172,11 @@ function buildScenario(eIx, finalPass) {
       minCount[k] = (S.BLDNUM[k] || 0) + 1;               // one level at a time, as specified
       settle(); syncPrices();
       // the futility guard applies to manufacturing too: if its own good is floored, more capacity cannot
-      // move the margin and the run is unwound to where it began
+      // move the margin and the run is unwound to where it began — but NOT when the good is pinned at the
+      // CEILING (see the raw branch above: there growth is mandatory and merely insufficient so far)
       const tpA = E.TPthr(best.ind, best.t);
-      if (PROFIT_CAP_FUTILITY && !(tpA < tpB - 0.25)) {
+      const outHigh = (S.thresholds[E.tierOut(best.ind, best.t)] ?? 100) >= 174.5;
+      if (PROFIT_CAP_FUTILITY && !(tpA < tpB - 0.25) && !outHigh) {
         minCount[k] = growStart[k]; capBlocked.add(k); settle(); syncPrices();
         const lbl = best.t.era === era ? best.ind.id : `${best.ind.id} e${best.t.era}`;
         delete tuned[lbl];
@@ -2818,6 +2898,8 @@ for (let e = 0; e < FIT.eras.length; e++) {
       + (bad.length ? `⚠⚠ BREACHED — ${bad.join(', ')} (the cap failed to apply; this is a bug)`
                     : at.length ? `held; AT the cap: ${at.join(', ')}` : 'held, nothing near a cap'));
   }
+  if (tradeSupplied.size) console.log(`    TRADE-SUPPLIED (no domestic producer; imported at demand, price = 100): `
+    + [...tradeSupplied].map(g => `${g} ${Math.round(S.ADDSELL[g] || 0)}`).join(' · '));
   console.log(`    INDUSTRIAL CEILING: ${breach.length ? '⚠ ' + breach.length + ' consumable good(s) AT +75%' : 'clear — no consumable good at +75%'}`);
   for (const b of breach) console.log(`      ${b.g} buy ${fmtN(b.buy)} / sell ${fmtN(b.sell)}`
     + (b.orphan ? '   ⚠ NO PRODUCER AT ALL — no count can fix this' : '   from ' + b.src.join(', ')));

@@ -68,7 +68,11 @@ const FORBID_FROM = (() => {
   return m;
 })();
 
-export function makePmRules(E, S) {
+// `hooks.onLawDisallowed(pm)` fires when a PM is rejected for a `disallowing_laws` clause — era_solver's
+// report keeps a named list of those, and the hook is what let its fork be DELETED rather than kept for
+// the sake of one diagnostic set (2026-08-09; the fork had already drifted, missing the coerced-labour
+// ban and the veto knob, exactly as this header warned).
+export function makePmRules(E, S, hooks = {}) {
   const TECH_ERA = S.VAN.tech_era || {};
   // a PM with no unlocking technology is a base PM: always available
   const pmEra = pm => { const r = S.VAN.pms[pm]; return (!r || !r.tech) ? 0 : (TECH_ERA[r.tech] ?? 0); };
@@ -87,7 +91,7 @@ export function makePmRules(E, S) {
     const r = S.VAN.pms[pm] || {};
     if (r.regions || r.company || r.identity || r.religion) return false;
     if (r.laws && !r.laws.some(l => SCENARIO_LAWS.has(l))) return false;
-    if (r.nolaws && r.nolaws.some(l => SCENARIO_LAWS.has(l))) return false;
+    if (r.nolaws && r.nolaws.some(l => SCENARIO_LAWS.has(l))) { hooks.onLawDisallowed?.(pm); return false; }
     return true;
   }
   function candidates(pmg, era, presentPms) {
