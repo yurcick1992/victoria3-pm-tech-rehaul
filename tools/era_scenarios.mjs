@@ -23,7 +23,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadEcon, REPO } from './econ_host.mjs';
 import { makePmRules, optimisePMs } from './era_pm.mjs';
-import { activeMacro, macroBounds, validateMacro } from './era_macro.mjs';
+import { activeMacro, macroBounds, macroVerifyOnly, validateMacro } from './era_macro.mjs';
 import { applyTechEraCorrections } from './era_tech_sync.mjs';
 
 const WRITE = process.argv.includes('--write');
@@ -1024,26 +1024,30 @@ function rawBandOf(b) {
 }
 
 // ═══ THE MACROSCENARIO — reasonability bounds (tools/era_macro.mjs, §10.47; ERA_MACRO=0 reverts). ═══
-// Bounds on gross product (VALUE ADDED) shares of GDP per industry and per category, and on profession
-// shares of population — the explicit form of "this is a large autarkic US-like economy", the same
-// governance layer the rice ban and the population premise already belong to. 1780 is exempt.
-// Enforced post-solve through counts (industries + categories) and verified (professions); the tables,
-// their calibration and the doctrine live in era_macro.mjs.
+// Bounds on gross product (VALUE ADDED) shares per industry and per group, and on profession shares of
+// population — the explicit form of "this is a large autarkic US-like economy", the same governance
+// layer the rice ban and the population premise already belong to. 1780 is exempt.
+// ⭐ SINCE §10.47.2 THE YARDSTICK IS THE MAPPED COMMODITY ECONOMY, NOT RAW MODEL GDP (user-ruled
+// derivation): the real-US side is import-adjusted, mapped-or-dropped and renormalized in
+// era_macro.mjs, and the MODEL side must be measured on the symmetric denominator — every tier
+// industry + the raw reference producers + subsistence, EXCLUDING urban centres (the model's
+// unmappable-services counterpart) and the construction/army sinks. Shares here can no longer be read
+// against the report's GDP line; the report labels them "of the mapped commodity economy".
 const MACRO = activeMacro();
 const MACRO_STEPS = +(process.env.ERA_MACRO_STEPS || 400);
 if (MACRO) validateMacro(MACRO, {
   industryIds: new Set(S.IND.map(i => i.id)),
   professionIds: new Set([...STRATUM.lower, ...STRATUM.middle, ...STRATUM.upper, 'peasants', 'slaves']),
-  categoryIds: new Set(['mfg_mfg', 'mfg_raw', 'extraction', 'agriculture']),
+  categoryIds: new Set(['manufacturing', 'extraction', 'agriculture']),
 });
-// The macro category split is the UI taxonomy (econ.js scenarioSummary): fishing/whaling files under
-// AGRICULTURE there, where the solver's raw-band sets file it under extraction — the macro bounds are
-// calibrated on the UI split, so they must use it. Manufacturing splits per TIER by the same
-// "consumes a good our own ladder makes" test as the sector composition report.
+// Group membership under the mapping (§10.47.2): manufacturing = every tier industry EXCEPT the three
+// infrastructure chains (railway/port/power map to real rail / water transport / utilities and carry
+// their own industry gates); agriculture = farm/plantation/ranch/fishing references PLUS SUBSISTENCE
+// (real farm-output series count home-consumed production); extraction = mining/logging/oil/rubber.
+// Fishing/whaling files under agriculture (the UI taxonomy), not under the raw-band's extraction set.
 const MACRO_EXTRACT_CATS = new Set(['mining', 'logging', 'oil', 'rubber']);
 const MACRO_AGRI_CATS = new Set(['farms', 'plantations', 'ranching', 'fishing_whaling']);
-const ALL_TIER_GOODS = new Set();
-for (const i of S.IND) for (const t of i.tiers) ALL_TIER_GOODS.add(E.tierOut(i, t));
+const MACRO_INFRA = new Set(['railway', 'port', 'power']);
 
 // ===================================================================================================
 const rules = makePmRules(E, S);
@@ -2317,26 +2321,39 @@ function buildScenario(eIx, finalPass) {
     return E.thruMult(t2.key) * (E.goodsVal(io.out, true) - E.goodsVal(io.in, true)); };
   const refVaPerLvl = b => { const g = E.selGoods(E.refSel(b));
     return E.thruMult(b) * (E.goodsVal(g.out, true) - E.goodsVal(g.in, true)); };
+  // Shares of the MAPPED COMMODITY ECONOMY (§10.47.2): tier industries + raw references + subsistence.
+  // Urban centres are excluded (the model's unmappable-services counterpart, symmetric with dropping
+  // real trade/finance/services), and the construction/army sinks never entered a VA sum anyway.
   const macroShares = () => {
-    const gdp = Math.max(1, E.scenarioValueAdded());
-    const ind = {}, cat = { mfg_mfg: 0, mfg_raw: 0, extraction: 0, agriculture: 0 };
+    const ind = {}, cat = { manufacturing: 0, extraction: 0, agriculture: 0 };
+    let total = 0;
     for (const p of placement) {
       let v = 0;
       for (const r of p.rows) {
         const n = S.BLDNUM[r.t.key] || 0; if (!(n > 0)) continue;
-        const va = n * vaPerLvl(p.ind, r.t);
-        v += va;
-        cat[Object.keys(r.t.inputs || {}).some(g => ALL_TIER_GOODS.has(g)) ? 'mfg_mfg' : 'mfg_raw'] += va;
+        v += n * vaPerLvl(p.ind, r.t);
       }
       ind[p.ind.id] = v;
+      total += v;
+      if (!MACRO_INFRA.has(p.ind.id)) cat.manufacturing += v;
     }
     for (const b of refProducers) {
       const n = S.BLDNUM[b] || 0; if (!(n > 0)) continue;
       const c = catOf(b);
       const key = MACRO_AGRI_CATS.has(c) ? 'agriculture' : MACRO_EXTRACT_CATS.has(c) ? 'extraction' : null;
-      if (key) cat[key] += n * refVaPerLvl(b);
+      if (!key) continue;
+      const va = n * refVaPerLvl(b);
+      cat[key] += va; total += va;
     }
-    return { gdp, ind, cat };
+    // subsistence: in the denominator and in agriculture's numerator (real farm-output series count
+    // home-consumed production) — but NEVER a lever: its size follows the peasants, not a bound
+    for (const b in S.BLDNUM) {
+      const n = S.BLDNUM[b] || 0;
+      if (!(n > 0) || !E.isSubsistenceBuilding(b)) continue;
+      const va = n * refVaPerLvl(b);
+      cat.agriculture += va; total += va;
+    }
+    return { total: Math.max(1, total), ind, cat };
   };
   const macroViolations = st => {
     if (!macroM.on) return [];
@@ -2344,24 +2361,29 @@ function buildScenario(eIx, finalPass) {
     for (const p of placement) {
       if (p.withheld || p.ind.follows_be === false) continue;
       const b = macroBounds(MACRO, 'industries', p.ind.id, eIx); if (!b) continue;
-      const s = (st.ind[p.ind.id] || 0) / st.gdp;
-      // lo = 0 means NO floor (era_macro.mjs) — presence is not demanded and negative gross product is
-      // tolerated there (it still lands on the NEGATIVE GROSS PRODUCT report line, never silently)
-      if (b[0] > 0 && s < b[0] - 1e-9) v.push({ kind: 'ind', key: p.ind.id, dir: 1, gap: b[0] - s, share: s, lo: b[0], hi: b[1], p });
-      else if (s > b[1] + 1e-9) v.push({ kind: 'ind', key: p.ind.id, dir: -1, gap: s - b[1], share: s, lo: b[0], hi: b[1], p });
+      const s = (st.ind[p.ind.id] || 0) / st.total;
+      const verify = macroVerifyOnly(MACRO, 'industries', p.ind.id);
+      // lo = 0 means NO floor (era_macro.mjs `nofloor`) — presence is not demanded and negative gross
+      // product is tolerated there (it still lands on the NEGATIVE GROSS PRODUCT line, never silently)
+      if (b[0] > 0 && s < b[0] - 1e-9) v.push({ kind: 'ind', key: p.ind.id, dir: 1, gap: b[0] - s, share: s, lo: b[0], hi: b[1], p, verify });
+      else if (s > b[1] + 1e-9) v.push({ kind: 'ind', key: p.ind.id, dir: -1, gap: s - b[1], share: s, lo: b[0], hi: b[1], p, verify });
     }
     for (const c in MACRO.categories) {
       const b = macroBounds(MACRO, 'categories', c, eIx); if (!b) continue;
-      const s = (st.cat[c] || 0) / st.gdp;
-      if (b[0] > 0 && s < b[0] - 1e-9) v.push({ kind: 'cat', key: c, dir: 1, gap: b[0] - s, share: s, lo: b[0], hi: b[1] });
-      else if (s > b[1] + 1e-9) v.push({ kind: 'cat', key: c, dir: -1, gap: s - b[1], share: s, lo: b[0], hi: b[1] });
+      const s = (st.cat[c] || 0) / st.total;
+      const verify = macroVerifyOnly(MACRO, 'categories', c);
+      if (b[0] > 0 && s < b[0] - 1e-9) v.push({ kind: 'cat', key: c, dir: 1, gap: b[0] - s, share: s, lo: b[0], hi: b[1], verify });
+      else if (s > b[1] + 1e-9) v.push({ kind: 'cat', key: c, dir: -1, gap: s - b[1], share: s, lo: b[0], hi: b[1], verify });
     }
     // the concrete outranks the aggregate: industries first, worst gap first within each kind
     return v.sort((a, b2) => (a.kind === b2.kind ? b2.gap - a.gap : a.kind === 'ind' ? -1 : 1));
   };
-  // total shortfall over every violated bound — the polish guard's scalar: a move that DEEPENS any
-  // existing breach must be rejected even though the breach COUNT does not change
-  const macroGap = () => macroM.on ? macroViolations(macroShares()).reduce((a, x) => a + x.gap, 0) : 0;
+  // total shortfall over every ENFORCEABLE violated bound — the polish guard's scalar: a move that
+  // DEEPENS any existing breach must be rejected even though the breach COUNT does not change.
+  // Verify-only breaches (extraction's structural red) are excluded — polish must not be vetoed by a
+  // gap nothing is allowed to close.
+  const macroGap = () => macroM.on
+    ? macroViolations(macroShares()).filter(x => !x.verify).reduce((a, x) => a + x.gap, 0) : 0;
   if (macroM.on) {
     const mBlocked = new Set();       // 'I:<id>' / 'C:<cat>' that may no longer be acted on
     const memberSkip = new Set();     // 'C:<cat>|<member>' — category member whose move failed
@@ -2384,10 +2406,11 @@ function buildScenario(eIx, finalPass) {
       settle(); syncPrices();
     };
     const shareNow = (kind, key) => { const st = macroShares();
-      return ((kind === 'ind' ? st.ind[key] : st.cat[key]) || 0) / st.gdp; };
+      return ((kind === 'ind' ? st.ind[key] : st.cat[key]) || 0) / st.total; };
     for (let step = 0; step < MACRO_STEPS; step++) {
       const st = macroShares();
-      const viol = macroViolations(st).find(x => !mBlocked.has((x.kind === 'ind' ? 'I:' : 'C:') + x.key));
+      // verify-only breaches are never acted on — they go straight to the residual report
+      const viol = macroViolations(st).find(x => !x.verify && !mBlocked.has((x.kind === 'ind' ? 'I:' : 'C:') + x.key));
       if (!viol) break;
       const vKey = (viol.kind === 'ind' ? 'I:' : 'C:') + viol.key;
       if (startShare[vKey] == null) startShare[vKey] = viol.share;
@@ -2441,15 +2464,13 @@ function buildScenario(eIx, finalPass) {
       } else {
         // category: best/oldest member by the same tests, skipping members that already failed
         if (viol.dir > 0) {
-          if (viol.key === 'mfg_mfg' || viol.key === 'mfg_raw') {
+          if (viol.key === 'manufacturing') {
             let best = null, bestVa = 0;
             for (const p of placement) {
-              if (p.withheld || p.ind.follows_be === false) continue;
+              if (p.withheld || p.ind.follows_be === false || MACRO_INFRA.has(p.ind.id)) continue;
               for (const r of p.rows) {
                 const k = r.t.key;
                 if (!(S.BLDNUM[k] > 0) || r.fixed != null || memberSkip.has(vKey + '|' + k)) continue;
-                const inCat = Object.keys(r.t.inputs || {}).some(g => ALL_TIER_GOODS.has(g)) ? 'mfg_mfg' : 'mfg_raw';
-                if (inCat !== viol.key) continue;
                 const va = vaPerLvl(p.ind, r.t);
                 if (va > bestVa) { best = r; bestVa = va; }
               }
@@ -2471,15 +2492,13 @@ function buildScenario(eIx, finalPass) {
             target = refMove(best, +1);
           }
         } else {
-          if (viol.key === 'mfg_mfg' || viol.key === 'mfg_raw') {
+          if (viol.key === 'manufacturing') {
             let cand = null;
             for (const p of placement) {
-              if (p.withheld || p.ind.follows_be === false) continue;
+              if (p.withheld || p.ind.follows_be === false || MACRO_INFRA.has(p.ind.id)) continue;
               for (const r of p.rows) {
                 const k = r.t.key;
                 if (!((S.BLDNUM[k] || 0) > 1) || r.fixed != null || memberSkip.has(vKey + '|' + k)) continue;
-                const inCat = Object.keys(r.t.inputs || {}).some(g => ALL_TIER_GOODS.has(g)) ? 'mfg_mfg' : 'mfg_raw';
-                if (inCat !== viol.key) continue;
                 if (!cand || r.t.era < cand.t.era) cand = r;      // stale capacity dies first
               }
             }
@@ -2525,7 +2544,7 @@ function buildScenario(eIx, finalPass) {
     // ---- residuals + the verified level (professions) + the standing negative-VA list --------------
     {
       const st = macroShares();
-      macroM.resid = macroViolations(st).map(x => ({ kind: x.kind, key: x.key, share: x.share, lo: x.lo, hi: x.hi, dir: x.dir }));
+      macroM.resid = macroViolations(st).map(x => ({ kind: x.kind, key: x.key, share: x.share, lo: x.lo, hi: x.hi, dir: x.dir, verify: x.verify }));
       for (const pr in MACRO.professions) {
         const b = macroBounds(MACRO, 'professions', pr, eIx); if (!b) continue;
         const s = (POPPROF[pr] || 0) / Math.max(1, S.POPS.total);
@@ -2534,7 +2553,7 @@ function buildScenario(eIx, finalPass) {
       for (const p of placement) {
         const va = st.ind[p.ind.id];
         if (va != null && va < 0 && p.rows.some(r => (S.BLDNUM[r.t.key] || 0) > 0))
-          macroM.negVA.push({ id: p.ind.id, share: va / st.gdp, excused: PMECON.LADDER_EXCUSED.has(p.ind.id) });
+          macroM.negVA.push({ id: p.ind.id, share: va / st.total, excused: PMECON.LADDER_EXCUSED.has(p.ind.id) });
       }
     }
   }
@@ -2891,52 +2910,59 @@ for (const i of S.IND) {
 // MACRO shares off the CURRENT GLOBAL STATE — the final profit pass's version, where `placement` no
 // longer exists. Presence-based: an industry with zero levels was withheld by something that outranks
 // a floor (date gate, prune, extinct, chain), so only PRESENT industries are judged. Must agree with
-// buildScenario's closure version on the same state; both live on E.goodsVal at market prices.
+// buildScenario's closure version on the same state; both live on E.goodsVal at market prices, both on
+// the §10.47.2 MAPPED-COMMODITY-ECONOMY denominator (tier industries + raw references + subsistence;
+// urban centres excluded as the model's unmappable-services counterpart).
 function macroSharesGlobal() {
-  const gdp = Math.max(1, E.scenarioValueAdded());
-  const ind = {}, cat = { mfg_mfg: 0, mfg_raw: 0, extraction: 0, agriculture: 0 };
+  const ind = {}, cat = { manufacturing: 0, extraction: 0, agriculture: 0 };
+  let total = 0;
   for (const i of S.IND) {
     let v = 0, any = false;
     for (const t of i.tiers) {
       const n = S.BLDNUM[t.key] || 0; if (!(n > 0)) continue;
       any = true;
       const io = E.tierGoodsIO(i, t);
-      const va = n * E.thruMult(t.key) * (E.goodsVal(io.out, true) - E.goodsVal(io.in, true));
-      v += va;
-      cat[Object.keys(t.inputs || {}).some(g => ALL_TIER_GOODS.has(g)) ? 'mfg_mfg' : 'mfg_raw'] += va;
+      v += n * E.thruMult(t.key) * (E.goodsVal(io.out, true) - E.goodsVal(io.in, true));
     }
-    if (any) ind[i.id] = v;
+    if (!any) continue;
+    ind[i.id] = v;
+    total += v;
+    if (!MACRO_INFRA.has(i.id)) cat.manufacturing += v;
   }
   const seenT = new Set(S.IND.flatMap(i => i.tiers.map(t => t.key)));
   for (const b in S.BLDNUM) {
     const n = S.BLDNUM[b] || 0; if (!(n > 0) || seenT.has(b)) continue;
+    const g = E.selGoods(E.refSel(b));
+    const va = n * E.thruMult(b) * (E.goodsVal(g.out, true) - E.goodsVal(g.in, true));
+    if (E.isSubsistenceBuilding(b)) { cat.agriculture += va; total += va; continue; }
     const c = catOf(b);
     const key = MACRO_AGRI_CATS.has(c) ? 'agriculture' : MACRO_EXTRACT_CATS.has(c) ? 'extraction' : null;
     if (!key) continue;
-    const g = E.selGoods(E.refSel(b));
-    cat[key] += n * E.thruMult(b) * (E.goodsVal(g.out, true) - E.goodsVal(g.in, true));
+    cat[key] += va; total += va;
   }
-  return { gdp, ind, cat };
+  return { total: Math.max(1, total), ind, cat };
 }
 function macroCheckGlobal(eIx2, popProf, popTotal) {
   if (!MACRO || eIx2 < MACRO.from_era) return null;
   const st = macroSharesGlobal();
   const breaches = [], negVA = [], profBad = [];
   for (const id in st.ind) {
-    const s = st.ind[id] / st.gdp;
+    const s = st.ind[id] / st.total;
     const b = macroBounds(MACRO, 'industries', id, eIx2);
     if (b) {
+      const verify = macroVerifyOnly(MACRO, 'industries', id);
       // lo = 0 means NO floor, same as the in-era check — negative gross product lands on negVA instead
-      if (b[0] > 0 && s < b[0] - 1e-9) breaches.push({ kind: 'ind', key: id, share: s, dir: 1, bound: b[0] });
-      else if (s > b[1] + 1e-9) breaches.push({ kind: 'ind', key: id, share: s, dir: -1, bound: b[1] });
+      if (b[0] > 0 && s < b[0] - 1e-9) breaches.push({ kind: 'ind', key: id, share: s, dir: 1, bound: b[0], verify });
+      else if (s > b[1] + 1e-9) breaches.push({ kind: 'ind', key: id, share: s, dir: -1, bound: b[1], verify });
     }
     if (st.ind[id] < 0) negVA.push({ id, share: s, excused: PMECON.LADDER_EXCUSED.has(id) });
   }
   for (const c in MACRO.categories) {
     const b = macroBounds(MACRO, 'categories', c, eIx2); if (!b) continue;
-    const s = (st.cat[c] || 0) / st.gdp;
-    if (b[0] > 0 && s < b[0] - 1e-9) breaches.push({ kind: 'cat', key: c, share: s, dir: 1, bound: b[0] });
-    else if (s > b[1] + 1e-9) breaches.push({ kind: 'cat', key: c, share: s, dir: -1, bound: b[1] });
+    const s = (st.cat[c] || 0) / st.total;
+    const verify = macroVerifyOnly(MACRO, 'categories', c);
+    if (b[0] > 0 && s < b[0] - 1e-9) breaches.push({ kind: 'cat', key: c, share: s, dir: 1, bound: b[0], verify });
+    else if (s > b[1] + 1e-9) breaches.push({ kind: 'cat', key: c, share: s, dir: -1, bound: b[1], verify });
   }
   for (const pr in MACRO.professions) {
     const b = macroBounds(MACRO, 'professions', pr, eIx2); if (!b) continue;
@@ -3257,15 +3283,15 @@ for (let e = 0; e < FIT.eras.length; e++) {
   if (meta.macro && meta.macro.on) {
     const m = meta.macro;
     const gl = Object.entries(m.grown), cl = Object.entries(m.cut);
-    console.log(`    MACRO (${MACRO.id} reasonability, §10.47; 1780 exempt): `
+    console.log(`    MACRO (${MACRO.id} reasonability, §10.47.2 — shares of the MAPPED COMMODITY ECONOMY; 1780 exempt): `
       + (gl.length || cl.length
         ? (gl.length ? 'grown ' + gl.map(([k, n]) => `${k} +${n}`).join(', ') : '')
           + (gl.length && cl.length ? ' · ' : '')
           + (cl.length ? 'cut ' + cl.map(([k, n]) => `${k} −${n}`).join(', ') : '')
         : (m.blocked.length ? 'no count moves kept' : 'no count moves needed'))
-      + (m.resid.length ? '' : ' — all industry/category bounds hold'));
+      + (m.resid.length ? '' : ' — all industry/group bounds hold'));
     if (m.resid.length) console.log('      ⚠ RESIDUAL BREACH(ES): ' + m.resid.map(r =>
-      `${r.key} ${(100 * r.share).toFixed(2)}% ${r.dir > 0 ? '< floor ' : '> cap '}${(100 * (r.dir > 0 ? r.lo : r.hi)).toFixed(2)}%${r.kind === 'cat' ? ' (category)' : ''}`).join(' · '));
+      `${r.key} ${(100 * r.share).toFixed(2)}% ${r.dir > 0 ? '< floor ' : '> cap '}${(100 * (r.dir > 0 ? r.lo : r.hi)).toFixed(2)}%${r.kind === 'cat' ? ' (group)' : ''}${r.verify ? ' [structural, verify-only]' : ''}`).join(' · '));
     if (m.blocked.length) console.log('      blocked: ' + m.blocked.map(b => `${b.key} (${b.why})`).join(' · '));
     if (m.profBad.length) console.log('      ⚠ PROFESSION BOUNDS: ' + m.profBad.map(p =>
       `${p.prof} ${(100 * p.share).toFixed(2)}% outside [${100 * p.lo}%, ${100 * p.hi}%]`).join(' · '));
@@ -3472,19 +3498,22 @@ for (let e = 0; e < FIT.eras.length; e++) {
     const illTot = rows.reduce((a, r) => a + r.illF.total, 0), illNet = rows.reduce((a, r) => a + r.illF.net, 0);
     console.log(`  FINAL-STATE ILLOGICALITY (same criterion, recipes final): ${illTot} point(s) (${illNet} excluding ${EXCUSED_LABEL}) — per era `
       + rows.map(r => r.illF.total).join('/'));
-    // ---- the macroscenario, verified where recipes are final (§10.47) ------------------------------
+    // ---- the macroscenario, verified where recipes are final (§10.47.2 mapped-economy basis) -------
     let macroResid = 0;
     if (MACRO) {
-      const rb = rows.flatMap((r, i2) => (r.macroF ? r.macroF.breaches.map(b => ({ era: i2, ...b })) : []));
+      const all = rows.flatMap((r, i2) => (r.macroF ? r.macroF.breaches.map(b => ({ era: i2, ...b })) : []));
+      const rb = all.filter(b => !b.verify), rbV = all.filter(b => b.verify);
       const rp = rows.flatMap((r, i2) => (r.macroF ? r.macroF.profBad.map(b => ({ era: i2, ...b })) : []));
       const nv = rows.flatMap((r, i2) => (r.macroF ? r.macroF.negVA.map(x => ({ era: i2, ...x })) : []));
       macroResid = rb.length + rp.length;
-      console.log(`  MACRO REASONABILITY (${MACRO.id}, §10.47; 1780 exempt): `
-        + (rb.length ? `${rb.length} residual bound breach(es) — ` + rb.map(b =>
-            `e${b.era} ${b.key} ${(100 * b.share).toFixed(2)}%${b.dir > 0 ? ' < ' : ' > '}${(100 * b.bound).toFixed(2)}%${b.kind === 'cat' ? ' (cat)' : ''}`).join(' · ')
-          : 'all industry/category bounds hold')
+      const fmtB = b => `e${b.era} ${b.key} ${(100 * b.share).toFixed(2)}%${b.dir > 0 ? ' < ' : ' > '}${(100 * b.bound).toFixed(2)}%${b.kind === 'cat' ? ' (group)' : ''}`;
+      console.log(`  MACRO REASONABILITY (${MACRO.id}, §10.47.2 — shares of the MAPPED COMMODITY ECONOMY; 1780 exempt): `
+        + (rb.length ? `${rb.length} residual bound breach(es) — ` + rb.map(fmtB).join(' · ')
+          : 'all enforceable industry/group bounds hold')
         + (rp.length ? `\n    ⚠ profession bounds: ` + rp.map(b =>
             `e${b.era} ${b.prof} ${(100 * b.share).toFixed(2)}% outside [${100 * b.lo}%, ${100 * b.hi}%]`).join(' · ') : ''));
+      if (rbV.length) console.log('    structural, verify-only (V3 prices the pithead, no count can close these — §10.47.2): '
+        + rbV.map(fmtB).join(' · '));
       if (nv.length) console.log('    negative gross product (growth can only worsen these — §10.47\'s discussion list): '
         + nv.map(x => `e${x.era} ${x.id} ${(100 * x.share).toFixed(2)}%${x.excused ? '*' : ''}`).join(' · ')
         + (nv.some(x => x.excused) ? '  (*excused)' : ''));

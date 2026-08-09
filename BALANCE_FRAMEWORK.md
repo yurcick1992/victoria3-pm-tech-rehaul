@@ -3714,3 +3714,97 @@ weigh: the 1920 railway boom flattens (0.95% vs 2.13% — the whole system re-eq
 earlier rail), and 1870's explosives squeeze clears while 1836 picks up small glass/motor negatives.
 A ruling, not a default: it re-prices the entire raw sector from 1870 (−£150–200/level), so it ships
 only if the user rules that a railway-age mine ships by rail as a matter of era, like street lighting.
+
+## 10.47.2 The bounds are DERIVED from the real US, on the mapped commodity economy (user-ruled 2026-08-09)
+
+The first bounds tables were broad hand calibrations. The user replaced the method: **look up the
+actual US share X of each industry (Y per group) at the scenario date; industry gates are [X/4, 4X],
+group gates [Y/3, 2Y]** — with a three-step procedure that makes the real numbers commensurable with a
+model that is autarkic and goods-only:
+
+1. **IMPORT ADJUSTMENT** (the autarky premise): where the US was a noticeable importer, X is scaled to
+   CONSUMPTION rather than domestic production, using a narratively similar industry of similar traded
+   value as the scale reference where the direct figure is thin (synthetics — German dyes; fertilizer —
+   Chilean nitrates; explosives inputs). Extended on the same logic to the **army premise**: the
+   scenario keeps a 5%-of-GDP standing army against the real US's ~1%, so arms/artillery/munitions X
+   is the peacetime share ×~5 — and 1945 uses the interwar-normal share, NOT the war peak, because a
+   floor above what the premise's own demand generates is a floor no market could honour.
+2. **MAP OR DROP**: every real industry maps into our classification or is removed — dropped as
+   unmappable: trade margins, finance, housing, professional/domestic services, government, road
+   transport, printing, and construction (a demand sink here, not an industry). Basket remaps recorded
+   in era_macro.mjs: flour/meatpacking/dairy/distilling → agriculture (the game sells grain, meat and
+   fish to pops raw, so that value sits on farms); apparel+footwear → textile; pottery/household
+   ceramics → glass; heavy electrical equipment → motor (leaving electrics the communications/consumer
+   basket). The art academy has no surviving real counterpart and is dropped from the calculation
+   (its hand sanity cap stays).
+3. **RENORMALIZE**: shares are restated over the **mapped commodity economy** on BOTH sides — the real
+   series over what survived the mapping, the model over its symmetric total (every tier industry +
+   raw reference producers + subsistence, with urban centres excluded as the model's own
+   unmappable-services counterpart). The solver's macro shares, reports and enforcement all moved to
+   this denominator; nothing macro reads raw model GDP any more.
+
+⚠ **The mfg-raw/mfg-mfg split gates are GONE by the mapping rule itself**: the model splits per TIER by
+recipe (late steel migrates to mfg-inputs the moment it starts eating electricity), which no census
+series can follow — unmappable, so removed, and the manufacturing TOTAL is gated instead. The split
+stays in the sector-composition report, ungated.
+
+**The derivation validates the model in one place and indicts it in two.** Renormalized, agriculture
+lands almost exactly on the real series (real 36% of the mapped economy at 1900 vs the model's 36.5%;
+27 vs 23.9 at 1920) — the premise chain (peasant shares → subsistence → farm sizing) reproduces real
+US structural change with no fitting. The two structural findings, kept loudly visible:
+- **Extraction runs ×1.8–4 the real share at every date** (real mining+logging 4.9–9.3% of the mapped
+  economy; the model 18–52%, RISING with era as iron/oil hit their scale caps): V3's price vector
+  books the value at the pithead — a mine turns ~£60 of tools into ~£1,200 of ore — where reality's
+  value accrues in processing and distribution, and manufacturing additionally wears the 4:1 VA cap.
+  No count bound can close a price-vector gap without starving every input chain into the +75%
+  ceiling, so the extraction cap is **VERIFY-ONLY**: computed from real Y, reported red, never
+  enforced.
+- **Railway's real share is ~7–11% of the mapped economy through 1870–1945**, so the derived floors
+  (1.75/2.7/2.75/2.05%) sit far above anything the model can reach — even the freight-mandate arm's
+  ~1% of GDP is ~1.3–2% mapped. §10.47.1's wall, sharpened: V3 under-weights transportation the same
+  way it over-weights ore, and the bound now states the full size of that gap instead of a
+  hand-shrunk version of it.
+
+**Dry-checked against the pre-derivation shipped state** (offline replay, before the re-solve): groups
+pass everywhere except extraction's structural red; the firing set is historically sensible — floors
+grow power@1900 (0.10→0.20 wanted), automotive@1920/45 (real autos were ~3–5% of the commodity
+economy), electrics@1945 (the radio age), port@1836, railway@1920/45; caps trim paper@1870 (3.2 vs
+2.8 — the admin-paper appetite) and automotive@1900 (0.55 vs 0.40 — a car industry a decade early);
+walls stay walls (steel@1836, explosives@1870, motor@1870's two-sided engines squeeze, railway
+@1870/1900, electrics@1900 debut).
+
+### 10.47.3 Measured results (derived bounds, default --write + seeds 9/10, 2026-08-09)
+
+| | final-state illogicality | losses £/wk | net £/wk | ceiling | macro residual |
+|---|---|---|---|---|---|
+| hand-bounds state (§10.47.1) | 72/85/68 (61/73/58) | 174/300/184k | 12.5/11.5/12.1M | 6 / 5 / 5 of 6 | 3/9/5 |
+| **derived bounds (ships, seed 8)** | **72 (61)** · 9/9/17/17/12/8 | **178k** (1.4%) | **12.3M** | **6/6** | **15** |
+| derived bounds, seeds 9/10 | 84 (72) / 73 (63) | 315k / 185k | 11.4M / 12.1M | 5/6 / 5/6 | 21 / 18 |
+
+**The derivation is metrically free** — faults, losses, net and the ceiling are the previous state's
+within noise on every seed (the write is a fresh solve, so even the recipes came back near-identical).
+What changed is what the report NAMES: the residual count 3 → 15 is not the economy getting worse, it
+is the yardstick getting honest — the hand bounds were calibrated so the shipped state passed, the
+derived bounds state the real-US gap wherever one exists. The 15 named residuals on the default fall
+into exactly four families:
+1. **The transport gap** — railway 0.11% / −0.00% / 1.70% / 1.16% against derived floors
+   1.75/2.73/2.75/2.05% (real rail was ~7–11% of the commodity economy). §10.47.1's freight ruling is
+   the open lever; even the mandate arm's ~1.3–2% mapped would close only half the 1900–20 gap.
+2. **The late-era new-economy undersizes** — automotive 0.49/0.65% vs floors 0.83/1.18%, electrics
+   0.17% vs 0.40% @1945, power 0.09% vs 0.20% @1900: the same disease as railway on the demand side —
+   pop budgets in V3 cannot fund cars/radios/power at their real shares, so enforcement grows a few
+   levels and stalls at the price wall. A finding about the game's demand system, now stated with
+   real-history numbers attached.
+3. **The debut walls, unchanged** — steel/motor@1836, explosives@1870, electrics@1900: negative or
+   near-zero gross product in the good's first era (§10.29 family), floors unreachable by
+   construction, blocked and reported.
+4. **Hairline misses** — artillery 0.10 vs 0.13, power@1945 1.02 vs 1.05: within the derivation's own
+   2sf noise; not worth a lever.
+Extraction's verify-only structural red prints at every era (18→52% vs real caps 9.8–18.6%) on its own
+line, never enforced, per §10.47.2.
+
+⭐ **The layer caught a real degeneracy in seed 9**: e4 textile at **0.17%** of the mapped economy
+against a 1.93% floor — that seed shrinks the 1920 textile industry to a stub, which every previous
+metric shrugged at (its margin faults counted the same either way) and the derived floor now flags by
+name. That is the bound doing precisely what "no industry should be dead" was written for, on the
+first ensemble it ever saw.

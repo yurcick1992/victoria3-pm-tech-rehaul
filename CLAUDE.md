@@ -117,22 +117,26 @@ figure before 2026-08-09 is comparable to later ones without adding shipyards ba
 from the totals now, reported on their own line, like gold).
 **Current state under the ruled set (§10.42.4) + the 1780 prune + the ELECTRICITY PASS (§10.43, 2-coal
 ruled) + the DATE GATE (§10.44) + the WEDGE and the 1780 RULINGS (§10.45/§10.46) + the MACROSCENARIO
-LAYER and the minCount-for-refs fix (§10.47, all shipped 2026-08-09): final-state illogicality 72 (61
-excluding shipyards), per era 9/8/17/18/12/8 · losses £174k/wk ≈ 1.4% of net · net £12.5M/wk · **THE
-DEFAULT CLEARS THE INDUSTRIAL CEILING IN ALL SIX ERAS** · ensemble (seeds 8/9/10 — the default IS
-seed 8): 72/85/68 (61/73/58) / £174–300k / £11.5–12.5M — a consistent +4–6 faults per seed over the
-pre-macro baseline (66/82/64), roughly half the minCount fix re-equilibrating the raw sector and half
-the constraint's own price, with losses/net/ceiling unchanged · MACRO residual breaches 3 on the
-default (explosives@1870 negative gross product; railway 0.27% @1870 / 0.02% @1900 against 1% floors —
-the RAILWAY WALL, §10.47.1: freight is wage-arbitrage in this model and does not pay before 1920
-wages; awaiting a ruling) · calendar-anachronistic output 0% by construction; 1836's honest era-2 share
-46.6% vs vanilla's measured 45% · hardwood TRADE-SUPPLIED where ruled (72 @1780, ~490 @1836; every
-other good domestic — the condition-based version of that rule shipped an all-imports iron economy and
-is recorded VOID, §10.46.1) · ownership professions follow the MEASURED wedge (F46: aristocrats fall to
-0.59×/0.35× by eras 4/5, clerks+shopkeepers double, bureaucrats halve — vanilla's own path), and every
-profession share passes its §10.47 bound in every era · the
-futility guard knows which price pin it is looking at, and the dye placeholder pin is gone.** Future
-A/B work compares against THESE numbers. The pre-campaign state on
+LAYER with DERIVED BOUNDS and the minCount-for-refs fix (§10.47/§10.47.2, all shipped 2026-08-09):
+final-state illogicality 72 (61 excluding shipyards), per era 9/9/17/17/12/8 · losses £178k/wk ≈ 1.4%
+of net · net £12.3M/wk · **THE DEFAULT CLEARS THE INDUSTRIAL CEILING IN ALL SIX ERAS** · ensemble
+(seeds 8/9/10 — the default IS seed 8): 72/84/73 (61/72/63) / £178–315k / £11.4–12.3M — the derivation
+was METRICALLY FREE (same band as the hand-bounds state; +4–6 per seed over the pre-macro 66/82/64,
+half of that the minCount fix) · MACRO residuals 15 on the default, and that count is the yardstick
+being honest, not the economy worsening — four named families (§10.47.3): the TRANSPORT GAP (railway
+0.11/−0.00/1.70/1.16% mapped vs derived floors 1.75–2.75% from a real ~7–11%; the freight ruling
+§10.47.1 is the open lever and closes only about half of it), the late-era NEW-ECONOMY UNDERSIZES
+(automotive/electrics/power short of real-history floors — V3 pop budgets cannot fund them at real
+scale), the DEBUT WALLS (steel/motor@1836, explosives@1870, electrics@1900 — §10.29 family), and two
+hairliners; extraction's cap is VERIFY-ONLY structural red at every era (model 18–52% vs real
+9.8–18.6% caps — V3 books value at the pithead) · the layer caught seed 9 shrinking 1920 textile to a
+0.17% stub — the "no dead industries" bound working on its first ensemble · calendar-anachronistic
+output 0% by construction; 1836's honest era-2 share 46.6% vs vanilla's measured 45% · hardwood
+TRADE-SUPPLIED where ruled (72 @1780, ~490 @1836; every other good domestic — the condition-based
+version of that rule shipped an all-imports iron economy and is recorded VOID, §10.46.1) · ownership
+professions follow the MEASURED wedge (F46), and every profession share passes its §10.47 bound in
+every era · the futility guard knows which price pin it is looking at, and the dye placeholder pin is
+gone.** Future A/B work compares against THESE numbers. The pre-campaign state on
 the same metric was 94 (84) and £868k losses. 1780's remaining faults (furniture, tooling, paper,
 arms, artillery in the current run) are honest tiny-market statements — industries with real
 buyers, each losing £86–300/wk at one floored level.
@@ -574,28 +578,39 @@ tools/                  dev tooling — NOT shipped in the mod
                         futility guard fires only at the price FLOOR, never at the ceiling (the
                         1780-iron/era-2-engines bug), and FIXED_REF_COUNT is EMPTY (the
                         10-dye-plantation placeholder pin is gone).
-                        ⭐⭐ THE MACROSCENARIO (ERA_MACRO, default usa — §10.47, user-ruled 2026-08-09):
-                        explicit reasonability bounds from tools/era_macro.mjs, applied 1836+ (1780
-                        exempt) — the governance layer the rice ban and the US population premise
-                        already belonged to. Three levels: profession shares of population (VERIFIED
-                        only), industry-CATEGORY GDP shares and per-INDUSTRY GDP shares (both ENFORCED
+                        ⭐⭐ THE MACROSCENARIO (ERA_MACRO, default usa — §10.47/§10.47.2, user-ruled
+                        2026-08-09): reasonability bounds from tools/era_macro.mjs, applied 1836+
+                        (1780 exempt) — the governance layer the rice ban and the US population
+                        premise already belonged to. Three levels: profession shares of population
+                        (VERIFIED only), industry-GROUP shares and per-INDUSTRY shares (both ENFORCED
                         post-solve through counts, before the polish, which carries a macro guard).
-                        Shares are of GROSS PRODUCT (value added) by ruling — so an industry with
-                        negative pre-wage balance can never reach a floor by growing; enforcement
-                        blocks it and the NEGATIVE GROSS PRODUCT report line is the standing discussion
-                        list. Floors are waived where placement withholds the industry (date gate /
-                        prune / chain / extinct outrank), lo=0 = no floor; the headline check is the
-                        MACRO REASONABILITY block in the final profit pass (in-era lines read
-                        provisional lead-rung recipes). ERA_MACRO=0 disables; ERA_MACRO_STEPS caps
-                        moves (default 400). Railway ∈ [1%,15%] of GDP from 1870 is the bound that
-                        forbids the three-levels-in-1900 state that prompted the layer
-  era_macro.mjs         the macroscenario bounds themselves (professions / categories / industries per
-                        era, percent of GDP or population) + activeMacro()/macroBounds()/validateMacro().
-                        Pure data + helpers, validated fail-loud against the live model at solver start;
-                        a future macroscenario is a NEW entry in MACROS selected by ERA_MACRO=<id>,
-                        never an edit to `usa`. Bounds are broad judgement calls calibrated on the
-                        shipped 2026-08-09 presets (SCALE_LIMIT doctrine: catch degeneracy, don't
-                        sculpt — the price/count feedback stays the sculptor)
+                        ⭐ Bounds are DERIVED, not calibrated (§10.47.2): X = the real US industry's
+                        share at the scenario date, import-adjusted for the autarky premise, army-
+                        premise-scaled for the war industries, mapped-or-dropped into our taxonomy and
+                        RENORMALIZED over the mapped commodity economy — gates [X/4,4X] per industry,
+                        [Y/3,2Y] per group; the model's shares are measured on the symmetric
+                        denominator (tier industries + raw refs + subsistence, urban centres excluded),
+                        NOT raw model GDP. Gross product (VA) by ruling — negative pre-wage balance can
+                        never reach a floor by growing; enforcement blocks it and NEGATIVE GROSS
+                        PRODUCT is the standing discussion list. Floors waived where placement
+                        withholds (date gate / prune / chain / extinct outrank); `nofloor` = shipyards
+                        (VA negative by construction) + the unmappable art academy. The EXTRACTION cap
+                        is VERIFY-ONLY: real mining+logging is 4.9–9.3% of the mapped economy, the
+                        model runs ×1.8–4 that because V3 books value at the pithead — a price-vector
+                        property no count can close (§10.47.2). Headline check = the MACRO
+                        REASONABILITY block in the final profit pass. ERA_MACRO=0 disables;
+                        ERA_MACRO_STEPS caps moves (default 400). Railway's derived floors
+                        (1.75–2.75% mapped, from a real ~7–11%) state the full transport gap — the
+                        freight ruling (§10.47.1) is what could move it
+  era_macro.mjs         the macroscenario DATA: per-industry X and per-group Y (real US shares of the
+                        mapped commodity economy, 2 significant figures, adjustment tags (b)asket
+                        (i)mport (a)rmy-premise (s)judgment recorded per row) + profession bands, and
+                        activeMacro()/macroBounds()/macroVerifyOnly()/validateMacro(). Pure data +
+                        helpers, validated fail-loud against the live model at solver start; a future
+                        macroscenario is a NEW entry in MACROS selected by ERA_MACRO=<id>, never an
+                        edit to `usa`. Sources: Historical Statistics of the US / Census of
+                        Manufactures / Gallman's commodity-output series — factor-4 gates need 2sf,
+                        not decimals
   econ_host.mjs         loads ui/econ.js + the generated ui/*.js under Node — supplies the state containers the
                         browser would. Contains NO model of its own.
                         ⚠ The CONFIG comes from config/mod_config.json DIRECTLY, not from the copy embedded in
