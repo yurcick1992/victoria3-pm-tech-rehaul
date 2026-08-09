@@ -126,12 +126,15 @@ FREE) · MACRO residuals 15 on the default, and that count is the yardstick bein
 economy worsening — four named families (§10.47.3): the TRANSPORT GAP (railway 0.15/0.33/−0.01/1.88%
 mapped vs derived floors 1.75–2.75% from a real ~7–11%; wages and target handicaps are MEASURED off
 the table — F47: vanilla adopts rail freight against the wage arithmetic, 58% of raw producers by
-1912 at ×1.4-flat wages, and the recipe-reaching handicap made railway value-poorer — the freight
-ruling §10.47.1 remains the open lever, and the 1920 share swings 2.13/1.70/0.84/−0.01 across
-same-design runs because the freight PM choice is an unpinned bistable cycle), the late-era
+1912 at ×1.4-flat wages, and the recipe-reaching handicap made railway value-poorer — and FREIGHT IS
+RULED ACCEPTED AS-IS, §10.47.5: "vanilla doesn't immediately switch either", so the gap and the 1920
+cycle swing (2.13/1.70/0.84/−0.01 across same-design runs — an unpinned bistable PM cycle, the
+hysteresis session's specimen) are ACCEPTED residuals, not open work), the late-era
 NEW-ECONOMY UNDERSIZES (automotive/electrics/power short of real-history floors — V3 pop budgets
-cannot fund them at real scale), the DEBUT WALLS (steel/motor@1836, explosives@1870, electrics@1900 —
-§10.29 family), and hairliners; extraction's cap is VERIFY-ONLY structural red at every era (model
+cannot fund them at real scale), the DEBUT WALLS (steel/motor@1836, electrics@1900 — §10.29 family,
+RULED TOLERABLE §10.47.5: every one verified to have consumers, and their denominator drag is
+−4.7%@1836 / ≤1.9% later, inside the corridors' noise in the flattering direction), and hairliners;
+extraction's cap is VERIFY-ONLY structural red at every era (model
 18–52% vs real 9.8–18.6% caps — V3 books value at the pithead) · the INFRA SUBSIDY TOLERANCE
 (§10.47.4, vanilla's must_have trio railway/port/power may book −10% before fault or shrink, scoring
 only, mirrored in econ.js LADDER_LOSS_FLOOR) ships with an IMPLIED SUBSIDY BILL of ~£0 (£1k/wk =

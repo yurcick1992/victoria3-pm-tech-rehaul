@@ -3864,6 +3864,28 @@ but bounded — infra must not gobble the budget, and no state budget will be mo
   bill ≤ tol × the trio's cost base, and the trio's size is bounded by its own market and the macro
   caps.
 
+## 10.47.5 Closing rulings (user, 2026-08-09) — freight stays as-is, onset losses are tolerable, and the verification that let them stand
+
+1. **FREIGHT — ACCEPTED AS-IS.** "Vanilla doesn't immediately switch to freight trains either." No
+   mandate ships; the derived railway floors (1.75–2.75% of the mapped economy) and the 1920
+   cycle-phase swing (§10.47.4.1) stand as ACCEPTED NAMED RESIDUALS, not open work. The freight
+   bistability remains interesting only as a PM-SETTLING specimen (the hysteresis session's material),
+   not as a demand problem to fix.
+2. **NEGATIVE GROSS PRODUCT IN ONSET ERAS — TOLERABLE**, conditional on two verifications, both run on
+   the shipped state and both passing:
+   - **every negative-VA industry has at least some consumers** — steel@1836 buys 63 (the date-gated
+     era-2 rungs present at 1836 eat it — the old "era-1 steel has zero buyers" was a statement about
+     the pre-date-gate placement), engines 11, telephones 106 (pops), fine art 11 (pops),
+     clippers/steamers heavy port demand, railway@1920 transportation 2,936. Nothing fails;
+   - **the corridor distortion is negligible** — negative VA shrinks the mapped denominator by −4.72%
+     at 1836 (dominated by the EXCUSED shipyard against a small £178k mapped economy) and −0.01…−1.82%
+     at every later era, one to two orders of magnitude inside the factor-4 corridors, and in the
+     FLATTERING direction for floors (a distortion-free denominator would make the named hairline
+     misses marginally deeper, never flip a pass). ⚠ If 1836's 4.7% ever matters, the available dial
+     is excluding LADDER_EXCUSED industries from the mapped denominator — noted, not needed.
+   An onset industry that ever LOSES its consumers or grows its denominator drag past the corridors'
+   noise re-opens this ruling; the NEGATIVE GROSS PRODUCT report line is the standing watch.
+
 ### 10.47.4.1 Measured results (default seed, report-only + reproducing --write, 2026-08-09 — SHIPS)
 
 | | final-state illogicality | losses £/wk | net £/wk | ceiling | macro resid | subsidy bill |
