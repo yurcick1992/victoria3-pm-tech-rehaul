@@ -684,7 +684,13 @@
   // target because none of their income from naval ship construction is modelled (§10.2). Art academies
   // are excused wholesale rather than by threshold — fine_art's budget is fixed, so extra academies only
   // destroy their own price and no margin target is meaningful.
-  const LADDER_LOSS_FLOOR = { shipyard: -0.10, shipyard_steam: -0.10 };
+  // RAILWAY / PORT / POWER carry the SUBSIDY TOLERANCE (§10.47.4): vanilla's default AI strategy
+  // subsidises all three at `must_have`, so in the game we mod a book loss down to −10% is subsidised
+  // operation, not a fault. Scoring only — recipes are never enriched (the measured ERA_RAIL_PENALTY
+  // failure). ⚠ Must match era_scenarios.mjs's ERA_SUBSIDY_TOL default; the criterion has ONE
+  // implementation and these floors are part of it.
+  const LADDER_LOSS_FLOOR = { shipyard: -0.10, shipyard_steam: -0.10,
+                              railway: -0.10, port: -0.10, power: -0.10 };
 
   // ⭐ THE SCENARIO'S SHAPE — every building it contains, in the mod's seven standard sectors.
   // A PURE function taking callbacks, exactly like ladderFaults below and for exactly the same reason:

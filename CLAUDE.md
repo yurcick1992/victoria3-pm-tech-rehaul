@@ -117,25 +117,31 @@ figure before 2026-08-09 is comparable to later ones without adding shipyards ba
 from the totals now, reported on their own line, like gold).
 **Current state under the ruled set (§10.42.4) + the 1780 prune + the ELECTRICITY PASS (§10.43, 2-coal
 ruled) + the DATE GATE (§10.44) + the WEDGE and the 1780 RULINGS (§10.45/§10.46) + the MACROSCENARIO
-LAYER with DERIVED BOUNDS and the minCount-for-refs fix (§10.47/§10.47.2, all shipped 2026-08-09):
-final-state illogicality 72 (61 excluding shipyards), per era 9/9/17/17/12/8 · losses £178k/wk ≈ 1.4%
-of net · net £12.3M/wk · **THE DEFAULT CLEARS THE INDUSTRIAL CEILING IN ALL SIX ERAS** · ensemble
-(seeds 8/9/10 — the default IS seed 8): 72/84/73 (61/72/63) / £178–315k / £11.4–12.3M — the derivation
-was METRICALLY FREE (same band as the hand-bounds state; +4–6 per seed over the pre-macro 66/82/64,
-half of that the minCount fix) · MACRO residuals 15 on the default, and that count is the yardstick
-being honest, not the economy worsening — four named families (§10.47.3): the TRANSPORT GAP (railway
-0.11/−0.00/1.70/1.16% mapped vs derived floors 1.75–2.75% from a real ~7–11%; the freight ruling
-§10.47.1 is the open lever and closes only about half of it), the late-era NEW-ECONOMY UNDERSIZES
-(automotive/electrics/power short of real-history floors — V3 pop budgets cannot fund them at real
-scale), the DEBUT WALLS (steel/motor@1836, explosives@1870, electrics@1900 — §10.29 family), and two
-hairliners; extraction's cap is VERIFY-ONLY structural red at every era (model 18–52% vs real
-9.8–18.6% caps — V3 books value at the pithead) · the layer caught seed 9 shrinking 1920 textile to a
-0.17% stub — the "no dead industries" bound working on its first ensemble · calendar-anachronistic
-output 0% by construction; 1836's honest era-2 share 46.6% vs vanilla's measured 45% · hardwood
-TRADE-SUPPLIED where ruled (72 @1780, ~490 @1836; every other good domestic — the condition-based
-version of that rule shipped an all-imports iron economy and is recorded VOID, §10.46.1) · ownership
-professions follow the MEASURED wedge (F46), and every profession share passes its §10.47 bound in
-every era · the futility guard knows which price pin it is looking at, and the dye placeholder pin is
+LAYER with DERIVED BOUNDS, the minCount-for-refs fix, and the INFRA SUBSIDY TOLERANCE
+(§10.47/§10.47.2/§10.47.4, all shipped 2026-08-09): final-state illogicality 71 (61 excluding
+shipyards), per era 9/9/17/18/10/8 · losses £205k/wk ≈ 1.7% of net · net £12.0M/wk · **THE DEFAULT
+CLEARS THE INDUSTRIAL CEILING IN ALL SIX ERAS** · derived-bounds ensemble (seeds 8/9/10, pre-tolerance:
+72/84/73 (61/72/63) / £178–315k / £11.4–12.3M — the derivation and the tolerance are each METRICALLY
+FREE) · MACRO residuals 15 on the default, and that count is the yardstick being honest, not the
+economy worsening — four named families (§10.47.3): the TRANSPORT GAP (railway 0.15/0.33/−0.01/1.88%
+mapped vs derived floors 1.75–2.75% from a real ~7–11%; wages and target handicaps are MEASURED off
+the table — F47: vanilla adopts rail freight against the wage arithmetic, 58% of raw producers by
+1912 at ×1.4-flat wages, and the recipe-reaching handicap made railway value-poorer — the freight
+ruling §10.47.1 remains the open lever, and the 1920 share swings 2.13/1.70/0.84/−0.01 across
+same-design runs because the freight PM choice is an unpinned bistable cycle), the late-era
+NEW-ECONOMY UNDERSIZES (automotive/electrics/power short of real-history floors — V3 pop budgets
+cannot fund them at real scale), the DEBUT WALLS (steel/motor@1836, explosives@1870, electrics@1900 —
+§10.29 family), and hairliners; extraction's cap is VERIFY-ONLY structural red at every era (model
+18–52% vs real 9.8–18.6% caps — V3 books value at the pithead) · the INFRA SUBSIDY TOLERANCE
+(§10.47.4, vanilla's must_have trio railway/port/power may book −10% before fault or shrink, scoring
+only, mirrored in econ.js LADDER_LOSS_FLOOR) ships with an IMPLIED SUBSIDY BILL of ~£0 (£1k/wk =
+0.02% of GDP at 1920 only) and revived railway@1900 to 0.33% · the layer caught seed 9 shrinking 1920
+textile to a 0.17% stub — the "no dead industries" bound working on its first ensemble ·
+calendar-anachronistic output 0% by construction; 1836's honest era-2 share 46.6% vs vanilla's
+measured 45% · hardwood TRADE-SUPPLIED where ruled (every other good domestic — the condition-based
+version shipped an all-imports iron economy and is recorded VOID, §10.46.1) · ownership professions
+follow the MEASURED wedge (F46), and every profession share passes its §10.47 bound in every era ·
+the futility guard knows which price pin it is looking at, and the dye placeholder pin is
 gone.** Future A/B work compares against THESE numbers. The pre-campaign state on
 the same metric was 94 (84) and £868k losses. 1780's remaining faults (furniture, tooling, paper,
 arms, artillery in the current run) are honest tiny-market statements — industries with real
@@ -563,9 +569,15 @@ tools/                  dev tooling — NOT shipped in the mod
                         ERA_SHRINK_STEPS (default 6000 — a SAFETY NET, not a budget; §10.38),
                         ERA_WAGE_RAMP (Baumol wage growth — DEAD by measurement, §10.42.5),
                         ERA_PM_MINGAIN (PM hysteresis — deferred by ruling),
-                        ERA_RAIL_PENALTY (default 0 — shipyard-style target handicap for railway,
-                        measurement-only: it cannot create transportation ORDERS, so it cannot fix the
-                        freight gap; §10.47 discussion),
+                        ERA_RAIL_PENALTY (default 0 — MEASURED AND REJECTED, §10.47.1: a target
+                        handicap reaches solveInputsAt and buys richer recipes, making railway
+                        value-poorer at every era; kept for re-measurement only),
+                        ⭐ ERA_SUBSIDY_TOL (default 0.10 — §10.47.4, user-ruled: vanilla's default AI
+                        strategy subsidises railway/port/power at must_have, so the trio may run down
+                        to −10% before the ladder criterion calls it a fault or the loss-shrink cuts
+                        it. SCORING ONLY — recipes untouched (the ERA_RAIL_PENALTY lesson); the
+                        implied SUBSIDY BILL is printed per era, structurally ≤ tol × the trio's cost
+                        base. ⚠ mirrored in ui/econ.js LADDER_LOSS_FLOOR — keep the two in step),
                         ERA_PRUNE (default steel@0,glass@0 — the ruled 1780 prune; empty reverts),
                         ERA_PROF_WEDGE (default ON — §10.45/F46: per-profession era multipliers on the
                         1836 vector, measured from the saves_debut USA campaign; =0 restores the frozen

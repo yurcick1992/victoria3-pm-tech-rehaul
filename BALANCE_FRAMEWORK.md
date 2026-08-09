@@ -3840,3 +3840,47 @@ against a 1.93% floor — that seed shrinks the 1920 textile industry to a stub,
 metric shrugged at (its margin faults counted the same either way) and the derived floor now flags by
 name. That is the bound doing precisely what "no industry should be dead" was written for, on the
 first ensemble it ever saw.
+
+## 10.47.4 The subsidy tolerance — infra may run at a book loss, because vanilla says so (user-ruled 2026-08-09)
+
+**The premise, verified in the game files:** vanilla's default AI strategy subsidises the
+infrastructure trio at `must_have` — `building_power_plant`, `building_railway`, `building_port`
+(`00_default_strategy.txt`, the subsidies block every AI country inherits). In the game we mod, a
+loss-making railway does not die; the state pays the difference. The user's ruling: model that stance,
+but bounded — infra must not gobble the budget, and no state budget will be modelled.
+
+**The design — a LOSS TOLERANCE, never income, never a recipe change** (`ERA_SUBSIDY_TOL`, default
+0.10; =0 reverts):
+- the ladder criterion's loss floor for railway/port/power drops by the tolerance (an infra industry
+  at −10%..0 is subsidised operation, not a fault) — mirrored in `ui/econ.js`'s `LADDER_LOSS_FLOOR` so
+  the UI's Ladder check and the solver keep the ONE implementation;
+- the loss-shrink and its recheck treat the trio like the shipyard handicap (cut only below −tol);
+- **the recipe targets are untouched** — §10.47.1's measured `ERA_RAIL_PENALTY` failure is exactly
+  what happens when target softness reaches `solveInputsAt`: ~10% of revenue more inputs per level,
+  and the sector gets value-poorer at every era. Tolerance is applied at the five SCORING sites only;
+- **the implied SUBSIDY BILL is printed per era** in the final profit pass (the trio's aggregate book
+  losses, per industry — a profitable port does not offset the railway, matching per-building
+  subsidies in-game), with its share of GDP. The bound needs no budget model because it is structural:
+  bill ≤ tol × the trio's cost base, and the trio's size is bounded by its own market and the macro
+  caps.
+
+### 10.47.4.1 Measured results (default seed, report-only + reproducing --write, 2026-08-09 — SHIPS)
+
+| | final-state illogicality | losses £/wk | net £/wk | ceiling | macro resid | subsidy bill |
+|---|---|---|---|---|---|---|
+| pre-tolerance (§10.47.3) | 72 (61) · 9/9/17/17/12/8 | 178k | 12.3M | 6/6 | 15 | — |
+| **subsidy tol −10% (ships)** | **71 (61)** · 9/9/17/18/10/8 | 205k (1.7%) | 12.0M | **6/6** | **15** | **£0/0/0/0/1k/0** |
+
+**Metrically free, and the bill answers the budget fear by measurement**: the trio's aggregate book
+losses are ZERO in five of six eras and **£1k/wk (0.02% of GDP) at 1920** — at −10% tolerance the
+subsidised infrastructure barely draws on the allowance, and the structural bound (bill ≤ tol × cost
+base) never comes near binding. Railway landed where the tolerance can actually help: **1900 goes
+0.00% → 0.33%** of the mapped economy (the macro floor's +17 grown levels now SURVIVE the loss-shrink
+instead of being cut back) and **1945 reaches 1.88%** (vs floor 2.05 — a near-miss now, from 1.16),
+with 1870 at 0.15%. Era-4/5 faults drop 12/8 → 10/8. ⚠ The 1920 railway share swung 1.70 → −0.01% —
+that is the FREIGHT BISTABILITY changing phase between runs (the §10.47.1 limit cycle; the share has
+read 2.13/1.70/0.84/−0.01 across four same-design runs), not a tolerance effect, and it is the
+strongest remaining argument for settling the freight ruling: a mandated freight side would pin that
+cycle. The derived railway floors (1.75–2.75%) remain honest residuals — the tolerance keeps a
+REASONABLE railway sector alive at a bounded book loss; the historical SHARE still needs freight
+demand.

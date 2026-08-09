@@ -976,16 +976,32 @@ const RAW_DRIFT = +(process.env.ERA_RAW_DRIFT || 1);
 
 const TG = FIT.targets;
 const SHIP_INDUSTRIES = new Set(['shipyard', 'shipyard_steam']);
-// ⚗ ERA_RAIL_PENALTY (measurement knob, default 0 = no-op; user question 2026-08-09): a shipyard-style
-// profitability handicap for RAILWAY, e.g. -0.10. Applied wherever the shipyard penalty is — the
-// recipe targets, the loss-shrink comparison, and (via currentTargetFor) the ladder-fault loss floor —
-// but railway is NOT excluded from the profit totals. Exists to measure whether a target handicap can
-// substitute for the freight ruling; the mechanical prediction says no (the count controller sizes
-// railway off transportation ORDERS, which no scoring change creates, and a lower target solves a
-// RICHER recipe, lowering gross product per level — §10.47 discussion).
+// ⚗ ERA_RAIL_PENALTY (measurement knob, default 0 — MEASURED AND REJECTED, §10.47.1): a shipyard-style
+// profitability handicap for RAILWAY applied to targets AND recipes. It made railway value-poorer at
+// every era (a softer RECIPE target buys ~10% of revenue more inputs per level), faults and losses up.
+// Kept at 0 strictly for re-measurement; the shipped subsidy stance is SUBSIDY_TOL below, which is the
+// same softness applied to SCORING ONLY.
 const RAIL_PENALTY = +(process.env.ERA_RAIL_PENALTY || 0);
 const indPenalty = ind => (SHIP_INDUSTRIES.has(ind.id) ? TG.shipyard_penalty : 0)
                         + (ind.id === 'railway' ? RAIL_PENALTY : 0);
+// ⭐ THE SUBSIDY TOLERANCE (user-ruled direction, 2026-08-09 — §10.47.4; ERA_SUBSIDY_TOL=0 reverts).
+// Vanilla's default AI strategy subsidises the infrastructure trio at `must_have`
+// (00_default_strategy.txt: building_power_plant / building_railway / building_port), so in the game
+// we mod these industries run state-backed and a book loss does not kill them. The scenarios model
+// that stance as a LOSS TOLERANCE, never as income and never as a recipe change:
+//   * the ladder criterion's loss floor drops by the tolerance (an infra industry at −10%..0 is
+//     subsidised operation, not a fault),
+//   * the loss-shrink treats it like the shipyard handicap (cut only below −tol),
+//   * the RECIPE targets are untouched — the measured ERA_RAIL_PENALTY failure is exactly what
+//     happens when the softness reaches solveInputsAt (richer recipes, value-poorer sector),
+//   * the implied SUBSIDY BILL (the trio's aggregate book losses) is printed per era in the final
+//     profit pass. It is structurally bounded — bill ≤ tol × the sector's cost base — which is what
+//     lets the stance exist without modelling a state budget.
+// ⚠ Keep this consistent with ui/econ.js's LADDER_LOSS_FLOOR (the UI's copy of the same floors) —
+// the criterion has ONE implementation and the floor values must not fork.
+const SUBSIDY_TOL = +(process.env.ERA_SUBSIDY_TOL != null ? process.env.ERA_SUBSIDY_TOL : 0.10);
+const SUBSIDIZED = new Set(['railway', 'port', 'power']);   // = vanilla's must_have trio (and MACRO_INFRA)
+const subsidyTol = ind => (SUBSIDIZED.has(ind.id) ? SUBSIDY_TOL : 0);
 // GOLD IS MONEY, NOT A GOOD. No pop need lists it and no building consumes it, so its order book is
 // one-sided by construction: all sell, no buy, price pinned to the 25% floor, and its mines read −68%
 // no matter how few of them there are. Excluding it is not a fudge — a target that cannot be moved by
@@ -2091,7 +2107,7 @@ function buildScenario(eIx, finalPass) {
           // deduction has to apply HERE, or the rule reads a shipyard as the worst loss-maker in the
           // economy at a margin that is, for a shipyard, par — and cuts it first every single era.
           // Comparisons use the handicapped figure too, so a −35% shipyard ranks as −5%.
-          const tp = E.TPthr(p.ind, t) / 100 - indPenalty(p.ind);
+          const tp = E.TPthr(p.ind, t) / 100 - indPenalty(p.ind) + subsidyTol(p.ind);
           if (!isFinite(tp) || tp >= 0) continue;
           if (SHRINK_STALE_FIRST && t.era < era) { if (tp < worstStaleP) { worstStale = t; worstStaleP = tp; } }
           if (tp < worstP) { worst = t; worstP = tp; }
@@ -2272,7 +2288,7 @@ function buildScenario(eIx, finalPass) {
         for (const r of p.rows) {
           const t = r.t, n = S.BLDNUM[t.key] || 0;
           if (!(n > 1) || r.fixed != null || protectedMfg.has(t.key)) continue;
-          const tp = E.TPthr(p.ind, t) / 100 - indPenalty(p.ind);
+          const tp = E.TPthr(p.ind, t) / 100 - indPenalty(p.ind) + subsidyTol(p.ind);
           if (!isFinite(tp) || tp >= 0) continue;
           if (SHRINK_STALE_FIRST && t.era < era && tp < worstStaleP) { worstStale = t.key; worstStaleP = tp; }
           if (tp < worstP) { worst = t.key; worstP = tp; kind = 'mfg'; }
@@ -2579,7 +2595,7 @@ function buildScenario(eIx, finalPass) {
       const f = PMECON.ladderFaults(S.IND, {
         countOf: t => (S.BLDNUM[t.key] || 0),
         profitOf: (i2, t2) => E.TPthr(i2, t2) / 100,
-        lossFloor: i2 => Math.min(0, currentTargetFor(i2)),
+        lossFloor: i2 => Math.min(0, currentTargetFor(i2)) - subsidyTol(i2),   // subsidised infra: fault only below −tol
       });
       const pt = profitTotals();
       return { f: f.net, l: pt.loss, n: pt.net };
@@ -3124,7 +3140,7 @@ for (let e = 0; e < FIT.eras.length; e++) {
     countOf: t => (S.BLDNUM[t.key] || 0),
     profitOf: (i, t) => E.TPthr(i, t) / 100,
     // the era-current tier's own target, floored at 0: a shipyard at −10% is on target, not a fault
-    lossFloor: i => Math.min(0, currentTargetFor(i)),
+    lossFloor: i => Math.min(0, currentTargetFor(i)) - subsidyTol(i),   // subsidised infra: fault only below −tol
   });
   const ill = { insolvent: illRaw.loss, stale_profitable: illRaw.stale, inverted: illRaw.inverted };
   meta.ill = ill;
@@ -3404,6 +3420,10 @@ for (let e = 0; e < FIT.eras.length; e++) {
     // their book losses measure the unmodelled naval income, not the economy; the −30pp handicap stays).
     const lossBy = { newest: 0, stale: 0, subsistence: 0, raw_other: 0 };
     const worst = [];
+    // the IMPLIED SUBSIDY BILL (§10.47.4): per subsidised industry, its aggregate book loss — what the
+    // state would be paying to keep vanilla's must_have trio running. Per INDUSTRY, not per tier: a
+    // profitable port does not offset the railway's loss, matching how the game subsidises buildings.
+    const subsNet = {};
     const take = (p, excused, what, cls, ship) => {
       if (!isFinite(p)) return;
       if (ship) { shipNet += p; if (p < 0) shipLoss -= p; return; }
@@ -3421,6 +3441,7 @@ for (let e = 0; e < FIT.eras.length; e++) {
         seen.add(t.key);
         const n = S.BLDNUM[t.key] || 0; if (!(n > 0)) continue;
         const io = E.tierGoodsIO(i, t); if (!Object.keys(io.out || {}).length) continue;
+        if (SUBSIDIZED.has(i.id)) subsNet[i.id] = (subsNet[i.id] || 0) + n * E.weeklyProfit(i, t);
         // "newest" = the industry's newest present rung, or anything at/after the scenario era (the two
         // coincide except past a plateau's end, where the permanent last tier is still the workhorse)
         const cls = (t.era === newestEra || t.era >= eraN) ? 'newest' : 'stale';
@@ -3460,10 +3481,12 @@ for (let e = 0; e < FIT.eras.length; e++) {
     const illF = PMECON.ladderFaults(S.IND, {
       countOf: t => (S.BLDNUM[t.key] || 0),
       profitOf: (i, t) => E.TPthr(i, t) / 100,
-      lossFloor: i => Math.min(0, currentTargetFor(i)),
+      lossFloor: i => Math.min(0, currentTargetFor(i)) - subsidyTol(i),   // subsidised infra: fault only below −tol
     });
     rows.push({ id: ep.label, net, loss, winners, losers, exNet, exLoss, shipNet, shipLoss,
                 worst: worst.slice(0, 4), lossBy, tgtRows, illF,
+                subsBill: Object.values(subsNet).reduce((a, v) => a + Math.max(0, -v), 0),
+                gdpF: E.scenarioValueAdded(),
                 // the macroscenario, verified on the SHIPPED state like everything else here — the
                 // in-era line reads provisional leading-rung recipes, so this is the headline check
                 macroF: macroCheckGlobal(eraN, ep.pops_by_profession, (ep.pops || {}).total) });
@@ -3485,6 +3508,12 @@ for (let e = 0; e < FIT.eras.length; e++) {
     + ((tn > 0 ? (100 * tl / tn).toFixed(1) + '%' : '∞')).padStart(17));
   console.log('  shipyards (excluded): net ' + fmtN(Math.round(tsn)) + ' · losses ' + fmtN(Math.round(tsl))
     + '  — per era ' + rows.map(r => fmtN(Math.round(r.shipLoss))).join('/'));
+  // §10.47.4 — the state's implied bill for vanilla's must_have infrastructure trio, per era. Bounded
+  // by construction (≤ ERA_SUBSIDY_TOL × the trio's cost base); printed so "subsidised" can never
+  // silently become "eating the budget" without this line saying so.
+  console.log(`  IMPLIED INFRA SUBSIDY (railway/port/power book losses, tol ${(100 * SUBSIDY_TOL).toFixed(0)}%): `
+    + rows.map(r => fmtN(Math.round(r.subsBill)) + (r.gdpF > 0 ? ' (' + (100 * r.subsBill / r.gdpF).toFixed(2) + '%)' : '')).join(' / ')
+    + '   (£/wk, % of GDP)');
   console.log('\n  losses by vintage — newest rungs are failures, stale tails are the design working');
   console.log('  era            newest £/wk      stale £/wk    subsist £/wk  raw&other £/wk');
   for (const r of rows)
