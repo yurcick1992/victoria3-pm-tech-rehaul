@@ -13,6 +13,38 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## The pm_goods writer and the model disagreed on what an override IS (2026-08-09, latent — found by inspection)
+
+**Symptom.** None — that is the point. `pm_goods` was empty, so nothing had ever exercised the divergence.
+The electricity pass (§10.43) would have been its first user and its first victim: the model would price
+urban centres on the new streetlights recipe (+1 electricity out, −1 coal in) while the emitted mod kept
+electricity −3 with no coal at all.
+
+**Root cause.** Two implementations of one contract. `ui/econ.js`'s `pmRec()` has always read an override
+as the PM's WHOLE goods map (`in: o.in || v.in` — replacement), while `build.ps1`'s writer walked the
+vanilla lines and only REQUANTIFIED goods that already had a line — it could neither add a good nor remove
+one. Every historical use happened to only requantify, so the fork stayed invisible.
+
+**Fix.** The writer now implements replacement (`Convert-PmBlock`): drop every goods line in the PM block,
+write the override's inputs+outputs into `building_modifiers → workforce_scaled`; same for the new
+`pm_employment` into `level_scaled`; drop a `required_input_goods` whose good left the inputs (a producer
+gated on its own product deadlocks — MODDING_NOTES); THROW on an override naming an unknown PM or a PM
+without the target sub-block.
+
+**Two more found while building it.**
+- **PowerShell scalar-unwrap**: a ONE-line employment override came back from the builder scriptblock as a
+  bare string; `$new[$n]` then indexed CHARACTERS and the emitted `level_scaled` block held a single tab
+  instead of the engineers line — silently, build green. `@( )` around the invocation is load-bearing and
+  commented as such. Caught only by reading the emitted artifact (the verify-the-artifact principle).
+- **`era_solver.mjs` still carries a pre-`era_pm.mjs` fork of `candidates()`** — the mandate landed in the
+  shared copy and era 0 of `era_prices.json` still showed gas streetlights. The fork has also already
+  drifted exactly as era_pm's header predicted (it lacks the coerced-labour ban). Both forks now consult
+  the one `mandatedPick()`; full dedup filed as its own task.
+
+**Detect next time.** When a mechanism has a model half and an emitter half, test it with a case that
+exercises the SEMANTIC difference (add + remove, not just requantify), and read the emitted file rather
+than trusting a green build.
+
 ## The in-era illogicality count was fiction — it scored recipes that never ship (2026-08-09)
 
 **Symptom.** The headline illogicality read 52 (47 excluding shipyards) while a replay of the criterion on

@@ -3201,3 +3201,147 @@ from now on, and the **integer polish** (below) attacks the amplifier itself.
 - **Grain collapses at era 3 in every configuration** — the subsistence/market interface (subsistence
   supplies grain at zero opportunity cost); needs its own session.
 - **PM choice still never settles** (hysteresis deferred; best-of-cycle freezing designed, unbuilt).
+
+## 10.43 The electricity pass (2026-08-09) — municipal generation, the lighting mandate, and power's era-4 start
+
+**The user's brief (superseding the §10.42.5 queue entry in three ways):** (1) urban-centre lighting
+methods are MANDATED at the highest tier the era allows — a prerequisite of being a city, never a solver
+choice; (2) the electric-streetlights method also consumes **one coal**, with the remaining effectiveness
+change covered by shifting laborers into engineers; (3) investigate what can be done narratively to get
+rid of an input-less era-3 power industry ("hydro") — were coal plants at 1870/1900/1920 different enough
+to justify 2–3 standalone types, and does era-3 electricity need to exist at all? The brief explicitly
+accepts that the outcome bends "urban centres are the only pre-existing non-manufacturing building whose
+PMs we touch" — this is one large change to redo electricity.
+
+### 10.43.1 The investigation — what the record supports
+
+- **1870 (era 2): no central power stations existed anywhere.** The first were Pearl Street and Holborn
+  Viaduct, both 1882; 1870s electricity is telegraph batteries and arc-light experiments (Gramme dynamo
+  1871). An era-2 electricity industry would be an invention, not a correction. (The shipped model
+  already agreed — power began at era 3 — and stays agreed: power now appears at era 2 in NO form.)
+- **1900 (era 3): the plant generation of 1900 was the municipal engine-house.** Reciprocating steam
+  engines driving dynamos, ~0.1–5 MW, typically owned by the city or the tram company, sited inside the
+  city it lit; the load was street lighting and trams. The steam turbine existed (Parsons 1884) and the
+  FIRST turbine station (Elberfeld, 1900) is exactly the leading edge at that date. Plant efficiency ~4%.
+  Niagara (1895) proved large hydro at the same moment — as a one-off heroic site, not a standard plant.
+- **1920–25 (era 4): the central station proper.** Steam turbines at 20–60+ MW per unit, pulverized-coal
+  firing, regional interconnection (Britain's 1926 Grid Act), and electricity becoming an INDUSTRIAL
+  input — motor drive overtaking line shafts. This is a different building from the 1900 engine-house in
+  machinery, scale and siting; you rebuild, you do not upgrade. Efficiency ~15%.
+- **1940 (era 5): the modernised station** — high-pressure/reheat steam, 100+ MW units, national grids —
+  an evolution of the era-4 plant rather than a third coal generation. (Vanilla represents this rung as
+  the oil-fired plant; oil was historically niche until postwar, but it prices the rung's fuel
+  differentiation and is kept.)
+
+**Verdicts.** Coal plants justify **two** standalone tiers (era 4 turbine hall, era 5 modernised), not
+three — the "third" (1900) was municipal-scale and city-embedded, which is precisely what the rehauled
+urban-centre lighting method models. **Era-3 electricity exists as a GOOD but not as a standalone
+dominant industry**: supply at 1900 is the urban centres' own generation plus whatever leading-rung
+turbine stations the market wants. **Hydro never becomes a market industry**: small-scale (mill-race /
+municipal) hydro folds into the urban-centre generation narrative alongside municipal coal — the 1-coal
+input keeps the fuel economics honest without claiming the whole method is hydro — and large-scale hydro
+(Niagara 1895, Hoover 1936, Dnieprostroi) is a site-specific unique megaproject in the same class as the
+canals, which the scenario model already excludes. No input-less producer exists anywhere in the ladder.
+A future in-game unique building for the great dams stays open as mod content; it is not scenario model.
+
+### 10.43.2 What shipped
+
+1. **The lighting mandate** — `MANDATED_PMGS` in `tools/era_pm.mjs`: `pmg_street_lighting` resolves to
+   exactly one candidate per era — none @0, gas @1–2, electric @3+ — so the optimiser cannot trade it and
+   the PM limit cycle loses a participant. Gas's era-1 threshold is hand-assigned (vanilla leaves the PM
+   ungated because vanilla starts at 1836; gas street lighting is 1807–1820s, and an ungated method would
+   otherwise be mandated into 1780). Consulted via `mandatedPick()` by BOTH `candidates()`
+   implementations — era_solver.mjs still carries its pre-era_pm fork of the candidate rules (dedup debt,
+   flagged as its own task; the fork also lacks the coerced-labour ban, a real drift the "one copy" rule
+   predicted).
+2. **The municipal-generation method** — `pm_electric_streetlights` overridden via `pm_goods`
+   (in: 1 coal · out: 10 services + **1 electricity**; was in: 3 electricity · out: 10 services) and the
+   new **`pm_employment`** (250 engineers; was 200 laborers + 50 engineers). `required_input_goods =
+   electricity` is dropped by the builder — a producer gated on its own product being already in the
+   market would deadlock the game's PM selector (MODDING_NOTES).
+   **The labor-shift arithmetic, stated honestly:** the flip is worth **+£90/level at base prices**
+   (3 elec no longer bought = +90, 1 elec now sold = +30, 1 coal now bought = −30). A 1:1
+   laborers→engineers shift adds `N × base wage × 2` of wages; covering £90 at the era-3 base wage
+   (£0.0885/wk) needs N≈508 — but the method only HAS 200 laborers, and drawing the building's base pool
+   negative is forbidden (arcades + motor carriages already exhaust it: 1000 − 1000 laborers). So ALL 200
+   shift (the method becomes pure engineers) and that covers **£35.4 of the £90** at era-3 wages (£51.9
+   at era-5 wages); the residual ~£55/level accrues to urban-centre margin. Exact neutrality is
+   unreachable inside the method's own headcount — recorded as a fact, not papered over; raising the
+   engineer count beyond 250 or the coal input beyond 1 are the levers if the residual reads badly.
+3. **Power = [coal @4, oil @5]** in `build_era_ladder.mjs`'s spec and the config; the era-3 "Early Power
+   Plant" tier is deleted. The coal tier inherits the **vanilla key `building_power_plant`** (5 vanilla
+   script files reference it — the key must survive) with tech swapped to `steam_turbine`; nothing in
+   vanilla script references `pm_early_power_plant`, so nothing is orphaned. 1836 history contains no
+   power plants, so the start conversion is untouched.
+4. **Power is DEBUT-EXEMPT** (`ERA_DEBUT_EXEMPT` default gains `power`, permanently and on principle —
+   unlike the trio pending era-1 tiers): its debut rung is EMBEDDED in urban centres, so the industry
+   exists at era 3 even though its standalone ladder starts at era 4, and the era-3 scenario may place
+   coal plants as its LEADING rung (+20% target) — the first turbine stations, which is historically the
+   right reading of 1900. At era ≤2 availability alone excludes power (earliest tier era 4 > LEAD_TIER),
+   so the exemption is inert there.
+5. **The chain rule now gates reference-building METHODS by era** (`refProducible` in era_scenarios.mjs).
+   The walk used to accept any PM of any reachable building; once streetlights PRODUCE electricity, that
+   would have called electricity "producible at 1780" (the urban centre is an era-0 building listing an
+   era-3 method) and un-withheld every electricity-eating rung three eras early. With the gate,
+   electricity is ref-producible exactly from era 3 — which is also what closes prerequisite (b) from
+   §10.42.5: the chain rule counts urban centres as electricity producers.
+6. **The builder's PM override writer is now REPLACEMENT, not requantify** (`Convert-PmBlock` in
+   build.ps1). The old writer could only rewrite quantities of goods lines that already existed, while
+   the model's `pmRec()` has always read an override as the whole recipe — a latent divergence that this
+   pass would have turned into a shipped bug (coal never added, the electricity input never removed).
+   Now: goods lines are dropped and rewritten inside `building_modifiers → workforce_scaled`, employment
+   inside `level_scaled`, `required_input_goods` dropped when its good leaves the inputs, and an override
+   naming a PM no vanilla file defines THROWS. See BUGS_AND_FIXES for the two defects found while
+   building it (the divergence itself; a PowerShell scalar-unwrap that emitted a lone tab instead of a
+   one-line employment block).
+7. **`pm_employment` reaches the model** via REFEDIT[pm].emp (econ_host folds the config key in;
+   econ.js's pmRec/selEmp/tierEmp route through it) and the UI via a separate `REFEMP` (builder.html) —
+   deliberately NOT inside the UI's editable REFEDIT, because pm_goods is serialised wholesale on export
+   and dropped wholesale by `recipes: vanilla`, and the employment override must survive both. It is
+   displayed in Workforce but not editable, consistent with the standing rule that workforce is not yet
+   a UI-editable field.
+
+**Scope declaration reaffirmed:** this is the only PM change made to pre-existing non-manufacturing
+industries, now including its one deliberate extension (the power industry restructure that the
+investigation concluded in) — the mechanism (`pm_goods`/`pm_employment`/mandates) is general, the
+LICENSE to use it on non-manufacturing vanilla buildings is not.
+
+### 10.43.3 Measured results (default run + ERA_JOINT 8/9/10 ensemble, 2026-08-09)
+
+**The design landed as specified.** Lighting per era: none / gas / gas / electric×3 (mandated, both
+solvers). Power per era: e0–2 **none** (1870 has zero electricity — historically exact), e3 **36
+coal-fired as the LEADING rung** beside **306 urban-centre levels each generating 1 electricity**, e4
+63 coal (dominant) + 64 oil (leading), e5 91 coal (stale, being shed) + 363 oil (dominant). Electricity
+price path **151 / 139 / 121** across e3/e4/e5 — scarce and expensive when new, deflating as the
+industry modernises, never pinned at the band edge.
+
+| | final-state illogicality | losses £/wk | net £/wk |
+|---|---|---|---|
+| baseline (ruled set + prune), default | 64 (55 excl) | 169k | 13.6M |
+| baseline verification seeds | 58–68 (50–59) | 155–242k | 12.0–14.0M |
+| **electricity pass, default (ships)** | **72 (61)** · per era 4/13/15/17/12/11 | **218k** (1.8%) | **12.3M** |
+| electricity pass, seeds 8/9/10 | 72/81/76 (61/72/67) | 218/347/319k | 12.3/11.7/12.2M |
+
+**The cost is real but modest — median ≈ +13 faults, ≈ +100k losses, ≈ −1.3M net** (the ensembles
+barely overlap, so this is signal, not the ±10/±250k/±0.4M jitter). It has two visible sources: (1)
+**electricity is dearer at eras 4–5 than before** (139/121 vs 125/105 — the standalone sector is
+smaller: 669 → 454 power levels at era 5) and the electric rungs that eat it pay for that — railway is
+now loss-making + inverted at era 4 (electric railway eats 10 electricity/level, floored at 1 level),
+electrics/synthetics linger on the 2-eras-stale-profitable lists; (2) urban centres got richer (the
+uncovered £55/level residual plus electricity revenue), so more of the F13 entitlement survives the
+loss cut (279 → 306 UC levels at era 3) and services supply grows accordingly. Era-5 newest-rung
+losses stay **£0**; railways reach **117 levels at 1945** (93 diesel + 23 electric + 1 steam; ~89
+before), still floored at 1 level in eras 3–4 — the railway question stays open and now has its
+electricity interaction on the record.
+
+⭐ **The one residual ceiling breach is GONE: the INDUSTRIAL CEILING is clear in all six eras in ALL
+FOUR runs** (default + three seeds). The baseline's era-2 engines breach (buy 224 / sell 96,
+§10.42.5's open item) does not reproduce anywhere in the new state. ⚠ Attribution is not fully pinned —
+the pass changed nothing that touches era-2 engines directly, so the breach was evidently marginal and
+the re-solve cleared it; treat it as closed-by-observation, reopen if a later ensemble resurfaces it.
+
+**Fixed point:** the first solve after the ladder rebuild printed the expected one-generation ⚠ (the
+re-minted tiers' frozen `input_ratio` is discarded by `build_era_ladder --write` and re-frozen by the
+next solve's `--write`); the state after it reads `own 66 · below 23 · frozen 10 — no tier reads its
+mix from the previous run`, and a full `--write` → re-run byte-identity check was run on the shipped
+state (see CLAUDE.md's fixed-point note for the transient rule).

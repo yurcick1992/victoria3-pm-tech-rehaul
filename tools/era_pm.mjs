@@ -31,6 +31,32 @@ export const SCENARIO_LAWS = new Set(['law_slavery_banned', 'law_commercialized_
 // paid to read to cigar rollers), not something a scenario should lean on.
 const FORBIDDEN_PM_RE = /^worker_exploitation_|^lectors_tobacco$/;
 
+// ---------------------------------------------------------------------------------------------------
+// MANDATED PMGs (user directive, 2026-08-09 — part of the electricity pass, BALANCE_FRAMEWORK §10.43).
+// Street lighting is a PREREQUISITE of being an urban centre, not an economic choice: a city lights its
+// streets with the newest method its era knows, whatever the margin says. The candidate set for a
+// mandated PMG collapses to exactly one method per era, so the optimiser cannot trade it and the PM
+// limit cycle loses a participant. The ladder is explicit because vanilla cannot express it:
+// `pm_gas_streetlights` is UNGATED in vanilla (the game starts at 1836, when gas lighting was real), but
+// gas street lighting is 1810s–20s — era 1, not era 0. Highest entry whose era <= the scenario era wins.
+// SOLVER-ONLY, like every rule in this file: the UI keeps free choice.
+const MANDATED_PMGS = {
+  pmg_street_lighting: [
+    ['pm_electric_streetlights', 3],   // electrical_generation — era 3 (its recipe is the rehauled
+                                       // municipal-generation method: +1 electricity, −1 coal, engineers)
+    ['pm_gas_streetlights', 1],        // hand-assigned era 1: Pall Mall 1807, widespread 1820s+
+    ['pm_no_street_lighting', 0],
+  ],
+};
+// The mandate resolved for one PMG+era: null = not mandated (normal candidate rules apply), else the
+// single-PM candidate list. EXPORTED because tools/era_solver.mjs still carries its own pre-era_pm fork
+// of candidates() (a known dedup debt) — both forks consult this ONE ladder, so the mandate at least
+// cannot drift between them while the fork lives.
+export function mandatedPick(pmg, era) {
+  const m = MANDATED_PMGS[pmg]; if (!m) return null;
+  const p = m.find(([, e]) => e <= era); return p ? [p[0]] : [];
+}
+
 // ⚗ EXPERIMENT KNOB (2026-08-09, default empty = no-op): ERA_FORBID_PMS="pm_a@3,pm_b" forbids named PMs
 // from a given era ONWARD (no @era = all eras). Exists to measure narrative vetoes — e.g. urban centres
 // running `pm_no_public_transport` in 1945, which is what the railway "recovery" currently rides on.
@@ -65,6 +91,9 @@ export function makePmRules(E, S) {
     return true;
   }
   function candidates(pmg, era, presentPms) {
+    // a mandated PMG has exactly one legal method per era — the newest its era allows (list above)
+    const mand = mandatedPick(pmg, era);
+    if (mand) return mand;
     const g = S.VAN.pmgs[pmg]; if (!(g && g.pms)) return [];
     return g.pms.filter(pm => !E.pmGated(pm) && pmAvailable(pm) && pmEra(pm) <= era && pmGateOk(pm, presentPms)
       && !(FORBID_FROM[pm] != null && era >= FORBID_FROM[pm]));

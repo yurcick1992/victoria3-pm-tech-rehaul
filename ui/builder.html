@@ -1222,8 +1222,11 @@ function syncScenarioPrices(agg){
 function thrOOB(v){ return v<25 || v>175; }   // outside the ±75% price band
 function tierOut(i,t){ return t.output_good || i.output_good; }
 // ----- production-method (PMVANILLA) helpers, shared by our secondaries + the reference explorer -----
-function pmRec(pm){ const v=VAN.pms[pm]||{in:{},out:{},emp:{},mods:{}}; const o=REFEDIT[pm];
-  return o ? {in:o.in||v.in, out:o.out||v.out, emp:v.emp, mods:v.mods} : v; }   // REFEDIT = session goods overrides (explorer editing)
+// REFEDIT = pm_goods overrides (editable, exported); REFEMP = pm_employment overrides (config-only,
+// NOT editable here and deliberately NOT inside REFEDIT — pm_goods is serialised wholesale on export and
+// dropped wholesale by `recipes: vanilla`, and the employment override must survive both).
+function pmRec(pm){ const v=VAN.pms[pm]||{in:{},out:{},emp:{},mods:{}}; const o=REFEDIT[pm], em=REFEMP[pm]||v.emp;
+  return o ? {in:o.in||v.in, out:o.out||v.out, emp:em, mods:v.mods} : (em===v.emp ? v : {in:v.in, out:v.out, emp:em, mods:v.mods}); }
 function goodsVal(map, useThr){ let v=0; for(const g in (map||{})){ v += map[g]*(PRICES[g]||0)*(useThr?(thresholds[g]??100)/100:1); } return v; }
 // THE MONEY A BUILDING ROW SHOWS IS AT SCENARIO PRICES, INCLUDING THROUGHPUT. Every £ in the Input and
 // Output cells — each goods row and both subtotals — is what this building actually pays and earns in the
@@ -1282,13 +1285,13 @@ function nonGoodsRows(i,t){ const ng=tierNonGoods(i,t); if(!ng.length) return ''
 // each PMG always has one active PM in-game). Base secondary PMs are usually inert (0 emp), but some carry the
 // building's jobs (e.g. the art academy's ownership PMG employs academics/clerks/laborers even at its default).
 function tierEmp(t){ const e=Object.assign({}, t.employment||{});
-  for(const pg in (t._sec||{})){ const r=VAN.pms[t._sec[pg]];
-    if(r&&r.emp) for(const k in r.emp) e[k]=(e[k]||0)+r.emp[k]; }
+  for(const pg in (t._sec||{})){ const r=pmRec(t._sec[pg]);
+    if(r.emp) for(const k in r.emp) e[k]=(e[k]||0)+r.emp[k]; }
   for(const k in e){ if(e[k]===0) delete e[k]; } return e; }
 function empTotal(m){ let s=0; for(const k in (m||{})) s+=m[k]; return s; }
 function empRows(m){ return Object.entries(m||{}).map(([k,v])=>`<div class="brk">${esc(k)} ${v}</div>`).join(''); }
 function empBreak(m){ return Object.entries(m||{}).map(([k,v])=>`${k} ${v}`).join(', '); }
-function selEmp(sel){ const e={}; for(const pg in (sel||{})){ const r=VAN.pms[sel[pg]]; if(r&&r.emp) for(const k in r.emp) e[k]=(e[k]||0)+r.emp[k]; } return e; }
+function selEmp(sel){ const e={}; for(const pg in (sel||{})){ const r=pmRec(sel[pg]); if(r.emp) for(const k in r.emp) e[k]=(e[k]||0)+r.emp[k]; } return e; }
 // FULL break-even: output price (% of base) at which full profit (input goods + wages) = 0.
 // THROUGHPUT is in the profit, not only the order book: it scales goods but NOT the workforce, so it
 // raises the margin (wages are the one cost that doesn't grow with it). revenue = k·O, cost = k·I + W.
@@ -2252,6 +2255,7 @@ function initVizTooltips(){
 const OURS = new Set(); IND.forEach(i=>i.tiers.forEach(t=>OURS.add(t.key)));   // buildings we own (exclude from reference)
 const REFSEL = {};                    // buildingKey -> {pmg: pm}  (session-only PM selection)
 const REFEDIT = JSON.parse(JSON.stringify(window.PMDATA.config.pm_goods||{}));   // pm -> {in:{good:qty}, out:{good:qty}}  goods overrides keyed by PM (global recipe); config-backed via pm_goods, emitted by the builder into the owned production_methods files
+const REFEMP = JSON.parse(JSON.stringify(window.PMDATA.config.pm_employment||{})); // pm -> {profession: count}  per-PM EMPLOYMENT overrides (config `pm_employment`, emitted like pm_goods). Config-only: displayed in Workforce, NOT editable in the UI, and kept OUT of REFEDIT so exporting / recipe-book switches can never touch it
 const REFAIV = Object.assign({}, window.PMDATA.config.building_ai_value||{});   // buildingKey -> base ai_value override (config-backed; emitted for buildings in owned files)
 function refEditSet(pm,dir,good,val){ const v=VAN.pms[pm]||{in:{},out:{}};
   const o=REFEDIT[pm]||(REFEDIT[pm]={in:{...(v.in||{})},out:{...(v.out||{})}});

@@ -265,11 +265,6 @@ pmg_main_electrics_telephones = {
 	production_methods = { pm_main_electrics_telephones }
 }
 
-pmg_main_power_early = {
-	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
-	production_methods = { pm_main_power_early }
-}
-
 pmg_main_power_coal = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
 	production_methods = { pm_main_power_coal }

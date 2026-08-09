@@ -420,6 +420,13 @@ The vanilla-PM→tier mapping should live in the config (add a `vanilla_pm` fiel
 - `aliases = { … }` on a building preserves the plural/alt keys other files use.
 - Referenced secondary PMGs (automation, luxury, canning, …) stay defined in vanilla — we only
   reference them, so their base ("off") PMs come along unchanged.
+- **⚠ `required_input_goods = <good>` makes a PM unselectable until that good is ALREADY traded in the
+  market** — vanilla uses it on `pm_electric_streetlights` so cities cannot light streets before any
+  electricity exists. That is a DEADLOCK for a PM that *produces* the named good: our rehauled
+  streetlights GENERATE electricity, and with the vanilla line kept no urban centre could ever switch to
+  them (no electricity in market → PM locked → no electricity, forever — and nothing errors). The
+  builder's `pm_goods` writer therefore drops a `required_input_goods` whose good is no longer among the
+  override's inputs. If you ever hand a producing PM such a gate, this is why the game ignores your PM.
 
 ## RNG seed: readable, not settable headlessly
 

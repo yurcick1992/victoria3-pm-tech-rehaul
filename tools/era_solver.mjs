@@ -33,6 +33,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadEcon, REPO } from './econ_host.mjs';
+import { mandatedPick } from './era_pm.mjs';
 
 const WRITE = process.argv.includes('--write');
 const CFG = join(REPO, 'config', 'mod_config.json');
@@ -244,7 +245,11 @@ function pmAvailable(pm) {
 }
 // Candidate PMs of a PMG for a country of `era`: available by tech, by law/region/company/identity, not
 // power-bloc gated, and with any unlocking_production_methods gate satisfied.
+// ⚠ This is a pre-era_pm.mjs FORK of the shared candidates() (dedup debt — era_pm's header says one
+// copy, and this is the second). The MANDATE at least is consulted from the one shared ladder.
 function candidates(pmg, era, presentPms) {
+  const mand = mandatedPick(pmg, era);
+  if (mand) return mand;
   const g = S.VAN.pmgs[pmg]; if (!(g && g.pms)) return [];
   return g.pms.filter(pm => !E.pmGated(pm) && pmAvailable(pm) && pmEra(pm) <= era && pmGateOk(pm, presentPms));
 }

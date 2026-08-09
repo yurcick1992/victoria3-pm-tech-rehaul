@@ -88,7 +88,16 @@ export function loadEcon({ quiet = false } = {}) {
     thresholds: {},
     BLDNUM: {}, ADDBUY: {}, ADDSELL: {}, THRU: {}, UNITNUM: {},
     REFSEL: {},
-    REFEDIT: JSON.parse(JSON.stringify(cfg.pm_goods || {})),
+    // pm_goods (goods overrides) + pm_employment (per-PM employment overrides) fold into ONE override
+    // map — econ.js's pmRec reads {in,out,emp} off the same entry. Kept as two config keys because the
+    // UI edits pm_goods and must never carry emp into it (the recipe book drops pm_goods wholesale).
+    REFEDIT: (() => {
+      const r = JSON.parse(JSON.stringify(cfg.pm_goods || {}));
+      for (const pm in (cfg.pm_employment || {})) {
+        (r[pm] = r[pm] || {}).emp = JSON.parse(JSON.stringify(cfg.pm_employment[pm]));
+      }
+      return r;
+    })(),
     REFBASE: {},
     OURS: new Set(),
     POPM,

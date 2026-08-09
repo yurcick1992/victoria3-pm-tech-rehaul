@@ -38,9 +38,10 @@ Everything below — "one main PM", "a building per tier", the profitability lad
 The mod has its **own five technology eras**, anchored at **~1750 / 1850 / 1900 / 1925 / 1940** —
 deliberately wider than the game's window at the front and **contracting** towards the back, because
 technical progress accelerates after the industrial revolution. **No industry has two tiers on one era.**
-89 tiers over 22 industries: 67 real + **22 `model_only`** (modelled but NOT emitted, because the game
+99 tiers over 22 industries: 66 real + **33 `model_only`** (modelled but NOT emitted, because the game
 has no unlocking technology for them yet — the builder gets a filtered config, `ui/data.js` gets the
-complete one). Some ladders stop early, recorded per industry as **`ladder_end`**: `plateau` (food,
+complete one; the count is `build_era_ladder.mjs`'s own summary line — an earlier "89/67/22" here had
+gone stale against the spec). Some ladders stop early, recorded per industry as **`ladder_end`**: `plateau` (food,
 textile, furniture — the last tier is permanent, so its good's price must hold that tier up rather
 than deflate past it, which is Baumol's cost disease falling out of the model) or `extinct` (sail
 shipyards — the industry **actually dies**: no price floor, *and* it is not placed in a scenario two eras
@@ -100,14 +101,19 @@ leading rung's PROVISIONAL recipe and under-counted by ~40 points (52 reported v
 shipped state). Quote the `FINAL-STATE ILLOGICALITY` line, never the per-era sum alone — and no profit
 figure before 2026-08-09 is comparable to later ones without adding shipyards back (they are excluded
 from the totals now, reported on their own line, like gold).
-**Current state under the ruled set (§10.42.4) + the 1780 prune (steel/glass, ruled 2026-08-09):
-final-state illogicality 64 (55 excluding shipyards), per era 5/12/13/15/10/9 · losses £169k/wk ≈ 1% of
-net · net £13.6M/wk · era-5 newest-rung losses £0 · grain four types at 1945 · rice zero by ruling · one
-residual ceiling breach (era-2 engines, under-built after the chain rule withheld the electric rung —
-open). Verification seeds spanned 58–68 (50–59) / £155–242k / £12.0–14.0M.** The pre-campaign state on
-the same metric was 94 (84) and £868k losses. 1780's five remaining faults (food, furniture, tooling,
-paper, artillery) are honest tiny-market statements — industries with real buyers, each losing
-£150–350/wk at one floored level.
+**Current state under the ruled set (§10.42.4) + the 1780 prune + the ELECTRICITY PASS (§10.43, shipped
+2026-08-09): final-state illogicality 72 (61 excluding shipyards), per era 4/13/15/17/12/11 · losses
+£218k/wk ≈ 1.8% of net · net £12.3M/wk · era-5 newest-rung losses £0 · INDUSTRIAL CEILING CLEAR IN ALL
+SIX ERAS in all four runs (the era-2 engines breach — the last residual — does not reproduce;
+closed-by-observation, attribution not pinned) · electricity path 151/139/121 across e3/e4/e5, era-3
+supply = 306 urban-centre levels + 36 leading coal plants · railways 117 levels at 1945, still floored
+at 1 in eras 3–4. Ensemble seeds 8/9/10: 72/81/76 (61/72/67) / £218–347k / £11.7–12.3M.** The pass costs
+a real but modest ≈+13 faults / ≈−1.3M net vs the pre-pass baseline (64 (55) / £169k / £13.6M; seeds
+58–68 (50–59) / £155–242k / £12.0–14.0M) — the standalone power sector is smaller and eras 4–5 pay more
+for electricity, which is §10.43's structural intent, not a tuning miss. The pre-campaign state on
+the same metric was 94 (84) and £868k losses. 1780's remaining faults (furniture, tooling, paper,
+artillery — food cleared in the shipped run) are honest tiny-market statements — industries with real
+buyers, each losing £86–300/wk at one floored level.
 ⚠ Older counts in this file's history (43/30, 52/47) are the in-era metric on the old defaults — void for
 comparison on both grounds.
 ⚠ **Two levers that lower the count are REJECTED and must stay rejected**: `ERA_NO_BUYER=1` buys its gain
@@ -120,8 +126,12 @@ scenario actually CONTAINS — an absent industry or a tier at Number 0 is never
 comparison partner for one — so zeroing things out while tinkering can only lower the count (§10.17).
 ✅ **The write cycle is a STRICT FIXED POINT** (BALANCE_FRAMEWORK §10.25, closed 2026-08-05): config,
 presets and the printed report come back byte-identical after every `--write` → re-run. It got there by
-making the recipe MIX come from the vanilla recipes alone — the run prints `RECIPE MIX: own 67 · below 22`
-and warns if any tier ever reads its mix from the previous write.
+making the recipe MIX come from invariant sources — the run prints `RECIPE MIX: own 66 · below 23 ·
+frozen 10` and warns if any tier ever reads its mix from the previous write. ⚠ **One EXPECTED transient:**
+`build_era_ladder.mjs --write` re-mints the invented tiers, which discards their frozen `input_ratio`, so
+the FIRST solve after a ladder rebuild prints the ⚠ (those tiers fall through to their seeded inputs) and
+its own `--write` re-freezes them — the SECOND run is clean and the fixed point holds from there. A ⚠ on
+any later run is a real defect.
 ✅ **The count/price loop now CONVERGES** (§10.28): it used to limit-cycle forever at a 19–94pp residual,
 because a proportional controller cannot settle integer building counts (a good wanting 6.4 levels toggles
 6/7, worth ~20pp of price). A **deadband with hysteresis — stop chasing at 8pp, resume at 15pp** — fixed
@@ -447,7 +457,7 @@ config/era_prices.json      GENERATED by tools/era_solver.mjs and COMMITTED: the
 config/era_presets.json     GENERATED by tools/era_scenarios.mjs and COMMITTED: the five solved era scenarios
                         (buildings/pops/units/sol/prices), passed through by extract_presets.ps1 into ui/presets.js.
                         Committed because a scenario is a design input, not an artifact
-config/mod_config.json      THE THING YOU EDIT — industries → tiers (tech, target_be, natural_year, output, inputs, building_cost, wage_pct?, employment, names, vanilla_pm, vanilla_pm_aliases?, state_infrastructure?, ship_construction?, ai_value?, output_override?); industry flags source_file?/clone_from_vanilla?/follows_be?/no_mass_be? (new-economy); plus top-level building_ai_value (map building_key→ai_value for PRESERVED buildings in owned files, e.g. trade center), pm_goods (map pm_key→{in:{good:qty},out:{good:qty}} — per-PM goods overrides applied to the owned PM files; any building's PM), and building_subsidies (map building_key→AI subsidy policy; see below)
+config/mod_config.json      THE THING YOU EDIT — industries → tiers (tech, target_be, natural_year, output, inputs, building_cost, wage_pct?, employment, names, vanilla_pm, vanilla_pm_aliases?, state_infrastructure?, ship_construction?, ai_value?, output_override?); industry flags source_file?/clone_from_vanilla?/follows_be?/no_mass_be? (new-economy); plus top-level building_ai_value (map building_key→ai_value for PRESERVED buildings in owned files, e.g. trade center), pm_goods (map pm_key→{in:{good:qty},out:{good:qty}} — per-PM goods overrides applied to the owned PM files; any building's PM. ⚠ REPLACEMENT semantics, not per-line requantify: the override IS the PM's whole goods block, so it can add and remove goods, and a `required_input_goods` naming a good the override no longer consumes is dropped — see §10.43's streetlights, which ADD coal and REMOVE the electricity input), pm_employment (map pm_key→{profession:count} — per-PM EMPLOYMENT override, same replacement semantics into the PM's level_scaled block; config-only, displayed but NOT editable in the UI; today: pm_electric_streetlights = 250 engineers), and building_subsidies (map building_key→AI subsidy policy; see below)
 config/start_exceptions.json manual 1836-start overrides (force_tier / remove, scoped by country/state) — editable
 config/start_baseline.json   GENERATED inventory of the vanilla 1836 start (per-industry/tier/country + drift check)
 config/presets.json          WHICH scenario presets to generate (id/label/group/country + optional market_add/market_drop, sol, measured_market) — editable. A preset carrying a **`placeholder`** block instead of `country` is **SYNTHETIC**: not derived from any country, one level of every ordinary building so each production chain is present exactly once (what BE-solving wants). See `placeholder_defaults` for the shared pops, the SoL multipliers and the exclusion lists. Note `sol.slaves` is the **slave basket level** (what buildings buy for them), not a standard of living, and `defaults.class_mult` deliberately has **no** `slaves` entry — slaves are not on the pop-consumption path at all
@@ -507,7 +517,8 @@ tools/                  dev tooling — NOT shipped in the mod
                         ERA_SHRINK_COARSE (coarse-to-fine reduction), the unified post-solve enforcement pass
                         (ERA_RAW_SHRINK — §10.18 sheds levels, not types), ERA_STALE_W=0.25,
                         ERA_SHRINK_STALE_FIRST (stale rungs die first), the DEBUT GUARD + forward-chain rule
-                        (ERA_DEBUT_GUARD, exempt railway/shipyard_steam/motor pending their era-1 tiers),
+                        (ERA_DEBUT_GUARD, exempt railway/shipyard_steam/motor pending their era-1 tiers
+                        + power PERMANENTLY — its debut rung is embedded in urban centres, §10.43),
                         ERA_URBAN_FLOOR=-0.10, the RICE BAN (ERA_ALLOW_RICE=1 restores),
                         ERA_RAW_PRICE_BAND=30 (raw prices float ±30pp; no prescribed path),
                         ERA_CONSTR_RAMP (8→18% of GDP by era), ERA_POLISH (final-pass ±1-level polish) and
@@ -742,7 +753,7 @@ mod/                    THE DEPLOYABLE MOD — GENERATED, do not hand-edit
   common/buildings/{01_industry,06_urban_center,11_private_infrastructure}.txt   (generated: WHOLE-FILE replacements of vanilla — 06/11 own the new-economy chains — see MODDING_NOTES)
   common/ai_strategies/01_admin_strategies.txt            (generated: WHOLE-FILE replacement of vanilla — rewrites the `subsidies` block of all 7 administrative strategies from `building_subsidies`; see AI subsidy policy)
   common/{production_methods,production_method_groups}/zzz_pm_rehaul_*.txt   (generated, additive)
-  common/production_methods/<vanilla name>.txt           (generated: WHOLE-FILE replacement, but ONLY for the vanilla PM files we actually CHANGE — secondary-PM gate remap + per-PM `pm_goods` overrides. A file we would copy verbatim is NOT emitted: owning it would freeze that vanilla file against the next patch and ship bytes we didn't author, for nothing. Today that means `01_industry.txt` alone. See below)
+  common/production_methods/<vanilla name>.txt           (generated: WHOLE-FILE replacement, but ONLY for the vanilla PM files we actually CHANGE — secondary-PM gate remap + per-PM `pm_goods`/`pm_employment` overrides. A file we would copy verbatim is NOT emitted: owning it would freeze that vanilla file against the next patch and ship bytes we didn't author, for nothing. Today that means `01_industry.txt` (gate remap) and `06_urban_center.txt` (the §10.43 electric-streetlights override). See below)
   common/history/buildings/*.txt                         (generated: the re-tiered 1836 start; replaces vanilla via replace_paths)
   common/on_actions/zzz_pm_rehaul_diag.txt               (generated: self-diagnostic tripwire; logs PM_TECH_REHAUL init marker to debug.log at game start — see MODDING_NOTES → Self-diagnostics)
   events/zzz_v3tb_probe.txt                              (generated, TESTBED ONLY — the only events/ file the builder ever emits, and only when a telemetry metric asks. Exists because `on_monthly_pulse` is the finest pulse vanilla has: a reading BETWEEN month boundaries is unreachable from an on_action, so a scheduled `trigger_event = { days = N }` is the only route. Never present in a normal build)
@@ -884,7 +895,17 @@ the game.
   **`no_mass_be: true`** (all three — excluded from the linter ladder and, in the UI, locked-by-default so
   the mass BE tools + preset never touch them). Per-tier **`state_infrastructure`** is emitted as a
   workforce-scaled `state_infrastructure_add` (ports/railways produce infrastructure). Power is on the BE
-  ladder normally (electricity output; `output_override` keeps its vanilla per-tier electricity). Their PMs
+  ladder normally (electricity output; `output_override` keeps its vanilla per-tier electricity).
+  ⭐ **POWER STARTS AT ERA 4 (§10.43, the electricity pass, 2026-08-09):** two tiers — coal-fired
+  (`building_power_plant`, the vanilla key so `has_building` references keep matching; tech
+  `steam_turbine`, era 4) and oil-fired (era 5). The vanilla era-3 "Early Power Plant" tier is GONE: the
+  1900 generation of plant was the municipal engine-house, which the urban centre's MANDATED
+  electric-streetlights method now models (`pm_goods`: +1 electricity out, −1 coal in; `pm_employment`:
+  250 engineers, laborers gone — the streetlight PMG is a solver PREREQUISITE per era via
+  `MANDATED_PMGS` in era_pm.mjs: none @0, gas @1-2, electric @3+, never an economic choice). Power is
+  DEBUT-EXEMPT so the era-3 scenario may still place coal plants as its LEADING rung (the 1900s' first
+  turbine stations); hydro is deliberately NOT a market industry (small-scale folds into the UC
+  narrative, large-scale is a site-specific megaproject like a canal, outside the scenario model). Their PMs
   are our own copies (editable), so `solve_volumes` reads **every** `common/production_methods` file, not
   just `01_industry`. `trade_center` stays vanilla (no tiers). `1836` ports/railways are re-tiered by
   `convert_history` like any split industry.

@@ -231,6 +231,24 @@ observer refuses to launch a mod that carries no telemetry, so build it with `-T
 
 Newest first. Append here as we discover more couplings to vanilla.
 
+- **2026-08-09** — **The electricity pass (BALANCE_FRAMEWORK §10.43) adds three vanilla couplings:**
+  - **`common/production_methods/06_urban_center.txt` is now OWNED** (whole-file, because of the
+    `pm_electric_streetlights` override). Self-healing on a patch — the builder re-reads live vanilla
+    every build and re-applies the surgery — but two things can silently drift: (a) the override targets
+    the PM **by name**; if a patch renames `pm_electric_streetlights` the build THROWS (an override
+    naming an unknown PM is fatal, deliberately); (b) if a patch restructures the PM's
+    `building_modifiers` (no `workforce_scaled`/`level_scaled` sub-block) the build also THROWS. Either
+    way the failure is loud, not silent — re-point the override and re-check §10.43's arithmetic
+    (the £90/level delta assumes vanilla's 3-electricity/10-services shape and base prices 30/30/30).
+  - **`MANDATED_PMGS` in `tools/era_pm.mjs` hardcodes the street-lighting ladder** (none@0 / gas@1 /
+    electric@3) including the PM names. A patch adding a fourth lighting method (LED? arc?) or renaming
+    one leaves the mandate quietly wrong — re-check `pmg_street_lighting`'s member list after a patch.
+  - **Power's vanilla anchors narrowed**: `pm_early_power_plant` is no longer any tier's `vanilla_pm`
+    (the era-3 tier is deleted; the coal tier keeps the vanilla `building_power_plant` key with tech
+    swapped to `steam_turbine`). If a patch gives the power plant a fourth PM or renames
+    `pm_coal-fired_plant`/`pm_oil-fired_plant`, the volume solver's anchors and `start_baseline`'s
+    unmapped alarm are the tripwires, as for any split industry.
+
 - **2026-07-31** — **Redundancy audit: one price table, one telemetry generator, one results root, one
   history walker; and only CHANGED vanilla files are owned.** No balance numbers moved (both linters give
   byte-identical output before and after; the converted 1836 start is byte-identical). What changed that

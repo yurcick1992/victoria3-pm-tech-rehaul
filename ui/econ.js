@@ -127,9 +127,12 @@
     function basePm(pmg){ const g = S.VAN.pmgs[pmg]; if(!(g && g.pms && g.pms.length)) return undefined;
       return g.pms.find(p => !pmGated(p)) || g.pms[0]; }
     function initSel(pmgs){ const s = {}; (pmgs||[]).forEach(pg => { const b = basePm(pg); if(b) s[pg] = b; }); return s; }
-    // REFEDIT = the pm_goods overrides (config-backed, emitted into the owned production_methods files)
+    // REFEDIT = the pm_goods overrides (config-backed, emitted into the owned production_methods files).
+    // An entry may also carry `emp` — the per-PM EMPLOYMENT override (config `pm_employment`, folded in
+    // by the host; the browser keeps it in a separate REFEMP because pm_goods is UI-editable and emp is
+    // not). Override semantics are REPLACEMENT, not merge: an overridden map is the whole recipe/crew.
     function pmRec(pm){ const v = S.VAN.pms[pm] || {in:{},out:{},emp:{},mods:{}}; const o = S.REFEDIT[pm];
-      return o ? {in:o.in||v.in, out:o.out||v.out, emp:v.emp, mods:v.mods} : v; }
+      return o ? {in:o.in||v.in, out:o.out||v.out, emp:o.emp||v.emp, mods:v.mods} : v; }
     function goodsVal(map, useThr){ let v = 0;
       for(const g in (map||{})) v += map[g]*(S.PRICES[g]||0)*(useThr ? (S.thresholds[g] ?? 100)/100 : 1);
       return v; }
@@ -143,7 +146,7 @@
         for(const m in r.mods) mods[m] = (mods[m]||0) + r.mods[m]; }
       return {in:inm, out:outm, mods}; }
     function selEmp(sel){ const e = {};
-      for(const pg in (sel||{})){ const r = S.VAN.pms[sel[pg]]; if(r && r.emp) for(const k in r.emp) e[k] = (e[k]||0) + r.emp[k]; }
+      for(const pg in (sel||{})){ const r = pmRec(sel[pg]); if(r.emp) for(const k in r.emp) e[k] = (e[k]||0) + r.emp[k]; }
       return e; }
 
     // ---------- our tier buildings ----------
@@ -152,8 +155,8 @@
     // default/base PM — each PMG always has one active PM in-game). Base secondary PMs are usually inert,
     // but some carry the building's jobs (e.g. the art academy's ownership PMG employs academics/clerks).
     function tierEmp(t){ const e = Object.assign({}, t.employment||{});
-      for(const pg in (t._sec||{})){ const r = S.VAN.pms[t._sec[pg]];
-        if(r && r.emp) for(const k in r.emp) e[k] = (e[k]||0) + r.emp[k]; }
+      for(const pg in (t._sec||{})){ const r = pmRec(t._sec[pg]);
+        if(r.emp) for(const k in r.emp) e[k] = (e[k]||0) + r.emp[k]; }
       for(const k in e){ if(e[k] === 0) delete e[k]; } return e; }
     function empTotal(m){ let s = 0; for(const k in (m||{})) s += m[k]; return s; }
 

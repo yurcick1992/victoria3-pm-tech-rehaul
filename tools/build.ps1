@@ -712,14 +712,27 @@ if (-not (Test-Path -LiteralPath $srcAI)) {
     Write-Output "ai subsidies: default-strategy trio read live from vanilla: $trioList"
 }
 
-# --- own EVERY production_methods file: two surgical transforms, everything else verbatim ---
+# --- own EVERY production_methods file: three surgical transforms, everything else verbatim ---
 #   (1) GATE REMAP: append our tier pm_key to each `unlocking_production_methods` list that references a
 #       split vanilla main PM (map vanilla_pm -> pm_key), so gated secondaries (bone china, elastics,
 #       precision tools) unlock at the right tier again (they were locked by the main-PM rename).
-#   (2) GOODS OVERRIDE: for any PM in the config `pm_goods` map, overwrite its goods_input/output_*_add
-#       quantities from config. Modifiers/employment/effects stay verbatim (display-only). This makes
-#       EVERY PM's goods editable & emittable WITHOUT owning any building file — buildings reference PMs
-#       by key, so all buildings pick up the edited goods. Default (no override) = verbatim copy.
+#   (2) GOODS OVERRIDE (config `pm_goods`): the override REPLACES the PM's goods wholesale — every
+#       goods_input/output_*_add line is dropped and the override's inputs+outputs written into
+#       `building_modifiers -> workforce_scaled`. ⚠ REPLACEMENT, not per-line requantify: ui/econ.js's
+#       pmRec() has always read an override as the whole recipe (`in: o.in || v.in`), and the electricity
+#       pass (§10.43) is exactly a case that ADDS a good (coal) and REMOVES one (the electricity input) —
+#       the old quantity-rewrite writer would have shipped a mod disagreeing with the model on both.
+#       A `required_input_goods = g` line is dropped when g is no longer among the override's inputs
+#       (pm_electric_streetlights required electricity-in-market — a deadlock once the PM PRODUCES it).
+#   (3) EMPLOYMENT OVERRIDE (config `pm_employment`, pm -> {profession: count}): same replacement
+#       semantics for the crew — every building_employment_*_add line is dropped and the override written
+#       into `building_modifiers -> level_scaled`. This is the per-PM employment override the electricity
+#       pass needed (laborers -> engineers on the streetlights method); the model reads it via
+#       REFEDIT[pm].emp (host) / REFEMP (browser).
+#       Both overrides THROW if the PM lacks the target sub-block — a silently skipped override is the
+#       landmine class (nothing fails, the mod diverges from the model).
+# This makes EVERY PM's goods/crew editable & emittable WITHOUT owning any building file — buildings
+# reference PMs by key, so all buildings pick up the edit. Default (no override) = verbatim copy.
 # The BE linter reads vanilla + our zzz (not these owned copies), so it's unaffected. The negative-goods
 # linter (lint_negative_goods.awk) DOES read these owned copies, so it checks pm_goods overrides.
 $script:pmRemap = @{}
@@ -739,10 +752,10 @@ function Format-Qty($v) {
     if ($d -eq [math]::Truncate($d)) { return ([int]$d).ToString([System.Globalization.CultureInfo]::InvariantCulture) }
     return $d.ToString('0.####', [System.Globalization.CultureInfo]::InvariantCulture)
 }
-# goods-override lookup: pm -> @{ in=@{good=qty}; out=@{good=qty} }
+# goods-override lookup: pm -> @{ in=[ordered]@{good=qty}; out=[ordered]@{good=qty} } (config order kept)
 $pmGoods = @{}
 if ($cfg.pm_goods) { foreach ($p in $cfg.pm_goods.PSObject.Properties) {
-    $ov = @{ in = @{}; out = @{} }
+    $ov = @{ in = [ordered]@{}; out = [ordered]@{} }
     # Quantities are NOT always integers — vanilla's subsistence / urban-centre / agro PMs use fractions
     # (grain 1.0, fabric 0.5, meat 0.33). Keep them as doubles and write them back with INVARIANT
     # culture, or a comma decimal separator on a non-English Windows would emit invalid script.
@@ -750,32 +763,116 @@ if ($cfg.pm_goods) { foreach ($p in $cfg.pm_goods.PSObject.Properties) {
     if ($p.Value.out) { foreach ($g in $p.Value.out.PSObject.Properties) { $ov.out[$g.Name] = [double]$g.Value } }
     $pmGoods[$p.Name] = $ov
 } }
+# employment-override lookup: pm -> [ordered]@{ profession = count }
+$pmEmp = @{}
+if ($cfg.pm_employment) { foreach ($p in $cfg.pm_employment.PSObject.Properties) {
+    $ov = [ordered]@{}
+    foreach ($e in $p.Value.PSObject.Properties) { $ov[$e.Name] = [double]$e.Value }
+    $pmEmp[$p.Name] = $ov
+} }
+# Rewrite ONE overridden PM's block (replacement semantics; see the header comment above). $blk is the
+# block's lines, header line included; returns the new lines. Throws when the PM cannot carry the
+# override, because a silently skipped override ships a mod that disagrees with the model.
+function Convert-PmBlock([System.Collections.Generic.List[string]]$blk, [string]$pmName, $goodsOv, $empOv) {
+    $out = New-Object System.Collections.Generic.List[string]
+    foreach ($ln in $blk) {
+        if ($goodsOv -and $ln -match '^\s*goods_(input|output)_[a-z_]+_add\s*=') { continue }
+        if ($empOv   -and $ln -match '^\s*building_employment_[a-z_]+_add\s*=')  { continue }
+        if ($goodsOv -and $ln -match '^\s*required_input_goods\s*=\s*([a-z_]+)') {
+            if (-not $goodsOv.in.Contains($Matches[1])) { continue }   # no longer an input => the gate would deadlock
+        }
+        $out.Add($ln)
+    }
+    # locate `building_modifiers = {` and its extent, then the target sub-block(s) INSIDE it — the file
+    # also has workforce_scaled under state_modifiers, so anchoring on the sub-block name alone is wrong
+    $bmIx = -1
+    for ($k = 0; $k -lt $out.Count; $k++) { if ($out[$k] -match '^\s*building_modifiers\s*=\s*\{') { $bmIx = $k; break } }
+    if ($bmIx -lt 0) { throw "pm override: $pmName has no building_modifiers block - cannot apply the override" }
+    $depth = 0; $bmEnd = $out.Count - 1
+    for ($k = $bmIx; $k -lt $out.Count; $k++) {
+        $depth += ([regex]::Matches($out[$k], '\{')).Count - ([regex]::Matches($out[$k], '\}')).Count
+        if ($k -gt $bmIx -and $depth -le 0) { $bmEnd = $k; break }
+    }
+    $insertInto = {
+        param($subRe, $mkLines, $what)
+        $ix = -1
+        for ($k = $bmIx + 1; $k -lt $bmEnd; $k++) { if ($out[$k] -match $subRe) { $ix = $k; break } }
+        if ($ix -lt 0) { throw "pm override: $pmName has no $what block inside building_modifiers - cannot apply the override" }
+        $indent = ([regex]::Match($out[$ix], '^\s*')).Value + "`t"
+        # @( ) is load-bearing: a one-line override comes back as a bare STRING (PowerShell unwraps
+        # single-element arrays), and indexing a string yields CHARACTERS — the emitted block then holds
+        # one tab instead of the employment line, silently.
+        $new = @(& $mkLines $indent)
+        for ($n = $new.Count - 1; $n -ge 0; $n--) { $out.Insert($ix + 1, $new[$n]) }
+    }
+    if ($goodsOv) {
+        & $insertInto '^\s*workforce_scaled\s*=\s*\{' {
+            param($ind)
+            $l = @()
+            foreach ($g in $goodsOv.in.Keys)  { $l += "${ind}goods_input_${g}_add = $(Format-Qty $goodsOv.in[$g])" }
+            foreach ($g in $goodsOv.out.Keys) { $l += "${ind}goods_output_${g}_add = $(Format-Qty $goodsOv.out[$g])" }
+            return $l
+        } 'workforce_scaled'
+        # indices moved; refresh building_modifiers extent for a following employment insert
+        $depth = 0; $bmEnd = $out.Count - 1
+        for ($k = $bmIx; $k -lt $out.Count; $k++) {
+            $depth += ([regex]::Matches($out[$k], '\{')).Count - ([regex]::Matches($out[$k], '\}')).Count
+            if ($k -gt $bmIx -and $depth -le 0) { $bmEnd = $k; break }
+        }
+    }
+    if ($empOv) {
+        & $insertInto '^\s*level_scaled\s*=\s*\{' {
+            param($ind)
+            $l = @()
+            foreach ($pr in $empOv.Keys) { $l += "${ind}building_employment_${pr}_add = $(Format-Qty $empOv[$pr])" }
+            return $l
+        } 'level_scaled'
+    }
+    return $out
+}
 # ONLY files we actually CHANGE are emitted. A file we own but copy verbatim is pure downside: it
 # freezes that vanilla file against every future patch, ships bytes we did not author, and buys
 # nothing (an unwritten file simply stays vanilla). Today only 01_industry.txt changes (the gate
 # remap); with an empty pm_goods map the other 14 were byte-identical copies.
-$pmEmitted = @(); $pmSkipped = 0
+$pmEmitted = @(); $pmSkipped = 0; $pmOverridden = New-Object System.Collections.Generic.HashSet[string]
 foreach ($pf in (Get-ChildItem (Join-Path $Game 'common\production_methods') -Filter *.txt)) {
     $orig = [System.IO.File]::ReadAllText($pf.FullName)
     $txt = [regex]::Replace($orig, 'unlocking_production_methods\s*=\s*\{([^{}]*)\}', $gateEval)
-    if ($pmGoods.Count -gt 0) {
-        $lines = $txt -split "`r?`n"; $cur = $null; $touched = $false
-        for ($k = 0; $k -lt $lines.Count; $k++) {
+    if ($pmGoods.Count -gt 0 -or $pmEmp.Count -gt 0) {
+        $lines = $txt -split "`r?`n"; $touched = $false
+        $outL = New-Object System.Collections.Generic.List[string]
+        $k = 0
+        while ($k -lt $lines.Count) {
+            $line = $lines[$k]
             # PM headers are top-level (column 0) in a production_methods file; names are NOT all pm_-prefixed
             # (plantations/farms use default_/automatic_/worker_/… , e.g. default_building_cotton_plantation).
-            if ($lines[$k] -match '^([A-Za-z_][A-Za-z0-9_-]*)\s*=\s*\{') { $cur = $Matches[1]; continue }
-            if ($null -ne $cur -and $pmGoods.ContainsKey($cur)) {
-                if ($lines[$k] -match '^(\s*)goods_input_([a-z_]+)_add\s*=')      { $g = $Matches[2]; if ($pmGoods[$cur].in.ContainsKey($g))  { $lines[$k] = "$($Matches[1])goods_input_${g}_add = $(Format-Qty $pmGoods[$cur].in[$g])"; $touched = $true } }
-                elseif ($lines[$k] -match '^(\s*)goods_output_([a-z_]+)_add\s*=') { $g = $Matches[2]; if ($pmGoods[$cur].out.ContainsKey($g)) { $lines[$k] = "$($Matches[1])goods_output_${g}_add = $(Format-Qty $pmGoods[$cur].out[$g])"; $touched = $true } }
+            if ($line -match '^([A-Za-z_][A-Za-z0-9_-]*)\s*=\s*\{' -and ($pmGoods.ContainsKey($Matches[1]) -or $pmEmp.ContainsKey($Matches[1]))) {
+                $name = $Matches[1]
+                $blk = New-Object System.Collections.Generic.List[string]
+                $depth = 0
+                do {
+                    $depth += ([regex]::Matches($lines[$k], '\{')).Count - ([regex]::Matches($lines[$k], '\}')).Count
+                    $blk.Add($lines[$k]); $k++
+                } while ($k -lt $lines.Count -and $depth -gt 0)
+                foreach ($nl in (Convert-PmBlock $blk $name $pmGoods[$name] $pmEmp[$name])) { $outL.Add($nl) }
+                [void]$pmOverridden.Add($name)
+                $touched = $true
+                continue
             }
+            $outL.Add($line); $k++
         }
-        if ($touched) { $txt = $lines -join "`n" }
+        if ($touched) { $txt = $outL -join "`n" }
     }
     if ($txt -ceq $orig) { $pmSkipped++; continue }   # unchanged => do not own it
     WriteText "$modRel\common\production_methods\$($pf.Name)" $txt $bom
     $pmEmitted += $pf.Name
 }
-Write-Output ("production_methods: owning {0} file(s) [{1}]; {2} left vanilla (unchanged)" -f $pmEmitted.Count, ($pmEmitted -join ', '), $pmSkipped)
+# an override naming a PM no vanilla file defines would otherwise vanish without a trace — the exact
+# "nothing fails" class TESTBED_LANDMINES exists for
+foreach ($pm in @($pmGoods.Keys) + @($pmEmp.Keys) | Select-Object -Unique) {
+    if (-not $pmOverridden.Contains($pm)) { throw "pm_goods/pm_employment override names '$pm', which no vanilla production_methods file defines" }
+}
+Write-Output ("production_methods: owning {0} file(s) [{1}]; {2} left vanilla (unchanged); {3} PM override(s) applied" -f $pmEmitted.Count, ($pmEmitted -join ', '), $pmSkipped, $pmOverridden.Count)
 
 # --- localization for every language (UTF-8 WITH BOM), in a replace/ folder so our building-name
 #     overrides win over vanilla (and new keys are still defined) ---

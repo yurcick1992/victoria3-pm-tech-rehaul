@@ -399,8 +399,12 @@ const URBAN_SHRINK = process.env.ERA_URBAN_SHRINK !== '0';
 //        "day 1 after the unlock", so the newest technology may hold real capacity. Kept as a knob only.
 //   ERA_DEBUT_GUARD (default ON) — the leading rung may EXTEND a ladder but never START one: an industry
 //        whose earliest available tier is newer than the scenario era did not exist yet and is not placed.
-//        ERA_DEBUT_EXEMPT (default railway,shipyard_steam,motor) spares industries that genuinely existed
-//        by 1836 and are only missing an invented era-1 tier. =0 reverts.
+//        ERA_DEBUT_EXEMPT (default railway,shipyard_steam,motor,power) spares industries that genuinely
+//        existed before their earliest standalone tier. Three are missing an invented era-1 tier;
+//        POWER's exemption is PERMANENT and principled (§10.43): its debut rung is EMBEDDED in urban
+//        centres (the mandated electric-streetlights method generates municipal electricity from era 3),
+//        so the standalone ladder starts at era 4 by design and the era-3 scenario may still place the
+//        era-4 coal plant as its leading rung — the 1900s' first turbine stations. =0 reverts.
 //   ERA_RAW_SHRINK (default ON) — §10.18 sheds LEVELS (25% at a time, floor 1, then the type) instead of
 //        dropping a whole TYPE outright. The type-drop, applied to one shared price, removed wheat, maize
 //        and rye one after another and left millet as the only — protected, loss-making — grain source.
@@ -444,7 +448,7 @@ const LEAD_W = +(process.env.ERA_LEAD_W || 1);
 const STALE_W = +(process.env.ERA_STALE_W || 0.25);
 const DEBUT_GUARD = process.env.ERA_DEBUT_GUARD !== '0';
 const DEBUT_EXEMPT = new Set((process.env.ERA_DEBUT_EXEMPT != null ? process.env.ERA_DEBUT_EXEMPT
-  : 'railway,shipyard_steam,motor').split(',').filter(Boolean));
+  : 'railway,shipyard_steam,motor,power').split(',').filter(Boolean));
 const WAGE_RAMP = +(process.env.ERA_WAGE_RAMP || 1);
 const RAW_SHRINK = process.env.ERA_RAW_SHRINK !== '0';
 const RAW_RECHECK = RAW_SHRINK || process.env.ERA_RAW_RECHECK === '1';
@@ -1325,7 +1329,15 @@ function buildScenario(eIx, finalPass) {
     if (!techAllowed(bt, era)) continue;
     for (const pmg of ((S.VAN.buildings[b] || {}).pmgs || [])) {
       const grp = S.VAN.pmgs[pmg]; if (!(grp && grp.pms)) continue;
-      for (const pm of grp.pms) { const o = E.pmRec(pm).out || {}; for (const g in o) if (o[g] > 0) refProducible.add(g); }
+      // ⚠ THE METHOD ITSELF MUST BE REACHABLE THIS ERA, not only the building. The urban centre is an
+      // era-0 building whose lighting PMG lists `pm_electric_streetlights` — an era-3 method that (since
+      // the electricity pass, §10.43) PRODUCES electricity. Without the per-PM gate this walk would call
+      // electricity "producible" at 1780 and un-withhold every electricity-eating rung three eras early.
+      // Principle-gated and law-illegal methods are excluded the same way the optimiser excludes them.
+      for (const pm of grp.pms) {
+        if (E.pmGated(pm) || !rules.pmAvailable(pm) || rules.pmEra(pm) > era) continue;
+        const o = E.pmRec(pm).out || {}; for (const g in o) if (o[g] > 0) refProducible.add(g);
+      }
     }
   }
   const tierProducible = new Set();

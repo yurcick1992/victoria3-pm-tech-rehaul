@@ -100,8 +100,8 @@ const SPEC = {
   electrics:   { eras:[3], invent:[ {era:4, slug:'radio', name:'Radio Electrics Industries', pm:'Radio Manufacturing'},
                                     {era:5, slug:'electronics', name:'Electronics Industries', pm:'Vacuum Tube Electronics'} ],
                  note:'VANILLA IS LATE: Bell 1876, first exchange 1878 — era 3, not era 4. Then broadcast radio 1920, electronics/TV 1930s. Telephone TFP actually ACCELERATED after 1929.' },
-  power:       { eras:[3,4,5], invent:[],
-                 note:'Pearl Street 1882. Plant efficiency ~4% (1900) -> 20%+ (1940); largest turbine unit 1.2 MW (1900) -> 30 MW (1910) -> 300 MW class (1930s).' },
+  power:       { eras:[4,5], invent:[],
+                 note:'STARTS AT ERA 4 BY DESIGN (§10.43): the 1900 generation of plant was the municipal engine-house — small, city-embedded, exactly what the urban centre\'s mandated electric-streetlights method now models (+1 electricity, −1 coal, engineers). The standalone ladder is the central turbine station: pulverized-coal turbine hall era 4 (largest unit 1.2 MW 1900 -> 30 MW 1910 -> 60+ MW 1920s), high-pressure/oil era 5 (efficiency ~4% 1900 -> 20%+ 1940). Placeable at era 3 as the LEADING rung (debut-exempt) — Elberfeld 1900 was the leading edge. Hydro is deliberately NOT a market industry: small-scale folds into the urban-centre narrative, large-scale (Niagara 1895, Hoover) is a site-specific megaproject like a canal, outside the scenario model.' },
   art_academy: { eras:[1,2,3,4], invent:[ {era:5, slug:'sound_film', name:'Sound Film Art Academies', pm:'Sound and Colour Film'} ],
                  note:'romanticism -> realism -> photography (1839) -> film 1895 -> sound 1927 / Technicolor 1935. "Output per worker" is barely meaningful here; the ladder is for consistency.' },
   // --- OFF the break-even ladder (follows_be:false) — vanilla economics, informational only ----------
