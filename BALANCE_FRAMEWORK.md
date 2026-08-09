@@ -3200,7 +3200,9 @@ from now on, and the **integer polish** (below) attacks the amplifier itself.
   ends 1921 and vanilla ends 1936 anyway.
 - **Grain collapses at era 3 in every configuration** — the subsistence/market interface (subsistence
   supplies grain at zero opportunity cost); needs its own session.
-- **PM choice still never settles** (hysteresis deferred; best-of-cycle freezing designed, unbuilt).
+- ~~**PM choice still never settles** (hysteresis deferred; best-of-cycle freezing designed, unbuilt).~~
+  **CLOSED 2026-08-10 (§10.48)**: hysteresis 0.10 + best-of-cycle freezing ship as defaults; PM choice
+  settles in all six eras of all three seeds.
 
 ## 10.43 The electricity pass (2026-08-09) — municipal generation, the lighting mandate, and power's era-4 start
 
@@ -3906,3 +3908,96 @@ strongest remaining argument for settling the freight ruling: a mandated freight
 cycle. The derived railway floors (1.75–2.75%) remain honest residuals — the tolerance keeps a
 REASONABLE railway sector alive at a bounded book loss; the historical SHARE still needs freight
 demand.
+
+## 10.48 The hysteresis session (2026-08-10) — PM choice SETTLES, and two ceiling-precedence bugs it flushed out
+
+The experiment §10.42.5 scheduled and §10.47.5 handed over: make the discrete method choice settle.
+Solver-only, no game runs; every arm judged on the 3-seed jitter ensemble (`ERA_JOINT` 8/9/10) against
+the §10.47.4 reference state, which the harness first re-reproduced exactly (seed 8: 71 (61) ·
+9/9/17/18/10/8 · £205k · £12.0M · macro 15 — byte-for-byte).
+
+### 10.48.1 What the campaign measured (10 arms, 31 solver runs)
+
+Illogicality is FINAL-STATE, excl-shipyards in parens; losses/net £/wk; "settled" counts eras whose PM
+optimality line reads SETTLED; "phase noise" is the count of (building, PMG) selections that differ
+across the three seeds' shipped states (the direct measure of solver noise in the method choice).
+
+| arm | ill (excl) by seed | losses | net | macro | settled | phase noise |
+|---|---|---|---|---|---|---|
+| baseline (HEAD d5e1893) | 71(61)/79(68)/80(68) | 205–334k | 11.7–12.0M | 15/20/17 | 0/18 | 137/903 |
+| `ERA_PM_MINGAIN=0.05` | 71(60)/68(58)/69(58) | 145–256k | 12.1–12.7M | 17/17/20 | 0 | — |
+| `ERA_PM_MINGAIN=0.10` | 68(57)/66(56)/68(58) | 173–211k | 12.0–12.7M | 14/13/18 | 1 | 79/894 |
+| `ERA_PM_MINGAIN=0.20` | 69(59)/76(65)/81(69) | 215–301k | 12.8–13.1M | 18/13/14 | 10 (early-break) | — |
+| `ERA_PM_SEED=prod` alone | 72(61)/84(73)/62(52) | 189–238k | 11.5–13.0M | 20/21/23 | 0 | — |
+| seed=prod + mingain 0.10 | 73(63)/69(59)/68(58) | 195–307k | 13.3–13.5M | 19/19/17 | 7 | — |
+| freeze alone (0.02 churn) | 76(65)/77(66)/70(60) | 332–352k | 11.1–11.4M | 14/19/16 | 18/18 | 54/894 |
+| freeze + 0.10, early-break | 64(54) ×3 (byte-identical) | 174k | 12.9M | 19 | 18/18 | 0 |
+| freeze + 0.10 + full budget | 66(56)/67(56)/63(52) | 154–166k | 12.6–12.7M | 14–17 | 18/18 | — |
+| **SHIPS: + set-guards + polish precedence** | **68(58)/64(54)/62(51)** | **154–218k** | **12.6–12.7M** | **15/17/15** | **18/18** | **50/897** |
+| (same code, no knobs — the new default-path reference) | 65(55)/81(70)/79(67) | 214–334k | 11.3–12.0M | 14/21/15 | 0 | 136/903 |
+
+The readings, in order of importance:
+
+- **The hysteresis response curve is clean and 0.10 is its optimum** (ensemble mean of ill-excl: 65.7
+  at 0.02 → 58.7 at 0.05 → **57.0 at 0.10** → 64.3 at 0.20, which also loses a ceiling era). The
+  churn was mostly pairs of near-identical methods — the food industry's canning/distillery and the
+  luxury PMGs dominate the differing-selection lists — trading places on noise-sized margins. The
+  §10.42.5 deferral is lifted by this measurement.
+- **Freezing without hysteresis is HARMFUL** (33–34 PMGs pinned at arbitrary phases, losses ×1.6):
+  at 0.02 the optimiser churns so widely that cycle detection pins a third of the economy. Freezing is
+  only safe AFTER hysteresis has thinned the churn to the genuine bistable pairs (10–13 pins).
+- **⭐ The seed-jitter mechanism was literally "where the cycle got cut off."** With freezing + 0.10
+  and the original early-break loop, the three seeds converged to a BYTE-IDENTICAL shipped state (same
+  dump hash): once the PM fixed point arrives before the round budget, the budget — which is all
+  `ERA_JOINT` varies — stops mattering. The shipped variant spends the remaining budget on the
+  continuous half (see below), so seed variance returns through price convergence depth, but the
+  discrete phase noise stays −63% (137 → 50), and the freight/railway specimen is FIXED: every seed
+  now shows monotone adoption (no trains → wooden → steel carriages), where the baseline flipped
+  `railway_electric`/`railway_diesel` between "steel carriages" and "no passenger trains" per seed.
+- **An early PM fixed point must not starve the continuous half**: breaking the joint loop at the PM
+  fixed point shipped 30–33pp residuals where the full budget reaches ~8pp (and cost the early-break
+  arm its era-1 ceiling and macro 19). The loop now always runs its whole round budget and merely
+  SKIPS the optimiser once settled — re-opening it only if a lifted pin (below) demands it.
+- **Productivity-first seeding (user hypothesis: start each PMG at the era-legal candidate with the
+  highest output-per-worker at base prices, `ERA_PM_SEED=prod`) is measured and PARKED**: it raises
+  net output (~+8% on two seeds, £13.3–13.5M with hysteresis — it does bias toward capital-shaped
+  local equilibria) but worsens illogicality spread (52–73 alone), macro residuals (17–23) and the
+  ceiling, with or without hysteresis. It changes the STARTING POINT, not the dynamics, so it adds
+  variance instead of removing it. The knob stays for re-measurement.
+- **Longer joint settling (`ERA_SETTLE_ITERS=80`) does not dominate** (seed 8 degrades 58→67 excl)
+  and doubles the joint-stage cost — parked at the default 40.
+- Runtime: the shipped set roughly HALVES the solve's optimiser work (55–61 passes vs 109–142).
+
+### 10.48.2 What ships (defaults; each revertable)
+
+1. **`ERA_PM_MINGAIN` default 0.02 → 0.10** (`=0.02` restores).
+2. **`ERA_PM_FREEZE` default ON** (`=0` reverts): after every joint round the full selection state is
+   snapshotted; any (building, PMG) that RETURNS to a method it held after an earlier round is
+   oscillating — a monotone march never revisits — and is pinned at the phase it returned to, which
+   just won the score comparison at current prices ("best-of-cycle", not "last-of-budget").
+   `optimisePMs` enforces pins, adds its own within-call cycles to the map, and DROPS any pin whose
+   method stops being a legal candidate. ⚠ **A pin is not exempt from the ceiling**: a pinned phase
+   that touches a good breached at 175 is lifted and the choice re-opened (measured: a pinned luxury
+   phase held `silk buy 4 / sell 0` — an automatic 175 — through a whole joint loop before this rule).
+3. **Ceiling guards compare breached-good SETS, not counts** (unconditional bugfix — see
+   BUGS_AND_FIXES 2026-08-10: with dye already breached, the count-guard let the §10.38 shrink walk
+   every iron mine out of an 1870 scenario, "1 → 1, fine" at every step).
+4. **The integer polish leads its objective with the breach count and may clear a standing breach
+   against the macro-gap veto** (unconditional bugfix, same entry: the old objective could not SEE a
+   standing breach, and the macro veto then rejected the one +1-shipyard move that priced era-1
+   clippers off the 175 wall because the shipyard's negative VA shrinks the mapped denominator).
+   Result on the DEFAULT path alone: seeds 9/10's standing era-1 breaches are gone — **the ceiling is
+   now clear in all six eras of all three seeds on both arms**, which the old defaults never achieved.
+5. New measurement knobs, all default-neutral: `ERA_PM_SEED=prod` (parked), `ERA_SETTLE_ITERS`
+   (default 40), `ERA_BREACH_TRACE=1` (prints per-step breach sets in the shrink loop — the
+   instrument that localised the count-guard bug).
+
+**The shipped reference state (bare defaults = the old seed-8 identity):** final-state illogicality
+**68 (58 excl shipyards)** · per era 10/10/14/14/12/8 · losses **£156k/wk (1.2% of net)** · net
+**£12.6M/wk** · **ceiling clear 6/6** · macro residuals 15 · subsidy bill ≈£0 (1k@1920) · **PM choice
+SETTLED in all six eras** · ensemble (8/9/10): 68/64/62 (58/54/51) · £156/218/154k · £12.6–12.7M ·
+macro 15/17/15 · ceiling 6/6 on every seed. Versus the same code without the two knobs: mean ill-excl
+64.0 → 54.3, losses −35%, and 0 → 18 settled eras. Future A/B work compares against THESE numbers.
+⚠ The freight-phase RUN-TO-RUN variance is dead (monotone adoption in every seed), but the freight
+ruling itself (§10.47.5: accepted as-is) is untouched — railway's derived floors remain honest
+residuals; what changed is that the share no longer swings between same-design runs.

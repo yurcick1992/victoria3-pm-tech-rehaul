@@ -13,6 +13,56 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## Every ceiling guard compared breach COUNTS — blind the moment anything was already breached (2026-08-10)
+
+**Symptom.** During the hysteresis campaign (§10.48), one seed's 1870 scenario shipped `iron buy 1k /
+sell 0 — NO PRODUCER AT ALL` at the 175 band edge: every iron mine had been walked out of the economy
+one shed at a time, while every per-step ceiling check reported the step as safe.
+
+**Root cause.** All ~10 "undo this step if it breached the industrial ceiling" guards (§10.18 drops and
+sheds, the §10.38 manufacturing shrink, the §10.21 tuner's growth steps, macro enforcement, the integer
+polish) had the shape `before = ceilingBreaches(); … if (ceilingBreaches() > before) undo`. A COUNT is
+blind once any breach already exists: with dye standing at 175, a step that pushed **iron** to 175 while
+dye happened to come off the wall read "1 → 1, fine" — and a loop of such steps dismantles an industry
+with every individual check passing. The promise in the §10.18 comment ("a drop that breaches the
+ceiling is undone") was simply false whenever the scenario already carried one breach.
+
+**Fix.** `ceilingBreachSet()` + `breachGrew(before)`: a step is undone when any GOOD is breached that
+was not breached before it — swapping one breach for another is also a regression and also rejected.
+All guard sites converted; the count survives only where a count is the right thing (the PM-choice
+penalty's magnitude).
+
+**Detect/prevent.** A guard on an aggregate (count, sum, mean) silently weakens the moment the
+aggregate is non-zero at rest. Guard on the SET of violations whenever "which ones" matters — and test
+the guard in a state that already violates, not only from a clean state, because that is the state in
+which it will actually run.
+
+## The integer polish could not CLEAR a standing ceiling breach — and the macro veto blocked the one move that could (2026-08-10)
+
+**Symptom.** Scenarios shipped with a hard-constraint violation standing (era-1 `clippers buy 106 /
+sell 48` from the 1-level shipyard, price pinned at 175) while the polish reported "0 moves accepted":
+one +1 shipyard level would have priced clippers at ~110, and nothing ever took it. Under the old
+jitter defaults this was live in the SHIPPED ensemble — seeds 9 and 10 both carried a standing era-1
+breach the polish never tried to fix.
+
+**Root cause.** Two layers. (1) The polish's objective was `illogicality → losses → net` with a guard
+that only refused NEW breaches — a standing breach was invisible to it, so a breach-clearing move was
+scored purely on profit keys it usually loses. (2) With that fixed, the macroscenario gap-sum veto
+still rejected the move: the shipyard's value added is negative, so adding a level SHRINKS the mapped
+denominator, every other share rises, and a standing above-cap gap (era-1 paper) widens by a hair. The
+veto ran before the objective, so the hard constraint lost to the soft layer — inverting the precedence
+the rest of the solver enforces (macro enforcement undoes its own steps on a ceiling breach).
+
+**Fix.** Ceiling breaches lead the polish objective lexicographically (breaches → faults → losses →
+net), and a move that strictly clears a breach without creating one is exempt from the macro-gap veto.
+Measured: the default ensemble went from standing era-1 breaches on two of three seeds to the ceiling
+CLEAR on all six eras of all three seeds, illogicality unchanged.
+
+**Detect/prevent.** When a constraint is declared to outrank everything, grep for every accept/reject
+decision and check the constraint appears — at the RIGHT precedence — in each. A hard constraint that
+is merely "guarded against getting worse" can never recover from a violation that arrives by any other
+path; some pass must be rewarded for clearing it.
+
 ## The tuner's raw-growth lever never reached the counts — `minCount` ignored for reference producers (2026-08-09)
 
 **Symptom.** The raw sector's upper band (§10.22, extraction ≤ +400% / agriculture ≤ +200%) never came

@@ -22,7 +22,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadEcon, REPO } from './econ_host.mjs';
-import { makePmRules, optimisePMs } from './era_pm.mjs';
+import { makePmRules, optimisePMs, tierLegal, refLegal } from './era_pm.mjs';
 import { activeMacro, macroBounds, macroVerifyOnly, validateMacro } from './era_macro.mjs';
 import { applyTechEraCorrections } from './era_tech_sync.mjs';
 
@@ -1122,6 +1122,50 @@ function advanceNonMarketPMs(era) {
   }
 }
 
+// ⚗ ERA_PM_SEED=prod (2026-08-10, default '' = off, no-op) — START the PM hill-climb from the era-legal
+// candidate with the highest OUTPUT-PER-WORKER at BASE prices, instead of from Phase A's incumbents.
+// The optimiser is a hill-climb over a discrete landscape, so where it starts decides which local
+// optimum it can reach; seeding at the most productive method biases the start toward the modern,
+// capital-shaped selections (user hypothesis 2026-08-10: better local equilibria than primitive-first).
+// BASE prices deliberately — the scenario's realised prices do not exist at seed time, and a seed must
+// be a function of the design alone, not of whatever the previous era left in the state.
+// Mirrors optimisePMs' structures exactly: same candidate rule (mandates collapse to one, the era gate,
+// law stance, forbidden PMs), same legality test (the negative-goods invariant), incumbent kept on ties.
+// Non-selling buildings score 0 for every candidate, so they keep their incumbent here and
+// advanceNonMarketPMs() (inside settle) remains their owner.
+const PM_SEED = process.env.ERA_PM_SEED || '';
+function seedProductivePMs(era) {
+  if (PM_SEED !== 'prod') return;
+  const seed = (sel, pmgs, present, score) => {
+    for (const pmg of (pmgs || [])) {
+      const cand = rules.candidates(pmg, era, present);
+      if (!cand.length) continue;
+      if (!cand.includes(sel[pmg])) sel[pmg] = cand[0];
+      if (cand.length < 2) continue;
+      const cur = sel[pmg];
+      let best = cur, bestP = score();
+      for (const pm of cand) {
+        if (pm === cur) continue;
+        sel[pmg] = pm;
+        const p = score();
+        if (p > bestP + 1e-9) { bestP = p; best = pm; }
+      }
+      sel[pmg] = best;
+    }
+  };
+  const perWorker = (out, emp) => out / Math.max(1, emp);
+  for (const i of S.IND) for (const t of i.tiers) {
+    if (!t._sec) continue;                                   // FIT never chose for it ⇒ never present
+    seed(t._sec, i.secondary_pmgs, new Set([t.pm_key, ...Object.values(t._sec)]),
+      () => tierLegal(E, i, t) ? perWorker(E.outputValue(i, t, false), E.empTotal(E.tierEmp(t))) : -Infinity);
+  }
+  for (const b of E.refBuildings()) {
+    const sel = E.refSel(b), info = S.VAN.buildings[b] || {};
+    seed(sel, info.pmgs, new Set(Object.values(sel)),
+      () => refLegal(E, b) ? perWorker(E.goodsVal(E.selGoods(sel).out, false), E.empTotal(E.selEmp(sel))) : -Infinity);
+  }
+}
+
 // good -> first era any tier of ours produces it (manufactured), else null (raw / secondary)
 const GOOD_FIRST_ERA = {};
 for (const i of S.IND) {
@@ -1367,6 +1411,7 @@ function buildScenario(eIx, finalPass) {
   // ---- production methods, exactly as Phase A chose them for this era -----------------------------
   for (const i of S.IND) for (const t of i.tiers) if (FIT.pms[eIx].tiers[t.key]) t._sec = { ...FIT.pms[eIx].tiers[t.key] };
   for (const b in FIT.pms[eIx].refs) S.REFSEL[b] = { ...FIT.pms[eIx].refs[b] };
+  seedProductivePMs(era);   // ⚗ ERA_PM_SEED=prod — productivity-first start for the PM hill-climb (no-op by default)
 
   // ---- which of our tiers this era runs, and in what proportion ----------------------------------
   // Era-appropriate and one-era-old at EQUAL LEVEL COUNTS (the brief), and one level of the two-era-old
@@ -1941,21 +1986,91 @@ function buildScenario(eIx, finalPass) {
   // Scoring the constraint alongside profit resolves it without naming any building: the middle method
   // `pm_hardwood` is the only one that leaves both goods inside the band, so it wins on the penalty even
   // though it loses on profit. That is the right answer and it is arrived at by the rule, not by hand.
-  const ceilingBreaches = () => {
+  const ceilingBreachSet = () => {
     const a = E.scenarioAggregates();
-    let n = 0;
+    const s = new Set();
     for (const g of RESTRICTED) {
       const { buy, sell } = E.scenarioBuySell(a, g);
-      if (buy > 0 && E.priceMultPct(buy, sell) >= CEILING) n++;
+      if (buy > 0 && E.priceMultPct(buy, sell) >= CEILING) s.add(g);
     }
-    return n;
+    return s;
   };
+  const ceilingBreaches = () => ceilingBreachSet().size;
+  // ⚠⚠ GUARDS COMPARE THE SET, NOT THE COUNT (2026-08-10). Every "undo if the step breached the ceiling"
+  // guard used to compare breach COUNTS — and a count is blind the moment ANY breach already exists: a
+  // step that breaches a NEW good while another good sits breached reads "1 → 1, fine", and a loop of
+  // such steps walks a whole industry out one level at a time. Measured: with dye breached at era 2, the
+  // raw reduction dropped EVERY iron mine — iron buy 1k / sell 0 at the 175 wall, "no producer at all" —
+  // and every per-step check passed. A step is now undone when any good is breached that was not
+  // breached before it; swapping one breach for another is also a regression and also rejected.
+  const breachGrew = before => { for (const g of ceilingBreachSet()) if (!before.has(g)) return true; return false; };
   const breachCount = () => CEIL_PM ? ceilingBreaches() : 0;
   // Weight it far above any profit difference: this is a constraint, not a preference. Profit only ever
   // breaks ties between selections that breach the ceiling equally often.
   const CEIL_PENALTY = 100;
   let pmResult = { cycles: [], settled: true, passes: 0 };
   let pmSettled = false;
+  // ⭐ ERA_PM_FREEZE (default ON — §10.48, shipped 2026-08-10; =0 reverts) — BEST-OF-CYCLE FREEZING, the
+  // designed fix for "PM choice never settles". The cycle the report complained about mostly spans JOINT
+  // ROUNDS, which optimisePMs
+  // cannot see: it flips a method, contSettle re-prices, the flip back becomes attractive next round.
+  // So the detection lives here: after every round the full selection state is snapshotted, and any
+  // (building, PMG) that RETURNS to a method it held in an earlier round is oscillating — a monotone
+  // march never revisits — and is pinned at the phase it just returned to. That phase won the score
+  // comparison at the current (settled) prices, so it is the best-scoring phase the cycle has exhibited;
+  // pinning it is "best-of-cycle", not "last-of-budget". The pin map is also handed to optimisePMs, which
+  // enforces it, adds its own within-call cycles to it, and drops any pin whose method stops being legal.
+  const PM_FREEZE = process.env.ERA_PM_FREEZE !== '0';
+  const pmFrozen = new Map();                    // "building|pmg" -> pinned pm (per era; rebuilt each scenario)
+  const pmRoundSeen = new Map();                 // "building|pmg" -> Set of pms held after earlier rounds
+  const pmRoundLast = new Map();                 // "building|pmg" -> pm held after the previous round
+  const snapSelections = () => {
+    const m = new Map();
+    for (const i of S.IND) for (const t of i.tiers) {
+      if (t.era > era || !(S.BLDNUM[t.key] > 0) || !t._sec) continue;
+      for (const pg in t._sec) m.set(t.key + '|' + pg, t._sec[pg]);
+    }
+    for (const b of E.refBuildings()) {
+      if (!(S.BLDNUM[b] > 0)) continue;
+      const sel = S.REFSEL[b] || {};
+      for (const pg in sel) m.set(b + '|' + pg, sel[pg]);
+    }
+    return m;
+  };
+  const freezeReturners = () => {
+    const now = snapSelections();
+    for (const [k, cur] of now) {
+      const last = pmRoundLast.get(k);
+      if (last != null && cur !== last) {
+        const hist = pmRoundSeen.get(k) || new Set();
+        if (hist.has(cur) && !pmFrozen.has(k)) pmFrozen.set(k, cur);
+        hist.add(last); pmRoundSeen.set(k, hist);
+      }
+      pmRoundLast.set(k, cur);
+    }
+  };
+  // ⚠ A PIN IS NOT EXEMPT FROM THE CEILING. The optimiser's score carries CEIL_PENALTY, but a frozen PMG
+  // is never re-scored — so a pinned phase that pins a consumable at +75% would hold the breach forever,
+  // with the one lever that could clear it disabled (measured on the first freeze ensemble: a pinned
+  // luxury phase held `silk buy 4 / sell 0` — an automatic 175 — through the whole joint loop). So after
+  // every settle, any pin whose method TOUCHES a breached good is lifted and the choice re-opened; the
+  // penalty then steers it off the breach exactly as it does for a free PMG. Returns how many were lifted.
+  const liftBreachedPins = () => {
+    if (!pmFrozen.size) return 0;
+    const a = E.scenarioAggregates();
+    const breached = [];
+    for (const g of RESTRICTED) {
+      const { buy, sell } = E.scenarioBuySell(a, g);
+      if (buy > 0 && E.priceMultPct(buy, sell) >= CEILING) breached.push(g);
+    }
+    if (!breached.length) return 0;
+    let lifted = 0;
+    for (const [k, pm] of [...pmFrozen]) {
+      const r = E.pmRec(pm);
+      if (breached.some(g => (r.in && r.in[g]) || (r.out && r.out[g]))) { pmFrozen.delete(k); lifted++; }
+    }
+    return lifted;
+  };
   // ⚠ THE INNER LOOP MUST CONVERGE WITH PMs HELD FIXED. Prices, recipes and counts are continuous and do
   // converge against a fixed method choice — that is exactly why the main loop freezes PM selection for its
   // last stretch. Re-opening the discrete choice on every pass, which is what this did first, guarantees it
@@ -1986,8 +2101,22 @@ function buildScenario(eIx, finalPass) {
     return { d, dg, dn };
   };
   let conv = { d: 0, dg: null, dn: 0 };
+  // ⚗ ERA_SETTLE_ITERS (default 40 = the shipped cutoff) — how long the continuous variables converge
+  // between discrete re-choices in the joint loop. Exposed for the hysteresis experiment: a longer settle
+  // shows the PM optimiser (and the cycle-freezer) prices closer to their fixed point, so the discrete
+  // decision is made on better information at the cost of proportional runtime.
+  const SETTLE_ITERS = +(process.env.ERA_SETTLE_ITERS || 40);
+  // An early PM fixed point must not STARVE the continuous half: the pre-freeze loop spent every joint
+  // round on contSettle (PM choice never settled), so breaking the whole loop at a round-k PM fixed point
+  // would ship LESS converged prices than never settling at all (measured: freeze-alone with an early
+  // break left era 1 at a 33pp residual where the full budget reaches 8pp). So the loop always runs its
+  // whole budget; once the method choice is settled the optimiser is merely SKIPPED — unless a lifted
+  // pin re-opened it — and the last act of every round stays continuous (§10.14.1's invariant).
+  let pmDone = false;
   for (let k = 0; k < JOINT_PASSES; k++) {
-    conv = contSettle(40, 0.15);
+    conv = contSettle(SETTLE_ITERS, 0.15);
+    if (PM_FREEZE && liftBreachedPins() > 0) pmDone = false;   // a pinned phase breached the ceiling: re-open
+    if (pmDone) continue;
     // THE HARD RULE: at the prices this market actually produces, every building must be running the most
     // profitable secondary methods available to it. Phase A chose PMs against its own fitted prices, which
     // are not these — so the choice has to be re-made here, or the scenario asserts an optimum it does not
@@ -1999,11 +2128,13 @@ function buildScenario(eIx, finalPass) {
         return p - CEIL_PENALTY * breachCount(); },
       profitOfRef: b => { const ec = E.refEcon(b); const p = (ec && ec.tp != null) ? ec.tp / 100 : -1;
         return p - CEIL_PENALTY * breachCount(); },
+      frozen: PM_FREEZE ? pmFrozen : null,
     });
+    if (PM_FREEZE) freezeReturners();   // pin any (building, PMG) that returned to an earlier round's method
     const pmMoved = !(r.passes === 1 && r.settled);
     pmResult = { cycles: [...pmResult.cycles, ...r.cycles], settled: r.settled, passes: pmResult.passes + r.passes };
     pmSettled = !pmMoved;
-    if (!pmMoved) break;
+    if (!pmMoved) pmDone = true;
   }
   // ⚠⚠ INVARIANT — NOTHING IS REPORTED OR SHIPPED FROM A NON-FINAL STATE.
   // Every number this tool prints, and every field of the preset it writes, is read from the state left
@@ -2049,12 +2180,12 @@ function buildScenario(eIx, finalPass) {
       if (ec.tp < 0 && ec.tp < worstP) { worst = b; worstP = ec.tp; }
     }
     if (!worst) break;
-    const before = ceilingBreaches();
+    const before = ceilingBreachSet();
     if (RAW_SHRINK && (S.BLDNUM[worst] || 0) > 1) {
       const n = S.BLDNUM[worst] || 0, prevCap = rawCap[worst];
       rawCap[worst] = n - Math.max(1, Math.floor(n * 0.25));
       conv = contSettle(10, 0.15);
-      if (ceilingBreaches() > before) {        // the shed broke the market — restore and protect
+      if (breachGrew(before)) {                // the shed broke the market — restore and protect
         rawCap[worst] = prevCap; protectedRaw.add(worst);
         conv = contSettle(10, 0.15);
       }
@@ -2062,7 +2193,7 @@ function buildScenario(eIx, finalPass) {
     }
     dropped.add(worst);
     conv = contSettle(20, 0.15);
-    if (ceilingBreaches() > before) {          // the drop broke the market — put it back and keep it
+    if (breachGrew(before)) {                  // the drop broke the market — put it back and keep it
       dropped.delete(worst); protectedRaw.add(worst);
       conv = contSettle(20, 0.15);
     }
@@ -2184,7 +2315,7 @@ function buildScenario(eIx, finalPass) {
         if (ec && ec.tp != null && isFinite(ec.tp) && ec.tp < 0) { shrink = b; break; }
       }
       if (!best && !rawGrow && !rawDrop && !shrink) break;
-      const beforeC = ceilingBreaches();
+      const beforeC = ceilingBreachSet();
       if (shrink) {
         // ⚠ THE CEILING GUARDS THE SHRINK TOO. In era 1 the plantation is dye's ONLY source — synthetics
         // does not exist yet — so shrinking it to zero left dye with demand and no supply, pinned at the
@@ -2193,7 +2324,7 @@ function buildScenario(eIx, finalPass) {
         fixedRef[shrink] -= 1;
         if (fixedRef[shrink] <= 0) dropped.add(shrink);
         settle(); syncPrices();
-        if (ceilingBreaches() > beforeC) {
+        if (breachGrew(beforeC)) {
           fixedRef[shrink] = prevN; dropped.delete(shrink); protectedRaw.add(shrink);
           settle(); syncPrices();
         }
@@ -2202,7 +2333,7 @@ function buildScenario(eIx, finalPass) {
       if (rawDrop) {
         dropped.add(rawDrop);
         settle(); syncPrices();
-        if (ceilingBreaches() > beforeC) { dropped.delete(rawDrop); protectedRaw.add(rawDrop); settle(); syncPrices(); }
+        if (breachGrew(beforeC)) { dropped.delete(rawDrop); protectedRaw.add(rawDrop); settle(); syncPrices(); }
         continue;
       }
       if (rawGrow && (!best || rawGrowP > bestP - PROFIT_CAP)) {
@@ -2225,7 +2356,7 @@ function buildScenario(eIx, finalPass) {
         const outPinnedHigh = (() => { const o = E.selGoods(E.refSel(rawGrow)).out;
           for (const g in o) if (o[g] > 0 && (S.thresholds[g] ?? 100) >= 174.5) return true; return false; })();
         const futile = PROFIT_CAP_FUTILITY && !(tpAfter < tpBefore - 0.25) && !outPinnedHigh;
-        if (ceilingBreaches() > beforeC || futile) {
+        if (breachGrew(beforeC) || futile) {
           // ceiling breach: undo this step. FUTILE: undo the entire run back to where it started.
           minCount[rawGrow] = futile ? growStart[rawGrow] : prevR;
           capBlocked.add(rawGrow); settle(); syncPrices();
@@ -2250,7 +2381,7 @@ function buildScenario(eIx, finalPass) {
         delete tuned[lbl];
         continue;
       }
-      if (ceilingBreaches() > beforeC) {
+      if (breachGrew(beforeC)) {
         // the extra capacity pushed one of its own inputs to the +75% band edge — the ceiling outranks
         // this rule, so put the level back and stop growing THIS TIER (not the whole industry: another
         // tier of it may still have room)
@@ -2296,7 +2427,9 @@ function buildScenario(eIx, finalPass) {
       }
       if (worstStale) { worst = worstStale; worstP = worstStaleP; kind = 'mfg'; }   // stale rungs die first
       if (!worst) break;
-      const before = ceilingBreaches();
+      const before = ceilingBreachSet();
+      if (process.env.ERA_BREACH_TRACE === '1')
+        console.error(`BTRACE e${era} shrink ${worst} n=${S.BLDNUM[worst] || 0} before={${[...before].join(',')}}`);
       const n = S.BLDNUM[worst] || 0;
       if (kind === 'mfg') {
         const prevCap = maxCount[worst];
@@ -2304,16 +2437,18 @@ function buildScenario(eIx, finalPass) {
         maxCount[worst] = Math.max(1, Math.floor(n - cut));
         shrunk[worst] = (shrunk[worst] || 0) + cut;
         settle(); syncPrices();
-        if (ceilingBreaches() > before) { maxCount[worst] = prevCap; protectedMfg.add(worst); settle(); syncPrices(); }
+        if (breachGrew(before)) { maxCount[worst] = prevCap; protectedMfg.add(worst); settle(); syncPrices(); }
+        if (process.env.ERA_BREACH_TRACE === '1')
+          console.error(`BTRACE e${era}   after={${[...ceilingBreachSet()].join(',')}} undone=${protectedMfg.has(worst)}`);
       } else if (RAW_SHRINK && n > 1) {
         const prevCap = rawCap[worst];
         rawCap[worst] = n - Math.max(1, Math.floor(n * 0.25));
         settle(); syncPrices();
-        if (ceilingBreaches() > before) { rawCap[worst] = prevCap; protectedRaw.add(worst); settle(); syncPrices(); }
+        if (breachGrew(before)) { rawCap[worst] = prevCap; protectedRaw.add(worst); settle(); syncPrices(); }
       } else {
         dropped.add(worst);
         settle(); syncPrices();
-        if (ceilingBreaches() > before) { dropped.delete(worst); protectedRaw.add(worst); settle(); syncPrices(); }
+        if (breachGrew(before)) { dropped.delete(worst); protectedRaw.add(worst); settle(); syncPrices(); }
       }
     }
   }
@@ -2441,7 +2576,7 @@ function buildScenario(eIx, finalPass) {
       const vKey = (viol.kind === 'ind' ? 'I:' : 'C:') + viol.key;
       if (startShare[vKey] == null) startShare[vKey] = viol.share;
       const preInd = new Set(macroViolations(st).filter(x => x.kind === 'ind').map(x => x.key));
-      const before = ceilingBreaches();
+      const before = ceilingBreachSet();
       const block = why => { mBlocked.add(vKey);
         macroM.blocked.push({ key: viol.key, kind: viol.kind, dir: viol.dir, share: shareNow(viol.kind, viol.key), lo: viol.lo, hi: viol.hi, why }); };
       // ---- pick the move target -------------------------------------------------------------------
@@ -2551,7 +2686,7 @@ function buildScenario(eIx, finalPass) {
       settle(); syncPrices();
       const sAfter = shareNow(viol.kind, viol.key);
       const improved = viol.dir > 0 ? sAfter > viol.share + 1e-9 : sAfter < viol.share - 1e-9;
-      const breach = ceilingBreaches() > before;
+      const breach = breachGrew(before);
       const newInd = viol.kind === 'cat'
         && macroViolations(macroShares()).some(x => x.kind === 'ind' && !preInd.has(x.key));
       if (breach || !improved || newInd) {
@@ -2586,8 +2721,14 @@ function buildScenario(eIx, finalPass) {
   // ⭐ THE INTEGER POLISH (default ON; ERA_POLISH=0 reverts; ERA_POLISH_TRIALS caps work) — the approved
   // attack on the ±1-level jaggedness at its source. FINAL outer pass only: greedy ±1-level moves over our
   // tiers, each trial re-priced (settle + syncPrices — recipes are final here) and kept only when the
-  // global objective strictly improves with no new ceiling breach. Objective, lexicographic: illogicality
-  // excluding excused → losses (shipyards excluded) → net; £500/wk epsilons stop it churning on noise.
+  // global objective strictly improves with no new ceiling breach. Objective, lexicographic: CEILING
+  // BREACHES → illogicality excluding excused → losses (shipyards excluded) → net; £500/wk epsilons stop
+  // it churning on noise. Breaches lead (2026-08-10) because §10.15 is a hard constraint and the polish is
+  // the last count pass that could CLEAR one — with the old objective a standing breach was invisible to
+  // it: a +1 shipyard level that would price clippers off the 175 wall was scored only by the profit keys,
+  // and a breach the joint loop shipped simply survived (measured at era 1: clippers buy 106 / sell 48
+  // from the 1-level shipyard, every downstream guard correctly refusing to make it WORSE and nothing
+  // rewarded making it BETTER).
   // Moves apply through minCount/maxCount so the job-pool rescale cannot silently undo an accepted move.
   const polished = { trials: 0, accepted: 0 };
   if (POLISH && finalPass) {
@@ -2598,9 +2739,10 @@ function buildScenario(eIx, finalPass) {
         lossFloor: i2 => Math.min(0, currentTargetFor(i2)) - subsidyTol(i2),   // subsidised infra: fault only below −tol
       });
       const pt = profitTotals();
-      return { f: f.net, l: pt.loss, n: pt.net };
+      return { br: ceilingBreaches(), f: f.net, l: pt.loss, n: pt.net };
     };
-    const better = (a, b) => a.f !== b.f ? a.f < b.f : Math.abs(a.l - b.l) > 500 ? a.l < b.l : a.n > b.n + 500;
+    const better = (a, b) => a.br !== b.br ? a.br < b.br
+      : a.f !== b.f ? a.f < b.f : Math.abs(a.l - b.l) > 500 ? a.l < b.l : a.n > b.n + 500;
     let cur = objective();
     for (let sweep = 0; sweep < 4 && polished.trials < POLISH_TRIALS; sweep++) {
       let acceptedThisSweep = 0;
@@ -2615,16 +2757,23 @@ function buildScenario(eIx, finalPass) {
             if (dir > 0 && !(n > 0)) continue;            // never resurrect an absent tier
             polished.trials++;
             const prevMin = minCount[k], prevMax = maxCount[k];
-            const before = ceilingBreaches();
+            const before = ceilingBreachSet();
             // the macroscenario guard: polish must not deepen a reasonability breach the enforcement
             // above just paid for — the gap SUM catches a move that worsens an existing breach, which
-            // the breach count alone would miss
+            // the breach count alone would miss.
+            // ⚠ EXCEPT for a move that CLEARS a hard-ceiling breach (2026-08-10): §10.15 outranks the
+            // macro layer everywhere else (macro enforcement undoes its own steps on a ceiling breach),
+            // so it must outrank it here too. Measured: the +1 shipyard level that prices era-1 clippers
+            // off the 175 wall shrinks the mapped denominator (shipyard VA is negative), nudging a
+            // standing above-cap gap wider — and the gap veto rejected the only move that could clear
+            // the era's one hard-constraint violation.
             const gap0 = macroGap();
             if (dir > 0) { minCount[k] = n + 1; if (maxCount[k] != null && maxCount[k] < n + 1) maxCount[k] = n + 1; }
             else { maxCount[k] = n - 1; if (minCount[k] != null && minCount[k] > n - 1) minCount[k] = n - 1; }
             settle(); syncPrices();
             const now = objective();
-            if (ceilingBreaches() > before || macroGap() > gap0 + 1e-9 || !better(now, cur)) {
+            const clearedBreach = !breachGrew(before) && ceilingBreaches() < before.size;
+            if (breachGrew(before) || (!clearedBreach && macroGap() > gap0 + 1e-9) || !better(now, cur)) {
               minCount[k] = prevMin; maxCount[k] = prevMax;
               settle(); syncPrices();
             } else { cur = now; polished.accepted++; acceptedThisSweep++; }
@@ -2860,7 +3009,7 @@ function buildScenario(eIx, finalPass) {
   }
 
   return { eIx, era, jobs, gdp, peasants, popNonPeasant, scaleOf, pmResult, share, gross, popBoost,
-           jointDrift, jointDriftGood, jointDriftN, pmSettled,
+           jointDrift, jointDriftGood, jointDriftN, pmSettled, pmFrozen: pmFrozen.size,
            constrShare: constructionShare(), constrLevels: S.BLDNUM[CONSTRUCTION_BLD] || 0, gross: grossOut, shrunk,
            profit: profitTotals(),
            popProf: { ...POPPROF },
@@ -3118,7 +3267,8 @@ for (let e = 0; e < FIT.eras.length; e++) {
   console.log('      worst: ' + scored.slice(0, 7).map(h => `${h.what} ${(h.got * 100).toFixed(0)}%/${(h.tgt * 100).toFixed(0)}%`).join('  '));
   if (floored.length) console.log('      floored: ' + floored.map(h => h.what).join(', '));
   // the hard PM rule, and the composition check
-  console.log(`    PM optimality: ${meta.pmSettled ? 'SETTLED at the realised prices' : '⚠ NEVER SETTLED'} (${meta.pmResult.passes} pass(es));`
+  console.log(`    PM optimality: ${meta.pmSettled ? 'SETTLED at the realised prices' : '⚠ NEVER SETTLED'} (${meta.pmResult.passes} pass(es)`
+    + (meta.pmFrozen ? `, ${meta.pmFrozen} PMG(s) cycle-frozen` : '') + `);`
     + ` continuous residual ${meta.jointDrift}pp`
     + (meta.jointDriftN ? ` (${meta.jointDriftN} good(s) still moving >5pp, worst ${meta.jointDriftGood})` : ' — converged')
     + (meta.pmResult.cycles.length ? `  ⚠ ${meta.pmResult.cycles.length} limit cycle(s): `

@@ -70,8 +70,9 @@ The pipeline (**Node ≥ 24 required**, `C:\Program Files\nodejs`):
 ```
 node tools/build_era_ladder.mjs --write   # structure: eras, tech_year dates (§10.44), invented tiers, ×1.5 ladder
 node tools/era_solver.mjs --write         # refresh era_prices.json (the FIT the scenario solve seeds from)
-node tools/era_scenarios.mjs   --write    # THE solve: prices, volumes, counts, pops, army (~15–35 min:
-powershell -File tools/build.ps1          #   3 outer passes + final-pass integer polish, §10.42.4)
+node tools/era_scenarios.mjs   --write    # THE solve: prices, volumes, counts, pops, army (~8–20 min:
+powershell -File tools/build.ps1          #   3 outer passes + final-pass integer polish, §10.42.4;
+                                          #   faster since §10.48 — the settled PM loop skips ~half the work)
 ```
 `tools/era_solver.mjs` is the **balance-only reference view** (margins alone, no scenario) and writes
 `config/era_prices.json`; `tools/era_scenarios.mjs` is authoritative and overwrites its volumes.
@@ -118,18 +119,23 @@ from the totals now, reported on their own line, like gold).
 **Current state under the ruled set (§10.42.4) + the 1780 prune + the ELECTRICITY PASS (§10.43, 2-coal
 ruled) + the DATE GATE (§10.44) + the WEDGE and the 1780 RULINGS (§10.45/§10.46) + the MACROSCENARIO
 LAYER with DERIVED BOUNDS, the minCount-for-refs fix, and the INFRA SUBSIDY TOLERANCE
-(§10.47/§10.47.2/§10.47.4, all shipped 2026-08-09): final-state illogicality 71 (61 excluding
-shipyards), per era 9/9/17/18/10/8 · losses £205k/wk ≈ 1.7% of net · net £12.0M/wk · **THE DEFAULT
-CLEARS THE INDUSTRIAL CEILING IN ALL SIX ERAS** · derived-bounds ensemble (seeds 8/9/10, pre-tolerance:
-72/84/73 (61/72/63) / £178–315k / £11.4–12.3M — the derivation and the tolerance are each METRICALLY
-FREE) · MACRO residuals 15 on the default, and that count is the yardstick being honest, not the
+(§10.47/§10.47.2/§10.47.4, shipped 2026-08-09) + THE HYSTERESIS SET (§10.48, shipped 2026-08-10 —
+`ERA_PM_MINGAIN` 0.10 + `ERA_PM_FREEZE` best-of-cycle freezing as defaults, ceiling guards on breach
+SETS, breach-clearing polish): final-state illogicality 68 (58 excluding shipyards), per era
+10/10/14/14/12/8 · losses £156k/wk ≈ 1.2% of net · net £12.6M/wk · **THE CEILING IS CLEAR IN ALL SIX
+ERAS OF ALL THREE ENSEMBLE SEEDS** (68/64/62 (58/54/51) / £156–218k / £12.6–12.7M / macro 15/17/15) ·
+**PM CHOICE SETTLES in every era of every seed**, cross-seed phase noise 137→50 selections, freight
+adoption monotone · the same code without the two knobs reads mean ill-excl 64.0 and losses £214–334k,
+so the set is a real gain, not jitter (§10.48.1's table holds all ten arms) · MACRO residuals 15 on
+the default, and that count is the yardstick being honest, not the
 economy worsening — four named families (§10.47.3): the TRANSPORT GAP (railway 0.15/0.33/−0.01/1.88%
 mapped vs derived floors 1.75–2.75% from a real ~7–11%; wages and target handicaps are MEASURED off
 the table — F47: vanilla adopts rail freight against the wage arithmetic, 58% of raw producers by
 1912 at ×1.4-flat wages, and the recipe-reaching handicap made railway value-poorer — and FREIGHT IS
-RULED ACCEPTED AS-IS, §10.47.5: "vanilla doesn't immediately switch either", so the gap and the 1920
-cycle swing (2.13/1.70/0.84/−0.01 across same-design runs — an unpinned bistable PM cycle, the
-hysteresis session's specimen) are ACCEPTED residuals, not open work), the late-era
+RULED ACCEPTED AS-IS, §10.47.5: "vanilla doesn't immediately switch either", so the gap is an
+ACCEPTED residual, not open work — and the 1920 cycle swing that used to ride on it
+(2.13/1.70/0.84/−0.01 across same-design runs, the unpinned bistable PM cycle) is GONE since §10.48
+pinned the phase: adoption is monotone in every seed), the late-era
 NEW-ECONOMY UNDERSIZES (automotive/electrics/power short of real-history floors — V3 pop budgets
 cannot fund them at real scale), the DEBUT WALLS (steel/motor@1836, electrics@1900 — §10.29 family,
 RULED TOLERABLE §10.47.5: every one verified to have consumers, and their denominator drag is
@@ -177,9 +183,17 @@ nothing prescribes a raw price path (the drift idea is REJECTED).
 ±250k losses / ±0.4M net, so design changes are judged on 3-seed jitter ensembles (`ERA_JOINT` 8/9/10),
 and the final-pass **integer polish** (±1-level greedy moves on the global objective) attacks the
 amplifier at its source.
-⚠ **PM choice still never settles** — a genuine discrete limit cycle in the method choice. Raising the
-optimiser's hysteresis (`ERA_PM_MINGAIN` 0.02→0.10) measured well inside combinations and is deferred by
-ruling until the ruled set beds in; best-of-cycle freezing remains the designed fix.
+✅ **PM choice now SETTLES — in all six eras of all three ensemble seeds (§10.48, shipped 2026-08-10).**
+The limit cycle was killed by two levers together: **hysteresis** (`ERA_PM_MINGAIN` default 0.02→0.10 —
+the response curve is clean and 0.10 is its optimum; most churn was near-identical method pairs trading
+places on noise-sized margins) and **best-of-cycle freezing** (`ERA_PM_FREEZE`, default ON: a PMG that
+RETURNS to a method it held after an earlier joint round is pinned at that phase — it just won the score
+comparison at current prices; a pin is lifted if its method goes illegal or touches a ceiling-breached
+good). Cross-seed PM phase noise fell 137→50 differing selections, the freight/railway phase flapping is
+gone (monotone adoption in every seed), losses fell ~35%, and the optimiser work roughly halved.
+⚠ **Freezing without the hysteresis is HARMFUL** (it pins a third of the churning economy at arbitrary
+phases — measured, §10.48.1); the two ship together. ⚠ An early PM fixed point must not starve the
+continuous half: the joint loop always spends its full round budget, skipping only the optimiser.
 ⚠ **THE LARGEST REMAINING BLOCK IS NOT A BALANCE PROBLEM (§10.29).** Every insolvent industry is *floored
 at 1 level* and pinned at the 25% price band edge: era-1 steel has **zero** buyers (its first consumer is
 an era-2 tier), and era-3 telephones read buy 18 against sell 72 because they share `popneed_communication`
@@ -545,7 +559,8 @@ tools/                  dev tooling — NOT shipped in the mod
                         army solved together per era, then THE OUTER ITERATION (default 3 passes) re-runs the
                         whole era sequence against the final recipe book — a tier's recipe is solved once, in
                         the era where it is dominant, so a single pass chooses counts against provisional
-                        recipes (§10.41.3/§10.42). Full run ~25–35 min. Writes config/era_presets.json AND the
+                        recipes (§10.41.3/§10.42). Full run ~8–20 min (halved by §10.48's settled PM
+                        loop). Writes config/era_presets.json AND the
                         volumes back to config/mod_config.json. Ends in a JOINT FIXED POINT over
                         prices/PMs/recipes/counts and reports ONLY that final state (§10.14.1) — do not add a
                         step after it that mutates any of them. Prints, per era: profit targets, PRICE PATH
@@ -571,7 +586,17 @@ tools/                  dev tooling — NOT shipped in the mod
                         (§10.30), ERA_NO_BUYER=1 (measured, stays off, §10.32), ERA_SHRINK_LOSSMAKERS=0,
                         ERA_SHRINK_STEPS (default 6000 — a SAFETY NET, not a budget; §10.38),
                         ERA_WAGE_RAMP (Baumol wage growth — DEAD by measurement, §10.42.5),
-                        ERA_PM_MINGAIN (PM hysteresis — deferred by ruling),
+                        ⭐ ERA_PM_MINGAIN (default 0.10 — §10.48: the PM optimiser's hysteresis, shipped
+                        2026-08-10; =0.02 restores the old optimiser) and ⭐ ERA_PM_FREEZE (default ON —
+                        §10.48: best-of-cycle freezing; a PMG returning to a method it held after an
+                        earlier joint round is pinned at that phase; pins yield to legality and to the
+                        ceiling; =0 reverts). Together they settle PM choice in every era (the old
+                        "never settles" ⚠ is closed) — ⚠ freezing without the hysteresis is measured
+                        HARMFUL, revert both or neither. Related measurement knobs: ERA_PM_SEED=prod
+                        (productivity-first PM seeding — measured 2026-08-10, PARKED: +8% net, worse
+                        illogicality/macro), ERA_SETTLE_ITERS (joint-loop settle iterations, default
+                        40 — 80 measured, no dominance), ERA_BREACH_TRACE=1 (per-step ceiling breach
+                        sets in the shrink loop),
                         ERA_RAIL_PENALTY (default 0 — MEASURED AND REJECTED, §10.47.1: a target
                         handicap reaches solveInputsAt and buys richer recipes, making railway
                         value-poorer at every era; kept for re-measurement only),

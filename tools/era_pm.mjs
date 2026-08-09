@@ -116,11 +116,23 @@ export function makePmRules(E, S, hooks = {}) {
 // The one permitted exception is a genuine LIMIT CYCLE: switching a PM moves prices enough that switching
 // back becomes attractive, and the pair never settles. Those are not silently tolerated — they are
 // returned in `cycles` so every one can be reported by name.
-// ⚗ ERA_PM_MINGAIN (default 0.02) — the optimiser's hysteresis, exposed for the "PM choice never settles"
-// experiment: a switch must beat the incumbent by more than this, so raising it trades optimality for
-// stability of the discrete choice.
+// ⭐ ERA_PM_MINGAIN (default 0.10 — §10.48, shipped 2026-08-10; =0.02 restores the old optimiser) — the
+// optimiser's hysteresis: a switch must beat the incumbent by more than this, so raising it trades
+// nominal optimality for stability of the discrete choice. The response curve is clean and 0.10 is its
+// optimum (ensemble mean illogicality excl-ships: 65.7 at 0.02 → 58.7 at 0.05 → 57.0 at 0.10 → 64.3 at
+// 0.20, which also loses a ceiling era) — most of the churn was pairs of near-identical methods trading
+// places on noise-sized margins.
+// ⚗ `frozen` (optional Map "building|pmg" -> pm) — BEST-OF-CYCLE FREEZING (the designed fix for the PM
+// limit cycle, 2026-08-10): a PMG the caller has pinned is enforced and never re-scored, so a pair that
+// would trade places forever stops participating in the hill-climb. The caller owns the detection (it
+// spans the joint rounds this function cannot see) and the choice of phase; this function only honours
+// the pin — and drops it if the pinned method stops being a legal candidate, because an illegal pin is
+// worse than an unsettled choice. When `frozen` is supplied, a WITHIN-call cycle ("returned to a method
+// it had already left") also pins itself at the returned-to method: by construction that phase just won
+// the score comparison at the current prices, so it is the best-scoring phase the cycle has shown.
 export function optimisePMs({ E, S, rules, era, profitOfTier, profitOfRef,
-                              minGain = +(process.env.ERA_PM_MINGAIN || 0.02), maxPasses = 6 }) {
+                              minGain = +(process.env.ERA_PM_MINGAIN || 0.10), maxPasses = 6,
+                              frozen = null }) {
   const cycles = [];
   const seen = new Map();   // "building|pmg" -> Set of PMs already tried, to spot a repeat
   let moved = true, pass = 0;
@@ -129,6 +141,12 @@ export function optimisePMs({ E, S, rules, era, profitOfTier, profitOfRef,
     const consider = (key, sel, pmgs, present, score, legal) => {
       for (const pmg of pmgs) {
         const cand = rules.candidates(pmg, era, present);
+        const fkey = key + '|' + pmg;
+        if (frozen && frozen.has(fkey)) {
+          const fpm = frozen.get(fkey);
+          if (cand.includes(fpm)) { if (sel[pmg] !== fpm) { sel[pmg] = fpm; moved = true; } continue; }
+          frozen.delete(fkey);   // the pinned method is no longer legal here — unfreeze, never pin an illegal PM
+        }
         if (cand.length < 2) { if (cand.length === 1 && sel[pmg] !== cand[0]) { sel[pmg] = cand[0]; moved = true; } continue; }
         if (!cand.includes(sel[pmg])) { sel[pmg] = cand[0]; moved = true; }   // evict an illegal incumbent
         const cur = sel[pmg];
@@ -142,9 +160,12 @@ export function optimisePMs({ E, S, rules, era, profitOfTier, profitOfRef,
         sel[pmg] = best;
         if (best !== cur) {
           moved = true;
-          const k = key + '|' + pmg;
+          const k = fkey;
           const hist = seen.get(k) || new Set();
-          if (hist.has(best)) cycles.push({ building: key, pmg, pm: best, note: 'returned to a method it had already left' });
+          if (hist.has(best)) {
+            cycles.push({ building: key, pmg, pm: best, note: 'returned to a method it had already left' });
+            if (frozen) frozen.set(k, best);   // best-of-cycle: the returned-to phase just won at these prices
+          }
           hist.add(cur); seen.set(k, hist);
         }
       }
