@@ -372,7 +372,8 @@ const CONSTRUCTION_BLD = 'building_construction_sector';
 // a step that pushes a consumable good to the band edge is undone and that industry stops growing — the
 // same precedence already used when dropping loss-making raw producers.
 const PROFIT_CAP_ON = process.env.ERA_PROFIT_CAP !== '0';
-// ⚗ ERA_PROFIT_BAND (2026-08-10 constraint-set experiment, default OFF) — PROFIT TARGETS BECOME A BAND.
+// ⭐ ERA_PROFIT_BAND (default ON — §10.49, user-ruled 2026-08-10 "ship this"; =0 restores the +5%
+// target regime) — PROFIT TARGETS BECOME A BAND.
 // The dominant tier's recipe is no longer solved to an exact margin (+5%): it is left alone while its
 // total-profit margin sits inside [ERA_BAND_LO, ERA_BAND_HI] (default [+5%, +100%], profit ÷
 // (inputs+wages) — the codebase's one margin basis), and solved to the nearest edge only when outside.
@@ -383,9 +384,12 @@ const PROFIT_CAP_ON = process.env.ERA_PROFIT_CAP !== '0';
 // as they shifted the targets. ⚠ Expect a structural consequence, not a tweak: recipes freed from the
 // +5% pin settle much LEANER (the canonical start is the 4:1-cap recipe and a lean recipe inside the
 // band is never enriched), so input demand across the chain falls — measure, don't assume.
-const PROFIT_BAND_ON = process.env.ERA_PROFIT_BAND === '1';
+const PROFIT_BAND_ON = process.env.ERA_PROFIT_BAND !== '0';
 const BAND_LO = +(process.env.ERA_BAND_LO || 0.05);
-const BAND_HI = +(process.env.ERA_BAND_HI || 1.00);
+// 0.5 by measurement (§10.49.3): at 1.0 a debut recipe's cost is revenue/2, so a stale rung only dies
+// when its price HALVES in two eras — no plausible ladder decays that fast, and the stale family
+// exploded. 0.5 keeps observed margins in 5–50%, inside the ruled "reasonable 5–100%".
+const BAND_HI = +(process.env.ERA_BAND_HI || 0.50);
 const PROFIT_CAP = +(process.env.ERA_PROFIT_CAP_PCT || (PROFIT_BAND_ON ? BAND_HI : 0.25));
 const PROFIT_CAP_STEPS = +(process.env.ERA_PROFIT_CAP_STEPS || 400);
 // One-level cuts the loss-making reduction may make per era. Each costs a full re-converge, so this is a
@@ -415,7 +419,8 @@ const PROFIT_CAP_STEPS = +(process.env.ERA_PROFIT_CAP_STEPS || 400);
 // 6000 since the outer iteration: with coarse stepping the loop self-terminates well under this, and a
 // net that binds ships un-shrunk losses silently (§10.38.2's lesson, which the outer loop re-taught).
 const SHRINK_STEPS = +(process.env.ERA_SHRINK_STEPS || 6000);
-// ⚗ ERA_GROW (2026-08-10 constraint-set experiment, default OFF) — THE INCREASE MECHANISM, the
+// ⭐ ERA_GROW (default 2 = STRICT — §10.49, user-ruled 2026-08-10 "ship this"; =0 disables, =1 is the
+// measured-harmful plain variant kept for A/B) — THE INCREASE MECHANISM, the
 // reduction's mirror (user design): alternating with the loss-shrink's cuts, the TOP-PROFIT building is
 // grown, shifting the workforce toward the highest-margin use. To qualify it must be BOTH the top of all
 // ELIGIBLE producers (eligible = not at a scale cap — agriculture/extraction carry the SCALE_LIMITs,
@@ -433,8 +438,9 @@ const SHRINK_STEPS = +(process.env.ERA_SHRINK_STEPS || 6000);
 // so under strict reading the mechanism cannot pour further workforce into the artifact's direction.
 // Measured because the smoke run showed plain ERA_GROW=1 growing era-5 sulfur +266 / iron +255: free
 // entry chasing a margin the model itself calls a price-vector distortion.
-const GROW_STRICT = process.env.ERA_GROW === '2';
-const GROW_ON = process.env.ERA_GROW === '1' || GROW_STRICT;
+const GROW_MODE = process.env.ERA_GROW ?? '2';
+const GROW_STRICT = GROW_MODE === '2';
+const GROW_ON = GROW_MODE === '1' || GROW_STRICT;
 const GROW_MARGIN = +(process.env.ERA_GROW_MARGIN || 0.20);
 // May the reduction cut URBAN CENTRES as well as our tiers? See the F13 block in `addSupport` for why
 // their entitlement is a ceiling rather than a count. `ERA_URBAN_SHRINK=0` restores the old behaviour.
@@ -512,16 +518,22 @@ const URBAN_SHRINK = process.env.ERA_URBAN_SHRINK !== '0';
 //        ERA_PRUNE= (empty) reverts to no pruning.
 //   ERA_SUBS_MIX=temperate     — optional hand-authored temperate subsistence mix; with rice banned the
 //        default world mix renormalises to ~93% grain farms anyway, so this is now nearly equivalent.
-//   ⚗ THE 2026-08-10 CONSTRAINT-SET EXPERIMENT — three knobs, all DEFAULT OFF pending measurement:
-//   ERA_PROFIT_BAND=1 — profit TARGETS become a BAND [ERA_BAND_LO, ERA_BAND_HI] (default +5%…+100%
-//        total profit): the dominant recipe moves only when its margin leaves the band, and the
-//        free-entry cap becomes the band top. See the knob's own header at PROFIT_CAP.
-//   ERA_PRICE_AVG=1 — the MANDATED PRICE DECLINE: weighted-average manufactured prices must track an
-//        era ladder (raw-fed 120…72, mfg-fed 130…50 across eras 1–5, ±10pp), enforced as an integral
-//        class offset on the count controller's price-path targets. See the header at PRICE_AVG_ON.
-//   ERA_GROW=1 — the INCREASE MECHANISM, the reduction's mirror: alternating with loss-shrink cuts,
-//        the top-profit eligible producer ≥20pp above the capital-weighted average margin is grown
-//        (+10% of levels at ≥10, else +1), under the ceiling/macro/futility guards. Header at GROW_ON.
+//   ⭐⭐ THE CONSTRAINT-SET REGIME — SHIPPED AS DEFAULTS BY RULING (user, 2026-08-10 "ship this, this
+//   is an obvious improvement"; measured §10.49, formerly the "ABC2h" arm):
+//   ERA_PROFIT_BAND (default ON; =0 restores the +5% target regime) — profit TARGETS are a BAND
+//        [ERA_BAND_LO, ERA_BAND_HI] (default +5%…+50% total profit): the dominant recipe moves only
+//        when its margin leaves the band, and the free-entry cap is the band top. Header at PROFIT_CAP.
+//   ERA_PRICE_AVG (default ON; =0 disables) — the MANDATED PRICE DECLINE: weighted-average
+//        manufactured prices track an era ladder (raw-fed 120…72, mfg-fed 130…50 across eras 1–5,
+//        ±10pp), an integral class offset on the count controller's targets. Header at PRICE_AVG_ON.
+//   ERA_GROW (default 2 = STRICT; =0 disables, =1 the measured-harmful plain form) — the INCREASE
+//        MECHANISM, the reduction's mirror: alternating with loss-shrink cuts, the top-profit
+//        eligible producer ≥20pp above the capital-weighted average margin is grown (+10% of levels
+//        at ≥10, else +1), under the ceiling/macro/futility guards; strict may not deepen even
+//        verify-only macro gaps. Header at GROW_ON.
+//   ERA_PM_LIFT (default 0.25; =0 disables) — pins and settled selections yield to DOMINANCE: a
+//        method beaten by >25pp at current prices re-opens the choice (shipped with the ruling; the
+//        era-0 textile −40%-vs-+159% pin is the case it exists for). Header at PM_LIFT.
 //   ERA_MACRO (default usa — §10.47, user-ruled 2026-08-09) — the MACROSCENARIO reasonability layer
 //        (tools/era_macro.mjs): per-era bounds on profession shares (verified), industry-category GDP
 //        shares and per-industry GDP shares (both enforced through counts, gross product = value
@@ -1018,7 +1030,8 @@ const PRICE_RAW = 100;
 // its price back to 100, so a strong wage ramp bankrupts the whole raw sector (measured: ERA_WAGE_RAMP=1.1
 // alone puts £1.9M/wk of era-5 losses on raw producers). Real resource prices rise with labour costs.
 const RAW_DRIFT = +(process.env.ERA_RAW_DRIFT || 1);
-// ⚗ ERA_PRICE_AVG (2026-08-10 constraint-set experiment, default OFF) — THE MANDATED PRICE DECLINE, as
+// ⭐ ERA_PRICE_AVG (default ON — §10.49, user-ruled 2026-08-10 "ship this"; =0 disables) — THE
+// MANDATED PRICE DECLINE, as
 // an AGGREGATE constraint (user design): the WEIGHTED AVERAGE realised price of manufactured goods must
 // track an era-indexed ladder, within ±ERA_PRICE_AVG_TOL (10pp). Two classes, split by what a tier EATS
 // (the sector report's own rule): tiers fed on raw inputs decline gently, tiers fed on MANUFACTURED
@@ -1036,7 +1049,7 @@ const RAW_DRIFT = +(process.env.ERA_RAW_DRIFT || 1);
 // Ladder defaults are grounded in the SHIPPED state (measured 2026-08-10: raw-fed 103/103/94/90/81,
 // mfg-fed 125/106/102/92/82 across eras 1–5) — early rungs bind softly, late rungs demand the decline
 // the zombie stale tail (−10..+5% margins, eras 4–5) currently never receives.
-const PRICE_AVG_ON = process.env.ERA_PRICE_AVG === '1';
+const PRICE_AVG_ON = process.env.ERA_PRICE_AVG !== '0';
 const AVG_TOL = +(process.env.ERA_PRICE_AVG_TOL || 10);
 const AVG_GAIN = +(process.env.ERA_PRICE_AVG_GAIN || 0.25);
 const AVG_LADDER = (() => {
@@ -2208,6 +2221,65 @@ function buildScenario(eIx, finalPass) {
   // luxury phase held `silk buy 4 / sell 0` — an automatic 175 — through the whole joint loop). So after
   // every settle, any pin whose method TOUCHES a breached good is lifted and the choice re-opened; the
   // penalty then steers it off the breach exactly as it does for a free PMG. Returns how many were lifted.
+  // ⭐ ERA_PM_LIFT (default 0.25; =0 disables — 2026-08-10, shipped with §10.49's ruling) — a selection
+  // DOMINATED at current prices re-opens the method choice. §10.48's pins (and the pmDone latch below)
+  // are re-validated against legality and the ceiling but never against PROFIT, so a phase pinned when
+  // it won could ship long after prices had made it grossly wrong. Measured on the ABC2h state: era-0
+  // textile pinned on craftsman's sewing at −40% with +159% one candidate away (luxury_clothes floored
+  // at 25 — no SoL-7 pop buys luxury — while the foregone clothes trade at 161), and era-4's dye/sewing
+  // mills stuck the OTHER way (+49pp/+40pp forgone by no_luxury_clothes). The scan mirrors the
+  // optimiser's own scoring minus the ceiling penalty (dominance is a profit question; the re-choice
+  // applies the penalty), and it only RE-OPENS: the pin is dropped and pmDone unlatched, then
+  // optimisePMs decides under its own rules — a genuine cycle re-freezes at the better-of-cycle at
+  // CURRENT prices, which is exactly the §10.48 contract kept honest.
+  const PM_LIFT = +(process.env.ERA_PM_LIFT ?? 0.25);
+  // ⚠ ONE APPEAL PER PIN, HEARD LATE — or the lift undoes §10.48. A genuinely bistable pair is
+  // dominated from whichever side it currently holds, so an unconditional per-round lift re-opens it
+  // forever (measured on the first shipped write: "PM settled 1/6" with the discrete state once again
+  // decided by where the budget ran out). So the scan runs only in the LAST THREE joint rounds — the
+  // appeal is judged at near-converged prices, which is the whole point — and a pin may be lifted
+  // exactly once per era: if the re-opened choice re-freezes, the new pin STANDS (best-of-cycle at
+  // late prices, the honest §10.48 contract).
+  const pmLiftAppealed = new Set();
+  const liftDominatedSelections = () => {
+    if (!(PM_LIFT > 0)) return 0;
+    let lifted = 0;
+    const scan = (key, sel, pmgs, present, score, legal) => {
+      for (const pmg of (pmgs || [])) {
+        const fkey = key + '|' + pmg;
+        if (pmFrozen.has(fkey) && pmLiftAppealed.has(fkey)) continue;   // the one appeal is spent
+        const cand = rules.candidates(pmg, era, present);
+        if (cand.length < 2 || !cand.includes(sel[pmg])) continue;
+        const cur = sel[pmg];
+        const curP = legal() ? score() : -Infinity;
+        let bestGap = 0;
+        for (const pm of cand) {
+          if (pm === cur) continue;
+          sel[pmg] = pm;
+          const p = legal() ? score() : -Infinity;
+          if (p - curP > bestGap) bestGap = p - curP;
+        }
+        sel[pmg] = cur;
+        if (bestGap > PM_LIFT) {
+          if (pmFrozen.has(fkey)) { pmFrozen.delete(fkey); pmLiftAppealed.add(fkey); }
+          lifted++;
+        }
+      }
+    };
+    for (const i of S.IND) for (const t of i.tiers) {
+      if (t.era > era || !(S.BLDNUM[t.key] > 0) || !t._sec) continue;
+      scan(t.key, t._sec, i.secondary_pmgs, new Set([t.pm_key, ...Object.values(t._sec)]),
+        () => E.TPthr(i, t) / 100, () => tierLegal(E, i, t));
+    }
+    for (const b of E.refBuildings()) {
+      if (!(S.BLDNUM[b] > 0)) continue;
+      const sel = E.refSel(b), info = S.VAN.buildings[b] || {};
+      scan(b, sel, info.pmgs || [], new Set(Object.values(sel)),
+        () => { const ec = E.refEcon(b); return (ec && ec.tp != null) ? ec.tp / 100 : -Infinity; },
+        () => refLegal(E, b));
+    }
+    return lifted;
+  };
   const liftBreachedPins = () => {
     if (!pmFrozen.size) return 0;
     const a = E.scenarioAggregates();
@@ -2269,6 +2341,8 @@ function buildScenario(eIx, finalPass) {
   for (let k = 0; k < JOINT_PASSES; k++) {
     conv = contSettle(SETTLE_ITERS, 0.15);
     if (PM_FREEZE && liftBreachedPins() > 0) pmDone = false;   // a pinned phase breached the ceiling: re-open
+    // the dominance appeal, LAST THREE ROUNDS ONLY (near-converged prices; see PM_LIFT's header)
+    if (k >= JOINT_PASSES - 3 && liftDominatedSelections() > 0) pmDone = false;
     if (pmDone) continue;
     // THE HARD RULE: at the prices this market actually produces, every building must be running the most
     // profitable secondary methods available to it. Phase A chose PMs against its own fitted prices, which

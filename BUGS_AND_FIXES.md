@@ -13,6 +13,39 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## A frozen PM selection was never re-validated against PROFIT — a −40% method shipped with +159% one candidate away (2026-08-10)
+
+**Symptom.** The era-0 preset's textile mill ran `pm_craftsman_sewing` — buying silk to make
+luxury_clothes in a scenario whose SoL-7 pops buy no luxury at all, so the output sat at the 25% price
+floor while the 30 clothes/level the method sacrifices traded at 161. Replayed on the shipped state:
+−40.5% with the method on, +159.4% with it off. The same defect ran the other way at era 4, where two
+textile tiers sat on `pm_no_luxury_clothes` forgoing +40–49pp. Nothing failed: the run reported
+`PM optimality: SETTLED`, and the state passed every guard. Found by the user reading the sheet.
+
+**Root cause.** Two §10.48 mechanisms each stop re-scoring a selection while prices keep moving:
+(1) best-of-cycle FREEZING pins an oscillating PMG at the phase that won *at the prices of that round* —
+and a pin is re-validated against legality and the ceiling, never against profit, so when later phases of
+the solve (the shrink, the tuner, the §10.49 offsets) move prices far enough to invert the comparison,
+the pin stands anyway; (2) the `pmDone` latch skips the optimiser entirely once a round makes no move, so
+even UNPINNED selections are last scored at mid-solve prices. The luxury textile PMG is a bistable pair
+(switching it flips both goods' prices), so it was exactly the class the freezer exists for — pinned, and
+pinned on the wrong side.
+
+**Fix.** `liftDominatedSelections()` (`ERA_PM_LIFT`, default 0.25): in the LAST THREE joint rounds,
+each present building's PMG selection is re-scored against its legal candidates at CURRENT prices; any
+selection beaten by more than the threshold drops its pin (if any) and unlatches `pmDone`, and the
+optimiser re-decides under its own rules. The pin contract becomes: pins yield to legality, to the
+ceiling, and to dominance — **but each pin gets exactly ONE appeal per era, heard late**. The first
+version lifted unconditionally every round, and a genuinely bistable pair is dominated from whichever
+side it holds, so it was re-opened forever: the settling property §10.48 bought came straight back off
+("PM settled 1/6" on the first shipped write). Late + once means the appeal is judged at near-converged
+prices, and a choice that re-freezes after its appeal stands as best-of-cycle at those prices.
+
+**Detect/prevent.** The threshold is deliberately far above `ERA_PM_MINGAIN` (0.25 vs 0.10) so the lift
+cannot reintroduce the churn the hysteresis killed; anything surviving is within 25pp of optimal at
+final prices or a bistable pair that already had its late appeal. When a shipped selection looks absurd
+in the UI, replay the preset and toggle the PMG — the two-line check that found this one (see §10.49.5).
+
 ## Every ceiling guard compared breach COUNTS — blind the moment anything was already breached (2026-08-10)
 
 **Symptom.** During the hysteresis campaign (§10.48), one seed's 1870 scenario shipped `iron buy 1k /

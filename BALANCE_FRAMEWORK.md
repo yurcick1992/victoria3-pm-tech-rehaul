@@ -4091,12 +4091,43 @@ Single-seed screening (default seed; ill = final-state excl shipyards; base repr
   LIFTED to 120/130 — the floored one-level markets of §10.29 hold the averages down and no count
   can raise a price whose single level already floods its market.
 
-### 10.49.4 Disposition
+### 10.49.4 Disposition — SHIPPED BY RULING (user, 2026-08-10: "ship this, this is an obvious improvement")
 
-All three knobs ship DEFAULT-OFF as measurement instruments; `ABC2h` (= `ERA_PRICE_AVG=1
-ERA_PROFIT_BAND=1 ERA_BAND_HI=0.5 ERA_GROW=2`) is the named alternative regime for future work.
-The open question it leaves is DESIGN, not measurement: the band regime delivers the mod's stated
-economic ends (real margins, competition, capital demand) and the target regime delivers the
-fault criterion; a stale-rung killer that is not a price pin (wage/maintenance-side obsolescence,
-or scoring stale tolerance differently under free entry) is the missing piece that would let the
-two coexist. That is a user ruling, not a knob.
+The §10.49.3 trade was put to the user and ruled: the band regime's economics outrank the ~8-point
+illogicality cost. **The ABC2h stack is now the DEFAULT** — `ERA_PROFIT_BAND` ON (band top
+`ERA_BAND_HI` default 0.50), `ERA_PRICE_AVG` ON, `ERA_GROW` default 2 (strict) — each with its
+revert knob (`=0`; the target regime is one `ERA_PROFIT_BAND=0 ERA_PRICE_AVG=0 ERA_GROW=0` away).
+The open design note above (a stale-rung killer that is not a price pin) stands as future work
+under the new regime, whose stale-profitable family (~30) is now the biggest fault block.
+
+### 10.49.5 The dominated-pin lift, and the shipped state (2026-08-10)
+
+Shipping surfaced one more §10.48 blind spot, found by the user reading the ABC2h sheet: **the
+era-0 textile mill ran `pm_craftsman_sewing` at −40.5% with +159.4% one candidate away** — a
+bistable luxury PMG pinned by the cycle-freezer at the phase that had won at MID-SOLVE prices
+(luxury_clothes has no SoL-7 buyer, so the method sells into a 25-floor while sacrificing clothes
+at 161), and never re-scored: pins yielded to legality and the ceiling but not to PROFIT, and the
+`pmDone` latch protected even unpinned selections (era 4 had two textile tiers stuck the OTHER
+way, +40–49pp forgone). The defect predates §10.49 — the committed §10.48 baseline preset carries
+the same selection. Fix, shipped with the ruling: **`ERA_PM_LIFT` (default 0.25)** — in the LAST
+THREE joint rounds, present buildings' PMG selections are re-scored at current prices, and any
+selection beaten by >25pp drops its pin and unlatches the optimiser, **one appeal per pin per era**
+(full story in BUGS_AND_FIXES 2026-08-10 — the unconditional version re-opened every bistable pair
+forever and cost §10.48's settling property, "PM settled 1/6", before the late-and-once form
+restored it). The threshold sits far above `ERA_PM_MINGAIN` (0.10) so the churn the hysteresis
+killed stays dead.
+
+**The shipped reference state (bare defaults, after the `--write`):** final-state illogicality
+**73 (64 excl shipyards)** · per era 9/13/9/11/14/17 · families loss 13 · stale-profitable 30 ·
+inverted 21 · losses **£126k/wk (0.7% of net)** · net **£19.2M/wk** · **ceiling clear 6/6** ·
+macro residuals 19 · **PM choice settled 5/6 eras** (era 2 the exception — the steel bistables
+churn there under any regime) · era-0 textile on `no_luxury_clothes` · recipe mix `own 66 ·
+below 24 · frozen 10`, no tier reading the previous write. ⚠ The unconditional-lift variant read
+better on this seed (61 excl · £112k · £20.7M) and is NOT shipped — it bought those points by
+re-opening every bistable pair each round, which un-settled the discrete choice (1/6) and put the
+shipped state back on "wherever the budget ran out"; the one-appeal form keeps the §10.48
+contract. **Ensemble (`ERA_JOINT` 8/9/10): 73/62/73 (64/55/65 excl) · losses £126/298/161k · net
+£19.2–19.5M · macro 19/17/16 · ceiling clear 6/6 on every seed · PM settled 5/4/5 of 6** — mean
+ill-excl 61.3 against the target regime's 54.3 and the pre-lift stack's 62.3. The write cycle is
+a STRICT FIXED POINT (fourth `--write` reproduced the third byte-for-byte, both files). Future
+A/B work compares against THESE numbers; the §10.48 figures are the last of the target regime.

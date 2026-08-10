@@ -121,14 +121,24 @@ ruled) + the DATE GATE (§10.44) + the WEDGE and the 1780 RULINGS (§10.45/§10.
 LAYER with DERIVED BOUNDS, the minCount-for-refs fix, and the INFRA SUBSIDY TOLERANCE
 (§10.47/§10.47.2/§10.47.4, shipped 2026-08-09) + THE HYSTERESIS SET (§10.48, shipped 2026-08-10 —
 `ERA_PM_MINGAIN` 0.10 + `ERA_PM_FREEZE` best-of-cycle freezing as defaults, ceiling guards on breach
-SETS, breach-clearing polish): final-state illogicality 68 (58 excluding shipyards), per era
-10/10/14/14/12/8 · losses £156k/wk ≈ 1.2% of net · net £12.6M/wk · **THE CEILING IS CLEAR IN ALL SIX
-ERAS OF ALL THREE ENSEMBLE SEEDS** (68/64/62 (58/54/51) / £156–218k / £12.6–12.7M / macro 15/17/15) ·
+SETS, breach-clearing polish) + THE CONSTRAINT-SET REGIME (§10.49, user-ruled 2026-08-10 "ship this" —
+profit BAND +5…+50% in place of the +5% target, the MANDATED PRICE-DECLINE ladder, the strict INCREASE
+mechanism, and the ERA_PM_LIFT dominance re-open): final-state illogicality 73 (64 excluding
+shipyards), per era 9/13/9/11/14/17, families loss 13 / stale-profitable 30 / inverted 21 · losses
+£126k/wk ≈ 0.7% of net · net £19.2M/wk (the band regime's +52% over §10.48's £12.6M is the ruling's
+point: real margins, and the stale family carrying the fault count is the ruled trade) · **THE CEILING
+IS CLEAR IN ALL SIX ERAS** · macro residuals 19 · PM settled 5/6 (era 2's steel bistables are the
+exception) · ⚠ the §10.48 figures (68/58 · £156k · £12.6M ·
+ensemble 68/64/62 (58/54/51) / £156–218k / £12.6–12.7M / macro 15/17/15) are the LAST OF THE TARGET
+REGIME — comparable to each other, not to these ·
 **PM CHOICE SETTLES in every era of every seed**, cross-seed phase noise 137→50 selections, freight
 adoption monotone · the same code without the two knobs reads mean ill-excl 64.0 and losses £214–334k,
-so the set is a real gain, not jitter (§10.48.1's table holds all ten arms) · MACRO residuals 15 on
-the default, and that count is the yardstick being honest, not the
-economy worsening — four named families (§10.47.3): the TRANSPORT GAP (railway 0.15/0.33/−0.01/1.88%
+so the set is a real gain, not jitter (§10.48.1's table holds all ten arms) · the macro residual
+FAMILY structure below persists under the §10.49 regime (whose own list is 19: the war industries
+join the over-cap block — explosives@1900/20/45, arms@1900, their army-fed margins competed by free
+entry — and railway@1945 reads 1.29% against its 2.05% floor, still the closest approach the model
+has made; the per-family NUMBERS below are the §10.48-era readings) —
+four named families (§10.47.3): the TRANSPORT GAP (railway 0.15/0.33/−0.01/1.88%
 mapped vs derived floors 1.75–2.75% from a real ~7–11%; wages and target handicaps are MEASURED off
 the table — F47: vanilla adopts rail freight against the wage arithmetic, 58% of raw producers by
 1912 at ×1.4-flat wages, and the recipe-reaching handicap made railway value-poorer — and FREIGHT IS
@@ -597,24 +607,30 @@ tools/                  dev tooling — NOT shipped in the mod
                         illogicality/macro), ERA_SETTLE_ITERS (joint-loop settle iterations, default
                         40 — 80 measured, no dominance), ERA_BREACH_TRACE=1 (per-step ceiling breach
                         sets in the shrink loop),
-                        ⚗ THE CONSTRAINT-SET TRIO (§10.49, measured 2026-08-10, ALL DEFAULT OFF —
-                        together = the named alternative regime "ABC2h"): ERA_PROFIT_BAND=1
-                        (+ ERA_BAND_LO/HI, default 0.05/1.00 — the dominant recipe's +5% pin
-                        becomes a BAND, solved to an edge only when the margin leaves it; the
-                        free-entry cap becomes the band top), ERA_PRICE_AVG=1 (+ _RAW/_MFG/_TOL/
-                        _GAIN — the mandated aggregate price decline: class-weighted manufactured
-                        price averages track an era ladder through an integral offset on the count
-                        controller's targets; plateau goods exempt FROM their last tier's era, ⚠
-                        `>=` — the `>` version killed textile), ERA_GROW=1|2 (the INCREASE
-                        mechanism, the reduction's mirror: the top-profit producer ≥20pp above the
-                        capital-weighted average margin grows +10%/+1, alternating with cuts; =2
-                        STRICT — may not deepen even verify-only macro gaps — is the only safe
-                        form). ⚠ MEASURED, NOT SHIPPED (§10.49): each alone is harmful (A → £1.5M
-                        losses, B → stale explosion + a lost ceiling era, C plain → grows the
-                        pithead artifact); the full stack at band top 0.5 buys net +50%, losses
-                        BELOW baseline and extraction-share red −10–14pp at ~8 ensemble-mean
-                        illogicality points (stale-profitable — the +5 pin turns out to BE the
-                        stale-rung killer). The open design question is §10.49.4's,
+                        ⭐⭐ THE CONSTRAINT-SET REGIME (§10.49 — SHIPPED AS DEFAULTS by ruling,
+                        2026-08-10 "ship this, this is an obvious improvement"): ERA_PROFIT_BAND
+                        default ON (+ ERA_BAND_LO/HI, default 0.05/0.50 — the dominant recipe's
+                        +5% pin is a BAND, solved to an edge only when the margin leaves it; the
+                        free-entry cap is the band top; =0 restores the target regime),
+                        ERA_PRICE_AVG default ON (+ _RAW/_MFG/_TOL/_GAIN — the mandated aggregate
+                        price decline: class-weighted manufactured price averages track an era
+                        ladder, raw-fed 120…72 / mfg-fed 130…50 over eras 1–5 ±10pp, through an
+                        integral offset on the count controller; plateau goods exempt FROM their
+                        last tier's era — ⚠ `>=`, the `>` version killed textile; era 0 exempt,
+                        §10.29 floored markets hold its averages down; =0 disables), ERA_GROW
+                        default 2 = STRICT (the INCREASE mechanism, the reduction's mirror: the
+                        top-profit producer ≥20pp above the capital-weighted average margin grows
+                        +10%/+1 alternating with cuts, and may not deepen even verify-only macro
+                        gaps; =1 the measured-harmful plain form, =0 disables), and ERA_PM_LIFT
+                        default 0.25 (pins and settled PM selections yield to DOMINANCE: beaten by
+                        >25pp at current prices re-opens the choice — the era-0 textile −40%-vs-
+                        +159% pin is why; LAST THREE joint rounds only, ONE appeal per pin per era,
+                        or every bistable pair re-opens forever and §10.48's settling dies —
+                        BUGS_AND_FIXES 2026-08-10). ⚠ Each measured HARMFUL
+                        ALONE (A → £1.5M losses, B → stale explosion, C plain → grows the pithead
+                        artifact) — revert as a set, not singly. Band top 1.0 measured: a stale
+                        rung then dies only if its price HALVES in 2 eras — 0.5 is the working
+                        top, margins live in 5–50%,
                         ERA_RAIL_PENALTY (default 0 — MEASURED AND REJECTED, §10.47.1: a target
                         handicap reaches solveInputsAt and buys richer recipes, making railway
                         value-poorer at every era; kept for re-measurement only),
