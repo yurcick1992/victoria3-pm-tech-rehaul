@@ -597,6 +597,24 @@ tools/                  dev tooling — NOT shipped in the mod
                         illogicality/macro), ERA_SETTLE_ITERS (joint-loop settle iterations, default
                         40 — 80 measured, no dominance), ERA_BREACH_TRACE=1 (per-step ceiling breach
                         sets in the shrink loop),
+                        ⚗ THE CONSTRAINT-SET TRIO (§10.49, measured 2026-08-10, ALL DEFAULT OFF —
+                        together = the named alternative regime "ABC2h"): ERA_PROFIT_BAND=1
+                        (+ ERA_BAND_LO/HI, default 0.05/1.00 — the dominant recipe's +5% pin
+                        becomes a BAND, solved to an edge only when the margin leaves it; the
+                        free-entry cap becomes the band top), ERA_PRICE_AVG=1 (+ _RAW/_MFG/_TOL/
+                        _GAIN — the mandated aggregate price decline: class-weighted manufactured
+                        price averages track an era ladder through an integral offset on the count
+                        controller's targets; plateau goods exempt FROM their last tier's era, ⚠
+                        `>=` — the `>` version killed textile), ERA_GROW=1|2 (the INCREASE
+                        mechanism, the reduction's mirror: the top-profit producer ≥20pp above the
+                        capital-weighted average margin grows +10%/+1, alternating with cuts; =2
+                        STRICT — may not deepen even verify-only macro gaps — is the only safe
+                        form). ⚠ MEASURED, NOT SHIPPED (§10.49): each alone is harmful (A → £1.5M
+                        losses, B → stale explosion + a lost ceiling era, C plain → grows the
+                        pithead artifact); the full stack at band top 0.5 buys net +50%, losses
+                        BELOW baseline and extraction-share red −10–14pp at ~8 ensemble-mean
+                        illogicality points (stale-profitable — the +5 pin turns out to BE the
+                        stale-rung killer). The open design question is §10.49.4's,
                         ERA_RAIL_PENALTY (default 0 — MEASURED AND REJECTED, §10.47.1: a target
                         handicap reaches solveInputsAt and buys richer recipes, making railway
                         value-poorer at every era; kept for re-measurement only),

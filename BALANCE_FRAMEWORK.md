@@ -4001,3 +4001,102 @@ macro 15/17/15 · ceiling 6/6 on every seed. Versus the same code without the tw
 ⚠ The freight-phase RUN-TO-RUN variance is dead (monotone adoption in every seed), but the freight
 ruling itself (§10.47.5: accepted as-is) is untouched — railway's derived floors remain honest
 residuals; what changed is that the share no longer swings between same-design runs.
+
+## 10.49 The constraint-set experiment (2026-08-10) — bands for targets, a mandated price decline, and the increase mechanism: MEASURED, NOT SHIPPED
+
+The user's three-part hypothesis ("should we try reducing or increasing constraint count once
+more?"): **(A)** ADD a mandated aggregate price decline — manufactured goods' weighted-average
+realised price must track an era ladder, mfg-from-mfg goods declining harder, any single industry
+free to break it; **(B)** REMOVE the remaining explicit profit targets — the dominant recipe's +5%
+pin becomes a BAND (no noticeable negatives, over-the-board positives penalised after late
+settling, "reasonable 5–100% total-profit margins"); **(C)** ADD the reduction's mirror — an
+INCREASE mechanism that grows the top-profit building (top of all scale-cap-eligible producers AND
+≥20pp above the capital-weighted average margin; +10% of levels at ≥10, else +1), alternating one
+increase with one reduction. All three are implemented behind default-off knobs (`ERA_PRICE_AVG`,
+`ERA_PROFIT_BAND`+`ERA_BAND_LO/HI`, `ERA_GROW` with `=2` the strict variant, headers in
+era_scenarios.mjs), and every arm below ran the full default pipeline, report-only, judged against
+the §10.48 reference (which the refactored code first reproduced byte-for-byte: 68 (58) ·
+10/10/14/14/12/8 · £156k · £12.6M · macro 15 · ceiling 6/6).
+
+### 10.49.1 The redundancy audit (which constraints the proposals could supersede)
+
+Exactly ONE explicit profit target still steers the solve: `solveInputsAt(dominant, +5%)` — the
+recipe lever (counts chase the price path since §10.13; raw producers have bands since §10.22;
+TG.current +20% survives only in scoring and the loss-floor arithmetic). The free-entry +25%
+absolute cap is the one rule B's "penalise over-the-board positives" subsumes (under the band the
+cap becomes the band top). Nothing else is redundant against the proposals: the per-good age-decay
+price path is the WITHIN-class shape A's aggregate re-anchors, not a duplicate of it, and the
+ceiling/scale/macro layers are the guards the proposals run under.
+
+### 10.49.2 What the campaign measured (13 full solver runs + 2 ensembles)
+
+Single-seed screening (default seed; ill = final-state excl shipyards; base reproduced = ref):
+
+| arm | ill excl | per era | net | losses | macro | ceiling |
+|---|---|---|---|---|---|---|
+| base (ref) | 58 | 10/10/14/14/12/8 | 12.6M | 156k | 15 | 6/6 |
+| A alone | 69 | 10/13/14/15/14/12 | 14.3M | **1.5M ⚠⚠** | 20 | 6/6 |
+| B alone | 80 | 10/10/11/13/19/24 | 17.9M | 101k | 13 | **5/6 ⚠** |
+| C plain (`ERA_GROW=1`) | 74 | 10/14/19/19/11/13 | 12.2M | 232k | 17 | 6/6 |
+| C strict (`ERA_GROW=2`) | 65 | 6/11/16/12/10/19 | 12.0M | 434k | 15 | 6/6 |
+| A+B | 71 | 10/11/15/10/13/19 | 19.8M | 118k | 13 | 6/6 |
+| A+B+C2 | 67 | 9/9/12/10/13/19 | 19.7M | 135k | 11 | 6/6 |
+| A+B+C2, band top 0.5 ("ABC2h") | 55→65* | — | 19.0M | 325k→130k* | 18 | 6/6 |
+| A+B+C2, steeper ladders | 67 | 9/11/6/12/20/15 | 19.3M | 291k | 12 | 6/6 |
+
+*before→after the plateau-offset fix below. The deciding 3-seed ensembles (`ERA_JOINT` 8/9/10):
+
+| ensemble | ill excl by seed (mean) | losses | net | newest-rung losses | macro | ceiling |
+|---|---|---|---|---|---|---|
+| baseline (§10.48) | 58/54/51 (**54.3**) | 156–218k | 12.6–12.7M | ~28k | 15/17/15 | 6/6 ×3 |
+| ABC2h | 65/52/70 (**62.3**) | **130–142k** | **18.5–19.5M** | **15–27k** | 19/15/14 | 6/6 ×3 |
+| ABh (= ABC2h minus C) | 70/63/67 (66.7) | 198–321k | 18.1–18.3M | 72–178k | 16/18/15 | 6/6 ×3 |
+
+### 10.49.3 The readings
+
+- **The +5% recipe pin is LOAD-BEARING for obsolescence, not bookkeeping.** Under a target the
+  dominant recipe's cost sits at revenue/1.05, so any price fall drowns the rung when its era
+  passes; under a band top of 1.0 the cost sits at revenue/2 and a stale rung only dies when its
+  price HALVES in two eras — no plausible ladder decays that fast, so B alone explodes the
+  stale-profitable family (eras 4–5 read 19/24). Band top 0.5 (cost = revenue/1.5, death at ×0.67
+  per two eras) is the working compromise, and its observed margins (5–50%) still sit inside the
+  user's "reasonable 5–100%".
+- **The three proposals only cohere TOGETHER — each alone is harmful.** A against pinned recipes
+  re-riches every dominant recipe at the top of the falling price and bankrupts wholesale (£1.5M/wk
+  losses, leading rungs 50.8pp adrift). B alone loses an era's ceiling and the stale tail. C plain
+  grows the pithead artifact (smoke: era-5 sulfur +266, iron +255 — free entry chasing a margin the
+  model itself calls a price-vector distortion, §10.47.2) and C in any form is worse than baseline
+  outside the band stack. The user's instinct that A and B belong together is confirmed
+  mechanically.
+- **C strict earns its place INSIDE the stack**: ABC2h beats ABh on every axis (ill mean 62.3 vs
+  66.7 · losses ~£140k vs ~£250k · newest-rung losses ~£20k vs ~£110k · net higher). The strict
+  variant (a growth step may not deepen even a verify-only macro gap) is the only safe form.
+- **What the band regime buys, at ensemble level**: net **+47–55%** (£18.5–19.5M vs £12.6M) ·
+  losses BELOW baseline (£130–142k vs £156–218k) despite floating margins · loss-makers 98–104 vs
+  124 · dominant rungs 6–9pp from aim vs 11pp · extraction's structural share red shrinks by
+  10–14pp (e5 38% vs 52% — the higher-VA manufacturing dilutes the pithead artifact) · the feared
+  chain-thinning did NOT happen (the 4:1 cap binds on 2 tiers, same as baseline; mfg-from-mfg
+  share unchanged at ~49.5%).
+- **What it costs: ~8 points of ensemble-mean illogicality (54.3 → 62.3), concentrated in
+  stale-profitable** (27–30 vs ~23), with loss (~10–16 vs ~15) and inverted (~15–24 vs ~20)
+  families roughly a wash. By the ruled criterion (§10.11: illogicality is the end) the
+  constraint-set change as measured is NOT an improvement, so **the defaults do not move**.
+- **⚠ A fault count can be bought with a dead industry** (§10.17's lesson, new clothes): the
+  pre-fix ABC2h screening read 55 excl — better than baseline — while the A-offset had pushed
+  textile to NEGATIVE gross product in its own plateau era (e4 −0.50% against a 1.93% floor). The
+  fix (the plateau exemption starts AT the last tier's era, `>=` not `>`) revived textile and the
+  count rose to 65 with losses falling £325k→£130k. Quote ensemble means, never a flattering seed.
+- **A's ladder is realisable only where counts have authority**: eras 3–5 track within tolerance
+  (achieved 92/87 · 92/73 · 82/57 against 96/88 · 84/68 · 72/50 raw/mfg), but eras 1–2 cannot be
+  LIFTED to 120/130 — the floored one-level markets of §10.29 hold the averages down and no count
+  can raise a price whose single level already floods its market.
+
+### 10.49.4 Disposition
+
+All three knobs ship DEFAULT-OFF as measurement instruments; `ABC2h` (= `ERA_PRICE_AVG=1
+ERA_PROFIT_BAND=1 ERA_BAND_HI=0.5 ERA_GROW=2`) is the named alternative regime for future work.
+The open question it leaves is DESIGN, not measurement: the band regime delivers the mod's stated
+economic ends (real margins, competition, capital demand) and the target regime delivers the
+fault criterion; a stale-rung killer that is not a price pin (wage/maintenance-side obsolescence,
+or scoring stale tolerance differently under free entry) is the missing piece that would let the
+two coexist. That is a user ruling, not a knob.

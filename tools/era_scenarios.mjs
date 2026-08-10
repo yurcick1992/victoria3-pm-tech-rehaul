@@ -372,7 +372,21 @@ const CONSTRUCTION_BLD = 'building_construction_sector';
 // a step that pushes a consumable good to the band edge is undone and that industry stops growing — the
 // same precedence already used when dropping loss-making raw producers.
 const PROFIT_CAP_ON = process.env.ERA_PROFIT_CAP !== '0';
-const PROFIT_CAP = +(process.env.ERA_PROFIT_CAP_PCT || 0.25);
+// ⚗ ERA_PROFIT_BAND (2026-08-10 constraint-set experiment, default OFF) — PROFIT TARGETS BECOME A BAND.
+// The dominant tier's recipe is no longer solved to an exact margin (+5%): it is left alone while its
+// total-profit margin sits inside [ERA_BAND_LO, ERA_BAND_HI] (default [+5%, +100%], profit ÷
+// (inputs+wages) — the codebase's one margin basis), and solved to the nearest edge only when outside.
+// "Not allowing noticeable negatives" stays with the loss-shrink and the illogicality floor (both
+// unchanged); "penalising over-the-board positives after late-stage settling" is the free-entry tuner,
+// whose absolute cap becomes the band's TOP under this knob (a margin is only "over the board" when it
+// leaves the band). Industry handicaps (shipyards −30pp, ERA_RAIL_PENALTY) shift the whole band, same
+// as they shifted the targets. ⚠ Expect a structural consequence, not a tweak: recipes freed from the
+// +5% pin settle much LEANER (the canonical start is the 4:1-cap recipe and a lean recipe inside the
+// band is never enriched), so input demand across the chain falls — measure, don't assume.
+const PROFIT_BAND_ON = process.env.ERA_PROFIT_BAND === '1';
+const BAND_LO = +(process.env.ERA_BAND_LO || 0.05);
+const BAND_HI = +(process.env.ERA_BAND_HI || 1.00);
+const PROFIT_CAP = +(process.env.ERA_PROFIT_CAP_PCT || (PROFIT_BAND_ON ? BAND_HI : 0.25));
 const PROFIT_CAP_STEPS = +(process.env.ERA_PROFIT_CAP_STEPS || 400);
 // One-level cuts the loss-making reduction may make per era. Each costs a full re-converge, so this is a
 // runtime knob as much as a behavioural one.
@@ -401,6 +415,27 @@ const PROFIT_CAP_STEPS = +(process.env.ERA_PROFIT_CAP_STEPS || 400);
 // 6000 since the outer iteration: with coarse stepping the loop self-terminates well under this, and a
 // net that binds ships un-shrunk losses silently (§10.38.2's lesson, which the outer loop re-taught).
 const SHRINK_STEPS = +(process.env.ERA_SHRINK_STEPS || 6000);
+// ⚗ ERA_GROW (2026-08-10 constraint-set experiment, default OFF) — THE INCREASE MECHANISM, the
+// reduction's mirror (user design): alternating with the loss-shrink's cuts, the TOP-PROFIT building is
+// grown, shifting the workforce toward the highest-margin use. To qualify it must be BOTH the top of all
+// ELIGIBLE producers (eligible = not at a scale cap — agriculture/extraction carry the SCALE_LIMITs,
+// manufacturing carries none — and not fixed/dropped/protected/already-cut-this-loop) AND at least
+// ERA_GROW_MARGIN (20pp) above the CAPITAL-WEIGHTED average margin of every profitable producer
+// (weights = each building's cost base, inputs+wages at market prices — profit% is a return on that
+// base, so the average is the economy's return on working capital). Step: +10% of levels at ≥10 levels,
+// else +1. Guards, same precedence as everywhere: a step that grows the ceiling breach set is undone and
+// the building blocked; a step that deepens a macro reasonability gap likewise; a step that does not
+// move the margin with the output not at the ceiling unwinds the whole run for that building (§10.21's
+// futility doctrine). Shipyard margins enter handicap-adjusted (−30pp deducted from par), so their
+// artifact losses neither qualify them nor drag the average.
+// ERA_GROW=2 is the STRICT variant: a growth step may not deepen even a VERIFY-ONLY macro gap — the
+// extraction cap above all, which is structurally breached (V3 books value at the pithead, §10.47.2),
+// so under strict reading the mechanism cannot pour further workforce into the artifact's direction.
+// Measured because the smoke run showed plain ERA_GROW=1 growing era-5 sulfur +266 / iron +255: free
+// entry chasing a margin the model itself calls a price-vector distortion.
+const GROW_STRICT = process.env.ERA_GROW === '2';
+const GROW_ON = process.env.ERA_GROW === '1' || GROW_STRICT;
+const GROW_MARGIN = +(process.env.ERA_GROW_MARGIN || 0.20);
 // May the reduction cut URBAN CENTRES as well as our tiers? See the F13 block in `addSupport` for why
 // their entitlement is a ceiling rather than a count. `ERA_URBAN_SHRINK=0` restores the old behaviour.
 const URBAN_SHRINK = process.env.ERA_URBAN_SHRINK !== '0';
@@ -477,6 +512,16 @@ const URBAN_SHRINK = process.env.ERA_URBAN_SHRINK !== '0';
 //        ERA_PRUNE= (empty) reverts to no pruning.
 //   ERA_SUBS_MIX=temperate     — optional hand-authored temperate subsistence mix; with rice banned the
 //        default world mix renormalises to ~93% grain farms anyway, so this is now nearly equivalent.
+//   ⚗ THE 2026-08-10 CONSTRAINT-SET EXPERIMENT — three knobs, all DEFAULT OFF pending measurement:
+//   ERA_PROFIT_BAND=1 — profit TARGETS become a BAND [ERA_BAND_LO, ERA_BAND_HI] (default +5%…+100%
+//        total profit): the dominant recipe moves only when its margin leaves the band, and the
+//        free-entry cap becomes the band top. See the knob's own header at PROFIT_CAP.
+//   ERA_PRICE_AVG=1 — the MANDATED PRICE DECLINE: weighted-average manufactured prices must track an
+//        era ladder (raw-fed 120…72, mfg-fed 130…50 across eras 1–5, ±10pp), enforced as an integral
+//        class offset on the count controller's price-path targets. See the header at PRICE_AVG_ON.
+//   ERA_GROW=1 — the INCREASE MECHANISM, the reduction's mirror: alternating with loss-shrink cuts,
+//        the top-profit eligible producer ≥20pp above the capital-weighted average margin is grown
+//        (+10% of levels at ≥10, else +1), under the ceiling/macro/futility guards. Header at GROW_ON.
 //   ERA_MACRO (default usa — §10.47, user-ruled 2026-08-09) — the MACROSCENARIO reasonability layer
 //        (tools/era_macro.mjs): per-era bounds on profession shares (verified), industry-category GDP
 //        shares and per-industry GDP shares (both enforced through counts, gross product = value
@@ -973,6 +1018,39 @@ const PRICE_RAW = 100;
 // its price back to 100, so a strong wage ramp bankrupts the whole raw sector (measured: ERA_WAGE_RAMP=1.1
 // alone puts £1.9M/wk of era-5 losses on raw producers). Real resource prices rise with labour costs.
 const RAW_DRIFT = +(process.env.ERA_RAW_DRIFT || 1);
+// ⚗ ERA_PRICE_AVG (2026-08-10 constraint-set experiment, default OFF) — THE MANDATED PRICE DECLINE, as
+// an AGGREGATE constraint (user design): the WEIGHTED AVERAGE realised price of manufactured goods must
+// track an era-indexed ladder, within ±ERA_PRICE_AVG_TOL (10pp). Two classes, split by what a tier EATS
+// (the sector report's own rule): tiers fed on raw inputs decline gently, tiers fed on MANUFACTURED
+// inputs decline harder — a deep chain compounds its inputs' productivity gains, so its prices fall
+// fastest. Any single good may sit off the ladder; only the average is constrained.
+// Enforcement: an INTEGRAL OFFSET per class on the per-good price-path targets (the count controller's
+// one lever), adapted only while the average is outside tolerance, clamped ±[−70,+40]. The per-good
+// age-decay path keeps setting the WITHIN-class shape (new goods dear, old goods cheap); the offset
+// re-anchors the class. Weights are base-price output value (count × qty × base price) — realised-price
+// weights would make the average self-referential. Exemptions: era 0 (tiny floored markets — §10.29's
+// trap: the controller cannot raise a price whose one-level supply already floods the market), plateau
+// goods PAST their ladder's end (their price holding up the permanent tier IS the design — they stay in
+// the average, so the movable goods must carry their share of the decline: Baumol, again), and
+// trade-supplied goods (pinned at 100 by construction).
+// Ladder defaults are grounded in the SHIPPED state (measured 2026-08-10: raw-fed 103/103/94/90/81,
+// mfg-fed 125/106/102/92/82 across eras 1–5) — early rungs bind softly, late rungs demand the decline
+// the zombie stale tail (−10..+5% margins, eras 4–5) currently never receives.
+const PRICE_AVG_ON = process.env.ERA_PRICE_AVG === '1';
+const AVG_TOL = +(process.env.ERA_PRICE_AVG_TOL || 10);
+const AVG_GAIN = +(process.env.ERA_PRICE_AVG_GAIN || 0.25);
+const AVG_LADDER = (() => {
+  const parse = (env, dflt) => {
+    if (!process.env[env]) return dflt;
+    const xs = process.env[env].split(',').map(s => (s === 'null' || s === '' ? null : +s));
+    if (xs.length !== 6 || xs.some(x => x !== null && !(x > 0))) throw new Error(`${env} must be 6 comma-separated values (null allowed)`);
+    return xs;
+  };
+  return {
+    raw: parse('ERA_PRICE_AVG_RAW', [null, 120, 108, 96, 84, 72]),
+    mfg: parse('ERA_PRICE_AVG_MFG', [null, 130, 108, 88, 68, 50]),
+  };
+})();
 
 const TG = FIT.targets;
 const SHIP_INDUSTRIES = new Set(['shipyard', 'shipyard_steam']);
@@ -1028,6 +1106,25 @@ function domTierOf(p, era) {
   return (era > best.era) ? best : null;
 }
 function dominantTargetFor(ind) { return TG.minus1 + indPenalty(ind); }
+// ⚗ ERA_PROFIT_BAND — the ONE recipe-solve entry point for the dominant tier. Under the band, the recipe
+// is left alone while the margin sits inside [lo,hi]+penalty and solved to the NEAREST EDGE when outside
+// (solving to lo LEANS the recipe toward the 4:1 cap — `capped` then reports it, exactly as under a
+// target it cannot reach). A 2pp hysteresis stops the edge-solve churning against price drift.
+function solveDomRecipe(ind, t) {
+  if (!PROFIT_BAND_ON) return solveInputsAt(ind, t, dominantTargetFor(ind));
+  const pen = indPenalty(ind);
+  const m = E.TPthr(ind, t) / 100;
+  if (!isFinite(m) || m > BAND_HI + pen + 0.02) return solveInputsAt(ind, t, BAND_HI + pen);
+  if (m < BAND_LO + pen - 0.02) return solveInputsAt(ind, t, BAND_LO + pen);
+  capped.delete(t.key);
+  return true;
+}
+// How far a margin sits from what the solve AIMED at — a point target normally, the band's nearest edge
+// under ERA_PROFIT_BAND (inside the band `off` is 0: the report must grade what the solve aimed for).
+function gradeOff(p, tgt, pen) {
+  if (!PROFIT_BAND_ON) return p - (tgt + pen);
+  return p < BAND_LO + pen ? p - (BAND_LO + pen) : p > BAND_HI + pen ? p - (BAND_HI + pen) : 0;
+}
 // ...and for a reference producer, by the UI's taxonomy
 const EXTRACTION_CATS = new Set(['mining', 'logging', 'oil', 'rubber', 'fishing_whaling']);
 const AGRICULTURE_CATS = new Set(['farms', 'plantations', 'ranching']);
@@ -1174,6 +1271,33 @@ for (const i of S.IND) {
     const g = E.tierOut(i, t);
     if (GOOD_FIRST_ERA[g] == null || t.era < GOOD_FIRST_ERA[g]) GOOD_FIRST_ERA[g] = t.era;
   }
+}
+// ⚗ ERA_PRICE_AVG — the class-weighted price averages off the CURRENT state (whatever S.BLDNUM and
+// S.thresholds hold when called): per present tier, its output good's realised price weighted by
+// count × qty × BASE price; class = does this tier's recipe eat a tiered good (the sector report's own
+// mfg_high/mfg_low rule, per TIER — a good made by both classes is averaged into both, and its OFFSET
+// class is its weight-majority one). Module-level because the final profit pass replays shipped presets
+// and must measure them with the identical rule.
+function classInfo() {
+  const acc = { raw: { w: 0, pw: 0 }, mfg: { w: 0, pw: 0 } };
+  const goodW = {};
+  for (const i of S.IND) {
+    if (i.follows_be === false) continue;
+    for (const t of i.tiers) {
+      const n = S.BLDNUM[t.key] || 0; if (!(n > 0)) continue;
+      const g = E.tierOut(i, t);
+      const w = n * t.output_qty * (S.PRICES[g] || 0);
+      if (!(w > 0)) continue;
+      const c = Object.keys(t.inputs || {}).some(x => t.inputs[x] > 0 && GOOD_FIRST_ERA[x] != null) ? 'mfg' : 'raw';
+      acc[c].w += w; acc[c].pw += w * (S.thresholds[g] ?? 100);
+      (goodW[g] = goodW[g] || { raw: 0, mfg: 0 })[c] += w;
+    }
+  }
+  const cls = {};
+  for (const g in goodW) cls[g] = goodW[g].mfg >= goodW[g].raw ? 'mfg' : 'raw';
+  return { avg: { raw: acc.raw.w > 0 ? acc.raw.pw / acc.raw.w : null,
+                  mfg: acc.mfg.w > 0 ? acc.mfg.pw / acc.mfg.w : null },
+           w: { raw: acc.raw.w, mfg: acc.mfg.w }, cls };
 }
 // ===================================================================================================
 // THE INDUSTRIAL PRICE CEILING — a HARD constraint, not a target.
@@ -1772,11 +1896,39 @@ function buildScenario(eIx, finalPass) {
   // which meant the joint settle ran with counts FROZEN — and counts are exactly what absorbs the movement
   // in this system, so freezing them left {price, PM, recipe} oscillating with nothing to damp it.
   const parked = new Set();   // goods currently inside the deadband — see stepCounts
+  // ⚗ ERA_PRICE_AVG — the class offsets (integral control on the aggregate) and the last measurement,
+  // per era. Reset with the scenario; the report reads `classAvgLast` so it prints what the controller
+  // actually steered by, not a recomputation from a later state.
+  const classOff = { raw: 0, mfg: 0 };
+  let classAvgLast = null;
   function stepCounts(gain, rescalePow) {
     const goodF = {};
+    if (PRICE_AVG_ON && (AVG_LADDER.raw[eIx] != null || AVG_LADDER.mfg[eIx] != null)) {
+      const ci = classInfo();
+      classAvgLast = ci;
+      for (const c of ['raw', 'mfg']) {
+        const tgt = AVG_LADDER[c][eIx], avg = ci.avg[c];
+        if (tgt == null || avg == null) continue;
+        const err = avg - tgt;
+        // adapt only OUTSIDE tolerance, toward its edge — inside, the aggregate is satisfied and the
+        // per-good path is in charge. Clamped asymmetrically: −70 (the decline is the point) / +40.
+        if (Math.abs(err) > AVG_TOL) classOff[c] = clamp(classOff[c] - AVG_GAIN * (err - Math.sign(err) * AVG_TOL), -70, 40);
+      }
+    }
     for (const g in S.PRICES) {
       if (SKIP_GOODS.has(g)) continue;
-      const want = targetPrice(g, era), got = S.thresholds[g];
+      let want = targetPrice(g, era);
+      // the class offset re-anchors every movable good of the class; plateau goods FROM their ladder's
+      // last era onward and trade-supplied goods are exempt (their prices are design statements, not
+      // levers). ⚠ `>=`, not `>`: the plateau price must hold from the moment the ladder ends — the
+      // first ABC2h run applied the offset during textile's own last era and pushed the whole industry
+      // to NEGATIVE gross product (e4 textile −0.50% against a 1.93% macro floor), which is the Baumol
+      // promise broken by the very constraint that was supposed to leave it alone.
+      if (PRICE_AVG_ON && classAvgLast && classAvgLast.cls[g] && !tradeSupplied.has(g)
+          && !(PLATEAU_LAST_ERA[g] != null && era >= PLATEAU_LAST_ERA[g])) {
+        want = clamp(want + classOff[classAvgLast.cls[g]], 30, RESTRICTED.has(g) ? CEIL_TARGET : 170);
+      }
+      const got = S.thresholds[g];
       if (!(want > 0) || !(got > 0)) continue;
       // ⚠ DEADBAND — DO NOT CHASE A PRICE THAT IS ALREADY INSIDE THE TARGET'S OWN TOLERANCE.
       //
@@ -1822,7 +1974,8 @@ function buildScenario(eIx, finalPass) {
     for (const p of placement) {
       const cur = p.rows[0].t;
       if (p.ind.follows_be === false) continue;
-      const tgt = currentTargetFor(p.ind);
+      // under the band, "insolvent" means the LEANEST recipe cannot even reach the band's floor
+      const tgt = PROFIT_BAND_ON ? BAND_LO + indPenalty(p.ind) : currentTargetFor(p.ind);
       const mm = maxMargin(p.ind, cur);
       if (mm < tgt) infeasible.set(p.ind.id, { got: mm, tgt }); else infeasible.delete(p.ind.id);
     }
@@ -1918,7 +2071,7 @@ function buildScenario(eIx, finalPass) {
       // and the only rung this scenario tunes.
       const dom = domTierOf(p, era);
       if (!dom || p.ind.follows_be === false) continue;
-      solveInputsAt(p.ind, dom, dominantTargetFor(p.ind));
+      solveDomRecipe(p.ind, dom);
     }
 
     // COUNTS chase the profit target. Supply and margin move opposite ways, so: earning more than the
@@ -2086,7 +2239,7 @@ function buildScenario(eIx, finalPass) {
       for (const p of placement) {
         const cur = p.rows[0].t;
         const dm = domTierOf(p, era);
-        if (dm && p.ind.follows_be !== false) solveInputsAt(p.ind, dm, dominantTargetFor(p.ind));
+        if (dm && p.ind.follows_be !== false) solveDomRecipe(p.ind, dm);
       }
       stepCounts(gain, 0.5);
       settle(); syncPrices();
@@ -2205,47 +2358,208 @@ function buildScenario(eIx, finalPass) {
   // rescale cannot undo it, re-converge, look again. A tier stops at ONE level — the industry is never
   // deleted, because "unprofitable" and "absent" are different statements and §10.17 stops scoring a
   // tier at zero anyway. Revertable: ERA_SHRINK_LOSSMAKERS=0.
+  // ═══ MACRO HELPERS — hoisted above the loss-shrink loop because ⚗ ERA_GROW's guard reads macroGap()
+  // there; the ENFORCEMENT still runs in its place after RAW_RECHECK (ordering unchanged, §10.47).
+  const macroM = { on: !!(MACRO && eIx >= MACRO.from_era), grown: {}, cut: {}, blocked: [], resid: [], profBad: [], negVA: [] };
+  const vaPerLvl = (ind2, t2) => { const io = E.tierGoodsIO(ind2, t2);
+    return E.thruMult(t2.key) * (E.goodsVal(io.out, true) - E.goodsVal(io.in, true)); };
+  const refVaPerLvl = b => { const g = E.selGoods(E.refSel(b));
+    return E.thruMult(b) * (E.goodsVal(g.out, true) - E.goodsVal(g.in, true)); };
+  // Shares of the MAPPED COMMODITY ECONOMY (§10.47.2): tier industries + raw references + subsistence.
+  // Urban centres are excluded (the model's unmappable-services counterpart, symmetric with dropping
+  // real trade/finance/services), and the construction/army sinks never entered a VA sum anyway.
+  const macroShares = () => {
+    const ind = {}, cat = { manufacturing: 0, extraction: 0, agriculture: 0 };
+    let total = 0;
+    for (const p of placement) {
+      let v = 0;
+      for (const r of p.rows) {
+        const n = S.BLDNUM[r.t.key] || 0; if (!(n > 0)) continue;
+        v += n * vaPerLvl(p.ind, r.t);
+      }
+      ind[p.ind.id] = v;
+      total += v;
+      if (!MACRO_INFRA.has(p.ind.id)) cat.manufacturing += v;
+    }
+    for (const b of refProducers) {
+      const n = S.BLDNUM[b] || 0; if (!(n > 0)) continue;
+      const c = catOf(b);
+      const key = MACRO_AGRI_CATS.has(c) ? 'agriculture' : MACRO_EXTRACT_CATS.has(c) ? 'extraction' : null;
+      if (!key) continue;
+      const va = n * refVaPerLvl(b);
+      cat[key] += va; total += va;
+    }
+    // subsistence: in the denominator and in agriculture's numerator (real farm-output series count
+    // home-consumed production) — but NEVER a lever: its size follows the peasants, not a bound
+    for (const b in S.BLDNUM) {
+      const n = S.BLDNUM[b] || 0;
+      if (!(n > 0) || !E.isSubsistenceBuilding(b)) continue;
+      const va = n * refVaPerLvl(b);
+      cat.agriculture += va; total += va;
+    }
+    return { total: Math.max(1, total), ind, cat };
+  };
+  const macroViolations = st => {
+    if (!macroM.on) return [];
+    const v = [];
+    for (const p of placement) {
+      if (p.withheld || p.ind.follows_be === false) continue;
+      const b = macroBounds(MACRO, 'industries', p.ind.id, eIx); if (!b) continue;
+      const s = (st.ind[p.ind.id] || 0) / st.total;
+      const verify = macroVerifyOnly(MACRO, 'industries', p.ind.id);
+      // lo = 0 means NO floor (era_macro.mjs `nofloor`) — presence is not demanded and negative gross
+      // product is tolerated there (it still lands on the NEGATIVE GROSS PRODUCT line, never silently)
+      if (b[0] > 0 && s < b[0] - 1e-9) v.push({ kind: 'ind', key: p.ind.id, dir: 1, gap: b[0] - s, share: s, lo: b[0], hi: b[1], p, verify });
+      else if (s > b[1] + 1e-9) v.push({ kind: 'ind', key: p.ind.id, dir: -1, gap: s - b[1], share: s, lo: b[0], hi: b[1], p, verify });
+    }
+    for (const c in MACRO.categories) {
+      const b = macroBounds(MACRO, 'categories', c, eIx); if (!b) continue;
+      const s = (st.cat[c] || 0) / st.total;
+      const verify = macroVerifyOnly(MACRO, 'categories', c);
+      if (b[0] > 0 && s < b[0] - 1e-9) v.push({ kind: 'cat', key: c, dir: 1, gap: b[0] - s, share: s, lo: b[0], hi: b[1], verify });
+      else if (s > b[1] + 1e-9) v.push({ kind: 'cat', key: c, dir: -1, gap: s - b[1], share: s, lo: b[0], hi: b[1], verify });
+    }
+    // the concrete outranks the aggregate: industries first, worst gap first within each kind
+    return v.sort((a, b2) => (a.kind === b2.kind ? b2.gap - a.gap : a.kind === 'ind' ? -1 : 1));
+  };
+  // total shortfall over every ENFORCEABLE violated bound — the polish guard's scalar: a move that
+  // DEEPENS any existing breach must be rejected even though the breach COUNT does not change.
+  // Verify-only breaches (extraction's structural red) are excluded — polish must not be vetoed by a
+  // gap nothing is allowed to close.
+  const macroGap = () => macroM.on
+    ? macroViolations(macroShares()).filter(x => !x.verify).reduce((a, x) => a + x.gap, 0) : 0;
+  // the STRICT gap includes verify-only bounds — read ONLY by ERA_GROW=2's guard (see GROW_STRICT):
+  // enforcement must never act on a verify-only bound, but a growth mechanism may be forbidden to
+  // deepen one, which is a weaker and legitimate use (report-only stays report-only; growth just stops).
+  const macroGapAll = () => macroM.on
+    ? macroViolations(macroShares()).reduce((a, x) => a + x.gap, 0) : 0;
+
   const SHRINK_ON = process.env.ERA_SHRINK_LOSSMAKERS !== '0';
   const shrunk = {};
+  const grown = {};                 // ⚗ ERA_GROW tally: key -> levels added
+  const growBlocked = new Set();    // grow candidates retired by a guard
+  const growFrom = {};              // key -> count at the first grow (futility unwinds to here)
+  let growWavg = null;              // last computed capital-weighted average margin (reported)
+  // ⭐ STALE RUNGS ARE THE FIRST VICTIMS (user, 2026-08-09; ERA_SHRINK_STALE_FIRST=0 reverts). The
+  // reduction used to cut the worst loser regardless of vintage, which could trim an era-exact
+  // workhorse while an obsolete rung still stood at scale. Now: while ANY stale rung (older than the
+  // scenario era) loses money above one level, it is cut first; era-exact and leading capacity may
+  // only be cut once the obsolete tail is spent. `worstStale` carries that priority class.
+  // ⭐ URBAN CENTRES ARE A CANDIDATE TOO. Their level count is an ENTITLEMENT from urbanization
+  // (F13), not a decision — but the game staffs that entitlement out of who is available, so a
+  // loss-making urban centre sheds employment instead of standing fully manned. With no employment
+  // scaling in the model, cutting levels is the available approximation of the same thing. Keyed by
+  // building rather than by tier, hence the `worst` bookkeeping below carries a KEY, not a tier.
+  const findWorstLoser = () => {
+    let worst = null, worstP = 0, worstStale = null, worstStaleP = 0;
+    if (URBAN_SHRINK) {
+      const n = S.BLDNUM.building_urban_center || 0;
+      const ec = n > 1 ? E.refEcon('building_urban_center') : null;
+      if (ec && ec.tp != null && isFinite(ec.tp) && ec.tp / 100 < URBAN_FLOOR && ec.tp / 100 < worstP) {
+        worst = { key: 'building_urban_center' }; worstP = ec.tp / 100;
+      }
+    }
+    for (const p of placement) {
+      if (p.ind.follows_be === false) continue;
+      for (const r of p.rows) {
+        const t = r.t, n = S.BLDNUM[t.key] || 0;
+        if (!(n > 1) || r.fixed != null) continue;     // never below one level; hand-placed stay put
+        // ⚠ A SHIPYARD AT −30% IS BREAKING EVEN. None of its income from naval ship construction is
+        // modelled, which is why every target it has carries TG.shipyard_penalty (−30pp). The same
+        // deduction has to apply HERE, or the rule reads a shipyard as the worst loss-maker in the
+        // economy at a margin that is, for a shipyard, par — and cuts it first every single era.
+        // Comparisons use the handicapped figure too, so a −35% shipyard ranks as −5%.
+        const tp = E.TPthr(p.ind, t) / 100 - indPenalty(p.ind) + subsidyTol(p.ind);
+        if (!isFinite(tp) || tp >= 0) continue;
+        if (SHRINK_STALE_FIRST && t.era < era) { if (tp < worstStaleP) { worstStale = t; worstStaleP = tp; } }
+        if (tp < worstP) { worst = t; worstP = tp; }
+      }
+    }
+    if (worstStale) { worst = worstStale; worstP = worstStaleP; }
+    return worst ? { worst, worstP } : null;
+  };
+  // ⚗ ERA_GROW — the qualified grow target, or null. Candidates and the capital-weighted average are
+  // both computed on the CURRENT settled state; see the knob's header comment for the rule.
+  const pickGrow = () => {
+    let wSum = 0, wTot = 0;
+    const cands = [];
+    let agriTot = 0;
+    for (const b in S.BLDNUM) if (isScaleAgri(b) && !E.isSubsistenceBuilding(b)) agriTot += S.BLDNUM[b] || 0;
+    for (const p of placement) {
+      if (p.ind.follows_be === false) continue;
+      const pen = indPenalty(p.ind);
+      for (const r of p.rows) {
+        const t = r.t, n = S.BLDNUM[t.key] || 0;
+        if (!(n > 0)) continue;
+        const io = E.tierGoodsIO(p.ind, t); if (!Object.keys(io.out || {}).length) continue;
+        const tp = E.TPthr(p.ind, t) / 100 - pen;
+        if (!isFinite(tp)) continue;
+        const k2 = E.thruMult(t.key), cost = n * (k2 * E.inputValue(t, true) + E.wageCost(t));
+        if (tp > 0 && cost > 0) { wSum += tp * cost; wTot += cost; }
+        // a rung this same loop already CUT is not a grow candidate — the alternation must not ping-pong
+        if (r.fixed != null || growBlocked.has(t.key) || shrunk[t.key]) continue;
+        cands.push({ key: t.key, isRef: false, tp, n, ind: p.ind, t });
+      }
+    }
+    for (const b of refProducers) {
+      const n = S.BLDNUM[b] || 0;
+      if (!(n > 0) || dropped.has(b)) continue;
+      const ec = E.refEcon(b); if (!ec || ec.tp == null || !isFinite(ec.tp)) continue;
+      const tp = ec.tp / 100;
+      const cost = n * (E.thruMult(b) * E.goodsVal((ec.goods || {}).in || {}, true) + (ec.W || 0));
+      if (tp > 0 && cost > 0) { wSum += tp * cost; wTot += cost; }
+      if (!isRawProducer(b)) continue;
+      if (fixedRef[b] != null || growBlocked.has(b) || protectedRaw.has(b) || rawCap[b] != null) continue;
+      if (n + 1 > scaleCapOf(b)) continue;                              // the user-ruled limits bind here
+      if (isScaleAgri(b) && agriTot + 1 > SCALE_LIMIT.agriculture) continue;
+      cands.push({ key: b, isRef: true, tp, n });
+    }
+    if (!cands.length || !(wTot > 0)) return null;
+    growWavg = wSum / wTot;
+    cands.sort((a, b2) => b2.tp - a.tp);
+    const top = cands[0];
+    return top.tp >= growWavg + GROW_MARGIN ? top : null;
+  };
+  const doGrow = g => {
+    const before = ceilingBreachSet();
+    const gap0 = GROW_STRICT ? macroGapAll() : macroGap();
+    if (growFrom[g.key] == null) growFrom[g.key] = g.n;
+    const step = g.n >= 10 ? Math.max(1, Math.floor(g.n * 0.10)) : 1;
+    const prevMin = minCount[g.key], prevMax = g.isRef ? undefined : maxCount[g.key];
+    minCount[g.key] = g.n + step;
+    if (!g.isRef && maxCount[g.key] != null && maxCount[g.key] < g.n + step) maxCount[g.key] = g.n + step;
+    settle(); syncPrices();
+    const tpA = g.isRef ? (((E.refEcon(g.key) || {}).tp ?? NaN) / 100)
+                        : E.TPthr(g.ind, g.t) / 100 - indPenalty(g.ind);
+    const outG = g.isRef ? E.selGoods(E.refSel(g.key)).out : E.tierGoodsIO(g.ind, g.t).out;
+    const outHigh = Object.keys(outG).some(x => outG[x] > 0 && (S.thresholds[x] ?? 100) >= 174.5);
+    const futile = isFinite(tpA) && !(tpA < g.tp - 0.0025) && !outHigh;   // §10.21's doctrine
+    if (breachGrew(before) || (GROW_STRICT ? macroGapAll() : macroGap()) > gap0 + 1e-9 || futile) {
+      // ceiling/macro: undo this step. FUTILE: unwind the whole run — pin at the count the first grow
+      // saw, exactly the tuner's growStart semantics (§10.21).
+      minCount[g.key] = futile ? growFrom[g.key] : prevMin;
+      if (minCount[g.key] == null) delete minCount[g.key];
+      if (!g.isRef) { maxCount[g.key] = prevMax; if (maxCount[g.key] == null) delete maxCount[g.key]; }
+      growBlocked.add(g.key);
+      if (futile) delete grown[g.key];
+      settle(); syncPrices();
+      return;
+    }
+    grown[g.key] = (grown[g.key] || 0) + step;
+  };
   if (SHRINK_ON) {
+    // ⚗ ERA_GROW alternates one increase with one reduction (user design); with the knob off this loop
+    // is byte-for-byte the previous reduction loop. When only one kind of candidate exists, that kind
+    // runs every iteration; the loop ends when neither exists.
+    let phase = 0;
     for (let guard = 0; guard < SHRINK_STEPS; guard++) {
       conv = contSettle(20, 0.15);
-      // ⭐ STALE RUNGS ARE THE FIRST VICTIMS (user, 2026-08-09; ERA_SHRINK_STALE_FIRST=0 reverts). The
-      // reduction used to cut the worst loser regardless of vintage, which could trim an era-exact
-      // workhorse while an obsolete rung still stood at scale. Now: while ANY stale rung (older than the
-      // scenario era) loses money above one level, it is cut first; era-exact and leading capacity may
-      // only be cut once the obsolete tail is spent. `worstStale` carries that priority class.
-      let worst = null, worstP = 0, worstStale = null, worstStaleP = 0;
-      // ⭐ URBAN CENTRES ARE A CANDIDATE TOO. Their level count is an ENTITLEMENT from urbanization
-      // (F13), not a decision — but the game staffs that entitlement out of who is available, so a
-      // loss-making urban centre sheds employment instead of standing fully manned. With no employment
-      // scaling in the model, cutting levels is the available approximation of the same thing. Keyed by
-      // building rather than by tier, hence the `worst` bookkeeping below carries a KEY, not a tier.
-      if (URBAN_SHRINK) {
-        const n = S.BLDNUM.building_urban_center || 0;
-        const ec = n > 1 ? E.refEcon('building_urban_center') : null;
-        if (ec && ec.tp != null && isFinite(ec.tp) && ec.tp / 100 < URBAN_FLOOR && ec.tp / 100 < worstP) {
-          worst = { key: 'building_urban_center' }; worstP = ec.tp / 100;
-        }
-      }
-      for (const p of placement) {
-        if (p.ind.follows_be === false) continue;
-        for (const r of p.rows) {
-          const t = r.t, n = S.BLDNUM[t.key] || 0;
-          if (!(n > 1) || r.fixed != null) continue;     // never below one level; hand-placed stay put
-          // ⚠ A SHIPYARD AT −30% IS BREAKING EVEN. None of its income from naval ship construction is
-          // modelled, which is why every target it has carries TG.shipyard_penalty (−30pp). The same
-          // deduction has to apply HERE, or the rule reads a shipyard as the worst loss-maker in the
-          // economy at a margin that is, for a shipyard, par — and cuts it first every single era.
-          // Comparisons use the handicapped figure too, so a −35% shipyard ranks as −5%.
-          const tp = E.TPthr(p.ind, t) / 100 - indPenalty(p.ind) + subsidyTol(p.ind);
-          if (!isFinite(tp) || tp >= 0) continue;
-          if (SHRINK_STALE_FIRST && t.era < era) { if (tp < worstStaleP) { worstStale = t; worstStaleP = tp; } }
-          if (tp < worstP) { worst = t; worstP = tp; }
-        }
-      }
-      if (worstStale) { worst = worstStale; worstP = worstStaleP; }
-      if (!worst) break;
+      const w = findWorstLoser();
+      const g = (GROW_ON && (phase === 1 || !w)) ? pickGrow() : null;
+      phase = 1 - phase;
+      if (g) { doGrow(g); continue; }
+      if (!w) break;
+      const { worst, worstP } = w;
       const nW = S.BLDNUM[worst.key] || 1;
       const cut = (SHRINK_COARSE && worstP < -0.10) ? Math.max(1, Math.floor(nW * 0.05)) : 1;
       maxCount[worst.key] = Math.max(1, Math.floor(nW - cut));
@@ -2477,74 +2791,8 @@ function buildScenario(eIx, finalPass) {
   // (same acceptance as the tuner's), and a category unwind can clip an overlapping industry move's
   // gains when both touched one tier. Category bounds sit far from today's state, so both paths are
   // dormant until a bound is narrowed; revisit §10.18 interaction if category enforcement starts binding.
-  const macroM = { on: !!(MACRO && eIx >= MACRO.from_era), grown: {}, cut: {}, blocked: [], resid: [], profBad: [], negVA: [] };
-  const vaPerLvl = (ind2, t2) => { const io = E.tierGoodsIO(ind2, t2);
-    return E.thruMult(t2.key) * (E.goodsVal(io.out, true) - E.goodsVal(io.in, true)); };
-  const refVaPerLvl = b => { const g = E.selGoods(E.refSel(b));
-    return E.thruMult(b) * (E.goodsVal(g.out, true) - E.goodsVal(g.in, true)); };
-  // Shares of the MAPPED COMMODITY ECONOMY (§10.47.2): tier industries + raw references + subsistence.
-  // Urban centres are excluded (the model's unmappable-services counterpart, symmetric with dropping
-  // real trade/finance/services), and the construction/army sinks never entered a VA sum anyway.
-  const macroShares = () => {
-    const ind = {}, cat = { manufacturing: 0, extraction: 0, agriculture: 0 };
-    let total = 0;
-    for (const p of placement) {
-      let v = 0;
-      for (const r of p.rows) {
-        const n = S.BLDNUM[r.t.key] || 0; if (!(n > 0)) continue;
-        v += n * vaPerLvl(p.ind, r.t);
-      }
-      ind[p.ind.id] = v;
-      total += v;
-      if (!MACRO_INFRA.has(p.ind.id)) cat.manufacturing += v;
-    }
-    for (const b of refProducers) {
-      const n = S.BLDNUM[b] || 0; if (!(n > 0)) continue;
-      const c = catOf(b);
-      const key = MACRO_AGRI_CATS.has(c) ? 'agriculture' : MACRO_EXTRACT_CATS.has(c) ? 'extraction' : null;
-      if (!key) continue;
-      const va = n * refVaPerLvl(b);
-      cat[key] += va; total += va;
-    }
-    // subsistence: in the denominator and in agriculture's numerator (real farm-output series count
-    // home-consumed production) — but NEVER a lever: its size follows the peasants, not a bound
-    for (const b in S.BLDNUM) {
-      const n = S.BLDNUM[b] || 0;
-      if (!(n > 0) || !E.isSubsistenceBuilding(b)) continue;
-      const va = n * refVaPerLvl(b);
-      cat.agriculture += va; total += va;
-    }
-    return { total: Math.max(1, total), ind, cat };
-  };
-  const macroViolations = st => {
-    if (!macroM.on) return [];
-    const v = [];
-    for (const p of placement) {
-      if (p.withheld || p.ind.follows_be === false) continue;
-      const b = macroBounds(MACRO, 'industries', p.ind.id, eIx); if (!b) continue;
-      const s = (st.ind[p.ind.id] || 0) / st.total;
-      const verify = macroVerifyOnly(MACRO, 'industries', p.ind.id);
-      // lo = 0 means NO floor (era_macro.mjs `nofloor`) — presence is not demanded and negative gross
-      // product is tolerated there (it still lands on the NEGATIVE GROSS PRODUCT line, never silently)
-      if (b[0] > 0 && s < b[0] - 1e-9) v.push({ kind: 'ind', key: p.ind.id, dir: 1, gap: b[0] - s, share: s, lo: b[0], hi: b[1], p, verify });
-      else if (s > b[1] + 1e-9) v.push({ kind: 'ind', key: p.ind.id, dir: -1, gap: s - b[1], share: s, lo: b[0], hi: b[1], p, verify });
-    }
-    for (const c in MACRO.categories) {
-      const b = macroBounds(MACRO, 'categories', c, eIx); if (!b) continue;
-      const s = (st.cat[c] || 0) / st.total;
-      const verify = macroVerifyOnly(MACRO, 'categories', c);
-      if (b[0] > 0 && s < b[0] - 1e-9) v.push({ kind: 'cat', key: c, dir: 1, gap: b[0] - s, share: s, lo: b[0], hi: b[1], verify });
-      else if (s > b[1] + 1e-9) v.push({ kind: 'cat', key: c, dir: -1, gap: s - b[1], share: s, lo: b[0], hi: b[1], verify });
-    }
-    // the concrete outranks the aggregate: industries first, worst gap first within each kind
-    return v.sort((a, b2) => (a.kind === b2.kind ? b2.gap - a.gap : a.kind === 'ind' ? -1 : 1));
-  };
-  // total shortfall over every ENFORCEABLE violated bound — the polish guard's scalar: a move that
-  // DEEPENS any existing breach must be rejected even though the breach COUNT does not change.
-  // Verify-only breaches (extraction's structural red) are excluded — polish must not be vetoed by a
-  // gap nothing is allowed to close.
-  const macroGap = () => macroM.on
-    ? macroViolations(macroShares()).filter(x => !x.verify).reduce((a, x) => a + x.gap, 0) : 0;
+  // (macroM / macroShares / macroViolations / macroGap are defined ABOVE the loss-shrink loop — the
+  //  ⚗ ERA_GROW guard consumes them there; the enforcement below is unchanged and still runs HERE.)
   if (macroM.on) {
     const mBlocked = new Set();       // 'I:<id>' / 'C:<cat>' that may no longer be acted on
     const memberSkip = new Set();     // 'C:<cat>|<member>' — category member whose move failed
@@ -3039,7 +3287,10 @@ function buildScenario(eIx, finalPass) {
              .filter(b => { const ec = E.refEcon(b); return ec && ec.tp != null && ec.tp < 0; })
              .map(b => ({ b: b.replace(/^building_/, ''), tp: E.refEcon(b).tp })),
            infeasible: new Map(infeasible), capped: new Set(capped), sec, ore, noBuyer,
-           debutHeld, prunedHeld, chainHeld, polished, macro: macroM };
+           debutHeld, prunedHeld, chainHeld, polished, macro: macroM,
+           grown: { ...grown }, growWavg, growBlocked: new Set(growBlocked),
+           priceAvg: PRICE_AVG_ON ? { avg: classAvgLast ? { ...classAvgLast.avg } : null,
+                                      off: { ...classOff } } : null };
 }
 
 // ===================================================================================================
@@ -3211,7 +3462,8 @@ for (let e = 0; e < FIT.eras.length; e++) {
       // ⚠ `kind` MUST keep the `tier ` prefix — the floored test below keys on it to build `I:<industry>`
       // vs `R:building_<name>`. Renaming it to the role silently sent every lookup to the reference branch,
       // so nothing was ever detected as floored and era 1's seven floored industries became genuine misses.
-      hits.push({ what: i.id, kind: 'tier e' + t.era, role, got: p, tgt: tgt + ship, off: p - (tgt + ship) });
+      hits.push({ what: i.id, kind: 'tier e' + t.era, role,
+                  got: p, tgt: PROFIT_BAND_ON ? BAND_LO + ship : tgt + ship, off: gradeOff(p, tgt, ship) });
     };
     // ⚠⚠ THE LEADING TIER IS DELIBERATELY *NOT* SCORED HERE, and this is not an oversight. A tier's recipe
     // is solved exactly once, in the era where it is DOMINANT — so when era N reports, the era-(N+1) tier
@@ -3397,8 +3649,28 @@ for (let e = 0; e < FIT.eras.length; e++) {
     const sh = Object.entries(meta.shrunk || {});
     if (sh.length) console.log('    SHRUNK (loss-making, stale rungs first): ' + sh.sort((a, b) => b[1] - a[1])
       .map(([k, n]) => k.replace(/^building_/, '') + ' −' + n).join(', '));
+    if (GROW_ON) {
+      const gr = Object.entries(meta.grown || {});
+      console.log(`    GROWN (⚗ ERA_GROW: top-profit ≥ wavg+${(GROW_MARGIN * 100).toFixed(0)}pp`
+        + (meta.growWavg != null ? `, wavg ${(100 * meta.growWavg).toFixed(0)}%` : '') + '): '
+        + (gr.length ? gr.sort((a, b) => b[1] - a[1]).map(([k, n]) => k.replace(/^building_/, '') + ' +' + n).join(', ')
+                     : 'nothing qualified')
+        + (meta.growBlocked.size ? '   blocked: ' + [...meta.growBlocked].map(x => x.replace(/^building_/, '')).join(', ') : ''));
+    }
     if (meta.polished && meta.polished.trials) console.log(`    INTEGER POLISH: ${meta.polished.accepted} move(s)`
       + ` accepted of ${meta.polished.trials} trials (final pass only)`);
+  }
+  // ⚗ ERA_PRICE_AVG — the aggregate the count controller steered by, and where it landed. The achieved
+  // averages off the SHIPPED state print again in the final profit pass (the headline for this knob).
+  if (PRICE_AVG_ON && meta.priceAvg) {
+    const pa = meta.priceAvg;
+    const line = ['raw', 'mfg'].map(c => {
+      const tgt = AVG_LADDER[c][meta.eIx];
+      const a = pa.avg && pa.avg[c] != null ? pa.avg[c].toFixed(1) : '—';
+      const bad = tgt != null && pa.avg && pa.avg[c] != null && Math.abs(pa.avg[c] - tgt) > AVG_TOL;
+      return `${c === 'raw' ? 'raw-fed' : 'mfg-fed'} ${a}` + (tgt != null ? ` (want ${tgt}±${AVG_TOL}${bad ? ' ⚠ OFF' : ''}, offset ${pa.off[c].toFixed(0)})` : ' (exempt)');
+    }).join(' · ');
+    console.log(`    PRICE LADDER (⚗ ERA_PRICE_AVG, weighted avg of manufactured prices): ${line}`);
   }
   // ⚠⚠ THE PER-ERA PROFITABILITY LINE IS GONE ON PURPOSE. It was computed HERE, inside the era pass, and
   // that is too early to mean anything: a tier recipe is solved in the era where its tier is DOMINANT, so
@@ -3619,12 +3891,14 @@ for (let e = 0; e < FIT.eras.length; e++) {
       const dom = present.find(t => t.era === eraN) || (newest.era < eraN ? newest : null);
       if (newest.era > eraN) {
         const p = E.TPthr(i, newest) / 100;
-        if (isFinite(p)) tgtRows.push({ id: i.id, role: 'lead', p, tgt: TG.current + ship, off: p - (TG.current + ship) });
+        if (isFinite(p)) tgtRows.push({ id: i.id, role: 'lead', p,
+          tgt: (PROFIT_BAND_ON ? BAND_LO : TG.current) + ship, off: gradeOff(p, TG.current, ship) });
       }
       if (dom) {
         const p = E.TPthr(i, dom) / 100;
-        const tgt = (dom.era === eraN ? TG.minus1 : (TG.plateau != null ? TG.plateau : TG.minus1)) + ship;
-        if (isFinite(p)) tgtRows.push({ id: i.id, role: 'dom', p, tgt, off: p - tgt });
+        const base = dom.era === eraN ? TG.minus1 : (TG.plateau != null ? TG.plateau : TG.minus1);
+        if (isFinite(p)) tgtRows.push({ id: i.id, role: 'dom', p,
+          tgt: (PROFIT_BAND_ON ? BAND_LO : base) + ship, off: gradeOff(p, base, ship) });
       }
     }
     // final-state illogicality: the same one criterion, evaluated where recipes are final
@@ -3635,6 +3909,7 @@ for (let e = 0; e < FIT.eras.length; e++) {
     });
     rows.push({ id: ep.label, net, loss, winners, losers, exNet, exLoss, shipNet, shipLoss,
                 worst: worst.slice(0, 4), lossBy, tgtRows, illF,
+                priceAvgF: classInfo().avg,   // the class price averages on the SHIPPED state
                 subsBill: Object.values(subsNet).reduce((a, v) => a + Math.max(0, -v), 0),
                 gdpF: E.scenarioValueAdded(),
                 // the macroscenario, verified on the SHIPPED state like everything else here — the
@@ -3681,12 +3956,40 @@ for (let e = 0; e < FIT.eras.length; e++) {
     const on = xs => xs.filter(x => Math.abs(x.off) <= 0.08).length;
     const mean = xs => xs.length ? xs.reduce((a, x) => a + Math.abs(x.off), 0) / xs.length : 0;
     const wl = [...leads].sort((a, b) => Math.abs(b.off) - Math.abs(a.off)).slice(0, 6);
-    console.log(`\n  LEADING rungs at final recipes (target +20%): ${on(leads)}/${leads.length} within 8pp, mean |off| ${(100 * mean(leads)).toFixed(1)}pp`);
+    const tgtLbl = r => PROFIT_BAND_ON ? `band ${(100 * BAND_LO).toFixed(0)}–${(100 * BAND_HI).toFixed(0)}%` : r;
+    console.log(`\n  LEADING rungs at final recipes (${tgtLbl('target +20%')}): ${on(leads)}/${leads.length} within 8pp, mean |off| ${(100 * mean(leads)).toFixed(1)}pp`);
     if (wl.length) console.log('    worst: ' + wl.map(x => `${x.id} ${(100 * x.p).toFixed(0)}%/${(100 * x.tgt).toFixed(0)}%`).join('  '));
-    console.log(`  DOMINANT rungs at final recipes (target +5%): ${on(doms)}/${doms.length} within 8pp, mean |off| ${(100 * mean(doms)).toFixed(1)}pp`);
+    console.log(`  DOMINANT rungs at final recipes (${tgtLbl('target +5%')}): ${on(doms)}/${doms.length} within 8pp, mean |off| ${(100 * mean(doms)).toFixed(1)}pp`);
+    // the manufactured-price averages on the shipped state — always printed (a cheap baseline for the
+    // ⚗ ERA_PRICE_AVG ladder), graded against the ladder only when the knob is on
+    console.log('  PRICE AVG (weighted, raw-fed/mfg-fed per era): '
+      + rows.map((r, i2) => {
+          const f = v => v == null ? '—' : v.toFixed(0);
+          let s = `${f(r.priceAvgF.raw)}/${f(r.priceAvgF.mfg)}`;
+          if (PRICE_AVG_ON) {
+            const tR = AVG_LADDER.raw[i2], tM = AVG_LADDER.mfg[i2];
+            const bad = (a, t) => t != null && a != null && Math.abs(a - t) > AVG_TOL;
+            if (bad(r.priceAvgF.raw, tR) || bad(r.priceAvgF.mfg, tM)) s += '⚠';
+          }
+          return s;
+        }).join(' · ')
+      + (PRICE_AVG_ON ? `   (want raw ${AVG_LADDER.raw.map(x => x == null ? '—' : x).join('/')} · mfg ${AVG_LADDER.mfg.map(x => x == null ? '—' : x).join('/')} ±${AVG_TOL})` : ''));
     const illTot = rows.reduce((a, r) => a + r.illF.total, 0), illNet = rows.reduce((a, r) => a + r.illF.net, 0);
     console.log(`  FINAL-STATE ILLOGICALITY (same criterion, recipes final): ${illTot} point(s) (${illNet} excluding ${EXCUSED_LABEL}) — per era `
       + rows.map(r => r.illF.total).join('/'));
+    // the FAMILY SPLIT, because the acceptance criterion (§10.11) is per family — loss and inverted
+    // must be ~0 while stale-profitable tolerates the teens — and a total cannot show which one moved
+    {
+      const exN = list => list.filter(id => !PMECON.LADDER_EXCUSED.has(id)).length;
+      const fam = k => rows.reduce((a, r) => a + exN(r.illF[k]), 0);
+      console.log(`    families (excl ${EXCUSED_LABEL}): loss ${fam('loss')} · stale-profitable ${fam('stale')} · inverted ${fam('inverted')}`
+        + '   — worst offenders: ' + (() => {
+            const cnt = {};
+            for (const r of rows) for (const k of ['loss', 'stale', 'inverted'])
+              for (const id of r.illF[k]) if (!PMECON.LADDER_EXCUSED.has(id)) cnt[id] = (cnt[id] || 0) + 1;
+            return Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([id, n]) => `${id} ${n}`).join(', ');
+          })());
+    }
     // ---- the macroscenario, verified where recipes are final (§10.47.2 mapped-economy basis) -------
     let macroResid = 0;
     if (MACRO) {
