@@ -4200,3 +4200,32 @@ every one legal. Sub-1 at base prices was EVIDENCE OF MAGNITUDE in the tooling c
 how far backwards a recipe had walked), not the offence; the offence is only a later tier less
 input-efficient than the tier below it. Do not derive an absolute ratio floor from §10.50 — none
 exists, and adding one would outlaw eight currently-healthy industries' debut and plateau tiers.
+
+### 10.50.2 The premise chips (2026-08-10) — army and construction GDP shares, displayed and audited
+
+Two read-only chips beside the UI's GDP figure (user request): **army/GDP** (battalion upkeep at
+current prices ÷ weekly VA) and **constr/GDP** (the construction sector's goods bill ÷ weekly VA),
+recomputed on every change, on the solver's own self-inclusive basis (both bills already sit in
+`inAgg`, so the VA nets them off — the same arithmetic `setArmy` and `sizeConstruction` target).
+
+The audit across the six shipped presets, against the premises (army 5%, construction 8→18% ramp):
+
+| era | army share (want 5%) | battalions shipped / wanted at final prices | constr share | target |
+|---|---|---|---|---|
+| e0 | 4.3% | 65 / 75 | **2.9%** | 8% |
+| e1 | 4.5% | 132 / 146 | 8.0% | 10% |
+| e2 | 3.9% | 333 / 428 | 11.2% | 12% |
+| e3 | **1.8%** | 372 / **1027** | 13.8% | 15% |
+| e4 | **6.8%** | 1187 / 874 | 16.8% | 17% |
+| e5 | 5.3% | 1871 / 1754 | 18.1% | 18% |
+
+**Construction tracks its ramp within ~1–2pp everywhere except 1780** (2.9% vs 8% — the floored
+tiny-market era again). **The army does NOT hold its premise**: 1.8–6.8% across eras, drifting
+wherever war-goods prices move between the last army sizing and the shipped price table. Era 3 is
+the worst case and it is THE SAME DEFECT as the insolvent-war-industries finding (the arms/artillery
+price collapse): the army was sized while small_arms/artillery were dear, the prices then crashed to
+the floor, and the shipped battalions' upkeep costs only 1.8% of VA — while the sizing rule at final
+prices would field 1027 battalions, whose demand would in turn lift the very prices whose collapse
+bankrupted the producers. The premise drift and the war-industry insolvency are one feedback loop
+seen from two sides; closing it means making the army a proper participant in the §10.14.1 joint
+fixed point (a solver-order change — needs a ruling, not a knob).

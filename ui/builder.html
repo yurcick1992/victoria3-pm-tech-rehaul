@@ -1555,6 +1555,20 @@ function renderScenSummary(){
   const nonPeas = pop - (POPS.peasants||0) - (POPS.slaves||0);
   const pc  = pop > 0 ? s.gdp/pop : 0;
   const pcn = nonPeas > 0 ? s.gdp/nonPeas : 0;
+  // ARMY + CONSTRUCTION SHARES OF GDP — read-only chips, recomputed with the summary (user,
+  // 2026-08-10). Both bills ÷ the SAME weekly VA the GDP chip shows; that VA already nets BOTH bills
+  // off (battalion upkeep and construction inputs sit in inAgg), which is exactly the self-inclusive
+  // basis the era solver targets — army 5% of VA at sizing time, construction the §10.42.4 era ramp
+  // (8/10/12/15/17/18% by era). A vanilla-market preset has no target; the chips are readouts.
+  let armyBill = 0;
+  unitTypes().forEach(u=>{ const gi=unitGoodsIO(u).in;
+    [false,true].forEach(mob=>{ const n=UNITNUM[unitRowKey(u,mob)]||0; if(!n) return;
+      for(const k in gi) armyBill += n*gi[k]*(PRICES[k]||0)*((thresholds[k]??100)/100); }); });
+  let constrBill = 0;
+  { const cb='building_construction_sector', n=(BLDNUM[cb]||0)*thruMult(cb);
+    if(n){ const gi=selGoods(refSel(cb)).in;
+      for(const k in gi) constrBill += n*gi[k]*(PRICES[k]||0)*((thresholds[k]??100)/100); } }
+  const shr = x => s.valueAdded > 0 ? (100*x/s.valueAdded).toFixed(1)+'%' : '—';
   el.innerHTML = `<div class="scensum"><span class="plbl">summary</span>`
     + cells
     + `<span class="secchip tot" title="Every building level in the scenario, all sectors."><span class="sn">total levels</span><span class="sv">${sep(tot)}</span><span class="st">${totTypes} types</span></span>`
@@ -1563,7 +1577,13 @@ function renderScenSummary(){
     + `<span class="st">£${sep(s.valueAdded)}/wk added</span></span>`
     + `<span class="secchip gdp" title="Annual GDP divided by the scenario's population. The smaller line divides by the NON-PEASANT population instead (excluding peasants and slaves) — the more comparable figure across eras, because the peasant share falls from 80% to 4% and drags the headline number with it.">`
     + `<span class="sn">GDP / capita</span><span class="sv">£${pc.toFixed(2)}</span>`
-    + `<span class="st">£${pcn.toFixed(2)} non-peasant</span></span></div>`;
+    + `<span class="st">£${pcn.toFixed(2)} non-peasant</span></span>`
+    + `<span class="secchip gdp" title="ARMY share of GDP: the battalions' weekly goods upkeep at current prices ÷ weekly value added (same VA as the GDP chip; battalion upkeep is already netted off it — the solver's own basis). The era solver sizes the army at 5% of VA, so era presets should read ≈5%; a vanilla-market preset has no target. Read-only — recomputed on every change.">`
+    + `<span class="sn">army / GDP</span><span class="sv">${shr(armyBill)}</span>`
+    + `<span class="st">£${sep(armyBill)}/wk upkeep</span></span>`
+    + `<span class="secchip gdp" title="CONSTRUCTION share of GDP: the construction sector's weekly goods bill at current prices ÷ weekly value added (same VA basis; the bill is already netted off it, matching the solver's self-inclusive target arithmetic). Era presets target the §10.42.4 ramp — 8/10/12/15/17/18% by era; a vanilla-market preset has no target. Read-only — recomputed on every change.">`
+    + `<span class="sn">constr / GDP</span><span class="sv">${shr(constrBill)}</span>`
+    + `<span class="st">£${sep(constrBill)}/wk bill</span></span></div>`;
 }
 function profPanelHTML(){
   // ⚠ EVERY profession, ALWAYS — never filtered to the ones that happen to be non-zero. A field that

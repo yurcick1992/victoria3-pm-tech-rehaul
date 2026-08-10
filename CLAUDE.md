@@ -369,7 +369,13 @@ a quantity whose meaning changes across the very period the ladder spans; that i
 The **army (5%)** and **construction (15%)** budgets are shares of GDP, rebased off gross output. Reference,
 measured off a vanilla 1901 gamestate — construction's goods bill as a share of GDP: FRA 20.1% · RUS 19.9% ·
 USA 15.3% · GBR 14.1% · BEL 8.8% · JAP 4.5%. Implemented once, in `ui/econ.js`'s `scenarioValueAdded()` /
-`scenarioGDP()`, and shown in the UI's scenario summary as GDP and GDP per capita.
+`scenarioGDP()`, and shown in the UI's scenario summary as GDP and GDP per capita — plus two
+READ-ONLY chips (user, 2026-08-10): **army/GDP** and **constr/GDP** share, recomputed on every
+change, on the solver's own self-inclusive basis (both bills sit in `inAgg`, so the VA nets them
+off). Era-preset targets: army 5%, construction the §10.42.4 ramp. ⚠ The audit that shipped with
+them (§10.50.2): construction tracks within ~1–2pp except 1780; **the army does NOT hold its 5%**
+(1.8–6.8% across eras — battalions are sized mid-solve and war-goods prices move afterwards; e3's
+1.8% is the same defect as its insolvent war industries, one feedback loop seen from two sides).
 
 **⭐ LOSS-MAKING MANUFACTURING SHRINKS (§10.38, semantics updated by §10.42.4).** Raw producers shed levels
 (§10.18 via `ERA_RAW_SHRINK`); manufacturing had no downward rule at all, so a loss-maker sat at whatever
