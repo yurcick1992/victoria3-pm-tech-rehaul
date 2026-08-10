@@ -534,6 +534,11 @@ const URBAN_SHRINK = process.env.ERA_URBAN_SHRINK !== '0';
 //   ERA_PM_LIFT (default 0.25; =0 disables) — pins and settled selections yield to DOMINANCE: a
 //        method beaten by >25pp at current prices re-opens the choice (shipped with the ruling; the
 //        era-0 textile −40%-vs-+159% pin is the case it exists for). Header at PM_LIFT.
+//   ERA_RECIPE_MONO (default strong; weak | 0 revert — §10.50, 2026-08-10) — THE RECIPE RATCHET: a
+//        later tier's base recipe may not be less input-efficient (O:I value at base prices) than
+//        the tier below it. Strong = every adjacent pair; weak = identical one-good-in/one-good-out
+//        pairs only. Hard cap on recipe richness, mirror of the 4:1 lean floor. Header above
+//        solveInputsAt.
 //   ERA_MACRO (default usa — §10.47, user-ruled 2026-08-09) — the MACROSCENARIO reasonability layer
 //        (tools/era_macro.mjs): per-era bounds on profession shares (verified), industry-category GDP
 //        shares and per-industry GDP shares (both enforced through counts, gross product = value
@@ -855,6 +860,56 @@ const RATIO_SRC = {};
 //     I = O/(1+τ) − W/k
 // Solving without the /k targets a different margin from the one the Profit column reports, and the two
 // silently disagree by exactly the size of the bonus.
+// ⭐ ERA_RECIPE_MONO (default 'strong'; 'weak' | '0'/'off' revert — 2026-08-10, user hypotheses,
+// strong measured decisively better: shipped-state census 31/78 violated → 3 rounding hairliners,
+// ill-excl 64 → 54 with the INVERTED family collapsing 21 → 6, net and macro both improved) — THE
+// RECIPE RATCHET: a later tier's BASE-PM recipe may not be less input-efficient than the tier below it.
+// The complaint that motivated it: e0 tooling made 20 tools from 14.3 wood while e1 needed 77.3 wood
+// for 30 tools — at base prices a ratio of 2.80 collapsing to 0.78, a tier that DESTROYS value at base
+// prices. Nothing bounded recipe richness from above (the 4:1 cap bounds only leanness), so a tier
+// solved at high realised prices could go arbitrarily gluttonous: 31 of 78 adjacent pairs violated
+// this in the first shipped §10.49 book.
+//   weak   — applies only where the pair is one-good-in, one-good-out with IDENTICAL goods (the
+//            physical reading: later out/in may not fall; prices cancel, so the value form below is
+//            exactly the physical form there).
+//   strong — applies to every adjacent pair of the industry (base recipes, VALUE ratio at base
+//            prices, output_qty·P / Σ inputs·P): later ≥ earlier.
+// "≥", not ">": two consecutive tiers both pinned at the 4:1 cap tie at ratio 4 exactly, so strict
+// improvement is infeasible at the cap. Secondary PMs are deliberately unrestricted (user spec).
+// The cap is HARD and the profit band is soft, same precedence as the 4:1 ceiling: a tier the ratchet
+// stops from richening floats above the band top and free entry corrects it through counts. Feasible
+// by construction: ratio_prev ≤ 4 (its own 4:1 cap) ⇒ IbaseMax ≥ Obase/4 = the lean floor.
+const RECIPE_MONO = (() => {
+  const v = process.env.ERA_RECIPE_MONO ?? 'strong';
+  if (v === '' || v === '0' || v === 'off') return '';
+  if (v !== 'weak' && v !== 'strong') throw new Error(`ERA_RECIPE_MONO=${v} — use strong | weak | 0`);
+  return v;
+})();
+const monoCapped = new Set();   // tiers whose recipe the ratchet clamped (reported)
+function monoCapInfo(ind, t) {
+  if (!RECIPE_MONO) return null;
+  const prev = (ind.tiers || [])
+    .filter(x => x !== t && (x.era ?? 0) < (t.era ?? 0)
+      && Object.keys(x.inputs || {}).some(g => x.inputs[g] > 0))
+    .sort((a, b) => (b.era ?? 0) - (a.era ?? 0))[0];
+  if (!prev) return null;
+  if (RECIPE_MONO === 'weak') {
+    const pk = Object.keys(prev.inputs).filter(g => prev.inputs[g] > 0);
+    const tk = Object.keys(t.inputs || {}).filter(g => t.inputs[g] > 0);
+    if (pk.length !== 1 || tk.length !== 1 || pk[0] !== tk[0]
+        || E.tierOut(ind, prev) !== E.tierOut(ind, t)) return null;
+  }
+  let Iprev = 0; for (const g in prev.inputs) Iprev += prev.inputs[g] * (S.PRICES[g] || 0);
+  const Oprev = prev.output_qty * (S.PRICES[E.tierOut(ind, prev)] || 0);
+  const Obase = t.output_qty * (S.PRICES[E.tierOut(ind, t)] || 0);
+  if (!(Iprev > 0) || !(Oprev > 0) || !(Obase > 0)) return null;
+  return { IbaseMax: Obase * Iprev / Oprev, prevEra: prev.era };
+}
+function monoViolated(ind, t) {
+  const m = monoCapInfo(ind, t); if (!m) return false;
+  let Ibase = 0; for (const g in t.inputs) Ibase += t.inputs[g] * (S.PRICES[g] || 0);
+  return Ibase > m.IbaseMax * 1.005;   // 0.5% grace for the 0.1-unit rounding
+}
 function solveInputsAt(ind, t, target) {
   const k = E.thruMult(t.key);
   const O = E.outputValue(ind, t, true), Wc = E.wageCost(t), secI = E.selInVal(t._sec, true);
@@ -903,6 +958,13 @@ function solveInputsAt(ind, t, target) {
   if (!(unitMkt > 0) || !(unitBase > 0)) return false;
   const Xmin = (Obase / ioCapFor(ind.id)) / unitBase;    // the 4:1 ceiling, in ratio units
   let X = wantI > 0 ? wantI / unitMkt : Xmin;
+  // the RECIPE RATCHET (ERA_RECIPE_MONO): richness is capped so the tier is never less
+  // input-efficient at base prices than the tier below it; the lean floor below still wins ties
+  const mono = monoCapInfo(ind, t);
+  if (mono) {
+    const Xmono = mono.IbaseMax / unitBase;
+    if (X > Xmono) { X = Xmono; monoCapped.add(t.key); } else monoCapped.delete(t.key);
+  }
   if (X < Xmin) { X = Xmin; capped.add(t.key); } else capped.delete(t.key);
   for (const g of Object.keys(t.inputs)) {
     t.inputs[g] = Math.max(minMainInput(ind, g), Math.round(t._ratio[g] * X * 10) / 10);
@@ -1126,6 +1188,9 @@ function dominantTargetFor(ind) { return TG.minus1 + indPenalty(ind); }
 function solveDomRecipe(ind, t) {
   if (!PROFIT_BAND_ON) return solveInputsAt(ind, t, dominantTargetFor(ind));
   const pen = indPenalty(ind);
+  // the ratchet outranks the in-band rest: a recipe that violates it (the tier below moved under an
+  // outer pass, or the state predates the knob) is re-solved, and solveInputsAt clamps it legal
+  if (RECIPE_MONO && monoViolated(ind, t)) return solveInputsAt(ind, t, BAND_HI + pen);
   const m = E.TPthr(ind, t) / 100;
   if (!isFinite(m) || m > BAND_HI + pen + 0.02) return solveInputsAt(ind, t, BAND_HI + pen);
   if (m < BAND_LO + pen - 0.02) return solveInputsAt(ind, t, BAND_LO + pen);
@@ -4048,6 +4113,29 @@ for (let e = 0; e < FIT.eras.length; e++) {
           return s;
         }).join(' · ')
       + (PRICE_AVG_ON ? `   (want raw ${AVG_LADDER.raw.map(x => x == null ? '—' : x).join('/')} · mfg ${AVG_LADDER.mfg.map(x => x == null ? '—' : x).join('/')} ±${AVG_TOL})` : ''));
+    // the RECIPE MONOTONICITY census on the FINAL recipe book (ERA_RECIPE_MONO's yardstick, printed
+    // always): adjacent tier pairs whose later rung is LESS input-efficient at base prices (0.5% grace)
+    {
+      let pairs = 0; const viol = [];
+      for (const i2 of S.IND) {
+        if (i2.follows_be === false) continue;
+        const ts = [...i2.tiers].sort((a, b) => (a.era ?? 0) - (b.era ?? 0))
+          .filter(t2 => Object.keys(t2.inputs || {}).some(g => t2.inputs[g] > 0));
+        for (let k2 = 1; k2 < ts.length; k2++) {
+          const a = ts[k2 - 1], b = ts[k2];
+          const val = t2 => Object.keys(t2.inputs).reduce((s, g) => s + t2.inputs[g] * (S.PRICES[g] || 0), 0);
+          const ra = a.output_qty * (S.PRICES[E.tierOut(i2, a)] || 0) / Math.max(1e-9, val(a));
+          const rb = b.output_qty * (S.PRICES[E.tierOut(i2, b)] || 0) / Math.max(1e-9, val(b));
+          pairs++;
+          if (rb < ra / 1.005) viol.push({ id: i2.id, ae: a.era, be: b.era, ra, rb });
+        }
+      }
+      viol.sort((x, y) => (y.ra / Math.max(1e-9, y.rb)) - (x.ra / Math.max(1e-9, x.rb)));
+      console.log(`  RECIPE MONOTONICITY (O:I value at base prices, later ≥ earlier; ERA_RECIPE_MONO=${RECIPE_MONO || 'off'}): `
+        + (viol.length ? `${viol.length}/${pairs} adjacent pairs violated — worst: `
+            + viol.slice(0, 5).map(v => `${v.id} e${v.ae}→e${v.be} ${v.ra.toFixed(2)}→${v.rb.toFixed(2)}`).join('  ')
+          : `all ${pairs} adjacent pairs monotone`));
+    }
     const illTot = rows.reduce((a, r) => a + r.illF.total, 0), illNet = rows.reduce((a, r) => a + r.illF.net, 0);
     console.log(`  FINAL-STATE ILLOGICALITY (same criterion, recipes final): ${illTot} point(s) (${illNet} excluding ${EXCUSED_LABEL}) — per era `
       + rows.map(r => r.illF.total).join('/'));

@@ -4131,3 +4131,58 @@ contract. **Ensemble (`ERA_JOINT` 8/9/10): 73/62/73 (64/55/65 excl) · losses £
 ill-excl 61.3 against the target regime's 54.3 and the pre-lift stack's 62.3. The write cycle is
 a STRICT FIXED POINT (fourth `--write` reproduced the third byte-for-byte, both files). Future
 A/B work compares against THESE numbers; the §10.48 figures are the last of the target regime.
+
+## 10.50 The recipe ratchet (2026-08-10) — a later tier may not be less input-efficient, and the inverted family collapses
+
+The user's complaint, verbatim shape: e0 tooling made 20 tools from 14.3 wood while e1 needed 77.3
+wood for 30 tools — at base prices a value ratio of 2.80 collapsing to **0.78, a tier that DESTROYS
+value at base prices**. Root cause: recipes are solved to margins at each tier's own dominant-era
+REALISED prices, and nothing ever bounded a recipe's RICHNESS — the 4:1 value-added cap bounds only
+leanness — so a tier solved when its output traded dear could go arbitrarily gluttonous. Census on
+the shipped §10.49 book: **31 of 78 adjacent tier pairs violated monotonicity**, several
+value-destroying outright (paper 4.01→0.80, steel 4.01→1.08, arms 3.95→1.07).
+
+Two user hypotheses, both implemented as `ERA_RECIPE_MONO` and measured:
+- **weak** — only where a pair is one-good-in/one-good-out with identical goods may the later tier
+  not have a worse output:input ratio (physical; prices cancel, so it is the value rule restricted
+  to where units are comparable). Scope: 6 of 78 pairs.
+- **strong** — every adjacent pair of an industry: the later tier's O:I VALUE ratio at base prices
+  may not be worse (base PMs only; secondary PMs deliberately unrestricted). "≥", not ">": two
+  consecutive tiers at the 4:1 cap tie at ratio 4 exactly, so strict improvement is infeasible there.
+
+Enforcement is a HARD Xmax in `solveInputsAt` (the mirror of the 4:1 Xmin; feasible by construction,
+since ratio_prev ≤ 4 implies the ratchet cap is never below the lean floor), plus a violation check
+in `solveDomRecipe`'s in-band early return so an outer pass moving the tier below re-opens the
+recipe. The final profit pass prints a RECIPE MONOTONICITY census on every run.
+
+Measured (single seed, then the deciding 3-seed ensemble for strong; reference = the shipped §10.49
+state 73 (64) · £126k · £19.2M · macro 19):
+
+| arm | ill excl | families L/S/I | net | losses | macro | census |
+|---|---|---|---|---|---|---|
+| reference (off) | 64 | 13/30/21 | 19.2M | 126k | 19 | 31/78 |
+| weak | 63 | 14/32/17 | 19.7M | 135k | 15 | 21/78 |
+| **strong** | **54** | 12/36/**6** | 20.1M | 138k | 16 | 3/78 (rounding) |
+| strong, seeds 9/10 | 61/53 | 9–10/38–44/5–8 | 20.2–20.3M | 100–141k | 17–18 | 3–4/78 |
+
+**Strong ships as the default** (`ERA_RECIPE_MONO=strong`; `weak`/`0` revert): ensemble mean
+ill-excl **56.0 against the regime's 61.3**, the **INVERTED family collapses 21 → ~6** (a newer tier
+that is structurally at least as input-efficient cannot easily earn less than the rung below), the
+LOSS family thins to 9–12 with newest-rung losses at £5–19k/wk, net rises to £20.1–20.3M, macro
+improves, and the ceiling stays clear on every seed. The residual census entries are 0.1-unit
+rounding at the 4:1 cap (4.02→3.99), inside any honest reading of the rule. Costs, stated: the
+stale-profitable family absorbs more (36–44 — lean old rungs die even more slowly, the §10.49 ruled
+trade continuing), and ratcheted dominant rungs float further above the band top (dominant "on-aim"
+64/102 vs 81/102), which is the constraint being hard while the band is soft — free entry, not the
+recipe, now carries those margins down. Weak is strictly dominated by strong on every axis measured
+and survives only as the knob's intermediate setting.
+
+**The shipped reference state (bare defaults, after the `--write` — SUPERSEDES §10.49.5's):**
+final-state illogicality **57 (54 excl shipyards)** · per era 3/5/7/12/15/15 · families loss 12 ·
+stale-profitable 36 · inverted 6 · losses **£138k/wk (0.7% of net)** · net **£20.1M/wk** · ceiling
+clear 6/6 · macro residuals 16 · PM settled 5/6 · census 3/78 (rounding hairliners at the 4:1 cap) ·
+the complaint recipe now reads e0 = 20 tools from 10 wood, e1 = 30 tools from 15 wood — identical
+physical efficiency, monotone at the ratchet edge. Ensemble (`ERA_JOINT` 8/9/10): **57/65/58
+(54/61/53 excl)** · losses £138/100/141k · net £20.1–20.3M · macro 16/18/17 · ceiling 6/6 ×3 ·
+newest-rung losses £5–19k/wk. Write cycle byte-identical (verified on the shipping pass). Future
+A/B work compares against THESE numbers.

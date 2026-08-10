@@ -123,12 +123,16 @@ LAYER with DERIVED BOUNDS, the minCount-for-refs fix, and the INFRA SUBSIDY TOLE
 `ERA_PM_MINGAIN` 0.10 + `ERA_PM_FREEZE` best-of-cycle freezing as defaults, ceiling guards on breach
 SETS, breach-clearing polish) + THE CONSTRAINT-SET REGIME (§10.49, user-ruled 2026-08-10 "ship this" —
 profit BAND +5…+50% in place of the +5% target, the MANDATED PRICE-DECLINE ladder, the strict INCREASE
-mechanism, and the ERA_PM_LIFT dominance re-open): final-state illogicality 73 (64 excluding
-shipyards), per era 9/13/9/11/14/17, families loss 13 / stale-profitable 30 / inverted 21 · losses
-£126k/wk ≈ 0.7% of net · net £19.2M/wk (the band regime's +52% over §10.48's £12.6M is the ruling's
-point: real margins, and the stale family carrying the fault count is the ruled trade) · **THE CEILING
-IS CLEAR IN ALL SIX ERAS** · macro residuals 19 · PM settled 5/6 (era 2's steel bistables are the
-exception) · ⚠ the §10.48 figures (68/58 · £156k · £12.6M ·
+mechanism, and the ERA_PM_LIFT dominance re-open) + THE RECIPE RATCHET (§10.50, 2026-08-10 — the
+STRONG form ships: a later tier's base recipe may not be less input-efficient at base prices than
+the tier below; the census went 31/78 violated → 3 rounding hairliners, and the INVERTED family
+collapsed 21 → 6): final-state illogicality 57 (54 excluding shipyards), per era 3/5/7/12/15/15,
+families loss 12 / stale-profitable 36 / inverted 6 · losses £138k/wk ≈ 0.7% of net · net £20.1M/wk
+(the band regime's +59% over §10.48's £12.6M is the ruling's point: real margins, and the stale
+family carrying the fault count is the ruled trade) · ensemble 57/65/58 (54/61/53) · £100–141k ·
+£20.1–20.3M · macro 16/18/17 · newest-rung losses £5–19k/wk · **THE CEILING IS CLEAR IN ALL SIX ERAS
+OF ALL THREE SEEDS** · PM settled 5/6 (era 2's steel bistables are the exception) · ⚠ the §10.48
+figures (68/58 · £156k · £12.6M ·
 ensemble 68/64/62 (58/54/51) / £156–218k / £12.6–12.7M / macro 15/17/15) are the LAST OF THE TARGET
 REGIME — comparable to each other, not to these ·
 **PM CHOICE SETTLES in every era of every seed**, cross-seed phase noise 137→50 selections, freight
@@ -626,7 +630,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         >25pp at current prices re-opens the choice — the era-0 textile −40%-vs-
                         +159% pin is why; LAST THREE joint rounds only, ONE appeal per pin per era,
                         or every bistable pair re-opens forever and §10.48's settling dies —
-                        BUGS_AND_FIXES 2026-08-10). ⚠ Each measured HARMFUL
+                        BUGS_AND_FIXES 2026-08-10), and ERA_RECIPE_MONO default strong (§10.50, THE
+                        RECIPE RATCHET: a later tier's base recipe may not be less input-efficient
+                        — O:I value at base prices — than the tier below; hard Xmax in
+                        solveInputsAt, mirror of the 4:1 lean floor, feasible by construction;
+                        'weak' = identical one-good-IO pairs only, measured strictly dominated;
+                        =0 reverts. Nothing had ever bounded recipe RICHNESS: e1 tooling once ate
+                        £1,546 of wood to make £1,200 of tools). ⚠ Each measured HARMFUL
                         ALONE (A → £1.5M losses, B → stale explosion, C plain → grows the pithead
                         artifact) — revert as a set, not singly. Band top 1.0 measured: a stale
                         rung then dies only if its price HALVES in 2 eras — 0.5 is the working
