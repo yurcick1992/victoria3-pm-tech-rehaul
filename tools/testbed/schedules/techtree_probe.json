@@ -1,0 +1,24 @@
+{
+  "schedule_version": 1,
+  "label": "techtree-probe",
+  "_why": "THREE QUESTIONS, ONE BATCH, after the industry tech tree was emitted for the first time (ROADMAP step 1). (1) ERRORS: are any of the errors a mod run logs actually OURS? A single mod run cannot answer it - error.log is a rotating ring with no per-run token, so counts are contaminated and must be filtered by each line's own timestamp, and a naval battle alone emits hundreds of vanilla localization errors. The user is specifically sceptical that we broke something naval. So: the SAME span, alternating arms, repeated, comparing DISTINCT error shapes inside each run's own window. (2) TELEMETRY: do our 38 new technologies appear in tech_log when acquired - it logs the DISPLAY NAME, so a missing localization would show up as a blank or a raw key. (3) STARTING COMPOSITION: does the 1836 starting technology set still broadly resemble vanilla's? tech_log fires ~1800 lines at the start for every country's starting technologies, which is exactly the comparison.",
+  "_arm": "ALTERNATING, and both are named honestly. {kind: config, config: config/mod_config.json} = the full modded build, 100 tier buildings and 217 technologies. {kind: control} = build.ps1 -ControlOnly, vanilla + telemetry and no gameplay content whatsoever. They are interleaved rather than blocked so a machine-state drift cannot be mistaken for an arm difference.",
+  "_span": "1836.1.1 -> 1840.1.1. Four years is enough for the starting sets to fire, for the first researched technologies to land, and for early wars - which is what puts a naval battle in the window at all. A shorter span was tried and produced no naval battle in the control, which is precisely what made the first comparison uninterpretable.",
+  "_analysis_note": "Compare DISTINCT error shapes per run window, never raw wc -l. See MODDING_NOTES -> Automated headless runs for why.",
+  "defaults": {
+    "metrics": ["tech_log", "country_state"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 30,
+    "tags": ["GBR", "FRA", "USA"]
+  },
+  "setups": {
+    "mod":     { "kind": "config", "config": "config/mod_config.json" },
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "mod",     "until": "1840.1.1", "dump_dates": ["1836.2.1", "1838.1.1", "1840.1.1"] },
+    { "setup": "vanilla", "until": "1840.1.1", "dump_dates": ["1836.2.1", "1838.1.1", "1840.1.1"] },
+    { "setup": "mod",     "until": "1840.1.1", "dump_dates": ["1836.2.1", "1838.1.1", "1840.1.1"] },
+    { "setup": "vanilla", "until": "1840.1.1", "dump_dates": ["1836.2.1", "1838.1.1", "1840.1.1"] }
+  ]
+}

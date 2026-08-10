@@ -225,7 +225,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn"  "pm_traditional_looms" "pm_craftsman_sewing" }
+				activate_production_methods={ "pm_handsewn_clothes"  "pm_traditional_looms" "pm_craftsman_sewing" }
 			}
 		}
 	}
@@ -240,7 +240,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_arms_muskets" "pm_automation_disabled"  }
+				activate_production_methods={ "pm_muskets" "pm_automation_disabled"  }
 			}
 			create_building={
 				building="building_food_industry"
@@ -253,7 +253,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning"  "pm_manual_dough_processing" "pm_disabled_distillery" }
+				activate_production_methods={ "pm_bakery" "pm_disabled_canning"  "pm_manual_dough_processing" "pm_disabled_distillery" }
 			}
 			create_building={
 				building="building_rye_farm"
@@ -666,7 +666,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn" "pm_no_luxury_clothes" "pm_traditional_looms"  }
+				activate_production_methods={ "pm_handsewn_clothes" "pm_no_luxury_clothes" "pm_traditional_looms"  }
 			}
 			create_building={
 				building="building_wheat_farm"
@@ -780,7 +780,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn" "pm_no_luxury_clothes" "pm_traditional_looms"  }
+				activate_production_methods={ "pm_handsewn_clothes" "pm_no_luxury_clothes" "pm_traditional_looms"  }
 			}
 			create_building={
 				building="building_wheat_farm"
@@ -847,7 +847,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted" "pm_no_luxuries" "pm_automation_disabled"  }
+				activate_production_methods={ "pm_handcrafted_furniture" "pm_no_luxuries" "pm_automation_disabled"  }
 			}
 			create_building={
 				building="building_logging_camp"

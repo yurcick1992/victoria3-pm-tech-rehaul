@@ -13,6 +13,45 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## The vanilla building "anchor" was tier POSITION 1 — switching on the era-0 rungs silently shipped vanilla's buildings for 9 industries (2026-08-11)
+
+**Symptom.** Nothing failed. The build was green — lint, negative-goods, mod checks and preflight all
+passed — the mod loaded, the game ran to date and self-quit. Only `error.log` knew, with nine lines:
+`gamedatabase.h: Duplicated key building_food_industry will not be created from file:
+common/buildings/01_industry.txt`, once each for food, textile, furniture, glass, tooling, paper, steel,
+arms and artillery.
+
+**Root cause.** `build.ps1` keyed each industry's generated block set on **`$ind.tiers[0].key`**, on the
+assumption that the first tier is the one reusing the vanilla building key. That held for as long as the
+era-0 rungs were `model_only`. The moment they were switched on (ROADMAP step 1), `tiers[0]` became an
+**invented** key — `building_food_industry_artisanal` — so:
+1. the vanilla `building_food_industry` block matched nothing in `$genByBase` and was copied through
+   **verbatim**, and
+2. the "no vanilla anchor in this file, append as a new industry" fallback then appended our whole set,
+3. giving **two definitions of the same key in one file**.
+
+The engine does not crash on that. It keeps the **first** — vanilla's — and logs one line. So the mod
+shipped **vanilla's** food industry, textile mill, steel mill and six more: no tiers, no new recipes, no
+tech gating, for exactly the nine industries that have a pre-industrial rung. Everything downstream
+still looked right, because the generated file *contained* our buildings; they were simply never loaded.
+⚠ The same assumption also drove `aliases`, which are only legal on the building that reuses the vanilla
+key: they were being written onto the era-0 rung.
+
+**Fix.** Compute an explicit **anchor tier** per industry — the lowest-era tier that carries a
+`vanilla_pm` — and key both `$genByBase`/`$genFileOf` and the `aliases` emission on it. An all-new chain
+with no `vanilla_pm` anywhere (the steamer shipyard) falls back to `tiers[0]` and is appended, which is
+what the existing `note:` line already reports.
+
+**Detect / prevent.** `error.log` was the *only* witness, and it is expected to carry vanilla's own
+noise, so nobody reads it — the exact shape TESTBED_LANDMINES exists for. Two cheap guards, both now
+used: a **duplicate-key scan of the emitted buildings files** (104 blocks, 0 duplicates), and grepping a
+run's `error.log` for `Duplicated key`. A build-time assertion belongs in `Invoke-ModChecks`.
+⚠ **Generalise the lesson: any "the first tier is the vanilla one" assumption is now false.** The ladder
+grew a rung *below* the vanilla anchor, so tier POSITION no longer implies tier ROLE anywhere. The same
+class already bit the user-facing tier numbering (CLAUDE.md: "N IS THE ERA, NEVER A POSITION").
+
+---
+
 ## A frozen PM selection was never re-validated against PROFIT — a −40% method shipped with +159% one candidate away (2026-08-10)
 
 **Symptom.** The era-0 preset's textile mill ran `pm_craftsman_sewing` — buying silk to make

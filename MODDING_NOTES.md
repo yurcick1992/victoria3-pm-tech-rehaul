@@ -34,6 +34,18 @@ Target game version: **1.13.x "Matcha"**.
     additive content would **replace that whole vanilla file and delete its original contents** —
     e.g. naming our PM file `01_industry.txt` would wipe *every* vanilla production method in it.
   Getting this backwards silently breaks the mod.
+- ⭐ **`common/defines/` IS THE EXCEPTION TO ALL OF THE ABOVE — and it is the useful one.** Defines use
+  their own replacement mechanic: a **new file** with a **partial block** overrides only the keys it
+  names, leaving the rest of that category and the rest of the file alone. So changing one engine
+  constant costs a four-line file, not ownership of vanilla's 2 000-line `00_defines.txt`:
+  ```
+  # mod/common/defines/01_pm_rehaul_defines.txt   (loads after 00_*, alphabetically)
+  NTechnology = {
+      TECH_AHEAD_OF_TIME_PENALTY_FACTOR = 0.15
+  }
+  ```
+  ⚠ Do **not** generalise this to other `common/` folders — everywhere else, a duplicate key from a
+  differently-named file is rejected and vanilla wins. Defines are special.
 - Text files under `common/` and `history/` **should be UTF-8 with BOM** (vanilla is). Without it
   the log warns `lexer.cpp: File … should be in utf8-bom encoding (will try to use it anyways)` —
   non-fatal, but we write BOM to match and keep the log clean.
@@ -194,6 +206,21 @@ balance changes can be measured over real playthroughs. It is called by `tools/t
 which is the entry point for all measurement (it owns building each run's mod); a hand invocation of the
 observer is a diagnostic. Everything below is **verified against 1.13.9**; it is all engine behaviour, so
 re-verify after a patch (see `ON_GAME_UPDATE.md`).
+
+⚠⚠ **`error.log` IS CROSS-CONTAMINATED BETWEEN RUNS, AND IT HAS NO TOKEN TO FILTER BY** (2026-08-11).
+Telemetry lines carry a per-run token precisely so one run cannot read another's; `error.log` carries
+nothing of the kind, and it is the same rotating 5×512 KB ring. So a run's `logs_live/error.log` mirror
+contains **other sessions' lines**, out of order — a control-arm mirror was observed opening on a line
+stamped `01:44:32` and closing on `01:28:26`, and carrying nine `Duplicated key` errors belonging to a
+**different arm** that had run 9 minutes earlier.
+⇒ **Never compare raw `wc -l` of `error.log` between arms.** It measured 15 294 against 7 516 where the
+runs' own windows held **139 and 12**. Filter every line by its own `[HH:MM:SS]` stamp against the run's
+launch and finish times from `harness.log` — the same trick the observer already uses for tick lines
+(see BUGS_AND_FIXES, the stale-tail resume verdict) — and de-duplicate, because the game repeats one
+error line thousands of times. This is landmine **L9** (unfiltered ring reads) wearing a different hat.
+⚠ And **count DISTINCT error shapes, not lines**: a single naval battle rendering produces hundreds of
+identical `NAVAL_BATTLE` promote/localization lines, which is vanilla's own bug and swamps everything
+our mod could possibly say.
 
 **Launching without the launcher.** `binaries\victoria3.exe`, working directory `binaries`:
 
@@ -427,6 +454,97 @@ The vanilla-PM→tier mapping should live in the config (add a `vanilla_pm` fiel
   them (no electricity in market → PM locked → no electricity, forever — and nothing errors). The
   builder's `pm_goods` writer therefore drops a `required_input_goods` whose good is no longer among the
   override's inputs. If you ever hand a producing PM such a gate, this is why the game ignores your PM.
+
+## Technology: research, spread, and what the AI actually weighs
+
+Read this before designing anything that hands a country research (ROADMAP step 2).
+
+- **There are TWO independent channels, and only one of them is a choice.**
+  **Directed research** spends your weekly innovation on the one technology you selected.
+  **Spread** is separate and automatic: each country may have **one technology per tree** spreading to
+  it from countries ahead of it, at
+  `(25 + 0.2 × unspent innovation + 0.75 × literacy) × Σ modifiers × rand(0.5, 1.5)` per week
+  (`country_tech_spread_add` / `_mult`, and per-category `country_production_tech_spread_mult`,
+  `country_military_…`, `country_society_…`). Spread grants **progress toward** a technology, not the
+  technology itself, and it finishes what it starts without the AI ever having to notice.
+- ⭐ **NO TECHNOLOGY IN VANILLA REQUIRES ONE FROM ANOTHER TREE — zero, across all 179.** Measured, not
+  assumed. So a cross-category `unlocking_technologies` entry is something the engine has never been
+  asked to draw, and moving a technology between trees means **re-rooting its prerequisites on its new
+  tree**, not carrying the old ones across. It is also what makes such a move *decidable*: ports could
+  move to military because vanilla's own dock technologies are already there to re-root on; electrics
+  could not, because a telephone works cannot stop requiring `electrical_generation`.
+- ⭐ **TECH ICONS CAN BE GENERATED — no image library, no Paradox art.** Vanilla's invention icons are
+  **256×256, 32-bit A8R8G8B8, uncompressed, 9 mipmaps** (`gfx/interface/icons/invention_icons/*.dds`).
+  Mipmaps are optional and a single surface is a legal DDS, so a placeholder is a **128-byte header plus
+  raw BGRA pixels** — writable from Node or PowerShell in a dozen lines. Header fields that must match:
+  `dwSize` 124, `dwFlags` 0x100F, height/width, `dwPitchOrLinearSize` = width×4, `ddspf.dwSize` 32,
+  `ddspf.dwFlags` 0x41, `dwRGBBitCount` 32, masks R `0x00ff0000` G `0x0000ff00` B `0x000000ff`
+  A `0xff000000`, `dwCaps` 0x1000. Byte-compared against `manufacturies.dds`: identical but for the
+  mipmap flag and `dwCaps`, as expected for a single-surface texture.
+  ⚠ Pixels are **BGRA byte order** — the masks describe a little-endian A8R8G8B8 word.
+- ⭐ **THE SPREAD FORMULA'S OWN CONSTANTS ARE SCRIPTABLE — all three of them.** They are not defines and
+  not hardcoded; they are static modifiers in `common/static_modifiers/00_code_static_modifiers.txt`,
+  whose header says outright *"Effects are fully scriptable here"* and *"these names can NOT be removed
+  or changed, as the code uses them"* — i.e. the block names are fixed, the numbers are ours:
+  ```
+  base_values          = { country_tech_spread_add = 25  }   # the flat term
+  country_literacy_rate = { country_tech_spread_add = 75  }   # x literacy (0..1)
+  excess_innovation     = { country_tech_spread_add = 0.2 }   # x unspent innovation points
+  ```
+  ⇒ weekly spread = `(25 + 75 x literacy + 0.2 x unspent) x (1 + Σ mult) x rand(0.5, 1.5)`.
+  ⚠ The innovation term is **0.2 per point (unspent ÷ 5)**, not ÷ 10.
+  ⚠ These live in a **1 029-line, 149-block file** that also carries `base_values` — weekly innovation,
+  the innovation cap, bureaucracy, authority, influence, minting, tax capacity, state infrastructure. It
+  is NOT a defines-style partial override: changing it means owning the whole file. **Do that by
+  GENERATING it from vanilla at build time and substituting only the numbers we change** (the same
+  transform-from-vanilla pattern the builder already uses for `01_industry.txt` and
+  `01_admin_strategies.txt`), so a patch's edits to the other 148 blocks flow through instead of being
+  frozen. ⚠ And make the substitution **throw when it does not match** — a renamed modifier would
+  otherwise leave the mod silently running vanilla spread, which is the exact landmine shape.
+  ⭐ The single-lever alternative: `base_values = { country_tech_spread_mult = 2 }` scales all three
+  terms at once. ⚠ Multipliers **add** rather than compound, so vanilla's own +5%/+25% spread bonuses
+  land as `1 + 2.0 + 0.25`, not `3 x 1.25`.
+- **Progress is stored PER TECHNOLOGY and persists.** Switching research away from a half-done
+  technology does not discard it — the wiki is explicit: *"The amount of innovation applied to a
+  technology so far is saved if another technology is selected as the current research."* So a country
+  genuinely can sit at 90% on something it is not researching.
+- **`add_technology_progress = { progress = N technology = X }` is a real effect**, used 68 times in
+  vanilla events and journal entries. It is the natural mechanism for industry-driven research.
+- ⚠⚠ **BUT THE AI'S EXPOSED WEIGHTING HAS NO PROGRESS TERM.** The whole of the AI's technology model in
+  `common/defines/00_ai.txt` is two constants, and the second states the formula in its own comment:
+  ```
+  TECH_RANDOM_FACTOR      = 1.0  # the higher this is, the more random AI tech research will be
+  TECH_COST_PENALTY_FACTOR = 5.0 # AI tendency to research a tech is divided by
+                                 #   ( 1 + this * ahead of time penalty / era base cost )
+  ```
+  That is the **ahead-of-time penalty**, i.e. how anachronistic the technology is — *not* how much of it
+  is already paid for. On this evidence the AI does **not** recognise "this one is nearly finished, so
+  it is cheap now".
+  ⚠ This is an argument from what the engine exposes, not a proof: the C++ could carry a progress term
+  with no define for it. It is **corroborated but not settled** — see the next point — and it is
+  measurable in the testbed (watch an AI country's selected technology while it holds partial progress
+  elsewhere).
+- **Corroboration: `has_technology_progress` exists and vanilla NEVER uses it.** The trigger is declared
+  in `common/trigger_localization/00_trigger_localization.txt` and renders as *"Technology progress for
+  X is ≥ N%"*, so progress is readable from script as a percentage — and a full-tree grep finds **zero**
+  usages outside that declaration. No vanilla content, `ai_weight` block or AI strategy makes any
+  decision on accumulated progress.
+  ⚠ **Its parameter names are therefore UNVERIFIED** — there is no vanilla call to copy. The shape is
+  presumably `has_technology_progress = { technology = <key> value >= <0..1> }`, but a wrong key here
+  fails the way this project's landmine register is about: the trigger returns false, nothing errors,
+  and the AI simply never gets the bonus. Probe it with the `pm_tech_rehaul_diag` tripwire before
+  relying on it.
+- ⇒ **Design consequence.** Today the "nearly finished" case barely arises, because spread completes
+  what spread starts. An event that dumps progress onto a technology the AI has no reason to select
+  would create that case for the first time, and could strand it. The robust shape is to make the
+  technology *wanted* rather than merely *cheap*: `ai_weight` is a per-technology script value block
+  that accepts arbitrary triggers in a `limit`, so an industrial technology can raise its own weight
+  from the industry the country actually owns — the same condition the event fires on, and no dependence
+  on the AI understanding progress at all.
+- ⚠ **A deeper tree makes AI randomness worse.** `TECH_RANDOM_FACTOR = 1.0` scatters the AI across
+  whatever is available, and vanilla leans on `value = 1` for most technologies with a handful of 2s and
+  3s. On a 100+ technology production tree that near-flat weighting spreads the AI thinner than it does
+  in vanilla, so our technologies need **authored** `ai_weight`s, not a copied `value = 1`.
 
 ## RNG seed: readable, not settable headlessly
 

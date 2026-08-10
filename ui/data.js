@@ -44,10 +44,10 @@ window.PMDATA = {
                                              "pm_name":  "Artisanal Preserving",
                                              "era":  0,
                                              "tech_year":  1700,
-                                             "model_only":  true,
-                                             "output_qty":  30,
+                                             "model_only":  false,
+                                             "output_qty":  42,
                                              "inputs":  {
-                                                            "grain":  30
+                                                            "grain":  42
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -92,12 +92,12 @@ window.PMDATA = {
                                          },
                                          {
                                              "key":  "building_food_industry_sweetener",
-                                             "name":  "Sweetener Food Industries",
+                                             "name":  "Beet Sugar Food Industries",
                                              "pm_key":  "pm_main_food_sweetener",
                                              "pmg_key":  "pmg_main_food_sweetener",
-                                             "pm_name":  "Sweeteners",
+                                             "pm_name":  "Beet Sugar Refining",
                                              "vanilla_pm":  "pm_sweeteners",
-                                             "tech":  "distillation",
+                                             "tech":  "beet_sugar_refining",
                                              "output_qty":  68,
                                              "inputs":  {
                                                             "grain":  34.3,
@@ -161,7 +161,7 @@ window.PMDATA = {
                                              "pm_name":  "Mechanised Bread Plant",
                                              "era":  4,
                                              "tech_year":  1920,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  152,
                                              "inputs":  {
                                                             "grain":  42.6,
@@ -181,7 +181,8 @@ window.PMDATA = {
                                              "input_ratio":  {
                                                                  "grain":  0.727273,
                                                                  "sugar":  0.272727
-                                                             }
+                                                             },
+                                             "tech":  "dough_rollers"
                                          }
                                      ],
                            "ladder_end":  "plateau"
@@ -215,7 +216,7 @@ window.PMDATA = {
                                              "pm_name":  "Cottage Spinning",
                                              "era":  0,
                                              "tech_year":  1700,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  30,
                                              "inputs":  {
                                                             "fabric":  57.8
@@ -263,12 +264,12 @@ window.PMDATA = {
                                          },
                                          {
                                              "key":  "building_textile_mill_dye",
-                                             "name":  "Dye Workshop Textile Mills",
+                                             "name":  "Calico Printing Textile Mills",
                                              "pm_key":  "pm_main_textile_dye",
                                              "pmg_key":  "pmg_main_textile_dye",
-                                             "pm_name":  "Dye Workshops",
+                                             "pm_name":  "Calico Printing",
                                              "vanilla_pm":  "pm_dye_workshops",
-                                             "tech":  "lathe",
+                                             "tech":  "calico_printing",
                                              "output_qty":  68,
                                              "inputs":  {
                                                             "dye":  3.9,
@@ -395,7 +396,7 @@ window.PMDATA = {
                                              "pm_name":  "Village Joinery",
                                              "era":  0,
                                              "tech_year":  1700,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  30,
                                              "inputs":  {
                                                             "fabric":  2.8,
@@ -521,7 +522,7 @@ window.PMDATA = {
                                              "pm_name":  "Spray Lacquer Finishing",
                                              "era":  4,
                                              "tech_year":  1923,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  152,
                                              "inputs":  {
                                                             "fabric":  7.4,
@@ -543,7 +544,8 @@ window.PMDATA = {
                                                                  "fabric":  0.142857,
                                                                  "tools":  0.142857,
                                                                  "wood":  0.714286
-                                                             }
+                                                             },
+                                             "tech":  "nitrocellulose_lacquer"
                                          }
                                      ],
                            "ladder_end":  "plateau"
@@ -573,7 +575,7 @@ window.PMDATA = {
                                              "pm_name":  "Broad Glass",
                                              "era":  0,
                                              "tech_year":  1700,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  20,
                                              "inputs":  {
                                                             "wood":  33.1
@@ -593,10 +595,10 @@ window.PMDATA = {
                                          },
                                          {
                                              "key":  "building_glassworks",
-                                             "name":  "Forest Glassworks",
+                                             "name":  "Coal-Fired Glassworks",
                                              "pm_key":  "pm_main_glass_forest",
                                              "pmg_key":  "pmg_main_glass_forest",
-                                             "pm_name":  "Forest Glass",
+                                             "pm_name":  "Coal-Fired Cone Glasshouse",
                                              "vanilla_pm":  "pm_forest_glass",
                                              "tech":  "manufacturies",
                                              "output_qty":  30,
@@ -626,7 +628,7 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_glass_leaded",
                                              "pm_name":  "Leaded Glass",
                                              "vanilla_pm":  "pm_leaded_glass",
-                                             "tech":  "lathe",
+                                             "tech":  "crystal_glass",
                                              "output_qty":  45,
                                              "inputs":  {
                                                             "lead":  5.6,
@@ -652,12 +654,12 @@ window.PMDATA = {
                                          },
                                          {
                                              "key":  "building_glassworks_crystal",
-                                             "name":  "Crystal Glassworks",
+                                             "name":  "Tank Furnace Glassworks",
                                              "pm_key":  "pm_main_glass_crystal",
                                              "pmg_key":  "pmg_main_glass_crystal",
-                                             "pm_name":  "Crystal Glass",
+                                             "pm_name":  "Regenerative Tank Furnace",
                                              "vanilla_pm":  "pm_crystal_glass",
-                                             "tech":  "crystal_glass",
+                                             "tech":  "regenerative_furnace",
                                              "output_qty":  68,
                                              "inputs":  {
                                                             "lead":  17
@@ -720,7 +722,7 @@ window.PMDATA = {
                                              "pm_name":  "Continuous Ribbon Machine",
                                              "era":  5,
                                              "tech_year":  1926,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  152,
                                              "inputs":  {
                                                             "lead":  22.8,
@@ -740,7 +742,8 @@ window.PMDATA = {
                                              "input_ratio":  {
                                                                  "lead":  0.6,
                                                                  "oil":  0.4
-                                                             }
+                                                             },
+                                             "tech":  "ribbon_machine"
                                          }
                                      ]
                        },
@@ -773,7 +776,7 @@ window.PMDATA = {
                                              "pm_name":  "Blacksmithing",
                                              "era":  0,
                                              "tech_year":  1700,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  20,
                                              "inputs":  {
                                                             "wood":  10
@@ -860,7 +863,7 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_tooling_steel",
                                              "pm_name":  "Steel Tools",
                                              "vanilla_pm":  "pm_steel",
-                                             "tech":  "mechanical_tools",
+                                             "tech":  "steel_toolmaking",
                                              "output_qty":  68,
                                              "inputs":  {
                                                             "steel":  8.5,
@@ -888,12 +891,12 @@ window.PMDATA = {
                                          },
                                          {
                                              "key":  "building_tooling_workshop_rubber",
-                                             "name":  "Rubber Grip Tooling Workshops",
+                                             "name":  "High-Speed Steel Tooling Workshops",
                                              "pm_key":  "pm_main_tooling_rubber",
                                              "pmg_key":  "pmg_main_tooling_rubber",
-                                             "pm_name":  "Rubber Grip Tools",
+                                             "pm_name":  "High-Speed Steel Tooling",
                                              "vanilla_pm":  "pm_rubber_grips",
-                                             "tech":  "vulcanization",
+                                             "tech":  "high_speed_steel",
                                              "output_qty":  101,
                                              "inputs":  {
                                                             "rubber":  5.3,
@@ -927,7 +930,7 @@ window.PMDATA = {
                                              "pm_name":  "Cemented Carbide Tools",
                                              "era":  5,
                                              "tech_year":  1927,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  152,
                                              "inputs":  {
                                                             "rubber":  8,
@@ -948,7 +951,8 @@ window.PMDATA = {
                                              "input_ratio":  {
                                                                  "rubber":  0.25,
                                                                  "steel":  0.75
-                                                             }
+                                                             },
+                                             "tech":  "cemented_carbide"
                                          }
                                      ]
                        },
@@ -980,7 +984,7 @@ window.PMDATA = {
                                              "pm_name":  "Rag Pulping",
                                              "era":  0,
                                              "tech_year":  1700,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  27,
                                              "inputs":  {
                                                             "wood":  10.1
@@ -1028,12 +1032,12 @@ window.PMDATA = {
                                          },
                                          {
                                              "key":  "building_paper_mill_sulfite",
-                                             "name":  "Sulfite Pulping Paper Mills",
+                                             "name":  "Machine Paper Mills",
                                              "pm_key":  "pm_main_paper_sulfite_pulping",
                                              "pmg_key":  "pmg_main_paper_mill_sulfite",
-                                             "pm_name":  "Sulfite Pulping",
+                                             "pm_name":  "Fourdrinier Machine",
                                              "vanilla_pm":  "pm_sulfite_pulping",
-                                             "tech":  "mechanical_tools",
+                                             "tech":  "fourdrinier_machine",
                                              "output_qty":  60,
                                              "inputs":  {
                                                             "sulfur":  4.1,
@@ -1059,10 +1063,10 @@ window.PMDATA = {
                                          },
                                          {
                                              "key":  "building_paper_mill_bleached",
-                                             "name":  "Paper Bleaching Paper Mills",
+                                             "name":  "Sulfite Pulping Paper Mills",
                                              "pm_key":  "pm_main_paper_bleached",
                                              "pmg_key":  "pmg_main_paper_mill_bleached",
-                                             "pm_name":  "Bleached Paper",
+                                             "pm_name":  "Sulfite Pulping",
                                              "vanilla_pm":  "pm_bleached_paper",
                                              "tech":  "chemical_bleaching",
                                              "output_qty":  90,
@@ -1099,7 +1103,7 @@ window.PMDATA = {
                                              "pm_name":  "Kraft Sulfate Pulping",
                                              "era":  4,
                                              "tech_year":  1890,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  135,
                                              "inputs":  {
                                                             "dye":  6.8,
@@ -1121,7 +1125,8 @@ window.PMDATA = {
                                                                  "dye":  0.2,
                                                                  "sulfur":  0.2,
                                                                  "wood":  0.6
-                                                             }
+                                                             },
+                                             "tech":  "kraft_process"
                                          },
                                          {
                                              "key":  "building_paper_mill_highspeed",
@@ -1131,7 +1136,7 @@ window.PMDATA = {
                                              "pm_name":  "High-Speed Fourdrinier",
                                              "era":  5,
                                              "tech_year":  1930,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  203,
                                              "inputs":  {
                                                             "dye":  10.2,
@@ -1153,7 +1158,8 @@ window.PMDATA = {
                                                                  "dye":  0.2,
                                                                  "sulfur":  0.2,
                                                                  "wood":  0.6
-                                                             }
+                                                             },
+                                             "tech":  "high_speed_papermaking"
                                          }
                                      ]
                        },
@@ -1179,10 +1185,10 @@ window.PMDATA = {
                            "tiers":  [
                                          {
                                              "key":  "building_chemical_plant",
-                                             "name":  "Artificial Fertilizer Plants",
+                                             "name":  "Superphosphate Plants",
                                              "pm_key":  "pm_main_fertilizer_artificial",
                                              "pmg_key":  "pmg_main_fertilizer_artificial",
-                                             "pm_name":  "Artificial Fertilizers",
+                                             "pm_name":  "Superphosphate",
                                              "vanilla_pm":  "pm_artificial_fertilizers",
                                              "tech":  "intensive_agriculture",
                                              "output_qty":  90,
@@ -1283,7 +1289,7 @@ window.PMDATA = {
                                              "pm_name":  "Methane Steam Reforming",
                                              "era":  5,
                                              "tech_year":  1931,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  304,
                                              "inputs":  {
                                                             "iron":  53.9,
@@ -1305,7 +1311,8 @@ window.PMDATA = {
                                                                  "iron":  0.333333,
                                                                  "oil":  0.222222,
                                                                  "sulfur":  0.444444
-                                                             }
+                                                             },
+                                             "tech":  "steam_reforming"
                                          }
                                      ]
                        },
@@ -1333,7 +1340,7 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_explosives_leblanc",
                                              "pm_name":  "Leblanc Process",
                                              "vanilla_pm":  "pm_leblanc_process",
-                                             "tech":  "intensive_agriculture",
+                                             "tech":  "leblanc_process",
                                              "output_qty":  50,
                                              "inputs":  {
                                                             "fertilizer":  26.1,
@@ -1360,12 +1367,12 @@ window.PMDATA = {
                                          },
                                          {
                                              "key":  "building_explosives_factory_ammonia",
-                                             "name":  "Ammonia-Soda Explosives Factories",
+                                             "name":  "Dynamite Explosives Factories",
                                              "pm_key":  "pm_main_explosives_ammonia",
                                              "pmg_key":  "pmg_main_explosives_ammonia",
-                                             "pm_name":  "Ammonia-Soda Process",
+                                             "pm_name":  "Dynamite",
                                              "vanilla_pm":  "pm_ammonia-soda_process",
-                                             "tech":  "nitroglycerin",
+                                             "tech":  "dynamite",
                                              "output_qty":  75,
                                              "inputs":  {
                                                             "fertilizer":  34.8,
@@ -1394,12 +1401,12 @@ window.PMDATA = {
                                          },
                                          {
                                              "key":  "building_explosives_factory_vacuum",
-                                             "name":  "Vacuum Evaporation Explosives Factories",
+                                             "name":  "Ostwald Process Explosives Factories",
                                              "pm_key":  "pm_main_explosives_vacuum",
                                              "pmg_key":  "pmg_main_explosives_vacuum",
-                                             "pm_name":  "Vacuum Evaporation",
+                                             "pm_name":  "Ostwald Ammonia Oxidation",
                                              "vanilla_pm":  "pm_vacuum_evaporation",
-                                             "tech":  "dynamite",
+                                             "tech":  "ostwald_process",
                                              "output_qty":  113,
                                              "inputs":  {
                                                             "fertilizer":  43.6,
@@ -1428,12 +1435,12 @@ window.PMDATA = {
                                          },
                                          {
                                              "key":  "building_explosives_factory_brine",
-                                             "name":  "Brine Electrolysis Explosives Factories",
+                                             "name":  "Continuous Nitration Explosives Factories",
                                              "pm_key":  "pm_main_explosives_brine",
                                              "pmg_key":  "pmg_main_explosives_brine",
-                                             "pm_name":  "Brine Electrolysis",
+                                             "pm_name":  "Continuous Nitration",
                                              "vanilla_pm":  "pm_brine_electrolysis",
-                                             "tech":  "electrical_capacitors",
+                                             "tech":  "continuous_nitration",
                                              "output_qty":  169,
                                              "inputs":  {
                                                             "electricity":  20.2,
@@ -1493,7 +1500,7 @@ window.PMDATA = {
                                              "pm_name":  "Bloomery Process",
                                              "era":  0,
                                              "tech_year":  1700,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  43,
                                              "inputs":  {
                                                             "coal":  27.3,
@@ -1653,7 +1660,7 @@ window.PMDATA = {
                                              "pm_name":  "Continuous Wide Strip Mill",
                                              "era":  5,
                                              "tech_year":  1926,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  329,
                                              "inputs":  {
                                                             "coal":  21.3,
@@ -1675,7 +1682,8 @@ window.PMDATA = {
                                                                  "coal":  0.1875,
                                                                  "electricity":  0.1875,
                                                                  "iron":  0.625
-                                                             }
+                                                             },
+                                             "tech":  "continuous_strip_mill"
                                          }
                                      ]
                        },
@@ -1733,7 +1741,7 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_motor_electric",
                                              "pm_name":  "Electric Engines",
                                              "vanilla_pm":  "pm_electric_engines",
-                                             "tech":  "electric_railway",
+                                             "tech":  "electric_motors",
                                              "output_qty":  60,
                                              "inputs":  {
                                                             "electricity":  25.8,
@@ -1765,7 +1773,7 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_motor_diesel",
                                              "pm_name":  "Diesel Engines",
                                              "vanilla_pm":  "pm_diesel_engines",
-                                             "tech":  "compression_ignition",
+                                             "tech":  "diesel_engine",
                                              "output_qty":  90,
                                              "inputs":  {
                                                             "oil":  41.6,
@@ -1798,7 +1806,7 @@ window.PMDATA = {
                                              "pm_name":  "Welded High-Speed Diesel",
                                              "era":  5,
                                              "tech_year":  1935,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  135,
                                              "inputs":  {
                                                             "oil":  56.8,
@@ -1818,7 +1826,8 @@ window.PMDATA = {
                                              "input_ratio":  {
                                                                  "oil":  0.5,
                                                                  "steel":  0.5
-                                                             }
+                                                             },
+                                             "tech":  "high_speed_diesel"
                                          }
                                      ]
                        },
@@ -1941,7 +1950,7 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_shipyard_metal",
                                              "pm_name":  "Metal Shipbuilding",
                                              "vanilla_pm":  "pm_metal_shipbuilding",
-                                             "tech":  "gantry_cranes",
+                                             "tech":  "iron_screw_steamers",
                                              "output_qty":  65,
                                              "inputs":  {
                                                             "coal":  27.3,
@@ -1977,7 +1986,7 @@ window.PMDATA = {
                                              "pm_name":  "Marine Steam Turbines",
                                              "era":  3,
                                              "tech_year":  1903,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  98,
                                              "inputs":  {
                                                             "coal":  7.1,
@@ -2000,7 +2009,8 @@ window.PMDATA = {
                                                                  "coal":  0.2,
                                                                  "engines":  0.2,
                                                                  "steel":  0.6
-                                                             }
+                                                             },
+                                             "tech":  "marine_steam_turbine"
                                          },
                                          {
                                              "key":  "building_shipyard_metal_oil_fired",
@@ -2010,7 +2020,7 @@ window.PMDATA = {
                                              "pm_name":  "Oil-Fired Turbine Steamers",
                                              "era":  4,
                                              "tech_year":  1913,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  146,
                                              "inputs":  {
                                                             "coal":  10.6,
@@ -2033,7 +2043,8 @@ window.PMDATA = {
                                                                  "coal":  0.2,
                                                                  "engines":  0.2,
                                                                  "steel":  0.6
-                                                             }
+                                                             },
+                                             "tech":  "oil_fired_boilers"
                                          },
                                          {
                                              "key":  "building_shipyard_arc_welding",
@@ -2132,7 +2143,7 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_automotive_mass",
                                              "pm_name":  "Mass Automobile Production",
                                              "vanilla_pm":  "pm_mass_automobile_production",
-                                             "tech":  "compression_ignition",
+                                             "tech":  "conveyors",
                                              "output_qty":  45,
                                              "inputs":  {
                                                             "engines":  26.5,
@@ -2167,7 +2178,7 @@ window.PMDATA = {
                                              "pm_name":  "Transfer Machining",
                                              "era":  5,
                                              "tech_year":  1936,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  68,
                                              "inputs":  {
                                                             "engines":  29.1,
@@ -2189,7 +2200,8 @@ window.PMDATA = {
                                                                  "engines":  0.333333,
                                                                  "oil":  0.333333,
                                                                  "rubber":  0.333333
-                                                             }
+                                                             },
+                                             "tech":  "transfer_machining"
                                          }
                                      ]
                        },
@@ -2221,7 +2233,7 @@ window.PMDATA = {
                                              "pm_name":  "Handmade Muskets",
                                              "era":  0,
                                              "tech_year":  1700,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  20,
                                              "inputs":  {
                                                             "hardwood":  3.8,
@@ -2383,7 +2395,7 @@ window.PMDATA = {
                                              "pm_name":  "Stamped and Welded Receivers",
                                              "era":  5,
                                              "tech_year":  1938,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  152,
                                              "inputs":  {
                                                             "hardwood":  8.9,
@@ -2407,7 +2419,8 @@ window.PMDATA = {
                                                                  "oil":  0.166667,
                                                                  "steel":  0.333333,
                                                                  "tools":  0.333333
-                                                             }
+                                                             },
+                                             "tech":  "stamped_receivers"
                                          }
                                      ]
                        },
@@ -2436,7 +2449,7 @@ window.PMDATA = {
                                              "pm_name":  "Bronze Cannons",
                                              "era":  0,
                                              "tech_year":  1700,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  17,
                                              "inputs":  {
                                                             "hardwood":  3,
@@ -2561,7 +2574,7 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_artillery_recoiled",
                                              "pm_name":  "Recoiled Barrels",
                                              "vanilla_pm":  "pm_recoiled_barrels",
-                                             "tech":  "automatic_machine_guns",
+                                             "tech":  "recoil_carriages",
                                              "output_qty":  84,
                                              "inputs":  {
                                                             "oil":  4.6,
@@ -2596,7 +2609,7 @@ window.PMDATA = {
                                              "pm_name":  "Autofrettage and Welded Carriages",
                                              "era":  5,
                                              "tech_year":  1925,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  127,
                                              "inputs":  {
                                                             "oil":  7,
@@ -2618,7 +2631,8 @@ window.PMDATA = {
                                                                  "oil":  0.142857,
                                                                  "steel":  0.571429,
                                                                  "tools":  0.285714
-                                                             }
+                                                             },
+                                             "tech":  "autofrettage"
                                          }
                                      ]
                        },
@@ -2682,7 +2696,7 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_munition_shells",
                                              "pm_name":  "Explosive Shells",
                                              "vanilla_pm":  "pm_explosive_shells",
-                                             "tech":  "dynamite",
+                                             "tech":  "explosive_shells",
                                              "output_qty":  75,
                                              "inputs":  {
                                                             "explosives":  31.5,
@@ -2715,7 +2729,7 @@ window.PMDATA = {
                                              "pm_name":  "Drawn Brass Cartridges",
                                              "era":  4,
                                              "tech_year":  1895,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  113,
                                              "inputs":  {
                                                             "explosives":  47.4,
@@ -2735,7 +2749,8 @@ window.PMDATA = {
                                              "input_ratio":  {
                                                                  "explosives":  0.571429,
                                                                  "lead":  0.428571
-                                                             }
+                                                             },
+                                             "tech":  "drawn_brass_cartridges"
                                          },
                                          {
                                              "key":  "building_munition_plant_automatic",
@@ -2745,7 +2760,7 @@ window.PMDATA = {
                                              "pm_name":  "Automatic Cartridge Lines",
                                              "era":  5,
                                              "tech_year":  1940,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  169,
                                              "inputs":  {
                                                             "explosives":  47,
@@ -2765,7 +2780,8 @@ window.PMDATA = {
                                              "input_ratio":  {
                                                                  "explosives":  0.571429,
                                                                  "lead":  0.428571
-                                                             }
+                                                             },
+                                             "tech":  "automatic_cartridge_lines"
                                          }
                                      ]
                        },
@@ -2829,7 +2845,7 @@ window.PMDATA = {
                                              "pm_name":  "Synthetic Indigo",
                                              "era":  3,
                                              "tech_year":  1897,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  120,
                                              "inputs":  {
                                                             "fertilizer":  51.3,
@@ -2849,7 +2865,8 @@ window.PMDATA = {
                                              "input_ratio":  {
                                                                  "fertilizer":  0.6,
                                                                  "sulfur":  0.4
-                                                             }
+                                                             },
+                                             "tech":  "synthetic_indigo"
                                          },
                                          {
                                              "key":  "building_synthetics_plant_viscose",
@@ -2859,7 +2876,7 @@ window.PMDATA = {
                                              "pm_name":  "Viscose Rayon",
                                              "era":  4,
                                              "tech_year":  1905,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  180,
                                              "inputs":  {
                                                             "fertilizer":  77,
@@ -2878,7 +2895,8 @@ window.PMDATA = {
                                              "input_ratio":  {
                                                                  "fertilizer":  0.6,
                                                                  "sulfur":  0.4
-                                                             }
+                                                             },
+                                             "tech":  "art_silk"
                                          },
                                          {
                                              "key":  "building_synthetics_plant_polyamide",
@@ -2888,7 +2906,7 @@ window.PMDATA = {
                                              "pm_name":  "Polyamide Synthesis",
                                              "era":  5,
                                              "tech_year":  1939,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  270,
                                              "inputs":  {
                                                             "fertilizer":  114.7,
@@ -2907,7 +2925,8 @@ window.PMDATA = {
                                              "input_ratio":  {
                                                                  "fertilizer":  0.6,
                                                                  "sulfur":  0.4
-                                                             }
+                                                             },
+                                             "tech":  "polyamide_synthesis"
                                          }
                                      ]
                        },
@@ -2972,7 +2991,7 @@ window.PMDATA = {
                                              "pm_name":  "Radio Manufacturing",
                                              "era":  4,
                                              "tech_year":  1920,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  90,
                                              "inputs":  {
                                                             "iron":  41.9,
@@ -2996,7 +3015,8 @@ window.PMDATA = {
                                                                  "lead":  0.285714,
                                                                  "rubber":  0.285714,
                                                                  "tools":  0.142857
-                                                             }
+                                                             },
+                                             "tech":  "radio"
                                          },
                                          {
                                              "key":  "building_electrics_industry_electronics",
@@ -3006,7 +3026,7 @@ window.PMDATA = {
                                              "pm_name":  "Vacuum Tube Electronics",
                                              "era":  5,
                                              "tech_year":  1935,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  135,
                                              "inputs":  {
                                                             "iron":  58.4,
@@ -3030,7 +3050,8 @@ window.PMDATA = {
                                                                  "lead":  0.285714,
                                                                  "rubber":  0.285714,
                                                                  "tools":  0.142857
-                                                             }
+                                                             },
+                                             "tech":  "vacuum_tube_electronics"
                                          }
                                      ]
                        },
@@ -3087,7 +3108,7 @@ window.PMDATA = {
                                              "pm_key":  "pm_main_power_pulverized",
                                              "pmg_key":  "pmg_main_power_pulverized",
                                              "pm_name":  "Pulverized-Coal Power Plant",
-                                             "tech":  "electrical_capacitors",
+                                             "tech":  "pulverized_coal_firing",
                                              "output_override":  65,
                                              "output_qty":  65,
                                              "inputs":  {
@@ -3167,7 +3188,6 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_port_basic",
                                              "pm_name":  "Basic Port",
                                              "vanilla_pm":  "pm_basic_port",
-                                             "tech":  "navigation",
                                              "output_qty":  9,
                                              "inputs":  {
                                                             "clippers":  5.3
@@ -3199,7 +3219,7 @@ window.PMDATA = {
                                              "pm_name":  "Steamship Bunkering",
                                              "era":  2,
                                              "tech_year":  1840,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  14,
                                              "inputs":  {
                                                             "steamers":  4.6,
@@ -3220,7 +3240,8 @@ window.PMDATA = {
                                              "input_ratio":  {
                                                                  "steamers":  0.5,
                                                                  "coal":  0.5
-                                                             }
+                                                             },
+                                             "tech":  "steamship_bunkering"
                                          },
                                          {
                                              "key":  "building_port_industrial",
@@ -3229,7 +3250,7 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_port_industrial",
                                              "pm_name":  "Industrial Port",
                                              "vanilla_pm":  "pm_industrial_port",
-                                             "tech":  "gantry_cranes",
+                                             "tech":  "deep_water_docks",
                                              "output_qty":  20,
                                              "inputs":  {
                                                             "steamers":  5.8,
@@ -3260,7 +3281,7 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_port_modern",
                                              "pm_name":  "Modern Port",
                                              "vanilla_pm":  "pm_modern_port",
-                                             "tech":  "concrete_dockyards",
+                                             "tech":  "concrete_quays",
                                              "output_qty":  30,
                                              "inputs":  {
                                                             "steamers":  5.8,
@@ -3293,7 +3314,7 @@ window.PMDATA = {
                                              "pm_name":  "Mechanised Cargo Handling",
                                              "era":  5,
                                              "tech_year":  1930,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  46,
                                              "inputs":  {
                                                             "steamers":  5.3,
@@ -3315,7 +3336,8 @@ window.PMDATA = {
                                              "input_ratio":  {
                                                                  "steamers":  0.333333,
                                                                  "oil":  0.666667
-                                                             }
+                                                             },
+                                             "tech":  "mechanised_cargo_handling"
                                          }
                                      ]
                        },
@@ -3604,7 +3626,7 @@ window.PMDATA = {
                                              "pm_name":  "Sound and Colour Film",
                                              "era":  5,
                                              "tech_year":  1927,
-                                             "model_only":  true,
+                                             "model_only":  false,
                                              "output_qty":  25,
                                              "inputs":  {
                                                             "electricity":  6.3,
@@ -3623,7 +3645,8 @@ window.PMDATA = {
                                                                  "electricity":  0.166667,
                                                                  "paper":  0.5,
                                                                  "tools":  0.333333
-                                                             }
+                                                             },
+                                             "tech":  "sound_film"
                                          }
                                      ]
                        }

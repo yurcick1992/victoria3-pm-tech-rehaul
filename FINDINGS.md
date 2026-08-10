@@ -131,6 +131,101 @@ transcript rather than from data.
 
 ---
 
+## F47 — **THE INDUSTRY TECH TREE LOADS CLEAN. Against a vanilla control, the mod contributes exactly ONE class of error — the already-catalogued relocated-PM references — and the naval error storm is vanilla's own**
+
+**Claim.** With 217 technologies (38 new) and 100 tier buildings emitted for the first time, the only
+error shapes attributable to the mod are `is_production_method_active` PostValidate failures at four
+vanilla script locations, all of which are already listed in `MISSING_PM_REFERENCES.md`. In particular
+**the mod did not break naval combat**, which was the standing suspicion.
+
+**Arms, n, span.** `20260811_014010_techtree-probe`, 4 runs **alternating** so machine drift cannot be
+read as an arm effect: 2 × `{kind: config, config: config/mod_config.json}` (the full modded build) and
+2 × `{kind: control}` (`build.ps1 -ControlOnly`, vanilla + telemetry, no gameplay content).
+1836.1.1 → 1840.1.1, telemetry v11 (`tech_log`, `country_state`), tags GBR/FRA/USA.
+
+**Numbers.** Distinct error shapes inside each run's own window:
+
+| run | arm | lines | distinct shapes | shapes naming our content | NAVAL_BATTLE lines |
+|---|---|---|---|---|---|
+| run001 | mod | 413 | 13 | **0** | 412 |
+| run002 | vanilla | 5 | 5 | **0** | 0 |
+| run003 | mod | 400 | 9 | **0** | 2 |
+| run004 | vanilla | 33 | 7 | **0** | 4 |
+
+Shapes present in the mod arm and never in the vanilla arm: **6**, and every one is accounted for —
+four are `PostValidate of trigger 'is_production_method_active' returned false` at
+`common/scripted_effects/00_scripted_effects.txt`, `common/scripted_triggers/00_scripted_triggers.txt`,
+`events/spanish_flu_events.txt` and `events/japan_events/ep2_japan_events_03.txt`; the other two are
+`range directive used, but no randomization is available` at
+**`common/naval_battle_conditions/00_naval_battle_conditions.txt`** and a wrong-type value at
+**`common/script_values/command_values.txt:373`** — both **vanilla files the mod never touches**.
+
+**Why the naval suspicion is refuted rather than merely unsupported.** The naval errors fire from a
+vanilla file, and they appear in the **vanilla arm too** (run004: 4 lines). Their count tracks nothing
+but how much naval combat a given playthrough happened to contain: 412 / 0 / 2 / 4 across the four runs,
+in no arm-dependent order. A single mod run showing hundreds of them is a run that had a naval war.
+
+**Two methodological results, both of which had to be fixed before the above could be read at all:**
+1. ⚠⚠ **`error.log` is cross-contaminated between runs and cannot be counted raw.** It is the same
+   rotating ring across launches and, unlike telemetry, carries no per-run token. Unfiltered, this
+   batch's arms read 2 698 / 615 / 1 243 / 850 lines; filtered to each run's own window they are
+   413 / 5 / 400 / 33. An earlier pair of hand runs read **15 294 against 7 516** where the true
+   windows held **139 and 12**, and a *vanilla control* appeared to carry nine `Duplicated key` errors
+   that in fact belonged to a modded run forty minutes earlier.
+2. **Count distinct SHAPES, not lines.** One naval battle emits hundreds of identical
+   `NAVAL_BATTLE` / `BATTLE_SHIPS_BREAKDOWN_*` lines and swamps everything else.
+   ⇒ Both are now implemented in **`tools/testbed/analyse_errors.mjs`**, which refuses to report
+   numbers when it cannot find a run's window rather than printing plausible unfiltered ones.
+
+**Also established by the same batch (telemetry v11 `tech_log`):**
+- **Our new technologies do reach telemetry.** 6 368 `TECH` lines, 64 distinct technology names in four
+  in-game years; the four new era-1 production technologies appear by their **display names** — *Beet
+  Sugar Refining*, *Calico Printing*, *Fourdrinier Machine*, *Leblanc Process*. `tech_log` logs the
+  localized name, so a missing localization would surface as a blank or a raw key: **none did**.
+- **A renamed vanilla technology reports its new name** — *Lead Crystal*, not *Crystal Glass* —
+  confirming the `localization/<lang>/replace/` override beats vanilla's own string.
+
+**What it does NOT say.**
+- Nothing about balance, GDP or the tech *pace*: four in-game years, and only era-1 technologies are
+  reached. The 34 remaining new technologies are unexercised.
+- Nothing about long-run stability or wall clock; that needs the full-length batch.
+- The relocated-PM errors are **not fixed**, only confirmed as the known class (user ruling: ignore
+  vanilla script referencing moved PMs). They remain missed flavour, not breakage.
+- n=2 per arm. Enough to show the naval errors are not arm-dependent, not enough to bound their rate.
+
+---
+
+## F46 — **THE 1836 STARTING TECHNOLOGY SETS STILL RESEMBLE VANILLA'S, measured as a share of each tree rather than a count**
+
+**Claim.** Deepening the tree from 179 to 217 technologies did not distort the starting position. Every
+starting tier gains only the new era-1 production technologies, and each country type still begins at
+essentially the same **fraction** of the tree it has to climb.
+
+**Method.** Static, off the two `00_starting_inventions.txt` files and the technology files the game
+will actually read (ours where we own them), expanding `add_era_researched = era_1` against real era
+membership. Not a run — this is deterministic and a run would only add noise.
+
+| starting tier | vanilla (prod/mil/soc) | mod (prod/mil/soc) | Δ | share of own tree | who |
+|---|---|---|---|---|---|
+| 1 | 52 (13/16/23) | 57 (18/16/23) | +5 | 29% → **26%** | GBR USA FRA BEL |
+| 2 | 44 (11/12/21) | 49 (16/12/21) | +5 | 25% → **23%** | AUT PRU SWE |
+| 3 | 31 (7/10/14) | 35 (11/10/14) | +4 | 17% → **16%** | ESP SIC RUS |
+| 4 | 20 (6/7/7) | 24 (10/7/7) | +4 | 11% → **11%** | unrecognised, OTT |
+| 5 | 10 (3/3/4) | 14 (7/3/4) | +4 | 6% → **6%** | very backward |
+| 6 | 3 (1/1/1) | 3 (1/1/1) | +0 | 2% → **1%** | decentralised |
+| 7 | 0 | 0 | +0 | 0% → 0% | no technology |
+
+**Reading.** The leader-to-laggard gradient is preserved and slightly *steepened* at the top (tier 1
+falls 29% → 26% because the tree grew faster than its grant did), which is the direction the mod wants.
+Tier 6 is unchanged in absolute terms by design — a decentralised country is meant to hold almost
+nothing.
+
+**What it does NOT say.** Nothing about what countries *reach*; only where they start. And a share of
+the tree is not a share of its *cost* — the mod's added technologies are concentrated in production,
+whose era costs differ from society's.
+
+---
+
 ## F45 — ⭐⭐ **GDP IS `52 × weekly VALUE ADDED`, MEASURED AGAINST THE GAME'S OWN PERSISTED SERIES.** It is NOT gross output, and the difference is not a constant — the gross:GDP ratio falls **48.5× → 36.7×** from 1836 to 1935 as production chains lengthen. This settles F29's open question
 
 **What it says.** The game's `gdp` is the market-price value of production **reduced by the value of

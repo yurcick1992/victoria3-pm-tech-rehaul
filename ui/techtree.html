@@ -1,0 +1,454 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Industry tech tree — three options</title>
+<!--
+  Standalone viewer for the three candidate industry tech trees (ROADMAP.md step 1).
+  Data comes from tools/tech_tree_spec.mjs (`node tools/tech_tree_spec.mjs --write` regenerates it).
+
+  Layout mirrors the game's own tech screen: ERA IS A ROW, progression runs DOWNWARD, and a line from
+  an upper node to a lower one means the lower one cannot be researched without it. Unlike the game,
+  columns here are INDUSTRIES, so an industry's ladder reads as one vertical line.
+-->
+<script src="techdata.js"></script>
+<style>
+:root{
+  --bg:#14161a; --panel:#1c1f25; --line:#2b3038; --ink:#dfe3e9; --dim:#8b93a1;
+  --new:#4ea36b; --vanilla:#5a6472; --plat:#8b6fd0; --tier:#d9a441; --xlink:#c98a3c;
+  --bad:#e0645c; --late:#d0a24a; --idea:#7f8a9a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.45 "Segoe UI",system-ui,sans-serif}
+header{position:sticky;top:0;z-index:20;background:var(--panel);border-bottom:1px solid var(--line);padding:10px 14px}
+h1{margin:0 0 8px;font-size:15px;font-weight:600;letter-spacing:.02em}
+h1 small{font-weight:400;color:var(--dim);margin-left:8px}
+.row{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.grp{display:flex;gap:6px;align-items:center}
+.grp>label{color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-right:2px}
+button.tab{background:#232830;color:var(--ink);border:1px solid var(--line);border-radius:4px;
+  padding:5px 11px;cursor:pointer;font:inherit}
+button.tab:hover{border-color:#4a525e}
+button.tab.on{background:var(--tier);border-color:var(--tier);color:#221a08;font-weight:600}
+.blurb{color:var(--dim);max-width:none;margin:8px 0 0;font-size:12px}
+.blurb b{color:var(--ink)}
+.stats{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:11.5px;color:var(--dim)}
+.stats span b{color:var(--ink);font-variant-numeric:tabular-nums}
+.warn{color:#e0a44a}
+
+#viewport{overflow:auto;height:calc(100vh - 190px);position:relative}
+#canvas{position:relative;transform-origin:0 0}
+.band{position:absolute;left:0;pointer-events:none}
+.band .fill{position:absolute;inset:0;background:#ffffff06}
+.band .lab{position:sticky;left:6px;display:inline-block;padding:2px 8px;margin:3px 0 0 6px;
+  background:#0d0f12ee;border:1px solid var(--line);border-radius:3px;color:var(--dim);font-size:11px;
+  letter-spacing:.06em;z-index:2}
+.colhead{position:absolute;top:0;font-size:10.5px;color:var(--dim);text-align:center;
+  text-transform:uppercase;letter-spacing:.06em;pointer-events:none}
+svg#edges{position:absolute;inset:0;overflow:visible;pointer-events:none}
+svg#edges path{fill:none;stroke-width:1.4}
+
+.node{position:absolute;border:1px solid var(--line);border-radius:5px;background:#20242b;
+  padding:4px 7px;cursor:default;overflow:hidden}
+.node .nm{font-size:11.5px;line-height:1.25;font-weight:600;display:block;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.node .meta{font-size:10px;color:var(--dim);font-variant-numeric:tabular-nums}
+.node.new{border-color:var(--new);background:#1c2620}
+.node.plat{border-color:var(--plat);background:#221e2c}
+.node.tierless{opacity:.62}
+.node .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--tier);
+  margin-right:4px;vertical-align:middle}
+.node.cf-anach{border-left:3px solid var(--bad)}
+.node.cf-late{border-left:3px solid var(--late)}
+.node.cf-idea{border-left:3px solid var(--idea)}
+.node.dim{opacity:.12}
+.node.hot{outline:2px solid var(--tier);outline-offset:1px;z-index:6}
+.node.up{outline:2px solid #5a9ad6;outline-offset:1px;z-index:5}
+.node.down{outline:2px solid #c96a6a;outline-offset:1px;z-index:5}
+
+#tip{position:fixed;z-index:60;max-width:430px;background:#0d0f12f2;border:1px solid var(--line);
+  border-radius:6px;padding:10px 12px;display:none;box-shadow:0 8px 26px #0009;font-size:12px}
+#tip h3{margin:0 0 2px;font-size:13.5px}
+#tip .sub{color:var(--dim);font-size:11px;margin-bottom:6px}
+#tip .d{color:#b9c0ca;font-style:italic;margin:6px 0}
+#tip ul{margin:2px 0 0;padding-left:16px}
+#tip li{margin:1px 0}
+#tip .h{color:var(--dim);font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;margin-top:8px}
+#tip .up{color:#8cc0ee}#tip .down{color:#eda0a0}#tip .unl{color:var(--tier)}
+#spread{margin-top:9px;padding:9px 11px;background:#171a1f;border:1px solid var(--line);border-radius:5px}
+#spread .srow{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--dim)}
+#spread input{background:#232830;color:var(--ink);border:1px solid var(--line);border-radius:3px;
+  padding:3px 5px;font:inherit;width:62px;font-variant-numeric:tabular-nums}
+#spread .vn{font-size:10px;color:#6b737f;margin-left:-2px}
+#spread table{border-collapse:collapse;margin-top:8px;font-size:11.5px;font-variant-numeric:tabular-nums}
+#spread th,#spread td{padding:3px 12px 3px 0;text-align:left;white-space:nowrap}
+#spread th{color:var(--dim);font-weight:500;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em}
+#spread td.hi{color:var(--tier);font-weight:600}
+#spread td.bad{color:var(--bad);font-weight:600}
+#spread .snote{font-size:11px;color:var(--dim);margin:8px 0 0;max-width:none}
+#spread .snote b{color:var(--ink)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--dim);margin-top:8px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;border:1px solid;
+  vertical-align:-1px;margin-right:4px}
+</style>
+
+<header>
+  <h1>Industry tech tree — three candidate designs
+    <small>hover a technology for what blocks it and what it blocks · click to pin</small></h1>
+  <div class="row">
+    <div class="grp"><label>option</label><span id="opts"></span></div>
+    <div class="grp"><label>tree</label><span id="cats"></span></div>
+    <div class="grp"><label>zoom</label><input id="zoom" type="range" min="40" max="130" value="85"></div>
+    <div class="grp"><label>filter</label>
+      <input id="q" placeholder="name or industry…" style="background:#232830;color:var(--ink);
+        border:1px solid var(--line);border-radius:4px;padding:5px 8px;font:inherit;width:170px"></div>
+    <div class="grp"><button class="tab" id="spreadBtn">tech spread ▾</button></div>
+  </div>
+  <div id="spread" hidden>
+    <div class="srow">
+      <span>weekly spread =</span>
+      (<input id="sFlat" type="number" step="5" value="25"><span class="vn">vanilla 25</span>
+      + <input id="sLit" type="number" step="5" value="75"><span class="vn">vanilla 75</span> × literacy
+      + 0.2 × unspent) × rand(0.5,&nbsp;1.5)
+      <span style="margin-left:14px">at literacy</span>
+      <input id="sLitPct" type="number" step="5" min="0" max="100" value="50">%
+    </div>
+    <div class="srow" style="margin-top:6px">
+      <span>per-tree multiplier</span>
+      prod <input id="sMprod" type="number" step="0.05" value="0.5">
+      mil <input id="sMmil" type="number" step="0.05" value="0">
+      soc <input id="sMsoc" type="number" step="0.05" value="0">
+      <button class="tab" id="sReset" style="padding:3px 8px">vanilla</button>
+      <button class="tab" id="sGlobal" style="padding:3px 8px">global 50/100</button>
+      <button class="tab" id="sProd" style="padding:3px 8px">production-only +50%</button>
+    </div>
+    <div id="sOut"></div>
+    <p class="snote">A boost here is the one lever that works <em>against</em> the mod's goal: spread only
+      ever delivers technologies somebody else already has, so it cannot create a leader — it closes the
+      gap the deeper tree is trying to open. What to watch is the <b>share of a tree handed over for
+      free</b>, not the multiplier. Holding production near vanilla's own share means the boost is paying
+      for the depth rather than outrunning it.</p>
+  </div>
+  <p class="blurb" id="blurb"></p>
+  <div class="stats" id="stats"></div>
+  <div class="legend">
+    <span><i style="border-color:var(--new);background:#1c2620"></i>new technology</span>
+    <span><i style="border-color:var(--line);background:#20242b"></i>vanilla technology</span>
+    <span><i style="border-color:var(--plat);background:#221e2c"></i>platform (option 3)</span>
+    <span><span class="dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;
+      background:var(--tier);margin-right:4px"></span>unlocks a tier building</span>
+    <span style="opacity:.62">faded = unlocks no building (gates production methods only)</span>
+    <span><i style="border-color:var(--bad);background:transparent;border-left-width:3px"></i>researchable before it existed</span>
+    <span><i style="border-color:var(--late);background:transparent;border-left-width:3px"></i>existed long before it can be researched</span>
+    <span><i style="border-color:var(--idea);background:transparent;border-left-width:3px"></i>an idea, gated by when it went mainstream</span>
+    <span><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#5a6472" stroke-width="2"/></svg> ladder link</span>
+    <span><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="var(--xlink)" stroke-width="2"/></svg> cross-industry</span>
+    <span><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="var(--plat)" stroke-width="2"/></svg> platform</span>
+  </div>
+</header>
+
+<div id="viewport"><div id="canvas"><svg id="edges"></svg></div></div>
+<div id="tip"></div>
+
+<script>
+const D = window.TECHDATA;
+const COLW = 176, NODEW = 158, NODEH = 42, ROWH = 56, BANDPAD = 46;
+// Default to whichever option is marked as shipping, so the page opens on the tree that is real.
+let optIx = Math.max(0, D.options.findIndex(o => o.ships)), cat = 'production', pinned = null;
+
+const colOf = t => t.industry || (t.vanillaUnlocks.length ? '_raw' : '_general');
+
+// NARRATIVE ONSET vs the era's calendar window. Two faults, and they are not the same fault:
+// anachronistic = researchable before the thing existed; late = the thing existed long before you may
+// research it, which is only worth flagging past a grace, because research is not invention.
+const ERA_WINDOW = { 1: [null, 1835], 2: [1836, 1861], 3: [1862, 1886], 4: [1887, 1911], 5: [1912, 1936] };
+const LATE_GRACE = 25;
+function conflict(t) {
+  if (t.onset == null) return null;
+  const [lo, hi] = ERA_WINDOW[t.era];
+  if (t.onset > hi) return { kind: 'anach', gap: t.onset - hi, label: `${t.onset - hi}y early` };
+  if (lo != null && t.onset < lo - LATE_GRACE)
+    return { kind: t.idea ? 'idea' : 'late', gap: lo - t.onset, label: `${lo - t.onset}y late` };
+  return null;
+}
+
+// ---- header controls ------------------------------------------------------------------------
+const $ = s => document.querySelector(s);
+$('#opts').innerHTML = D.options.map((o, i) =>
+  `<button class="tab" data-o="${i}">${o.n}. ${o.label}${o.ships ? ' ✓' : ''}</button>`).join(' ');
+$('#cats').innerHTML = ['production', 'military', 'society'].map(c =>
+  `<button class="tab" data-c="${c}">${c}</button>`).join(' ');
+// ⚠ Drop the pin when the view changes — a tooltip left over from another option describes a tree
+// that is no longer on screen, and it looks authoritative.
+$('#opts').onclick = e => { if (e.target.dataset.o) { optIx = +e.target.dataset.o; pinned = null; clear(); render(); } };
+$('#cats').onclick = e => { if (e.target.dataset.c) { cat = e.target.dataset.c; pinned = null; clear(); render(); } };
+$('#zoom').oninput = e => { $('#canvas').style.transform = `scale(${e.target.value / 100})`; };
+$('#q').oninput = render;
+
+// ---- tech spread ------------------------------------------------------------------------------
+// The three constants of the spread formula are static modifiers, not defines, so they are ours to set
+// (MODDING_NOTES). What decides whether a boost is safe is not the multiplier but the SHARE OF A TREE
+// spread alone hands a laggard over the campaign — spread only ever delivers what someone else already
+// has, so it is the one lever that closes the gap the deeper tree exists to open.
+const WEEKS_1836_1936 = 5218;   // rand(0.5,1.5) averages 1, so the bracket IS the expectation
+$('#spreadBtn').onclick = () => {
+  const p = $('#spread'); p.hidden = !p.hidden;
+  $('#spreadBtn').textContent = 'tech spread ' + (p.hidden ? '▾' : '▴');
+  if (!p.hidden) spread();
+};
+for (const id of ['sFlat', 'sLit', 'sLitPct', 'sMprod', 'sMmil', 'sMsoc']) $('#' + id).oninput = spread;
+const setSpread = (f, l, mp, mm, ms) => {
+  $('#sFlat').value = f; $('#sLit').value = l;
+  $('#sMprod').value = mp; $('#sMmil').value = mm; $('#sMsoc').value = ms; spread();
+};
+$('#sReset').onclick  = () => setSpread(25, 75, 0, 0, 0);
+$('#sGlobal').onclick = () => setSpread(50, 100, 0, 0, 0);
+$('#sProd').onclick   = () => setSpread(25, 75, 0.5, 0, 0);
+
+function spread() {
+  const o = D.options[optIx];
+  const flat = +$('#sFlat').value, lit = +$('#sLit').value, L = +$('#sLitPct').value / 100;
+  const cats = ['production', 'military', 'society'];
+  const mult = { production: +$('#sMprod').value, military: +$('#sMmil').value, society: +$('#sMsoc').value };
+  const wkV = 25 + 75 * L, wk = flat + lit * L;
+  const ourCost = Object.fromEntries(cats.map(c => [c, o.budget[c].cost]));
+  const rows = [
+    ['vanilla spread, vanilla trees', wkV, {}, D.vanilla.cost],
+    ['vanilla spread, these trees', wkV, {}, ourCost],
+    [`these settings, option ${o.n} trees`, wk, mult, ourCost],
+  ];
+  // The verdict is a COMPARISON, never an absolute: vanilla's own share at this literacy is the bar.
+  const base = Object.fromEntries(cats.map(c => [c, 100 * wkV * WEEKS_1836_1936 / D.vanilla.cost[c]]));
+  $('#sOut').innerHTML = '<table><thead><tr><th>arm</th>' +
+    cats.map(c => `<th>${c}</th>`).join('') + '</tr></thead><tbody>' +
+    rows.map(([label, w, m, cost], i) => `<tr><td>${label}</td>` +
+      cats.map(c => {
+        const pct = 100 * w * (1 + (m[c] ?? 0)) * WEEKS_1836_1936 / cost[c];
+        const d = pct - base[c];
+        // flag only the arms being judged, and only against vanilla's own share at this literacy
+        const cls = i === 0 ? '' : d > 15 ? 'bad' : Math.abs(d) <= 8 ? 'hi' : '';
+        return `<td class="${cls}">${pct.toFixed(0)}%` +
+          (i ? ` <span style="color:var(--dim);font-weight:400">${d >= 0 ? '+' : ''}${d.toFixed(0)}pp</span>` : '') +
+          '</td>';
+      }).join('') + '</tr>').join('') +
+    '</tbody></table>' +
+    `<div style="font-size:10.5px;color:var(--dim);margin-top:5px">` +
+    `share of each tree that spread alone hands a laggard by 1936, against <b>vanilla's own share</b> — ` +
+    `<span style="color:var(--tier)">gold</span> within 8pp, ` +
+    `<span style="color:var(--bad)">red</span> more than 15pp above it, i.e. the tree is being given away. ` +
+    `Second row shows what the deeper trees do at UNCHANGED vanilla spread.</div>`;
+}
+
+// ---- layout + draw --------------------------------------------------------------------------
+function render() {
+  const o = D.options[optIx];
+  document.querySelectorAll('#opts .tab').forEach((b, i) => b.classList.toggle('on', i === optIx));
+  document.querySelectorAll('#cats .tab').forEach(b => b.classList.toggle('on', b.dataset.c === cat));
+
+  $('#blurb').innerHTML = (o.ships ? '<b style="color:var(--tier)">SHIPS. </b>' : '') +
+    `<b>${o.tagline}</b> ${o.blurb}`;
+  // ⚠ Vanilla's own figures come from the DATA, which computes them from the parsed game files. They
+  // were hardcoded here once and the rush-cost literal was simply wrong (285k against a real 542k),
+  // which made every option read as about twice as punishing as it is.
+  const b = o.budget[cat], van = D.vanilla.cost[cat], vanN = D.vanilla.n[cat];
+  $('#stats').innerHTML = [
+    `<span>technologies <b>${b.n}</b> (vanilla ${vanN})</span>`,
+    `<span>new here <b>${o.techs.filter(t => t.category === cat && t.origin === 'new').length}</b></span>`,
+    `<span>per era <b>${b.perEra.join(' / ')}</b></span>`,
+    `<span>research budget <b>${(b.cost / 1000).toFixed(0)}k</b> innovation ` +
+      `(vanilla ${(van / 1000).toFixed(0)}k, <b>${b.cost >= van ? '+' : ''}${((b.cost / van - 1) * 100).toFixed(0)}%</b>)</span>`,
+    cat === 'production' ? `<span class="warn">worst-case era-5 tech, nothing below it researched: ` +
+      `<b>${(o.rushCost / 1000).toFixed(0)}k</b> at the vanilla penalty ` +
+      `(vanilla tree ${(D.vanilla.rush5 / 1000).toFixed(0)}k) · ` +
+      `<b>${(o.rushCostByAot['0.15'] / 1000).toFixed(0)}k</b> at penalty 0.15</span>` : '',
+    o.problems.length ? `<span class="warn">⚠ ${o.problems.length} era violation(s)</span>` : '',
+  ].join('');
+
+  const techs = o.techs.filter(t => t.category === cat);
+  const byId = Object.fromEntries(techs.map(t => [t.id, t]));
+
+  // columns, in the declared industry order; anything unknown lands at the end
+  const cols = [...new Set(techs.map(colOf))].sort((a, x) => {
+    const i = D.indOrder.indexOf(a), j = D.indOrder.indexOf(x);
+    return (i < 0 ? 99 : i) - (j < 0 ? 99 : j) || a.localeCompare(x);
+  });
+
+  // ⚠ A column is not one lane. The shared/vanilla column holds ~20 technologies in a single era, and
+  // stacking them vertically stretches EVERY era band to that height and pushes the industry ladders
+  // — the thing the page is for — off the screen. So each column gets as many SUB-LANES as it needs to
+  // stay under MAXROWS deep in its worst era, and the band is only as tall as its deepest column.
+  const MAXROWS = 4;
+  const perColEra = {};
+  for (const t of techs) { const c = colOf(t); (perColEra[c] ||= {})[t.era] = (perColEra[c][t.era] ?? 0) + 1; }
+  const lanes = Object.fromEntries(cols.map(c =>
+    [c, Math.max(1, ...Object.values(perColEra[c]).map(n => Math.ceil(n / MAXROWS)))]));
+  const colX = {}; let cx = 14;
+  for (const c of cols) { colX[c] = cx; cx += lanes[c] * COLW; }
+
+  // era bands: within a band a column fills its lanes column-major, ordered by year
+  const pos = {}, bands = [];
+  let y = 6;                                  // y is the TOP of the band; nodes start BANDPAD below it
+  for (let era = 1; era <= 5; era++) {
+    const inEra = techs.filter(t => t.era === era)
+      .sort((a, x) => (a.year ?? 9999) - (x.year ?? 9999) || a.id.localeCompare(x.id));
+    const groups = {};
+    for (const t of inEra) (groups[colOf(t)] ||= []).push(t);
+    let maxRow = 0;
+    for (const [c, list] of Object.entries(groups)) {
+      const rows = Math.ceil(list.length / lanes[c]);
+      list.forEach((t, i) => {
+        const lane = Math.floor(i / rows), row = i % rows;
+        maxRow = Math.max(maxRow, row);
+        pos[t.id] = { x: colX[c] + lane * COLW, y: y + BANDPAD + row * ROWH };
+      });
+    }
+    const h = BANDPAD + (maxRow + 1) * ROWH + 12;
+    bands.push({ era, top: y, h, n: inEra.length });
+    y += h;
+  }
+  const W = cx + 30, H = y + 40;
+
+  const cv = $('#canvas');
+  cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  const q = $('#q').value.trim().toLowerCase();
+
+  // ---- edges (drawn first, behind the nodes) ----
+  let paths = '';
+  for (const t of techs) {
+    for (const p of t.prereqs) {
+      if (!byId[p]) continue;                       // prerequisite lives in another tree
+      const a = pos[p], c = pos[t.id];
+      const ax = a.x + NODEW / 2, ay = a.y + NODEH, cx = c.x + NODEW / 2, cy = c.y;
+      const kind = byId[p].platform ? 'plat' : (colOf(byId[p]) === colOf(t) ? 'ladder' : 'cross');
+      const stroke = kind === 'plat' ? 'var(--plat)' : kind === 'cross' ? 'var(--xlink)' : '#5a6472';
+      // same-band edges bow sideways so they do not vanish under the nodes
+      const dy = Math.max(24, (cy - ay) * 0.5);
+      const d = cy > ay + 6
+        ? `M${ax},${ay} C${ax},${ay + dy} ${cx},${cy - dy} ${cx},${cy}`
+        : `M${ax},${ay} C${ax},${ay + 34} ${cx},${cy + NODEH + 34} ${cx},${cy + NODEH}`;
+      paths += `<path d="${d}" stroke="${stroke}" opacity=".13" data-a="${p}" data-b="${t.id}"></path>`;
+    }
+  }
+  $('#edges').setAttribute('width', W); $('#edges').setAttribute('height', H);
+  $('#edges').innerHTML = paths;
+
+  // ---- bands, column headers, nodes ----
+  cv.querySelectorAll('.band,.node,.colhead').forEach(n => n.remove());
+  for (const bd of bands) {
+    const el = document.createElement('div');
+    el.className = 'band'; el.style.top = bd.top + 'px'; el.style.height = bd.h + 'px'; el.style.width = W + 'px';
+    if (bd.era % 2) el.innerHTML = '<div class="fill"></div>';
+    el.innerHTML += `<span class="lab">ERA ${bd.era} · ${D.eraCost[bd.era].toLocaleString()} innovation each · ${bd.n} techs</span>`;
+    cv.appendChild(el);
+  }
+  // Column headings are repeated at the top of every band — five bands deep, a single row of headings
+  // at the very top is off-screen exactly when you need it.
+  for (const bd of bands) {
+    for (const c of cols) {
+      const el = document.createElement('div');
+      el.className = 'colhead'; el.style.left = colX[c] + 'px';
+      el.style.width = lanes[c] * COLW - 18 + 'px';
+      el.style.top = (bd.top + 26) + 'px';
+      el.textContent = D.indLabel[c] || c.replace(/^_/, '');
+      cv.appendChild(el);
+    }
+  }
+  for (const t of techs) {
+    const el = document.createElement('div');
+    const unl = t.unlocks.length + t.vanillaUnlocks.length;
+    el.className = 'node' + (t.platform ? ' plat' : t.origin === 'new' ? ' new' : '') + (unl ? '' : ' tierless');
+    el.style.left = pos[t.id].x + 'px'; el.style.top = pos[t.id].y + 'px';
+    el.style.width = NODEW + 'px'; el.style.height = NODEH + 'px';
+    el.dataset.id = t.id;
+    const cf = conflict(t);
+    if (cf) el.classList.add('cf-' + cf.kind);
+    el.innerHTML = `<span class="nm" title="${esc(t.name)}">${t.unlocks.length ? '<span class="dot"></span>' : ''}${esc(t.name)}</span>` +
+      `<span class="meta">${t.onset ?? '—'}${t.origin === 'new' ? ' · new' : ''}` +
+      `${t.platform ? ' · ' + t.platform : ''}${t.reEra ? ' · re-era\'d' : ''}` +
+      `${t.renamed ? ' · renamed' : ''}${cf ? ' · <b style="color:var(--' + (cf.kind === 'anach' ? 'bad' : 'late') + ')">' + cf.label + '</b>' : ''}</span>`;
+    if (q && !(t.name.toLowerCase().includes(q) || t.id.includes(q) || (colOf(t) + (D.indLabel[colOf(t)] || '')).toLowerCase().includes(q)))
+      el.style.opacity = .18;
+    cv.appendChild(el);
+  }
+  window._byId = byId;
+  if (!$('#spread').hidden) spread();     // the shares are per-option, so they move with the tab
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+// ---- hover / pin ----------------------------------------------------------------------------
+$('#canvas').addEventListener('mouseover', e => {
+  const n = e.target.closest('.node'); if (!n || pinned) return; highlight(n.dataset.id, e);
+});
+$('#canvas').addEventListener('mousemove', e => {
+  if (pinned) return; const tip = $('#tip');
+  if (tip.style.display === 'block') place(tip, e);
+});
+$('#canvas').addEventListener('mouseout', e => {
+  if (pinned) return; if (e.target.closest('.node')) clear();
+});
+$('#canvas').addEventListener('click', e => {
+  const n = e.target.closest('.node');
+  if (!n) { pinned = null; clear(); return; }
+  if (pinned === n.dataset.id) { pinned = null; clear(); }
+  else { pinned = n.dataset.id; highlight(pinned, e); }
+});
+
+function place(tip, e) {
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = Math.min(e.clientX + 16, innerWidth - w - 8) + 'px';
+  tip.style.top = Math.min(e.clientY + 16, innerHeight - h - 8) + 'px';
+}
+function clear() {
+  $('#tip').style.display = 'none';
+  document.querySelectorAll('.node').forEach(n => n.classList.remove('dim', 'hot', 'up', 'down'));
+  document.querySelectorAll('#edges path').forEach(p => { p.setAttribute('opacity', '.13'); p.setAttribute('stroke-width', '1.4'); });
+}
+function highlight(id, e) {
+  const byId = window._byId, t = byId[id]; if (!t) return;
+  const up = new Set(t.prereqs.filter(p => byId[p])), down = new Set(t.blocks.filter(p => byId[p]));
+  document.querySelectorAll('.node').forEach(n => {
+    const i = n.dataset.id;
+    n.classList.toggle('hot', i === id);
+    n.classList.toggle('up', up.has(i));
+    n.classList.toggle('down', down.has(i));
+    n.classList.toggle('dim', i !== id && !up.has(i) && !down.has(i));
+  });
+  document.querySelectorAll('#edges path').forEach(p => {
+    const on = p.dataset.a === id || p.dataset.b === id;
+    p.setAttribute('opacity', on ? '.95' : '.05');
+    p.setAttribute('stroke-width', on ? '2.4' : '1.4');
+  });
+  const list = (arr, cls) => arr.length
+    ? `<ul class="${cls}">` + arr.map(x => {
+        const u = byId[x]; return `<li>${esc(u ? u.name : x)} <span style="color:var(--dim)">· era ${u ? u.era : '?'}${u && u.origin === 'new' ? ' · new' : ''}</span></li>`;
+      }).join('') + '</ul>'
+    : '<div style="color:var(--dim);padding-left:2px">— none —</div>';
+  const missing = t.prereqs.filter(p => !byId[p]);
+  const tip = $('#tip');
+  tip.innerHTML =
+    `<h3>${esc(t.name)}</h3>` +
+    `<div class="sub">${t.id} · ${t.category} · era ${t.era} (${D.eraCost[t.era].toLocaleString()} innovation)` +
+    ` · ${t.origin === 'new' ? 'NEW technology' : 'vanilla technology'}` +
+    `${t.platform ? ' · platform: ' + t.platform : ''}</div>` +
+    (t.desc ? `<div class="d">${esc(t.desc)}</div>` : '') +
+    `<div class="sub">narrative onset <b style="color:var(--ink)">${t.onset ?? 'undated'}</b> · ` +
+      `era ${t.era} window ${ERA_WINDOW[t.era][0] ?? '…'}–${ERA_WINDOW[t.era][1]}` +
+      (() => { const c = conflict(t); return c
+        ? ` · <b style="color:var(--${c.kind === 'anach' ? 'bad' : c.kind === 'idea' ? 'idea' : 'late'})">` +
+          (c.kind === 'anach' ? `researchable ${c.gap}y before it existed`
+           : c.kind === 'idea' ? `articulated ${c.gap}y earlier — gated by when it became a mass movement`
+           : `existed ${c.gap}y before it can be researched`) + '</b>' : ''; })() + '</div>' +
+    (t.renamed ? `<div class="sub warn">renamed from "${esc(t.vanillaName ?? t.id)}" — ${esc(t.renamed)}</div>` : '') +
+    (t.reEra ? `<div class="sub warn">re-era'd — ${esc(t.reEra)}</div>` : '') +
+    `<div class="h up">blocked by — cannot be researched without</div>${list([...up], 'up')}` +
+    (missing.length ? `<div class="sub">also requires, from another tree: ${missing.map(esc).join(', ')}</div>` : '') +
+    `<div class="h down">blocks — cannot be researched until this is</div>${list([...down], 'down')}` +
+    (t.unlocks.length ? `<div class="h unl">unlocks (our tiers)</div><ul class="unl">` +
+      t.unlocks.map(u => `<li>${esc(u.name)} <span style="color:var(--dim)">· ladder era ${u.era} · ${u.year}</span></li>`).join('') + '</ul>' : '') +
+    (t.vanillaUnlocks.length ? `<div class="h unl">unlocks (vanilla buildings)</div><ul class="unl">` +
+      t.vanillaUnlocks.map(u => `<li>${esc(u.replace(/^building_/, '').replace(/_/g, ' '))}</li>`).join('') + '</ul>' : '') +
+    (pinned ? '' : '<div class="sub" style="margin-top:8px">click to pin</div>');
+  tip.style.display = 'block';
+  place(tip, e);
+}
+
+render();
+</script>
