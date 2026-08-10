@@ -5,11 +5,11 @@
   "_arm": "{kind: config, config: config/mod_config.json} - the full modded build, n=3. NOT a control. Three runs because a single campaign is one RNG draw and the questions above are all distributional; three is what tells a trend from a fluke without costing a second night.",
   "_comparison": "⚠ THIS BATCH CARRIES NO VANILLA ARM, so 'compared to vanilla averages' cannot be answered from it alone. Vanilla references must come from an earlier vanilla session or a follow-up batch, and any finding written from this data must say which. Adding three vanilla runs here would have doubled a ~5h batch to ~10h.",
   "_metrics": "country_state gives per-country GDP + foreign-owned GDP + market, and with `population` on it also carries workforce composition - which is the sharpest test in ROADMAP step 4 (runners-up should hold far fewer engineers, machinists and capitalists). tech_log gives every acquisition by every country to the day, which IS the tech-picture-by-decade answer. building_inventory gives what actually got built.",
-  "_cost": "3 runs x 100 in-game years. At roughly a minute per in-game year plus ~40s load, expect ~100-110 min per run, so ~5-6 hours for the batch.",
+  "_cost": "3 runs x 100 in-game years. At roughly a minute per in-game year plus ~40s load, MEASURED on the first attempt: ~0.68 in-game years per minute early on, and late game is slower still, so budget ~2.5-3.5h per run and ~8h for the batch. The first launch used timeout_minutes 200 and was stopped and relaunched at 330 before it could guillotine a run at 1900 - an established long-run schedule in this repo uses 260 for 85 years.",
   "defaults": {
     "metrics": ["country_state", "population", "tech_log", "building_inventory"],
     "autosave_interval": "five_year",
-    "timeout_minutes": 200,
+    "timeout_minutes": 330,
     "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "JAP"]
   },
   "setups": {
