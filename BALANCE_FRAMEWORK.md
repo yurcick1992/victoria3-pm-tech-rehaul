@@ -4229,3 +4229,102 @@ prices would field 1027 battalions, whose demand would in turn lift the very pri
 bankrupted the producers. The premise drift and the war-industry insolvency are one feedback loop
 seen from two sides; closing it means making the army a proper participant in the §10.14.1 joint
 fixed point (a solver-order change — needs a ruling, not a knob).
+
+## 10.51 The army joins the fixed point (2026-08-10, user-ruled) — the cobweb, the damped joint solve, and the undrop rule it forced
+
+The §10.50.2 audit found the army premise adrift (1.8–6.8% against 5%), and the user ruled: "army
+and construction should re-solve and change on price and GDP changes", with bounds — "6.8 instead
+of 5 is hardly acceptable. 1.8 absolutely isn't."
+
+**The mechanism, verified by simulation before fixing**: `setArmy` already re-sized every settle,
+but sizing from CURRENT prices alone is a COBWEB — battalions = budget/unitCost(p) while
+p = f(army demand), and the army is most of the war-goods books. Undamped on the shipped 1900
+preset the iteration flips forever between ~78 groups (prices floored) and ~310 (prices at
+122–175); the shipped 372 battalions were wherever the last tick landed, and era 4's 6.8% was the
+same coin's other face.
+
+**The fix (`ERA_ARMY_FP`, default ON; =0 reverts)**: battalions and the army-goods prices are
+solved to their JOINT fixed point inside `setArmy` — damped iteration (λ=0.5, ≤40 steps, stop at
+half a group) against the frozen non-army order book, which is exact because `S.UNITNUM` is
+cleared first and no pop need buys war goods. Monotone budget demand against fixed supply ⇒ one
+crossing; the damping kills the two-cycle. A skip cache keeps it cheap: when the naive
+current-price sizing agrees with the incumbent within 3% the fixed point already holds and the
+aggregates call is skipped, so a converged outer loop pays almost nothing.
+
+**The knock-on it exposed, and the symmetric rule it forced**: the consistent era-3 army (553
+battalions vs 372) raised sugar demand after sugar's plantations had been LEGALLY dropped as
+unviable — buy 903 / sell 122, pinned at 175, and no rule could bring a dropped producer back
+(the polish moves only our tiers). **UNDROP ON BREACH** now leads each recheck iteration: while a
+restricted good is breached and a dropped/shed raw producer makes it, that producer is restored
+(or its shed cap lifted 25%) as the step, and it joins the "kept at a loss — the market's only
+source" protected set. The ceiling now outranks solvency in BOTH directions.
+
+**Measured (3-seed ensemble, per-era ARMY lines new in the report, ⚠ flag at ±1pp of the
+consistent 5.3% — the display basis makes 5% of army-exclusive VA read as 5/95):**
+
+| | e0 | e1 | e2 | e3 | e4 | e5 |
+|---|---|---|---|---|---|---|
+| before (§10.50.2) | 4.3% | 4.5% | 3.9% | **1.8%** | **6.8%** | 5.3% |
+| seed 8 | 2.9%⚠ | 4.5% | 4.9% | 5.0% | 5.0% | 5.3% |
+| seed 9 | 3.6%⚠ | 4.5% | 4.8% | 5.2% | 4.9% | 5.2% |
+| seed 10 | 2.8%⚠ | 4.5% | 4.9% | 5.1% | 4.9% | 5.2% |
+
+Eras 1–5 hold the user's bound on every seed; era 3 fields 553–616 battalions where the cobweb
+shipped 372. **Era 0 misses (2.8–3.6%) and stays flagged** — 64 battalions in a floored
+tiny-market economy where band-edge prices make the demand curve degenerate; it joins 1780's
+documented honest exceptions rather than being ground at. Ceiling clear 6/6 on all three seeds
+(the undrop working); headline metrics a wash against §10.50 (ill-excl 59/53/58, mean 56.7 vs
+56.0 · net £20.0–20.5M · losses £116–245k, the increase being producers now deliberately kept to
+serve the consistent army). Construction needed no mechanism change — it was already in the loop;
+its only miss is era 0's integer granularity (§10.50.2), likewise flagged, likewise 1780.
+
+### 10.51.1 The one-shot audit, ruled item by item (user, 2026-08-10) — and the post-macro recheck it shipped
+
+The user asked for a census of everything calibrated ONCE rather than in the loop (the army's
+family), then ruled on each of the five findings:
+
+1. **SoL + base wage set once per era from the fit, never re-solved against the realized economy —
+   ACCEPTED AS DESIGN** ("that is intended for simplicity, or we'd never solve that"). The premise
+   stays exogenous; do not build an SoL/wage feedback.
+2. **The free-entry tuner's single pass** (its minCount floors and futility verdicts were permanent
+   while macro/polish kept moving prices — part of why dominant rungs ended 6–17pp off the band
+   edge) — explained, then RULED "needs fixing" and SHIPPED as **§10.51.2**: `runFreeEntry` is a
+   function and runs twice, the second time after the macro pass with a CLEAN futility slate
+   (`capBlocked.clear()` — the late-appeal doctrine: mid-solve verdicts get one re-hearing at
+   near-final prices) and a MACRO GUARD the first pass does not need (a growth step that deepens an
+   enforceable macro gap is undone and the tier blocked, so free entry cannot un-pay what macro's
+   floors paid for). Order after macro: free entry second pass → loss/band recheck → polish.
+3. **The macro enforcement pass ran last with no §10.18/§10.22 re-verification after its moves —
+   RULED "NEEDS FIXING", SHIPPED**: the recheck is now a function that runs twice, the second time
+   AFTER macro, sparing exactly the keys macro's FLOOR moves raised (`skipGrown` — a reasonability
+   floor outranks a margin by the §10.47 ruling, so the recheck must not cut what macro paid for;
+   everything else is fair game). The second call also re-verifies the §10.22 UPPER band, which
+   previously only the tuner's one pass ever enforced: an over-band raw producer grows one level
+   at a time under the same futility/ceiling guards, losses outranking over-earners for the step.
+4. **Construction's era-0 miss (2.9% vs 8%)** — integer granularity in a floored tiny market,
+   flagged ⚠ in the report — ACCEPTED ("all right"), joins 1780's honest exceptions.
+5. **The per-era futility/block lists** (capBlocked, protectedRaw, growBlocked — dated verdicts
+   kept for termination's sake; the PM side has its one late appeal) — explained; RULED left
+   untouched ("if you can't quantify the effects or reason where it's the most likely to bite,
+   let's not touch this"). Exposure is unquantified-low; §10.51.2's fresh-slate second pass
+   incidentally gives the TUNER's list its late appeal, and the remaining lists stay as they are
+   until a measured case names one biting. Revisit only with such a case in hand.
+
+**The shipped full-stack ensemble (army FP + undrop + post-macro free-entry AND recheck, seeds
+8/9/10):** ill-excl **58/54/55 (mean 55.7 — §10.50's was 56.0)** · losses £276/116/130k · net
+£20.0–20.3M · macro 20/19/19 · **ceiling 6/6 on every seed** · ARMY eras 1–5 within ±1pp of the
+consistent 5.3% on every seed (4.4–5.3%), era 0 flagged at 2.8–3.6% · every over-loss raw producer
+a NAMED "kept: only source" case. The premise-consistency machinery is metrically free — the fault
+count did not move — which is the right price for a constraint layer that only makes the shipped
+state mean what it says.
+
+⚠ **The one visible trade, stated as such: dominant rungs sit further off the profit band (mean
+17.0 → 23.5pp) under the CONSISTENT army — and that is three ruled constraints colliding, not a
+regression to fix.** The 5%-GDP army premise pours real demand into war goods; the §10.47 macro
+caps forbid the war industries from expanding to absorb it (arms ≤ 1.20% at 1900); so their
+margins float above the band top, and free entry's second pass correctly refuses to grow them (the
+macro guard doing its job). A state buying 5% of GDP in weapons from an industry history says was
+this size IS a fat-margin arms sector; the excess margin is the honest residual of the premise,
+the caps and the band all binding at once. §10.51.2's second free-entry pass is ~neutral on
+today's seeds for exactly this reason — its value is standing ready for the industries the caps do
+NOT bind.

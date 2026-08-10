@@ -117,6 +117,12 @@ const PEASANT_SHARE = [0.80, 0.45, 0.35, 0.22, 0.12, 0.04];
 // Share of GDP spent on the ARMY's goods upkeep, and the battalion mix. Era-appropriate weaponry only:
 // a 1935 army is not line infantry. 3 infantry battalions per artillery/armour battalion.
 const ARMY_GDP_SHARE = 0.05;
+// ⭐ ERA_ARMY_FP (default ON; =0 reverts) — see setArmy: battalions and the army-goods prices are
+// solved to their joint fixed point instead of the one-tick-behind cobweb. ARMY_FP_LAST is the warm
+// start + skip cache (per era; the cheap current-price sizing agreeing with the incumbent within 3%
+// means the fixed point already holds and the aggregates call is skipped).
+const ARMY_FP = process.env.ERA_ARMY_FP !== '0';
+const ARMY_FP_LAST = { era: -1, groups: null };
 const ARMY_MIX = {
   0: [['combat_unit_type_line_infantry', 3], ['combat_unit_type_cannon_artillery', 1]],
   1: [['combat_unit_type_line_infantry', 3], ['combat_unit_type_cannon_artillery', 1]],
@@ -2727,8 +2733,15 @@ function buildScenario(eIx, finalPass) {
   // `growStart` remembers the count each producer had before this rule first touched it, so the revert
   // goes back to the beginning of the run.
   const tuned = {}, capBlocked = new Set(), growStart = {};
-  if (PROFIT_CAP_ON) {
-    for (let step = 0; step < PROFIT_CAP_STEPS; step++) {
+  // ⭐ §10.51.2 (user-ruled "needs fixing", 2026-08-10): FREE ENTRY IS A FUNCTION AND RUNS TWICE — here,
+  // and again AFTER the macro pass, because the tuner's one pass left its work graded against prices
+  // that macro and the recheck then moved (dominant rungs ending 6–17pp off the band edge with growth
+  // headroom unexploited). The second call starts with a CLEAN futility slate (capBlocked.clear() — the
+  // late-appeal doctrine: verdicts formed at mid-solve prices get one re-hearing at near-final ones)
+  // and carries a MACRO GUARD the first pass does not need: a growth step that deepens an enforceable
+  // macro gap is undone and the tier blocked, so free entry cannot un-pay what macro's floors paid for.
+  const runFreeEntry = (steps, macroGuard) => {
+    for (let step = 0; step < steps; step++) {
       // WHICH tier grows: of every TIER TYPE currently over the cap, the MOST PROFITABLE one, one level at
       // a time. Stated that way rather than as "an industry over the cap grows", which left it ambiguous
       // what happens when several qualify at once.
@@ -2796,6 +2809,7 @@ function buildScenario(eIx, finalPass) {
       }
       if (rawGrow && (!best || rawGrowP > bestP - PROFIT_CAP)) {
         const prevR = minCount[rawGrow] || 0, tpBefore = E.refEcon(rawGrow).tp;
+        const gap0 = macroGuard ? macroGap() : 0;
         if (growStart[rawGrow] == null) growStart[rawGrow] = S.BLDNUM[rawGrow] || 0;
         minCount[rawGrow] = (S.BLDNUM[rawGrow] || 0) + 1;
         settle(); syncPrices();
@@ -2814,8 +2828,9 @@ function buildScenario(eIx, finalPass) {
         const outPinnedHigh = (() => { const o = E.selGoods(E.refSel(rawGrow)).out;
           for (const g in o) if (o[g] > 0 && (S.thresholds[g] ?? 100) >= 174.5) return true; return false; })();
         const futile = PROFIT_CAP_FUTILITY && !(tpAfter < tpBefore - 0.25) && !outPinnedHigh;
-        if (breachGrew(beforeC) || futile) {
-          // ceiling breach: undo this step. FUTILE: undo the entire run back to where it started.
+        // the second pass's macro guard: growth may not deepen an enforceable reasonability gap (§10.51.2)
+        if (breachGrew(beforeC) || futile || (macroGuard && macroGap() > gap0 + 1e-9)) {
+          // ceiling/macro breach: undo this step. FUTILE: undo the entire run back to where it started.
           minCount[rawGrow] = futile ? growStart[rawGrow] : prevR;
           capBlocked.add(rawGrow); settle(); syncPrices();
           if (futile) delete tuned[rawGrow.replace(/^building_/, '')];
@@ -2825,6 +2840,7 @@ function buildScenario(eIx, finalPass) {
       if (!best) break;
       const k = best.t.key, prev = minCount[k] || 0;
       const tpB = E.TPthr(best.ind, best.t);
+      const gapB = macroGuard ? macroGap() : 0;
       if (growStart[k] == null) growStart[k] = S.BLDNUM[k] || 0;
       minCount[k] = (S.BLDNUM[k] || 0) + 1;               // one level at a time, as specified
       settle(); syncPrices();
@@ -2839,10 +2855,10 @@ function buildScenario(eIx, finalPass) {
         delete tuned[lbl];
         continue;
       }
-      if (breachGrew(beforeC)) {
-        // the extra capacity pushed one of its own inputs to the +75% band edge — the ceiling outranks
-        // this rule, so put the level back and stop growing THIS TIER (not the whole industry: another
-        // tier of it may still have room)
+      if (breachGrew(beforeC) || (macroGuard && macroGap() > gapB + 1e-9)) {
+        // the extra capacity pushed one of its own inputs to the +75% band edge (or, on the second
+        // pass, deepened a macro gap) — those outrank this rule, so put the level back and stop growing
+        // THIS TIER (not the whole industry: another tier of it may still have room)
         minCount[k] = prev; capBlocked.add(k);
         settle(); syncPrices();
       } else {
@@ -2850,33 +2866,76 @@ function buildScenario(eIx, finalPass) {
         tuned[label] = (tuned[label] || 0) + 1;
       }
     }
-  }
+  };
+  if (PROFIT_CAP_ON) runFreeEntry(PROFIT_CAP_STEPS, false);
 
   // ⚗ ERA_RAW_RECHECK — re-enforce §10.18 on the FINAL state. The main enforcement runs before the
   // manufacturing reduction and the tuner, and both of those move counts and prices afterwards — which is
   // exactly how the shipped 1870 ended with wheat/maize/millet at −3% unprotected. This pass may only move
   // COUNTS and re-price (settle + syncPrices, like the tuner): recipes are final here and contSettle would
   // re-solve them.
-  if (RAW_RECHECK) {
+  // ⭐ §10.51.1 (user-ruled "needs fixing", 2026-08-10): the recheck is a FUNCTION and runs TWICE — here,
+  // and again AFTER the macro enforcement pass, because macro moves counts and prices and nothing was
+  // re-verifying §10.18 (no loss-making raw producer), §10.22 (the raw band) or the mfg loss rule after
+  // it. The post-macro call passes `skipGrown` — the exact keys macro's FLOOR moves raised — because a
+  // reasonability floor outranks a margin by ruling (§10.47): the recheck must not cut what macro just
+  // paid for, and everything else is fair game. `protectedMfg` persists across both calls.
+  const RECHECK_PROTECTED_MFG = new Set();
+  const runRecheck = (budget, skipGrown = null) => {
     // ⚠ THE RE-CHECK MUST COVER MANUFACTURING TOO, or it recreates the phase-ordering bug it exists to
     // close. Measured (combo1, 2026-08-09): the raw-only version dropped/shrank raw producers AFTER the
     // manufacturing reduction had terminated, prices moved, and era-5's fertilizer tier — clean when the
     // reduction last looked — ended at 116 levels × −46%, £448k/wk, with nothing left running that could
     // cut it. One combined loop over every count rule, settle-only (recipes are final here), worst first.
-    const protectedMfg = new Set();
-    for (let guard = 0; guard < 400; guard++) {
+    const protectedMfg = RECHECK_PROTECTED_MFG;
+    for (let guard = 0; guard < budget; guard++) {
+      // ⭐ UNDROP ON BREACH (2026-08-10, found by the army fixed point): a producer dropped as unviable
+      // is dropped against THAT moment's demand, and demand keeps moving — the §10.51 army re-solve
+      // raised era-3 sugar demand AFTER the sugar plantations were legally dropped, and the good pinned
+      // at 175 with no producer any rule could bring back (the polish moves only our tiers). The ceiling
+      // outranks solvency in BOTH directions, so the remedy is symmetric with the drop guard: while a
+      // restricted good is breached and a dropped/capped raw producer makes it, restore that producer
+      // (undrop, or lift the shed cap by 25%) as this iteration's step. Protected producers are already
+      // present, so this cannot fight the "kept at a loss" rule.
+      {
+        const breached = ceilingBreachSet();
+        let acted = false;
+        for (const g of breached) {
+          for (const b of refProducers) {
+            if (!isRawProducer(b)) continue;
+            const makes = (E.selGoods(E.refSel(b)).out || {})[g] > 0;
+            if (!makes) continue;
+            if (dropped.has(b)) { dropped.delete(b); protectedRaw.add(b); acted = true; break; }
+            if (rawCap[b] != null && rawCap[b] < scaleCapOf(b)) {
+              rawCap[b] = Math.min(scaleCapOf(b), Math.ceil(rawCap[b] * 1.25) + 1); acted = true; break;
+            }
+          }
+          if (acted) break;
+        }
+        if (acted) { settle(); syncPrices(); continue; }
+      }
       let worst = null, worstP = 0, kind = null, worstStale = null, worstStaleP = 0;
+      let rawOver = null, rawOverGap = 0;
       for (const b of refProducers) {
         if (!(S.BLDNUM[b] > 0) || dropped.has(b) || protectedRaw.has(b) || !isRawProducer(b)) continue;
         if (fixedRef[b] != null) continue;               // fixed-count producers have their own rule above
+        if (skipGrown && skipGrown.has(b)) continue;     // macro floors outrank margins (§10.47)
         const ec = E.refEcon(b); if (!ec || ec.tp == null || !isFinite(ec.tp)) continue;
         if (ec.tp < 0 && ec.tp < worstP) { worst = b; worstP = ec.tp; kind = 'raw'; }
+        // …and the §10.22 UPPER band, re-verified here too (§10.51.1): a producer left over-band by
+        // post-tuner phases grows one level at a time, loss cases first
+        const band = rawBandOf(b);
+        if (band && ec.tp / 100 > band[1] && !capBlocked.has(b)
+            && (S.BLDNUM[b] || 0) + 1 <= scaleCapOf(b)
+            && (rawCap[b] == null || (S.BLDNUM[b] || 0) + 1 <= rawCap[b])
+            && ec.tp / 100 - band[1] > rawOverGap) { rawOver = b; rawOverGap = ec.tp / 100 - band[1]; }
       }
       if (SHRINK_ON) for (const p of placement) {
         if (p.ind.follows_be === false) continue;
         for (const r of p.rows) {
           const t = r.t, n = S.BLDNUM[t.key] || 0;
           if (!(n > 1) || r.fixed != null || protectedMfg.has(t.key)) continue;
+          if (skipGrown && skipGrown.has(t.key)) continue;   // macro floors outrank margins (§10.47)
           const tp = E.TPthr(p.ind, t) / 100 - indPenalty(p.ind) + subsidyTol(p.ind);
           if (!isFinite(tp) || tp >= 0) continue;
           if (SHRINK_STALE_FIRST && t.era < era && tp < worstStaleP) { worstStale = t.key; worstStaleP = tp; }
@@ -2884,6 +2943,21 @@ function buildScenario(eIx, finalPass) {
         }
       }
       if (worstStale) { worst = worstStale; worstP = worstStaleP; kind = 'mfg'; }   // stale rungs die first
+      // a loss anywhere outranks an over-earner; only a loser-free pass may spend its step on the band top
+      if (!worst && rawOver) {
+        const before2 = ceilingBreachSet(), tpB = E.refEcon(rawOver).tp;
+        const prevMin = minCount[rawOver];
+        minCount[rawOver] = (S.BLDNUM[rawOver] || 0) + 1;
+        settle(); syncPrices();
+        const tpA = (E.refEcon(rawOver) || {}).tp;
+        const outHigh = (() => { const o = E.selGoods(E.refSel(rawOver)).out;
+          for (const g in o) if (o[g] > 0 && (S.thresholds[g] ?? 100) >= 174.5) return true; return false; })();
+        if (breachGrew(before2) || (PROFIT_CAP_FUTILITY && !(tpA < tpB - 0.25) && !outHigh)) {
+          minCount[rawOver] = prevMin; if (minCount[rawOver] == null) delete minCount[rawOver];
+          capBlocked.add(rawOver); settle(); syncPrices();
+        }
+        continue;
+      }
       if (!worst) break;
       const before = ceilingBreachSet();
       if (process.env.ERA_BREACH_TRACE === '1')
@@ -2909,7 +2983,9 @@ function buildScenario(eIx, finalPass) {
         if (breachGrew(before)) { dropped.delete(worst); protectedRaw.add(worst); settle(); syncPrices(); }
       }
     }
-  }
+  };
+  const macroGrownKeys = new Set();   // §10.51.1: keys macro's FLOOR moves raised — the post-macro recheck skips them
+  if (RAW_RECHECK) runRecheck(400);
   // ═══ MACROSCENARIO REASONABILITY — enforcement (tools/era_macro.mjs, §10.47; ERA_MACRO=0 reverts) ═══
   // The bounds say what a large autarkic US-like economy may look like: per-industry and per-category
   // GROSS PRODUCT (value added) shares of GDP, professions verified alongside. Enforcement is a
@@ -3092,6 +3168,7 @@ function buildScenario(eIx, finalPass) {
       } else {
         const tally = viol.dir > 0 ? macroM.grown : macroM.cut;
         tally[viol.key] = (tally[viol.key] || 0) + target.size;
+        if (viol.dir > 0) macroGrownKeys.add(target.key);   // §10.51.1: the post-macro recheck spares these
       }
     }
     // ---- residuals + the verified level (professions) + the standing negative-VA list --------------
@@ -3110,6 +3187,13 @@ function buildScenario(eIx, finalPass) {
       }
     }
   }
+  // ⭐ §10.51.1/.2 — THE POST-MACRO RE-VERIFICATION (user-ruled "needs fixing", 2026-08-10): the macro
+  // pass moves counts and prices, and neither the loss/band rules nor FREE ENTRY ever looked again.
+  // Order: free entry's second pass first (fresh futility slate, macro-guarded — §10.51.2), then the
+  // combined loss/band recheck sparing only the keys macro's floors grew (the ruled precedence: a
+  // reasonability floor outranks a margin). The polish stays the final pass.
+  if (PROFIT_CAP_ON && macroM.on) { capBlocked.clear(); runFreeEntry(Math.min(200, PROFIT_CAP_STEPS), true); }
+  if (RAW_RECHECK && macroM.on) runRecheck(200, macroGrownKeys);
   // ⭐ THE INTEGER POLISH (default ON; ERA_POLISH=0 reverts; ERA_POLISH_TRIALS caps work) — the approved
   // attack on the ±1-level jaggedness at its source. FINAL outer pass only: greedy ±1-level moves over our
   // tiers, each trial re-priced (settle + syncPrices — recipes are final here) and kept only when the
@@ -3352,7 +3436,45 @@ function buildScenario(eIx, finalPass) {
     let unitCost = 0;
     for (const [u, w] of mix) unitCost += w * E.goodsVal(E.unitGoodsIO(u).in, true);
     if (!(unitCost > 0)) return;
-    const groups = budget / unitCost;
+    let groups = budget / unitCost;
+    // ⭐ ERA_ARMY_FP (default ON; =0 reverts to the raw sizing — user-ruled 2026-08-10 "army and
+    // construction should re-solve and change on price and GDP changes"). Sizing battalions from
+    // CURRENT prices alone is a COBWEB: battalions = budget/unitCost(p) while p = f(army demand), and
+    // war-goods demand is most of those goods' books — simulated undamped on the shipped 1900 preset
+    // it flips forever between ~78 groups (prices floored) and ~310 (prices at 122–175), and the
+    // shipped state was wherever the last tick landed (372 battalions whose bill was 1.8% of GDP
+    // against the 5% premise, §10.50.2 — the same defect as that era's insolvent war industries).
+    // So battalions and the army-goods prices are solved to their JOINT fixed point here, by damped
+    // iteration against the FROZEN non-army order book (S.UNITNUM was cleared above, so the
+    // aggregates ARE the non-army book; pops buy none of these goods, so freezing the rest is exact).
+    // The engine's own price formula, monotone-decreasing budget demand against fixed supply ⇒ a
+    // unique crossing; λ=0.5 kills the two-cycle. ⚠ The aggregates call is the expensive part, so it
+    // runs only when the cheap current-price sizing disagrees with the incumbent by >3% — once the
+    // outer loop has converged, nearly every settle takes the skip.
+    if (ARMY_FP) {
+      const prevGroups = ARMY_FP_LAST.era === era ? ARMY_FP_LAST.groups : null;
+      if (prevGroups != null && Math.abs(groups - prevGroups) <= 0.03 * Math.max(1, prevGroups)) {
+        groups = prevGroups;
+      } else {
+        const upk = {};
+        for (const [u, w] of mix) { const gi = E.unitGoodsIO(u).in; for (const g in gi) upk[g] = (upk[g] || 0) + w * gi[g]; }
+        const a = E.scenarioAggregates();
+        const book = {};
+        for (const g in upk) book[g] = E.scenarioBuySell(a, g);   // non-army buy/sell (army cleared above)
+        for (let k = 0; k < 40; k++) {
+          let uc = 0;
+          for (const g in upk) {
+            const p = E.priceMultPct(book[g].buy + groups * upk[g], book[g].sell);
+            uc += upk[g] * (S.PRICES[g] || 0) * p / 100;
+          }
+          if (!(uc > 0)) break;
+          const want = budget / uc;
+          if (Math.abs(want - groups) < 0.5) { groups = want; break; }
+          groups += 0.5 * (want - groups);
+        }
+      }
+      ARMY_FP_LAST.era = era; ARMY_FP_LAST.groups = groups;
+    }
     for (const [u, w] of mix) S.UNITNUM[E.unitRowKey(u, false)] = Math.max(1, Math.round(groups * w));
   }
 
@@ -3401,6 +3523,13 @@ function buildScenario(eIx, finalPass) {
   }
 
   return { eIx, era, jobs, gdp, peasants, popNonPeasant, scaleOf, pmResult, share, gross, popBoost,
+           army: (() => { let bill = 0, batt = 0;
+             for (const u of E.unitTypes()) for (const mob of [false, true]) {
+               const n = S.UNITNUM[E.unitRowKey(u, mob)] || 0; if (!n) continue;
+               batt += n; bill += n * E.goodsVal(E.unitGoodsIO(u).in, true);
+             }
+             const vaNow = E.scenarioValueAdded();
+             return { bill, batt, share: vaNow > 0 ? bill / vaNow : 0 }; })(),
            jointDrift, jointDriftGood, jointDriftN, pmSettled, pmFrozen: pmFrozen.size,
            constrShare: constructionShare(), constrLevels: S.BLDNUM[CONSTRUCTION_BLD] || 0, gross: grossOut, shrunk,
            profit: profitTotals(),
@@ -3825,6 +3954,15 @@ for (let e = 0; e < FIT.eras.length; e++) {
   console.log(`    CONSTRUCTION: ${meta.constrLevels} levels = ${(100 * meta.constrShare).toFixed(1)}% of GDP`
     + ` (target ${(100 * constrShareOf(meta.eIx)).toFixed(0)}%, ${CONSTRUCTION_PM[meta.era]})`
     + (Math.abs(meta.constrShare - constrShareOf(meta.eIx)) > 0.02 ? '   ⚠ OFF TARGET' : ''));
+  // the ARMY premise, on the DISPLAY basis (bill ÷ army-inclusive VA — the UI chips' arithmetic):
+  // budgeting 5% of army-exclusive VA makes the consistent display value s/(1−s) ≈ 5.3% (§10.50.2)
+  {
+    const armyTgt = ARMY_GDP_SHARE / (1 - ARMY_GDP_SHARE);
+    console.log(`    ARMY: ${fmtN(meta.army.batt)} battalions, upkeep £${fmtN(Math.round(meta.army.bill))}/wk`
+      + ` = ${(100 * meta.army.share).toFixed(1)}% of GDP (consistent ≈${(100 * armyTgt).toFixed(1)}%`
+      + `${ARMY_FP ? '' : '; ⚗ ERA_ARMY_FP=0 — cobweb sizing'})`
+      + (Math.abs(meta.army.share - armyTgt) > 0.01 ? '   ⚠ OFF TARGET' : ''));
+  }
   const outB = (meta.rawProfits && meta.rawProfits.outside) || [];
   console.log(`    RAW BAND (extraction 0–${(RAW_BAND.extraction[1] * 100).toFixed(0)}%, agriculture 0–${(RAW_BAND.agriculture[1] * 100).toFixed(0)}%): `
     + (outB.length ? `⚠ ${outB.length} OUTSIDE — ` + outB.map(r => `${r.b} ${r.tp.toFixed(0)}%`

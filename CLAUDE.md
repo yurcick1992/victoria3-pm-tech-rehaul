@@ -129,10 +129,21 @@ the tier below; the census went 31/78 violated → 3 rounding hairliners, and th
 collapsed 21 → 6): final-state illogicality 57 (54 excluding shipyards), per era 3/5/7/12/15/15,
 families loss 12 / stale-profitable 36 / inverted 6 · losses £138k/wk ≈ 0.7% of net · net £20.1M/wk
 (the band regime's +59% over §10.48's £12.6M is the ruling's point: real margins, and the stale
-family carrying the fault count is the ruled trade) · ensemble 57/65/58 (54/61/53) · £100–141k ·
-£20.1–20.3M · macro 16/18/17 · newest-rung losses £5–19k/wk · **THE CEILING IS CLEAR IN ALL SIX ERAS
-OF ALL THREE SEEDS** · PM settled 5/6 (era 2's steel bistables are the exception) · ⚠ the §10.48
-figures (68/58 · £156k · £12.6M ·
+family carrying the fault count is the ruled trade) + THE ARMY IN THE FIXED POINT (§10.51,
+user-ruled 2026-08-10 — ERA_ARMY_FP: battalions and war-goods prices solved jointly inside setArmy,
+killing the cobweb that shipped 1.8–6.8% army shares against the 5% premise; eras 1–5 now hold
+±1pp of the consistent 5.3% on every seed, era 0 the flagged 1780 exception; UNDROP-ON-BREACH makes
+the ceiling outrank solvency in both directions; per-era ARMY report lines added; §10.51.1: the
+recheck runs TWICE, the second time after macro sparing only its floor-grown keys, and re-verifies
+the §10.22 upper band — the five-item one-shot audit is ruled: SoL/wage premise and e0 granularity
+ACCEPTED, block-lists left by ruling, the post-macro gap AND the tuner single-pass both FIXED —
+§10.51.2: free entry re-runs after macro with a fresh futility slate and a macro guard; ⚠ dominant
+rungs off the band 17→23.5pp is the army premise × macro caps × band COLLIDING on the war
+industries, an honest residual, not a defect) ·
+ensemble (full stack) 65/61/61 (58/54/55, mean 55.7) · £116–276k · £20.0–20.3M · macro 20/19/19 ·
+**THE CEILING IS CLEAR IN ALL SIX ERAS OF ALL THREE SEEDS** · PM settled 5/6 (era 2's steel
+bistables are the exception) · ⚠ the
+§10.48 figures (68/58 · £156k · £12.6M ·
 ensemble 68/64/62 (58/54/51) / £156–218k / £12.6–12.7M / macro 15/17/15) are the LAST OF THE TARGET
 REGIME — comparable to each other, not to these ·
 **PM CHOICE SETTLES in every era of every seed**, cross-seed phase noise 137→50 selections, freight
