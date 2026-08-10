@@ -865,10 +865,15 @@ const RATIO_SRC = {};
 // ill-excl 64 → 54 with the INVERTED family collapsing 21 → 6, net and macro both improved) — THE
 // RECIPE RATCHET: a later tier's BASE-PM recipe may not be less input-efficient than the tier below it.
 // The complaint that motivated it: e0 tooling made 20 tools from 14.3 wood while e1 needed 77.3 wood
-// for 30 tools — at base prices a ratio of 2.80 collapsing to 0.78, a tier that DESTROYS value at base
-// prices. Nothing bounded recipe richness from above (the 4:1 cap bounds only leanness), so a tier
-// solved at high realised prices could go arbitrarily gluttonous: 31 of 78 adjacent pairs violated
-// this in the first shipped §10.49 book.
+// for 30 tools — at base prices a ratio of 2.80 collapsing to 0.78. Nothing bounded recipe richness
+// from above (the 4:1 cap bounds only leanness), so a tier solved at high realised prices could go
+// arbitrarily gluttonous: 31 of 78 adjacent pairs violated this in the first shipped §10.49 book.
+// ⚠ THE DEFECT IS THE REGRESSION, NOT THE LEVEL (user, 2026-08-10 — §10.50.1): a sub-1 ratio at base
+// prices is NOT itself forbidden — a recipe may destroy value at base prices so long as plausible
+// price scenarios carry it (fertilizer runs 0.98 for three eras, electrics debuts at 0.75, both
+// viable at their realised prices). There is deliberately NO absolute floor here; a chain whose
+// first tier sits below 1 may legally stay below 1. What is forbidden is only technology running
+// BACKWARDS — a later tier worse than the one below it.
 //   weak   — applies only where the pair is one-good-in, one-good-out with IDENTICAL goods (the
 //            physical reading: later out/in may not fall; prices cancel, so the value form below is
 //            exactly the physical form there).

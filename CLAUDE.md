@@ -636,7 +636,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         solveInputsAt, mirror of the 4:1 lean floor, feasible by construction;
                         'weak' = identical one-good-IO pairs only, measured strictly dominated;
                         =0 reverts. Nothing had ever bounded recipe RICHNESS: e1 tooling once ate
-                        £1,546 of wood to make £1,200 of tools). ⚠ Each measured HARMFUL
+                        £1,546 of wood to make £1,200 of tools. ⚠ NO absolute ratio floor — sub-1
+                        at base prices is legal when realised prices carry it (fertilizer 0.98,
+                        electrics debut 0.75); only the REGRESSION is forbidden, §10.50.1). ⚠ Each measured HARMFUL
                         ALONE (A → £1.5M losses, B → stale explosion, C plain → grows the pithead
                         artifact) — revert as a set, not singly. Band top 1.0 measured: a stale
                         rung then dies only if its price HALVES in 2 eras — 0.5 is the working

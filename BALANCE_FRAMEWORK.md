@@ -4186,3 +4186,17 @@ physical efficiency, monotone at the ratchet edge. Ensemble (`ERA_JOINT` 8/9/10)
 (54/61/53 excl)** · losses £138/100/141k · net £20.1–20.3M · macro 16/18/17 · ceiling 6/6 ×3 ·
 newest-rung losses £5–19k/wk. Write cycle byte-identical (verified on the shipping pass). Future
 A/B work compares against THESE numbers.
+
+### 10.50.1 Clarified scope (user, 2026-08-10) — the defect is the regression, not the level
+
+"It is not automatically forbidden for a PM to be value-destroying at base prices, as long as there
+are plausible price scenarios when it's not value-destroying." The section above leaned on sub-1
+base-price ratios ("a tier that destroys value at base prices") as if the LEVEL were the crime; it
+is not, and the shipped mechanism never treated it as one — the ratchet has NO absolute floor, only
+the pairwise bound, so a chain whose first tier sits below 1 may legally stay below 1. The shipped
+book proves the scope live: textile's plateau pair runs 0.82/0.82, fertilizer 0.98 across three
+eras, electrics debuts at 0.75 and power at 0.79 — every one viable at its own realised prices,
+every one legal. Sub-1 at base prices was EVIDENCE OF MAGNITUDE in the tooling case (2.80 → 0.78 is
+how far backwards a recipe had walked), not the offence; the offence is only a later tier less
+input-efficient than the tier below it. Do not derive an absolute ratio floor from §10.50 — none
+exists, and adding one would outlaw eight currently-healthy industries' debut and plateau tiers.
