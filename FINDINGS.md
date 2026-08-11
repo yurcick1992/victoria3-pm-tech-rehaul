@@ -131,6 +131,77 @@ transcript rather than from data.
 
 ---
 
+## F48 — **A FULL CENTURY ON THE TECH TREE: no GDP penalty, ~8% wall-clock cost, and 86–88% of a 217-technology tree reached. The top era is under-reached — but that is VANILLA's property, not ours**
+
+**Arm, n, span.** `20260811_020843_techtree-full-n3`, `{kind: config, config/mod_config.json}` — the full
+modded build, **n=2 completed** (a third run was stopped by the user before it produced data),
+1836.1.1 → 1936.1.1, telemetry v11 (`country_state`, `population`, `tech_log`, `building_inventory`).
+Vanilla reference is **cross-session**, not contemporaneous: `20260801_001026_vanilla-n3-v5`,
+`{kind: control}`, n=3, same span, telemetry v5.
+
+**1. GDP — no detectable penalty.** World GDP at 1935:
+
+| arm | runs | world GDP | mean |
+|---|---|---|---|
+| **mod** | 3 776M · 4 513M | spread **19%** | **4 145M** |
+| vanilla | 4 166M · 4 163M · 4 453M | spread 7% | **4 261M** |
+
+The mod sits **~3% below vanilla and far inside its own run-to-run spread**, so the honest statement is
+*no measurable difference*, not *slightly lower*. Both arms grow the world about **×11** over the
+century (378M → ~4.2Bn). ⚠ n=2 with a 19% spread bounds nothing tighter than that.
+
+**2. The technology picture by decade** — measured as **distinct technologies reached by anyone in the
+world**, which is rename-proof (see the trap below). The two runs agree to within 3–5 technologies at
+every decade:
+
+| by | 1840 | 1860 | 1880 | 1900 | 1910 | 1920 | 1930 | 1936 |
+|---|---|---|---|---|---|---|---|---|
+| of 217 | 63 | 89–92 | 119 | 146–148 | 158–163 | 166–169 | 178–181 | **187–190** |
+| % | 29% | 41% | 55% | 67% | 73–75% | 76–78% | 82–83% | **86–88%** |
+
+By era at 1936: **e1 45/45 · e2 39/39 · e3 45/45 · e4 43–44/47 · e5 15–17/41.**
+
+**3. ⭐ THE TOP ERA IS UNDER-REACHED, AND IT IS MOSTLY VANILLA'S DOING.** 20 of the 41 era-5
+technologies are never acquired by anyone, in either run — but **only 6 of those 20 are ours**. The
+other 14 are vanilla's own: antibiotics, chemical warfare, flamethrowers, stormtroopers, mobile armour,
+super dreadnought, modern battlefleet tactics, paved roads, macroeconomics, mass propaganda, mass
+surveillance, modern financial instruments, analytical philosophy, behaviorism. Nobody finishes era 5
+in Victoria 3, and our deepening of it did not create that.
+⇒ **32 of our 38 new technologies ARE reached.** The six that are not gate exactly six top rungs:
+artillery e5 (*Autofrettage*), munitions e5 (*Automatic Cartridge Lines*), engines e5 (*High Speed
+Diesel*), ports e5 (*Mechanised Cargo Handling*), steam shipyards e4 (*Oil-Fired Boilers*) and art
+academies e5 (*Sound Film*). Those buildings are, in practice, never built.
+⇒ Era 4 is nearly complete — only 2 of 47 unreached, both vanilla (*Film*, *Pre Dreadnought*).
+
+**4. Stability.** Both completed runs reached 1936 and self-quit with complete dumps. **One CTD**, in
+run 1 at 1854.3.20 (minidump `victoria3_01260711_022839`); the harness resumed from the last autosave
+and the run finished normally. 1 crash in 2 century-long runs. ⚠ Not attributed — V3 crashes on its
+own, and n=2 cannot separate that from a mod cause.
+
+**5. Wall clock.** 163 min and 156 min for the century. Against the vanilla curve that is **~8% slower**
+(see MODDING_NOTES for the per-decade curves). Affordable.
+
+**⚠ THE TRAP THIS ANALYSIS FELL INTO FIRST — and TESTBED_METRICS §35 already warned about it.** The
+first cut keyed GDP and technology columns on **country DISPLAY NAMES**, which is the hardcoded-tag time
+bomb wearing a nicer face: Prussia becomes the German Empire, Britain becomes the British Republic, and
+the column simply stops. It read "Great Britain plateaus at 99 technologies in 1899 and never learns
+another thing" — which was a rename, not a finding. Every number above is instead a world-wide
+aggregate or a top-N-at-this-dump, neither of which cares what anyone is called.
+⚠ A second, duller bug: `debug.log` fields carry a trailing **CR**, so an untrimmed technology name
+matches nothing and every era bucket reads zero.
+
+**What it does NOT say.**
+- **Nothing about workforce composition** — the step-4 criterion (runners-up holding drastically fewer
+  engineers, machinists, capitalists) needs a per-profession metric that does not exist. `population`
+  carries totals only.
+- The vanilla comparison is **cross-session and cross-schema** (v5 against v11), same span and same
+  game version but not the same night. Good enough for a 3% GDP difference inside a 19% spread; not
+  good enough for anything finer.
+- n=2. The world diverges hugely by RNG — at 1935 run 1 is led by Russia at 723M, run 2 by India at
+  979M with a German Empire on 719M — so *per-country* readings from this batch mean very little.
+
+---
+
 ## F47 — **THE INDUSTRY TECH TREE LOADS CLEAN. Against a vanilla control, the mod contributes exactly ONE class of error — the already-catalogued relocated-PM references — and the naval error storm is vanilla's own**
 
 **Claim.** With 217 technologies (38 new) and 100 tier buildings emitted for the first time, the only
