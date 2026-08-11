@@ -1,6 +1,7 @@
 {
   "schedule_version": 1,
   "label": "three-arm-tc-subsidy",
+  "_superseded": "⚠ THIS SCHEDULE NO LONGER RUNS AS WRITTEN, and that is deliberate rather than rot. Its `mod_no_tc` arm points at config/mod_config.no_tc_subsidy.json, which was DELETED on 2026-08-11 when the user parked the trade-centre subsidy question and removed the mandate from the DEFAULT config - so the shipped config/mod_config.json now IS what this schedule called `mod_no_tc`, and the variant had nothing left to vary. run_schedule.ps1 validates every setup's config BEFORE building or launching anything, so re-running this fails in two seconds with `setup 'mod_no_tc': config not found` rather than half-way through an overnight batch. To resume the n=2 comparison, regenerate the variant as the arm that HAS the mandate (building_subsidies.building_trade_center = must_have) and rename the arms accordingly - the shipped config is now the unsubsidised side, not the subsidised one.",
   "_why": "THE FIRST BATCH ON THE SAVEGAME INSTRUMENT (ROADMAP step 3.5), and the first three-arm comparison of the shipped mod. Four questions: (1) is VANILLA still what it was - same economy, same wall clock - measured against the earlier vanilla sessions, which is what separates a telemetry tax from a mod tax; (2) how far the mod is from vanilla on GDP, stability and speed; (3) whether MANDATING TRADE-CENTRE SUBSIDIES buys more trade, and what it costs in GDP, in budget share and in bankruptcies; (4) whether the save summaries agree with the log telemetry on GDP, building counts and population - the alignment gate that must pass before any state-of-process metric is moved off the logs.",
   "_arms": "vanilla = {kind: control} - vanilla + telemetry, ZERO gameplay content (build.ps1 throws if handed content). mod = {kind: config, config: config/mod_config.json} - the shipped mod, 217 technologies, 100 tier buildings, trade centre at must_have. mod_no_tc = {kind: config, config: config/mod_config.no_tc_subsidy.json} - byte-identical to `mod` EXCEPT six lines: building_trade_center = must_have removed from all six administrative AI strategies. VERIFIED by a full-tree diff of the two builds: only those six lines plus the build timestamp differ. Vanilla's own ai_strategy_default subsidises power_plant/railway/port and NOT trade centres, so this genuinely withdraws the mandate rather than falling back to a default that would reinstate it.",
   "_order": "2.1-2.2-2.3-2.1-2.2-2.3, interleaved by user instruction rather than blocked by arm, so that any drift in machine state over ~16 hours (thermal, background load, time of day) falls on all three arms equally instead of on whichever ran last.",
@@ -10,28 +11,146 @@
   "_cost": "6 runs x 100 in-game years. Measured on 20260811_020843: 2h36 per mod run, and ~2h20 for a vanilla run of the same span. Budget ~15h of game time plus ~2 min of save harvest per run and ~1 min of build. timeout_minutes 330 per run, as the last full-length batch used.",
   "_disk": "~100 saves per run at ~40 MB = ~4 GB standing during a run, drained to a ~120 MB summary set plus ONE kept save per run (the escape hatch for questions the schema did not anticipate). The archiver stops itself if free space falls below 8 GB.",
   "defaults": {
-    "metrics": ["country_state", "population", "tech_log", "building_inventory", "treasury", "events"],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "building_inventory",
+      "treasury",
+      "events"
+    ],
     "autosave_interval": "yearly",
     "timeout_minutes": 330,
-    "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "JAP"]
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP"
+    ]
   },
   "setups": {
-    "vanilla":   { "kind": "control" },
-    "mod":       { "kind": "config", "config": "config/mod_config.json" },
-    "mod_no_tc": { "kind": "config", "config": "config/mod_config.no_tc_subsidy.json" }
+    "vanilla": {
+      "kind": "control"
+    },
+    "mod": {
+      "kind": "config",
+      "config": "config/mod_config.json"
+    },
+    "mod_no_tc": {
+      "kind": "config",
+      "config": "config/mod_config.no_tc_subsidy.json"
+    }
   },
   "runs": [
-    { "setup": "vanilla",   "until": "1936.1.1",
-      "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] },
-    { "setup": "mod",       "until": "1936.1.1",
-      "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] },
-    { "setup": "mod_no_tc", "until": "1936.1.1",
-      "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] },
-    { "setup": "vanilla",   "until": "1936.1.1",
-      "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] },
-    { "setup": "mod",       "until": "1936.1.1",
-      "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] },
-    { "setup": "mod_no_tc", "until": "1936.1.1",
-      "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] }
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1",
+      "dump_dates": [
+        "1836.2.1",
+        "1840.1.1",
+        "1850.1.1",
+        "1860.1.1",
+        "1870.1.1",
+        "1880.1.1",
+        "1890.1.1",
+        "1900.1.1",
+        "1910.1.1",
+        "1920.1.1",
+        "1930.1.1",
+        "1935.1.1"
+      ]
+    },
+    {
+      "setup": "mod",
+      "until": "1936.1.1",
+      "dump_dates": [
+        "1836.2.1",
+        "1840.1.1",
+        "1850.1.1",
+        "1860.1.1",
+        "1870.1.1",
+        "1880.1.1",
+        "1890.1.1",
+        "1900.1.1",
+        "1910.1.1",
+        "1920.1.1",
+        "1930.1.1",
+        "1935.1.1"
+      ]
+    },
+    {
+      "setup": "mod_no_tc",
+      "until": "1936.1.1",
+      "dump_dates": [
+        "1836.2.1",
+        "1840.1.1",
+        "1850.1.1",
+        "1860.1.1",
+        "1870.1.1",
+        "1880.1.1",
+        "1890.1.1",
+        "1900.1.1",
+        "1910.1.1",
+        "1920.1.1",
+        "1930.1.1",
+        "1935.1.1"
+      ]
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1",
+      "dump_dates": [
+        "1836.2.1",
+        "1840.1.1",
+        "1850.1.1",
+        "1860.1.1",
+        "1870.1.1",
+        "1880.1.1",
+        "1890.1.1",
+        "1900.1.1",
+        "1910.1.1",
+        "1920.1.1",
+        "1930.1.1",
+        "1935.1.1"
+      ]
+    },
+    {
+      "setup": "mod",
+      "until": "1936.1.1",
+      "dump_dates": [
+        "1836.2.1",
+        "1840.1.1",
+        "1850.1.1",
+        "1860.1.1",
+        "1870.1.1",
+        "1880.1.1",
+        "1890.1.1",
+        "1900.1.1",
+        "1910.1.1",
+        "1920.1.1",
+        "1930.1.1",
+        "1935.1.1"
+      ]
+    },
+    {
+      "setup": "mod_no_tc",
+      "until": "1936.1.1",
+      "dump_dates": [
+        "1836.2.1",
+        "1840.1.1",
+        "1850.1.1",
+        "1860.1.1",
+        "1870.1.1",
+        "1880.1.1",
+        "1890.1.1",
+        "1900.1.1",
+        "1910.1.1",
+        "1920.1.1",
+        "1930.1.1",
+        "1935.1.1"
+      ]
+    }
   ]
 }

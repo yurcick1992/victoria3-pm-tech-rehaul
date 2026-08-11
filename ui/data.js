@@ -3666,7 +3666,7 @@ window.PMDATA = {
                                                   }
                  },
     "building_subsidies":  {
-                               "building_trade_center":  "must_have"
+                               "building_trade_center":  "vanilla"
                            },
     "pm_employment":  {
                           "pm_electric_streetlights":  {

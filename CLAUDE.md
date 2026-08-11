@@ -1852,8 +1852,11 @@ the game.
   no `ai_value` for it at all). Explorer edits to non-owned buildings show but don't emit yet. The UI's default display reads
   each building's vanilla `ai_value` from `vanilla.js` (now extracted). **AI subsidy policy** is editable the same way,
   on **every** row (tier + explorer), via a 5-option dropdown backed by the top-level **`building_subsidies`** map
-  (building key → `vanilla`/`none`/`nice_to_have`/`wants_to_have`/`must_have`; **default `vanilla` everywhere except
-  `building_trade_center` = `must_have`**). See "AI subsidy policy" below for what it emits and why. **"Build now"** writes the config and runs the full build (needs the `ui.ps1` server — a
+  (building key → `vanilla`/`none`/`nice_to_have`/`wants_to_have`/`must_have`; **default `vanilla` EVERYWHERE**, including `building_trade_center` — it was `must_have` until
+2026-08-11, when F49 measured that mandate at **35% of all government expense** against vanilla's 4.7%,
+and the user parked the question by removing it from the default config. Vanilla's own
+`ai_strategy_montenegro_admin` still subsidises trade centres and we preserve that, as we preserve every
+strategy's own entries). See "AI subsidy policy" below for what it emits and why. **"Build now"** writes the config and runs the full build (needs the `ui.ps1` server — a
   browser can't run programs). Everything else works **frontend-only**: opening `ui/builder.html`
   directly still edits + previews + **Export mod_config.json** (then run `build.ps1` yourself).
   User-facing setup lives in `README.md`.

@@ -374,8 +374,10 @@ And no causal claim about technology and GDP.
 **Evidence.** `tools/testbed/sessions/20260811_094048_three-arm-tc-subsidy/`, runs 1–3 complete plus a
 partial run 4 (21 vanilla summaries to 1856). Regenerate every table with
 `node tools/testbed/analyse_three_arm.mjs <session>`.
-⚠ `config/mod_config.no_tc_subsidy.json` is gitignored as a derived config; regenerate it by copying
-`config/mod_config.json` and setting `building_subsidies.building_trade_center` to `"vanilla"`.
+⚠ **The arms were renamed under this finding by a later ruling (2026-08-11).** The trade-centre subsidy
+mandate was removed from `config/mod_config.json`, so the SHIPPED mod is now what this finding calls
+`mod_no_tc`, and `config/mod_config.no_tc_subsidy.json` is deleted. Read the `mod` column here as "the
+mod as it was, with the mandate" and the `mod_no_tc` column as "the mod as it ships now".
 
 ---
 

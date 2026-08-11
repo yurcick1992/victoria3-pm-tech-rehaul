@@ -131,7 +131,11 @@ function Complete-One($key) {
     Move-Item -LiteralPath $j.tmp -Destination $j.dest -Force
     Remove-Item $errFile -Force -ErrorAction SilentlyContinue
     $script:done++
-    if (-not $NoReap) { Remove-Item -LiteralPath $key -Force -ErrorAction SilentlyContinue; $script:reaped++ }
+    # THE ESCAPE HATCH: the newest save of the set is summarised like any other and then KEPT, so the
+    # final state has both a summary and a save to re-read for whatever the schema did not anticipate.
+    $isNewest = $KeepLast -and (@(Get-ChildItem $Saves -Filter "*.v3" -ErrorAction SilentlyContinue |
+                                 Sort-Object Name | Select-Object -Last 1).FullName -eq $key)
+    if (-not $NoReap -and -not $isNewest) { Remove-Item -LiteralPath $key -Force -ErrorAction SilentlyContinue; $script:reaped++ }
   } else {
     $script:failed++
     $script:blocked[$key] = $why
@@ -146,7 +150,13 @@ function Complete-One($key) {
 
 function Get-Queue {
   $all = @(Get-ChildItem $Saves -Filter "*.v3" -ErrorAction SilentlyContinue | Sort-Object Name)
-  if ($KeepLast -and $all.Count -gt 0) { $all = @($all | Select-Object -SkipLast 1) }
+  # ⚠ `-KeepLast` means DO NOT REAP the newest, not "do not summarise" it — the distinction cost the
+  # 1936 endpoint of every run in the first batch, so the series ran 1837-1935 and the final state had a
+  # save but no summary. Reaping is skipped in Complete-One instead.
+  # ⚠ In -Watch mode the newest IS still skipped, because during a live run it may be the one the
+  # archiver has only just renamed into place and a newer one is imminent; the post-run drain then picks
+  # it up. (The archiver's atomic rename makes reading it safe; deferring is about ordering, not safety.)
+  if ($Watch -and $all.Count -gt 0) { $all = @($all | Select-Object -SkipLast 1) }
   # skip anything already summarised, and anything a worker currently holds
   @($all | Where-Object {
       $stem = [IO.Path]::GetFileNameWithoutExtension($_.Name)

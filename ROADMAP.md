@@ -552,23 +552,28 @@ groundwork; read it before searching:
   foreign-owned levels count for the owner, the host or neither.
 - `MODDING_NOTES.md` → *Technology: research, spread, and what the AI actually weighs* has the mechanics.
 
-**Two things to settle before (3) runs, both cheap and both easy to get wrong:**
-- ⚠ **Which config is the "techs" arm?** `config/mod_config.json` still carries
-  `building_trade_center = must_have`, which F49 measured at **35 % of all government expense**. Parking
-  the subsidy *question* means that regime stays switched on in both the techs and techs+events arms.
-  That is harmless for techs-vs-techs+events (it cancels) but it means neither arm is a clean reading of
-  the mod against vanilla on GDP. Decide once, deliberately.
-  ⭐ It does **not** contaminate the tech-compression result: F49 saw the same flattening in *both* mod
-  arms (130/130 with the subsidy, 127/128 without), so the compression is not a subsidy artifact.
-- ⚠ **"techs+events" is a CODE arm, not a config variant.** The builder emits events only for telemetry
-  today, so a new emitter is needed and the `{kind: config}` mechanism may not express the arm. Work out
-  how the arm is declared *before* the batch, or `build_state.json` will not record what was tested.
+**The three arms, now settled (user, 2026-08-11):**
+- **vanilla** — `{kind: control}`.
+- **techs** — `config/mod_config.json`. ⭐ **The trade-centre subsidy mandate has been REMOVED from the
+  default config** (`building_subsidies.building_trade_center: "vanilla"`), so the shipped mod now *is*
+  what this session called `mod_no_tc`. F49 measured that mandate at **35% of all government expense**
+  against vanilla's 4.7%; the question is parked, not answered. `config/mod_config.no_tc_subsidy.json`
+  is deleted as redundant. ⚠ Vanilla's own `ai_strategy_montenegro_admin` still subsidises trade centres
+  and we preserve it — one line survives in the emitted file and it is not ours.
+- **techs+events** — ⚠⚠ **MUST BE A CONFIG VARIANT, not a code arm** (user ruling). The events therefore
+  have to be *driven by a field in `mod_config.json`* that the builder reads, exactly as `pm_goods` and
+  `building_subsidies` are — not by a build flag and not by a hardcoded emitter. Design the config shape
+  before the emitter; it is what makes the arm expressible as `{kind: config, config: …}`, recordable in
+  `build_state.json`, and switchable without a rebuild of the harness.
+  ⚠ **No scaffolding was written for it.** The config shape depends on answers step (1) has not produced
+  yet — whether the trigger is levels, employment or output share, and whether the grant is flat progress
+  or a research-speed modifier — and a schema guessed now would most likely be undone.
 
-⭐ **The existing runs POOL with the new ones if the schedule matches.** This session already produced
-n=1 vanilla and n=1 techs at telemetry v12, yearly autosaves, 1836→1936, with the same six metrics
-(`20260811_094048_three-arm-tc-subsidy`, runs 1 and 2). Keep those defaults and the new batch's vanilla
-and techs arms are effectively n+1 each for free. Change any of them and it cannot be pooled — say so in
-the schedule's `_comparison` either way.
+⭐ **POOLING — and note WHICH run pools, because the arms were renamed under it.** This session's
+**run 3** (`mod_no_tc`) is the one that matches the new `techs` arm; **run 2 carried the subsidy mandate
+and does NOT pool with it**. Run 1 (vanilla) pools as vanilla. Both were telemetry v12, yearly autosaves,
+1836→1936, the same six metrics (`20260811_094048_three-arm-tc-subsidy`). Keep those defaults and vanilla
+and techs each start at n=1 for free; change any of them and say so in the schedule's `_comparison`.
 
 ### Parked (was the old plan; nothing here is abandoned)
 - **Runs 4–6 of the three-arm batch** — `schedules/three_arm_tc_subsidy.json`, unchanged and re-runnable.
