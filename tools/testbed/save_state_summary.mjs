@@ -22,7 +22,31 @@
 // quarterly autosave producer (one save every 15-35 s of wall clock).  The queue drains; the handover's
 // feared 90 s melt was wrong by a factor of 45.
 //
-// ⚠ THE POP TABLE IS DELIBERATELY NOT SCANNED (it is 8 M of the melt's 16 M lines).  Each country record
+// ⭐ POP OBJECT COUNT (v2).  A pop object is a RECORD, not a number of people, and it is the natural scale
+// parameter for how much work a tick is — the leading candidate for regressing engine speed on something
+// better than the coarse "mod vs vanilla" factor (user, 2026-08-11).  Measured on a 1936 vanilla
+// gamestate: 163 266 objects world-wide, RUS 13 123 · USA 11 983 · GBR 8 643.
+//
+// ⚠ **`workplace` IS ONE OF THE DIMENSIONS** (user, 2026-08-11: *"for an iron mine in Midlands and a coal
+// mine in Midlands, there will be two English Protestant Labourer pops"*).  An earlier comment here said
+// the opposite — that employment lived only on the building side — from a field census truncated at
+// `head -16` of a sorted list, with `workplace` sitting at rank 17.  Measured properly: the field is on
+// 70 % of records, and grouping by (state, culture, religion, profession) alone leaves **163 266 records
+// in only 45 615 keys**, 55 % of them holding more than one.
+// ⚠ But workplace does not close the gap either: the 5-tuple gives 132 599 distinct keys against 163 266
+// records, and the largest single group — 170 Protestant laborer pops in one state — has NO workplace at
+// all.  Non-employed pops split on something not yet identified.
+// ⇒ So this counts RECORDS and claims nothing about the identity tuple.  That is the honest quantity and
+// it is the one the regression wants anyway.
+// ⚠ It is counted with a FOUR-CHARACTER TEST, not a regex — a record opener is `\t\t<digit>` — which is
+// what keeps it affordable: ~1.9 s over the 7.2 M lines of the pop table, against ~4 s for everything
+// else in this reader put together.
+// ⚠⚠ AND IT IS WHY THE SCHEMA IS GENEROUS BY DEFAULT.  This field was added AFTER a batch had already
+// reaped its saves, so runs 1-3 of 20260811_094048 have it at exactly ONE date each — their kept save —
+// and can never have it anywhere else.  That is the inversion this file's header warns about, landing on
+// the first question the schema did not anticipate.  When in doubt, capture it.
+//
+// ⚠ THE POP TABLE IS OTHERWISE NOT SCANNED (it is 8 M of the melt's 16 M lines).  Each country record
 // already carries `pop_statistics.population_by_profession`, indexed by pop type.  That index is
 // ALPHABETICAL over `common/pop_types/*.txt` — VERIFIED, not assumed: summed world-wide the two sources
 // agree to 0.03 % on all 15 professions (see FINDINGS / the --verify-pops mode, which re-does the full
@@ -34,7 +58,8 @@ import { join, basename, dirname } from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
-export const SAVE_SUMMARY_VERSION = 1;
+// v2 (2026-08-11) adds POP OBJECT COUNTS — see the note on the pop table below.
+export const SAVE_SUMMARY_VERSION = 2;
 
 // What we knowingly leave out, and why.  Read this before concluding the summary "lost" something.
 const NOT_CAPTURED = {
@@ -114,6 +139,11 @@ const rl = createInterface({
   crlfDelay: Infinity,
 });
 
+// pop-object counting (v2): accumulate by state, resolve to countries at the end — `pops` comes BEFORE
+// `states` in the file, so the owner is not knowable at read time.
+const popObjByState = new Map();
+let popObjTotal = 0, popCurState = -1;
+
 let mode = 'top', depth = 0;
 // country_manager state
 let cid = null, cur = null, path = [];       // path = block names by depth inside a country record
@@ -137,11 +167,34 @@ for await (const line of rl) {
     if (!saveDate) { const d = /^date=(\d+\.\d+\.\d+)/.exec(line); if (d) { saveDate = d[1]; continue; } }
     const s = /^([a-z_]+)=\{$/.exec(line);
     if (!s) continue;
+    if (s[1] === 'pops') { mode = 'pops'; continue; }
     if (WANT.has(s[1])) { mode = s[1]; depth = 1; }
     else mode = 'skip';
     continue;
   }
   if (mode === 'skip') { if (line.charCodeAt(0) === 125) mode = 'top'; continue; }
+  // ⚠ FOUR CHARACTER COMPARISONS, NO REGEX AND NO trim().  This block sees ~7.2 M lines — half the melt —
+  // so anything per-line that allocates would dominate the whole reader.  As written it costs ~1.9 s
+  // against ~4 s for everything else.  A record opens with `\t\t<digit>`; `location=` is the only field
+  // read, and only until it is found.
+  if (mode === 'pops') {
+    if (line.charCodeAt(0) === 125) {
+      if (popCurState >= 0) popObjByState.set(popCurState, (popObjByState.get(popCurState) || 0) + 1);
+      popCurState = -1; mode = 'top'; continue;
+    }
+    const c0 = line.charCodeAt(0), c1 = line.charCodeAt(1), c2 = line.charCodeAt(2);
+    // ⚠ THE TRAILING `{` IS LOAD-BEARING. The pop database also holds `<id>=none` — freed slots — and a
+    // test that only checks "starts with two tabs and a digit" counts those as pops. Measured on a 1936
+    // vanilla gamestate: 158 636 real records against 4 630 `=none` slots, so the loose test over-counted
+    // by 2.9 % and reported an object that has no fields at all.
+    if (c0 === 9 && c1 === 9 && c2 >= 48 && c2 <= 57 && line.charCodeAt(line.length - 1) === 123) {
+      if (popCurState >= 0) popObjByState.set(popCurState, (popObjByState.get(popCurState) || 0) + 1);
+      popObjTotal++; popCurState = -1;
+    } else if (popCurState === -1 && c0 === 9 && c1 === 9 && c2 === 9 && line.charCodeAt(3) === 108) {
+      if (line.startsWith('\t\t\tlocation=')) popCurState = +line.slice(12);
+    }
+    continue;
+  }
 
   const t = line.trim();
   let opens = 0, closes = 0;
@@ -392,6 +445,16 @@ const tagOf = id => C.get(id)?.tag ?? null;
 // so grouping by the raw id splits a market that contains subjects.  We report BOTH the raw market id and
 // the subject/overlord relation, and leave the merge to the reader — `melted_building_goods.mjs` measured
 // the naive merge to be WORSE against telemetry, so this file must not bake one in.
+// pop objects were tallied by STATE (the pop table precedes the state table); resolve to owners now.
+// ⚠ A state with no owner contributes to the world total and to no country — reported, never dropped.
+const popObjByCountry = new Map();
+let popObjOrphan = 0;
+for (const [st, n] of popObjByState) {
+  const ci = stateCountry.get(st);
+  if (ci == null) { popObjOrphan += n; continue; }
+  popObjByCountry.set(ci, (popObjByCountry.get(ci) || 0) + n);
+}
+
 const countries = {};
 for (const [id, c] of C) {
   if (!c.tag) continue;
@@ -422,6 +485,7 @@ for (const [id, c] of C) {
     technologies: tech ? tech.acquired.length : 0,
     researching: tech?.researching ?? null,
     technologies_held: tech ? tech.acquired : [],
+    pop_objects: popObjByCountry.get(id) ?? 0,
     foreign_owned_levels: foreignOwned.get(id) ?? 0,
     owned_abroad_levels: ownedAbroad.get(id) ?? 0,
     buildings: blds, goods_out: gout, goods_in: gin,
@@ -442,7 +506,7 @@ for (const [g, rows] of [...byGood].sort()) {
   top_producers[g] = { world: +rows.reduce((a, r) => a + r[1], 0).toFixed(1), top: rows.slice(0, TOPN) };
 }
 
-const world = { buildings: {}, gdp: 0, population: 0 };
+const world = { buildings: {}, gdp: 0, population: 0, pop_objects: popObjTotal, pop_objects_unowned: popObjOrphan };
 for (const [, r] of bldByCountry) { void r; }
 for (const [k, r] of bldByCountry) {
   const ty = k.slice(k.indexOf('|') + 1);
