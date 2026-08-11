@@ -479,9 +479,18 @@ function Test-LmL12 {
     if (-not $Session) { Add-Result 'L12' 'saves reaped without summaries' 'N/A' 'no -Session given (this entry is post-run)'; return }
     if (-not (Test-Path $Session)) { Add-Result 'L12' 'saves reaped without summaries' 'FAIL' "no such session: $Session"; return }
     $bad = @(); $seen = 0; $tot = 0
+    $inflight = 0
     foreach ($run in @(Get-ChildItem $Session -Directory)) {
         $sv = Join-Path $run.FullName 'saves'
         if (-not (Test-Path $sv)) { continue }
+        # ⚠ A RUN STILL PLAYING LEGITIMATELY HAS saves\ AND NO save_summaries\ - the harvest runs after
+        # the game exits. Judging it is a false positive, and a detector that cries wolf on every
+        # mid-batch check is one people learn to ignore, which is the entire point of the register lost.
+        # `ended` in meta.json is the completion signal; no meta.json at all means the run never finished.
+        $meta = Join-Path $run.FullName 'meta.json'
+        $ended = $false
+        if (Test-Path $meta) { try { $ended = [bool](Get-Content $meta -Raw | ConvertFrom-Json).ended } catch { $ended = $false } }
+        if (-not $ended) { $inflight++; continue }
         $seen++
         $sm = Join-Path $run.FullName 'save_summaries'
         $kept = @(Get-ChildItem $sv -Filter '*.v3' -ErrorAction SilentlyContinue)
@@ -503,9 +512,10 @@ function Test-LmL12 {
         } catch { $bad += "$($run.Name): $($probe.Name) is unreadable - $($_.Exception.Message)" }
         if ($kept.Count -eq 0) { $bad += "$($run.Name): every save reaped and none kept - the escape hatch is gone" }
     }
-    if (-not $seen) { Add-Result 'L12' 'saves reaped without summaries' 'N/A' 'no run in this session archived saves'; return }
-    if ($bad.Count) { Add-Result 'L12' 'saves reaped without summaries' 'FAIL' ($bad -join "`n") }
-    else { Add-Result 'L12' 'saves reaped without summaries' 'PASS' "$seen run(s) with archived saves, $tot readable versioned summaries, an escape-hatch save kept in each" }
+    $note = $(if ($inflight) { " ($inflight run(s) still in flight, not judged)" } else { '' })
+    if (-not $seen) { Add-Result 'L12' 'saves reaped without summaries' 'N/A' "no FINISHED run in this session archived saves$note"; return }
+    if ($bad.Count) { Add-Result 'L12' 'saves reaped without summaries' 'FAIL' (($bad -join "`n") + $note) }
+    else { Add-Result 'L12' 'saves reaped without summaries' 'PASS' "$seen finished run(s) with archived saves, $tot readable versioned summaries, an escape-hatch save kept in each$note" }
 }
 
 # --------------------------------------------------------------------------- driver ----

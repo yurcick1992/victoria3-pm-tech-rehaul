@@ -1199,19 +1199,61 @@ counts **farmers as MIDDLE** strata and **clerks as LOWER**. GBR 1935 upper = ar
 exactly; middle = academics + bureaucrats + clergymen + clerks*(no)* … the sums only close with farmers
 middle and clerks lower. Do not re-derive it from a guess.
 
-### ⚠ THE JOIN BETWEEN THE TWO INSTRUMENTS IS ON POPULATION, NOT ON NAME
+### ⚠⚠ THE JOIN BETWEEN THE TWO INSTRUMENTS NEEDS **TWO** KEYS, AND NEITHER IS THE NAME
 
 Log telemetry identifies a country by **display name** (`GetNameNoFormatting`; there is no tag data
 function, §3) and **a display name changes mid-campaign** — F48 fell into exactly this. A save identifies
 a country by **tag**, which never changes. In the F48 save the country telemetry calls *"India"* is tag
-**`BHT`** — Bhutan, having formed India. So `verify_save_alignment.mjs` joins on **population**: measured
-independently on both sides, ~8 significant figures wide, and *not* one of the quantities being scored —
-matching on GDP and then reporting GDP agreement would be circular.
+**`BHT`** — Bhutan, having formed India. So the join cannot be on name.
+
+⚠ **POPULATION ALONE IS NOT A KEY EITHER, and believing it was produced confident nonsense.** Across
+~250 countries — many small and formulaically populated — a coincidence inside 0.1 % is ordinary:
+
+| telemetry country | joined to tag | population agreement | GDP disagreement |
+|---|---|---|---|
+| Tripolitania @1930 | `PCO` | 0.08 % | **+1 722 %** |
+| Kokand @1860 | `CUB` | 0.08 % | +514 % |
+| Tuscany @1935 | `GAR` | 0.05 % | +952 % |
+
+An "is the runner-up far away?" guard cannot see this, because the coincidence *beats every
+alternative*. **Tightening the tolerance 20× removed not one bad pair** — which is what proved they were
+joins rather than measurements.
+
+⇒ **`verify_save_alignment.mjs` runs two passes, and the scored quantity is never one of its own keys:**
+
+| pass | join on | scores |
+|---|---|---|
+| A | population + **building count** | **GDP** |
+| B | population + **GDP** | **building count** |
+
+Matching on GDP and then reporting GDP agreement would be circular; this is not. The building count is
+what rejects every bad pair above (40 vs 27, 21 vs 115). ⭐ The two passes also **check each other**: where
+they assign different save countries to one telemetry country, the row is reported as unproven rather than
+scored — which is exactly what flagged the one +98 % building outlier at 1930.
+
+Population tolerance is **5 %**, not tighter, and the loosening is safe only *because* of the second key
+(swept: 2 %→5 % leaves the GDP error identical at 1.61 %; 10 % starts admitting worse pairs).
+
+**Measured on run 1 of `20260811_094048` — vanilla, 11 shared dates, 272 of 275 country-observations
+joined:**
+
+| | mean | \|mean\| | median | worst |
+|---|---|---|---|---|
+| GDP | −0.41 % | **1.61 %** | −0.2 to −0.45 % | +14.5 % |
+| buildings | +0.48 % | **1.05 %** | **0.00 %** | +98 % (the flagged unproven row) |
 
 ⚠ **A residual of a few percent is expected and is not disagreement.** The save's `gdp` is a weekly trend
-whose last sample is dated a few weeks before the save (1934.12.8 in a 1935.1.1 save) while telemetry
-fires on the dump date. A *systematic* bias, a wrong sign, or a country present in one instrument and
+whose last sample predates the save by a few weeks (1934.12.8 in a 1935.1.1 save), and a telemetry dump
+labelled `1935.1.1` actually fires on **1 February** (§v7 — a dump is spread over three months and the
+logged date is the label). A *systematic* bias, a wrong sign, or a country present in one instrument and
 absent from the other is what would be a real failure.
+
+🔍 **ONE OPEN RESIDUAL WORTH CHASING: GBR's population differs by 2.8 % at 1935** — the save's profession
+sum reads 86.36 M against telemetry's `GetTotalPopulation` 88.85 M, where the same comparison on an
+earlier save agreed to 0.16 %. A month of growth does not explain 2.8 %. The leading suspect is pops in
+states the save attributes to a different owner (unincorporated or colonial), which the per-country
+profession aggregate would miss and `GetTotalPopulation` would not. Not chased yet; it is why the join
+tolerance is 5 %.
 
 ### What must never move off the logs
 
