@@ -30,7 +30,7 @@ if (!SESSION || !existsSync(SESSION)) { console.error('usage: analyse_three_arm.
 const L = [];
 const say = s => L.push(s);
 const n0 = x => Number.isFinite(x) ? Math.round(x).toLocaleString('en-US') : '—';
-const n2 = x => Number.isFinite(x) ? x.toFixed(2) : '—';
+const n2 = x => Number.isFinite(x) ? (Number.isInteger(x) ? x.toLocaleString("en-US") : x.toFixed(2)) : "—";
 const pc = x => Number.isFinite(x) ? (x * 100).toFixed(2) + '%' : '—';
 const mean = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : NaN;
 
@@ -70,13 +70,21 @@ function loadRun(sessionDir, dir) {
 }
 
 const runDirs = readdirSync(SESSION).filter(d => /^run\d+_/.test(d) && statSync(join(SESSION, d)).isDirectory()).sort();
-const runs = runDirs.map(d => loadRun(SESSION, d));
+const allRuns = runDirs.map(d => loadRun(SESSION, d));
+// ⚠ ONLY FINISHED RUNS ARE AGGREGATED. A run still playing has a partial event log, no summaries and no
+// wall time, and folding it into an arm's mean silently drags every figure toward zero — run 2 of the
+// first batch contributed "0.00 default entries" to the mod arm while it was at in-game 1843. `ended` in
+// meta.json is the completion signal.
+const runs = allRuns.filter(r => r.meta && r.meta.ended);
+const skipped = allRuns.length - runs.length;
+if (!runs.length) { console.error('no FINISHED run in this session yet'); process.exit(1); }
 const arms = [...new Set(runs.map(r => r.setup))];
 const byArm = a => runs.filter(r => r.setup === a);
 
 say(`# Three-arm session report — \`${SESSION.replace(/\\/g, '/').split('/').pop()}\``);
 say('');
 say(`Generated ${new Date().toISOString().replace('T', ' ').slice(0, 16)} UTC by \`tools/testbed/analyse_three_arm.mjs\`.`);
+if (skipped) say(`\n⚠ **${skipped} run(s) had not finished and are excluded** — every figure below is over completed runs only.`);
 say('');
 
 // ------------------------------------------------------------------ 1. runs
@@ -214,6 +222,10 @@ say('`on_country_default` fires on ENTERING default, which usually ends within a
 say('in recovery rather than bankruptcy (TESTBED_METRICS §1). A real bankruptcy is only visible as');
 say('`last_bankruptcy_date` in a save — counting DISTINCT values per country across the annual series is');
 say('what makes frequency measurable at all.');
+say('');
+say('⚠ The bankruptcy count is a **lower bound**: a country holds only its LAST bankruptcy date, so two');
+say('within one year of each other appear as one at annual cadence. The default count has no such limit,');
+say('being an event. Neither is comparable to the other — they measure different things.');
 say('');
 say('| arm | default entries (mean/run) | distinct bankruptcies (mean/run) | countries ever bankrupt at 1935 |');
 say('|---|---|---|---|');
