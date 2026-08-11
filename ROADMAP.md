@@ -516,19 +516,64 @@ industry-driven research events are the intended remedy (they reward whoever alr
 which spread cannot do), so **this is an argument for step 2 and against a large spread boost — the two
 pull in opposite directions by construction**. ⚠ n=1; confirm before acting.
 
-### Next, in order
-1. **Finish the three-arm batch — runs 4, 5, 6** (~8 h). `schedules/three_arm_tc_subsidy.json`, unchanged
-   and re-runnable; the scheduler will start a fresh session. Everything in F49 is n=1 and the batch
-   supplies its own warning about that: two builds differing by six lines came in 9 % apart on wall clock.
-2. **The autosave cadence experiment** (~9.5 h), `schedules/autosave_cadence_vanilla.json`, validated and
-   deferred by ruling. It is the only design that can isolate the cost of a save from the yearly pulse.
-3. **Strengthen the concentration metric** before re-reporting goal 2 — top-3 share and HHI, value-weighted,
-   always splitting the 22 goods the mod tiers from the 27 it does not. A top-1 share averaged over all
-   goods is what produced a wrong "goal 2 is not happening" reading, and the corrected one is a wash.
-4. **The tick-speed regression** (user's idea, not yet scoped): fit wall clock against *continuous*
-   predictors — pop objects, live pop objects, people, GDP, building count — instead of the coarse
-   mod/vanilla factor. Every summary from now on carries all of them; runs 1–3 of the first batch carry
-   pop counts at exactly one date each, because their saves were already reaped when the field was added.
+### ⭐ THE PLAN FOR THE NEXT SESSION (user, 2026-08-11) — go straight to step 2
+
+1. **Research what a tech-granting event can actually condition on.**
+2. **Draft the events.**
+3. **Overnight test: vanilla vs techs vs techs+events.** The trade-centre subsidy question is **PARKED**.
+
+Everything else on this file's old list is parked behind that — see *Parked* below.
+
+**What already exists for (1), so it is not started from nothing.** Step 2's own section holds the
+groundwork; read it before searching:
+- `add_technology_progress` is the right effect and **vanilla uses it 68 times**.
+- ⚠⚠ **The obvious implementation has a hole.** The AI's exposed weighting is
+  `ai_weight / (1 + 5 × aheadOfTimePenalty / eraBaseCost)` and has **no progress term at all** — so
+  progress dumped onto a technology the AI has no reason to pick creates *stranded progress*, a case
+  vanilla never produces because its other channel (spread) finishes what it starts. ⇒ **Step 2 is two
+  mechanisms, not one:** the event grants the progress, **and** the technology's own `ai_weight` reads
+  the industry the country owns.
+- 🔍 **The open investigation is exactly your step 1** — *how deep can `ai_weight` reach?* Three
+  sub-questions, none answered: when is it evaluated (the belief is: at the moment of choice only, since
+  the AI runs a technology to completion rather than queueing); do dynamic triggers work there at all, or
+  is the block read once at load; and how expensive is a building-count scan across every country ×
+  every available technology on a tree that just grew by 24. Answerable in the testbed by watching an AI
+  country's selection against a weight only its own industry could satisfy.
+- The **shape is already ruled**: three events on one condition, three years apart, each granting **half
+  the era cost**. Still open: whether the trigger is levels, employment or output share, and whether
+  foreign-owned levels count for the owner, the host or neither.
+- `MODDING_NOTES.md` → *Technology: research, spread, and what the AI actually weighs* has the mechanics.
+
+**Two things to settle before (3) runs, both cheap and both easy to get wrong:**
+- ⚠ **Which config is the "techs" arm?** `config/mod_config.json` still carries
+  `building_trade_center = must_have`, which F49 measured at **35 % of all government expense**. Parking
+  the subsidy *question* means that regime stays switched on in both the techs and techs+events arms.
+  That is harmless for techs-vs-techs+events (it cancels) but it means neither arm is a clean reading of
+  the mod against vanilla on GDP. Decide once, deliberately.
+  ⭐ It does **not** contaminate the tech-compression result: F49 saw the same flattening in *both* mod
+  arms (130/130 with the subsidy, 127/128 without), so the compression is not a subsidy artifact.
+- ⚠ **"techs+events" is a CODE arm, not a config variant.** The builder emits events only for telemetry
+  today, so a new emitter is needed and the `{kind: config}` mechanism may not express the arm. Work out
+  how the arm is declared *before* the batch, or `build_state.json` will not record what was tested.
+
+⭐ **The existing runs POOL with the new ones if the schedule matches.** This session already produced
+n=1 vanilla and n=1 techs at telemetry v12, yearly autosaves, 1836→1936, with the same six metrics
+(`20260811_094048_three-arm-tc-subsidy`, runs 1 and 2). Keep those defaults and the new batch's vanilla
+and techs arms are effectively n+1 each for free. Change any of them and it cannot be pooled — say so in
+the schedule's `_comparison` either way.
+
+### Parked (was the old plan; nothing here is abandoned)
+- **Runs 4–6 of the three-arm batch** — `schedules/three_arm_tc_subsidy.json`, unchanged and re-runnable.
+  Everything in F49 stays n=1 until it runs.
+- **The autosave cadence experiment** — `schedules/autosave_cadence_vanilla.json`, validated. The only
+  design that isolates a save's cost from the yearly pulse it fires alongside.
+- **Strengthen the concentration metric** — top-3 share and HHI, value-weighted, always splitting the 22
+  goods the mod tiers from the 27 it does not. A top-1 share over all goods produced a wrong "goal 2 is
+  not happening" reading; the corrected one is a wash. Do this **before** goal 2 is re-reported.
+- **The tick-speed regression** — fit wall clock against continuous predictors (pop objects, live pop
+  objects, people, GDP, building count) rather than the coarse mod/vanilla factor. Every summary from now
+  on carries all of them; the first batch's runs carry pop counts at one date each, their saves having
+  been reaped before the field existed.
 
 ### Two open questions worth keeping
 - **Do the 17.4 % empty pop records cost the engine anything?** If it iterates them they are real
