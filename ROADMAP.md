@@ -297,6 +297,37 @@ tech-gated ladder is part of this step.
 
 ## Step 3½ — SAVEGAMES BECOME THE INSTRUMENT FOR STATE (agreed 2026-08-11, not yet built)
 
+### 🚩 START HERE — handover for the session that builds this
+
+**Where things stand.** Step 1 is DONE and shipped: 217 technologies (38 new), all 100 tier buildings
+emitted and buildable, build green (lint / negative-goods / mod-checks / preflight), deployed. Two
+full-length runs are on disk and analysed — F47 (the tree loads clean against a vanilla control) and
+F48 (a century: no GDP penalty, ~8% wall clock, 86–88% of the tree reached). Everything is committed
+and pushed to `main`.
+
+**The one thing to do before anything else:** ⏱ **time a rakaly melt + extract on
+`Documents/Paradox Interactive/Victoria 3/save games/techtree_n3_run2_latest.v3`** (54 MB, in-game
+1934.12, kept deliberately). That single number decides whether quarterly cadence is feasible at all —
+see the queue arithmetic below. Do not build the pipeline before knowing it.
+
+**What already exists and should be reused, not rewritten:**
+- `tools/testbed/archive_autosaves.ps1` — stage A, already handles both hazards (slots rotate by
+  RENAME; a 45 MB write is not atomic).
+- `tools/testbed/score_save.ps1` — melt → readers → score, for one save. The shape of stages B–C.
+- `melted_pops_by_profession.mjs` · `melted_building_goods.mjs` · `melted_pop_need_weights.mjs` ·
+  `melted_cultures.mjs` — the readers. Profession-by-country is the step-4 metric telemetry never had.
+- `tools/vendor/rakaly` is present.
+- `tools/testbed/analyse_errors.mjs` and `analyse_tech_picture.mjs` — and read their headers before
+  writing any new reader: both encode traps that produced confident nonsense first (the log ring has no
+  token on `error.log`; country DISPLAY NAMES change mid-campaign; `debug.log` fields carry a trailing CR).
+
+**Two live inconsistencies to be aware of while working:**
+- The AI subsidy targeting bug below (§ *Deferred fixes*) — it invalidates BALANCE_FRAMEWORK §10.47.4's
+  tolerance for every tier above the first.
+- Six of our new technologies are never reached in a century (F48), so six top rungs are never built.
+
+**Do NOT** strip anything from log telemetry until the alignment proof in the build order passes.
+
 **The refocus.** For **state of process** — anything that is a *level* rather than an *event* — a melted
 savegame is a better source than a log flood: it is complete, it is internally consistent, it carries
 things telemetry cannot reach, and it is not subject to the log ring. Telemetry keeps **events**.
@@ -370,6 +401,17 @@ Then, and **nothing currently captured by log telemetry may be lost**:
   derivable via `extract_presets.ps1`'s reading of history.
 - **Trade: what is traded where**, country- and market-level aggregation.
 - **Per-state/market goods flows** — supply and non-pop demand (`melted_building_goods.mjs`).
+- ⭐ **COUNTRY BUDGETS, WITH SUBSIDIES AS THEIR OWN LINE — imperative** (user, 2026-08-11).
+  ✅ **Already reachable and already itemised**: TESTBED_METRICS §3.5 verified the whole in-game budget
+  panel on Country scope, and **`GetSubsidiesExpenses`** is a separate expense function, next to
+  `GetSubventionsExpenses`. So the *line* exists today — it simply was not enabled in the `techtree-full-n3`
+  batch. Turning the `treasury` metric on is all the total requires. ⚠ Seven revenue/expense terms are
+  `Predict*` rather than `Get*` — the panel computes them forward and there is no stored value.
+  ⚠ **The BREAKDOWN — where subsidies go — is NOT in the budget panel.** No per-building function
+  exists; the panel gives one country total. It has to come from the **save**: read each building's
+  subsidised flag and its shortfall, then aggregate by building type and by country. That is precisely
+  the kind of question saves answer and logs cannot, and it is the reason it belongs in this schema
+  rather than in telemetry.
 - ⭐ **TOP PRODUCERS BY GOOD — the ranked table the game itself shows** (user, 2026-08-11): for each
   good, the leading producing countries in order with their quantities, at least the top 10. Cheap:
   `melted_building_goods.mjs` already reads every building's `output_goods` per state, so this is an
@@ -438,6 +480,54 @@ one-off validation pass.
 ---
 
 *— MVP ends here. Everything below is polish. —*
+
+## DEFERRED FIXES — known, not scheduled
+
+### ⚠⚠ THE AI SUBSIDISES ONLY THE OBSOLETE TIER OF EACH INFRASTRUCTURE CHAIN (found 2026-08-11)
+
+**Worse than "we keep subsidising basic ports": we subsidise *nothing else*.** Vanilla's
+`ai_strategy_default` names three buildings at `must_have`:
+
+```
+building_power_plant · building_railway · building_port
+```
+
+Those are **our tier-1 keys**, because the split deliberately keeps the vanilla key on the lowest rung
+so `has_building` references keep matching. So in the shipped mod the standing subsidy lands on:
+
+| chain | subsidised | never subsidised |
+|---|---|---|
+| ports | `building_port` — **Basic Port, 1700** | steam 1840 · industrial 1875 · modern 1908 · motor 1930 |
+| railways | `building_railway` — Early Railway, 1825 | steam 1867 · electric 1895 · diesel 1934 |
+| power | `building_power_plant` — Coal-Fired, 1900 | pulverized 1920 · oil 1925 |
+
+⇒ The AI props up the rung the ladder is trying to retire and leaves the modern ones to fend for
+themselves — the exact inverse of the design.
+
+⚠⚠ **AND IT SILENTLY INVALIDATES A BALANCE RULING.** BALANCE_FRAMEWORK §10.47.4 grants railway / port /
+power a **−10% loss tolerance before the ladder criterion calls it a fault**, justified by "vanilla's
+default AI strategy subsidises the trio at must_have". That justification only holds for the tier-1
+key. Every higher tier is being scored with a tolerance it does not actually receive.
+
+**This is the `has_building` narrowing class** already recorded in CLAUDE.md (457 vanilla references now
+matching only tier 1, alongside company mandates and monopolies) — but it is the most economically
+consequential instance found so far, because it moves money every week.
+
+**What a fix has to do** (user, 2026-08-11: *"invent some option to stop subsidising obsolete
+infrastructure once newer infrastructure is mature enough"*):
+1. **Subsidise the tier a country actually runs**, not the one holding the vanilla key. The builder
+   already whole-file-owns `01_admin_strategies.txt` and writes every `subsidies` block from the config
+   map, so the emission side is free — the map simply needs every tier, not one key per chain.
+2. **Retire the subsidy on an obsolete rung once its successor is mature.** `subsidies` takes only
+   `must_have`/`wants_to_have`/`nice_to_have` and no trigger, so "mature enough" cannot be expressed
+   inside the block. Two candidate routes, neither tested:
+   - a **war_subsidies-style second block** if any conditional form exists — needs checking;
+   - a **scripted route**: the AI re-scores subsidies continuously and undoes `set_subsidized`, so this
+     probably means swapping the whole strategy on a condition, not toggling a building.
+   ⚠ Whatever ships must be re-measured against §10.47.4's tolerance, which was calibrated on the
+   assumption above.
+
+---
 
 ## Step 5 — COMPANY MANDATES
 
