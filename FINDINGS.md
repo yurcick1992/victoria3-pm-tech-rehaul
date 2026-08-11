@@ -325,28 +325,47 @@ traceable to the subsidy mandate rather than to the tier ladder.
   distinguish a near-monopoly from a duopoly, which is the distinction the claim is about. Top-3 share
   and HHI, value-weighted, are the fix and are not yet implemented.
 
-**5. ⚠⚠ THE SHARPEST SIGNAL: THE TECHNOLOGY DISTRIBUTION HAS COMPRESSED.**
+**5. ⚠⚠ RETRACTED WITHIN THE SESSION — "THE TECHNOLOGY DISTRIBUTION HAS COMPRESSED" WAS ONE COUNTRY,
+NOT A DISTRIBUTION.** The claim was that vanilla's leader holds 160 technologies against a median of 122
+while the mod's holds 130 against 130, so the mod flattens the technology race. **The full distribution
+says otherwise.** Countries with ≥1M people, at 1935:
 
-| | leading economy's technologies | world median | ratio |
-|---|---|---|---|
-| vanilla | **160** | 122 | **1.31×** |
-| mod | 130 | 130 | **1.00×** |
-| mod_no_tc | 127 | 128 | 0.99× |
+| arm | n | min | p10 | p25 | median | p75 | p90 | max | p90/p10 | Gini |
+|---|---|---|---|---|---|---|---|---|---|---|
+| vanilla | 125 | **86** | 93 | 104 | 122 | 141 | 154 | 166 | 1.66 | 0.103 |
+| mod | 137 | 3 | 105 | 114 | 130 | 154 | 167 | 177 | 1.59 | 0.109 |
+| mod_no_tc | 130 | 3 | 103 | 117 | 127 | 152 | 164 | 188 | 1.59 | 0.112 |
 
-**In the mod the largest economy holds exactly the median number of technologies.** In vanilla it holds
-31% more. The mod's stated goal is that runners-up hold *drastically less advanced* industry; here they
-hold the same. The mechanism is plausible on its face: a deeper tree costs every country the same,
-while the per-category spread boost hands laggards a floor, and together they flatten rather than
-steepen. ⇒ This is the one result likely to demand a **design** change rather than tuning, and ROADMAP
-step 2's industry-driven research events — progress granted to whoever already owns the industry — are
-the intended remedy, since unlike spread they cannot help a country that owns nothing.
-⚠ n=1. Confirm before acting on it.
+| | tech leader | median | **leader ÷ median** | biggest economy | its rank on tech |
+|---|---|---|---|---|---|
+| vanilla | WAL 166 | 122 | **1.36×** | USA 160 | 5 of 125 |
+| mod | SAX 177 | 130 | **1.36×** | RUS 130 | **67 of 135** |
+| mod_no_tc | NOR 188 | 128 | **1.47×** | BIC 127 | 65 of 128 |
 
-**A supporting reading, weaker.** Professions per 1000 people at 1935 point the same way: in vanilla the
-#1 economy has 78.9 engineers/1k against 3.1 for #5, while in the mod #5 (FRA, 57.8) has *more* than #1
-(RUS, 44.1). ⚠ But ranking by total GDP and comparing per-capita mixes two things — a populous leader
-looks thin per head by construction — so this is suggestive only, and the metric wants ranking by GDP
-per head instead.
+**Leader ÷ median is identical in vanilla and the mod (1.36×) and wider in mod_no_tc.** The mod's top is
+higher in absolute terms (177 / 188 against 166), its Gini is marginally *higher*, and its floor is far
+lower — vanilla has no ≥1M country under **86** technologies while the mod has some at 3. Nothing here
+is compressed.
+
+⚠ **What the original figure actually measured** was the technology count of *the single highest-GDP
+country*. In the mod that is Russia, 67th of 135 on technology; in vanilla it is the USA, 5th of 125.
+But the mod's #2 and #3 economies are the USA at 173 and Britain at 174, right at the frontier — so the
+statistic turns on which large-population state happened to top the GDP table in one campaign, which at
+n=1 is close to a coin toss. **A one-country statistic was reported as a property of the world.**
+
+⇒ **The design conclusion drawn from it is withdrawn too.** It was used to argue that the spread boost
+and step 2's research events pull against each other and that spread should therefore stay small. That
+argument may still be right, but **this measurement does not support it** and must not be cited for it.
+
+**What DOES survive, and agrees with F48.** Countries reach a *smaller share of a bigger tree*: the tech
+leader holds 95–98% of the technologies seen in play, on trees of 186 and 192 against vanilla's 171 —
+and §4's slope of ln(GDP per head) on technologies is *steeper* in both mod arms (0.0134 / 0.0155 against
+0.0117), i.e. a technology is worth slightly **more** in the mod, not less. Goal 1 is weakly served.
+
+**A related reading, also weak, also n=1.** Professions per 1000 people at 1935: vanilla's #1 economy has
+78.9 engineers/1k against 3.1 for #5, while the mod's #5 (FRA, 57.8) has more than its #1 (RUS, 44.1).
+⚠ Same defect as above — ranking by TOTAL GDP and then comparing PER-CAPITA mixes two things, and a
+populous leader looks thin per head by construction. Rank by GDP per head before reporting this again.
 
 **What this does NOT say.** Nothing at n=2. Nothing about whether the trade-centre subsidy is *worth*
 it, only what it costs and buys. Nothing about the earlier vanilla sessions' economies (not logged).

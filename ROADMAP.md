@@ -508,13 +508,21 @@ savegame instrument archives, melts, summarises and reaps **concurrently with th
 schema **v3**, alignment gate passed at 1.61 % on GDP. Read F49 and F50 before anything else — they hold
 the numbers and, more importantly, the three things that were wrong before they were right.
 
-### The one result that may demand a design change
-⚠⚠ **The technology distribution has COMPRESSED.** Vanilla's largest economy holds **160 technologies
-against a world median of 122**; the mod's holds **130 against 130** — the leader is exactly average.
-That is the opposite of "runners-up should hold drastically less advanced industry". Step 2's
-industry-driven research events are the intended remedy (they reward whoever already owns the industry,
-which spread cannot do), so **this is an argument for step 2 and against a large spread boost — the two
-pull in opposite directions by construction**. ⚠ n=1; confirm before acting.
+### ⚠ A RESULT THAT WAS RETRACTED THE SAME DAY — read F49 §5 before citing it
+An earlier form of this handover led with "the technology distribution has COMPRESSED": vanilla's leader
+160 technologies against a median of 122, the mod's 130 against 130. **That was one country, not a
+distribution.** The full distribution has leader ÷ median at **1.36× in BOTH** vanilla and the mod (1.47×
+without the trade-centre subsidy), the mod's top higher in absolute terms, and its Gini marginally
+*higher*. What the figure actually measured was the technology count of the single highest-GDP country —
+Russia in the mod, 67th of 135 on technology, against the USA in vanilla, 5th of 125 — while the mod's
+#2 and #3 economies sit at 173 and 174, right at the frontier.
+
+⇒ **The design conclusion drawn from it is withdrawn.** It was used to argue that the spread boost and
+step 2's research events pull against each other and that spread should stay small. That may still be
+true; **this measurement does not show it**, and step 2 should not be scoped as if it did.
+⚠ The general fault is worth more than the number: a one-country statistic was reported as a property of
+the world. When the next batch reports "the leader", say leader BY WHAT, and put the distribution beside
+it.
 
 ### ⭐ THE PLAN FOR THE NEXT SESSION (user, 2026-08-11) — go straight to step 2
 
