@@ -294,6 +294,74 @@ for (const a of arms) {
   }
 }
 say('');
+// ------------------------------------------------------------------ 8. capital
+say('## 8. Does modernising cost capital?  `[saves]`');
+say('');
+say('The third of the mod\'s three goals: a newer factory must be BUILT, not toggled on for free, which');
+say('should raise construction demand and show up as a capital deficit. Construction goods spend comes');
+say('from `country_building_budget.expenses.construction_goods`; the investment pool is the country\'s own.');
+say('');
+say('| arm | date | Σ construction goods £/wk | as % of world GDP/52 | Σ investment pool | pool ÷ weekly construction |');
+say('|---|---|---|---|---|---|');
+for (const a of arms) {
+  for (const d of ['1870.1.1', '1900.1.1', '1935.1.1']) {
+    const per = byArm(a).map(r => {
+      const s = nearestSave(r, d); if (!s) return null;
+      let con = 0, pool = 0;
+      for (const c of Object.values(s.countries)) {
+        con += (c.building_budget?.expense_by_category?.construction_goods) || 0;
+        pool += c.investment_pool || 0;
+      }
+      return { con, pool, gdp: s.world.gdp };
+    }).filter(Boolean);
+    if (!per.length) continue;
+    const con = mean(per.map(p => p.con)), pool = mean(per.map(p => p.pool)), gdp = mean(per.map(p => p.gdp));
+    say(`| ${a} | ${d} | ${n0(con)} | ${gdp ? (con / (gdp / 52) * 100).toFixed(2) + '%' : '—'} | ${n0(pool)} | ${con ? (pool / con).toFixed(1) + ' wk' : '—'} |`);
+  }
+}
+say('');
+
+// ------------------------------------------------------------------ 9. does a tech edge pay
+say('## 9. Does a technological edge pay?  `[saves]`');
+say('');
+say('The mod\'s first goal, as a slope: regress ln(GDP per capita) on technologies held, across every');
+say('country with at least 1 M people, at 1935. A steeper slope means the same number of extra');
+say('technologies is worth more — which is exactly what "a tech lead should matter" asks for.');
+say('');
+say('⚠ This is a correlation across countries in one world, not a causal estimate: a rich country');
+say('researches faster, so the slope runs both ways. It is comparable BETWEEN ARMS, which is the only');
+say('use made of it here.');
+say('');
+say('| arm | n countries | slope (ln GDP/head per tech) | R² | techs: leader / median | GDP/head: leader ÷ median |');
+say('|---|---|---|---|---|---|');
+for (const a of arms) {
+  const rows = [];
+  let leadT = NaN, medT = NaN, ratio = NaN;
+  for (const r of byArm(a)) {
+    const s = nearestSave(r, '1935.1.1'); if (!s) continue;
+    const pts = [];
+    for (const c of Object.values(s.countries)) {
+      const pop = Object.values(c.professions).reduce((x, y) => x + y, 0);
+      if (!(pop >= 1e6) || !(c.gdp > 0) || !c.technologies) continue;
+      pts.push({ x: c.technologies, y: Math.log(c.gdp / pop), gdp: c.gdp, pop });
+    }
+    if (pts.length < 5) continue;
+    const mx = mean(pts.map(p => p.x)), my = mean(pts.map(p => p.y));
+    const sxy = pts.reduce((s2, p) => s2 + (p.x - mx) * (p.y - my), 0);
+    const sxx = pts.reduce((s2, p) => s2 + (p.x - mx) ** 2, 0);
+    const syy = pts.reduce((s2, p) => s2 + (p.y - my) ** 2, 0);
+    const b = sxy / sxx;
+    rows.push({ n: pts.length, b, r2: (sxy * sxy) / (sxx * syy) });
+    const byGdp = pts.slice().sort((p, q) => q.gdp - p.gdp);
+    const perHead = pts.map(p => p.gdp / p.pop).sort((p, q) => p - q);
+    leadT = byGdp[0].x; medT = pts.map(p => p.x).sort((p, q) => p - q)[pts.length >> 1];
+    ratio = (byGdp[0].gdp / byGdp[0].pop) / perHead[perHead.length >> 1];
+  }
+  if (!rows.length) { say(`| ${a} | — | — | — | — | — |`); continue; }
+  say(`| ${a} | ${n0(mean(rows.map(x => x.n)))} | ${mean(rows.map(x => x.b)).toFixed(4)} | ${n2(mean(rows.map(x => x.r2)))} | ${n0(leadT)} / ${n0(medT)} | ${n2(ratio)}× |`);
+}
+say('');
+
 say('### Wars and peace  `[logs]`');
 say('');
 say('| arm | war starts (mean/run) | peaces | capitulations | diplomatic plays |');

@@ -310,11 +310,16 @@ consumer is several times *faster* than a quarterly producer. Every queued mitig
 adaptive thinning, the high-water throttle pausing the game — is unnecessary at any cadence we use;
 **streaming was the one that mattered**, and it was free.
 
-⚠ **THE REAL CONSTRAINT IS THE ENGINE, NOT THE PIPELINE.** Writing a 40–55 MB autosave stalls the game, so
-cadence is paid for in *game* wall clock: ~400 quarterly saves per century against ~100 yearly ones. On a
-batch whose questions include wall-clock cost that is a self-inflicted confound — which is why the first
-batch ran **yearly**, also the cadence the earlier vanilla sessions used, keeping them comparable. The
-quarterly ruling stands as available and proven; it is a per-batch choice, not a standing setting.
+⚠ **WHAT AN AUTOSAVE COSTS THE ENGINE IS AN OPEN QUESTION**, and it is the one thing that would make
+cadence a wall-clock decision rather than a free choice of resolution. An estimate of 4–13% for quarterly
+from save size alone was **wrong and is withdrawn**; and the obvious measurement cannot settle it, because
+a yearly autosave fires on **1 January** and so is perfectly confounded with `on_yearly_pulse`
+(TESTBED_METRICS §7½ carries the numbers). **Scheduled, not yet run:**
+`schedules/autosave_cadence_vanilla.json` — n=2 vanilla-yearly against n=2 vanilla-quarterly, interleaved.
+Both arms run the same ~100 yearly pulses and differ by ~300 autosaves, so the pulse cancels and the
+wall-clock difference divided by 300 is the cost of one save.
+**Cadence is user-ruled YEARLY for now** (2026-08-11); quarterly is proven feasible on the consumer side
+and remains a per-batch choice, not a standing setting.
 
 ⭐ **THE SUBSIDY BREAKDOWN NEEDED NO DERIVING.** The plan expected to reconstruct it from each building's
 subsidised flag and its shortfall. The save books it directly:

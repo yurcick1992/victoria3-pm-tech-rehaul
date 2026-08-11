@@ -1126,11 +1126,43 @@ measurement — parallel melt, adaptive thinning, a high-water throttle pausing 
 any cadence we use. **Streaming was the one that mattered**, and it costs nothing: a `.v3` handed to the
 reader is melted in-process.
 
-⚠ **THE BINDING CONSTRAINT TURNED OUT TO BE THE ENGINE, NOT THE PIPELINE.** Writing a 40–55 MB autosave
-stalls the game, so cadence is paid for in *game* wall clock: ~400 quarterly saves per century against
-~100 yearly ones. On a batch whose questions include wall-clock cost that is a self-inflicted confound,
-which is why the 2026-08-11 three-arm batch ran **yearly** — also the cadence the earlier vanilla sessions
-used, which is what keeps vanilla-now comparable to vanilla-then.
+### ⚠⚠ WHAT AN AUTOSAVE COSTS IS **NOT YET KNOWN**, and the obvious measurement cannot find out
+
+The pipeline is cheap; the open question is what the *engine* pays to write a 13–55 MB save, because that
+is what makes cadence a wall-clock decision rather than a free choice of resolution. **An estimate of
+4–13% for quarterly, derived from save size alone, was wrong and is withdrawn.**
+
+⚠ **THE AUTOSAVE IS PERFECTLY CONFOUNDED WITH THE YEARLY PULSE** (user, 2026-08-11). A yearly autosave
+fires on **1 January**, which is also when `on_yearly_pulse` runs. So comparing tick windows that contain
+an autosave against those that do not is not measuring the autosave — **it is measuring January**. And the
+observer polls every ~20 s while the game advances ~5.7 in-game days per second, so a window spans ~114
+days: a month cannot be resolved even in principle, let alone a sub-second stall inside one.
+
+Measured anyway, off run 1 of `20260811_094048`:
+
+| ~20 s tick windows | n | in-game days/s |
+|---|---|---|
+| containing a 1 January (autosave **and** yearly pulse) | 13 | 5.68 ± 0.13 |
+| not containing one | 30 | 5.76 ± 0.10 |
+
+Difference **0.079 ± 0.162 days/s, t ≈ 0.5**. Read correctly that is an **upper bound on the yearly pulse
+and the autosave together**, not an estimate of the autosave: *January is not distinguishably slower than
+any other month*, which points at both being close to free but sizes neither. Naively converted it reads
+~0.4 s per save (quarterly +1.9% over a century) with an interval spanning roughly 0 to +7%.
+
+⭐ **THE IDENTIFYING DESIGN IS TWO CADENCES, NOT ONE RUN'S TICK LOG** —
+`tools/testbed/schedules/autosave_cadence_vanilla.json`, n=2 vanilla-yearly against n=2 vanilla-quarterly,
+interleaved. Both arms play the same century so both run the same ~100 yearly pulses; only the autosave
+count differs, by ~300. The pulse cancels, and `(mean quarterly wall − mean yearly wall) / 300` is the cost
+of one save. It needs no within-run timing at all — just `meta.json`'s `wall_seconds`.
+⚠ It isolates the marginal cost of an autosave **as we take them, concurrent archiver included** — the
+operationally useful quantity, not the engine's own. Separating those needs a third arm with
+`-NoSaveHarvest`.
+
+Until that lands, cadence is chosen on **resolution and disk**, and on one comparability argument that
+holds regardless: **yearly is what the earlier vanilla sessions used**, so a vanilla arm at yearly can be
+read against them. That, not the withdrawn wall-clock estimate, is why the 2026-08-11 three-arm batch ran
+yearly (user-ruled: *"let's leave at yearly now"*).
 
 ### What the summary carries, per save
 
