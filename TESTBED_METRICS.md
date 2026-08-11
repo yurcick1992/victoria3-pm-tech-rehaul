@@ -1248,12 +1248,27 @@ labelled `1935.1.1` actually fires on **1 February** (§v7 — a dump is spread 
 logged date is the label). A *systematic* bias, a wrong sign, or a country present in one instrument and
 absent from the other is what would be a real failure.
 
-🔍 **ONE OPEN RESIDUAL WORTH CHASING: GBR's population differs by 2.8 % at 1935** — the save's profession
-sum reads 86.36 M against telemetry's `GetTotalPopulation` 88.85 M, where the same comparison on an
-earlier save agreed to 0.16 %. A month of growth does not explain 2.8 %. The leading suspect is pops in
-states the save attributes to a different owner (unincorporated or colonial), which the per-country
-profession aggregate would miss and `GetTotalPopulation` would not. Not chased yet; it is why the join
-tolerance is 5 %.
+✅ **THE 2.8 % GBR GAP IS TERRITORY CHANGING HANDS, NOT AN INSTRUMENT FAULT** (user, 2026-08-11 —
+*"a conquest or rebellion annexation very well can"*). The save's profession sum reads 86.36 M at 1935.1.1
+against telemetry's 88.85 M a month later, and *growth* cannot produce 2.8 % in a month — but an
+annexation can, and GBR's own annual series says that is exactly what was happening:
+
+| step | population | change | buildings |
+|---|---|---|---|
+| 1934 | 97 571 491 | −1.74 % | 719 |
+| **1935** | **86 363 935** | **−11.49 %** | **684** |
+
+**14 of 98 year-on-year steps exceed 2.8 %** (median step 1.44 %, 90th percentile 4.34 %, max +17.49 % in
+1926), and 1935 is among the largest — GBR shed 11.5 % of its people and 35 buildings that year. The two
+instruments were watching the same collapse one month apart.
+
+⚠ **The general lesson, which outlives this case: the two instruments will disagree MOST on exactly the
+countries that are changing hands**, and that is a property of the world rather than of either
+instrument. It is why the join tolerance is 5 % and why a country whose join fails is reported rather
+than forced. It also means a per-country figure quoted from a save should be checked against its
+neighbours in the series before it is called a trend — one annual point can sit mid-annexation.
+*(An earlier note here blamed pops in unincorporated or colonially-held states; superseded — that
+hypothesis was never tested and the measured one fits.)*
 
 ### What must never move off the logs
 
