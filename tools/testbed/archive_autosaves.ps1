@@ -28,7 +28,12 @@ param(
   [int]    $StableSeconds    = 4,
   [int]    $MaxMinutes       = 300,
   [int]    $IdleExitMinutes  = 10,
-  [int]    $MinFreeGB        = 8
+  [int]    $MinFreeGB        = 8,
+  # ⚠ NEEDED WHENEVER A BATCH RUNS BACK TO BACK. The engine's autosave slots survive the game exiting, so
+  # at the start of run N+1 the save folder still holds run N's five saves - and without this they are
+  # archived into run N+1's folder and attributed to the wrong arm. Pre-seeding them as already-seen is
+  # the fix that does not touch the files themselves (deleting them would break crash-resume).
+  [switch] $SkipExisting
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
@@ -56,6 +61,11 @@ if (Test-Path $stopFile) { Remove-Item $stopFile -Force }
 # archives the SAME save up to five times - measured, and at 45 MB a copy it fills the disk in about
 # an hour. Keying on (length, mtime) globally makes a rotated file identical to the one already kept.
 $seen    = @{}
+if ($SkipExisting) {
+  $pre = @(Get-ChildItem $SaveDir -Filter "autosave*.v3" -ErrorAction SilentlyContinue)
+  foreach ($f in $pre) { $seen["{0}|{1}" -f $f.Length, $f.LastWriteTimeUtc.Ticks] = $true }
+  Log "-SkipExisting: $(@($pre).Count) pre-existing autosave(s) marked as already seen"
+}
 # candidates awaiting stability: name -> @{ len; mtime; since }
 $pending = @{}
 $n       = 0

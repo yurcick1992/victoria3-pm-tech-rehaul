@@ -880,6 +880,50 @@ tools/                  dev tooling — NOT shipped in the mod
                         validate_split_rule.mjs (clamps, prestige and culture terms, isolated),
                         solve_need_availability.mjs / fit_availability.mjs / identify_availability.mjs /
                         invert_deduction.mjs (the identification path, kept for re-derivation)
+  --- ⭐⭐ THE SAVEGAME HARVEST — the same instrument, INDUSTRIALISED (2026-08-11, TESTBED_METRICS §7½).
+      Every autosave of every run is archived, melted, summarised and reaped automatically, so a batch
+      yields an ANNUAL per-country state series beside the log telemetry's twelve dump dates ---
+  testbed/save_state_summary.mjs  ONE MELT -> ONE SUMMARY JSON (gzipped, ~400 KB from 2.2 MB raw).
+                        Takes a `.v3` DIRECTLY and melts it in-process with `rakaly -c`, so the 391 MB
+                        plaintext never touches disk and a worker pool needs no shell pipe. Per country:
+                        GDP/prestige/literacy/SoL (last sample of each weekly trend), pop_statistics
+                        incl. POPULATION BY PROFESSION, buildings BY TYPE (count, levels, SUBSIDISED
+                        levels, profit, cash, staffing), the whole budget with `country_building_budget`
+                        itemised by category AND BY BUILDING (⭐ the per-building SUBSIDY line, which
+                        needed no deriving — the save books it directly), last_bankruptcy_date,
+                        technologies held, foreign-owned/owned-abroad levels, goods in/out, and
+                        TOP PRODUCERS BY GOOD with quantities.
+                        ⚠ It does NOT scan the pop table (8 M of the melt's 16 M lines): each country
+                        record already carries population_by_profession, and that index is ALPHABETICAL
+                        over `common/pop_types/*.txt` — VERIFIED, agreeing to 0.03% world-wide on all 15
+                        professions (`--verify-pops` re-derives it the expensive way). It THROWS if the
+                        game's pop-type count ever differs from the save's own count prefix.
+                        ⚠ SAVE_SUMMARY_VERSION is bump-never-renumber, like TELEMETRY_VERSION.
+                        ⚠ NOT to be confused with `save_summary.mjs` (below), which reads the RAW BINARY
+                        and answers a different question
+  testbed/harvest_saves.ps1  stages B-D: melt -> extract -> VERIFY -> reap, N workers (default 4), with
+                        the queue-depth / GB / drain-rate progress line. ⚠⚠ IT INVERTS THE REPO'S RULE:
+                        everywhere else "the summary is a CACHE, the raw log is the record", but a reaped
+                        save makes THE SUMMARY THE RECORD. Hence: write to a temp name, VERIFY the
+                        artifact (gunzip, parse, require a version + date + ≥10 countries), rename, and
+                        only THEN delete the .v3 — a failed save is never reaped and keeps a .err beside
+                        it, and the NEWEST save of each run is kept permanently as the escape hatch.
+                        Landmine L12 enforces all of that post-run (`preflight.ps1 -Session <dir>`).
+                        ⚠ DEFAULT IS SERIAL WITH THE GAME (run between runs), because wall clock is one
+                        of the things these batches measure — `-Watch` is the deliberate opt-in
+  testbed/verify_save_alignment.mjs  THE GATE: do the two instruments agree on GDP, building count and
+                        population? ⚠ The join is on POPULATION, not on name — telemetry names a country
+                        by DISPLAY NAME, which changes mid-campaign (the country telemetry calls "India"
+                        is tag BHT), while a save names it by TAG, which does not. Matching on GDP and
+                        then reporting GDP agreement would be circular; population is measured
+                        independently on both sides and is not scored. Run it before moving any
+                        state-of-process metric off the logs
+  ⚠ MEASURED COST, and it retires the plan's central worry: melt 2 s, single-pass extract ~4 s,
+      STREAMED end-to-end 5.0 s per 57 MB save. The consumer is several times FASTER than a quarterly
+      producer (one save per 15-35 s of wall clock), so the queue never grows. The binding constraint is
+      the ENGINE: writing a 40-55 MB autosave stalls the game, so ~400 quarterly saves per century cost
+      real game wall clock where ~100 yearly ones do not — which is why a batch measuring wall clock uses
+      YEARLY (also the cadence the earlier vanilla sessions used, keeping them comparable)
   testbed/score_save.ps1   ONE COMMAND per gamestate: melt an archived autosave, run all three readers,
                         score it. `-Keep` keeps the 250 MB melt for follow-up work; without it the melt
                         is deleted. ⚠ It reads the date from the melt anchored at COLUMN 0 — a save is
@@ -916,7 +960,19 @@ tools/                  dev tooling — NOT shipped in the mod
   testbed/run_schedule.ps1  THE entry point for all measurement: ordered schedule JSON -> build each run via
                         build.ps1 -> run -> harvest -> cross-run markets_all.tsv. Interactive p/r/s/x control;
                         crash policy. Never call the builder directly for test data. Specs in
-                        testbed/schedules/, results in testbed/sessions/ (the ONE results root)
+                        testbed/schedules/, results in testbed/sessions/ (the ONE results root).
+                        ⭐ It also owns the SAVEGAME HARVEST (default ON, `-NoSaveHarvest` opts out):
+                        `archive_autosaves.ps1` runs CONCURRENTLY with the game into `<run>\saves\`, and
+                        `harvest_saves.ps1` runs BETWEEN runs into `<run>\save_summaries\`, with a
+                        `save_provenance.json` carrying the arm/run/session into every summary.
+                        ⚠ The archiver is launched with `Start-Process`, whose `-ArgumentList` joins an
+                        array with spaces and QUOTES NOTHING — and this repo lives under a path with a
+                        space, so every path there is quoted by hand and the scheduler now PROVES the
+                        archiver is alive rather than reporting it started. It was launched into a hidden
+                        window and died instantly on `Processing -File 'C:\claude-code\victoria' failed`;
+                        the batch played 3.5 in-game years capturing nothing before that was noticed.
+                        ⚠ The harvest is invoked with `& powershell @args`, which quotes each element
+                        ITSELF — so its paths must NOT be pre-quoted. Two calls, two opposite rules
   testbed/make_vanilla_stub.ps1  derives a "tiering only" config (structure kept, base-game recipes/costs/ai_value)
                         -> config/mod_config.vanilla_stub.json; the headless twin of the UI's Bring-to-vanilla,
                         used as the control arm when measuring what the tier split alone does
@@ -1890,7 +1946,9 @@ the game.
   So each is enumerated with an **ID and a detector**, and `preflight.ps1` **throws** inside `build.ps1`
   and `run_schedule.ps1`. Today: L1 tag guards · L2 data-function-as-script · L3 unbounded scope (manual) ·
   L4 burst phasing (advisory) · L5 dropped spec key · L6 undefined script value · L7 control-arm purity ·
-  L8 telemetry changed without a schema bump · L9 unfiltered ring reads · L10 mid-batch edits (manual).
+  L8 telemetry changed without a schema bump · L9 unfiltered ring reads · L10 mid-batch edits (manual) ·
+  L11 a tag that is not the country you think it is (proposed) · **L12 savegames reaped without a readable
+  summary** — the one POST-RUN entry, walked with `preflight.ps1 -Session <dir>` and N/A on a normal build.
   **The MD holds the story and the numbers; the script holds the enforcement.** When a run surfaces a new
   one: entry first, then `Test-Lm<ID>`, then **prove the tripwire trips** by breaking it on purpose — a
   guardrail that has never failed is not known to work.

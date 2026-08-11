@@ -60,7 +60,16 @@ param(
     # keep the mod_sched_<setup>\ folders this builds (default: delete them when the schedule ends;
     # they are ~1.7 MB each and fully reproducible from the setup's config)
     [switch] $KeepMods,
-    [switch] $WhatIf
+    [switch] $WhatIf,
+    # ⭐ THE SAVEGAME INSTRUMENT (ROADMAP step 3.5). Stage A (archive) runs CONCURRENTLY with the game;
+    # stages B-D (melt / extract / reap) run BETWEEN runs, deliberately serial with it - wall clock is one
+    # of the things these batches measure, so stealing cores from the engine would confound the number
+    # under test. Measured: ~5 s per save on one core, so a quarterly century drains in ~8 min at 4
+    # workers, against ~2.5 h of game time per run.
+    [switch] $NoSaveHarvest,
+    [int]    $HarvestWorkers = 4,
+    # keep every archived save instead of reaping it once its summary verifies (needs ~16 GB per run)
+    [switch] $KeepSaves
 )
 
 $ErrorActionPreference = "Stop"
@@ -324,8 +333,74 @@ foreach ($p in $plan) {
     # PROVENANCE: the arm this run was built from, machine-read into build_state.json. A control arm
     # with no config passes nothing, and build_state then reads as the pure-vanilla arm it is.
     if ($resolved.Config) { $obsArgs += @("-BuildConfig",$resolved.Config) }
+
+    # ---- STAGE A: archive autosaves CONCURRENTLY with the game (a file copy; the engine rotates its
+    #      slots by RENAME and a 45 MB write is not atomic, both of which archive_autosaves.ps1 handles).
+    #      -SkipExisting is what keeps run N's leftover slots out of run N+1's folder.
+    $saveDir = Join-Path $runDir "saves"
+    $sumDir  = Join-Path $runDir "save_summaries"
+    $arch = $null
+    if (-not $NoSaveHarvest) {
+        $stopArch = Join-Path $PSScriptRoot "STOP_ARCHIVE"
+        if (Test-Path $stopArch) { Remove-Item $stopArch -Force }
+        # ⚠⚠ EVERY PATH IS QUOTED, INCLUDING THE -File ONE. `Start-Process -ArgumentList` joins an array
+        # with spaces and quotes NOTHING, and this repo lives under "victoria 3 PM and tech rehaul" — so
+        # an unquoted script path makes powershell report
+        #   Processing -File 'C:\claude-code\victoria' failed ... does not have a '.ps1' extension
+        # into a hidden window, and the archiver is simply never there. The first launch of this batch
+        # played 3.5 in-game years capturing nothing before that was noticed; -WindowStyle Hidden is
+        # what made it silent. The run's own log now proves the archiver is alive rather than started.
+        $archLog = Join-Path $runDir "archiver_launch.log"
+        $arch = Start-Process powershell -PassThru -WindowStyle Hidden -RedirectStandardError $archLog -ArgumentList @(
+            "-ExecutionPolicy","Bypass","-File","`"$(Join-Path $PSScriptRoot 'archive_autosaves.ps1')`"",
+            "-Dest","`"$saveDir`"","-SkipExisting","-MaxMinutes","$($p.timeout + 15)","-IdleExitMinutes","5")
+        $null = $arch.Handle
+        Start-Sleep -Seconds 3
+        if ($arch.HasExited) {
+            $why = (Get-Content $archLog -Tail 3 -ErrorAction SilentlyContinue) -join ' / '
+            Log "ARCHIVER DIED AT LAUNCH (exit $($arch.ExitCode)): $why - no saves will be captured for this run" "ALERT"
+            $arch = $null
+        } else {
+            Log "autosave archiver alive (pid $($arch.Id)) -> $(Split-Path $saveDir -Leaf)\"
+        }
+    }
+
     & powershell @obsArgs
     $rc = $LASTEXITCODE
+
+    if ($arch) {
+        # signal it rather than killing it: a kill mid-copy leaves a truncated .v3 in the archive, which
+        # is the one failure the stability check exists to prevent
+        New-Item -ItemType File -Force -Path (Join-Path $PSScriptRoot "STOP_ARCHIVE") | Out-Null
+        if (-not $arch.WaitForExit(60000)) { Log "archiver did not stop within 60s - killing" "WARN"; $arch.Kill() }
+        Remove-Item (Join-Path $PSScriptRoot "STOP_ARCHIVE") -Force -ErrorAction SilentlyContinue
+        $nSaves = @(Get-ChildItem $saveDir -Filter "*.v3" -ErrorAction SilentlyContinue).Count
+        Log "archiver stopped - $nSaves save(s) captured"
+
+        # ---- STAGES B-D: melt -> extract -> reap, now that the game is gone.
+        # PROVENANCE travels with each summary: a summary outlives its save, so it has to say which arm,
+        # which run and which session it came from without a lookup.
+        $prov = Join-Path $runDir "save_provenance.json"
+        [System.IO.File]::WriteAllText($prov, ([ordered]@{
+            session = $stamp; label = $label; run_index = $p.index; setup = $p.setup
+            arm_kind = $resolved.Kind; built_from_config = $resolved.Config
+            token = $token; until = $p.until
+        } | ConvertTo-Json -Depth 4), $Utf8)
+        # ⚠ NOT pre-quoted, unlike the Start-Process call above, and the difference is real: `& powershell
+        # @args` quotes each element itself when it contains a space, so adding quotes here would nest
+        # them. Start-Process -ArgumentList joins raw and quotes nothing, so there they are mandatory.
+        # Same two calls, two opposite rules — this is the same shape as $obsArgs, which works.
+        $hArgs = @("-ExecutionPolicy","Bypass","-File",(Join-Path $PSScriptRoot "harvest_saves.ps1"),
+                   "-Saves",$saveDir,"-Out",$sumDir,"-Workers","$HarvestWorkers",
+                   "-Provenance",$prov)
+        if ($KeepSaves) { $hArgs += "-NoReap" }
+        $t1 = Get-Date
+        & powershell @hArgs
+        $hrc = $LASTEXITCODE
+        $nSum = @(Get-ChildItem $sumDir -Filter "*.json.gz" -ErrorAction SilentlyContinue).Count
+        Log ("save harvest: {0} summaries in {1:N0}s{2}" -f $nSum, ((Get-Date)-$t1).TotalSeconds,
+             $(if ($hrc -ne 0) { " - ⚠ SOME FAILED, the .v3 files are kept" } else { "" }))
+    }
 
     $status = switch ($rc) { 0 { "ok" } 2 { "stopped_by_user" } 3 { "fatal_early_crashes" } default { "failed($rc)" } }
     Log "run $($p.index) finished: $status"

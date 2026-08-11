@@ -60,6 +60,49 @@ closed.
 | L9 | Reading the shared log ring without filtering by the run's own identity | AUTO (regression) + OPEN |
 | L10 | Editing the generator while a batch is running | MANUAL |
 | L11 | A named tag that is not the country you think it is | **PROPOSED — AUTO, detector not yet written** |
+| L12 | Savegames reaped without a readable summary | AUTO (post-run, `-Session`) |
+
+---
+
+### L12 — savegames reaped without a readable summary · AUTO (post-run)
+
+**The failure.** The savegame instrument (ROADMAP step 3½, built 2026-08-11) archives every autosave,
+melts it, writes one summary JSON, and then **deletes the save**. That inverts the rule the rest of the
+repo runs on — *"the summary is a CACHE; the raw log is the record"*, which is exactly what makes
+compressing raw logs safe. Here **the summary IS the record.** A save deleted without a readable summary
+beside it is evidence that exists nowhere else, and re-running does not recover it: a different seed is
+a different world, and after a patch a different game.
+
+**Why nothing fails.** Every other signal stays green. The batch completes, `session.json` reports every
+run finished, `markets_all.tsv` is full, the mod loaded, `error.log` is quiet — and the disk is
+pleasantly empty, which is precisely the symptom read as success. Nothing anywhere announces that run 4
+put 100 saves through a reader that crashed on all of them, or that a worker died mid-write and left
+`.partial` files that look like summaries to anything that counts rather than reads.
+
+**The design that makes it survivable, and which the detector checks is actually in force:**
+1. `harvest_saves.ps1` writes to a temp name, **verifies the artifact** (gunzips, parses, requires a
+   `save_summary_version`, a `provenance.date` and ≥10 countries), and only then renames it into place;
+2. **only then** is the `.v3` deleted — a failed save is never reaped, so it stays as the only remaining
+   copy of its own evidence, with a `.err` beside it;
+3. the **newest save of every run is kept permanently** (user-agreed) as the escape hatch for questions
+   the schema did not anticipate. ~57 MB per run against ~4 GB for the run's full set.
+
+**Detector — `Test-LmL12`, run with `-Session <dir>`.** For every run folder holding `saves\`: require a
+`save_summaries\` beside it; require it non-empty; **read one** and require a `save_summary_version`
+(a directory of zero-byte files counts perfectly well); reject leftover `.partial.json.gz`; report any
+`.err`; and require at least one `.v3` still kept. It reports **N/A** when no `-Session` is given, so it
+costs a build nothing — this is the register's one post-run entry.
+
+⚠ **Proved by breaking it** (2026-08-11), on both shapes: `save_summaries\` renamed away ⇒ FAIL; every
+save reaped with none kept ⇒ FAIL *"the escape hatch is gone"*; restored ⇒ PASS; no `-Session` ⇒ N/A.
+
+⚠ **Two bugs found while building the harvester, both of which produce this landmine's exact
+signature** and are why the verify-before-reap order is not optional. `Start-Process -ArgumentList`
+quotes nothing, and the repo path contains a space, so every worker was handed
+`C:\claude-code\victoria` as its script and exited 1. And a local `$out` inside a function **is** the
+script's `$Out` parameter — PowerShell variable names are case-insensitive — so the first launch rewrote
+the output directory to a per-save path. Under a reap-first design either one would have deleted a
+century of saves and left an empty folder.
 
 ---
 

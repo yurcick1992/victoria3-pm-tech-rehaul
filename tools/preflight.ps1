@@ -33,7 +33,8 @@ param(
     [switch]$UpdateFingerprint,         # rewrite tools\telemetry_fingerprint.json from current code (L8)
     [switch]$RepoOnly,                  # only the checks that need no built mod (for a pre-batch gate)
     [switch]$WarnOnly,                  # print the report but always exit 0
-    [switch]$Quiet                      # only print FAIL/WARN lines
+    [switch]$Quiet,                     # only print FAIL/WARN lines
+    [string]$Session = ''               # a session folder to walk the POST-RUN entries against (L12)
 )
 
 # NOTE: deliberately NO Set-StrictMode. This script dot-sources telemetry_lib.ps1, which documents
@@ -455,6 +456,58 @@ function Test-LmL9 {
     else { Add-Result 'L9' 'reads the shared log ring unfiltered' 'PASS' 'token filter and clock stamp both present; error counts remain unfiltered by design (open, see register)' }
 }
 
+# ============================================================== L12 ====
+function Test-LmL12 {
+    <#
+      L12 - A SESSION WHOSE SAVES WERE REAPED BUT WHOSE SUMMARIES ARE NOT THERE.
+
+      This is the landmine the savegame instrument creates by existing. Everywhere else in the repo
+      "the summary is a CACHE, the raw log is the record" - which is what makes compressing raws safe.
+      Reaping autosaves INVERTS it: the summary becomes the record, and a save deleted without a
+      readable summary beside it is evidence that no longer exists anywhere. Re-running does not
+      recover it - a different seed is a different world.
+
+      And it is silent by construction. The batch completes, session.json says every run finished, the
+      markets TSV is full, and the disk is pleasantly empty. Nothing anywhere says that run 4's saves
+      went through a reader that crashed on every one of them.
+
+      DETECTOR: for each run folder holding a `saves\` directory, require a `save_summaries\` beside
+      it, require it non-empty, READ one and require a save_summary_version, reject leftover
+      `.partial` files, report the per-save `.err` files harvest_saves.ps1 leaves on failure, and
+      require at least one save still kept (the escape hatch the ruling asks for).
+    #>
+    if (-not $Session) { Add-Result 'L12' 'saves reaped without summaries' 'N/A' 'no -Session given (this entry is post-run)'; return }
+    if (-not (Test-Path $Session)) { Add-Result 'L12' 'saves reaped without summaries' 'FAIL' "no such session: $Session"; return }
+    $bad = @(); $seen = 0; $tot = 0
+    foreach ($run in @(Get-ChildItem $Session -Directory)) {
+        $sv = Join-Path $run.FullName 'saves'
+        if (-not (Test-Path $sv)) { continue }
+        $seen++
+        $sm = Join-Path $run.FullName 'save_summaries'
+        $kept = @(Get-ChildItem $sv -Filter '*.v3' -ErrorAction SilentlyContinue)
+        if (-not (Test-Path $sm)) { $bad += "$($run.Name): saves\ exists but save_summaries\ does not"; continue }
+        $sums  = @(Get-ChildItem $sm -Filter '*.json.gz' -ErrorAction SilentlyContinue | Where-Object { $_.Name -notlike '*.partial.json.gz' })
+        $errs  = @(Get-ChildItem $sm -Filter '*.err' -ErrorAction SilentlyContinue)
+        $parts = @(Get-ChildItem $sm -Filter '*.partial.json.gz' -ErrorAction SilentlyContinue)
+        $tot += $sums.Count
+        if ($sums.Count -eq 0) { $bad += "$($run.Name): 0 summaries"; continue }
+        if ($errs.Count)  { $bad += "$($run.Name): $($errs.Count) save(s) failed to summarise - $((($errs | Select-Object -First 3).Name) -join ', ')" }
+        if ($parts.Count) { $bad += "$($run.Name): $($parts.Count) partial summary file(s) left behind" }
+        # ⚠ READ one, do not merely count: a directory of zero-byte files counts perfectly well.
+        $probe = $sums[0]
+        try {
+            $ms = [IO.MemoryStream]::new([IO.File]::ReadAllBytes($probe.FullName))
+            $gz = [IO.Compression.GZipStream]::new($ms, [IO.Compression.CompressionMode]::Decompress)
+            $o  = ([IO.StreamReader]::new($gz)).ReadToEnd() | ConvertFrom-Json
+            if (-not $o.save_summary_version) { $bad += "$($run.Name): $($probe.Name) carries no save_summary_version" }
+        } catch { $bad += "$($run.Name): $($probe.Name) is unreadable - $($_.Exception.Message)" }
+        if ($kept.Count -eq 0) { $bad += "$($run.Name): every save reaped and none kept - the escape hatch is gone" }
+    }
+    if (-not $seen) { Add-Result 'L12' 'saves reaped without summaries' 'N/A' 'no run in this session archived saves'; return }
+    if ($bad.Count) { Add-Result 'L12' 'saves reaped without summaries' 'FAIL' ($bad -join "`n") }
+    else { Add-Result 'L12' 'saves reaped without summaries' 'PASS' "$seen run(s) with archived saves, $tot readable versioned summaries, an escape-hatch save kept in each" }
+}
+
 # --------------------------------------------------------------------------- driver ----
 # `Artifact` = needs a BUILT mod to read. The rest read the repo and can therefore gate a batch
 # BEFORE anything is built, which is the difference between failing in two seconds and failing after
@@ -467,7 +520,10 @@ $CHECKS = @(
     @{ Id = 'L6'; Artifact = $true;  Fn = { Test-LmL6 } },
     @{ Id = 'L7'; Artifact = $true;  Fn = { Test-LmL7 } },
     @{ Id = 'L8'; Artifact = $false; Fn = { Test-LmL8 } },
-    @{ Id = 'L9'; Artifact = $false; Fn = { Test-LmL9 } }
+    @{ Id = 'L9'; Artifact = $false; Fn = { Test-LmL9 } },
+    # L12 needs a finished SESSION, not a mod - it is the one post-run entry, and it reports N/A
+    # (never FAIL) when no -Session is given, so it costs a build nothing.
+    @{ Id = 'L12'; Artifact = $false; Fn = { Test-LmL12 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 

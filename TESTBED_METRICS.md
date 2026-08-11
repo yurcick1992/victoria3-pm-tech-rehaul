@@ -1101,6 +1101,95 @@ is ~5 300 lines per dump. `summarise.ps1`'s `integrity.partial_dumps` gate exist
 nothing at all. §4.3 listed this as a candidate early-read hook and suspected it; it is now measured.
 **The earliest usable monthly dump is 1836.2.1.**
 
+## 7½. THE SAVEGAME HARVEST — the instrument, industrialised (2026-08-11)
+
+§7 established that a save can be read. This section is what turned that into a **standing instrument**:
+every autosave of every run is archived, melted, summarised and reaped automatically, so a batch now
+produces an ANNUAL (or quarterly) per-country state series beside the log telemetry's handful of dump
+dates. `tools/testbed/save_state_summary.mjs` + `harvest_saves.ps1`, wired into `run_schedule.ps1`.
+
+### ⭐⭐ THE COST, MEASURED — and the planning assumption it destroys
+
+The plan for this was written around a feared **~90 s melt**, which implied the consumer would be 3–6×
+slower than a quarterly autosave producer and the backlog would grow without bound. Measured on a 56.9 MB
+1935 gamestate (20 logical cores, one worker):
+
+| step | time |
+|---|---|
+| `rakaly melt` → 391 MB plaintext on disk | **2 s** |
+| the three legacy readers, each re-reading that file | 5 s + 3 s + 2 s |
+| **`rakaly melt -c` piped straight into one single-pass reader** | **5.0 s, and the 391 MB never touches disk** |
+
+⇒ **The producer is the slow side, not the consumer.** A quarterly autosave arrives every 15–35 s of wall
+clock; four workers drain a whole century in ~8 minutes. Every mitigation the plan queued behind this
+measurement — parallel melt, adaptive thinning, a high-water throttle pausing the game — is unnecessary at
+any cadence we use. **Streaming was the one that mattered**, and it costs nothing: a `.v3` handed to the
+reader is melted in-process.
+
+⚠ **THE BINDING CONSTRAINT TURNED OUT TO BE THE ENGINE, NOT THE PIPELINE.** Writing a 40–55 MB autosave
+stalls the game, so cadence is paid for in *game* wall clock: ~400 quarterly saves per century against
+~100 yearly ones. On a batch whose questions include wall-clock cost that is a self-inflicted confound,
+which is why the 2026-08-11 three-arm batch ran **yearly** — also the cadence the earlier vanilla sessions
+used, which is what keeps vanilla-now comparable to vanilla-then.
+
+### What the summary carries, per save
+
+Provenance (`save_summary_version`, source file, in-game date, session/run/arm/token — a summary outlives
+its save, so it must say what it came from without a lookup), then per country:
+
+- **GDP**, prestige, literacy, average SoL — the last sample of each weekly TREND channel.
+- **`pop_statistics`**, including **population by profession** and by strata.
+- **Buildings by TYPE**: count, levels, **subsidised count and levels**, summed profit, cash reserves, staffing.
+- **The whole budget**: treasury, credit, investment pool, base wage, average productivity, the raw
+  `weekly_expenses`/`weekly_income` vectors, and `country_building_budget` **itemised by category and by
+  building** — including **`subsidies` and `subventions` per building type**.
+- **`last_bankruptcy_date`** — over a series of saves this yields bankruptcy *frequency* per country.
+- **Technologies held** (the full list) and what is being researched.
+- Foreign-owned and owned-abroad building **levels**.
+- Goods **in/out per country**, and from them **TOP PRODUCERS BY GOOD** with quantities.
+
+⭐ **The per-building SUBSIDY line needed no deriving.** The plan expected to reconstruct it from a
+building's subsidised flag and its shortfall; the save books it directly. GBR at 1935 in the F48 save:
+port £62 376/wk · railway £51 146 · trade centre £12 449 · power plant £104, plus £43 590 of trade-centre
+*subventions*, which are a different mechanic.
+
+### ⚠ The pop table is deliberately NOT scanned, and that is a measured shortcut
+
+`pops={…}` is 8 M of the melt's 16 M lines. Each country record already carries
+`pop_statistics.population_by_profession`, indexed by pop type — and **that index is alphabetical over
+`common/pop_types/*.txt`, VERIFIED rather than assumed**: summed world-wide the two sources agree to
+**0.03 %** on all 15 professions. `--verify-pops` re-does the labelled scan and prints the comparison, and
+the reader **throws** if the game ever ships a different number of pop types than the save's own count
+prefix, so a patch cannot silently shift every index.
+
+⚠ **The strata split is not the alphabetical intuition** and reading it back confirmed the mapping: V3
+counts **farmers as MIDDLE** strata and **clerks as LOWER**. GBR 1935 upper = aristocrats + capitalists
+exactly; middle = academics + bureaucrats + clergymen + clerks*(no)* … the sums only close with farmers
+middle and clerks lower. Do not re-derive it from a guess.
+
+### ⚠ THE JOIN BETWEEN THE TWO INSTRUMENTS IS ON POPULATION, NOT ON NAME
+
+Log telemetry identifies a country by **display name** (`GetNameNoFormatting`; there is no tag data
+function, §3) and **a display name changes mid-campaign** — F48 fell into exactly this. A save identifies
+a country by **tag**, which never changes. In the F48 save the country telemetry calls *"India"* is tag
+**`BHT`** — Bhutan, having formed India. So `verify_save_alignment.mjs` joins on **population**: measured
+independently on both sides, ~8 significant figures wide, and *not* one of the quantities being scored —
+matching on GDP and then reporting GDP agreement would be circular.
+
+⚠ **A residual of a few percent is expected and is not disagreement.** The save's `gdp` is a weekly trend
+whose last sample is dated a few weeks before the save (1934.12.8 in a 1935.1.1 save) while telemetry
+fires on the dump date. A *systematic* bias, a wrong sign, or a country present in one instrument and
+absent from the other is what would be a real failure.
+
+### What must never move off the logs
+
+- **Events** — war, peace, bankruptcy, and **technology acquisition DATES**. A save shows what is HELD,
+  never when it arrived.
+- **The market ORDER BOOK**, which is **not persisted at all**: the market database holds only `owner`
+  (which is why F40 had to rebuild the pair from buildings).
+
+---
+
 ## 7. THE SAVEGAME — a SECOND instrument, and the right one for STATE (2026-08-06)
 
 Everything above logs through the game's script layer, which is why it is a *keyhole*: a metric must be

@@ -295,20 +295,44 @@ tech-gated ladder is part of this step.
 
 ---
 
-## Step 3½ — SAVEGAMES BECOME THE INSTRUMENT FOR STATE (agreed 2026-08-11, not yet built)
+## Step 3½ — SAVEGAMES BECOME THE INSTRUMENT FOR STATE  ✅ **BUILT 2026-08-11**
 
-### 🚩 START HERE — handover for the session that builds this
+**Status: shipped and in use.** The pipeline exists, is wired into `run_schedule.ps1` by default, and ran
+its first batch (`20260811_094048_three-arm-tc-subsidy`). What it is and what it carries is documented in
+**TESTBED_METRICS §7½** and **CLAUDE.md**'s tool list; the plan below is kept because its *reasoning* is
+still the reasoning, and because two of its central assumptions turned out to be wrong in ways worth
+recording.
 
-**Where things stand.** Step 1 is DONE and shipped: 217 technologies (38 new), all 100 tier buildings
-emitted and buildable, build green (lint / negative-goods / mod-checks / preflight), deployed. Two
-full-length runs are on disk and analysed — F47 (the tree loads clean against a vanilla control) and
-F48 (a century: no GDP penalty, ~8% wall clock, 86–88% of the tree reached). Everything is committed
-and pushed to `main`.
+⭐ **THE FEASIBILITY GATE CAME BACK 45× BETTER THAN FEARED.** The plan was written around a possible ~90 s
+melt, which implied a backlog growing without bound. Measured on the 56.9 MB 1935 gamestate: **melt 2 s**,
+single-pass extract ~4 s, and **streamed end to end 5.0 s** with no 391 MB intermediate on disk. The
+consumer is several times *faster* than a quarterly producer. Every queued mitigation — parallel melt,
+adaptive thinning, the high-water throttle pausing the game — is unnecessary at any cadence we use;
+**streaming was the one that mattered**, and it was free.
 
-**The one thing to do before anything else:** ⏱ **time a rakaly melt + extract on
-`Documents/Paradox Interactive/Victoria 3/save games/techtree_n3_run2_latest.v3`** (54 MB, in-game
-1934.12, kept deliberately). That single number decides whether quarterly cadence is feasible at all —
-see the queue arithmetic below. Do not build the pipeline before knowing it.
+⚠ **THE REAL CONSTRAINT IS THE ENGINE, NOT THE PIPELINE.** Writing a 40–55 MB autosave stalls the game, so
+cadence is paid for in *game* wall clock: ~400 quarterly saves per century against ~100 yearly ones. On a
+batch whose questions include wall-clock cost that is a self-inflicted confound — which is why the first
+batch ran **yearly**, also the cadence the earlier vanilla sessions used, keeping them comparable. The
+quarterly ruling stands as available and proven; it is a per-batch choice, not a standing setting.
+
+⭐ **THE SUBSIDY BREAKDOWN NEEDED NO DERIVING.** The plan expected to reconstruct it from each building's
+subsidised flag and its shortfall. The save books it directly:
+`country_building_budget.expenses.subsidies.values.<building_key>`, per country, per save. GBR 1935:
+port £62 376/wk · railway £51 146 · trade centre £12 449 · power plant £104.
+
+⭐ **ALIGNMENT LOOKS RIGHT ON THE FIRST CHECK** (formally re-run per batch by
+`verify_save_alignment.mjs`): against its own run's telemetry the kept 1935 save matches GDP to 0.1–0.5 %
+(India 979.3 M telemetry vs 980.2 M save), building counts exactly for several countries (1208 vs 1208,
+360 vs 360) and population to 0.16 %. It also demonstrated the property that motivated tags over names:
+that country is tag **`BHT`** in the save and *"India"* in the log.
+
+⚠ **NOTHING HAS BEEN STRIPPED FROM LOG TELEMETRY YET**, and nothing should be until a full batch passes
+the alignment gate. Events and the market order book stay on the logs permanently regardless.
+
+---
+
+### The plan as agreed (kept for its reasoning)
 
 **What already exists and should be reused, not rewritten:**
 - `tools/testbed/archive_autosaves.ps1` — stage A, already handles both hazards (slots rotate by
@@ -442,16 +466,22 @@ cost back.
 
 ### Build order — and the gate that must not be skipped
 
-1. **Time a melt+extract** on `techtree_n3_run2_latest.v3`. This is the feasibility gate for quarterly.
-2. `save_summary.mjs` — readers → one JSON — plus `SAVE_SUMMARY_VERSION`.
-3. ⭐ **PROVE ALIGNMENT before retiring anything.** Run both instruments over one batch and check GDP,
-   building counts and population agree. Same discipline that caught F39's bad solve: a metric is not
-   replaced until its replacement is validated against it. **Only then** does step "strip the logs" run.
-4. The technologies-held and market-composition readers.
-5. `harvest_saves.ps1` — chains B–D over a session, with the progress line above.
-6. Wire archiving into `run_schedule.ps1` by default; add the queue high-water guard.
-7. **Landmine entry + detector**: a session whose saves were reaped but whose summaries are missing,
-   unversioned, or fewer than the autosaves the run should have produced.
+1. ✅ **Time a melt+extract.** Done — 2 s melt, 5.0 s streamed end to end. See the box at the top.
+2. ✅ `save_state_summary.mjs` (**not** `save_summary.mjs`, which already existed and reads the raw
+   binary for a different purpose) + `SAVE_SUMMARY_VERSION`.
+3. ⏳ **PROVE ALIGNMENT before retiring anything.** `verify_save_alignment.mjs` exists and the spot check
+   passes; the formal run happens on the first completed batch. Same discipline that caught F39's bad
+   solve: a metric is not replaced until its replacement is validated against it. **Only then** does
+   "strip the logs" run — and it has NOT run.
+4. ✅ Technologies-held and market composition — both in the summary (market as each country's own market
+   id plus the subject/overlord relation; the merge is deliberately left to the reader, because
+   `melted_building_goods.mjs` measured the naive merge to be *worse* against telemetry).
+5. ✅ `harvest_saves.ps1` — chains B–D, N workers, verify-before-reap, progress line.
+6. ✅ Wired into `run_schedule.ps1` by default (`-NoSaveHarvest` opts out). The queue high-water guard is
+   **not needed** — the archiver already stops below 8 GB free, and at the measured drain rate the queue
+   cannot outrun the consumer.
+7. ✅ **Landmine L12** + `Test-LmL12`, proved by breaking it both ways (summaries removed; every save
+   reaped with none kept). ⚠ L11 was already taken — check the register before claiming an ID.
 
 ⚠ **A STALENESS COUPLING TO CLOSE FIRST, unrelated to saves but in the same class.** `build.ps1` calls
 `emit_techs.mjs` but **not** `tech_tree_spec.mjs`, so `config/tech_tree_options.json` is never

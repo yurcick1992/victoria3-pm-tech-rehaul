@@ -13,6 +13,51 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## Three ways to launch a process that never runs — the savegame harvest's first hour (2026-08-11)
+
+**Symptom, all three times: nothing failed.** A worker "started", the log said so by pid, and no output
+ever appeared. These are worth one entry together because they share a shape — *a launch that reports
+success and produces nothing* — and because the pipeline they were in **deletes savegames**, so any of
+them under a reap-first design would have destroyed a century of evidence rather than merely wasting it.
+
+**1. `Start-Process -ArgumentList` quotes NOTHING, and this repo's path has a space.**
+`tools\testbed` sits under `C:\claude-code\victoria 3 PM and tech rehaul\`. `-ArgumentList @(…)` joins
+its elements with spaces and adds no quoting, so `powershell -File <that path>` became
+`-File 'C:\claude-code\victoria'` and PowerShell replied *"does not have a '.ps1' extension"* — **into a
+hidden window**, which is what made it silent. Hit twice: once in the harvest worker pool (`node` handed
+a truncated script path, exiting 1 on every save) and once in the scheduler's autosave archiver, where
+**the batch played 3.5 in-game years capturing nothing** before it was noticed and stopped.
+⚠ **The opposite rule applies to `& powershell @args`**, which quotes each element itself — pre-quoting
+there nests the quotes. Two invocation styles, two contradictory rules, in the same twenty lines.
+**Fix:** quote every path in the `Start-Process` call, leave the `&` call bare, and make the scheduler
+**prove the archiver is alive** (sleep 3, check `HasExited`, print the redirected stderr and shout) rather
+than reporting that it was started.
+
+**2. `Start-Process -PassThru` gives an EMPTY `ExitCode` unless the handle was materialised.**
+`$p.HasExited` was `$true` and `$p.ExitCode` was `''`, so every finished worker was scored as a failure.
+The queue is defined as "saves with no summary yet", so the same four saves were re-dispatched forever —
+**888 "failures" in one minute**. **Fix:** `$null = $p.Handle` immediately after `Start-Process` (which
+makes PowerShell cache the exit code), *plus* a failure blocklist so a permanent failure can never be
+retried in the same pass. Both are needed: the second is what stops a genuine defect becoming a spin.
+
+**3. A local `$out` inside a function IS the script's `$Out` parameter.** PowerShell variable names are
+case-insensitive, so `$out = Join-Path $Out "$stem.json.gz"` **rewrote the output directory** on the first
+launch, and every subsequent path became
+`…\_summaries\0001_autosave.json.gz\0001_autosave.partial.json.gz`. **Fix:** name the local `$dest`.
+
+**A fourth, caught on a dry run rather than in the batch:** PowerShell 5.1's `Out-File -Encoding utf8`
+writes a **BOM**, so a hand-authored provenance file made `JSON.parse` throw — *after* the whole melt had
+been parsed. The reader now strips a BOM (the repo already knew to: `verify_pms.mjs` documents that every
+vanilla file starts with one).
+
+**How this was caught rather than shipped.** The harvester **verifies the artifact before reaping the
+save** — gunzip it, parse it, require a `save_summary_version`, a date and ≥10 countries — and never
+deletes a `.v3` whose summary failed. Landmine **L12** then enforces the same thing over a whole session
+after the fact. The verify-before-reap order is not caution; it is the only reason three launch bugs cost
+five minutes instead of a batch.
+
+---
+
 ## The vanilla building "anchor" was tier POSITION 1 — switching on the era-0 rungs silently shipped vanilla's buildings for 9 industries (2026-08-11)
 
 **Symptom.** Nothing failed. The build was green — lint, negative-goods, mod checks and preflight all
