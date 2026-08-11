@@ -892,7 +892,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         itemised by category AND BY BUILDING (⭐ the per-building SUBSIDY line, which
                         needed no deriving — the save books it directly), last_bankruptcy_date,
                         technologies held, foreign-owned/owned-abroad levels, goods in/out, and
-                        TOP PRODUCERS BY GOOD with quantities.
+                        TOP PRODUCERS BY GOOD with quantities (top 20 per good, in EVERY summary),
+                        and POP OBJECT COUNTS — total AND non-empty, per country and world-wide.
+                        ⚠ 17.4% of vanilla pop records hold NO people, the game's UI hides them, and
+                        `<id>=none` freed slots sit in the same database (a record test must require the
+                        trailing brace, or the count comes out 2.9% high). Count RECORDS and claim
+                        nothing about the identity tuple — `workplace` is one of its dimensions but
+                        state+culture+religion+profession+workplace+wealth still only reaches 92.8%.
                         ⚠ It does NOT scan the pop table (8 M of the melt's 16 M lines): each country
                         record already carries population_by_profession, and that index is ALPHABETICAL
                         over `common/pop_types/*.txt` — VERIFIED, agreeing to 0.03% world-wide on all 15
@@ -909,8 +915,16 @@ tools/                  dev tooling — NOT shipped in the mod
                         only THEN delete the .v3 — a failed save is never reaped and keeps a .err beside
                         it, and the NEWEST save of each run is kept permanently as the escape hatch.
                         Landmine L12 enforces all of that post-run (`preflight.ps1 -Session <dir>`).
-                        ⚠ DEFAULT IS SERIAL WITH THE GAME (run between runs), because wall clock is one
-                        of the things these batches measure — `-Watch` is the deliberate opt-in
+                        ⭐ IT RUNS CONCURRENTLY WITH THE GAME BY DEFAULT (`-Watch`, user ruling
+                        2026-08-11): a save is summarised and deleted minutes after it is written rather
+                        than tens of gigabytes standing until the run ends. A final synchronous drain
+                        always follows the run, so a dead watcher costs time and nothing else — the queue
+                        is "saves with no summary yet", which makes the pass idempotent.
+                        ⚠ This required the archiver to write ATOMICALLY (copy to `.v3.part`, then
+                        rename): `Copy-Item` is not atomic, so a live harvester could otherwise read a
+                        half-copied save. ⚠ The melt's cost to the GAME is unmeasured (~5 s of one core
+                        per save, 20 cores, mostly single-threaded engine); `-HarvestWorkers 0` restores
+                        the drain-between-runs shape for a batch that needs the machine quiet
   testbed/verify_save_alignment.mjs  THE GATE: do the two instruments agree on GDP, building count and
                         population? ⚠ The join is on POPULATION, not on name — telemetry names a country
                         by DISPLAY NAME, which changes mid-campaign (the country telemetry calls "India"

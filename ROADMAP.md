@@ -498,6 +498,47 @@ derived from.
 
 ---
 
+## 🚩 HANDOVER — start here (written 2026-08-11 evening, session ended for a device switch)
+
+**Everything below is committed and pushed to `main`. The game is off; nothing is running.**
+
+### What just landed
+Step 3½ is **built and validated** (F50) and the first three-arm measurement exists (**F49**). The
+savegame instrument archives, melts, summarises and reaps **concurrently with the game** (user ruling),
+schema **v3**, alignment gate passed at 1.61 % on GDP. Read F49 and F50 before anything else — they hold
+the numbers and, more importantly, the three things that were wrong before they were right.
+
+### The one result that may demand a design change
+⚠⚠ **The technology distribution has COMPRESSED.** Vanilla's largest economy holds **160 technologies
+against a world median of 122**; the mod's holds **130 against 130** — the leader is exactly average.
+That is the opposite of "runners-up should hold drastically less advanced industry". Step 2's
+industry-driven research events are the intended remedy (they reward whoever already owns the industry,
+which spread cannot do), so **this is an argument for step 2 and against a large spread boost — the two
+pull in opposite directions by construction**. ⚠ n=1; confirm before acting.
+
+### Next, in order
+1. **Finish the three-arm batch — runs 4, 5, 6** (~8 h). `schedules/three_arm_tc_subsidy.json`, unchanged
+   and re-runnable; the scheduler will start a fresh session. Everything in F49 is n=1 and the batch
+   supplies its own warning about that: two builds differing by six lines came in 9 % apart on wall clock.
+2. **The autosave cadence experiment** (~9.5 h), `schedules/autosave_cadence_vanilla.json`, validated and
+   deferred by ruling. It is the only design that can isolate the cost of a save from the yearly pulse.
+3. **Strengthen the concentration metric** before re-reporting goal 2 — top-3 share and HHI, value-weighted,
+   always splitting the 22 goods the mod tiers from the 27 it does not. A top-1 share averaged over all
+   goods is what produced a wrong "goal 2 is not happening" reading, and the corrected one is a wash.
+4. **The tick-speed regression** (user's idea, not yet scoped): fit wall clock against *continuous*
+   predictors — pop objects, live pop objects, people, GDP, building count — instead of the coarse
+   mod/vanilla factor. Every summary from now on carries all of them; runs 1–3 of the first batch carry
+   pop counts at exactly one date each, because their saves were already reaped when the field was added.
+
+### Two open questions worth keeping
+- **Do the 17.4 % empty pop records cost the engine anything?** If it iterates them they are real
+  overhead; if it skips them, live count is the better regressor. The two differ by a fifth.
+- **Nothing has been stripped from log telemetry**, and should not be until the alignment gate passes on
+  a full batch rather than one arm. Events and the market order book stay on the logs permanently either
+  way.
+
+---
+
 ## Step 4 — TELEMETRY RUNS, AND THE LOOP BACK
 
 Run the testbed heavily on the mod and some vanilla control arms, and ask whether the game unfolds as

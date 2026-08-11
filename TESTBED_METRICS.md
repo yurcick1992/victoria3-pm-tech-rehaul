@@ -1178,14 +1178,59 @@ its save, so it must say what it came from without a lookup), then per country:
 - **`last_bankruptcy_date`** — over a series of saves this yields bankruptcy *frequency* per country.
 - **Technologies held** (the full list) and what is being researched.
 - Foreign-owned and owned-abroad building **levels**.
-- Goods **in/out per country**, and from them **TOP PRODUCERS BY GOOD** with quantities.
+- Goods **in/out per country**, and from them **TOP PRODUCERS BY GOOD** with quantities — the **top 20**
+  per good, in **every** summary (user ruling 2026-08-11: "at least top-10, or better, 20"). `local`
+  goods are kept rather than skipped: the table is built from building outputs aggregated to countries,
+  so they cost nothing extra here, and what makes `local` awkward is a DEMAND-side rule (§10.37).
+  ⚠ The 319 summaries written before that ruling carry 15, and cannot be widened — their saves are reaped.
+- ⭐ **POP OBJECT COUNTS, total AND non-empty**, per country and world-wide (schema v3, user ruling) —
+  see the pop-table box below for why the two are kept apart and why neither is "the number of pops".
 
 ⭐ **The per-building SUBSIDY line needed no deriving.** The plan expected to reconstruct it from a
 building's subsidised flag and its shortfall; the save books it directly. GBR at 1935 in the F48 save:
 port £62 376/wk · railway £51 146 · trade centre £12 449 · power plant £104, plus £43 590 of trade-centre
 *subventions*, which are a different mechanic.
 
-### ⚠ The pop table is deliberately NOT scanned, and that is a measured shortcut
+### ⭐ MELT AND REAP AS SAVES ARRIVE (user ruling, 2026-08-11)
+
+`run_schedule.ps1` runs stage A **and** stages B–D concurrently with the game, so a save is summarised
+and deleted minutes after it is written rather than tens of gigabytes standing until a run ends. At
+yearly cadence that holds the queue near zero; at quarterly it is the difference between ~16 GB and
+almost nothing per run. A **final synchronous drain always follows the run**, so a dead watcher costs
+time and nothing else — the queue is "saves with no summary yet", which makes the pass idempotent.
+
+⚠ **It needed one real fix first: `Copy-Item` is not atomic.** For the duration of a 45 MB write there
+is a file at the destination path that looks like a complete save and is not. Harmless while nothing
+read the archive until a run ended; fatal to a live harvester. The archiver now copies to
+`<name>.v3.part` and **renames into place**, which is atomic on one volume — so a `.v3` in that folder
+is complete by construction, and the `.part` suffix keeps it out of the queue meanwhile (verified:
+`-Filter "*.v3"` does not match it).
+
+⚠ **The concurrent melt's cost to the game is NOT measured** — ~5 s of one core per save, on 20 cores
+against a mostly single-threaded engine, believed negligible. `-HarvestWorkers 0` restores the old
+drain-between-runs shape for a batch that needs the machine perfectly quiet.
+
+### ⚠ POP OBJECTS: total and non-empty are DIFFERENT NUMBERS, and neither is "how many pops there are"
+
+Schema v3 stores both, per country and world-wide, expressly so a later regression can ask which
+predicts tick cost (user ruling). Measured on a vanilla 1936 gamestate — **158 636 records, of which
+131 102 hold people and 27 534 (17.4 %) hold none at all**; the empty share is stable across arms
+(17.4 / 16.9 / 17.5 %). A further 2.0 % have dependants and no workers, which is a *different* thing.
+
+⚠ **`<id>=none` freed slots sit in the same database** — 4 630 of them — so a record test must require
+the trailing `{`. Without it the count came out 2.9 % high and reported "objects" with no fields.
+
+⚠ **`workplace` is one of the identity dimensions** (an iron mine and a coal mine in one state give two
+English Protestant labourer pops). It is on 70 % of records. Grouping by (state, culture, religion,
+profession) alone leaves 158 636 records in **45 615 keys**, 55 % of them holding more than one; adding
+workplace reaches 132 599, adding wealth as well 147 155 (**92.8 %**), and the last 7.2 % is
+unidentified. ⇒ **Count records; claim nothing about the tuple.**
+
+⚠ **The game's interface hides the empties.** STATE_SLAVONIA stores 564 records and shows 280. A report
+that quotes stored counts to someone reading the UI will not agree with what they see, and neither side
+is wrong.
+
+### ⚠ The pop table is otherwise NOT scanned, and that is a measured shortcut
 
 `pops={…}` is 8 M of the melt's 16 M lines. Each country record already carries
 `pop_statistics.population_by_profession`, indexed by pop type — and **that index is alphabetical over

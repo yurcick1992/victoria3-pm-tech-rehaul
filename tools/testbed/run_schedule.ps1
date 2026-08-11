@@ -61,11 +61,15 @@ param(
     # they are ~1.7 MB each and fully reproducible from the setup's config)
     [switch] $KeepMods,
     [switch] $WhatIf,
-    # ⭐ THE SAVEGAME INSTRUMENT (ROADMAP step 3.5). Stage A (archive) runs CONCURRENTLY with the game;
-    # stages B-D (melt / extract / reap) run BETWEEN runs, deliberately serial with it - wall clock is one
-    # of the things these batches measure, so stealing cores from the engine would confound the number
-    # under test. Measured: ~5 s per save on one core, so a quarterly century drains in ~8 min at 4
-    # workers, against ~2.5 h of game time per run.
+    # ⭐ THE SAVEGAME INSTRUMENT (ROADMAP step 3.5). Stage A (archive) AND stages B-D (melt / extract /
+    # reap) both run CONCURRENTLY with the game, so a save is summarised and deleted minutes after it is
+    # written instead of tens of gigabytes standing until the run ends (user ruling, 2026-08-11). At
+    # yearly cadence that holds the queue near zero; at quarterly it is the difference between ~16 GB and
+    # ~nothing per run. A final synchronous drain always follows the run, so a dead watcher costs
+    # nothing but time.
+    # ⚠ The concurrent melt costs ~5 s of ONE core per save, on a 20-core machine against a mostly
+    # single-threaded engine. Believed negligible; NOT measured. `-HarvestWorkers 0` restores the old
+    # drain-between-runs shape for a batch that needs the machine perfectly quiet.
     [switch] $NoSaveHarvest,
     [int]    $HarvestWorkers = 4,
     # keep every archived save instead of reaping it once its summary verifies (needs ~16 GB per run)
@@ -365,6 +369,39 @@ foreach ($p in $plan) {
         }
     }
 
+    # ---- STAGES B-D, CONCURRENTLY (user ruling 2026-08-11: melt and reap as saves arrive rather than
+    #      letting tens of gigabytes stand until a run ends). Safe now that the archiver renames into
+    #      place atomically, so a `.v3` in that folder is complete by construction.
+    #      Cost to the game: one worker melting a 40 MB save takes ~5 s of ONE core per ~60 s of wall
+    #      clock at yearly cadence, on a 20-core machine against a mostly single-threaded engine. That is
+    #      believed negligible and is NOT yet measured — `-HarvestWorkers 0` runs the old between-runs
+    #      shape if a batch ever needs the machine perfectly quiet.
+    $harv = $null
+    if (-not $NoSaveHarvest -and $arch -and $HarvestWorkers -gt 0) {
+        $prov = Join-Path $runDir "save_provenance.json"
+        [System.IO.File]::WriteAllText($prov, ([ordered]@{
+            session = $stamp; label = $label; run_index = $p.index; setup = $p.setup
+            arm_kind = $resolved.Kind; built_from_config = $resolved.Config
+            token = $token; until = $p.until
+        } | ConvertTo-Json -Depth 4), $Utf8)
+        $stopH = Join-Path $PSScriptRoot "STOP_HARVEST"
+        if (Test-Path $stopH) { Remove-Item $stopH -Force }
+        $harvLog = Join-Path $runDir "harvester_launch.log"
+        $harv = Start-Process powershell -PassThru -WindowStyle Hidden -RedirectStandardError $harvLog -ArgumentList @(
+            "-ExecutionPolicy","Bypass","-File","`"$(Join-Path $PSScriptRoot 'harvest_saves.ps1')`"",
+            "-Saves","`"$saveDir`"","-Out","`"$sumDir`"","-Workers","$HarvestWorkers",
+            "-Provenance","`"$prov`"","-Watch") + $(if ($KeepSaves) { @("-NoReap") } else { @() })
+        $null = $harv.Handle
+        Start-Sleep -Seconds 3
+        if ($harv.HasExited) {
+            $why = (Get-Content $harvLog -Tail 3 -ErrorAction SilentlyContinue) -join ' / '
+            Log "HARVESTER DIED AT LAUNCH (exit $($harv.ExitCode)): $why - falling back to a drain after the run" "ALERT"
+            $harv = $null
+        } else {
+            Log "save harvester alive (pid $($harv.Id), $HarvestWorkers workers, watching)"
+        }
+    }
+
     & powershell @obsArgs
     $rc = $LASTEXITCODE
 
@@ -375,31 +412,44 @@ foreach ($p in $plan) {
         if (-not $arch.WaitForExit(60000)) { Log "archiver did not stop within 60s - killing" "WARN"; $arch.Kill() }
         Remove-Item (Join-Path $PSScriptRoot "STOP_ARCHIVE") -Force -ErrorAction SilentlyContinue
         $nSaves = @(Get-ChildItem $saveDir -Filter "*.v3" -ErrorAction SilentlyContinue).Count
-        Log "archiver stopped - $nSaves save(s) captured"
+        Log "archiver stopped - $nSaves save(s) still on disk (the harvester has been draining them)"
 
-        # ---- STAGES B-D: melt -> extract -> reap, now that the game is gone.
+        # ---- stop the watcher, then ALWAYS run a final synchronous drain. The watcher handles the bulk
+        #      DURING the run; this pass catches whatever arrived in its last poll, and is the whole
+        #      harvest if the watcher died or was disabled. It is idempotent - the queue is "saves with
+        #      no summary yet" - so running it after a successful watch costs seconds.
+        if ($harv) {
+            New-Item -ItemType File -Force -Path (Join-Path $PSScriptRoot "STOP_HARVEST") | Out-Null
+            if (-not $harv.WaitForExit(180000)) { Log "harvester did not stop within 180s - killing" "WARN"; $harv.Kill() }
+            Remove-Item (Join-Path $PSScriptRoot "STOP_HARVEST") -Force -ErrorAction SilentlyContinue
+        }
         # PROVENANCE travels with each summary: a summary outlives its save, so it has to say which arm,
-        # which run and which session it came from without a lookup.
+        # which run and which session it came from without a lookup. Written by the watcher launch when
+        # there is one; written here when there is not.
         $prov = Join-Path $runDir "save_provenance.json"
-        [System.IO.File]::WriteAllText($prov, ([ordered]@{
-            session = $stamp; label = $label; run_index = $p.index; setup = $p.setup
-            arm_kind = $resolved.Kind; built_from_config = $resolved.Config
-            token = $token; until = $p.until
-        } | ConvertTo-Json -Depth 4), $Utf8)
-        # ⚠ NOT pre-quoted, unlike the Start-Process call above, and the difference is real: `& powershell
+        if (-not (Test-Path $prov)) {
+            [System.IO.File]::WriteAllText($prov, ([ordered]@{
+                session = $stamp; label = $label; run_index = $p.index; setup = $p.setup
+                arm_kind = $resolved.Kind; built_from_config = $resolved.Config
+                token = $token; until = $p.until
+            } | ConvertTo-Json -Depth 4), $Utf8)
+        }
+        # ⚠ NOT pre-quoted, unlike the Start-Process calls above, and the difference is real: `& powershell
         # @args` quotes each element itself when it contains a space, so adding quotes here would nest
         # them. Start-Process -ArgumentList joins raw and quotes nothing, so there they are mandatory.
-        # Same two calls, two opposite rules — this is the same shape as $obsArgs, which works.
+        # Same two shapes, two opposite rules - this one matches $obsArgs, which works.
         $hArgs = @("-ExecutionPolicy","Bypass","-File",(Join-Path $PSScriptRoot "harvest_saves.ps1"),
-                   "-Saves",$saveDir,"-Out",$sumDir,"-Workers","$HarvestWorkers",
+                   "-Saves",$saveDir,"-Out",$sumDir,"-Workers","$([Math]::Max(1,$HarvestWorkers))",
                    "-Provenance",$prov)
         if ($KeepSaves) { $hArgs += "-NoReap" }
         $t1 = Get-Date
         & powershell @hArgs
         $hrc = $LASTEXITCODE
         $nSum = @(Get-ChildItem $sumDir -Filter "*.json.gz" -ErrorAction SilentlyContinue).Count
-        Log ("save harvest: {0} summaries in {1:N0}s{2}" -f $nSum, ((Get-Date)-$t1).TotalSeconds,
-             $(if ($hrc -ne 0) { " - ⚠ SOME FAILED, the .v3 files are kept" } else { "" }))
+        $left = @(Get-ChildItem $saveDir -Filter "*.v3" -ErrorAction SilentlyContinue).Count
+        Log ("save harvest: {0} summaries, {1} save(s) kept, final drain {2:N0}s{3}" -f $nSum, $left,
+             ((Get-Date)-$t1).TotalSeconds,
+             $(if ($hrc -ne 0) { " - ⚠ SOME FAILED, those .v3 files are kept" } else { "" }))
     }
 
     $status = switch ($rc) { 0 { "ok" } 2 { "stopped_by_user" } 3 { "fatal_early_crashes" } default { "failed($rc)" } }

@@ -58,8 +58,9 @@ import { join, basename, dirname } from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
-// v2 (2026-08-11) adds POP OBJECT COUNTS — see the note on the pop table below.
-export const SAVE_SUMMARY_VERSION = 2;
+// v2 (2026-08-11) adds POP OBJECT COUNTS.  v3, same day, splits them into TOTAL and NON-EMPTY — user
+// ruling, so a later regression can ask which of the two actually predicts tick speed.
+export const SAVE_SUMMARY_VERSION = 3;
 
 // What we knowingly leave out, and why.  Read this before concluding the summary "lost" something.
 const NOT_CAPTURED = {
@@ -77,7 +78,14 @@ const OUT = argOf('--out', '');
 const GAME = argOf('--game', 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game');
 const PROV = argOf('--provenance', '');          // extra JSON merged into .provenance
 const VERIFY_POPS = args.includes('--verify-pops');
-const TOPN = +argOf('--top', '15');
+// ⭐ TOP PRODUCERS PER GOOD, IN EVERY SUMMARY — 20 by user ruling (2026-08-11), "at least top-10, or
+// better, 20". It is already per-good and already written to every save's summary; this only widens the
+// list. `local` goods (electricity, transportation, services) are kept rather than skipped: they cost
+// nothing extra here because the table is built from building outputs aggregated to countries, and the
+// awkwardness of `local` is a DEMAND-side property (§10.37), not a production one.
+// ⚠ The 319 summaries already on disk were written at 15. Widening does not rewrite them, and cannot —
+// their saves are reaped.
+const TOPN = +argOf('--top', '20');
 if (!SRC) { console.error('usage: save_state_summary.mjs <melt.txt|-> --out summary.json'); process.exit(1); }
 
 const strip = s => s.replace(/^\uFEFF/, '');
@@ -139,10 +147,20 @@ const rl = createInterface({
   crlfDelay: Infinity,
 });
 
-// pop-object counting (v2): accumulate by state, resolve to countries at the end — `pops` comes BEFORE
-// `states` in the file, so the owner is not knowable at read time.
-const popObjByState = new Map();
-let popObjTotal = 0, popCurState = -1;
+// pop-object counting (v2/v3): accumulate by state, resolve to countries at the end — `pops` comes
+// BEFORE `states` in the file, so the owner is not knowable at read time.
+// ⭐ v3 keeps TOTAL and NON-EMPTY separately, per user ruling 2026-08-11, expressly so a future
+// regression can ask which of them actually predicts tick speed.  They differ by about a fifth.
+const popObjByState = new Map();          // state -> { n, live }
+let popObjTotal = 0, popObjLive = 0, popCurState = -1, popCurPeople = 0;
+const closePop = () => {
+  if (popCurState >= 0) {
+    let e = popObjByState.get(popCurState);
+    if (!e) popObjByState.set(popCurState, e = { n: 0, live: 0 });
+    e.n++; if (popCurPeople) e.live++;
+  }
+  popCurState = -1; popCurPeople = 0;
+};
 
 let mode = 'top', depth = 0;
 // country_manager state
@@ -178,20 +196,20 @@ for await (const line of rl) {
   // against ~4 s for everything else.  A record opens with `\t\t<digit>`; `location=` is the only field
   // read, and only until it is found.
   if (mode === 'pops') {
-    if (line.charCodeAt(0) === 125) {
-      if (popCurState >= 0) popObjByState.set(popCurState, (popObjByState.get(popCurState) || 0) + 1);
-      popCurState = -1; mode = 'top'; continue;
-    }
+    if (line.charCodeAt(0) === 125) { closePop(); mode = 'top'; continue; }
     const c0 = line.charCodeAt(0), c1 = line.charCodeAt(1), c2 = line.charCodeAt(2);
     // ⚠ THE TRAILING `{` IS LOAD-BEARING. The pop database also holds `<id>=none` — freed slots — and a
     // test that only checks "starts with two tabs and a digit" counts those as pops. Measured on a 1936
     // vanilla gamestate: 158 636 real records against 4 630 `=none` slots, so the loose test over-counted
     // by 2.9 % and reported an object that has no fields at all.
     if (c0 === 9 && c1 === 9 && c2 >= 48 && c2 <= 57 && line.charCodeAt(line.length - 1) === 123) {
-      if (popCurState >= 0) popObjByState.set(popCurState, (popObjByState.get(popCurState) || 0) + 1);
-      popObjTotal++; popCurState = -1;
-    } else if (popCurState === -1 && c0 === 9 && c1 === 9 && c2 === 9 && line.charCodeAt(3) === 108) {
-      if (line.startsWith('\t\t\tlocation=')) popCurState = +line.slice(12);
+      closePop(); popObjTotal++;
+    } else if (c0 === 9 && c1 === 9 && c2 === 9) {
+      // Only three initials can matter, so the string comparisons run on a small minority of lines.
+      const c3 = line.charCodeAt(3);
+      if (c3 === 108) { if (popCurState < 0 && line.startsWith('\t\t\tlocation=')) popCurState = +line.slice(12); }
+      else if (c3 === 119) { if (!popCurPeople && line.startsWith('\t\t\tworkforce=') && +line.slice(13) > 0) { popCurPeople = 1; popObjLive++; } }
+      else if (c3 === 100) { if (!popCurPeople && line.startsWith('\t\t\tdependents=') && +line.slice(14) > 0) { popCurPeople = 1; popObjLive++; } }
     }
     continue;
   }
@@ -448,11 +466,13 @@ const tagOf = id => C.get(id)?.tag ?? null;
 // pop objects were tallied by STATE (the pop table precedes the state table); resolve to owners now.
 // ⚠ A state with no owner contributes to the world total and to no country — reported, never dropped.
 const popObjByCountry = new Map();
-let popObjOrphan = 0;
-for (const [st, n] of popObjByState) {
+let popObjOrphan = 0, popObjOrphanLive = 0;
+for (const [st, e] of popObjByState) {
   const ci = stateCountry.get(st);
-  if (ci == null) { popObjOrphan += n; continue; }
-  popObjByCountry.set(ci, (popObjByCountry.get(ci) || 0) + n);
+  if (ci == null) { popObjOrphan += e.n; popObjOrphanLive += e.live; continue; }
+  let r = popObjByCountry.get(ci);
+  if (!r) popObjByCountry.set(ci, r = { n: 0, live: 0 });
+  r.n += e.n; r.live += e.live;
 }
 
 const countries = {};
@@ -485,7 +505,8 @@ for (const [id, c] of C) {
     technologies: tech ? tech.acquired.length : 0,
     researching: tech?.researching ?? null,
     technologies_held: tech ? tech.acquired : [],
-    pop_objects: popObjByCountry.get(id) ?? 0,
+    pop_objects: popObjByCountry.get(id)?.n ?? 0,
+    pop_objects_live: popObjByCountry.get(id)?.live ?? 0,
     foreign_owned_levels: foreignOwned.get(id) ?? 0,
     owned_abroad_levels: ownedAbroad.get(id) ?? 0,
     buildings: blds, goods_out: gout, goods_in: gin,
@@ -506,7 +527,14 @@ for (const [g, rows] of [...byGood].sort()) {
   top_producers[g] = { world: +rows.reduce((a, r) => a + r[1], 0).toFixed(1), top: rows.slice(0, TOPN) };
 }
 
-const world = { buildings: {}, gdp: 0, population: 0, pop_objects: popObjTotal, pop_objects_unowned: popObjOrphan };
+// ⭐ TOTAL vs NON-EMPTY, kept apart on purpose.  A pop record with no workforce and no dependants is
+// stored by the engine and hidden by the interface: 17.4 % of them in a vanilla 1936 gamestate, and
+// half the records in some states.  Which of the two predicts a tick's cost is an open question, so
+// the summary refuses to choose (user ruling, 2026-08-11).
+const world = { buildings: {}, gdp: 0, population: 0,
+                pop_objects: popObjTotal, pop_objects_live: popObjLive,
+                pop_objects_empty: popObjTotal - popObjLive,
+                pop_objects_unowned: popObjOrphan, pop_objects_unowned_live: popObjOrphanLive };
 for (const [, r] of bldByCountry) { void r; }
 for (const [k, r] of bldByCountry) {
   const ty = k.slice(k.indexOf('|') + 1);

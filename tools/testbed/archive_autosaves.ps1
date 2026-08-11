@@ -114,18 +114,27 @@ while ($true) {
     $n++
     $stamp = $f.LastWriteTime.ToString("yyyyMMdd_HHmmss")
     $out   = Join-Path $Dest ("{0:d4}_{1}_{2}" -f $n, $stamp, $f.Name)
+    # ⚠⚠ COPY TO A TEMP NAME, THEN RENAME. `Copy-Item` is not atomic, so for the duration of a 45 MB
+    # write there is a file at the destination path that LOOKS like a complete save and is not. That was
+    # harmless while nothing read the archive until the run ended, but the harvester now melts saves AS
+    # THEY ARRIVE (user ruling, 2026-08-11) and would pick the half-written one up. A rename on the same
+    # volume is atomic, so a `.v3` in this folder is complete by construction.
+    # ⚠ The `.part` suffix also keeps it out of the harvester's `*.v3` queue while it is being written.
+    $tmp = "$out.part"
     try {
-      Copy-Item -LiteralPath $f.FullName -Destination $out -Force
-      $copied = (Get-Item $out).Length
+      Copy-Item -LiteralPath $f.FullName -Destination $tmp -Force
+      $copied = (Get-Item $tmp).Length
       if ($copied -ne $f.Length) {
         Log "size mismatch on $($f.Name): source $($f.Length) vs copy $copied - DISCARDING" "WARN"
-        Remove-Item $out -Force; $n--
+        Remove-Item $tmp -Force; $n--
       } else {
+        Move-Item -LiteralPath $tmp -Destination $out -Force
         $seen[$sig] = $true
         Log ("#{0,-4} {1,-16} {2,10:N0} bytes  (free {3} GB)" -f $n, $f.Name, $copied, (Get-FreeGB))
       }
     } catch {
       Log "copy failed for $($f.Name): $_" "WARN"; $n--
+      Remove-Item $tmp -Force -ErrorAction SilentlyContinue
     }
     $pending.Remove($f.Name)
   }

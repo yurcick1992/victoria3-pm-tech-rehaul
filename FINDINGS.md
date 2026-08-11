@@ -131,6 +131,235 @@ transcript rather than from data.
 
 ---
 
+## F50 — **THE SAVEGAME INSTRUMENT VALIDATES: melt costs 2 s not 90, the two instruments agree to 1.6% on GDP, and a pop object is not what a pop is**
+
+**What this measures.** The instrument itself, not the economy — ROADMAP step 3½ built and gated.
+Session `20260811_094048_three-arm-tc-subsidy`, three completed campaigns plus one partial, telemetry
+v12, save summary schema **v3**. Every number below is re-derivable from the committed summaries.
+
+**1. Cost — the plan's central worry was wrong by a factor of 45.** Measured on a 56.9 MB 1935
+gamestate, 20 logical cores:
+
+| step | time |
+|---|---|
+| `rakaly melt` → 391 MB plaintext on disk | **2 s** |
+| the three legacy readers, each re-reading that file | 5 s + 3 s + 2 s |
+| **`rakaly melt -c` streamed into one single-pass reader** | **5.0 s, nothing touches disk** |
+
+The plan was designed around a possible ~90 s melt, which implied a backlog growing without bound at
+quarterly cadence. In practice a quarterly save arrives every 15–35 s of wall clock and four workers
+drain a century in ~8 minutes. **Parallel melt, adaptive thinning and the high-water throttle are all
+unnecessary**; streaming was the only mitigation that mattered and it was free.
+In production: three runs × 100 saves, **99 summarised and reaped each, 0 failures**, ~3 min per run.
+3.0 GB of savegames per run → 30 MB of summaries + one kept save.
+
+**2. ALIGNMENT — PASSED.** Run 1 (vanilla), 11 dates where a save and a telemetry dump coincide,
+272 of 275 country-observations joined:
+
+| | mean | \|mean\| | median | worst |
+|---|---|---|---|---|
+| GDP | −0.41% | **1.61%** | −0.2% | +14.5% |
+| building count | +0.48% | **1.05%** | **0.00%** | +98% (a flagged unproven row) |
+
+⚠ **What it does NOT license.** Nothing has been stripped from log telemetry, and the gate was run on
+ONE arm of ONE batch. Events and the market order book stay on the logs permanently regardless: a save
+shows what is held, never when it arrived, and the order book is **not persisted at all**.
+
+**3. ⚠⚠ POPULATION IS NOT A JOIN KEY, and the failure is silent.** Telemetry names a country by DISPLAY
+NAME (which changes mid-campaign — F48's trap) and a save by TAG, so the join must be on measured
+quantities. Population alone looks ideal — independently measured, eight significant figures — and is
+wrong:
+
+| telemetry country | joined to tag | population agreement | GDP disagreement |
+|---|---|---|---|
+| Tripolitania @1930 | `PCO` | 0.08% | **+1 722%** |
+| Kokand @1860 | `CUB` | 0.08% | +514% |
+| Tuscany @1935 | `GAR` | 0.05% | +952% |
+
+Across ~250 countries, many small and formulaically populated, a coincidence inside 0.1% is ordinary,
+and an "is the runner-up far away?" guard cannot see it because the coincidence beats every
+alternative. **Tightening the tolerance 20× removed not one bad pair** — that is what proved these were
+joins rather than measurements. ⇒ The join now uses **two keys and never scores one of its own**:
+population + buildings to score GDP, population + GDP to score buildings. The passes check each other
+and a disagreement is reported unproven rather than scored.
+
+**4. A per-country divergence of a few percent is the WORLD, not the instrument.** GBR reads 86.36 M in
+the 1935.1.1 save against 88.85 M in telemetry a month later. Growth cannot do 2.8% in a month;
+annexation can, and GBR's own annual series shows it losing **11.49% of its population and 35 buildings
+across 1935** — one of 14 year-on-year steps out of 98 that exceed the gap (median step 1.44%, max
++17.49%). **The two instruments disagree most on exactly the countries changing hands.** A per-country
+figure from one save wants checking against its neighbours before it is called a trend.
+
+**5. ⭐ THE PER-BUILDING SUBSIDY LINE NEEDED NO DERIVING.** The plan expected to reconstruct it from a
+subsidised flag and a shortfall. The save books it directly, per country per building type, as
+`country_building_budget.expenses.subsidies.values`. GBR at 1935 (vanilla): port £62 376/wk · railway
+£51 146 · trade centre £12 449 · power plant £104, plus £43 590 of trade-centre **subventions**, which
+are a different mechanic. This is a line no telemetry function can break down — the budget panel gives
+one country total.
+
+**6. BANKRUPTCY FREQUENCY BECOMES MEASURABLE.** `on_country_default` fires on entering DEFAULT, which
+usually ends within a month and may end in recovery (TESTBED_METRICS §1) — it is not bankruptcy. A save
+carries `last_bankruptcy_date`, so counting distinct values per country across an annual series counts
+the real thing. ⚠ It is a **lower bound**: only the last date is held, so two inside one year read as
+one.
+
+**7. ⚠ A POP OBJECT IS NOT A POP, AND THE COUNT IS NOT WHAT IT LOOKS LIKE.** Three corrections, each
+found by being challenged rather than by checking:
+
+- **`workplace` IS a pop dimension.** Asserted otherwise from a field census truncated at `head -16` of
+  a sorted list, with `workplace` at rank 17. It is on **70%** of records. Grouping by (state, culture,
+  religion, profession) alone puts 158 636 records into **45 615 keys**, 55% of them holding more than
+  one. Adding workplace reaches 132 599 keys; adding wealth as well reaches 147 155 (**92.8%**);
+  `social_class` adds nothing. The last 7.2% is unidentified, so the reader counts **records** and
+  claims nothing about the identity tuple.
+- **The first count was 2.9% too high.** The pop database holds `<id>=none` freed slots beside real
+  `<id>={` records, and a test checking only "two tabs then a digit" counts both: **158 636 real against
+  4 630 slots**. The trailing brace is now part of the test.
+- **17.4% of pop records hold NO PEOPLE.** 27 534 of 158 636 carry a profession, a location and a wealth
+  level with no workforce and no dependants; a further **2.0%** have dependants and no workers, which is
+  a different thing and is not "empty". The share is stable across arms: **17.4% / 16.9% / 17.5%**.
+  In STATE_SLAVONIA, 564 records are stored and **280 have people** — and the game's interface shows
+  only the latter, which is why they appear absent in game. The extremes are odd in their own right:
+  Tasmania carries 1 181 pop records, more than any state in the world.
+
+⇒ Schema v3 therefore stores **total and non-empty separately, per country and world-wide** (user
+ruling), expressly so a later regression can ask which of the two predicts tick cost. They differ by a
+fifth, and it is not known whether the engine iterates the empties.
+
+**What this does NOT say.** Nothing about which quantity drives tick speed — that regression is not
+run. Nothing about the mod, since every pop figure here is from the **vanilla control arm**. And the
+alignment gate is one arm of one batch, not a standing guarantee.
+
+**Evidence.** `tools/testbed/sessions/20260811_094048_three-arm-tc-subsidy/` — 319 save summaries,
+four kept saves, `verify_save_alignment.mjs` re-runs the gate. The vanilla 1936 endpoint is also copied
+to the game's save folder as `vanilla_1936_popobjects.v3` for inspection by hand.
+
+---
+
+## F49 — **THREE ARMS, ONE RUN EACH: the mod costs no wall clock and is not more broken than vanilla; mandating trade-centre subsidies buys 2× the trade for 22pp of the budget; and the technology distribution has COMPRESSED against the mod's own goal**
+
+⚠⚠ **n=1 PER ARM. READ THE NOISE FIGURE BEFORE ANY NUMBER BELOW.** The batch supplies its own warning:
+`mod` and `mod_no_tc` differ by **six lines of AI subsidy policy** and came in **9% apart on wall
+clock**. Any arm-to-arm difference smaller than that is not evidence. The batch was planned as n=2 and
+stopped after three runs plus a partial by user decision; runs 4–6 are deferred.
+
+**Arms, span, instrument.** `20260811_094048_three-arm-tc-subsidy`, 1836.1.1 → 1936.1.1, telemetry v12
+(`country_state`, `population`, `tech_log`, `building_inventory`, `treasury`, `events`), yearly
+autosaves, save summary v3.
+- `vanilla` = `{kind: control}` — vanilla + telemetry, zero gameplay content.
+- `mod` = `{kind: config, config/mod_config.json}` — the shipped mod, 217 technologies, 100 tier buildings.
+- `mod_no_tc` = `{kind: config, config/mod_config.no_tc_subsidy.json}` — **verified by a full-tree build
+  diff to differ from `mod` in exactly six lines**: `building_trade_center = must_have` removed from all
+  six administrative AI strategies, plus the build timestamp. Vanilla's own `ai_strategy_default`
+  subsidises power plant / railway / port and **not** trade centres, so this genuinely withdraws the
+  mandate rather than deferring to a default that reinstates it.
+
+**1. WALL CLOCK — the mod is free, and so is the telemetry.**
+
+| arm | wall | vs vanilla |
+|---|---|---|
+| vanilla | 2.82 h | — |
+| mod | 2.79 h | −0.9% |
+| mod_no_tc | 2.55 h | −9.3% |
+
+−0.9% is far inside the 9% noise, so: **no measurable cost**. ⭐ Separately, this session's vanilla ran
+**2.82 h against 2.83 h** for the last full-length vanilla run (`20260806_110926`, 2026-08-06) despite a
+completely different metric set (`market_goods_scoped` + breakdowns + the 50-market wide sweep, versus
+this batch's six). **The telemetry tax is indistinguishable from zero across two very different loads.**
+⚠ The economies of those earlier runs cannot be compared — they carried no `country_state`, so no GDP,
+buildings or population were logged at all.
+
+**2. THE TRADE-CENTRE SUBSIDY WORKS AND IT IS EXPENSIVE.** At 1935, summed over every country:
+
+| | vanilla | mod | mod_no_tc |
+|---|---|---|---|
+| trade-centre subsidy £/wk | 0 | **4 964 343** | 0 |
+| all subsidies £/wk | 970 473 | 9 155 091 | 3 532 161 |
+| **all subsidies, % of government expense** | **4.7%** | **35.1%** | **12.7%** |
+| market trade capacity | 55 343 | **135 788** | 66 258 |
+| trade-centre levels | 6 790 | 11 404 | 8 166 |
+| world GDP | 4 037M | 4 163M | **5 646M** |
+| distinct bankruptcies over the century | 827 | **1 389** | 959 |
+| countries ever bankrupt by 1935 | 102 | **131** | 100 |
+
+The mandate buys **2.05× the market trade capacity** and 40% more trade-centre levels, paid for with
+**22 percentage points of government budget share** and a ~45% higher bankruptcy count.
+⚠ **The GDP column is the least safe number here.** Much of `mod_no_tc`'s 36% lead is one snowball —
+BIC at 800M, larger than any country in either other arm — and at n=1 a single runaway moves the world
+total. The direction matches the concern (capital spent on subsidy is not accumulating) but the
+magnitude is not established.
+
+**3. HOW BROKEN IS THE MOD? NOT MORE THAN VANILLA, AND LESS ON THE CLEANEST MEASURE.**
+
+| at 1935 | vanilla | mod | mod_no_tc |
+|---|---|---|---|
+| loss-making building levels | 21 535 | 17 970 | 30 718 |
+| — as a share of all levels | 10.0% | **7.6%** | 10.9% |
+| subsidised levels | 6 472 | **19 225** | 6 836 |
+| entries into default (events) | 1 507 | **3 544** | 2 587 |
+| technologies held, top-10 mean | 134.1 | 146.6 | 163.6 |
+
+All three arms played a century with **no crashes, no resumes, all 12 dumps complete, and zero
+telemetry errors** (our own lines in `error.log`: 0 in every arm; the 42–75k lines present are
+vanilla's own noise). The mod's real costs are 3× the subsidised levels and 2.3× the defaults, both
+traceable to the subsidy mandate rather than to the tier ladder.
+
+**4. THE MOD'S THREE GOALS, MEASURED.**
+
+- **Capital demand (goal 3) — met, modestly.** Construction goods spend as a share of GDP runs
+  10.8% → 10.5% → 12.3% in the mod against vanilla's 8.9% → 9.8% → 13.2% at 1870/1900/1935. The mod
+  front-loads capital demand but does not end higher.
+- **A tech edge should pay (goal 1) — weakly positive.** Regressing ln(GDP per head) on technologies
+  held across countries over 1M people at 1935: slope **0.0117 (vanilla) → 0.0134 (mod) → 0.0155
+  (mod_no_tc)**, R² 0.07 → 0.12 → 0.17. ⚠ A correlation across countries in one world, not a causal
+  estimate — a rich country researches faster too. Comparable between arms and nothing more.
+- **Drive out inefficient producers (goal 2) — NO EVIDENCE EITHER WAY.** Top-1 producer share of world
+  output on 13 advanced goods: vanilla **26.1%**, mod **26.4%**, mod_no_tc 23.4%. Against 13 basic/raw
+  goods: 18.7% / 17.6% / 23.0%. So advanced goods genuinely are ~8pp more concentrated than raw ones in
+  both vanilla and the mod, and the mod preserves that structure without steepening it.
+  ⚠⚠ **A first reading of this said "goal 2 is not happening" from a top-1 share averaged over all 49
+  goods (22.9% mod vs 25.7% vanilla). That was wrong** — the all-goods mean blends the 22 goods the mod
+  tiers with the 27 it does not, and the arms differ in composition (`mod_no_tc`: 20.0% tiered against
+  27.8% untiered). The corrected comparison is a wash, and even that rests on one good, `small_arms` at
+  62%; drop it and the mod falls ~3pp below vanilla. ⚠ Top-1 share is a weak instrument — it cannot
+  distinguish a near-monopoly from a duopoly, which is the distinction the claim is about. Top-3 share
+  and HHI, value-weighted, are the fix and are not yet implemented.
+
+**5. ⚠⚠ THE SHARPEST SIGNAL: THE TECHNOLOGY DISTRIBUTION HAS COMPRESSED.**
+
+| | leading economy's technologies | world median | ratio |
+|---|---|---|---|
+| vanilla | **160** | 122 | **1.31×** |
+| mod | 130 | 130 | **1.00×** |
+| mod_no_tc | 127 | 128 | 0.99× |
+
+**In the mod the largest economy holds exactly the median number of technologies.** In vanilla it holds
+31% more. The mod's stated goal is that runners-up hold *drastically less advanced* industry; here they
+hold the same. The mechanism is plausible on its face: a deeper tree costs every country the same,
+while the per-category spread boost hands laggards a floor, and together they flatten rather than
+steepen. ⇒ This is the one result likely to demand a **design** change rather than tuning, and ROADMAP
+step 2's industry-driven research events — progress granted to whoever already owns the industry — are
+the intended remedy, since unlike spread they cannot help a country that owns nothing.
+⚠ n=1. Confirm before acting on it.
+
+**A supporting reading, weaker.** Professions per 1000 people at 1935 point the same way: in vanilla the
+#1 economy has 78.9 engineers/1k against 3.1 for #5, while in the mod #5 (FRA, 57.8) has *more* than #1
+(RUS, 44.1). ⚠ But ranking by total GDP and comparing per-capita mixes two things — a populous leader
+looks thin per head by construction — so this is suggestive only, and the metric wants ranking by GDP
+per head instead.
+
+**What this does NOT say.** Nothing at n=2. Nothing about whether the trade-centre subsidy is *worth*
+it, only what it costs and buys. Nothing about the earlier vanilla sessions' economies (not logged).
+And no causal claim about technology and GDP.
+
+**Evidence.** `tools/testbed/sessions/20260811_094048_three-arm-tc-subsidy/`, runs 1–3 complete plus a
+partial run 4 (21 vanilla summaries to 1856). Regenerate every table with
+`node tools/testbed/analyse_three_arm.mjs <session>`.
+⚠ `config/mod_config.no_tc_subsidy.json` is gitignored as a derived config; regenerate it by copying
+`config/mod_config.json` and setting `building_subsidies.building_trade_center` to `"vanilla"`.
+
+---
+
 ## F48 — **A FULL CENTURY ON THE TECH TREE: no GDP penalty, ~8% wall-clock cost, and 86–88% of a 217-technology tree reached. The top era is under-reached — but that is VANILLA's property, not ours**
 
 **Arm, n, span.** `20260811_020843_techtree-full-n3`, `{kind: config, config/mod_config.json}` — the full
