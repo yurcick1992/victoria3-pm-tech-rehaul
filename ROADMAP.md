@@ -295,6 +295,116 @@ tech-gated ladder is part of this step.
 
 ---
 
+## Step 3½ — SAVEGAMES BECOME THE INSTRUMENT FOR STATE (agreed 2026-08-11, not yet built)
+
+**The refocus.** For **state of process** — anything that is a *level* rather than an *event* — a melted
+savegame is a better source than a log flood: it is complete, it is internally consistent, it carries
+things telemetry cannot reach, and it is not subject to the log ring. Telemetry keeps **events**.
+
+⭐ **The immediate prize:** `melted_pops_by_profession.mjs` already reads **population by profession per
+country** — the exact metric step 4's sharpest criterion needs (runners-up holding drastically fewer
+engineers, machinists and capitalists) and the one telemetry has never been able to give.
+
+### ⚠⚠ The principle this INVERTS, and what it therefore demands
+
+The repo runs on *"the summary is a CACHE; the raw log is the record"* — which is what makes compressing
+logs safe. **Reaping the saves inverts it: the summary BECOMES the record.** Anything not captured at
+melt time is gone, and the only remedy is re-running a campaign, which is a different world. Hence:
+- the schema is **generous by default** — everything cheap goes in, not just what today's question needs;
+- ⭐ **the last save of each run is kept permanently** (user-agreed) as the escape hatch. ~55 MB × runs,
+  against ~16 GB for a run's full set.
+
+### The pipeline — four stages, and A must not be coupled to B
+
+| stage | what | when | cost |
+|---|---|---|---|
+| **A. capture** | copy each autosave out before its slot is reused | **concurrent** with the run — `archive_autosaves.ps1` already does this, including both hazards (slots rotate by RENAME; a 45 MB write is not atomic) | seconds |
+| **B. melt** | rakaly → plaintext | after/behind the run, from the archive | minutes, ~7× disk transient |
+| **C. extract** | readers → one summary JSON per save | after melt | seconds |
+| **D. reap** | delete melt, verify summary, then delete the save | after C verifies | — |
+
+**A concurrent, B–D behind it.** Coupling them races the engine: if a melt outlasts the interval between
+autosaves, saves are lost silently. Archiving first removes the race. Same discipline as
+`summarise.ps1`: **verify the summary before reaping its source.**
+
+### ⭐ CADENCE: QUARTERLY (user-ruled) — and the queue arithmetic that follows
+
+400 saves per century-long run. Sizes measured this session: 44.6 MB at 1915, 54.2 MB at 1935, smaller
+early — call it ~40 MB mean. **~16 GB per run, ~48 GB for a 3-run batch**, which sits on the user's
+**50 GB ceiling with no margin**. So the queue must be actively drained, not merely tolerated.
+
+⚠⚠ **THE QUEUE PROBABLY GROWS WITHOUT BOUND AT THIS CADENCE, AND THAT IS THE FIRST THING TO MEASURE.**
+From the timing curves, a quarter-year of game takes **~15 s of wall clock in the 1830s and ~35 s in the
+1930s** — so a save arrives every 15–35 s. **Melt+extract time is UNMEASURED.** If it is ~90 s for a
+40 MB save, the consumer is 3–6× slower than the producer, the backlog grows monotonically, and it never
+drains during a back-to-back batch: ~250–330 unprocessed saves ≈ 10–13 GB left standing per run.
+⇒ **Measure a melt before committing.** Then, in rough order of value:
+1. **Stream the melt** if rakaly can write to stdout — extraction reads the stream and the 250 MB
+   intermediate never touches disk. Biggest single win if it works.
+2. **Parallel melt workers** — if melting is CPU-bound, N workers buy roughly N× throughput.
+3. **Adaptive thinning** — keep every quarter in the decades under study, thin to yearly elsewhere.
+4. **High-water throttle** — over X GB, pause the game (the observer already has a pause channel) until
+   the queue drains. Bounded by construction; costs wall clock. The backstop, not the plan.
+
+### ⭐ CLI TRANSPARENCY (user requirement)
+
+The runner must say where phase B is at any moment, not just where the game is. Target shape:
+
+```
+run 6/12 · in-game 1862 · melt queue: autosave 275/399 of run 5 · 12.4 GB · draining 0.8/min
+```
+
+so a growing backlog is visible while it is still cheap to react to.
+
+### The summary schema — one JSON per save
+
+Provenance first, so a summary outlives its save: source filename, in-game date, run id, `build_state`
+hash, mod build, rakaly version, and **`SAVE_SUMMARY_VERSION`** (bump-never-renumber, like
+`TELEMETRY_VERSION`).
+
+Then, and **nothing currently captured by log telemetry may be lost**:
+- **Population by profession, per country** — the step-4 metric.
+- **Full building count AND levels by TYPE by COUNTRY** — not category totals; the whole table.
+- **GDP** per country (F45 confirmed the series is persisted), plus foreign-owned GDP.
+- **Full market composition — which country is in which market.** A necessity, and today it is only
+  derivable via `extract_presets.ps1`'s reading of history.
+- **Trade: what is traded where**, country- and market-level aggregation.
+- **Per-state/market goods flows** — supply and non-pop demand (`melted_building_goods.mjs`).
+- **Pop-need purchase weights** (`melted_pop_need_weights.mjs` — the F40 instrument).
+- **Cultures and current obsessions** (`melted_cultures.mjs` — runtime state, unreadable from files).
+- **Technologies held per country** — a new reader. ⭐ **Rename-proof by construction**, since saves
+  carry TAGS where `tech_log` carries display names — the exact trap F48 fell into.
+
+### What moves off the logs, and what must never
+
+⭐ **Once alignment is proven, log telemetry is STRIPPED of state-of-process metrics** (user ruling):
+`country_state`, `population`, `building_inventory`, market composition. **Logs are for EVENTS.**
+
+**Stays on telemetry, permanently:**
+- **Events** — war start, bankruptcy/default, peace, diplomatic plays, and **technology ACQUISITION
+  DATES**. A save shows what is held, never when it arrived.
+- ⚠ **The market ORDER BOOK, which is NOT PERSISTED IN A SAVE** — the market database holds only
+  `owner`, which is why F40 had to rebuild the pair from buildings. Anything needing actual buy/sell
+  orders stays in the logs.
+
+**Expected payoff:** a much smaller log flood, less ring pressure, and some of the mod's 8% wall-clock
+cost back.
+
+### Build order — and the gate that must not be skipped
+
+1. **Time a melt+extract** on `techtree_n3_run2_latest.v3`. This is the feasibility gate for quarterly.
+2. `save_summary.mjs` — readers → one JSON — plus `SAVE_SUMMARY_VERSION`.
+3. ⭐ **PROVE ALIGNMENT before retiring anything.** Run both instruments over one batch and check GDP,
+   building counts and population agree. Same discipline that caught F39's bad solve: a metric is not
+   replaced until its replacement is validated against it. **Only then** does step "strip the logs" run.
+4. The technologies-held and market-composition readers.
+5. `harvest_saves.ps1` — chains B–D over a session, with the progress line above.
+6. Wire archiving into `run_schedule.ps1` by default; add the queue high-water guard.
+7. **Landmine entry + detector**: a session whose saves were reaped but whose summaries are missing,
+   unversioned, or fewer than the autosaves the run should have produced.
+
+---
+
 ## Step 4 — TELEMETRY RUNS, AND THE LOOP BACK
 
 Run the testbed heavily on the mod and some vanilla control arms, and ask whether the game unfolds as
