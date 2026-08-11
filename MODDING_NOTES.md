@@ -207,6 +207,54 @@ which is the entry point for all measurement (it owns building each run's mod); 
 observer is a diagnostic. Everything below is **verified against 1.13.9**; it is all engine behaviour, so
 re-verify after a patch (see `ON_GAME_UPDATE.md`).
 
+### ⚠⚠ NEVER EXTRAPOLATE A RUN'S LENGTH FROM ITS FIRST DECADE (measured 2026-08-11)
+
+**The game gets steadily slower as the economy it simulates grows.** The 1830s run at about **1.0
+in-game years per real minute**; the 1930s at about **0.44** — a factor of **2.3** across a campaign. A
+rate sampled in the first minutes therefore under-states a century by roughly a **third**, and the
+mistake is expensive in exactly the place it is usually made: sizing `timeout_minutes` for an overnight
+batch. It cost a relaunch here — 200 min was budgeted from an early reading and the run took **153**,
+which would have been guillotined around 1900 had the economy been slightly heavier.
+
+⚠ The "~5.7 in-game days/sec, so a 5-year run is ~5–6 min" figure elsewhere in this file is an
+**opening-years** rate. It is correct for a short probe and wrong for anything that reaches the 1900s.
+
+**COARSE CURVES — in-game years per real minute, by decade.** Regenerate with
+`node tools/testbed/run_timing.mjs <sessionDir>`; the tool splits resumed attempts, because a resume
+restarts the wall clock and folding the attempts together makes the curve double back on itself.
+
+| decade | vanilla | mod | | decade | vanilla | mod |
+|---|---|---|---|---|---|---|
+| 1830s | 1.05 | 1.00 | | 1890s | 0.69 | 0.61 |
+| 1840s | 0.95 | 0.95 | | 1900s | 0.62 | 0.56 |
+| 1850s | 0.89 | 0.85 | | 1910s | 0.52 | 0.51 |
+| 1860s | 0.87 | 0.82 | | 1920s | 0.53 | 0.47 |
+| 1870s | 0.81 | 0.77 | | 1930s | ~0.50 | 0.43 |
+| 1880s | 0.78 | 0.68 | | | | |
+
+**CUMULATIVE BUDGET from an 1836 start, in minutes** — this is the table to size a schedule from. Add
+~1 min for load, and note it excludes any crash-and-resume (which costs the elapsed in-game time back
+to the last autosave).
+
+| reach | 1850 | 1860 | 1870 | 1880 | 1890 | 1900 | 1910 | 1920 | 1930 | 1936 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| **vanilla** | 14 | 26 | 37 | 49 | 62 | 77 | 93 | 112 | 131 | 143 |
+| **mod** | 15 | 26 | 39 | 52 | 66 | 83 | 101 | 120 | 141 | **155** |
+
+⇒ **A full 1836→1936 run is ~2h35 on the mod and ~2h20 on vanilla.** Set `timeout_minutes` well above
+that (330 is the value in use) — the margin is for a crash-resume, not for the curve.
+
+**The mod costs ~8% over a full campaign, not a step change.** Per decade it runs 0–15% slower than
+vanilla, widest in the 1880s–90s. A deeper tree, 38 more technologies and 33 more buildings are
+affordable; this was an open question and the answer is yes.
+
+⚠ **Sources and their limits.** Vanilla: `20260807_005246_popsplit-debut-vanilla` (1836→1921) and
+`20260806_110926_vanilla-retest-2` (1836→1889). Mod: both completed runs of
+`20260811_020843_techtree-full-n3`. Two to three campaigns per arm, one machine, one game version — the
+curves are **coarse by construction** and the 1930s vanilla figure is an extrapolation, since no vanilla
+run on file reaches it. Treat them as a budgeting aid, not a benchmark, and re-derive after a patch or a
+hardware change.
+
 ⚠⚠ **`error.log` IS CROSS-CONTAMINATED BETWEEN RUNS, AND IT HAS NO TOKEN TO FILTER BY** (2026-08-11).
 Telemetry lines carry a per-run token precisely so one run cannot read another's; `error.log` carries
 nothing of the kind, and it is the same rotating 5×512 KB ring. So a run's `logs_live/error.log` mirror

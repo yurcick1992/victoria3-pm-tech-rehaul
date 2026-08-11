@@ -1925,8 +1925,12 @@ the game.
   two answer different questions. **State the arm in the schedule's `_why`, and in every finding it
   produces.** A finding that names its session but not its arm is uninterpretable later.
 - **NEVER launch a game run without the user's explicit go-ahead — and ask for the whole batch in ONE
-  request.** Game time is the one cost here that cannot be optimized away: every run pays ~40 s of load
-  plus roughly a minute per in-game year, and it monopolizes the machine. Three rules:
+  request.** Game time is the one cost here that cannot be optimized away, and it monopolizes the
+  machine. ⚠⚠ **DO NOT SIZE A RUN AT "a minute per in-game year" — that is the OPENING rate and it
+  under-states a century by about a third.** The game slows as the economy grows: ~1.0 in-game years per
+  minute in the 1830s against ~0.44 in the 1930s. A full 1836→1936 run is **~2h35 on the mod, ~2h20 on
+  vanilla**. The per-decade curves and a cumulative budget table are in MODDING_NOTES → *Automated
+  headless runs*; regenerate them with `node tools/testbed/run_timing.mjs <sessionDir>`. Three rules:
   - **Explicit ask or explicit permission, every time.** Only start `run_observer.ps1` (or the game by any
     other means) when the user has asked for a run or approved the one you proposed. Permission for one
     batch is **not** permission for the next — re-ask, even for a rerun of the same thing.
@@ -1942,7 +1946,8 @@ the game.
   Deterministic, no agent in the loop: it launches the game **without the Paradox launcher**
   (`victoria3.exe -handsoff` auto-starts an **observer** game at the 1836 bookmark;
   `-run_until=<date>` makes the game play to a date and **quit itself**), harvests, and repeats
-  N times. ~5.7 in-game days/sec (+~40 s startup), so a 5-year run is ~5–6 min. **Measurement goes
+  N times. ~5.7 in-game days/sec (+~40 s startup) **in the OPENING YEARS ONLY**, so a 5-year probe is
+  ~5–6 min — do not scale that to a campaign, see the curves above. **Measurement goes
   through `run_schedule.ps1`** (above); invoking the observer by hand is a *diagnostic* — e.g. the
   post-patch smoke test in ON_GAME_UPDATE — because it has no build step and can only run a mod
   someone already built:
