@@ -939,6 +939,14 @@ if ($telemetryOn) {
 & node (Join-Path $PSScriptRoot 'emit_techs.mjs') $modAbs
 if ($LASTEXITCODE -ne 0) { throw "emit_techs.mjs failed (exit $LASTEXITCODE) - the mod would ship without its technologies." }
 
+# --- INDUSTRY-DRIVEN RESEARCH EVENTS (ROADMAP step 2) --------------------------------------------
+# Reads config/mod_config.json's `research_events` block and emits nothing at all when it is
+# disabled. That is what makes `techs` and `techs+events` two CONFIG VARIANTS of one builder rather
+# than a build flag (user ruling 2026-08-11), so the arm is expressible as {kind: config, config: X}
+# and is recorded in build_state.json without touching the harness.
+& node (Join-Path $PSScriptRoot 'emit_research_events.mjs') $modAbs
+if ($LASTEXITCODE -ne 0) { throw "emit_research_events.mjs failed (exit $LASTEXITCODE) - the mod would ship without its research events." }
+
 # --- emit UI data (consumed by ui/builder.html) so the editor always reflects the latest config ---
 # Only the canonical build repoints the UI; alternate builds (-DryRun/-SaveTo) leave ui/data.js alone.
 if (-not $isAlt) {

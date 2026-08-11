@@ -13,6 +13,59 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## A `+` in the wrong place aborts every concurrent-harvest batch, and blames the wrong script (2026-08-12)
+
+**Symptom.** `run_schedule.ps1` builds the mod, reports `build ok`, reports `autosave archiver alive
+(pid …)`, and then dies with:
+
+```
+run_schedule.ps1 : A positional parameter cannot be found that accepts argument '+'.
+    + CategoryInfo : InvalidArgument: (:) [run_schedule.ps1], ParameterBindingException
+```
+
+The session folder is created and looks like a started run — `build.log`, `telemetry.json`,
+`save_provenance.json`, an empty `saves\` — but there is **no `run.log`, no `meta.json`, and the game
+never launches**. Reproducible in the foreground and in the background, so it is not a wrapper artefact.
+
+**Root cause.** The save-harvester launch was written as
+
+```powershell
+Start-Process powershell … -ArgumentList @(
+    "-ExecutionPolicy","Bypass","-File","…harvest_saves.ps1",
+    …,"-Watch") + $(if ($KeepSaves) { @("-NoReap") } else { @() })
+```
+
+PowerShell binds the array literal to `-ArgumentList` and then reads ` + ` as the **next positional
+argument to `Start-Process`**, which has none left. Two things make it hard to see: the error is
+attributed to **`run_schedule.ps1` itself** rather than to `Start-Process`, several frames from the
+mistake; and it fires *after* the archiver is already running, so the failure looks like the observer
+refusing to start rather than a parse problem in the line before it.
+
+⚠ A minimal repro does **not** reproduce it — `-ArgumentList @("-a","-b") + $(…)` against a simple
+function binds cleanly. It needs a cmdlet with positional parameters left to bind, which `Start-Process`
+has and a one-parameter function does not. Do not conclude from a small test that the construct is safe.
+
+**Fix.** Build the array first, append conditionally, then pass it:
+
+```powershell
+$harvArgs = @("-ExecutionPolicy","Bypass","-File","…","-Watch")
+if ($KeepSaves) { $harvArgs += "-NoReap" }
+Start-Process powershell … -ArgumentList $harvArgs
+```
+
+**Detection next time.** The signature is a session folder with `build.log` but **no `run.log`** — the
+scheduler got past the build and never reached the observer. `Get-ChildItem <session>\run001_*` answering
+that question takes two seconds and is worth doing before diagnosing anything else. Note also that
+`[Parser]::ParseFile` reports the file as syntactically **clean**: this is a binding error, not a syntax
+error, so a parse check cannot catch it — only running it can.
+
+⚠ It also stranded **six** `run_schedule.ps1` processes across retries, each with its own archiver
+watching the same save folder. Kill by matching `run_schedule\.ps1` / `archive_autosaves\.ps1` in the
+command line — and exclude `Get-CimInstance` from the match, or the query process matches **itself** and
+you spend several minutes chasing an archiver that was never there.
+
+---
+
 ## Three ways to launch a process that never runs — the savegame harvest's first hour (2026-08-11)
 
 **Symptom, all three times: nothing failed.** A worker "started", the log said so by pid, and no output

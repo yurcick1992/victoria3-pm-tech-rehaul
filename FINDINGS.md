@@ -131,6 +131,80 @@ transcript rather than from data.
 
 ---
 
+## F51 — **THE STEP-2 CONDITION SET, PROBED: journal entries auto-activate for every country, occupancy weights exactly, and THREE trigger spellings were accepted and silently ignored**
+
+**Claim.** Every engine mechanism ROADMAP step 2 needs is available and now measured. Two of the five
+things probed failed *silently* — they parsed, ran, and produced a plausible number — and were caught
+only by asking each condition twice, once with a threshold that must pass and once with one that cannot.
+
+**Arms and spans.** Five probe runs, 2026-08-11/12, each **1 run × 1–1.5 in-game years, 190–290 s wall**.
+Arm in every case: a full `mod_jeprobe` build (`build.ps1 -SaveTo jeprobe -TelemetryOn`, from
+`config/mod_config.json`) **plus injected probe files**. Not an experiment arm; pools with nothing. The
+probe content never entered `telemetry_lib.ps1`, so the telemetry fingerprint is untouched and these
+sessions cannot disturb the vanilla/techs pooling. Sessions: `20260811_215142` (journal entries and the
+occupancy weight), `20260811_225546` (war conditions), `20260811_235642` (anti-gaming),
+`20260812_001905` (generals), `20260812_003658` (mobilisation rate).
+
+**1. Occupancy is readable as a WEIGHT, and the script value is exact.** `every_scope_building = { limit
+= { is_building_type = X } add = { value = this.level multiply = occupancy } }` equals `Σ(level ×
+occupancy)` rebuilt independently from the per-building data functions `GetExpansionLevel` and
+`GetEmploymentPercentage`, to five decimal places, in all seven countries measured:
+
+| | mills | levels | Σ(lvl×occ) measured | script value | occupancy as a FILTER |
+|---|--:|--:|--:|--:|--:|
+| GBR | 5 | 57 | 56.810 | **56.81345** | 57 |
+| RUS | 7 | 13 | 12.269 | **12.26985** | 13 |
+| FRA | 7 | 29 | 27.110 | **27.11275** | 29 |
+| PRU | 4 | 13 | 11.112 | **11.11187** | 13 |
+| AUS | 3 | 16 | 15.969 | **15.97368** | 16 |
+| USA | 3 | 10 | 10.000 | **10** | 10 |
+| BEL | 1 | 4 | 3.998 | **3.9986** | 4 |
+
+The last column is why it matters: as a `limit` filter, occupancy is blind to staffing — seven
+half-staffed levels score **zero** while three full ones pass.
+
+**2. Journal entries auto-activate, for every country in the game.** A JE with
+`is_shown_when_inactive` + `possible` both true activated for **285 countries** with no
+`add_journal_entry` anywhere, and completed 545 times in one year. A negative control whose condition
+could never be satisfied completed **0** times — which is what makes the rest of the readings mean
+anything.
+
+**3. Three spellings were accepted and ignored.** `num_mobilized_battalions_greater_or_equal = { value =
+N }`, the same with a bare number, and `army_size_greater_than = N` all returned **true for countries at
+peace and true for their absurd twins**. The `_greater_than` / `_greater_or_equal` names in
+`trigger_localization` are **localization keys for rendering a comparator, not callable triggers**; the
+callable form is the base name inline (`army_size >= 100`, vanilla-proven).
+
+**4. `num_mobilized_battalions` is CHARACTER scope** — the engine says so loudly (`Expected 'character',
+but got 'country'`), so a country-level battalion gate is unwritable. It is reachable per commander:
+`any_scope_general = { owner = ROOT num_mobilized_battalions >= N }`, which works, nests inside
+`any_scope_war → any_scope_front`, and supports `count >= 2`.
+
+**5. The anti-gaming discrimination works, and `is_at_war` alone does not.** Puerto Rico, Cuba and the
+Philippines were at war for the whole sample and carried war exhaustion, yet had **no front of their own
+and zero casualties** — colonial subjects dragged into someone else's war. The front chain and the
+casualty count both exclude them; `is_at_war` does not.
+
+**6. `root.` is load-bearing and its absence fails silently.** Inside `any_enemy_in_war`,
+`army_power_projection >= root.<script_value>` discriminated correctly (true for Fezzan and Carlist
+Spain, false for Tripolitania and Brazil). Without `root.`, the value resolved in the **enemy's** scope —
+comparing each enemy against half of itself, always true, 1 for every country at war.
+
+**7. Barracks levels = `army_size`, exactly** (RUS 206/206, FRA 182/182), which turns the annual save
+summaries into a free army-size series: the largest army runs **RUS 206 (1837) → GBR 573 (1935)**.
+
+⚠ **What it does NOT say.** "Share of the army mobilised" is **not computable**: Σ(per-general mobilised)
+÷ `army_size` exceeds 1 (GBR 1.29, MEX 2.44), and `army_size_including_raised_conscripts` fixes most but
+not all of it (Mexico still 1.50). It is usable only as a one-sided `>=` gate. Every reading here is from
+**1836–37 only**, which is why an early conclusion that "100 battalions is unreachable" was wrong — it is
+unreachable *in the 1830s* and ordinary by 1900. And `army_mobilization_option_fraction` works but
+measures a different quantity (share carrying one named mobilisation option).
+
+⚠ **Log-ring contamination is real**: probe 1's journal-entry keys appeared in probe 2's `logs_live`
+mirror even though those entries no longer existed in the mod. Count only keys unique to the run.
+
+---
+
 ## F50 — **THE SAVEGAME INSTRUMENT VALIDATES: melt costs 2 s not 90, the two instruments agree to 1.6% on GDP, and a pop object is not what a pop is**
 
 **What this measures.** The instrument itself, not the economy — ROADMAP step 3½ built and gated.

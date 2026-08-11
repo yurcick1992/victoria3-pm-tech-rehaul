@@ -1,0 +1,53 @@
+{
+  "schedule_version": 1,
+  "label": "research-events-n3",
+  "_why": "ROADMAP step 2's first measurement. Three questions, in the user's own order (2026-08-12): (1) HOW OFTEN DOES EACH JOURNAL ENTRY FIRE - at all, and for the top majors - which is read from the `PMR_JE|<stage>|<tech>|<country>` line each entry logs on completion; (2) does the addition make TECHNOLOGY PROGRESS materially faster, read from tech_log (acquisition to the day) and from the annual save summaries' technologies_held; (3) does it make ECONOMIES BIGGER and, ultimately, is the top of the tree reachable - read from per-country GDP and from buildings-by-type. The thresholds under test are the USER'S RULED ones (15k/45k/135k/405k people in the predecessor tier, by era), chosen deliberately high: a retrospective sweep over run003 of 20260811_094048 put JE #2 completion at 14%/4%/0%/0% of top-20 countries at those levels, and the point of the run is to see whether the mechanism still moves tech and GDP despite firing rarely.",
+  "_arms": "events = {kind: config, config: config/mod_config.json} - the shipped mod PLUS `research_events.enabled: true`, which emits 366 journal entries over 122 technologies (82 industry-gated, 40 war-gated). This is a CONFIG VARIANT, not a build flag (user ruling 2026-08-11): setting enabled:false in that same file emits nothing and reproduces the `techs` arm exactly, so build_state.json records the arm without any harness change.",
+  "_comparison": "AGAINST run003 (`mod_no_tc`) OF SESSION 20260811_094048, which is the `techs` arm at n=1 and which POOLS with this batch because every pooling-relevant setting is identical: the same six metrics, yearly autosaves, 1836.1.1 -> 1936.1.1, the same twelve dump dates and the same six tags. ⚠ n=1 on the baseline is ACCEPTED BY THE USER for this round ('right now we're calibrating thresholds, so baseline with n=1 is acceptable, even 0 would be'), so any GDP or tech-count difference here is a point estimate against a point estimate and must be reported as such. ⚠ The baseline was built from config/mod_config.no_tc_subsidy.json, which no longer exists; the shipped config became byte-equivalent to it when the trade-centre mandate was removed, and the ONLY intended difference from this batch's arm is the research_events block.",
+  "_saves": "Default harvest. The annual per-country summaries are the instrument for questions (2) and (3): technologies_held gives each technology's arrival year per country, buildings-by-type gives industry size (its `staffing` field is Σ(level × occupancy), the same quantity the in-game condition computes), and barracks levels turn out to equal army_size exactly, which is how the war gate's reachability gets checked retrospectively.",
+  "_cost": "3 runs x 100 in-game years, ~2h36 per modded century measured on 20260811_020843 = ~7.5-8h, plus ~1 min build and ~2 min harvest per run. timeout_minutes 330 per run, as the last full-length batch used.",
+  "_watch": "⚠ Each completed journal entry writes one debug_log line. With 366 entries over ~300 countries a century could in principle produce a large burst; the log ring is mirrored continuously to logs_live so nothing is lost, but if the PMR_JE volume turns out to crowd the ring this metric should move into telemetry_lib proper rather than staying an emitter-side debug_log.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "building_inventory",
+      "treasury",
+      "events"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP"
+    ]
+  },
+  "setups": {
+    "events": {
+      "kind": "config",
+      "config": "config/mod_config.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "events",
+      "until": "1936.1.1",
+      "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"]
+    },
+    {
+      "setup": "events",
+      "until": "1936.1.1",
+      "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"]
+    },
+    {
+      "setup": "events",
+      "until": "1936.1.1",
+      "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"]
+    }
+  ]
+}

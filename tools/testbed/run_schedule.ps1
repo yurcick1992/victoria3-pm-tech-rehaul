@@ -387,10 +387,19 @@ foreach ($p in $plan) {
         $stopH = Join-Path $PSScriptRoot "STOP_HARVEST"
         if (Test-Path $stopH) { Remove-Item $stopH -Force }
         $harvLog = Join-Path $runDir "harvester_launch.log"
-        $harv = Start-Process powershell -PassThru -WindowStyle Hidden -RedirectStandardError $harvLog -ArgumentList @(
+        # ⚠⚠ THE CONCATENATION MUST BE PARENTHESISED. Written as `-ArgumentList @(...) + $(...)`, the
+        # binder takes the array literal as -ArgumentList and then sees ` + ` as the NEXT POSITIONAL
+        # ARGUMENT to Start-Process, which fails with
+        #   "A positional parameter cannot be found that accepts argument '+'"
+        # attributed to run_schedule.ps1 itself, several frames from where the mistake is. It aborts the
+        # batch AFTER the mod is built and the archiver is running, so the session folder looks like a
+        # started run that simply never launched the game. Keep the outer parentheses.
+        $harvArgs = @(
             "-ExecutionPolicy","Bypass","-File","`"$(Join-Path $PSScriptRoot 'harvest_saves.ps1')`"",
             "-Saves","`"$saveDir`"","-Out","`"$sumDir`"","-Workers","$HarvestWorkers",
-            "-Provenance","`"$prov`"","-Watch") + $(if ($KeepSaves) { @("-NoReap") } else { @() })
+            "-Provenance","`"$prov`"","-Watch")
+        if ($KeepSaves) { $harvArgs += "-NoReap" }
+        $harv = Start-Process powershell -PassThru -WindowStyle Hidden -RedirectStandardError $harvLog -ArgumentList $harvArgs
         $null = $harv.Handle
         Start-Sleep -Seconds 3
         if ($harv.HasExited) {

@@ -178,7 +178,22 @@ pointing at it and the `model_only` flags gone. Plus, in the same pass:
 
 ---
 
-## Step 2 — INDUSTRY-DRIVEN RESEARCH EVENTS
+## Step 2 — INDUSTRY-DRIVEN RESEARCH EVENTS  ⬅ **BUILT 2026-08-12, first batch running**
+
+**Status: emitted, lint-clean, smoke-tested, and under measurement.** `tools/emit_research_events.mjs`
+turns the config's `research_events` block into **366 journal entries over 122 technologies** (82
+industry-gated, 40 war-gated) — 122 scripted progress bars, 115 script values, 1103 loc keys in 11
+languages. `enabled: false` emits nothing and reproduces the plain `techs` arm, which is what makes the
+two a **config variant** rather than a build flag (user ruling 2026-08-11).
+Every engine fact it stands on was measured in five probe runs on 2026-08-11/12 rather than assumed —
+`can_research` semantics, journal-entry auto-activation reaching every country, occupancy as a weight,
+script-values-as-triggers, the `root.` scope trap, and the general/mobilisation gate. They are written up
+in MODDING_NOTES → *What a tech-granting event can CONDITION on*, with the three dead trigger spellings
+that all failed **silently** and were caught only by asking each condition twice, once impossibly.
+⚠ **The thresholds under measurement are the user's ruled ones** (15k/45k/135k/405k people in the
+predecessor tier for eras 2–5), chosen deliberately high against a retrospective sweep that put JE #2
+completion at 14%/4%/0%/0% of top-20 countries. The batch exists to see whether the mechanism still moves
+technology and GDP despite firing rarely — that is the question, not a calibration to be fixed first.
 
 **Goal.** Add research progress to the technologies of industry X when the country — or its companies —
 owns or controls a significant amount of **staffed** industry X.
@@ -261,9 +276,59 @@ countries most in relative terms, raising the 75 helps literate ones. They are n
 Deepening all three was chosen instead — the added technologies are real gaps in vanilla's coverage, and
 a production-only boost makes the other trees feel stagnant rather than balanced.
 
-**Open questions to settle when we get there:** whether the trigger is levels, employment, or output
-share; whether it grants flat progress or a research-speed modifier; whether foreign-owned levels count
-for the owner, the host, or neither; and how it interacts with tech spread.
+⭐⭐ **THE MECHANISM — RULED 2026-08-11 (user: "broadly yes, go B").** A **journal entry per technology**,
+carrying a **`scripted_progress_bar`**, is the shipping shape. The engine mechanics, all verified against
+the shipped files and the exe string pool, are in MODDING_NOTES → *What a tech-granting event can CONDITION
+on*. The four decisions:
+
+1. **Visibility = `can_research = <tech>`**, which is exactly "every prerequisite researched **and** not yet
+   researched" — vanilla proves it by writing `OR = { can_research = X  has_technology_researched = X }` in
+   `je_victoria_terminus`. One cheap engine-side trigger, and it is the *whole* of the eligibility rule.
+2. **The bar ticks on EMPLOYMENT, measured as `Σ (level × occupancy) × employees-per-level`** — occupancy is
+   a **weight, never a filter**. 7 half-staffed levels (17 500 people) must pass a 15 000 threshold that 3
+   fully-staffed levels (15 000) also passes; a `limit = { occupancy >= 0.9 }` filter scores the first as
+   **zero** and is wrong. The threshold is authored in `mod_config.json` **in people**; the builder divides
+   by that tier's own `employment` sum to emit the level figure.
+3. **The first-rung technologies hang off a NARRATIVE supplier, and ⭐ NO MINE IS EVER USED** (user,
+   2026-08-11: *"inputs should only be used when it fits narratively; mines should never be used"*). The
+   config's `inputs` are a *candidate generator*, not the rule — where they name a mine, the mapping is
+   authored instead:
+
+   | industry | technology | conditions on | why |
+   |---|---|---|---|
+   | fertilizer | `intensive_agriculture` | **agriculture** (`bg_agriculture`) | the technology *is* farming; its iron/sulfur inputs are mines |
+   | munition | `percussion_cap` | **arms** + explosives | percussion caps are gunsmiths' work; its lead input is a mine |
+   | synthetics | `aniline` | **fertilizer** + textile | the chemical industry makes coal-tar dyes; the dyers wanted them |
+   | railway | `railways` | **motor** + steel | engines on rails; its coal input is a mine |
+   | shipyard_steam | `iron_screw_steamers` | **motor** + shipyard | you make engines and you build hulls |
+   | electrics | `telephone` | **tooling** | precision instrument making; iron, lead and rubber are extraction |
+   | **automotive** | `combustion_engine` | **motor** | the car is an engine on wheels |
+   | **power** | `steam_turbine` | **motor** | the turbine is an engine; its coal input is a mine |
+
+   ⚠ Automotive, electrics, power and railway are precisely the §10.29/§10.35 debut-wall industries, so
+   this rule points straight at the standing problem.
+   ⭐⭐ **THE OTHER FOUR GET NO EVENT, because their technology is a 1836 FREEBIE.** `navigation` (shipyard),
+   `romanticism` (art_academy), `leblanc_process` (explosives) and `atmospheric_engine` (motor) all sit in
+   **game era 1**, and `effect_starting_technology_tier_1_tech` opens with `add_era_researched = era_1` —
+   so every tier-1/2 country already holds them at the 1836 start and `can_research` is false from day one.
+   An event on them is dead on arrival.
+   ⚠⚠ **THIS GENERALISES AND IT RESIZES STEP 2.** Of the **83** distinct tier technologies, **13 are game
+   era 1** and therefore free at the start: artillery, atmospheric_engine, beet_sugar_refining,
+   calico_printing, crystal_glass, fourdrinier_machine, gunsmithing, lathe, leblanc_process, manufacturies,
+   navigation, romanticism, steelworking. ⇒ **70 technologies carry a live event, not 83.** The remainder
+   split 14 / 12 / 22 / 22 across game eras 2–5.
+4. **Every country gets it, including tags that do not exist yet** (user ruling — vanilla's tech events work
+   this way and that is to be kept). This is *free* on the auto-activation route and impossible on the
+   effect route: `is_shown_when_inactive` + `possible` is an engine sweep over all countries, so a tag first
+   created in 1880 is picked up within 14 days, whereas `add_journal_entry` is a one-shot a new tag misses.
+   Decentralized countries exclude themselves (`can_research = no` on their country type).
+
+**Still open:** whether the grant is one lump per stage or a monthly drip; whether several contributing
+industries gate the bar (any-of) or *speed* it (one `add` term each — the scripted bar makes this natural);
+and how it interacts with tech spread.
+**Settled by measurement, not opinion:** foreign-owned levels count for the **host's territory**, owner-
+agnostic — the workforce is what learns. `levels_owned_by_country` exists, so the owner-learns variant is a
+one-clause change if step 4 shows imperial powers under-teching.
 
 ⚠⚠ **THE OBVIOUS IMPLEMENTATION HAS A HOLE, FOUND WHILE SCOPING STEP 1** (2026-08-10 — the mechanics and
 their evidence are in MODDING_NOTES → *Technology: research, spread, and what the AI actually weighs*).
@@ -498,7 +563,60 @@ derived from.
 
 ---
 
-## 🚩 HANDOVER — start here (written 2026-08-11 evening, session ended for a device switch)
+## 🚩 HANDOVER — start here (written 2026-08-12, ~01:15, batch left running overnight)
+
+**A three-run batch is PLAYING right now: `tools/testbed/sessions/20260812_010659_research-events-n3`.**
+3 × (1836→1936), ~7–8 h, the `techs+events` arm. Read `session.log`'s tail first — if it says
+`SCHEDULE DONE`, it finished; if the newest line is a tick, it is still going.
+
+### What to read first, in this order
+1. **`PMR_JE|<stage>|<tech>|<country>`** lines in each run's `logs_live/debug.log` — one per completed
+   journal entry. That is question 1 (how often does each fire, and for whom).
+2. The **annual save summaries** (`run00N_events/save_summaries/`) for GDP, buildings-by-type and
+   `technologies_held` — questions 2 and 3.
+3. **Against run003 of `20260811_094048`**, the `techs` arm at n=1, which pools because metrics, cadence,
+   span, dump dates and tags are all identical.
+
+### ⚠ THE FIRST THING TO CHECK, because it is the most likely disappointment
+The thresholds are the **user's ruled** 15k/45k/135k/405k, chosen deliberately high. A retrospective
+sweep over the baseline campaign put JE #2 completion at **14% / 4% / 0% / 0%** of top-20 countries at
+those levels, and the 10-year smoke fired **20 of 122** technologies — dominated by the *group-anchored*
+ones (`fractional_distillation` 293, `watertube_boiler` 159, `intensive_agriculture` 113), because a
+building-GROUP threshold is expressed in staffed LEVELS (3 at era 2) while a tier threshold is expressed
+in PEOPLE (15 000). **That asymmetry is mine, not the user's ruling**, and it is the first calibration
+question to put to them: a group spans many buildings, so its gate is far easier to clear than a single
+tier's. The user's stated purpose is to see whether the mechanism moves tech and GDP *despite* firing
+rarely — do not "fix" the thresholds without asking.
+
+### What shipped, and where it lives
+- **`tools/emit_research_events.mjs`** — 122 technologies → 366 journal entries, 122 scripted progress
+  bars, 115 script values, 1225 loc keys × 11 languages. Wired into `build.ps1`, throws on failure.
+- **`research_events` in `config/mod_config.json`** — `enabled:false` emits nothing and reproduces the
+  plain `techs` arm, which is what makes the two a **config variant** rather than a build flag.
+  ⚠ **The canonical config now carries `enabled: true`**, so a default build ships the events. If the
+  events-free mod is wanted as the default again, flip that flag and carry a variant file for the batch.
+- Coverage census, validated with the user: **152 in-scope technologies, 122 covered, 30 not** — 27 of
+  those are era-1 freebies (`add_era_researched = era_1` hands them out at the 1836 start, so
+  `can_research` is false from day one) and 3 are modifier-only. Society is out of scope by ruling.
+- Engine mechanics: **FINDINGS F51** and MODDING_NOTES → *What a tech-granting event can CONDITION on*.
+  Five probe runs; three trigger spellings were accepted and **silently ignored**, and were caught only
+  because every condition was asked twice, once impossibly. Keep that discipline.
+- ⚠ **`run_schedule.ps1` had a launch-blocking bug** (a `+` read as a positional argument to
+  `Start-Process`); fixed, and written up in BUGS_AND_FIXES. Sessions `20260812_005609`, `010202` and
+  `010614` are its failed attempts — kept, per the never-delete rule, and they contain no measurement.
+
+### Still open
+- The **military gate is emitted but unproven in a real war**: front-restricted, one general with ≥100
+  mobilised battalions or two with ≥50, plus a ≥50% mobilised share. 1836 has no war big enough to trip
+  it, so the century run is its first real test. Barracks levels = `army_size` exactly, so the save
+  summaries can check reachability retrospectively (largest army: RUS 206 in 1837 → GBR 573 in 1935).
+- **"Share of the army mobilised" is not a true fraction** — it exceeds 1 for some countries. It ships as
+  a one-sided `>=` gate only. See F51.
+- The **balance UI snapshot has not been regenerated** since the config gained `research_events`.
+
+---
+
+## 🚩 PREVIOUS HANDOVER (written 2026-08-11 evening, session ended for a device switch)
 
 **Everything below is committed and pushed to `main`. The game is off; nothing is running.**
 

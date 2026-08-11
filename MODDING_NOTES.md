@@ -577,11 +577,21 @@ Read this before designing anything that hands a country research (ROADMAP step 
   X is ≥ N%"*, so progress is readable from script as a percentage — and a full-tree grep finds **zero**
   usages outside that declaration. No vanilla content, `ai_weight` block or AI strategy makes any
   decision on accumulated progress.
-  ⚠ **Its parameter names are therefore UNVERIFIED** — there is no vanilla call to copy. The shape is
-  presumably `has_technology_progress = { technology = <key> value >= <0..1> }`, but a wrong key here
-  fails the way this project's landmine register is about: the trigger returns false, nothing errors,
-  and the AI simply never gets the bonus. Probe it with the `pm_tech_rehaul_diag` tripwire before
-  relying on it.
+  ⭐ **ITS PARAMETERS ARE NOW KNOWN, AND THE EARLIER GUESS HERE WAS WRONG** (2026-08-11). The exe's own
+  string pool carries the usage hint verbatim:
+  ```
+  has_technology_progress = { technology = X progress = Y }
+  add_technology_progress = { progress = X technology = Y }
+  ```
+  So the second key is **`progress`**, not `value` — this file previously guessed `value >= <0..1>`, which
+  would have failed exactly the way the landmine register describes (trigger returns false, nothing errors).
+  The trigger's loc renders `$NUM|%$`, so `progress` is read as a **fraction**, not innovation points.
+  ⚠ Still worth a `pm_tech_rehaul_diag` probe before relying on it: the hint fixes the key names, it does
+  not prove the comparator form or the 0..1 scale.
+  ⭐ **THE EXE STRING POOL IS A GENERAL INSTRUMENT FOR THIS.** `grep -a -o -E "[a-z_]{6,40} = \{[^}\"]{3,110}\}"
+  over `binaries/victoria3.exe` prints the engine's own usage hints for triggers and effects vanilla never
+  calls — e.g. `has_employee_slots_filled = { pop_type = X percent = Y }`,
+  `add_journal_entry = { type = <key> target = <scope> }`. Reach for it before guessing a key.
 - ⇒ **Design consequence.** Today the "nearly finished" case barely arises, because spread completes
   what spread starts. An event that dumps progress onto a technology the AI has no reason to select
   would create that case for the first time, and could strand it. The robust shape is to make the
@@ -593,6 +603,283 @@ Read this before designing anything that hands a country research (ROADMAP step 
   whatever is available, and vanilla leans on `value = 1` for most technologies with a handful of 2s and
   3s. On a 100+ technology production tree that near-flat weighting spreads the AI thinner than it does
   in vanilla, so our technologies need **authored** `ai_weight`s, not a copied `value = 1`.
+
+## What a tech-granting event can CONDITION on (ROADMAP step 2 research, 2026-08-11)
+
+Everything below is read off the shipped game files, the shipped `.md` docs, or the exe string pool.
+Nothing here is inferred from the wiki alone.
+
+- ⭐⭐ **`can_research = <tech>` IS EXACTLY "all prerequisites researched AND not yet researched".** It is
+  the whole of step 2's visibility condition in one cheap engine-side trigger. Proof that it goes false
+  once researched is vanilla's own idiom in `je_victoria_terminus`:
+  `OR = { can_research = steel_frame_buildings  has_technology_researched = steel_frame_buildings }` —
+  the OR exists precisely because `can_research` stops being true after the fact. Related, also live:
+  `has_researchable_technology = yes`, `has_technology_discovered`, `is_original_inventor_of`.
+- **Counting industry — four instruments, very different costs.**
+  - `country_has_building_type_levels = { target = bt:building_X  value >= N }` and
+    `country_has_building_group_levels = { type = bg_X  value >= N }` — country scope, engine aggregate,
+    **levels only, staffing ignored**. Cheapest. Vanilla runs the first one *inside a building's `ai_value`*
+    (`05_military.txt`), so it is cheap enough for a per-decision weight block.
+  - `any_scope_building = { is_building_type = X  level >= N  occupancy >= 0.5  weekly_profit > 0 … }` —
+    per building. The full verified key set inside a building scope is `is_building_type`, `is_building_group`,
+    `level`, `occupancy`, `weekly_profit`, `earnings`, `cash_reserves_ratio`, `is_subsidized`,
+    `is_under_construction`, `has_active_production_method`, `has_failed_hires`, `building_has_goods_shortage`,
+    `private_ownership_fraction`, `country_ownership_fraction`, `levels_owned_by_country`.
+  - ⭐ **Staffed levels as a script value — and the formulation matters.** The quantity wanted is
+    `Σ (level × occupancy)`, i.e. **occupancy as a WEIGHT**:
+    ```
+    every_scope_building = { limit = { is_building_type = X }
+                             add = { value = this.level  multiply = occupancy } }
+    ```
+    ⚠⚠ **Do NOT write `limit = { … occupancy >= 0.9 }` and `add = this.level`.** That is a *filter*, and it
+    throws away the case the rule exists for: 7 levels at 50 % staffing (3.5 level-equivalents) contributes
+    **zero**, while 3 levels fully staffed passes. The half-staffed larger industry is the bigger employer
+    and must count as one (user, 2026-08-11).
+    ✅ **VERIFIED IN GAME 2026-08-11** (session `20260811_215142`, 1836→1837, mod build + probe files).
+    The script value equals `Σ(level × occupancy)` rebuilt independently from the per-building data
+    functions `GetExpansionLevel` / `GetEmploymentPercentage`, to five decimal places, in all seven
+    countries probed:
+
+    | | mills | levels | Σ(lvl×occ) from data functions | script value | filter form |
+    |---|--:|--:|--:|--:|--:|
+    | GBR | 5 | 57 | 56.810 | **56.81345** | 57 |
+    | RUS | 7 | 13 | 12.269 | **12.26985** | 13 |
+    | FRA | 7 | 29 | 27.110 | **27.11275** | 29 |
+    | PRU | 4 | 13 | 11.112 | **11.11187** | 13 |
+    | AUS | 3 | 16 | 15.969 | **15.97368** | 16 |
+    | USA | 3 | 10 | 10.000 | **10** | 10 |
+    | BEL | 1 | 4 | 3.998 | **3.9986** | 4 |
+
+    Both spellings work and agree exactly — bare `occupancy` and `this.occupancy`. `add = occupancy`
+    with no `multiply` also resolves (it returns the per-building occupancy sum, e.g. GBR 4.827 over
+    5 mills). The filter form's last column is the point: it cannot see staffing at all.
+    ⚠ The occupancy-band fallback is therefore **not needed** and is not part of the design.
+  - ⚠ **Level × occupancy × config employment measures STAFFED CAPACITY, not bodies.** It equals headcount
+    at a tier's base PM, and **overstates by up to ~30 % where an automation PM is active** (automation cuts
+    up to 1 500 of ~5 000 laborers per level). Correctable per building with `has_active_production_method`;
+    exact headcount needs the pop walk below.
+  - **True headcount** exists only via `every_scope_pop = { limit = { pop_employment_building = X } … }` —
+    `pop_employment_building` is a **pop-scope boolean**, so this iterates every pop in the country.
+    ⚠ There is **no** building-scope or country-scope employee-count value. Vanilla uses the pop loop only
+    for one-off effects (`enslave_discriminated_farm_workers`), never on a pulse.
+  - ⇒ **"Y people employed" is best authored as people and COMPILED to staffed levels**, since our own config
+    holds each tier's `employment` (~5 000/level for manufacturing). ⚠ Guard the divide: the art academy's
+    tiers carry **zero** base employment (its jobs live in the ownership PMG).
+- **Ownership is expressible.** `levels_owned_by_country = { target = c:XXX  value >= N }` inside a building
+  scope distinguishes who owns the levels from whose territory they sit in; `country_ownership_fraction` /
+  `private_ownership_fraction` give the split. So "foreign-owned levels do not count for the host" is a
+  one-clause change, not a redesign.
+- **Journal entries are the engine's own conditional progress bar, and they run for AI countries.**
+  `is_shown_when_inactive` (default **no**) + `possible` (default **yes**) both true ⇒ the JE **activates by
+  itself**, no `add_journal_entry` and no on_action needed. `can_deactivate = yes` lets it fall back to
+  inactive. AI participation is not an assumption: `je_meiji_restoration`'s `on_complete` carries an
+  `is_player = no` branch that annexes Ezo, which only ever executes for an AI Japan.
+  - Two independent bar systems. **Goal:** `current_value` + `goal_add_value` (summed **at activation**) with
+    `complete = { scope:journal_entry = { is_goal_complete = yes } }`, plus `progressbar = yes` and
+    `display_progressbar_as_months = yes`. **Scripted:** `scripted_progress_bar = <key>` from
+    `common/scripted_progress_bars`, with its own `min_value`/`max_value`/`start_value` and a
+    `monthly_progress = { add = { desc = … if = { limit = {…} value = N } } }` block — i.e. **conditional
+    accumulation with a per-term tooltip**, read back as `"scripted_bar_progress(<key>)" >= N`. Bar state is
+    per-JE-instance (Antarctica and Central Africa share one definition).
+  - ⚠⚠ **The goal-value re-activation trap.** `goal_add_value` is evaluated *at activation* and **added to**
+    `current_value`. A JE that deactivates and reactivates while its counter variable has grown re-bases the
+    goal upward and can never complete. Either keep the JE active and gate only the tick, reset the variable
+    in `immediate`, or use a scripted bar (which has a fixed `max_value` and is immune).
+  - `on_weekly_pulse` / `on_monthly_pulse` / `on_yearly_pulse` inside a JE take `effect = {}` and/or
+    `events = {}`. A scripted bar's own progress update runs **before** the JE pulse of the same period.
+  - **Cost:** `JOURNAL_ENTRY_UPDATE_ACTIVE = 4` days, `JOURNAL_ENTRY_UPDATE_INACTIVE = 14` days
+    (`00_defines.txt`), whose comment says it "can be overriden on journal entry type". No vanilla JE does,
+    and the doc does not name the field — but the exe string pool carries **`active_update_frequency`** and
+    **`inactive_update_frequency`**. ⚠ Unverified key names; probe before relying on them.
+- ⚠⚠ **DO NOT reuse vanilla's tech-event channel.** All ~33 vanilla tech events hang off one
+  `tech_monthly_events` `random_events` block at `chance_to_happen = 50` with `never_fire_again` cooldowns —
+  a country gets roughly half an event a month from the whole set. Adding ours there makes them a lottery.
+  Use an own on_action with `events = { … }` (always fires when the event's own trigger passes), attached
+  without owning any vanilla file via the documented append pattern:
+  `on_monthly_pulse_country = { on_actions = { pm_rehaul_research_pulse } }`.
+- ⭐ **A delayed event re-checks itself.** `_on_actions.md`: *"an event will only successfully fire if it is
+  valid both when the on_action is executed AND once the delay is complete"*. So
+  `trigger_event = { id = X  days = 1095 }` is a free "still true three years later?" with no JE and no
+  variable — it just does not observe the middle of the interval.
+- **Research modifiers are CATEGORY-wide, never per technology.** `country_production_tech_research_speed_mult`,
+  `country_tech_research_speed_mult`, `country_weekly_innovation_add/_mult/_max_add`,
+  `country_ahead_of_time_research_penalty_mult`, and the per-category spread multipliers.
+  `country_tech_group_research_speed_mult` is *defined* but used nowhere in vanilla. ⇒ **You cannot speed up
+  one technology; you can only add flat progress to one, or speed the whole tree.**
+- ⭐ **A production method can pay research directly, scaled by staffing.** `country_modifiers = {
+  workforce_scaled = { … } }` on a PM applies a country modifier scaled by *staffed* level (the `.md`:
+  "scaled by the staffing level of the building … between 0.0 and building level"). Vanilla's universities
+  do exactly this with `country_weekly_innovation_add = 1/1.5/2`. Since we already own every tier's PM file,
+  "industry generates research" needs **no events, no journal entries and no AI coupling** — but it is
+  diffuse, not directed at a particular technology.
+- ⭐ **UNIVERSALITY IS FREE ON THE JE ROUTE, AND IT IS NOT ON THE EFFECT ROUTE.** Auto-activation is an
+  engine sweep over countries (every 14 days inactive, 4 active), so a tag that first exists in 1880 —
+  released subject, successful revolution, unification — is swept exactly like any other and needs nothing
+  fired at it. `add_journal_entry` is a one-shot effect and a new tag simply misses it. Decentralized
+  countries drop out for free: their `country_type` carries `can_research = no` and `has_events = no`, so
+  the `can_research = X` gate is already false for them. Set `can_revolution_inherit = yes` (the doc:
+  *"Revolutions also get all variables from the defeated parent country, so most JEs should be inherited in
+  this way"*) and `transferable = no` — the entry belongs to the country, not to whoever the player is.
+- ⭐ **THE RESEARCHABLE FRONTIER IS ~11 TECHNOLOGIES WIDE, NOT 83** (measured over the shipping tree,
+  `config/tech_tree_options.json`, researching in era-then-onset order): min 1, **median 12, mean 11.1,
+  max 17** across the whole campaign. That is the number that sizes both the journal clutter and the per-
+  country cost — not the 81 production technologies in the tree.
+- **Scale of the problem, from our own config:** 100 tiers, 90 carrying a `tech`, **83 distinct technologies**
+  (38 of them ours). Only 3 technologies are shared by more than one tier — `manufacturies` (6 industries),
+  `mechanized_workshops` (2), `steelworking` (2). ⚠ And **12 of the 90 are the FIRST rung of their industry**,
+  so they have no "tier N−1" to condition on at all: fertilizer, explosives, motor, both shipyards, automotive,
+  munition, synthetics, electrics, power, railway, art academy.
+- ⚠ `add_technology_progress` is called 68 times in vanilla and **every one passes literal integers and a
+  literal technology key**. A script-value `progress`, or a `technology` read from a variable, is therefore
+  unverified in both directions.
+
+### The step-2 wording probe — what ran, and everything it settled (2026-08-11)
+
+Session **`20260811_215142`**, label `je-wording-probe`. Arm: a full `mod_jeprobe` build
+(`build.ps1 -SaveTo jeprobe -TelemetryOn`, config `config/mod_config.json`) plus **five injected probe
+files** — script values, scripted progress bars, seven journal entries, an on_action and English loc.
+1 run, 1836.1.1 → 1837.1.1, **190 s wall**, self-quit, autosaves off. Not an experiment arm and it pools
+with nothing; the probe files were never in `telemetry_lib.ps1`, so the telemetry fingerprint is untouched
+and this session cannot disturb the vanilla/techs pooling the ROADMAP handover depends on.
+
+**Seven journal entries differing in exactly one thing each**, so a zero names its own cause:
+
+| variant | completions in 1 year | what it proves |
+|---|--:|---|
+| `always` | **545** (285 countries named) | JE auto-activation + scripted bar + `on_complete` all work, for **every country in the game**, with no `add_journal_entry` anywhere |
+| `canres` | 111 | `can_research` gating works and discriminates (era-2 technology; the era-1 freebies would have given ~0) |
+| `lvl` | 82 | ⭐ **a script value CAN be used as a trigger** (`pmrprobe_tex_lvl >= 1`), and `is_building_type` really filters |
+| `occw` | 56 | the occupancy-weighted sum works as a bar condition end to end |
+| `anyb` | 82 | `any_scope_building` + `occupancy` as a plain trigger works |
+| `varw` | 62 | `set_variable` from a script value, then `var:x` as a trigger, works |
+| `never` | **0** | ⭐⭐ **the negative control is clean** — the conditions are genuinely being evaluated |
+
+⚠⚠ **The negative control is the load-bearing one.** §3.7 of TESTBED_METRICS established that an invalid
+trigger inside a `limit` is *silently ignored*, which would make every conditional bar above tick
+unconditionally and every "success" meaningless. `never` completing 0 times is what rules that out.
+
+Incidental findings, each of which would have cost a build cycle later:
+- ⭐ **`[THIS.GetCountry.GetNameNoFormatting]` works inside a JE `on_complete`; `[ROOT.GetCountry…]` does
+  NOT** — it raises `Data error in loc string` and logs an empty field. Use `THIS`.
+- **A JE wants a `<key>_reason` loc key** as well as name and desc: `Journal entry is missing loc for
+  je_X_reason!` for every entry. Harmless, noisy, trivially avoided.
+- ⚠ **A scripted bar's `monthly_progress` runs BEFORE the on_action that feeds it.** The variable-based
+  variant logged `Failed to fetch variable for 'pmrprobe_texw' due to not being set` on its first tick.
+  Set such a variable in the JE's `immediate`, or guard the condition with `has_variable`.
+- Country-direct `every_scope_building` and `every_scope_state × every_scope_building` return **identical**
+  sums (GBR 3252 both ways), so the cheaper single-level form is fine.
+- The filtered sums discriminate hard against their unfiltered twins (GBR textile 57 against 3252 total
+  levels), so the filters are real, not silently-ignored no-ops.
+
+### Probe 2 — the WAR conditions (session `20260811_225546`, same method, 1 run, 1836→1837)
+
+Same arm and method; every candidate trigger asked twice, once with a threshold that must pass and once
+with one that cannot, because an invalid trigger inside a `limit` is silently ignored. 16 countries were
+at war in the sample (Carlist Spain, Brazil, Fezzan, Tripolitania, Riograndense Republic, Puerto Rico …).
+
+**WORKS:**
+- `army_power_projection` as a **country-scope script value** (GBR 1528 · RUS 4568 · FRA 5112 · Carlist
+  Spain 1284), and it is readable **inside the enemy's scope**: `>= 0` true, `>= 1e9` false, so the
+  comparison is genuinely evaluated.
+- `any_enemy_in_war = { … }` **and** `every_enemy_in_war = { add = 1 }` — the second matters, because a
+  script value needs the `every_` form to COUNT rather than test.
+- `weekly_progress` on a scripted bar: 285 completions of a 4-week unconditional bar, one per country;
+  the weekly negative control completed **0** times.
+- The whole war term end to end: a bar gated on `is_at_war` + an enemy at least half as strong completed
+  for 9 countries in one year.
+
+⭐⭐ **THE `root.` PREFIX IS LOAD-BEARING AND ITS ABSENCE FAILS SILENTLY.** Inside `any_enemy_in_war`,
+`army_power_projection >= root.<script_value>` discriminates correctly (true for Fezzan and Carlist Spain,
+**false** for Tripolitania and Brazil). Written **without** `root.`, the script value resolves in the
+**enemy's** scope — so it compares each enemy against half of *its own* strength, which is always true, and
+it read 1 for every country at war. Both spellings parse, neither errors, and only the discrimination test
+tells them apart.
+
+❌ **THREE SPELLINGS OF THE BATTALION COUNT ARE ACCEPTED AND IGNORED.** All of these returned *true* even
+for countries at peace, and true for their absurd twins:
+```
+num_mobilized_battalions_greater_or_equal = { value = N }
+num_mobilized_battalions_greater_or_equal = N
+army_size_greater_than = N
+```
+⇒ **The `_greater_than` / `_greater_or_equal` / `_less_than` … names in `trigger_localization` are
+LOCALIZATION KEYS for rendering a comparator, not script-callable triggers.** The callable form is the
+**base name with an inline comparator** — `army_size >= 3` and `army_power_projection >= 5` are what vanilla
+journal entries actually write. Use `num_mobilized_battalions >= N`; it is unprobed but is the only form
+consistent with the evidence.
+⚠ This is the same class as `is_unemployed` (§3.7 of TESTBED_METRICS) and it is why the absurd twin is not
+optional: reading only the "low" value would have reported all three dead spellings as working.
+
+⚠ **The log ring carries the PREVIOUS run's lines into the next run's mirror.** Probe 1's journal-entry
+keys appeared in probe 2's `logs_live/debug.log` even though those entries no longer existed in the mod.
+Count only keys unique to the run being read, or filter by the run's own token (landmine L9).
+
+### Probe 3 — the anti-gaming set (session `20260811_235642`, 1836→1837.6)
+
+❌❌ **`num_mobilized_battalions` IS NOT A COUNTRY-SCOPE TRIGGER — it is CHARACTER scope.** The engine says
+so outright, and unlike the dead spellings above it fails **loudly**:
+```
+Error: Event target link 'num_mobilized_battalions' did not get a matching scope type.
+       Expected 'character', but got 'country'
+Error: Invalid left side during comparison 'num_mobilized_battalions'
+```
+⇒ "the country has ≥ N battalions mobilised" **cannot be written directly**. It is a property of a
+general's formation, reachable only as `any_scope_general = { num_mobilized_battalions >= N }`.
+
+✅ **What does work at country scope, measured in the same run:**
+
+| term | GBR | RUS | FRA | Carlist Spain | Puerto Rico |
+|---|--:|--:|--:|--:|--:|
+| `army_size` (battalions) | 68 | 206 | 182 | 60 | 2 |
+| `is_at_war` | 0 | 0 | 0 | 1 | **1** |
+| front chain (below) | 0 | 0 | 0 | **1** | **0** |
+| `has_war_exhaustion` | 0 | 0 | 0 | 1 | 1 |
+| casualties / dead | 0 | 0 | 0 | 38 991 / 11 514 | **0 / 0** |
+
+⭐⭐ **Puerto Rico is the whole point.** It is at war and carries war exhaustion, yet has **no front of its
+own and zero casualties** — a colonial subject dragged into someone else's war, i.e. exactly the
+"technically at war, never actually fighting" case. `is_at_war` alone does **not** exclude it; the front
+chain and the casualty count both do, in the same sample. Cuba and the Philippines behave identically.
+
+The verified anti-gaming chain, adapted from vanilla's `je_war_nursing`:
+```
+is_at_war = yes
+any_scope_war = { any_scope_front = { any_scope_general = { owner = ROOT } } }   # a real front
+every_scope_war = { add = "num_country_casualties(root)" }                        # unfakeable rate
+any_scope_war = { has_war_exhaustion = { target = ROOT  value > N } }             # WAR scope, targeted
+```
+⚠ **`army_size` is a battalion count and 100 is a HIGH bar early.** At the 1836 start Britain runs 68 and
+Carlist Spain 60, so a flat `army_size >= 100` gate excludes Britain and every minor power for decades
+while admitting Russia (206) and France (182) from day one.
+
+### Probes 4 and 5 — the general/mobilisation gate (sessions `20260812_001905`, `20260812_003658`)
+
+⭐ **`num_mobilized_battalions` IS reachable — at CHARACTER scope, through the general list.**
+`any_scope_general = { owner = ROOT  num_mobilized_battalions >= N }` works, at country scope and
+nested inside `any_scope_war → any_scope_front`. `every_scope_general` also resolves at country scope,
+so the battalions can be summed. All absurd twins read 0, so none of it is being silently ignored.
+⭐ **`count >= N` works inside a list trigger** (vanilla precedent: `any_scope_ally = { … count >= 2 }`),
+so *"one general with ≥100 **or** two with ≥50 each"* is expressible as an `OR` of two general lists.
+
+⭐⭐ **BARRACKS LEVELS = `army_size`, EXACTLY.** RUS 206 levels / 206 battalions, FRA 182 / 182 at the
+1836 start. The save summaries therefore give army size per country per year for a whole campaign at no
+cost — which is how "is 100 battalions under one general ever reachable?" was answered without a run:
+the largest army grows from **RUS 206 (1837)** to **GBR 573 (1935)**, so the gate is impossible in the
+1830s and ordinary for a major power by 1900. ⚠ A gate measured only on the 1830s will look dead when it
+is merely early — this one did, and the reading was wrong.
+
+⚠ **"What share of the army is mobilised" CANNOT be computed reliably.** Σ(per-general mobilised
+battalions) ÷ `army_size` exceeds 1 (GBR 1.29, MEX 2.44). `army_size_including_raised_conscripts` is the
+better denominator and fixes most of it (Carlist Spain 1.00, Brazil 0.88) but **Mexico still reads 1.50**,
+so the two quantities are not perfectly on one basis and this is not a true fraction. Use it only as a
+one-sided `>=` gate, where an overshoot can produce a false positive but never a false negative. In
+practice mobilisation is near-total when it happens — **every country at peace reads 0** — so a 0.5
+threshold reads as "has actually mobilised".
+⚠ `army_mobilization_option_fraction` is a **different quantity**: the share of the army carrying one
+named mobilisation *option*. It works and discriminates, but it cannot express "half the army is
+mobilised".
+⚠ `army_size_greater_than` joins the dead list — `Unknown trigger type` in `error.log`, confirming again
+that the comparator-suffixed names are loc keys. `army_size >= N` is the callable form.
 
 ## RNG seed: readable, not settable headlessly
 
