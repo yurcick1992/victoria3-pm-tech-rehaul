@@ -66,13 +66,26 @@ rest of this section implements, and where the two disagree, this wins.
 ⚠ **The heading is inherited and imprecise: there are SIX eras (0–5), not five.** Era 0 is the
 pre-industrial rung that carries no unlocking technology at all. See the anchor principle above.
 
-The mod has its **own technology eras**, anchored at **~1700 / 1750 / 1850 / 1900 / 1925 / 1940** —
-deliberately wider than the game's window at the front and **contracting** towards the back, because
-technical progress accelerates after the industrial revolution. **No industry has two tiers on one era.**
-100 tiers over 22 industries: 67 real + **33 `model_only`** (modelled but NOT emitted, because the game
-has no unlocking technology for them yet — the builder gets a filtered config, `ui/data.js` gets the
-complete one; the count is `build_era_ladder.mjs`'s own summary line — an earlier "89/67/22" here had
-gone stale against the spec).
+The mod has its **own technology eras**, anchored at **1750 / 1830 / 1870 / 1900 / 1925 / 1940**
+(user-ruled 2026-08-12, superseding ~1700/1750/1850/1900/1925/1940) — deliberately wider than the game's
+window at the front and **contracting** towards the back, because technical progress accelerates after
+the industrial revolution. Each tier's `tech_year` must fall in its era's **band** (boundaries
+**1790 / 1850 / 1885 / 1912 / 1932**, the midpoints between anchors), and **no industry has two tiers on
+one era** — `build_era_ladder.mjs` now THROWS on either, at authoring time, because nothing downstream
+compared a tier's authored era against its own date.
+**106 tiers over 22 industries: 66 real + 40 invented**, 11/17/19/21/21/17 per era (modelled but NOT
+emitted while the game has no unlocking technology for them — the builder gets a filtered config,
+`ui/data.js` gets the complete one; the count is `build_era_ladder.mjs`'s own summary line — earlier
+"89/67/22" and "100/67/33" here had gone stale against the spec).
+⚠ **An invented tier is marked by having NO `vanilla_pm`, not by `model_only`.** It used to be
+`model_only`, which the tech-tree step clears by design — after which the ladder builder's idempotent
+drop matched nothing and it threw on the first industry, i.e. the pipeline's FIRST stage could not run
+at all. A permanent all-new tier therefore belongs in the spec's `invent[]`, never in `eras[]`.
+⚠⚠ **The re-band is written into the SPEC but the CANONICAL config still holds the 100-tier ladder**,
+held until the research-events batch B has built (`config/mod_config.era6.json` carries it meanwhile,
+reachable through **`MOD_CONFIG=`**, which all three era tools now honour — `era_solver.mjs` used to
+hardcode the path while `econ_host.mjs` honoured the override, so a redirected run read one file and
+wrote its solved recipes into the other). The full table is in ROADMAP step 1b.
 ⭐⭐ **EVERY TIER ALSO CARRIES `tech_year` — THE DATE GATE (§10.44, user-ruled 2026-08-09).** The year
 the SLOT's technology was first commercially deployable, transcribed from the spec's own dated notes
 (date the slot, not the vanilla PM's decorative name), stamped by `build_era_ladder.mjs`, which throws
