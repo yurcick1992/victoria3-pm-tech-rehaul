@@ -91,7 +91,19 @@ const CFG = JSON.parse(readFileSync(CFGPATH, 'utf8'));
 // a design expectation of roughly a quarter by 1936. This factor is one candidate cause of that
 // overshoot and the first to be tested; tree depth, era costs and spread have not been separated from it.
 const AHEAD_OF_TIME = 0.25;        // NTechnology.TECH_AHEAD_OF_TIME_PENALTY_FACTOR, vanilla 0.25
-const PROD_SPREAD_MULT = 0.5;      // production-only spread boost; military and society untouched
+// ⚠ THE PER-TREE SPREAD BOOST IS GONE — RESTORED TO VANILLA 2026-08-12 (user ruling). It shipped as
+// `country_production_tech_spread_mult = 0.5` in base_values, a modifier vanilla does not set at all,
+// and its whole job was to compensate a laggard for the deeper production tree. The ruling: the extra
+// industry technologies are compensated "aplenty" by the research journal entries (ROADMAP step 2),
+// which grant half an era's base cost per stage — so the spread boost was paying twice for the same
+// depth, on the one lever that works AGAINST the mod's goal (spread only ever delivers what somebody
+// else already has, so it cannot create a leader; it closes the gap the deeper tree exists to open).
+// ⚠ THE KNOB STAYS IN THE TECH-TREE PAGE, defaulting to 0 for all three trees. It is how the question
+// gets re-asked — the share of a tree handed to a laggard by 1936 against vanilla's own share — and
+// deleting the instrument along with the setting would leave nothing to re-measure with.
+// ⚠ AND WITH IT WE STOP OWNING `00_code_static_modifiers.txt`. That one line was the only difference
+// from vanilla in a 900-line file, and the repo's rule is that a file we would copy verbatim is not
+// emitted: owning it freezes that file against the next patch and ships bytes we did not author.
 const SOCIETY_AI_WEIGHT = 0.8;     // user ruling 2026-08-11 — damp society so spread does not rush it
 const PLACEHOLDER = 'gfx/interface/icons/invention_icons/zzz_pm_rehaul_placeholder.dds';
 
@@ -269,16 +281,14 @@ const NEWT = OPT.techs.filter(t => t.origin === 'new');
 }
 
 // ===================================================================================================
-// 5. STATIC MODIFIERS — the production-only spread boost
+// 5. STATIC MODIFIERS — NOTHING. Tech spread is left exactly as vanilla sets it.
 // ===================================================================================================
-// ⚠ Production ONLY. A global boost was measured and rejected: with military and society near vanilla
-// depth it hands those two trees away (69% of society against vanilla's 44%). See ROADMAP step 2.
-{
-  let txt = vanilla('common/static_modifiers/00_code_static_modifiers.txt');
-  txt = sub(txt, /(base_values = \{\n\tcountry_weekly_innovation_add = 50\n)/,
-    `$1\tcountry_production_tech_spread_mult = ${PROD_SPREAD_MULT}\n`, 1, 'production tech spread multiplier');
-  write('common/static_modifiers/00_code_static_modifiers.txt', txt);
-}
+// This step used to emit a whole copy of `common/static_modifiers/00_code_static_modifiers.txt` for one
+// added line, `country_production_tech_spread_mult = 0.5`. Removed by user ruling 2026-08-12 — see the
+// note on the knobs above. Nothing replaces it: the file is not ours, and the tech-tree page's spread
+// panel now opens on the vanilla setting for all three trees.
+// ⚠ A global boost had already been measured and rejected (it handed 69% of the society tree to a
+// laggard against vanilla's 44%); the production-only form is what this ruling removes.
 
 // ===================================================================================================
 // 6. DEFINES — the ahead-of-time penalty (partial override; the one folder that allows it)

@@ -530,7 +530,11 @@ Read this before designing anything that hands a country research (ROADMAP step 
   A `0xff000000`, `dwCaps` 0x1000. Byte-compared against `manufacturies.dds`: identical but for the
   mipmap flag and `dwCaps`, as expected for a single-surface texture.
   ⚠ Pixels are **BGRA byte order** — the masks describe a little-endian A8R8G8B8 word.
-- ⭐ **THE SPREAD FORMULA'S OWN CONSTANTS ARE SCRIPTABLE — all three of them.** They are not defines and
+- ⭐ **THE SPREAD FORMULA'S OWN CONSTANTS ARE SCRIPTABLE — all three of them.** ⚠ **THE MOD USES NONE OF
+  THIS as of 2026-08-12** (user ruling — the research journal entries already compensate the deeper tree,
+  and spread is the one lever that works against the mod's goal). It is kept because the mechanism is a
+  real engine fact and the question will be asked again; nothing below describes shipped content.
+  They are not defines and
   not hardcoded; they are static modifiers in `common/static_modifiers/00_code_static_modifiers.txt`,
   whose header says outright *"Effects are fully scriptable here"* and *"these names can NOT be removed
   or changed, as the code uses them"* — i.e. the block names are fixed, the numbers are ours:

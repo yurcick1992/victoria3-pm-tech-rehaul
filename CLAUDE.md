@@ -1072,8 +1072,18 @@ tools/                  dev tooling — NOT shipped in the mod
   emit_techs.mjs        THE TECH TREE, EMITTED (ROADMAP step 1) — called by build.ps1, which THROWS if it
                         fails. Reads config/tech_tree_options.json's SHIPPING option and writes the additive
                         new-technology file, the era moves into vanilla's production AND military files, the
-                        society ai_weight, the 1836 starting sets, the spread modifier, the ahead-of-time
-                        define, a minted placeholder icon and loc for all 11 languages.
+                        society ai_weight, the 1836 starting sets, the ahead-of-time define, a minted
+                        placeholder icon and loc for all 11 languages.
+                        ⚠ **IT EMITS NO TECH-SPREAD CHANGE — spread is exactly vanilla** (user ruling
+                        2026-08-12). It shipped `country_production_tech_spread_mult = 0.5` until then, for
+                        which it owned a whole 900-line vanilla file; the ruling is that the deeper
+                        production tree is compensated **aplenty by the research journal entries**, so the
+                        boost paid twice for the same depth — and on the one lever that works AGAINST the
+                        mod's goal, since spread only ever delivers what somebody else already has. The
+                        BASE terms (flat 25, literacy 75) were never changed: the 2026-08-10 ruling that
+                        raised them to 50/100 was superseded before it was emitted. The knobs stay in the
+                        tech-tree page's spread panel, all at vanilla, because that panel is how the
+                        question gets re-asked. ⇒ we no longer own `common/static_modifiers` at all
                         ⚠ EVERY vanilla transform asserts its own MATCH COUNT and throws on a no-op — "fix the
                         transform rather than shipping a silent no-op". That guard earned its keep on
                         2026-08-12: the ladder-era alignment made the era-move loop try to patch

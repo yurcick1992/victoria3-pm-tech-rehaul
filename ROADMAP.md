@@ -402,7 +402,23 @@ worst-case penalty. That figure was 571 375 — roughly 55 years of national res
 worst case describes a country with nothing researched, i.e. one that could never qualify for the reward
 in the first place. The ceiling arithmetic is kept in step 1's `--aot` sweep, where it belongs.
 
-⭐ **TECH SPREAD GETS BOOSTED TOO** (user, 2026-08-10) so a laggard converges on the leading edge faster
+❌❌ **TECH SPREAD IS NOT BOOSTED — THE WHOLE IDEA IS WITHDRAWN (user ruling 2026-08-12).** *"Increased
+number of industry techs are compensated aplenty by JEs."* The research journal entries of step 2 grant
+half an era's base cost per stage, so a spread boost was paying twice for the same depth — and paying it
+on the one lever that works **against** the mod's goal, because spread only ever delivers technologies
+somebody else already has: it cannot create a leader, it closes the gap the deeper tree exists to open.
+**Nothing spread-related is emitted any more**, and with it we stopped owning
+`common/static_modifiers/00_code_static_modifiers.txt` — one added line in a 900-line vanilla file.
+⚠ For the record of what was actually ever SHIPPED: only the per-tree multiplier
+(`country_production_tech_spread_mult = 0.5`). The FLAT 25 → 50 / LIT 75 → 100 ruling below was
+superseded before it was emitted, so the base terms have always been vanilla.
+⚠ The **knobs stay in the tech-tree page's spread panel**, defaulting to vanilla — the panel is the
+instrument for re-asking the question (the share of a tree handed to a laggard by 1936, against
+vanilla's own share), and deleting it with the setting would leave nothing to measure with.
+The superseded reasoning is kept below, because the mechanism is still true and someone will ask again.
+
+⭐ **TECH SPREAD GETS BOOSTED TOO** (user, 2026-08-10 — **WITHDRAWN, see above**) so a laggard converges
+on the leading edge faster
 and the deepened tree does not simply mean everyone finishes less of it. **The formula's own constants
 are scriptable** — all three sit in `common/static_modifiers/00_code_static_modifiers.txt`; see
 MODDING_NOTES for the mechanism, the file-ownership cost and how to avoid freezing it:

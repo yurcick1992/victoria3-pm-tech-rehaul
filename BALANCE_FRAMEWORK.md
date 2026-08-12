@@ -4451,3 +4451,41 @@ only the production file**, so an era move on a MILITARY technology was written 
 the viewer, and silently dropped on the way to the mod. Three of the 32 are military. A `20_military.txt`
 emitter now exists, and it is deliberately unconditional inside its block so an empty list and a broken
 pattern cannot look alike.
+
+## 10.54 TECH SPREAD RETURNS TO VANILLA — the journal entries already pay for the depth (user-ruled 2026-08-12)
+
+⭐ **The mod emits no tech-spread change of any kind.** It shipped
+`country_production_tech_spread_mult = 0.5` — a modifier vanilla sets on no tree — whose job was to
+compensate a laggard for a production tree costing +65% over vanilla's. The ruling: *"Increased number of
+industry techs are compensated aplenty by JEs."* The research journal entries of ROADMAP step 2 grant
+**half an era's base cost per stage, three stages per technology**, which is the compensation; the spread
+boost was a second one for the same depth.
+
+**And it was the worst available place to pay it.** Spread only ever delivers technologies somebody else
+already holds, so it cannot create a leader — it can only close the gap the deeper tree exists to open,
+which is the mod's central goal. A grant a country earns by *building the industry* is the opposite kind
+of lever: it rewards the leader for leading.
+
+⚠ **What was ever actually SHIPPED was only the multiplier.** The 2026-08-10 ruling that raised the base
+terms (FLAT 25 → 50, LIT 75 → 100) was superseded by its own consequence before it was emitted — a global
+boost hands 69% of the society tree to a laggard against vanilla's 44% — so the flat and literacy terms
+have always been vanilla. Do not describe the base spread as "restored"; it was never changed.
+
+⇒ **We no longer own `common/static_modifiers/00_code_static_modifiers.txt`.** One added line in a
+900-line file, and the repo's rule is that a file we would otherwise copy verbatim is not emitted: owning
+it freezes that file against the next patch and ships bytes we did not author.
+
+⚠ **The KNOBS STAY**, in the tech-tree page's spread panel, all three trees defaulting to 0 and the base
+terms to vanilla's 25/75. The panel is the instrument for re-asking the question — the share of a tree
+that spread alone hands a laggard by 1936, judged against vanilla's own share — and deleting the
+instrument along with the setting would leave nothing to re-measure with. The `production-only +50%`
+button is kept as the experiment it now is, not as a setting.
+
+At vanilla spread and 50% literacy the shares now read: production **43%** against vanilla's 47%,
+military **34%** against 45%, society **43%** against 44%. Military is the outlier and has no
+compensation — its tree is +33% deeper than vanilla's and its journal entries cover the war technologies
+on a 26-week bar rather than a 36-month one. Not addressed; flagged.
+
+⚠ **This removal surfaced a build defect worth more than the change itself** — a removed emitter kept
+shipping its file, because `build.ps1` cleaned three named directories instead of everything. See
+BUGS_AND_FIXES, 2026-08-12.

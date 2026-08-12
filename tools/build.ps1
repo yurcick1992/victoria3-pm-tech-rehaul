@@ -374,13 +374,32 @@ function Invoke-ModChecks($modRoot, $config) {
     return $problems
 }
 
-# --- clean previously generated outputs (keep .metadata + history, which the converter rewrites) ---
-foreach ($d in 'common\buildings', 'common\production_methods', 'common\production_method_groups') {
-    $p = Join-Path $modAbs $d
-    if (Test-Path $p) { Remove-Item (Join-Path $p '*') -Force -Recurse -ErrorAction SilentlyContinue }
+# --- clean previously generated outputs -------------------------------------------------------------
+# ⚠⚠ EVERYTHING, not a list. This used to name three directories plus localization, so every OTHER
+# emitted folder — technology, static_modifiers, defines, journal_entries, ai_strategies, scripted_effects,
+# script_values, scripted_progress_bars, on_actions, events — kept whatever an earlier build had put
+# there. A file whose EMITTER IS REMOVED therefore went on shipping forever: the build passes, the linters
+# pass, preflight passes, the mod loads, and it silently carries a gameplay change that was deleted by
+# ruling. That is exactly what happened when the per-tree tech-spread boost was removed (2026-08-12) —
+# `common/static_modifiers/00_code_static_modifiers.txt` survived the rebuild and was still deployed.
+# A conditional emitter makes this the NORMAL case, not an edge one: `research_events.enabled = false`
+# and the military era-move file both emit nothing on some runs.
+# ⚠ TWO EXCEPTIONS, both deliberate:
+#   .metadata      — the one hand-maintained thing in mod/ (CLAUDE.md); deleting it loses the mod id.
+#   common/history — rewritten LATER in this build by convert_history.ps1. Wiping it here would leave the
+#                    game with no starting buildings at all if the converter then failed, and
+#                    replace_paths makes our copy the only history the engine reads.
+foreach ($d in Get-ChildItem $modAbs -Force -ErrorAction SilentlyContinue) {
+    if ($d.Name -eq '.metadata') { continue }
+    if ($d.PSIsContainer -and $d.Name -eq 'common') {
+        foreach ($c in Get-ChildItem $d.FullName -Force -ErrorAction SilentlyContinue) {
+            if ($c.Name -eq 'history') { continue }
+            Remove-Item $c.FullName -Recurse -Force -ErrorAction SilentlyContinue
+        }
+        continue
+    }
+    Remove-Item $d.FullName -Recurse -Force -ErrorAction SilentlyContinue
 }
-$locRoot = Join-Path $modAbs 'localization'
-if (Test-Path $locRoot) { Remove-Item $locRoot -Recurse -Force -ErrorAction SilentlyContinue }
 
 $pmOut = @($genHeader); $pmgOut = @($genHeader)
 $genByBase = @{}        # base building key -> generated text for that whole industry (base + tiers)

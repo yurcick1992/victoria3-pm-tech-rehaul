@@ -112,20 +112,26 @@ svg#edges path{fill:none;stroke-width:1.4}
       <input id="sLitPct" type="number" step="5" min="0" max="100" value="50">%
     </div>
     <div class="srow" style="margin-top:6px">
-      <span>per-tree multiplier</span>
-      prod <input id="sMprod" type="number" step="0.05" value="0.5">
-      mil <input id="sMmil" type="number" step="0.05" value="0">
-      soc <input id="sMsoc" type="number" step="0.05" value="0">
-      <button class="tab" id="sReset" style="padding:3px 8px">vanilla</button>
-      <button class="tab" id="sGlobal" style="padding:3px 8px">global 50/100</button>
-      <button class="tab" id="sProd" style="padding:3px 8px">production-only +50%</button>
+      <span title="country_&lt;tree&gt;_tech_spread_mult. VANILLA SETS NONE OF THESE, and neither do we any
+        more — the mod shipped production 0.5 until 2026-08-12, when it was removed by ruling: the deeper
+        production tree is already compensated by the research journal entries, and spread is the one
+        lever that works against the mod's goal. The knob stays so the question can be re-asked.">per-tree multiplier</span>
+      prod <input id="sMprod" type="number" step="0.05" value="0"><span class="vn">vanilla 0</span>
+      mil <input id="sMmil" type="number" step="0.05" value="0"><span class="vn">vanilla 0</span>
+      soc <input id="sMsoc" type="number" step="0.05" value="0"><span class="vn">vanilla 0</span>
+      <button class="tab" id="sReset" style="padding:3px 8px" title="Back to vanilla — which is also what the mod now ships.">vanilla ✓ shipped</button>
+      <button class="tab" id="sGlobal" style="padding:3px 8px" title="MEASURED AND REJECTED: raising the flat and literacy terms for every tree hands 69% of the society tree to a laggard against vanilla's 44%.">global 50/100</button>
+      <button class="tab" id="sProd" style="padding:3px 8px" title="What the mod shipped until 2026-08-12. Kept as an experiment, not a setting.">production-only +50%</button>
     </div>
     <div id="sOut"></div>
-    <p class="snote">A boost here is the one lever that works <em>against</em> the mod's goal: spread only
-      ever delivers technologies somebody else already has, so it cannot create a leader — it closes the
-      gap the deeper tree is trying to open. What to watch is the <b>share of a tree handed over for
-      free</b>, not the multiplier. Holding production near vanilla's own share means the boost is paying
-      for the depth rather than outrunning it.</p>
+    <p class="snote"><b style="color:var(--tier)">THE MOD SHIPS NO SPREAD CHANGE AT ALL</b> — every field
+      above is at vanilla, and this panel is an instrument for asking the question, not a setting. A
+      per-tree boost shipped (production 0.5) until <b>2026-08-12</b>, when it was removed by ruling: the
+      deeper production tree is already compensated by the <b>research journal entries</b>, so the boost
+      was paying twice for the same depth. And it pays on the one lever that works <em>against</em> the
+      mod's goal — spread only ever delivers technologies somebody else already has, so it cannot create
+      a leader; it closes the gap the deeper tree exists to open. What to watch is the <b>share of a tree
+      handed over for free</b>, not the multiplier.</p>
   </div>
   <p class="blurb" id="blurb"></p>
   <div class="stats" id="stats"></div>
@@ -184,10 +190,13 @@ $('#zoom').oninput = e => { $('#canvas').style.transform = `scale(${e.target.val
 $('#q').oninput = render;
 
 // ---- tech spread ------------------------------------------------------------------------------
-// The three constants of the spread formula are static modifiers, not defines, so they are ours to set
-// (MODDING_NOTES). What decides whether a boost is safe is not the multiplier but the SHARE OF A TREE
-// spread alone hands a laggard over the campaign — spread only ever delivers what someone else already
-// has, so it is the one lever that closes the gap the deeper tree exists to open.
+// The three constants of the spread formula are static modifiers, not defines, so they WOULD be ours to
+// set (MODDING_NOTES). ⚠ AS OF 2026-08-12 WE SET NONE OF THEM: the per-tree multiplier shipped at
+// production 0.5 and was removed by ruling — the research journal entries already compensate the deeper
+// tree, so the boost paid twice, on the one lever that works against the mod's goal. The panel keeps the
+// knobs because they are how the question is re-asked; they open at vanilla.
+// What decides whether a boost is safe is not the multiplier but the SHARE OF A TREE spread alone hands
+// a laggard over the campaign — spread only ever delivers what someone else already has.
 const WEEKS_1836_1936 = 5218;   // rand(0.5,1.5) averages 1, so the bracket IS the expectation
 $('#spreadBtn').onclick = () => {
   const p = $('#spread'); p.hidden = !p.hidden;

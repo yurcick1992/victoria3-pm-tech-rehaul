@@ -1356,3 +1356,42 @@ measured the same conclusion independently — two agreeing sources, not one off
 ⚠ The measurements are not wasted: they stand as observations and they raised the real question, which is
 why our implementation of the documented rule produces far less demand than the game does. But the day
 would have started there rather than ended there.
+
+## A REMOVED EMITTER KEPT SHIPPING ITS FILE — `mod/` was never fully cleaned (2026-08-12)
+
+**Symptom: none.** The build passed, both linters passed, `Invoke-ModChecks` passed, preflight passed,
+the mod loaded — and it went on carrying a gameplay change that had been deleted by ruling.
+
+**What happened.** The per-tree tech-spread boost was removed from `emit_techs.mjs`: the section that
+emitted `common/static_modifiers/00_code_static_modifiers.txt` (a whole-file copy of vanilla plus one
+added line) was deleted. Rebuild, redeploy — and the file was **still there**, in `mod/` and in the
+deployed copy, still setting `country_production_tech_spread_mult = 0.5`. Only a hand check caught it.
+
+**Root cause.** `build.ps1`'s clean step named **three directories plus localization**:
+
+```powershell
+foreach ($d in 'common\buildings', 'common\production_methods', 'common\production_method_groups') { ... }
+```
+
+Every other emitted folder — `technology`, `static_modifiers`, `defines`, `journal_entries`,
+`ai_strategies`, `scripted_effects`, `script_values`, `scripted_progress_bars`, `on_actions`, `events`,
+`gfx` — kept whatever an earlier build had left. `mod/` was therefore the UNION of every build ever run
+in that working copy, not the output of the current one.
+
+⚠ **This is the normal case, not an edge case.** Several emitters are conditional by design:
+`research_events.enabled = false` emits no journal entries, bars or script values; the military era-move
+file is written only when there are moves; the testbed probe event only when a metric asks. Each of those
+leaves a stale file behind the moment its condition flips off — and a stale `zzz_v3tb_probe.txt` in a
+CONTROL arm is precisely the landmine L7 exists to prevent, reached by a route L7 does not watch (it
+walks the mod, and the mod really does contain the file).
+
+**Fix.** Clean **everything** under `mod/`, with two deliberate exceptions: `.metadata` (the one
+hand-maintained thing in the tree) and `common/history` (rewritten later in the same build by
+`convert_history.ps1` — wiping it early would leave the game with no starting buildings at all if the
+converter then failed, and `replace_paths` makes our copy the only history the engine reads).
+
+**Verified**: after the fix the stale file is gone from `mod/` and from the deployment; the 16 history
+files are byte-identical (sha256 `a19a314f…`); the mod's directory list is exactly the 25 it emits.
+
+**The general lesson**: a clean step that names its targets is a list that silently falls behind the
+emitters. Whitelist what survives, not what dies.
