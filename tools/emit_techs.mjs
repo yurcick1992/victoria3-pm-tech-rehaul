@@ -215,6 +215,26 @@ const NEWT = OPT.techs.filter(t => t.origin === 'new');
     const add = newEra1Prod.map(id => `\tadd_technology_researched = ${id}\n`).join('');
     txt = sub(txt, re, `$1${add}`, 1, `starting technologies, tier ${tier}`);
   }
+  // ⭐⭐ OUR OWN NAMED GRANT — a technology the 1836 MAP depends on whose slot we date after 1836.
+  // Vanilla already carries three such cases (`central_archives` 1838, `mechanical_tools` 1840,
+  // `intensive_agriculture` 1842) in an explicit named grant, because its own starting map runs buildings
+  // the calendar would forbid. Our re-band adds a fourth, and it must be named for the same reason.
+  //
+  // ⚠ WHY THIS ONE. Vanilla gates a steel tooling workshop on `mechanical_tools` — which IS in that named
+  // grant — so vanilla's 1836 great powers run steel tooling, and 16 of the map's 35 tooling workshops do.
+  // Our ladder replaced that gate with `steel_toolmaking` (era 3, 1865, and requiring `bessemer_process`
+  // 1856), so converting those workshops faithfully produced five great powers owning a building their own
+  // technologies could not unlock. The ruling is that 1836 stays close to vanilla — the industries that
+  // factually existed stay, and their technologies are unlocked — so the grant follows the map.
+  // ⚠ It was INVISIBLE until landmine L13 was fixed: while the converter silently failed to re-tier those
+  // workshops, they stayed on the base rung and nothing was gated wrongly. `tools/verify_start_techs.mjs`
+  // is what found it, one build after the conversion started working.
+  // ⚠ Tiers 1 and 2 only. Tier 3 and below do not run steel tooling on the 1836 map, and granting an 1865
+  // technology to a country that has no use for it would move 1836 away from vanilla, not towards it.
+  for (const tier of [1, 2]) {
+    const re = new RegExp(`(effect_starting_technology_tier_${tier}_tech = \\{\\n)`, 'm');
+    txt = sub(txt, re, `$1\tadd_technology_researched = steel_toolmaking\n`, 1, `named grant, tier ${tier}`);
+  }
   write('common/scripted_effects/00_starting_inventions.txt', txt);
 }
 

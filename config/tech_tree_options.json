@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-11T20:40:41.480Z",
+ "generated": "2026-08-12T11:13:48.464Z",
  "eraCost": {
   "1": 7500,
   "2": 10000,
@@ -108,25 +108,25 @@
    "blurb": "Keeps vanilla's topology and its shared technologies — `manufacturies` still unlocks six industries' first rung — and extends it only where our ladder has rungs vanilla never had. Smallest tree, cheapest research, most familiar to a returning player. Its cost is paid at roadmap step 2: a shared technology cannot be rewarded to one industry.",
    "budget": {
     "production": {
-     "n": 81,
-     "cost": 1042500,
+     "n": 92,
+     "cost": 1197500,
      "perEra": [
       15,
-      12,
-      17,
+      14,
       20,
-      17
+      23,
+      20
      ]
     },
     "military": {
-     "n": 71,
-     "cost": 915000,
+     "n": 76,
+     "cost": 990000,
      "perEra": [
       12,
-      12,
+      13,
       15,
-      17,
-      15
+      19,
+      17
      ]
     },
     "society": {
@@ -249,7 +249,7 @@
       {
        "key": "building_artillery_foundry",
        "name": "Cannon Artillery Foundries",
-       "era": 1,
+       "era": 0,
        "year": 1750,
        "ind": "artillery"
       }
@@ -283,7 +283,7 @@
       {
        "key": "building_motor_industry",
        "name": "Steam Engine Motor Industries",
-       "era": 2,
+       "era": 1,
        "year": 1820,
        "ind": "motor"
       }
@@ -294,7 +294,8 @@
      "reEra": "era 2 -> 1: Newcomen 1712, 124 years before era 2 opens",
      "blocks": [
       "watertube_boiler",
-      "railways"
+      "railways",
+      "compound_engines"
      ]
     },
     {
@@ -347,13 +348,15 @@
       {
        "key": "building_food_industry_sweetener",
        "name": "Beet Sugar Food Industries",
-       "era": 2,
+       "era": 1,
        "year": 1815,
        "ind": "food"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "baking_powder"
+     ]
     },
     {
      "id": "calico_printing",
@@ -378,13 +381,15 @@
       {
        "key": "building_textile_mill_dye",
        "name": "Calico Printing Textile Mills",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "textile"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "mechanized_workshops"
+     ]
     },
     {
      "id": "centralization",
@@ -479,13 +484,14 @@
      "platform": null,
      "industry": "glass",
      "prereqs": [
-      "lathe"
+      "lathe",
+      "manufacturies"
      ],
      "unlocks": [
       {
        "key": "building_glassworks_leaded",
        "name": "Leaded Glassworks",
-       "era": 2,
+       "era": 1,
        "year": 1832,
        "ind": "glass"
       }
@@ -691,13 +697,15 @@
       {
        "key": "building_paper_mill_sulfite",
        "name": "Machine Paper Mills",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "paper"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "chemical_bleaching"
+     ]
     },
     {
      "id": "gunsmithing",
@@ -722,7 +730,7 @@
       {
        "key": "building_arms_industry",
        "name": "Musket Arms Industries",
-       "era": 1,
+       "era": 0,
        "year": 1770,
        "ind": "arms"
       }
@@ -733,7 +741,8 @@
      ],
      "blocks": [
       "artillery",
-      "percussion_cap"
+      "percussion_cap",
+      "rifling"
      ]
     },
     {
@@ -805,13 +814,14 @@
      "platform": null,
      "industry": "furniture",
      "prereqs": [
-      "cotton_gin"
+      "cotton_gin",
+      "manufacturies"
      ],
      "unlocks": [
       {
        "key": "building_furniture_manufactory_lathe",
        "name": "Lathe Furniture Manufactories",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "furniture"
       }
@@ -820,6 +830,7 @@
      "blocks": [
       "crystal_glass",
       "canneries",
+      "mechanized_workshops",
       "mechanical_tools",
       "fourdrinier_machine"
      ]
@@ -872,13 +883,15 @@
       {
        "key": "building_explosives_factory",
        "name": "Leblanc Explosives Factories",
-       "era": 2,
+       "era": 1,
        "year": 1820,
        "ind": "explosives"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "dynamite"
+     ]
     },
     {
      "id": "line_infantry",
@@ -953,42 +966,42 @@
       {
        "key": "building_food_industry",
        "name": "Bakery Food Industries",
-       "era": 1,
+       "era": 0,
        "year": 1750,
        "ind": "food"
       },
       {
        "key": "building_textile_mill",
        "name": "Handsewn Textile Mills",
-       "era": 1,
-       "year": 1800,
+       "era": 0,
+       "year": 1780,
        "ind": "textile"
       },
       {
        "key": "building_furniture_manufactory",
        "name": "Handcrafted Furniture Manufactories",
-       "era": 1,
-       "year": 1800,
+       "era": 0,
+       "year": 1780,
        "ind": "furniture"
       },
       {
        "key": "building_glassworks",
        "name": "Coal-Fired Glassworks",
-       "era": 1,
+       "era": 0,
        "year": 1750,
        "ind": "glass"
       },
       {
        "key": "building_tooling_workshop",
        "name": "Crude Tooling Workshops",
-       "era": 1,
+       "era": 0,
        "year": 1770,
        "ind": "tooling"
       },
       {
        "key": "building_paper_mill",
        "name": "Pulp Pressing Paper Mills",
-       "era": 1,
+       "era": 0,
        "year": 1750,
        "ind": "paper"
       }
@@ -1004,7 +1017,10 @@
      "blocks": [
       "shaft_mining",
       "cotton_gin",
+      "lathe",
       "distillation",
+      "steelworking",
+      "crystal_glass",
       "beet_sugar_refining",
       "calico_printing",
       "fourdrinier_machine",
@@ -1129,13 +1145,20 @@
      "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "shipyard",
+     "industry": "port",
      "prereqs": [],
      "unlocks": [
       {
+       "key": "building_port",
+       "name": "Basic Port",
+       "era": 0,
+       "year": 1700,
+       "ind": "port"
+      },
+      {
        "key": "building_shipyard",
        "name": "Basic Shipyards",
-       "era": 1,
+       "era": 0,
        "year": 1700,
        "ind": "shipyard"
       }
@@ -1147,7 +1170,9 @@
      ],
      "blocks": [
       "drydocks",
-      "admiralty"
+      "admiralty",
+      "screw_frigate",
+      "steamship_bunkering"
      ]
     },
     {
@@ -1363,20 +1388,21 @@
      "platform": null,
      "industry": "tooling",
      "prereqs": [
-      "shaft_mining"
+      "shaft_mining",
+      "manufacturies"
      ],
      "unlocks": [
       {
        "key": "building_tooling_workshop_pig_iron",
        "name": "Pig Iron Tooling Workshops",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "tooling"
       },
       {
        "key": "building_steel_mill",
        "name": "Blister Steel Mills",
-       "era": 1,
+       "era": 0,
        "year": 1745,
        "ind": "steel"
       }
@@ -1386,7 +1412,8 @@
      ],
      "blocks": [
       "bessemer_process",
-      "mechanical_tools"
+      "mechanical_tools",
+      "steel_toolmaking"
      ]
     },
     {
@@ -1499,6 +1526,39 @@
      ]
     },
     {
+     "id": "ammoniacal_liquor",
+     "name": "Ammoniacal Liquor Recovery",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "The gasworks and the coke oven were throwing away their ammonia; recovered as sulphate it becomes the first nitrogen fertilizer a country can make rather than import.",
+     "category": "production",
+     "era": 2,
+     "year": 1865,
+     "onset": 1865,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "fertilizer",
+     "prereqs": [
+      "intensive_agriculture"
+     ],
+     "unlocks": [
+      {
+       "key": "building_chemical_plant_ammoniacal",
+       "name": "Ammoniacal Liquor Fertilizer Plants",
+       "era": 2,
+       "year": 1865,
+       "ind": "fertilizer"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "improved_fertilizer"
+     ]
+    },
+    {
      "id": "aniline",
      "name": "Aniline",
      "vanillaName": "Aniline",
@@ -1552,19 +1612,22 @@
      "platform": null,
      "industry": "food",
      "prereqs": [
-      "fractional_distillation"
+      "fractional_distillation",
+      "beet_sugar_refining"
      ],
      "unlocks": [
       {
        "key": "building_food_industry_baking_powder",
        "name": "Baking Powder Food Industries",
-       "era": 3,
+       "era": 2,
        "year": 1860,
        "ind": "food"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "fat_hydrogenation"
+     ]
     },
     {
      "id": "bessemer_process",
@@ -1694,13 +1757,14 @@
      "platform": null,
      "industry": "paper",
      "prereqs": [
-      "crystal_glass"
+      "crystal_glass",
+      "fourdrinier_machine"
      ],
      "unlocks": [
       {
        "key": "building_paper_mill_bleached",
        "name": "Sulfite Pulping Paper Mills",
-       "era": 3,
+       "era": 2,
        "year": 1874,
        "ind": "paper"
       }
@@ -1711,6 +1775,39 @@
       "aniline",
       "kraft_process",
       "synthetic_indigo"
+     ]
+    },
+    {
+     "id": "compound_engines",
+     "name": "Compound Expansion",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Working the steam twice, through a high-pressure and then a low-pressure cylinder, roughly halves the coal per horsepower-hour — and makes the engine works a supplier to shipping rather than to mills alone.",
+     "category": "production",
+     "era": 2,
+     "year": 1860,
+     "onset": 1860,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "motor",
+     "prereqs": [
+      "atmospheric_engine"
+     ],
+     "unlocks": [
+      {
+       "key": "building_motor_industry_compound",
+       "name": "Compound Engine Motor Industries",
+       "era": 2,
+       "year": 1860,
+       "ind": "motor"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "electric_motors"
      ]
     },
     {
@@ -1914,7 +2011,7 @@
       {
        "key": "building_chemical_plant",
        "name": "Superphosphate Plants",
-       "era": 2,
+       "era": 1,
        "year": 1842,
        "ind": "fertilizer"
       }
@@ -1926,7 +2023,8 @@
      "blocks": [
       "nitroglycerin",
       "improved_fertilizer",
-      "steam_donkey"
+      "steam_donkey",
+      "ammoniacal_liquor"
      ]
     },
     {
@@ -1952,13 +2050,14 @@
       {
        "key": "building_shipyard_metal",
        "name": "Metal Shipyards",
-       "era": 2,
+       "era": 1,
        "year": 1843,
        "ind": "shipyard_steam"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
+      "steel_hulls",
       "marine_steam_turbine"
      ]
     },
@@ -2089,20 +2188,22 @@
      "industry": "textile",
      "prereqs": [
       "canneries",
-      "mechanical_tools"
+      "mechanical_tools",
+      "calico_printing",
+      "lathe"
      ],
      "unlocks": [
       {
        "key": "building_textile_mill_sewing",
        "name": "Sewing Machine Textile Mills",
-       "era": 3,
+       "era": 2,
        "year": 1855,
        "ind": "textile"
       },
       {
        "key": "building_furniture_manufactory_mechanized",
        "name": "Mechanized Furniture Manufactories",
-       "era": 3,
+       "era": 2,
        "year": 1855,
        "ind": "furniture"
       }
@@ -2110,7 +2211,9 @@
      "vanillaUnlocks": [],
      "blocks": [
       "vacuum_canning",
-      "shift_work"
+      "shift_work",
+      "electrical_capacitors",
+      "rotary_veneer"
      ]
     },
     {
@@ -2240,7 +2343,7 @@
       {
        "key": "building_munition_plant",
        "name": "Percussion Cap Munition Plants",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "munition"
       }
@@ -2403,7 +2506,7 @@
       {
        "key": "building_railway",
        "name": "Early Railway",
-       "era": 2,
+       "era": 1,
        "year": 1825,
        "ind": "railway"
       }
@@ -2465,14 +2568,15 @@
      "platform": null,
      "industry": "arms",
      "prereqs": [
-      "percussion_cap"
+      "percussion_cap",
+      "gunsmithing"
      ],
      "unlocks": [
       {
        "key": "building_arms_industry_rifles",
        "name": "Rifle Arms Industries",
-       "era": 2,
-       "year": 1853,
+       "era": 1,
+       "year": 1849,
        "ind": "arms"
       }
      ],
@@ -2500,13 +2604,14 @@
      "platform": null,
      "industry": "shipyard",
      "prereqs": [
-      "paddle_steamer"
+      "paddle_steamer",
+      "navigation"
      ],
      "unlocks": [
       {
        "key": "building_shipyard_complex",
        "name": "Complex Shipyards",
-       "era": 2,
+       "era": 1,
        "year": 1845,
        "ind": "shipyard"
       }
@@ -2540,7 +2645,7 @@
       {
        "key": "building_artillery_foundry_smoothbore",
        "name": "Smoothbore Artillery Foundries",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "artillery"
       }
@@ -2568,13 +2673,14 @@
      "platform": null,
      "industry": "port",
      "prereqs": [
-      "paddle_steamer"
+      "paddle_steamer",
+      "navigation"
      ],
      "unlocks": [
       {
        "key": "building_port_steam",
        "name": "Steamship Ports",
-       "era": 2,
+       "era": 1,
        "year": 1840,
        "ind": "port"
       }
@@ -2582,6 +2688,39 @@
      "vanillaUnlocks": [],
      "blocks": [
       "deep_water_docks"
+     ]
+    },
+    {
+     "id": "steel_hulls",
+     "name": "Steel Hulls",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Mild steel plate is stronger than iron for the same weight, so the same hull carries more cargo or more armour, and the yard's berths are laid out for a material that will not be replaced this century.",
+     "category": "military",
+     "era": 2,
+     "year": 1875,
+     "onset": 1875,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "shipyard_steam",
+     "prereqs": [
+      "iron_screw_steamers"
+     ],
+     "unlocks": [
+      {
+       "key": "building_shipyard_metal_steel_hull",
+       "name": "Steel Hull Steamship Yards",
+       "era": 2,
+       "year": 1875,
+       "ind": "shipyard_steam"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "marine_steam_turbine"
      ]
     },
     {
@@ -2683,7 +2822,7 @@
       {
        "key": "building_artillery_foundry_breech",
        "name": "Breech-Loading Artillery Foundries",
-       "era": 3,
+       "era": 2,
        "year": 1861,
        "ind": "artillery"
       }
@@ -2719,7 +2858,7 @@
        "key": "building_art_academy_photographic",
        "name": "Photographic Art Academy",
        "era": 3,
-       "year": 1839,
+       "year": 1885,
        "ind": "art_academy"
       }
      ],
@@ -2804,7 +2943,7 @@
       {
        "key": "building_port_industrial",
        "name": "Industrial Port",
-       "era": 3,
+       "era": 2,
        "year": 1875,
        "ind": "port"
       }
@@ -2831,13 +2970,14 @@
      "platform": null,
      "industry": "explosives",
      "prereqs": [
-      "nitroglycerin"
+      "nitroglycerin",
+      "leblanc_process"
      ],
      "unlocks": [
       {
        "key": "building_explosives_factory_ammonia",
        "name": "Dynamite Explosives Factories",
-       "era": 3,
+       "era": 2,
        "year": 1867,
        "ind": "explosives"
       }
@@ -2954,7 +3094,7 @@
       {
        "key": "building_munition_plant_shells",
        "name": "Explosive Shell Munition Plants",
-       "era": 3,
+       "era": 2,
        "year": 1875,
        "ind": "munition"
       }
@@ -2962,6 +3102,39 @@
      "vanillaUnlocks": [],
      "blocks": [
       "drawn_brass_cartridges"
+     ]
+    },
+    {
+     "id": "fat_hydrogenation",
+     "name": "Fat Hydrogenation",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Normann's nickel catalyst hardens cheap liquid oils into a solid cooking fat, and the food industry stops depending on animal tallow and the dairy herd.",
+     "category": "production",
+     "era": 3,
+     "year": 1909,
+     "onset": 1909,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "food",
+     "prereqs": [
+      "baking_powder"
+     ],
+     "unlocks": [
+      {
+       "key": "building_food_industry_hydrogenated",
+       "name": "Hydrogenated Fat Food Industries",
+       "era": 3,
+       "year": 1909,
+       "ind": "food"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "dough_rollers"
      ]
     },
     {
@@ -3134,7 +3307,8 @@
      "platform": null,
      "industry": "fertilizer",
      "prereqs": [
-      "intensive_agriculture"
+      "intensive_agriculture",
+      "ammoniacal_liquor"
      ],
      "unlocks": [
       {
@@ -3357,7 +3531,7 @@
        "key": "building_steel_mill_open_hearth",
        "name": "Open-Hearth Steel Mills",
        "era": 3,
-       "year": 1868,
+       "year": 1885,
        "ind": "steel"
       }
      ],
@@ -3467,13 +3641,15 @@
       {
        "key": "building_glassworks_crystal",
        "name": "Tank Furnace Glassworks",
-       "era": 3,
+       "era": 2,
        "year": 1867,
        "ind": "glass"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "plastics"
+     ]
     },
     {
      "id": "reinforced_concrete",
@@ -3524,7 +3700,7 @@
       {
        "key": "building_arms_industry_repeaters",
        "name": "Repeater Arms Industries",
-       "era": 3,
+       "era": 2,
        "year": 1866,
        "ind": "arms"
       }
@@ -3560,6 +3736,39 @@
       "electrical_generation",
       "combustion_engine",
       "pneumatic_tools"
+     ]
+    },
+    {
+     "id": "rotary_veneer",
+     "name": "Rotary-Cut Veneer",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Peeling a log on a rotary lathe and gluing the sheets crosswise gives a panel stronger than the timber it came from, and furniture stops being carpentry and starts being assembly.",
+     "category": "production",
+     "era": 3,
+     "year": 1900,
+     "onset": 1900,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "furniture",
+     "prereqs": [
+      "mechanized_workshops"
+     ],
+     "unlocks": [
+      {
+       "key": "building_furniture_manufactory_plywood",
+       "name": "Plywood Furniture Manufactories",
+       "era": 3,
+       "year": 1900,
+       "ind": "furniture"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "nitrocellulose_lacquer"
      ]
     },
     {
@@ -3743,7 +3952,7 @@
       {
        "key": "building_railway_steam",
        "name": "Steam Railway",
-       "era": 3,
+       "era": 2,
        "year": 1867,
        "ind": "railway"
       }
@@ -3771,13 +3980,14 @@
      "industry": "tooling",
      "prereqs": [
       "mechanical_tools",
-      "bessemer_process"
+      "bessemer_process",
+      "steelworking"
      ],
      "unlocks": [
       {
        "key": "building_tooling_workshop_steel",
        "name": "Steel Tooling Workshops",
-       "era": 3,
+       "era": 2,
        "year": 1865,
        "ind": "tooling"
       }
@@ -3811,7 +4021,7 @@
       {
        "key": "building_electrics_industry",
        "name": "Electrics Industries",
-       "era": 3,
+       "era": 2,
        "year": 1878,
        "ind": "electrics"
       }
@@ -3821,7 +4031,8 @@
      ],
      "reEra": "era 4 -> 3: Bell 1876, first exchange 1878",
      "blocks": [
-      "radio"
+      "radio",
+      "wireless_telegraphy"
      ]
     },
     {
@@ -3901,6 +4112,39 @@
      ]
     },
     {
+     "id": "wireless_telegraphy",
+     "name": "Wireless Telegraphy",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Spark transmitters put a telegraph office on a ship and then across an ocean, and the electrical trade acquires a product that needs no line at all.",
+     "category": "production",
+     "era": 3,
+     "year": 1901,
+     "onset": 1901,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "electrics",
+     "prereqs": [
+      "telephone"
+     ],
+     "unlocks": [
+      {
+       "key": "building_electrics_industry_wireless",
+       "name": "Wireless Telegraph Electrics Industries",
+       "era": 3,
+       "year": 1901,
+       "ind": "electrics"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "radio"
+     ]
+    },
+    {
      "id": "art_silk",
      "name": "Art Silk",
      "vanillaName": "Art Silk",
@@ -3917,14 +4161,15 @@
      "platform": null,
      "industry": "synthetics",
      "prereqs": [
-      "aniline"
+      "aniline",
+      "synthetic_indigo"
      ],
      "unlocks": [
       {
        "key": "building_synthetics_plant_viscose",
        "name": "Viscose Rayon Plants",
        "era": 4,
-       "year": 1905,
+       "year": 1912,
        "ind": "synthetics"
       }
      ],
@@ -4009,7 +4254,7 @@
       {
        "key": "building_arms_industry_bolt_action",
        "name": "Bolt-Action Arms Industries",
-       "era": 4,
+       "era": 3,
        "year": 1886,
        "ind": "arms"
       }
@@ -4017,6 +4262,7 @@
      "vanillaUnlocks": [],
      "blocks": [
       "automatic_machine_guns",
+      "light_machine_guns",
       "stamped_receivers"
      ]
     },
@@ -4077,6 +4323,7 @@
       "building_automotive_industry"
      ],
      "blocks": [
+      "conveyors",
       "compression_ignition",
       "diesel_engine"
      ]
@@ -4131,7 +4378,7 @@
       {
        "key": "building_port_modern",
        "name": "Modern Port",
-       "era": 4,
+       "era": 3,
        "year": 1908,
        "ind": "port"
       }
@@ -4160,7 +4407,8 @@
      "prereqs": [
       "vulcanization",
       "shift_work",
-      "electrical_generation"
+      "electrical_generation",
+      "combustion_engine"
      ],
      "unlocks": [
       {
@@ -4249,14 +4497,15 @@
      "platform": null,
      "industry": "motor",
      "prereqs": [
-      "combustion_engine"
+      "combustion_engine",
+      "electric_motors"
      ],
      "unlocks": [
       {
        "key": "building_motor_industry_diesel",
        "name": "Diesel Engine Motor Industries",
        "era": 4,
-       "year": 1904,
+       "year": 1912,
        "ind": "motor"
       }
      ],
@@ -4289,13 +4538,14 @@
       {
        "key": "building_munition_plant_drawn_brass",
        "name": "Drawn Brass Munition Plants",
-       "era": 4,
+       "era": 3,
        "year": 1895,
        "ind": "munition"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
+      "shell_filling",
       "automatic_cartridge_lines"
      ]
     },
@@ -4352,7 +4602,7 @@
        "key": "building_steel_mill_electric_arc",
        "name": "Electric Arc Steel Mills",
        "era": 4,
-       "year": 1903,
+       "year": 1912,
        "ind": "steel"
       }
      ],
@@ -4380,7 +4630,8 @@
      "platform": null,
      "industry": "motor",
      "prereqs": [
-      "electrical_generation"
+      "electrical_generation",
+      "compound_engines"
      ],
      "unlocks": [
       {
@@ -4392,7 +4643,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "diesel_engine"
+     ]
     },
     {
      "id": "electric_railway",
@@ -4418,13 +4671,15 @@
       {
        "key": "building_railway_electric",
        "name": "Electric Railway",
-       "era": 4,
+       "era": 3,
        "year": 1895,
        "ind": "railway"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "superheated_steam"
+     ]
     },
     {
      "id": "electrical_capacitors",
@@ -4443,13 +4698,14 @@
      "platform": null,
      "industry": "textile",
      "prereqs": [
-      "electrical_generation"
+      "electrical_generation",
+      "mechanized_workshops"
      ],
      "unlocks": [
       {
        "key": "building_textile_mill_electric",
        "name": "Electric Sewing Textile Mills",
-       "era": 4,
+       "era": 3,
        "year": 1905,
        "ind": "textile"
       }
@@ -4458,6 +4714,7 @@
      "blocks": [
       "pasteurization",
       "electric_railway",
+      "long_draft_spinning",
       "ribbon_machine"
      ]
     },
@@ -4510,7 +4767,7 @@
        "key": "building_art_academy_film",
        "name": "Film Art Academy",
        "era": 4,
-       "year": 1896,
+       "year": 1912,
        "ind": "art_academy"
       }
      ],
@@ -4544,7 +4801,7 @@
       {
        "key": "building_tooling_workshop_rubber",
        "name": "High-Speed Steel Tooling Workshops",
-       "era": 4,
+       "era": 3,
        "year": 1901,
        "ind": "tooling"
       }
@@ -4605,13 +4862,14 @@
       {
        "key": "building_paper_mill_kraft",
        "name": "Kraft Process Paper Mills",
-       "era": 4,
+       "era": 3,
        "year": 1890,
        "ind": "paper"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
+      "semi_chemical_pulping",
       "high_speed_papermaking"
      ]
     },
@@ -4636,6 +4894,70 @@
       "monitor_tech"
      ],
      "unlocks": [],
+     "vanillaUnlocks": [],
+     "blocks": []
+    },
+    {
+     "id": "light_machine_guns",
+     "name": "Light Machine Guns",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "An automatic weapon a section can carry moves sustained fire from the strongpoint into the assault, and the arms industry starts making mechanisms rather than barrels.",
+     "category": "military",
+     "era": 4,
+     "year": 1915,
+     "onset": 1915,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "arms",
+     "prereqs": [
+      "bolt_action_rifles"
+     ],
+     "unlocks": [
+      {
+       "key": "building_arms_industry_automatic",
+       "name": "Automatic Arms Industries",
+       "era": 4,
+       "year": 1915,
+       "ind": "arms"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "stamped_receivers"
+     ]
+    },
+    {
+     "id": "long_draft_spinning",
+     "name": "Long-Draft Spinning",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Drafting the roving further in one passage removes whole banks of machinery from the spinning room, and with individual electric drive the mill is rebuilt around the operative rather than the shaft.",
+     "category": "production",
+     "era": 4,
+     "year": 1925,
+     "onset": 1925,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "textile",
+     "prereqs": [
+      "electrical_capacitors"
+     ],
+     "unlocks": [
+      {
+       "key": "building_textile_mill_highdraft",
+       "name": "High-Draft Spinning Textile Mills",
+       "era": 4,
+       "year": 1925,
+       "ind": "textile"
+      }
+     ],
      "vanillaUnlocks": [],
      "blocks": []
     },
@@ -4682,7 +5004,8 @@
      "industry": "shipyard_steam",
      "prereqs": [
       "iron_screw_steamers",
-      "ironclad_tech"
+      "ironclad_tech",
+      "steel_hulls"
      ],
      "unlocks": [
       {
@@ -4827,7 +5150,7 @@
       {
        "key": "building_explosives_factory_vacuum",
        "name": "Ostwald Process Explosives Factories",
-       "era": 4,
+       "era": 3,
        "year": 1908,
        "ind": "explosives"
       }
@@ -4880,20 +5203,22 @@
      "platform": null,
      "industry": "glass",
      "prereqs": [
-      "reinforced_concrete"
+      "reinforced_concrete",
+      "regenerative_furnace"
      ],
      "unlocks": [
       {
        "key": "building_glassworks_plastics",
        "name": "Plastic Glassworks",
-       "era": 4,
+       "era": 3,
        "year": 1910,
        "ind": "glass"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
-      "nitrocellulose_lacquer"
+      "nitrocellulose_lacquer",
+      "ribbon_machine"
      ]
     },
     {
@@ -5017,7 +5342,8 @@
      "platform": null,
      "industry": "electrics",
      "prereqs": [
-      "telephone"
+      "telephone",
+      "wireless_telegraphy"
      ],
      "unlocks": [
       {
@@ -5056,7 +5382,7 @@
       {
        "key": "building_artillery_foundry_recoiled",
        "name": "Recoiled Barrel Artillery Foundries",
-       "era": 4,
+       "era": 3,
        "year": 1897,
        "ind": "artillery"
       }
@@ -5090,6 +5416,72 @@
      "blocks": [
       "dreadnought_tech",
       "battlefleet_tactics"
+     ]
+    },
+    {
+     "id": "semi_chemical_pulping",
+     "name": "Semi-Chemical Pulping",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "A mild sulfite cook followed by mechanical defibring opens hardwoods the chemical mills could not use, and the corrugated box gets a cheap domestic furnish.",
+     "category": "production",
+     "era": 4,
+     "year": 1925,
+     "onset": 1925,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "paper",
+     "prereqs": [
+      "kraft_process"
+     ],
+     "unlocks": [
+      {
+       "key": "building_paper_mill_nssc",
+       "name": "Semi-Chemical Paper Mills",
+       "era": 4,
+       "year": 1925,
+       "ind": "paper"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "high_speed_papermaking"
+     ]
+    },
+    {
+     "id": "shell_filling",
+     "name": "Mass Shell Filling",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "The filling factory is a distinct industry from the case plant: acres of separated sheds, women's labour at scale, and an output measured in millions of rounds a week.",
+     "category": "military",
+     "era": 4,
+     "year": 1915,
+     "onset": 1915,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "munition",
+     "prereqs": [
+      "drawn_brass_cartridges"
+     ],
+     "unlocks": [
+      {
+       "key": "building_munition_plant_filling",
+       "name": "Shell Filling Munition Plants",
+       "era": 4,
+       "year": 1915,
+       "ind": "munition"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "automatic_cartridge_lines"
      ]
     },
     {
@@ -5150,6 +5542,39 @@
      "blocks": []
     },
     {
+     "id": "superheated_steam",
+     "name": "Superheating",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Passing the steam back through the firebox before it reaches the cylinders cuts coal and water by about a quarter per ton-mile, and is why the steam locomotive survived the electric one by forty years.",
+     "category": "production",
+     "era": 4,
+     "year": 1915,
+     "onset": 1915,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "railway",
+     "prereqs": [
+      "electric_railway"
+     ],
+     "unlocks": [
+      {
+       "key": "building_railway_superheated",
+       "name": "Superheated Steam Railways",
+       "era": 4,
+       "year": 1915,
+       "ind": "railway"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "compression_ignition"
+     ]
+    },
+    {
      "id": "synthetic_indigo",
      "name": "Synthetic Indigo",
      "vanillaName": null,
@@ -5179,7 +5604,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "art_silk"
+     ]
     },
     {
      "id": "trench_works",
@@ -5343,20 +5770,12 @@
      "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "shipyard_steam",
+     "industry": null,
      "prereqs": [
       "electric_arc_process",
       "pneumatic_tools"
      ],
-     "unlocks": [
-      {
-       "key": "building_shipyard_arc_welding",
-       "name": "Arc Welding Shipyards",
-       "era": 5,
-       "year": 1941,
-       "ind": "shipyard_steam"
-      }
-     ],
+     "unlocks": [],
      "vanillaUnlocks": [],
      "blocks": [
       "high_speed_diesel"
@@ -5385,8 +5804,41 @@
       {
        "key": "building_artillery_foundry_autofrettage",
        "name": "Autofrettaged Artillery Foundries",
-       "era": 5,
+       "era": 4,
        "year": 1925,
+       "ind": "artillery"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "automatic_aa_guns"
+     ]
+    },
+    {
+     "id": "automatic_aa_guns",
+     "name": "Automatic Anti-Aircraft Guns",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "A fast-traversing automatic gun on a welded mounting, laid by a mechanical director, is the first artillery designed for a target that moves faster than the shell's flight time.",
+     "category": "military",
+     "era": 5,
+     "year": 1936,
+     "onset": 1936,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "artillery",
+     "prereqs": [
+      "autofrettage"
+     ],
+     "unlocks": [
+      {
+       "key": "building_artillery_foundry_antiaircraft",
+       "name": "Automatic Anti-Aircraft Foundries",
+       "era": 5,
+       "year": 1936,
        "ind": "artillery"
       }
      ],
@@ -5410,7 +5862,8 @@
      "platform": null,
      "industry": "munition",
      "prereqs": [
-      "drawn_brass_cartridges"
+      "drawn_brass_cartridges",
+      "shell_filling"
      ],
      "unlocks": [
       {
@@ -5543,13 +5996,15 @@
       {
        "key": "building_tooling_workshop_carbide",
        "name": "Cemented Carbide Tooling Workshops",
-       "era": 5,
+       "era": 4,
        "year": 1927,
        "ind": "tooling"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "tracer_control"
+     ]
     },
     {
      "id": "chemical_warfare",
@@ -5591,7 +6046,8 @@
      "platform": null,
      "industry": "railway",
      "prereqs": [
-      "combustion_engine"
+      "combustion_engine",
+      "superheated_steam"
      ],
      "unlocks": [
       {
@@ -5654,13 +6110,15 @@
       {
        "key": "building_explosives_factory_brine",
        "name": "Continuous Nitration Explosives Factories",
-       "era": 5,
+       "era": 4,
        "year": 1928,
        "ind": "explosives"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "cyclonite_process"
+     ]
     },
     {
      "id": "continuous_strip_mill",
@@ -5687,8 +6145,39 @@
        "key": "building_steel_mill_strip_mill",
        "name": "Continuous Strip Mill Steelworks",
        "era": 5,
-       "year": 1926,
+       "year": 1932,
        "ind": "steel"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": []
+    },
+    {
+     "id": "cyclonite_process",
+     "name": "Cyclonite Process",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Nitrating hexamine gives an explosive half again as powerful as TNT, and continuous plant makes it in quantities that change what a bomb and a torpedo can do.",
+     "category": "production",
+     "era": 5,
+     "year": 1940,
+     "onset": 1940,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "explosives",
+     "prereqs": [
+      "continuous_nitration"
+     ],
+     "unlocks": [
+      {
+       "key": "building_explosives_factory_cyclonite",
+       "name": "Cyclonite Explosives Factories",
+       "era": 5,
+       "year": 1940,
+       "ind": "explosives"
       }
      ],
      "vanillaUnlocks": [],
@@ -5734,7 +6223,8 @@
      "platform": null,
      "industry": "food",
      "prereqs": [
-      "conveyors"
+      "conveyors",
+      "fat_hydrogenation"
      ],
      "unlocks": [
       {
@@ -5796,6 +6286,37 @@
      "blocks": []
     },
     {
+     "id": "glass_fibre",
+     "name": "Glass Fibre",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Glass drawn continuously into filaments finer than wool is no longer a glazing material at all — it insulates, reinforces and filters, and the glassworks acquires a market that has nothing to do with windows.",
+     "category": "production",
+     "era": 5,
+     "year": 1938,
+     "onset": 1938,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "glass",
+     "prereqs": [
+      "ribbon_machine"
+     ],
+     "unlocks": [
+      {
+       "key": "building_glassworks_fibre",
+       "name": "Glass Fibre Works",
+       "era": 5,
+       "year": 1938,
+       "ind": "glass"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": []
+    },
+    {
      "id": "high_speed_diesel",
      "name": "High Speed Diesel",
      "vanillaName": null,
@@ -5845,14 +6366,15 @@
      "industry": "paper",
      "prereqs": [
       "kraft_process",
-      "conveyors"
+      "conveyors",
+      "semi_chemical_pulping"
      ],
      "unlocks": [
       {
        "key": "building_paper_mill_highspeed",
        "name": "High-Speed Machine Paper Mills",
        "era": 5,
-       "year": 1930,
+       "year": 1935,
        "ind": "paper"
       }
      ],
@@ -5954,7 +6476,7 @@
       {
        "key": "building_port_motor",
        "name": "Motor Ship Ports",
-       "era": 5,
+       "era": 4,
        "year": 1930,
        "ind": "port"
       }
@@ -6053,7 +6575,8 @@
      "industry": "furniture",
      "prereqs": [
       "art_silk",
-      "plastics"
+      "plastics",
+      "rotary_veneer"
      ],
      "unlocks": [
       {
@@ -6096,7 +6619,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "welded_prefabrication"
+     ]
     },
     {
      "id": "oil_turbine",
@@ -6115,14 +6640,15 @@
      "platform": null,
      "industry": "power",
      "prereqs": [
-      "steam_turbine"
+      "steam_turbine",
+      "pulverized_coal_firing"
      ],
      "unlocks": [
       {
        "key": "building_power_plant_oil",
        "name": "Oil-Fired Power Plant",
        "era": 5,
-       "year": 1925,
+       "year": 1932,
        "ind": "power"
       }
      ],
@@ -6214,7 +6740,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "oil_turbine"
+     ]
     },
     {
      "id": "ribbon_machine",
@@ -6234,19 +6762,22 @@
      "industry": "glass",
      "prereqs": [
       "automatic_bottle_blowers",
-      "electrical_capacitors"
+      "electrical_capacitors",
+      "plastics"
      ],
      "unlocks": [
       {
        "key": "building_glassworks_ribbon",
        "name": "Ribbon Machine Glassworks",
-       "era": 5,
+       "era": 4,
        "year": 1926,
        "ind": "glass"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "glass_fibre"
+     ]
     },
     {
      "id": "sound_film",
@@ -6272,7 +6803,7 @@
        "key": "building_art_academy_sound_film",
        "name": "Sound Film Art Academies",
        "era": 5,
-       "year": 1927,
+       "year": 1932,
        "ind": "art_academy"
       }
      ],
@@ -6296,7 +6827,8 @@
      "platform": null,
      "industry": "arms",
      "prereqs": [
-      "bolt_action_rifles"
+      "bolt_action_rifles",
+      "light_machine_guns"
      ],
      "unlocks": [
       {
@@ -6334,7 +6866,7 @@
        "key": "building_chemical_plant_reforming",
        "name": "Steam Reforming Chemical Plants",
        "era": 5,
-       "year": 1931,
+       "year": 1935,
        "ind": "fertilizer"
       }
      ],
@@ -6362,6 +6894,37 @@
       "trench_works"
      ],
      "unlocks": [],
+     "vanillaUnlocks": [],
+     "blocks": []
+    },
+    {
+     "id": "tracer_control",
+     "name": "Hydraulic Tracer Control",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "A stylus follows a master form and hydraulics repeat it on the cutter, so a complex profile no longer needs a skilled machinist — only a first article to copy.",
+     "category": "production",
+     "era": 5,
+     "year": 1936,
+     "onset": 1936,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "tooling",
+     "prereqs": [
+      "cemented_carbide"
+     ],
+     "unlocks": [
+      {
+       "key": "building_tooling_workshop_tracer",
+       "name": "Tracer-Controlled Tooling Workshops",
+       "era": 5,
+       "year": 1936,
+       "ind": "tooling"
+      }
+     ],
      "vanillaUnlocks": [],
      "blocks": []
     },
@@ -6427,16 +6990,47 @@
      ],
      "vanillaUnlocks": [],
      "blocks": []
+    },
+    {
+     "id": "welded_prefabrication",
+     "name": "Welded Prefabrication",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Hulls assembled from pre-welded sections built inland turn shipbuilding into an assembly industry, and a merchant ship from a two-year commission into a two-month one.",
+     "category": "military",
+     "era": 5,
+     "year": 1941,
+     "onset": 1941,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "shipyard_steam",
+     "prereqs": [
+      "oil_fired_boilers"
+     ],
+     "unlocks": [
+      {
+       "key": "building_shipyard_arc_welding",
+       "name": "Arc Welding Shipyards",
+       "era": 5,
+       "year": 1941,
+       "ind": "shipyard_steam"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": []
     }
    ],
-   "rushCost": 673750,
-   "rushCostVanillaAot": 673750,
+   "rushCost": 739375,
+   "rushCostVanillaAot": 739375,
    "rushCostByAot": {
-    "0.25": 673750,
-    "0.2": 542500,
-    "0.15": 411250,
-    "0.125": 345625,
-    "0.1": 280000
+    "0.25": 739375,
+    "0.2": 595000,
+    "0.15": 450625,
+    "0.125": 378437.5,
+    "0.1": 306250
    }
   },
   {
@@ -6447,25 +7041,25 @@
    "blurb": "One dedicated technology per tier: 22 near-independent verticals, with cross-links only where a recipe literally cannot exist without another industry's product. Maximum per-industry targeting, which is what the industry-driven research events need; reads like an industry's own story. Weakest at making a technological lead in one sector lift the others.",
    "budget": {
     "production": {
-     "n": 93,
-     "cost": 1152500,
+     "n": 104,
+     "cost": 1307500,
      "perEra": [
       22,
-      15,
-      18,
+      17,
       21,
-      17
+      24,
+      20
      ]
     },
     "military": {
-     "n": 73,
-     "cost": 930000,
+     "n": 78,
+     "cost": 1005000,
      "perEra": [
       14,
-      12,
+      13,
       15,
-      17,
-      15
+      19,
+      17
      ]
     },
     "society": {
@@ -6615,7 +7209,7 @@
       {
        "key": "building_motor_industry",
        "name": "Steam Engine Motor Industries",
-       "era": 2,
+       "era": 1,
        "year": 1820,
        "ind": "motor"
       }
@@ -6627,7 +7221,7 @@
      "blocks": [
       "watertube_boiler",
       "railways",
-      "electric_motors"
+      "compound_engines"
      ]
     },
     {
@@ -6653,7 +7247,7 @@
       {
        "key": "building_food_industry",
        "name": "Bakery Food Industries",
-       "era": 1,
+       "era": 0,
        "year": 1750,
        "ind": "food"
       }
@@ -6712,7 +7306,7 @@
       {
        "key": "building_food_industry_sweetener",
        "name": "Beet Sugar Food Industries",
-       "era": 2,
+       "era": 1,
        "year": 1815,
        "ind": "food"
       }
@@ -6745,7 +7339,7 @@
       {
        "key": "building_artillery_foundry",
        "name": "Cannon Artillery Foundries",
-       "era": 1,
+       "era": 0,
        "year": 1750,
        "ind": "artillery"
       }
@@ -6778,7 +7372,7 @@
       {
        "key": "building_textile_mill_dye",
        "name": "Calico Printing Textile Mills",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "textile"
       }
@@ -6837,7 +7431,7 @@
       {
        "key": "building_glassworks",
        "name": "Coal-Fired Glassworks",
-       "era": 1,
+       "era": 0,
        "year": 1750,
        "ind": "glass"
       }
@@ -6921,7 +7515,7 @@
       {
        "key": "building_glassworks_leaded",
        "name": "Leaded Glassworks",
-       "era": 2,
+       "era": 1,
        "year": 1832,
        "ind": "glass"
       }
@@ -7125,7 +7719,7 @@
       {
        "key": "building_paper_mill_sulfite",
        "name": "Machine Paper Mills",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "paper"
       }
@@ -7158,7 +7752,7 @@
       {
        "key": "building_arms_industry",
        "name": "Musket Arms Industries",
-       "era": 1,
+       "era": 0,
        "year": 1770,
        "ind": "arms"
       }
@@ -7274,7 +7868,7 @@
       {
        "key": "building_furniture_manufactory_lathe",
        "name": "Lathe Furniture Manufactories",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "furniture"
       }
@@ -7335,7 +7929,7 @@
       {
        "key": "building_explosives_factory",
        "name": "Leblanc Explosives Factories",
-       "era": 2,
+       "era": 1,
        "year": 1820,
        "ind": "explosives"
       }
@@ -7420,8 +8014,8 @@
       {
        "key": "building_furniture_manufactory",
        "name": "Handcrafted Furniture Manufactories",
-       "era": 1,
-       "year": 1800,
+       "era": 0,
+       "year": 1780,
        "ind": "furniture"
       }
      ],
@@ -7587,13 +8181,20 @@
      "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "shipyard",
+     "industry": "port",
      "prereqs": [],
      "unlocks": [
       {
+       "key": "building_port",
+       "name": "Basic Port",
+       "era": 0,
+       "year": 1700,
+       "ind": "port"
+      },
+      {
        "key": "building_shipyard",
        "name": "Basic Shipyards",
-       "era": 1,
+       "era": 0,
        "year": 1700,
        "ind": "shipyard"
       }
@@ -7606,7 +8207,8 @@
      "blocks": [
       "drydocks",
       "admiralty",
-      "screw_frigate"
+      "screw_frigate",
+      "steamship_bunkering"
      ]
     },
     {
@@ -7632,7 +8234,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "screw_frigate",
-      "steamship_bunkering",
       "iron_screw_steamers"
      ]
     },
@@ -7659,7 +8260,7 @@
       {
        "key": "building_tooling_workshop_pig_iron",
        "name": "Pig Iron Tooling Workshops",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "tooling"
       }
@@ -7720,7 +8321,7 @@
       {
        "key": "building_paper_mill",
        "name": "Pulp Pressing Paper Mills",
-       "era": 1,
+       "era": 0,
        "year": 1750,
        "ind": "paper"
       }
@@ -7777,8 +8378,8 @@
       {
        "key": "building_textile_mill",
        "name": "Handsewn Textile Mills",
-       "era": 1,
-       "year": 1800,
+       "era": 0,
+       "year": 1780,
        "ind": "textile"
       }
      ],
@@ -7927,7 +8528,7 @@
       {
        "key": "building_steel_mill",
        "name": "Blister Steel Mills",
-       "era": 1,
+       "era": 0,
        "year": 1745,
        "ind": "steel"
       }
@@ -8019,7 +8620,7 @@
       {
        "key": "building_tooling_workshop",
        "name": "Crude Tooling Workshops",
-       "era": 1,
+       "era": 0,
        "year": 1770,
        "ind": "tooling"
       }
@@ -8083,6 +8684,39 @@
      ]
     },
     {
+     "id": "ammoniacal_liquor",
+     "name": "Ammoniacal Liquor Recovery",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "The gasworks and the coke oven were throwing away their ammonia; recovered as sulphate it becomes the first nitrogen fertilizer a country can make rather than import.",
+     "category": "production",
+     "era": 2,
+     "year": 1865,
+     "onset": 1865,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "fertilizer",
+     "prereqs": [
+      "superphosphate"
+     ],
+     "unlocks": [
+      {
+       "key": "building_chemical_plant_ammoniacal",
+       "name": "Ammoniacal Liquor Fertilizer Plants",
+       "era": 2,
+       "year": 1865,
+       "ind": "fertilizer"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "improved_fertilizer"
+     ]
+    },
+    {
      "id": "aniline",
      "name": "Aniline",
      "vanillaName": "Aniline",
@@ -8143,14 +8777,14 @@
       {
        "key": "building_food_industry_baking_powder",
        "name": "Baking Powder Food Industries",
-       "era": 3,
+       "era": 2,
        "year": 1860,
        "ind": "food"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
-      "dough_rollers"
+      "fat_hydrogenation"
      ]
     },
     {
@@ -8176,14 +8810,14 @@
       {
        "key": "building_furniture_manufactory_mechanized",
        "name": "Mechanized Furniture Manufactories",
-       "era": 3,
+       "era": 2,
        "year": 1855,
        "ind": "furniture"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
-      "nitrocellulose_lacquer"
+      "rotary_veneer"
      ]
     },
     {
@@ -8320,6 +8954,39 @@
      "blocks": [
       "rubber_mastication",
       "aniline"
+     ]
+    },
+    {
+     "id": "compound_engines",
+     "name": "Compound Expansion",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Working the steam twice, through a high-pressure and then a low-pressure cylinder, roughly halves the coal per horsepower-hour — and makes the engine works a supplier to shipping rather than to mills alone.",
+     "category": "production",
+     "era": 2,
+     "year": 1860,
+     "onset": 1860,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "motor",
+     "prereqs": [
+      "atmospheric_engine"
+     ],
+     "unlocks": [
+      {
+       "key": "building_motor_industry_compound",
+       "name": "Compound Engine Motor Industries",
+       "era": 2,
+       "year": 1860,
+       "ind": "motor"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "electric_motors"
      ]
     },
     {
@@ -8553,14 +9220,14 @@
       {
        "key": "building_shipyard_metal",
        "name": "Metal Shipyards",
-       "era": 2,
+       "era": 1,
        "year": 1843,
        "ind": "shipyard_steam"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
-      "marine_steam_turbine"
+      "steel_hulls"
      ]
     },
     {
@@ -8825,7 +9492,7 @@
       {
        "key": "building_munition_plant",
        "name": "Percussion Cap Munition Plants",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "munition"
       }
@@ -8988,7 +9655,7 @@
       {
        "key": "building_railway",
        "name": "Early Railway",
-       "era": 2,
+       "era": 1,
        "year": 1825,
        "ind": "railway"
       }
@@ -9057,8 +9724,8 @@
       {
        "key": "building_arms_industry_rifles",
        "name": "Rifle Arms Industries",
-       "era": 2,
-       "year": 1853,
+       "era": 1,
+       "year": 1849,
        "ind": "arms"
       }
      ],
@@ -9092,7 +9759,7 @@
       {
        "key": "building_shipyard_complex",
        "name": "Complex Shipyards",
-       "era": 2,
+       "era": 1,
        "year": 1845,
        "ind": "shipyard"
       }
@@ -9127,7 +9794,7 @@
       {
        "key": "building_textile_mill_sewing",
        "name": "Sewing Machine Textile Mills",
-       "era": 3,
+       "era": 2,
        "year": 1855,
        "ind": "textile"
       }
@@ -9161,7 +9828,7 @@
       {
        "key": "building_artillery_foundry_smoothbore",
        "name": "Smoothbore Artillery Foundries",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "artillery"
       }
@@ -9188,13 +9855,13 @@
      "platform": null,
      "industry": "port",
      "prereqs": [
-      "paddle_steamer"
+      "navigation"
      ],
      "unlocks": [
       {
        "key": "building_port_steam",
        "name": "Steamship Ports",
-       "era": 2,
+       "era": 1,
        "year": 1840,
        "ind": "port"
       }
@@ -9202,6 +9869,39 @@
      "vanillaUnlocks": [],
      "blocks": [
       "deep_water_docks"
+     ]
+    },
+    {
+     "id": "steel_hulls",
+     "name": "Steel Hulls",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Mild steel plate is stronger than iron for the same weight, so the same hull carries more cargo or more armour, and the yard's berths are laid out for a material that will not be replaced this century.",
+     "category": "military",
+     "era": 2,
+     "year": 1875,
+     "onset": 1875,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "shipyard_steam",
+     "prereqs": [
+      "iron_screw_steamers"
+     ],
+     "unlocks": [
+      {
+       "key": "building_shipyard_metal_steel_hull",
+       "name": "Steel Hull Steamship Yards",
+       "era": 2,
+       "year": 1875,
+       "ind": "shipyard_steam"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "marine_steam_turbine"
      ]
     },
     {
@@ -9227,14 +9927,14 @@
       {
        "key": "building_chemical_plant",
        "name": "Superphosphate Plants",
-       "era": 2,
+       "era": 1,
        "year": 1842,
        "ind": "fertilizer"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
-      "improved_fertilizer"
+      "ammoniacal_liquor"
      ]
     },
     {
@@ -9336,7 +10036,7 @@
       {
        "key": "building_artillery_foundry_breech",
        "name": "Breech-Loading Artillery Foundries",
-       "era": 3,
+       "era": 2,
        "year": 1861,
        "ind": "artillery"
       }
@@ -9372,7 +10072,7 @@
        "key": "building_art_academy_photographic",
        "name": "Photographic Art Academy",
        "era": 3,
-       "year": 1839,
+       "year": 1885,
        "ind": "art_academy"
       }
      ],
@@ -9456,7 +10156,7 @@
       {
        "key": "building_port_industrial",
        "name": "Industrial Port",
-       "era": 3,
+       "era": 2,
        "year": 1875,
        "ind": "port"
       }
@@ -9490,7 +10190,7 @@
       {
        "key": "building_explosives_factory_ammonia",
        "name": "Dynamite Explosives Factories",
-       "era": 3,
+       "era": 2,
        "year": 1867,
        "ind": "explosives"
       }
@@ -9607,7 +10307,7 @@
       {
        "key": "building_munition_plant_shells",
        "name": "Explosive Shell Munition Plants",
-       "era": 3,
+       "era": 2,
        "year": 1875,
        "ind": "munition"
       }
@@ -9615,6 +10315,39 @@
      "vanillaUnlocks": [],
      "blocks": [
       "drawn_brass_cartridges"
+     ]
+    },
+    {
+     "id": "fat_hydrogenation",
+     "name": "Fat Hydrogenation",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Normann's nickel catalyst hardens cheap liquid oils into a solid cooking fat, and the food industry stops depending on animal tallow and the dairy herd.",
+     "category": "production",
+     "era": 3,
+     "year": 1909,
+     "onset": 1909,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "food",
+     "prereqs": [
+      "baking_powder"
+     ],
+     "unlocks": [
+      {
+       "key": "building_food_industry_hydrogenated",
+       "name": "Hydrogenated Fat Food Industries",
+       "era": 3,
+       "year": 1909,
+       "ind": "food"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "dough_rollers"
      ]
     },
     {
@@ -9788,7 +10521,7 @@
      "industry": "fertilizer",
      "prereqs": [
       "intensive_agriculture",
-      "superphosphate"
+      "ammoniacal_liquor"
      ],
      "unlocks": [
       {
@@ -10009,7 +10742,7 @@
        "key": "building_steel_mill_open_hearth",
        "name": "Open-Hearth Steel Mills",
        "era": 3,
-       "year": 1868,
+       "year": 1885,
        "ind": "steel"
       }
      ],
@@ -10117,7 +10850,7 @@
       {
        "key": "building_glassworks_crystal",
        "name": "Tank Furnace Glassworks",
-       "era": 3,
+       "era": 2,
        "year": 1867,
        "ind": "glass"
       }
@@ -10176,7 +10909,7 @@
       {
        "key": "building_arms_industry_repeaters",
        "name": "Repeater Arms Industries",
-       "era": 3,
+       "era": 2,
        "year": 1866,
        "ind": "arms"
       }
@@ -10212,6 +10945,39 @@
       "electrical_generation",
       "combustion_engine",
       "pneumatic_tools"
+     ]
+    },
+    {
+     "id": "rotary_veneer",
+     "name": "Rotary-Cut Veneer",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Peeling a log on a rotary lathe and gluing the sheets crosswise gives a panel stronger than the timber it came from, and furniture stops being carpentry and starts being assembly.",
+     "category": "production",
+     "era": 3,
+     "year": 1900,
+     "onset": 1900,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "furniture",
+     "prereqs": [
+      "bentwood_furniture"
+     ],
+     "unlocks": [
+      {
+       "key": "building_furniture_manufactory_plywood",
+       "name": "Plywood Furniture Manufactories",
+       "era": 3,
+       "year": 1900,
+       "ind": "furniture"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "nitrocellulose_lacquer"
      ]
     },
     {
@@ -10395,7 +11161,7 @@
       {
        "key": "building_railway_steam",
        "name": "Steam Railway",
-       "era": 3,
+       "era": 2,
        "year": 1867,
        "ind": "railway"
       }
@@ -10429,7 +11195,7 @@
       {
        "key": "building_tooling_workshop_steel",
        "name": "Steel Tooling Workshops",
-       "era": 3,
+       "era": 2,
        "year": 1865,
        "ind": "tooling"
       }
@@ -10462,7 +11228,7 @@
       {
        "key": "building_paper_mill_bleached",
        "name": "Sulfite Pulping Paper Mills",
-       "era": 3,
+       "era": 2,
        "year": 1874,
        "ind": "paper"
       }
@@ -10496,7 +11262,7 @@
       {
        "key": "building_electrics_industry",
        "name": "Electrics Industries",
-       "era": 3,
+       "era": 2,
        "year": 1878,
        "ind": "electrics"
       }
@@ -10506,7 +11272,8 @@
      ],
      "reEra": "era 4 -> 3: Bell 1876, first exchange 1878",
      "blocks": [
-      "radio"
+      "radio",
+      "wireless_telegraphy"
      ]
     },
     {
@@ -10586,6 +11353,39 @@
      ]
     },
     {
+     "id": "wireless_telegraphy",
+     "name": "Wireless Telegraphy",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Spark transmitters put a telegraph office on a ship and then across an ocean, and the electrical trade acquires a product that needs no line at all.",
+     "category": "production",
+     "era": 3,
+     "year": 1901,
+     "onset": 1901,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "electrics",
+     "prereqs": [
+      "telephone"
+     ],
+     "unlocks": [
+      {
+       "key": "building_electrics_industry_wireless",
+       "name": "Wireless Telegraph Electrics Industries",
+       "era": 3,
+       "year": 1901,
+       "ind": "electrics"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "radio"
+     ]
+    },
+    {
      "id": "art_silk",
      "name": "Art Silk",
      "vanillaName": "Art Silk",
@@ -10610,7 +11410,7 @@
        "key": "building_synthetics_plant_viscose",
        "name": "Viscose Rayon Plants",
        "era": 4,
-       "year": 1905,
+       "year": 1912,
        "ind": "synthetics"
       }
      ],
@@ -10695,7 +11495,7 @@
       {
        "key": "building_arms_industry_bolt_action",
        "name": "Bolt-Action Arms Industries",
-       "era": 4,
+       "era": 3,
        "year": 1886,
        "ind": "arms"
       }
@@ -10703,7 +11503,7 @@
      "vanillaUnlocks": [],
      "blocks": [
       "automatic_machine_guns",
-      "stamped_receivers"
+      "light_machine_guns"
      ]
     },
     {
@@ -10818,7 +11618,7 @@
       {
        "key": "building_port_modern",
        "name": "Modern Port",
-       "era": 4,
+       "era": 3,
        "year": 1908,
        "ind": "port"
       }
@@ -10941,7 +11741,7 @@
        "key": "building_motor_industry_diesel",
        "name": "Diesel Engine Motor Industries",
        "era": 4,
-       "year": 1904,
+       "year": 1912,
        "ind": "motor"
       }
      ],
@@ -10973,14 +11773,14 @@
       {
        "key": "building_munition_plant_drawn_brass",
        "name": "Drawn Brass Munition Plants",
-       "era": 4,
+       "era": 3,
        "year": 1895,
        "ind": "munition"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
-      "automatic_cartridge_lines"
+      "shell_filling"
      ]
     },
     {
@@ -11036,7 +11836,7 @@
        "key": "building_steel_mill_electric_arc",
        "name": "Electric Arc Steel Mills",
        "era": 4,
-       "year": 1903,
+       "year": 1912,
        "ind": "steel"
       }
      ],
@@ -11071,13 +11871,15 @@
       {
        "key": "building_textile_mill_electric",
        "name": "Electric Sewing Textile Mills",
-       "era": 4,
+       "era": 3,
        "year": 1905,
        "ind": "textile"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "long_draft_spinning"
+     ]
     },
     {
      "id": "electric_motors",
@@ -11096,7 +11898,7 @@
      "platform": null,
      "industry": "motor",
      "prereqs": [
-      "atmospheric_engine",
+      "compound_engines",
       "electrical_generation"
      ],
      "unlocks": [
@@ -11137,14 +11939,14 @@
       {
        "key": "building_railway_electric",
        "name": "Electric Railway",
-       "era": 4,
+       "era": 3,
        "year": 1895,
        "ind": "railway"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
-      "compression_ignition"
+      "superheated_steam"
      ]
     },
     {
@@ -11222,7 +12024,7 @@
        "key": "building_art_academy_film",
        "name": "Film Art Academy",
        "era": 4,
-       "year": 1896,
+       "year": 1912,
        "ind": "art_academy"
       }
      ],
@@ -11255,7 +12057,7 @@
       {
        "key": "building_tooling_workshop_rubber",
        "name": "High-Speed Steel Tooling Workshops",
-       "era": 4,
+       "era": 3,
        "year": 1901,
        "ind": "tooling"
       }
@@ -11315,14 +12117,14 @@
       {
        "key": "building_paper_mill_kraft",
        "name": "Kraft Process Paper Mills",
-       "era": 4,
+       "era": 3,
        "year": 1890,
        "ind": "paper"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
-      "high_speed_papermaking"
+      "semi_chemical_pulping"
      ]
     },
     {
@@ -11346,6 +12148,70 @@
       "monitor_tech"
      ],
      "unlocks": [],
+     "vanillaUnlocks": [],
+     "blocks": []
+    },
+    {
+     "id": "light_machine_guns",
+     "name": "Light Machine Guns",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "An automatic weapon a section can carry moves sustained fire from the strongpoint into the assault, and the arms industry starts making mechanisms rather than barrels.",
+     "category": "military",
+     "era": 4,
+     "year": 1915,
+     "onset": 1915,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "arms",
+     "prereqs": [
+      "bolt_action_rifles"
+     ],
+     "unlocks": [
+      {
+       "key": "building_arms_industry_automatic",
+       "name": "Automatic Arms Industries",
+       "era": 4,
+       "year": 1915,
+       "ind": "arms"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "stamped_receivers"
+     ]
+    },
+    {
+     "id": "long_draft_spinning",
+     "name": "Long-Draft Spinning",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Drafting the roving further in one passage removes whole banks of machinery from the spinning room, and with individual electric drive the mill is rebuilt around the operative rather than the shaft.",
+     "category": "production",
+     "era": 4,
+     "year": 1925,
+     "onset": 1925,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "textile",
+     "prereqs": [
+      "electric_drive_looms"
+     ],
+     "unlocks": [
+      {
+       "key": "building_textile_mill_highdraft",
+       "name": "High-Draft Spinning Textile Mills",
+       "era": 4,
+       "year": 1925,
+       "ind": "textile"
+      }
+     ],
      "vanillaUnlocks": [],
      "blocks": []
     },
@@ -11391,7 +12257,7 @@
      "platform": null,
      "industry": "shipyard_steam",
      "prereqs": [
-      "iron_screw_steamers"
+      "steel_hulls"
      ],
      "unlocks": [
       {
@@ -11535,7 +12401,7 @@
       {
        "key": "building_explosives_factory_vacuum",
        "name": "Ostwald Process Explosives Factories",
-       "era": 4,
+       "era": 3,
        "year": 1908,
        "ind": "explosives"
       }
@@ -11595,7 +12461,7 @@
       {
        "key": "building_glassworks_plastics",
        "name": "Plastic Glassworks",
-       "era": 4,
+       "era": 3,
        "year": 1910,
        "ind": "glass"
       }
@@ -11726,7 +12592,8 @@
      "platform": null,
      "industry": "electrics",
      "prereqs": [
-      "telephone"
+      "telephone",
+      "wireless_telegraphy"
      ],
      "unlocks": [
       {
@@ -11765,7 +12632,7 @@
       {
        "key": "building_artillery_foundry_recoiled",
        "name": "Recoiled Barrel Artillery Foundries",
-       "era": 4,
+       "era": 3,
        "year": 1897,
        "ind": "artillery"
       }
@@ -11799,6 +12666,72 @@
      "blocks": [
       "dreadnought_tech",
       "battlefleet_tactics"
+     ]
+    },
+    {
+     "id": "semi_chemical_pulping",
+     "name": "Semi-Chemical Pulping",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "A mild sulfite cook followed by mechanical defibring opens hardwoods the chemical mills could not use, and the corrugated box gets a cheap domestic furnish.",
+     "category": "production",
+     "era": 4,
+     "year": 1925,
+     "onset": 1925,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "paper",
+     "prereqs": [
+      "kraft_process"
+     ],
+     "unlocks": [
+      {
+       "key": "building_paper_mill_nssc",
+       "name": "Semi-Chemical Paper Mills",
+       "era": 4,
+       "year": 1925,
+       "ind": "paper"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "high_speed_papermaking"
+     ]
+    },
+    {
+     "id": "shell_filling",
+     "name": "Mass Shell Filling",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "The filling factory is a distinct industry from the case plant: acres of separated sheds, women's labour at scale, and an output measured in millions of rounds a week.",
+     "category": "military",
+     "era": 4,
+     "year": 1915,
+     "onset": 1915,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "munition",
+     "prereqs": [
+      "drawn_brass_cartridges"
+     ],
+     "unlocks": [
+      {
+       "key": "building_munition_plant_filling",
+       "name": "Shell Filling Munition Plants",
+       "era": 4,
+       "year": 1915,
+       "ind": "munition"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "automatic_cartridge_lines"
      ]
     },
     {
@@ -11857,6 +12790,39 @@
      "unlocks": [],
      "vanillaUnlocks": [],
      "blocks": []
+    },
+    {
+     "id": "superheated_steam",
+     "name": "Superheating",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Passing the steam back through the firebox before it reaches the cylinders cuts coal and water by about a quarter per ton-mile, and is why the steam locomotive survived the electric one by forty years.",
+     "category": "production",
+     "era": 4,
+     "year": 1915,
+     "onset": 1915,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "railway",
+     "prereqs": [
+      "electric_railway"
+     ],
+     "unlocks": [
+      {
+       "key": "building_railway_superheated",
+       "name": "Superheated Steam Railways",
+       "era": 4,
+       "year": 1915,
+       "ind": "railway"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "compression_ignition"
+     ]
     },
     {
      "id": "synthetic_indigo",
@@ -12053,20 +13019,12 @@
      "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "shipyard_steam",
+     "industry": null,
      "prereqs": [
       "electric_arc_process",
       "pneumatic_tools"
      ],
-     "unlocks": [
-      {
-       "key": "building_shipyard_arc_welding",
-       "name": "Arc Welding Shipyards",
-       "era": 5,
-       "year": 1941,
-       "ind": "shipyard_steam"
-      }
-     ],
+     "unlocks": [],
      "vanillaUnlocks": [],
      "blocks": []
     },
@@ -12093,8 +13051,41 @@
       {
        "key": "building_artillery_foundry_autofrettage",
        "name": "Autofrettaged Artillery Foundries",
-       "era": 5,
+       "era": 4,
        "year": 1925,
+       "ind": "artillery"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "automatic_aa_guns"
+     ]
+    },
+    {
+     "id": "automatic_aa_guns",
+     "name": "Automatic Anti-Aircraft Guns",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "A fast-traversing automatic gun on a welded mounting, laid by a mechanical director, is the first artillery designed for a target that moves faster than the shell's flight time.",
+     "category": "military",
+     "era": 5,
+     "year": 1936,
+     "onset": 1936,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "artillery",
+     "prereqs": [
+      "autofrettage"
+     ],
+     "unlocks": [
+      {
+       "key": "building_artillery_foundry_antiaircraft",
+       "name": "Automatic Anti-Aircraft Foundries",
+       "era": 5,
+       "year": 1936,
        "ind": "artillery"
       }
      ],
@@ -12118,7 +13109,7 @@
      "platform": null,
      "industry": "munition",
      "prereqs": [
-      "drawn_brass_cartridges"
+      "shell_filling"
      ],
      "unlocks": [
       {
@@ -12251,13 +13242,15 @@
       {
        "key": "building_tooling_workshop_carbide",
        "name": "Cemented Carbide Tooling Workshops",
-       "era": 5,
+       "era": 4,
        "year": 1927,
        "ind": "tooling"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "tracer_control"
+     ]
     },
     {
      "id": "chemical_warfare",
@@ -12300,7 +13293,7 @@
      "industry": "railway",
      "prereqs": [
       "combustion_engine",
-      "electric_railway"
+      "superheated_steam"
      ],
      "unlocks": [
       {
@@ -12362,13 +13355,15 @@
       {
        "key": "building_explosives_factory_brine",
        "name": "Continuous Nitration Explosives Factories",
-       "era": 5,
+       "era": 4,
        "year": 1928,
        "ind": "explosives"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "cyclonite_process"
+     ]
     },
     {
      "id": "continuous_strip_mill",
@@ -12394,8 +13389,39 @@
        "key": "building_steel_mill_strip_mill",
        "name": "Continuous Strip Mill Steelworks",
        "era": 5,
-       "year": 1926,
+       "year": 1932,
        "ind": "steel"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": []
+    },
+    {
+     "id": "cyclonite_process",
+     "name": "Cyclonite Process",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Nitrating hexamine gives an explosive half again as powerful as TNT, and continuous plant makes it in quantities that change what a bomb and a torpedo can do.",
+     "category": "production",
+     "era": 5,
+     "year": 1940,
+     "onset": 1940,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "explosives",
+     "prereqs": [
+      "continuous_nitration"
+     ],
+     "unlocks": [
+      {
+       "key": "building_explosives_factory_cyclonite",
+       "name": "Cyclonite Explosives Factories",
+       "era": 5,
+       "year": 1940,
+       "ind": "explosives"
       }
      ],
      "vanillaUnlocks": [],
@@ -12442,7 +13468,7 @@
      "industry": "food",
      "prereqs": [
       "conveyors",
-      "baking_powder"
+      "fat_hydrogenation"
      ],
      "unlocks": [
       {
@@ -12504,6 +13530,37 @@
      "blocks": []
     },
     {
+     "id": "glass_fibre",
+     "name": "Glass Fibre",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Glass drawn continuously into filaments finer than wool is no longer a glazing material at all — it insulates, reinforces and filters, and the glassworks acquires a market that has nothing to do with windows.",
+     "category": "production",
+     "era": 5,
+     "year": 1938,
+     "onset": 1938,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "glass",
+     "prereqs": [
+      "ribbon_machine"
+     ],
+     "unlocks": [
+      {
+       "key": "building_glassworks_fibre",
+       "name": "Glass Fibre Works",
+       "era": 5,
+       "year": 1938,
+       "ind": "glass"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": []
+    },
+    {
      "id": "high_speed_diesel",
      "name": "High Speed Diesel",
      "vanillaName": null,
@@ -12551,14 +13608,14 @@
      "platform": null,
      "industry": "paper",
      "prereqs": [
-      "kraft_process"
+      "semi_chemical_pulping"
      ],
      "unlocks": [
       {
        "key": "building_paper_mill_highspeed",
        "name": "High-Speed Machine Paper Mills",
        "era": 5,
-       "year": 1930,
+       "year": 1935,
        "ind": "paper"
       }
      ],
@@ -12660,7 +13717,7 @@
       {
        "key": "building_port_motor",
        "name": "Motor Ship Ports",
-       "era": 5,
+       "era": 4,
        "year": 1930,
        "ind": "port"
       }
@@ -12758,7 +13815,7 @@
      "platform": null,
      "industry": "furniture",
      "prereqs": [
-      "bentwood_furniture",
+      "rotary_veneer",
       "art_silk"
      ],
      "unlocks": [
@@ -12802,7 +13859,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "welded_prefabrication"
+     ]
     },
     {
      "id": "oil_turbine",
@@ -12829,7 +13888,7 @@
        "key": "building_power_plant_oil",
        "name": "Oil-Fired Power Plant",
        "era": 5,
-       "year": 1925,
+       "year": 1932,
        "ind": "power"
       }
      ],
@@ -12948,13 +14007,15 @@
       {
        "key": "building_glassworks_ribbon",
        "name": "Ribbon Machine Glassworks",
-       "era": 5,
+       "era": 4,
        "year": 1926,
        "ind": "glass"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "glass_fibre"
+     ]
     },
     {
      "id": "sound_film",
@@ -12980,7 +14041,7 @@
        "key": "building_art_academy_sound_film",
        "name": "Sound Film Art Academies",
        "era": 5,
-       "year": 1927,
+       "year": 1932,
        "ind": "art_academy"
       }
      ],
@@ -13004,7 +14065,7 @@
      "platform": null,
      "industry": "arms",
      "prereqs": [
-      "bolt_action_rifles"
+      "light_machine_guns"
      ],
      "unlocks": [
       {
@@ -13042,7 +14103,7 @@
        "key": "building_chemical_plant_reforming",
        "name": "Steam Reforming Chemical Plants",
        "era": 5,
-       "year": 1931,
+       "year": 1935,
        "ind": "fertilizer"
       }
      ],
@@ -13070,6 +14131,37 @@
       "trench_works"
      ],
      "unlocks": [],
+     "vanillaUnlocks": [],
+     "blocks": []
+    },
+    {
+     "id": "tracer_control",
+     "name": "Hydraulic Tracer Control",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "A stylus follows a master form and hydraulics repeat it on the cutter, so a complex profile no longer needs a skilled machinist — only a first article to copy.",
+     "category": "production",
+     "era": 5,
+     "year": 1936,
+     "onset": 1936,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "tooling",
+     "prereqs": [
+      "cemented_carbide"
+     ],
+     "unlocks": [
+      {
+       "key": "building_tooling_workshop_tracer",
+       "name": "Tracer-Controlled Tooling Workshops",
+       "era": 5,
+       "year": 1936,
+       "ind": "tooling"
+      }
+     ],
      "vanillaUnlocks": [],
      "blocks": []
     },
@@ -13135,16 +14227,47 @@
      ],
      "vanillaUnlocks": [],
      "blocks": []
+    },
+    {
+     "id": "welded_prefabrication",
+     "name": "Welded Prefabrication",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Hulls assembled from pre-welded sections built inland turn shipbuilding into an assembly industry, and a merchant ship from a two-year commission into a two-month one.",
+     "category": "military",
+     "era": 5,
+     "year": 1941,
+     "onset": 1941,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "shipyard_steam",
+     "prereqs": [
+      "oil_fired_boilers"
+     ],
+     "unlocks": [
+      {
+       "key": "building_shipyard_arc_welding",
+       "name": "Arc Welding Shipyards",
+       "era": 5,
+       "year": 1941,
+       "ind": "shipyard_steam"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": []
     }
    ],
-   "rushCost": 848750,
-   "rushCostVanillaAot": 848750,
+   "rushCost": 914375,
+   "rushCostVanillaAot": 914375,
    "rushCostByAot": {
-    "0.25": 848750,
-    "0.2": 682500,
-    "0.15": 516250,
-    "0.125": 433125,
-    "0.1": 350000
+    "0.25": 914375,
+    "0.2": 735000,
+    "0.15": 555625,
+    "0.125": 465937.5,
+    "0.1": 376250
    }
   },
   {
@@ -13155,25 +14278,25 @@
    "blurb": "Option 2's ladders plus a backbone of nine platform technologies, each tier technology also requiring the platform of its generation. The strongest realisation of \"a technological edge should really matter\": neglect steel, precision or electricity and every industry stalls at once. Biggest and densest tree, and the one that leans hardest on the ahead-of-time penalty.",
    "budget": {
     "production": {
-     "n": 103,
-     "cost": 1285000,
+     "n": 114,
+     "cost": 1440000,
      "perEra": [
       24,
-      16,
-      19,
-      25,
-      19
+      18,
+      22,
+      28,
+      22
      ]
     },
     "military": {
-     "n": 73,
-     "cost": 930000,
+     "n": 78,
+     "cost": 1005000,
      "perEra": [
       14,
-      12,
+      13,
       15,
-      17,
-      15
+      19,
+      17
      ]
     },
     "society": {
@@ -13324,7 +14447,7 @@
       {
        "key": "building_motor_industry",
        "name": "Steam Engine Motor Industries",
-       "era": 2,
+       "era": 1,
        "year": 1820,
        "ind": "motor"
       }
@@ -13337,7 +14460,7 @@
       "watertube_boiler",
       "railways",
       "high_pressure_steam",
-      "electric_motors"
+      "compound_engines"
      ]
     },
     {
@@ -13364,7 +14487,7 @@
       {
        "key": "building_food_industry",
        "name": "Bakery Food Industries",
-       "era": 1,
+       "era": 0,
        "year": 1750,
        "ind": "food"
       }
@@ -13424,7 +14547,7 @@
       {
        "key": "building_food_industry_sweetener",
        "name": "Beet Sugar Food Industries",
-       "era": 2,
+       "era": 1,
        "year": 1815,
        "ind": "food"
       }
@@ -13457,7 +14580,7 @@
       {
        "key": "building_artillery_foundry",
        "name": "Cannon Artillery Foundries",
-       "era": 1,
+       "era": 0,
        "year": 1750,
        "ind": "artillery"
       }
@@ -13491,7 +14614,7 @@
       {
        "key": "building_textile_mill_dye",
        "name": "Calico Printing Textile Mills",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "textile"
       }
@@ -13550,7 +14673,7 @@
       {
        "key": "building_glassworks",
        "name": "Coal-Fired Glassworks",
-       "era": 1,
+       "era": 0,
        "year": 1750,
        "ind": "glass"
       }
@@ -13634,7 +14757,7 @@
       {
        "key": "building_glassworks_leaded",
        "name": "Leaded Glassworks",
-       "era": 2,
+       "era": 1,
        "year": 1832,
        "ind": "glass"
       }
@@ -13839,7 +14962,7 @@
       {
        "key": "building_paper_mill_sulfite",
        "name": "Machine Paper Mills",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "paper"
       }
@@ -13872,7 +14995,7 @@
       {
        "key": "building_arms_industry",
        "name": "Musket Arms Industries",
-       "era": 1,
+       "era": 0,
        "year": 1770,
        "ind": "arms"
       }
@@ -13942,12 +15065,13 @@
       "baking_powder",
       "bakehouse_manufactories",
       "beet_sugar_refining",
+      "precision_measurement",
       "ready_made_clothing",
       "calico_printing",
       "sewing_machine_works",
       "manufactory_joinery",
       "bentwood_furniture",
-      "precision_measurement"
+      "compound_engines"
      ]
     },
     {
@@ -14027,7 +15151,7 @@
       {
        "key": "building_furniture_manufactory_lathe",
        "name": "Lathe Furniture Manufactories",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "furniture"
       }
@@ -14089,7 +15213,7 @@
       {
        "key": "building_explosives_factory",
        "name": "Leblanc Explosives Factories",
-       "era": 2,
+       "era": 1,
        "year": 1820,
        "ind": "explosives"
       }
@@ -14175,8 +15299,8 @@
       {
        "key": "building_furniture_manufactory",
        "name": "Handcrafted Furniture Manufactories",
-       "era": 1,
-       "year": 1800,
+       "era": 0,
+       "year": 1780,
        "ind": "furniture"
       }
      ],
@@ -14334,6 +15458,7 @@
       "sulfite_pulping",
       "industrial_catalysis",
       "superphosphate",
+      "ammoniacal_liquor",
       "leblanc_process"
      ]
     },
@@ -14379,13 +15504,20 @@
      "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "shipyard",
+     "industry": "port",
      "prereqs": [],
      "unlocks": [
       {
+       "key": "building_port",
+       "name": "Basic Port",
+       "era": 0,
+       "year": 1700,
+       "ind": "port"
+      },
+      {
        "key": "building_shipyard",
        "name": "Basic Shipyards",
-       "era": 1,
+       "era": 0,
        "year": 1700,
        "ind": "shipyard"
       }
@@ -14398,7 +15530,8 @@
      "blocks": [
       "drydocks",
       "admiralty",
-      "screw_frigate"
+      "screw_frigate",
+      "steamship_bunkering"
      ]
     },
     {
@@ -14424,7 +15557,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "screw_frigate",
-      "steamship_bunkering",
       "iron_screw_steamers"
      ]
     },
@@ -14451,7 +15583,7 @@
       {
        "key": "building_tooling_workshop_pig_iron",
        "name": "Pig Iron Tooling Workshops",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "tooling"
       }
@@ -14513,7 +15645,7 @@
       {
        "key": "building_paper_mill",
        "name": "Pulp Pressing Paper Mills",
-       "era": 1,
+       "era": 0,
        "year": 1750,
        "ind": "paper"
       }
@@ -14571,8 +15703,8 @@
       {
        "key": "building_textile_mill",
        "name": "Handsewn Textile Mills",
-       "era": 1,
-       "year": 1800,
+       "era": 0,
+       "year": 1780,
        "ind": "textile"
       }
      ],
@@ -14721,7 +15853,7 @@
       {
        "key": "building_steel_mill",
        "name": "Blister Steel Mills",
-       "era": 1,
+       "era": 0,
        "year": 1745,
        "ind": "steel"
       }
@@ -14813,7 +15945,7 @@
       {
        "key": "building_tooling_workshop",
        "name": "Crude Tooling Workshops",
-       "era": 1,
+       "era": 0,
        "year": 1770,
        "ind": "tooling"
       }
@@ -14874,6 +16006,40 @@
      "blocks": [
       "urban_planning",
       "tech_bureaucracy"
+     ]
+    },
+    {
+     "id": "ammoniacal_liquor",
+     "name": "Ammoniacal Liquor Recovery",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "The gasworks and the coke oven were throwing away their ammonia; recovered as sulphate it becomes the first nitrogen fertilizer a country can make rather than import.",
+     "category": "production",
+     "era": 2,
+     "year": 1865,
+     "onset": 1865,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "fertilizer",
+     "prereqs": [
+      "superphosphate",
+      "mineral_acids"
+     ],
+     "unlocks": [
+      {
+       "key": "building_chemical_plant_ammoniacal",
+       "name": "Ammoniacal Liquor Fertilizer Plants",
+       "era": 2,
+       "year": 1865,
+       "ind": "fertilizer"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "improved_fertilizer"
      ]
     },
     {
@@ -14939,14 +16105,14 @@
       {
        "key": "building_food_industry_baking_powder",
        "name": "Baking Powder Food Industries",
-       "era": 3,
+       "era": 2,
        "year": 1860,
        "ind": "food"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
-      "dough_rollers"
+      "fat_hydrogenation"
      ]
     },
     {
@@ -14973,14 +16139,14 @@
       {
        "key": "building_furniture_manufactory_mechanized",
        "name": "Mechanized Furniture Manufactories",
-       "era": 3,
+       "era": 2,
        "year": 1855,
        "ind": "furniture"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
-      "nitrocellulose_lacquer"
+      "rotary_veneer"
      ]
     },
     {
@@ -15117,6 +16283,40 @@
      "blocks": [
       "rubber_mastication",
       "aniline"
+     ]
+    },
+    {
+     "id": "compound_engines",
+     "name": "Compound Expansion",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Working the steam twice, through a high-pressure and then a low-pressure cylinder, roughly halves the coal per horsepower-hour — and makes the engine works a supplier to shipping rather than to mills alone.",
+     "category": "production",
+     "era": 2,
+     "year": 1860,
+     "onset": 1860,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "motor",
+     "prereqs": [
+      "atmospheric_engine",
+      "interchangeable_parts"
+     ],
+     "unlocks": [
+      {
+       "key": "building_motor_industry_compound",
+       "name": "Compound Engine Motor Industries",
+       "era": 2,
+       "year": 1860,
+       "ind": "motor"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "electric_motors"
      ]
     },
     {
@@ -15300,7 +16500,8 @@
       "steel_railway_cars",
       "telephone",
       "regenerative_furnace",
-      "electric_drive"
+      "electric_drive",
+      "wireless_telegraphy"
      ]
     },
     {
@@ -15382,14 +16583,14 @@
       {
        "key": "building_shipyard_metal",
        "name": "Metal Shipyards",
-       "era": 2,
+       "era": 1,
        "year": 1843,
        "ind": "shipyard_steam"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
-      "marine_steam_turbine"
+      "steel_hulls"
      ]
     },
     {
@@ -15498,8 +16699,8 @@
      "blocks": [
       "railways",
       "mechanized_workshops",
-      "sewing_machine_works",
-      "precision_measurement"
+      "precision_measurement",
+      "sewing_machine_works"
      ]
     },
     {
@@ -15655,7 +16856,7 @@
       {
        "key": "building_munition_plant",
        "name": "Percussion Cap Munition Plants",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "munition"
       }
@@ -15819,7 +17020,7 @@
       {
        "key": "building_railway",
        "name": "Early Railway",
-       "era": 2,
+       "era": 1,
        "year": 1825,
        "ind": "railway"
       }
@@ -15888,8 +17089,8 @@
       {
        "key": "building_arms_industry_rifles",
        "name": "Rifle Arms Industries",
-       "era": 2,
-       "year": 1853,
+       "era": 1,
+       "year": 1849,
        "ind": "arms"
       }
      ],
@@ -15923,7 +17124,7 @@
       {
        "key": "building_shipyard_complex",
        "name": "Complex Shipyards",
-       "era": 2,
+       "era": 1,
        "year": 1845,
        "ind": "shipyard"
       }
@@ -15959,7 +17160,7 @@
       {
        "key": "building_textile_mill_sewing",
        "name": "Sewing Machine Textile Mills",
-       "era": 3,
+       "era": 2,
        "year": 1855,
        "ind": "textile"
       }
@@ -15993,7 +17194,7 @@
       {
        "key": "building_artillery_foundry_smoothbore",
        "name": "Smoothbore Artillery Foundries",
-       "era": 2,
+       "era": 1,
        "year": 1830,
        "ind": "artillery"
       }
@@ -16020,13 +17221,13 @@
      "platform": null,
      "industry": "port",
      "prereqs": [
-      "paddle_steamer"
+      "navigation"
      ],
      "unlocks": [
       {
        "key": "building_port_steam",
        "name": "Steamship Ports",
-       "era": 2,
+       "era": 1,
        "year": 1840,
        "ind": "port"
       }
@@ -16034,6 +17235,39 @@
      "vanillaUnlocks": [],
      "blocks": [
       "deep_water_docks"
+     ]
+    },
+    {
+     "id": "steel_hulls",
+     "name": "Steel Hulls",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Mild steel plate is stronger than iron for the same weight, so the same hull carries more cargo or more armour, and the yard's berths are laid out for a material that will not be replaced this century.",
+     "category": "military",
+     "era": 2,
+     "year": 1875,
+     "onset": 1875,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "shipyard_steam",
+     "prereqs": [
+      "iron_screw_steamers"
+     ],
+     "unlocks": [
+      {
+       "key": "building_shipyard_metal_steel_hull",
+       "name": "Steel Hull Steamship Yards",
+       "era": 2,
+       "year": 1875,
+       "ind": "shipyard_steam"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "marine_steam_turbine"
      ]
     },
     {
@@ -16060,14 +17294,14 @@
       {
        "key": "building_chemical_plant",
        "name": "Superphosphate Plants",
-       "era": 2,
+       "era": 1,
        "year": 1842,
        "ind": "fertilizer"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
-      "improved_fertilizer"
+      "ammoniacal_liquor"
      ]
     },
     {
@@ -16169,7 +17403,7 @@
       {
        "key": "building_artillery_foundry_breech",
        "name": "Breech-Loading Artillery Foundries",
-       "era": 3,
+       "era": 2,
        "year": 1861,
        "ind": "artillery"
       }
@@ -16205,7 +17439,7 @@
        "key": "building_art_academy_photographic",
        "name": "Photographic Art Academy",
        "era": 3,
-       "year": 1839,
+       "year": 1885,
        "ind": "art_academy"
       }
      ],
@@ -16289,7 +17523,7 @@
       {
        "key": "building_port_industrial",
        "name": "Industrial Port",
-       "era": 3,
+       "era": 2,
        "year": 1875,
        "ind": "port"
       }
@@ -16324,7 +17558,7 @@
       {
        "key": "building_explosives_factory_ammonia",
        "name": "Dynamite Explosives Factories",
-       "era": 3,
+       "era": 2,
        "year": 1867,
        "ind": "explosives"
       }
@@ -16442,7 +17676,7 @@
       {
        "key": "building_munition_plant_shells",
        "name": "Explosive Shell Munition Plants",
-       "era": 3,
+       "era": 2,
        "year": 1875,
        "ind": "munition"
       }
@@ -16450,6 +17684,40 @@
      "vanillaUnlocks": [],
      "blocks": [
       "drawn_brass_cartridges"
+     ]
+    },
+    {
+     "id": "fat_hydrogenation",
+     "name": "Fat Hydrogenation",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Normann's nickel catalyst hardens cheap liquid oils into a solid cooking fat, and the food industry stops depending on animal tallow and the dairy herd.",
+     "category": "production",
+     "era": 3,
+     "year": 1909,
+     "onset": 1909,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "food",
+     "prereqs": [
+      "baking_powder",
+      "precision_measurement"
+     ],
+     "unlocks": [
+      {
+       "key": "building_food_industry_hydrogenated",
+       "name": "Hydrogenated Fat Food Industries",
+       "era": 3,
+       "year": 1909,
+       "ind": "food"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "dough_rollers"
      ]
     },
     {
@@ -16623,7 +17891,7 @@
      "industry": "fertilizer",
      "prereqs": [
       "intensive_agriculture",
-      "superphosphate",
+      "ammoniacal_liquor",
       "mineral_acids"
      ],
      "unlocks": [
@@ -16846,7 +18114,7 @@
        "key": "building_steel_mill_open_hearth",
        "name": "Open-Hearth Steel Mills",
        "era": 3,
-       "year": 1868,
+       "year": 1885,
        "ind": "steel"
       }
      ],
@@ -16932,7 +18200,9 @@
      "unlocks": [],
      "vanillaUnlocks": [],
      "blocks": [
-      "scientific_management"
+      "fat_hydrogenation",
+      "scientific_management",
+      "rotary_veneer"
      ]
     },
     {
@@ -16985,7 +18255,7 @@
       {
        "key": "building_glassworks_crystal",
        "name": "Tank Furnace Glassworks",
-       "era": 3,
+       "era": 2,
        "year": 1867,
        "ind": "glass"
       }
@@ -17044,7 +18314,7 @@
       {
        "key": "building_arms_industry_repeaters",
        "name": "Repeater Arms Industries",
-       "era": 3,
+       "era": 2,
        "year": 1866,
        "ind": "arms"
       }
@@ -17080,6 +18350,40 @@
       "electrical_generation",
       "combustion_engine",
       "pneumatic_tools"
+     ]
+    },
+    {
+     "id": "rotary_veneer",
+     "name": "Rotary-Cut Veneer",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Peeling a log on a rotary lathe and gluing the sheets crosswise gives a panel stronger than the timber it came from, and furniture stops being carpentry and starts being assembly.",
+     "category": "production",
+     "era": 3,
+     "year": 1900,
+     "onset": 1900,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "furniture",
+     "prereqs": [
+      "bentwood_furniture",
+      "precision_measurement"
+     ],
+     "unlocks": [
+      {
+       "key": "building_furniture_manufactory_plywood",
+       "name": "Plywood Furniture Manufactories",
+       "era": 3,
+       "year": 1900,
+       "ind": "furniture"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "nitrocellulose_lacquer"
      ]
     },
     {
@@ -17265,7 +18569,7 @@
       {
        "key": "building_railway_steam",
        "name": "Steam Railway",
-       "era": 3,
+       "era": 2,
        "year": 1867,
        "ind": "railway"
       }
@@ -17299,7 +18603,7 @@
       {
        "key": "building_tooling_workshop_steel",
        "name": "Steel Tooling Workshops",
-       "era": 3,
+       "era": 2,
        "year": 1865,
        "ind": "tooling"
       }
@@ -17333,7 +18637,7 @@
       {
        "key": "building_paper_mill_bleached",
        "name": "Sulfite Pulping Paper Mills",
-       "era": 3,
+       "era": 2,
        "year": 1874,
        "ind": "paper"
       }
@@ -17368,7 +18672,7 @@
       {
        "key": "building_electrics_industry",
        "name": "Electrics Industries",
-       "era": 3,
+       "era": 2,
        "year": 1878,
        "ind": "electrics"
       }
@@ -17378,7 +18682,8 @@
      ],
      "reEra": "era 4 -> 3: Bell 1876, first exchange 1878",
      "blocks": [
-      "radio"
+      "radio",
+      "wireless_telegraphy"
      ]
     },
     {
@@ -17458,6 +18763,40 @@
      ]
     },
     {
+     "id": "wireless_telegraphy",
+     "name": "Wireless Telegraphy",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Spark transmitters put a telegraph office on a ship and then across an ocean, and the electrical trade acquires a product that needs no line at all.",
+     "category": "production",
+     "era": 3,
+     "year": 1901,
+     "onset": 1901,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "electrics",
+     "prereqs": [
+      "telephone",
+      "high_pressure_steam"
+     ],
+     "unlocks": [
+      {
+       "key": "building_electrics_industry_wireless",
+       "name": "Wireless Telegraph Electrics Industries",
+       "era": 3,
+       "year": 1901,
+       "ind": "electrics"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "radio"
+     ]
+    },
+    {
      "id": "alloy_steels",
      "name": "Alloy Steels",
      "vanillaName": null,
@@ -17485,7 +18824,8 @@
       "electric_arc_process",
       "light_alloys",
       "high_speed_steel",
-      "cemented_carbide"
+      "cemented_carbide",
+      "tracer_control"
      ]
     },
     {
@@ -17514,7 +18854,7 @@
        "key": "building_synthetics_plant_viscose",
        "name": "Viscose Rayon Plants",
        "era": 4,
-       "year": 1905,
+       "year": 1912,
        "ind": "synthetics"
       }
      ],
@@ -17599,7 +18939,7 @@
       {
        "key": "building_arms_industry_bolt_action",
        "name": "Bolt-Action Arms Industries",
-       "era": 4,
+       "era": 3,
        "year": 1886,
        "ind": "arms"
       }
@@ -17607,7 +18947,7 @@
      "vanillaUnlocks": [],
      "blocks": [
       "automatic_machine_guns",
-      "stamped_receivers"
+      "light_machine_guns"
      ]
     },
     {
@@ -17723,7 +19063,7 @@
       {
        "key": "building_port_modern",
        "name": "Modern Port",
-       "era": 4,
+       "era": 3,
        "year": 1908,
        "ind": "port"
       }
@@ -17848,7 +19188,7 @@
        "key": "building_motor_industry_diesel",
        "name": "Diesel Engine Motor Industries",
        "era": 4,
-       "year": 1904,
+       "year": 1912,
        "ind": "motor"
       }
      ],
@@ -17880,14 +19220,14 @@
       {
        "key": "building_munition_plant_drawn_brass",
        "name": "Drawn Brass Munition Plants",
-       "era": 4,
+       "era": 3,
        "year": 1895,
        "ind": "munition"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
-      "automatic_cartridge_lines"
+      "shell_filling"
      ]
     },
     {
@@ -17944,7 +19284,7 @@
        "key": "building_steel_mill_electric_arc",
        "name": "Electric Arc Steel Mills",
        "era": 4,
-       "year": 1903,
+       "year": 1912,
        "ind": "steel"
       }
      ],
@@ -17984,7 +19324,8 @@
       "steam_turbine",
       "plastics",
       "radio",
-      "light_alloys"
+      "light_alloys",
+      "superheated_steam"
      ]
     },
     {
@@ -18012,13 +19353,15 @@
       {
        "key": "building_textile_mill_electric",
        "name": "Electric Sewing Textile Mills",
-       "era": 4,
+       "era": 3,
        "year": 1905,
        "ind": "textile"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "long_draft_spinning"
+     ]
     },
     {
      "id": "electric_motors",
@@ -18037,7 +19380,7 @@
      "platform": null,
      "industry": "motor",
      "prereqs": [
-      "atmospheric_engine",
+      "compound_engines",
       "electrical_generation",
       "scientific_management"
      ],
@@ -18080,14 +19423,14 @@
       {
        "key": "building_railway_electric",
        "name": "Electric Railway",
-       "era": 4,
+       "era": 3,
        "year": 1895,
        "ind": "railway"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
-      "compression_ignition"
+      "superheated_steam"
      ]
     },
     {
@@ -18166,7 +19509,7 @@
        "key": "building_art_academy_film",
        "name": "Film Art Academy",
        "era": 4,
-       "year": 1896,
+       "year": 1912,
        "ind": "art_academy"
       }
      ],
@@ -18200,7 +19543,7 @@
       {
        "key": "building_tooling_workshop_rubber",
        "name": "High-Speed Steel Tooling Workshops",
-       "era": 4,
+       "era": 3,
        "year": 1901,
        "ind": "tooling"
       }
@@ -18239,10 +19582,12 @@
       "art_silk",
       "nitrogen_fixation",
       "kraft_process",
+      "semi_chemical_pulping",
       "high_speed_papermaking",
       "steam_reforming",
       "ostwald_process",
       "continuous_nitration",
+      "cyclonite_process",
       "synthetic_indigo",
       "polyamide_synthesis"
      ]
@@ -18297,14 +19642,14 @@
       {
        "key": "building_paper_mill_kraft",
        "name": "Kraft Process Paper Mills",
-       "era": 4,
+       "era": 3,
        "year": 1890,
        "ind": "paper"
       }
      ],
      "vanillaUnlocks": [],
      "blocks": [
-      "high_speed_papermaking"
+      "semi_chemical_pulping"
      ]
     },
     {
@@ -18328,6 +19673,71 @@
       "monitor_tech"
      ],
      "unlocks": [],
+     "vanillaUnlocks": [],
+     "blocks": []
+    },
+    {
+     "id": "light_machine_guns",
+     "name": "Light Machine Guns",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "An automatic weapon a section can carry moves sustained fire from the strongpoint into the assault, and the arms industry starts making mechanisms rather than barrels.",
+     "category": "military",
+     "era": 4,
+     "year": 1915,
+     "onset": 1915,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "arms",
+     "prereqs": [
+      "bolt_action_rifles"
+     ],
+     "unlocks": [
+      {
+       "key": "building_arms_industry_automatic",
+       "name": "Automatic Arms Industries",
+       "era": 4,
+       "year": 1915,
+       "ind": "arms"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "stamped_receivers"
+     ]
+    },
+    {
+     "id": "long_draft_spinning",
+     "name": "Long-Draft Spinning",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Drafting the roving further in one passage removes whole banks of machinery from the spinning room, and with individual electric drive the mill is rebuilt around the operative rather than the shaft.",
+     "category": "production",
+     "era": 4,
+     "year": 1925,
+     "onset": 1925,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "textile",
+     "prereqs": [
+      "electric_drive_looms",
+      "scientific_management"
+     ],
+     "unlocks": [
+      {
+       "key": "building_textile_mill_highdraft",
+       "name": "High-Draft Spinning Textile Mills",
+       "era": 4,
+       "year": 1925,
+       "ind": "textile"
+      }
+     ],
      "vanillaUnlocks": [],
      "blocks": []
     },
@@ -18373,7 +19783,7 @@
      "platform": null,
      "industry": "shipyard_steam",
      "prereqs": [
-      "iron_screw_steamers"
+      "steel_hulls"
      ],
      "unlocks": [
       {
@@ -18519,7 +19929,7 @@
       {
        "key": "building_explosives_factory_vacuum",
        "name": "Ostwald Process Explosives Factories",
-       "era": 4,
+       "era": 3,
        "year": 1908,
        "ind": "explosives"
       }
@@ -18580,7 +19990,7 @@
       {
        "key": "building_glassworks_plastics",
        "name": "Plastic Glassworks",
-       "era": 4,
+       "era": 3,
        "year": 1910,
        "ind": "glass"
       }
@@ -18712,6 +20122,7 @@
      "industry": "electrics",
      "prereqs": [
       "telephone",
+      "wireless_telegraphy",
       "electric_drive"
      ],
      "unlocks": [
@@ -18751,7 +20162,7 @@
       {
        "key": "building_artillery_foundry_recoiled",
        "name": "Recoiled Barrel Artillery Foundries",
-       "era": 4,
+       "era": 3,
        "year": 1897,
        "ind": "artillery"
       }
@@ -18789,6 +20200,7 @@
       "conveyors",
       "combustion_engine",
       "electric_drive_looms",
+      "long_draft_spinning",
       "process_control",
       "electric_motors",
       "diesel_engine",
@@ -18819,6 +20231,73 @@
      "blocks": [
       "dreadnought_tech",
       "battlefleet_tactics"
+     ]
+    },
+    {
+     "id": "semi_chemical_pulping",
+     "name": "Semi-Chemical Pulping",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "A mild sulfite cook followed by mechanical defibring opens hardwoods the chemical mills could not use, and the corrugated box gets a cheap domestic furnish.",
+     "category": "production",
+     "era": 4,
+     "year": 1925,
+     "onset": 1925,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "paper",
+     "prereqs": [
+      "kraft_process",
+      "industrial_catalysis"
+     ],
+     "unlocks": [
+      {
+       "key": "building_paper_mill_nssc",
+       "name": "Semi-Chemical Paper Mills",
+       "era": 4,
+       "year": 1925,
+       "ind": "paper"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "high_speed_papermaking"
+     ]
+    },
+    {
+     "id": "shell_filling",
+     "name": "Mass Shell Filling",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "The filling factory is a distinct industry from the case plant: acres of separated sheds, women's labour at scale, and an output measured in millions of rounds a week.",
+     "category": "military",
+     "era": 4,
+     "year": 1915,
+     "onset": 1915,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "munition",
+     "prereqs": [
+      "drawn_brass_cartridges"
+     ],
+     "unlocks": [
+      {
+       "key": "building_munition_plant_filling",
+       "name": "Shell Filling Munition Plants",
+       "era": 4,
+       "year": 1915,
+       "ind": "munition"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "automatic_cartridge_lines"
      ]
     },
     {
@@ -18878,6 +20357,40 @@
      "unlocks": [],
      "vanillaUnlocks": [],
      "blocks": []
+    },
+    {
+     "id": "superheated_steam",
+     "name": "Superheating",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Passing the steam back through the firebox before it reaches the cylinders cuts coal and water by about a quarter per ton-mile, and is why the steam locomotive survived the electric one by forty years.",
+     "category": "production",
+     "era": 4,
+     "year": 1915,
+     "onset": 1915,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "railway",
+     "prereqs": [
+      "electric_railway",
+      "electric_drive"
+     ],
+     "unlocks": [
+      {
+       "key": "building_railway_superheated",
+       "name": "Superheated Steam Railways",
+       "era": 4,
+       "year": 1915,
+       "ind": "railway"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "compression_ignition"
+     ]
     },
     {
      "id": "synthetic_indigo",
@@ -19075,20 +20588,12 @@
      "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "shipyard_steam",
+     "industry": null,
      "prereqs": [
       "electric_arc_process",
       "pneumatic_tools"
      ],
-     "unlocks": [
-      {
-       "key": "building_shipyard_arc_welding",
-       "name": "Arc Welding Shipyards",
-       "era": 5,
-       "year": 1941,
-       "ind": "shipyard_steam"
-      }
-     ],
+     "unlocks": [],
      "vanillaUnlocks": [],
      "blocks": []
     },
@@ -19115,8 +20620,41 @@
       {
        "key": "building_artillery_foundry_autofrettage",
        "name": "Autofrettaged Artillery Foundries",
-       "era": 5,
+       "era": 4,
        "year": 1925,
+       "ind": "artillery"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": [
+      "automatic_aa_guns"
+     ]
+    },
+    {
+     "id": "automatic_aa_guns",
+     "name": "Automatic Anti-Aircraft Guns",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "A fast-traversing automatic gun on a welded mounting, laid by a mechanical director, is the first artillery designed for a target that moves faster than the shell's flight time.",
+     "category": "military",
+     "era": 5,
+     "year": 1936,
+     "onset": 1936,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "artillery",
+     "prereqs": [
+      "autofrettage"
+     ],
+     "unlocks": [
+      {
+       "key": "building_artillery_foundry_antiaircraft",
+       "name": "Automatic Anti-Aircraft Foundries",
+       "era": 5,
+       "year": 1936,
        "ind": "artillery"
       }
      ],
@@ -19140,7 +20678,7 @@
      "platform": null,
      "industry": "munition",
      "prereqs": [
-      "drawn_brass_cartridges"
+      "shell_filling"
      ],
      "unlocks": [
       {
@@ -19274,13 +20812,15 @@
       {
        "key": "building_tooling_workshop_carbide",
        "name": "Cemented Carbide Tooling Workshops",
-       "era": 5,
+       "era": 4,
        "year": 1927,
        "ind": "tooling"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "tracer_control"
+     ]
     },
     {
      "id": "chemical_warfare",
@@ -19323,7 +20863,7 @@
      "industry": "railway",
      "prereqs": [
       "combustion_engine",
-      "electric_railway",
+      "superheated_steam",
       "process_control"
      ],
      "unlocks": [
@@ -19387,13 +20927,15 @@
       {
        "key": "building_explosives_factory_brine",
        "name": "Continuous Nitration Explosives Factories",
-       "era": 5,
+       "era": 4,
        "year": 1928,
        "ind": "explosives"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "cyclonite_process"
+     ]
     },
     {
      "id": "continuous_strip_mill",
@@ -19420,8 +20962,40 @@
        "key": "building_steel_mill_strip_mill",
        "name": "Continuous Strip Mill Steelworks",
        "era": 5,
-       "year": 1926,
+       "year": 1932,
        "ind": "steel"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": []
+    },
+    {
+     "id": "cyclonite_process",
+     "name": "Cyclonite Process",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Nitrating hexamine gives an explosive half again as powerful as TNT, and continuous plant makes it in quantities that change what a bomb and a torpedo can do.",
+     "category": "production",
+     "era": 5,
+     "year": 1940,
+     "onset": 1940,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "explosives",
+     "prereqs": [
+      "continuous_nitration",
+      "industrial_catalysis"
+     ],
+     "unlocks": [
+      {
+       "key": "building_explosives_factory_cyclonite",
+       "name": "Cyclonite Explosives Factories",
+       "era": 5,
+       "year": 1940,
+       "ind": "explosives"
       }
      ],
      "vanillaUnlocks": [],
@@ -19468,7 +21042,7 @@
      "industry": "food",
      "prereqs": [
       "conveyors",
-      "baking_powder",
+      "fat_hydrogenation",
       "light_alloys"
      ],
      "unlocks": [
@@ -19531,6 +21105,38 @@
      "blocks": []
     },
     {
+     "id": "glass_fibre",
+     "name": "Glass Fibre",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Glass drawn continuously into filaments finer than wool is no longer a glazing material at all — it insulates, reinforces and filters, and the glassworks acquires a market that has nothing to do with windows.",
+     "category": "production",
+     "era": 5,
+     "year": 1938,
+     "onset": 1938,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "glass",
+     "prereqs": [
+      "ribbon_machine",
+      "process_control"
+     ],
+     "unlocks": [
+      {
+       "key": "building_glassworks_fibre",
+       "name": "Glass Fibre Works",
+       "era": 5,
+       "year": 1938,
+       "ind": "glass"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": []
+    },
+    {
      "id": "high_speed_diesel",
      "name": "High Speed Diesel",
      "vanillaName": null,
@@ -19579,7 +21185,7 @@
      "platform": null,
      "industry": "paper",
      "prereqs": [
-      "kraft_process",
+      "semi_chemical_pulping",
       "industrial_catalysis"
      ],
      "unlocks": [
@@ -19587,7 +21193,7 @@
        "key": "building_paper_mill_highspeed",
        "name": "High-Speed Machine Paper Mills",
        "era": 5,
-       "year": 1930,
+       "year": 1935,
        "ind": "paper"
       }
      ],
@@ -19720,7 +21326,7 @@
       {
        "key": "building_port_motor",
        "name": "Motor Ship Ports",
-       "era": 5,
+       "era": 4,
        "year": 1930,
        "ind": "port"
       }
@@ -19818,7 +21424,7 @@
      "platform": null,
      "industry": "furniture",
      "prereqs": [
-      "bentwood_furniture",
+      "rotary_veneer",
       "art_silk",
       "light_alloys"
      ],
@@ -19863,7 +21469,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "welded_prefabrication"
+     ]
     },
     {
      "id": "oil_turbine",
@@ -19891,7 +21499,7 @@
        "key": "building_power_plant_oil",
        "name": "Oil-Fired Power Plant",
        "era": 5,
-       "year": 1925,
+       "year": 1932,
        "ind": "power"
       }
      ],
@@ -19982,6 +21590,7 @@
       "oil_turbine",
       "compression_ignition",
       "ribbon_machine",
+      "glass_fibre",
       "continuous_strip_mill",
       "vacuum_tube_electronics",
       "pulverized_coal_firing"
@@ -20046,13 +21655,15 @@
       {
        "key": "building_glassworks_ribbon",
        "name": "Ribbon Machine Glassworks",
-       "era": 5,
+       "era": 4,
        "year": 1926,
        "ind": "glass"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "glass_fibre"
+     ]
     },
     {
      "id": "sound_film",
@@ -20078,7 +21689,7 @@
        "key": "building_art_academy_sound_film",
        "name": "Sound Film Art Academies",
        "era": 5,
-       "year": 1927,
+       "year": 1932,
        "ind": "art_academy"
       }
      ],
@@ -20102,7 +21713,7 @@
      "platform": null,
      "industry": "arms",
      "prereqs": [
-      "bolt_action_rifles"
+      "light_machine_guns"
      ],
      "unlocks": [
       {
@@ -20141,7 +21752,7 @@
        "key": "building_chemical_plant_reforming",
        "name": "Steam Reforming Chemical Plants",
        "era": 5,
-       "year": 1931,
+       "year": 1935,
        "ind": "fertilizer"
       }
      ],
@@ -20169,6 +21780,38 @@
       "trench_works"
      ],
      "unlocks": [],
+     "vanillaUnlocks": [],
+     "blocks": []
+    },
+    {
+     "id": "tracer_control",
+     "name": "Hydraulic Tracer Control",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "A stylus follows a master form and hydraulics repeat it on the cutter, so a complex profile no longer needs a skilled machinist — only a first article to copy.",
+     "category": "production",
+     "era": 5,
+     "year": 1936,
+     "onset": 1936,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "tooling",
+     "prereqs": [
+      "cemented_carbide",
+      "alloy_steels"
+     ],
+     "unlocks": [
+      {
+       "key": "building_tooling_workshop_tracer",
+       "name": "Tracer-Controlled Tooling Workshops",
+       "era": 5,
+       "year": 1936,
+       "ind": "tooling"
+      }
+     ],
      "vanillaUnlocks": [],
      "blocks": []
     },
@@ -20236,16 +21879,47 @@
      ],
      "vanillaUnlocks": [],
      "blocks": []
+    },
+    {
+     "id": "welded_prefabrication",
+     "name": "Welded Prefabrication",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Hulls assembled from pre-welded sections built inland turn shipbuilding into an assembly industry, and a merchant ship from a two-year commission into a two-month one.",
+     "category": "military",
+     "era": 5,
+     "year": 1941,
+     "onset": 1941,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "shipyard_steam",
+     "prereqs": [
+      "oil_fired_boilers"
+     ],
+     "unlocks": [
+      {
+       "key": "building_shipyard_arc_welding",
+       "name": "Arc Welding Shipyards",
+       "era": 5,
+       "year": 1941,
+       "ind": "shipyard_steam"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": []
     }
    ],
-   "rushCost": 923125,
-   "rushCostVanillaAot": 923125,
+   "rushCost": 988750,
+   "rushCostVanillaAot": 988750,
    "rushCostByAot": {
-    "0.25": 923125,
-    "0.2": 742000.0000000001,
-    "0.15": 560875,
-    "0.125": 470312.5,
-    "0.1": 379750.00000000006
+    "0.25": 988750,
+    "0.2": 794500.0000000001,
+    "0.15": 600250,
+    "0.125": 503125,
+    "0.1": 406000.00000000006
    }
   }
  ]

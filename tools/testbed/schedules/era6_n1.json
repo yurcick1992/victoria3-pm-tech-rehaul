@@ -1,12 +1,12 @@
 {
   "schedule_version": 1,
   "label": "era6-n1",
-  "_why": "FIRST RUN OF THE RE-BANDED LADDER (ROADMAP step 1b, ruled 2026-08-12). The era anchors moved to 1750/1830/1870/1900/1925/1940 and every tier was placed by its own technology date, so most rungs dropped one era number. Seven invented ~1700 rungs were removed (they shared era 0 with a real ~1750 vanilla rung) and fifteen were added, filling every interior gap the re-band opened and giving era 5 real content. All fifteen now carry their own new technology, and the research-event emitter covers them: 53 new technologies (was 38), 137 covered by journal entries (was 122), 411 journal entries (was 366).",
-  "_arms": "era6 = {kind: config, config: config/mod_config.era6.json}, research_events.enabled: true — the `techs+events` arm on the new ladder. n=1: this is a SHAKEDOWN of a structure that has never been in the game, not a measurement of a treatment.",
+  "_why": "FIRST RUN OF THE RE-BANDED LADDER AS SHIPPED. 106 tiers on the ruled anchors 1750/1830/1870/1900/1925/1940, every tier gated by its own technology (54 new ones), every technology covered by journal entries (138 covered, 414 entries), every rung requiring the rung below it, and — after the date-gate fix — every era-N rung present in its own era-N scenario (30 absences down to the 2 ruled ERA_PRUNE exemptions). Fixing the converter's tier mapping as a side effect of dropping the seven ~1700 rungs also made the 1836 start actually re-tier for the first time.",
+  "_arms": "era6 = {kind: config, config: config/mod_config.json} — the re-banded 106-tier ladder is now THE canonical config; the .era6 side files are merged and deleted. research_events.enabled: true, so this is the techs+events arm.",
   "_comparison": "Against run002 of 20260812_093402_research-events-fixed-n2, which is the same arm (techs+events, fixed military gate, vanilla ahead-of-time penalty) on the OLD 100-tier ladder. ⚠ THE TWO DIFFER IN MORE THAN THE LADDER: 15 new technologies deepen the production tree, which raises the ahead-of-time penalty on everything above them, and 15 more journal entries exist to be filled. This run cannot separate 'the re-band' from 'a deeper tree' and is not meant to.",
-  "_watch": "First, that it RUNS: 106 tier buildings, 40 of them emitted for the first time, and a 1836 start converted onto a ladder whose era-0 rungs changed. Read error.log and the PM_TECH_REHAUL init marker before anything else. Then: whether the new rungs are ever BUILT (building_inventory by type — glass fibre, tracer tooling, plywood furniture, the three 1915 war rungs); era-5 technologies held by the tree leader at 1935, against 17/17 production and 15/15 military on the previous events run and 12/17 and 1/15 on the baseline; and whether the deeper tree slows the leader as the ahead-of-time penalty implies it should.",
+  "_watch": "FIRST: that it runs. 106 tier buildings, 40 emitted for the first time, and an 1836 start that now genuinely re-tiers (textile, furniture, paper, glass and tooling split across rungs where they used to pass through). Smoke-check at five minutes per the hard rule: init marker, game version, this run's own error window, clock advancing. THEN: whether the new rungs are ever built; era-5 technologies held by the leader at 1935 against batch A's 17/17 production and 15/15 military, and the year it reaches half of era 5 against batch A's 1913-1917 and the 1940 anchor.",
   "_cost": "1 run x 100 in-game years, ~2h40.",
-  "_caveats": "The era-1 employment threshold (5000) is PROVISIONAL and unruled — the re-band put tiers at era 1 whose technology is not an era-1 freebie, and the emitter keys on our tier era, so a value was required to build at all. It continues the ruled x3 ladder downward. Also: building_cost is still null on the fifteen new rungs, so they fall back to the building-level required_construction rather than a solved payback figure.",
+  "_caveats": "GAME VERSION 1.13.10, against batch A's 1.13.9 — three of that hotfix's fixes touch quantities this mod is calibrated against (private investment no longer endlessly expands unprofitable railways, shipyard wages no longer paid twice, a single-good shortage now lowers organization instead of draining supply). So this run measures a new ladder AND a changed game, and cannot separate them. The era-1 employment threshold (5000) is provisional and unruled. building_cost is now solved for all 106 tiers.",
   "defaults": {
     "metrics": [
       "country_state",
@@ -30,14 +30,27 @@
   "setups": {
     "era6": {
       "kind": "config",
-      "config": "config/mod_config.era6.json"
+      "config": "config/mod_config.json"
     }
   },
   "runs": [
     {
       "setup": "era6",
       "until": "1936.1.1",
-      "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"]
+      "dump_dates": [
+        "1836.2.1",
+        "1840.1.1",
+        "1850.1.1",
+        "1860.1.1",
+        "1870.1.1",
+        "1880.1.1",
+        "1890.1.1",
+        "1900.1.1",
+        "1910.1.1",
+        "1920.1.1",
+        "1930.1.1",
+        "1935.1.1"
+      ]
     }
   ]
 }
