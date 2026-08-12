@@ -62,7 +62,7 @@ window.PMDATA = {
                                                                  "grain":  1
                                                              },
                                              "tech_year":  1750,
-                                             "building_cost":  165
+                                             "building_cost":  400
                                          },
                                          {
                                              "key":  "building_food_industry_sweetener",
@@ -93,7 +93,7 @@ window.PMDATA = {
                                                                  "sugar":  0.272727
                                                              },
                                              "tech_year":  1815,
-                                             "building_cost":  240
+                                             "building_cost":  600
                                          },
                                          {
                                              "key":  "building_food_industry_baking_powder",
@@ -125,7 +125,7 @@ window.PMDATA = {
                                                                  "sugar":  0.272727
                                                              },
                                              "tech_year":  1860,
-                                             "building_cost":  360
+                                             "building_cost":  900
                                          },
                                          {
                                              "key":  "building_food_industry_hydrogenated",
@@ -151,7 +151,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/baking_powder.dds",
                                              "target_be":  84,
                                              "natural_year":  1900,
-                                             "building_cost":  null,
+                                             "building_cost":  1350,
                                              "tech":  "fat_hydrogenation",
                                              "input_ratio":  {
                                                                  "grain":  0.727273,
@@ -182,7 +182,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/baking_powder.dds",
                                              "target_be":  60,
                                              "natural_year":  1925,
-                                             "building_cost":  null,
+                                             "building_cost":  2025,
                                              "tech":  "conveyors",
                                              "input_ratio":  {
                                                                  "grain":  0.727273,
@@ -239,7 +239,7 @@ window.PMDATA = {
                                                                  "fabric":  1
                                                              },
                                              "tech_year":  1780,
-                                             "building_cost":  135
+                                             "building_cost":  400
                                          },
                                          {
                                              "key":  "building_textile_mill_dye",
@@ -270,7 +270,7 @@ window.PMDATA = {
                                                                  "fabric":  0.888889
                                                              },
                                              "tech_year":  1830,
-                                             "building_cost":  205
+                                             "building_cost":  600
                                          },
                                          {
                                              "key":  "building_textile_mill_sewing",
@@ -304,7 +304,7 @@ window.PMDATA = {
                                                                  "tools":  0.066667
                                                              },
                                              "tech_year":  1855,
-                                             "building_cost":  305
+                                             "building_cost":  900
                                          },
                                          {
                                              "key":  "building_textile_mill_electric",
@@ -341,7 +341,7 @@ window.PMDATA = {
                                                                  "tools":  0.1
                                                              },
                                              "tech_year":  1905,
-                                             "building_cost":  455
+                                             "building_cost":  1350
                                          },
                                          {
                                              "key":  "building_textile_mill_highdraft",
@@ -369,7 +369,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/electric_sewing_machines.dds",
                                              "target_be":  69,
                                              "natural_year":  1925,
-                                             "building_cost":  null,
+                                             "building_cost":  2025,
                                              "tech":  "long_draft_spinning",
                                              "input_ratio":  {
                                                                  "dye":  0.2,
@@ -430,7 +430,7 @@ window.PMDATA = {
                                                                  "wood":  0.75
                                                              },
                                              "tech_year":  1780,
-                                             "building_cost":  165
+                                             "building_cost":  400
                                          },
                                          {
                                              "key":  "building_furniture_manufactory_lathe",
@@ -464,7 +464,7 @@ window.PMDATA = {
                                                                  "wood":  0.666667
                                                              },
                                              "tech_year":  1830,
-                                             "building_cost":  250
+                                             "building_cost":  600
                                          },
                                          {
                                              "key":  "building_furniture_manufactory_mechanized",
@@ -498,7 +498,7 @@ window.PMDATA = {
                                                                  "wood":  0.714286
                                                              },
                                              "tech_year":  1855,
-                                             "building_cost":  370
+                                             "building_cost":  900
                                          },
                                          {
                                              "key":  "building_furniture_manufactory_plywood",
@@ -525,7 +525,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/mechanized_workshops.dds",
                                              "target_be":  85,
                                              "natural_year":  1900,
-                                             "building_cost":  null,
+                                             "building_cost":  1350,
                                              "tech":  "rotary_veneer",
                                              "input_ratio":  {
                                                                  "fabric":  0.142857,
@@ -558,7 +558,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/mechanized_workshops.dds",
                                              "target_be":  73,
                                              "natural_year":  1925,
-                                             "building_cost":  null,
+                                             "building_cost":  2025,
                                              "tech":  "art_silk",
                                              "input_ratio":  {
                                                                  "fabric":  0.142857,
@@ -612,7 +612,7 @@ window.PMDATA = {
                                                                  "wood":  1
                                                              },
                                              "tech_year":  1750,
-                                             "building_cost":  190
+                                             "building_cost":  400
                                          },
                                          {
                                              "key":  "building_glassworks_leaded",
@@ -643,7 +643,7 @@ window.PMDATA = {
                                                                  "wood":  0.666667
                                                              },
                                              "tech_year":  1832,
-                                             "building_cost":  225
+                                             "building_cost":  600
                                          },
                                          {
                                              "key":  "building_glassworks_crystal",
@@ -673,7 +673,7 @@ window.PMDATA = {
                                                                  "lead":  1
                                                              },
                                              "tech_year":  1867,
-                                             "building_cost":  335
+                                             "building_cost":  900
                                          },
                                          {
                                              "key":  "building_glassworks_plastics",
@@ -705,7 +705,7 @@ window.PMDATA = {
                                                                  "oil":  0.4
                                                              },
                                              "tech_year":  1910,
-                                             "building_cost":  500
+                                             "building_cost":  1350
                                          },
                                          {
                                              "key":  "building_glassworks_ribbon",
@@ -731,7 +731,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/houseware_plastics.dds",
                                              "target_be":  84,
                                              "natural_year":  1925,
-                                             "building_cost":  null,
+                                             "building_cost":  2025,
                                              "tech":  "ribbon_machine",
                                              "input_ratio":  {
                                                                  "lead":  0.6,
@@ -762,7 +762,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/houseware_plastics.dds",
                                              "target_be":  73,
                                              "natural_year":  1940,
-                                             "building_cost":  null,
+                                             "building_cost":  3040,
                                              "tech":  "glass_fibre",
                                              "input_ratio":  {
                                                                  "lead":  0.6,
@@ -819,7 +819,7 @@ window.PMDATA = {
                                                                  "wood":  1
                                                              },
                                              "tech_year":  1770,
-                                             "building_cost":  60
+                                             "building_cost":  400
                                          },
                                          {
                                              "key":  "building_tooling_workshop_pig_iron",
@@ -851,7 +851,7 @@ window.PMDATA = {
                                                                  "wood":  0.6
                                                              },
                                              "tech_year":  1830,
-                                             "building_cost":  85
+                                             "building_cost":  600
                                          },
                                          {
                                              "key":  "building_tooling_workshop_steel",
@@ -884,7 +884,7 @@ window.PMDATA = {
                                                                  "wood":  0.6
                                                              },
                                              "tech_year":  1865,
-                                             "building_cost":  130
+                                             "building_cost":  900
                                          },
                                          {
                                              "key":  "building_tooling_workshop_rubber",
@@ -917,7 +917,7 @@ window.PMDATA = {
                                                                  "steel":  0.75
                                                              },
                                              "tech_year":  1901,
-                                             "building_cost":  195
+                                             "building_cost":  1350
                                          },
                                          {
                                              "key":  "building_tooling_workshop_carbide",
@@ -943,7 +943,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/steel_tools.dds",
                                              "target_be":  33,
                                              "natural_year":  1925,
-                                             "building_cost":  null,
+                                             "building_cost":  2025,
                                              "ai_value":  2000,
                                              "tech":  "cemented_carbide",
                                              "input_ratio":  {
@@ -975,7 +975,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/steel_tools.dds",
                                              "target_be":  33,
                                              "natural_year":  1940,
-                                             "building_cost":  null,
+                                             "building_cost":  3040,
                                              "ai_value":  2000,
                                              "tech":  "transfer_machining",
                                              "input_ratio":  {
@@ -1031,7 +1031,7 @@ window.PMDATA = {
                                                                  "wood":  1
                                                              },
                                              "tech_year":  1750,
-                                             "building_cost":  60
+                                             "building_cost":  400
                                          },
                                          {
                                              "key":  "building_paper_mill_sulfite",
@@ -1062,7 +1062,7 @@ window.PMDATA = {
                                                                  "wood":  0.75
                                                              },
                                              "tech_year":  1830,
-                                             "building_cost":  85
+                                             "building_cost":  600
                                          },
                                          {
                                              "key":  "building_paper_mill_bleached",
@@ -1096,7 +1096,7 @@ window.PMDATA = {
                                                                  "wood":  0.6
                                                              },
                                              "tech_year":  1874,
-                                             "building_cost":  130
+                                             "building_cost":  900
                                          },
                                          {
                                              "key":  "building_paper_mill_kraft",
@@ -1123,7 +1123,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/bleached_paper.dds",
                                              "target_be":  34,
                                              "natural_year":  1900,
-                                             "building_cost":  null,
+                                             "building_cost":  1350,
                                              "tech":  "kraft_process",
                                              "input_ratio":  {
                                                                  "dye":  0.2,
@@ -1156,7 +1156,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/bleached_paper.dds",
                                              "target_be":  33,
                                              "natural_year":  1925,
-                                             "building_cost":  null,
+                                             "building_cost":  2025,
                                              "tech":  "semi_chemical_pulping",
                                              "input_ratio":  {
                                                                  "dye":  0.2,
@@ -1189,7 +1189,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/bleached_paper.dds",
                                              "target_be":  34,
                                              "natural_year":  1940,
-                                             "building_cost":  null,
+                                             "building_cost":  3040,
                                              "tech":  "high_speed_papermaking",
                                              "input_ratio":  {
                                                                  "dye":  0.2,
@@ -1249,7 +1249,7 @@ window.PMDATA = {
                                                                  "sulfur":  0.75
                                                              },
                                              "tech_year":  1842,
-                                             "building_cost":  130
+                                             "building_cost":  1600
                                          },
                                          {
                                              "key":  "building_chemical_plant_ammoniacal",
@@ -1275,7 +1275,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/chemical_fertilizers.dds",
                                              "target_be":  34,
                                              "natural_year":  1870,
-                                             "building_cost":  null,
+                                             "building_cost":  2400,
                                              "tech":  "aniline",
                                              "input_ratio":  {
                                                                  "iron":  0.25,
@@ -1312,7 +1312,7 @@ window.PMDATA = {
                                                                  "sulfur":  0.5
                                                              },
                                              "tech_year":  1885,
-                                             "building_cost":  295
+                                             "building_cost":  3600
                                          },
                                          {
                                              "key":  "building_chemical_plant_nitrogen",
@@ -1346,7 +1346,7 @@ window.PMDATA = {
                                                                  "sulfur":  0.444444
                                                              },
                                              "tech_year":  1913,
-                                             "building_cost":  445
+                                             "building_cost":  5400
                                          },
                                          {
                                              "key":  "building_chemical_plant_reforming",
@@ -1373,7 +1373,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/nitrogen_fixation.dds",
                                              "target_be":  34,
                                              "natural_year":  1940,
-                                             "building_cost":  null,
+                                             "building_cost":  8100,
                                              "tech":  "steam_reforming",
                                              "input_ratio":  {
                                                                  "iron":  0.333333,
@@ -1430,7 +1430,7 @@ window.PMDATA = {
                                                                  "sulfur":  0.5
                                                              },
                                              "tech_year":  1820,
-                                             "building_cost":  120
+                                             "building_cost":  1600
                                          },
                                          {
                                              "key":  "building_explosives_factory_ammonia",
@@ -1464,7 +1464,7 @@ window.PMDATA = {
                                                                  "sulfur":  0.428571
                                                              },
                                              "tech_year":  1867,
-                                             "building_cost":  180
+                                             "building_cost":  2400
                                          },
                                          {
                                              "key":  "building_explosives_factory_vacuum",
@@ -1498,7 +1498,7 @@ window.PMDATA = {
                                                                  "sulfur":  0.4
                                                              },
                                              "tech_year":  1908,
-                                             "building_cost":  270
+                                             "building_cost":  3600
                                          },
                                          {
                                              "key":  "building_explosives_factory_brine",
@@ -1534,7 +1534,7 @@ window.PMDATA = {
                                                                  "sulfur":  0.285714
                                                              },
                                              "tech_year":  1928,
-                                             "building_cost":  405
+                                             "building_cost":  5400
                                          },
                                          {
                                              "key":  "building_explosives_factory_cyclonite",
@@ -1562,7 +1562,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/vaccum_brine_electrolysis.dds",
                                              "target_be":  33,
                                              "natural_year":  1940,
-                                             "building_cost":  null,
+                                             "building_cost":  8100,
                                              "tech":  "cyclonite_process",
                                              "input_ratio":  {
                                                                  "electricity":  0.142857,
@@ -1625,7 +1625,7 @@ window.PMDATA = {
                                                                  "iron":  0.571429
                                                              },
                                              "tech_year":  1745,
-                                             "building_cost":  635
+                                             "building_cost":  1065
                                          },
                                          {
                                              "key":  "building_steel_mill_bessemer",
@@ -1657,7 +1657,7 @@ window.PMDATA = {
                                                                  "iron":  0.666667
                                                              },
                                              "tech_year":  1856,
-                                             "building_cost":  980
+                                             "building_cost":  2400
                                          },
                                          {
                                              "key":  "building_steel_mill_open_hearth",
@@ -1689,7 +1689,7 @@ window.PMDATA = {
                                                                  "iron":  0.75
                                                              },
                                              "tech_year":  1885,
-                                             "building_cost":  1425
+                                             "building_cost":  3600
                                          },
                                          {
                                              "key":  "building_steel_mill_electric_arc",
@@ -1723,7 +1723,7 @@ window.PMDATA = {
                                                                  "iron":  0.625
                                                              },
                                              "tech_year":  1912,
-                                             "building_cost":  1315
+                                             "building_cost":  5400
                                          },
                                          {
                                              "key":  "building_steel_mill_strip_mill",
@@ -1750,7 +1750,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/electric_arc_process.dds",
                                              "target_be":  60,
                                              "natural_year":  1940,
-                                             "building_cost":  null,
+                                             "building_cost":  8100,
                                              "tech":  "continuous_strip_mill",
                                              "input_ratio":  {
                                                                  "coal":  0.1875,
@@ -1805,7 +1805,7 @@ window.PMDATA = {
                                                                  "steel":  1
                                                              },
                                              "tech_year":  1820,
-                                             "building_cost":  220
+                                             "building_cost":  1600
                                          },
                                          {
                                              "key":  "building_motor_industry_compound",
@@ -1830,7 +1830,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/steamworks.dds",
                                              "target_be":  61,
                                              "natural_year":  1870,
-                                             "building_cost":  null,
+                                             "building_cost":  2400,
                                              "tech":  "watertube_boiler",
                                              "input_ratio":  {
                                                                  "steel":  1
@@ -1866,7 +1866,7 @@ window.PMDATA = {
                                                                  "steel":  0.571429
                                                              },
                                              "tech_year":  1893,
-                                             "building_cost":  500
+                                             "building_cost":  3600
                                          },
                                          {
                                              "key":  "building_motor_industry_diesel",
@@ -1898,7 +1898,7 @@ window.PMDATA = {
                                                                  "steel":  0.5
                                                              },
                                              "tech_year":  1912,
-                                             "building_cost":  750
+                                             "building_cost":  5400
                                          },
                                          {
                                              "key":  "building_motor_industry_welded_diesel",
@@ -1924,7 +1924,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/diesel_engines.dds",
                                              "target_be":  61,
                                              "natural_year":  1940,
-                                             "building_cost":  null,
+                                             "building_cost":  8100,
                                              "tech":  "high_speed_diesel",
                                              "input_ratio":  {
                                                                  "oil":  0.5,
@@ -1985,7 +1985,7 @@ window.PMDATA = {
                                                                  "wood":  0.666667
                                                              },
                                              "tech_year":  1700,
-                                             "building_cost":  445
+                                             "building_cost":  400
                                          },
                                          {
                                              "key":  "building_shipyard_complex",
@@ -2022,7 +2022,7 @@ window.PMDATA = {
                                                                  "wood":  0.307692
                                                              },
                                              "tech_year":  1845,
-                                             "building_cost":  220
+                                             "building_cost":  600
                                          }
                                      ],
                            "ladder_end":  "extinct"
@@ -2078,7 +2078,7 @@ window.PMDATA = {
                                                                  "steel":  0.6
                                                              },
                                              "tech_year":  1843,
-                                             "building_cost":  915
+                                             "building_cost":  600
                                          },
                                          {
                                              "key":  "building_shipyard_metal_steel_hull",
@@ -2105,7 +2105,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/reinforced_steam_ships.dds",
                                              "target_be":  136,
                                              "natural_year":  1870,
-                                             "building_cost":  null,
+                                             "building_cost":  900,
                                              "ship_construction":  15,
                                              "tech":  "steel_hulls",
                                              "input_ratio":  {
@@ -2139,7 +2139,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/reinforced_steam_ships.dds",
                                              "target_be":  125,
                                              "natural_year":  1900,
-                                             "building_cost":  null,
+                                             "building_cost":  1350,
                                              "ship_construction":  15,
                                              "tech":  "marine_steam_turbine",
                                              "input_ratio":  {
@@ -2173,7 +2173,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/reinforced_steam_ships.dds",
                                              "target_be":  125,
                                              "natural_year":  1925,
-                                             "building_cost":  null,
+                                             "building_cost":  2025,
                                              "ship_construction":  15,
                                              "tech":  "oil_fired_boilers",
                                              "input_ratio":  {
@@ -2215,7 +2215,7 @@ window.PMDATA = {
                                                                  "steel":  0.428571
                                                              },
                                              "tech_year":  1941,
-                                             "building_cost":  3715
+                                             "building_cost":  3040
                                          }
                                      ]
                        },
@@ -2270,7 +2270,7 @@ window.PMDATA = {
                                                                  "rubber":  0.25
                                                              },
                                              "tech_year":  1899,
-                                             "building_cost":  525
+                                             "building_cost":  3600
                                          },
                                          {
                                              "key":  "building_automotive_industry_mass",
@@ -2304,7 +2304,7 @@ window.PMDATA = {
                                                                  "rubber":  0.333333
                                                              },
                                              "tech_year":  1913,
-                                             "building_cost":  785
+                                             "building_cost":  5400
                                          },
                                          {
                                              "key":  "building_automotive_industry_transfer_line",
@@ -2331,7 +2331,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/standardized_automobiles.dds",
                                              "target_be":  63,
                                              "natural_year":  1940,
-                                             "building_cost":  null,
+                                             "building_cost":  8100,
                                              "tech":  "transfer_machining",
                                              "input_ratio":  {
                                                                  "engines":  0.333333,
@@ -2390,7 +2390,7 @@ window.PMDATA = {
                                                                  "iron":  0.5
                                                              },
                                              "tech_year":  1770,
-                                             "building_cost":  150
+                                             "building_cost":  400
                                          },
                                          {
                                              "key":  "building_arms_industry_rifles",
@@ -2423,7 +2423,7 @@ window.PMDATA = {
                                                                  "tools":  0.2
                                                              },
                                              "tech_year":  1849,
-                                             "building_cost":  225
+                                             "building_cost":  600
                                          },
                                          {
                                              "key":  "building_arms_industry_repeaters",
@@ -2457,7 +2457,7 @@ window.PMDATA = {
                                                                  "tools":  0.25
                                                              },
                                              "tech_year":  1866,
-                                             "building_cost":  340
+                                             "building_cost":  900
                                          },
                                          {
                                              "key":  "building_arms_industry_bolt_action",
@@ -2493,7 +2493,7 @@ window.PMDATA = {
                                                                  "tools":  0.333333
                                                              },
                                              "tech_year":  1886,
-                                             "building_cost":  510
+                                             "building_cost":  1350
                                          },
                                          {
                                              "key":  "building_arms_industry_automatic",
@@ -2521,7 +2521,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/bolt_action_rifles.dds",
                                              "target_be":  58,
                                              "natural_year":  1925,
-                                             "building_cost":  null,
+                                             "building_cost":  2025,
                                              "tech":  "light_machine_guns",
                                              "input_ratio":  {
                                                                  "hardwood":  0.166667,
@@ -2556,7 +2556,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/bolt_action_rifles.dds",
                                              "target_be":  56,
                                              "natural_year":  1940,
-                                             "building_cost":  null,
+                                             "building_cost":  3040,
                                              "tech":  "stamped_receivers",
                                              "input_ratio":  {
                                                                  "hardwood":  0.166667,
@@ -2613,7 +2613,7 @@ window.PMDATA = {
                                                                  "iron":  0.6
                                                              },
                                              "tech_year":  1750,
-                                             "building_cost":  85
+                                             "building_cost":  400
                                          },
                                          {
                                              "key":  "building_artillery_foundry_smoothbore",
@@ -2645,7 +2645,7 @@ window.PMDATA = {
                                                                  "iron":  0.625
                                                              },
                                              "tech_year":  1830,
-                                             "building_cost":  130
+                                             "building_cost":  600
                                          },
                                          {
                                              "key":  "building_artillery_foundry_breech",
@@ -2679,7 +2679,7 @@ window.PMDATA = {
                                                                  "tools":  0.222222
                                                              },
                                              "tech_year":  1861,
-                                             "building_cost":  190
+                                             "building_cost":  900
                                          },
                                          {
                                              "key":  "building_artillery_foundry_recoiled",
@@ -2713,7 +2713,7 @@ window.PMDATA = {
                                                                  "tools":  0.285714
                                                              },
                                              "tech_year":  1897,
-                                             "building_cost":  285
+                                             "building_cost":  1350
                                          },
                                          {
                                              "key":  "building_artillery_foundry_autofrettage",
@@ -2740,7 +2740,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/recoil_mechanism_artillery_production.dds",
                                              "target_be":  34,
                                              "natural_year":  1925,
-                                             "building_cost":  null,
+                                             "building_cost":  2025,
                                              "tech":  "autofrettage",
                                              "input_ratio":  {
                                                                  "oil":  0.142857,
@@ -2773,7 +2773,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/recoil_mechanism_artillery_production.dds",
                                              "target_be":  34,
                                              "natural_year":  1940,
-                                             "building_cost":  null,
+                                             "building_cost":  3040,
                                              "tech":  "automatic_aa_guns",
                                              "input_ratio":  {
                                                                  "oil":  0.142857,
@@ -2834,7 +2834,7 @@ window.PMDATA = {
                                                                  "lead":  0.5
                                                              },
                                              "tech_year":  1830,
-                                             "building_cost":  120
+                                             "building_cost":  1600
                                          },
                                          {
                                              "key":  "building_munition_plant_shells",
@@ -2866,7 +2866,7 @@ window.PMDATA = {
                                                                  "lead":  0.428571
                                                              },
                                              "tech_year":  1875,
-                                             "building_cost":  180
+                                             "building_cost":  2400
                                          },
                                          {
                                              "key":  "building_munition_plant_drawn_brass",
@@ -2892,7 +2892,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/explosive_shells.dds",
                                              "target_be":  33,
                                              "natural_year":  1900,
-                                             "building_cost":  null,
+                                             "building_cost":  3600,
                                              "tech":  "bolt_action_rifles",
                                              "input_ratio":  {
                                                                  "explosives":  0.571429,
@@ -2923,7 +2923,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/explosive_shells.dds",
                                              "target_be":  33,
                                              "natural_year":  1925,
-                                             "building_cost":  null,
+                                             "building_cost":  5400,
                                              "tech":  "shell_filling",
                                              "input_ratio":  {
                                                                  "explosives":  0.571429,
@@ -2954,7 +2954,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/explosive_shells.dds",
                                              "target_be":  33,
                                              "natural_year":  1940,
-                                             "building_cost":  null,
+                                             "building_cost":  8100,
                                              "tech":  "stamped_receivers",
                                              "input_ratio":  {
                                                                  "explosives":  0.571429,
@@ -3013,7 +3013,7 @@ window.PMDATA = {
                                                                  "sulfur":  0.4
                                                              },
                                              "tech_year":  1857,
-                                             "building_cost":  780
+                                             "building_cost":  2400
                                          },
                                          {
                                              "key":  "building_synthetics_plant_indigo",
@@ -3039,7 +3039,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/synthetic_dyes.dds",
                                              "target_be":  118,
                                              "natural_year":  1900,
-                                             "building_cost":  null,
+                                             "building_cost":  3600,
                                              "tech":  "synthetic_indigo",
                                              "input_ratio":  {
                                                                  "fertilizer":  0.6,
@@ -3069,7 +3069,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/synthetic_dyes.dds",
                                              "target_be":  118,
                                              "natural_year":  1925,
-                                             "building_cost":  null,
+                                             "building_cost":  5400,
                                              "tech":  "art_silk",
                                              "input_ratio":  {
                                                                  "fertilizer":  0.6,
@@ -3099,7 +3099,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/synthetic_dyes.dds",
                                              "target_be":  93,
                                              "natural_year":  1940,
-                                             "building_cost":  null,
+                                             "building_cost":  8100,
                                              "tech":  "polyamide_synthesis",
                                              "input_ratio":  {
                                                                  "fertilizer":  0.6,
@@ -3159,7 +3159,7 @@ window.PMDATA = {
                                                                  "tools":  0.142857
                                                              },
                                              "tech_year":  1878,
-                                             "building_cost":  205
+                                             "building_cost":  2400
                                          },
                                          {
                                              "key":  "building_electrics_industry_wireless",
@@ -3187,7 +3187,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/telephones.dds",
                                              "target_be":  33,
                                              "natural_year":  1900,
-                                             "building_cost":  null,
+                                             "building_cost":  3600,
                                              "tech":  "wireless_telegraphy",
                                              "input_ratio":  {
                                                                  "iron":  0.285714,
@@ -3222,7 +3222,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/telephones.dds",
                                              "target_be":  33,
                                              "natural_year":  1925,
-                                             "building_cost":  null,
+                                             "building_cost":  5400,
                                              "tech":  "radio",
                                              "input_ratio":  {
                                                                  "iron":  0.285714,
@@ -3256,7 +3256,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/telephones.dds",
                                              "target_be":  33,
                                              "natural_year":  1940,
-                                             "building_cost":  null,
+                                             "building_cost":  8100,
                                              "tech":  "vacuum_tube_electronics",
                                              "input_ratio":  {
                                                                  "iron":  0.285714,
@@ -3312,7 +3312,7 @@ window.PMDATA = {
                                                                  "engines":  0.230769
                                                              },
                                              "tech_year":  1900,
-                                             "building_cost":  365
+                                             "building_cost":  900
                                          },
                                          {
                                              "key":  "building_power_plant_pulverized",
@@ -3337,7 +3337,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/coal_fired_plant.dds",
                                              "target_be":  132,
                                              "natural_year":  1925,
-                                             "building_cost":  null,
+                                             "building_cost":  1350,
                                              "output_override":  50,
                                              "tech":  "pulverized_coal_firing",
                                              "input_ratio":  {
@@ -3375,7 +3375,7 @@ window.PMDATA = {
                                                                  "oil":  0.714286
                                                              },
                                              "tech_year":  1932,
-                                             "building_cost":  360
+                                             "building_cost":  2025
                                          }
                                      ]
                        },
@@ -3423,7 +3423,7 @@ window.PMDATA = {
                                                              },
                                              "tech_year":  1700,
                                              "tech":  "navigation",
-                                             "building_cost":  175
+                                             "building_cost":  265
                                          },
                                          {
                                              "key":  "building_port_steam",
@@ -3449,7 +3449,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/basic_port.dds",
                                              "target_be":  120,
                                              "natural_year":  1830,
-                                             "building_cost":  null,
+                                             "building_cost":  400,
                                              "state_infrastructure":  4,
                                              "tech":  "screw_frigate",
                                              "input_ratio":  {
@@ -3487,7 +3487,7 @@ window.PMDATA = {
                                                                  "coal":  0.5
                                                              },
                                              "tech_year":  1875,
-                                             "building_cost":  110
+                                             "building_cost":  600
                                          },
                                          {
                                              "key":  "building_port_modern",
@@ -3520,7 +3520,7 @@ window.PMDATA = {
                                                                  "oil":  0.666667
                                                              },
                                              "tech_year":  1908,
-                                             "building_cost":  170
+                                             "building_cost":  900
                                          },
                                          {
                                              "key":  "building_port_motor",
@@ -3547,7 +3547,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/modern_port.dds",
                                              "target_be":  68,
                                              "natural_year":  1925,
-                                             "building_cost":  null,
+                                             "building_cost":  1350,
                                              "state_infrastructure":  6,
                                              "tech":  "mechanised_cargo_handling",
                                              "input_ratio":  {
@@ -3602,7 +3602,7 @@ window.PMDATA = {
                                                                  "coal":  0.285714
                                                              },
                                              "tech_year":  1825,
-                                             "building_cost":  170
+                                             "building_cost":  800
                                          },
                                          {
                                              "key":  "building_railway_steam",
@@ -3634,7 +3634,7 @@ window.PMDATA = {
                                                                  "coal":  0.5
                                                              },
                                              "tech_year":  1867,
-                                             "building_cost":  135
+                                             "building_cost":  1200
                                          },
                                          {
                                              "key":  "building_railway_electric",
@@ -3666,7 +3666,7 @@ window.PMDATA = {
                                                                  "electricity":  0.615385
                                                              },
                                              "tech_year":  1895,
-                                             "building_cost":  130
+                                             "building_cost":  1800
                                          },
                                          {
                                              "key":  "building_railway_diesel",
@@ -3699,7 +3699,7 @@ window.PMDATA = {
                                                                  "oil":  0.545455
                                                              },
                                              "tech_year":  1925,
-                                             "building_cost":  255
+                                             "building_cost":  2700
                                          }
                                      ],
                            "ladder_end":  "plateau"
@@ -3751,7 +3751,7 @@ window.PMDATA = {
                                                                  "paper":  1
                                                              },
                                              "tech_year":  1800,
-                                             "building_cost":  50
+                                             "building_cost":  400
                                          },
                                          {
                                              "key":  "building_art_academy_realist",
@@ -3778,7 +3778,7 @@ window.PMDATA = {
                                                                  "paper":  1
                                                              },
                                              "tech_year":  1850,
-                                             "building_cost":  75
+                                             "building_cost":  600
                                          },
                                          {
                                              "key":  "building_art_academy_photographic",
@@ -3807,7 +3807,7 @@ window.PMDATA = {
                                                                  "tools":  0.347826
                                                              },
                                              "tech_year":  1885,
-                                             "building_cost":  105
+                                             "building_cost":  900
                                          },
                                          {
                                              "key":  "building_art_academy_film",
@@ -3838,7 +3838,7 @@ window.PMDATA = {
                                                                  "tools":  0.333333
                                                              },
                                              "tech_year":  1912,
-                                             "building_cost":  165
+                                             "building_cost":  1350
                                          },
                                          {
                                              "key":  "building_art_academy_sound_film",
@@ -3862,7 +3862,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/film_art.dds",
                                              "target_be":  33,
                                              "natural_year":  1940,
-                                             "building_cost":  null,
+                                             "building_cost":  2025,
                                              "tech":  "sound_film",
                                              "input_ratio":  {
                                                                  "electricity":  0.166667,

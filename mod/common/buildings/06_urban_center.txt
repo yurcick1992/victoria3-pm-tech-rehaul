@@ -42,7 +42,7 @@ building_art_academy = {
 		pmg_ownership_building_art_academy
 		pmg_principle_freedom_of_movement_3
 	}
-	required_construction = 50
+	required_construction = 400
 	ai_value = 1000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
@@ -59,7 +59,7 @@ building_art_academy_realist = {
 		pmg_ownership_building_art_academy
 		pmg_principle_freedom_of_movement_3
 	}
-	required_construction = 75
+	required_construction = 600
 	ai_value = 1000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
@@ -76,7 +76,7 @@ building_art_academy_photographic = {
 		pmg_ownership_building_art_academy
 		pmg_principle_freedom_of_movement_3
 	}
-	required_construction = 105
+	required_construction = 900
 	ai_value = 1000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
@@ -93,7 +93,7 @@ building_art_academy_film = {
 		pmg_ownership_building_art_academy
 		pmg_principle_freedom_of_movement_3
 	}
-	required_construction = 165
+	required_construction = 1350
 	ai_value = 1000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
@@ -110,7 +110,7 @@ building_art_academy_sound_film = {
 		pmg_ownership_building_art_academy
 		pmg_principle_freedom_of_movement_3
 	}
-	required_construction = construction_cost_medium
+	required_construction = 2025
 	ai_value = 1000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
@@ -130,7 +130,7 @@ building_power_plant = {
 		pmg_main_power_coal
 	}
 
-	required_construction = 365
+	required_construction = 900
 
 	ai_value = {
 		value = 1000
@@ -174,7 +174,7 @@ building_power_plant_pulverized = {
 		pmg_main_power_pulverized
 	}
 
-	required_construction = construction_cost_medium
+	required_construction = 1350
 
 	ai_value = {
 		value = 1000
@@ -218,7 +218,7 @@ building_power_plant_oil = {
 		pmg_main_power_oil
 	}
 
-	required_construction = 360
+	required_construction = 2025
 
 	ai_value = {
 		value = 1000

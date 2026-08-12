@@ -4664,3 +4664,110 @@ shipyards) against 57 (54) before, per era 4/7/12/11/12/21; net £22.0M/wk again
 against £138k; macro 18 against 20. Net, losses and macro improved. ⚠ The +9 is inside the documented
 noise band and the railway lost a rung, which lands in era 5 — **user ruled the jitter ignorable for
 now**; a 3-seed ensemble would settle it.
+
+## 10.57 BUILDING COST — TWO BANDS OFF VANILLA'S OWN COST BOOK (user-ruled 2026-08-13)
+
+**The rule, in full:**
+```
+building_cost (points) = VANILLA's required_construction × band × 1.5^(era − 1)
+band                   = 2  for the EXPENSIVE set  ·  1  for everything else
+EXPENSIVE              = vanilla's own `construction_cost_very_high` (800) class, minus infrastructure
+```
+Derived and written by **`node tools/payback_census.mjs --write`**. The whole cost book is therefore
+**two sequences of six numbers**:
+
+| band | e0 | e1 | e2 | e3 | e4 | e5 |
+|---|---|---|---|---|---|---|
+| **regular** (vanilla 600) | 400 | **600** | 900 | 1350 | 2025 | 3040 |
+| **expensive** (vanilla 800 ×2) | 1065 | **1600** | 2400 | 3600 | 5400 | 8100 |
+
+with port/power (vanilla 400) and railway (800, held regular) scaling off their own anchors.
+**expensive:** fertilizer, explosives, steel, motor, automotive, munition, synthetics, electrics.
+**regular:** food, textile, furniture, glass, tooling, paper, shipyard, shipyard_steam, arms,
+artillery, power, port, railway, art_academy.
+
+### The three terms, and why each is what it is
+
+⭐⭐ **VANILLA'S COST IS THE ERA-1 RUNG, NOT THE INDUSTRY'S FIRST.** The exponent is `era − 1`: an era-0
+rung is vanilla ÷ 1.5, an era-5 rung is vanilla × 1.5⁴. Keying on the ERA and not on the tier's position
+is what makes a late-starting industry expensive from its first building — automotive debuts at era 3 and
+pays 1.5² over its anchor instead of being handed the era-1 price for being new. Well-defined because no
+industry may hold two tiers in one era (`build_era_ladder.mjs` throws), so era ↔ rung is one-to-one.
+
+⭐ **THE EXPENSIVE SET IS DERIVED, NOT LISTED** — it is vanilla's own `very_high` class read live from
+`common/buildings`, so a patch that reclassifies a building carries through instead of leaving a stale
+literal. The resolved set is printed on every run. **Infrastructure is excluded by hand**: railway is
+`very_high` in vanilla, but port and railway sell `state_infrastructure`, which is **not a priced good**,
+so nothing about them belongs in a profit-facing band — they take the plain vanilla anchor.
+
+⚠ **NOTHING IN THE RULE TOUCHES PROFIT.** A loss-making tier costs exactly what its era says. Negative or
+infinite costs are impossible **by construction** rather than by a guard — the inputs are a vanilla
+constant, a band and an era — which was an explicit user requirement.
+
+### Why it replaced the payback-derived rule that was ruled first
+
+The first form of this ruling set `building_cost = c(macrotype, era) × base output value`, with
+`c = 10 years × 52 × ρ(macrotype) / £720` and ρ measured per macrotype. It delivered a clean ten-year
+median and was **rejected by the user as "still per-building fitting"** — every building got its own
+number out of its own output value, which is exactly the property the two-band rule removes. Superseded,
+not wrong; the measurements behind it stand and are in F53.
+
+⭐ **TEN YEARS SURVIVES AS THE CHECK, NOT THE CONSTRUCTION.** The vanilla-anchored book *delivers* a
+dominant-rung median of **11.1 years** (per era 6.6 / 11.2 / 11.1 / 11.2 / 10.5 / 11.1) against vanilla's
+own 1836 reading of **11.4 modelled / 14.8 measured** (F53). That agreement is the argument for anchoring
+on vanilla: adopt the base game's cost book and the base game's payback follows, with no fitting at all.
+⚠ The band assignment was chosen on this check. The alternative — banding by MACROTYPE ("industry with
+industrial input") — delivers **17.9 years**, well off vanilla, and its membership is an artifact: `dye`
+counts as a manufactured good because our synthetics ladder makes it, so *textile* comes out expensive
+(1200) while *steel* stays regular (800), which reads backwards. Vanilla's own heavy/light split does not
+have that problem.
+
+### The capital-side consequences
+
+| scenario | K/GDP | yrs of construction budget to rebuild K | levels/yr the budget buys |
+|---|---|---|---|
+| 1780 | 1.05 | 13.1 | 1.2 |
+| 1836 | 2.12 | 26.5 | 2.3 |
+| 1870 | 3.14 | 31.4 | 7.9 |
+| 1900 | 6.93 | 53.3 | 31.6 |
+| 1920 | 7.48 | 46.8 | 67.1 |
+| 1945 | 9.13 | 50.7 | 46.3 |
+
+Against the shipped-before state (K/GDP 0.32→1.51, rebuild 4.0→8.4 years) this is a **5–6× tightening of
+the capital constraint**, which is the "overabundance of capital" finding (§10.52 / F52) answered.
+⚠ **K/GDP still reaches 9.1 against a real 3–4, and no cost book can fix that** — `K/GDP = payback ×
+profit share of GDP` is an identity, and our tiers' profit share runs **16 → 68 %** across the eras
+against a real 25–35 %. The pinned wage share is why. A cost rule can only move the first factor, and it
+is already sitting on vanilla's own value.
+
+### £720 per construction point is kept FLAT, as a known bias
+
+⚠ **£720 is the IRON-FRAME method's goods bill per point**, not a constant. The rate is a property of the
+construction method alone (both the goods and `country_construction_add` are `workforce_scaled`, so
+staffing cancels):
+
+| method | pts/level | **£/point** | gated on |
+|---|---|---|---|
+| `pm_wooden_buildings` | 2 | **1000** | default |
+| `pm_iron_frame_buildings` | 5 | **720** | `urban_planning` (era 1) |
+| `pm_steel_frame_buildings` | 10 | **540** | `steel_frame_buildings` (era 3) |
+| `pm_arc_welded_buildings` | 15 | **527** | `arc_welding` (era 5) |
+
+⇒ the real era ladder is **1000 / 720 / 720 / 540 / 540 / 527**, so an era-5 building pays back ~27%
+FASTER in £ than the book's figures say and an era-0 one ~28% slower. **Accepted and known.** Using the
+era rate would leave every macro figure identical (K and the construction budget scale together) and
+change only the POINT cost. The reason not to split it is that £720 is the model's single constant
+everywhere (`BCM.poundPerPoint`, the UI's Payback column, `solve_building_cost.ps1`), and changing it in
+one place only would create two readings of one number.
+
+### What it changed, mechanically
+
+`building_cost` is a pure OUTPUT of the pipeline — **nothing in the solve reads it back** (verified: no
+reference in `era_scenarios.mjs` or `era_solver.mjs`; `build_era_ladder.mjs` only nulls it on a freshly
+minted tier). So writing it needs no re-solve and cannot disturb the §10.25 fixed point. 105 tiers
+written — **39 of them had no `building_cost` at all**, having been minted by the ladder rebuild after
+`solve_building_cost.ps1` last ran, and were silently falling back to the UI's own model.
+`tools/solve_building_cost.ps1` is now **LEGACY for tiers on this ladder**: its assumed 20% return on
+operating cost, against a 56–104% realised margin, is exactly what shipped a ~2-year payback (§10.52).
+The vanilla construction data is read by ONE module, `tools/vanilla_construction.mjs`, shared with
+`tools/vanilla_payback_census.mjs`.

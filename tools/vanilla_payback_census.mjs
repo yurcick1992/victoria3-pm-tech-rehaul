@@ -28,59 +28,21 @@
 // ⚠ The CAPITAL-WEIGHTED aggregate is the robust reading: Σ(cost × levels) ÷ Σ(52 × profit × levels),
 // i.e. how many years of the market's whole industrial profit would rebuild its whole capital stock. It
 // needs no per-type distribution and it is what the ladder is really trying to set.
-import { readFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
-import { loadEcon, REPO } from './econ_host.mjs';
+import { loadEcon } from './econ_host.mjs';
+import { GAME, requiredConstruction, constructionMethods } from './vanilla_construction.mjs';
 
 const argv = process.argv.slice(2);
 const argOf = (n, d) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : d; };
 const BOOK = argOf('--book', 'vanilla');            // vanilla | mod
 const DETAIL = argv.includes('--detail');
-const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
-
 const { E, S, presets, config } = loadEcon({ quiet: true });
 const P = S.PRICES;
 const price = (g, real) => (P[g] || 0) * (real ? (S.thresholds[g] ?? 100) / 100 : 1);
 
 // ---------------------------------------------------------------- vanilla construction data
-const strip = s => s.replace(/^\uFEFF/, '');
-const SV = {};
-for (const l of strip(readFileSync(join(GAME, 'common/script_values/building_values.txt'), 'utf8')).split('\n')) {
-  const m = /^\s*(construction_cost_[a-z_]+)\s*=\s*([\d.]+)/.exec(l); if (m) SV[m[1]] = +m[2];
-}
-// building -> required_construction, in POINTS. Depth-aware: only the block's own top-level field counts.
-const RC = {};
-for (const f of readdirSync(join(GAME, 'common/buildings')).filter(x => x.endsWith('.txt'))) {
-  let cur = null, depth = 0;
-  for (const raw of strip(readFileSync(join(GAME, 'common/buildings', f), 'utf8')).split('\n')) {
-    const t = raw.replace(/#.*$/, '');
-    if (depth === 0) { const m = /^([a-z_0-9]+)\s*=\s*\{/.exec(t.trim()); if (m) cur = m[1]; }
-    else if (cur && depth === 1) {
-      const m = /^\s*required_construction\s*=\s*(\S+)/.exec(t);
-      if (m && RC[cur] == null) RC[cur] = SV[m[1]] != null ? SV[m[1]] : +m[1];
-    }
-    depth += (t.match(/\{/g) || []).length - (t.match(/\}/g) || []).length;
-    if (depth <= 0) { depth = 0; cur = null; }
-  }
-}
-// The construction sector's methods: goods bill per construction point.
-const CPM = [];
-{
-  let cur = null, depth = 0, inWS = false;
-  for (const raw of strip(readFileSync(join(GAME, 'common/production_methods/13_construction.txt'), 'utf8')).split('\n')) {
-    const t = raw.replace(/#.*$/, ''), s = t.trim();
-    if (depth === 0) { const m = /^([a-z_0-9]+)\s*=\s*\{/.exec(s); if (m) { cur = { pm: m[1], pts: 0, in: {} }; CPM.push(cur); } }
-    if (cur) {
-      if (/^workforce_scaled\s*=\s*\{/.test(s)) inWS = true;
-      let m;
-      if ((m = /^country_construction_add\s*=\s*([\d.]+)/.exec(s))) cur.pts = +m[1];
-      if (inWS && (m = /^goods_input_([a-z_]+)_add\s*=\s*([\d.]+)/.exec(s))) cur.in[m[1]] = +m[2];
-      if (s === '}' ) inWS = inWS && depth > 2;
-    }
-    depth += (t.match(/\{/g) || []).length - (t.match(/\}/g) || []).length;
-    if (depth <= 0) { depth = 0; cur = null; inWS = false; }
-  }
-}
+// One implementation, shared with payback_census.mjs \u2014 see tools/vanilla_construction.mjs.
+const RC = requiredConstruction(GAME);
+const CPM = constructionMethods(GAME);
 const pmPointCost = (pm, real) => {
   const c = CPM.find(x => x.pm === pm); if (!c || !c.pts) return NaN;
   return Object.entries(c.in).reduce((s, [g, q]) => s + q * price(g, real), 0) / c.pts;

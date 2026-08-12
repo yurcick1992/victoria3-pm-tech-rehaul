@@ -794,7 +794,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         PMs look hallucinated on this check's first run
   solve_be_targets.ps1  re-derives every tier's target_be + natural_year from its tech's vanilla era (date ladder; BALANCE_FRAMEWORK §8.1)
   solve_volumes.ps1     re-derives every tier's output/input volumes from vanilla recipes + target_be (BALANCE_FRAMEWORK §8)
-  solve_building_cost.ps1 re-derives every tier's building_cost (construction points) from a 10yr-payback model (BALANCE_FRAMEWORK §9)
+  solve_building_cost.ps1 LEGACY for tiers on the era ladder — the older 10yr-payback model (BALANCE_FRAMEWORK §9),
+                        whose assumed 20% return on operating cost is what shipped a ~2-year book.
+                        `payback_census.mjs --write` owns building_cost now (§10.57)
   audit_tech_content.mjs ⭐⭐ WHAT WOULD BE LOST IF THIS TECHNOLOGY WERE MERGED AWAY OR DELETED?
                         Read-only. Per technology: its MODIFIER block, every production method /
                         building / combat unit / decree / company it gates, and every line of vanilla
@@ -810,6 +812,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         events, ship modifications and COMPANY formation requirements. A merge is therefore
                         re-pointing OUR tier gates onto one technology, and deleting only technologies WE
                         added (which have zero vanilla references by construction).
+  vanilla_construction.mjs VANILLA'S CONSTRUCTION DATA, read live from the game files — ONE
+                        implementation, because two tools need it. `requiredConstruction()` (building →
+                        points, depth-aware so a conditional second field cannot win),
+                        `constructionCostValues()` (the `construction_cost_*` script values) and
+                        `constructionMethods()` (the construction sector's methods → £ per point).
+                        Consumed by `payback_census.mjs` (the cost book anchors on it) and
+                        `vanilla_payback_census.mjs` (it prices vanilla with it)
   vanilla_payback_census.mjs ⭐⭐ WHAT PAYBACK DOES THE BASE GAME RUN AT? Read-only. The REFERENCE the
                         cost book is anchored to, because `payback_census.mjs` can only compare us
                         against our own assumption. Vanilla recipe book (each tier's `vanilla_pm`,
@@ -819,6 +828,10 @@ tools/                  dev tooling — NOT shipped in the mod
                         eight vanilla-1836 preset markets at their own realised prices. `--book mod`
                         re-reads the same scenarios on our book, which is the gap in one number;
                         `--detail` gives the per-building-type table.
+                        ⚠ The vanilla construction data it reads lives in ONE module,
+                        **`tools/vanilla_construction.mjs`** (`requiredConstruction()` /
+                        `constructionMethods()` / `constructionCostValues()`), shared with
+                        `payback_census.mjs`, which anchors the cost book on the same numbers.
                         ⭐⭐ **£720 PER CONSTRUCTION POINT IS ONE METHOD'S RATE, NOT A CONSTANT** (F53).
                         It is `pm_iron_frame_buildings`; the ladder is **wooden 1000 · iron 720 · steel
                         540 · arc 527**, i.e. the cheapest available rate falls 1000/720/720/540/540/527
@@ -830,20 +843,24 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⚠ A building at a LOSS has no payback and is reported as a COUNT, never folded
                         into a median as a large number. The capital-weighted aggregate — Σ(cost×levels)
                         ÷ Σ(52×profit×levels) — needs no distribution and is the robust reading.
-  payback_census.mjs    ⭐ THE CAPITAL-SIDE CENSUS — read-only, writes nothing. What a level COSTS against
-                        what it EARNS, across the six era scenarios: payback per tier at that scenario's
-                        own realised prices, the realised margins behind it, capital stock, **K/GDP**, and
-                        **years of the construction budget the standing capital stock represents** (the
-                        buildability constraint, and the sharpest single reading of the capital glut).
-                        `--rule [--p0 10 --p5 20]` also derives and tests a payback-ladder cost book.
+  payback_census.mjs    ⭐⭐ THE CAPITAL-SIDE CENSUS **AND THE COST-BOOK SOLVER** (`--write` is the one
+                        thing here that writes, and it writes exactly `building_cost`). What a level
+                        COSTS against what it EARNS, across the six era scenarios: payback per tier at
+                        that scenario's own realised prices, the realised margins behind it, capital
+                        stock, **K/GDP**, and **years of the construction budget the standing capital
+                        stock represents** (the buildability constraint, and the sharpest single reading
+                        of the capital glut). `--rule` derives the cost book, `--write` stores it.
+                        ⭐⭐ THE RULE IT IMPLEMENTS is in the Working-conventions bullet *Building cost
+                        is two bands off vanilla's own cost book* — read that first; this is where it runs.
                         ⭐⭐ WHY IT EXISTS, and the finding it was written for: `solve_building_cost.ps1`
                         pays the cost back out of an ASSUMED 20% return on operating cost, while the
                         shipped economy earns 56–104% (median, dominant rungs) — so the REALISED payback
-                        is **~2 years in every era**, not the 10 the model names. The model is right; its
+                        was **~2 years in every era**, not the 10 the model names. The model is right; its
                         one assumption is 3–6× off. Nothing measured that before, because payback is a
                         property of the RECIPE BOOK and the SCENARIO together and the two live in
                         different tools. ⚠ A tier is read in the era where it is DOMINANT, the same
-                        convention the recipe solve uses
+                        convention the recipe solve uses. ⚠ Its £ figures are all on the flat-£720 basis
+                        (see the ruling) — self-consistent within it, ~27% high on late-era capital
   extract_vanilla.ps1   dumps EVERY vanilla building/PMG/PM → ui/vanilla.js (the UI's all-buildings explorer — same editable layout as the tier cards); regenerated each build
   telemetry_lib.ps1     THE one generator of testbed telemetry script; dot-sourced by build.ps1 so the vanilla
                         control and every modded arm instrument IDENTICALLY (a control that logs differently is not a control)
@@ -1376,17 +1393,50 @@ the game.
   the repo-absolute `config/mod_config.json`), so the whole pipeline can be run against an alternate
   balance set without touching the canonical config — and none of them can silently miss because they
   were launched from another working directory.
-- **Building cost is derived too.** Each tier's `building_cost` (construction points) is emitted as the
-  building's `required_construction` (a per-tier number now — it replaces vanilla's flat
+- ⭐⭐ **BUILDING COST IS TWO BANDS OFF VANILLA'S OWN COST BOOK** (user-ruled 2026-08-13,
+  BALANCE_FRAMEWORK §10.57). Each tier's `building_cost` (construction points) is emitted as the
+  building's `required_construction` (a per-tier number — it replaces vanilla's flat
   `construction_cost_high`/`_very_high` script-values; the building-level `required_construction` in the
-  config remains only as a fallback for tiers without `building_cost`). Values come from
-  `tools/solve_building_cost.ps1` — a 10-year-payback model (BALANCE_FRAMEWORK §9): `building_cost =
-  10yr × 52wk × (20% net return on total operating cost) ÷ £720-per-construction-point`, where £720 is
-  read live from the construction sector's iron PM at 0 efficiency bonus. Re-solve after changing volumes
-  or a game patch: `solve_volumes.ps1` → `solve_building_cost.ps1` → `build.ps1`. The model's knobs
-  (margin %, payback years, weeks/yr) are solver parameters; **wages** use the shared `wage_pct` (fraction of
-  total, default 0.25, per-tier `wage_pct` override — the same knob the volume solver, linter, and UI use; §1). The UI
-  preserves `building_cost` through export/Build-now (it deep-clones the config), but does not itself edit it.
+  config remains only as a fallback for tiers without `building_cost`). The rule:
+  ```
+  building_cost (points) = VANILLA's required_construction × band × 1.5^(era − 1)
+  band  = 2 for the EXPENSIVE set · 1 otherwise
+  EXPENSIVE = vanilla's own construction_cost_very_high (800) class, minus infrastructure
+  ```
+  Derived and written by **`node tools/payback_census.mjs --write`**. The whole book is **two sequences
+  of six numbers** — regular (vanilla 600) `400 · 600 · 900 · 1350 · 2025 · 3040`, expensive (vanilla 800
+  ×2) `1065 · 1600 · 2400 · 3600 · 5400 · 8100`, with port/power (400) and railway (800, held regular)
+  scaling off their own anchors. **expensive:** fertilizer, explosives, steel, motor, automotive,
+  munition, synthetics, electrics.
+  ⭐⭐ **VANILLA'S COST IS THE ERA-1 RUNG, NOT THE INDUSTRY'S FIRST** — the exponent is `era − 1`, so an
+  era-0 rung is vanilla ÷ 1.5 and an era-5 rung is vanilla × 1.5⁴. Keying on the ERA makes a
+  late-starting industry expensive from its first building (automotive debuts at era 3 paying 1.5² over
+  its anchor) instead of being handed the era-1 price for being new. Well-defined because no industry may
+  hold two tiers in one era.
+  ⭐ **TEN YEARS IS THE CHECK, NOT THE CONSTRUCTION.** The book *delivers* a dominant-rung median of
+  **11.1 years** against vanilla's own 1836 reading of **11.4 modelled / 14.8 measured** (FINDINGS F53,
+  `tools/vanilla_payback_census.mjs`) — adopt the base game's cost book and its payback follows, with no
+  fitting. ⚠ An earlier form of this ruling derived cost from each tier's output value and a measured
+  profit ratio; **the user rejected it as "still per-building fitting"**. Do not reintroduce it.
+  ⚠ **THE EXPENSIVE SET IS DERIVED, NOT LISTED** (read live from `common/buildings`, printed every run),
+  and **infrastructure is excluded by hand**: railway is `very_high` in vanilla, but port and railway
+  sell `state_infrastructure`, which is **not a priced good**, so nothing about them belongs in a
+  profit-facing band.
+  ⚠⚠ **NOTHING IN THE RULE TOUCHES PROFIT** — a loss-making tier costs exactly what its era says, and a
+  negative or infinite cost is impossible *by construction* rather than by a guard. Explicit user
+  requirement.
+  ⚠ **£720/point is the IRON-FRAME rate and is kept FLAT by the same ruling.** The real rate is
+  **1000 / 720 / 720 / 540 / 540 / 527** across our eras (wooden → iron → steel → arc, gated by
+  `urban_planning` / `steel_frame_buildings` / `arc_welding`), so an era-5 building really pays back
+  ~27% faster than the book says and era 0 ~28% slower. **An accepted, known bias** — F53 has the table.
+  ⚠ `building_cost` is a pure OUTPUT: nothing in the solve reads it back, so writing it needs no
+  re-solve and cannot disturb the fixed point. **`tools/solve_building_cost.ps1` is LEGACY for tiers on
+  this ladder** — its assumed 20% return on operating cost against a 56–104% realised margin is exactly
+  what put the shipped book at a ~2-year payback. It still documents the older model (BALANCE_FRAMEWORK §9)
+  and still serves any tier off the era ladder. **wages** use the shared `wage_pct` (fraction of total,
+  default 0.25, per-tier `wage_pct` override — the same knob the volume solver, linter, and UI use; §1).
+  The UI preserves `building_cost` through export/Build-now (it deep-clones the config), but does not
+  itself edit it.
 - **Toggle a whole industry** with an industry-level `disabled: true` in the config — the builder,
   history converter, and UI all skip it, leaving that vanilla building untouched (the mechanism that
   formerly kept shipyards vanilla; no industry is disabled now). Building-level flags: `heavy_industry_law` (emits the industry-ban /

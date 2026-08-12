@@ -15,7 +15,7 @@ building_port = {
 		pmg_main_port_basic
 	}
 
-	required_construction = 175
+	required_construction = 265
 
 	terrain_manipulator = urban_port
 
@@ -42,7 +42,7 @@ building_port_steam = {
 		pmg_main_port_steam
 	}
 
-	required_construction = construction_cost_medium
+	required_construction = 400
 
 	terrain_manipulator = urban_port
 
@@ -69,7 +69,7 @@ building_port_industrial = {
 		pmg_main_port_industrial
 	}
 
-	required_construction = 110
+	required_construction = 600
 
 	terrain_manipulator = urban_port
 
@@ -96,7 +96,7 @@ building_port_modern = {
 		pmg_main_port_modern
 	}
 
-	required_construction = 170
+	required_construction = 900
 
 	terrain_manipulator = urban_port
 
@@ -123,7 +123,7 @@ building_port_motor = {
 		pmg_main_port_motor
 	}
 
-	required_construction = construction_cost_medium
+	required_construction = 1350
 
 	terrain_manipulator = urban_port
 
@@ -150,7 +150,7 @@ building_railway = {
 		pmg_passenger_trains
 	}
 
-	required_construction = 170
+	required_construction = 800
 
 	ai_value = {
 		value = 2000 # Railways are important
@@ -354,7 +354,7 @@ building_railway_steam = {
 		pmg_passenger_trains
 	}
 
-	required_construction = 135
+	required_construction = 1200
 
 	ai_value = {
 		value = 2000 # Railways are important
@@ -558,7 +558,7 @@ building_railway_electric = {
 		pmg_passenger_trains
 	}
 
-	required_construction = 130
+	required_construction = 1800
 
 	ai_value = {
 		value = 2000 # Railways are important
@@ -762,7 +762,7 @@ building_railway_diesel = {
 		pmg_passenger_trains
 	}
 
-	required_construction = 255
+	required_construction = 2700
 
 	ai_value = {
 		value = 2000 # Railways are important
