@@ -131,6 +131,109 @@ transcript rather than from data.
 
 ---
 
+## F53 — ⭐⭐ **VANILLA'S OWN PAYBACK PERIOD IS 10–15 YEARS IN 1836 AND IT SHORTENS, NOT LENGTHENS, ACROSS THE CENTURY. And £720 per construction point is ONE METHOD'S rate, not a constant: the real rate falls 1000 → 527 as the eras pass**
+
+**Measured 2026-08-13. Two independent instruments, no game time spent** — both read existing artifacts.
+This is the reference F52/§10.52 was missing: the mod's build-cost model names a 10-year payback and
+delivers ~2, but neither number was ever checked against the game being modded.
+
+### Instrument A — the model, on the eight vanilla-1836 preset markets
+
+`node tools/vanilla_payback_census.mjs --constr-pm pm_iron_frame_buildings`. Vanilla recipe book (each
+tier's own `vanilla_pm`), vanilla `required_construction` read from `common/buildings/*.txt` through
+`common/script_values/building_values.txt`, each market's own realised prices, wage-inclusive
+`weeklyProfit` — the same call the balance sheet's Payback column uses.
+
+| market | £/pt realised | buildings | at a loss | payback p25 / **med** / p75 | capital-weighted |
+|---|---|---|---|---|---|
+| GBR | 937 | 38 | 10 | 4.4 / **10.3** / 16.4 | 19.6 y |
+| FRA | 1115 | 26 | 7 | 6.6 / **10.9** / 22.2 | 34.4 y |
+| USA | 786 | 28 | 8 | 6.9 / **12.5** / 19.7 | 35.1 y |
+| RUS | 621 | 20 | 2 | 4.4 / **9.2** / 13.4 | 13.8 y |
+| AUS | 777 | 20 | 7 | 13.9 / **19.7** / 30.5 | 43.4 y |
+| BEL | 758 | 17 | 4 | 6.2 / **11.2** / 30.9 | 22.1 y |
+| JAP | 720 | 19 | 8 | 11.5 / **17.4** / 28.0 | 47.5 y |
+| CHI | 682 | 19 | 1 | 3.6 / **7.5** / 20.5 | 6.9 y |
+
+By sector, over all 187 (building × market) cells: **manufacturing 8.5 / 14.9 / 27.5** (23 at a loss of
+71) · **agriculture 3.2 / 7.1 / 16.4** (15/76) · **extraction 6.2 / 11.2 / 18.2** (3/29) ·
+**infrastructure 22.2 / 31.7 / 130.8** (6/11). All: **5.6 / 11.4 / 21.6**, capital-weighted **16.1 y**.
+
+Per type, the extremes are the story: tobacco plantation 1.8 y, sugar 2.9, silk 4.3, logging camp 6.2 —
+against paper mill 22.8, glassworks 21.6, art academy 30.5, railway 22.2 and **port 1781 y (6 of 8
+markets at a loss)**. Rye and rice farms sit at 48–56 y. Vanilla is not internally consistent on this.
+
+### Instrument B — the game itself, off a melted vanilla savegame
+
+`tools/testbed/saves_debut` (a pure-vanilla campaign), the game's own `profit_after_reserves` per
+building summed by type per country, ÷ levels, against the same vanilla `required_construction`.
+
+| gamestate | £/pt used | all p25 / **med** / p75 | capital-weighted | manufacturing med | agriculture | extraction | infra |
+|---|---|---|---|---|---|---|---|
+| **1838.4.1** | 720 | 6.5 / **14.8** / 27.0 | 11.1 y | **21.3** | 10.6 | 11.1 | 41.8 |
+| **1870.1.1** | 720 | 6.8 / **11.5** / 24.3 | 9.8 y | **10.2** | — | — | — |
+| **1900.1.1** | 540 | 5.6 / **9.0** / 15.4 | 8.4 y | **8.2** | — | — | — |
+
+⇒ **The two instruments agree at 1836**: median 11.4 (model) against 14.8 (measured), manufacturing 14.9
+against 21.3, capital-weighted 16.1 against 11.1. Different denominators (the model prices a
+single-state market and counts loss-makers per type-market cell; the save aggregates a whole country and
+so nets losers into winners) — but the same order, and that is what a reference has to supply.
+
+⇒ ⚠⚠ **VANILLA'S PAYBACK SHORTENS WITH THE ERA.** Median 14.8 → 11.5 → 9.0 and manufacturing
+21.3 → 10.2 → 8.2 over 1838 → 1870 → 1900. **A RISING payback ladder is therefore an inversion of
+vanilla, not a restoration of it.** That may still be the right design — "upgrading production should
+cost capital" is the mod's stated goal and vanilla's cheapening capital is part of what it is trying to
+fix — but it must be ruled as a departure, with the size of the departure known.
+
+### ⭐⭐ The £720 constant is one method's rate, and the rate is era-dependent
+
+`building_cost` is denominated in construction POINTS; the £ a point costs is the construction sector's
+own goods bill ÷ `country_construction_add`, and both are `workforce_scaled`, so the ratio is a property
+of the METHOD alone. At base prices:
+
+| method | pts/level | goods | **£/point** | first available |
+|---|---|---|---|---|
+| `pm_wooden_buildings` | 2 | 25 fabric + 75 wood | **1000** | default |
+| `pm_iron_frame_buildings` | 5 | 40 wood + 20 fabric + 50 iron + 10 tools | **720** | `urban_planning` (era 1) |
+| `pm_steel_frame_buildings` | 10 | 50 steel + 40 glass + 10 explosives + 20 tools | **540** | `steel_frame_buildings` (era 3) |
+| `pm_arc_welded_buildings` | 15 | 50 steel + 40 glass + 20 explosives + 40 tools + 40 electricity | **527** | `arc_welding` (era 5) |
+
+So the mod's `poundPerPoint = 720` is the **iron-frame** rate. Three consequences:
+1. **In 1836 it is right for these markets** — all eight hold `urban_planning` (it is in vanilla's
+   `00_starting_inventions.txt`), verified in the 1838 melt's `technologies_held`. But a country on
+   wooden buildings pays £1000, 39% more, so an era-0 reading at £720 is 28% low.
+2. **By era 5 it is 37% high.** The era ladder of the cheapest available method is
+   **1000 / 720 / 720 / 540 / 540 / 527**. Every £-denominated capital figure in
+   `payback_census.mjs` uses 720 flat, so era-4/5 capital stock and rebuild times are ~27% overstated
+   and the realised late-era payback is ~27% SHORTER than reported.
+3. **It is a second, separate design question**: anchor the payback in £ (the investor's actual return)
+   and let the POINT cost follow the era's rate — which makes late-era buildings cost ~37% more points
+   for the same £ payback, tightening the buildability constraint exactly where the mod wants it.
+Spot-checked against the melt: a 1-level iron-frame construction sector shows `goods_cost=3869.47` for
+5 points = **£774/pt** at that state's realised prices, against £720 at base. The identity holds.
+
+### The gap it measures
+
+Same eight markets, same scenarios, **our shipped recipe+cost book** (`--book mod`): manufacturing
+p25/med/p75 **0.8 / 1.5 / 5.6** years against vanilla's 8.5 / 14.9 / 27.5. **Our manufacturing buildings
+pay for themselves about ten times faster than vanilla's.** Raw and extraction, which use vanilla
+buildings unchanged, land on vanilla's own numbers (agriculture 7.1 both books) — so the divergence is
+entirely in the tiers we author.
+
+### What it does NOT say
+
+It does **not** say vanilla's number is a design target — vanilla's own spread is 1.8 y to ∞ and its
+ports lose money in 6 of 8 markets, so it is a reference, not a rule. It does **not** establish the
+payback of a building at the moment it is BUILT: both instruments read standing capital at market
+prices, and an investor faces the marginal level's return, not the average. `profit_after_reserves` is
+after the cash-reserve top-up, so instrument B's early-game profit is if anything understated (payback
+overstated) while reserves are still filling. The trajectory is **one vanilla campaign** (the standard
+`saves_debut` caveat) and reads three gamestates, not a fitted curve. The 1870/1900 £/pt figures assume
+the era-appropriate method world-wide; a mixed world would sit between them. Instrument A inherits every
+known limitation of the 1836 preset scenarios (F24's 18.5% pop-demand error above all).
+
+---
+
 ## F52 — **THE LADDER IS NOT CLIMBED: only 38% of it is realised, capital piles up unspent, and the binding constraint is WORKFORCE, not capital or technology**
 
 **Session:** `20260812_165702_era6-n1`, n=1, 1836→1936, self-quit, 13 674 s. Arm: `{kind: config,

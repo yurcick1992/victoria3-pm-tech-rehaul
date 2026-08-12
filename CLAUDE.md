@@ -810,6 +810,26 @@ tools/                  dev tooling — NOT shipped in the mod
                         events, ship modifications and COMPANY formation requirements. A merge is therefore
                         re-pointing OUR tier gates onto one technology, and deleting only technologies WE
                         added (which have zero vanilla references by construction).
+  vanilla_payback_census.mjs ⭐⭐ WHAT PAYBACK DOES THE BASE GAME RUN AT? Read-only. The REFERENCE the
+                        cost book is anchored to, because `payback_census.mjs` can only compare us
+                        against our own assumption. Vanilla recipe book (each tier's `vanilla_pm`,
+                        invented tiers interpolated along the ×1.5 ladder — the same rule the UI's
+                        `recipes: vanilla` button uses), vanilla `required_construction` read live from
+                        `common/buildings/*.txt` through `common/script_values/building_values.txt`, the
+                        eight vanilla-1836 preset markets at their own realised prices. `--book mod`
+                        re-reads the same scenarios on our book, which is the gap in one number;
+                        `--detail` gives the per-building-type table.
+                        ⭐⭐ **£720 PER CONSTRUCTION POINT IS ONE METHOD'S RATE, NOT A CONSTANT** (F53).
+                        It is `pm_iron_frame_buildings`; the ladder is **wooden 1000 · iron 720 · steel
+                        540 · arc 527**, i.e. the cheapest available rate falls 1000/720/720/540/540/527
+                        across our six eras. The tool DERIVES it per method from the game files and
+                        takes `--constr-pm` to pick one; 1836 wants iron frame, since all eight markets
+                        hold `urban_planning` from vanilla's own starting inventions. Every £ figure in
+                        `payback_census.mjs` still uses 720 flat, so its late-era capital stock and
+                        rebuild times read ~27% high.
+                        ⚠ A building at a LOSS has no payback and is reported as a COUNT, never folded
+                        into a median as a large number. The capital-weighted aggregate — Σ(cost×levels)
+                        ÷ Σ(52×profit×levels) — needs no distribution and is the robust reading.
   payback_census.mjs    ⭐ THE CAPITAL-SIDE CENSUS — read-only, writes nothing. What a level COSTS against
                         what it EARNS, across the six era scenarios: payback per tier at that scenario's
                         own realised prices, the realised margins behind it, capital stock, **K/GDP**, and
