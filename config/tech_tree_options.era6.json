@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-12T10:54:14.230Z",
+ "generated": "2026-08-12T11:13:48.464Z",
  "eraCost": {
   "1": 7500,
   "2": 10000,
@@ -119,14 +119,14 @@
      ]
     },
     "military": {
-     "n": 75,
-     "cost": 972500,
+     "n": 76,
+     "cost": 990000,
      "perEra": [
       12,
       13,
       15,
       19,
-      16
+      17
      ]
     },
     "society": {
@@ -354,7 +354,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "baking_powder"
+     ]
     },
     {
      "id": "calico_printing",
@@ -385,7 +387,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "mechanized_workshops"
+     ]
     },
     {
      "id": "centralization",
@@ -480,7 +484,8 @@
      "platform": null,
      "industry": "glass",
      "prereqs": [
-      "lathe"
+      "lathe",
+      "manufacturies"
      ],
      "unlocks": [
       {
@@ -698,7 +703,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "chemical_bleaching"
+     ]
     },
     {
      "id": "gunsmithing",
@@ -734,7 +741,8 @@
      ],
      "blocks": [
       "artillery",
-      "percussion_cap"
+      "percussion_cap",
+      "rifling"
      ]
     },
     {
@@ -806,7 +814,8 @@
      "platform": null,
      "industry": "furniture",
      "prereqs": [
-      "cotton_gin"
+      "cotton_gin",
+      "manufacturies"
      ],
      "unlocks": [
       {
@@ -821,6 +830,7 @@
      "blocks": [
       "crystal_glass",
       "canneries",
+      "mechanized_workshops",
       "mechanical_tools",
       "fourdrinier_machine"
      ]
@@ -879,7 +889,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "dynamite"
+     ]
     },
     {
      "id": "line_infantry",
@@ -1005,7 +1017,10 @@
      "blocks": [
       "shaft_mining",
       "cotton_gin",
+      "lathe",
       "distillation",
+      "steelworking",
+      "crystal_glass",
       "beet_sugar_refining",
       "calico_printing",
       "fourdrinier_machine",
@@ -1155,7 +1170,9 @@
      ],
      "blocks": [
       "drydocks",
-      "admiralty"
+      "admiralty",
+      "screw_frigate",
+      "steamship_bunkering"
      ]
     },
     {
@@ -1371,7 +1388,8 @@
      "platform": null,
      "industry": "tooling",
      "prereqs": [
-      "shaft_mining"
+      "shaft_mining",
+      "manufacturies"
      ],
      "unlocks": [
       {
@@ -1394,7 +1412,8 @@
      ],
      "blocks": [
       "bessemer_process",
-      "mechanical_tools"
+      "mechanical_tools",
+      "steel_toolmaking"
      ]
     },
     {
@@ -1535,7 +1554,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "improved_fertilizer"
+     ]
     },
     {
      "id": "aniline",
@@ -1591,7 +1612,8 @@
      "platform": null,
      "industry": "food",
      "prereqs": [
-      "fractional_distillation"
+      "fractional_distillation",
+      "beet_sugar_refining"
      ],
      "unlocks": [
       {
@@ -1735,7 +1757,8 @@
      "platform": null,
      "industry": "paper",
      "prereqs": [
-      "crystal_glass"
+      "crystal_glass",
+      "fourdrinier_machine"
      ],
      "unlocks": [
       {
@@ -1783,7 +1806,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "electric_motors"
+     ]
     },
     {
      "id": "corporate_charters",
@@ -2163,7 +2188,9 @@
      "industry": "textile",
      "prereqs": [
       "canneries",
-      "mechanical_tools"
+      "mechanical_tools",
+      "calico_printing",
+      "lathe"
      ],
      "unlocks": [
       {
@@ -2185,6 +2212,7 @@
      "blocks": [
       "vacuum_canning",
       "shift_work",
+      "electrical_capacitors",
       "rotary_veneer"
      ]
     },
@@ -2540,7 +2568,8 @@
      "platform": null,
      "industry": "arms",
      "prereqs": [
-      "percussion_cap"
+      "percussion_cap",
+      "gunsmithing"
      ],
      "unlocks": [
       {
@@ -2575,7 +2604,8 @@
      "platform": null,
      "industry": "shipyard",
      "prereqs": [
-      "paddle_steamer"
+      "paddle_steamer",
+      "navigation"
      ],
      "unlocks": [
       {
@@ -2643,7 +2673,8 @@
      "platform": null,
      "industry": "port",
      "prereqs": [
-      "paddle_steamer"
+      "paddle_steamer",
+      "navigation"
      ],
      "unlocks": [
       {
@@ -2688,7 +2719,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "marine_steam_turbine"
+     ]
     },
     {
      "id": "triage",
@@ -2937,7 +2970,8 @@
      "platform": null,
      "industry": "explosives",
      "prereqs": [
-      "nitroglycerin"
+      "nitroglycerin",
+      "leblanc_process"
      ],
      "unlocks": [
       {
@@ -3099,7 +3133,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "dough_rollers"
+     ]
     },
     {
      "id": "feminism",
@@ -3271,7 +3307,8 @@
      "platform": null,
      "industry": "fertilizer",
      "prereqs": [
-      "intensive_agriculture"
+      "intensive_agriculture",
+      "ammoniacal_liquor"
      ],
      "unlocks": [
       {
@@ -3610,7 +3647,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "plastics"
+     ]
     },
     {
      "id": "reinforced_concrete",
@@ -3728,7 +3767,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "nitrocellulose_lacquer"
+     ]
     },
     {
      "id": "rubber_mastication",
@@ -3939,7 +3980,8 @@
      "industry": "tooling",
      "prereqs": [
       "mechanical_tools",
-      "bessemer_process"
+      "bessemer_process",
+      "steelworking"
      ],
      "unlocks": [
       {
@@ -4098,7 +4140,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "radio"
+     ]
     },
     {
      "id": "art_silk",
@@ -4117,7 +4161,8 @@
      "platform": null,
      "industry": "synthetics",
      "prereqs": [
-      "aniline"
+      "aniline",
+      "synthetic_indigo"
      ],
      "unlocks": [
       {
@@ -4278,6 +4323,7 @@
       "building_automotive_industry"
      ],
      "blocks": [
+      "conveyors",
       "compression_ignition",
       "diesel_engine"
      ]
@@ -4361,7 +4407,8 @@
      "prereqs": [
       "vulcanization",
       "shift_work",
-      "electrical_generation"
+      "electrical_generation",
+      "combustion_engine"
      ],
      "unlocks": [
       {
@@ -4450,7 +4497,8 @@
      "platform": null,
      "industry": "motor",
      "prereqs": [
-      "combustion_engine"
+      "combustion_engine",
+      "electric_motors"
      ],
      "unlocks": [
       {
@@ -4582,7 +4630,8 @@
      "platform": null,
      "industry": "motor",
      "prereqs": [
-      "electrical_generation"
+      "electrical_generation",
+      "compound_engines"
      ],
      "unlocks": [
       {
@@ -4594,7 +4643,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "diesel_engine"
+     ]
     },
     {
      "id": "electric_railway",
@@ -4647,7 +4698,8 @@
      "platform": null,
      "industry": "textile",
      "prereqs": [
-      "electrical_generation"
+      "electrical_generation",
+      "mechanized_workshops"
      ],
      "unlocks": [
       {
@@ -4874,7 +4926,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "stamped_receivers"
+     ]
     },
     {
      "id": "long_draft_spinning",
@@ -4950,7 +5004,8 @@
      "industry": "shipyard_steam",
      "prereqs": [
       "iron_screw_steamers",
-      "ironclad_tech"
+      "ironclad_tech",
+      "steel_hulls"
      ],
      "unlocks": [
       {
@@ -5148,7 +5203,8 @@
      "platform": null,
      "industry": "glass",
      "prereqs": [
-      "reinforced_concrete"
+      "reinforced_concrete",
+      "regenerative_furnace"
      ],
      "unlocks": [
       {
@@ -5161,7 +5217,8 @@
      ],
      "vanillaUnlocks": [],
      "blocks": [
-      "nitrocellulose_lacquer"
+      "nitrocellulose_lacquer",
+      "ribbon_machine"
      ]
     },
     {
@@ -5285,7 +5342,8 @@
      "platform": null,
      "industry": "electrics",
      "prereqs": [
-      "telephone"
+      "telephone",
+      "wireless_telegraphy"
      ],
      "unlocks": [
       {
@@ -5389,7 +5447,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "high_speed_papermaking"
+     ]
     },
     {
      "id": "shell_filling",
@@ -5420,7 +5480,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "automatic_cartridge_lines"
+     ]
     },
     {
      "id": "steam_turbine",
@@ -5508,7 +5570,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "compression_ignition"
+     ]
     },
     {
      "id": "synthetic_indigo",
@@ -5540,7 +5604,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "art_silk"
+     ]
     },
     {
      "id": "trench_works",
@@ -5704,20 +5770,12 @@
      "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "shipyard_steam",
+     "industry": null,
      "prereqs": [
       "electric_arc_process",
       "pneumatic_tools"
      ],
-     "unlocks": [
-      {
-       "key": "building_shipyard_arc_welding",
-       "name": "Arc Welding Shipyards",
-       "era": 5,
-       "year": 1941,
-       "ind": "shipyard_steam"
-      }
-     ],
+     "unlocks": [],
      "vanillaUnlocks": [],
      "blocks": [
       "high_speed_diesel"
@@ -5804,7 +5862,8 @@
      "platform": null,
      "industry": "munition",
      "prereqs": [
-      "drawn_brass_cartridges"
+      "drawn_brass_cartridges",
+      "shell_filling"
      ],
      "unlocks": [
       {
@@ -5987,7 +6046,8 @@
      "platform": null,
      "industry": "railway",
      "prereqs": [
-      "combustion_engine"
+      "combustion_engine",
+      "superheated_steam"
      ],
      "unlocks": [
       {
@@ -6163,7 +6223,8 @@
      "platform": null,
      "industry": "food",
      "prereqs": [
-      "conveyors"
+      "conveyors",
+      "fat_hydrogenation"
      ],
      "unlocks": [
       {
@@ -6305,7 +6366,8 @@
      "industry": "paper",
      "prereqs": [
       "kraft_process",
-      "conveyors"
+      "conveyors",
+      "semi_chemical_pulping"
      ],
      "unlocks": [
       {
@@ -6513,7 +6575,8 @@
      "industry": "furniture",
      "prereqs": [
       "art_silk",
-      "plastics"
+      "plastics",
+      "rotary_veneer"
      ],
      "unlocks": [
       {
@@ -6556,7 +6619,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "welded_prefabrication"
+     ]
     },
     {
      "id": "oil_turbine",
@@ -6575,7 +6640,8 @@
      "platform": null,
      "industry": "power",
      "prereqs": [
-      "steam_turbine"
+      "steam_turbine",
+      "pulverized_coal_firing"
      ],
      "unlocks": [
       {
@@ -6674,7 +6740,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "oil_turbine"
+     ]
     },
     {
      "id": "ribbon_machine",
@@ -6694,7 +6762,8 @@
      "industry": "glass",
      "prereqs": [
       "automatic_bottle_blowers",
-      "electrical_capacitors"
+      "electrical_capacitors",
+      "plastics"
      ],
      "unlocks": [
       {
@@ -6758,7 +6827,8 @@
      "platform": null,
      "industry": "arms",
      "prereqs": [
-      "bolt_action_rifles"
+      "bolt_action_rifles",
+      "light_machine_guns"
      ],
      "unlocks": [
       {
@@ -6920,6 +6990,37 @@
      ],
      "vanillaUnlocks": [],
      "blocks": []
+    },
+    {
+     "id": "welded_prefabrication",
+     "name": "Welded Prefabrication",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Hulls assembled from pre-welded sections built inland turn shipbuilding into an assembly industry, and a merchant ship from a two-year commission into a two-month one.",
+     "category": "military",
+     "era": 5,
+     "year": 1941,
+     "onset": 1941,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "shipyard_steam",
+     "prereqs": [
+      "oil_fired_boilers"
+     ],
+     "unlocks": [
+      {
+       "key": "building_shipyard_arc_welding",
+       "name": "Arc Welding Shipyards",
+       "era": 5,
+       "year": 1941,
+       "ind": "shipyard_steam"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": []
     }
    ],
    "rushCost": 739375,
@@ -6951,14 +7052,14 @@
      ]
     },
     "military": {
-     "n": 77,
-     "cost": 987500,
+     "n": 78,
+     "cost": 1005000,
      "perEra": [
       14,
       13,
       15,
       19,
-      16
+      17
      ]
     },
     "society": {
@@ -12918,20 +13019,12 @@
      "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "shipyard_steam",
+     "industry": null,
      "prereqs": [
       "electric_arc_process",
       "pneumatic_tools"
      ],
-     "unlocks": [
-      {
-       "key": "building_shipyard_arc_welding",
-       "name": "Arc Welding Shipyards",
-       "era": 5,
-       "year": 1941,
-       "ind": "shipyard_steam"
-      }
-     ],
+     "unlocks": [],
      "vanillaUnlocks": [],
      "blocks": []
     },
@@ -13766,7 +13859,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "welded_prefabrication"
+     ]
     },
     {
      "id": "oil_turbine",
@@ -14132,6 +14227,37 @@
      ],
      "vanillaUnlocks": [],
      "blocks": []
+    },
+    {
+     "id": "welded_prefabrication",
+     "name": "Welded Prefabrication",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Hulls assembled from pre-welded sections built inland turn shipbuilding into an assembly industry, and a merchant ship from a two-year commission into a two-month one.",
+     "category": "military",
+     "era": 5,
+     "year": 1941,
+     "onset": 1941,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "shipyard_steam",
+     "prereqs": [
+      "oil_fired_boilers"
+     ],
+     "unlocks": [
+      {
+       "key": "building_shipyard_arc_welding",
+       "name": "Arc Welding Shipyards",
+       "era": 5,
+       "year": 1941,
+       "ind": "shipyard_steam"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": []
     }
    ],
    "rushCost": 914375,
@@ -14163,14 +14289,14 @@
      ]
     },
     "military": {
-     "n": 77,
-     "cost": 987500,
+     "n": 78,
+     "cost": 1005000,
      "perEra": [
       14,
       13,
       15,
       19,
-      16
+      17
      ]
     },
     "society": {
@@ -20462,20 +20588,12 @@
      "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "shipyard_steam",
+     "industry": null,
      "prereqs": [
       "electric_arc_process",
       "pneumatic_tools"
      ],
-     "unlocks": [
-      {
-       "key": "building_shipyard_arc_welding",
-       "name": "Arc Welding Shipyards",
-       "era": 5,
-       "year": 1941,
-       "ind": "shipyard_steam"
-      }
-     ],
+     "unlocks": [],
      "vanillaUnlocks": [],
      "blocks": []
     },
@@ -21351,7 +21469,9 @@
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": []
+     "blocks": [
+      "welded_prefabrication"
+     ]
     },
     {
      "id": "oil_turbine",
@@ -21755,6 +21875,37 @@
        "era": 5,
        "year": 1935,
        "ind": "electrics"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "blocks": []
+    },
+    {
+     "id": "welded_prefabrication",
+     "name": "Welded Prefabrication",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Hulls assembled from pre-welded sections built inland turn shipbuilding into an assembly industry, and a merchant ship from a two-year commission into a two-month one.",
+     "category": "military",
+     "era": 5,
+     "year": 1941,
+     "onset": 1941,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "shipyard_steam",
+     "prereqs": [
+      "oil_fired_boilers"
+     ],
+     "unlocks": [
+      {
+       "key": "building_shipyard_arc_welding",
+       "name": "Arc Welding Shipyards",
+       "era": 5,
+       "year": 1941,
+       "ind": "shipyard_steam"
       }
      ],
      "vanillaUnlocks": [],

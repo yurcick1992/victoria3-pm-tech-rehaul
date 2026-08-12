@@ -215,6 +215,8 @@ const NEW = {
   // ruled anchors opened — see ROADMAP step 1b. Each names a specific historical step; `era` is stated
   // rather than derived from the year, because gameEra() maps to VANILLA's era windows and ours are a
   // different scale (a 1909 process is our era 3 and vanilla's era 4).
+  welded_prefabrication:     { name: 'Welded Prefabrication', year: 1941, era: 5, in: '123', ind: 'shipyard_steam', cat: 'military',
+    desc: 'Hulls assembled from pre-welded sections built inland turn shipbuilding into an assembly industry, and a merchant ship from a two-year commission into a two-month one.' },
   fat_hydrogenation:         { name: "Fat Hydrogenation", year: 1909, era: 3, in: '123', ind: 'food',
     desc: "Normann's nickel catalyst hardens cheap liquid oils into a solid cooking fat, and the food industry stops depending on animal tallow and the dairy herd." },
   long_draft_spinning:       { name: "Long-Draft Spinning", year: 1925, era: 4, in: '123', ind: 'textile',
@@ -744,7 +746,7 @@ const LADDER = {
     { era: 2, o1: 'steel_hulls', o2: 'steel_hulls' },
     { era: 3, o1: 'marine_steam_turbine',o2: 'marine_steam_turbine' },
     { era: 4, o1: 'oil_fired_boilers',   o2: 'oil_fired_boilers' },
-    { era: 5, o1: 'arc_welding',         o2: 'arc_welding' },
+    { era: 5, o1: 'welded_prefabrication', o2: 'welded_prefabrication' },
   ],
   art_academy: [
     { era: 1, o1: 'romanticism',         o2: 'romanticism' },
@@ -760,6 +762,7 @@ const LADDER = {
 // industry" automatically and these are used only for the techs that have no rung below.
 const O1_PREREQ = {
   // the re-band's fifteen, each rooted on the rung below it IN ITS OWN TREE (shared decision 3)
+  welded_prefabrication: ["oil_fired_boilers"],
   fat_hydrogenation: ["baking_powder"],
   long_draft_spinning: ["electrical_capacitors"],
   rotary_veneer: ["mechanized_workshops"],
@@ -947,6 +950,7 @@ function buildOption(optN) {
   for (const v of Object.values(VAN)) ensure(v.id);
 
   // Ladders.
+  const LADDER_UNCHAINED = [];
   for (const [ind, rungs] of Object.entries(LADDER)) {
     let prevId = null;
     for (const r of rungs) {
@@ -959,6 +963,22 @@ function buildOption(optN) {
       tech.unlocks.push({ key: t.key, name: t.name, era: t.era, year: t.year, ind });
       if (optN === 1) {
         for (const p of (O1_PREREQ[id] ?? [])) if (NEW[id]) tech.prereqs.add(p);
+        // ⭐⭐ CHAIN THE LADDER (user ruling 2026-08-12): "I don't want situations where an N tier is
+        // likely to be available before N-1". Option 1 rooted each of OUR technologies on its own
+        // predecessor by hand, but never re-rooted the rung ABOVE an inserted one, and vanilla's own
+        // rungs were never chained to each other at all — an audit found 22 of 84 links unchained, of
+        // which paper is only the case vanilla itself ships. The link is added here rather than in the
+        // O1_PREREQ table so that inserting a rung cannot silently break the chain above it.
+        // ⚠ IT YIELDS TO TWO HARDER CONSTRAINTS, and reports rather than forcing:
+        //   · SAME TREE (shared decision 3) — the steam shipyard's top rung is vanilla's `arc_welding`,
+        //     a production technology, above a military one; the engine has never drawn that edge.
+        //   · NO ERA INVERSION — a prerequisite may not sit in a later era than its dependent.
+        if (prevId && prevId !== id) {
+          const pt = techs.get(prevId);
+          if (pt.category !== tech.category) LADDER_UNCHAINED.push(`${ind} ${prevId}->${id}: different trees (${pt.category}/${tech.category})`);
+          else if (pt.era > tech.era) LADDER_UNCHAINED.push(`${ind} ${prevId}->${id}: era inversion (${pt.era} > ${tech.era})`);
+          else tech.prereqs.add(prevId);
+        }
       } else {
         // Ladder link first — but it YIELDS to the same-tree constraint. The steam shipyard's top rung
         // is vanilla's `arc_welding`, a PRODUCTION technology, while the rung below it is military; the
@@ -1036,7 +1056,7 @@ function buildOption(optN) {
   for (const t of techs.values()) t.blocks = [];
   for (const t of techs.values()) for (const p of t.prereqs) techs.get(p).blocks.push(t.id);
 
-  return { techs, problems };
+  return { techs, problems, unchained: LADDER_UNCHAINED };
 }
 
 // ===================================================================================================
