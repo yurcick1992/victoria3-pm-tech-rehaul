@@ -271,6 +271,43 @@ observer refuses to launch a mod that carries no telemetry, so build it with `-T
 
 Newest first. Append here as we discover more couplings to vanilla.
 
+- **2026-08-12** — 🛑 **THE GAME WENT 1.13.9 → 1.13.10 BETWEEN TWO SESSIONS OF ONE AFTERNOON.** Batch A
+  (`20260812_093402`, 12:37–15:17) ran on **1.13.9**; the era6 run (`20260812_152101`, 15:21) ran on
+  **1.13.10** and logged `Mod … version 1.13.9 does not match game version 1.13.10`. Nothing announced
+  it — Steam updated between the two launches, and the only evidence is one line in `error.log`.
+  ⇒ **The two sessions are not comparable**, and any comparison drawn across that boundary needs saying
+  so out loud. This is why the ~5-minute smoke check in `CLAUDE.md` includes the version line.
+  ✅ **THE ROUTINE WAS RUN AGAINST 1.13.10 AND FOUND ZERO DRIFT — measured, not assumed.** The patch is
+  localization-only (1.13.9 was the last planned 1.13 hotfix; .10 exists to restore translations that
+  missed it), and every artifact we derive from the game agrees:
+  | re-derived artifact | result under 1.13.10 |
+  |---|---|
+  | `ui/vanilla.js` — every vanilla building, PMG and PM | **byte-identical** |
+  | `tools/ladder_tiers.txt` | **byte-identical** |
+  | `config/start_baseline.json` — the 1836 inventory + drift alarm | unchanged, `unmapped: []` |
+  | `ui/presets.js` | differs **only in its own generation timestamp** |
+  | `config/tech_tree_options.json` — display names parsed LIVE from vanilla loc | **identical** |
+  ⭐ The tech tree is the one that could have moved on a localization patch, since `tech_tree_spec.mjs`
+  reads vanilla's loc for display names. It did not.
+  `metadata.json` bumped to 1.13.10.
+
+- **2026-08-12** — ⭐ **THE 1836 STARTING-TECHNOLOGY CHECK IS NOW A TOOL: `tools/verify_start_techs.mjs`.**
+  It reads the EMITTED history (ours, via `replace_paths`), resolves each building's and production
+  method's `unlocking_technologies` against vanilla plus our owned files, and reports **per country**.
+  Point it at an absolute path to run the identical check on pure vanilla — which is the only way to
+  tell a gap we introduced from one the base game has always had.
+  **Result on 1.13.10:** 6 countries start with something their technologies do not unlock — AUS, FRA,
+  PRU, RUS (`fractional_distillation`), BAV (`railways`), SPA (`atmospheric_engine`). **All six are
+  present in PURE VANILLA identically**, so the mod introduces none.
+  ⚠ Two ways this check reported a false answer before it worked, both worth knowing:
+  · **it passed vacuously** — wrong tag regexes matched zero countries and it printed PASSED. Hence
+    `assertNonTrivial()`, which refuses to report success unless it found countries, buildings and
+    starting sets. A check that cannot fail is worse than no check.
+  · **it failed spuriously on 24 countries** — the starting sets grant most of their content through
+    `add_era_researched = era_1`, not by naming technologies, so reading only `add_technology_researched`
+    made Britain and France look as though they lacked `manufacturies`. The shorthand is expanded now,
+    from the MOD's technology eras (our re-eras change who gets what for free).
+
 - **2026-08-09** — **The electricity pass (BALANCE_FRAMEWORK §10.43) adds three vanilla couplings:**
   - **`common/production_methods/06_urban_center.txt` is now OWNED** (whole-file, because of the
     `pm_electric_streetlights` override). Self-healing on a patch — the builder re-reads live vanilla

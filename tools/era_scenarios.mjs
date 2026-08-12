@@ -1690,7 +1690,19 @@ function buildScenario(eIx, finalPass) {
     if (DATE_GATE) for (const t of sorted) {
       if (t.tech_year == null) throw new Error(`${t.key} has no tech_year — re-run build_era_ladder.mjs --write`);
     }
-    const avail0 = sorted.filter(t => (DATE_GATE ? t.tech_year <= SCEN_YEAR : t.era <= LEAD_TIER)
+    // ⭐⭐ THE GATE APPLIES TO LATER-ERA RUNGS ONLY (user ruling 2026-08-12). A scenario at era N must
+    // contain every industry's era-N rung — CLAUDE.md's anchor principle says so explicitly, and gives
+    // the reason: a scenario is not one country but an AMALGAMATION of several technology leaders, each
+    // ahead in a different subfield, with NO international trade, so it must hold every chain to be
+    // solvable at all. The date gate was reading `tech_year <= SCEN_YEAR` for EVERY rung, which withheld
+    // an industry's own era-appropriate tier whenever its date fell after the scenario year — tooling's
+    // high-speed-steel shop missed the 1900 scenario by ONE year and its carbide shop missed 1920 by
+    // seven. Census: 30 of 106 era-appropriate rungs were absent from their own era's scenario.
+    // ⚠ THIS DOES NOT UNDO §10.44. What the date gate was introduced to stop is NEXT-era technology
+    // flooding a scenario — the measured fault was ~50-58% of tier-output value sitting on the era above.
+    // That is exactly the case `t.era > era` still covers; only the industry's own era and below are
+    // exempted, and those cannot be anachronistic in the sense the census measured.
+    const avail0 = sorted.filter(t => (DATE_GATE ? (t.era <= era || t.tech_year <= SCEN_YEAR) : t.era <= LEAD_TIER)
       && !Object.keys(t.inputs || {}).some(g => GONE.has(g)));   // its input has no supplier left
     if (!avail0.length) continue;
     // ⚠ WITHHELD IS NOT THE SAME AS ABSENT. An industry nothing buys from is pinned to ZERO levels rather

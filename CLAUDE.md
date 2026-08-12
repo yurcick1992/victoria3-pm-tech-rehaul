@@ -2175,6 +2175,23 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   from an interactive one, and an entire overnight batch ran with the STOP file as its only control.
   ⚠ `run_schedule.ps1` takes **no `-Label`** (the label comes from the schedule JSON); passing it kills
   the launch instantly, which is exactly how the above happened.
+- **🛑 HARD RULE — SMOKE-CHECK EVERY RUN ~5 MINUTES AFTER IT STARTS, AGENTICALLY.** (User, 2026-08-12.)
+  A run that is botched at minute one is still botched at hour three, and the harness will not say so:
+  it reports `SESSION DONE` on a run that loaded no mod at all. Five minutes in, the game has booted,
+  loaded, started and written its first ticks — everything needed to tell a healthy run from a dead one
+  is already on disk. **Look at it then, not at the end.** Four checks, all cheap:
+  1. **Did OUR mod load?** `grep PM_TECH_REHAUL <run>/logs_live/debug.log` — the builder emits that init
+     marker for exactly this. Absent ⇒ stop the run, do not wait.
+  2. **Does the game version match the mod's?** `does not match game version` in `error.log`. A Steam
+     update between two sessions makes them incomparable, and it is invisible unless looked for — it
+     happened on 2026-08-12 **between two runs of the same afternoon** (1.13.9 → 1.13.10).
+  3. **Errors in THIS RUN'S time window only.** `error.log` is a shared ring carrying other sessions'
+     lines; a raw line count is meaningless. Filter by the run's own start time, then discard vanilla's
+     own noise (the `jomini_spline_network_graphics` flood) and the catalogued
+     `is_production_method_active` PostValidate class (MISSING_PM_REFERENCES). What is left is the signal.
+  4. **Is the clock advancing?** The tail of `<run>/run.log` should show `in-game <date>` moving.
+  ⚠ **`mod_loaded=False` in the harness summary is NOT authoritative** — it read False on a run whose
+  init marker is plainly in `debug.log`. Check the marker yourself before believing the summary either way.
 - **ALWAYS pair a batch launch with `tools/testbed/wait_for_session.ps1` in the BACKGROUND.** The
   visible window that keeps the keys alive is invisible to the agent harness, so nothing signals when
   the batch ends — on 2026-08-01 a finished 8-hour batch sat unnoticed for ~2 h. The waiter supplies
