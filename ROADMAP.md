@@ -906,6 +906,37 @@ one-off validation pass.
 
 ## DEFERRED FIXES — known, not scheduled
 
+### ⚠ `deviates_from_vanilla` NAMES 5 OF THE 13 DIRECTORIES AN ARM ACTUALLY CARRIES (found 2026-08-12)
+
+**The record of what a run was testing has quietly stopped being true.** `run_observer.ps1` builds
+`build_state.json`'s `deviates_from_vanilla` from a **hardcoded probe list** of six paths —
+`common/buildings`, `common/production_methods`, `common/history`, `common/pop_needs`,
+`common/ai_strategies`, `localization`. It has never grown. The era6 arm emits **25 directories**, and
+everything ROADMAP steps 1 and 2 added is missing from the record: `common/technology`,
+`common/journal_entries`, `common/script_values`, `common/scripted_progress_bars`, `common/defines`,
+`common/scripted_effects`, `common/static_modifiers`, `gfx/interface`.
+
+Its own comment states the intent it no longer meets — *"names every gameplay file the arm carries, so
+'how far from vanilla is this' is answerable without re-deriving it from the config"*.
+
+✅ **The GUARDRAIL is intact; it is the RECORD that is wrong.** Landmine **L7** (a control arm carrying
+gameplay content) does **not** consult this list — it walks the built mod itself against an allow-list of
+`.metadata` / `common/on_actions` / `common/script_values` / `events`. So a control that carried a tech
+tree would still fail the build.
+
+⚠ **But two derived values are wrong, and both are `arm` — the field the hard rule about run
+configuration exists to protect.** `arm` is computed *from* this list:
+- a **control** carrying an unprobed directory yields `deviates.Count -eq 0` and is recorded as a clean
+  `control` rather than `control+UNEXPECTED`;
+- an **overlay** whose content sits outside the probe list is recorded as `overlay+EMPTY`.
+
+**Fix:** derive the list by walking the built mod (as L7 already does) rather than probing six names, and
+keep `arm`'s derivation on top of it. Then a directory added by a future step is recorded without anyone
+remembering to update a list — which is the property that failed here.
+⚠ **Held while a session is live**: `run_observer.ps1` is what the running batch is executing.
+⚠ **Sessions before this fix under-report their content**; the value is a historical record and must not
+be back-filled (same rule as the 2026-08-05/06 `control+pop_needs` entries).
+
 ### ⚠⚠ 30% OF THE 1836 START IS EMITTED ON THE WRONG TIER (found 2026-08-12)
 
 **A LANDMINE in the exact sense the register means: nothing fails.** The build succeeds, the linter
