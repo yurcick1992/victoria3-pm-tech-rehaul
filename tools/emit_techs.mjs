@@ -51,7 +51,12 @@ if (!OPT) throw new Error('no option is marked `ships` in config/tech_tree_optio
 const CFG = JSON.parse(readFileSync(join(REPO, 'config', 'mod_config.json'), 'utf8'));
 
 // ---- knobs that this step ships (ROADMAP step 1/2) ------------------------------------------------
-const AHEAD_OF_TIME = 0.15;        // NTechnology.TECH_AHEAD_OF_TIME_PENALTY_FACTOR, vanilla 0.25
+// ⚠ RESTORED TO VANILLA 2026-08-12 (user ruling). It was 0.15 — lowered because the tree is deeper —
+// and that made reaching era 5 early cheaper by design. Session 20260812_010659 measured the baseline
+// production leader holding 12 of 17 era-5 technologies at 1935 with NO research events at all, against
+// a design expectation of roughly a quarter by 1936. This factor is one candidate cause of that
+// overshoot and the first to be tested; tree depth, era costs and spread have not been separated from it.
+const AHEAD_OF_TIME = 0.25;        // NTechnology.TECH_AHEAD_OF_TIME_PENALTY_FACTOR, vanilla 0.25
 const PROD_SPREAD_MULT = 0.5;      // production-only spread boost; military and society untouched
 const SOCIETY_AI_WEIGHT = 0.8;     // user ruling 2026-08-11 — damp society so spread does not rush it
 const PLACEHOLDER = 'gfx/interface/icons/invention_icons/zzz_pm_rehaul_placeholder.dds';

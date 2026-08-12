@@ -2251,6 +2251,25 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   resumed; **3 crashes from the same autosave** ⇒ permanent failure, move to the next run; **3 crashes
   before the first autosave ever exists** ⇒ loud alert and the **whole schedule aborts**, because repeated
   deaths that early mean the mod itself is broken. Exit codes: `0` ok, `2` stopped by user, `3` fatal.
+- **🛑 A SESSION THAT IS SUPERSEDED, DEFECTIVE OR PARTLY VOID GETS A `VERDICT.md` INSIDE ITS OWN FOLDER.**
+  Everything a session carries about *why* it ran — `schedule.json`'s `_why`/`_comparison`,
+  `build_state.json`'s `agentic` block — is written **before** the run. Nothing anywhere records what it
+  turned out to mean, and since sessions are never deleted (below), a defective batch otherwise sits
+  there indefinitely looking like clean runs. `FINDINGS.md` is the wrong home: it is organised by result,
+  a retracted or partial result does not belong in it, and someone reading a session folder has no reason
+  to go looking there.
+  **So the annotation lives WITH the data**, `tools/testbed/sessions/<stamp>/VERDICT.md`, where it cannot
+  be found separately from what it describes. Write one when: a defect is found in the build after it
+  ran; a later batch supersedes it; part of the result is void and part survives; or a metric turns out
+  not to have been instrumented. Say plainly **what is void, what still reads, and how far** — and
+  distinguish the measured quantity from the proposed cause, because a session's numbers usually outlive
+  the first explanation of them.
+  ⚠ **Do not write the verdict off the endpoint alone.** The trajectory is often where the result is:
+  whether a leader plateaued or the century merely ended, when milestones moved, whether two runs of one
+  arm agree. A 1935 snapshot cannot tell those apart.
+  ⚠ A verdict written **retrospectively**, from the documents rather than at the time, says so at the
+  top — it is weaker evidence than one written while the analysis was live, and a later reader needs to
+  know which kind they have.
 - **⚠️ TESTBED SESSIONS ARE NEVER DELETED — not even obsolete ones.** Everything under
   `tools/testbed/sessions/` is **permanent**. This is the one exception to "gitignored ⇒ throwaway":
   it is gitignored because it is bulky and binary-ish (game logs, minidumps), **not** because it is

@@ -156,15 +156,20 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     // POSITIVE but never a false negative. In practice mobilisation is near-total when it happens
     // at all (peacetime reads 0 for every country measured), so 0.5 reads as "you have actually
     // mobilised", which is the intent.
+    // ⚠⚠ BOTH war terms carry the SAME gate. The first build shipped the second term with only
+    // `is_at_war = yes` + an enemy holding the technology — no battalions, no front, no mobilised
+    // share — and at +2/week against a 26-week bar that completes in 13 weeks of ANY war against a
+    // more advanced enemy. Session 20260812_010659 measured the result: military took 70% of all
+    // completions and the top firing countries were micro-states (Selangor, Warsangali, Jambi) that
+    // cannot field the intended 100 battalions. The design ruling was "we are at war, HAVE THOSE
+    // BATTALIONS MOBILISED, THE ENEMIES ARE STRONG **and** our enemies have the tech already" — the
+    // second term is the first term PLUS a clause, never a weaker condition beside it.
     const share = w.mobilised_share_min;
-    terms.push({
-      desc: `pmr_term_war_pressed`,
-      trigger: `is_at_war = yes\n${T}${T}${T}${T}${share ? `pmr_mob_share >= ${share}\n${T}${T}${T}${T}` : ''}OR = {\n${T}${T}${T}${T}${T}${front(`num_mobilized_battalions >= ${w.general_battalions_high ?? 100}`)}\n${T}${T}${T}${T}${T}${front(`count >= ${w.generals_low_count ?? 2}\n${T}${T}${T}${T}${T}${T}${T}num_mobilized_battalions >= ${w.general_battalions_low ?? 50}`)}\n${T}${T}${T}${T}}`,
-      value: 1,
-    });
+    const gate = `is_at_war = yes\n${T}${T}${T}${T}${share ? `pmr_mob_share >= ${share}\n${T}${T}${T}${T}` : ''}OR = {\n${T}${T}${T}${T}${T}${front(`num_mobilized_battalions >= ${w.general_battalions_high ?? 100}`)}\n${T}${T}${T}${T}${T}${front(`count >= ${w.generals_low_count ?? 2}\n${T}${T}${T}${T}${T}${T}${T}num_mobilized_battalions >= ${w.general_battalions_low ?? 50}`)}\n${T}${T}${T}${T}}`;
+    terms.push({ desc: `pmr_term_war_pressed`, trigger: gate, value: 1 });
     terms.push({
       desc: `pmr_term_war_enemy_has_it`,
-      trigger: `is_at_war = yes\n${T}${T}${T}${T}any_enemy_in_war = {\n${T}${T}${T}${T}${T}has_technology_researched = ${tech}\n${T}${T}${T}${T}}`,
+      trigger: `${gate}\n${T}${T}${T}${T}any_enemy_in_war = {\n${T}${T}${T}${T}${T}has_technology_researched = ${tech}\n${T}${T}${T}${T}}`,
       value: 2,
     });
   } else {

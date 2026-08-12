@@ -1,0 +1,73 @@
+{
+  "schedule_version": 1,
+  "label": "research-events-2x-n2",
+  "_why": "BATCH B of the corrections ruled 2026-08-12. Identical to research_events_fixed_n2 (military gate corrected, vanilla ahead-of-time penalty restored) EXCEPT that the era thresholds are DOUBLED: 30k/90k/270k/810k people employed in the qualifying industry, against the ruled 15k/45k/135k/405k. It runs SECOND and separately so the threshold change is isolated from the two fixes - batch A is its control, not the original session.",
+  "_arms": "events_fixed = {kind: config, config: config/mod_config.json} with research_events.enabled: true. Still a CONFIG VARIANT — enabled:false reproduces the plain techs arm from the same file.",
+  "_comparison": "Against research-events-fixed-n2 (n=2, same build, half these thresholds) for the effect of the thresholds alone; and against run003 of 20260811_094048 (the techs arm, n=1) for the effect of having events at all. ⚠ A retrospective sweep on the baseline campaign suggested the ORIGINAL thresholds already put JE #2 completion at 14%/4%/0%/0% of top-20 countries by era; doubling them may push the industry channel close to silent, in which case the useful reading is how much of the previous effect survives rather than whether the shape is right.",
+  "_watch": "Whether the industry channel still fires at all: distinct technologies firing (was 80-85 of 122), completions per run (was ~13k), and the share reaching stage 3. If completions collapse toward zero the threshold ladder is past its useful range and the lever to reach for next is grant size, not thresholds.",
+  "_cost": "2 runs x 100 in-game years, ~2h40 each = ~5.5h.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "building_inventory",
+      "treasury",
+      "events"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP"
+    ]
+  },
+  "setups": {
+    "events_2x": {
+      "kind": "config",
+      "config": "config/mod_config.2x_thresholds.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "events_2x",
+      "until": "1936.1.1",
+      "dump_dates": [
+        "1836.2.1",
+        "1840.1.1",
+        "1850.1.1",
+        "1860.1.1",
+        "1870.1.1",
+        "1880.1.1",
+        "1890.1.1",
+        "1900.1.1",
+        "1910.1.1",
+        "1920.1.1",
+        "1930.1.1",
+        "1935.1.1"
+      ]
+    },
+    {
+      "setup": "events_2x",
+      "until": "1936.1.1",
+      "dump_dates": [
+        "1836.2.1",
+        "1840.1.1",
+        "1850.1.1",
+        "1860.1.1",
+        "1870.1.1",
+        "1880.1.1",
+        "1890.1.1",
+        "1900.1.1",
+        "1910.1.1",
+        "1920.1.1",
+        "1930.1.1",
+        "1935.1.1"
+      ]
+    }
+  ]
+}
