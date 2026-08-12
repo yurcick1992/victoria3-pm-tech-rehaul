@@ -115,15 +115,23 @@ const treeScript = (() => {
       + `detached copy. Update the loader in builder.html and tools/bundle_ui.mjs together.\n`);
     process.exit(1);
   }
-  // techdata.js is generated too, but by `node tools/tech_tree_spec.mjs --write`, which the BUILDER does
-  // not run — so it goes stale against the config on a schedule of its own. A WARNING rather than the
-  // hard stop the sheet's data gets: the tree reads the ladder's structure (tiers, eras, technologies),
-  // which a volume or price solve does not touch, so failing here would block most snapshots for a
-  // staleness that usually is not one.
-  if (existsSync(cfg) && statSync(join(UI, 'techdata.js')).mtimeMs < statSync(cfg).mtimeMs)
-    console.warn('WARNING: ui/techdata.js is older than config/mod_config.json — the tech-tree page may\n'
-      + '         predate the current ladder. Refresh with: node tools/tech_tree_spec.mjs --write');
   const data = readFileSync(join(UI, 'techdata.js'), 'utf8');
+  // Is the tree page's data the same generation as the tree itself? ⚠ NOT an mtime check against the
+  // config: `tech_tree_spec.mjs --write` writes techdata.js and then STAMPS the config, and a build
+  // rewrites the config again afterwards, so techdata.js is older than mod_config.json after every
+  // single normal build. That warning fired on a perfectly current pair the first time it ran — a guard
+  // that cries wolf every build is a guard nobody reads. Both files carry the same `generated` stamp
+  // from the run that wrote them, so compare THAT: it is exact, and it catches the case that can
+  // actually hurt (a half-written or hand-edited pair). Whether the tree is behind the LADDER is
+  // already answered, and thrown on, by emit_techs.mjs inside the build.
+  const stampOf = s => (s.match(/"generated"\s*:\s*"([^"]+)"/) || [])[1] || null;
+  const ttoPath = join(REPO, 'config', 'tech_tree_options.json');
+  if (existsSync(ttoPath)) {
+    const a = stampOf(data), b = stampOf(readFileSync(ttoPath, 'utf8'));
+    if (a && b && a !== b)
+      console.warn(`WARNING: ui/techdata.js (${a}) and config/tech_tree_options.json (${b}) are from\n`
+        + '         different runs. Refresh both with: node tools/tech_tree_spec.mjs --write');
+  }
   tree = tree.replace(tag, `<script>\n/* inlined from ui/techdata.js */\n${data}\n</script>`);
   sizes.push(['techtree.html + techdata.js', tree.length]);
   return `\n<script>\n/* inlined from ui/techtree.html — the tech-tree page, loaded into its iframe */\n`
