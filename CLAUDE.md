@@ -2283,6 +2283,16 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   ⚠ A verdict written **retrospectively**, from the documents rather than at the time, says so at the
   top — it is weaker evidence than one written while the analysis was live, and a later reader needs to
   know which kind they have.
+  ⚠⚠ **A `VERDICT.md` IS GITIGNORED WITH ITS SESSION, so it is NOT backed up** — the same standing hazard
+  as the data (*gitignored ≠ backed up*, below). That is accepted for the reasoning, which is moot once
+  the data is gone, but **not** for the correction itself: a "this batch is n=2, not n=3" is exactly the
+  kind of thing that must outlive the folder. So every verdict also gets a **one-line row in the
+  COMMITTED `tools/testbed/SESSION_VERDICTS.md`**, carrying the status and the correction. Same division
+  of labour as `FINDINGS.md` and the sessions it describes: detail with the data, conclusion in the repo.
+  ⭐ Writing verdicts over the existing sessions paid for itself immediately — it found three batches
+  claiming more runs than they have (`techtree-full-n3` and `wages-n3` are n=2; `vanilla-retest`'s
+  nineteen runs are sixteen 52-second probes plus three failed resumes), one of which underpins the
+  measured base wage. **Run counts in a session's NAME are not evidence; the run logs are.**
 - **⚠️ TESTBED SESSIONS ARE NEVER DELETED — not even obsolete ones.** Everything under
   `tools/testbed/sessions/` is **permanent**. This is the one exception to "gitignored ⇒ throwaway":
   it is gitignored because it is bulky and binary-ish (game logs, minidumps), **not** because it is
