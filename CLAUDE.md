@@ -1069,6 +1069,17 @@ tools/                  dev tooling — NOT shipped in the mod
   lint_profitability.awk / ladder_tiers.txt   BE-vs-ladder linter (ladder_tiers.txt is GENERATED; prices come
                         from goods_prices.tsv via `-v PRICES=`, never a copy inside the awk)
   lint_negative_goods.awk negative-goods invariant linter (no PM combination drives a good's building total < 0)
+  emit_techs.mjs        THE TECH TREE, EMITTED (ROADMAP step 1) — called by build.ps1, which THROWS if it
+                        fails. Reads config/tech_tree_options.json's SHIPPING option and writes the additive
+                        new-technology file, the era moves into vanilla's production AND military files, the
+                        society ai_weight, the 1836 starting sets, the spread modifier, the ahead-of-time
+                        define, a minted placeholder icon and loc for all 11 languages.
+                        ⚠ EVERY vanilla transform asserts its own MATCH COUNT and throws on a no-op — "fix the
+                        transform rather than shipping a silent no-op". That guard earned its keep on
+                        2026-08-12: the ladder-era alignment made the era-move loop try to patch
+                        `regenerative_furnace`, one of OUR technologies, into the vanilla file. The fix is the
+                        `origin === 'vanilla'` filter; the point is that the build stopped rather than
+                        half-emitting a tree
   emit_research_events.mjs  THE INDUSTRY-DRIVEN RESEARCH EVENTS (ROADMAP step 2) — called by build.ps1, which
                         THROWS if it fails. Reads config's `research_events` block and emits nothing when it
                         is disabled. Derives the per-technology anchor table rather than storing it: rule A
@@ -1098,6 +1109,30 @@ tools/                  dev tooling — NOT shipped in the mod
                         silently does nothing (that check caught 10 on its first run). Also carries the NARRATIVE
                         ONSET table — a real-world date for all 239 technologies, vanilla included — and reports
                         every conflict with the era's calendar window. ⚠ It does NOT emit anything into mod/ yet
+                        ⭐⭐ **LADDER-ERA ALIGNMENT (user-ruled 2026-08-12).** A technology that unlocks one of our
+                        tiers is placed in the MECHANICAL era that tier maps to — the anchor principle's own
+                        mapping (our e0 AND e1 → era 1, then 1:1). Until this existed nothing enforced it, because
+                        a NEW technology that omits `era` gets `gameEra(year)`, and `gameEra` maps a year onto
+                        **VANILLA's** era windows — `1836|1861|1886|1911` against the ladder's own bands
+                        `1790|1850|1885|1912|1932`. **Two calendars, disagreeing everywhere above era 1: 41 of the
+                        106 tiers were gated one era too high** (the whole tooling ladder above e1, every port
+                        rung, every artillery rung). Not cosmetic — the mechanical eras exist for the ERA BASE
+                        COST and the AHEAD-OF-TIME PENALTY, so an e4 rung on an era-5 technology was dearer AND
+                        penalised at exactly the date it is meant to be the workhorse, and a leader sitting on the
+                        era-4 anchor (1925) could not have it at all.
+                        ⚠ A RULE RE-DERIVED FROM THE LADDER EVERY RUN, never a table of literals — a re-band
+                        cannot silently reintroduce the drift. (The 2026-08-12 re-band worked around it by stating
+                        `era` by hand on its fifteen new rungs: correct, and exactly the fix that does not scale.)
+                        **Three things it will not do, each a user-stated invariant, each verified against the
+                        EMITTED mod rather than the spec:** it only ever LOWERS; it never lands in **era 1**
+                        (`add_era_researched = era_1` hands every era-1 technology to the tier-1/2 countries at
+                        the 1836 start, and vanilla gives them none of these); and it never INVERTS a prerequisite
+                        (iterated to a fixed point, since lowering one rung can free the one above it).
+                        **32 moved, 9 held** — 8 that would reach era 1 (all e1 rungs whose technology postdates
+                        the start: arms 1849, ports 1840, fertilizer 1842, railways, artillery, munitions,
+                        shipyards) and `telephone`, blocked by `shift_work`/`electrical_generation`. Whatever it
+                        declines it PRINTS: a rule that silently skips is indistinguishable from one that never
+                        ran. Production went 15/14/20/23/20 → **15/18/26/19/14** per era, budget 1198k → 1148k
 ui/                     browser balance editor — builder.html (hand-authored) + econ.js (hand-authored) + data.js +
                         vanilla.js + presets.js + icons.js (the last four GENERATED each build; icons.js is gitignored game art)
                         + techdata.js (GENERATED, but by `tech_tree_spec.mjs --write`, NOT by the builder)
@@ -1157,6 +1192,9 @@ mod/                    THE DEPLOYABLE MOD — GENERATED, do not hand-edit
   common/on_actions/zzz_pm_rehaul_diag.txt               (generated: self-diagnostic tripwire; logs PM_TECH_REHAUL init marker to debug.log at game start — see MODDING_NOTES → Self-diagnostics)
   common/journal_entries/zzz_pm_rehaul_research.txt      (generated by emit_research_events.mjs, ADDITIVE — three journal entries per covered technology: inception / development / implementation. Only the FIRST auto-activates, from `is_shown_when_inactive = { can_research = X }`; the other two are placed by `add_journal_entry` from the one before. Each grants half the era base cost and logs `PMR_JE|<stage>|<tech>|<country>` on completion, which is how a batch counts firings. Absent when research_events.enabled is false)
   common/scripted_progress_bars/zzz_pm_rehaul_research_bars.txt  (generated, ADDITIVE — one bar per covered technology, shared by its three stages, each instance starting at zero. `monthly_progress` for industry entries (36 months), `weekly_progress` for war ones (26 weeks). One tooltipped `add` term per contributing source, so several qualifying industries fill the bar proportionally faster)
+  common/technology/technologies/zzz_pm_rehaul_techs.txt (generated by emit_techs.mjs, ADDITIVE — the 54 technologies the mod ADDS, each with its era, prerequisites and unlocks)
+  common/technology/technologies/{10_production,20_military,30_society}.txt (generated: WHOLE-FILE replacements of vanilla. 10 carries the ERA MOVES + the `aniline` prerequisite swap; **20 carries era moves too, and ONLY EXISTS WHEN THERE ARE ANY** — until 2026-08-12 emit_techs patched 10 alone, so a re-era on a MILITARY technology was written into the spec, drawn by the viewer, and silently dropped on the way to the mod, with nothing failing anywhere; the ladder-era alignment moves three (repeaters, breech_loading_artillery, bolt_action_rifles) and that is what surfaced it. 30 carries the ai_weight ×0.8. Each transform asserts its own match count and THROWS on a no-op)
+  common/scripted_effects/00_starting_inventions.txt     (generated: WHOLE-FILE replacement — the new era-1 production technologies added to the 1836 starting sets. ⚠ `add_era_researched = era_1` is the ONLY era granted at the start, which is exactly why the ladder-era alignment refuses to move anything INTO era 1)
   common/script_values/zzz_pm_rehaul_research_values.txt (generated, ADDITIVE — per-source employment sums, `Σ(level × occupancy) × employment-per-level`. ⚠ occupancy is a WEIGHT, never a `limit` filter: the filter form scores seven half-staffed levels as zero while passing three full ones, which is the opposite of the intent)
   events/zzz_v3tb_probe.txt                              (generated, TESTBED ONLY — the only events/ file the builder ever emits, and only when a telemetry metric asks. Exists because `on_monthly_pulse` is the finest pulse vanilla has: a reading BETWEEN month boundaries is unreachable from an on_action, so a scheduled `trigger_event = { days = N }` is the only route. Never present in a normal build)
   localization/<lang>/replace/zzz_pm_rehaul_l_<lang>.yml (generated for all 11 languages; replace/ so name overrides win)

@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-12T11:13:48.464Z",
+ "generated": "2026-08-12T18:59:48.611Z",
  "eraCost": {
   "1": 7500,
   "2": 10000,
@@ -109,24 +109,24 @@
    "budget": {
     "production": {
      "n": 92,
-     "cost": 1197500,
+     "cost": 1147500,
      "perEra": [
       15,
-      14,
-      20,
-      23,
-      20
+      18,
+      26,
+      19,
+      14
      ]
     },
     "military": {
      "n": 76,
-     "cost": 990000,
+     "cost": 960000,
      "perEra": [
       12,
-      13,
-      15,
-      19,
-      17
+      17,
+      16,
+      17,
+      14
      ]
     },
     "society": {
@@ -142,6 +142,17 @@
     }
    },
    "problems": [],
+   "alignHeld": [
+    "intensive_agriculture: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks fertilizer e1)",
+    "railways: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks railway e1)",
+    "telephone: era 3 -> 2 WITHHELD — prerequisite would sit later (shift_work era 3, electrical_generation era 3)",
+    "shell_gun: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks artillery e1)",
+    "percussion_cap: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks munition e1)",
+    "rifling: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks arms e1)",
+    "screw_frigate: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks shipyard e1)",
+    "steamship_bunkering: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks port e1)",
+    "iron_screw_steamers: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks shipyard_steam e1)"
+   ],
    "techs": [
     {
      "id": "academia",
@@ -1666,6 +1677,43 @@
      ]
     },
     {
+     "id": "breech_loading_artillery",
+     "name": "Breech-Loading Artillery",
+     "vanillaName": "Breech-Loading Artillery",
+     "renamed": null,
+     "desc": null,
+     "category": "military",
+     "era": 2,
+     "year": null,
+     "onset": 1859,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "artillery",
+     "prereqs": [
+      "rifling",
+      "shell_gun"
+     ],
+     "unlocks": [
+      {
+       "key": "building_artillery_foundry_breech",
+       "name": "Breech-Loading Artillery Foundries",
+       "era": 2,
+       "year": 1861,
+       "ind": "artillery"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks artillery e2",
+     "blocks": [
+      "handcranked_machine_gun",
+      "monitor_tech",
+      "recoil_carriages"
+     ]
+    },
+    {
      "id": "canneries",
      "name": "Canneries",
      "vanillaName": "Canneries",
@@ -1836,6 +1884,41 @@
      ]
     },
     {
+     "id": "deep_water_docks",
+     "name": "Deep Water Docks",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Hydraulic cranes, dredged approaches and enclosed basins let a port handle an iron steamer of a draught no tidal quay could ever take.",
+     "category": "military",
+     "era": 2,
+     "year": 1875,
+     "onset": 1875,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "port",
+     "prereqs": [
+      "steamship_bunkering",
+      "hydraulic_cranes"
+     ],
+     "unlocks": [
+      {
+       "key": "building_port_industrial",
+       "name": "Industrial Port",
+       "era": 2,
+       "year": 1875,
+       "ind": "port"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks port e2",
+     "blocks": [
+      "concrete_quays"
+     ]
+    },
+    {
      "id": "dialectics",
      "name": "Dialectics",
      "vanillaName": "Dialectics",
@@ -1858,6 +1941,42 @@
      "vanillaUnlocks": [],
      "blocks": [
       "socialism"
+     ]
+    },
+    {
+     "id": "dynamite",
+     "name": "Dynamite",
+     "vanillaName": "Dynamite",
+     "renamed": null,
+     "desc": null,
+     "category": "production",
+     "era": 2,
+     "year": null,
+     "onset": 1867,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "explosives",
+     "prereqs": [
+      "nitroglycerin",
+      "leblanc_process"
+     ],
+     "unlocks": [
+      {
+       "key": "building_explosives_factory_ammonia",
+       "name": "Dynamite Explosives Factories",
+       "era": 2,
+       "year": 1867,
+       "ind": "explosives"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks explosives e2",
+     "blocks": [
+      "pumpjacks",
+      "ostwald_process"
      ]
     },
     {
@@ -1885,6 +2004,41 @@
       "labor_movement",
       "human_rights",
       "anarchism"
+     ]
+    },
+    {
+     "id": "explosive_shells",
+     "name": "Filled Explosive Shells",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Shells filled and fused on a production line rather than in a laboratory, in quantities a siege can actually spend.",
+     "category": "military",
+     "era": 2,
+     "year": 1875,
+     "onset": 1875,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "munition",
+     "prereqs": [
+      "percussion_cap",
+      "shell_gun"
+     ],
+     "unlocks": [
+      {
+       "key": "building_munition_plant_shells",
+       "name": "Explosive Shell Munition Plants",
+       "era": 2,
+       "year": 1875,
+       "ind": "munition"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks munition e2",
+     "blocks": [
+      "drawn_brass_cartridges"
      ]
     },
     {
@@ -2552,6 +2706,76 @@
      ]
     },
     {
+     "id": "regenerative_furnace",
+     "name": "Regenerative Furnace",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Siemens' heat-recovery tank furnace runs continuously instead of in pots, halving the fuel a glasshouse burns for every ton it melts.",
+     "category": "production",
+     "era": 2,
+     "year": 1867,
+     "onset": 1867,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "glass",
+     "prereqs": [
+      "crystal_glass",
+      "bessemer_process"
+     ],
+     "unlocks": [
+      {
+       "key": "building_glassworks_crystal",
+       "name": "Tank Furnace Glassworks",
+       "era": 2,
+       "year": 1867,
+       "ind": "glass"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks glass e2",
+     "blocks": [
+      "plastics"
+     ]
+    },
+    {
+     "id": "repeaters",
+     "name": "Repeaters",
+     "vanillaName": "Repeaters",
+     "renamed": null,
+     "desc": null,
+     "category": "military",
+     "era": 2,
+     "year": null,
+     "onset": 1860,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "arms",
+     "prereqs": [
+      "rifling"
+     ],
+     "unlocks": [
+      {
+       "key": "building_arms_industry_repeaters",
+       "name": "Repeater Arms Industries",
+       "era": 2,
+       "year": 1866,
+       "ind": "arms"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks arms e2",
+     "blocks": [
+      "handcranked_machine_gun",
+      "bolt_action_rifles"
+     ]
+    },
+    {
      "id": "rifling",
      "name": "Rifling",
      "vanillaName": "Rifling",
@@ -2724,6 +2948,76 @@
      ]
     },
     {
+     "id": "steel_railway_cars",
+     "name": "Steel Railway Cars",
+     "vanillaName": "Steel Railway Cars",
+     "renamed": null,
+     "desc": null,
+     "category": "production",
+     "era": 2,
+     "year": null,
+     "onset": 1867,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "railway",
+     "prereqs": [
+      "railways"
+     ],
+     "unlocks": [
+      {
+       "key": "building_railway_steam",
+       "name": "Steam Railway",
+       "era": 2,
+       "year": 1867,
+       "ind": "railway"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks railway e2",
+     "blocks": [
+      "electric_railway"
+     ]
+    },
+    {
+     "id": "steel_toolmaking",
+     "name": "Steel Toolmaking",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Cheap bulk steel reaches the toolmaker. Cutters that once had to be forged from crucible stock are now made from mill steel and hardened in quantity.",
+     "category": "production",
+     "era": 2,
+     "year": 1865,
+     "onset": 1865,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "tooling",
+     "prereqs": [
+      "mechanical_tools",
+      "bessemer_process",
+      "steelworking"
+     ],
+     "unlocks": [
+      {
+       "key": "building_tooling_workshop_steel",
+       "name": "Steel Tooling Workshops",
+       "era": 2,
+       "year": 1865,
+       "ind": "tooling"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks tooling e2",
+     "blocks": [
+      "high_speed_steel"
+     ]
+    },
+    {
      "id": "triage",
      "name": "Triage",
      "vanillaName": "Triage",
@@ -2799,39 +3093,39 @@
      ]
     },
     {
-     "id": "breech_loading_artillery",
-     "name": "Breech-Loading Artillery",
-     "vanillaName": "Breech-Loading Artillery",
+     "id": "bolt_action_rifles",
+     "name": "Bolt-Action Rifle",
+     "vanillaName": "Bolt-Action Rifle",
      "renamed": null,
      "desc": null,
      "category": "military",
      "era": 3,
      "year": null,
-     "onset": 1859,
+     "onset": 1886,
      "idea": false,
      "mod": null,
      "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "artillery",
+     "industry": "arms",
      "prereqs": [
-      "rifling",
-      "shell_gun"
+      "repeaters"
      ],
      "unlocks": [
       {
-       "key": "building_artillery_foundry_breech",
-       "name": "Breech-Loading Artillery Foundries",
-       "era": 2,
-       "year": 1861,
-       "ind": "artillery"
+       "key": "building_arms_industry_bolt_action",
+       "name": "Bolt-Action Arms Industries",
+       "era": 3,
+       "year": 1886,
+       "ind": "arms"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks arms e3",
      "blocks": [
-      "handcranked_machine_gun",
-      "monitor_tech",
-      "recoil_carriages"
+      "automatic_machine_guns",
+      "light_machine_guns",
+      "stamped_receivers"
      ]
     },
     {
@@ -2894,6 +3188,79 @@
      ]
     },
     {
+     "id": "combustion_engine",
+     "name": "Combustion Engine",
+     "vanillaName": "Combustion Engine",
+     "renamed": null,
+     "desc": null,
+     "category": "production",
+     "era": 3,
+     "year": null,
+     "onset": 1886,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "automotive",
+     "prereqs": [
+      "rotary_valve_engine"
+     ],
+     "unlocks": [
+      {
+       "key": "building_automotive_industry",
+       "name": "Automobile Industries",
+       "era": 3,
+       "year": 1899,
+       "ind": "automotive"
+      }
+     ],
+     "vanillaUnlocks": [
+      "building_automotive_industry"
+     ],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks automotive e3",
+     "blocks": [
+      "conveyors",
+      "compression_ignition",
+      "diesel_engine"
+     ]
+    },
+    {
+     "id": "concrete_quays",
+     "name": "Reinforced Concrete Quays",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Monolithic concrete replaces the timber pile and the masonry block, and a berth can be built where no quarry could ever have supplied one.",
+     "category": "military",
+     "era": 3,
+     "year": 1908,
+     "onset": 1908,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "port",
+     "prereqs": [
+      "deep_water_docks",
+      "gantry_cranes"
+     ],
+     "unlocks": [
+      {
+       "key": "building_port_modern",
+       "name": "Modern Port",
+       "era": 3,
+       "year": 1908,
+       "ind": "port"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks port e3",
+     "blocks": [
+      "mechanised_cargo_handling"
+     ]
+    },
+    {
      "id": "corporatism",
      "name": "Corporatism",
      "vanillaName": "Corporatism",
@@ -2920,72 +3287,109 @@
      ]
     },
     {
-     "id": "deep_water_docks",
-     "name": "Deep Water Docks",
+     "id": "drawn_brass_cartridges",
+     "name": "Drawn Brass Cartridges",
      "vanillaName": null,
      "renamed": null,
-     "desc": "Hydraulic cranes, dredged approaches and enclosed basins let a port handle an iron steamer of a draught no tidal quay could ever take.",
+     "desc": "Deep-drawn cases and smokeless powder, loaded by automatic machinery. Ammunition becomes a volume manufacture like any other.",
      "category": "military",
      "era": 3,
-     "year": 1875,
-     "onset": 1875,
+     "year": 1895,
+     "onset": 1895,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "port",
+     "industry": "munition",
      "prereqs": [
-      "steamship_bunkering",
-      "hydraulic_cranes"
+      "explosive_shells",
+      "rifling"
      ],
      "unlocks": [
       {
-       "key": "building_port_industrial",
-       "name": "Industrial Port",
-       "era": 2,
-       "year": 1875,
-       "ind": "port"
+       "key": "building_munition_plant_drawn_brass",
+       "name": "Drawn Brass Munition Plants",
+       "era": 3,
+       "year": 1895,
+       "ind": "munition"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks munition e3",
      "blocks": [
-      "concrete_quays"
+      "shell_filling",
+      "automatic_cartridge_lines"
      ]
     },
     {
-     "id": "dynamite",
-     "name": "Dynamite",
-     "vanillaName": "Dynamite",
+     "id": "electric_motors",
+     "name": "Electric Motors",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "The polyphase induction motor gives every machine its own prime mover. Line shafting, and the mill built around it, begins to disappear.",
+     "category": "production",
+     "era": 3,
+     "year": 1893,
+     "onset": 1893,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "motor",
+     "prereqs": [
+      "electrical_generation",
+      "compound_engines"
+     ],
+     "unlocks": [
+      {
+       "key": "building_motor_industry_electric",
+       "name": "Electric Engine Motor Industries",
+       "era": 3,
+       "year": 1893,
+       "ind": "motor"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks motor e3",
+     "blocks": [
+      "diesel_engine"
+     ]
+    },
+    {
+     "id": "electric_railway",
+     "name": "Electric Railways",
+     "vanillaName": "Electric Railways",
      "renamed": null,
      "desc": null,
      "category": "production",
      "era": 3,
      "year": null,
-     "onset": 1867,
+     "onset": 1895,
      "idea": false,
      "mod": null,
      "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "explosives",
+     "industry": "railway",
      "prereqs": [
-      "nitroglycerin",
-      "leblanc_process"
+      "electrical_capacitors",
+      "steel_railway_cars"
      ],
      "unlocks": [
       {
-       "key": "building_explosives_factory_ammonia",
-       "name": "Dynamite Explosives Factories",
-       "era": 2,
-       "year": 1867,
-       "ind": "explosives"
+       "key": "building_railway_electric",
+       "name": "Electric Railway",
+       "era": 3,
+       "year": 1895,
+       "ind": "railway"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks railway e3",
      "blocks": [
-      "pumpjacks",
-      "ostwald_process"
+      "superheated_steam"
      ]
     },
     {
@@ -3012,6 +3416,44 @@
      "blocks": [
       "military_statistics",
       "trench_works"
+     ]
+    },
+    {
+     "id": "electrical_capacitors",
+     "name": "Alternating Current",
+     "vanillaName": "Electrical Capacitors",
+     "renamed": "It gates electric drive in mills, brine electrolysis and electric saws — polyphase distribution, not a component. A capacitor is the Leyden jar, 1745.",
+     "desc": null,
+     "category": "production",
+     "era": 3,
+     "year": null,
+     "onset": 1891,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "textile",
+     "prereqs": [
+      "electrical_generation",
+      "mechanized_workshops"
+     ],
+     "unlocks": [
+      {
+       "key": "building_textile_mill_electric",
+       "name": "Electric Sewing Textile Mills",
+       "era": 3,
+       "year": 1905,
+       "ind": "textile"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks textile e3",
+     "blocks": [
+      "pasteurization",
+      "electric_railway",
+      "long_draft_spinning",
+      "ribbon_machine"
      ]
     },
     {
@@ -3068,40 +3510,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "war_propaganda"
-     ]
-    },
-    {
-     "id": "explosive_shells",
-     "name": "Filled Explosive Shells",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Shells filled and fused on a production line rather than in a laboratory, in quantities a siege can actually spend.",
-     "category": "military",
-     "era": 3,
-     "year": 1875,
-     "onset": 1875,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "munition",
-     "prereqs": [
-      "percussion_cap",
-      "shell_gun"
-     ],
-     "unlocks": [
-      {
-       "key": "building_munition_plant_shells",
-       "name": "Explosive Shell Munition Plants",
-       "era": 2,
-       "year": 1875,
-       "ind": "munition"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "drawn_brass_cartridges"
      ]
     },
     {
@@ -3238,6 +3646,42 @@
       "defense_in_depth",
       "automatic_machine_guns",
       "military_aviation"
+     ]
+    },
+    {
+     "id": "high_speed_steel",
+     "name": "High Speed Steel",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Taylor and White's tungsten steel cuts red-hot without losing its edge. Machine shop speeds go from five metres a minute to thirty.",
+     "category": "production",
+     "era": 3,
+     "year": 1901,
+     "onset": 1901,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "tooling",
+     "prereqs": [
+      "steel_toolmaking",
+      "open_hearth_process"
+     ],
+     "unlocks": [
+      {
+       "key": "building_tooling_workshop_rubber",
+       "name": "High-Speed Steel Tooling Workshops",
+       "era": 3,
+       "year": 1901,
+       "ind": "tooling"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks tooling e3",
+     "blocks": [
+      "cemented_carbide",
+      "transfer_machining"
      ]
     },
     {
@@ -3405,6 +3849,78 @@
      ]
     },
     {
+     "id": "kraft_process",
+     "name": "Kraft Process",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Sulfate pulping digests resinous softwoods that sulfite cannot touch, and recovers its own chemicals — the strongest and cheapest pulp yet made.",
+     "category": "production",
+     "era": 3,
+     "year": 1890,
+     "onset": 1890,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "paper",
+     "prereqs": [
+      "chemical_bleaching",
+      "nitroglycerin"
+     ],
+     "unlocks": [
+      {
+       "key": "building_paper_mill_kraft",
+       "name": "Kraft Process Paper Mills",
+       "era": 3,
+       "year": 1890,
+       "ind": "paper"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks paper e3",
+     "blocks": [
+      "semi_chemical_pulping",
+      "high_speed_papermaking"
+     ]
+    },
+    {
+     "id": "marine_steam_turbine",
+     "name": "Marine Steam Turbine",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Parsons' turbine at sea: fewer moving parts, no reciprocating mass, and speeds a triple-expansion engine cannot reach.",
+     "category": "military",
+     "era": 3,
+     "year": 1903,
+     "onset": 1903,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "shipyard_steam",
+     "prereqs": [
+      "iron_screw_steamers",
+      "ironclad_tech",
+      "steel_hulls"
+     ],
+     "unlocks": [
+      {
+       "key": "building_shipyard_metal_turbine",
+       "name": "Turbine Steamship Yards",
+       "era": 3,
+       "year": 1903,
+       "ind": "shipyard_steam"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks shipyard_steam e3",
+     "blocks": [
+      "oil_fired_boilers"
+     ]
+    },
+    {
      "id": "military_statistics",
      "name": "Military Statistics",
      "vanillaName": "Military Statistics",
@@ -3542,6 +4058,41 @@
      ]
     },
     {
+     "id": "ostwald_process",
+     "name": "Ostwald Process",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Catalytic oxidation of ammonia makes nitric acid without a nitrate mine, and cuts the last colonial tether on the explosives trade.",
+     "category": "production",
+     "era": 3,
+     "year": 1908,
+     "onset": 1908,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "explosives",
+     "prereqs": [
+      "dynamite",
+      "improved_fertilizer"
+     ],
+     "unlocks": [
+      {
+       "key": "building_explosives_factory_vacuum",
+       "name": "Ostwald Process Explosives Factories",
+       "era": 3,
+       "year": 1908,
+       "ind": "explosives"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks explosives e3",
+     "blocks": [
+      "continuous_nitration"
+     ]
+    },
+    {
      "id": "pan-nationalism",
      "name": "Pan-nationalism",
      "vanillaName": "Pan-nationalism",
@@ -3592,6 +4143,42 @@
      ]
     },
     {
+     "id": "plastics",
+     "name": "Plastics",
+     "vanillaName": "Plastics",
+     "renamed": null,
+     "desc": null,
+     "category": "production",
+     "era": 3,
+     "year": null,
+     "onset": 1907,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "glass",
+     "prereqs": [
+      "reinforced_concrete",
+      "regenerative_furnace"
+     ],
+     "unlocks": [
+      {
+       "key": "building_glassworks_plastics",
+       "name": "Plastic Glassworks",
+       "era": 3,
+       "year": 1910,
+       "ind": "glass"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks glass e3",
+     "blocks": [
+      "nitrocellulose_lacquer",
+      "ribbon_machine"
+     ]
+    },
+    {
      "id": "pumpjacks",
      "name": "Oil Drilling",
      "vanillaName": "Pumpjacks",
@@ -3618,37 +4205,37 @@
      "blocks": []
     },
     {
-     "id": "regenerative_furnace",
-     "name": "Regenerative Furnace",
+     "id": "recoil_carriages",
+     "name": "Recoil Carriages",
      "vanillaName": null,
      "renamed": null,
-     "desc": "Siemens' heat-recovery tank furnace runs continuously instead of in pots, halving the fuel a glasshouse burns for every ton it melts.",
-     "category": "production",
+     "desc": "The French 75's hydro-pneumatic recoil keeps the barrel on target between rounds, and multiplies a battery's rate of fire.",
+     "category": "military",
      "era": 3,
-     "year": 1867,
-     "onset": 1867,
+     "year": 1897,
+     "onset": 1897,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "glass",
+     "industry": "artillery",
      "prereqs": [
-      "crystal_glass",
-      "bessemer_process"
+      "breech_loading_artillery"
      ],
      "unlocks": [
       {
-       "key": "building_glassworks_crystal",
-       "name": "Tank Furnace Glassworks",
-       "era": 2,
-       "year": 1867,
-       "ind": "glass"
+       "key": "building_artillery_foundry_recoiled",
+       "name": "Recoiled Barrel Artillery Foundries",
+       "era": 3,
+       "year": 1897,
+       "ind": "artillery"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks artillery e3",
      "blocks": [
-      "plastics"
+      "autofrettage"
      ]
     },
     {
@@ -3675,40 +4262,6 @@
      "blocks": [
       "pneumatic_tools",
       "plastics"
-     ]
-    },
-    {
-     "id": "repeaters",
-     "name": "Repeaters",
-     "vanillaName": "Repeaters",
-     "renamed": null,
-     "desc": null,
-     "category": "military",
-     "era": 3,
-     "year": null,
-     "onset": 1860,
-     "idea": false,
-     "mod": null,
-     "origin": "vanilla",
-     "filler": false,
-     "platform": null,
-     "industry": "arms",
-     "prereqs": [
-      "rifling"
-     ],
-     "unlocks": [
-      {
-       "key": "building_arms_industry_repeaters",
-       "name": "Repeater Arms Industries",
-       "era": 2,
-       "year": 1866,
-       "ind": "arms"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "handcranked_machine_gun",
-      "bolt_action_rifles"
      ]
     },
     {
@@ -3904,6 +4457,41 @@
      ]
     },
     {
+     "id": "steam_turbine",
+     "name": "Steam Turbine",
+     "vanillaName": "Steam Turbine",
+     "renamed": null,
+     "desc": null,
+     "category": "production",
+     "era": 3,
+     "year": null,
+     "onset": 1900,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "power",
+     "prereqs": [
+      "electrical_generation"
+     ],
+     "unlocks": [
+      {
+       "key": "building_power_plant",
+       "name": "Coal-Fired Power Plant",
+       "era": 3,
+       "year": 1900,
+       "ind": "power"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks power e3",
+     "blocks": [
+      "oil_turbine",
+      "pulverized_coal_firing"
+     ]
+    },
+    {
      "id": "steel_frame_buildings",
      "name": "Steel-Frame Buildings",
      "vanillaName": "Steel-Frame Buildings",
@@ -3930,71 +4518,38 @@
      ]
     },
     {
-     "id": "steel_railway_cars",
-     "name": "Steel Railway Cars",
-     "vanillaName": "Steel Railway Cars",
-     "renamed": null,
-     "desc": null,
-     "category": "production",
-     "era": 3,
-     "year": null,
-     "onset": 1867,
-     "idea": false,
-     "mod": null,
-     "origin": "vanilla",
-     "filler": false,
-     "platform": null,
-     "industry": "railway",
-     "prereqs": [
-      "railways"
-     ],
-     "unlocks": [
-      {
-       "key": "building_railway_steam",
-       "name": "Steam Railway",
-       "era": 2,
-       "year": 1867,
-       "ind": "railway"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "electric_railway"
-     ]
-    },
-    {
-     "id": "steel_toolmaking",
-     "name": "Steel Toolmaking",
+     "id": "synthetic_indigo",
+     "name": "Synthetic Indigo",
      "vanillaName": null,
      "renamed": null,
-     "desc": "Cheap bulk steel reaches the toolmaker. Cutters that once had to be forged from crucible stock are now made from mill steel and hardened in quantity.",
+     "desc": "Seventeen years and a fortune later, BASF sells indigo made from coal tar — and the Bengal indigo districts have nothing left to sell.",
      "category": "production",
      "era": 3,
-     "year": 1865,
-     "onset": 1865,
+     "year": 1897,
+     "onset": 1897,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "tooling",
+     "industry": "synthetics",
      "prereqs": [
-      "mechanical_tools",
-      "bessemer_process",
-      "steelworking"
+      "aniline",
+      "chemical_bleaching"
      ],
      "unlocks": [
       {
-       "key": "building_tooling_workshop_steel",
-       "name": "Steel Tooling Workshops",
-       "era": 2,
-       "year": 1865,
-       "ind": "tooling"
+       "key": "building_synthetics_plant_indigo",
+       "name": "Synthetic Indigo Plants",
+       "era": 3,
+       "year": 1897,
+       "ind": "synthetics"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks synthetics e3",
      "blocks": [
-      "high_speed_steel"
+      "art_silk"
      ]
     },
     {
@@ -4180,6 +4735,40 @@
      ]
     },
     {
+     "id": "autofrettage",
+     "name": "Autofrettage",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Pre-stressing a barrel from within replaces built-up hoop construction — a lighter gun of the same power, made in fewer operations.",
+     "category": "military",
+     "era": 4,
+     "year": 1925,
+     "onset": 1925,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "artillery",
+     "prereqs": [
+      "recoil_carriages"
+     ],
+     "unlocks": [
+      {
+       "key": "building_artillery_foundry_autofrettage",
+       "name": "Autofrettaged Artillery Foundries",
+       "era": 4,
+       "year": 1925,
+       "ind": "artillery"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks artillery e4",
+     "blocks": [
+      "automatic_aa_guns"
+     ]
+    },
+    {
      "id": "automatic_bottle_blowers",
      "name": "Automatic Bottle Blowers",
      "vanillaName": "Automatic Bottle Blowers",
@@ -4232,38 +4821,38 @@
      ]
     },
     {
-     "id": "bolt_action_rifles",
-     "name": "Bolt-Action Rifle",
-     "vanillaName": "Bolt-Action Rifle",
+     "id": "cemented_carbide",
+     "name": "Cemented Carbide",
+     "vanillaName": null,
      "renamed": null,
-     "desc": null,
-     "category": "military",
+     "desc": "Tungsten carbide sintered in cobalt cuts four to seven times faster than high speed steel, and wears out far more slowly.",
+     "category": "production",
      "era": 4,
-     "year": null,
-     "onset": 1886,
+     "year": 1927,
+     "onset": 1927,
      "idea": false,
      "mod": null,
-     "origin": "vanilla",
+     "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "arms",
+     "industry": "tooling",
      "prereqs": [
-      "repeaters"
+      "high_speed_steel",
+      "electric_arc_process"
      ],
      "unlocks": [
       {
-       "key": "building_arms_industry_bolt_action",
-       "name": "Bolt-Action Arms Industries",
-       "era": 3,
-       "year": 1886,
-       "ind": "arms"
+       "key": "building_tooling_workshop_carbide",
+       "name": "Cemented Carbide Tooling Workshops",
+       "era": 4,
+       "year": 1927,
+       "ind": "tooling"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks tooling e4",
      "blocks": [
-      "automatic_machine_guns",
-      "light_machine_guns",
-      "stamped_receivers"
+      "tracer_control"
      ]
     },
     {
@@ -4289,43 +4878,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "mass_surveillance"
-     ]
-    },
-    {
-     "id": "combustion_engine",
-     "name": "Combustion Engine",
-     "vanillaName": "Combustion Engine",
-     "renamed": null,
-     "desc": null,
-     "category": "production",
-     "era": 4,
-     "year": null,
-     "onset": 1886,
-     "idea": false,
-     "mod": null,
-     "origin": "vanilla",
-     "filler": false,
-     "platform": null,
-     "industry": "automotive",
-     "prereqs": [
-      "rotary_valve_engine"
-     ],
-     "unlocks": [
-      {
-       "key": "building_automotive_industry",
-       "name": "Automobile Industries",
-       "era": 3,
-       "year": 1899,
-       "ind": "automotive"
-      }
-     ],
-     "vanillaUnlocks": [
-      "building_automotive_industry"
-     ],
-     "blocks": [
-      "conveyors",
-      "compression_ignition",
-      "diesel_engine"
      ]
     },
     {
@@ -4355,37 +4907,38 @@
      ]
     },
     {
-     "id": "concrete_quays",
-     "name": "Reinforced Concrete Quays",
+     "id": "continuous_nitration",
+     "name": "Continuous Nitration",
      "vanillaName": null,
      "renamed": null,
-     "desc": "Monolithic concrete replaces the timber pile and the masonry block, and a berth can be built where no quarry could ever have supplied one.",
-     "category": "military",
+     "desc": "Nitration in a flowing stream rather than a batch pot — safer, steadier, and limited only by how fast acid can be pumped.",
+     "category": "production",
      "era": 4,
-     "year": 1908,
-     "onset": 1908,
+     "year": 1928,
+     "onset": 1928,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "port",
+     "industry": "explosives",
      "prereqs": [
-      "deep_water_docks",
-      "gantry_cranes"
+      "ostwald_process",
+      "conveyors"
      ],
      "unlocks": [
       {
-       "key": "building_port_modern",
-       "name": "Modern Port",
-       "era": 3,
-       "year": 1908,
-       "ind": "port"
+       "key": "building_explosives_factory_brine",
+       "name": "Continuous Nitration Explosives Factories",
+       "era": 4,
+       "year": 1928,
+       "ind": "explosives"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks explosives e4",
      "blocks": [
-      "mechanised_cargo_handling"
+      "cyclonite_process"
      ]
     },
     {
@@ -4515,39 +5068,37 @@
      ]
     },
     {
-     "id": "drawn_brass_cartridges",
-     "name": "Drawn Brass Cartridges",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Deep-drawn cases and smokeless powder, loaded by automatic machinery. Ammunition becomes a volume manufacture like any other.",
-     "category": "military",
+     "id": "dough_rollers",
+     "name": "Mechanised Bakeries",
+     "vanillaName": "Dough Rollers",
+     "renamed": "It unlocks the whole automated bakery, of which the dough roller is one machine — and in our ladder it is a tier building.",
+     "desc": null,
+     "category": "production",
      "era": 4,
-     "year": 1895,
-     "onset": 1895,
+     "year": null,
+     "onset": 1920,
      "idea": false,
      "mod": null,
-     "origin": "new",
+     "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "munition",
+     "industry": "food",
      "prereqs": [
-      "explosive_shells",
-      "rifling"
+      "conveyors",
+      "fat_hydrogenation"
      ],
      "unlocks": [
       {
-       "key": "building_munition_plant_drawn_brass",
-       "name": "Drawn Brass Munition Plants",
-       "era": 3,
-       "year": 1895,
-       "ind": "munition"
+       "key": "building_food_industry_mechanised",
+       "name": "Mechanised Bakery Food Industries",
+       "era": 4,
+       "year": 1920,
+       "ind": "food"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": [
-      "shell_filling",
-      "automatic_cartridge_lines"
-     ]
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks food e4",
+     "blocks": []
     },
     {
      "id": "dreadnought_tech",
@@ -4614,111 +5165,6 @@
      ]
     },
     {
-     "id": "electric_motors",
-     "name": "Electric Motors",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "The polyphase induction motor gives every machine its own prime mover. Line shafting, and the mill built around it, begins to disappear.",
-     "category": "production",
-     "era": 4,
-     "year": 1893,
-     "onset": 1893,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "motor",
-     "prereqs": [
-      "electrical_generation",
-      "compound_engines"
-     ],
-     "unlocks": [
-      {
-       "key": "building_motor_industry_electric",
-       "name": "Electric Engine Motor Industries",
-       "era": 3,
-       "year": 1893,
-       "ind": "motor"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "diesel_engine"
-     ]
-    },
-    {
-     "id": "electric_railway",
-     "name": "Electric Railways",
-     "vanillaName": "Electric Railways",
-     "renamed": null,
-     "desc": null,
-     "category": "production",
-     "era": 4,
-     "year": null,
-     "onset": 1895,
-     "idea": false,
-     "mod": null,
-     "origin": "vanilla",
-     "filler": false,
-     "platform": null,
-     "industry": "railway",
-     "prereqs": [
-      "electrical_capacitors",
-      "steel_railway_cars"
-     ],
-     "unlocks": [
-      {
-       "key": "building_railway_electric",
-       "name": "Electric Railway",
-       "era": 3,
-       "year": 1895,
-       "ind": "railway"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "superheated_steam"
-     ]
-    },
-    {
-     "id": "electrical_capacitors",
-     "name": "Alternating Current",
-     "vanillaName": "Electrical Capacitors",
-     "renamed": "It gates electric drive in mills, brine electrolysis and electric saws — polyphase distribution, not a component. A capacitor is the Leyden jar, 1745.",
-     "desc": null,
-     "category": "production",
-     "era": 4,
-     "year": null,
-     "onset": 1891,
-     "idea": false,
-     "mod": null,
-     "origin": "vanilla",
-     "filler": false,
-     "platform": null,
-     "industry": "textile",
-     "prereqs": [
-      "electrical_generation",
-      "mechanized_workshops"
-     ],
-     "unlocks": [
-      {
-       "key": "building_textile_mill_electric",
-       "name": "Electric Sewing Textile Mills",
-       "era": 3,
-       "year": 1905,
-       "ind": "textile"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "pasteurization",
-      "electric_railway",
-      "long_draft_spinning",
-      "ribbon_machine"
-     ]
-    },
-    {
      "id": "elevator",
      "name": "Elevators",
      "vanillaName": "Elevators",
@@ -4778,41 +5224,6 @@
      ]
     },
     {
-     "id": "high_speed_steel",
-     "name": "High Speed Steel",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Taylor and White's tungsten steel cuts red-hot without losing its edge. Machine shop speeds go from five metres a minute to thirty.",
-     "category": "production",
-     "era": 4,
-     "year": 1901,
-     "onset": 1901,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "tooling",
-     "prereqs": [
-      "steel_toolmaking",
-      "open_hearth_process"
-     ],
-     "unlocks": [
-      {
-       "key": "building_tooling_workshop_rubber",
-       "name": "High-Speed Steel Tooling Workshops",
-       "era": 3,
-       "year": 1901,
-       "ind": "tooling"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "cemented_carbide",
-      "transfer_machining"
-     ]
-    },
-    {
      "id": "international_exchange_standards",
      "name": "International Exchange Standards",
      "vanillaName": "International Exchange Standards",
@@ -4836,41 +5247,6 @@
      "blocks": [
       "modern_financial_instruments",
       "macroeconomics"
-     ]
-    },
-    {
-     "id": "kraft_process",
-     "name": "Kraft Process",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Sulfate pulping digests resinous softwoods that sulfite cannot touch, and recovers its own chemicals — the strongest and cheapest pulp yet made.",
-     "category": "production",
-     "era": 4,
-     "year": 1890,
-     "onset": 1890,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "paper",
-     "prereqs": [
-      "chemical_bleaching",
-      "nitroglycerin"
-     ],
-     "unlocks": [
-      {
-       "key": "building_paper_mill_kraft",
-       "name": "Kraft Process Paper Mills",
-       "era": 3,
-       "year": 1890,
-       "ind": "paper"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "semi_chemical_pulping",
-      "high_speed_papermaking"
      ]
     },
     {
@@ -4987,39 +5363,37 @@
      ]
     },
     {
-     "id": "marine_steam_turbine",
-     "name": "Marine Steam Turbine",
+     "id": "mechanised_cargo_handling",
+     "name": "Mechanised Cargo Handling",
      "vanillaName": null,
      "renamed": null,
-     "desc": "Parsons' turbine at sea: fewer moving parts, no reciprocating mass, and speeds a triple-expansion engine cannot reach.",
+     "desc": "Travelling gantries, conveyors and motor trucks on the quay. A motor ship's turnaround is measured in days rather than weeks.",
      "category": "military",
      "era": 4,
-     "year": 1903,
-     "onset": 1903,
+     "year": 1930,
+     "onset": 1930,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "shipyard_steam",
+     "industry": "port",
      "prereqs": [
-      "iron_screw_steamers",
-      "ironclad_tech",
-      "steel_hulls"
+      "concrete_quays",
+      "concrete_dockyards"
      ],
      "unlocks": [
       {
-       "key": "building_shipyard_metal_turbine",
-       "name": "Turbine Steamship Yards",
-       "era": 3,
-       "year": 1903,
-       "ind": "shipyard_steam"
+       "key": "building_port_motor",
+       "name": "Motor Ship Ports",
+       "era": 4,
+       "year": 1930,
+       "ind": "port"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": [
-      "oil_fired_boilers"
-     ]
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks port e4",
+     "blocks": []
     },
     {
      "id": "mechanized_farming",
@@ -5093,6 +5467,40 @@
      "blocks": []
     },
     {
+     "id": "nitrocellulose_lacquer",
+     "name": "Nitrocellulose Lacquers",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Sprayed lacquer dries in minutes where varnish took days. Furniture finishing stops being the bottleneck of the whole trade.",
+     "category": "production",
+     "era": 4,
+     "year": 1923,
+     "onset": 1923,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "furniture",
+     "prereqs": [
+      "art_silk",
+      "plastics",
+      "rotary_veneer"
+     ],
+     "unlocks": [
+      {
+       "key": "building_furniture_manufactory_sprayed",
+       "name": "Spray-Finished Furniture Manufactories",
+       "era": 4,
+       "year": 1923,
+       "ind": "furniture"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks furniture e4",
+     "blocks": []
+    },
+    {
      "id": "nitrogen_fixation",
      "name": "Nitrogen Fixation",
      "vanillaName": "Nitrogen Fixation",
@@ -5127,37 +5535,37 @@
      ]
     },
     {
-     "id": "ostwald_process",
-     "name": "Ostwald Process",
+     "id": "oil_fired_boilers",
+     "name": "Oil-Fired Boilers",
      "vanillaName": null,
      "renamed": null,
-     "desc": "Catalytic oxidation of ammonia makes nitric acid without a nitrate mine, and cuts the last colonial tether on the explosives trade.",
-     "category": "production",
+     "desc": "Oil firing halves the stokehold crew and doubles the range. The yard's customers stop specifying coal bunkers.",
+     "category": "military",
      "era": 4,
-     "year": 1908,
-     "onset": 1908,
+     "year": 1913,
+     "onset": 1913,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "explosives",
+     "industry": "shipyard_steam",
      "prereqs": [
-      "dynamite",
-      "improved_fertilizer"
+      "marine_steam_turbine"
      ],
      "unlocks": [
       {
-       "key": "building_explosives_factory_vacuum",
-       "name": "Ostwald Process Explosives Factories",
-       "era": 3,
-       "year": 1908,
-       "ind": "explosives"
+       "key": "building_shipyard_metal_oil_fired",
+       "name": "Oil-Fired Steamship Yards",
+       "era": 4,
+       "year": 1913,
+       "ind": "shipyard_steam"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks shipyard_steam e4",
      "blocks": [
-      "continuous_nitration"
+      "welded_prefabrication"
      ]
     },
     {
@@ -5184,41 +5592,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "flash_freezing"
-     ]
-    },
-    {
-     "id": "plastics",
-     "name": "Plastics",
-     "vanillaName": "Plastics",
-     "renamed": null,
-     "desc": null,
-     "category": "production",
-     "era": 4,
-     "year": null,
-     "onset": 1907,
-     "idea": false,
-     "mod": null,
-     "origin": "vanilla",
-     "filler": false,
-     "platform": null,
-     "industry": "glass",
-     "prereqs": [
-      "reinforced_concrete",
-      "regenerative_furnace"
-     ],
-     "unlocks": [
-      {
-       "key": "building_glassworks_plastics",
-       "name": "Plastic Glassworks",
-       "era": 3,
-       "year": 1910,
-       "ind": "glass"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "nitrocellulose_lacquer",
-      "ribbon_machine"
      ]
     },
     {
@@ -5326,6 +5699,41 @@
      ]
     },
     {
+     "id": "pulverized_coal_firing",
+     "name": "Pulverized Coal Firing",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Coal ground to flour and blown into the furnace burns like a gas. Station units jump from single megawatts to tens of them.",
+     "category": "production",
+     "era": 4,
+     "year": 1920,
+     "onset": 1920,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "power",
+     "prereqs": [
+      "steam_turbine",
+      "conveyors"
+     ],
+     "unlocks": [
+      {
+       "key": "building_power_plant_pulverized",
+       "name": "Pulverized-Coal Power Plant",
+       "era": 4,
+       "year": 1920,
+       "ind": "power"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks power e4",
+     "blocks": [
+      "oil_turbine"
+     ]
+    },
+    {
      "id": "radio",
      "name": "Radio",
      "vanillaName": "Radio",
@@ -5360,36 +5768,39 @@
      ]
     },
     {
-     "id": "recoil_carriages",
-     "name": "Recoil Carriages",
+     "id": "ribbon_machine",
+     "name": "Ribbon Machine",
      "vanillaName": null,
      "renamed": null,
-     "desc": "The French 75's hydro-pneumatic recoil keeps the barrel on target between rounds, and multiplies a battery's rate of fire.",
-     "category": "military",
+     "desc": "Corning's ribbon machine blows bulbs from a moving ribbon of glass at a rate no gathering machine can approach.",
+     "category": "production",
      "era": 4,
-     "year": 1897,
-     "onset": 1897,
+     "year": 1926,
+     "onset": 1926,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "artillery",
+     "industry": "glass",
      "prereqs": [
-      "breech_loading_artillery"
+      "automatic_bottle_blowers",
+      "electrical_capacitors",
+      "plastics"
      ],
      "unlocks": [
       {
-       "key": "building_artillery_foundry_recoiled",
-       "name": "Recoiled Barrel Artillery Foundries",
-       "era": 3,
-       "year": 1897,
-       "ind": "artillery"
+       "key": "building_glassworks_ribbon",
+       "name": "Ribbon Machine Glassworks",
+       "era": 4,
+       "year": 1926,
+       "ind": "glass"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks glass e4",
      "blocks": [
-      "autofrettage"
+      "glass_fibre"
      ]
     },
     {
@@ -5485,40 +5896,6 @@
      ]
     },
     {
-     "id": "steam_turbine",
-     "name": "Steam Turbine",
-     "vanillaName": "Steam Turbine",
-     "renamed": null,
-     "desc": null,
-     "category": "production",
-     "era": 4,
-     "year": null,
-     "onset": 1900,
-     "idea": false,
-     "mod": null,
-     "origin": "vanilla",
-     "filler": false,
-     "platform": null,
-     "industry": "power",
-     "prereqs": [
-      "electrical_generation"
-     ],
-     "unlocks": [
-      {
-       "key": "building_power_plant",
-       "name": "Coal-Fired Power Plant",
-       "era": 3,
-       "year": 1900,
-       "ind": "power"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "oil_turbine",
-      "pulverized_coal_firing"
-     ]
-    },
-    {
      "id": "submarine",
      "name": "Submarine",
      "vanillaName": "Submarine",
@@ -5572,40 +5949,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "compression_ignition"
-     ]
-    },
-    {
-     "id": "synthetic_indigo",
-     "name": "Synthetic Indigo",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Seventeen years and a fortune later, BASF sells indigo made from coal tar — and the Bengal indigo districts have nothing left to sell.",
-     "category": "production",
-     "era": 4,
-     "year": 1897,
-     "onset": 1897,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "synthetics",
-     "prereqs": [
-      "aniline",
-      "chemical_bleaching"
-     ],
-     "unlocks": [
-      {
-       "key": "building_synthetics_plant_indigo",
-       "name": "Synthetic Indigo Plants",
-       "era": 3,
-       "year": 1897,
-       "ind": "synthetics"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "art_silk"
      ]
     },
     {
@@ -5782,39 +6125,6 @@
      ]
     },
     {
-     "id": "autofrettage",
-     "name": "Autofrettage",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Pre-stressing a barrel from within replaces built-up hoop construction — a lighter gun of the same power, made in fewer operations.",
-     "category": "military",
-     "era": 5,
-     "year": 1925,
-     "onset": 1925,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "artillery",
-     "prereqs": [
-      "recoil_carriages"
-     ],
-     "unlocks": [
-      {
-       "key": "building_artillery_foundry_autofrettage",
-       "name": "Autofrettaged Artillery Foundries",
-       "era": 4,
-       "year": 1925,
-       "ind": "artillery"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "automatic_aa_guns"
-     ]
-    },
-    {
      "id": "automatic_aa_guns",
      "name": "Automatic Anti-Aircraft Guns",
      "vanillaName": null,
@@ -5973,40 +6283,6 @@
      "blocks": []
     },
     {
-     "id": "cemented_carbide",
-     "name": "Cemented Carbide",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Tungsten carbide sintered in cobalt cuts four to seven times faster than high speed steel, and wears out far more slowly.",
-     "category": "production",
-     "era": 5,
-     "year": 1927,
-     "onset": 1927,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "tooling",
-     "prereqs": [
-      "high_speed_steel",
-      "electric_arc_process"
-     ],
-     "unlocks": [
-      {
-       "key": "building_tooling_workshop_carbide",
-       "name": "Cemented Carbide Tooling Workshops",
-       "era": 4,
-       "year": 1927,
-       "ind": "tooling"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "tracer_control"
-     ]
-    },
-    {
      "id": "chemical_warfare",
      "name": "Chemical Warfare",
      "vanillaName": "Chemical Warfare",
@@ -6084,40 +6360,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "mobile_armor"
-     ]
-    },
-    {
-     "id": "continuous_nitration",
-     "name": "Continuous Nitration",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Nitration in a flowing stream rather than a batch pot — safer, steadier, and limited only by how fast acid can be pumped.",
-     "category": "production",
-     "era": 5,
-     "year": 1928,
-     "onset": 1928,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "explosives",
-     "prereqs": [
-      "ostwald_process",
-      "conveyors"
-     ],
-     "unlocks": [
-      {
-       "key": "building_explosives_factory_brine",
-       "name": "Continuous Nitration Explosives Factories",
-       "era": 4,
-       "year": 1928,
-       "ind": "explosives"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "cyclonite_process"
      ]
     },
     {
@@ -6203,38 +6445,6 @@
       "monitor_tech"
      ],
      "unlocks": [],
-     "vanillaUnlocks": [],
-     "blocks": []
-    },
-    {
-     "id": "dough_rollers",
-     "name": "Mechanised Bakeries",
-     "vanillaName": "Dough Rollers",
-     "renamed": "It unlocks the whole automated bakery, of which the dough roller is one machine — and in our ladder it is a tier building.",
-     "desc": null,
-     "category": "production",
-     "era": 5,
-     "year": null,
-     "onset": 1920,
-     "idea": false,
-     "mod": null,
-     "origin": "vanilla",
-     "filler": false,
-     "platform": null,
-     "industry": "food",
-     "prereqs": [
-      "conveyors",
-      "fat_hydrogenation"
-     ],
-     "unlocks": [
-      {
-       "key": "building_food_industry_mechanised",
-       "name": "Mechanised Bakery Food Industries",
-       "era": 4,
-       "year": 1920,
-       "ind": "food"
-      }
-     ],
      "vanillaUnlocks": [],
      "blocks": []
     },
@@ -6453,38 +6663,6 @@
      "blocks": []
     },
     {
-     "id": "mechanised_cargo_handling",
-     "name": "Mechanised Cargo Handling",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Travelling gantries, conveyors and motor trucks on the quay. A motor ship's turnaround is measured in days rather than weeks.",
-     "category": "military",
-     "era": 5,
-     "year": 1930,
-     "onset": 1930,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "port",
-     "prereqs": [
-      "concrete_quays",
-      "concrete_dockyards"
-     ],
-     "unlocks": [
-      {
-       "key": "building_port_motor",
-       "name": "Motor Ship Ports",
-       "era": 4,
-       "year": 1930,
-       "ind": "port"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": []
-    },
-    {
      "id": "mobile_armor",
      "name": "Mobile Armor",
      "vanillaName": "Mobile Armor",
@@ -6555,72 +6733,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "mobile_armor"
-     ]
-    },
-    {
-     "id": "nitrocellulose_lacquer",
-     "name": "Nitrocellulose Lacquers",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Sprayed lacquer dries in minutes where varnish took days. Furniture finishing stops being the bottleneck of the whole trade.",
-     "category": "production",
-     "era": 5,
-     "year": 1923,
-     "onset": 1923,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "furniture",
-     "prereqs": [
-      "art_silk",
-      "plastics",
-      "rotary_veneer"
-     ],
-     "unlocks": [
-      {
-       "key": "building_furniture_manufactory_sprayed",
-       "name": "Spray-Finished Furniture Manufactories",
-       "era": 4,
-       "year": 1923,
-       "ind": "furniture"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": []
-    },
-    {
-     "id": "oil_fired_boilers",
-     "name": "Oil-Fired Boilers",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Oil firing halves the stokehold crew and doubles the range. The yard's customers stop specifying coal bunkers.",
-     "category": "military",
-     "era": 5,
-     "year": 1913,
-     "onset": 1913,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "shipyard_steam",
-     "prereqs": [
-      "marine_steam_turbine"
-     ],
-     "unlocks": [
-      {
-       "key": "building_shipyard_metal_oil_fired",
-       "name": "Oil-Fired Steamship Yards",
-       "era": 4,
-       "year": 1913,
-       "ind": "shipyard_steam"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "welded_prefabrication"
      ]
     },
     {
@@ -6709,75 +6821,6 @@
      ],
      "vanillaUnlocks": [],
      "blocks": []
-    },
-    {
-     "id": "pulverized_coal_firing",
-     "name": "Pulverized Coal Firing",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Coal ground to flour and blown into the furnace burns like a gas. Station units jump from single megawatts to tens of them.",
-     "category": "production",
-     "era": 5,
-     "year": 1920,
-     "onset": 1920,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "power",
-     "prereqs": [
-      "steam_turbine",
-      "conveyors"
-     ],
-     "unlocks": [
-      {
-       "key": "building_power_plant_pulverized",
-       "name": "Pulverized-Coal Power Plant",
-       "era": 4,
-       "year": 1920,
-       "ind": "power"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "oil_turbine"
-     ]
-    },
-    {
-     "id": "ribbon_machine",
-     "name": "Ribbon Machine",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Corning's ribbon machine blows bulbs from a moving ribbon of glass at a rate no gathering machine can approach.",
-     "category": "production",
-     "era": 5,
-     "year": 1926,
-     "onset": 1926,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "glass",
-     "prereqs": [
-      "automatic_bottle_blowers",
-      "electrical_capacitors",
-      "plastics"
-     ],
-     "unlocks": [
-      {
-       "key": "building_glassworks_ribbon",
-       "name": "Ribbon Machine Glassworks",
-       "era": 4,
-       "year": 1926,
-       "ind": "glass"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "glass_fibre"
-     ]
     },
     {
      "id": "sound_film",
@@ -7023,14 +7066,14 @@
      "blocks": []
     }
    ],
-   "rushCost": 739375,
-   "rushCostVanillaAot": 739375,
+   "rushCost": 826875,
+   "rushCostVanillaAot": 826875,
    "rushCostByAot": {
-    "0.25": 739375,
-    "0.2": 595000,
-    "0.15": 450625,
-    "0.125": 378437.5,
-    "0.1": 306250
+    "0.25": 826875,
+    "0.2": 665000,
+    "0.15": 503125,
+    "0.125": 422187.5,
+    "0.1": 341250
    }
   },
   {
@@ -7042,24 +7085,24 @@
    "budget": {
     "production": {
      "n": 104,
-     "cost": 1307500,
+     "cost": 1257500,
      "perEra": [
       22,
-      17,
+      22,
+      25,
       21,
-      24,
-      20
+      14
      ]
     },
     "military": {
      "n": 78,
-     "cost": 1005000,
+     "cost": 975000,
      "perEra": [
       14,
-      13,
-      15,
-      19,
-      17
+      17,
+      16,
+      17,
+      14
      ]
     },
     "society": {
@@ -7075,6 +7118,18 @@
     }
    },
    "problems": [],
+   "alignHeld": [
+    "railways: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks railway e1)",
+    "electric_railway: era 4 -> 3 WITHHELD — prerequisite would sit later (electrical_capacitors era 4)",
+    "telephone: era 3 -> 2 WITHHELD — prerequisite would sit later (shift_work era 3, electrical_generation era 3)",
+    "shell_gun: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks artillery e1)",
+    "percussion_cap: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks munition e1)",
+    "rifling: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks arms e1)",
+    "screw_frigate: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks shipyard e1)",
+    "superphosphate: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks fertilizer e1)",
+    "steamship_bunkering: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks port e1)",
+    "iron_screw_steamers: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks shipyard_steam e1)"
+   ],
    "techs": [
     {
      "id": "academia",
@@ -8856,6 +8911,43 @@
      ]
     },
     {
+     "id": "breech_loading_artillery",
+     "name": "Breech-Loading Artillery",
+     "vanillaName": "Breech-Loading Artillery",
+     "renamed": null,
+     "desc": null,
+     "category": "military",
+     "era": 2,
+     "year": null,
+     "onset": 1859,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "artillery",
+     "prereqs": [
+      "rifling",
+      "shell_gun"
+     ],
+     "unlocks": [
+      {
+       "key": "building_artillery_foundry_breech",
+       "name": "Breech-Loading Artillery Foundries",
+       "era": 2,
+       "year": 1861,
+       "ind": "artillery"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks artillery e2",
+     "blocks": [
+      "handcranked_machine_gun",
+      "monitor_tech",
+      "recoil_carriages"
+     ]
+    },
+    {
      "id": "canneries",
      "name": "Canneries",
      "vanillaName": "Canneries",
@@ -9015,6 +9107,40 @@
      ]
     },
     {
+     "id": "deep_water_docks",
+     "name": "Deep Water Docks",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Hydraulic cranes, dredged approaches and enclosed basins let a port handle an iron steamer of a draught no tidal quay could ever take.",
+     "category": "military",
+     "era": 2,
+     "year": 1875,
+     "onset": 1875,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "port",
+     "prereqs": [
+      "steamship_bunkering"
+     ],
+     "unlocks": [
+      {
+       "key": "building_port_industrial",
+       "name": "Industrial Port",
+       "era": 2,
+       "year": 1875,
+       "ind": "port"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks port e2",
+     "blocks": [
+      "concrete_quays"
+     ]
+    },
+    {
      "id": "dialectics",
      "name": "Dialectics",
      "vanillaName": "Dialectics",
@@ -9037,6 +9163,42 @@
      "vanillaUnlocks": [],
      "blocks": [
       "socialism"
+     ]
+    },
+    {
+     "id": "dynamite",
+     "name": "Dynamite",
+     "vanillaName": "Dynamite",
+     "renamed": null,
+     "desc": null,
+     "category": "production",
+     "era": 2,
+     "year": null,
+     "onset": 1867,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "explosives",
+     "prereqs": [
+      "nitroglycerin",
+      "leblanc_process"
+     ],
+     "unlocks": [
+      {
+       "key": "building_explosives_factory_ammonia",
+       "name": "Dynamite Explosives Factories",
+       "era": 2,
+       "year": 1867,
+       "ind": "explosives"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks explosives e2",
+     "blocks": [
+      "pumpjacks",
+      "ostwald_process"
      ]
     },
     {
@@ -9064,6 +9226,40 @@
       "labor_movement",
       "human_rights",
       "anarchism"
+     ]
+    },
+    {
+     "id": "explosive_shells",
+     "name": "Filled Explosive Shells",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Shells filled and fused on a production line rather than in a laboratory, in quantities a siege can actually spend.",
+     "category": "military",
+     "era": 2,
+     "year": 1875,
+     "onset": 1875,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "munition",
+     "prereqs": [
+      "percussion_cap"
+     ],
+     "unlocks": [
+      {
+       "key": "building_munition_plant_shells",
+       "name": "Explosive Shell Munition Plants",
+       "era": 2,
+       "year": 1875,
+       "ind": "munition"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks munition e2",
+     "blocks": [
+      "drawn_brass_cartridges"
      ]
     },
     {
@@ -9701,6 +9897,75 @@
      ]
     },
     {
+     "id": "regenerative_furnace",
+     "name": "Regenerative Furnace",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Siemens' heat-recovery tank furnace runs continuously instead of in pots, halving the fuel a glasshouse burns for every ton it melts.",
+     "category": "production",
+     "era": 2,
+     "year": 1867,
+     "onset": 1867,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "glass",
+     "prereqs": [
+      "crystal_glass"
+     ],
+     "unlocks": [
+      {
+       "key": "building_glassworks_crystal",
+       "name": "Tank Furnace Glassworks",
+       "era": 2,
+       "year": 1867,
+       "ind": "glass"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks glass e2",
+     "blocks": [
+      "plastics"
+     ]
+    },
+    {
+     "id": "repeaters",
+     "name": "Repeaters",
+     "vanillaName": "Repeaters",
+     "renamed": null,
+     "desc": null,
+     "category": "military",
+     "era": 2,
+     "year": null,
+     "onset": 1860,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "arms",
+     "prereqs": [
+      "rifling"
+     ],
+     "unlocks": [
+      {
+       "key": "building_arms_industry_repeaters",
+       "name": "Repeater Arms Industries",
+       "era": 2,
+       "year": 1866,
+       "ind": "arms"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks arms e2",
+     "blocks": [
+      "handcranked_machine_gun",
+      "bolt_action_rifles"
+     ]
+    },
+    {
      "id": "rifling",
      "name": "Rifling",
      "vanillaName": "Rifling",
@@ -9905,6 +10170,109 @@
      ]
     },
     {
+     "id": "steel_railway_cars",
+     "name": "Steel Railway Cars",
+     "vanillaName": "Steel Railway Cars",
+     "renamed": null,
+     "desc": null,
+     "category": "production",
+     "era": 2,
+     "year": null,
+     "onset": 1867,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "railway",
+     "prereqs": [
+      "railways"
+     ],
+     "unlocks": [
+      {
+       "key": "building_railway_steam",
+       "name": "Steam Railway",
+       "era": 2,
+       "year": 1867,
+       "ind": "railway"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks railway e2",
+     "blocks": [
+      "electric_railway"
+     ]
+    },
+    {
+     "id": "steel_toolmaking",
+     "name": "Steel Toolmaking",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Cheap bulk steel reaches the toolmaker. Cutters that once had to be forged from crucible stock are now made from mill steel and hardened in quantity.",
+     "category": "production",
+     "era": 2,
+     "year": 1865,
+     "onset": 1865,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "tooling",
+     "prereqs": [
+      "pig_iron_tooling",
+      "bessemer_process"
+     ],
+     "unlocks": [
+      {
+       "key": "building_tooling_workshop_steel",
+       "name": "Steel Tooling Workshops",
+       "era": 2,
+       "year": 1865,
+       "ind": "tooling"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks tooling e2",
+     "blocks": [
+      "high_speed_steel"
+     ]
+    },
+    {
+     "id": "sulfite_pulping",
+     "name": "Sulfite Pulping",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Tilghman's acid digestion turns standing timber into paper, and rag supply stops being the ceiling on how much a country can print.",
+     "category": "production",
+     "era": 2,
+     "year": 1874,
+     "onset": 1874,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "paper",
+     "prereqs": [
+      "fourdrinier_machine"
+     ],
+     "unlocks": [
+      {
+       "key": "building_paper_mill_bleached",
+       "name": "Sulfite Pulping Paper Mills",
+       "era": 2,
+       "year": 1874,
+       "ind": "paper"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks paper e2",
+     "blocks": [
+      "kraft_process"
+     ]
+    },
+    {
      "id": "superphosphate",
      "name": "Superphosphate",
      "vanillaName": null,
@@ -10013,39 +10381,38 @@
      ]
     },
     {
-     "id": "breech_loading_artillery",
-     "name": "Breech-Loading Artillery",
-     "vanillaName": "Breech-Loading Artillery",
+     "id": "bolt_action_rifles",
+     "name": "Bolt-Action Rifle",
+     "vanillaName": "Bolt-Action Rifle",
      "renamed": null,
      "desc": null,
      "category": "military",
      "era": 3,
      "year": null,
-     "onset": 1859,
+     "onset": 1886,
      "idea": false,
      "mod": null,
      "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "artillery",
+     "industry": "arms",
      "prereqs": [
-      "rifling",
-      "shell_gun"
+      "repeaters"
      ],
      "unlocks": [
       {
-       "key": "building_artillery_foundry_breech",
-       "name": "Breech-Loading Artillery Foundries",
-       "era": 2,
-       "year": 1861,
-       "ind": "artillery"
+       "key": "building_arms_industry_bolt_action",
+       "name": "Bolt-Action Arms Industries",
+       "era": 3,
+       "year": 1886,
+       "ind": "arms"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks arms e3",
      "blocks": [
-      "handcranked_machine_gun",
-      "monitor_tech",
-      "recoil_carriages"
+      "automatic_machine_guns",
+      "light_machine_guns"
      ]
     },
     {
@@ -10108,6 +10475,79 @@
      ]
     },
     {
+     "id": "combustion_engine",
+     "name": "Combustion Engine",
+     "vanillaName": "Combustion Engine",
+     "renamed": null,
+     "desc": null,
+     "category": "production",
+     "era": 3,
+     "year": null,
+     "onset": 1886,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "automotive",
+     "prereqs": [
+      "rotary_valve_engine"
+     ],
+     "unlocks": [
+      {
+       "key": "building_automotive_industry",
+       "name": "Automobile Industries",
+       "era": 3,
+       "year": 1899,
+       "ind": "automotive"
+      }
+     ],
+     "vanillaUnlocks": [
+      "building_automotive_industry"
+     ],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks automotive e3",
+     "blocks": [
+      "conveyors",
+      "compression_ignition",
+      "diesel_engine"
+     ]
+    },
+    {
+     "id": "concrete_quays",
+     "name": "Reinforced Concrete Quays",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Monolithic concrete replaces the timber pile and the masonry block, and a berth can be built where no quarry could ever have supplied one.",
+     "category": "military",
+     "era": 3,
+     "year": 1908,
+     "onset": 1908,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "port",
+     "prereqs": [
+      "deep_water_docks",
+      "gantry_cranes"
+     ],
+     "unlocks": [
+      {
+       "key": "building_port_modern",
+       "name": "Modern Port",
+       "era": 3,
+       "year": 1908,
+       "ind": "port"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks port e3",
+     "blocks": [
+      "mechanised_cargo_handling"
+     ]
+    },
+    {
      "id": "corporatism",
      "name": "Corporatism",
      "vanillaName": "Corporatism",
@@ -10134,71 +10574,107 @@
      ]
     },
     {
-     "id": "deep_water_docks",
-     "name": "Deep Water Docks",
+     "id": "drawn_brass_cartridges",
+     "name": "Drawn Brass Cartridges",
      "vanillaName": null,
      "renamed": null,
-     "desc": "Hydraulic cranes, dredged approaches and enclosed basins let a port handle an iron steamer of a draught no tidal quay could ever take.",
+     "desc": "Deep-drawn cases and smokeless powder, loaded by automatic machinery. Ammunition becomes a volume manufacture like any other.",
      "category": "military",
      "era": 3,
-     "year": 1875,
-     "onset": 1875,
+     "year": 1895,
+     "onset": 1895,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "port",
+     "industry": "munition",
      "prereqs": [
-      "steamship_bunkering"
+      "explosive_shells"
      ],
      "unlocks": [
       {
-       "key": "building_port_industrial",
-       "name": "Industrial Port",
-       "era": 2,
-       "year": 1875,
-       "ind": "port"
+       "key": "building_munition_plant_drawn_brass",
+       "name": "Drawn Brass Munition Plants",
+       "era": 3,
+       "year": 1895,
+       "ind": "munition"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks munition e3",
      "blocks": [
-      "concrete_quays"
+      "shell_filling"
      ]
     },
     {
-     "id": "dynamite",
-     "name": "Dynamite",
-     "vanillaName": "Dynamite",
+     "id": "electric_drive_looms",
+     "name": "Electric Drive Looms",
+     "vanillaName": null,
      "renamed": null,
-     "desc": null,
+     "desc": "Individual motor drive per loom ends the overhead shaft, and lets a weaving shed be laid out for the cloth instead of for the belting.",
      "category": "production",
      "era": 3,
-     "year": null,
-     "onset": 1867,
+     "year": 1905,
+     "onset": 1905,
      "idea": false,
      "mod": null,
-     "origin": "vanilla",
+     "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "explosives",
+     "industry": "textile",
      "prereqs": [
-      "nitroglycerin",
-      "leblanc_process"
+      "sewing_machine_works",
+      "electrical_generation"
      ],
      "unlocks": [
       {
-       "key": "building_explosives_factory_ammonia",
-       "name": "Dynamite Explosives Factories",
-       "era": 2,
-       "year": 1867,
-       "ind": "explosives"
+       "key": "building_textile_mill_electric",
+       "name": "Electric Sewing Textile Mills",
+       "era": 3,
+       "year": 1905,
+       "ind": "textile"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks textile e3",
      "blocks": [
-      "pumpjacks",
-      "ostwald_process"
+      "long_draft_spinning"
+     ]
+    },
+    {
+     "id": "electric_motors",
+     "name": "Electric Motors",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "The polyphase induction motor gives every machine its own prime mover. Line shafting, and the mill built around it, begins to disappear.",
+     "category": "production",
+     "era": 3,
+     "year": 1893,
+     "onset": 1893,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "motor",
+     "prereqs": [
+      "compound_engines",
+      "electrical_generation"
+     ],
+     "unlocks": [
+      {
+       "key": "building_motor_industry_electric",
+       "name": "Electric Engine Motor Industries",
+       "era": 3,
+       "year": 1893,
+       "ind": "motor"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks motor e3",
+     "blocks": [
+      "diesel_engine"
      ]
     },
     {
@@ -10282,39 +10758,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "war_propaganda"
-     ]
-    },
-    {
-     "id": "explosive_shells",
-     "name": "Filled Explosive Shells",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Shells filled and fused on a production line rather than in a laboratory, in quantities a siege can actually spend.",
-     "category": "military",
-     "era": 3,
-     "year": 1875,
-     "onset": 1875,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "munition",
-     "prereqs": [
-      "percussion_cap"
-     ],
-     "unlocks": [
-      {
-       "key": "building_munition_plant_shells",
-       "name": "Explosive Shell Munition Plants",
-       "era": 2,
-       "year": 1875,
-       "ind": "munition"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "drawn_brass_cartridges"
      ]
     },
     {
@@ -10451,6 +10894,41 @@
       "defense_in_depth",
       "automatic_machine_guns",
       "military_aviation"
+     ]
+    },
+    {
+     "id": "high_speed_steel",
+     "name": "High Speed Steel",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Taylor and White's tungsten steel cuts red-hot without losing its edge. Machine shop speeds go from five metres a minute to thirty.",
+     "category": "production",
+     "era": 3,
+     "year": 1901,
+     "onset": 1901,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "tooling",
+     "prereqs": [
+      "steel_toolmaking"
+     ],
+     "unlocks": [
+      {
+       "key": "building_tooling_workshop_rubber",
+       "name": "High-Speed Steel Tooling Workshops",
+       "era": 3,
+       "year": 1901,
+       "ind": "tooling"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks tooling e3",
+     "blocks": [
+      "cemented_carbide",
+      "transfer_machining"
      ]
     },
     {
@@ -10616,6 +11094,74 @@
      ]
     },
     {
+     "id": "kraft_process",
+     "name": "Kraft Process",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Sulfate pulping digests resinous softwoods that sulfite cannot touch, and recovers its own chemicals — the strongest and cheapest pulp yet made.",
+     "category": "production",
+     "era": 3,
+     "year": 1890,
+     "onset": 1890,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "paper",
+     "prereqs": [
+      "sulfite_pulping"
+     ],
+     "unlocks": [
+      {
+       "key": "building_paper_mill_kraft",
+       "name": "Kraft Process Paper Mills",
+       "era": 3,
+       "year": 1890,
+       "ind": "paper"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks paper e3",
+     "blocks": [
+      "semi_chemical_pulping"
+     ]
+    },
+    {
+     "id": "marine_steam_turbine",
+     "name": "Marine Steam Turbine",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Parsons' turbine at sea: fewer moving parts, no reciprocating mass, and speeds a triple-expansion engine cannot reach.",
+     "category": "military",
+     "era": 3,
+     "year": 1903,
+     "onset": 1903,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "shipyard_steam",
+     "prereqs": [
+      "steel_hulls"
+     ],
+     "unlocks": [
+      {
+       "key": "building_shipyard_metal_turbine",
+       "name": "Turbine Steamship Yards",
+       "era": 3,
+       "year": 1903,
+       "ind": "shipyard_steam"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks shipyard_steam e3",
+     "blocks": [
+      "oil_fired_boilers"
+     ]
+    },
+    {
      "id": "military_statistics",
      "name": "Military Statistics",
      "vanillaName": "Military Statistics",
@@ -10752,6 +11298,40 @@
      ]
     },
     {
+     "id": "ostwald_process",
+     "name": "Ostwald Process",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Catalytic oxidation of ammonia makes nitric acid without a nitrate mine, and cuts the last colonial tether on the explosives trade.",
+     "category": "production",
+     "era": 3,
+     "year": 1908,
+     "onset": 1908,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "explosives",
+     "prereqs": [
+      "dynamite"
+     ],
+     "unlocks": [
+      {
+       "key": "building_explosives_factory_vacuum",
+       "name": "Ostwald Process Explosives Factories",
+       "era": 3,
+       "year": 1908,
+       "ind": "explosives"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks explosives e3",
+     "blocks": [
+      "continuous_nitration"
+     ]
+    },
+    {
      "id": "pan-nationalism",
      "name": "Pan-nationalism",
      "vanillaName": "Pan-nationalism",
@@ -10802,6 +11382,41 @@
      ]
     },
     {
+     "id": "plastics",
+     "name": "Plastics",
+     "vanillaName": "Plastics",
+     "renamed": null,
+     "desc": null,
+     "category": "production",
+     "era": 3,
+     "year": null,
+     "onset": 1907,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "glass",
+     "prereqs": [
+      "reinforced_concrete",
+      "regenerative_furnace"
+     ],
+     "unlocks": [
+      {
+       "key": "building_glassworks_plastics",
+       "name": "Plastic Glassworks",
+       "era": 3,
+       "year": 1910,
+       "ind": "glass"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks glass e3",
+     "blocks": [
+      "ribbon_machine"
+     ]
+    },
+    {
      "id": "pumpjacks",
      "name": "Oil Drilling",
      "vanillaName": "Pumpjacks",
@@ -10828,36 +11443,37 @@
      "blocks": []
     },
     {
-     "id": "regenerative_furnace",
-     "name": "Regenerative Furnace",
+     "id": "recoil_carriages",
+     "name": "Recoil Carriages",
      "vanillaName": null,
      "renamed": null,
-     "desc": "Siemens' heat-recovery tank furnace runs continuously instead of in pots, halving the fuel a glasshouse burns for every ton it melts.",
-     "category": "production",
+     "desc": "The French 75's hydro-pneumatic recoil keeps the barrel on target between rounds, and multiplies a battery's rate of fire.",
+     "category": "military",
      "era": 3,
-     "year": 1867,
-     "onset": 1867,
+     "year": 1897,
+     "onset": 1897,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "glass",
+     "industry": "artillery",
      "prereqs": [
-      "crystal_glass"
+      "breech_loading_artillery"
      ],
      "unlocks": [
       {
-       "key": "building_glassworks_crystal",
-       "name": "Tank Furnace Glassworks",
-       "era": 2,
-       "year": 1867,
-       "ind": "glass"
+       "key": "building_artillery_foundry_recoiled",
+       "name": "Recoiled Barrel Artillery Foundries",
+       "era": 3,
+       "year": 1897,
+       "ind": "artillery"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks artillery e3",
      "blocks": [
-      "plastics"
+      "autofrettage"
      ]
     },
     {
@@ -10884,40 +11500,6 @@
      "blocks": [
       "pneumatic_tools",
       "plastics"
-     ]
-    },
-    {
-     "id": "repeaters",
-     "name": "Repeaters",
-     "vanillaName": "Repeaters",
-     "renamed": null,
-     "desc": null,
-     "category": "military",
-     "era": 3,
-     "year": null,
-     "onset": 1860,
-     "idea": false,
-     "mod": null,
-     "origin": "vanilla",
-     "filler": false,
-     "platform": null,
-     "industry": "arms",
-     "prereqs": [
-      "rifling"
-     ],
-     "unlocks": [
-      {
-       "key": "building_arms_industry_repeaters",
-       "name": "Repeater Arms Industries",
-       "era": 2,
-       "year": 1866,
-       "ind": "arms"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "handcranked_machine_gun",
-      "bolt_action_rifles"
      ]
     },
     {
@@ -11113,6 +11695,41 @@
      ]
     },
     {
+     "id": "steam_turbine",
+     "name": "Steam Turbine",
+     "vanillaName": "Steam Turbine",
+     "renamed": null,
+     "desc": null,
+     "category": "production",
+     "era": 3,
+     "year": null,
+     "onset": 1900,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "power",
+     "prereqs": [
+      "electrical_generation"
+     ],
+     "unlocks": [
+      {
+       "key": "building_power_plant",
+       "name": "Coal-Fired Power Plant",
+       "era": 3,
+       "year": 1900,
+       "ind": "power"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks power e3",
+     "blocks": [
+      "oil_turbine",
+      "pulverized_coal_firing"
+     ]
+    },
+    {
      "id": "steel_frame_buildings",
      "name": "Steel-Frame Buildings",
      "vanillaName": "Steel-Frame Buildings",
@@ -11139,103 +11756,37 @@
      ]
     },
     {
-     "id": "steel_railway_cars",
-     "name": "Steel Railway Cars",
-     "vanillaName": "Steel Railway Cars",
-     "renamed": null,
-     "desc": null,
-     "category": "production",
-     "era": 3,
-     "year": null,
-     "onset": 1867,
-     "idea": false,
-     "mod": null,
-     "origin": "vanilla",
-     "filler": false,
-     "platform": null,
-     "industry": "railway",
-     "prereqs": [
-      "railways"
-     ],
-     "unlocks": [
-      {
-       "key": "building_railway_steam",
-       "name": "Steam Railway",
-       "era": 2,
-       "year": 1867,
-       "ind": "railway"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "electric_railway"
-     ]
-    },
-    {
-     "id": "steel_toolmaking",
-     "name": "Steel Toolmaking",
+     "id": "synthetic_indigo",
+     "name": "Synthetic Indigo",
      "vanillaName": null,
      "renamed": null,
-     "desc": "Cheap bulk steel reaches the toolmaker. Cutters that once had to be forged from crucible stock are now made from mill steel and hardened in quantity.",
+     "desc": "Seventeen years and a fortune later, BASF sells indigo made from coal tar — and the Bengal indigo districts have nothing left to sell.",
      "category": "production",
      "era": 3,
-     "year": 1865,
-     "onset": 1865,
+     "year": 1897,
+     "onset": 1897,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "tooling",
+     "industry": "synthetics",
      "prereqs": [
-      "pig_iron_tooling",
-      "bessemer_process"
+      "aniline"
      ],
      "unlocks": [
       {
-       "key": "building_tooling_workshop_steel",
-       "name": "Steel Tooling Workshops",
-       "era": 2,
-       "year": 1865,
-       "ind": "tooling"
+       "key": "building_synthetics_plant_indigo",
+       "name": "Synthetic Indigo Plants",
+       "era": 3,
+       "year": 1897,
+       "ind": "synthetics"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks synthetics e3",
      "blocks": [
-      "high_speed_steel"
-     ]
-    },
-    {
-     "id": "sulfite_pulping",
-     "name": "Sulfite Pulping",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Tilghman's acid digestion turns standing timber into paper, and rag supply stops being the ceiling on how much a country can print.",
-     "category": "production",
-     "era": 3,
-     "year": 1874,
-     "onset": 1874,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "paper",
-     "prereqs": [
-      "fourdrinier_machine"
-     ],
-     "unlocks": [
-      {
-       "key": "building_paper_mill_bleached",
-       "name": "Sulfite Pulping Paper Mills",
-       "era": 2,
-       "year": 1874,
-       "ind": "paper"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "kraft_process"
+      "art_silk"
      ]
     },
     {
@@ -11421,6 +11972,40 @@
      ]
     },
     {
+     "id": "autofrettage",
+     "name": "Autofrettage",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Pre-stressing a barrel from within replaces built-up hoop construction — a lighter gun of the same power, made in fewer operations.",
+     "category": "military",
+     "era": 4,
+     "year": 1925,
+     "onset": 1925,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "artillery",
+     "prereqs": [
+      "recoil_carriages"
+     ],
+     "unlocks": [
+      {
+       "key": "building_artillery_foundry_autofrettage",
+       "name": "Autofrettaged Artillery Foundries",
+       "era": 4,
+       "year": 1925,
+       "ind": "artillery"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks artillery e4",
+     "blocks": [
+      "automatic_aa_guns"
+     ]
+    },
+    {
      "id": "automatic_bottle_blowers",
      "name": "Automatic Bottle Blowers",
      "vanillaName": "Automatic Bottle Blowers",
@@ -11473,37 +12058,38 @@
      ]
     },
     {
-     "id": "bolt_action_rifles",
-     "name": "Bolt-Action Rifle",
-     "vanillaName": "Bolt-Action Rifle",
+     "id": "cemented_carbide",
+     "name": "Cemented Carbide",
+     "vanillaName": null,
      "renamed": null,
-     "desc": null,
-     "category": "military",
+     "desc": "Tungsten carbide sintered in cobalt cuts four to seven times faster than high speed steel, and wears out far more slowly.",
+     "category": "production",
      "era": 4,
-     "year": null,
-     "onset": 1886,
+     "year": 1927,
+     "onset": 1927,
      "idea": false,
      "mod": null,
-     "origin": "vanilla",
+     "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "arms",
+     "industry": "tooling",
      "prereqs": [
-      "repeaters"
+      "high_speed_steel",
+      "electric_arc_process"
      ],
      "unlocks": [
       {
-       "key": "building_arms_industry_bolt_action",
-       "name": "Bolt-Action Arms Industries",
-       "era": 3,
-       "year": 1886,
-       "ind": "arms"
+       "key": "building_tooling_workshop_carbide",
+       "name": "Cemented Carbide Tooling Workshops",
+       "era": 4,
+       "year": 1927,
+       "ind": "tooling"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks tooling e4",
      "blocks": [
-      "automatic_machine_guns",
-      "light_machine_guns"
+      "tracer_control"
      ]
     },
     {
@@ -11529,43 +12115,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "mass_surveillance"
-     ]
-    },
-    {
-     "id": "combustion_engine",
-     "name": "Combustion Engine",
-     "vanillaName": "Combustion Engine",
-     "renamed": null,
-     "desc": null,
-     "category": "production",
-     "era": 4,
-     "year": null,
-     "onset": 1886,
-     "idea": false,
-     "mod": null,
-     "origin": "vanilla",
-     "filler": false,
-     "platform": null,
-     "industry": "automotive",
-     "prereqs": [
-      "rotary_valve_engine"
-     ],
-     "unlocks": [
-      {
-       "key": "building_automotive_industry",
-       "name": "Automobile Industries",
-       "era": 3,
-       "year": 1899,
-       "ind": "automotive"
-      }
-     ],
-     "vanillaUnlocks": [
-      "building_automotive_industry"
-     ],
-     "blocks": [
-      "conveyors",
-      "compression_ignition",
-      "diesel_engine"
      ]
     },
     {
@@ -11595,37 +12144,37 @@
      ]
     },
     {
-     "id": "concrete_quays",
-     "name": "Reinforced Concrete Quays",
+     "id": "continuous_nitration",
+     "name": "Continuous Nitration",
      "vanillaName": null,
      "renamed": null,
-     "desc": "Monolithic concrete replaces the timber pile and the masonry block, and a berth can be built where no quarry could ever have supplied one.",
-     "category": "military",
+     "desc": "Nitration in a flowing stream rather than a batch pot — safer, steadier, and limited only by how fast acid can be pumped.",
+     "category": "production",
      "era": 4,
-     "year": 1908,
-     "onset": 1908,
+     "year": 1928,
+     "onset": 1928,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "port",
+     "industry": "explosives",
      "prereqs": [
-      "deep_water_docks",
-      "gantry_cranes"
+      "ostwald_process"
      ],
      "unlocks": [
       {
-       "key": "building_port_modern",
-       "name": "Modern Port",
-       "era": 3,
-       "year": 1908,
-       "ind": "port"
+       "key": "building_explosives_factory_brine",
+       "name": "Continuous Nitration Explosives Factories",
+       "era": 4,
+       "year": 1928,
+       "ind": "explosives"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks explosives e4",
      "blocks": [
-      "mechanised_cargo_handling"
+      "cyclonite_process"
      ]
     },
     {
@@ -11751,37 +12300,37 @@
      ]
     },
     {
-     "id": "drawn_brass_cartridges",
-     "name": "Drawn Brass Cartridges",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Deep-drawn cases and smokeless powder, loaded by automatic machinery. Ammunition becomes a volume manufacture like any other.",
-     "category": "military",
+     "id": "dough_rollers",
+     "name": "Mechanised Bakeries",
+     "vanillaName": "Dough Rollers",
+     "renamed": "It unlocks the whole automated bakery, of which the dough roller is one machine — and in our ladder it is a tier building.",
+     "desc": null,
+     "category": "production",
      "era": 4,
-     "year": 1895,
-     "onset": 1895,
+     "year": null,
+     "onset": 1920,
      "idea": false,
      "mod": null,
-     "origin": "new",
+     "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "munition",
+     "industry": "food",
      "prereqs": [
-      "explosive_shells"
+      "conveyors",
+      "fat_hydrogenation"
      ],
      "unlocks": [
       {
-       "key": "building_munition_plant_drawn_brass",
-       "name": "Drawn Brass Munition Plants",
-       "era": 3,
-       "year": 1895,
-       "ind": "munition"
+       "key": "building_food_industry_mechanised",
+       "name": "Mechanised Bakery Food Industries",
+       "era": 4,
+       "year": 1920,
+       "ind": "food"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": [
-      "shell_filling"
-     ]
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks food e4",
+     "blocks": []
     },
     {
      "id": "dreadnought_tech",
@@ -11845,74 +12394,6 @@
       "arc_welding",
       "cemented_carbide",
       "continuous_strip_mill"
-     ]
-    },
-    {
-     "id": "electric_drive_looms",
-     "name": "Electric Drive Looms",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Individual motor drive per loom ends the overhead shaft, and lets a weaving shed be laid out for the cloth instead of for the belting.",
-     "category": "production",
-     "era": 4,
-     "year": 1905,
-     "onset": 1905,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "textile",
-     "prereqs": [
-      "sewing_machine_works",
-      "electrical_generation"
-     ],
-     "unlocks": [
-      {
-       "key": "building_textile_mill_electric",
-       "name": "Electric Sewing Textile Mills",
-       "era": 3,
-       "year": 1905,
-       "ind": "textile"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "long_draft_spinning"
-     ]
-    },
-    {
-     "id": "electric_motors",
-     "name": "Electric Motors",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "The polyphase induction motor gives every machine its own prime mover. Line shafting, and the mill built around it, begins to disappear.",
-     "category": "production",
-     "era": 4,
-     "year": 1893,
-     "onset": 1893,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "motor",
-     "prereqs": [
-      "compound_engines",
-      "electrical_generation"
-     ],
-     "unlocks": [
-      {
-       "key": "building_motor_industry_electric",
-       "name": "Electric Engine Motor Industries",
-       "era": 3,
-       "year": 1893,
-       "ind": "motor"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "diesel_engine"
      ]
     },
     {
@@ -12035,40 +12516,6 @@
      ]
     },
     {
-     "id": "high_speed_steel",
-     "name": "High Speed Steel",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Taylor and White's tungsten steel cuts red-hot without losing its edge. Machine shop speeds go from five metres a minute to thirty.",
-     "category": "production",
-     "era": 4,
-     "year": 1901,
-     "onset": 1901,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "tooling",
-     "prereqs": [
-      "steel_toolmaking"
-     ],
-     "unlocks": [
-      {
-       "key": "building_tooling_workshop_rubber",
-       "name": "High-Speed Steel Tooling Workshops",
-       "era": 3,
-       "year": 1901,
-       "ind": "tooling"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "cemented_carbide",
-      "transfer_machining"
-     ]
-    },
-    {
      "id": "international_exchange_standards",
      "name": "International Exchange Standards",
      "vanillaName": "International Exchange Standards",
@@ -12092,39 +12539,6 @@
      "blocks": [
       "modern_financial_instruments",
       "macroeconomics"
-     ]
-    },
-    {
-     "id": "kraft_process",
-     "name": "Kraft Process",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Sulfate pulping digests resinous softwoods that sulfite cannot touch, and recovers its own chemicals — the strongest and cheapest pulp yet made.",
-     "category": "production",
-     "era": 4,
-     "year": 1890,
-     "onset": 1890,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "paper",
-     "prereqs": [
-      "sulfite_pulping"
-     ],
-     "unlocks": [
-      {
-       "key": "building_paper_mill_kraft",
-       "name": "Kraft Process Paper Mills",
-       "era": 3,
-       "year": 1890,
-       "ind": "paper"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "semi_chemical_pulping"
      ]
     },
     {
@@ -12241,37 +12655,37 @@
      ]
     },
     {
-     "id": "marine_steam_turbine",
-     "name": "Marine Steam Turbine",
+     "id": "mechanised_cargo_handling",
+     "name": "Mechanised Cargo Handling",
      "vanillaName": null,
      "renamed": null,
-     "desc": "Parsons' turbine at sea: fewer moving parts, no reciprocating mass, and speeds a triple-expansion engine cannot reach.",
+     "desc": "Travelling gantries, conveyors and motor trucks on the quay. A motor ship's turnaround is measured in days rather than weeks.",
      "category": "military",
      "era": 4,
-     "year": 1903,
-     "onset": 1903,
+     "year": 1930,
+     "onset": 1930,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "shipyard_steam",
+     "industry": "port",
      "prereqs": [
-      "steel_hulls"
+      "concrete_quays",
+      "concrete_dockyards"
      ],
      "unlocks": [
       {
-       "key": "building_shipyard_metal_turbine",
-       "name": "Turbine Steamship Yards",
-       "era": 3,
-       "year": 1903,
-       "ind": "shipyard_steam"
+       "key": "building_port_motor",
+       "name": "Motor Ship Ports",
+       "era": 4,
+       "year": 1930,
+       "ind": "port"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": [
-      "oil_fired_boilers"
-     ]
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks port e4",
+     "blocks": []
     },
     {
      "id": "mechanized_farming",
@@ -12345,6 +12759,39 @@
      "blocks": []
     },
     {
+     "id": "nitrocellulose_lacquer",
+     "name": "Nitrocellulose Lacquers",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Sprayed lacquer dries in minutes where varnish took days. Furniture finishing stops being the bottleneck of the whole trade.",
+     "category": "production",
+     "era": 4,
+     "year": 1923,
+     "onset": 1923,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "furniture",
+     "prereqs": [
+      "rotary_veneer",
+      "art_silk"
+     ],
+     "unlocks": [
+      {
+       "key": "building_furniture_manufactory_sprayed",
+       "name": "Spray-Finished Furniture Manufactories",
+       "era": 4,
+       "year": 1923,
+       "ind": "furniture"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks furniture e4",
+     "blocks": []
+    },
+    {
      "id": "nitrogen_fixation",
      "name": "Nitrogen Fixation",
      "vanillaName": "Nitrogen Fixation",
@@ -12379,36 +12826,37 @@
      ]
     },
     {
-     "id": "ostwald_process",
-     "name": "Ostwald Process",
+     "id": "oil_fired_boilers",
+     "name": "Oil-Fired Boilers",
      "vanillaName": null,
      "renamed": null,
-     "desc": "Catalytic oxidation of ammonia makes nitric acid without a nitrate mine, and cuts the last colonial tether on the explosives trade.",
-     "category": "production",
+     "desc": "Oil firing halves the stokehold crew and doubles the range. The yard's customers stop specifying coal bunkers.",
+     "category": "military",
      "era": 4,
-     "year": 1908,
-     "onset": 1908,
+     "year": 1913,
+     "onset": 1913,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "explosives",
+     "industry": "shipyard_steam",
      "prereqs": [
-      "dynamite"
+      "marine_steam_turbine"
      ],
      "unlocks": [
       {
-       "key": "building_explosives_factory_vacuum",
-       "name": "Ostwald Process Explosives Factories",
-       "era": 3,
-       "year": 1908,
-       "ind": "explosives"
+       "key": "building_shipyard_metal_oil_fired",
+       "name": "Oil-Fired Steamship Yards",
+       "era": 4,
+       "year": 1913,
+       "ind": "shipyard_steam"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks shipyard_steam e4",
      "blocks": [
-      "continuous_nitration"
+      "welded_prefabrication"
      ]
     },
     {
@@ -12435,40 +12883,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "flash_freezing"
-     ]
-    },
-    {
-     "id": "plastics",
-     "name": "Plastics",
-     "vanillaName": "Plastics",
-     "renamed": null,
-     "desc": null,
-     "category": "production",
-     "era": 4,
-     "year": null,
-     "onset": 1907,
-     "idea": false,
-     "mod": null,
-     "origin": "vanilla",
-     "filler": false,
-     "platform": null,
-     "industry": "glass",
-     "prereqs": [
-      "reinforced_concrete",
-      "regenerative_furnace"
-     ],
-     "unlocks": [
-      {
-       "key": "building_glassworks_plastics",
-       "name": "Plastic Glassworks",
-       "era": 3,
-       "year": 1910,
-       "ind": "glass"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "ribbon_machine"
      ]
     },
     {
@@ -12576,6 +12990,40 @@
      ]
     },
     {
+     "id": "pulverized_coal_firing",
+     "name": "Pulverized Coal Firing",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Coal ground to flour and blown into the furnace burns like a gas. Station units jump from single megawatts to tens of them.",
+     "category": "production",
+     "era": 4,
+     "year": 1920,
+     "onset": 1920,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "power",
+     "prereqs": [
+      "steam_turbine"
+     ],
+     "unlocks": [
+      {
+       "key": "building_power_plant_pulverized",
+       "name": "Pulverized-Coal Power Plant",
+       "era": 4,
+       "year": 1920,
+       "ind": "power"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks power e4",
+     "blocks": [
+      "oil_turbine"
+     ]
+    },
+    {
      "id": "radio",
      "name": "Radio",
      "vanillaName": "Radio",
@@ -12610,36 +13058,38 @@
      ]
     },
     {
-     "id": "recoil_carriages",
-     "name": "Recoil Carriages",
+     "id": "ribbon_machine",
+     "name": "Ribbon Machine",
      "vanillaName": null,
      "renamed": null,
-     "desc": "The French 75's hydro-pneumatic recoil keeps the barrel on target between rounds, and multiplies a battery's rate of fire.",
-     "category": "military",
+     "desc": "Corning's ribbon machine blows bulbs from a moving ribbon of glass at a rate no gathering machine can approach.",
+     "category": "production",
      "era": 4,
-     "year": 1897,
-     "onset": 1897,
+     "year": 1926,
+     "onset": 1926,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "artillery",
+     "industry": "glass",
      "prereqs": [
-      "breech_loading_artillery"
+      "plastics",
+      "automatic_bottle_blowers"
      ],
      "unlocks": [
       {
-       "key": "building_artillery_foundry_recoiled",
-       "name": "Recoiled Barrel Artillery Foundries",
-       "era": 3,
-       "year": 1897,
-       "ind": "artillery"
+       "key": "building_glassworks_ribbon",
+       "name": "Ribbon Machine Glassworks",
+       "era": 4,
+       "year": 1926,
+       "ind": "glass"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks glass e4",
      "blocks": [
-      "autofrettage"
+      "glass_fibre"
      ]
     },
     {
@@ -12735,40 +13185,6 @@
      ]
     },
     {
-     "id": "steam_turbine",
-     "name": "Steam Turbine",
-     "vanillaName": "Steam Turbine",
-     "renamed": null,
-     "desc": null,
-     "category": "production",
-     "era": 4,
-     "year": null,
-     "onset": 1900,
-     "idea": false,
-     "mod": null,
-     "origin": "vanilla",
-     "filler": false,
-     "platform": null,
-     "industry": "power",
-     "prereqs": [
-      "electrical_generation"
-     ],
-     "unlocks": [
-      {
-       "key": "building_power_plant",
-       "name": "Coal-Fired Power Plant",
-       "era": 3,
-       "year": 1900,
-       "ind": "power"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "oil_turbine",
-      "pulverized_coal_firing"
-     ]
-    },
-    {
      "id": "submarine",
      "name": "Submarine",
      "vanillaName": "Submarine",
@@ -12822,39 +13238,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "compression_ignition"
-     ]
-    },
-    {
-     "id": "synthetic_indigo",
-     "name": "Synthetic Indigo",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Seventeen years and a fortune later, BASF sells indigo made from coal tar — and the Bengal indigo districts have nothing left to sell.",
-     "category": "production",
-     "era": 4,
-     "year": 1897,
-     "onset": 1897,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "synthetics",
-     "prereqs": [
-      "aniline"
-     ],
-     "unlocks": [
-      {
-       "key": "building_synthetics_plant_indigo",
-       "name": "Synthetic Indigo Plants",
-       "era": 3,
-       "year": 1897,
-       "ind": "synthetics"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "art_silk"
      ]
     },
     {
@@ -13029,39 +13412,6 @@
      "blocks": []
     },
     {
-     "id": "autofrettage",
-     "name": "Autofrettage",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Pre-stressing a barrel from within replaces built-up hoop construction — a lighter gun of the same power, made in fewer operations.",
-     "category": "military",
-     "era": 5,
-     "year": 1925,
-     "onset": 1925,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "artillery",
-     "prereqs": [
-      "recoil_carriages"
-     ],
-     "unlocks": [
-      {
-       "key": "building_artillery_foundry_autofrettage",
-       "name": "Autofrettaged Artillery Foundries",
-       "era": 4,
-       "year": 1925,
-       "ind": "artillery"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "automatic_aa_guns"
-     ]
-    },
-    {
      "id": "automatic_aa_guns",
      "name": "Automatic Anti-Aircraft Guns",
      "vanillaName": null,
@@ -13219,40 +13569,6 @@
      "blocks": []
     },
     {
-     "id": "cemented_carbide",
-     "name": "Cemented Carbide",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Tungsten carbide sintered in cobalt cuts four to seven times faster than high speed steel, and wears out far more slowly.",
-     "category": "production",
-     "era": 5,
-     "year": 1927,
-     "onset": 1927,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "tooling",
-     "prereqs": [
-      "high_speed_steel",
-      "electric_arc_process"
-     ],
-     "unlocks": [
-      {
-       "key": "building_tooling_workshop_carbide",
-       "name": "Cemented Carbide Tooling Workshops",
-       "era": 4,
-       "year": 1927,
-       "ind": "tooling"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "tracer_control"
-     ]
-    },
-    {
      "id": "chemical_warfare",
      "name": "Chemical Warfare",
      "vanillaName": "Chemical Warfare",
@@ -13330,39 +13646,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "mobile_armor"
-     ]
-    },
-    {
-     "id": "continuous_nitration",
-     "name": "Continuous Nitration",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Nitration in a flowing stream rather than a batch pot — safer, steadier, and limited only by how fast acid can be pumped.",
-     "category": "production",
-     "era": 5,
-     "year": 1928,
-     "onset": 1928,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "explosives",
-     "prereqs": [
-      "ostwald_process"
-     ],
-     "unlocks": [
-      {
-       "key": "building_explosives_factory_brine",
-       "name": "Continuous Nitration Explosives Factories",
-       "era": 4,
-       "year": 1928,
-       "ind": "explosives"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "cyclonite_process"
      ]
     },
     {
@@ -13447,38 +13730,6 @@
       "monitor_tech"
      ],
      "unlocks": [],
-     "vanillaUnlocks": [],
-     "blocks": []
-    },
-    {
-     "id": "dough_rollers",
-     "name": "Mechanised Bakeries",
-     "vanillaName": "Dough Rollers",
-     "renamed": "It unlocks the whole automated bakery, of which the dough roller is one machine — and in our ladder it is a tier building.",
-     "desc": null,
-     "category": "production",
-     "era": 5,
-     "year": null,
-     "onset": 1920,
-     "idea": false,
-     "mod": null,
-     "origin": "vanilla",
-     "filler": false,
-     "platform": null,
-     "industry": "food",
-     "prereqs": [
-      "conveyors",
-      "fat_hydrogenation"
-     ],
-     "unlocks": [
-      {
-       "key": "building_food_industry_mechanised",
-       "name": "Mechanised Bakery Food Industries",
-       "era": 4,
-       "year": 1920,
-       "ind": "food"
-      }
-     ],
      "vanillaUnlocks": [],
      "blocks": []
     },
@@ -13694,38 +13945,6 @@
      "blocks": []
     },
     {
-     "id": "mechanised_cargo_handling",
-     "name": "Mechanised Cargo Handling",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Travelling gantries, conveyors and motor trucks on the quay. A motor ship's turnaround is measured in days rather than weeks.",
-     "category": "military",
-     "era": 5,
-     "year": 1930,
-     "onset": 1930,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "port",
-     "prereqs": [
-      "concrete_quays",
-      "concrete_dockyards"
-     ],
-     "unlocks": [
-      {
-       "key": "building_port_motor",
-       "name": "Motor Ship Ports",
-       "era": 4,
-       "year": 1930,
-       "ind": "port"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": []
-    },
-    {
      "id": "mobile_armor",
      "name": "Mobile Armor",
      "vanillaName": "Mobile Armor",
@@ -13796,71 +14015,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "mobile_armor"
-     ]
-    },
-    {
-     "id": "nitrocellulose_lacquer",
-     "name": "Nitrocellulose Lacquers",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Sprayed lacquer dries in minutes where varnish took days. Furniture finishing stops being the bottleneck of the whole trade.",
-     "category": "production",
-     "era": 5,
-     "year": 1923,
-     "onset": 1923,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "furniture",
-     "prereqs": [
-      "rotary_veneer",
-      "art_silk"
-     ],
-     "unlocks": [
-      {
-       "key": "building_furniture_manufactory_sprayed",
-       "name": "Spray-Finished Furniture Manufactories",
-       "era": 4,
-       "year": 1923,
-       "ind": "furniture"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": []
-    },
-    {
-     "id": "oil_fired_boilers",
-     "name": "Oil-Fired Boilers",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Oil firing halves the stokehold crew and doubles the range. The yard's customers stop specifying coal bunkers.",
-     "category": "military",
-     "era": 5,
-     "year": 1913,
-     "onset": 1913,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "shipyard_steam",
-     "prereqs": [
-      "marine_steam_turbine"
-     ],
-     "unlocks": [
-      {
-       "key": "building_shipyard_metal_oil_fired",
-       "name": "Oil-Fired Steamship Yards",
-       "era": 4,
-       "year": 1913,
-       "ind": "shipyard_steam"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "welded_prefabrication"
      ]
     },
     {
@@ -13949,73 +14103,6 @@
      ],
      "vanillaUnlocks": [],
      "blocks": []
-    },
-    {
-     "id": "pulverized_coal_firing",
-     "name": "Pulverized Coal Firing",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Coal ground to flour and blown into the furnace burns like a gas. Station units jump from single megawatts to tens of them.",
-     "category": "production",
-     "era": 5,
-     "year": 1920,
-     "onset": 1920,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "power",
-     "prereqs": [
-      "steam_turbine"
-     ],
-     "unlocks": [
-      {
-       "key": "building_power_plant_pulverized",
-       "name": "Pulverized-Coal Power Plant",
-       "era": 4,
-       "year": 1920,
-       "ind": "power"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "oil_turbine"
-     ]
-    },
-    {
-     "id": "ribbon_machine",
-     "name": "Ribbon Machine",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Corning's ribbon machine blows bulbs from a moving ribbon of glass at a rate no gathering machine can approach.",
-     "category": "production",
-     "era": 5,
-     "year": 1926,
-     "onset": 1926,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "glass",
-     "prereqs": [
-      "plastics",
-      "automatic_bottle_blowers"
-     ],
-     "unlocks": [
-      {
-       "key": "building_glassworks_ribbon",
-       "name": "Ribbon Machine Glassworks",
-       "era": 4,
-       "year": 1926,
-       "ind": "glass"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "glass_fibre"
-     ]
     },
     {
      "id": "sound_film",
@@ -14260,14 +14347,14 @@
      "blocks": []
     }
    ],
-   "rushCost": 914375,
-   "rushCostVanillaAot": 914375,
+   "rushCost": 1001875,
+   "rushCostVanillaAot": 1001875,
    "rushCostByAot": {
-    "0.25": 914375,
-    "0.2": 735000,
-    "0.15": 555625,
-    "0.125": 465937.5,
-    "0.1": 376250
+    "0.25": 1001875,
+    "0.2": 805000,
+    "0.15": 608125,
+    "0.125": 509687.5,
+    "0.1": 411250
    }
   },
   {
@@ -14279,24 +14366,24 @@
    "budget": {
     "production": {
      "n": 114,
-     "cost": 1440000,
+     "cost": 1422500,
      "perEra": [
       24,
-      18,
-      22,
-      28,
-      22
+      23,
+      17,
+      30,
+      20
      ]
     },
     "military": {
      "n": 78,
-     "cost": 1005000,
+     "cost": 975000,
      "perEra": [
       14,
-      13,
-      15,
-      19,
-      17
+      17,
+      16,
+      17,
+      14
      ]
     },
     "society": {
@@ -14312,6 +14399,31 @@
     }
    },
    "problems": [],
+   "alignHeld": [
+    "railways: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks railway e1)",
+    "electric_railway: era 4 -> 3 WITHHELD — prerequisite would sit later (electrical_capacitors era 4, electric_drive era 4)",
+    "combustion_engine: era 4 -> 3 WITHHELD — prerequisite would sit later (scientific_management era 4)",
+    "steam_turbine: era 4 -> 3 WITHHELD — prerequisite would sit later (electric_drive era 4)",
+    "plastics: era 4 -> 3 WITHHELD — prerequisite would sit later (electric_drive era 4)",
+    "telephone: era 3 -> 2 WITHHELD — prerequisite would sit later (shift_work era 3, electrical_generation era 3)",
+    "dough_rollers: era 5 -> 4 WITHHELD — prerequisite would sit later (light_alloys era 5)",
+    "shell_gun: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks artillery e1)",
+    "percussion_cap: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks munition e1)",
+    "rifling: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks arms e1)",
+    "screw_frigate: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks shipyard e1)",
+    "electric_drive_looms: era 4 -> 3 WITHHELD — prerequisite would sit later (scientific_management era 4)",
+    "nitrocellulose_lacquer: era 5 -> 4 WITHHELD — prerequisite would sit later (light_alloys era 5)",
+    "ribbon_machine: era 5 -> 4 WITHHELD — prerequisite would sit later (process_control era 5)",
+    "high_speed_steel: era 4 -> 3 WITHHELD — prerequisite would sit later (alloy_steels era 4)",
+    "kraft_process: era 4 -> 3 WITHHELD — prerequisite would sit later (industrial_catalysis era 4)",
+    "superphosphate: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks fertilizer e1)",
+    "ostwald_process: era 4 -> 3 WITHHELD — prerequisite would sit later (industrial_catalysis era 4)",
+    "electric_motors: era 4 -> 3 WITHHELD — prerequisite would sit later (scientific_management era 4)",
+    "synthetic_indigo: era 4 -> 3 WITHHELD — prerequisite would sit later (industrial_catalysis era 4)",
+    "pulverized_coal_firing: era 5 -> 4 WITHHELD — prerequisite would sit later (process_control era 5)",
+    "steamship_bunkering: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks port e1)",
+    "iron_screw_steamers: era 2 -> 1 WITHHELD — would be granted at the 1836 start (unlocks shipyard_steam e1)"
+   ],
    "techs": [
     {
      "id": "academia",
@@ -16185,6 +16297,43 @@
      ]
     },
     {
+     "id": "breech_loading_artillery",
+     "name": "Breech-Loading Artillery",
+     "vanillaName": "Breech-Loading Artillery",
+     "renamed": null,
+     "desc": null,
+     "category": "military",
+     "era": 2,
+     "year": null,
+     "onset": 1859,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "artillery",
+     "prereqs": [
+      "rifling",
+      "shell_gun"
+     ],
+     "unlocks": [
+      {
+       "key": "building_artillery_foundry_breech",
+       "name": "Breech-Loading Artillery Foundries",
+       "era": 2,
+       "year": 1861,
+       "ind": "artillery"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks artillery e2",
+     "blocks": [
+      "handcranked_machine_gun",
+      "monitor_tech",
+      "recoil_carriages"
+     ]
+    },
+    {
      "id": "canneries",
      "name": "Canneries",
      "vanillaName": "Canneries",
@@ -16345,6 +16494,40 @@
      ]
     },
     {
+     "id": "deep_water_docks",
+     "name": "Deep Water Docks",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Hydraulic cranes, dredged approaches and enclosed basins let a port handle an iron steamer of a draught no tidal quay could ever take.",
+     "category": "military",
+     "era": 2,
+     "year": 1875,
+     "onset": 1875,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "port",
+     "prereqs": [
+      "steamship_bunkering"
+     ],
+     "unlocks": [
+      {
+       "key": "building_port_industrial",
+       "name": "Industrial Port",
+       "era": 2,
+       "year": 1875,
+       "ind": "port"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks port e2",
+     "blocks": [
+      "concrete_quays"
+     ]
+    },
+    {
      "id": "dialectics",
      "name": "Dialectics",
      "vanillaName": "Dialectics",
@@ -16367,6 +16550,43 @@
      "vanillaUnlocks": [],
      "blocks": [
       "socialism"
+     ]
+    },
+    {
+     "id": "dynamite",
+     "name": "Dynamite",
+     "vanillaName": "Dynamite",
+     "renamed": null,
+     "desc": null,
+     "category": "production",
+     "era": 2,
+     "year": null,
+     "onset": 1867,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "explosives",
+     "prereqs": [
+      "nitroglycerin",
+      "leblanc_process",
+      "mineral_acids"
+     ],
+     "unlocks": [
+      {
+       "key": "building_explosives_factory_ammonia",
+       "name": "Dynamite Explosives Factories",
+       "era": 2,
+       "year": 1867,
+       "ind": "explosives"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks explosives e2",
+     "blocks": [
+      "pumpjacks",
+      "ostwald_process"
      ]
     },
     {
@@ -16394,6 +16614,40 @@
       "labor_movement",
       "human_rights",
       "anarchism"
+     ]
+    },
+    {
+     "id": "explosive_shells",
+     "name": "Filled Explosive Shells",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Shells filled and fused on a production line rather than in a laboratory, in quantities a siege can actually spend.",
+     "category": "military",
+     "era": 2,
+     "year": 1875,
+     "onset": 1875,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "munition",
+     "prereqs": [
+      "percussion_cap"
+     ],
+     "unlocks": [
+      {
+       "key": "building_munition_plant_shells",
+       "name": "Explosive Shell Munition Plants",
+       "era": 2,
+       "year": 1875,
+       "ind": "munition"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks munition e2",
+     "blocks": [
+      "drawn_brass_cartridges"
      ]
     },
     {
@@ -17066,6 +17320,76 @@
      ]
     },
     {
+     "id": "regenerative_furnace",
+     "name": "Regenerative Furnace",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Siemens' heat-recovery tank furnace runs continuously instead of in pots, halving the fuel a glasshouse burns for every ton it melts.",
+     "category": "production",
+     "era": 2,
+     "year": 1867,
+     "onset": 1867,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "glass",
+     "prereqs": [
+      "crystal_glass",
+      "high_pressure_steam"
+     ],
+     "unlocks": [
+      {
+       "key": "building_glassworks_crystal",
+       "name": "Tank Furnace Glassworks",
+       "era": 2,
+       "year": 1867,
+       "ind": "glass"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks glass e2",
+     "blocks": [
+      "plastics"
+     ]
+    },
+    {
+     "id": "repeaters",
+     "name": "Repeaters",
+     "vanillaName": "Repeaters",
+     "renamed": null,
+     "desc": null,
+     "category": "military",
+     "era": 2,
+     "year": null,
+     "onset": 1860,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "arms",
+     "prereqs": [
+      "rifling"
+     ],
+     "unlocks": [
+      {
+       "key": "building_arms_industry_repeaters",
+       "name": "Repeater Arms Industries",
+       "era": 2,
+       "year": 1866,
+       "ind": "arms"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks arms e2",
+     "blocks": [
+      "handcranked_machine_gun",
+      "bolt_action_rifles"
+     ]
+    },
+    {
      "id": "rifling",
      "name": "Rifling",
      "vanillaName": "Rifling",
@@ -17271,6 +17595,111 @@
      ]
     },
     {
+     "id": "steel_railway_cars",
+     "name": "Steel Railway Cars",
+     "vanillaName": "Steel Railway Cars",
+     "renamed": null,
+     "desc": null,
+     "category": "production",
+     "era": 2,
+     "year": null,
+     "onset": 1867,
+     "idea": false,
+     "mod": null,
+     "origin": "vanilla",
+     "filler": false,
+     "platform": null,
+     "industry": "railway",
+     "prereqs": [
+      "railways",
+      "high_pressure_steam"
+     ],
+     "unlocks": [
+      {
+       "key": "building_railway_steam",
+       "name": "Steam Railway",
+       "era": 2,
+       "year": 1867,
+       "ind": "railway"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks railway e2",
+     "blocks": [
+      "electric_railway"
+     ]
+    },
+    {
+     "id": "steel_toolmaking",
+     "name": "Steel Toolmaking",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Cheap bulk steel reaches the toolmaker. Cutters that once had to be forged from crucible stock are now made from mill steel and hardened in quantity.",
+     "category": "production",
+     "era": 2,
+     "year": 1865,
+     "onset": 1865,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "tooling",
+     "prereqs": [
+      "pig_iron_tooling",
+      "bessemer_process"
+     ],
+     "unlocks": [
+      {
+       "key": "building_tooling_workshop_steel",
+       "name": "Steel Tooling Workshops",
+       "era": 2,
+       "year": 1865,
+       "ind": "tooling"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks tooling e2",
+     "blocks": [
+      "high_speed_steel"
+     ]
+    },
+    {
+     "id": "sulfite_pulping",
+     "name": "Sulfite Pulping",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Tilghman's acid digestion turns standing timber into paper, and rag supply stops being the ceiling on how much a country can print.",
+     "category": "production",
+     "era": 2,
+     "year": 1874,
+     "onset": 1874,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "paper",
+     "prereqs": [
+      "fourdrinier_machine",
+      "mineral_acids"
+     ],
+     "unlocks": [
+      {
+       "key": "building_paper_mill_bleached",
+       "name": "Sulfite Pulping Paper Mills",
+       "era": 2,
+       "year": 1874,
+       "ind": "paper"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 3 -> 2: ladder-era alignment — it unlocks paper e2",
+     "blocks": [
+      "kraft_process"
+     ]
+    },
+    {
      "id": "superphosphate",
      "name": "Superphosphate",
      "vanillaName": null,
@@ -17380,39 +17809,38 @@
      ]
     },
     {
-     "id": "breech_loading_artillery",
-     "name": "Breech-Loading Artillery",
-     "vanillaName": "Breech-Loading Artillery",
+     "id": "bolt_action_rifles",
+     "name": "Bolt-Action Rifle",
+     "vanillaName": "Bolt-Action Rifle",
      "renamed": null,
      "desc": null,
      "category": "military",
      "era": 3,
      "year": null,
-     "onset": 1859,
+     "onset": 1886,
      "idea": false,
      "mod": null,
      "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "artillery",
+     "industry": "arms",
      "prereqs": [
-      "rifling",
-      "shell_gun"
+      "repeaters"
      ],
      "unlocks": [
       {
-       "key": "building_artillery_foundry_breech",
-       "name": "Breech-Loading Artillery Foundries",
-       "era": 2,
-       "year": 1861,
-       "ind": "artillery"
+       "key": "building_arms_industry_bolt_action",
+       "name": "Bolt-Action Arms Industries",
+       "era": 3,
+       "year": 1886,
+       "ind": "arms"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks arms e3",
      "blocks": [
-      "handcranked_machine_gun",
-      "monitor_tech",
-      "recoil_carriages"
+      "automatic_machine_guns",
+      "light_machine_guns"
      ]
     },
     {
@@ -17475,6 +17903,41 @@
      ]
     },
     {
+     "id": "concrete_quays",
+     "name": "Reinforced Concrete Quays",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Monolithic concrete replaces the timber pile and the masonry block, and a berth can be built where no quarry could ever have supplied one.",
+     "category": "military",
+     "era": 3,
+     "year": 1908,
+     "onset": 1908,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "port",
+     "prereqs": [
+      "deep_water_docks",
+      "gantry_cranes"
+     ],
+     "unlocks": [
+      {
+       "key": "building_port_modern",
+       "name": "Modern Port",
+       "era": 3,
+       "year": 1908,
+       "ind": "port"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks port e3",
+     "blocks": [
+      "mechanised_cargo_handling"
+     ]
+    },
+    {
      "id": "corporatism",
      "name": "Corporatism",
      "vanillaName": "Corporatism",
@@ -17501,72 +17964,37 @@
      ]
     },
     {
-     "id": "deep_water_docks",
-     "name": "Deep Water Docks",
+     "id": "drawn_brass_cartridges",
+     "name": "Drawn Brass Cartridges",
      "vanillaName": null,
      "renamed": null,
-     "desc": "Hydraulic cranes, dredged approaches and enclosed basins let a port handle an iron steamer of a draught no tidal quay could ever take.",
+     "desc": "Deep-drawn cases and smokeless powder, loaded by automatic machinery. Ammunition becomes a volume manufacture like any other.",
      "category": "military",
      "era": 3,
-     "year": 1875,
-     "onset": 1875,
+     "year": 1895,
+     "onset": 1895,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "port",
+     "industry": "munition",
      "prereqs": [
-      "steamship_bunkering"
+      "explosive_shells"
      ],
      "unlocks": [
       {
-       "key": "building_port_industrial",
-       "name": "Industrial Port",
-       "era": 2,
-       "year": 1875,
-       "ind": "port"
+       "key": "building_munition_plant_drawn_brass",
+       "name": "Drawn Brass Munition Plants",
+       "era": 3,
+       "year": 1895,
+       "ind": "munition"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks munition e3",
      "blocks": [
-      "concrete_quays"
-     ]
-    },
-    {
-     "id": "dynamite",
-     "name": "Dynamite",
-     "vanillaName": "Dynamite",
-     "renamed": null,
-     "desc": null,
-     "category": "production",
-     "era": 3,
-     "year": null,
-     "onset": 1867,
-     "idea": false,
-     "mod": null,
-     "origin": "vanilla",
-     "filler": false,
-     "platform": null,
-     "industry": "explosives",
-     "prereqs": [
-      "nitroglycerin",
-      "leblanc_process",
-      "mineral_acids"
-     ],
-     "unlocks": [
-      {
-       "key": "building_explosives_factory_ammonia",
-       "name": "Dynamite Explosives Factories",
-       "era": 2,
-       "year": 1867,
-       "ind": "explosives"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "pumpjacks",
-      "ostwald_process"
+      "shell_filling"
      ]
     },
     {
@@ -17651,39 +18079,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "war_propaganda"
-     ]
-    },
-    {
-     "id": "explosive_shells",
-     "name": "Filled Explosive Shells",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Shells filled and fused on a production line rather than in a laboratory, in quantities a siege can actually spend.",
-     "category": "military",
-     "era": 3,
-     "year": 1875,
-     "onset": 1875,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "munition",
-     "prereqs": [
-      "percussion_cap"
-     ],
-     "unlocks": [
-      {
-       "key": "building_munition_plant_shells",
-       "name": "Explosive Shell Munition Plants",
-       "era": 2,
-       "year": 1875,
-       "ind": "munition"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "drawn_brass_cartridges"
      ]
     },
     {
@@ -17988,6 +18383,40 @@
      ]
     },
     {
+     "id": "marine_steam_turbine",
+     "name": "Marine Steam Turbine",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Parsons' turbine at sea: fewer moving parts, no reciprocating mass, and speeds a triple-expansion engine cannot reach.",
+     "category": "military",
+     "era": 3,
+     "year": 1903,
+     "onset": 1903,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "shipyard_steam",
+     "prereqs": [
+      "steel_hulls"
+     ],
+     "unlocks": [
+      {
+       "key": "building_shipyard_metal_turbine",
+       "name": "Turbine Steamship Yards",
+       "era": 3,
+       "year": 1903,
+       "ind": "shipyard_steam"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks shipyard_steam e3",
+     "blocks": [
+      "oil_fired_boilers"
+     ]
+    },
+    {
      "id": "military_statistics",
      "name": "Military Statistics",
      "vanillaName": "Military Statistics",
@@ -18232,37 +18661,37 @@
      "blocks": []
     },
     {
-     "id": "regenerative_furnace",
-     "name": "Regenerative Furnace",
+     "id": "recoil_carriages",
+     "name": "Recoil Carriages",
      "vanillaName": null,
      "renamed": null,
-     "desc": "Siemens' heat-recovery tank furnace runs continuously instead of in pots, halving the fuel a glasshouse burns for every ton it melts.",
-     "category": "production",
+     "desc": "The French 75's hydro-pneumatic recoil keeps the barrel on target between rounds, and multiplies a battery's rate of fire.",
+     "category": "military",
      "era": 3,
-     "year": 1867,
-     "onset": 1867,
+     "year": 1897,
+     "onset": 1897,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "glass",
+     "industry": "artillery",
      "prereqs": [
-      "crystal_glass",
-      "high_pressure_steam"
+      "breech_loading_artillery"
      ],
      "unlocks": [
       {
-       "key": "building_glassworks_crystal",
-       "name": "Tank Furnace Glassworks",
-       "era": 2,
-       "year": 1867,
-       "ind": "glass"
+       "key": "building_artillery_foundry_recoiled",
+       "name": "Recoiled Barrel Artillery Foundries",
+       "era": 3,
+       "year": 1897,
+       "ind": "artillery"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 4 -> 3: ladder-era alignment — it unlocks artillery e3",
      "blocks": [
-      "plastics"
+      "autofrettage"
      ]
     },
     {
@@ -18289,40 +18718,6 @@
      "blocks": [
       "pneumatic_tools",
       "plastics"
-     ]
-    },
-    {
-     "id": "repeaters",
-     "name": "Repeaters",
-     "vanillaName": "Repeaters",
-     "renamed": null,
-     "desc": null,
-     "category": "military",
-     "era": 3,
-     "year": null,
-     "onset": 1860,
-     "idea": false,
-     "mod": null,
-     "origin": "vanilla",
-     "filler": false,
-     "platform": null,
-     "industry": "arms",
-     "prereqs": [
-      "rifling"
-     ],
-     "unlocks": [
-      {
-       "key": "building_arms_industry_repeaters",
-       "name": "Repeater Arms Industries",
-       "era": 2,
-       "year": 1866,
-       "ind": "arms"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "handcranked_machine_gun",
-      "bolt_action_rifles"
      ]
     },
     {
@@ -18546,108 +18941,6 @@
      ]
     },
     {
-     "id": "steel_railway_cars",
-     "name": "Steel Railway Cars",
-     "vanillaName": "Steel Railway Cars",
-     "renamed": null,
-     "desc": null,
-     "category": "production",
-     "era": 3,
-     "year": null,
-     "onset": 1867,
-     "idea": false,
-     "mod": null,
-     "origin": "vanilla",
-     "filler": false,
-     "platform": null,
-     "industry": "railway",
-     "prereqs": [
-      "railways",
-      "high_pressure_steam"
-     ],
-     "unlocks": [
-      {
-       "key": "building_railway_steam",
-       "name": "Steam Railway",
-       "era": 2,
-       "year": 1867,
-       "ind": "railway"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "electric_railway"
-     ]
-    },
-    {
-     "id": "steel_toolmaking",
-     "name": "Steel Toolmaking",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Cheap bulk steel reaches the toolmaker. Cutters that once had to be forged from crucible stock are now made from mill steel and hardened in quantity.",
-     "category": "production",
-     "era": 3,
-     "year": 1865,
-     "onset": 1865,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "tooling",
-     "prereqs": [
-      "pig_iron_tooling",
-      "bessemer_process"
-     ],
-     "unlocks": [
-      {
-       "key": "building_tooling_workshop_steel",
-       "name": "Steel Tooling Workshops",
-       "era": 2,
-       "year": 1865,
-       "ind": "tooling"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "high_speed_steel"
-     ]
-    },
-    {
-     "id": "sulfite_pulping",
-     "name": "Sulfite Pulping",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Tilghman's acid digestion turns standing timber into paper, and rag supply stops being the ceiling on how much a country can print.",
-     "category": "production",
-     "era": 3,
-     "year": 1874,
-     "onset": 1874,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "paper",
-     "prereqs": [
-      "fourdrinier_machine",
-      "mineral_acids"
-     ],
-     "unlocks": [
-      {
-       "key": "building_paper_mill_bleached",
-       "name": "Sulfite Pulping Paper Mills",
-       "era": 2,
-       "year": 1874,
-       "ind": "paper"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "kraft_process"
-     ]
-    },
-    {
      "id": "telephone",
      "name": "Telephone",
      "vanillaName": "Telephone",
@@ -18865,6 +19158,40 @@
      ]
     },
     {
+     "id": "autofrettage",
+     "name": "Autofrettage",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Pre-stressing a barrel from within replaces built-up hoop construction — a lighter gun of the same power, made in fewer operations.",
+     "category": "military",
+     "era": 4,
+     "year": 1925,
+     "onset": 1925,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "artillery",
+     "prereqs": [
+      "recoil_carriages"
+     ],
+     "unlocks": [
+      {
+       "key": "building_artillery_foundry_autofrettage",
+       "name": "Autofrettaged Artillery Foundries",
+       "era": 4,
+       "year": 1925,
+       "ind": "artillery"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks artillery e4",
+     "blocks": [
+      "automatic_aa_guns"
+     ]
+    },
+    {
      "id": "automatic_bottle_blowers",
      "name": "Automatic Bottle Blowers",
      "vanillaName": "Automatic Bottle Blowers",
@@ -18917,37 +19244,39 @@
      ]
     },
     {
-     "id": "bolt_action_rifles",
-     "name": "Bolt-Action Rifle",
-     "vanillaName": "Bolt-Action Rifle",
+     "id": "cemented_carbide",
+     "name": "Cemented Carbide",
+     "vanillaName": null,
      "renamed": null,
-     "desc": null,
-     "category": "military",
+     "desc": "Tungsten carbide sintered in cobalt cuts four to seven times faster than high speed steel, and wears out far more slowly.",
+     "category": "production",
      "era": 4,
-     "year": null,
-     "onset": 1886,
+     "year": 1927,
+     "onset": 1927,
      "idea": false,
      "mod": null,
-     "origin": "vanilla",
+     "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "arms",
+     "industry": "tooling",
      "prereqs": [
-      "repeaters"
+      "high_speed_steel",
+      "electric_arc_process",
+      "alloy_steels"
      ],
      "unlocks": [
       {
-       "key": "building_arms_industry_bolt_action",
-       "name": "Bolt-Action Arms Industries",
-       "era": 3,
-       "year": 1886,
-       "ind": "arms"
+       "key": "building_tooling_workshop_carbide",
+       "name": "Cemented Carbide Tooling Workshops",
+       "era": 4,
+       "year": 1927,
+       "ind": "tooling"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks tooling e4",
      "blocks": [
-      "automatic_machine_guns",
-      "light_machine_guns"
+      "tracer_control"
      ]
     },
     {
@@ -19040,37 +19369,38 @@
      ]
     },
     {
-     "id": "concrete_quays",
-     "name": "Reinforced Concrete Quays",
+     "id": "continuous_nitration",
+     "name": "Continuous Nitration",
      "vanillaName": null,
      "renamed": null,
-     "desc": "Monolithic concrete replaces the timber pile and the masonry block, and a berth can be built where no quarry could ever have supplied one.",
-     "category": "military",
+     "desc": "Nitration in a flowing stream rather than a batch pot — safer, steadier, and limited only by how fast acid can be pumped.",
+     "category": "production",
      "era": 4,
-     "year": 1908,
-     "onset": 1908,
+     "year": 1928,
+     "onset": 1928,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "port",
+     "industry": "explosives",
      "prereqs": [
-      "deep_water_docks",
-      "gantry_cranes"
+      "ostwald_process",
+      "industrial_catalysis"
      ],
      "unlocks": [
       {
-       "key": "building_port_modern",
-       "name": "Modern Port",
-       "era": 3,
-       "year": 1908,
-       "ind": "port"
+       "key": "building_explosives_factory_brine",
+       "name": "Continuous Nitration Explosives Factories",
+       "era": 4,
+       "year": 1928,
+       "ind": "explosives"
       }
      ],
      "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks explosives e4",
      "blocks": [
-      "mechanised_cargo_handling"
+      "cyclonite_process"
      ]
     },
     {
@@ -19195,39 +19525,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "high_speed_diesel"
-     ]
-    },
-    {
-     "id": "drawn_brass_cartridges",
-     "name": "Drawn Brass Cartridges",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Deep-drawn cases and smokeless powder, loaded by automatic machinery. Ammunition becomes a volume manufacture like any other.",
-     "category": "military",
-     "era": 4,
-     "year": 1895,
-     "onset": 1895,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "munition",
-     "prereqs": [
-      "explosive_shells"
-     ],
-     "unlocks": [
-      {
-       "key": "building_munition_plant_drawn_brass",
-       "name": "Drawn Brass Munition Plants",
-       "era": 3,
-       "year": 1895,
-       "ind": "munition"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "shell_filling"
      ]
     },
     {
@@ -19767,37 +20064,37 @@
      ]
     },
     {
-     "id": "marine_steam_turbine",
-     "name": "Marine Steam Turbine",
+     "id": "mechanised_cargo_handling",
+     "name": "Mechanised Cargo Handling",
      "vanillaName": null,
      "renamed": null,
-     "desc": "Parsons' turbine at sea: fewer moving parts, no reciprocating mass, and speeds a triple-expansion engine cannot reach.",
+     "desc": "Travelling gantries, conveyors and motor trucks on the quay. A motor ship's turnaround is measured in days rather than weeks.",
      "category": "military",
      "era": 4,
-     "year": 1903,
-     "onset": 1903,
+     "year": 1930,
+     "onset": 1930,
      "idea": false,
      "mod": null,
      "origin": "new",
      "filler": false,
      "platform": null,
-     "industry": "shipyard_steam",
+     "industry": "port",
      "prereqs": [
-      "steel_hulls"
+      "concrete_quays",
+      "concrete_dockyards"
      ],
      "unlocks": [
       {
-       "key": "building_shipyard_metal_turbine",
-       "name": "Turbine Steamship Yards",
-       "era": 3,
-       "year": 1903,
-       "ind": "shipyard_steam"
+       "key": "building_port_motor",
+       "name": "Motor Ship Ports",
+       "era": 4,
+       "year": 1930,
+       "ind": "port"
       }
      ],
      "vanillaUnlocks": [],
-     "blocks": [
-      "oil_fired_boilers"
-     ]
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks port e4",
+     "blocks": []
     },
     {
      "id": "mechanized_farming",
@@ -19903,6 +20200,40 @@
      "blocks": [
       "steam_reforming",
       "polyamide_synthesis"
+     ]
+    },
+    {
+     "id": "oil_fired_boilers",
+     "name": "Oil-Fired Boilers",
+     "vanillaName": null,
+     "renamed": null,
+     "desc": "Oil firing halves the stokehold crew and doubles the range. The yard's customers stop specifying coal bunkers.",
+     "category": "military",
+     "era": 4,
+     "year": 1913,
+     "onset": 1913,
+     "idea": false,
+     "mod": null,
+     "origin": "new",
+     "filler": false,
+     "platform": null,
+     "industry": "shipyard_steam",
+     "prereqs": [
+      "marine_steam_turbine"
+     ],
+     "unlocks": [
+      {
+       "key": "building_shipyard_metal_oil_fired",
+       "name": "Oil-Fired Steamship Yards",
+       "era": 4,
+       "year": 1913,
+       "ind": "shipyard_steam"
+      }
+     ],
+     "vanillaUnlocks": [],
+     "reEra": "era 5 -> 4: ladder-era alignment — it unlocks shipyard_steam e4",
+     "blocks": [
+      "welded_prefabrication"
      ]
     },
     {
@@ -20137,39 +20468,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "vacuum_tube_electronics"
-     ]
-    },
-    {
-     "id": "recoil_carriages",
-     "name": "Recoil Carriages",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "The French 75's hydro-pneumatic recoil keeps the barrel on target between rounds, and multiplies a battery's rate of fire.",
-     "category": "military",
-     "era": 4,
-     "year": 1897,
-     "onset": 1897,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "artillery",
-     "prereqs": [
-      "breech_loading_artillery"
-     ],
-     "unlocks": [
-      {
-       "key": "building_artillery_foundry_recoiled",
-       "name": "Recoiled Barrel Artillery Foundries",
-       "era": 3,
-       "year": 1897,
-       "ind": "artillery"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "autofrettage"
      ]
     },
     {
@@ -20598,39 +20896,6 @@
      "blocks": []
     },
     {
-     "id": "autofrettage",
-     "name": "Autofrettage",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Pre-stressing a barrel from within replaces built-up hoop construction — a lighter gun of the same power, made in fewer operations.",
-     "category": "military",
-     "era": 5,
-     "year": 1925,
-     "onset": 1925,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "artillery",
-     "prereqs": [
-      "recoil_carriages"
-     ],
-     "unlocks": [
-      {
-       "key": "building_artillery_foundry_autofrettage",
-       "name": "Autofrettaged Artillery Foundries",
-       "era": 4,
-       "year": 1925,
-       "ind": "artillery"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "automatic_aa_guns"
-     ]
-    },
-    {
      "id": "automatic_aa_guns",
      "name": "Automatic Anti-Aircraft Guns",
      "vanillaName": null,
@@ -20788,41 +21053,6 @@
      "blocks": []
     },
     {
-     "id": "cemented_carbide",
-     "name": "Cemented Carbide",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Tungsten carbide sintered in cobalt cuts four to seven times faster than high speed steel, and wears out far more slowly.",
-     "category": "production",
-     "era": 5,
-     "year": 1927,
-     "onset": 1927,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "tooling",
-     "prereqs": [
-      "high_speed_steel",
-      "electric_arc_process",
-      "alloy_steels"
-     ],
-     "unlocks": [
-      {
-       "key": "building_tooling_workshop_carbide",
-       "name": "Cemented Carbide Tooling Workshops",
-       "era": 4,
-       "year": 1927,
-       "ind": "tooling"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "tracer_control"
-     ]
-    },
-    {
      "id": "chemical_warfare",
      "name": "Chemical Warfare",
      "vanillaName": "Chemical Warfare",
@@ -20901,40 +21131,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "mobile_armor"
-     ]
-    },
-    {
-     "id": "continuous_nitration",
-     "name": "Continuous Nitration",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Nitration in a flowing stream rather than a batch pot — safer, steadier, and limited only by how fast acid can be pumped.",
-     "category": "production",
-     "era": 5,
-     "year": 1928,
-     "onset": 1928,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "explosives",
-     "prereqs": [
-      "ostwald_process",
-      "industrial_catalysis"
-     ],
-     "unlocks": [
-      {
-       "key": "building_explosives_factory_brine",
-       "name": "Continuous Nitration Explosives Factories",
-       "era": 4,
-       "year": 1928,
-       "ind": "explosives"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "cyclonite_process"
      ]
     },
     {
@@ -21303,38 +21499,6 @@
      "blocks": []
     },
     {
-     "id": "mechanised_cargo_handling",
-     "name": "Mechanised Cargo Handling",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Travelling gantries, conveyors and motor trucks on the quay. A motor ship's turnaround is measured in days rather than weeks.",
-     "category": "military",
-     "era": 5,
-     "year": 1930,
-     "onset": 1930,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "port",
-     "prereqs": [
-      "concrete_quays",
-      "concrete_dockyards"
-     ],
-     "unlocks": [
-      {
-       "key": "building_port_motor",
-       "name": "Motor Ship Ports",
-       "era": 4,
-       "year": 1930,
-       "ind": "port"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": []
-    },
-    {
      "id": "mobile_armor",
      "name": "Mobile Armor",
      "vanillaName": "Mobile Armor",
@@ -21439,39 +21603,6 @@
      ],
      "vanillaUnlocks": [],
      "blocks": []
-    },
-    {
-     "id": "oil_fired_boilers",
-     "name": "Oil-Fired Boilers",
-     "vanillaName": null,
-     "renamed": null,
-     "desc": "Oil firing halves the stokehold crew and doubles the range. The yard's customers stop specifying coal bunkers.",
-     "category": "military",
-     "era": 5,
-     "year": 1913,
-     "onset": 1913,
-     "idea": false,
-     "mod": null,
-     "origin": "new",
-     "filler": false,
-     "platform": null,
-     "industry": "shipyard_steam",
-     "prereqs": [
-      "marine_steam_turbine"
-     ],
-     "unlocks": [
-      {
-       "key": "building_shipyard_metal_oil_fired",
-       "name": "Oil-Fired Steamship Yards",
-       "era": 4,
-       "year": 1913,
-       "ind": "shipyard_steam"
-      }
-     ],
-     "vanillaUnlocks": [],
-     "blocks": [
-      "welded_prefabrication"
-     ]
     },
     {
      "id": "oil_turbine",
@@ -21912,14 +22043,14 @@
      "blocks": []
     }
    ],
-   "rushCost": 988750,
-   "rushCostVanillaAot": 988750,
+   "rushCost": 1019375,
+   "rushCostVanillaAot": 1019375,
    "rushCostByAot": {
-    "0.25": 988750,
-    "0.2": 794500.0000000001,
-    "0.15": 600250,
-    "0.125": 503125,
-    "0.1": 406000.00000000006
+    "0.25": 1019375,
+    "0.2": 819000.0000000001,
+    "0.15": 618625,
+    "0.125": 518437.5,
+    "0.1": 418250.00000000006
    }
   }
  ]

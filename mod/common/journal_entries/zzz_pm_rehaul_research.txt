@@ -371,7 +371,7 @@ je_pmr_autofrettage_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = autofrettage }
-			add_technology_progress = { progress = 8750  technology = autofrettage }
+			add_technology_progress = { progress = 7500  technology = autofrettage }
 		}
 		if = {
 			limit = { can_research = autofrettage }
@@ -401,7 +401,7 @@ je_pmr_autofrettage_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = autofrettage }
-			add_technology_progress = { progress = 8750  technology = autofrettage }
+			add_technology_progress = { progress = 7500  technology = autofrettage }
 		}
 		if = {
 			limit = { can_research = autofrettage }
@@ -431,7 +431,7 @@ je_pmr_autofrettage_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = autofrettage }
-			add_technology_progress = { progress = 8750  technology = autofrettage }
+			add_technology_progress = { progress = 7500  technology = autofrettage }
 		}
 		debug_log = "PMR_JE|implementation|autofrettage|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -1172,7 +1172,7 @@ je_pmr_bolt_action_rifles_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = bolt_action_rifles }
-			add_technology_progress = { progress = 7500  technology = bolt_action_rifles }
+			add_technology_progress = { progress = 6250  technology = bolt_action_rifles }
 		}
 		if = {
 			limit = { can_research = bolt_action_rifles }
@@ -1202,7 +1202,7 @@ je_pmr_bolt_action_rifles_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = bolt_action_rifles }
-			add_technology_progress = { progress = 7500  technology = bolt_action_rifles }
+			add_technology_progress = { progress = 6250  technology = bolt_action_rifles }
 		}
 		if = {
 			limit = { can_research = bolt_action_rifles }
@@ -1232,7 +1232,7 @@ je_pmr_bolt_action_rifles_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = bolt_action_rifles }
-			add_technology_progress = { progress = 7500  technology = bolt_action_rifles }
+			add_technology_progress = { progress = 6250  technology = bolt_action_rifles }
 		}
 		debug_log = "PMR_JE|implementation|bolt_action_rifles|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -1261,7 +1261,7 @@ je_pmr_breech_loading_artillery_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = breech_loading_artillery }
-			add_technology_progress = { progress = 6250  technology = breech_loading_artillery }
+			add_technology_progress = { progress = 5000  technology = breech_loading_artillery }
 		}
 		if = {
 			limit = { can_research = breech_loading_artillery }
@@ -1291,7 +1291,7 @@ je_pmr_breech_loading_artillery_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = breech_loading_artillery }
-			add_technology_progress = { progress = 6250  technology = breech_loading_artillery }
+			add_technology_progress = { progress = 5000  technology = breech_loading_artillery }
 		}
 		if = {
 			limit = { can_research = breech_loading_artillery }
@@ -1321,7 +1321,7 @@ je_pmr_breech_loading_artillery_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = breech_loading_artillery }
-			add_technology_progress = { progress = 6250  technology = breech_loading_artillery }
+			add_technology_progress = { progress = 5000  technology = breech_loading_artillery }
 		}
 		debug_log = "PMR_JE|implementation|breech_loading_artillery|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -1528,7 +1528,7 @@ je_pmr_cemented_carbide_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = cemented_carbide }
-			add_technology_progress = { progress = 8750  technology = cemented_carbide }
+			add_technology_progress = { progress = 7500  technology = cemented_carbide }
 		}
 		if = {
 			limit = { can_research = cemented_carbide }
@@ -1558,7 +1558,7 @@ je_pmr_cemented_carbide_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = cemented_carbide }
-			add_technology_progress = { progress = 8750  technology = cemented_carbide }
+			add_technology_progress = { progress = 7500  technology = cemented_carbide }
 		}
 		if = {
 			limit = { can_research = cemented_carbide }
@@ -1588,7 +1588,7 @@ je_pmr_cemented_carbide_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = cemented_carbide }
-			add_technology_progress = { progress = 8750  technology = cemented_carbide }
+			add_technology_progress = { progress = 7500  technology = cemented_carbide }
 		}
 		debug_log = "PMR_JE|implementation|cemented_carbide|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -1795,7 +1795,7 @@ je_pmr_combustion_engine_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = combustion_engine }
-			add_technology_progress = { progress = 7500  technology = combustion_engine }
+			add_technology_progress = { progress = 6250  technology = combustion_engine }
 		}
 		if = {
 			limit = { can_research = combustion_engine }
@@ -1825,7 +1825,7 @@ je_pmr_combustion_engine_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = combustion_engine }
-			add_technology_progress = { progress = 7500  technology = combustion_engine }
+			add_technology_progress = { progress = 6250  technology = combustion_engine }
 		}
 		if = {
 			limit = { can_research = combustion_engine }
@@ -1855,7 +1855,7 @@ je_pmr_combustion_engine_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = combustion_engine }
-			add_technology_progress = { progress = 7500  technology = combustion_engine }
+			add_technology_progress = { progress = 6250  technology = combustion_engine }
 		}
 		debug_log = "PMR_JE|implementation|combustion_engine|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -2240,7 +2240,7 @@ je_pmr_concrete_quays_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = concrete_quays }
-			add_technology_progress = { progress = 7500  technology = concrete_quays }
+			add_technology_progress = { progress = 6250  technology = concrete_quays }
 		}
 		if = {
 			limit = { can_research = concrete_quays }
@@ -2270,7 +2270,7 @@ je_pmr_concrete_quays_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = concrete_quays }
-			add_technology_progress = { progress = 7500  technology = concrete_quays }
+			add_technology_progress = { progress = 6250  technology = concrete_quays }
 		}
 		if = {
 			limit = { can_research = concrete_quays }
@@ -2300,7 +2300,7 @@ je_pmr_concrete_quays_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = concrete_quays }
-			add_technology_progress = { progress = 7500  technology = concrete_quays }
+			add_technology_progress = { progress = 6250  technology = concrete_quays }
 		}
 		debug_log = "PMR_JE|implementation|concrete_quays|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -2329,7 +2329,7 @@ je_pmr_continuous_nitration_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = continuous_nitration }
-			add_technology_progress = { progress = 8750  technology = continuous_nitration }
+			add_technology_progress = { progress = 7500  technology = continuous_nitration }
 		}
 		if = {
 			limit = { can_research = continuous_nitration }
@@ -2359,7 +2359,7 @@ je_pmr_continuous_nitration_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = continuous_nitration }
-			add_technology_progress = { progress = 8750  technology = continuous_nitration }
+			add_technology_progress = { progress = 7500  technology = continuous_nitration }
 		}
 		if = {
 			limit = { can_research = continuous_nitration }
@@ -2389,7 +2389,7 @@ je_pmr_continuous_nitration_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = continuous_nitration }
-			add_technology_progress = { progress = 8750  technology = continuous_nitration }
+			add_technology_progress = { progress = 7500  technology = continuous_nitration }
 		}
 		debug_log = "PMR_JE|implementation|continuous_nitration|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -2685,7 +2685,7 @@ je_pmr_deep_water_docks_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = deep_water_docks }
-			add_technology_progress = { progress = 6250  technology = deep_water_docks }
+			add_technology_progress = { progress = 5000  technology = deep_water_docks }
 		}
 		if = {
 			limit = { can_research = deep_water_docks }
@@ -2715,7 +2715,7 @@ je_pmr_deep_water_docks_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = deep_water_docks }
-			add_technology_progress = { progress = 6250  technology = deep_water_docks }
+			add_technology_progress = { progress = 5000  technology = deep_water_docks }
 		}
 		if = {
 			limit = { can_research = deep_water_docks }
@@ -2745,7 +2745,7 @@ je_pmr_deep_water_docks_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = deep_water_docks }
-			add_technology_progress = { progress = 6250  technology = deep_water_docks }
+			add_technology_progress = { progress = 5000  technology = deep_water_docks }
 		}
 		debug_log = "PMR_JE|implementation|deep_water_docks|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -3041,7 +3041,7 @@ je_pmr_dough_rollers_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = dough_rollers }
-			add_technology_progress = { progress = 8750  technology = dough_rollers }
+			add_technology_progress = { progress = 7500  technology = dough_rollers }
 		}
 		if = {
 			limit = { can_research = dough_rollers }
@@ -3071,7 +3071,7 @@ je_pmr_dough_rollers_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = dough_rollers }
-			add_technology_progress = { progress = 8750  technology = dough_rollers }
+			add_technology_progress = { progress = 7500  technology = dough_rollers }
 		}
 		if = {
 			limit = { can_research = dough_rollers }
@@ -3101,7 +3101,7 @@ je_pmr_dough_rollers_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = dough_rollers }
-			add_technology_progress = { progress = 8750  technology = dough_rollers }
+			add_technology_progress = { progress = 7500  technology = dough_rollers }
 		}
 		debug_log = "PMR_JE|implementation|dough_rollers|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -3130,7 +3130,7 @@ je_pmr_drawn_brass_cartridges_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = drawn_brass_cartridges }
-			add_technology_progress = { progress = 7500  technology = drawn_brass_cartridges }
+			add_technology_progress = { progress = 6250  technology = drawn_brass_cartridges }
 		}
 		if = {
 			limit = { can_research = drawn_brass_cartridges }
@@ -3160,7 +3160,7 @@ je_pmr_drawn_brass_cartridges_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = drawn_brass_cartridges }
-			add_technology_progress = { progress = 7500  technology = drawn_brass_cartridges }
+			add_technology_progress = { progress = 6250  technology = drawn_brass_cartridges }
 		}
 		if = {
 			limit = { can_research = drawn_brass_cartridges }
@@ -3190,7 +3190,7 @@ je_pmr_drawn_brass_cartridges_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = drawn_brass_cartridges }
-			add_technology_progress = { progress = 7500  technology = drawn_brass_cartridges }
+			add_technology_progress = { progress = 6250  technology = drawn_brass_cartridges }
 		}
 		debug_log = "PMR_JE|implementation|drawn_brass_cartridges|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -3308,7 +3308,7 @@ je_pmr_dynamite_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = dynamite }
-			add_technology_progress = { progress = 6250  technology = dynamite }
+			add_technology_progress = { progress = 5000  technology = dynamite }
 		}
 		if = {
 			limit = { can_research = dynamite }
@@ -3338,7 +3338,7 @@ je_pmr_dynamite_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = dynamite }
-			add_technology_progress = { progress = 6250  technology = dynamite }
+			add_technology_progress = { progress = 5000  technology = dynamite }
 		}
 		if = {
 			limit = { can_research = dynamite }
@@ -3368,7 +3368,7 @@ je_pmr_dynamite_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = dynamite }
-			add_technology_progress = { progress = 6250  technology = dynamite }
+			add_technology_progress = { progress = 5000  technology = dynamite }
 		}
 		debug_log = "PMR_JE|implementation|dynamite|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -3486,7 +3486,7 @@ je_pmr_electric_motors_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = electric_motors }
-			add_technology_progress = { progress = 7500  technology = electric_motors }
+			add_technology_progress = { progress = 6250  technology = electric_motors }
 		}
 		if = {
 			limit = { can_research = electric_motors }
@@ -3516,7 +3516,7 @@ je_pmr_electric_motors_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = electric_motors }
-			add_technology_progress = { progress = 7500  technology = electric_motors }
+			add_technology_progress = { progress = 6250  technology = electric_motors }
 		}
 		if = {
 			limit = { can_research = electric_motors }
@@ -3546,7 +3546,7 @@ je_pmr_electric_motors_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = electric_motors }
-			add_technology_progress = { progress = 7500  technology = electric_motors }
+			add_technology_progress = { progress = 6250  technology = electric_motors }
 		}
 		debug_log = "PMR_JE|implementation|electric_motors|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -3575,7 +3575,7 @@ je_pmr_electric_railway_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = electric_railway }
-			add_technology_progress = { progress = 7500  technology = electric_railway }
+			add_technology_progress = { progress = 6250  technology = electric_railway }
 		}
 		if = {
 			limit = { can_research = electric_railway }
@@ -3605,7 +3605,7 @@ je_pmr_electric_railway_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = electric_railway }
-			add_technology_progress = { progress = 7500  technology = electric_railway }
+			add_technology_progress = { progress = 6250  technology = electric_railway }
 		}
 		if = {
 			limit = { can_research = electric_railway }
@@ -3635,7 +3635,7 @@ je_pmr_electric_railway_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = electric_railway }
-			add_technology_progress = { progress = 7500  technology = electric_railway }
+			add_technology_progress = { progress = 6250  technology = electric_railway }
 		}
 		debug_log = "PMR_JE|implementation|electric_railway|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -3753,7 +3753,7 @@ je_pmr_electrical_capacitors_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = electrical_capacitors }
-			add_technology_progress = { progress = 7500  technology = electrical_capacitors }
+			add_technology_progress = { progress = 6250  technology = electrical_capacitors }
 		}
 		if = {
 			limit = { can_research = electrical_capacitors }
@@ -3783,7 +3783,7 @@ je_pmr_electrical_capacitors_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = electrical_capacitors }
-			add_technology_progress = { progress = 7500  technology = electrical_capacitors }
+			add_technology_progress = { progress = 6250  technology = electrical_capacitors }
 		}
 		if = {
 			limit = { can_research = electrical_capacitors }
@@ -3813,7 +3813,7 @@ je_pmr_electrical_capacitors_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = electrical_capacitors }
-			add_technology_progress = { progress = 7500  technology = electrical_capacitors }
+			add_technology_progress = { progress = 6250  technology = electrical_capacitors }
 		}
 		debug_log = "PMR_JE|implementation|electrical_capacitors|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -4020,7 +4020,7 @@ je_pmr_explosive_shells_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = explosive_shells }
-			add_technology_progress = { progress = 6250  technology = explosive_shells }
+			add_technology_progress = { progress = 5000  technology = explosive_shells }
 		}
 		if = {
 			limit = { can_research = explosive_shells }
@@ -4050,7 +4050,7 @@ je_pmr_explosive_shells_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = explosive_shells }
-			add_technology_progress = { progress = 6250  technology = explosive_shells }
+			add_technology_progress = { progress = 5000  technology = explosive_shells }
 		}
 		if = {
 			limit = { can_research = explosive_shells }
@@ -4080,7 +4080,7 @@ je_pmr_explosive_shells_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = explosive_shells }
-			add_technology_progress = { progress = 6250  technology = explosive_shells }
+			add_technology_progress = { progress = 5000  technology = explosive_shells }
 		}
 		debug_log = "PMR_JE|implementation|explosive_shells|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -5177,7 +5177,7 @@ je_pmr_high_speed_steel_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = high_speed_steel }
-			add_technology_progress = { progress = 7500  technology = high_speed_steel }
+			add_technology_progress = { progress = 6250  technology = high_speed_steel }
 		}
 		if = {
 			limit = { can_research = high_speed_steel }
@@ -5207,7 +5207,7 @@ je_pmr_high_speed_steel_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = high_speed_steel }
-			add_technology_progress = { progress = 7500  technology = high_speed_steel }
+			add_technology_progress = { progress = 6250  technology = high_speed_steel }
 		}
 		if = {
 			limit = { can_research = high_speed_steel }
@@ -5237,7 +5237,7 @@ je_pmr_high_speed_steel_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = high_speed_steel }
-			add_technology_progress = { progress = 7500  technology = high_speed_steel }
+			add_technology_progress = { progress = 6250  technology = high_speed_steel }
 		}
 		debug_log = "PMR_JE|implementation|high_speed_steel|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -5800,7 +5800,7 @@ je_pmr_kraft_process_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = kraft_process }
-			add_technology_progress = { progress = 7500  technology = kraft_process }
+			add_technology_progress = { progress = 6250  technology = kraft_process }
 		}
 		if = {
 			limit = { can_research = kraft_process }
@@ -5830,7 +5830,7 @@ je_pmr_kraft_process_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = kraft_process }
-			add_technology_progress = { progress = 7500  technology = kraft_process }
+			add_technology_progress = { progress = 6250  technology = kraft_process }
 		}
 		if = {
 			limit = { can_research = kraft_process }
@@ -5860,7 +5860,7 @@ je_pmr_kraft_process_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = kraft_process }
-			add_technology_progress = { progress = 7500  technology = kraft_process }
+			add_technology_progress = { progress = 6250  technology = kraft_process }
 		}
 		debug_log = "PMR_JE|implementation|kraft_process|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -6245,7 +6245,7 @@ je_pmr_marine_steam_turbine_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = marine_steam_turbine }
-			add_technology_progress = { progress = 7500  technology = marine_steam_turbine }
+			add_technology_progress = { progress = 6250  technology = marine_steam_turbine }
 		}
 		if = {
 			limit = { can_research = marine_steam_turbine }
@@ -6275,7 +6275,7 @@ je_pmr_marine_steam_turbine_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = marine_steam_turbine }
-			add_technology_progress = { progress = 7500  technology = marine_steam_turbine }
+			add_technology_progress = { progress = 6250  technology = marine_steam_turbine }
 		}
 		if = {
 			limit = { can_research = marine_steam_turbine }
@@ -6305,7 +6305,7 @@ je_pmr_marine_steam_turbine_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = marine_steam_turbine }
-			add_technology_progress = { progress = 7500  technology = marine_steam_turbine }
+			add_technology_progress = { progress = 6250  technology = marine_steam_turbine }
 		}
 		debug_log = "PMR_JE|implementation|marine_steam_turbine|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -6423,7 +6423,7 @@ je_pmr_mechanised_cargo_handling_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = mechanised_cargo_handling }
-			add_technology_progress = { progress = 8750  technology = mechanised_cargo_handling }
+			add_technology_progress = { progress = 7500  technology = mechanised_cargo_handling }
 		}
 		if = {
 			limit = { can_research = mechanised_cargo_handling }
@@ -6453,7 +6453,7 @@ je_pmr_mechanised_cargo_handling_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = mechanised_cargo_handling }
-			add_technology_progress = { progress = 8750  technology = mechanised_cargo_handling }
+			add_technology_progress = { progress = 7500  technology = mechanised_cargo_handling }
 		}
 		if = {
 			limit = { can_research = mechanised_cargo_handling }
@@ -6483,7 +6483,7 @@ je_pmr_mechanised_cargo_handling_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = mechanised_cargo_handling }
-			add_technology_progress = { progress = 8750  technology = mechanised_cargo_handling }
+			add_technology_progress = { progress = 7500  technology = mechanised_cargo_handling }
 		}
 		debug_log = "PMR_JE|implementation|mechanised_cargo_handling|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -7224,7 +7224,7 @@ je_pmr_nitrocellulose_lacquer_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = nitrocellulose_lacquer }
-			add_technology_progress = { progress = 8750  technology = nitrocellulose_lacquer }
+			add_technology_progress = { progress = 7500  technology = nitrocellulose_lacquer }
 		}
 		if = {
 			limit = { can_research = nitrocellulose_lacquer }
@@ -7254,7 +7254,7 @@ je_pmr_nitrocellulose_lacquer_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = nitrocellulose_lacquer }
-			add_technology_progress = { progress = 8750  technology = nitrocellulose_lacquer }
+			add_technology_progress = { progress = 7500  technology = nitrocellulose_lacquer }
 		}
 		if = {
 			limit = { can_research = nitrocellulose_lacquer }
@@ -7284,7 +7284,7 @@ je_pmr_nitrocellulose_lacquer_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = nitrocellulose_lacquer }
-			add_technology_progress = { progress = 8750  technology = nitrocellulose_lacquer }
+			add_technology_progress = { progress = 7500  technology = nitrocellulose_lacquer }
 		}
 		debug_log = "PMR_JE|implementation|nitrocellulose_lacquer|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -7491,7 +7491,7 @@ je_pmr_oil_fired_boilers_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = oil_fired_boilers }
-			add_technology_progress = { progress = 8750  technology = oil_fired_boilers }
+			add_technology_progress = { progress = 7500  technology = oil_fired_boilers }
 		}
 		if = {
 			limit = { can_research = oil_fired_boilers }
@@ -7521,7 +7521,7 @@ je_pmr_oil_fired_boilers_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = oil_fired_boilers }
-			add_technology_progress = { progress = 8750  technology = oil_fired_boilers }
+			add_technology_progress = { progress = 7500  technology = oil_fired_boilers }
 		}
 		if = {
 			limit = { can_research = oil_fired_boilers }
@@ -7551,7 +7551,7 @@ je_pmr_oil_fired_boilers_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = oil_fired_boilers }
-			add_technology_progress = { progress = 8750  technology = oil_fired_boilers }
+			add_technology_progress = { progress = 7500  technology = oil_fired_boilers }
 		}
 		debug_log = "PMR_JE|implementation|oil_fired_boilers|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -7758,7 +7758,7 @@ je_pmr_ostwald_process_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = ostwald_process }
-			add_technology_progress = { progress = 7500  technology = ostwald_process }
+			add_technology_progress = { progress = 6250  technology = ostwald_process }
 		}
 		if = {
 			limit = { can_research = ostwald_process }
@@ -7788,7 +7788,7 @@ je_pmr_ostwald_process_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = ostwald_process }
-			add_technology_progress = { progress = 7500  technology = ostwald_process }
+			add_technology_progress = { progress = 6250  technology = ostwald_process }
 		}
 		if = {
 			limit = { can_research = ostwald_process }
@@ -7818,7 +7818,7 @@ je_pmr_ostwald_process_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = ostwald_process }
-			add_technology_progress = { progress = 7500  technology = ostwald_process }
+			add_technology_progress = { progress = 6250  technology = ostwald_process }
 		}
 		debug_log = "PMR_JE|implementation|ostwald_process|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -8025,7 +8025,7 @@ je_pmr_plastics_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = plastics }
-			add_technology_progress = { progress = 7500  technology = plastics }
+			add_technology_progress = { progress = 6250  technology = plastics }
 		}
 		if = {
 			limit = { can_research = plastics }
@@ -8055,7 +8055,7 @@ je_pmr_plastics_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = plastics }
-			add_technology_progress = { progress = 7500  technology = plastics }
+			add_technology_progress = { progress = 6250  technology = plastics }
 		}
 		if = {
 			limit = { can_research = plastics }
@@ -8085,7 +8085,7 @@ je_pmr_plastics_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = plastics }
-			add_technology_progress = { progress = 7500  technology = plastics }
+			add_technology_progress = { progress = 6250  technology = plastics }
 		}
 		debug_log = "PMR_JE|implementation|plastics|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -8381,7 +8381,7 @@ je_pmr_pulverized_coal_firing_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = pulverized_coal_firing }
-			add_technology_progress = { progress = 8750  technology = pulverized_coal_firing }
+			add_technology_progress = { progress = 7500  technology = pulverized_coal_firing }
 		}
 		if = {
 			limit = { can_research = pulverized_coal_firing }
@@ -8411,7 +8411,7 @@ je_pmr_pulverized_coal_firing_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = pulverized_coal_firing }
-			add_technology_progress = { progress = 8750  technology = pulverized_coal_firing }
+			add_technology_progress = { progress = 7500  technology = pulverized_coal_firing }
 		}
 		if = {
 			limit = { can_research = pulverized_coal_firing }
@@ -8441,7 +8441,7 @@ je_pmr_pulverized_coal_firing_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = pulverized_coal_firing }
-			add_technology_progress = { progress = 8750  technology = pulverized_coal_firing }
+			add_technology_progress = { progress = 7500  technology = pulverized_coal_firing }
 		}
 		debug_log = "PMR_JE|implementation|pulverized_coal_firing|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -8737,7 +8737,7 @@ je_pmr_recoil_carriages_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = recoil_carriages }
-			add_technology_progress = { progress = 7500  technology = recoil_carriages }
+			add_technology_progress = { progress = 6250  technology = recoil_carriages }
 		}
 		if = {
 			limit = { can_research = recoil_carriages }
@@ -8767,7 +8767,7 @@ je_pmr_recoil_carriages_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = recoil_carriages }
-			add_technology_progress = { progress = 7500  technology = recoil_carriages }
+			add_technology_progress = { progress = 6250  technology = recoil_carriages }
 		}
 		if = {
 			limit = { can_research = recoil_carriages }
@@ -8797,7 +8797,7 @@ je_pmr_recoil_carriages_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = recoil_carriages }
-			add_technology_progress = { progress = 7500  technology = recoil_carriages }
+			add_technology_progress = { progress = 6250  technology = recoil_carriages }
 		}
 		debug_log = "PMR_JE|implementation|recoil_carriages|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -8826,7 +8826,7 @@ je_pmr_regenerative_furnace_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = regenerative_furnace }
-			add_technology_progress = { progress = 6250  technology = regenerative_furnace }
+			add_technology_progress = { progress = 5000  technology = regenerative_furnace }
 		}
 		if = {
 			limit = { can_research = regenerative_furnace }
@@ -8856,7 +8856,7 @@ je_pmr_regenerative_furnace_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = regenerative_furnace }
-			add_technology_progress = { progress = 6250  technology = regenerative_furnace }
+			add_technology_progress = { progress = 5000  technology = regenerative_furnace }
 		}
 		if = {
 			limit = { can_research = regenerative_furnace }
@@ -8886,7 +8886,7 @@ je_pmr_regenerative_furnace_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = regenerative_furnace }
-			add_technology_progress = { progress = 6250  technology = regenerative_furnace }
+			add_technology_progress = { progress = 5000  technology = regenerative_furnace }
 		}
 		debug_log = "PMR_JE|implementation|regenerative_furnace|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -8915,7 +8915,7 @@ je_pmr_repeaters_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = repeaters }
-			add_technology_progress = { progress = 6250  technology = repeaters }
+			add_technology_progress = { progress = 5000  technology = repeaters }
 		}
 		if = {
 			limit = { can_research = repeaters }
@@ -8945,7 +8945,7 @@ je_pmr_repeaters_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = repeaters }
-			add_technology_progress = { progress = 6250  technology = repeaters }
+			add_technology_progress = { progress = 5000  technology = repeaters }
 		}
 		if = {
 			limit = { can_research = repeaters }
@@ -8975,7 +8975,7 @@ je_pmr_repeaters_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = repeaters }
-			add_technology_progress = { progress = 6250  technology = repeaters }
+			add_technology_progress = { progress = 5000  technology = repeaters }
 		}
 		debug_log = "PMR_JE|implementation|repeaters|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -9004,7 +9004,7 @@ je_pmr_ribbon_machine_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = ribbon_machine }
-			add_technology_progress = { progress = 8750  technology = ribbon_machine }
+			add_technology_progress = { progress = 7500  technology = ribbon_machine }
 		}
 		if = {
 			limit = { can_research = ribbon_machine }
@@ -9034,7 +9034,7 @@ je_pmr_ribbon_machine_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = ribbon_machine }
-			add_technology_progress = { progress = 8750  technology = ribbon_machine }
+			add_technology_progress = { progress = 7500  technology = ribbon_machine }
 		}
 		if = {
 			limit = { can_research = ribbon_machine }
@@ -9064,7 +9064,7 @@ je_pmr_ribbon_machine_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = ribbon_machine }
-			add_technology_progress = { progress = 8750  technology = ribbon_machine }
+			add_technology_progress = { progress = 7500  technology = ribbon_machine }
 		}
 		debug_log = "PMR_JE|implementation|ribbon_machine|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -10250,7 +10250,7 @@ je_pmr_steam_turbine_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = steam_turbine }
-			add_technology_progress = { progress = 7500  technology = steam_turbine }
+			add_technology_progress = { progress = 6250  technology = steam_turbine }
 		}
 		if = {
 			limit = { can_research = steam_turbine }
@@ -10280,7 +10280,7 @@ je_pmr_steam_turbine_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = steam_turbine }
-			add_technology_progress = { progress = 7500  technology = steam_turbine }
+			add_technology_progress = { progress = 6250  technology = steam_turbine }
 		}
 		if = {
 			limit = { can_research = steam_turbine }
@@ -10310,7 +10310,7 @@ je_pmr_steam_turbine_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = steam_turbine }
-			add_technology_progress = { progress = 7500  technology = steam_turbine }
+			add_technology_progress = { progress = 6250  technology = steam_turbine }
 		}
 		debug_log = "PMR_JE|implementation|steam_turbine|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -10517,7 +10517,7 @@ je_pmr_steel_railway_cars_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = steel_railway_cars }
-			add_technology_progress = { progress = 6250  technology = steel_railway_cars }
+			add_technology_progress = { progress = 5000  technology = steel_railway_cars }
 		}
 		if = {
 			limit = { can_research = steel_railway_cars }
@@ -10547,7 +10547,7 @@ je_pmr_steel_railway_cars_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = steel_railway_cars }
-			add_technology_progress = { progress = 6250  technology = steel_railway_cars }
+			add_technology_progress = { progress = 5000  technology = steel_railway_cars }
 		}
 		if = {
 			limit = { can_research = steel_railway_cars }
@@ -10577,7 +10577,7 @@ je_pmr_steel_railway_cars_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = steel_railway_cars }
-			add_technology_progress = { progress = 6250  technology = steel_railway_cars }
+			add_technology_progress = { progress = 5000  technology = steel_railway_cars }
 		}
 		debug_log = "PMR_JE|implementation|steel_railway_cars|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -10606,7 +10606,7 @@ je_pmr_steel_toolmaking_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = steel_toolmaking }
-			add_technology_progress = { progress = 6250  technology = steel_toolmaking }
+			add_technology_progress = { progress = 5000  technology = steel_toolmaking }
 		}
 		if = {
 			limit = { can_research = steel_toolmaking }
@@ -10636,7 +10636,7 @@ je_pmr_steel_toolmaking_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = steel_toolmaking }
-			add_technology_progress = { progress = 6250  technology = steel_toolmaking }
+			add_technology_progress = { progress = 5000  technology = steel_toolmaking }
 		}
 		if = {
 			limit = { can_research = steel_toolmaking }
@@ -10666,7 +10666,7 @@ je_pmr_steel_toolmaking_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = steel_toolmaking }
-			add_technology_progress = { progress = 6250  technology = steel_toolmaking }
+			add_technology_progress = { progress = 5000  technology = steel_toolmaking }
 		}
 		debug_log = "PMR_JE|implementation|steel_toolmaking|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -10962,7 +10962,7 @@ je_pmr_synthetic_indigo_inception = {
 	on_complete = {
 		if = {
 			limit = { can_research = synthetic_indigo }
-			add_technology_progress = { progress = 7500  technology = synthetic_indigo }
+			add_technology_progress = { progress = 6250  technology = synthetic_indigo }
 		}
 		if = {
 			limit = { can_research = synthetic_indigo }
@@ -10992,7 +10992,7 @@ je_pmr_synthetic_indigo_development = {
 	on_complete = {
 		if = {
 			limit = { can_research = synthetic_indigo }
-			add_technology_progress = { progress = 7500  technology = synthetic_indigo }
+			add_technology_progress = { progress = 6250  technology = synthetic_indigo }
 		}
 		if = {
 			limit = { can_research = synthetic_indigo }
@@ -11022,7 +11022,7 @@ je_pmr_synthetic_indigo_implementation = {
 	on_complete = {
 		if = {
 			limit = { can_research = synthetic_indigo }
-			add_technology_progress = { progress = 7500  technology = synthetic_indigo }
+			add_technology_progress = { progress = 6250  technology = synthetic_indigo }
 		}
 		debug_log = "PMR_JE|implementation|synthetic_indigo|[THIS.GetCountry.GetNameNoFormatting]"
 	}

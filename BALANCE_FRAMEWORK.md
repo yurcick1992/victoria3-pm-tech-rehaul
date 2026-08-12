@@ -4388,3 +4388,66 @@ output value`, `c = P(era) × 52 × ρ(era) / £720`) is with the user for a rul
 --rule --p0 <a> --p5 <b>` derives and tests any ladder. ρ, the median realised-profit-to-base-output
 ratio at a tier's dominant era, measures **0.54 / 0.69 / 0.54 / 0.52 / 0.57 / 0.61** — nearly flat,
 which is what makes a six-number table enough.
+
+## 10.53 TWO CALENDARS — 41 tiers were gated an era too high (user-ruled 2026-08-12)
+
+⭐⭐ **A tier's era and its unlocking technology's era were being decided by two different functions,
+and they disagree everywhere above era 1.**
+
+```
+the ladder's era bands (build_era_ladder, midpoints between the anchors):  1790 | 1850 | 1885 | 1912 | 1932
+gameEra() in tech_tree_spec.mjs (VANILLA's own era windows):               1836 | 1861 | 1886 | 1911
+```
+
+A NEW technology that omits `era` gets `gameEra(year)`. So `cemented_carbide` (1927) landed in game era
+5 while the tier it unlocks, `building_tooling_workshop_carbide`, is ladder era 4 — our e4 band being
+1912–1932. **41 of the 106 tiers**, always by exactly one era, never two and never the other way: the
+whole tooling ladder above e1, every port rung, every artillery and munitions rung. By ladder era:
+e1 8/17 · e2 9/19 · **e3 15/21** · e4 9/21 (e0 and e5 clean by construction).
+
+**It is not cosmetic.** The mechanical eras exist for two things and this hit both — the **era base
+cost** (15 000 at era 4 against 17 500 at era 5) and the **ahead-of-time penalty**, so the affected rung
+was dearer *and* penalised at exactly the date it is meant to be the workhorse. And it contradicts what
+an era MEANS here: era 4's anchor is 1925 and its definition is "a leader holds about half of era 4's
+technologies at 1925", yet this rung needed an era-5 technology, whose anchor is 1940. A live suspect
+for the handover's "only 38% of the ladder is realised" and the e4/e5 level shares of 16%/4% at 1936 —
+suspect, not measured, and not separated from cost or workforce.
+
+**THE FIX IS A RULE, NOT A TABLE**: a technology that unlocks one of our tiers is placed in the
+mechanical era that tier maps to (our e0 AND e1 → era 1, then 1:1), re-derived from the ladder every
+run so a re-band cannot silently reintroduce the drift. The 2026-08-12 re-band had worked around it by
+stating `era` by hand on its fifteen new rungs — correct, and exactly the fix that does not scale.
+
+**THE THREE INVARIANTS IT RESPECTS (user-stated), each verified against the EMITTED mod, not the spec:**
+
+1. **A 1836 situation keeps vanilla's PMs and tiers.** Only a move into **era 1** could change that —
+   `add_era_researched = era_1` hands every era-1 technology to the tier-1/2 countries at the start, so
+   lowering `railways` or `rifling` there would give the powers railways and rifled arms in 1836, which
+   vanilla does not. Era 2+ is invisible to the start. Verified: the 16 history files are byte-identical
+   (sha 6 a19a314f…), `00_starting_inventions.txt` is unchanged, and era 1 is still the only era granted.
+2. **A 1836 tier's country holds its technologies** — `verify_start_techs.mjs --vs-vanilla`: *no starting-
+   technology gap beyond vanilla's own* (vanilla itself fails on 6 countries). Lowering can only help here.
+3. **No prerequisite in a later era** — re-parsed off the four emitted technology files: 233 technologies,
+   310 prerequisite edges, **zero inversions**.
+
+**32 moved. 9 held, and they are the discussion list:** eight that would land in era 1 —
+`intensive_agriculture` (fertilizer e1, 1842) · `screw_frigate` (shipyard e1, 1845) ·
+`iron_screw_steamers` (shipyard_steam e1, 1843) · `rifling` (arms e1, 1849) · `shell_gun` (artillery e1,
+1830) · `percussion_cap` (munition e1, 1830) · `steamship_bunkering` (port e1, 1840) · `railways`
+(railway e1, 1825) — every one an e1 rung whose technology postdates the 1836 start, so the conflict is
+real rather than mechanical; and `telephone`, whose prerequisites `shift_work` and `electrical_generation`
+would sit later. Whatever the rule declines it PRINTS: a rule that silently skips is indistinguishable
+from one that never ran.
+
+Result: production per era **15/14/20/23/20 → 15/18/26/19/14**, budget 1198k → 1148k; military
+12/13/15/19/17 → 12/17/16/17/14, 990k → 960k; society untouched. ⚠ **Era-5 production falls from 20
+technologies to 14** — that changes what "half of era 5 by 1940" means and partly re-opens the era-5
+hole the re-band was filling. Not addressed here.
+
+⚠ **TWO DEFECTS THIS FLUSHED OUT, both of the "nothing fails" kind.** (a) `emit_techs.mjs` treated any
+`reEra` as a vanilla re-era and tried to patch OUR `regenerative_furnace` into `10_production.txt` — the
+match-count assertion threw and stopped the build, which is the guard working. (b) **`emit_techs` patched
+only the production file**, so an era move on a MILITARY technology was written into the spec, drawn by
+the viewer, and silently dropped on the way to the mod. Three of the 32 are military. A `20_military.txt`
+emitter now exists, and it is deliberately unconditional inside its block so an empty list and a broken
+pattern cannot look alike.

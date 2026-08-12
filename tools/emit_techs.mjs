@@ -17,6 +17,7 @@
 //     localization/<lang>/replace/zzz_pm_rehaul_tech_l_<lang>.yml
 //   WHOLE-FILE, REGENERATED FROM VANILLA EACH BUILD (so a patch flows through, nothing is frozen)
 //     common/technology/technologies/10_production.txt  — era moves + one prerequisite swap
+//     common/technology/technologies/20_military.txt    — era moves (only when there are any)
 //     common/technology/technologies/30_society.txt     — ai_weight x0.8 on every society technology
 //     common/scripted_effects/00_starting_inventions.txt— new era-1 techs into the 1836 starting sets
 //     common/static_modifiers/00_code_static_modifiers.txt — the production-only tech spread multiplier
@@ -156,7 +157,12 @@ const NEWT = OPT.techs.filter(t => t.origin === 'new');
 {
   let txt = vanilla('common/technology/technologies/10_production.txt');
   // Re-era'd technologies, each with the reason the spec recorded.
-  const eraMoves = OPT.techs.filter(t => t.reEra && t.category === 'production');
+  // ⚠ VANILLA ONES ONLY. `reEra` records that the spec moved a technology, and since the ladder-era
+  // alignment (2026-08-12) most of the moved ones are technologies WE ADD — those get their era written
+  // directly in section 1, and they have no block in the vanilla file to patch. Without the origin
+  // filter this searched 10_production.txt for `regenerative_furnace` and, finding nothing, threw. That
+  // throw is the guardrail working: a transform that matches nothing must fail rather than no-op.
+  const eraMoves = OPT.techs.filter(t => t.reEra && t.category === 'production' && t.origin === 'vanilla');
   for (const t of eraMoves) {
     // anchor on the tech's own block so we cannot hit another tech's era line
     const re = new RegExp(`(^${t.id} = \\{[\\s\\S]*?\\n\\tera = era_)\\d`, 'm');
@@ -166,6 +172,30 @@ const NEWT = OPT.techs.filter(t => t.origin === 'new');
   txt = sub(txt, /(^aniline = \{[\s\S]*?unlocking_technologies = \{)[^}]*(\})/m,
     '$1\n\t\tchemical_bleaching\n\t$2', 1, 'aniline prerequisite swap');
   write('common/technology/technologies/10_production.txt', txt);
+}
+
+// ===================================================================================================
+// 2b. VANILLA MILITARY FILE — era moves
+// ===================================================================================================
+// ⚠ THIS FILE EXISTED AS A GAP UNTIL 2026-08-12. Section 2 patches ONLY 10_production.txt, so a re-era
+// on a MILITARY technology was written into the spec, reported by the viewer, and then silently
+// dropped on the way to the mod — the tree the game loaded would disagree with the tree the sheet drew,
+// with nothing failing anywhere. The ladder-era alignment moves three of them (repeaters,
+// breech_loading_artillery, bolt_action_rifles: arms and artillery are military-tree industries by user
+// ruling), which is what surfaced it.
+// ⚠ THE LOOP IS DELIBERATELY UNCONDITIONAL — it runs even when the list is empty, and `sub` throws when
+// a transform matches nothing. A `if (moves.length)` guard here would make an empty list and a broken
+// pattern look identical.
+{
+  const moves = OPT.techs.filter(t => t.reEra && t.category === 'military' && t.origin === 'vanilla');
+  if (moves.length) {
+    let txt = vanilla('common/technology/technologies/20_military.txt');
+    for (const t of moves) {
+      const re = new RegExp(`(^${t.id} = \\{[\\s\\S]*?\\n\\tera = era_)\\d`, 'm');
+      txt = sub(txt, re, `$1${t.era}`, 1, `re-era ${t.id} -> era ${t.era}`);
+    }
+    write('common/technology/technologies/20_military.txt', txt);
+  }
 }
 
 // ===================================================================================================

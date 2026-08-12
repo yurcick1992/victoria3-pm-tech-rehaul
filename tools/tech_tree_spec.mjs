@@ -1019,6 +1019,66 @@ function buildOption(optN) {
   // Prune dangling prereqs (a split that does not exist in this option).
   for (const t of techs.values()) t.prereqs = new Set([...t.prereqs].filter(p => techs.has(p) && p !== t.id));
 
+  // ---- ⭐⭐ LADDER-ERA ALIGNMENT (user-ruled 2026-08-12) -----------------------------------------
+  // A TECHNOLOGY THAT UNLOCKS ONE OF OUR TIERS BELONGS IN THE MECHANICAL ERA THAT TIER MAPS TO.
+  // That is the anchor principle's own mapping — our e0 AND e1 both sit in mechanical era 1, then one
+  // to one — and until now nothing enforced it, because `era` falls out of `gameEra(year)` whenever a
+  // NEW technology omits it and `gameEra` maps a year onto VANILLA's era windows:
+  //     ladder bands (build_era_ladder):  1790 | 1850 | 1885 | 1912 | 1932
+  //     gameEra()    (vanilla's):         1836 | 1861 | 1886 | 1911
+  // Two calendars, disagreeing everywhere above era 1. 41 of the 106 tiers were gated one era too
+  // high — the whole tooling ladder above e1, every port rung, every artillery rung. The cost is not
+  // cosmetic: the mechanical eras exist for the ERA BASE COST and the AHEAD-OF-TIME PENALTY, so an
+  // era-4 rung gated on an era-5 technology is dearer AND penalised at exactly the date it is meant to
+  // be the workhorse — and a leader sitting exactly on the era-4 anchor (1925) cannot have it at all,
+  // which contradicts what an era MEANS here.
+  // ⚠ A RULE, NOT A TABLE OF LITERALS. The alignment is re-derived from the ladder every run, so a
+  // re-band cannot silently reintroduce the drift. (The re-band of 2026-08-12 worked around it by
+  // stating `era` by hand on its fifteen new rungs — correct, and exactly the fix that does not scale.)
+  //
+  // THREE THINGS IT WILL NOT DO, each a user-stated invariant:
+  //  1. IT ONLY EVER LOWERS. Raising a technology withdraws it from a country that should have it.
+  //  2. IT NEVER LANDS IN ERA 1. `add_era_researched = era_1` hands every era-1 technology to the
+  //     tier-1/tier-2 countries at the 1836 start, so a move into era 1 would give the powers
+  //     railways, rifling and percussion caps in 1836, which vanilla does not. Era 2+ is untouched by
+  //     the start, so every other move is invisible to it. THE EIGHT IT HOLDS BACK ARE ALL e1 RUNGS
+  //     WHOSE TECHNOLOGY POSTDATES THE START (arms 1849, ports 1840, fertilizer 1842…) — they need a
+  //     decision per technology, not a rule.
+  //  3. IT NEVER INVERTS A PREREQUISITE. Lowering is skipped where a prerequisite would end up later.
+  //     Iterated to a fixed point, because lowering one rung can free the rung above it.
+  // Whatever it declines to do it RECORDS, in `alignHeld`, and the report prints it — a rule that
+  // silently skips is indistinguishable from one that never ran.
+  const ALIGN_FLOOR = 2;                          // never land in era 1 — see 2 above
+  const mech = e => (e <= 1 ? 1 : e);             // our ladder era -> the mechanical era it rides on
+  // ⚠ The held list is rebuilt EVERY pass and only the LAST pass's survives. Recording it on the first
+  // pass instead reports a technology as blocked by a prerequisite that the very next pass lowers —
+  // `electric_railway` waiting on `electrical_capacitors`, when both move. A stale "held back" reads as
+  // a refusal and is worse than no report at all.
+  let alignHeld = [];
+  for (let pass = 0; pass < 8; pass++) {
+    let moved = 0; alignHeld = [];
+    for (const t of techs.values()) {
+      if (!t.unlocks.length) continue;            // gates PMs only — nothing anchors it to a rung
+      const target = Math.min(...t.unlocks.map(u => mech(u.era)));
+      if (target >= t.era) continue;              // already at or below where the ladder puts it
+      if (target < ALIGN_FLOOR) {
+        alignHeld.push(`${t.id}: era ${t.era} -> ${target} WITHHELD — would be granted at the 1836 start`
+          + ` (unlocks ${t.unlocks.map(u => `${u.ind} e${u.era}`).join(', ')})`);
+        continue;
+      }
+      const late = [...t.prereqs].filter(p => techs.get(p).era > target);
+      if (late.length) {
+        alignHeld.push(`${t.id}: era ${t.era} -> ${target} WITHHELD — prerequisite would sit later `
+          + `(${late.map(p => `${p} era ${techs.get(p).era}`).join(', ')})`);
+        continue;
+      }
+      t.reEra = `era ${t.era} -> ${target}: ladder-era alignment — it unlocks `
+        + t.unlocks.map(u => `${u.ind} e${u.era}`).join(', ');
+      t.era = target; moved++;
+    }
+    if (!moved) break;
+  }
+
   // ---- THE TWO STRUCTURAL CONSTRAINTS (user-ruled 2026-08-10) ----------------------------------
   const problems = [];
   //  1. No technology may require a LATER-era prerequisite. The engine's cost arithmetic assumes it,
@@ -1056,7 +1116,7 @@ function buildOption(optN) {
   for (const t of techs.values()) t.blocks = [];
   for (const t of techs.values()) for (const p of t.prereqs) techs.get(p).blocks.push(t.id);
 
-  return { techs, problems, unchained: LADDER_UNCHAINED };
+  return { techs, problems, unchained: LADDER_UNCHAINED, alignHeld };
 }
 
 // ===================================================================================================
@@ -1068,7 +1128,7 @@ const out = { generated: new Date().toISOString(), eraCost: ERA_COST, indOrder: 
 
 const uncovered = [];
 for (const meta of OPTION_META) {
-  const { techs, problems } = buildOption(meta.n);
+  const { techs, problems, alignHeld } = buildOption(meta.n);
   const list = [...techs.values()].map(t => ({ ...t, prereqs: [...t.prereqs] }))
                                   .sort((a, b) => a.era - b.era || a.id.localeCompare(b.id));
   // budget
@@ -1078,7 +1138,7 @@ for (const meta of OPTION_META) {
     budget[cat] = { n: inCat.length, cost: inCat.reduce((s, t) => s + ERA_COST[t.era], 0),
                     perEra: [1, 2, 3, 4, 5].map(e => inCat.filter(t => t.era === e).length) };
   }
-  out.options.push({ ...meta, budget, problems, techs: list });
+  out.options.push({ ...meta, budget, problems, alignHeld, techs: list });
 }
 
 // Coverage: every tier must be either era-0/untech'd or attached to a technology in every option.
@@ -1141,6 +1201,15 @@ for (const o of out.options) {
               `${(o.rushCost / 1000).toFixed(0)}k  ` +
               `(vanilla tree at F=${AOT_VANILLA}: ${(rushCost(vpe, 5, AOT_VANILLA) / 1000).toFixed(0)}k)`);
   if (o.problems.length) console.log(`  !! era violations:\n     ` + o.problems.join('\n     '));
+  // What the ladder-era alignment DID, and — the half that matters — what it declined to do. A rule
+  // that silently skips is indistinguishable from one that never ran.
+  {
+    const did = o.techs.filter(t => (t.reEra || '').includes('ladder-era alignment'));
+    if (did.length) console.log(`  ladder-era alignment: ${did.length} technologies lowered one era ` +
+      `(${did.map(t => `${t.id}->${t.era}`).slice(0, 6).join(', ')}${did.length > 6 ? ', …' : ''})`);
+    if (o.alignHeld && o.alignHeld.length)
+      console.log(`  ladder-era alignment HELD BACK ${o.alignHeld.length}:\n     ` + o.alignHeld.join('\n     '));
+  }
   console.log();
 }
 
