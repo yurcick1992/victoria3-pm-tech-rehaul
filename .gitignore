@@ -77,3 +77,9 @@ tools/vendor/
 tools/testbed/_score_work/
 tools/testbed/saves_debut/
 tools/testbed/saves_x10_extra/
+
+# The handover is a BATON, not a record (user ruling 2026-08-12). It is written at the end of a session
+# for the next one and replaced wholesale; a committed copy rots into a stale second source of truth,
+# exactly like a status board. Anything in it that must outlive the session belongs in FINDINGS.md
+# (results), ROADMAP.md (plan), BALANCE_FRAMEWORK.md (rulings) or TESTBED_LANDMINES.md (guardrails).
+HANDOVER.md

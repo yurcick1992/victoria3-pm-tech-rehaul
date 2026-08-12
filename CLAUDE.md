@@ -2419,6 +2419,14 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   ⚠ **A stale snapshot is worse than none.** It carries its own timestamp and reads as authoritative, so a
   reader has no way to tell it is describing an economy that no longer exists. If you cannot regenerate it
   (build broken, mid-refactor), say so rather than leaving the old one standing.
+- **The HANDOVER is a baton, and is NOT COMMITTED** (user ruling 2026-08-12). Write it at the end of a
+  session for the next one — three or four concrete tasks in the user's own order, each with the
+  measurements that motivate it and the traps that cost time. Then **gitignored, like the status board
+  and for the same reason**: it is replaced wholesale each session, and a committed copy rots into a
+  stale second source of truth. ⚠ **The corollary is load-bearing: nothing durable may live only in the
+  handover.** Before writing one, put the results in `FINDINGS.md`, the plan in `ROADMAP.md`, rulings in
+  `BALANCE_FRAMEWORK.md`, guardrails in `TESTBED_LANDMINES.md`. The handover then only has to say what
+  to DO, and can point at those for why.
 - **Status board — REBUILD it UNPROMPTED, never maintain it.** Publish a status board as an
   Artifact, and **republish it to the same URL the moment the picture moves — during the session,
   not at the end, and without being asked.** Closing an item, hitting a blocker or handing a

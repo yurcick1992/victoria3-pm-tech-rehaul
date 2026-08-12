@@ -131,6 +131,102 @@ transcript rather than from data.
 
 ---
 
+## F52 — **THE LADDER IS NOT CLIMBED: only 38% of it is realised, capital piles up unspent, and the binding constraint is WORKFORCE, not capital or technology**
+
+**Session:** `20260812_165702_era6-n1`, n=1, 1836→1936, self-quit, 13 674 s. Arm: `{kind: config,
+config: config/mod_config.json}` = the shipped **106-tier re-banded ladder** with research events on,
+game **1.13.10**, `moderate_consolidation`.
+**Compared against:** `20260812_093402_research-events-fixed-n2/run002`, the same arm on the **100-tier**
+ladder and game **1.13.9**. ⚠ Mod-versus-mod: ladder and game version moved together and this cannot
+separate them. **No vanilla baseline exists for any of it** — every vanilla session predates the savegame
+harvest (2026-08-11) and carries zero summaries.
+
+### The headline: 38% of the ladder is realised
+
+Mean output per built level **82.7**, against **220.5** if every level were era 5. World levels at 1936,
+with the technology leaders holding **all** of era 5:
+
+| era | 0 | 1 | 2 | 3 | 4 | 5 |
+|---|--:|--:|--:|--:|--:|--:|
+| world levels | 9 390 | 14 771 | 17 878 | 19 748 | 12 633 | **3 143** |
+| share | 12.1% | 19.0% | 23.0% | 25.5% | 16.3% | **4.1%** |
+| GBR | 4.2% | 19.3% | 21.7% | 26.0% | 22.3% | **6.5%** |
+| GER | 7.1% | 15.6% | 19.6% | 27.8% | 22.4% | **7.5%** |
+
+Britain researched every era-5 production technology and stands on era-5 buildings for **6.5%** of its
+levels. A third of world capacity is still era 0–1 in 1936.
+
+⭐ **THE OLD RUNG IS NEVER DISPLACED, and the time series shows it plainly.** GBR tooling by era, share of
+levels: e2 holds **~40% continuously from 1887 to 1936** while e3 arrives and settles beside it at ~40%;
+e4 and e5 never exceed 6% and 1%. Steel reaches e5 only in **1927**, at ~10%, and sits in an e4/e5
+near-tie **despite e5 being twice as profitable** (37% vs 13% for GBR alone; 42% vs 19% market-wide).
+Obsolescence — the mechanism the whole profitability ladder exists to produce — is not happening.
+
+### Capital piles up unspent
+
+| | 100-tier | 106-tier |
+|---|--:|--:|
+| investment pool, world | 3.75bn | **8.46bn** (+126%) |
+| top-10 share of it | 89.8% | 85.5% |
+| pool ÷ own GDP, leaders | 0.96–1.81 | **2.37–4.94** (GER 3.37 · HUN 3.53 · BEL 4.18 · TIB 4.94) |
+| owner (financial district + manor) profit per level | 546.9 | **469.2** |
+| manufacturing profit per level | 601.3 | **478.7** |
+
+⇒ **The pool is not being fed faster — it is not draining.** Total owner profit is nearly flat (+9%)
+while the pool more than doubled, and profit per level FELL on both measures.
+
+### The binding constraint is workforce
+
+Peasants + unemployed as a share of workforce (dependents excluded) first falls below 5% at:
+
+| GER | AUS | GBR | TUR | RUS | USA | JAP | FRA | CHI |
+|---|---|---|---|---|---|---|---|---|
+| **1889** | 1895 | **1898** | **1898** | **1910** | 1919 | 1920 | 1926 | never — 57.6% at 1936 |
+
+It collapses abruptly once it turns: Germany 34.4% (1873) → 17.0% (1882) → **0.7% (1891)**; Britain 37.3%
+→ 22.6% → 15.5% → **1.6% (1900)**. World peasants **208.8M → 101.2M** while salaried went 53.4M → 374.4M.
+Nine of the ten pool hoarders end at ~0% slack (GER: 282 unemployed and 22k peasants against 27.0M
+salaried). The in-game UI states the cause directly — private construction is blocked for lack of
+workforce.
+
+### Three explanations MEASURED AND REJECTED — do not re-run them
+
+1. **1.13.10's railway fix removing a capital sink.** Railways grew **+39%** in this run, not fewer.
+2. **Persistent margins feeding the pool.** Profit per level FELL, 601 → 479; owner profit per level
+   547 → 469.
+3. **A labour ceiling capping a high-productivity economy.** Our per-worker ceiling is ~2.4× vanilla's
+   (our ladder ×5.9 bottom-to-top; vanilla's median ×2.50 across the same 19 industries, with vanilla
+   also holding employment flat in 17 of 19). Exhausted labour therefore cannot explain *lower* output —
+   the economy never becomes high-productivity in the first place.
+
+### What it does NOT say
+
+- **Nothing about vanilla.** Total supply at base prices came out British market 29.1M vs vanilla's
+  46.9M and American 30.3M vs 34.2M — but market membership is unmatched between the two instruments,
+  only one vanilla run reached 1936, and `goods_out` (savegame) has never been cross-validated against
+  `production` (telemetry). Treat as unresolved.
+- **It cannot separate ladder from game version**, n=1 against n=1.
+- **It does not identify WHY the AI declines the upgrade** — build cost, `ai_value` (unauthored, per
+  ROADMAP), or never demolishing the old building. `building_budget` is itemised per building in the
+  annual summaries, so the construction queue's composition would separate them with no new game time.
+
+### Two things that are not the economy but came out of the same run
+
+- **Treasury is FLOORED AT 0 in the save** — zero negative `money` entries in a 544 MB melt, no debt or
+  loan field, and `credit` is the GDP-scaled *limit* not the drawing. 105 of 244 countries sit at the
+  floor and **107 have gone bankrupt**, so a sum of treasuries is not a fiscal position. The flow is:
+  world net weekly **−80k → −226k**, countries in deficit 83 → 106.
+- ⭐ **POP RECORDS +43% BY 1910, and the slowdown tracks it.** Pop objects ran 1.04× at 1840 rising to
+  **1.43× at 1910**; the wall-clock speed ratio ran 0.92 falling to **0.61** over the same decades, and
+  1/1.43 = 0.70 against a measured 0.61. Our ladder holds six rungs of one industry simultaneously and a
+  pop's identity includes its workplace, so the workforce fragments across more records — and pop
+  records, not people, are what the engine iterates. Population itself rose only 6%; live and empty pops
+  grew in lockstep (empty share stable at ~17–18%), so these are real records rather than husks.
+  ⚠ **This makes the mod, not the hotfix, the leading suspect for the 1.43× wall-clock cost** — reversing
+  the reading taken earlier the same day from a count of tiers and journal entries (+6%, +13%), which
+  missed the quantity that actually scales.
+
+
 ## F51 — **THE STEP-2 CONDITION SET, PROBED: journal entries auto-activate for every country, occupancy weights exactly, and THREE trigger spellings were accepted and silently ignored**
 
 **Claim.** Every engine mechanism ROADMAP step 2 needs is available and now measured. Two of the five
