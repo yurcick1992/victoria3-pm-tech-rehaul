@@ -783,7 +783,10 @@ if (WRITE) {
     prices: ERAS.map((x, e) => { const o = {}; for (const g of [...shown].sort()) o[g] = Math.round(P[e][g] * 10) / 10; return o; }),
     pms: PMSEL.map(sel => ({ tiers: sel.tiers, refs: sel.refs })),
   };
-  const pricePath = join(REPO, 'config', 'era_prices.json');
+  // follows MOD_CONFIG, same reasoning as era_scenarios' artifact() — see the comment there
+  const sfx = (() => { const b = (process.env.MOD_CONFIG || '').split(/[\\/]/).pop() || '';
+    const m = b.match(/^mod_config\.(.+)\.json$/); return m ? '.' + m[1] : ''; })();
+  const pricePath = join(REPO, 'config', 'era_prices' + sfx + '.json');
   writeFileSync(pricePath, JSON.stringify(out, null, 1), 'utf8');
   console.log(`WROTE the solved price path + per-era PM selections to ${pricePath}`);
 } else {

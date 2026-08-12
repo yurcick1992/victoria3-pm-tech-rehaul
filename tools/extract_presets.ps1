@@ -1183,13 +1183,22 @@ $popModel = [ordered]@{
 # own five-era ladder as one interdependent economy with prices UNLOCKED. They are pass-through here:
 # nothing in this script can derive them, because they are not a country — they are the balance design.
 # Absent file ⇒ nothing added, so a clone that has not run the solver still builds.
-$eraPath = Join-Path $Repo 'config\era_presets.json'
+# ⚠⚠ THE ERA PRESETS FOLLOW THE CONFIG BEING BUILT. They are solved FROM that config, so building an
+# alternate config against the canonical presets ships a balance sheet whose scenarios reference
+# buildings the sheet does not contain. `-Config config/mod_config.era6.json` therefore reads
+# `config/era_presets.era6.json`, exactly as the solver writes it. Same rule as era_scenarios' artifact().
+$eraSfx = ''
+if ($Config) {
+    $m = [regex]::Match([System.IO.Path]::GetFileName($Config), '^mod_config\.(.+)\.json$')
+    if ($m.Success) { $eraSfx = '.' + $m.Groups[1].Value }
+}
+$eraPath = Join-Path $Repo ('config\era_presets{0}.json' -f $eraSfx)
 if (Test-Path $eraPath) {
     $eraCfg = Get-Content -LiteralPath $eraPath -Raw -Encoding UTF8 | ConvertFrom-Json
     foreach ($p in $eraCfg.presets) { $out.Add($p) }
-    Write-Output ("  era presets: added {0} from config/era_presets.json" -f @($eraCfg.presets).Count)
+    Write-Output ("  era presets: added {0} from {1}" -f @($eraCfg.presets).Count, (Split-Path $eraPath -Leaf))
 } else {
-    Write-Output "  era presets: config/era_presets.json not found - run 'node tools/era_scenarios.mjs --write' (skipped)"
+    Write-Output "  era presets: $eraPath not found - run 'node tools/era_scenarios.mjs --write' (skipped)"
 }
 
 # ⭐⭐ GOLD IS STRIPPED FROM EVERY PRESET, at the ONE point they are all serialised.
