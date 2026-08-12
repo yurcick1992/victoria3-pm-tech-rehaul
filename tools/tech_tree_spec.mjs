@@ -78,6 +78,13 @@ import { dirname } from 'node:path';
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const WRITE = process.argv.includes('--write');
+// ⚠⚠ FOLLOWS MOD_CONFIG, like every other step. The tree is DERIVED from the tier ladder, so generating
+// it against one config and shipping it beside another is the same defect that has now been fixed in
+// five tools; here it would produce technologies unlocking buildings that do not exist and tiers no
+// technology unlocks — the two failure modes emit_techs' coverage guard exists to catch.
+const CFGPATH = join(REPO, process.env.MOD_CONFIG || join('config', 'mod_config.json'));
+const SFX = (() => { const b = (process.env.MOD_CONFIG || '').split(/[\\/]/).pop() || '';
+  const m = b.match(/^mod_config\.(.+)\.json$/); return m ? '.' + m[1] : ''; })();
 
 // ===================================================================================================
 // 1. VANILLA — parsed live, never transcribed, so a patch cannot leave this file quietly wrong.
@@ -164,7 +171,7 @@ const MOD_TYPES = parseModifierTypes();
 // ===================================================================================================
 // 2. OUR TIERS — from the config, which is authoritative for key/era/tech_year/name.
 // ===================================================================================================
-const cfg = JSON.parse(readFileSync(join(REPO, 'config', 'mod_config.json'), 'utf8'));
+const cfg = JSON.parse(readFileSync(CFGPATH, 'utf8'));
 const TIERS = [];
 for (const ind of cfg.industries) {
   for (const t of ind.tiers) {
@@ -204,6 +211,40 @@ const gameEra = y => y < 1836 ? 1 : y <= 1861 ? 2 : y <= 1886 ? 3 : y <= 1911 ? 
 //    `in` lists which options use it: any of '1','2','3'.
 // ===================================================================================================
 const NEW = {
+  // ⭐ THE RE-BAND'S FIFTEEN RUNGS (2026-08-12). One technology per interior gap and per era-5 hole the
+  // ruled anchors opened — see ROADMAP step 1b. Each names a specific historical step; `era` is stated
+  // rather than derived from the year, because gameEra() maps to VANILLA's era windows and ours are a
+  // different scale (a 1909 process is our era 3 and vanilla's era 4).
+  fat_hydrogenation:         { name: "Fat Hydrogenation", year: 1909, era: 3, in: '123', ind: 'food',
+    desc: "Normann's nickel catalyst hardens cheap liquid oils into a solid cooking fat, and the food industry stops depending on animal tallow and the dairy herd." },
+  long_draft_spinning:       { name: "Long-Draft Spinning", year: 1925, era: 4, in: '123', ind: 'textile',
+    desc: "Drafting the roving further in one passage removes whole banks of machinery from the spinning room, and with individual electric drive the mill is rebuilt around the operative rather than the shaft." },
+  rotary_veneer:             { name: "Rotary-Cut Veneer", year: 1900, era: 3, in: '123', ind: 'furniture',
+    desc: "Peeling a log on a rotary lathe and gluing the sheets crosswise gives a panel stronger than the timber it came from, and furniture stops being carpentry and starts being assembly." },
+  glass_fibre:               { name: "Glass Fibre", year: 1938, era: 5, in: '123', ind: 'glass',
+    desc: "Glass drawn continuously into filaments finer than wool is no longer a glazing material at all — it insulates, reinforces and filters, and the glassworks acquires a market that has nothing to do with windows." },
+  tracer_control:            { name: "Hydraulic Tracer Control", year: 1936, era: 5, in: '123', ind: 'tooling',
+    desc: "A stylus follows a master form and hydraulics repeat it on the cutter, so a complex profile no longer needs a skilled machinist — only a first article to copy." },
+  semi_chemical_pulping:     { name: "Semi-Chemical Pulping", year: 1925, era: 4, in: '123', ind: 'paper',
+    desc: "A mild sulfite cook followed by mechanical defibring opens hardwoods the chemical mills could not use, and the corrugated box gets a cheap domestic furnish." },
+  ammoniacal_liquor:         { name: "Ammoniacal Liquor Recovery", year: 1865, era: 2, in: '123', ind: 'fertilizer',
+    desc: "The gasworks and the coke oven were throwing away their ammonia; recovered as sulphate it becomes the first nitrogen fertilizer a country can make rather than import." },
+  cyclonite_process:         { name: "Cyclonite Process", year: 1940, era: 5, in: '123', ind: 'explosives',
+    desc: "Nitrating hexamine gives an explosive half again as powerful as TNT, and continuous plant makes it in quantities that change what a bomb and a torpedo can do." },
+  compound_engines:          { name: "Compound Expansion", year: 1860, era: 2, in: '123', ind: 'motor',
+    desc: "Working the steam twice, through a high-pressure and then a low-pressure cylinder, roughly halves the coal per horsepower-hour — and makes the engine works a supplier to shipping rather than to mills alone." },
+  steel_hulls:               { name: "Steel Hulls", year: 1875, era: 2, in: '123', ind: 'shipyard_steam', cat: 'military',
+    desc: "Mild steel plate is stronger than iron for the same weight, so the same hull carries more cargo or more armour, and the yard's berths are laid out for a material that will not be replaced this century." },
+  light_machine_guns:        { name: "Light Machine Guns", year: 1915, era: 4, in: '123', ind: 'arms', cat: 'military',
+    desc: "An automatic weapon a section can carry moves sustained fire from the strongpoint into the assault, and the arms industry starts making mechanisms rather than barrels." },
+  automatic_aa_guns:         { name: "Automatic Anti-Aircraft Guns", year: 1936, era: 5, in: '123', ind: 'artillery', cat: 'military',
+    desc: "A fast-traversing automatic gun on a welded mounting, laid by a mechanical director, is the first artillery designed for a target that moves faster than the shell's flight time." },
+  shell_filling:             { name: "Mass Shell Filling", year: 1915, era: 4, in: '123', ind: 'munition', cat: 'military',
+    desc: "The filling factory is a distinct industry from the case plant: acres of separated sheds, women's labour at scale, and an output measured in millions of rounds a week." },
+  wireless_telegraphy:       { name: "Wireless Telegraphy", year: 1901, era: 3, in: '123', ind: 'electrics',
+    desc: "Spark transmitters put a telegraph office on a ship and then across an ocean, and the electrical trade acquires a product that needs no line at all." },
+  superheated_steam:         { name: "Superheating", year: 1915, era: 4, in: '123', ind: 'railway',
+    desc: "Passing the steam back through the firebox before it reaches the cylinders cuts coal and water by about a quarter per ton-mile, and is why the steam locomotive survived the electric one by forty years." },
   // ---- production: rungs vanilla has no technology for (used by ALL three options) ---------------
   beet_sugar_refining:     { name: 'Beet Sugar Refining',        year: 1815, in: '123', ind: 'food',
     desc: 'Marggraf and Achard\'s beet process frees the sugar trade from the cane colonies, and puts a refinery within reach of any temperate country with a food industry.' },
@@ -557,72 +598,74 @@ const RENAME = {
 // ===================================================================================================
 const LADDER = {
   food: [
-    { era: 0, o1: null,                  o2: null },
-    { era: 1, o1: 'manufacturies',       o2: 'bakehouse_manufactories' },
-    { era: 2, o1: 'beet_sugar_refining', o2: 'beet_sugar_refining' },
-    { era: 3, o1: 'baking_powder',       o2: 'baking_powder' },
+    { era: 0, o1: 'manufacturies',       o2: 'bakehouse_manufactories' },
+    { era: 1, o1: 'beet_sugar_refining', o2: 'beet_sugar_refining' },
+    { era: 2, o1: 'baking_powder',       o2: 'baking_powder' },
+    { era: 3, o1: 'fat_hydrogenation', o2: 'fat_hydrogenation' },
     { era: 4, o1: 'dough_rollers',       o2: 'dough_rollers',        x: ['conveyors'] },
   ],
   textile: [
-    { era: 0, o1: null,                  o2: null },
-    { era: 1, o1: 'manufacturies',       o2: 'ready_made_clothing' },
-    { era: 2, o1: 'calico_printing',     o2: 'calico_printing' },
-    { era: 3, o1: 'mechanized_workshops',o2: 'sewing_machine_works',  x: ['mechanical_tools'] },
-    { era: 4, o1: 'electrical_capacitors', o2: 'electric_drive_looms', x: ['electrical_generation'] },
+    { era: 0, o1: 'manufacturies',       o2: 'ready_made_clothing' },
+    { era: 1, o1: 'calico_printing',     o2: 'calico_printing' },
+    { era: 2, o1: 'mechanized_workshops',o2: 'sewing_machine_works',  x: ['mechanical_tools'] },
+    { era: 3, o1: 'electrical_capacitors', o2: 'electric_drive_looms', x: ['electrical_generation'] },
+    { era: 4, o1: 'long_draft_spinning', o2: 'long_draft_spinning' },
   ],
   furniture: [
-    { era: 0, o1: null,                  o2: null },
-    { era: 1, o1: 'manufacturies',       o2: 'manufactory_joinery' },
-    { era: 2, o1: 'lathe',               o2: 'lathe' },
-    { era: 3, o1: 'mechanized_workshops',o2: 'bentwood_furniture' },
+    { era: 0, o1: 'manufacturies',       o2: 'manufactory_joinery' },
+    { era: 1, o1: 'lathe',               o2: 'lathe' },
+    { era: 2, o1: 'mechanized_workshops',o2: 'bentwood_furniture' },
+    { era: 3, o1: 'rotary_veneer', o2: 'rotary_veneer' },
     { era: 4, o1: 'nitrocellulose_lacquer', o2: 'nitrocellulose_lacquer', x: ['art_silk'] },
   ],
   glass: [
-    { era: 0, o1: null,                  o2: null },
-    { era: 1, o1: 'manufacturies',       o2: 'coal_fired_glasshouse' },
-    { era: 2, o1: 'crystal_glass',       o2: 'crystal_glass' },
-    { era: 3, o1: 'regenerative_furnace',o2: 'regenerative_furnace' },
-    { era: 4, o1: 'plastics',            o2: 'plastics' },
-    { era: 5, o1: 'ribbon_machine',      o2: 'ribbon_machine',        x: ['automatic_bottle_blowers'] },
+    { era: 0, o1: 'manufacturies',       o2: 'coal_fired_glasshouse' },
+    { era: 1, o1: 'crystal_glass',       o2: 'crystal_glass' },
+    { era: 2, o1: 'regenerative_furnace',o2: 'regenerative_furnace' },
+    { era: 3, o1: 'plastics',            o2: 'plastics' },
+    { era: 4, o1: 'ribbon_machine',      o2: 'ribbon_machine',        x: ['automatic_bottle_blowers'] },
+    { era: 5, o1: 'glass_fibre', o2: 'glass_fibre' },
   ],
   tooling: [
-    { era: 0, o1: null,                  o2: null },
-    { era: 1, o1: 'manufacturies',       o2: 'toolmakers_workshops' },
-    { era: 2, o1: 'steelworking',        o2: 'pig_iron_tooling' },
-    { era: 3, o1: 'steel_toolmaking',    o2: 'steel_toolmaking',      x: ['bessemer_process'] },
-    { era: 4, o1: 'high_speed_steel',    o2: 'high_speed_steel' },
-    { era: 5, o1: 'cemented_carbide',    o2: 'cemented_carbide',      x: ['electric_arc_process'] },
+    { era: 0, o1: 'manufacturies',       o2: 'toolmakers_workshops' },
+    { era: 1, o1: 'steelworking',        o2: 'pig_iron_tooling' },
+    { era: 2, o1: 'steel_toolmaking',    o2: 'steel_toolmaking',      x: ['bessemer_process'] },
+    { era: 3, o1: 'high_speed_steel',    o2: 'high_speed_steel' },
+    { era: 4, o1: 'cemented_carbide',    o2: 'cemented_carbide',      x: ['electric_arc_process'] },
+    { era: 5, o1: 'tracer_control', o2: 'tracer_control' },
   ],
   paper: [
-    { era: 0, o1: null,                  o2: null },
-    { era: 1, o1: 'manufacturies',       o2: 'pulp_pressing_mills' },
-    { era: 2, o1: 'fourdrinier_machine', o2: 'fourdrinier_machine' },
-    { era: 3, o1: 'chemical_bleaching',  o2: 'sulfite_pulping' },
-    { era: 4, o1: 'kraft_process',       o2: 'kraft_process' },
+    { era: 0, o1: 'manufacturies',       o2: 'pulp_pressing_mills' },
+    { era: 1, o1: 'fourdrinier_machine', o2: 'fourdrinier_machine' },
+    { era: 2, o1: 'chemical_bleaching',  o2: 'sulfite_pulping' },
+    { era: 3, o1: 'kraft_process',       o2: 'kraft_process' },
+    { era: 4, o1: 'semi_chemical_pulping', o2: 'semi_chemical_pulping' },
     { era: 5, o1: 'high_speed_papermaking', o2: 'high_speed_papermaking' },
   ],
   fertilizer: [
-    { era: 2, o1: 'intensive_agriculture', o2: 'superphosphate' },
+    { era: 1, o1: 'intensive_agriculture', o2: 'superphosphate' },
+    { era: 2, o1: 'ammoniacal_liquor', o2: 'ammoniacal_liquor' },
     { era: 3, o1: 'improved_fertilizer', o2: 'improved_fertilizer' },
     { era: 4, o1: 'nitrogen_fixation',   o2: 'nitrogen_fixation' },
     { era: 5, o1: 'steam_reforming',     o2: 'steam_reforming' },
   ],
   explosives: [
-    { era: 2, o1: 'leblanc_process',     o2: 'leblanc_process' },
-    { era: 3, o1: 'dynamite',            o2: 'dynamite' },
-    { era: 4, o1: 'ostwald_process',     o2: 'ostwald_process' },
-    { era: 5, o1: 'continuous_nitration',o2: 'continuous_nitration' },
+    { era: 1, o1: 'leblanc_process',     o2: 'leblanc_process' },
+    { era: 2, o1: 'dynamite',            o2: 'dynamite' },
+    { era: 3, o1: 'ostwald_process',     o2: 'ostwald_process' },
+    { era: 4, o1: 'continuous_nitration',o2: 'continuous_nitration' },
+    { era: 5, o1: 'cyclonite_process', o2: 'cyclonite_process' },
   ],
   steel: [
-    { era: 0, o1: null,                  o2: null },
-    { era: 1, o1: 'steelworking',        o2: 'steelworking' },
+    { era: 0, o1: 'steelworking',        o2: 'steelworking' },
     { era: 2, o1: 'bessemer_process',    o2: 'bessemer_process' },
     { era: 3, o1: 'open_hearth_process', o2: 'open_hearth_process' },
     { era: 4, o1: 'electric_arc_process',o2: 'electric_arc_process' },
     { era: 5, o1: 'continuous_strip_mill', o2: 'continuous_strip_mill' },
   ],
   motor: [
-    { era: 2, o1: 'atmospheric_engine',  o2: 'atmospheric_engine' },
+    { era: 1, o1: 'atmospheric_engine',  o2: 'atmospheric_engine' },
+    { era: 2, o1: 'compound_engines', o2: 'compound_engines' },
     { era: 3, o1: 'electric_motors',     o2: 'electric_motors',       x: ['electrical_generation'] },
     { era: 4, o1: 'diesel_engine',       o2: 'diesel_engine',         x: ['combustion_engine'] },
     { era: 5, o1: 'high_speed_diesel',   o2: 'high_speed_diesel' },
@@ -639,7 +682,8 @@ const LADDER = {
     { era: 5, o1: 'polyamide_synthesis', o2: 'polyamide_synthesis',   x: ['nitrogen_fixation'] },
   ],
   electrics: [
-    { era: 3, o1: 'telephone',           o2: 'telephone' },
+    { era: 2, o1: 'telephone',           o2: 'telephone' },
+    { era: 3, o1: 'wireless_telegraphy', o2: 'wireless_telegraphy' },
     { era: 4, o1: 'radio',               o2: 'radio' },
     { era: 5, o1: 'vacuum_tube_electronics', o2: 'vacuum_tube_electronics' },
   ],
@@ -649,53 +693,53 @@ const LADDER = {
     { era: 5, o1: 'oil_turbine',         o2: 'oil_turbine' },
   ],
   railway: [
-    { era: 2, o1: 'railways',            o2: 'railways' },
-    { era: 3, o1: 'steel_railway_cars',  o2: 'steel_railway_cars' },
-    { era: 4, o1: 'electric_railway',    o2: 'electric_railway' },
+    { era: 1, o1: 'railways',            o2: 'railways' },
+    { era: 2, o1: 'steel_railway_cars',  o2: 'steel_railway_cars' },
+    { era: 3, o1: 'electric_railway',    o2: 'electric_railway' },
+    { era: 4, o1: 'superheated_steam', o2: 'superheated_steam' },
     { era: 5, o1: 'compression_ignition',o2: 'compression_ignition' },
   ],
   port: [
-    // Vanilla's port has NO unlocking technology, and the era-1 tier keeps it that way.
-    { era: 1, o1: null,                  o2: null },
-    { era: 2, o1: 'steamship_bunkering', o2: 'steamship_bunkering' },
-    { era: 3, o1: 'deep_water_docks',    o2: 'deep_water_docks' },
-    { era: 4, o1: 'concrete_quays',      o2: 'concrete_quays',        x: ['gantry_cranes'] },
-    { era: 5, o1: 'mechanised_cargo_handling', o2: 'mechanised_cargo_handling', x: ['concrete_dockyards'] },
-  ],
-  // ---- military tree ----------------------------------------------------------------------------
-  arms: [
     { era: 0, o1: null,                  o2: null },
-    { era: 1, o1: 'gunsmithing',         o2: 'gunsmith_workshops' },
-    { era: 2, o1: 'rifling',             o2: 'rifling' },
-    { era: 3, o1: 'repeaters',           o2: 'repeaters' },
-    { era: 4, o1: 'bolt_action_rifles',  o2: 'bolt_action_rifles' },
+    { era: 1, o1: 'steamship_bunkering', o2: 'steamship_bunkering' },
+    { era: 2, o1: 'deep_water_docks',    o2: 'deep_water_docks' },
+    { era: 3, o1: 'concrete_quays',      o2: 'concrete_quays',        x: ['gantry_cranes'] },
+    { era: 4, o1: 'mechanised_cargo_handling', o2: 'mechanised_cargo_handling', x: ['concrete_dockyards'] },
+  ],
+  arms: [
+    { era: 0, o1: 'gunsmithing',         o2: 'gunsmith_workshops' },
+    { era: 1, o1: 'rifling',             o2: 'rifling' },
+    { era: 2, o1: 'repeaters',           o2: 'repeaters' },
+    { era: 3, o1: 'bolt_action_rifles',  o2: 'bolt_action_rifles' },
+    { era: 4, o1: 'light_machine_guns', o2: 'light_machine_guns' },
     { era: 5, o1: 'stamped_receivers',   o2: 'stamped_receivers' },
   ],
   artillery: [
-    { era: 0, o1: null,                  o2: null },
-    { era: 1, o1: 'artillery',           o2: 'bronze_gun_founding' },
-    { era: 2, o1: 'shell_gun',           o2: 'shell_gun' },
-    { era: 3, o1: 'breech_loading_artillery', o2: 'breech_loading_artillery' },
-    { era: 4, o1: 'recoil_carriages',    o2: 'recoil_carriages' },
-    { era: 5, o1: 'autofrettage',        o2: 'autofrettage' },
+    { era: 0, o1: 'artillery',           o2: 'bronze_gun_founding' },
+    { era: 1, o1: 'shell_gun',           o2: 'shell_gun' },
+    { era: 2, o1: 'breech_loading_artillery', o2: 'breech_loading_artillery' },
+    { era: 3, o1: 'recoil_carriages',    o2: 'recoil_carriages' },
+    { era: 4, o1: 'autofrettage',        o2: 'autofrettage' },
+    { era: 5, o1: 'automatic_aa_guns', o2: 'automatic_aa_guns' },
   ],
   munition: [
-    { era: 2, o1: 'percussion_cap',      o2: 'percussion_cap' },
-    { era: 3, o1: 'explosive_shells',    o2: 'explosive_shells' },
-    { era: 4, o1: 'drawn_brass_cartridges', o2: 'drawn_brass_cartridges' },
+    { era: 1, o1: 'percussion_cap',      o2: 'percussion_cap' },
+    { era: 2, o1: 'explosive_shells',    o2: 'explosive_shells' },
+    { era: 3, o1: 'drawn_brass_cartridges', o2: 'drawn_brass_cartridges' },
+    { era: 4, o1: 'shell_filling', o2: 'shell_filling' },
     { era: 5, o1: 'automatic_cartridge_lines', o2: 'automatic_cartridge_lines' },
   ],
   shipyard: [
-    { era: 1, o1: 'navigation',          o2: 'navigation' },
-    { era: 2, o1: 'screw_frigate',       o2: 'screw_frigate' },
+    { era: 0, o1: 'navigation',          o2: 'navigation' },
+    { era: 1, o1: 'screw_frigate',       o2: 'screw_frigate' },
   ],
   shipyard_steam: [
-    { era: 2, o1: 'iron_screw_steamers', o2: 'iron_screw_steamers' },
+    { era: 1, o1: 'iron_screw_steamers', o2: 'iron_screw_steamers' },
+    { era: 2, o1: 'steel_hulls', o2: 'steel_hulls' },
     { era: 3, o1: 'marine_steam_turbine',o2: 'marine_steam_turbine' },
     { era: 4, o1: 'oil_fired_boilers',   o2: 'oil_fired_boilers' },
     { era: 5, o1: 'arc_welding',         o2: 'arc_welding' },
   ],
-  // ---- society tree -----------------------------------------------------------------------------
   art_academy: [
     { era: 1, o1: 'romanticism',         o2: 'romanticism' },
     { era: 2, o1: 'realism',             o2: 'realism' },
@@ -709,6 +753,22 @@ const LADDER = {
 // every link is stated). In options 2 and 3 a tier tech inherits "the rung below me in my own
 // industry" automatically and these are used only for the techs that have no rung below.
 const O1_PREREQ = {
+  // the re-band's fifteen, each rooted on the rung below it IN ITS OWN TREE (shared decision 3)
+  fat_hydrogenation: ["baking_powder"],
+  long_draft_spinning: ["electrical_capacitors"],
+  rotary_veneer: ["mechanized_workshops"],
+  glass_fibre: ["ribbon_machine"],
+  tracer_control: ["cemented_carbide"],
+  semi_chemical_pulping: ["kraft_process"],
+  ammoniacal_liquor: ["intensive_agriculture"],
+  cyclonite_process: ["continuous_nitration"],
+  compound_engines: ["atmospheric_engine"],
+  steel_hulls: ["iron_screw_steamers"],
+  light_machine_guns: ["bolt_action_rifles"],
+  automatic_aa_guns: ["autofrettage"],
+  shell_filling: ["drawn_brass_cartridges"],
+  wireless_telegraphy: ["telephone"],
+  superheated_steam: ["electric_railway"],
   beet_sugar_refining: ['manufacturies', 'distillation'],
   calico_printing: ['manufacturies'],
   fourdrinier_machine: ['manufacturies', 'lathe'],
@@ -1180,9 +1240,39 @@ if (process.argv.includes('--chains')) {
 }
 
 if (WRITE) {
-  writeFileSync(join(REPO, 'config', 'tech_tree_options.json'), JSON.stringify(out, null, 1));
-  writeFileSync(join(REPO, 'ui', 'techdata.js'), 'window.TECHDATA = ' + JSON.stringify(out) + ';\n');
-  console.log('wrote config/tech_tree_options.json and ui/techdata.js');
+  const optPath = join(REPO, 'config', 'tech_tree_options' + SFX + '.json');
+  writeFileSync(optPath, JSON.stringify(out, null, 1));
+  writeFileSync(join(REPO, 'ui', 'techdata' + SFX + '.js'), 'window.TECHDATA = ' + JSON.stringify(out) + ';\n');
+  console.log(`wrote ${optPath} and ui/techdata${SFX}.js`);
+
+  // ⭐ CLOSE THE LOOP: stamp each tier's `tech` back into the config the tree was generated from. It is
+  // the ROADMAP step-1 deliverable ("every tier's tech field pointing at it") and nothing did it — the
+  // covered tiers had been assigned by hand, so a tier added later silently had none and only
+  // emit_techs' coverage guard would say so, at build time, after the fact.
+  // ⚠ The mapping is the INVERSE of each technology's own `unlocks`, so it cannot drift from the tree.
+  // A tier claimed by two technologies is an authoring error and throws rather than being picked between.
+  const ship = out.options.find(o => o.ships);
+  const byTier = {};
+  for (const t of ship.techs) for (const u of (t.unlocks || [])) (byTier[u.key] = byTier[u.key] || []).push(t.id);
+  const dup = Object.entries(byTier).filter(([, v]) => v.length > 1);
+  if (dup.length) throw new Error('tier(s) unlocked by more than one technology: ' +
+    dup.map(([k, v]) => `${k} <- ${v.join(', ')}`).join(' · '));
+  const cfgOut = JSON.parse(readFileSync(CFGPATH, 'utf8'));
+  let set = 0, cleared = 0, emitted = 0; const bare = [];
+  for (const ind of cfgOut.industries) for (const t of (ind.tiers || [])) {
+    const got = (byTier[t.key] || [])[0] || null;
+    if (got) { if (t.tech !== got) set++; t.tech = got; }
+    else { if (t.tech) cleared++; delete t.tech; bare.push(`${ind.id}/${t.key}`); }
+    // ⭐ `model_only` MEANS "the game has no technology that could unlock this", and that is exactly the
+    // condition this pass resolves. A tier that now has one must stop being model-only, or the builder
+    // goes on skipping it and the mod ships the old, shorter ladder while the config describes the new
+    // one — the ROADMAP step-1 deliverable is precisely "the model_only flags gone".
+    if (got && t.model_only) { t.model_only = false; emitted++; }
+  }
+  writeFileSync(CFGPATH, JSON.stringify(cfgOut), 'utf8');
+  console.log(`stamped tier -> technology into ${CFGPATH}: ${set} changed, ${cleared} cleared, ` +
+    `${emitted} tier(s) promoted out of model_only, ` +
+    `${bare.length} left with none (available at the 1836 start): ${bare.join(', ') || '-'}`);
 } else {
-  console.log('(report only — pass --write to emit config/tech_tree_options.json + ui/techdata.js)');
+  console.log(`(report only — pass --write to emit config/tech_tree_options${SFX}.json + ui/techdata${SFX}.js)`);
 }

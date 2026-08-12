@@ -41,7 +41,13 @@ const CFG = JSON.parse(readFileSync(CFGPATH, 'utf8'));
 const RE = CFG.research_events;
 if (!RE || !RE.enabled) { console.log('research events: DISABLED in config - nothing emitted (this is the `techs` arm)'); process.exit(0); }
 
-const TREEFILE = join(REPO, 'config/tech_tree_options.json');
+const TREE_SFX = (() => {
+  const raw = process.env.MOD_CONFIG || process.argv[3] || '';
+  const bn = raw.split('\\').join('/').split('/').pop();
+  const m = bn.match(/^mod_config\.(.+)\.json$/);
+  return m ? '.' + m[1] : '';
+})();
+const TREEFILE = join(REPO, 'config/tech_tree_options' + TREE_SFX + '.json');
 const OPT = JSON.parse(readFileSync(TREEFILE, 'utf8')).options.find(o => o.ships);
 if (!OPT) throw new Error('no option marked `ships` in config/tech_tree_options.json');
 const TECH = Object.fromEntries(OPT.techs.map(t => [t.id, t]));

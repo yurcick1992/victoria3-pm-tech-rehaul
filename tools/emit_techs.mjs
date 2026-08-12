@@ -35,7 +35,15 @@ if (!MOD) { console.error('usage: node tools/emit_techs.mjs <modRoot> [configPat
 // got a technology unlocking a building that does not exist (an engine error at load).
 const CFGPATH = process.argv[3] || join(REPO, 'config', 'mod_config.json');
 
-const DATA = JSON.parse(readFileSync(join(REPO, 'config', 'tech_tree_options.json'), 'utf8'));
+// the tree follows the config, same suffix rule as every other derived artifact
+const SFX = (() => {
+  const raw = process.env.MOD_CONFIG || process.argv[3] || '';
+  const bn = raw.split('\\').join('/').split('/').pop();
+  const m = bn.match(/^mod_config\.(.+)\.json$/);
+  return m ? '.' + m[1] : '';
+})();
+const TREE_PATH = join(REPO, 'config', 'tech_tree_options' + SFX + '.json');
+const DATA = JSON.parse(readFileSync(TREE_PATH, 'utf8'));
 const OPT = DATA.options.find(o => o.ships);
 if (!OPT) throw new Error('no option is marked `ships` in config/tech_tree_options.json');
 const CFG = JSON.parse(readFileSync(CFGPATH, 'utf8'));
