@@ -33,9 +33,40 @@ Everything below — "one main PM", "a building per tier", the profitability lad
    profitable once tier-(N+2) buildings flood the market — so a tech lead actually pushes
    laggards out. Governed by `BALANCE_FRAMEWORK.md` (the balance source of truth).
 
+## ⭐⭐⭐ THE ANCHOR PRINCIPLE — WHAT AN ERA *MEANS* (user-ruled 2026-08-12, GOVERNING)
+
+**Read this before touching the tech tree, the era ladder, or any tier's era.** It is the intent the
+rest of this section implements, and where the two disagree, this wins.
+
+1. **SIX of our eras (0–5) ride on FIVE mechanical game eras.** The game has at most five, and they
+   exist only as machinery — the ahead-of-time penalty and the era base cost. The mapping is
+   **our 0 AND our 1 both sit in mechanical era 1**; thereafter one-to-one, our 2→2, 3→3, 4→4, 5→5.
+2. ⭐⭐ **EACH OF OUR ERAS HAS AN ANCHOR YEAR, AND THE ANCHOR HAS A NARRATIVE MEANING: at the anchor
+   year, a TECHNOLOGY LEADER should hold about HALF of that era's technologies.** That is the
+   definition of an era in this mod. It is not a label and not a decoration.
+3. **Era 0 is anchored well before the 1836 start; era 5 slightly after the 1936 end.** Both are
+   deliberate. The consequence is intended: **even an experienced player should finish a whole tree
+   only when unusually lucky, playing a strong nation, and probably neglecting the other trees.**
+4. ⭐⭐ **THE ANCHORS ARE AUTHORITATIVE. THE TECHNOLOGIES AND THE INDUSTRIES ARE CALIBRATED TO THEM,
+   NEVER THE REVERSE.** If the tree's dates and the anchors disagree, the tree is wrong. A substantial
+   re-dating or re-banding of technologies is an acceptable cost of meeting them.
+   ⚠ This overturns a reading recorded on 2026-08-12 that treated the dated content as fixed and the
+   anchors as the outlier — that had it backwards.
+5. **It coexists with the vanilla-fidelity premise by dividing the timeline.** At **1836** we hold
+   composition and distribution close to vanilla. **After 1836 only GDP** needs to stay near vanilla;
+   nothing else is bound by it, and the tech distribution in particular is expected to diverge.
+6. ⚠ **The balance UI's economic scenarios deliberately break rule 2, and that is correct.** A scenario
+   at era N contains tier-N industries of *every* type, even though the principle says half that era's
+   technology should be unavailable. A scenario is not one country: it is an **amalgamation of several
+   large technology leaders, each ahead in a different subfield**, and it models **no international
+   trade**. So it must contain every chain to be solvable. Do not "fix" this to match rule 2.
+
 ## THE FIVE-ERA LADDER (current method — supersedes the BE targets)
 
-The mod has its **own five technology eras**, anchored at **~1750 / 1850 / 1900 / 1925 / 1940** —
+⚠ **The heading is inherited and imprecise: there are SIX eras (0–5), not five.** Era 0 is the
+pre-industrial rung that carries no unlocking technology at all. See the anchor principle above.
+
+The mod has its **own technology eras**, anchored at **~1700 / 1750 / 1850 / 1900 / 1925 / 1940** —
 deliberately wider than the game's window at the front and **contracting** towards the back, because
 technical progress accelerates after the industrial revolution. **No industry has two tiers on one era.**
 100 tiers over 22 industries: 67 real + **33 `model_only`** (modelled but NOT emitted, because the game
