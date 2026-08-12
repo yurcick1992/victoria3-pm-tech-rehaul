@@ -936,7 +936,11 @@ if ($telemetryOn) {
 # tools/tech_tree_spec.mjs) and every vanilla transform it performs is a text surgery that THROWS when
 # its anchor is missing. Keeping it there rather than restating the design here means there is one
 # definition of the tree, not two.
-& node (Join-Path $PSScriptRoot 'emit_techs.mjs') $modAbs
+# ⚠⚠ $cfgPath IS NOT OPTIONAL HERE. Both emitters used to read config/mod_config.json directly while
+# every other step received -Config, so `build.ps1 -Config <alt>` emitted the alternate config's
+# BUILDINGS beside the canonical config's TECHNOLOGIES and RESEARCH EVENTS. See BUGS_AND_FIXES
+# (2026-08-12) - it was caught one run before it would have voided an overnight batch.
+& node (Join-Path $PSScriptRoot 'emit_techs.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_techs.mjs failed (exit $LASTEXITCODE) - the mod would ship without its technologies." }
 
 # --- INDUSTRY-DRIVEN RESEARCH EVENTS (ROADMAP step 2) --------------------------------------------
@@ -944,7 +948,7 @@ if ($LASTEXITCODE -ne 0) { throw "emit_techs.mjs failed (exit $LASTEXITCODE) - t
 # disabled. That is what makes `techs` and `techs+events` two CONFIG VARIANTS of one builder rather
 # than a build flag (user ruling 2026-08-11), so the arm is expressible as {kind: config, config: X}
 # and is recorded in build_state.json without touching the harness.
-& node (Join-Path $PSScriptRoot 'emit_research_events.mjs') $modAbs
+& node (Join-Path $PSScriptRoot 'emit_research_events.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_research_events.mjs failed (exit $LASTEXITCODE) - the mod would ship without its research events." }
 
 # --- emit UI data (consumed by ui/builder.html) so the editor always reflects the latest config ---

@@ -28,9 +28,16 @@ import { fileURLToPath } from 'node:url';
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const MOD = process.argv[2];
-if (!MOD) { console.error('usage: node tools/emit_research_events.mjs <modRoot>'); process.exit(2); }
+if (!MOD) { console.error('usage: node tools/emit_research_events.mjs <modRoot> [configPath]'); process.exit(2); }
 
-const CFG = JSON.parse(readFileSync(join(REPO, 'config/mod_config.json'), 'utf8'));
+// ⚠⚠ THE CONFIG PATH IS AN ARGUMENT, AND IT USED TO BE HARDCODED. `build.ps1 -Config <alt>` threads that
+// path through every other step; this one read `config/mod_config.json` regardless, so an alternate-config
+// build emitted BUILDINGS from the alternate config and RESEARCH EVENTS from the canonical one — silently,
+// because nothing compared them. It was caught while checking a pending measurement: the batch measuring
+// DOUBLED employment thresholds would have emitted the canonical config's original thresholds and come
+// back an exact rerun of the batch it was meant to be compared against.
+const CFGPATH = process.argv[3] || join(REPO, 'config/mod_config.json');
+const CFG = JSON.parse(readFileSync(CFGPATH, 'utf8'));
 const RE = CFG.research_events;
 if (!RE || !RE.enabled) { console.log('research events: DISABLED in config - nothing emitted (this is the `techs` arm)'); process.exit(0); }
 

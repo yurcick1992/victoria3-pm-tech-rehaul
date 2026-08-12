@@ -13,6 +13,57 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## `build.ps1 -Config X` built X's buildings with the CANONICAL config's technologies (2026-08-12)
+
+**Symptom.** None. That is the whole problem — the build succeeded, the linter passed, `Invoke-ModChecks`
+passed, preflight passed, and the mod loaded.
+
+**Found by** checking a *pending* measurement rather than a failure. Batch B of the research-events work
+was to re-run batch A with **doubled** employment thresholds, from
+`config/mod_config.2x_thresholds.json`. Asking "will it actually emit the doubled numbers?" produced the
+answer *no*.
+
+**Root cause.** `build.ps1` threads `-Config $cfgPath` through every step — `extract_presets.ps1`,
+`extract_start.ps1`, `convert_history.ps1` — **except the two newest ones**. `emit_techs.mjs` and
+`emit_research_events.mjs` were called with only the mod root and read `config/mod_config.json`
+directly, by name. So an alternate-config build emitted:
+
+- **buildings** from the alternate config,
+- **technologies** from the canonical one — a tier present only in the alternate gets no unlocking
+  technology (a building nobody can construct), and one present only in the canonical gets a technology
+  unlocking a building that does not exist (an engine error at load),
+- **research events** from the canonical one — including the whole `research_events` block.
+
+**What it would have cost.** Demonstrated, not inferred: running `emit_research_events.mjs` the old way
+(no config argument) against the batch-B mod root produces output **byte-identical to the canonical
+arm** — 15 000 / 45 000 / 135 000 / 405 000, batch A's thresholds. Batch B would have been an exact
+rerun of batch A, ~5 hours of game time, and the honest reading of the result would have been *"doubling
+the thresholds changes nothing"*: a confidently wrong finding with clean-looking data behind it.
+
+**Fix.** Both emitters take the config path as `process.argv[3]`, defaulting to the canonical one, and
+`build.ps1` passes `$cfgPath` to both.
+
+**The guard that should have caught it was itself wrong, twice.** `emit_techs.mjs` carried a staleness
+check comparing `tech_tree_options.json`'s mtime against `config/mod_config.json`'s — the wrong file on
+this path, and mtime is the wrong test anyway: too weak (a tree regenerated after an unrelated edit
+passes while still missing a tier) and too strong (any config touched later trips it, which blocked the
+batch-B config outright for merely existing). It now checks what it means: **every tier this build will
+emit must name a technology the shipping tree contains.**
+⚠ And the first version of *that* threw on all ten tiers with no technology at all — which are correct:
+a tier with no `tech` is available from the 1836 start, which is exactly right for the pre-industrial
+era-0 rungs and the vanilla basic port. Only a tier that *names* a technology can be wrong about it.
+The start-available ones are counted and printed instead, so an accidental one is still visible.
+
+**Detecting it next time.** The general shape is *a build step that ignores the config the build was
+given*, and it is worth grepping for whenever a step is added: `grep -n "mod_config.json" tools/*.mjs`.
+Three tools had the same defect in one day — this one, plus `era_solver.mjs` (read the redirected config
+via `econ_host`, wrote its solved recipes into the canonical one) and `build_era_ladder.mjs`. All now
+take the path explicitly.
+⚠ **No shipped measurement is affected.** Both emitters are ROADMAP step 1/2, added 2026-08-11/12; the
+only sessions that used a non-canonical config predate them.
+
+---
+
 ## A `+` in the wrong place aborts every concurrent-harvest batch, and blames the wrong script (2026-08-12)
 
 **Symptom.** `run_schedule.ps1` builds the mod, reports `build ok`, reports `autosave archiver alive
