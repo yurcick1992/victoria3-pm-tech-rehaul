@@ -2322,7 +2322,27 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   resumed; **3 crashes from the same autosave** ⇒ permanent failure, move to the next run; **3 crashes
   before the first autosave ever exists** ⇒ loud alert and the **whole schedule aborts**, because repeated
   deaths that early mean the mod itself is broken. Exit codes: `0` ok, `2` stopped by user, `3` fatal.
-- **🛑 A SESSION THAT IS SUPERSEDED, DEFECTIVE OR PARTLY VOID GETS A `VERDICT.md` INSIDE ITS OWN FOLDER.**
+- **🛑🛑 EVERY SESSION THAT RAN GETS A `VERDICT.md`, AND THE DEADLINE IS THE HANDOVER** (user ruling
+  2026-08-12). A sound session needs one as much as a defective one — its numbers are what a later
+  reader compares against, and "sound" is itself a finding that has to be stated. ⚠ **The right MOMENT
+  cannot be pinned down**, because a verdict often needs the user: whether a result is void, what it is
+  confounded by, and what it means are frequently their call, and that conversation can run for hours
+  after the run ends. So the rule is not "write it when the run finishes" — it is **"a handover may not
+  be written while a session from this session's work lacks a verdict"**. That is a moment that always
+  arrives and is always noticeable.
+  **Check it mechanically rather than from memory** — one line, and it is the last step before the
+  handover:
+  ```bash
+  for d in tools/testbed/sessions/*/; do b=$(basename "$d"); [ "${b:0:8}" -ge 20260812 ] 2>/dev/null && { [ -f "$d/VERDICT.md" ] || echo "MISSING VERDICT: $b"; }; done
+  ```
+  ⚠ **The glob starts at 2026-08-12 ON PURPOSE.** The convention began that day and 77 earlier sessions
+  have no verdict; a check that reports 77 misses every time is a check nobody reads, which is the exact
+  failure mode this register-and-detector habit exists to prevent. Widen the glob only to write a
+  RETROSPECTIVE verdict deliberately — and mark it as retrospective, since it is weaker evidence than one
+  written while the analysis was live.
+  Then add the one-line row to the COMMITTED `tools/testbed/SESSION_VERDICTS.md` — the session folder is
+  gitignored, so the row is the half that survives it.
+- **A SESSION THAT IS SUPERSEDED, DEFECTIVE OR PARTLY VOID NEEDS THE VERDICT MOST.**
   Everything a session carries about *why* it ran — `schedule.json`'s `_why`/`_comparison`,
   `build_state.json`'s `agentic` block — is written **before** the run. Nothing anywhere records what it
   turned out to mean, and since sessions are never deleted (below), a defective batch otherwise sits
@@ -2427,6 +2447,9 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   handover.** Before writing one, put the results in `FINDINGS.md`, the plan in `ROADMAP.md`, rulings in
   `BALANCE_FRAMEWORK.md`, guardrails in `TESTBED_LANDMINES.md`. The handover then only has to say what
   to DO, and can point at those for why.
+  ⚠⚠ **AND EVERY SESSION THAT RAN MUST HAVE ITS `VERDICT.md` FIRST** — the handover is the deadline for
+  that rule, because no earlier moment reliably arrives (see the verdict rule above). Run the
+  missing-verdict check before writing, not after.
 - **Status board — REBUILD it UNPROMPTED, never maintain it.** Publish a status board as an
   Artifact, and **republish it to the same URL the moment the picture moves — during the session,
   not at the end, and without being asked.** Closing an item, hitting a blocker or handing a
