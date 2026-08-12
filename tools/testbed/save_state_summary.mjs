@@ -60,7 +60,7 @@ import { fileURLToPath } from 'node:url';
 
 // v2 (2026-08-11) adds POP OBJECT COUNTS.  v3, same day, splits them into TOTAL and NON-EMPTY — user
 // ruling, so a later regression can ask which of the two actually predicts tick speed.
-export const SAVE_SUMMARY_VERSION = 3;
+export const SAVE_SUMMARY_VERSION = 4;
 
 // What we knowingly leave out, and why.  Read this before concluding the summary "lost" something.
 const NOT_CAPTURED = {
@@ -105,6 +105,7 @@ const WANT = new Set(['country_manager', 'states', 'technology', 'pacts', 'build
 
 // ---------------------------------------------------------------- collectors
 let saveDate = '';
+let gameRules = null;
 const stateCountry = new Map(), stateRegion = new Map();
 const C = new Map();                       // country id -> record
 const techByCountry = new Map();           // country id -> {acquired:[], researching, progressed:n}
@@ -180,6 +181,19 @@ let o = null, inIdent = false;
 const numsOf = t => { const out = []; for (const m of t.matchAll(/-?\d+(?:\.\d+)?/g)) out.push(+m[0]); return out; };
 
 for await (const line of rl) {
+  // ⭐ THE GAME RULES ARE PART OF WHAT A RUN MEANS, and nothing captured them (user ruling 2026-08-12).
+  // `pop_consolidation` above all: it is the player's own fidelity-versus-performance dial, it decides
+  // how many POP RECORDS the world holds, and pop records — not people — are what the engine iterates.
+  // A session that quietly ran on a different setting would be incomparable in exactly the way an
+  // unnoticed patch is, and just as invisible.
+  // ⚠ Every run before 2026-08-12 was guaranteed `moderate_consolidation` (the game's default); the two
+  // sessions of that day were checked and are byte-identical across all fifteen rules.
+  // ⚠ COST: the settings line sits at ~line 45 of the melt, nested inside the header block this reader
+  // otherwise skips — so it cannot be caught in the `top` branch. Guarded on `gameRules === null`, which
+  // is a single null comparison per line once it has been found, and this loop is hot (~7.2 M lines).
+  if (gameRules === null && line.charCodeAt(0) === 9 && line.indexOf('"achievements_allowed"') > 0) {
+    gameRules = (line.match(/"[a-z_]+"/g) || []).map(x => x.slice(1, -1));
+  }
   if (mode === 'top') {
     if (line.charCodeAt(0) === 125) continue;                       // stray '}' — cannot happen at top
     if (!saveDate) { const d = /^date=(\d+\.\d+\.\d+)/.exec(line); if (d) { saveDate = d[1]; continue; } }
@@ -450,6 +464,7 @@ for await (const line of rl) {
 
 // ---------------------------------------------------------------- integrity gates (fail loud)
 await rakalyDone;                       // a melt that failed must not yield a summary — see meltStream
+if (!gameRules) console.error('WARN: no game_rules settings line found in the header');
 if (!saveDate) throw new Error('no top-level `date=` found — is this a melted vic3 gamestate?');
 if (!C.size) throw new Error('no countries parsed — the save layout has moved');
 // ⚠ A patch that adds or removes a pop type shifts EVERY profession index.  The save states its own
@@ -531,7 +546,7 @@ for (const [g, rows] of [...byGood].sort()) {
 // stored by the engine and hidden by the interface: 17.4 % of them in a vanilla 1936 gamestate, and
 // half the records in some states.  Which of the two predicts a tick's cost is an open question, so
 // the summary refuses to choose (user ruling, 2026-08-11).
-const world = { buildings: {}, gdp: 0, population: 0,
+const world = { buildings: {}, gdp: 0, population: 0, game_rules: gameRules,
                 pop_objects: popObjTotal, pop_objects_live: popObjLive,
                 pop_objects_empty: popObjTotal - popObjLive,
                 pop_objects_unowned: popObjOrphan, pop_objects_unowned_live: popObjOrphanLive };

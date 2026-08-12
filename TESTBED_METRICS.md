@@ -1101,6 +1101,20 @@ is ~5 300 lines per dump. `summarise.ps1`'s `integrity.partial_dumps` gate exist
 nothing at all. §4.3 listed this as a candidate early-read hook and suspected it; it is now measured.
 **The earliest usable monthly dump is 1836.2.1.**
 
+## 7¼ — THE GAME RULES ARE RECORDED (schema v4, 2026-08-12)
+
+Every save summary's `world.game_rules` carries the fifteen rule settings the run was played under.
+**`pop_consolidation` is the one that matters for interpretation**: it is the player's own
+fidelity-versus-performance dial, it decides how many POP RECORDS the world holds, and pop records — not
+people — are what the engine iterates per tick. A session on a different setting is not comparable to one
+on the default, and nothing would have said so.
+
+⚠ **Every run before 2026-08-12 was guaranteed `moderate_consolidation`** (the game's default; the
+observer sets no rules). The two sessions of that day were checked and are byte-identical across all
+fifteen. Read it off the save, never off intent.
+
+---
+
 ## 7½. THE SAVEGAME HARVEST — the instrument, industrialised (2026-08-11)
 
 §7 established that a save can be read. This section is what turned that into a **standing instrument**:
