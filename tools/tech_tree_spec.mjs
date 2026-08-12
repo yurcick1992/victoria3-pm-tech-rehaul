@@ -700,7 +700,13 @@ const LADDER = {
     { era: 5, o1: 'compression_ignition',o2: 'compression_ignition' },
   ],
   port: [
-    { era: 0, o1: null,                  o2: null },
+    // ⚠ `navigation`, NOT null. Vanilla's own `building_port` carries
+    // `unlocking_technologies = { navigation }`, and this rung IS that building — leaving it ungated let
+    // any country build a port from the 1836 start where vanilla requires the technology. Small in
+    // practice (navigation is era 1 and most starting countries hold it) but it was a divergence from
+    // vanilla that nothing had chosen. `navigation` also unlocks the sail shipyard's base rung, which is
+    // again exactly what vanilla does with it.
+    { era: 0, o1: 'navigation',          o2: 'navigation' },
     { era: 1, o1: 'steamship_bunkering', o2: 'steamship_bunkering' },
     { era: 2, o1: 'deep_water_docks',    o2: 'deep_water_docks' },
     { era: 3, o1: 'concrete_quays',      o2: 'concrete_quays',        x: ['gantry_cranes'] },

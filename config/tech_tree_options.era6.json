@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-12T10:40:25.225Z",
+ "generated": "2026-08-12T10:54:14.230Z",
  "eraCost": {
   "1": 7500,
   "2": 10000,
@@ -1130,9 +1130,16 @@
      "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "shipyard",
+     "industry": "port",
      "prereqs": [],
      "unlocks": [
+      {
+       "key": "building_port",
+       "name": "Basic Port",
+       "era": 0,
+       "year": 1700,
+       "ind": "port"
+      },
       {
        "key": "building_shipyard",
        "name": "Basic Shipyards",
@@ -8073,9 +8080,16 @@
      "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "shipyard",
+     "industry": "port",
      "prereqs": [],
      "unlocks": [
+      {
+       "key": "building_port",
+       "name": "Basic Port",
+       "era": 0,
+       "year": 1700,
+       "ind": "port"
+      },
       {
        "key": "building_shipyard",
        "name": "Basic Shipyards",
@@ -8092,7 +8106,8 @@
      "blocks": [
       "drydocks",
       "admiralty",
-      "screw_frigate"
+      "screw_frigate",
+      "steamship_bunkering"
      ]
     },
     {
@@ -8118,7 +8133,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "screw_frigate",
-      "steamship_bunkering",
       "iron_screw_steamers"
      ]
     },
@@ -9740,7 +9754,7 @@
      "platform": null,
      "industry": "port",
      "prereqs": [
-      "paddle_steamer"
+      "navigation"
      ],
      "unlocks": [
       {
@@ -15364,9 +15378,16 @@
      "origin": "vanilla",
      "filler": false,
      "platform": null,
-     "industry": "shipyard",
+     "industry": "port",
      "prereqs": [],
      "unlocks": [
+      {
+       "key": "building_port",
+       "name": "Basic Port",
+       "era": 0,
+       "year": 1700,
+       "ind": "port"
+      },
       {
        "key": "building_shipyard",
        "name": "Basic Shipyards",
@@ -15383,7 +15404,8 @@
      "blocks": [
       "drydocks",
       "admiralty",
-      "screw_frigate"
+      "screw_frigate",
+      "steamship_bunkering"
      ]
     },
     {
@@ -15409,7 +15431,6 @@
      "vanillaUnlocks": [],
      "blocks": [
       "screw_frigate",
-      "steamship_bunkering",
       "iron_screw_steamers"
      ]
     },
@@ -17074,7 +17095,7 @@
      "platform": null,
      "industry": "port",
      "prereqs": [
-      "paddle_steamer"
+      "navigation"
      ],
      "unlocks": [
       {
