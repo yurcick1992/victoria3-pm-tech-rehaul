@@ -109,8 +109,21 @@ for (const ind of CFG.industries) {
       if (!emp) return;                                       // art academy: jobs live in the ownership PMG
       addSource(t.tech, t.era, 'improvement', { building: prev.key, emp });
     } else {
+      // ⚠⚠ A RESEARCHABLE FIRST RUNG WITHOUT AN ANCHOR IS A BAR THAT CAN NEVER FILL, and it used to be a
+      // silent `return`. The comment said "deliberately unanchored (era-1 freebies etc.)", which is true
+      // only while that rung's technology sits in era 1 — those are handed out at the 1836 start and are
+      // skipped above. `percussion_cap` is exactly the case that breaks it: the ladder-era alignment holds
+      // it back at era 2 (moving it to era 1 would hand the powers percussion caps in 1836), so it IS
+      // researchable, munition's first rung is its own, and munition had no anchor. Before the merges that
+      // meant percussion_cap had NO sources at all and therefore no journal entry; after them it had one,
+      // for artillery only, and the munition half of the same technology contributed nothing. Nothing
+      // failed at any point.
       const list = (RE.necessity_anchors || {})[ind.id];
-      if (!list) return;                                      // deliberately unanchored (era-1 freebies etc.)
+      if (!list) throw new Error(
+        `research_events: ${ind.id}'s first rung (${t.key}) is gated on '${t.tech}', which is era ${T.era} ` +
+        `and therefore RESEARCHABLE — but ${ind.id} has no necessity_anchors entry, so its research bar ` +
+        `would have no source from this industry and could never fill. Add an anchor (a building or ` +
+        `bg_ group whose presence is the demand pull for it), or give the industry an earlier rung.`);
       for (const s of list) {
         if (s.startsWith('bg_')) { if (!GROUPS.has(s)) throw new Error(`necessity_anchors[${ind.id}] names unknown building group '${s}'`); addSource(t.tech, t.era, 'necessity', { group: s }); }
         else addSource(t.tech, t.era, 'necessity', { building: s });

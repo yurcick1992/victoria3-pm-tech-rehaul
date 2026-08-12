@@ -677,6 +677,22 @@ pmr_src_percussion_cap_0 = {
 		multiply = 5000
 }
 
+pmr_src_percussion_cap_1 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_group = bg_army }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_percussion_cap_2 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_group = bg_conscription }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
 pmr_src_plastics_0 = {
 	value = 0
 	every_scope_building = {

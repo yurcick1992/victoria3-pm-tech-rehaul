@@ -3369,6 +3369,24 @@ pmr_bar_percussion_cap = {
 				value = 1
 			}
 		}
+		add = {
+			desc = "pmr_term_improvement"
+			if = {
+				limit = {
+				pmr_src_percussion_cap_1 >= 1
+				}
+				value = 1
+			}
+		}
+		add = {
+			desc = "pmr_term_improvement"
+			if = {
+				limit = {
+				pmr_src_percussion_cap_2 >= 1
+				}
+				value = 1
+			}
+		}
 	}
 }
 

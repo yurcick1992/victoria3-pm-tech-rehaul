@@ -3950,7 +3950,11 @@ window.PMDATA = {
                                                       "electrics":  [
                                                                         "building_trade_center",
                                                                         "building_financial_district"
-                                                                    ]
+                                                                    ],
+                                                      "munition":  [
+                                                                       "bg_army",
+                                                                       "bg_conscription"
+                                                                   ]
                                                   },
                             "_threshold_era1_note":  "PROVISIONAL, needs a ruling. The re-band moved rungs down an era, so tiers now sit at era 1 whose technology is not an era-1 freebie, and the emitter looks the threshold up by OUR TIER era. 5000 continues the ruled x3 ladder (5k/15k/45k/135k/405k) downward; it was not itself ruled."
                         }
