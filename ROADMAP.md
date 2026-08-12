@@ -277,6 +277,45 @@ authored era against its own date: a tier whose `tech_year` falls outside its er
 tiers in one era throw, and the arrival-order check already present still throws. Two tooling defects
 were fixed to get here — see *Deferred fixes* and the commit log.
 
+**THE SOLVE — RUN AND CONFIRMED, 2026-08-12.** Two consecutive `era_scenarios --write` runs on the
+re-banded ladder came back **byte-identical outside the RECIPE MIX line**, and the second printed *"no
+tier reads its mix from the previous run"* — so this is a **strict fixed point**, not a transitional
+state, and it is comparable to the shipped numbers.
+
+| | re-banded (106 tiers) | shipped (100 tiers) |
+|---|--:|--:|
+| final-state illogicality | **63** (57 excl shipyards) | 57 (54) |
+| per era | 4 / 4 / 9 / 13 / 15 / 18 | 3 / 5 / 7 / 12 / 15 / 15 |
+| — **loss** family | **8** | 12 |
+| — inverted | 8 | 6 |
+| — stale-profitable | 41 | 36 |
+| net | £20.2M/wk | £20.1M |
+| losses | £136k/wk (0.7% of net) | £138k |
+| industrial ceiling | **clear, all six eras** | clear |
+| macro residual breaches | 23 | 19 |
+| recipe monotonicity | 5/84 (all rounding, 4.02→3.99) | 3 |
+
+⭐ **Read against the ruled severity ordering this is a net gain, not a regression.** A top rung *losing
+money* is the very bad fault and it falls **12 → 8**; an *inverted* ladder is the middling one and rises
+6 → 8; *obsolete-not-phased-out* is the tolerable one and takes the growth, 36 → 41. The headline number
+going up is that trade, and it is the trade the severity ordering asks for.
+⭐ **Losses on NEWEST rungs are £1k / £4k / £603 / £620 / 0 / 0 across the six eras** — the fifteen added
+rungs pay for themselves, and eras 4 and 5 carry no newest-rung loss at all. What loss remains is
+subsistence (£22–38k in the late eras) and stale tails, which is the design working.
+
+**Two honest residuals, neither hidden:**
+- ⚠ **Dominant rungs sit 37.5pp off the band on average (57/105 within 8pp)**, against 23.5pp shipped.
+  The re-band moved every recipe and the band regime has not caught up; this is the clearest lever left.
+- ⚠ **There are now ZERO leading rungs (0/0).** The bands align tightly with the scenario years, so no
+  present tier has an era above its scenario. The leading rung was scored by nothing anyway
+  (BALANCE_FRAMEWORK, 2026-08-08), but it is a structural change, not noise.
+- Macro breaches 19 → 23; the new entries are the war industries and glass at the late eras, plus
+  railway, which remains the standing transport gap rather than anything the re-band caused.
+
+**Not yet done, and needed before this can be merged:** `building_cost` is `null` on all fifteen new
+rungs — `solve_building_cost.ps1` has not been run — and none of them has an unlocking technology yet,
+which is step 1's job and the reason they are still invented tiers rather than emitted buildings.
+
 **6. The four starting-technology lists are rewritten**, and the blanket pass is deliberate: *"the
 countries should have reasonable base techs, and not only the absolute minimum mandated by their 1836
 PMs"* — every civilised country gets **all of era 0** as a blanket statement, before the per-country
