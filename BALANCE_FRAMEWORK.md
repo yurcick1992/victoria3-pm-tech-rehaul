@@ -4328,3 +4328,63 @@ this size IS a fat-margin arms sector; the excess margin is the honest residual 
 the caps and the band all binding at once. §10.51.2's second free-entry pass is ~neutral on
 today's seeds for exactly this reason — its value is standing ready for the industries the caps do
 NOT bind.
+
+## 10.52 THE PAYBACK IS TWO YEARS, NOT TEN — the capital side, measured for the first time (2026-08-12)
+
+⭐⭐ **§9's ten-year-payback model is arithmetically right and its one assumption is 3–6× off, so every
+building on the sheet repays its construction cost in about TWO YEARS.** Measured with the new
+`tools/payback_census.mjs` (read-only) over the six shipped era scenarios, at each scenario's own
+realised prices:
+
+| scenario | tiers present | profitable | payback p25 / med / p75 | capital-weighted |
+|---|---|---|---|---|
+| 1780 | 9 | 7 | 1.0 / **1.6** / 6.3 | 1.4 |
+| 1836 | 28 | 21 | 0.9 / **2.1** / 3.5 | 2.0 |
+| 1870 | 47 | 37 | 1.0 / **2.0** / 3.9 | 1.9 |
+| 1900 | 57 | 46 | 1.0 / **2.1** / 3.8 | 1.9 |
+| 1920 | 61 | 51 | 0.9 / **2.2** / 3.4 | 2.3 |
+| 1945 | 63 | 56 | 0.9 / **2.2** / 4.3 | 2.2 |
+
+**Why.** `solve_building_cost.ps1` pays the cost back out of an ASSUMED **20% return on operating
+cost**. The economy the solver actually ships earns, on its DOMINANT rungs (`TPthr`, the same quantity
+the solve bands):
+
+| scenario | margin p25 / med / p75 | rungs above the +50% band top |
+|---|---|---|
+| 1780 | 27 / **80** / 139 % | 5/9 |
+| 1836 | 30 / **56** / 138 % | 9/17 |
+| 1870 | 25 / **64** / 158 % | 11/19 |
+| 1900 | 26 / **67** / 158 % | 14/21 |
+| 1920 | 44 / **76** / 163 % | 14/21 |
+| 1945 | 45 / **104** / 183 % | 12/17 |
+
+10 years × 0.20 ÷ 0.90 ≈ 2.2 years. Nothing had measured it because payback is a property of the
+**recipe book and the scenario together**, and the two live in different tools — §9 works at base
+prices with an assumed margin and never sees a scenario; the era solver works at realised prices and
+never looks at `building_cost`.
+
+⚠ **This is the handover's "overabundance of capital", stated as one number.** At the shipped cost book
+the whole standing capital stock of the 1945 scenario is **2.7 years** of that scenario's own
+construction budget (K £2.26bn against 18% of a £1.50bn GDP) — the economy could rebuild itself from
+nothing three times a decade. K/GDP runs **0.32 → 1.51** across the eras against a real-world ~3–4.
+
+⭐ **AND THE TWO GOALS ARE LINKED BY AN IDENTITY THAT CANNOT BE ESCAPED BY TUNING**:
+`K/GDP = payback × (profit share of GDP)`. Our tiers' profit share of GDP runs **14 / 16 / 27 / 48 / 55 /
+68 %** across the six eras (wage share 5 / 8 / 10 / 16 / 14 / 13 %), against a real ~25–35%. So a
+20-year payback at era 5 *forces* K/GDP ≈ 13, and conversely a realistic K/GDP of 3–4 *forces* a
+payback of about 5 years. **A payback ladder that RISES over the century and a buildable capital stock
+are in direct conflict, and the profit share is why** — the deeper fix is the wage share, which is
+pinned (see §1: `W = base wage × Σ employees × wage_weight`, both pinned, landing at 10–40% of cost).
+
+⚠ **A cost rule cannot make the ladder climb, and the census says so directly.** Under any
+payback-anchored book, the median payback of the PROFITABLE STALE rungs is *shorter* than the dominant
+rung's in 1836, 1870 and 1900 (10.7 vs 13.0 · 10.6 vs 14.4 · 13.2 vs 15.0 at the 10→20 ladder): the old
+building is cheap AND still turning a healthy margin, so it remains the better investment. That is
+§10.49's ruled stale-profitable trade (36 of the 57 faults) seen from the capital side. Build cost
+cannot fix it — making OLDER buildings dearer is absurd — the price ladder has to.
+
+**Status: measured, not shipped.** The rule proposed on top of it (`building_cost = c(era) × base-price
+output value`, `c = P(era) × 52 × ρ(era) / £720`) is with the user for a ruling; `payback_census.mjs
+--rule --p0 <a> --p5 <b>` derives and tests any ladder. ρ, the median realised-profit-to-base-output
+ratio at a tier's dominant era, measures **0.54 / 0.69 / 0.54 / 0.52 / 0.57 / 0.61** — nearly flat,
+which is what makes a six-number table enough.

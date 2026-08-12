@@ -331,6 +331,17 @@
   button.recipe.same{opacity:.42;font-style:italic}
   button.recipe:disabled{opacity:.3;cursor:not-allowed}
   .recipelbl{font-size:11px;color:#8a3030;letter-spacing:.06em;text-transform:uppercase;margin-right:2px}
+  /* PAGE NAV — the sheet and the tech tree are two views of one config, so they are two pages of one
+     window rather than two windows. The tree itself lives in ui/techtree.html and is embedded in an
+     IFRAME: it is a full page with its own stylesheet whose selectors (header, .row, .legend, .stats,
+     .node) collide head-on with this one's, and an iframe isolates both directions for free while
+     leaving that file byte-identical and still openable on its own. */
+  .pgnav{display:flex;gap:0;margin-right:10px;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+  .pgnav button{border:0;border-radius:0;padding:6px 12px;background:transparent;font-weight:600}
+  .pgnav button+button{border-left:1px solid var(--line)}
+  .pgnav button.on{background:var(--panel2);color:var(--accent)}
+  #techpage{padding:0;max-width:none;margin:0}
+  #techframe{display:block;width:100%;border:0;background:var(--bg)}
   .lockbtn{font-size:13px;padding:0 6px}
   .mtable col.c-act{width:58px}
   .tieract{display:flex;gap:3px;justify-content:flex-end}
@@ -371,6 +382,11 @@
 <body>
 <header>
   <h1>PM &amp; Tech Rehaul — Balance UI</h1>
+  <span class="pgnav">
+    <button id="navSheet" class="on" title="The balance sheet: recipes, scenario, prices, profitability.">Balance sheet</button>
+    <button id="navTech" title="The industry tech tree (ROADMAP step 1): era as a row, progression downward, columns are industries. Hover a technology for what blocks it and what it blocks.">Tech tree</button>
+  </span>
+  <span id="sheetTools" style="display:contents">
   <span class="tag muted">Manufacturing industry PMs</span>
   <span class="sp"></span>
   <span class="recipelbl" title="The sheet is two things: a RECIPE BOOK (emitted to the game) and a SCENARIO (session-only). These two buttons switch the book; everything red writes it.">recipes</span>
@@ -397,6 +413,8 @@
   <button id="history">History</button>
   <button id="exportCfg">Export mod_config.json</button>
   <button id="buildNow" class="primary" title="Write config &amp; run build.ps1 (needs tools/ui.ps1 server)">Build now</button>
+  </span><!-- /#sheetTools: every control here acts on the SHEET, so the tree page hides the lot rather
+       than offering buttons that do nothing to what is on screen. -->
 </header>
 <main>
   <div id="banner" class="banner"></div>
@@ -435,6 +453,60 @@
     </div>
   </div>
 </main>
+
+<!-- ===== PAGE 2: THE INDUSTRY TECH TREE (ROADMAP step 1) =========================================
+     ui/techtree.html, embedded. It stays a complete standalone page — openable off the filesystem,
+     reading the generated ui/techdata.js — and this frame is the only thing that knows about it.
+     LOADED LAZILY, on the first visit: techdata.js is ~340 KB of tree, and the sheet must not pay for
+     it on every page load.
+     TWO SOURCES, one frame: served from ui/ it is a file (`src`); inside the standalone snapshot the
+     whole page (techdata.js already folded in) arrives as window.__TECHTREE_HTML and goes in through
+     `srcdoc` — see tools/bundle_ui.mjs, which FAILS the bundle if it cannot find either half. -->
+<section id="techpage" hidden>
+  <iframe id="techframe" title="Industry tech tree"></iframe>
+</section>
+<script>
+(function () {
+  var main = document.querySelector('main'), page = document.getElementById('techpage'),
+      frame = document.getElementById('techframe'), hdr = document.querySelector('header'),
+      tools = document.getElementById('sheetTools'),
+      bSheet = document.getElementById('navSheet'), bTech = document.getElementById('navTech');
+  var loaded = false;
+  // The header wraps to two or three rows depending on window width, so its height is measured rather
+  // than assumed — a hardcoded offset leaves the tree either clipped or short by a whole row of buttons.
+  function fit() { if (!page.hidden) frame.style.height =
+    Math.max(320, window.innerHeight - hdr.getBoundingClientRect().height) + 'px'; }
+  function show(tech) {
+    page.hidden = !tech; main.hidden = tech;
+    tools.style.display = tech ? 'none' : 'contents';
+    bSheet.classList.toggle('on', !tech); bTech.classList.toggle('on', tech);
+    if (tech && !loaded) {
+      loaded = true;
+      if (window.__TECHTREE_HTML) { frame.srcdoc = window.__TECHTREE_HTML; guard(); }
+      else frame.src = 'techtree.html';
+    }
+    fit();
+    if (tech) window.scrollTo(0, 0);
+  }
+  // A BLANK FRAME EXPLAINS NOTHING, and there is one realistic way to get one: a host that refuses the
+  // nested frame under its own CSP. Serving from ui/ is verified, so this only ever fires on a published
+  // copy — and it says what to do instead rather than leaving an empty page that looks like a data bug.
+  function guard() {
+    setTimeout(function () {
+      var d = null; try { d = frame.contentDocument; } catch (e) {}
+      if (d && d.getElementById('canvas')) return;
+      var n = document.createElement('div');
+      n.style.cssText = 'padding:14px 16px;color:var(--warn);font-size:13px';
+      n.textContent = 'The tech tree did not load in this copy. The page embeds it in a frame and this '
+        + 'host appears to block that; open ui/techtree.html directly instead.';
+      page.insertBefore(n, frame);
+    }, 2500);
+  }
+  bSheet.onclick = function () { show(false); };
+  bTech.onclick  = function () { show(true); };
+  window.addEventListener('resize', fit);
+})();
+</script>
 
 <!-- THE economic model. builder.html still carries its own copy of most of this arithmetic (an open
      fork — see CLAUDE.md), but the ILLOGICALITY rule lives here and here only: it is the criterion that
@@ -497,6 +569,31 @@ function basePm(pmg){ const g=VAN.pmgs[pmg]; if(!(g&&g.pms&&g.pms.length)) retur
 // between industries: fertilizer starts at era 2, so ITS era-2 rung is position 1.
 // Everything USER-FACING therefore labels by era. Only ids and lookups use `t.tier`.
 const tlab = t => (t && t.era != null ? 'e' + t.era : 'T' + (t ? t.tier : '?'));
+// ---- THE UNLOCKING TECHNOLOGY, named and dated ----------------------------------------------------
+// `t.tech` is a script key, and a script key does not answer the question anyone actually asks of a
+// building: what unlocks it, and how far down the tree is that? PMDATA.techs is the SHIPPING option's
+// index (build.ps1, from config/tech_tree_options.json) — the same tree emit_techs.mjs writes into the
+// mod, so the sheet can never name a technology the game does not have.
+// ⚠ THE TWO ERAS ARE NOT THE SAME NUMBER and must never be conflated. A tier's `era` is its rung on the
+// mod's SIX-era ladder (0–5, anchored 1750…1940); a technology's era is its row in the GAME's five-era
+// tree, where our 0 and our 1 both sit in game era 1. So a `e0` building on an `era 1` technology is
+// correct, not a bug — which is exactly why this labels the technology's era as "tech era".
+const TECHIDX = (window.PMDATA && window.PMDATA.techs) || {};
+function techInfo(id){ return id ? (TECHIDX[id] || null) : null; }
+function techName(id){ const T = techInfo(id); return T && T.n ? T.n : (id || ''); }
+// short form for a cell: "Bessemer Process · tech era 2"; falls back to the bare key when the index is
+// missing (an old data.js, or a tier whose technology is not in the shipping tree)
+function techLabel(id){ const T = techInfo(id); if(!id) return '';
+  return T ? `${T.n} · tech era ${T.e}` : id; }
+// long form for a tooltip, with the narrative onset and whether we invented the technology
+function techTitle(id){ const T = techInfo(id);
+  if(!id) return 'no unlocking technology — available from the start';
+  if(!T) return `unlocking technology: ${id} (not in the shipping tech tree — regenerate ui/data.js)`;
+  return `Unlocked by ${T.n} (${id}) — ${T.c} tree, GAME era ${T.e}`
+    + (T.y ? `, real-world onset ~${T.y}` : '')
+    + (T.o === 'new' ? '. A technology this mod ADDS.' : '. A vanilla technology.')
+    + ' ⚠ the technology\'s era is its row in the game\'s five-era tree, which is not the mod\'s six-era'
+    + ' ladder — our e0 and e1 both sit in game era 1.'; }
 function initSel(pmgs){ const s={}; (pmgs||[]).forEach(pg=>{ const b=basePm(pg); if(b) s[pg]=b; }); return s; }
 // normalize industries into an editable model
 const AIVAL_DEFAULT = 1000;   // PRODUCTION_BUILDING_BASE_VALUE — engine default when a building scripts no ai_value
@@ -1936,7 +2033,7 @@ function tierRow(i,t){
     + subtotalRow(`osub_${i.id}_${t.tier}`, 'total out', thruMult(t.key)*outputValue(i,t,true), 'Total weekly output revenue at the CURRENT scenario prices, including the throughput bonus — priced goods only (the non-goods above carry no £).');
   return `<tr data-ind="${esc(i.id)}" data-tier="${t.tier}">
     <td><span class="pill" style="background:${t.era===0?ERA0COL:(TIERCOL[t.era!=null?t.era:t.tier]||'#666')}" title="${t.era!=null?`Era ${t.era} of the mod's six-era ladder, 1780-1945. This is the ERA, never a position in its own industry: automotive starts at era 3, so its first building is e3. The in-game name says the same thing ("Era ${t.era}. …").${t.tech_year!=null?` First commercially deployable ~${t.tech_year} (tech_year, §10.44) — the date gate places this tier in scenarios from that year on.`:''}`:'tier'}">${t.era!=null?'e'+t.era:t.tier}</span>${t.tech_year!=null?`<div class="muted" style="font-size:10px" title="tech_year: the year this slot's technology was first commercially deployable — what the §10.44 date gate places by">${t.tech_year}</div>`:''}${t.model_only?'<div class="muted" style="font-size:9px" title="modelled but NOT emitted — no unlocking technology exists for it yet">model</div>':''}</td>
-    <td>${esc(t.name)}<div class="muted" style="font-size:11px">${esc(t.key)}</div><div class="muted" style="font-size:10px" title="unlocking technology (vanilla)">${esc(t.tech||'')}</div>
+    <td>${esc(t.name)}<div class="muted" style="font-size:11px">${esc(t.key)}</div><div class="muted" style="font-size:10px" title="${esc(techTitle(t.tech))}">${t.tech?'🔒 '+esc(techLabel(t.tech)):'<i>no unlocking technology</i>'}</div>
       <div class="aivrow" title="Base AI construction desire (building ai_value). Blank = engine default ${AIVAL_DEFAULT}. Emitted as the building's ai_value when set.">ai_value <input type="number" min="0" step="50" value="${t.ai_value!=null?t.ai_value:''}" placeholder="${AIVAL_DEFAULT}" data-ind="${i.id}" data-tier="${t.tier}" data-aiv="1"></div>
       ${subsidyRowHTML(t.key)}
       ${secSelectors(i,t)}</td>
@@ -2210,9 +2307,15 @@ function renderViz(){
       const v=valOf(i,p.t), n=BLDNUM[p.t.key]||0;
       // A HOLLOW dot means the scenario contains none of this building. Its arithmetic is still real, but
       // it is not part of what the Ladder check scores — same presence rule, shown rather than explained.
+      // The unlocking technology is on the dot because the chart IS the ladder, and a rung's position on
+      // it is meaningless without knowing what gates it. Note the two eras differ by design — see techLabel.
+      const T = techInfo(p.t.tech);
+      const tline = p.t.tech
+        ? `unlocked by ${techName(p.t.tech)}${T?` — game era ${T.e}${T.o==='new'?', new':''}${T.y?`, onset ~${T.y}`:''}`:''}`
+        : 'no unlocking technology — available from the start';
       const tip = profit
-        ? `${i.id} — ${tlab(p.t)}|${p.t.name}|profit ${v.toFixed(0)}% at current prices|BE ${BE(i,p.t).toFixed(0)}% (target ${p.t.target_be}%)|${n?n+' in scenario':'not in the scenario'}`
-        : `${i.id} — ${tlab(p.t)}|${p.t.name}|BE ${v.toFixed(0)}% (target ${p.t.target_be}%)|${p.t.output_qty} ${tierOut(i,p.t)}|${n?n+' in scenario':'not in the scenario'}`;
+        ? `${i.id} — ${tlab(p.t)}|${p.t.name}|${tline}|profit ${v.toFixed(0)}% at current prices|BE ${BE(i,p.t).toFixed(0)}% (target ${p.t.target_be}%)|${n?n+' in scenario':'not in the scenario'}`
+        : `${i.id} — ${tlab(p.t)}|${p.t.name}|${tline}|BE ${v.toFixed(0)}% (target ${p.t.target_be}%)|${p.t.output_qty} ${tierOut(i,p.t)}|${n?n+' in scenario':'not in the scenario'}`;
       s+= n ? `<circle cx="${p.x}" cy="${p.y}" r="3.2" fill="${col}"/>`
             : `<circle cx="${p.x}" cy="${p.y}" r="3.2" fill="var(--panel)" stroke="${col}" stroke-width="1.5"/>`;
       s+=`<circle cx="${p.x}" cy="${p.y}" r="7" fill="transparent" data-tip="${esc(tip)}" style="cursor:help"/>`;
@@ -2672,7 +2775,7 @@ function refRow(b){ const info=VAN.buildings[b], e=refEcon(b);
   return `<tr data-refbld="${esc(b)}">
     <td><span class="pill" style="background:${TIERCOL[0]}" title="untiered — a vanilla building not split by the mod">0</span></td>
     <td>${esc(prettyKey(b))}<div class="muted" style="font-size:11px">${esc(b)}</div>
-      <div class="muted" style="font-size:10px">${esc(prettyGroup(info.group||''))}${info.tech?' · '+esc(info.tech):''}</div>
+      <div class="muted" style="font-size:10px">${esc(prettyGroup(info.group||''))}${info.tech?`<span title="${esc(techTitle(info.tech))}"> · 🔒 ${esc(techLabel(info.tech))}</span>`:''}</div>
       <div class="aivrow" title="Base AI construction desire (building ai_value). Blank = vanilla (${aivDef}). Emitted only for buildings in files the mod owns (01/06/11); others are session-only.">ai_value <input type="number" min="0" step="50" value="${REFAIV[b]!=null?REFAIV[b]:''}" placeholder="${aivDef}" data-refaiv="${esc(b)}"></div>
       ${subsidyRowHTML(b)}
       ${refPmSelectors(b)}</td>

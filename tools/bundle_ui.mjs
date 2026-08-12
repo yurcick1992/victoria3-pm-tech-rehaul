@@ -92,6 +92,44 @@ if (leftover.length) {
 }
 for (const o of OMIT) html = html.replace(`<script src="${o.file}"></script>`, `<!-- ${o.file} omitted: ${o.why} -->`);
 
+// ---- PAGE 2: the tech tree. builder.html embeds ui/techtree.html in an iframe, by `src` when served
+// from ui/ and by `srcdoc` from window.__TECHTREE_HTML when there is no ui/ to serve from. So the whole
+// page — techdata.js folded into it — is carried here as ONE JS string literal.
+// ⚠ Not a <script type="text/plain"> block and not a <template>: the tree's own </script> tags would
+// close the first, and the second silently drops the doctype and renders the frame in quirks mode.
+// JSON.stringify gives a valid literal; escaping `</` keeps the HTML parser out of it.
+// ⚠ BUILT HERE, APPENDED BELOW — after the wrapper strip. That strip is anchored at the end of the
+// document and deletes every <meta> globally, so a tech-tree page appended before it would both defeat
+// the `</body></html>$` match and have its own charset meta eaten out of the string literal.
+const treeScript = (() => {
+  const tag = '<script src="techdata.js"></script>';
+  let tree = readFileSync(join(UI, 'techtree.html'), 'utf8');
+  if (!tree.includes(tag)) {
+    console.error(`\nui/techtree.html does not load "techdata.js" any more (expected \`${tag}\`).\n`
+      + `The snapshot's tech-tree page carries that data inline, so this has to be updated together.\n`);
+    process.exit(1);
+  }
+  if (!html.includes('__TECHTREE_HTML')) {
+    console.error(`\nui/builder.html no longer reads window.__TECHTREE_HTML — the snapshot's tech-tree\n`
+      + `page would silently fall back to <iframe src="techtree.html">, which does not exist beside a\n`
+      + `detached copy. Update the loader in builder.html and tools/bundle_ui.mjs together.\n`);
+    process.exit(1);
+  }
+  // techdata.js is generated too, but by `node tools/tech_tree_spec.mjs --write`, which the BUILDER does
+  // not run — so it goes stale against the config on a schedule of its own. A WARNING rather than the
+  // hard stop the sheet's data gets: the tree reads the ladder's structure (tiers, eras, technologies),
+  // which a volume or price solve does not touch, so failing here would block most snapshots for a
+  // staleness that usually is not one.
+  if (existsSync(cfg) && statSync(join(UI, 'techdata.js')).mtimeMs < statSync(cfg).mtimeMs)
+    console.warn('WARNING: ui/techdata.js is older than config/mod_config.json — the tech-tree page may\n'
+      + '         predate the current ladder. Refresh with: node tools/tech_tree_spec.mjs --write');
+  const data = readFileSync(join(UI, 'techdata.js'), 'utf8');
+  tree = tree.replace(tag, `<script>\n/* inlined from ui/techdata.js */\n${data}\n</script>`);
+  sizes.push(['techtree.html + techdata.js', tree.length]);
+  return `\n<script>\n/* inlined from ui/techtree.html — the tech-tree page, loaded into its iframe */\n`
+    + `window.__TECHTREE_HTML = ${JSON.stringify(tree).replace(/<\//g, '<\\/')};\n</script>`;
+})();
+
 // The Artifact host (and any plain wrapper) supplies <!doctype>, <html>, <head> and <body>; emit only
 // the page CONTENT, keeping <title> and the stylesheet.
 html = html
@@ -99,6 +137,7 @@ html = html
   .replace(/<meta[^>]*>\s*/gi, '')
   .replace(/<\/head>\s*<body>/i, '')
   .replace(/<\/body>\s*<\/html>\s*$/i, '');
+html += treeScript;
 
 // ⚠ ALWAYS UTC, ALWAYS SAID OUT LOUD. A bare "2026-08-04 14:32" on a detached page is read in the reader's
 // own zone and can be hours out; a snapshot's whole job is to tell you how old it is.
@@ -123,6 +162,7 @@ html += `
     + 'live (presets, prices, profitability, the payback and BE tools) and <b>Export mod_config.json</b> '
     + 'works. <b>Build now is disabled</b> — it needs the local <code>tools/ui.ps1</code> server. Goods '
     + 'pictograms are omitted, so the scenario panel shows text-only rows. '
+    + 'The <b>Tech tree</b> page (top left) is carried inline too. '
     + 'It does <b>not</b> follow later solver runs: regenerate with <code>balance-snapshot.cmd</code>.';
   var main = document.querySelector('main');
   if (main) main.insertBefore(note, main.firstChild);

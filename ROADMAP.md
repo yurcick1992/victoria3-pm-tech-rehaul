@@ -72,6 +72,9 @@ is a mod about industry, and the industrial half of the tree should be where the
 **Where it stands (2026-08-10).** Three complete candidate trees are authored in
 `tools/tech_tree_spec.mjs`, emitted to `config/tech_tree_options.json`, and viewable in
 `ui/techtree.html`. All three cover all 100 tiers plus the vanilla economic buildings.
+⭐ **The viewer is now the balance UI's SECOND PAGE** (2026-08-12) — the `Balance sheet` / `Tech tree`
+switch at the top left of `builder.html`, embedded in an iframe and carried into the standalone snapshot
+by `tools/bundle_ui.mjs`. It remains openable on its own; see CLAUDE.md → `ui/techtree.html`.
 ⭐ **OPTION 1, "VANILLA-SHAPED", SHIPS** (user ruling, made without confidence — "I'm really unsure").
 The other two stay in the file and the viewer: they cost nothing to keep and a week to re-derive.
 

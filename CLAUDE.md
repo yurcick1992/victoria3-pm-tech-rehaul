@@ -795,6 +795,20 @@ tools/                  dev tooling — NOT shipped in the mod
   solve_be_targets.ps1  re-derives every tier's target_be + natural_year from its tech's vanilla era (date ladder; BALANCE_FRAMEWORK §8.1)
   solve_volumes.ps1     re-derives every tier's output/input volumes from vanilla recipes + target_be (BALANCE_FRAMEWORK §8)
   solve_building_cost.ps1 re-derives every tier's building_cost (construction points) from a 10yr-payback model (BALANCE_FRAMEWORK §9)
+  payback_census.mjs    ⭐ THE CAPITAL-SIDE CENSUS — read-only, writes nothing. What a level COSTS against
+                        what it EARNS, across the six era scenarios: payback per tier at that scenario's
+                        own realised prices, the realised margins behind it, capital stock, **K/GDP**, and
+                        **years of the construction budget the standing capital stock represents** (the
+                        buildability constraint, and the sharpest single reading of the capital glut).
+                        `--rule [--p0 10 --p5 20]` also derives and tests a payback-ladder cost book.
+                        ⭐⭐ WHY IT EXISTS, and the finding it was written for: `solve_building_cost.ps1`
+                        pays the cost back out of an ASSUMED 20% return on operating cost, while the
+                        shipped economy earns 56–104% (median, dominant rungs) — so the REALISED payback
+                        is **~2 years in every era**, not the 10 the model names. The model is right; its
+                        one assumption is 3–6× off. Nothing measured that before, because payback is a
+                        property of the RECIPE BOOK and the SCENARIO together and the two live in
+                        different tools. ⚠ A tier is read in the era where it is DOMINANT, the same
+                        convention the recipe solve uses
   extract_vanilla.ps1   dumps EVERY vanilla building/PMG/PM → ui/vanilla.js (the UI's all-buildings explorer — same editable layout as the tier cards); regenerated each build
   telemetry_lib.ps1     THE one generator of testbed telemetry script; dot-sourced by build.ps1 so the vanilla
                         control and every modded arm instrument IDENTICALLY (a control that logs differently is not a control)
@@ -812,7 +826,8 @@ tools/                  dev tooling — NOT shipped in the mod
   extract_start.ps1     baseline extractor: vanilla start → start_baseline.json (inventory + version-drift alarm)
   history_lib.ps1       shared vanilla parsing: ONE history walker (Invoke-HistoryWalk; Walk-HistoryFile = rewriting mode, Read-HistoryBlocks = read-only mode) + Get-TopBlocks / Get-ListTokens / Get-Num, used by the converter, every extractor and the volume solvers
   ui.ps1                balance-UI server: serves ui/ at localhost:8777 + POST /api/build (writes config, runs build)
-  bundle_ui.mjs         inlines ui/builder.html + data.js + vanilla.js + presets.js into ONE standalone page
+  bundle_ui.mjs         inlines ui/builder.html + data.js + vanilla.js + presets.js — **and the whole tech-tree
+                        page, techtree.html with techdata.js folded into it** — into ONE standalone page
                         (`node tools/bundle_ui.mjs [--out <path>] [--stale-ok]`, or balance-snapshot.cmd).
                         ⚠ **ui/icons.js is deliberately EXCLUDED** — Paradox art, gitignored because the repo
                         is public, and a snapshot is something you hand to someone else; the panel already
@@ -822,7 +837,15 @@ tools/                  dev tooling — NOT shipped in the mod
                         ui/*.js is older than config/mod_config.json (a snapshot of the previous build's
                         numbers is the failure mode worth preventing — `--stale-ok` overrides), and it fails
                         if builder.html loads a `<script src>` not listed in its INLINE/OMIT lists, rather
-                        than silently shipping a page missing a whole data set
+                        than silently shipping a page missing a whole data set. The tech-tree page has two
+                        more of the same kind: it fails if techtree.html stops loading techdata.js, and if
+                        builder.html stops reading `window.__TECHTREE_HTML` (which would leave the detached
+                        copy quietly falling back to an `<iframe src>` with nothing beside it to serve).
+                        ⚠ The tree page's own data, ui/techdata.js, only WARNS when stale — see techtree.html
+                        below for why. ⚠ The tree block is built before the wrapper strip and appended
+                        AFTER it: that strip is `$`-anchored and deletes every `<meta>` globally, so an
+                        earlier append would both defeat the anchor and eat the tree's own charset meta out
+                        of its string literal
   testbed/run_observer.ps1  the GAME driver, called BY run_schedule (a hand run is a DIAGNOSTIC, not an
                         experiment — it has no build step): launches the game headless (no launcher), plays to
                         a date, harvests, quits; owns crash-resume + the p/r/s/x keys. Telemetry always comes
@@ -1077,6 +1100,17 @@ tools/                  dev tooling — NOT shipped in the mod
                         every conflict with the era's calendar window. ⚠ It does NOT emit anything into mod/ yet
 ui/                     browser balance editor — builder.html (hand-authored) + econ.js (hand-authored) + data.js +
                         vanilla.js + presets.js + icons.js (the last four GENERATED each build; icons.js is gitignored game art)
+                        + techdata.js (GENERATED, but by `tech_tree_spec.mjs --write`, NOT by the builder)
+  data.js               GENERATED each build: `config` (the WHOLE ladder, model_only tiers included — the
+                        emission path drops those, the UI must not), `prices`, and **`techs`** — a COMPACT
+                        index of the SHIPPING tech tree, `id → {n name, e game era, c category, o
+                        vanilla|new, y onset}`, built from `config/tech_tree_options.json`. It is what
+                        lets every building row and every ladder-chart dot name its unlocking technology
+                        instead of printing a script key. ⚠ The index is the SHIPPING option, the same one
+                        `emit_techs.mjs` writes into the mod, so the sheet cannot name a technology the
+                        game does not have — and `emit_techs.mjs` throws when that file has fallen behind
+                        the config, so the build is what keeps the index honest. ⚠ ~20 KB, deliberately
+                        NOT ui/techdata.js: that is 340 KB and it is the TREE PAGE's data
   econ.js               THE economic model, hand-authored, shared by builder.html AND the Node solvers. Also
                         the ONE implementation of **`ladderFaults()`** — the illogicality criterion (§10.11)
                         — called by both `tools/era_scenarios.mjs` and the UI's **Ladder check** panel, since
@@ -1087,8 +1121,24 @@ ui/                     browser balance editor — builder.html (hand-authored) 
                         are measured results, not conventions. Pure model: no DOM, no formatting.
                         ⚠ builder.html still carries its own identical copy of these ~260 lines; collapsing that
                         fork is an open task. Until then, change BOTH or neither.
-  techtree.html         THE TECH TREE VIEWER (ROADMAP step 1) — standalone, opened directly from the filesystem,
-                        reading the GENERATED techdata.js. Era is a ROW and progression runs DOWNWARD, as in the
+  techtree.html         THE TECH TREE VIEWER (ROADMAP step 1) — **the balance UI's SECOND PAGE** (the
+                        `Balance sheet` / `Tech tree` switch at the top left of builder.html) AND still a
+                        complete standalone page openable off the filesystem, reading the GENERATED
+                        techdata.js. It is embedded in an **IFRAME**, deliberately: it is a whole page whose
+                        selectors (`header`, `.row`, `.legend`, `.stats`, `.node`) collide head-on with the
+                        sheet's, and a frame isolates both directions for free while leaving this file
+                        byte-identical and independently openable. **LAZY** — the frame is not filled until
+                        the page is first visited, so the sheet never pays for ~340 KB of tree.
+                        ⚠ TWO SOURCES, one frame: served from `ui/` it loads by `src`; inside the standalone
+                        snapshot the whole page (techdata.js already folded in) arrives as
+                        `window.__TECHTREE_HTML` and goes in by `srcdoc`. `tools/bundle_ui.mjs` FAILS the
+                        bundle if either half has moved, and builder.html shows a named warning rather than a
+                        blank frame if a host's CSP refuses the nested frame.
+                        ⚠ `techdata.js` is generated by `node tools/tech_tree_spec.mjs --write`, which the
+                        BUILDER DOES NOT RUN — so it goes stale on its own schedule. The bundler WARNS (it
+                        does not fail) when it is older than the config: the tree reads the ladder's
+                        structure, which a volume or price solve does not touch. Refresh it by hand after a
+                        ladder change. Era is a ROW and progression runs DOWNWARD, as in the
                         game; unlike the game, COLUMNS ARE INDUSTRIES, so an industry's ladder reads as one
                         vertical line. Hovering a technology names what blocks it and what it blocks; clicking
                         pins that. Switches option (1/2/3) and tree (production/military/society) and reports each
@@ -1096,8 +1146,7 @@ ui/                     browser balance editor — builder.html (hand-authored) 
                         era's calendar window. Carries the **TECH SPREAD panel** — the three constants of the
                         spread formula are editable and it shows, live, the SHARE OF EACH TREE that spread alone
                         hands a laggard by 1936, judged against vanilla's own share rather than against zero
-                        (that share, not the multiplier, is what says whether a boost is safe). Intended to become
-                        the balance UI's SECOND vertical page later; standalone for now
+                        (that share, not the multiplier, is what says whether a boost is safe)
 mod/                    THE DEPLOYABLE MOD — GENERATED, do not hand-edit
   .metadata/metadata.json                                (hand-maintained, except the mod `name` which the builder suffixes with the build time; has replace_paths for history)
   common/buildings/{01_industry,06_urban_center,11_private_infrastructure}.txt   (generated: WHOLE-FILE replacements of vanilla — 06/11 own the new-economy chains — see MODDING_NOTES)
@@ -1306,7 +1355,20 @@ the game.
   a patch adds are picked up automatically on rebuild.
 - **Balance UI (for Claude-less iteration):** one-click **`balance-ui.cmd`** (or
   `powershell -ExecutionPolicy Bypass -File tools\ui.ps1`) opens a browser editor (`ui/builder.html`)
-  showing every building × tier with editable **main-PM** input/output volumes. **Wages now stem from the
+  showing every building × tier with editable **main-PM** input/output volumes.
+  ⭐ **EVERY BUILDING NAMES ITS UNLOCKING TECHNOLOGY** — on the row (`🔒 Bessemer Process · tech era 2`,
+  hover for tree, onset and vanilla-vs-new) and on every dot of the **Ladder chart in `raw` mode**, where
+  the rung's position is meaningless without knowing what gates it. Our tiers name the MOD's technology
+  (`tech_tree_spec.mjs` stamps it into the config), reference buildings their vanilla one; both resolve
+  through the same `PMDATA.techs` index. ⚠⚠ **THE TWO ERAS ARE DIFFERENT NUMBERS.** A tier's era is its
+  rung on the mod's SIX-era ladder; a technology's era is its row in the GAME's five-era tree, where our
+  0 and our 1 both sit in game era 1 (the anchor principle). So an `e0` building on `tech era 1` is
+  correct — which is why the label says "tech era" and never bare "era".
+  ⭐ **TWO PAGES, one window** — the `Balance sheet` / `Tech tree` switch at the top left. They are two
+  views of one config, so they are two pages rather than two windows; the tree is `ui/techtree.html` in an
+  iframe (see the repo layout for why a frame and how the snapshot carries it). Every header control
+  belongs to the SHEET, so the tree page hides the lot rather than offering buttons that do nothing to
+  what is on screen. **Wages now stem from the
   building's WORKFORCE**, not a fraction of goods: a **base-wage row** — inside the scenario panel, directly
   under the Population row and above every building, because the wage is a property of the market being
   modelled and it prices the buildings below it — sets one
