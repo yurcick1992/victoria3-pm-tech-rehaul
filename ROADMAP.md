@@ -334,6 +334,15 @@ production method is actually gated is in `ON_GAME_UPDATE.md`, with its BOM warn
 countries is **not** sufficient, since a technology can be covered by some other country's list while
 the country that needs it lacks it.
 
+⚠ **THE REPO IS DELIBERATELY INCONSISTENT UNTIL THE MERGE.** `config/era_prices.json` and
+`config/era_presets.json` now describe the **106-tier** ladder, while `config/mod_config.json` still holds
+the **100-tier** one; the re-banded config sits in `config/mod_config.era6.json` (un-ignored on purpose —
+it carries solved volumes, so it is not a derivable output). A canonical `build.ps1` run in this window
+would pass the era6 presets through `extract_presets.ps1` into a `ui/presets.js` that disagrees with the
+config beside it. Testbed builds are unaffected — alt builds never write `ui/`. **Merging era6 into
+`config/mod_config.json` resolves all of it in one move**, and needs `solve_building_cost.ps1` in the
+same pass.
+
 ⚠⚠ **SEQUENCING — nothing here may be written yet.** `config/mod_config.json` and
 `tools/build_era_ladder.mjs` must not move until the second research-events batch has launched *and
 built*, or batch A and batch B stop being comparable and both nights of game time are wasted.

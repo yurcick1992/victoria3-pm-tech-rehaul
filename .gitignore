@@ -27,6 +27,10 @@ mod_*/
 # config/mod_config.json, so they are outputs, not source. The pattern needs the dot: it matches
 # mod_config.vanilla_stub.json and never mod_config.json itself.
 config/mod_config.*.json
+# ⚠ EXCEPT the era6 ladder, which is NOT a derivable output: it carries ~40 minutes of solved volumes
+# from the re-banded ladder (ROADMAP step 1b) and exists only because the canonical config is frozen
+# until the research-events batch has built. Losing it would mean re-solving, not re-generating.
+!config/mod_config.era6.json
 
 # Output of testbed runs: per-run telemetry plus a copy of the game's own logs. Ignored because it
 # is BULKY (game logs, minidumps), NOT because it is disposable - the harness itself
