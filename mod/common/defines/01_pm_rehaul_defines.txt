@@ -2,5 +2,5 @@
 # Defines take a PARTIAL override: only the keys named here change, the rest of NTechnology and the
 # rest of 00_defines.txt stay vanilla. See MODDING_NOTES -> File loading & override semantics.
 NTechnology = {
-	TECH_AHEAD_OF_TIME_PENALTY_FACTOR = 0.15	# vanilla 0.25; the tree is deeper
+	TECH_AHEAD_OF_TIME_PENALTY_FACTOR = 0.25	# vanilla 0.25; the tree is deeper
 }

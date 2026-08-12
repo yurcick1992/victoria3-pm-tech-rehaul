@@ -3672,7 +3672,64 @@ window.PMDATA = {
                           "pm_electric_streetlights":  {
                                                            "engineers":  250
                                                        }
-                      }
+                      },
+    "research_events":  {
+                            "_comment":  "ROADMAP step 2. Industry-driven research events. enabled:false builds the plain techs arm, enabled:true the techs+events arm - which is what makes the arm a CONFIG VARIANT rather than a code flag (user ruling 2026-08-11).",
+                            "enabled":  true,
+                            "stages":  [
+                                           "inception",
+                                           "development",
+                                           "implementation"
+                                       ],
+                            "grant_fraction":  0.5,
+                            "industry_bar_months":  36,
+                            "war_bar_weeks":  26,
+                            "thresholds_by_era":  {
+                                                      "2":  15000,
+                                                      "3":  45000,
+                                                      "4":  135000,
+                                                      "5":  405000
+                                                  },
+                            "employment_per_level_default":  5000,
+                            "war_gate":  {
+                                             "require_front":  true,
+                                             "general_battalions_high":  100,
+                                             "general_battalions_low":  50,
+                                             "generals_low_count":  2,
+                                             "mobilised_share_min":  0.5
+                                         },
+                            "necessity_anchors":  {
+                                                      "fertilizer":  [
+                                                                         "bg_staple_crops"
+                                                                     ],
+                                                      "synthetics":  [
+                                                                         "building_textile_mill",
+                                                                         "bg_light_industry"
+                                                                     ],
+                                                      "power":  [
+                                                                    "bg_manufacturing"
+                                                                ],
+                                                      "railway":  [
+                                                                      "bg_mining",
+                                                                      "bg_plantations",
+                                                                      "bg_staple_crops",
+                                                                      "bg_logging",
+                                                                      "bg_oil_extraction"
+                                                                  ],
+                                                      "shipyard_steam":  [
+                                                                             "building_port",
+                                                                             "bg_fishing",
+                                                                             "bg_whaling"
+                                                                         ],
+                                                      "automotive":  [
+                                                                         "building_urban_center"
+                                                                     ],
+                                                      "electrics":  [
+                                                                        "building_trade_center",
+                                                                        "building_financial_district"
+                                                                    ]
+                                                  }
+                        }
 },
   prices: {
     "ironclads":  80,
