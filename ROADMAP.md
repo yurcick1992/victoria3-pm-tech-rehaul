@@ -75,6 +75,32 @@ is a mod about industry, and the industrial half of the tree should be where the
 ⭐ **The viewer is now the balance UI's SECOND PAGE** (2026-08-12) — the `Balance sheet` / `Tech tree`
 switch at the top left of `builder.html`, embedded in an iframe and carried into the standalone snapshot
 by `tools/bundle_ui.mjs`. It remains openable on its own; see CLAUDE.md → `ui/techtree.html`.
+⭐⭐ **THE TREE IS SMALLER, TWICE OVER (2026-08-12).** First the **ladder-era alignment** — a technology
+unlocking one of our tiers sits in the mechanical era that tier maps to, which 41 of 106 tiers violated
+(BALANCE_FRAMEWORK §10.53). Then **eleven merges** (§10.56): where one historical advance reached several
+industries, one technology now gates all of them — Bulk Steel, Electric Drive, The Screw Steamer,
+Continuous-Flow Production, Magazine Rifles, Percussion Ordnance, Coal-Tar Chemistry, Cellulose Esters,
+High-Pressure Steam, Automatic Machine Control, Mass Small-Arms Production. **Railway plateaus at e4** on
+the diesel engine; the invented superheating rung is gone.
+⚠ **A merge deletes only technologies WE added.** A vanilla one is named by vanilla script — production
+methods, journal entries, events, ship modifications, company formation — so merging onto it means
+re-pointing our own tier gate and leaving it in the tree. `tools/audit_tech_content.mjs` enumerates what
+any technology carries before it is touched. Deleting vanilla technologies and re-pointing their
+references is DEFERRED to final polish (user, 2026-08-12: *"in the distant future we won't shy from
+deleting vanilla techs"*), and the UI-readability argument for it is accepted.
+
+| | before | after |
+|---|---|---|
+| production | 92 techs · 1198k · +65% vs vanilla | **84 · 1045k · +50%** |
+| military | 76 · 960k · +33% | **72 · 910k · +26%** |
+| society | 65 · 755k · +2% | untouched, by ruling |
+| new technologies | 54 | **42** |
+
+⚠ **Two consequences flagged and NOT addressed.** Era-5 production fell from 20 technologies to 14, which
+changes what "a leader holds half of era 5 by 1940" means and partly re-opens the era-5 hole the re-band
+was filling. And the military tree now hands a laggard 34% of itself by 1936 against vanilla's 45% — an
+11pp shortfall with no compensation, since its journal entries run on a 26-week war bar rather than the
+36-month industry one.
 ⭐ **OPTION 1, "VANILLA-SHAPED", SHIPS** (user ruling, made without confidence — "I'm really unsure").
 The other two stay in the file and the viewer: they cost nothing to keep and a week to re-derive.
 

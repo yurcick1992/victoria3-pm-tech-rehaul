@@ -4611,3 +4611,56 @@ dropping vanilla's blanket or dating pre-1836 processes into era 2; both are wor
 ⚠ Per-COUNTRY precision is available if it is ever wanted (a `limit` block inside the tier effect) and is
 deliberately not done: vanilla's own structure is tier-granular plus per-country extras, and 45 extra
 tier-3 countries knowing about beet sugar is not a defect worth new machinery.
+
+## 10.56 ELEVEN TECH MERGES — one advance, several industries (user-ruled 2026-08-12)
+
+⭐ **Where one historical advance reached several industries, one technology now gates all of them.** The
+method was an exhaustive pairwise pass: all 188 technologies from era 2 up, **1487 within-era
+within-tree pairs**, screened for "is there ONE advance behind both". Rejected on sight: pairs spanning
+trees or eras, and **consecutive rungs of one industry** (that collapses the ladder).
+
+| survivor (renamed) | now gates | absorbed |
+|---|---|---|
+| `steel_railway_cars` **Bulk Steel** | tooling e2 + railway e2 | steel_toolmaking |
+| `electric_railway` **Electric Drive** | motor e3 + railway e3 | electric_motors |
+| `watertube_boiler` **High-Pressure Steam** | motor e2 (+16 vanilla gates) | compound_engines |
+| `aniline` **Coal-Tar Chemistry** | fertilizer e2 + synthetics e2 | ammoniacal_liquor |
+| `art_silk` **Cellulose Esters** | synthetics e4 + furniture e4 | nitrocellulose_lacquer |
+| `bolt_action_rifles` **Magazine Rifles** | arms e3 + munition e3 | drawn_brass_cartridges |
+| `screw_frigate` **The Screw Steamer** | shipyard e1 + shipyard_steam e1 + port e1 | iron_screw_steamers, steamship_bunkering |
+| `conveyors` **Continuous-Flow Production** | automotive e4 + food e4 + explosives e4 | continuous_nitration |
+| `transfer_machining` **Automatic Machine Control** | automotive e5 + tooling e5 | tracer_control |
+| `stamped_receivers` **Mass Small-Arms Production** | arms e5 + munition e5 | automatic_cartridge_lines |
+| `percussion_cap` **Percussion Ordnance** | artillery e1 + munition e1 | — (re-point only) |
+
+⚠ **A MERGE DELETES ONLY TECHNOLOGIES WE ADDED.** Twelve were deleted, all ours. A vanilla technology is
+named by vanilla script — production methods, journal entries, events, ship modifications, company
+formation requirements (`percussion_cap` in 16 places, `watertube_boiler` in 24) — so merging onto one
+means re-pointing OUR tier gate and leaving it in the tree with its content. Two merges are re-points
+with no deletion at all: artillery e1 onto `percussion_cap` (`shell_gun` stays) and food e4 onto
+`conveyors` (`dough_rollers` stays).
+
+⚠ **TWO APPROVED MERGES TURNED OUT NOT TO EXIST**: Rubber Mastication + Vulcanization, and Steam Donkey +
+Steam Threshing. Both pairs are vanilla-vanilla AND neither member gates one of our tiers, so a merge
+would be an edit to vanilla's tree for zero gain to our ladder. My "pure simplification, both contentless"
+reading of them came from the viewer's BUILDING-unlock column and was simply wrong.
+
+⭐⭐ **THE RULE THAT GOVERNS ALL OF THIS (user, 2026-08-12): THERE ARE NO CONTENTLESS VANILLA
+TECHNOLOGIES.** None is a placeholder that only slows research; if one looks like that, you are looking in
+the wrong place. `tools/audit_tech_content.mjs` is the instrument — modifier block, every production
+method / building / combat unit / decree / company gated, and every line of vanilla script naming it.
+`watertube_boiler` gates **sixteen** things and looked empty in the viewer.
+
+**RAILWAY PLATEAUS AT e4.** The invented superheating rung and its technology (ours) are deleted; the
+vanilla diesel rung moves e5 → e4 gated on `diesel_engine`, re-dated 1934 → **1925** (mainline
+diesel-electric, and e4's band is 1912–1932). One technology for the diesel locomotive and the diesel
+engine works, which is what they historically were.
+⚠ **`compression_ignition` is NOT deleted.** It is vanilla and gates **ten** vanilla production methods —
+diesel pumps in five mine types, diesel tractors, diesel trains, mass automobile production — plus a
+vanilla event. It simply stops gating a building of ours.
+
+**Result** (single seed, and the ±10 jitter band applies): final-state illogicality 67 (63 excl.
+shipyards) against 57 (54) before, per era 4/7/12/11/12/21; net £22.0M/wk against £20.1M; losses £126k
+against £138k; macro 18 against 20. Net, losses and macro improved. ⚠ The +9 is inside the documented
+noise band and the railway lost a rung, which lands in era 5 — **user ruled the jitter ignorable for
+now**; a 3-seed ensemble would settle it.
