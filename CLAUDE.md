@@ -1072,8 +1072,24 @@ tools/                  dev tooling — NOT shipped in the mod
   emit_techs.mjs        THE TECH TREE, EMITTED (ROADMAP step 1) — called by build.ps1, which THROWS if it
                         fails. Reads config/tech_tree_options.json's SHIPPING option and writes the additive
                         new-technology file, the era moves into vanilla's production AND military files, the
-                        society ai_weight, the 1836 starting sets, the ahead-of-time define, a minted
+                        society ai_weight, the 1836 starting grant, the ahead-of-time define, a minted
                         placeholder icon and loc for all 11 languages.
+                        ⭐⭐ **THE 1836 GRANT IS DERIVED FROM THE 1836 MAP** (user ruling 2026-08-12): *every
+                        production method vanilla runs in 1836 stays, and the country running it holds the
+                        technology.* For each of our tier buildings standing on the map it takes the
+                        STARTING TIERS of the countries owning one and grants that tier's technology to
+                        exactly those tiers, minus what vanilla's own `add_era_researched` already covers
+                        and minus anything vanilla names itself (read live from vanilla's file, so a patch
+                        flows through). It used to name every new era-1 production technology to tiers 3,
+                        4 and 5 — 213 countries, of which **two** owned anything of the kind. The grant is
+                        now TWO lines: `steel_toolmaking` to tier 1, `beet_sugar_refining` to tier 3.
+                        ⚠ Tiers 1 and 2 keep vanilla's own `add_era_researched = era_1`, so our era-1
+                        technologies reach them regardless — a deliberate, small over-grant (tier 2 gets
+                        `fourdrinier_machine` and `leblanc_process` unneeded). Removing vanilla's blanket
+                        would strip vanilla technologies, which the rule forbids.
+                        ⚠ Its source is `config/start_baseline.json`, which is why **build.ps1 now runs
+                        `extract_start.ps1` BEFORE this** — a baseline written later would derive this
+                        build's grant from the previous build's map. Guarded by landmines L14 and L15.
                         ⚠ **IT EMITS NO TECH-SPREAD CHANGE — spread is exactly vanilla** (user ruling
                         2026-08-12). It shipped `country_production_tech_spread_mult = 0.5` until then, for
                         which it owned a whole 900-line vanilla file; the ruling is that the deeper
@@ -2151,7 +2167,11 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   L11 a tag that is not the country you think it is (proposed) · **L13 a starting factory converted onto a tier
   its own production method contradicts (MASKED by the re-band, not fixed)** · **L14 a country starts with a
   building its own technologies cannot unlock** (`verify_start_techs.mjs --vs-vanilla`, compared against
-  vanilla because vanilla itself fails on six countries) · **L12 savegames reaped without a readable
+  vanilla because vanilla itself fails on six countries) · **L15 a country LOSES a starting technology
+  vanilla gives it** (`verify_start_techs.mjs --diff-vanilla` — L14's converse, and the quiet one: tiers 1
+  and 2 draw most of their set from `add_era_researched = era_1`, so re-era-ing a technology OUT of era 1
+  withdraws it from 59 countries with no file mentioning it. It expands the era shorthand against EACH
+  root's own eras and includes the per-country extras 81 countries carry) · **L12 savegames reaped without a readable
   summary** — the one POST-RUN entry, walked with `preflight.ps1 -Session <dir>` and N/A on a normal build.
   **The MD holds the story and the numbers; the script holds the enforcement.** When a run surfaces a new
   one: entry first, then `Test-Lm<ID>`, then **prove the tripwire trips** by breaking it on purpose — a

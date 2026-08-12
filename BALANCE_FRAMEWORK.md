@@ -4489,3 +4489,62 @@ on a 26-week bar rather than a 36-month one. Not addressed; flagged.
 ⚠ **This removal surfaced a build defect worth more than the change itself** — a removed emitter kept
 shipping its file, because `build.ps1` cleaned three named directories instead of everything. See
 BUGS_AND_FIXES, 2026-08-12.
+
+## 10.55 THE 1836 GRANT IS DERIVED FROM THE 1836 MAP (user-ruled 2026-08-12)
+
+⭐ **The ruling, in three parts.** The only blanket rule is that all civilised countries hold the
+pre-industrial baseline; **era 1 is decided case by case**; and three invariants govern whatever is
+decided:
+
+1. **Every production method vanilla runs in 1836 stays, and the country running it holds the unlocking
+   technology.** (Landmine L14, already enforced.)
+2. **Where vanilla mandates a technology one by one, repeat that** — and check the technologies have not
+   moved underneath it.
+3. **For the top countries, check what they hold in vanilla by any source and grant it one by one.**
+
+**What the grant was.** Every NEW era-1 production technology, named into tiers 3, 4 and 5 — 213
+countries — on the reasoning that a country starting with a calico works must be able to build one.
+True, and it was a blanket wearing a justification: of those 213 countries, **two** own anything of the
+kind. Measured against the emitted 1836 map:
+
+| technology | was granted to | actually owned by |
+|---|---|---|
+| `steel_toolmaking` | t1, t2 (named) | t1 only — BEL FRA GBR PRU USA |
+| `beet_sugar_refining` | t1,t2 (era_1) + t3,t4,t5 | t1, t2 (NET), t3 (MEX, SPA) |
+| `calico_printing` | t1,t2 + t3,t4,t5 | t1, t2 (NET) |
+| `fourdrinier_machine` | t1,t2 + t3,t4,t5 | **t1 only** |
+| `leblanc_process` | t1,t2 + t3,t4,t5 | **t1 only** |
+
+**What it is now: derived, not listed.** `emit_techs.mjs` reads `config/start_baseline.json` — which
+country of which starting tier owns which tier building — and grants each tier building's technology to
+exactly the starting tiers that own one, minus whatever `add_era_researched` already covers and minus
+anything vanilla names itself (read live from vanilla's own file). The emitted diff against vanilla is
+**two lines**: `steel_toolmaking` → tier 1, `beet_sugar_refining` → tier 3.
+⚠ `extract_start.ps1` therefore had to move BEFORE `emit_techs.mjs` in the build. A baseline written
+later makes this build's grant a function of the previous build's map — the same stale-read shape that
+bit `econ_host` reading `ui/data.js` and the solvers' own write→read loop.
+
+**The full per-country result** (`verify_start_techs.mjs --diff-vanilla`, all 444 countries, per-country
+`add_technology_researched` extras included, era shorthand expanded against each root's own eras):
+
+| countries | tier | gains over vanilla |
+|---|---|---|
+| 338 | 4–7 | **nothing** |
+| 47 | 3 | `beet_sugar_refining` |
+| 54 | 2 | `beet_sugar_refining`, `calico_printing`, `crystal_glass`, `fourdrinier_machine`, `leblanc_process` |
+| 5 | 1 | those five + `steel_toolmaking` |
+
+**Zero countries lose anything** — rules 1 and 2 hold by construction and are now checked (L15).
+⚠ Rule 3 asked for the top 30; the check covers all 444, which strictly dominates it. Tier 1 (5) and
+tier 2 (54) contain every plausible top-30 country.
+
+⚠ **The residual over-grant is tier 2, and it is deliberate.** Those 54 countries draw the five era-1
+technologies from **vanilla's own** `add_era_researched = era_1`, which we cannot remove without
+stripping vanilla technologies. `crystal_glass` is on that list because we re-era'd it 2 → 1 in 2026-08-11
+(Ravenscroft 1674). All five are genuinely pre-1836 — beet sugar 1815, Leblanc 1820, calico printing and
+the Fourdrinier machine 1830, lead crystal 1674 — and tier 2 is "advanced European and American powers",
+which had all of them by 1836 whether or not the map places a building. Closing the gap would mean either
+dropping vanilla's blanket or dating pre-1836 processes into era 2; both are worse.
+⚠ Per-COUNTRY precision is available if it is ever wanted (a `limit` block inside the tier effect) and is
+deliberately not done: vanilla's own structure is tier-granular plus per-country extras, and 45 extra
+tier-3 countries knowing about beet sugar is not a defect worth new machinery.

@@ -959,6 +959,16 @@ if ($telemetryOn) {
 # every other step received -Config, so `build.ps1 -Config <alt>` emitted the alternate config's
 # BUILDINGS beside the canonical config's TECHNOLOGIES and RESEARCH EVENTS. See BUGS_AND_FIXES
 # (2026-08-12) - it was caught one run before it would have voided an overnight batch.
+# ⚠⚠ THE 1836 BASELINE IS REFRESHED FIRST, AND THE ORDER IS LOAD-BEARING. `emit_techs` derives the 1836
+# starting-technology grant from `config/start_baseline.json` — which country of which starting tier owns
+# which tier building on the map — so a baseline written LATER in the build would make this build's grant
+# a function of the PREVIOUS build's map. That is the stale-read shape this repo has been bitten by twice
+# (econ_host reading ui/data.js; the solvers' write->read loop). extract_start reads vanilla history plus
+# the config and depends on nothing emit_techs writes, so moving it up is free.
+# ⚠ It rewrites the repo-tracked config/start_baseline.json, so alternate targets (-DryRun/-SaveTo) skip
+# it and emit_techs falls back to the committed copy — correct, since an alt build must never write repo
+# files, and landmine L14 still fails the build if the grant it derives is wrong.
+if (-not $isAlt) { & (Join-Path $PSScriptRoot 'extract_start.ps1') -Repo $repo -Config $cfgPath }
 & node (Join-Path $PSScriptRoot 'emit_techs.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_techs.mjs failed (exit $LASTEXITCODE) - the mod would ship without its technologies." }
 
@@ -1012,10 +1022,7 @@ if (-not $isAlt) {
 Write-Output ("Generated {0} tier buildings across {1} industries; localization in {2} languages." -f $summary.Count, $cfg.industries.Count, $cfg.languages.Count)
 $summary | Format-Table -AutoSize | Out-String | Write-Output
 
-# --- refresh the 1836 start baseline (inventory + version-drift check), then convert it ---
-# extract_start rewrites the repo-tracked config/start_baseline.json; skip it for alternate targets
-# (-DryRun/-SaveTo) so they only ever touch their own mod_* folder, never canonical repo files.
-if (-not $isAlt) { & (Join-Path $PSScriptRoot 'extract_start.ps1') -Repo $repo -Config $cfgPath }
+# --- convert the 1836 start (the baseline it reads was refreshed BEFORE emit_techs, above) ---
 & (Join-Path $PSScriptRoot 'convert_history.ps1') -Repo $repo -Config $cfgPath -ModDir $modRel
 
 if (-not $NoLint) {

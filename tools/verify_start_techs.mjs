@@ -137,9 +137,80 @@ function analyse(root) {
   return { gaps, stats };
 }
 
+// ---- THE SECOND QUESTION: what does each country's 1836 SET look like against vanilla's? -------------
+// L14 above asks "can this country unlock what it owns". This asks the converse and sharper one, and it
+// is the user's rule of 2026-08-12: *every production method vanilla runs in 1836 stays, and the country
+// running it holds the technology* — so **no country may LOSE a starting technology vanilla gives it**,
+// and every technology it GAINS has to be one somebody decided on.
+// ⚠ IT MUST READ THE PER-COUNTRY EXTRAS, not just the tier effect. 81 countries carry their own
+// `add_technology_researched` lines in `common/history/countries` — Russia's `fractional_distillation`,
+// Japan's `sericulture`, Britain's `joint_stock_companies` — and a set built from the tier alone is
+// simply the wrong set for a fifth of the world.
+// ⚠ AND THE ERA SHORTHAND IS EXPANDED AGAINST EACH ROOT'S OWN ERAS. `add_era_researched = era_1` grants
+// a different set in our tree than in vanilla's, which is the whole point of looking: a technology we
+// re-era'd DOWN into era 1 is handed to every tier-1/2 country for free, and that is a gain nobody
+// explicitly voted for unless someone looks. It is how `crystal_glass` showed up on this list.
+function startSets(root) {
+  const techEra = {};
+  for (const dir of [join(GAME, 'common/technology/technologies'), join(root, 'common/technology/technologies')])
+    for (const f of txts(dir)) for (const [k, v] of Object.entries(blocks(read(f)))) {
+      const e = v.match(/\bera\s*=\s*era_(\d)/); if (e) techEra[k] = +e[1];
+    }
+  const tiers = {};
+  for (const [k, v] of Object.entries(blocks(read(join(root, 'common/scripted_effects/00_starting_inventions.txt'))))) {
+    const m = k.match(/^effect_starting_technology_tier_(\d)_tech$/); if (!m) continue;
+    const set = new Set([...v.matchAll(/add_technology_researched\s*=\s*([a-z_0-9-]+)/g)].map(x => x[1]));
+    for (const e of v.matchAll(/add_era_researched\s*=\s*era_(\d)/g))
+      for (const [t, era] of Object.entries(techEra)) if (era <= +e[1]) set.add(t);
+    tiers[+m[1]] = set;
+  }
+  const per = {};
+  for (const f of txts(join(GAME, 'common/history/countries'))) {
+    const t = read(f);
+    for (const m of t.matchAll(/c:([A-Z_0-9]{2,4})\s*\??=\s*\{/g)) {
+      let i = t.indexOf('{', m.index) + 1, d = 1;
+      while (i < t.length && d > 0) { if (t[i] === '{') d++; else if (t[i] === '}') d--; i++; }
+      const body = t.slice(m.index, i);
+      const e = body.match(/effect_starting_technology_tier_(\d)_tech/); if (!e) continue;
+      const extra = [...body.matchAll(/add_technology_researched = ([a-z_0-9-]+)/g)].map(x => x[1]);
+      per[m[1]] = { tier: +e[1], set: new Set([...(tiers[+e[1]] || []), ...extra]) };
+    }
+  }
+  if (Object.keys(per).length < 100) { console.error(`REFUSING TO REPORT: only ${Object.keys(per).length} countries parsed`); process.exit(2); }
+  return per;
+}
+
+function diffVanilla(root) {
+  const mine = startSets(root), base = startSets(GAME);
+  const lost = [], gained = {};
+  for (const [tag, m] of Object.entries(mine)) {
+    const b = base[tag]; if (!b) continue;
+    const L = [...b.set].filter(x => !m.set.has(x)).sort();
+    if (L.length) lost.push(`${tag} (tier ${b.tier}): ${L.join(', ')}`);
+    const G = [...m.set].filter(x => !b.set.has(x)).sort();
+    const key = G.join(', ') || '(nothing)';
+    (gained[key] ||= { n: 0, tiers: new Set(), tags: [] });
+    gained[key].n++; gained[key].tiers.add(b.tier);
+    if (gained[key].tags.length < 6) gained[key].tags.push(tag);
+  }
+  console.log('\n1836 STARTING SET vs VANILLA, all countries, per-country extras included');
+  for (const [k, v] of Object.entries(gained).sort((a, b) => b[1].n - a[1].n))
+    console.log(`  ${String(v.n).padStart(3)} countries  tier(s) ${[...v.tiers].sort().join(',')}  +[${k}]  e.g. ${v.tags.join(' ')}`);
+  if (lost.length) {
+    console.error(`\nFAILED: ${lost.length} country/countries LOSE a technology vanilla gives them:\n  ` + lost.join('\n  '));
+    process.exit(1);
+  }
+  console.log('\nPASSED: no country loses a starting technology vanilla gives it.');
+}
+
 // ---- main ------------------------------------------------------------------------------------------
 const args = process.argv.slice(2);
 const vs = args.includes('--vs-vanilla');
+if (args.includes('--diff-vanilla')) {
+  const a = args.find(x => !x.startsWith('--')) || 'mod';
+  diffVanilla(/^[A-Za-z]:|^\//.test(a) ? a : join(REPO, a));
+  process.exit(0);
+}
 const arg = args.find(a => !a.startsWith('--')) || 'mod';
 const MOD = /^[A-Za-z]:|^\//.test(arg) ? arg : join(REPO, arg);
 

@@ -339,6 +339,39 @@ function Test-LmL14 {
     }
 }
 
+# ============================================================== L15 ===
+function Test-LmL15 {
+    <#
+      L15 - a country silently LOSES a starting technology vanilla gives it.
+
+      L14 asks whether a country can unlock what it owns. This asks the converse, and it is the
+      user's rule of 2026-08-12: every production method vanilla runs in 1836 stays, and the country
+      running it holds the technology that unlocks it. Nothing in the build enforced the "stays" half.
+
+      WHY IT CAN HAPPEN WITHOUT ANYTHING FAILING. We whole-file-replace vanilla's starting-inventions
+      file, so a transform that drops a line, or a re-era that moves a technology OUT of the era a
+      tier's 'add_era_researched' covers, quietly removes it from every country of that tier. The mod
+      still loads. The country simply cannot run a production method it ran in vanilla, and the first
+      symptom is an economy that reads slightly wrong a decade later.
+
+      DETECTOR. tools/verify_start_techs.mjs --diff-vanilla, over the EMITTED files, expanding the era
+      shorthand against EACH root's own eras and including the per-country 'add_technology_researched'
+      extras that 81 countries carry in their own history.
+
+      PROVEN: deleting 'railways' from the tier-1 grant makes it name FRA, GBR, PRU, USA and fail.
+    #>
+    $script = Join-Path $PSScriptRoot 'verify_start_techs.mjs'
+    if (-not (Test-Path $script)) { Add-Result 'L15' 'a country loses a vanilla starting technology' 'N/A' 'verify_start_techs.mjs not present'; return }
+    $out = & node $script $Mod --diff-vanilla
+    if ($LASTEXITCODE -eq 0) {
+        # the gains are intended and ruled; report their SHAPE so an unexpected one is visible here
+        $rows = @($out | Where-Object { $_ -match '^\s+\d+ countries' })
+        Add-Result 'L15' 'a country loses a vanilla starting technology' 'PASS' (($rows | ForEach-Object { $_.Trim() }) -join '; ')
+    } else {
+        Add-Result 'L15' 'a country loses a vanilla starting technology' 'FAIL' ((@($out) | Select-Object -Last 12) -join [Environment]::NewLine)
+    }
+}
+
 # ============================================================== L7 ====
 function Test-LmL7 {
     <#
@@ -573,7 +606,8 @@ $CHECKS = @(
     # L12 needs a finished SESSION, not a mod - it is the one post-run entry, and it reports N/A
     # (never FAIL) when no -Session is given, so it costs a build nothing.
     @{ Id = 'L12'; Artifact = $false; Fn = { Test-LmL12 } },
-    @{ Id = 'L14'; Artifact = $true;  Fn = { Test-LmL14 } }
+    @{ Id = 'L14'; Artifact = $true;  Fn = { Test-LmL14 } },
+    @{ Id = 'L15'; Artifact = $true;  Fn = { Test-LmL15 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 

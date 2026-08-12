@@ -19,9 +19,10 @@
 //     common/technology/technologies/10_production.txt  — era moves + one prerequisite swap
 //     common/technology/technologies/20_military.txt    — era moves (only when there are any)
 //     common/technology/technologies/30_society.txt     — ai_weight x0.8 on every society technology
-//     common/scripted_effects/00_starting_inventions.txt— new era-1 techs into the 1836 starting sets
-//     common/static_modifiers/00_code_static_modifiers.txt — the production-only tech spread multiplier
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+//     common/scripted_effects/00_starting_inventions.txt— the 1836 grant, DERIVED from the 1836 map
+//   NOT WRITTEN AT ALL
+//     common/static_modifiers/*  — tech spread is exactly vanilla (user ruling 2026-08-12)
+import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -105,6 +106,15 @@ const AHEAD_OF_TIME = 0.25;        // NTechnology.TECH_AHEAD_OF_TIME_PENALTY_FAC
 // from vanilla in a 900-line file, and the repo's rule is that a file we would copy verbatim is not
 // emitted: owning it freezes that file against the next patch and ships bytes we did not author.
 const SOCIETY_AI_WEIGHT = 0.8;     // user ruling 2026-08-11 — damp society so spread does not rush it
+// ⭐ WHERE VANILLA MANDATES A TECHNOLOGY ONE BY ONE, WE REPEAT IT AND ADD NOTHING (user ruling
+// 2026-08-12). Read LIVE from vanilla's own starting-inventions file rather than listed here, so a patch
+// that adds or drops a named grant flows straight through — and so we can never re-grant something
+// vanilla already grants. ⚠ It also means we notice: `sub()` throws if the file's shape moves.
+const VAN_STARTING_NAMED = new Set(
+  [...readFileSync(join(GAME, 'common/scripted_effects/00_starting_inventions.txt'), 'utf8')
+    .matchAll(/add_technology_researched\s*=\s*([a-z_0-9-]+)/g)].map(m => m[1]));
+if (VAN_STARTING_NAMED.size < 30)
+  throw new Error(`emit_techs: only ${VAN_STARTING_NAMED.size} named starting technologies parsed from vanilla — the file shape moved`);
 const PLACEHOLDER = 'gfx/interface/icons/invention_icons/zzz_pm_rehaul_placeholder.dds';
 
 const BOM = '\uFEFF';
@@ -248,35 +258,91 @@ const NEWT = OPT.techs.filter(t => t.origin === 'new');
 // Tiers 3-5 list technologies by name, so a country that starts with, say, a calico works would
 // otherwise own a building it could not have built. Tier 6 holds `enclosure` alone and tier 7 nothing;
 // both are left as they are, deliberately — those countries are meant to have no industry.
+// ⭐⭐ THE GRANT IS DERIVED FROM THE 1836 MAP, ONE TECHNOLOGY AT A TIME (user ruling 2026-08-12).
+// THE RULE: *every production method vanilla runs in 1836 stays, and the country running it holds the
+// technology that unlocks it.* Nothing else. So for each of OUR tier buildings that actually stands on
+// the 1836 map, we take the starting tiers of the countries that own one, and grant that tier building's
+// technology to exactly those tiers — minus whatever vanilla's own `add_era_researched` already covers.
+// ⚠ THE BLANKET IS THE THING THIS REPLACES. It used to hand every NEW era-1 production technology to
+// tiers 3, 4 and 5 by name, on the reasoning that a country starting with a calico works must be able to
+// build one. True — but only two of those 213 countries start with anything of the kind. Tier 4 and
+// tier 5 (166 countries) needed NONE of the four, and tier 3 needed one of them. Handing Leblanc soda
+// and Fourdrinier paper machines to every backward state in the world is not "close to vanilla", it is
+// a blanket wearing a justification.
+// ⚠ TIERS 1 AND 2 KEEP VANILLA'S OWN `add_era_researched = era_1`, so anything of ours at era 1 reaches
+// them regardless — that line is vanilla's and removing it would strip vanilla technologies, which the
+// rule above forbids. The consequence is a small, deliberate over-grant: tier 2 gets `fourdrinier_machine`
+// and `leblanc_process` without a tier-2 country owning either. Closing that would mean either dropping
+// vanilla's blanket or dating two genuinely pre-1836 technologies into era 2; both are worse.
+// ⚠ TIER GRANULARITY, not per country — vanilla's own structure. Spain and Mexico need beet sugar, so
+// all 47 tier-3 countries get it. Per-country precision is possible (a `limit` block inside the tier
+// effect) and is deliberately not done yet.
+// ⚠ THE SOURCE IS `config/start_baseline.json`, the inventory extract_start.ps1 makes from the vanilla
+// 1836 start — which is why build.ps1 runs that BEFORE this. Reading a baseline from the previous build
+// would derive this build's grant from the last one's map.
+// ⚠ AND IT IS GUARDED: landmine L14 (`verify_start_techs.mjs --vs-vanilla`, inside preflight) fails the
+// build if any country ends up owning a building its own technologies cannot unlock. An under-grant here
+// cannot ship silently.
 {
   let txt = vanilla('common/scripted_effects/00_starting_inventions.txt');
-  const newEra1Prod = NEWT.filter(t => t.era === 1 && t.category === 'production').map(t => t.id);
-  if (!newEra1Prod.length) throw new Error('emit_techs: expected at least one new era-1 production technology');
-  for (const tier of [3, 4, 5]) {
-    const re = new RegExp(`(effect_starting_technology_tier_${tier}_tech = \\{[\\s\\S]*?add_technology_researched = manufacturies\\n)`, 'm');
-    const add = newEra1Prod.map(id => `\tadd_technology_researched = ${id}\n`).join('');
-    txt = sub(txt, re, `$1${add}`, 1, `starting technologies, tier ${tier}`);
+
+  // which starting tier does each country belong to?
+  const cTier = {};
+  for (const f of readdirSync(join(GAME, 'common/history/countries'))) {
+    if (!f.endsWith('.txt')) continue;
+    const t = readFileSync(join(GAME, 'common/history/countries', f), 'utf8').replace(/^﻿/, '');
+    for (const m of t.matchAll(/c:([A-Z_0-9]{2,4})\s*\??=\s*\{/g)) {
+      let i = t.indexOf('{', m.index) + 1, d = 1;
+      while (i < t.length && d > 0) { if (t[i] === '{') d++; else if (t[i] === '}') d--; i++; }
+      const e = t.slice(m.index, i).match(/effect_starting_technology_tier_(\d)_tech/);
+      if (e) cTier[m[1]] = +e[1];
+    }
   }
-  // ⭐⭐ OUR OWN NAMED GRANT — a technology the 1836 MAP depends on whose slot we date after 1836.
-  // Vanilla already carries three such cases (`central_archives` 1838, `mechanical_tools` 1840,
-  // `intensive_agriculture` 1842) in an explicit named grant, because its own starting map runs buildings
-  // the calendar would forbid. Our re-band adds a fourth, and it must be named for the same reason.
-  //
-  // ⚠ WHY THIS ONE. Vanilla gates a steel tooling workshop on `mechanical_tools` — which IS in that named
-  // grant — so vanilla's 1836 great powers run steel tooling, and 16 of the map's 35 tooling workshops do.
-  // Our ladder replaced that gate with `steel_toolmaking` (era 3, 1865, and requiring `bessemer_process`
-  // 1856), so converting those workshops faithfully produced five great powers owning a building their own
-  // technologies could not unlock. The ruling is that 1836 stays close to vanilla — the industries that
-  // factually existed stay, and their technologies are unlocked — so the grant follows the map.
+  if (Object.keys(cTier).length < 100)
+    throw new Error(`emit_techs: only ${Object.keys(cTier).length} countries have a starting tier — the history parse is wrong`);
+
+  // what does the 1836 map need, per starting tier?
+  const basePath = join(REPO, 'config', 'start_baseline.json');
+  const baseline = JSON.parse(readFileSync(basePath, 'utf8').replace(/^﻿/, ''));
+  if (!baseline.factories?.length) throw new Error(`emit_techs: ${basePath} carries no factories`);
+  const eraOf = Object.fromEntries(OPT.techs.map(t => [t.id, t.era]));
+  const ERA_GRANTED = { 1: 1, 2: 1 };            // tiers 1 and 2 call add_era_researched = era_1
+  const needByTier = {};                          // tier -> Set(tech)
+  const whoNeeds = {};                            // tech -> tier -> Set(tag), for the report
+  for (const f of baseline.factories) {
+    const ind = CFG.industries.find(i => i.id === f.industry);
+    const tier = ind?.tiers[f.tier - 1];
+    if (!tier?.tech) continue;
+    const st = cTier[f.country];
+    if (st == null) continue;
+    ((whoNeeds[tier.tech] ||= {})[st] ||= new Set()).add(f.country);
+    if (eraOf[tier.tech] != null && eraOf[tier.tech] <= (ERA_GRANTED[st] ?? 0)) continue;   // already covered
+    if (VAN_STARTING_NAMED.has(tier.tech)) continue;                                        // vanilla names it itself
+    (needByTier[st] ||= new Set()).add(tier.tech);
+  }
+
+  for (const st of Object.keys(needByTier).map(Number).sort()) {
+    const add = [...needByTier[st]].sort().map(id => `\tadd_technology_researched = ${id}\n`).join('');
+    const re = new RegExp(`(effect_starting_technology_tier_${st}_tech = \\{\\n)`, 'm');
+    txt = sub(txt, re, `$1${add}`, 1, `1836 map grant, tier ${st}`);
+    out.push(`  tier ${st}: ${[...needByTier[st]].sort().join(', ')}`);
+  }
+  // A rule that grants nothing is a rule that silently stopped working — the 1836 map contains steel
+  // tooling workshops and beet-sugar refineries, and it always will.
+  if (!Object.keys(needByTier).length)
+    throw new Error('emit_techs: the 1836 map needed no technology grant at all — that cannot be right');
+
+  // ⚠ THE STEEL-TOOLING CASE, which is why this rule exists at all. Vanilla gates a steel tooling
+  // workshop on `mechanical_tools` — a technology vanilla itself NAMES in the tier-1/2 grant, because its
+  // own 1836 map runs buildings the calendar would forbid — so vanilla's great powers run steel tooling and
+  // 16 of the map's 35 tooling workshops do. Our ladder replaced that gate with `steel_toolmaking` (1865,
+  // requiring `bessemer_process`), so converting those workshops faithfully produced five great powers
+  // owning a building their own technologies could not unlock. The derived grant above now finds this by
+  // itself, from the map, instead of naming it by hand — and finds nothing for tier 2, which the hand
+  // version granted anyway.
   // ⚠ It was INVISIBLE until landmine L13 was fixed: while the converter silently failed to re-tier those
-  // workshops, they stayed on the base rung and nothing was gated wrongly. `tools/verify_start_techs.mjs`
-  // is what found it, one build after the conversion started working.
-  // ⚠ Tiers 1 and 2 only. Tier 3 and below do not run steel tooling on the 1836 map, and granting an 1865
-  // technology to a country that has no use for it would move 1836 away from vanilla, not towards it.
-  for (const tier of [1, 2]) {
-    const re = new RegExp(`(effect_starting_technology_tier_${tier}_tech = \\{\\n)`, 'm');
-    txt = sub(txt, re, `$1\tadd_technology_researched = steel_toolmaking\n`, 1, `named grant, tier ${tier}`);
-  }
+  // workshops they stayed on the base rung and nothing was gated wrongly. verify_start_techs.mjs found it
+  // one build after the conversion started working.
   write('common/scripted_effects/00_starting_inventions.txt', txt);
 }
 

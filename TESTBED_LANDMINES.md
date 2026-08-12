@@ -468,3 +468,32 @@ When a run surfaces a new one:
 step is one that gets skipped, and the failures in this file are precisely the ones nobody notices
 being skipped. L3 and L10 are MANUAL because the information genuinely is not available at build
 time — not because writing the check was inconvenient.
+
+## L15 — a country silently LOSES a starting technology vanilla gives it
+
+**The shape.** L14 asks whether a country can unlock the buildings it owns. This asks the converse, and
+it is the user's rule of 2026-08-12: *every production method vanilla runs in 1836 stays, and the country
+running it holds the technology that unlocks it.* Nothing in the build enforced the "stays" half.
+
+**Why nothing fails.** We whole-file-replace `common/scripted_effects/00_starting_inventions.txt`, so a
+transform that drops a line removes that technology from every country of that tier. Worse and quieter:
+tiers 1 and 2 get most of their set from `add_era_researched = era_1`, so **re-era-ing a technology OUT
+of era 1 silently withdraws it from 59 countries** — no file mentions it, no check reads it, the mod
+loads, and the first symptom is a production method a great power can no longer run. We move eras
+routinely (the ladder-era alignment moved 32 technologies in one commit), which is exactly the operation
+that can do this.
+
+**The detector.** `tools/verify_start_techs.mjs --diff-vanilla`, over the EMITTED files. Two things make
+it correct rather than approximately correct:
+- it expands the era shorthand **against each root's own era assignments**, because the whole hazard is
+  that ours differ from vanilla's;
+- it includes the **per-country `add_technology_researched` extras** that 81 countries carry in their own
+  history (Russia's `fractional_distillation`, Japan's `sericulture`, Britain's `joint_stock_companies`).
+  A set built from the tier effect alone is the wrong set for a fifth of the world.
+
+It FAILS on any loss and merely REPORTS the gains, grouped — gains are intended and ruled, but their
+shape belongs on screen so an unexpected one is visible. Today: 338 countries gain nothing, tier 3 gains
+`beet_sugar_refining`, tier 2 gains five era-1 technologies, tier 1 those five plus `steel_toolmaking`.
+
+**Proven.** Deleting `add_technology_researched = railways` from the tier-1 grant makes it name FRA, GBR,
+PRU and USA and exit non-zero.
