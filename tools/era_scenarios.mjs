@@ -1399,10 +1399,12 @@ function classInfo() {
 // feedback receives no gradient at all.
 //
 // SCOPE, deliberately simple: a good is restricted if it is an input to ANY production method reachable
-// in any of our industry buildings — main recipes and every secondary PMG, across every era. "Consumable
-// by industry", not "consumed by industry right now": a good that some era's method could buy is treated
-// as restricted in all of them, because the alternative is a set that changes underfoot as the PM
-// optimiser moves.
+// in any of our industry buildings — main recipes and every secondary PMG, across every era — OR if any
+// combat unit's upkeep consumes it (user ruling 2026-08-12; the addition is made further down, where
+// UNIT_GOODS is built). "Consumable by industry or by the army", not "consumed right now": a good that
+// some era's method could buy is treated as restricted in all of them, because the alternative is a set
+// that changes underfoot as the PM optimiser moves.
+// ⇒ The ONLY good that may pass +75% is one nothing but civilian pops consume.
 const CEILING = 175;            // the engine's own band edge
 const CEIL_TARGET = 160;        // what the count feedback aims restricted goods AT MOST at, to leave slack
 // The three levers that enforce it, individually switchable so each one's contribution can be measured
@@ -1534,6 +1536,16 @@ for (const u of (E.unitTypes ? E.unitTypes() : [])) {
   const io = E.unitGoodsIO ? E.unitGoodsIO(u) : null;
   for (const g in ((io && io.in) || {})) UNIT_GOODS.add(g);
 }
+// ⭐⭐ MILITARY CONSUMPTION IS RESTRICTED TOO (user ruling 2026-08-12). The ceiling exists because a good
+// pinned at the band edge can no longer signal scarcity, so everything downstream is priced against a
+// wall — and that argument does not care whether the buyer is a factory or a battalion. **The only good
+// allowed past +75% is one that is PURELY CIVILIAN-CONSUMED.** Radios are the named case: pops buy them,
+// which made them look like a consumer good, but a battalion's upkeep buys them too, so they are in.
+// ⚠ This set is computed above for the no-buyer test and was simply never consulted by the ceiling; the
+// two rules ask opposite questions about the same fact ("does anything buy this?" / "does anything that
+// is not a pop buy this?") and now share one source for it.
+for (const g of UNIT_GOODS) RESTRICTED.add(g);
+
 const NO_BUYER_EXEMPT = new Set(['gold']);
 const firstConsumerEra = {};   // good -> earliest era any BUILDING of ours eats it
 for (const i of S.IND) for (const t of i.tiers) for (const g in (t.inputs || {}))
@@ -4037,7 +4049,15 @@ for (let e = 0; e < FIT.eras.length; e++) {
 
   out.push({
     id: `era${meta.era}_${cfg.year}`,
-    label: `Era ${meta.era} · ${cfg.year}`,
+    // ⭐ THE LABEL IS THE YEAR ALONE (user ruling 2026-08-12). It used to read `Era 5 · 1945`, which asserts
+    // that era 5 IS 1945 — it is not. The scenario YEAR is where the vanilla GDP/SoL/wage references were
+    // measured (1780/1836/1870/1900/1920/1945); the era ANCHOR is a different date meaning something else
+    // (1750/1830/1870/1900/1925/1940 — at the anchor a technology leader holds about half that era's
+    // technologies). They coincide only at eras 2 and 3. The UI shows the anchor as a read-only chip
+    // beside the year; `era` and `year` are carried here so it need not parse the id.
+    label: String(cfg.year),
+    era: meta.era,
+    year: cfg.year,
     group: 'Era ladder · solved, prices unlocked',
     country: null,
     base_wage: cfg.base_wage,

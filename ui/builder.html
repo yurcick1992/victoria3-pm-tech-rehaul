@@ -204,6 +204,10 @@
   .presetbar .plbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);
     font-weight:700;margin-right:4px;min-width:72px}
   .presetbar .pbtn{padding:3px 10px;font-size:12px;border-radius:7px}
+  /* the read-only era-anchor chip that sits to the LEFT of an era scenario's year */
+  .presetbar .pbtn .eraAnchor{display:inline-block;margin:0 6px 0 -3px;padding:0 5px;border-radius:4px;
+    background:rgba(255,255,255,.09);color:#93a1b3;font-size:10.5px;font-variant-numeric:tabular-nums;
+    letter-spacing:.02em;vertical-align:1px;cursor:help}
   .presetbar .pbtn.on{background:var(--accent);border-color:var(--accent);color:#0f1319;font-weight:700}
   /* .same = the scenario ALREADY equals what this button would set. Derived every render from the live
      state, so it disappears the instant anything diverges — it never claims you are "in" a preset. */
@@ -262,7 +266,18 @@
   .thresholds label.oob input{border-color:var(--bad);color:var(--bad)}
   .thresholds label.hl-in{background:rgba(232,115,90,.30);border-color:var(--bad)}
   .thresholds label.hl-out{background:rgba(78,201,143,.30);border-color:var(--good)}
-  .legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--muted)}
+  .legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--muted);align-items:center}
+  /* legend entries are FILTERS — 22 industries in one chart is unreadable, so any of them can be taken
+     out. Session-only, like every other scenario-side control. */
+  .legend .lgd{display:inline-flex;align-items:center;gap:6px;cursor:pointer;border:1px solid transparent;
+    border-radius:6px;padding:1px 6px;background:none;color:inherit;font:inherit;line-height:1.5}
+  .legend .lgd:hover{border-color:var(--line);background:rgba(255,255,255,.05)}
+  .legend .lgd.off{opacity:.38}
+  .legend .lgd.off .swatch{background:transparent!important;box-shadow:inset 0 0 0 1.5px currentColor}
+  .legend .lgdall{cursor:pointer;border:1px solid var(--line);border-radius:6px;padding:1px 7px;
+    background:none;color:var(--muted);font:inherit;font-size:11px}
+  .legend .lgdall:hover{background:rgba(255,255,255,.06)}
+  .legend .lgdnote{margin-left:4px;opacity:.85}
   /* ---- ladder chart mode switch ---- */
   .vizmode{display:inline-flex;gap:2px;margin:0 8px;vertical-align:middle;background:var(--panel2);
            border:1px solid var(--line);border-radius:6px;padding:2px}
@@ -1437,12 +1452,42 @@ function fmtPop(n){ n=+n||0;
 // SoL and Population are ONE grid template so each class sits in one column across both rows, in one
 // order (upper · middle · lower · peasants · slaves). The base wage follows directly underneath: it is a
 // property of the market being modelled, and it belongs above the buildings whose wages it prices.
+// ⭐ A SCENARIO'S YEAR AND ITS ERA'S ANCHOR ARE DIFFERENT DATES, and the preset label used to run them
+// together as "Era 5 · 1945", which reads as a claim that era 5 IS 1945. It is not: the six scenarios are
+// dated 1780/1836/1870/1900/1920/1945 because that is where the vanilla GDP, SoL and wage references were
+// MEASURED, while the era anchors are 1750/1830/1870/1900/1925/1940 and mean something else entirely (at
+// the anchor, a technology leader holds about half that era's technologies). They coincide only at eras
+// 2 and 3. So the button NAME is the year alone and the anchor sits beside it as a read-only chip
+// (user ruling 2026-08-12). The scenarios themselves are not re-dated — the references are what they are.
+const ERA_ANCHOR_YEAR = { 0:1750, 1:1830, 2:1870, 3:1900, 4:1925, 5:1940 };
+// Parsed from the id (`era5_1945`) rather than read from a field, so it works on presets written before
+// the generator learned to carry `era`/`anchor` — and on any it writes afterwards.
+function eraAnchorOf(p){
+  if(p && p.era!=null && p.year!=null) return { era:+p.era, year:+p.year, anchor:ERA_ANCHOR_YEAR[+p.era] };
+  const m=/^era(\d+)_(\d+)$/.exec(p&&p.id||'');
+  if(!m) return null;
+  return { era:+m[1], year:+m[2], anchor:ERA_ANCHOR_YEAR[+m[1]] };
+}
+// The displayed name: the YEAR alone for an era scenario, the authored label for everything else.
+function presetName(p){ const a=eraAnchorOf(p); return a ? String(a.year) : (p.label||p.id); }
+
+// Which series the ladder chart currently HIDES — session-only, never saved or emitted, exactly like
+// BLDNUM and the PM selections. Two sets because the two chart shapes plot different things: the raw
+// view plots one line per industry, the aggregated view one box per sector.
+const VIZHIDE = new Set();        // industry ids hidden in the raw view
+const VIZHIDE_AGG = new Set();    // sector keys hidden in the aggregated view
+
 function presetBarHTML(){
   const groups=[], byGroup={};
   presetList().forEach(p=>{ const g=p.group||'Presets'; if(!byGroup[g]){ byGroup[g]=[]; groups.push(g); } byGroup[g].push(p); });
   const btns=groups.map(g=>`<div class="pgrp"><span class="plbl">${esc(g)}</span>`
-      + byGroup[g].map(p=>`<button class="pbtn" data-preset="${esc(p.id)}"
-          title="One-off overwrite: replaces every building Number, the non-pop buy/sell orders, the pop counts, the base wage and the PM selections with ${esc(p.label)}. Nothing stays 'in' the preset afterwards — edit freely.">${esc(p.label)}</button>`).join('')
+      + byGroup[g].map(p=>{ const a=eraAnchorOf(p);
+        const tip = `One-off overwrite: replaces every building Number, the non-pop buy/sell orders, the pop counts, the base wage and the PM selections with ${presetName(p)}.`
+          + (a ? ` Scenario YEAR ${a.year}; it sits in era ${a.era}, whose ANCHOR is ${a.anchor} — the two are different dates and the scenario year is the one the vanilla GDP/SoL/wage references were measured at.` : '')
+          + ` Nothing stays 'in' the preset afterwards — edit freely.`;
+        return `<button class="pbtn" data-preset="${esc(p.id)}" title="${esc(tip)}">`
+          + (a ? `<span class="eraAnchor" title="era ${a.era}, anchored ${a.anchor}">e${a.era}·${a.anchor}</span>` : '')
+          + `${esc(presetName(p))}</button>`; }).join('')
       + `</div>`).join('');
   const cm=POPM.class_mult||{};
   const solTitle=c=> c==='slaves'
@@ -1667,7 +1712,7 @@ function presetReportHTML(p){
     + `<code>floor(state urbanization / 100)</code>, summed per state (FINDINGS F13: exact on 774 of 783 states). `
     + `The nine misses are all UNDER-counts: we assume base techs and ignore the technology/law urbanization bonus, so a `
     + `developed market gets slightly too few. Services supply and wood/glass demand are understated by that much, never overstated.`]);
-  return `Applied <b>${esc(p.label)}</b> — a one-off overwrite; edit anything from here.`
+  return `Applied <b>${esc(presetName(p))}</b> — a one-off overwrite; edit anything from here.`
     + `<dl>${rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>`;
 }
 // Apply a saved market: OVERWRITE the building numbers, the non-building orders, the population, the
@@ -1730,7 +1775,7 @@ function applyScenarioPreset(id, quiet){
     const rep={lower:'laborers',middle:'clerks',upper:'aristocrats'};
     for(const c in rep) if(p.pops[c]>0) POPPROF[rep[c]]=+p.pops[c]||0;
     POPPROF.peasants=+p.pops.peasants||0; POPPROF.slaves=+p.pops.slaves||0;
-    if(!quiet) banner('warn',`<b>${esc(p.label||p.id)}</b> carries no per-profession population, so each class was put on one representative profession `
+    if(!quiet) banner('warn',`<b>${esc(presetName(p))}</b> carries no per-profession population, so each class was put on one representative profession `
       + `(lower→laborers, middle→clerks, upper→aristocrats). The class totals are right; the profession MIX is not, `
       + `and it is what prices wages. Re-run <code>tools\\build.ps1</code> to regenerate the presets with real professions.`);
   }
@@ -2086,7 +2131,7 @@ function vizSectorData(valOf){
   IND.forEach(i=>i.tiers.forEach(t=>{
     const v=valOf.tier(i,t); if(!isFinite(v)) return;
     const key=tierSector(t,manu,i.id), w=(BLDNUM[t.key]||0)*thruMult(t.key)*outputValue(i,t,true);
-    (g[key].tiered[t.tier]=g[key].tiered[t.tier]||[]).push({ v, w:Math.max(0,w||0), name:`${i.id} ${tlab(t)}` });
+    (g[key].tiered[t.era??0]=g[key].tiered[t.era??0]||[]).push({ v, w:Math.max(0,w||0), name:`${i.id} ${tlab(t)}` });
   }));
   const catToGroup={}; VIZ_GROUPS.forEach(gr=>(gr.cats||[]).forEach(c=>catToGroup[c]=gr.key));
   refBuildings().forEach(b=>{
@@ -2108,7 +2153,13 @@ function renderViz(){
   if(tagEl) tagEl.innerHTML = VIZ_TAG[VIZMODE] + (VIZSHAPE==='agg' ? VIZ_TAG_AGG : '');
   if(VIZSHAPE==='agg') return renderVizAggregated();
   const W=Math.min(1360, (document.getElementById('viz').clientWidth||900)), H=300, padL=44, padB=26, padT=12, padR=12;
-  const maxTier=Math.max(...IND.map(i=>i.tiers.length));
+  // ⚠⚠ THE X AXIS IS THE ERA, NOT A POSITION. It used to run T1..TN over each industry's own tier count,
+  // which is the very confusion the "N IS THE ERA, NEVER A POSITION" ruling exists to stop: automotive
+  // starts at era 3, so plotting its first rung in column 1 put an era-3 building beside another
+  // industry's era-0 one and invited the reader to compare them. Columns are eras; an industry that does
+  // not exist in an era simply has no point there, and its line breaks.
+  const minEra=Math.min(...IND.flatMap(i=>i.tiers.map(t=>t.era??0)));
+  const maxEra=Math.max(...IND.flatMap(i=>i.tiers.map(t=>t.era??0)));
   const profit = VIZMODE==='profit';
   const valOf = (i,t) => profit ? TPthr(i,t) : BE(i,t);
 
@@ -2117,30 +2168,31 @@ function renderViz(){
   // number, and always forced to include 0 (the line that decides whether a tier is viable at all).
   let yMin=25, yMax=175, ticks=[25,50,75,100,125,150,175];
   if(profit){
-    const vals=[]; IND.forEach(i=>i.tiers.forEach(t=>{ const v=valOf(i,t); if(isFinite(v)) vals.push(v); }));
+    const vals=[]; IND.forEach(i=>{ if(VIZHIDE.has(i.id)) return; i.tiers.forEach(t=>{ const v=valOf(i,t); if(isFinite(v)) vals.push(v); }); });
     let lo=Math.min(0,...vals), hi=Math.max(20,...vals);
     const step = (hi-lo)>400?100:(hi-lo)>200?50:25;
     yMin=Math.floor(lo/step)*step; yMax=Math.ceil(hi/step)*step;
     if(yMax-yMin<step*2) yMax=yMin+step*2;
     ticks=[]; for(let v=yMin;v<=yMax+1e-9;v+=step) ticks.push(Math.round(v));
   }
-  const x = t => padL + (maxTier<=1?0:(t-1)/(maxTier-1))*(W-padL-padR);
+  const nCol = maxEra-minEra+1;
+  const x = e => padL + (nCol<=1?0:(e-minEra)/(nCol-1))*(W-padL-padR);
   const y = v => padT + (1-(v-yMin)/(yMax-yMin))*(H-padT-padB);
   const clampY = v => Math.max(yMin,Math.min(yMax,v));
   let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" font-family="system-ui" font-size="11">`;
 
-  for(let t=1;t<=maxTier;t++){
-    const cx=x(t), w=Math.max(24,(W-padL-padR)/(maxTier)*0.8);
-    // BE mode only: shade min..max of every industry's target_be at that tier (auto-adapts to the
-    // coexisting ladders instead of one fixed band). There is no per-TIER profit target — the profit
-    // targets are per ERA — so the profit view marks 0% and +20% as lines instead.
+  for(let e=minEra;e<=maxEra;e++){
+    const cx=x(e), w=Math.max(24,(W-padL-padR)/nCol*0.8);
+    // BE mode only: shade min..max of every industry's target_be in that ERA (auto-adapts to the
+    // coexisting ladders instead of one fixed band). There is no per-tier profit target — the profit
+    // targets are per era — so the profit view marks 0% and +20% as lines instead.
     if(!profit){
-      const tg=IND.map(i=>i.tiers.find(z=>z.tier===t)).filter(Boolean).map(z=>z.target_be);
+      const tg=IND.map(i=>i.tiers.find(z=>z.era===e)).filter(Boolean).map(z=>z.target_be);
       if(tg.length){ const lo=Math.max(yMin,Math.min(...tg)), hi=Math.min(yMax,Math.max(...tg));
-        const tip=`Tier ${t} target band|${Math.min(...tg)}–${Math.max(...tg)}% break-even|across ${tg.length} group(s)`;
-        s+=`<rect x="${cx-w/2}" y="${y(hi)}" width="${w}" height="${Math.max(1,y(lo)-y(hi))}" fill="${TIERCOL[t]}" opacity="0.13" data-tip="${esc(tip)}" style="cursor:help"/>`; }
+        const tip=`Era ${e} target band|${Math.min(...tg)}–${Math.max(...tg)}% break-even|across ${tg.length} industry ladder(s)`;
+        s+=`<rect x="${cx-w/2}" y="${y(hi)}" width="${w}" height="${Math.max(1,y(lo)-y(hi))}" fill="${e===0?ERA0COL:(TIERCOL[e]||'#5b6b7d')}" opacity="0.13" data-tip="${esc(tip)}" style="cursor:help"/>`; }
     }
-    s+=`<text x="${cx}" y="${H-8}" text-anchor="middle" fill="#93a1b3">T${t}</text>`;
+    s+=`<text x="${cx}" y="${H-8}" text-anchor="middle" fill="#93a1b3">e${e}</text>`;
   }
   ticks.forEach(v=>{ s+=`<line x1="${padL}" y1="${y(v)}" x2="${W-padR}" y2="${y(v)}" stroke="#2e3947" stroke-width="1"/>
     <text x="${padL-6}" y="${y(v)+3}" text-anchor="end" fill="#5f6c7d">${v}%</text>`; });
@@ -2151,16 +2203,16 @@ function renderViz(){
     if(20<=yMax && 20>=yMin) s+=`<line x1="${padL}" y1="${y(20)}" x2="${W-padR}" y2="${y(20)}" stroke="#4ec98f" stroke-width="1" stroke-dasharray="5 4" opacity="0.75"/>`;
   }
 
-  IND.forEach((i,ix)=>{ const col=VIZ_COLORS[ix%VIZ_COLORS.length];
-    const pts=i.tiers.map(t=>({x:x(t.tier), y:y(clampY(valOf(i,t))), t}));
+  IND.forEach((i,ix)=>{ if(VIZHIDE.has(i.id)) return; const col=VIZ_COLORS[ix%VIZ_COLORS.length];
+    const pts=i.tiers.slice().sort((a,b)=>(a.era??0)-(b.era??0)).map(t=>({x:x(t.era??0), y:y(clampY(valOf(i,t))), t}));
     s+=`<polyline fill="none" stroke="${col}" stroke-width="2" points="${pts.map(p=>p.x+','+p.y).join(' ')}"/>`;
     pts.forEach(p=>{
       const v=valOf(i,p.t), n=BLDNUM[p.t.key]||0;
       // A HOLLOW dot means the scenario contains none of this building. Its arithmetic is still real, but
       // it is not part of what the Ladder check scores — same presence rule, shown rather than explained.
       const tip = profit
-        ? `${i.id} — Tier ${p.t.tier}|${p.t.name}|profit ${v.toFixed(0)}% at current prices|BE ${BE(i,p.t).toFixed(0)}% (target ${p.t.target_be}%)|${n?n+' in scenario':'not in the scenario'}`
-        : `${i.id} — Tier ${p.t.tier}|${p.t.name}|BE ${v.toFixed(0)}% (target ${p.t.target_be}%)|${p.t.output_qty} ${tierOut(i,p.t)}|${n?n+' in scenario':'not in the scenario'}`;
+        ? `${i.id} — ${tlab(p.t)}|${p.t.name}|profit ${v.toFixed(0)}% at current prices|BE ${BE(i,p.t).toFixed(0)}% (target ${p.t.target_be}%)|${n?n+' in scenario':'not in the scenario'}`
+        : `${i.id} — ${tlab(p.t)}|${p.t.name}|BE ${v.toFixed(0)}% (target ${p.t.target_be}%)|${p.t.output_qty} ${tierOut(i,p.t)}|${n?n+' in scenario':'not in the scenario'}`;
       s+= n ? `<circle cx="${p.x}" cy="${p.y}" r="3.2" fill="${col}"/>`
             : `<circle cx="${p.x}" cy="${p.y}" r="3.2" fill="var(--panel)" stroke="${col}" stroke-width="1.5"/>`;
       s+=`<circle cx="${p.x}" cy="${p.y}" r="7" fill="transparent" data-tip="${esc(tip)}" style="cursor:help"/>`;
@@ -2169,14 +2221,22 @@ function renderViz(){
   s+=`</svg>`;
   document.getElementById('viz').innerHTML=s;
   document.getElementById('vizLegend').innerHTML =
-    IND.map((i,ix)=>`<span><span class="swatch" style="background:${VIZ_COLORS[ix%VIZ_COLORS.length]}"></span>${esc(i.id)}</span>`).join('')
-    + `<span style="margin-left:6px">○ = not in the current scenario</span>`;
+    `<button class="lgdall" data-vizall="ind">all</button><button class="lgdall" data-viznone="ind">none</button>`
+    + IND.map((i,ix)=>{ const off=VIZHIDE.has(i.id), col=VIZ_COLORS[ix%VIZ_COLORS.length];
+        return `<button class="lgd${off?' off':''}" data-vizind="${esc(i.id)}" style="color:${col}"
+          title="${off?'Show':'Hide'} ${esc(i.id)} in the chart. Hiding also rescales the axis to what is left, which is the point — 22 lines at once are unreadable.">`
+          + `<span class="swatch" style="background:${col}"></span><span style="color:var(--muted)">${esc(i.id)}</span></button>`; }).join('')
+    + `<span class="lgdnote">○ = not in the current scenario${VIZHIDE.size?` · ${VIZHIDE.size} hidden`:''}</span>`;
 }
 
 // ---------- AGGREGATED: the four standard sectors as box plots, per tier ------------------------------
 function renderVizAggregated(){
   const W=Math.min(1360,(document.getElementById('viz').clientWidth||900)), H=300, padL=44, padB=26, padT=12, padR=12;
-  const maxTier=Math.max(...IND.map(i=>i.tiers.length));
+  // Columns are ERAS here too — see the note in renderViz(). The two charts must agree on what a column
+  // means, or the raw and aggregated views of one scenario disagree about which buildings are comparable.
+  const minEra=Math.min(...IND.flatMap(i=>i.tiers.map(t=>t.era??0)));
+  const maxEra=Math.max(...IND.flatMap(i=>i.tiers.map(t=>t.era??0)));
+  const nCol=maxEra-minEra+1;
   const profit=VIZMODE==='profit';
   const data=vizSectorData({ tier:(i,t)=>profit?TPthr(i,t):BE(i,t), ref:ec=>profit?ec.tp:ec.BE });
 
@@ -2195,13 +2255,13 @@ function renderVizAggregated(){
   }
   const y=v=>padT+(1-(v-yMin)/(yMax-yMin))*(H-padT-padB);
   const cy=v=>y(Math.max(yMin,Math.min(yMax,v)));
-  const slotW=(W-padL-padR)/maxTier, xSlot=t=>padL+(t-0.5)*slotW;
+  const slotW=(W-padL-padR)/nCol, xSlot=e=>padL+(e-minEra+0.5)*slotW;
   // spacing adapts to the number of sectors — with six groups a fixed 0.21-of-a-slot pitch overlapped
   const n=VIZ_GROUPS.length, pitch=slotW*0.78/n, bw=Math.min(22,pitch*0.78);
   const bx=(t,j)=>xSlot(t)+(j-(n-1)/2)*pitch;
 
   let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" font-family="system-ui" font-size="11">`;
-  for(let t=1;t<=maxTier;t++) s+=`<text x="${xSlot(t)}" y="${H-8}" text-anchor="middle" fill="#93a1b3">T${t}</text>`;
+  for(let e=minEra;e<=maxEra;e++) s+=`<text x="${xSlot(e)}" y="${H-8}" text-anchor="middle" fill="#93a1b3">e${e}</text>`;
   ticks.forEach(v=>{ s+=`<line x1="${padL}" y1="${y(v)}" x2="${W-padR}" y2="${y(v)}" stroke="#2e3947" stroke-width="1"/>
     <text x="${padL-6}" y="${y(v)+3}" text-anchor="end" fill="#5f6c7d">${v}%</text>`; });
   if(profit){
@@ -2212,13 +2272,14 @@ function renderVizAggregated(){
   const centres={};
   VIZ_GROUPS.forEach((gr,j)=>{
     centres[gr.key]=[];
-    for(let t=1;t<=maxTier;t++){
+    if(VIZHIDE_AGG.has(gr.key)) return;
+    for(let t=minEra;t<=maxEra;t++){
       // an untiered sector repeats unchanged in every column (see VIZ_GROUPS)
       const rows = gr.tiered ? (data[gr.key].tiered[t]||[]) : data[gr.key].flat;
       const st=boxStats(rows.map(r=>r.v)); if(!st) continue;
       const c=weightedCentre(rows), x0=bx(t,j);
       const fmt=v=>v.toFixed(0)+'%';
-      const tip=`${gr.label}${gr.tiered?' — Tier '+t:' — untiered (same in every column)'}`
+      const tip=`${gr.label}${gr.tiered?' — era '+t:' — untiered (same in every column)'}`
         + `|${st.n} building type(s)`
         + `|median ${fmt(st.med)} · IQR ${fmt(st.q1)}–${fmt(st.q3)} · range ${fmt(st.min)}–${fmt(st.max)}`
         + (c?`|◆ ${c.weighted?'output-weighted centre':'median (nothing built — no weights)'} ${fmt(c.v)}`:'');
@@ -2244,9 +2305,27 @@ function renderVizAggregated(){
   s+=`</svg>`;
   document.getElementById('viz').innerHTML=s;
   document.getElementById('vizLegend').innerHTML =
-    VIZ_GROUPS.map(gr=>`<span><span class="swatch" style="background:${gr.color}"></span>${esc(gr.label)}${gr.tiered?'':' <span style="opacity:.7">(untiered)</span>'}</span>`).join('')
+    `<button class="lgdall" data-vizall="agg">all</button><button class="lgdall" data-viznone="agg">none</button>`
+    + VIZ_GROUPS.map(gr=>{ const off=VIZHIDE_AGG.has(gr.key);
+        return `<button class="lgd${off?' off':''}" data-vizagg="${esc(gr.key)}" style="color:${gr.color}" title="${off?'Show':'Hide'} this sector.">`
+          + `<span class="swatch" style="background:${gr.color}"></span><span style="color:var(--muted)">${esc(gr.label)}${gr.tiered?'':' (untiered)'}</span></button>`; }).join('')
     + `<span style="margin-left:6px">◆ = output-weighted centre · ◇ = median (nothing built there) · box = IQR · whiskers = min–max</span>`;
 }
+// ---------- legend filtering: click a series to drop it, "all"/"none" for the whole set ----------
+// Delegated on the legend container because renderViz replaces its innerHTML on every update, so a
+// handler bound to the entries themselves would die on the first repaint.
+document.getElementById('vizLegend').addEventListener('click', e=>{
+  const ind=e.target.closest('[data-vizind]'), agg=e.target.closest('[data-vizagg]');
+  const all=e.target.closest('[data-vizall]'), none=e.target.closest('[data-viznone]');
+  if(ind){ const k=ind.dataset.vizind; VIZHIDE.has(k)?VIZHIDE.delete(k):VIZHIDE.add(k); }
+  else if(agg){ const k=agg.dataset.vizagg; VIZHIDE_AGG.has(k)?VIZHIDE_AGG.delete(k):VIZHIDE_AGG.add(k); }
+  else if(all){ (all.dataset.vizall==='agg'?VIZHIDE_AGG:VIZHIDE).clear(); }
+  else if(none){ if(none.dataset.viznone==='agg') VIZ_GROUPS.forEach(g=>VIZHIDE_AGG.add(g.key));
+                 else IND.forEach(i=>VIZHIDE.add(i.id)); }
+  else return;
+  renderViz();
+});
+
 // ---------- viz hover tooltips (dots + target-band rects; appear 2s after hover starts) ----------
 // Event-delegated on #viz so it survives every renderViz re-render. Content is stored raw in each
 // element's data-tip (pipe-separated); we re-escape per line when showing (guards against injection).
@@ -2964,7 +3043,7 @@ document.addEventListener('click', e=>{
     if(act==='cost'){ const ok=applyBuildCost(i,t,X);
       banner(ok?'info':'warn', ok?`${i.id} ${tlab(t)}: Build cost set for a ${X}-yr payback.`:`${i.id} ${tlab(t)}: unprofitable at current prices — raise its output price first.`); }
     else { const r=applyPricesAnchor(i,t,X);
-      banner(r.ok?(r.oob?'warn':'info'):'warn', r.ok?`Scaled ${i.id} prices so T${t.tier} payback = ${X} yrs${r.oob?' (some prices left the band, flagged red)':''}.`:`${i.id} T${t.tier}: can't reach ${X} yrs by uniform price scaling (IO ≤ 0 at current prices).`); }
+      banner(r.ok?(r.oob?'warn':'info'):'warn', r.ok?`Scaled ${i.id} prices so ${tlab(t)} payback = ${X} yrs${r.oob?' (some prices left the band, flagged red)':''}.`:`${i.id} ${tlab(t)}: can't reach ${X} yrs by uniform price scaling (IO ≤ 0 at current prices).`); }
   } else {                                                     // ----- group level -----
     if(act==='cost'){ let set=0; const skip=[]; i.tiers.forEach(t=>{ applyBuildCost(i,t,X)?set++:skip.push(tlab(t)); });
       banner(skip.length?'warn':'info', `${i.id}: set Build cost on ${set} tier(s) for a ${X}-yr payback.`+(skip.length?` Skipped ${skip.join(', ')} (unprofitable now).`:'')); }

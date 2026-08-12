@@ -459,12 +459,19 @@ but there is no tier 6, so at era 5 the partner slides down onto the **one-era-s
 capacity starts at −13% to −23%. That is the ladder working, not failing — the defect was only that the
 scenario placed a dying rung at full scale and could not correct it.
 
-**⭐ HARD CONSTRAINT — THE INDUSTRIAL PRICE CEILING (§10.15).** No good that manufacturing can consume may
-reach **+75%** (the engine's 175% band edge). −75% is fine; +75% is fine for a purely consumer good. An
-input pinned at the ceiling means the market can no longer signal scarcity at all, so everything downstream
-is priced against a wall. Enforced in the price path (restricted goods capped at 160), in the counts (a
-breach outranks the revenue-weighted mean) and in **PM choice** (scored `profit − 100 × breaches`, so the
-constraint decides and profit only breaks ties). Currently **clear in all five eras**, from 11 breaches.
+**⭐ HARD CONSTRAINT — THE INDUSTRIAL PRICE CEILING (§10.15).** No good that manufacturing **or the army**
+can consume may reach **+75%** (the engine's 175% band edge). −75% is fine; **+75% is fine only for a
+PURELY CIVILIAN-CONSUMED good** (user ruling 2026-08-12). An input pinned at the ceiling means the market
+can no longer signal scarcity at all, so everything downstream is priced against a wall — and that
+argument does not care whether the buyer is a factory or a battalion. Enforced in the price path
+(restricted goods capped at 160), in the counts (a breach outranks the revenue-weighted mean) and in
+**PM choice** (scored `profit − 100 × breaches`, so the constraint decides and profit only breaks ties).
+⚠ **The military half was measured, not assumed**: combat-unit upkeep consumes 8 goods (ammunition,
+artillery, grain, iron, oil, **radios**, small_arms, tanks), of which **5 were not already restricted** —
+small_arms, ammunition, radios, tanks, artillery, i.e. exactly the war-industry outputs no civilian chain
+eats. Restricted set 25 → 30. `radios` is the case the ruling names: pops buy them, which made them look
+purely civilian, but a battalion's upkeep buys them too. The set comes from `UNIT_GOODS`, which the
+no-buyer test already built and the ceiling simply never consulted.
 
 **Wage share is not a free variable** (`W = base wage × Σ employees × wage_weight`, both pinned), and it
 lands at 10–40% of total cost. So obsolescence is **price-driven**: what kills an old building is its
