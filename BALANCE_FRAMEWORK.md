@@ -4535,6 +4535,44 @@ bit `econ_host` reading `ui/data.js` and the solvers' own write→read loop.
 | 5 | 1 | those five + `steel_toolmaking` |
 
 **Zero countries lose anything** — rules 1 and 2 hold by construction and are now checked (L15).
+
+⭐⭐ **AND "GAIN" IS THE WRONG WORD FOR THAT TABLE — user, 2026-08-12: *"if the country had it in vanilla,
+then it's hardly a gain"*.** Correct, and it was the REPORT that was wrong, not the grant. **The tier
+split moved every gate**: a vanilla main production method became its own building with its own
+technology, so a permission the country already held had to be RE-ISSUED under a new key. All six:
+
+| our gate | vanilla PM it replaced | vanilla's gate on it | did tier 1/2 hold that in vanilla? |
+|---|---|---|---|
+| `beet_sugar_refining` | `pm_sweeteners` | `distillation` (era 1) | yes — era_1 blanket |
+| `calico_printing` | `pm_dye_workshops` | `lathe` (era 1) | yes — era_1 blanket |
+| `crystal_glass` | `pm_leaded_glass` | `lathe` (era 1) | yes — era_1 blanket |
+| `fourdrinier_machine` | `pm_sulfite_pulping` | `mechanical_tools` | yes — vanilla NAMES it |
+| `steel_toolmaking` | `pm_steel` | `mechanical_tools` | yes — vanilla NAMES it |
+| `leblanc_process` | `pm_leblanc_process` | **ungated** | always |
+
+`--diff-vanilla` therefore compares CAPABILITY, not keys: the keys that differ, what a country can newly
+BUILD, and which RUNGS are newly gated.
+
+⚠⚠ **GETTING THAT COMPARISON RIGHT NEEDS THE BUILDING'S GATE, NOT JUST THE METHOD'S.** Most of these
+vanilla PMs carry no `unlocking_technologies` of their own — the BUILDING is what is gated — so a PM-only
+reading says "vanilla let anyone run this" and produced **23 phantom losses across every tier**, including
+nonsense like tier 1 losing telephones. The base building key is the LOWEST TIER'S key, *not* the config's
+`ind.building` field, which holds a properties object; indexing the vanilla table with that silently
+yields undefined, and that is exactly how the phantom 23 appeared. With the building gate in, the real
+count is three.
+
+**The true 1836 delta, measured:**
+- **CAPABILITY GAINED: one.** Tier 2 can build the era-1 Leblanc explosives works. In vanilla
+  `pm_leblanc_process` was ungated but the explosives factory itself needed `intensive_agriculture`,
+  which tier 2 lacks; our e1 rung is gated on `leblanc_process`, which tier 2 draws from vanilla's own
+  era-1 blanket. A side effect of that blanket, not of the derived grant.
+- **THREE RUNGS ARE NEWLY GATED** — buildable at once in vanilla, now needing their own technology:
+  tier 1 explosives e2 (`intensive_agriculture` → `dynamite`), tier 2 tooling e2 (`mechanical_tools` →
+  `steel_toolmaking`), tier 4 food e1 (`distillation` → `beet_sugar_refining`).
+  ⭐ **This is the mod's central mechanic, not a leak.** The INDUSTRY is still available at its lower rung
+  on day one; the UPGRADE is what now costs research. A vanilla PM sitting ungated inside a gated building
+  is precisely the free modernisation the rehaul exists to remove.
+- **Nothing any country actually RUNS in 1836 changes** — that is L14, and it is green.
 ⚠ Rule 3 asked for the top 30; the check covers all 444, which strictly dominates it. Tier 1 (5) and
 tier 2 (54) contain every plausible top-30 country.
 

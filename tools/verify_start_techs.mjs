@@ -180,24 +180,73 @@ function startSets(root) {
   return per;
 }
 
+// ⚠⚠ A TECHNOLOGY KEY IS NOT A CAPABILITY, AND COUNTING KEYS READS AS ALARM WHERE THERE IS NONE.
+// The tier split MOVED EVERY GATE: a vanilla main production method became its own building with its own
+// technology, so the permission a country already held had to be re-issued under a new name. Britain
+// gains `beet_sugar_refining` — and could refine beet sugar in vanilla all along, via `distillation`.
+// Six such re-issues showed up as "gains over vanilla" in the first version of this report and invited
+// exactly the wrong question.
+// So the comparison is made in VANILLA PRODUCTION METHODS, which is the unit of capability and is common
+// to both sides: for our build, a split main PM counts as runnable when the TIER BUILDING that replaced
+// it is unlocked. What survives that translation is a real difference in what a country can do on day one.
+// THE CAPABILITY VIEW, scoped to the production methods our split actually re-gated.
+// ⚠⚠ VANILLA'S SIDE NEEDS THE BUILDING'S GATE AS WELL AS THE METHOD'S, and leaving it out inverts the
+// answer. Most of these vanilla PMs carry no `unlocking_technologies` of their own — the BUILDING is what
+// is gated — so reading the PM alone says "vanilla let anyone run this" and produces 23 phantom losses
+// across every tier. With the building gate included the true count is three.
+// ⚠ The base building key is the LOWEST TIER'S key, which is the vanilla building we split. It is NOT
+// `ind.building`: that field holds a properties object (building_group, icon, …), and indexing the
+// vanilla table with it silently yields undefined — which is how the phantom 23 were produced.
+function reGated() {
+  const vpm = {}, vb = {};
+  for (const f of txts(join(GAME, 'common/production_methods')))
+    for (const [k, v] of Object.entries(blocks(read(f)))) vpm[k] = gateOf(v);
+  for (const f of txts(join(GAME, 'common/buildings')))
+    for (const [k, v] of Object.entries(blocks(read(f)))) vb[k] = gateOf(v);
+  const cfg = JSON.parse(read(join(REPO, 'config', 'mod_config.json')));
+  const rows = [];
+  for (const ind of cfg.industries || []) {
+    const bg = vb[ind.tiers?.[0]?.key] || [];
+    for (const t of ind.tiers || []) {
+      if (t.model_only || !t.vanilla_pm) continue;
+      rows.push({ ind: ind.id, era: t.era, pm: t.vanilla_pm,
+                  vanillaNeeds: [...new Set([...bg, ...(vpm[t.vanilla_pm] || [])])],
+                  weNeed: t.tech ? [t.tech] : [] });
+    }
+  }
+  if (rows.length < 50) { console.error(`REFUSING TO REPORT: only ${rows.length} re-gated methods found`); process.exit(2); }
+  return rows;
+}
+
 function diffVanilla(root) {
   const mine = startSets(root), base = startSets(GAME);
-  const lost = [], gained = {};
+  const rows = reGated();
+  const lost = [], keyOnly = new Set(), gained = [], rungGated = [];
+  const byTier = {};
   for (const [tag, m] of Object.entries(mine)) {
     const b = base[tag]; if (!b) continue;
-    const L = [...b.set].filter(x => !m.set.has(x)).sort();
-    if (L.length) lost.push(`${tag} (tier ${b.tier}): ${L.join(', ')}`);
-    const G = [...m.set].filter(x => !b.set.has(x)).sort();
-    const key = G.join(', ') || '(nothing)';
-    (gained[key] ||= { n: 0, tiers: new Set(), tags: [] });
-    gained[key].n++; gained[key].tiers.add(b.tier);
-    if (gained[key].tags.length < 6) gained[key].tags.push(tag);
+    for (const x of b.set) if (!m.set.has(x)) lost.push(`${tag} (tier ${b.tier}) loses ${x}`);
+    for (const x of m.set) if (!b.set.has(x)) keyOnly.add(x);
+    byTier[b.tier] = { v: b.set, m: m.set };
   }
-  console.log('\n1836 STARTING SET vs VANILLA, all countries, per-country extras included');
-  for (const [k, v] of Object.entries(gained).sort((a, b) => b[1].n - a[1].n))
-    console.log(`  ${String(v.n).padStart(3)} countries  tier(s) ${[...v.tiers].sort().join(',')}  +[${k}]  e.g. ${v.tags.join(' ')}`);
+  for (const r of rows) for (const [tier, s] of Object.entries(byTier)) {
+    const couldV = r.vanillaNeeds.every(x => s.v.has(x));
+    const couldM = r.weNeed.every(x => s.m.has(x));
+    if (couldM && !couldV) gained.push(`tier ${tier}: ${r.ind} e${r.era} (${r.pm})`);
+    if (couldV && !couldM) rungGated.push({ tier: +tier, ...r });
+  }
+  console.log('\n1836 vs VANILLA — in CAPABILITY, not in technology keys');
+  console.log(`  technology keys that differ: ${keyOnly.size} (${[...keyOnly].sort().join(', ')})`);
+  console.log('    — every one re-issues a permission vanilla already granted, under the new gate the');
+  console.log('      tier split gave it. A key is not a capability.');
+  console.log(`  CAPABILITY GAINED: ${gained.length ? gained.join('; ') : 'NONE — no country can build anything vanilla forbade it'}`);
+  console.log(`  RUNGS NOW GATED: ${rungGated.length} — a tier that could be built at once in vanilla now`);
+  console.log('    needs its own technology first. This is the mod\'s central mechanic, not a leak: the');
+  console.log('    INDUSTRY is still available at its lower rung, the UPGRADE is what costs research.');
+  for (const g of rungGated.sort((a, b) => a.tier - b.tier))
+    console.log(`      tier ${g.tier}: ${g.ind} e${g.era} — vanilla needed ${g.vanillaNeeds.join('+') || '(nothing)'}, we need ${g.weNeed.join('+')}`);
   if (lost.length) {
-    console.error(`\nFAILED: ${lost.length} country/countries LOSE a technology vanilla gives them:\n  ` + lost.join('\n  '));
+    console.error(`\nFAILED: ${lost.length} country/countries lose a technology vanilla grants:\n  ` + lost.slice(0, 20).join('\n  '));
     process.exit(1);
   }
   console.log('\nPASSED: no country loses a starting technology vanilla gives it.');
