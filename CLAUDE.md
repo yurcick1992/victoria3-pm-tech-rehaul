@@ -2264,6 +2264,19 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   not to have been instrumented. Say plainly **what is void, what still reads, and how far** — and
   distinguish the measured quantity from the proposed cause, because a session's numbers usually outlive
   the first explanation of them.
+  ⚠⚠ **NAMING THE DEFECT IS NOT THE VERDICT — TRACE WHAT IT DID, AND WHAT IT TOUCHED.** "The military
+  channel was ungated" says nothing a reader can act on. "A clear overshoot on the technology boost,
+  exacerbated by military technology being gated on conditions that are true far too often, so it was
+  shared free and fast" says what happened *and* by what mechanism. Then **follow the knock-ons**: this
+  game is densely interconnected and a defect never stays in its own channel. In the case that produced
+  this rule, one ungated military term plausibly reached four other readings — easier early conquest
+  (13–20 fewer countries surviving, which silently changes the population every median and percentile is
+  computed over), directed research redirected into the *other* trees (so the untreated tree is a weaker
+  control than it looks), the treated tree's own gain partly borrowed from that freed budget, and ~10%
+  more war feeding every economic number. **List those paths even when you cannot measure them** — an
+  unlisted confound reads as an absent one.
+  ⚠ Corollary: be sceptical of your own control. A tree, arm or metric is only a control for the channels
+  it is actually independent of; say which those are.
   ⚠ **Do not write the verdict off the endpoint alone.** The trajectory is often where the result is:
   whether a leader plateaued or the century merely ended, when milestones moved, whether two runs of one
   arm agree. A 1935 snapshot cannot tell those apart.
