@@ -795,6 +795,21 @@ tools/                  dev tooling — NOT shipped in the mod
   solve_be_targets.ps1  re-derives every tier's target_be + natural_year from its tech's vanilla era (date ladder; BALANCE_FRAMEWORK §8.1)
   solve_volumes.ps1     re-derives every tier's output/input volumes from vanilla recipes + target_be (BALANCE_FRAMEWORK §8)
   solve_building_cost.ps1 re-derives every tier's building_cost (construction points) from a 10yr-payback model (BALANCE_FRAMEWORK §9)
+  audit_tech_content.mjs ⭐⭐ WHAT WOULD BE LOST IF THIS TECHNOLOGY WERE MERGED AWAY OR DELETED?
+                        Read-only. Per technology: its MODIFIER block, every production method /
+                        building / combat unit / decree / company it gates, and every line of vanilla
+                        script that names it.  sweeps every technology we add.
+                        ⭐⭐ THE RULE IT ENFORCES (user, 2026-08-12): **THERE ARE NO CONTENTLESS VANILLA
+                        TECHNOLOGIES.** None is a placeholder that only slows research down; if one looks
+                        like that, you are looking in the wrong place. The tech-tree viewer counts only
+                        BUILDING unlocks, which is exactly why a technology can look empty there and gate
+                        sixteen things —  does. Run this before ANY merge or removal and
+                        make the survivor absorb everything listed.
+                        ⚠ ITS FINDING THAT CHANGED THE PLAN: a vanilla technology can essentially never be
+                        DELETED, because vanilla script names it — in production methods, journal entries,
+                        events, ship modifications and COMPANY formation requirements. A merge is therefore
+                        re-pointing OUR tier gates onto one technology, and deleting only technologies WE
+                        added (which have zero vanilla references by construction).
   payback_census.mjs    ⭐ THE CAPITAL-SIDE CENSUS — read-only, writes nothing. What a level COSTS against
                         what it EARNS, across the six era scenarios: payback per tier at that scenario's
                         own realised prices, the realised margins behind it, capital stock, **K/GDP**, and
