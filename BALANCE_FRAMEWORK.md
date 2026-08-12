@@ -4566,13 +4566,38 @@ count is three.
   `pm_leblanc_process` was ungated but the explosives factory itself needed `intensive_agriculture`,
   which tier 2 lacks; our e1 rung is gated on `leblanc_process`, which tier 2 draws from vanilla's own
   era-1 blanket. A side effect of that blanket, not of the derived grant.
-- **THREE RUNGS ARE NEWLY GATED** — buildable at once in vanilla, now needing their own technology:
-  tier 1 explosives e2 (`intensive_agriculture` → `dynamite`), tier 2 tooling e2 (`mechanical_tools` →
-  `steel_toolmaking`), tier 4 food e1 (`distillation` → `beet_sugar_refining`).
-  ⭐ **This is the mod's central mechanic, not a leak.** The INDUSTRY is still available at its lower rung
-  on day one; the UPGRADE is what now costs research. A vanilla PM sitting ungated inside a gated building
-  is precisely the free modernisation the rehaul exists to remove.
+- **TWO RUNGS WERE NEWLY GATED** — buildable at once in vanilla, needing their own technology under ours:
+  tier 2 tooling e2 (`mechanical_tools` → `steel_toolmaking`) and tier 4 food e1 (`distillation` →
+  `beet_sugar_refining`).
 - **Nothing any country actually RUNS in 1836 changes** — that is L14, and it is green.
+
+⚠⚠ **A THIRD ROW WAS REPORTED AND WAS A PHANTOM — `dynamite`.** The check claimed tier 1 lost the era-2
+ammonia-soda explosives works. The user asked how dynamite could be available to anyone in 1836; it
+cannot. Vanilla gates `pm_ammonia-soda_process` on **`nitroglycerin`**, which no starting tier holds, so
+tier 1 could never build that rung in vanilla either. The cause was a **hyphen in the identifier class**:
+four vanilla keys contain one, three of them are `vanilla_pm` values of OUR tiers (explosives e2, power
+e3, power e5), and an `[a-z_0-9]+` class does not open their blocks at all — so their gate read as empty,
+which is the permissive direction. See BUGS_AND_FIXES, 2026-08-12.
+
+⭐⭐ **RULING (user, 2026-08-12): MATCH VANILLA ON "COULD HAVE BUILT", NOT ONLY ON "OWNS ONE" — "even if
+it's e2 in our era".** A tier vanilla let a country construct on day one stays constructible on day one.
+The derived rule keeps its shape and widens its predicate: a tier building's technology is granted to
+every starting tier that either owns one on the map OR satisfied vanilla's own requirement for it
+(the BUILDING's gate ∪ the METHOD's gate, against vanilla's own era expansion). The grant is four lines:
+
+```
+tier 1  add_technology_researched = steel_toolmaking      (owns 16 of the map's 35 tooling workshops)
+tier 2  add_technology_researched = steel_toolmaking      (could build one in vanilla — mechanical_tools)
+tier 3  add_technology_researched = beet_sugar_refining   (MEX and SPA own one)
+tier 4  add_technology_researched = beet_sugar_refining   (could build one in vanilla — distillation)
+```
+
+⇒ **RUNGS NEWLY GATED: 0.** The residual is one capability GAINED — tier 2 can build the era-1 Leblanc
+explosives works, through vanilla's own `add_era_researched = era_1`, which cannot be removed without
+stripping vanilla technologies.
+⚠ Granting an era-2 technology at the 1836 start is not exotic: **all 13 technologies in vanilla's own
+tier-1 named grant are era 2.** `add_era_researched = era_1` covers era 1; the named list exists
+precisely to hand out era-2 ones.
 ⚠ Rule 3 asked for the top 30; the check covers all 444, which strictly dominates it. Tier 1 (5) and
 tier 2 (54) contain every plausible top-30 country.
 

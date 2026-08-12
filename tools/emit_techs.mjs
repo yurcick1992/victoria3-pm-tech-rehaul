@@ -321,6 +321,56 @@ const NEWT = OPT.techs.filter(t => t.origin === 'new');
     (needByTier[st] ||= new Set()).add(tier.tech);
   }
 
+  // ⭐⭐ AND THE WIDER PREDICATE (user ruling 2026-08-12): match vanilla on what a country COULD BUILD,
+  // not only on what it already owns — "even if it's e2 in our era". A tier that vanilla let a country
+  // construct on day one stays constructible on day one. Same rule, wider test, still derived.
+  // vanilla's own gates: the BUILDING's as well as the METHOD's. Most of these vanilla PMs carry no
+  // unlocking_technologies at all and the building is what is gated, so reading the PM alone concludes
+  // vanilla let everyone build everything.
+  // ⚠ THE ID CLASS MUST ADMIT A HYPHEN. `pm_ammonia-soda_process`, `pm_coal-fired_plant` and
+  // `pm_oil-fired_plant` are all `vanilla_pm` values of our tiers, and an [a-z_0-9]+ class does not open
+  // their blocks at all — so their gate reads as EMPTY, i.e. "vanilla let anyone run this", and the rule
+  // grants a technology nobody needs. That mis-read once produced a confident claim that tier 1 lost the
+  // ammonia-soda explosives rung; vanilla gates it on `nitroglycerin`, which tier 1 never has.
+  {
+    const ID = '[A-Za-z_0-9-]+';
+    const blk = txt2 => { const o = {}; const re = new RegExp('^(' + ID + ')\\s*=\\s*\\{', 'gm'); let m;
+      while ((m = re.exec(txt2))) { let i = re.lastIndex, d = 1;
+        while (i < txt2.length && d > 0) { if (txt2[i] === '{') d++; else if (txt2[i] === '}') d--; i++; }
+        o[m[1]] = txt2.slice(re.lastIndex, i - 1); } return o; };
+    const gt = b => { const u = b.match(/unlocking_technologies\s*=\s*\{([^}]*)\}/); return u ? u[1].trim().split(/\s+/).filter(Boolean) : []; };
+    const dirTxts = d => readdirSync(join(GAME, d)).filter(f => f.endsWith('.txt')).map(f => readFileSync(join(GAME, d, f), 'utf8').replace(/^﻿/, ''));
+    const vpm = {}, vb = {}, vEra = {};
+    for (const t of dirTxts('common/production_methods')) for (const [k, v] of Object.entries(blk(t))) vpm[k] = gt(v);
+    for (const t of dirTxts('common/buildings')) for (const [k, v] of Object.entries(blk(t))) vb[k] = gt(v);
+    for (const t of dirTxts('common/technology/technologies')) for (const [k, v] of Object.entries(blk(t))) {
+      const e = v.match(/\bera\s*=\s*era_(\d)/); if (e) vEra[k] = +e[1];
+    }
+    if (Object.keys(vpm).length < 400) throw new Error(`emit_techs: only ${Object.keys(vpm).length} vanilla PMs parsed`);
+    // vanilla's own starting sets, era shorthand expanded against VANILLA's eras
+    const vTier = {};
+    for (const [k, v] of Object.entries(blk(readFileSync(join(GAME, 'common/scripted_effects/00_starting_inventions.txt'), 'utf8').replace(/^﻿/, '')))) {
+      const m = k.match(/^effect_starting_technology_tier_(\d)_tech$/); if (!m) continue;
+      const s = new Set([...v.matchAll(/add_technology_researched\s*=\s*([a-z_0-9-]+)/g)].map(x => x[1]));
+      for (const e of v.matchAll(/add_era_researched\s*=\s*era_(\d)/g))
+        for (const [t, er] of Object.entries(vEra)) if (er <= +e[1]) s.add(t);
+      vTier[+m[1]] = s;
+    }
+    for (const ind of CFG.industries || []) {
+      const bg = vb[ind.tiers?.[0]?.key] || [];
+      for (const t of ind.tiers || []) {
+        if (t.model_only || !t.vanilla_pm || !t.tech) continue;
+        const vanillaNeeds = [...new Set([...bg, ...(vpm[t.vanilla_pm] || [])])];
+        for (const st of Object.keys(vTier).map(Number)) {
+          if (!vanillaNeeds.every(x => vTier[st].has(x))) continue;      // vanilla did not allow it either
+          if (eraOf[t.tech] != null && eraOf[t.tech] <= (ERA_GRANTED[st] ?? 0)) continue;
+          if (VAN_STARTING_NAMED.has(t.tech)) continue;
+          (needByTier[st] ||= new Set()).add(t.tech);
+        }
+      }
+    }
+  }
+
   for (const st of Object.keys(needByTier).map(Number).sort()) {
     const add = [...needByTier[st]].sort().map(id => `\tadd_technology_researched = ${id}\n`).join('');
     const re = new RegExp(`(effect_starting_technology_tier_${st}_tech = \\{\\n)`, 'm');

@@ -34,8 +34,18 @@ const strip = s => s.replace(/^\uFEFF/, '');
 const read = f => strip(readFileSync(f, 'utf8'));
 const txts = d => existsSync(d) ? readdirSync(d).filter(f => f.endsWith('.txt')).map(f => join(d, f)) : [];
 
+// ⚠⚠ THE HYPHEN IS IN THE IDENTIFIER CLASS FOR A REASON. Four vanilla keys contain one —
+// `pm_ammonia-soda_process`, `pm_coal-fired_plant`, `pm_oil-fired_plant`, `pan-nationalism` — and an
+// `[A-Za-z_0-9]+` id class does not merely mis-name them, it fails to open the block at all, so the
+// entry is ABSENT from the table and every lookup returns "no gate". Absent reads as permissive, which
+// is the dangerous direction: this check then believes vanilla let anyone run those methods.
+// ⚠ THREE OF THE FOUR ARE `vanilla_pm` VALUES OF OUR OWN TIERS (explosives e2, power e3, power e5), so
+// the blind spot lands exactly on the comparison this file exists to make. It produced a confident
+// "tier 1 loses the ability to build explosives e2" — where in truth vanilla gates
+// `pm_ammonia-soda_process` on `nitroglycerin`, which tier 1 does not start with. Caught by the user
+// asking how dynamite could possibly be available in 1836.
 function blocks(txt) {
-  const out = {}; const re = /^([A-Za-z_0-9]+)\s*=\s*\{/gm; let m;
+  const out = {}; const re = /^([A-Za-z_0-9-]+)\s*=\s*\{/gm; let m;
   while ((m = re.exec(txt))) {
     let i = re.lastIndex, d = 1;
     while (i < txt.length && d > 0) { if (txt[i] === '{') d++; else if (txt[i] === '}') d--; i++; }
@@ -70,7 +80,7 @@ function analyse(root) {
   const sePath = join(root, 'common/scripted_effects/00_starting_inventions.txt');
   for (const [k, v] of Object.entries(blocks(read(sePath)))) {
     const m = k.match(/^effect_starting_technology_tier_(\d)_tech$/); if (!m) continue;
-    const set = new Set([...v.matchAll(/add_technology_researched\s*=\s*([a-z_0-9]+)/g)].map(x => x[1]));
+    const set = new Set([...v.matchAll(/add_technology_researched\s*=\s*([a-z_0-9-]+)/g)].map(x => x[1]));
     for (const e of v.matchAll(/add_era_researched\s*=\s*era_(\d)/g))
       for (const [t, era] of Object.entries(techEra)) if (era <= +e[1]) set.add(t);
     tiers[+m[1]] = set;
@@ -105,13 +115,13 @@ function analyse(root) {
         let j = body.indexOf('{', cb.index) + 1, e = 1;
         while (j < body.length && e > 0) { if (body[j] === '{') e++; else if (body[j] === '}') e--; j++; }
         const blk = body.slice(cb.index, j);
-        const bk = (blk.match(/building\s*=\s*"([a-z_0-9]+)"/) || [])[1];
+        const bk = (blk.match(/building\s*=\s*"([a-z_0-9-]+)"/) || [])[1];
         if (!bk) continue;
         owns[tag] = (owns[tag] || 0) + 1;
         const set = need[tag] = need[tag] || new Set();
         for (const g of (bTech[bk] || [])) set.add(g);
         const act = blk.match(/activate_production_methods\s*=\s*\{([^}]*)\}/);
-        for (const q of (act ? act[1].match(/"([a-z_0-9]+)"/g) || [] : []))
+        for (const q of (act ? act[1].match(/"([a-z_0-9-]+)"/g) || [] : []))
           for (const g of (pmTech[q.replace(/"/g, '')] || [])) set.add(g);
       }
     }

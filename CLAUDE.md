@@ -1082,7 +1082,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         and minus anything vanilla names itself (read live from vanilla's file, so a patch
                         flows through). It used to name every new era-1 production technology to tiers 3,
                         4 and 5 — 213 countries, of which **two** owned anything of the kind. The grant is
-                        now TWO lines: `steel_toolmaking` to tier 1, `beet_sugar_refining` to tier 3.
+                        now FOUR lines: `steel_toolmaking` to tiers 1-2, `beet_sugar_refining` to tiers 3-4.
+                        ⭐ The predicate is BOTH "owns one on the map" AND "could have built one in
+                        vanilla" (user ruling: match vanilla on could-have-built, even where the
+                        technology is era 2 in our tree — all 13 of vanilla's own tier-1 named grants are
+                        era 2). Vanilla's side needs the BUILDING's gate as well as the METHOD's, and the
+                        id class must admit a HYPHEN: three of our tiers' `vanilla_pm` values contain one
+                        and an [a-z_0-9]+ class leaves their gate reading EMPTY, i.e. permissive.
                         ⚠ Tiers 1 and 2 keep vanilla's own `add_era_researched = era_1`, so our era-1
                         technologies reach them regardless — a deliberate, small over-grant (tier 2 gets
                         `fourdrinier_machine` and `leblanc_process` unneeded). Removing vanilla's blanket

@@ -1395,3 +1395,32 @@ files are byte-identical (sha256 `a19a314f…`); the mod's directory list is exa
 
 **The general lesson**: a clean step that names its targets is a list that silently falls behind the
 emitters. Whitelist what survives, not what dies.
+
+## FOUR VANILLA KEYS CONTAIN A HYPHEN, AND AN `[a-z_0-9]+` ID CLASS MAKES THEM INVISIBLE (2026-08-12)
+
+**Symptom: a confident, wrong finding.** `verify_start_techs.mjs --diff-vanilla` reported that tier-1
+countries LOSE the ability to build the era-2 ammonia-soda explosives works — vanilla needing only
+`intensive_agriculture` where we need `dynamite`. The user asked how dynamite could possibly be available
+to anyone in 1836. It cannot: vanilla gates `pm_ammonia-soda_process` on **`nitroglycerin`**, which no
+starting tier holds.
+
+**Root cause.** The block parser used `/^([A-Za-z_0-9]+)\s*=\s*\{/gm`. Four vanilla keys contain a
+hyphen — `pm_ammonia-soda_process`, `pm_coal-fired_plant`, `pm_oil-fired_plant`, `pan-nationalism` — and
+for those the pattern does not merely mis-name the block, **it never opens it**, so the entry is absent
+from the table entirely. Every lookup then returns "no gate", and **absent reads as PERMISSIVE**: the
+check concluded vanilla let anyone run those methods.
+
+⚠ **Three of the four are `vanilla_pm` values of our own tiers** — explosives e2, power e3, power e5 — so
+a four-key blind spot landed precisely on the comparison the file exists to make. The same class of miss
+had already appeared once that day, in an ad-hoc era-inversion check that silently skipped
+`pan-nationalism` and its edges.
+
+**Fix.** `[A-Za-z_0-9-]+` in the id class, everywhere blocks or references are matched, in both
+`verify_start_techs.mjs` and the new capability pass in `emit_techs.mjs`. PM count went 539 → 542.
+
+**Effect on conclusions.** The "tier 1 loses explosives e2" row is void. The real list of rungs that lost
+buildability was two, not three, and both are now granted (§10.55).
+
+**The general lesson**: an identifier class is a whitelist, and a whitelist that is missing a character
+fails SILENTLY and in the permissive direction. Derive the class from the data — a one-line census
+(`grep -oE '^[A-Za-z_0-9-]+ = \{' | grep -- -`) would have found all four in seconds.
