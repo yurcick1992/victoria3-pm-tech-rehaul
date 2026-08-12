@@ -819,7 +819,7 @@ window.PMDATA = {
                                                                  "wood":  1
                                                              },
                                              "tech_year":  1770,
-                                             "building_cost":  400
+                                             "building_cost":  800
                                          },
                                          {
                                              "key":  "building_tooling_workshop_pig_iron",
@@ -851,7 +851,7 @@ window.PMDATA = {
                                                                  "wood":  0.6
                                                              },
                                              "tech_year":  1830,
-                                             "building_cost":  600
+                                             "building_cost":  1200
                                          },
                                          {
                                              "key":  "building_tooling_workshop_steel",
@@ -884,7 +884,7 @@ window.PMDATA = {
                                                                  "wood":  0.6
                                                              },
                                              "tech_year":  1865,
-                                             "building_cost":  900
+                                             "building_cost":  1800
                                          },
                                          {
                                              "key":  "building_tooling_workshop_rubber",
@@ -917,7 +917,7 @@ window.PMDATA = {
                                                                  "steel":  0.75
                                                              },
                                              "tech_year":  1901,
-                                             "building_cost":  1350
+                                             "building_cost":  2700
                                          },
                                          {
                                              "key":  "building_tooling_workshop_carbide",
@@ -943,7 +943,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/steel_tools.dds",
                                              "target_be":  33,
                                              "natural_year":  1925,
-                                             "building_cost":  2025,
+                                             "building_cost":  4050,
                                              "ai_value":  2000,
                                              "tech":  "cemented_carbide",
                                              "input_ratio":  {
@@ -975,7 +975,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/steel_tools.dds",
                                              "target_be":  33,
                                              "natural_year":  1940,
-                                             "building_cost":  3040,
+                                             "building_cost":  6075,
                                              "ai_value":  2000,
                                              "tech":  "transfer_machining",
                                              "input_ratio":  {
@@ -1985,7 +1985,7 @@ window.PMDATA = {
                                                                  "wood":  0.666667
                                                              },
                                              "tech_year":  1700,
-                                             "building_cost":  400
+                                             "building_cost":  800
                                          },
                                          {
                                              "key":  "building_shipyard_complex",
@@ -2022,7 +2022,7 @@ window.PMDATA = {
                                                                  "wood":  0.307692
                                                              },
                                              "tech_year":  1845,
-                                             "building_cost":  600
+                                             "building_cost":  1200
                                          }
                                      ],
                            "ladder_end":  "extinct"
@@ -2390,7 +2390,7 @@ window.PMDATA = {
                                                                  "iron":  0.5
                                                              },
                                              "tech_year":  1770,
-                                             "building_cost":  400
+                                             "building_cost":  800
                                          },
                                          {
                                              "key":  "building_arms_industry_rifles",
@@ -2423,7 +2423,7 @@ window.PMDATA = {
                                                                  "tools":  0.2
                                                              },
                                              "tech_year":  1849,
-                                             "building_cost":  600
+                                             "building_cost":  1200
                                          },
                                          {
                                              "key":  "building_arms_industry_repeaters",
@@ -2457,7 +2457,7 @@ window.PMDATA = {
                                                                  "tools":  0.25
                                                              },
                                              "tech_year":  1866,
-                                             "building_cost":  900
+                                             "building_cost":  1800
                                          },
                                          {
                                              "key":  "building_arms_industry_bolt_action",
@@ -2493,7 +2493,7 @@ window.PMDATA = {
                                                                  "tools":  0.333333
                                                              },
                                              "tech_year":  1886,
-                                             "building_cost":  1350
+                                             "building_cost":  2700
                                          },
                                          {
                                              "key":  "building_arms_industry_automatic",
@@ -2521,7 +2521,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/bolt_action_rifles.dds",
                                              "target_be":  58,
                                              "natural_year":  1925,
-                                             "building_cost":  2025,
+                                             "building_cost":  4050,
                                              "tech":  "light_machine_guns",
                                              "input_ratio":  {
                                                                  "hardwood":  0.166667,
@@ -2556,7 +2556,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/bolt_action_rifles.dds",
                                              "target_be":  56,
                                              "natural_year":  1940,
-                                             "building_cost":  3040,
+                                             "building_cost":  6075,
                                              "tech":  "stamped_receivers",
                                              "input_ratio":  {
                                                                  "hardwood":  0.166667,
@@ -2613,7 +2613,7 @@ window.PMDATA = {
                                                                  "iron":  0.6
                                                              },
                                              "tech_year":  1750,
-                                             "building_cost":  400
+                                             "building_cost":  800
                                          },
                                          {
                                              "key":  "building_artillery_foundry_smoothbore",
@@ -2645,7 +2645,7 @@ window.PMDATA = {
                                                                  "iron":  0.625
                                                              },
                                              "tech_year":  1830,
-                                             "building_cost":  600
+                                             "building_cost":  1200
                                          },
                                          {
                                              "key":  "building_artillery_foundry_breech",
@@ -2679,7 +2679,7 @@ window.PMDATA = {
                                                                  "tools":  0.222222
                                                              },
                                              "tech_year":  1861,
-                                             "building_cost":  900
+                                             "building_cost":  1800
                                          },
                                          {
                                              "key":  "building_artillery_foundry_recoiled",
@@ -2713,7 +2713,7 @@ window.PMDATA = {
                                                                  "tools":  0.285714
                                                              },
                                              "tech_year":  1897,
-                                             "building_cost":  1350
+                                             "building_cost":  2700
                                          },
                                          {
                                              "key":  "building_artillery_foundry_autofrettage",
@@ -2740,7 +2740,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/recoil_mechanism_artillery_production.dds",
                                              "target_be":  34,
                                              "natural_year":  1925,
-                                             "building_cost":  2025,
+                                             "building_cost":  4050,
                                              "tech":  "autofrettage",
                                              "input_ratio":  {
                                                                  "oil":  0.142857,
@@ -2773,7 +2773,7 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/recoil_mechanism_artillery_production.dds",
                                              "target_be":  34,
                                              "natural_year":  1940,
-                                             "building_cost":  3040,
+                                             "building_cost":  6075,
                                              "tech":  "automatic_aa_guns",
                                              "input_ratio":  {
                                                                  "oil":  0.142857,

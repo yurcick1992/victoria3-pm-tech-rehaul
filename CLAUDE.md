@@ -1401,20 +1401,36 @@ the game.
   ```
   building_cost (points) = VANILLA's required_construction × band × 1.5^(era − 1)
   band  = 2 for the EXPENSIVE set · 1 otherwise
-  EXPENSIVE = vanilla's own construction_cost_very_high (800) class, minus infrastructure
+  EXPENSIVE = vanilla's own construction_cost_very_high (800) class, minus infrastructure,
+              PLUS four named exceptions: tooling, shipyard, arms, artillery
   ```
-  Derived and written by **`node tools/payback_census.mjs --write`**. The whole book is **two sequences
-  of six numbers** — regular (vanilla 600) `400 · 600 · 900 · 1350 · 2025 · 3040`, expensive (vanilla 800
-  ×2) `1065 · 1600 · 2400 · 3600 · 5400 · 8100`, with port/power (400) and railway (800, held regular)
-  scaling off their own anchors. **expensive:** fertilizer, explosives, steel, motor, automotive,
-  munition, synthetics, electrics.
+  Derived and written by **`node tools/payback_census.mjs --write`**. The whole book is five ladders,
+  one per (anchor × band) in play — `400×1` 265·**400**·600·900·1350·2025 (power, port, art_academy) ·
+  `600×1` 400·**600**·900·1350·2025·3040 (food, textile, furniture, glass, paper, shipyard_steam) ·
+  `800×1` 535·**800**·1200·1800·2700·4050 (railway) · `600×2` 800·**1200**·1800·2700·4050·6075 (the four
+  exceptions) · `800×2` 1065·**1600**·2400·3600·5400·8100 (fertilizer, explosives, steel, motor,
+  automotive, munition, synthetics, electrics).
+  ⭐ **THE FOUR EXCEPTIONS ARE NAMED AND CARRY THEIR REASON** (user-ruled from the delivered-payback
+  census): shipyard 3.6y, artillery 4.2y, arms 5.6y, tooling 6.5y against the book's 11.1 centre. Arms
+  and artillery because their own family's other half (munition, explosives) is vanilla-800 and lands at
+  11.4–11.6; shipyard because its −30pp naval handicap *understates* its profit so the true payback is
+  faster still; tooling because it is an intermediate-goods producer and every other vanilla-600 light
+  industry lands 11–17. ⚠ `paper` (6.6y) and `motor` (18.0y) were offered in the same ruling and
+  **deliberately left alone**; so were borderline `textile` and `steel`.
+  ⚠⚠ **THE WORST-LOOKING NUMBERS ARE NOT BAND PROBLEMS** — synthetics 210y, automotive 55y,
+  shipyard_steam 484y, railway 70y, power 62y each have most dominant rungs **at a loss** (§10.29/§10.35)
+  or are infra priced off an unpriced `state_infrastructure` output. A cost multiplier cannot fix a
+  building that does not earn; moving one would hide the fault.
+  ⚠ **A STALE EXCEPTION IS WORSE THAN NONE** — the tool THROWS if an override names a missing industry,
+  or if vanilla has come to derive that band anyway (leaving the written reason quietly untrue).
   ⭐⭐ **VANILLA'S COST IS THE ERA-1 RUNG, NOT THE INDUSTRY'S FIRST** — the exponent is `era − 1`, so an
   era-0 rung is vanilla ÷ 1.5 and an era-5 rung is vanilla × 1.5⁴. Keying on the ERA makes a
   late-starting industry expensive from its first building (automotive debuts at era 3 paying 1.5² over
   its anchor) instead of being handed the era-1 price for being new. Well-defined because no industry may
   hold two tiers in one era.
   ⭐ **TEN YEARS IS THE CHECK, NOT THE CONSTRUCTION.** The book *delivers* a dominant-rung median of
-  **11.1 years** against vanilla's own 1836 reading of **11.4 modelled / 14.8 measured** (FINDINGS F53,
+  **11.5 years, and 11.2–12.3 in every single era**, against vanilla's own 1836 reading of
+  **11.4 modelled / 14.8 measured** (FINDINGS F53,
   `tools/vanilla_payback_census.mjs`) — adopt the base game's cost book and its payback follows, with no
   fitting. ⚠ An earlier form of this ruling derived cost from each tier's output value and a measured
   profit ratio; **the user rejected it as "still per-building fitting"**. Do not reintroduce it.

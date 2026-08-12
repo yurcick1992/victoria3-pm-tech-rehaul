@@ -4671,20 +4671,46 @@ now**; a 3-seed ensemble would settle it.
 ```
 building_cost (points) = VANILLA's required_construction × band × 1.5^(era − 1)
 band                   = 2  for the EXPENSIVE set  ·  1  for everything else
-EXPENSIVE              = vanilla's own `construction_cost_very_high` (800) class, minus infrastructure
+EXPENSIVE              = vanilla's own `construction_cost_very_high` (800) class, minus infrastructure,
+                         PLUS four named exceptions (below)
 ```
-Derived and written by **`node tools/payback_census.mjs --write`**. The whole cost book is therefore
-**two sequences of six numbers**:
+Derived and written by **`node tools/payback_census.mjs --write`**. The whole cost book is five ladders,
+one per (anchor × band) actually in play:
 
-| band | e0 | e1 | e2 | e3 | e4 | e5 |
-|---|---|---|---|---|---|---|
-| **regular** (vanilla 600) | 400 | **600** | 900 | 1350 | 2025 | 3040 |
-| **expensive** (vanilla 800 ×2) | 1065 | **1600** | 2400 | 3600 | 5400 | 8100 |
+| anchor × band | e0 | e1 | e2 | e3 | e4 | e5 | industries |
+|---|---|---|---|---|---|---|---|
+| 400 × 1 | 265 | **400** | 600 | 900 | 1350 | 2025 | power, port, art_academy |
+| 600 × 1 | 400 | **600** | 900 | 1350 | 2025 | 3040 | food, textile, furniture, glass, paper, shipyard_steam |
+| 800 × 1 | 535 | **800** | 1200 | 1800 | 2700 | 4050 | railway |
+| 600 × 2 | 800 | **1200** | 1800 | 2700 | 4050 | 6075 | tooling\*, shipyard\*, arms\*, artillery\* |
+| 800 × 2 | 1065 | **1600** | 2400 | 3600 | 5400 | 8100 | fertilizer, explosives, steel, motor, automotive, munition, synthetics, electrics |
 
-with port/power (vanilla 400) and railway (800, held regular) scaling off their own anchors.
-**expensive:** fertilizer, explosives, steel, motor, automotive, munition, synthetics, electrics.
-**regular:** food, textile, furniture, glass, tooling, paper, shipyard, shipyard_steam, arms,
-artillery, power, port, railway, art_academy.
+### ⭐ The four named exceptions (user-ruled 2026-08-13, from the delivered-payback census)
+
+The derived rule reads vanilla's class, and for four industries vanilla's class is wrong **for this
+economy** — they paid back in 3.6–6.5 years against the book's own 11.1 centre:
+
+| industry | vanilla | payback before | after | the argument |
+|---|---|---|---|---|
+| **shipyard** | 600 | **3.6** | 7.2 | and it carries the −30pp naval handicap, so its profit here is *understated* — the true payback is faster still |
+| **artillery** | 600 | **4.2** | 8.4 | its own family's other half (munition, explosives) is vanilla-800 and lands at 11.4–11.6 |
+| **arms** | 600 | **5.6** | 11.3 | same family, same army-fed customer |
+| **tooling** | 600 | **6.5** | 13.0 | an intermediate-goods producer; every other light industry on vanilla's 600 lands 11–17 |
+
+⚠ **`paper` (6.6y) and `motor` (18.0y) were offered in the same ruling and deliberately LEFT ALONE**, as
+were the borderline `textile` (7.3y) and `steel` (16.1y) — steel's figure is inflated by its era-1 rung
+having no buyer at all (§10.32), which is a defect and not a pricing question.
+⚠⚠ **THE WORST-LOOKING NUMBERS ARE NOT BAND PROBLEMS AND MUST NOT BE "FIXED" HERE.** synthetics **210y**,
+automotive **55y**, shipyard_steam **484y**, railway **70y**, power **62y**, port **22y**: each has most
+of its dominant rungs **at a loss** (the §10.29/§10.35 new-economy undersizes) or is infra priced off an
+unpriced `state_infrastructure` output. Doubling or halving a cost cannot fix a building that does not
+earn — moving one would only hide the fault.
+⚠ **A STALE EXCEPTION IS WORSE THAN NONE**, so `payback_census.mjs` **throws** if an override names an
+industry the config no longer has, or if vanilla has come to derive the same band anyway (which would
+leave the reason above quietly untrue). Same discipline as `emit_techs.mjs` asserting its match counts.
+
+Effect of the four: dominant-rung **p25 6.6 → ~10**, per-era medians tightened to **11.2–12.3** in every
+era including era 0 (which had sat at 6.6), with the capital stock essentially unmoved.
 
 ### The three terms, and why each is what it is
 
@@ -4713,7 +4739,8 @@ number out of its own output value, which is exactly the property the two-band r
 not wrong; the measurements behind it stand and are in F53.
 
 ⭐ **TEN YEARS SURVIVES AS THE CHECK, NOT THE CONSTRUCTION.** The vanilla-anchored book *delivers* a
-dominant-rung median of **11.1 years** (per era 6.6 / 11.2 / 11.1 / 11.2 / 10.5 / 11.1) against vanilla's
+dominant-rung median of **11.5 years with the exceptions applied** (per era 11.5 / 12.3 / 11.9 / 11.4 /
+11.2 / 11.6 — before them 6.6 / 11.2 / 11.1 / 11.2 / 10.5 / 11.1) against vanilla's
 own 1836 reading of **11.4 modelled / 14.8 measured** (F53). That agreement is the argument for anchoring
 on vanilla: adopt the base game's cost book and the base game's payback follows, with no fitting at all.
 ⚠ The band assignment was chosen on this check. The alternative — banding by MACROTYPE ("industry with
@@ -4726,16 +4753,16 @@ have that problem.
 
 | scenario | K/GDP | yrs of construction budget to rebuild K | levels/yr the budget buys |
 |---|---|---|---|
-| 1780 | 1.05 | 13.1 | 1.2 |
-| 1836 | 2.12 | 26.5 | 2.3 |
-| 1870 | 3.14 | 31.4 | 7.9 |
-| 1900 | 6.93 | 53.3 | 31.6 |
-| 1920 | 7.48 | 46.8 | 67.1 |
-| 1945 | 9.13 | 50.7 | 46.3 |
+| 1780 | 1.72 | 21.5 | 1.2 |
+| 1836 | 2.58 | 32.2 | 1.7 |
+| 1870 | 3.80 | 38.0 | 4.0 |
+| 1900 | 7.75 | 59.6 | 15.8 |
+| 1920 | 8.23 | 51.4 | 33.5 |
+| 1945 | 9.96 | 55.3 | 46.3 |
 
-Against the shipped-before state (K/GDP 0.32→1.51, rebuild 4.0→8.4 years) this is a **5–6× tightening of
+Against the shipped-before state (K/GDP 0.32→1.51, rebuild 4.0→8.4 years) this is a **5–7× tightening of
 the capital constraint**, which is the "overabundance of capital" finding (§10.52 / F52) answered.
-⚠ **K/GDP still reaches 9.1 against a real 3–4, and no cost book can fix that** — `K/GDP = payback ×
+⚠ **K/GDP still reaches 10.0 against a real 3–4, and no cost book can fix that** — `K/GDP = payback ×
 profit share of GDP` is an identity, and our tiers' profit share runs **16 → 68 %** across the eras
 against a real 25–35 %. The pinned wage share is why. A cost rule can only move the first factor, and it
 is already sitting on vanilla's own value.

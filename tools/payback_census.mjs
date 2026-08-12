@@ -150,7 +150,39 @@ if (!RULE) {
 // a derived rule that never shows its result is one nobody can check.
 const RC = requiredConstruction(GAME);
 const LADDER_R = 1.5, EXPENSIVE_MULT = 2, VERY_HIGH = 800;
-const bandOf = i => (!INFRA.has(i.id) && RC[i.tiers[0].key] === VERY_HIGH ? EXPENSIVE_MULT : 1);
+
+// ⭐ NAMED EXCEPTIONS TO THE DERIVED BAND (user-ruled 2026-08-13, from the delivered-payback census).
+// Four industries paid back in 3.6–6.5 years against the book's own 11.1 centre — the derived rule reads
+// vanilla's class, and vanilla's class is wrong about them FOR THIS ECONOMY. Each carries its reason,
+// because an exception whose argument is not written down cannot be re-checked after a patch.
+// ⚠ Deliberately NOT a wholesale reclassification: `paper` (6.6y) and `motor` (18.0y) were both offered
+// and left alone by the same ruling. And the industries that look like far worse outliers — synthetics
+// 210y, automotive 55y, shipyard_steam 484y, railway 70y, power 62y — are NOT band problems: each has
+// most of its dominant rungs AT A LOSS (the §10.29/§10.35 new-economy undersizes) or is infra priced off
+// an unpriced `state_infrastructure` output. Doubling or halving a cost cannot fix a building that does
+// not earn, and moving one would only hide the real fault.
+const BAND_OVERRIDE = {
+  arms:      EXPENSIVE_MULT,   // 5.6y. Its own family's other half (munition, explosives) is vanilla-800
+  artillery: EXPENSIVE_MULT,   // 4.2y. and lands at 11.4–11.6 — same customer, same army-fed demand.
+  shipyard:  EXPENSIVE_MULT,   // 3.6y, AND it carries the −30pp naval handicap, so its profit is
+                               //   understated here and the true payback is faster still.
+  tooling:   EXPENSIVE_MULT,   // 6.5y. An intermediate-goods producer; every other light industry on
+                               //   vanilla's 600 lands 11–17.
+};
+const bandOf = i => {
+  const derived = (!INFRA.has(i.id) && RC[i.tiers[0].key] === VERY_HIGH ? EXPENSIVE_MULT : 1);
+  return BAND_OVERRIDE[i.id] ?? derived;
+};
+// A stale exception is worse than none: if vanilla ever reclassifies one of these, the override silently
+// becomes a no-op and the reason above stops being true with nothing to say so. Same discipline as
+// emit_techs.mjs asserting its match counts — fail, don't quietly agree.
+for (const id in BAND_OVERRIDE) {
+  const ind = S.IND.find(x => x.id === id);
+  if (!ind) throw new Error(`BAND_OVERRIDE names '${id}', which is not an industry in the config — renamed or removed?`);
+  const derived = (!INFRA.has(id) && RC[ind.tiers[0].key] === VERY_HIGH ? EXPENSIVE_MULT : 1);
+  if (derived === BAND_OVERRIDE[id]) throw new Error(`BAND_OVERRIDE for '${id}' is a NO-OP — vanilla now `
+    + `derives the same band. Delete the exception (and its reason) rather than leaving it to rot.`);
+}
 // The industry's vanilla anchor: its base building's own required_construction. `shipyard_steam` is an
 // all-new chain with no vanilla building at all, so it falls back to the class named in the config's
 // own `building` block — the same value the builder would have emitted for it.
@@ -169,15 +201,27 @@ for (const i of S.IND) {
   const anchor = anchorOf(i), band = bandOf(i);
   for (const t of i.tiers) newCost[t.key] = Math.max(5, Math.round(anchor * band * Math.pow(LADDER_R, t.era - 1) / 5) * 5);
 }
-console.log('\n=== THE TWO BANDS ===');
+const mark = i => i.id + (BAND_OVERRIDE[i.id] != null ? '*' : '');
+console.log('\n=== THE TWO BANDS   (* = named exception to vanilla\'s own class) ===');
 console.log(`expensive (×${EXPENSIVE_MULT}, vanilla's very_high class): `
-  + S.IND.filter(i => bandOf(i) === EXPENSIVE_MULT).map(i => i.id).join(', '));
-console.log('regular  (×1):                                ' + S.IND.filter(i => bandOf(i) === 1).map(i => i.id).join(', '));
-for (const band of [1, EXPENSIVE_MULT]) {
-  const ex = S.IND.find(i => bandOf(i) === band);
-  if (!ex) continue;
-  console.log(`  ${band === 1 ? 'regular  ' : 'expensive'} ladder (anchor ${anchorOf(ex)} × ${band}): `
-    + [0, 1, 2, 3, 4, 5].map(e => `e${e} ${Math.round(anchorOf(ex) * band * Math.pow(LADDER_R, e - 1) / 5) * 5}`).join(' · '));
+  + S.IND.filter(i => bandOf(i) === EXPENSIVE_MULT).map(mark).join(', '));
+console.log('regular  (×1):                                ' + S.IND.filter(i => bandOf(i) === 1).map(mark).join(', '));
+// One line per DISTINCT (anchor × band) actually in play. There is more than one anchor per band since
+// the exceptions moved vanilla-600 industries into the expensive column, so printing a single example
+// ladder per band would misdescribe half the book.
+{
+  const seen = new Map();
+  for (const i of S.IND) {
+    const a = anchorOf(i), b = bandOf(i), k = a + '|' + b;
+    if (!seen.has(k)) seen.set(k, { a, b, ids: [] });
+    seen.get(k).ids.push(i.id);
+  }
+  console.log('anchor × band   ladder e0…e5                                    industries');
+  for (const { a, b, ids } of [...seen.values()].sort((x, y) => x.a * x.b - y.a * y.b)) {
+    console.log(`  ${pad(a, 4)} × ${b}      `
+      + pad([0, 1, 2, 3, 4, 5].map(e => Math.round(a * b * Math.pow(LADDER_R, e - 1) / 5) * 5).join(' · '), 42)
+      + `   ${ids.join(', ')}`);
+  }
 }
 
 console.log('\n=== THE COST BOOK IT PRODUCES (construction points per level) ===');
