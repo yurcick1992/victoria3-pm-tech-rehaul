@@ -2033,7 +2033,10 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   and `run_schedule.ps1`. Today: L1 tag guards · L2 data-function-as-script · L3 unbounded scope (manual) ·
   L4 burst phasing (advisory) · L5 dropped spec key · L6 undefined script value · L7 control-arm purity ·
   L8 telemetry changed without a schema bump · L9 unfiltered ring reads · L10 mid-batch edits (manual) ·
-  L11 a tag that is not the country you think it is (proposed) · **L12 savegames reaped without a readable
+  L11 a tag that is not the country you think it is (proposed) · **L13 a starting factory converted onto a tier
+  its own production method contradicts (MASKED by the re-band, not fixed)** · **L14 a country starts with a
+  building its own technologies cannot unlock** (`verify_start_techs.mjs --vs-vanilla`, compared against
+  vanilla because vanilla itself fails on six countries) · **L12 savegames reaped without a readable
   summary** — the one POST-RUN entry, walked with `preflight.ps1 -Session <dir>` and N/A on a normal build.
   **The MD holds the story and the numbers; the script holds the enforcement.** When a run surfaces a new
   one: entry first, then `Test-Lm<ID>`, then **prove the tripwire trips** by breaking it on purpose — a

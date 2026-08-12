@@ -300,6 +300,45 @@ function Test-LmL6 {
     }
 }
 
+# ============================================================= L14 ====
+function Test-LmL14 {
+    <#
+      L14 - a country starts with a building its own technologies cannot unlock.
+
+      The build succeeds, the mod loads, the game runs, and a great power simply owns a factory it
+      could never have constructed. Nothing errors: the engine places what history tells it to place
+      and never audits that against the country's technology set. The economy then comes out
+      different from vanilla's for a reason no log mentions.
+
+      FOUND LIVE 2026-08-12, and only because an unrelated bug was fixed first. While the 1836
+      converter silently failed to re-tier (landmine L13), vanilla's steel-tooling workshops stayed on
+      the base rung and nothing was gated wrongly. The moment conversion started working, five great
+      powers - BEL, FRA, GBR, PRU, USA - owned a tooling workshop gated on 'steel_toolmaking', an 1865
+      technology of ours that had replaced vanilla's 'mechanical_tools' gate. The fix was to name it
+      in our own starting grant, exactly as vanilla names the three it needs for the same reason.
+
+      DETECTOR. tools/verify_start_techs.mjs --vs-vanilla, over the EMITTED history - ours is the only
+      history the engine reads, via replace_paths.
+
+      IT COMPARES AGAINST VANILLA RATHER THAN DEMANDING ZERO. Vanilla itself fails on six countries,
+      so an absolute pass is unreachable and a build demanding one could never go green. What we hold
+      ourselves to is introducing no NEW gap, which is the real requirement and is computable because
+      the same analysis runs unchanged against the game's own directory.
+    #>
+    $script = Join-Path $PSScriptRoot 'verify_start_techs.mjs'
+    if (-not (Test-Path $script)) { Add-Result 'L14' 'a country starts with a building it cannot unlock' 'N/A' 'verify_start_techs.mjs not present'; return }
+    # no 2>&1: PS 5.1 wraps a native exe stderr line in an ErrorRecord, which loses the detail.
+    # verify_start_techs writes its verdict to STDOUT and signals only through the exit code.
+    $out = & node $script $Mod --vs-vanilla
+    if ($LASTEXITCODE -eq 0) {
+        $line = @($out | Where-Object { $_ -match 'inherited, not ours' }) -join ''
+        $detail = if ($line) { $line.Trim() } else { "no gap beyond vanilla's own" }
+        Add-Result 'L14' 'a country starts with a building it cannot unlock' 'PASS' $detail
+    } else {
+        Add-Result 'L14' 'a country starts with a building it cannot unlock' 'FAIL' ((@($out) | Select-Object -Last 12) -join [Environment]::NewLine)
+    }
+}
+
 # ============================================================== L7 ====
 function Test-LmL7 {
     <#
@@ -533,7 +572,8 @@ $CHECKS = @(
     @{ Id = 'L9'; Artifact = $false; Fn = { Test-LmL9 } },
     # L12 needs a finished SESSION, not a mod - it is the one post-run entry, and it reports N/A
     # (never FAIL) when no -Session is given, so it costs a build nothing.
-    @{ Id = 'L12'; Artifact = $false; Fn = { Test-LmL12 } }
+    @{ Id = 'L12'; Artifact = $false; Fn = { Test-LmL12 } },
+    @{ Id = 'L14'; Artifact = $true;  Fn = { Test-LmL14 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 

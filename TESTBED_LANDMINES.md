@@ -61,7 +61,8 @@ closed.
 | L10 | Editing the generator while a batch is running | MANUAL |
 | L11 | A named tag that is not the country you think it is | **PROPOSED — AUTO, detector not yet written** |
 | L12 | Savegames reaped without a readable summary | AUTO (post-run, `-Session`) |
-| L13 | A starting factory converted onto a tier its own production method contradicts | **PROPOSED — AUTO, detector not yet written** |
+| L13 | A starting factory converted onto a tier its own production method contradicts | **MASKED, not fixed — detector not yet written** |
+| L14 | A country starts with a building its own technologies cannot unlock | AUTO |
 
 ---
 
@@ -93,8 +94,62 @@ and the reason a check on the mapping code would not have caught this one. A sec
 is worth having beside it: **no vanilla base building key may survive into the emitted history unless a
 tier legitimately owns it**, and `unmapped` must account for every factory the map declined.
 
-⚠ Not yet written: `history_lib.ps1` is a build input and a research-events batch is mid-flight, so the
-fix and its detector are both held until it finishes (L10).
+⚠⚠ **CURRENTLY MASKED, NOT FIXED (2026-08-12).** The re-band dropped the seven invented ~1700 rungs, so
+the vanilla building key is back in slot 0 and conversion works again — the 1836 start now genuinely
+re-tiers, and block counts and ownership levels match vanilla exactly (2954 and 8224). **But
+`Get-SplitMaps` still keys on `tiers[0]`**, so the day anyone mints a new first rung for an industry it
+breaks again, silently and at the same scale. The detector below is still worth writing for exactly that
+reason; the fix is one line and the guard is what makes it stay fixed.
+⭐ **And it was hiding L14.** While conversion was broken, the mis-tiered workshops sat on a rung nothing
+gated, so the starting-technology fault below was invisible. Fixing one landmine exposed another.
+
+---
+
+### L14 — a country starts with a building its own technologies cannot unlock · AUTO
+
+**The failure.** The build succeeds, the mod loads, the game runs, and a great power simply owns a
+factory it could never have constructed. Nothing errors: the engine places what history tells it to
+place and never audits that against the country's technology set. The economy then comes out different
+from vanilla's for a reason no log mentions — and the countries it bites are the ones whose 1836
+industry matters most.
+
+**Found live, 2026-08-12, and only because an unrelated bug was fixed first.** While the converter
+silently failed to re-tier the 1836 start (**L13**), vanilla's steel-tooling workshops stayed on the base
+rung and nothing was gated wrongly. The moment conversion started working, **five great powers — BEL,
+FRA, GBR, PRU, USA — owned a tooling workshop gated on `steel_toolmaking`**, an 1865 technology of ours
+that had replaced vanilla's `mechanical_tools` gate. 16 of the map's 35 tooling workshops run that
+method in vanilla, and vanilla can run them because `mechanical_tools` sits in its own named grant.
+⇒ **One landmine was hiding another.** Fixing L13 is what made L14 visible, which is the argument for
+detectors over inspection: nobody would have gone looking.
+
+**The fix that shipped** was to name `steel_toolmaking` in our own starting grant, tiers 1 and 2, exactly
+as vanilla names the three technologies its own 1836 map needs (`central_archives`, `mechanical_tools`,
+`intensive_agriculture`).
+
+**The detector.** `tools/verify_start_techs.mjs --vs-vanilla`, over the EMITTED history — ours is the
+only history the engine reads, via `replace_paths`. It resolves each building's and each production
+method's `unlocking_technologies` against vanilla plus our owned files, expands
+`add_era_researched` (which is most of the grant), and reports **per country**.
+
+⚠ **IT COMPARES AGAINST VANILLA RATHER THAN DEMANDING ZERO.** Vanilla itself fails on six countries, so
+an absolute pass is unreachable and a build demanding one could never go green. What we hold ourselves to
+is introducing **no new** gap — the real requirement, and computable because the same analysis runs
+unchanged against the game's own directory.
+
+⚠ **Three ways this check reported a false answer before it worked**, all worth knowing because they are
+the generic traps of this kind of detector:
+- **It passed vacuously.** Wrong tag regexes for these file shapes matched zero countries and it printed
+  PASSED. Hence `assertNonTrivial()`, which refuses to report success unless it found countries,
+  buildings and starting sets. **A check that cannot fail is worse than no check.**
+- **It failed spuriously on 24 countries.** The starting sets grant most of their content through
+  `add_era_researched = era_1`, not by naming technologies, so reading only `add_technology_researched`
+  made Britain and France look as though they lacked `manufacturies`.
+- **It lost its own error message.** The detector called node with `2>&1`, and PowerShell 5.1 wraps a
+  native executable's stderr lines in ErrorRecords — so a real FAIL reported `(detector error)` and named
+  nobody. The tool now writes its verdict to **stdout** and signals only through the exit code.
+
+**Tripwire proven** by deleting the two grant lines from the emitted file: preflight went
+`L14 FAIL … PREFLIGHT FAILED: 1 landmine(s) live`, naming GBR, FRA and BEL. Restored, it passes.
 
 ---
 
