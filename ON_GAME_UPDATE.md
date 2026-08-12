@@ -277,9 +277,35 @@ Newest first. Append here as we discover more couplings to vanilla.
   it — Steam updated between the two launches, and the only evidence is one line in `error.log`.
   ⇒ **The two sessions are not comparable**, and any comparison drawn across that boundary needs saying
   so out loud. This is why the ~5-minute smoke check in `CLAUDE.md` includes the version line.
-  ✅ **THE ROUTINE WAS RUN AGAINST 1.13.10 AND FOUND ZERO DRIFT — measured, not assumed.** The patch is
-  localization-only (1.13.9 was the last planned 1.13 hotfix; .10 exists to restore translations that
-  missed it), and every artifact we derive from the game agrees:
+  ⚠⚠ **"LOCALIZATION-ONLY" WAS WRONG AND IS RETRACTED.** 1.13.10 is a **substantial hotfix** —
+  Improvements, AI, a long Interface section, Performance, Modding and a long Bugfixes section
+  ([forum thread](https://forum.paradoxplaza.com/forum/threads/hotfix-1-13-10-is-now-live-not-for-problem-reports.1938098/),
+  checksum `2964`). The claim came from a web-search *summary* that never actually retrieved the 1.13.10
+  notes; it inferred them from the 1.13.9 announcement's line about translations arriving later. **A
+  search summary is not a source.** Fetch the changelog itself.
+  ⚠ **AND THE FILE-MTIME CENSUS AGREED WITH THE WRONG ANSWER, for a reason worth remembering:** of 405
+  files the patch rewrote under `game/`, 305 are localization — but **`binaries/victoria3.exe` was
+  rewritten too**, and that is where a hotfix like this one mostly lives. **Counting touched script files
+  cannot see engine changes.** Check the binary's timestamp before concluding anything about scope.
+
+  ⭐ **THREE ITEMS TOUCH QUANTITIES THIS MOD IS CALIBRATED AGAINST**, and each needs re-measuring rather
+  than assuming it is neutral:
+  - **"Private investment no longer endlessly expands railways that can never become profitable."**
+    Directly on the transport gap (BALANCE_FRAMEWORK §10.47.1) — railway's derived macro floors and the
+    ruled-accepted freight residual were both measured on a game that *did* endlessly expand railways.
+  - **"Shipyard wages are no longer paid twice."** A doubled wage bill on a building we model, and one
+    already carrying a −30pp handicap because its naval-construction income is unmodelled.
+  - **"Single good shortage no longer drains supply and instead lowers maximum organization."** Changes
+    what a goods shortage does to an army, which is the channel the 5%-of-GDP army premise sits in.
+  Also relevant, unquantified: strait-toll and trade-centre toll accounting now agree and no longer
+  charge for goods that do not pass the strait; goods are removed from the importer correctly during
+  piracy; a crash loading saves with pops missing a social class (our savegame harvest reads those).
+  **New modding surface:** `create_container` script containers, the `on_treaty_ports_inherited`
+  on-action and the `renege_treaty_ports_with` effect.
+
+  ✅ **What the re-derivation DID establish — and it stands, because it is measurement rather than
+  inference:** none of the vanilla DATA we derive from moved. That is a narrower claim than
+  "the patch changed nothing", and it is the one the evidence supports:
   | re-derived artifact | result under 1.13.10 |
   |---|---|
   | `ui/vanilla.js` — every vanilla building, PMG and PM | **byte-identical** |
