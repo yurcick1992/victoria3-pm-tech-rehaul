@@ -495,11 +495,6 @@ pmg_main_rail_electric = {
 	production_methods = { pm_main_rail_electric }
 }
 
-pmg_main_railway_superheated = {
-	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
-	production_methods = { pm_main_railway_superheated }
-}
-
 pmg_main_rail_diesel = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
 	production_methods = { pm_main_rail_diesel }

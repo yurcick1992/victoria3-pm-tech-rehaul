@@ -156,8 +156,8 @@ const SPEC = {
                                         {era:4, year:1930, slug:'motor', name:'Motor Ship Ports', pm:'Mechanised Cargo Handling',
                                          state_infrastructure:6} ],
                  note:'now PLATEAUS at e4 rather than reaching e5: the next real step in cargo handling is containerisation (1956), far outside the window, and inventing a 1930s rung to avoid an empty column is exactly the filler the design forbids. ⚠ The era-1 tier is why an invent entry may carry its own `inputs`: iron screw steamers arrive in era 1-2, so an 1870 port bunkers STEAMERS, not the era-0 port’s clippers.' },
-  railway:     { eras:[1,2,3,5], years:[1825,1867,1895,1934], invent:[ {era:4, year:1915, slug:'superheated', name:'Superheated Steam Railways', pm:'Superheated Locomotives'} ],
-                 note:'e4 is NEW: superheating (Schmidt 1898, standard on new construction by the 1910s) cut coal and water per ton-mile by roughly a quarter and is the 1912-1931 step between mainline electrification and the diesel railcar. Years: Stockton & Darlington 1825, steel rails 1867, electrification 1895, superheated steam 1915, road-service diesel 1934 (Zephyr).' },
+  railway:     { eras:[1,2,3,4], years:[1825,1867,1895,1925], invent:[],
+                 note:'RAILWAY PLATEAUS AT e4 (user ruling 2026-08-12). The invented superheating rung is gone and the vanilla DIESEL rung moves e5 -> e4, gated on the motor industry\'s own diesel_engine: one technology for the diesel locomotive and the diesel engine works, which is what they historically were. Dated 1925 rather than 1934 — mainline diesel-electric service (Kaufman Act 1923, the first road switchers) rather than the Zephyr, and e4 s band is 1912-1932 anyway. ⚠ compression_ignition is NOT deleted: it is a VANILLA technology gating ten vanilla production methods (diesel pumps in five mine types, diesel tractors, diesel trains, mass automobile production) and a vanilla event. It simply no longer gates a building of ours. Years: Stockton & Darlington 1825, steel rails 1867, electrification 1895, road diesel 1925.' },
 
   // --- arts -----------------------------------------------------------------------------------------
   art_academy: { eras:[1,2,3,4], years:[1800,1850,1885,1912], invent:[ {era:5, year:1932, slug:'sound_film', name:'Sound Film Art Academies', pm:'Sound and Colour Film'} ],
@@ -183,6 +183,7 @@ const LADDER_END = {
   // handling is containerisation (1956), far outside the window. Inventing a 1930s rung purely to fill the
   // era-5 column is the filler the design forbids, so the last tier gets a price floor instead.
   port: 'plateau',
+  railway: 'plateau',            // user ruling 2026-08-12: no era-5 railway; the diesel rung is the last
 };
 
 // Skill-mix step for an INVENTED tier: hold headcount constant and move 10% of it from laborers to

@@ -164,6 +164,68 @@ function parseModifierTypes() {
 }
 
 const VAN = parseVanillaTechs();
+// ⭐⭐ WHAT A TECHNOLOGY GATES BESIDES BUILDINGS (2026-08-12). **There are no contentless technologies in
+// this game** (user ruling) — and the viewer used to imply otherwise, because it counted BUILDING unlocks
+// only and drew everything else FADED with the legend "unlocks no building". After the merges that became
+// actively misleading: `compression_ignition` gates TEN vanilla production methods (diesel pumps in five
+// mine types, diesel tractors, diesel trains, mass automobile production) and rendered as an empty node
+// in the shared column, so it looked deleted. It is not; it simply no longer gates a tier of OURS.
+// ⚠ The id class admits a HYPHEN: `pm_ammonia-soda_process`, `pm_coal-fired_plant`, `pm_oil-fired_plant`.
+// An [a-z_0-9]+ class does not open those blocks at all, so their gate reads as empty — the permissive
+// direction, and the same bug that once faked a whole finding (BUGS_AND_FIXES 2026-08-12).
+function parseVanillaPmUnlocks() {
+  const byTech = {};
+  const dir = join(GAME, 'common/production_methods');
+  for (const f of readdirSync(dir).filter(x => x.endsWith('.txt'))) {
+    const txt = readFileSync(join(dir, f), 'utf8').replace(/^﻿/, '');
+    const re = /^([A-Za-z_0-9-]+) = \{$/gm;
+    let m; const starts = [];
+    while ((m = re.exec(txt))) starts.push({ id: m[1], at: m.index });
+    starts.forEach((s, i) => {
+      const body = txt.slice(s.at, i + 1 < starts.length ? starts[i + 1].at : txt.length);
+      const pre = body.match(/unlocking_technologies = \{([^}]*)\}/);
+      if (!pre) return;
+      for (const t of pre[1].split(/\s+/).filter(Boolean)) (byTech[t] ||= []).push(s.id);
+    });
+  }
+  return byTech;
+}
+// …and the other content classes, so a node can never look empty when it is not. Combat unit types,
+// decrees and company requirements all gate on technologies too.
+function parseOtherGates() {
+  const byTech = {};
+  for (const d of ['common/combat_unit_types', 'common/decrees', 'common/company_types']) {
+    const dir = join(GAME, d);
+    let files = []; try { files = readdirSync(dir).filter(x => x.endsWith('.txt')); } catch { continue; }
+    for (const f of files) {
+      const txt = readFileSync(join(dir, f), 'utf8').replace(/^﻿/, '');
+      for (const m of txt.matchAll(/^([A-Za-z_0-9-]+) = \{([\s\S]*?)\n\}/gm)) {
+        const u = m[2].match(/unlocking_technologies\s*=\s*\{([^}]*)\}/); if (!u) continue;
+        for (const g of u[1].split(/\s+/).filter(Boolean))
+          (byTech[g] ||= []).push(`${d.split('/').pop().replace(/_types$/, '')}: ${m[1]}`);
+      }
+    }
+  }
+  return byTech;
+}
+// how many lines of MODIFIER a vanilla technology carries — 99 of them do, and that is content the
+// building-unlock column has never shown.
+function parseTechModifiers() {
+  const out = {};
+  const dir = join(GAME, 'common/technology/technologies');
+  for (const f of readdirSync(dir).filter(x => x.endsWith('.txt'))) {
+    const txt = readFileSync(join(dir, f), 'utf8').replace(/^﻿/, '');
+    for (const m of txt.matchAll(/^([A-Za-z_0-9-]+) = \{([\s\S]*?)\n\}/gm)) {
+      const mod = m[2].match(/modifier\s*=\s*\{([\s\S]*?)\n\t\}/);
+      if (!mod) continue;
+      out[m[1]] = mod[1].split(/\r?\n/).map(s => s.trim()).filter(s => s && !s.startsWith('#'));
+    }
+  }
+  return out;
+}
+const VAN_OTHER_GATES = parseOtherGates();
+const VAN_TECH_MODS = parseTechModifiers();
+const VAN_PM_UNLOCKS = parseVanillaPmUnlocks();
 const VAN_UNLOCKS = parseVanillaBuildingUnlocks();
 const VAN_LOC = parseVanillaLoc();
 const MOD_TYPES = parseModifierTypes();
@@ -225,16 +287,10 @@ const NEW = {
     desc: "Peeling a log on a rotary lathe and gluing the sheets crosswise gives a panel stronger than the timber it came from, and furniture stops being carpentry and starts being assembly." },
   glass_fibre:               { name: "Glass Fibre", year: 1938, era: 5, in: '123', ind: 'glass',
     desc: "Glass drawn continuously into filaments finer than wool is no longer a glazing material at all — it insulates, reinforces and filters, and the glassworks acquires a market that has nothing to do with windows." },
-  tracer_control:            { name: "Hydraulic Tracer Control", year: 1936, era: 5, in: '123', ind: 'tooling',
-    desc: "A stylus follows a master form and hydraulics repeat it on the cutter, so a complex profile no longer needs a skilled machinist — only a first article to copy." },
   semi_chemical_pulping:     { name: "Semi-Chemical Pulping", year: 1925, era: 4, in: '123', ind: 'paper',
     desc: "A mild sulfite cook followed by mechanical defibring opens hardwoods the chemical mills could not use, and the corrugated box gets a cheap domestic furnish." },
-  ammoniacal_liquor:         { name: "Ammoniacal Liquor Recovery", year: 1865, era: 2, in: '123', ind: 'fertilizer',
-    desc: "The gasworks and the coke oven were throwing away their ammonia; recovered as sulphate it becomes the first nitrogen fertilizer a country can make rather than import." },
   cyclonite_process:         { name: "Cyclonite Process", year: 1940, era: 5, in: '123', ind: 'explosives',
     desc: "Nitrating hexamine gives an explosive half again as powerful as TNT, and continuous plant makes it in quantities that change what a bomb and a torpedo can do." },
-  compound_engines:          { name: "Compound Expansion", year: 1860, era: 2, in: '123', ind: 'motor',
-    desc: "Working the steam twice, through a high-pressure and then a low-pressure cylinder, roughly halves the coal per horsepower-hour — and makes the engine works a supplier to shipping rather than to mills alone." },
   steel_hulls:               { name: "Steel Hulls", year: 1875, era: 2, in: '123', ind: 'shipyard_steam', cat: 'military',
     desc: "Mild steel plate is stronger than iron for the same weight, so the same hull carries more cargo or more armour, and the yard's berths are laid out for a material that will not be replaced this century." },
   light_machine_guns:        { name: "Light Machine Guns", year: 1915, era: 4, in: '123', ind: 'arms', cat: 'military',
@@ -245,8 +301,6 @@ const NEW = {
     desc: "The filling factory is a distinct industry from the case plant: acres of separated sheds, women's labour at scale, and an output measured in millions of rounds a week." },
   wireless_telegraphy:       { name: "Wireless Telegraphy", year: 1901, era: 3, in: '123', ind: 'electrics',
     desc: "Spark transmitters put a telegraph office on a ship and then across an ocean, and the electrical trade acquires a product that needs no line at all." },
-  superheated_steam:         { name: "Superheating", year: 1915, era: 4, in: '123', ind: 'railway',
-    desc: "Passing the steam back through the firebox before it reaches the cylinders cuts coal and water by about a quarter per ton-mile, and is why the steam locomotive survived the electric one by forty years." },
   // ---- production: rungs vanilla has no technology for (used by ALL three options) ---------------
   beet_sugar_refining:     { name: 'Beet Sugar Refining',        year: 1815, in: '123', ind: 'food',
     desc: 'Marggraf and Achard\'s beet process frees the sugar trade from the cane colonies, and puts a refinery within reach of any temperate country with a food industry.' },
@@ -261,12 +315,8 @@ const NEW = {
   // own logic: `hydraulic_cranes`, `gantry_cranes`, `floating_harbor` and `concrete_dockyards` are all
   // MILITARY technologies already, so dock engineering was never in the production tree to begin with.
   // Every prerequisite below is therefore a military technology; see the same-tree constraint.
-  steamship_bunkering:     { name: 'Steamship Bunkering',        year: 1840, in: '123', ind: 'port', cat: 'military',
-    desc: 'A steamer cannot cross an ocean without a coaling station at the other end. Ports rebuild themselves around the bunker, the tug and the tide dock.' },
   regenerative_furnace:    { name: 'Regenerative Furnace',       year: 1867, in: '123', ind: 'glass',
     desc: 'Siemens\' heat-recovery tank furnace runs continuously instead of in pots, halving the fuel a glasshouse burns for every ton it melts.' },
-  steel_toolmaking:        { name: 'Steel Toolmaking',           year: 1865, in: '123', ind: 'tooling',
-    desc: 'Cheap bulk steel reaches the toolmaker. Cutters that once had to be forged from crucible stock are now made from mill steel and hardened in quantity.' },
   deep_water_docks:        { name: 'Deep Water Docks',           year: 1875, in: '123', ind: 'port', cat: 'military',
     desc: 'Hydraulic cranes, dredged approaches and enclosed basins let a port handle an iron steamer of a draught no tidal quay could ever take.' },
   kraft_process:           { name: 'Kraft Process',              year: 1890, in: '123', ind: 'paper',
@@ -275,16 +325,12 @@ const NEW = {
     desc: 'Taylor and White\'s tungsten steel cuts red-hot without losing its edge. Machine shop speeds go from five metres a minute to thirty.' },
   ostwald_process:         { name: 'Ostwald Process',            year: 1908, in: '123', ind: 'explosives',
     desc: 'Catalytic oxidation of ammonia makes nitric acid without a nitrate mine, and cuts the last colonial tether on the explosives trade.' },
-  electric_motors:         { name: 'Electric Motors',            year: 1893, in: '123', ind: 'motor',
-    desc: 'The polyphase induction motor gives every machine its own prime mover. Line shafting, and the mill built around it, begins to disappear.' },
   diesel_engine:           { name: 'Diesel Engine',              year: 1904, in: '123', ind: 'motor',
     desc: 'Compression ignition burns a fuel no boiler would take, at an efficiency no steam plant can reach, in a works that can build one to order.' },
   synthetic_indigo:        { name: 'Synthetic Indigo',           year: 1897, in: '123', ind: 'synthetics',
     desc: 'Seventeen years and a fortune later, BASF sells indigo made from coal tar — and the Bengal indigo districts have nothing left to sell.' },
   concrete_quays:          { name: 'Reinforced Concrete Quays',  year: 1908, in: '123', ind: 'port', cat: 'military',
     desc: 'Monolithic concrete replaces the timber pile and the masonry block, and a berth can be built where no quarry could ever have supplied one.' },
-  nitrocellulose_lacquer:  { name: 'Nitrocellulose Lacquers',    year: 1923, in: '123', ind: 'furniture',
-    desc: 'Sprayed lacquer dries in minutes where varnish took days. Furniture finishing stops being the bottleneck of the whole trade.' },
   ribbon_machine:          { name: 'Ribbon Machine',             year: 1926, in: '123', ind: 'glass',
     desc: 'Corning\'s ribbon machine blows bulbs from a moving ribbon of glass at a rate no gathering machine can approach.' },
   cemented_carbide:        { name: 'Cemented Carbide',           year: 1927, in: '123', ind: 'tooling',
@@ -293,8 +339,6 @@ const NEW = {
     desc: 'Suction presses, steam drying and precision drives take the Fourdrinier past a quarter mile of paper a minute.' },
   steam_reforming:         { name: 'Steam Reforming',            year: 1931, in: '123', ind: 'fertilizer',
     desc: 'Hydrogen from methane instead of coke. The ammonia plant sheds its gasworks and its coal yard together.' },
-  continuous_nitration:    { name: 'Continuous Nitration',       year: 1928, in: '123', ind: 'explosives',
-    desc: 'Nitration in a flowing stream rather than a batch pot — safer, steadier, and limited only by how fast acid can be pumped.' },
   continuous_strip_mill:   { name: 'Continuous Wide Strip Mill', year: 1926, in: '123', ind: 'steel',
     desc: 'Armco\'s continuous mill rolls a coil of wide sheet in one pass. It is the largest single step interwar steel takes, and vanilla has no tier for it at all.' },
   high_speed_diesel:       { name: 'High Speed Diesel',          year: 1935, in: '123', ind: 'motor',
@@ -374,14 +418,10 @@ const NEW = {
     desc: 'Manganese, nickel, chromium, tungsten. Steel stops being one material and becomes a catalogue of them.' },
 
   // ---- military: the rungs vanilla is missing (ALL options) -------------------------------------
-  iron_screw_steamers:     { name: 'Iron Screw Steamers',        year: 1843, in: '123', ind: 'shipyard_steam', cat: 'military',
-    desc: 'The Great Britain: iron hull, screw propeller, no sail worth the name. A yard that can build her is not a yard that built clippers.' },
   explosive_shells:        { name: 'Filled Explosive Shells',    year: 1875, in: '123', ind: 'munition', cat: 'military',
     desc: 'Shells filled and fused on a production line rather than in a laboratory, in quantities a siege can actually spend.' },
   marine_steam_turbine:    { name: 'Marine Steam Turbine',       year: 1903, in: '123', ind: 'shipyard_steam', cat: 'military',
     desc: 'Parsons\' turbine at sea: fewer moving parts, no reciprocating mass, and speeds a triple-expansion engine cannot reach.' },
-  drawn_brass_cartridges:  { name: 'Drawn Brass Cartridges',     year: 1895, in: '123', ind: 'munition', cat: 'military',
-    desc: 'Deep-drawn cases and smokeless powder, loaded by automatic machinery. Ammunition becomes a volume manufacture like any other.' },
   recoil_carriages:        { name: 'Recoil Carriages',           year: 1897, in: '123', ind: 'artillery', cat: 'military',
     desc: 'The French 75\'s hydro-pneumatic recoil keeps the barrel on target between rounds, and multiplies a battery\'s rate of fire.' },
   oil_fired_boilers:       { name: 'Oil-Fired Boilers',          year: 1913, in: '123', ind: 'shipyard_steam', cat: 'military',
@@ -390,8 +430,6 @@ const NEW = {
     desc: 'Pre-stressing a barrel from within replaces built-up hoop construction — a lighter gun of the same power, made in fewer operations.' },
   stamped_receivers:       { name: 'Stamped Receivers',          year: 1938, in: '123', ind: 'arms', cat: 'military',
     desc: 'Pressed and welded sheet metal in place of milled forgings. A weapon a bicycle works can make, in the numbers a war needs.' },
-  automatic_cartridge_lines:{ name: 'Automatic Cartridge Lines', year: 1940, in: '123', ind: 'munition', cat: 'military',
-    desc: 'Case, primer, powder and bullet joined by machines that need a setter rather than an operator.' },
   gunsmith_workshops:      { name: 'Gunsmith Workshops',         year: 1770, in: '23', ind: 'arms', cat: 'military',
     desc: 'The Birmingham gun quarter: barrel, lock and stock made by separate trades and assembled to a contract.' },
   bronze_gun_founding:     { name: 'Bronze Gun Founding',        year: 1750, in: '23', ind: 'artillery', cat: 'military',
@@ -579,6 +617,21 @@ const IDEA_TECH = new Set([
 // references depend on those — but gets a new DISPLAY NAME through our localization. Ruled 2026-08-10:
 // "don't leave the vanilla name at all if the tech means something drastically different."
 const RENAME = {
+  // ⭐ MERGE RENAMES (user-ruled 2026-08-12). Each survivor gates a tier its vanilla name does not
+  // describe, because the merge re-pointed our gate onto it. The vanilla technology itself is untouched
+  // — only what we CALL it, and vanilla script never reads a display name.
+  steel_railway_cars: ['Bulk Steel', 'it now gates the steel tooling workshop as well as the steel railway'],
+  watertube_boiler:   ['High-Pressure Steam', 'it now gates the compound-expansion motor works as well as its own methods'],
+  electric_railway:   ['Electric Drive', 'it now gates the electric motor works as well as the electric railway'],
+  aniline:            ['Coal-Tar Chemistry', 'it now gates ammoniacal-liquor fertilizer as well as aniline dye'],
+  art_silk:           ['Cellulose Esters', 'it now gates nitrocellulose lacquers as well as rayon'],
+  conveyors:          ['Continuous-Flow Production', 'it now gates the mechanised bakery and continuous nitration as well as the moving line'],
+  bolt_action_rifles: ['Magazine Rifles', 'it now gates the drawn-brass cartridge plant as well as the rifle'],
+  percussion_cap:     ['Percussion Ordnance', 'it now gates the shell-gun foundry as well as the cap plant'],
+  screw_frigate:      ['The Screw Steamer', 'it now gates the metal merchant yard and the coaling port as well as the frigate'],
+  transfer_machining: ['Automatic Machine Control', 'it now gates tracer-controlled tooling as well as the transfer line'],
+  stamped_receivers:  ['Mass Small-Arms Production', 'it now gates automatic cartridge lines as well as stamped receivers'],
+  diesel_engine:      ['Diesel Engine', 'it now gates the diesel railway as well as the motor works'],
   crystal_glass: ['Lead Crystal',
     'It unlocks the LEADED glassworks; the crystal tier is a rung above it, on the regenerative furnace.'],
   electrical_capacitors: ['Alternating Current',
@@ -604,7 +657,7 @@ const LADDER = {
     { era: 1, o1: 'beet_sugar_refining', o2: 'beet_sugar_refining' },
     { era: 2, o1: 'baking_powder',       o2: 'baking_powder' },
     { era: 3, o1: 'fat_hydrogenation', o2: 'fat_hydrogenation' },
-    { era: 4, o1: 'dough_rollers',       o2: 'dough_rollers',        x: ['conveyors'] },
+    { era: 4, o1: 'conveyors',           o2: 'conveyors' },
   ],
   textile: [
     { era: 0, o1: 'manufacturies',       o2: 'ready_made_clothing' },
@@ -618,7 +671,7 @@ const LADDER = {
     { era: 1, o1: 'lathe',               o2: 'lathe' },
     { era: 2, o1: 'mechanized_workshops',o2: 'bentwood_furniture' },
     { era: 3, o1: 'rotary_veneer', o2: 'rotary_veneer' },
-    { era: 4, o1: 'nitrocellulose_lacquer', o2: 'nitrocellulose_lacquer', x: ['art_silk'] },
+    { era: 4, o1: 'art_silk',            o2: 'art_silk' },
   ],
   glass: [
     { era: 0, o1: 'manufacturies',       o2: 'coal_fired_glasshouse' },
@@ -631,10 +684,10 @@ const LADDER = {
   tooling: [
     { era: 0, o1: 'manufacturies',       o2: 'toolmakers_workshops' },
     { era: 1, o1: 'steelworking',        o2: 'pig_iron_tooling' },
-    { era: 2, o1: 'steel_toolmaking',    o2: 'steel_toolmaking',      x: ['bessemer_process'] },
+    { era: 2, o1: 'steel_railway_cars',  o2: 'steel_railway_cars',    x: ['bessemer_process'] },
     { era: 3, o1: 'high_speed_steel',    o2: 'high_speed_steel' },
     { era: 4, o1: 'cemented_carbide',    o2: 'cemented_carbide',      x: ['electric_arc_process'] },
-    { era: 5, o1: 'tracer_control', o2: 'tracer_control' },
+    { era: 5, o1: 'transfer_machining',  o2: 'transfer_machining' },
   ],
   paper: [
     { era: 0, o1: 'manufacturies',       o2: 'pulp_pressing_mills' },
@@ -646,7 +699,7 @@ const LADDER = {
   ],
   fertilizer: [
     { era: 1, o1: 'intensive_agriculture', o2: 'superphosphate' },
-    { era: 2, o1: 'ammoniacal_liquor', o2: 'ammoniacal_liquor' },
+    { era: 2, o1: 'aniline',             o2: 'aniline' },
     { era: 3, o1: 'improved_fertilizer', o2: 'improved_fertilizer' },
     { era: 4, o1: 'nitrogen_fixation',   o2: 'nitrogen_fixation' },
     { era: 5, o1: 'steam_reforming',     o2: 'steam_reforming' },
@@ -655,7 +708,7 @@ const LADDER = {
     { era: 1, o1: 'leblanc_process',     o2: 'leblanc_process' },
     { era: 2, o1: 'dynamite',            o2: 'dynamite' },
     { era: 3, o1: 'ostwald_process',     o2: 'ostwald_process' },
-    { era: 4, o1: 'continuous_nitration',o2: 'continuous_nitration' },
+    { era: 4, o1: 'conveyors',           o2: 'conveyors' },
     { era: 5, o1: 'cyclonite_process', o2: 'cyclonite_process' },
   ],
   steel: [
@@ -667,8 +720,8 @@ const LADDER = {
   ],
   motor: [
     { era: 1, o1: 'atmospheric_engine',  o2: 'atmospheric_engine' },
-    { era: 2, o1: 'compound_engines', o2: 'compound_engines' },
-    { era: 3, o1: 'electric_motors',     o2: 'electric_motors',       x: ['electrical_generation'] },
+    { era: 2, o1: 'watertube_boiler',    o2: 'watertube_boiler' },
+    { era: 3, o1: 'electric_railway',    o2: 'electric_railway',      x: ['electrical_generation'] },
     { era: 4, o1: 'diesel_engine',       o2: 'diesel_engine',         x: ['combustion_engine'] },
     { era: 5, o1: 'high_speed_diesel',   o2: 'high_speed_diesel' },
   ],
@@ -698,8 +751,7 @@ const LADDER = {
     { era: 1, o1: 'railways',            o2: 'railways' },
     { era: 2, o1: 'steel_railway_cars',  o2: 'steel_railway_cars' },
     { era: 3, o1: 'electric_railway',    o2: 'electric_railway' },
-    { era: 4, o1: 'superheated_steam', o2: 'superheated_steam' },
-    { era: 5, o1: 'compression_ignition',o2: 'compression_ignition' },
+    { era: 4, o1: 'diesel_engine',       o2: 'diesel_engine' },
   ],
   port: [
     // ⚠ `navigation`, NOT null. Vanilla's own `building_port` carries
@@ -709,7 +761,7 @@ const LADDER = {
     // vanilla that nothing had chosen. `navigation` also unlocks the sail shipyard's base rung, which is
     // again exactly what vanilla does with it.
     { era: 0, o1: 'navigation',          o2: 'navigation' },
-    { era: 1, o1: 'steamship_bunkering', o2: 'steamship_bunkering' },
+    { era: 1, o1: 'screw_frigate',       o2: 'screw_frigate' },
     { era: 2, o1: 'deep_water_docks',    o2: 'deep_water_docks' },
     { era: 3, o1: 'concrete_quays',      o2: 'concrete_quays',        x: ['gantry_cranes'] },
     { era: 4, o1: 'mechanised_cargo_handling', o2: 'mechanised_cargo_handling', x: ['concrete_dockyards'] },
@@ -724,7 +776,7 @@ const LADDER = {
   ],
   artillery: [
     { era: 0, o1: 'artillery',           o2: 'bronze_gun_founding' },
-    { era: 1, o1: 'shell_gun',           o2: 'shell_gun' },
+    { era: 1, o1: 'percussion_cap',      o2: 'percussion_cap' },
     { era: 2, o1: 'breech_loading_artillery', o2: 'breech_loading_artillery' },
     { era: 3, o1: 'recoil_carriages',    o2: 'recoil_carriages' },
     { era: 4, o1: 'autofrettage',        o2: 'autofrettage' },
@@ -733,16 +785,16 @@ const LADDER = {
   munition: [
     { era: 1, o1: 'percussion_cap',      o2: 'percussion_cap' },
     { era: 2, o1: 'explosive_shells',    o2: 'explosive_shells' },
-    { era: 3, o1: 'drawn_brass_cartridges', o2: 'drawn_brass_cartridges' },
+    { era: 3, o1: 'bolt_action_rifles',  o2: 'bolt_action_rifles' },
     { era: 4, o1: 'shell_filling', o2: 'shell_filling' },
-    { era: 5, o1: 'automatic_cartridge_lines', o2: 'automatic_cartridge_lines' },
+    { era: 5, o1: 'stamped_receivers',   o2: 'stamped_receivers' },
   ],
   shipyard: [
     { era: 0, o1: 'navigation',          o2: 'navigation' },
     { era: 1, o1: 'screw_frigate',       o2: 'screw_frigate' },
   ],
   shipyard_steam: [
-    { era: 1, o1: 'iron_screw_steamers', o2: 'iron_screw_steamers' },
+    { era: 1, o1: 'screw_frigate',       o2: 'screw_frigate' },
     { era: 2, o1: 'steel_hulls', o2: 'steel_hulls' },
     { era: 3, o1: 'marine_steam_turbine',o2: 'marine_steam_turbine' },
     { era: 4, o1: 'oil_fired_boilers',   o2: 'oil_fired_boilers' },
@@ -767,38 +819,29 @@ const O1_PREREQ = {
   long_draft_spinning: ["electrical_capacitors"],
   rotary_veneer: ["mechanized_workshops"],
   glass_fibre: ["ribbon_machine"],
-  tracer_control: ["cemented_carbide"],
   semi_chemical_pulping: ["kraft_process"],
-  ammoniacal_liquor: ["intensive_agriculture"],
-  cyclonite_process: ["continuous_nitration"],
-  compound_engines: ["atmospheric_engine"],
-  steel_hulls: ["iron_screw_steamers"],
+  cyclonite_process: ["conveyors"],
+  steel_hulls: ["screw_frigate"],
   light_machine_guns: ["bolt_action_rifles"],
   automatic_aa_guns: ["autofrettage"],
-  shell_filling: ["drawn_brass_cartridges"],
+  shell_filling: ["bolt_action_rifles"],
   wireless_telegraphy: ["telephone"],
-  superheated_steam: ["electric_railway"],
   beet_sugar_refining: ['manufacturies', 'distillation'],
   calico_printing: ['manufacturies'],
   fourdrinier_machine: ['manufacturies', 'lathe'],
   leblanc_process: ['manufacturies', 'shaft_mining'],
-  steamship_bunkering: ['paddle_steamer'],
   regenerative_furnace: ['crystal_glass', 'bessemer_process'],
-  steel_toolmaking: ['mechanical_tools', 'bessemer_process'],
-  deep_water_docks: ['steamship_bunkering', 'hydraulic_cranes'],
+  deep_water_docks: ['screw_frigate', 'hydraulic_cranes'],
   kraft_process: ['chemical_bleaching', 'nitroglycerin'],
-  high_speed_steel: ['steel_toolmaking', 'open_hearth_process'],
+  high_speed_steel: ['steel_railway_cars', 'open_hearth_process'],
   ostwald_process: ['dynamite', 'improved_fertilizer'],
-  electric_motors: ['electrical_generation'],
   diesel_engine: ['combustion_engine'],
   synthetic_indigo: ['aniline', 'chemical_bleaching'],
   concrete_quays: ['deep_water_docks', 'gantry_cranes'],
-  nitrocellulose_lacquer: ['art_silk', 'plastics'],
   ribbon_machine: ['automatic_bottle_blowers', 'electrical_capacitors'],
   cemented_carbide: ['high_speed_steel', 'electric_arc_process'],
   high_speed_papermaking: ['kraft_process', 'conveyors'],
   steam_reforming: ['nitrogen_fixation'],
-  continuous_nitration: ['ostwald_process', 'conveyors'],
   continuous_strip_mill: ['electric_arc_process', 'conveyors'],
   high_speed_diesel: ['diesel_engine', 'arc_welding'],
   transfer_machining: ['conveyors', 'high_speed_steel'],
@@ -807,15 +850,12 @@ const O1_PREREQ = {
   pulverized_coal_firing: ['steam_turbine', 'conveyors'],
   mechanised_cargo_handling: ['concrete_quays', 'concrete_dockyards'],
   // military
-  iron_screw_steamers: ['paddle_steamer'],
   explosive_shells: ['percussion_cap', 'shell_gun'],
-  marine_steam_turbine: ['iron_screw_steamers', 'ironclad_tech'],
-  drawn_brass_cartridges: ['explosive_shells', 'rifling'],
+  marine_steam_turbine: ['screw_frigate', 'ironclad_tech'],
   recoil_carriages: ['breech_loading_artillery'],
   oil_fired_boilers: ['marine_steam_turbine'],
   autofrettage: ['recoil_carriages'],
   stamped_receivers: ['bolt_action_rifles'],
-  automatic_cartridge_lines: ['drawn_brass_cartridges'],
   // splits (options 2/3 only, but stated here so the table is one thing)
   bakehouse_manufactories: ['manufacturies'],
   ready_made_clothing: ['manufacturies'],
@@ -924,6 +964,9 @@ function buildOption(optN) {
       prereqs: new Set(),
       unlocks: [],                                  // our tier buildings
       vanillaUnlocks: VAN_UNLOCKS[id] ?? [],        // vanilla buildings
+      pmUnlocks: VAN_PM_UNLOCKS[id] ?? [],          // vanilla PRODUCTION METHODS — see parseVanillaPmUnlocks
+      otherGates: VAN_OTHER_GATES[id] ?? [],        // combat unit types, decrees, company requirements
+      modLines: (n?.mod ? Object.entries(n.mod).map(([k, v]) => `${k} = ${v}`) : (VAN_TECH_MODS[id] ?? [])),
     };
     if (t.origin === 'vanilla') for (const p of v.prereqs) t.prereqs.add(p);
     // Deliberate re-eras (shared decision 5). Moving a technology earlier can strand it behind a

@@ -1037,7 +1037,7 @@ telephone = {
 
 dough_rollers = {
 	# Unlocks the Automated Bakery PM in Food Industries
-	era = era_4
+	era = era_5
 	texture = "gfx/interface/icons/invention_icons/rollers.dds"
 	category = production
 

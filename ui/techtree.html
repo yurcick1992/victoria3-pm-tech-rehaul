@@ -141,7 +141,7 @@ svg#edges path{fill:none;stroke-width:1.4}
     <span><i style="border-color:var(--plat);background:#221e2c"></i>platform (option 3)</span>
     <span><span class="dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;
       background:var(--tier);margin-right:4px"></span>unlocks a tier building</span>
-    <span style="opacity:.62">faded = unlocks no building (gates production methods only)</span>
+    <span style="opacity:.62" title="There are no contentless technologies in this game. A faded node gates no BUILDING; the blue PM count on it says how many vanilla production methods it does gate, and the tooltip lists them.">faded = gates no building — the <b style="color:#8cc0ee">n PMs</b> badge says what it does gate</span>
     <span><i style="border-color:var(--bad);background:transparent;border-left-width:3px"></i>researchable before it existed</span>
     <span><i style="border-color:var(--late);background:transparent;border-left-width:3px"></i>existed long before it can be researched</span>
     <span><i style="border-color:var(--idea);background:transparent;border-left-width:3px"></i>an idea, gated by when it went mainstream</span>
@@ -362,7 +362,13 @@ function render() {
   }
   for (const t of techs) {
     const el = document.createElement('div');
+    // ⚠⚠ FADED MEANS "GATES NO BUILDING", NOT "EMPTY". **There are no contentless technologies in this
+    // game** — a faded node still gates production methods, and some gate a great many:
+    // `compression_ignition` gates ten (diesel pumps in five mine types, diesel tractors, diesel trains,
+    // mass automobile production). Before `pmUnlocks` existed this page drew it as a blank node in the
+    // shared column and it looked deleted. The count now rides on the node itself.
     const unl = t.unlocks.length + t.vanillaUnlocks.length;
+    const pms = (t.pmUnlocks || []).length;
     el.className = 'node' + (t.platform ? ' plat' : t.origin === 'new' ? ' new' : '') + (unl ? '' : ' tierless');
     el.style.left = pos[t.id].x + 'px'; el.style.top = pos[t.id].y + 'px';
     el.style.width = NODEW + 'px'; el.style.height = NODEH + 'px';
@@ -372,6 +378,9 @@ function render() {
     el.innerHTML = `<span class="nm" title="${esc(t.name)}">${t.unlocks.length ? '<span class="dot"></span>' : ''}${esc(t.name)}</span>` +
       `<span class="meta">${t.onset ?? '—'}${t.origin === 'new' ? ' · new' : ''}` +
       `${t.platform ? ' · ' + t.platform : ''}${t.reEra ? ' · re-era\'d' : ''}` +
+      `${!unl && pms ? ` · <b style="color:#8cc0ee">${pms} PM${pms > 1 ? 's' : ''}</b>` : ''}` +
+      `${!unl && !pms && (t.modLines || []).length ? ` · <b style="color:#8cc0ee">modifier</b>` : ''}` +
+      `${!unl && !pms && !(t.modLines || []).length && (t.otherGates || []).length ? ` · <b style="color:#8cc0ee">${t.otherGates.length} unit${t.otherGates.length > 1 ? 's' : ''}</b>` : ''}` +
       `${t.renamed ? ' · renamed' : ''}${cf ? ' · <b style="color:var(--' + (cf.kind === 'anach' ? 'bad' : 'late') + ')">' + cf.label + '</b>' : ''}</span>`;
     if (q && !(t.name.toLowerCase().includes(q) || t.id.includes(q) || (colOf(t) + (D.indLabel[colOf(t)] || '')).toLowerCase().includes(q)))
       el.style.opacity = .18;
@@ -454,6 +463,22 @@ function highlight(id, e) {
       t.unlocks.map(u => `<li>${esc(u.name)} <span style="color:var(--dim)">· ladder era ${u.era} · ${u.year}</span></li>`).join('') + '</ul>' : '') +
     (t.vanillaUnlocks.length ? `<div class="h unl">unlocks (vanilla buildings)</div><ul class="unl">` +
       t.vanillaUnlocks.map(u => `<li>${esc(u.replace(/^building_/, '').replace(/_/g, ' '))}</li>`).join('') + '</ul>' : '') +
+    // The content a "faded" node actually carries. Never omitted when present: this list is the reason
+    // the mod does not delete vanilla technologies, and a node that looks empty here has been the source
+    // of exactly that misreading.
+    ((t.pmUnlocks || []).length ? `<div class="h unl">gates (vanilla production methods · ${t.pmUnlocks.length})</div><ul class="unl">` +
+      t.pmUnlocks.map(u => `<li>${esc(u.replace(/^pm_/, '').replace(/_/g, ' '))}</li>`).join('') + '</ul>' : '') +
+    ((t.otherGates || []).length ? `<div class="h unl">gates (combat units, decrees, companies)</div><ul class="unl">` +
+      t.otherGates.map(u => `<li>${esc(u)}</li>`).join('') + '</ul>' : '') +
+    ((t.modLines || []).length ? `<div class="h unl">modifiers</div><ul class="unl">` +
+      t.modLines.map(u => `<li>${esc(u)}</li>`).join('') + '</ul>' : '') +
+    // ⚠ NEVER print "this technology does nothing". The scan below is not exhaustive — it misses whatever
+    // gates ship hulls, and `international_trade` and `drydocks` both land here — so the honest statement
+    // is about the SCAN, not about the technology. (User: there are no contentless technologies; if one
+    // looks like that, you are looking in the wrong place.)
+    (!t.unlocks.length && !t.vanillaUnlocks.length && !(t.pmUnlocks || []).length
+      && !(t.otherGates || []).length && !(t.modLines || []).length
+      ? '<div class="sub" style="margin-top:6px;color:var(--dim)">no building, method, unit or modifier found by this scan — the scan is not exhaustive, and no vanilla technology is content-free</div>' : '') +
     (pinned ? '' : '<div class="sub" style="margin-top:8px">click to pin</div>');
   tip.style.display = 'block';
   place(tip, e);

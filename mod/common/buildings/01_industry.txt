@@ -68,7 +68,7 @@ building_food_industry_hydrogenated = {
 		pmg_distillery
 		pmg_automation_building_food_industry
 	}
-	required_construction = 540
+	required_construction = construction_cost_high
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -79,14 +79,14 @@ building_food_industry_mechanised = {
 	city_type = city
 	levels_per_mesh = 50
 	ai_nationalization_desire = -0.25
-	unlocking_technologies = { dough_rollers }
+	unlocking_technologies = { conveyors }
 	production_method_groups = {
 		pmg_main_food_mechanised
 		pmg_canning
 		pmg_distillery
 		pmg_automation_building_food_industry
 	}
-	required_construction = 760
+	required_construction = construction_cost_high
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -173,7 +173,7 @@ building_textile_mill_highdraft = {
 		pmg_luxury_building_textile_mill
 		pmg_automation_building_textile_mill
 	}
-	required_construction = 685
+	required_construction = construction_cost_high
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -243,7 +243,7 @@ building_furniture_manufactory_plywood = {
 		pmg_luxury_building_furniture_manufactory
 		pmg_automation_building_furniture_manufactory
 	}
-	required_construction = 440
+	required_construction = construction_cost_high
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -254,13 +254,13 @@ building_furniture_manufactory_sprayed = {
 	city_type = city
 	levels_per_mesh = 50
 	ai_nationalization_desire = -0.25
-	unlocking_technologies = { nitrocellulose_lacquer }
+	unlocking_technologies = { art_silk }
 	production_method_groups = {
 		pmg_main_furniture_sprayed
 		pmg_luxury_building_furniture_manufactory
 		pmg_automation_building_furniture_manufactory
 	}
-	required_construction = 660
+	required_construction = construction_cost_high
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -341,7 +341,7 @@ building_glassworks_ribbon = {
 		pmg_luxury_building_glassworks
 		pmg_glassblowing
 	}
-	required_construction = 755
+	required_construction = construction_cost_high
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -357,7 +357,7 @@ building_glassworks_fibre = {
 		pmg_luxury_building_glassworks
 		pmg_glassblowing
 	}
-	required_construction = 975
+	required_construction = construction_cost_high
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -404,7 +404,7 @@ building_tooling_workshop_steel = {
 	city_type = city
 	levels_per_mesh = 50
 	ai_nationalization_desire = 0.25
-	unlocking_technologies = { steel_toolmaking }
+	unlocking_technologies = { steel_railway_cars }
 	production_method_groups = {
 		pmg_main_tooling_steel
 		pmg_automation_building_tooling_workshop
@@ -443,7 +443,7 @@ building_tooling_workshop_carbide = {
 		pmg_main_tooling_carbide
 		pmg_automation_building_tooling_workshop
 	}
-	required_construction = 295
+	required_construction = construction_cost_high
 	ai_value = 2000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -455,12 +455,12 @@ building_tooling_workshop_tracer = {
 	city_type = city
 	levels_per_mesh = 50
 	ai_nationalization_desire = 0.25
-	unlocking_technologies = { tracer_control }
+	unlocking_technologies = { transfer_machining }
 	production_method_groups = {
 		pmg_main_tooling_tracer
 		pmg_automation_building_tooling_workshop
 	}
-	required_construction = 440
+	required_construction = construction_cost_high
 	ai_value = 2000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -527,7 +527,7 @@ building_paper_mill_kraft = {
 		pmg_main_paper_kraft
 		pmg_automation_building_paper_mill
 	}
-	required_construction = 195
+	required_construction = construction_cost_high
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -543,7 +543,7 @@ building_paper_mill_nssc = {
 		pmg_main_paper_nssc
 		pmg_automation_building_paper_mill
 	}
-	required_construction = 295
+	required_construction = construction_cost_high
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -559,7 +559,7 @@ building_paper_mill_highspeed = {
 		pmg_main_paper_highspeed
 		pmg_automation_building_paper_mill
 	}
-	required_construction = 440
+	required_construction = construction_cost_high
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -595,11 +595,11 @@ building_chemical_plant_ammoniacal = {
 	icon = "gfx/interface/icons/building_icons/chemicals_industry.dds"
 	city_type = city
 	levels_per_mesh = 50
-	unlocking_technologies = { ammoniacal_liquor }
+	unlocking_technologies = { aniline }
 	production_method_groups = {
 		pmg_main_fertilizer_ammoniacal
 	}
-	required_construction = 195
+	required_construction = construction_cost_very_high
 	possible = {
 		owner = {
 			NOT = {
@@ -671,7 +671,7 @@ building_chemical_plant_reforming = {
 	production_method_groups = {
 		pmg_main_fertilizer_reforming
 	}
-	required_construction = 665
+	required_construction = construction_cost_very_high
 	possible = {
 		owner = {
 			NOT = {
@@ -764,7 +764,7 @@ building_explosives_factory_brine = {
 	icon = "gfx/interface/icons/building_icons/explosives_factory.dds"
 	city_type = city
 	levels_per_mesh = 50
-	unlocking_technologies = { continuous_nitration }
+	unlocking_technologies = { conveyors }
 	production_method_groups = {
 		pmg_main_explosives_brine
 	}
@@ -792,7 +792,7 @@ building_explosives_factory_cyclonite = {
 	production_method_groups = {
 		pmg_main_explosives_cyclonite
 	}
-	required_construction = 610
+	required_construction = construction_cost_very_high
 	possible = {
 		owner = {
 			NOT = {
@@ -844,7 +844,7 @@ building_synthetics_plant_indigo = {
 		pmg_main_synthetics_indigo
 		pmg_synthetic_silk
 	}
-	required_construction = 740
+	required_construction = construction_cost_very_high
 	possible = {
 		owner = {
 			NOT = {
@@ -869,7 +869,7 @@ building_synthetics_plant_viscose = {
 		pmg_main_synthetics_viscose
 		pmg_synthetic_silk
 	}
-	required_construction = 1110
+	required_construction = construction_cost_very_high
 	possible = {
 		owner = {
 			NOT = {
@@ -894,7 +894,7 @@ building_synthetics_plant_polyamide = {
 		pmg_main_synthetics_polyamide
 		pmg_synthetic_silk
 	}
-	required_construction = 1435
+	required_construction = construction_cost_very_high
 	possible = {
 		owner = {
 			NOT = {
@@ -1026,7 +1026,7 @@ building_steel_mill_strip_mill = {
 		pmg_main_steel_strip_mill
 		pmg_automation_building_steel_mill
 	}
-	required_construction = 1465
+	required_construction = construction_cost_very_high
 	possible = {
 		owner = {
 			NOT = {
@@ -1072,12 +1072,12 @@ building_motor_industry_compound = {
 	icon = "gfx/interface/icons/building_icons/motor_industry.dds"
 	city_type = city
 	levels_per_mesh = 50
-	unlocking_technologies = { compound_engines }
+	unlocking_technologies = { watertube_boiler }
 	production_method_groups = {
 		pmg_main_motor_compound
 		pmg_automation_building_motor_industry
 	}
-	required_construction = 330
+	required_construction = construction_cost_very_high
 	possible = {
 		owner = {
 			NOT = {
@@ -1097,7 +1097,7 @@ building_motor_industry_electric = {
 	icon = "gfx/interface/icons/building_icons/motor_industry.dds"
 	city_type = city
 	levels_per_mesh = 50
-	unlocking_technologies = { electric_motors }
+	unlocking_technologies = { electric_railway }
 	production_method_groups = {
 		pmg_main_motor_electric
 		pmg_automation_building_motor_industry
@@ -1152,7 +1152,7 @@ building_motor_industry_welded_diesel = {
 		pmg_main_motor_welded_diesel
 		pmg_automation_building_motor_industry
 	}
-	required_construction = 1125
+	required_construction = construction_cost_very_high
 	possible = {
 		owner = {
 			NOT = {
@@ -1272,7 +1272,7 @@ building_automotive_industry_transfer_line = {
 		pmg_tanks
 		pmg_automation_building_automotive_industry
 	}
-	required_construction = 750
+	required_construction = construction_cost_very_high
 	possible = {
 		owner = {
 			NOT = {
@@ -1323,7 +1323,7 @@ building_electrics_industry_wireless = {
 		pmg_main_electrics_wireless
 		pmg_radios_category
 	}
-	required_construction = 305
+	required_construction = construction_cost_very_high
 	possible = {
 		owner = {
 			NOT = {
@@ -1348,7 +1348,7 @@ building_electrics_industry_radio = {
 		pmg_main_electrics_radio
 		pmg_radios_category
 	}
-	required_construction = 455
+	required_construction = construction_cost_very_high
 	possible = {
 		owner = {
 			NOT = {
@@ -1373,7 +1373,7 @@ building_electrics_industry_electronics = {
 		pmg_main_electrics_electronics
 		pmg_radios_category
 	}
-	required_construction = 685
+	required_construction = construction_cost_very_high
 	possible = {
 		owner = {
 			NOT = {
@@ -1465,7 +1465,7 @@ building_arms_industry_automatic = {
 		pmg_main_arms_automatic
 		pmg_automation_building_arms_industry
 	}
-	required_construction = 765
+	required_construction = construction_cost_high
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1481,7 +1481,7 @@ building_arms_industry_stamped = {
 		pmg_main_arms_stamped
 		pmg_automation_building_arms_industry
 	}
-	required_construction = 1150
+	required_construction = construction_cost_high
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1509,7 +1509,7 @@ building_artillery_foundry_smoothbore = {
 	city_type = city
 	levels_per_mesh = 50
 	ai_nationalization_desire = 0.5
-	unlocking_technologies = { shell_gun }
+	unlocking_technologies = { percussion_cap }
 	production_method_groups = {
 		pmg_main_artillery_smoothbore
 		pmg_automation_building_arms_industry
@@ -1562,7 +1562,7 @@ building_artillery_foundry_autofrettage = {
 		pmg_main_artillery_autofrettage
 		pmg_automation_building_arms_industry
 	}
-	required_construction = 430
+	required_construction = construction_cost_high
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1578,7 +1578,7 @@ building_artillery_foundry_antiaircraft = {
 		pmg_main_artillery_antiaircraft
 		pmg_automation_building_arms_industry
 	}
-	required_construction = 645
+	required_construction = construction_cost_high
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1643,12 +1643,12 @@ building_munition_plant_drawn_brass = {
 	city_type = city
 	levels_per_mesh = 50
 	ai_nationalization_desire = 0.5
-	unlocking_technologies = { drawn_brass_cartridges }
+	unlocking_technologies = { bolt_action_rifles }
 	production_method_groups = {
 		pmg_main_munition_drawn_brass
 		pmg_automation_building_munition_plant
 	}
-	required_construction = 270
+	required_construction = construction_cost_very_high
 	possible = {
 		owner = {
 			NOT = {
@@ -1674,7 +1674,7 @@ building_munition_plant_filling = {
 		pmg_main_munition_filling
 		pmg_automation_building_munition_plant
 	}
-	required_construction = 405
+	required_construction = construction_cost_very_high
 	possible = {
 		owner = {
 			NOT = {
@@ -1695,12 +1695,12 @@ building_munition_plant_automatic = {
 	city_type = city
 	levels_per_mesh = 50
 	ai_nationalization_desire = 0.5
-	unlocking_technologies = { automatic_cartridge_lines }
+	unlocking_technologies = { stamped_receivers }
 	production_method_groups = {
 		pmg_main_munition_automatic
 		pmg_automation_building_munition_plant
 	}
-	required_construction = 610
+	required_construction = construction_cost_very_high
 	possible = {
 		owner = {
 			NOT = {
@@ -1721,7 +1721,7 @@ building_shipyard_metal = {
 	city_type = port
 	levels_per_mesh = 1
 	ai_nationalization_desire = 0.25
-	unlocking_technologies = { iron_screw_steamers }
+	unlocking_technologies = { screw_frigate }
 	production_method_groups = {
 		pmg_main_shipyard_metal
 	}
@@ -1743,7 +1743,7 @@ building_shipyard_metal_steel_hull = {
 	production_method_groups = {
 		pmg_main_shipyard_steam_steel_hull
 	}
-	required_construction = 1250
+	required_construction = construction_cost_high
 	potential = {
 		is_coastal = yes
 	}
@@ -1761,7 +1761,7 @@ building_shipyard_metal_turbine = {
 	production_method_groups = {
 		pmg_main_shipyard_steam_turbine
 	}
-	required_construction = 1860
+	required_construction = construction_cost_high
 	potential = {
 		is_coastal = yes
 	}
@@ -1779,7 +1779,7 @@ building_shipyard_metal_oil_fired = {
 	production_method_groups = {
 		pmg_main_shipyard_steam_oil_fired
 	}
-	required_construction = 2795
+	required_construction = construction_cost_high
 	potential = {
 		is_coastal = yes
 	}

@@ -7,7 +7,7 @@ pmr_mob_share = {
 	if = { limit = { pmr_army_consc > 0 }  divide = pmr_army_consc }
 }
 
-pmr_src_ammoniacal_liquor_0 = {
+pmr_src_aniline_0 = {
 	value = 0
 	every_scope_building = {
 		limit = { is_building_type = building_chemical_plant }
@@ -16,7 +16,7 @@ pmr_src_ammoniacal_liquor_0 = {
 		multiply = 5000
 }
 
-pmr_src_aniline_0 = {
+pmr_src_aniline_1 = {
 	value = 0
 	every_scope_building = {
 		limit = { is_building_type = building_textile_mill }
@@ -24,7 +24,7 @@ pmr_src_aniline_0 = {
 	}
 }
 
-pmr_src_aniline_1 = {
+pmr_src_aniline_2 = {
 	value = 0
 	every_scope_building = {
 		limit = { is_building_group = bg_light_industry }
@@ -49,6 +49,15 @@ pmr_src_arc_welding_1 = {
 }
 
 pmr_src_art_silk_0 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_furniture_manufactory_plywood }
+		add = { value = this.level  multiply = occupancy }
+	}
+		multiply = 5500
+}
+
+pmr_src_art_silk_1 = {
 	value = 0
 	every_scope_building = {
 		limit = { is_building_type = building_synthetics_plant_indigo }
@@ -83,15 +92,6 @@ pmr_src_automatic_bottle_blowers_0 = {
 	}
 }
 
-pmr_src_automatic_cartridge_lines_0 = {
-	value = 0
-	every_scope_building = {
-		limit = { is_building_type = building_munition_plant_filling }
-		add = { value = this.level  multiply = occupancy }
-	}
-		multiply = 5000
-}
-
 pmr_src_baking_powder_0 = {
 	value = 0
 	every_scope_building = {
@@ -114,6 +114,15 @@ pmr_src_bolt_action_rifles_0 = {
 	value = 0
 	every_scope_building = {
 		limit = { is_building_type = building_arms_industry_repeaters }
+		add = { value = this.level  multiply = occupancy }
+	}
+		multiply = 5000
+}
+
+pmr_src_bolt_action_rifles_1 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_munition_plant_shells }
 		add = { value = this.level  multiply = occupancy }
 	}
 		multiply = 5000
@@ -162,22 +171,36 @@ pmr_src_combustion_engine_0 = {
 	}
 }
 
-pmr_src_compound_engines_0 = {
-	value = 0
-	every_scope_building = {
-		limit = { is_building_type = building_motor_industry }
-		add = { value = this.level  multiply = occupancy }
-	}
-		multiply = 5000
-}
-
 pmr_src_compression_ignition_0 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_railway_superheated }
+		limit = { is_building_group = bg_heavy_industry }
 		add = { value = this.level  multiply = occupancy }
 	}
-		multiply = 1000
+}
+
+pmr_src_compression_ignition_1 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_group = bg_staple_crops }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_compression_ignition_2 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_group = bg_mining }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_compression_ignition_3 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_group = bg_private_infrastructure }
+		add = { value = this.level  multiply = occupancy }
+	}
 }
 
 pmr_src_concrete_quays_0 = {
@@ -187,15 +210,6 @@ pmr_src_concrete_quays_0 = {
 		add = { value = this.level  multiply = occupancy }
 	}
 		multiply = 1000
-}
-
-pmr_src_continuous_nitration_0 = {
-	value = 0
-	every_scope_building = {
-		limit = { is_building_type = building_explosives_factory_vacuum }
-		add = { value = this.level  multiply = occupancy }
-	}
-		multiply = 4500
 }
 
 pmr_src_continuous_strip_mill_0 = {
@@ -208,6 +222,24 @@ pmr_src_continuous_strip_mill_0 = {
 }
 
 pmr_src_conveyors_0 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_food_industry_hydrogenated }
+		add = { value = this.level  multiply = occupancy }
+	}
+		multiply = 5000
+}
+
+pmr_src_conveyors_1 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_explosives_factory_vacuum }
+		add = { value = this.level  multiply = occupancy }
+	}
+		multiply = 4500
+}
+
+pmr_src_conveyors_2 = {
 	value = 0
 	every_scope_building = {
 		limit = { is_building_type = building_automotive_industry }
@@ -243,22 +275,21 @@ pmr_src_diesel_engine_0 = {
 		multiply = 5000
 }
 
+pmr_src_diesel_engine_1 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_railway_electric }
+		add = { value = this.level  multiply = occupancy }
+	}
+		multiply = 1000
+}
+
 pmr_src_dough_rollers_0 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_food_industry_hydrogenated }
+		limit = { is_building_group = bg_light_industry }
 		add = { value = this.level  multiply = occupancy }
 	}
-		multiply = 5000
-}
-
-pmr_src_drawn_brass_cartridges_0 = {
-	value = 0
-	every_scope_building = {
-		limit = { is_building_type = building_munition_plant_shells }
-		add = { value = this.level  multiply = occupancy }
-	}
-		multiply = 5000
 }
 
 pmr_src_dynamite_0 = {
@@ -279,7 +310,7 @@ pmr_src_electric_arc_process_0 = {
 		multiply = 5000
 }
 
-pmr_src_electric_motors_0 = {
+pmr_src_electric_railway_0 = {
 	value = 0
 	every_scope_building = {
 		limit = { is_building_type = building_motor_industry_compound }
@@ -288,7 +319,7 @@ pmr_src_electric_motors_0 = {
 		multiply = 5000
 }
 
-pmr_src_electric_railway_0 = {
+pmr_src_electric_railway_1 = {
 	value = 0
 	every_scope_building = {
 		limit = { is_building_type = building_railway_steam }
@@ -457,30 +488,6 @@ pmr_src_intensive_agriculture_0 = {
 	}
 }
 
-pmr_src_iron_screw_steamers_0 = {
-	value = 0
-	every_scope_building = {
-		limit = { is_building_type = building_port }
-		add = { value = this.level  multiply = occupancy }
-	}
-}
-
-pmr_src_iron_screw_steamers_1 = {
-	value = 0
-	every_scope_building = {
-		limit = { is_building_group = bg_fishing }
-		add = { value = this.level  multiply = occupancy }
-	}
-}
-
-pmr_src_iron_screw_steamers_2 = {
-	value = 0
-	every_scope_building = {
-		limit = { is_building_group = bg_whaling }
-		add = { value = this.level  multiply = occupancy }
-	}
-}
-
 pmr_src_kraft_process_0 = {
 	value = 0
 	every_scope_building = {
@@ -584,15 +591,6 @@ pmr_src_mechanized_workshops_1 = {
 		multiply = 5000
 }
 
-pmr_src_nitrocellulose_lacquer_0 = {
-	value = 0
-	every_scope_building = {
-		limit = { is_building_type = building_furniture_manufactory_plywood }
-		add = { value = this.level  multiply = occupancy }
-	}
-		multiply = 5500
-}
-
 pmr_src_nitrogen_fixation_0 = {
 	value = 0
 	every_scope_building = {
@@ -668,6 +666,15 @@ pmr_src_pasteurization_2 = {
 		limit = { is_building_group = bg_whaling }
 		add = { value = this.level  multiply = occupancy }
 	}
+}
+
+pmr_src_percussion_cap_0 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_artillery_foundry }
+		add = { value = this.level  multiply = occupancy }
+	}
+		multiply = 5000
 }
 
 pmr_src_plastics_0 = {
@@ -881,6 +888,30 @@ pmr_src_screw_frigate_0 = {
 		multiply = 5000
 }
 
+pmr_src_screw_frigate_1 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_port }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_screw_frigate_2 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_group = bg_fishing }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_screw_frigate_3 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_group = bg_whaling }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
 pmr_src_semi_chemical_pulping_0 = {
 	value = 0
 	every_scope_building = {
@@ -899,19 +930,19 @@ pmr_src_shell_filling_0 = {
 		multiply = 5000
 }
 
-pmr_src_shell_gun_0 = {
+pmr_src_stamped_receivers_0 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_artillery_foundry }
+		limit = { is_building_type = building_arms_industry_automatic }
 		add = { value = this.level  multiply = occupancy }
 	}
 		multiply = 5000
 }
 
-pmr_src_stamped_receivers_0 = {
+pmr_src_stamped_receivers_1 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_arms_industry_automatic }
+		limit = { is_building_type = building_munition_plant_filling }
 		add = { value = this.level  multiply = occupancy }
 	}
 		multiply = 5000
@@ -950,15 +981,6 @@ pmr_src_steam_turbine_0 = {
 	}
 }
 
-pmr_src_steamship_bunkering_0 = {
-	value = 0
-	every_scope_building = {
-		limit = { is_building_type = building_port }
-		add = { value = this.level  multiply = occupancy }
-	}
-		multiply = 1000
-}
-
 pmr_src_steel_hulls_0 = {
 	value = 0
 	every_scope_building = {
@@ -971,25 +993,16 @@ pmr_src_steel_hulls_0 = {
 pmr_src_steel_railway_cars_0 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_railway }
-		add = { value = this.level  multiply = occupancy }
-	}
-		multiply = 1000
-}
-
-pmr_src_steel_toolmaking_0 = {
-	value = 0
-	every_scope_building = {
 		limit = { is_building_type = building_tooling_workshop_pig_iron }
 		add = { value = this.level  multiply = occupancy }
 	}
 		multiply = 5000
 }
 
-pmr_src_superheated_steam_0 = {
+pmr_src_steel_railway_cars_1 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_railway_electric }
+		limit = { is_building_type = building_railway }
 		add = { value = this.level  multiply = occupancy }
 	}
 		multiply = 1000
@@ -1028,7 +1041,7 @@ pmr_src_threshing_machine_0 = {
 	}
 }
 
-pmr_src_tracer_control_0 = {
+pmr_src_transfer_machining_0 = {
 	value = 0
 	every_scope_building = {
 		limit = { is_building_type = building_tooling_workshop_carbide }
@@ -1037,7 +1050,7 @@ pmr_src_tracer_control_0 = {
 		multiply = 5000
 }
 
-pmr_src_transfer_machining_0 = {
+pmr_src_transfer_machining_1 = {
 	value = 0
 	every_scope_building = {
 		limit = { is_building_type = building_automotive_industry_mass }
@@ -1074,33 +1087,10 @@ pmr_src_vulcanization_0 = {
 pmr_src_watertube_boiler_0 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_group = bg_light_industry }
+		limit = { is_building_type = building_motor_industry }
 		add = { value = this.level  multiply = occupancy }
 	}
-}
-
-pmr_src_watertube_boiler_1 = {
-	value = 0
-	every_scope_building = {
-		limit = { is_building_group = bg_heavy_industry }
-		add = { value = this.level  multiply = occupancy }
-	}
-}
-
-pmr_src_watertube_boiler_2 = {
-	value = 0
-	every_scope_building = {
-		limit = { is_building_group = bg_mining }
-		add = { value = this.level  multiply = occupancy }
-	}
-}
-
-pmr_src_watertube_boiler_3 = {
-	value = 0
-	every_scope_building = {
-		limit = { is_building_group = bg_plantations }
-		add = { value = this.level  multiply = occupancy }
-	}
+		multiply = 5000
 }
 
 pmr_src_welded_prefabrication_0 = {

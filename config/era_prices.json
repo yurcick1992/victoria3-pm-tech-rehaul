@@ -65,7 +65,7 @@
    "ammunition": 150,
    "artillery": 32.9,
    "automobiles": 150,
-   "clippers": 33.7,
+   "clippers": 42.6,
    "clothes": 25,
    "coal": 49.5,
    "coffee": 33.7,
@@ -76,32 +76,32 @@
    "fabric": 44.3,
    "fertilizer": 150,
    "fine_art": 150,
-   "fish": 42.4,
+   "fish": 45.6,
    "fruit": 29.6,
-   "furniture": 32.5,
-   "glass": 34.9,
+   "furniture": 35,
+   "glass": 38.3,
    "gold": 46.4,
    "grain": 71.9,
-   "groceries": 66.8,
+   "groceries": 66.1,
    "hardwood": 58.1,
    "iron": 46.4,
    "lead": 46.4,
-   "liquor": 60.3,
+   "liquor": 60.5,
    "luxury_clothes": 32.9,
-   "luxury_furniture": 41.2,
+   "luxury_furniture": 42.6,
    "meat": 55.9,
-   "merchant_marine": 40.5,
+   "merchant_marine": 103.9,
    "oil": 45.1,
    "opium": 26.6,
    "paper": 33.9,
-   "porcelain": 53.7,
+   "porcelain": 55.2,
    "radios": 165.4,
    "rubber": 48.4,
-   "services": 63.8,
+   "services": 63.9,
    "silk": 44.3,
-   "small_arms": 47.4,
+   "small_arms": 46.6,
    "steamers": 150,
-   "steel": 62.8,
+   "steel": 60.9,
    "sugar": 65,
    "sulfur": 37.2,
    "tanks": 175,
@@ -118,43 +118,43 @@
    "ammunition": 31.2,
    "artillery": 36.6,
    "automobiles": 150,
-   "clippers": 28.1,
-   "clothes": 73,
+   "clippers": 28.8,
+   "clothes": 30.2,
    "coal": 70.4,
    "coffee": 50.6,
    "dye": 150,
    "electricity": 150,
-   "engines": 63.7,
+   "engines": 53.8,
    "explosives": 30.9,
    "fabric": 66.5,
    "fertilizer": 32.2,
    "fine_art": 70.2,
-   "fish": 55.5,
+   "fish": 55.7,
    "fruit": 44.3,
-   "furniture": 54.4,
-   "glass": 62.6,
+   "furniture": 58,
+   "glass": 64.3,
    "gold": 66,
    "grain": 104.7,
-   "groceries": 87.6,
+   "groceries": 85.2,
    "hardwood": 48.2,
    "iron": 66,
    "lead": 66,
-   "liquor": 86,
-   "luxury_clothes": 70.6,
-   "luxury_furniture": 55.1,
+   "liquor": 85.1,
+   "luxury_clothes": 44.9,
+   "luxury_furniture": 57.2,
    "meat": 81.4,
-   "merchant_marine": 42.8,
-   "oil": 42.8,
+   "merchant_marine": 31.8,
+   "oil": 41.3,
    "opium": 39.9,
    "paper": 36.8,
-   "porcelain": 68.1,
+   "porcelain": 68.9,
    "radios": 166.5,
    "rubber": 72.6,
    "services": 90.3,
    "silk": 66.5,
-   "small_arms": 34.6,
-   "steamers": 25.2,
-   "steel": 68.5,
+   "small_arms": 48.2,
+   "steamers": 58.4,
+   "steel": 66.5,
    "sugar": 97.6,
    "sulfur": 52.8,
    "tanks": 175,
@@ -162,221 +162,221 @@
    "telephones": 150,
    "tobacco": 43.6,
    "tools": 38.4,
-   "transportation": 138.6,
+   "transportation": 70.1,
    "wine": 39.9,
    "wood": 40.1
   },
   {
    "aeroplanes": 175,
    "ammunition": 25.7,
-   "artillery": 33.4,
+   "artillery": 33,
    "automobiles": 150,
    "clippers": 25,
-   "clothes": 42.7,
-   "coal": 50.4,
-   "coffee": 41.6,
-   "dye": 61.4,
+   "clothes": 44.7,
+   "coal": 49.5,
+   "coffee": 39.7,
+   "dye": 69,
    "electricity": 150,
-   "engines": 58.9,
-   "explosives": 26.6,
-   "fabric": 80.5,
-   "fertilizer": 26.2,
+   "engines": 49.9,
+   "explosives": 26.5,
+   "fabric": 78.4,
+   "fertilizer": 25.9,
    "fine_art": 56.4,
    "fish": 63.9,
-   "fruit": 52.5,
-   "furniture": 70.9,
-   "glass": 54.4,
-   "gold": 46.9,
-   "grain": 105.3,
-   "groceries": 41,
-   "hardwood": 56.9,
-   "iron": 48.8,
-   "lead": 48.8,
-   "liquor": 55.5,
-   "luxury_clothes": 57,
-   "luxury_furniture": 69.3,
-   "meat": 65.9,
-   "merchant_marine": 28.4,
-   "oil": 43.8,
-   "opium": 47,
-   "paper": 40.1,
-   "porcelain": 45.2,
-   "radios": 105.2,
-   "rubber": 86.1,
-   "services": 103.5,
-   "silk": 78.4,
-   "small_arms": 32,
-   "steamers": 25.3,
-   "steel": 65.7,
-   "sugar": 71.4,
-   "sulfur": 40.2,
-   "tanks": 175,
-   "tea": 63.1,
-   "telephones": 31.8,
-   "tobacco": 51.8,
-   "tools": 45.8,
-   "transportation": 41.2,
-   "wine": 47,
-   "wood": 47.4
-  },
-  {
-   "aeroplanes": 153.6,
-   "ammunition": 25.1,
-   "artillery": 26.8,
-   "automobiles": 80.6,
-   "clippers": 25,
-   "clothes": 43.3,
-   "coal": 51,
-   "coffee": 45.9,
-   "dye": 44.4,
-   "electricity": 86.5,
-   "engines": 59.6,
-   "explosives": 25.4,
-   "fabric": 64.2,
-   "fertilizer": 25.2,
-   "fine_art": 51,
-   "fish": 58.9,
-   "fruit": 62.8,
-   "furniture": 59.4,
-   "glass": 31.5,
-   "gold": 45.8,
-   "grain": 89.6,
-   "groceries": 28.6,
-   "hardwood": 62.6,
-   "iron": 50,
-   "lead": 50,
-   "liquor": 40.5,
-   "luxury_clothes": 48.8,
-   "luxury_furniture": 64.6,
-   "meat": 76.8,
-   "merchant_marine": 29.5,
-   "oil": 47.8,
-   "opium": 39.2,
-   "paper": 39.5,
-   "porcelain": 32.2,
-   "radios": 68.3,
-   "rubber": 63.4,
-   "services": 114.5,
-   "silk": 52,
-   "small_arms": 27.1,
-   "steamers": 25.1,
-   "steel": 55.2,
-   "sugar": 49.3,
+   "fruit": 51.9,
+   "furniture": 74.8,
+   "glass": 53,
+   "gold": 46.7,
+   "grain": 105.2,
+   "groceries": 41.5,
+   "hardwood": 56.3,
+   "iron": 48.7,
+   "lead": 48.7,
+   "liquor": 54.9,
+   "luxury_clothes": 58.1,
+   "luxury_furniture": 71.5,
+   "meat": 66.2,
+   "merchant_marine": 42.6,
+   "oil": 41.5,
+   "opium": 46.4,
+   "paper": 39.8,
+   "porcelain": 46.3,
+   "radios": 105.1,
+   "rubber": 85.3,
+   "services": 103,
+   "silk": 77.4,
+   "small_arms": 44.6,
+   "steamers": 52.9,
+   "steel": 63.5,
+   "sugar": 69.3,
    "sulfur": 40,
-   "tanks": 136.2,
-   "tea": 50.9,
-   "telephones": 27.9,
-   "tobacco": 36.8,
-   "tools": 41.2,
-   "transportation": 45.5,
-   "wine": 41.6,
-   "wood": 52.1
+   "tanks": 175,
+   "tea": 62.5,
+   "telephones": 31.7,
+   "tobacco": 50.5,
+   "tools": 45.9,
+   "transportation": 37.5,
+   "wine": 46.4,
+   "wood": 47
   },
   {
-   "aeroplanes": 126.5,
+   "aeroplanes": 148.3,
    "ammunition": 25,
-   "artillery": 25,
-   "automobiles": 60.7,
+   "artillery": 27.9,
+   "automobiles": 77.5,
    "clippers": 25,
-   "clothes": 46.7,
-   "coal": 53.1,
-   "coffee": 47.8,
-   "dye": 40.3,
-   "electricity": 64.5,
-   "engines": 38.6,
+   "clothes": 45.4,
+   "coal": 49.6,
+   "coffee": 44.6,
+   "dye": 65,
+   "electricity": 76.8,
+   "engines": 52.7,
    "explosives": 25,
-   "fabric": 68.3,
+   "fabric": 62.1,
    "fertilizer": 25,
-   "fine_art": 41.8,
-   "fish": 63.6,
-   "fruit": 72.2,
-   "furniture": 46.5,
-   "glass": 25.9,
-   "gold": 48.4,
-   "grain": 88.1,
-   "groceries": 28.2,
-   "hardwood": 62.9,
-   "iron": 52.9,
-   "lead": 52.9,
-   "liquor": 41.6,
-   "luxury_clothes": 52.6,
-   "luxury_furniture": 58.3,
-   "meat": 62.7,
-   "merchant_marine": 25,
-   "oil": 31.5,
-   "opium": 39.9,
-   "paper": 32.5,
-   "porcelain": 30.2,
-   "radios": 55.5,
-   "rubber": 66.4,
-   "services": 132.9,
-   "silk": 53.5,
-   "small_arms": 25,
-   "steamers": 25,
-   "steel": 46.1,
-   "sugar": 52,
-   "sulfur": 42.3,
-   "tanks": 105.8,
-   "tea": 54.2,
-   "telephones": 25,
-   "tobacco": 36.6,
-   "tools": 37.3,
-   "transportation": 31.1,
-   "wine": 42.8,
-   "wood": 52.4
+   "fine_art": 50.4,
+   "fish": 64.2,
+   "fruit": 61.9,
+   "furniture": 65.9,
+   "glass": 50.7,
+   "gold": 44.5,
+   "grain": 89.5,
+   "groceries": 38.5,
+   "hardwood": 61,
+   "iron": 48.6,
+   "lead": 48.6,
+   "liquor": 47.8,
+   "luxury_clothes": 49.4,
+   "luxury_furniture": 68.1,
+   "meat": 76.6,
+   "merchant_marine": 39.8,
+   "oil": 45.6,
+   "opium": 37.5,
+   "paper": 36.7,
+   "porcelain": 45.6,
+   "radios": 62.6,
+   "rubber": 61.1,
+   "services": 117.1,
+   "silk": 49.9,
+   "small_arms": 39.1,
+   "steamers": 52.4,
+   "steel": 62.2,
+   "sugar": 47.6,
+   "sulfur": 38.9,
+   "tanks": 132.9,
+   "tea": 49.2,
+   "telephones": 27.5,
+   "tobacco": 35.3,
+   "tools": 41.2,
+   "transportation": 39.6,
+   "wine": 40,
+   "wood": 50.8
   },
   {
-   "aeroplanes": 100.5,
+   "aeroplanes": 123.8,
    "ammunition": 25,
    "artillery": 25,
-   "automobiles": 40.5,
-   "clippers": 27.7,
-   "clothes": 48.1,
-   "coal": 48.9,
-   "coffee": 53.7,
-   "dye": 34.2,
-   "electricity": 36.2,
-   "engines": 32.8,
+   "automobiles": 59.1,
+   "clippers": 25.5,
+   "clothes": 48.9,
+   "coal": 52.5,
+   "coffee": 46.7,
+   "dye": 62.8,
+   "electricity": 73.9,
+   "engines": 33.9,
    "explosives": 25,
-   "fabric": 78.4,
+   "fabric": 66.7,
    "fertilizer": 25,
-   "fine_art": 34.5,
-   "fish": 61.2,
-   "fruit": 85.4,
-   "furniture": 49.6,
-   "glass": 25,
-   "gold": 42.8,
-   "grain": 102.6,
-   "groceries": 30.6,
-   "hardwood": 65.4,
+   "fine_art": 42.3,
+   "fish": 67.2,
+   "fruit": 71.3,
+   "furniture": 60.1,
+   "glass": 43.4,
+   "gold": 47.2,
+   "grain": 88.1,
+   "groceries": 43.7,
+   "hardwood": 62.6,
+   "iron": 51.6,
+   "lead": 51.6,
+   "liquor": 51.5,
+   "luxury_clothes": 53.3,
+   "luxury_furniture": 66.5,
+   "meat": 63.8,
+   "merchant_marine": 30.4,
+   "oil": 30,
+   "opium": 38.6,
+   "paper": 33.7,
+   "porcelain": 43.4,
+   "radios": 60.7,
+   "rubber": 64.7,
+   "services": 135.5,
+   "silk": 51.9,
+   "small_arms": 33.5,
+   "steamers": 41.5,
+   "steel": 48.5,
+   "sugar": 50.7,
+   "sulfur": 41.3,
+   "tanks": 103.8,
+   "tea": 52.9,
+   "telephones": 25,
+   "tobacco": 36,
+   "tools": 37.3,
+   "transportation": 25,
+   "wine": 41.5,
+   "wood": 52.2
+  },
+  {
+   "aeroplanes": 120.9,
+   "ammunition": 25,
+   "artillery": 25,
+   "automobiles": 54.1,
+   "clippers": 28.8,
+   "clothes": 49.5,
+   "coal": 49,
+   "coffee": 53.5,
+   "dye": 53.9,
+   "electricity": 36.5,
+   "engines": 30.4,
+   "explosives": 25,
+   "fabric": 78.1,
+   "fertilizer": 25,
+   "fine_art": 34.7,
+   "fish": 64.1,
+   "fruit": 85.7,
+   "furniture": 64,
+   "glass": 40.8,
+   "gold": 42.9,
+   "grain": 102.7,
+   "groceries": 47.3,
+   "hardwood": 65.7,
    "iron": 47.6,
    "lead": 47.6,
-   "liquor": 46.5,
-   "luxury_clothes": 57.2,
-   "luxury_furniture": 62.9,
-   "meat": 69.2,
-   "merchant_marine": 27.7,
-   "oil": 34.4,
-   "opium": 44.9,
-   "paper": 29.1,
-   "porcelain": 30.4,
-   "radios": 40.8,
-   "rubber": 75.8,
-   "services": 155.7,
-   "silk": 60.6,
-   "small_arms": 25,
-   "steamers": 25,
-   "steel": 35,
-   "sugar": 58.9,
+   "liquor": 56.9,
+   "luxury_clothes": 57.9,
+   "luxury_furniture": 71.6,
+   "meat": 69.4,
+   "merchant_marine": 32.5,
+   "oil": 34.1,
+   "opium": 44.6,
+   "paper": 30.1,
+   "porcelain": 42.1,
+   "radios": 40.9,
+   "rubber": 75.5,
+   "services": 158.4,
+   "silk": 60.3,
+   "small_arms": 30.6,
+   "steamers": 37.9,
+   "steel": 42.5,
+   "sugar": 58.6,
    "sulfur": 34.3,
-   "tanks": 74.7,
-   "tea": 62.3,
+   "tanks": 96.5,
+   "tea": 62.1,
    "telephones": 25,
-   "tobacco": 39.5,
-   "tools": 35.1,
-   "transportation": 25,
-   "wine": 48.5,
-   "wood": 54.5
+   "tobacco": 39.3,
+   "tools": 35.3,
+   "transportation": 26.6,
+   "wine": 48.2,
+   "wood": 54.7
   }
  ],
  "pms": [
@@ -659,9 +659,6 @@
      "pmg_passenger_trains": "pm_no_passenger_trains"
     },
     "building_railway_electric": {
-     "pmg_passenger_trains": "pm_no_passenger_trains"
-    },
-    "building_railway_superheated": {
      "pmg_passenger_trains": "pm_no_passenger_trains"
     },
     "building_railway_diesel": {
@@ -1053,7 +1050,7 @@
    "tiers": {
     "building_food_industry": {
      "pmg_canning": "pm_disabled_canning",
-     "pmg_distillery": "pm_disabled_distillery",
+     "pmg_distillery": "pm_pot_stills",
      "pmg_automation_building_food_industry": "pm_manual_dough_processing"
     },
     "building_food_industry_sweetener": {
@@ -1328,9 +1325,6 @@
      "pmg_passenger_trains": "pm_no_passenger_trains"
     },
     "building_railway_electric": {
-     "pmg_passenger_trains": "pm_no_passenger_trains"
-    },
-    "building_railway_superheated": {
      "pmg_passenger_trains": "pm_no_passenger_trains"
     },
     "building_railway_diesel": {
@@ -1731,7 +1725,7 @@
      "pmg_automation_building_food_industry": "pm_manual_dough_processing"
     },
     "building_food_industry_baking_powder": {
-     "pmg_canning": "pm_cannery_fish",
+     "pmg_canning": "pm_cannery",
      "pmg_distillery": "pm_patent_stills",
      "pmg_automation_building_food_industry": "pm_manual_dough_processing"
     },
@@ -1751,7 +1745,7 @@
     },
     "building_textile_mill_dye": {
      "pmg_luxury_building_textile_mill": "pm_craftsman_sewing",
-     "pmg_automation_building_textile_mill": "pm_traditional_looms"
+     "pmg_automation_building_textile_mill": "pm_mechanized_looms"
     },
     "building_textile_mill_sewing": {
      "pmg_luxury_building_textile_mill": "pm_craftsman_sewing",
@@ -1999,9 +1993,6 @@
     "building_railway_electric": {
      "pmg_passenger_trains": "pm_no_passenger_trains"
     },
-    "building_railway_superheated": {
-     "pmg_passenger_trains": "pm_no_passenger_trains"
-    },
     "building_railway_diesel": {
      "pmg_passenger_trains": "pm_no_passenger_trains"
     },
@@ -2066,7 +2057,7 @@
      "pmg_mining_equipment_building_coal_mine": "pm_condensing_engine_pump_building_coal_mine",
      "pmg_explosives_building_coal_mine": "pm_nitroglycerin_building_coal_mine",
      "pmg_steam_automation_building_coal_mine": "pm_no_steam_automation",
-     "pmg_train_automation_building_coal_mine": "pm_road_carts"
+     "pmg_train_automation_building_coal_mine": "pm_rail_transport_mine"
     },
     "building_iron_mine": {
      "pmg_mining_equipment_building_iron_mine": "pm_condensing_engine_pump_building_iron_mine",
@@ -2099,12 +2090,12 @@
      "pmg_base_building_coffee_plantation": "coffee_plantation_wet_process_mechanical",
      "pmg_drying_coffee_plantation": "coffee_plantation_mechanical_drying",
      "pmg_coffee_exploitation": "default_labour",
-     "pmg_train_automation_building_coffee_plantation": "pm_road_carts"
+     "pmg_train_automation_building_coffee_plantation": "pm_steam_rail_transport"
     },
     "building_cotton_plantation": {
      "pmg_base_building_cotton_plantation": "default_building_cotton_plantation",
      "pmg_cotton_exploitation": "default_labour",
-     "pmg_train_automation_building_cotton_plantation": "pm_road_carts"
+     "pmg_train_automation_building_cotton_plantation": "pm_steam_rail_transport"
     },
     "building_dye_plantation": {
      "pmg_base_building_dye_plantation": "default_building_dye_plantation",
@@ -2124,13 +2115,13 @@
      "pmg_base_building_tobacco_plantation": "default_building_tobacco_plantation",
      "pmg_manufacture_tobacco": "molds",
      "pmg_working_conditions_tobacco": "default_labour_tobacco",
-     "pmg_train_automation_building_tobacco_plantation": "pm_road_carts"
+     "pmg_train_automation_building_tobacco_plantation": "pm_steam_rail_transport"
     },
     "building_sugar_plantation": {
      "pmg_base_building_sugar_plantation": "default_building_sugar_plantation",
      "pmg_refinement_building_sugar_plantation": "steam_powered_evaporation_sugar",
      "pmg_exploitation_sugar": "default_labour",
-     "pmg_train_automation_building_sugar_plantation": "pm_road_carts"
+     "pmg_train_automation_building_sugar_plantation": "pm_steam_rail_transport"
     },
     "building_banana_plantation": {
      "pmg_base_building_banana_plantation": "default_building_banana_plantation",
@@ -2329,7 +2320,7 @@
     },
     "building_oil_rig": {
      "pmg_base_building_oil_rig": "pm_steam_derricks",
-     "pmg_transportation_building_oil_rig": "pm_road_carts"
+     "pmg_transportation_building_oil_rig": "pm_rail_transport_building_oil_rig"
     },
     "building_suez_canal": {
      "pmg_canal": "pm_canal"
@@ -2405,7 +2396,7 @@
      "pmg_automation_building_food_industry": "pm_manual_dough_processing"
     },
     "building_food_industry_hydrogenated": {
-     "pmg_canning": "pm_disabled_canning",
+     "pmg_canning": "pm_cannery_fish",
      "pmg_distillery": "pm_patent_stills",
      "pmg_automation_building_food_industry": "pm_manual_dough_processing"
     },
@@ -2660,16 +2651,13 @@
     "building_port_modern": {},
     "building_port_motor": {},
     "building_railway": {
-     "pmg_passenger_trains": "pm_steel_passenger_carriages"
+     "pmg_passenger_trains": "pm_wooden_passenger_carriages"
     },
     "building_railway_steam": {
      "pmg_passenger_trains": "pm_wooden_passenger_carriages"
     },
     "building_railway_electric": {
-     "pmg_passenger_trains": "pm_steel_passenger_carriages"
-    },
-    "building_railway_superheated": {
-     "pmg_passenger_trains": "pm_no_passenger_trains"
+     "pmg_passenger_trains": "pm_wooden_passenger_carriages"
     },
     "building_railway_diesel": {
      "pmg_passenger_trains": "pm_no_passenger_trains"
@@ -2734,32 +2722,32 @@
     "building_coal_mine": {
      "pmg_mining_equipment_building_coal_mine": "pm_condensing_engine_pump_building_coal_mine",
      "pmg_explosives_building_coal_mine": "pm_dynamite_building_coal_mine",
-     "pmg_steam_automation_building_coal_mine": "pm_no_steam_automation",
+     "pmg_steam_automation_building_coal_mine": "pm_steam_donkey_building_coal_mine",
      "pmg_train_automation_building_coal_mine": "pm_rail_transport_mine"
     },
     "building_iron_mine": {
      "pmg_mining_equipment_building_iron_mine": "pm_condensing_engine_pump_building_iron_mine",
      "pmg_explosives_building_iron_mine": "pm_dynamite_building_iron_mine",
      "pmg_steam_automation_building_iron_mine": "pm_no_steam_automation",
-     "pmg_train_automation_building_iron_mine": "pm_road_carts"
+     "pmg_train_automation_building_iron_mine": "pm_rail_transport_mine"
     },
     "building_lead_mine": {
      "pmg_mining_equipment_building_lead_mine": "pm_condensing_engine_pump_building_lead_mine",
      "pmg_explosives_building_lead_mine": "pm_dynamite_building_lead_mine",
      "pmg_steam_automation_building_lead_mine": "pm_no_steam_automation",
-     "pmg_train_automation_building_lead_mine": "pm_road_carts"
+     "pmg_train_automation_building_lead_mine": "pm_rail_transport_mine"
     },
     "building_sulfur_mine": {
      "pmg_mining_equipment_building_sulfur_mine": "pm_condensing_engine_pump_building_sulfur_mine",
      "pmg_explosives_building_sulfur_mine": "pm_dynamite_building_sulfur_mine",
      "pmg_steam_automation_building_sulfur_mine": "pm_no_steam_automation",
-     "pmg_train_automation_building_sulfur_mine": "pm_road_carts"
+     "pmg_train_automation_building_sulfur_mine": "pm_rail_transport_mine"
     },
     "building_gold_mine": {
      "pmg_mining_equipment_building_gold_mine": "pm_condensing_engine_pump_building_gold_mine",
      "pmg_explosives_building_gold_mine": "pm_dynamite_building_gold_mine",
      "pmg_steam_automation_building_gold_mine": "pm_no_steam_automation",
-     "pmg_train_automation_building_gold_mine": "pm_road_carts"
+     "pmg_train_automation_building_gold_mine": "pm_rail_transport_mine"
     },
     "building_gold_field": {
      "pmg_base_building_gold_field": "default_building_gold_field"
@@ -3059,12 +3047,12 @@
   {
    "tiers": {
     "building_food_industry": {
-     "pmg_canning": "pm_cannery_fish",
+     "pmg_canning": "pm_vacuum_canning",
      "pmg_distillery": "pm_patent_stills",
      "pmg_automation_building_food_industry": "pm_manual_dough_processing"
     },
     "building_food_industry_sweetener": {
-     "pmg_canning": "pm_cannery_fish",
+     "pmg_canning": "pm_vacuum_canning",
      "pmg_distillery": "pm_patent_stills",
      "pmg_automation_building_food_industry": "pm_manual_dough_processing"
     },
@@ -3074,12 +3062,12 @@
      "pmg_automation_building_food_industry": "pm_manual_dough_processing"
     },
     "building_food_industry_hydrogenated": {
-     "pmg_canning": "pm_disabled_canning",
+     "pmg_canning": "pm_cannery_fish",
      "pmg_distillery": "pm_patent_stills",
      "pmg_automation_building_food_industry": "pm_manual_dough_processing"
     },
     "building_food_industry_mechanised": {
-     "pmg_canning": "pm_disabled_canning",
+     "pmg_canning": "pm_vacuum_canning",
      "pmg_distillery": "pm_patent_stills",
      "pmg_automation_building_food_industry": "pm_manual_dough_processing"
     },
@@ -3117,22 +3105,22 @@
     },
     "building_furniture_manufactory_plywood": {
      "pmg_luxury_building_furniture_manufactory": "pm_luxury_furniture",
-     "pmg_automation_building_furniture_manufactory": "pm_assembly_lines_building_furniture_manufactory"
+     "pmg_automation_building_furniture_manufactory": "pm_automation_disabled"
     },
     "building_furniture_manufactory_sprayed": {
      "pmg_luxury_building_furniture_manufactory": "pm_luxury_furniture",
      "pmg_automation_building_furniture_manufactory": "pm_assembly_lines_building_furniture_manufactory"
     },
     "building_glassworks": {
-     "pmg_luxury_building_glassworks": "pm_ceramics",
+     "pmg_luxury_building_glassworks": "pm_disabled_ceramics",
      "pmg_glassblowing": "pm_automatic_bottle_blowers"
     },
     "building_glassworks_leaded": {
-     "pmg_luxury_building_glassworks": "pm_ceramics",
+     "pmg_luxury_building_glassworks": "pm_disabled_ceramics",
      "pmg_glassblowing": "pm_automatic_bottle_blowers"
     },
     "building_glassworks_crystal": {
-     "pmg_luxury_building_glassworks": "pm_ceramics",
+     "pmg_luxury_building_glassworks": "pm_disabled_ceramics",
      "pmg_glassblowing": "pm_automatic_bottle_blowers"
     },
     "building_glassworks_plastics": {
@@ -3249,13 +3237,13 @@
      "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
     "building_arms_industry_rifles": {
-     "pmg_automation_building_arms_industry": "pm_assembly_lines_building_arms_industry"
+     "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
     "building_arms_industry_repeaters": {
-     "pmg_automation_building_arms_industry": "pm_assembly_lines_building_arms_industry"
+     "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
     "building_arms_industry_bolt_action": {
-     "pmg_automation_building_arms_industry": "pm_assembly_lines_building_arms_industry"
+     "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
     "building_arms_industry_automatic": {
      "pmg_automation_building_arms_industry": "pm_assembly_lines_building_arms_industry"
@@ -3264,13 +3252,13 @@
      "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
     "building_artillery_foundry": {
-     "pmg_automation_building_arms_industry": "pm_assembly_lines_building_arms_industry"
+     "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
     "building_artillery_foundry_smoothbore": {
-     "pmg_automation_building_arms_industry": "pm_assembly_lines_building_arms_industry"
+     "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
     "building_artillery_foundry_breech": {
-     "pmg_automation_building_arms_industry": "pm_assembly_lines_building_arms_industry"
+     "pmg_automation_building_arms_industry": "pm_automation_disabled"
     },
     "building_artillery_foundry_recoiled": {
      "pmg_automation_building_arms_industry": "pm_assembly_lines_building_arms_industry"
@@ -3335,10 +3323,7 @@
      "pmg_passenger_trains": "pm_wooden_passenger_carriages"
     },
     "building_railway_electric": {
-     "pmg_passenger_trains": "pm_steel_passenger_carriages"
-    },
-    "building_railway_superheated": {
-     "pmg_passenger_trains": "pm_no_passenger_trains"
+     "pmg_passenger_trains": "pm_wooden_passenger_carriages"
     },
     "building_railway_diesel": {
      "pmg_passenger_trains": "pm_no_passenger_trains"
@@ -3409,25 +3394,25 @@
     "building_iron_mine": {
      "pmg_mining_equipment_building_iron_mine": "pm_condensing_engine_pump_building_iron_mine",
      "pmg_explosives_building_iron_mine": "pm_dynamite_building_iron_mine",
-     "pmg_steam_automation_building_iron_mine": "pm_no_steam_automation",
+     "pmg_steam_automation_building_iron_mine": "pm_steam_donkey_mine",
      "pmg_train_automation_building_iron_mine": "pm_rail_transport_mine"
     },
     "building_lead_mine": {
      "pmg_mining_equipment_building_lead_mine": "pm_condensing_engine_pump_building_lead_mine",
      "pmg_explosives_building_lead_mine": "pm_dynamite_building_lead_mine",
-     "pmg_steam_automation_building_lead_mine": "pm_no_steam_automation",
+     "pmg_steam_automation_building_lead_mine": "pm_steam_donkey_mine",
      "pmg_train_automation_building_lead_mine": "pm_rail_transport_mine"
     },
     "building_sulfur_mine": {
      "pmg_mining_equipment_building_sulfur_mine": "pm_condensing_engine_pump_building_sulfur_mine",
      "pmg_explosives_building_sulfur_mine": "pm_dynamite_building_sulfur_mine",
-     "pmg_steam_automation_building_sulfur_mine": "pm_no_steam_automation",
+     "pmg_steam_automation_building_sulfur_mine": "pm_steam_donkey_mine",
      "pmg_train_automation_building_sulfur_mine": "pm_rail_transport_mine"
     },
     "building_gold_mine": {
      "pmg_mining_equipment_building_gold_mine": "pm_condensing_engine_pump_building_gold_mine",
      "pmg_explosives_building_gold_mine": "pm_dynamite_building_gold_mine",
-     "pmg_steam_automation_building_gold_mine": "pm_no_steam_automation",
+     "pmg_steam_automation_building_gold_mine": "pm_steam_donkey_mine",
      "pmg_train_automation_building_gold_mine": "pm_rail_transport_mine"
     },
     "building_gold_field": {
@@ -3728,27 +3713,27 @@
   {
    "tiers": {
     "building_food_industry": {
-     "pmg_canning": "pm_cannery_fish",
+     "pmg_canning": "pm_vacuum_canning",
      "pmg_distillery": "pm_patent_stills",
      "pmg_automation_building_food_industry": "pm_automated_bakery"
     },
     "building_food_industry_sweetener": {
-     "pmg_canning": "pm_cannery_fish",
+     "pmg_canning": "pm_vacuum_canning",
      "pmg_distillery": "pm_patent_stills",
      "pmg_automation_building_food_industry": "pm_automated_bakery"
     },
     "building_food_industry_baking_powder": {
-     "pmg_canning": "pm_cannery_fish",
+     "pmg_canning": "pm_vacuum_canning",
      "pmg_distillery": "pm_patent_stills",
      "pmg_automation_building_food_industry": "pm_automated_bakery"
     },
     "building_food_industry_hydrogenated": {
-     "pmg_canning": "pm_disabled_canning",
+     "pmg_canning": "pm_cannery_fish",
      "pmg_distillery": "pm_patent_stills",
      "pmg_automation_building_food_industry": "pm_automated_bakery"
     },
     "building_food_industry_mechanised": {
-     "pmg_canning": "pm_disabled_canning",
+     "pmg_canning": "pm_vacuum_canning",
      "pmg_distillery": "pm_patent_stills",
      "pmg_automation_building_food_industry": "pm_automated_bakery"
     },
@@ -3793,15 +3778,15 @@
      "pmg_automation_building_furniture_manufactory": "pm_assembly_lines_building_furniture_manufactory"
     },
     "building_glassworks": {
-     "pmg_luxury_building_glassworks": "pm_ceramics",
+     "pmg_luxury_building_glassworks": "pm_disabled_ceramics",
      "pmg_glassblowing": "pm_automatic_bottle_blowers"
     },
     "building_glassworks_leaded": {
-     "pmg_luxury_building_glassworks": "pm_ceramics",
+     "pmg_luxury_building_glassworks": "pm_disabled_ceramics",
      "pmg_glassblowing": "pm_automatic_bottle_blowers"
     },
     "building_glassworks_crystal": {
-     "pmg_luxury_building_glassworks": "pm_ceramics",
+     "pmg_luxury_building_glassworks": "pm_disabled_ceramics",
      "pmg_glassblowing": "pm_automatic_bottle_blowers"
     },
     "building_glassworks_plastics": {
@@ -4004,9 +3989,6 @@
      "pmg_passenger_trains": "pm_steel_passenger_carriages"
     },
     "building_railway_electric": {
-     "pmg_passenger_trains": "pm_steel_passenger_carriages"
-    },
-    "building_railway_superheated": {
      "pmg_passenger_trains": "pm_no_passenger_trains"
     },
     "building_railway_diesel": {

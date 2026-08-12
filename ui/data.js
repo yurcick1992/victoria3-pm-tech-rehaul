@@ -74,8 +74,8 @@ window.PMDATA = {
                                              "tech":  "beet_sugar_refining",
                                              "output_qty":  68,
                                              "inputs":  {
-                                                            "grain":  40.1,
-                                                            "sugar":  15
+                                                            "grain":  40.9,
+                                                            "sugar":  15.3
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -84,7 +84,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/sweeteners.dds",
-                                             "target_be":  82,
+                                             "target_be":  83,
                                              "natural_year":  1830,
                                              "era":  1,
                                              "model_only":  false,
@@ -105,8 +105,8 @@ window.PMDATA = {
                                              "tech":  "baking_powder",
                                              "output_qty":  101,
                                              "inputs":  {
-                                                            "grain":  59.5,
-                                                            "sugar":  22.3
+                                                            "grain":  60.7,
+                                                            "sugar":  22.8
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -116,7 +116,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/baking_powder.dds",
-                                             "target_be":  82,
+                                             "target_be":  84,
                                              "natural_year":  1870,
                                              "era":  2,
                                              "model_only":  false,
@@ -138,8 +138,8 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  152,
                                              "inputs":  {
-                                                            "grain":  89.5,
-                                                            "sugar":  33.6
+                                                            "grain":  91.4,
+                                                            "sugar":  34.3
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -149,14 +149,14 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/baking_powder.dds",
-                                             "target_be":  82,
+                                             "target_be":  84,
                                              "natural_year":  1900,
+                                             "building_cost":  null,
+                                             "tech":  "fat_hydrogenation",
                                              "input_ratio":  {
                                                                  "grain":  0.727273,
                                                                  "sugar":  0.272727
-                                                             },
-                                             "tech":  "fat_hydrogenation",
-                                             "building_cost":  540
+                                                             }
                                          },
                                          {
                                              "key":  "building_food_industry_mechanised",
@@ -169,8 +169,8 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  228,
                                              "inputs":  {
-                                                            "grain":  126.6,
-                                                            "sugar":  47.5
+                                                            "grain":  98.8,
+                                                            "sugar":  37.1
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -180,14 +180,14 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/baking_powder.dds",
-                                             "target_be":  77,
+                                             "target_be":  60,
                                              "natural_year":  1925,
+                                             "building_cost":  null,
+                                             "tech":  "conveyors",
                                              "input_ratio":  {
                                                                  "grain":  0.727273,
                                                                  "sugar":  0.272727
-                                                             },
-                                             "tech":  "dough_rollers",
-                                             "building_cost":  760
+                                                             }
                                          }
                                      ],
                            "ladder_end":  "plateau"
@@ -369,14 +369,14 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/electric_sewing_machines.dds",
                                              "target_be":  69,
                                              "natural_year":  1925,
+                                             "building_cost":  null,
+                                             "tech":  "long_draft_spinning",
                                              "input_ratio":  {
                                                                  "dye":  0.2,
                                                                  "electricity":  0.1,
                                                                  "fabric":  0.6,
                                                                  "tools":  0.1
-                                                             },
-                                             "tech":  "long_draft_spinning",
-                                             "building_cost":  685
+                                                             }
                                          }
                                      ],
                            "ladder_end":  "plateau"
@@ -511,9 +511,9 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  152,
                                              "inputs":  {
-                                                            "fabric":  14.3,
-                                                            "tools":  14.3,
-                                                            "wood":  71.6
+                                                            "fabric":  18.1,
+                                                            "tools":  18.1,
+                                                            "wood":  90.5
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -523,15 +523,15 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/mechanized_workshops.dds",
-                                             "target_be":  67,
+                                             "target_be":  85,
                                              "natural_year":  1900,
+                                             "building_cost":  null,
+                                             "tech":  "rotary_veneer",
                                              "input_ratio":  {
                                                                  "fabric":  0.142857,
                                                                  "tools":  0.142857,
                                                                  "wood":  0.714286
-                                                             },
-                                             "tech":  "rotary_veneer",
-                                             "building_cost":  440
+                                                             }
                                          },
                                          {
                                              "key":  "building_furniture_manufactory_sprayed",
@@ -544,9 +544,9 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  228,
                                              "inputs":  {
-                                                            "fabric":  21.5,
-                                                            "tools":  21.5,
-                                                            "wood":  107.3
+                                                            "fabric":  23.5,
+                                                            "tools":  23.5,
+                                                            "wood":  117.7
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -556,15 +556,15 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/mechanized_workshops.dds",
-                                             "target_be":  67,
+                                             "target_be":  73,
                                              "natural_year":  1925,
+                                             "building_cost":  null,
+                                             "tech":  "art_silk",
                                              "input_ratio":  {
                                                                  "fabric":  0.142857,
                                                                  "tools":  0.142857,
                                                                  "wood":  0.714286
-                                                             },
-                                             "tech":  "nitrocellulose_lacquer",
-                                             "building_cost":  660
+                                                             }
                                          }
                                      ],
                            "ladder_end":  "plateau"
@@ -624,8 +624,8 @@ window.PMDATA = {
                                              "tech":  "crystal_glass",
                                              "output_qty":  45,
                                              "inputs":  {
-                                                            "lead":  14.5,
-                                                            "wood":  29
+                                                            "lead":  14.1,
+                                                            "wood":  28.3
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -634,7 +634,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/leaded_glass.dds",
-                                             "target_be":  86,
+                                             "target_be":  84,
                                              "natural_year":  1830,
                                              "era":  1,
                                              "model_only":  false,
@@ -655,7 +655,7 @@ window.PMDATA = {
                                              "tech":  "regenerative_furnace",
                                              "output_qty":  68,
                                              "inputs":  {
-                                                            "lead":  43.8
+                                                            "lead":  42.7
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -665,7 +665,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/crystal_glass.dds",
-                                             "target_be":  86,
+                                             "target_be":  84,
                                              "natural_year":  1870,
                                              "era":  2,
                                              "model_only":  false,
@@ -685,8 +685,8 @@ window.PMDATA = {
                                              "tech":  "plastics",
                                              "output_qty":  101,
                                              "inputs":  {
-                                                            "lead":  39,
-                                                            "oil":  26
+                                                            "lead":  38.1,
+                                                            "oil":  25.4
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -696,7 +696,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  15,
                                              "texture":  "gfx/interface/icons/production_method_icons/houseware_plastics.dds",
-                                             "target_be":  86,
+                                             "target_be":  84,
                                              "natural_year":  1900,
                                              "era":  3,
                                              "model_only":  false,
@@ -718,8 +718,8 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  152,
                                              "inputs":  {
-                                                            "lead":  58.7,
-                                                            "oil":  39.1
+                                                            "lead":  57.3,
+                                                            "oil":  38.2
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -729,14 +729,14 @@ window.PMDATA = {
                                                             },
                                              "pollution":  15,
                                              "texture":  "gfx/interface/icons/production_method_icons/houseware_plastics.dds",
-                                             "target_be":  86,
+                                             "target_be":  84,
                                              "natural_year":  1925,
+                                             "building_cost":  null,
+                                             "tech":  "ribbon_machine",
                                              "input_ratio":  {
                                                                  "lead":  0.6,
                                                                  "oil":  0.4
-                                                             },
-                                             "tech":  "ribbon_machine",
-                                             "building_cost":  755
+                                                             }
                                          },
                                          {
                                              "key":  "building_glassworks_fibre",
@@ -749,8 +749,8 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  228,
                                              "inputs":  {
-                                                            "lead":  75.8,
-                                                            "oil":  50.5
+                                                            "lead":  74.5,
+                                                            "oil":  49.7
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -760,14 +760,14 @@ window.PMDATA = {
                                                             },
                                              "pollution":  15,
                                              "texture":  "gfx/interface/icons/production_method_icons/houseware_plastics.dds",
-                                             "target_be":  74,
+                                             "target_be":  73,
                                              "natural_year":  1940,
+                                             "building_cost":  null,
+                                             "tech":  "glass_fibre",
                                              "input_ratio":  {
                                                                  "lead":  0.6,
                                                                  "oil":  0.4
-                                                             },
-                                             "tech":  "glass_fibre",
-                                             "building_cost":  975
+                                                             }
                                          }
                                      ]
                        },
@@ -860,7 +860,7 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_tooling_steel",
                                              "pm_name":  "Steel Tools",
                                              "vanilla_pm":  "pm_steel",
-                                             "tech":  "steel_toolmaking",
+                                             "tech":  "steel_railway_cars",
                                              "output_qty":  68,
                                              "inputs":  {
                                                             "steel":  8.5,
@@ -943,13 +943,13 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/steel_tools.dds",
                                              "target_be":  33,
                                              "natural_year":  1925,
+                                             "building_cost":  null,
                                              "ai_value":  2000,
+                                             "tech":  "cemented_carbide",
                                              "input_ratio":  {
                                                                  "rubber":  0.25,
                                                                  "steel":  0.75
-                                                             },
-                                             "tech":  "cemented_carbide",
-                                             "building_cost":  295
+                                                             }
                                          },
                                          {
                                              "key":  "building_tooling_workshop_tracer",
@@ -975,13 +975,13 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/steel_tools.dds",
                                              "target_be":  33,
                                              "natural_year":  1940,
+                                             "building_cost":  null,
                                              "ai_value":  2000,
+                                             "tech":  "transfer_machining",
                                              "input_ratio":  {
                                                                  "rubber":  0.25,
                                                                  "steel":  0.75
-                                                             },
-                                             "tech":  "tracer_control",
-                                             "building_cost":  440
+                                                             }
                                          }
                                      ]
                        },
@@ -1123,13 +1123,13 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/bleached_paper.dds",
                                              "target_be":  34,
                                              "natural_year":  1900,
+                                             "building_cost":  null,
+                                             "tech":  "kraft_process",
                                              "input_ratio":  {
                                                                  "dye":  0.2,
                                                                  "sulfur":  0.2,
                                                                  "wood":  0.6
-                                                             },
-                                             "tech":  "kraft_process",
-                                             "building_cost":  195
+                                                             }
                                          },
                                          {
                                              "key":  "building_paper_mill_nssc",
@@ -1156,13 +1156,13 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/bleached_paper.dds",
                                              "target_be":  33,
                                              "natural_year":  1925,
+                                             "building_cost":  null,
+                                             "tech":  "semi_chemical_pulping",
                                              "input_ratio":  {
                                                                  "dye":  0.2,
                                                                  "sulfur":  0.2,
                                                                  "wood":  0.6
-                                                             },
-                                             "tech":  "semi_chemical_pulping",
-                                             "building_cost":  295
+                                                             }
                                          },
                                          {
                                              "key":  "building_paper_mill_highspeed",
@@ -1189,13 +1189,13 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/bleached_paper.dds",
                                              "target_be":  34,
                                              "natural_year":  1940,
+                                             "building_cost":  null,
+                                             "tech":  "high_speed_papermaking",
                                              "input_ratio":  {
                                                                  "dye":  0.2,
                                                                  "sulfur":  0.2,
                                                                  "wood":  0.6
-                                                             },
-                                             "tech":  "high_speed_papermaking",
-                                             "building_cost":  440
+                                                             }
                                          }
                                      ]
                        },
@@ -1275,12 +1275,12 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/chemical_fertilizers.dds",
                                              "target_be":  34,
                                              "natural_year":  1870,
+                                             "building_cost":  null,
+                                             "tech":  "aniline",
                                              "input_ratio":  {
                                                                  "iron":  0.25,
                                                                  "sulfur":  0.75
-                                                             },
-                                             "tech":  "ammoniacal_liquor",
-                                             "building_cost":  195
+                                                             }
                                          },
                                          {
                                              "key":  "building_chemical_plant_improved",
@@ -1373,13 +1373,13 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/nitrogen_fixation.dds",
                                              "target_be":  34,
                                              "natural_year":  1940,
+                                             "building_cost":  null,
+                                             "tech":  "steam_reforming",
                                              "input_ratio":  {
                                                                  "iron":  0.333333,
                                                                  "oil":  0.222222,
                                                                  "sulfur":  0.444444
-                                                             },
-                                             "tech":  "steam_reforming",
-                                             "building_cost":  665
+                                                             }
                                          }
                                      ]
                        },
@@ -1507,7 +1507,7 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_explosives_brine",
                                              "pm_name":  "Continuous Nitration",
                                              "vanilla_pm":  "pm_brine_electrolysis",
-                                             "tech":  "continuous_nitration",
+                                             "tech":  "conveyors",
                                              "output_qty":  169,
                                              "inputs":  {
                                                             "electricity":  8.5,
@@ -1562,14 +1562,14 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/vaccum_brine_electrolysis.dds",
                                              "target_be":  33,
                                              "natural_year":  1940,
+                                             "building_cost":  null,
+                                             "tech":  "cyclonite_process",
                                              "input_ratio":  {
                                                                  "electricity":  0.142857,
                                                                  "fertilizer":  0.357143,
                                                                  "paper":  0.214286,
                                                                  "sulfur":  0.285714
-                                                             },
-                                             "tech":  "cyclonite_process",
-                                             "building_cost":  610
+                                                             }
                                          }
                                      ]
                        },
@@ -1669,8 +1669,8 @@ window.PMDATA = {
                                              "tech":  "open_hearth_process",
                                              "output_qty":  146,
                                              "inputs":  {
-                                                            "coal":  49.3,
-                                                            "iron":  148
+                                                            "coal":  38,
+                                                            "iron":  114
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1680,7 +1680,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  20,
                                              "texture":  "gfx/interface/icons/production_method_icons/open_hearth_process.dds",
-                                             "target_be":  135,
+                                             "target_be":  104,
                                              "natural_year":  1900,
                                              "era":  3,
                                              "model_only":  false,
@@ -1701,9 +1701,9 @@ window.PMDATA = {
                                              "tech":  "electric_arc_process",
                                              "output_qty":  219,
                                              "inputs":  {
-                                                            "coal":  35.3,
-                                                            "electricity":  35.3,
-                                                            "iron":  117.7
+                                                            "coal":  32.6,
+                                                            "electricity":  32.6,
+                                                            "iron":  108.6
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1713,7 +1713,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  25,
                                              "texture":  "gfx/interface/icons/production_method_icons/electric_arc_process.dds",
-                                             "target_be":  83,
+                                             "target_be":  77,
                                              "natural_year":  1925,
                                              "era":  4,
                                              "model_only":  false,
@@ -1736,9 +1736,9 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  329,
                                              "inputs":  {
-                                                            "coal":  39.3,
-                                                            "electricity":  39.3,
-                                                            "iron":  131.2
+                                                            "coal":  38.3,
+                                                            "electricity":  38.3,
+                                                            "iron":  127.6
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1748,15 +1748,15 @@ window.PMDATA = {
                                                             },
                                              "pollution":  25,
                                              "texture":  "gfx/interface/icons/production_method_icons/electric_arc_process.dds",
-                                             "target_be":  62,
+                                             "target_be":  60,
                                              "natural_year":  1940,
+                                             "building_cost":  null,
+                                             "tech":  "continuous_strip_mill",
                                              "input_ratio":  {
                                                                  "coal":  0.1875,
                                                                  "electricity":  0.1875,
                                                                  "iron":  0.625
-                                                             },
-                                             "tech":  "continuous_strip_mill",
-                                             "building_cost":  1465
+                                                             }
                                          }
                                      ]
                        },
@@ -1787,7 +1787,7 @@ window.PMDATA = {
                                              "tech":  "atmospheric_engine",
                                              "output_qty":  40,
                                              "inputs":  {
-                                                            "steel":  23
+                                                            "steel":  21.8
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1797,7 +1797,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/steamworks.dds",
-                                             "target_be":  64,
+                                             "target_be":  61,
                                              "natural_year":  1830,
                                              "era":  1,
                                              "model_only":  false,
@@ -1818,7 +1818,7 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  60,
                                              "inputs":  {
-                                                            "steel":  34.5
+                                                            "steel":  32.7
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1828,13 +1828,13 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/steamworks.dds",
-                                             "target_be":  64,
+                                             "target_be":  61,
                                              "natural_year":  1870,
+                                             "building_cost":  null,
+                                             "tech":  "watertube_boiler",
                                              "input_ratio":  {
                                                                  "steel":  1
-                                                             },
-                                             "tech":  "compound_engines",
-                                             "building_cost":  330
+                                                             }
                                          },
                                          {
                                              "key":  "building_motor_industry_electric",
@@ -1843,11 +1843,11 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_motor_electric",
                                              "pm_name":  "Electric Engines",
                                              "vanilla_pm":  "pm_electric_engines",
-                                             "tech":  "electric_motors",
+                                             "tech":  "electric_railway",
                                              "output_qty":  90,
                                              "inputs":  {
-                                                            "electricity":  26.8,
-                                                            "steel":  35.7
+                                                            "electricity":  25.4,
+                                                            "steel":  33.8
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1857,7 +1857,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/electric_engines.dds",
-                                             "target_be":  64,
+                                             "target_be":  61,
                                              "natural_year":  1900,
                                              "era":  3,
                                              "model_only":  false,
@@ -1878,8 +1878,8 @@ window.PMDATA = {
                                              "tech":  "diesel_engine",
                                              "output_qty":  135,
                                              "inputs":  {
-                                                            "oil":  43.2,
-                                                            "steel":  43.2
+                                                            "oil":  40.9,
+                                                            "steel":  40.9
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1889,7 +1889,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/diesel_engines.dds",
-                                             "target_be":  64,
+                                             "target_be":  61,
                                              "natural_year":  1925,
                                              "era":  4,
                                              "model_only":  false,
@@ -1911,8 +1911,8 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  203,
                                              "inputs":  {
-                                                            "oil":  65,
-                                                            "steel":  65
+                                                            "oil":  61.5,
+                                                            "steel":  61.5
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -1922,14 +1922,14 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/diesel_engines.dds",
-                                             "target_be":  64,
+                                             "target_be":  61,
                                              "natural_year":  1940,
+                                             "building_cost":  null,
+                                             "tech":  "high_speed_diesel",
                                              "input_ratio":  {
                                                                  "oil":  0.5,
                                                                  "steel":  0.5
-                                                             },
-                                             "tech":  "high_speed_diesel",
-                                             "building_cost":  1125
+                                                             }
                                          }
                                      ]
                        },
@@ -1997,10 +1997,10 @@ window.PMDATA = {
                                              "tech":  "screw_frigate",
                                              "output_qty":  60,
                                              "inputs":  {
-                                                            "engines":  3,
-                                                            "fabric":  11.9,
-                                                            "hardwood":  11.9,
-                                                            "wood":  11.9
+                                                            "engines":  3.4,
+                                                            "fabric":  13.7,
+                                                            "hardwood":  13.7,
+                                                            "wood":  13.7
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2011,7 +2011,7 @@ window.PMDATA = {
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/reinforced_wooden_ships.dds",
                                              "ship_construction":  10,
-                                             "target_be":  42,
+                                             "target_be":  48,
                                              "natural_year":  1830,
                                              "era":  1,
                                              "model_only":  false,
@@ -2052,12 +2052,12 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_shipyard_metal",
                                              "pm_name":  "Metal Shipbuilding",
                                              "vanilla_pm":  "pm_metal_shipbuilding",
-                                             "tech":  "iron_screw_steamers",
+                                             "tech":  "screw_frigate",
                                              "output_qty":  65,
                                              "inputs":  {
-                                                            "coal":  19.8,
-                                                            "engines":  19.8,
-                                                            "steel":  59.4
+                                                            "coal":  20.3,
+                                                            "engines":  20.3,
+                                                            "steel":  61
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2068,7 +2068,7 @@ window.PMDATA = {
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/reinforced_steam_ships.dds",
                                              "ship_construction":  15,
-                                             "target_be":  139,
+                                             "target_be":  143,
                                              "natural_year":  1830,
                                              "era":  1,
                                              "model_only":  false,
@@ -2091,9 +2091,9 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  98,
                                              "inputs":  {
-                                                            "coal":  27,
-                                                            "engines":  27,
-                                                            "steel":  81.1
+                                                            "coal":  29.2,
+                                                            "engines":  29.2,
+                                                            "steel":  87.7
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2103,16 +2103,16 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/reinforced_steam_ships.dds",
-                                             "target_be":  126,
+                                             "target_be":  136,
                                              "natural_year":  1870,
+                                             "building_cost":  null,
                                              "ship_construction":  15,
+                                             "tech":  "steel_hulls",
                                              "input_ratio":  {
                                                                  "coal":  0.2,
                                                                  "engines":  0.2,
                                                                  "steel":  0.6
-                                                             },
-                                             "tech":  "steel_hulls",
-                                             "building_cost":  1250
+                                                             }
                                          },
                                          {
                                              "key":  "building_shipyard_metal_turbine",
@@ -2125,9 +2125,9 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  146,
                                              "inputs":  {
-                                                            "coal":  40.3,
-                                                            "engines":  40.3,
-                                                            "steel":  120.8
+                                                            "coal":  39.8,
+                                                            "engines":  39.8,
+                                                            "steel":  119.5
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2137,16 +2137,16 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/reinforced_steam_ships.dds",
-                                             "target_be":  126,
+                                             "target_be":  125,
                                              "natural_year":  1900,
+                                             "building_cost":  null,
                                              "ship_construction":  15,
+                                             "tech":  "marine_steam_turbine",
                                              "input_ratio":  {
                                                                  "coal":  0.2,
                                                                  "engines":  0.2,
                                                                  "steel":  0.6
-                                                             },
-                                             "tech":  "marine_steam_turbine",
-                                             "building_cost":  1860
+                                                             }
                                          },
                                          {
                                              "key":  "building_shipyard_metal_oil_fired",
@@ -2159,9 +2159,9 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  219,
                                              "inputs":  {
-                                                            "coal":  60.4,
-                                                            "engines":  60.4,
-                                                            "steel":  181.3
+                                                            "coal":  59.7,
+                                                            "engines":  59.7,
+                                                            "steel":  179.2
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2171,16 +2171,16 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/reinforced_steam_ships.dds",
-                                             "target_be":  126,
+                                             "target_be":  125,
                                              "natural_year":  1925,
+                                             "building_cost":  null,
                                              "ship_construction":  15,
+                                             "tech":  "oil_fired_boilers",
                                              "input_ratio":  {
                                                                  "coal":  0.2,
                                                                  "engines":  0.2,
                                                                  "steel":  0.6
-                                                             },
-                                             "tech":  "oil_fired_boilers",
-                                             "building_cost":  2795
+                                                             }
                                          },
                                          {
                                              "key":  "building_shipyard_arc_welding",
@@ -2192,9 +2192,9 @@ window.PMDATA = {
                                              "tech":  "welded_prefabrication",
                                              "output_qty":  329,
                                              "inputs":  {
-                                                            "electricity":  192.9,
-                                                            "engines":  64.3,
-                                                            "steel":  192.9
+                                                            "electricity":  215.3,
+                                                            "engines":  71.8,
+                                                            "steel":  215.3
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2205,7 +2205,7 @@ window.PMDATA = {
                                              "pollution":  20,
                                              "texture":  "gfx/interface/icons/production_method_icons/arc_welded_steam_ships.dds",
                                              "ship_construction":  20,
-                                             "target_be":  112,
+                                             "target_be":  125,
                                              "natural_year":  1940,
                                              "era":  5,
                                              "model_only":  false,
@@ -2248,7 +2248,7 @@ window.PMDATA = {
                                              "tech":  "combustion_engine",
                                              "output_qty":  30,
                                              "inputs":  {
-                                                            "engines":  27.2,
+                                                            "engines":  27.3,
                                                             "oil":  13.6,
                                                             "rubber":  13.6
                                                         },
@@ -2282,9 +2282,9 @@ window.PMDATA = {
                                              "tech":  "conveyors",
                                              "output_qty":  45,
                                              "inputs":  {
-                                                            "engines":  29.1,
-                                                            "oil":  29.1,
-                                                            "rubber":  29.1
+                                                            "engines":  29.2,
+                                                            "oil":  29.2,
+                                                            "rubber":  29.2
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2317,9 +2317,9 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  68,
                                              "inputs":  {
-                                                            "engines":  27.8,
-                                                            "oil":  27.8,
-                                                            "rubber":  27.8
+                                                            "engines":  23.1,
+                                                            "oil":  23.1,
+                                                            "rubber":  23.1
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2329,15 +2329,15 @@ window.PMDATA = {
                                                             },
                                              "pollution":  10,
                                              "texture":  "gfx/interface/icons/production_method_icons/standardized_automobiles.dds",
-                                             "target_be":  76,
+                                             "target_be":  63,
                                              "natural_year":  1940,
+                                             "building_cost":  null,
+                                             "tech":  "transfer_machining",
                                              "input_ratio":  {
                                                                  "engines":  0.333333,
                                                                  "oil":  0.333333,
                                                                  "rubber":  0.333333
-                                                             },
-                                             "tech":  "transfer_machining",
-                                             "building_cost":  750
+                                                             }
                                          }
                                      ]
                        },
@@ -2521,14 +2521,14 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/bolt_action_rifles.dds",
                                              "target_be":  58,
                                              "natural_year":  1925,
+                                             "building_cost":  null,
+                                             "tech":  "light_machine_guns",
                                              "input_ratio":  {
                                                                  "hardwood":  0.166667,
                                                                  "oil":  0.166667,
                                                                  "steel":  0.333333,
                                                                  "tools":  0.333333
-                                                             },
-                                             "tech":  "light_machine_guns",
-                                             "building_cost":  765
+                                                             }
                                          },
                                          {
                                              "key":  "building_arms_industry_stamped",
@@ -2541,10 +2541,10 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  228,
                                              "inputs":  {
-                                                            "hardwood":  23,
-                                                            "oil":  23,
-                                                            "steel":  45.9,
-                                                            "tools":  45.9
+                                                            "hardwood":  22,
+                                                            "oil":  22,
+                                                            "steel":  44.1,
+                                                            "tools":  44.1
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -2554,16 +2554,16 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/bolt_action_rifles.dds",
-                                             "target_be":  58,
+                                             "target_be":  56,
                                              "natural_year":  1940,
+                                             "building_cost":  null,
+                                             "tech":  "stamped_receivers",
                                              "input_ratio":  {
                                                                  "hardwood":  0.166667,
                                                                  "oil":  0.166667,
                                                                  "steel":  0.333333,
                                                                  "tools":  0.333333
-                                                             },
-                                             "tech":  "stamped_receivers",
-                                             "building_cost":  1150
+                                                             }
                                          }
                                      ]
                        },
@@ -2622,7 +2622,7 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_artillery_smoothbore",
                                              "pm_name":  "Smoothbores",
                                              "vanilla_pm":  "pm_smoothbores",
-                                             "tech":  "shell_gun",
+                                             "tech":  "percussion_cap",
                                              "output_qty":  38,
                                              "inputs":  {
                                                             "hardwood":  6.2,
@@ -2740,13 +2740,13 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/recoil_mechanism_artillery_production.dds",
                                              "target_be":  34,
                                              "natural_year":  1925,
+                                             "building_cost":  null,
+                                             "tech":  "autofrettage",
                                              "input_ratio":  {
                                                                  "oil":  0.142857,
                                                                  "steel":  0.571429,
                                                                  "tools":  0.285714
-                                                             },
-                                             "tech":  "autofrettage",
-                                             "building_cost":  430
+                                                             }
                                          },
                                          {
                                              "key":  "building_artillery_foundry_antiaircraft",
@@ -2773,13 +2773,13 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/recoil_mechanism_artillery_production.dds",
                                              "target_be":  34,
                                              "natural_year":  1940,
+                                             "building_cost":  null,
+                                             "tech":  "automatic_aa_guns",
                                              "input_ratio":  {
                                                                  "oil":  0.142857,
                                                                  "steel":  0.571429,
                                                                  "tools":  0.285714
-                                                             },
-                                             "tech":  "automatic_aa_guns",
-                                             "building_cost":  645
+                                                             }
                                          }
                                      ]
                        },
@@ -2892,12 +2892,12 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/explosive_shells.dds",
                                              "target_be":  33,
                                              "natural_year":  1900,
+                                             "building_cost":  null,
+                                             "tech":  "bolt_action_rifles",
                                              "input_ratio":  {
                                                                  "explosives":  0.571429,
                                                                  "lead":  0.428571
-                                                             },
-                                             "tech":  "drawn_brass_cartridges",
-                                             "building_cost":  270
+                                                             }
                                          },
                                          {
                                              "key":  "building_munition_plant_filling",
@@ -2923,12 +2923,12 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/explosive_shells.dds",
                                              "target_be":  33,
                                              "natural_year":  1925,
+                                             "building_cost":  null,
+                                             "tech":  "shell_filling",
                                              "input_ratio":  {
                                                                  "explosives":  0.571429,
                                                                  "lead":  0.428571
-                                                             },
-                                             "tech":  "shell_filling",
-                                             "building_cost":  405
+                                                             }
                                          },
                                          {
                                              "key":  "building_munition_plant_automatic",
@@ -2954,12 +2954,12 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/explosive_shells.dds",
                                              "target_be":  33,
                                              "natural_year":  1940,
+                                             "building_cost":  null,
+                                             "tech":  "stamped_receivers",
                                              "input_ratio":  {
                                                                  "explosives":  0.571429,
                                                                  "lead":  0.428571
-                                                             },
-                                             "tech":  "automatic_cartridge_lines",
-                                             "building_cost":  610
+                                                             }
                                          }
                                      ]
                        },
@@ -2993,8 +2993,8 @@ window.PMDATA = {
                                              "tech":  "aniline",
                                              "output_qty":  80,
                                              "inputs":  {
-                                                            "fertilizer":  63.9,
-                                                            "sulfur":  42.6
+                                                            "fertilizer":  74.6,
+                                                            "sulfur":  49.8
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -3004,7 +3004,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/synthetic_dyes.dds",
-                                             "target_be":  169,
+                                             "target_be":  197,
                                              "natural_year":  1870,
                                              "era":  2,
                                              "model_only":  false,
@@ -3026,8 +3026,8 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  120,
                                              "inputs":  {
-                                                            "fertilizer":  60.8,
-                                                            "sulfur":  40.5
+                                                            "fertilizer":  67.3,
+                                                            "sulfur":  44.8
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -3037,14 +3037,14 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/synthetic_dyes.dds",
-                                             "target_be":  107,
+                                             "target_be":  118,
                                              "natural_year":  1900,
+                                             "building_cost":  null,
+                                             "tech":  "synthetic_indigo",
                                              "input_ratio":  {
                                                                  "fertilizer":  0.6,
                                                                  "sulfur":  0.4
-                                                             },
-                                             "tech":  "synthetic_indigo",
-                                             "building_cost":  740
+                                                             }
                                          },
                                          {
                                              "key":  "building_synthetics_plant_viscose",
@@ -3057,8 +3057,8 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  180,
                                              "inputs":  {
-                                                            "fertilizer":  91.2,
-                                                            "sulfur":  60.8
+                                                            "fertilizer":  100.9,
+                                                            "sulfur":  67.2
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -3067,14 +3067,14 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/synthetic_dyes.dds",
-                                             "target_be":  107,
+                                             "target_be":  118,
                                              "natural_year":  1925,
+                                             "building_cost":  null,
+                                             "tech":  "art_silk",
                                              "input_ratio":  {
                                                                  "fertilizer":  0.6,
                                                                  "sulfur":  0.4
-                                                             },
-                                             "tech":  "art_silk",
-                                             "building_cost":  1110
+                                                             }
                                          },
                                          {
                                              "key":  "building_synthetics_plant_polyamide",
@@ -3087,8 +3087,8 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  270,
                                              "inputs":  {
-                                                            "fertilizer":  117.7,
-                                                            "sulfur":  78.5
+                                                            "fertilizer":  119.2,
+                                                            "sulfur":  79.5
                                                         },
                                              "employment":  {
                                                                 "shopkeepers":  500,
@@ -3097,14 +3097,14 @@ window.PMDATA = {
                                                             },
                                              "pollution":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/synthetic_dyes.dds",
-                                             "target_be":  92,
+                                             "target_be":  93,
                                              "natural_year":  1940,
+                                             "building_cost":  null,
+                                             "tech":  "polyamide_synthesis",
                                              "input_ratio":  {
                                                                  "fertilizer":  0.6,
                                                                  "sulfur":  0.4
-                                                             },
-                                             "tech":  "polyamide_synthesis",
-                                             "building_cost":  1435
+                                                             }
                                          }
                                      ]
                        },
@@ -3187,14 +3187,14 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/telephones.dds",
                                              "target_be":  33,
                                              "natural_year":  1900,
+                                             "building_cost":  null,
+                                             "tech":  "wireless_telegraphy",
                                              "input_ratio":  {
                                                                  "iron":  0.285714,
                                                                  "lead":  0.285714,
                                                                  "rubber":  0.285714,
                                                                  "tools":  0.142857
-                                                             },
-                                             "tech":  "wireless_telegraphy",
-                                             "building_cost":  305
+                                                             }
                                          },
                                          {
                                              "key":  "building_electrics_industry_radio",
@@ -3222,14 +3222,14 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/telephones.dds",
                                              "target_be":  33,
                                              "natural_year":  1925,
+                                             "building_cost":  null,
+                                             "tech":  "radio",
                                              "input_ratio":  {
                                                                  "iron":  0.285714,
                                                                  "lead":  0.285714,
                                                                  "rubber":  0.285714,
                                                                  "tools":  0.142857
-                                                             },
-                                             "tech":  "radio",
-                                             "building_cost":  455
+                                                             }
                                          },
                                          {
                                              "key":  "building_electrics_industry_electronics",
@@ -3256,14 +3256,14 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/telephones.dds",
                                              "target_be":  33,
                                              "natural_year":  1940,
+                                             "building_cost":  null,
+                                             "tech":  "vacuum_tube_electronics",
                                              "input_ratio":  {
                                                                  "iron":  0.285714,
                                                                  "lead":  0.285714,
                                                                  "rubber":  0.285714,
                                                                  "tools":  0.142857
-                                                             },
-                                             "tech":  "vacuum_tube_electronics",
-                                             "building_cost":  685
+                                                             }
                                          }
                                      ]
                        },
@@ -3293,8 +3293,8 @@ window.PMDATA = {
                                              "output_override":  50,
                                              "output_qty":  50,
                                              "inputs":  {
-                                                            "coal":  39.5,
-                                                            "engines":  11.8
+                                                            "coal":  36.7,
+                                                            "engines":  11
                                                         },
                                              "employment":  {
                                                                 "laborers":  350,
@@ -3303,7 +3303,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  50,
                                              "texture":  "gfx/interface/icons/production_method_icons/coal_fired_plant.dds",
-                                             "target_be":  168,
+                                             "target_be":  157,
                                              "natural_year":  1900,
                                              "era":  3,
                                              "model_only":  false,
@@ -3325,7 +3325,7 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  50,
                                              "inputs":  {
-                                                            "coal":  31.1,
+                                                            "coal":  30.9,
                                                             "engines":  9.3
                                                         },
                                              "employment":  {
@@ -3335,15 +3335,15 @@ window.PMDATA = {
                                                             },
                                              "pollution":  50,
                                              "texture":  "gfx/interface/icons/production_method_icons/coal_fired_plant.dds",
-                                             "target_be":  133,
+                                             "target_be":  132,
                                              "natural_year":  1925,
+                                             "building_cost":  null,
                                              "output_override":  50,
+                                             "tech":  "pulverized_coal_firing",
                                              "input_ratio":  {
                                                                  "coal":  0.769231,
                                                                  "engines":  0.230769
-                                                             },
-                                             "tech":  "pulverized_coal_firing",
-                                             "building_cost":  285
+                                                             }
                                          },
                                          {
                                              "key":  "building_power_plant_oil",
@@ -3356,8 +3356,8 @@ window.PMDATA = {
                                              "output_override":  80,
                                              "output_qty":  80,
                                              "inputs":  {
-                                                            "engines":  11.7,
-                                                            "oil":  29.3
+                                                            "engines":  11.5,
+                                                            "oil":  28.7
                                                         },
                                              "employment":  {
                                                                 "laborers":  200,
@@ -3366,7 +3366,7 @@ window.PMDATA = {
                                                             },
                                              "pollution":  40,
                                              "texture":  "gfx/interface/icons/production_method_icons/oil_fired_plant.dds",
-                                             "target_be":  104,
+                                             "target_be":  102,
                                              "natural_year":  1940,
                                              "era":  5,
                                              "model_only":  false,
@@ -3436,8 +3436,8 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  14,
                                              "inputs":  {
-                                                            "steamers":  6.7,
-                                                            "coal":  6.7
+                                                            "steamers":  6.3,
+                                                            "coal":  6.3
                                                         },
                                              "employment":  {
                                                                 "laborers":  600,
@@ -3447,15 +3447,15 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/basic_port.dds",
-                                             "target_be":  128,
+                                             "target_be":  120,
                                              "natural_year":  1830,
+                                             "building_cost":  null,
                                              "state_infrastructure":  4,
+                                             "tech":  "screw_frigate",
                                              "input_ratio":  {
                                                                  "steamers":  0.5,
                                                                  "coal":  0.5
-                                                             },
-                                             "tech":  "steamship_bunkering",
-                                             "building_cost":  130
+                                                             }
                                          },
                                          {
                                              "key":  "building_port_industrial",
@@ -3467,8 +3467,8 @@ window.PMDATA = {
                                              "tech":  "deep_water_docks",
                                              "output_qty":  20,
                                              "inputs":  {
-                                                            "steamers":  5.8,
-                                                            "coal":  5.8
+                                                            "steamers":  6,
+                                                            "coal":  6
                                                         },
                                              "employment":  {
                                                                 "laborers":  500,
@@ -3478,7 +3478,7 @@ window.PMDATA = {
                                                             },
                                              "state_infrastructure":  4,
                                              "texture":  "gfx/interface/icons/production_method_icons/industrial_port.dds",
-                                             "target_be":  77,
+                                             "target_be":  80,
                                              "natural_year":  1870,
                                              "era":  2,
                                              "model_only":  false,
@@ -3499,8 +3499,8 @@ window.PMDATA = {
                                              "tech":  "concrete_quays",
                                              "output_qty":  30,
                                              "inputs":  {
-                                                            "steamers":  5.8,
-                                                            "oil":  11.6
+                                                            "steamers":  6,
+                                                            "oil":  12
                                                         },
                                              "employment":  {
                                                                 "laborers":  400,
@@ -3511,7 +3511,7 @@ window.PMDATA = {
                                                             },
                                              "state_infrastructure":  5,
                                              "texture":  "gfx/interface/icons/production_method_icons/modern_port.dds",
-                                             "target_be":  77,
+                                             "target_be":  80,
                                              "natural_year":  1900,
                                              "era":  3,
                                              "model_only":  false,
@@ -3533,8 +3533,8 @@ window.PMDATA = {
                                              "model_only":  false,
                                              "output_qty":  46,
                                              "inputs":  {
-                                                            "steamers":  7.5,
-                                                            "oil":  15.1
+                                                            "steamers":  7.8,
+                                                            "oil":  15.7
                                                         },
                                              "employment":  {
                                                                 "laborers":  300,
@@ -3545,15 +3545,15 @@ window.PMDATA = {
                                                             },
                                              "pollution":  0,
                                              "texture":  "gfx/interface/icons/production_method_icons/modern_port.dds",
-                                             "target_be":  65,
+                                             "target_be":  68,
                                              "natural_year":  1925,
+                                             "building_cost":  null,
                                              "state_infrastructure":  6,
+                                             "tech":  "mechanised_cargo_handling",
                                              "input_ratio":  {
                                                                  "steamers":  0.333333,
                                                                  "oil":  0.666667
-                                                             },
-                                             "tech":  "mechanised_cargo_handling",
-                                             "building_cost":  215
+                                                             }
                                          }
                                      ],
                            "ladder_end":  "plateau"
@@ -3582,8 +3582,8 @@ window.PMDATA = {
                                              "tech":  "railways",
                                              "output_qty":  20,
                                              "inputs":  {
-                                                            "engines":  12.4,
-                                                            "coal":  5
+                                                            "engines":  9.2,
+                                                            "coal":  3.7
                                                         },
                                              "employment":  {
                                                                 "laborers":  600,
@@ -3593,7 +3593,7 @@ window.PMDATA = {
                                              "pollution":  25,
                                              "state_infrastructure":  20,
                                              "texture":  "gfx/interface/icons/production_method_icons/experimental_trains.dds",
-                                             "target_be":  199,
+                                             "target_be":  147,
                                              "natural_year":  1830,
                                              "era":  1,
                                              "model_only":  false,
@@ -3614,8 +3614,8 @@ window.PMDATA = {
                                              "tech":  "steel_railway_cars",
                                              "output_qty":  30,
                                              "inputs":  {
-                                                            "engines":  7.9,
-                                                            "coal":  7.9
+                                                            "engines":  8.4,
+                                                            "coal":  8.4
                                                         },
                                              "employment":  {
                                                                 "laborers":  500,
@@ -3625,7 +3625,7 @@ window.PMDATA = {
                                              "pollution":  20,
                                              "state_infrastructure":  25,
                                              "texture":  "gfx/interface/icons/production_method_icons/trains_steam.dds",
-                                             "target_be":  105,
+                                             "target_be":  112,
                                              "natural_year":  1870,
                                              "era":  2,
                                              "model_only":  false,
@@ -3646,8 +3646,8 @@ window.PMDATA = {
                                              "tech":  "electric_railway",
                                              "output_qty":  45,
                                              "inputs":  {
-                                                            "engines":  6.3,
-                                                            "electricity":  10.1
+                                                            "engines":  7.2,
+                                                            "electricity":  11.6
                                                         },
                                              "employment":  {
                                                                 "laborers":  400,
@@ -3657,7 +3657,7 @@ window.PMDATA = {
                                                             },
                                              "state_infrastructure":  30,
                                              "texture":  "gfx/interface/icons/production_method_icons/trains_electric.dds",
-                                             "target_be":  67,
+                                             "target_be":  77,
                                              "natural_year":  1900,
                                              "era":  3,
                                              "model_only":  false,
@@ -3669,49 +3669,17 @@ window.PMDATA = {
                                              "building_cost":  130
                                          },
                                          {
-                                             "key":  "building_railway_superheated",
-                                             "name":  "Superheated Steam Railways",
-                                             "pm_key":  "pm_main_railway_superheated",
-                                             "pmg_key":  "pmg_main_railway_superheated",
-                                             "pm_name":  "Superheated Locomotives",
-                                             "era":  4,
-                                             "tech_year":  1915,
-                                             "model_only":  false,
-                                             "output_qty":  68,
-                                             "inputs":  {
-                                                            "engines":  9.5,
-                                                            "electricity":  15.2
-                                                        },
-                                             "employment":  {
-                                                                "laborers":  300,
-                                                                "machinists":  400,
-                                                                "engineers":  100,
-                                                                "clerks":  200
-                                                            },
-                                             "pollution":  0,
-                                             "texture":  "gfx/interface/icons/production_method_icons/trains_electric.dds",
-                                             "target_be":  67,
-                                             "natural_year":  1925,
-                                             "state_infrastructure":  30,
-                                             "input_ratio":  {
-                                                                 "engines":  0.384615,
-                                                                 "electricity":  0.615385
-                                                             },
-                                             "tech":  "superheated_steam",
-                                             "building_cost":  200
-                                         },
-                                         {
                                              "key":  "building_railway_diesel",
                                              "name":  "Diesel Railway",
                                              "pm_key":  "pm_main_rail_diesel",
                                              "pmg_key":  "pmg_main_rail_diesel",
                                              "pm_name":  "Diesel Trains",
                                              "vanilla_pm":  "pm_diesel_trains",
-                                             "tech":  "compression_ignition",
-                                             "output_qty":  101,
+                                             "tech":  "diesel_engine",
+                                             "output_qty":  68,
                                              "inputs":  {
-                                                            "engines":  12.3,
-                                                            "oil":  14.7
+                                                            "engines":  10.9,
+                                                            "oil":  13.1
                                                         },
                                              "employment":  {
                                                                 "laborers":  400,
@@ -3722,18 +3690,19 @@ window.PMDATA = {
                                              "pollution":  15,
                                              "state_infrastructure":  40,
                                              "texture":  "gfx/interface/icons/production_method_icons/trains_diesel.dds",
-                                             "target_be":  58,
-                                             "natural_year":  1940,
-                                             "era":  5,
+                                             "target_be":  77,
+                                             "natural_year":  1925,
+                                             "era":  4,
                                              "model_only":  false,
                                              "input_ratio":  {
                                                                  "engines":  0.454545,
                                                                  "oil":  0.545455
                                                              },
-                                             "tech_year":  1934,
+                                             "tech_year":  1925,
                                              "building_cost":  255
                                          }
-                                     ]
+                                     ],
+                           "ladder_end":  "plateau"
                        },
                        {
                            "id":  "art_academy",
@@ -3893,13 +3862,13 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/film_art.dds",
                                              "target_be":  33,
                                              "natural_year":  1940,
+                                             "building_cost":  null,
+                                             "tech":  "sound_film",
                                              "input_ratio":  {
                                                                  "electricity":  0.166667,
                                                                  "paper":  0.5,
                                                                  "tools":  0.333333
-                                                             },
-                                             "tech":  "sound_film",
-                                             "building_cost":  240
+                                                             }
                                          }
                                      ]
                        }
@@ -4041,5 +4010,5 @@ window.PMDATA = {
     "liquor":  30,
     "small_arms":  60
 },
-  techs: {"academia":{"n":"Academia","e":1,"c":"society","o":"vanilla","y":1700},"admiralty":{"n":"Admiralty","e":1,"c":"military","o":"vanilla","y":1700},"army_reserves":{"n":"Army Reserves","e":1,"c":"military","o":"vanilla","y":1813},"artillery":{"n":"Artillery","e":1,"c":"military","o":"vanilla","y":1700},"atmospheric_engine":{"n":"Atmospheric Engine","e":1,"c":"production","o":"vanilla","y":1712},"banking":{"n":"Banking","e":1,"c":"society","o":"vanilla","y":1694},"beet_sugar_refining":{"n":"Beet Sugar Refining","e":1,"c":"production","o":"new","y":1815},"calico_printing":{"n":"Calico Printing","e":1,"c":"production","o":"new","y":1830},"centralization":{"n":"Centralization","e":1,"c":"society","o":"vanilla","y":1700},"colonization":{"n":"Colonization","e":1,"c":"society","o":"vanilla","y":1500},"cotton_gin":{"n":"Cotton Gin","e":1,"c":"production","o":"vanilla","y":1793},"crystal_glass":{"n":"Lead Crystal","e":1,"c":"production","o":"vanilla","y":1674},"currency_standards":{"n":"Currency Standards","e":1,"c":"society","o":"vanilla","y":1717},"democracy":{"n":"Democracy","e":1,"c":"society","o":"vanilla","y":1789},"distillation":{"n":"Distillation","e":1,"c":"production","o":"vanilla","y":1700},"drydocks":{"n":"Drydocks","e":1,"c":"military","o":"vanilla","y":1700},"empiricism":{"n":"Empiricism","e":1,"c":"society","o":"vanilla","y":1700},"enclosure":{"n":"Enclosure","e":1,"c":"production","o":"vanilla","y":1750},"fourdrinier_machine":{"n":"Fourdrinier Machine","e":1,"c":"production","o":"new","y":1830},"gunsmithing":{"n":"Gunsmithing","e":1,"c":"military","o":"vanilla","y":1700},"international_relations":{"n":"International Relations","e":1,"c":"society","o":"vanilla","y":1648},"international_trade":{"n":"International Trade","e":1,"c":"society","o":"vanilla","y":1700},"lathe":{"n":"Lathe","e":1,"c":"production","o":"vanilla","y":1800},"law_enforcement":{"n":"Law Enforcement","e":1,"c":"society","o":"vanilla","y":1829},"leblanc_process":{"n":"Leblanc Process","e":1,"c":"production","o":"new","y":1820},"line_infantry":{"n":"Line Infantry","e":1,"c":"military","o":"vanilla","y":1700},"mandatory_service":{"n":"Mandatory Service","e":1,"c":"military","o":"vanilla","y":1793},"manufacturies":{"n":"Manufacturies","e":1,"c":"production","o":"vanilla","y":1700},"mass_communication":{"n":"Mass Communication","e":1,"c":"society","o":"vanilla","y":1814},"medical_degrees":{"n":"Medical Degrees","e":1,"c":"society","o":"vanilla","y":1750},"military_drill":{"n":"Military Drill","e":1,"c":"military","o":"vanilla","y":1700},"napoleonic_warfare":{"n":"Napoleonic Warfare","e":1,"c":"military","o":"vanilla","y":1805},"navigation":{"n":"Navigation","e":1,"c":"military","o":"vanilla","y":1700},"paddle_steamer":{"n":"Paddle Steamer","e":1,"c":"military","o":"vanilla","y":1807},"prospecting":{"n":"Prospecting","e":1,"c":"production","o":"vanilla","y":1750},"rationalism":{"n":"Rationalism","e":1,"c":"society","o":"vanilla","y":1650},"romanticism":{"n":"Romanticism","e":1,"c":"society","o":"vanilla","y":1800},"sericulture":{"n":"Sericulture","e":1,"c":"production","o":"vanilla","y":1600},"shaft_mining":{"n":"Shaft Mining","e":1,"c":"production","o":"vanilla","y":1712},"standing_army":{"n":"Standing Army","e":1,"c":"military","o":"vanilla","y":1650},"steelworking":{"n":"Steelworking","e":1,"c":"production","o":"vanilla","y":1740},"stock_exchange":{"n":"Stock Exchange","e":1,"c":"society","o":"vanilla","y":1698},"tech_bureaucracy":{"n":"Bureaucracy","e":1,"c":"society","o":"vanilla","y":1700},"urban_planning":{"n":"Urban Planning","e":1,"c":"society","o":"vanilla","y":1750},"urbanization":{"n":"Urbanization","e":1,"c":"society","o":"vanilla","y":1700},"ammoniacal_liquor":{"n":"Ammoniacal Liquor Recovery","e":2,"c":"production","o":"new","y":1865},"aniline":{"n":"Aniline","e":2,"c":"production","o":"vanilla","y":1856},"baking_powder":{"n":"Baking Powder","e":2,"c":"production","o":"vanilla","y":1843},"bessemer_process":{"n":"Bessemer Process","e":2,"c":"production","o":"vanilla","y":1856},"breech_loading_artillery":{"n":"Breech-Loading Artillery","e":2,"c":"military","o":"vanilla","y":1859},"canneries":{"n":"Canneries","e":2,"c":"production","o":"vanilla","y":1813},"central_archives":{"n":"Central Archives","e":2,"c":"society","o":"vanilla","y":1838},"central_banking":{"n":"Central Banking","e":2,"c":"society","o":"vanilla","y":1844},"chemical_bleaching":{"n":"Chemical Bleaching","e":2,"c":"production","o":"vanilla","y":1799},"compound_engines":{"n":"Compound Expansion","e":2,"c":"production","o":"new","y":1860},"corporate_charters":{"n":"Corporate Charters","e":2,"c":"society","o":"vanilla","y":1844},"deep_water_docks":{"n":"Deep Water Docks","e":2,"c":"military","o":"new","y":1875},"dialectics":{"n":"Dialectics","e":2,"c":"society","o":"vanilla","y":1807},"dynamite":{"n":"Dynamite","e":2,"c":"production","o":"vanilla","y":1867},"egalitarianism":{"n":"Egalitarianism","e":2,"c":"society","o":"vanilla","y":1789},"explosive_shells":{"n":"Filled Explosive Shells","e":2,"c":"military","o":"new","y":1875},"field_works":{"n":"Field Works","e":2,"c":"military","o":"vanilla","y":1855},"fractional_distillation":{"n":"Fractional Distillation","e":2,"c":"production","o":"vanilla","y":1830},"general_staff":{"n":"General Staff","e":2,"c":"military","o":"vanilla","y":1857},"hydraulic_cranes":{"n":"Hydraulic Cranes","e":2,"c":"military","o":"vanilla","y":1846},"intensive_agriculture":{"n":"Intensive Agriculture","e":2,"c":"production","o":"vanilla","y":1842},"iron_screw_steamers":{"n":"Iron Screw Steamers","e":2,"c":"military","o":"new","y":1843},"joint_stock_companies":{"n":"Joint-Stock Companies","e":2,"c":"society","o":"vanilla","y":1856},"labor_movement":{"n":"Labor Movement","e":2,"c":"society","o":"vanilla","y":1834},"logistics":{"n":"Logistics","e":2,"c":"military","o":"vanilla","y":1855},"mechanical_tools":{"n":"Mechanical Tools","e":2,"c":"production","o":"vanilla","y":1840},"mechanized_workshops":{"n":"Mechanized Workshops","e":2,"c":"production","o":"vanilla","y":1850},"modern_sewerage":{"n":"Modern Sewerage","e":2,"c":"society","o":"vanilla","y":1858},"nationalism":{"n":"Nationalism","e":2,"c":"society","o":"vanilla","y":1789},"nitroglycerin":{"n":"Nitroglycerin","e":2,"c":"production","o":"vanilla","y":1847},"organized_sports":{"n":"Organized Sports","e":2,"c":"society","o":"vanilla","y":1863},"percussion_cap":{"n":"Percussion Cap","e":2,"c":"military","o":"vanilla","y":1822},"pharmaceuticals":{"n":"Pharmaceuticals","e":2,"c":"society","o":"vanilla","y":1827},"postal_savings":{"n":"Postal Savings","e":2,"c":"society","o":"vanilla","y":1861},"power_of_the_purse":{"n":"Power of the Purse","e":2,"c":"military","o":"vanilla","y":1830},"psychiatry":{"n":"Psychiatry","e":2,"c":"society","o":"vanilla","y":1808},"quinine":{"n":"Quinine","e":2,"c":"society","o":"vanilla","y":1820},"railways":{"n":"Railways","e":2,"c":"production","o":"vanilla","y":1825},"realism":{"n":"Realism","e":2,"c":"society","o":"vanilla","y":1850},"regenerative_furnace":{"n":"Regenerative Furnace","e":2,"c":"production","o":"new","y":1867},"repeaters":{"n":"Repeaters","e":2,"c":"military","o":"vanilla","y":1860},"rifling":{"n":"Rifling","e":2,"c":"military","o":"vanilla","y":1849},"screw_frigate":{"n":"Screw Frigate","e":2,"c":"military","o":"vanilla","y":1843},"shell_gun":{"n":"Shell Gun","e":2,"c":"military","o":"vanilla","y":1822},"steamship_bunkering":{"n":"Steamship Bunkering","e":2,"c":"military","o":"new","y":1840},"steel_hulls":{"n":"Steel Hulls","e":2,"c":"military","o":"new","y":1875},"steel_railway_cars":{"n":"Steel Railway Cars","e":2,"c":"production","o":"vanilla","y":1867},"steel_toolmaking":{"n":"Steel Toolmaking","e":2,"c":"production","o":"new","y":1865},"triage":{"n":"Triage","e":2,"c":"military","o":"vanilla","y":1846},"watertube_boiler":{"n":"Water-tube Boiler","e":2,"c":"production","o":"vanilla","y":1867},"anarchism":{"n":"Anarchism","e":3,"c":"society","o":"vanilla","y":1840},"bolt_action_rifles":{"n":"Bolt-Action Rifle","e":3,"c":"military","o":"vanilla","y":1886},"camera":{"n":"Camera","e":3,"c":"society","o":"vanilla","y":1839},"civilizing_mission":{"n":"Civilizing Mission","e":3,"c":"society","o":"vanilla","y":1870},"combustion_engine":{"n":"Combustion Engine","e":3,"c":"production","o":"vanilla","y":1886},"concrete_quays":{"n":"Reinforced Concrete Quays","e":3,"c":"military","o":"new","y":1908},"corporatism":{"n":"Corporatism","e":3,"c":"society","o":"vanilla","y":1891},"drawn_brass_cartridges":{"n":"Drawn Brass Cartridges","e":3,"c":"military","o":"new","y":1895},"electric_motors":{"n":"Electric Motors","e":3,"c":"production","o":"new","y":1893},"electric_railway":{"n":"Electric Railways","e":3,"c":"production","o":"vanilla","y":1895},"electric_telegraph":{"n":"Electric Telegraph","e":3,"c":"military","o":"vanilla","y":1837},"electrical_capacitors":{"n":"Alternating Current","e":3,"c":"production","o":"vanilla","y":1891},"electrical_generation":{"n":"Electrical Generation","e":3,"c":"production","o":"vanilla","y":1882},"enlistment_offices":{"n":"Enlistment Offices","e":3,"c":"military","o":"vanilla","y":1860},"fat_hydrogenation":{"n":"Fat Hydrogenation","e":3,"c":"production","o":"new","y":1909},"feminism":{"n":"Feminism","e":3,"c":"society","o":"vanilla","y":1848},"floating_harbor":{"n":"Floating Harbor","e":3,"c":"military","o":"vanilla","y":1868},"gantry_cranes":{"n":"Gantry Cranes","e":3,"c":"military","o":"vanilla","y":1875},"handcranked_machine_gun":{"n":"Handcranked Machine Gun","e":3,"c":"military","o":"vanilla","y":1862},"high_speed_steel":{"n":"High Speed Steel","e":3,"c":"production","o":"new","y":1901},"human_rights":{"n":"Human Rights","e":3,"c":"society","o":"vanilla","y":1789},"identification_documents":{"n":"Identification Documents","e":3,"c":"society","o":"vanilla","y":1860},"improved_fertilizer":{"n":"Improved Fertilizer","e":3,"c":"production","o":"vanilla","y":1878},"investment_banks":{"n":"Investment Banks","e":3,"c":"society","o":"vanilla","y":1852},"ironclad_tech":{"n":"Ironclad","e":3,"c":"military","o":"vanilla","y":1859},"jeune_ecole":{"n":"Jeune École","e":3,"c":"military","o":"vanilla","y":1880},"kraft_process":{"n":"Kraft Process","e":3,"c":"production","o":"new","y":1890},"marine_steam_turbine":{"n":"Marine Steam Turbine","e":3,"c":"military","o":"new","y":1903},"military_statistics":{"n":"Military Statistics","e":3,"c":"military","o":"vanilla","y":1865},"modern_nursing":{"n":"Modern Nursing","e":3,"c":"military","o":"vanilla","y":1854},"monitor_tech":{"n":"Modern Ironclad","e":3,"c":"military","o":"vanilla","y":1862},"mutual_funds":{"n":"Mutual Funds","e":3,"c":"society","o":"vanilla","y":1868},"open_hearth_process":{"n":"Open Hearth Process","e":3,"c":"production","o":"vanilla","y":1865},"ostwald_process":{"n":"Ostwald Process","e":3,"c":"production","o":"new","y":1908},"pan-nationalism":{"n":"Pan-nationalism","e":3,"c":"society","o":"vanilla","y":1848},"philosophical_pragmatism":{"n":"Philosophical Pragmatism","e":3,"c":"society","o":"vanilla","y":1878},"plastics":{"n":"Plastics","e":3,"c":"production","o":"vanilla","y":1907},"pumpjacks":{"n":"Oil Drilling","e":3,"c":"production","o":"vanilla","y":1859},"recoil_carriages":{"n":"Recoil Carriages","e":3,"c":"military","o":"new","y":1897},"reinforced_concrete":{"n":"Reinforced Concrete","e":3,"c":"production","o":"vanilla","y":1867},"rotary_valve_engine":{"n":"Rotary Valve Engine","e":3,"c":"production","o":"vanilla","y":1849},"rotary_veneer":{"n":"Rotary-Cut Veneer","e":3,"c":"production","o":"new","y":1900},"rubber_mastication":{"n":"Rubber Mastication","e":3,"c":"production","o":"vanilla","y":1820},"self_propelled_torpedoes":{"n":"Self-Propelled Torpedoes","e":3,"c":"military","o":"vanilla","y":1866},"shift_work":{"n":"Shift Work","e":3,"c":"production","o":"vanilla","y":1870},"socialism":{"n":"Socialism","e":3,"c":"society","o":"vanilla","y":1848},"steam_donkey":{"n":"Steam Donkey","e":3,"c":"production","o":"vanilla","y":1881},"steam_turbine":{"n":"Steam Turbine","e":3,"c":"production","o":"vanilla","y":1900},"steel_frame_buildings":{"n":"Steel-Frame Buildings","e":3,"c":"society","o":"vanilla","y":1884},"synthetic_indigo":{"n":"Synthetic Indigo","e":3,"c":"production","o":"new","y":1897},"telephone":{"n":"Telephone","e":3,"c":"production","o":"vanilla","y":1878},"threshing_machine":{"n":"Steam Threshing","e":3,"c":"production","o":"vanilla","y":1842},"vacuum_canning":{"n":"Vacuum Canning","e":3,"c":"production","o":"vanilla","y":1874},"vulcanization":{"n":"Vulcanization","e":3,"c":"production","o":"vanilla","y":1839},"wireless_telegraphy":{"n":"Wireless Telegraphy","e":3,"c":"production","o":"new","y":1901},"art_silk":{"n":"Art Silk","e":4,"c":"production","o":"vanilla","y":1905},"autofrettage":{"n":"Autofrettage","e":4,"c":"military","o":"new","y":1925},"automatic_bottle_blowers":{"n":"Automatic Bottle Blowers","e":4,"c":"production","o":"vanilla","y":1903},"automatic_machine_guns":{"n":"Automatic Machine Guns","e":4,"c":"military","o":"vanilla","y":1884},"cemented_carbide":{"n":"Cemented Carbide","e":4,"c":"production","o":"new","y":1927},"central_planning":{"n":"Central Planning","e":4,"c":"society","o":"vanilla","y":1917},"concrete_dockyards":{"n":"Concrete Dockyards","e":4,"c":"military","o":"vanilla","y":1900},"continuous_nitration":{"n":"Continuous Nitration","e":4,"c":"production","o":"new","y":1928},"conveyors":{"n":"Conveyors","e":4,"c":"production","o":"vanilla","y":1913},"corporate_management":{"n":"Corporate Governance","e":4,"c":"society","o":"vanilla","y":1900},"defense_in_depth":{"n":"Defense in Depth","e":4,"c":"military","o":"vanilla","y":1917},"diesel_engine":{"n":"Diesel Engine","e":4,"c":"production","o":"new","y":1904},"dough_rollers":{"n":"Mechanised Bakeries","e":4,"c":"production","o":"vanilla","y":1920},"dreadnought_tech":{"n":"Dreadnought","e":4,"c":"military","o":"vanilla","y":1906},"electric_arc_process":{"n":"Electric Arc Process","e":4,"c":"production","o":"vanilla","y":1903},"elevator":{"n":"Elevators","e":4,"c":"society","o":"vanilla","y":1889},"film":{"n":"Film","e":4,"c":"society","o":"vanilla","y":1895},"international_exchange_standards":{"n":"International Exchange Standards","e":4,"c":"society","o":"vanilla","y":1922},"landing_craft":{"n":"Landing Craft","e":4,"c":"military","o":"vanilla","y":1915},"light_machine_guns":{"n":"Light Machine Guns","e":4,"c":"military","o":"new","y":1915},"long_draft_spinning":{"n":"Long-Draft Spinning","e":4,"c":"production","o":"new","y":1925},"malaria_prevention":{"n":"Malaria Prevention","e":4,"c":"society","o":"vanilla","y":1897},"mechanised_cargo_handling":{"n":"Mechanised Cargo Handling","e":4,"c":"military","o":"new","y":1930},"mechanized_farming":{"n":"Mechanized Farming","e":4,"c":"production","o":"vanilla","y":1892},"military_aviation":{"n":"Military Aviation","e":4,"c":"military","o":"vanilla","y":1911},"multilateral_alliances":{"n":"Multilateral Alliances","e":4,"c":"society","o":"vanilla","y":1900},"nitrocellulose_lacquer":{"n":"Nitrocellulose Lacquers","e":4,"c":"production","o":"new","y":1923},"nitrogen_fixation":{"n":"Nitrogen Fixation","e":4,"c":"production","o":"vanilla","y":1913},"oil_fired_boilers":{"n":"Oil-Fired Boilers","e":4,"c":"military","o":"new","y":1913},"pasteurization":{"n":"Pasteurization","e":4,"c":"production","o":"vanilla","y":1864},"pneumatic_tools":{"n":"Pneumatic Tools","e":4,"c":"production","o":"vanilla","y":1871},"political_agitation":{"n":"Political Agitation","e":4,"c":"society","o":"vanilla","y":1900},"pre_dreadnought_tech":{"n":"Pre Dreadnought","e":4,"c":"military","o":"vanilla","y":1889},"psychoanalysis":{"n":"Psychoanalysis","e":4,"c":"society","o":"vanilla","y":1899},"pulverized_coal_firing":{"n":"Pulverized Coal Firing","e":4,"c":"production","o":"new","y":1920},"radio":{"n":"Radio","e":4,"c":"production","o":"vanilla","y":1920},"ribbon_machine":{"n":"Ribbon Machine","e":4,"c":"production","o":"new","y":1926},"sea_lane_strategies":{"n":"Sea Lane Strategies","e":4,"c":"military","o":"vanilla","y":1890},"semi_chemical_pulping":{"n":"Semi-Chemical Pulping","e":4,"c":"production","o":"new","y":1925},"shell_filling":{"n":"Mass Shell Filling","e":4,"c":"military","o":"new","y":1915},"submarine":{"n":"Submarine","e":4,"c":"military","o":"vanilla","y":1900},"superheated_steam":{"n":"Superheating","e":4,"c":"production","o":"new","y":1915},"trench_works":{"n":"Trench Works","e":4,"c":"military","o":"vanilla","y":1904},"war_propaganda":{"n":"War Propaganda","e":4,"c":"military","o":"vanilla","y":1914},"wargaming":{"n":"Wargaming","e":4,"c":"military","o":"vanilla","y":1824},"zeppelins":{"n":"Zeppelins","e":4,"c":"society","o":"vanilla","y":1900},"analytical_philosophy":{"n":"Analytical Philosophy","e":5,"c":"society","o":"vanilla","y":1912},"antibiotics":{"n":"Antibiotics","e":5,"c":"society","o":"vanilla","y":1928},"arc_welding":{"n":"Arc Welding","e":5,"c":"production","o":"vanilla","y":1919},"automatic_aa_guns":{"n":"Automatic Anti-Aircraft Guns","e":5,"c":"military","o":"new","y":1936},"automatic_cartridge_lines":{"n":"Automatic Cartridge Lines","e":5,"c":"military","o":"new","y":1940},"battlefleet_tactics":{"n":"Modern Battlefleet Tactics","e":5,"c":"military","o":"vanilla","y":1916},"battleship_tech":{"n":"Super Dreadnought","e":5,"c":"military","o":"vanilla","y":1912},"behaviorism":{"n":"Behaviorism","e":5,"c":"society","o":"vanilla","y":1913},"carrier_tech":{"n":"Aircraft Carrier","e":5,"c":"military","o":"vanilla","y":1918},"chemical_warfare":{"n":"Chemical Warfare","e":5,"c":"military","o":"vanilla","y":1915},"compression_ignition":{"n":"Compression Ignition","e":5,"c":"production","o":"vanilla","y":1897},"concrete_fortifications":{"n":"Concrete Fortifications","e":5,"c":"military","o":"vanilla","y":1930},"continuous_strip_mill":{"n":"Continuous Wide Strip Mill","e":5,"c":"production","o":"new","y":1926},"cyclonite_process":{"n":"Cyclonite Process","e":5,"c":"production","o":"new","y":1940},"destroyer":{"n":"Destroyer","e":5,"c":"military","o":"vanilla","y":1893},"flamethrowers":{"n":"Flamethrowers","e":5,"c":"military","o":"vanilla","y":1915},"flash_freezing":{"n":"Flash Freezing","e":5,"c":"production","o":"vanilla","y":1924},"glass_fibre":{"n":"Glass Fibre","e":5,"c":"production","o":"new","y":1938},"high_speed_diesel":{"n":"High Speed Diesel","e":5,"c":"production","o":"new","y":1935},"high_speed_papermaking":{"n":"High Speed Papermaking","e":5,"c":"production","o":"new","y":1930},"macroeconomics":{"n":"Macroeconomics","e":5,"c":"society","o":"vanilla","y":1936},"mass_propaganda":{"n":"Mass Propaganda","e":5,"c":"society","o":"vanilla","y":1917},"mass_surveillance":{"n":"Mass Surveillance","e":5,"c":"society","o":"vanilla","y":1920},"mobile_armor":{"n":"Mobile Armor","e":5,"c":"military","o":"vanilla","y":1916},"modern_financial_instruments":{"n":"Modern Financial Instruments","e":5,"c":"society","o":"vanilla","y":1920},"nco_training":{"n":"NCO Training","e":5,"c":"military","o":"vanilla","y":1900},"oil_turbine":{"n":"Oil Turbine","e":5,"c":"production","o":"vanilla","y":1920},"paved_roads":{"n":"Paved Roads","e":5,"c":"society","o":"vanilla","y":1872},"polyamide_synthesis":{"n":"Polyamide Synthesis","e":5,"c":"production","o":"new","y":1939},"sound_film":{"n":"Sound Film","e":5,"c":"society","o":"new","y":1927},"stamped_receivers":{"n":"Stamped Receivers","e":5,"c":"military","o":"new","y":1938},"steam_reforming":{"n":"Steam Reforming","e":5,"c":"production","o":"new","y":1931},"stormtroopers":{"n":"Stormtroopers","e":5,"c":"military","o":"vanilla","y":1918},"tracer_control":{"n":"Hydraulic Tracer Control","e":5,"c":"production","o":"new","y":1936},"transfer_machining":{"n":"Transfer Machining","e":5,"c":"production","o":"new","y":1936},"vacuum_tube_electronics":{"n":"Vacuum Tube Electronics","e":5,"c":"production","o":"new","y":1935},"welded_prefabrication":{"n":"Welded Prefabrication","e":5,"c":"military","o":"new","y":1941}}
+  techs: {"academia":{"n":"Academia","e":1,"c":"society","o":"vanilla","y":1700},"admiralty":{"n":"Admiralty","e":1,"c":"military","o":"vanilla","y":1700},"army_reserves":{"n":"Army Reserves","e":1,"c":"military","o":"vanilla","y":1813},"artillery":{"n":"Artillery","e":1,"c":"military","o":"vanilla","y":1700},"atmospheric_engine":{"n":"Atmospheric Engine","e":1,"c":"production","o":"vanilla","y":1712},"banking":{"n":"Banking","e":1,"c":"society","o":"vanilla","y":1694},"beet_sugar_refining":{"n":"Beet Sugar Refining","e":1,"c":"production","o":"new","y":1815},"calico_printing":{"n":"Calico Printing","e":1,"c":"production","o":"new","y":1830},"centralization":{"n":"Centralization","e":1,"c":"society","o":"vanilla","y":1700},"colonization":{"n":"Colonization","e":1,"c":"society","o":"vanilla","y":1500},"cotton_gin":{"n":"Cotton Gin","e":1,"c":"production","o":"vanilla","y":1793},"crystal_glass":{"n":"Lead Crystal","e":1,"c":"production","o":"vanilla","y":1674},"currency_standards":{"n":"Currency Standards","e":1,"c":"society","o":"vanilla","y":1717},"democracy":{"n":"Democracy","e":1,"c":"society","o":"vanilla","y":1789},"distillation":{"n":"Distillation","e":1,"c":"production","o":"vanilla","y":1700},"drydocks":{"n":"Drydocks","e":1,"c":"military","o":"vanilla","y":1700},"empiricism":{"n":"Empiricism","e":1,"c":"society","o":"vanilla","y":1700},"enclosure":{"n":"Enclosure","e":1,"c":"production","o":"vanilla","y":1750},"fourdrinier_machine":{"n":"Fourdrinier Machine","e":1,"c":"production","o":"new","y":1830},"gunsmithing":{"n":"Gunsmithing","e":1,"c":"military","o":"vanilla","y":1700},"international_relations":{"n":"International Relations","e":1,"c":"society","o":"vanilla","y":1648},"international_trade":{"n":"International Trade","e":1,"c":"society","o":"vanilla","y":1700},"lathe":{"n":"Lathe","e":1,"c":"production","o":"vanilla","y":1800},"law_enforcement":{"n":"Law Enforcement","e":1,"c":"society","o":"vanilla","y":1829},"leblanc_process":{"n":"Leblanc Process","e":1,"c":"production","o":"new","y":1820},"line_infantry":{"n":"Line Infantry","e":1,"c":"military","o":"vanilla","y":1700},"mandatory_service":{"n":"Mandatory Service","e":1,"c":"military","o":"vanilla","y":1793},"manufacturies":{"n":"Manufacturies","e":1,"c":"production","o":"vanilla","y":1700},"mass_communication":{"n":"Mass Communication","e":1,"c":"society","o":"vanilla","y":1814},"medical_degrees":{"n":"Medical Degrees","e":1,"c":"society","o":"vanilla","y":1750},"military_drill":{"n":"Military Drill","e":1,"c":"military","o":"vanilla","y":1700},"napoleonic_warfare":{"n":"Napoleonic Warfare","e":1,"c":"military","o":"vanilla","y":1805},"navigation":{"n":"Navigation","e":1,"c":"military","o":"vanilla","y":1700},"paddle_steamer":{"n":"Paddle Steamer","e":1,"c":"military","o":"vanilla","y":1807},"prospecting":{"n":"Prospecting","e":1,"c":"production","o":"vanilla","y":1750},"rationalism":{"n":"Rationalism","e":1,"c":"society","o":"vanilla","y":1650},"romanticism":{"n":"Romanticism","e":1,"c":"society","o":"vanilla","y":1800},"sericulture":{"n":"Sericulture","e":1,"c":"production","o":"vanilla","y":1600},"shaft_mining":{"n":"Shaft Mining","e":1,"c":"production","o":"vanilla","y":1712},"standing_army":{"n":"Standing Army","e":1,"c":"military","o":"vanilla","y":1650},"steelworking":{"n":"Steelworking","e":1,"c":"production","o":"vanilla","y":1740},"stock_exchange":{"n":"Stock Exchange","e":1,"c":"society","o":"vanilla","y":1698},"tech_bureaucracy":{"n":"Bureaucracy","e":1,"c":"society","o":"vanilla","y":1700},"urban_planning":{"n":"Urban Planning","e":1,"c":"society","o":"vanilla","y":1750},"urbanization":{"n":"Urbanization","e":1,"c":"society","o":"vanilla","y":1700},"aniline":{"n":"Coal-Tar Chemistry","e":2,"c":"production","o":"vanilla","y":1856},"baking_powder":{"n":"Baking Powder","e":2,"c":"production","o":"vanilla","y":1843},"bessemer_process":{"n":"Bessemer Process","e":2,"c":"production","o":"vanilla","y":1856},"breech_loading_artillery":{"n":"Breech-Loading Artillery","e":2,"c":"military","o":"vanilla","y":1859},"canneries":{"n":"Canneries","e":2,"c":"production","o":"vanilla","y":1813},"central_archives":{"n":"Central Archives","e":2,"c":"society","o":"vanilla","y":1838},"central_banking":{"n":"Central Banking","e":2,"c":"society","o":"vanilla","y":1844},"chemical_bleaching":{"n":"Chemical Bleaching","e":2,"c":"production","o":"vanilla","y":1799},"corporate_charters":{"n":"Corporate Charters","e":2,"c":"society","o":"vanilla","y":1844},"deep_water_docks":{"n":"Deep Water Docks","e":2,"c":"military","o":"new","y":1875},"dialectics":{"n":"Dialectics","e":2,"c":"society","o":"vanilla","y":1807},"dynamite":{"n":"Dynamite","e":2,"c":"production","o":"vanilla","y":1867},"egalitarianism":{"n":"Egalitarianism","e":2,"c":"society","o":"vanilla","y":1789},"explosive_shells":{"n":"Filled Explosive Shells","e":2,"c":"military","o":"new","y":1875},"field_works":{"n":"Field Works","e":2,"c":"military","o":"vanilla","y":1855},"fractional_distillation":{"n":"Fractional Distillation","e":2,"c":"production","o":"vanilla","y":1830},"general_staff":{"n":"General Staff","e":2,"c":"military","o":"vanilla","y":1857},"hydraulic_cranes":{"n":"Hydraulic Cranes","e":2,"c":"military","o":"vanilla","y":1846},"intensive_agriculture":{"n":"Intensive Agriculture","e":2,"c":"production","o":"vanilla","y":1842},"joint_stock_companies":{"n":"Joint-Stock Companies","e":2,"c":"society","o":"vanilla","y":1856},"labor_movement":{"n":"Labor Movement","e":2,"c":"society","o":"vanilla","y":1834},"logistics":{"n":"Logistics","e":2,"c":"military","o":"vanilla","y":1855},"mechanical_tools":{"n":"Mechanical Tools","e":2,"c":"production","o":"vanilla","y":1840},"mechanized_workshops":{"n":"Mechanized Workshops","e":2,"c":"production","o":"vanilla","y":1850},"modern_sewerage":{"n":"Modern Sewerage","e":2,"c":"society","o":"vanilla","y":1858},"nationalism":{"n":"Nationalism","e":2,"c":"society","o":"vanilla","y":1789},"nitroglycerin":{"n":"Nitroglycerin","e":2,"c":"production","o":"vanilla","y":1847},"organized_sports":{"n":"Organized Sports","e":2,"c":"society","o":"vanilla","y":1863},"percussion_cap":{"n":"Percussion Ordnance","e":2,"c":"military","o":"vanilla","y":1822},"pharmaceuticals":{"n":"Pharmaceuticals","e":2,"c":"society","o":"vanilla","y":1827},"postal_savings":{"n":"Postal Savings","e":2,"c":"society","o":"vanilla","y":1861},"power_of_the_purse":{"n":"Power of the Purse","e":2,"c":"military","o":"vanilla","y":1830},"psychiatry":{"n":"Psychiatry","e":2,"c":"society","o":"vanilla","y":1808},"quinine":{"n":"Quinine","e":2,"c":"society","o":"vanilla","y":1820},"railways":{"n":"Railways","e":2,"c":"production","o":"vanilla","y":1825},"realism":{"n":"Realism","e":2,"c":"society","o":"vanilla","y":1850},"regenerative_furnace":{"n":"Regenerative Furnace","e":2,"c":"production","o":"new","y":1867},"repeaters":{"n":"Repeaters","e":2,"c":"military","o":"vanilla","y":1860},"rifling":{"n":"Rifling","e":2,"c":"military","o":"vanilla","y":1849},"screw_frigate":{"n":"The Screw Steamer","e":2,"c":"military","o":"vanilla","y":1843},"shell_gun":{"n":"Shell Gun","e":2,"c":"military","o":"vanilla","y":1822},"steel_hulls":{"n":"Steel Hulls","e":2,"c":"military","o":"new","y":1875},"steel_railway_cars":{"n":"Bulk Steel","e":2,"c":"production","o":"vanilla","y":1867},"triage":{"n":"Triage","e":2,"c":"military","o":"vanilla","y":1846},"watertube_boiler":{"n":"High-Pressure Steam","e":2,"c":"production","o":"vanilla","y":1867},"anarchism":{"n":"Anarchism","e":3,"c":"society","o":"vanilla","y":1840},"bolt_action_rifles":{"n":"Magazine Rifles","e":3,"c":"military","o":"vanilla","y":1886},"camera":{"n":"Camera","e":3,"c":"society","o":"vanilla","y":1839},"civilizing_mission":{"n":"Civilizing Mission","e":3,"c":"society","o":"vanilla","y":1870},"combustion_engine":{"n":"Combustion Engine","e":3,"c":"production","o":"vanilla","y":1886},"concrete_quays":{"n":"Reinforced Concrete Quays","e":3,"c":"military","o":"new","y":1908},"corporatism":{"n":"Corporatism","e":3,"c":"society","o":"vanilla","y":1891},"electric_railway":{"n":"Electric Drive","e":3,"c":"production","o":"vanilla","y":1895},"electric_telegraph":{"n":"Electric Telegraph","e":3,"c":"military","o":"vanilla","y":1837},"electrical_capacitors":{"n":"Alternating Current","e":3,"c":"production","o":"vanilla","y":1891},"electrical_generation":{"n":"Electrical Generation","e":3,"c":"production","o":"vanilla","y":1882},"enlistment_offices":{"n":"Enlistment Offices","e":3,"c":"military","o":"vanilla","y":1860},"fat_hydrogenation":{"n":"Fat Hydrogenation","e":3,"c":"production","o":"new","y":1909},"feminism":{"n":"Feminism","e":3,"c":"society","o":"vanilla","y":1848},"floating_harbor":{"n":"Floating Harbor","e":3,"c":"military","o":"vanilla","y":1868},"gantry_cranes":{"n":"Gantry Cranes","e":3,"c":"military","o":"vanilla","y":1875},"handcranked_machine_gun":{"n":"Handcranked Machine Gun","e":3,"c":"military","o":"vanilla","y":1862},"high_speed_steel":{"n":"High Speed Steel","e":3,"c":"production","o":"new","y":1901},"human_rights":{"n":"Human Rights","e":3,"c":"society","o":"vanilla","y":1789},"identification_documents":{"n":"Identification Documents","e":3,"c":"society","o":"vanilla","y":1860},"improved_fertilizer":{"n":"Improved Fertilizer","e":3,"c":"production","o":"vanilla","y":1878},"investment_banks":{"n":"Investment Banks","e":3,"c":"society","o":"vanilla","y":1852},"ironclad_tech":{"n":"Ironclad","e":3,"c":"military","o":"vanilla","y":1859},"jeune_ecole":{"n":"Jeune École","e":3,"c":"military","o":"vanilla","y":1880},"kraft_process":{"n":"Kraft Process","e":3,"c":"production","o":"new","y":1890},"marine_steam_turbine":{"n":"Marine Steam Turbine","e":3,"c":"military","o":"new","y":1903},"military_statistics":{"n":"Military Statistics","e":3,"c":"military","o":"vanilla","y":1865},"modern_nursing":{"n":"Modern Nursing","e":3,"c":"military","o":"vanilla","y":1854},"monitor_tech":{"n":"Modern Ironclad","e":3,"c":"military","o":"vanilla","y":1862},"mutual_funds":{"n":"Mutual Funds","e":3,"c":"society","o":"vanilla","y":1868},"open_hearth_process":{"n":"Open Hearth Process","e":3,"c":"production","o":"vanilla","y":1865},"ostwald_process":{"n":"Ostwald Process","e":3,"c":"production","o":"new","y":1908},"pan-nationalism":{"n":"Pan-nationalism","e":3,"c":"society","o":"vanilla","y":1848},"philosophical_pragmatism":{"n":"Philosophical Pragmatism","e":3,"c":"society","o":"vanilla","y":1878},"plastics":{"n":"Plastics","e":3,"c":"production","o":"vanilla","y":1907},"pumpjacks":{"n":"Oil Drilling","e":3,"c":"production","o":"vanilla","y":1859},"recoil_carriages":{"n":"Recoil Carriages","e":3,"c":"military","o":"new","y":1897},"reinforced_concrete":{"n":"Reinforced Concrete","e":3,"c":"production","o":"vanilla","y":1867},"rotary_valve_engine":{"n":"Rotary Valve Engine","e":3,"c":"production","o":"vanilla","y":1849},"rotary_veneer":{"n":"Rotary-Cut Veneer","e":3,"c":"production","o":"new","y":1900},"rubber_mastication":{"n":"Rubber Mastication","e":3,"c":"production","o":"vanilla","y":1820},"self_propelled_torpedoes":{"n":"Self-Propelled Torpedoes","e":3,"c":"military","o":"vanilla","y":1866},"shift_work":{"n":"Shift Work","e":3,"c":"production","o":"vanilla","y":1870},"socialism":{"n":"Socialism","e":3,"c":"society","o":"vanilla","y":1848},"steam_donkey":{"n":"Steam Donkey","e":3,"c":"production","o":"vanilla","y":1881},"steam_turbine":{"n":"Steam Turbine","e":3,"c":"production","o":"vanilla","y":1900},"steel_frame_buildings":{"n":"Steel-Frame Buildings","e":3,"c":"society","o":"vanilla","y":1884},"synthetic_indigo":{"n":"Synthetic Indigo","e":3,"c":"production","o":"new","y":1897},"telephone":{"n":"Telephone","e":3,"c":"production","o":"vanilla","y":1878},"threshing_machine":{"n":"Steam Threshing","e":3,"c":"production","o":"vanilla","y":1842},"vacuum_canning":{"n":"Vacuum Canning","e":3,"c":"production","o":"vanilla","y":1874},"vulcanization":{"n":"Vulcanization","e":3,"c":"production","o":"vanilla","y":1839},"wireless_telegraphy":{"n":"Wireless Telegraphy","e":3,"c":"production","o":"new","y":1901},"art_silk":{"n":"Cellulose Esters","e":4,"c":"production","o":"vanilla","y":1905},"autofrettage":{"n":"Autofrettage","e":4,"c":"military","o":"new","y":1925},"automatic_bottle_blowers":{"n":"Automatic Bottle Blowers","e":4,"c":"production","o":"vanilla","y":1903},"automatic_machine_guns":{"n":"Automatic Machine Guns","e":4,"c":"military","o":"vanilla","y":1884},"cemented_carbide":{"n":"Cemented Carbide","e":4,"c":"production","o":"new","y":1927},"central_planning":{"n":"Central Planning","e":4,"c":"society","o":"vanilla","y":1917},"concrete_dockyards":{"n":"Concrete Dockyards","e":4,"c":"military","o":"vanilla","y":1900},"conveyors":{"n":"Continuous-Flow Production","e":4,"c":"production","o":"vanilla","y":1913},"corporate_management":{"n":"Corporate Governance","e":4,"c":"society","o":"vanilla","y":1900},"defense_in_depth":{"n":"Defense in Depth","e":4,"c":"military","o":"vanilla","y":1917},"diesel_engine":{"n":"Diesel Engine","e":4,"c":"production","o":"new","y":1904},"dreadnought_tech":{"n":"Dreadnought","e":4,"c":"military","o":"vanilla","y":1906},"electric_arc_process":{"n":"Electric Arc Process","e":4,"c":"production","o":"vanilla","y":1903},"elevator":{"n":"Elevators","e":4,"c":"society","o":"vanilla","y":1889},"film":{"n":"Film","e":4,"c":"society","o":"vanilla","y":1895},"international_exchange_standards":{"n":"International Exchange Standards","e":4,"c":"society","o":"vanilla","y":1922},"landing_craft":{"n":"Landing Craft","e":4,"c":"military","o":"vanilla","y":1915},"light_machine_guns":{"n":"Light Machine Guns","e":4,"c":"military","o":"new","y":1915},"long_draft_spinning":{"n":"Long-Draft Spinning","e":4,"c":"production","o":"new","y":1925},"malaria_prevention":{"n":"Malaria Prevention","e":4,"c":"society","o":"vanilla","y":1897},"mechanised_cargo_handling":{"n":"Mechanised Cargo Handling","e":4,"c":"military","o":"new","y":1930},"mechanized_farming":{"n":"Mechanized Farming","e":4,"c":"production","o":"vanilla","y":1892},"military_aviation":{"n":"Military Aviation","e":4,"c":"military","o":"vanilla","y":1911},"multilateral_alliances":{"n":"Multilateral Alliances","e":4,"c":"society","o":"vanilla","y":1900},"nitrogen_fixation":{"n":"Nitrogen Fixation","e":4,"c":"production","o":"vanilla","y":1913},"oil_fired_boilers":{"n":"Oil-Fired Boilers","e":4,"c":"military","o":"new","y":1913},"pasteurization":{"n":"Pasteurization","e":4,"c":"production","o":"vanilla","y":1864},"pneumatic_tools":{"n":"Pneumatic Tools","e":4,"c":"production","o":"vanilla","y":1871},"political_agitation":{"n":"Political Agitation","e":4,"c":"society","o":"vanilla","y":1900},"pre_dreadnought_tech":{"n":"Pre Dreadnought","e":4,"c":"military","o":"vanilla","y":1889},"psychoanalysis":{"n":"Psychoanalysis","e":4,"c":"society","o":"vanilla","y":1899},"pulverized_coal_firing":{"n":"Pulverized Coal Firing","e":4,"c":"production","o":"new","y":1920},"radio":{"n":"Radio","e":4,"c":"production","o":"vanilla","y":1920},"ribbon_machine":{"n":"Ribbon Machine","e":4,"c":"production","o":"new","y":1926},"sea_lane_strategies":{"n":"Sea Lane Strategies","e":4,"c":"military","o":"vanilla","y":1890},"semi_chemical_pulping":{"n":"Semi-Chemical Pulping","e":4,"c":"production","o":"new","y":1925},"shell_filling":{"n":"Mass Shell Filling","e":4,"c":"military","o":"new","y":1915},"submarine":{"n":"Submarine","e":4,"c":"military","o":"vanilla","y":1900},"trench_works":{"n":"Trench Works","e":4,"c":"military","o":"vanilla","y":1904},"war_propaganda":{"n":"War Propaganda","e":4,"c":"military","o":"vanilla","y":1914},"wargaming":{"n":"Wargaming","e":4,"c":"military","o":"vanilla","y":1824},"zeppelins":{"n":"Zeppelins","e":4,"c":"society","o":"vanilla","y":1900},"analytical_philosophy":{"n":"Analytical Philosophy","e":5,"c":"society","o":"vanilla","y":1912},"antibiotics":{"n":"Antibiotics","e":5,"c":"society","o":"vanilla","y":1928},"arc_welding":{"n":"Arc Welding","e":5,"c":"production","o":"vanilla","y":1919},"automatic_aa_guns":{"n":"Automatic Anti-Aircraft Guns","e":5,"c":"military","o":"new","y":1936},"battlefleet_tactics":{"n":"Modern Battlefleet Tactics","e":5,"c":"military","o":"vanilla","y":1916},"battleship_tech":{"n":"Super Dreadnought","e":5,"c":"military","o":"vanilla","y":1912},"behaviorism":{"n":"Behaviorism","e":5,"c":"society","o":"vanilla","y":1913},"carrier_tech":{"n":"Aircraft Carrier","e":5,"c":"military","o":"vanilla","y":1918},"chemical_warfare":{"n":"Chemical Warfare","e":5,"c":"military","o":"vanilla","y":1915},"compression_ignition":{"n":"Compression Ignition","e":5,"c":"production","o":"vanilla","y":1897},"concrete_fortifications":{"n":"Concrete Fortifications","e":5,"c":"military","o":"vanilla","y":1930},"continuous_strip_mill":{"n":"Continuous Wide Strip Mill","e":5,"c":"production","o":"new","y":1926},"cyclonite_process":{"n":"Cyclonite Process","e":5,"c":"production","o":"new","y":1940},"destroyer":{"n":"Destroyer","e":5,"c":"military","o":"vanilla","y":1893},"dough_rollers":{"n":"Mechanised Bakeries","e":5,"c":"production","o":"vanilla","y":1920},"flamethrowers":{"n":"Flamethrowers","e":5,"c":"military","o":"vanilla","y":1915},"flash_freezing":{"n":"Flash Freezing","e":5,"c":"production","o":"vanilla","y":1924},"glass_fibre":{"n":"Glass Fibre","e":5,"c":"production","o":"new","y":1938},"high_speed_diesel":{"n":"High Speed Diesel","e":5,"c":"production","o":"new","y":1935},"high_speed_papermaking":{"n":"High Speed Papermaking","e":5,"c":"production","o":"new","y":1930},"macroeconomics":{"n":"Macroeconomics","e":5,"c":"society","o":"vanilla","y":1936},"mass_propaganda":{"n":"Mass Propaganda","e":5,"c":"society","o":"vanilla","y":1917},"mass_surveillance":{"n":"Mass Surveillance","e":5,"c":"society","o":"vanilla","y":1920},"mobile_armor":{"n":"Mobile Armor","e":5,"c":"military","o":"vanilla","y":1916},"modern_financial_instruments":{"n":"Modern Financial Instruments","e":5,"c":"society","o":"vanilla","y":1920},"nco_training":{"n":"NCO Training","e":5,"c":"military","o":"vanilla","y":1900},"oil_turbine":{"n":"Oil Turbine","e":5,"c":"production","o":"vanilla","y":1920},"paved_roads":{"n":"Paved Roads","e":5,"c":"society","o":"vanilla","y":1872},"polyamide_synthesis":{"n":"Polyamide Synthesis","e":5,"c":"production","o":"new","y":1939},"sound_film":{"n":"Sound Film","e":5,"c":"society","o":"new","y":1927},"stamped_receivers":{"n":"Mass Small-Arms Production","e":5,"c":"military","o":"new","y":1938},"steam_reforming":{"n":"Steam Reforming","e":5,"c":"production","o":"new","y":1931},"stormtroopers":{"n":"Stormtroopers","e":5,"c":"military","o":"vanilla","y":1918},"transfer_machining":{"n":"Automatic Machine Control","e":5,"c":"production","o":"new","y":1936},"vacuum_tube_electronics":{"n":"Vacuum Tube Electronics","e":5,"c":"production","o":"new","y":1935},"welded_prefabrication":{"n":"Welded Prefabrication","e":5,"c":"military","o":"new","y":1941}}
 };
