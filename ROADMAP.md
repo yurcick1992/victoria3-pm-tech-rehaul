@@ -867,6 +867,60 @@ one-off validation pass.
 
 ## DEFERRED FIXES — known, not scheduled
 
+### ⚠⚠ 30% OF THE 1836 START IS EMITTED ON THE WRONG TIER (found 2026-08-12)
+
+**A LANDMINE in the exact sense the register means: nothing fails.** The build succeeds, the linter
+passes, `Invoke-ModChecks` passes (its test is that `create_building` blocks are *present*), the history
+files are non-empty, and `start_baseline.json`'s **`unmapped` list — the version-drift alarm — reads 0**
+while 327 factories are never inspected at all.
+
+**Root cause, one line.** `Get-SplitMaps` in `tools/history_lib.ps1:61` keys the converter's
+base-building map on the **first** tier: `if ($n -eq 1) { $baseIndustry[$t.key] = $ind.id }`. That was
+correct while tier 1 *was* the vanilla building. The era ladder then minted **e0 rungs**, which are not
+`model_only`, so slot 0 is now an invented key — `building_textile_mill_cottage`,
+`building_steel_mill_bloomery` — and the vanilla key it displaced is invisible to the map. A vanilla
+`create_building` naming `building_textile_mill` therefore matches nothing, is **not** recorded as
+`unmapped`, and passes straight through unconverted onto whatever tier happens to own that key: era 1.
+
+**Nine industries affected** — exactly those that got an e0 rung: food, textile, furniture, glass,
+tooling, paper, steel, arms, artillery. Counted by the era each factory's *own active production
+method* implies, against the era 1 they are all emitted as:
+
+| industry | e1 | e2 | e3 | wrong |
+|---|--:|--:|--:|--:|
+| textile | 55 | 21 | — | 21 |
+| furniture | 33 | 18 | — | 18 |
+| tooling | 10 | 16 | 9 | **25** |
+| glass | 28 | 12 | — | 12 |
+| food | 20 | 12 | — | 12 |
+| paper | 40 | 10 | — | 10 |
+| arms | 27 | — | — | 0 |
+| artillery | 10 | — | — | 0 |
+| steel | 6 | — | — | 0 |
+
+⇒ **98 of 327 (30%)**, and tooling holds a **two-era** demotion on nine of them. Vanilla and converted
+`create_building` counts are byte-for-byte identical for all nine, which is the cleanest proof that no
+conversion happens: only `port` moves (229 → 241), because port's first tier still *is* `building_port`.
+
+⭐ **Steel is correct by luck, and that matters for step 1b.** All six 1836 steel mills run
+`pm_blister_steel_process`, which is era 1 anyway — so the pass-through lands them right. Better still,
+**dropping steel's bloomery rung (step 1b clause 2) makes `building_steel_mill` the first tier again and
+un-breaks steel by construction.** The same is true of any industry whose e0 rung is dropped; it is not
+a substitute for the fix, but it means the redo and this bug pull in the same direction.
+
+**The fix** is to key `baseIndustry` on the tier that carries the **vanilla building key** rather than on
+position — every affected industry has exactly one tier whose key appears in vanilla history — and to
+make a `create_building` whose key belongs to a known industry but matches no tier land in `unmapped`
+rather than vanishing. Then add the detector: **a landmine-register entry that walks the emitted history
+against vanilla's and fails when a factory's tier disagrees with its own active production method.**
+The current alarm cannot see this, and an entry that stays manual is a smell.
+
+⚠⚠ **HELD until the research-events batch B has built.** `history_lib.ps1` is a build input and
+`run_schedule.ps1` rebuilds the mod before every run, so changing it mid-batch would land in some runs
+and not others — the same reason `build.ps1` and `telemetry_lib.ps1` are frozen during a batch.
+⚠ **It also invalidates nothing measured so far**, because every arm that carried a mod carried this
+too; it is a wrong *baseline*, not a wrong *comparison*.
+
 ### ⚠⚠ THE AI SUBSIDISES ONLY THE OBSOLETE TIER OF EACH INFRASTRUCTURE CHAIN (found 2026-08-11)
 
 **Worse than "we keep subsidising basic ports": we subsidise *nothing else*.** Vanilla's

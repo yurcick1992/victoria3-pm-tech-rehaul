@@ -61,6 +61,40 @@ closed.
 | L10 | Editing the generator while a batch is running | MANUAL |
 | L11 | A named tag that is not the country you think it is | **PROPOSED — AUTO, detector not yet written** |
 | L12 | Savegames reaped without a readable summary | AUTO (post-run, `-Session`) |
+| L13 | A starting factory converted onto a tier its own production method contradicts | **PROPOSED — AUTO, detector not yet written** |
+
+---
+
+### L13 — a starting factory converted onto a tier its own production method contradicts · PROPOSED (AUTO)
+
+**The failure.** The 1836 start converter maps each vanilla factory onto one of our tiers by reading the
+main production method it runs. When the mapping silently fails, the factory does **not** disappear and
+is **not** reported — it passes through carrying the vanilla building key, which some tier still owns, so
+it lands on that tier regardless of what it was running.
+
+Everything downstream looks healthy. The build succeeds, both linters pass, `Invoke-ModChecks` passes
+(its test is that `create_building` blocks are *present*, which they are), the history files are the
+right size, and `start_baseline.json`'s **`unmapped` list — the drift alarm built for exactly this
+class — reads 0**, because a factory whose base key is absent from the map is never examined at all
+rather than being examined and failing.
+
+**Found live, 2026-08-12, at 30%.** `Get-SplitMaps` (`tools/history_lib.ps1:61`) keys the base-building
+map on the **first** tier. That held while tier 1 was the vanilla building; the era ladder then minted
+non-`model_only` **e0 rungs** for nine industries, so slot 0 became an invented key and the vanilla one
+it displaced went invisible. **98 of 327 starting factories** were emitted on era 1 against their own
+methods — textile 21, tooling 25 (nine of them a **two-era** demotion), furniture 18, glass 12, food 12,
+paper 10. Vanilla and converted `create_building` counts were **identical** for all nine industries,
+which is what proves no conversion ran. Full root cause and the fix in `ROADMAP.md` → *Deferred fixes*.
+
+**The detector.** Walk the **emitted** history against vanilla's: for every `create_building`, read its
+active main production method, look up the tier that method belongs to, and fail if the emitted building
+key is not that tier's. It reads the artifact, never the generator — the same rule as `verify_pms.mjs`,
+and the reason a check on the mapping code would not have caught this one. A second, cheaper assertion
+is worth having beside it: **no vanilla base building key may survive into the emitted history unless a
+tier legitimately owns it**, and `unmapped` must account for every factory the map declined.
+
+⚠ Not yet written: `history_lib.ps1` is a build input and a research-events batch is mid-flight, so the
+fix and its detector are both held until it finishes (L10).
 
 ---
 
