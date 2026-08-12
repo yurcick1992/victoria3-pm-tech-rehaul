@@ -798,12 +798,12 @@ tools/                  dev tooling — NOT shipped in the mod
   audit_tech_content.mjs ⭐⭐ WHAT WOULD BE LOST IF THIS TECHNOLOGY WERE MERGED AWAY OR DELETED?
                         Read-only. Per technology: its MODIFIER block, every production method /
                         building / combat unit / decree / company it gates, and every line of vanilla
-                        script that names it.  sweeps every technology we add.
+                        script that names it. `--all-new` sweeps every technology we add.
                         ⭐⭐ THE RULE IT ENFORCES (user, 2026-08-12): **THERE ARE NO CONTENTLESS VANILLA
                         TECHNOLOGIES.** None is a placeholder that only slows research down; if one looks
                         like that, you are looking in the wrong place. The tech-tree viewer counts only
                         BUILDING unlocks, which is exactly why a technology can look empty there and gate
-                        sixteen things —  does. Run this before ANY merge or removal and
+                        sixteen things — `watertube_boiler` does. Run this before ANY merge or removal and
                         make the survivor absorb everything listed.
                         ⚠ ITS FINDING THAT CHANGED THE PLAN: a vanilla technology can essentially never be
                         DELETED, because vanilla script names it — in production methods, journal entries,
