@@ -20,7 +20,11 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { REPO } from './econ_host.mjs';
 
-const CFG = join(REPO, 'config', 'mod_config.json');
+// ⚠ MOD_CONFIG redirects the WHOLE era pipeline at an alternate config, exactly as econ_host.mjs already
+// does for the model it loads. Without it the two disagree — the model would speak for one file while the
+// ladder rewrote another — and there would be no way to develop a ladder while a measurement batch is
+// still building from the canonical config.
+const CFG = join(REPO, process.env.MOD_CONFIG || join('config', 'mod_config.json'));
 const WRITE = process.argv.includes('--write');
 
 // The mod's own era anchors. Contracting on purpose: 100 years, then 50, then 25, then 15.
@@ -31,7 +35,16 @@ const WRITE = process.argv.includes('--write');
 // ⚠ Era 0 is ~1700 and exists ONLY for industries that existed before ~1780. Fertilizer, explosives,
 // motor, munition and synthetics begin at era 2; automotive and electrics at era 3. Minting a 1700 tier
 // for those would invent a technology, which is the same test every `note` in the SPEC below applies.
-export const ERA_YEAR = { 0: 1700, 1: 1750, 2: 1850, 3: 1900, 4: 1925, 5: 1940 };
+// ⭐⭐ THE ANCHORS ARE AUTHORITATIVE (user ruling 2026-08-12, CLAUDE.md's anchor principle). At an era's
+// anchor year a technology LEADER holds about half of that era's technologies — so the anchor is the
+// MEDIAN of the era's dates, not the midpoint of its band. Era 0 sits well before the 1836 start and
+// era 5 slightly after the 1936 end, both deliberately.
+export const ERA_YEAR = { 0: 1750, 1: 1830, 2: 1870, 3: 1900, 4: 1925, 5: 1940 };
+// The band each tier's tech_year falls in, derived as the midpoints between consecutive anchors. Every
+// tier below MUST land in the band its authored era names — `checkBands()` throws otherwise, so a
+// re-dating that quietly moves a rung into the wrong era cannot ship.
+export const ERA_BAND = [1790, 1850, 1885, 1912, 1932];
+export const bandOf = y => { let e = 0; for (let i = 0; i < ERA_BAND.length; i++) if (y >= ERA_BAND[i]) e = i + 1; return e; };
 
 // ⚠ The "one technology, one era" correction that pairs with SPEC's historical moves below lives in
 // `tools/era_tech_sync.mjs`, NOT here: this module runs its whole build at import time and keys off
@@ -57,67 +70,98 @@ const OUTPUT_MULT = (() => {
 // derived, because every interesting case is an exception (see the notes). `invent` lists the tiers that
 // do not exist in vanilla at all. Sources for the dates are the industry research in this task's notes.
 const SPEC = {
-  // --- unchanged shape, one tier added at the top ---------------------------------------------------
   // `years` (one per entry of `eras`) and `year:` on each invent = the tier's TECH_YEAR (§10.44): the
   // year the SLOT'S technology was first commercially deployable — a building of this kind could exist.
   // ⚠ Date the SLOT, not the vanilla PM's decorative name (vanilla gates rubber-grip tooling on
   // vulcanization, 1844; the slot it occupies is the high-speed-steel machine shop, 1901). The date gate
-  // in era_scenarios places a tier iff tech_year <= the scenario year, replacing the leading-rung era
-  // arithmetic that put ~50-58% of output value on next-era technology (the census that killed it).
-  food:        { eras:[1,2,3], years:[1750,1815,1860], invent:[ {era:0, year:1700, slug:'artisanal', name:'Artisanal Food Workshops', pm:'Artisanal Preserving'}, {era:4, year:1920, slug:'mechanised', name:'Mechanised Bakery Food Industries', pm:'Mechanised Bread Plant'} ],
-                 note:'stops at era 4: mechanised bread and quick-freezing peak in the 1920s-30s; continuous-mix dough is 1953. WEAKEST plateau call — 1930s food TFP was still healthy. Years: naval victualling biscuit manufactories ~1750, beet-sugar/sweetener plants 1815, commercial baking powder 1860.' },
-  textile:     { eras:[1,2,3,4], years:[1800,1830,1855,1905], invent:[ {era:0, year:1700, slug:'cottage', name:'Cottage Textile Workshops', pm:'Cottage Spinning'},],
-                 note:'stops at era 4: the Northrop automatic loom (1894) + individual electric drive is the last pre-war step. Shuttleless looms and open-end spinning are 1950s-60s — an era-5 tier would be inventing a technology. Years: ready-made garment manufactories ~1800, integrated dye/calico works 1830, sewing-machine factories 1855, electric-drive garment plants 1905.' },
-  furniture:   { eras:[1,2,3], years:[1800,1830,1855], invent:[ {era:0, year:1700, slug:'village', name:'Village Furniture Workshops', pm:'Village Joinery'}, {era:4, year:1923, slug:'sprayed', name:'Spray-Finished Furniture Manufactories', pm:'Spray Lacquer Finishing'} ],
-                 note:'stops at era 4: the trade stayed hand-assembled into the 1990s; only finishing (nitrocellulose spray lacquer, 1923) is a clean >50% step after 1900. Years: manufactory joinery 1800 — the honest range is 1770 (Gillows-scale London firms) to 1800s (provincial manufactory scale), and WITHIN an honest range the tie-break is input-chain producibility: the e1 recipe eats HARDWOOD, whose only producer is a tech-gated logging secondary the 1780 scenario cannot run, so 1770 pinned hardwood at the ceiling with no producer at all (§10.44.3). Steam lathe/circular saw 1830, Thonet-style mechanization 1855.' },
-  glass:       { eras:[1,2,3,4], years:[1750,1832,1867,1910], invent:[ {era:0, year:1700, slug:'broad', name:'Broad Glass Workshops', pm:'Broad Glass'}, {era:5, year:1926, slug:'ribbon', name:'Ribbon Machine Glassworks', pm:'Continuous Ribbon Machine'} ],
-                 note:'Owens bottle machine 1903-05 (one machine ~= 50 hand workers), Fourcault/Colburn flat glass 1913-17, Corning ribbon machine 1926. Years: coal-fired cone glasshouses 1750, cylinder sheet (Chance) 1832, Siemens regenerative tank 1867, Bakelite-era plastics 1910.' },
-  tooling:     { eras:[1,2,3,4], years:[1770,1830,1865,1901], invent:[ {era:0, year:1700, slug:'blacksmith', name:'Blacksmith Tool Workshops', pm:'Blacksmithing'}, {era:5, year:1927, slug:'carbide', name:'Cemented Carbide Tooling Workshops', pm:'Cemented Carbide Tools'} ],
-                 note:'high-speed steel 1900 (cutting 5 -> 30 m/min), cemented carbide 1926-27 (another 4-7x). Years: Birmingham/Soho toolshops 1770, pig-iron tooling 1830, Bessemer-steel tools 1865, HSS commercial 1901 (demonstrated 1900, tooling on sale 1901+ — deliberately AFTER the 1900 scenario).' },
-  paper:       { eras:[1,2,3], years:[1750,1830,1874], invent:[ {era:0, year:1700, slug:'rag', name:'Rag Paper Workshops', pm:'Rag Pulping'}, {era:4, year:1890, slug:'kraft', name:'Kraft Process Paper Mills', pm:'Kraft Sulfate Pulping'},
-                                        {era:5, year:1930, slug:'highspeed', name:'High-Speed Machine Paper Mills', pm:'High-Speed Fourdrinier'} ],
-                 note:'NO plateau — the hunch that paper stops improving did not survive research. Machine speed 270 ft/min (1889) -> 400-500 (1900) -> 600 (1910) -> 1500+ by 1940, on top of sulfite 1874 / kraft 1884. Years: large rag mills 1750, Fourdrinier machine mills 1830 (the e2 slot is the MACHINE mill — its vanilla PM name says sulfite, its tech says mechanical_tools, and the slot position is 1836-70), sulfite 1874, kraft deployable ~1890, high-speed machines 1930.' },
-  fertilizer:  { eras:[2,3,4], years:[1842,1885,1913], invent:[ {era:5, year:1931, slug:'reforming', name:'Steam Reforming Chemical Plants', pm:'Methane Steam Reforming'} ],
-                 note:'superphosphate 1842 (era 2 start), Haber-Bosch commercial at Oppau 1913, methane steam reforming ~1930-31. Years: 1842 (note superphosphate POSTDATES the 1836 scenario — vanilla-1836 fertilizer capacity was always an anachronism), Thomas slag/potash 1885, Oppau 1913.' },
-  explosives:  { eras:[2,3,4,5], years:[1820,1867,1908,1928], invent:[],
-                 note:'nitroglycerin 1847, dynamite 1867, Ostwald ammonia oxidation commercial 1908, continuous nitration late 1920s. Years: Leblanc-era works 1820, dynamite 1867, Ostwald 1908, continuous nitration 1928 (the slot; its vanilla PM name says brine electrolysis, which is 1890s tech in a 1920s slot).' },
-  steel:       { eras:[1,2,3,4], years:[1745,1856,1868,1903], invent:[ {era:0, year:1700, slug:'bloomery', name:'Bloomery Steel Forges', pm:'Bloomery Process'}, {era:5, year:1926, slug:'strip_mill', name:'Continuous Strip Mill Steelworks', pm:'Continuous Wide Strip Mill'} ],
-                 note:'crucible 1740 anchors era 1. The era-5 tier is the CONTINUOUS WIDE STRIP MILL (1926), interwar steel’s biggest step and absent from vanilla entirely. Years: blister/crucible 1745, Bessemer 1856, Siemens-Martin 1868, ARC STEEL 1903 (Héroult furnace 1900, first commercial steel plants 1903-06 — deliberately AFTER the 1900 scenario, the census case), strip mill 1926.' },
-  motor:       { eras:[2,3,4], years:[1820,1893,1904], invent:[ {era:5, year:1935, slug:'welded_diesel', name:'Welded High-Speed Motor Industries', pm:'Welded High-Speed Diesel'} ],
-                 note:'atmospheric/steam era 2, electric motor + turbine era 3, diesel (1897) era 4, high-speed welded diesel 1930s era 5. Years: engine works as a trade (Maudslay, marine works) 1820 — PREDATES 1836, which is what the old debut-guard exemption was hand-waving; electric motor works 1893; diesel engine works 1904; welded high-speed 1935.' },
-  shipyard:    { eras:[1,2], years:[1700,1845], invent:[],
-                 note:'DEAD END, not a plateau: steam tonnage passes sail in 1890 and the last commercial sailing hulls are ~1899-1904. Two tiers is already generous. Years: 1700, screw-era yards 1845.' },
-  shipyard_steam:{ eras:[2,5], years:[1843,1941], invent:[ {era:3, year:1903, slug:'turbine', name:'Turbine Steamship Yards', pm:'Marine Steam Turbines'},
-                                        {era:4, year:1913, slug:'oil_fired', name:'Oil-Fired Steamship Yards', pm:'Oil-Fired Turbine Steamers'} ],
-                 note:'iron screw steamers from the 1840s (era 2, per the design brief), steel + triple expansion 1881, turbines/oil 1900s-20s, welded prefabrication 1941-43 — so vanilla’s arc-welding tier belongs at era 5, not era 3. Years: SS Great Britain 1843 (predates 1870, so the yard stands at 1870 natively — the second retired exemption), merchant turbines 1903, oil-fired boilers 1913, welded prefab 1941.' },
-  automotive:  { eras:[3,4], years:[1899,1913], invent:[ {era:5, year:1936, slug:'transfer_line', name:'Transfer Line Automotive Industries', pm:'Transfer Machining'} ],
-                 note:'Curved Dash 1901 (era 3 start, per the design brief), moving assembly line 1913 (chassis 12.5h -> 1.5h), interwar transfer machinery. Years: SERIES production 1899 (De Dion-Bouton, ~400 cars in 1900 — so the industry stands at the 1900 scenario), assembly line 1913, transfer lines 1936.' },
-  arms:        { eras:[1,2,3,4], years:[1770,1853,1866,1886], invent:[ {era:0, year:1700, slug:'gunsmith', name:'Gunsmith Arms Workshops', pm:'Handmade Muskets'}, {era:5, year:1938, slug:'stamped', name:'Stamped Receiver Arms Industries', pm:'Stamped and Welded Receivers'} ],
-                 note:'gunsmithing -> rifled musket 1850s -> bolt action 1888 -> stamped/welded submachine guns (MP40 1938, Sten 1941). Years: Birmingham gun-quarter manufactories 1770, rifled muskets at scale 1853 (Enfield), repeaters 1866 (Winchester), smokeless bolt-action 1886 (Lebel), stamped receivers 1938.' },
-  artillery:   { eras:[1,2,3,4], years:[1750,1830,1861,1897], invent:[ {era:0, year:1700, slug:'bronze', name:'Bronze Cannon Foundries', pm:'Bronze Cannons'}, {era:5, year:1925, slug:'autofrettage', name:'Autofrettaged Artillery Foundries', pm:'Autofrettage and Welded Carriages'} ],
-                 note:'smoothbore -> shell gun 1820s-40s -> breech-loading steel with recoil 1897 -> autofrettage, welded carriages, automatic AA. Years: organized cannon foundries 1750, Paixhans shell guns 1830, rifled breech-loaders 1861 (Armstrong/Krupp), recoil carriages 1897 (French 75), autofrettage 1925.' },
-  munition:    { eras:[2,3], years:[1830,1875], invent:[ {era:4, year:1895, slug:'drawn_brass', name:'Drawn Brass Munition Plants', pm:'Drawn Brass Cartridges'},
-                                      {era:5, year:1940, slug:'automatic', name:'Automatic Line Munition Plants', pm:'Automatic Cartridge Lines'} ],
-                 note:'percussion cap 1820s-40s, drawn brass 1866, smokeless shells 1880s-90s, high-speed automatic cartridge lines by WWII. Years: caps at scale 1830, filled explosive shells 1875, smokeless-era case plants 1895 (drawn brass is 1866 but the SLOT is the 1890s high-volume plant), automatic lines 1940.' },
+  // in era_scenarios places a tier iff tech_year <= the scenario year.
+  //
+  // ⭐⭐ RE-BANDED ONTO THE RULED ANCHORS (2026-08-12). Three things changed together:
+  //   1. THE ANCHORS MOVED to 1750/1830/1870/1900/1925/1940, so most rungs move DOWN one era number —
+  //      what used to be era 5 is mostly era 4 now, which is what frees era 5 for genuinely 1930s work.
+  //   2. THE 1700 RUNGS ARE GONE. Seven industries carried an invented ~1700 tier AND a real ~1750
+  //      vanilla-anchored one; under the new anchors both fall in era 0 and an industry may not hold two
+  //      rungs in one era. The invented one is dropped in every case — it is ours, not vanilla's, and the
+  //      user had already ruled the steel instance that way. ⭐ This also restores the vanilla building
+  //      key to slot 0 in nine industries, which is the root cause of landmine L13.
+  //   3. FIFTEEN RUNGS ARE ADDED, filling every interior gap the re-band opened and giving era 5 real
+  //      content. Each names a specific historical step, not a placeholder: a rung that could not be
+  //      justified was left out and the industry marked `plateau` instead (LADDER_END below).
+  // ⚠ Where a date moved, the note says so and why. The anchors are authoritative; the dates are
+  // calibrated to them, never the reverse.
+
+  // --- consumer manufacturing -----------------------------------------------------------------------
+  food:        { eras:[0,1,2], years:[1750,1815,1860], invent:[ {era:3, year:1909, slug:'hydrogenated', name:'Hydrogenated Fat Food Industries', pm:'Fat Hydrogenation'}, {era:4, year:1920, slug:'mechanised', name:'Mechanised Bakery Food Industries', pm:'Mechanised Bread Plant'} ],
+                 note:'e3 is NEW: catalytic hydrogenation of oils (Normann 1902, Procter & Gamble Crisco 1911) turned cheap oils into solid cooking fat and is the one clean 1885-1911 step in food manufacture. Still plateaus at e4 — continuous-mix dough is 1953. Years: naval victualling biscuit manufactories ~1750, beet-sugar plants 1815, commercial baking powder 1860, hydrogenated fat 1909, mechanised bread 1920.' },
+  textile:     { eras:[0,1,2,3], years:[1780,1830,1855,1905], invent:[ {era:4, year:1925, slug:'highdraft', name:'High-Draft Spinning Textile Mills', pm:'Long-Draft Roving and Spinning'} ],
+                 note:'the invented 1700 cottage tier is dropped and the vanilla handsewn manufactory moves to e0 at 1780 — putting-out clothing manufactories predate 1800 comfortably, and this is what puts the VANILLA KEY back in slot 0. e4 is NEW: long-draft roving and spinning (1920s) cut the number of passages and doublings and is the last pre-war spinning step. Plateau at e4 stands — shuttleless looms and open-end spinning are 1950s-60s.' },
+  furniture:   { eras:[0,1,2], years:[1780,1830,1855], invent:[ {era:3, year:1900, slug:'plywood', name:'Plywood Furniture Manufactories', pm:'Rotary-Cut Veneer and Plywood'}, {era:4, year:1923, slug:'sprayed', name:'Spray-Finished Furniture Manufactories', pm:'Spray Lacquer Finishing'} ],
+                 note:'same 1700-drop and 1780 re-date as textile, for the same two reasons. e3 is NEW: rotary-lathe veneer cutting plus waterproof glue made plywood carcass furniture an industrial product around 1900 — the missing 1885-1911 step. Plateau at e4: the trade stayed hand-assembled into the 1990s.' },
+  glass:       { eras:[0,1,2,3], years:[1750,1832,1867,1910], invent:[ {era:4, year:1926, slug:'ribbon', name:'Ribbon Machine Glassworks', pm:'Continuous Ribbon Machine'}, {era:5, year:1938, slug:'fibre', name:'Glass Fibre Works', pm:'Continuous Glass Fibre'} ],
+                 note:'e5 is NEW: Owens-Corning 1938, continuous glass-fibre drawing — a genuinely 1930s product and a new market rather than a faster bottle machine. Years: coal-fired cone glasshouses 1750, cylinder sheet (Chance) 1832, Siemens regenerative tank 1867, housewares plastics 1910, Corning ribbon machine 1926, glass fibre 1938.' },
+  tooling:     { eras:[0,1,2,3], years:[1770,1830,1865,1901], invent:[ {era:4, year:1927, slug:'carbide', name:'Cemented Carbide Tooling Workshops', pm:'Cemented Carbide Tools'}, {era:5, year:1936, slug:'tracer', name:'Tracer-Controlled Tooling Workshops', pm:'Hydraulic Tracer Control'} ],
+                 note:'e5 is NEW and answers the user’s point that tooling is "basically any machine", so its e3/e4/e5 must really differ: hydraulic tracer-controlled mills and lathes (Keller, Cincinnati, 1930s) cut complex profiles from a master without a skilled machinist — the step between carbide cutting speed and 1950s numerical control. Years: Soho toolshops 1770, pig-iron tooling 1830, Bessemer-steel tools 1865, HSS 1901, cemented carbide 1927, tracer control 1936.' },
+  paper:       { eras:[0,1,2], years:[1750,1830,1874], invent:[ {era:3, year:1890, slug:'kraft', name:'Kraft Process Paper Mills', pm:'Kraft Sulfate Pulping'},
+                                        {era:4, year:1925, slug:'nssc', name:'Semi-Chemical Paper Mills', pm:'Neutral Sulfite Semi-Chemical Pulping'},
+                                        {era:5, year:1935, slug:'highspeed', name:'High-Speed Machine Paper Mills', pm:'High-Speed Fourdrinier'} ],
+                 note:'e4 is NEW: neutral sulfite semi-chemical pulping (commercial 1925) opened hardwoods and corrugating medium to chemical pulping. High-speed machines move 1930 -> 1935 so they sit in era 5 rather than crowding e4; machine speed 270 ft/min (1889) -> 600 (1910) -> 1500+ by 1940 makes either date defensible and the anchors decide.' },
+
+  // --- chemicals ------------------------------------------------------------------------------------
+  fertilizer:  { eras:[1,3,4], years:[1842,1885,1913], invent:[ {era:2, year:1865, slug:'ammoniacal', name:'Ammoniacal Liquor Fertilizer Plants', pm:'By-Product Ammonium Sulphate'}, {era:5, year:1935, slug:'reforming', name:'Steam Reforming Chemical Plants', pm:'Methane Steam Reforming'} ],
+                 note:'e2 is NEW: ammonium sulphate recovered from gasworks and coke-oven liquor was the era’s real nitrogen fertilizer, 1860s-70s, and fills the gap between superphosphate and Thomas slag. Steam reforming moves 1931 -> 1935 (ICI Billingham scale-up) so it lands in era 5. ⚠ Superphosphate 1842 POSTDATES the 1836 scenario — vanilla-1836 fertilizer capacity was always an anachronism.' },
+  explosives:  { eras:[1,2,3,4], years:[1820,1867,1908,1928], invent:[ {era:5, year:1940, slug:'cyclonite', name:'Cyclonite Explosives Factories', pm:'RDX Continuous Nitration'} ],
+                 note:'e5 is NEW: RDX/cyclonite at scale (Woolwich process, then Bachmann 1940) — roughly 1.5x TNT’s power and the defining explosive of the war that ends the game window.' },
   synthetics:  { eras:[2], years:[1857], invent:[ {era:3, year:1897, slug:'indigo', name:'Synthetic Indigo Plants', pm:'Synthetic Indigo'},
-                                    {era:4, year:1905, slug:'viscose', name:'Viscose Rayon Plants', pm:'Viscose Rayon'},
+                                    {era:4, year:1912, slug:'viscose', name:'Viscose Rayon Plants', pm:'Viscose Rayon'},
                                     {era:5, year:1939, slug:'polyamide', name:'Polyamide Fibre Plants', pm:'Polyamide Synthesis'} ],
-                 note:'VANILLA IS AN ERA LATE: Perkin’s mauveine is 1856, not 1874 — aniline belongs at era 2. Then alizarin 1869 / indigo 1897, viscose rayon 1905, nylon 1935/39. Years: aniline works 1857, BASF indigo 1897, viscose 1905, nylon commercial 1939.' },
-  electrics:   { eras:[3], years:[1878], invent:[ {era:4, year:1920, slug:'radio', name:'Radio Electrics Industries', pm:'Radio Manufacturing'},
+                 note:'no new rungs — viscose moves 1905 -> 1912, which both resolves the era-3 collision with indigo and is the more honest date: Courtaulds licensed it in 1904 but rayon reached real tonnage in the 1910s. Aniline works 1857 (Perkin 1856, so vanilla dating it era 4 was an era late).' },
+
+  // --- metals and machinery -------------------------------------------------------------------------
+  steel:       { eras:[0,2,3,4], years:[1745,1856,1885,1912], invent:[ {era:5, year:1932, slug:'strip_mill', name:'Continuous Strip Mill Steelworks', pm:'Continuous Wide Strip Mill'} ],
+                 note:'⚠ THE ERA-1 GAP IS DELIBERATE, not an oversight: era-1 steel has no buyer of any kind (BALANCE_FRAMEWORK §10.32), which is why ERA_PRUNE excludes the blister mill from the era-0 AND era-1 scenarios and why dropping it outright is on the long-term todo. The invented bloomery tier is gone; blister steel keeps the VANILLA key in slot 0, which is what the 1836 map’s six steel mills convert onto. Three re-dates, all defensible and all forced by one rung per era: open hearth 1868 -> 1885 (Siemens-Martin existed from 1865 but the BASIC process, Thomas 1879, is what made it dominant), electric arc 1903 -> 1912 (Heroult 1900, first plants 1903-06, real tonnage in the 1910s), continuous wide strip 1926 -> 1932 (ARMCO Butler 1926, but the strip-mill building wave is the 1930s).' },
+  motor:       { eras:[1,3,4], years:[1820,1893,1912], invent:[ {era:2, year:1860, slug:'compound', name:'Compound Engine Motor Industries', pm:'Compound Steam Engines'}, {era:5, year:1935, slug:'welded_diesel', name:'Welded High-Speed Motor Industries', pm:'Welded High-Speed Diesel'} ],
+                 note:'e2 is NEW: compound expansion (Corliss 1849, compound marine engines from 1854, widespread 1860s) roughly halved coal per horsepower-hour and is the missing step between the atmospheric-era engine works and the electric motor. Diesel moves 1904 -> 1912, which resolves the collision with electric engines and matches when MAN marine diesels reached industrial scale.' },
+
+  // --- shipbuilding ---------------------------------------------------------------------------------
+  shipyard:    { eras:[0,1], years:[1700,1845], invent:[],
+                 note:'DEAD END, not a plateau: steam tonnage passes sail in 1890 and the last commercial sailing hulls are ~1899-1904. Two tiers is already generous. Years: 1700, screw-era yards 1845.' },
+  shipyard_steam:{ eras:[1,5], years:[1843,1941], invent:[ {era:2, year:1875, slug:'steel_hull', name:'Steel Hull Steamship Yards', pm:'Steel Hull Construction'},
+                                        {era:3, year:1903, slug:'turbine', name:'Turbine Steamship Yards', pm:'Marine Steam Turbines'},
+                                        {era:4, year:1913, slug:'oil_fired', name:'Oil-Fired Steamship Yards', pm:'Oil-Fired Turbine Steamers'} ],
+                 note:'e2 is NEW: mild-steel hulls (Siemens-Martin plate from the late 1870s, SS Rotomahana 1879) cut hull weight ~15% over iron and are the missing 1850-1884 step. Years: SS Great Britain 1843, steel hulls 1875, merchant turbines 1903, oil-fired boilers 1913, welded prefabrication 1941.' },
+  automotive:  { eras:[3,4], years:[1899,1913], invent:[ {era:5, year:1936, slug:'transfer_line', name:'Transfer Line Automotive Industries', pm:'Transfer Machining'} ],
+                 note:'unchanged — the one industry whose dates already sat one per era under the new anchors. Series production 1899 (De Dion-Bouton), moving assembly line 1913, transfer machining 1936.' },
+
+  // --- war industries -------------------------------------------------------------------------------
+  arms:        { eras:[0,1,2,3], years:[1770,1849,1866,1886], invent:[ {era:4, year:1915, slug:'automatic', name:'Automatic Arms Industries', pm:'Light Machine Gun Production'}, {era:5, year:1938, slug:'stamped', name:'Stamped Receiver Arms Industries', pm:'Stamped and Welded Receivers'} ],
+                 note:'the invented gunsmith tier is dropped so the vanilla musket works holds slot 0. Rifles move 1853 -> 1849 (Minie ball 1849 rather than the Enfield 1853 pattern), which is what lets repeaters keep 1866 without colliding. e4 is NEW: light machine guns at scale from 1915 (Lewis, Chauchat) — the 1912-1931 step the ladder had nothing for.' },
+  artillery:   { eras:[0,1,2,3], years:[1750,1830,1861,1897], invent:[ {era:4, year:1925, slug:'autofrettage', name:'Autofrettaged Artillery Foundries', pm:'Autofrettage and Welded Carriages'}, {era:5, year:1936, slug:'antiaircraft', name:'Automatic Anti-Aircraft Foundries', pm:'Automatic Anti-Aircraft Guns'} ],
+                 note:'the invented bronze-cannon tier is dropped; the vanilla cannon foundry holds slot 0 at 1750. e5 is NEW: automatic anti-aircraft artillery (Bofors 40 mm 1934, welded mountings, mechanical directors) — a real 1930s product line and the answer to aircraft, which the game window ends on.' },
+  munition:    { eras:[1,2], years:[1830,1875], invent:[ {era:3, year:1895, slug:'drawn_brass', name:'Drawn Brass Munition Plants', pm:'Drawn Brass Cartridges'},
+                                      {era:4, year:1915, slug:'filling', name:'Shell Filling Munition Plants', pm:'Mass Shell Filling'},
+                                      {era:5, year:1940, slug:'automatic', name:'Automatic Line Munition Plants', pm:'Automatic Cartridge Lines'} ],
+                 note:'e4 is NEW: the WWI national shell-filling factory (Gretna, Chilwell, 1915-16) is a distinct industrial form from a cartridge-case plant and fills the 1912-1931 gap. Years: caps at scale 1830, filled explosive shells 1875, smokeless-era drawn brass 1895, shell filling 1915, automatic lines 1940.' },
+
+  // --- new economy ----------------------------------------------------------------------------------
+  electrics:   { eras:[2], years:[1878], invent:[ {era:3, year:1901, slug:'wireless', name:'Wireless Telegraph Electrics Industries', pm:'Wireless Telegraphy'},
+                                    {era:4, year:1920, slug:'radio', name:'Radio Electrics Industries', pm:'Radio Manufacturing'},
                                     {era:5, year:1935, slug:'electronics', name:'Electronics Industries', pm:'Vacuum Tube Electronics'} ],
-                 note:'VANILLA IS LATE: Bell 1876, first exchange 1878 — era 3, not era 4. Then broadcast radio 1920, electronics/TV 1930s. Telephone TFP actually ACCELERATED after 1929. Years: exchanges 1878, broadcast radio 1920 (KDKA — lands exactly on the 1920 scenario), electronics 1935.' },
-  power:       { eras:[3,4,5], years:[1900,1920,1925], invent:[],
-                 note:'THREE TIERS, NO GAPS (user ruling 2026-08-09, superseding the two-tier §10.43 shape): e3 Coal-Fired = the first turbine station (Parsons 1884, Elberfeld 1900 — tech steam_turbine, a deliberate-early correction; year 1900 lands it exactly on the 1900 scenario); e4 Pulverized-Coal = the interconnected 1920s central station (pulverized firing 1919-21 at Oneida Street, 30-60 MW units; tech electrical_capacitors as the closest grid-equipment gate; NO vanilla PM — an all-new tier like the steamer chain); e5 Oil-Fired 1925+. The 1900-era MUNICIPAL engine-house lives inside urban centres (the mandated electric-streetlights method: +1 electricity, −2 coal, engineers). Hydro is deliberately NOT a market industry: small-scale folds into the urban-centre narrative, large-scale (Niagara 1895, Hoover) is a site-specific megaproject like a canal, outside the scenario model.' },
-  art_academy: { eras:[1,2,3,4], years:[1800,1850,1839,1896], invent:[ {era:5, year:1927, slug:'sound_film', name:'Sound Film Art Academies', pm:'Sound and Colour Film'} ],
-                 note:'romanticism -> realism -> photography (1839) -> film 1895 -> sound 1927 / Technicolor 1935. "Output per worker" is barely meaningful here; the ladder is for consistency. Years: romanticism 1800, realism 1850, PHOTOGRAPHY 1839 — deliberately NON-MONOTONE with realism (photography predates it); inert at our six scenario years, both arrive at 1870 — film 1896, sound 1927.' },
-  // --- OFF the break-even ladder (follows_be:false) — vanilla economics, informational only ----------
-  port:        { eras:[1,3,4], years:[1700,1875,1908], invent:[ {era:2, year:1840, slug:'steam', name:'Steamship Ports', pm:'Steamship Bunkering',
+                 note:'telephone exchanges (1878) move DOWN to era 2 under the new anchors — vanilla had this industry two eras late. e3 is NEW: wireless telegraphy as a manufacturing industry (Marconi transatlantic 1901, ship installations from 1900) fills the gap between the exchange and broadcast radio.' },
+  power:       { eras:[3,5], years:[1900,1932], invent:[ {era:4, year:1920, slug:'pulverized', name:'Pulverized-Coal Power Plant', pm:'Pulverized Coal Firing'} ],
+                 note:'⚠ pulverized-coal MOVED from the eras[] list into invent[] — it has no vanilla PM, and `vanilla_pm` is now what marks a tier as ours (see the filter above). Its key is unchanged. Oil-fired moves 1925 -> 1932 so it holds era 5; large oil-fired central stations are a 1930s form. e3 Coal-Fired = the first turbine station (Parsons 1884, Elberfeld 1900). Hydro is deliberately NOT a market industry.' },
+
+  // --- infrastructure -------------------------------------------------------------------------------
+  port:        { eras:[0,2,3], years:[1700,1875,1908], invent:[ {era:1, year:1840, slug:'steam', name:'Steamship Ports', pm:'Steamship Bunkering',
                                          inputs:{ steamers:2, coal:2 }, state_infrastructure:4},
-                                        {era:5, year:1930, slug:'motor', name:'Motor Ship Ports', pm:'Mechanised Cargo Handling',
+                                        {era:4, year:1930, slug:'motor', name:'Motor Ship Ports', pm:'Mechanised Cargo Handling',
                                          state_infrastructure:6} ],
-                 note:'ON the ladder since 0cdc041, so it now needs a tier in EVERY era like any other industry — eras 2 and 5 are invented. ⚠ The era-2 tier is the reason the invent spec can carry its own `inputs`: iron screw steamers arrive in era 2 (shipyard_metal), so an 1870 port bunkers STEAMERS, not the 1836 port\'s clippers, and seeding it from the tier below would have got that backwards. It also closes the last producer-before-consumer gap in the model — steamers were made in era 2 and first eaten in era 3 (BALANCE_FRAMEWORK §10.32.1). Years: 1700, steam bunkering 1840, hydraulic cranes/deep docks 1875, reinforced-concrete quays 1908, motor-ship handling 1930.' },
-  railway:     { eras:[2,3,4,5], years:[1825,1867,1895,1934], invent:[],
-                 note:'OFF-LADDER. Vanilla’s four tiers map one-to-one onto eras 2-5. Years: Stockton & Darlington 1825 (predates 1836 — a retired debut-guard exemption), steel rails/cars 1867, mainline electrification 1895 (Baltimore B&O — electric railways stand at the 1900 scenario), road-service diesel 1934 (Zephyr).' },
+                 note:'now PLATEAUS at e4 rather than reaching e5: the next real step in cargo handling is containerisation (1956), far outside the window, and inventing a 1930s rung to avoid an empty column is exactly the filler the design forbids. ⚠ The era-1 tier is why an invent entry may carry its own `inputs`: iron screw steamers arrive in era 1-2, so an 1870 port bunkers STEAMERS, not the era-0 port’s clippers.' },
+  railway:     { eras:[1,2,3,5], years:[1825,1867,1895,1934], invent:[ {era:4, year:1915, slug:'superheated', name:'Superheated Steam Railways', pm:'Superheated Locomotives'} ],
+                 note:'e4 is NEW: superheating (Schmidt 1898, standard on new construction by the 1910s) cut coal and water per ton-mile by roughly a quarter and is the 1912-1931 step between mainline electrification and the diesel railcar. Years: Stockton & Darlington 1825, steel rails 1867, electrification 1895, superheated steam 1915, road-service diesel 1934 (Zephyr).' },
+
+  // --- arts -----------------------------------------------------------------------------------------
+  art_academy: { eras:[1,2,3,4], years:[1800,1850,1885,1912], invent:[ {era:5, year:1932, slug:'sound_film', name:'Sound Film Art Academies', pm:'Sound and Colour Film'} ],
+                 note:'no new rungs; three re-dates put one per era and each is the INDUSTRIAL onset rather than the invention. Photography 1839 -> 1885 (dry plates 1878, Kodak roll film 1888 made it a trade); film 1896 -> 1912 (the feature-film studio industry, 1912-15); sound film 1927 -> 1932 (The Jazz Singer 1927, but conversion of the exhibition industry completes about 1932). This also removes the old non-monotone photography-before-realism inversion.' },
 };
 
 // How each industry's ladder ENDS, for industries that stop before era 5. This is not decoration — it is
@@ -134,8 +178,11 @@ const SPEC = {
 const LADDER_END = {
   food: 'plateau', textile: 'plateau', furniture: 'plateau',
   shipyard: 'extinct',           // superseded by shipyard_steam, which is a separate chain
-  // port WAS 'plateau' — it now has an invented era-5 tier, so it reaches the end of the ladder like any
-  // other industry and needs no price floor propping its last tier up.
+  // ⚠ port is a plateau AGAIN as of the 2026-08-12 re-band. It briefly reached era 5, but under the ruled
+  // anchors its mechanised-cargo tier is a 1930 building and therefore era 4; the next real step in cargo
+  // handling is containerisation (1956), far outside the window. Inventing a 1930s rung purely to fill the
+  // era-5 column is the filler the design forbids, so the last tier gets a price floor instead.
+  port: 'plateau',
 };
 
 // Skill-mix step for an INVENTED tier: hold headcount constant and move 10% of it from laborers to
@@ -187,9 +234,16 @@ for (const ind of cfg.industries) {
   const spec = SPEC[ind.id];
   if (!spec) { console.error(`!! no ladder spec for industry ${ind.id} — left untouched`); continue; }
   // IDEMPOTENT: drop any previously invented tiers so a re-run rebuilds them from the spec rather than
-  // stacking a second copy on top. ⚠ This DISCARDS solved input volumes for model_only tiers, so the
+  // stacking a second copy on top. ⚠ This DISCARDS solved input volumes for invented tiers, so the
   // pipeline order is build_era_ladder.mjs -> era_solver.mjs, never the reverse.
-  ind.tiers = ind.tiers.filter(t => !t.model_only);
+  // ⚠⚠ THE MARKER IS `vanilla_pm`, NOT `model_only`. It used to be model_only, and that silently BROKE:
+  // the tech-tree step assigns a technology to every tier and clears the flag by design, after which this
+  // filter matched nothing, the arity check below threw on the first industry, and the ladder builder —
+  // the FIRST stage of the pipeline — could not run at all. `vanilla_pm` is the durable statement of the
+  // same thing (a tier with no base-game production method is one we invented) and no step clears it.
+  // Every tier the SPEC's `eras[]` names therefore MUST carry a vanilla_pm; a genuinely all-new permanent
+  // tier belongs in `invent[]`, which is where power's pulverized-coal tier now lives.
+  ind.tiers = ind.tiers.filter(t => t.vanilla_pm);
   if (spec.eras.length !== ind.tiers.length) {
     throw new Error(`${ind.id}: spec lists ${spec.eras.length} eras for ${ind.tiers.length} existing tiers`);
   }
@@ -304,6 +358,23 @@ for (const ind of cfg.industries) {
     if (arrival(ind.tiers[k].tech_year) < arrival(ind.tiers[k - 1].tech_year)) {
       throw new Error(`${ind.id}: tier ${ind.tiers[k].key} (year ${ind.tiers[k].tech_year}) arrives at an earlier scenario than ${ind.tiers[k - 1].key} (year ${ind.tiers[k - 1].tech_year})`);
     }
+  }
+  // ⭐ THE ANCHORS ARE AUTHORITATIVE, SO THE BANDS ARE CHECKED. A tier's authored era and its tech_year
+  // are two statements about the same thing, and nothing else in the pipeline compares them — a re-dating
+  // that quietly moves a rung out of its era's band would just change which scenario it appears in, with
+  // no error anywhere. It throws here, at authoring time.
+  // ⚠ ONE tier per era per industry is checked in the same pass: it is the ladder's own invariant and the
+  // re-band is exactly the operation that breaks it.
+  const seen = new Map();
+  for (const t of ind.tiers) {
+    const want = bandOf(t.tech_year);
+    if (want !== t.era) {
+      throw new Error(`${ind.id}: tier ${t.key} is authored era ${t.era} but its tech_year ${t.tech_year} falls in era ${want} (bands ${ERA_BAND.join('/')})`);
+    }
+    if (seen.has(t.era)) {
+      throw new Error(`${ind.id}: two tiers in era ${t.era} — ${seen.get(t.era)} and ${t.key}`);
+    }
+    seen.set(t.era, t.key);
   }
 }
 

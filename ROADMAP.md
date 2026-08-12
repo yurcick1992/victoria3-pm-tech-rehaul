@@ -216,75 +216,66 @@ the e1 rung once e0 is gone), and the 1836 scenario then contains no steel at al
 holds 6 levels of it — small, but it is a divergence from the "1836 stays close to vanilla" premise
 and should be stated rather than discovered.
 
-**4. Five new era-1 technologies**, because the spread in (1) leaves era 1 with rungs and no gates:
+**4 & 5. THE LADDER IS RE-BANDED, SEVEN RUNGS DROPPED AND FIFTEEN ADDED — BUILT 2026-08-12.**
+The provisional tables that stood here (five new era-1 technologies, eight new rungs) are **superseded
+by what was actually authored**; both were earlier iterations that did not survive the arithmetic. The
+ladder now runs **106 tiers over 22 industries — 11 / 17 / 19 / 21 / 21 / 17 per era**, with one rung per
+era per industry, no interior gaps, and every tier's `tech_year` inside its era's band. Bold = new rung:
 
-| technology | onset | gates |
-|---|--:|---|
-| `division_of_labour` | 1776 | food · textile · furniture · glass · tooling · paper, all e1 |
-| `interchangeable_parts` | 1798 | arms e1 |
-| `crucible_casting` | 1800 | steel e1 |
-| `cast_iron_ordnance` | 1800 | artillery e1 |
-| `high_pressure_steam` | 1802 | motor e1 |
+| industry | e0 | e1 | e2 | e3 | e4 | e5 |
+|---|---|---|---|---|---|---|
+| food | 1750 | 1815 | 1860 | **1909** | 1920 | *plateau* |
+| textile | 1780 | 1830 | 1855 | 1905 | **1925** | *plateau* |
+| furniture | 1780 | 1830 | 1855 | **1900** | 1923 | *plateau* |
+| glass | 1750 | 1832 | 1867 | 1910 | 1926 | **1938** |
+| tooling | 1770 | 1830 | 1865 | 1901 | 1927 | **1936** |
+| paper | 1750 | 1830 | 1874 | 1890 | **1925** | 1935 |
+| fertilizer | — | 1842 | **1865** | 1885 | 1913 | 1935 |
+| explosives | — | 1820 | 1867 | 1908 | 1928 | **1940** |
+| steel | 1745 | *no buyer* | 1856 | 1885 | 1912 | 1932 |
+| motor | — | 1820 | **1860** | 1893 | 1912 | 1935 |
+| shipyard | 1700 | 1845 | — | — | — | *extinct* |
+| shipyard_steam | — | 1843 | **1875** | 1903 | 1913 | 1941 |
+| automotive | — | — | — | 1899 | 1913 | 1936 |
+| arms | 1770 | 1849 | 1866 | 1886 | **1915** | 1938 |
+| artillery | 1750 | 1830 | 1861 | 1897 | 1925 | **1936** |
+| munition | — | 1830 | 1875 | 1895 | **1915** | 1940 |
+| synthetics | — | — | 1857 | 1897 | 1912 | 1939 |
+| electrics | — | — | 1878 | **1901** | 1920 | 1935 |
+| power | — | — | — | 1900 | 1920 | 1932 |
+| port | 1700 | 1840 | 1875 | 1908 | 1930 | *plateau* |
+| railway | — | 1825 | 1867 | 1895 | **1915** | 1934 |
+| art_academy | — | 1800 | 1850 | 1885 | 1912 | 1932 |
 
-⚠ **This table is provisional for the same reason clause 5's was**, and against the arithmetic there it
-is visibly off in three places: **textile and furniture have no era-0 duplicate** (their duplicate is at
-e1), so `division_of_labour` does not gate anything of theirs; **motor already starts at e1** (1820), so
-`high_pressure_steam` has no rung to gate; and **steel, once the bloomery is dropped, has no era-0
-duplicate either** — `building_steel_mill` becomes its lone era-0 rung, so `crucible_casting` would be
-gating the very building clause 3 excludes from every scenario and the todo eventually drops.
-⇒ Re-derive clause 4 and clause 5 together from the duplicate/gap table, in one pass. Whatever survives
-must still clear constraint 4 above: **no technology may end up unlocking nothing.**
+**Seven ~1700 rungs dropped.** Under the new anchors an invented ~1700 tier and a real ~1750
+vanilla-anchored one both fall in era 0, and no industry may hold two rungs in one era. The invented one
+goes in every case — it is ours rather than vanilla's, and the user had already ruled the steel instance
+that way. ⭐ **This restores the vanilla building key to slot 0 in nine industries, which is the root
+cause of landmine L13**, so the re-band and that bug fix pull in the same direction.
 
-**5. New rungs fill the interior gaps — but the LIST MUST BE RE-DERIVED, NOT COPIED.**
-⚠⚠ **A provisional eight-rung table was carried in this section and is WITHDRAWN.** Re-banding every
-tier by its own `tech_year` under the boundaries above (steel's bloomery already dropped) produces a
-different set from the one that table named — it put a new rung on fertilizer at e3 and on explosives
-and port at e5, where the arithmetic shows fertilizer's hole at **e2** and explosives and port with no
-interior hole at all. The table was an earlier iteration that outlived its inputs; the arithmetic below
-is what the final list has to come from.
+**Fifteen rungs added**, each naming a specific historical step rather than filling a column: fat
+hydrogenation (1909), long-draft spinning (1925), plywood furniture (1900), glass fibre (1938), tracer
+control (1936), semi-chemical pulping (1925), by-product ammonium sulphate (1865), RDX (1940), compound
+steam engines (1860), steel hulls (1875), light machine guns (1915), automatic anti-aircraft (1936),
+shell filling (1915), wireless telegraphy (1901), superheated locomotives (1915).
 
-| industry | re-banded eras | two rungs in one era | interior gap | no top rung |
-|---|---|---|---|---|
-| food | 0,0,1,2,4 | e0 | e3 | — |
-| textile | 0,1,1,2,3 | e1 | — | — |
-| furniture | 0,1,1,2,4 | e1 | e3 | — |
-| glass | 0,0,1,2,3,4 | e0 | — | e5 |
-| tooling | 0,0,1,2,3,4 | e0 | — | e5 |
-| paper | 0,0,1,2,3,4 | e0 | — | e5 |
-| fertilizer | 1,3,4,4 | e4 | e2 | e5 |
-| explosives | 1,2,3,4 | — | — | e5 |
-| steel | 0,2,2,3,4 | e2 | e1 | e5 |
-| motor | 1,3,3,5 | e3 | e2, e4 | — |
-| shipyard | 0,1 | — | — | *extinct* |
-| shipyard_steam | 1,3,4,5 | — | e2 | — |
-| automotive | 3,4,5 | — | — | — |
-| arms | 0,0,2,2,3,5 | e0, e2 | e1, e4 | — |
-| artillery | 0,0,1,2,3,4 | e0 | — | e5 |
-| munition | 1,2,3,5 | — | e4 | — |
-| synthetics | 2,3,3,5 | e3 | e4 | — |
-| electrics | 2,4,5 | — | e3 | — |
-| power | 3,4,4 | e4 | — | e5 |
-| port | 0,1,2,3,4 | — | — | e5 |
-| railway | 1,2,3,5 | — | e4 | — |
-| art_academy | 1,2,1,3,4 | e1 | — | e5 |
+**Where no rung could be justified the industry PLATEAUS instead**, per the ruling that gaps are bad but
+late onsets and plateaus are fine. **Port is a plateau again** — its mechanised-cargo tier is a 1930
+building and therefore era 4, and the next real step is containerisation in 1956.
 
-**15 duplicated eras and 13 interior gaps.** The two are different problems with different remedies:
-- **A duplicate is what SPREADING resolves** (clause 1) — the later of the two rungs is assigned to the
-  era above and its gate re-dated to match. That is legitimate under the governing principle *the
-  anchors are authoritative*, and it is the same "dated by first articulation, gated by mainstreaming"
-  pattern the tree already carries five of. The six era-0 duplicates are exactly what the new era-1
-  technologies in clause 4 exist to gate.
-- **A gap needs a genuinely new rung with a genuinely new technology**, and each one must earn its
-  place: a **late onset or a plateau is fine, an interior hole is not**.
-- **"No top rung" is NOT a fault** where the industry plateaus (food, textile, furniture) or dies
-  (shipyard). Elsewhere it is a real e5 hole and the reason era 5 needed authoring at all.
+**Eleven dates moved**, all forced by one-rung-per-era and all recorded with their reasoning in the
+SPEC's own notes: textile and furniture manufactories 1800 → 1780, arms rifles 1853 → 1849, steel open
+hearth 1868 → 1885 and electric arc 1903 → 1912 and strip mill 1926 → 1932, motor diesel 1904 → 1912,
+synthetics viscose 1905 → 1912, power oil-fired 1925 → 1932, fertilizer reforming 1931 → 1935, paper
+high-speed 1930 → 1935, and art academy photography 1839 → 1885 / film 1896 → 1912 / sound 1927 → 1932.
 
-⚠ Whatever the final list is, two rulings bind it. **A contemporary consumer must not be left without
-production, and a producer must not be left without contemporary consumers** — military demand counts,
-pop demand is tolerable but is avoided where it would widen a need's goods list, because
-goods-substitution weirdness grows superlinearly with the number of goods in a need. And **a port or
-shipyard technology is a MILITARY one**: those ladders moved to the military tree by the earlier
-ruling, and constraint 3 (a prerequisite must be in the same tree) makes that binding, not cosmetic.
+⚠ **Steel's era-1 gap is deliberate**, not an oversight — era-1 steel has no buyer of any kind, which is
+the same fact clause 3's `ERA_PRUNE` exclusion states.
+
+**Three guards now enforce all of this at authoring time**, because nothing downstream compared an
+authored era against its own date: a tier whose `tech_year` falls outside its era's band throws, two
+tiers in one era throw, and the arrival-order check already present still throws. Two tooling defects
+were fixed to get here — see *Deferred fixes* and the commit log.
 
 **6. The four starting-technology lists are rewritten**, and the blanket pass is deliberate: *"the
 countries should have reasonable base techs, and not only the absolute minimum mandated by their 1836

@@ -4376,7 +4376,9 @@ if (WRITE) {
   // its own order book produces, which are NOT the prices Phase A assumed. Writing the presets without
   // the volumes would ship building counts fitted to one recipe and a config holding another, and the
   // scenario would simply not reproduce when loaded in the UI.
-  const CFG = join(REPO, 'config', 'mod_config.json');
+  // ⚠ MOD_CONFIG, same contract as econ_host.mjs and build_era_ladder.mjs: the volumes must go back to
+  // the config the MODEL was loaded from, or the solve writes its results into a file it never read.
+  const CFG = join(REPO, process.env.MOD_CONFIG || join('config', 'mod_config.json'));
   const cfg = JSON.parse(readFileSync(CFG, 'utf8'));
   const byKey = {}; for (const i of S.IND) for (const t of i.tiers) byKey[t.key] = t;
   let nv = 0;

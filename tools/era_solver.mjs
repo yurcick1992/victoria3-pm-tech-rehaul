@@ -36,7 +36,10 @@ import { loadEcon, REPO } from './econ_host.mjs';
 import { makePmRules } from './era_pm.mjs';
 
 const WRITE = process.argv.includes('--write');
-const CFG = join(REPO, 'config', 'mod_config.json');
+// ⚠ MOD_CONFIG, same contract as econ_host.mjs. This was hardcoded and it MATTERED: econ_host already
+// honoured the override, so a redirected run READ the alternate config and WROTE its solved recipes into
+// the canonical one — silently, since both files are valid and the report names only the one it wrote.
+const CFG = join(REPO, process.env.MOD_CONFIG || join('config', 'mod_config.json'));
 
 // ===================================================================================================
 // DESIGN INPUTS
