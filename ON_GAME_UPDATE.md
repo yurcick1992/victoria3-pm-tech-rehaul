@@ -70,6 +70,46 @@ refresh the affected tier's **`vanilla_pm`** field in `config/mod_config.json`, 
 
 ---
 
+## ⭐ THE 1836 STARTING-TECHNOLOGY CHECK — run it after EVERY patch, PER COUNTRY
+
+**The question:** for every country, does its 1836 starting technology set unlock every production
+method its own 1836 buildings are told to activate? A country that starts with a building running a PM
+it cannot legally run is a silent fault — the engine does not refuse it loudly, and the economy simply
+comes out different from vanilla's.
+
+This becomes load-bearing once the starting sets are **authored lists** rather than
+`add_era_researched = era_1` (the anchor principle in `CLAUDE.md` requires that, because the shorthand
+grants a whole mechanical era and the principle says a leader should hold about *half* of era 1 at its
+anchor). Vanilla's shorthand is forgiving; an authored list is not.
+
+**The check, in order:**
+1. Collect every `activate_production_methods` entry in `common/history/buildings/*.txt` — **the mod's
+   emitted copy**, since `replace_paths` makes ours the only history the engine reads.
+2. Resolve each PM's `unlocking_technologies` from `common/production_methods/` — vanilla **and** our
+   owned files.
+3. Resolve each building's own `unlocking_technologies` too (a building can be gated as well as its PM).
+4. For each COUNTRY, take its starting set from `common/scripted_effects/00_starting_inventions.txt`
+   (which tier it gets comes from `common/history/countries/*.txt`) and check every technology its own
+   buildings and PMs need is in it.
+5. Report per country, not as a union.
+
+⚠⚠ **STRIP THE UTF-8 BOM BEFORE PARSING THE PM FILES.** Every PM file starts with one, so a naive
+`^name = {` match makes the **first production method in each file invisible**. On 2026-08-12 that
+silently dropped 8 of 110 PMs from this very check and produced a clean result that was not earned;
+`tools/verify_pms.mjs` records the same trap making six real PMs look hallucinated. If any of the eight
+had carried a tech gate, the check would have passed while 1836 was broken.
+
+⚠ **The union across all countries is NOT sufficient.** A leader's generous set can cover a gap that a
+tier-3 or tier-4 country's does not. The lower starting tiers are where this bites, and they are also
+the ones most likely to drift 1836 away from vanilla.
+
+**Known structural exceptions, as of 2026-08-12 (patch 1.13):** three technologies the 1836 map depends
+on have onsets *after* 1836 — `central_archives` (1838), `mechanical_tools` (1840) and
+`intensive_agriculture` (1842). All three are in vanilla's explicit named grant, which is exactly what
+that list is for. If a patch adds a fourth such case and does *not* name it, this check is what finds it.
+
+---
+
 ## Manual — static snapshots that can go stale (NOT automated)
 
 These are hand-maintained copies of vanilla data. Nothing warns you if vanilla changes them — check by

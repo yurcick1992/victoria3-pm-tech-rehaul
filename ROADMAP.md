@@ -176,6 +176,138 @@ pointing at it and the `model_only` flags gone. Plus, in the same pass:
   `dough_rollers` → **Mechanised Bakeries**. Two of these also *fix* a dating absurdity: a pumpjack is
   1925 and gates an era-3 oil rig, a threshing machine is 1786 and gates era-3 steam threshers.
 
+### ⭐⭐ STEP 1b — THE ANCHOR RE-BAND (specified 2026-08-12, NOT yet written)
+
+The governing principle is in `CLAUDE.md` (*the era anchors are authoritative; technologies and
+industries are calibrated to them, never the reverse*). This is the concrete change that brings the
+tree to it. **Nothing below is implemented yet** — it is a specification the user has ruled on
+clause by clause, held back only by the sequencing constraint at the end.
+
+**The anchors, user-ruled:** **1750 / 1830 / 1870 / 1900 / 1925 / 1940** for our eras 0–5, with band
+boundaries **1790 / 1850 / 1885 / 1912 / 1932**. Six of our eras ride on the engine's five, ours 0
+and 1 sharing mechanical era 1. The anchor means *a technology leader holds about half of that era's
+technologies at the anchor year* — so era 0 sits far before the game starts and era 5 slightly after
+it ends, and finishing a tree should need luck, a strong nation and some neglect of the other trees.
+
+**1. Today's e0 and e1 merge by SPREADING, not doubling.** An industry that currently holds two rungs
+below 1850 keeps both, one per era — it does not end up with two era-0 buildings. After this no
+industry has more than one rung in any era, which is the invariant the ladder already claims.
+
+**2. Steel loses its era-0 rung.** `building_steel_mill_bloomery` is dropped outright: its good has no
+buyer of any kind that early, which is exactly why `ERA_PRUNE` already carries `steel@0`.
+⚠ `steelworking` is **not orphaned** by this — it stays era 1, keeps `shaft_mining` as its
+prerequisite, is still required by `bessemer_process` and `mechanical_tools`, and still unlocks
+vanilla `pm_pig_iron` / `pm_saw_mills` / `building_steel_mill`.
+
+**3. `building_steel_mill` (blister steel — today's era-1 rung) gets a MANDATED SOLVER EXCLUSION**
+(user ruling: *"we must mandate a solver exclusion for it to avoid it being built"*), and **dropping it
+too goes on the long-term todo.** ⚠ Named by BUILDING, not by era number: under the new bands its
+`tech_year` of 1745 puts it in era 0 beside the bloomery, so "the era-1 rung" is only true of today's
+numbering.
+The building itself has to survive for now — the 1836 map contains steel mills, so the history
+converter needs a tier to map them onto — but no scenario may place it.
+⚠ **The mechanism already exists and is NOT `EXCLUDE_REF`.** `EXCLUDE_REF` (gold mines, rice farms)
+holds *vanilla reference* buildings. Ours are governed by **`ERA_PRUNE`**, whose spec is
+`industry@scenarioEra` and whose shipped default is `steel@0,glass@0` — so the exclusion is
+**`ERA_PRUNE=steel@0,steel@1,glass@0`** as the new default, one line in `tools/era_scenarios.mjs`.
+⚠ Two things to check when it is applied, neither yet done: `ERA_PRUNE` prunes a whole **industry**
+at an era rather than a single rung (harmless here, since era 1 is the only scenario that could hold
+the e1 rung once e0 is gone), and the 1836 scenario then contains no steel at all against a map that
+holds 6 levels of it — small, but it is a divergence from the "1836 stays close to vanilla" premise
+and should be stated rather than discovered.
+
+**4. Five new era-1 technologies**, because the spread in (1) leaves era 1 with rungs and no gates:
+
+| technology | onset | gates |
+|---|--:|---|
+| `division_of_labour` | 1776 | food · textile · furniture · glass · tooling · paper, all e1 |
+| `interchangeable_parts` | 1798 | arms e1 |
+| `crucible_casting` | 1800 | steel e1 |
+| `cast_iron_ordnance` | 1800 | artillery e1 |
+| `high_pressure_steam` | 1802 | motor e1 |
+
+⚠ **This table is provisional for the same reason clause 5's was**, and against the arithmetic there it
+is visibly off in three places: **textile and furniture have no era-0 duplicate** (their duplicate is at
+e1), so `division_of_labour` does not gate anything of theirs; **motor already starts at e1** (1820), so
+`high_pressure_steam` has no rung to gate; and **steel, once the bloomery is dropped, has no era-0
+duplicate either** — `building_steel_mill` becomes its lone era-0 rung, so `crucible_casting` would be
+gating the very building clause 3 excludes from every scenario and the todo eventually drops.
+⇒ Re-derive clause 4 and clause 5 together from the duplicate/gap table, in one pass. Whatever survives
+must still clear constraint 4 above: **no technology may end up unlocking nothing.**
+
+**5. New rungs fill the interior gaps — but the LIST MUST BE RE-DERIVED, NOT COPIED.**
+⚠⚠ **A provisional eight-rung table was carried in this section and is WITHDRAWN.** Re-banding every
+tier by its own `tech_year` under the boundaries above (steel's bloomery already dropped) produces a
+different set from the one that table named — it put a new rung on fertilizer at e3 and on explosives
+and port at e5, where the arithmetic shows fertilizer's hole at **e2** and explosives and port with no
+interior hole at all. The table was an earlier iteration that outlived its inputs; the arithmetic below
+is what the final list has to come from.
+
+| industry | re-banded eras | two rungs in one era | interior gap | no top rung |
+|---|---|---|---|---|
+| food | 0,0,1,2,4 | e0 | e3 | — |
+| textile | 0,1,1,2,3 | e1 | — | — |
+| furniture | 0,1,1,2,4 | e1 | e3 | — |
+| glass | 0,0,1,2,3,4 | e0 | — | e5 |
+| tooling | 0,0,1,2,3,4 | e0 | — | e5 |
+| paper | 0,0,1,2,3,4 | e0 | — | e5 |
+| fertilizer | 1,3,4,4 | e4 | e2 | e5 |
+| explosives | 1,2,3,4 | — | — | e5 |
+| steel | 0,2,2,3,4 | e2 | e1 | e5 |
+| motor | 1,3,3,5 | e3 | e2, e4 | — |
+| shipyard | 0,1 | — | — | *extinct* |
+| shipyard_steam | 1,3,4,5 | — | e2 | — |
+| automotive | 3,4,5 | — | — | — |
+| arms | 0,0,2,2,3,5 | e0, e2 | e1, e4 | — |
+| artillery | 0,0,1,2,3,4 | e0 | — | e5 |
+| munition | 1,2,3,5 | — | e4 | — |
+| synthetics | 2,3,3,5 | e3 | e4 | — |
+| electrics | 2,4,5 | — | e3 | — |
+| power | 3,4,4 | e4 | — | e5 |
+| port | 0,1,2,3,4 | — | — | e5 |
+| railway | 1,2,3,5 | — | e4 | — |
+| art_academy | 1,2,1,3,4 | e1 | — | e5 |
+
+**15 duplicated eras and 13 interior gaps.** The two are different problems with different remedies:
+- **A duplicate is what SPREADING resolves** (clause 1) — the later of the two rungs is assigned to the
+  era above and its gate re-dated to match. That is legitimate under the governing principle *the
+  anchors are authoritative*, and it is the same "dated by first articulation, gated by mainstreaming"
+  pattern the tree already carries five of. The six era-0 duplicates are exactly what the new era-1
+  technologies in clause 4 exist to gate.
+- **A gap needs a genuinely new rung with a genuinely new technology**, and each one must earn its
+  place: a **late onset or a plateau is fine, an interior hole is not**.
+- **"No top rung" is NOT a fault** where the industry plateaus (food, textile, furniture) or dies
+  (shipyard). Elsewhere it is a real e5 hole and the reason era 5 needed authoring at all.
+
+⚠ Whatever the final list is, two rulings bind it. **A contemporary consumer must not be left without
+production, and a producer must not be left without contemporary consumers** — military demand counts,
+pop demand is tolerable but is avoided where it would widen a need's goods list, because
+goods-substitution weirdness grows superlinearly with the number of goods in a need. And **a port or
+shipyard technology is a MILITARY one**: those ladders moved to the military tree by the earlier
+ruling, and constraint 3 (a prerequisite must be in the same tree) makes that binding, not cosmetic.
+
+**6. The four starting-technology lists are rewritten**, and the blanket pass is deliberate: *"the
+countries should have reasonable base techs, and not only the absolute minimum mandated by their 1836
+PMs"* — every civilised country gets **all of era 0** as a blanket statement, before the per-country
+pass that guarantees each start's own production methods are gated.
+
+| list | contents |
+|---|---|
+| `effect_starting_technology_tier_1_tech` | all era 0 + every era-1 technology with onset ≤ 1836 |
+| `…_tier_2_tech` | all era 0 + every era-1 technology with onset ≤ 1820 |
+| `…_tier_3_tech` | all era 0 |
+| `…_tier_4_tech` | stays a curated named list |
+
+⚠ **The blanket lists are a vanilla-style shortcut, not a hard limit** (user): a minor that should not
+hold all of era 0 can be handed technologies one by one. The per-country verification that every 1836
+production method is actually gated is in `ON_GAME_UPDATE.md`, with its BOM warning — a union across
+countries is **not** sufficient, since a technology can be covered by some other country's list while
+the country that needs it lacks it.
+
+⚠⚠ **SEQUENCING — nothing here may be written yet.** `config/mod_config.json` and
+`tools/build_era_ladder.mjs` must not move until the second research-events batch has launched *and
+built*, or batch A and batch B stop being comparable and both nights of game time are wasted.
+
 ---
 
 ## Step 2 — INDUSTRY-DRIVEN RESEARCH EVENTS  ⬅ **BUILT 2026-08-12, first batch running**
@@ -778,6 +910,19 @@ infrastructure once newer infrastructure is mature enough"*):
      probably means swapping the whole strategy on a condition, not toggling a building.
    ⚠ Whatever ships must be re-measured against §10.47.4's tolerance, which was calibrated on the
    assumption above.
+
+### DROP STEEL'S ERA-1 RUNG (user-ruled 2026-08-12, deliberately not scheduled)
+
+`building_steel_mill` (blister steel) should eventually go the way of the bloomery rung that step 1b
+drops. It survives for now for one reason only: the **1836 map contains steel mills**, and the history
+converter needs a tier to map them onto. Until that is solved, the rung exists but is **excluded from
+every scenario** by `ERA_PRUNE` (step 1b, clause 3) — so it costs the model nothing and costs the
+player only a building they will never profitably run.
+
+Taking it needs three things together, which is why it is not scheduled: a home for the 1836 steel
+mills (re-tier them onto era 2, or remove them from the converted start), a decision on
+`crucible_casting` (it would then gate nothing — either drop it or give it a real effect, per
+constraint 4), and a check that nothing in the 1836 start depends on the key.
 
 ---
 
