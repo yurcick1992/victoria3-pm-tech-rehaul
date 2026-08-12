@@ -343,7 +343,7 @@ const NEW = {
     desc: 'Armco\'s continuous mill rolls a coil of wide sheet in one pass. It is the largest single step interwar steel takes, and vanilla has no tier for it at all.' },
   high_speed_diesel:       { name: 'High Speed Diesel',          year: 1935, in: '123', ind: 'motor',
     desc: 'Welded frames and light alloys take the diesel from a stationary engine to something a lorry, a locomotive or a submarine can carry.' },
-  transfer_machining:      { name: 'Transfer Machining',         year: 1936, in: '123', ind: 'automotive',
+  transfer_machining:      { name: 'Automatic Machine Control',  year: 1936, in: '123', ind: 'automotive',
     desc: 'Workpieces are indexed automatically from station to station. The assembly line finally reaches the machine shop feeding it.' },
   polyamide_synthesis:     { name: 'Polyamide Synthesis',        year: 1939, in: '123', ind: 'synthetics',
     desc: 'Carothers\' nylon is the first fibre owing nothing to a plant or an animal — and the first that competes with silk on its own terms.' },
@@ -428,7 +428,7 @@ const NEW = {
     desc: 'Oil firing halves the stokehold crew and doubles the range. The yard\'s customers stop specifying coal bunkers.' },
   autofrettage:            { name: 'Autofrettage',               year: 1925, in: '123', ind: 'artillery', cat: 'military',
     desc: 'Pre-stressing a barrel from within replaces built-up hoop construction — a lighter gun of the same power, made in fewer operations.' },
-  stamped_receivers:       { name: 'Stamped Receivers',          year: 1938, in: '123', ind: 'arms', cat: 'military',
+  stamped_receivers:       { name: 'Mass Small-Arms Production', year: 1938, in: '123', ind: 'arms', cat: 'military',
     desc: 'Pressed and welded sheet metal in place of milled forgings. A weapon a bicycle works can make, in the numbers a war needs.' },
   gunsmith_workshops:      { name: 'Gunsmith Workshops',         year: 1770, in: '23', ind: 'arms', cat: 'military',
     desc: 'The Birmingham gun quarter: barrel, lock and stock made by separate trades and assembled to a contract.' },
@@ -629,9 +629,13 @@ const RENAME = {
   bolt_action_rifles: ['Magazine Rifles', 'it now gates the drawn-brass cartridge plant as well as the rifle'],
   percussion_cap:     ['Percussion Ordnance', 'it now gates the shell-gun foundry as well as the cap plant'],
   screw_frigate:      ['The Screw Steamer', 'it now gates the metal merchant yard and the coaling port as well as the frigate'],
-  transfer_machining: ['Automatic Machine Control', 'it now gates tracer-controlled tooling as well as the transfer line'],
-  stamped_receivers:  ['Mass Small-Arms Production', 'it now gates automatic cartridge lines as well as stamped receivers'],
-  diesel_engine:      ['Diesel Engine', 'it now gates the diesel railway as well as the motor works'],
+  // ⚠ NOTHING OF OURS BELONGS IN THIS TABLE, and no entry may rename a technology to the name it already
+  // has. RENAME means "vanilla calls this X, we call it Y" — it sets the `renamed` marker the node and
+  // the tooltip show. Three entries were briefly wrong here: `transfer_machining` and `stamped_receivers`
+  // are OURS, so there is no vanilla name to be renamed from and the tooltip title-cased the id instead;
+  // and `diesel_engine` was "renamed" to Diesel Engine, its own name, purely to carry a justification —
+  // which showed a node marked "renamed" whose tooltip said it was renamed from itself. The user spotted
+  // that one on screen. Our own names live in NEW{}; the guard in the constraint block enforces both.
   crystal_glass: ['Lead Crystal',
     'It unlocks the LEADED glassworks; the crystal tier is a rung above it, on the regenerative furnace.'],
   electrical_capacitors: ['Alternating Current',
@@ -1146,6 +1150,18 @@ function buildOption(optN) {
     for (const p of t.prereqs)
       if (techs.get(p).category !== t.category)
         problems.push(`CROSS-TREE: ${t.category}:${t.id} requires ${techs.get(p).category}:${p}`);
+  //  3b. A RENAME MUST BE A REAL RENAME OF A VANILLA TECHNOLOGY. `renamed` is shown on the node and in
+  //      the tooltip as "renamed from X", so an entry targeting one of OUR technologies has no X to name
+  //      (the tooltip title-cases the id and says a technology was renamed from itself), and an entry
+  //      whose new name equals the vanilla name marks a node "renamed" for no change at all. Both
+  //      shipped for one build on 2026-08-12; the user spotted the second on screen.
+  for (const t of techs.values()) {
+    if (!t.renamed) continue;
+    if (t.origin === 'new')
+      problems.push(`RENAME OF OURS: ${t.id} is a technology we add — set its name in NEW{}, not RENAME{}`);
+    else if (t.vanillaName && t.name === t.vanillaName)
+      problems.push(`RENAME IS A NO-OP: ${t.id} is renamed to "${t.name}", already its vanilla name`);
+  }
   //  4. NO EMPTY TECHNOLOGIES (user-ruled 2026-08-11). One we ADD must unlock something or carry a
   //     modifier; a technology that costs innovation and does nothing is not content, it is a toll.
   //     ⚠ Scoped to OUR technologies on purpose. Vanilla ships several genuinely empty ones —
