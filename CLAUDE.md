@@ -264,8 +264,16 @@ gone (monotone adoption in every seed), losses fell ~35%, and the optimiser work
 phases — measured, §10.48.1); the two ship together. ⚠ An early PM fixed point must not starve the
 continuous half: the joint loop always spends its full round budget, skipping only the optimiser.
 ⚠ **THE LARGEST REMAINING BLOCK IS NOT A BALANCE PROBLEM (§10.29).** Every insolvent industry is *floored
-at 1 level* and pinned at the 25% price band edge: era-1 steel has **zero** buyers (its first consumer is
-an era-2 tier), and era-3 telephones read buy 18 against sell 72 because they share `popneed_communication`
+at 1 level* and pinned at the 25% price band edge.
+⚠⚠ **THE STEEL HALF OF THIS IS VOID — "era-1 steel has ZERO buyers, its first consumer is an era-2 tier"
+WAS TRUE IN AUGUST 2026 AND IS NOT TRUE NOW** (re-measured 2026-08-13). The date gate and two re-bandings
+moved `motor` e1, `shipyard_steam` e1 and `arms` e1 into era 1, and all three eat steel: the shipped
+1836 scenario reads **buy 112 against sell 78** — demand EXCEEDS supply and the price sits at 100%, not on
+the floor. Do not cite the zero. ⭐ It is also **contradicted by the game**: a melted vanilla 1838
+gamestate has a real steel market of **1387 units/wk**, consumed by tooling workshops (90.5%, 56 levels)
+and motor industry (9.5%), against 1063 produced — see FINDINGS **F54**. The `ERA_PRUNE` default
+`steel@0` still stands, because at **1780** there genuinely is no steel consumer of any kind.
+The rest of the block is unaffected: era-3 telephones read buy 18 against sell 72 because they share `popneed_communication`
 with `transportation`, which is sold in vast quantity. Two obvious remedies were measured and **both fail**
 — a 4× bigger market leaves the prices *identical* (supply and demand scale together), and cutting the
 debut tier's output makes the industry **worse** (−29% → −62%), because pop money is allocated by supply

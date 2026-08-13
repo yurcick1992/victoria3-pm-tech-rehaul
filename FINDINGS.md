@@ -131,6 +131,75 @@ transcript rather than from data.
 
 ---
 
+## F54 — ⚠⚠ **"ERA-1 STEEL HAS ZERO BUYERS" IS VOID. The shipped 1836 scenario reads buy 112 against sell 78, and vanilla's own 1838 gamestate has a 1387-unit steel market that is 90% TOOLING WORKSHOPS**
+
+**Measured 2026-08-13**, prompted by the user asking whether the zero had ever been confirmed in a
+savegame. It had not: **§10.32 was a model-side reading of our own scenario order book**, never an
+observation of the game. Checking it both ways retires the claim.
+
+### 1. The game: vanilla 1838 has a real steel market, and it is tooling
+
+Melted vanilla gamestate `saves_debut/0001` (**1838.4.1**, pure vanilla), every building's own
+`input_goods` / `output_goods` summed by BUILDING TYPE:
+
+| | units/wk | share | buildings / levels |
+|---|---|---|---|
+| **consumed by** `tooling_workshop` | **1256** | **90.5%** | 11 / 56 |
+| consumed by `motor_industry` | 131 | 9.5% | 2 / 4 |
+| **total demand** | **1387** | | |
+| produced by `steel_mill` | 1063 | | 6 / 17 |
+
+**Demand exceeds supply by 30% at the start of a vanilla campaign.** Per country, consumption is
+GBR 563 · PRU 252 · USA 208 · FRA 166 · BEL 116 · WUR 62 (7 countries); production GBR 406 · PRU 287 ·
+USA 133 · BEL 120 · FRA 118 (5 countries). The market grows to 11 561 units over 37 countries by 1870
+and 69 682 over 92 by 1900.
+
+### 2. Our own model no longer shows zero either
+
+Shipped era scenarios, steel's order book:
+
+| scenario | buy | sell | price | our tier consumers present |
+|---|---|---|---|---|
+| 1780 | **0** | **0** | 100% | none — and `ERA_PRUNE steel@0` removes the mill entirely |
+| **1836** | **112** | **78** | **100%** | `motor` e1 →26 · `shipyard_steam` e1 →73 · `arms` e1 →13 |
+| 1870 | 1017 | 744 | 100% | 8 tiers across tooling, motor, shipyard_steam, arms, artillery |
+
+The zero was real when §10.32 measured it (2026-08-05). What changed it: the **date gate** (§10.44) and
+**two re-bandings** moved `motor` e1 (`pm_steam_engines`, 1820), `shipyard_steam` e1 (1843) and `arms` e1
+into era 1, and all three consume steel. BALANCE_FRAMEWORK §10.47 had already caught part of this in
+passing ("steel@1836 buys 63 … the old *era-1 steel has zero buyers* was a statement about the
+pre-date-gate placement"); this replaces the number and closes it out everywhere else.
+
+⇒ **The steel era-1 GAP still stands, but only on its other reason** — the calendar. Vanilla's ladder
+runs **1745 blister → 1856 Bessemer**, an 111-year hole, and era 1's band is **1790–1850**. Nothing lands
+in it because the 1790–1850 advances were in *iron* (puddling, hot blast 1828), which vanilla models on
+the iron and tooling side. The "no buyer" half of the justification is retired.
+
+### ⭐ The one real divergence it exposes: our tooling does not eat steel until 1865
+
+Vanilla's steel demand at 1838 is **90% tooling workshops**. Our tooling ladder eats
+`wood` at e0, `iron`+`wood` at e1 (`pm_pig_iron`, 1830) and only reaches steel at **e2**
+(`pm_steel`, `steel_railway_cars`, **1865**). So the single biggest steel consumer in vanilla's early
+game is absent from ours by three decades.
+
+**That is defensible and deliberate** — the ladder dates e2 as *Bessemer-steel* tooling, which really is
+1865, whereas vanilla hands its steel-tools method to tier-1/2 countries at the 1836 start (which is
+also why our derived 1836 grant had to name `steel_toolmaking` before it was merged away). But it is the
+reason our early steel market is small where vanilla's is not, and any future attempt to close the era-1
+steel gap should start here rather than by inventing a steel rung.
+
+### What it does NOT say
+
+It does **not** say our 1836 steel market is the right SIZE — only that it is non-zero, that demand
+exceeds supply as it does in vanilla, and that the price is not pinned. The two are not directly
+comparable in level: the vanilla figure is a whole world of 7 consuming countries, ours is one solved
+scenario. It does **not** revisit §10.29's other cases (telephones, fine art, dye), which were measured
+separately and are untouched. It reads **one** vanilla campaign at three dates (the standard
+`saves_debut` caveat), and `input_goods` is realised consumption, not the order book — trade and pops
+are on neither side.
+
+---
+
 ## F53 — ⭐⭐ **VANILLA'S OWN PAYBACK PERIOD IS 10–15 YEARS IN 1836 AND IT SHORTENS, NOT LENGTHENS, ACROSS THE CENTURY. And £720 per construction point is ONE METHOD'S rate, not a constant: the real rate falls 1000 → 527 as the eras pass**
 
 **Measured 2026-08-13. Two independent instruments, no game time spent** — both read existing artifacts.
