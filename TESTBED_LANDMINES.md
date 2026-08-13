@@ -559,3 +559,57 @@ flagged automatically. Prove it by putting `dump_dates` back into a schedule's `
 ⚠ **The real fix is arguably in the scheduler** — give `dump_dates` the same `Val $r … (Val $defaults …)`
 treatment as its neighbours. The detector is still wanted: it is the general case, and the next key added
 without a fallback will be silent in the same way.
+
+---
+
+## L17 — a run that FAILED is recorded as `ok`, and the arm count silently shrinks
+
+**Status: REGISTERED, DETECTOR OWED.** Found live 2026-08-13, mid-batch, in
+`20260813_083557_vanilla-vs-mod-n4`.
+
+**What happened.** Run 4 (the mod arm) crashed at **1851.1.27**, its resume made no progress, and
+`run_observer.ps1` abandoned it — correctly, and it said so in its own log:
+
+```
+[16:31:59] [WARN] run 1: game CRASHED at 1851.1.27 (crash dump: victoria3_01260713_163156) - resuming
+[16:32:37] [WARN] resume made no progress (still 1851.1.27) - abandoning run 1
+[16:32:37] [INFO] run 1 finished: 1165,7s wall over 2 attempt(s), in-game 1851.1.27,
+                  exit resume made no progress
+```
+
+The **session** log, one line later, says:
+
+```
+[16:32:55] [INFO] run 4 finished: ok
+```
+
+**Root cause.** `run_schedule.ps1:464` derives the status from the observer's EXIT CODE and nothing else:
+`switch ($rc) { 0 { "ok" } 2 { "stopped_by_user" } 3 { "fatal_early_crashes" } ... }`. The observer exits
+**0** when it abandons a run, so an abandoned run is indistinguishable from a completed one. That status
+is then written into `session.json`'s index, which is what a later reader counts arms from.
+
+**Why nothing fails.** The batch continues, the folder exists, the TSVs have rows, and the summary is
+well-formed. The run simply covers **15 of 100 years** — 3 of 12 dump dates, 15 save summaries against a
+century's 100 — and `n=4 per arm` is really n=3. Everything needed to know better is already in that
+run's own `meta.json`: `reached_ingame_date: 1851.1.27`, `self_quit: false`, `resumes: 1`,
+`abandoned_reason: "resume made no progress"`. The scheduler never reads it.
+
+⚠⚠ **THIS IS THE MOST-REPEATED DEFECT IN THE WHOLE REGISTER'S HISTORY, seen from the generating side.**
+`SESSION_VERDICTS.md` already carries four retrospective corrections of exactly this shape —
+`techtree-full-n3` is n=2, `wages-n3` is n=2, `vanilla-retest`'s "19 runs" are 16 smoke probes, and
+`vanilla-retest-2` reached 1936 once in three. Every one of them had to be reconstructed by hand from
+run logs, long after the analysis that used the wrong n. This entry is why they keep happening.
+
+**DETECTOR.** Two halves, and the first is a real fix rather than a check:
+1. **In `run_schedule.ps1`**, after each run, read that run's `meta.json` and downgrade the status when
+   `self_quit` is false, or `abandoned_reason` is non-empty, or `reached_ingame_date` is short of the
+   plan's `until`. Record `partial(<date>)`, not `ok`. The information is already on disk.
+2. **In `preflight.ps1 -Session <dir>`** (where L12 already runs post-run), fail if any run's recorded
+   status disagrees with its own `meta.json`, and print a per-arm table of runs that actually reached
+   `until`. That table is the thing a verdict should quote instead of the folder count.
+
+Prove it by pointing the check at `20260813_083557_vanilla-vs-mod-n4`, where run 4 must come out
+`partial(1851.1.27)` and the mod arm must count 3 completed, not 4.
+
+⚠ Neither half could be written when this was found: `preflight.ps1` is invoked by `build.ps1` before
+every run and the batch was live. Editing it mid-batch would have changed the instrument between arms.

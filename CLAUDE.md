@@ -2287,6 +2287,12 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   and 2 draw most of their set from `add_era_researched = era_1`, so re-era-ing a technology OUT of era 1
   withdraws it from 59 countries with no file mentioning it. It expands the era shorthand against EACH
   root's own eras and includes the per-country extras 81 countries carry) ·
+  **L17 a run that FAILED is recorded as `ok`** — the scheduler derives status from the observer's EXIT
+  CODE alone, and the observer exits 0 even when it ABANDONS a run, so a run that reached 15% of its span
+  counts as complete and the arm's `n` silently shrinks. Everything needed is already in that run's own
+  `meta.json` (`reached_ingame_date`, `self_quit`, `abandoned_reason`) and nothing reads it. Found live
+  2026-08-13; it is the generating cause of the FOUR retrospective n-corrections already in
+  `SESSION_VERDICTS.md`. REGISTERED, **DETECTOR OWED** ·
   **L16 a schedule key that works in `defaults` for some fields and is SILENTLY DROPPED for others**
   (`dump_dates` is run-only, with no `$defaults` fallback unlike every neighbouring key — a
   defaults-level one is ignored and every run falls back to ONE dump date instead of twelve, so a
