@@ -2338,8 +2338,28 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   behaviour must be on vanilla; a measurement of *our economy's* behaviour must be on our config; and the
   two answer different questions. **State the arm in the schedule's `_why`, and in every finding it
   produces.** A finding that names its session but not its arm is uninterpretable later.
+- **⭐⭐ AN ALLOTTED WINDOW IS A STANDING GO-AHEAD — INSIDE IT, GO AND GET THE DATA YOURSELF**
+  (user-ruled 2026-08-14). When the user grants an explicit window for long work — "up to Friday
+  evening", "overnight", "take the next N hours" — that window is permission to run **probes and short
+  tests on your own initiative**, without coming back to ask. If you hit a blocker that is simply
+  *missing data*, or a question that a measurement would close, **run the measurement**. Do not stop and
+  ask; do not hand back a half-answer that a five-minute probe would have finished.
+  ⚠ **NO WORDING SHORTENS THE WINDOW BELOW 12 HOURS FROM THE LAST REPLY.** "Friday evening" can mean
+  many things, but it never means less than that, so never reason yourself into believing the time is
+  nearly gone. The window ends when the allotted time actually runs out, or when the user **explicitly**
+  breaks it with a command to do otherwise.
+  ⚠ **A STATUS REQUEST IS NOT A BREAK.** Asking what is happening, asking for analysis of data already
+  collected, or asking a question about earlier results does **not** end the window and does not require
+  you to re-ask before continuing. Only an instruction to stop, or to do something else instead, does.
+  ⚠ **LONG tests follow the same rule with one bound: do not START one with under 3 hours of the window
+  left** without explicit permission — a long run that cannot finish inside the window is worse than no
+  run, because it monopolises the machine and produces a partial result nobody asked for.
+  ⚠ This does NOT relax the arm-discipline rule below: a probe still has to state its arm, span and
+  metrics in its schedule `_why`, and still gets a `VERDICT.md`. Autonomy is about **not asking**, not
+  about recording less.
 - **NEVER launch a game run without the user's explicit go-ahead — and ask for the whole batch in ONE
-  request.** Game time is the one cost here that cannot be optimized away, and it monopolizes the
+  request.** ⚠ Read this together with the allotted-window rule directly above: inside a granted window
+  the go-ahead is already given and this bullet's "ask first" does not re-apply per probe. Game time is the one cost here that cannot be optimized away, and it monopolizes the
   machine. ⚠⚠ **DO NOT SIZE A RUN AT "a minute per in-game year" — that is the OPENING rate and it
   under-states a century by about a third.** The game slows as the economy grows: ~1.0 in-game years per
   minute in the 1830s against ~0.44 in the 1930s. A full 1836→1936 run is **~2h35 on the mod, ~2h20 on
