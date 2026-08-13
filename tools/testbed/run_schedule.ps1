@@ -88,6 +88,18 @@ if (-not (Test-Path $Schedule)) { throw "schedule not found: $Schedule" }
 $schedRaw = Get-Content $Schedule -Raw -Encoding UTF8
 $sched    = $schedRaw | ConvertFrom-Json
 
+# "1886.1.1" -> 18860101, for ordering. Returns 0 if unparseable, so a missing date can never make a
+# run look like it reached its target. ⚠ A COPY of run_observer.ps1's helper, deliberately: the observer
+# runs its whole body on import, so it cannot be dot-sourced for one function. Eight lines duplicated
+# beats executing a game driver to borrow a parser.
+function ConvertTo-DateNum {
+    param([string]$D)
+    if (-not $D) { return 0 }
+    $p = "$D".Split('.')
+    if ($p.Count -lt 3) { return 0 }
+    return ([int]$p[0]) * 10000 + ([int]$p[1]) * 100 + ([int]$p[2])
+}
+
 function Val {
     param($Obj, [string]$Name, $Default)
     if ($null -eq $Obj) { return $Default }
@@ -462,6 +474,22 @@ foreach ($p in $plan) {
     }
 
     $status = switch ($rc) { 0 { "ok" } 2 { "stopped_by_user" } 3 { "fatal_early_crashes" } default { "failed($rc)" } }
+    # ⚠⚠ THE EXIT CODE IS NOT THE WHOLE STORY — landmine L17. run_observer exits 0 when it ABANDONS a
+    # run, so an abandoned run used to read exactly like a completed one. That is how a batch reports
+    # "8/8 ok" while two of its runs covered 15 and 9 years of a century, and it is the generating cause
+    # of four retrospective n-corrections already in SESSION_VERDICTS.md. The run's own meta.json has
+    # always known better; nothing read it. Now it does.
+    $metaPath = Join-Path $runDir "meta.json"
+    if ($status -eq "ok" -and (Test-Path $metaPath)) {
+        try {
+            $meta = Get-Content $metaPath -Raw -Encoding UTF8 | ConvertFrom-Json
+            $short = ($meta.reached_ingame_date -and (ConvertTo-DateNum $meta.reached_ingame_date) -lt (ConvertTo-DateNum $p.until))
+            if ((-not $meta.self_quit) -or $meta.abandoned_reason -or $short) {
+                $status = "partial($($meta.reached_ingame_date))"
+                Log "run $($p.index) did NOT reach $($p.until): stopped at $($meta.reached_ingame_date)$(if ($meta.abandoned_reason) { " - $($meta.abandoned_reason)" }) - recording '$status', NOT 'ok'" "WARN"
+            }
+        } catch { Log "run $($p.index): meta.json unreadable ($($_.Exception.Message)) - status left as '$status'" "WARN" }
+    }
     Log "run $($p.index) finished: $status"
     if ($rc -eq 3) {
         Log "REPEATED EARLY CRASHES - the mod for setup '$($p.setup)' is probably broken. Aborting the whole schedule." "ALERT"

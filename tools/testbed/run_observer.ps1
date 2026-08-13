@@ -113,6 +113,11 @@ param(
     # watching: it is now a stability signal rather than a budget, and a large value means the run
     # spent real time re-treading ground.
     [int]      $MaxResumes = 3,
+    # How far the resume ladder may walk BACK through the autosave ring when a save is unusable — either
+    # it will not load, or it loads and the game dies on it. 2 covers a poisoned gamestate that spans one
+    # autosave interval; walking further starts throwing away real progress to chase a run that is very
+    # probably lost. 0 disables stepping back entirely (the pre-2026-08-14 behaviour for the stuck case).
+    [int]      $MaxStepBack = 2,
     # On an abnormal exit with NO crash artifact, wait this long for a keypress before deciding
     # it was a crash rather than you. Any key = you did it = stop the batch.
     [int]      $StopGraceSeconds = 60,
@@ -734,9 +739,13 @@ try {
         $attempt = 0; $resumes = 0; $abandoned = ""
         $attemptLog = @()
         $earlyDeaths = 0; $sameSaveTries = 0; $lastResumeSave = ""
-        # Resume fallback ladder, per run: how many times a resume produced a FRESH 1836 game (i.e. the
-        # load failed), and whether we have already quarantined the newest autosave and stepped back.
-        $freshStarts = 0; $steppedBack = $false
+        # Resume fallback ladder, per run. TWO faults reach it, and they look nothing alike:
+        #   $freshStarts — the load FAILED and -handsoff began a fresh 1836 game
+        #   $stuckTries  — the load SUCCEEDED and the game then died without advancing a day
+        # ⚠ $steppedBack is a COUNT now, not a bool: a poisoned gamestate can survive more than one
+        # autosave, so the ladder may need to walk back further than a single step. Bounded by
+        # -MaxStepBack so it can never walk the whole ring.
+        $freshStarts = 0; $stuckTries = 0; $steppedBack = 0
         $script:QuarantinedSaves = @()
 
         # ---- attempt loop: one pass per launch, extra passes are crash resumes ----
@@ -913,7 +922,7 @@ try {
                 $freshStarts++
                 if ($freshStarts -ge 2) {
                     $bad = Test-OwnSaveIsNewest $runStart
-                    if ($bad -and -not $steppedBack) {
+                    if ($bad -and $steppedBack -lt $MaxStepBack) {
                         $sizes = @(Get-ChildItem $SaveDir -Filter *.v3 -ErrorAction SilentlyContinue |
                                    Sort-Object LastWriteTime -Descending | Select-Object -First 4)
                         $quarantine = Join-Path $runDir ("quarantined_" + $bad.Name)
@@ -922,7 +931,8 @@ try {
                         Write-Log "resume failed twice from $($bad.Name) - QUARANTINED it and stepping back one autosave" "WARN"
                         Write-Log "  save sizes at quarantine: $sizeNote  (a much smaller newest = truncated by a mid-write crash)" "WARN"
                         $script:QuarantinedSaves += @{ name = $bad.Name; bytes = $bad.Length; kept_at = $quarantine; sizes = $sizeNote }
-                        $steppedBack = $true
+                        $steppedBack++
+                        $freshStarts = 0        # the next save gets its own two tries
                         # count it: this ladder `continue`s past the normal $resumes++ near the bottom
                         # of the loop, and an uncounted retry would both dodge -MaxResumes and make
                         # meta.json under-report how hard the run fought to stay alive.
@@ -943,10 +953,51 @@ try {
                 continue
             }
             if ((ConvertTo-DateNum $lastTick) -le $wanted) {
-                Write-Log "resume made no progress (still $lastTick) - abandoning run $run" "WARN"
-                $abandoned = "resume made no progress"
-                break
+                # ⭐⭐ THE SAVE LOADS AND THE GAME DIES ON IT — a POISONED GAMESTATE, and until 2026-08-14
+                # this branch gave up on the spot while four untouched autosaves sat in the folder.
+                #
+                # The quarantine ladder below used to hang off the OTHER branch only (the load FAILED and
+                # -handsoff began a fresh 1836 game). That is the narrower fault: a save that will not
+                # load at all. This one — loads fine, then crashes without advancing — is at least as
+                # likely, and it cost TWO of four mod runs in the vanilla-vs-mod batch (run 4 abandoned
+                # at 1851, run 8 at 1845; all four vanilla runs recovered from their own crashes).
+                # ⚠ RUN 8 IS WHY THIS STEPS BACK RATHER THAN JUST RETRYING: it crashed three times in
+                # 25 minutes around 1845, advancing two in-game MONTHS between the first and second, so
+                # the crash reproduces from a save that loads perfectly. Retrying the same save is what
+                # cannot work here; going back past the poisoned state is the only move available.
+                # ⚠ Same mechanism as the other branch and for the same reason: `-loadsave=<path>` is
+                # REJECTED by the exe, so MOVING the newest save is the only way to choose an older one.
+                $stuckTries++
+                if ($stuckTries -ge 2) {
+                    $bad = Test-OwnSaveIsNewest $runStart
+                    if ($bad -and $steppedBack -lt $MaxStepBack) {
+                        $sizes = @(Get-ChildItem $SaveDir -Filter *.v3 -ErrorAction SilentlyContinue |
+                                   Sort-Object LastWriteTime -Descending | Select-Object -First 4)
+                        $quarantine = Join-Path $runDir ("quarantined_stuck_" + $bad.Name)
+                        Move-Item -LiteralPath $bad.FullName -Destination $quarantine -Force
+                        $sizeNote = ($sizes | ForEach-Object { "{0}={1:N0}B" -f $_.Name, $_.Length }) -join ' '
+                        Write-Log "resume loaded $($bad.Name) but the game died without advancing, twice - QUARANTINED it and stepping back one autosave (step $($steppedBack + 1) of $MaxStepBack)" "WARN"
+                        Write-Log "  save sizes at quarantine: $sizeNote" "WARN"
+                        $script:QuarantinedSaves += @{ name = $bad.Name; bytes = $bad.Length; kept_at = $quarantine; sizes = $sizeNote; reason = "loaded but would not tick" }
+                        $steppedBack++
+                        $resumes++          # count it: this ladder `continue`s past the normal $resumes++
+                        $stuckTries = 0     # the next save gets its own two tries
+                        $firstTick = ""; $lastTick = $tickAtStart
+                        continue
+                    }
+                    Write-Log "resume made no progress from $($steppedBack + 1) different autosave(s) - the run is stuck at $lastTick, ending run $run" "ALERT"
+                    $abandoned = "stuck: no progress from $($steppedBack + 1) autosave(s)"
+                    break
+                }
+                Write-Log "resume made no progress (still $lastTick) - retrying this save (attempt $stuckTries of 2)" "WARN"
+                $resumes++
+                $firstTick = ""; $lastTick = $tickAtStart
+                continue
             }
+            # progress was made, so whatever poisoned the last save is behind us: reset the stuck counter
+            # or a run that crashes repeatedly at DIFFERENT points would accumulate its way into the
+            # ladder and start throwing away saves it is still making progress from.
+            $stuckTries = 0
         }
         # ⚠ THERE IS DELIBERATELY NO CAP ON TOTAL RESUMES. A run that keeps crashing at DIFFERENT points
         # is a run that keeps making progress, and cutting it off wastes everything it earned - that is
