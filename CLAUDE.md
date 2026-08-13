@@ -2278,8 +2278,19 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   vanilla gives it** (`verify_start_techs.mjs --diff-vanilla` — L14's converse, and the quiet one: tiers 1
   and 2 draw most of their set from `add_era_researched = era_1`, so re-era-ing a technology OUT of era 1
   withdraws it from 59 countries with no file mentioning it. It expands the era shorthand against EACH
-  root's own eras and includes the per-country extras 81 countries carry) · **L12 savegames reaped without a readable
+  root's own eras and includes the per-country extras 81 countries carry) ·
+  **L16 a schedule key that works in `defaults` for some fields and is SILENTLY DROPPED for others**
+  (`dump_dates` is run-only, with no `$defaults` fallback unlike every neighbouring key — a
+  defaults-level one is ignored and every run falls back to ONE dump date instead of twelve, so a
+  per-decade series silently becomes a single endpoint. REGISTERED, **DETECTOR OWED**) ·
+  **L12 savegames reaped without a readable
   summary** — the one POST-RUN entry, walked with `preflight.ps1 -Session <dir>` and N/A on a normal build.
+  ⚠⚠ **L14 AND L15 ARE `N/A` FOR AN INSTRUMENT ARM, AND GETTING THAT WRONG MADE THE CONTROL ARM
+  UNBUILDABLE FOR A DAY** (2026-08-12 → 13). They read our own 1836 grant, which a control does not emit,
+  so both died on ENOENT and `build.ps1 -ControlOnly` **threw** — a landmine sitting inside the landmine
+  register's own enforcement, found only when a 20-hour batch stalled on its first build with neither a
+  `build ok` nor a `BUILD FAILED` line anywhere. The skip keys on the mod's METADATA ID (the mechanism L7
+  uses), **never** on the grant file being absent, because a content mod missing its grant must still FAIL.
   **The MD holds the story and the numbers; the script holds the enforcement.** When a run surfaces a new
   one: entry first, then `Test-Lm<ID>`, then **prove the tripwire trips** by breaking it on purpose — a
   guardrail that has never failed is not known to work.

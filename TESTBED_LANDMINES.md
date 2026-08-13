@@ -497,3 +497,65 @@ shape belongs on screen so an unexpected one is visible. Today: 338 countries ga
 
 **Proven.** Deleting `add_technology_researched = railways` from the tier-1 grant makes it name FRA, GBR,
 PRU and USA and exit non-zero.
+
+**⚠⚠ L14 AND L15 ARE `N/A` FOR AN INSTRUMENT ARM, AND THAT EXEMPTION IS ITSELF A LANDMINE STORY
+(2026-08-13).** Both read *our own* 1836 grant, which only a content arm has. A control emits
+`.metadata` + telemetry and nothing else — the hard rule — so it carries no
+`common/scripted_effects/00_starting_inventions.txt`, and both detectors died on **ENOENT** reading it.
+That made **`build.ps1 -ControlOnly` THROW**, i.e. **the control arm was unbuildable from the moment
+these two landed (2026-08-12) until it was fixed (2026-08-13)** — the purest form of the defect this
+register exists for, sitting *inside* the register's own enforcement. Nobody noticed because every arm
+built in between was a content arm.
+
+It surfaced when a 20-hour vanilla-vs-mod batch stalled on its first run: `session.log` stopped at
+`building setup 'vanilla'` with **neither** `build ok` **nor** `BUILD FAILED`, `build.log` ended
+mid-build with no error, and the scheduler sat idle with no children and 1.1 s of CPU. The message went
+to the scheduler's detached window — unreadable by design, since that window is what keeps `p/r/s/x`
+alive. Diagnosis required reproducing the build by hand in the foreground.
+
+**The skip is keyed on the mod's own METADATA ID** (`Get-InstrumentArmSkip`, the mechanism L7 already
+uses, read off the BUILT mod), **never on the grant file being absent** — "the grant file is missing"
+must stay a FAILURE for a content mod, which is exactly what L15 catches. **Proven both ways:** the
+control now builds green with L14/L15 reporting `N/A`, and deleting the grant from the real mod still
+fails both.
+
+---
+
+## L16 — a schedule key that works in `defaults` for some fields and is SILENTLY DROPPED for others
+
+**Status: REGISTERED, DETECTOR OWED.** Found 2026-08-13; the fix could not be written the same hour
+because `preflight.ps1` is invoked by `build.ps1` before every run and a 20-hour batch was live.
+
+**The defect.** `run_schedule.ps1:153` resolves a run's dump dates as
+
+```powershell
+$dumps = @(Val $r "dump_dates" @())
+```
+
+— run-level only, with **no `$defaults` fallback**, unlike `tags`, `metrics`, `autosave_interval`,
+`timeout_minutes`, `wide_dates`, `wide_tags` and `origin_goods`, which all have one. So a schedule that
+puts `dump_dates` in `defaults` — the obvious place, and where every neighbouring key belongs — has it
+**silently ignored**, and every run falls back to the built-in default of *1 January of the year before
+`until`*: **one dump date instead of twelve**.
+
+**Why nothing fails.** The build succeeds, the mod loads, the run completes, the TSVs have rows. The run
+simply has one twelfth of the intended time series, and a metric that was supposed to be sampled per
+decade is a single endpoint. Every trajectory question — when a technology arrived, when a rung was
+first built, whether a leader plateaued — becomes unanswerable, and the summary looks perfectly normal.
+
+**Caught by** the `-WhatIf` line, which prints the resolved dump list per run and read
+`dumps: 1935.1.1`. That is luck, not a guard: `-WhatIf` is optional and the batch would have run
+without it.
+
+**Not covered by L5.** L5 walks the *telemetry* spec keys (`breakdown_dates`, `wide_dates`, `origin_goods`,
+…) against what `Resolve-Setup` threads. `dump_dates` reaches the observer by a different path — a
+`-DumpDates` argument — so it is outside L5's population entirely.
+
+**DETECTOR (to write).** In `preflight.ps1 -RepoOnly`: parse every `tools/testbed/schedules/*.json` and
+fail if any `defaults` block carries a key the resolver reads run-only. Derive the run-only set from
+`run_schedule.ps1` itself rather than listing it, so a key that later gains a fallback stops being
+flagged automatically. Prove it by putting `dump_dates` back into a schedule's `defaults`.
+
+⚠ **The real fix is arguably in the scheduler** — give `dump_dates` the same `Val $r … (Val $defaults …)`
+treatment as its neighbours. The detector is still wanted: it is the general case, and the next key added
+without a fallback will be silent in the same way.
