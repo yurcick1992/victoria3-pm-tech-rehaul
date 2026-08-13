@@ -1,0 +1,76 @@
+{
+  "schedule_version": 1,
+  "label": "vanilla-1836-wages-n5",
+  "_why": "THE 1836 VANILLA REFERENCE, PROPERLY: n=5 for variance, and WAGES included so the rebase can replace config/measured_1836.json in full rather than in part. The n=3 attempt established that the start is stable (production -0%, sell -1%, workforce -1%, urban centres -1%) but carried NO wages block, and measured_1836.json is documented as silently wrong rather than obviously missing when stale — so a partial overwrite would have deleted the measured base weekly wage the whole scenario wage model runs on.",
+  "_arms": "{kind: control} — vanilla + telemetry and nothing else. This measures THE GAME, so it must not carry our content; a modded arm here would rebase the scenarios on ourselves.",
+  "_comparison": "Against config/measured_1836.json as it stands (extracted 2026-08-03) and against what extract_presets.ps1 derives from the history files. Differences get reported, not silently applied — the history files are the AUTHORED start and the save is the INITIALISED one, and which should win differs per field.",
+  "_watch": "1836.2.1 and NOT day 0: construction goods spend is exactly £0 on 1836.1.1 because the sector has not ticked (FINDINGS F14), so day 0 is history-faithful and economically unfinished. Whether the savegame diverges much from the history-derived state is itself the question — urban-centre levels and the pop-class split are the two most likely to move.",
+  "_cost": "3 runs x 2 in-game months, ~3 minutes. extract_measured averages field by field, which is its documented default because the 1836 start is nearly deterministic for most metrics but NOT all (urban-centre tram levels swing by a third between runs, F16).",
+  "_caveats": "GAME 1.13.10. Metric set matches the belgium_check/allmarkets_popsol lineage that produced the current measured_1836.json, so the two are comparable field by field. Tags are the eight preset countries, which is what config/presets.json drives. ⚠ n=3 because the FIRST single-run attempt showed military type counts and trade breadth well below the committed reference, which is exactly the shape single-run coverage noise takes; averaging is how extract_measured is meant to be fed. ⚠⚠ WAGES IS A BURST METRIC: telemetry_lib restricts its PER-POP sweep to ENDPOINT dumps because a dump writes its lines in ONE tick and the log ring is shared and finite (landmine L4/L9). This run puts the per-pop sweep in the same tick as SCEN/BINV/POP/THRU, which is exactly the eviction risk. VERIFY AFTERWARDS: SCEN lines must still read ~570 per run, as they did at n=3. If they drop, the wage sweep evicted the scenario metrics and wages must be run separately and merged with -WagesOnly.",
+  "defaults": {
+    "metrics": [
+      "boot_dump",
+      "scenario",
+      "building_inventory",
+      "active_pms",
+      "market_goods_scoped",
+      "construction",
+      "pop_sol",
+      "wages"
+    ],
+    "autosave_interval": "monthly",
+    "timeout_minutes": 20,
+    "tags": [
+      "FRA",
+      "GBR",
+      "RUS",
+      "CHI",
+      "AUS",
+      "JAP",
+      "USA",
+      "BEL"
+    ]
+  },
+  "setups": {
+    "vanilla": {
+      "kind": "control"
+    }
+  },
+  "runs": [
+    {
+      "setup": "vanilla",
+      "until": "1836.3.1",
+      "dump_dates": [
+        "1836.2.1"
+      ]
+    },
+    {
+      "setup": "vanilla",
+      "until": "1836.3.1",
+      "dump_dates": [
+        "1836.2.1"
+      ]
+    },
+    {
+      "setup": "vanilla",
+      "until": "1836.3.1",
+      "dump_dates": [
+        "1836.2.1"
+      ]
+    },
+    {
+      "setup": "vanilla",
+      "until": "1836.3.1",
+      "dump_dates": [
+        "1836.2.1"
+      ]
+    },
+    {
+      "setup": "vanilla",
+      "until": "1836.3.1",
+      "dump_dates": [
+        "1836.2.1"
+      ]
+    }
+  ]
+}
