@@ -1,0 +1,51 @@
+{
+  "schedule_version": 1,
+  "label": "vanilla-vs-mod-n4",
+  "_why": "THE FIRST VANILLA BASELINE THE SAVEGAME HARVEST HAS EVER SEEN. Every vanilla session in the repo predates the harvest (2026-08-11) and carries ZERO save summaries, so there is no vanilla reference for GDP, building levels, workforce composition, treasuries, investment pools, trade or technology distribution — every comparison to date has been mod-versus-mod. This is n=4 per arm on ONE instrument set, which makes the mod's numbers interpretable for the first time.",
+  "_arms": "vanilla = {kind: control} — vanilla + telemetry and nothing else, built by build.ps1 -ControlOnly. mod = {kind: config, config: config/mod_config.json} — the mod exactly as shipped on 2026-08-13: 105 tiers on the re-banded ladder, research events on, and the NEW build-cost book (BALANCE_FRAMEWORK §10.57: vanilla required_construction x band x 1.5^(era-1), two bands, four named exceptions). Both arms carry byte-identical telemetry — that is what makes the control a control.",
+  "_comparison": "Arm against arm, within this batch only. ALTERNATING V/M/V/M/V/M/V/M by user directive, so time-of-day and machine-state effects fall on both arms equally — F2's stated confound (time-of-day ordering) is what this design closes.",
+  "_watch": "(1) Whether the engine slowdown is OURS or the patch's — prediction: ours, since pop records ran +43% by 1910 and the speed gap tracks it. This is the first batch that can separate them, because both arms run on 1.13.10 on the same machine on the same night. (2) Total supply at base prices, mod vs vanilla, on one instrument. (3) THE GDP PREMISE, never once checked against a vanilla 1936. (4) The NEW COST BOOK's first contact with the game: does the AI actually build the ladder now that a level costs 2-8x what it did, and is the binding constraint still WORKFORCE (F52) rather than capital? (5) Technology distribution mod vs vanilla — F49 measured it COMPRESSING against the mod's own goal, with no vanilla arm to compare.",
+  "_cost": "8 runs x 100 in-game years, ~2h20 vanilla and ~2h35 mod, so ~20h wall clock plus 8 builds.",
+  "_caveats": "GAME 1.13.10 both arms, mod metadata 1.13.10 — matched, checked before launch. market_goods_scoped is carried by BOTH arms: the market order book is never persisted in a savegame (save_state_summary NOT_CAPTURED), so telemetry is the only route to it, and no vanilla session has ever had it beside save summaries. It also lets verify_save_alignment cross-check goods_out against production for the first time. ⚠ It is the volume risk on a 100-year run — the log ring is shared and a burst can evict its own data (landmines L4/L9); logs_live mirroring is what makes that survivable. Save harvest is ON (default), concurrent with the game.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "building_inventory",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP"
+    ],
+    "_dump_dates_note": "⚠ dump_dates MUST be stated PER RUN. run_schedule.ps1 line 153 reads `Val $r \"dump_dates\"` with NO defaults fallback, unlike tags and metrics — so a defaults-level dump_dates is silently dropped and every run falls back to `1 January of the year before until`, i.e. ONE dump instead of twelve. Caught by the -WhatIf line printing `dumps: 1935.1.1`. This key is deliberately NOT in defaults so nobody trusts it there."
+  },
+  "setups": {
+    "vanilla": {
+      "kind": "control"
+    },
+    "mod": {
+      "kind": "config",
+      "config": "config/mod_config.json"
+    }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1936.1.1", "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] },
+    { "setup": "mod",     "until": "1936.1.1", "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] },
+    { "setup": "vanilla", "until": "1936.1.1", "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] },
+    { "setup": "mod",     "until": "1936.1.1", "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] },
+    { "setup": "vanilla", "until": "1936.1.1", "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] },
+    { "setup": "mod",     "until": "1936.1.1", "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] },
+    { "setup": "vanilla", "until": "1936.1.1", "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] },
+    { "setup": "mod",     "until": "1936.1.1", "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] }
+  ]
+}

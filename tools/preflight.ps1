@@ -48,6 +48,29 @@ if (-not [System.IO.Path]::IsPathRooted($Mod)) { $Mod = Join-Path $Repo $Mod }
 
 $FingerprintFile = Join-Path $PSScriptRoot 'telemetry_fingerprint.json'
 $CONTROL_MOD_ID  = 'com.yurcick.v3_testbed_control'
+$OVERLAY_MOD_ID  = 'com.yurcick.v3_testbed_overlay'
+
+# ⚠⚠ L14 AND L15 VERIFY *OUR OWN* 1836 TECHNOLOGY GRANT, WHICH ONLY A CONTENT ARM HAS.
+# A control emits `.metadata` + telemetry and nothing else — that is CLAUDE.md's hard rule — so it
+# carries no `common/scripted_effects/00_starting_inventions.txt`, and both detectors used to die on
+# ENOENT reading it. That made `build.ps1 -ControlOnly` THROW, i.e. THE CONTROL ARM COULD NOT BE BUILT
+# AT ALL from the moment L14/L15 were added (2026-08-12) until this was fixed (2026-08-13) — found by a
+# 20-hour vanilla-vs-mod batch stalling on its first run, with the failure invisible because the
+# scheduler's window swallowed it. The honest verdict for a control is N/A, exactly like L12 without
+# -Session.
+# ⚠ KEYED ON THE MOD'S OWN METADATA ID, NEVER ON THE FILE BEING ABSENT. "The grant file is missing" must
+# stay a FAILURE for a content mod — that is precisely the fault L15 exists to catch — so the skip has to
+# identify the ARM, not the symptom. Same mechanism L7 uses, and read off the BUILT mod so it cannot
+# disagree with what loaded.
+function Get-InstrumentArmSkip {
+    $metaFile = Join-Path $Mod '.metadata\metadata.json'
+    if (-not (Test-Path $metaFile)) { return $null }
+    try { $meta = Get-Content $metaFile -Raw -Encoding UTF8 | ConvertFrom-Json } catch { return $null }
+    if ($meta.id -eq $CONTROL_MOD_ID -or $meta.id -eq $OVERLAY_MOD_ID) {
+        return "instrument arm (id: $($meta.id)) - emits no starting-inventions grant by design"
+    }
+    return $null
+}
 
 # --------------------------------------------------------------------------- reporting ----
 $script:Results = @()
@@ -325,6 +348,8 @@ function Test-LmL14 {
       ourselves to is introducing no NEW gap, which is the real requirement and is computable because
       the same analysis runs unchanged against the game's own directory.
     #>
+    $skip = Get-InstrumentArmSkip
+    if ($skip) { Add-Result 'L14' 'a country starts with a building it cannot unlock' 'N/A' $skip; return }
     $script = Join-Path $PSScriptRoot 'verify_start_techs.mjs'
     if (-not (Test-Path $script)) { Add-Result 'L14' 'a country starts with a building it cannot unlock' 'N/A' 'verify_start_techs.mjs not present'; return }
     # no 2>&1: PS 5.1 wraps a native exe stderr line in an ErrorRecord, which loses the detail.
@@ -360,6 +385,8 @@ function Test-LmL15 {
 
       PROVEN: deleting 'railways' from the tier-1 grant makes it name FRA, GBR, PRU, USA and fail.
     #>
+    $skip = Get-InstrumentArmSkip
+    if ($skip) { Add-Result 'L15' 'a country loses a vanilla starting technology' 'N/A' $skip; return }
     $script = Join-Path $PSScriptRoot 'verify_start_techs.mjs'
     if (-not (Test-Path $script)) { Add-Result 'L15' 'a country loses a vanilla starting technology' 'N/A' 'verify_start_techs.mjs not present'; return }
     $out = & node $script $Mod --diff-vanilla
