@@ -747,6 +747,7 @@ try {
         # -MaxStepBack so it can never walk the whole ring.
         $freshStarts = 0; $stuckTries = 0; $steppedBack = 0
         $script:QuarantinedSaves = @()
+        $script:PendingEvidence = $null
 
         # ---- attempt loop: one pass per launch, extra passes are crash resumes ----
         while ($true) {
@@ -755,6 +756,29 @@ try {
         $launchArgs = $gameArgs
         if ($attempt -gt 1) { $launchArgs = @("-continuelastsave") + $gameArgs }
         $resumeFrom = $lastTick
+
+        # ⭐ EVIDENCE COPY, TAKEN AT LAUNCH (user-approved 2026-08-14, FINDINGS F56). Whatever save
+        # -continuelastsave is about to load is copied aside BEFORE the attempt runs, because if the
+        # attempt later crashes there is no reliable way to recover that exact file: the engine rotates
+        # slots by renaming (gone from the save dir after ~5 autosaves) and the concurrent harvester
+        # reaps the archive copy within minutes. A pending copy that the attempt completes cleanly is
+        # deleted below; one whose attempt CRASHES is promoted into quarantined_saves\ and recorded in
+        # meta.json. This is a COPY, never a move - the resume ladder still owns which save loads next.
+        # The folder is invisible to harvest_saves.ps1 and to landmine L12, which both glob saves\ only.
+        # It exists because the 1.13.10 sway recursion (F56) made poisoned-but-loadable saves the key
+        # evidence, and a run that RECOVERS after re-crashing is exactly the case that used to lose them.
+        if ($attempt -gt 1) {
+            $toLoad = Get-ChildItem $SaveDir -Filter *.v3 -ErrorAction SilentlyContinue |
+                      Sort-Object LastWriteTime -Descending | Select-Object -First 1
+            if ($toLoad) {
+                $evDir = Join-Path $runDir "quarantined_saves"
+                if (-not (Test-Path $evDir)) { $null = New-Item -ItemType Directory -Force $evDir }
+                $pend = Join-Path $evDir ("_pending_" + $toLoad.Name)
+                Copy-Item -LiteralPath $toLoad.FullName -Destination $pend -Force
+                $script:PendingEvidence = @{ name = $toLoad.Name; bytes = $toLoad.Length; pending = $pend
+                                             final = (Join-Path $evDir $toLoad.Name); from_tick = $resumeFrom }
+            }
+        }
         Write-Log $(if ($attempt -eq 1) { "run $run/$Runs starting (token $token)" }
                     else { "run $run resume attempt $attempt from the last autosave (was at $resumeFrom)" })
         Write-KeyLegend
@@ -889,6 +913,27 @@ try {
             resumed_from = $(if ($attempt -gt 1) { $resumeFrom } else { "" })
             ended_at_ingame = $lastTick; reached_target = $reached
             crash_dirs = @($crashDirs | ForEach-Object { $_.Name })
+        }
+
+        # ---- settle the pending evidence copy for this attempt (see the launch-side comment) ----
+        if ($script:PendingEvidence) {
+            $ev = $script:PendingEvidence
+            if ($crashDirs.Count -gt 0) {
+                if (Test-Path $ev.final) {
+                    # a retry of the same save already promoted this file; one evidence copy is enough
+                    Remove-Item -LiteralPath $ev.pending -Force -ErrorAction SilentlyContinue
+                } else {
+                    Move-Item -LiteralPath $ev.pending -Destination $ev.final -Force
+                    Write-Log "resume loaded $($ev.name) and the attempt CRASHED - kept an evidence copy in quarantined_saves\" "WARN"
+                    $script:QuarantinedSaves += @{ name = $ev.name; bytes = $ev.bytes; kept_at = $ev.final
+                                                   reason = "loaded by a crashed resume - kept as evidence"
+                                                   resumed_from_tick = $ev.from_tick
+                                                   crash_dirs = @($crashDirs | ForEach-Object { $_.Name }) }
+                }
+            } else {
+                Remove-Item -LiteralPath $ev.pending -Force -ErrorAction SilentlyContinue
+            }
+            $script:PendingEvidence = $null
         }
 
         if ($reached -or $timedOut) { break }

@@ -2441,6 +2441,16 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   **kept**, and `meta.json` → `quarantined_saves` records its byte size against its siblings: much
   smaller than its neighbours confirms the leading hypothesis (a CTD landing mid-autosave-write leaves a
   truncated `.v3` that exists, is newest, and fails to load); the same size refutes it.
+  ⭐ **EVERY SAVE A CRASHED RESUME LOADED IS KEPT AS EVIDENCE** (user-approved 2026-08-14, F56): at each
+  resume launch the observer copies the save `-continuelastsave` is about to load into
+  `<run>\quarantined_saves\` as a pending copy — promoted and recorded in `meta.json` →
+  `quarantined_saves` (reason `loaded by a crashed resume`) if that attempt crashes, deleted if it
+  completes. Copy at LAUNCH, not at crash: slot rotation renames the file away and the concurrent
+  harvester reaps the archive within minutes, which is how the 2026-08-14 vanilla run's poisoned ~1896
+  save was lost (the run recovered, so keep-newest kept only its 1936 endpoint). The folder is invisible
+  to `harvest_saves.ps1` and to L12, which both glob `saves\` only. ⚠ Live proof still owed: the hooks
+  are parse-checked and trace-reviewed, but no batch has crashed-and-resumed under them yet — check the
+  first post-2026-08-14 batch with resumes for `quarantined_saves\` entries and their meta records.
   ⚠⚠ **THE RESUME VERDICT MUST NOT BE READ FROM A STALE TAIL.** The game rotates its logs at startup and
   the tail keeps reading against the old file's offset, so for ~100 s after any launch it serves the
   PREVIOUS session's ticks — measured: `in-game 1877.2.13` reported while the game was at 1836.2. Every
