@@ -1,0 +1,11 @@
+# Diagnostic overlay for the 1.13.10 sway-evaluation stack overflow (FINDINGS F56).
+# Defines take a PARTIAL override: only the keys named here change; everything else in NAI stays vanilla.
+# Zeroing the daily attempt chances starves every downstream sway path (offers, answers, notifications),
+# which is the mechanism-confirmation test: if the poisoned save stops crashing under this overlay, the
+# recursion is reached through AI sway attempts inside an active diplomatic play.
+NAI = {
+	DIPLO_PLAY_SWAY_COUNTRIES_CHANCE_SCALED = 0
+	DIPLO_PLAY_SWAY_COUNTRIES_CHANCE_MAX = 0
+	DIPLO_PLAY_REVERSE_SWAY_COUNTRIES_CHANCE_SCALED = 0.0
+	DIPLO_PLAY_REVERSE_SWAY_COUNTRIES_CHANCE_MAX = 0.0
+}

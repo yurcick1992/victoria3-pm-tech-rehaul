@@ -158,7 +158,7 @@ All in session `20260813_083557_vanilla-vs-mod-n4`. Zero stack overflows in any 
 ### The minidumps prove it is ONE bug: an identical 4-function recursion cycle in all six dumps
 
 The thread stacks were extracted from the minidumps directly (parser:
-scratchpad `dumpstack.mjs`; the crashed thread had recursed through **~185 MB of stack**, ~10,870
+`tools/testbed/dumpstack.mjs`; the crashed thread had recursed through **~185 MB of stack**, ~10,870
 iterations of a period-4 cycle, 100% match rate in every dump). As `victoria3.exe` RVAs (1.13.10,
 `release/1.13.10`, SCMCommit `58c9ac06`):
 
@@ -172,7 +172,7 @@ identical across processes, and dumps from different attempts fault at the same 
 the guard page happened to be hit.
 
 **The four functions are diplomatic-play sway machinery**, identified by RIP-relative string references
-in their neighbourhoods (scanner: scratchpad `exestrings.mjs`):
+in their neighbourhoods (scanner: `tools/testbed/exestrings.mjs`):
 `countrycommands.cpp` sway-command validity (`SWAY_OFFER_NOT_VALID_FOR_SUBJECT`, `ALREADY_PROMISED_SWAY`,
 `CANNOT_REVERSE_SWAY_CALL_ALLY`, `COUNTRY_ALREADY_SUBJECT`); the maneuvers/desc block
 (`SWAY_OFFER_MANEUVERS_DESC`, `OBLIGATION_CALL_IN_MANEUVERS_DESC`); and `sway_manager.cpp`
@@ -200,20 +200,47 @@ divergence resolved its play differently — n=1, luck not exemption.
 ### Incidence (small n — treat as rates, not truths)
 
 1.13.10 century-runs to date: **mod 2 fatal of 5** (runs 002/006 and the 08-12 era6 run completed clean);
-**vanilla 1 transient of 4**. Per exposure-year the arms are compatible with the same trigger rate; the
-sample cannot distinguish "mod raises the rate" from chance.
+**vanilla 2 transient of 6** — run003 of the 08-13 batch at 1874.8.8, and run001 of
+`20260814_123646_vanilla-wages-century-n5` at 1896.7.20, whose first resume **re-crashed** at 1897.12.17
+(its dump `victoria3_01260714_135730` has an empty exception.txt — aborted crash report — but the context
+is unambiguous) before the second resume recovered to 1936. The arms look symmetric per exposure-year;
+the sample cannot distinguish "mod raises the rate" from chance in either direction.
+⚠ That vanilla re-crash also cost the evidence: the run recovered, so the harvester reaped the ~1896
+poisoned autosave into a summary — only a run that DIES keeps its poisoned save under keep-newest. The
+quarantine-on-resume-crash harvest change (user-approved 2026-08-14) exists to close exactly this.
+
+### ⭐ THE POISONED-SAVE PROBE (2026-08-14 21:35–21:43): mechanism CONFIRMED, workaround VALIDATED
+
+Driver: `tools/testbed/ctd_probe/probe_ctd_repro.ps1` (plants the archived save, launches
+`-handsoff -continuelastsave -run_until=1846.1.1`, classifies by new-dump-or-clean-exit, restores
+everything). Against run008's 1845.1.1 save:
+
+| variant | outcome |
+|---|---|
+| plain (mod only) | **CRASH_STACK_OVERFLOW ~90 s after launch** (dump `victoria3_01260714_213706`, same faulting offset) — the **4th consecutive** crash from this save |
+| nosway ×2 | **CLEAN_EXIT both times** — tick log shows the game playing straight through the previously-fatal 1845.10.15 to the 1846.1.1 target (~2 min each) |
+
+The nosway overlay (`tools/testbed/ctd_probe/nosway_mod`) sets exactly four `NAI` defines to zero:
+`DIPLO_PLAY_SWAY_COUNTRIES_CHANCE_SCALED/MAX` and `DIPLO_PLAY_REVERSE_SWAY_COUNTRIES_CHANCE_SCALED/MAX`
+— the AI's daily chances to attempt (reverse-)sways. Both overlay runs were verified from the game's own
+`debug.log`: both mods mounted and version-matched, the defines file parsed (cosmetic BOM warning only).
+A silent overlay-load failure would have produced the crash, not the clean pass, so the design is
+fail-safe in the informative direction. ⇒ **The recursion is entered through AI sway attempts inside an
+active diplomatic play, and starving those attempts prevents the CTD on a state that otherwise crashes
+deterministically.** Whether to adopt the overlay for measurement batches is a design ruling (it
+suppresses AI swaying, i.e. changes war coalitions), deliberately NOT taken here.
 
 ### What this does NOT say
 
 - It does **not** say the mod's content causes the recursion — the control arm hit the identical cycle
   with zero gameplay content loaded. It also does not *clear* the mod of raising exposure (more/different
   wars → more plays); n is far too small.
-- It does not name the exact engine defect, only the subsystem (sway evaluation inside diplomatic plays).
+- It does not name the exact engine defect, only the subsystem (sway evaluation inside diplomatic plays)
+  and now the entry path (AI sway attempts — the probe).
 - It does not say 1.13.9 was crash-free — the ACCESS_VIOLATION background class is old, both-arms, and
   recoverable; that class is unchanged and is NOT this week's problem.
-- The sway-suppression mitigation (`NAI` `DIPLO_PLAY_SWAY_COUNTRIES_CHANCE_*` and
-  `DIPLO_PLAY_REVERSE_SWAY_COUNTRIES_CHANCE_*` → 0) is a **hypothesis awaiting the poisoned-save probe**;
-  nothing here yet shows it prevents the crash.
+- The nosway overlay is a validated **diagnostic and emergency mitigation**, not a shipped default — it
+  alters AI diplomacy, and no measurement batch has run under it.
 
 **Poisoned saves (KEEP):** `run004_mod\saves\0015_20260813_163150_autosave.v3` (1851.1.1) and
 `run008_mod\saves\0009_20260814_004516_autosave.v3` (1845.1.1) in

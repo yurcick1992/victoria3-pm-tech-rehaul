@@ -1,0 +1,13 @@
+{
+	"name" : "CTD Probe - No AI Sway",
+	"id" : "com.yurcick.v3_ctd_probe_nosway",
+	"version" : "0.1.0",
+	"game_id" : "victoria3",
+	"supported_game_version" : "1.13.10",
+	"short_description" : "Diagnostic overlay: zeroes the AI's daily sway and reverse-sway attempt chances to test whether the 1.13.10 sway-evaluation stack overflow (FINDINGS F56) stops firing. Not a gameplay mod.",
+	"tags" : [],
+	"relationships" : [],
+	"game_custom_data" : {
+		"multiplayer_synchronized" : true
+	}
+}
