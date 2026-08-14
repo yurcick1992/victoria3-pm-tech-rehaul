@@ -1,0 +1,41 @@
+{
+  "schedule_version": 1,
+  "label": "costbook-ab-n2",
+  "_why": "SEPARATE 'THE LADDER WAS ALREADY UNCLIMBED' FROM 'AND WE JUST MADE EVERY BUILDING 2-8x DEARER'. The vanilla-vs-mod batch measured the mod at a third of vanilla's world GDP, 62% of its building levels, half its salaried employment and 39-41% unemployment — but it ran on the NEW two-band cost book, shipped hours before it launched. F52 measured the same under-building BEFORE that change, so the effect predates the cost book; what no run can currently say is how much of the collapse the cost book ADDED. This is the single-variable A/B that answers it.",
+  "_arms": "oldcost = {kind: config, config: config/mod_config.oldcost.json} — byte-identical to the shipped config EXCEPT `building_cost`, which is restored to the pre-2026-08-13 book: 66 tiers on their old solve_building_cost values, 39 invented tiers back to NULL so they fall through to the building-level default, exactly the state F52 measured. Same ladder, same recipes, same tech tree (config/tech_tree_options.oldcost.json is a byte copy), same research events. ⚠ THE ARM CONFIG IS NOT COMMITTED — config/mod_config.*.json is gitignored by repo convention. Regenerate it exactly: take config/mod_config.json and, for every tier, copy building_cost verbatim from the same tier key in `git show a872cc1:config/mod_config.json` — 66 tiers get an explicit value and 39 invented tiers get NULL, falling through to the building-level default, which is the state F52 measured. Then `cp config/tech_tree_options.json config/tech_tree_options.oldcost.json`: emit_techs.mjs derives its tech-tree path from the config filename and throws without the sibling.",
+  "_comparison": "Against run002_mod and run006_mod of 20260813_083557_vanilla-vs-mod-n4 — the SAME config with the NEW cost book, same game 1.13.10, same machine. Those two agreed to within 3% on every headline (world GDP 1,317M / 1,181M; unemployment 38.8% / 40.6%; top-10 peasants+unemployed 21.6% / 21.7%), so a two-run oldcost arm is enough to see a real difference against them. n=2 to match.",
+  "_watch": "World GDP at 1935 (new book: 1,317M / 1,181M against vanilla's 3,632-4,396M). Building levels (new: 141k / 135k against vanilla 213-234k). Unemployment (new: 38.8% / 40.6% against vanilla 15-18%). And the tier distribution: with cheaper rungs, does Britain's era-4/5 ever get built, and does the era-0 band finally shrink? Also worth reading: WALL CLOCK. era6-n1, the last old-cost-book mod century, took 228 minutes against the new book's 137 and 135 — if that reproduces, the mod's apparent speed advantage is an artefact of building less, not of tiering being cheaper to simulate.",
+  "_cost": "2 runs x 100 in-game years, ~2h20 each on the mod arm's measured pace, so ~4h40 plus 2 builds.",
+  "_caveats": "GAME 1.13.10 both arms and the comparison arm ran the same day, so no version confound. ⚠ ONE variable is not ONE effect: a cheaper cost book changes what gets built, which changes employment, prices and research thresholds together — this says how much the cost book moved the outcome, not which channel carried it. ⚠ The resume ladder was FIXED after the previous batch (loads-but-will-not-tick now quarantines and steps back, -MaxStepBack 2), so these runs are the first to exercise it; a mod run dying at 1845-1851 as runs 4 and 8 did should now recover, and if it does not the recovery attempt is recorded in meta.json.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "building_inventory",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP"
+    ]
+  },
+  "setups": {
+    "oldcost": {
+      "kind": "config",
+      "config": "config/mod_config.oldcost.json"
+    }
+  },
+  "runs": [
+    { "setup": "oldcost", "until": "1936.1.1", "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] },
+    { "setup": "oldcost", "until": "1936.1.1", "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] }
+  ]
+}

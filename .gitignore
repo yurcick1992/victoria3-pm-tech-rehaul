@@ -83,3 +83,7 @@ tools/testbed/saves_x10_extra/
 # exactly like a status board. Anything in it that must outlive the session belongs in FINDINGS.md
 # (results), ROADMAP.md (plan), BALANCE_FRAMEWORK.md (rulings) or TESTBED_LANDMINES.md (guardrails).
 HANDOVER.md
+
+# alternate-config siblings: emit_techs.mjs derives this path from the config name, so an alt config
+# needs one. Byte copies of the committed tree; regenerate with cp, never commit 585 KB twice.
+config/tech_tree_options.*.json

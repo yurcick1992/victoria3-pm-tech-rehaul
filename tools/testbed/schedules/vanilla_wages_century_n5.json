@@ -1,0 +1,43 @@
+{
+  "schedule_version": 1,
+  "label": "vanilla-wages-century-n5",
+  "_why": "WAGES ACROSS THE WHOLE CENTURY, ON VANILLA, WITH VARIANCE (user, 2026-08-14). Every wage figure the scenario model uses is a single 1836 cross-section — the measured base weekly wage, the profession spread, the workforce ratio — and the mod's wage ladder (0.0605 -> 0.0885 over 1836-1900) has never been checked against what vanilla's wages actually do over a century. This run supplies the trajectory, on the arm that measures THE GAME, at n=5 for variance.",
+  "_arms": "{kind: control} — vanilla + telemetry and nothing else. Measuring the base game, so it must carry none of our content.",
+  "_comparison": "Against the mod's own assumed wage path (ERA_WAGE_RAMP, measured DEAD in §10.42.5) and against config/measured_1836.json's 1836 cross-section, which this batch's own first dump reproduces independently. Also against the four vanilla centuries of 20260813_083557_vanilla-vs-mod-n4, which carried no wage metric at all.",
+  "_watch": "The WAGE TRAJECTORY: base weekly wage per market at each of the twelve dumps, and whether it grows the ~x1.4 over 1836-1912 that F47 inferred from pop wealth levels, or something else. Then the 1836 vs 1935 per-pop distributions, which are the only two complete ones the instrument can give.",
+  "_cost": "5 runs x 100 in-game years. Vanilla measured 155.5 / 161.0 / 155.9 / 186.7 minutes on this machine, so ~2h45 each plus wage-logging overhead — call it ~3h, ~15h for five. ⚠ RUNS COMPLETE ONE AT A TIME AND EACH IS INDEPENDENTLY USABLE, so stopping early keeps whatever finished: press [s] in the harness window, or drop a tools/testbed/STOP file. Expect 4 complete by the twelve-hour mark.",
+  "_caveats": "⚠⚠ THE PER-POP SWEEP IS COMPLETE ONLY AT THE FIRST AND LAST DUMP — a hard, measured instrument limit, not a preference. A dump writes its lines in one tick and the log ring is 5x512KB; ~1,500 lines fit inside a segment and ~3,400 do not, so mid-run per-pop dumps recovered 5% and 19% of their pops in session 20260803_022027, and recovered them as a BIASED subset (whichever lines rotation spared), which is worse than missing. The trajectory therefore rides on the CHEAP lines — WC per country, SW per state, WSTR per stratum, ~800 per dump — which fit comfortably at every one of the twelve dates. The full per-pop distribution is taken at 1836.2.1 (proven complete) and 1935.1.1 (close enough to exit that the ring snapshot still holds it). ⚠ Adding or moving a dump date moves the endpoints; re-check the completeness columns if this schedule is edited. GAME 1.13.10.",
+  "defaults": {
+    "metrics": [
+      "wages",
+      "country_state",
+      "population",
+      "building_inventory",
+      "treasury"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "AUS",
+      "BEL"
+    ]
+  },
+  "setups": {
+    "vanilla": {
+      "kind": "control"
+    }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1936.1.1", "dump_dates": ["1836.2.1","1845.1.1","1855.1.1","1865.1.1","1875.1.1","1885.1.1","1895.1.1","1905.1.1","1915.1.1","1925.1.1","1930.1.1","1935.1.1"] },
+    { "setup": "vanilla", "until": "1936.1.1", "dump_dates": ["1836.2.1","1845.1.1","1855.1.1","1865.1.1","1875.1.1","1885.1.1","1895.1.1","1905.1.1","1915.1.1","1925.1.1","1930.1.1","1935.1.1"] },
+    { "setup": "vanilla", "until": "1936.1.1", "dump_dates": ["1836.2.1","1845.1.1","1855.1.1","1865.1.1","1875.1.1","1885.1.1","1895.1.1","1905.1.1","1915.1.1","1925.1.1","1930.1.1","1935.1.1"] },
+    { "setup": "vanilla", "until": "1936.1.1", "dump_dates": ["1836.2.1","1845.1.1","1855.1.1","1865.1.1","1875.1.1","1885.1.1","1895.1.1","1905.1.1","1915.1.1","1925.1.1","1930.1.1","1935.1.1"] },
+    { "setup": "vanilla", "until": "1936.1.1", "dump_dates": ["1836.2.1","1845.1.1","1855.1.1","1865.1.1","1875.1.1","1885.1.1","1895.1.1","1905.1.1","1915.1.1","1925.1.1","1930.1.1","1935.1.1"] }
+  ]
+}

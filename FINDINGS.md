@@ -131,6 +131,69 @@ transcript rather than from data.
 
 ---
 
+## F55 — ⭐⭐ **THE WAGE IS ALREADY IN THE SAVEGAME. `base_wage` sits in every country record, has been harvested annually all along, and tracks the telemetry measurement to 3.6% on a single scale factor**
+
+**Measured 2026-08-14**, prompted by the user asking whether wages could be pulled from savegames instead
+of log dumps. They can, and the data was already on disk.
+
+### The field exists and is the game's own wage scalar
+
+Every country record in a melted save carries **`base_wage`**, and `save_state_summary.mjs` has been
+capturing it since the harvest was built — so it is present in **all 100 annual summaries of every run**
+in `20260813_083557_vanilla-vs-mod-n4`, at zero extra cost, with no log ring involved.
+
+Confirmed to be the wage the game actually pays: a building record's `salary_rate` reads **547.90**
+against its country's `base_wage` of **547.41** at the same tick — the same number.
+
+Vanilla trajectory, straight out of summaries already collected (run001_vanilla):
+
+| year | GBR | FRA | AUS | BEL | RUS | USA |
+|---|---|---|---|---|---|---|
+| 1837 | 577 | 558 | 434 | 567 | 424 | 551 |
+| 1870 | 649 | 598 | 487 | 646 | 550 | 684 |
+| 1900 | 757 | 716 | 567 | 826 | 570 | 612 |
+| 1930 | 1092 | 847 | 792 | 1092 | 613 | 613 |
+
+### Calibrating it against the telemetry basis
+
+`base_wage` is per COUNTRY and in the game's own units; `measured_1836.json`'s `base_weekly_wage` is per
+MARKET, pop-weighted, on the F26 basis (laborers + farmers + machinists, employed only). The save carries
+each country's `market`, so the like-for-like comparison is a pop-weighted average over the market's
+members. Same date (**1836.2.1**), same build (**1.13.10**), both vanilla:
+
+| market | members | pop-weighted `base_wage` | telemetry £/wk | ratio |
+|---|---|---|---|---|
+| Austrian | 5 (AUS · HUN · TRS · CRO · KRA) | 436.2 | 0.061041 | **7 145** |
+| Belgian | 1 (BEL) | 581.6 | 0.078505 | **7 409** |
+
+**One factor to 3.6%.** Pop-weighting matters: the lead-country-only ratio for Austria is 7 008, so
+averaging over the market's five members moves it 2 pp toward Belgium's.
+
+The residual is almost certainly **profession mix** — `mean_wage_weight` is **0.524** for Austria against
+**0.742** for Belgium, and the telemetry basis counts only three professions while `base_wage` is the raw
+scalar the weights multiply.
+
+### ⚠ What this does NOT yet establish, and it is the part that matters
+
+**Two markets is not a calibration**, and the assumption that would actually break the method is
+**stability of the factor over time**: inferring an 1890 wage from an 1836 constant is only valid if the
+factor does not drift. Nothing here tests that — both points are at 1836.2.1.
+
+That is what `20260814_123646_vanilla-wages-century-n5` is for, and it reframes that batch: it is no
+longer "collect the wage trajectory" (the saves already have it) but **the calibration run for the
+save-based method** — 12 telemetry wage dumps alongside 100 annual saves in the same runs, which is the
+only way to test the factor at more than one date. n=2 is sufficient for that; n=5 was not needed.
+
+⚠ It also does not say `base_wage` is the *only* wage quantity worth having. The per-pop distribution
+(spread, cv, per-profession) still comes from telemetry, and the instrument can only deliver it complete
+at the first and last dump of a run — a hard measured limit, not a preference (see the schedule's
+caveats and `telemetry_lib.ps1`).
+
+⭐ **The general lesson is the standing one**: before instrumenting a quantity through the log ring, ask
+whether the savegame already persists it. This one did, for months.
+
+---
+
 ## F54 — ⚠⚠ **"ERA-1 STEEL HAS ZERO BUYERS" IS VOID. The shipped 1836 scenario reads buy 112 against sell 78, and vanilla's own 1838 gamestate has a 1387-unit steel market that is 90% TOOLING WORKSHOPS**
 
 **Measured 2026-08-13**, prompted by the user asking whether the zero had ever been confirmed in a
