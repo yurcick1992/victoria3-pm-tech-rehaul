@@ -219,6 +219,18 @@ sample cannot distinguish "mod raises the rate" from chance.
 `run008_mod\saves\0009_20260814_004516_autosave.v3` (1845.1.1) in
 `tools/testbed/sessions/20260813_083557_vanilla-vs-mod-n4/` — the only known deterministic repro states.
 
+**Addendum (2026-08-14, same day): independently reported, cross-platform, and the cycle now has NAMES.**
+Paradox forum thread 1938327 ("Repeated crashes in 1.13.10 apparently caused by recursive Diplomatic
+Sway validation", unacknowledged at the time of writing) reports the same crash on **macOS, mods
+disabled, files verified** — and macOS builds keep symbols, so the reporter's stack names the cycle:
+`CSwayCommand::ValidateSwayOffer → CSway::ValidateSway → CSwayManager::HasAlreadyPromisedSwayToOtherCountry
+→ ValidateSwayOffer → …`. The mapping onto our Windows offsets is exact — `ALREADY_PROMISED_SWAY` is the
+denial-reason string beside our `+0xce81f4` call-site region, and `+0x1413beb` sits in `sway_manager.cpp`
+— so the bug is confirmed **cross-platform and vanilla**, upgrading the F56 attribution from
+"subsystem named by strings" to "functions named by symbols". His campaign also matches the trigger
+shape: crash date shifts when replaying from far back but the same stack always returns — consistent
+with "any pending sway offer whose validation walks a set containing itself recurses".
+
 ## F55 — ⭐⭐ **THE WAGE IS ALREADY IN THE SAVEGAME. `base_wage` sits in every country record, has been harvested annually all along, and tracks the telemetry measurement to 3.6% on a single scale factor**
 
 **Measured 2026-08-14**, prompted by the user asking whether wages could be pulled from savegames instead
