@@ -197,17 +197,27 @@ quarantined the *save-fails-to-load* branch, so it gave up instead of stepping b
 (`b9ce0ca` fixed this: `-MaxStepBack 2`). The vanilla arm's one hit recovered because post-resume RNG
 divergence resolved its play differently — n=1, luck not exemption.
 
-### Incidence (small n — treat as rates, not truths)
+### Incidence (updated 2026-08-14 evening — this is FREQUENT, not exotic)
 
-1.13.10 century-runs to date: **mod 2 fatal of 5** (runs 002/006 and the 08-12 era6 run completed clean);
-**vanilla 2 transient of 6** — run003 of the 08-13 batch at 1874.8.8, and run001 of
-`20260814_123646_vanilla-wages-century-n5` at 1896.7.20, whose first resume **re-crashed** at 1897.12.17
-(its dump `victoria3_01260714_135730` has an empty exception.txt — aborted crash report — but the context
-is unambiguous) before the second resume recovered to 1936. The arms look symmetric per exposure-year;
-the sample cannot distinguish "mod raises the rate" from chance in either direction.
-⚠ That vanilla re-crash also cost the evidence: the run recovered, so the harvester reaped the ~1896
-poisoned autosave into a summary — only a run that DIES keeps its poisoned save under keep-newest. The
-quarantine-on-resume-crash harvest change (user-approved 2026-08-14) exists to close exactly this.
+1.13.10 century-scale runs to date: **mod 2 fatal of 5** (runs 002/006 and the 08-12 era6 run completed
+clean); **vanilla 5 incidents across ~8 runs, every one recovered** —
+- 08-13 batch run003 at 1874.8.8;
+- `20260814_123646_vanilla-wages-century-n5` run001 at 1896.7.20 **plus a resume re-crash** at 1897.12.17
+  (dump `victoria3_01260714_135730` has an empty exception.txt — aborted crash report — but the context
+  is unambiguous);
+- run002 at 1919.9.16;
+- run003 at 1874.3.3 **and again** at 1885.12.19 after resuming (11 in-game years on — a separate
+  incident, or the same play pattern re-forming);
+- (run004 was hand-killed at ~1862 after 33 min, too short to judge).
+
+So roughly **two of three century-runs hit the recursion at least once**, on either arm; the arms look
+symmetric per exposure-year, vanilla's recoveries and the mod's two deaths being resume-RNG rather than
+an arm property.
+⚠ Every vanilla recovery also cost its evidence: the run survived, so keep-newest kept only the run-final
+endpoint and the harvester reaped each loaded save into a summary — **zero vanilla poisoned saves exist
+on disk** as of this entry, five near-misses. The quarantine-on-resume-crash observer change
+(user-approved, shipped 2026-08-14 ~22:20, after this batch) exists to close exactly this; at the
+measured rate the next vanilla batch should capture one almost immediately.
 
 ### ⭐ THE POISONED-SAVE PROBE (2026-08-14 21:35–21:43): mechanism CONFIRMED, workaround VALIDATED
 
