@@ -271,6 +271,17 @@ observer refuses to launch a mod that carries no telemetry, so build it with `-T
 
 Newest first. Append here as we discover more couplings to vanilla.
 
+- **2026-08-14** — 🛑 **1.13.10 SHIPS A CTD: infinite recursion (`EXCEPTION_STACK_OVERFLOW`) in
+  diplomatic-play SWAY evaluation** — FINDINGS **F56**. Both arms can hit it (the first incident was the
+  pure control arm at 1874); a save carrying the poisoned play state re-crashes deterministically after
+  load, which is what killed runs 4 and 8 of `20260813_083557_vanilla-vs-mod-n4` mid-century.
+  **Expect some fraction of century-runs to die mid-century on every 1.13.10 batch, both arms**, and
+  budget n accordingly; the resume ladder steps back up to 2 autosaves since `b9ce0ca`, which helps only
+  when the play started recently. The scheduler records such runs as `partial(date)` (L17).
+  **On the next game patch: re-test with the archived poisoned saves** (paths in F56) before assuming the
+  bug is gone — load each, expect self-quit at the `-run_until` target instead of a dump. If a patch
+  fixes it, drop the sway-suppression mitigation if one was ever adopted (probe pending as of this entry).
+
 - **2026-08-12** — 🛑 **THE GAME WENT 1.13.9 → 1.13.10 BETWEEN TWO SESSIONS OF ONE AFTERNOON.** Batch A
   (`20260812_093402`, 12:37–15:17) ran on **1.13.9**; the era6 run (`20260812_152101`, 15:21) ran on
   **1.13.10** and logged `Mod … version 1.13.9 does not match game version 1.13.10`. Nothing announced

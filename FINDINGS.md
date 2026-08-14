@@ -131,6 +131,94 @@ transcript rather than from data.
 
 ---
 
+## F56 — ⭐⭐ **THE WEEK'S CTDs ARE ONE ENGINE BUG IN 1.13.10: infinite recursion in diplomatic-play SWAY evaluation. It hit the pure vanilla CONTROL arm too — the mod's only distinctive part is that its two dead runs re-hit it deterministically from their own autosaves**
+
+**Measured 2026-08-14** from the crash-dump archive (`Documents\Paradox Interactive\Victoria 3\crashes`),
+the runs' own `meta.json` attempt logs, and the two archived poisoned autosaves. No game was launched.
+
+### The census: two crash classes, and the new one arrives exactly with 1.13.10
+
+All 34 dumps on disk (2026-08-05 → 08-14) were read for exception code, game version and loaded mod:
+
+- **1.13.9 (08-05 → 08-12 morning): 28 dumps, every one `EXCEPTION_ACCESS_VIOLATION`** with a short
+  (~50-frame) stack, spread over both arms (control, overlay, mod) across ≥15 century-runs. This is the
+  long-standing background CTD class; **every single one was recovered by a resume**.
+- **1.13.10 (from 08-12 afternoon): the AV background continues — plus a NEW class:
+  `EXCEPTION_STACK_OVERFLOW` (C00000FD) with a ~2.27 MB exception.txt (≈32,600 frames).** Six dumps,
+  three incidents, and the **first one is on the VANILLA CONTROL arm**:
+
+| incident | arm | in-game date | outcome |
+|---|---|---|---|
+| run003_vanilla, 08-13 14:18 | **control (vanilla + telemetry)** | 1874.8.8 | resumed once, completed to 1936 |
+| run004_mod, 08-13 16:31 + 16:32 | mod | 1851.1.27 | resume died ~38 s after load, same date — **run abandoned** |
+| run008_mod, 08-14 00:46/00:47/00:49 | mod | 1845.8.15 → 1845.10.15 | resume advanced 2 in-game months, died; second resume died at the same 1845.10.15 — **abandoned** |
+
+All in session `20260813_083557_vanilla-vs-mod-n4`. Zero stack overflows in any 1.13.9 session.
+
+### The minidumps prove it is ONE bug: an identical 4-function recursion cycle in all six dumps
+
+The thread stacks were extracted from the minidumps directly (parser:
+scratchpad `dumpstack.mjs`; the crashed thread had recursed through **~185 MB of stack**, ~10,870
+iterations of a period-4 cycle, 100% match rate in every dump). As `victoria3.exe` RVAs (1.13.10,
+`release/1.13.10`, SCMCommit `58c9ac06`):
+
+```
++0xce81d9 (or +0xce7faa — two call sites in one function) → +0x131d5ed → +0x131e1fe → +0x1413beb → …
+```
+
+Same cycle in the vanilla-arm dump and in all five mod-arm dumps; within one boot the exe base is
+identical across processes, and dumps from different attempts fault at the same addresses
+(`+0x131e0e0` twice, `+0xce7fa5` twice). The faulting RIP differs per dump only by where in the cycle
+the guard page happened to be hit.
+
+**The four functions are diplomatic-play sway machinery**, identified by RIP-relative string references
+in their neighbourhoods (scanner: scratchpad `exestrings.mjs`):
+`countrycommands.cpp` sway-command validity (`SWAY_OFFER_NOT_VALID_FOR_SUBJECT`, `ALREADY_PROMISED_SWAY`,
+`CANNOT_REVERSE_SWAY_CALL_ALLY`, `COUNTRY_ALREADY_SUBJECT`); the maneuvers/desc block
+(`SWAY_OFFER_MANEUVERS_DESC`, `OBLIGATION_CALL_IN_MANEUVERS_DESC`); and `sway_manager.cpp`
+(`PostSwayCreatedNotification`, `proposal_sway_offer`, `proposal_reverse_sway_offer`). The reverse-sway
+strings are suggestive of the defect's shape (each direction's evaluation consulting the other), but the
+exact C++ fault is not established — the binary is stripped.
+
+### Why the mod's runs died where vanilla's recovered
+
+Both dead runs' last yearly autosaves were archived by the save harvest and hold an **active escalating
+multi-country diplomatic play**:
+
+- run008's 1845.1.1 save: `dp_revolution` in region_indochina, **29 involved countries**, escalation 5,
+  started 1844.12.28. Loading this save produced the crash at **1845.10.15 twice in a row** (attempts 2
+  and 3) — the re-crash is deterministic from disk.
+- run004's 1851.1.1 save: `dp_make_protectorate` in region_balkans, **12 involved countries**,
+  escalation 89, maneuvers already partly spent on sways (75/62 of 100). Crash 26 in-game days later.
+
+So "the mod produces irrecoverable savegames" decomposes into: (a) the engine bug is state-triggered;
+(b) a save carrying the poisoned play state re-triggers it after load; (c) the old resume ladder only
+quarantined the *save-fails-to-load* branch, so it gave up instead of stepping back past the play
+(`b9ce0ca` fixed this: `-MaxStepBack 2`). The vanilla arm's one hit recovered because post-resume RNG
+divergence resolved its play differently — n=1, luck not exemption.
+
+### Incidence (small n — treat as rates, not truths)
+
+1.13.10 century-runs to date: **mod 2 fatal of 5** (runs 002/006 and the 08-12 era6 run completed clean);
+**vanilla 1 transient of 4**. Per exposure-year the arms are compatible with the same trigger rate; the
+sample cannot distinguish "mod raises the rate" from chance.
+
+### What this does NOT say
+
+- It does **not** say the mod's content causes the recursion — the control arm hit the identical cycle
+  with zero gameplay content loaded. It also does not *clear* the mod of raising exposure (more/different
+  wars → more plays); n is far too small.
+- It does not name the exact engine defect, only the subsystem (sway evaluation inside diplomatic plays).
+- It does not say 1.13.9 was crash-free — the ACCESS_VIOLATION background class is old, both-arms, and
+  recoverable; that class is unchanged and is NOT this week's problem.
+- The sway-suppression mitigation (`NAI` `DIPLO_PLAY_SWAY_COUNTRIES_CHANCE_*` and
+  `DIPLO_PLAY_REVERSE_SWAY_COUNTRIES_CHANCE_*` → 0) is a **hypothesis awaiting the poisoned-save probe**;
+  nothing here yet shows it prevents the crash.
+
+**Poisoned saves (KEEP):** `run004_mod\saves\0015_20260813_163150_autosave.v3` (1851.1.1) and
+`run008_mod\saves\0009_20260814_004516_autosave.v3` (1845.1.1) in
+`tools/testbed/sessions/20260813_083557_vanilla-vs-mod-n4/` — the only known deterministic repro states.
+
 ## F55 — ⭐⭐ **THE WAGE IS ALREADY IN THE SAVEGAME. `base_wage` sits in every country record, has been harvested annually all along, and tracks the telemetry measurement to 3.6% on a single scale factor**
 
 **Measured 2026-08-14**, prompted by the user asking whether wages could be pulled from savegames instead
