@@ -210,9 +210,11 @@ clean); **vanilla 5 incidents across ~8 runs, every one recovered** —
   incident, or the same play pattern re-forming);
 - (run004 was hand-killed at ~1862 after 33 min, too short to judge).
 
-So roughly **two of three century-runs hit the recursion at least once**, on either arm; the arms look
-symmetric per exposure-year, vanilla's recoveries and the mod's two deaths being resume-RNG rather than
-an arm property.
+Counted in RUNS (the honest unit — the user's ruling: report broken runs, not incidents): **6 of 12
+full-length campaigns were struck at least once — 4 of 7 vanilla, 2 of 5 mod** (the hand-killed 26-year
+run004 excluded as not full-length; the nine 2-month 1836 probes carry no exposure and are not in the
+denominator). The arms look symmetric per exposure-year, vanilla's recoveries and the mod's two deaths
+being resume-RNG rather than an arm property.
 ⚠ Every vanilla recovery also cost its evidence: the run survived, so keep-newest kept only the run-final
 endpoint and the harvester reaped each loaded save into a summary — **zero vanilla poisoned saves exist
 on disk** as of this entry, five near-misses. The quarantine-on-resume-crash observer change
