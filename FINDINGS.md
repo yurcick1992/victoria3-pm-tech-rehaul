@@ -131,6 +131,62 @@ transcript rather than from data.
 
 ---
 
+## F58 — ⭐⭐ **VANILLA'S GROWTH ENGINE IN THREE CONSTANTS: profit per level is FLAT ~£500–1,200/wk for a century (wages absorb the PM ladder's VA growth), cost per level is flat 400–800 points, and ~30% of GDP goes into construction — so payback sits at 10–15y forever and the economy compounds. Vanilla's own PM ladder is VA ×1.48 per step at FLAT employment — the same shape as our tier ladder, minus the purchase price**
+
+**Analysed 2026-08-15** from the game files (`ui/vanilla.js` extract + `tools/goods_prices.tsv`) and the four
+vanilla centuries of `20260813_083557_vanilla-vs-mod-n4`. No game launched. Companion to F57: these are
+the anchors any cost-book recalibration should be judged against.
+
+### The vanilla main-PM recipe ladder (base prices, per level)
+
+Across **34 main-PM steps in 13 in-scope buildings**: median per step — output **×1.44**, VA (out − in)
+**×1.48**, employment **×1.00** (5 000/level throughout manufacturing), VA/worker **×1.50**.
+Bottom-to-top: food 550→1 100 · textile 550→1 500 · tooling 600→2 500 · glass 600→2 000 ·
+motor 900→2 700 · paper 600→1 500. ⇒ **Vanilla is already a ×1.5-per-step VA ladder at flat
+employment — structurally identical to our tier ladder.** The differences are only that vanilla's step
+is *free, instant, in-place*, inherits full staffing and supply chains, and has 2–4 rungs where we
+have 6.
+
+### Realized vanilla profits: a game-constant, not a ladder
+
+Profit per level (staffing), world sums, run001:
+
+| | textile | tooling | steel | paper | glass | motor | food | iron mine | wheat farm |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| 1850 | 980 (.91) | 669 (.88) | 513 (.60) | 651 (.96) | 297 (.88) | 166 (.66) | 571 (.92) | 457 (.87) | 146 (.95) |
+| 1880 | 1 202 (.96) | 555 (.86) | 586 (.57) | 651 (.94) | 615 (.92) | 342 (.58) | 689 (.83) | 478 (.88) | 130 (.97) |
+| 1910 | 775 (.88) | 600 (.77) | 672 (.59) | 674 (.89) | 645 (.91) | 474 (.75) | 446 (.60) | 533 (.82) | 119 (.94) |
+| 1935 | 742 (.85) | 637 (.81) | 667 (.51) | 620 (.86) | 826 (.90) | 678 (.79) | 720 (.69) | 580 (.79) | 166 (.93) |
+
+**Manufacturing profit/level is flat ~500–1,200 £/wk across the century** while the PM ladder multiplies
+VA/level ×2–4 — wages absorb the productivity gain. Against vanilla's flat 400–800-pt construction cost
+that constant IS the measured 10–15y payback (F53), at every date. This is the growth engine: constant
+per-level return ÷ constant per-level cost ⇒ constant payback ⇒ reinvestment compounds at ~2.3%/yr.
+⚠ Corollary for the mod: any per-level profit advantage of a higher tier is a **transient** that lasts
+until wages catch up — steady-state scenario margins are the wrong base for pricing capital (the F57
+mechanism, seen from the wage side). The mod's measured profit-by-era gradient (×1.3–1.4/era at 1935)
+exists only because 40% unemployment floors its wages.
+
+### Construction share of GDP (flat £720/pt basis — overstates late decades ~27%, comparably in both arms)
+
+| | 1840s | 1860s | 1880s | 1900s | 1920s | century total |
+|---|--:|--:|--:|--:|--:|--:|
+| vanilla | 27.7% | 27.1% | 29.8% | 31.8% | 32.4% | 69.3M pts · 181k levels (119k econ) |
+| mod | 25.1% | 24.6% | 23.3% | 21.8% | 19.9% | 25.4M pts · 66k levels (35k econ) |
+
+The mod's construction *share* only erodes ~a third; the 0.14× absolute-points collapse (F57) is mostly
+the shrinking GDP under it. ⚠ Points inferred as Δlevels × cost, including auto-created buildings at
+vanilla costs — an overstatement that cancels in the cross-arm comparison.
+
+### What it does NOT say
+
+- Vanilla profit flatness is measured on nine building types, world sums, one run tabulated (the other
+  three vanilla runs agree on the aggregates F57 used but were not re-tabulated per type).
+- The wage-absorption reading is inferred (profit flat while recipe VA rises, plus F55's ×6.4 wage
+  swings); per-building wage bills are not persisted in the summaries.
+- Steel/chemical/arms ladders are missing from the 34-step census (their base PMG is not named
+  `*base*`); the 13 covered buildings bracket the range.
+
 ## F57 — ⭐⭐ **THE GDP GAP IS A CONSTRUCTION GAP, AND THE TWO-BAND COST BOOK IS ITS DOMINANT CAUSE: the same ladder ran at 1.9× vanilla GDP under the old book and 0.28× under the new one. Value added per economic level is EQUAL across arms — the mod is smaller only because it builds a third of the levels**
 
 **Analysed 2026-08-15**, entirely from existing save summaries — no game was launched. Sessions:
