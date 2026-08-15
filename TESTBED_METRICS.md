@@ -1648,3 +1648,43 @@ every line, filter at analysis time* — is entirely correct and costs nothing: 
 
 **So the levers remain markets, dates and goods-at-analysis — not goods-at-emission.** Budget the
 split as: one market per tick, a sparse date list, and union across dumps and runs.
+
+---
+
+## §9 THE TELEMETRY AUDIT (2026-08-15) — redundancy and savegame-replaceability, metric by metric
+
+Ruled criteria: (1) no metric may double-save what another metric already saves (cheap re-derivation is
+fine); (2) anything reliably obtainable from savegame analysis moves there, subject to calibration —
+99%+ agreement with grace for read-date lag, **no unexplained calibration factors**. The nine `*_probe`
+metrics are one-off diagnostics, exempt. Evidence: the flatcost-n1 melt (1936 save, government/private
+queue inspected), the alignment gate re-run (below), and the F55/20260814 wages negative.
+
+**Calibration re-run tonight** (`verify_save_alignment.mjs` on `20260815_153825_flatcost-n1`, 11 shared
+dates, 274 country-observations): GDP mean −0.57%, |mean| 1.87%, median ±0.6% per date; buildings
+|mean| 0.65%. The residual is read-date lag plus civil-war-week tails (worst −69% is a country
+mid-collapse between the two instruments' dates), not a scale factor. **VERDICT: ALIGNED.**
+
+| metric | redundancy (1) | savegame verdict (2) |
+|---|---|---|
+| `country_state` | none | **REPLACEABLE at annual cadence** (calibrated above). Keep in specs only when sub-annual reads matter |
+| `population` | none | REPLACEABLE — summaries carry pop_statistics + professions (it is the alignment join key) |
+| `treasury` | none | REPLACEABLE — money/credit/weekly flows/budget by category are all in the summaries |
+| `building_inventory` | none | PARTIAL — save building records have staffing/levels/PMs but **no headcounts**; exact employment stays BINV (employment% × cap) or the heavy pop-table workplace join |
+| `market_goods` / `_scoped` / `_wide` | scope variants of one family, never run together | **LOG-ONLY, permanently** — the order book is not persisted (re-confirmed in the melt) |
+| `origins` | none | **LOG-ONLY, permanently** — no trade-route volume database exists in the melt (only event flags); market-pair attribution lives in the live order book |
+| `events` | none | LOG-ONLY — process, not state; saves keep only current diplo state + `last_bankruptcy_date` |
+| `tech_log` | annual overlap with summaries' `technologies_held` — cross-instrument, deliberate | PARTIAL — saves cover the yearly held-set (the ledger uses it); keep `tech_log` only when day precision matters |
+| `wages` | WC's popobj/state counts re-derivable from saves — cheap, fine | **LOG-ONLY, measured** — the save `base_wage` ↔ F26 factor swings ×6.4 over a century (20260814 session): exactly the unexplained-factor case the rule forbids |
+| `consumption_breakdown` / `breakdown_sparse` | sparse is a variant | PARTIAL — melted pop_needs give the WEIGHTS (F40); consumed VOLUMES stay log-side |
+| `scenario` / `boot_dump` | boot_dump repeats the market sweep at day 0 — the day-0 read IS the point | PARTIAL — per-stratum SoL detail beyond `avg_sol` is log-side |
+| `active_pms` | none | LIKELY REPLACEABLE — building records carry per-building production methods; one field-level confirmation owed |
+| `pop_sol` | none | REPLACEABLE via the melted pop table (heavy) |
+| `construction` (CON) | ⚠ **TRIPLE-SAVED** — same `GetConstructionGoodsExpenses` in CON, in the v13 CQ canary column, and in every summary's budget | **RETIRED from batch specs** — the summary's `construction_goods` category is the same number |
+| `state_access` (v13) | none | PARTIAL — states persist `infrastructure` (real float) but `market_access` is a db pointer, not a value; ACCESS stays log-side, infra either side |
+| `construction_queue` (v13) | canary column = CON's number (intentional, one value, it is the L6 guard) | ⚠ **SUPERSEDED BY SAVES hours after being built** — the save persists the queue **per element**: building type, state, owner, `construction_left`, speed. That is queue COMPOSITION, which script cannot see at all. Batch use: extract from saves (summary vNext work item); CQ survives as a probe/sub-annual tool only |
+
+**Actions**: CON out of every future spec; CQ out of batch specs (probe tool only); a queue extractor
+into `save_state_summary.mjs` is the highest-value save-side addition (composition per country per
+year, free); BINV↔save staffing calibration owed a same-date pair. The permanently-log-side set is
+now explicit: `market_goods*`, `origins`, `events`, `wages`, `consumption_breakdown` — all because
+the save persists state but neither the order book nor the process.
