@@ -198,13 +198,18 @@ a{color:var(--accent)}
   </div>
 
   <div class="card tablewrap">
-  <h3>Research — technologies held (mean per country, by game era) and journal entries</h3>
+  <div class="fighead">
+    <h3>Research — technologies held (mean per country, by game era) and journal entries</h3>
+    <div class="ctagbar" id="trees-w"></div>
+  </div>
   <table id="t-tech-w"></table>
   <table id="t-je-w" style="margin-top:10px"></table>
-  <p class="small">Techs: mean count of technologies held per country, mapped onto the MOD tree's game eras for
-  both arms (a design-centric yardstick — vanilla-arm techs are placed where our tree puts them). JEs: the mod's
-  research journal entries, cumulative firings over the whole run by stage × the gated technology's era —
-  no per-date series yet (PMR_JE lines carry no game date; a wall-clock join against run.log is the route).</p>
+  <p class="small">Cells read <b>held / of N</b> — N = discoverable technologies of the selected trees in that era
+  (<b>sericulture excluded</b>: only obtainable as an 1836 grant, never researched; excluded from held counts
+  too). Both arms mapped onto the MOD tree's eras — a design-centric yardstick. JEs: cumulative firings over the
+  whole run by stage × the gated technology's era, filtered by the same tree selection (society techs carry no
+  JEs by design). No per-date JE series yet — PMR_JE lines carry no game date; the wall-clock join against
+  run.log's ticks is the route.</p>
   </div>
 </div>
 
@@ -278,23 +283,26 @@ a{color:var(--accent)}
   </div>
 
   <div class="card">
-  <h3>Placeholders — collection status after the 2026-08-15 probes (telemetry v13)</h3>
+  <h3>Ex-placeholders — collection status and first real values (probes of 2026-08-15, telemetry v13)</h3>
   <table>
-    <tr><th>Metric, in game terms</th><th>Status</th><th>Route</th></tr>
-    <tr><td><span class="ph">◇ lost markets</span></td><td><span class="pill ok">gatherable</span></td><td><span class="mono">origins</span> metric, verified emitting nonzero cross-market import rows on this arm (FRA ← 11.53 engines from the American market, 1836.2). ⚠ Rides phase 3 — span runs past the last dump +3 months. Not yet in this run's data; next full batch carries it.</td></tr>
-    <tr><td><span class="ph">◇ market access</span></td><td><span class="pill ok">gatherable</span></td><td>NEW <span class="mono">state_access</span> (v13): per-state GetMarketAccess + GetInfrastructure/Usage for tagged countries, verified (420 lines, GBR Home Counties 1.0000 · 205.81 · 153.40).</td></tr>
-    <tr><td><span class="ph">◇ queue composition</span></td><td><span class="pill warn">levels only</span></td><td>NEW <span class="mono">construction_queue</span> (v13): queued-but-unbuilt LEVELS per country, government/private split, verified with the L6 canary (GBR 4=0+4). Queue composition by building type is not exposed to script.</td></tr>
-    <tr><td><span class="ph">◇ wage catch-up per rung</span></td><td><span class="pill warn">derivable</span></td><td>No building-scope wage function exists (exe pool checked). Derive offline: SW state wages × BINV per-building employment — a join over data already collected.</td></tr>
-    <tr><td><span class="ph">◇ true employment per rung</span></td><td><span class="pill ok">already collected</span></td><td>Was never missing: <span class="mono">building_inventory</span> (BINV — type, levels, employment %, cap, state) is verified and ON in this run; the employment charts' estimate can be replaced by a BINV parse.</td></tr>
+    <tr><th>Metric, in game terms</th><th>Status</th><th>First real data</th><th>Route to the full series</th></tr>
+    <tr><td><span class="ph">◇ lost markets</span></td><td><span class="pill ok">gatherable</span></td><td>1836.2 probe: 33 nonzero market-pair flows over 7 goods — FRA imports <b>11.53 engines/wk from the American market</b> and 0.46 from the British; USA imports 12.98 paper from the Russian.</td><td><span class="mono">origins</span> in the next full batch. ⚠ Rides phase 3 — span past the last dump +3 months (probe 1's lesson).</td></tr>
+    <tr><td><span class="ph">◇ market access</span></td><td><span class="pill ok">gatherable</span></td><td>1836.2 probe, 420 states of 6 tags: <b>every tagged state reads access 1.0000</b> — no infrastructure throttle at the start. GBR Home Counties: infra 205.81, used 153.40 (75%).</td><td>NEW <span class="mono">state_access</span> (v13) at every dump of the next batch.</td></tr>
+    <tr><td><span class="ph">◇ queue depth</span></td><td><span class="pill warn">levels only</span></td><td>1836.2 probe, queued-but-unbuilt levels: <b>GBR 4 (0 gov + 4 private) · USA 7 (5+2) · RUS 6 (6+0) · FRA 3 · PRU 2 · TUR 4</b>.</td><td>NEW <span class="mono">construction_queue</span> (v13). Composition by building type is not exposed to script — levels and gov/private split only.</td></tr>
+    <tr><td><span class="ph">◇ wage catch-up per rung</span></td><td><span class="pill warn">derivable</span></td><td>—</td><td>No building-scope wage function exists (exe pool checked). Derive offline: SW state wages × BINV per-building employment.</td></tr>
+    <tr><td><span class="ph">◇ true employment per rung</span></td><td><span class="pill ok">collected</span></td><td>Day-7 BINV inventory of THIS run, exact: tier employment <b>6.96M at 1836</b> — e0 4.75 · e1 1.96 · e2 0.25. Cross-check: the charts' estimate reads 3.52/1.84/0.27 at 1840 — same order, <b>e0 biased low ~20%</b> (start staffing differences + the four-year gap).</td><td>BINV fires once (day 7) today; re-wiring it to every dump is the route to an exact century series (burst-phasing care needed: ~8.9k lines per firing).</td></tr>
   </table>
   </div>
 
   <div class="card tablewrap">
-  <h3>Research — technologies held (mean per country, by game era) and journal entries — selection</h3>
+  <div class="fighead">
+    <h3>Research — technologies held (mean per country, by game era) and journal entries — selection</h3>
+    <div class="ctagbar" id="trees-s"></div>
+  </div>
   <table id="t-tech-s"></table>
   <table id="t-je-s" style="margin-top:10px"></table>
   <p class="small">Same construction as the world tables, over the selected tags (techs: selection mean vs the
-  same tags' vanilla mean; JEs: cumulative firings by the selected countries).</p>
+  same tags' vanilla mean; JEs: cumulative firings by the selected countries), filtered by the tree chips.</p>
   </div>
 </div>
 
@@ -425,25 +433,50 @@ function empTable(el,data,yrs){
   }
 }
 empTable(document.getElementById('t-emp'),EMP,EYRS);
-// ---------- research tables ----------
-function techTable(el,flatFn,vanFn){
-  el.innerHTML='<tr><th>year</th>'+[1,2,3,4,5].map(e=>'<th class="num">era '+e+' <span class="dim">(vs van)</span></th>').join('')+'</tr>';
+// ---------- research tables (tree-aware; keys tree|era for techs, stage|tree|era for JEs) ----------
+const TREES=['production','military','society'];
+const TREE_SEL={w:new Set(TREES),s:new Set(TREES)};
+function treeChips(barId,which,onchange){
+  const bar=document.getElementById(barId);
+  for(const tr of TREES){
+    const b=document.createElement('button');
+    b.className='ctag';b.textContent=tr;b.setAttribute('aria-pressed','true');
+    b.onclick=()=>{const S=TREE_SEL[which];if(S.has(tr))S.delete(tr);else S.add(tr);b.setAttribute('aria-pressed',S.has(tr));onchange();};
+    bar.appendChild(b);
+  }
+}
+function sumTrees(obj,trees,era){ // obj keys 'tree|era'
+  let s=0;for(const tr of trees)s+=obj[tr+'|'+era]||0;return s;
+}
+function techTable(el,flatFn,vanFn,trees){
+  el.innerHTML='<tr><th>year</th>'+[1,2,3,4,5].map(e=>'<th class="num">era '+e+' <span class="dim">held / of '+sumTrees(D2.techsT.totals,trees,e)+' (vs van)</span></th>').join('')+'</tr>';
   for(const y of EYRS){
     const f=flatFn(y),v=vanFn(y);
     if(!f)continue;
-    el.insertRow().innerHTML='<td>'+y+'</td>'+[0,1,2,3,4].map(i=>'<td class="num">'+f[i].toFixed(1)+' <span class="dim">/ '+(v?v[i].toFixed(1):'—')+'</span></td>').join('');
+    el.insertRow().innerHTML='<td>'+y+'</td>'+[1,2,3,4,5].map(e=>{
+      const fv=sumTrees(f,trees,e),vv=v?sumTrees(v,trees,e):null;
+      return '<td class="num">'+fv.toFixed(1)+' <span class="dim">/ '+sumTrees(D2.techsT.totals,trees,e)+' ('+(vv!=null?vv.toFixed(1):'—')+')</span></td>';
+    }).join('');
   }
 }
-function jeTable(el,data){
+function jeTable(el,data,trees){
   const stages=['inception','development','implementation'];
   el.innerHTML='<tr><th>journal entries (cumulative)</th>'+[2,3,4,5].map(e=>'<th class="num">era '+e+' gates</th>').join('')+'</tr>';
   for(const s of stages){
     el.insertRow().innerHTML='<td>'+s+(s==='implementation'?' <span class="dim">(grant paid)</span>':'')+'</td>'+
-      [2,3,4,5].map(e=>'<td class="num">'+((data[s+'|e'+e]||0).toLocaleString())+'</td>').join('');
+      [2,3,4,5].map(e=>{
+        let n=0;for(const tr of trees)n+=data[s+'|'+tr+'|'+e]||0;
+        return '<td class="num">'+n.toLocaleString()+'</td>';
+      }).join('');
   }
 }
-techTable(document.getElementById('t-tech-w'),y=>D2.techs.flat.world[y],y=>D2.techs.van.world[y]);
-jeTable(document.getElementById('t-je-w'),D2.je.world);
+function renderResearchW(){
+  const trees=[...TREE_SEL.w];
+  techTable(document.getElementById('t-tech-w'),y=>D2.techsT.flat.world[y],y=>D2.techsT.van.world[y],trees);
+  jeTable(document.getElementById('t-je-w'),D2.jeT.world,trees);
+}
+treeChips('trees-w','w',renderResearchW);
+renderResearchW();
 const lad=document.getElementById('t-ladder');
 for(const y of YEARS){
   const l=LADDER[y];
@@ -674,13 +707,19 @@ function renderWatch(){
     if(any)wemp[y]=a.map(v=>+v.toFixed(2));
   }
   empTable(document.getElementById('t-wemp'),wemp,EYRS.filter(y=>wemp[y]));
-  // research tables for selection
-  techTable(document.getElementById('t-tech-s'),
-    y=>{let s=[0,0,0,0,0],n=0;for(const tg of sel){const e=D2.techs.flat.tags[tg]?D2.techs.flat.tags[tg][y]:null;if(e){n++;e.forEach((v,i)=>s[i]+=v);}}return n?s.map(v=>v/n):null;},
-    y=>{let s=[0,0,0,0,0],n=0;for(const tg of sel){const e=D2.techs.van.tags[tg]?D2.techs.van.tags[tg][y]:null;if(e){n++;e.forEach((v,i)=>s[i]+=v);}}return n?s.map(v=>v/n):null;});
+  // research tables for selection (tree-aware)
+  const trees=[...TREE_SEL.s];
+  function selMean(src,y){
+    let acc={},n=0;
+    for(const tg of sel){const e=src[tg]?src[tg][y]:null;if(e){n++;for(const [k,v] of Object.entries(e))acc[k]=(acc[k]||0)+v;}}
+    if(!n)return null;
+    for(const k in acc)acc[k]/=n;
+    return acc;
+  }
+  techTable(document.getElementById('t-tech-s'),y=>selMean(D2.techsT.flat.tags,y),y=>selMean(D2.techsT.van.tags,y),trees);
   const jeSel={};
-  for(const tg of sel){const jt=D2.je.tags[tg]||{};for(const [k,v] of Object.entries(jt))jeSel[k]=(jeSel[k]||0)+v;}
-  jeTable(document.getElementById('t-je-s'),jeSel);
+  for(const tg of sel){const jt=D2.jeT.tags[tg]||{};for(const [k,v] of Object.entries(jt))jeSel[k]=(jeSel[k]||0)+v;}
+  jeTable(document.getElementById('t-je-s'),jeSel,trees);
   // labour table (pop-weighted)
   const t=document.getElementById('t-wlab');
   t.innerHTML='<tr><th>year</th><th class="num">pure unemployment <span class="dim">(vs van)</span></th><th class="num">non-productive adults <span class="dim">(vs van)</span></th><th class="num">tags in cell</th></tr>';
@@ -696,5 +735,6 @@ function renderWatch(){
       '<td class="num">'+(fv/wp).toFixed(1)+'% <span class="dim">/ '+(vv/wp).toFixed(1)+'%</span></td><td class="num dim">'+n+'</td>';
   }
 }
+treeChips('trees-s','s',renderWatch);
 renderWatch();
 </script>
