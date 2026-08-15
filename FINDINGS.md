@@ -131,6 +131,103 @@ transcript rather than from data.
 
 ---
 
+## F61 — ⭐⭐ **THE SLAVE CHANNEL ON 1.13.10, SOLVED BY DECOMPOSITION: the pop-consumption line contains EVERY slave pop at its own wealth (USA 0.863 → 1.003 aggregate), and the "purchased for slaves" line is a SEPARATE building purchase = employed (non-subsistence) slaves × PER-HEAD package at own wealth — exact to 1.9% per-good in the USA. FIVE candidate terms for the remaining ~5% divergence are measured and REFUTED, including F44's obsession/taboo budget shift — whose shipped implementation had never actually fired (a silent culture-parser no-op)**
+
+**Arm** `control` · vanilla + telemetry · session `20260815_233017_consumption-calib2` (1840.1.1 breakdown + same-date save, melted) · schema v13 · 🟢 ARM-FREE (an engine consumption-accounting property, measured on vanilla)
+
+**Instrument**: `tools/testbed/slave_channel_ab.mjs` (new) — melts the calib2 save, decomposes every
+slave pop by its own `workplace` → building type (subsistence `building_subsistence_*` / real
+building / none), predicts per-good £ through the save's stored purchase weights × `buy_packages`,
+and scores NAMED structural hypotheses against the logged CP pop line and "purchased for slaves"
+line (own-token, neighbor-month G-line verification). No fitted coefficients anywhere.
+
+### 1. The pop line contains ALL slave pops, at their own wealth, at ordinary (wf + 0.5·dep) units
+
+Ratio of predicted composition to the measured Pop Consumption line (covered goods):
+
+| composition | USA (27 goods) | GBR (16) | FRA (27) |
+|---|--:|--:|--:|
+| nonslave pops alone | 0.863 | 0.955 | 0.996 |
+| **+ ALL slave pops at own wealth** | **1.003** | 1.051 | 1.012 |
+| + employed+unemployed only (no subsistence slaves) | 0.906 | 0.998 | 1.002 |
+
+The USA — 2.0M slaves, high market access, mild obsession noise — is the decisive market: the
+uniform ×0.85 tilt of the slave-excluded model closes to 1.003 only when **every** employer class is
+included. GBR's apparent preference for the no-subsistence composition is its separate poor-staples
+bias (§3) sitting on the same goods, not a slave-class effect. **F27's "slaves are not a consuming
+class" is FALSE on 1.13.10 for the pop line.** Slave pops' own `weekly_budget` is all-zero in the
+save — they consume without money accounting, exactly as a game-managed channel would.
+
+### 2. The slave line = employed slaves × per-head basket, and the per-good match is essentially exact (USA)
+
+Slave pops sit at basket-like wealth already (mean own wealth: USA 7.94 · GBR emp 7.92 · FRA emp
+8.00 — the F27 basket 8, realised). The line is priced at the pop's own wealth package with **every
+head at full rate** (units = size/10 000, no 0.5 dependent discount — a building buys per slave, not
+per working-adult-equivalent), over **non-subsistence-employed slaves only** (no 0.05 subsistence
+term — adding one worsens 0.984 → 1.094 USA):
+
+| hypothesis | USA | GBR | FRA |
+|---|--:|--:|--:|
+| **employed × per-head, own wealth** | **0.984** | 1.171 | 1.277 |
+| employed × (wf+0.5dep) units | 0.738 | 0.769 | 0.868 |
+| F27 (basket emp + 0.05×subsistence) | 1.094 | 1.265 | 1.383 |
+
+USA per-good: tobacco 3,460 measured vs 3,456 predicted · grain 2,680/2,678 · fabric 1,804/1,803 ·
+fruit 1,215/1,214 · fish 1,088/1,087 — **spend-weighted mean |err| 1.9%** (coffee ×0.50 on £220 is
+the one outlier). GBR/FRA overshoot uniformly ×1.27–1.39 — all their employed slaves are COLONIAL
+(India, sugar islands); the shortfall's cause is open (see §3's refuted candidates; per-state market
+access could not be tested on this session's metrics and is instrumented in the n=2 batch).
+⚠ GBR's measured line also carries £6,540 of **clippers** the model predicts at 0 — clippers are in
+`leisure`, so slave baskets can hold them where supplied; which states drive it is open.
+
+### 3. Five candidates for the residual ~5%, all measured, all REFUTED
+
+Base model (no extra terms) spend-weighted per-good error: **USA 6.1% · GBR 5.0% · FRA 2.6%** —
+the same numbers as calib2, reproduced independently. GBR's error is a structured cluster: its
+**poor-staples basket** (opium 1.122, furniture 1.119, groceries 1.120, tobacco 1.154, sugar 1.070)
+against a clean ≈1.00 set (services 1.002, transportation 1.004, luxury_clothes 1.001, tea 1.019,
+coffee 1.011, fine_art 1.004, small_arms 1.010). Candidates:
+
+1. **F44 obsession/taboo cross-need budget shift (±25%)** — with the parser actually fixed (see
+   below): USA 6.1→6.8%, GBR 5.0→7.0%, FRA ≈. It pushes exactly the already-correct obsessed goods
+   (GBR tea 1.019→1.135, USA tobacco 1.022→1.100) into over-prediction. **The defines exist; the
+   effect does not appear in realised 1.13.10 pop consumption.** Do not re-add the term.
+2. **Taboo half alone** — GBR 5.0→5.8%: worse. (Taboo sets are liquor/wine, groceries(jewish),
+   meat(hindu) — not the offender goods anyway.)
+3. **Colonial market access at the good level** — colonial share does NOT separate the clusters
+   (services at 0.606 colonial share reads 1.002 while opium at 0.662 reads 1.122; fit
+   pred/meas = 0.835 + 0.343×colShare, R² 0.42 with the wrong intercept).
+4. **Basket-8 pricing of the slave line** — employed-slave wealth is already ≈8 in all three
+   markets; cannot produce GBR's ×1.39.
+5. **Per-pop actual budget (persisted `weekly_budget` slot 7 over the package)** — USA 6.1→5.3 and
+   FRA 2.6→2.3 improve mildly, **GBR explodes 5.0→14.2%** (British pops' slot-7 spend runs up to
+   ×1.16 of package for the rich strata; whatever the excess buys, it is not market pop-demand).
+   Slot 7 is the consumption outflow (identified across 44 market×type×band blocs; peasants' slot 7
+   ≈ their FULL internal basket, slaves' all-zero).
+
+### The instrument bug this uncovered (fixed in both tools)
+
+`predict_good_demand.mjs --obsession-budget 1` **never loaded a single obsession**: its culture scan
+matched the trimmed line `cultures={`, which first occurs as an indented per-country culture-id list
+(`cultures={ 15 289 }`) — the loop entered it, closed at depth 0, and `break`-ed before ever
+reaching the real top-level culture database; and obsession goods are QUOTED in a melt (`"meat"`),
+which the unquoted-only regex also read as zero. **calib3's "verified on british=tea" movement was
+the TABOO half's renormalisation, mis-attributed.** Fixed 2026-08-16 in both
+`predict_good_demand.mjs` (column-0 anchor + quote-tolerant, now prints its obsession count) and
+`slave_channel_ab.mjs`. Root cause in BUGS_AND_FIXES.
+
+### What it does NOT say
+
+- One date (1840), one save, three markets, vanilla. The n=2 century batch
+  (`vancost-nosub-n2`, breakdowns at 1910/1935 with same-date saves) is the replication + the
+  late-century read, and carries `state_access` for the colonial-shortfall candidate.
+- The GBR/FRA slave-line ×1.27–1.39 overshoot and GBR's poor-staples ×1.07–1.15 cluster are
+  DOCUMENTED RESIDUALS with all named candidates refuted — not explained, and per the 2026-08-16
+  ruling not to be closed with fitted coefficients.
+- Nothing here changes the scenario model's `slaveSpend()`/`slaveRealShare()` yet — that is a design
+  decision (the UI models a scenario, not the 1.13.10 ledger); F27's *in-game channel* reading is
+  what this supersedes.
+
 ## F60 — ⭐⭐ **VANILLA'S PM LADDER IS NOT FLAT: profit per level multiplies ×1.79 per step at fixed wages, ×1.43 at era-indexed wages — real and steep, with the in:out ratio held constant (the steepness is wage leverage on a ×1.48 VA slope, not input efficiency). Ours reads ×1.67–1.70 / ×1.50 on the same terms. And in-game under the cheap book, the mod's tier sector staffs 2× vanilla's counterpart buildings at 0.7× their productivity until 1900**
 
 **Measured 2026-08-15** from the game files (`ui/vanilla.js` extract, `tools/goods_prices.tsv`,

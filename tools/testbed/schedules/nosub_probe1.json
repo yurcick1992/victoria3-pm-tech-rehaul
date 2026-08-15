@@ -1,0 +1,20 @@
+{
+  "schedule_version": 1,
+  "label": "nosub-probe1",
+  "_why": "SUBSIDY-MANDATE PROBE: does the AI break when the must_have infrastructure mandate is removed? vanilla's ai_strategy_default subsidies trio (power_plant/railway/port = must_have) is downgraded by explicit per-key nice_to_have entries for ALL 12 infra tier keys in all 7 owned admin strategies (correct under BOTH the merge and the replace reading of typed-vs-default subsidies blocks - the unsettled semantics only affects OMITTED keys, and we omit none). This removes the mandate without mandating the lack: nice_to_have keeps subsidy an AI option, and the 9 higher-tier infra keys become subsidy-POSSIBLE for the first time (vanilla's trio names only tier-1 keys, so tiers 2+ were subsidy-impossible under the split). Reads, from save summaries at 1840/1850 vs flatcost-n1 (must_have, 0.65x cost) and vanilla-vs-mod-n4 vanilla runs: (1) railway/port/power levels still grow; (2) per-building subsidy GBP in country_building_budget - expected to collapse from the ~13%-of-gov-expense bleed (F57 s5); (3) state infrastructure + market access at dumps (state_access) not collapsing; (4) no bankruptcy wave (events). Doubles as the config smoke for the n=2 century batch on the same arm.",
+  "_arms": "vancost_nosub = {kind: config, config: config/mod_config.vancost_nosub.json} - NOT committed (config/mod_config.*.json gitignored). Regenerate exactly: take config/mod_config.json, set every tier's building_cost FLAT to its industry's vanilla anchor x1.0 {power:400, port:400, art_academy:400, food:600, textile:600, furniture:600, glass:600, paper:600, shipyard_steam:600, tooling:600, shipyard:600, arms:600, artillery:600, railway:800, fertilizer:800, explosives:800, steel:800, motor:800, automotive:800, munition:800, synthetics:800, electrics:800} (105 tiers), and set building_subsidies = trade_center:vanilla + all 12 railway/port/power tier keys at nice_to_have. Then cp config/tech_tree_options.json config/tech_tree_options.vancost_nosub.json. Generator kept at scratchpad make_vancost_nosub.mjs this session.",
+  "_comparison": "flatcost-n1 (20260815_153825) save summaries at 1840/1850: must_have trio, 0.65x flat cost - the subsidy read is qualitative (bleed present vs gone), the cost difference (1.0x vs 0.65x) confounds level counts mildly. vanilla n=4 (20260813_083557) for the healthy-AI reference.",
+  "_cost": "1 run x 15 in-game years, ~18-22 min wall including build.",
+  "defaults": {
+    "metrics": ["tech_log", "events", "building_inventory", "market_goods_scoped", "state_access"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 75,
+    "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "JAP"]
+  },
+  "setups": {
+    "vancost_nosub": { "kind": "config", "config": "config/mod_config.vancost_nosub.json" }
+  },
+  "runs": [
+    { "setup": "vancost_nosub", "until": "1851.1.1", "dump_dates": ["1840.1.1", "1850.1.1"] }
+  ]
+}

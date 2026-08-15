@@ -1,0 +1,25 @@
+{
+  "schedule_version": 1,
+  "label": "vancost-nosub-n2",
+  "_why": "THE COST-BOOK ARM AT 1.0x VANILLA ANCHORS + NO MANDATED INFRA SUBSIDIES, n=2 centuries. Two questions: (1) the cost response curve's fifth point - flat 0.65x anchors read 1.56-1.89x vanilla GDP with the majors' labour reserve drained (F59); 1.0x flat is the interpolation toward parity while keeping the climb mechanism (per-point return still strictly rises with era). (2) the consumption calibration ON A LONG RUN on its own merits (user instruction 2026-08-16): breakdown_sparse VALIDATION sweeps at 1910.1.1 and 1935.1.1 with reference G dumps one month earlier on clear ticks (calib1's eviction lesson), same-date yearly autosaves KEPT (-KeepSaves) so the save-side reconstruction is scored against the logged breakdown at late-century scale - including the two NEW terms from the 2026-08-16 slave-channel A/B (pop line = everyone incl. slave pops at own wealth; slave line = employed slaves per-head) and the colonial MARKET-ACCESS hypothesis (state_access dumps beside each breakdown date; GBR's x1.07-1.15 offender basket is exactly its India-heavy basket). Subsidy mandate removed per nosub-probe1 (20260816_005242, PASS): all 12 infra tier keys nice_to_have in the 7 owned admin strategies - mandate gone (majors GBP 0, world residual 0.4-5% of the mandated arm's), option alive (minors still fire it), bankruptcies at vanilla's count, access intact; known consequence = unsubsidised loss-making ports run near-empty, which this century run reads at scale.",
+  "_arms": "vancost_nosub = {kind: config, config: config/mod_config.vancost_nosub.json} - NOT committed (gitignored by convention). Regenerate exactly: take config/mod_config.json, set every tier's building_cost FLAT to its industry's vanilla anchor x1.0 {power:400, port:400, art_academy:400, food:600, textile:600, furniture:600, glass:600, paper:600, shipyard_steam:600, tooling:600, shipyard:600, arms:600, artillery:600, railway:800, fertilizer:800, explosives:800, steel:800, motor:800, automotive:800, munition:800, synthetics:800, electrics:800} (105 tiers), and set building_subsidies = trade_center:vanilla + all 12 railway/port/power tier keys at nice_to_have. Then cp config/tech_tree_options.json config/tech_tree_options.vancost_nosub.json (emit_techs derives its tech-tree path from the config filename).",
+  "_comparison": "vanilla n=4 + mod-newbook n=2 of 20260813_083557 (1.13.10), flatcost-n1 20260815_153825 (0.65x flat, must_have subsidies), era6-n1 oldbook 20260812_165702. Watch: world GDP 1935 vs vanilla's 3.63-4.40B band (flatcost 6.86B, newbook 1.16-1.32B); era composition of additions (rotation cadence); majors' labour reserve (flatcost drained to 6.3% vs vanilla 25.6%); frontier payback vs the 8-15y window; GBR trade/convoys under empty ports; subsidy GBP staying ~0.",
+  "_cost": "2 runs x 100 in-game years. Flatcost century took 2h54 (bigger economy = slower); vanilla ~2h20. Budget ~6h30 total with builds and harvest drains.",
+  "_caveats": "Arm changes TWO variables vs flatcost-n1 (cost 0.65->1.0 AND subsidies) - deliberate, per user instruction; the cost read is against the F57/F59 response curve where the subsidy bleed was constant across ALL prior arms, so the 1935 GDP point carries a small subsidy-side term the nosub probe bounds (~13% of world gov expense freed at 1850 scale). Game must be 1.13.10 at launch (check error.log at smoke). F56 sway-CTD is an engine bug; resume ladder handles it. origins rides phase 3: last dump 1934.12.1 -> phase 3 lands ~1935.3, run ends 1936.1.1. L16: dump_dates are PER-RUN. Launch with -KeepSaves: yearly .v3s kept so the 1910.1.1/1935.1.1 same-date saves survive for the calibration melts; reap the rest via harvest_saves after the calibration copies are made.",
+  "defaults": {
+    "metrics": ["tech_log", "events", "building_inventory", "market_goods_scoped", "origins", "state_access", "breakdown_sparse"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "JAP"],
+    "origin_goods": ["tools", "steel", "engines", "paper", "glass", "clothes", "small_arms"],
+    "breakdown_dates": ["1910.1.1", "1935.1.1"],
+    "breakdown_tags": ["GBR", "FRA", "USA"]
+  },
+  "setups": {
+    "vancost_nosub": { "kind": "config", "config": "config/mod_config.vancost_nosub.json" }
+  },
+  "runs": [
+    { "setup": "vancost_nosub", "until": "1936.1.1", "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1909.12.1", "1920.1.1", "1930.1.1", "1934.12.1"] },
+    { "setup": "vancost_nosub", "until": "1936.1.1", "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1909.12.1", "1920.1.1", "1930.1.1", "1934.12.1"] }
+  ]
+}

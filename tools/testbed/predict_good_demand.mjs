@@ -75,23 +75,31 @@ const OBS = argOf('--obsession-budget', '0') === '1';
 const OBSMULT = +argOf('--obsession-mult', '0.25');
 const CULTOBS = new Map();  // culture id -> [obsession goods] (<=3 by the game's own cap)
 if (OBS) {
+  // ⚠⚠ TWO PARSE HAZARDS, both found 2026-08-16 and both SILENT (the term simply no-ops):
+  //   (1) COLUMN-0 ANCHOR — every country record carries an indented `cultures={ <ids> }` list;
+  //       a trimmed-line match enters the FIRST of those and the `break` on its close ends the
+  //       scan before the real top-level culture database is ever reached. CULTOBS stayed empty,
+  //       so the obsession half of --obsession-budget never fired — the calib3 "british=tea"
+  //       movement came from the TABOO half's renormalisation alone.
+  //   (2) obsession goods are QUOTED in a melt ("meat"); an unquoted-only test reads zero.
   let inC = false, cDepth = 0, cid = null, inObs = false;
   const rlC = createInterface({ input: createReadStream(MELT, { encoding: 'utf8' }), crlfDelay: Infinity });
   for await (const line of rlC) {
     const t = line.trim();
-    if (!inC) { if (t === 'cultures={') { inC = true; cDepth = 1; } continue; }
+    if (!inC) { if (line === 'cultures={') { inC = true; cDepth = 1; } continue; }
     const o = (t.match(/\{/g) || []).length, c = (t.match(/\}/g) || []).length;
     let x;
     if ((x = /^(\d+)=\{$/.exec(t)) && cDepth === 2) { cid = x[1]; CULTOBS.set(cid, []); }
     else if (cid != null && t === 'obsessions={') inObs = true;
     else if (inObs) {
       if (t === '}') inObs = false;
-      else for (const g of t.split(/\s+/)) if (/^[a-z_]+$/.test(g)) CULTOBS.get(cid).push(g);
+      else for (const g of t.split(/\s+/)) { const q = /^"?([a-z_]+)"?$/.exec(g); if (q) CULTOBS.get(cid).push(q[1]); }
     }
     cDepth += o - c;
     if (inObs && c > 0 && !t.includes('{')) inObs = false;
     if (cDepth <= 0) break;
   }
+  console.error(`obsessions: ${[...CULTOBS.values()].filter(v => v.length).length} culture(s) carry one`);
 }
 const RELTABOO = {};  // religion key -> Set(goods)
 if (OBS) for (const f of readdirSync(join(GAME, 'common/religions')).filter(x => x.endsWith('.txt')))

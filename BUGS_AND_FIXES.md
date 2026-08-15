@@ -13,6 +13,36 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## `predict_good_demand.mjs --obsession-budget 1` never loaded a single obsession — and its verification passed anyway (2026-08-16)
+
+**Symptom.** None, twice over. The flag ran without error, the predicted number MOVED in the expected
+direction, and calib3's verdict recorded the term as "implemented and verified on the named case"
+(British tea 1627.0 → 1654.5). All of that happened with the obsession table **empty**.
+
+**Root cause, two independent halves.**
+1. The culture scan matched the **trimmed** line `cultures={`. A melted gamestate's first such line is
+   not the culture database — it is an indented per-country culture-id list (`cultures={ 15 289 }`)
+   inside the country records, ~1.9M lines before the real top-level `cultures={`. The loop entered
+   it, found no `N={` records, hit depth 0, and **`break`-ed** — the scan ended before the culture
+   database was ever reached.
+2. Even reaching it would have read nothing: obsession goods are **quoted** in a melt (`"meat"`), and
+   the token test was `/^[a-z_]+$/` — unquoted only.
+
+**Why the verification lied.** The term has two halves sharing one renormalisation: obsessions
+(per-culture, from the melt — broken) and taboos (per-religion, from game files — working). The tea
+movement came from the TABOO half's budget renormalisation over Hindu/Muslim pops, landing close to
+the magnitude the obsession story predicted. A moved number is not a fired mechanism.
+
+**Fix** (both `predict_good_demand.mjs` and the new `slave_channel_ab.mjs`): anchor the section at
+**column 0** (`line === 'cultures={'`, untrimmed — the same lesson as `score_save.ps1`'s date
+anchor), accept quoted goods (`/^"?([a-z_]+)"?$/`), and print the loaded obsession count so an empty
+table is visible (`obsessions: N culture(s) carry one`).
+
+**Detect/prevent.** A term whose input table can silently be empty must SAY how many entries it
+loaded — and a verification must check the mechanism's *input* fired, not only that the output moved.
+(With the fix in place the F44 budget term was then properly measured — and REFUTED, F61: it worsens
+all three calibrated markets. The bug hid a negative result, not a positive one.)
+
 ## `build.ps1 -Config X` built X's buildings with the CANONICAL config's technologies (2026-08-12)
 
 **Symptom.** None. That is the whole problem — the build succeeded, the linter passed, `Invoke-ModChecks`
