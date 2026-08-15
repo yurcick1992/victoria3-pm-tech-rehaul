@@ -4798,3 +4798,32 @@ written — **39 of them had no `building_cost` at all**, having been minted by 
 operating cost, against a 56–104% realised margin, is exactly what shipped a ~2-year payback (§10.52).
 The vanilla construction data is read by ONE module, `tools/vanilla_construction.mjs`, shared with
 `tools/vanilla_payback_census.mjs`.
+
+## 10.58 THE PRODUCTIVITY-DIVERGENCE LEVERS — three vetoes and the vanilla-slope anatomy (user-ruled 2026-08-15)
+
+**Context.** The flatcost-n1 batch (F59) showed the mod's aggregate productivity per productive worker
+diverges from vanilla only after ~1910. Diagnosis (F57/F60): (1) DILUTION — tier buildings hold only
+20% (1880) → 37% (1935) of productive workers, the untiered rest is vanilla-identical by construction;
+(2) shared recipe slope on e0–e3 with the extra rungs opening only ~1900+; (3) vintage drag — vanilla
+flips its whole stock free while our stock carries an old tail. Four levers were proposed to move the
+divergence earlier; the user ruled:
+
+- ❌ **A — employment declining per tier** ("×0.85–0.9 per era"): REJECTED. Automation PMs already carry
+  this; a strongly varied base employment per tier is unwanted complexity.
+- ❌ **B — tiering agriculture/extraction**: REJECTED on narrative grounds. Tiers represent capital
+  re-construction of a production process; agriculture is not that, and real extraction (deposit yields,
+  depletion) fits neither vanilla's logic nor anything feasible in a mod.
+- ❌ **C — mandated obsolescence** (tech-triggered throughput maluses on old tiers): REJECTED.
+  Obsolescence must be EMERGENT from the simulation, never scripted.
+- ⏸ **D — steepening the output slope beyond ×1.5**: "we'll consider that." Open.
+- ⏸ **E — accept late divergence as historical**: depends on how significant vanilla's own ladder is —
+  answered by F60: vanilla's per-step profit multiplier is ×1.79 at fixed wages / ×1.43 at era-indexed
+  wages, against ours ×1.67–1.70 / ×1.50. Vanilla's ladder is REAL and steep; what it lacks is a price
+  on the step (no capital gating ⇒ no leader/laggard differentiation), rungs above its PM ceiling, and
+  any vintage persistence. The mod's identity is the DISTRIBUTION (who is modern), not the mean slope.
+
+**The report's scope control** (whole economy ⇄ tiered sector, urban centres always excluded from
+"tiered" despite the §10.43 streetlights PM) exists because of the dilution finding — the sector view
+is where the premise is testable at all. Measured under the 0.65×-anchor flat book: the mod's tier
+sector staffs ~2× vanilla's counterpart buildings all century and runs ~0.7× their per-worker output
+value until 1900, reaching parity only at 1935 (F60) — cheap buildings over-absorb into low rungs.

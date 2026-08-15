@@ -131,6 +131,79 @@ transcript rather than from data.
 
 ---
 
+## F60 — ⭐⭐ **VANILLA'S PM LADDER IS NOT FLAT: profit per level multiplies ×1.79 per step at fixed wages, ×1.43 at era-indexed wages — real and steep, with the in:out ratio held constant (the steepness is wage leverage on a ×1.48 VA slope, not input efficiency). Ours reads ×1.67–1.70 / ×1.50 on the same terms. And in-game under the cheap book, the mod's tier sector staffs 2× vanilla's counterpart buildings at 0.7× their productivity until 1900**
+
+**Measured 2026-08-15** from the game files (`ui/vanilla.js` extract, `tools/goods_prices.tsv`,
+`config/mod_config.json`) and the flatcost-n1 + vanilla-n=4 save summaries. No game launched.
+Wage model: `Σ employment × wage_weight × base`, base = the measured 1836 industrial £0.0781/wk (F26);
+"era-indexed" = ×1.4 per era (≈×3.8 over the century, matching real-wage growth and F55's observed range).
+Eras taken from our tier↔`vanilla_pm` mapping.
+
+### The 2×2 — per-step PROFIT multiplier, median across ladders, base prices
+
+| | flat 1836 wage | era-indexed wage (×1.4^era) |
+|---|--:|--:|
+| **vanilla PM ladder** (34 steps) | **×1.79** | **×1.43** — flagship late rungs UNDERWATER at base prices: electric sewing −107, diesel engines −225, arc-welding shipbuilding −1 600 |
+| **our tier ladder** (105 tiers) | ×1.67–1.70 | **×1.50** — 31/105 underwater |
+
+Under the realistic wage path our ladder is the *steeper* one, and it holds together at the top where
+vanilla's collapses. At a flat ×3 wage the gap widens further (ours ×2.77, vanilla ×1.77; underwater
+42/66 vanilla vs 33/66 aligned pairs).
+
+### The anatomy: where vanilla's steepness comes from
+
+Across 34 vanilla main-PM steps: output value ×1.44/step, **inputs ×1.50/step**, in:out ratio change
+median **+0.000** (rises in 14 ladders — food 0.59→0.69; falls in 15 — tooling 0.50→0.43, furniture
+0.59→0.48, railway 0.60→0.45; flat in 5). ⇒ Vanilla holds input share ~constant, so VA ∝ output
+(×1.48/step, F58), employment is flat, and the fixed-wage profit steepness is **operating leverage on
+the wage bill** — which era-indexed wages then eat back down to the VA slope. Input efficiency
+contributes only in specific ladders (tooling, furniture, railway), not as a rule.
+
+### Aligned tiers vs their own vanilla PMs (base prices, 1836 wage, 65 pairs)
+
+Median ours/vanilla profit per level **1.28**, with huge dispersion by design: war/chem industries far
+richer (munition 11.3×, fertilizer 4.7–6.7×, explosives 3.1–4.1×, electrics 3.5×), consumer industries
+poorer (furniture 0.29–0.48, glass mixed), and **11/66 of our rungs negative at base prices** (glass e0
+−265, steel e0 −669, shipyard_steam e1 −1 010, automotive −349/−409, synthetics −2 368, port e0 −571) —
+the debut-wall family: our rungs are solved to be profitable at realised scenario prices when dominant,
+not at base.
+
+### In-game sector comparison (the report's new "tiered sector" scope)
+
+Tier-sector workers (all tier buildings vs the same 20 vanilla building types, urban centres excluded;
+headcount = staffed levels × base employment) and clean-sector productivity (base-price output value ÷
+workers over 15 clean-priced industries — food/textile/furniture excluded for subsistence
+co-production, port/power for unpriced or urban-centre-contaminated output):
+
+| | 1860 | 1880 | 1900 | 1920 | 1935 |
+|---|--:|--:|--:|--:|--:|
+| sector workers, mod/van (M) | 10.1/6.5 | 21.7/11.1 | 41.2/21.0 | 85.8/40.1 | 124.4/63.4 |
+| clean £/wk/worker, mod/van | 0.48/0.68 | 0.56/0.81 | 0.72/1.06 | 1.06/1.22 | 1.38/1.35 |
+| productivity ×van | 0.71 | **0.69** | **0.68** | 0.87 | **1.02** |
+
+⇒ Under the 0.65× flat book the mod's sector is **twice as staffed at ~0.7× the productivity** until
+1900 — cheap buildings over-absorb into low rungs; the world-aggregate productivity stayed ~1.0 only
+because moving those extra workers out of subsistence into any manufacturing is itself a composition
+gain. Parity arrives with e4/e5.
+
+### What it says for the design (with §10.58's rulings)
+
+Vanilla's problem was never a flat ladder — it is that the step is **free and universal** (everyone
+escalates together; no leader/laggard differentiation), its ladder **ends** where ours continues
+(e4/e5), and its stock has **no vintages**. The mod's identity is therefore the *distribution* — who
+can afford to be modern — which G1's frontier-share and stock-era-gap metrics measure, not the mean
+productivity slope. A vanilla-priced cost book plus the tier structure is NOT "vanilla with extra
+steps": same slope, but priced, gated, vintage-bearing, and two rungs taller.
+
+### What it does NOT say
+
+- Base-price arithmetic; realised in-game prices differ (that is what the scenario solver is for).
+- The ×1.4^era wage index is an assumption (declared, historically scaled), not a measurement.
+- The sector productivity uses base prices and the clean-good subset; the excluded industries
+  (food/textile/furniture) could shift the level, though both arms are excluded identically.
+- Vanilla-side sector headcount assumes base employment (5 000/1 000) at measured staffing — vanilla
+  automation PMs are not netted, same as the mod side's estimate.
+
 ## F59 — ⭐⭐ **A FLAT COST BOOK RESTORES THE CLIMB COMPLETELY — the ladder rotates one era per ~22 years, era-5 reaches 2,826 levels where the ×1.5^era book built ONE, and tier n−2 measurably dies. At 0.65× vanilla anchors the level is ~2× too cheap: GDP ends at 1.56–1.89× vanilla with the majors' labour reserve drained to nothing**
 
 **Session `20260815_153825_flatcost-n1`**, n=1 (explicit user instruction), 1836→1936, self-quit,
