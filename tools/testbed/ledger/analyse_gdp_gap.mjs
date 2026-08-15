@@ -7,11 +7,19 @@ import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
 import { requiredConstruction } from 'file:///C:/claude-code/victoria%203%20PM%20and%20tech%20rehaul/tools/vanilla_construction.mjs';
 
-const SESSION = 'C:/claude-code/victoria 3 PM and tech rehaul/tools/testbed/sessions/20260813_083557_vanilla-vs-mod-n4';
-const OUT = 'C:/Users/User/AppData/Local/Temp/claude/C--claude-code-victoria-3-PM-and-tech-rehaul/2c1160f5-8bde-4577-a871-2d0b82b80119/scratchpad';
+// --session <dir-or-name>: the session whose run*/save_summaries to decompose (default: the
+// original vanilla-vs-mod batch). A bare name is resolved under tools/testbed/sessions.
+const argsG = process.argv.slice(2);
+const sessArg = (() => { const i = argsG.indexOf('--session'); return i >= 0 && argsG[i + 1] ? argsG[i + 1] : '20260813_083557_vanilla-vs-mod-n4'; })();
+const SESSION = sessArg.includes('/') || sessArg.includes('\\')
+  ? sessArg
+  : 'C:/claude-code/victoria 3 PM and tech rehaul/tools/testbed/sessions/' + sessArg;
+const OUT = (() => { const a = process.argv.slice(2), i = a.indexOf('--out'); return i >= 0 && a[i + 1] ? a[i + 1] : '.'; })();  // default: cwd
 
 // --- building key -> era + cost (mod tiers), and vanilla costs ---
-const cfg = JSON.parse(readFileSync('C:/claude-code/victoria 3 PM and tech rehaul/config/mod_config.json', 'utf8'));
+// --config <path>: the ARM's config (its building_cost is the arm's own cost book)
+const cfgPathG = (() => { const i = argsG.indexOf('--config'); return i >= 0 && argsG[i + 1] ? argsG[i + 1] : 'C:/claude-code/victoria 3 PM and tech rehaul/config/mod_config.json'; })();
+const cfg = JSON.parse(readFileSync(cfgPathG, 'utf8'));
 const tierEra = {}, tierCost = {}, tierInd = {};
 for (const ind of cfg.industries) for (const t of ind.tiers || []) {
   tierEra[t.key] = t.era; tierCost[t.key] = t.building_cost; tierInd[t.key] = ind.id;
@@ -37,7 +45,8 @@ const costOf = (k, isMod) => {
 const runs = readdirSync(SESSION).filter(d => /^run\d+_/.test(d));
 const rows = [];
 for (const run of runs) {
-  const isMod = /_mod$/.test(run);
+  // a run is the MOD arm unless its setup name says vanilla/control (run001_vancost_nosub is mod)
+  const isMod = !/_(vanilla|control)$/.test(run);
   const dir = join(SESSION, run, 'save_summaries');
   let files;
   try { files = readdirSync(dir).filter(f => f.endsWith('.json.gz')).sort(); } catch { continue; }

@@ -17,7 +17,7 @@ encodes, all user-ruled:
 
 ## Filling it for a new batch
 
-1. Run the three data scripts against the batch's session (⚠ session paths are currently HARDCODED to
+1. Run the three data scripts against the batch (now parameterized: `--session <name>` on analyse_gdp_gap, `--mod <sess/run[,sess/run]>` on report_data + report_data2, `--config <arm config>` for the arm cost book, `--out <dir>`; defaults reproduce the flatcost-n1 fill. Historical note - they were hardcoded to
    `20260815_153825_flatcost-n1` + the `20260813_083557` vanilla baseline — parameterize or edit the
    consts at the top; a proper `--session` flag is the known TODO):
    - `analyse_gdp_gap.mjs` — the world trajectory series (GDP, levels, construction points, labour).

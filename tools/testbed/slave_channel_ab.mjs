@@ -30,6 +30,7 @@ const argv = process.argv.slice(2);
 const [MELT, WTSV, BTSV, RUN] = argv.filter(a => !a.startsWith('--'));
 const NO_OBS = argv.includes('--no-obsession-term');   // clear the F44 budget term (it is REFUTED on 1.13.10 — see the 2026-08-16 runs)
 const ACTUAL = argv.includes('--actual-budget');       // scale each pop's package by its own persisted weekly_budget spend (slot 7)
+const DATEF = (() => { const i = argv.indexOf('--date'); return i >= 0 && argv[i + 1] ? argv[i + 1] : null; })();  // keep only breakdown blocks of this date (a run may carry several sweeps)
 const GAME = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const DEP = 0.5, PKG = 10000, PEASANT_MULT = 0.05, BASKET_DEFAULT = 8;
 const strip = s => s.replace(/^\uFEFF/, '');
@@ -279,7 +280,8 @@ const buyOf = { get(key) {
 const { blocks, stats } = await readBreakdown(LOG, tok, buyOf, { tolerance: 0.12 });
 console.error('breakdown blocks:', JSON.stringify(stats));
 const meas = new Map();  // marketName|good -> { pop, slaves }
-for (const b of blocks) meas.set(b.market + '|' + b.good, { pop: b.pop, slaves: b.slaves });
+for (const b of blocks) { if (DATEF && b.date !== DATEF) continue; meas.set(b.market + '|' + b.good, { pop: b.pop, slaves: b.slaves }); }
+if (DATEF) console.error(`date filter ${DATEF}: ${[...meas.keys()].length} (market,good) pairs kept`);
 
 // ---- report
 const f0 = x => Math.round(x).toLocaleString('en-US');

@@ -5,7 +5,7 @@ import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
 const REPO = 'C:/claude-code/victoria 3 PM and tech rehaul';
 const SES = join(REPO, 'tools/testbed/sessions');
-const OUT = 'C:/Users/User/AppData/Local/Temp/claude/C--claude-code-victoria-3-PM-and-tech-rehaul/2c1160f5-8bde-4577-a871-2d0b82b80119/scratchpad';
+const OUT = (() => { const a = process.argv.slice(2), i = a.indexOf('--out'); return i >= 0 && a[i + 1] ? a[i + 1] : '.'; })();  // default: cwd
 const cfg = JSON.parse(readFileSync(join(REPO, 'config/mod_config.json'), 'utf8'));
 const tierEra = {}, tierEmp = {};
 for (const ind of cfg.industries) for (const t of ind.tiers || []) {
@@ -41,7 +41,11 @@ function walk(runDir, wantEmp) {
   }
   return out;
 }
-const flat = walk('20260815_153825_flatcost-n1/run001_flatcost', true);
+const args = process.argv.slice(2);
+const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 && args[i + 1] ? args[i + 1] : d; };
+const MODRUNS = argOf('--mod', '20260815_153825_flatcost-n1/run001_flatcost').split(',');
+const flatRuns = MODRUNS.map(r => walk(r, true));
+const flat = flatRuns[0];
 const vans = ['run001_vanilla', 'run003_vanilla', 'run005_vanilla', 'run007_vanilla']
   .map(r => walk('20260813_083557_vanilla-vs-mod-n4/' + r, false));
 // vanilla mean per tag per year over runs where present
@@ -80,6 +84,6 @@ for (const tag of TAGS) {
   if (vy.length && vy[vy.length - 1] < 1935) fl.push('van: gone ~' + vy[vy.length - 1]);
   flags[tag] = fl;
 }
-writeFileSync(join(OUT, 'report_data2.json'), JSON.stringify({ flat, van, flags }));
+writeFileSync(join(OUT, 'report_data2.json'), JSON.stringify({ flat, flatRuns, van, flags }));
 for (const tag of TAGS) console.log(tag, JSON.stringify(flags[tag]));
 console.log('bytes:', readFileSync(join(OUT, 'report_data2.json')).length);

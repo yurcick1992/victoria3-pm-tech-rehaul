@@ -6,15 +6,20 @@ import { requiredConstruction } from 'file:///C:/claude-code/victoria%203%20PM%2
 
 const REPO = 'C:/claude-code/victoria 3 PM and tech rehaul';
 const SES = join(REPO, 'tools/testbed/sessions');
-const OUT = 'C:/Users/User/AppData/Local/Temp/claude/C--claude-code-victoria-3-PM-and-tech-rehaul/2c1160f5-8bde-4577-a871-2d0b82b80119/scratchpad';
-const cfg = JSON.parse(readFileSync(join(REPO, 'config/mod_config.json'), 'utf8'));
+const OUT = (() => { const a = process.argv.slice(2), i = a.indexOf('--out'); return i >= 0 && a[i + 1] ? a[i + 1] : '.'; })();  // default: cwd
+// --config <path>: the ARM's config — tier costs come from ITS building_cost (an arm's cost book is
+// its own; the flatcost 0.65x map below is only the fallback for the original hardcoded run).
+const args0 = process.argv.slice(2);
+const cfgPath0 = (() => { const i = args0.indexOf('--config'); return i >= 0 && args0[i + 1] ? args0[i + 1] : join(REPO, 'config/mod_config.json'); })();
+const CFG_GIVEN = args0.includes('--config');
+const cfg = JSON.parse(readFileSync(cfgPath0, 'utf8'));
 const vanCost = requiredConstruction();
 const A = { power: 260, port: 260, art_academy: 260, food: 390, textile: 390, furniture: 390, glass: 390, paper: 390, shipyard_steam: 390, tooling: 390, shipyard: 390, arms: 390, artillery: 390, railway: 520, fertilizer: 520, explosives: 520, steel: 520, motor: 520, automotive: 520, munition: 520, synthetics: 520, electrics: 520 };
 const tierEra = {}, tierCost = {}, indTiers = {};
 for (const ind of cfg.industries) {
   indTiers[ind.id] = { good: ind.output_good, tiers: [] };
   for (const t of ind.tiers || []) {
-    tierEra[t.key] = t.era; tierCost[t.key] = A[ind.id];
+    tierEra[t.key] = t.era; tierCost[t.key] = CFG_GIVEN ? t.building_cost : A[ind.id];
     indTiers[ind.id].tiers.push({ era: t.era, tech: t.tech });
   }
 }
@@ -119,7 +124,13 @@ function walk(runDir, isFlat) {
   }
   return out;
 }
-const flat = walk('20260815_153825_flatcost-n1/run001_flatcost', true);
+// --mod <sess/run[,sess/run...]>: the mod arm's run(s). Several runs -> per-run series kept AND a
+// flatMean the template can plot; `flat` stays the FIRST run for shape compatibility.
+const args = process.argv.slice(2);
+const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 && args[i + 1] ? args[i + 1] : d; };
+const MODRUNS = argOf('--mod', '20260815_153825_flatcost-n1/run001_flatcost').split(',');
+const flats = MODRUNS.map(r => walk(r, true));
+const flat = flats[0];
 const van = ['run001_vanilla', 'run003_vanilla', 'run005_vanilla', 'run007_vanilla'].map(r => walk('20260813_083557_vanilla-vs-mod-n4/' + r, false));
 const nb = ['run002_mod', 'run006_mod'].map(r => walk('20260813_083557_vanilla-vs-mod-n4/' + r, false)); // cost map irrelevant for GDP series
 // vanilla means at years
@@ -144,7 +155,8 @@ for (const y of Object.keys(van[0].gdpByYear)) {
   const vals = van.map(v => v.gdpByYear[y]).filter(Boolean);
   vanGdpByYear[y] = vals.reduce((a, b) => a + b, 0) / vals.length;
 }
-writeFileSync(join(OUT, 'report_data.json'), JSON.stringify({ flat, vanMean, nbGdp, vanGdpByYear, nbAdds: nb[0].addsByDecade }, null, 1));
+const flatAll = flats.map(f => f.gdpByYear);   // per-run world GDP series (n=2 agreement is a finding)
+writeFileSync(join(OUT, 'report_data.json'), JSON.stringify({ flat, flats, flatAll, vanMean, nbGdp, vanGdpByYear, nbAdds: nb[0].addsByDecade }, null, 1));
 console.log('written. flat years:', Object.keys(flat.years).join(','));
 console.log('frontier share medians:', YEARS.map(y => y + ':' + (flat.years[y]?.frontierShareMedian?.toFixed(2) ?? '-') + '(n=' + (flat.years[y]?.frontierShareN ?? 0) + ')').join('  '));
 console.log('GBR meanEra:', YEARS.map(y => y + ':' + (flat.years[y]?.gbr?.meanEra?.toFixed(2) ?? '-')).join('  '));
