@@ -1105,6 +1105,12 @@ tools/                  dev tooling — NOT shipped in the mod
   testbed/wait_for_session.ps1  the wake-up signal for a batch launched into its own window (which the
                         agent harness cannot see). Run it with run_in_background; returns DONE on
                         completion, RUNNING on a heartbeat, DEAD (exit 2) if the game vanished
+  testbed/ledger/       THE BATCH LEDGER — the reusable per-batch report (template + data scripts +
+                        README with the fill procedure). Ruled conventions encoded: normalized/absolute
+                        toggles on every view, world + watchlist pages with selectable countries,
+                        computed per-tag anomaly flags, the whole-economy/tiered-sector scope control.
+                        Published as an Artifact per batch AND copied into the session as REPORT.html.
+                        ⚠ Session paths hardcoded to the first instance (flatcost-n1); --session flag TODO
   testbed/run_schedule.ps1  THE entry point for all measurement: ordered schedule JSON -> build each run via
                         build.ps1 -> run -> harvest -> cross-run markets_all.tsv. Interactive p/r/s/x control;
                         crash policy. Never call the builder directly for test data. Specs in
