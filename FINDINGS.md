@@ -131,6 +131,135 @@ transcript rather than from data.
 
 ---
 
+## F57 — ⭐⭐ **THE GDP GAP IS A CONSTRUCTION GAP, AND THE TWO-BAND COST BOOK IS ITS DOMINANT CAUSE: the same ladder ran at 1.9× vanilla GDP under the old book and 0.28× under the new one. Value added per economic level is EQUAL across arms — the mod is smaller only because it builds a third of the levels**
+
+**Analysed 2026-08-15**, entirely from existing save summaries — no game was launched. Sessions:
+`20260813_083557_vanilla-vs-mod-n4` (vanilla n=4, mod n=2, all 1836→1936, new cost book, 1.13.10) and
+`20260812_165702_era6-n1` (mod n=1, same 106-tier ladder, **old** cost book, 1.13.10) as the third arm.
+Both mod runs of the 08-13 batch agree on every number below; vanilla figures are run001/run003 means
+unless stated.
+
+### 1. The decomposition: the gap is the LEVEL COUNT, not the value per level
+
+World GDP ÷ world **economic** building levels (tier industries + untiered farms/mines/plantations;
+construction sectors, ownership, subsistence, urban centres, government, military and trade centres
+excluded) is nearly one constant across both arms and the whole century:
+
+| | 1840 | 1935 |
+|---|--:|--:|
+| vanilla GDP / econ levels | 451.7M / 12k = **37.6k** | 4 390M / 114k = **38.5k** |
+| mod GDP / econ levels | 442.1M / 11k = **40.2k** | 1 250M / 35k = **35.7k** |
+
+⇒ **GDP ratio 0.28 ≈ econ-level ratio 0.31.** Composition and per-level productivity differences are
+second-order (mod GDP also carries proportionally more subsistence, so its econ VA/level is if anything
+slightly lower — the direction that strengthens this reading). The whole question reduces to: **why does
+the mod build a third of the economic levels?**
+
+### 2. The construction chain: capacity × utilization, and neither compounds
+
+| ratio mod/vanilla | 1840 | 1860 | 1880 | 1900 | 1920 | 1935 |
+|---|--:|--:|--:|--:|--:|--:|
+| world GDP | 0.98 | 0.86 | 0.73 | 0.55 | 0.39 | **0.28** |
+| construction points delivered/yr | 0.92 | 0.96 | 0.53 | 0.33 | 0.22 | **0.14** |
+| construction-sector levels | 0.88 | 0.79 | 0.82 | 0.67 | 0.51 | **0.34** |
+| gov construction-goods £/wk | 0.86 | 0.72 | 0.61 | 0.44 | 0.28 | **0.16** |
+| investment pool | 1.19 | 1.06 | 0.93 | 0.53 | 0.32 | **0.23** |
+
+The mod's absolute points/yr is **flat ~180–330k for a century** while vanilla's grows ~10×: the economy
+does not shrink, it **never compounds**. Points/yr = capacity (0.34) × per-level output (mod ~390
+pts/yr/level vs vanilla ~1 000 — idle or on cheaper construction PMs; sectors read fully staffed, so it
+is the queue/PM side, not hiring). Leaders are the sharpest case: **GBR's investment pool is £0 from
+1900 to 1936, its construction sector falls 21 → 6 levels, its construction-goods spend collapses
+68k → 26k/wk while vanilla GBR's grows 64k → 400k**; GBR GDP 28M → 42M in a century vs vanilla's
+28M → 426M. FRA/GER/USA pools ≤1.7M against vanilla's 66–280M. ⚠ This is the OPPOSITE regime from
+era6-n1's capital glut — see §4.
+
+### 3. Realised cost per level is ~vanilla — because the AI never buys the dear rungs
+
+Average points per econ level added: vanilla 337→429 across the century, mod 346→475 (+5–11%). The cost
+book does not act through the average price paid; it acts through **selection**. Tier-building levels
+ADDED per decade by era (both mod runs summed):
+
+| decade | total | e0 | e1 | e2 | e3 | e4 | e5 |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| 1840s | 1 165 | 50% | 41% | 9% | 0% | 0% | 0% |
+| 1880s | 1 277 | 45% | 34% | 16% | 5% | 0% | 0% |
+| 1900s | 1 519 | 38% | 33% | 21% | 7% | 1% | 0% |
+| 1920s | 1 822 | **40%** | 27% | 17% | 14% | 2% | 0% |
+| 1930s | 1 177 | 41% | 27% | 17% | 12% | 3% | **0%** (1 level) |
+
+Era 0 — the pre-industrial rung — is the single most-built band in every decade to the end. And the AI
+is **rational** in this: GBR (holding all era-5 tech) at 1920 earns, per £ of capital at £720/pt —
+e1 **4.6%/yr**, e2 3.5%, e0 2.6%, e3 **2.1%** (e3 runs at 0.55 staffing; at 1900 it was 0.32 staffing
+and 1.0%/yr). Per LEVEL the ladder is right-way-up by 1920 (world profit/lv e4 818–1 278 vs e0 ~350) —
+per POINT it is upside-down, because the book prices e3 at 2.25–4.5× e1 while the debut rung starts
+understaffed on thin manufactured-input chains. **The realised in-game payback of the healthy rungs is
+~17–19 years and of debut rungs 25–100, against the 11.5 the census models from scenario margins** —
+the scenario overstates in-game margins, so the book calibrated on it overprices in-game.
+
+### 4. The three-way comparison: the cost book is the dominant cause, measured
+
+Same 106-tier ladder, same 1.13.10, research events on in both mod arms. Config diff between the two
+builds (`f90e1c2` → `ae6c30c`): **`building_cost` changed on 105 of 106 tiers, median ×6.67, max
+×14.1**; recipes essentially unmoved (44 tiers' inputs re-solved, ONE output moved >5%); 14 tech gates
+changed by the merges and the ladder-era alignment — both in the *easing* direction, so they cannot
+produce a collapse.
+
+| final state (1936) | era6-n1, OLD book | vs-mod runs, NEW book | vanilla (n=4) |
+|---|--:|--:|--:|
+| world GDP | **7.91B** | 1.16–1.32B | 3.63–4.40B |
+| tier-building levels | **76 616** | 7 198–8 101 | — |
+| tier levels e3/e4/e5 | 19 792 / 11 793 / 2 678 | 381–501 / 45–103 / 0–1 | — |
+| unemployment share | 11.5% | 40.3–41.8% | 15.0–18.4% |
+| binding constraint | workforce (F52) | **capital** | — |
+
+⇒ The old ~2-year-payback book produced a hypergrowth artifact at **1.9× vanilla GDP** with labour
+exhausted and the pool hoarded (F52); the new book **divides the same economy by ~6**, flips the
+constraint from workforce to capital, and idles 40% of the workforce. Both violate the after-1836
+GDP-fidelity premise, in opposite directions — **the dial between them has both endpoints measured
+in-game**, and vanilla's own realised payback (10–15y, F53) names the target in between.
+⚠ This largely discharges the 08-13 verdict's "cannot separate the ladder from the cost book" caveat,
+with the stated n=1-vs-n=2 and intervening-commits limits.
+
+### 5. The infrastructure split bleeds treasuries from day one and stands dead capital
+
+- **Tier-1 port subsidy runs ~7× vanilla per level from the start**: 1850 world port subsidies
+  407k/wk over 378 subsidised levels (£1 076/level) vs vanilla 55–68k over 394 (£140–170). World
+  subsidy bill at 1850: mod 414k vs vanilla 62–75k — ~13% of ALL world government expense against
+  ~2%. GBR opens 1837 paying 51k/wk of subsidies against vanilla's 6.4k — ⅔ of its construction
+  budget.
+- **The higher port tiers cannot be subsidised at all**: vanilla's admin strategies name
+  `building_port`, our split tiers have keys the subsidies block never mentions. Measured result:
+  port_steam **101 levels at 0.02 staffing** (1850); port_industrial/modern/steam 448 levels at
+  0.01–0.03 staffing (1900), subsidised 0 — built, dead, providing ~no `state_infrastructure`.
+  The same key narrowing hits railway tiers (railway_steam staff 0.55–0.71, unsubsidised).
+- **Railways: mod 458 levels at 1900 vs vanilla 2 227** — states are plausibly infra-starved
+  economy-wide (market-access penalties are NOT instrumented; see "does not say").
+- Countries ever-bankrupt: mod **56–58 by 1850** vs vanilla 31–38; 125 vs 83–96 by 1935.
+
+### 6. Ruled out as causes
+
+- **Research/technology**: mean technologies held is inside the vanilla range (mod 91.9–100.0 vs
+  vanilla 94.0–104.9). The research events fire (5 040–5 180 times) but 76% on era-1 gates and never
+  on an era-4/5 tier gate — a symptom of the missing industrial base, not a cause of the gap.
+- **The crashes**: engine bug in 1.13.10 sway evaluation (F56), hit the vanilla control too.
+- **Value-added per level, prices, composition**: §1 — equal to second order.
+- **Recipe drift between the two mod builds**: one output moved >5%.
+
+### What it does NOT say
+
+- The era6-n1 arm is **n=1**, and five commits sit between the builds (tech merges, ladder-era
+  alignment, a research-bar fix); the attribution rests on the config diff's magnitudes and
+  directions, not on a clean A/B. The pre-empted `costbook_ab_n2` remains the clean experiment if the
+  ~6× needs a defended effect size.
+- Whether mod states are actually infrastructure-starved is **inferred from dead port/railway levels,
+  not measured** — market access / state infrastructure is not instrumented in either instrument.
+- Why mod construction sectors deliver ~390 pts/yr/level against vanilla's ~1 000 (queue idle vs
+  cheaper construction PMs) cannot be split from the summaries — construction PM choice is not
+  persisted per country in ours.
+- Nothing here says the old cost book was right: 1.9× vanilla GDP with a ~2-year payback is the
+  opposite calibration failure.
+
 ## F56 — ⭐⭐ **THE WEEK'S CTDs ARE ONE ENGINE BUG IN 1.13.10: infinite recursion in diplomatic-play SWAY evaluation. It hit the pure vanilla CONTROL arm too — the mod's only distinctive part is that its two dead runs re-hit it deterministically from their own autosaves**
 
 **Measured 2026-08-14** from the crash-dump archive (`Documents\Paradox Interactive\Victoria 3\crashes`),
