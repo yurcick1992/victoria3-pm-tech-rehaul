@@ -1,0 +1,21 @@
+{
+  "schedule_version": 1,
+  "label": "consumption-calib3-1837",
+  "_why": "CALIBRATION PROBE: can pop consumption VOLUMES be reconstructed from the SAVE (stored purchase weights x stored pop wealth/size x buy packages / base price) at 99%+ against the LOGGED breakdown, retiring consumption_breakdown from the permanently-log-side set? User-corrected premise: all orders realise immediately (no rationing gap - the price carries the imbalance), so the reconstruction target is exact in principle. Design per user advice: VANILLA control arm (calibrations are done on vanilla+telemetry); run to 1840 so building employment has diverged from the full-staffing 1836 start (building demand scales with employment); autosave yearly so the kept newest save (1840.1.1) is same-date with the breakdown's first market. Peasant orders reach the market at 5% (consumption_mult) - already in the model.",
+  "_arms": "control = vanilla + telemetry, nothing else.",
+  "_cost": "1 run x ~4.2 in-game years, ~6-8 min wall.",
+  "defaults": {
+    "metrics": ["breakdown_sparse", "market_goods_scoped", "country_state", "population"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 30,
+    "tags": ["GBR", "FRA", "USA"],
+    "breakdown_dates": ["1837.1.1"],
+    "breakdown_tags": ["GBR", "FRA", "USA"]
+  },
+  "setups": {
+    "control": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "control", "until": "1837.5.10", "dump_dates": ["1836.12.1", "1837.4.1"] }
+  ]
+}

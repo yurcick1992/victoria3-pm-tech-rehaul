@@ -35,7 +35,13 @@ const DEP = +argOf('--dependent-factor', '0.5');      // DEPENDENT_CONSUMPTION_R
 const PKG = +argOf('--pop-size-package', '10000');    // POP_SIZE_PACKAGE
 // ⭐ consumption_mult from common/pop_types. Peasants allocate a full need budget but only a fraction of
 // it becomes MARKET demand — the rest is met inside the subsistence building (F41, confirmed in game).
-const CLASSMULT = { peasants: +argOf('--peasant-mult', '1') };
+const CLASSMULT = { peasants: +argOf('--peasant-mult', '1'),
+  // ⭐ SLAVES ARE NOT ON THE POP-CONSUMPTION PATH (F27): the building that employs them buys their
+  // basket, and the market screen books it as its own channel — so the measured "Pop Consumption"
+  // line excludes them, and a prediction that counts them double-charges every slave-heavy market
+  // (the British market's rural-India slaves alone are >10M people). ⚠ DEFAULT 1 (count them): the 1.13.10
+  // calibration found the US pop line reads ~×1.0 WITH slave pops and a uniform ×0.85 WITHOUT — the
+  slaves: +argOf('--slave-mult', '1') };
 const strip = s => s.replace(/^\uFEFF/, '');
 
 const BASEP = {};
@@ -52,10 +58,69 @@ for (const m of strip(readFileSync(join(GAME, 'common/buy_packages/00_buy_packag
   if (gm) for (const e of gm[1].matchAll(/popneed_([a-z_]+)\s*=\s*([\d.]+)/g)) g[e[1]] = +e[2];
   PACK[w] = g;
 }
-// which needs the good belongs to
+// which needs the good belongs to — and EVERY need's goods set, for the obsession/taboo budget shift
 const NEEDS_OF = [];
-for (const m of strip(readFileSync(join(GAME, 'common/pop_needs/00_pop_needs.txt'), 'utf8')).matchAll(/^popneed_([a-z_]*)\s*=\s*\{([\s\S]*?)\n\}/gm))
-  if ([...m[2].matchAll(/goods\s*=\s*([a-z_]+)/g)].some(x => x[1] === GOOD)) NEEDS_OF.push(m[1]);
+const NEEDG = {};   // need -> Set(goods), all needs
+for (const m of strip(readFileSync(join(GAME, 'common/pop_needs/00_pop_needs.txt'), 'utf8')).matchAll(/^popneed_([a-z_]*)\s*=\s*\{([\s\S]*?)\n\}/gm)) {
+  NEEDG[m[1]] = new Set([...m[2].matchAll(/goods\s*=\s*([a-z_]+)/g)].map(x => x[1]));
+  if (NEEDG[m[1]].has(GOOD)) NEEDS_OF.push(m[1]);
+}
+
+// ---- the CROSS-NEED obsession/taboo budget shift (F44): ±25% of a need's money per obsession/taboo,
+// money conserved across the pop's whole package ("money is given or taken from other needs").
+// OBSESSION_POP_NEED_EXPENSE_MULT = 0.25 · TABOO_POP_NEED_EXPENSE_MULT = -0.25 · MAX_NUM_OBSESSIONS = 3.
+// Obsessions are RUNTIME per-culture state read from THIS melt (never common/cultures); taboos are
+// static per-RELIGION file data, and pop records carry the religion KEY directly.
+const OBS = argOf('--obsession-budget', '0') === '1';
+const OBSMULT = +argOf('--obsession-mult', '0.25');
+const CULTOBS = new Map();  // culture id -> [obsession goods] (<=3 by the game's own cap)
+if (OBS) {
+  let inC = false, cDepth = 0, cid = null, inObs = false;
+  const rlC = createInterface({ input: createReadStream(MELT, { encoding: 'utf8' }), crlfDelay: Infinity });
+  for await (const line of rlC) {
+    const t = line.trim();
+    if (!inC) { if (t === 'cultures={') { inC = true; cDepth = 1; } continue; }
+    const o = (t.match(/\{/g) || []).length, c = (t.match(/\}/g) || []).length;
+    let x;
+    if ((x = /^(\d+)=\{$/.exec(t)) && cDepth === 2) { cid = x[1]; CULTOBS.set(cid, []); }
+    else if (cid != null && t === 'obsessions={') inObs = true;
+    else if (inObs) {
+      if (t === '}') inObs = false;
+      else for (const g of t.split(/\s+/)) if (/^[a-z_]+$/.test(g)) CULTOBS.get(cid).push(g);
+    }
+    cDepth += o - c;
+    if (inObs && c > 0 && !t.includes('{')) inObs = false;
+    if (cDepth <= 0) break;
+  }
+}
+const RELTABOO = {};  // religion key -> Set(goods)
+if (OBS) for (const f of readdirSync(join(GAME, 'common/religions')).filter(x => x.endsWith('.txt')))
+  for (const m of strip(readFileSync(join(GAME, 'common/religions', f), 'utf8')).matchAll(/^([a-z_]+)\s*=\s*\{([\s\S]*?)^\}/gm)) {
+    const tb = /taboos\s*=\s*\{([\s\S]*?)\}/.exec(m[2]);
+    RELTABOO[m[1]] = new Set(tb ? tb[1].split(/\s+/).filter(g => /^[a-z_]+$/.test(g)) : []);
+  }
+// per (culture, religion, wealth): the need-budget factors, cached (the pop table repeats these)
+const shiftCache = new Map();
+function needFactors(cultureId, religion, wealth) {
+  const key = cultureId + '|' + religion + '|' + wealth;
+  let f = shiftCache.get(key);
+  if (f !== undefined) return f;
+  const pk = PACK[wealth] || {};
+  const obs = (CULTOBS.get(String(cultureId)) || []).slice(0, 3);
+  const tab = RELTABOO[religion] || new Set();
+  let T = 0, A = 0; const s = {};
+  for (const nd of Object.keys(pk)) {
+    let sh = 0;
+    for (const g of obs) if (NEEDG[nd] && NEEDG[nd].has(g)) sh += OBSMULT;
+    for (const g of tab) if (NEEDG[nd] && NEEDG[nd].has(g)) sh -= OBSMULT;
+    s[nd] = 1 + sh;
+    T += pk[nd]; A += pk[nd] * (1 + sh);
+  }
+  const norm = A > 0 ? T / A : 1;
+  f = {}; for (const nd of Object.keys(pk)) f[nd] = s[nd] * norm;
+  shiftCache.set(key, f);
+  return f;
+}
 
 // state -> market, and the market's building demand for the good
 const B = readFileSync(BTSV, 'utf8').split('\n').filter(Boolean);
@@ -95,8 +160,9 @@ const flush = () => {
   if (!(size > 0)) { cur = null; return; }
   const pk = PACK[cur.wealth] || {};
   const cm = CLASSMULT[cur.type] != null ? CLASSMULT[cur.type] : 1;
+  const nf = OBS ? needFactors(cur.culture, cur.religion, cur.wealth) : null;
   for (const nd of NEEDS_OF) {
-    const money = (pk[nd] || 0) * size / PKG * cm;
+    const money = (pk[nd] || 0) * (nf ? (nf[nd] || 1) : 1) * size / PKG * cm;
     if (!(money > 0)) continue;
     moneyByNeed[nd] = (moneyByNeed[nd] || 0) + money;
     const k = cur.state + '|' + cur.culture + '|' + nd;
@@ -118,12 +184,13 @@ for await (const line of rl) {
   if (!sec) { if (t === 'pops={') { sec = true; depth = 1; } continue; }
   const o = (t.match(/\{/g) || []).length, c = (t.match(/\}/g) || []).length;
   const m = /^(\d+)=\{$/.exec(t);
-  if (m && depth === 2) { flush(); cur = { state: null, wealth: null, culture: null, workforce: 0, dependents: 0, type: null }; }
+  if (m && depth === 2) { flush(); cur = { state: null, wealth: null, culture: null, religion: null, workforce: 0, dependents: 0, type: null }; }
   else if (cur) {
     let x;
     if ((x = /^location=(\d+)$/.exec(t))) cur.state = +x[1];
     else if ((x = /^wealth=(\d+)$/.exec(t))) cur.wealth = +x[1];
     else if ((x = /^culture=(\d+)$/.exec(t))) cur.culture = +x[1];
+    else if ((x = /^religion="([a-z_]+)"$/.exec(t))) cur.religion = x[1];
     else if ((x = /^workforce=(\d+)$/.exec(t))) cur.workforce = +x[1];
     else if ((x = /^dependents=(\d+)$/.exec(t))) cur.dependents = +x[1];
     else if ((x = /^type="([a-z_]+)"$/.exec(t))) cur.type = x[1];
