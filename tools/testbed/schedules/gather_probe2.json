@@ -1,0 +1,20 @@
+{
+  "schedule_version": 1,
+  "label": "gather-probe2",
+  "_why": "INSTRUMENT PROBE for the batch-ledger placeholders, round 2. Probe 1 (20260815_214635) emitted ZERO ORIG lines because origins rides phase 3 (its own month) and the 1836.4.1 endpoint ended before phase 3 of the first dump fired - this run extends the tail to 1836.8.1 so the phased blocks land. It also carries the two NEW v13 metrics: state_access (per-state GetMarketAccess + GetInfrastructure/Usage, exe-pool-verified names on the SW sweep idiom) and construction_queue (script values wrapping construction_queue_num_queued_levels triggers - UNVERIFIED, L6 hazard, canary = GetConstructionGoodsExpenses on the same line: all-zero queue beside nonzero expense means the wrap failed).",
+  "_arms": "flatcost = {kind: config, config: config/mod_config.flatcost.json} - regeneration recipe in schedules/flatcost_n1.json _arms.",
+  "_cost": "1 run x 7 in-game months, ~8 min wall.",
+  "defaults": {
+    "metrics": ["origins", "state_access", "construction_queue", "country_state"],
+    "autosave_interval": "never",
+    "timeout_minutes": 25,
+    "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "TUR"],
+    "origin_goods": ["tools", "steel", "engines", "paper", "glass", "clothes", "small_arms"]
+  },
+  "setups": {
+    "flatcost": { "kind": "config", "config": "config/mod_config.flatcost.json" }
+  },
+  "runs": [
+    { "setup": "flatcost", "until": "1836.8.1", "dump_dates": ["1836.2.1", "1836.3.1"] }
+  ]
+}

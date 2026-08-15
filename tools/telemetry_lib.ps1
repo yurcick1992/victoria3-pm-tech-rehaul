@@ -60,7 +60,7 @@
 #       workforce/dependent, and the measured workforce ratio. Deep markets are the LEAD COUNTRY AND
 #       ITS SUBJECTS, not the whole market - see Get-WageBlock for why. New script values
 #       v3tb_popobj_count (graduated from the probe file), v3tb_state_count, v3tb_poptype_id.
-$script:TELEMETRY_VERSION = 12
+$script:TELEMETRY_VERSION = 13
 
 function Get-TelemetryVersion { return $script:TELEMETRY_VERSION }
 
@@ -195,6 +195,16 @@ v3tb_popobj_count = { value = 0
 	every_scope_state = { every_scope_pop = { add = 1 } } }
 v3tb_state_count = { value = 0
 	every_scope_state = { add = 1 } }
+
+# ---- CONSTRUCTION QUEUE (v13 probe): country-scope comparator triggers found in the exe pool
+# (construction_queue_num_queued_levels + _government_/_private_). UNVERIFIED whether a script
+# value can read them as value fields - THE L6 HAZARD: if not, these read 0 silently. The probe
+# design therefore logs them beside a canary every reader must check: at any date past 1836.2,
+# a great power ALWAYS has something queued, so an all-zero CQ line on GBR means the wrap failed,
+# not that the queue is empty.
+v3tb_queue_all = { value = construction_queue_num_queued_levels }
+v3tb_queue_gov = { value = construction_queue_num_queued_government_levels }
+v3tb_queue_priv = { value = construction_queue_num_queued_private_levels }
 
 # ---- POPULATION / WORKFORCE ----
 # The capital-scarcity measure: how much of a country's workforce is in subsistence (peasants) or
@@ -1437,6 +1447,47 @@ $nm2 = {
             # in one tick and the mirror lost 5980 of them (measured 20260801_185936) - the same
             # burst failure phasing exists to prevent, reintroduced by stacking two heavy blocks.
             $phaseBlocks[3] += $blocks; $blocks = ""
+        }
+
+        # ---- STATE MARKET ACCESS (v13): per-state market access of the tagged countries. The
+        # placeholder in the batch-ledger report ("is growth ever throttled by infrastructure?").
+        # GetMarketAccess is a State data function (exe pool, beside GetMarketAccessStatus/Desc);
+        # the sweep is the SW block's verified idiom. ~1 line per state per tag per dump - tiny.
+        if ($metrics -contains "state_access") {
+            foreach ($t in $tags) {
+                $blocks += @"
+
+			if = {
+				limit = { exists = c:$t }
+				c:$t = {
+					every_scope_state = {
+						debug_log = "V3TB|$Token|SMA|$date|$t|[THIS.GetState.GetNameNoFormatting]|[THIS.GetState.GetMarketAccess|4]|[THIS.GetState.GetInfrastructure|2]|[THIS.GetState.GetInfrastructureUsage|2]"
+					}
+				}
+			}
+"@
+            }
+            $phaseBlocks[1] += $blocks; $blocks = ""
+        }
+
+        # ---- CONSTRUCTION QUEUE (v13 PROBE): queued-but-unbuilt levels per tagged country - the
+        # capital-deficit signal the report reserves. Script values wrap comparator triggers found
+        # in the exe pool; UNVERIFIED (L6: an unsupported wrap reads 0 silently). Canary in the
+        # line: [Country.GetConstructionGoodsExpenses] is a VERIFIED nonzero for a building country,
+        # so CQ|...|0.00|0.00|0.00 beside a nonzero expense means the wrap failed, not an empty queue.
+        if ($metrics -contains "construction_queue") {
+            foreach ($t in $tags) {
+                $blocks += @"
+
+			if = {
+				limit = { exists = c:$t }
+				c:$t = {
+					debug_log = "V3TB|$Token|CQ|$date|$t|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_queue_all')]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_queue_gov')]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_queue_priv')]|[THIS.GetCountry.GetConstructionGoodsExpenses|2]"
+				}
+			}
+"@
+            }
+            $phaseBlocks[1] += $blocks; $blocks = ""
         }
 
         # ---- ORIGINS PROBE: can the EXPORTER be pinned, instead of iterating all ~305 markets?
