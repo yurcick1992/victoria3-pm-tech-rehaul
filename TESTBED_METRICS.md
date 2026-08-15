@@ -1675,7 +1675,7 @@ mid-collapse between the two instruments' dates), not a scale factor. **VERDICT:
 | `events` | none | LOG-ONLY — process, not state; saves keep only current diplo state + `last_bankruptcy_date` |
 | `tech_log` | annual overlap with summaries' `technologies_held` — cross-instrument, deliberate | PARTIAL — saves cover the yearly held-set (the ledger uses it); keep `tech_log` only when day precision matters |
 | `wages` | WC's popobj/state counts re-derivable from saves — cheap, fine | **LOG-ONLY, measured** — the save `base_wage` ↔ F26 factor swings ×6.4 over a century (20260814 session): exactly the unexplained-factor case the rule forbids |
-| `consumption_breakdown` / `breakdown_sparse` | sparse is a variant | PARTIAL — melted pop_needs give the WEIGHTS (F40); consumed VOLUMES stay log-side |
+| `consumption_breakdown` / `breakdown_sparse` | sparse is a variant | PARTIAL, **pending calibration** — the save holds more than the weights: per-(state,culture,need,good) purchase weights (F40) AND pop wealth/size AND per-pop need budgets (§7, field IDs hypothesis-grade), so volumes ≈ budget × weight ÷ base price is reconstructable from stored data. Not yet moved because (a) that rebuilds DEMAND, not rationed consumption — at shortages they diverge and no stored quantity closes the gap; (b) the channel split's building side validates at only ~8% mean; (c) only per-good spot checks exist (automobile ramp, few pp of share), no end-to-end calibration. The calibration is runnable from kept saves + existing telemetry, no game time; until it passes, log-side — but unlike `market_goods`/`origins` this is NOT a "data does not exist" case |
 | `scenario` / `boot_dump` | boot_dump repeats the market sweep at day 0 — the day-0 read IS the point | PARTIAL — per-stratum SoL detail beyond `avg_sol` is log-side |
 | `active_pms` | none | LIKELY REPLACEABLE — building records carry per-building production methods; one field-level confirmation owed |
 | `pop_sol` | none | REPLACEABLE via the melted pop table (heavy) |
@@ -1686,5 +1686,7 @@ mid-collapse between the two instruments' dates), not a scale factor. **VERDICT:
 **Actions**: CON out of every future spec; CQ out of batch specs (probe tool only); a queue extractor
 into `save_state_summary.mjs` is the highest-value save-side addition (composition per country per
 year, free); BINV↔save staffing calibration owed a same-date pair. The permanently-log-side set is
-now explicit: `market_goods*`, `origins`, `events`, `wages`, `consumption_breakdown` — all because
-the save persists state but neither the order book nor the process.
+now explicit and smaller than first written: `market_goods*`, `origins` (the data does not exist in a
+save), `events` (process), `wages` (the ×6.4 factor). `consumption_breakdown` is the borderline case —
+reconstructable from stored weights + budgets, log-side only until an end-to-end calibration passes,
+with the rationing gap at shortages as its one irreducible (but explainable) residual.
