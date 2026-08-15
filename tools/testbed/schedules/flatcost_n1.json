@@ -1,0 +1,40 @@
+{
+  "schedule_version": 1,
+  "label": "flatcost-n1",
+  "_why": "CAN A FLAT, BELOW-VANILLA COST BOOK PUT THE MOD BACK ON VANILLA'S GDP TRAJECTORY? F57 measured the response curve's two endpoints: the old ~2y-payback book ran the ladder at 1.9x vanilla world GDP (era6-n1, 7.91B) and the two-band x1.5^era book at 0.28x (1.16-1.32B). F58 supplies the calibration rule between them: in-game profit per level is ~a game constant (~500-1200 vanilla, ~350-800 on our rungs, wages absorb the VA ladder), so the AI builds at vanilla's pace when cost = profit x 52 x 10-15y / 720 = ~360-630 points. This arm prices every tier FLAT at 0.65 x its industry's vanilla anchor: 400->260 (power/port/art_academy), 600->390 (food/textile/furniture/glass/paper/shipyard_steam/tooling/shipyard/arms/artillery), 800->520 (railway/fertilizer/explosives/steel/motor/automotive/munition/synthetics/electrics). FLAT kills the per-point inversion (profit/level rises with era, cost does not, so return per point strictly rises and the AI has a reason to climb); 0.65x compensates our recipes' deliberately thinner margins against vanilla's flagship buildings. The capital-demand goal is carried by the churn (every upgrade is a purchase vanilla gets free), not by per-level escalation.",
+  "_arms": "flatcost = {kind: config, config: config/mod_config.flatcost.json} — byte-identical to the shipped config EXCEPT building_cost: every tier of an industry gets round(0.65 x vanilla anchor / 5) * 5, flat across eras. ⚠ THE ARM CONFIG IS NOT COMMITTED — config/mod_config.*.json is gitignored by repo convention. Regenerate exactly: take config/mod_config.json and set every tier's building_cost from the industry map {power:260, port:260, art_academy:260, food:390, textile:390, furniture:390, glass:390, paper:390, shipyard_steam:390, tooling:390, shipyard:390, arms:390, artillery:390, railway:520, fertilizer:520, explosives:520, steel:520, motor:520, automotive:520, munition:520, synthetics:520, electrics:520}. Then cp config/tech_tree_options.json config/tech_tree_options.flatcost.json — emit_techs.mjs derives its tech-tree path from the config filename and throws without the sibling.",
+  "_comparison": "Three-way: vanilla n=4 and mod-newbook n=2 of 20260813_083557_vanilla-vs-mod-n4, and mod-oldbook n=1 era6-n1 (20260812_165702), all 1.13.10. The two newbook runs agreed within 3% on every headline, so n=1 here reads against a known-tight band.",
+  "_watch": "World GDP at 1935 (target: vanilla's 3.63-4.40B band; newbook read 1.16-1.32B, oldbook 7.91B — landing between vanilla and oldbook means the dial works and 0.65 is close; below newbook is impossible, at newbook level means cost was never the lever). Era composition of tier-level ADDITIONS per decade (newbook: 40% era-0 in the 1920s, e5 = 1 level per century — flat cost should shift additions up-era). Unemployment (newbook 40-42%, vanilla 15-18%). Construction points/yr and construction-sector levels (newbook flat ~180-330k/yr, 0.14x vanilla by 1935). Investment pool / GDP (leaders at 0 under newbook, 2.4-4.9x GDP under oldbook — vanilla's ~0.28 is the healthy band). Wall clock: a bigger economy runs slower (era6-n1 took 228 min vs newbook's 135-137).",
+  "_cost": "1 run x 100 in-game years. Newbook mod centuries took ~2h15; a successfully growing economy runs slower (era6-n1: 3h48). Budget ~4h.",
+  "_caveats": "n=1 by explicit user instruction. Single variable vs the newbook arm: building_cost only (verified by construction; recipes, tech tree, research events untouched). The port/railway subsidy bleed (F57 §5) is DELIBERATELY left in — known, quantified (~13% of world gov expense at 1850), and constant across all compared arms; fixing it here would confound the cost-book read. Game version must still be 1.13.10 at launch (check error.log at smoke test — it moved mid-afternoon once before). The sway-recursion CTD (F56) is an engine bug; if this run dies mid-century the resume ladder handles it and quarantines what it loaded.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "building_inventory",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP"
+    ]
+  },
+  "setups": {
+    "flatcost": {
+      "kind": "config",
+      "config": "config/mod_config.flatcost.json"
+    }
+  },
+  "runs": [
+    { "setup": "flatcost", "until": "1936.1.1", "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] }
+  ]
+}

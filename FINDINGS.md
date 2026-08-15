@@ -131,6 +131,65 @@ transcript rather than from data.
 
 ---
 
+## F59 — ⭐⭐ **A FLAT COST BOOK RESTORES THE CLIMB COMPLETELY — the ladder rotates one era per ~22 years, era-5 reaches 2,826 levels where the ×1.5^era book built ONE, and tier n−2 measurably dies. At 0.65× vanilla anchors the level is ~2× too cheap: GDP ends at 1.56–1.89× vanilla with the majors' labour reserve drained to nothing**
+
+**Session `20260815_153825_flatcost-n1`**, n=1 (explicit user instruction), 1836→1936, self-quit,
+one F56 sway-CTD survived by a clean resume, game 1.13.10, wall clock ~2h54. Arm: the shipped config
+with ONE change — every tier's `building_cost` FLAT at 0.65 × its industry's vanilla anchor
+(260/390/520 by vanilla's 400/600/800 classes). Rationale and regeneration map:
+`schedules/flatcost_n1.json`. Comparators: F57's three points, same game version.
+
+### The response curve now has four points
+
+| cost book | world GDP 1935/36 | vs vanilla |
+|---|--:|--:|
+| ×1.5^era × band ×2 (§10.57) | 1 181–1 317M | **0.28×** |
+| vanilla itself | 3 632–4 396M | 1.0 |
+| **flat 0.65× anchors** | **6 855M** | **1.56–1.89×** |
+| old ~2y-payback book | 7 910M | ~1.9× |
+
+GDP ratio by decade (flatcost): 0.98 (1850) · 0.98 (1860) · 1.06 (1870) · 1.13 (1880) · 1.08 (1890) ·
+1.18 (1900) · 1.34 (1910) → 1.56–1.89 (1935) — tracks vanilla for three decades, then compounds away
+as the climbed rungs' VA advantage feeds back into construction.
+
+### The climb mechanism works — all three design behaviours appear at once
+
+- **Rotation on the anchor cadence.** Share of tier-level ADDITIONS by era: modal era e1 in the
+  1840s–50s → e2 in the 1870s → e3 in the 1900s–10s → e4 in the 1920s–30s, with e5 at 15% and rising
+  in the 1930s. e0's share decays 39% → 5%. Endpoint stock e0..e5:
+  5 745/9 803/10 918/13 269/11 544/**2 826** (the ×1.5^era book: 3 936/2 429/1 131/501/103/**1**).
+- **A falling payback ladder while climbing** (1880 realized: e0 14.7y · e1 12.3 · e2 10.6 ·
+  **e3 6.1y**) — return per point rises with era, so the AI climbs unprompted.
+- **Obsolescence is real** (1935 realized: e0 24.9y · e1 **31.3y**, staffing sagged to 0.57–0.63,
+  e0/e1 profit/level falling in absolute terms — while e4 reads 6.7y and e5 3.3y). Tier n−2 dies the
+  way the ladder intends: economically dead, lingering at low staffing.
+
+### The overshoot, and what it is made of
+
+Frontier rungs far below the 10–15y vanilla window (e5 3.3y) flood with investment: construction
+sectors end at 3 413 (vanilla ~2 000), pool at 3 924M = 0.57× GDP (vanilla 0.28×), pure unemployment
+10.5% (below vanilla's 15–18.4%), and the 11-major panel's unemployed+peasants share drains to
+**6.3%** against vanilla's 25.6% (GBR: 0.6%, pure unemployment 0.1%). The "more peasants than
+vanilla" design premise inverts at this cost level — the boom eats the whole reserve, era6-n1's
+overheating in milder form.
+
+### What it says for the book
+
+Parity is now an interpolation, not a search: a flat-ish book with a **mild era slope — anchor ×
+~1.1–1.2^era, no ×2 band** — sized so a frontier rung's *transient* debut margin reads ~8–12y while
+its steady-state margin reads 20y+ (F58: any per-level profit edge is a transient that wage catch-up
+erases; the book must charge for the transient, not the steady state).
+
+### What it does NOT say
+
+- **n=1**, and the port/railway subsidy bleed (F57 §5) was deliberately left in — constant across
+  every compared arm, so it cannot explain differences, but absolute levels carry it.
+- Payback figures are on the flat-£720 basis (F53's known ~27% late-era bias, shared by all arms).
+- The overshoot conflates "frontier too cheap" with "labour became the binding ceiling" — both are
+  present and n=1 cannot apportion them.
+- Nothing here re-tests the ×2 band or the exceptions separately; the flat book removed band,
+  exponent and the e0 discount together.
+
 ## F58 — ⭐⭐ **VANILLA'S GROWTH ENGINE IN THREE CONSTANTS: profit per level is FLAT ~£500–1,200/wk for a century (wages absorb the PM ladder's VA growth), cost per level is flat 400–800 points, and ~30% of GDP goes into construction — so payback sits at 10–15y forever and the economy compounds. Vanilla's own PM ladder is VA ×1.48 per step at FLAT employment — the same shape as our tier ladder, minus the purchase price**
 
 **Analysed 2026-08-15** from the game files (`ui/vanilla.js` extract + `tools/goods_prices.tsv`) and the four
