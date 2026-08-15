@@ -1,0 +1,700 @@
+<title>Rehaul Batch Ledger</title>
+<style>
+:root{
+  --bg:#f4f6f9; --panel:#ffffff; --panel2:#eef2f7; --ink:#1c2733; --ink2:#5a6b7d; --ink3:#8b99a8;
+  --line:#d8dfe8; --accent:#3a76b0; --gold:#a97b24; --ok:#2e7d4f; --warn:#a06d10; --bad:#b3403a;
+  --okbg:#e7f2ec; --warnbg:#f7efdd; --badbg:#f7e6e4;
+  --e0:#dde7f2; --e1:#b5cbe6; --e2:#8cafd8; --e3:#6190c6; --e4:#3d6ea8; --e5:#1f4a7d;
+  --phdash:#b3bfcc;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141a21; --panel:#1d252f; --panel2:#232d39; --ink:#e2e8ef; --ink2:#96a4b4; --ink3:#6d7c8c;
+    --line:#33404e; --accent:#6ea3d8; --gold:#d9a441; --ok:#4fa876; --warn:#d29a3a; --bad:#d96b64;
+    --okbg:#1e3229; --warnbg:#33291a; --badbg:#33211f;
+    --e0:#31404f; --e1:#3f5871; --e2:#4f7396; --e3:#6790bc; --e4:#86b0dc; --e5:#abcdf2;
+    --phdash:#4a5866;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141a21; --panel:#1d252f; --panel2:#232d39; --ink:#e2e8ef; --ink2:#96a4b4; --ink3:#6d7c8c;
+  --line:#33404e; --accent:#6ea3d8; --gold:#d9a441; --ok:#4fa876; --warn:#d29a3a; --bad:#d96b64;
+  --okbg:#1e3229; --warnbg:#33291a; --badbg:#33211f;
+  --e0:#31404f; --e1:#3f5871; --e2:#4f7396; --e3:#6790bc; --e4:#86b0dc; --e5:#abcdf2;
+  --phdash:#4a5866;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 "Segoe UI",system-ui,-apple-system,sans-serif}
+.wrap{max-width:960px;margin:0 auto;padding:32px 20px 64px;display:flex;flex-direction:column;gap:26px}
+h1{font:700 30px/1.15 Georgia,'Times New Roman',serif;margin:0;text-wrap:balance}
+h2{font:700 20px/1.2 Georgia,serif;margin:0}
+h3{font:600 15px/1.3 "Segoe UI",system-ui,sans-serif;margin:0;color:var(--ink)}
+.eyebrow{font:600 11px/1 "Segoe UI",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)}
+.mast{display:flex;flex-direction:column;gap:10px;border-bottom:2px solid var(--ink);padding-bottom:18px}
+.meta{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:3px 9px;font-size:12.5px;color:var(--ink2)}
+.chip b{color:var(--ink);font-weight:600}
+.chip.mono{font-family:Consolas,monospace;font-size:12px}
+.sec{display:flex;flex-direction:column;gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:16px 18px}
+.lede{margin:0;max-width:70ch;color:var(--ink)}
+.small{font-size:12.5px;color:var(--ink2)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{font:600 11px/1.3 "Segoe UI",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);text-align:left;padding:7px 10px;border-bottom:2px solid var(--line);white-space:nowrap}
+td{padding:7px 10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.num,th.num{text-align:right}
+.dim{color:var(--ink3)}
+.vgood{color:var(--ok);font-weight:600}.vbad{color:var(--bad);font-weight:600}.vwarn{color:var(--warn);font-weight:600}
+.neg{color:var(--bad);font-weight:600}
+.pill{display:inline-block;border-radius:3px;padding:2px 9px;font-size:12px;font-weight:600;white-space:nowrap}
+.pill.ok{background:var(--okbg);color:var(--ok)}.pill.warn{background:var(--warnbg);color:var(--warn)}.pill.bad{background:var(--badbg);color:var(--bad)}
+.ph{border:1.5px dashed var(--phdash);border-radius:3px;color:var(--ink3);background:transparent;padding:2px 8px;font-size:12px;white-space:nowrap}
+.phcell{color:var(--ink3);font-style:italic}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12.5px;color:var(--ink2);align-items:center}
+.sw{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+figure{margin:0;display:flex;flex-direction:column;gap:8px}
+figcaption{font-size:12.5px;color:var(--ink2)}
+svg text{font-family:"Segoe UI",system-ui,sans-serif}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);padding:5px 9px;border-radius:4px;font-size:12px;opacity:0;transition:opacity .1s;z-index:10;white-space:nowrap;font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion: reduce){.tip{transition:none}}
+.fighead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.toggle{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.toggle button{border:0;background:var(--panel);color:var(--ink2);font:600 12px "Segoe UI",sans-serif;padding:4px 12px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--accent);color:var(--panel)}
+.toggle button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.tabs{display:flex;gap:0;border:1px solid var(--line);border-radius:5px;overflow:hidden;width:fit-content}
+.tabs button{border:0;background:var(--panel);color:var(--ink2);font:700 14px Georgia,serif;padding:9px 26px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.ctag{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:14px;padding:3px 11px;font:600 12.5px "Segoe UI",sans-serif;color:var(--ink2);background:var(--panel);cursor:pointer;user-select:none}
+.ctag[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--panel)}
+.ctag .flag{font-size:11px}
+.ctag:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.ctagbar{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.linkbtn{border:0;background:none;color:var(--accent);font:600 12px "Segoe UI",sans-serif;cursor:pointer;padding:2px 4px}
+.next{border-left:3px solid var(--accent);padding:10px 16px;background:var(--panel);border-radius:0 5px 5px 0}
+ul{margin:6px 0;padding-left:20px}li{margin:3px 0}
+a{color:var(--accent)}
+.footer{font-size:12px;color:var(--ink3);border-top:1px solid var(--line);padding-top:14px}
+.goalcell{max-width:210px}
+.mono{font-family:Consolas,monospace}
+.page{display:none;flex-direction:column;gap:26px}
+.page.on{display:flex}
+</style>
+
+<div class="wrap">
+<header class="mast">
+  <div class="eyebrow">PM &amp; Tech Rehaul — batch report</div>
+  <h1>Rehaul Batch Ledger</h1>
+  <div class="meta">
+    <span class="chip mono">20260815_153825_flatcost-n1</span>
+    <span class="chip"><b>arm</b> flat cost book, 0.65× vanilla anchors (260/390/520)</span>
+    <span class="chip"><b>n</b> 1 · 1836→1936 · game 1.13.10</span>
+    <span class="chip"><b>Δ vs shipped</b> building_cost only, 105 tiers</span>
+    <span class="chip"><b>baseline</b> vanilla n=4 + ×1.5^era book n=2 (20260813) · old book n=1 (era6-n1)</span>
+  </div>
+  <div class="meta">
+    <span class="pill ok">Run health: reached 1936 · 1 engine CTD (F56), clean resume · arm verified from built mod</span>
+  </div>
+</header>
+
+<!-- ============ VERDICT (always visible) ============ -->
+<section class="sec">
+  <h2>Verdict — is the mod at its goals?</h2>
+  <p class="lede">The flat book proves the <b>mechanism</b>: for the first time the ladder is climbed on the anchor
+  cadence, obsolete rungs shed workers, and construction runs at vanilla scale. What fails is the <b>level</b> —
+  and the decomposition says how: the 1.56× GDP overshoot is <b>1.18× the productive workers × 1.33× the output
+  per worker</b>. The premise wanted the first factor <i>below</i> one; buildings this cheap absorb extra workers
+  faster than the upgrade churn retires them. One dial — frontier cost up — plausibly closes both misses.</p>
+  <div class="card tablewrap">
+  <table>
+    <tr><th></th><th>Goal, in game terms</th><th>Headline metric</th><th class="num">This batch</th><th class="num">Target</th><th>Verdict</th></tr>
+    <tr><td>G1</td><td class="goalcell">A tech edge wins markets</td><td>Frontier producers' share of world output · leader−laggard stock-era gap</td><td class="num">52% · 0.45 era</td><td class="num dim">band TBD</td><td><span class="pill warn">first read</span></td></tr>
+    <tr><td>G2</td><td class="goalcell">Inefficient producers die</td><td>Oldest rungs: payback, staffing, workers</td><td class="num">25–31y · 0.57–0.63 · e0+e1 −0.7M in the 1930s</td><td class="num dim">dying</td><td><span class="pill ok">met</span></td></tr>
+    <tr><td>G3</td><td class="goalcell">Modernising costs capital</td><td>Construction ÷ vanilla · frontier-rung payback</td><td class="num">1.0–1.6× · <b>3.3y</b></td><td class="num dim">≥1× · 8–15y</td><td><span class="pill warn">half met</span></td></tr>
+    <tr><td>G4</td><td class="goalcell">GDP stays on vanilla's path</td><td>1935 world GDP ÷ vanilla</td><td class="num"><b>1.56×</b></td><td class="num dim">0.8–1.25×</td><td><span class="pill bad">overshoot</span></td></tr>
+    <tr><td>G5</td><td class="goalcell">Fewer workers, more product per worker</td><td>Productive workers ÷ vanilla × GDP/worker ÷ vanilla</td><td class="num"><b>1.18× · 1.33×</b></td><td class="num dim">&lt;1 · &gt;1, product ≈ 1</td><td><span class="pill bad">inverted</span></td></tr>
+    <tr><td>G6</td><td class="goalcell">Early game still grows</td><td>1836–1860 GDP ÷ vanilla</td><td class="num">0.98×</td><td class="num dim">0.9–1.1×</td><td><span class="pill ok">met</span></td></tr>
+    <tr><td>G7</td><td class="goalcell">Eras arrive on the anchors</td><td>Largest employment era at each anchor</td><td class="num">e2@1870s · e3@1900s · e4@1920s–30s</td><td class="num dim">era N ± 10y</td><td><span class="pill ok">met</span></td></tr>
+  </table>
+  </div>
+</section>
+
+<div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center">
+  <div class="tabs" role="tablist" aria-label="Report page">
+    <button id="tab-world" aria-pressed="true">World</button><button id="tab-watch" aria-pressed="false">Watchlist</button>
+  </div>
+  <div class="toggle" role="group" aria-label="Sector scope">
+    <button id="sc-all" aria-pressed="true">whole economy</button><button id="sc-tier" aria-pressed="false">tiered sector</button>
+  </div>
+  <span class="small">scope applies to the decomposition tables; urban centres always excluded from "tiered"</span>
+</div>
+
+<!-- ============ WORLD PAGE ============ -->
+<div class="page on" id="page-world">
+
+  <figure class="card">
+    <div class="fighead">
+      <h3>World GDP, 1837–1936</h3>
+      <div class="toggle" role="group" aria-label="GDP chart mode">
+        <button id="c1-ratio" aria-pressed="true">÷ vanilla</button><button id="c1-abs" aria-pressed="false">£M absolute</button>
+      </div>
+    </div>
+    <div id="chart1"></div>
+    <figcaption id="cap1"></figcaption>
+  </figure>
+
+  <div class="card tablewrap">
+  <h3 id="decomp-h">Fewer workers × more product per worker — the G4/G5 decomposition</h3>
+  <table id="t-decomp"></table>
+  <p class="small" id="decomp-cap"></p>
+  </div>
+
+  <div class="card tablewrap">
+  <h3>Trajectory — this arm ÷ vanilla baseline</h3>
+  <table id="t-traj">
+    <tr><th>year</th><th class="num">GDP ×van</th><th class="num">econ levels ×van</th><th class="num">construction ×van</th><th class="num">non-productive adults <span class="dim">(vs van)</span></th><th class="num">pure unemployment <span class="dim">(vs van)</span></th></tr>
+  </table>
+  <p class="small">Non-productive adults = unemployed + peasant workforce ÷ all employable non-dependants.
+  Construction = points delivered per year, inferred from level additions × cost.</p>
+  </div>
+
+  <figure class="card">
+    <div class="fighead">
+      <h3>Who works where — employment in tier buildings, by era</h3>
+      <div class="toggle" role="group" aria-label="Employment chart mode">
+        <button id="c2-abs" aria-pressed="true">millions</button><button id="c2-norm" aria-pressed="false">100%</button>
+      </div>
+    </div>
+    <div class="legend" id="legend2"></div>
+    <div id="chart2"></div>
+    <figcaption>Estimated workers employed in the mod's tier buildings (staffed-level-equivalents × the tier's base
+    employment; unemployed and subsistence excluded by construction; automation PMs not netted). Unlike counting
+    built levels, this view shows contraction: era-0 employment peaks in 1920 and falls, era-1 peaks in 1930 and
+    falls — obsolete rungs shedding real workers while e4–e5 absorb them.</figcaption>
+  </figure>
+
+  <div class="card tablewrap">
+  <h3>Tier employment by era, with the decade's change in brackets (millions)</h3>
+  <table id="t-emp"></table>
+  <p class="small">Δ in brackets = change since the previous row. Negative brackets are the obsolescence signal
+  the level-addition view cannot show — a rung's workforce contracting while its buildings still stand.
+  ⚠ e0 declines only from the 1920s–30s; whether that lateness is the cheap book's doing is a watchlist-level
+  question — check per-country on the Watchlist page.</p>
+  </div>
+
+  <div class="card tablewrap">
+  <h3>The ladder — climb and death</h3>
+  <table id="t-ladder">
+    <tr><th>year</th><th>most-built era</th><th class="num">e0 share of builds</th><th class="num">frontier rung payback</th><th class="num">stale rung payback</th><th class="num">stale staffing</th></tr>
+  </table>
+  <p class="small">Frontier = newest rung with ≥50 world levels; stale = two eras below the most-built era
+  (e0 where none). Payback = years of realised weekly profit to repay construction at £720/pt. ⚠ "Most-built" and
+  "e0 share" come from gross level additions (positive year-on-year deltas only — blind to contraction); the
+  employment view above is the contraction-aware complement. Vanilla's own payback runs 10–15y (F53): the frontier
+  column sitting at 3–6y is the overshoot engine.</p>
+  </div>
+
+  <div class="card tablewrap">
+  <h3>Research — technologies held (mean per country, by game era) and journal entries</h3>
+  <table id="t-tech-w"></table>
+  <table id="t-je-w" style="margin-top:10px"></table>
+  <p class="small">Techs: mean count of technologies held per country, mapped onto the MOD tree's game eras for
+  both arms (a design-centric yardstick — vanilla-arm techs are placed where our tree puts them). JEs: the mod's
+  research journal entries, cumulative firings over the whole run by stage × the gated technology's era —
+  no per-date series yet (PMR_JE lines carry no game date; a wall-clock join against run.log is the route).</p>
+  </div>
+</div>
+
+<!-- ============ WATCHLIST PAGE ============ -->
+<div class="page" id="page-watch">
+  <div class="card">
+    <h3>Countries — click to include / exclude</h3>
+    <div class="ctagbar" id="ctags" style="margin-top:8px"></div>
+    <div style="margin-top:6px"><button class="linkbtn" id="sel-all">all</button>·<button class="linkbtn" id="sel-none">none</button>·<button class="linkbtn" id="sel-gp">great powers</button></div>
+    <p class="small" id="flagnote" style="margin-bottom:0"></p>
+  </div>
+
+  <figure class="card">
+    <div class="fighead">
+      <h3 id="wgdp-h">GDP of the selection, 1837–1936</h3>
+      <div class="toggle" role="group" aria-label="Watchlist GDP mode">
+        <button id="c3-ratio" aria-pressed="true">÷ vanilla</button><button id="c3-abs" aria-pressed="false">£M absolute</button>
+      </div>
+    </div>
+    <div id="chart3"></div>
+    <figcaption>Sum over the selected tags. The ratio uses only tags alive in <i>both</i> arms in a given year, so
+    a dissolution narrows the basis rather than faking a collapse; the absolute view shows this run (blue) against
+    the vanilla mean of the same selection (grey). Single-year spikes on a selected tag are usually a civil war —
+    see the ⚠ flags above.</figcaption>
+  </figure>
+
+  <figure class="card">
+    <div class="fighead">
+      <h3>Employment in tier buildings, by era — selection</h3>
+      <div class="toggle" role="group" aria-label="Watchlist employment mode">
+        <button id="c4-abs" aria-pressed="true">millions</button><button id="c4-norm" aria-pressed="false">100%</button>
+      </div>
+    </div>
+    <div class="legend" id="legend4"></div>
+    <div id="chart4"></div>
+    <figcaption>Same estimate as the world chart, summed over the selected tags only — this is where "does era 0
+    die on time in the leaders?" is answerable, unobscured by the periphery.</figcaption>
+  </figure>
+
+  <div class="card tablewrap">
+  <h3>Tier employment by era, with the decade's change in brackets (millions) — selection</h3>
+  <table id="t-wemp"></table>
+  <p class="small">Same construction as the world table, summed over the selected tags. Negative brackets =
+  the selection's obsolete rungs shedding real workers.</p>
+  </div>
+
+  <div class="card tablewrap">
+  <h3>Fewer workers × more product per worker — the G4/G5 decomposition, selection</h3>
+  <table id="t-wdecomp"></table>
+  <p class="small">Same construction as the world table, summed over the selected tags (tags alive in both arms
+  only, per year). This is where the premise splits: leaders can satisfy it (GBR alone reads workers &lt;1 ×
+  productivity &gt;1) while the world aggregate inverts it — select subsets to see who carries which factor.</p>
+  </div>
+
+  <div class="card tablewrap">
+  <h3>Labour — selection vs vanilla (pop-weighted mean of country shares)</h3>
+  <table id="t-wlab"></table>
+  <p class="small">Pure unemployment = unemployed ÷ (unemployed + salaried); non-productive = unemployed + peasant
+  workforce ÷ all workforce. Weighted by each tag's population in this run; the vanilla column uses the same
+  weights, so composition shifts cancel.</p>
+  </div>
+
+  <div class="card tablewrap">
+  <h3>The tech edge (watchlist-wide, not filtered)</h3>
+  <table id="t-watch">
+    <tr><th>year</th><th class="num">GDP ×van</th><th class="num">mean stock era <span class="dim">· GBR · p25</span></th><th class="num">non-productive <span class="dim">(vs van)</span></th><th class="num">frontier share of output</th><th class="num">lost markets ◇</th></tr>
+  </table>
+  <p class="small">Stock era = level-weighted mean era of a country's tier buildings. Frontier share = of the
+  15 industrial goods, the median share of world output produced by countries holding that industry's newest
+  researched technology. <b>Lost markets ◇</b> is <b>not yet gathered</b> (needs import origins; see below).</p>
+  </div>
+
+  <div class="card">
+  <h3>Placeholders — collection status after the 2026-08-15 probes (telemetry v13)</h3>
+  <table>
+    <tr><th>Metric, in game terms</th><th>Status</th><th>Route</th></tr>
+    <tr><td><span class="ph">◇ lost markets</span></td><td><span class="pill ok">gatherable</span></td><td><span class="mono">origins</span> metric, verified emitting nonzero cross-market import rows on this arm (FRA ← 11.53 engines from the American market, 1836.2). ⚠ Rides phase 3 — span runs past the last dump +3 months. Not yet in this run's data; next full batch carries it.</td></tr>
+    <tr><td><span class="ph">◇ market access</span></td><td><span class="pill ok">gatherable</span></td><td>NEW <span class="mono">state_access</span> (v13): per-state GetMarketAccess + GetInfrastructure/Usage for tagged countries, verified (420 lines, GBR Home Counties 1.0000 · 205.81 · 153.40).</td></tr>
+    <tr><td><span class="ph">◇ queue composition</span></td><td><span class="pill warn">levels only</span></td><td>NEW <span class="mono">construction_queue</span> (v13): queued-but-unbuilt LEVELS per country, government/private split, verified with the L6 canary (GBR 4=0+4). Queue composition by building type is not exposed to script.</td></tr>
+    <tr><td><span class="ph">◇ wage catch-up per rung</span></td><td><span class="pill warn">derivable</span></td><td>No building-scope wage function exists (exe pool checked). Derive offline: SW state wages × BINV per-building employment — a join over data already collected.</td></tr>
+    <tr><td><span class="ph">◇ true employment per rung</span></td><td><span class="pill ok">already collected</span></td><td>Was never missing: <span class="mono">building_inventory</span> (BINV — type, levels, employment %, cap, state) is verified and ON in this run; the employment charts' estimate can be replaced by a BINV parse.</td></tr>
+  </table>
+  </div>
+
+  <div class="card tablewrap">
+  <h3>Research — technologies held (mean per country, by game era) and journal entries — selection</h3>
+  <table id="t-tech-s"></table>
+  <table id="t-je-s" style="margin-top:10px"></table>
+  <p class="small">Same construction as the world tables, over the selected tags (techs: selection mean vs the
+  same tags' vanilla mean; JEs: cumulative firings by the selected countries).</p>
+  </div>
+</div>
+
+<!-- ============ INCIDENTS + NEXT (always visible) ============ -->
+<section class="sec">
+  <h2>Incidents &amp; confounds</h2>
+  <div class="card">
+    <ul class="small" style="font-size:13.5px">
+      <li><b>n=1</b> by instruction. The comparison band is known-tight (the two ×1.5^era runs agreed within 3% on every headline), but country-level numbers are single-world observations.</li>
+      <li><b>The 1928–29 "depression" is two simultaneous state collapses, not a business cycle</b>: Russia's civil war (pop 173M→17M at 1929, fully restored by 1931) and China fracturing into a Taiping state + seven warlord states. Individual vanilla runs carry the same event class (worst single-year world-GDP drawdowns −3.6…−12.0%), hidden by the n=4 average; this run's −16.3% is the largest observed but the same species.</li>
+      <li>One CTD at ~1908 — the 1.13.10 sway-recursion engine bug (F56), also seen on pure vanilla. Resume loaded clean and finished.</li>
+      <li>The <b>port/railway subsidy bleed</b> (F57 §5) is <b>deliberately left in</b> — constant across every compared arm.</li>
+      <li>All payback £ on the flat-£720/pt basis (F53: shared ~27% late-era bias).</li>
+      <li>The overshoot conflates "frontier too cheap" with "labour became the ceiling" — both present; n=1 cannot apportion.</li>
+    </ul>
+  </div>
+
+  <h2>Next lever</h2>
+  <div class="next">
+    <p class="lede" style="margin:0">The largest deviation is G4/G5 — one overshoot, decomposed as 1.18× workers ×
+    1.33× productivity — and its dial is the frontier's price. The response curve has four measured points
+    (0.28× · 1.0 target · 1.56× · 1.9×), which interpolate to <b>anchor × ~1.1–1.2^era, no ×2 band</b>: sized so a
+    frontier rung's <i>transient</i> debut margin reads ~8–12y while its steady-state margin reads 20y+ — F58 says
+    wage catch-up erases any per-level profit edge, so the book must charge for the transient, not the steady
+    state. Run it n=2.</p>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated 2026-08-15, 18:40 UTC · data: 100 annual save summaries of run001_flatcost + the fixed vanilla baseline
+  (20260813_083557, n=4) · findings F52–F59 · template: verdict → world / watchlist pages → placeholders → incidents → next lever.
+</footer>
+</div>
+
+<div class="tip" id="tip"></div>
+
+<script>
+// ---------- world data ----------
+const GDP_FLAT={1837:417,1838:425,1839:432,1840:444,1841:463,1842:468,1843:483,1844:511,1845:521,1846:532,1847:545,1848:544,1849:564,1850:565,1851:520,1852:556,1853:583,1854:599,1855:596,1856:637,1857:654,1858:672,1859:680,1860:700,1861:713,1862:731,1863:757,1864:776,1865:798,1866:824,1867:846,1868:878,1869:901,1870:924,1871:958,1872:969,1873:978,1874:1001,1875:1024,1876:1057,1877:1070,1878:1047,1879:1097,1880:1170,1881:1176,1882:1177,1883:1185,1884:1198,1885:1254,1886:1272,1887:1327,1888:1374,1889:1422,1890:1414,1891:1447,1892:1530,1893:1575,1894:1635,1895:1673,1896:1718,1897:1778,1898:1845,1899:1908,1900:1992,1901:2035,1902:2152,1903:2208,1904:2270,1905:2386,1906:2488,1907:2584,1908:2697,1909:2792,1910:2959,1911:3028,1912:3125,1913:3169,1914:3374,1915:3606,1916:3740,1917:3908,1918:4045,1919:4112,1920:4316,1921:4579,1922:4706,1923:4855,1924:5006,1925:5287,1926:5546,1927:5668,1928:5379,1929:4744,1930:6047,1931:6237,1932:6340,1933:6366,1934:6686,1935:6855,1936:7047};
+const GDP_VAN={1837:417,1838:426,1839:436,1840:452,1841:465,1842:476,1843:489,1844:502,1845:520,1846:530,1847:547,1848:555,1849:559,1850:575,1851:595,1852:607,1853:620,1854:628,1855:642,1856:667,1857:684,1858:677,1859:704,1860:716,1861:732,1862:755,1863:764,1864:779,1865:792,1866:813,1867:812,1868:838,1869:857,1870:872,1871:890,1872:905,1873:924,1874:938,1875:953,1876:973,1877:981,1878:993,1879:1012,1880:1029,1881:1059,1882:1060,1883:1092,1884:1122,1885:1147,1886:1186,1887:1202,1888:1244,1889:1274,1890:1306,1891:1339,1892:1376,1893:1379,1894:1438,1895:1473,1896:1509,1897:1559,1898:1611,1899:1626,1900:1687,1901:1770,1902:1817,1903:1859,1904:1924,1905:1953,1906:2024,1907:2074,1908:2093,1909:2147,1910:2208,1911:2254,1912:2305,1913:2328,1914:2389,1915:2493,1916:2568,1917:2643,1918:2718,1919:2780,1920:2861,1921:2989,1922:3059,1923:3153,1924:3239,1925:3390,1926:3465,1927:3536,1928:3643,1929:3636,1930:3750,1931:3926,1932:3910,1933:4056,1934:4226,1935:4385,1936:4526};
+const GDP_NB={1837:419,1838:424,1839:430,1840:443,1841:450,1842:466,1843:475,1844:493,1845:502,1846:508,1847:518,1848:527,1849:538,1850:546,1851:561,1852:556,1853:544,1854:563,1855:578,1856:586,1857:593,1858:585,1859:600,1860:614,1861:622,1862:616,1863:630,1864:644,1865:654,1866:647,1867:653,1868:660,1869:671,1870:684,1871:682,1872:678,1873:678,1874:678,1875:691,1876:706,1877:727,1878:721,1879:743,1880:748,1881:759,1882:758,1883:762,1884:732,1885:748,1886:747,1887:782,1888:808,1889:810,1890:839,1891:840,1892:862,1893:855,1894:859,1895:883,1896:889,1897:892,1898:884,1899:885,1900:922,1901:902,1902:935,1903:941,1904:947,1905:914,1906:905,1907:978,1908:927,1909:942,1910:992,1911:992,1912:1018,1913:1018,1914:1022,1915:1036,1916:1047,1917:1069,1918:1090,1919:1105,1920:1108,1921:1087,1922:1123,1923:1137,1924:1132,1925:1162,1926:1179,1927:1180,1928:1172,1929:1196,1930:1111,1931:1206,1932:1217,1933:1197,1934:1228,1935:1249,1936:1242};
+const EMP={1840:[3.52,1.84,0.27,0,0,0],1850:[4.1,2.57,0.52,0,0,0],1860:[5.25,3.69,1.11,0.02,0,0],1870:[6.75,5.76,2.47,0.15,0,0],1880:[8.62,7.85,4.63,0.6,0,0],1890:[10.07,9.81,6.66,1.58,0.07,0],1900:[12.17,13.09,9.97,5.01,0.91,0],1910:[13.86,15.8,15.49,11.87,4.65,0],1920:[14.12,16.56,20.15,20.42,14.34,0.17],1930:[13.86,17.43,23.18,26.9,27.09,5.36],1935:[13.65,16.97,23.86,28.89,31.08,9.99]};
+const PROD_FLAT={1840:{w:49.4,g:444},1850:{w:56.6,g:565},1860:{w:66.4,g:700},1870:{w:84.1,g:924},1880:{w:106.4,g:1170},1890:{w:129.3,g:1414},1900:{w:161.3,g:1992},1910:{w:204.5,g:2959},1920:{w:251.3,g:4316},1930:{w:309.4,g:6047},1935:{w:335.1,g:6855}};
+const PROD_VAN={1840:{w:49.9,g:452},1850:{w:58,g:575},1860:{w:69.8,g:716},1870:{w:82.7,g:872},1880:{w:96.1,g:1029},1890:{w:113.9,g:1306},1900:{w:136.5,g:1687},1910:{w:171.3,g:2208},1920:{w:208.3,g:2861},1930:{w:253.1,g:3750},1935:{w:284.1,g:4385}};
+const TRAJ={1840:[0.98,0.95,1.06],1860:[0.98,0.95,1.26],1880:[1.14,1.13,1.02],1900:[1.18,1.14,1.20],1920:[1.51,1.23,1.55],1935:[1.56,1.25,1.29]};
+const WORLD_FULL={1840:[77.2,76.5],1860:[71.2,69.7],1880:[62.2,63.9],1900:[48.8,52.1],1920:[22.0,40.7],1935:[27.5,39.5]};
+const WORLD_PURE={1840:[17.7,18.2],1860:[30.0,30.1],1880:[28.7,30.1],1900:[23.2,26.0],1920:[15.8,21.3],1935:[10.5,16.0]};
+const LADDER={1840:['e1',39,'e2',5.7,'e0',14.8,0.89],1860:['e1',29,'e2',9.4,'e0',12.6,0.83],1880:['e1–e2',22,'e3',6.1,'e0',12.3,0.80],1900:['e3',10,'e4',3.5,'e1',9.1,0.78],1920:['e4',6,'e5',3.8,'e2',7.5,0.79],1935:['e4',5,'e5',3.3,'e2',10.9,0.64]};
+const WATCH={1840:[1.02,0.38,0.79,0.10,67.0,65.7,76],1860:[1.08,0.56,0.97,0.21,65.2,63.4,72],1880:[1.18,0.82,1.22,0.56,58.1,59.6,73],1900:[1.28,1.25,1.56,1.18,48.8,52.1,48],1920:[2.03,2.02,2.30,1.67,22.0,40.7,51],1935:[1.95,2.44,2.64,2.19,6.3,25.6,52]};
+const YEARS=[1840,1860,1880,1900,1920,1935];
+const EYRS=Object.keys(EMP).map(Number);
+// ---------- per-country data (watchlist) ----------
+const D2=__D2__;
+const TAGS=['GBR','RUS','FRA','USA','PRU','TUR','AUS','SPA','BRZ','SIC','POR'];
+const GP=['GBR','RUS','FRA','USA','PRU','TUR','AUS'];
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const tip=document.getElementById('tip');
+
+// ---------- tabs ----------
+function page(which){
+  document.getElementById('page-world').classList.toggle('on',which==='world');
+  document.getElementById('page-watch').classList.toggle('on',which==='watch');
+  document.getElementById('tab-world').setAttribute('aria-pressed',which==='world');
+  document.getElementById('tab-watch').setAttribute('aria-pressed',which==='watch');
+}
+document.getElementById('tab-world').onclick=()=>page('world');
+document.getElementById('tab-watch').onclick=()=>page('watch');
+document.getElementById('sc-all').onclick=()=>{SCOPE='all';press('sc-all','sc-tier');renderDecompWorld();renderWatch();};
+document.getElementById('sc-tier').onclick=()=>{SCOPE='tier';press('sc-tier','sc-all');renderDecompWorld();renderWatch();};
+
+// ---------- world tables ----------
+const cmp=(f,v)=>f.toFixed(1)+'% <span class="dim">/ '+v.toFixed(1)+'%</span>';
+let SCOPE='all';
+function renderDecompWorld(){
+  const t=document.getElementById('t-decomp');
+  if(SCOPE==='all'){
+    document.getElementById('decomp-h').textContent='Fewer workers × more product per worker — the G4/G5 decomposition (whole economy)';
+    t.innerHTML='<tr><th>year</th><th class="num">productive workers <span class="dim">mod / van</span></th><th class="num">workers ×van</th><th class="num">GDP per worker £/yr <span class="dim">mod / van</span></th><th class="num">product per worker ×van</th><th class="num">= GDP ×van</th></tr>';
+    for(const y of EYRS){
+      const f=PROD_FLAT[y],v=PROD_VAN[y];if(!f||!v)continue;
+      const wr=f.w/v.w, pf=f.g/f.w, pv=v.g/v.w, pr=pf/pv;
+      t.insertRow().innerHTML='<td>'+y+'</td><td class="num">'+f.w.toFixed(0)+'M <span class="dim">/ '+v.w.toFixed(0)+'M</span></td>'+
+        '<td class="num '+(wr>1.05?'vbad':wr<0.95?'vgood':'')+'">'+wr.toFixed(2)+'×</td>'+
+        '<td class="num">£'+pf.toFixed(1)+' <span class="dim">/ £'+pv.toFixed(1)+'</span></td>'+
+        '<td class="num '+(pr>1.05?'vgood':'')+'">'+pr.toFixed(2)+'×</td><td class="num">'+(wr*pr).toFixed(2)+'×</td>';
+    }
+    document.getElementById('decomp-cap').innerHTML='Productive workers = salaried workforce minus government and military payrolls. The premise says the two middle factors should cancel; through 1900 the productivity factor is ~1.00 and the workers factor never drops below 1 — switch scope to <b>tiered sector</b> to see why (dilution: the tier buildings hold only 20→37% of productive workers).';
+  }else{
+    document.getElementById('decomp-h').textContent='The tiered sector — workers and productivity vs vanilla’s counterpart buildings';
+    t.innerHTML='<tr><th>year</th><th class="num">tier-sector workers <span class="dim">mod / van</span></th><th class="num">workers ×van</th><th class="num">sector share of productive wf</th><th class="num">clean-sector £/wk per worker <span class="dim">mod / van</span></th><th class="num">productivity ×van</th></tr>';
+    for(const y of EYRS){
+      const f=D2.sector.flat.world[y],v=D2.sector.van.world[y];if(!f||!v)continue;
+      const wr=f[0]/v[0];
+      const pf=f[1]?f[2]/f[1]:0, pv=v[1]?v[2]/v[1]:0, pr=pv?pf/pv:0;
+      const shF=PROD_FLAT[y]?100*f[0]/PROD_FLAT[y].w:null, shV=PROD_VAN[y]?100*v[0]/PROD_VAN[y].w:null;
+      t.insertRow().innerHTML='<td>'+y+'</td><td class="num">'+f[0].toFixed(1)+'M <span class="dim">/ '+v[0].toFixed(1)+'M</span></td>'+
+        '<td class="num '+(wr>1.05?'vbad':wr<0.95?'vgood':'')+'">'+wr.toFixed(2)+'×</td>'+
+        '<td class="num">'+(shF!=null?shF.toFixed(0)+'%':'—')+' <span class="dim">/ '+(shV!=null?shV.toFixed(0)+'%':'—')+'</span></td>'+
+        '<td class="num">£'+pf.toFixed(2)+' <span class="dim">/ £'+pv.toFixed(2)+'</span></td>'+
+        '<td class="num '+(pr>1.05?'vgood':pr<0.95&&pr?'vbad':'')+'">'+(pr?pr.toFixed(2)+'×':'—')+'</td>';
+    }
+    document.getElementById('decomp-cap').innerHTML='Workers: all tier buildings (mod) vs the same 20 vanilla building types (urban centres excluded both sides; vanilla headcount = staffed levels × base employment). Productivity: base-price output value ÷ workers over the <b>15 clean-priced industries</b> — food/textile/furniture excluded (subsistence co-produces their goods), port/power excluded (unpriced or urban-centre-contaminated output). The mod’s sector staffs ~2× vanilla’s and runs ~0.7× its productivity until 1900 — cheap buildings over-absorb into low rungs; parity arrives only with e4/e5.';
+  }
+}
+renderDecompWorld();
+const traj=document.getElementById('t-traj');
+for(const y of YEARS){
+  const t=TRAJ[y];
+  traj.insertRow().innerHTML='<td>'+y+'</td><td class="num '+((t[0]>=0.8&&t[0]<=1.25)?'':'vbad')+'">'+t[0].toFixed(2)+'×</td><td class="num">'+t[1].toFixed(2)+'×</td><td class="num">'+t[2].toFixed(2)+'×</td>'+
+    '<td class="num">'+cmp(WORLD_FULL[y][0],WORLD_FULL[y][1])+'</td><td class="num">'+cmp(WORLD_PURE[y][0],WORLD_PURE[y][1])+'</td>';
+}
+function empTable(el,data,yrs){
+  el.innerHTML='<tr><th>year</th>'+[0,1,2,3,4,5].map(i=>'<th class="num">era '+i+'</th>').join('')+'<th class="num">total</th></tr>';
+  let prev=null;
+  for(const y of yrs){
+    const e=data[y]; if(!e)continue;
+    const tot=e.reduce((a,b)=>a+b,0);
+    let cells='<td>'+y+'</td>';
+    e.forEach((v,i)=>{
+      let d='';
+      if(prev){const dd=v-prev[i];if(Math.abs(dd)>=0.05)d=' <span class="'+(dd<0?'neg':'dim')+'">('+(dd>0?'+':'')+dd.toFixed(1)+')</span>';}
+      cells+='<td class="num">'+(v>=0.005?v.toFixed(1):'<span class="dim">—</span>')+d+'</td>';
+    });
+    const dt=prev?tot-prev.reduce((a,b)=>a+b,0):null;
+    cells+='<td class="num"><b>'+tot.toFixed(1)+'</b>'+(dt!=null?' <span class="dim">('+(dt>0?'+':'')+dt.toFixed(1)+')</span>':'')+'</td>';
+    el.insertRow().innerHTML=cells;
+    prev=e;
+  }
+}
+empTable(document.getElementById('t-emp'),EMP,EYRS);
+// ---------- research tables ----------
+function techTable(el,flatFn,vanFn){
+  el.innerHTML='<tr><th>year</th>'+[1,2,3,4,5].map(e=>'<th class="num">era '+e+' <span class="dim">(vs van)</span></th>').join('')+'</tr>';
+  for(const y of EYRS){
+    const f=flatFn(y),v=vanFn(y);
+    if(!f)continue;
+    el.insertRow().innerHTML='<td>'+y+'</td>'+[0,1,2,3,4].map(i=>'<td class="num">'+f[i].toFixed(1)+' <span class="dim">/ '+(v?v[i].toFixed(1):'—')+'</span></td>').join('');
+  }
+}
+function jeTable(el,data){
+  const stages=['inception','development','implementation'];
+  el.innerHTML='<tr><th>journal entries (cumulative)</th>'+[2,3,4,5].map(e=>'<th class="num">era '+e+' gates</th>').join('')+'</tr>';
+  for(const s of stages){
+    el.insertRow().innerHTML='<td>'+s+(s==='implementation'?' <span class="dim">(grant paid)</span>':'')+'</td>'+
+      [2,3,4,5].map(e=>'<td class="num">'+((data[s+'|e'+e]||0).toLocaleString())+'</td>').join('');
+  }
+}
+techTable(document.getElementById('t-tech-w'),y=>D2.techs.flat.world[y],y=>D2.techs.van.world[y]);
+jeTable(document.getElementById('t-je-w'),D2.je.world);
+const lad=document.getElementById('t-ladder');
+for(const y of YEARS){
+  const l=LADDER[y];
+  lad.insertRow().innerHTML='<td>'+y+'</td><td>'+l[0]+'</td><td class="num">'+l[1]+'%</td><td class="num '+((l[3]>=8&&l[3]<=15)?'':'vwarn')+'">'+l[2]+' · '+l[3].toFixed(1)+'y</td>'+
+    '<td class="num">'+l[4]+' · '+l[5].toFixed(1)+'y</td><td class="num">'+l[6].toFixed(2)+'</td>';
+}
+const wat=document.getElementById('t-watch');
+for(const y of YEARS){
+  const w=WATCH[y];
+  wat.insertRow().innerHTML='<td>'+y+'</td><td class="num '+((w[0]>=0.8&&w[0]<=1.25)?'':'vbad')+'">'+w[0].toFixed(2)+'×</td><td class="num">'+w[1].toFixed(2)+' <span class="dim">· '+w[2].toFixed(2)+' · '+w[3].toFixed(2)+'</span></td>'+
+    '<td class="num">'+cmp(w[4],w[5])+'</td><td class="num">'+w[6]+'%</td><td class="num phcell">—◇</td>';
+}
+
+// ---------- generic line chart ----------
+function lineChart(el,series,opts){
+  const W=900,H=300,L=48,R=86,T=16,B=30;
+  const x=y=>L+(y-1837)/(1936-1837)*(W-L-R);
+  const yp=v=>T+(opts.ymax-v)/(opts.ymax-opts.ymin)*(H-T-B);
+  let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+opts.label+'" style="width:100%;height:auto">';
+  if(opts.band)s+='<rect x="'+L+'" y="'+yp(opts.band[1])+'" width="'+(W-L-R)+'" height="'+(yp(opts.band[0])-yp(opts.band[1]))+'" fill="'+css('--accent')+'" opacity="0.07"/>';
+  for(const g of opts.grid){
+    const em=opts.emph===g;
+    s+='<line x1="'+L+'" y1="'+yp(g)+'" x2="'+(W-R)+'" y2="'+yp(g)+'" stroke="'+css('--line')+'" stroke-width="'+(em?1.5:1)+'" '+(em?'stroke-dasharray="5 4"':'')+'/>';
+    s+='<text x="'+(L-7)+'" y="'+(yp(g)+4)+'" text-anchor="end" font-size="11" fill="'+css('--ink3')+'">'+opts.fmt(g)+'</text>';
+  }
+  for(const g of [1840,1860,1880,1900,1920,1936])s+='<text x="'+x(g)+'" y="'+(H-8)+'" text-anchor="middle" font-size="11" fill="'+css('--ink3')+'">'+g+'</text>';
+  const path=pts=>pts.map((p,i)=>(i?'L':'M')+x(p[0]).toFixed(1)+' '+yp(Math.max(opts.ymin,Math.min(opts.ymax,p[1]))).toFixed(1)).join('');
+  for(const sr of series)if(sr.pts.length)s+='<path d="'+path(sr.pts)+'" fill="none" stroke="'+css(sr.c)+'" stroke-width="2" stroke-linejoin="round"/>';
+  const usedY=[];
+  for(const sr of series){
+    if(!sr.pts.length)continue;
+    const e=sr.pts[sr.pts.length-1];
+    let ly=yp(e[1]);
+    while(usedY.some(u=>Math.abs(u-ly)<14))ly+=14;
+    usedY.push(ly);
+    s+='<circle cx="'+x(e[0])+'" cy="'+yp(e[1])+'" r="4" fill="'+css(sr.c)+'" stroke="'+css('--panel')+'" stroke-width="2"/>';
+    s+='<text x="'+(x(e[0])+8)+'" y="'+(ly+4)+'" font-size="12" font-weight="600" fill="'+css('--ink')+'">'+sr.label+' <tspan fill="'+css('--ink2')+'">'+opts.fmt(Math.round(e[1]*100)/100)+'</tspan></text>';
+  }
+  s+='<line class="xh" x1="0" y1="'+T+'" x2="0" y2="'+(H-B)+'" stroke="'+css('--ink3')+'" stroke-width="1" opacity="0"/></svg>';
+  el.innerHTML=s;
+  const svg=el.querySelector('svg'),xh=el.querySelector('.xh');
+  svg.onmousemove=ev=>{
+    const r=svg.getBoundingClientRect();
+    const yr=Math.round(1837+((ev.clientX-r.left)*(W/r.width)-L)/(W-L-R)*(1936-1837));
+    if(yr<1837||yr>1936){tip.style.opacity=0;xh.setAttribute('opacity',0);return;}
+    xh.setAttribute('x1',x(yr));xh.setAttribute('x2',x(yr));xh.setAttribute('opacity',0.5);
+    tip.innerHTML='<b>'+yr+'</b> '+series.map(sr=>{const p=sr.pts.find(q=>q[0]===yr);return sr.label+' '+(p?opts.fmt(Math.round(p[1]*100)/100):'—');}).join(' · ');
+    tip.style.opacity=1;tip.style.left=(ev.clientX+14)+'px';tip.style.top=(ev.clientY-10)+'px';
+  };
+  svg.onmouseleave=()=>{tip.style.opacity=0;xh.setAttribute('opacity',0);};
+}
+
+// ---------- chart 1 ----------
+function render1(mode){
+  const flatPts=Object.entries(GDP_FLAT).map(([y,g])=>[+y,g]);
+  const vanPts=Object.entries(GDP_VAN).map(([y,g])=>[+y,g]);
+  const nbPts=Object.entries(GDP_NB).map(([y,g])=>[+y,g]);
+  if(mode==='ratio'){
+    lineChart(document.getElementById('chart1'),[
+      {pts:flatPts.map(([y,g])=>[y,g/GDP_VAN[y]]),c:'--accent',label:'flat 0.65×'},
+      {pts:nbPts.map(([y,g])=>[y,g/GDP_VAN[y]]),c:'--gold',label:'×1.5^era'}],
+      {ymin:0.2,ymax:1.8,grid:[0.25,0.5,0.75,1,1.25,1.5,1.75],emph:1,band:[0.8,1.25],fmt:v=>v.toFixed(2)+'×',label:'World GDP ratio'});
+    document.getElementById('cap1').textContent='Yearly world GDP ÷ the vanilla baseline (n=4 mean). Shaded band = the 0.8–1.25× target. The 1928–29 notch is the Russian civil war + Chinese collapse (see incidents), not a business cycle.';
+  }else{
+    lineChart(document.getElementById('chart1'),[
+      {pts:flatPts,c:'--accent',label:'flat 0.65×'},
+      {pts:vanPts,c:'--ink3',label:'vanilla'},
+      {pts:nbPts,c:'--gold',label:'×1.5^era'}],
+      {ymin:0,ymax:7200,grid:[0,1000,2000,3000,4000,5000,6000,7000],fmt:v=>'£'+(v>=1000?(v/1000).toFixed(1)+'B':v+'M'),label:'World GDP absolute'});
+    document.getElementById('cap1').textContent='Yearly world GDP in £M, all three arms on one axis. Same data as the ratio view, unnormalised — vanilla and the flat book are near-identical curves until ~1875; the ×1.5^era book is visibly flat for a century.';
+  }
+}
+document.getElementById('c1-ratio').onclick=()=>{press('c1-ratio','c1-abs');render1('ratio')};
+document.getElementById('c1-abs').onclick=()=>{press('c1-abs','c1-ratio');render1('abs')};
+function press(on,off){document.getElementById(on).setAttribute('aria-pressed',true);document.getElementById(off).setAttribute('aria-pressed',false);}
+render1('ratio');
+
+// ---------- stacked employment chart (shared) ----------
+const eras=['e0','e1','e2','e3','e4','e5'],cols=['--e0','--e1','--e2','--e3','--e4','--e5'];
+function legendHTML(txt){return eras.map((e,i)=>'<span><span class="sw" style="background:var('+cols[i]+')"></span>era '+i+'</span>').join('')+'<span class="dim" style="margin-left:auto">'+txt+'</span>';}
+document.getElementById('legend2').innerHTML=legendHTML('workers in tier buildings (est.)');
+document.getElementById('legend4').innerHTML=legendHTML('selection only (est.)');
+function stacked(el,data,yrs,mode){
+  const W=900,H=280,L=48,R=14,T=8,B=26;
+  const bw=(W-L-R)/yrs.length;
+  const tots=yrs.map(y=>(data[y]||[0]).reduce((a,b)=>a+b,0));
+  const maxAbs=Math.max(...tots,0.1);
+  const gmax=mode==='norm'?100:Math.max(5,Math.ceil(maxAbs/5)*5);
+  let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Employment by era" style="width:100%;height:auto">';
+  const gl=mode==='norm'?[0,25,50,75,100]:[0,.25,.5,.75,1].map(f=>Math.round(gmax*f));
+  for(const g of gl){
+    const gy=T+(gmax-g)/gmax*(H-T-B);
+    s+='<line x1="'+L+'" y1="'+gy+'" x2="'+(W-R)+'" y2="'+gy+'" stroke="'+css('--line')+'" stroke-width="1"/>';
+    s+='<text x="'+(L-7)+'" y="'+(gy+4)+'" text-anchor="end" font-size="11" fill="'+css('--ink3')+'">'+g+(mode==='norm'?'%':'M')+'</text>';
+  }
+  yrs.forEach((y,di)=>{
+    const a=data[y]||[0,0,0,0,0,0],tot=a.reduce((x2,y2)=>x2+y2,0)||1;
+    const scale=mode==='norm'?100/tot:1;
+    let acc=0;
+    const bx=L+di*bw+bw*0.14,bwid=bw*0.72;
+    a.forEach((v,ei)=>{
+      if(v<0.005)return;
+      const hv=v*scale/gmax*(H-T-B);
+      const gy=T+(H-T-B)-(acc+hv);
+      acc+=hv;
+      const pct=100*v/tot;
+      s+='<rect x="'+bx+'" y="'+(gy+1)+'" width="'+bwid+'" height="'+Math.max(0,hv-2)+'" rx="2" fill="var('+cols[ei]+')" data-d="'+y+'" data-e="'+ei+'" data-p="'+pct.toFixed(0)+'" data-v="'+v.toFixed(2)+'"/>';
+      if((mode==='norm'?pct>=11:hv>=20))
+        s+='<text x="'+(bx+bwid/2)+'" y="'+(gy+hv/2+4)+'" text-anchor="middle" font-size="11" font-weight="600" fill="'+(ei>=3?'var(--bg)':'var(--ink)')+'" pointer-events="none">'+(mode==='norm'?pct.toFixed(0):(v>=10?v.toFixed(0):v.toFixed(1)))+'</text>';
+    });
+    s+='<text x="'+(bx+bwid/2)+'" y="'+(H-7)+'" text-anchor="middle" font-size="11" fill="'+css('--ink3')+'">'+y+'</text>';
+  });
+  s+='</svg>';
+  el.innerHTML=s;
+  el.querySelectorAll('rect[data-d]').forEach(rc=>{
+    rc.addEventListener('mousemove',ev=>{
+      tip.innerHTML='<b>'+rc.dataset.d+'</b> era '+rc.dataset.e+': '+rc.dataset.v+'M workers · '+rc.dataset.p+'%';
+      tip.style.opacity=1;tip.style.left=(ev.clientX+14)+'px';tip.style.top=(ev.clientY-10)+'px';
+    });
+    rc.addEventListener('mouseleave',()=>tip.style.opacity=0);
+  });
+}
+document.getElementById('c2-abs').onclick=()=>{press('c2-abs','c2-norm');stacked(document.getElementById('chart2'),EMP,EYRS,'abs')};
+document.getElementById('c2-norm').onclick=()=>{press('c2-norm','c2-abs');stacked(document.getElementById('chart2'),EMP,EYRS,'norm')};
+stacked(document.getElementById('chart2'),EMP,EYRS,'abs');
+
+// ---------- watchlist: selection state ----------
+let SEL=new Set(TAGS);
+const bar=document.getElementById('ctags');
+for(const tag of TAGS){
+  const b=document.createElement('button');
+  b.className='ctag';b.id='ct-'+tag;b.setAttribute('aria-pressed','true');
+  const fl=D2.flags[tag]||[];
+  b.innerHTML=tag+(fl.length?' <span class="flag" title="'+fl.join('; ')+'">⚠</span>':'');
+  b.title=fl.join('; ')||'no anomalies detected';
+  b.onclick=()=>{if(SEL.has(tag))SEL.delete(tag);else SEL.add(tag);b.setAttribute('aria-pressed',SEL.has(tag));renderWatch();};
+  bar.appendChild(b);
+}
+document.getElementById('sel-all').onclick=()=>{SEL=new Set(TAGS);TAGS.forEach(t=>document.getElementById('ct-'+t).setAttribute('aria-pressed',true));renderWatch();};
+document.getElementById('sel-none').onclick=()=>{SEL=new Set();TAGS.forEach(t=>document.getElementById('ct-'+t).setAttribute('aria-pressed',false));renderWatch();};
+document.getElementById('sel-gp').onclick=()=>{SEL=new Set(GP);TAGS.forEach(t=>document.getElementById('ct-'+t).setAttribute('aria-pressed',SEL.has(t)));renderWatch();};
+
+let c3mode='ratio',c4mode='abs';
+document.getElementById('c3-ratio').onclick=()=>{press('c3-ratio','c3-abs');c3mode='ratio';renderWatch();};
+document.getElementById('c3-abs').onclick=()=>{press('c3-abs','c3-ratio');c3mode='abs';renderWatch();};
+document.getElementById('c4-abs').onclick=()=>{press('c4-abs','c4-norm');c4mode='abs';renderWatch();};
+document.getElementById('c4-norm').onclick=()=>{press('c4-norm','c4-abs');c4mode='norm';renderWatch();};
+
+function renderWatch(){
+  const sel=[...SEL];
+  document.getElementById('wgdp-h').textContent='GDP of the selection ('+(sel.length?sel.join(' '):'nothing selected')+'), 1837–1936';
+  // flag note for selected
+  const notes=sel.filter(t=>(D2.flags[t]||[]).length).map(t=>'<b>'+t+'</b>: '+D2.flags[t].join(', '));
+  document.getElementById('flagnote').innerHTML=notes.length?('⚠ within-tag caveats — '+notes.join(' · ')):'no anomalies among selected tags';
+  // GDP series
+  const fpts=[],vpts=[],rpts=[];
+  for(let y=1837;y<=1936;y++){
+    let fs=0,vs=0,fc=0,vc=0,fsC=0,vsC=0;
+    for(const t of sel){
+      const f=D2.flat[t].gdp[y],v=(D2.van[t].gdp[y]||{}).m;
+      if(f!=null){fs+=f;fc++;}
+      if(v!=null){vs+=v;vc++;}
+      if(f!=null&&v!=null){fsC+=f;vsC+=v;}
+    }
+    if(fc)fpts.push([y,Math.round(fs)]);
+    if(vc)vpts.push([y,Math.round(vs)]);
+    if(vsC>0)rpts.push([y,fsC/vsC]);
+  }
+  if(c3mode==='ratio'){
+    lineChart(document.getElementById('chart3'),[{pts:rpts,c:'--accent',label:'selection'}],
+      {ymin:0.2,ymax:Math.max(1.8,Math.ceil(Math.max(...rpts.map(p=>p[1]),1)*4)/4+0.2),grid:[0.5,1,1.5,2,2.5,3].filter(g=>g<=Math.max(1.8,Math.max(...rpts.map(p=>p[1]))+0.2)),emph:1,band:[0.8,1.25],fmt:v=>v.toFixed(2)+'×',label:'Selection GDP ratio'});
+  }else{
+    const ymax=Math.max(...fpts.map(p=>p[1]),...vpts.map(p=>p[1]),100)*1.08;
+    lineChart(document.getElementById('chart3'),[
+      {pts:fpts,c:'--accent',label:'this run'},{pts:vpts,c:'--ink3',label:'vanilla'}],
+      {ymin:0,ymax:ymax,grid:[0,.25,.5,.75,1].map(f=>Math.round(ymax*f/50)*50),fmt:v=>'£'+(v>=1000?(v/1000).toFixed(1)+'B':v+'M'),label:'Selection GDP absolute'});
+  }
+  // employment
+  const edata={};
+  for(const y of EYRS){
+    const a=[0,0,0,0,0,0];let any=false;
+    for(const t of sel){const e=D2.flat[t].emp[y];if(e){any=true;e.forEach((v,i)=>a[i]+=v);}}
+    if(any)edata[y]=a.map(v=>+v.toFixed(2));
+  }
+  stacked(document.getElementById('chart4'),edata,EYRS.filter(y=>edata[y]),c4mode);
+  // decomposition table (selection sums, common-tag basis per year; honors SCOPE)
+  const dt=document.getElementById('t-wdecomp');
+  if(SCOPE==='all'){
+    dt.innerHTML='<tr><th>year</th><th class="num">productive workers <span class="dim">sel / van</span></th><th class="num">workers ×van</th><th class="num">GDP per worker £/yr <span class="dim">sel / van</span></th><th class="num">product per worker ×van</th><th class="num">= GDP ×van</th><th class="num">tags</th></tr>';
+    for(const y of EYRS){
+      let fw=0,vw=0,fg=0,vg=0,n=0;
+      for(const tg of sel){
+        const a=D2.flat[tg].pw?D2.flat[tg].pw[y]:null, b=D2.van[tg].pw?D2.van[tg].pw[y]:null;
+        const gf=D2.flat[tg].gdp[y], gv=(D2.van[tg].gdp[y]||{}).m;
+        if(a==null||b==null||gf==null||gv==null)continue;
+        fw+=a;vw+=b;fg+=gf;vg+=gv;n++;
+      }
+      if(!n||!vw||!fw)continue;
+      const wr=fw/vw, pf=fg/fw, pv=vg/vw, pr=pf/pv;
+      dt.insertRow().innerHTML='<td>'+y+'</td><td class="num">'+fw.toFixed(1)+'M <span class="dim">/ '+vw.toFixed(1)+'M</span></td>'+
+        '<td class="num '+(wr>1.05?'vbad':wr<0.95?'vgood':'')+'">'+wr.toFixed(2)+'×</td>'+
+        '<td class="num">£'+pf.toFixed(1)+' <span class="dim">/ £'+pv.toFixed(1)+'</span></td>'+
+        '<td class="num '+(pr>1.05?'vgood':'')+'">'+pr.toFixed(2)+'×</td><td class="num">'+(wr*pr).toFixed(2)+'×</td><td class="num dim">'+n+'</td>';
+    }
+  }else{
+    dt.innerHTML='<tr><th>year</th><th class="num">tier-sector workers <span class="dim">sel / van</span></th><th class="num">workers ×van</th><th class="num">clean-sector £/wk per worker <span class="dim">sel / van</span></th><th class="num">productivity ×van</th><th class="num">tags</th></tr>';
+    for(const y of EYRS){
+      let f=[0,0,0],v=[0,0,0],n=0;
+      for(const tg of sel){
+        const a=D2.sector.flat.tags[tg]?D2.sector.flat.tags[tg][y]:null, b=D2.sector.van.tags[tg]?D2.sector.van.tags[tg][y]:null;
+        if(!a||!b)continue;
+        f=[f[0]+a[0],f[1]+a[1],f[2]+a[2]];v=[v[0]+b[0],v[1]+b[1],v[2]+b[2]];n++;
+      }
+      if(!n||!v[0]||!f[0])continue;
+      const wr=f[0]/v[0];
+      const pf=f[1]?f[2]/f[1]:0, pv=v[1]?v[2]/v[1]:0, pr=pv?pf/pv:0;
+      dt.insertRow().innerHTML='<td>'+y+'</td><td class="num">'+f[0].toFixed(2)+'M <span class="dim">/ '+v[0].toFixed(2)+'M</span></td>'+
+        '<td class="num '+(wr>1.05?'vbad':wr<0.95?'vgood':'')+'">'+wr.toFixed(2)+'×</td>'+
+        '<td class="num">£'+pf.toFixed(2)+' <span class="dim">/ £'+pv.toFixed(2)+'</span></td>'+
+        '<td class="num '+(pr>1.05?'vgood':pr&&pr<0.95?'vbad':'')+'">'+(pr?pr.toFixed(2)+'×':'—')+'</td><td class="num dim">'+n+'</td>';
+    }
+  }
+  // employment-with-brackets table for selection
+  const wemp={};
+  for(const y of EYRS){
+    const a=[0,0,0,0,0,0];let any=false;
+    for(const tg of sel){const e=D2.flat[tg].emp[y];if(e){any=true;e.forEach((v,i)=>a[i]+=v);}}
+    if(any)wemp[y]=a.map(v=>+v.toFixed(2));
+  }
+  empTable(document.getElementById('t-wemp'),wemp,EYRS.filter(y=>wemp[y]));
+  // research tables for selection
+  techTable(document.getElementById('t-tech-s'),
+    y=>{let s=[0,0,0,0,0],n=0;for(const tg of sel){const e=D2.techs.flat.tags[tg]?D2.techs.flat.tags[tg][y]:null;if(e){n++;e.forEach((v,i)=>s[i]+=v);}}return n?s.map(v=>v/n):null;},
+    y=>{let s=[0,0,0,0,0],n=0;for(const tg of sel){const e=D2.techs.van.tags[tg]?D2.techs.van.tags[tg][y]:null;if(e){n++;e.forEach((v,i)=>s[i]+=v);}}return n?s.map(v=>v/n):null;});
+  const jeSel={};
+  for(const tg of sel){const jt=D2.je.tags[tg]||{};for(const [k,v] of Object.entries(jt))jeSel[k]=(jeSel[k]||0)+v;}
+  jeTable(document.getElementById('t-je-s'),jeSel);
+  // labour table (pop-weighted)
+  const t=document.getElementById('t-wlab');
+  t.innerHTML='<tr><th>year</th><th class="num">pure unemployment <span class="dim">(vs van)</span></th><th class="num">non-productive adults <span class="dim">(vs van)</span></th><th class="num">tags in cell</th></tr>';
+  for(const y of EYRS){
+    let wp=0,fp=0,fv=0,vp=0,vv=0,n=0;
+    for(const tg of sel){
+      const l=D2.flat[tg].lab[y],vl=D2.van[tg].lab[y],w=D2.flat[tg].pop[y];
+      if(!l||!vl||!w)continue;
+      wp+=w;fp+=w*l[0];fv+=w*l[1];vp+=w*vl[0];vv+=w*vl[1];n++;
+    }
+    if(!n)continue;
+    t.insertRow().innerHTML='<td>'+y+'</td><td class="num">'+(fp/wp).toFixed(1)+'% <span class="dim">/ '+(vp/wp).toFixed(1)+'%</span></td>'+
+      '<td class="num">'+(fv/wp).toFixed(1)+'% <span class="dim">/ '+(vv/wp).toFixed(1)+'%</span></td><td class="num dim">'+n+'</td>';
+  }
+}
+renderWatch();
+</script>
