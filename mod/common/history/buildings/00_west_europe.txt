@@ -3439,7 +3439,7 @@
 				activate_production_methods={ "pm_main_textile_dye" "pm_craftsman_sewing" "pm_traditional_looms"  }
 			}
 			create_building={
-				building="building_paper_mill_sulfite"
+				building="building_motor_industry"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -3459,7 +3459,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_paper_sulfite_pulping" "pm_automation_disabled"  }
+				activate_production_methods={ "pm_main_motor_steam" "pm_automation_disabled"  }
 			}
 			create_building={
 				building="building_logging_camp"

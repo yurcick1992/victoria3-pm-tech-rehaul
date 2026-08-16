@@ -5043,7 +5043,11 @@ categorically need resolution.
   (industrial-port) era.** The intended end-state, to be delivered by the Q1 solver rework's price
   path; the engine's per-state sail stubs remain a known tolerated floor.
 - **Q4 — DEFERRED until Q1/Q2 land** (user).
-- **Q5 — no ruling yet** (subject anchorage grants / FRA engine seed) — stays open.
+- **Q5 — (c) RULED same night: FRA gets one motor factory.** FRA holds `atmospheric_engine` from the
+  tier-1 starting grant (motor t1's own unlocking tech), so the Rhone 1-level paper mill (Lyon; FRA
+  keeps 4 paper levels elsewhere) converts to motor t1 — 40 engines/wk capacity against the yard's
+  16.6 need, eating 22.8 steel/wk beside Alsace's 65. (a) subject-anchorage grants: still open.
+  (b) leader basic-port seeding: dropped (the engine does it in weeks).
 - **Q6 — RESOLVED (user, plainer form, same night):** the seed provides **ceil(steam-port count / X)
   full-size t1 metal yards, minimum one from the FIRST port**, where X = yard t1 output ÷ per-stub
   steamer demand (today 65 ÷ 0.61 ≈ 107: 1–107 ports → one yard, 108+ → two, and so on). Yards stay
