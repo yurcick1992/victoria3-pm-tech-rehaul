@@ -1,0 +1,19 @@
+{
+  "schedule_version": 1,
+  "label": "infra-frac-probe",
+  "_why": "§10.60 FRACTIONAL-INFRASTRUCTURE VERIFICATION: the factored port tiers emit state_infrastructure_add = 0.3/0.4/1.2 - fractional values with NO vanilla precedent for this modifier (grep: none). Goods decimals are PROVEN live (ports-graded-probe: GBR MM out 226.46/wk through the same workforce_scaled pipeline), but infra could still be silently truncated at parse (a landmine-shaped risk: nothing would fail). This probe: 10 in-game months, quarteryear autosaves; the kept newest save (~1836.10) is melted and colonial island port states (Jamaica/Malta class - port is their ONLY infra building, ports still STAFFED this early; GBR destaffs only ~1839) decomposed: a .3-ish fractional part in state infrastructure = registers; a clean integer where vanilla's same state shows base+3 = truncated. Cross-check: testbed/saves_debut vanilla melts of the same states. Tonight's century n=2 rides on the answer.",
+  "_arms": "graded = {kind: config, config: config/mod_config.json} - canonical, identical to ports-graded-probe (20260816_202628).",
+  "_cost": "1 run x 10 in-game months, ~4 min wall.",
+  "defaults": {
+    "metrics": ["events"],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 20,
+    "tags": ["GBR", "FRA"]
+  },
+  "setups": {
+    "graded": { "kind": "config", "config": "config/mod_config.json" }
+  },
+  "runs": [
+    { "setup": "graded", "until": "1836.11.1", "dump_dates": ["1836.10.1"] }
+  ]
+}

@@ -4886,7 +4886,7 @@ level of each new tier; identical with and without the mandate — see F66's cor
 That is an open design question; the conditional-subsidy work (F64/F65) and its start-assignment
 bypass are a separate open thread.
 
-## 10.60 THE PORT UNIT FACTORISATION (user-ruled 2026-08-16, refined same evening: ×1/50 → ×1/10 → GRADED PER TIER — IMPLEMENTATION PENDING, next session)
+## 10.60 THE PORT UNIT FACTORISATION (user-ruled 2026-08-16, refined same evening: ×1/50 → ×1/10 → GRADED PER TIER — **IMPLEMENTED same evening, validated by probe; see §10.60.2**)
 
 **The ruling (final form of the evening).** Port tiers are rebuilt at reduced unit size — employment
 and ALL effects (recipes, merchant-marine output, state_infrastructure, construction cost) divided
@@ -4936,6 +4936,67 @@ port counts, the macro bounds, and the ×1/50 interaction with `SCALE_LIMIT`-sty
 plus a validation probe (the F66 wave should re-appear at ~1/50th the construction cost and the
 queue share should collapse). The conditional-subsidy work (F64/F65) likely shrinks ×50 in
 magnitude with it — revisit after.
+
+### §10.60.2 THE IMPLEMENTATION AS SHIPPED (2026-08-16 evening — user architecture: EXPLICIT VALUES, NOT A HIDDEN DIVISOR)
+
+**The user overruled the "divide at emission, model stays full-size" proposal mid-implementation**: no
+obscure divisor coefficient behind the scenes. What shipped instead:
+- **The port tiers' `output_qty`, `inputs` and `building_cost` are EXPLICITLY divided in the config**
+  (out 0.9/1.4/2/6/9.2 · cost 27/40/60/180/270 — UI-visible and editable like any recipe), so the config,
+  the UI and the era solve all see the true small unit.
+- **Two per-tier config fields carry the non-recipe magnitudes: `workforce_mult` and `effect_mult`**
+  (0.1/0.1/0.1/0.2/0.2 on the five port tiers), editable on every tier row in the balance UI (under
+  ai_value). `build.ps1` applies them at emission — employment × workforce_mult (integer-guarded: throws
+  on a fractional head-count), state_infrastructure/pollution/ship_construction × effect_mult. Config
+  employment stays full-size (700/200/100…), which is what keeps the §10.60 table's engine-proven
+  70/20/10 landing exactly.
+- **The model applies them too** (`tierEmp()` in ui/econ.js AND builder.html's fork multiplies base
+  employment by workforce_mult; builder.html's non-goods display shows effects × effect_mult), so
+  wages/BE/profit are computed on the same small unit the game gets. `emit_research_events.mjs`
+  multiplies its per-level employment source by workforce_mult (else a port-descended research bar fills
+  ~10× too fast).
+- **`convert_history.ps1` multiplies 1836 port levels by round(1/workforce_mult)** — 151 ownership-levels
+  lines ×10 — EXCEPT anchorage-mapped entries (`pm_anchorage`), clamped to exactly level 1 (all 90 were
+  1-level already; the clamp is patch insurance). Emission: fractional goods amounts are engine-proven
+  (vanilla 12_subsistence.txt carries 0.25/0.5); `QtyMul` in build.ps1 emits integers bare (byte-identical
+  for unfactored tiers) and fractions to ≤3 decimals.
+
+**Probe validation (session `20260816_202628_ports-graded-probe`, 1836→1852, canonical config, n=1):**
+- **The provisioning wave still fires — and became invisible in the queue.** GBR's 12 overseas steam-port
+  stubs (same 12 states as the baseline) were all standing by the FIRST 1837 summary — the whole wave cost
+  ~480 pts (12×40) and was absorbed in weeks. The baseline spent 1837–41 at 100% port_steam queue share
+  for the same 12 buildings at 4,800 pts. GBR's queue is a normal diversified economy from 1837 on; ports
+  appear as a 3-item blip (1839) and a 4-item industrial-port burst (1848). NET/SPA/DEN fired their
+  delayed waves at screw_frigate research (4/3/6 stubs by 1840) — cheap, as designed; POR and FRA
+  completed theirs instantly.
+- **Fractional goods PROVEN in-game**: GBR merchant-marine output 226.46/wk at 1837 (0.9/level × ~231
+  staffed levels), port profit positive and staffing-proportional. No new error-log classes.
+- **1836 conversion verified**: GBR 319 basic-port levels (22 buildings) at 1837, staffed s231 —
+  physical capacity preserved; the 4 anchorage entries in the sampled file stayed level 1.
+- **GBR GDP vs vanilla (n=1, jagged surface — indicative only)**: graded 1.07→0.63 over 1837–51 against
+  the baseline's 1.06→0.60, ahead 3–12pp in the middle years (0.85 vs 0.76 at 1841). The port sink is
+  gone from the queue, but GBR's decline persists — its trade economy is the standing suspect (see next).
+- ⚠ **STANDING, PRE-EXISTING, NOT A REGRESSION: GBR/USA merchant-marine demand is ~5/wk and their ports
+  destaff to near-zero by ~1840 IN BOTH ARMS** (baseline GBR: staffing 0–5 of 41 levels, MM 4–5/wk from
+  1838; graded starts at s231/MM226 and decays to the same demand-limited equilibrium; FRA stays ~97%
+  staffed all run). The factorisation changes construction behaviour, not MM demand. Why the mod's
+  GBR/USA MM demand is a twentieth of France's is an open question for the parity restart.
+- ⚠ **OPEN VERIFICATION: fractional `state_infrastructure_add` (0.3/0.4/1.2) has NO vanilla precedent**
+  (goods decimals do). Weak positive evidence from the 1852 melt (Alaska: infra 10.37 ≈ base 10 + 1
+  staffed port × 0.3); a dedicated 10-month probe (`infra-frac-probe`) melts an early save while ports
+  are still staffed to read the fractional part directly.
+
+⚠ **THREE REGENERATION TRAPS the explicit-value architecture creates** (each a tool that would silently
+un-divide the ports on its next `--write`):
+1. **`payback_census.mjs --write`** derives building_cost from vanilla's book × band × 1.5^(era−1) —
+   full-size. It must learn to multiply a factored tier's derived cost by workforce_mult before it is
+   next run, or it overwrites 27/40/60/180/270 with 265/400/600/900/1350.
+2. **`build_era_ladder.mjs --write`** re-mints the two invented port tiers (steam, motor) along the ×1.5
+   ladder from anchored neighbours. Because the anchors are themselves divided, the interpolation lands
+   ≈right (steam ~1.35 vs 1.4, motor 9 vs 9.2) — approximately safe, but verify after any ladder rebuild.
+3. **`era_scenarios.mjs --write`** re-solves recipes at the model's scale — now the small unit,
+   consistently (tierEmp applies workforce_mult), so this one is safe by construction; expect port
+   COUNTS ~×10 on the next solve, and the committed era_presets are stale on port counts until then.
 
 ### §10.60.1 The start-assignment fix: OWN `common/history/ai/00_strategy.txt` (user-proposed 2026-08-16, agreed)
 

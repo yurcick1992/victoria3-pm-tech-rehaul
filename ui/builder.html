@@ -637,6 +637,11 @@ function makeTiers(i){ return i.tiers.map((t,ix)=>({
     wage_pct:(t.wage_pct!=null?+t.wage_pct:null),   // LEGACY config field (still read by the solvers/linter/builder); the UI now derives wages from the workforce × base wage. Carried through on export.
     _baseWage:null,   // this tier's own base wage (£/wk); null ⇒ follows the sheet-level BASE_WAGE
     ai_value:(t.ai_value!=null?+t.ai_value:null),   // per-tier AI construction desire; null = engine default (AIVAL_DEFAULT)
+    // §10.60 graded port factorisation: visible+editable per-tier emission multipliers. workforce_mult
+    // scales base employment (build.ps1 applies it at emission; tierEmp applies it here so wages/BE/profit
+    // match the emitted small unit); effect_mult scales the non-goods effects. null = 1 (unfactored tier).
+    workforce_mult:(t.workforce_mult!=null?+t.workforce_mult:null),
+    effect_mult:(t.effect_mult!=null?+t.effect_mult:null),
     // ---- read-only display fields (carried for the Output zone + Workforce column; not edited or re-emitted by the UI) ----
     employment:(t.employment?Object.fromEntries(Object.entries(t.employment).map(([k,v])=>[k,+v])):null),  // workforce by profession (viz-only)
     pollution:(t.pollution!=null?+t.pollution:null),
@@ -1390,9 +1395,11 @@ function prettyMod(m){ return String(m).replace(/^(state_|country_|building_)/,'
 // merge by label: config base (pollution/infrastructure/ship construction) + any modifiers from active secondary PMs.
 function tierNonGoods(i,t){ const acc={};
   const add=(label,val,cls)=>{ if(!acc[label]) acc[label]={label,val:0,cls}; acc[label].val+=val; };
-  if(t.state_infrastructure!=null) add('infrastructure', +t.state_infrastructure, 'pos');
-  if(t.ship_construction!=null)    add('ship construction', +t.ship_construction, 'pos');
-  if(t.pollution!=null && t.pollution>0) add('pollution', +t.pollution, 'neg');
+  // §10.60: the config's non-goods effects are emitted × effect_mult — show what the game gets.
+  const fm=(t.effect_mult!=null?+t.effect_mult:1);
+  if(t.state_infrastructure!=null) add('infrastructure', Math.round(+t.state_infrastructure*fm*1000)/1000, 'pos');
+  if(t.ship_construction!=null)    add('ship construction', Math.round(+t.ship_construction*fm*1000)/1000, 'pos');
+  if(t.pollution!=null && t.pollution>0) add('pollution', Math.round(+t.pollution*fm*1000)/1000, 'neg');
   for(const pg in t._sec){ const sel=t._sec[pg]; if(sel===basePm(pg)) continue;
     const m=pmRec(sel).mods||{}; for(const k in m){ if(!m[k]) continue; const lbl=prettyMod(k);
       add(lbl, m[k], lbl==='pollution'?'neg':(m[k]>0?'pos':'neg')); } }
@@ -1403,7 +1410,10 @@ function nonGoodsRows(i,t){ const ng=tierNonGoods(i,t); if(!ng.length) return ''
 // workforce = base-PM employment (config) + the ACTIVE PM of EVERY secondary PMG (including its default/base PM —
 // each PMG always has one active PM in-game). Base secondary PMs are usually inert (0 emp), but some carry the
 // building's jobs (e.g. the art academy's ownership PMG employs academics/clerks/laborers even at its default).
-function tierEmp(t){ const e=Object.assign({}, t.employment||{});
+function tierEmp(t){ const e={};
+  // §10.60: a factored tier's BASE employment is emitted × workforce_mult (secondary-PM employment is not).
+  const wm=(t.workforce_mult!=null?+t.workforce_mult:1);
+  for(const k in (t.employment||{})) e[k]=(t.employment[k]||0)*wm;
   for(const pg in (t._sec||{})){ const r=pmRec(t._sec[pg]);
     if(r.emp) for(const k in r.emp) e[k]=(e[k]||0)+r.emp[k]; }
   for(const k in e){ if(e[k]===0) delete e[k]; } return e; }
@@ -2040,6 +2050,8 @@ function tierRow(i,t){
     <td><span class="pill" style="background:${t.era===0?ERA0COL:(TIERCOL[t.era!=null?t.era:t.tier]||'#666')}" title="${t.era!=null?`Era ${t.era} of the mod's six-era ladder, 1780-1945. This is the ERA, never a position in its own industry: automotive starts at era 3, so its first building is e3. The in-game name says the same thing ("Era ${t.era}. …").${t.tech_year!=null?` First commercially deployable ~${t.tech_year} (tech_year, §10.44) — the date gate places this tier in scenarios from that year on.`:''}`:'tier'}">${t.era!=null?'e'+t.era:t.tier}</span>${t.tech_year!=null?`<div class="muted" style="font-size:10px" title="tech_year: the year this slot's technology was first commercially deployable — what the §10.44 date gate places by">${t.tech_year}</div>`:''}${t.model_only?'<div class="muted" style="font-size:9px" title="modelled but NOT emitted — no unlocking technology exists for it yet">model</div>':''}</td>
     <td>${esc(t.name)}<div class="muted" style="font-size:11px">${esc(t.key)}</div><div class="muted" style="font-size:10px" title="${esc(techTitle(t.tech))}">${t.tech?'🔒 '+esc(techLabel(t.tech)):'<i>no unlocking technology</i>'}</div>
       <div class="aivrow" title="Base AI construction desire (building ai_value). Blank = engine default ${AIVAL_DEFAULT}. Emitted as the building's ai_value when set.">ai_value <input type="number" min="0" step="50" value="${t.ai_value!=null?t.ai_value:''}" placeholder="${AIVAL_DEFAULT}" data-ind="${i.id}" data-tier="${t.tier}" data-aiv="1"></div>
+      <div class="aivrow" title="§10.60 workforce multiplier — scales this tier's BASE employment at emission and in the sheet's workforce/wages/BE/profit. The factored port tiers run 0.1 (÷10 unit) / 0.2 (÷5); blank = ×1. The 1836 start multiplies this tier's starting levels by 1/this to preserve physical capacity (anchorage entries stay level 1).">workforce × <input type="number" min="0" step="0.05" value="${t.workforce_mult!=null?t.workforce_mult:''}" placeholder="1" data-ind="${i.id}" data-tier="${t.tier}" data-wfm="1"></div>
+      <div class="aivrow" title="§10.60 non-goods effect multiplier — scales infrastructure / pollution / ship construction at emission (the Output column shows the scaled values). Blank = ×1.">effects × <input type="number" min="0" step="0.05" value="${t.effect_mult!=null?t.effect_mult:''}" placeholder="1" data-ind="${i.id}" data-tier="${t.tier}" data-efm="1"></div>
       ${subsidyRowHTML(t.key)}
       ${secSelectors(i,t)}</td>
     ${numCellHTML(t.key)}
@@ -2990,6 +3002,14 @@ document.addEventListener('change', e=>{
     solveTierToTarget(i,t);
     render();
     banner('info', `${esc(t.name)}: re-solved input volumes to hit ${t.target_be}% break-even.`);
+  } else if(d.wfm!==undefined){   // §10.60 workforce multiplier (blank = ×1); re-render so workforce/wages/BE/profit follow
+    const [i,t]=findTier(d.ind, d.tier);
+    t.workforce_mult=(e.target.value===''?null:Math.max(0,+e.target.value||0));
+    render();
+  } else if(d.efm!==undefined){   // §10.60 non-goods effect multiplier (blank = ×1)
+    const [i,t]=findTier(d.ind, d.tier);
+    t.effect_mult=(e.target.value===''?null:Math.max(0,+e.target.value||0));
+    render();
   } else if(e.target.classList.contains('pmsel') && d.tier!==undefined){   // our tier's secondary PM
     const [i,t]=findTier(d.ind, d.tier); t._sec[d.pmg]=e.target.value;
     render();   // re-render so BE/profit + the secondary effect labels refresh
@@ -3232,7 +3252,10 @@ function mergedConfig(){
         else delete t.input_ratio; }
       if(mt.building_cost!=null) t.building_cost=mt.building_cost;
       if(mt.wage_pct!=null) t.wage_pct=mt.wage_pct;
-      if(mt.ai_value!=null) t.ai_value=mt.ai_value; else delete t.ai_value; }); });
+      if(mt.ai_value!=null) t.ai_value=mt.ai_value; else delete t.ai_value;
+      // §10.60 emission multipliers (workforce / non-goods effects) — editable on the tier row
+      if(mt.workforce_mult!=null) t.workforce_mult=mt.workforce_mult; else delete t.workforce_mult;
+      if(mt.effect_mult!=null) t.effect_mult=mt.effect_mult; else delete t.effect_mult; }); });
   cfg.building_ai_value = Object.assign({}, REFAIV);   // explorer/preserved-building ai_value overrides (builder applies to owned files)
   cfg.building_subsidies = Object.assign({}, SUBSIDY); // AI subsidy policy (builder writes it into every administrative ai_strategy)
   cfg.pm_goods = JSON.parse(JSON.stringify(REFEDIT)); // per-PM goods overrides (any building's PM); builder rewrites the owned production_methods files

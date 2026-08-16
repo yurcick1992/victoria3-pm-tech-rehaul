@@ -1,0 +1,25 @@
+{
+  "schedule_version": 1,
+  "label": "parity10-graded-n2",
+  "_why": "THE PARITY RESTART (handover §1b, user-ruled 2026-08-16): most previous parity findings are DISCARDED by ruling - they were gathered with the F66 port-provisioning sink distorting everything (F62's 0.49-0.58x carried GBR at 0.57 by 1855 from ports alone). This is the clean re-measurement: mod + x1.0 FLAT vanilla cost anchors (exactly vanilla's cost book, the response curve's parity point) + the GRADED PORT FACTORISATION (§10.60.2, validated same evening by ports-graded-probe: waves at ~1/10 cost, GBR queue diversified from 1837) + canonical nice_to_have infra subsidies + F61 slave model. Century, n=2. Also carries the consumption-calibration instrumentation at 1910/1935 (breakdown_sparse + reference G dumps + same-date saves kept) - score against melts per the F61 ruling. READ: world GDP 1935 vs vanilla's 3.63-4.40B band; GBR GDP ratio trajectory (the probe read 0.63 vs baseline 0.60 at 1851, n=1); majors' labour reserve; era composition of additions; frontier payback vs the 8-15y window; GBR trade/convoys + the standing GBR/USA MM-demand ~5/wk question (FRA staffed 97%, GBR/USA near-0 by 1840 in BOTH pre-fix arms - why is Britain's trade economy dead in the mod?); NET/SPA/POR delayed port waves at screw_frigate (~1848) staying cheap; port_industrial/modern/motor unlock shocks at century scale.",
+  "_arms": "vancost_graded = {kind: config, config: config/mod_config.vancost_graded.json} - NOT committed (gitignored by convention). Regenerate exactly: take config/mod_config.json (canonical as of 2026-08-16 evening: graded ports §10.60.2 + nice_to_have subsidies canonical) and set every tier's building_cost FLAT to its industry's vanilla anchor x1.0 {power:400, port:400, art_academy:400, food:600, textile:600, furniture:600, glass:600, paper:600, shipyard_steam:600, tooling:600, shipyard:600, arms:600, artillery:600, railway:800, fertilizer:800, explosives:800, steel:800, motor:800, automotive:800, munition:800, synthetics:800, electrics:800} x the tier's workforce_mult where present (§10.60.2: building_cost is the EMITTED value, so factored port tiers get 40/40/40/80/80 - a full-price 400 would reintroduce the wave sink this restart exists to remove). 105 tiers, 5 factored. NO subsidy override needed (nice_to_have is canonical now). Then cp config/tech_tree_options.json config/tech_tree_options.vancost_graded.json (emit_techs derives its tech-tree path from the config filename). Dry-run verified 2026-08-16 ~21:25 (LINT/NEGATIVE-GOODS/MOD CHECKS/PREFLIGHT all PASS).",
+  "_comparison": "vanilla n=4 of 20260813_083557 + vanilla-wages-century-n5 (1.13.10); vancost-nosub-n2 20260816_011552 (same cost book + subsidies, PRE-fix ports - the port-sink delta at century scale); flatcost-n1 20260815_153825 (0.65x flat); ports-graded-probe 20260816_202628 (this exact economy to 1852, n=1).",
+  "_cost": "2 runs x 100 in-game years, ~6h30 total with builds and harvest drains.",
+  "_caveats": "Game must be 1.13.10 at launch (check error.log at smoke). F56 sway-CTD is a standing engine bug, both arms; resume ladder handles it, and the quarantine hooks (F56) should show their first live proof if a resume crashes - check quarantined_saves\\ after. L16: dump_dates are PER-RUN (no defaults fallback). Launched with -KeepSaves: yearly .v3s kept so the 1910.1.1/1935.1.1 same-date saves survive for the calibration melts; reap the rest via harvest_saves after the calibration copies are made. Fractional state_infrastructure_add is UNPROVEN (infra-frac-probe verdict: structural confound) - if colonial market access reads broken at scale, suspect truncation first (ON_GAME_UPDATE drift log 2026-08-16 has the decisive A/B design).",
+  "defaults": {
+    "metrics": ["tech_log", "events", "building_inventory", "market_goods_scoped", "origins", "state_access", "breakdown_sparse"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "JAP"],
+    "origin_goods": ["tools", "steel", "engines", "paper", "glass", "clothes", "small_arms"],
+    "breakdown_dates": ["1910.1.1", "1935.1.1"],
+    "breakdown_tags": ["GBR", "FRA", "USA"]
+  },
+  "setups": {
+    "vancost_graded": { "kind": "config", "config": "config/mod_config.vancost_graded.json" }
+  },
+  "runs": [
+    { "setup": "vancost_graded", "until": "1936.1.1", "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1909.12.1", "1920.1.1", "1930.1.1", "1934.12.1"] },
+    { "setup": "vancost_graded", "until": "1936.1.1", "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1909.12.1", "1920.1.1", "1930.1.1", "1934.12.1"] }
+  ]
+}

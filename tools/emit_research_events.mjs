@@ -105,7 +105,10 @@ for (const ind of CFG.industries) {
     if (T.era === 1) return;                                  // granted free at the 1836 start
     if (i > 0) {
       const prev = ts[i - 1];
-      const emp = Object.values(prev.employment || {}).reduce((a, b) => a + b, 0);
+      // §10.60: a factored tier (ports) EMPLOYS config × workforce_mult per level — the script value
+      // multiplies emp by in-game levels, so full-size emp here would fill the bar ~10× too fast.
+      const wfM = prev.workforce_mult != null ? +prev.workforce_mult : 1;
+      const emp = Math.round(Object.values(prev.employment || {}).reduce((a, b) => a + b, 0) * wfM);
       if (!emp) return;                                       // art academy: jobs live in the ownership PMG
       addSource(t.tech, t.era, 'improvement', { building: prev.key, emp });
     } else {

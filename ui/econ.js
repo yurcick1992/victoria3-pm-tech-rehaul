@@ -154,7 +154,11 @@
     // workforce = base-PM employment (config) + the ACTIVE PM of EVERY secondary PMG (including its
     // default/base PM — each PMG always has one active PM in-game). Base secondary PMs are usually inert,
     // but some carry the building's jobs (e.g. the art academy's ownership PMG employs academics/clerks).
-    function tierEmp(t){ const e = Object.assign({}, t.employment||{});
+    function tierEmp(t){ const e = {};
+      // §10.60: a factored tier's BASE employment is emitted × workforce_mult (secondary-PM employment
+      // is not scaled — ports carry no secondaries; revisit if a factored tier ever gains one).
+      const wm = (t.workforce_mult != null ? +t.workforce_mult : 1);
+      for(const k in (t.employment||{})) e[k] = (t.employment[k]||0)*wm;
       for(const pg in (t._sec||{})){ const r = pmRec(t._sec[pg]);
         if(r.emp) for(const k in r.emp) e[k] = (e[k]||0) + r.emp[k]; }
       for(const k in e){ if(e[k] === 0) delete e[k]; } return e; }
@@ -576,6 +580,13 @@
         // Must survive into the model — same lesson as tech_year/input_ratio above: a dropped config
         // field is a solver branch that silently never runs (it did, for one full solve).
         solve_profit:(t.solve_profit != null ? +t.solve_profit : null),
+        // §10.60 graded port factorisation (user architecture 2026-08-16): the factored tiers' goods
+        // volumes + building_cost are divided EXPLICITLY in the config; these two visible multipliers
+        // carry the rest — workforce_mult scales base employment (applied in tierEmp, and by build.ps1 at
+        // emission), effect_mult the non-goods effects (infra/pollution/ship construction). null = 1.
+        // Must survive into the model — a dropped config field is a branch that silently never runs.
+        workforce_mult:(t.workforce_mult != null ? +t.workforce_mult : null),
+        effect_mult:(t.effect_mult != null ? +t.effect_mult : null),
         _baseWage:null,                                // this tier's own base wage; null ⇒ follows S.BASE_WAGE
         ai_value:(t.ai_value != null ? +t.ai_value : null),
         employment:(t.employment ? Object.fromEntries(Object.entries(t.employment).map(([k,v]) => [k,+v])) : null),

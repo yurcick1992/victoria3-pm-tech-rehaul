@@ -271,6 +271,20 @@ observer refuses to launch a mod that carries no telemetry, so build it with `-T
 
 Newest first. Append here as we discover more couplings to vanilla.
 
+- **2026-08-16** — **The graded port factorisation (§10.60.2) adds two vanilla couplings.**
+  (1) `convert_history.ps1` clamps **anchorage-mapped** port entries (`pm_anchorage` by name) to exactly
+  level 1 while multiplying every other port entry's levels ×10 — if a patch renames `pm_anchorage` the
+  clamp silently stops matching (the entry then multiplies ×10 like a basic port; the converter's
+  §10.60 summary line prints the clamp count, which should stay 0 only while vanilla keeps all
+  anchorages at 1 level). (2) The factored port tiers emit **fractional modifier values** —
+  `goods_*_add` 0.61/0.9/… (vanilla precedent: 12_subsistence.txt) and `state_infrastructure_add`
+  0.3/0.4/1.2 (**no vanilla precedent and NOT yet proven in-game** — the goods half IS proven live on
+  1.13.10 (GBR MM out 226.46/wk, `ports-graded-probe`) and infra rides the same workforce_scaled parser
+  path with float state totals, but every direct decomposition attempt was confounded: vanilla's
+  anchorage grants NO infra, so no controlled pair exists. Harm if truncated: ports grant 0 infra —
+  colonial access + port-heavy home states ~−8% state infra. Decisive test if ever needed: same-seed
+  A/B with an integer-vs-fractional infra value on one tier, ~15 min. Re-check after engine updates.)
+
 - **2026-08-14** — 🛑 **1.13.10 SHIPS A CTD: infinite recursion (`EXCEPTION_STACK_OVERFLOW`) in
   diplomatic-play SWAY evaluation** — FINDINGS **F56**. Both arms can hit it (the first incident was the
   pure control arm at 1874); a save carrying the poisoned play state re-crashes deterministically after

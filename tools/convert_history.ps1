@@ -62,6 +62,7 @@ function Find-Exception($bkey, $country, $state) {
 }
 
 $script:converted = 0; $script:removed = 0; $script:forced = 0; $script:unmapped = @()
+$script:levelsMultiplied = 0; $script:anchorClamped = 0   # §10.60 graded port factorisation counters
 
 $handler = {
     param($block, $state, $country)
@@ -112,6 +113,15 @@ $handler = {
     $tier = $industryById[$id].tiers[$tierIndex - 1]
     $tierKey = $tier.key; $newPm = $tier.pm_key
 
+    # §10.60 GRADED PORT FACTORISATION: a tier carrying `workforce_mult` is a fractional-unit building
+    # (its config goods/cost are explicitly divided; build.ps1 scales employment/effects by the
+    # multipliers), so the 1836 start MULTIPLIES its levels by 1/workforce_mult to preserve physical
+    # capacity. EXCEPTION, by the same ruling: anchorage-mapped ports stay at exactly level 1 — the
+    # deliberately tiny colonial stub. All 90 vanilla anchorage entries are 1-level today; the clamp is
+    # so a patch cannot silently change that.
+    $div = if ($null -ne $tier.workforce_mult -and [double]$tier.workforce_mult -gt 0 -and [double]$tier.workforce_mult -lt 1) { [int][math]::Floor(1.0 / [double]$tier.workforce_mult + 0.5) } else { 1 }
+    $clampOne = ($mainPm -eq 'pm_anchorage')
+
     $reBld  = 'building\s*=\s*"' + [regex]::Escape($bkey) + '"'
     $reType = 'type\s*=\s*"'     + [regex]::Escape($bkey) + '"'
     $rePm   = '"' + [regex]::Escape($mainPm) + '"'
@@ -121,6 +131,13 @@ $handler = {
         $nl = [regex]::Replace($nl, $reBld,  'building="' + $tierKey + '"')
         $nl = [regex]::Replace($nl, $reType, 'type="'     + $tierKey + '"')
         $nl = [regex]::Replace($nl, $rePm,   '"' + $newPm + '"')
+        if ($clampOne) {
+            if ($nl -match 'levels\s*=\s*(\d+)' -and [int]$Matches[1] -ne 1) { $script:anchorClamped++ }
+            $nl = [regex]::Replace($nl, '(levels\s*=\s*)\d+', '${1}1')
+        } elseif ($div -gt 1 -and $nl -match 'levels\s*=\s*\d+') {
+            $nl = [regex]::Replace($nl, '(levels\s*=\s*)(\d+)', { param($m) $m.Groups[1].Value + ([int]$m.Groups[2].Value * $div) })
+            $script:levelsMultiplied++
+        }
         $res.Add($nl)
     }
     $script:converted++
@@ -136,6 +153,10 @@ foreach ($f in $files) {
 
 Write-Output ("History conversion: {0} factories re-tiered ({1} forced, {2} removed) across {3} files; {4} exception rule(s)." -f `
     $script:converted, $script:forced, $script:removed, $files.Count, $rules.Count)
+if ($script:levelsMultiplied -gt 0 -or $script:anchorClamped -gt 0) {
+    Write-Output ("  §10.60 port factorisation: {0} ownership levels line(s) multiplied by 1/workforce_mult; {1} anchorage entr(ies) clamped above level 1." -f `
+        $script:levelsMultiplied, $script:anchorClamped)
+}
 if ($script:unmapped.Count -gt 0) {
     Write-Output ("  WARNING: {0} split-industry blocks had no recognized main PM (version drift?):" -f $script:unmapped.Count)
     $script:unmapped | Select-Object -Unique | ForEach-Object { Write-Output "    $_" }

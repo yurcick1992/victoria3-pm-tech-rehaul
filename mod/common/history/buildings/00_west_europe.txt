@@ -102,7 +102,7 @@
 				add_ownership={
 					country={
 						country="c:SWE"
-						levels=1
+						levels=10
 					}
 				}
 				reserves=1
@@ -268,7 +268,7 @@
 				add_ownership={
 					country={
 						country="c:SWE"
-						levels=1
+						levels=10
 					}
 				}
 				reserves=1
@@ -392,7 +392,7 @@
 				add_ownership={
 					country={
 						country="c:SWE"
-						levels=1
+						levels=10
 					}
 				}
 				reserves=1
@@ -501,7 +501,7 @@
 				add_ownership={
 					country={
 						country="c:DEN"
-						levels=1
+						levels=10
 					}
 				}
 				reserves=1
@@ -625,7 +625,7 @@
 				add_ownership={
 					country={
 						country="c:DEN"
-						levels=1
+						levels=10
 					}
 				}
 				reserves=1
@@ -739,7 +739,7 @@
 				add_ownership={
 					country={
 						country="c:NOR"
-						levels=1
+						levels=10
 					}
 				}
 				reserves=1
@@ -897,7 +897,7 @@
 				add_ownership={
 					country={
 						country="c:NOR"
-						levels=2
+						levels=20
 					}
 				}
 				reserves=1
@@ -1149,7 +1149,7 @@
 				add_ownership={
 					country={
 						country="c:GBR"
-						levels=5
+						levels=50
 					}
 				}
 				reserves=1
@@ -1378,7 +1378,7 @@
 				add_ownership={
 					country={
 						country="c:GBR"
-						levels=4
+						levels=40
 					}
 				}
 				reserves=1
@@ -1686,7 +1686,7 @@
 				add_ownership={
 					country={
 						country="c:GBR"
-						levels=2
+						levels=20
 					}
 				}
 				reserves=1
@@ -1964,7 +1964,7 @@
 				add_ownership={
 					country={
 						country="c:GBR"
-						levels=2
+						levels=20
 					}
 				}
 				reserves=1
@@ -2149,7 +2149,7 @@
 				add_ownership={
 					country={
 						country="c:GBR"
-						levels=4
+						levels=40
 					}
 				}
 				reserves=1
@@ -2321,7 +2321,7 @@
 				add_ownership={
 					country={
 						country="c:GBR"
-						levels=4
+						levels=40
 					}
 				}
 				reserves=1
@@ -2514,7 +2514,7 @@
 				add_ownership={
 					country={
 						country="c:GBR"
-						levels=2
+						levels=20
 					}
 				}
 				reserves=1
@@ -2581,7 +2581,7 @@
 				add_ownership={
 					country={
 						country="c:GBR"
-						levels=1
+						levels=10
 					}
 				}
 				reserves=1
@@ -2609,7 +2609,7 @@
 				add_ownership={
 					country={
 						country="c:GBR"
-						levels=1
+						levels=10
 					}
 				}
 				reserves=1
@@ -2687,7 +2687,7 @@
 				add_ownership={
 					country={
 						country="c:GBR"
-						levels=2
+						levels=20
 					}
 				}
 				reserves=1
@@ -3042,7 +3042,7 @@
 				add_ownership={
 					country={
 						country="c:FRA"
-						levels=2
+						levels=20
 					}
 				}
 				reserves=1
@@ -3205,7 +3205,7 @@
 				add_ownership={
 					country={
 						country="c:FRA"
-						levels=2
+						levels=20
 					}
 				}
 				reserves=1
@@ -3670,7 +3670,7 @@
 				add_ownership={
 					country={
 						country="c:FRA"
-						levels=1
+						levels=10
 					}
 				}
 				reserves=1
@@ -3969,7 +3969,7 @@
 				add_ownership={
 					country={
 						country="c:FRA"
-						levels=1
+						levels=10
 					}
 				}
 				reserves=1
@@ -4309,7 +4309,7 @@
 				add_ownership={
 					country={
 						country="c:FRA"
-						levels=2
+						levels=20
 					}
 				}
 				reserves=1
@@ -4802,7 +4802,7 @@
 				add_ownership={
 					country={
 						country="c:FRA"
-						levels=1
+						levels=10
 					}
 				}
 				reserves=1
@@ -5044,7 +5044,7 @@
 				add_ownership={
 					country={
 						country="c:NET"
-						levels=5
+						levels=50
 					}
 				}
 				reserves=1
@@ -5160,7 +5160,7 @@
 				add_ownership={
 					country={
 						country="c:NET"
-						levels=3
+						levels=30
 					}
 				}
 				reserves=1
@@ -5667,7 +5667,7 @@
 				add_ownership={
 					country={
 						country="c:BEL"
-						levels=3
+						levels=30
 					}
 				}
 				reserves=1
@@ -6327,7 +6327,7 @@
 				add_ownership={
 					country={
 						country="c:PRU"
-						levels=1
+						levels=10
 					}
 				}
 				reserves=1
@@ -6377,7 +6377,7 @@
 				add_ownership={
 					country={
 						country="c:BRE"
-						levels=1
+						levels=10
 					}
 				}
 				reserves=1
@@ -6429,7 +6429,7 @@
 				add_ownership={
 					country={
 						country="c:HAM"
-						levels=1
+						levels=10
 					}
 				}
 				reserves=1
@@ -7298,7 +7298,7 @@
 				add_ownership={
 					country={
 						country="c:LUB"
-						levels=1
+						levels=10
 					}
 				}
 				reserves=1
@@ -7717,7 +7717,7 @@
 				add_ownership={
 					country={
 						country="c:HAN"
-						levels=1
+						levels=10
 					}
 				}
 				reserves=1
@@ -8586,7 +8586,7 @@
 				add_ownership={
 					country={
 						country="c:MEC"
-						levels=1
+						levels=10
 					}
 				}
 				reserves=1

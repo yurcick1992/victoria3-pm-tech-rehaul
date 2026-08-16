@@ -368,7 +368,7 @@
 				add_ownership = {
 					country= {
 						country = "c:BIC"
-						levels = 7
+						levels = 70
 					}
 				}
 				reserves = 1
@@ -465,7 +465,7 @@
 				add_ownership = {
 					country= {
 						country = "c:BIC"
-						levels = 1
+						levels = 10
 					}
 				}
 				reserves = 1
@@ -2017,7 +2017,7 @@
 				add_ownership = {
 					country= {
 						country = "c:BCE"
-						levels = 1
+						levels = 10
 					}
 				}
 				reserves = 1
@@ -2314,7 +2314,7 @@
 				add_ownership = {
 					country= {
 						country = "c:BIC"
-						levels = 1
+						levels = 10
 					}
 				}
 				reserves = 1
@@ -2673,7 +2673,7 @@
 				add_ownership = {
 					country= {
 						country = "c:BIC"
-						levels = 1
+						levels = 10
 					}
 				}
 				reserves = 1
@@ -2931,7 +2931,7 @@
 				add_ownership = {
 					country= {
 						country = "c:BIC"
-						levels = 4
+						levels = 40
 					}
 				}
 				reserves = 1

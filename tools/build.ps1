@@ -52,6 +52,20 @@ $ErrorActionPreference = 'Stop'
 $INV = [System.Globalization.CultureInfo]::InvariantCulture
 function Fmt($v) { return ([double]$v).ToString($INV) }   # locale-safe number -> string
 function RoundHalfUp($x) { return [int][math]::Floor([double]$x + 0.5) }
+# §10.60 GRADED PORT FACTORISATION (user architecture, 2026-08-16): the port tiers' goods volumes and
+# building_cost are EXPLICITLY divided in the config (visible + editable in the UI like any recipe), and the
+# residual non-UI-editable magnitudes ride on two per-tier multiplier fields — `workforce_mult` (employment)
+# and `effect_mult` (state_infrastructure / pollution / ship_construction) — 0.1 on the ÷10 tiers, 0.2 on
+# the ÷5 tiers, applied here at emission. The 1836 start multiplies levels by 1/workforce_mult
+# (convert_history.ps1) to preserve physical capacity. This helper renders a multiplier-scaled quantity:
+# integers stay bare [int] (byte-identical emission for every unfactored tier); fractional results emit up
+# to 3 decimals (fractional goods amounts are engine-proven — vanilla's own 12_subsistence.txt PMs carry
+# 0.25/0.5).
+function QtyMul($v, $m) {
+    $q = [math]::Round([double]$v * $m, 3)
+    if ($q -eq [math]::Floor($q)) { return [string][int]$q }
+    return $q.ToString('0.###', $INV)
+}
 
 # clone_from_vanilla: build a tier building by copying the vanilla block and surgically swapping only
 # the header key, unlocking_technologies, production_method_groups, and (optionally) required_construction.
@@ -446,11 +460,17 @@ foreach ($ind in $cfg.industries) {
         $wage = if ($null -ne $t.wage_pct) { [double]$t.wage_pct } else { 0.25 }   # wages as fraction of TOTAL cost (input goods + wages); default 0.25 (BALANCE_FRAMEWORK §1)
 
         # ---- PM ----
+        # §10.60 graded port factorisation: workforce/effect multipliers, 1 for every unfactored tier.
+        # $factored gates the fractional-goods emission path — the port tiers' config volumes are already
+        # divided and must NOT go through the legacy [int] cast (1.52 clippers would emit as 2).
+        $wfM = if ($null -ne $t.workforce_mult) { [double]$t.workforce_mult } else { 1.0 }
+        $fxM = if ($null -ne $t.effect_mult) { [double]$t.effect_mult } else { 1.0 }
+        $factored = ($null -ne $t.workforce_mult -or $null -ne $t.effect_mult)
         $pm = @("$($t.pm_key) = {", "`ttexture = `"$($t.texture)`"")
         # state modifiers (workforce-scaled): pollution + infrastructure (ports/railways produce infra).
         $stateMods = @()
-        if ([double]$t.pollution -gt 0) { $stateMods += "state_pollution_generation_add = $([int]$t.pollution)" }
-        if ($null -ne $t.state_infrastructure) { $stateMods += "state_infrastructure_add = $([int]$t.state_infrastructure)" }
+        if ([double]$t.pollution -gt 0) { $stateMods += "state_pollution_generation_add = $(QtyMul $t.pollution $fxM)" }
+        if ($null -ne $t.state_infrastructure) { $stateMods += "state_infrastructure_add = $(QtyMul $t.state_infrastructure $fxM)" }
         if ($stateMods.Count -gt 0) {
             $pm += "`tstate_modifiers = {","`t`tworkforce_scaled = {"
             foreach ($sm in $stateMods) { $pm += "`t`t`t$sm" }
@@ -459,22 +479,31 @@ foreach ($ind in $cfg.industries) {
         # country modifiers: shipyards grant naval capacity (country_ship_construction_add) from the SAME
         # PM that makes clippers/steamers — dropping it silently breaks building/maintaining navies.
         if ($null -ne $t.ship_construction) {
-            $pm += "`tcountry_modifiers = {","`t`tworkforce_scaled = {","`t`t`tcountry_ship_construction_add = $([int]$t.ship_construction)","`t`t}","`t}"
+            $pm += "`tcountry_modifiers = {","`t`tworkforce_scaled = {","`t`t`tcountry_ship_construction_add = $(QtyMul $t.ship_construction $fxM)","`t`t}","`t}"
         }
         $pm += "`tbuilding_modifiers = {","`t`tworkforce_scaled = {"
+        # A factored tier's config volumes are exact (already divided) — keep them exact in the BE
+        # arithmetic too, or [int]1.52 = 2 skews the name/summary BE by ~30%.
         $actualI = 0.0
         foreach ($p in $t.inputs.PSObject.Properties) {
-            $q = [int]$p.Value
+            $q = if ($factored) { [double]$p.Value } else { [int]$p.Value }
             $actualI += $q * $prices[$p.Name]
-            $pm += "`t`t`tgoods_input_$($p.Name)_add = $q"
+            $pm += "`t`t`tgoods_input_$($p.Name)_add = $(if ($factored) { QtyMul $p.Value 1 } else { [int]$p.Value })"
         }
-        $pm += "`t`t`tgoods_output_$($outGood)_add = $([int]$t.output_qty)","`t`t}"
+        $pm += "`t`t`tgoods_output_$($outGood)_add = $(if ($factored) { QtyMul $t.output_qty 1 } else { [int]$t.output_qty })","`t`t}"
         # employment (level_scaled). Some buildings carry NO base-PM employment (e.g. the art academy: jobs live
         # in its ownership PMG, kept as a secondary), so omit the block entirely when employment is empty.
         $empProps = if ($null -ne $t.employment) { @($t.employment.PSObject.Properties) } else { @() }
         if ($empProps.Count -gt 0) {
             $pm += "`t`tlevel_scaled = {"
-            foreach ($e in $empProps) { $pm += "`t`t`tbuilding_employment_$($e.Name)_add = $([int]$e.Value)" }
+            # §10.60: multiplied employment stays whole by construction (the 0.1/0.1/0.1/0.2/0.2 set was
+            # chosen so every profession lands >=10/level — the EMPLOYMENT_PROPORTIONALITY_LIMIT hazard);
+            # throw rather than silently rounding if a config edit ever breaks that.
+            foreach ($e in $empProps) {
+                $ev = [math]::Round([double]$e.Value * $wfM, 6)
+                if ($ev -ne [math]::Floor($ev)) { throw "workforce_mult $wfM on $($t.key) leaves fractional employment $($e.Name)=$ev - adjust the multiplier or the employment (§10.60)" }
+                $pm += "`t`t`tbuilding_employment_$($e.Name)_add = $([int]$ev)"
+            }
             $pm += "`t`t}"
         }
         $pm += "`t}"

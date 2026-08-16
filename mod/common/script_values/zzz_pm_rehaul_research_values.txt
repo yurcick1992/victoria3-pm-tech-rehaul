@@ -209,7 +209,7 @@ pmr_src_concrete_quays_0 = {
 		limit = { is_building_type = building_port_industrial }
 		add = { value = this.level  multiply = occupancy }
 	}
-		multiply = 1000
+		multiply = 100
 }
 
 pmr_src_continuous_strip_mill_0 = {
@@ -263,7 +263,7 @@ pmr_src_deep_water_docks_0 = {
 		limit = { is_building_type = building_port_steam }
 		add = { value = this.level  multiply = occupancy }
 	}
-		multiply = 1000
+		multiply = 100
 }
 
 pmr_src_diesel_engine_0 = {
@@ -554,7 +554,7 @@ pmr_src_mechanised_cargo_handling_0 = {
 		limit = { is_building_type = building_port_modern }
 		add = { value = this.level  multiply = occupancy }
 	}
-		multiply = 1000
+		multiply = 200
 }
 
 pmr_src_mechanized_farming_0 = {

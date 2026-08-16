@@ -1,0 +1,20 @@
+{
+  "schedule_version": 1,
+  "label": "ports-graded-probe",
+  "_why": "§10.60 VALIDATION PROBE (graded port factorisation, canonical config): port tiers now emit at 1/10 (e0-e2) and 1/5 (e3-e4) unit size - goods+building_cost divided EXPLICITLY in the config (user architecture 2026-08-16: no hidden divisor; UI-visible), employment/state-effects scaled at emission by the per-tier workforce_mult/effect_mult fields (0.1/0.1/0.1/0.2/0.2), and the 1836 start's port levels multiplied by 1/workforce_mult (anchorage-mapped entries clamped at exactly level 1). SUCCESS: the F66 provisioning waves REAPPEAR (engine-side, un-suppressible - that is expected and fine) but at ~1/10 cost (a steam port = 40 anchor pts); GBR's queue share of port_steam collapses from ~47% to single digits; hub ports grow ~x10 levels to carry the same shipping lanes (lane MM demand is engine-side and ABSOLUTE); steamer market + metal-yard adoption readable in the same window; colonial market access stays ~1.0. FAILURE MODES to check: (a) the engine TRUNCATING fractional goods/infra values (port MM output 0 => convoy collapse, port profit weird - read GBR merchant marine + port building profit in the save summaries), (b) hub ports NOT growing (lane capacity starved), (c) construction still port-dominated (queue_mix). Watch NET/SPA/POR/DEN delayed waves when they research screw_frigate (~1848) in queue_mix.",
+  "_arms": "graded = {kind: config, config: config/mod_config.json} - the CANONICAL config as of 2026-08-16 evening: graded port factorisation (§10.60) + canonical nice_to_have infra subsidies + F61 slave model. Needs build.ps1 >= 2026-08-16 evening (QtyMul fractional emission + workforce_mult/effect_mult) and convert_history.ps1 same (level multiply + anchorage clamp).",
+  "_comparison": "vancost-nosub-n2 (20260816_011552) is the pre-fix wave shape: GBR queue 100% port_steam 1837-41 -> 12 lv, FRA -> 10 by 1841, port_industrial wave from ~1849, GBR GDP 0.57 of vanilla by ~1855. ports_aival probes (16.08) proved ai_value inert against the provisioning term.",
+  "_cost": "1 run x 16 in-game years, ~20 min wall.",
+  "defaults": {
+    "metrics": ["tech_log", "events"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 60,
+    "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "BEL"]
+  },
+  "setups": {
+    "graded": { "kind": "config", "config": "config/mod_config.json" }
+  },
+  "runs": [
+    { "setup": "graded", "until": "1852.1.1", "dump_dates": ["1837.1.1", "1841.1.1", "1846.1.1", "1851.1.1"] }
+  ]
+}

@@ -3401,9 +3401,9 @@ window.PMDATA = {
                                              "pmg_key":  "pmg_main_port_basic",
                                              "pm_name":  "Basic Port",
                                              "vanilla_pm":  "pm_basic_port",
-                                             "output_qty":  9,
+                                             "output_qty":  0.9,
                                              "inputs":  {
-                                                            "clippers":  15.2
+                                                            "clippers":  1.52
                                                         },
                                              "employment":  {
                                                                 "laborers":  700,
@@ -3424,7 +3424,9 @@ window.PMDATA = {
                                                              },
                                              "tech_year":  1700,
                                              "tech":  "navigation",
-                                             "building_cost":  265
+                                             "building_cost":  27,
+                                             "workforce_mult":  0.1,
+                                             "effect_mult":  0.1
                                          },
                                          {
                                              "key":  "building_port_steam",
@@ -3435,10 +3437,10 @@ window.PMDATA = {
                                              "era":  1,
                                              "tech_year":  1840,
                                              "model_only":  false,
-                                             "output_qty":  14,
+                                             "output_qty":  1.4,
                                              "inputs":  {
-                                                            "steamers":  6.1,
-                                                            "coal":  6.1
+                                                            "steamers":  0.61,
+                                                            "coal":  0.61
                                                         },
                                              "employment":  {
                                                                 "laborers":  600,
@@ -3450,13 +3452,15 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/basic_port.dds",
                                              "target_be":  116,
                                              "natural_year":  1830,
-                                             "building_cost":  400,
+                                             "building_cost":  40,
                                              "state_infrastructure":  4,
                                              "tech":  "screw_frigate",
                                              "input_ratio":  {
                                                                  "steamers":  0.5,
                                                                  "coal":  0.5
-                                                             }
+                                                             },
+                                             "workforce_mult":  0.1,
+                                             "effect_mult":  0.1
                                          },
                                          {
                                              "key":  "building_port_industrial",
@@ -3466,10 +3470,10 @@ window.PMDATA = {
                                              "pm_name":  "Industrial Port",
                                              "vanilla_pm":  "pm_industrial_port",
                                              "tech":  "deep_water_docks",
-                                             "output_qty":  20,
+                                             "output_qty":  2,
                                              "inputs":  {
-                                                            "steamers":  6.4,
-                                                            "coal":  6.4
+                                                            "steamers":  0.64,
+                                                            "coal":  0.64
                                                         },
                                              "employment":  {
                                                                 "laborers":  500,
@@ -3488,7 +3492,9 @@ window.PMDATA = {
                                                                  "coal":  0.5
                                                              },
                                              "tech_year":  1875,
-                                             "building_cost":  600
+                                             "building_cost":  60,
+                                             "workforce_mult":  0.1,
+                                             "effect_mult":  0.1
                                          },
                                          {
                                              "key":  "building_port_modern",
@@ -3498,10 +3504,10 @@ window.PMDATA = {
                                              "pm_name":  "Modern Port",
                                              "vanilla_pm":  "pm_modern_port",
                                              "tech":  "concrete_quays",
-                                             "output_qty":  30,
+                                             "output_qty":  6,
                                              "inputs":  {
-                                                            "steamers":  6.4,
-                                                            "oil":  12.8
+                                                            "steamers":  1.28,
+                                                            "oil":  2.56
                                                         },
                                              "employment":  {
                                                                 "laborers":  400,
@@ -3521,7 +3527,9 @@ window.PMDATA = {
                                                                  "oil":  0.666667
                                                              },
                                              "tech_year":  1908,
-                                             "building_cost":  900
+                                             "building_cost":  180,
+                                             "workforce_mult":  0.2,
+                                             "effect_mult":  0.2
                                          },
                                          {
                                              "key":  "building_port_motor",
@@ -3532,10 +3540,10 @@ window.PMDATA = {
                                              "era":  4,
                                              "tech_year":  1930,
                                              "model_only":  false,
-                                             "output_qty":  46,
+                                             "output_qty":  9.2,
                                              "inputs":  {
-                                                            "steamers":  8,
-                                                            "oil":  15.9
+                                                            "steamers":  1.6,
+                                                            "oil":  3.18
                                                         },
                                              "employment":  {
                                                                 "laborers":  300,
@@ -3548,13 +3556,15 @@ window.PMDATA = {
                                              "texture":  "gfx/interface/icons/production_method_icons/modern_port.dds",
                                              "target_be":  69,
                                              "natural_year":  1925,
-                                             "building_cost":  1350,
+                                             "building_cost":  270,
                                              "state_infrastructure":  6,
                                              "tech":  "mechanised_cargo_handling",
                                              "input_ratio":  {
                                                                  "steamers":  0.333333,
                                                                  "oil":  0.666667
-                                                             }
+                                                             },
+                                             "workforce_mult":  0.2,
+                                             "effect_mult":  0.2
                                          }
                                      ],
                            "ladder_end":  "plateau"
