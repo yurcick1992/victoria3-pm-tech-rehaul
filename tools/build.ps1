@@ -493,7 +493,18 @@ foreach ($ind in $cfg.industries) {
             if (-not $vanBld.ContainsKey($baseKey)) { throw "clone_from_vanilla: vanilla building '$baseKey' not found in owned files for industry '$($ind.id)'" }
             $pmgTokens = @($t.pmg_key) + @($ind.secondary_pmgs)
             $reqCon = if ($null -ne $t.building_cost) { [int]$t.building_cost } else { $null }   # $null => keep vanilla required_construction
-            $indBld += (New-ClonedBuilding $vanBld[$baseKey] $t.key $baseKey $t.tech $pmgTokens $reqCon)
+            $clonedBld = New-ClonedBuilding $vanBld[$baseKey] $t.key $baseKey $t.tech $pmgTokens $reqCon
+            # Per-tier ai_value on CLONED tiers too (F66 addendum): vanilla port/railway carry no scalar
+            # ai_value, so a cloned tier competes at the engine default 1000 (NAI
+            # PRODUCTION_BUILDING_BASE_VALUE) unless the config says otherwise. The F66 probe sets tiny
+            # values on the e1+ port tiers to test whether ai_value reaches the per-overseas-state
+            # provisioning term. Set-BuildingAiValue refuses complex blocks, so a vanilla conditional
+            # ai_value (railway's Trans-Siberian block) is never mangled — it notes and skips instead.
+            # ⚠ New-ClonedBuilding returns ONE STRING, not lines — split before the per-line helper, or
+            # the "insert after element 0" lands AFTER the whole block, at file top level (caught on the
+            # first emit: four ai_value = 50 orphans between buildings).
+            if ($null -ne $t.ai_value) { $clonedBld = (Set-BuildingAiValue ($clonedBld -split "`n") ([int]$t.ai_value)) -join "`n" }
+            $indBld += $clonedBld
             $indBld += ""
         } else {
             $b = $ind.building

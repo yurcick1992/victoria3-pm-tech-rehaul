@@ -1,0 +1,20 @@
+{
+  "schedule_version": 1,
+  "label": "ports-aival-neg-probe",
+  "_why": "ARM 2 of the ai_value series: ai_value = -2000 on the four e1+ port tiers (arm 1, =50, measured INERT: identical waves level-for-level - see 20260816_182108 VERDICT). Negative ai_value is shipped nowhere in vanilla, so parser acceptance is itself part of the probe: the smoke check greps error.log for ai_value complaints. If -2000 kills the waves we have full control; if inert too, the provisioning term is outside building script entirely and the fallbacks (x1/50 unit or de-tier) decide. ORIGINAL: F66 PROBE (user-directed 2026-08-16): can per-building ai_value override the engine's per-overseas-state port provisioning (the 'AI intention machine')? The runaway: every overseas state gets one level of each new port TYPE the moment its tech exists (F66 corrected mechanism: 82/84 steam-port states already hold a sail port; GBR 12 / FRA 10 / BEL 1 / USA 0 / PRU 0 = overseas possessions; identical with and without subsidy mandates). No moddable off-switch exists; the one per-building lever is ai_value (NAI PRODUCTION_BUILDING_BASE_VALUE=1000 applies when unscripted, and our cloned port tiers scripted none). This arm sets ai_value=50 on the FOUR e1+ port tiers (e0 sail port stays default so colonial provisioning lands there, like vanilla). SUCCESS: no 1837-41 port_steam wave (GBR <=2 lv by 1841 vs baseline 12; FRA <=2 vs 10) AND no port_industrial wave by 1852; queue_mix.mjs clean on the early summaries. FAILURE: waves unchanged => ai_value does not reach the provisioning term (it may be additive outside the multiplier) => fallbacks per ruling: x1/50 port unit size (a binary portless-trigger is cleared by any sized port - user's reading, conceded) or de-tier ports (trade_center precedent).",
+  "_arms": "ports_aival_neg = {kind: config, config: config/mod_config.ports_aival_neg.json} - NOT committed (gitignored). Regenerate: config/mod_config.vancost_nosub.json (see schedules/vancost_nosub_n2.json _arms) with ai_value=50 added to the port industry's four e1+ tiers (building_port_steam/industrial/modern/motor; building_port untouched). Then cp config/tech_tree_options.vancost_nosub.json config/tech_tree_options.ports_aival_neg.json. Needs build.ps1 >= 2026-08-16 evening (the clone path applies per-tier ai_value via Set-BuildingAiValue on SPLIT lines - it returns one string; see the caught orphan-line bug in the call-site comment).",
+  "_comparison": "vancost-nosub-n2 (20260816_011552) is the exact baseline: same config modulo the four ai_value fields. Its waves: GBR queue 100% port_steam 1837-41 -> 12 lv; FRA -> 10 lv by 1841; port_industrial wave from ~1849.",
+  "_cost": "1 run x 16 in-game years, ~20 min wall.",
+  "defaults": {
+    "metrics": ["tech_log", "events"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 60,
+    "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "BEL"]
+  },
+  "setups": {
+    "ports_aival_neg": { "kind": "config", "config": "config/mod_config.ports_aival_neg.json" }
+  },
+  "runs": [
+    { "setup": "ports_aival_neg", "until": "1852.1.1", "dump_dates": ["1837.1.1", "1841.1.1", "1846.1.1", "1851.1.1"] }
+  ]
+}
