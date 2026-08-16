@@ -1497,6 +1497,9 @@ function renderArmCard(){
     row('industries', `${inds.length} (${tiers.length} tiers, ${emitted.length} emitted${disabled.length?`; <b>DISABLED:</b> ${disabled.map(i=>esc(i.id)).join(', ')}`:''})`)
    +row('factored tiers (§10.60)', factored.length? factored.map(t=>`${esc(t.key)} <span class="muted">workforce ×${t.workforce_mult??1} · effects ×${t.effect_mult??1} · out ${t.output_qty} · cost ${t.building_cost}</span>`).join('<br>') : 'none')
    +row('AI subsidies', nSub? Object.entries(subBy).map(([v,ks])=>`<b>${esc(v)}</b> ×${ks.length} <span class="muted">${ks.map(esc).join(', ')}</span>`).join('<br>') : 'none (every building vanilla)')
+   +row('conditional subsidies (§10.60.3)', cfg.subsidy_conditional
+      ? `market leaders carry the mandate above; it RETIRES when the coverage tiers supply ≥ ${Math.round((cfg.subsidy_conditional.coverage_share??0.5)*100)}% of market MM demand · coverage tiers: <b>${(cfg.subsidy_conditional.coverage_tiers||['building_port_modern','building_port_motor']).map(k=>esc(String(k).replace('building_port_','')) ).join(', ')}</b> · retire/exempt land on ${esc([...new Set(Object.values(cfg.subsidy_conditional.retire_overrides||{}))].join('/')||'?')} · non-leaders exempt (own-market test)`
+      : 'none (flat subsidies only)')
    +row('pm_goods overrides', pmg.length? `${pmg.length}: <span class="muted">${pmg.map(esc).join(', ')}</span>` : 'none')
    +row('pm_employment overrides', pme.length? pme.map(k=>`${esc(k)} <span class="muted">${esc(JSON.stringify(cfg.pm_employment[k]))}</span>`).join('<br>') : 'none')
    +row('building_ai_value (preserved bldgs)', aiv.length? aiv.map(k=>`${esc(k)} = ${(typeof REFAIV!=='undefined'&&REFAIV[k]!=null)?REFAIV[k]:(cfg.building_ai_value||{})[k]}`).join('<br>') : 'none')

@@ -40,8 +40,7 @@ pmr_mm_port_motor = {
 	multiply = 9.2
 }
 pmr_mm_high_cov = {
-	value = pmr_mm_port_steam
-	add = pmr_mm_port_industrial
+	value = pmr_mm_port_industrial
 	add = pmr_mm_port_modern
 	add = pmr_mm_port_motor
 	multiply = 2

@@ -767,11 +767,20 @@ if ($subCond) {
         $sv = New-Object System.Collections.Generic.List[string]
         $sv.Add(($genHeader.TrimEnd()))
         $tierKeys = @($portInd.tiers | ForEach-Object { $_.key })
-        # "t2+" (user-ruled 2026-08-16, §10.60.3: mandate retires when t2+ ports cover half of MM
-        # demand): the comparators count EVERY rung above the sail port — steam included — not just
-        # the modern/motor pair the F65 probe used. Derived from the config (lowest-era tier
-        # excluded), never a literal list, so a ladder re-band flows through.
-        $modernSet = @($portInd.tiers | Sort-Object { [int]$_.era } | Select-Object -Skip 1 | ForEach-Object { $_.key })
+        # THE COVERAGE SET — which port tiers count toward retiring the mandate (user-corrected
+        # 2026-08-16 twice, §10.60.3): "the subsidies stop only when the LIKELY-TO-BE-PROFITABLE
+        # ports are enough by themselves to cover the MM demand. Steamer t1 is not one of them."
+        # So the set is EXPLICIT in the config (`coverage_tiers` — canonical: industrial/modern/
+        # motor), validated against the port tiers, never a derivation: "above the lowest era"
+        # wrongly included the steam stub, and profitability is a design judgement the config
+        # states, not a rule the builder can infer. Fallback without the key: modern+motor (the
+        # F65-measured pair), the conservative direction (mandate lasts longer).
+        $modernSet = if ($subCond.coverage_tiers) {
+            foreach ($ck in $subCond.coverage_tiers) {
+                if ($tierKeys -notcontains $ck) { throw "subsidy_conditional.coverage_tiers: '$ck' is not a port tier key (have: $($tierKeys -join ', '))" }
+            }
+            @($subCond.coverage_tiers)
+        } else { @('building_port_modern', 'building_port_motor') }
         foreach ($t in $portInd.tiers) {
             $svName = 'pmr_mm_' + ($t.key -replace '^building_', '')
             $sv.Add("$svName = {")

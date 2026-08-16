@@ -5025,28 +5025,32 @@ categorically need resolution.
   qualification jam / wage competition) are SUPERSEDED as explanations of the red ports; they may still
   modulate the margins but the first-order cause is the tuning.
   **IMMEDIATE RULING, implemented same night: mandate port subsidies for all MARKET LEADERS unless
-  t2+ ports cover at least HALF of the market's MM demand.**
+  the LIKELY-TO-BE-PROFITABLE ports cover at least HALF of the market's MM demand.**
 - **Q2 — RULED: (b), the F64/F65 conditional, "needs doing now" — DONE same night, canonical.**
   `building_subsidies`: the five port tier keys → must_have (the base mandate); `subsidy_conditional`:
   coverage_share 0.5, retire trigger `market_goods_buy_orders <= pmr_mm_high_cov` on mg:merchant_marine
   (the F65-measured idioms), exempt trigger `NOT = { ROOT.market.owner ?= ROOT }`; both retire and
-  exempt land on nice_to_have (never `none` — no reliance on replace-vs-merge semantics). The t2+ set
-  is DERIVED in build.ps1 (every port tier above the lowest era — steam included, wider than the F65
-  probe's modern/motor pair), and the variant strategies now carry loc ($key$ references to the base).
+  exempt land on nice_to_have (never `none` — no reliance on replace-vs-merge semantics).
+  ⚠ **THE COVERAGE SET IS EXPLICIT, NOT DERIVED — corrected the same night.** The first emission
+  derived "t2+" as every rung above sail, steam included; the user corrected it: *"the subsidies stop
+  only when the likely-to-be-profitable ports are enough by themselves to cover the MM demand.
+  Steamer t1 is not one of them"* — the t1 steam port is tuned loss-making like the sail port. The
+  set now ships as config `subsidy_conditional.coverage_tiers` = **industrial / modern / motor**
+  (validated against the port tiers at build; profitability is a design judgement the config states,
+  not a rule the builder infers). The variant strategies carry loc ($key$ references to the base).
   Railway/power stay nice_to_have — the ruling names ports.
 - **Q3 — RULED: with MM prices declining as steam ports improve, t1 (sail) ports should DIE in the t3
   (industrial-port) era.** The intended end-state, to be delivered by the Q1 solver rework's price
   path; the engine's per-state sail stubs remain a known tolerated floor.
 - **Q4 — DEFERRED until Q1/Q2 land** (user).
 - **Q5 — no ruling yet** (subject anchorage grants / FRA engine seed) — stays open.
-- **Q6 — CORRECTED RULE (user):** "one t1 metal yard per X t1 added steamer ports, where X is chosen
-  so that the ports' cumulative demand were over the metal yard's cumulative supply" — yards are added
-  at a ratio that keeps them DEMAND-COVERED (never idle), not one-per-leader. ⚠ ARITHMETIC NOTE,
-  clarification pending: at graded stub demand (0.61 steamers/wk/level) a FULL-SIZE yard level
-  (65/wk) needs X≈107 stubs — today's GBR+FRA counts would then seed zero yards, colliding with the
-  ratified "yards must be provided". The reading that reconciles them is factoring the metal yard's
-  unit too (÷10 ⇒ X≈11, GBR and FRA each qualify for one); awaiting the user's word before touching
-  the yard tiers.
+- **Q6 — RESOLVED (user, plainer form, same night):** the seed provides **ceil(steam-port count / X)
+  full-size t1 metal yards, minimum one from the FIRST port**, where X = yard t1 output ÷ per-stub
+  steamer demand (today 65 ÷ 0.61 ≈ 107: 1–107 ports → one yard, 108+ → two, and so on). Yards stay
+  FULL-SIZE (no factoring — my ÷10 reading was wrong); X is derived from the config's own numbers, so
+  a solver re-solve of either recipe changes the ratio automatically. The current seed (one yard each
+  for GBR ~20 and FRA ~16 stubs) already satisfies the rule — no change to the rules on disk, only to
+  their justification. Encode the formula in the seed generator when the seed is next regenerated.
 - **Q7 — DEFERRED (user), with the diagnosis recorded: trade centers die now because MM is too
   expensive** (their input is the ceiling-priced good).
 
