@@ -676,6 +676,28 @@ if ($cfg.building_subsidies) {
         $subMap[$p.Name] = $v
     }
 }
+# --- CONDITIONAL subsidies (config `subsidy_conditional`, EXPERIMENTAL 2026-08-16) --------------
+# The subsidies block itself is a flat map (no per-entry triggers — goods_stances has them, subsidies
+# does not), so conditionality is expressed the way the engine expresses ALL conditional AI behaviour:
+# STRATEGY VARIANTS. Each admin strategy is emitted twice — the BASE keeps the building_subsidies map
+# (which should carry the mandate, e.g. early ports = must_have), and a `<name>_pmr_mature` variant
+# applies `retire_overrides` on top. The two carry MUTUALLY EXCLUSIVE `possible` gates (base = original
+# possible AND NOT retire_trigger; variant = original possible AND retire_trigger), so exactly one of
+# the pair is available at any time — if the AI re-evaluates strategies it MUST switch, and if it never
+# does, the design degrades to a permanent base mandate rather than to nothing.
+# ⚠ `retire_trigger` is raw script pasted into the possible blocks — keep it to constructs vanilla
+# itself uses inside ai_strategies (any_scope_building / is_building_type / count >=), and remember a
+# broken trigger fails SILENT-PERMISSIVE or SILENT-RESTRICTIVE, not loudly: check error.log on load.
+$subCond = $cfg.subsidy_conditional
+if ($subCond) {
+    if (-not $subCond.retire_trigger -or -not $subCond.retire_overrides) {
+        throw "subsidy_conditional needs both retire_trigger and retire_overrides"
+    }
+    foreach ($p in $subCond.retire_overrides.PSObject.Properties) {
+        $v = [string]$p.Value
+        if ($v -ne 'none' -and $SUBSIDY_ENUM -notcontains $v) { throw "subsidy_conditional.retire_overrides: '$($p.Name)' = '$v' invalid" }
+    }
+}
 # Read ai_strategy_default's OWN subsidies live from vanilla (we deliberately do NOT own that file - it is a
 # single ~8790-line block covering the whole AI: wargoals, navy/army sizes, treaties, infamy, interest groups.
 # Owning it to change one field would freeze all of that against every future patch). We only READ its trio so
@@ -731,14 +753,50 @@ if (-not (Test-Path -LiteralPath $srcAI)) {
                     if ($subMap[$k] -eq 'none') { if ($ent.Contains($k)) { $ent.Remove($k) } }
                     else { $ent[$k] = $subMap[$k] }
                 }
-                $body = Remove-SubsidyBlock $blk
-                $new  = New-Object System.Collections.Generic.List[string]
-                $new.Add($body[0])                                               # strategy header
-                $new.Add("`tsubsidies = {")
-                foreach ($k in $ent.Keys) { $new.Add("`t`t$k = $($ent[$k])") }
-                $new.Add("`t}")
-                for ($j = 1; $j -lt $body.Count; $j++) { $new.Add($body[$j]) }
-                foreach ($nl in $new) { $aOut.Add($nl) }
+                # helper: rebuild this strategy block with a given subsidies map, a given name suffix,
+                # and an extra clause AND-composed into `possible` (inserted right after `possible = {`,
+                # or as a fresh possible block when the strategy had none - industrial_expansion's case).
+                $emitVariant = {
+                    param($entMap, $suffix, $possibleClause)
+                    $body = Remove-SubsidyBlock $blk
+                    $new  = New-Object System.Collections.Generic.List[string]
+                    $hdr  = $body[0]
+                    if ($suffix) { $hdr = $hdr -replace '^(ai_strategy_[A-Za-z0-9_]+)', ('$1' + $suffix) }
+                    $new.Add($hdr)
+                    $new.Add("`tsubsidies = {")
+                    foreach ($k in $entMap.Keys) { $new.Add("`t`t$k = $($entMap[$k])") }
+                    $new.Add("`t}")
+                    $hasPossible = ($body | Where-Object { $_ -match '^\s*possible\s*=\s*\{' }) -ne $null
+                    if ($possibleClause -and -not $hasPossible) {
+                        $new.Add("`tpossible = {")
+                        foreach ($cl in $possibleClause) { $new.Add("`t`t$cl") }
+                        $new.Add("`t}")
+                    }
+                    $injected = $false
+                    for ($j = 1; $j -lt $body.Count; $j++) {
+                        $new.Add($body[$j])
+                        if ($possibleClause -and -not $injected -and $body[$j] -match '^\s*possible\s*=\s*\{') {
+                            foreach ($cl in $possibleClause) { $new.Add("`t`t$cl") }
+                            $injected = $true
+                        }
+                    }
+                    return $new
+                }
+                if ($subCond) {
+                    # BASE: the mandate map, gated on NOT retire_trigger
+                    $baseClause = @('NOT = {', "`t$($subCond.retire_trigger)", '}')
+                    foreach ($nl in (& $emitVariant $ent '' $baseClause)) { $aOut.Add($nl) }
+                    # VARIANT: retire_overrides applied, gated on retire_trigger
+                    $entM = [ordered]@{}
+                    foreach ($k in $ent.Keys) { $entM[$k] = $ent[$k] }
+                    foreach ($p in $subCond.retire_overrides.PSObject.Properties) {
+                        if ([string]$p.Value -eq 'none') { if ($entM.Contains($p.Name)) { $entM.Remove($p.Name) } }
+                        else { $entM[$p.Name] = [string]$p.Value }
+                    }
+                    foreach ($nl in (& $emitVariant $entM '_pmr_mature' @($subCond.retire_trigger))) { $aOut.Add($nl) }
+                } else {
+                    foreach ($nl in (& $emitVariant $ent '' $null)) { $aOut.Add($nl) }
+                }
                 $touched++
             } else { foreach ($bl in $blk) { $aOut.Add($bl) } }
         } else { $aOut.Add($line); $i++ }
@@ -748,6 +806,10 @@ if (-not (Test-Path -LiteralPath $srcAI)) {
     $trioList = if ($SUBSIDY_TRIO.Count) { ($SUBSIDY_TRIO.Keys | ForEach-Object { "$_=$($SUBSIDY_TRIO[$_])" }) -join ', ' } else { '(none)' }
     Write-Output "ai subsidies: rewrote $touched administrative strategies; overrides: $setList"
     Write-Output "ai subsidies: default-strategy trio read live from vanilla: $trioList"
+    if ($subCond) {
+        $retList = ($subCond.retire_overrides.PSObject.Properties | ForEach-Object { "$($_.Name)=$($_.Value)" }) -join ', '
+        Write-Output "ai subsidies: CONDITIONAL variants emitted ($touched pairs, mutually exclusive possible); retire -> $retList; trigger: $($subCond.retire_trigger)"
+    }
 }
 
 # --- own EVERY production_methods file: three surgical transforms, everything else verbatim ---
