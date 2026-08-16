@@ -60,7 +60,7 @@ import { fileURLToPath } from 'node:url';
 
 // v2 (2026-08-11) adds POP OBJECT COUNTS.  v3, same day, splits them into TOTAL and NON-EMPTY — user
 // ruling, so a later regression can ask which of the two actually predicts tick speed.
-export const SAVE_SUMMARY_VERSION = 4;
+export const SAVE_SUMMARY_VERSION = 5;   // v5 (2026-08-16): + per-country construction-queue composition (government/private: n, left, speed, by_type)
 
 // What we knowingly leave out, and why.  Read this before concluding the summary "lost" something.
 const NOT_CAPTURED = {
@@ -167,6 +167,7 @@ let mode = 'top', depth = 0;
 // country_manager state
 let cid = null, cur = null, path = [];       // path = block names by depth inside a country record
 let budgetCat = null, budgetSide = null, trendKey = null, trendVals = null, inValues = false;
+let qEl = null;                              // in-flight construction-queue element (v5)
 // states
 let sid = null;
 // technology
@@ -244,8 +245,9 @@ for await (const line of rl) {
               building_budget: { expense: null, income: null, expenses: {}, incomes: {} },
               subsidies: {}, subventions: {},
               strata: {}, professions: {}, workforce_by_profession: {},
-              pop_stats: {} };
-      C.set(cid, cur); path = []; budgetCat = budgetSide = trendKey = null; inValues = false;
+              pop_stats: {},
+              queues: { government: { n: 0, left: 0, speed: 0, by_type: {} }, private: { n: 0, left: 0, speed: 0, by_type: {} } } };
+      C.set(cid, cur); path = []; budgetCat = budgetSide = trendKey = null; inValues = false; qEl = null;
     } else if (cur) {
       const blk = /^([a-z_]+)=\{$/.exec(t);
       if (blk) path[depth - 3] = blk[1];
@@ -306,6 +308,29 @@ for await (const line of rl) {
               const bag = cur.building_budget[budgetSide];
               (bag[budgetCat] ??= {})[kv[1]] = (bag[budgetCat][kv[1]] || 0) + +kv[2];
             }
+          }
+        }
+      }
+      // ⭐ THE CONSTRUCTION QUEUE, PER ELEMENT (v5, 2026-08-16 — the save persists what script cannot
+      // see at all: each queued element's building type, target state, work left and current speed).
+      // Elements are ANONYMOUS `{ … }` blocks holding a nested identity={ } — the element is closed by
+      // ITS OWN depth, never by the first `}` (the identity block's close bit the standalone probe).
+      if (p0 === 'government_queue' || p0 === 'private_queue') {
+        const q = cur.queues[p0 === 'government_queue' ? 'government' : 'private'];
+        if (!qEl && t === '{') qEl = { d: 1 };
+        else if (qEl) {
+          let x;
+          if ((x = /^type="([a-z_0-9]+)"$/.exec(t))) qEl.type = x[1];
+          else if ((x = /^construction_left=([\d.]+)$/.exec(t))) qEl.left = +x[1];
+          else if ((x = /^construction_speed=([\d.]+)$/.exec(t))) qEl.speed = +x[1];
+          qEl.d += opens - closes;
+          if (qEl.d <= 0) {
+            if (qEl.type) {
+              q.n++; q.left += qEl.left || 0; q.speed += qEl.speed || 0;
+              const b = q.by_type[qEl.type] = q.by_type[qEl.type] || { n: 0, left: 0 };
+              b.n++; b.left += qEl.left || 0;
+            }
+            qEl = null;
           }
         }
       }
@@ -525,6 +550,12 @@ for (const [id, c] of C) {
     foreign_owned_levels: foreignOwned.get(id) ?? 0,
     owned_abroad_levels: ownedAbroad.get(id) ?? 0,
     buildings: blds, goods_out: gout, goods_in: gin,
+    // v5: queue COMPOSITION per country — n elements, total work left (points), total speed
+    // (points/wk), and per-building-type breakdown. Retired the CQ telemetry (§9).
+    queues: {
+      government: { n: c.queues.government.n, left: +c.queues.government.left.toFixed(1), speed: +c.queues.government.speed.toFixed(1), by_type: Object.fromEntries(Object.entries(c.queues.government.by_type).map(([k, v]) => [k, { n: v.n, left: +v.left.toFixed(1) }])) },
+      private: { n: c.queues.private.n, left: +c.queues.private.left.toFixed(1), speed: +c.queues.private.speed.toFixed(1), by_type: Object.fromEntries(Object.entries(c.queues.private.by_type).map(([k, v]) => [k, { n: v.n, left: +v.left.toFixed(1) }])) },
+    },
   };
 }
 

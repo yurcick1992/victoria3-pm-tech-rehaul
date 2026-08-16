@@ -131,7 +131,115 @@ transcript rather than from data.
 
 ---
 
-## F61 — ⭐⭐ **THE SLAVE CHANNEL ON 1.13.10, SOLVED BY DECOMPOSITION: the pop-consumption line contains EVERY slave pop at its own wealth (USA 0.863 → 1.003 aggregate), and the "purchased for slaves" line is a SEPARATE building purchase = employed (non-subsistence) slaves × PER-HEAD package at own wealth — exact to 1.9% per-good in the USA. FIVE candidate terms for the remaining ~5% divergence are measured and REFUTED, including F44's obsession/taboo budget shift — whose shipped implementation had never actually fired (a silent culture-parser no-op)**
+## F63 — ⭐⭐ **THE CONSUMPTION RECONSTRUCTION ON A LONG RUN: 9 of 11 measurable (run × date × market) cells read 1.6–6.8% — including EVERY market of run 2 at 1935 — validating the melt-based extractor at century scale. The two failures are one run's late-century readings, in which the British Market had re-formed as a 93-state customs union**
+
+**Arm** `config` (vancost_nosub: flat 1.0× vanilla-anchor cost book + no mandated infra subsidies) · session `20260816_011552_vancost-nosub-n2`, n=2 centuries, 1836→1936, both self-quit, zero crashes · schema v13, summaries v5 · 🟡 ARM-BOUND for the absolute economies, but the RECONSTRUCTION QUALITY is instrument-vs-instrument on the same arm (both sides see the same economy), so the extractor verdict transfers
+
+**Method**: breakdown_sparse validation sweeps at 1910.1.1 and 1935.1.1 (references on the clear
+1909.12.1 / 1934.12.1 dumps), same-date saves kept via `-KeepSaves`, melted, reconstructed with the
+F61 model (all pops incl. slave pops at own wealth, stored purchase weights × buy packages ÷ base
+price, peasants ×0.05; no obsession/taboo term — F61 refuted it), scored per good against the logged
+CP pop channel. Tool: `slave_channel_ab.mjs` with the tag-modal market join (a probe-region join
+broke the moment Île-de-France changed hands mid-century).
+
+### The grid — spend-weighted per-good |error| / aggregate ratio (predicted ÷ measured)
+
+| sweep | USA | GBR | FRA |
+|---|--:|--:|--:|
+| vanilla 1840 (calib2, reference) | 6.1% / 1.003 | 5.0% / 1.05 | 2.6% / 1.01 |
+| run 1 · 1910 | 6.1% / 0.96 | **13.8% / 0.86** | 4.7% / 1.03 |
+| run 1 · 1935 | 6.8% / 1.03 | **31.2% / 0.69** | **16.0% / 0.84** |
+| run 2 · 1910 | 4.7% / 1.04 | 3.5% / 1.03 | — (blocks lost to the ring) |
+| run 2 · 1935 | 4.3% / 0.96 | 5.3% / 0.95 | **1.6% / 1.00** |
+
+### What separates the failures
+
+Run 2's British Market is the original market object (id 0, 38 GBR states); **run 1's had re-formed
+as id 150995037 spanning 93 states across 13 tags** (CAN/CHL/NSW/SAF/ZUL/…, a customs-union
+super-market). All 93 states' pops are IN the prediction (the join is by the save's own state→market
+field), so the miss is not membership accounting. Eight structural candidates measured, all refuted
+or partial: obsession/taboo budget (worsens, F61), colonial access at good level (clusters don't
+separate), basket-8 slave pricing, wealth-interp (no-op), package-ceiling skip (none — packages go
+to 99, pops top out at 98), weights-row skip (zero people), per-pop persisted spend (slot 7; closes
+GBR 13.8→10.4% at 1910 but wrong-signed at 1840), **current-price units** (money ÷ realised price:
+closes 30–40% of the aggregate gap at 1935 — real deflation is part of it — but worsens per-good
+scatter). The residual is documented per the no-fudge ruling.
+
+### What it says for the §9 plan
+
+The melt-based consumption extractor is **validated at century scale for ordinary markets** — every
+run-2 cell and every USA cell sits at 1.6–6.8%, matching the 1840 vanilla calibration. The flagged
+case is a re-formed super-market late-century; until it is understood, keep `consumption_breakdown`
+as the validation metric on runs where a market has re-formed (the summaries' `market` id shows it
+directly). Slave line at these dates: absolute £ tiny (98–23k/wk); the F61 per-head-employed model
+reads 27–205% off on those scraps — late-century slave-line £ is noise, not a test.
+
+### What it does NOT say
+
+- Nothing about vanilla late-century (the sweeps rode the mod arm; the 1840 vanilla point is the
+  only vanilla cell).
+- Run 2's missing FRA-1910 sweep is a coverage loss (its blocks did not survive ring verification),
+  not a zero reading.
+- The run-1 outlier's cause is OPEN — "customs-union super-market" is the discriminating
+  observation, not a mechanism.
+
+## F62 — ⭐⭐ **THE COST CURVE'S FIFTH POINT: flat 1.0× vanilla anchors runs the century at ×0.54 vanilla GDP (n=2: 2,138/2,563M at 1935) — parity sits between 0.65× and 1.0×, near ~0.8× flat. The climb mechanism survives at full price (additions rotate e1→e4, payback falls 24y→5y with era) and the labour reserve stays ABOVE vanilla (58.5% vs 35.7%). The subsidy mandate's removal holds at century scale: the residual is ≤£4k/wk against the mandated arm's £374–455k**
+
+**Arm** `config` (vancost_nosub) · session `20260816_011552_vancost-nosub-n2`, n=2 centuries 1836→1936, both complete (wall 2h09/2h16, zero crashes), game 1.13.10 · 🟡 ARM-BOUND · comparators: vanilla n=4 + newbook n=2 (`20260813_083557`), flatcost 0.65× n=1 (`20260815_153825`), oldbook n=1 (`20260812_165702`)
+
+### The response curve (world GDP at 1935/36, ratio to vanilla's 3.63–4.40B)
+
+| cost book | GDP | ×van |
+|---|--:|--:|
+| ×1.5^era × band ×2 (§10.57) | 1 181–1 317M | 0.28× |
+| **flat 1.0× vanilla anchors** | **2 138 / 2 563M** | **0.49 / 0.58×** |
+| vanilla | 3 632–4 396M | 1.0 |
+| flat 0.65× anchors | 6 855M | 1.56–1.89× |
+| old ~2y-payback book | 7 910M | ~1.9× |
+
+Trajectory (run-mean ×van): 0.94 (1840) · 0.77 (1860) · 0.70 (1880) · 0.58 (1900) · 0.51 (1910) ·
+0.53 (1930) · 0.54 (1935) — the ratio stabilises after 1910 instead of compounding away in either
+direction. **A ×1.54 price step (0.65→1.0) moved century GDP ×3.2** — the curve is steep because
+cost sets the reinvestment rate and the century integrates it. Log-interpolating the two flat arms
+puts parity near **~0.8× flat vanilla anchors**; F59's alternative (mild era slope ×1.1–1.2^era on
+~that base) remains the design candidate carrying both level and climb.
+
+### The climb at full price — slower but intact
+
+- Additions by decade (run 1, e0..e5): modal era e1 through the 1870s → e2 by the 1890s → e3 by the
+  1910s (502/532 of 1 677) → **e4 in the 1930s (745 of 2 510, 44%)**; e5 reaches only 2–10 levels by
+  1936 (run 2: 161) — the century ends before e5's window at this pace.
+- 1935 realized paybacks (world, £720/pt): e0 23.5y@0.61 staffing · e1 24.3y@0.61 · e2 15.8y@0.72 ·
+  e3 8.5y@0.76 · e4 5.5y@0.91 · e5 4.8y@1.05 — **strictly falling with era**, so the AI keeps a
+  reason to climb, and the stale rungs (e0/e1 at 23–24y, 0.61 staffing) are dying correctly.
+- 1935 era stocks (run1/run2): e0 2 863/3 651 · e1 2 917/3 285 · e2 3 085/3 473 · e3 2 728/2 712 ·
+  e4 1 076/1 665 · e5 12/161. GBR's stock mean-era climbs 0.81 → 2.63 over the century.
+- Investment pool at 1936: 0.22× GDP — inside vanilla's healthy ~0.28 band (0.65× ran 0.57×,
+  oldbook 2.4–4.9×). Capital neither gluts nor starves at this price.
+
+### Labour: the premise holds without draining
+
+World pure unemployment 35–40% mid-century → 35.5% at 1935 (vanilla 16.0%); full reserve
+(unemployed + peasants) 58.5% vs vanilla 35.7%; 11-major panel full reserve 56.6% vs 26.2%. The
+0.65× arm drained the majors to 6.3% — at 1.0× the "more peasants than vanilla" premise holds with
+a wide margin. The flip side is the same as the newbook's: a smaller economy hires fewer people,
+and its measured profit-by-era gradient partly rests on floored wages (F58's caveat).
+
+### The subsidy-mandate removal at century scale (nosub-probe1's confirmation)
+
+World infrastructure subsidies: £38.5k/wk (1840) → £7.8k (1850) → £3.0k (1880) → **£0.1k (1910)** →
+£3.2k (1936), against flatcost's mandated £374–455k/wk. The six tracked majors pay £0 at nearly
+every read. Bankruptcy counts stay at vanilla-like levels; infrastructure keeps being built.
+
+### What it does NOT say
+
+- n=2 with a ~10–20% between-run spread at 1935 (2 138 vs 2 563M) — wider than the newbook pair's
+  3%; single-decade comparisons between these runs are inside that noise.
+- The arm moved TWO variables vs flatcost (cost AND subsidies) by explicit instruction; the ~13%-of-
+  gov-expense subsidy bleed removal is a small part of the GDP delta, not zero, and this batch
+  cannot apportion it exactly.
+- Payback figures stay on the flat-£720 basis (F53's ~27% late-era bias, shared by all arms).
+- "Parity ≈ 0.8×" is an interpolation on two flat points, not a measurement.: the pop-consumption line contains EVERY slave pop at its own wealth (USA 0.863 → 1.003 aggregate), and the "purchased for slaves" line is a SEPARATE building purchase = employed (non-subsistence) slaves × PER-HEAD package at own wealth — exact to 1.9% per-good in the USA. FIVE candidate terms for the remaining ~5% divergence are measured and REFUTED, including F44's obsession/taboo budget shift — whose shipped implementation had never actually fired (a silent culture-parser no-op)**
 
 **Arm** `control` · vanilla + telemetry · session `20260815_233017_consumption-calib2` (1840.1.1 breakdown + same-date save, melted) · schema v13 · 🟢 ARM-FREE (an engine consumption-accounting property, measured on vanilla)
 
