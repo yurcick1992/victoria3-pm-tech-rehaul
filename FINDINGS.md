@@ -131,6 +131,46 @@ transcript rather than from data.
 
 ---
 
+## F65 — ⭐⭐ **THE v2 CONDITIONAL-SUBSIDY DESIGN IS CONCLUSIVE AT 1900: a market-ownership exemption (vanilla's `ROOT.market.owner ?= ROOT`) plus a staffed merchant-marine-share retirement holds colonial access at 1.000 for the whole window at ~30% less cost than the count form, custom script values PROVABLY work inside strategy `possible` blocks, and the class system tracks a violently churning market topology with bounded 2–8-year event-driven lags**
+
+**Arm** `config` (ports_cond2) · session `20260816_135707_ports-cond2-n1`, 1836→1900, self-quit, one attempt, stopped at 1900 by ruling (conclusive; the 1936 leg deemed overkill) · 🟡 ARM-BOUND for £ levels; the **SV-in-possible and market-idiom results are 🟢 ARM-FREE engine facts**
+
+**The design** (user-specified): three-way partition per admin strategy — `_pmr_ext` (in someone
+else's market, never mandated), base (own market, early ports must_have), `_pmr_mature` (own
+market, retired when modern+motor ports' occupancy-weighted merchant_marine output ≥ 20% of all
+port tiers'; coefficients = the config's own output_qty, emitted as script values; merchant_marine
+IS the 1.13 convoy system). Railways/power nice_to_have throughout.
+
+### Results
+
+- **Access 1.000, GBR/FRA, zero penalized states, every dump 1850–1899.** World port bill
+  £337–369k/wk vs the count-form's £476–567k — the exemption cuts ~30% for equal protection.
+  53 countries on `_pmr_ext` at 1900.
+- **The share retirement is properly stricter**: GBR still mandated at 1900 (modern share ~7%,
+  18 levels @ 0.13–0.18 staffing) where count≥2 had retired it at ~1885 on two barely-staffed
+  buildings — no handoff until the modern tier actually carries convoys.
+- **Both new constructs work live in `possible`**: the market-owner comparison and a custom
+  script-value threshold (`pmr_port_mm_excess >= 0`) — zero load errors, behavior confirmed by
+  the class census. This unlocks arbitrary computed conditions on AI strategy selection.
+- **The market topology CHURNS far more than intuition suggests** (measured via the summaries'
+  per-country market ids): NET own→absorbed-into-GBR's-market (1844)→own again (1860); GBR's own
+  market OBJECT torn down and rebuilt (id 0 → 33554534, 1845–46); BIC in GBR's market from 1837
+  throughout (its 1848 own-market year excepted); POR the mirror of NET. Classes follow, both
+  directions, payments matching: NET £18k→£0→£13k, POR £29k→£0→£31k→£0.
+- **Bounded weirdness, all mapped**: (1) start-decade over-mandation of members (BIC/DEI pay
+  ~£25–45k/wk world until the 1844–48 churn forces re-picks — mechanism undetermined,
+  misclassified start assignment vs rich `nice_to_have`; tick-zero probe is the discriminator,
+  not run); (2) 2–8-year transition lags in both directions (event-driven re-evaluation; POR's
+  1860–68 stale mandate the longest); (3) the portless edge — zero ports makes the excess 0 ≥ 0
+  true, so landlocked own-market countries class `_pmr_mature` (functional no-op, documented).
+
+### What it does NOT say
+
+- n=1 to 1900: the majors' actual MM-share retirement dates, the handoff dynamics (subsidised old
+  tiers at ~1.00 staffing may retard modern staffing), and the late-century bill are unobserved.
+- The start-window mechanism is open; errs safe (over-subsidises).
+- Nothing is in the canonical config; loc for the 14 variant keys owed if this ships.
+
 ## F64 — ⭐⭐ **CONDITIONAL AI SUBSIDIES WORK, AND THE MECHANISM THEY STAND ON IS NOW PROVEN: AI countries RE-PICK their strategies mid-campaign when `possible` flips. A must_have on early port tiers, retired by a mutually-exclusive strategy-variant pair once ≥2 modern-class ports exist, holds colonial market access at 1.000 for the WHOLE century — where `wants_to_have` collapsed within a decade (it fires, retreats in the first treasury squeeze, and never re-engages) and no-mandate ran a five-decade 0.5-access famine. Retirement is progressive and permanent (GBR £0 for 46 years; 11 mature-variant holders at 1900 → 67 by 1936; world bill −42%), with a £204k/wk plateau on minors that never cross the threshold**
 
 **Arm** `config` (ports_cond: flat 1.0× cost book + conditional port mandate) · session `20260816_110325_ports-cond-n1` — one world in two segments: 1836→1900 fresh + 1900→1936 continued from its own save (`-ContinueFromSave`, landed 1900.2.9) · schema v13, summaries v5 · 🟡 ARM-BOUND for the £ levels; **the re-pick result is 🟢 ARM-FREE** (an engine property no subsidy stance could fake: 11 countries demonstrably switched to strategies that did not exist in vanilla, keyed on a runtime building count)
