@@ -4861,14 +4861,18 @@ and all prerequisites, chain-ordered.*
   the era-exact match always finds it) and the fallback was removed as dead code. The whole fix is
   the point-target branch in `solveDomRecipe`.
 
-**Part 2 — the 1836 steamer seed** (`config/start_exceptions.json` + `tools/convert_history.ps1`):
-new exception action **`force_industry_tier`** (fields `industry` + `tier`), because `force_tier`
-resolves inside the base building's OWN industry and the steam chain is a separate industry whose
-base building never appears in vanilla history. Five rules, one yard per `screw_frigate` holder —
-the second-largest yard where the country has several, its only one otherwise: GBR Home Counties (5
-levels), FRA Brittany (4), USA Virginia (2), BEL Flanders (1), PRU West Prussia (1) — **13 metal
-levels world-wide** against the vanilla start's 105 clipper levels / 0 steamer supply. Every
-recipient holds the unlocking tech at start (L14 clean). A typo'd industry id THROWS.
+**Part 2 — the 1836 steamer seed — ⚠⚠ REVERTED the same day (user-ruled 2026-08-16 evening).**
+As shipped for a few hours: new exception action **`force_industry_tier`** (fields `industry` +
+`tier`), because `force_tier` resolves inside the base building's OWN industry and the steam chain
+is a separate industry whose base building never appears in vanilla history; five rules, one yard
+per `screw_frigate` holder (GBR Home Counties 5 / FRA Brittany 4 / USA Virginia 2 / BEL Flanders 1 /
+PRU West Prussia 1 = 13 metal levels against the vanilla start's 105 clipper / 0 steamer). **The
+reversion's reason**: the seed existed only to feed the abnormal from-start steam-port construction,
+and F66's corrected diagnosis shows that construction is itself the defect (the engine provisions
+every overseas state once per port building TYPE — fix the ports, not the symptom). The
+`force_industry_tier` MACHINERY stays in the converter, documented and tested; the rules list is
+empty. Part 1 (the `solve_profit` recipe stance) is deliberately KEPT — a viable metal shipyard is
+right regardless of when demand arrives.
 
 **Part 3 — verified already satisfied, no code.** `screw_frigate` gates BOTH `building_port_steam`
 and `building_shipyard_metal` in the shipped tree, so "port-tech holders get the steamer tech" is

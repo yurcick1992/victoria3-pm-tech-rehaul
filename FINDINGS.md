@@ -211,10 +211,22 @@ reasonability check, now part of the ~5-minute smoke protocol (user-directed); i
 at the very FIRST 1837 summary of these runs.
 
 **Fixes ruled by the user in the same conversation** (see BALANCE_FRAMEWORK §10.59): per-tier
-`solve_profit` override re-solving shipyard_steam e1 at +5% instead of −25%; the 1836 steamer seed
-(one yard per screw_frigate holder converted to `building_shipyard_metal` via the new
-`force_industry_tier` start exception); the requested port-tech⇒steamer-tech grant verified already
-satisfied (same tech gates both).
+`solve_profit` override re-solving shipyard_steam e1 at +5% instead of −25% (KEPT); the 1836 steamer
+seed (one yard per screw_frigate holder via the new `force_industry_tier` start exception) —
+**REVERTED the same evening** once the corrected mechanism above landed: the seed only fed the
+abnormal steam-port construction, which is itself the defect; the requested port-tech⇒steamer-tech
+grant verified already satisfied (same tech gates both).
+
+**The GDP attribution (same-day retrospective, the reason the reversion mattered):** at ~1855,
+mod-to-vanilla GDP ratios read **GBR 0.57** (26M vs 46M, flat-to-DECLINING for two decades in both
+runs) against **USA 0.90 · RUS 0.93 · PRU 0.90 · FRA 0.86** and world 0.89 — the damage ranks
+exactly by port-crowding share (GBR 47% of queue-eligible construction, FRA 13%, USA 0%), and GBR
+alone carries roughly a third of the world gap at 1855. Correlational (n=2 per arm, one date), but
+the gradient is clean; the causal test is a run with the port structure fixed. The port focus is
+present in EVERY mod run since the 2026-08-12 ladder-era alignment lowered the port techs (sweep
+over 15 mod runs with save summaries); the 2026-08-11 batch predates it and shows none, and the
+2026-08-12-early batches show the delayed form (the wave fires when screw_frigate is researched
+~1848 instead of at start).
 
 ---
 
