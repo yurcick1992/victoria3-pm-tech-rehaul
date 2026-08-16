@@ -5046,8 +5046,21 @@ categorically need resolution.
 - **Q5 — (c) RULED same night: FRA gets one motor factory.** FRA holds `atmospheric_engine` from the
   tier-1 starting grant (motor t1's own unlocking tech), so the Rhone 1-level paper mill (Lyon; FRA
   keeps 4 paper levels elsewhere) converts to motor t1 — 40 engines/wk capacity against the yard's
-  16.6 need, eating 22.8 steel/wk beside Alsace's 65. (a) subject-anchorage grants: still open.
+  16.6 need, eating 22.8 steel/wk beside Alsace's 65.
+  **(a) RULED same night, MEASUREMENT FIRST (user: "check that in already completed runs"):** the
+  century run shows the engine provisions steam ports into SUBJECT anchorage states regardless of the
+  subject's tech — SIL/BIC/NSW/ABU hold stubs by the FIRST 1837 summary (Sierra Leone cannot have
+  researched screw_frigate in a year), and by 1840 every subject in both markets has them; only ORG
+  never does (likely annexed). So the subjects ARE seeded: **12 subject-owned anchorages convert to
+  overlord-OWNED steam stubs** (rule field `owner` — convert_history rewrites the ownership country;
+  vanilla precedent: SIL's African anchorages are GBR-owned in vanilla itself), **NO tech grants**
+  (user: "a known deviation from the have-a-building-must-have-a-tech rule") — the rules carry
+  `tech_deviation: true`, which verify_start_techs exempts as (tag|converted-key) pairs and PRINTS
+  ("12 deliberate tech-deviation seed(s) exempted") rather than failing L14; every other building
+  stays fully gated. DEI excluded — NET's market, leader lacks the tech at start.
   (b) leader basic-port seeding: dropped (the engine does it in weeks).
+  **The full seed roster: 25 steam stubs (13 leader-owned + 12 subject-state overlord-owned) +
+  2 metal yards + 1 FRA motor factory = 28 rules.**
 - **Q6 — RESOLVED (user, plainer form, same night):** the seed provides **ceil(steam-port count / X)
   full-size t1 metal yards, minimum one from the FIRST port**, where X = yard t1 output ÷ per-stub
   steamer demand (today 65 ÷ 0.61 ≈ 107: 1–107 ports → one yard, 108+ → two, and so on). Yards stay

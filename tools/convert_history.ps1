@@ -63,6 +63,7 @@ function Find-Exception($bkey, $country, $state) {
 
 $script:converted = 0; $script:removed = 0; $script:forced = 0; $script:unmapped = @()
 $script:levelsMultiplied = 0; $script:anchorClamped = 0   # §10.60 graded port factorisation counters
+$script:ownerRewrites = 0   # §10.60.3 Q5a: blocks whose ownership was rewritten to the overlord
 
 $handler = {
     param($block, $state, $country)
@@ -140,6 +141,19 @@ $handler = {
         }
         $res.Add($nl)
     }
+    # §10.60.3 Q5a (user-ruled 2026-08-16 night): a rule may carry `owner` — the seeded building's
+    # OWNERSHIP is rewritten to that country (the overlord), while the building stays physically in
+    # the subject's state. Vanilla itself has cross-country 1836 ownership (SIL's African anchorages
+    # are GBR-owned), and the engine demonstrably provisions steam ports into subject states without
+    # the subject holding the tech (SIL held one by 1837.1 in the century run). ⚠ Rewrites EVERY
+    # ownership country token in the block — correct for the single-owner anchorage blocks this
+    # exists for; check the block shape before putting `owner` on a multi-owner building.
+    if ($ex -and $ex.owner) {
+        for ($ri = 0; $ri -lt $res.Count; $ri++) {
+            $res[$ri] = [regex]::Replace($res[$ri], 'country="c:[A-Z0-9]+"', ('country="c:' + $ex.owner + '"'))
+        }
+        $script:ownerRewrites++
+    }
     $script:converted++
     return ,$res.ToArray()
 }
@@ -156,6 +170,9 @@ Write-Output ("History conversion: {0} factories re-tiered ({1} forced, {2} remo
 if ($script:levelsMultiplied -gt 0 -or $script:anchorClamped -gt 0) {
     Write-Output ("  §10.60 port factorisation: {0} ownership levels line(s) multiplied by 1/workforce_mult; {1} anchorage entr(ies) clamped above level 1." -f `
         $script:levelsMultiplied, $script:anchorClamped)
+}
+if ($script:ownerRewrites -gt 0) {
+    Write-Output ("  §10.60.3 Q5a: {0} seeded block(s) rewritten to overlord ownership." -f $script:ownerRewrites)
 }
 if ($script:unmapped.Count -gt 0) {
     Write-Output ("  WARNING: {0} split-industry blocks had no recognized main PM (version drift?):" -f $script:unmapped.Count)

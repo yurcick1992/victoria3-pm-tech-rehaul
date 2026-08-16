@@ -487,15 +487,15 @@
 	s:STATE_WASHINGTON={
 		region_state:ORG={
 			create_building={
-				building="building_port"
+				building="building_port_steam"
 				add_ownership={
 					country={
-						country="c:HBC"
+						country="c:GBR"
 						levels=1
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 	}

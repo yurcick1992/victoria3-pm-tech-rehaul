@@ -44,7 +44,7 @@
 		}
 		region_state:SIL={
 			create_building={
-				building="building_port"
+				building="building_port_steam"
 				add_ownership={
 					country={
 						country="c:GBR"
@@ -52,7 +52,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 		region_state:JLF={
@@ -102,15 +102,15 @@
 				activate_production_methods={ "pm_simple_farming" "pm_no_secondary" "pm_tools_disabled"  }
 			}
 			create_building={
-				building="building_port"
+				building="building_port_steam"
 				add_ownership={
 					country={
-						country="c:SIL"
+						country="c:GBR"
 						levels=1
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 	}
@@ -630,7 +630,7 @@
 	s:STATE_GOLD_COAST={
 		region_state:SIL={
 			create_building={
-				building="building_port"
+				building="building_port_steam"
 				add_ownership={
 					country={
 						country="c:GBR"
@@ -638,7 +638,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 		region_state:NET={
@@ -2068,7 +2068,7 @@
 	s:STATE_SOUTH_CAMEROON={
 		region_state:SIL={
 			create_building={
-				building="building_port"
+				building="building_port_steam"
 				add_ownership={
 					country={
 						country="c:GBR"
@@ -2076,7 +2076,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 		region_state:POR={

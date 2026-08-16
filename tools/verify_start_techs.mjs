@@ -34,6 +34,39 @@ const strip = s => s.replace(/^\uFEFF/, '');
 const read = f => strip(readFileSync(f, 'utf8'));
 const txts = d => existsSync(d) ? readdirSync(d).filter(f => f.endsWith('.txt')).map(f => join(d, f)) : [];
 
+// \u00A710.60.3 Q5a (user-ruled 2026-08-16 night): DELIBERATE tech deviations. A start-exception rule
+// carrying `tech_deviation: true` seeds a building whose STATE OWNER cannot unlock it \u2014 by design
+// (the subject-market anchorage steam stubs: ownership is rewritten to the overlord, no tech grant,
+// and the engine itself provisions such ports without the subject's tech \u2014 measured, SIL by 1837.1).
+// The exemption is (region_state tag | converted building key) pairs, resolved from the config's own
+// tier tables, and it is PRINTED whenever it fires \u2014 a silent exemption is a hole, a loud one is a
+// decision on the record.
+const DEVIATIONS = (() => {
+  const set = new Set();
+  try {
+    const cfg = JSON.parse(read(join(REPO, 'config', 'mod_config.json')));
+    const ex = JSON.parse(read(join(REPO, 'config', 'start_exceptions.json')));
+    const byBase = {};   // vanilla base building key -> industry (anchor tier reuses the vanilla key)
+    for (const ind of cfg.industries || []) {
+      if (ind.disabled) continue;
+      const real = (ind.tiers || []).filter(t => !t.model_only);
+      for (const t of real) byBase[t.key] = byBase[t.key] || ind;
+    }
+    for (const r of (ex.rules || [])) {
+      if (!r.tech_deviation) continue;
+      let ind = null, tierIx = null;
+      if (r.action === 'force_industry_tier') { ind = (cfg.industries || []).find(i => i.id === r.industry); tierIx = r.tier; }
+      else if (r.action === 'force_tier') { ind = byBase[r.building]; tierIx = r.tier; }
+      if (!ind) continue;
+      const real = (ind.tiers || []).filter(t => !t.model_only);
+      const t = real[Math.min(Math.max(1, tierIx), real.length) - 1];
+      if (t) set.add(`${r.country}|${t.key}`);
+    }
+  } catch { /* configs absent (pure-vanilla walk) => no deviations */ }
+  return set;
+})();
+let deviationHits = 0;
+
 // ⚠⚠ THE HYPHEN IS IN THE IDENTIFIER CLASS FOR A REASON. Four vanilla keys contain one —
 // `pm_ammonia-soda_process`, `pm_coal-fired_plant`, `pm_oil-fired_plant`, `pan-nationalism` — and an
 // `[A-Za-z_0-9]+` id class does not merely mis-name them, it fails to open the block at all, so the
@@ -117,6 +150,7 @@ function analyse(root) {
         const blk = body.slice(cb.index, j);
         const bk = (blk.match(/building\s*=\s*"([a-z_0-9-]+)"/) || [])[1];
         if (!bk) continue;
+        if (DEVIATIONS.has(`${tag}|${bk}`)) { deviationHits++; continue; }   // §10.60.3 Q5a, printed below
         owns[tag] = (owns[tag] || 0) + 1;
         const set = need[tag] = need[tag] || new Set();
         for (const g of (bTech[bk] || [])) set.add(g);
@@ -276,6 +310,8 @@ const MOD = /^[A-Za-z]:|^\//.test(arg) ? arg : join(REPO, arg);
 const mine = analyse(MOD);
 console.log(`parsed ${mine.stats.pms} PMs · ${mine.stats.blds} buildings · ${mine.stats.tiers} starting tiers · ` +
   `${mine.stats.tiered} countries tiered · ${mine.stats.owners} own 1836 buildings`);
+if (deviationHits) console.log(`§10.60.3 Q5a: ${deviationHits} deliberate tech-deviation seed(s) exempted ` +
+  `(start_exceptions rules flagged tech_deviation: overlord-owned subject-state stubs, no tech grant by ruling)`);
 
 if (!vs) {
   for (const [tag, g] of Object.entries(mine.gaps).sort())
