@@ -697,6 +697,66 @@ if ($subCond) {
         $v = [string]$p.Value
         if ($v -ne 'none' -and $SUBSIDY_ENUM -notcontains $v) { throw "subsidy_conditional.retire_overrides: '$($p.Name)' = '$v' invalid" }
     }
+    # Optional THIRD class (2026-08-16, user design): countries in SOMEONE ELSE'S market are exempt
+    # from the mandate entirely (their overseas access rides the market owner's merchant marine).
+    # exempt_trigger is the OUT-OF-CLASS condition (e.g. NOT = { ROOT.market.owner ?= ROOT } —
+    # vanilla's own market-ownership idiom, 02_coffee_and_milk.txt); exempt_overrides its map.
+    if ($subCond.exempt_trigger -and -not $subCond.exempt_overrides) { throw "subsidy_conditional.exempt_trigger needs exempt_overrides" }
+    if ($subCond.exempt_overrides) {
+        foreach ($p in $subCond.exempt_overrides.PSObject.Properties) {
+            $v = [string]$p.Value
+            if ($v -ne 'none' -and $SUBSIDY_ENUM -notcontains $v) { throw "subsidy_conditional.exempt_overrides: '$($p.Name)' = '$v' invalid" }
+        }
+    }
+    # Optional: emit the merchant-marine share script values the retire_trigger can reference.
+    # pmr_port_mm_excess >= 0  <=>  (modern+motor ports' occupancy-weighted merchant_marine output)
+    # >= retire_share x (all port tiers' output). Coefficients are the CONFIG's own per-tier
+    # output_qty, read at build time - a re-solve flows through automatically. The SV-in-trigger
+    # construct is the research bars' own shipped idiom (pmr_mob_share >= 0.5).
+    if ($subCond.retire_share) {
+        $portInd = $cfg.industries | Where-Object { $_.id -eq 'port' }
+        if (-not $portInd) { throw "subsidy_conditional.retire_share needs a 'port' industry in the config" }
+        $share = [double]$subCond.retire_share
+        if ($share -le 0 -or $share -ge 1) { throw "subsidy_conditional.retire_share must be in (0,1)" }
+        $inv = [Math]::Round(1.0 / $share, 4)
+        # invariant formatting inline - Format-Qty is defined later in this straight-line script,
+        # and a Russian-locale comma in a script value would be a silent parse failure
+        $fmtN = { param($v) $d = [double]$v
+            if ($d -eq [math]::Truncate($d)) { return ([long]$d).ToString([System.Globalization.CultureInfo]::InvariantCulture) }
+            return $d.ToString('0.####', [System.Globalization.CultureInfo]::InvariantCulture) }
+        $sv = New-Object System.Collections.Generic.List[string]
+        $sv.Add(($genHeader.TrimEnd()))
+        $tierKeys = @($portInd.tiers | ForEach-Object { $_.key })
+        $modernSet = @('building_port_modern', 'building_port_motor')
+        foreach ($t in $portInd.tiers) {
+            $svName = 'pmr_mm_' + ($t.key -replace '^building_', '')
+            $sv.Add("$svName = {")
+            $sv.Add("`tvalue = 0")
+            $sv.Add("`tevery_scope_building = {")
+            $sv.Add("`t`tlimit = { is_building_type = $($t.key) }")
+            $sv.Add("`t`tadd = { value = this.level  multiply = occupancy }")
+            $sv.Add("`t}")
+            $sv.Add("`tmultiply = $(& $fmtN $t.output_qty)")
+            $sv.Add("}")
+        }
+        $sv.Add("# excess >= 0  <=>  modern share of port merchant-marine output >= $share")
+        $sv.Add("pmr_port_mm_excess = {")
+        $first = $true
+        foreach ($t in $portInd.tiers) {
+            if ($modernSet -notcontains $t.key) { continue }
+            $svName = 'pmr_mm_' + ($t.key -replace '^building_', '')
+            if ($first) { $sv.Add("`tvalue = $svName"); $first = $false } else { $sv.Add("`tadd = $svName") }
+        }
+        if ($first) { throw "subsidy_conditional.retire_share: no modern-class port tiers found" }
+        $sv.Add("`tmultiply = $(& $fmtN $inv)")
+        foreach ($t in $portInd.tiers) {
+            $svName = 'pmr_mm_' + ($t.key -replace '^building_', '')
+            $sv.Add("`tsubtract = $svName")
+        }
+        $sv.Add("}")
+        WriteText "$modRel\common\script_values\zzz_pm_rehaul_subsidy_values.txt" (($sv -join "`n") + "`n") $bom
+        Write-Output "ai subsidies: merchant-marine share values emitted (retire_share $share, coefficients $((@($portInd.tiers | ForEach-Object { $_.output_qty })) -join '/'))"
+    }
 }
 # Read ai_strategy_default's OWN subsidies live from vanilla (we deliberately do NOT own that file - it is a
 # single ~8790-line block covering the whole AI: wargoals, navy/army sizes, treaties, infamy, interest groups.
@@ -783,17 +843,32 @@ if (-not (Test-Path -LiteralPath $srcAI)) {
                     return $new
                 }
                 if ($subCond) {
-                    # BASE: the mandate map, gated on NOT retire_trigger
-                    $baseClause = @('NOT = {', "`t$($subCond.retire_trigger)", '}')
-                    foreach ($nl in (& $emitVariant $ent '' $baseClause)) { $aOut.Add($nl) }
-                    # VARIANT: retire_overrides applied, gated on retire_trigger
-                    $entM = [ordered]@{}
-                    foreach ($k in $ent.Keys) { $entM[$k] = $ent[$k] }
-                    foreach ($p in $subCond.retire_overrides.PSObject.Properties) {
-                        if ([string]$p.Value -eq 'none') { if ($entM.Contains($p.Name)) { $entM.Remove($p.Name) } }
-                        else { $entM[$p.Name] = [string]$p.Value }
+                    $applyOv = {
+                        param($base, $ov)
+                        $m = [ordered]@{}
+                        foreach ($k in $base.Keys) { $m[$k] = $base[$k] }
+                        foreach ($p in $ov.PSObject.Properties) {
+                            if ([string]$p.Value -eq 'none') { if ($m.Contains($p.Name)) { $m.Remove($p.Name) } }
+                            else { $m[$p.Name] = [string]$p.Value }
+                        }
+                        return $m
                     }
-                    foreach ($nl in (& $emitVariant $entM '_pmr_mature' @($subCond.retire_trigger))) { $aOut.Add($nl) }
+                    # The possible clauses PARTITION: (exempt) / (not exempt AND not retired) /
+                    # (not exempt AND retired) - exactly one variant is available at any time, so an
+                    # AI that re-evaluates must land somewhere and the always-available guarantee holds.
+                    $notRetire = @('NOT = {', "`t$($subCond.retire_trigger)", '}')
+                    if ($subCond.exempt_trigger) {
+                        $notExempt = @('NOT = {', "`t$($subCond.exempt_trigger)", '}')
+                        # EXEMPT (in someone else's market): no mandate ever
+                        foreach ($nl in (& $emitVariant (& $applyOv $ent $subCond.exempt_overrides) '_pmr_ext' @($subCond.exempt_trigger))) { $aOut.Add($nl) }
+                        # BASE (own market, retire condition not met): the mandate
+                        foreach ($nl in (& $emitVariant $ent '' ($notExempt + $notRetire))) { $aOut.Add($nl) }
+                        # MATURE (own market, retire condition met): mandate retired
+                        foreach ($nl in (& $emitVariant (& $applyOv $ent $subCond.retire_overrides) '_pmr_mature' ($notExempt + @($subCond.retire_trigger)))) { $aOut.Add($nl) }
+                    } else {
+                        foreach ($nl in (& $emitVariant $ent '' $notRetire)) { $aOut.Add($nl) }
+                        foreach ($nl in (& $emitVariant (& $applyOv $ent $subCond.retire_overrides) '_pmr_mature' @($subCond.retire_trigger))) { $aOut.Add($nl) }
+                    }
                 } else {
                     foreach ($nl in (& $emitVariant $ent '' $null)) { $aOut.Add($nl) }
                 }
