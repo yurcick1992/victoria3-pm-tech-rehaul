@@ -267,22 +267,33 @@
       const mine = surplus*(slaveWork/Math.max(1e-9, slaveWork + peasWork));
       return Math.min(1, mine/slaveWork);
     }
-    function slaveBasketMult(){ const r = slaveRealShare(); return r + SLAVE_SUBSISTENCE_MULT*(1 - r); }
+    // ⭐ F61 (re-derived 2026-08-16 by user ruling — supersedes F27's `share + 0.05×(1−share)` form):
+    // the building-purchase multiplier is the EMPLOYED share ALONE. The 0.05 subsistence term
+    // measurably worsens the melt reconstruction (USA 0.984 → 1.094); subsistence slaves consume
+    // through the POP line instead, which slave pops now join (see popSpend).
+    function slaveBasketMult(){ return slaveRealShare(); }
 
     // £/week each pop NEED is budgeted, for the current population and SoL.
     //   * each class buys the BUY PACKAGE of its wealth level, scaled by people / POP_SIZE_PACKAGE, by the
     //     per-head DEPENDENT factor (needs are per working adult; dependents need half → 0.25 + 0.75×0.5 =
     //     0.625 per head) and by its class multiplier (peasants 0.05 — the game's own `consumption_mult`:
     //     most of a peasant's needs are met inside the subsistence building and never reach the market).
-    // SLAVES ARE NOT HERE — their basket is a building purchase, see slaveSpend().
+    // ⭐ SLAVES ARE HERE TOO (F61, re-derived 2026-08-16 by user ruling): on 1.13.10 the game's Pop
+    // Consumption line contains EVERY slave pop at its own wealth — melt-scored, the USA closes from
+    // 0.863 to 1.003 only when all of them are included — at ordinary (wf + 0.5·dep) units, which for
+    // slaves' working_adult_ratio 0.5 is 0.75/head, with NO class multiplier (the game has no
+    // consumption_mult for slaves). Their wealth is the basket level (solOf('slaves')): measured slave
+    // own-wealth means run 7.9–8.0 against the F27 basket 8, so the same knob serves both channels.
+    // F27's "slaves are not a consuming class" is FALSE on 1.13.10 for the pop line.
     function popSpend(){
       const spend = {};
       const cm = POPM.class_mult||{}, PK = POPM.buy_packages||{};
       const wr = (POPM.working_adult_ratio != null ? POPM.working_adult_ratio : 0.25);
-      const head = wr + (1 - wr)*depRatio();  // 0.625
       const steps = 2*SOL_SPREAD + 1;
-      ['upper','middle','lower','peasants'].forEach(cls => {
+      ['upper','middle','lower','peasants','slaves'].forEach(cls => {
         const n = S.POPS[cls]||0; if(!(n > 0)) return;
+        const r = (cls === 'slaves') ? SLAVE_WORK_RATIO : wr;
+        const head = r + (1 - r)*depRatio();  // 0.625 ordinary classes, 0.75 slaves
         const lvl = solOf(cls);
         const units = n*head*(cm[cls] != null ? cm[cls] : 1)/(POPM.pop_size_package||10000)/steps;
         for(let k = -SOL_SPREAD; k <= SOL_SPREAD; k++){
@@ -292,16 +303,17 @@
       });
       return spend;
     }
-    // £/week budgeted per NEED for the goods bought FOR the slaves — one buy package at the basket level,
-    // no spread, scaled by how many of them are in real buildings rather than subsistence.
-    // NOT applied: SOL_SPREAD. The basket is a single clamped number per building, and spreading it would
-    // push part of the population past the max the game allows. And there is NO consumption multiplier —
-    // the game has no `consumption_mult` for slaves at all (peasants' 0.05 is real; slaves' 0.5 was not).
+    // £/week budgeted per NEED for the goods bought FOR the slaves — the F61 building line: one buy
+    // package at the slaves' own wealth, for EMPLOYED (non-subsistence) slaves only, EVERY head at
+    // FULL rate (units = size / POP_SIZE_PACKAGE — a building buys per slave, not per working-adult
+    // equivalent; the 0.75 head factor belongs to the POP line, which slaves also join now).
+    // Melt-scored (F61): this form reads USA 0.984 with spend-weighted per-good |err| 1.9%; the
+    // (wf+0.5·dep)-units form reads 0.738 and the old F27 form 1.094. No SOL_SPREAD: the basket is a
+    // single clamped number per building, and spreading it would push past the game's max.
     function slaveSpend(){
       const spend = {}, n = S.POPS.slaves||0; if(!(n > 0)) return spend;
       const pkg = (POPM.buy_packages||{})[String(Math.max(1, Math.round(solOf('slaves'))))]; if(!pkg) return spend;
-      const head = SLAVE_WORK_RATIO + (1 - SLAVE_WORK_RATIO)*depRatio();   // 0.75
-      const units = n*head*slaveBasketMult()/(POPM.pop_size_package||10000);
+      const units = n*slaveBasketMult()/(POPM.pop_size_package||10000);
       for(const nd in pkg) spend[nd] = pkg[nd]*units;
       return spend;
     }

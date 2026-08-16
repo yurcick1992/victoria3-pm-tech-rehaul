@@ -15,17 +15,28 @@ const near = (label, got, want, tol, note) => {
 const fmt = v => (Number.isFinite(v) ? (Math.abs(v) >= 100 ? v.toFixed(0) : v.toFixed(4)) : String(v));
 const P = id => { const p = presets.find(x => x.id === id); if (!p) throw new Error(`preset ${id} missing`); return p; };
 
-// ---- F27: the slave-basket multiplier is DERIVED from residual employment, and both large slave markets
-// were measured directly. The published figures are the BASKET MULTIPLIER (share + 0.05 × the rest), not
-// the bare share: USA derives 0.209 against a measured 0.224; Britain 0.05 against 0.044 — Britain's free
-// lower stratum already exceeds every unqualified job, so its real share is 0 and only the 0.05
-// subsistence floor remains.
+// ---- F27→F61 (re-derived 2026-08-16 by user ruling): the slave-employment SHARE is still derived
+// from residual employment exactly as F27 measured it, but the building-line multiplier is now the
+// share ALONE — F61's melt reconstruction shows the 0.05 subsistence term worsening USA 0.984→1.094,
+// with subsistence slaves consuming through the POP line instead (popSpend now includes slave pops
+// at their own wealth, 0.75/head). So slaveBasketMult() === slaveRealShare() by construction, and a
+// divergence between the two checks below means someone re-added a term.
 E.applyPreset(P('usa_1836'));
-near('F27  USA slave basket multiplier', E.slaveBasketMult(), 0.209, 0.010, 'measured 0.224');
-near('F27  USA slaves in real jobs (share)', E.slaveRealShare(), 0.1676, 0.010, '⇒ the 0.209 above');
+near('F61  USA slave building-line mult (= employed share)', E.slaveBasketMult(), 0.1676, 0.010, 'was F27 0.209 with the dropped 0.05 term');
+near('F27  USA slaves in real jobs (share)', E.slaveRealShare(), 0.1676, 0.010, 'derivation unchanged');
 E.applyPreset(P('gbr_1836'));
-near('F27  GBR slave basket multiplier', E.slaveBasketMult(), 0.05, 0.005, 'measured 0.044; free labour covers every job');
+near('F61  GBR slave building-line mult (= employed share)', E.slaveBasketMult(), 0.0, 0.001, 'was F27 0.05 via the dropped floor');
 near('F27  GBR slaves in real jobs (share)', E.slaveRealShare(), 0.0, 0.001, 'floor only');
+// F61's pop line: slaves consume as a class now — zeroing the slave population must SHRINK popSpend.
+{
+  E.applyPreset(P('usa_1836'));
+  const with_ = Object.values(E.popSpend()).reduce((a,b)=>a+b,0);
+  const slaves = S.POPS.slaves; S.POPS.slaves = 0;
+  const without = Object.values(E.popSpend()).reduce((a,b)=>a+b,0);
+  S.POPS.slaves = slaves;
+  near('F61  USA pop line includes slave pops (Δ>0)', with_ > without ? 1 : 0, 1, 0,
+       `${fmt(without)} → ${fmt(with_)} £/wk of need budget`);
+}
 
 // ---- F26 / measured_1836: the per-market base wage rides in the preset and is applied by applyPreset.
 // CANONICAL basis = base_weekly_wage (laborers + farmers + machinists, EMPLOYED only), NOT the superseded

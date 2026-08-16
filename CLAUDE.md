@@ -1959,13 +1959,19 @@ the game.
   correct. The **"Pops may buy" toggles + scenario year** were redundant against supply share: a good the market
   does not supply already takes a zero share and drops out on its own, so the calendar gate could only make the
   two disagree.
-  **SLAVES ARE NOT A CONSUMING CLASS** (FINDINGS F27). ⚠⚠ **SUPERSEDED AS A STATEMENT ABOUT THE GAME on
-  1.13.10 — F61 (2026-08-16): the Pop Consumption line contains EVERY slave pop at its own wealth (USA
-  0.863→1.003 with them), and the separate "purchased for slaves" line is an ADDITIONAL building purchase =
-  employed (non-subsistence) slaves × PER-HEAD package (USA per-good 1.9%; no 0.05 subsistence term).** The
-  scenario model below still implements the F27 reading; re-deriving it against F61 is an open design
-  decision, so read the rest of this block as the UI's current model, not as the engine's behaviour.
-  The F27 reading was: the game never has a slave buy anything — the **building
+  **THE SLAVE CHANNEL IMPLEMENTS F61** (re-derived 2026-08-16 by user ruling — "pick the one that gives
+  the closest result from melting"): **slave pops consume in the POP line at their own wealth**
+  (`popSpend` includes the slaves class at `solOf('slaves')`, 0.75/head via their working_adult_ratio
+  0.5, no class multiplier — melt-scored, the USA closes 0.863→1.003 only with all of them in), **and
+  the "purchased for slaves" building line is an ADDITIONAL purchase = employed (non-subsistence)
+  slaves × per-head package at FULL rate** (no dependent discount, no 0.05 subsistence term —
+  `slaveBasketMult()` is now the employed share alone; F61 measured the old form at USA 1.094 vs this
+  form's 0.984, per-good spend-weighted |err| 1.9%). The employed share still comes from
+  `slaveRealShare()`'s residual-employment derivation, unchanged. `tools/econ_selftest.mjs` carries the
+  F61 checks; ⚠ builder.html's fork mirrors all three functions — change BOTH or neither.
+  **The superseded F27 reading below is kept for the record** (its share derivation and its
+  measurements survive; only the channel split changed):
+  the game never has a slave buy anything — the **building
   that employs them buys a consumer-goods basket** on their behalf, and the market screen reports it as its own
   order channel (`GOODS_SLAVE_CONSUMPTION_MARKET_ORDERS`, *"purchased for slaves"*). The panel computes it
   separately (`slaveSpend()`), then **folds it into the `pops` buy column** — it is a genuinely separate channel

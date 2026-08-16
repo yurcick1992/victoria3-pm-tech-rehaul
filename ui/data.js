@@ -3889,7 +3889,19 @@ window.PMDATA = {
                                                   }
                  },
     "building_subsidies":  {
-                               "building_trade_center":  "vanilla"
+                               "building_trade_center":  "vanilla",
+                               "building_power_plant":  "nice_to_have",
+                               "building_power_plant_pulverized":  "nice_to_have",
+                               "building_power_plant_oil":  "nice_to_have",
+                               "building_port":  "nice_to_have",
+                               "building_port_steam":  "nice_to_have",
+                               "building_port_industrial":  "nice_to_have",
+                               "building_port_modern":  "nice_to_have",
+                               "building_port_motor":  "nice_to_have",
+                               "building_railway":  "nice_to_have",
+                               "building_railway_steam":  "nice_to_have",
+                               "building_railway_electric":  "nice_to_have",
+                               "building_railway_diesel":  "nice_to_have"
                            },
     "pm_employment":  {
                           "pm_electric_streetlights":  {

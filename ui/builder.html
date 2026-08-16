@@ -822,8 +822,10 @@ function slaveRealShare(){
   const mine=surplus*(slaveWork/Math.max(1e-9, slaveWork+peasWork));
   return Math.min(1, mine/slaveWork);
 }
-// the basket multiplier the whole slave population averages out to
-function slaveBasketMult(){ const r=slaveRealShare(); return r + SLAVE_SUBSISTENCE_MULT*(1-r); }
+// ⭐ F61 (re-derived 2026-08-16 by user ruling): the building-line multiplier is the EMPLOYED share
+// ALONE — the 0.05 subsistence term worsens the melt reconstruction (USA 0.984→1.094); subsistence
+// slaves consume through the POP line instead (popSpend includes slave pops now). Mirror of econ.js.
+function slaveBasketMult(){ return slaveRealShare(); }
 function popTotal(){ return CLASSES.reduce((s,c)=>s+(POPS[c]||0),0); }
 function presetList(){ return [EMPTY_PRESET].concat(HAVE_PRESETS ? PRE.presets : []); }
 // Pop BUY orders, straight out of the game's own tables:
@@ -863,15 +865,18 @@ const SOL_SPREAD=8;
 function depRatio(){ return (POPM.dependent_consumption_ratio!=null?POPM.dependent_consumption_ratio:0.5); }
 // £/week each pop NEED is budgeted, for the current population and SoL. Split out of the demand
 // arithmetic because the distribution fit needs exactly this vector and must not compute it a second way.
-// SLAVES ARE NOT HERE — their basket is a building purchase, see slaveSpend().
+// ⭐ SLAVES ARE HERE TOO (F61, re-derived 2026-08-16 by user ruling): every slave pop at its own
+// wealth (solOf('slaves')), 0.75/head (their working_adult_ratio 0.5), no class multiplier. Mirror
+// of econ.js — change BOTH or neither.
 function popSpend(){
   const spend={};
   const cm=POPM.class_mult||{}, PK=POPM.buy_packages||{};
   const wr=(POPM.working_adult_ratio!=null?POPM.working_adult_ratio:0.25);
-  const head=wr+(1-wr)*depRatio();  // 0.625
   const steps=2*SOL_SPREAD+1;
-  ['upper','middle','lower','peasants'].forEach(cls=>{
+  ['upper','middle','lower','peasants','slaves'].forEach(cls=>{
       const n=POPS[cls]||0; if(!(n>0)) return;
+      const r=(cls==='slaves')?SLAVE_WORK_RATIO:wr;
+      const head=r+(1-r)*depRatio();  // 0.625 ordinary classes, 0.75 slaves
       const lvl=solOf(cls);
       const units=n*head*(cm[cls]!=null?cm[cls]:1)/(POPM.pop_size_package||10000)/steps;
       for(let k=-SOL_SPREAD;k<=SOL_SPREAD;k++){
@@ -881,13 +886,13 @@ function popSpend(){
     });
   return spend;
 }
-// £/week budgeted per NEED for the goods bought FOR the slaves — one buy package at the basket level,
-// no spread, scaled by how many of them are in real buildings rather than subsistence (see above).
+// £/week budgeted per NEED for the goods bought FOR the slaves — the F61 building line: one buy
+// package at the slaves' own wealth, EMPLOYED (non-subsistence) slaves only, EVERY head at FULL
+// rate (no dependent discount — a building buys per slave). No spread. Mirror of econ.js.
 function slaveSpend(){
   const spend={}, n=POPS.slaves||0; if(!(n>0)) return spend;
   const pkg=(POPM.buy_packages||{})[String(Math.max(1,Math.round(solOf('slaves'))))]; if(!pkg) return spend;
-  const head=SLAVE_WORK_RATIO+(1-SLAVE_WORK_RATIO)*depRatio();   // 0.75
-  const units=n*head*slaveBasketMult()/(POPM.pop_size_package||10000);
+  const units=n*slaveBasketMult()/(POPM.pop_size_package||10000);
   for(const nd in pkg) spend[nd]=pkg[nd]*units;
   return spend;
 }
