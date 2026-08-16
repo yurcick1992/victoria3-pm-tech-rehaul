@@ -31,12 +31,19 @@ const [MELT, WTSV, BTSV, RUN] = argv.filter(a => !a.startsWith('--'));
 const NO_OBS = argv.includes('--no-obsession-term');   // clear the F44 budget term (it is REFUTED on 1.13.10 — see the 2026-08-16 runs)
 const ACTUAL = argv.includes('--actual-budget');       // scale each pop's package by its own persisted weekly_budget spend (slot 7)
 const DATEF = (() => { const i = argv.indexOf('--date'); return i >= 0 && argv[i + 1] ? argv[i + 1] : null; })();  // keep only breakdown blocks of this date (a run may carry several sweeps)
+const WINTERP = argv.includes('--wealth-interp');      // interpolate the package by the pop's wealth_progress toward the next level
+// --price-tsv <markets.tsv> --price-date <dump>: predict UNITS at the market's CURRENT price
+// instead of base (money buys more units of a deflated good). Implemented as pred£/priceFrac.
+const PTSV = (() => { const i = argv.indexOf('--price-tsv'); return i >= 0 && argv[i + 1] ? argv[i + 1] : null; })();
+const PDATE = (() => { const i = argv.indexOf('--price-date'); return i >= 0 && argv[i + 1] ? argv[i + 1] : null; })();
 const GAME = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const DEP = 0.5, PKG = 10000, PEASANT_MULT = 0.05, BASKET_DEFAULT = 8;
 const strip = s => s.replace(/^\uFEFF/, '');
 
-// market display name <-> probe region (the same probe idiom predict_good_demand uses)
-const PROBES = [['American Market', 'STATE_NEW_YORK'], ['British Market', 'STATE_LANCASHIRE'], ['French Market', 'STATE_ILE_DE_FRANCE']];
+// market display name <-> owning tag. The market id is resolved as the MODE market over the tag's
+// own states — NOT via a single probe region (STATE_ILE_DE_FRANCE once changed hands by 1910 in a
+// mod century and the region probe silently pointed at the conqueror's market, 0.014 ratio).
+const PROBES = [['American Market', 'USA'], ['British Market', 'GBR'], ['French Market', 'FRA']];
 
 // ---- game files: base prices, buy packages, pop-need goods sets
 const BASEP = {};
@@ -92,16 +99,22 @@ function needFactors(cultureId, religion, wealth) {
 // ---- joins from the two TSVs
 const B = readFileSync(BTSV, 'utf8').split('\n').filter(Boolean);
 const bh = Object.fromEntries(B[0].split('\t').map((x, i) => [x, i]));
-const stateMkt = new Map(), regionMkt = new Map();
+const stateMkt = new Map(), tagMktCount = new Map();
 for (let i = 1; i < B.length; i++) {
   const c = B[i].split('\t');
-  stateMkt.set(+c[bh.state], c[bh.market]);
-  if (!regionMkt.has(c[bh.region])) regionMkt.set(c[bh.region], c[bh.market]);
+  const st = +c[bh.state], mk = c[bh.market], tg = c[bh.tag];
+  if (stateMkt.has(st)) continue;   // bgoods has one row per (state, good) — count each state once
+  stateMkt.set(st, mk);
+  let m = tagMktCount.get(tg); if (!m) { m = new Map(); tagMktCount.set(tg, m); }
+  m.set(mk, (m.get(mk) || 0) + 1);
 }
-const mktName = new Map();  // numeric market id -> display name, via the probes
-for (const [name, region] of PROBES) {
-  const id = regionMkt.get(region);
-  if (id != null) mktName.set(id, name); else console.error(`⚠ probe region ${region} not in bgoods`);
+const mktName = new Map();  // numeric market id -> display name, via the owning tag's modal market
+for (const [name, tag] of PROBES) {
+  const m = tagMktCount.get(tag);
+  if (!m) { console.error(`⚠ tag ${tag} has no states in bgoods — market '${name}' unresolvable`); continue; }
+  const id = [...m.entries()].sort((a, b) => b[1] - a[1])[0][0];
+  mktName.set(id, name);
+  console.error(`${name} <- market ${id} (${tag}: ${m.get(id)} of ${[...m.values()].reduce((a, b) => a + b, 0)} states)`);
 }
 
 // weights: state|culture -> need -> { good -> w, sum }
@@ -169,8 +182,9 @@ console.error(`buildings ${bType.size} · cultures with obsessions ${[...CULTOBS
 
 // ---- melt pass 2: pops. Slaves decomposed by employer class; everyone else -> P_nonslave.
 // class: sub (workplace is a building_subsistence_*), emp (any other building), none (no workplace)
-const S = new Map();   // market -> { good -> { own: {sub,emp,none}, bask: {sub,emp,none} } }  (base-£/wk)
+const S = new Map();   // market -> { good -> { own: {sub,emp,none}, head: {sub,emp,none} } }  (base-£/wk)
 const P = new Map();   // market -> { good -> nonslave predicted base-£/wk }
+const SKIPPED = new Map();  // market -> people silently skipped (no weights row / no package)
 const CLS = new Map(); // market -> people + workforce tallies per class
 const lowestNonSlaveWealth = new Map();  // market -> min wealth among non-slave pops (for the basket clamp)
 let popN = 0, slaveN = 0, slaveNoW = 0;
@@ -185,7 +199,14 @@ let popN = 0, slaveN = 0, slaveNoW = 0;
     popN++;
     const units = ((cur.workforce || 0) + DEP * (cur.dependents || 0)) / PKG;
     const wm = WMAP.get(cur.state + '|' + cur.culture);
-    if (!wm) { cur = null; return; }
+    if (!wm) {   // ⚠ silent-skip counter — a pop with no stored-weights row contributes NOTHING
+      let sk = SKIPPED.get(mkt); if (!sk) { sk = { noWeights: 0, noPack: 0 }; SKIPPED.set(mkt, sk); }
+      sk.noWeights += size; cur = null; return;
+    }
+    if (!PACK[cur.wealth]) {
+      let sk = SKIPPED.get(mkt); if (!sk) { sk = { noWeights: 0, noPack: 0 }; SKIPPED.set(mkt, sk); }
+      sk.noPack += size;
+    }
     const isSlave = cur.type === 'slaves';
     if (!isSlave) {
       const w0 = lowestNonSlaveWealth.get(mkt);
@@ -207,9 +228,14 @@ let popN = 0, slaveN = 0, slaveNoW = 0;
     }
     const spend = (wealth, u, into, klass) => {
       const pk = PACK[wealth]; if (!pk) return;
+      // --wealth-interp: a pop mid-promotion (wealth_progress in (0,1)) buys between its level's
+      // package and the next; mid-demotion (negative progress) between its level's and the previous.
+      const pkN = WINTERP && cur.wp > 0 ? PACK[wealth + 1] : (WINTERP && cur.wp < 0 ? PACK[wealth - 1] : null);
+      const wfrac = WINTERP ? Math.min(1, Math.abs(cur.wp || 0)) : 0;
       for (const nd of Object.keys(pk)) {
         const n = wm[nd]; if (!n || !(n.sum > 0)) continue;
-        const money = pk[nd] * u * mult * (nf[nd] ?? 1) * acFac;
+        const base = pkN ? pk[nd] * (1 - wfrac) + (pkN[nd] || 0) * wfrac : pk[nd];
+        const money = base * u * mult * (nf[nd] ?? 1) * acFac;
         for (const g of Object.keys(n.g)) {
           const gbp = money * n.g[g] / n.sum;
           if (!(gbp > 0)) continue;
@@ -251,6 +277,7 @@ let popN = 0, slaveN = 0, slaveNoW = 0;
       else if ((x = /^dependents=(\d+)$/.exec(t))) cur.dependents = +x[1];
       else if ((x = /^culture=(\d+)$/.exec(t))) cur.culture = +x[1];
       else if ((x = /^wealth=(\d+)$/.exec(t))) cur.wealth = +x[1];
+      else if ((x = /^wealth_progress=(-?[\d.]+)$/.exec(t))) cur.wp = +x[1];
       else if ((x = /^workplace=(\d+)$/.exec(t))) cur.workplace = +x[1];
       else if ((x = /^religion="([a-z_]+)"$/.exec(t))) cur.religion = x[1];
     }
@@ -259,6 +286,7 @@ let popN = 0, slaveN = 0, slaveNoW = 0;
   }
 }
 console.error(`pops in calibrated markets ${popN} · slave pops ${slaveN} · slave workplace ids missing from buildings db ${slaveNoW}`);
+for (const [mkt, sk] of SKIPPED) console.error(`⚠ ${mktName.get(mkt) || mkt}: SKIPPED people — no weights row ${sk.noWeights.toLocaleString('en-US')} · no buy package ${sk.noPack.toLocaleString('en-US')}`);
 // ⚠ the basket clamp uses lowestNonSlaveWealth accumulated DURING the same pass — pops stream in db
 // order, so early slave pops may see a not-yet-final minimum. Wealth minima are small integers that
 // stabilise within the first states; report the final clamp so a reader can judge.
@@ -283,6 +311,22 @@ const meas = new Map();  // marketName|good -> { pop, slaves }
 for (const b of blocks) { if (DATEF && b.date !== DATEF) continue; meas.set(b.market + '|' + b.good, { pop: b.pop, slaves: b.slaves }); }
 if (DATEF) console.error(`date filter ${DATEF}: ${[...meas.keys()].length} (market,good) pairs kept`);
 
+// ---- current-price fractions per (marketName, good), from the run's own market dumps
+const PFRAC = new Map();
+if (PTSV) {
+  const rl = readFileSync(PTSV, 'utf8').split('\n');
+  let n = 0;
+  for (let i = 1; i < rl.length; i++) {
+    const c = rl[i].split('\t');
+    if (c.length < 8) continue;
+    if (PDATE && c[1] !== PDATE) continue;
+    const bp = BASEP[c[4]];
+    if (!(bp > 0) || !(+c[7] > 0)) continue;
+    PFRAC.set(c[2] + '|' + c[4], +c[7] / bp); n++;
+  }
+  console.error(`price table: ${n} (market,good) price fractions at ${PDATE || 'all dates'}`);
+}
+
 // ---- report
 const f0 = x => Math.round(x).toLocaleString('en-US');
 const r2 = x => (Math.round(x * 1000) / 1000).toFixed(3);
@@ -304,9 +348,12 @@ for (const [mkt, name] of mktName) {
     if (!mv) continue;
     covered++;
     const sv = sm[g] || { own: { sub: 0, emp: 0, none: 0 }, head: { sub: 0, emp: 0, none: 0 } };
-    const pOnly = (pm[g] || 0);
+    // current-price conversion: pred units = money/currentPrice, expressed here as pred£/frac
+    const frac = PTSV ? (PFRAC.get(name + '|' + g) || 1) : 1;
+    const pOnly = (pm[g] || 0) / frac;
+    const scale = o => ({ sub: o.sub / frac, emp: o.emp / frac, none: o.none / frac });
     measPop += mv.pop * (BASEP[g] || 0); measSlv += mv.slaves * (BASEP[g] || 0); predNon += pOnly;
-    rows.push({ g, mvPop: mv.pop * (BASEP[g] || 0), mvSlv: mv.slaves * (BASEP[g] || 0), pOnly, own: sv.own, head: sv.head });
+    rows.push({ g, mvPop: mv.pop * (BASEP[g] || 0), mvSlv: mv.slaves * (BASEP[g] || 0), pOnly, own: scale(sv.own), head: scale(sv.head) });
   }
   console.log(`\n=== ${name} — ${covered} measured goods · base-£/wk (all sums over covered goods only)`);
   console.log(`measured: pop line ${f0(measPop)} · slave line ${f0(measSlv)} · P_nonslave ${f0(predNon)}`);
