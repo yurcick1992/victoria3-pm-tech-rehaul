@@ -4885,3 +4885,27 @@ fires once per port building TYPE, so the five-tier split makes every overseas s
 level of each new tier; identical with and without the mandate — see F66's corrected mechanism).
 That is an open design question; the conditional-subsidy work (F64/F65) and its start-assignment
 bypass are a separate open thread.
+
+## 10.60 THE ×1/50 PORT UNIT (user-ruled 2026-08-16 — IMPLEMENTATION PENDING, next session)
+
+**The ruling.** Port tiers are rebuilt at **1/50 unit size** — ×1/50 employment and ×1/50 all
+effects (recipes, merchant-marine output, state_infrastructure; construction cost to match) — so
+that the engine's un-overridable per-overseas-state port provisioning (F66) places floors that
+cost ~nothing, while genuine hub capacity re-expresses as ~50× more, much cheaper levels.
+
+**Why this fix and not another.** The provisioning term ignores building script entirely
+(F66 addendum 2: ai_value 50 and −2000 both measured inert), so suppression is impossible; the
+trigger is BINARY — it saturates at one level per (state, type), verified to century scale
+(port_steam 221/238 still level 1 at 1935) — so any-sized port clears it (the user's reading,
+measured true). De-tiering (trade_center precedent) was the alternative; rejected in favour of
+keeping the port ladder and its capital story. Historical note in favour of fine granularity: a
+real port was a mosaic of berths and basins of different vintages, and the colonial level-1 steam
+port has a real referent (the coaling station).
+
+**Implementation scoping (open, next session):** whether e0 shrinks too (presumably yes — "the
+port unit"); the touchpoints are the config recipes/employment/state_infrastructure/building_cost
+for the five port tiers, the era solve (volumes re-solved at the new scale), the scenario model's
+port counts, the macro bounds, and the ×1/50 interaction with `SCALE_LIMIT`-style expectations;
+plus a validation probe (the F66 wave should re-appear at ~1/50th the construction cost and the
+queue share should collapse). The conditional-subsidy work (F64/F65) likely shrinks ×50 in
+magnitude with it — revisit after.

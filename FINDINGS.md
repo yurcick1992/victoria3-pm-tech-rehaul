@@ -215,6 +215,25 @@ our whole-file ownership). The one per-building lever in data is **`ai_value`**
 (`PRODUCTION_BUILDING_BASE_VALUE = 1000` applies when none is scripted — our port tiers script
 none), which the config already supports per tier.
 
+**Addendum 2 (same day, evening) — the ai_value series and the saturation measurement:**
+(a) **Scripted `ai_value` CANNOT override the provisioning** — two probe arms on the exact
+vancost_nosub baseline: `= 50` (20× cut of the engine default) and `= −2000` (parses clean, zero
+error.log complaints, would sink any additive scoring below zero) are both wave-for-wave IDENTICAL
+to baseline (sessions `20260816_182108` / `20260816_182918`); the `0.00001` arm was skipped as
+logically dominated (and Jomini fixed-point carries 5 decimals — 0.000001 truncates to 0). The
+term is a separate hardcoded path that never consults building script.
+(b) **The trigger SATURATES at one level per (state, type), verified to century scale** — melted
+histograms: at 1855, port_steam 93 of 96 built at level 1 (max 2); at 1935 (no-mandate run 2)
+port_steam **221 of 238 still level 1 after a hundred years** (max 3), port_industrial 227/281,
+while the CURRENT tier genuinely expands in trade hubs (port_motor: Georgia 19, W. Cuba 13,
+Louisiana 10, New Jersey 9; port_modern: W. Cuba 12, Jiangsu 9). Two coexisting mechanisms: a
+one-level provisioning floor per (state, type) that keeps SPREADING (steam 102 → 238 buildings
+1855→1935) but never grows, and a real port economy on the newest tier. Of 866 new-tier port
+buildings at 1935, ~700 are level-≤1 floors.
+(c) **The ruling that followed (user, 2026-08-16): ×1/50 PORT UNIT SIZE** — any-sized port clears
+a binary portless-trigger, so the floor stock re-prices to ~nothing while hub capacity re-expresses
+as ~50× cheaper levels. Implementation is next-session work (BALANCE_FRAMEWORK §10.60).
+
 **What it does NOT say**: it does not name the exact engine rule (hardcoded AI vs an NAI define —
 unidentified); it does not say whether one level-1 steam port per overseas state is even WRONG
 (arguably it is the supply network working — the faults it produced were phantom steamer demand,
