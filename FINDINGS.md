@@ -201,6 +201,20 @@ pinned at the −25% shipyard stance: base-price goods margin −6.7% before wag
 run. **The tech side is symmetric by construction** — `screw_frigate` gates `building_shipyard_metal`
 too — so the asymmetry was purely economic (the −25% stance) and stock (zero 1836 metal yards).
 
+**Addendum (same day, follow-up questions):** (a) **82 of the 84 states holding `port_steam` at
+1855 ALSO hold a sail port** — so this is not the plain "state needs a port" rule choosing a type;
+it genuinely fires per port building TYPE. (b) **Railways have NO analogue**: `railway_steam`
+concentrates multi-level in industrial states (Home Counties 6, West Bengal 6, Yorkshire 4,
+Lancashire 3 — the profit shape), and the mod builds FEWER railways than vanilla (GBR 19 vs 52 by
+~1855, FRA 7 vs 18; USA 24 vs 16), the steam tier substituting for base expansion. (c) **No
+moddable off-switch found**: the wiki's AI-modding page documents no port/overseas provisioning
+behaviour; `PORT_BUILDING = "building_port"` (defines) is the engine's named port anchor and
+already points at our kept e0 key; `building_group_weights` cannot separate ports from railways
+(both `bg_private_infrastructure`; one vanilla admin strategy weights it ×2.0, carried through by
+our whole-file ownership). The one per-building lever in data is **`ai_value`**
+(`PRODUCTION_BUILDING_BASE_VALUE = 1000` applies when none is scripted — our port tiers script
+none), which the config already supports per tier.
+
 **What it does NOT say**: it does not name the exact engine rule (hardcoded AI vs an NAI define —
 unidentified); it does not say whether one level-1 steam port per overseas state is even WRONG
 (arguably it is the supply network working — the faults it produced were phantom steamer demand,
