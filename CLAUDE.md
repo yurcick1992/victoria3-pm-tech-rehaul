@@ -2511,6 +2511,14 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
      own noise (the `jomini_spline_network_graphics` flood) and the catalogued
      `is_production_method_active` PostValidate class (MISSING_PM_REFERENCES). What is left is the signal.
   4. **Is the clock advancing?** The tail of `<run>/run.log` should show `in-game <date>` moving.
+  5. **Is the construction mix reasonable?** (User-directed 2026-08-16, after F66.) As soon as the
+     concurrent save harvest lands its first summary (~10 min for the 1837 autosave), run
+     `node tools/testbed/queue_mix.mjs <run-dir>` — for select majors separately and the world as a
+     whole, the distribution of what is being built, private queue and government queue separately,
+     must be plausible. One building family dominating a major's queue (≥60% of ≥3 items) is a
+     **red flag that can invalidate the run**: F66's port spam read 100%-port on GBR and FRA at the
+     very first 1837 summary, in every arm, and nobody looked until 1855. Re-run it `--all` post-run;
+     the WARN threshold is advisory — read the lines, don't just gate on the exit code.
   ⚠ **`mod_loaded=False` in the harness summary is NOT authoritative** — it read False on a run whose
   init marker is plainly in `debug.log`. Check the marker yourself before believing the summary either way.
 - **ALWAYS pair a batch launch with `tools/testbed/wait_for_session.ps1` in the BACKGROUND.** The

@@ -131,12 +131,21 @@ transcript rather than from data.
 
 ---
 
-## F66 — ⭐⭐ **THE PORT-QUEUE RUNAWAY: under a subsidy mandate the private investment pool builds almost nothing but infrastructure — 87% of GBR's queue-eligible construction over 1837–1855 is ports + railways, with the queue reading 100% ports in the tier-arrival waves. The mechanism is a three-factor product: the mandate makes every port profitable by construction, vanilla's own cloned `should_auto_expand` accepts `is_subsidized = yes` as its cash test, and our economy keeps its transportation-price leg permanently lit at the +75% ceiling. The steamer half is a phantom-demand loop: `screw_frigate` — a tier-1-tech STARTING invention — unlocks the steamer-eating port from day 1 into a world with zero steamer supply**
+## F66 — ⭐⭐ **THE PORT-QUEUE RUNAWAY IS STRUCTURAL, NOT SUBSIDY-DRIVEN: the engine's per-overseas-state port provisioning fires once per PORT BUILDING TYPE, so the five-tier split makes every overseas state accumulate one level of each new port tier the moment its tech exists — identically with and without the mandate. GBR's private queue reads 100% `port_steam` 1837–41 and 100% `port_industrial` 1849–52 in BOTH arms; the per-country magnitude is the count of overseas possessions (GBR 12 · FRA 10 · BEL 1 · USA 0 · PRU 0), not coastline, tech or subsidy. Vanilla's control: +4 GBR port levels in twelve years on a diversified queue — the same logic satisfied by the one port building it already has. The steamer half stands: `screw_frigate`, a tier-1-tech STARTING invention, unlocks the steamer-eating port from day 1 into a world with zero steamer supply**
 
-**Arm** `config` (ports_cond3: vancost_nosub base + ports×5 must_have + subsidy_conditional v3) ·
-session `20260816_161056_ports-cond3-n1`, 1836→~1855 (killed by ruling), 19 annual v5 save summaries ·
-🟡 the QUANTITIES are arm-bound (a mandate arm); the MECHANISM decomposition is 🟢 engine + emitted-file
-facts readable without any run.
+**Arm** `config` — measured on TWO arms: ports_cond3 (must_have mandate) AND vancost_nosub (NO port
+mandate, n=2), with vanilla saves_debut as control · sessions `20260816_161056_ports-cond3-n1`
+(1836→~1855, killed by ruling, 19 annual v5 summaries), `20260816_011552_vancost-nosub-n2`,
+vanilla melts at 1838/1839/1842/1848 · 🟢 the arm-independence IS the finding.
+
+⚠⚠ **A first version of this entry blamed a three-factor subsidy product (mandate ⇒ pool ranking ×
+cloned `should_auto_expand` accepting `is_subsidized` × transportation at ceiling). All three legs
+are RETRACTED** — the user challenged the story and every leg failed on inspection: the no-mandate
+arm shows the identical waves; the quoted `should_auto_expand` block belongs to the RAILWAY (our
+port tiers carry NO `ai_value` and NO `should_auto_expand` at all — vanilla's port has none to
+clone); and ports do not make transportation, so the ceiling leg was never coherent for them. The
+transportation-ceiling observation itself is real (buy 3,382 vs sell 381, +75% pinned, 1840) and
+explains the RAILWAYS' unsubsidised 21-level growth — it just says nothing about ports.
 
 **The observation it explains** (user, watching the run live): "in those 15 years, 95% of everything
 constructed by British private queue is ports."
@@ -154,22 +163,33 @@ districts, manors, government, military, subsistence, urban centres): **52 queue
 total, of which ports 24 + railways 21 = 87%**. The whole rest of the British economy: 7 levels
 (1 explosives, 1 leaded glass, 1 Bessemer steel, 2 metal shipyard, 1 tooling, 1 clipper shipyard).
 
-**The mechanism, three factors multiplied:**
-1. **The mandate makes every port profitable by construction.** All 64 GBR port levels subsidised at
-   every read (£53k/wk by 1855, profit ≡ 0, cash ≡ 0 — the subsidy fills the gap exactly). A building
-   that cannot lose money outranks every factory in the pool's return ranking.
-2. **Vanilla's own `should_auto_expand`** (cloned verbatim into our port by clone-and-swap):
-   `occupancy >= 0.8 AND (cash_reserves_ratio > 0.5 OR is_subsidized = yes) AND
-   (sg:transportation state_goods_pricier > 0.5 OR …)`. The subsidy lights leg 2 and guarantees the
-   occupancy leg (subsidised buildings hold staff).
-3. **Our economy keeps leg 3 lit permanently**: transportation sits at the **+75% ceiling** (British
-   market 1840: buy 3,382 vs sell 381; 1845: 4,402 vs 855) because railways are un-mandated and
-   urban centres under-scaled. In vanilla the same rule exists but leg 3 is usually dark.
+**The mechanism (corrected after the retraction above):**
+1. **The no-mandate arm is IDENTICAL.** vancost-nosub (no port subsidy anywhere): GBR queue 100%
+   `port_steam` 1837–41 → exactly 12–13 levels, quiet years, then 100% `port_industrial` → 12–13
+   more; FRA queues `port_steam`×3 at 1838 → 10 levels by 1841 — the same numbers as the mandate
+   arm, run for run. Whatever drives the waves, it is not the subsidy.
+2. **The per-country magnitude is the count of OVERSEAS possessions.** GBR 12 · FRA 10 · BEL 1 ·
+   USA 0 · PRU 0 — the USA holds `screw_frigate` and has a longer coastline than France, and builds
+   ZERO. Coastline and tech are ruled out; overseas holdings fit exactly.
+3. **The kept 1855 save names the states.** 155 steam/industrial port buildings world-wide, almost
+   all LEVEL 1, almost all in overseas/colonial states — Bermuda, Bahamas, West Indies, Sierra
+   Leone, Gold Coast, Ceylon, Malaya, Western Australia, Senegal, Oran, Ivory Coast… — and the SAME
+   state accumulates one of EACH newer type as its tech arrives (Zululand, Senegal, West Indies
+   each hold steam AND industrial). One level, per overseas state, per port building type.
+4. **So the driver is the engine's overseas-port provisioning, iterating per port TYPE.** An
+   overseas state needs a port for market access; the AI ensures one. In vanilla there is ONE port
+   building, the 1836 start already provides it everywhere, and the logic is satisfied — GBR adds
+   +4 port levels in twelve years (41→45, melts at 1838/1842/1848) on a queue of steel mills,
+   plantations, trade centres and textiles. In our five-type split the same logic apparently
+   re-fires for each newly unlockable `port = yes` building type, in every overseas state, mandate
+   or no mandate. (The exact rule — hardcoded vs NAI — is not identified from files; our port tiers
+   carry no ai_value/should_auto_expand, so it is not building-script side.)
+5. **The dominance of the queue is a DENOMINATOR effect on top.** The pool is starved at the 1.0×
+   cost book (52 queue-eligible GBR levels in 18 years, against vanilla's hundreds), so ~24 port
+   levels that would be a rounding error in vanilla's mix are 46% of ours — and 100% of wave years.
 
-**Railways are the control for factor 1**: NOT subsidised in this arm (nice_to_have never taken up by
-GBR — profit £647–2,787/wk, cash £142–252k), yet they grew 21 levels — the same transportation
-ceiling expressed as genuine profitability. So the ceiling recruits the pool honestly for railways
-and dishonestly (via subsidy) for ports.
+**Railways grew 21 levels unsubsidised** (profit £647–2,787/wk) on genuinely profitable
+ceiling-priced transportation — an honest price signal, not part of the port story.
 
 **The steamer phantom-demand loop** (the second half of the runaway): `building_port_steam` is gated
 on `screw_frigate`, which vanilla's `effect_starting_technology_tier_1_tech` hands to **BEL, FRA,
@@ -181,9 +201,14 @@ pinned at the −25% shipyard stance: base-price goods margin −6.7% before wag
 run. **The tech side is symmetric by construction** — `screw_frigate` gates `building_shipyard_metal`
 too — so the asymmetry was purely economic (the −25% stance) and stock (zero 1836 metal yards).
 
-**What it does NOT say**: nothing here measures vanilla's own queue composition under its own
-must_have trio (vanilla ports are profitable and its transportation is not at ceiling, so the a
-priori expectation is no runaway — unmeasured); and the 87% is one country, one run, one arm.
+**What it does NOT say**: it does not name the exact engine rule (hardcoded AI vs an NAI define —
+unidentified); it does not say whether one level-1 steam port per overseas state is even WRONG
+(arguably it is the supply network working — the faults it produced were phantom steamer demand,
+now addressed by §10.59, and crowding in a starved pool, which is the cost book's question); and
+the 87% stock share is one country's read, though the queue waves replicate across arms, runs and
+countries. **Follow-up guardrail**: `tools/testbed/queue_mix.mjs` — the construction-mix
+reasonability check, now part of the ~5-minute smoke protocol (user-directed); it fires on GBR/FRA
+at the very FIRST 1837 summary of these runs.
 
 **Fixes ruled by the user in the same conversation** (see BALANCE_FRAMEWORK §10.59): per-tier
 `solve_profit` override re-solving shipyard_steam e1 at +5% instead of −25%; the 1836 steamer seed

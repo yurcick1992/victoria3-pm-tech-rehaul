@@ -4875,6 +4875,9 @@ and `building_shipyard_metal` in the shipped tree, so "port-tech holders get the
 true by construction; the requested prerequisite-chain grant has nothing to add. The asymmetry that
 produced the famine was purely economic (part 1) and stock (part 2).
 
-⚠ **What this deliberately does NOT do**: it does not touch the port side of F66's runaway (the
-mandate × `should_auto_expand` × transportation-ceiling product) — that is the subsidy-design
-question (§the conditional-subsidy work, F64/F65), still open on the start-assignment bypass.
+⚠ **What this deliberately does NOT do**: it does not touch the port side of F66's runaway — which
+turned out to be STRUCTURAL, not subsidy-driven (the engine's per-overseas-state port provisioning
+fires once per port building TYPE, so the five-tier split makes every overseas state stack one
+level of each new tier; identical with and without the mandate — see F66's corrected mechanism).
+That is an open design question; the conditional-subsidy work (F64/F65) and its start-assignment
+bypass are a separate open thread.
