@@ -419,6 +419,19 @@
 <main>
   <div id="banner" class="banner"></div>
 
+  <!-- THE SHIPPED ARM — read-only summary of everything the BUILDER will emit from the loaded config.
+       The sheet's recipe book is one part of the arm; this card is the rest: AI subsidies, per-PM
+       goods/employment overrides, ai_value overrides, research events, the §10.60 factored tiers.
+       First cut of the shipped-arm-visibility rework (user-requested 2026-08-16). ⚠ ui/data.js does
+       NOT embed config/start_exceptions.json yet, so the 1836-start seed/override rules are POINTED AT,
+       never enumerated — enumerating them here from a hardcoded copy would go stale silently, which is
+       exactly the failure this card exists to prevent. Collapsed by default; the header tag carries the
+       one-line summary. -->
+  <div class="card">
+    <div class="hd" data-toggle="armbd">Shipped arm <span class="tag" id="armTag"></span></div>
+    <div class="bd" id="armBody" style="display:none"></div>
+  </div>
+
   <div class="card">
     <div class="hd" data-toggle="viz">Ladder
       <span class="vizmode" id="vizMode"><label><input type="radio" name="vizmode" value="be" checked> break-even</label><label><input type="radio" name="vizmode" value="profit"> profit</label></span>
@@ -1459,7 +1472,40 @@ function onTarget(t,be){ return Math.abs(be - t.target_be) <= TARGET_TOL; }   //
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
 // ---------- rendering ----------
+// ---------- the shipped-arm card (read-only; see the HTML comment above #armBody) ----------
+// Reads the LIVE session state where it exists (SUBSIDY map, tier fields — so an edit shows here the
+// moment render() runs) and the pristine config for the rest. String-built, no inputs, cheap.
+function renderArmCard(){
+  const cfg=window.PMDATA.config||{};
+  const inds=(cfg.industries||[]).filter(i=>!i.disabled);
+  const tiers=inds.flatMap(i=>i.tiers||[]);
+  const emitted=tiers.filter(t=>!t.model_only);
+  const factored=[]; IND.forEach(i=>i.tiers.forEach(t=>{ if(t.workforce_mult!=null||t.effect_mult!=null) factored.push(t); }));
+  const sub=(typeof SUBSIDY!=='undefined'&&SUBSIDY)||cfg.building_subsidies||{};
+  const subBy={}; Object.entries(sub).forEach(([k,v])=>{ if(v)(subBy[v]=subBy[v]||[]).push(k); });
+  const pmg=Object.keys((typeof REFEDIT!=='undefined'&&REFEDIT)||cfg.pm_goods||{});
+  const pme=Object.keys(cfg.pm_employment||{});
+  const aiv=Object.keys((typeof REFAIV!=='undefined'&&REFAIV)||cfg.building_ai_value||{});
+  const re=cfg.research_events||{};
+  const solveP=tiers.filter(t=>t.solve_profit!=null);
+  const disabled=(cfg.industries||[]).filter(i=>i.disabled);
+  const nSub=Object.values(subBy).reduce((a,b)=>a+b.length,0);
+  const row=(k,v)=>`<div style="display:flex;gap:10px;margin:3px 0;font-size:12.5px"><span class="muted" style="flex:none;min-width:200px">${k}</span><span style="flex:1;min-width:0">${v}</span></div>`;
+  const tag=document.getElementById('armTag'); if(!tag) return;
+  tag.textContent=`— what the builder emits from this config: ${inds.length} industries · ${emitted.length} emitted tiers · ${factored.length} factored · subsidies ${nSub} · pm_goods ${pmg.length} · research events ${re.enabled?'ON':'off'} · start exceptions: see config`;
+  document.getElementById('armBody').innerHTML=
+    row('industries', `${inds.length} (${tiers.length} tiers, ${emitted.length} emitted${disabled.length?`; <b>DISABLED:</b> ${disabled.map(i=>esc(i.id)).join(', ')}`:''})`)
+   +row('factored tiers (§10.60)', factored.length? factored.map(t=>`${esc(t.key)} <span class="muted">workforce ×${t.workforce_mult??1} · effects ×${t.effect_mult??1} · out ${t.output_qty} · cost ${t.building_cost}</span>`).join('<br>') : 'none')
+   +row('AI subsidies', nSub? Object.entries(subBy).map(([v,ks])=>`<b>${esc(v)}</b> ×${ks.length} <span class="muted">${ks.map(esc).join(', ')}</span>`).join('<br>') : 'none (every building vanilla)')
+   +row('pm_goods overrides', pmg.length? `${pmg.length}: <span class="muted">${pmg.map(esc).join(', ')}</span>` : 'none')
+   +row('pm_employment overrides', pme.length? pme.map(k=>`${esc(k)} <span class="muted">${esc(JSON.stringify(cfg.pm_employment[k]))}</span>`).join('<br>') : 'none')
+   +row('building_ai_value (preserved bldgs)', aiv.length? aiv.map(k=>`${esc(k)} = ${(typeof REFAIV!=='undefined'&&REFAIV[k]!=null)?REFAIV[k]:(cfg.building_ai_value||{})[k]}`).join('<br>') : 'none')
+   +row('solve_profit overrides (§10.59)', solveP.length? solveP.map(t=>`${esc(t.key)} = ${t.solve_profit}`).join('<br>') : 'none')
+   +row('research events (step 2)', re.enabled? `ENABLED — thresholds by era ${esc(JSON.stringify(re.thresholds_by_era||{}))} · grant ${re.grant_fraction} of era base cost per stage · bars ${re.industry_bar_months} mo industry / ${re.war_bar_weeks} wk war` : 'disabled — emits nothing (the plain techs arm)')
+   +row('1836 start exceptions', `<span class="muted">NOT embedded in ui/data.js yet — the seed/override rules live in <code>config/start_exceptions.json</code> (§10.60.3: the RATIFIED steam-port + steam-yard chain seed). This line is a pointer, deliberately not an enumeration — a hardcoded copy here would go stale silently. Embedding needs a build-side pass.</span>`);
+}
 function render(){
+  renderArmCard();          // the shipped-arm summary — reads live SUBSIDY/tier state, so edits show up
   renderScenario();         // syncs AUTO prices into thresholds first (and fills the base-wage row it owns)
   renderIndustries();
   attachIndustryUI();
@@ -2994,6 +3040,7 @@ document.addEventListener('change', e=>{
     banner(warned?'warn':'info', warned
       ? `${esc(b)} → none. ⚠ This building is also subsidized by <code>ai_strategy_default</code>, which the mod does not own — suppression may not take effect (depends on whether a typed strategy's subsidies merge with or replace the default's).`
       : `AI subsidy policy: ${esc(b)} → ${v||'vanilla (don’t touch)'}. Written into all 7 administrative ai_strategies on build.`);
+    renderArmCard();   // the shipped-arm card lists subsidies — this branch returns without render()
     return;
   }
   if(d.target!==undefined){

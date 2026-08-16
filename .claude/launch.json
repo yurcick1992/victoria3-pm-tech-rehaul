@@ -1,0 +1,10 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "balance-ui",
+      "url": "http://localhost:8777",
+      "port": 8777
+    }
+  ]
+}

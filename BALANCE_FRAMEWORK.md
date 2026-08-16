@@ -5006,6 +5006,46 @@ un-divide the ports on its next `--write`):
    consistently (tierEmp applies workforce_mult), so this one is safe by construction; expect port
    COUNTS ~×10 on the next solve, and the committed era_presets are stale on port counts until then.
 
+### §10.60.3 THE PARKING RULING + THE CLIPPER-PORT DECISION LIST (user-ruled 2026-08-16 late evening)
+
+**RULED, standing design: on start, the t1 steam ports and the steam yards MUST be provided.** The §2
+chain seed (13 leader-owned anchorage steam stubs + 2 converted metal yards, `_why_chain_seed` in
+config/start_exceptions.json) is RATIFIED canonical — no longer probe-stage. The port/steamer work is
+then PARKED pending the decisions below; next work item is UI/config consistency (the shipped-arm
+visibility rework), and the clipper ports ("in the red too much" — user, looking at the 1840 state)
+categorically need resolution.
+
+**The open questions, ordered by decision-urgency (some to decide, some to defer — user's call):**
+- **Q1 — the destaffing mechanism.** Ports and yards shed workforce while their goods sit at the +75%
+  ceiling with 6–10× unmet demand (the chain-seed probe's corrected reading). Until the mechanism is
+  identified (access wedge / bureaucrat-qualification × EMPLOYMENT_PROPORTIONALITY jam / wage
+  competition), every clipper-port fix is symptom treatment. Proposed: one desk session over the 1852
+  melt — per-building realised revenue, per-profession employment, state-access join; no game time.
+- **Q2 — infra-trio subsidies.** Vanilla's answer to red ports IS the must_have subsidy; we demoted it
+  at full-size port costs, and the bill argument is now ~×10 weaker. (a) restore must_have flat;
+  (b) un-park the F64/F65 conditional (leaders-mandate, retire-at-maturity — measured working, needs
+  loc); (c) keep nice_to_have and accept red stubs. A subsidy also short-circuits the Q1 symptom for
+  ports specifically (it pays the wages → staffed → supply).
+- **Q3 — the sail port's intended end-state.** Late-century red sail ports are the LADDER WORKING
+  (N+2 obsolescence) — but the engine re-provisions one sail stub per overseas state forever (measured:
+  a converted anchorage's sail port is rebuilt within a year), so a permanent red sail-dust layer
+  exists regardless. Accept engine stubs as tolerated red (scoring exemption), or fight via
+  recipes/costs (ai_value is proven inert)?
+- **Q4 — can a staffed sail port live unsubsidised?** Basic port t1 target_be 270% cannot break even
+  inside the engine's 175% price band BY CONSTRUCTION — it lives on subsidy (vanilla) or dies (our
+  nice_to_have). If Q2 lands on no-subsidy, the e0/e1 port recipes need re-sloping (fewer clippers per
+  MM) + an era re-solve. Downstream of Q1/Q2.
+- **Q5 — seed extensions.** (a) subject-owned anchorages need a screw_frigate grant to market members
+  (L14 blocks today; a deliberate tech-grant design, changes diffusion); (b) leaders' overseas
+  basic-port states — near-zero value, the engine does it in weeks; (c) FRA has NO engine source, its
+  seeded yard limps on an engines shortage — one motor-industry seed would complete FRA's chain.
+- **Q6 — the yard rule's final form.** Standing: one converted small clipper yard per affected leader,
+  under-employment accepted. Formalise as "one t1 metal yard per screw_frigate market leader with
+  overseas ports"?
+- **Q7 — trade centers.** Same pathology family (GBR staffing 42→15 while levels grow 44→61); MM's
+  largest buyer. In Q1's decomposition scope; any trade-center ruling (incl. the parked F49 mandate
+  question) deferred until Q1 reads.
+
 ### §10.60.1 The start-assignment fix: OWN `common/history/ai/00_strategy.txt` (user-proposed 2026-08-16, agreed)
 
 The conditional-subsidy fork's one real disruption is that history's 89 curated `set_strategy`

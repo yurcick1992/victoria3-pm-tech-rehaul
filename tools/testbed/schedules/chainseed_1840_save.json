@@ -1,0 +1,19 @@
+{
+  "schedule_version": 1,
+  "label": "chainseed-1840-save",
+  "_why": "NOT A MEASUREMENT - a save generator (user request 2026-08-16 late evening): produce a ~1840.1.1 autosave of the chain-seed world (canonical config + the §2 seed rules in start_exceptions.json, same arm as ports-chainseed-probe 20260816_213843) for the user to load and inspect VISUALLY in the game. The kept newest save (~1840.1.1, yearly cadence) is copied into the user's save games folder afterwards. Any numbers from this run are redundant with the chainseed probe's.",
+  "_arms": "chainseed = {kind: config, config: config/mod_config.json} - identical to ports-chainseed-probe.",
+  "_cost": "1 run x 4 in-game years, ~6 min wall.",
+  "defaults": {
+    "metrics": ["events"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 30,
+    "tags": ["GBR", "FRA"]
+  },
+  "setups": {
+    "chainseed": { "kind": "config", "config": "config/mod_config.json" }
+  },
+  "runs": [
+    { "setup": "chainseed", "until": "1840.2.1", "dump_dates": ["1840.1.1"] }
+  ]
+}
