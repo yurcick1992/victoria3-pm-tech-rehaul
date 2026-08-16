@@ -1,0 +1,20 @@
+{
+  "schedule_version": 1,
+  "label": "ports-cond3-n1",
+  "_why": "PORT-SUBSIDY DESIGN v3 (user-specified 2026-08-16): TWO effective states per admin family. DISTRESS - market leader AND (market MM pricier > +50% OR staffed modern+motor MM output < 50% of the market's MM buy orders) -> ALL five port tiers must_have. CALM leader or ANY non-leader -> port keys REMOVED entirely (none; non-leaders never supply the overlord's convoys by mandate). Grounding: the famine decades ARE a ceiling-pinned MM deficit (nosub runs: +75% price cap continuously 1840-1880, GBR 1880 buy 645 vs sell 25) and 1836-39 reads MM SURPLUS (-38..-55%), so the price form has no start window by construction. THREE questions this run decides: (1) FLIP-FLOP - does the engine's lazy strategy re-evaluation cause threshold oscillation, and what is the ONSET LAG from first +50% breach to first subsidy GBP (the user's stated concern; watch GBR ~1837-40); (2) MERGE-vs-REPLACE, the 3-week-old semantics unknown, resolved as a natural experiment: calm-era GBR 1836-39 subsidising sail ports proves MERGE (ai_strategy_default's must_have leaking through our removed key), zero subsidies proves REPLACE; (3) the v3 behavior - famine avoided, Russia-class leaders spared automatically (their MM never breaches +50%?), world bill vs v1/v2. DECISION RULE: SOLVED = no overseas state below 0.9 access for 2+ consecutive dumps 1840-1890 AND no unbounded oscillation; run to 1900 and summarise (no continuation - per the standing ruling pattern).",
+  "_arms": "ports_cond3 = {kind: config, config: config/mod_config.ports_cond3.json} - NOT committed. Regenerate: the vancost_nosub recipe with building_subsidies = ports x5 must_have + railways/power nice_to_have, and subsidy_conditional = { exempt_trigger: 'NOT = { ROOT.market.owner ?= ROOT }', exempt_overrides: ports x5 -> none, retire_trigger: 'NOT = { OR = { ROOT.market ?= { mg:merchant_marine ?= { market_goods_pricier > 0.5 } } ROOT.market ?= { mg:merchant_marine ?= { market_goods_buy_orders > pmr_mm_high_cov } } } }', retire_overrides: ports x5 -> none, coverage_share: 0.5 }. build.ps1 emits pmr_mm_high_cov = staffed modern+motor MM output x2.",
+  "_comparison": "vancost-nosub-n2 (famine baseline), ports-cond-n1 (count>=2), ports-cond2-n1 (ownership+20% share) - same 1.0x cost book. market_goods_scoped is IN this run's metrics (unlike cond2) so the MM order book is measured alongside the mandate behavior.",
+  "_cost": "1 run x 64 in-game years, ~60-75 min wall.",
+  "defaults": {
+    "metrics": ["tech_log", "events", "state_access", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 150,
+    "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "JAP"]
+  },
+  "setups": {
+    "ports_cond3": { "kind": "config", "config": "config/mod_config.ports_cond3.json" }
+  },
+  "runs": [
+    { "setup": "ports_cond3", "until": "1900.1.1", "dump_dates": ["1836.2.1", "1840.1.1", "1845.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1899.1.1"] }
+  ]
+}

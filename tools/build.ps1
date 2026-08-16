@@ -713,10 +713,10 @@ if ($subCond) {
     # >= retire_share x (all port tiers' output). Coefficients are the CONFIG's own per-tier
     # output_qty, read at build time - a re-solve flows through automatically. The SV-in-trigger
     # construct is the research bars' own shipped idiom (pmr_mob_share >= 0.5).
-    if ($subCond.retire_share) {
+    if ($subCond.retire_share -or $subCond.coverage_share) {
         $portInd = $cfg.industries | Where-Object { $_.id -eq 'port' }
-        if (-not $portInd) { throw "subsidy_conditional.retire_share needs a 'port' industry in the config" }
-        $share = [double]$subCond.retire_share
+        if (-not $portInd) { throw "subsidy_conditional share values need a 'port' industry in the config" }
+        $share = if ($subCond.retire_share) { [double]$subCond.retire_share } else { 0.5 }
         if ($share -le 0 -or $share -ge 1) { throw "subsidy_conditional.retire_share must be in (0,1)" }
         $inv = [Math]::Round(1.0 / $share, 4)
         # invariant formatting inline - Format-Qty is defined later in this straight-line script,
@@ -739,21 +739,40 @@ if ($subCond) {
             $sv.Add("`tmultiply = $(& $fmtN $t.output_qty)")
             $sv.Add("}")
         }
-        $sv.Add("# excess >= 0  <=>  modern share of port merchant-marine output >= $share")
-        $sv.Add("pmr_port_mm_excess = {")
-        $first = $true
-        foreach ($t in $portInd.tiers) {
-            if ($modernSet -notcontains $t.key) { continue }
-            $svName = 'pmr_mm_' + ($t.key -replace '^building_', '')
-            if ($first) { $sv.Add("`tvalue = $svName"); $first = $false } else { $sv.Add("`tadd = $svName") }
+        if ($subCond.retire_share) {
+            $sv.Add("# excess >= 0  <=>  modern share of port merchant-marine output >= $share")
+            $sv.Add("pmr_port_mm_excess = {")
+            $first = $true
+            foreach ($t in $portInd.tiers) {
+                if ($modernSet -notcontains $t.key) { continue }
+                $svName = 'pmr_mm_' + ($t.key -replace '^building_', '')
+                if ($first) { $sv.Add("`tvalue = $svName"); $first = $false } else { $sv.Add("`tadd = $svName") }
+            }
+            if ($first) { throw "subsidy_conditional.retire_share: no modern-class port tiers found" }
+            $sv.Add("`tmultiply = $(& $fmtN $inv)")
+            foreach ($t in $portInd.tiers) {
+                $svName = 'pmr_mm_' + ($t.key -replace '^building_', '')
+                $sv.Add("`tsubtract = $svName")
+            }
+            $sv.Add("}")
         }
-        if ($first) { throw "subsidy_conditional.retire_share: no modern-class port tiers found" }
-        $sv.Add("`tmultiply = $(& $fmtN $inv)")
-        foreach ($t in $portInd.tiers) {
-            $svName = 'pmr_mm_' + ($t.key -replace '^building_', '')
-            $sv.Add("`tsubtract = $svName")
+        # v3 (user design): coverage comparator — staffed high-tier MM output x (1/coverage_share),
+        # for the trigger  mg:merchant_marine = { market_goods_buy_orders > pmr_mm_high_cov }
+        # (buy orders exceeding it  <=>  high-tier covers < coverage_share of the market's MM demand)
+        if ($subCond.coverage_share) {
+            $cs = [double]$subCond.coverage_share
+            if ($cs -le 0 -or $cs -ge 1) { throw "subsidy_conditional.coverage_share must be in (0,1)" }
+            $cinv = [Math]::Round(1.0 / $cs, 4)
+            $sv.Add("pmr_mm_high_cov = {")
+            $first = $true
+            foreach ($t in $portInd.tiers) {
+                if ($modernSet -notcontains $t.key) { continue }
+                $svName = 'pmr_mm_' + ($t.key -replace '^building_', '')
+                if ($first) { $sv.Add("`tvalue = $svName"); $first = $false } else { $sv.Add("`tadd = $svName") }
+            }
+            $sv.Add("`tmultiply = $(& $fmtN $cinv)")
+            $sv.Add("}")
         }
-        $sv.Add("}")
         WriteText "$modRel\common\script_values\zzz_pm_rehaul_subsidy_values.txt" (($sv -join "`n") + "`n") $bom
         Write-Output "ai subsidies: merchant-marine share values emitted (retire_share $share, coefficients $((@($portInd.tiers | ForEach-Object { $_.output_qty })) -join '/'))"
     }
