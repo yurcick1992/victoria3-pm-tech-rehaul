@@ -89,6 +89,17 @@ param(
     # WARNING: this OVERWRITES the player's own autosave*.v3 slots. See MODDING_NOTES.
     [ValidateSet("never", "monthly", "quarteryear", "halfyear", "five_year", "yearly")]
     [string]   $AutosaveInterval = "five_year",
+
+    # ⭐ CONTINUATION MODE (2026-08-16): launch attempt 1 with -continuelastsave, i.e. CONTINUE a
+    # prior run's world from the newest save on the machine instead of starting a fresh 1836 game.
+    # The CALLER owns making sure that newest save is the intended one (nothing else may write saves
+    # between the source run's end and this launch). -ContinueExpectAfter is the guard: if the first
+    # tick lands BEFORE this date the load failed and -handsoff began a fresh 1836 game (the same
+    # failure mode the resume ladder handles), and the run is abandoned loudly instead of silently
+    # measuring a fresh world. The proven-safe flag combination is the resume path's own
+    # (-continuelastsave + -handsoff keeps observer mode — verified 2026-08-06, session resume_diag).
+    [switch]   $ContinueFromSave,
+    [string]   $ContinueExpectAfter = "",
     # How many times a run may be resumed FROM THE SAME AUTOSAVE before that save is declared poisoned
     # and the run abandoned. 0 disables resuming (an abnormal exit then just ends the run).
     #
@@ -754,7 +765,7 @@ try {
         $attempt++
         $attemptStart = Get-Date
         $launchArgs = $gameArgs
-        if ($attempt -gt 1) { $launchArgs = @("-continuelastsave") + $gameArgs }
+        if ($attempt -gt 1 -or $ContinueFromSave) { $launchArgs = @("-continuelastsave") + $gameArgs }
         $resumeFrom = $lastTick
 
         # ⭐ EVIDENCE COPY, TAKEN AT LAUNCH (user-approved 2026-08-14, FINDINGS F56). Whatever save
@@ -767,7 +778,7 @@ try {
         # The folder is invisible to harvest_saves.ps1 and to landmine L12, which both glob saves\ only.
         # It exists because the 1.13.10 sway recursion (F56) made poisoned-but-loadable saves the key
         # evidence, and a run that RECOVERS after re-crashing is exactly the case that used to lose them.
-        if ($attempt -gt 1) {
+        if ($attempt -gt 1 -or $ContinueFromSave) {
             $toLoad = Get-ChildItem $SaveDir -Filter *.v3 -ErrorAction SilentlyContinue |
                       Sort-Object LastWriteTime -Descending | Select-Object -First 1
             if ($toLoad) {
@@ -829,7 +840,17 @@ try {
                         if ($lineClock -lt $startClock -and ($startClock - $lineClock) -lt 43200) { continue }
                     }
                     $lastTick = $tickHere
-                    if (-not $firstTick) { $firstTick = $lastTick }
+                    if (-not $firstTick) {
+                        $firstTick = $lastTick
+                        # continuation early abort: a fresh-1836 first tick means the save never loaded
+                        if ($ContinueFromSave -and $attempt -eq 1 -and $ContinueExpectAfter -and
+                            (ConvertTo-DateNum $firstTick) -lt (ConvertTo-DateNum $ContinueExpectAfter)) {
+                            Write-Log "continuation landed at $firstTick, BEFORE the expected $ContinueExpectAfter - the save did not load; stopping the game" "WARN"
+                            Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
+                            $timedOut = $true; $abandoned = "continuation load failed (fresh start at $firstTick)"
+                            Start-Sleep -Seconds 3
+                        }
+                    }
                 }
             }
             $null = Read-Tail $tailError   # mirrored only; nothing to react to live
@@ -934,6 +955,16 @@ try {
                 Remove-Item -LiteralPath $ev.pending -Force -ErrorAction SilentlyContinue
             }
             $script:PendingEvidence = $null
+        }
+
+        # Continuation landing guard: the first tick must land AFTER -ContinueExpectAfter, or the
+        # load failed and -handsoff silently began a fresh 1836 game — abandon rather than measure it.
+        if ($ContinueFromSave -and $attempt -eq 1 -and $ContinueExpectAfter -and $firstTick) {
+            if ((ConvertTo-DateNum $firstTick) -lt (ConvertTo-DateNum $ContinueExpectAfter)) {
+                Write-Log "continuation landed at $firstTick, BEFORE the expected $ContinueExpectAfter - the save did not load; abandoning" "WARN"
+                $abandoned = "continuation load failed (fresh start at $firstTick)"
+                break
+            }
         }
 
         if ($reached -or $timedOut) { break }
