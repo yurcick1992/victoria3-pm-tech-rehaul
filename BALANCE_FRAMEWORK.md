@@ -4886,12 +4886,39 @@ level of each new tier; identical with and without the mandate — see F66's cor
 That is an open design question; the conditional-subsidy work (F64/F65) and its start-assignment
 bypass are a separate open thread.
 
-## 10.60 THE ×1/50 PORT UNIT (user-ruled 2026-08-16 — IMPLEMENTATION PENDING, next session)
+## 10.60 THE PORT UNIT FACTORISATION (user-ruled 2026-08-16, refined same evening: ×1/50 → ×1/10 → GRADED PER TIER — IMPLEMENTATION PENDING, next session)
 
-**The ruling.** Port tiers are rebuilt at **1/50 unit size** — ×1/50 employment and ×1/50 all
-effects (recipes, merchant-marine output, state_infrastructure; construction cost to match) — so
-that the engine's un-overridable per-overseas-state port provisioning (F66) places floors that
-cost ~nothing, while genuine hub capacity re-expresses as ~50× more, much cheaper levels.
+**The ruling (final form of the evening).** Port tiers are rebuilt at reduced unit size — employment
+and ALL effects (recipes, merchant-marine output, state_infrastructure, construction cost) divided
+by a PER-TIER factor — so the engine's un-overridable per-overseas-state port provisioning (F66)
+places floors that cost little, while hub capacity re-expresses as more, cheaper levels. The
+factorisation is **GRADED: hugest denominators on the early tiers (where the from-start waves hit),
+progressively smaller for later eras** — a new port tech's unlock is a shock to damp, so the
+smallest divisor must stay well above ×1/2 (user constraint).
+**The proposed divisor set — 10 / 10 / 10 / 5 / 5 (e0…e4) — falls out of the profession-divisibility
+constraint on its own** (every profession ≥10/level, the vanilla floor, per the
+EMPLOYMENT_PROPORTIONALITY_LIMIT hazard below):
+  e0 700/200/100 ÷10 = 70/20/10 (EXACTLY vanilla's anchorage PM — engine-proven) ·
+  e1 600/200/100/100 ÷10 = 60/20/10/10 ·
+  e2 500/200/200/100 ÷10 = 50/20/20/10 ·
+  e3 400/250/**50**/200/100 ÷5 = 80/50/10/40/20 (the 50 engineers CAP e3 at ÷5 — ÷10 gives 5) ·
+  e4 300/300/100/200/100 ÷5 = 60/60/20/40/20.
+Late-tier shock check: an e3 wave costs 900/5 = 180 pts per overseas state, landing in a far larger
+economy than 1837's — proportionally smaller than the damped e1 wave (400/10 = 40 pts) was.
+Steamer-chain alignment at ÷10 (the reason ×1/50 was abandoned): a steam-port level eats 0.63
+steamers/wk, so a gifted full-size metal yard is mild ACCEPTED overkill ("it just won't be fully
+employed"), not ceremony.
+⭐ **Proposed implementation architecture (next session's choice): divide at EMISSION, not in the
+model.** The scenario model and the era solve keep FULL-SIZE ports (no re-solve, no ladder
+distortion from unequal divisors — the ×1.5 output ladder and the recipe ratchet are per-level and
+unit-sensitive); `build.ps1` divides output/inputs/employment/infra/cost by the tier's divisor when
+emitting, and `convert_history.ps1` MULTIPLIES 1836 port levels by the divisor to preserve physical
+capacity — EXCEPT anchorage-mapped ports, which stay at exactly level 1 by the same ruling (the
+deliberately tiny colonial stub). Presets/extract must stay consistent with whichever side of the
+seam they read.
+⚠ **Interaction to watch in the validation probe**: shipping-lane MM demand is engine-side and
+ABSOLUTE, so hub ports must grow ×divisor levels to carry the same lanes — cheap levels, but the AI
+must actually build them.
 
 **Why this fix and not another.** The provisioning term ignores building script entirely
 (F66 addendum 2: ai_value 50 and −2000 both measured inert), so suppression is impossible; the
@@ -4909,3 +4936,21 @@ port counts, the macro bounds, and the ×1/50 interaction with `SCALE_LIMIT`-sty
 plus a validation probe (the F66 wave should re-appear at ~1/50th the construction cost and the
 queue share should collapse). The conditional-subsidy work (F64/F65) likely shrinks ×50 in
 magnitude with it — revisit after.
+
+### §10.60.1 The start-assignment fix: OWN `common/history/ai/00_strategy.txt` (user-proposed 2026-08-16, agreed)
+
+The conditional-subsidy fork's one real disruption is that history's 89 curated `set_strategy`
+calls ignore `possible` — countries land on the base (mandate) variant regardless of their 1836
+state and self-correct only at the first natural re-pick (2–8 years). The fix: extend
+`replace_paths` to `common/history/ai` and emit our copy with each forked strategy's assignment
+RE-POINTED to the variant whose trigger is true at 1836 — which is mechanically derivable, because
+at 1836 no high-tier ports exist (the coverage clause is false everywhere), so market LEADERS get
+the mandate variant and non-leaders the exempt variant, and 1836 market membership is exactly what
+`extract_presets.ps1` already derives. Vanilla's archetype choices stay untouched.
+⚠ **The limit**: the ~150 non-history countries get their strategy from the engine's initial
+picker, and whether THAT respects `possible` at tick zero is the still-unrun 5-minute probe (fresh
+1836 → first-save melt). If yes, owning the file closes the bypass completely; if no, the rest
+keep the 2–8yr lag — pre-assigning them would override vanilla's archetype choice, a real
+behaviour change we do not want. ⚠ An owned history file freezes against patches — ON_GAME_UPDATE
+entry when implemented. Only relevant if the conditional machinery ships (parked until after
+×1/10), but the design is recorded because any future conditional-strategy work needs it.
