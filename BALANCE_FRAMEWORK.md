@@ -4976,11 +4976,19 @@ obscure divisor coefficient behind the scenes. What shipped instead:
 - **GBR GDP vs vanilla (n=1, jagged surface — indicative only)**: graded 1.07→0.63 over 1837–51 against
   the baseline's 1.06→0.60, ahead 3–12pp in the middle years (0.85 vs 0.76 at 1841). The port sink is
   gone from the queue, but GBR's decline persists — its trade economy is the standing suspect (see next).
-- ⚠ **STANDING, PRE-EXISTING, NOT A REGRESSION: GBR/USA merchant-marine demand is ~5/wk and their ports
-  destaff to near-zero by ~1840 IN BOTH ARMS** (baseline GBR: staffing 0–5 of 41 levels, MM 4–5/wk from
-  1838; graded starts at s231/MM226 and decays to the same demand-limited equilibrium; FRA stays ~97%
-  staffed all run). The factorisation changes construction behaviour, not MM demand. Why the mod's
-  GBR/USA MM demand is a twentieth of France's is an open question for the parity restart.
+- ⚠⚠ **STANDING, PRE-EXISTING, NOT A REGRESSION — AND CORRECTED SAME EVENING: GBR/USA ports destaff to
+  near-zero by ~1840 in both arms WHILE MM DEMAND IS HUGE AND THE PRICE SITS AT THE +75% CEILING.** The
+  first write-up of this read country `goods_out` (production) as demand and concluded "MM demand
+  ~5/wk" — WRONG, retracted within the hour when the chain-seed probe's `market_goods_scoped` telemetry
+  recorded the actual order book: GBR MM buy 290–384/wk against sell 29–48, price pinned at £87.50
+  (175% of base, the ceiling) from ~1839 on; FRA the same shape from 1841. The disease is SUPPLY-side
+  and deeply pathological: buildings whose output sits at the price ceiling with 6–10× unmet demand
+  shed their workforce anyway (GBR basic ports 319 levels at staffing ~3 from 1841). Candidate
+  mechanisms, none yet discriminated: a market-access/local-price wedge (the port may realise a LOCAL
+  price far below the market's ceiling), the qualifications/EMPLOYMENT_PROPORTIONALITY jam
+  (10 bureaucrats/level gating whole buildings), or wage competition. Per-state
+  `state_region_market_access` IS persisted in saves (found, not yet decomposed) and per-building
+  realised revenue is in the melted building records — the discriminators exist.
 - ⚠ **OPEN VERIFICATION: fractional `state_infrastructure_add` (0.3/0.4/1.2) has NO vanilla precedent**
   (goods decimals do). Weak positive evidence from the 1852 melt (Alaska: infra 10.37 ≈ base 10 + 1
   staffed port × 0.3); a dedicated 10-month probe (`infra-frac-probe`) melts an early save while ports
