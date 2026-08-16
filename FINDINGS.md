@@ -131,6 +131,68 @@ transcript rather than from data.
 
 ---
 
+## F66 — ⭐⭐ **THE PORT-QUEUE RUNAWAY: under a subsidy mandate the private investment pool builds almost nothing but infrastructure — 87% of GBR's queue-eligible construction over 1837–1855 is ports + railways, with the queue reading 100% ports in the tier-arrival waves. The mechanism is a three-factor product: the mandate makes every port profitable by construction, vanilla's own cloned `should_auto_expand` accepts `is_subsidized = yes` as its cash test, and our economy keeps its transportation-price leg permanently lit at the +75% ceiling. The steamer half is a phantom-demand loop: `screw_frigate` — a tier-1-tech STARTING invention — unlocks the steamer-eating port from day 1 into a world with zero steamer supply**
+
+**Arm** `config` (ports_cond3: vancost_nosub base + ports×5 must_have + subsidy_conditional v3) ·
+session `20260816_161056_ports-cond3-n1`, 1836→~1855 (killed by ruling), 19 annual v5 save summaries ·
+🟡 the QUANTITIES are arm-bound (a mandate arm); the MECHANISM decomposition is 🟢 engine + emitted-file
+facts readable without any run.
+
+**The observation it explains** (user, watching the run live): "in those 15 years, 95% of everything
+constructed by British private queue is ports."
+
+**The queue, from the run's own v5 summaries** (`queues.private.by_type`, GBR):
+
+| window | queue contents | share |
+|---|---|---|
+| 1837–1841 | `port_steam` only (5 items, 873–1,283 pts) | **100% of items and points** |
+| 1842–1848 | no ports; 2–4 small items (railway, silk) | 0% |
+| 1849–1852 | `port_industrial` only (2–4 items) — the wave starts the year `deep_water_docks` arrives | **~100%** |
+
+**The stock, 1837→1855** (level growth, GBR, auto-grown buildings excluded — companies, financial
+districts, manors, government, military, subsistence, urban centres): **52 queue-eligible levels
+total, of which ports 24 + railways 21 = 87%**. The whole rest of the British economy: 7 levels
+(1 explosives, 1 leaded glass, 1 Bessemer steel, 2 metal shipyard, 1 tooling, 1 clipper shipyard).
+
+**The mechanism, three factors multiplied:**
+1. **The mandate makes every port profitable by construction.** All 64 GBR port levels subsidised at
+   every read (£53k/wk by 1855, profit ≡ 0, cash ≡ 0 — the subsidy fills the gap exactly). A building
+   that cannot lose money outranks every factory in the pool's return ranking.
+2. **Vanilla's own `should_auto_expand`** (cloned verbatim into our port by clone-and-swap):
+   `occupancy >= 0.8 AND (cash_reserves_ratio > 0.5 OR is_subsidized = yes) AND
+   (sg:transportation state_goods_pricier > 0.5 OR …)`. The subsidy lights leg 2 and guarantees the
+   occupancy leg (subsidised buildings hold staff).
+3. **Our economy keeps leg 3 lit permanently**: transportation sits at the **+75% ceiling** (British
+   market 1840: buy 3,382 vs sell 381; 1845: 4,402 vs 855) because railways are un-mandated and
+   urban centres under-scaled. In vanilla the same rule exists but leg 3 is usually dark.
+
+**Railways are the control for factor 1**: NOT subsidised in this arm (nice_to_have never taken up by
+GBR — profit £647–2,787/wk, cash £142–252k), yet they grew 21 levels — the same transportation
+ceiling expressed as genuine profitability. So the ceiling recruits the pool honestly for railways
+and dishonestly (via subsidy) for ports.
+
+**The steamer phantom-demand loop** (the second half of the runaway): `building_port_steam` is gated
+on `screw_frigate`, which vanilla's `effect_starting_technology_tier_1_tech` hands to **BEL, FRA,
+GBR, PRU, USA at the 1836 start** — while the 1836 world holds **105 clipper-shipyard levels and
+zero steamer production** (steamers need `building_shipyard_metal`, whose recipe the era solve had
+pinned at the −25% shipyard stance: base-price goods margin −6.7% before wages, £4,550 out vs
+£4,877 in — nobody builds it unsubsidised). GBR's port_steam reached 12 levels by 1842 and bought
+~76 nonexistent steamers/wk at the ceiling price (122.5 vs base 70) with subsidy money for the whole
+run. **The tech side is symmetric by construction** — `screw_frigate` gates `building_shipyard_metal`
+too — so the asymmetry was purely economic (the −25% stance) and stock (zero 1836 metal yards).
+
+**What it does NOT say**: nothing here measures vanilla's own queue composition under its own
+must_have trio (vanilla ports are profitable and its transportation is not at ceiling, so the a
+priori expectation is no runaway — unmeasured); and the 87% is one country, one run, one arm.
+
+**Fixes ruled by the user in the same conversation** (see BALANCE_FRAMEWORK §10.59): per-tier
+`solve_profit` override re-solving shipyard_steam e1 at +5% instead of −25%; the 1836 steamer seed
+(one yard per screw_frigate holder converted to `building_shipyard_metal` via the new
+`force_industry_tier` start exception); the requested port-tech⇒steamer-tech grant verified already
+satisfied (same tech gates both).
+
+---
+
 ## F65 — ⭐⭐ **THE v2 CONDITIONAL-SUBSIDY DESIGN IS CONCLUSIVE AT 1900: a market-ownership exemption (vanilla's `ROOT.market.owner ?= ROOT`) plus a staffed merchant-marine-share retirement holds colonial access at 1.000 for the whole window at ~30% less cost than the count form, custom script values PROVABLY work inside strategy `possible` blocks, and the class system tracks a violently churning market topology with bounded 2–8-year event-driven lags**
 
 **Arm** `config` (ports_cond2) · session `20260816_135707_ports-cond2-n1`, 1836→1900, self-quit, one attempt, stopped at 1900 by ruling (conclusive; the 1936 leg deemed overkill) · 🟡 ARM-BOUND for £ levels; the **SV-in-possible and market-idiom results are 🟢 ARM-FREE engine facts**

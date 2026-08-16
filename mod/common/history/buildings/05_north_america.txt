@@ -407,17 +407,17 @@
 				activate_production_methods={ "default_building_cotton_plantation" "pm_road_carts"  }
 			}
 			create_building={
-				building="building_shipyard"
+				building="building_shipyard_metal"
 				add_ownership={
 					building={
-						type="building_shipyard"
+						type="building_shipyard_metal"
 						country="c:USA"
 						levels=2
 						region="STATE_VIRGINIA"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_shipyard_basic"  }
+				activate_production_methods={ "pm_main_shipyard_metal"  }
 			}
 			create_building={
 				building="building_port"

@@ -559,6 +559,11 @@
         vanilla_pm:t.vanilla_pm,                       // base-game main PM this tier replaces
         building_cost:(t.building_cost != null ? +t.building_cost : null),
         wage_pct:(t.wage_pct != null ? +t.wage_pct : null),   // LEGACY config field, carried through on export
+        // ⭐ per-tier recipe-solve profit override (§10.59, user-ruled 2026-08-16): replaces the band
+        // edge AND the industry handicap for THIS tier's recipe solve (shipyard_steam e1 at +0.05).
+        // Must survive into the model — same lesson as tech_year/input_ratio above: a dropped config
+        // field is a solver branch that silently never runs (it did, for one full solve).
+        solve_profit:(t.solve_profit != null ? +t.solve_profit : null),
         _baseWage:null,                                // this tier's own base wage; null ⇒ follows S.BASE_WAGE
         ai_value:(t.ai_value != null ? +t.ai_value : null),
         employment:(t.employment ? Object.fromEntries(Object.entries(t.employment).map(([k,v]) => [k,+v])) : null),

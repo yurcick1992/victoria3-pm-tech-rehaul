@@ -1,0 +1,5 @@
+{
+  "dump_dates": ["1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+  "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "JAP"],
+  "metrics": ["tech_log", "events", "state_access"]
+}

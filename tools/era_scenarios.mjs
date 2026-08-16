@@ -1209,6 +1209,20 @@ function dominantTargetFor(ind) { return TG.minus1 + indPenalty(ind); }
 // (solving to lo LEANS the recipe toward the 4:1 cap — `capped` then reports it, exactly as under a
 // target it cannot reach). A 2pp hysteresis stops the edge-solve churning against price drift.
 function solveDomRecipe(ind, t) {
+  // ⭐ per-tier `solve_profit` (user-ruled 2026-08-16 — §10.59): a POINT target that replaces both the
+  // band edge and the industry handicap for THIS tier's recipe. The ruled use: shipyard_steam e1 at
+  // +0.05 — the −30pp shipyard stance made its recipe a −25% loss-maker at scenario prices, and in the
+  // game (where the handicap's unmodelled naval income did not materialise) it struggled even at a
+  // +75% output price, so nobody built steamer supply while port_steam bought phantom steamers at the
+  // ceiling for decades. Scoring keeps the industry handicap — only the SOLVE is overridden.
+  if (t.solve_profit != null) {
+    const tgt = +t.solve_profit;
+    if (RECIPE_MONO && monoViolated(ind, t)) return solveInputsAt(ind, t, tgt);
+    const m = E.TPthr(ind, t) / 100;
+    if (!isFinite(m) || Math.abs(m - tgt) > 0.02) return solveInputsAt(ind, t, tgt);
+    capped.delete(t.key);
+    return true;
+  }
   if (!PROFIT_BAND_ON) return solveInputsAt(ind, t, dominantTargetFor(ind));
   const pen = indPenalty(ind);
   // the ratchet outranks the in-band rest: a recipe that violates it (the tier below moved under an

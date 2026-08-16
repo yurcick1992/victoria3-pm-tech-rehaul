@@ -73,7 +73,7 @@ $handler = {
     if ($ex -and $ex.action -eq 'remove') { $script:removed++; return @() }
 
     if (-not $baseIndustry.ContainsKey($bkey)) {
-        if ($ex -and $ex.action -eq 'force_tier') { Write-Warning "force_tier on non-split building $bkey ignored ($country/$state)" }
+        if ($ex -and $ex.action -like 'force*') { Write-Warning "$($ex.action) on non-split building $bkey ignored ($country/$state)" }
         return ,$block   # non-split building, nothing to re-tier
     }
     $id = $baseIndustry[$bkey]
@@ -87,7 +87,22 @@ $handler = {
     if (-not $mainPm) { $script:unmapped += "$bkey @ $country/$state"; return ,$block }
 
     $tierIndex = $pmMap[$id][$mainPm].tier
-    if ($ex -and $ex.action -eq 'force_tier') {
+    if ($ex -and $ex.action -eq 'force_industry_tier') {
+        # Cross-industry force (user-ruled 2026-08-16, the 1836 steamer seed): re-tier this factory onto
+        # ANOTHER config industry's tier — clipper shipyards -> building_shipyard_metal. `force_tier`
+        # cannot express this: its tier index resolves inside the base building's OWN industry, and the
+        # steam chain is a separate industry whose base building is all-new (never in vanilla history).
+        # The rule must name a real industry id; a typo throws rather than silently keeping the old tier.
+        $tid = [string]$ex.industry
+        if (-not $industryById.ContainsKey($tid)) { throw "force_industry_tier: unknown industry '$tid' ($country/$state)" }
+        $id = $tid
+        $tierIndex = [int]$ex.tier
+        $maxT = $industryById[$id].tiers.Count
+        if ($tierIndex -lt 1) { $tierIndex = 1 }
+        if ($tierIndex -gt $maxT) { $tierIndex = $maxT }
+        $script:forced++
+    }
+    elseif ($ex -and $ex.action -eq 'force_tier') {
         $tierIndex = [int]$ex.tier
         $maxT = $industryById[$id].tiers.Count
         if ($tierIndex -lt 1) { $tierIndex = 1 }

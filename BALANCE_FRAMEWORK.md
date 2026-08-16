@@ -4827,3 +4827,54 @@ divergence earlier; the user ruled:
 is where the premise is testable at all. Measured under the 0.65×-anchor flat book: the mod's tier
 sector staffs ~2× vanilla's counterpart buildings all century and runs ~0.7× their per-worker output
 value until 1900, reaching parity only at 1935 (F60) — cheap buildings over-absorb into low rungs.
+
+## 10.59 THE STEAMER WEDGE AND THE PER-TIER `solve_profit` OVERRIDE (user-ruled 2026-08-16)
+
+**The fault it answers (F66's second half).** `building_shipyard_metal` (shipyard_steam e1,
+tech_year 1843) was a −25% loss-maker BY CONSTRUCTION: the shipyard handicap (−30pp on every
+shipyard target) put its dominant-recipe target at BAND_LO − 30pp = **−25%**, and the own-era
+placement exemption (2026-08-12 ruling: an era-N scenario holds every industry's era-N rung
+regardless of tech_year) makes it era-exact dominant at era 1 — so the solve dutifully delivered a
+recipe that LOSES 25% at 1836's realised prices (base-price goods margin −6.7% before wages: £4,550
+out vs £4,877 in). In the game the handicap's justification (unmodelled naval income) did not
+materialise: nobody built steamer supply unsubsidised, while `screw_frigate` — a tier-1-tech
+STARTING invention (BEL/FRA/GBR/PRU/USA) — unlocked the steamer-EATING `building_port_steam` from
+day 1. Mandated-subsidy runs bought phantom steamers at the +75% ceiling for decades (F66).
+
+**The ruling** (user, 2026-08-16, all three parts): *(1) re-solve, mandating a higher profitability
+(lower BE) for Era 1 metal shipyards; (2) make some 1836 shipyards metal even where direct rule
+application yields clipper; (3) everyone holding the t1 port tech in 1836 also gets the steamer tech
+and all prerequisites, chain-ordered.*
+
+**Part 1 — the `solve_profit` per-tier config field** (`tools/era_scenarios.mjs`):
+- A tier carrying `solve_profit` is solved to that margin as a POINT target (±2pp hysteresis),
+  **replacing both the band edge and the industry handicap** — for the solve only. Scoring keeps the
+  −30pp shipyard stance (the excusal argument is untouched).
+- Shipped value: `building_shipyard_metal.solve_profit = 0.05` — the standard workhorse stance.
+  The recipe ratchet (§10.50) then binds the chain above it (a later tier may not be less
+  input-efficient), so the whole steam chain tightens from the new e1 anchor.
+- ⚠ **The field must be carried by `makeTiers`** (`ui/econ.js`) — the first solve ran with it
+  silently dropped and changed nothing, the same trap as `input_ratio` and `tech_year` before it
+  (§10.25: a config field the model drops is a solver branch that silently never runs).
+- ⚠ A `domTierOf` "wedge fallback" was briefly added on the theory that the tier was never
+  dominant-solved; that theory was WRONG (the own-era exemption places every rung at its own era, so
+  the era-exact match always finds it) and the fallback was removed as dead code. The whole fix is
+  the point-target branch in `solveDomRecipe`.
+
+**Part 2 — the 1836 steamer seed** (`config/start_exceptions.json` + `tools/convert_history.ps1`):
+new exception action **`force_industry_tier`** (fields `industry` + `tier`), because `force_tier`
+resolves inside the base building's OWN industry and the steam chain is a separate industry whose
+base building never appears in vanilla history. Five rules, one yard per `screw_frigate` holder —
+the second-largest yard where the country has several, its only one otherwise: GBR Home Counties (5
+levels), FRA Brittany (4), USA Virginia (2), BEL Flanders (1), PRU West Prussia (1) — **13 metal
+levels world-wide** against the vanilla start's 105 clipper levels / 0 steamer supply. Every
+recipient holds the unlocking tech at start (L14 clean). A typo'd industry id THROWS.
+
+**Part 3 — verified already satisfied, no code.** `screw_frigate` gates BOTH `building_port_steam`
+and `building_shipyard_metal` in the shipped tree, so "port-tech holders get the steamer tech" is
+true by construction; the requested prerequisite-chain grant has nothing to add. The asymmetry that
+produced the famine was purely economic (part 1) and stock (part 2).
+
+⚠ **What this deliberately does NOT do**: it does not touch the port side of F66's runaway (the
+mandate × `should_auto_expand` × transportation-ceiling product) — that is the subsidy-design
+question (§the conditional-subsidy work, F64/F65), still open on the start-assignment bypass.

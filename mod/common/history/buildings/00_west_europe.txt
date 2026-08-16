@@ -1063,7 +1063,7 @@
 				activate_production_methods={ "pm_main_textile_dye"  "pm_traditional_looms" "pm_craftsman_sewing" }
 			}
 			create_building={
-				building="building_shipyard"
+				building="building_shipyard_metal"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -1073,7 +1073,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_shipyard_basic"  }
+				activate_production_methods={ "pm_main_shipyard_metal"  }
 			}
 			create_building={
 				building="building_furniture_manufactory_lathe"
@@ -4199,7 +4199,7 @@
 				reserves=1
 			}
 			create_building={
-				building="building_shipyard"
+				building="building_shipyard_metal"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -4215,7 +4215,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_shipyard_basic"  }
+				activate_production_methods={ "pm_main_shipyard_metal"  }
 			}
 			create_building={
 				building="building_naval_administration"
@@ -5465,7 +5465,7 @@
 				reserves=1
 			}
 			create_building={
-				building="building_shipyard"
+				building="building_shipyard_metal"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -5475,7 +5475,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_shipyard_basic"  }
+				activate_production_methods={ "pm_main_shipyard_metal"  }
 			}
 			create_building={
 				building="building_government_administration"
