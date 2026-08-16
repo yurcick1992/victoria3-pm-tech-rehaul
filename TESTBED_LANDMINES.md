@@ -131,6 +131,17 @@ only history the engine reads, via `replace_paths`. It resolves each building's 
 method's `unlocking_technologies` against vanilla plus our owned files, expands
 `add_era_researched` (which is most of the grant), and reports **per country**.
 
+⭐ **THE GATE IS A DOMESTIC-OWNERSHIP RULE (user-refined 2026-08-16 night, §10.60.3 Q5a).** It fires
+only on buildings the state's own country holds a stake in; a building owned ENTIRELY by foreign
+countries rides its owners' technology, not the state holder's. Vanilla itself ships such buildings
+(SIL's African anchorages are GBR-owned), and the engine provisions steam ports into subject states
+whose owners lack the tech (measured: SIL held one by 1837.1 in the vancost century run). This
+replaced a short-lived per-rule `tech_deviation` exception list the same night — a refined rule beats
+a register of exceptions to a cruder one. The skip count is PRINTED every run (78 foreign-owned 1836
+buildings on the current map — 12 of ours, the §10.60.3 overlord-owned subject stubs, and 66 of
+vanilla's own). **Tripwire proven both ways**: flipping one seeded stub's ownership to its subject
+makes the check FAIL naming the country and `screw_frigate`; restored, it passes.
+
 ⚠ **IT COMPARES AGAINST VANILLA RATHER THAN DEMANDING ZERO.** Vanilla itself fails on six countries, so
 an absolute pass is unreachable and a build demanding one could never go green. What we hold ourselves to
 is introducing **no new** gap — the real requirement, and computable because the same analysis runs

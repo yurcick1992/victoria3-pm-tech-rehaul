@@ -5053,11 +5053,14 @@ categorically need resolution.
   researched screw_frigate in a year), and by 1840 every subject in both markets has them; only ORG
   never does (likely annexed). So the subjects ARE seeded: **12 subject-owned anchorages convert to
   overlord-OWNED steam stubs** (rule field `owner` — convert_history rewrites the ownership country;
-  vanilla precedent: SIL's African anchorages are GBR-owned in vanilla itself), **NO tech grants**
-  (user: "a known deviation from the have-a-building-must-have-a-tech rule") — the rules carry
-  `tech_deviation: true`, which verify_start_techs exempts as (tag|converted-key) pairs and PRINTS
-  ("12 deliberate tech-deviation seed(s) exempted") rather than failing L14; every other building
-  stays fully gated. DEI excluded — NET's market, leader lacks the tech at start.
+  vanilla precedent: SIL's African anchorages are GBR-owned in vanilla itself), **NO tech grants**.
+  ⭐ **And the L14 gate itself was REFINED rather than excepted (user, same night)**: the
+  starting-tech gate binds **domestically-owned** buildings only — a building wholly owned by foreign
+  countries rides its owners' technology. verify_start_techs parses each block's ownership and prints
+  the skip count (78 foreign-owned 1836 buildings on the current map: our 12 stubs + 66 of vanilla's
+  own cross-owned blocks); the short-lived `tech_deviation` per-rule flag is GONE. Tripwire proven
+  both ways (a stub flipped to domestic ownership fails naming BIC + screw_frigate).
+  DEI excluded — NET's market, leader lacks the tech at start.
   (b) leader basic-port seeding: dropped (the engine does it in weeks).
   **The full seed roster: 25 steam stubs (13 leader-owned + 12 subject-state overlord-owned) +
   2 metal yards + 1 FRA motor factory = 28 rules.**

@@ -2318,7 +2318,10 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   L11 a tag that is not the country you think it is (proposed) · **L13 a starting factory converted onto a tier
   its own production method contradicts (MASKED by the re-band, not fixed)** · **L14 a country starts with a
   building its own technologies cannot unlock** (`verify_start_techs.mjs --vs-vanilla`, compared against
-  vanilla because vanilla itself fails on six countries) · **L15 a country LOSES a starting technology
+  vanilla because vanilla itself fails on six countries; ⭐ since 2026-08-16 the gate binds
+  DOMESTICALLY-owned buildings only — a building wholly owned by foreign countries rides its owners'
+  technology, which is what lets the §10.60.3 overlord-owned subject-state port stubs ship with no tech
+  grant; the foreign-owned skip count is printed every run) · **L15 a country LOSES a starting technology
   vanilla gives it** (`verify_start_techs.mjs --diff-vanilla` — L14's converse, and the quiet one: tiers 1
   and 2 draw most of their set from `add_era_researched = era_1`, so re-era-ing a technology OUT of era 1
   withdraws it from 59 countries with no file mentioning it. It expands the era shorthand against EACH

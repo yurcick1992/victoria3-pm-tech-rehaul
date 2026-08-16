@@ -22,8 +22,7 @@
       "state": "STATE_IONIAN_ISLANDS",
       "action": "force_tier",
       "tier": 2,
-      "owner": "GBR",
-      "tech_deviation": true
+      "owner": "GBR"
     },
     {
       "building": "building_port",
@@ -59,8 +58,7 @@
       "state": "STATE_SENEGAL",
       "action": "force_tier",
       "tier": 2,
-      "owner": "GBR",
-      "tech_deviation": true
+      "owner": "GBR"
     },
     {
       "building": "building_port",
@@ -68,8 +66,7 @@
       "state": "STATE_SIERRA_LEONE",
       "action": "force_tier",
       "tier": 2,
-      "owner": "GBR",
-      "tech_deviation": true
+      "owner": "GBR"
     },
     {
       "building": "building_port",
@@ -77,8 +74,7 @@
       "state": "STATE_GOLD_COAST",
       "action": "force_tier",
       "tier": 2,
-      "owner": "GBR",
-      "tech_deviation": true
+      "owner": "GBR"
     },
     {
       "building": "building_port",
@@ -86,8 +82,7 @@
       "state": "STATE_SOUTH_CAMEROON",
       "action": "force_tier",
       "tier": 2,
-      "owner": "GBR",
-      "tech_deviation": true
+      "owner": "GBR"
     },
     {
       "building": "building_port",
@@ -95,8 +90,7 @@
       "state": "STATE_WASHINGTON",
       "action": "force_tier",
       "tier": 2,
-      "owner": "GBR",
-      "tech_deviation": true
+      "owner": "GBR"
     },
     {
       "building": "building_port",
@@ -118,8 +112,7 @@
       "state": "STATE_NICARAGUA",
       "action": "force_tier",
       "tier": 2,
-      "owner": "GBR",
-      "tech_deviation": true
+      "owner": "GBR"
     },
     {
       "building": "building_port",
@@ -176,8 +169,7 @@
       "state": "STATE_ABU_DHABI",
       "action": "force_tier",
       "tier": 2,
-      "owner": "GBR",
-      "tech_deviation": true
+      "owner": "GBR"
     },
     {
       "building": "building_port",
@@ -185,8 +177,7 @@
       "state": "STATE_TENASSERIM",
       "action": "force_tier",
       "tier": 2,
-      "owner": "GBR",
-      "tech_deviation": true
+      "owner": "GBR"
     },
     {
       "building": "building_port",
@@ -194,8 +185,7 @@
       "state": "STATE_PEGU",
       "action": "force_tier",
       "tier": 2,
-      "owner": "GBR",
-      "tech_deviation": true
+      "owner": "GBR"
     },
     {
       "building": "building_port",
@@ -203,8 +193,7 @@
       "state": "STATE_TAHITI",
       "action": "force_tier",
       "tier": 2,
-      "owner": "FRA",
-      "tech_deviation": true
+      "owner": "FRA"
     },
     {
       "building": "building_port",
@@ -212,8 +201,7 @@
       "state": "STATE_NORTH_ISLAND",
       "action": "force_tier",
       "tier": 2,
-      "owner": "GBR",
-      "tech_deviation": true
+      "owner": "GBR"
     },
     {
       "building": "building_shipyard",
@@ -240,5 +228,5 @@
       "tier": 1
     }
   ],
-  "_why_chain_seed": "THE §2 CHAIN SEED — RATIFIED STANDING DESIGN (user-ruled 2026-08-16 late evening + Q5a/Q5c the same night, §10.60.3): every anchorage in the GBR and FRA 1836 markets (the two markets whose LEADER holds screw_frigate from day 0 - tier-1 starting techs are GBR/FRA/USA/PRU/BEL, of whom only these two have overseas empires) becomes a tier-2 (t1 steam, graded 1/10-size) port stub at level 1 (the anchorage clamp holds it there). LEADER-owned anchorages convert plainly; SUBJECT-owned ones (BIC/SIL/ION/NSW/PLY/MKT/ABU/ORG - Q5a ruled after MEASURING that the engine provisions steam ports into these states regardless of the subject s tech, SIL by 1837.1 in the century run) convert with ownership REWRITTEN TO THE OVERLORD (`owner`) and NO tech grant: `tech_deviation: true` marks the deliberate breach of have-a-building-have-the-tech, which verify_start_techs exempts LOUDLY (printed count) instead of failing L14. DEI excluded - NET market, leader lacks the tech at start. Each leader gets ONE metal shipyard by converting a small clipper-shipyard block (GBR East Anglia, FRA Brittany; Q6 sizing rule: ceil(stubs / (yard output/stub demand)) yards, min 1 - one each suffices below ~107 stubs), and FRA one motor factory (Q5c: Rhone 1-lv paper mill -> motor t1; FRA holds atmospheric_engine). STEEL IS NOT SEEDED (GBR Yorkshire 6 lv, FRA Alsace 1 lv exist); leader-owned overseas BASIC-port states (Malta/Gibraltar/Malaya) are NOT seeded - the engine provisions their steam stubs within weeks at graded cost (measured). Regenerate with the gen_seed_rules.mjs pattern (vanilla history anchorages x ui/presets.js market membership)."
+  "_why_chain_seed": "THE В§2 CHAIN SEED вЂ” RATIFIED STANDING DESIGN (user-ruled 2026-08-16 late evening + Q5a/Q5c the same night, В§10.60.3): every anchorage in the GBR and FRA 1836 markets (the two markets whose LEADER holds screw_frigate from day 0 - tier-1 starting techs are GBR/FRA/USA/PRU/BEL, of whom only these two have overseas empires) becomes a tier-2 (t1 steam, graded 1/10-size) port stub at level 1 (the anchorage clamp holds it there). LEADER-owned anchorages convert plainly; SUBJECT-owned ones (BIC/SIL/ION/NSW/PLY/MKT/ABU/ORG - Q5a ruled after MEASURING that the engine provisions steam ports into these states regardless of the subject s tech, SIL by 1837.1 in the century run) convert with ownership REWRITTEN TO THE OVERLORD (`owner`) and NO tech grant - covered not by an exception but by the REFINED L14 RULE (user, same night): the starting-tech gate binds DOMESTICALLY-owned buildings only; a building wholly owned by foreign countries rides its owners technology (verify_start_techs.mjs parses each block s ownership and prints the foreign-owned skip count). DEI excluded - NET market, leader lacks the tech at start. Each leader gets ONE metal shipyard by converting a small clipper-shipyard block (GBR East Anglia, FRA Brittany; Q6 sizing rule: ceil(stubs / (yard output/stub demand)) yards, min 1 - one each suffices below ~107 stubs), and FRA one motor factory (Q5c: Rhone 1-lv paper mill -> motor t1; FRA holds atmospheric_engine). STEEL IS NOT SEEDED (GBR Yorkshire 6 lv, FRA Alsace 1 lv exist); leader-owned overseas BASIC-port states (Malta/Gibraltar/Malaya) are NOT seeded - the engine provisions their steam stubs within weeks at graded cost (measured). Regenerate with the gen_seed_rules.mjs pattern (vanilla history anchorages x ui/presets.js market membership)."
 }
