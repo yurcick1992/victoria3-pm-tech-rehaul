@@ -2064,7 +2064,7 @@
 				activate_production_methods={ "pm_atmospheric_engine_pump_building_iron_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
 			create_building={
-				building="building_shipyard"
+				building="building_shipyard_metal"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -2074,7 +2074,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_shipyard_basic"  }
+				activate_production_methods={ "pm_main_shipyard_metal"  }
 			}
 			create_building={
 				building="building_rye_farm"
@@ -4199,7 +4199,7 @@
 				reserves=1
 			}
 			create_building={
-				building="building_shipyard"
+				building="building_shipyard_metal"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -4215,7 +4215,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_shipyard_basic"  }
+				activate_production_methods={ "pm_main_shipyard_metal"  }
 			}
 			create_building={
 				building="building_naval_administration"

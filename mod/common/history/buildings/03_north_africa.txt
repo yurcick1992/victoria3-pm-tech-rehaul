@@ -1075,7 +1075,7 @@
 		}
 		region_state:FRA={
 			create_building={
-				building="building_port"
+				building="building_port_steam"
 				add_ownership={
 					country={
 						country="c:FRA"
@@ -1083,7 +1083,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_main_port_steam" }
 			}
 			create_building={
 				building="building_wheat_farm"
@@ -1205,7 +1205,7 @@
 		}
 		region_state:FRA={
 			create_building={
-				building="building_port"
+				building="building_port_steam"
 				add_ownership={
 					country={
 						country="c:FRA"
@@ -1213,7 +1213,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_main_port_steam" }
 			}
 			create_building={
 				building="building_fishing_wharf"

@@ -132,7 +132,7 @@
 		}
 		region_state:FRA={
 			create_building={
-				building="building_port"
+				building="building_port_steam"
 				add_ownership={
 					country={
 						country="c:FRA"
@@ -140,7 +140,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 		region_state:GBR={
@@ -171,7 +171,7 @@
 				activate_production_methods={ "default_building_sugar_plantation" "pm_road_carts"  }
 			}
 			create_building={
-				building="building_port"
+				building="building_port_steam"
 				add_ownership={
 					country={
 						country="c:GBR"
@@ -179,7 +179,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 	}
@@ -1987,7 +1987,7 @@
 	s:STATE_SOUTH_ATLANTIC_ISLANDS={
 		region_state:GBR={
 			create_building={
-				building="building_port"
+				building="building_port_steam"
 				add_ownership={
 					country={
 						country="c:GBR"
@@ -1995,7 +1995,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 	}
