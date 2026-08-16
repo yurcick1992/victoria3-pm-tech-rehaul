@@ -1,0 +1,20 @@
+{
+  "schedule_version": 1,
+  "label": "ports-chainseed-probe",
+  "_why": "THE §2 CHAIN-SEED PROBE (user-directed 2026-08-16 evening): the graded-port probe measured ZERO metal shipyards built world-wide in 15 years against standing steamer demand from the engine's own steam-port stubs (GBR buys 0.6-1.5 steamers/wk with no producer on Earth; steam stubs at -80/wk) - the chicken-and-egg the user's seed plan targets. This arm = canonical graded config + the chain seed now in config/start_exceptions.json: 13 leader-owned anchorages in the GBR/FRA markets (the two 1836 markets whose leader holds screw_frigate day 0) start as t1 steam stubs at level 1, and each leader gets ONE metal shipyard converted from a small clipper-shipyard block (GBR East Anglia 3 lv, FRA Brittany 1 lv). Steel NOT seeded (GBR Yorkshire 6 lv + FRA Alsace 1 lv exist in vanilla history); engines NOT seeded per the stop-there rule (GBR has Yorkshire motor 1 lv; FRA has NO engine source - expect its yard to limp on an engines shortage, that is a reading not a defect). Subject-owned anchorages EXCLUDED by landmine L14 (their owners cannot unlock the building; preflight caught it live on the first dry run). READ: (1) does the seeded yard SURVIVE and supply the stubs, or shed to zero like everything else - the steamer market's price series (market_goods_scoped, first time recorded for this question); (2) where does the MM price sit in the GBR/FRA markets (the user's standing question - not measurable in the bare probe, which ran without market telemetry); (3) do the seeded stubs STAY staffed or destaff into the same ~5/wk MM-demand floor (canonical nice_to_have = no subsidies, majors pay GBP 0 - measured); (4) does the engine re-provision SAIL ports into the seeded states (their anchorage was converted away - unknown interaction, queue_mix shows it); (5) steel/engines prices under the new yard demand; (6) the usual queue mix + NET/SPA/POR delayed waves.",
+  "_arms": "chainseed = {kind: config, config: config/mod_config.json} - the CANONICAL config (graded ports §10.60.2 + nice_to_have + F61) with the chain-seed rules LIVE in config/start_exceptions.json (committed; _why_chain_seed there holds the full derivation). Dry-run verified incl. preflight (L14 clean after the leader-only restriction).",
+  "_comparison": "ports-graded-probe 20260816_202628 is the exact no-seed baseline (same config minus the 15 exception rules, same span): GBR ports destaff to s4/MM 5 by 1841, zero yards world-wide, steamers bought 0.6-1.5/wk phantom. vancost-nosub-n2 20260816_011552 = the pre-factorisation shape.",
+  "_cost": "1 run x 16 in-game years, ~20 min wall.",
+  "defaults": {
+    "metrics": ["tech_log", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 60,
+    "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "BEL"]
+  },
+  "setups": {
+    "chainseed": { "kind": "config", "config": "config/mod_config.json" }
+  },
+  "runs": [
+    { "setup": "chainseed", "until": "1852.1.1", "dump_dates": ["1837.1.1", "1839.1.1", "1841.1.1", "1844.1.1", "1848.1.1", "1851.1.1"] }
+  ]
+}

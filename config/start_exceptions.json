@@ -15,5 +15,114 @@
     }
   ],
   "_why_steamer_seed": "REVERTED (user-ruled 2026-08-16, same day): the seed existed only to feed the abnormal from-start steam-port construction, which F66 traced to the engine provisioning every overseas state once per port building TYPE — the disease to fix, not the symptom to feed. The force_industry_tier machinery stays (documented, tested); the rules are withdrawn. The five rules it carried: GBR Home Counties 5 / FRA Brittany 4 / USA Virginia 2 / BEL Flanders 1 / PRU West Prussia 1 -> building_shipyard_metal.",
-  "rules": []
+  "rules": [
+    {
+      "building": "building_port",
+      "country": "FRA",
+      "state": "STATE_CONSTANTINE",
+      "action": "force_tier",
+      "tier": 2
+    },
+    {
+      "building": "building_port",
+      "country": "FRA",
+      "state": "STATE_ORAN",
+      "action": "force_tier",
+      "tier": 2
+    },
+    {
+      "building": "building_port",
+      "country": "FRA",
+      "state": "STATE_IVORY_COAST",
+      "action": "force_tier",
+      "tier": 2
+    },
+    {
+      "building": "building_port",
+      "country": "FRA",
+      "state": "STATE_SENEGAL",
+      "action": "force_tier",
+      "tier": 2
+    },
+    {
+      "building": "building_port",
+      "country": "GBR",
+      "state": "STATE_BERMUDA",
+      "action": "force_tier",
+      "tier": 2
+    },
+    {
+      "building": "building_port",
+      "country": "GBR",
+      "state": "STATE_GUATEMALA",
+      "action": "force_tier",
+      "tier": 2
+    },
+    {
+      "building": "building_port",
+      "country": "GBR",
+      "state": "STATE_BAHAMAS",
+      "action": "force_tier",
+      "tier": 2
+    },
+    {
+      "building": "building_port",
+      "country": "FRA",
+      "state": "STATE_WEST_INDIES",
+      "action": "force_tier",
+      "tier": 2
+    },
+    {
+      "building": "building_port",
+      "country": "GBR",
+      "state": "STATE_WEST_INDIES",
+      "action": "force_tier",
+      "tier": 2
+    },
+    {
+      "building": "building_port",
+      "country": "GBR",
+      "state": "STATE_JAMAICA",
+      "action": "force_tier",
+      "tier": 2
+    },
+    {
+      "building": "building_port",
+      "country": "FRA",
+      "state": "STATE_GUAYANA",
+      "action": "force_tier",
+      "tier": 2
+    },
+    {
+      "building": "building_port",
+      "country": "GBR",
+      "state": "STATE_GUAYANA",
+      "action": "force_tier",
+      "tier": 2
+    },
+    {
+      "building": "building_port",
+      "country": "GBR",
+      "state": "STATE_SOUTH_ATLANTIC_ISLANDS",
+      "action": "force_tier",
+      "tier": 2
+    },
+    {
+      "building": "building_shipyard",
+      "country": "GBR",
+      "state": "STATE_EAST_ANGLIA",
+      "action": "force_industry_tier",
+      "industry": "shipyard_steam",
+      "tier": 1
+    },
+    {
+      "building": "building_shipyard",
+      "country": "FRA",
+      "state": "STATE_BRITTANY",
+      "action": "force_industry_tier",
+      "industry": "shipyard_steam",
+      "tier": 1
+    }
+  ],
+  "_why_chain_seed": "THE §2 CHAIN SEED (user-directed 2026-08-16 evening, after the graded-port probe measured ZERO metal shipyards world-wide in 15 years against standing steamer demand from the engine-provisioned stubs): every LEADER-OWNED anchorage in the GBR and FRA 1836 markets (the two markets whose leader holds screw_frigate from day 0 - tier-1 starting techs are GBR/FRA/USA/PRU/BEL, of whom only GBR and FRA have overseas empires) becomes a tier-2 (t1 steam, graded 1/10-size) port stub at level 1 (the anchorage clamp holds it there), and each leader gets ONE metal shipyard by converting a small clipper-shipyard block (GBR East Anglia 3 lv, FRA Brittany 1 lv - the clipper-capacity loss is the accepted price). LEADER-OWNED ONLY by landmine L14: subject-owned anchorages (BIC/SIL/ION/NSW/...) would start with a building their own technologies cannot unlock - preflight caught it on the first dry run; their stubs arrive from the engine when they research. STEEL IS NOT SEEDED: both leaders already hold 1836 steel mills (GBR Yorkshire 6 lv, FRA Alsace 1 lv). KNOWN LIMPS, accepted per the stop-there rule (coal/iron/engines by market): FRA has no 1836 engine source (its yard will run an engines shortage; GBR has Yorkshire motor 1 lv), and leader-owned overseas BASIC-port states (Malta/Gibraltar/Malaya) are NOT seeded - the engine provisions their steam stubs within weeks at graded cost (measured, ports-graded-probe). 13 port seeds (GBR 7, FRA 6) + 2 yard conversions; regenerate with the gen_seed_rules.mjs pattern (vanilla history anchorages x ui/presets.js market membership)."
 }
