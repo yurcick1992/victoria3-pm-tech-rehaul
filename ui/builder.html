@@ -342,6 +342,22 @@
   .pgnav button.on{background:var(--panel2);color:var(--accent)}
   #techpage{padding:0;max-width:none;margin:0}
   #techframe{display:block;width:100%;border:0;background:var(--bg)}
+  /* PAGE 3 — MOD CHANGES. Read-only prose; own mc- classes so nothing collides with the sheet's. */
+  #changespage{padding:16px;max-width:1080px;margin:0 auto}
+  .mc-intro{color:var(--muted);font-size:12.5px;margin:2px 0 14px;line-height:1.5}
+  .mc-toc{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+  .mc-toc a{font-size:12px;padding:3px 9px;border:1px solid var(--line);border-radius:12px;text-decoration:none;color:var(--fg);background:var(--panel)}
+  .mc-toc a:hover{background:var(--panel2)}
+  .mc-sec{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin:0 0 12px;overflow:hidden}
+  .mc-sec>h2{font-size:14px;margin:0;padding:9px 14px;background:var(--panel2);border-bottom:1px solid var(--line)}
+  .mc-sec>h2 .mc-n{color:var(--muted);font-weight:400;font-size:12px;margin-left:8px}
+  .mc-pts{margin:0;padding:8px 14px 10px 30px}
+  .mc-pts>li{margin:7px 0;font-size:13px;line-height:1.55}
+  .mc-pts .muted{color:var(--muted)}
+  .mc-pts code{font-size:12px}
+  .mc-cond{color:var(--warn);font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;margin-right:4px}
+  .mc-sub{margin:4px 0 0 14px;padding:0 0 0 16px;font-size:12.5px;color:var(--fg)}
+  .mc-sub>li{margin:3px 0}
   .lockbtn{font-size:13px;padding:0 6px}
   .mtable col.c-act{width:58px}
   .tieract{display:flex;gap:3px;justify-content:flex-end}
@@ -385,6 +401,7 @@
   <span class="pgnav">
     <button id="navSheet" class="on" title="The balance sheet: recipes, scenario, prices, profitability.">Balance sheet</button>
     <button id="navTech" title="The industry tech tree (ROADMAP step 1): era as a row, progression downward, columns are industries. Hover a technology for what blocks it and what it blocks.">Tech tree</button>
+    <button id="navChanges" title="READ-ONLY: every change the mod makes to the base game beyond the balance sheet's recipes — the whole set the Build button emits, compressed into readable points. Values are interpolated live from the loaded config, so the page cannot go stale against it.">Mod changes</button>
   </span>
   <span id="sheetTools" style="display:contents">
   <span class="tag muted">Manufacturing industry PMs</span>
@@ -419,19 +436,10 @@
 <main>
   <div id="banner" class="banner"></div>
 
-  <!-- THE SHIPPED ARM — read-only summary of everything the BUILDER will emit from the loaded config.
-       The sheet's recipe book is one part of the arm; this card is the rest: AI subsidies, per-PM
-       goods/employment overrides, ai_value overrides, research events, the §10.60 factored tiers.
-       First cut of the shipped-arm-visibility rework (user-requested 2026-08-16). ⚠ ui/data.js does
-       NOT embed config/start_exceptions.json yet, so the 1836-start seed/override rules are POINTED AT,
-       never enumerated — enumerating them here from a hardcoded copy would go stale silently, which is
-       exactly the failure this card exists to prevent. Collapsed by default; the header tag carries the
-       one-line summary. -->
-  <div class="card">
-    <div class="hd" data-toggle="armbd">Shipped arm <span class="tag" id="armTag"></span></div>
-    <div class="bd" id="armBody" style="display:none"></div>
-  </div>
-
+  <!-- The "Shipped arm" card (first cut of the shipped-arm-visibility rework, 2026-08-16) lived here;
+       it is absorbed by PAGE 3 — the Mod changes page (nav, top left), which enumerates the whole
+       emitted set, start exceptions included (ui/data.js now embeds them, and the live server serves
+       them at /api/start_exceptions). -->
   <div class="card">
     <div class="hd" data-toggle="viz">Ladder
       <span class="vizmode" id="vizMode"><label><input type="radio" name="vizmode" value="be" checked> break-even</label><label><input type="radio" name="vizmode" value="profit"> profit</label></span>
@@ -478,28 +486,49 @@
 <section id="techpage" hidden>
   <iframe id="techframe" title="Industry tech tree"></iframe>
 </section>
+
+<!-- ===== PAGE 3: MOD CHANGES (user-ruled 2026-08-16) ==============================================
+     READ-ONLY. Every change the mod makes to the base game beyond the balance sheet's per-tier
+     recipes/costs, compressed into readable points and grouped by theme — the whole set the Build
+     button emits. There is deliberately NO add/remove-a-point UI and never will be: the page is a
+     VIEW of the loaded config plus the builders' fixed rules. Numbers and lists are interpolated
+     from the live config (renderModChanges in the main script), so an edit on the sheet shows here;
+     prose describing a builder RULE is authored beside the rule's implementation and must be updated
+     with it (same doc-sync convention as CLAUDE.md). Rendered lazily on first visit and re-rendered
+     on every visit — it is a cheap string build. -->
+<section id="changespage" hidden>
+  <div id="changesBody"></div>
+</section>
 <script>
 (function () {
   var main = document.querySelector('main'), page = document.getElementById('techpage'),
+      changes = document.getElementById('changespage'),
       frame = document.getElementById('techframe'), hdr = document.querySelector('header'),
       tools = document.getElementById('sheetTools'),
-      bSheet = document.getElementById('navSheet'), bTech = document.getElementById('navTech');
+      bSheet = document.getElementById('navSheet'), bTech = document.getElementById('navTech'),
+      bChanges = document.getElementById('navChanges');
+  // Three pages, one visible at a time. The sheet is <main>; the other two are siblings of it.
+  var PAGES = { sheet: { btn: bSheet, el: main }, tech: { btn: bTech, el: page },
+                changes: { btn: bChanges, el: changes } };
   var loaded = false;
   // The header wraps to two or three rows depending on window width, so its height is measured rather
   // than assumed — a hardcoded offset leaves the tree either clipped or short by a whole row of buttons.
   function fit() { if (!page.hidden) frame.style.height =
     Math.max(320, window.innerHeight - hdr.getBoundingClientRect().height) + 'px'; }
-  function show(tech) {
-    page.hidden = !tech; main.hidden = tech;
-    tools.style.display = tech ? 'none' : 'contents';
-    bSheet.classList.toggle('on', !tech); bTech.classList.toggle('on', tech);
-    if (tech && !loaded) {
+  function show(id) {
+    for (var k in PAGES) { PAGES[k].el.hidden = (k !== id); PAGES[k].btn.classList.toggle('on', k === id); }
+    tools.style.display = (id === 'sheet') ? 'contents' : 'none';
+    if (id === 'tech' && !loaded) {
       loaded = true;
       if (window.__TECHTREE_HTML) { frame.srcdoc = window.__TECHTREE_HTML; guard(); }
       else frame.src = 'techtree.html';
     }
+    // The Mod-changes page is rendered by the MAIN script (it reads the loaded config), which runs
+    // after this one — by the time a click can happen the renderer exists. Re-rendered on every
+    // visit so sheet edits (subsidies, multipliers) show; it is a cheap string build.
+    if (id === 'changes' && window.renderModChanges) window.renderModChanges(true);
     fit();
-    if (tech) window.scrollTo(0, 0);
+    if (id !== 'sheet') window.scrollTo(0, 0);
   }
   // A BLANK FRAME EXPLAINS NOTHING, and there is one realistic way to get one: a host that refuses the
   // nested frame under its own CSP. Serving from ui/ is verified, so this only ever fires on a published
@@ -515,8 +544,9 @@
       page.insertBefore(n, frame);
     }, 2500);
   }
-  bSheet.onclick = function () { show(false); };
-  bTech.onclick  = function () { show(true); };
+  bSheet.onclick   = function () { show('sheet'); };
+  bTech.onclick    = function () { show('tech'); };
+  bChanges.onclick = function () { show('changes'); };
   window.addEventListener('resize', fit);
 })();
 </script>
@@ -563,6 +593,24 @@ const GOOD_GROUPS = [
 
 // ---------- state ----------
 if(!window.PMDATA){ document.body.innerHTML = '<p style="padding:24px">Could not load <code>data.js</code>. Run <code>tools\\build.ps1</code> first, and open this file from the same <code>ui/</code> folder.</p>'; throw new Error("no data"); }
+// ---- LIVE CONFIG FIRST (user-ruled 2026-08-16): the sheet opens on exactly what the Build button
+// would ship. ui/data.js embeds a BUILD-TIME copy of config/mod_config.json, which is stale the moment
+// a solver --write or a hand edit touches the config without a build (the same trap econ_host.mjs
+// closed for the Node solvers). Served by tools/ui.ps1 the live file is one request away — fetched
+// SYNCHRONOUSLY, because everything below is consts computed at load and an async boot would mean
+// restructuring the whole script for a localhost read that takes milliseconds. The standalone snapshot
+// and a file:// open have no server: they keep the embedded copy (its build date is PMDATA.generated),
+// the fetch fails silently, and the load banner states which source the page is on either way.
+let CONFIG_SOURCE = 'build-time copy in data.js' + (window.PMDATA.generated ? ' (built ' + window.PMDATA.generated + ')' : '');
+(function(){
+  if(location.protocol !== 'http:' && location.protocol !== 'https:') return;
+  function getJSON(path){ try{ const x = new XMLHttpRequest(); x.open('GET', path, false); x.send();
+      return x.status === 200 ? JSON.parse(x.responseText) : null; } catch(e){ return null; } }
+  const live = getJSON('/api/config');
+  if(live && live.industries){ window.PMDATA.config = live; CONFIG_SOURCE = 'config/mod_config.json (live)'; }
+  const sx = getJSON('/api/start_exceptions');   // ships in data.js too; the live copy wins when served
+  if(sx) window.PMDATA.start_exceptions = sx;
+})();
 const PRICES = window.PMDATA.prices;
 // full vanilla building/PMG/PM reference (from vanilla.js); may be absent if not yet generated.
 const VAN = window.PMVANILLA || {buildings:{}, pmgs:{}, pms:{}};
@@ -650,6 +698,7 @@ function makeTiers(i){ return i.tiers.map((t,ix)=>({
     wage_pct:(t.wage_pct!=null?+t.wage_pct:null),   // LEGACY config field (still read by the solvers/linter/builder); the UI now derives wages from the workforce × base wage. Carried through on export.
     _baseWage:null,   // this tier's own base wage (£/wk); null ⇒ follows the sheet-level BASE_WAGE
     ai_value:(t.ai_value!=null?+t.ai_value:null),   // per-tier AI construction desire; null = engine default (AIVAL_DEFAULT)
+    solve_profit:(t.solve_profit!=null?+t.solve_profit:null),   // §10.59 per-tier recipe-solve margin override (solver-side; carried so the fork stays faithful to the config — ui/econ.js makeTiers carries it too)
     // §10.60 graded port factorisation: visible+editable per-tier emission multipliers. workforce_mult
     // scales base employment (build.ps1 applies it at emission; tierEmp applies it here so wages/BE/profit
     // match the emitted small unit); effect_mult scales the non-goods effects. null = 1 (unfactored tier).
@@ -670,6 +719,7 @@ const IND = window.PMDATA.config.industries.filter(i => !i.disabled).map(i => ({
   id:i.id, output_good:i.output_good,
   secondary_pmgs:(i.secondary_pmgs||[]).filter(pg=>VAN.pmgs[pg]),   // vanilla secondary PMGs (selectable)
   follows_be:(i.follows_be!==false),   // false = stays on vanilla economics (ports, railways), not on the BE ladder
+  ladder_end:i.ladder_end||null,       // 'plateau' | 'extinct' — how the industry's ladder stops (ui/econ.js carries it too)
   no_mass_be:!!i.no_mass_be,           // new-economy buildings: excluded from mass BE tools + preset by default
   locked:!!i.no_mass_be,   // UI-session lock: excludes this group from all mass editors (preset + payback sweeps); new-economy starts locked
   _open:false,    // fold state, preserved across re-render
@@ -1472,43 +1522,146 @@ function onTarget(t,be){ return Math.abs(be - t.target_be) <= TARGET_TOL; }   //
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
 // ---------- rendering ----------
-// ---------- the shipped-arm card (read-only; see the HTML comment above #armBody) ----------
-// Reads the LIVE session state where it exists (SUBSIDY map, tier fields — so an edit shows here the
-// moment render() runs) and the pristine config for the rest. String-built, no inputs, cheap.
-function renderArmCard(){
+// ---------- PAGE 3: MOD CHANGES (read-only; see the #changespage HTML comment) ---------------------
+// THE WHOLE SET OF CHANGES the Build button emits, compressed into readable points, grouped by theme.
+// It absorbed the "Shipped arm" card (the first cut of this rework, 2026-08-16). Two kinds of content,
+// deliberately mixed: NUMBERS AND LISTS are interpolated from the loaded config + live session state
+// (SUBSIDY, pm_goods edits, tier fields — so a sheet edit shows here on the next visit), while PROSE
+// states the builders' FIXED RULES (build.ps1, convert_history.ps1, emit_techs.mjs,
+// emit_research_events.mjs) and is maintained together with them — the same doc-sync convention as
+// CLAUDE.md, so a builder change updates this page's prose in the same pass. There is NO
+// add/remove-a-point UI and never will be: the page is a faithful VIEW of the emitted set, not an
+// editor. ⚠ inside a point marks a FLAGGED DIVERGENCE — a place where what ships differs from a
+// stated intent (verified 2026-08-16 against the emitted mod); resolving one is a design decision.
+// A few figures (grant lines, research-event counts) are only knowable at build time and are marked
+// "at the last build" — everything else cannot go stale against the loaded config.
+function renderModChanges(force){
+  const pg=document.getElementById('changespage'); if(!pg||(pg.hidden&&!force)) return;
+  const body=document.getElementById('changesBody'); if(!body) return;
   const cfg=window.PMDATA.config||{};
+  const sx=window.PMDATA.start_exceptions||null;
   const inds=(cfg.industries||[]).filter(i=>!i.disabled);
-  const tiers=inds.flatMap(i=>i.tiers||[]);
-  const emitted=tiers.filter(t=>!t.model_only);
-  const factored=[]; IND.forEach(i=>i.tiers.forEach(t=>{ if(t.workforce_mult!=null||t.effect_mult!=null) factored.push(t); }));
-  const sub=(typeof SUBSIDY!=='undefined'&&SUBSIDY)||cfg.building_subsidies||{};
-  const subBy={}; Object.entries(sub).forEach(([k,v])=>{ if(v)(subBy[v]=subBy[v]||[]).push(k); });
-  const pmg=Object.keys((typeof REFEDIT!=='undefined'&&REFEDIT)||cfg.pm_goods||{});
-  const pme=Object.keys(cfg.pm_employment||{});
-  const aiv=Object.keys((typeof REFAIV!=='undefined'&&REFAIV)||cfg.building_ai_value||{});
-  const re=cfg.research_events||{};
-  const solveP=tiers.filter(t=>t.solve_profit!=null);
   const disabled=(cfg.industries||[]).filter(i=>i.disabled);
-  const nSub=Object.values(subBy).reduce((a,b)=>a+b.length,0);
-  const row=(k,v)=>`<div style="display:flex;gap:10px;margin:3px 0;font-size:12.5px"><span class="muted" style="flex:none;min-width:200px">${k}</span><span style="flex:1;min-width:0">${v}</span></div>`;
-  const tag=document.getElementById('armTag'); if(!tag) return;
-  tag.textContent=`— what the builder emits from this config: ${inds.length} industries · ${emitted.length} emitted tiers · ${factored.length} factored · subsidies ${nSub} · pm_goods ${pmg.length} · research events ${re.enabled?'ON':'off'} · start exceptions: see config`;
-  document.getElementById('armBody').innerHTML=
-    row('industries', `${inds.length} (${tiers.length} tiers, ${emitted.length} emitted${disabled.length?`; <b>DISABLED:</b> ${disabled.map(i=>esc(i.id)).join(', ')}`:''})`)
-   +row('factored tiers (§10.60)', factored.length? factored.map(t=>`${esc(t.key)} <span class="muted">workforce ×${t.workforce_mult??1} · effects ×${t.effect_mult??1} · out ${t.output_qty} · cost ${t.building_cost}</span>`).join('<br>') : 'none')
-   +row('AI subsidies', nSub? Object.entries(subBy).map(([v,ks])=>`<b>${esc(v)}</b> ×${ks.length} <span class="muted">${ks.map(esc).join(', ')}</span>`).join('<br>') : 'none (every building vanilla)')
-   +row('conditional subsidies (§10.60.3)', cfg.subsidy_conditional
-      ? `market leaders carry the mandate above; it RETIRES when the coverage tiers supply ≥ ${Math.round((cfg.subsidy_conditional.coverage_share??0.5)*100)}% of market MM demand · coverage tiers: <b>${(cfg.subsidy_conditional.coverage_tiers||['building_port_modern','building_port_motor']).map(k=>esc(String(k).replace('building_port_','')) ).join(', ')}</b> · retire/exempt land on ${esc([...new Set(Object.values(cfg.subsidy_conditional.retire_overrides||{}))].join('/')||'?')} · non-leaders exempt (own-market test)`
-      : 'none (flat subsidies only)')
-   +row('pm_goods overrides', pmg.length? `${pmg.length}: <span class="muted">${pmg.map(esc).join(', ')}</span>` : 'none')
-   +row('pm_employment overrides', pme.length? pme.map(k=>`${esc(k)} <span class="muted">${esc(JSON.stringify(cfg.pm_employment[k]))}</span>`).join('<br>') : 'none')
-   +row('building_ai_value (preserved bldgs)', aiv.length? aiv.map(k=>`${esc(k)} = ${(typeof REFAIV!=='undefined'&&REFAIV[k]!=null)?REFAIV[k]:(cfg.building_ai_value||{})[k]}`).join('<br>') : 'none')
-   +row('solve_profit overrides (§10.59)', solveP.length? solveP.map(t=>`${esc(t.key)} = ${t.solve_profit}`).join('<br>') : 'none')
-   +row('research events (step 2)', re.enabled? `ENABLED — thresholds by era ${esc(JSON.stringify(re.thresholds_by_era||{}))} · grant ${re.grant_fraction} of era base cost per stage · bars ${re.industry_bar_months} mo industry / ${re.war_bar_weeks} wk war` : 'disabled — emits nothing (the plain techs arm)')
-   +row('1836 start exceptions', `<span class="muted">NOT embedded in ui/data.js yet — the seed/override rules live in <code>config/start_exceptions.json</code> (§10.60.3: the RATIFIED steam-port + steam-yard chain seed). This line is a pointer, deliberately not an enumeration — a hardcoded copy here would go stale silently. Embedding needs a build-side pass.</span>`);
+  const emitted=[]; IND.forEach(i=>i.tiers.forEach(t=>{ if(!t.model_only) emitted.push({i,t}); }));
+  const factored=emitted.filter(x=>x.t.workforce_mult!=null||x.t.effect_mult!=null);
+  const clones=inds.filter(i=>i.clone_from_vanilla).map(i=>i.id);
+  const plateau=inds.filter(i=>i.ladder_end==='plateau').map(i=>i.id);
+  const extinct=inds.filter(i=>i.ladder_end==='extinct').map(i=>i.id);
+  const heavy=inds.filter(i=>i.building&&i.building.heavy_industry_law).map(i=>i.id);
+  const coastal=inds.filter(i=>i.building&&i.building.coastal_only).map(i=>i.id);
+  const aivTiers=emitted.filter(x=>x.t.ai_value!=null);
+  const solveP=emitted.filter(x=>x.t.solve_profit!=null);
+  const sub=(typeof SUBSIDY!=='undefined'&&SUBSIDY)||cfg.building_subsidies||{};
+  const subBy={}; Object.entries(sub).forEach(([k,v])=>{ if(v&&v!=='vanilla')(subBy[v]=subBy[v]||[]).push(k); });
+  const pmG=(typeof REFEDIT!=='undefined'&&REFEDIT)||cfg.pm_goods||{};
+  const pmE=cfg.pm_employment||{};
+  const aiv=(typeof REFAIV!=='undefined'&&REFAIV)||cfg.building_ai_value||{};
+  const re=cfg.research_events||{};
+  const sc=cfg.subsidy_conditional||null;
+  const langs=(cfg.languages||[]).length;
+  const newTechs=Object.values(TECHIDX).filter(T=>T.o==='new');
+  const fmt=n=>(+n).toLocaleString('en-US');
+  const goodsMap=m=>Object.entries(m||{}).map(([g,q])=>`${esc(g)} ${q}`).join(', ')||'—';
+  const pt=h=>`<li>${h}</li>`;
+  const sec=(id,title,note,items)=>`<section class="mc-sec" id="mc-${id}"><h2>${title}${note?`<span class="mc-n">${note}</span>`:''}</h2><ol class="mc-pts">${items.join('')}</ol></section>`;
+
+  // ---- §4's live enumeration of the start-exception rules ----
+  const rules=(sx&&sx.rules)||[];
+  const stubs=rules.filter(r=>r.action==='force_tier'&&r.building==='building_port');
+  const stubOwned=stubs.filter(r=>r.owner);
+  const otherFT=rules.filter(r=>r.action==='force_tier'&&r.building!=='building_port');
+  const fit=rules.filter(r=>r.action==='force_industry_tier');
+  const removes=rules.filter(r=>r.action==='remove');
+  const ownerPairs=[...new Set(stubOwned.map(r=>`${r.country}→${r.owner}`))].join(', ');
+  const fitList=fit.map(r=>`${esc(r.country||'?')} ${esc((r.state||'').replace('STATE_',''))}: ${esc(r.building.replace('building_',''))} → <b>${esc(r.industry)}</b> t${r.tier}`).join('; ');
+
+  const S1=sec('split','1 · The tier split — buildings',`${inds.length} industries · ${emitted.length} tier buildings${disabled.length?` · DISABLED: ${disabled.map(i=>esc(i.id)).join(', ')}`:''}`,[
+    pt(`<b>One main production method per building.</b> Each industry's vanilla building becomes a ladder of per-era building types, each carrying exactly one main PM in its own single-method group. The vanilla "switch your main method" group is dropped, so the free 1830s→1930s upgrade toggle no longer exists — modernising means <b>constructing</b> the next tier's building at real capital cost. Secondary groups (automation, luxury, canning, …) stay selectable per industry.`),
+    pt(`<b>Anchor keys.</b> In each industry, the lowest-era tier replacing a real vanilla main PM <b>keeps the vanilla building key</b> (plus its aliases), so vanilla script testing <code>has_building</code> keeps matching that rung; higher tiers are new building types. Vanilla references that now match only the anchor tier are catalogued (MISSING_PM_REFERENCES.md / MISSING_BUILDING_CONDITIONS.md) for one strategic batch fix, not patched piecemeal.`),
+    pt(`<b>Whole-file ownership.</b> Buildings ship as whole-file replacements of vanilla's <code>01_industry</code>, <code>06_urban_center</code> and <code>11_private_infrastructure</code>; every block we do not split passes through verbatim, and chains with no vanilla anchor (the steamer shipyards) are appended. Owning a file freezes it against game patches until the next build (ON_GAME_UPDATE.md).`),
+    pt(`<b>Split buildings are re-authored from a template</b> (group, icon, city type, unlocking tech, PM groups, construction, law/coastal gates, ai_value, ownership, background). A vanilla field outside that template is dropped — known cases catalogued in MISSING_BUILDING_CONDITIONS.md.`),
+    pt(`<b>Clone-and-swap for ${clones.map(esc).join(' / ')||'—'}.</b> These carry engine-critical fields the template can't model, so their vanilla block is copied <b>verbatim</b> and only the key, unlocking technology, PM groups and construction cost are swapped — <code>port = yes</code>, terrain manipulators, complex ai_value blocks and <code>potential</code> all survive. ⚠ inherited quirk: those verbatim ai_value blocks still test the BASE key (an oil power plant's +4000 fires when the country lacks a <i>coal</i> plant; every railway tier's Trans-Siberian bonus tests <code>building_railway</code>).`),
+    pt(`<b>Ladder ends.</b> ${plateau.length?`<b>${plateau.map(esc).join(', ')}</b> plateau — the last tier is permanent`:''}${extinct.length?`; <b>${extinct.map(esc).join(', ')}</b> go extinct — the industry actually dies (§10.30)`:''}.`),
+    pt(`<b>In-game names</b> read "Era N. Name. BE target X%", where N is the tier's <b>era</b>, never a position — an industry legitimately debuting at "Era 3" is the claim that it did not exist before. Localised as English stubs in all ${langs} languages via <code>replace/</code>. ⚠ flagged: port and railway names currently carry the BE label too (their <code>follows_be</code> is unset), though a break-even against an unpriced infrastructure output means nothing — not yet ruled.`),
+    pt(`<b>Trade centres are not tiered</b> — deliberately left vanilla; the mod only raises their AI construction value (§7).`)
+  ]);
+
+  const S2=sec('emit','2 · Recipes, costs & effects — emission rules','the numbers themselves live on the Balance sheet',[
+    pt(`<b>Recipes emit verbatim into each tier's main PM</b> — the volumes the era pipeline solved, exactly as this sheet shows them. ⚠ one caveat: non-factored tiers' goods are cast to <b>integers</b> at emission (config 42.3 ships as 42); only the ${factored.length} factored port tiers emit exact decimals.`),
+    pt(`<b>Per-tier construction cost.</b> Every tier emits its own <code>required_construction</code> from the §10.57 cost book: vanilla's own cost anchor × band × 1.5^(era−1), band 2 for vanilla's 800-point class minus infrastructure plus four ruled exceptions (tooling, shipyard, arms, artillery). Derived by <code>payback_census.mjs --write</code>, stored in the config, emitted as-is.`),
+    pt(`<b>Graded ports (§10.60)</b> — ports are <b>fractional-unit buildings</b>, so the engine's per-overseas-state provisioning wave costs ~1/10th: goods and cost are stored pre-divided in the config; employment is scaled by <code>workforce_mult</code> and state effects by <code>effect_mult</code> at emission (the build throws if a multiplier leaves fractional employment). Live:${factored.length?`<ul class="mc-sub">${factored.map(x=>`<li><code>${esc(x.t.key)}</code> workforce ×${x.t.workforce_mult??1} · effects ×${x.t.effect_mult??1} · out ${x.t.output_qty} · cost ${x.t.building_cost}${x.t.state_infrastructure!=null?` · infra ${x.t.state_infrastructure}`:''}</li>`).join('')}</ul>`:' none'}`),
+    pt(`<b>Non-goods outputs</b> emit workforce-scaled: state infrastructure from ports (${inds.find(i=>i.id==='port')?(cfg.industries.find(i=>i.id==='port').tiers.map(t=>t.state_infrastructure).filter(v=>v!=null).join('/')):'—'}) and railways (${(cfg.industries.find(i=>i.id==='railway')||{tiers:[]}).tiers.map(t=>t.state_infrastructure).filter(v=>v!=null).join('/')||'—'}), ship construction from both shipyard chains, pollution where configured — each × <code>effect_mult</code> on factored tiers.`),
+    pt(`<b>Law & terrain gates.</b> ${heavy.length?`<b>${heavy.map(esc).join(', ')}</b> carry the industry-ban / extraction-economy <code>possible</code> block`:'no industry carries the heavy-industry law block'}; ${coastal.length?`<b>${coastal.map(esc).join(', ')}</b> are coastal-only`:'none are coastal-gated'}.`),
+    pt(`<b>solve_profit overrides (§10.59)</b> — a per-tier recipe-solve margin replacing the band edge and the industry handicap: ${solveP.length?solveP.map(x=>`<code>${esc(x.t.key)}</code> = ${x.t.solve_profit}`).join(', '):'none'}. Solver-side, not emitted, but part of how the shipped recipes were produced.`),
+    pt(`<b>Wages, targets and prices are model-only.</b> <code>wage_pct</code>, <code>target_be</code>, the scenario and every £ on this sheet are never emitted — Victoria 3 pays wages endogenously from employment.`)
+  ]);
+
+  const pmGoodsLive=Object.keys(pmG).length?`<ul class="mc-sub">${Object.entries(pmG).map(([k,v])=>`<li><code>${esc(k)}</code>: in { ${goodsMap(v.in)} } → out { ${goodsMap(v.out)} }${k==='pm_electric_streetlights'?' <span class="muted">— the §10.43 electricity pass: the 1900 municipal engine-house modelled inside urban centres (vanilla ate 3 electricity; ours burns 2 coal and produces 1 electricity beside the services; the now-impossible <code>required_input_goods = electricity</code> is dropped)</span>':''}</li>`).join('')}</ul>`:' none';
+  const S3=sec('pms','3 · Production-method surgery',null,[
+    pt(`<b>Additive tier methods.</b> One new PM + one single-method group per tier (${emitted.length} of each) in the mod's own <code>zzz_pm_rehaul</code> files.`),
+    pt(`<b>Secondary-PM gate remap.</b> Any vanilla <code>unlocking_production_methods</code> list naming a split main PM gets the replacing tier's PM <b>appended</b>, so gated secondaries (bone china, elastics, precision tools) unlock at exactly the tiers whose main PM satisfied them in vanilla. New gated secondaries a patch adds are picked up automatically on rebuild.`),
+    pt(`<b><code>pm_goods</code> overrides — replacement semantics.</b> An override IS the PM's whole goods block (it can add and remove goods; a <code>required_input_goods</code> naming a good the override dropped is deleted). Live:${pmGoodsLive}`),
+    pt(`<b><code>pm_employment</code> overrides</b>, same replacement into the PM's employment block. Live: ${Object.keys(pmE).length?Object.entries(pmE).map(([k,v])=>`<code>${esc(k)}</code> = ${esc(Object.entries(v).map(([p,n])=>`${p} ${n}`).join(', '))}${k==='pm_electric_streetlights'?' <span class="muted">(vanilla: 200 laborers + 50 engineers)</span>':''}`).join('; '):'none'}.`),
+    pt(`<b>Only files that actually change are owned.</b> A vanilla PM file our transforms leave byte-identical is NOT emitted — owning it would freeze it against patches for nothing. Today that means two owned files: <code>01_industry</code> (gate remap) and <code>06_urban_center</code> (streetlights).`)
+  ]);
+
+  const S4=sec('start','4 · The 1836 start',sx?`${rules.length} exception rules loaded`:'⚠ start_exceptions not loaded — rebuild ui/data.js or serve via tools/ui.ps1',[
+    pt(`<b>Our history copy is the only one the engine reads</b> (<code>replace_paths</code>): all 16 vanilla building-history files are re-emitted every build — which is why an empty conversion would delete every starting factory, and why the mod is rebuilt after every game patch.`),
+    pt(`<b>Every vanilla starting factory of a split industry is re-tiered</b> onto the tier matching its <i>active main PM</i>, keeping ownership and secondary PMs; <code>vanilla_pm_aliases</code> fold several vanilla PMs onto one tier (anchorages → the basic port). Factories a patch adds that map to no tier surface in <code>start_baseline.json</code>'s <code>unmapped</code> list — the version-drift alarm.`),
+    pt(`<b>Graded port levels.</b> A factored tier's 1836 levels are multiplied by 1/<code>workforce_mult</code> (×10 / ×5) so physical capacity is preserved in small units; <b>anchorage</b> blocks are instead clamped to level 1 — the deliberately tiny colonial stub. The clamp keys on the <i>vanilla</i> PM, so a re-tiered anchorage stays a stub.`),
+    pt(`<b>The chain seed (§10.60.3, ruled 2026-08-16).</b> In the two 1836 markets whose leader holds <code>screw_frigate</code> from day 0 <i>and</i> has an overseas empire (GBR, FRA), every anchorage becomes a level-1, 1/10-size <b>steam-port stub</b> — subject-owned ones convert with <b>ownership rewritten to the overlord</b> and no tech grant (legal because the L14 starting-tech gate binds domestically-owned buildings only; foreign-owned buildings ride their owners' technology). The new steamer demand is then backfilled: each leader converts one small clipper-yard block to a <b>metal shipyard</b> (Q6 sizing: ceil(stubs ÷ yard-output-per-stub-demand), min 1 — one each suffices), and FRA — holding <code>atmospheric_engine</code> with no motor industry — converts a Rhône paper mill to a <b>motor factory</b> (Q5c). <b>Steel is deliberately not seeded</b> (existing GBR/FRA mills cover the new demand); DEI is excluded (its leader lacks the tech); leader-owned overseas <i>basic</i>-port states are not seeded — the engine provisions their stubs within weeks at the graded cost (F66, measured). Live: <b>${stubs.length} port stubs</b>${stubOwned.length?` (${stubOwned.length} rewritten to the overlord: ${esc(ownerPairs)})`:''}${fit.length?`; <b>${fit.length} chain conversions</b> — ${fitList}`:''}${otherFT.length?`; ${otherFT.length} other force_tier rules`:''}${removes.length?`; ${removes.length} removals`:''}.`),
+    pt(`<b>The exception machinery</b> (<code>config/start_exceptions.json</code>): <code>force_tier</code> (same industry), <code>force_industry_tier</code> (re-tier onto <i>another</i> industry's tier — an unknown industry id throws), <code>remove</code>, each optionally scoped by country/state with most-specific-wins precedence, plus an <code>owner</code> rewrite for the overlord-owned stubs.`)
+  ]);
+
+  const S5=sec('techs','5 · The technology tree',`${newTechs.length} technologies added`,[
+    pt(`<b>${newTechs.length} new technologies</b> (live count from the shipping tree: ${['production','military','society'].map(c=>{const n=newTechs.filter(T=>T.c===c).length; return n?`${n} ${c}`:null;}).filter(Boolean).join(', ')}), each with its era, prerequisites and unlocks, a minted placeholder icon, and names/descriptions in all ${langs} languages. New techs carry a flat AI weight so the AI treats them like vanilla research.`),
+    pt(`<b>Era moves inside vanilla's own files.</b> A technology unlocking one of our tiers is placed on the mechanical era that tier maps to (the ladder-era alignment: re-derived every run, only ever LOWERS, never lands in era 1, never inverts a prerequisite). The moves are patched into vanilla's production and military technology files as whole-file replacements — at the current tree, 11 production moves plus the <code>aniline</code> prerequisite swap, and 3 military moves (repeaters, breech-loading artillery, bolt-action rifles). Every transform asserts its exact match count and throws on a no-op.`),
+    pt(`<b>The society tree is slowed for the AI</b>: a <code>multiply = 0.8</code> appended <i>last</i> inside every vanilla society technology's ai_weight (64 techs), preserving vanilla's conditional weights while tilting AI research toward the deepened production/military trees.`),
+    pt(`<b>The 1836 grant is derived from the map</b>: every production method vanilla runs in 1836 stays runnable, and a country running it holds the technology — the union of "owns one on the map" and "could have built one in vanilla", minus what the era-1 blanket already covers and what vanilla names itself (both read live, so a patch flows through). Granted by <i>starting tier</i>, vanilla's own structure. At the last build the grant is four lines: tiers 1–2 → <code>steel_railway_cars</code>, tiers 3–4 → <code>beet_sugar_refining</code>; tiers 1–2 also keep vanilla's own <code>add_era_researched = era_1</code> — a small deliberate over-grant.`),
+    pt(`⚠ <b>The ahead-of-time define ships at vanilla's own value</b> (<code>TECH_AHEAD_OF_TIME_PENALTY_FACTOR = 0.25</code>) — currently a no-op. The 0.15 boost was withdrawn by the 2026-08-12 ruling; the file outlived the setting.`),
+    pt(`<b>No tech-spread change — spread is exactly vanilla</b> (ruled 2026-08-12): the deeper tree is compensated by the research journal entries, and spread only ever delivers what somebody else already has. The mod owns no static-modifiers file at all.`),
+    pt(`<b>14 vanilla technologies are renamed</b> (localisation override) alongside the new-tech names.`)
+  ]);
+
+  const wg=re.war_gate||{};
+  const S6=sec('research','6 · Industry-driven research events',re.enabled?'ENABLED':'<span class="mc-cond">disabled — emits nothing (the plain techs arm)</span>',[
+    pt(`<b>Three journal entries per covered technology</b> — ${(re.stages||[]).map(esc).join(' → ')||'inception → development → implementation'}. Only the first auto-activates (visible once the tech is researchable); completing a stage places the next and grants <b>${re.grant_fraction??0.5} of the era's base research cost</b> (era costs read live from the game at build). Completions log <code>PMR_JE</code> lines so a batch can count firings. <code>enabled: false</code> emits nothing — that is the plain "techs" arm, making the two arms config variants rather than build flags.`),
+    pt(`<b>One shared progress bar per technology</b>: industry entries tick monthly over <b>${re.industry_bar_months??36} months</b>, war entries weekly over <b>${re.war_bar_weeks??26} weeks</b>; <i>each</i> qualifying source adds +1 per tick, so holding two qualifying industries fills twice as fast.`),
+    pt(`<b>Rule A — improvement</b>: tier N's bar fills from <b>people employed in the tier-(N−1) building</b>. Thresholds by the tier's era: ${re.thresholds_by_era?Object.entries(re.thresholds_by_era).map(([e,v])=>`e${e} ${fmt(v)}`).join(' · '):'—'}. Factored tiers count employment through <code>workforce_mult</code>; occupancy is a <b>weight</b>, never a filter (seven half-staffed levels beat three full ones — ruled).`),
+    pt(`<b>Rule B — necessity</b>: a debut rung with no predecessor draws from a hand-authored demand-pull anchor. Live anchors (${Object.keys(re.necessity_anchors||{}).length}): ${Object.keys(re.necessity_anchors||{}).map(esc).join(', ')||'—'} — e.g. munition's anchor is the army itself. A researchable debut rung with no anchor <b>throws the build</b>.`),
+    pt(`<b>Rule C — war</b>: military technologies fill from real fighting — at war, mobilised share ≥ ${Math.round((wg.mobilised_share_min??0.5)*100)}%, and a front-scoped general with ≥ ${wg.general_battalions_high??100} mobilised battalions (or ≥ ${wg.generals_low_count??2} generals with ≥ ${wg.general_battalions_low??50} each). An enemy already holding the technology adds a second +2 term behind the <i>same</i> gate.`),
+    pt(`<b>Rule D</b>: a production technology outside the tier ladder anchors on the building group of whatever it unlocks — parsed live from the game's production methods, so a patch cannot leave it quietly wrong.`),
+    pt(`<b>Era-1 technologies are skipped by construction</b> — the 1836 start hands them out, so their journal entry could never fire. Scale at the last build: 126 technologies (86 industry / 40 war) → 378 journal entries, 126 bars, 133 script values, ~1,265 loc keys per language.`)
+  ]);
+
+  const subLive=Object.keys(subBy).length?`<ul class="mc-sub">${Object.entries(subBy).map(([v,ks])=>`<li><b>${esc(v)}</b> — ${ks.map(esc).join(', ')}</li>`).join('')}</ul>`:' none (every building vanilla)';
+  const covTiers=(sc&&sc.coverage_tiers||[]).map(k=>esc(String(k).replace('building_port_','')));
+  const S7=sec('ai','7 · AI behaviour — subsidies & construction desire',null,[
+    pt(`<b>The 7 administrative AI strategies' subsidy rules are rewritten</b> (whole-file — every AI country runs exactly one administrative strategy, so coverage is universal at a 13× smaller patch surface than the default strategy). A strategy with no vanilla subsidies block gets the default's trio restated (read <i>live</i> from vanilla each build); one that has its own is authoritative and only takes our overrides — correct whether the engine merges or replaces blocks.`),
+    pt(`<b>The mandate map</b>, live:${subLive}${(sub['building_power_plant']==='nice_to_have'||sub['building_railway']==='nice_to_have')?`<span class="muted">Note the deliberate <b>downgrade</b>: vanilla holds <code>must_have</code> on the base power plant and railway; the ruled canon (§10.60.3) puts the whole power and railway families at <code>nice_to_have</code> — a real AI-economy change independent of the port mandate.</span>`:''}`),
+    ...(sc?[
+    pt(`<b>The conditional port mandate (§10.60.3)</b>: each administrative strategy ships as <b>three mutually exclusive variants</b> partitioned by <code>possible</code> gates — <i>exempt</i> (in someone else's market: ports at ${esc([...new Set(Object.values(sc.exempt_overrides||{}))].join('/')||'nice_to_have')}), the <i>base mandate</i> (market leaders: the must_have map above), and <i>mature</i> (mandate retired to ${esc([...new Set(Object.values(sc.retire_overrides||{}))].join('/')||'nice_to_have')}). The mandate retires when the <b>likely-profitable</b> port tiers (${covTiers.join('/')} — the tuned-loss-making t1 steam port deliberately does <i>not</i> count) cover ≥ <b>${Math.round((sc.coverage_share??0.5)*100)}%</b> of the market's merchant-marine demand. Triggers as emitted: retire <code>${esc(sc.retire_trigger||'')}</code> · exempt <code>${esc(sc.exempt_trigger||'')}</code>. The three gates partition, so exactly one variant is available to every country — including <code>industrial_expansion</code>, which had no <code>possible</code> at all in vanilla. Variants carry localisation in all ${langs} languages as references to the base strategy's name (a variant is a policy state, not new content).`),
+    pt(`<b>Custom script values drive the trigger</b>: per port tier, occupancy-weighted merchant-marine supply with coefficients from the config's own output volumes (${factored.map(x=>x.t.output_qty).join(' / ')||'—'}), summed over the coverage tiers and scaled ×${sc.coverage_share?Math.round(1/sc.coverage_share*100)/100:2} into the comparator. Proven live inside strategy <code>possible</code> blocks (F65), and AIs re-pick strategies mid-campaign when the gate flips (F64: GBR's port subsidy £82k→£0 at its modern ports' arrival; world bill −42%).`)]:[
+    pt(`<span class="mc-cond">absent</span> <b>No conditional subsidies</b> — <code>subsidy_conditional</code> is not set, so each strategy ships once, flat.`)]),
+    pt(`<b>AI construction desire (<code>ai_value</code>)</b>: per-tier where set — live: ${aivTiers.length?aivTiers.map(x=>`<code>${esc(x.t.key)}</code> ${x.t.ai_value}`).join(', '):'none'} — and on preserved vanilla buildings via <code>building_ai_value</code>: ${Object.keys(aiv).length?Object.entries(aiv).map(([k,v])=>`<code>${esc(k)}</code> = ${v} <span class="muted">(engine default 1000; vanilla scripts none)</span>`).join(', '):'none'}.`)
+  ]);
+
+  const S8=sec('meta','8 · Diagnostics, meta & what is left alone',null,[
+    pt(`<b>Self-diagnostic</b>: an on_action logs <code>PM_TECH_REHAUL: init OK … (build &lt;timestamp&gt;)</code> to <code>debug.log</code> at game start — an absent marker means the mod failed to load. New invariants that the linters can't see get tripwires in the same effect.`),
+    pt(`<b>Launcher freshness</b>: the mod's display name is suffixed "(built …)" each build (id stays fixed, so playsets survive); the finished mod is deployed as a <b>real copy</b> to the Paradox mod folder — a junction doesn't work, the launcher won't traverse it.`),
+    pt(`<b>What a normal build does NOT touch</b>: pop needs (the weight rescale exists only for the testbed overlay arm), telemetry (testbed builds only), tech spread (ruled — vanilla), trade-centre tiering, and every vanilla production-method file our transforms leave byte-identical (14 of the 16 today). ${disabled.length?`Disabled industries left fully vanilla: ${disabled.map(i=>esc(i.id)).join(', ')}.`:'No industry is disabled.'}`),
+    pt(`<b>Guards that gate every build</b> (verify, change nothing): the BE-ladder linter and the negative-goods linter (no reachable PM combination drives any good's building total below zero); the mod checks (required files, one loc file per language, all 16 history files non-empty — <code>replace_paths</code> makes an empty conversion delete every starting factory); and the landmine preflight, including L14 (no country starts with a <i>domestically-owned</i> building its own techs can't unlock — foreign-owned buildings ride their owners' tech, with the skip count printed) and L15 (no country silently loses a vanilla starting technology). The verifiers read the <i>emitted artifacts</i>, never the generators.`)
+  ]);
+
+  const toc=[['split','Tier split'],['emit','Recipes & costs'],['pms','PM surgery'],['start','1836 start'],['techs','Tech tree'],['research','Research events'],['ai','AI behaviour'],['meta','Meta & guards']]
+    .map(([id,l])=>`<a href="#mc-${id}">${l}</a>`).join('');
+  body.innerHTML=
+    `<div class="mc-intro"><b>READ-ONLY — the whole set of changes the Build button emits from the loaded config</b>, beyond the per-tier recipe numbers the Balance sheet already shows. Config source: <b>${esc(CONFIG_SOURCE)}</b>. Numbers and lists are read from that config on every visit (a sheet edit shows here immediately); prose states the builders' fixed rules and is maintained beside them. ⚠ marks a flagged divergence between stated intent and what actually ships; "at the last build" marks the few figures only knowable at build time.</div>`
+    +`<div class="mc-toc">${toc}</div>`
+    +S1+S2+S3+S4+S5+S6+S7+S8;
 }
 function render(){
-  renderArmCard();          // the shipped-arm summary — reads live SUBSIDY/tier state, so edits show up
+  renderModChanges();       // page 3, the shipped-arm view — no-op unless that page is visible
   renderScenario();         // syncs AUTO prices into thresholds first (and fills the base-wage row it owns)
   renderIndustries();
   attachIndustryUI();
@@ -3043,7 +3196,7 @@ document.addEventListener('change', e=>{
     banner(warned?'warn':'info', warned
       ? `${esc(b)} → none. ⚠ This building is also subsidized by <code>ai_strategy_default</code>, which the mod does not own — suppression may not take effect (depends on whether a typed strategy's subsidies merge with or replace the default's).`
       : `AI subsidy policy: ${esc(b)} → ${v||'vanilla (don’t touch)'}. Written into all 7 administrative ai_strategies on build.`);
-    renderArmCard();   // the shipped-arm card lists subsidies — this branch returns without render()
+    renderModChanges();   // the Mod-changes page lists subsidies — this branch returns without render()
     return;
   }
   if(d.target!==undefined){
@@ -3378,15 +3531,7 @@ document.querySelectorAll('.hd[data-toggle]').forEach(h=>h.onclick=()=>{ const b
   }
 }
 
-// ---------- startup: reconcile the sheet with the WORKFORCE wage model ----------
-// The config's stored volumes were solved by tools/solve_volumes.ps1 under the LEGACY wage model (wages = a
-// fraction of input cost, ~I/3). The UI now takes wages from the workforce (base wage × wage units), which is a
-// much smaller and input-independent number, so on load every tier's FULL break-even sits well UNDER its
-// target_be (worst on input-heavy tiers). Re-solve each unlocked ladder group at the current standard wage so
-// the sheet opens ON target, and let build cost FOLLOW (the payback model reads the new input cost).
-// This is a UI-side reconcile; it does not change the config on disk until you Export / Build now.
-// TRANSITIONAL: once the solvers/linter/builder move off wage_pct onto workforce wages, the config will already
-// be on target and this becomes a no-op. See CLAUDE.md → Balance UI (transitional note).
+// ---------- startup: the config is authoritative — load it and show it ----------
 // REMOVED: reconcileToWageModel().
 //
 // It re-solved every unlocked group to its stored `target_be` AT BASE PRICES on every page load. That was
@@ -3402,7 +3547,7 @@ document.querySelectorAll('.hd[data-toggle]').forEach(h=>h.onclick=()=>{ const b
 // scenario panel. It happened to live inside the reconcile IIFE that used to sit here, so deleting that
 // left a page with nothing but its headers. Nothing else calls it at start-up.
 render();
-banner('info', 'Loaded the solved config as-is. Volumes come from tools/era_scenarios.mjs, fitted against '
+banner('info', 'Loaded the solved config as-is from ' + CONFIG_SOURCE + '. Volumes come from tools/era_scenarios.mjs, fitted against '
   + 'each era’s own prices — apply an “Era ladder” preset to see them at those prices rather than at base.');
 initVizTooltips();
 window.addEventListener('resize', renderViz);

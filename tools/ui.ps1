@@ -38,6 +38,20 @@ while ($listener.IsListening) {
             Send $resp 200 'text/plain; charset=utf-8' ($enc.GetBytes($out))
             continue
         }
+        # GET /api/config — the LIVE config/mod_config.json, verbatim bytes. The sheet boots from this
+        # when served (the UI must open on exactly what the Build button would ship, and ui/data.js is a
+        # build-time copy that goes stale the moment a solver --write touches the config without a build).
+        # The static branch below serves ui/ ONLY, so the config needs its own route.
+        if ($req.HttpMethod -eq 'GET' -and $path -eq '/api/config') {
+            Send $resp 200 'application/json; charset=utf-8' ([System.IO.File]::ReadAllBytes((Join-Path $repo 'config\mod_config.json')))
+            continue
+        }
+        # GET /api/start_exceptions — same deal for config/start_exceptions.json (the Mod-changes page
+        # enumerates the 1836 start rules from it rather than pointing at the file).
+        if ($req.HttpMethod -eq 'GET' -and $path -eq '/api/start_exceptions') {
+            Send $resp 200 'application/json; charset=utf-8' ([System.IO.File]::ReadAllBytes((Join-Path $repo 'config\start_exceptions.json')))
+            continue
+        }
         # static files from ui/
         $rel = $path.TrimStart('/'); if ($rel -eq '') { $rel = 'builder.html' }
         $f = Join-Path $uiDir $rel
