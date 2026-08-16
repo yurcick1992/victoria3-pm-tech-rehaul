@@ -131,6 +131,59 @@ transcript rather than from data.
 
 ---
 
+## F64 — ⭐⭐ **CONDITIONAL AI SUBSIDIES WORK, AND THE MECHANISM THEY STAND ON IS NOW PROVEN: AI countries RE-PICK their strategies mid-campaign when `possible` flips. A must_have on early port tiers, retired by a mutually-exclusive strategy-variant pair once ≥2 modern-class ports exist, holds colonial market access at 1.000 for the WHOLE century — where `wants_to_have` collapsed within a decade (it fires, retreats in the first treasury squeeze, and never re-engages) and no-mandate ran a five-decade 0.5-access famine. Retirement is progressive and permanent (GBR £0 for 46 years; 11 mature-variant holders at 1900 → 67 by 1936; world bill −42%), with a £204k/wk plateau on minors that never cross the threshold**
+
+**Arm** `config` (ports_cond: flat 1.0× cost book + conditional port mandate) · session `20260816_110325_ports-cond-n1` — one world in two segments: 1836→1900 fresh + 1900→1936 continued from its own save (`-ContinueFromSave`, landed 1900.2.9) · schema v13, summaries v5 · 🟡 ARM-BOUND for the £ levels; **the re-pick result is 🟢 ARM-FREE** (an engine property no subsidy stance could fake: 11 countries demonstrably switched to strategies that did not exist in vanilla, keyed on a runtime building count)
+
+### The three-arm comparison on the same cost book (colonial access, GBR overseas states)
+
+| arm | 1840 | 1850 | 1860 | 1870–1890 | mechanism |
+|---|---|---|---|---|---|
+| no mandate (`vancost-nosub-n2`) | famined (6–13 states at 0.5) | 0.50 | 0.50 | 0.50→heals 1890 | ports at 1% staffing; e3 modern port (first self-sustaining rung) heals it |
+| `wants_to_have` (`ports-w2h-n1`) | **clean** (fired: £11–17k/wk) | 0.59 | 0.50 | (stopped ~1861) | fired 1838–42, retreated in the treasury squeeze, never re-engaged (1846/1852: £535k treasury, £0 subsidy) |
+| **conditional must_have (this)** | clean (one 0.88 blip) | **1.000** | **1.000** | **1.000, and through 1935** | mandate holds; retires per-country on the trigger |
+
+### The retirement — the user's drain question answered
+
+World port subsidy £/wk: 476k (1840) · 567k (1860) · 533k (1880) · 355k (1901) · 307k (1910) ·
+252k (1920) · **204k (1936, plateau since ~1925)**; payers 114 → 84. GBR: £55–96k/wk 1840–1880,
+then **£0 from 1890 to 1936 without a single relapse** — its old tiers empty (sail 0.01–0.07
+staffing) while motor ports scale 16→43 levels at 0.33→0.81 staffing, and access never dips. The AI
+stops subsidising the moment the mandate retires; what does NOT stop is the minors' un-retired
+mandate — the £204k floor is the threshold knob's cost (count ≥ 2 modern-class buildings is
+unreachable for a one-port minor), not a mechanism defect.
+
+### The costs, honestly
+
+Mid-century the bill is full-mandate-sized (£476–567k vs vanilla's own trio at ~£75k on this
+economy) — three tiers × every country — and bankrupt-ever counts run 61/87/117 (1850/1900/1936)
+against the no-mandate arm's 31 at 1850. The un-mandated railway side stays healthy to the end bar
+two local boom-state shortfalls (USA 1935: Rhode Island 0.69, Texas 0.85, usage > infrastructure).
+
+### The machinery (config `subsidy_conditional`, build.ps1 2026-08-16)
+
+The `subsidies` block is a flat map (no per-entry triggers — `goods_stances` has them, `subsidies`
+does not), so conditionality uses the engine's own lever: each of the 7 admin strategies emits as a
+**mutually exclusive pair** — base (mandate, `possible = NOT(trigger)`) and `_pmr_mature`
+(retired map, `possible = trigger`), everything else byte-identical, trigger =
+`any_scope_building = { OR = { is_building_type = building_port_modern is_building_type =
+building_port_motor } count >= 2 }` (vanilla's own constructs; count as the verified approximation
+of "share"). 1836 selection is vanilla-equivalent (all mature twins impossible); the
+always-available guarantee holds by pairwise exhaustion; the one mechanical novelty is the forced
+re-evaluation at threshold-crossing (all 11 observed switchers stayed in-family — GBR on
+resource_expansion's twin, GER/BEL/SPA on industrial_expansion's, etc., resolved via each ai
+record's own `country=` field).
+
+### What it does NOT say
+
+- n=1, one world. The £ levels and crossing dates are single-world; the mechanism results are
+  structural.
+- Only one threshold form measured. A share-based retire (script values) and per-strategy weight
+  nudges are unmeasured; so is any family-hop at the forced re-pick (bounded 0/11 observed, not
+  proven impossible).
+- The 7 `_pmr_mature` keys carry no localization yet; probe-arm only — nothing here is in the
+  canonical config.
+
 ## F63 — ⭐⭐ **THE CONSUMPTION RECONSTRUCTION ON A LONG RUN: 9 of 11 measurable (run × date × market) cells read 1.6–6.8% — including EVERY market of run 2 at 1935 — validating the melt-based extractor at century scale. The two failures are one run's late-century readings, in which the British Market had re-formed as a 93-state customs union**
 
 **Arm** `config` (vancost_nosub: flat 1.0× vanilla-anchor cost book + no mandated infra subsidies) · session `20260816_011552_vancost-nosub-n2`, n=2 centuries, 1836→1936, both self-quit, zero crashes · schema v13, summaries v5 · 🟡 ARM-BOUND for the absolute economies, but the RECONSTRUCTION QUALITY is instrument-vs-instrument on the same arm (both sides see the same economy), so the extractor verdict transfers
