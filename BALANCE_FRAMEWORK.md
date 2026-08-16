@@ -5015,36 +5015,40 @@ then PARKED pending the decisions below; next work item is UI/config consistency
 visibility rework), and the clipper ports ("in the red too much" — user, looking at the 1840 state)
 categorically need resolution.
 
-**The open questions, ordered by decision-urgency (some to decide, some to defer — user's call):**
-- **Q1 — the destaffing mechanism.** Ports and yards shed workforce while their goods sit at the +75%
-  ceiling with 6–10× unmet demand (the chain-seed probe's corrected reading). Until the mechanism is
-  identified (access wedge / bureaucrat-qualification × EMPLOYMENT_PROPORTIONALITY jam / wage
-  competition), every clipper-port fix is symptom treatment. Proposed: one desk session over the 1852
-  melt — per-building realised revenue, per-profession employment, state-access join; no game time.
-- **Q2 — infra-trio subsidies.** Vanilla's answer to red ports IS the must_have subsidy; we demoted it
-  at full-size port costs, and the bill argument is now ~×10 weaker. (a) restore must_have flat;
-  (b) un-park the F64/F65 conditional (leaders-mandate, retire-at-maturity — measured working, needs
-  loc); (c) keep nice_to_have and accept red stubs. A subsidy also short-circuits the Q1 symptom for
-  ports specifically (it pays the wages → staffed → supply).
-- **Q3 — the sail port's intended end-state.** Late-century red sail ports are the LADDER WORKING
-  (N+2 obsolescence) — but the engine re-provisions one sail stub per overseas state forever (measured:
-  a converted anchorage's sail port is rebuilt within a year), so a permanent red sail-dust layer
-  exists regardless. Accept engine stubs as tolerated red (scoring exemption), or fight via
-  recipes/costs (ai_value is proven inert)?
-- **Q4 — can a staffed sail port live unsubsidised?** Basic port t1 target_be 270% cannot break even
-  inside the engine's 175% price band BY CONSTRUCTION — it lives on subsidy (vanilla) or dies (our
-  nice_to_have). If Q2 lands on no-subsidy, the e0/e1 port recipes need re-sloping (fewer clippers per
-  MM) + an era re-solve. Downstream of Q1/Q2.
-- **Q5 — seed extensions.** (a) subject-owned anchorages need a screw_frigate grant to market members
-  (L14 blocks today; a deliberate tech-grant design, changes diffusion); (b) leaders' overseas
-  basic-port states — near-zero value, the engine does it in weeks; (c) FRA has NO engine source, its
-  seeded yard limps on an engines shortage — one motor-industry seed would complete FRA's chain.
-- **Q6 — the yard rule's final form.** Standing: one converted small clipper yard per affected leader,
-  under-employment accepted. Formalise as "one t1 metal yard per screw_frigate market leader with
-  overseas ports"?
-- **Q7 — trade centers.** Same pathology family (GBR staffing 42→15 while levels grow 44→61); MM's
-  largest buyer. In Q1's decomposition scope; any trade-center ruling (incl. the parked F49 mandate
-  question) deferred until Q1 reads.
+**The open questions — RULED ON 2026-08-16 late evening (user answers inline):**
+- **Q1 — the destaffing "mystery" — ANSWERED BY THE USER, and it is not a mystery: it is the RECIPE
+  BOOK.** "Why shouldn't they shed workforce? Ports are tuned to BE under insane +100%+ output prices,
+  so they can only break even under the maximum allowed +75% if inputs are very cheap — which doesn't
+  happen, because shipyards are also tuned to BE under insanely high prices." A SOLVER problem (the
+  maritime chain's targets assume prices the engine's 175% band can never deliver), queued — "we'll
+  reach it soon enough". ⚠ The three mechanism candidates the probes suggested (access wedge /
+  qualification jam / wage competition) are SUPERSEDED as explanations of the red ports; they may still
+  modulate the margins but the first-order cause is the tuning.
+  **IMMEDIATE RULING, implemented same night: mandate port subsidies for all MARKET LEADERS unless
+  t2+ ports cover at least HALF of the market's MM demand.**
+- **Q2 — RULED: (b), the F64/F65 conditional, "needs doing now" — DONE same night, canonical.**
+  `building_subsidies`: the five port tier keys → must_have (the base mandate); `subsidy_conditional`:
+  coverage_share 0.5, retire trigger `market_goods_buy_orders <= pmr_mm_high_cov` on mg:merchant_marine
+  (the F65-measured idioms), exempt trigger `NOT = { ROOT.market.owner ?= ROOT }`; both retire and
+  exempt land on nice_to_have (never `none` — no reliance on replace-vs-merge semantics). The t2+ set
+  is DERIVED in build.ps1 (every port tier above the lowest era — steam included, wider than the F65
+  probe's modern/motor pair), and the variant strategies now carry loc ($key$ references to the base).
+  Railway/power stay nice_to_have — the ruling names ports.
+- **Q3 — RULED: with MM prices declining as steam ports improve, t1 (sail) ports should DIE in the t3
+  (industrial-port) era.** The intended end-state, to be delivered by the Q1 solver rework's price
+  path; the engine's per-state sail stubs remain a known tolerated floor.
+- **Q4 — DEFERRED until Q1/Q2 land** (user).
+- **Q5 — no ruling yet** (subject anchorage grants / FRA engine seed) — stays open.
+- **Q6 — CORRECTED RULE (user):** "one t1 metal yard per X t1 added steamer ports, where X is chosen
+  so that the ports' cumulative demand were over the metal yard's cumulative supply" — yards are added
+  at a ratio that keeps them DEMAND-COVERED (never idle), not one-per-leader. ⚠ ARITHMETIC NOTE,
+  clarification pending: at graded stub demand (0.61 steamers/wk/level) a FULL-SIZE yard level
+  (65/wk) needs X≈107 stubs — today's GBR+FRA counts would then seed zero yards, colliding with the
+  ratified "yards must be provided". The reading that reconciles them is factoring the metal yard's
+  unit too (÷10 ⇒ X≈11, GBR and FRA each qualify for one); awaiting the user's word before touching
+  the yard tiers.
+- **Q7 — DEFERRED (user), with the diagnosis recorded: trade centers die now because MM is too
+  expensive** (their input is the ceiling-priced good).
 
 ### §10.60.1 The start-assignment fix: OWN `common/history/ai/00_strategy.txt` (user-proposed 2026-08-16, agreed)
 

@@ -749,7 +749,7 @@ if ($subCond) {
         }
     }
     # Optional: emit the merchant-marine share script values the retire_trigger can reference.
-    # pmr_port_mm_excess >= 0  <=>  (modern+motor ports' occupancy-weighted merchant_marine output)
+    # pmr_port_mm_excess >= 0  <=>  (t2+ ports' occupancy-weighted merchant_marine output)
     # >= retire_share x (all port tiers' output). Coefficients are the CONFIG's own per-tier
     # output_qty, read at build time - a re-solve flows through automatically. The SV-in-trigger
     # construct is the research bars' own shipped idiom (pmr_mob_share >= 0.5).
@@ -767,7 +767,11 @@ if ($subCond) {
         $sv = New-Object System.Collections.Generic.List[string]
         $sv.Add(($genHeader.TrimEnd()))
         $tierKeys = @($portInd.tiers | ForEach-Object { $_.key })
-        $modernSet = @('building_port_modern', 'building_port_motor')
+        # "t2+" (user-ruled 2026-08-16, §10.60.3: mandate retires when t2+ ports cover half of MM
+        # demand): the comparators count EVERY rung above the sail port — steam included — not just
+        # the modern/motor pair the F65 probe used. Derived from the config (lowest-era tier
+        # excluded), never a literal list, so a ladder re-band flows through.
+        $modernSet = @($portInd.tiers | Sort-Object { [int]$_.era } | Select-Object -Skip 1 | ForEach-Object { $_.key })
         foreach ($t in $portInd.tiers) {
             $svName = 'pmr_mm_' + ($t.key -replace '^building_', '')
             $sv.Add("$svName = {")
@@ -844,6 +848,7 @@ if (-not (Test-Path -LiteralPath $srcAI)) {
 } else {
     $aiLines = Get-Content -LiteralPath $srcAI
     $aOut = New-Object System.Collections.Generic.List[string]
+    $condLoc = New-Object System.Collections.Generic.List[string]   # conditional-subsidy variant names -> loc
     $aOut.Add($genHeader.TrimEnd())
     $touched = 0; $i = 0
     while ($i -lt $aiLines.Count) {
@@ -881,6 +886,9 @@ if (-not (Test-Path -LiteralPath $srcAI)) {
                     $new  = New-Object System.Collections.Generic.List[string]
                     $hdr  = $body[0]
                     if ($suffix) { $hdr = $hdr -replace '^(ai_strategy_[A-Za-z0-9_]+)', ('$1' + $suffix) }
+                    # collect variant names for loc ($condLoc defined before the file loop): a variant
+                    # with no loc shows its raw key in every AI tooltip that names the strategy.
+                    if ($suffix -and $hdr -match '^(ai_strategy_[A-Za-z0-9_]+)') { $condLoc.Add($Matches[1]) }
                     $new.Add($hdr)
                     $new.Add("`tsubsidies = {")
                     foreach ($k in $entMap.Keys) { $new.Add("`t`t$k = $($entMap[$k])") }
@@ -936,6 +944,16 @@ if (-not (Test-Path -LiteralPath $srcAI)) {
         } else { $aOut.Add($line); $i++ }
     }
     WriteText "$modRel\$relAI" (($aOut -join "`n") + "`n") $bom
+    if ($subCond -and $condLoc.Count) {
+        # Variant strategies DISPLAY AS THEIR BASE via loc $key$ references (vanilla's own idiom —
+        # diplomacy_l_english.yml does exactly this): the variants are policy STATES of one strategy,
+        # and a renamed strategy in an AI tooltip would read as new content.
+        foreach ($vn in ($condLoc | Select-Object -Unique)) {
+            $bn = $vn -replace '_pmr_(mature|ext)$', ''
+            $locBody += " ${vn}:0 `"$D$bn$D`""
+            $locBody += " ${vn}_desc:0 `"$D${bn}_desc$D`""
+        }
+    }
     $setList  = if ($subMap.Count) { ($subMap.Keys | Sort-Object | ForEach-Object { "$_=$($subMap[$_])" }) -join ', ' } else { '(none - vanilla policy)' }
     $trioList = if ($SUBSIDY_TRIO.Count) { ($SUBSIDY_TRIO.Keys | ForEach-Object { "$_=$($SUBSIDY_TRIO[$_])" }) -join ', ' } else { '(none)' }
     Write-Output "ai subsidies: rewrote $touched administrative strategies; overrides: $setList"

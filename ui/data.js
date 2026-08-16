@@ -3903,11 +3903,11 @@ window.PMDATA = {
                                "building_power_plant":  "nice_to_have",
                                "building_power_plant_pulverized":  "nice_to_have",
                                "building_power_plant_oil":  "nice_to_have",
-                               "building_port":  "nice_to_have",
-                               "building_port_steam":  "nice_to_have",
-                               "building_port_industrial":  "nice_to_have",
-                               "building_port_modern":  "nice_to_have",
-                               "building_port_motor":  "nice_to_have",
+                               "building_port":  "must_have",
+                               "building_port_steam":  "must_have",
+                               "building_port_industrial":  "must_have",
+                               "building_port_modern":  "must_have",
+                               "building_port_motor":  "must_have",
                                "building_railway":  "nice_to_have",
                                "building_railway_steam":  "nice_to_have",
                                "building_railway_electric":  "nice_to_have",
@@ -3980,7 +3980,27 @@ window.PMDATA = {
                                                                    ]
                                                   },
                             "_threshold_era1_note":  "PROVISIONAL, needs a ruling. The re-band moved rungs down an era, so tiers now sit at era 1 whose technology is not an era-1 freebie, and the emitter looks the threshold up by OUR TIER era. 5000 continues the ruled x3 ladder (5k/15k/45k/135k/405k) downward; it was not itself ruled."
-                        }
+                        },
+    "subsidy_conditional":  {
+                                "_comment":  "Q1+Q2 RULING (user, 2026-08-16 late evening, §10.60.3): MARKET LEADERS carry a port subsidy MANDATE (the five port tier keys must_have in building_subsidies, the base variant) UNLESS t2+ ports (every rung above sail - build.ps1 derives the set from the config, lowest era excluded) cover at least HALF of the market MM demand - then the mandate retires to nice_to_have (the option stays; unlike the cond3 probe this never relies on replace-vs-merge semantics for a none). Non-leaders (in someone else s market) are exempt at nice_to_have. Trigger forms are the F65-measured idioms (ROOT.market ?= { mg: ... } + the emitted pmr_mm_high_cov comparator; custom SVs proven live in strategy possible blocks). Railway/power stay nice_to_have per canon - this ruling names PORTS.",
+                                "coverage_share":  0.5,
+                                "retire_trigger":  "ROOT.market ?= { mg:merchant_marine ?= { market_goods_buy_orders \u003c= pmr_mm_high_cov } }",
+                                "retire_overrides":  {
+                                                         "building_port":  "nice_to_have",
+                                                         "building_port_steam":  "nice_to_have",
+                                                         "building_port_industrial":  "nice_to_have",
+                                                         "building_port_modern":  "nice_to_have",
+                                                         "building_port_motor":  "nice_to_have"
+                                                     },
+                                "exempt_trigger":  "NOT = { ROOT.market.owner ?= ROOT }",
+                                "exempt_overrides":  {
+                                                         "building_port":  "nice_to_have",
+                                                         "building_port_steam":  "nice_to_have",
+                                                         "building_port_industrial":  "nice_to_have",
+                                                         "building_port_modern":  "nice_to_have",
+                                                         "building_port_motor":  "nice_to_have"
+                                                     }
+                            }
 },
   prices: {
     "ironclads":  80,
