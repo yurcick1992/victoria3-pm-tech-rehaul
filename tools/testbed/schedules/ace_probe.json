@@ -1,0 +1,11 @@
+{
+  "schedule_version": 1,
+  "label": "ace-probe",
+  "_why": "ONE COUNTRY, ONE STATE, NO CONFOUNDS. Grants screw_frigate to the three market leaders plus ACE and nobody else. ACE is the clean case: exactly one seeded port rule (STATE_ACEH), a state it does not share, and a full loss without the grant (1 -> 0). If ACE's stub appears here while LAN, ORG, TID and DEI still lose theirs, a history `create_building` is gated on the STATE'S OWN COUNTRY holding the technology even when the building is owned by the overlord's government - and the countries that looked unaffected in the nogrants arm were masked by the engine's own per-overseas-state port provisioning (NSW shows 4 levels from 1 seeded rule, so provisioning demonstrably happens). If ACE still loses it, the technology is NOT the mechanism and the cause is elsewhere.",
+  "_arms": "aceonly = {kind: config, config: config/mod_config.aceonly.json}. Compare against 20260817_155024 (all 17 granted) and 20260817_184940 (leaders only).",
+  "_cost": "1 run x 4 in-game years, ~6 minutes.",
+  "_caveats": "Read the SAVE SUMMARY at 1837, never the BINV boot dump: the 12k-line boot burst overflows the log ring and the mirror loses ~3% of it scattered at random, which produced spurious differences in states we never touched (Benin, Dahomey, Bhavnagar). L19: check for an orphaned victoria3.exe first.",
+  "defaults": { "metrics": ["building_inventory"], "autosave_interval": "yearly", "timeout_minutes": 20, "tags": ["NET"] },
+  "setups": { "aceonly": { "kind": "config", "config": "config/mod_config.aceonly.json" } },
+  "runs": [ { "setup": "aceonly", "until": "1840.1.1", "dump_dates": ["1836.2.1"] } ]
+}
