@@ -1,0 +1,36 @@
+{
+  "schedule_version": 1,
+  "label": "wargate-lowthr-n1",
+  "_why": "DOES THE WAR GATE MECHANISM WORK AT ALL? (user, 2026-08-18.) The 50000-casualty probe cannot distinguish \"mechanism broken\" from \"threshold too high for 1846\", and a zero there would leave both live. This drops front_casualties_min to 100 and changes NOTHING else, so a completion here isolates the mechanism.\n\nOBSERVABLE: PMR_JE|<stage>|<tech>|<country> is logged when a journal entry completes. War bars are max_value 6 at +1 per qualifying month, so six qualifying months complete one - well inside a three-year run.\n\n⚠ WHAT A ZERO WOULD STILL NOT PROVE. The gate needs an ENEMY GENERAL ON THE FRONT WHOSE OWNER HOLDS A TECHNOLOGY WE LACK. In a CIVIL war the breakaway side usually starts with the parent's technologies, so a tech differential may simply not exist - Brazil's 1836 war (the Ragamuffin revolt) is exactly that shape. A zero here therefore points at the tech clause, not necessarily at the plumbing, and the follow-up is a probe relaxing THAT clause.",
+  "_arms": "lowthr = {kind: config, config: config/mod_config.wargate_lowthr.json} - the shipped config with ONE value changed: front_casualties_min 50000 -> 100. NOT a shipping candidate.",
+  "_comparison": "Not an arm comparison - a variance envelope on one config. It supersedes, at monthly resolution, the annual 1837-1841 rows read off 20260817_155024 (which is a DIFFERENT arm: all-subject grants) and the three-month window of 20260817_211818 (same arm, too short).",
+  "_cost": "1 run x 3 in-game years, ~5 min.",
+  "_caveats": "⚠ Monthly autosaves are the point of the run, and they are not free: the engine stalls on every write, so this is slower per in-game year than a normal run. ⚠ Autosaves overwrite the user's own autosave*.v3 slots. ⚠ L19: check for an orphaned victoria3.exe before launching. ⚠ L17: a run that fails is still recorded `ok`; check each meta.json's reached_ingame_date before counting it. ⚠ Read building presence from SAVE SUMMARIES, never the building_inventory boot dump, whose ~12k-line burst overflows the log ring (the defect that voided 20260817_184413).",
+  "defaults": {
+    "metrics": [
+      "events"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 40,
+    "tags": [
+      "GBR",
+      "FRA",
+      "NET"
+    ]
+  },
+  "setups": {
+    "lowthr": {
+      "kind": "config",
+      "config": "config/mod_config.wargate_lowthr.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "lowthr",
+      "until": "1839.6.1",
+      "dump_dates": [
+        "1839.1.1"
+      ]
+    }
+  ]
+}

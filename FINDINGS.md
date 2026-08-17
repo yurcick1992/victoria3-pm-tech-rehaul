@@ -7243,3 +7243,47 @@ a motor industry, say — in a subject's state at runtime while that subject lac
 TESTED**. It is plausible; the user reports it from play, and in-game construction is evidently a
 different code path from the history effect. But F69's probe covers world init only, and every runtime
 observation here is of **ports**, which are the one building type F66 shows behaving unusually.
+
+---
+
+## F70 — The research-event machinery works; the WAR GATE is the only part that does not fire
+
+**Session** `20260818_003120_wargate-probe-n2`, run 1 (to 1843 at time of reading), shipped config with
+the rebuilt war channel. Arm: `{kind: config, config: config/mod_config.json}`.
+
+**Two results, and the second is only interpretable because of the first.**
+
+**1 — The ROOT defect is fixed.** `link 'owner'` errors in this run's own window: **0**, against
+**18,720** before (F-ref: BUGS_AND_FIXES 2026-08-17). No error in the log names any `pm_rehaul` file at
+all. The gate moved to `on_monthly_pulse_country`, where ROOT resolves, and the bars now read an
+expiring country variable.
+
+**2 — The journal-entry machinery is proven end to end, by the industry channel.**
+
+| | |
+|---|---|
+| `PMR_JE` completions | **2 308** |
+| by stage | inception 1 693 · development 531 · implementation 84 |
+| distinct technologies completing | 16 |
+| **war-tech completions** | **0** of 40 covered technologies |
+
+⇒ Bars accumulate, journal entries complete, stages chain, and grants land. **So a zero on the war side
+is not a plumbing failure** — it is the war GATE specifically declining. That distinction is the whole
+value of measuring both channels in one run; the war count alone would have been uninterpretable.
+
+⚠ **What it does NOT yet say: whether 50 000 front casualties is simply too high for 1843.** The gate
+requires, on ONE front: our general at ≥100 mobilised battalions, an enemy general there whose owner
+holds the technology, and ≥50 000 of our casualties. A zero is consistent with both "the mechanism
+never sets the variable" and "no 1836–43 war reaches that bar". A follow-up probe at
+`front_casualties_min = 100` (`config/mod_config.wargate_lowthr.json`, diagnostic only) separates them.
+
+⚠ **And a zero at threshold 100 would still not condemn the plumbing**, because the tech clause may be
+the binding one: in a CIVIL war the breakaway side normally starts with the parent's technologies, so
+no differential exists. Brazil's 1836 Ragamuffin revolt is exactly that shape. Read a low-threshold
+zero as pointing at the tech clause, and probe that next rather than lowering casualties further.
+
+⚠ **A methodological note worth keeping.** The first parse of this log reported **0 completions of any
+kind** — the regex expected a country TAG where the emitted line carries a display NAME with spaces
+(`[THIS.GetCountry.GetNameNoFormatting]`). The correct count is 2 308. A telemetry reader that assumes
+the wrong field shape reports silence indistinguishable from a dead mechanic; check the emitting
+template before believing a zero.

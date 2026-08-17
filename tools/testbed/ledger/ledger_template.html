@@ -118,7 +118,40 @@ a{color:var(--accent)}
     <tr><td>G5</td><td class="goalcell">Fewer workers, more product per worker</td><td>Productive workers ÷ vanilla × GDP/worker ÷ vanilla</td><td class="num"><b>1.18× · 1.33×</b></td><td class="num dim">&lt;1 · &gt;1, product ≈ 1</td><td><span class="pill bad">inverted</span></td></tr>
     <tr><td>G6</td><td class="goalcell">Early game still grows</td><td>1836–1860 GDP ÷ vanilla</td><td class="num">0.98×</td><td class="num dim">0.9–1.1×</td><td><span class="pill ok">met</span></td></tr>
     <tr><td>G7</td><td class="goalcell">Eras arrive on the anchors</td><td>Largest employment era at each anchor</td><td class="num">e2@1870s · e3@1900s · e4@1920s–30s</td><td class="num dim">era N ± 10y</td><td><span class="pill ok">met</span></td></tr>
+    <tr><td><b>P</b></td><td class="goalcell"><b>The game does not get slower</b></td><td>Wall clock per in-game year, <b>at matched live pop objects</b></td><td class="num" id="v-perf">—</td><td class="num dim">≤ +10%</td><td id="v-perfpill"><span class="pill dim">—</span></td></tr>
   </table>
+  </div>
+</section>
+
+<!-- ============ PERFORMANCE (hard constraint — user-ruled 2026-08-18) ============ -->
+<section class="sec">
+  <h2>P — Performance: does our meddling make the game slower than vanilla?</h2>
+  <p class="lede"><b>A standing constraint on every batch, not a per-batch curiosity.</b> Whatever the mod does to
+  the economy, it must not make Victoria&nbsp;3 materially slower to play than the base game. The budget is
+  <b>10% overall</b>. But it has to be measured <b>at a comparable economy size</b>: the engine's cost scales with
+  how much it is simulating, so a mod whose world is half as developed — fewer distinct pops, a fraction of the
+  GDP — finishes sooner while being <i>slower per unit of work</i>. That kind of "speedup" is not a result, it is
+  the absence of an economy, and it <b>barely counts</b>. So the verdict is read
+  <b>pop-matched</b>: seconds per in-game year compared between the arms at the <b>same live pop-object count</b>,
+  never at the same date and never in total.</p>
+
+  <div class="card" id="perf-head"></div>
+
+  <figure class="card">
+    <div class="fighead">
+      <h3>Cost curve — seconds of wall clock per in-game year vs live pop objects</h3>
+      <div class="toggle" role="group" aria-label="Performance x-axis">
+        <button id="pf-pop" aria-pressed="true">by pop objects</button><button id="pf-yr" aria-pressed="false">by year</button>
+      </div>
+    </div>
+    <div id="perf-chart"></div>
+    <figcaption class="small" id="perf-cap"></figcaption>
+  </figure>
+
+  <div class="card tablewrap">
+    <h3 style="margin-top:0">Pop-matched bins — the reading the budget is written against</h3>
+    <table id="t-perf"></table>
+    <p class="small" id="perf-note"></p>
   </div>
 </section>
 
