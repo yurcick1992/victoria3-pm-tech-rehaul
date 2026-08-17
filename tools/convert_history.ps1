@@ -202,11 +202,88 @@ $handler = {
     return ,$res.ToArray()
 }
 
+# ⭐⭐ `action: create` — A GRANT THAT ADDS A BUILDING INSTEAD OF CONSUMING ONE (user-ruled 2026-08-17).
+#
+# Every other action here RE-TIERS a building vanilla already placed, which ties a grant to whatever
+# happens to stand in that state. That constraint is what split the industry grants across states and
+# forced them to eat unrelated industries: FRA's motor factory had to be a paper mill because Brittany
+# contains nothing but shipyards, and NET's had to be a food industry. The user's requirement — ALL
+# industry grants in ONE state per market leader, at Home Counties / Brittany / Amsterdam — is simply
+# not expressible by conversion.
+#
+# So a `create` rule emits a fresh `create_building` block into `s:<state> { region_state:<country> }`:
+#   { action:"create", industry:"motor", tier:1, country:"FRA", state:"STATE_BRITTANY", levels:4 }
+# Ownership is the market leader's GOVERNMENT, the same form the `owner` rewrite produces — a grant is a
+# state endowment, never a financial district's private holding.
+#
+# ⚠ It THROWS if the target region_state is not found. A grant that silently lands nowhere is exactly
+# the failure mode that let the chain seed ship 13 of its 25 stubs, and this path has no linter behind it.
+$creates = @($rules | Where-Object { $_.action -eq 'create' })
+$script:created = 0
+$script:createPlaced = @{}
+
 $files = Get-ChildItem $histDir -Filter *.txt
 foreach ($f in $files) {
     $outLines = Walk-HistoryFile $f.FullName $handler
+
+    foreach ($cr in $creates) {
+        $anchor = 's:' + $cr.state + '='
+        $rs     = 'region_state:' + $cr.country + '='
+        # find the state, then its region_state, then that block's closing brace
+        $si = -1; for ($i = 0; $i -lt $outLines.Count; $i++) { if ($outLines[$i] -match ('^\s*' + [regex]::Escape($anchor))) { $si = $i; break } }
+        if ($si -lt 0) { continue }
+        $ri = -1; for ($i = $si + 1; $i -lt $outLines.Count; $i++) {
+            if ($outLines[$i] -match '^\ts:') { break }
+            if ($outLines[$i] -match ('^\s*' + [regex]::Escape($rs))) { $ri = $i; break }
+        }
+        if ($ri -lt 0) { continue }
+        $depth = 1; $ci = -1
+        for ($i = $ri + 1; $i -lt $outLines.Count; $i++) {
+            $depth += ([regex]::Matches($outLines[$i], '\{')).Count
+            $depth -= ([regex]::Matches($outLines[$i], '\}')).Count
+            if ($depth -le 0) { $ci = $i; break }
+        }
+        if ($ci -lt 0) { throw "create: region_state:$($cr.country) in $($cr.state) has no closing brace" }
+
+        $ind = $industryById[[string]$cr.industry]
+        if (-not $ind) { throw "create: unknown industry '$($cr.industry)'" }
+        $tier = $ind.tiers[[int]$cr.tier - 1]
+        if (-not $tier) { throw "create: $($cr.industry) has no tier $($cr.tier)" }
+        $lv = if ($cr.levels) { [int]$cr.levels } else { 1 }
+
+        $blk = @(
+            "`t`t`tcreate_building={",
+            "`t`t`t`tbuilding=`"$($tier.key)`"",
+            "`t`t`t`tadd_ownership={",
+            "`t`t`t`t`tcountry={",
+            "`t`t`t`t`t`tcountry=`"c:$($cr.country)`"",
+            "`t`t`t`t`t`tlevels=$lv",
+            "`t`t`t`t`t}",
+            "`t`t`t`t}",
+            "`t`t`t`treserves=1",
+            "`t`t`t`tactivate_production_methods={ `"$($tier.pm_key)`" }",
+            "`t`t`t}")
+        $new = New-Object System.Collections.Generic.List[string]
+        if ($ci -gt 0) { $new.AddRange([string[]]$outLines[0..($ci - 1)]) }
+        $new.AddRange([string[]]$blk)
+        $new.AddRange([string[]]$outLines[$ci..($outLines.Count - 1)])
+        $outLines = $new.ToArray()
+        $script:created++
+        $script:createPlaced[($cr.country + '/' + $cr.state + ' ' + $tier.key)] = $lv
+    }
+
     $text = ($outLines -join "`r`n") + "`r`n"
     [System.IO.File]::WriteAllText((Join-Path $outDir $f.Name), $text, (New-Object System.Text.UTF8Encoding($true)))
+}
+# A grant that found no home is a silent hole — fail rather than ship a seed that isn't there.
+foreach ($cr in $creates) {
+    $ind = $industryById[[string]$cr.industry]
+    $key = $cr.country + '/' + $cr.state + ' ' + $ind.tiers[[int]$cr.tier - 1].key
+    if (-not $script:createPlaced.ContainsKey($key)) {
+        # ASCII only inside a string literal: this file is read as ANSI, so a multi-byte character
+        # (an em-dash, a section sign) corrupts the literal and the whole script fails to parse.
+        throw "create: no region_state:$($cr.country) found in $($cr.state) - the grant '$key' would vanish silently"
+    }
 }
 
 Write-Output ("History conversion: {0} factories re-tiered ({1} forced, {2} removed) across {3} files; {4} exception rule(s)." -f `
@@ -218,6 +295,10 @@ if ($script:levelsMultiplied -gt 0 -or $script:anchorClamped -gt 0) {
 if ($script:ownerRewrites -gt 0) {
     Write-Output ("  §10.60.3 Q5a: {0} seeded block(s) granted to overlord GOVERNMENT ownership ({1} add_ownership block(s) replaced)." -f `
         $script:ownerRewrites, $script:ownerFormFixed)
+}
+if ($script:created -gt 0) {
+    Write-Output ("  industry grants CREATED (government-owned, not converted): {0}" -f $script:created)
+    foreach ($k in ($script:createPlaced.Keys | Sort-Object)) { Write-Output ("    {0} x{1}" -f $k, $script:createPlaced[$k]) }
 }
 if ($script:unmapped.Count -gt 0) {
     Write-Output ("  WARNING: {0} split-industry blocks had no recognized main PM (version drift?):" -f $script:unmapped.Count)

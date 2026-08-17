@@ -1176,6 +1176,17 @@
 				}
 				activate_production_methods={ "pm_naval_fortification_basic"  }
 			}
+			create_building={
+				building="building_shipyard_metal"
+				add_ownership={
+					country={
+						country="c:GBR"
+						levels=3
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_shipyard_metal" }
+			}
 		}
 	}
 	s:STATE_LANCASHIRE={
@@ -2064,7 +2075,7 @@
 				activate_production_methods={ "pm_atmospheric_engine_pump_building_iron_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
 			create_building={
-				building="building_shipyard_metal"
+				building="building_shipyard"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -2074,7 +2085,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_shipyard_metal"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_rye_farm"
@@ -3897,7 +3908,7 @@
 	s:STATE_POITOU={
 		region_state:FRA={
 			create_building={
-				building="building_motor_industry"
+				building="building_paper_mill_sulfite"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -3911,7 +3922,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_motor_steam" "pm_automation_disabled"  }
+				activate_production_methods={ "pm_main_paper_sulfite_pulping" "pm_automation_disabled"  }
 			}
 			create_building={
 				building="building_vineyard"
@@ -4199,7 +4210,7 @@
 				reserves=1
 			}
 			create_building={
-				building="building_shipyard_metal"
+				building="building_shipyard"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -4215,7 +4226,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_shipyard_metal"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_naval_administration"
@@ -4324,6 +4335,28 @@
 					}
 				}
 				activate_production_methods={ "pm_naval_fortification_basic"  }
+			}
+			create_building={
+				building="building_shipyard_metal"
+				add_ownership={
+					country={
+						country="c:FRA"
+						levels=4
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_shipyard_metal" }
+			}
+			create_building={
+				building="building_motor_industry"
+				add_ownership={
+					country={
+						country="c:FRA"
+						levels=4
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_motor_steam" }
 			}
 		}
 	}
@@ -4939,7 +4972,7 @@
 				activate_production_methods={ "pm_scholastic_education" "pm_religious_academia" }
 			}
 			create_building={
-				building="building_shipyard_metal"
+				building="building_shipyard"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -4949,7 +4982,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_shipyard_metal"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_arms_industry"
@@ -4988,7 +5021,7 @@
 				activate_production_methods={ "pm_craftsman_sewing" "pm_main_textile_dye" "pm_traditional_looms"  }
 			}
 			create_building={
-				building="building_motor_industry"
+				building="building_food_industry_sweetener"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -4998,7 +5031,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_motor_steam" "pm_disabled_canning" "pm_disabled_distillery" "pm_manual_dough_processing"  }
+				activate_production_methods={ "pm_main_food_sweetener" "pm_disabled_canning" "pm_disabled_distillery" "pm_manual_dough_processing"  }
 			}
 			create_building={
 				building="building_rye_farm"
@@ -5071,6 +5104,39 @@
 				}
 				activate_production_methods={ "pm_naval_fortification_basic"  }
 			}
+			create_building={
+				building="building_shipyard_metal"
+				add_ownership={
+					country={
+						country="c:NET"
+						levels=2
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_shipyard_metal" }
+			}
+			create_building={
+				building="building_steel_mill"
+				add_ownership={
+					country={
+						country="c:NET"
+						levels=2
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_steel_blister" }
+			}
+			create_building={
+				building="building_motor_industry"
+				add_ownership={
+					country={
+						country="c:NET"
+						levels=2
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_motor_steam" }
+			}
 		}
 	}
 	s:STATE_FRIESLAND={
@@ -5130,7 +5196,7 @@
 				activate_production_methods={ "pm_main_paper_pulp_pressing" "pm_automation_disabled"  }
 			}
 			create_building={
-				building="building_steel_mill"
+				building="building_glassworks"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -5140,7 +5206,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_steel_blister"  "pm_manual_glassblowing" "pm_ceramics" }
+				activate_production_methods={ "pm_main_glass_forest"  "pm_manual_glassblowing" "pm_ceramics" }
 			}
 			create_building={
 				building="building_fishing_wharf"
