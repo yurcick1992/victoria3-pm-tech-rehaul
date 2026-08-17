@@ -478,11 +478,9 @@
 			create_building={
 				building="building_shipyard_metal"
 				add_ownership={
-					building={
-						type="building_financial_district"
+					country={
 						country="c:NET"
 						levels=1
-						region="STATE_WEST_JAVA"
 					}
 				}
 				reserves=1

@@ -64,6 +64,7 @@ function Find-Exception($bkey, $country, $state) {
 $script:converted = 0; $script:removed = 0; $script:forced = 0; $script:unmapped = @()
 $script:levelsMultiplied = 0; $script:anchorClamped = 0   # §10.60 graded port factorisation counters
 $script:ownerRewrites = 0   # §10.60.3 Q5a: blocks whose ownership was rewritten to the overlord
+$script:ownerFormFixed = 0  # add_ownership blocks replaced with the government-ownership form (see below)
 
 $handler = {
     param($block, $state, $country)
@@ -145,13 +146,56 @@ $handler = {
     # OWNERSHIP is rewritten to that country (the overlord), while the building stays physically in
     # the subject's state. Vanilla itself has cross-country 1836 ownership (SIL's African anchorages
     # are GBR-owned), and the engine demonstrably provisions steam ports into subject states without
-    # the subject holding the tech (SIL held one by 1837.1 in the century run). ⚠ Rewrites EVERY
-    # ownership country token in the block — correct for the single-owner anchorage blocks this
-    # exists for; check the block shape before putting `owner` on a multi-owner building.
+    # the subject holding the tech.
+    #
+    # ⭐⭐ `owner` MEANS GOVERNMENT-OWNED BY THAT COUNTRY (user ruling, 2026-08-17). A seeded building is
+    # a STATE GRANT from the market leader, not a private investment, so its whole `add_ownership` block
+    # is REPLACED with a single government entry — never patched in place, and never carrying a financial
+    # district or a manor house.
+    #
+    #     add_ownership={ country={ country="c:<owner>" levels=<total> } }
+    #
+    # ⚠⚠ WHY THE RULE HAD TO BE STATED, and why a financial district ever entered the picture. This
+    # started as a blunt regex over every `country="c:X"` token in the block. For an ANCHORAGE that is
+    # harmless — vanilla already owns those as government (`country={ country="c:PLY" levels=1 }`), so
+    # swapping the tag gives exactly the intended result. But vanilla owns SHIPYARDS **privately**:
+    #     building={ type="building_financial_district" country="c:DEI" region="STATE_WEST_JAVA" }
+    # and rewriting only the country token there produces "NET's financial district in West Java" — a
+    # building that does not exist. The engine then silently declines the whole `create_building`.
+    # Inheriting vanilla's ownership SHAPE was the mistake; a grant should assert its own.
+    #
+    # ⚠ Multi-owner blocks collapse to one government owner with the levels summed. That is intended
+    # here — these are grants — but it is why `owner` does not belong on an ordinary vanilla factory.
     if ($ex -and $ex.owner) {
-        for ($ri = 0; $ri -lt $res.Count; $ri++) {
-            $res[$ri] = [regex]::Replace($res[$ri], 'country="c:[A-Z0-9]+"', ('country="c:' + $ex.owner + '"'))
+        $own = New-Object System.Collections.Generic.List[string]
+        $ri = 0
+        while ($ri -lt $res.Count) {
+            $line = $res[$ri]
+            if ($line -match '^(\s*)add_ownership=\{\s*$') {
+                $indent = $Matches[1]
+                # consume the whole ownership block, summing whatever levels it declared
+                $rj = $ri + 1; $depth = 1; $levels = 0
+                while ($rj -lt $res.Count -and $depth -gt 0) {
+                    if ($res[$rj] -match '\{') { $depth++ }
+                    if ($res[$rj] -match '\}') { $depth-- ; if ($depth -eq 0) { break } }
+                    if ($res[$rj] -match 'levels\s*=\s*(\d+)') { $levels += [int]$Matches[1] }
+                    $rj++
+                }
+                if ($levels -lt 1) { $levels = 1 }
+                $own.Add($indent + 'add_ownership={')
+                $own.Add($indent + "`tcountry={")
+                $own.Add($indent + "`t`tcountry=`"c:" + $ex.owner + '"')
+                $own.Add($indent + "`t`tlevels=" + $levels)
+                $own.Add($indent + "`t}")
+                $own.Add($indent + '}')
+                $script:ownerFormFixed++
+                $ri = $rj + 1
+                continue
+            }
+            $own.Add($line)
+            $ri++
         }
+        $res = $own
         $script:ownerRewrites++
     }
     $script:converted++
@@ -172,7 +216,8 @@ if ($script:levelsMultiplied -gt 0 -or $script:anchorClamped -gt 0) {
         $script:levelsMultiplied, $script:anchorClamped)
 }
 if ($script:ownerRewrites -gt 0) {
-    Write-Output ("  §10.60.3 Q5a: {0} seeded block(s) rewritten to overlord ownership." -f $script:ownerRewrites)
+    Write-Output ("  §10.60.3 Q5a: {0} seeded block(s) granted to overlord GOVERNMENT ownership ({1} add_ownership block(s) replaced)." -f `
+        $script:ownerRewrites, $script:ownerFormFixed)
 }
 if ($script:unmapped.Count -gt 0) {
     Write-Output ("  WARNING: {0} split-industry blocks had no recognized main PM (version drift?):" -f $script:unmapped.Count)
