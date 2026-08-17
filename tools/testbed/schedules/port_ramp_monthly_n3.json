@@ -1,0 +1,23 @@
+{
+  "schedule_version": 1,
+  "label": "port-ramp-monthly-n3",
+  "_why": "THE MONTHLY PORT RAMP, 1836-1841 (user request 2026-08-17 evening). Every reading of the port wave so far has been at ANNUAL resolution, which collapses a construction ramp into a single step and cannot answer the question the user's one-year standard actually turns on: does the wave finish inside 1836, or run into 1837 and beyond?\n\nThe three months that do exist (session 20260817_211818) already show it is a RAMP, not a placement: GBR steam ports read 10 -> 12 -> 15 across 1836.2, 1836.3 and 1836.4. This run extends that to 1841.1 at monthly cadence.\n\nOUTPUT: t0 (building_port) and t1 (building_port_steam) LEVELS per MARKET per month, for GBR, NET, FRA, POR, SPA, USA and RUS. n=3, reported as the mean across runs, with a '!' marking any cell whose spread across the three runs exceeds max(2 levels, 15% of the mean) - so a reader can tell a settled number from a noisy one.",
+  "_arms": "canon = {kind: config, config: config/mod_config.json} - THE SHIPPED CONFIG under the 2026-08-17 ruling: tech grant to literal NET only, 16 port stubs all in GBR/FRA/NET's own overseas states, zero stubs in any subject state. All three runs identical; the only difference is the game's RNG.",
+  "_comparison": "Not an arm comparison - a variance envelope on one config. It supersedes, at monthly resolution, the annual 1837-1841 rows read off 20260817_155024 (which is a DIFFERENT arm: all-subject grants) and the three-month window of 20260817_211818 (same arm, too short).",
+  "_cost": "3 runs x 5 in-game years with MONTHLY autosaves, ~30 min wall (about 6 min of game time each, plus the engine's stall writing ~60 autosaves per run, plus melting ~180 saves).",
+  "_caveats": "⚠ Monthly autosaves are the point of the run, and they are not free: the engine stalls on every write, so this is slower per in-game year than a normal run. ⚠ Autosaves overwrite the user's own autosave*.v3 slots. ⚠ L19: check for an orphaned victoria3.exe before launching. ⚠ L17: a run that fails is still recorded `ok`; check each meta.json's reached_ingame_date before counting it. ⚠ Read building presence from SAVE SUMMARIES, never the building_inventory boot dump, whose ~12k-line burst overflows the log ring (the defect that voided 20260817_184413).",
+  "defaults": {
+    "metrics": ["events"],
+    "autosave_interval": "monthly",
+    "timeout_minutes": 40,
+    "tags": ["GBR", "FRA", "NET"]
+  },
+  "setups": {
+    "canon": { "kind": "config", "config": "config/mod_config.json" }
+  },
+  "runs": [
+    { "setup": "canon", "until": "1841.2.1", "dump_dates": ["1841.1.1"] },
+    { "setup": "canon", "until": "1841.2.1", "dump_dates": ["1841.1.1"] },
+    { "setup": "canon", "until": "1841.2.1", "dump_dates": ["1841.1.1"] }
+  ]
+}
