@@ -67,6 +67,7 @@ closed.
 | L16 | A schedule key honoured in `defaults` for some fields and silently dropped for others | **REGISTERED, DETECTOR OWED** |
 | L17 | A run that FAILED is recorded as `ok`, and the arm count silently shrinks | **REGISTERED, DETECTOR OWED** |
 | L18 | A tier that cannot break even at ANY price the engine can produce | **DETECTOR BUILT + PROVEN — build wiring owed** |
+| L19 | An orphaned game process makes the next run fail instantly and silently | **REGISTERED, DETECTOR OWED** |
 
 ---
 
@@ -731,3 +732,49 @@ names exactly three tiers — `building_port` 270%, `building_railway` 217%, `bu
 (`building_power_plant` 158, `building_steel_mill_bessemer` 139, `building_steel_mill` 135). Those three
 passing is as much a part of the proof as the three failing: the rule must not degenerate into "no sub-1
 recipes", which §10.50.1 forbids.
+
+---
+
+## L19 — an ORPHANED GAME PROCESS makes the next run fail instantly, and nothing says so
+
+**Status: REGISTERED, DETECTOR OWED.** Found live 2026-08-17, immediately after a run was stopped by
+ruling. Cost one wasted launch; overnight it would have cost the night.
+
+**What happened.** `canon-ports-n2` run 2 was stopped mid-campaign with the STOP file. The observer did
+everything right — logged the stop, called `Stop-Process -Id $proc.Id -Force`, drained the harvest,
+closed the session (`run 2 finished: failed(1)`, `SCHEDULE DONE`). **But `victoria3.exe` outlived it**:
+PID 8420, started 13:33:01, still running at 14:58.
+
+Victoria 3 is effectively single-instance, so the *next* schedule's game could never start. That run
+reported `failed(1)` **twenty seconds** in, with zero rows, no `build_state.json`, no `logs/`, and a
+`run.log` of exactly one line:
+
+```
+[14:55:42] [INFO] restored content_load.json + pdx_settings.json
+```
+
+Killing the orphan by hand and relaunching the identical schedule worked first time.
+
+**Why nothing fails — and why this one is nastier than most.** The build succeeded and passed all four
+gates. The archiver and the harvester both reported alive. The scheduler reported `SCHEDULE DONE: 1/1`.
+The single log line describes the **tidy-up path**, so the only evidence reads like an orderly shutdown
+rather than a failure to launch. Every visible signal points at the config or the mod, which are
+blameless. ⚠ And the preceding batch looked *completely clean* — the orphan is invisible from inside the
+session that created it, because that session had already written its last line.
+
+**DETECTOR.** Two halves, and the first is a fix rather than a check:
+
+1. **In `run_observer.ps1`, make the kill verifiable.** After `Stop-Process`, poll for the process to
+   actually be gone (a few seconds, then a second `-Force`), and **log the outcome either way**. A kill
+   that reports success and leaves the process running is the whole defect.
+2. **At the START of every run — in `run_observer.ps1`, before the settings backup — refuse to launch
+   while a `victoria3.exe` this session did not start is alive.** Fail loudly with the offending PID and
+   its start time. That is the check that would have turned twenty silent seconds into one clear line.
+   ⚠ Do NOT auto-kill it: a process from a *concurrent* session is somebody else's run, and killing it
+   would convert a wasted launch into a destroyed campaign. Report and stop.
+
+Worth adding to `preflight.ps1 -RepoOnly` as well, since that already runs before a batch is estimated —
+a stale game process is exactly the kind of thing to catch before the first build rather than after it.
+
+**Prove it** by starting the game by hand, then launching any schedule: the run must refuse with the PID
+named, instead of exiting after one line.

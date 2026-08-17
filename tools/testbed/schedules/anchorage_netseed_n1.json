@@ -1,0 +1,31 @@
+{
+  "schedule_version": 1,
+  "label": "anchorage-netseed-n1",
+  "_why": "THE ANCHORAGE FIX + THE NET CHAIN SEED, n=1 century (user-ruled 2026-08-17, after canon-ports-n2 run 1 completed and run 2 was stopped at 1892). Two changes ship together in this arm and the run cannot separate them — stated up front because that is the arm's main limitation.\n\n1. THE ANCHORAGE FIX (§10.63). The era-0 anchorage went 1.52 → 0.9 clippers per level (undivided 15.2 → 9.0 against vanilla's 6.0) and its break-even 270% → 160%, under the ruled solvency bound that no tier's target BE may exceed 175 — the engine's own band edge. 41 of 105 tiers moved across 12 industries in the re-solve; output volumes untouched. Measured against a true control (ERA_SOLVENCY=0): illogicality 72→75 (inside the ±10 jitter band), net £23.0M→£21.8M (real, 3× the band), loss-making buildings 56→51, macro breaches 17→16, and the shipyard sector swinging from net −£227k to +£101k.\n\n2. THE NET CHAIN SEED. 18 new start_exceptions rules giving the Dutch market the package GBR and FRA already have, plus the two chains it lacks entirely: 15 level-1 overseas anchorages → steam-port stubs (3 NET-owned, 12 subject-owned rewritten to NET, the same rule and rewrite §10.60.3 applies to GBR/FRA), one metal shipyard (DEI West Java ×1, owner NET), steel t1 (glassworks ×1 Friesland) and motor t1 (furniture ×2 Gelre). Plus `screw_frigate` through the new config-driven `start_tech_grants` — NET is starting tier 2 and screw_frigate is era 2, so vanilla's era-1 blanket does not cover it, which is why NET researches it in June 1838 while every tier-1 power starts with it.\n\nWHAT TO READ, in order. (a) THE MERCHANT-MARINE SHAPE, per the ruled criterion — a steady climb that clamps at +75% and STAYS is broken; stabilising or turning over is not. Run 1 of the previous batch peaked three markets at the ceiling for one reading each and every survivor finished 1935 at 84–128%, so the yardstick is whether the fix lowers the peaks and shortens the 1846–60 supply depression (world MM 2088 → 1881 at the 1860 trough, reproduced on BOTH prior seeds at 1881/1885 — that trough is the single most robust number to beat). (b) CLIPPERS, which the fix targets directly: anchorage clipper demand falls 41%, so the Dutch/Spanish/Japanese ceiling pins of 1836–37 should not recur. (c) THE DUTCH MARKET specifically — port modernisation share and MM peak date, read PER MARKET and never per country (F67: NET's subjects hold 60% of its market's ports and are twice as modern; a per-tag reading produced a wrong conclusion). (d) The steel collateral: `steel_mill_open_hearth` went +13% at 88 levels to −17% in the re-solve, the largest unexamined regression in the new book.",
+  "_arms": "canon = {kind: config, config: config/mod_config.json} — the committed canonical config at 488c432. Dry-run and canonical build both verified 2026-08-17: LINT PASSED (93 buildings) / NEGATIVE-GOODS PASSED / MOD CHECKS PASSED / PREFLIGHT PASSED, 46 exception rules applied, and landmine L14 reports 'no starting-technology gap beyond vanilla's own'. `node tools/lint_solvency.mjs` passes on all 105 tiers. Game 1.13.10.",
+  "_comparison": "canon-ports-n2 20260817_104849 is the DIRECT predecessor and the one that matters — same instrumentation, same tags, same dump and wide dates, run 1 a complete century and run 2 stopped at 1892. Before that: vanilla n=4 of 20260813_083557 (the pinned ledger baseline) and parity10-graded-n2.",
+  "_cost": "1 run × 100 in-game years, ~2h45 with the build and harvest drains (run 1 of the predecessor took 2h43).",
+  "_caveats": "⚠ TWO CHANGES IN ONE ARM: the anchorage re-solve touches 41 tiers across 12 industries AND the NET seed adds 18 start rules. A difference against canon-ports-n2 cannot be attributed to one of them without a third arm. Accepted deliberately — the user ruled both ship together. ⚠ n=1, against a predecessor whose own two runs differed substantially on which markets pinned (run 1: Britain/Russia/Dutch touched the ceiling once each; run 2: Portugal 9 readings of 25 at the ceiling, Spain and the Dutch pinned at truncation) — so per-market detail is seed noise and only the aggregates (world MM trough, GDP, port modernisation) carry across. ⚠ The Dutch market now has NET-owned buildings inside subject states; watch for ownership oddities in the 1836 dump. ⚠ Dump dates are PER-RUN (L16). F56 sway-CTD is a standing engine bug; the resume ladder handles it and the quarantine hooks may take their first live proof.",
+  "defaults": {
+    "metrics": ["tech_log", "events", "building_inventory", "market_goods_scoped", "origins", "state_access", "market_goods_wide"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "JAP", "NET"],
+    "origin_goods": ["clippers", "steamers", "merchant_marine", "coal", "steel", "engines", "tools"],
+    "wide_tags": ["GBR", "FRA", "NET", "USA", "SPA", "POR"],
+    "wide_dates": [
+      "1836.7.1", "1837.7.1", "1838.7.1", "1839.7.1", "1840.7.1",
+      "1841.7.1", "1842.7.1", "1843.7.1", "1844.7.1", "1845.7.1",
+      "1846.7.1", "1847.7.1", "1848.7.1", "1849.7.1", "1850.7.1",
+      "1851.7.1", "1852.7.1", "1853.7.1", "1854.7.1", "1855.7.1",
+      "1856.7.1", "1857.7.1", "1858.7.1", "1859.7.1", "1860.7.1",
+      "1865.7.1", "1870.7.1", "1875.7.1", "1880.7.1"
+    ]
+  },
+  "setups": {
+    "canon": { "kind": "config", "config": "config/mod_config.json" }
+  },
+  "runs": [
+    { "setup": "canon", "until": "1936.1.1", "dump_dates": ["1836.2.1", "1838.1.1", "1840.1.1", "1842.1.1", "1845.1.1", "1848.1.1", "1850.1.1", "1852.1.1", "1855.1.1", "1858.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1909.12.1", "1920.1.1", "1930.1.1", "1934.12.1"] }
+  ]
+}
