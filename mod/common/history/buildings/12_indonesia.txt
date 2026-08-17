@@ -252,17 +252,6 @@
 				reserves=1
 				activate_production_methods={ "pm_main_port_basic" }
 			}
-			create_building={
-				building="building_port_steam"
-				add_ownership={
-					country={
-						country="c:NET"
-						levels=1
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
-			}
 		}
 		region_state:DEI={
 		}
@@ -1258,17 +1247,6 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_main_port_basic" }
-			}
-			create_building={
-				building="building_port_steam"
-				add_ownership={
-					country={
-						country="c:NET"
-						levels=1
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 		region_state:SAK={

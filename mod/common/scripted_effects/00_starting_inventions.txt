@@ -2,15 +2,6 @@
 # Starting techs for the cutting edge Western powers - Britain, America, France, Belgium etc
 
 effect_starting_technology_tier_1_tech = {
-	if = {
-		limit = { this = c:GBR }
-		add_technology_researched = screw_frigate
-	}
-	if = {
-		limit = { this = c:FRA }
-		add_technology_researched = atmospheric_engine
-		add_technology_researched = screw_frigate
-	}
 	add_technology_researched = steel_railway_cars
 	add_era_researched = era_1
 
@@ -38,26 +29,10 @@ effect_starting_technology_tier_1_tech = {
 
 effect_starting_technology_tier_2_tech = {
 	if = {
-		limit = { this = c:ORG }
-		add_technology_researched = screw_frigate
-	}
-	if = {
-		limit = { this = c:NSW }
-		add_technology_researched = screw_frigate
-	}
-	if = {
 		limit = { this = c:NET }
 		add_technology_researched = atmospheric_engine
 		add_technology_researched = screw_frigate
 		add_technology_researched = steelworking
-	}
-	if = {
-		limit = { this = c:DEI }
-		add_technology_researched = screw_frigate
-	}
-	if = {
-		limit = { this = c:BIC }
-		add_technology_researched = screw_frigate
 	}
 	add_technology_researched = steel_railway_cars
 	add_era_researched = era_1
@@ -72,14 +47,6 @@ effect_starting_technology_tier_2_tech = {
 # Starting techs for backwards European and American powers - Spain, Sicily, Russia
 
 effect_starting_technology_tier_3_tech = {
-	if = {
-		limit = { this = c:SIL }
-		add_technology_researched = screw_frigate
-	}
-	if = {
-		limit = { this = c:ION }
-		add_technology_researched = screw_frigate
-	}
 	add_technology_researched = beet_sugar_refining
 
 	# Production
@@ -123,34 +90,6 @@ effect_starting_technology_tier_3_tech = {
 # Starting techs for most unrecognized nations and very backwards European powers (Ottomans, etc)
 
 effect_starting_technology_tier_4_tech = {
-	if = {
-		limit = { this = c:TID }
-		add_technology_researched = screw_frigate
-	}
-	if = {
-		limit = { this = c:SMB }
-		add_technology_researched = screw_frigate
-	}
-	if = {
-		limit = { this = c:PON }
-		add_technology_researched = screw_frigate
-	}
-	if = {
-		limit = { this = c:MKT }
-		add_technology_researched = screw_frigate
-	}
-	if = {
-		limit = { this = c:LAN }
-		add_technology_researched = screw_frigate
-	}
-	if = {
-		limit = { this = c:ACE }
-		add_technology_researched = screw_frigate
-	}
-	if = {
-		limit = { this = c:ABU }
-		add_technology_researched = screw_frigate
-	}
 	add_technology_researched = beet_sugar_refining
 
 	# Production
@@ -182,10 +121,6 @@ effect_starting_technology_tier_4_tech = {
 
 # Very backwards centralized powers
 effect_starting_technology_tier_5_tech = {
-	if = {
-		limit = { this = c:PLY }
-		add_technology_researched = screw_frigate
-	}
 	# Production
 	add_technology_researched = enclosure
 	add_technology_researched = manufacturies

@@ -1,28 +1,99 @@
 {
   "schedule_version": 1,
   "label": "seed-variance-n10",
-  "_why": "TEN IDENTICAL SHORT RUNS TO MEASURE THE NOISE FLOOR, AND TO LOCALISE WHICH COUNTRIES ARE ACTUALLY PROBLEMATIC (user-directed 2026-08-17).\n\nWHY THIS EXISTS. Every with/without comparison made today rested on single-run boot-state port counts, and the ace-probe proved that quantity is not reproducible: PON and SMB read 1 in two arms and 0 in a third whose grants were a strict SUPERSET of one of them. Adding a grant to Aceh cannot remove a port from Pontianak, so there is no monotone model under which that happens — the counts move on their own. Four conclusions were drawn from that quantity before anyone measured how much it moves. This measures it.\n\nALL TEN RUNS ARE THE SAME CONFIG. Any spread between them is pure run-to-run variance, and that spread is the yardstick every future arm comparison has to clear. Per seeded country the reading is simply: in how many of ten runs does its steam port exist at 1837? A country at 10/10 or 0/10 is deterministic; anything between is the noise this whole investigation mistook for structure.\n\nIT ALSO LOCALISES. The seeded countries span three markets — GBR's (ABU, BIC, ION, MKT, NSW, ORG, SIL), FRA's (PLY) and NET's (DEI, PON, SMB, TID) — so the per-country frequencies say whether the problem is one market, one subject type, or scattered. ACE and LAN have been REMOVED from the seed: neither is in the Dutch market at 1836 (Aceh independent, Lanfang a Chinese subject) and they were picked from a 1840 listing by which time Aceh had joined. That is a config defect, not a measurement one, and it needed no probe.\n\nREAD, from the SAVE SUMMARIES at 1837.1.1 and never from the BINV boot dump: per seeded country, the count of runs in which building_port_steam levels are non-zero, and the min/median/max level count. Then the same for the three leaders' own created industry (shipyard_metal, steel_mill, motor_industry), which should be 10/10 if creation in one's OWN state is deterministic — if even that moves, the instability is not about subjects at all.",
-  "_arms": "canon = {kind: config, config: config/mod_config.json} — the committed config with ACE and LAN removed. All ten runs identical; the ONLY difference between them is the game's own RNG.",
+  "_why": "WHICH OF THE SEEDED PORTS ARE PROBLEMATIC, AND HOW OFTEN (user-directed 2026-08-17).\n\nCONFIG: all port-related technology grants are GONE except literal NET's. NET is the one market leader that genuinely lacks screw_frigate - it is starting tier 2 and researches it in June 1838, where GBR and FRA hold it from vanilla's own tier-1 grant. Every SUBJECT grant is removed, and L14/L15 both pass without them, which is the check on the claim that a port owned by the overlord's government does not need the local country's technology. ACE and LAN are removed from the seed entirely: neither is in the Dutch market at 1836 (Aceh independent, Lanfang a Chinese subject) - they came from a 1840 listing that had been guessed at rather than derived.\n\nTHE QUESTION: of the 38 remaining seeded ports, which ones fail to materialise, and in how many runs out of ten?\n\nWHY TEN IDENTICAL RUNS RATHER THAN AN ARM COMPARISON. Every with/without conclusion drawn today rested on single-run boot-state port counts, and the ace-probe proved that quantity is not reproducible: PON and SMB read 1 in two arms and 0 in a third whose grants were a strict SUPERSET of one of them. Adding a grant to Aceh cannot remove a port from Pontianak. The counts move on their own, and nobody measured how much before drawing four conclusions from them. All ten runs here are the same config, so any spread IS the noise floor.\n\nREAD, from the SAVE SUMMARIES at 1837.1.1 and never from the BINV boot dump: per seeded country, in how many of ten runs its steam port exists, plus min/median/max levels. 10/10 or 0/10 is deterministic - a 0/10 names a genuinely broken seed entry. Anything between is variance. CONTROL: the three leaders' own created industry (shipyard_metal, steel_mill, motor_industry, all in their own states) should read 10/10; if even that moves, the instability is not about subjects or markets and the create mechanism itself is at fault.",
+  "_arms": "canon = {kind: config, config: config/mod_config.json} - grants are NET-only, ACE and LAN removed. All ten runs identical; the only difference is the game's RNG.",
   "_comparison": "Not an arm comparison. The output is a variance envelope, against which 20260817_155024 (all grants), 20260817_184940 (leaders only) and 20260817_200536 (ace only) can finally be judged — or dismissed.",
   "_cost": "10 runs × 2 in-game years, ~35 minutes total with builds.",
   "_caveats": "⚠ The BINV boot dump is NOT usable for this: its ~12k-line burst overflows the log ring and the mirror loses about 3% of it at random, which already produced spurious differences in states we never touched (Benin, Dahomey, Bhavnagar). Save summaries come from the savegame and are unaffected. ⚠ Two in-game years so a 1837.1.1 autosave exists; nothing economic can be read from a run this short and nothing should be. ⚠ L19: check for an orphaned victoria3.exe before launching — one live game from a previous batch makes every subsequent run fail in ~20 seconds with a single-line log and a misleading SCHEDULE DONE. With ten runs queued that would waste the whole batch. ⚠ L17: a run that fails is still recorded `ok` by the harness; check each meta.json before counting it.",
   "defaults": {
-    "metrics": ["building_inventory"],
+    "metrics": [
+      "building_inventory"
+    ],
     "autosave_interval": "yearly",
     "timeout_minutes": 20,
-    "tags": ["GBR", "FRA", "NET"]
+    "tags": [
+      "GBR",
+      "FRA",
+      "NET"
+    ]
   },
-  "setups": { "canon": { "kind": "config", "config": "config/mod_config.json" } },
+  "setups": {
+    "canon": {
+      "kind": "config",
+      "config": "config/mod_config.json"
+    }
+  },
   "runs": [
-    { "setup": "canon", "until": "1838.1.1", "dump_dates": ["1836.2.1"] },
-    { "setup": "canon", "until": "1838.1.1", "dump_dates": ["1836.2.1"] },
-    { "setup": "canon", "until": "1838.1.1", "dump_dates": ["1836.2.1"] },
-    { "setup": "canon", "until": "1838.1.1", "dump_dates": ["1836.2.1"] },
-    { "setup": "canon", "until": "1838.1.1", "dump_dates": ["1836.2.1"] },
-    { "setup": "canon", "until": "1838.1.1", "dump_dates": ["1836.2.1"] },
-    { "setup": "canon", "until": "1838.1.1", "dump_dates": ["1836.2.1"] },
-    { "setup": "canon", "until": "1838.1.1", "dump_dates": ["1836.2.1"] },
-    { "setup": "canon", "until": "1838.1.1", "dump_dates": ["1836.2.1"] },
-    { "setup": "canon", "until": "1838.1.1", "dump_dates": ["1836.2.1"] }
+    {
+      "setup": "canon",
+      "until": "1838.1.1",
+      "dump_dates": [
+        "1836.2.1"
+      ]
+    },
+    {
+      "setup": "canon",
+      "until": "1838.1.1",
+      "dump_dates": [
+        "1836.2.1"
+      ]
+    },
+    {
+      "setup": "canon",
+      "until": "1838.1.1",
+      "dump_dates": [
+        "1836.2.1"
+      ]
+    },
+    {
+      "setup": "canon",
+      "until": "1838.1.1",
+      "dump_dates": [
+        "1836.2.1"
+      ]
+    },
+    {
+      "setup": "canon",
+      "until": "1838.1.1",
+      "dump_dates": [
+        "1836.2.1"
+      ]
+    },
+    {
+      "setup": "canon",
+      "until": "1838.1.1",
+      "dump_dates": [
+        "1836.2.1"
+      ]
+    },
+    {
+      "setup": "canon",
+      "until": "1838.1.1",
+      "dump_dates": [
+        "1836.2.1"
+      ]
+    },
+    {
+      "setup": "canon",
+      "until": "1838.1.1",
+      "dump_dates": [
+        "1836.2.1"
+      ]
+    },
+    {
+      "setup": "canon",
+      "until": "1838.1.1",
+      "dump_dates": [
+        "1836.2.1"
+      ]
+    },
+    {
+      "setup": "canon",
+      "until": "1838.1.1",
+      "dump_dates": [
+        "1836.2.1"
+      ]
+    }
   ]
 }
