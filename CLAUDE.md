@@ -1450,7 +1450,8 @@ the game.
   rewritten to the overlord), the two metal-shipyard seeds and the FRA motor factory; see the
   repo-layout entry above and the file's own `_why_chain_seed` comment for the design rule. The
   earlier §10.59 steamer seed stays **REVERTED** (F66: it fed the abnormal from-start steam-port
-  construction — the engine provisions every overseas state once per port building TYPE; the graded
+  construction — the AI builds one level per overseas state per port building TYPE (F66's MEASURED
+  pattern; the rule itself is NOT identified); the graded
   ports fixed the disease). To author
   rules, browse `config/start_baseline.json` (regenerated each build by `extract_start.ps1`) to see
   which countries/states have which factories. That baseline's `unmapped` list is also the
@@ -1564,8 +1565,15 @@ the game.
   workforce-scaled `state_infrastructure_add` (ports/railways produce infrastructure). Power is on the BE
   ladder normally (electricity output; `output_override` keeps its vanilla per-tier electricity).
   ⭐⭐ **PORTS ARE FRACTIONAL-UNIT BUILDINGS (§10.60/§10.60.2, user-ruled + implemented 2026-08-16):** the
-  engine provisions every overseas state with one level of each new port TYPE and no script can stop it
-  (F66 — ai_value measured inert), so the port unit was shrunk instead: the five tiers' goods and
+  AI builds one level per overseas state per NEW port TYPE and no script we tried can stop it
+  (F66 — ai_value measured inert), so the port unit was shrunk instead:
+  ⚠ **"PROVISIONING" WAS OUR OWN LABEL FOR AN UNIDENTIFIED RULE and is retired (2026-08-17).** F66
+  establishes the PATTERN on good evidence — arm-independent of the subsidy mandate, magnitude tracking
+  the count of overseas possessions (GBR 12 · FRA 10 · BEL 1 · USA 0 · PRU 0), one level per overseas
+  state per port type in the 1855 save — and says in its own text that *"the exact rule — hardcoded vs
+  NAI — is not identified from files"*. It runs through the PRIVATE CONSTRUCTION QUEUE, so it is
+  ordinary construction, not a separate placement path. Do not cite it as a documented engine feature;
+  the shrink is justified by the measured pattern, which is enough. the five tiers' goods and
   building_cost are divided by 10/10/10/5/5 EXPLICITLY in the config, and per-tier `workforce_mult` /
   `effect_mult` (0.1/0.2) scale employment and infra at emission. The 1836 start multiplies port levels
   by 1/workforce_mult (anchorage entries stay level 1). Validated: the provisioning wave still fires but

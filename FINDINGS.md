@@ -7208,11 +7208,28 @@ their starting set. Conversely a 49-technology country (ORG, DEI) fails without 
 10-technology one (PLY) succeeds with it. ⇒ **Seed whatever you like into a minor's state; just declare
 the technology** (`start_tech_grants`, F68).
 
-⚠ **DO NOT GENERALISE THE RUNTIME HALF TO "THE OVERLORD CAN BUILD IT LATER".** The appearances counted
-above are almost certainly **F66's overseas-port provisioning** — the engine giving every overseas state
-one level of each port TYPE — which is **port-specific and tech-blind**. POR is independent and holds 10
-levels, which matches "one per overseas state" and cannot be an overlord investing. Whether an overlord
-can *construct* an ordinary building (a motor industry, say) in a subject's state at runtime while that
-subject lacks the technology is **NOT MEASURED**. It is plausible — the user reports it from play, and
-in-game construction is evidently a different code path from the history effect — but nothing here
-tests it, and F69's probe covers world init only.
+**The clean single-country case: PORTUGAL.** It holds **0** `building_port_steam` at **1836.2.1** and
+**10** at **1837.1.1**, with 61 t0 ports throughout and **without ever holding `screw_frigate`**. Nothing
+at init, ten a year later, the technology never acquired. That is the asymmetry in one country, and it is
+**construction** — F66 measured these waves in the **private construction queue** — not placement.
+
+⚠⚠ **"PROVISIONING" IS OUR OWN LABEL FOR AN UNIDENTIFIED RULE — DO NOT CITE IT AS AN ENGINE FEATURE.**
+F66 says so itself: *"the exact rule — hardcoded vs NAI — is not identified from files"*. What F66
+establishes is a **pattern**, on good evidence: the waves are identical with and without the subsidy
+mandate, their per-country magnitude tracks the count of overseas possessions (GBR 12 · FRA 10 · BEL 1 ·
+USA 0 · PRU 0, with the USA holding `screw_frigate` and building zero), and the 1855 save shows one level
+per overseas state per port type. It establishes **no mechanism**. An earlier version of this entry called
+it "the engine handing every overseas state one level of each port type", contrasted it with investment,
+and concluded POR's ten levels "cannot be an overlord investing" — **all three of those go beyond the
+evidence** and are withdrawn.
+
+⚠ **WHO OWNS THEM IS UNRESOLVED.** The save summary buckets buildings by the **state's owner**, so a
+foreign-owned building standing in a Portuguese state counts under POR. Whether POR built these itself
+(a country constructing what it cannot unlock) or someone built them there is **not determined** by this
+reading, and the two have different implications.
+
+⚠ **AND THE GENERAL CASE REMAINS UNMEASURED.** Whether an overlord can *construct* an ordinary building —
+a motor industry, say — in a subject's state at runtime while that subject lacks the technology is **NOT
+TESTED**. It is plausible; the user reports it from play, and in-game construction is evidently a
+different code path from the history effect. But F69's probe covers world init only, and every runtime
+observation here is of **ports**, which are the one building type F66 shows behaving unusually.
