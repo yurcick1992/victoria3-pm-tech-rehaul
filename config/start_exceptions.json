@@ -220,14 +220,6 @@
    "tier": 1
   },
   {
-   "building": "building_paper_mill",
-   "country": "FRA",
-   "state": "STATE_RHONE",
-   "action": "force_industry_tier",
-   "industry": "motor",
-   "tier": 1
-  },
-  {
    "building": "building_port",
    "country": "NET",
    "state": "STATE_GOLD_COAST",
@@ -345,15 +337,6 @@
    "owner": "NET"
   },
   {
-   "building": "building_shipyard",
-   "country": "DEI",
-   "state": "STATE_WEST_JAVA",
-   "action": "force_industry_tier",
-   "industry": "shipyard_steam",
-   "tier": 1,
-   "owner": "NET"
-  },
-  {
    "building": "building_glassworks",
    "country": "NET",
    "state": "STATE_FRIESLAND",
@@ -362,14 +345,31 @@
    "tier": 1
   },
   {
-   "building": "building_furniture_manufactory",
+   "building": "building_shipyard",
    "country": "NET",
-   "state": "STATE_GELRE",
+   "state": "STATE_HOLLAND",
+   "action": "force_industry_tier",
+   "industry": "shipyard_steam",
+   "tier": 1
+  },
+  {
+   "building": "building_food_industry",
+   "country": "NET",
+   "state": "STATE_HOLLAND",
+   "action": "force_industry_tier",
+   "industry": "motor",
+   "tier": 1
+  },
+  {
+   "building": "building_paper_mill",
+   "country": "FRA",
+   "state": "STATE_POITOU",
    "action": "force_industry_tier",
    "industry": "motor",
    "tier": 1
   }
  ],
  "_why_chain_seed": "THE В§2 CHAIN SEED вЂ” RATIFIED STANDING DESIGN (user-ruled 2026-08-16 late evening + Q5a/Q5c the same night, В§10.60.3): every anchorage in the GBR and FRA 1836 markets (the two markets whose LEADER holds screw_frigate from day 0 - tier-1 starting techs are GBR/FRA/USA/PRU/BEL, of whom only these two have overseas empires) becomes a tier-2 (t1 steam, graded 1/10-size) port stub at level 1 (the anchorage clamp holds it there). LEADER-owned anchorages convert plainly; SUBJECT-owned ones (BIC/SIL/ION/NSW/PLY/MKT/ABU/ORG - Q5a ruled after MEASURING that the engine provisions steam ports into these states regardless of the subject s tech, SIL by 1837.1 in the century run) convert with ownership REWRITTEN TO THE OVERLORD (`owner`) and NO tech grant - covered not by an exception but by the REFINED L14 RULE (user, same night): the starting-tech gate binds DOMESTICALLY-owned buildings only; a building wholly owned by foreign countries rides its owners technology (verify_start_techs.mjs parses each block s ownership and prints the foreign-owned skip count). DEI excluded - NET market, leader lacks the tech at start. Each leader gets ONE metal shipyard by converting a small clipper-shipyard block (GBR East Anglia, FRA Brittany; Q6 sizing rule: ceil(stubs / (yard output/stub demand)) yards, min 1 - one each suffices below ~107 stubs), and FRA one motor factory (Q5c: Rhone 1-lv paper mill -> motor t1; FRA holds atmospheric_engine). STEEL IS NOT SEEDED (GBR Yorkshire 6 lv, FRA Alsace 1 lv exist); leader-owned overseas BASIC-port states (Malta/Gibraltar/Malaya) are NOT seeded - the engine provisions their steam stubs within weeks at graded cost (measured). Regenerate with the gen_seed_rules.mjs pattern (vanilla history anchorages x ui/presets.js market membership).",
- "_why_net_seed": "NET SEED (user-ruled 2026-08-17) - the Dutch market gets the package GBR and FRA have, plus the two chains it lacks entirely. 15 port stubs: every LEVEL-1 OVERSEAS anchorage in the market, 3 NET-owned and 12 subject-owned rewritten to NET, which is the same selection rule and the same ownership rewrite the 10.60.3 chain seed applies to GBR/FRA. Plus screw_frigate via config start_tech_grants - NET is starting tier 2 and screw_frigate is era 2, so vanillas add_era_researched = era_1 does NOT cover it, which is exactly why NET researches it in June 1838 while every tier-1 power starts with it; without the grant NET would own steam ports its own technology cannot unlock and landmine L14 would fail the build. WHY THE METAL SHIPYARD IS DEIs WEST JAVA (1 level) AND NOT NETs HOLLAND (4): Holland is NETs ENTIRE clipper capacity, and F67 measured that stripping clipper supply is the failure this whole change is fixing - the Dutch market runs ~97 anchorages eating ~147 clippers/wk against 200 supplied, so converting Holland would leave 40. GBR kept 14 of 17 shipyard levels and FRA 6 of 10; NET has only 4. One level is also the size GBRs seeded 3-level yard actually collapsed to. Steel and motor are the SMALLEST available blocks (glassworks x1 Friesland, furniture x2 Gelre) so the seed does not gut a larger industry; NET has no steel mill and no motor industry in the vanilla 1836 map at all."
+ "_why_net_seed": "NET SEED (user-ruled 2026-08-17). PORTS are granted to every OVERSEAS state in the market: 15 level-1 anchorages become steam-port stubs, 3 in NET states and 12 in subject states, all rewritten to NET GOVERNMENT ownership. INDUSTRY grants sit in the MARKET LEADER ITSELF, in the largest coastal state contiguous with its capital - never in a subject, and never inland. For NET that is STATE_HOLLAND, which is both the capital and coastal: the metal shipyard (shipyard x4) and the motor factory (food x2) go there, and steel stays at STATE_FRIESLAND (glassworks x1), also NET, also coastal, also contiguous with Holland. An earlier draft put the metal shipyard in DEI West Java and the motor in inland Gelre; both are corrected. ⚠ CONSEQUENCE TO WATCH: converting Holland shipyard x4 leaves the Dutch market with ONE clipper yard (DEI West Java x1, 40/wk) against roughly 87/wk of anchorage demand after the anchorage fix - a deficit where NET previously had a surplus.",
+ "_why_fra_motor": "FRA motor moved STATE_RHONE -> STATE_POITOU (2026-08-17). Same rule: industry grants belong in a COASTAL state of the market leader, and Rhone is inland (no vanilla port). Poitou is coastal and carries the same building type at the same size (paper_mill x4), so the grant is unchanged in everything but location. GBR East Anglia and FRA Brittany were checked and are both already compliant - coastal, and in the leader."
 }

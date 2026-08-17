@@ -3439,7 +3439,7 @@
 				activate_production_methods={ "pm_main_textile_dye" "pm_craftsman_sewing" "pm_traditional_looms"  }
 			}
 			create_building={
-				building="building_motor_industry"
+				building="building_paper_mill_sulfite"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -3459,7 +3459,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_motor_steam" "pm_automation_disabled"  }
+				activate_production_methods={ "pm_main_paper_sulfite_pulping" "pm_automation_disabled"  }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -3897,7 +3897,7 @@
 	s:STATE_POITOU={
 		region_state:FRA={
 			create_building={
-				building="building_paper_mill_sulfite"
+				building="building_motor_industry"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -3911,7 +3911,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_paper_sulfite_pulping" "pm_automation_disabled"  }
+				activate_production_methods={ "pm_main_motor_steam" "pm_automation_disabled"  }
 			}
 			create_building={
 				building="building_vineyard"
@@ -4939,7 +4939,7 @@
 				activate_production_methods={ "pm_scholastic_education" "pm_religious_academia" }
 			}
 			create_building={
-				building="building_shipyard"
+				building="building_shipyard_metal"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -4949,7 +4949,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_shipyard_basic"  }
+				activate_production_methods={ "pm_main_shipyard_metal"  }
 			}
 			create_building={
 				building="building_arms_industry"
@@ -4988,7 +4988,7 @@
 				activate_production_methods={ "pm_craftsman_sewing" "pm_main_textile_dye" "pm_traditional_looms"  }
 			}
 			create_building={
-				building="building_food_industry_sweetener"
+				building="building_motor_industry"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -4998,7 +4998,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_food_sweetener" "pm_disabled_canning" "pm_disabled_distillery" "pm_manual_dough_processing"  }
+				activate_production_methods={ "pm_main_motor_steam" "pm_disabled_canning" "pm_disabled_distillery" "pm_manual_dough_processing"  }
 			}
 			create_building={
 				building="building_rye_farm"
@@ -5195,7 +5195,7 @@
 				reserves=1
 			}
 			create_building={
-				building="building_motor_industry"
+				building="building_furniture_manufactory"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -5204,14 +5204,14 @@
 						region="STATE_GELRE"
 					}
 					building={
-						type="building_motor_industry"
+						type="building_furniture_manufactory"
 						country="c:NET"
 						levels=1
 						region="STATE_GELRE"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_motor_steam"  "pm_automation_disabled" "pm_luxury_furniture" }
+				activate_production_methods={ "pm_main_furniture_handcrafted"  "pm_automation_disabled" "pm_luxury_furniture" }
 			}
 			create_building={
 				building="building_rye_farm"

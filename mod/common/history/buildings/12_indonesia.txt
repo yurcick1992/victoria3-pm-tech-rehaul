@@ -476,15 +476,17 @@
 				activate_production_methods={ "pm_secular_bureaucrats" "pm_professional_bureaucrats" "pm_horizontal_drawer_cabinets" }
 			}
 			create_building={
-				building="building_shipyard_metal"
+				building="building_shipyard"
 				add_ownership={
-					country={
-						country="c:NET"
+					building={
+						type="building_financial_district"
+						country="c:DEI"
 						levels=1
+						region="STATE_WEST_JAVA"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_shipyard_metal"  }
+				activate_production_methods={ "pm_main_shipyard_basic"  }
 			}
 			create_building={
 				building="building_trade_center"
