@@ -988,24 +988,33 @@ function solveInputsAt(ind, t, target) {
     const Xmono = mono.IbaseMax / unitBase;
     if (X > Xmono) { X = Xmono; monoCapped.add(t.key); } else monoCapped.delete(t.key);
   }
-  // ⭐⭐ THE SOLVENCY BOUND (§10.62, user-ruled 2026-08-17) — the ABSOLUTE cap the ladder never had.
-  // Every other bound here is RELATIVE: Xmin is relative to this tier's own output, Xmono to the tier
-  // BELOW. A ladder's bottom rung has no tier below it, so before this it was bounded on one side only
-  // (leanness) and could be solved arbitrarily gluttonous. That is how `building_port` reached 15.2
-  // clippers for 9 merchant marine — target_be 270 against an engine that stops at 175, i.e. insolvent
-  // at every price the game can produce (FINDINGS F67, landmine L18).
-  // The rule: at the MOST FAVOURABLE prices the engine allows — output at the +75% band edge, inputs at
-  // the −75% edge — the base PM must still break even. Deliberately NOT "must not destroy value at base
-  // prices" (user, same ruling): an early tier is MEANT to be insolvent at base and profitable once its
-  // output price rises, so only the unreachable case is forbidden.
-  // ⚠ WAGES ARE IN IT, and they are what makes it bite: `wage_pct` is the wage fraction of TOTAL cost, so
-  // W = Ibase·wp/(1−wp) — and wages do NOT scale with goods prices. At the favourable extreme the
-  // discounted goods bill is 0.25·Ibase while wages are still 0.333·Ibase, so wages are the LARGER term.
-  // Goods-only the threshold would be O:I ≥ 0.143; wage-inclusive it is O:I ≥ 0.333.
+  // ⭐⭐ THE SOLVENCY BOUND — TARGET BE ≤ 175 (§10.63, user-ruled 2026-08-17) — the ABSOLUTE cap the
+  // ladder never had. Every other bound here is RELATIVE: Xmin to this tier's own output, Xmono to the
+  // tier BELOW. A ladder's bottom rung has no tier below it, so before this it was bounded on one side
+  // only (leanness) and could be solved arbitrarily gluttonous. That is how `building_port` reached 15.2
+  // clippers for 9 merchant marine — a break-even at 270% of base against an engine that stops at 175%,
+  // i.e. insolvent at every price the game can produce (FINDINGS F67, landmine L18).
+  //
+  // THE RULE: a tier's full, wage-inclusive break-even — the OUTPUT price, as a % of base, at which the
+  // base PM covers its input goods plus wages WITH INPUTS AT BASE — may not exceed the engine's own
+  // +75% band edge:
+  //     target_be = Ibase / ((1 − wp) · Obase) · 100  ≤  175      ⟺  Ibase ≤ 1.75 · (1 − wp) · Obase
+  // so at the default wp = 0.25 the recipe may cost at most 1.3125 × its own output value, i.e. O:I ≥ 0.762.
+  //
+  // ⚠⚠ THIS IS THE STRICTER OF THE TWO LINES CONSIDERED, AND IT IS THE RULED ONE (2026-08-17, second
+  // ruling). The first ruling allowed BOTH prices to move to their favourable edges (output ×1.75 AND
+  // inputs ×0.25), which is `target_be ≤ 400` and caught 0 of 105 tiers — measured before it shipped.
+  // Holding inputs at BASE is what makes the bound bite: it catches port 270, railway 217, synthetics 208.
+  // It is still NOT "may not destroy value at base prices" (that would be ≤ 100 and is rejected): a tier
+  // may legitimately be insolvent at base prices and be carried by a higher output price. §10.50.1 stands,
+  // sub-1 O:I stays legal, and the §10.50 RECIPE RATCHET is untouched and orthogonal — that one is
+  // relative (a tier against the one below), this one absolute (a tier against the engine).
+  // ⚠ SHIPYARDS ARE NOT EXEMPT (user, same ruling). They cost nothing today — all seven tiers already sit
+  // at ≤128 — but the carve-out is gone, so a future re-solve cannot hide behind it.
   // ⚠ It can never fight the lean floor: Xmin sits at Ibase = Obase/ioCap (≤ 0.25·Obase) and this cap at
-  // Ibase = 3·Obase for wp=0.25, a factor of 12 apart — so the Xmin clamp below still has the last word.
+  // Ibase = 1.3125·Obase, a factor of five apart — so the Xmin clamp below still has the last word.
   const wpS = t.wage_pct != null ? +t.wage_pct : DEFAULT_WAGE_PCT;
-  const IbaseMaxSolv = (PRICE_BAND_HI * Obase) / (PRICE_BAND_LO + wpS / (1 - wpS));
+  const IbaseMaxSolv = (MAX_TARGET_BE / 100) * (1 - wpS) * Obase;
   const Xsolv = IbaseMaxSolv / unitBase;
   if (X > Xsolv) { X = Xsolv; solvCapped.add(t.key); } else solvCapped.delete(t.key);
   if (X < Xmin) { X = Xmin; capped.add(t.key); } else capped.delete(t.key);
@@ -1022,16 +1031,15 @@ function solveInputsAt(ind, t, target) {
   if (IbaseFinal > IbaseMaxSolv * (1 + 1e-9)) {
     solvBreach.set(t.key, {
       industry: ind.id, era: t.era, Obase, Ibase: IbaseFinal, wp: wpS,
-      best: (PRICE_BAND_HI * Obase) / (PRICE_BAND_LO * IbaseFinal + IbaseFinal * wpS / (1 - wpS)),
       needBe: Math.round(IbaseFinal / ((1 - wpS) * Obase) * 100),
     });
   } else solvBreach.delete(t.key);
   return true;
 }
-// The engine's own price band (vic3 `price = base × [1 + 0.75·clamp(...)]`, 25–175% of base). These are
-// GAME CONSTANTS, not tuning knobs — the solvency bound is "no reachable price saves this building", and
-// what is reachable is the engine's business. Do not turn them into env knobs.
-const PRICE_BAND_HI = 1.75, PRICE_BAND_LO = 0.25;
+// The engine's own upper band edge (vic3 `price = base × [1 + 0.75·clamp(...)]` ⇒ 25–175% of base). This
+// is a GAME CONSTANT, not a tuning knob — the bound says "no reachable output price saves this building",
+// and what is reachable is the engine's business. Deliberately NOT an env knob.
+const MAX_TARGET_BE = 175;
 const DEFAULT_WAGE_PCT = 0.25;
 const solvCapped = new Set();          // tiers whose richness the solvency bound is actively holding back
 const solvBreach = new Map();          // tiers that violate it ANYWAY, via the negative-goods floor
@@ -1040,11 +1048,10 @@ const solvBreach = new Map();          // tiers that violate it ANYWAY, via the 
 function assertSolvency(where = 'solve') {
   if (!solvBreach.size) return;
   const lines = [...solvBreach.entries()].map(([k, b]) =>
-    `  ${k} (${b.industry}, e${b.era}): needs output at ${b.needBe}% of base to break even; the engine `
-    + `stops at ${Math.round(PRICE_BAND_HI * 100)}%. Best case ×${b.best.toFixed(2)} `
-    + `(out £${b.Obase.toFixed(0)} in £${b.Ibase.toFixed(0)} wage_pct ${b.wp}).`);
+    `  ${k} (${b.industry}, e${b.era}): break-even at ${b.needBe}% of base, cap is ${MAX_TARGET_BE}% `
+    + `(out £${b.Obase.toFixed(0)}, in £${b.Ibase.toFixed(0)}, wage_pct ${b.wp}).`);
   throw new Error(
-    `SOLVENCY BOUND VIOLATED by ${solvBreach.size} tier(s) at ${where} — §10.62 / landmine L18.\n`
+    `SOLVENCY BOUND VIOLATED by ${solvBreach.size} tier(s) at ${where} — §10.63 / landmine L18.\n`
     + lines.join('\n')
     + `\nThese recipes cannot break even at ANY price the engine can produce, so the solve refuses to write`
     + ` them. Each was clamped and then pushed back over the line by minMainInput (the negative-goods`
@@ -4512,7 +4519,7 @@ if (WRITE) {
     if (Obase > 0) t.target_be = Math.round(Ibase / ((1 - wp) * Obase) * 100);
     nv++;
   }
-  // §10.62 — refuse to write a config the solve already knows is unsolvable (landmine L18).
+  // §10.63 — refuse to write a config the solve already knows is unsolvable (landmine L18).
   assertSolvency('config write');
   writeFileSync(CFG, JSON.stringify(cfg), 'utf8');
   console.log(`\nWROTE ${nv} tier input recipes (re-solved at the REALISED prices) to ${CFG}`);

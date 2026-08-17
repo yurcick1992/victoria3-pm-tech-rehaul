@@ -5153,87 +5153,97 @@ round-tripped to the parent sheet over postMessage because the config write path
 lives there. Implemented in `emit_techs.mjs` (AIW), sections 2/2b/3 generalized so all three trees
 have an emission path (the 2b lesson: a change routed at a tree with no path is silently dropped).
 
+
 ---
 
-## 10.62 THE SOLVENCY BOUND — the absolute floor the ladder never had (user-ruled 2026-08-17)
+## 10.63 THE SOLVENCY BOUND — TARGET BE ≤ 175 (user-ruled 2026-08-17)
 
-**The rule.** A tier's **base production method** must be able to break even at **some price the engine
-can actually produce**. Tested at the most favourable combination the band allows — **output at +75%,
-every input at −75%**, wages included:
+**The rule.** A tier's **target BE may not exceed 175**. That is the tier's full, wage-inclusive
+break-even — the OUTPUT price, as a % of base, at which its **base production method** covers its input
+goods plus wages, **with inputs at base prices** — against the engine's own +75% band edge:
 
 ```
-solvent  ⟺  1.75 · O_base  ≥  0.25 · I_base  +  W        where W = I_base · wage_pct/(1 − wage_pct)
-         ⟺  O:I ≥ 0.333 at the default wage_pct 0.25      (goods-only it would be 0.143)
+target_be = I_base / ((1 − wage_pct) · O_base) · 100  ≤  175
+        ⟺  I_base ≤ 1.75 · (1 − wage_pct) · O_base
+        ⟺  O:I ≥ 0.762 at the default wage_pct 0.25
 ```
 
-A tier that fails is insolvent at **every reachable price**. That is not a balance opinion, it is
-arithmetic about a building that can never pay for itself.
+A tier that fails is insolvent at **every output price the engine can produce**. That is not a balance
+opinion, it is arithmetic about a building that can never pay for itself. **Enforced in both the solver
+and the linter**, and **shipyards are not an exception** (user, same ruling — it costs nothing today, all
+seven of their tiers sitting at ≤128, but the carve-out is gone so a future re-solve cannot hide in it).
 
-⚠⚠ **DELIBERATELY NOT "a recipe may not destroy value at base prices"** — the easy rule, explicitly
-rejected in the same ruling, and rightly. *An early tier is MEANT to be insolvent at base prices*: its
-whole design is to be carried by a high output price and then driven out as later tiers deflate that
-price. A sub-1 output:input ratio at base is legitimate and stays legitimate (**§10.50.1 is unchanged**).
-Six tiers destroy value at base prices today and **all six remain legal**.
+### What it is NOT, and why
 
-⚠ **THE §10.50 RECIPE RATCHET IS UNAFFECTED AND STAYS** (user, same ruling): *output value ÷ input value,
-both at base prices, may not decrease with era within an industry*. The two rules are orthogonal and
-neither subsumes the other — the ratchet is **relative** (this tier against the one below), the solvency
-bound is **absolute** (this tier against the engine). The ratchet is exactly what the bottom rung of a
-ladder escapes, which is how `building_port` got where it is.
+⚠⚠ **NOT "a recipe may not destroy value at base prices"** — that is `target_be ≤ 100`, and it is
+**rejected**. An early tier is *meant* to be insolvent at base prices: its whole design is to be carried
+by a high output price and then driven out as later tiers deflate that price. **§10.50.1 stands and sub-1
+O:I stays legal** — three tiers (power e3 158, steel e2 139, steel e0 135) destroy value at base prices,
+pass this rule, and are correct.
 
-### Why wages are in it, and why they dominate
+⚠ **The §10.50 RECIPE RATCHET is untouched and stays** (user, same ruling): *output value ÷ input value,
+both at base prices, may not decrease with era within an industry.* The two are orthogonal and neither
+subsumes the other — the ratchet is **relative** (a tier against the one below), this bound is
+**absolute** (a tier against the engine). The ratchet is precisely what a ladder's bottom rung escapes,
+which is how `building_port` reached 15.2 clippers for 9 merchant marine.
+
+### ⚠ The superseded first line, kept because the reasoning matters
+
+The rule was first ruled as *both* prices at their favourable edges — output ×1.75 **and** inputs ×0.25 —
+which is `target_be ≤ 400`. Measured before it shipped, that caught **0 of 105 tiers**: the worst in the
+book, `building_port` at 270, cleared it by ×1.48 with wages included. The user asked exactly the right
+question before ruling ("will this really cover anything? ×4 input decrease is a huge boost"), the answer
+was no, and the ruling was tightened the same hour. `lint_solvency.mjs --band` still scores the old line.
+
+| test | equivalent to | threshold O:I | fails on the pre-ruling book |
+|---|---|---|---|
+| output +75%, inputs −75% — superseded | `target_be ≤ 400` | 0.333 | 0 |
+| **output +75%, inputs at base — SHIPPED** | **`target_be ≤ 175`** | **0.762** | **3** |
+| output at base — rejected | `target_be ≤ 100` | 1.333 | 6 |
+
+**Why the middle line is the right one**: it is the exact formalisation of the ruling's own principle —
+*"early tiers are intended to bring profits at a higher output price"* — permitting base-price insolvency
+and forbidding only *"no output price in the band saves it"*. The evidence against also letting inputs
+collapse: over 100 in-game years across nine markets in `20260817_104849_canon-ports-n2`, clippers never
+traded below **85%** of base while merchant marine never exceeded **175%**. The weaker rule's "best case"
+is not a state the game produces.
+
+### Why wages are in it
 
 `wage_pct` is the wage fraction of **total** cost, so `W = I_base · wp/(1−wp)` — the same quantity
-`lint_profitability.awk` uses, i.e. the repo's standard **full** break-even. Wages matter more here than
-anywhere else because **they do not scale with goods prices**. At the favourable extreme the discounted
-goods bill is `0.25·I` while wages are still `0.333·I`: the wage term is the **larger** one. Including
-them more than doubles the rule's strictness (0.143 → 0.333).
+`lint_profitability.awk` uses, i.e. the repo's standard **full** break-even. Excluding them would slacken
+the bound from O:I ≥ 0.762 to ≥ 0.571.
 
-### ⚠ What it catches today: NOTHING — and that was known before it shipped
+### The three tiers it caught, and the re-solve
 
-The user asked the right question before ruling ("will this really cover anything? ×4 input decrease is a
-huge boost"), and the answer measured out at **0 of 105 tiers**. The rule is equivalent to
-`target_be ≤ 400`, and the worst tier in the book is `building_port` at **270** — it clears the best case
-by **×1.48**, wages included. **This is a floor against a future catastrophe, not a fix for F67.**
-
-The three candidate lines, for whoever revisits this:
-
-| test | equivalent to | threshold O:I | fails today |
+| tier | target BE | O:I | max input value allowed |
 |---|---|---|---|
-| **output +75%, inputs −75%** — SHIPPED | `target_be ≤ 400` | 0.333 | **0** |
-| output +75%, inputs at base | `target_be ≤ 175` | 0.762 | port 270, railway 217, synthetics 208 |
-| output at base — REJECTED | `target_be ≤ 100` | 1.333 | 6 |
+| `building_port` (e0) | **270** | 0.49 | £59 against £91 |
+| `building_railway` (e1) | **217** | 0.61 | £788 against £978 |
+| `building_synthetics_plant` (e2) | **208** | 0.64 | £4200 against £5000 |
 
-⭐ **The middle line is the open question**, and it is the one that would have caught F67. It is also the
-exact formalisation of the ruling's own stated principle — *"early tiers are intended to bring profits at
-a higher output price"* — since it permits base-price insolvency and base-price value destruction and
-forbids only *"no output price in the band saves it"*. The difference from the shipped line is solely
-whether **inputs may also collapse to 25%** while the output is at its ceiling. Evidence that they cannot:
-over 100 in-game years across nine markets in `20260817_104849_canon-ports-n2`, clippers never traded
-below **85%** of base while merchant marine never exceeded **175%** — the shipped rule's "best case" is
-not a state the game produces. **Not ruled; do not implement it without asking.**
+⚠ **`building_port` is the one that matters** — it is the F67 defect, the merchant-marine chain's break
+point, and the reason this rule exists.
 
 ### Where it is enforced
 
-- **Solver** — `solveInputsAt()` in `tools/era_scenarios.mjs`. `Xsolv` is a hard clamp beside the existing
+- **Solver** — `Xsolv` in `solveInputsAt()` (`tools/era_scenarios.mjs`), a hard clamp beside the existing
   `Xmin` (the 4:1 lean floor) and `Xmono` (the ratchet). It can never fight `Xmin`: that sits at
-  `I = O/ioCap ≤ 0.25·O` and this at `I = 3·O`, a factor of twelve apart, so the lean floor keeps the last
-  word. ⚠ **The clamp is re-checked after `minMainInput`**, because the negative-goods floor is applied
-  per good and *after* it — a tier with large secondary reductions can be pushed back over the line by a
+  `I = O/ioCap ≤ 0.25·O` and this at `I = 1.3125·O`, a factor of five apart, so the lean floor keeps the
+  last word. ⚠ **Re-checked after `minMainInput`**, because the negative-goods floor is applied per good
+  and *after* the clamp — a tier with large secondary reductions can be pushed back over the line by a
   different hard invariant. Two hard rules in genuine conflict must **fail loudly** rather than have one
-  silently win, so that case records a breach and `assertSolvency()` **throws before the config write**.
+  silently win, so that case records a breach and **`assertSolvency()` throws before the config write**.
   "Fail solving" is literal: the solve refuses to write a config it knows is unsolvable.
-- **Build** — `tools/lint_solvency.mjs`, a **separate** check, for two reasons that are the whole story of
-  how F67 survived. (1) **Scope**: `lint_profitability.awk` reads `ladder_tiers.txt`, which `build.ps1`
-  writes only for industries with neither `follows_be:false` nor `no_mass_be`, so port/railway/power — three
-  of the six sub-1 tiers — are invisible to it. (2) **Circularity**: that linter compares a recipe against
-  `target_be`, which the solver restates *from that recipe*, so its deviation is 0 by construction and its
-  own source comment concedes it "can no longer tell us the balance is wrong". ⚠ **This check must never
-  read `target_be`**; it recomputes from the goods block against `tools/goods_prices.tsv`.
+- **Build** — `tools/lint_solvency.mjs`, a **separate** check, and both reasons are the story of how F67
+  survived for months. (1) **Scope**: `lint_profitability.awk` reads `ladder_tiers.txt`, which `build.ps1`
+  writes only for industries with neither `follows_be:false` nor `no_mass_be` — so port, railway and power
+  are invisible to it, and two of the three offenders are among them. (2) **Circularity**: that linter
+  compares a recipe against `target_be`, which `era_solver` restates *from that same recipe*, so its
+  deviation is 0 by construction and its own source comment concedes it "can no longer tell us the balance
+  is wrong". ⚠ **Never read `target_be` in this check**; recompute from the goods block against
+  `tools/goods_prices.tsv`.
 
-⚠ **NOT YET WIRED INTO `build.ps1` / `lint.sh` (2026-08-17).** `canon-ports-n2` was live and the scheduler
-rebuilds the mod before every run, so touching the build path would have changed the instrument between
-run 1 and run 2 (**landmine L10**). The checker is written, committed and **proven to trip** — pointed at a
-config with `building_port` at 2.5 clippers it exits 1 and names the tier — and the one-line call is owed
-the moment the batch reports.
+⚠ **`MAX_TARGET_BE = 175` is a GAME CONSTANT, not a knob.** It is the engine's own band edge
+(`price = base × [1 + 0.75·clamp(±1)]`). Deliberately not env-overridable in either implementation.
 

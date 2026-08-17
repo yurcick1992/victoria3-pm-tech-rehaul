@@ -733,24 +733,30 @@ tools/                  dev tooling — NOT shipped in the mod
                         is forbidden, §10.50.1. ⚠ The two examples §10.50.1 cites, fertilizer 0.98
                         and electrics 0.75, BOTH NOW RUN 3.99 — later re-solves fixed them and the
                         exemption stayed; today's sub-1 population is 6 tiers, worst 0.49),
-                        ⭐⭐ THE SOLVENCY BOUND (§10.62, user-ruled 2026-08-17, NO revert knob — it
-                        is a game constant, not a tuning choice): a tier's BASE PM must break even
-                        at SOME price the engine can produce, tested at the most favourable
-                        combination the band allows — output ×1.75, inputs ×0.25, WAGES INCLUDED
-                        (W = Ibase·wp/(1−wp), and wages are the LARGER term there because they do
-                        not scale with goods prices: 0.333·I against a 0.25·I goods bill).
-                        `Xsolv` clamps it in solveInputsAt beside Xmin and the ratchet, and
+                        ⭐⭐ THE SOLVENCY BOUND — TARGET BE ≤ 175 (§10.63, user-ruled 2026-08-17,
+                        NO revert knob — 175 is the engine's own band edge, a game constant rather
+                        than a tuning choice): a tier's full wage-inclusive break-even, i.e. the
+                        OUTPUT price as a % of base at which its BASE PM covers input goods plus
+                        wages WITH INPUTS AT BASE, may not exceed 175 — `Ibase ≤ 1.75·(1−wp)·Obase`,
+                        so O:I ≥ 0.762 at wp 0.25. `Xsolv` clamps it in solveInputsAt beside Xmin
+                        and the ratchet (never fighting Xmin, which sits 5× away), and
                         `assertSolvency()` THROWS before the config write when minMainInput (the
                         negative-goods floor, applied per good AFTER the clamp) pushes a tier back
                         over the line — two hard invariants in conflict must fail loudly, not have
                         one silently win. Build side: `tools/lint_solvency.mjs`, SEPARATE from
                         lint_profitability.awk for the two reasons F67 survived — that linter's
                         scope excludes no_mass_be industries, and its test is circular (target_be
-                        is restated FROM the recipe it checks). ⚠⚠ IT CATCHES 0 OF 105 TODAY and
-                        that was known before it shipped: the rule is target_be ≤ 400 and the worst
-                        tier is the port at 270. A floor against a future catastrophe, NOT a fix
-                        for F67; the stricter middle line (inputs at base, target_be ≤ 175, which
-                        WOULD catch it) is recorded in §10.62 as open and UNRULED.
+                        is restated FROM the recipe it checks). SHIPYARDS ARE NOT EXEMPT (costs
+                        nothing today, all seven at ≤128, but the carve-out is gone).
+                        ⚠ It caught THREE tiers on the pre-ruling book — port 270, railway 217,
+                        synthetics 208 — which is what forced the re-solve.
+                        ⚠ It is NOT "may not destroy value at base prices" (that is ≤100, REJECTED):
+                        an early tier is MEANT to be insolvent at base and carried by a higher
+                        output price, so §10.50.1 stands and sub-1 O:I stays legal (power 158,
+                        steel 139/135 all pass). ⚠ A FIRST ruling the same day set the weaker
+                        both-edges line (output ×1.75 AND inputs ×0.25 = target_be ≤ 400); measured
+                        at 0 of 105 before shipping and superseded within the hour —
+                        `lint_solvency.mjs --band` still scores it.
                         ⚠ Each measured HARMFUL
                         ALONE (A → £1.5M losses, B → stale explosion, C plain → grows the pithead
                         artifact) — revert as a set, not singly. Band top 1.0 measured: a stale
@@ -1168,7 +1174,7 @@ tools/                  dev tooling — NOT shipped in the mod
   lint_profitability.awk / ladder_tiers.txt   BE-vs-ladder linter (ladder_tiers.txt is GENERATED; prices come
                         from goods_prices.tsv via `-v PRICES=`, never a copy inside the awk)
   lint_negative_goods.awk negative-goods invariant linter (no PM combination drives a good's building total < 0)
-  lint_solvency.mjs     THE SOLVENCY LINTER (§10.62 / landmine L18) — every tier's BASE PM must be able to
+  lint_solvency.mjs     THE SOLVENCY LINTER (§10.63 / landmine L18) — every tier's BASE PM must be able to
                         break even at SOME price inside the engine's own 25–175% band: output ×1.75,
                         inputs ×0.25, wages included. `--census` ranks every tier by how close it is to
                         the line; `--config <path>` scores an alternate book; `--goods-only` drops the wage

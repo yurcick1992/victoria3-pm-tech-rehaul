@@ -635,7 +635,7 @@ every run and the batch was live. Editing it mid-batch would have changed the in
 
 **Status: DETECTOR BUILT AND PROVEN — build wiring owed.** Found 2026-08-17 while diagnosing F67, from
 the economy's behaviour in flight rather than from any check. The rule was **ruled by the user the same
-day (§10.62)** and both halves are implemented:
+day (§10.63)** and both halves are implemented:
 
 - **Solver** — `Xsolv`, a hard clamp in `solveInputsAt()` beside `Xmin` and the ratchet, plus
   `assertSolvency()`, which **throws before the config write** if the negative-goods floor pushes a tier
@@ -649,11 +649,12 @@ day (§10.62)** and both halves are implemented:
 written and the scheduler rebuilds the mod before every run, so editing the build path would have changed
 the instrument between run 1 and run 2 — **L10**. Wire it the moment the batch reports.
 
-⚠⚠ **AND THE SHIPPED THRESHOLD DOES NOT CATCH THE DEFECT THAT PROMPTED IT.** The ruled test is output at
-+75% *and* inputs at −75%, which is `target_be ≤ 400`; the port is 270 and clears it by ×1.48. The rule is
-a floor against a future catastrophe, **not** a fix for F67, and §10.62 records the stricter middle line
-(inputs held at base, `target_be ≤ 175`) as an open, unruled question. Do not read a passing solvency
-check as evidence the port is fine.
+⚠ **THE THRESHOLD WAS RULED TWICE ON THE SAME DAY, AND THE FIRST ONE WAS TOO WEAK TO MATTER.** The first
+ruling let BOTH prices go to their favourable edges — output ×1.75 *and* inputs ×0.25, i.e.
+`target_be ≤ 400` — which was measured at **0 of 105** before it shipped: the port is 270 and cleared it
+by ×1.48. Holding **inputs at base** is what makes the bound bite, and that is the shipped rule
+(`target_be ≤ 175`, §10.63). It catches port 270, railway 217 and synthetics 208, which is what forced
+the re-solve. `lint_solvency.mjs --band` still scores the superseded line for comparison.
 
 **The defect.** `building_port` (era 0) consumes **15.2 clippers to make 9 merchant marine** —
 £912 of input for £450 of output at base prices, a ratio of **0.49**. Vanilla's own
@@ -702,16 +703,15 @@ non-obvious reason it did not:
 | 0.96 | e2 | 139 | yes | `building_steel_mill_bessemer` |
 | 0.96 | e0 | 135 | yes | `building_steel_mill` |
 
-**DETECTOR — as RULED and as BUILT (§10.62).** ⚠ An earlier draft of this entry proposed
-`BE% > 175`; the **user ruled the weaker outer line instead**, and this section is the ruling, not the
-draft. Both prices go to their most favourable band edge:
+**DETECTOR — as RULED and as BUILT (§10.63).** Inputs stay at BASE; only the output price moves to its
+band edge:
 
 > For every tier, take the **base PM** and compute from the goods block and the shared
-> `tools/goods_prices.tsv`: **THROW if `1.75·O_base < 0.25·I_base + W`**, where
-> `W = I_base · wage_pct/(1 − wage_pct)`. 1.75 and 0.25 are the engine's own band edges, so the
-> threshold is a game constant rather than a tuning choice. Scope is **every tier**, explicitly
-> including `no_mass_be` industries — three of the six sub-1 tiers live inside them and are invisible
-> to `lint_profitability.awk`.
+> `tools/goods_prices.tsv`: **THROW if `I_base / ((1 − wage_pct) · O_base) · 100 > 175`** — i.e. the
+> output price, as a % of base, at which the tier breaks even, against the engine's own +75% band edge.
+> 175 is a game constant rather than a tuning choice. Scope is **every tier**, explicitly including
+> `no_mass_be` industries — two of the three offenders live inside them and are invisible to
+> `lint_profitability.awk`. **Shipyards are not exempt.**
 
 Implemented as `tools/lint_solvency.mjs` (build side) and `Xsolv` + `assertSolvency()` in
 `solveInputsAt()` (solver side).
@@ -725,7 +725,9 @@ the sharper claim: *no reachable price makes this building solvent*. Steel's two
 and must keep passing. **The §10.50 recipe ratchet is untouched and stays** — it is relative (a tier
 against the one below), this is absolute (a tier against the engine), and neither subsumes the other.
 
-**Proven** by running `node tools/lint_solvency.mjs --config <copy>` against a config with
-`building_port` at 2.5 clippers instead of 1.52: it exits **1** with *"needs its output at 444% of base
-to break even; the engine stops at 175%"*, and names nothing else. Against the real config as of
-`acaf6ad` it exits **0** — see the warning above about what that does and does not mean.
+**Proven on the real config.** `node tools/lint_solvency.mjs --census` against `acaf6ad` exits **1** and
+names exactly three tiers — `building_port` 270%, `building_railway` 217%, `building_synthetics_plant`
+208% — while staying silent on the three tiers that destroy value at base prices but remain reachable
+(`building_power_plant` 158, `building_steel_mill_bessemer` 139, `building_steel_mill` 135). Those three
+passing is as much a part of the proof as the three failing: the rule must not degenerate into "no sub-1
+recipes", which §10.50.1 forbids.

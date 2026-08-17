@@ -1,22 +1,29 @@
-// THE SOLVENCY LINTER — §10.62 / landmine L18, user-ruled 2026-08-17.
+// THE SOLVENCY LINTER — §10.63 / landmine L18, user-ruled 2026-08-17.
 //
-// THE RULE. A tier's BASE production method must be able to break even at SOME price the engine can
-// actually produce. Concretely: with its output at the +75% band edge and every input at the −75% edge —
-// the most favourable combination the game allows — output revenue must still cover input goods plus
-// wages. A tier that fails is insolvent at EVERY reachable price, which is not a balance opinion but an
-// arithmetic fact about a building that can never pay for itself.
+// THE RULE. **A tier's target BE may not exceed 175.** That is the tier's full, wage-inclusive
+// break-even — the OUTPUT price, as a % of base, at which its BASE production method covers its input
+// goods plus wages, with inputs at base prices — against the engine's own +75% band edge:
 //
-// ⚠⚠ THIS IS DELIBERATELY *NOT* "a recipe may not destroy value at base prices" (user ruling, same day).
-// That easy rule is wrong for this ladder: an early tier is MEANT to be insolvent at base prices — its
-// whole design is to be carried by a high output price and then driven out as later tiers deflate that
-// price. A sub-1 output:input ratio at base is legitimate (§10.50.1). Only the UNREACHABLE case is
-// forbidden. Today six tiers destroy value at base prices and all six are legal.
+//     target_be = Ibase / ((1 − wage_pct) · Obase) · 100  ≤  175   ⟺   Ibase ≤ 1.75 · (1 − wp) · Obase
+//                                                                  ⟺   O:I ≥ 0.762 at wp = 0.25
+//
+// A tier that fails is insolvent at EVERY output price the engine can produce. That is not a balance
+// opinion, it is arithmetic about a building that can never pay for itself.
+//
+// ⚠⚠ THIS IS THE SECOND, STRICTER RULING (2026-08-17). The first allowed BOTH prices to their favourable
+// edges — output ×1.75 AND inputs ×0.25, i.e. `target_be ≤ 400` — which was measured at **0 of 105** before
+// it shipped and could not catch the defect that prompted it. Holding INPUTS AT BASE is what makes the
+// bound bite. `--band` still scores that older, weaker line for comparison.
+//
+// ⚠ IT IS STILL NOT "a recipe may not destroy value at base prices" (that would be ≤ 100, and is
+// rejected): an early tier is MEANT to be insolvent at base and carried by a higher output price. What is
+// forbidden is only the UNREACHABLE case. ⚠ **The §10.50 recipe ratchet is untouched and orthogonal** —
+// that one is relative (a tier against the one below), this one absolute (a tier against the engine).
+// ⚠ **Shipyards are NOT exempt** (user, same ruling); they cost nothing today, all seven sitting at ≤128.
 //
 // ⚠ WAGES ARE INCLUDED, on the repo's standard full-break-even basis: `wage_pct` is the wage fraction of
-// TOTAL cost, so W = Ibase·wp/(1−wp), the same quantity `lint_profitability.awk` uses. They matter more
-// here than anywhere else, because wages do NOT scale with goods prices — at the favourable extreme the
-// discounted goods bill is 0.25·Ibase while wages are still 0.333·Ibase, i.e. wages become the LARGER
-// term. Goods-only the threshold is O:I ≥ 0.143; wage-inclusive it is O:I ≥ 0.333.
+// TOTAL cost, so W = Ibase·wp/(1−wp) — the same quantity `lint_profitability.awk` uses. Excluding them
+// would slacken the bound to O:I ≥ 0.571.
 //
 // ⚠ WHY THIS EXISTS AS ITS OWN CHECK rather than a line in lint_profitability.awk — both reasons are
 // load-bearing and both are why the port slipped through for months (F67):
@@ -28,8 +35,8 @@
 //      ("it can no longer tell us the balance is wrong"). So this check must never read `target_be`; it
 //      recomputes from the goods block against the shared price table.
 //
-// Usage:  node tools/lint_solvency.mjs [--config <path>] [--census] [--goods-only]
-//   exit 0 = pass · exit 1 = at least one tier is insolvent at every reachable price
+// Usage:  node tools/lint_solvency.mjs [--config <path>] [--census] [--goods-only] [--band]
+//   exit 0 = pass · exit 1 = at least one tier is insolvent at every reachable output price
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, isAbsolute } from 'node:path';
@@ -40,9 +47,11 @@ const args = process.argv.slice(2);
 const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 && args[i + 1] ? args[i + 1] : d; };
 const CFG = (p => isAbsolute(p) ? p : join(REPO, p))(argOf('--config', 'config/mod_config.json'));
 
-// The engine's own band: price = base × [1 + 0.75·clamp(±1)] ⇒ 25%…175% of base. GAME CONSTANTS.
-const BAND_HI = 1.75, BAND_LO = 0.25, DEFAULT_WAGE_PCT = 0.25;
+// The engine's own band: price = base × [1 + 0.75·clamp(±1)] ⇒ 25%…175% of base. GAME CONSTANTS, not
+// tuning knobs — deliberately not env-overridable.
+const MAX_TARGET_BE = 175, BAND_LO = 0.25, DEFAULT_WAGE_PCT = 0.25;
 const GOODS_ONLY = args.includes('--goods-only');   // A/B only: drops the wage term. Not the shipped rule.
+const BAND_MODE = args.includes('--band');          // A/B only: the SUPERSEDED both-edges line (≤400).
 
 // Prices come from the ONE table, never a copy inside a script (same rule as the awks' -v PRICES=).
 const PRICES = {};
@@ -69,44 +78,50 @@ for (const ind of cfg.industries || []) {
     if (!(Obase > 0) || !(Ibase > 0)) continue;
     const wp = t.wage_pct != null ? +t.wage_pct : DEFAULT_WAGE_PCT;
     const W = GOODS_ONLY ? 0 : Ibase * wp / (1 - wp);        // wages do NOT scale with goods prices
-    const bestRevenue = BAND_HI * Obase;
-    const bestCost = BAND_LO * Ibase + W;
+    // needBe = the output price, as a % of base, at which this tier breaks even WITH INPUTS AT BASE.
+    // `--band` scores the superseded line instead, in which inputs also fall to the −75% edge.
+    const goodsBill = BAND_MODE ? BAND_LO * Ibase : Ibase;
+    const needBe = (goodsBill + W) / Obase * 100;
     rows.push({
       key: t.key, ind: ind.id, era: t.era,
       ratio: Obase / Ibase, Obase, Ibase, wp,
-      margin: bestRevenue / bestCost,
-      needBe: Math.round(Ibase / ((1 - wp) * Obase) * 100),   // output %-of-base needed to break even
+      needBe: Math.round(needBe),
+      headroom: MAX_TARGET_BE / needBe,        // >1 = passes; how much slack it has
     });
   }
 }
 
-rows.sort((a, b) => a.margin - b.margin);
-const fails = rows.filter(r => r.margin < 1);
+rows.sort((a, b) => b.needBe - a.needBe);
+const fails = rows.filter(r => r.needBe > MAX_TARGET_BE);
+const mode = (BAND_MODE ? '  [--band: SUPERSEDED both-edges line]' : '')
+  + (GOODS_ONLY ? '  [--goods-only: WAGES EXCLUDED, not the shipped rule]' : '');
 
 if (args.includes('--census')) {
-  console.log(`SOLVENCY CENSUS — ${rows.length} tiers, closest to the line first`
-    + (GOODS_ONLY ? '  [--goods-only: WAGES EXCLUDED, not the shipped rule]' : ''));
-  console.log('  best-case    O:I   needs out%   tier');
+  console.log(`SOLVENCY CENSUS — ${rows.length} tiers, worst break-even first (cap ${MAX_TARGET_BE}%)${mode}`);
+  console.log('  target BE    O:I   headroom   tier');
   for (const r of rows.slice(0, 12)) {
-    console.log(`  ×${r.margin.toFixed(2).padStart(6)}  ${r.ratio.toFixed(2).padStart(6)}`
-      + `   ${String(r.needBe).padStart(6)}%    ${r.key} (${r.ind}, e${r.era})`);
+    console.log(`  ${String(r.needBe).padStart(7)}%  ${r.ratio.toFixed(2).padStart(6)}`
+      + `   ×${r.headroom.toFixed(2).padStart(5)}   ${r.key} (${r.ind}, e${r.era})`
+      + (r.needBe > MAX_TARGET_BE ? '   <<< OVER' : ''));
   }
   const sub1 = rows.filter(r => r.ratio < 1);
-  console.log(`\n  ${sub1.length} tier(s) destroy value at BASE prices — legal by §10.50.1, listed for context:`);
-  for (const r of sub1) console.log(`    O:I ${r.ratio.toFixed(2)}  needs out ${r.needBe}%  ${r.key}`);
+  console.log(`\n  ${sub1.length} tier(s) destroy value at BASE prices. That is LEGAL (§10.50.1) and stays`
+    + ` legal — only the ones over ${MAX_TARGET_BE}% fail:`);
+  for (const r of sub1) console.log(`    O:I ${r.ratio.toFixed(2)}  target BE ${r.needBe}%  ${r.key}`
+    + (r.needBe > MAX_TARGET_BE ? '   <<< OVER' : '   ok'));
 }
 
 if (fails.length) {
-  console.error(`\nSOLVENCY LINT FAILED: ${fails.length} tier(s) cannot break even at ANY price the engine `
-    + `can produce (output +75%, inputs −75%, wages included).`);
+  console.error(`\nSOLVENCY LINT FAILED: ${fails.length} tier(s) have a target BE above ${MAX_TARGET_BE}% — `
+    + `they cannot break even at ANY output price the engine can produce (wages included, inputs at base).`);
   for (const r of fails) {
-    console.error(`  ${r.key} (${r.ind}, e${r.era}): needs its output at ${r.needBe}% of base to break `
-      + `even; the engine stops at 175%. Best case ×${r.margin.toFixed(2)} `
-      + `(out £${r.Obase.toFixed(0)}, in £${r.Ibase.toFixed(0)}, wage_pct ${r.wp}).`);
+    console.error(`  ${r.key} (${r.ind}, e${r.era}): break-even at ${r.needBe}% of base, cap is `
+      + `${MAX_TARGET_BE}% (out £${r.Obase.toFixed(0)}, in £${r.Ibase.toFixed(0)}, wage_pct ${r.wp}; `
+      + `needs input value ≤ £${(MAX_TARGET_BE / 100 * (1 - r.wp) * r.Obase).toFixed(0)}).`);
   }
   console.error(`\nThe remedy is more output or a leaner recipe — NOT relaxing the bound, and NOT a hand `
     + `edit of target_be (which is restated from the recipe and would simply follow it).`);
   process.exit(1);
 }
-console.log(`SOLVENCY CHECK PASSED: ${rows.length} tiers can each break even somewhere inside the engine's `
-  + `25–175% price band.`);
+console.log(`SOLVENCY CHECK PASSED: all ${rows.length} tiers break even at or below ${MAX_TARGET_BE}% of `
+  + `base output price — inside the engine's own band.${mode}`);
