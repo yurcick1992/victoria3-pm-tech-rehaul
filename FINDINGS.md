@@ -7082,9 +7082,49 @@ one to the other.
 any building type other than the port ladder — though the check is generic to `create_building` and
 should be assumed to apply to every seeded industry.
 
-**Consequence (shipped 2026-08-17).** The 22 subject-state rules were removed from
-`config/start_exceptions.json` (44 → 22 rules; 16 port creates remain, all in leader states). Granting
-`screw_frigate` to twelve subject countries is the only alternative and is **ruled out** (user: port
-tech grants go, except literal NET). Subjects are not left portless — the additive redesign retains
-their vanilla anchorages as t0 clipper ports, and F66's provisioning wave supplies steam ports within
-about a year, which is precisely what the 1837 reading was accidentally measuring.
+## ⭐⭐ THE POSITIVE CONTROL: GRANTING THE TECHNOLOGY FIXES IT COMPLETELY
+
+**Measured the same evening, and it is the other half of the finding — do not read the paragraphs above
+without it.** The century run `20260817_155024` (config `713504a843ccb897`, commit `a5406ac`) carried
+`start_tech_grants` for **every seeded subject** — ABU, BIC, DEI, ION, MKT, NSW, ORG, PLY, PON, SIL,
+SMB, TID. It reads:
+
+**0 rejections. 0 script locations.** And all twelve subjects hold `screw_frigate` at the first save,
+each with a technology count exactly **+1** against the NET-only runs and nothing else moved:
+
+| tag | DEI | SIL | NSW | BIC | ION | ORG | MKT | ABU | SMB | PON | TID | PLY |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| granted | 50 ✓ | 33 ✓ | 50 ✓ | 51 ✓ | 33 ✓ | 50 ✓ | 22 ✓ | 22 ✓ | 22 ✓ | 22 ✓ | 22 ✓ | 11 ✓ |
+| NET-only | 49 — | 32 — | 49 — | 50 — | 32 — | 49 — | 21 — | 21 — | 21 — | 21 — | 21 — | 10 — |
+
+⇒ **`start_tech_grants` WORKS, per country, exactly as emitted** — a guarded
+`if = { limit = { this = c:TAG } add_technology_researched = X }` inside that country's own starting-tier
+effect. With the grants, **38 of 38** seeded stubs are created; without them, **16 of 38**.
+
+⚠⚠ **SO THE 22 REJECTIONS ARE NOT AN ENGINE LIMIT WE RAN INTO — THEY ARE THE DIRECT CONSEQUENCE OF
+CUTTING THE GRANTS.** The mechanism above stands unchanged and is confirmed *by* this control (supply
+the technology to the state's own country and the create succeeds). What is corrected is the claim
+built on top of it.
+
+⚠⚠ **AND THE RULING THAT CUT THEM RESTS ON A PREMISE THIS DISPROVES.** The user's instruction
+(2026-08-17) was *"Grants are not needed, as the ports belong to overlord rather than the locals"* —
+correct as a statement about ownership, and **not** how the engine gates a history `create_building`,
+which consults the region_state's own country and ignores `add_ownership` entirely. The earlier
+analysis that reported the grants as not load-bearing was drawn from a **truncated boot dump**
+(`20260817_184413`) and **year-late snapshots**, both since void. Referred back to the user.
+
+⚠ **A NEAR-MISS IN THE ANALYSIS, WORTH THE SAME WARNING AS THE SNAPSHOT ONE.** The two ten-run batches
+(`20260817_202408` and `_211818`) both show 22 rejections, which looked like a clean A/B proving the
+grants irrelevant. It is not a comparison at all: commit `6121973` ("grants cut to NET only") landed at
+**20:23:58** and `202408` launched at **20:24:08**, ten seconds later, so **both batches ran the same
+NET-only config**. ⇒ **Check what a run actually built from (`build_state.json`'s `config_sha256`)
+before treating two sessions as arms.** The hashes differ — `713504a843ccb897` against
+`b9028a529a1badf9` — and would have said so immediately.
+
+**Consequence as shipped 2026-08-17 (and OPEN).** The 22 subject-state rules were removed from
+`config/start_exceptions.json` (44 → 22 rules; 16 port creates remain, all in leader states), because
+under the no-grants ruling they cannot fire. Subjects are not left portless — the additive redesign
+retains their vanilla anchorages as t0 clipper ports, and F66's provisioning wave supplies steam ports
+within about a year, which is precisely what the 1837 reading was accidentally measuring. **Restoring
+the grants and the 22 rules is a two-line revert and is the user's decision**, now that the premise
+behind the ruling is known to be false.
