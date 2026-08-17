@@ -186,25 +186,38 @@ run, at 1908.** World merchant marine bottoms at **1881 in 1860** and then recov
 ~80% subsidised for the whole century — they never recover — but they stop mattering, because the growth
 is carried entirely by the **higher port tiers**, which have positive goods balances by construction:
 industrial 0 → 661 levels, modern 0 → 257, steam 83 → 469.
-⭐⭐ **SO THE DEFECT IS AN EARLY-GAME ONE THAT A MODERNISING COUNTRY OUTGROWS**, and the ordering holds:
-port modernisation tracks how high and how long a market's merchant marine runs. Modern share of port
-levels (industrial + modern ÷ all) against the peak price and where it ended:
+⭐⭐ **SO THE DEFECT IS AN EARLY-GAME ONE THAT A MODERNISING MARKET OUTGROWS**, and the ordering holds:
+how far a market has modernised its ports tracks how high and how late its merchant marine runs.
 
-| | 1870 → 1890 → 1900 | peak | 1935 |
-|---|---|---|---|
-| **NET** | **8% → 8% → 8%** — frozen at anch 86 / indus 7 / modern 0 for thirty years | **175.0 (1900)** | 93.1 |
-| GBR | 6% → 23% → 29% | 175.0 (1849) | 83.8 |
-| FRA | 8% → 24% → 37% | 155.3 (1880) | 90.8 |
-| RUS | 5% → 17% → 11% | 175.0 (1858) | 86.2 |
-| USA | 0% → 1% → 20% | 151.5 (1900) | 109.4 |
+⚠⚠⚠ **MEASURE THIS PER MARKET, NEVER PER COUNTRY — the first version of this table did the latter and was
+wrong (caught by the user, 2026-08-17).** A colonial power's ports are largely owned by its SUBJECTS,
+which are separate countries sharing the overlord's market, and the merchant-marine price is a *market*
+price. Modern share (industrial + modern + motor ÷ all port levels), aggregated over every country
+sharing the market:
 
-⚠ **The Netherlands peaks LATEST (1900, against Britain's 1849) and is the only one still above 160% at
-1909** — consistent with the freeze — but it too comes down, to 93.1 by 1935. An earlier version of this
-table read the 1908 snapshot as "NET pinned" and it is not: it is late, not stuck.
-⚠ **And the Dutch case is not a port-specific fault.** NET is broadly stagnant in this run — GDP ×3 over
-1840–1905 and building levels **480 → 669 (+39%)**, against Britain's ×6.1 — and Belgium has the same
-shape. The port freeze is one symptom of a small economy that stops building, and the causality
-plausibly runs both ways (a merchant marine near the ceiling raises its trade costs).
+| market | 1870 | 1890 | 1900 | 1935 | MM peak | MM 1935 |
+|---|---|---|---|---|---|---|
+| **NET** | 5% | 8% | **11%** | **56%** | **175.0 (1900)** | 93.1 |
+| GBR | 5% | 24% | **30%** | 68% | 175.0 (1849) | 83.8 |
+| FRA | 8% | 26% | 35% | 47% | 155.3 (1880) | 90.8 |
+| USA | 2% | 2% | 21% | 73% | 151.5 (1900) | 109.4 |
+
+**The Netherlands is roughly 20–25 years behind on port modernisation** — 11% in 1900 where Britain was
+30% and had passed 24% a decade earlier — and its merchant marine peaks correspondingly late, touching
+the ceiling in 1900 against Britain's 1849. Both then resolve.
+
+⛔ **THE "NET IS FROZEN / BROADLY STAGNANT" READING IS RETRACTED.** It came from NET's OWN building list
+truncated at 1905, and it is wrong twice over:
+- **Its subjects do the modernising, and more of it than NET does.** Dutch-market ports by owner at 1935:
+  NET itself 161 levels at 39% modern, **subjects 238 levels at 67% modern** — the subjects hold 60% of
+  the market's ports and are nearly twice as modern. At 1900 it was NET 103 (7%) against subjects 80 (16%).
+- **NET is late, not stunted.** Country GDP £3M (1840) → £8M (1900) → **£37M (1935)**, i.e. ×12.3 over the
+  century, not the "×3" that a 1905 cutoff suggested. **Market-wide NET grows ×10.6 against Britain's
+  ×8.4**, and its port sector ×3.3 against Britain's ×3.6. Nothing here is a stalled economy.
+
+⚠ **This is a standing hazard for the ledger's watchlist**, which is per-TAG by construction: for a
+colonial power the tag understates the economy it actually runs. NET is the panel's newest member and
+the one it distorts most — read its row beside its market, or not at all.
 6. **Price rises through the squeeze.** Merchant marine as % of base, to 1858 — the window in which the
    supply depression of steps 1–5 shows up in the order book. ⚠ **This table is the SQUEEZE, not the
    century**; read it with the completed series immediately below, which is what it resolves to.

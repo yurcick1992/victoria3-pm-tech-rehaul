@@ -10,7 +10,16 @@ encodes, all user-ruled:
   **NET was added 2026-08-17** as the port-seed control: the §10.60.3 chain seed converts anchorages
   into level-1 steam-port stubs in the **GBR and FRA markets only**, so the Netherlands is the third
   overseas-empire power that got nothing — the panel is where "does an unseeded colonial empire fall
-  behind, and does it snap back when it researches the tech?" is read. The tag list is defined in
+  behind, and does it snap back when it researches the tech?" is read.
+  ⚠⚠ **THE PANEL IS PER-TAG, AND FOR A COLONIAL POWER THAT UNDERSTATES THE ECONOMY IT RUNS.** Subjects
+  are separate countries sharing the overlord's market, so their buildings, GDP and production sit on
+  *their* tag, not the overlord's. Measured on the Dutch market at 1935 (F67): NET's own books hold 161
+  port levels at 39% modern while its **subjects hold 238 at 67% modern** — read the tag alone and the
+  Netherlands looks frozen when its market has modernised. The same applies to GBR (the East India
+  Company alone carried ~145 anchorages), FRA, SPA and POR. This cost a wrong conclusion on the day NET
+  was added. **Any per-country reading of a colonial power's development must be checked against its
+  market**, which the save summaries support directly: each country record carries a numeric `market`
+  id, so grouping by it is a one-line change. The tag list is defined in
   three places and they must stay identical: `report_data.mjs` (`PANEL`), `report_data2.mjs` (`TAGS`)
   and `ledger_template.html` (`TAGS`). Everything else — chips, flags, per-country charts — is
   derived from that list, so adding a tag is those three lines and nothing more.
