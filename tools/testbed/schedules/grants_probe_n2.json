@@ -1,0 +1,25 @@
+{
+  "schedule_version": 1,
+  "label": "grants-probe-n2",
+  "_why": "TWO QUESTIONS, ONE 12-MINUTE PROBE (planned 2026-08-17, to run AFTER anchorage-netseed-n1 finishes).\n\nQ1 — ARE THE SUBJECT TECH GRANTS NEEDED AT ALL? User ruling: they are not, because a seeded port belongs to the OVERLORD's government, not to the state's own country. That contradicts what I inferred earlier from the conversion-based seed, where stubs in subject states failed until the subject held `screw_frigate` — but that inference was drawn when the ports were CONVERSIONS of a locally-owned anchorage. They are now CREATED with explicit overlord government ownership, which is a different object, and the earlier finding may simply not carry.\n\nQ2 — DID THE GRANTS CAUSE THE ERROR FLOOD? `anchorage-netseed-n1` produced 18,723 script errors of \"Event target link 'owner' returned an invalid object\" in 42 minutes, against ZERO in canon-ports-n2 runs 1 and 2 (whose error logs are 76 MB / 615k lines and 43k lines, so the comparison is real, not an artifact of a short log). Every one traces to `scripted_progress_bars/zzz_pm_rehaul_research_bars.txt` — the WAR GATE, `any_scope_general -> owner = ROOT` — and that file is BYTE-IDENTICAL to the one canon-ports-n2 shipped. So the script did not change; the world did. The leading hypothesis is that granting `screw_frigate` (a MILITARY technology) to 14 small subject countries opens the next military technologies for research there, activating military research journal entries whose war gate then evaluates monthly on scopes where a general's `owner` link is invalid.\n\nBOTH QUESTIONS ARE ANSWERED AT THE 1836 BOOT DUMP AND IN THE FIRST FEW YEARS — no century needed.\n\nREAD: (a) the count of `building_port_steam` at the 1836.1 boot dump, which must be 40 in BOTH arms if the grants are unnecessary; if the nogrants arm is short, name which states lost theirs and the grants are load-bearing after all. (b) `grep -c \"link 'owner'\"` on each arm's error.log, normalised per minute — if nogrants is ~0 and grants is ~450/min, the grants are the culprit and the fix is simply to drop them. (c) as a control that nothing else moved, the merchant-marine and clipper prices at 1836.7 and 1840.7 should match between arms.",
+  "_arms": "grants   = {kind: config, config: config/mod_config.json}          - canonical, 17 countries granted (3 leaders + 14 subjects).\nnogrants = {kind: config, config: config/mod_config.nogrants.json} - IDENTICAL except start_tech_grants is cut to the three leaders (GBR/FRA/NET), who own the created buildings. NOT committed (config/mod_config.*.json is gitignored); regenerate by taking the canonical config and keeping only those three keys in start_tech_grants, then copying tech_tree_options/era_prices/era_presets to the matching .nogrants names.",
+  "_comparison": "anchorage-netseed-n1 (20260817_155024) is the same economy at century length with the grants in; this probe isolates the grants alone.",
+  "_cost": "2 runs x 5 in-game years, ~12 minutes total with builds.",
+  "_caveats": "⚠ If the nogrants arm places all 40 stubs AND is quiet, drop the 14 subject grants and note that the earlier 'the engine gates on the state's own country' finding applies to CONVERSIONS of locally-owned buildings only, not to created overlord-owned ones. ⚠ If it places all 40 but is still noisy, the flood is not the grants and the war gate itself needs looking at. ⚠ If it drops stubs, the grants stay and the flood needs a different fix - most likely narrowing the war gate in emit_research_events.mjs. ⚠ L19: check no orphaned victoria3.exe before launching; a live game from a previous batch makes the next run fail in 20 seconds with a one-line log.",
+  "defaults": {
+    "metrics": ["building_inventory", "market_goods_scoped", "market_goods_wide"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 30,
+    "tags": ["GBR", "FRA", "NET"],
+    "wide_tags": ["GBR", "FRA", "NET"],
+    "wide_dates": ["1836.7.1", "1838.7.1", "1840.7.1"]
+  },
+  "setups": {
+    "grants":   { "kind": "config", "config": "config/mod_config.json" },
+    "nogrants": { "kind": "config", "config": "config/mod_config.nogrants.json" }
+  },
+  "runs": [
+    { "setup": "grants",   "until": "1841.1.1", "dump_dates": ["1836.2.1", "1838.1.1", "1840.1.1"] },
+    { "setup": "nogrants", "until": "1841.1.1", "dump_dates": ["1836.2.1", "1838.1.1", "1840.1.1"] }
+  ]
+}
