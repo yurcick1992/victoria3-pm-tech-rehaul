@@ -733,9 +733,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         is forbidden, §10.50.1. ⚠ The two examples §10.50.1 cites, fertilizer 0.98
                         and electrics 0.75, BOTH NOW RUN 3.99 — later re-solves fixed them and the
                         exemption stayed; today's sub-1 population is 6 tiers, worst 0.49),
-                        ⭐⭐ THE SOLVENCY BOUND — TARGET BE ≤ 175 (§10.63, user-ruled 2026-08-17,
-                        NO revert knob — 175 is the engine's own band edge, a game constant rather
-                        than a tuning choice): a tier's full wage-inclusive break-even, i.e. the
+                        ⭐⭐ THE SOLVENCY BOUND — TARGET BE ≤ 175 (§10.63, user-ruled 2026-08-17;
+                        the THRESHOLD is a game constant and is NOT tunable — 175 is the engine's
+                        own band edge — but ENFORCEMENT has the measurement switch ERA_SOLVENCY=0,
+                        same shape as ERA_RECIPE_MONO=0, because the cap lives in the CODE not the
+                        config, so without it two solves of two different configs both apply it and
+                        come back byte-identical and there is no A/B baseline at all; never ship
+                        with it off): a tier's full wage-inclusive break-even, i.e. the
                         OUTPUT price as a % of base at which its BASE PM covers input goods plus
                         wages WITH INPUTS AT BASE, may not exceed 175 — `Ibase ≤ 1.75·(1−wp)·Obase`,
                         so O:I ≥ 0.762 at wp 0.25. `Xsolv` clamps it in solveInputsAt beside Xmin

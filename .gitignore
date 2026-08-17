@@ -31,6 +31,12 @@ config/mod_config.*.json
 # from the re-banded ladder (ROADMAP step 1b) and exists only because the canonical config is frozen
 # until the research-events batch has built. Losing it would mean re-solving, not re-generating.
 !config/mod_config.era6.json
+# The SAME rule for a variant config's derived artifacts. MOD_CONFIG redirects era_prices.json and
+# era_presets.json to suffixed names (§10.60.2's note in era_scenarios.mjs), so a redirected solve drops
+# a matching pair beside the canonical ones — outputs of an output. The un-suffixed pair stays tracked,
+# because those two ARE committed design inputs.
+config/era_prices.*.json
+config/era_presets.*.json
 
 # Output of testbed runs: per-run telemetry plus a copy of the game's own logs. Ignored because it
 # is BULKY (game logs, minidumps), NOT because it is disposable - the harness itself

@@ -5244,6 +5244,17 @@ point, and the reason this rule exists.
   is wrong". ⚠ **Never read `target_be` in this check**; recompute from the goods block against
   `tools/goods_prices.tsv`.
 
-⚠ **`MAX_TARGET_BE = 175` is a GAME CONSTANT, not a knob.** It is the engine's own band edge
-(`price = base × [1 + 0.75·clamp(±1)]`). Deliberately not env-overridable in either implementation.
+⚠ **`MAX_TARGET_BE = 175` is a GAME CONSTANT and is NOT tunable.** It is the engine's own band edge
+(`price = base × [1 + 0.75·clamp(±1)]`), so "no reachable output price saves this building" is a fact
+about the engine rather than a balance preference. There is deliberately no `ERA_MAX_BE=200`.
+
+⭐ **But ENFORCEMENT has a measurement switch, `ERA_SOLVENCY=0`** — a distinction worth keeping straight:
+the threshold is fixed, whether the bound is *applied* is not. Same shape as `ERA_RECIPE_MONO=0` and
+`ERA_PROFIT_BAND=0`, and it exists for the same reason — this repo judges a design change on a measured
+A/B, and there is otherwise no baseline to measure against. ⚠ Never ship with it off; it is for
+re-measurement only, like `ERA_RAIL_PENALTY`.
+⚠⚠ **Why it had to exist, learned by getting it wrong**: the cap lives in the CODE, not the config, so an
+attempt to produce a baseline by re-solving the *unchanged* config came back **byte-identical** to the
+capped run — both solves applied the cap. That is a fine determinism check and a useless A/B. The knob was
+written an hour after the comment asserting it was unnecessary.
 

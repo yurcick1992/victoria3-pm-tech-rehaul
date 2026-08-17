@@ -1014,20 +1014,30 @@ function solveInputsAt(ind, t, target) {
   // ⚠ It can never fight the lean floor: Xmin sits at Ibase = Obase/ioCap (≤ 0.25·Obase) and this cap at
   // Ibase = 1.3125·Obase, a factor of five apart — so the Xmin clamp below still has the last word.
   const wpS = t.wage_pct != null ? +t.wage_pct : DEFAULT_WAGE_PCT;
-  const IbaseMaxSolv = (MAX_TARGET_BE / 100) * (1 - wpS) * Obase;
+  const IbaseMaxSolv = ERA_SOLVENCY ? (MAX_TARGET_BE / 100) * (1 - wpS) * Obase : Infinity;
   const Xsolv = IbaseMaxSolv / unitBase;
   if (X > Xsolv) { X = Xsolv; solvCapped.add(t.key); } else solvCapped.delete(t.key);
   if (X < Xmin) { X = Xmin; capped.add(t.key); } else capped.delete(t.key);
-  for (const g of Object.keys(t.inputs)) {
-    t.inputs[g] = Math.max(minMainInput(ind, g), Math.round(t._ratio[g] * X * 10) / 10);
-  }
-  // ⚠⚠ RE-CHECK AFTER `minMainInput`, because that floor is applied PER GOOD and AFTER the clamp above,
-  // so a tier whose secondary PMs carry large reductions can be pushed back over the line by a DIFFERENT
-  // hard invariant (the negative-goods floor, which can never yield — a building's total input for a good
-  // going negative is not a balance question). Two hard rules in genuine conflict must FAIL LOUDLY rather
-  // than have one silently pick the winner, which is why this records a breach instead of re-clamping.
-  let IbaseFinal = 0;
-  for (const g in t.inputs) IbaseFinal += t.inputs[g] * (S.PRICES[g] || 0);
+  const applyInputs = round => {
+    for (const g of Object.keys(t.inputs)) {
+      t.inputs[g] = Math.max(minMainInput(ind, g), round(t._ratio[g] * X * 10) / 10);
+    }
+    let I = 0; for (const g in t.inputs) I += t.inputs[g] * (S.PRICES[g] || 0);
+    return I;
+  };
+  let IbaseFinal = applyInputs(Math.round);
+  // ⚠⚠ ROUNDING MUST FALL ON THE SAFE SIDE OF A HARD BOUND. Inputs are quantised to 0.1, so `Math.round`
+  // can push a tier the clamp placed exactly ON the cap just over it — a grid artifact, not a balance
+  // fact. It bites hardest on the GRADED PORT tiers (§10.60.2), whose goods are divided by 10, so one
+  // grid step is 13% of a port level's entire output value. MEASURED: the first run of this bound put the
+  // port at 1.0 clippers (£60) against a £59.06 cap — over by £0.94, exactly one step. So when the
+  // solvency cap binds, re-round DOWN. Leaner than required is safe; over a hard bound is not.
+  if (IbaseFinal > IbaseMaxSolv * (1 + 1e-9)) IbaseFinal = applyInputs(Math.floor);
+  // ⚠⚠ ONLY NOW is a breach real, and it can only come from `minMainInput` — that floor is applied PER
+  // GOOD and AFTER the clamp, so a tier whose secondary PMs carry large reductions can be pushed back
+  // over the line by a DIFFERENT hard invariant (the negative-goods floor, which can never yield: a
+  // building's total input for a good going negative is not a balance question). Two hard rules in
+  // genuine conflict must FAIL LOUDLY rather than have one silently pick the winner.
   if (IbaseFinal > IbaseMaxSolv * (1 + 1e-9)) {
     solvBreach.set(t.key, {
       industry: ind.id, era: t.era, Obase, Ibase: IbaseFinal, wp: wpS,
@@ -1036,11 +1046,20 @@ function solveInputsAt(ind, t, target) {
   } else solvBreach.delete(t.key);
   return true;
 }
-// The engine's own upper band edge (vic3 `price = base × [1 + 0.75·clamp(...)]` ⇒ 25–175% of base). This
-// is a GAME CONSTANT, not a tuning knob — the bound says "no reachable output price saves this building",
-// and what is reachable is the engine's business. Deliberately NOT an env knob.
+// The engine's own upper band edge (vic3 `price = base × [1 + 0.75·clamp(...)]` ⇒ 25–175% of base).
+// ⚠ THE THRESHOLD IS A GAME CONSTANT AND IS NOT TUNABLE. "No reachable output price saves this building"
+// is a fact about the engine, not a balance preference, so there is deliberately no ERA_MAX_BE=200.
 const MAX_TARGET_BE = 175;
 const DEFAULT_WAGE_PCT = 0.25;
+// ⭐ ERA_SOLVENCY (default ON, `=0` disables) — A MEASUREMENT SWITCH, NOT A SETTING, and the distinction
+// is the whole point: the THRESHOLD above is fixed, but whether the bound is ENFORCED can be turned off
+// so the rule's cost is measurable. Same shape as ERA_RECIPE_MONO=0 and ERA_PROFIT_BAND=0, and it exists
+// for the same reason: this repo judges a design change on a measured A/B, and without an off-switch
+// there is no baseline to measure against — the cap lives in the CODE, not the config, so two solves of
+// two different configs both apply it and come back byte-identical (observed 2026-08-17, which is how
+// this knob came to be written an hour after the comment claiming it was unnecessary).
+// ⚠ Never ship with it off; it is for re-measurement only, like ERA_RAIL_PENALTY.
+const ERA_SOLVENCY = process.env.ERA_SOLVENCY !== '0';
 const solvCapped = new Set();          // tiers whose richness the solvency bound is actively holding back
 const solvBreach = new Map();          // tiers that violate it ANYWAY, via the negative-goods floor
 // ⭐ "fail solving" (user, 2026-08-17): the solve must not WRITE a config it knows is unsolvable. Called
@@ -1054,9 +1073,10 @@ function assertSolvency(where = 'solve') {
     `SOLVENCY BOUND VIOLATED by ${solvBreach.size} tier(s) at ${where} — §10.63 / landmine L18.\n`
     + lines.join('\n')
     + `\nThese recipes cannot break even at ANY price the engine can produce, so the solve refuses to write`
-    + ` them. Each was clamped and then pushed back over the line by minMainInput (the negative-goods`
-    + ` floor), which means two hard invariants are in conflict — widen the tier's output or reduce the`
-    + ` secondary reduction that sets its floor. Do NOT relax the bound.`);
+    + ` them. Each was clamped, re-rounded DOWN, and STILL over — which leaves only minMainInput (the`
+    + ` negative-goods floor, applied per good after the clamp) as the cause, i.e. two hard invariants in`
+    + ` genuine conflict. Widen the tier's output or reduce the secondary reduction that sets its floor.`
+    + ` Do NOT relax the bound.`);
 }
 const capped = new Set();   // tiers whose recipe is pinned by the ceiling rather than by their target
 
