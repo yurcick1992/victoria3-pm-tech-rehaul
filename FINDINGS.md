@@ -131,6 +131,105 @@ transcript rather than from data.
 
 ---
 
+## F67 — ⭐⭐ **THE ERA-0 ANCHORAGE IS THE MERCHANT-MARINE CHAIN'S BREAK POINT: it eats 15.2 clippers per 9 merchant marine where vanilla's `pm_basic_port` eats 6, i.e. −£462 per level at base prices against vanilla's +£90 — the ONLY negative rung in the five-tier port ladder. So no anchorage runs unsubsidised; 87% of the world's 2,600 levels are subsidised at the start, coverage DECAYS to 78% by 1848, staffing follows it down, anchorage levels never grow, and world merchant-marine output falls in ABSOLUTE terms (2084 → 1953) while demand grows. The result is a one-way price ratchet: the Prussian market reaches the +75% clamp at 1850 and the Russian market climbs 81.7 → 169.2 monotonically. Clippers are the visible symptom — 120–175% of base where vanilla runs a surplus at 61–85%**
+
+**Arm** `config` (canonical `config/mod_config.json` at commit 4a2a3ef: flat vanilla cost book,
+graded ports §10.60.2, conditional port mandate §10.60.3, the 28-rule chain seed) · session
+`20260817_104849_canon-ports-n2` run 1, read LIVE in flight to 1858 · vanilla control
+`20260813_083557_vanilla-vs-mod-n4` run 1 · game 1.13.10 · 🟡 **read from run 1 only, while it was
+still playing; the n=2 confirmation and the post-1858 trajectory are owed** (the batch was ruled to
+run its full course anyway, as the "before" baseline for the fix). The recipe half (the arithmetic
+below) is 🟢 — it is read off the config and the game files and needs no run at all.
+
+### The recipe, which is the whole of it
+
+Vanilla `common/production_methods/11_private_infrastructure.txt`, `pm_basic_port`:
+**6 clippers → 9 merchant marine** = £360 in, £450 out, **+£90**.
+Ours, `building_port` era 0, undivided by its `workforce_mult` 0.1:
+**15.2 clippers → 9 merchant marine** = £912 in, £450 out, **−£462**.
+
+Same output, **2.53× the clipper input**. The rest of the ladder is fine, which is what makes the
+era-0 rung diagnostic rather than a general mis-slope:
+
+| tier | undivided recipe | out | in | goods balance |
+|---|---|---|---|---|
+| `building_port` (e0) | clippers 15.2 → mm 9 | £450 | £912 | **−£462** |
+| `building_port_steam` (e1) | steamers 6.1 + coal 6.1 → mm 14 | £700 | £610 | +£90 |
+| `building_port_industrial` (e2) | steamers 6.4 + coal 6.4 → mm 20 | £1000 | £640 | +£360 |
+| `building_port_modern` (e3) | steamers 6.4 + oil 12.8 → mm 30 | £1500 | £960 | +£540 |
+| `building_port_motor` (e4) | steamers 8.0 + oil 15.9 → mm 46 | £2300 | £1196 | +£1104 |
+
+⚠ **Long-standing, NOT a regression.** The 1.689 clippers-per-mm ratio is byte-identical across every
+commit back through the graded port factorisation (`8ca8d83~1`), so it is present in the pinned
+baselines too and does not break their comparability.
+⚠ **The §10.50 recipe ratchet cannot catch it**: the ratchet forbids a LATER tier being less
+input-efficient than the one below, and e0 is the bottom rung, so nothing bounds it. This is the
+first measured case of *the bottom rung having no floor at all*.
+
+### The causal chain, each link measured
+
+1. **−£462 ⇒ subsidy dependence.** World anchorages: 2,588 levels, **87% subsidised** at 1837.
+2. **Coverage decays.** 87% (1837) → 84% (1845) → **78% (1848)**. Staffing tracks it: 89% → 78%.
+3. **Unsubsidised anchorages shed staff.** The clean case is the East India Company, whose subsidised
+   levels went **143 → 10 in 1847** while the company itself *grew* (GDP 57→68M, pop 144→171M, ports
+   143→147). Its staffing collapsed **136.4 → 51.1 → 17.2 (12%)** and its merchant-marine output went
+   **141.4 → 52.4 → out of the world top 20**.
+4. **Supply never rebuilds.** Anchorage levels are flat at ~2,600 for twelve years — the AI does not
+   build a loss-making building — and the steam-port path cannot take over, because it needs steamers
+   from a metal yard the market supports at ~1 level (GBR's seeded 3 levels shrank to 1 at 8% staffing).
+5. **World merchant-marine output falls in absolute terms** — 2084 (1846) → 2014 (1847) → **1953 (1848)** —
+   against demand that grows with the economy.
+6. **Price ratchets up.** Merchant marine as % of base, by market:
+
+| market | 1836 | 1840 | 1845 | 1850 | 1858 | shape at 1858 |
+|---|---|---|---|---|---|---|
+| Prussian | 122.9 | 150.8 | 151.1 | **⛔175.0** | **⛔175.0** | clamped at 1850 and **STILL clamped 8 years later** |
+| Russian | 81.7 | 110.9 | 142.7 | 169.2 | **⛔175.0** | monotone throughout, reached the clamp |
+| French | 104.5 | 100.2 | 104.6 | ~114 | 148.7 | accelerating |
+| Spanish | 76.5 | 92.6 | 97.0 | ~99 | 147.9 | accelerating (turned over at 1846, then resumed) |
+| British | 72.3 | 101.5 | 117.3 | 145.1 | 145.5 | **decelerating** — fluctuates 110–156, turned over twice |
+| Dutch | 91.7 | 100.4 | 116.8 | 132.6 | 127.1 | turned over |
+| Portuguese | 92.6 | 75.5 | ~97 | — | 99.1 | accelerating off a low base |
+| American | 75.0 | 67.0 | 82.0 | ~83 | 97.4 | turned over |
+| Japanese | 25.0 | 25.0 | 85.1 | — | 25.0 | back on the 25% FLOOR |
+
+⭐⭐ **THE "CLAMPS AND STAYS" HALF IS NOW SATISFIED.** Prussia held 175.0 continuously from 1850 to
+1858, and Russia climbed monotonically into it — two markets meeting the ruled break criterion in
+full, with three more (France, Spain, Portugal) accelerating toward it. The British market is the
+notable holdout and the reason the failure is *partial* rather than total: it is the largest, it has
+turned over twice, and it decelerated to 1.8 pp/yr.
+
+⭐ **The break criterion is the user's, ruled 2026-08-17**: merchant marine is THE indicator, and a
+steady rise that clamps at +75% *and stays* is a broken market, whereas one that decelerates, stalls
+or turns over is a market finding its level. The two are indistinguishable from the price LEVEL, which
+is why `tools/testbed/watch_mm_chain.mjs --mm` prints the annualised increment beside every price.
+
+### What it does NOT say
+
+- **It does not say the whole economy is broken.** Merchant marine starts priced almost exactly like
+  vanilla (British market **72.3%** against vanilla's **72.1%** at 1836.2), and the largest market is
+  still fluctuating rather than clamped at 1850. Five of nine markets oscillate or turn over.
+- **It does not implicate the chain seed, the graded factorisation or the conditional mandate.** All
+  three post-date the recipe, and the seeded metal yards behave sanely — they shrink to the size the
+  market supports and stay profitable (GBR £279/wk, FRA £97/wk).
+- **It does not measure the post-1858 trajectory or n=2.** The clamp is confirmed to 1858 on run 1;
+  whether the British market eventually follows Prussia and Russia in, or holds its deceleration, is
+  open, and so is whether run 2 reproduces the same market-by-market pattern.
+- **The clipper symptom is corroborating, not decisive** (user ruling, same day): clipper or steamer
+  breakage alone does not invalidate a run.
+- **Shipyard staffing is NOT part of this.** Our clipper yards run 54% staffed against vanilla's 53%
+  on the same dates — an early reading that they were anomalously idle was wrong and is withdrawn.
+
+### The fix, and what NOT to do
+
+The lever is the era-0 recipe, and it is **not a hand edit** — volumes are solver output and a hand
+edit trips `lint_profitability.awk`'s drift guard. It needs the port's solve parameters adjusted and
+`era_scenarios.mjs` re-run. ⚠ **Do not simply copy vanilla's 6:9.** The e0 rung is *meant* to be the
+poor, obsolete one that steam ports drive out; the defect is that −£462 is past "poor" into "cannot
+function at all", which is a different thing from being unprofitable at the margin.
+
+---
+
 ## F66 — ⭐⭐ **THE PORT-QUEUE RUNAWAY IS STRUCTURAL, NOT SUBSIDY-DRIVEN: the engine's per-overseas-state port provisioning fires once per PORT BUILDING TYPE, so the five-tier split makes every overseas state accumulate one level of each new port tier the moment its tech exists — identically with and without the mandate. GBR's private queue reads 100% `port_steam` 1837–41 and 100% `port_industrial` 1849–52 in BOTH arms; the per-country magnitude is the count of overseas possessions (GBR 12 · FRA 10 · BEL 1 · USA 0 · PRU 0), not coastline, tech or subsidy. Vanilla's control: +4 GBR port levels in twelve years on a diversified queue — the same logic satisfied by the one port building it already has. The steamer half stands: `screw_frigate`, a tier-1-tech STARTING invention, unlocks the steamer-eating port from day 1 into a world with zero steamer supply**
 
 **Arm** `config` — measured on TWO arms: ports_cond3 (must_have mandate) AND vancost_nosub (NO port
