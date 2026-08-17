@@ -7183,3 +7183,36 @@ and it checks both.
 from the `LACKING_TECHNOLOGY_SINGLE` loc family and the composition of `add_ownership` is in
 MODDING_NOTES, and is inference); nothing about buildings placed by events or by the AI at runtime;
 nothing economic.
+
+### F69.1 — THE ASYMMETRY: history enforces the gate, the runtime port path does not
+
+**Same sessions, measured 2026-08-17 in answer to the user's reading that this is "a 1836.1.1 issue".**
+It is, and the engine is **internally inconsistent** about it.
+
+In a no-grants run at **1837.1.1**, counting every country holding `building_port_steam` against whether
+it holds `screw_frigate`:
+
+> **16 countries hold 33 levels of a building their own technology does not unlock**, against **4**
+> countries that do hold it. POR alone has **10**; SPA, HAN, PHI, CUB, LIB, SAF, ION, BIC, MKT, SIL and
+> PLY hold 1–3 each.
+
+So the very buildings the history load **refused** appear within a year anyway. One code path validates
+`unlocking_technologies` against the state's owner and drops the block; another places the same building
+in the same state with no such check.
+
+⚠⚠ **BUT THE FRAMING "A SUBJECT CANNOT BE GIVEN A BUILDING IN HISTORY" IS WRONG, AND THE DISTINCTION IS
+LOAD-BEARING.** The gate never consults subject status, overlord, or market — only whether the
+region_state's owner holds that one technology. The granted run is the proof: **the same twelve subjects,
+in the same states, under the same overlord ownership, created all 38 stubs** once `screw_frigate` was in
+their starting set. Conversely a 49-technology country (ORG, DEI) fails without it while a
+10-technology one (PLY) succeeds with it. ⇒ **Seed whatever you like into a minor's state; just declare
+the technology** (`start_tech_grants`, F68).
+
+⚠ **DO NOT GENERALISE THE RUNTIME HALF TO "THE OVERLORD CAN BUILD IT LATER".** The appearances counted
+above are almost certainly **F66's overseas-port provisioning** — the engine giving every overseas state
+one level of each port TYPE — which is **port-specific and tech-blind**. POR is independent and holds 10
+levels, which matches "one per overseas state" and cannot be an overlord investing. Whether an overlord
+can *construct* an ordinary building (a motor industry, say) in a subject's state at runtime while that
+subject lacks the technology is **NOT MEASURED**. It is plausible — the user reports it from play, and
+in-game construction is evidently a different code path from the history effect — but nothing here
+tests it, and F69's probe covers world init only.
