@@ -1117,6 +1117,44 @@ fifteen. Read it off the save, never off intent.
 
 ---
 
+## 7⅜ — WALL CLOCK: HOW FAST THE GAME RUNS, AND WHY THE OBVIOUS READING IS WRONG (2026-08-18)
+
+**Nothing new is instrumented.** Every batch already writes what this needs, in two places:
+
+| quantity | where | note |
+|---|---|---|
+| total run time | `<run>/meta.json` → `wall_seconds` | plus `attempt_log[]` per attempt |
+| in-game date reached | `<run>/meta.json` → `reached_ingame_date` | vs `until_date` — see **L17** |
+| per-year wall clock | `<run>/save_summaries/` **FILENAMES** | `NNNN_yyyymmdd_HHMMSS_autosave…` |
+| what was being simulated | each save summary | `world.pop_objects_live`, `world.gdp`, `world.buildings` |
+| finer wall-clock series | `<run>/run.log` tick lines | `… <wall>s in-game <date>`, ~every 20 s — `run_timing.mjs` |
+
+The yearly save archive is the useful pairing: **one file gives both the wall-clock stamp and the size of
+the economy at that moment**, so cost can be plotted against load directly. Reader:
+`tools/testbed/ledger/report_perf.mjs`.
+
+⚠⚠ **THE TRAP, AND IT IS NOT HYPOTHETICAL — THE RAW TOTAL INVERTS THE ANSWER ON OUR OWN DATA.** In
+`20260813_083557` the modded arm ran 1836→1936 in **134.6–137.2 min** against vanilla's **155.5–186.7**:
+×0.86, i.e. "the mod is 14% faster". It is not faster. It ended with **×0.65 the live pop objects** and
+**×0.61 the building levels** — a third of an economy, and less economy is cheaper to tick. Compared
+**pop-matched** the arms lie on one curve and the figure is **−2.5%**.
+⇒ **Compare seconds per in-game year at equal `pop_objects_live`, never at equal date and never in total.**
+
+⚠ **`pop_objects_live`, not `population` and not `pop_objects`.** People are not what the engine iterates;
+**pop RECORDS** are (§7¼), and 17.4% of vanilla's records hold nobody, so the raw count carries dead weight.
+⚠⚠ **A WALL-CLOCK COMPARISON IS ONLY VALID WITHIN ONE `pop_consolidation` SETTING** — §7¼'s dial decides
+how many records exist, which is precisely the cost driver. Check `world.game_rules` matches across the
+arms before comparing, exactly as for any other cross-session reading.
+⚠ Wall clock is also **machine- and version-sensitive** in a way the economic metrics are not: background
+load, thermal state and a Steam patch all move the absolute seconds. **Ratios within one night survive;
+absolute minutes across sessions do not.** Prefer an alternating within-session design (which
+`20260813_083557` happens to be — V/M/V/M — and that is what makes it the baseline).
+⚠ An interval spanning a **resume** contains the crash and reload; drop it rather than smoothing it. And
+the archive stamp is the *archive* time — `archive_autosaves.ps1` waits for the file to go size-stable —
+so it lags the engine's write by a near-constant margin. Harmless in a rate, wrong as an absolute instant.
+
+---
+
 ## 7½. THE SAVEGAME HARVEST — the instrument, industrialised (2026-08-11)
 
 §7 established that a save can be read. This section is what turned that into a **standing instrument**:

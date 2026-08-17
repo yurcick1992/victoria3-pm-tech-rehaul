@@ -1,0 +1,42 @@
+{
+  "schedule_version": 1,
+  "label": "canon-n2",
+  "_why": "A FULL-CENTURY VARIANCE READ ON THE CURRENT RULES (user-ruled 2026-08-18, 'run n=2 under the current rules'), and the FIRST BATCH TO CARRY THE NEW WALL-CLOCK CONSTRAINT (row P of the ledger, CLAUDE.md working conventions, FINDINGS F71). Everything shipped since the pinned baseline of 2026-08-13 has been read off single runs or short probes: the flat cost book (§10.61), the graded fractional ports (§10.60.2), the ratified 28-rule chain seed (§10.60.3), the solvency bound (§10.63), the AI research weight returning to 1/1/1, and the rebuilt war gate. n=2 at full span is what says which of those readings survive a second run, and it is the state the next design decision is taken from.",
+  "_arms": "canonfull = {kind: config, config: config/mod_config.json} — the shipped canonical config exactly as it stands, no overlay, no variant. n=2. There is NO control arm in this batch by user ruling: the economic comparison partner is the pinned vanilla baseline 20260813_083557 (vanilla n=4), and the wall-clock comparison partner is that same session's vanilla arm.",
+  "_comparison": "Run against run WITHIN this batch for the variance envelope (that is the primary purpose — n=1 has carried too much lately). Against 20260813_083557's vanilla arm for GDP/levels/workforce AND for row P. ⚠⚠ THE CROSS-SESSION WALL-CLOCK COMPARISON IS WEAKER THAN A WITHIN-SESSION ONE and must be labelled as such: absolute minutes do not travel between nights (machine load, thermal state, and 1.13.10-vs-later game version all move them), only the pop-matched RATIO does. If row P reads anywhere near its 10% budget on this cross-session basis, the honest next step is a same-night alternating V/M batch, not a louder claim from this one.",
+  "_watch": "(1) ROW P — wall clock. F71 established -2.5% pop-matched on the 2026-08-13 pair; this is its first re-read on a changed mod. The 1830s bin (x1.12, the one adverse reading) is where our added content is largest relative to the economy, and the research journal entries have grown since — watch that bin specifically. (2) Whether the flat cost book's single-run readings hold at n=2 (F57/§10.61: the old book divided the same economy by ~6, and the flat book's 1.56x GDP overshoot came from ONE run). (3) The graded ports: does the provisioning wave still cost ~1/10, and does the chain seed still hold at 1936 rather than only at 1840? (4) The war gate, now that it is rebuilt (F70 measured it as the one channel that never fired) — over a century, covering many wars, not the 1846 probe's two. (5) Research-event firings by era: F52's finding was 76% on era-1 gates and NONE on era-4/5. (6) Run-to-run variance itself, which nothing in the last fortnight has measured at full span.",
+  "_cost": "2 runs x 100 in-game years = ~2h35 each on the mod, so ~5h10 wall clock plus 2 builds (~1 min each). No control arm, so no vanilla runs.",
+  "_caveats": "⚠ NOT a controlled experiment — one arm, no control. It measures VARIANCE and STATE, not the effect of any change. Any arm-vs-arm claim must name 20260813_083557 explicitly and carry the cross-session caveat above. ⚠ `building_inventory` is DELIBERATELY ABSENT: it was disqualified as an inventory instrument on 2026-08-17 (its ~12,700-line boot burst overflows the shared 5x512KB log ring and voided session 20260817_184413), and building presence is read from SAVE SUMMARIES instead. Dropping it also protects the other metrics from ring eviction (landmines L4/L9). Every other metric matches the pinned baseline's set so the two remain comparable. ⚠ Save harvest ON (default) and concurrent — the yearly save summaries are REQUIRED here, not optional: row P's pop-matched reading is computed from `world.pop_objects_live` in them, and without them the batch cannot answer its own headline question. ⚠ All runs must be `moderate_consolidation` for the wall-clock reading to be valid against the baseline (TESTBED_METRICS §7¼/§7⅜) — the observer sets no rules, so this holds by default; verify from world.game_rules rather than intent. ⚠ L17: a run that fails is still recorded `ok` — check each meta.json's reached_ingame_date before counting it, and an INCOMPLETE run's wall clock is meaningless and must be excluded, not scaled. ⚠ L19: check for an orphaned victoria3.exe before launching. ⚠ Machine must stay otherwise idle for the duration or row P is measuring background load.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "_dump_dates_note": "⚠ dump_dates are stated PER RUN on purpose. A defaults-level key was silently dropped for this field (landmine L16) — fixed 2026-08-17, but kept per-run here so the file does not depend on that fix. The twelve dates match the pinned baseline 20260813_083557 exactly, which is what keeps the two sessions comparable."
+  },
+  "setups": {
+    "canonfull": {
+      "kind": "config",
+      "config": "config/mod_config.json"
+    }
+  },
+  "runs": [
+    { "setup": "canonfull", "until": "1936.1.1", "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] },
+    { "setup": "canonfull", "until": "1936.1.1", "dump_dates": ["1836.2.1","1840.1.1","1850.1.1","1860.1.1","1870.1.1","1880.1.1","1890.1.1","1900.1.1","1910.1.1","1920.1.1","1930.1.1","1935.1.1"] }
+  ]
+}

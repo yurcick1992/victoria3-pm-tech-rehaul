@@ -2863,6 +2863,31 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   Hence the companion rule: **write the conclusion into `FINDINGS.md`, with the numbers in full, as
   part of the same pass that produces it** — don't leave the finding living in the session folder or
   in chat.
+- **⭐⭐ THE MOD MUST NOT MAKE THE GAME SLOWER — A STANDING CONSTRAINT ON EVERY BATCH, REPORTED HIGH UP**
+  (user-ruled 2026-08-18). Whatever we do to the economy, **Victoria 3 must stay about as fast to play as
+  the base game**. This is a first-class goal, not a footnote: a mod that models a beautiful economy and
+  costs the player a third of their evening in load and tick time has failed at something the balance
+  numbers will never show. **The budget is 10% overall.** It sits in the ledger's verdict table as row
+  **P**, with its own section directly under the verdict — see the ledger README, and
+  `tools/testbed/ledger/report_perf.mjs`, which computes it from artifacts every batch already produces
+  (`meta.json` → `wall_seconds`, and the yearly save archive whose FILENAMES carry the wall-clock stamp).
+  ⚠⚠ **AND IT MUST BE MEASURED AT A COMPARABLE ECONOMY SIZE — THE RAW TOTAL IS NOT JUST WEAK, IT POINTS
+  THE WRONG WAY ON OUR OWN DATA.** The engine's cost scales with how much it is simulating, so an
+  underdeveloped arm finishes sooner while being slower per unit of work. **Measured, session
+  `20260813_083557`: the modded arm ran the century in 134.6–137.2 min against vanilla's 155.5–186.7 —
+  ×0.86, reading as a 14% SPEEDUP.** It is nothing of the kind. That arm ended with **×0.65 the live pop
+  objects and ×0.61 the building levels**; it was simply a third of an economy. Pop-matched, the two arms
+  sit on **one curve** and the real figure is **−2.5%** (8 of 14 overlapping bins, range 0.935–1.123).
+  ⇒ **The verdict is the POP-MATCHED one: seconds per in-game year compared between arms at the same
+  live pop-object count** (`world.pop_objects_live`, in every save summary) — **never at the same date,
+  never in total**. An economy with half the GDP and far fewer distinct pops **barely counts** as evidence
+  about speed. Show the raw total on the page only so it can be dismissed.
+  ⚠ Where the arms never reach a common size the question is **unanswerable, not favourable**: if the
+  overlap falls below about a third of the bins, report that wall clock cannot be compared for this batch
+  rather than substituting the raw total.
+  ⚠ Intervals spanning a resume carry the crash and reload in their wall time and are **dropped**, not
+  smoothed. And the archive stamp is the ARCHIVE time (`archive_autosaves.ps1` waits for the file to go
+  stable), which is a near-constant lag — fine in a *rate*, wrong as "the moment the game reached this date".
 - **Record every measurement batch in `FINDINGS.md`.** After a run batch, append (or update) a finding
   there with: the claim + effect size, the arms/n-per-arm/span/dates and the actual numbers, the
   session folder, the confidence, and an explicit **"what it does NOT say"**. Copy the tables in

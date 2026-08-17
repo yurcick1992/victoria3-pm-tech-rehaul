@@ -30,6 +30,22 @@ encodes, all user-ruled:
   excluded from "tiered".
 - A ratio table/chart always sits beside its absolute twin; contraction-aware measures (employment
   with bracketed deltas) over gross level additions.
+- ⭐⭐ **WALL CLOCK IS A FIRST-CLASS ROW, HIGH UP — row `P` in the verdict table plus its own section
+  directly beneath it** (user-ruled 2026-08-18). The mod must not make the game materially slower than
+  vanilla; **budget 10%**. It is not an afterthought at the bottom, because a mod that is unplayable-slow
+  has failed at something no balance number reveals.
+  ⚠⚠ **The headline is the POP-MATCHED figure and nothing else**: seconds per in-game year compared
+  between arms **at the same `world.pop_objects_live`**, never at the same date and never in total. On our
+  own baseline the raw total says the mod is **14% faster** (×0.86) purely because that arm built a third
+  of an economy (×0.65 live pops, ×0.61 levels); pop-matched it is **−2.5%**. The naive total is rendered
+  on the page *only so it can be dismissed* — never quote it as the result.
+  ⚠ Bins where only one arm has samples are shown as `no overlap` and never folded in. If overlap drops
+  below ~a third of the bins, the arms did not simulate a comparable economy and wall clock **cannot be
+  compared** for that batch — say so rather than falling back to the total.
+  ⚠ **The panel is its own `<script>` block with its own `css()` helper, deliberately** — a hard-constraint
+  panel must still render when anything else on the page throws. Appended to the main script it silently
+  blanked the moment an unrelated renderer failed. Keep it independent (and keep it wrapped in its IIFE:
+  the main script declares its own top-level `const css`, and a second one throws).
 
 ## Filling it for a new batch
 
@@ -40,6 +56,18 @@ encodes, all user-ruled:
    - `report_data.mjs` — era stocks/additions, paybacks, frontier share, panel GDP.
    - `report_data2.mjs` — the per-country dataset (yearly GDP both arms, labour, tier employment,
      anomaly flags) → `report_data2.json`.
+   - **`report_perf.mjs` — the wall-clock / row-`P` data.** Point it at the session(s) holding **both**
+     arms (it reads `meta.json` + `save_summaries/`, so nothing extra is instrumented) and it prints the
+     naive total, the per-decade rates and the pop-matched verdict:
+     `node tools/testbed/ledger/report_perf.mjs <session> [<session2>] --json perf.json`.
+     It classifies an arm from `build_state.json`'s `deterministic.arm`, falling back to the folder name,
+     and **skips incomplete runs** (L17: a run that stopped early has a meaningless wall clock).
+     ⚠ It needs a vanilla arm to compare against. Where a batch has none, run it over the batch **and**
+     the pinned vanilla baseline together — but state that the two were not measured on the same night,
+     since machine load and game version both move the absolute numbers (the *ratio* is what survives).
+1b. Regenerate the template's `PERF` const from `perf.json` (runs, `byDecade`, `matched.bins`,
+   `matched.pct`, and the per-run `curve`), then splice it over the existing `const PERF={...}` in the
+   perf `<script>` block.
 2. The template's inline consts (GDP_FLAT/GDP_VAN/GDP_NB, EMP, PROD_*, TRAJ, LADDER, WATCH, WORLD_*)
    carry the world-level numbers — update them from the scripts' output.
 3. Splice the per-country JSON over the `__D2__` token:

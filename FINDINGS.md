@@ -7287,3 +7287,91 @@ kind** — the regex expected a country TAG where the emitted line carries a dis
 (`[THIS.GetCountry.GetNameNoFormatting]`). The correct count is 2 308. A telemetry reader that assumes
 the wrong field shape reports silence indistinguishable from a dead mechanic; check the emitting
 template before believing a zero.
+
+---
+
+## F71 — ⭐⭐ THE MOD DOES NOT SLOW THE GAME DOWN: **−2.5% pop-matched**. And the raw wall-clock total says the opposite of the truth — it reads as a **14% speedup** that is really a missing third of an economy
+
+**Claim.** Measured at a comparable economy size, the mod costs the engine **−2.5%** per in-game year
+against vanilla — no slowdown, well inside the 10% budget ruled 2026-08-18. **The naive reading of the
+same data is not merely weaker but inverted in meaning**: totalled over the century the modded arm looks
+**14% faster**, entirely because it built a third less economy.
+
+**Arms, n, span.** Retrospective analysis of session `20260813_083557_vanilla-vs-mod-n4` — **no new game
+time**. Alternating V/M/V/M, 1836.1.1→1936.1.1, game 1.13.10, one machine, one night, all runs
+`moderate_consolidation`. Completed runs only: **vanilla n=4, mod n=2** (the other two mod runs died and
+are void — see that session's VERDICT.md and landmine L17). Reader:
+`tools/testbed/ledger/report_perf.mjs`.
+
+### 1. The naive total — do not quote it
+
+| arm | wall clock, 1836→1936 | median |
+|---|---|---|
+| vanilla (n=4) | 155.5 / 161.0 / 155.9 / 186.7 min | 158.5 |
+| mod (n=2) | 137.2 / 134.6 min | **135.9** |
+
+Ratio mod/vanilla **×0.858**. ⚠ But the arms did not simulate the same thing: at 1936 the mod arm held
+**×0.65 the live pop objects** (83–89k vs 122–147k) and **×0.61 the building levels** (139–145k vs
+219–274k).
+
+### 2. Seconds per in-game year, by decade (median) — the shape of the illusion
+
+| decade | vanilla | mod | mod/van |
+|---|---|---|---|
+| 1830s | 58.5 | 64.5 | 1.103 |
+| 1840s | 69.5 | 71.5 | 1.029 |
+| 1850s | 75.0 | 76.5 | 1.020 |
+| 1860s | 77.0 | 76.5 | 0.994 |
+| 1870s | 77.0 | 75.0 | 0.974 |
+| 1880s | 84.5 | 71.0 | 0.840 |
+| 1890s | 93.0 | 75.0 | 0.806 |
+| 1900s | 98.0 | 80.5 | 0.821 |
+| 1910s | 123.5 | 83.0 | 0.672 |
+| 1920s | 133.0 | 92.0 | 0.692 |
+| 1930s | 142.5 | 93.0 | **0.653** |
+
+The apparent advantage grows monotonically after the 1870s — which is exactly the period in which the two
+economies diverge. It is a measure of the divergence, not of speed.
+
+### 3. ⭐ Pop-matched — the reading that answers the question
+
+Binned by `world.pop_objects_live`; only bins where **both** arms have samples are comparable.
+
+| live pop objects | vanilla s/yr | mod s/yr | mod ÷ van | samples (v,m) |
+|---|---|---|---|---|
+| 30–38k | 61.0 | 68.5 | 1.123 | 22,14 |
+| 38–46k | 70.5 | 72.0 | 1.021 | 28,17 |
+| 46–55k | 75.0 | 76.0 | 1.013 | 38,29 |
+| 55–63k | 77.0 | 72.0 | 0.935 | 45,34 |
+| 63–72k | 77.0 | 75.0 | 0.974 | 40,38 |
+| 72–80k | 86.0 | 84.0 | 0.977 | 44,39 |
+| 80–88k | 96.0 | 92.5 | 0.964 | 36,26 |
+| 88–97k | 100.0 | 94.0 | 0.940 | 29,1 |
+| 97–105k … 139–147k | 117 → 161 | — | **no overlap** | 31…7, 0 |
+
+**Median ratio over the 8 overlapping bins: 0.975, i.e. −2.5%**, range 0.935–1.123. The two arms lie on
+essentially **one cost curve**: at equal pop-record count the engine costs the same whichever arm runs.
+
+### What it does NOT say
+
+- **It is not a clean bill of health above ~97k live pop objects.** Six of fourteen bins have no mod
+  samples at all, because the mod's world never gets that big. If a future arm reaches vanilla's scale,
+  the top of the curve is unmeasured and must be re-read there.
+- **The 1830s bin (×1.12) is the one adverse reading** and is not dismissed: it is where our extra content
+  (research journal entries, the larger tech tree, the added buildings) is largest relative to a tiny
+  economy. It is inside the budget, on the smallest workload, and it shrinks as the economy grows — but a
+  future load-time or startup regression would show here first.
+- **It says nothing about load time, save time or UI responsiveness** — only about simulation throughput
+  between autosaves. Autosave *writing* stalls the engine (the reason batches use yearly cadence) and is
+  inside these intervals, unseparated.
+- **n is small on the mod side (2).** The vanilla arm's spread is itself 155.5–186.7 min (±10%), which is
+  the noise floor for the *total*; the pop-matched bins are far better resolved (26–45 samples each)
+  because every run contributes ~99 yearly intervals.
+- **Absolute minutes do not travel.** Machine load, thermal state and game version all move them; only
+  the within-session ratio survives. This is why an alternating same-night design is the right one.
+- **Valid only within one `pop_consolidation` setting** (TESTBED_METRICS §7¼/§7⅜) — the dial that decides
+  how many pop records exist is the cost driver itself. All runs here were on the default.
+
+**Confidence: high for the conclusion (no slowdown in the measured range), moderate for the exact −2.5%.**
+The sign and rough magnitude are robust — eight independent bins, none above 1.13, six below 1.0. The
+point estimate is a median of medians over an unevenly sampled range.
