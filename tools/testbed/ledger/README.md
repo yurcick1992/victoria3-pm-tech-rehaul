@@ -5,8 +5,15 @@ World / Watchlist pages (tab switcher) → placeholders → incidents → next l
 encodes, all user-ruled:
 
 - **Every graph/table gets a normalized/absolute toggle** unless there is a specific local reason not to.
-- **Every graph/table exists at world level AND watchlist level** (the eleven majors: GBR RUS FRA USA
-  PRU TUR AUS SPA BRZ SIC POR), the watchlist with **selectable countries** (filter chips).
+- **Every graph/table exists at world level AND watchlist level** (the twelve majors: GBR RUS FRA USA
+  PRU TUR AUS SPA BRZ SIC POR NET), the watchlist with **selectable countries** (filter chips).
+  **NET was added 2026-08-17** as the port-seed control: the §10.60.3 chain seed converts anchorages
+  into level-1 steam-port stubs in the **GBR and FRA markets only**, so the Netherlands is the third
+  overseas-empire power that got nothing — the panel is where "does an unseeded colonial empire fall
+  behind, and does it snap back when it researches the tech?" is read. The tag list is defined in
+  three places and they must stay identical: `report_data.mjs` (`PANEL`), `report_data2.mjs` (`TAGS`)
+  and `ledger_template.html` (`TAGS`). Everything else — chips, flags, per-country charts — is
+  derived from that list, so adding a tag is those three lines and nothing more.
 - **Per-tag anomaly flags in the legends/headers** (dissolutions, civil-war pop collapses,
   annexation-scale jumps) — computed, never hand-listed, because they decide whether a within-tag
   comparison is reliable.

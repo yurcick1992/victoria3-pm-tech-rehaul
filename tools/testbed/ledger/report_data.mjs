@@ -24,7 +24,7 @@ for (const ind of cfg.industries) {
   }
 }
 const FRONTIER_INDS = ['tooling', 'steel', 'motor', 'automotive', 'fertilizer', 'explosives', 'munition', 'arms', 'artillery', 'electrics', 'paper', 'glass', 'shipyard', 'shipyard_steam', 'synthetics'];
-const PANEL = ['GBR', 'RUS', 'FRA', 'USA', 'PRU', 'TUR', 'AUS', 'SPA', 'BRZ', 'SIC', 'POR'];
+const PANEL = ['GBR', 'RUS', 'FRA', 'USA', 'PRU', 'TUR', 'AUS', 'SPA', 'BRZ', 'SIC', 'POR', 'NET'];
 const YEARS = [1840, 1860, 1880, 1900, 1920, 1935];
 const classOf = k => {
   if (k === 'building_construction_sector') return 'c';

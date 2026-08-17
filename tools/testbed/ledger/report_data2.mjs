@@ -12,7 +12,10 @@ for (const ind of cfg.industries) for (const t of ind.tiers || []) {
   tierEra[t.key] = t.era;
   tierEmp[t.key] = Object.values(t.employment || {}).reduce((a, b) => a + b, 0);
 }
-const TAGS = ['GBR', 'RUS', 'FRA', 'USA', 'PRU', 'TUR', 'AUS', 'SPA', 'BRZ', 'SIC', 'POR'];
+// NET joins the panel 2026-08-17: it is the third colonial-port power and the one the §10.60.3 chain
+// seed deliberately withheld from (the seed is GBR/FRA markets only), so it is the control for
+// "does an unseeded overseas empire fall behind once it researches the port tech?".
+const TAGS = ['GBR', 'RUS', 'FRA', 'USA', 'PRU', 'TUR', 'AUS', 'SPA', 'BRZ', 'SIC', 'POR', 'NET'];
 const SAMPLE = [1840, 1850, 1860, 1870, 1880, 1890, 1900, 1910, 1920, 1930, 1935];
 function walk(runDir, wantEmp) {
   const dir = join(SES, runDir, 'save_summaries');

@@ -1,0 +1,32 @@
+{
+  "schedule_version": 1,
+  "label": "canon-ports-n2",
+  "_why": "WHERE THE RECENT BALANCE CHANGES GOT US (user-requested 2026-08-17). n=2 century on the CANONICAL config as of commit 4a2a3ef - i.e. the FLAT VANILLA COST BOOK (§10.61, the era exponent retired as double jeopardy: 400 power/art_academy, 40/40/40/80/80 port, 600 the light industries, 800 the heavy), exact-decimal emission, tech_ai_weight_mult 1/1/1 (no tree damped or favoured; the 2026-08-11 society x0.8 is superseded), the GRADED PORT FACTORISATION (§10.60.2), the conditional port mandate (§10.60.3 Q1+Q2), and the ratified 28-rule CHAIN SEED in the 1836 start. The parity restart's arm ran this cost book as `vancost_graded` off a throwaway config; this is the same book now CANONICAL, so it is also the check that the canonicalisation carried it faithfully.\n\nTHE FOCUS THE USER NAMED, and why it is instrumented harder than a standard batch: the merchant-marine chain in the EARLY GAME (1836-1860). shipyard->clippers (e0, from the start), shipyard_steam->steamers (e1, tech_year 1843), port->merchant_marine (e0 anchorage eats clippers; e1 steam port eats steamers+coal, tech_year 1840). The §10.60.3 chain seed converts 25 anchorages into level-1 steam-port stubs and seeds 2 metal shipyards, but ONLY in the GBR and FRA markets - so clipper price, steamer price, merchant-marine price and GBR's overseas state market access are the four series that say whether the seeded chain clears from 1836 or the market is broken from day one. Prior art: the chain-seed probe (20260816, ea20683) read MM PINNED AT THE +75% CEILING and retracted the ~5/wk demand claim; whether the graded ports + conditional mandate clear that pin at century scale is exactly the open question.\n\nSTOP-EARLY IS EXPECTED AND SANCTIONED (user): if the early window reads broken, the batch is stopped and the economy retuned rather than played out. The agent checks the price series and GBR access at every early dump, not only at the 5-minute smoke.\n\nNET JOINS THE PANEL (task 1, same day). The Netherlands is the third overseas-empire power and the one the chain seed deliberately withheld from, so it is the CONTROL for 'does an unseeded colonial empire fall behind, and how hard does it snap when it finally researches the port tech?'. NET is now in the ledger watchlist (report_data.mjs PANEL, report_data2.mjs TAGS, ledger_template.html TAGS) and in this batch's telemetry tags, so its per-state market access and its market's order book are both read. The pending DECISION this batch informs: grant NET the port technology explicitly and seed it steamer ports the way GBR and FRA have them - to be taken only if the penalty is NOTICEABLE AND CONSISTENT across both runs.",
+  "_arms": "canon = {kind: config, config: config/mod_config.json} - the committed canonical config, no throwaway variant. Dry-run verified 2026-08-17 10:46 (LINT PASSED 93 buildings / NEGATIVE-GOODS PASSED / MOD CHECKS PASSED / PREFLIGHT PASSED). Game 1.13.10, matching every pinned baseline.",
+  "_comparison": "vanilla n=4 of 20260813_083557 (the pinned ledger baseline) + vanilla-wages-century-n5; parity10-graded-n2 (the SAME cost book off mod_config.vancost_graded.json, pre-canonicalisation) is the nearest arm and the one this must reproduce; vancost-nosub-n2 20260816_011552 (same book, PRE port fix); ports-graded-probe 20260816_202628 (this economy to 1852, n=1); chainseed probe (MM at the +75% ceiling - the number to beat).",
+  "_cost": "2 runs x 100 in-game years, ~6h30 total with builds and harvest drains. Early window (1836-1860) is ~25 min of that per run, which is where the close monitoring lands.",
+  "_caveats": "Dump dates are DENSER THAN STANDARD in 1836-1860 (7 extra dates) but every one of the ledger's twelve standard dates is still present, so the batch stays report-comparable. `market_goods_wide` carries the price watch on its OWN yearly July dates over a 6-market list - July so it can never share a tick with a January dump's four phases (a dump occupies D..D+3). L16: dump_dates are PER-RUN (no defaults fallback) and are written out per run below. F56 sway-CTD is a standing engine bug in both arms; the resume ladder handles it and the F56 quarantine hooks may take their first live proof here - check quarantined_saves\\ after. Fractional state_infrastructure_add remains UNPROVEN (infra-frac-probe: structural confound), so if colonial market access reads broken, suspect truncation before concluding the economy is at fault.",
+  "defaults": {
+    "metrics": ["tech_log", "events", "building_inventory", "market_goods_scoped", "origins", "state_access", "market_goods_wide"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "JAP", "NET"],
+    "origin_goods": ["clippers", "steamers", "merchant_marine", "coal", "steel", "engines", "tools"],
+    "wide_tags": ["GBR", "FRA", "NET", "USA", "SPA", "POR"],
+    "wide_dates": [
+      "1836.7.1", "1837.7.1", "1838.7.1", "1839.7.1", "1840.7.1",
+      "1841.7.1", "1842.7.1", "1843.7.1", "1844.7.1", "1845.7.1",
+      "1846.7.1", "1847.7.1", "1848.7.1", "1849.7.1", "1850.7.1",
+      "1851.7.1", "1852.7.1", "1853.7.1", "1854.7.1", "1855.7.1",
+      "1856.7.1", "1857.7.1", "1858.7.1", "1859.7.1", "1860.7.1",
+      "1865.7.1", "1870.7.1", "1875.7.1", "1880.7.1"
+    ]
+  },
+  "setups": {
+    "canon": { "kind": "config", "config": "config/mod_config.json" }
+  },
+  "runs": [
+    { "setup": "canon", "until": "1936.1.1", "dump_dates": ["1836.2.1", "1838.1.1", "1840.1.1", "1842.1.1", "1845.1.1", "1848.1.1", "1850.1.1", "1852.1.1", "1855.1.1", "1858.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1909.12.1", "1920.1.1", "1930.1.1", "1934.12.1"] },
+    { "setup": "canon", "until": "1936.1.1", "dump_dates": ["1836.2.1", "1838.1.1", "1840.1.1", "1842.1.1", "1845.1.1", "1848.1.1", "1850.1.1", "1852.1.1", "1855.1.1", "1858.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1909.12.1", "1920.1.1", "1930.1.1", "1934.12.1"] }
+  ]
+}
