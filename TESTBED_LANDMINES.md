@@ -63,6 +63,10 @@ closed.
 | L12 | Savegames reaped without a readable summary | AUTO (post-run, `-Session`) |
 | L13 | A starting factory converted onto a tier its own production method contradicts | **MASKED, not fixed — detector not yet written** |
 | L14 | A country starts with a building its own technologies cannot unlock | AUTO |
+| L15 | A country LOSES a starting technology vanilla gives it | AUTO |
+| L16 | A schedule key honoured in `defaults` for some fields and silently dropped for others | **REGISTERED, DETECTOR OWED** |
+| L17 | A run that FAILED is recorded as `ok`, and the arm count silently shrinks | **REGISTERED, DETECTOR OWED** |
+| L18 | A tier that cannot break even at ANY price the engine can produce | **REGISTERED, DETECTOR OWED** |
 
 ---
 
@@ -624,3 +628,81 @@ Prove it by pointing the check at `20260813_083557_vanilla-vs-mod-n4`, where run
 
 ⚠ Neither half could be written when this was found: `preflight.ps1` is invoked by `build.ps1` before
 every run and the batch was live. Editing it mid-batch would have changed the instrument between arms.
+
+---
+
+## L18 — a tier that cannot break even at ANY price the engine can produce
+
+**Status: REGISTERED, DETECTOR OWED.** Found 2026-08-17 while diagnosing F67, from the economy's
+behaviour in flight rather than from any check. Detector not written the same hour because
+`preflight.ps1` runs inside `build.ps1` before every run and the `canon-ports-n2` batch was live
+(L10) — and because the check FAILS on three tiers today, so it has to ship with, or just before,
+the fix.
+
+**The defect.** `building_port` (era 0) consumes **15.2 clippers to make 9 merchant marine** —
+£912 of input for £450 of output at base prices, a ratio of **0.49**. Vanilla's own
+`pm_basic_port` is 6 → 9, i.e. **+£90**. Its stored `target_be` is **270**, which states plainly
+that the building needs its output at 270% of base to break even. **The engine's price band tops
+out at 175%.** So the tier cannot break even at any price the game is capable of producing, and
+it never could — it survives only on subsidy, and dies the moment subsidy lapses (F67 traces the
+rest: coverage decays 87% → 78%, staffing follows, world merchant-marine output falls in absolute
+terms, and two markets clamp at the +75% ceiling).
+
+**Why nothing fails.** Four layers each had a reason to catch it, and each has a specific,
+non-obvious reason it did not:
+
+1. **Scope.** `build.ps1:584` writes the linter's tier map only for industries where
+   `follows_be -ne $false -and -not $ind.no_mass_be`. Port, railway and power carry
+   `no_mass_be: true`, so no port tier is ever in `tools/ladder_tiers.txt` — the map has 93 entries
+   and the linter dutifully reports "93 in-scope buildings". The flag was introduced to keep the
+   mass BE tools and the UI preset off the new-economy chains; that it also removes them from the
+   linter is a side effect nobody chose.
+2. **The test is circular.** `era_solver.mjs:764` writes
+   `target_be = Ibase / ((1 − wage_pct) · Obase) · 100` — whatever the solved recipe implies — and
+   `lint_profitability.awk:55` then recomputes exactly that quantity and compares. The deviation is
+   **0 by construction**. The solver's own comment says so: *"demotes lint_profitability.awk from a
+   design check to a DRIFT GUARD: it can no longer tell us the balance is wrong"*.
+   ⚠ **This alone is sufficient, so fixing scope would not have helped**: `building_synthetics_plant`
+   carries `target_be` **208**, IS in scope, IS linted, and PASSES.
+3. **No absolute bound exists in the solver.** `era_scenarios.mjs:982` sets
+   `Xmin = (Obase / ioCapFor(ind.id)) / unitBase` — a **hard floor on leanness** (the 4:1 cap) — and
+   the only bound on richness is `monoCapInfo()`, the §10.50 ratchet, which is **relative to the tier
+   below**. A ladder's bottom rung has no tier below it, so it is bounded on one side only.
+   `building_port` is a bottom rung.
+4. **The ruling that removed the floor is now argued from stale cases.** §10.50.1 states there is
+   *"deliberately NO absolute floor"*, justified by *"fertilizer runs 0.98 for three eras, electrics
+   debuts at 0.75, both viable at their realised prices"*. **Both now run 3.99** — later re-solves
+   fixed them and the exemption stayed. The current sub-1 population is six tiers and the worst is
+   **0.49**, twice as far under as the worst case the ruling was argued from.
+
+**The census (2026-08-17, canonical config, 6 of 105 tiers destroy value at base prices):**
+
+| O:I | era | target_be | in the linter? | tier |
+|---|---|---|---|---|
+| 0.49 | e0 | 270 | **no** (`no_mass_be`) | `building_port` |
+| 0.61 | e1 | 217 | **no** (`no_mass_be`) | `building_railway` |
+| 0.64 | e2 | 208 | **yes — and it passes** | `building_synthetics_plant` |
+| 0.84 | e3 | 158 | **no** (`no_mass_be`) | `building_power_plant` |
+| 0.96 | e2 | 139 | yes | `building_steel_mill_bessemer` |
+| 0.96 | e0 | 135 | yes | `building_steel_mill` |
+
+**DETECTOR.** One line of arithmetic, on the EMITTED artifact, per the register's own rule that a
+check reads the artifact and never the generator:
+
+> For every emitted tier, compute `BE% = Ibase / ((1 − wage_pct) · Obase) · 100` from the emitted
+> goods block and the shared `tools/goods_prices.tsv`. **THROW if `BE% > 175`** — the engine's own
+> `1 + 0.75` band edge, so the threshold is a game constant, not a tuning choice. Scope is **every
+> tier**, explicitly including `no_mass_be` industries; this check must not inherit the linter's
+> exclusions, because three of the six offenders live inside them.
+
+⚠ **Do not implement it as a bound on `target_be`.** That field is solver output restated from the
+recipe, so a check against it inherits the circularity of layer 2. Recompute from the goods block.
+
+⚠ **A ratio below 1 is NOT the trigger, and must not be.** §10.50.1's reasoning is still sound —
+a tier may legitimately destroy value at base prices when realised prices carry it. The trigger is
+the sharper and non-negotiable claim: *no reachable price makes this building solvent*. Steel's two
+0.96 rungs are fine and must keep passing; 270 against a 175 ceiling is not a judgement call.
+
+**Prove it** by running the check against the config as of commit `acaf6ad`: it must name exactly
+`building_port` (270), `building_railway` (217) and `building_synthetics_plant` (208), and must be
+silent on both steel rungs.
