@@ -7128,3 +7128,58 @@ retains their vanilla anchorages as t0 clipper ports, and F66's provisioning wav
 within about a year, which is precisely what the 1837 reading was accidentally measuring. **Restoring
 the grants and the 22 rules is a two-line revert and is the user's decision**, now that the premise
 behind the ruling is known to be false.
+
+---
+
+## F69 — The `create_building` technology gate is VANILLA engine behaviour, ownership-independent, and it really does drop the building
+
+**Session:** `techgate_probe` (2026-08-17). ⚠ **Arm: a hand-assembled DIAGNOSTIC mod, NOT a control and
+NOT our config** — vanilla + the standard telemetry + **one** added history file carrying three
+`create_building` blocks. Run 1836.1.1 → 1836.4.1. Direct answer to the user's question of whether F68's
+errors are "just an oversight".
+
+**The design.** `building_motor_industry` is gated on `atmospheric_engine`. GBR holds it at the 1836
+start; **ABU does not** (21 technologies). Three motor industries were planted:
+
+| # | state (region_state) | `add_ownership` | prediction |
+|---|---|---|---|
+| A | `STATE_ABU_DHABI` (ABU) | **`c:GBR`** — advanced FOREIGN owner | rejected |
+| B | `STATE_ABU_DHABI` (ABU) | `c:ABU` | rejected |
+| C | `STATE_HOME_COUNTIES` (GBR) | `c:GBR` | **created** (positive control) |
+
+**Result — all three predictions hold.** Two `must have invented … Atmospheric Engine` lines in the run's
+own window, at `zzz_techgate_probe.txt:4` and `:14` — cases **A and B**. Case **C is silent**.
+
+**And the building is genuinely absent, not merely complained about:**
+
+| | vanilla baseline | probe |
+|---|---|---|
+| GBR `building_motor_industry` | 3 levels | **4 levels** ← C was created |
+| ABU `building_motor_industry` | absent | **absent** ← A and B were not |
+
+⇒ **Three things settled at once.** (1) The rule is **vanilla engine behaviour** — nothing of our mod is
+present in this test. (2) **`add_ownership` is irrelevant**: the GBR-owned block failed identically to the
+ABU-owned one. (3) **The error is not an oversight** — the block is dropped and the building never exists.
+
+**Corroborated independently by the port data.** DEI was seeded 6 stubs and reads **exactly 6 with the
+technology granted, 2–3 in all ten runs without** (1837.1.1, same date both arms). A cosmetic error would
+leave 6 in both.
+
+⚠ **WHY IT LOOKED COSMETIC AT FIRST, AND THE TRAP TO REMEMBER.** F66's engine provisioning wave rebuilds
+many of the rejected ports within the first year, so at 1837 **BIC, ION, MKT, PLY and NSW hold identical
+counts with and without the grants** and only DEI, ORG, TID (and intermittently ABU/SMB/PON) still differ:
+totals 52 granted against a 43.4 mean ungranted, not 52 against 30. **The building is deleted at creation
+and the wave papers over it.** Any test of creation must read close to init, not a year later (F68).
+
+⚠⚠ **IT IS NOT A GENERAL TECHNOLOGY-VIOLATION DETECTOR — BUILDING GATES ONLY.** Vanilla itself ships
+**three** countries whose `activate_production_methods` names a production method their technologies do
+not unlock — AUS, FRA and PRU, all missing `fractional_distillation` for `pm_patent_stills` — and a
+vanilla run throws **zero** `must have invented` lines. So a **PM**-level violation is evidently tolerated
+in silence while a **building**-level one is rejected. Do not read a clean `error.log` as proof that a
+country can run everything its 1836 buildings are told to activate; that is what landmine **L14** is for,
+and it checks both.
+
+**What it does NOT say.** Nothing about *why* the engine uses the state's owner (the mechanism argument
+from the `LACKING_TECHNOLOGY_SINGLE` loc family and the composition of `add_ownership` is in
+MODDING_NOTES, and is inference); nothing about buildings placed by events or by the AI at runtime;
+nothing economic.
