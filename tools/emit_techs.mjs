@@ -426,6 +426,32 @@ function applyAiWeightMult(txt, mult, label) {
   if (!Object.keys(needByTier).length)
     throw new Error('emit_techs: the 1836 map needed no technology grant at all — that cannot be right');
 
+  // ⭐⭐ PER-COUNTRY GRANTS (config `start_tech_grants`) — the one thing the derived rule above CANNOT see.
+  // That derivation reads the VANILLA map (`start_baseline.json`), so a building placed by
+  // `config/start_exceptions.json` is invisible to it: seeding the Netherlands a steam port makes NET own
+  // a building gated on a technology it does not hold, and the only thing that would notice is landmine
+  // L14 — failing the build rather than fixing it. This is where a SEED declares the technology it needs.
+  // ⚠ IT IS EMITTED AS A GUARD INSIDE THE COUNTRY'S OWN STARTING-TIER EFFECT, because that effect is what
+  // vanilla's country history actually calls, with `this` bound to the country. A free-standing block
+  // would be dead code — nothing in vanilla would ever call it.
+  // ⚠⚠ `verify_start_techs.mjs` parses THIS EXACT SHAPE and attributes the grant to the named tag only.
+  // A blanket `add_technology_researched` regex over the tier body would credit EVERY country of that
+  // tier with it — an over-reporting detector, which is precisely the hole L14 exists to close. Emitter
+  // and detector are coupled on this format; change one and the other must follow.
+  const grants = CFG.start_tech_grants || {};
+  const knownTech = new Set(OPT.techs.map(t => t.id));
+  for (const [tag, techs] of Object.entries(grants)) {
+    const st = cTier[tag];
+    if (st == null) throw new Error(`start_tech_grants: ${tag} has no starting technology tier in vanilla history`);
+    for (const id of techs) if (!knownTech.has(id))
+      throw new Error(`start_tech_grants: ${tag} asks for '${id}', which is not a technology in the shipping tree`);
+    const lines = techs.map(id => `\t\tadd_technology_researched = ${id}\n`).join('');
+    const body = `\tif = {\n\t\tlimit = { this = c:${tag} }\n${lines}\t}\n`;
+    const re = new RegExp(`(effect_starting_technology_tier_${st}_tech = \\{\\n)`, 'm');
+    txt = sub(txt, re, `$1${body}`, 1, `per-country grant ${tag}`);
+    out.push(`  ${tag} (starting tier ${st}, per-country): ${techs.join(', ')}`);
+  }
+
   // ⚠ THE STEEL-TOOLING CASE, which is why this rule exists at all. Vanilla gates a steel tooling
   // workshop on `mechanical_tools` — a technology vanilla itself NAMES in the tier-1/2 grant, because its
   // own 1836 map runs buildings the calendar would forbid — so vanilla's great powers run steel tooling and

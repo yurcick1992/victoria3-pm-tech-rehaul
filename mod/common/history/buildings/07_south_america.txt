@@ -119,7 +119,7 @@
 				activate_production_methods={ "default_building_sugar_plantation" "pm_road_carts"  }
 			}
 			create_building={
-				building="building_port"
+				building="building_port_steam"
 				add_ownership={
 					country={
 						country="c:NET"
@@ -127,7 +127,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 		region_state:FRA={

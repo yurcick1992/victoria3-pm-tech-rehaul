@@ -185,11 +185,23 @@ function startSets(root) {
     for (const f of txts(dir)) for (const [k, v] of Object.entries(blocks(read(f)))) {
       const e = v.match(/\bera\s*=\s*era_(\d)/); if (e) techEra[k] = +e[1];
     }
-  const tiers = {};
+  const tiers = {}, condPer = {};
   for (const [k, v] of Object.entries(blocks(read(join(root, 'common/scripted_effects/00_starting_inventions.txt'))))) {
     const m = k.match(/^effect_starting_technology_tier_(\d)_tech$/); if (!m) continue;
-    const set = new Set([...v.matchAll(/add_technology_researched\s*=\s*([a-z_0-9-]+)/g)].map(x => x[1]));
-    for (const e of v.matchAll(/add_era_researched\s*=\s*era_(\d)/g))
+    // ⚠⚠ PULL THE PER-COUNTRY GUARDED GRANTS OUT BEFORE THE BLANKET REGEX. `emit_techs.mjs` writes a
+    // `start_tech_grants` entry as `if = { limit = { this = c:TAG } add_technology_researched = X }`
+    // inside the tier effect, because that effect is what vanilla's country history calls. Counting it
+    // with the unconditional lines would credit EVERY country of that tier with X — a detector that
+    // over-reports what countries hold is a detector that passes the very failure L14 is for.
+    // Emitter and detector are coupled on this exact shape; change one and the other must follow.
+    let body = v;
+    for (const c of v.matchAll(/\tif = \{\n\t\tlimit = \{ this = c:([A-Z_0-9]{2,4}) \}\n([\s\S]*?)\n\t\}/g)) {
+      for (const t of c[2].matchAll(/add_technology_researched\s*=\s*([a-z_0-9-]+)/g))
+        (condPer[c[1]] ||= new Set()).add(t[1]);
+      body = body.replace(c[0], '');
+    }
+    const set = new Set([...body.matchAll(/add_technology_researched\s*=\s*([a-z_0-9-]+)/g)].map(x => x[1]));
+    for (const e of body.matchAll(/add_era_researched\s*=\s*era_(\d)/g))
       for (const [t, era] of Object.entries(techEra)) if (era <= +e[1]) set.add(t);
     tiers[+m[1]] = set;
   }
@@ -202,7 +214,8 @@ function startSets(root) {
       const body = t.slice(m.index, i);
       const e = body.match(/effect_starting_technology_tier_(\d)_tech/); if (!e) continue;
       const extra = [...body.matchAll(/add_technology_researched = ([a-z_0-9-]+)/g)].map(x => x[1]);
-      per[m[1]] = { tier: +e[1], set: new Set([...(tiers[+e[1]] || []), ...extra]) };
+      // ...plus anything a `start_tech_grants` guard hands this tag specifically (see above)
+      per[m[1]] = { tier: +e[1], set: new Set([...(tiers[+e[1]] || []), ...extra, ...(condPer[m[1]] || [])]) };
     }
   }
   if (Object.keys(per).length < 100) { console.error(`REFUSING TO REPORT: only ${Object.keys(per).length} countries parsed`); process.exit(2); }
