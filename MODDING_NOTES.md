@@ -453,6 +453,57 @@ crashes unrecoverable (and note a crash before the first autosave has nothing to
   path is fine and needs no asset. A bad path logs an error and shows a fallback/missing icon;
   it does not crash.
 
+## ⭐⭐ `create_building` IS GATED ON THE STATE OWNER'S TECHNOLOGY — AND FAILS SILENTLY
+
+**Undocumented, measured 2026-08-17 (FINDINGS F68). The single most expensive engine trap this mod has
+hit.**
+
+A `create_building` block in `common/history/buildings` is validated against the **country that owns the
+region_state**, using the building's own `unlocking_technologies`. If that country lacks the technology,
+**the block is dropped and the building never exists.** The build succeeds, the mod loads, the game runs,
+and the only trace is one line in `error.log`:
+
+```
+Error: create_building effect [ … Dutch East Indies … must have invented … The Screw Steamer … ]
+Script location: common/history/buildings/12_indonesia.txt:683
+```
+
+⚠⚠ **`add_ownership` IS NOT CONSULTED.** Naming a technologically advanced overlord as the owner does
+**not** satisfy the check. We seeded 38 steam-port stubs owned by GBR/FRA/NET; the 22 that stood in a
+*subject's* state were all rejected, deterministically — 110 error lines across 22 locations, identical
+in ten runs. Granting the technology to each subject fixes it completely: 0 rejections, 38 of 38 created.
+
+**Why it works this way** (mechanism, from the files):
+
+- The error string is **generic engine validation**, not history-specific:
+  `LACKING_TECHNOLOGY_SINGLE:2 "[Country.GetName] must have invented [Technology.GetName]"`, sitting in
+  a family with `LACKING_IDENTITY_SINGLE` / `LACKING_PRINCIPLE_SINGLE` / … that maps one-to-one onto the
+  `unlocking_*` fields buildings and PMs carry. It is the same "may this country have this thing" check
+  that gates construction and PM selection; `create_building` just runs it at world init.
+- That check needs **one country**, and ownership cannot supply one. `add_ownership` is a *set of
+  shares*, and in vanilla's own 1836 files most shares are not countries: **2 361 `building=`**
+  (financial districts, manor houses) against **898 `country=`** and **21 `company=`** —
+  e.g. `building={ type="building_financial_district" country="c:USA" levels=6 region="STATE_LOUISIANA" }`.
+  The only unambiguous country attached to a building is the state's owner, which is what the error names.
+  *(The loc-family evidence is direct; "therefore the state owner" is inference from it.)*
+
+**⚠ IN-GAME CONSTRUCTION IS NOT GATED THIS WAY.** A country can build in any state its diplomacy allows
+without the local country holding the technology. The history effect is a separate code path with its own
+check. Do not reason from one to the other — that mistake is what produced a wrong ruling here.
+
+**The fix** when a seeded building outruns the local country's tech: declare the technology in the
+config's `start_tech_grants`, which `emit_techs.mjs` emits as a guard inside that country's own starting-
+tier effect (`if = { limit = { this = c:TAG } add_technology_researched = X }`). **Measured to work,
+per country.** Landmine **L14** (`verify_start_techs.mjs`) is the detector; see TESTBED_LANDMINES for the
+two ways it was blinded.
+
+**⚠ IT IS NOT DOCUMENTED ANYWHERE.** The game ships no documentation folder; the wiki's effect tables are
+generated from the engine's script-doc dump, which gives signature and scope only and never validation
+semantics (`create_building` does not appear there at all). The one in-game statement of the rule is the
+error tooltip above — a UI template, not documentation — in a log nobody reads by default.
+
+---
+
 ## Game-start conversion (the 1836 "savegame")
 
 The 1836 start is **generated from `common/history/buildings/*.txt`** (16 regional files) — there
