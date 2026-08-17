@@ -1,0 +1,22 @@
+{
+  "schedule_version": 1,
+  "schedule_note": "Q1-ONLY BY DESIGN. See _why — the second question was dropped from this probe on purpose, not forgotten.",
+  "label": "grants-probe-n1",
+  "_why": "ONE DETERMINISTIC QUESTION: ARE THE SUBJECT TECH GRANTS NEEDED AT ALL? (planned 2026-08-17, to run after anchorage-netseed-n1.)\n\nUser ruling: they are not, because a seeded port belongs to the OVERLORD's government rather than to the state's own country. That contradicts what I inferred earlier — that the engine gates `create_building` on the state's own country holding the technology — but that inference was drawn when the ports were CONVERSIONS of a locally-owned anchorage. They are now CREATED with explicit overlord government ownership, which is a different object, so the earlier finding may simply not carry. This probe settles it.\n\nTHE TEST IS THE 1836 BOOT DUMP AND NOTHING ELSE. The `building_inventory` metric fires at 1836.1.8, eight in-game days in, so the run needs about four minutes of wall clock. One arm suffices: the WITH-GRANTS answer is already measured — anchorage-netseed-n1 shows all 40 `building_port_steam` stubs present — so this run only has to answer whether they survive WITHOUT the fourteen subject grants.\n\nREAD: (a) the count of `building_port_steam` at the 1836.1.8 boot dump. **40 = the grants are unnecessary and get deleted.** Fewer, and the grants are load-bearing: name which states lost theirs, because that also identifies exactly which countries genuinely need one. (b) as a control that nothing else moved, `building_shipyard_metal` 3, `building_steel_mill` 15, `building_motor_industry` 11 and the anchorages still present beside the stubs.\n\n⚠⚠ THE SECOND QUESTION — DID THE GRANTS CAUSE THE OWNER-LINK FLOOD? — IS DELIBERATELY NOT TESTED HERE, AND THE REASON IS THAT IT CANNOT BE, CHEAPLY. In anchorage-netseed-n1 all 18,723 errors fall in ELEVEN MONTHS, 1842.2 to 1843.1, bracketing the East India Company's war with the Khalsa Raj (play 1842.3.4, WARSTART 1842.6.12); BIC is one of the granted countries. But WARS ARE HIGHLY STOCHASTIC (user, 2026-08-17): of the wars not already running at 1836.1.1, only the Mexican-American and the Opium wars are at all reliable, so a BIC/Khalsa war in the 1840s cannot be counted on. A probe that waits for it would read zero in both arms on most seeds and prove nothing — and an earlier draft of THIS file ran only to 1841, which is before the errors even began, so it would have produced a confident null that meant nothing at all.\n\nSO Q2 IS ANSWERED THE CHEAP WAY: if Q1 says the grants are unnecessary they are deleted, and their culpability becomes moot. If a later century run STILL floods with no grants present, the war gate in `emit_research_events.mjs` is the culprit and is investigated on its own terms. If Q1 says the grants are needed, then and only then does Q2 need a deliberate design — most likely a scripted war rather than a hoped-for one.",
+  "_arms": "nogrants = {kind: config, config: config/mod_config.nogrants.json} — the canonical config with `start_tech_grants` cut from 17 countries to the three market leaders (GBR/FRA/NET), who own the created buildings. NOT committed (config/mod_config.*.json is gitignored); regenerate by taking config/mod_config.json, keeping only those three keys in start_tech_grants, and copying tech_tree_options/era_prices/era_presets to the matching .nogrants names.",
+  "_comparison": "anchorage-netseed-n1 (20260817_155024) is the WITH-GRANTS arm, already measured: 40 port_steam / 6 shipyard_metal / 15 steel_mill / 11 motor_industry at its 1836.1.8 boot dump, anchorages retained beside the stubs.",
+  "_cost": "1 run × 1 in-game year, ~4 minutes.",
+  "_caveats": "⚠ The whole answer is in the 1836.1.8 boot dump; the run continues to 1837 only so the harness has a clean self-quit rather than a watchdog kill. ⚠ Do not read anything else from this run — one year is far too short for any economic reading, and it carries no wide sweep. ⚠ L19: check no orphaned victoria3.exe before launching; a live game from a previous batch makes the next run fail in about 20 seconds with a single-line log and a misleading `SCHEDULE DONE`.",
+  "defaults": {
+    "metrics": ["building_inventory"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 20,
+    "tags": ["GBR", "FRA", "NET"]
+  },
+  "setups": {
+    "nogrants": { "kind": "config", "config": "config/mod_config.nogrants.json" }
+  },
+  "runs": [
+    { "setup": "nogrants", "until": "1837.1.1", "dump_dates": ["1836.2.1"] }
+  ]
+}
