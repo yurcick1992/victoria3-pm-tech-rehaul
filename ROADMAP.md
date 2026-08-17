@@ -1126,3 +1126,79 @@ is a site-specific megaproject — exactly what this step builds it as.
 - Fix the era band dividers in the tech tree GUI (step 1's known cosmetic debt).
 - Proofread every new technology name and description.
 - Release.
+
+---
+
+## The war research channel — RULED (user, 2026-08-17): rebuild it on option 3
+
+**Status: SPECIFIED, NOT IMPLEMENTED.** The war half of the research events (40 of 126 technologies)
+is currently **inert** — its gate can never pass — and pours ~18,720 error lines into every run.
+Root cause in BUGS_AND_FIXES (2026-08-17): **`ROOT` is not a valid scope inside a
+`scripted_progress_bar`**, and the gate is written there.
+
+### Why the obvious fixes were rejected
+
+The bar can evaluate any COUNTRY-scoped trigger (`is_at_war`, `pmr_mob_share`, `any_enemy_in_war`,
+`any_scope_general`). It cannot evaluate anything that needs **us** as a target — `owner = ROOT`,
+`is_at_war_with = ROOT`, `num_front_casualties = { target = root }`. That single limit rules out the
+front restriction, casualty gating, and — decisively — **binding the enemy who holds the technology to
+the war our general is actually fighting in**.
+
+⚠⚠ **THAT BINDING IS ALREADY BROKEN TODAY, INDEPENDENTLY OF THE ROOT BUG.** The emitted gate ANDs two
+uncoupled clauses: *some* war has *some* front with a big general of ours, AND *some* enemy in *some*
+war has the technology. **GBR at war with both the USA and the Qing learns a US technology by fighting
+in China.** (User, 2026-08-17.) No fix that stays inside the bar can close this.
+
+### The ruled design
+
+Compute the gate where ROOT is valid, store the answer on the country, let the bar read it. **Nothing
+structural changes** — still three journal entries per technology sharing one progress bar.
+
+1. **`on_monthly_pulse_country`** (country scope, ROOT valid) evaluates the real gate:
+   iterate `any_scope_war`; within ONE war require both our qualifying general on one of *its* fronts
+   **and** an enemy *of that war* holding the technology — the two clauses bound to the same war, which
+   is the whole point. `any_participant` is the war-scoped iterator; enemies are separated from
+   co-belligerents with `is_at_war_with = ROOT`, which is legal here and illegal in the bar.
+2. It sets a per-technology country variable, e.g. `pmr_wargate_<tech>`, **with an expiry** (`days`)
+   slightly over the pulse interval, so the flag lapses by itself and needs no clearing pass.
+3. The bar's war term becomes `has_variable = pmr_wargate_<tech>` — country-scoped, no back-reference.
+
+### Accepted approximation
+
+`on_monthly_pulse_country` is the **finest country pulse vanilla has** (verified). War bars tick
+`weekly_progress`, so the gate is re-evaluated monthly against weekly accrual: ~6 checks over a 26-week
+bar, and a war ending mid-month leaks at most 3 weeks of progress. **Accepted deliberately**; the
+alternative is moving war bars to `monthly_progress`, which changes the mechanic's pacing.
+
+### ⚠ The cost this must be designed against — L3 and L4
+
+40 technologies × a war/front/general sweep per country per month is exactly landmine **L3** (a scope
+bounded today and unbounded by 1900) and **L4** (heavy sweeps in one tick). It must be **one pass that
+sets all applicable flags**, not forty passes: iterate wars once, and only when the general clause holds
+for that war, test which of the covered technologies its enemies hold. Most countries are at peace and
+exit on `is_at_war = yes` immediately.
+
+### Optional, once the scope is available
+
+With ROOT valid, `num_front_casualties = { target = root }` becomes expressible, giving front
+restriction and a "has actually bled" test in one trigger. ⚠ It is **not battle-only** — the loc reads
+*"Total number of [Country] casualties at [Front]"*, a location filter and not a cause filter, and the
+engine exposes **no** counter splitting battle from attrition (only modifiers, and the boolean
+`has_high_attrition`). Do not promise a battle/attrition split; it does not exist in script.
+
+### Verification, two stages
+
+1. **Any short run:** the 18,720 `link 'owner'` errors go to **0**. Needs no war — they fire on every
+   evaluation regardless.
+2. **A run reaching a dependable war** (Opium 1839–42, Mexican–American 1846 — the two that are not
+   stochastic): confirms the gate actually *passes* and bars fill. The emitter logs
+   `PMR_JE|<stage>|<tech>|<country>` on completion, so firings are directly countable.
+   ⚠ This gate has overshot in **both** directions — session 20260812_010659 measured military taking
+   70% of all completions with micro-states firing it, and it is now never-true. Stage 2 matters more
+   than usual.
+
+### The fallback, if this is ever descoped
+
+`war_gate.require_front: false` in the config already emits `any_scope_general = { … }` with no ROOT —
+a config-only change that stops the errors and makes the gate function, while leaving the cross-war
+leak in place. It is strictly worse than the design above and is recorded only as the cheap escape.
