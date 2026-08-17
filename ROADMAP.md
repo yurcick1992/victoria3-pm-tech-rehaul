@@ -248,7 +248,9 @@ and should be stated rather than discovered.
 **4 & 5. THE LADDER IS RE-BANDED, SEVEN RUNGS DROPPED AND FIFTEEN ADDED — BUILT 2026-08-12.**
 The provisional tables that stood here (five new era-1 technologies, eight new rungs) are **superseded
 by what was actually authored**; both were earlier iterations that did not survive the arithmetic. The
-ladder now runs **106 tiers over 22 industries — 11 / 17 / 19 / 21 / 21 / 17 per era**, with one rung per
+ladder now runs **105 tiers over 22 industries — 11 / 17 / 19 / 21 / 21 / 16 per era** (the re-band
+authored 106; one invented e5 rung was dropped in a later pass — `build_era_ladder.mjs`'s own summary
+line is the authority), with one rung per
 era per industry, no interior gaps, and every tier's `tech_year` inside its era's band. Bold = new rung:
 
 | industry | e0 | e1 | e2 | e3 | e4 | e5 |
@@ -381,9 +383,10 @@ built*, or batch A and batch B stop being comparable and both nights of game tim
 ## Step 2 — INDUSTRY-DRIVEN RESEARCH EVENTS  ⬅ **BUILT 2026-08-12, first batch running**
 
 **Status: emitted, lint-clean, smoke-tested, and under measurement.** `tools/emit_research_events.mjs`
-turns the config's `research_events` block into **366 journal entries over 122 technologies** (82
-industry-gated, 40 war-gated) — 122 scripted progress bars, 115 script values, 1103 loc keys in 11
-languages. `enabled: false` emits nothing and reproduces the plain `techs` arm, which is what makes the
+turns the config's `research_events` block into **378 journal entries over 126 technologies** (86
+industry-gated, 40 war-gated) — 126 scripted progress bars, 133 script values, ~1,265 loc keys in 11
+languages (the counts moved with the ladder-era alignment; the original 2026-08-12 emission was
+366/122/115/1103). `enabled: false` emits nothing and reproduces the plain `techs` arm, which is what makes the
 two a **config variant** rather than a build flag (user ruling 2026-08-11).
 Every engine fact it stands on was measured in five probe runs on 2026-08-11/12 rather than assumed —
 `can_research` semantics, journal-entry auto-activation reaching every country, occupancy as a weight,
@@ -567,12 +570,16 @@ vanilla's 57 does. Our technologies need **authored** `ai_weight`s, not vanilla'
 
 ---
 
-## Step 3 — BUILDING COSTS, THEN THE FIRST REAL BUILD
+## Step 3 — BUILDING COSTS, THEN THE FIRST REAL BUILD  ✅ **RULED AND SHIPPED (2026-08-17)**
 
 Decide each tier's `building_cost` (construction points) under the new tech gating, then build the mod
-for real: solved recipes + new technologies + the step-2 events. `tools/solve_building_cost.ps1` holds
-the current 10-year-payback model (BALANCE_FRAMEWORK §9); whether that model survives contact with a
-tech-gated ladder is part of this step.
+for real: solved recipes + new technologies + the step-2 events. **Resolved through three rulings**: the
+§9 ten-year-payback model (its assumed 20% return was 3–6× off the realised margins) → §10.57's
+two-band × 1.5^(era−1) vanilla-anchored ladder (2026-08-13) → **§10.61's EXACTLY-VANILLA FLAT book
+(2026-08-17, canonical)**: each tier costs its industry's vanilla anchor, flat, × workforce_mult on the
+graded ports — the exponential ladder was double jeopardy, since constructing the next tier at all IS
+the modernisation cost. `payback_census.mjs --rule --write` owns the book; `solve_building_cost.ps1`
+remains legacy documentation of the §9 model.
 
 ---
 
@@ -805,8 +812,9 @@ tier's. The user's stated purpose is to see whether the mechanism moves tech and
 rarely — do not "fix" the thresholds without asking.
 
 ### What shipped, and where it lives
-- **`tools/emit_research_events.mjs`** — 122 technologies → 366 journal entries, 122 scripted progress
-  bars, 115 script values, 1225 loc keys × 11 languages. Wired into `build.ps1`, throws on failure.
+- **`tools/emit_research_events.mjs`** — 126 technologies → 378 journal entries, 126 scripted progress
+  bars, 133 script values, ~1,265 loc keys × 11 languages (was 122/366/115 at the 2026-08-12 first
+  emission; the counts track the ladder). Wired into `build.ps1`, throws on failure.
 - **`research_events` in `config/mod_config.json`** — `enabled:false` emits nothing and reproduces the
   plain `techs` arm, which is what makes the two a **config variant** rather than a build flag.
   ⚠ **The canonical config now carries `enabled: true`**, so a default build ships the events. If the
