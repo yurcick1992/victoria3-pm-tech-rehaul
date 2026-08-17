@@ -4667,6 +4667,12 @@ now**; a 3-seed ensemble would settle it.
 
 ## 10.57 BUILDING COST — TWO BANDS OFF VANILLA'S OWN COST BOOK (user-ruled 2026-08-13)
 
+⚠⚠ **SUPERSEDED BY §10.61 (user-ruled 2026-08-17): the cost book is now EXACTLY VANILLA, FLAT** — no
+band, no era exponent, ports × workforce_mult. The exponential ladder below was rejected as **double
+jeopardy**: having to construct the next tier at all is already the modernisation cost, and 1.5^era
+priced the same thing twice. This section is kept for the rule's history and the census that produced
+it; the named-exception table below is retired with it.
+
 **The rule, in full:**
 ```
 building_cost (points) = VANILLA's required_construction × band × 1.5^(era − 1)
@@ -4996,9 +5002,9 @@ obscure divisor coefficient behind the scenes. What shipped instead:
 
 ⚠ **THREE REGENERATION TRAPS the explicit-value architecture creates** (each a tool that would silently
 un-divide the ports on its next `--write`):
-1. **`payback_census.mjs --write`** derives building_cost from vanilla's book × band × 1.5^(era−1) —
-   full-size. It must learn to multiply a factored tier's derived cost by workforce_mult before it is
-   next run, or it overwrites 27/40/60/180/270 with 265/400/600/900/1350.
+1. **`payback_census.mjs --write`** — ✅ **CLOSED by §10.61 (2026-08-17)**: the flat-vanilla rule
+   multiplies by the tier's own `workforce_mult`, so a `--write` now PRODUCES the divided port book
+   (40/40/40/80/80) instead of un-dividing it.
 2. **`build_era_ladder.mjs --write`** re-mints the two invented port tiers (steam, motor) along the ×1.5
    ladder from anchored neighbours. Because the anchors are themselves divided, the interpolation lands
    ≈right (steam ~1.35 vs 1.4, motor 9 vs 9.2) — approximately safe, but verify after any ladder rebuild.
@@ -5091,3 +5097,58 @@ keep the 2–8yr lag — pre-assigning them would override vanilla's archetype c
 behaviour change we do not want. ⚠ An owned history file freezes against patches — ON_GAME_UPDATE
 entry when implemented. Only relevant if the conditional machinery ships (parked until after
 ×1/10), but the design is recorded because any future conditional-strategy work needs it.
+
+## 10.61 THE FLAT VANILLA COST BOOK (user-ruled 2026-08-17 — supersedes §10.57)
+
+**The rule, in full:**
+```
+building_cost (points) = VANILLA's required_construction for the industry's anchor building
+                         × the tier's workforce_mult where set (§10.60 graded ports: ×0.1 / ×0.2)
+```
+**Flat across tiers — no band, no era exponent, no named exceptions.** The whole book is four lines:
+400 (power, art_academy) · 40/40/40/80/80 (port, = 400 × its multipliers) · 600 (food, textile,
+furniture, glass, tooling, paper, shipyard, shipyard_steam, arms, artillery) · 800 (fertilizer,
+explosives, steel, motor, automotive, munition, synthetics, electrics, railway).
+
+**Why the exponential ladder died — DOUBLE JEOPARDY (the user's word).** The tier split's whole point
+is that modernising is not a free toggle: reaching the next rung means constructing an entire new
+building at full price. That IS the era cost. §10.57's ×1.5^(era−1) charged a second, compounding
+premium on top of it — and the ×2 band a third — so the late game was over-priced twice over for the
+same design goal. An era's premium is now exactly vanilla's own (none); eras are priced by what their
+recipes eat and the research it takes to unlock them.
+
+**Lineage.** The ruling was first made for the parity restart (HANDOVER 2026-08-16 §1b: "×1.0 flat
+vanilla anchors (exactly vanilla cost book)") and ran as the `vancost_nosub` arm's config; it never
+landed in the canonical config until the user caught the UI still showing the exponential book
+(2026-08-17) — the UI was faithfully displaying a config the ruling had missed.
+
+**Implementation.** `tools/payback_census.mjs --rule --write` implements it (the anchor read LIVE from
+vanilla's `required_construction`, config `building.required_construction` as the fallback for chains
+with no vanilla anchor — and the three clone industries now carry that field explicitly: power/port
+`construction_cost_medium`, railway `construction_cost_very_high`). ⭐ **The graded ports ride
+`workforce_mult`, which CLOSES §10.60.2's regeneration trap** — a `--write` can no longer un-divide
+the port book, because the division is the rule itself. The UI's `buildingCostModel` hint
+(builder.html) mirrors the same rule off the config's own anchor classes. Written 2026-08-17:
+105 tiers, 96 changed.
+
+**Accepted consequence: payback spreads wider and the check changes meaning.** §10.57 aimed the
+dominant-rung median at ~11.5y in every era; the flat book delivers medians of 9.9 / 9.1 / 4.5 /
+3.8 / 2.3 / 1.2 across the six eras (capital-weighted era-5 tiers pay back in about a year — they
+earn late-era margins against an 1836 price). That is the ruling's intent, not a defect: the ten-year
+figure was a §10.57-era check, and re-fitting costs to restore it would reintroduce exactly the
+premium the ruling removed. K/GDP now reads 1.4–2.2 across eras (was rising to ~3+ late).
+
+## 10.62 PER-TREE AI RESEARCH WEIGHT — DEFAULT 1, CONFIG-BACKED (user-ruled 2026-08-17)
+
+The hardcoded society ai_weight ×0.8 (ruled 2026-08-11 to damp society against spread rushing it) is
+**superseded**: the knob is now `tech_ai_weight_mult` in the config — {production, military, society},
+**default 1 for every tree** ("no bonus or malus for all trees, I think the JEs may be boost enough").
+At 1 a tree emits NOTHING, so at the defaults the mod stops owning `30_society.txt` entirely — one
+fewer frozen vanilla file. A tree set ≠1 gets `multiply` appended last inside every vanilla
+technology's ai_weight in that tree's file (preserving vanilla's own conditional weights; a technology
+with no ai_weight block gets `value = <mult>` inserted, since the engine default weight is 1), and the
+mod's own new technologies in that tree carry the multiplier as their flat weight.
+**Surface**: the row lives beside the tech page's spread panel — the one EMITTED row in that panel —
+round-tripped to the parent sheet over postMessage because the config write path (Export / Build now)
+lives there. Implemented in `emit_techs.mjs` (AIW), sections 2/2b/3 generalized so all three trees
+have an emission path (the 2b lesson: a change routed at a tree with no path is silently dropped).

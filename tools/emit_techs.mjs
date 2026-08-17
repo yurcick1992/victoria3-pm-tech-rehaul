@@ -16,9 +16,12 @@
 //     gfx/interface/icons/invention_icons/zzz_pm_rehaul_placeholder.dds
 //     localization/<lang>/replace/zzz_pm_rehaul_tech_l_<lang>.yml
 //   WHOLE-FILE, REGENERATED FROM VANILLA EACH BUILD (so a patch flows through, nothing is frozen)
-//     common/technology/technologies/10_production.txt  — era moves + one prerequisite swap
-//     common/technology/technologies/20_military.txt    — era moves (only when there are any)
-//     common/technology/technologies/30_society.txt     — ai_weight x0.8 on every society technology
+//     common/technology/technologies/10_production.txt  — era moves + one prerequisite swap (+ ai_weight
+//                                                         multiplier, only when the config sets one ≠ 1)
+//     common/technology/technologies/20_military.txt    — era moves / ai_weight mult (only when any)
+//     common/technology/technologies/30_society.txt     — era moves / ai_weight mult (only when any —
+//                                                         NOT OWNED at the default 1; the hardcoded
+//                                                         society ×0.8 died 2026-08-17, see AIW below)
 //     common/scripted_effects/00_starting_inventions.txt— the 1836 grant, DERIVED from the 1836 map
 //   NOT WRITTEN AT ALL
 //     common/static_modifiers/*  — tech spread is exactly vanilla (user ruling 2026-08-12)
@@ -105,7 +108,19 @@ const AHEAD_OF_TIME = 0.25;        // NTechnology.TECH_AHEAD_OF_TIME_PENALTY_FAC
 // ⚠ AND WITH IT WE STOP OWNING `00_code_static_modifiers.txt`. That one line was the only difference
 // from vanilla in a 900-line file, and the repo's rule is that a file we would copy verbatim is not
 // emitted: owning it freezes that file against the next patch and ships bytes we did not author.
-const SOCIETY_AI_WEIGHT = 0.8;     // user ruling 2026-08-11 — damp society so spread does not rush it
+// ⭐ PER-TREE AI RESEARCH-WEIGHT MULTIPLIERS — config-backed, DEFAULT 1 FOR ALL TREES (user-ruled
+// 2026-08-17): the research journal entries are boost enough, so no tree is damped or favoured by
+// default. A tree at 1 emits NOTHING for this knob — at the defaults we stop owning 30_society.txt
+// entirely. Set `tech_ai_weight_mult` in the config ({production, military, society}) and the
+// multiplier is appended inside every vanilla technology's ai_weight in that tree's file, and becomes
+// the flat weight of OUR new technologies in that tree. Displayed beside the spread panel on the
+// tech-tree page. Replaces the hardcoded SOCIETY_AI_WEIGHT = 0.8 (2026-08-11 ruling, superseded).
+const AIW = Object.assign({ production: 1, military: 1, society: 1 }, CFG.tech_ai_weight_mult || {});
+delete AIW._comment;
+for (const [k, v] of Object.entries(AIW)) {
+  if (!['production', 'military', 'society'].includes(k)) throw new Error(`tech_ai_weight_mult: unknown tree '${k}'`);
+  if (!(typeof v === 'number' && v > 0)) throw new Error(`tech_ai_weight_mult.${k} = ${v} — must be a positive number`);
+}
 // ⭐ WHERE VANILLA MANDATES A TECHNOLOGY ONE BY ONE, WE REPEAT IT AND ADD NOTHING (user ruling
 // 2026-08-12). Read LIVE from vanilla's own starting-inventions file rather than listed here, so a patch
 // that adds or drops a named grant flows straight through — and so we can never re-grant something
@@ -166,15 +181,50 @@ const NEWT = OPT.techs.filter(t => t.origin === 'new');
       L.push('\t}');
     }
     L.push('\tai_weight = {');
-    L.push(`\t\tvalue = ${t.category === 'society' ? SOCIETY_AI_WEIGHT : 1}`);
+    L.push(`\t\tvalue = ${AIW[t.category] ?? 1}`);
     L.push('\t}');
     L.push('}', '');
   }
   write('common/technology/technologies/zzz_pm_rehaul_techs.txt', L.join('\n'));
 }
 
+// Append `multiply = <mult>` inside every technology's ai_weight in a vanilla tree file — multiplied,
+// not overwritten: vanilla authored real relative weights (2 and 3 on the techs it wants the AI to
+// rush) and flattening them to a constant would throw that away. `multiply` lands LAST, after the
+// conditional `add`s. A technology with NO ai_weight block at all gets `ai_weight = { value = <mult> }`
+// (the engine default weight is 1, so value = mult is the same damping) — society techs happen to
+// always carry one, but production and military do not, and this serves all three trees.
+function applyAiWeightMult(txt, mult, label) {
+  const starts = [...txt.matchAll(/^([a-z_0-9-]+) = \{$/gm)].map(m => ({ id: m[1], at: m.index }));
+  let done = 0;
+  for (let i = starts.length - 1; i >= 0; i--) {          // backwards, so earlier offsets stay valid
+    const from = starts[i].at, to = i + 1 < starts.length ? starts[i + 1].at : txt.length;
+    let block = txt.slice(from, to);
+    const aw = block.indexOf('\tai_weight = {');
+    if (aw < 0) {
+      const close = block.lastIndexOf('\n}');             // column-0 close = the technology's own brace
+      if (close < 0) throw new Error(`emit_techs: cannot find the closing brace of ${label} technology ${starts[i].id}`);
+      block = block.slice(0, close) + `\n\tai_weight = {\n\t\tvalue = ${mult}\n\t}` + block.slice(close);
+    } else {
+      // brace-match from the opening of ai_weight to its close
+      let d = 0, end = -1;
+      for (let k = aw; k < block.length; k++) {
+        if (block[k] === '{') d++;
+        else if (block[k] === '}') { d--; if (d === 0) { end = k; break; } }
+      }
+      if (end < 0) throw new Error(`emit_techs: unbalanced ai_weight in ${label} technology ${starts[i].id}`);
+      block = block.slice(0, end) + `\n\t\tmultiply = ${mult}\n\t` + block.slice(end);
+    }
+    txt = txt.slice(0, from) + block + txt.slice(to);
+    done++;
+  }
+  if (done !== starts.length) throw new Error(`emit_techs: multiplied ${done} of ${starts.length} ${label} technologies`);
+  console.log(`  ${label} ai_weight ×${mult} applied to ${done} technologies`);
+  return txt;
+}
+
 // ===================================================================================================
-// 2. VANILLA PRODUCTION FILE — era moves and one prerequisite swap
+// 2. VANILLA PRODUCTION FILE — era moves, one prerequisite swap, ai_weight mult when set
 // ===================================================================================================
 {
   let txt = vanilla('common/technology/technologies/10_production.txt');
@@ -193,6 +243,7 @@ const NEWT = OPT.techs.filter(t => t.origin === 'new');
   // `aniline` moved to era 2 and can no longer wait on `rubber_mastication`, which is era 3.
   txt = sub(txt, /(^aniline = \{[\s\S]*?unlocking_technologies = \{)[^}]*(\})/m,
     '$1\n\t\tchemical_bleaching\n\t$2', 1, 'aniline prerequisite swap');
+  if (AIW.production !== 1) txt = applyAiWeightMult(txt, AIW.production, 'production');
   write('common/technology/technologies/10_production.txt', txt);
 }
 
@@ -210,45 +261,38 @@ const NEWT = OPT.techs.filter(t => t.origin === 'new');
 // pattern look identical.
 {
   const moves = OPT.techs.filter(t => t.reEra && t.category === 'military' && t.origin === 'vanilla');
-  if (moves.length) {
+  if (moves.length || AIW.military !== 1) {
     let txt = vanilla('common/technology/technologies/20_military.txt');
     for (const t of moves) {
       const re = new RegExp(`(^${t.id} = \\{[\\s\\S]*?\\n\\tera = era_)\\d`, 'm');
       txt = sub(txt, re, `$1${t.era}`, 1, `re-era ${t.id} -> era ${t.era}`);
     }
+    if (AIW.military !== 1) txt = applyAiWeightMult(txt, AIW.military, 'military');
     write('common/technology/technologies/20_military.txt', txt);
   }
 }
 
 // ===================================================================================================
-// 3. VANILLA SOCIETY FILE — ai_weight x0.8 on every technology
+// 3. VANILLA SOCIETY FILE — era moves / ai_weight mult (only when there are any)
 // ===================================================================================================
-// Multiplied, not overwritten: vanilla authored real relative weights (2 and 3 on the techs it wants
-// the AI to prioritise) and flattening them to a constant would throw that away. `multiply` is appended
-// last so it applies to whatever the conditional `add`s produced.
+// Mirrors 2b, for the same reason 2b exists: a change routed at a tree with no emission path would be
+// written into the spec, drawn by the viewer, and silently dropped on the way to the mod. At the
+// default tech_ai_weight_mult.society = 1 with no society era moves this file is NOT OWNED at all —
+// the hardcoded ×0.8 damping (2026-08-11) was superseded 2026-08-17: no tree is damped by default,
+// the research journal entries being boost enough.
 {
-  let txt = vanilla('common/technology/technologies/30_society.txt');
-  const starts = [...txt.matchAll(/^([a-z_0-9-]+) = \{$/gm)].map(m => ({ id: m[1], at: m.index }));
-  let done = 0;
-  for (let i = starts.length - 1; i >= 0; i--) {          // backwards, so earlier offsets stay valid
-    const from = starts[i].at, to = i + 1 < starts.length ? starts[i + 1].at : txt.length;
-    const block = txt.slice(from, to);
-    const aw = block.indexOf('\tai_weight = {');
-    if (aw < 0) throw new Error(`emit_techs: society technology ${starts[i].id} has no ai_weight block`);
-    // brace-match from the opening of ai_weight to its close
-    let d = 0, end = -1;
-    for (let k = aw; k < block.length; k++) {
-      if (block[k] === '{') d++;
-      else if (block[k] === '}') { d--; if (d === 0) { end = k; break; } }
+  const moves = OPT.techs.filter(t => t.reEra && t.category === 'society' && t.origin === 'vanilla');
+  if (moves.length || AIW.society !== 1) {
+    let txt = vanilla('common/technology/technologies/30_society.txt');
+    for (const t of moves) {
+      const re = new RegExp(`(^${t.id} = \\{[\\s\\S]*?\\n\\tera = era_)\\d`, 'm');
+      txt = sub(txt, re, `$1${t.era}`, 1, `re-era ${t.id} -> era ${t.era}`);
     }
-    if (end < 0) throw new Error(`emit_techs: unbalanced ai_weight in society technology ${starts[i].id}`);
-    const patched = block.slice(0, end) + `\n\t\tmultiply = ${SOCIETY_AI_WEIGHT}\n\t` + block.slice(end);
-    txt = txt.slice(0, from) + patched + txt.slice(to);
-    done++;
+    if (AIW.society !== 1) txt = applyAiWeightMult(txt, AIW.society, 'society');
+    write('common/technology/technologies/30_society.txt', txt);
+  } else {
+    console.log('  society file not owned — no era moves and tech_ai_weight_mult.society = 1 (vanilla)');
   }
-  if (done !== starts.length) throw new Error(`emit_techs: damped ${done} of ${starts.length} society technologies`);
-  console.log(`  society ai_weight x${SOCIETY_AI_WEIGHT} applied to ${done} technologies`);
-  write('common/technology/technologies/30_society.txt', txt);
 }
 
 // ===================================================================================================

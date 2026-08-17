@@ -123,9 +123,24 @@ svg#edges path{fill:none;stroke-width:1.4}
       <button class="tab" id="sGlobal" style="padding:3px 8px" title="MEASURED AND REJECTED: raising the flat and literacy terms for every tree hands 69% of the society tree to a laggard against vanilla's 44%.">global 50/100</button>
       <button class="tab" id="sProd" style="padding:3px 8px" title="What the mod shipped until 2026-08-12. Kept as an experiment, not a setting.">production-only +50%</button>
     </div>
+    <div class="srow" style="margin-top:6px">
+      <span title="config tech_ai_weight_mult — UNLIKE everything else in this panel, this row is a real
+        SETTING and is EMITTED: the multiplier is appended inside every vanilla technology's ai_weight in
+        that tree's file (and becomes the flat weight of the mod's new technologies there), tilting how
+        eagerly the AI researches the tree. Default 1 for all trees (user-ruled 2026-08-17): no bonus or
+        malus — the research journal entries are boost enough. At 1, nothing is emitted for the tree.
+        The society tree shipped ×0.8 from 2026-08-11 until this ruling.">AI research weight ×
+        <b style="color:var(--ink)">(emitted)</b></span>
+      prod <input id="aiwProd" type="number" step="0.05" min="0.05" value="1"><span class="vn">default 1</span>
+      mil <input id="aiwMil" type="number" step="0.05" min="0.05" value="1"><span class="vn">default 1</span>
+      soc <input id="aiwSoc" type="number" step="0.05" min="0.05" value="1"><span class="vn">default 1</span>
+      <span class="vn" id="aiwNote"></span>
+    </div>
     <div id="sOut"></div>
-    <p class="snote"><b style="color:var(--tier)">THE MOD SHIPS NO SPREAD CHANGE AT ALL</b> — every field
-      above is at vanilla, and this panel is an instrument for asking the question, not a setting. A
+    <p class="snote"><b style="color:var(--tier)">THE MOD SHIPS NO SPREAD CHANGE AT ALL</b> — every
+      spread field above is at vanilla, and those fields are an instrument for asking the question, not
+      a setting. The one exception is marked: the <b>AI research weight</b> row is config-backed and
+      emitted (default 1 = nothing). A
       per-tree boost shipped (production 0.5) until <b>2026-08-12</b>, when it was removed by ruling: the
       deeper production tree is already compensated by the <b>research journal entries</b>, so the boost
       was paying twice for the same depth. And it pays on the one lever that works <em>against</em> the
@@ -211,6 +226,34 @@ const setSpread = (f, l, mp, mm, ms) => {
 $('#sReset').onclick  = () => setSpread(25, 75, 0, 0, 0);
 $('#sGlobal').onclick = () => setSpread(50, 100, 0, 0, 0);
 $('#sProd').onclick   = () => setSpread(25, 75, 0.5, 0, 0);
+
+// ---- AI research weight (config tech_ai_weight_mult) — the one EMITTED row in this panel ---------
+// The config's write path lives in the PARENT page (builder.html: Export / Build now), so the values
+// round-trip over postMessage: on load we ask the parent for the current config values; an edit here is
+// sent back and the parent carries it into the next export/build. Opened truly STANDALONE (no parent
+// frame — e.g. ui/techtree.html straight off the filesystem) the row is read-only at its defaults,
+// with a note saying where to edit; the embedded copy inside the balance UI (served OR snapshot) is
+// the live one.
+{
+  const ids = { production: 'aiwProd', military: 'aiwMil', society: 'aiwSoc' };
+  const embedded = (() => { try { return window.parent && window.parent !== window; } catch (e) { return false; } })();
+  if (embedded) {
+    window.addEventListener('message', e => {
+      const v = e.data && e.data.pmrAiWeightIs;
+      if (!v) return;
+      for (const k in ids) if (v[k] != null) $('#' + ids[k]).value = +v[k];
+    });
+    window.parent.postMessage({ pmrWantAiWeight: 1 }, '*');
+    for (const k in ids) $('#' + ids[k]).oninput = () => {
+      const out = {}; for (const j in ids) out[j] = Math.max(0.05, +$('#' + ids[j]).value || 1);
+      window.parent.postMessage({ pmrAiWeight: out }, '*');
+      $('#aiwNote').textContent = 'sent to the sheet — carried into Export / Build now';
+    };
+  } else {
+    for (const k in ids) $('#' + ids[k]).disabled = true;
+    $('#aiwNote').textContent = 'read-only standalone — edit via the balance UI (config tech_ai_weight_mult)';
+  }
+}
 
 function spread() {
   const o = D.options[optIx];

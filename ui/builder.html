@@ -725,12 +725,12 @@ const IND = window.PMDATA.config.industries.filter(i => !i.disabled).map(i => ({
   _open:false,    // fold state, preserved across re-render
   tiers:makeTiers(i)
 }));
-// building-cost model — mirrors tools/solve_building_cost.ps1 (that solver is authoritative).
 // £/point = construction sector iron PM: £3600/wk goods ÷ 5 pts/wk = 720 (0 efficiency bonus).
 // NOTE: poundPerPoint is STATIC here and may go STALE on a game update if Paradox changes the
-// construction sector's iron PM recipe or its construction output. The solver re-derives it live
-// from the game each run, so the stored building_cost values shown are always correct — only this
-// UI "model N" hint would drift until 720 is refreshed. See ON_GAME_UPDATE.md.
+// construction sector's iron PM recipe or its construction output — it prices the Payback column and
+// the payback ACTION tools ($→X / %→X). paybackYears/marginPct/basis are the LEGACY §9 model's knobs,
+// kept only for those tools' defaults; the cost MODEL itself is buildingCostModel below (§10.61 flat
+// vanilla), which no longer reads them. See ON_GAME_UPDATE.md.
 const BCM = { paybackYears:10, weeksPerYear:52, marginPct:0.20, poundPerPoint:720, roundTo:5, basis:'cost' };
 // wages are a balance-model construct (NOT emitted to the game — Victoria 3 pays wages endogenously from
 // employment). A building's WAGE UNITS = Σ (employees × wage_weight); its wage W = base wage × wage units.
@@ -757,12 +757,20 @@ function wageRowHTML(idSuffix, base, U, goodsCost, dataAttr){
 function subtotalRow(id, label, val, title){
   return `<div class="goodrow subtot pushbot" title="${title}"><span class="g">${label}</span><span class="amt"><span class="v" id="${id}">£${round(val)}</span></span></div>`;
 }
+// THE RULED COST MODEL (user, 2026-08-17 — BALANCE_FRAMEWORK §10.61, superseding §10.57's exponential
+// ladder): building_cost = EXACTLY the industry's vanilla anchor (its config building block's
+// required_construction class → VANILLA_CONSTRUCTION), FLAT across tiers, × the tier's workforce_mult
+// (§10.60 graded ports: 400 → 40/40/40/80/80). No band, no era exponent — the need to construct the
+// next tier at all IS the modernisation cost, and an exponent priced it twice ("double jeopardy").
+// The "model N" hint turns amber when the stored value diverges (a hand edit, or a config predating
+// the ruling). payback_census.mjs --write implements the same rule against the live game files.
 function buildingCostModel(i,t){
-  const I=inputValue(t,false);
-  const profit = (BCM.basis==='output') ? BCM.marginPct*outputValue(i,t,false) : BCM.marginPct*(I+wageCost(t));
-  const cost = BCM.paybackYears*BCM.weeksPerYear*profit/BCM.poundPerPoint;
-  const pts = BCM.roundTo>0 ? Math.round(cost/BCM.roundTo)*BCM.roundTo : Math.round(cost);
-  return Math.max(1, pts);
+  const src=((window.PMDATA.config||{}).industries||[]).find(x=>x.id===i.id);
+  const named=src&&src.building?src.building.required_construction:null;
+  const anchor=(VANILLA_CONSTRUCTION[named]!=null?VANILLA_CONSTRUCTION[named]:+named);
+  if(!(anchor>0)) return Math.max(1, t.building_cost!=null?t.building_cost:1);   // no anchor in the config — accept stored
+  const wm=(t.workforce_mult!=null?+t.workforce_mult:1);
+  return Math.max(5, Math.round(anchor*wm/5)*5);
 }
 // ---- payback period (depends on building_cost + the current price panel) ----
 // capital = build cost (points) × £/point ; weekly net profit at CURRENT prices, wages = 33% of
@@ -1587,8 +1595,8 @@ function renderModChanges(force){
   ]);
 
   const S2=sec('emit','2 · Recipes, costs & effects — emission rules','the numbers themselves live on the Balance sheet',[
-    pt(`<b>Recipes emit verbatim into each tier's main PM</b> — the volumes the era pipeline solved, exactly as this sheet shows them. ⚠ one caveat: non-factored tiers' goods are cast to <b>integers</b> at emission (config 42.3 ships as 42); only the ${factored.length} factored port tiers emit exact decimals.`),
-    pt(`<b>Per-tier construction cost.</b> Every tier emits its own <code>required_construction</code> from the §10.57 cost book: vanilla's own cost anchor × band × 1.5^(era−1), band 2 for vanilla's 800-point class minus infrastructure plus four ruled exceptions (tooling, shipyard, arms, artillery). Derived by <code>payback_census.mjs --write</code>, stored in the config, emitted as-is.`),
+    pt(`<b>Recipes emit verbatim into each tier's main PM</b> — the volumes the era pipeline solved, exactly as this sheet shows them, decimals included (the legacy integer cast that shipped 42 where the model said 42.3 was removed 2026-08-17; the game accepts fractional goods_*_add, as the factored ports always proved).`),
+    pt(`<b>Per-tier construction cost — exactly vanilla's own book, flat</b> (§10.61, superseding §10.57's exponential ladder): every tier emits its own <code>required_construction</code> = its industry's vanilla anchor cost, the same at every tier, × <code>workforce_mult</code> on the graded ports. No band, no era exponent — having to construct the next tier at all IS the modernisation cost, and an exponent priced it twice. Derived by <code>payback_census.mjs --write</code>, stored in the config, emitted as-is.`),
     pt(`<b>Graded ports (§10.60)</b> — ports are <b>fractional-unit buildings</b>, so the engine's per-overseas-state provisioning wave costs ~1/10th: goods and cost are stored pre-divided in the config; employment is scaled by <code>workforce_mult</code> and state effects by <code>effect_mult</code> at emission (the build throws if a multiplier leaves fractional employment). Live:${factored.length?`<ul class="mc-sub">${factored.map(x=>`<li><code>${esc(x.t.key)}</code> workforce ×${x.t.workforce_mult??1} · effects ×${x.t.effect_mult??1} · out ${x.t.output_qty} · cost ${x.t.building_cost}${x.t.state_infrastructure!=null?` · infra ${x.t.state_infrastructure}`:''}</li>`).join('')}</ul>`:' none'}`),
     pt(`<b>Non-goods outputs</b> emit workforce-scaled: state infrastructure from ports (${inds.find(i=>i.id==='port')?(cfg.industries.find(i=>i.id==='port').tiers.map(t=>t.state_infrastructure).filter(v=>v!=null).join('/')):'—'}) and railways (${(cfg.industries.find(i=>i.id==='railway')||{tiers:[]}).tiers.map(t=>t.state_infrastructure).filter(v=>v!=null).join('/')||'—'}), ship construction from both shipyard chains, pollution where configured — each × <code>effect_mult</code> on factored tiers.`),
     pt(`<b>Law & terrain gates.</b> ${heavy.length?`<b>${heavy.map(esc).join(', ')}</b> carry the industry-ban / extraction-economy <code>possible</code> block`:'no industry carries the heavy-industry law block'}; ${coastal.length?`<b>${coastal.map(esc).join(', ')}</b> are coastal-only`:'none are coastal-gated'}.`),
@@ -1616,7 +1624,16 @@ function renderModChanges(force){
   const S5=sec('techs','5 · The technology tree',`${newTechs.length} technologies added`,[
     pt(`<b>${newTechs.length} new technologies</b> (live count from the shipping tree: ${['production','military','society'].map(c=>{const n=newTechs.filter(T=>T.c===c).length; return n?`${n} ${c}`:null;}).filter(Boolean).join(', ')}), each with its era, prerequisites and unlocks, a minted placeholder icon, and names/descriptions in all ${langs} languages. New techs carry a flat AI weight so the AI treats them like vanilla research.`),
     pt(`<b>Era moves inside vanilla's own files.</b> A technology unlocking one of our tiers is placed on the mechanical era that tier maps to (the ladder-era alignment: re-derived every run, only ever LOWERS, never lands in era 1, never inverts a prerequisite). The moves are patched into vanilla's production and military technology files as whole-file replacements — at the current tree, 11 production moves plus the <code>aniline</code> prerequisite swap, and 3 military moves (repeaters, breech-loading artillery, bolt-action rifles). Every transform asserts its exact match count and throws on a no-op.`),
-    pt(`<b>The society tree is slowed for the AI</b>: a <code>multiply = 0.8</code> appended <i>last</i> inside every vanilla society technology's ai_weight (64 techs), preserving vanilla's conditional weights while tilting AI research toward the deepened production/military trees.`),
+    pt((()=>{
+      const aiw=(typeof AIWEDIT!=='undefined'&&AIWEDIT)||cfg.tech_ai_weight_mult||{};
+      const trees=['production','military','society'];
+      const vals=trees.map(k=>`${k} ×${+aiw[k]||1}`).join(' · ');
+      const all1=trees.every(k=>(+aiw[k]||1)===1);
+      return `<b>Per-tree AI research weight</b> (config <code>tech_ai_weight_mult</code>, editable beside the tech page's spread panel) — live: ${vals}. `
+        +(all1
+          ? `All at 1 (ruled 2026-08-17: no tree damped or favoured — the research journal entries are boost enough), so <b>nothing is emitted</b> and the vanilla society file is not owned at all. The society tree shipped ×0.8 from 2026-08-11 until this ruling.`
+          : `A tree ≠ 1 gets <code>multiply</code> appended <i>last</i> inside every vanilla technology's ai_weight in its file (preserving vanilla's conditional weights) and sets the flat weight of the mod's new technologies there.`);
+    })()),
     pt(`<b>The 1836 grant is derived from the map</b>: every production method vanilla runs in 1836 stays runnable, and a country running it holds the technology — the union of "owns one on the map" and "could have built one in vanilla", minus what the era-1 blanket already covers and what vanilla names itself (both read live, so a patch flows through). Granted by <i>starting tier</i>, vanilla's own structure. At the last build the grant is four lines: tiers 1–2 → <code>steel_railway_cars</code>, tiers 3–4 → <code>beet_sugar_refining</code>; tiers 1–2 also keep vanilla's own <code>add_era_researched = era_1</code> — a small deliberate over-grant.`),
     pt(`⚠ <b>The ahead-of-time define ships at vanilla's own value</b> (<code>TECH_AHEAD_OF_TIME_PENALTY_FACTOR = 0.25</code>) — currently a no-op. The 0.15 boost was withdrawn by the 2026-08-12 ruling; the file outlived the setting.`),
     pt(`<b>No tech-spread change — spread is exactly vanilla</b> (ruled 2026-08-12): the deeper tree is compensated by the research journal entries, and spread only ever delivers what somebody else already has. The mod owns no static-modifiers file at all.`),
@@ -3462,8 +3479,29 @@ function mergedConfig(){
   cfg.building_ai_value = Object.assign({}, REFAIV);   // explorer/preserved-building ai_value overrides (builder applies to owned files)
   cfg.building_subsidies = Object.assign({}, SUBSIDY); // AI subsidy policy (builder writes it into every administrative ai_strategy)
   cfg.pm_goods = JSON.parse(JSON.stringify(REFEDIT)); // per-PM goods overrides (any building's PM); builder rewrites the owned production_methods files
+  if(AIWEDIT) cfg.tech_ai_weight_mult = Object.assign({}, cfg.tech_ai_weight_mult||{}, AIWEDIT);   // per-tree AI research weight, edited on the tech page
   return cfg;
 }
+// ---- per-tree AI research weight (config tech_ai_weight_mult) — EDITED ON THE TECH PAGE ----------
+// The row lives beside the spread panel in the techtree iframe (that page is where research pace is
+// reasoned about), but the config write path lives HERE, so the values round-trip over postMessage:
+// the frame asks for the current config values on load, and an edit comes back as a session override
+// (AIWEDIT) that mergedConfig() carries into Export / Build now. Default 1/1/1 (user-ruled 2026-08-17:
+// no tree damped or favoured — the research JEs are boost enough; emit_techs emits nothing at 1).
+let AIWEDIT=null;
+window.addEventListener('message', e=>{
+  const d=e.data||{};
+  if(d.pmrWantAiWeight && e.source){
+    const src=AIWEDIT||(window.PMDATA.config.tech_ai_weight_mult||{});
+    e.source.postMessage({pmrAiWeightIs:{production:+src.production||1, military:+src.military||1, society:+src.society||1}}, '*');
+  }
+  if(d.pmrAiWeight && typeof d.pmrAiWeight==='object'){
+    AIWEDIT={production:+d.pmrAiWeight.production||1, military:+d.pmrAiWeight.military||1, society:+d.pmrAiWeight.society||1};
+    banner('info', `AI research weight × set to production ${AIWEDIT.production} · military ${AIWEDIT.military} · society ${AIWEDIT.society} `
+      + `(config <code>tech_ai_weight_mult</code>) — carried into <b>Export</b> / <b>Build now</b>. 1 = vanilla weight, nothing emitted.`);
+    renderModChanges();   // the Mod-changes page states the live values
+  }
+});
 document.getElementById('exportCfg').onclick=async()=>{
   try{
     const how=await saveJSON('mod_config.json', mergedConfig());

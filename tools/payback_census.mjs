@@ -13,14 +13,16 @@
 // this file, because payback is a property of the RECIPE BOOK and the SCENARIO together, and the two
 // live in different tools.
 //
-// ⭐⭐ THE RULED COST BOOK IS TWO BANDS OFF VANILLA'S OWN NUMBERS (user, 2026-08-13 — §10.57):
-//     building_cost = vanilla required_construction × band × 1.5^(era − 1),   band = 2 or 1
-// See "THE RULE" below for the full statement and why each term is what it is. Two things about it are
-// worth carrying in the head while reading this file:
+// ⭐⭐ THE RULED COST BOOK IS EXACTLY VANILLA'S OWN, FLAT (user, 2026-08-17 — supersedes §10.57's
+// two-band ×1.5^(era−1) ladder):
+//     building_cost = vanilla required_construction (the industry's anchor), × workforce_mult where set
+// See "THE RULE" below for the full statement. Two things worth carrying in the head while reading:
 // ⚠ IT IS NOT PAYBACK-DERIVED. An earlier version set cost from each tier's own output value and a
-// measured profit ratio; the user rejected it as "still per-building fitting". Ten years is now a
-// CHECK, not a construction — and the book delivers a median 11.1 against vanilla's own 11.4 modelled /
-// 14.8 measured (FINDINGS F53), which is the whole argument for anchoring on vanilla in the first place.
+// measured profit ratio; the user rejected it as "still per-building fitting". §10.57's ladder was then
+// rejected in turn as DOUBLE JEOPARDY — having to construct the next tier at all IS the modernisation
+// cost, and an era exponent priced the same thing twice. Payback figures below remain a READING, and
+// they will spread wider than the old book's (late tiers earn more against the same flat cost); that is
+// the accepted consequence, not a defect to re-fit away.
 // ⚠ £720 PER POINT IS KEPT FLAT BY THE SAME RULING, and it is the IRON-FRAME method's rate. The real
 // rate is 1000/720/720/540/540/527 across the eras (wooden → iron → steel → arc), so a late-era
 // building really pays back ~27% faster than this file's £ figures say, and era-0 ~28% slower. That is
@@ -119,70 +121,27 @@ if (!RULE) {
   process.exit(0);
 }
 
-// ==================== THE RULE — TWO BANDS OFF VANILLA'S OWN COST BOOK ====================
-// (user-ruled 2026-08-13, BALANCE_FRAMEWORK §10.57)
+// ==================== THE RULE — EXACTLY VANILLA'S OWN COST BOOK, FLAT ====================
+// (user-ruled 2026-08-17, superseding §10.57's two-band ×1.5^(era−1) ladder — BALANCE_FRAMEWORK §10.61)
 //
-//   building_cost (points) = VANILLA's required_construction × band × 1.5^(era − 1)
-//   band = 2 for the EXPENSIVE set, 1 for everything else
+//   building_cost (points) = VANILLA's required_construction for the industry's anchor building
+//                            × the tier's workforce_mult where set (the §10.60 graded ports: ×0.1/×0.2)
 //
-// ⭐⭐ VANILLA'S COST IS THE ERA-1 RUNG, NOT THE INDUSTRY'S FIRST ONE. The exponent is `era − 1`, so an
-// era-0 rung is vanilla ÷ 1.5 and an era-5 rung is vanilla × 1.5⁴. Keying on the ERA rather than on the
-// tier's position is what makes a late-starting industry expensive from its first building: automotive
-// debuts at era 3 and pays 1.5² over its vanilla anchor, instead of being handed the era-1 price for
-// being new. Legal because no industry may hold two tiers in one era — `build_era_ladder.mjs` throws on
-// that — so era ↔ rung is one-to-one within an industry.
+// FLAT ACROSS TIERS — no band, no era exponent. The exponential ladder was DOUBLE JEOPARDY (the user's
+// word): the whole point of the tier split is that modernising already costs the full price of a NEW
+// building, so an era exponent priced the same thing twice, and the ×2 band compounded it. The
+// 2026-08-16 handover had already ruled the parity restart onto "×1.0 flat vanilla anchors (exactly
+// vanilla cost book)" and the vancost arm ran it; this makes that book CANONICAL. An era's premium is
+// now exactly vanilla's own — none: eras are priced by what their recipes eat and the research it takes
+// to unlock them, not by a cost multiplier.
 //
-// ⭐ THE WHOLE COST BOOK IS THEREFORE TWO SEQUENCES OF SIX NUMBERS, and that is the point of the ruling:
-//   regular   (vanilla 600)   400 ·  600 ·  900 · 1350 · 2025 · 3040
-//   expensive (vanilla 800)  1065 · 1600 · 2400 · 3600 · 5400 · 8100
-// Everything is hand-checkable from vanilla's own number, and no building is fitted individually. It
-// replaces an output-value-proportional rule that was per-building fitting in all but name.
+// ⚠ NOTHING HERE TOUCHES PROFIT (unchanged from §10.57): the inputs are a vanilla constant and a config
+// multiplier, so no cost can go negative or infinite, and no building is fitted individually.
 //
-// ⚠ NOTHING HERE TOUCHES PROFIT, so a loss-making tier costs exactly what its era says and nothing can
-// go negative or infinite. That was an explicit user requirement and it now holds by construction rather
-// than by a guard: the inputs are a vanilla constant, a band, and an era.
-//
-// ⚠ THE EXPENSIVE SET IS DERIVED, NOT LISTED — it is vanilla's own `construction_cost_very_high` (800)
-// class, so a patch that reclassifies a building carries through instead of leaving a stale literal.
-// Infrastructure is excluded by hand: railway is very_high in vanilla, but the three infra industries
-// were ruled onto the plain vanilla anchor (they sell `state_infrastructure`, which is not a priced
-// good, so nothing about them belongs in a profit-facing band). The resolved set is PRINTED every run —
-// a derived rule that never shows its result is one nobody can check.
+// ⭐ THE GRADED PORTS RIDE workforce_mult — §10.60.2's regeneration trap ("--write would un-divide the
+// port book") is CLOSED: a factored tier's cost is vanilla × its own workforce_mult (400 → 40/40/40/
+// 80/80), read from the same tier field emission and the 1836 converter key on.
 const RC = requiredConstruction(GAME);
-const LADDER_R = 1.5, EXPENSIVE_MULT = 2, VERY_HIGH = 800;
-
-// ⭐ NAMED EXCEPTIONS TO THE DERIVED BAND (user-ruled 2026-08-13, from the delivered-payback census).
-// Four industries paid back in 3.6–6.5 years against the book's own 11.1 centre — the derived rule reads
-// vanilla's class, and vanilla's class is wrong about them FOR THIS ECONOMY. Each carries its reason,
-// because an exception whose argument is not written down cannot be re-checked after a patch.
-// ⚠ Deliberately NOT a wholesale reclassification: `paper` (6.6y) and `motor` (18.0y) were both offered
-// and left alone by the same ruling. And the industries that look like far worse outliers — synthetics
-// 210y, automotive 55y, shipyard_steam 484y, railway 70y, power 62y — are NOT band problems: each has
-// most of its dominant rungs AT A LOSS (the §10.29/§10.35 new-economy undersizes) or is infra priced off
-// an unpriced `state_infrastructure` output. Doubling or halving a cost cannot fix a building that does
-// not earn, and moving one would only hide the real fault.
-const BAND_OVERRIDE = {
-  arms:      EXPENSIVE_MULT,   // 5.6y. Its own family's other half (munition, explosives) is vanilla-800
-  artillery: EXPENSIVE_MULT,   // 4.2y. and lands at 11.4–11.6 — same customer, same army-fed demand.
-  shipyard:  EXPENSIVE_MULT,   // 3.6y, AND it carries the −30pp naval handicap, so its profit is
-                               //   understated here and the true payback is faster still.
-  tooling:   EXPENSIVE_MULT,   // 6.5y. An intermediate-goods producer; every other light industry on
-                               //   vanilla's 600 lands 11–17.
-};
-const bandOf = i => {
-  const derived = (!INFRA.has(i.id) && RC[i.tiers[0].key] === VERY_HIGH ? EXPENSIVE_MULT : 1);
-  return BAND_OVERRIDE[i.id] ?? derived;
-};
-// A stale exception is worse than none: if vanilla ever reclassifies one of these, the override silently
-// becomes a no-op and the reason above stops being true with nothing to say so. Same discipline as
-// emit_techs.mjs asserting its match counts — fail, don't quietly agree.
-for (const id in BAND_OVERRIDE) {
-  const ind = S.IND.find(x => x.id === id);
-  if (!ind) throw new Error(`BAND_OVERRIDE names '${id}', which is not an industry in the config — renamed or removed?`);
-  const derived = (!INFRA.has(id) && RC[ind.tiers[0].key] === VERY_HIGH ? EXPENSIVE_MULT : 1);
-  if (derived === BAND_OVERRIDE[id]) throw new Error(`BAND_OVERRIDE for '${id}' is a NO-OP — vanilla now `
-    + `derives the same band. Delete the exception (and its reason) rather than leaving it to rot.`);
-}
 // The industry's vanilla anchor: its base building's own required_construction. `shipyard_steam` is an
 // all-new chain with no vanilla building at all, so it falls back to the class named in the config's
 // own `building` block — the same value the builder would have emitted for it.
@@ -198,30 +157,26 @@ const anchorOf = i => {
 
 const newCost = {};
 for (const i of S.IND) {
-  const anchor = anchorOf(i), band = bandOf(i);
-  for (const t of i.tiers) newCost[t.key] = Math.max(5, Math.round(anchor * band * Math.pow(LADDER_R, t.era - 1) / 5) * 5);
+  const anchor = anchorOf(i);
+  for (const t of i.tiers) {
+    const wm = (t.workforce_mult != null ? +t.workforce_mult : 1);
+    newCost[t.key] = Math.max(5, Math.round(anchor * wm / 5) * 5);
+  }
 }
-const mark = i => i.id + (BAND_OVERRIDE[i.id] != null ? '*' : '');
-console.log('\n=== THE TWO BANDS   (* = named exception to vanilla\'s own class) ===');
-console.log(`expensive (×${EXPENSIVE_MULT}, vanilla's very_high class): `
-  + S.IND.filter(i => bandOf(i) === EXPENSIVE_MULT).map(mark).join(', '));
-console.log('regular  (×1):                                ' + S.IND.filter(i => bandOf(i) === 1).map(mark).join(', '));
-// One line per DISTINCT (anchor × band) actually in play. There is more than one anchor per band since
-// the exceptions moved vanilla-600 industries into the expensive column, so printing a single example
-// ladder per band would misdescribe half the book.
+console.log('\n=== THE FLAT VANILLA BOOK   (anchor × workforce_mult; flat across tiers) ===');
 {
   const seen = new Map();
   for (const i of S.IND) {
-    const a = anchorOf(i), b = bandOf(i), k = a + '|' + b;
-    if (!seen.has(k)) seen.set(k, { a, b, ids: [] });
+    const a = anchorOf(i);
+    const costs = i.tiers.map(t => newCost[t.key]);
+    const line = [...new Set(costs)].join(' / ');
+    const k = a + '|' + line;
+    if (!seen.has(k)) seen.set(k, { a, line, ids: [] });
     seen.get(k).ids.push(i.id);
   }
-  console.log('anchor × band   ladder e0…e5                                    industries');
-  for (const { a, b, ids } of [...seen.values()].sort((x, y) => x.a * x.b - y.a * y.b)) {
-    console.log(`  ${pad(a, 4)} × ${b}      `
-      + pad([0, 1, 2, 3, 4, 5].map(e => Math.round(a * b * Math.pow(LADDER_R, e - 1) / 5) * 5).join(' · '), 42)
-      + `   ${ids.join(', ')}`);
-  }
+  console.log('anchor   cost per level   industries');
+  for (const { a, line, ids } of [...seen.values()].sort((x, y) => x.a - y.a))
+    console.log(`  ${pad(a, 4)}   ${pad(line, 14)}   ${ids.join(', ')}`);
 }
 
 console.log('\n=== THE COST BOOK IT PRODUCES (construction points per level) ===');
@@ -271,11 +226,10 @@ for (const s of shipped) {
   console.log(`${s.id.padEnd(12)} ${pad(M(k), 8)} ${pad(f2(k / s.gdp), 8)} ${pad(f1(k / c), 35)} ${pad(f1(c / PPP / q(med, .5)), 28)}`);
 }
 
-// The rule aims the MACROTYPE's median at P years; a building lands where its own margin puts it. This
-// is the check that the aim is true, and the honest statement of how wide the scatter is.
-// Diagnostic only — the two-band rule aims at nothing per macrotype, so this is a READING of what the
-// vanilla-anchored book happens to deliver, not a target it missed. infra sits high because vanilla's
-// own ports and railways pay back slowly (31.7 modelled / 41.8 measured, F53); that is faithfulness.
+// Diagnostic only — the flat vanilla rule aims at nothing per macrotype, so this is a READING of what
+// the vanilla-anchored book happens to deliver, not a target it missed. infra sits high because
+// vanilla's own ports and railways pay back slowly (31.7 modelled / 41.8 measured, F53); that is
+// faithfulness. Expect a wider spread than the old ladder's: late tiers earn more against a flat cost.
 console.log('\n=== DELIVERED PAYBACK BY MACROTYPE — a reading of the book, not a target ===');
 console.log('macrotype   rungs   p10 / p25 / MEDIAN / p75 / p90      at a loss (no payback)');
 {

@@ -571,6 +571,6 @@ sound_film = {
 		film
 	}
 	ai_weight = {
-		value = 0.8
+		value = 1
 	}
 }

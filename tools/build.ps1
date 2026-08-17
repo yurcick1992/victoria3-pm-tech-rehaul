@@ -461,11 +461,8 @@ foreach ($ind in $cfg.industries) {
 
         # ---- PM ----
         # §10.60 graded port factorisation: workforce/effect multipliers, 1 for every unfactored tier.
-        # $factored gates the fractional-goods emission path — the port tiers' config volumes are already
-        # divided and must NOT go through the legacy [int] cast (1.52 clippers would emit as 2).
         $wfM = if ($null -ne $t.workforce_mult) { [double]$t.workforce_mult } else { 1.0 }
         $fxM = if ($null -ne $t.effect_mult) { [double]$t.effect_mult } else { 1.0 }
-        $factored = ($null -ne $t.workforce_mult -or $null -ne $t.effect_mult)
         $pm = @("$($t.pm_key) = {", "`ttexture = `"$($t.texture)`"")
         # state modifiers (workforce-scaled): pollution + infrastructure (ports/railways produce infra).
         $stateMods = @()
@@ -482,15 +479,16 @@ foreach ($ind in $cfg.industries) {
             $pm += "`tcountry_modifiers = {","`t`tworkforce_scaled = {","`t`t`tcountry_ship_construction_add = $(QtyMul $t.ship_construction $fxM)","`t`t}","`t}"
         }
         $pm += "`tbuilding_modifiers = {","`t`tworkforce_scaled = {"
-        # A factored tier's config volumes are exact (already divided) — keep them exact in the BE
-        # arithmetic too, or [int]1.52 = 2 skews the name/summary BE by ~30%.
+        # EXACT VOLUMES FOR EVERY TIER (user-ruled 2026-08-17): the config's solved volumes emit
+        # VERBATIM. The legacy [int] cast quietly shipped 42 where the model said 42.3, so the game ran
+        # a slightly different recipe from every solver, linter and UI figure — worst on low-volume
+        # goods. QtyMul emits integers bare and fractions to 3 dp, so integer configs stay byte-stable.
         $actualI = 0.0
         foreach ($p in $t.inputs.PSObject.Properties) {
-            $q = if ($factored) { [double]$p.Value } else { [int]$p.Value }
-            $actualI += $q * $prices[$p.Name]
-            $pm += "`t`t`tgoods_input_$($p.Name)_add = $(if ($factored) { QtyMul $p.Value 1 } else { [int]$p.Value })"
+            $actualI += [double]$p.Value * $prices[$p.Name]
+            $pm += "`t`t`tgoods_input_$($p.Name)_add = $(QtyMul $p.Value 1)"
         }
-        $pm += "`t`t`tgoods_output_$($outGood)_add = $(if ($factored) { QtyMul $t.output_qty 1 } else { [int]$t.output_qty })","`t`t}"
+        $pm += "`t`t`tgoods_output_$($outGood)_add = $(QtyMul $t.output_qty 1)","`t`t}"
         # employment (level_scaled). Some buildings carry NO base-PM employment (e.g. the art academy: jobs live
         # in its ownership PMG, kept as a secondary), so omit the block entirely when employment is empty.
         $empProps = if ($null -ne $t.employment) { @($t.employment.PSObject.Properties) } else { @() }
