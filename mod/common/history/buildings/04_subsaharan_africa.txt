@@ -2,6 +2,17 @@
 	s:STATE_IVORY_COAST={
 		region_state:FRA={
 			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:FRA"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
+			}
+			create_building={
 				building="building_port_steam"
 				add_ownership={
 					country={
@@ -31,6 +42,17 @@
 	s:STATE_SENEGAL={
 		region_state:FRA={
 			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:FRA"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
+			}
+			create_building={
 				building="building_port_steam"
 				add_ownership={
 					country={
@@ -43,6 +65,17 @@
 			}
 		}
 		region_state:SIL={
+			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:GBR"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
+			}
 			create_building={
 				building="building_port_steam"
 				add_ownership={
@@ -100,6 +133,17 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_simple_farming" "pm_no_secondary" "pm_tools_disabled"  }
+			}
+			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:SIL"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_port_steam"
@@ -630,6 +674,17 @@
 	s:STATE_GOLD_COAST={
 		region_state:SIL={
 			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:GBR"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
+			}
+			create_building={
 				building="building_port_steam"
 				add_ownership={
 					country={
@@ -642,6 +697,17 @@
 			}
 		}
 		region_state:NET={
+			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:NET"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
+			}
 			create_building={
 				building="building_port_steam"
 				add_ownership={
@@ -2067,6 +2133,17 @@
 	}
 	s:STATE_SOUTH_CAMEROON={
 		region_state:SIL={
+			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:GBR"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
+			}
 			create_building={
 				building="building_port_steam"
 				add_ownership={

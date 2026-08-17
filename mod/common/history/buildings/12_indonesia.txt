@@ -242,6 +242,17 @@
 				activate_production_methods={ "pm_no_organization" }
 			}
 			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:LAN"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
+			}
+			create_building={
 				building="building_port_steam"
 				add_ownership={
 					country={
@@ -266,6 +277,17 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_no_organization" }
+			}
+			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:SMB"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_port_steam"
@@ -294,15 +316,15 @@
 				activate_production_methods={ "default_building_dye_plantation" "pm_road_carts"  }
 			}
 			create_building={
-				building="building_port_steam"
+				building="building_port"
 				add_ownership={
 					country={
-						country="c:NET"
+						country="c:PON"
 						levels=1
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_rice_farm"
@@ -327,6 +349,17 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_no_organization" }
+			}
+			create_building={
+				building="building_port_steam"
+				add_ownership={
+					country={
+						country="c:NET"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 		region_state:STG={
@@ -370,6 +403,17 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_simple_farming_building_rice_farm"  "pm_tools_disabled" "pm_fig_orchards_building_rice_farm" }
+			}
+			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:DEI"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_port_steam"
@@ -627,15 +671,15 @@
 				activate_production_methods={ "default_building_cotton_plantation" "pm_road_carts"  }
 			}
 			create_building={
-				building="building_port_steam"
+				building="building_port"
 				add_ownership={
 					country={
-						country="c:NET"
+						country="c:DEI"
 						levels=10
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -646,6 +690,17 @@
 					}
 				}
 				activate_production_methods={ "pm_naval_fortification_basic"  }
+			}
+			create_building={
+				building="building_port_steam"
+				add_ownership={
+					country={
+						country="c:NET"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 	}
@@ -1012,11 +1067,22 @@
 				activate_production_methods={ "pm_simple_forestry" "pm_hardwood" "pm_no_equipment" "pm_road_carts"  }
 			}
 			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:DEI"
+						levels=10
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
+			}
+			create_building={
 				building="building_port_steam"
 				add_ownership={
 					country={
 						country="c:NET"
-						levels=10
+						levels=1
 					}
 				}
 				reserves=1
@@ -1183,6 +1249,17 @@
 				activate_production_methods={ "pm_no_organization" }
 			}
 			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:ACE"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
+			}
+			create_building={
 				building="building_port_steam"
 				add_ownership={
 					country={
@@ -1267,6 +1344,17 @@
 				activate_production_methods={ "default_building_banana_plantation" "pm_road_carts"  }
 			}
 			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:TID"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
+			}
+			create_building={
 				building="building_port_steam"
 				add_ownership={
 					country={
@@ -1306,6 +1394,17 @@
 				}
 				reserves=1
 				activate_production_methods={ "default_building_dye_plantation" "pm_road_carts"  }
+			}
+			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:DEI"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_port_steam"
@@ -1371,6 +1470,17 @@
 				activate_production_methods={ "pm_no_organization" }
 			}
 			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:TID"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
+			}
+			create_building={
 				building="building_port_steam"
 				add_ownership={
 					country={
@@ -1388,15 +1498,15 @@
 		}
 		region_state:DEI={
 			create_building={
-				building="building_port_steam"
+				building="building_port"
 				add_ownership={
 					country={
-						country="c:NET"
+						country="c:DEI"
 						levels=1
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_tea_plantation"
@@ -1410,6 +1520,17 @@
 				}
 				reserves=1
 				activate_production_methods={ "default_building_tea_plantation" "pm_road_carts"  }
+			}
+			create_building={
+				building="building_port_steam"
+				add_ownership={
+					country={
+						country="c:NET"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 		region_state:BTN={
@@ -1524,6 +1645,17 @@
 				}
 				reserves=1
 				activate_production_methods={ "default_building_tobacco_plantation" "pm_road_carts"  }
+			}
+			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:DEI"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_port_steam"
@@ -1848,6 +1980,21 @@
 				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:PLY"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
+			}
+			create_building={
+				building= "building_easter_island_heads"
+				level = 1
+			}
+			create_building={
 				building="building_port_steam"
 				add_ownership={
 					country={
@@ -1857,10 +2004,6 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_main_port_steam" }
-			}
-			create_building={
-				building= "building_easter_island_heads"
-				level = 1
 			}
 		}
 	}

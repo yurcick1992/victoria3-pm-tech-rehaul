@@ -1075,7 +1075,7 @@
 		}
 		region_state:FRA={
 			create_building={
-				building="building_port_steam"
+				building="building_port"
 				add_ownership={
 					country={
 						country="c:FRA"
@@ -1083,7 +1083,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_wheat_farm"
@@ -1097,6 +1097,17 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_simple_farming" "pm_no_secondary" "pm_tools_disabled"  }
+			}
+			create_building={
+				building="building_port_steam"
+				add_ownership={
+					country={
+						country="c:FRA"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 		region_state:AIT={
@@ -1205,7 +1216,7 @@
 		}
 		region_state:FRA={
 			create_building={
-				building="building_port_steam"
+				building="building_port"
 				add_ownership={
 					country={
 						country="c:FRA"
@@ -1213,7 +1224,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -1240,6 +1251,17 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_simple_farming" "pm_no_secondary" "pm_tools_disabled"  }
+			}
+			create_building={
+				building="building_port_steam"
+				add_ownership={
+					country={
+						country="c:FRA"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 	}

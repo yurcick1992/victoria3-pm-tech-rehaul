@@ -117,6 +117,17 @@
 		}
 		region_state:GBR={
 			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:GBR"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
+			}
+			create_building={
 				building="building_port_steam"
 				add_ownership={
 					country={
@@ -232,6 +243,17 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_no_organization" }
+			}
+			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:MKT"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_port_steam"
@@ -591,6 +613,17 @@
 				activate_production_methods={ "default_building_sugar_plantation" "pm_road_carts"  }
 			}
 			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:GBR"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
+			}
+			create_building={
 				building="building_port_steam"
 				add_ownership={
 					country={
@@ -658,6 +691,17 @@
 				activate_production_methods={ "default_building_tobacco_plantation" "pm_road_carts"  }
 			}
 			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:FRA"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
+			}
+			create_building={
 				building="building_port_steam"
 				add_ownership={
 					country={
@@ -697,7 +741,7 @@
 		}
 		region_state:NET={
 			create_building={
-				building="building_port_steam"
+				building="building_port"
 				add_ownership={
 					country={
 						country="c:NET"
@@ -705,7 +749,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_cotton_plantation"
@@ -719,6 +763,17 @@
 				}
 				reserves=1
 				activate_production_methods={ "default_building_cotton_plantation" "pm_road_carts"  }
+			}
+			create_building={
+				building="building_port_steam"
+				add_ownership={
+					country={
+						country="c:NET"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 		region_state:GBR={
@@ -760,6 +815,17 @@
 				}
 				reserves=1
 				activate_production_methods={ "default_building_tobacco_plantation" "pm_road_carts"  }
+			}
+			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:GBR"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_port_steam"
@@ -871,6 +937,17 @@
 				}
 				reserves=1
 				activate_production_methods={ "coffee_plantation_dry_process" "pm_road_carts"  }
+			}
+			create_building={
+				building="building_port"
+				add_ownership={
+					country={
+						country="c:GBR"
+						levels=1
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_port_basic" }
 			}
 			create_building={
 				building="building_port_steam"

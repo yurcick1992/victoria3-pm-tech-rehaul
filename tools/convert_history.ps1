@@ -227,14 +227,17 @@ foreach ($f in $files) {
     $outLines = Walk-HistoryFile $f.FullName $handler
 
     foreach ($cr in $creates) {
-        $anchor = 's:' + $cr.state + '='
-        $rs     = 'region_state:' + $cr.country + '='
+        # ⚠ TOLERATE WHITESPACE AROUND `=`. The history files are not uniform - `region_state:DEI={` in
+        # some, `region_state:BIC = {` in others - and a literal match silently found nothing for the
+        # spaced ones. The create guard below caught it (STATE_PEGU), which is why that guard exists.
+        $anchor = '^\s*s:' + [regex]::Escape($cr.state) + '\s*='
+        $rs     = '^\s*region_state:' + [regex]::Escape($cr.country) + '\s*='
         # find the state, then its region_state, then that block's closing brace
-        $si = -1; for ($i = 0; $i -lt $outLines.Count; $i++) { if ($outLines[$i] -match ('^\s*' + [regex]::Escape($anchor))) { $si = $i; break } }
+        $si = -1; for ($i = 0; $i -lt $outLines.Count; $i++) { if ($outLines[$i] -match $anchor) { $si = $i; break } }
         if ($si -lt 0) { continue }
         $ri = -1; for ($i = $si + 1; $i -lt $outLines.Count; $i++) {
             if ($outLines[$i] -match '^\ts:') { break }
-            if ($outLines[$i] -match ('^\s*' + [regex]::Escape($rs))) { $ri = $i; break }
+            if ($outLines[$i] -match $rs) { $ri = $i; break }
         }
         if ($ri -lt 0) { continue }
         $depth = 1; $ci = -1
@@ -250,13 +253,17 @@ foreach ($f in $files) {
         $tier = $ind.tiers[[int]$cr.tier - 1]
         if (-not $tier) { throw "create: $($cr.industry) has no tier $($cr.tier)" }
         $lv = if ($cr.levels) { [int]$cr.levels } else { 1 }
+        # WHERE it sits and WHO owns it are different questions. `country` is the region_state it is
+        # placed in (a subject's state, for a colonial port); `owner` is the government that owns it
+        # (the market leader). Default: the state's own country owns it.
+        $ownTag = if ($cr.owner) { [string]$cr.owner } else { [string]$cr.country }
 
         $blk = @(
             "`t`t`tcreate_building={",
             "`t`t`t`tbuilding=`"$($tier.key)`"",
             "`t`t`t`tadd_ownership={",
             "`t`t`t`t`tcountry={",
-            "`t`t`t`t`t`tcountry=`"c:$($cr.country)`"",
+            "`t`t`t`t`t`tcountry=`"c:$ownTag`"",
             "`t`t`t`t`t`tlevels=$lv",
             "`t`t`t`t`t}",
             "`t`t`t`t}",
@@ -275,6 +282,68 @@ foreach ($f in $files) {
     $text = ($outLines -join "`r`n") + "`r`n"
     [System.IO.File]::WriteAllText((Join-Path $outDir $f.Name), $text, (New-Object System.Text.UTF8Encoding($true)))
 }
+# ⭐⭐ THE WORKFORCE FOR A GRANTED FACTORY (user-ruled 2026-08-17). A granted building with no workers
+# staffs itself only slowly, out of whatever the state's existing pops can spare, so an INDUSTRY grant
+# also spawns its own labour: the market leader's PRIMARY CULTURE, one pop per profession the tier
+# employs, in the state the factory was placed in.
+#
+# SIZE. Each of the three granted tiers employs exactly 5 000 per level, and a pop's WORKFORCE is its
+# size × WORKING_ADULT_RATIO_BASE (0.25) — so a pop that supplies 5 000 workers numbers 20 000 people,
+# dependents included, which is what the ruling asks for ("5k or so workers, with their dependents
+# within their pops"). Per profession: size = employment / 0.25.
+#
+# ⚠ PORTS GET NONE, by the same ruling. They are tiny stubs in colonial states and importing a British
+# workforce into them is neither wanted nor plausible.
+# ⚠ ADDITIVE FILE, not a replacement: `common/history/pops` is NOT in metadata's `replace_paths` (only
+# `common/history/buildings` is), so this file adds pops rather than replacing vanilla's.
+$WORKING_ADULT_RATIO = 0.25
+$primaryCulture = @{ GBR = 'british'; FRA = 'french'; NET = 'dutch' }
+$popStates = @{}
+foreach ($cr in $creates) {
+    if ($cr.industry -eq 'port') { continue }          # ports get no workforce
+    $ind  = $industryById[[string]$cr.industry]
+    $tier = $ind.tiers[[int]$cr.tier - 1]
+    $lv   = if ($cr.levels) { [int]$cr.levels } else { 1 }
+    $ownTag = if ($cr.owner) { [string]$cr.owner } else { [string]$cr.country }
+    $cul = $primaryCulture[$ownTag]
+    if (-not $cul) { throw "create: no primary culture known for $ownTag - add it to `$primaryCulture" }
+    if (-not $tier.employment) { continue }
+    $key = "$($cr.state)|$($cr.country)"
+    if (-not $popStates.ContainsKey($key)) { $popStates[$key] = @{} }
+    foreach ($p in $tier.employment.PSObject.Properties) {
+        $people = [int][math]::Round(($p.Value * $lv) / $WORKING_ADULT_RATIO)
+        if ($people -le 0) { continue }
+        $pk = "$cul|$($p.Name)"
+        $popStates[$key][$pk] = [int]$popStates[$key][$pk] + $people
+    }
+}
+if ($popStates.Count -gt 0) {
+    $popDir = Join-Path $Repo (Join-Path $ModDir 'common\history\pops')
+    if (-not (Test-Path $popDir)) { New-Item -ItemType Directory -Force -Path $popDir | Out-Null }
+    $out = New-Object System.Collections.Generic.List[string]
+    $out.Add('# GENERATED by tools/convert_history.ps1 - the workforce for CREATED industry grants.')
+    $out.Add('# One pop per profession the granted tier employs, of the market leader''s primary culture,')
+    $out.Add('# sized employment / 0.25 so the pop carries its dependents. Ports get none. ADDITIVE.')
+    $out.Add('POPS = {')
+    $script:popPeople = 0
+    foreach ($k in ($popStates.Keys | Sort-Object)) {
+        $st, $co = $k.Split('|')
+        $out.Add("`ts:$st = {")
+        $out.Add("`t`tregion_state:$co = {")
+        foreach ($pk in ($popStates[$k].Keys | Sort-Object)) {
+            $cul, $prof = $pk.Split('|')
+            $n = $popStates[$k][$pk]; $script:popPeople += $n
+            $out.Add("`t`t`tcreate_pop = { culture = $cul pop_type = $prof size = $n }")
+        }
+        $out.Add("`t`t}")
+        $out.Add("`t}")
+    }
+    $out.Add('}')
+    [System.IO.File]::WriteAllText((Join-Path $popDir 'zzz_pm_rehaul_seed_pops.txt'), (($out -join "`r`n") + "`r`n"), (New-Object System.Text.UTF8Encoding($true)))
+    Write-Output ("  seed workforce: {0} people across {1} state(s), {2} pop(s)" -f `
+        $script:popPeople, $popStates.Count, ($popStates.Values | ForEach-Object { $_.Count } | Measure-Object -Sum).Sum)
+}
+
 # A grant that found no home is a silent hole — fail rather than ship a seed that isn't there.
 foreach ($cr in $creates) {
     $ind = $industryById[[string]$cr.industry]

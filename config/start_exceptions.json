@@ -17,307 +17,363 @@
  "_why_steamer_seed": "REVERTED (user-ruled 2026-08-16, same day): the seed existed only to feed the abnormal from-start steam-port construction, which F66 traced to the engine provisioning every overseas state once per port building TYPE — the disease to fix, not the symptom to feed. The force_industry_tier machinery stays (documented, tested); the rules are withdrawn. The five rules it carried: GBR Home Counties 5 / FRA Brittany 4 / USA Virginia 2 / BEL Flanders 1 / PRU West Prussia 1 -> building_shipyard_metal.",
  "rules": [
   {
-   "building": "building_port",
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
    "country": "ION",
    "state": "STATE_IONIAN_ISLANDS",
-   "action": "force_tier",
-   "tier": 2,
+   "levels": 1,
    "owner": "GBR"
   },
   {
-   "building": "building_port",
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
    "country": "FRA",
    "state": "STATE_CONSTANTINE",
-   "action": "force_tier",
-   "tier": 2
-  },
-  {
-   "building": "building_port",
-   "country": "FRA",
-   "state": "STATE_ORAN",
-   "action": "force_tier",
-   "tier": 2
-  },
-  {
-   "building": "building_port",
-   "country": "FRA",
-   "state": "STATE_IVORY_COAST",
-   "action": "force_tier",
-   "tier": 2
-  },
-  {
-   "building": "building_port",
-   "country": "FRA",
-   "state": "STATE_SENEGAL",
-   "action": "force_tier",
-   "tier": 2
-  },
-  {
-   "building": "building_port",
-   "country": "SIL",
-   "state": "STATE_SENEGAL",
-   "action": "force_tier",
-   "tier": 2,
-   "owner": "GBR"
-  },
-  {
-   "building": "building_port",
-   "country": "SIL",
-   "state": "STATE_SIERRA_LEONE",
-   "action": "force_tier",
-   "tier": 2,
-   "owner": "GBR"
-  },
-  {
-   "building": "building_port",
-   "country": "SIL",
-   "state": "STATE_GOLD_COAST",
-   "action": "force_tier",
-   "tier": 2,
-   "owner": "GBR"
-  },
-  {
-   "building": "building_port",
-   "country": "SIL",
-   "state": "STATE_SOUTH_CAMEROON",
-   "action": "force_tier",
-   "tier": 2,
-   "owner": "GBR"
-  },
-  {
-   "building": "building_port",
-   "country": "ORG",
-   "state": "STATE_WASHINGTON",
-   "action": "force_tier",
-   "tier": 2,
-   "owner": "GBR"
-  },
-  {
-   "building": "building_port",
-   "country": "GBR",
-   "state": "STATE_BERMUDA",
-   "action": "force_tier",
-   "tier": 2
-  },
-  {
-   "building": "building_port",
-   "country": "GBR",
-   "state": "STATE_GUATEMALA",
-   "action": "force_tier",
-   "tier": 2
-  },
-  {
-   "building": "building_port",
-   "country": "MKT",
-   "state": "STATE_NICARAGUA",
-   "action": "force_tier",
-   "tier": 2,
-   "owner": "GBR"
-  },
-  {
-   "building": "building_port",
-   "country": "GBR",
-   "state": "STATE_BAHAMAS",
-   "action": "force_tier",
-   "tier": 2
-  },
-  {
-   "building": "building_port",
-   "country": "FRA",
-   "state": "STATE_WEST_INDIES",
-   "action": "force_tier",
-   "tier": 2
-  },
-  {
-   "building": "building_port",
-   "country": "GBR",
-   "state": "STATE_WEST_INDIES",
-   "action": "force_tier",
-   "tier": 2
-  },
-  {
-   "building": "building_port",
-   "country": "GBR",
-   "state": "STATE_JAMAICA",
-   "action": "force_tier",
-   "tier": 2
-  },
-  {
-   "building": "building_port",
-   "country": "FRA",
-   "state": "STATE_GUAYANA",
-   "action": "force_tier",
-   "tier": 2
-  },
-  {
-   "building": "building_port",
-   "country": "GBR",
-   "state": "STATE_GUAYANA",
-   "action": "force_tier",
-   "tier": 2
-  },
-  {
-   "building": "building_port",
-   "country": "GBR",
-   "state": "STATE_SOUTH_ATLANTIC_ISLANDS",
-   "action": "force_tier",
-   "tier": 2
-  },
-  {
-   "building": "building_port",
-   "country": "ABU",
-   "state": "STATE_ABU_DHABI",
-   "action": "force_tier",
-   "tier": 2,
-   "owner": "GBR"
-  },
-  {
-   "building": "building_port",
-   "country": "BIC",
-   "state": "STATE_TENASSERIM",
-   "action": "force_tier",
-   "tier": 2,
-   "owner": "GBR"
-  },
-  {
-   "building": "building_port",
-   "country": "BIC",
-   "state": "STATE_PEGU",
-   "action": "force_tier",
-   "tier": 2,
-   "owner": "GBR"
-  },
-  {
-   "building": "building_port",
-   "country": "PLY",
-   "state": "STATE_TAHITI",
-   "action": "force_tier",
-   "tier": 2,
+   "levels": 1,
    "owner": "FRA"
   },
   {
-   "building": "building_port",
-   "country": "NSW",
-   "state": "STATE_NORTH_ISLAND",
-   "action": "force_tier",
+   "action": "create",
+   "industry": "port",
    "tier": 2,
+   "country": "FRA",
+   "state": "STATE_ORAN",
+   "levels": 1,
+   "owner": "FRA"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "FRA",
+   "state": "STATE_IVORY_COAST",
+   "levels": 1,
+   "owner": "FRA"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "FRA",
+   "state": "STATE_SENEGAL",
+   "levels": 1,
+   "owner": "FRA"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "SIL",
+   "state": "STATE_SENEGAL",
+   "levels": 1,
    "owner": "GBR"
   },
   {
-   "building": "building_port",
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "SIL",
+   "state": "STATE_SIERRA_LEONE",
+   "levels": 1,
+   "owner": "GBR"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "SIL",
+   "state": "STATE_GOLD_COAST",
+   "levels": 1,
+   "owner": "GBR"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "SIL",
+   "state": "STATE_SOUTH_CAMEROON",
+   "levels": 1,
+   "owner": "GBR"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "ORG",
+   "state": "STATE_WASHINGTON",
+   "levels": 1,
+   "owner": "GBR"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "GBR",
+   "state": "STATE_BERMUDA",
+   "levels": 1,
+   "owner": "GBR"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "GBR",
+   "state": "STATE_GUATEMALA",
+   "levels": 1,
+   "owner": "GBR"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "MKT",
+   "state": "STATE_NICARAGUA",
+   "levels": 1,
+   "owner": "GBR"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "GBR",
+   "state": "STATE_BAHAMAS",
+   "levels": 1,
+   "owner": "GBR"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "FRA",
+   "state": "STATE_WEST_INDIES",
+   "levels": 1,
+   "owner": "FRA"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "GBR",
+   "state": "STATE_WEST_INDIES",
+   "levels": 1,
+   "owner": "GBR"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "GBR",
+   "state": "STATE_JAMAICA",
+   "levels": 1,
+   "owner": "GBR"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "FRA",
+   "state": "STATE_GUAYANA",
+   "levels": 1,
+   "owner": "FRA"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "GBR",
+   "state": "STATE_GUAYANA",
+   "levels": 1,
+   "owner": "GBR"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "GBR",
+   "state": "STATE_SOUTH_ATLANTIC_ISLANDS",
+   "levels": 1,
+   "owner": "GBR"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "ABU",
+   "state": "STATE_ABU_DHABI",
+   "levels": 1,
+   "owner": "GBR"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "BIC",
+   "state": "STATE_TENASSERIM",
+   "levels": 1,
+   "owner": "GBR"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "BIC",
+   "state": "STATE_PEGU",
+   "levels": 1,
+   "owner": "GBR"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "PLY",
+   "state": "STATE_TAHITI",
+   "levels": 1,
+   "owner": "FRA"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
+   "country": "NSW",
+   "state": "STATE_NORTH_ISLAND",
+   "levels": 1,
+   "owner": "GBR"
+  },
+  {
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
    "country": "NET",
    "state": "STATE_GOLD_COAST",
-   "action": "force_tier",
-   "tier": 2
+   "levels": 1,
+   "owner": "NET"
   },
   {
-   "building": "building_port",
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
    "country": "NET",
    "state": "STATE_WEST_INDIES",
-   "action": "force_tier",
-   "tier": 2
+   "levels": 1,
+   "owner": "NET"
   },
   {
-   "building": "building_port",
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
    "country": "NET",
    "state": "STATE_GUAYANA",
-   "action": "force_tier",
-   "tier": 2
+   "levels": 1,
+   "owner": "NET"
   },
   {
-   "building": "building_port",
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
    "country": "DEI",
    "state": "STATE_EAST_BORNEO",
-   "action": "force_tier",
-   "tier": 2,
+   "levels": 1,
    "owner": "NET"
   },
   {
-   "building": "building_port",
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
    "country": "DEI",
    "state": "STATE_WEST_JAVA",
-   "action": "force_tier",
-   "tier": 2,
+   "levels": 1,
    "owner": "NET"
   },
   {
-   "building": "building_port",
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
    "country": "DEI",
    "state": "STATE_NORTH_SUMATRA",
-   "action": "force_tier",
-   "tier": 2,
+   "levels": 1,
    "owner": "NET"
   },
   {
-   "building": "building_port",
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
    "country": "DEI",
    "state": "STATE_MOLUCCAS",
-   "action": "force_tier",
-   "tier": 2,
+   "levels": 1,
    "owner": "NET"
   },
   {
-   "building": "building_port",
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
    "country": "DEI",
    "state": "STATE_CELEBES",
-   "action": "force_tier",
-   "tier": 2,
+   "levels": 1,
    "owner": "NET"
   },
   {
-   "building": "building_port",
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
    "country": "DEI",
    "state": "STATE_SUNDA_ISLANDS",
-   "action": "force_tier",
-   "tier": 2,
+   "levels": 1,
    "owner": "NET"
   },
   {
-   "building": "building_port",
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
    "country": "ACE",
    "state": "STATE_ACEH",
-   "action": "force_tier",
-   "tier": 2,
+   "levels": 1,
    "owner": "NET"
   },
   {
-   "building": "building_port",
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
    "country": "TID",
    "state": "STATE_WESTERN_NEW_GUINEA",
-   "action": "force_tier",
-   "tier": 2,
+   "levels": 1,
    "owner": "NET"
   },
   {
-   "building": "building_port",
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
    "country": "TID",
    "state": "STATE_MOLUCCAS",
-   "action": "force_tier",
-   "tier": 2,
+   "levels": 1,
    "owner": "NET"
   },
   {
-   "building": "building_port",
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
    "country": "LAN",
    "state": "STATE_WEST_BORNEO",
-   "action": "force_tier",
-   "tier": 2,
+   "levels": 1,
    "owner": "NET"
   },
   {
-   "building": "building_port",
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
    "country": "SMB",
    "state": "STATE_WEST_BORNEO",
-   "action": "force_tier",
-   "tier": 2,
+   "levels": 1,
    "owner": "NET"
   },
   {
-   "building": "building_port",
+   "action": "create",
+   "industry": "port",
+   "tier": 2,
    "country": "PON",
    "state": "STATE_WEST_BORNEO",
-   "action": "force_tier",
-   "tier": 2,
+   "levels": 1,
    "owner": "NET"
   },
   {
@@ -370,5 +426,5 @@
   }
  ],
  "_why_chain_seed": "THE В§2 CHAIN SEED вЂ” RATIFIED STANDING DESIGN (user-ruled 2026-08-16 late evening + Q5a/Q5c the same night, В§10.60.3): every anchorage in the GBR and FRA 1836 markets (the two markets whose LEADER holds screw_frigate from day 0 - tier-1 starting techs are GBR/FRA/USA/PRU/BEL, of whom only these two have overseas empires) becomes a tier-2 (t1 steam, graded 1/10-size) port stub at level 1 (the anchorage clamp holds it there). LEADER-owned anchorages convert plainly; SUBJECT-owned ones (BIC/SIL/ION/NSW/PLY/MKT/ABU/ORG - Q5a ruled after MEASURING that the engine provisions steam ports into these states regardless of the subject s tech, SIL by 1837.1 in the century run) convert with ownership REWRITTEN TO THE OVERLORD (`owner`) and NO tech grant - covered not by an exception but by the REFINED L14 RULE (user, same night): the starting-tech gate binds DOMESTICALLY-owned buildings only; a building wholly owned by foreign countries rides its owners technology (verify_start_techs.mjs parses each block s ownership and prints the foreign-owned skip count). DEI excluded - NET market, leader lacks the tech at start. Each leader gets ONE metal shipyard by converting a small clipper-shipyard block (GBR East Anglia, FRA Brittany; Q6 sizing rule: ceil(stubs / (yard output/stub demand)) yards, min 1 - one each suffices below ~107 stubs), and FRA one motor factory (Q5c: Rhone 1-lv paper mill -> motor t1; FRA holds atmospheric_engine). STEEL IS NOT SEEDED (GBR Yorkshire 6 lv, FRA Alsace 1 lv exist); leader-owned overseas BASIC-port states (Malta/Gibraltar/Malaya) are NOT seeded - the engine provisions their steam stubs within weeks at graded cost (measured). Regenerate with the gen_seed_rules.mjs pattern (vanilla history anchorages x ui/presets.js market membership).",
- "_why_net_seed": "SEED PLACEMENT AND SIZING (user-ruled 2026-08-17). PORTS are granted to every OVERSEAS state in the market and remain CONVERSIONS - each re-tiers a real level-1 anchorage - with subject-owned ones granted to the market leader GOVERNMENT. INDUSTRY grants are CREATED, not converted, and all of a leaders grants sit in ONE state: GBR Home Counties, FRA Brittany, NET Holland (Amsterdam) - each the leader itself, coastal, at or beside the capital. Creation is what makes one state possible: a conversion can only re-tier a building vanilla already put there, and BRITTANY CONTAINS NOTHING BUT SHIPYARDS. It also consumes no vanilla industry, so NET keeps its clipper yards. SIZE IS ONE LEVEL EACH, and the arithmetic is the reason: the only 1836 consumer of steamers is the steam-port stub at 0.7/level, so demand is GBR 18 stubs = 12.6/wk, NET 15 = 10.5, FRA 7 = 4.9, about 28 world-wide - against 65 supplied by a SINGLE metal shipyard level. One level is the smallest indivisible grant and is already over twice world demand; the earlier sizes (GBR 3, FRA 4+4, NET 2+2+2) were inherited from whichever vanilla building the conversion happened to consume and ran 12-53x oversupplied. Run 1 measured the consequence directly: GBRs seeded 3-level yard collapsed to 1 level at 8% staffing making 1.7 steamers/wk. Engines corroborate - one motor level is 40/wk against FRAs 35 (2 railways + a yard) and NETs 15 (a yard alone)."
+ "_why_net_seed": "THE SEED, as ruled 2026-08-17 (supersedes every earlier shape). NOTHING IS REPLACED - no replacement was ever intended, and an earlier draft using force_tier CONVERTED 40 anchorages into steam ports, silently deleting their tier-0 clipper port and that clipper demand with it. The design is purely additive: (1) ANCHORAGES STAY as tier-0 clipper ports at level 1, exactly as vanilla places them; (2) a tier-1 STEAM PORT of level 1 is CREATED beside each one, in every eligible overseas state of a seeded market, owned by the market leaders GOVERNMENT - placement is the states own region_state, ownership is the leader, which are different questions; (3) where the market would otherwise carry steamer/motor/steel DEMAND WITH NO SUPPLY, one level of the missing industry is created in a coastal state at or beside the leaders capital. Measured against the vanilla 1836 map: GBR already has steel AND engines (Yorkshire), so it needs only the metal shipyard; FRA has steel but no engines, so it needs the yard and a motor works; NET has neither, so it needs all three. Sizes are one level each because the only 1836 steamer consumer is the steam-port stub at 0.7/level - about 28/wk world-wide against 65 from a single shipyard level."
 }
