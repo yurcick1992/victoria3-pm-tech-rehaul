@@ -556,6 +556,67 @@ function Test-LmL9 {
 }
 
 # ============================================================== L12 ====
+function Test-LmL17 {
+    <#
+      L17 - A RUN THAT FAILED IS RECORDED AS `ok`, AND THE ARM'S n SILENTLY SHRINKS.
+
+      The scheduler derives a run's status from the OBSERVER'S EXIT CODE alone, and the observer exits
+      0 even when it ABANDONS a run - on a watchdog timeout, on a STOP file, or on a resume it gave up
+      on. So a run that reached 1838 of a planned 1936 is counted beside three that reached 1936, the
+      arm reports n=4, and every mean is computed over a population that never existed.
+
+      Nothing was missing to catch it: each run's own meta.json already carries reached_ingame_date,
+      until_date, self_quit and abandoned_reason. Nothing read them. This is the generating cause of
+      the four retrospective n-corrections in SESSION_VERDICTS.md - techtree-full-n3 and wages-n3 are
+      n=2, vanilla-retest's nineteen runs are sixteen probes and three failed resumes, and
+      canon-ports-n2 is n=1 for the century.
+
+      DETECTOR: for every ENDED run in the session, compare reached_ingame_date against until_date and
+      report any run that fell short, or that carries a non-empty abandoned_reason. It does NOT judge
+      why - a deliberate STOP is as much a shortfall for COUNTING purposes as a crash is, and which of
+      those it was belongs in the session's VERDICT.md, written by a human.
+      ⚠ A run still in flight legitimately has no `ended` yet; those are counted separately and never
+      failed, for the same reason L12 skips them - a detector that cries wolf on every mid-batch check
+      is one people learn to ignore, which loses the whole point of the register.
+      ⚠ It cannot run at build time: it reads a session. N/A without -Session, exactly like L12.
+    #>
+    if (-not $Session) { Add-Result 'L17' 'a failed run recorded as ok' 'N/A' 'no -Session given (this entry is post-run)'; return }
+    if (-not (Test-Path $Session)) { Add-Result 'L17' 'a failed run recorded as ok' 'FAIL' "no such session: $Session"; return }
+
+    $short = @(); $ended = 0; $inflight = 0
+    foreach ($run in @(Get-ChildItem $Session -Directory)) {
+        $meta = Join-Path $run.FullName 'meta.json'
+        if (-not (Test-Path $meta)) { continue }
+        $m = $null
+        try { $m = Get-Content $meta -Raw -Encoding UTF8 | ConvertFrom-Json } catch { }
+        if (-not $m) { $short += "$($run.Name): meta.json unreadable"; continue }
+        if (-not $m.ended) { $inflight++; continue }
+        $ended++
+
+        $reached = $null; $target = $null
+        if ("$($m.reached_ingame_date)" -match '^(\d{4})\.(\d+)\.(\d+)') { $reached = [int]$Matches[1]*10000 + [int]$Matches[2]*100 + [int]$Matches[3] }
+        if ("$($m.until_date)"        -match '^(\d{4})\.(\d+)\.(\d+)') { $target  = [int]$Matches[1]*10000 + [int]$Matches[2]*100 + [int]$Matches[3] }
+
+        $why = @()
+        if ($null -ne $reached -and $null -ne $target -and $reached -lt $target) {
+            $why += "reached $($m.reached_ingame_date) of $($m.until_date)"
+        }
+        if ("$($m.abandoned_reason)".Trim()) { $why += "abandoned: $($m.abandoned_reason)" }
+        if ($why.Count) { $short += "$($run.Name): $($why -join ' | ')" }
+    }
+
+    $note = "$ended ended run(s)"
+    if ($inflight) { $note = "$note, $inflight still in flight" }
+
+    if ($short.Count) {
+        Add-Result 'L17' 'a failed run recorded as ok' 'FAIL' ("$($short.Count) of $ended ended run(s) did NOT complete - do not count them in this arm's n:`n    " + ($short -join "`n    "))
+    } elseif ($ended -eq 0) {
+        Add-Result 'L17' 'a failed run recorded as ok' 'N/A' 'no ended runs in this session yet'
+    } else {
+        Add-Result 'L17' 'a failed run recorded as ok' 'PASS' "$note, all reached their target date"
+    }
+}
+
 function Test-LmL12 {
     <#
       L12 - A SESSION WHOSE SAVES WERE REAPED BUT WHOSE SUMMARIES ARE NOT THERE.
@@ -634,7 +695,8 @@ $CHECKS = @(
     # (never FAIL) when no -Session is given, so it costs a build nothing.
     @{ Id = 'L12'; Artifact = $false; Fn = { Test-LmL12 } },
     @{ Id = 'L14'; Artifact = $true;  Fn = { Test-LmL14 } },
-    @{ Id = 'L15'; Artifact = $true;  Fn = { Test-LmL15 } }
+    @{ Id = 'L15'; Artifact = $true;  Fn = { Test-LmL15 } },
+    @{ Id = 'L17'; Artifact = $false; Fn = { Test-LmL17 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 

@@ -64,9 +64,9 @@ closed.
 | L13 | A starting factory converted onto a tier its own production method contradicts | **MASKED, not fixed — detector not yet written** |
 | L14 | A country starts with a building its own technologies cannot unlock | AUTO |
 | L15 | A country LOSES a starting technology vanilla gives it | AUTO |
-| L16 | A schedule key honoured in `defaults` for some fields and silently dropped for others | **REGISTERED, DETECTOR OWED** |
-| L17 | A run that FAILED is recorded as `ok`, and the arm count silently shrinks | **REGISTERED, DETECTOR OWED** |
-| L18 | A tier that cannot break even at ANY price the engine can produce | **DETECTOR BUILT + PROVEN — build wiring owed** |
+| L16 | A schedule key honoured in `defaults` for some fields and silently dropped for others | AUTO |
+| L17 | A run that FAILED is recorded as `ok`, and the arm count silently shrinks | AUTO (post-run, `-Session`) |
+| L18 | A tier that cannot break even at ANY price the engine can produce | AUTO |
 | L19 | An orphaned game process makes the next run fail instantly and silently | **REGISTERED, DETECTOR OWED** |
 
 ---
@@ -811,3 +811,52 @@ a stale game process is exactly the kind of thing to catch before the first buil
 
 **Prove it** by starting the game by hand, then launching any schedule: the run must refuse with the PID
 named, instead of exiting after one line.
+
+---
+
+### L16 — a `defaults` key honoured for some fields and silently dropped for others · AUTO
+
+**The failure.** The schedule JSON accepts the key, nothing reads it, and the run proceeds on a
+fallback. Nothing errors. The result looks like the METRIC failed rather than the plumbing.
+
+**The case it was registered from:** `dump_dates` was read as `Val $r "dump_dates" @()` — from the RUN
+ONLY — while `tags` and `metrics` on the next two lines both fall back to `$defaults`. A defaults-level
+`dump_dates` therefore did nothing, and every run fell back to ONE computed dump date instead of the
+twelve asked for. **A per-decade series silently becomes a single endpoint.**
+
+**Fixed and guarded, 2026-08-17.** `dump_dates` now falls back to `$defaults` like its neighbours; and
+the scheduler **throws on any `defaults` key it does not thread through**, naming the key, before it
+builds or launches anything. Keys prefixed `_` are treated as comments. Adding a defaults key now means
+adding it to `$KNOWN_DEFAULT_KEYS` and threading it, or the batch refuses to start.
+
+⚠ **The guard matters more than the fix** — the next key added has the identical hazard. Same argument
+as L5 about spec keys: a comment on the right line did not prevent this the first time.
+
+**Tripwire proven both ways:** a real schedule passes `-WhatIf`; the same schedule with a
+`dump_dates_typo` key added to `defaults` throws, naming `dump_dates_typo`.
+
+---
+
+### L17 — a run that FAILED is recorded as `ok`, and the arm's n silently shrinks · AUTO (post-run)
+
+**The failure.** The scheduler derives a run's status from the **observer's exit code alone**, and the
+observer exits 0 even when it ABANDONS a run — on a watchdog timeout, on a STOP file, on a resume it
+gave up on. A run that reached 1838 of a planned 1936 is then counted beside three that reached 1936:
+the arm reports n=4, and every mean is computed over a population that never existed.
+
+**Nothing was missing to catch it.** Each run's own `meta.json` already carries `reached_ingame_date`,
+`until_date`, `self_quit` and `abandoned_reason`. Nothing read them. This is the generating cause of the
+**four retrospective n-corrections** in `SESSION_VERDICTS.md` — `techtree-full-n3` and `wages-n3` are
+n=2, `vanilla-retest`'s nineteen runs are sixteen probes plus three failed resumes, and
+`canon-ports-n2` is n=1 for the century.
+
+**The detector** (`preflight.ps1 -Session <dir>`, N/A at build time like L12): for every ENDED run,
+compare `reached_ingame_date` against `until_date` and report any run that fell short or carries a
+non-empty `abandoned_reason`. It deliberately does **not** judge why — a deliberate STOP is as much a
+shortfall for COUNTING as a crash is, and which it was belongs in the session's `VERDICT.md`.
+⚠ Runs still in flight are counted separately and never failed; a detector that cries wolf on every
+mid-batch check is one people learn to ignore, which loses the register.
+
+**Tripwire proven both ways, 2026-08-17:** PASS on `20260817_225120_port-ramp-monthly-n3` (3 ended runs,
+all reached 1841.2.1); **FAIL** on `20260817_152516_anchorage-netseed-n1`, a run killed by the STOP file
+— and the whole preflight goes red with it.

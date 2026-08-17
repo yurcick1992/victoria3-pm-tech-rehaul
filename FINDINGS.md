@@ -7228,6 +7228,16 @@ foreign-owned building standing in a Portuguese state counts under POR. Whether 
 (a country constructing what it cannot unlock) or someone built them there is **not determined** by this
 reading, and the two have different implications.
 
+⭐ **BOTH OPEN POINTS CLOSED BY RULING (user, 2026-08-17), not by measurement — recorded as such.**
+- *Who builds the runtime ports:* **whoever holds the technology**. The user's reading: a missing port of
+  any type overrides all other construction decisions, rather inelegantly, so any qualifying builder
+  supplies it. Stated at ~95% confidence, and **we are not diving further** — the question is closed for
+  working purposes, and anything built on it should cite this ruling rather than a measurement.
+- *Whether an overlord can construct in a subject's state at runtime:* **not a question — it can.** The
+  real question was only whether doing so throws errors, and since the errors are confined to the 1836
+  history realisation and do not occur afterwards, **the question is moot**.
+
+⚠ The paragraph below is kept for the record of what was and was not measured.
 ⚠ **AND THE GENERAL CASE REMAINS UNMEASURED.** Whether an overlord can *construct* an ordinary building —
 a motor industry, say — in a subject's state at runtime while that subject lacks the technology is **NOT
 TESTED**. It is plausible; the user reports it from play, and in-game construction is evidently a

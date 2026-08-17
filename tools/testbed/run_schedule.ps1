@@ -125,6 +125,28 @@ $defTags     = @(Val $defaults "tags" @("GBR","FRA"))
 $defMetrics  = @(Val $defaults "metrics" @("market_goods"))
 $defAutosave = Val $defaults "autosave_interval" "five_year"
 $defTimeout  = [int](Val $defaults "timeout_minutes" 360)
+$defDumps    = @(Val $defaults "dump_dates" @())
+
+# ---- L16: A `defaults` KEY THAT IS HONOURED FOR SOME FIELDS AND SILENTLY DROPPED FOR OTHERS --------
+# `dump_dates` used to be read from the RUN ONLY, with no $defaults fallback - unlike `tags` and
+# `metrics` sitting on the very next lines. So a defaults-level dump_dates was accepted by the JSON,
+# read by nothing, and every run quietly fell back to ONE computed dump date instead of the twelve
+# that were asked for: a per-decade series silently becomes a single endpoint, and the run looks like
+# the METRIC failed rather than the plumbing. The fallback above closes it.
+# ⚠ THE GUARD MATTERS MORE THAN THE FIX. The next key added to `defaults` will have the same hazard,
+# so this refuses to start on any defaults key the scheduler does not actually thread through - and
+# it names the key. A comment sitting on the right line did not stop this happening the first time
+# (TESTBED_LANDMINES L5 makes the same point about spec keys); a check that throws does.
+$KNOWN_DEFAULT_KEYS = @('tags','metrics','autosave_interval','timeout_minutes','dump_dates','wages_markets')
+if ($defaults) {
+    $unknown = @($defaults.PSObject.Properties | ForEach-Object { $_.Name } |
+                 Where-Object { $KNOWN_DEFAULT_KEYS -notcontains $_ -and $_ -notlike '_*' })
+    if ($unknown.Count) {
+        throw ("L16: schedule 'defaults' carries key(s) the scheduler does not thread through: " +
+               ($unknown -join ', ') +
+               ". A defaults key that nothing reads is accepted silently and changes nothing, which reads as a failed METRIC rather than failed plumbing. Either move it to each run, or thread it through and add it to `$KNOWN_DEFAULT_KEYS. (Keys prefixed with _ are treated as comments.)")
+    }
+}
 
 # ---- validate everything BEFORE building or launching anything ----
 $setupNames = @($setups.PSObject.Properties | ForEach-Object { $_.Name })
@@ -162,7 +184,7 @@ foreach ($r in $runs) {
     if ($setupNames -notcontains $sid)  { throw "run #$i references unknown setup '$sid'" }
     $until = Val $r "until" ""
     if ($until -notmatch '^\d{3,4}\.\d{1,2}\.\d{1,2}$') { throw "run #$i has a bad 'until' date: '$until'" }
-    $dumps = @(Val $r "dump_dates" @())
+    $dumps = @(Val $r "dump_dates" $defDumps)   # L16: defaults-level dump_dates is now honoured
     if ($dumps.Count -eq 0) { $dumps = @("$([int]$until.Split('.')[0] - 1).1.1") }   # year before `until`
     foreach ($d in $dumps) {
         if ($d -notmatch '^\d{3,4}\.\d{1,2}\.1$') { throw "run #$i dump date '$d' must be the 1st of a month (on_monthly_pulse only fires then)" }

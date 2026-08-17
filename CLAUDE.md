@@ -1196,8 +1196,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         construction). ⚠ Never read target_be here; recompute from the goods block.
                         ⚠⚠ It passes on the current book — 0 of 105 — BY DESIGN, not by luck: the ruled
                         threshold is target_be ≤ 400 and the port sits at 270. A passing run is NOT evidence
-                        the port is fine. ⚠ NOT yet called by build.ps1/lint.sh (L10: the canon-ports-n2
-                        batch was live); the one-line wiring is owed
+                        the port is fine. ✅ WIRED INTO build.ps1 (2026-08-17), immediately after lint.sh, and it
+                        THROWS on a non-zero exit. Kept separate from lint.sh on purpose — see the two
+                        reasons above
   emit_techs.mjs        THE TECH TREE, EMITTED (ROADMAP step 1) — called by build.ps1, which THROWS if it
                         fails. Reads config/tech_tree_options.json's SHIPPING option and writes the additive
                         new-technology file, the era moves into vanilla's production AND military files, the
@@ -2437,11 +2438,14 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   counts as complete and the arm's `n` silently shrinks. Everything needed is already in that run's own
   `meta.json` (`reached_ingame_date`, `self_quit`, `abandoned_reason`) and nothing reads it. Found live
   2026-08-13; it is the generating cause of the FOUR retrospective n-corrections already in
-  `SESSION_VERDICTS.md`. REGISTERED, **DETECTOR OWED** ·
-  **L16 a schedule key that works in `defaults` for some fields and is SILENTLY DROPPED for others**
-  (`dump_dates` is run-only, with no `$defaults` fallback unlike every neighbouring key — a
-  defaults-level one is ignored and every run falls back to ONE dump date instead of twelve, so a
-  per-decade series silently becomes a single endpoint. REGISTERED, **DETECTOR OWED**) ·
+  `SESSION_VERDICTS.md`. ✅ AUTO since 2026-08-17: `preflight.ps1 -Session <dir>` compares every
+  ENDED run's `reached_ingame_date` against its `until_date` and fails on any shortfall or non-empty
+  `abandoned_reason`. It does NOT judge WHY — a deliberate STOP is as much a shortfall for COUNTING as a
+  crash, and which it was belongs in the VERDICT. Proven both ways on real sessions ·
+  **L16 a schedule key that works in `defaults` for some fields and is SILENTLY DROPPED for others (AUTO since 2026-08-17)**
+  (`dump_dates` USED TO BE run-only, with no `$defaults` fallback unlike every neighbouring key — a
+  defaults-level one was ignored and every run fell back to ONE dump date instead of twelve, so a
+  per-decade series silently became a single endpoint. Both halves fixed: AUTO since 2026-08-17 — the scheduler throws on any `defaults` key it does not thread through, naming it, and `dump_dates` now falls back to defaults like its neighbours) ·
   **L12 savegames reaped without a readable
   summary** — the one POST-RUN entry, walked with `preflight.ps1 -Session <dir>` and N/A on a normal build.
   ⚠⚠ **L14 AND L15 ARE `N/A` FOR AN INSTRUMENT ARM, AND GETTING THAT WRONG MADE THE CONTROL ARM

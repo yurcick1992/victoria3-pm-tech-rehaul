@@ -1454,3 +1454,53 @@ buildability was two, not three, and both are now granted (§10.55).
 **The general lesson**: an identifier class is a whitelist, and a whitelist that is missing a character
 fails SILENTLY and in the permissive direction. Derive the class from the data — a one-line census
 (`grep -oE '^[A-Za-z_0-9-]+ = \{' | grep -- -`) would have found all four in seconds.
+
+---
+
+## 2026-08-17 — `ROOT` is not valid in a `scripted_progress_bar`, and it cost 18,720 error lines a run
+
+**Symptom.** Every modded run poured `Event target link 'owner' returned an invalid object` into
+`error.log` — **18,723 lines** in the shipped century run, against **0** in a vanilla run of the same
+length. 18,720 of them name our own file,
+`common/scripted_progress_bars/zzz_pm_rehaul_research_bars.txt`.
+
+**The line.** The research events' war gate, emitted by `emit_research_events.mjs`:
+
+```
+any_scope_war = { any_scope_front = { any_scope_general = {
+    owner = ROOT
+    num_mobilized_battalions >= 100
+} } }
+```
+
+**What it is NOT.** Three plausible causes were checked and cleared before the real one:
+
+- **Not the scope chain.** Vanilla runs the *identical* `war → front → general → owner = ROOT` chain in
+  `common/journal_entries/00_nursing.txt`. 14 of vanilla's 21 `any_scope_front` blocks nest
+  `any_scope_general`.
+- **Not the `owner` link being unsupported.** 17 vanilla `any_scope_general` blocks use `owner =`.
+- **Not an occasional general with no owner** — the hypothesis the `owner ?= { … }` safe-link idiom
+  exists for. **All 160** `owner = ROOT` lines in the file error, **~117 times each, uniformly**. A
+  missing owner on *some* general fires intermittently; this fires on every evaluation.
+
+**The cause.** `ROOT` is not a valid scope inside a `scripted_progress_bar`. The census that settles it:
+**vanilla uses `ROOT` zero times across all 14 of its progress-bar files**; we use it 160 times.
+Vanilla's identical chain lives in a **journal entry**, where ROOT is the JE's country. A bar has no
+ROOT, so the comparison target is invalid and the trigger fails every tick, in every country holding a
+war bar. The engine's shipped `scripted_progress_bars.md` documents the syntax but not the scope.
+
+⚠ **The damage is noise, not behaviour** — as far as measured. The gate simply never passes, so the war
+half of the research events cannot fire. That is a real content defect, but it does not corrupt the
+economy, and every economic number taken from these runs stands.
+
+**Fix: NOT YET APPLIED.** It needs a design decision rather than a one-liner, because the bar genuinely
+needs "generals belonging to the country this bar is for" and the back-reference is exactly what is
+unavailable. The candidates: express the gate through the country's own `any_military_formation`
+(never leaves our scope, so no owner test is needed at all), or move the war test into the journal
+entry — where ROOT is valid — and have the bar read a script value. Either needs a run to verify,
+since the failure mode is silent.
+
+**The transferable lesson.** *A construct being idiomatic in vanilla does not make it valid in your
+context.* The chain, the link and the comparison were each copied faithfully from a vanilla file that
+uses all three — into a different kind of file, where one of them has no meaning. When script fails
+uniformly rather than occasionally, suspect the **context**, not the data.

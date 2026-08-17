@@ -1271,6 +1271,23 @@ if (-not $NoLint) {
     } else {
         Write-Output "bash (Git Bash) not found - run the linter separately:  bash tools/lint.sh"
     }
+
+    # --- L18: THE SOLVENCY LINTER (BALANCE_FRAMEWORK 10.63) -----------------------------------------
+    # Every tier's BASE production method must be able to break even at SOME price inside the engine's
+    # own 25-175% band: target BE <= 175, wages included. A tier that cannot is unsellable at any price
+    # the market can produce, and nothing else notices - which is exactly why F67 survived for months.
+    # DELIBERATELY SEPARATE from lint.sh's BE check, for the two reasons that let F67 through: that
+    # check reads ladder_tiers.txt, which EXCLUDES no_mass_be industries (port, railway, power - three
+    # of the six sub-1 tiers), and its test is CIRCULAR, comparing a recipe against a target_be the
+    # solver restates FROM that recipe. This one recomputes from the goods block and reads nothing else.
+    $solvLint = Join-Path $repo 'tools/lint_solvency.mjs'
+    if (Test-Path $solvLint) {
+        Write-Output "Running solvency linter (L18)..."
+        & node $solvLint --config $cfgPath
+        if ($LASTEXITCODE -ne 0) { throw "SOLVENCY LINT FAILED (L18): a tier cannot break even at any price in the engine's 25-175% band. See BALANCE_FRAMEWORK 10.63." }
+    } else {
+        Write-Output "WARN: tools/lint_solvency.mjs missing - L18 not checked"
+    }
 }
 # alt builds used a throwaway ladder in TEMP; remove it now that the linter is done with it.
 if ($isAlt -and $ladderPath -and (Test-Path $ladderPath)) { Remove-Item $ladderPath -Force -ErrorAction SilentlyContinue }
