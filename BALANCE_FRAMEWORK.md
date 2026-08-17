@@ -5152,3 +5152,88 @@ mod's own new technologies in that tree carry the multiplier as their flat weigh
 round-tripped to the parent sheet over postMessage because the config write path (Export / Build now)
 lives there. Implemented in `emit_techs.mjs` (AIW), sections 2/2b/3 generalized so all three trees
 have an emission path (the 2b lesson: a change routed at a tree with no path is silently dropped).
+
+---
+
+## 10.62 THE SOLVENCY BOUND — the absolute floor the ladder never had (user-ruled 2026-08-17)
+
+**The rule.** A tier's **base production method** must be able to break even at **some price the engine
+can actually produce**. Tested at the most favourable combination the band allows — **output at +75%,
+every input at −75%**, wages included:
+
+```
+solvent  ⟺  1.75 · O_base  ≥  0.25 · I_base  +  W        where W = I_base · wage_pct/(1 − wage_pct)
+         ⟺  O:I ≥ 0.333 at the default wage_pct 0.25      (goods-only it would be 0.143)
+```
+
+A tier that fails is insolvent at **every reachable price**. That is not a balance opinion, it is
+arithmetic about a building that can never pay for itself.
+
+⚠⚠ **DELIBERATELY NOT "a recipe may not destroy value at base prices"** — the easy rule, explicitly
+rejected in the same ruling, and rightly. *An early tier is MEANT to be insolvent at base prices*: its
+whole design is to be carried by a high output price and then driven out as later tiers deflate that
+price. A sub-1 output:input ratio at base is legitimate and stays legitimate (**§10.50.1 is unchanged**).
+Six tiers destroy value at base prices today and **all six remain legal**.
+
+⚠ **THE §10.50 RECIPE RATCHET IS UNAFFECTED AND STAYS** (user, same ruling): *output value ÷ input value,
+both at base prices, may not decrease with era within an industry*. The two rules are orthogonal and
+neither subsumes the other — the ratchet is **relative** (this tier against the one below), the solvency
+bound is **absolute** (this tier against the engine). The ratchet is exactly what the bottom rung of a
+ladder escapes, which is how `building_port` got where it is.
+
+### Why wages are in it, and why they dominate
+
+`wage_pct` is the wage fraction of **total** cost, so `W = I_base · wp/(1−wp)` — the same quantity
+`lint_profitability.awk` uses, i.e. the repo's standard **full** break-even. Wages matter more here than
+anywhere else because **they do not scale with goods prices**. At the favourable extreme the discounted
+goods bill is `0.25·I` while wages are still `0.333·I`: the wage term is the **larger** one. Including
+them more than doubles the rule's strictness (0.143 → 0.333).
+
+### ⚠ What it catches today: NOTHING — and that was known before it shipped
+
+The user asked the right question before ruling ("will this really cover anything? ×4 input decrease is a
+huge boost"), and the answer measured out at **0 of 105 tiers**. The rule is equivalent to
+`target_be ≤ 400`, and the worst tier in the book is `building_port` at **270** — it clears the best case
+by **×1.48**, wages included. **This is a floor against a future catastrophe, not a fix for F67.**
+
+The three candidate lines, for whoever revisits this:
+
+| test | equivalent to | threshold O:I | fails today |
+|---|---|---|---|
+| **output +75%, inputs −75%** — SHIPPED | `target_be ≤ 400` | 0.333 | **0** |
+| output +75%, inputs at base | `target_be ≤ 175` | 0.762 | port 270, railway 217, synthetics 208 |
+| output at base — REJECTED | `target_be ≤ 100` | 1.333 | 6 |
+
+⭐ **The middle line is the open question**, and it is the one that would have caught F67. It is also the
+exact formalisation of the ruling's own stated principle — *"early tiers are intended to bring profits at
+a higher output price"* — since it permits base-price insolvency and base-price value destruction and
+forbids only *"no output price in the band saves it"*. The difference from the shipped line is solely
+whether **inputs may also collapse to 25%** while the output is at its ceiling. Evidence that they cannot:
+over 100 in-game years across nine markets in `20260817_104849_canon-ports-n2`, clippers never traded
+below **85%** of base while merchant marine never exceeded **175%** — the shipped rule's "best case" is
+not a state the game produces. **Not ruled; do not implement it without asking.**
+
+### Where it is enforced
+
+- **Solver** — `solveInputsAt()` in `tools/era_scenarios.mjs`. `Xsolv` is a hard clamp beside the existing
+  `Xmin` (the 4:1 lean floor) and `Xmono` (the ratchet). It can never fight `Xmin`: that sits at
+  `I = O/ioCap ≤ 0.25·O` and this at `I = 3·O`, a factor of twelve apart, so the lean floor keeps the last
+  word. ⚠ **The clamp is re-checked after `minMainInput`**, because the negative-goods floor is applied
+  per good and *after* it — a tier with large secondary reductions can be pushed back over the line by a
+  different hard invariant. Two hard rules in genuine conflict must **fail loudly** rather than have one
+  silently win, so that case records a breach and `assertSolvency()` **throws before the config write**.
+  "Fail solving" is literal: the solve refuses to write a config it knows is unsolvable.
+- **Build** — `tools/lint_solvency.mjs`, a **separate** check, for two reasons that are the whole story of
+  how F67 survived. (1) **Scope**: `lint_profitability.awk` reads `ladder_tiers.txt`, which `build.ps1`
+  writes only for industries with neither `follows_be:false` nor `no_mass_be`, so port/railway/power — three
+  of the six sub-1 tiers — are invisible to it. (2) **Circularity**: that linter compares a recipe against
+  `target_be`, which the solver restates *from that recipe*, so its deviation is 0 by construction and its
+  own source comment concedes it "can no longer tell us the balance is wrong". ⚠ **This check must never
+  read `target_be`**; it recomputes from the goods block against `tools/goods_prices.tsv`.
+
+⚠ **NOT YET WIRED INTO `build.ps1` / `lint.sh` (2026-08-17).** `canon-ports-n2` was live and the scheduler
+rebuilds the mod before every run, so touching the build path would have changed the instrument between
+run 1 and run 2 (**landmine L10**). The checker is written, committed and **proven to trip** — pointed at a
+config with `building_port` at 2.5 clippers it exits 1 and names the tier — and the one-line call is owed
+the moment the batch reports.
+

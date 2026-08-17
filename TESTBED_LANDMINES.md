@@ -66,7 +66,7 @@ closed.
 | L15 | A country LOSES a starting technology vanilla gives it | AUTO |
 | L16 | A schedule key honoured in `defaults` for some fields and silently dropped for others | **REGISTERED, DETECTOR OWED** |
 | L17 | A run that FAILED is recorded as `ok`, and the arm count silently shrinks | **REGISTERED, DETECTOR OWED** |
-| L18 | A tier that cannot break even at ANY price the engine can produce | **REGISTERED, DETECTOR OWED** |
+| L18 | A tier that cannot break even at ANY price the engine can produce | **DETECTOR BUILT + PROVEN — build wiring owed** |
 
 ---
 
@@ -633,11 +633,27 @@ every run and the batch was live. Editing it mid-batch would have changed the in
 
 ## L18 — a tier that cannot break even at ANY price the engine can produce
 
-**Status: REGISTERED, DETECTOR OWED.** Found 2026-08-17 while diagnosing F67, from the economy's
-behaviour in flight rather than from any check. Detector not written the same hour because
-`preflight.ps1` runs inside `build.ps1` before every run and the `canon-ports-n2` batch was live
-(L10) — and because the check FAILS on three tiers today, so it has to ship with, or just before,
-the fix.
+**Status: DETECTOR BUILT AND PROVEN — build wiring owed.** Found 2026-08-17 while diagnosing F67, from
+the economy's behaviour in flight rather than from any check. The rule was **ruled by the user the same
+day (§10.62)** and both halves are implemented:
+
+- **Solver** — `Xsolv`, a hard clamp in `solveInputsAt()` beside `Xmin` and the ratchet, plus
+  `assertSolvency()`, which **throws before the config write** if the negative-goods floor pushes a tier
+  back over the line after clamping. The solve refuses to write a config it knows is unsolvable.
+- **Build** — `tools/lint_solvency.mjs`, standalone, covering **every** tier including the `no_mass_be`
+  industries. Proven to trip: pointed at a config with `building_port` at 2.5 clippers it exits 1 with
+  *"needs its output at 444% of base to break even; the engine stops at 175%"*, and stays silent on
+  everything else.
+
+⚠ **The one-line call in `build.ps1`/`lint.sh` is still owed.** `canon-ports-n2` was live when this was
+written and the scheduler rebuilds the mod before every run, so editing the build path would have changed
+the instrument between run 1 and run 2 — **L10**. Wire it the moment the batch reports.
+
+⚠⚠ **AND THE SHIPPED THRESHOLD DOES NOT CATCH THE DEFECT THAT PROMPTED IT.** The ruled test is output at
++75% *and* inputs at −75%, which is `target_be ≤ 400`; the port is 270 and clears it by ×1.48. The rule is
+a floor against a future catastrophe, **not** a fix for F67, and §10.62 records the stricter middle line
+(inputs held at base, `target_be ≤ 175`) as an open, unruled question. Do not read a passing solvency
+check as evidence the port is fine.
 
 **The defect.** `building_port` (era 0) consumes **15.2 clippers to make 9 merchant marine** —
 £912 of input for £450 of output at base prices, a ratio of **0.49**. Vanilla's own
@@ -686,23 +702,30 @@ non-obvious reason it did not:
 | 0.96 | e2 | 139 | yes | `building_steel_mill_bessemer` |
 | 0.96 | e0 | 135 | yes | `building_steel_mill` |
 
-**DETECTOR.** One line of arithmetic, on the EMITTED artifact, per the register's own rule that a
-check reads the artifact and never the generator:
+**DETECTOR — as RULED and as BUILT (§10.62).** ⚠ An earlier draft of this entry proposed
+`BE% > 175`; the **user ruled the weaker outer line instead**, and this section is the ruling, not the
+draft. Both prices go to their most favourable band edge:
 
-> For every emitted tier, compute `BE% = Ibase / ((1 − wage_pct) · Obase) · 100` from the emitted
-> goods block and the shared `tools/goods_prices.tsv`. **THROW if `BE% > 175`** — the engine's own
-> `1 + 0.75` band edge, so the threshold is a game constant, not a tuning choice. Scope is **every
-> tier**, explicitly including `no_mass_be` industries; this check must not inherit the linter's
-> exclusions, because three of the six offenders live inside them.
+> For every tier, take the **base PM** and compute from the goods block and the shared
+> `tools/goods_prices.tsv`: **THROW if `1.75·O_base < 0.25·I_base + W`**, where
+> `W = I_base · wage_pct/(1 − wage_pct)`. 1.75 and 0.25 are the engine's own band edges, so the
+> threshold is a game constant rather than a tuning choice. Scope is **every tier**, explicitly
+> including `no_mass_be` industries — three of the six sub-1 tiers live inside them and are invisible
+> to `lint_profitability.awk`.
+
+Implemented as `tools/lint_solvency.mjs` (build side) and `Xsolv` + `assertSolvency()` in
+`solveInputsAt()` (solver side).
 
 ⚠ **Do not implement it as a bound on `target_be`.** That field is solver output restated from the
 recipe, so a check against it inherits the circularity of layer 2. Recompute from the goods block.
 
 ⚠ **A ratio below 1 is NOT the trigger, and must not be.** §10.50.1's reasoning is still sound —
 a tier may legitimately destroy value at base prices when realised prices carry it. The trigger is
-the sharper and non-negotiable claim: *no reachable price makes this building solvent*. Steel's two
-0.96 rungs are fine and must keep passing; 270 against a 175 ceiling is not a judgement call.
+the sharper claim: *no reachable price makes this building solvent*. Steel's two 0.96 rungs are fine
+and must keep passing. **The §10.50 recipe ratchet is untouched and stays** — it is relative (a tier
+against the one below), this is absolute (a tier against the engine), and neither subsumes the other.
 
-**Prove it** by running the check against the config as of commit `acaf6ad`: it must name exactly
-`building_port` (270), `building_railway` (217) and `building_synthetics_plant` (208), and must be
-silent on both steel rungs.
+**Proven** by running `node tools/lint_solvency.mjs --config <copy>` against a config with
+`building_port` at 2.5 clippers instead of 1.52: it exits **1** with *"needs its output at 444% of base
+to break even; the engine stops at 175%"*, and names nothing else. Against the real config as of
+`acaf6ad` it exits **0** — see the warning above about what that does and does not mean.
