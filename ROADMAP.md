@@ -1202,3 +1202,49 @@ engine exposes **no** counter splitting battle from attrition (only modifiers, a
 `war_gate.require_front: false` in the config already emits `any_scope_general = { … }` with no ROOT —
 a config-only change that stops the errors and makes the gate function, while leaving the cross-war
 leak in place. It is strictly worse than the design above and is recorded only as the cheap escape.
+
+### The war channel — RULED IN DETAIL (user, 2026-08-18)
+
+**The gate** (computed in `on_monthly_pulse_country`, where ROOT is valid — all three clauses bound
+inside ONE front, inside ONE war):
+
+```
+any_scope_war = { any_scope_front = {
+    any_scope_general = { owner = ROOT            num_mobilized_battalions >= 100 }
+    any_scope_general = { NOT = { owner = ROOT }  owner = { has_technology_researched = <tech> } }
+    num_front_casualties = { target = ROOT  value >= 50000 }
+} }
+```
+
+⭐ **The ruling asked for war-level binding (1a) and the casualty clause delivers FRONT-level for free.**
+The threshold was specified as *"50k casualties on a front that contains a technologically superior
+enemy army"*, which is tighter than 1a — and it **removes the dependency on `is_at_war_with`, a trigger
+that does not exist**: a general on the opposite side of a front we are bleeding on is the enemy there
+by construction, so `NOT = { owner = ROOT }` suffices. The state-ownership route proposed for 1b is
+therefore not needed and is dropped.
+
+**Pacing.** War bars move from `weekly_progress` to `monthly_progress`, `max_value = 6`, gate true =
+**+1**. Six qualifying months complete one journal entry and grant `0.5 × era base cost`.
+⭐ This also **retires the pulse-granularity approximation** recorded above: flag and bar both move
+monthly, in step, so there is no stale-flag window at all.
+
+**The two-term structure is retired.** `pmr_term_war_pressed` (+1 for a bare state of war) and
+`pmr_term_war_enemy_has_it` (+2) collapse into ONE gate: a state of war must not tick by itself
+(user, 2026-08-18), so the enemy-has-it condition folds in and the weaker term disappears.
+
+**Flag granularity: ONE VARIABLE PER TECHNOLOGY** (40), `pmr_wargate_<tech>`, set with an expiry just
+over the pulse interval so it lapses without a clearing pass. The bar reads `has_variable`.
+⚠ A single shared flag was rejected: it forces the enemy test back into the bar as country-wide
+`any_enemy_in_war`, which is uncoupled from the war and reintroduces the very leak this removes.
+⚠ **L3/L4 cost is contained by ordering**: countries at peace exit on `is_at_war = yes`; the 40-way
+technology loop runs only after a front has already passed the 100-battalion and 50 000-casualty
+tests, which is rare.
+
+**Unchanged and already correct:** the grant is an ABSOLUTE point value (`era base cost × 0.5`), so
+under an ahead-of-time penalty it stays the same number of points and simply stops being half a
+technology — which is the ruled behaviour.
+
+⚠ **Known property of `num_front_casualties`, accepted:** it is total casualties at that front, not
+battle-only — a location filter, not a cause filter, and no counter in the engine splits battle from
+attrition. At a 50 000 threshold on a front that also holds a superior enemy army, attrition alone is
+unlikely to carry it, but the term is not battle-pure and should not be described as such.
