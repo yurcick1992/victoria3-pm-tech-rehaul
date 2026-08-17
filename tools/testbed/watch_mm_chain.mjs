@@ -117,6 +117,8 @@ if (!args.includes('--access-only')) {
 // second case, and the two are indistinguishable from the level alone.
 if (args.includes('--mm') || args.includes('--verdict')) {
   const G = 'merchant_marine';
+  // the newest year ANY market was observed — the yardstick every series' staleness is measured against
+  const MAX_YEAR = Math.max(...Object.keys(price).map(d => +d.split('.')[0]), 0);
   console.log('\n=== MERCHANT MARINE — THE BREAK INDICATOR  (% of base £' + BASE[G] + ')');
   console.log('    steady climb into ⛔175 and staying = broken · decelerating / stalling / turning over = finding its level');
   const markets = new Set();
@@ -133,17 +135,34 @@ if (args.includes('--mm') || args.includes('--verdict')) {
       prev = { d, p };
     }
     const first = out[0].p, last = out[out.length - 1].p;
+    // ⚠⚠ A SERIES THAT STOPPED IS NOT A STATE THAT PERSISTED. A market vanishes when its owner does —
+    // Prussia became the North German Federation in 1855, which was not in the tag list — and the last
+    // observation then sits there looking like the present. Read as a live reading, PRU's 1852 value of
+    // 175.0 became "pinned at the ceiling for fifty-eight years"; it was two observations and then a
+    // dead country. So every line states how stale its last point is, and a series that ends well before
+    // the others is called DEAD rather than given a shape at all.
+    const lastYr = +out[out.length - 1].d.split('.')[0];
+    const stale = MAX_YEAR - lastYr;
     // deceleration: mean annual increment over the last third vs the first third
     const k = Math.max(1, Math.floor(out.length / 3));
     const mean = a => a.reduce((s, v) => s + v, 0) / (a.length || 1);
     const early = mean(out.slice(1, 1 + k).map(o => o.inc).filter(isFinite));
     const late = mean(out.slice(-k).map(o => o.inc).filter(isFinite));
-    const shape = last >= 174.5 ? 'AT THE CEILING'
-      : late <= 0 ? 'turned over'
-        : late < early * 0.5 ? 'decelerating'
-          : late > early * 1.1 ? 'ACCELERATING' : 'steady climb';
-    console.log('\n--- ' + m + '   ' + f1(first) + '% -> ' + f1(last) + '%   early ' + f1(early)
-      + ' pp/yr, late ' + f1(late) + ' pp/yr  =>  ' + shape);
+    const shape = stale > 10 ? 'SERIES ENDS ' + lastYr + ' (market gone — NOT a current reading)'
+      : last >= 174.5 ? 'AT THE CEILING'
+        : late <= 0 ? 'turned over'
+          : late < early * 0.5 ? 'decelerating'
+            : late > early * 1.1 ? 'ACCELERATING' : 'steady climb';
+    // the peak matters as much as the endpoint: a market that touched 175 once and recovered is a very
+    // different object from one that sits there, and the endpoint alone cannot tell them apart either
+    const peak = out.reduce((a, o) => (o.p > a.p ? o : a), out[0]);
+    console.log('\n--- ' + m + '   ' + f1(first) + '% -> ' + f1(last) + '%'
+      + (stale > 10 ? '' : '   early ' + f1(early) + ' pp/yr, late ' + f1(late) + ' pp/yr')
+      + '  =>  ' + shape);
+    console.log('    peak ' + f1(peak.p) + '% at ' + peak.d.replace(/\.\d+$/, '')
+      + (peak.p >= 174.5 ? '  ⛔ TOUCHED THE CEILING' : '')
+      + (stale > 10 ? '' : '   ·   ' + (out.filter(o => o.p >= 174.5).length) + ' of '
+        + out.length + ' readings at the ceiling'));
     console.log('    ' + out.map(o => o.d.replace(/\.\d+$/, '') + ':' + f1(o.p)).join('  '));
     const l = out[out.length - 1];
     console.log('    latest order book: buy ' + f1(l.buy) + '  sell ' + f1(l.sell)

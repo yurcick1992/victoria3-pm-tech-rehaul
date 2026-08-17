@@ -131,7 +131,7 @@ transcript rather than from data.
 
 ---
 
-## F67 — ⭐⭐ **THE ERA-0 ANCHORAGE IS THE MERCHANT-MARINE CHAIN'S BREAK POINT: it eats 15.2 clippers per 9 merchant marine where vanilla's `pm_basic_port` eats 6, i.e. −£462 per level at base prices against vanilla's +£90 — the ONLY negative rung in the five-tier port ladder. So no anchorage runs unsubsidised; 87% of the world's 2,600 levels are subsidised at the start, coverage DECAYS to 78% by 1848, staffing follows it down, anchorage levels never grow, and world merchant-marine output falls in ABSOLUTE terms (2084 → 1953) while demand grows. The result is a one-way price ratchet: the Prussian market reaches the +75% clamp at 1850 and the Russian market climbs 81.7 → 169.2 monotonically. Clippers are the visible symptom — 120–175% of base where vanilla runs a surplus at 61–85%**
+## F67 — ⭐⭐ **THE ERA-0 ANCHORAGE IS A REAL RECIPE DEFECT WITH A BOUNDED COST — NOT A BROKEN MARKET: it eats 15.2 clippers per 9 merchant marine where vanilla's `pm_basic_port` eats 6, i.e. −£462 per level at base prices against vanilla's +£90, the ONLY negative rung in the five-tier port ladder, and a break-even at 270% of base against an engine that stops at 175%. The cost is a 1846–60 depression in world merchant-marine supply (2088 → 1881) and a PERMANENT ~80% subsidy dependence on ~2,600 anchorage levels that never lifts. But supply then recovers ×2.9 off that trough to 5423 by 1900 on the higher port tiers, and NO market ends the century pinned — three touch the +75% ceiling for a single reading each and all finish 1935 between 84% and 128%. ⚠⚠ THREE INTERIM READINGS OF THIS SAME RUN SAID OTHERWISE AND ARE RETRACTED BELOW — the lesson is in the retraction, not the result**
 
 **Arm** `config` (canonical `config/mod_config.json` at commit 4a2a3ef: flat vanilla cost book,
 graded ports §10.60.2, conditional port mandate §10.60.3, the 28-rule chain seed) · session
@@ -186,45 +186,72 @@ run, at 1908.** World merchant marine bottoms at **1881 in 1860** and then recov
 ~80% subsidised for the whole century — they never recover — but they stop mattering, because the growth
 is carried entirely by the **higher port tiers**, which have positive goods balances by construction:
 industrial 0 → 661 levels, modern 0 → 257, steam 83 → 469.
-⭐⭐ **SO THE DEFECT IS AN EARLY-GAME ONE THAT A MODERNISING COUNTRY OUTGROWS — and the markets that pin
-at the ceiling are exactly the ones that do not modernise.** Measured at 1908, modern share of port
-levels (industrial + modern ÷ all) against the merchant-marine price:
+⭐⭐ **SO THE DEFECT IS AN EARLY-GAME ONE THAT A MODERNISING COUNTRY OUTGROWS**, and the ordering holds:
+port modernisation tracks how high and how long a market's merchant marine runs. Modern share of port
+levels (industrial + modern ÷ all) against the peak price and where it ended:
 
-| | 1870 → 1890 → 1900 | MM at 1908 |
-|---|---|---|
-| **NET** | **8% → 8% → 8%** — frozen at anch 86 / indus 7 / modern 0 for thirty years | **⛔ 175, pinned** |
-| GBR | 6% → 23% → 29% | 124, turned over from 148 |
-| FRA | 8% → 24% → 37% | 115, turned over from 154 |
-| RUS | 5% → 17% → 11% | 134, turned over from 173 |
-| USA | 0% → 1% → 20% | 152, turned over |
+| | 1870 → 1890 → 1900 | peak | 1935 |
+|---|---|---|---|
+| **NET** | **8% → 8% → 8%** — frozen at anch 86 / indus 7 / modern 0 for thirty years | **175.0 (1900)** | 93.1 |
+| GBR | 6% → 23% → 29% | 175.0 (1849) | 83.8 |
+| FRA | 8% → 24% → 37% | 155.3 (1880) | 90.8 |
+| RUS | 5% → 17% → 11% | 175.0 (1858) | 86.2 |
+| USA | 0% → 1% → 20% | 151.5 (1900) | 109.4 |
 
-⚠ **Do not read the Dutch pin as a port-specific fault.** NET is broadly stagnant in this run — GDP ×3
-over 1840–1905 and building levels **480 → 669 (+39%)**, against Britain's ×6.1 — and Belgium has the
-same shape. The port freeze is one symptom of a small economy that stops building, and the causality
-plausibly runs both ways (a merchant marine pinned at +75% raises its trade costs). Prussia, the other
-pinned market, is not colonial at all.
-6. **Price ratchets up.** Merchant marine as % of base, by market:
+⚠ **The Netherlands peaks LATEST (1900, against Britain's 1849) and is the only one still above 160% at
+1909** — consistent with the freeze — but it too comes down, to 93.1 by 1935. An earlier version of this
+table read the 1908 snapshot as "NET pinned" and it is not: it is late, not stuck.
+⚠ **And the Dutch case is not a port-specific fault.** NET is broadly stagnant in this run — GDP ×3 over
+1840–1905 and building levels **480 → 669 (+39%)**, against Britain's ×6.1 — and Belgium has the same
+shape. The port freeze is one symptom of a small economy that stops building, and the causality
+plausibly runs both ways (a merchant marine near the ceiling raises its trade costs).
+6. **Price rises through the squeeze.** Merchant marine as % of base, to 1858 — the window in which the
+   supply depression of steps 1–5 shows up in the order book. ⚠ **This table is the SQUEEZE, not the
+   century**; read it with the completed series immediately below, which is what it resolves to.
 
-| market | 1836 | 1840 | 1845 | 1850 | 1858 | shape at 1858 |
-|---|---|---|---|---|---|---|
-| Prussian | 122.9 | 150.8 | 151.1 | **⛔175.0** | **⛔175.0** | clamped at 1850 and **STILL clamped 8 years later** |
-| Russian | 81.7 | 110.9 | 142.7 | 169.2 | **⛔175.0** | monotone throughout, reached the clamp |
-| French | 104.5 | 100.2 | 104.6 | ~114 | 148.7 | accelerating |
-| Spanish | 76.5 | 92.6 | 97.0 | ~99 | 147.9 | accelerating (turned over at 1846, then resumed) |
-| British | 72.3 | 101.5 | 117.3 | 145.1 | 145.5 | **decelerating** — fluctuates 110–156, turned over twice |
-| Dutch | 91.7 | 100.4 | 116.8 | 132.6 | 127.1 | turned over |
-| Portuguese | 92.6 | 75.5 | ~97 | — | 99.1 | accelerating off a low base |
-| American | 75.0 | 67.0 | 82.0 | ~83 | 97.4 | turned over |
-| Japanese | 25.0 | 25.0 | 85.1 | — | 25.0 | back on the 25% FLOOR |
+| market | 1836 | 1840 | 1845 | 1850 | 1858 |
+|---|---|---|---|---|---|
+| Prussian | 122.9 | 150.8 | 151.1 | **⛔175.0** | — *(country gone 1855)* |
+| Russian | 81.7 | 110.9 | 142.7 | 169.2 | **⛔175.0** |
+| French | 104.5 | 100.2 | 104.6 | ~114 | 148.7 |
+| Spanish | 76.5 | 92.6 | 97.0 | ~99 | 147.9 |
+| British | 72.3 | 101.5 | 117.3 | 145.1 | 145.5 |
+| Dutch | 91.7 | 100.4 | 116.8 | 132.6 | 127.1 |
+| Portuguese | 92.6 | 75.5 | ~97 | — | — *(series ends 1851)* |
+| American | 75.0 | 67.0 | 82.0 | ~83 | 97.4 |
+| Japanese | 25.0 | 25.0 | 85.1 | — | 25.0 |
 
-⭐⭐ **THE "CLAMPS AND STAYS" HALF IS SATISFIED FOR PRUSSIA, AND ONLY PRUSSIA.** It held 175.0
-continuously from 1850 through 1908 — fifty-eight years, the ruled break criterion met in full. The
-Netherlands joined it by 1908.
-⚠⚠ **BUT THE OTHERS DID NOT STAY, AND THE 1858 READING ABOVE MISLED ON THIS.** Followed to 1908,
-Russia peaked at 173 and fell back to **134**, Britain peaked at 156 and fell to **124**, America and
-Spain turned over too. What looked at 1858 like five markets marching into the ceiling is, at century
-scale, **two markets pinned and the rest correcting** — see the correction below for the mechanism.
-Any reading of this finding taken before ~1875 overstates it.
+⛔⛔ **THE BREAK CRITERION IS NOT MET BY ANY MARKET. RETRACTED IN FULL, 2026-08-17, on run 1's completed
+century.** Every surviving market ends 1935 between **84% and 128%** of base:
+
+| market | 1836 | peak | **1935** | readings at the ceiling |
+|---|---|---|---|---|
+| British | 72.3 | **175.0 (1849)** | **83.8** | 1 of 48 |
+| Russian | 81.7 | **175.0 (1858)** | **86.2** | 1 of 19 |
+| Dutch | 91.7 | **175.0 (1900)** | **93.1** | 1 of 48 |
+| French | 104.5 | 155.3 (1880) | 90.8 | 0 of 48 |
+| American | 75.0 | 151.5 (1900) | 109.4 | 0 of 48 |
+| Japanese | 25.0 | 166.0 (1890) | 127.9 | 0 of 19 |
+| Prussian | 122.9 | 175.0 (1850) | — | **country ceased to exist 1855** |
+
+The real shape is a **mid-century squeeze, roughly 1845–1900**, in which three markets touch the ceiling
+for a *single reading* each and everything comes back down. Under the ruled criterion — clamps at +75%
+*and stays*, versus stabilises or fluctuates at a lower point — **the merchant-marine market is not
+broken.**
+
+⚠⚠⚠ **HOW THE OPPOSITE CONCLUSION WAS REACHED, because the error is more useful than the retraction.**
+The claim was "Prussia held 175.0 continuously from 1850 through 1908 — fifty-eight years". **Prussia
+ceased to exist in 1855**, becoming the North German Federation, which was not in the tag list. Its
+series is two readings at the ceiling and then nothing — and `watch_mm_chain.mjs --mm` derived its shape
+label from the LAST observation without saying how old it was, so a dead market read as a live pin. The
+same defect inflated Portugal (series ends 1851) and Spain (ends 1880), both of which were quoted as
+current. **A series that stopped is not a state that persisted**, and an interim reading of a running
+campaign is worth very little: the same run supported "not broken" (1846), "broken" (1858), "partly
+broken" (1908) and "not broken" (1936) as it went.
+✅ The tool now labels any series >10 years stale as `SERIES ENDS <year> (market gone — NOT a current
+reading)` and gives it no shape, and prints every market's **peak with its date** plus a count of
+readings at the ceiling — because an endpoint cannot distinguish "touched 175 once and recovered" from
+"sits there", which is the whole question.
 
 ⭐ **The break criterion is the user's, ruled 2026-08-17**: merchant marine is THE indicator, and a
 steady rise that clamps at +75% *and stays* is a broken market, whereas one that decelerates, stalls
@@ -239,13 +266,17 @@ is why `tools/testbed/watch_mm_chain.mjs --mm` prints the annualised increment b
 - **It does not implicate the chain seed, the graded factorisation or the conditional mandate.** All
   three post-date the recipe, and the seeded metal yards behave sanely — they shrink to the size the
   market supports and stay profitable (GBR £279/wk, FRA £97/wk).
-- **It does not measure n=2, or anything past 1908.** The correction above is from the same single run.
-  Whether the same two markets pin on a different seed is open.
-- ⚠⚠ **IT DOES NOT SAY THE LADDER IS BROKEN AT CENTURY SCALE.** That was the reading at 1858 and it did
-  not survive to 1908. What the anchorage recipe buys is a **1846–1860 depression in merchant-marine
-  supply** and a permanent ~80% subsidy dependence on 2,600 anchorage levels — serious, and the reason
-  the §10.63 bound was ruled — but a country that builds industrial and modern ports grows straight out
-  of it. The lasting damage is concentrated in countries that do not.
+- **It does not measure n=2.** Everything here is run 1 of `canon-ports-n2`, a single seed. Whether the
+  same markets peak at the same dates on another seed is open; run 2 is playing.
+- ⚠⚠ **IT DOES NOT SAY THE LADDER IS BROKEN AT ANY SCALE, AND THREE EARLIER VERSIONS OF THIS ENTRY DID.**
+  What the anchorage recipe buys is a **1846–60 depression in merchant-marine supply** and a permanent
+  ~80% subsidy dependence on 2,600 anchorage levels — serious, and the reason the §10.63 bound was
+  ruled — but supply recovers ×2.9 and every surviving market ends 1935 between 84% and 128%.
+  ⭐ **The methodological lesson is the durable part**: this run supported "not broken" at 1846,
+  "broken" at 1858, "partly broken" at 1908 and "not broken" at 1936, and each interim reading was
+  argued confidently from real numbers. **Do not publish a verdict on a running campaign.** The
+  criterion here was explicitly about SHAPE — clamps and stays, versus stabilises or fluctuates lower —
+  and shape is precisely the thing a truncated series cannot show.
 - **The clipper symptom is corroborating, not decisive** (user ruling, same day): clipper or steamer
   breakage alone does not invalidate a run.
 - **Shipyard staffing is NOT part of this.** Our clipper yards run 54% staffed against vanilla's 53%
