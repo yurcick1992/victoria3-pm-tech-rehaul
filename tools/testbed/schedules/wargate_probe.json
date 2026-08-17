@@ -1,0 +1,43 @@
+{
+  "schedule_version": 1,
+  "label": "wargate-probe-n2",
+  "_why": "THE WAR-CHANNEL REBUILD, VERIFIED (ROADMAP: The war channel - RULED IN DETAIL). Stage 1: the 18,720 owner-link errors a run must go to ZERO - they fired on every evaluation regardless of war, so any span proves it. Stage 2: the gate must be able to FIRE - the run reaches 1846, covering the Opium War (1839-42) and the Mexican-American War (1846), the two wars that are not stochastic. PMR_JE|<stage>|<tech>|<country> is logged on each journal-entry completion, so firings are directly countable. ⚠ This gate has overshot in BOTH directions before - session 20260812_010659 measured military taking 70% of all completions with micro-states firing it, and it has since been never-true - so the count matters as much as the absence of errors. A ZERO count here is not yet a failure: 50k casualties on one front is a high bar and 1846 is early.",
+  "_arms": "canon = {kind: config, config: config/mod_config.json} - the shipped config with the rebuilt war gate (on_monthly_pulse_country sets an expiring pmr_wargate_<tech> variable; bars read has_variable, monthly, max_value 6). n=2.",
+  "_comparison": "Not an arm comparison - a variance envelope on one config. It supersedes, at monthly resolution, the annual 1837-1841 rows read off 20260817_155024 (which is a DIFFERENT arm: all-subject grants) and the three-month window of 20260817_211818 (same arm, too short).",
+  "_cost": "2 runs x ~10 in-game years, ~25 min.",
+  "_caveats": "⚠ Monthly autosaves are the point of the run, and they are not free: the engine stalls on every write, so this is slower per in-game year than a normal run. ⚠ Autosaves overwrite the user's own autosave*.v3 slots. ⚠ L19: check for an orphaned victoria3.exe before launching. ⚠ L17: a run that fails is still recorded `ok`; check each meta.json's reached_ingame_date before counting it. ⚠ Read building presence from SAVE SUMMARIES, never the building_inventory boot dump, whose ~12k-line burst overflows the log ring (the defect that voided 20260817_184413).",
+  "defaults": {
+    "metrics": [
+      "events"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 40,
+    "tags": [
+      "GBR",
+      "FRA",
+      "NET"
+    ]
+  },
+  "setups": {
+    "canon": {
+      "kind": "config",
+      "config": "config/mod_config.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "canon",
+      "until": "1846.6.1",
+      "dump_dates": [
+        "1846.1.1"
+      ]
+    },
+    {
+      "setup": "canon",
+      "until": "1846.6.1",
+      "dump_dates": [
+        "1846.1.1"
+      ]
+    }
+  ]
+}

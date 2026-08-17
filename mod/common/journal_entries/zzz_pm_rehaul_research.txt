@@ -543,7 +543,7 @@ je_pmr_automatic_machine_guns_inception = {
 	scripted_progress_bar = pmr_bar_automatic_machine_guns
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_automatic_machine_guns)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_automatic_machine_guns)" >= 6 }
 	}
 
 	on_complete = {
@@ -573,7 +573,7 @@ je_pmr_automatic_machine_guns_development = {
 	scripted_progress_bar = pmr_bar_automatic_machine_guns
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_automatic_machine_guns)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_automatic_machine_guns)" >= 6 }
 	}
 
 	on_complete = {
@@ -603,7 +603,7 @@ je_pmr_automatic_machine_guns_implementation = {
 	scripted_progress_bar = pmr_bar_automatic_machine_guns
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_automatic_machine_guns)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_automatic_machine_guns)" >= 6 }
 	}
 
 	on_complete = {
@@ -721,7 +721,7 @@ je_pmr_battlefleet_tactics_inception = {
 	scripted_progress_bar = pmr_bar_battlefleet_tactics
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_battlefleet_tactics)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_battlefleet_tactics)" >= 6 }
 	}
 
 	on_complete = {
@@ -751,7 +751,7 @@ je_pmr_battlefleet_tactics_development = {
 	scripted_progress_bar = pmr_bar_battlefleet_tactics
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_battlefleet_tactics)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_battlefleet_tactics)" >= 6 }
 	}
 
 	on_complete = {
@@ -781,7 +781,7 @@ je_pmr_battlefleet_tactics_implementation = {
 	scripted_progress_bar = pmr_bar_battlefleet_tactics
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_battlefleet_tactics)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_battlefleet_tactics)" >= 6 }
 	}
 
 	on_complete = {
@@ -810,7 +810,7 @@ je_pmr_battleship_tech_inception = {
 	scripted_progress_bar = pmr_bar_battleship_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_battleship_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_battleship_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -840,7 +840,7 @@ je_pmr_battleship_tech_development = {
 	scripted_progress_bar = pmr_bar_battleship_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_battleship_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_battleship_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -870,7 +870,7 @@ je_pmr_battleship_tech_implementation = {
 	scripted_progress_bar = pmr_bar_battleship_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_battleship_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_battleship_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -1255,7 +1255,7 @@ je_pmr_carrier_tech_inception = {
 	scripted_progress_bar = pmr_bar_carrier_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_carrier_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_carrier_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -1285,7 +1285,7 @@ je_pmr_carrier_tech_development = {
 	scripted_progress_bar = pmr_bar_carrier_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_carrier_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_carrier_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -1315,7 +1315,7 @@ je_pmr_carrier_tech_implementation = {
 	scripted_progress_bar = pmr_bar_carrier_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_carrier_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_carrier_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -1522,7 +1522,7 @@ je_pmr_chemical_warfare_inception = {
 	scripted_progress_bar = pmr_bar_chemical_warfare
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_chemical_warfare)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_chemical_warfare)" >= 6 }
 	}
 
 	on_complete = {
@@ -1552,7 +1552,7 @@ je_pmr_chemical_warfare_development = {
 	scripted_progress_bar = pmr_bar_chemical_warfare
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_chemical_warfare)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_chemical_warfare)" >= 6 }
 	}
 
 	on_complete = {
@@ -1582,7 +1582,7 @@ je_pmr_chemical_warfare_implementation = {
 	scripted_progress_bar = pmr_bar_chemical_warfare
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_chemical_warfare)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_chemical_warfare)" >= 6 }
 	}
 
 	on_complete = {
@@ -1789,7 +1789,7 @@ je_pmr_concrete_dockyards_inception = {
 	scripted_progress_bar = pmr_bar_concrete_dockyards
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_concrete_dockyards)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_concrete_dockyards)" >= 6 }
 	}
 
 	on_complete = {
@@ -1819,7 +1819,7 @@ je_pmr_concrete_dockyards_development = {
 	scripted_progress_bar = pmr_bar_concrete_dockyards
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_concrete_dockyards)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_concrete_dockyards)" >= 6 }
 	}
 
 	on_complete = {
@@ -1849,7 +1849,7 @@ je_pmr_concrete_dockyards_implementation = {
 	scripted_progress_bar = pmr_bar_concrete_dockyards
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_concrete_dockyards)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_concrete_dockyards)" >= 6 }
 	}
 
 	on_complete = {
@@ -1878,7 +1878,7 @@ je_pmr_concrete_fortifications_inception = {
 	scripted_progress_bar = pmr_bar_concrete_fortifications
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_concrete_fortifications)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_concrete_fortifications)" >= 6 }
 	}
 
 	on_complete = {
@@ -1908,7 +1908,7 @@ je_pmr_concrete_fortifications_development = {
 	scripted_progress_bar = pmr_bar_concrete_fortifications
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_concrete_fortifications)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_concrete_fortifications)" >= 6 }
 	}
 
 	on_complete = {
@@ -1938,7 +1938,7 @@ je_pmr_concrete_fortifications_implementation = {
 	scripted_progress_bar = pmr_bar_concrete_fortifications
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_concrete_fortifications)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_concrete_fortifications)" >= 6 }
 	}
 
 	on_complete = {
@@ -2412,7 +2412,7 @@ je_pmr_defense_in_depth_inception = {
 	scripted_progress_bar = pmr_bar_defense_in_depth
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_defense_in_depth)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_defense_in_depth)" >= 6 }
 	}
 
 	on_complete = {
@@ -2442,7 +2442,7 @@ je_pmr_defense_in_depth_development = {
 	scripted_progress_bar = pmr_bar_defense_in_depth
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_defense_in_depth)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_defense_in_depth)" >= 6 }
 	}
 
 	on_complete = {
@@ -2472,7 +2472,7 @@ je_pmr_defense_in_depth_implementation = {
 	scripted_progress_bar = pmr_bar_defense_in_depth
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_defense_in_depth)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_defense_in_depth)" >= 6 }
 	}
 
 	on_complete = {
@@ -2501,7 +2501,7 @@ je_pmr_destroyer_inception = {
 	scripted_progress_bar = pmr_bar_destroyer
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_destroyer)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_destroyer)" >= 6 }
 	}
 
 	on_complete = {
@@ -2531,7 +2531,7 @@ je_pmr_destroyer_development = {
 	scripted_progress_bar = pmr_bar_destroyer
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_destroyer)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_destroyer)" >= 6 }
 	}
 
 	on_complete = {
@@ -2561,7 +2561,7 @@ je_pmr_destroyer_implementation = {
 	scripted_progress_bar = pmr_bar_destroyer
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_destroyer)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_destroyer)" >= 6 }
 	}
 
 	on_complete = {
@@ -2768,7 +2768,7 @@ je_pmr_dreadnought_tech_inception = {
 	scripted_progress_bar = pmr_bar_dreadnought_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_dreadnought_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_dreadnought_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -2798,7 +2798,7 @@ je_pmr_dreadnought_tech_development = {
 	scripted_progress_bar = pmr_bar_dreadnought_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_dreadnought_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_dreadnought_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -2828,7 +2828,7 @@ je_pmr_dreadnought_tech_implementation = {
 	scripted_progress_bar = pmr_bar_dreadnought_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_dreadnought_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_dreadnought_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -3124,7 +3124,7 @@ je_pmr_electric_telegraph_inception = {
 	scripted_progress_bar = pmr_bar_electric_telegraph
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_electric_telegraph)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_electric_telegraph)" >= 6 }
 	}
 
 	on_complete = {
@@ -3154,7 +3154,7 @@ je_pmr_electric_telegraph_development = {
 	scripted_progress_bar = pmr_bar_electric_telegraph
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_electric_telegraph)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_electric_telegraph)" >= 6 }
 	}
 
 	on_complete = {
@@ -3184,7 +3184,7 @@ je_pmr_electric_telegraph_implementation = {
 	scripted_progress_bar = pmr_bar_electric_telegraph
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_electric_telegraph)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_electric_telegraph)" >= 6 }
 	}
 
 	on_complete = {
@@ -3391,7 +3391,7 @@ je_pmr_enlistment_offices_inception = {
 	scripted_progress_bar = pmr_bar_enlistment_offices
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_enlistment_offices)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_enlistment_offices)" >= 6 }
 	}
 
 	on_complete = {
@@ -3421,7 +3421,7 @@ je_pmr_enlistment_offices_development = {
 	scripted_progress_bar = pmr_bar_enlistment_offices
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_enlistment_offices)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_enlistment_offices)" >= 6 }
 	}
 
 	on_complete = {
@@ -3451,7 +3451,7 @@ je_pmr_enlistment_offices_implementation = {
 	scripted_progress_bar = pmr_bar_enlistment_offices
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_enlistment_offices)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_enlistment_offices)" >= 6 }
 	}
 
 	on_complete = {
@@ -3658,7 +3658,7 @@ je_pmr_field_works_inception = {
 	scripted_progress_bar = pmr_bar_field_works
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_field_works)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_field_works)" >= 6 }
 	}
 
 	on_complete = {
@@ -3688,7 +3688,7 @@ je_pmr_field_works_development = {
 	scripted_progress_bar = pmr_bar_field_works
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_field_works)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_field_works)" >= 6 }
 	}
 
 	on_complete = {
@@ -3718,7 +3718,7 @@ je_pmr_field_works_implementation = {
 	scripted_progress_bar = pmr_bar_field_works
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_field_works)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_field_works)" >= 6 }
 	}
 
 	on_complete = {
@@ -3747,7 +3747,7 @@ je_pmr_flamethrowers_inception = {
 	scripted_progress_bar = pmr_bar_flamethrowers
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_flamethrowers)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_flamethrowers)" >= 6 }
 	}
 
 	on_complete = {
@@ -3777,7 +3777,7 @@ je_pmr_flamethrowers_development = {
 	scripted_progress_bar = pmr_bar_flamethrowers
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_flamethrowers)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_flamethrowers)" >= 6 }
 	}
 
 	on_complete = {
@@ -3807,7 +3807,7 @@ je_pmr_flamethrowers_implementation = {
 	scripted_progress_bar = pmr_bar_flamethrowers
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_flamethrowers)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_flamethrowers)" >= 6 }
 	}
 
 	on_complete = {
@@ -3925,7 +3925,7 @@ je_pmr_floating_harbor_inception = {
 	scripted_progress_bar = pmr_bar_floating_harbor
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_floating_harbor)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_floating_harbor)" >= 6 }
 	}
 
 	on_complete = {
@@ -3955,7 +3955,7 @@ je_pmr_floating_harbor_development = {
 	scripted_progress_bar = pmr_bar_floating_harbor
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_floating_harbor)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_floating_harbor)" >= 6 }
 	}
 
 	on_complete = {
@@ -3985,7 +3985,7 @@ je_pmr_floating_harbor_implementation = {
 	scripted_progress_bar = pmr_bar_floating_harbor
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_floating_harbor)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_floating_harbor)" >= 6 }
 	}
 
 	on_complete = {
@@ -4103,7 +4103,7 @@ je_pmr_gantry_cranes_inception = {
 	scripted_progress_bar = pmr_bar_gantry_cranes
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_gantry_cranes)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_gantry_cranes)" >= 6 }
 	}
 
 	on_complete = {
@@ -4133,7 +4133,7 @@ je_pmr_gantry_cranes_development = {
 	scripted_progress_bar = pmr_bar_gantry_cranes
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_gantry_cranes)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_gantry_cranes)" >= 6 }
 	}
 
 	on_complete = {
@@ -4163,7 +4163,7 @@ je_pmr_gantry_cranes_implementation = {
 	scripted_progress_bar = pmr_bar_gantry_cranes
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_gantry_cranes)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_gantry_cranes)" >= 6 }
 	}
 
 	on_complete = {
@@ -4192,7 +4192,7 @@ je_pmr_general_staff_inception = {
 	scripted_progress_bar = pmr_bar_general_staff
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_general_staff)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_general_staff)" >= 6 }
 	}
 
 	on_complete = {
@@ -4222,7 +4222,7 @@ je_pmr_general_staff_development = {
 	scripted_progress_bar = pmr_bar_general_staff
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_general_staff)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_general_staff)" >= 6 }
 	}
 
 	on_complete = {
@@ -4252,7 +4252,7 @@ je_pmr_general_staff_implementation = {
 	scripted_progress_bar = pmr_bar_general_staff
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_general_staff)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_general_staff)" >= 6 }
 	}
 
 	on_complete = {
@@ -4370,7 +4370,7 @@ je_pmr_handcranked_machine_gun_inception = {
 	scripted_progress_bar = pmr_bar_handcranked_machine_gun
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_handcranked_machine_gun)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_handcranked_machine_gun)" >= 6 }
 	}
 
 	on_complete = {
@@ -4400,7 +4400,7 @@ je_pmr_handcranked_machine_gun_development = {
 	scripted_progress_bar = pmr_bar_handcranked_machine_gun
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_handcranked_machine_gun)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_handcranked_machine_gun)" >= 6 }
 	}
 
 	on_complete = {
@@ -4430,7 +4430,7 @@ je_pmr_handcranked_machine_gun_implementation = {
 	scripted_progress_bar = pmr_bar_handcranked_machine_gun
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_handcranked_machine_gun)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_handcranked_machine_gun)" >= 6 }
 	}
 
 	on_complete = {
@@ -4726,7 +4726,7 @@ je_pmr_hydraulic_cranes_inception = {
 	scripted_progress_bar = pmr_bar_hydraulic_cranes
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_hydraulic_cranes)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_hydraulic_cranes)" >= 6 }
 	}
 
 	on_complete = {
@@ -4756,7 +4756,7 @@ je_pmr_hydraulic_cranes_development = {
 	scripted_progress_bar = pmr_bar_hydraulic_cranes
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_hydraulic_cranes)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_hydraulic_cranes)" >= 6 }
 	}
 
 	on_complete = {
@@ -4786,7 +4786,7 @@ je_pmr_hydraulic_cranes_implementation = {
 	scripted_progress_bar = pmr_bar_hydraulic_cranes
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_hydraulic_cranes)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_hydraulic_cranes)" >= 6 }
 	}
 
 	on_complete = {
@@ -4993,7 +4993,7 @@ je_pmr_ironclad_tech_inception = {
 	scripted_progress_bar = pmr_bar_ironclad_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_ironclad_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_ironclad_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -5023,7 +5023,7 @@ je_pmr_ironclad_tech_development = {
 	scripted_progress_bar = pmr_bar_ironclad_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_ironclad_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_ironclad_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -5053,7 +5053,7 @@ je_pmr_ironclad_tech_implementation = {
 	scripted_progress_bar = pmr_bar_ironclad_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_ironclad_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_ironclad_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -5082,7 +5082,7 @@ je_pmr_jeune_ecole_inception = {
 	scripted_progress_bar = pmr_bar_jeune_ecole
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_jeune_ecole)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_jeune_ecole)" >= 6 }
 	}
 
 	on_complete = {
@@ -5112,7 +5112,7 @@ je_pmr_jeune_ecole_development = {
 	scripted_progress_bar = pmr_bar_jeune_ecole
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_jeune_ecole)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_jeune_ecole)" >= 6 }
 	}
 
 	on_complete = {
@@ -5142,7 +5142,7 @@ je_pmr_jeune_ecole_implementation = {
 	scripted_progress_bar = pmr_bar_jeune_ecole
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_jeune_ecole)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_jeune_ecole)" >= 6 }
 	}
 
 	on_complete = {
@@ -5260,7 +5260,7 @@ je_pmr_landing_craft_inception = {
 	scripted_progress_bar = pmr_bar_landing_craft
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_landing_craft)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_landing_craft)" >= 6 }
 	}
 
 	on_complete = {
@@ -5290,7 +5290,7 @@ je_pmr_landing_craft_development = {
 	scripted_progress_bar = pmr_bar_landing_craft
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_landing_craft)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_landing_craft)" >= 6 }
 	}
 
 	on_complete = {
@@ -5320,7 +5320,7 @@ je_pmr_landing_craft_implementation = {
 	scripted_progress_bar = pmr_bar_landing_craft
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_landing_craft)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_landing_craft)" >= 6 }
 	}
 
 	on_complete = {
@@ -5438,7 +5438,7 @@ je_pmr_logistics_inception = {
 	scripted_progress_bar = pmr_bar_logistics
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_logistics)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_logistics)" >= 6 }
 	}
 
 	on_complete = {
@@ -5468,7 +5468,7 @@ je_pmr_logistics_development = {
 	scripted_progress_bar = pmr_bar_logistics
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_logistics)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_logistics)" >= 6 }
 	}
 
 	on_complete = {
@@ -5498,7 +5498,7 @@ je_pmr_logistics_implementation = {
 	scripted_progress_bar = pmr_bar_logistics
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_logistics)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_logistics)" >= 6 }
 	}
 
 	on_complete = {
@@ -6061,7 +6061,7 @@ je_pmr_military_aviation_inception = {
 	scripted_progress_bar = pmr_bar_military_aviation
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_military_aviation)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_military_aviation)" >= 6 }
 	}
 
 	on_complete = {
@@ -6091,7 +6091,7 @@ je_pmr_military_aviation_development = {
 	scripted_progress_bar = pmr_bar_military_aviation
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_military_aviation)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_military_aviation)" >= 6 }
 	}
 
 	on_complete = {
@@ -6121,7 +6121,7 @@ je_pmr_military_aviation_implementation = {
 	scripted_progress_bar = pmr_bar_military_aviation
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_military_aviation)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_military_aviation)" >= 6 }
 	}
 
 	on_complete = {
@@ -6150,7 +6150,7 @@ je_pmr_military_statistics_inception = {
 	scripted_progress_bar = pmr_bar_military_statistics
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_military_statistics)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_military_statistics)" >= 6 }
 	}
 
 	on_complete = {
@@ -6180,7 +6180,7 @@ je_pmr_military_statistics_development = {
 	scripted_progress_bar = pmr_bar_military_statistics
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_military_statistics)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_military_statistics)" >= 6 }
 	}
 
 	on_complete = {
@@ -6210,7 +6210,7 @@ je_pmr_military_statistics_implementation = {
 	scripted_progress_bar = pmr_bar_military_statistics
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_military_statistics)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_military_statistics)" >= 6 }
 	}
 
 	on_complete = {
@@ -6239,7 +6239,7 @@ je_pmr_mobile_armor_inception = {
 	scripted_progress_bar = pmr_bar_mobile_armor
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_mobile_armor)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_mobile_armor)" >= 6 }
 	}
 
 	on_complete = {
@@ -6269,7 +6269,7 @@ je_pmr_mobile_armor_development = {
 	scripted_progress_bar = pmr_bar_mobile_armor
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_mobile_armor)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_mobile_armor)" >= 6 }
 	}
 
 	on_complete = {
@@ -6299,7 +6299,7 @@ je_pmr_mobile_armor_implementation = {
 	scripted_progress_bar = pmr_bar_mobile_armor
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_mobile_armor)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_mobile_armor)" >= 6 }
 	}
 
 	on_complete = {
@@ -6328,7 +6328,7 @@ je_pmr_modern_nursing_inception = {
 	scripted_progress_bar = pmr_bar_modern_nursing
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_modern_nursing)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_modern_nursing)" >= 6 }
 	}
 
 	on_complete = {
@@ -6358,7 +6358,7 @@ je_pmr_modern_nursing_development = {
 	scripted_progress_bar = pmr_bar_modern_nursing
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_modern_nursing)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_modern_nursing)" >= 6 }
 	}
 
 	on_complete = {
@@ -6388,7 +6388,7 @@ je_pmr_modern_nursing_implementation = {
 	scripted_progress_bar = pmr_bar_modern_nursing
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_modern_nursing)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_modern_nursing)" >= 6 }
 	}
 
 	on_complete = {
@@ -6417,7 +6417,7 @@ je_pmr_monitor_tech_inception = {
 	scripted_progress_bar = pmr_bar_monitor_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_monitor_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_monitor_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -6447,7 +6447,7 @@ je_pmr_monitor_tech_development = {
 	scripted_progress_bar = pmr_bar_monitor_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_monitor_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_monitor_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -6477,7 +6477,7 @@ je_pmr_monitor_tech_implementation = {
 	scripted_progress_bar = pmr_bar_monitor_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_monitor_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_monitor_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -6506,7 +6506,7 @@ je_pmr_nco_training_inception = {
 	scripted_progress_bar = pmr_bar_nco_training
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_nco_training)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_nco_training)" >= 6 }
 	}
 
 	on_complete = {
@@ -6536,7 +6536,7 @@ je_pmr_nco_training_development = {
 	scripted_progress_bar = pmr_bar_nco_training
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_nco_training)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_nco_training)" >= 6 }
 	}
 
 	on_complete = {
@@ -6566,7 +6566,7 @@ je_pmr_nco_training_implementation = {
 	scripted_progress_bar = pmr_bar_nco_training
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_nco_training)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_nco_training)" >= 6 }
 	}
 
 	on_complete = {
@@ -7485,7 +7485,7 @@ je_pmr_power_of_the_purse_inception = {
 	scripted_progress_bar = pmr_bar_power_of_the_purse
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_power_of_the_purse)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_power_of_the_purse)" >= 6 }
 	}
 
 	on_complete = {
@@ -7515,7 +7515,7 @@ je_pmr_power_of_the_purse_development = {
 	scripted_progress_bar = pmr_bar_power_of_the_purse
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_power_of_the_purse)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_power_of_the_purse)" >= 6 }
 	}
 
 	on_complete = {
@@ -7545,7 +7545,7 @@ je_pmr_power_of_the_purse_implementation = {
 	scripted_progress_bar = pmr_bar_power_of_the_purse
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_power_of_the_purse)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_power_of_the_purse)" >= 6 }
 	}
 
 	on_complete = {
@@ -7574,7 +7574,7 @@ je_pmr_pre_dreadnought_tech_inception = {
 	scripted_progress_bar = pmr_bar_pre_dreadnought_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_pre_dreadnought_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_pre_dreadnought_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -7604,7 +7604,7 @@ je_pmr_pre_dreadnought_tech_development = {
 	scripted_progress_bar = pmr_bar_pre_dreadnought_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_pre_dreadnought_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_pre_dreadnought_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -7634,7 +7634,7 @@ je_pmr_pre_dreadnought_tech_implementation = {
 	scripted_progress_bar = pmr_bar_pre_dreadnought_tech
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_pre_dreadnought_tech)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_pre_dreadnought_tech)" >= 6 }
 	}
 
 	on_complete = {
@@ -8820,7 +8820,7 @@ je_pmr_sea_lane_strategies_inception = {
 	scripted_progress_bar = pmr_bar_sea_lane_strategies
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_sea_lane_strategies)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_sea_lane_strategies)" >= 6 }
 	}
 
 	on_complete = {
@@ -8850,7 +8850,7 @@ je_pmr_sea_lane_strategies_development = {
 	scripted_progress_bar = pmr_bar_sea_lane_strategies
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_sea_lane_strategies)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_sea_lane_strategies)" >= 6 }
 	}
 
 	on_complete = {
@@ -8880,7 +8880,7 @@ je_pmr_sea_lane_strategies_implementation = {
 	scripted_progress_bar = pmr_bar_sea_lane_strategies
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_sea_lane_strategies)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_sea_lane_strategies)" >= 6 }
 	}
 
 	on_complete = {
@@ -8909,7 +8909,7 @@ je_pmr_self_propelled_torpedoes_inception = {
 	scripted_progress_bar = pmr_bar_self_propelled_torpedoes
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_self_propelled_torpedoes)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_self_propelled_torpedoes)" >= 6 }
 	}
 
 	on_complete = {
@@ -8939,7 +8939,7 @@ je_pmr_self_propelled_torpedoes_development = {
 	scripted_progress_bar = pmr_bar_self_propelled_torpedoes
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_self_propelled_torpedoes)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_self_propelled_torpedoes)" >= 6 }
 	}
 
 	on_complete = {
@@ -8969,7 +8969,7 @@ je_pmr_self_propelled_torpedoes_implementation = {
 	scripted_progress_bar = pmr_bar_self_propelled_torpedoes
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_self_propelled_torpedoes)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_self_propelled_torpedoes)" >= 6 }
 	}
 
 	on_complete = {
@@ -9176,7 +9176,7 @@ je_pmr_shell_gun_inception = {
 	scripted_progress_bar = pmr_bar_shell_gun
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_shell_gun)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_shell_gun)" >= 6 }
 	}
 
 	on_complete = {
@@ -9206,7 +9206,7 @@ je_pmr_shell_gun_development = {
 	scripted_progress_bar = pmr_bar_shell_gun
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_shell_gun)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_shell_gun)" >= 6 }
 	}
 
 	on_complete = {
@@ -9236,7 +9236,7 @@ je_pmr_shell_gun_implementation = {
 	scripted_progress_bar = pmr_bar_shell_gun
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_shell_gun)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_shell_gun)" >= 6 }
 	}
 
 	on_complete = {
@@ -9799,7 +9799,7 @@ je_pmr_stormtroopers_inception = {
 	scripted_progress_bar = pmr_bar_stormtroopers
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_stormtroopers)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_stormtroopers)" >= 6 }
 	}
 
 	on_complete = {
@@ -9829,7 +9829,7 @@ je_pmr_stormtroopers_development = {
 	scripted_progress_bar = pmr_bar_stormtroopers
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_stormtroopers)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_stormtroopers)" >= 6 }
 	}
 
 	on_complete = {
@@ -9859,7 +9859,7 @@ je_pmr_stormtroopers_implementation = {
 	scripted_progress_bar = pmr_bar_stormtroopers
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_stormtroopers)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_stormtroopers)" >= 6 }
 	}
 
 	on_complete = {
@@ -9888,7 +9888,7 @@ je_pmr_submarine_inception = {
 	scripted_progress_bar = pmr_bar_submarine
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_submarine)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_submarine)" >= 6 }
 	}
 
 	on_complete = {
@@ -9918,7 +9918,7 @@ je_pmr_submarine_development = {
 	scripted_progress_bar = pmr_bar_submarine
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_submarine)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_submarine)" >= 6 }
 	}
 
 	on_complete = {
@@ -9948,7 +9948,7 @@ je_pmr_submarine_implementation = {
 	scripted_progress_bar = pmr_bar_submarine
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_submarine)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_submarine)" >= 6 }
 	}
 
 	on_complete = {
@@ -10333,7 +10333,7 @@ je_pmr_trench_works_inception = {
 	scripted_progress_bar = pmr_bar_trench_works
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_trench_works)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_trench_works)" >= 6 }
 	}
 
 	on_complete = {
@@ -10363,7 +10363,7 @@ je_pmr_trench_works_development = {
 	scripted_progress_bar = pmr_bar_trench_works
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_trench_works)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_trench_works)" >= 6 }
 	}
 
 	on_complete = {
@@ -10393,7 +10393,7 @@ je_pmr_trench_works_implementation = {
 	scripted_progress_bar = pmr_bar_trench_works
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_trench_works)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_trench_works)" >= 6 }
 	}
 
 	on_complete = {
@@ -10422,7 +10422,7 @@ je_pmr_triage_inception = {
 	scripted_progress_bar = pmr_bar_triage
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_triage)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_triage)" >= 6 }
 	}
 
 	on_complete = {
@@ -10452,7 +10452,7 @@ je_pmr_triage_development = {
 	scripted_progress_bar = pmr_bar_triage
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_triage)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_triage)" >= 6 }
 	}
 
 	on_complete = {
@@ -10482,7 +10482,7 @@ je_pmr_triage_implementation = {
 	scripted_progress_bar = pmr_bar_triage
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_triage)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_triage)" >= 6 }
 	}
 
 	on_complete = {
@@ -10778,7 +10778,7 @@ je_pmr_war_propaganda_inception = {
 	scripted_progress_bar = pmr_bar_war_propaganda
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_war_propaganda)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_war_propaganda)" >= 6 }
 	}
 
 	on_complete = {
@@ -10808,7 +10808,7 @@ je_pmr_war_propaganda_development = {
 	scripted_progress_bar = pmr_bar_war_propaganda
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_war_propaganda)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_war_propaganda)" >= 6 }
 	}
 
 	on_complete = {
@@ -10838,7 +10838,7 @@ je_pmr_war_propaganda_implementation = {
 	scripted_progress_bar = pmr_bar_war_propaganda
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_war_propaganda)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_war_propaganda)" >= 6 }
 	}
 
 	on_complete = {
@@ -10867,7 +10867,7 @@ je_pmr_wargaming_inception = {
 	scripted_progress_bar = pmr_bar_wargaming
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_wargaming)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_wargaming)" >= 6 }
 	}
 
 	on_complete = {
@@ -10897,7 +10897,7 @@ je_pmr_wargaming_development = {
 	scripted_progress_bar = pmr_bar_wargaming
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_wargaming)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_wargaming)" >= 6 }
 	}
 
 	on_complete = {
@@ -10927,7 +10927,7 @@ je_pmr_wargaming_implementation = {
 	scripted_progress_bar = pmr_bar_wargaming
 
 	complete = {
-		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_wargaming)" >= 26 }
+		scope:journal_entry ?= { "scripted_bar_progress(pmr_bar_wargaming)" >= 6 }
 	}
 
 	on_complete = {

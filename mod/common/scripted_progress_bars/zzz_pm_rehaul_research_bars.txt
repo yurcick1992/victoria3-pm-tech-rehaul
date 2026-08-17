@@ -161,67 +161,15 @@ pmr_bar_automatic_machine_guns = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_automatic_machine_guns
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = automatic_machine_guns
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -253,67 +201,15 @@ pmr_bar_battlefleet_tactics = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_battlefleet_tactics
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = battlefleet_tactics
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -325,67 +221,15 @@ pmr_bar_battleship_tech = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_battleship_tech
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = battleship_tech
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -486,67 +330,15 @@ pmr_bar_carrier_tech = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_carrier_tech
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = carrier_tech
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -598,67 +390,15 @@ pmr_bar_chemical_warfare = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_chemical_warfare
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = chemical_warfare
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -737,67 +477,15 @@ pmr_bar_concrete_dockyards = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_concrete_dockyards
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = concrete_dockyards
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -809,67 +497,15 @@ pmr_bar_concrete_fortifications = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_concrete_fortifications
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = concrete_fortifications
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -999,67 +635,15 @@ pmr_bar_defense_in_depth = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_defense_in_depth
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = defense_in_depth
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -1071,67 +655,15 @@ pmr_bar_destroyer = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_destroyer
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = destroyer
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -1192,67 +724,15 @@ pmr_bar_dreadnought_tech = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_dreadnought_tech
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = dreadnought_tech
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -1333,67 +813,15 @@ pmr_bar_electric_telegraph = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_electric_telegraph
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = electric_telegraph
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -1481,67 +909,15 @@ pmr_bar_enlistment_offices = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_enlistment_offices
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = enlistment_offices
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -1593,67 +969,15 @@ pmr_bar_field_works = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_field_works
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = field_works
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -1665,67 +989,15 @@ pmr_bar_flamethrowers = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_flamethrowers
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = flamethrowers
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -1766,67 +1038,15 @@ pmr_bar_floating_harbor = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_floating_harbor
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = floating_harbor
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -1876,67 +1096,15 @@ pmr_bar_gantry_cranes = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_gantry_cranes
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = gantry_cranes
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -1948,67 +1116,15 @@ pmr_bar_general_staff = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_general_staff
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = general_staff
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -2040,67 +1156,15 @@ pmr_bar_handcranked_machine_gun = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_handcranked_machine_gun
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = handcranked_machine_gun
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -2172,67 +1236,15 @@ pmr_bar_hydraulic_cranes = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_hydraulic_cranes
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = hydraulic_cranes
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -2284,67 +1296,15 @@ pmr_bar_ironclad_tech = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_ironclad_tech
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = ironclad_tech
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -2356,67 +1316,15 @@ pmr_bar_jeune_ecole = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_jeune_ecole
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = jeune_ecole
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -2448,67 +1356,15 @@ pmr_bar_landing_craft = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_landing_craft
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = landing_craft
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -2540,67 +1396,15 @@ pmr_bar_logistics = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_logistics
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = logistics
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -2768,67 +1572,15 @@ pmr_bar_military_aviation = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_military_aviation
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = military_aviation
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -2840,67 +1592,15 @@ pmr_bar_military_statistics = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_military_statistics
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = military_statistics
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -2912,67 +1612,15 @@ pmr_bar_mobile_armor = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_mobile_armor
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = mobile_armor
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -2984,67 +1632,15 @@ pmr_bar_modern_nursing = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_modern_nursing
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = modern_nursing
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -3056,67 +1652,15 @@ pmr_bar_monitor_tech = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_monitor_tech
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = monitor_tech
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -3128,67 +1672,15 @@ pmr_bar_nco_training = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_nco_training
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = nco_training
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -3436,67 +1928,15 @@ pmr_bar_power_of_the_purse = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_power_of_the_purse
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = power_of_the_purse
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -3508,67 +1948,15 @@ pmr_bar_pre_dreadnought_tech = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_pre_dreadnought_tech
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = pre_dreadnought_tech
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -3957,67 +2345,15 @@ pmr_bar_sea_lane_strategies = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_sea_lane_strategies
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = sea_lane_strategies
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -4029,67 +2365,15 @@ pmr_bar_self_propelled_torpedoes = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_self_propelled_torpedoes
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = self_propelled_torpedoes
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -4141,67 +2425,15 @@ pmr_bar_shell_gun = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_shell_gun
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = shell_gun
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -4360,67 +2592,15 @@ pmr_bar_stormtroopers = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_stormtroopers
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = stormtroopers
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -4432,67 +2612,15 @@ pmr_bar_submarine = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_submarine
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = submarine
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -4602,67 +2730,15 @@ pmr_bar_trench_works = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_trench_works
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = trench_works
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -4674,67 +2750,15 @@ pmr_bar_triage = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_triage
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = triage
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -4806,67 +2830,15 @@ pmr_bar_war_propaganda = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_war_propaganda
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = war_propaganda
-				}
-				}
-				value = 2
 			}
 		}
 	}
@@ -4878,67 +2850,15 @@ pmr_bar_wargaming = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 26
-	weekly_progress = {
+	max_value = 6
+	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_pressed"
+			desc = "pmr_term_war_engaged"
 			if = {
 				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
+				has_variable = pmr_wargate_wargaming
 				}
 				value = 1
-			}
-		}
-		add = {
-			desc = "pmr_term_war_enemy_has_it"
-			if = {
-				limit = {
-				is_at_war = yes
-				pmr_mob_share >= 0.5
-				OR = {
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							num_mobilized_battalions >= 100
-						}
-					}
-				}
-					any_scope_war = {
-					any_scope_front = {
-						any_scope_general = {
-							owner = ROOT
-							count >= 2
-							num_mobilized_battalions >= 50
-						}
-					}
-				}
-				}
-				any_enemy_in_war = {
-					has_technology_researched = wargaming
-				}
-				}
-				value = 2
 			}
 		}
 	}

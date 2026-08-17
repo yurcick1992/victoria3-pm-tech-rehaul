@@ -157,6 +157,11 @@ const perLevel = RE.employment_per_level_default || 5000;
 const svName = (tech, i) => `pmr_src_${tech}_${i}`;
 const barName = (tech) => `pmr_bar_${tech}`;
 const jeName = (tech, s) => `je_pmr_${tech}_${s}`;
+// The war gate's country variable, one per covered war technology. The bar reads `has_variable`;
+// `on_monthly_pulse_country` sets it. See the war-term comment below and ROADMAP.md.
+const wgVar = (tech) => `pmr_wargate_${tech}`;
+const WAR_TECHS = [];
+const keep = (tech) => WAR_TECHS.push(tech);
 
 // the two country-scope values the war gate needs, emitted once
 if ((RE.war_gate || {}).mobilised_share_min) {
@@ -174,9 +179,23 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
   if (a.rule === 'war') {
     nWar++;
     const w = RE.war_gate || {};
-    const front = (inner) => w.require_front
-      ? `any_scope_war = {\n${T}${T}${T}${T}${T}any_scope_front = {\n${T}${T}${T}${T}${T}${T}any_scope_general = {\n${T}${T}${T}${T}${T}${T}${T}owner = ROOT\n${T}${T}${T}${T}${T}${T}${T}${inner}\n${T}${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}}`
-      : `any_scope_general = { ${inner} }`;
+    // ⭐⭐ THE GATE IS NOT WRITTEN HERE ANY MORE — it is computed in `on_monthly_pulse_country` and
+    // handed to the bar as an EXPIRING COUNTRY VARIABLE. (User-ruled 2026-08-18; full design in
+    // ROADMAP.md → "The war channel — RULED IN DETAIL".)
+    //
+    // WHY. A `scripted_progress_bar` has no valid ROOT — vanilla uses ROOT zero times across all 14
+    // of its bar files, and we used it 160 times. Every one of those lines threw
+    // `Event target link 'owner' returned an invalid object`, ~117 times each, **18,720 error lines a
+    // run**, and the war gate could never pass (BUGS_AND_FIXES 2026-08-17). A bar can evaluate any
+    // COUNTRY-scoped trigger but nothing that needs US as a target — which rules out `owner = ROOT`,
+    // the front restriction, and casualties, all at once.
+    //
+    // ⚠⚠ AND THE OLD GATE WAS ALREADY WRONG INDEPENDENTLY OF THAT. Its two clauses were ANDed but
+    // UNCOUPLED: *some* war had *some* front with a big general of ours, AND *some* enemy in *some*
+    // war held the technology. Britain, at war with both the USA and the Qing, learned a US
+    // technology by fighting in China. No fix that stays inside the bar can close that, because the
+    // binding is exactly what needs ROOT.
+    keep(tech);
     // ⚠ THE MOBILISED SHARE IS A ONE-SIDED GATE, DELIBERATELY. Probe 5 measured
     // Σ(per-general mobilised battalions) ÷ army_size_including_raised_conscripts and it is
     // well-behaved for most belligerents (Carlist Spain 1.00, Brazil 0.88) but STILL EXCEEDS 1 for
@@ -193,14 +212,11 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     // cannot field the intended 100 battalions. The design ruling was "we are at war, HAVE THOSE
     // BATTALIONS MOBILISED, THE ENEMIES ARE STRONG **and** our enemies have the tech already" — the
     // second term is the first term PLUS a clause, never a weaker condition beside it.
-    const share = w.mobilised_share_min;
-    const gate = `is_at_war = yes\n${T}${T}${T}${T}${share ? `pmr_mob_share >= ${share}\n${T}${T}${T}${T}` : ''}OR = {\n${T}${T}${T}${T}${T}${front(`num_mobilized_battalions >= ${w.general_battalions_high ?? 100}`)}\n${T}${T}${T}${T}${T}${front(`count >= ${w.generals_low_count ?? 2}\n${T}${T}${T}${T}${T}${T}${T}num_mobilized_battalions >= ${w.general_battalions_low ?? 50}`)}\n${T}${T}${T}${T}}`;
-    terms.push({ desc: `pmr_term_war_pressed`, trigger: gate, value: 1 });
-    terms.push({
-      desc: `pmr_term_war_enemy_has_it`,
-      trigger: `${gate}\n${T}${T}${T}${T}any_enemy_in_war = {\n${T}${T}${T}${T}${T}has_technology_researched = ${tech}\n${T}${T}${T}${T}}`,
-      value: 2,
-    });
+    // ⚠ THE TWO-TERM STRUCTURE IS RETIRED. There used to be `pmr_term_war_pressed` (+1 for a bare
+    // state of war) beside `pmr_term_war_enemy_has_it` (+2). User ruling 2026-08-18: **a state of war
+    // must not tick by itself**, so the weaker term is gone and the enemy clause folds into the one
+    // gate. One qualifying month, one tick.
+    terms.push({ desc: `pmr_term_war_engaged`, trigger: `has_variable = ${wgVar(tech)}`, value: 1 });
   } else {
     nInd++;
     const people = thresholdPeople(a.era);
@@ -224,8 +240,13 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     if (!terms.length) continue;
   }
 
-  const span = a.rule === 'war' ? (RE.war_bar_weeks ?? 26) : (RE.industry_bar_months ?? 36);
-  const cadence = a.rule === 'war' ? 'weekly_progress' : 'monthly_progress';
+  // ⭐ WAR BARS ARE MONTHLY NOW, six ticks to a stage (user-ruled 2026-08-18). They were
+  // `weekly_progress` over 26 weeks with terms worth +1 and +2, i.e. ~9 weeks when both held.
+  // Monthly also puts the bar IN STEP WITH ITS GATE: `on_monthly_pulse_country` is the finest country
+  // pulse vanilla has (verified), so a weekly bar reading a monthly flag would have accrued up to
+  // three weeks on a stale reading. At monthly there is no stale window at all.
+  const span = a.rule === 'war' ? (RE.war_bar_months ?? 6) : (RE.industry_bar_months ?? 36);
+  const cadence = 'monthly_progress';
   // ⚠ A bar's `name` is a LOC KEY, not a label. The first smoke run logged 122 lines of
   // "Unrecognized loc key pmr_bar_<tech>" because only the shared `desc` had one.
   loc.push([barName(tech), `Towards ${(TECH[tech].name || tech).replace(/"/g, '')}`]);
@@ -274,6 +295,74 @@ const W = (rel, text) => { const p = join(MOD, rel); mkdirSync(dirname(p), { rec
 W('common/script_values/zzz_pm_rehaul_research_values.txt', '# AUTO-GENERATED by tools/emit_research_events.mjs - do not edit by hand.\n' + sv.join('\n\n') + '\n');
 W('common/scripted_progress_bars/zzz_pm_rehaul_research_bars.txt', '# AUTO-GENERATED by tools/emit_research_events.mjs - do not edit by hand.\n' + bars.join('\n\n') + '\n');
 W('common/journal_entries/zzz_pm_rehaul_research.txt', '# AUTO-GENERATED by tools/emit_research_events.mjs - do not edit by hand.\n' + jes.join('\n\n') + '\n');
+
+// ===================================================================================================
+// THE WAR GATE — evaluated where ROOT resolves, handed to the bars as expiring country variables
+// ===================================================================================================
+// Ruled 2026-08-18; design in ROADMAP.md. All three clauses bind inside ONE front, inside ONE war:
+//   · a general of OURS on that front with >= <general_battalions_high> mobilised battalions
+//   · an ENEMY general on that SAME front whose owner already holds the technology
+//   · >= <front_casualties_min> of OUR casualties at that front
+//
+// ⭐ WHY THIS NEEDS NO `is_at_war_with`: that trigger DOES NOT EXIST in the game (checked against the
+// full trigger list). It is not needed — a general on the far side of a front we are bleeding on is
+// the enemy there by construction, so `NOT = { owner = ROOT }` is sufficient and exact. The
+// state-ownership route first proposed for front-binding is therefore dropped.
+//
+// ⚠ L3/L4 — THE COST IS CONTAINED BY ORDERING, NOT BY LUCK. This is 40 technologies × a war/front
+// sweep per country per month, which is squarely "a scope bounded today and unbounded in 1900" plus
+// "two heavy sweeps in one tick". So: countries at peace exit immediately on `is_at_war = yes`, and
+// the per-technology loop is reached only after that. Do not hoist a technology test above the war
+// test.
+//
+// ⚠ `num_front_casualties` IS NOT BATTLE-ONLY. Its own loc reads "Total number of [Country]
+// casualties at [Front]" — a LOCATION filter, not a CAUSE filter — and the engine exposes no counter
+// separating battle deaths from attrition (only modifiers, and the boolean `has_high_attrition`). At
+// this threshold, on a front that also holds a superior enemy army, attrition alone is unlikely to
+// carry it; but the term is not battle-pure and must not be described as such.
+if (WAR_TECHS.length) {
+  const w = RE.war_gate || {};
+  const batt = w.general_battalions_high ?? 100;
+  const cas  = w.front_casualties_min ?? 50000;
+  // The variable outlives one pulse so the bar never reads a hole between evaluations, and lapses by
+  // itself so no clearing pass is needed - which is also why nothing here ever removes it.
+  const days = w.gate_variable_days ?? 40;
+  const blocks = WAR_TECHS.map(tech =>
+`${T}${T}if = {
+${T}${T}${T}limit = {
+${T}${T}${T}${T}any_scope_war = {
+${T}${T}${T}${T}${T}any_scope_front = {
+${T}${T}${T}${T}${T}${T}any_scope_general = {
+${T}${T}${T}${T}${T}${T}${T}owner = ROOT
+${T}${T}${T}${T}${T}${T}${T}num_mobilized_battalions >= ${batt}
+${T}${T}${T}${T}${T}${T}}
+${T}${T}${T}${T}${T}${T}any_scope_general = {
+${T}${T}${T}${T}${T}${T}${T}NOT = { owner = ROOT }
+${T}${T}${T}${T}${T}${T}${T}owner = { has_technology_researched = ${tech} }
+${T}${T}${T}${T}${T}${T}}
+${T}${T}${T}${T}${T}${T}num_front_casualties = {
+${T}${T}${T}${T}${T}${T}${T}target = ROOT
+${T}${T}${T}${T}${T}${T}${T}value >= ${cas}
+${T}${T}${T}${T}${T}${T}}
+${T}${T}${T}${T}${T}}
+${T}${T}${T}${T}}
+${T}${T}${T}}
+${T}${T}${T}set_variable = { name = ${wgVar(tech)}  days = ${days} }
+${T}${T}}`).join('\n');
+  W('common/on_actions/zzz_pm_rehaul_wargate.txt',
+`# AUTO-GENERATED by tools/emit_research_events.mjs - do not edit by hand.
+# The war research gate. Computed here because a scripted_progress_bar has no valid ROOT; the bars
+# read the variables this sets. See ROADMAP.md -> "The war channel - RULED IN DETAIL".
+on_monthly_pulse_country = {
+${T}effect = {
+${T}${T}if = {
+${T}${T}${T}limit = { is_at_war = yes }
+${blocks}
+${T}${T}}
+${T}}
+}
+`);
+}
 for (const lang of (CFG.languages || ['english']))
   W(`localization/${lang}/replace/zzz_pm_rehaul_research_l_${lang}.yml`,
     `l_${lang}:\n` + loc.map(([k, v]) => ` ${k}:0 "${v.replace(/"/g, '')}"`).join('\n') + '\n');
