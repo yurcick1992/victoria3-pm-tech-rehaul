@@ -76,17 +76,6 @@
 				reserves=1
 				activate_production_methods={ "pm_main_port_basic" }
 			}
-			create_building={
-				building="building_port_steam"
-				add_ownership={
-					country={
-						country="c:GBR"
-						levels=1
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
-			}
 		}
 		region_state:JLF={
 		}
@@ -144,17 +133,6 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_main_port_basic" }
-			}
-			create_building={
-				building="building_port_steam"
-				add_ownership={
-					country={
-						country="c:GBR"
-						levels=1
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 	}
@@ -683,17 +661,6 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_main_port_basic" }
-			}
-			create_building={
-				building="building_port_steam"
-				add_ownership={
-					country={
-						country="c:GBR"
-						levels=1
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 		region_state:NET={
@@ -2143,17 +2110,6 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_main_port_basic" }
-			}
-			create_building={
-				building="building_port_steam"
-				add_ownership={
-					country={
-						country="c:GBR"
-						levels=1
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 		region_state:POR={

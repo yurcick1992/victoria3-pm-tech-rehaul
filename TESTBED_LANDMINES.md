@@ -136,18 +136,51 @@ only history the engine reads, via `replace_paths`. It resolves each building's 
 method's `unlocking_technologies` against vanilla plus our owned files, expands
 `add_era_researched` (which is most of the grant), and reports **per country**.
 
-⭐ **THE GATE IS A DOMESTIC-OWNERSHIP RULE (user-refined 2026-08-16 night, §10.60.3 Q5a).** It fires
-only on buildings the state's own country holds a stake in; a building owned ENTIRELY by foreign
-countries rides its owners' technology, not the state holder's. Vanilla itself ships such buildings
-(SIL's African anchorages are GBR-owned), and the engine provisions steam ports into subject states
-whose owners lack the tech (measured: SIL held one by 1837.1 in the vancost century run). This
-replaced a short-lived per-rule `tech_deviation` exception list the same night — a refined rule beats
-a register of exceptions to a cruder one. The skip count is PRINTED every run (78 foreign-owned 1836
-buildings on the current map — 12 of ours, the §10.60.3 overlord-owned subject stubs, and 66 of
-vanilla's own). **Tripwire proven both ways**: flipping one seeded stub's ownership to its subject
-makes the check FAIL naming the country and `screw_frigate`; restored, it passes.
+⭐⭐ **THE GATE BINDS EVERY BUILDING, WHOEVER OWNS IT** (re-established 2026-08-17, **FINDINGS F68**).
+The engine checks a history `create_building` against the **region_state's own country**;
+`add_ownership` is not consulted. Its own words, at world init:
 
-⚠ **IT COMPARES AGAINST VANILLA RATHER THAN DEMANDING ZERO.** Vanilla itself fails on six countries, so
+```
+Error: create_building effect [ … Dutch East Indies … must have invented … The Screw Steamer … ]
+Script location: common/history/buildings/12_indonesia.txt:683
+```
+
+⚠⚠ **THIS ENTRY IS THE CASE STUDY FOR THE WHOLE REGISTER: THE DETECTOR WAS SWITCHED OFF AND 22 BROKEN
+START RULES SHIPPED GREEN.** A "refinement" of 2026-08-16 night (§10.60.3 Q5a) made L14 SKIP any
+building owned entirely by foreign countries, on the theory that it rides its owners' technology. It
+was wrong, and it failed **twice over**:
+
+1. **Its evidence was a snapshot taken a year late.** *"the engine provisions steam ports into subject
+   states whose owners lack the tech (measured: SIL held one by 1837.1)"* — read at **1837.1.1**, so
+   what it saw was **F66's engine provisioning wave** building that port over the intervening year, not
+   our `create_building` succeeding. Re-measured at **1836.2.1 over 10 runs**: every subject-state stub
+   rejected, **110 error lines, 22 locations, identical in all ten**.
+2. **Its second leg was true but inert.** Vanilla does ship foreign-owned ports (GBR's in SIL's
+   Senegal) — but they are t0 `building_port` gated on `navigation`, which every country holds, so
+   vanilla never creates the conflict that would test the rule.
+
+⚠⚠ **AND A SECOND BUG IN THE SAME FILE HID IT EVEN AFTER THE SKIP WAS REMOVED.** `analyse()` counted
+`add_technology_researched` lines sitting inside a per-country guard —
+`if = { limit = { this = c:NET } … }`, exactly how `emit_techs.mjs` writes `start_tech_grants` — as
+though **every** country of that tier held them. Our NET-only `screw_frigate` grant was therefore
+credited to all 60-odd tier-2 countries, so DEI, SMB, TID and PON looked entitled to steam ports they
+cannot build. `startSets()` (L15's path) had already solved this and its own comment warned that
+over-reporting holdings *"is a detector that passes the very failure L14 is for"* — correctly, about
+the function beside it. **Both landmines now read `startSets()`**: one definition of what a country
+starts with. That also removed three standing false positives (vanilla-inherited gaps **6 → 3**),
+because the old path ignored the per-country extras 81 countries carry.
+
+**Tripwire re-proved by sabotage, 2026-08-17.** Injecting one NET-owned `port_steam` into DEI's
+territory in a copy of the emitted mod makes the check **exit 1** and print
+`DEI (tier 2, 46 buildings): screw_frigate`; the real build exits 0. ⚠ It failed this same test
+*before* the `startSets()` fix — passing a mod carrying the exact defect — which is why "removed the
+skip" was not the end of the work.
+
+⚠ **Do not re-introduce an ownership exemption without a reading taken at 1836.2.1.** A late snapshot
+cannot tell "never created" from "created, then supplied by the engine anyway", and those demand
+opposite fixes.
+
+⚠ **IT COMPARES AGAINST VANILLA RATHER THAN DEMANDING ZERO.** Vanilla itself fails on three countries, so
 an absolute pass is unreachable and a build demanding one could never go green. What we hold ourselves to
 is introducing **no new** gap — the real requirement, and computable because the same analysis runs
 unchanged against the game's own directory.

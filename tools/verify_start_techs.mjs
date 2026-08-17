@@ -34,23 +34,30 @@ const strip = s => s.replace(/^\uFEFF/, '');
 const read = f => strip(readFileSync(f, 'utf8'));
 const txts = d => existsSync(d) ? readdirSync(d).filter(f => f.endsWith('.txt')).map(f => join(d, f)) : [];
 
-// \u00A710.60.3 Q5a, REFINED (user, 2026-08-16 night): THE TECH GATE IS A DOMESTIC-OWNERSHIP RULE.
-// L14 fires only on buildings the state's own country holds a stake in; a building owned ENTIRELY by
-// foreign countries rides its owners' technology, not the state holder's \u2014 vanilla itself ships such
-// buildings (SIL's African anchorages are GBR-owned), and the engine demonstrably provisions steam
-// ports into subject states whose owners lack the tech (measured: SIL held one by 1837.1). This
-// replaces the earlier per-rule `tech_deviation` exception list: a refined RULE beats a register of
-// exceptions to a cruder one. The skip count is PRINTED \u2014 a silent exemption is a hole, a loud one is
-// a property of the map on the record. A block with NO parseable ownership counts as domestic (the
-// conservative direction: it stays gated).
-let foreignSkips = 0;
-function foreignOwned(blk, tag) {
-  const own = blk.match(/add_ownership\s*=\s*\{[\s\S]*$/);
-  if (!own) return false;
-  const owners = [...own[0].matchAll(/country\s*=\s*"c:([A-Z0-9]+)"/g)].map(m => m[1]);
-  if (!owners.length) return false;
-  return !owners.includes(tag);
-}
+// \u26A0\u26A0 THE GATE BINDS EVERY BUILDING, WHOEVER OWNS IT \u2014 REVERTED 2026-08-17 (FINDINGS F68).
+//
+// A \u00A710.60.3 Q5a "refinement" (2026-08-16 night) used to SKIP any building owned entirely by foreign
+// countries, on the theory that it rides its owners' technology rather than the state holder's. That
+// theory is FALSE, and the skip is exactly why 22 broken start rules shipped without a single check
+// firing. The engine's own words, from error.log at world init:
+//
+//     Error: create_building effect [ ... Dutch East Indies ... must have invented ... ]
+//
+// The `create_building` effect checks the REGION_STATE'S OWN COUNTRY against the building's
+// `unlocking_technologies`. `add_ownership` is not consulted. Naming an advanced overlord as owner
+// does not help, and the rejected block is dropped in silence \u2014 the mod loads, the build passes, the
+// building is simply absent.
+//
+// BOTH legs of the old argument were wrong, and both failed the same way:
+//   \u2022 "measured: SIL held one by 1837.1" \u2014 read a YEAR after init, so what it saw was F66's engine
+//     provisioning wave building that port, not our create_building succeeding. Re-measured at
+//     1836.2.1 over 10 runs: every subject-state stub rejected, 110 error lines, zero variance.
+//   \u2022 "vanilla ships such buildings" \u2014 true but inert. Vanilla's foreign-owned ports (GBR's in SIL's
+//     Senegal) are t0 `building_port` gated on `navigation`, which every country holds, so vanilla
+//     never creates the conflict that would test the rule.
+//
+// The lesson worth keeping: a detector relaxed on the strength of one late snapshot is a detector
+// switched off. Do not re-introduce an ownership exemption without a reading taken at 1836.2.1.
 
 // ⚠⚠ THE HYPHEN IS IN THE IDENTIFIER CLASS FOR A REASON. Four vanilla keys contain one —
 // `pm_ammonia-soda_process`, `pm_coal-fired_plant`, `pm_oil-fired_plant`, `pan-nationalism` — and an
@@ -135,7 +142,6 @@ function analyse(root) {
         const blk = body.slice(cb.index, j);
         const bk = (blk.match(/building\s*=\s*"([a-z_0-9-]+)"/) || [])[1];
         if (!bk) continue;
-        if (foreignOwned(blk, tag)) { foreignSkips++; continue; }   // §10.60.3 Q5a: domestic-ownership rule, printed below
         owns[tag] = (owns[tag] || 0) + 1;
         const set = need[tag] = need[tag] || new Set();
         for (const g of (bTech[bk] || [])) set.add(g);
@@ -156,12 +162,27 @@ function analyse(root) {
   if (stats.owners < 50) fail.push(`only ${stats.owners} countries own 1836 buildings`);
   if (fail.length) { console.error(`REFUSING TO REPORT for ${root}: the check did not find enough to be meaningful —\n  ` + fail.join('\n  ')); process.exit(2); }
 
+  // ⚠⚠ THE PER-COUNTRY SET COMES FROM `startSets()`, NOT FROM `tiers[tier]` — FIXED 2026-08-17 (F68).
+  // This used to compare against the bare tier set, which is wrong in BOTH directions:
+  //   • it counted `add_technology_researched` lines sitting inside a per-country guard
+  //     (`if = { limit = { this = c:NET } … }`, how emit_techs writes `start_tech_grants`) as though
+  //     EVERY country of that tier held them. That is what let 22 broken start rules ship green: our
+  //     NET-only `screw_frigate` grant was credited to all 60-odd tier-2 countries, so DEI, SMB, TID,
+  //     PON and the rest looked entitled to a steam port they cannot build. The engine disagreed at
+  //     load, 110 errors a run, and nothing here noticed.
+  //   • it ignored the per-country EXTRAS in `common/history/countries` (81 countries carry them), so
+  //     it invented gaps like RUS/`fractional_distillation` — false positives that were then waved
+  //     through by `--vs-vanilla` because vanilla "has them too". A check reporting known-wrong rows
+  //     teaches its reader to skim.
+  // `startSets()` already handles both, and its own comment warned that over-reporting holdings
+  // "is a detector that passes the very failure L14 is for" — it was right, about the function next
+  // to it. ONE definition of what a country starts with; both landmines read it.
   const gaps = {};
+  const held = startSets(root);
   for (const [tag, reqs] of Object.entries(need)) {
-    const tier = cTier[tag]; if (tier == null) continue;
-    const set = tiers[tier] || new Set();
-    const missing = [...reqs].filter(r => !set.has(r) && !NAMED.has(r)).sort();
-    if (missing.length) gaps[tag] = { tier, owns: owns[tag], missing };
+    const rec = held[tag]; if (!rec) continue;
+    const missing = [...reqs].filter(r => !rec.set.has(r) && !NAMED.has(r)).sort();
+    if (missing.length) gaps[tag] = { tier: rec.tier, owns: owns[tag], missing };
   }
   return { gaps, stats };
 }
@@ -308,8 +329,6 @@ const MOD = /^[A-Za-z]:|^\//.test(arg) ? arg : join(REPO, arg);
 const mine = analyse(MOD);
 console.log(`parsed ${mine.stats.pms} PMs · ${mine.stats.blds} buildings · ${mine.stats.tiers} starting tiers · ` +
   `${mine.stats.tiered} countries tiered · ${mine.stats.owners} own 1836 buildings`);
-if (foreignSkips) console.log(`§10.60.3 Q5a: ${foreignSkips} foreign-owned 1836 building(s) outside the domestic ` +
-  `tech gate (the gate binds the state's own country; a wholly foreign-owned building rides its owners' technology)`);
 
 if (!vs) {
   for (const [tag, g] of Object.entries(mine.gaps).sort())

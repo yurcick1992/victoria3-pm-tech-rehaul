@@ -935,8 +935,14 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⚠ **ui/icons.js is deliberately EXCLUDED** — Paradox art, gitignored because the repo
                         is public, and a snapshot is something you hand to someone else; the panel already
                         degrades to text-only good names. "Build now" is disabled in the copy (it POSTs to
-                        ui.ps1); **Export mod_config.json still works**, so the round trip is tune → export →
-                        bring the file back. Two guards, both exit non-zero: it REFUSES to bundle when
+                        ui.ps1); **Export mod_config.json still works IN THE FILE**, so the round trip is tune → export →
+                        bring the file back.
+                        ⚠ **BUT NOT IN THE PUBLISHED ARTIFACT.** The artifact viewer never grants a page
+                        download permission, so Export is INERT there — the button does nothing, silently,
+                        including for `data:`/`blob:` hrefs. The published snapshot is therefore READ-ONLY
+                        in practice: to tune and bring changes back, download the HTML and open it locally,
+                        or use the served UI. Do not tell someone to "export from the link".
+                        Two guards, both exit non-zero: it REFUSES to bundle when
                         ui/*.js is older than config/mod_config.json (a snapshot of the previous build's
                         numbers is the failure mode worth preventing — `--stale-ok` overrides), and it fails
                         if builder.html loads a `<script src>` not listed in its INLINE/OMIT lists, rather
@@ -2392,10 +2398,28 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   L11 a tag that is not the country you think it is (proposed) · **L13 a starting factory converted onto a tier
   its own production method contradicts (MASKED by the re-band, not fixed)** · **L14 a country starts with a
   building its own technologies cannot unlock** (`verify_start_techs.mjs --vs-vanilla`, compared against
-  vanilla because vanilla itself fails on six countries; ⭐ since 2026-08-16 the gate binds
-  DOMESTICALLY-owned buildings only — a building wholly owned by foreign countries rides its owners'
-  technology, which is what lets the §10.60.3 overlord-owned subject-state port stubs ship with no tech
-  grant; the foreign-owned skip count is printed every run) · **L15 a country LOSES a starting technology
+  vanilla because vanilla itself fails on three countries).
+  ⭐⭐ **THE GATE BINDS EVERY BUILDING, WHOEVER OWNS IT (re-established 2026-08-17, FINDINGS F68).** A
+  history `create_building` is checked against the **region_state's OWN country**; `add_ownership` is not
+  consulted, so naming an advanced overlord as owner does not help, and a rejected block is dropped
+  **silently** — the mod loads, the build passes, the building is absent. The engine says so in
+  `error.log`: `create_building effect [ … Dutch East Indies … must have invented … ]`.
+  ⚠⚠ **THIS DETECTOR WAS DISARMED FOR A DAY AND SHIPPED 22 BROKEN START RULES.** A 2026-08-16
+  "refinement" made L14 SKIP wholly foreign-owned buildings, on the theory that they ride their owners'
+  technology — and its evidence was a save read at **1837.1.1, a year after init**, so what it actually
+  saw was F66's engine provisioning wave building those ports, not our `create_building` succeeding.
+  ⚠ It then survived a second bug in the same file: `analyse()` counted `add_technology_researched`
+  lines sitting inside a per-country guard (`if = { limit = { this = c:NET } … }`, exactly how
+  `emit_techs.mjs` writes `start_tech_grants`) as though **every** country of that tier held them — so
+  our NET-only `screw_frigate` grant was credited to all 60-odd tier-2 countries and DEI, SMB, TID and
+  PON looked entitled to steam ports they cannot build. `startSets()` had already solved this and even
+  warned that over-reporting holdings "is a detector that passes the very failure L14 is for"; the fix
+  is that **both landmines now read `startSets()`**, one definition of what a country starts with.
+  It also killed three standing false positives (vanilla-inherited gaps 6 → 3), because the old path
+  ignored the per-country extras 81 countries carry.
+  ⚠ Re-proved by sabotage: injecting one NET-owned `port_steam` into DEI's territory now exits 1 and
+  names `DEI (tier 2): screw_frigate`. Do not re-introduce an ownership exemption without a reading
+  taken at **1836.2.1** · **L15 a country LOSES a starting technology
   vanilla gives it** (`verify_start_techs.mjs --diff-vanilla` — L14's converse, and the quiet one: tiers 1
   and 2 draw most of their set from `add_era_researched = era_1`, so re-era-ing a technology OUT of era 1
   withdraws it from 59 countries with no file mentioning it. It expands the era shorthand against EACH

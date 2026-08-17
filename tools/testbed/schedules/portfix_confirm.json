@@ -1,0 +1,36 @@
+{
+  "schedule_version": 1,
+  "label": "portfix-confirm-n1",
+  "_why": "CONFIRMATION, NOT A MEASUREMENT: does the load now come up clean? The 22 subject-state port rules were removed from config/start_exceptions.json after session 20260817_211818 showed the engine rejecting every one of them (110 error.log lines, 22 distinct locations, identical in all ten runs). PASS = zero \"must have invented\" lines and the 16 leader-state stubs still present at 1836.2.1.",
+  "_arms": "canon = {kind: config, config: config/mod_config.json} - grants are NET-only, ACE and LAN removed. All ten runs identical; the only difference is the game's RNG.",
+  "_comparison": "Not an arm comparison. The output is a variance envelope, against which 20260817_155024 (all grants), 20260817_184940 (leaders only) and 20260817_200536 (ace only) can finally be judged — or dismissed.",
+  "_cost": "1 run x 3 in-game months, ~2 minutes.",
+  "_caveats": "⚠ The BINV boot dump is NOT usable for this: its ~12k-line burst overflows the log ring and the mirror loses about 3% of it at random, which already produced spurious differences in states we never touched (Benin, Dahomey, Bhavnagar). Save summaries come from the savegame and are unaffected. ⚠ Two in-game years so a 1837.1.1 autosave exists; nothing economic can be read from a run this short and nothing should be. ⚠ L19: check for an orphaned victoria3.exe before launching — one live game from a previous batch makes every subsequent run fail in ~20 seconds with a single-line log and a misleading SCHEDULE DONE. With ten runs queued that would waste the whole batch. ⚠ L17: a run that fails is still recorded `ok` by the harness; check each meta.json before counting it.",
+  "defaults": {
+    "metrics": [
+      "building_inventory"
+    ],
+    "autosave_interval": "monthly",
+    "timeout_minutes": 20,
+    "tags": [
+      "GBR",
+      "FRA",
+      "NET"
+    ]
+  },
+  "setups": {
+    "canon": {
+      "kind": "config",
+      "config": "config/mod_config.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "canon",
+      "until": "1836.4.1",
+      "dump_dates": [
+        "1836.2.1"
+      ]
+    }
+  ]
+}

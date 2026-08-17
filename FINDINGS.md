@@ -7013,3 +7013,78 @@ attribution is possible); and it is one campaign of one world (the standard save
 wealth→wage conversion leans on F26's 1836 cross-sectional fit applied over time, which is exactly the
 kind of extrapolation F26 itself warns about — here it only needs to support "flat, not ×2+", which the
 raw wealth levels show directly.
+
+---
+
+## F68 — A history `create_building` is gated on the REGION_STATE'S OWN COUNTRY holding the technology, regardless of who owns the building
+
+**Session:** `20260817_211818_seed-variance-monthly-n10` — 10 runs, canonical config, 1836.1.1 → 1836.4.1,
+monthly autosaves, inventory read from **save summaries** at **1836.2.1**. Arm: `{kind: config,
+config: config/mod_config.json}`. All 10 reached the target date (L17 checked).
+
+**Claim.** The engine's `create_building` effect in `common/history/buildings` requires the country that
+owns the **region_state** to have researched the building's `unlocking_technologies`. The `add_ownership`
+block is **irrelevant to this check** — naming a technologically advanced overlord as owner does not
+satisfy it. A rejected block is dropped silently as far as the game is concerned: the mod loads, the
+build succeeds, nothing fails, and the building simply is not there.
+
+**Evidence.** The §10.60.3 chain seed emitted 38 `building_port_steam` stubs. **22 were rejected** —
+every one of them in a subject's state — and the 16 that survived are exactly those in GBR's, FRA's and
+NET's own states. The engine names the reason in `error.log`:
+
+```
+Error: create_building effect [ … Dutch East Indies … must have invented … The Screw Steamer … ]
+Script location: common/history/buildings/12_indonesia.txt:683
+```
+
+("The Screw Steamer" is *our* loc for `screw_frigate`, which gates `building_port_steam`.)
+
+**It is perfectly deterministic.** Every one of the ten runs produced **110 `must have invented` lines
+across 22 distinct script locations** — identical counts, identical locations. Presence per country at
+1836.2.1 was 4/4 or 0/4 with nothing in between.
+
+Rejected: ION(Ionian Is.) · SIL(Senegal, Sierra Leone, Gold Coast, S. Cameroon) · ORG(Washington) ·
+MKT(Nicaragua) · ABU(Abu Dhabi) · BIC(Tenasserim, Pegu) · SMB + PON(W. Borneo) ·
+DEI(E. Borneo, W. Java, N. Sumatra, Moluccas, Celebes, Sunda Is.) · TID(W. New Guinea, Moluccas) ·
+PLY(Tahiti) · NSW(North Island).
+
+**Three rival explanations were tested and all fail:**
+
+- **Subject type.** Colonies/dominions appeared to work and protectorates/chartered companies/puppets to
+  fail — an artifact of a per-*country* presence test. SIL, NSW and DEI scored "present" because the
+  country held a `port_steam` in some *other* state; all eleven of their own rules were rejected.
+- **Starting technology tier.** Does not predict it: BIC and ORG are `2_tech` and fail, NSW and DEI are
+  `2_tech` and succeed (succeed only in the coarse test, but the tiers are the point — the split is not
+  along tier lines).
+- **Market membership.** ABU, BIC, ION, MKT and ORG all resolve to GBR's market and still fail;
+  `grant_own_market` exists on only LUX and EGY in the whole 1836 start.
+
+**⚠⚠ THE MEASUREMENT THAT PRODUCED THIS ALSO INVALIDATES FOUR EARLIER READINGS, AND THE CAUSE IS A
+SNAPSHOT TAKEN TOO LATE.** Presence had been read from the **first save summary, which at yearly
+autosaves is 1837.1.1 — a full in-game year after init.** Across that year the engine's own
+per-overseas-state port provisioning (F66) builds the very stubs whose creation was being tested, at
+different times in different runs. That produced, and I reported, all of the following, every one of
+them **void**:
+
+| Reported | Actually |
+|---|---|
+| ABU 6/10, SMB 7/10, TID 7/10, PON 8/10 "intermittent" | Engine provisioning finishing at different dates. 0/4 at one month, flat. |
+| BIC, ION, MKT, NSW, PLY "10/10 — the seed works" | All rejected; their 1837 ports were engine-built. |
+| "Subject type is the discriminator" | Artifact of the coarse per-country test. |
+| ORG uniquely broken (the HBC-owned port in its state) | ORG is not special; it fails for the same reason as the other 21. |
+
+**⚠ It does NOT contradict in-game experience.** A country *can* build in any state its diplomacy allows
+without holding local technology — that is the **construction** path. The **history effect** is a
+separate code path with its own `must have invented` check, evaluated at world init. Do not reason from
+one to the other.
+
+**What it does NOT say.** Nothing about whether such stubs are economically desirable, and nothing about
+any building type other than the port ladder — though the check is generic to `create_building` and
+should be assumed to apply to every seeded industry.
+
+**Consequence (shipped 2026-08-17).** The 22 subject-state rules were removed from
+`config/start_exceptions.json` (44 → 22 rules; 16 port creates remain, all in leader states). Granting
+`screw_frigate` to twelve subject countries is the only alternative and is **ruled out** (user: port
+tech grants go, except literal NET). Subjects are not left portless — the additive redesign retains
+their vanilla anchorages as t0 clipper ports, and F66's provisioning wave supplies steam ports within
+about a year, which is precisely what the 1837 reading was accidentally measuring.
