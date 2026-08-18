@@ -7499,3 +7499,81 @@ directionally consistent with row P's +5.6% pop-matched.
 - **Machine load is assumed near-zero** by ruling, supported by the 0.040 MAD but not independently
   measured.
 - The 0.39 s/yr intercept is not meaningfully non-zero and should not be read as fixed overhead.
+
+---
+
+## F73 — ⭐ THE INDUSTRY RESEARCH CHANNEL FIRES DECADES EARLY, IN THE **TAIL** NOT THE MEDIAN — and **87% of its firings go to countries outside the twelve majors**
+
+**Claim.** Measured over canon-n2's two full-century runs (**10 093 industry-channel firings**), the
+industry research journal entries have three distinct properties, and only the first was suspected:
+
+1. **Nine technologies have `implementation` completed BEFORE their own narrative onset year**, the worst
+   by **41 years**. This is an *earliest-adopter* effect: for eight of the nine the MEDIAN firing lands
+   *after* onset, so it is the leading edge that is broken, not the whole distribution.
+2. **The channel front-loads hard**: firings peak in the **1840s (2 221)** and fall monotonically to
+   **294 in the 1930s** — a 7.6× decline over the century.
+3. ⭐ **It is overwhelmingly a MINOR-country mechanism**: only **1 289 of 10 093 firings (12.8%)** go to
+   the twelve majors; **8 804 (87.2%)** go to everyone else.
+
+**Arms, n, span.** `20260818_084128_canon-n2`, config arm, n=2, 1836→1936, game 1.13.10, frozen config
+sha `ee029e5e`. War- and fleet-gated bars excluded (this is the industry channel only). In-game dates are
+interpolated from the observer's own tick lines, so timings carry ±a few in-game weeks. Onset years are
+the narrative real-world dates `tech_tree_spec.mjs` carries per technology. Reader: `je_dist.mjs`.
+
+### The egregious cases — implementation granted before the technology existed
+
+| technology | era | onset | first fired | years early | firings | majors reached |
+|---|---|---|---|---|---|---|
+| `steam_donkey` | 3 | 1881 | 1840 | **−41** | 85 | 10 |
+| `automatic_bottle_blowers` | 4 | 1903 | 1865 | **−38** | 81 | 11 |
+| `compression_ignition` | **5** | 1897 | 1860 | **−37** | 57 | 11 |
+| `electrical_generation` | 3 | 1882 | 1849 | −33 | 26 | 7 |
+| `mechanized_farming` | 4 | 1892 | 1860 | −32 | 65 | 9 |
+| `vacuum_canning` | 3 | 1874 | 1852 | −22 | 84 | 11 |
+| `dough_rollers` | 5 | 1920 | 1910 | −10 | 10 | 4 |
+| `rotary_valve_engine` | 3 | 1849 | 1845 | −4 | 148 | 11 |
+| `screw_frigate` | 2 | 1843 | 1842 | −1 | 41 | 2 |
+
+⚠ **An ERA-5 technology (`compression_ignition`) completing in 1860 is the sharpest single statement**
+this batch makes about the channel: 37 years before its onset and four eras ahead of the calendar.
+
+### The systemic case is one technology, not many
+
+Ranked by reach × earliness with only genuinely-early technologies counted, **exactly one survives**:
+`steam_donkey`, median **10.2 years early**, 85 firings, 11 distinct countries. Every other early
+technology fires early only at its leading edge. ⚠ An earlier cut of this analysis ranked by a score
+that collapses to zero for late-firing technologies and so listed twelve "systemic" entries that were
+mostly *late*; that table was wrong and is void.
+
+### Distribution and recipients
+
+```
+1830s 1123 ####################        1890s  625 ###########
+1840s 2221 ########################################   1900s  657 ############
+1850s 1230 ######################      1910s  623 ###########
+1860s 1143 #####################       1920s  598 ###########
+1870s  807 ###############             1930s  294 #####
+1880s  772 ##############
+```
+Majors, firings each: RUS 150 · TUR 138 · USA 122 · SPA 118 · GBR 115 · BRZ 110 · AUS 108 · SIC 106 ·
+POR 106 · PRU 91 · NET 81 · **FRA 44**. ⚠ FRA's outlier-low count is not a mechanism finding — that run's
+France suffered a civil war with a **−94% population collapse at 1879** (report_data2 anomaly flags).
+
+### What this says for the threshold rework
+
+The thresholds are **employment in the predecessor tier** (5k/15k/45k/135k/405k by era). The pattern —
+early tail, minor-country dominance, front-loading — is consistent with **small countries clearing a
+low absolute bar on a handful of buildings**, long before the technology is plausible. That argues for
+thresholds that scale with something relative (share of the country's own workforce, or of world output)
+rather than an absolute head-count, and/or a hard **date floor** at the technology's onset.
+⚠ **This finding does not test either remedy** — it characterises the fault only.
+
+### What it does NOT say
+
+- **Onset years are narrative, not mechanical.** A firing "before onset" is ahead of the real-world date,
+  not necessarily ahead of anything the game enforces. It is the yardstick the complaint was raised in.
+- **It says nothing about whether the technology was actually RESEARCHED early** — a completed
+  journal entry grants half an era's research cost, it does not by itself unlock anything.
+- **Timings are interpolated** from ~20-second tick lines; treat single-year precision as approximate.
+- **n=2, one arm.** Given canon-n2's measured 2.1× spread on war firings, the industry channel's 2%
+  run-to-run agreement suggests these counts are stable, but the *tail* dates rest on single events.
