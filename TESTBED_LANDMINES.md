@@ -975,13 +975,21 @@ release the machine in seconds.
 
 ## L22 — a mod `effect` block on a VANILLA on_action SILENTLY REPLACES vanilla's, and the engine says so in one line nobody reads
 
-**Status: ✅ FIXED 2026-08-18 (detector still owed).** `emit_research_events.mjs` now registers
+**Status: ✅ FIXED AND GUARDED 2026-08-18 · AUTO.** `emit_research_events.mjs` now registers
 `on_monthly_pulse_country = { on_actions = { pmr_wargate_eval } }` and puts the effect in that named
 action, the idiom the telemetry and diag files already used. Verified against the EMITTED artifact: the
 only direct `effect` child sits under `pmr_wargate_eval`, and `on_monthly_pulse_country` carries an
 `on_actions` list. Vanilla's 1005-line effect is no longer displaced.
-⚠ The build-time DETECTOR is still owed — the fix is in one emitter, nothing stops the next one
-repeating it. See the detector spec below.
+✅ **DETECTOR:  in **, registered in $CHECKS as an artifact check, so it
+runs inside every build. It reads the EMITTED , and any top-level block that is a
+VANILLA on_action must not carry a direct  child. The 262 vanilla on_action names are parsed
+LIVE from the game so a patch that adds one is covered without editing the check; -prefixed is the
+fallback when the game path is unreadable.
+⚠ **Tripwire PROVEN by deliberate breakage**: reintroducing the bare  on 
+made preflight exit 1 with , naming
+the file and printing the two-line fix; restoring it returned PASS, and a full build passes with it live.
+⚠ It is deliberately NOT a grep for the engine's warning string — that needs a RUN, and the point is to
+fail at build time. Same principle as reading the artifact rather than the generator.
 
 **Original status: REGISTERED, DETECTOR + FIX OWED** (both queued behind the live `canon-n2` batch — `emit_research_events.mjs`
 is in the build path and the scheduler rebuilds between runs, so changing it mid-batch is an L10 breach).

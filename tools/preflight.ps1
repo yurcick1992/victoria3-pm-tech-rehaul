@@ -50,6 +50,11 @@ $FingerprintFile = Join-Path $PSScriptRoot 'telemetry_fingerprint.json'
 $CONTROL_MOD_ID  = 'com.yurcick.v3_testbed_control'
 $OVERLAY_MOD_ID  = 'com.yurcick.v3_testbed_overlay'
 
+# L22 needs the VANILLA on_action names. Read live so a patch that adds one is covered without editing
+# this file. ⚠ Every check that uses it must degrade to a documented fallback when the path is absent —
+# preflight has to keep working on a machine without the game installed.
+$GameDir = 'C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game'
+
 # ⚠⚠ L14 AND L15 VERIFY *OUR OWN* 1836 TECHNOLOGY GRANT, WHICH ONLY A CONTENT ARM HAS.
 # A control emits `.metadata` + telemetry and nothing else — that is CLAUDE.md's hard rule — so it
 # carries no `common/scripted_effects/00_starting_inventions.txt`, and both detectors used to die on
@@ -399,6 +404,65 @@ function Test-LmL15 {
     }
 }
 
+# ============================================================= L22 ====
+function Test-LmL22 {
+    <#
+      L22 - a mod `effect` block on a VANILLA on_action silently REPLACES vanilla's.
+
+      An on_action's `events` list MERGES across files; its `effect` block does NOT. Two files
+      defining an effect for the same on_action do not compose - the engine keeps the most recently
+      loaded one and DISCARDS the other, logging a single line in a file that is expected to carry
+      vanilla's own noise. `zzz_pm_rehaul_wargate.txt` did this to `on_monthly_pulse_country`, whose
+      vanilla effect is 1005 lines of Ottoman and Portuguese succession and ruler-trait rolls, and
+      nothing failed anywhere: the mod loaded, every gate passed, the run completed.
+
+      DETECTOR. Read the EMITTED on_actions files. Any top-level block that is a VANILLA on_action
+      must not contain a direct `effect = {` child - it must register a named action instead
+      (`on_actions = { my_action }`, with the effect on `my_action`). The vanilla on_action names are
+      parsed live from the game's own common/on_actions, so a patch that adds one is covered without
+      touching this check; `on_`-prefixed is the fallback when the game files are unreadable.
+
+      ⚠ Deliberately NOT a grep for the engine's warning string: that needs a RUN, and the whole
+      point is to fail at build time. Same principle as reading the artifact rather than the generator.
+    #>
+    $dir = Join-Path $Mod 'common\on_actions'
+    if (-not (Test-Path $dir)) { Add-Result 'L22' 'mod effect overriding a vanilla on_action' 'N/A' 'no on_actions emitted'; return }
+
+    # vanilla on_action names, read live; fall back to the `on_` convention if the game is unreadable
+    $vanilla = @{}
+    $vDir = Join-Path $GameDir 'common\on_actions'
+    if (Test-Path $vDir) {
+        foreach ($f in Get-ChildItem $vDir -Filter *.txt -File) {
+            foreach ($line in [System.IO.File]::ReadAllLines($f.FullName)) {
+                if ($line -match '^([a-z_0-9]+)\s*=\s*\{') { $vanilla[$Matches[1]] = $true }
+            }
+        }
+    }
+    $bad = @(); $checked = 0
+    foreach ($f in Get-ChildItem $dir -Filter *.txt -File) {
+        $lines = [System.IO.File]::ReadAllLines($f.FullName)
+        $blk = $null
+        foreach ($line in $lines) {
+            if ($line -match '^([a-z_0-9]+)\s*=\s*\{') { $blk = $Matches[1]; continue }
+            # a direct child sits one indent level in
+            if ($blk -and $line -match '^[\t ]{1,2}effect\s*=\s*\{') {
+                $isVanilla = if ($vanilla.Count) { $vanilla.ContainsKey($blk) } else { $blk -like 'on_*' }
+                $checked++
+                if ($isVanilla) { $bad += "$($f.Name): '$blk' declares its own effect block" }
+            }
+        }
+    }
+    if ($bad.Count) {
+        Add-Result 'L22' 'mod effect overriding a vanilla on_action' 'FAIL' (
+            ($bad -join [Environment]::NewLine) + [Environment]::NewLine +
+            "vanilla's effect for that on_action is DISCARDED (most-recent-load wins). Register a named" + [Environment]::NewLine +
+            "action instead:  <on_action> = { on_actions = { my_action } }  and put the effect on my_action.")
+    } else {
+        Add-Result 'L22' 'mod effect overriding a vanilla on_action' 'PASS' `
+            "$($checked) direct effect block(s) inspected, none on a vanilla on_action ($($vanilla.Count) vanilla names known)"
+    }
+}
+
 # ============================================================== L7 ====
 function Test-LmL7 {
     <#
@@ -696,7 +760,8 @@ $CHECKS = @(
     @{ Id = 'L12'; Artifact = $false; Fn = { Test-LmL12 } },
     @{ Id = 'L14'; Artifact = $true;  Fn = { Test-LmL14 } },
     @{ Id = 'L15'; Artifact = $true;  Fn = { Test-LmL15 } },
-    @{ Id = 'L17'; Artifact = $false; Fn = { Test-LmL17 } }
+    @{ Id = 'L17'; Artifact = $false; Fn = { Test-LmL17 } },
+    @{ Id = 'L22'; Artifact = $true;  Fn = { Test-LmL22 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 
