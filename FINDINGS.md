@@ -7504,6 +7504,20 @@ directionally consistent with row P's +5.6% pop-matched.
 
 ## F73 — ⭐ THE INDUSTRY RESEARCH CHANNEL FIRES DECADES EARLY, IN THE **TAIL** NOT THE MEDIAN — and **87% of its firings go to countries outside the twelve majors**
 
+⚠⚠ **MAGNITUDE CORRECTION, 2026-08-19 — EVERY COUNT BELOW WAS TAKEN FROM RAW LOG LINES AND IS INFLATED.**
+Measured on canon-n7 run 1 (landmine **L23**): the telemetry holds **12 143 `PMR_JE` lines against 5 293
+distinct `(stage, tech, country)` triples — 2.29x**. The duplication is concentrated in a handful of
+SECONDS during the game's own burst ticks, and the early-1840s window that produces this finding's peak
+is exactly where those bursts are. A journal entry completes once per country per technology by
+construction, so the distinct-triple count is the honest one; raw lines are an upper bound.
+⇒ **The SHAPE of this finding stands** — the duplication is not selective by country, technology or date,
+so "the tail, not the median", the nine early technologies and the majors/minors split are unaffected in
+kind. **The NUMBERS do not**: treat 10 093, the 1840s peak of 2 221 and the per-decade series as upper
+bounds, and re-derive from distinct triples before taking any threshold ruling on them. The 87.2% share is
+a RATIO and is the most likely of the three to survive intact, but it has not been re-measured either.
+⚠ The cause is not identified (mirror re-append under rapid ring rotation vs the engine re-emitting) and
+the correction does not depend on which it is — see L23.
+
 **Claim.** Measured over canon-n2's two full-century runs (**10 093 industry-channel firings**), the
 industry research journal entries have three distinct properties, and only the first was suspected:
 

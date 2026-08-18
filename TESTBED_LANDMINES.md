@@ -71,6 +71,7 @@ closed.
 | L20 | An alternate config with no paired `tech_tree_options.<sfx>.json` | AUTO |
 | L21 | A failed build hangs the scheduler instead of aborting it | AUTO (bounded build + fail-aware waiter) |
 | L22 | A mod `effect` block silently replacing a vanilla on_action's | AUTO |
+| L23 | A telemetry line counted RAW when a burst repeats it | **REGISTERED, DETECTOR OWED** |
 
 ---
 
@@ -1119,3 +1120,50 @@ inferred, not measured. Confirming it is a probe on **vanilla + telemetry** for 
 
 **Scope of contamination.** The wargate file first shipped 2026-08-18, so only that day's sessions carry
 it: the three `wargate-*` probes and the `canon-n2` batch. Earlier sessions are clean.
+---
+
+## L23 — a LOG LINE COUNTED RAW, when a burst repeats it: JE firing counts inflated 2.29x
+
+**Status: REGISTERED, DETECTOR OWED.** Found 2026-08-19, ~2 h into canon-n7 run 1, while answering
+"anything egregious in the first run?". Nothing in the run was wrong; the way its telemetry was being
+COUNTED was.
+
+**The failure.** `PMR_JE|<stage>|<tech>|<country>` is logged once when a research journal entry
+completes, and every analysis so far has counted those LINES. In canon-n7 run 1 to 1926 the log holds
+**12,143 PMR_JE lines against 5,293 distinct `(stage, tech, country)` triples — 2.29x inflation.**
+It is not spread out: it lives in a handful of SECONDS, 136 duplicated lines in 22:24:42 alone, and
+the steady state is clean. One country, Yogyakarta, appears **16 times** completing `percussion_cap`,
+all at the same wall-clock second, in verbatim 655-line blocks that repeat — blocks whose md5s are
+identical and which carry unrelated lines (party creation) along with the JE lines.
+
+⚠ **THE CAUSE IS NOT IDENTIFIED, AND THE FIX DOES NOT DEPEND ON IT.** Two candidates: the observer's
+continuous log MIRROR re-appending an overlapping chunk when the 5x512KB ring rotates rapidly under a
+burst (the bursts are exactly where the game emits thousands of lines in one tick), or the engine
+genuinely re-emitting. Evidence leans to the mirror — the repeated blocks are byte-identical including
+unrelated content, and a line-for-line comparison against the GAME'S OWN live `debug.log` in a
+steady-state window matches 1:1 (game=1, mirror=1 on three sampled lines). It could not be checked at
+the burst itself: the ring had rotated that window away by the time it was found. **Do not write the
+cause into the fix.**
+
+**THE RULE: COUNT DISTINCT `(stage, tech, country)` TRIPLES, NEVER RAW LINES.** That is correct under
+either cause, and a journal entry completes once per country per technology by construction, so a
+triple cannot legitimately recur. Raw lines are an UPPER bound, distinct triples a LOWER bound; the
+truth sits at or near the lower one.
+
+⚠⚠ **IT REACHES BACK INTO A SHIPPED FINDING. F73's "10,093 firings", its 1840s peak of 2,221 and its
+87.2%-to-minors split were all counted RAW**, and the inflation is concentrated in exactly the early
+window that produced that peak. The SHAPE of F73 very likely survives — the duplication is not
+selective by country or technology — but its MAGNITUDES do not, and no threshold ruling should be taken
+on the raw numbers. Re-derive from distinct triples before using them.
+
+**DETECTOR (owed).** Two halves, and the second is the one that lasts:
+1. The analysis path: every reader of `PMR_JE` (and any other per-event telemetry line) de-duplicates on
+   its identity tuple, and REPORTS the raw/distinct ratio rather than silently collapsing — a large ratio
+   is itself a signal about the ring.
+2. A mirror-fidelity check: after a run, compare the mirror against the game's own retained log over an
+   overlapping window and fail if the mirror holds lines the source does not. That is the artifact-vs-
+   generator principle applied to the instrument itself.
+
+⚠ This is L9's sibling — that entry is about reading the shared ring without filtering by the run's own
+token, this one about trusting line COUNTS from a ring under burst. The same instinct fixes both: a log
+line is evidence that something happened, never evidence of how many times.
