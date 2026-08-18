@@ -89,35 +89,25 @@ a{color:var(--accent)}
   <div class="eyebrow">PM &amp; Tech Rehaul — batch report</div>
   <h1>Rehaul Batch Ledger</h1>
   <div class="meta">
-    <span class="chip mono">20260815_153825_flatcost-n1</span>
-    <span class="chip"><b>arm</b> flat cost book, 0.65× vanilla anchors (260/390/520)</span>
-    <span class="chip"><b>n</b> 1 · 1836→1936 · game 1.13.10</span>
-    <span class="chip"><b>Δ vs shipped</b> building_cost only, 105 tiers</span>
-    <span class="chip"><b>baseline</b> vanilla n=4 + ×1.5^era book n=2 (20260813) · old book n=1 (era6-n1)</span>
+    <span class="chip mono">__SESSION__</span>
+    <span class="chip"><b>arm</b> __ARM__</span>
+    <span class="chip"><b>n</b> __N__ · 1836→1936 · game __GAME__</span>
+    <span class="chip"><b>Δ vs shipped</b> __DELTA__</span>
+    <span class="chip"><b>baseline</b> __BASE__</span>
   </div>
   <div class="meta">
-    <span class="pill ok">Run health: reached 1936 · 1 engine CTD (F56), clean resume · arm verified from built mod</span>
+    <span class="pill ok">__HEALTH__</span>
   </div>
 </header>
 
 <!-- ============ VERDICT (always visible) ============ -->
 <section class="sec">
   <h2>Verdict — is the mod at its goals?</h2>
-  <p class="lede">The flat book proves the <b>mechanism</b>: for the first time the ladder is climbed on the anchor
-  cadence, obsolete rungs shed workers, and construction runs at vanilla scale. What fails is the <b>level</b> —
-  and the decomposition says how: the 1.56× GDP overshoot is <b>1.18× the productive workers × 1.33× the output
-  per worker</b>. The premise wanted the first factor <i>below</i> one; buildings this cheap absorb extra workers
-  faster than the upgrade churn retires them. One dial — frontier cost up — plausibly closes both misses.</p>
+  __LEDE__
   <div class="card tablewrap">
   <table>
     <tr><th></th><th>Goal, in game terms</th><th>Headline metric</th><th class="num">This batch</th><th class="num">Target</th><th>Verdict</th></tr>
-    <tr><td>G1</td><td class="goalcell">A tech edge wins markets</td><td>Frontier producers' share of world output · leader−laggard stock-era gap</td><td class="num">52% · 0.45 era</td><td class="num dim">band TBD</td><td><span class="pill warn">first read</span></td></tr>
-    <tr><td>G2</td><td class="goalcell">Inefficient producers die</td><td>Oldest rungs: payback, staffing, workers</td><td class="num">25–31y · 0.57–0.63 · e0+e1 −0.7M in the 1930s</td><td class="num dim">dying</td><td><span class="pill ok">met</span></td></tr>
-    <tr><td>G3</td><td class="goalcell">Modernising costs capital</td><td>Construction ÷ vanilla · frontier-rung payback</td><td class="num">1.0–1.6× · <b>3.3y</b></td><td class="num dim">≥1× · 8–15y</td><td><span class="pill warn">half met</span></td></tr>
-    <tr><td>G4</td><td class="goalcell">GDP stays on vanilla's path</td><td>1935 world GDP ÷ vanilla</td><td class="num"><b>1.56×</b></td><td class="num dim">0.8–1.25×</td><td><span class="pill bad">overshoot</span></td></tr>
-    <tr><td>G5</td><td class="goalcell">Fewer workers, more product per worker</td><td>Productive workers ÷ vanilla × GDP/worker ÷ vanilla</td><td class="num"><b>1.18× · 1.33×</b></td><td class="num dim">&lt;1 · &gt;1, product ≈ 1</td><td><span class="pill bad">inverted</span></td></tr>
-    <tr><td>G6</td><td class="goalcell">Early game still grows</td><td>1836–1860 GDP ÷ vanilla</td><td class="num">0.98×</td><td class="num dim">0.9–1.1×</td><td><span class="pill ok">met</span></td></tr>
-    <tr><td>G7</td><td class="goalcell">Eras arrive on the anchors</td><td>Largest employment era at each anchor</td><td class="num">e2@1870s · e3@1900s · e4@1920s–30s</td><td class="num dim">era N ± 10y</td><td><span class="pill ok">met</span></td></tr>
+    __GOALS__
     <tr><td><b>P</b></td><td class="goalcell"><b>The game does not get slower</b></td><td>Wall clock per in-game year, <b>at matched live pop objects</b></td><td class="num" id="v-perf">—</td><td class="num dim">≤ +10%</td><td id="v-perfpill"><span class="pill dim">—</span></td></tr>
   </table>
   </div>
@@ -126,30 +116,39 @@ a{color:var(--accent)}
 <!-- ============ PERFORMANCE (hard constraint — user-ruled 2026-08-18) ============ -->
 <section class="sec">
   <h2>P — Performance: does our meddling make the game slower than vanilla?</h2>
-  <p class="lede"><b>A standing constraint on every batch, not a per-batch curiosity.</b> Whatever the mod does to
-  the economy, it must not make Victoria&nbsp;3 materially slower to play than the base game. The budget is
-  <b>10% overall</b>. But it has to be measured <b>at a comparable economy size</b>: the engine's cost scales with
-  how much it is simulating, so a mod whose world is half as developed — fewer distinct pops, a fraction of the
-  GDP — finishes sooner while being <i>slower per unit of work</i>. That kind of "speedup" is not a result, it is
-  the absence of an economy, and it <b>barely counts</b>. So the verdict is read
-  <b>pop-matched</b>: seconds per in-game year compared between the arms at the <b>same live pop-object count</b>,
-  never at the same date and never in total.</p>
+  <p class="lede"><b>A standing constraint on every batch.</b> Whatever the mod does to the economy, it must not
+  make Victoria&nbsp;3 materially slower to play. Budget <b>10%</b>. Speed is reported as <b>in-game years per
+  minute</b> — the rate you actually feel — so <b>higher is better</b> everywhere on this page.</p>
+  <p class="lede">⚠ It must be read <b>at a comparable economy size</b>: the engine's cost scales with how much
+  it simulates, so an underdeveloped arm finishes sooner while being slower per unit of work. The verdict is
+  therefore <b>pop-matched</b> — compared at the same live pop-object count, never at the same date.</p>
 
   <div class="card" id="perf-head"></div>
 
   <figure class="card">
     <div class="fighead">
-      <h3>Cost curve — seconds of wall clock per in-game year vs live pop objects</h3>
-      <div class="toggle" role="group" aria-label="Performance x-axis">
-        <button id="pf-pop" aria-pressed="true">by pop objects</button><button id="pf-yr" aria-pressed="false">by year</button>
+      <h3 id="perf-h">Speed through the century</h3>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <div class="toggle" role="group" aria-label="Scale">
+          <button id="pf-abs" aria-pressed="true">yr/min</button><button id="pf-ratio" aria-pressed="false">÷ vanilla</button>
+        </div>
+        <div class="toggle" role="group" aria-label="Normalise by">
+          <button id="pf-n0" aria-pressed="true">raw</button><button id="pf-npop" aria-pressed="false">÷ pop objects</button><button id="pf-nlv" aria-pressed="false">÷ building levels</button>
+        </div>
       </div>
     </div>
+    <div class="legend" id="perf-legend"></div>
     <div id="perf-chart"></div>
     <figcaption class="small" id="perf-cap"></figcaption>
   </figure>
 
   <div class="card tablewrap">
-    <h3 style="margin-top:0">Pop-matched bins — the reading the budget is written against</h3>
+    <h3 style="margin-top:0">By decade</h3>
+    <table id="t-perfyear"></table>
+  </div>
+
+  <div class="card tablewrap">
+    <h3 style="margin-top:0">Pop-matched — the reading the budget is written against</h3>
     <table id="t-perf"></table>
     <p class="small" id="perf-note"></p>
   </div>
@@ -165,90 +164,118 @@ const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim
 const PERF={"source":"20260813_083557_vanilla-vs-mod-n4","runs":[{"label":"run001_vanilla","van":true,"min":155.5,"pops":122166,"levels":219252},{"label":"run002_mod","van":false,"min":137.2,"pops":88675,"levels":144690},{"label":"run003_vanilla","van":true,"min":161,"pops":136448,"levels":234287},{"label":"run005_vanilla","van":true,"min":155.9,"pops":126651,"levels":227345},{"label":"run006_mod","van":false,"min":134.6,"pops":83128,"levels":139110},{"label":"run007_vanilla","van":true,"min":186.7,"pops":147030,"levels":273957}],"dec":{"vanilla":{"1830":58.5,"1840":69.5,"1850":75,"1860":77,"1870":77,"1880":84.5,"1890":93,"1900":98,"1910":123.5,"1920":133,"1930":142.5},"mod":{"1830":64.5,"1840":71.5,"1850":76.5,"1860":76.5,"1870":75,"1880":71,"1890":75,"1900":80.5,"1910":83,"1920":92,"1930":93}},"bins":[{"b":"30-38k","v":61,"m":68.5,"nV":22,"nM":14},{"b":"38-46k","v":70.5,"m":72,"nV":28,"nM":17},{"b":"46-55k","v":75,"m":76,"nV":38,"nM":29},{"b":"55-63k","v":77,"m":72,"nV":45,"nM":34},{"b":"63-72k","v":77,"m":75,"nV":40,"nM":38},{"b":"72-80k","v":86,"m":84,"nV":44,"nM":39},{"b":"80-88k","v":96,"m":92.5,"nV":36,"nM":26},{"b":"88-97k","v":100,"m":94,"nV":29,"nM":1},{"b":"97-105k","v":117,"m":null,"nV":31,"nM":0},{"b":"105-113k","v":128,"m":null,"nV":25,"nM":0},{"b":"113-122k","v":143,"m":null,"nV":25,"nM":0},{"b":"122-130k","v":132,"m":null,"nV":19,"nM":0},{"b":"130-139k","v":153,"m":null,"nV":7,"nM":0},{"b":"139-147k","v":161,"m":null,"nV":7,"nM":0}],"pct":-2.5,"overlapping":8,"budget":10,"curve":{"run001_vanilla":[[1838,30141,52],[1839,31746,53],[1840,33457,54],[1841,34445,56],[1842,36549,60],[1843,38333,57],[1844,39548,58],[1845,41054,60],[1846,42608,61],[1847,44350,66],[1848,44853,82],[1849,46443,77],[1850,47384,75],[1851,48714,70],[1852,49422,89],[1853,50288,67],[1854,51049,65],[1855,50919,66],[1856,52026,72],[1857,53518,74],[1858,54668,81],[1859,55390,78],[1860,56424,75],[1861,57524,68],[1862,57268,67],[1863,58489,75],[1864,59696,77],[1865,61084,80],[1866,62344,85],[1867,62069,77],[1868,62478,77],[1869,61571,73],[1870,62268,70],[1871,63434,71],[1872,64099,74],[1873,65039,78],[1874,66329,77],[1875,66527,74],[1876,66168,75],[1877,67485,74],[1878,69128,76],[1879,69984,74],[1880,70883,74],[1881,71884,80],[1882,72562,86],[1883,72048,92],[1884,72890,81],[1885,74352,84],[1886,75751,79],[1887,76048,79],[1888,77284,80],[1889,78365,81],[1890,77998,82],[1891,78963,78],[1892,80041,81],[1893,81077,85],[1894,81053,97],[1895,81674,91],[1896,82432,92],[1897,82060,96],[1898,83279,90],[1899,84362,93],[1900,84673,94],[1901,85776,91],[1902,87512,87],[1903,89282,90],[1904,88603,94],[1905,89354,95],[1906,90840,100],[1907,91640,95],[1908,92453,101],[1909,93091,104],[1910,94414,113],[1911,94115,133],[1912,95295,134],[1913,96411,121],[1914,98297,135],[1915,98728,124],[1916,99867,110],[1917,100557,107],[1918,99998,125],[1919,101588,141],[1920,102954,133],[1921,103832,114],[1922,105429,117],[1923,107487,129],[1924,108328,128],[1925,107203,130],[1926,109092,128],[1927,110796,129],[1928,112465,128],[1929,112954,148],[1930,114819,131],[1931,116494,126],[1932,115357,141],[1933,117453,153],[1934,119073,134],[1935,120969,144],[1936,122166,179]],"run002_mod":[[1838,29640,68],[1839,31266,65],[1840,32607,63],[1841,33434,67],[1842,34878,71],[1843,36287,69],[1844,37716,74],[1845,38691,69],[1846,39709,67],[1847,40070,67],[1848,40540,65],[1849,41533,73],[1850,42841,74],[1851,43758,72],[1852,44430,71],[1853,45827,89],[1854,47196,94],[1855,47334,81],[1856,47827,77],[1857,48143,75],[1858,48943,73],[1859,49569,70],[1860,50122,71],[1861,50651,72],[1862,50771,81],[1863,51368,73],[1864,51703,69],[1865,52946,74],[1866,53511,74],[1867,54274,75],[1868,55175,77],[1869,55125,77],[1870,55747,82],[1871,56514,85],[1872,56443,82],[1873,56885,80],[1874,57508,76],[1875,58208,72],[1876,57666,66],[1877,58171,68],[1878,58437,69],[1879,59319,70],[1880,60334,69],[1881,60750,72],[1882,61283,74],[1883,60441,71],[1884,61073,71],[1885,62235,71],[1886,63494,71],[1887,64202,71],[1888,64647,70],[1889,65098,72],[1890,64740,73],[1891,66116,75],[1892,66990,73],[1893,67716,79],[1894,68384,81],[1895,68990,78],[1896,69519,72],[1897,69171,77],[1898,69707,75],[1899,70177,79],[1900,71422,74],[1901,71500,79],[1902,72610,80],[1903,73077,81],[1904,72456,84],[1905,73337,92],[1906,74213,95],[1907,74821,100],[1908,75097,104],[1909,75839,113],[1910,76455,123],[1911,75926,134],[1912,76684,146],[1913,76813,94],[1914,77486,80],[1915,78649,86],[1916,79026,84],[1917,79671,83],[1918,79021,83],[1919,79240,83],[1920,79624,85],[1921,80479,83],[1922,81218,87],[1923,81920,87],[1924,82615,87],[1925,82830,93],[1926,82807,92],[1927,83597,93],[1928,83657,92],[1929,84346,93],[1930,84685,98],[1931,85367,97],[1932,85628,98],[1933,86076,101],[1934,87309,99],[1935,87599,93],[1936,88675,94]],"run003_vanilla":[[1838,30211,58],[1839,32165,59],[1840,33593,60],[1841,34468,62],[1842,35596,62],[1843,37434,70],[1844,39357,70],[1845,41053,71],[1846,42261,68],[1847,43689,67],[1848,43943,76],[1849,45073,78],[1850,46056,74],[1851,47194,69],[1852,48124,70],[1853,49310,76],[1854,50603,87],[1855,50624,78],[1856,51188,77],[1857,52129,77],[1858,53089,76],[1859,54074,74],[1860,54961,77],[1861,55339,77],[1862,54658,76],[1863,55820,76],[1864,56876,75],[1865,58215,76],[1866,59474,77],[1867,60362,79],[1868,61236,77],[1869,60757,79],[1870,61902,74],[1871,63006,74],[1872,64019,75],[1873,65002,76],[1874,66324,75],[1875,67314,161],[1876,67036,76],[1877,68987,75],[1878,69955,84],[1879,70682,85],[1880,72262,76],[1881,73093,77],[1882,74289,80],[1883,73938,85],[1884,74830,83],[1885,75945,85],[1886,77116,84],[1887,78548,86],[1888,79889,85],[1889,81068,88],[1890,80142,96],[1891,81735,117],[1892,82862,105],[1893,84216,100],[1894,85464,100],[1895,86871,98],[1896,87388,92],[1897,86844,90],[1898,88972,90],[1899,90293,91],[1900,91980,94],[1901,93540,93],[1902,94888,93],[1903,96859,94],[1904,96029,106],[1905,97311,121],[1906,99106,117],[1907,100767,112],[1908,102339,120],[1909,103707,117],[1910,105071,109],[1911,103566,112],[1912,103960,121],[1913,104389,120],[1914,107006,129],[1915,109507,126],[1916,110055,115],[1917,111603,123],[1918,111372,128],[1919,112337,132],[1920,113933,124],[1921,115768,135],[1922,117773,132],[1923,120756,133],[1924,121654,143],[1925,120696,148],[1926,122491,136],[1927,123568,132],[1928,125078,130],[1929,126665,127],[1930,127267,128],[1931,128734,131],[1932,127698,129],[1933,130578,129],[1934,132335,134],[1935,134824,145],[1936,136448,153]],"run005_vanilla":[[1838,30371,58],[1839,32206,61],[1840,34309,67],[1841,35266,66],[1842,36613,76],[1843,38079,80],[1844,39306,73],[1845,40783,77],[1846,42178,78],[1847,43353,70],[1848,43515,70],[1849,44829,70],[1850,45717,69],[1851,46924,69],[1852,48092,72],[1853,49311,80],[1854,50292,86],[1855,50079,75],[1856,51189,76],[1857,51778,75],[1858,52928,75],[1859,53541,75],[1860,54787,74],[1861,56237,136],[1862,56043,74],[1863,57025,73],[1864,58046,74],[1865,58906,71],[1866,59520,70],[1867,60348,71],[1868,61306,72],[1869,61337,77],[1870,62220,79],[1871,63233,77],[1872,64410,76],[1873,65767,76],[1874,66414,76],[1875,66781,75],[1876,66015,80],[1877,65372,91],[1878,66159,83],[1879,67046,77],[1880,69099,79],[1881,69955,79],[1882,71148,78],[1883,70515,83],[1884,71751,88],[1885,72796,81],[1886,73389,82],[1887,74810,84],[1888,75759,89],[1889,76850,86],[1890,76732,88],[1891,76382,90],[1892,77076,91],[1893,77838,90],[1894,79120,91],[1895,79886,93],[1896,80215,92],[1897,79735,90],[1898,80890,89],[1899,82310,98],[1900,83681,100],[1901,84818,94],[1902,85700,96],[1903,86336,94],[1904,85776,95],[1905,87418,96],[1906,88867,93],[1907,90293,94],[1908,91213,94],[1909,92847,95],[1910,94085,100],[1911,93309,105],[1912,95697,111],[1913,97649,117],[1914,99024,104],[1915,100796,111],[1916,101607,111],[1917,103223,114],[1918,103167,113],[1919,104923,111],[1920,106758,117],[1921,107744,121],[1922,109508,118],[1923,110805,119],[1924,112369,130],[1925,112324,155],[1926,113719,137],[1927,115300,125],[1928,116782,137],[1929,118320,184],[1930,120683,150],[1931,122241,149],[1932,120671,130],[1933,122281,129],[1934,122910,131],[1935,125349,124],[1936,126651,129]],"run006_mod":[[1838,29566,62],[1839,31255,64],[1840,32629,65],[1841,33637,76],[1842,35217,84],[1843,36639,75],[1844,37634,76],[1845,38948,72],[1846,40332,71],[1847,41358,72],[1848,41551,73],[1849,42866,78],[1850,44014,72],[1851,45360,70],[1852,46308,79],[1853,47164,88],[1854,47687,88],[1855,47794,79],[1856,48326,76],[1857,49104,74],[1858,49879,83],[1859,49538,82],[1860,50464,77],[1861,50995,78],[1862,50293,76],[1863,50955,74],[1864,51890,76],[1865,52952,78],[1866,53809,78],[1867,54423,77],[1868,55506,79],[1869,54808,80],[1870,55165,75],[1871,55597,75],[1872,56591,76],[1873,57227,77],[1874,58066,77],[1875,58482,79],[1876,58190,68],[1877,59089,70],[1878,60034,70],[1879,60869,72],[1880,61646,70],[1881,62318,69],[1882,62901,69],[1883,62424,71],[1884,63298,71],[1885,63843,73],[1886,64375,73],[1887,64739,74],[1888,65321,75],[1889,65045,74],[1890,64388,74],[1891,65071,73],[1892,65795,75],[1893,66569,83],[1894,67015,77],[1895,67631,74],[1896,68396,73],[1897,67793,75],[1898,67897,75],[1899,68520,76],[1900,68871,78],[1901,69674,80],[1902,69753,83],[1903,71236,80],[1904,70898,79],[1905,71382,77],[1906,72770,79],[1907,72802,78],[1908,73393,83],[1909,73657,85],[1910,74112,82],[1911,73821,82],[1912,74098,79],[1913,74547,80],[1914,75052,81],[1915,75592,80],[1916,76701,83],[1917,77019,84],[1918,76357,84],[1919,77217,84],[1920,77510,89],[1921,78320,93],[1922,79017,89],[1923,79547,90],[1924,79768,96],[1925,79194,102],[1926,80026,110],[1927,79941,121],[1928,80126,122],[1929,80128,88],[1930,80429,88],[1931,81245,90],[1932,80892,91],[1933,81480,90],[1934,82119,92],[1935,82811,92],[1936,83128,93]],"run007_vanilla":[[1838,30231,60],[1839,31873,61],[1840,33451,62],[1841,34307,69],[1842,35952,65],[1843,37632,68],[1844,39074,66],[1845,40166,71],[1846,41821,73],[1847,43094,80],[1848,43220,77],[1849,44130,73],[1850,45233,70],[1851,46357,74],[1852,48107,74],[1853,49142,73],[1854,50073,73],[1855,49477,77],[1856,50606,74],[1857,52309,76],[1858,53649,79],[1859,54662,79],[1860,55645,81],[1861,56023,79],[1862,56064,80],[1863,57077,79],[1864,58112,75],[1865,59181,76],[1866,60187,78],[1867,61295,84],[1868,62297,87],[1869,62294,91],[1870,63057,93],[1871,63687,77],[1872,65097,80],[1873,66419,85],[1874,67423,85],[1875,68285,93],[1876,68440,96],[1877,69179,94],[1878,69957,92],[1879,71280,84],[1880,71994,89],[1881,73461,92],[1882,73821,88],[1883,73695,94],[1884,74830,103],[1885,75803,98],[1886,75924,93],[1887,77678,97],[1888,79066,98],[1889,79321,100],[1890,78861,93],[1891,80286,96],[1892,81489,101],[1893,83122,102],[1894,84285,108],[1895,86079,126],[1896,87691,151],[1897,87561,122],[1898,88702,122],[1899,90339,116],[1900,91994,121],[1901,94337,284],[1902,96059,114],[1903,97764,127],[1904,97932,121],[1905,99816,119],[1906,100667,118],[1907,102770,118],[1908,103592,121],[1909,105907,121],[1910,107390,128],[1911,106484,126],[1912,109327,139],[1913,112035,158],[1914,114203,173],[1915,115835,163],[1916,117289,152],[1917,118613,146],[1918,117519,154],[1919,119231,180],[1920,120624,143],[1921,122690,141],[1922,124015,149],[1923,127759,181],[1924,128569,218],[1925,127536,160],[1926,129790,161],[1927,132121,164],[1928,134858,159],[1929,138096,181],[1930,139778,182],[1931,140491,178],[1932,140135,171],[1933,141869,161],[1934,143911,154],[1935,145313,156],[1936,147030,153]]}};
 
 // ---------- P: performance (wall clock) ----------
-// ⚠ REFILL with: node tools/testbed/ledger/report_perf.mjs <session> --json perf.json
-//   then regenerate the PERF const above (README step 1b). The POP-MATCHED % is the ONLY headline;
-//   the raw total is rendered purely so it can be dismissed on the page.
+// ⚠ REFILL with report_perf.mjs --json, then regenerate the PERF const (README step 1b).
+// Speed is IN-GAME YEARS PER MINUTE: higher is better. The pop-matched % stays the only headline;
+// the by-year view is the readable one and is explicitly NOT the verdict.
 function renderPerf(mode){
-  const van=PERF.runs.filter(r=>r.van), mod=PERF.runs.filter(r=>!r.van);
   const med=a=>{if(!a.length)return null;const s=[...a].sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2;};
+  const van=PERF.runs.filter(r=>r.van), mod=PERF.runs.filter(r=>!r.van);
   const mv=med(van.map(r=>r.min)), mm=med(mod.map(r=>r.min));
-  const raw=mm/mv, pr=med(mod.map(r=>r.pops))/med(van.map(r=>r.pops)), lr=med(mod.map(r=>r.levels))/med(van.map(r=>r.levels));
+  const raw=mm/mv, pr=med(mod.map(r=>r.pops))/med(van.map(r=>r.pops));
   const pct=PERF.pct, ok=pct<=PERF.budget;
-
   document.getElementById('v-perf').innerHTML='<b>'+(pct>=0?'+':'')+pct.toFixed(1)+'%</b>';
   document.getElementById('v-perfpill').innerHTML=ok
     ? '<span class="pill ok">'+(pct<=0?'no slowdown':'within budget')+'</span>'
     : '<span class="pill bad">over budget</span>';
-
   document.getElementById('perf-head').innerHTML=
     '<div style="display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start">'+
-      '<div style="flex:1 1 260px"><div class="eyebrow">The verdict &mdash; pop-matched</div>'+
-        '<div style="font:700 34px/1.1 Segoe UI,sans-serif;color:var(--'+(ok?'ok':'bad')+');margin:6px 0">'+(pct>=0?'+':'')+pct.toFixed(1)+'%</div>'+
-        '<div class="small">Seconds per in-game year against vanilla, compared <b>only</b> where both arms were '+
-        'simulating the same number of live pop objects. Budget <b>+'+PERF.budget+'%</b>. '+PERF.overlapping+' overlapping bins.</div></div>'+
-      '<div style="flex:1 1 320px"><div class="eyebrow">&#9888; The naive total &mdash; do not quote this</div>'+
+      '<div style="flex:1 1 250px"><div class="eyebrow">The verdict &mdash; pop-matched</div>'+
+        '<div style="font:700 34px/1.1 Segoe UI,sans-serif;color:var(--'+(ok?'ok':'bad')+');margin:6px 0">'+(pct>=0?'+':'')+pct.toFixed(1)+'% slower</div>'+
+        '<div class="small">At equal live pop objects. Budget <b>+'+PERF.budget+'%</b>. '+PERF.overlapping+' overlapping bins.</div></div>'+
+      '<div style="flex:1 1 300px"><div class="eyebrow">&#9888; The naive total &mdash; do not quote this</div>'+
         '<div style="font:700 34px/1.1 Segoe UI,sans-serif;color:var(--ink3);margin:6px 0">&times;'+raw.toFixed(2)+'</div>'+
-        '<div class="small">Vanilla <b>'+mv.toFixed(1)+'</b> min vs mod <b>'+mm.toFixed(1)+'</b> min for the century '+
-        '(n='+van.length+'/'+mod.length+'). It reads as '+(raw<1?'a <b>'+((1-raw)*100).toFixed(0)+'% speedup</b>':'a <b>'+((raw-1)*100).toFixed(0)+'% slowdown</b>')+
-        ', and it is an artefact: the mod arm ended with <b>&times;'+pr.toFixed(2)+'</b> the live pop objects and '+
-        '<b>&times;'+lr.toFixed(2)+'</b> the building levels. Less economy is cheaper to simulate.</div></div>'+
+        '<div class="small">Vanilla <b>'+mv.toFixed(1)+'</b> min vs mod <b>'+mm.toFixed(1)+'</b> min for the century. '+
+        'The arms did not simulate the same thing &mdash; the mod ended with <b>&times;'+pr.toFixed(2)+'</b> the live pop objects.</div></div>'+
     '</div>';
 
-  // ---- cost curve ----
-  const W=900,H=310,L=54,R=92,T=14,B=34;
-  const runs=PERF.runs.map(r=>({...r,pts:PERF.curve[r.label]||[]}));
-  const xi=mode==='pop'?1:0;
-  const xs=runs.flatMap(r=>r.pts.map(p=>p[xi])), ys=runs.flatMap(r=>r.pts.map(p=>p[2]));
-  const x0=Math.min.apply(null,xs), x1=Math.max.apply(null,xs), y1=Math.max.apply(null,ys)*1.05;
-  const X=v=>L+(v-x0)/(x1-x0)*(W-L-R), Y=v=>T+(y1-v)/y1*(H-T-B);
-  let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="wall clock per in-game year" style="width:100%;height:auto">';
-  for(let g=0;g<=y1;g+=30){
-    s+='<line x1="'+L+'" y1="'+Y(g)+'" x2="'+(W-R)+'" y2="'+Y(g)+'" stroke="'+css('--line')+'"/>'+
-       '<text x="'+(L-7)+'" y="'+(Y(g)+4)+'" text-anchor="end" font-size="11" fill="'+css('--ink3')+'">'+g+'s</text>';
+  const yrs=Object.keys(PERF.byYear.van).map(Number).filter(y=>PERF.byYear.mod[y]!=null).sort((x,y)=>x-y);
+  const ratio=(mode.scale==='ratio'), norm=mode.norm;
+  // ⚠ MEASURED (this batch, 594 samples): tick cost scales as pops^0.67 but levels^1.05, so dividing by
+  // pop objects OVER-corrects and the curve still slopes; dividing by LEVELS is what flattens it
+  // (cv 0.131 vs 0.194 for pops, 0.303 raw). Levels is the better cost model; pops is the fairer
+  // VERDICT basis, because building count is something the mod itself changes.
+  const drv=(arm,y)=> norm==='pop' ? (PERF.pops?.[arm]?.[y]/1e6)
+                    : norm==='lv'  ? (PERF.levels?.[arm]?.[y]/1e3) : 1;
+  const val=(arm,y)=>{ const v=PERF.byYear[arm][y]; if(norm==='none') return v;
+    const d=drv(arm,y); return (d&&d>0)?v/d:null; };
+  const okY=y=>Number.isFinite(val('mod',y))&&Number.isFinite(val('van',y));
+  const ys=yrs.filter(okY);
+  const series=ratio
+    ? [{label:'mod ÷ van',c:'--accent',pts:ys.map(y=>[y,val('mod',y)/val('van',y)])}]
+    : [{label:'vanilla',c:'--ink2',pts:ys.map(y=>[y,val('van',y)])},
+       {label:'mod',c:'--accent',pts:ys.map(y=>[y,val('mod',y)])}];
+  document.getElementById('perf-legend').innerHTML=series.map(s=>
+    '<span><span style="display:inline-block;width:11px;height:11px;background:'+css(s.c)+';margin-right:5px;vertical-align:-1px"></span>'+s.label+'</span>').join('');
+  const W=900,H=290,L=52,R=90,T=14,B=32;
+  const all=series.flatMap(s=>s.pts.map(p=>p[1]));
+  const ymax=ratio?Math.max(1.3,Math.max.apply(null,all)*1.05):Math.max.apply(null,all)*1.08, ymin=ratio?Math.min(0.7,Math.min.apply(null,all)*0.95):0;
+  const x=y=>L+(y-ys[0])/(ys[ys.length-1]-ys[0])*(W-L-R), Y=v=>T+(ymax-v)/(ymax-ymin)*(H-T-B);
+  let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="in-game years per minute" style="width:100%;height:auto">';
+  const step=ratio?0.1:(norm!=='none'?Math.max(1e-5,(ymax-ymin)/6):0.2);
+  for(let g=Math.ceil(ymin/step)*step;g<=ymax;g+=step){
+    const em=ratio&&Math.abs(g-1)<1e-9;
+    s+='<line x1="'+L+'" y1="'+Y(g)+'" x2="'+(W-R)+'" y2="'+Y(g)+'" stroke="'+css('--line')+'"'+(em?' stroke-width="1.5" stroke-dasharray="5 4"':'')+'/>'+
+       '<text x="'+(L-7)+'" y="'+(Y(g)+4)+'" text-anchor="end" font-size="11" fill="'+css('--ink3')+'">'+(ratio?g.toFixed(1)+'\u00d7':g.toFixed(1))+'</text>';
   }
-  const ticks=mode==='pop'?[40000,60000,80000,100000,120000,140000]:[1840,1860,1880,1900,1920,1936];
-  for(const g of ticks){
-    if(g<x0||g>x1)continue;
-    s+='<text x="'+X(g)+'" y="'+(H-10)+'" text-anchor="middle" font-size="11" fill="'+css('--ink3')+'">'+(mode==='pop'?(g/1000)+'k':g)+'</text>';
+  for(const g of [1840,1860,1880,1900,1920,1935]) if(g>=ys[0]&&g<=ys[ys.length-1])
+    s+='<text x="'+x(g)+'" y="'+(H-9)+'" text-anchor="middle" font-size="11" fill="'+css('--ink3')+'">'+g+'</text>';
+  for(const sr of series){
+    const p=sr.pts.filter(q=>Number.isFinite(q[1]));
+    const sm=p.map((q,i)=>{const w=p.slice(Math.max(0,i-2),i+3);return [q[0],w.reduce((s2,b2)=>s2+b2[1],0)/w.length];});
+    s+='<path d="'+sm.map((q,i)=>(i?'L':'M')+x(q[0]).toFixed(1)+' '+Y(q[1]).toFixed(1)).join('')+
+       '" fill="none" stroke="'+css(sr.c)+'" stroke-width="2" stroke-linejoin="round"/>';
+    const e=sm[sm.length-1];
+    s+='<circle cx="'+x(e[0])+'" cy="'+Y(e[1])+'" r="4" fill="'+css(sr.c)+'" stroke="'+css('--panel')+'" stroke-width="2"/>'+
+       '<text x="'+(x(e[0])+8)+'" y="'+(Y(e[1])+4)+'" font-size="12" font-weight="600" fill="'+css('--ink')+'">'+(ratio?e[1].toFixed(2)+'\u00d7':e[1].toFixed(2))+'</text>';
   }
-  s+='<text x="'+((L+W-R)/2)+'" y="'+(H-24)+'" text-anchor="middle" font-size="11" fill="'+css('--ink3')+'">'+(mode==='pop'?'live pop objects':'in-game year')+'</text>';
-  for(const r of runs){
-    if(!r.pts.length)continue;
-    const p=r.pts.slice().sort((a,b)=>a[xi]-b[xi]);
-    const sm=p.map((q,i)=>{const w=p.slice(Math.max(0,i-2),i+3);return [q[xi], w.reduce((a,b)=>a+b[2],0)/w.length];});
-    s+='<path d="'+sm.map((q,i)=>(i?'L':'M')+X(q[0]).toFixed(1)+' '+Y(q[1]).toFixed(1)).join('')+
-      '" fill="none" stroke="'+css(r.van?'--ink2':'--accent')+'" stroke-width="'+(r.van?1.6:2.2)+'" opacity="'+(r.van?0.7:1)+'" stroke-linejoin="round"/>';
-  }
-  s+='<text x="'+(W-R+8)+'" y="'+(T+14)+'" font-size="12" font-weight="600" fill="'+css('--ink2')+'">vanilla</text>';
-  s+='<text x="'+(W-R+8)+'" y="'+(T+32)+'" font-size="12" font-weight="600" fill="'+css('--accent')+'">mod</text>';
   s+='</svg>';
   document.getElementById('perf-chart').innerHTML=s;
-  document.getElementById('perf-cap').innerHTML = mode==='pop'
-    ? 'Both arms lie on essentially <b>one curve</b>: at the same number of live pops the engine costs about the same, whichever arm is running. The mod line simply <b>stops earlier</b> &mdash; it never reaches the pop counts vanilla does. That gap is the economy-size difference, and it is exactly what the raw total mistakes for speed.'
-    : 'By <b>date</b> the mod looks progressively faster after the 1880s. It is not: at any given year its economy is smaller. Switch to <b>by pop objects</b> for the comparison the budget is written against.';
+  const NL={none:'',pop:' per million live pop objects',lv:' per thousand building levels'};
+  document.getElementById('perf-h').textContent =
+    (ratio?'Speed ÷ vanilla':'Speed through the century — in-game yr/min')+NL[norm];
+  document.getElementById('perf-cap').innerHTML = norm==='lv'
+    ? 'Normalised by <b>building levels</b>, which this batch measures as the engine’s real cost driver: tick cost scales as <b>levels<sup>1.05</sup></b> (R² 0.84) against <b>pops<sup>0.67</sup></b>, and dividing by levels is what actually flattens the curve (cv <b>0.131</b> vs 0.194 for pops, 0.303 raw). A flat line means the mod costs the same per unit of simulated work. ⚠ Levels is the better cost MODEL but the weaker VERDICT basis, because the tier split changes how many buildings exist — normalising by it can hide a cost the mod itself introduced.'
+    : norm==='pop'
+    ? 'Normalised by <b>live pop objects</b> — the records the engine actually steps — so this divides out the economy-size difference the raw curve carries. It is the same idea as the pop-matched verdict, shown as a time series rather than a binning; the two should agree, and where they diverge the binned one is authoritative because it never compares different-sized economies. <b>Higher is better.</b>'
+    : ratio
+    ? 'Mod speed as a fraction of vanilla at the same <b>date</b>. Above 1.0 the mod is faster. ⚠ This is the NAIVE view: at any given year the two arms hold different-sized economies, so it flatters whichever arm built less. It is here to be read, not to be quoted.'
+    : 'Both arms slow through the century as the economies they simulate grow — vanilla from about 1.0 to 0.4 in-game years per minute. The mod tracks it closely. ⚠ Same-date comparison; the verdict is the pop-matched figure above.';
 
-  // ---- bin table ----
-  const tb=document.getElementById('t-perf');
-  tb.innerHTML='<tr><th>live pop objects</th><th class="num">vanilla s/yr</th><th class="num">mod s/yr</th><th class="num">mod &divide; van</th><th class="num dim">samples (v,m)</th></tr>';
-  for(const b of PERF.bins){
-    const rr=(b.v&&b.m)?b.m/b.v:null;
-    tb.insertRow().innerHTML='<td>'+b.b+'</td>'+
-      '<td class="num">'+(b.v==null?'&mdash;':b.v)+'</td><td class="num">'+(b.m==null?'&mdash;':b.m)+'</td>'+
-      '<td class="num">'+(rr==null?'<span class="dim">no overlap</span>':'<b style="color:var(--'+(rr<=1+PERF.budget/100?'ok':'bad')+')">&times;'+rr.toFixed(3)+'</b>')+'</td>'+
-      '<td class="num dim">'+b.nV+','+b.nM+'</td>';
+  const ty=document.getElementById('t-perfyear');
+  ty.innerHTML='<tr><th>decade</th><th class="num">vanilla yr/min</th><th class="num">mod yr/min</th><th class="num">mod ÷ van</th></tr>';
+  const decs={};
+  for(const y of yrs){const d=Math.floor(y/10)*10;(decs[d] ??= {v:[],m:[]});decs[d].v.push(PERF.byYear.van[y]);decs[d].m.push(PERF.byYear.mod[y]);}
+  for(const d of Object.keys(decs).map(Number).sort((a2,b2)=>a2-b2)){
+    const v=med(decs[d].v), m=med(decs[d].m), rr=m/v;
+    ty.insertRow().innerHTML='<td>'+d+'s</td><td class="num">'+v.toFixed(2)+'</td><td class="num">'+m.toFixed(2)+'</td>'+
+      '<td class="num"><b style="color:var(--'+(rr>=0.909?'ok':'bad')+')">'+rr.toFixed(3)+'&times;</b></td>';
   }
-  const noOverlap=PERF.bins.filter(b=>!(b.v&&b.m)).length;
+
+  const tb=document.getElementById('t-perf');
+  tb.innerHTML='<tr><th>live pop objects</th><th class="num">vanilla yr/min</th><th class="num">mod yr/min</th><th class="num">mod &divide; van</th><th class="num dim">samples (v,m)</th></tr>';
+  for(const b2 of PERF.bins){
+    const rr=(b2.v&&b2.m)?b2.m/b2.v:null;
+    tb.insertRow().innerHTML='<td>'+b2.b+'</td><td class="num">'+(b2.v==null?'&mdash;':b2.v.toFixed(2))+'</td>'+
+      '<td class="num">'+(b2.m==null?'&mdash;':b2.m.toFixed(2))+'</td>'+
+      '<td class="num">'+(rr==null?'<span class="dim">no overlap</span>':'<b style="color:var(--'+(rr>=0.909?'ok':'bad')+')">'+rr.toFixed(3)+'&times;</b>')+'</td>'+
+      '<td class="num dim">'+b2.nV+','+b2.nM+'</td>';
+  }
+  const no=PERF.bins.filter(b2=>!(b2.v&&b2.m)).length;
   document.getElementById('perf-note').innerHTML=
-    'Bins with <b>no overlap</b> ('+noOverlap+' of '+PERF.bins.length+') are pop counts <b>only vanilla ever reached</b> &mdash; they cannot be '+
-    'compared and are never folded into the headline. &#9888; If overlap falls below about a third of the bins, the arms did not simulate a '+
-    'comparable economy and wall clock <b>cannot be compared at all</b>; report that rather than substituting the raw total. '+
-    'Source: <code>'+PERF.source+'</code>.';
+    'Higher is better throughout; <b>÷van below 0.909</b> is the 10% budget line. Bins with <b>no overlap</b> ('+no+' of '+
+    PERF.bins.length+') are pop counts only one arm reached — never folded into the headline. ⚠ If overlap falls below about a '+
+    'third of the bins the arms did not simulate a comparable economy and wall clock cannot be compared at all. Source: <code>'+PERF.source+'</code>.';
 }
 (function(){
-  const bp=document.getElementById('pf-pop'), by=document.getElementById('pf-yr');
-  const set=m=>{bp.setAttribute('aria-pressed',m==='pop');by.setAttribute('aria-pressed',m==='yr');renderPerf(m);};
-  bp.onclick=()=>set('pop'); by.onclick=()=>set('yr');
-  renderPerf('pop');
+  const ba=document.getElementById('pf-abs'), br=document.getElementById('pf-ratio');
+
+  const n0=document.getElementById('pf-n0'), np=document.getElementById('pf-npop'), nl=document.getElementById('pf-nlv');
+  let cur={scale:'abs',norm:'none'};
+  const paint=()=>{ba.setAttribute('aria-pressed',cur.scale==='abs');br.setAttribute('aria-pressed',cur.scale==='ratio');
+    n0.setAttribute('aria-pressed',cur.norm==='none');np.setAttribute('aria-pressed',cur.norm==='pop');nl.setAttribute('aria-pressed',cur.norm==='lv');renderPerf(cur);};
+  ba.onclick=()=>{cur.scale='abs';paint()}; br.onclick=()=>{cur.scale='ratio';paint()};
+  n0.onclick=()=>{cur.norm='none';paint()}; np.onclick=()=>{cur.norm='pop';paint()}; nl.onclick=()=>{cur.norm='lv';paint()};
+  paint();
 })();
 })();
 </script>
@@ -260,7 +287,7 @@ function renderPerf(mode){
   <div class="toggle" role="group" aria-label="Sector scope">
     <button id="sc-all" aria-pressed="true">whole economy</button><button id="sc-tier" aria-pressed="false">tiered sector</button>
   </div>
-  <span class="small">scope applies to the decomposition tables; urban centres always excluded from "tiered"</span>
+  <span class="small">Scope and page apply to every view below unless a caption says otherwise. Urban centres are always excluded from "tiered".</span>
 </div>
 
 <!-- ============ WORLD PAGE ============ -->
