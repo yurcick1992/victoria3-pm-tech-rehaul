@@ -860,3 +860,113 @@ mid-batch check is one people learn to ignore, which loses the register.
 **Tripwire proven both ways, 2026-08-17:** PASS on `20260817_225120_port-ramp-monthly-n3` (3 ended runs,
 all reached 1841.2.1); **FAIL** on `20260817_152516_anchorage-netseed-n1`, a run killed by the STOP file
 — and the whole preflight goes red with it.
+
+---
+
+## L20 — an ALTERNATE CONFIG WITHOUT ITS PAIRED `tech_tree_options.<sfx>.json` cannot be built, and the batch dies at the first build
+
+**Status: REGISTERED, DETECTOR OWED** (queued behind a live batch — `preflight.ps1` runs inside
+`build.ps1`, so wiring it while runs are in flight is itself an L10 breach). Found 2026-08-18.
+**Cost: 6 h 40 min of an overnight window, zero runs.**
+
+**The convention nobody states.** `emit_techs.mjs` and `emit_research_events.mjs` derive a **parallel
+tree file** from the config's *filename*:
+
+```js
+const m = bn.match(/^mod_config\.(.+)\.json$/);   // mod_config.foo.json -> '.foo'
+const TREE_PATH = join(REPO, 'config', 'tech_tree_options' + SFX + '.json');
+```
+
+So `config/mod_config.foo.json` **requires** `config/tech_tree_options.foo.json` to exist. Every
+alternate in the repo has one; nothing says so, and nothing checks it.
+
+**What happened.** A full-century n=2 batch was launched against a *frozen byte copy* of the canonical
+config (`mod_config.canon_n2.json`) — a deliberate L10 mitigation, so that a second agent session editing
+`config/mod_config.json` mid-batch could not silently change the arm between run 1 and run 2. The freeze
+had no paired tree, so the build threw:
+
+```
+Error: ENOENT: no such file or directory, open '…/config/tech_tree_options.canon_n2.json'
+    at emit_techs.mjs:51
+emit_techs.mjs failed (exit 1) - the mod would ship without its technologies.
+```
+
+⚠ **The mitigation was what broke it.** The freeze is still the right call — do not conclude "never
+freeze". Conclude that a frozen config is a *new alternate* and needs its pair.
+
+**Why it is silent for six hours.** The build fails in **3 seconds** with a perfectly clear message — but
+into `build.log`, which nobody reads while a batch is believed to be running. The scheduler then failed
+to abort (**L21**), so `session.log` ended mid-sentence at `building setup 'canonfull'…`, the harness sat
+alive at 9.5 s CPU with no child process, and no game ever launched. From outside, an idle machine and a
+silent log are indistinguishable from a healthy long run.
+
+**Do NOT "fix" it by falling back to the canonical tree.** That would pair an alternate config's
+BUILDINGS with the canonical config's TECHNOLOGIES — precisely the defect BUGS_AND_FIXES 2026-08-12
+records, caught one run before it voided an overnight batch. It must fail; it must fail *loudly and
+early*, naming the missing file and the one-line fix.
+
+**Census at registration — 5 of 21 alternates are unbuildable today**, one of them a day old:
+`2x_thresholds`, `baseline175ab` (2026-08-17), `paper_be20`, `vanilla_stub`, `x10`. So this is a live
+trap, not a one-off self-inflicted wound.
+
+**DETECTOR (owed).** `preflight.ps1` gains `-Config <path>`, passed by `build.ps1`, which already knows
+it: **FAIL** when the config about to be built has no paired tree, naming the exact `Copy-Item` that
+fixes it. With no `-Config`, **WARN**-list every unpaired alternate — that alone would have caught this,
+because `-WhatIf` ran preflight seconds before launch and printed `PREFLIGHT PASSED`.
+
+**Prove it** by renaming a paired tree aside and running the build: it must refuse *before* the mod is
+half-emitted, not throw ENOENT out of node.
+
+---
+
+## L21 — a FAILED BUILD hangs the scheduler instead of aborting it, and the whole window is lost
+
+**Status: REGISTERED, DETECTOR OWED.** Found 2026-08-18, the same incident as **L20**. This is the entry
+that turned a 3-second, clearly-reported failure into a **6 h 40 min** loss, and it is the more dangerous
+of the two because it is arm- and config-independent: *any* build failure, from any cause, costs the
+whole window.
+
+**The intended behaviour exists and is correct** (`run_schedule.ps1`):
+
+```powershell
+& powershell @($resolved.Args) 2>&1 | Out-File -FilePath (Join-Path $runDir "build.log") -Encoding utf8
+if ($LASTEXITCODE -ne 0) { Log "BUILD FAILED for setup … - see build.log; aborting schedule" "ALERT" ; … }
+```
+
+**It never ran.** `session.log` — written by `Log` via `Add-Content`, so it is the record of what the
+scheduler actually reached — contains no `BUILD FAILED`, no `ALERT`, no `aborting`. Its last line is
+`building setup 'canonfull'…`. The scheduler was therefore blocked **on the pipeline itself**, never
+reaching the exit-code test. Observed state: harness PowerShell alive, **9.5 s CPU over 6 h 40 min**, a
+`conhost.exe` and **no build child at all**, `build.log` truncated mid-stream with the node error absent
+from it.
+
+⚠ **The exact blocking mechanism is NOT identified** and is not claimed here. Candidates, none confirmed:
+`2>&1` on a native command in PS 5.1 wrapping stderr into `NativeCommandError` records (the hazard
+CLAUDE.md already warns about for the Bash/PowerShell tools); `Out-File` holding the pipeline open; or a
+console-selection freeze (QuickEdit) blocking a write. **Do not write the cause into the fix** — write
+the *timeout*, which is correct regardless of which it is.
+
+**Why nothing fails.** Every guardrail in the repo assumes the scheduler is running or has finished. A
+scheduler that is *blocked* satisfies neither: `wait_for_session.ps1` sees no completion marker and a
+live harness, so it reports `RUNNING` forever — the heartbeat is indistinguishable from a healthy
+2½-hour run.
+
+**And the agent-side failure is the same shape, which is the lesson worth keeping.** The smoke check
+mandated in CLAUDE.md was armed as a background waiter conditioned on `logs_live/debug.log` **appearing**
+— a happy-path signal. The build failed, that file was never created, the waiter never fired, and the
+silence was read as "still running". **A watcher that matches only success is indistinguishable from a
+broken watcher.** Every wait condition must also match failure, process death, and stall.
+
+**DETECTOR / FIX (owed), three parts:**
+
+1. **Bound the build.** Run it as a job with a timeout (a build is ~7 s; 10 minutes is generous) and on
+   expiry kill it, log `BUILD TIMED OUT`, and abort the schedule with exit 3.
+2. **Do not depend on the pipeline for the verdict.** Capture the exit code from the process object
+   (`Start-Process -Wait -PassThru` / `$proc.ExitCode`) and redirect the build's output to `build.log` by
+   file redirection rather than a PowerShell pipeline, so a stuck stream cannot swallow the result.
+3. **Make the waiter fail-aware.** `wait_for_session.ps1` should report **DEAD/STALLED** when the newest
+   `run.log` has not advanced for N minutes even though the harness is alive — "alive" is not "working".
+
+**Prove it** by pointing a schedule at a config guaranteed to fail the build (an alternate with no paired
+tree — **L20** supplies one for free): the scheduler must print `BUILD FAILED`, exit non-zero, and
+release the machine in seconds.
