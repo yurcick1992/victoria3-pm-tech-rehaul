@@ -60,7 +60,8 @@ import { fileURLToPath } from 'node:url';
 
 // v2 (2026-08-11) adds POP OBJECT COUNTS.  v3, same day, splits them into TOTAL and NON-EMPTY — user
 // ruling, so a later regression can ask which of the two actually predicts tick speed.
-export const SAVE_SUMMARY_VERSION = 5;   // v5 (2026-08-16): + per-country construction-queue composition (government/private: n, left, speed, by_type)
+export const SAVE_SUMMARY_VERSION = 6;   // v6 (2026-08-18): + per-building-type VALUE ADDED (va_out/va_in), so a tiered-sector GDP is derivable
+// v5 (2026-08-16): + per-country construction-queue composition (government/private: n, left, speed, by_type)
 
 // What we knowingly leave out, and why.  Read this before concluding the summary "lost" something.
 const NOT_CAPTURED = {
@@ -445,8 +446,14 @@ for await (const line of rl) {
         if (ci != null) {
           const k = ci + '|' + b.type;
           let r = bldByCountry.get(k);
-          if (!r) bldByCountry.set(k, r = { n: 0, levels: 0, subsidised: 0, subsidised_levels: 0, profit: 0, cash: 0, staffing: 0 });
+          if (!r) bldByCountry.set(k, r = { n: 0, levels: 0, subsidised: 0, subsidised_levels: 0, profit: 0, cash: 0, staffing: 0, va_out: 0, va_in: 0 });
           r.n++; r.levels += b.levels; r.profit += b.profit; r.cash += b.cash; r.staffing += b.staffing;
+          // VALUE ADDED per building TYPE. The melt stores goods as monetary `value=`, so no price lookup is
+          // needed; GDP is 52 x (output - input) at market prices (F45). The per-COUNTRY per-GOOD rollup
+          // below already consumed these; this keeps the same numbers split by building type, which is what
+          // a tiered-sector GDP needs and what the ledger could not previously scope.
+          for (const [, v] of b.out) r.va_out += v;
+          for (const [, v] of b.in)  r.va_in  += v;
           if (b.subsidized) { r.subsidised++; r.subsidised_levels += b.levels; }
           for (const [g, v] of b.out) add(goodsOut, ci + '|' + g, v);
           for (const [g, v] of b.in) add(goodsIn, ci + '|' + g, v);
@@ -584,8 +591,9 @@ const world = { buildings: {}, gdp: 0, population: 0, game_rules: gameRules,
 for (const [, r] of bldByCountry) { void r; }
 for (const [k, r] of bldByCountry) {
   const ty = k.slice(k.indexOf('|') + 1);
-  const w = world.buildings[ty] ??= { n: 0, levels: 0, subsidised_levels: 0 };
+  const w = world.buildings[ty] ??= { n: 0, levels: 0, subsidised_levels: 0, va_out: 0, va_in: 0 };
   w.n += r.n; w.levels += r.levels; w.subsidised_levels += r.subsidised_levels;
+  w.va_out += r.va_out || 0; w.va_in += r.va_in || 0;
 }
 for (const c of Object.values(countries)) { world.gdp += c.gdp || 0; world.population += Object.values(c.professions).reduce((a, x) => a + x, 0); }
 world.gdp = Math.round(world.gdp); world.population = Math.round(world.population);

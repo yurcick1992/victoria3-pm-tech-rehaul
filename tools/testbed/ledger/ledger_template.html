@@ -206,16 +206,33 @@ function renderPerf(mode){
        {label:'mod',c:'--accent',pts:ys.map(y=>[y,val('mod',y)])}];
   document.getElementById('perf-legend').innerHTML=series.map(s=>
     '<span><span style="display:inline-block;width:11px;height:11px;background:'+css(s.c)+';margin-right:5px;vertical-align:-1px"></span>'+s.label+'</span>').join('');
-  const W=900,H=290,L=52,R=90,T=14,B=32;
-  const all=series.flatMap(s=>s.pts.map(p=>p[1]));
+  const W=900,H=290,L=62,R=90,T=14,B=32;
+  let all=series.flatMap(s=>s.pts.map(p=>p[1]));
+  // ⚠ a normalised value can be ~0.005; without rescaling every axis label rounded to "0.0".
+  // Pick a power of ten that puts the maximum in [1,100) and say so in the unit label.
+  let sc=1, scLbl='';
+  if(!ratio && norm!=='none'){
+    const mx=Math.max.apply(null,all);
+    while(mx*sc<1) sc*=10; while(mx*sc>=100) sc/=10;
+    if(sc!==1){ series.forEach(s2=>s2.pts=s2.pts.map(p=>[p[0],p[1]*sc]));
+      all=series.flatMap(s2=>s2.pts.map(p=>p[1]));
+      const e=Math.round(Math.log10(sc)); scLbl=' (×10'+String(-e).replace(/-/,'−').split('').map(d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[+d]||d).join('')+')';
+      if(e>0) scLbl=' (×10⁻'+['⁰','¹','²','³','⁴','⁵','⁶','⁷','⁸','⁹'][e]+')';
+    }
+  }
+  let fmtV=v=>v.toFixed(2);   // re-bound below once the step is known
   const ymax=ratio?Math.max(1.3,Math.max.apply(null,all)*1.05):Math.max.apply(null,all)*1.08, ymin=ratio?Math.min(0.7,Math.min.apply(null,all)*0.95):0;
   const x=y=>L+(y-ys[0])/(ys[ys.length-1]-ys[0])*(W-L-R), Y=v=>T+(ymax-v)/(ymax-ymin)*(H-T-B);
   let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="in-game years per minute" style="width:100%;height:auto">';
-  const step=ratio?0.1:(norm!=='none'?Math.max(1e-5,(ymax-ymin)/6):0.2);
+  // a "nice" step: 1/2/5 x power of ten, ~6 gridlines — never a raw division that yields 0.0 labels
+  const nice=r=>{const p=Math.pow(10,Math.floor(Math.log10(r))),n=r/p;return (n<1.5?1:n<3?2:n<7?5:10)*p;};
+  const step=ratio?0.1:nice((ymax-ymin)/6);
+  const dp=Math.max(0,Math.min(4,-Math.floor(Math.log10(step))));
+  fmtV=v=>v.toFixed(dp);
   for(let g=Math.ceil(ymin/step)*step;g<=ymax;g+=step){
     const em=ratio&&Math.abs(g-1)<1e-9;
     s+='<line x1="'+L+'" y1="'+Y(g)+'" x2="'+(W-R)+'" y2="'+Y(g)+'" stroke="'+css('--line')+'"'+(em?' stroke-width="1.5" stroke-dasharray="5 4"':'')+'/>'+
-       '<text x="'+(L-7)+'" y="'+(Y(g)+4)+'" text-anchor="end" font-size="11" fill="'+css('--ink3')+'">'+(ratio?g.toFixed(1)+'\u00d7':g.toFixed(1))+'</text>';
+       '<text x="'+(L-7)+'" y="'+(Y(g)+4)+'" text-anchor="end" font-size="11" fill="'+css('--ink3')+'">'+(ratio?g.toFixed(2)+'\u00d7':fmtV(g))+'</text>';
   }
   for(const g of [1840,1860,1880,1900,1920,1935]) if(g>=ys[0]&&g<=ys[ys.length-1])
     s+='<text x="'+x(g)+'" y="'+(H-9)+'" text-anchor="middle" font-size="11" fill="'+css('--ink3')+'">'+g+'</text>';
@@ -226,15 +243,15 @@ function renderPerf(mode){
        '" fill="none" stroke="'+css(sr.c)+'" stroke-width="2" stroke-linejoin="round"/>';
     const e=sm[sm.length-1];
     s+='<circle cx="'+x(e[0])+'" cy="'+Y(e[1])+'" r="4" fill="'+css(sr.c)+'" stroke="'+css('--panel')+'" stroke-width="2"/>'+
-       '<text x="'+(x(e[0])+8)+'" y="'+(Y(e[1])+4)+'" font-size="12" font-weight="600" fill="'+css('--ink')+'">'+(ratio?e[1].toFixed(2)+'\u00d7':e[1].toFixed(2))+'</text>';
+       '<text x="'+(x(e[0])+8)+'" y="'+(Y(e[1])+4)+'" font-size="12" font-weight="600" fill="'+css('--ink')+'">'+(ratio?e[1].toFixed(2)+'\u00d7':fmtV(e[1]))+'</text>';
   }
   s+='</svg>';
   document.getElementById('perf-chart').innerHTML=s;
   const NL={none:'',pop:' per million live pop objects',lv:' per thousand building levels'};
   document.getElementById('perf-h').textContent =
-    (ratio?'Speed ÷ vanilla':'Speed through the century — in-game yr/min')+NL[norm];
+    (ratio?'Speed ÷ vanilla':'Speed through the century — in-game yr/min')+NL[norm]+(ratio?'':scLbl);
   document.getElementById('perf-cap').innerHTML = norm==='lv'
-    ? 'Normalised by <b>building levels</b>, which this batch measures as the engine’s real cost driver: tick cost scales as <b>levels<sup>1.05</sup></b> (R² 0.84) against <b>pops<sup>0.67</sup></b>, and dividing by levels is what actually flattens the curve (cv <b>0.131</b> vs 0.194 for pops, 0.303 raw). A flat line means the mod costs the same per unit of simulated work. ⚠ Levels is the better cost MODEL but the weaker VERDICT basis, because the tier split changes how many buildings exist — normalising by it can hide a cost the mod itself introduced.'
+    ? '⚠ <b>The right complexity proxy is an OPEN QUESTION, deferred by ruling (2026-08-18).</b> Neither candidate gives the flat line a true cost model would: levels is much the better of the two but still slopes. A composite (something like Σ<sub>markets</sub> pop<sup>0.5</sup>·states) is on the table if it can be justified rather than fitted. Until then read this as a comparison, not a cost law. — Normalised by <b>building levels</b>, which this batch measures as the closer driver: tick cost scales as <b>levels<sup>1.05</sup></b> (R² 0.84) against <b>pops<sup>0.67</sup></b>, and dividing by levels is what actually flattens the curve (cv <b>0.131</b> vs 0.194 for pops, 0.303 raw). A flat line means the mod costs the same per unit of simulated work. ⚠ Levels is the better cost MODEL but the weaker VERDICT basis, because the tier split changes how many buildings exist — normalising by it can hide a cost the mod itself introduced.'
     : norm==='pop'
     ? 'Normalised by <b>live pop objects</b> — the records the engine actually steps — so this divides out the economy-size difference the raw curve carries. It is the same idea as the pop-matched verdict, shown as a time series rather than a binning; the two should agree, and where they diverge the binned one is authoritative because it never compares different-sized economies. <b>Higher is better.</b>'
     : ratio
