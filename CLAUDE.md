@@ -2497,6 +2497,18 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   behaviour must be on vanilla; a measurement of *our economy's* behaviour must be on our config; and the
   two answer different questions. **State the arm in the schedule's `_why`, and in every finding it
   produces.** A finding that names its session but not its arm is uninterpretable later.
+  ⭐⭐ **WHICH ARM A PROBE BELONGS ON — user-ruled 2026-08-18.** A probe asking **how the ENGINE behaves**
+  (does this trigger mean what its name says, does this on_action merge or replace, does the AI re-pick a
+  strategy) belongs on **vanilla + telemetry**, and sometimes *must* be there: on the mod, our own content
+  is a confound on the very mechanism under test, and a null result cannot be told apart from our content
+  suppressing it. A probe asking **how OUR economy behaves** belongs on the config. Decide which question
+  is being asked before choosing the arm, not after.
+  ⚠ **Right now (2026-08-18) the standing instruction is MOD RUNS ONLY** for ordinary batches — do not
+  spend a slot on a paired control. A **dozen vanilla runs are scheduled for the weekend of 2026-08-22/23**
+  and will supply a far better baseline than any n=1 or n=2 control bought at the cost of a mod run. So a
+  batch's comparison partner today is the **pinned** vanilla baseline `20260813_083557`, quoted with the
+  cross-session caveat (absolute figures do not travel between nights; ratios do). This does not license
+  dropping the arm from the record — every run still states its arm.
 - **⭐⭐ AN ALLOTTED WINDOW IS A STANDING GO-AHEAD — INSIDE IT, GO AND GET THE DATA YOURSELF**
   (user-ruled 2026-08-14). When the user grants an explicit window for long work — "up to Friday
   evening", "overnight", "take the next N hours" — that window is permission to run **probes and short
