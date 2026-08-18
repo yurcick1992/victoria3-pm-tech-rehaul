@@ -647,6 +647,15 @@ tools/                  dev tooling — NOT shipped in the mod
                         breaking; a forced decision between bumping the version and recording that older
                         sessions stay comparable
   --- the five-era pipeline (Node ≥ 24; see "THE FIVE-ERA LADDER" above) ---
+  ⚠⚠ AN ALTERNATE CONFIG NEEDS A COMPANION TECH-TREE FILE, or the BUILD DIES (2026-08-18).
+                        `emit_techs.mjs` derives its options file from the CONFIG FILENAME: build with
+                        `-Config config/mod_config.<suffix>.json` and it opens
+                        `config/tech_tree_options.<suffix>.json`. Absent ⇒ ENOENT ⇒ build.ps1 throws
+                        "emit_techs.mjs failed - the mod would ship without its technologies", BEFORE the
+                        game is ever launched. Copy the canonical file to the matching suffix when making
+                        any alt config. ⚠ It cost a probe launch (session 20260818_005903, zero runs) and
+                        it is ALSO why an L18 solvency tripwire could not be proven end-to-end through a
+                        full build the same day — the sabotaged config died here first, not at the linter.
   build_era_ladder.mjs  STRUCTURE: stamps each tier's era from an explicit per-industry spec, mints the 22
                         model_only tiers, applies the ×1.5 output ladder. IDEMPOTENT (drops previously invented
                         tiers first), so run it BEFORE era_scenarios, never after — it discards their volumes
