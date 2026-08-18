@@ -60,7 +60,7 @@ import { fileURLToPath } from 'node:url';
 
 // v2 (2026-08-11) adds POP OBJECT COUNTS.  v3, same day, splits them into TOTAL and NON-EMPTY — user
 // ruling, so a later regression can ask which of the two actually predicts tick speed.
-export const SAVE_SUMMARY_VERSION = 6;   // v6 (2026-08-18): + per-building-type VALUE ADDED (va_out/va_in), so a tiered-sector GDP is derivable
+export const SAVE_SUMMARY_VERSION = 6;   // v6 (2026-08-18): + per-building-type VALUE ADDED (va_out/va_in), PRICED at base cost, so a tiered-sector GDP is derivable (F74)
 // v5 (2026-08-16): + per-country construction-queue composition (government/private: n, left, speed, by_type)
 
 // What we knowingly leave out, and why.  Read this before concluding the summary "lost" something.
@@ -92,8 +92,27 @@ if (!SRC) { console.error('usage: save_state_summary.mjs <melt.txt|-> --out summ
 const strip = s => s.replace(/^\uFEFF/, '');
 // ---- reference tables read LIVE from the game, so a patch cannot leave this quietly wrong.
 const GOODS = [];
-for (const f of readdirSync(join(GAME, 'common/goods')).filter(x => x.endsWith('.txt')).sort())
-  for (const m of strip(readFileSync(join(GAME, 'common/goods', f), 'utf8')).matchAll(/^([a-z][a-z_]*)\s*=\s*\{/gm)) GOODS.push(m[1]);
+// ⭐ AND THEIR BASE PRICES. A building's `input_goods`/`output_goods` `value=` is a QUANTITY IN UNITS,
+// not money — melted_building_goods.mjs validated that reading against telemetry to ~8% mean. Value
+// added is a MONETARY quantity (F45: GDP = 52 × (outputs − inputs) at market prices), so the units must
+// be priced before they mean anything. Reading them at BASE price reproduces the save's own `gdp` field
+// to 0.3% (F74), which is what makes va_* trustworthy.
+// ⚠ BASE price, not realised: the market order book is not persisted in a save, so a realised price
+// cannot be recovered. That is a stated approximation, and it is why va_* must not be quoted as the
+// engine's own GDP to more than about a percent.
+const GOODS_PRICE = {};
+for (const f of readdirSync(join(GAME, 'common/goods')).filter(x => x.endsWith('.txt')).sort()) {
+  const src = strip(readFileSync(join(GAME, 'common/goods', f), 'utf8'));
+  let cur = null;
+  for (const line of src.split(/\r?\n/)) {
+    const l = line.replace(/#.*$/, '');
+    let m;
+    if ((m = /^([a-z][a-z_]*)\s*=\s*\{/.exec(l))) { cur = m[1]; GOODS.push(cur); }
+    else if (cur && (m = /^\s*cost\s*=\s*([\d.]+)/.exec(l))) GOODS_PRICE[cur] = +m[1];
+  }
+}
+if (Object.keys(GOODS_PRICE).length < GOODS.length * 0.9)
+  throw new Error(`only ${Object.keys(GOODS_PRICE).length} of ${GOODS.length} goods carry a cost — the price key moved`);
 const POP_TYPES = readdirSync(join(GAME, 'common/pop_types')).filter(x => x.endsWith('.txt')).sort()
   .map(x => x.replace(/\.txt$/, ''));
 if (!GOODS.length || !POP_TYPES.length) throw new Error(`game reference tables empty — is --game right? (${GAME})`);
@@ -452,8 +471,8 @@ for await (const line of rl) {
           // needed; GDP is 52 x (output - input) at market prices (F45). The per-COUNTRY per-GOOD rollup
           // below already consumed these; this keeps the same numbers split by building type, which is what
           // a tiered-sector GDP needs and what the ledger could not previously scope.
-          for (const [, v] of b.out) r.va_out += v;
-          for (const [, v] of b.in)  r.va_in  += v;
+          for (const [g, v] of b.out) r.va_out += v * (GOODS_PRICE[g] || 0);
+          for (const [g, v] of b.in)  r.va_in  += v * (GOODS_PRICE[g] || 0);
           if (b.subsidized) { r.subsidised++; r.subsidised_levels += b.levels; }
           for (const [g, v] of b.out) add(goodsOut, ci + '|' + g, v);
           for (const [g, v] of b.in) add(goodsIn, ci + '|' + g, v);

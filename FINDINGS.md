@@ -7577,3 +7577,52 @@ rather than an absolute head-count, and/or a hard **date floor** at the technolo
 - **Timings are interpolated** from ~20-second tick lines; treat single-year precision as approximate.
 - **n=2, one arm.** Given canon-n2's measured 2.1× spread on war firings, the industry channel's 2%
   run-to-run agreement suggests these counts are stable, but the *tail* dates rest on single events.
+
+---
+
+## F74 — ✅ THE SAVE'S BUILDING GOODS ARE **UNITS, NOT MONEY** — priced at base cost they reproduce the engine's own GDP to **0.3%**, which makes a tiered-sector GDP derivable
+
+**Claim.** A melted save's `input_goods` / `output_goods` `value=` field is a **quantity in units**. Priced
+at each good's base `cost` and summed as F45 prescribes, **52 × (outputs − inputs) reproduces the save's
+own `gdp` field to 0.3%** world-wide (£4.13B computed against £4.12B stored). Split by building type this
+yields the quantity the ledger previously could not scope: **tiered-sector GDP = £1.82B, 42.6% of the
+economy** at 1936 in canon-n2 run 1.
+
+**How the error arose, and why it mattered.** `save_state_summary.mjs` already walked those blocks, so
+adding a per-building-type rollup was two lines — but read as *money* it produced 52 × VA = **£0.12B
+against a £4.12B `gdp` field, a ratio of 0.029**. The mistake was mine and it was a semantics error, not
+an arithmetic one: `melted_building_goods.mjs`'s own header states the reading (*"SUPPLY = sum of
+output_goods"*), validated against telemetry to ~8% mean, i.e. **production in units**. F45's method then
+applies prices; I had skipped that step and blamed the field.
+⭐ **The 34× gap was the missing price vector, nothing more.** Refusing to ship the number until it
+reconciled is what kept a confidently-wrong tiered GDP out of the report.
+
+| reading | 52 × VA | vs the save's `gdp` |
+|---|---|---|
+| `value=` as money (wrong) | £0.12B | **0.029×** |
+| `value=` as units × base price | **£4.13B** | **1.003×** |
+| same, via the v6 per-building rollup | £4.29B | 1.041× |
+
+⚠ **The v6 rollup lands at 1.041, not 1.003, and that is expected**: the per-country `goods_out`/`goods_in`
+tables and the per-building-type rollup are aggregated over slightly different populations (countries that
+exist in the `countries` map vs every building in the world). Treat va_* as good to a few percent, not to
+the third digit.
+
+⚠ **BASE prices, not realised — a stated approximation.** The market order book is **not persisted in a
+save** (`NOT_CAPTURED.market_order_book`), so a realised price cannot be recovered from a gamestate at
+all. The 4% residual is where that lives. **Do not quote va_* as the engine's own GDP beyond ~1%.**
+
+**Shipped as `SAVE_SUMMARY_VERSION = 6`**: `world.buildings[type].va_out` / `va_in` and the same per
+country, priced at base cost. Prices are parsed **live** from `common/goods/*.txt` alongside the goods
+names the reader already read, and the reader **throws** if fewer than 90% of goods carry a `cost` key —
+so a patch that renames the field fails loudly instead of silently zeroing every value.
+
+### What it does NOT say
+
+- **It is not a per-building profit measure.** Value added is output minus *material* inputs; wages,
+  subsidies and dividends are not in it.
+- **It cannot be backfilled.** The harvester reaps saves after summarising, so canon-n2 has this at
+  exactly ONE date per run — its kept endpoint save. The trajectory is unavailable and always will be;
+  this is the schema-generosity hazard the reader's own header warns about, landing again.
+- **42.6% is one run at one date**, and given canon-n2's 46% run-to-run spread on tiered levels it should
+  not be treated as a stable share until a batch carries v6 throughout.
