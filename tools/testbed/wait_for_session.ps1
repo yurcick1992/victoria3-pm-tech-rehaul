@@ -16,7 +16,9 @@
   Both are exit 0 because neither is an error - read the printed status, not the code. Exit 2
   means the session looks DEAD (no game process and no completion marker), which IS worth alarm.
   Exit 3 means STALLED: the harness is alive but NOTHING in the session tree has been written for
-  -StallMinutes.
+  -StallMinutes. Exit 4 means BAD SESSION - the path does not exist, or its tree enumerates nothing;
+  that is a broken ARGUMENT, and reporting it as STALLED would be a watcher failing in the flattering
+  direction (it happened, on the day STALLED shipped).
 
   WHY STALLED EXISTS (landmine L21, 2026-08-18). "Alive" is not "working". A build failed in 3
   seconds and the scheduler blocked on its own output pipeline: no game, no completion marker, a
@@ -59,6 +61,17 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 
+# ⚠⚠ A SESSION PATH THAT DOES NOT EXIST IS AN ERROR, NOT A STALL - and this check is why.
+# Measured 2026-08-18, minutes after STALLED shipped: the path was passed through a layer that ate its
+# backslashes, the waiter happily watched a directory that was never there, found zero files, and
+# reported STALLED against a run that was healthy and advancing. A watcher that cannot tell a broken
+# ARGUMENT from a broken RUN is the same defect as one that cannot tell failure from success - it just
+# fails in the flattering direction instead. Exit 4, named, before any waiting happens.
+if (-not (Test-Path $Session)) {
+    Write-Output "BAD SESSION - no such directory: $Session"
+    Write-Output "  (a mistyped or mangled path must never be reported as STALLED or DEAD - check the path, not the run)"
+    exit 4
+}
 $log = Join-Path $Session 'session.log'
 $deadline = (Get-Date).AddMinutes($MaxMinutes)
 
@@ -79,11 +92,16 @@ function Get-NewestWrite {
     # care WHICH stage is live: the game mirrors logs_live continuously, the harvest writes summaries
     # every few seconds, a build writes build.log. If none of them has written for -StallMinutes, the
     # session is not working, whatever its processes claim.
-    # WARN: saves\ is excluded - a 45 MB autosave copy takes many seconds and its mtime is the START of
-    # the write, but everything else in the tree ticks faster, so including it only adds noise.
+    # WARN: the autosave archive folder is excluded - a 45 MB copy takes many seconds and its mtime is
+    # the START of the write, but everything else in the tree ticks faster, so it only adds noise.
+    # WARN WARN: MATCHED ON THE PARENT DIRECTORY'S NAME, NOT A PATH REGEX, AND THAT IS DELIBERATE. The
+    # first version tested the full path against a regex full of escaped separators; an escaping layer
+    # collapsed the doubling, leaving an INVALID regex that threw on every file. It did not surface,
+    # because the same run was handed a mangled session path, so the enumeration was empty and the broken
+    # filter never ran - one bug hiding another. A comparison with no escaping in it cannot be mangled.
     $newest = [datetime]::MinValue
     Get-ChildItem $Session -Recurse -File -ErrorAction SilentlyContinue |
-        Where-Object { $_.FullName -notmatch '\saves\' } |
+        Where-Object { $_.Directory.Name -ne 'saves' } |
         ForEach-Object { if ($_.LastWriteTime -gt $newest) { $newest = $_.LastWriteTime } }
     return $newest
 }
@@ -128,6 +146,12 @@ while ($true) {
     if ($StallMinutes -gt 0) {
         $nw = Get-NewestWrite
         if ($nw -gt $lastWrite) { $lastWrite = $nw; $lastWriteAt = Get-Date }
+        elseif ($nw -eq [datetime]::MinValue) {
+            # Not stale - EMPTY. The tree existed at startup and now enumerates nothing, which is a
+            # disappeared or unreadable folder, not a quiet one. Same rule as above: say which.
+            Write-Output "BAD SESSION - the session tree enumerates no files at all: $Session"
+            exit 4
+        }
         elseif (((Get-Date) - $lastWriteAt).TotalMinutes -ge $StallMinutes) {
             Write-Output ("STALLED - harness may be alive but nothing in the session tree has been written for {0} min" -f $StallMinutes)
             Write-Output ("  newest write: {0}" -f $lastWrite)

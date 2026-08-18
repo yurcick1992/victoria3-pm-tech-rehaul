@@ -1017,6 +1017,25 @@ build must wake the agent in seconds, not look like a live run) with `[ABORTED]`
   `InvokeMethodOnNull` and **never printed `BUILD TIMED OUT`**. A guard that has only been tested on the
   happy path is not known to work — this one was two lines from being another silent hang.
 
+⚠⚠ **AND THE WAITER'S OWN STALL CHECK SHIPPED WITH TWO BUGS THAT HID EACH OTHER — caught within minutes
+of shipping, on the live canon-n7 batch (2026-08-18).** It reported **STALLED against a run that was
+healthy and advancing**, printing `newest write: 01.01.0001 0:00:00`, i.e. it had found *no files at all*.
+Two independent faults, in series:
+1. **The session path it was handed was mangled** (an escaping layer between the caller and the script ate
+   the separators), so it watched a directory that never existed. **A watcher that cannot tell a broken
+   ARGUMENT from a broken RUN is the same defect as one that cannot tell failure from success** — it just
+   fails in the flattering direction. Fixed: a non-existent session is **BAD SESSION, exit 4**, named,
+   before any waiting; and a tree that enumerates *nothing* is exit 4 too, not staleness.
+2. **The exclusion filter was an invalid regex.** It tested the full path against a pattern of escaped
+   separators, and the same escaping layer collapsed the doubling, leaving a regex that **threw on every
+   file**. It could not surface while fault 1 was present, because an empty enumeration never reaches the
+   filter. Fixed by removing the escaping entirely — the check now compares the parent **directory's
+   name**, which nothing can mangle.
+⭐ **The lesson is the register's own, turned on itself:** a guard is not known to work until it has been
+run against the thing it guards. This one was proven against a fabricated stall and never against a real
+session, and it had a 100% false-positive rate on the first live one. It now reports RUNNING correctly on
+canon-n7 and sees writes 7 seconds old.
+
 ⚠ The blocking mechanism of the original incident is **still not identified**, and deliberately so: the
 fix is the timeout, which is correct whichever candidate it was.
 
