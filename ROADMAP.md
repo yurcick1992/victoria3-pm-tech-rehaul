@@ -1203,6 +1203,60 @@ engine exposes **no** counter splitting battle from attrition (only modifiers, a
 a config-only change that stops the errors and makes the gate function, while leaving the cross-war
 leak in place. It is strictly worse than the design above and is recorded only as the cheap escape.
 
+### The NAVAL channel — OBSERVATION, NOT BATTLE (user-ruled 2026-08-18, evening)
+
+⭐⭐ **Fleet technologies do NOT use the battle gate at all.** A navy is not observed by bleeding on a
+front, it is observed by *seeing the ship*. So a naval tech ticks on POSSESSION — ours or a declared
+rival's — **regardless of the state of war**.
+
+**The two sources, and they SUPERSEDE rather than stack** (explicit ruling):
+
+| state | monthly progress |
+|---|---|
+| a declared **rival** owns a qualifying ship | **+1** (normal) |
+| **we** own one | **+2** (double) |
+| both | **+2** — no extra bonus |
+
+**Pacing: one stage completes in 5 YEARS at the normal rate** ⇒ `monthly_progress`, `max_value = 60`.
+Owning one halves it to 2.5 years. Three stages as usual.
+
+**The gate, entirely in COUNTRY scope** — no war, no front, no general, no character:
+
+```
+# ship types S1..Sn for tech X, derived LIVE from common/ship_types (unlocking_technologies)
+if      = { limit = { any_scope_ship    = { OR = { is_ship_type = ship_type:S1  … } } }  value = 2 }
+else_if = { limit = { any_rival_country = { any_scope_ship = { OR = { is_ship_type = ship_type:S1  … } } } }  value = 1 }
+```
+
+⭐ **RIVALRY IS ONE-SIDED AND THAT IS THE POINT.** `common/diplomatic_actions/12_rivalry.txt` carries
+**`is_two_sided_pact = no`**, so A→B needs no reciprocation, and `any_rival_country` from A's scope
+iterates the countries **A has declared**. If A rivals B and B floats the ship, A's bar ticks — B's does
+not, unless B has declared A in turn.
+
+⭐ **Every component is VANILLA-ATTESTED**, which is the whole reason for this shape:
+`any_country` 84 files · `any_diplomatically_relevant_country` 22 · `any_rival_country` 8 ·
+`any_scope_ship` 7 (used in **country** scope, filtered by exactly `is_ship_type`) · `is_ship_type` 4.
+Vanilla also nests country-scoped iterators inside `any_rival_country`, so the composite is its own idiom.
+⚠ It **retires `num_mobilized_battalions`** for these techs — a trigger with **ZERO** vanilla uses,
+appearing only in `trigger_localization` — and the `owner = ROOT` character link vanilla never writes.
+
+**Self-possession covers the acquisition cases for free**: `any_scope_ship` asks what is IN the navy, not
+how it arrived — bought, annexed, or taken in a peace treaty all count, which is the intent.
+
+**The tech→ship table is DERIVED, never authored.** `common/ship_types/00_ship_types.txt` carries
+`unlocking_technologies` per type, so the emitter builds it live, exactly as it already parses
+production methods: `ironclad_tech` → monitor · early_ironclad · iron_frigate · troop_ship;
+`monitor_tech` → coastal_defense_ship · modern_ironclad; `pre_dreadnought_tech` → pre_dreadnought ·
+armored_cruiser; `dreadnought_tech` → dreadnought · light_cruiser · seaplane_tender;
+`battleship_tech` → super_dreadnought; plus submarine / destroyer / torpedo_boat.
+
+**LANDLOCKED COUNTRIES GET NO EXCEPTION** (ruled): vanilla makes none for naval tech spread or
+requirements either, and such powers are too marginal to justify the machinery.
+⚠ **The land tree is NOT moved to this model** — considered and deliberately deferred. The same
+`unlocking_technologies` field exists in `common/combat_unit_types`, so it remains available later.
+⇒ the battle gate above stays for land techs, and its 100-battalion threshold is still to be tuned down
+(it is far too hard early).
+
 ### The war channel — RULED IN DETAIL (user, 2026-08-18)
 
 **The gate** (computed in `on_monthly_pulse_country`, where ROOT is valid — all three clauses bound
