@@ -980,16 +980,19 @@ release the machine in seconds.
 action, the idiom the telemetry and diag files already used. Verified against the EMITTED artifact: the
 only direct `effect` child sits under `pmr_wargate_eval`, and `on_monthly_pulse_country` carries an
 `on_actions` list. Vanilla's 1005-line effect is no longer displaced.
-✅ **DETECTOR:  in **, registered in $CHECKS as an artifact check, so it
-runs inside every build. It reads the EMITTED , and any top-level block that is a
-VANILLA on_action must not carry a direct  child. The 262 vanilla on_action names are parsed
-LIVE from the game so a patch that adds one is covered without editing the check; -prefixed is the
-fallback when the game path is unreadable.
-⚠ **Tripwire PROVEN by deliberate breakage**: reintroducing the bare  on 
-made preflight exit 1 with , naming
-the file and printing the two-line fix; restoring it returned PASS, and a full build passes with it live.
-⚠ It is deliberately NOT a grep for the engine's warning string — that needs a RUN, and the point is to
-fail at build time. Same principle as reading the artifact rather than the generator.
+✅ **DETECTOR: `Test-LmL22` in `tools/preflight.ps1`**, registered in \$CHECKS as an artifact check, so
+it runs inside every build. It reads the EMITTED `common/on_actions/*.txt`, and any top-level block that
+is a VANILLA on_action must not carry a direct `effect = {` child. The **262 vanilla on_action names are
+parsed LIVE from the game**, so a patch that adds one is covered without editing the check; an `on_` prefix
+is the documented fallback when the game path is unreadable — preflight must keep working on a machine
+with no game installed.
+⚠ **Tripwire PROVEN by deliberate breakage.** Reintroducing the bare `effect` on
+`on_monthly_pulse_country` made preflight exit 1 with
+`L22 FAIL … 'on_monthly_pulse_country' declares its own effect block`, naming the file and printing the
+two-line fix; restoring it returned PASS, and a full dry-run build passes with the check live.
+⚠ It is deliberately **NOT** a grep for the engine's own warning string — that needs a RUN, and the point
+is to fail at BUILD time. Same principle as reading the artifact rather than the generator, which is what
+caught both this bug and the zero-fleet-technologies bug on the same day.
 
 **Original status: REGISTERED, DETECTOR + FIX OWED** (both queued behind the live `canon-n2` batch — `emit_research_events.mjs`
 is in the build path and the scheduler rebuilds between runs, so changing it mid-batch is an L10 breach).
