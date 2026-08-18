@@ -108,7 +108,7 @@ a{color:var(--accent)}
   <table>
     <tr><th></th><th>Goal, in game terms</th><th>Headline metric</th><th class="num">This batch</th><th class="num">Target</th><th>Verdict</th></tr>
     __GOALS__
-    <tr><td><b>P</b></td><td class="goalcell"><b>The game does not get slower</b></td><td>Wall clock per in-game year, <b>at matched live pop objects</b></td><td class="num" id="v-perf">—</td><td class="num dim">≤ +10%</td><td id="v-perfpill"><span class="pill dim">—</span></td></tr>
+    <tr><td><b>P</b></td><td class="goalcell"><b>The game does not get slower</b></td><td><b>Total run time</b> vs vanilla <span class="dim">(per-unit, pop-matched, beside it)</span></td><td class="num" id="v-perf">—</td><td class="num dim">≤+5% / +5–15% / >+15%</td><td id="v-perfpill"><span class="pill dim">—</span></td></tr>
   </table>
   </div>
 </section>
@@ -117,7 +117,7 @@ a{color:var(--accent)}
 <section class="sec">
   <h2>P — Performance: does our meddling make the game slower than vanilla?</h2>
   <p class="lede"><b>A standing constraint on every batch.</b> Whatever the mod does to the economy, it must not
-  make Victoria&nbsp;3 materially slower to play. Budget <b>10%</b>. Speed is reported as <b>in-game years per
+  make Victoria&nbsp;3 materially slower to play. Graded on the total: <b>≤+5%</b> acceptable, <b>+5–15%</b> needs improvement, <b>&gt;+15%</b> too slow. Speed is reported as <b>in-game years per
   minute</b> — the rate you actually feel — so <b>higher is better</b> everywhere on this page.</p>
   <p class="lede"><b>Total run time is the quantity that matters</b> — a player never notices that the economy
   half a world away carries more lightly-staffed buildings, they notice the century taking longer. So the aim is
@@ -178,20 +178,24 @@ function renderPerf(mode){
   const van=PERF.runs.filter(r=>r.van), mod=PERF.runs.filter(r=>!r.van);
   const mv=med(van.map(r=>r.min)), mm=med(mod.map(r=>r.min));
   const raw=mm/mv, pr=med(mod.map(r=>r.pops))/med(van.map(r=>r.pops));
-  const pct=PERF.pct, ok=pct<=PERF.budget;
-  document.getElementById('v-perf').innerHTML='<b>'+(pct>=0?'+':'')+pct.toFixed(1)+'%</b>';
-  document.getElementById('v-perfpill').innerHTML=ok
-    ? '<span class="pill ok">'+(pct<=0?'no slowdown':'within budget')+'</span>'
-    : '<span class="pill bad">over budget</span>';
+  const pctTotal=(raw-1)*100, pct=PERF.pct;
+  const GY=(PERF.grade&&PERF.grade.green)??5, RY=(PERF.grade&&PERF.grade.yellow)??15;
+  const cls=pctTotal<=GY?'ok':pctTotal<=RY?'wa':'bad';
+  const lab=pctTotal<=GY?(pctTotal<=0?'no slowdown':'acceptable'):pctTotal<=RY?'needs improvement':'too slow';
+  document.getElementById('v-perf').innerHTML='<b>'+(pctTotal>=0?'+':'')+pctTotal.toFixed(1)+'%</b>'+
+    ' <span class="dim">total</span><br><span class="dim" style="font-size:12px">'+(pct>=0?'+':'')+pct.toFixed(1)+'% per unit</span>';
+  document.getElementById('v-perfpill').innerHTML='<span class="pill '+cls+'">'+lab+'</span>';
   document.getElementById('perf-head').innerHTML=
     '<div style="display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start">'+
-      '<div style="flex:1 1 250px"><div class="eyebrow">The verdict &mdash; pop-matched</div>'+
-        '<div style="font:700 34px/1.1 Segoe UI,sans-serif;color:var(--'+(ok?'ok':'bad')+');margin:6px 0">'+(pct>=0?'+':'')+pct.toFixed(1)+'% slower</div>'+
-        '<div class="small">At equal live pop objects. Budget <b>+'+PERF.budget+'%</b>. '+PERF.overlapping+' overlapping bins.</div></div>'+
-      '<div style="flex:1 1 300px"><div class="eyebrow">&#9888; The naive total &mdash; do not quote this</div>'+
-        '<div style="font:700 34px/1.1 Segoe UI,sans-serif;color:var(--ink3);margin:6px 0">&times;'+raw.toFixed(2)+'</div>'+
+      '<div style="flex:1 1 260px"><div class="eyebrow">THE GRADE &mdash; total run time</div>'+
+        '<div style="font:700 34px/1.1 Segoe UI,sans-serif;color:var(--'+(cls==='wa'?'warn':cls==='ok'?'ok':'bad')+');margin:6px 0">'+(pctTotal>=0?'+':'')+pctTotal.toFixed(1)+'% slower</div>'+
         '<div class="small">Vanilla <b>'+mv.toFixed(1)+'</b> min vs mod <b>'+mm.toFixed(1)+'</b> min for the century. '+
-        'The arms did not simulate the same thing &mdash; the mod ended with <b>&times;'+pr.toFixed(2)+'</b> the live pop objects.</div></div>'+
+        'This is what a player feels, so it sets the grade: &le;+'+GY+'% acceptable, +'+GY+'\u2013'+RY+'% needs improvement, &gt;+'+RY+'% too slow.</div></div>'+
+      '<div style="flex:1 1 290px"><div class="eyebrow">Per unit of work &mdash; pop-matched</div>'+
+        '<div style="font:700 34px/1.1 Segoe UI,sans-serif;color:var(--ink2);margin:6px 0">'+(pct>=0?'+':'')+pct.toFixed(1)+'%</div>'+
+        '<div class="small">At equal live pop objects ('+PERF.overlapping+' overlapping bins). The <b>fair arm-vs-arm</b> figure, '+
+        'and the gap to the total is the point: the mod ended with <b>&times;'+pr.toFixed(2)+'</b> the live pop objects, so most of '+
+        'the extra time is a <b>bigger world</b>, not a dearer engine. Both are real \u2014 the player pays the total.</div></div>'+
     '</div>';
 
   const yrs=Object.keys(PERF.byYear.van).map(Number).filter(y=>PERF.byYear.mod[y]!=null).sort((x,y)=>x-y);
