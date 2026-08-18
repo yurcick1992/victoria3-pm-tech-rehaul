@@ -119,9 +119,15 @@ a{color:var(--accent)}
   <p class="lede"><b>A standing constraint on every batch.</b> Whatever the mod does to the economy, it must not
   make Victoria&nbsp;3 materially slower to play. Budget <b>10%</b>. Speed is reported as <b>in-game years per
   minute</b> — the rate you actually feel — so <b>higher is better</b> everywhere on this page.</p>
-  <p class="lede">⚠ It must be read <b>at a comparable economy size</b>: the engine's cost scales with how much
-  it simulates, so an underdeveloped arm finishes sooner while being slower per unit of work. The verdict is
-  therefore <b>pop-matched</b> — compared at the same live pop-object count, never at the same date.</p>
+  <p class="lede"><b>Total run time is the quantity that matters</b> — a player never notices that the economy
+  half a world away carries more lightly-staffed buildings, they notice the century taking longer. So the aim is
+  to keep the <i>total</i> down, and shrinking what we ask the engine to simulate is as legitimate a way to do
+  that as making each unit cheaper.</p>
+  <p class="lede">The normalised views exist for a different job. ⚠ They must be read <b>at a comparable economy
+  size</b>: an underdeveloped arm finishes sooner while being slower per unit of work, so the fair arm-vs-arm
+  verdict is <b>pop-matched</b>. And <b>÷ modelled cost</b> is a <b>diagnostic tripwire</b>: it should sit near
+  1.0 and near-flat, and if a build suddenly lifts or destabilises it, that build made each unit of world dearer
+  — a fault that a change in economy size would otherwise mask.</p>
 
   <div class="card" id="perf-head"></div>
 
@@ -133,7 +139,7 @@ a{color:var(--accent)}
           <button id="pf-abs" aria-pressed="true">yr/min</button><button id="pf-ratio" aria-pressed="false">÷ vanilla</button>
         </div>
         <div class="toggle" role="group" aria-label="Normalise by">
-          <button id="pf-n0" aria-pressed="true">raw</button><button id="pf-npop" aria-pressed="false">÷ pop objects</button><button id="pf-nlv" aria-pressed="false">÷ building levels</button>
+          <button id="pf-n0" aria-pressed="true">raw</button><button id="pf-npop" aria-pressed="false">÷ pop objects</button><button id="pf-nlv" aria-pressed="false">÷ building levels</button><button id="pf-nmod" aria-pressed="false">÷ modelled cost</button>
         </div>
       </div>
     </div>
@@ -196,7 +202,15 @@ function renderPerf(mode){
   // VERDICT basis, because building count is something the mod itself changes.
   const drv=(arm,y)=> norm==='pop' ? (PERF.pops?.[arm]?.[y]/1e6)
                     : norm==='lv'  ? (PERF.levels?.[arm]?.[y]/1e3) : 1;
+  // ⭐ MODELLED COST (F72): sec/yr = c0 + cPop*kpops + cLv*klevels, fitted across 2304 samples over 24
+  // archived yearly-cadence runs. Plotted as modelled ÷ actual, so 1.0 means "exactly as expensive as
+  // the whole archive predicts". This is a DIAGNOSTIC, not a target: a sudden level shift or a loss of
+  // flatness says the BUILD changed how much each unit of world costs, which is the thing that would
+  // otherwise hide behind a bigger or smaller economy.
+  const mcost=(arm,y)=>{ const M=PERF.model, p=PERF.pops?.[arm]?.[y], l=PERF.levels?.[arm]?.[y];
+    return (M&&p&&l)? (M.c0 + M.cPop*(p/1e3) + M.cLv*(l/1e3)) : null; };
   const val=(arm,y)=>{ const v=PERF.byYear[arm][y]; if(norm==='none') return v;
+    if(norm==='model'){ const m=mcost(arm,y); return (m&&v>0)? m*v/60 : null; }
     const d=drv(arm,y); return (d&&d>0)?v/d:null; };
   const okY=y=>Number.isFinite(val('mod',y))&&Number.isFinite(val('van',y));
   const ys=yrs.filter(okY);
@@ -247,10 +261,12 @@ function renderPerf(mode){
   }
   s+='</svg>';
   document.getElementById('perf-chart').innerHTML=s;
-  const NL={none:'',pop:' per million live pop objects',lv:' per thousand building levels'};
+  const NL={none:'',pop:' per million live pop objects',lv:' per thousand building levels',model:' \u00f7 modelled cost (1.0 = as predicted)'};
   document.getElementById('perf-h').textContent =
     (ratio?'Speed ÷ vanilla':'Speed through the century — in-game yr/min')+NL[norm]+(ratio?'':scLbl);
-  document.getElementById('perf-cap').innerHTML = norm==='lv'
+  document.getElementById('perf-cap').innerHTML = norm==='model'
+    ? 'Actual speed against the cost the whole archive predicts for a world of this size \u2014 <b>1.0 means exactly as expected</b>, and the line should be near-flat. \u26a0 This is a <b>tripwire, not a target</b>: it divides out how big the world is, and the player only ever feels the <i>total</i>. A sudden step or a loss of flatness means this BUILD made each unit of world dearer, which is precisely what a bigger or smaller economy would otherwise hide. Model (F72): <code>sec/yr = '+(PERF.model?PERF.model.c0.toFixed(2)+' + '+PERF.model.cPop.toFixed(3)+'\u00b7kpops + '+PERF.model.cLv.toFixed(3)+'\u00b7klevels':'n/a')+'</code>.'
+    : norm==='lv'
     ? '⚠ <b>The right complexity proxy is an OPEN QUESTION, deferred by ruling (2026-08-18).</b> Neither candidate gives the flat line a true cost model would: levels is much the better of the two but still slopes. A composite (something like Σ<sub>markets</sub> pop<sup>0.5</sup>·states) is on the table if it can be justified rather than fitted. Until then read this as a comparison, not a cost law. — Normalised by <b>building levels</b>, which this batch measures as the closer driver: tick cost scales as <b>levels<sup>1.05</sup></b> (R² 0.84) against <b>pops<sup>0.67</sup></b>, and dividing by levels is what actually flattens the curve (cv <b>0.131</b> vs 0.194 for pops, 0.303 raw). A flat line means the mod costs the same per unit of simulated work. ⚠ Levels is the better cost MODEL but the weaker VERDICT basis, because the tier split changes how many buildings exist — normalising by it can hide a cost the mod itself introduced.'
     : norm==='pop'
     ? 'Normalised by <b>live pop objects</b> — the records the engine actually steps — so this divides out the economy-size difference the raw curve carries. It is the same idea as the pop-matched verdict, shown as a time series rather than a binning; the two should agree, and where they diverge the binned one is authoritative because it never compares different-sized economies. <b>Higher is better.</b>'
@@ -289,9 +305,11 @@ function renderPerf(mode){
   const n0=document.getElementById('pf-n0'), np=document.getElementById('pf-npop'), nl=document.getElementById('pf-nlv');
   let cur={scale:'abs',norm:'none'};
   const paint=()=>{ba.setAttribute('aria-pressed',cur.scale==='abs');br.setAttribute('aria-pressed',cur.scale==='ratio');
-    n0.setAttribute('aria-pressed',cur.norm==='none');np.setAttribute('aria-pressed',cur.norm==='pop');nl.setAttribute('aria-pressed',cur.norm==='lv');renderPerf(cur);};
+    n0.setAttribute('aria-pressed',cur.norm==='none');np.setAttribute('aria-pressed',cur.norm==='pop');nl.setAttribute('aria-pressed',cur.norm==='lv');
+    document.getElementById('pf-nmod').setAttribute('aria-pressed',cur.norm==='model');renderPerf(cur);};
   ba.onclick=()=>{cur.scale='abs';paint()}; br.onclick=()=>{cur.scale='ratio';paint()};
   n0.onclick=()=>{cur.norm='none';paint()}; np.onclick=()=>{cur.norm='pop';paint()}; nl.onclick=()=>{cur.norm='lv';paint()};
+  const nm=document.getElementById('pf-nmod'); nm.onclick=()=>{cur.norm='model';paint()};
   paint();
 })();
 })();

@@ -7421,3 +7421,81 @@ research channel is *intended* to be a late-game mechanic and the zeros are not 
 threshold came from a ruling aimed at stopping micro-states firing it (session 20260812_010659, where
 military took 70% of completions). Whether it should also fire in early-game wars is a design call, not
 a bug report.
+
+---
+
+## F72 — ⭐ WHAT ACTUALLY DRIVES VICTORIA 3's TICK COST, FITTED ACROSS THE WHOLE ARCHIVE: **building levels, not pop objects** — and the game version does not matter
+
+**Claim.** Over 2 304 samples from 24 archived full-century runs, engine cost is well described by
+**`sec per in-game year = 0.39 + 0.180·(k live pop objects) + 0.590·(k building levels)`**. **Building
+levels dominate**: levels alone explain the cost as well as both terms together (cv 0.138 vs 0.136),
+while **pop objects alone are nearly useless** (0.228 against 0.353 for no normalisation at all).
+**Game version has no material effect.**
+
+**Method, arms, n.** No new game time. Every archived run with ≥50 save summaries and a completed span
+was pooled — vanilla, tiered, old and flat cost books, era6, research-event arms — which is what supplies
+the independent variation a single campaign cannot: **levels per thousand pop objects ranges 1.36–3.34**
+across the pool. Cost per in-game year comes from the yearly save-archive wall-clock stamps; drivers from
+each save's own `world.pop_objects_live` and summed building levels. Reader:
+`tools/testbed/ledger/report_perf.mjs` + the pooled fit.
+
+### Flatness of cost ÷ driver (lower = better cost model)
+
+| normaliser | cv |
+|---|---|
+| two-term (pops + levels) | **0.136** |
+| building levels only | 0.138 |
+| live pop objects only | 0.228 |
+| none (raw sec/yr) | 0.353 |
+
+### Game version: no effect
+
+Adding a 1.13.10 dummy moves cv from 0.136 to 0.135 — inside noise — and the term is **not identified**,
+trading against the intercept (+5.55 against −3.60). Like-for-like, 1.13.9 samples sit at **0.955**
+actual ÷ predicted and 1.13.10 at **0.994**: ~4%, as plausibly economy mix as engine. ⇒ **Pool the two
+versions.** This retires the standing worry that cross-version wall clock is incomparable.
+
+### The one outlier explained itself
+
+`20260817_225120_port-ramp-monthly-n3/run003_canon` ran **1.198×** predicted (z = 2.9). That session used
+**monthly autosaves** — 12× the writes, and the engine stalls on each. Cadence is instrumentation, not
+economy, so **non-yearly-cadence runs are excluded by cause rather than fitted around**. After that
+**nothing exceeds z = 3.5**; the tightest is `canon-n2/run002` at 1.092.
+⭐ **Per-run cost multipliers cluster at 0.972 ± 0.040 (MAD) across 24 runs on many different nights.**
+That tight spread is itself the evidence that external machine load is negligible — were it material the
+distribution would be wide and skewed high.
+
+### ⚠ This sits awkwardly with Paradox's own Dev Diary #76
+
+DD76 names the **employment update** — which it says scales with *"the number of pop objects, not total
+population"* — as the single most expensive tick task, with the pop-need cache second. Our fit says pop
+objects contribute little. **Two readings, and this data cannot separate them:** the diary describes the
+state *before* the optimisations it announces, and our pop-object range (34k–157k) may sit below where
+employment blows up. The diary also names cost centres that plausibly track BUILDINGS — modifier-node
+recalculation (*"an order of magnitude more complex than CK3's"*) and a per-country budget update that
+*"sometimes takes more than a hundred times as long for one country compared to another"* — which is a
+mechanism consistent with what we measure. Do not treat either source as settling it.
+
+### How it is used, and how it must NOT be
+
+⭐ **Total run time is the quantity that matters** (user ruling, 2026-08-18): a player never notices that a
+distant economy carries more lightly-staffed buildings, only that the century takes longer. **Shrinking
+what the engine is asked to simulate is as legitimate a way to cut total time as making each unit
+cheaper.** The model is therefore **NOT a target**.
+⭐ **It is a DIAGNOSTIC TRIPWIRE.** Plotted as modelled ÷ actual it should sit near **1.0** and near-flat;
+a sudden step or a loss of flatness means that BUILD made each unit of world dearer — a fault that a
+change in economy size would otherwise mask entirely. First reading: vanilla **0.99–1.14**, canon-n2
+**0.80–1.01** (dearest at 1870, 0.798), i.e. this build runs ~8–20% above the archive's expectation,
+directionally consistent with row P's +5.6% pop-matched.
+
+### What it does NOT say
+
+- **It is not a causal model of the engine.** It is a two-term regression on observational data; pops and
+  levels are correlated even across the pool, so the *split* between the coefficients is weakly identified
+  even though their *sum* predicts well.
+- **It does not license a cost target per building.** Levels dominating is a statement about tick cost,
+  not about whether a level is worth building.
+- **It says nothing below 34k or above 157k pop objects**, the observed range.
+- **Machine load is assumed near-zero** by ruling, supported by the 0.040 MAD but not independently
+  measured.
+- The 0.39 s/yr intercept is not meaningfully non-zero and should not be read as fixed overhead.
