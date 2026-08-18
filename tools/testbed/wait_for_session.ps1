@@ -15,6 +15,15 @@
     - -MaxMinutes elapsing   -> exit 0, prints RUNNING   (a heartbeat; re-launch to keep waiting)
   Both are exit 0 because neither is an error - read the printed status, not the code. Exit 2
   means the session looks DEAD (no game process and no completion marker), which IS worth alarm.
+  Exit 3 means STALLED: the harness is alive but NOTHING in the session tree has been written for
+  -StallMinutes.
+
+  WHY STALLED EXISTS (landmine L21, 2026-08-18). "Alive" is not "working". A build failed in 3
+  seconds and the scheduler blocked on its own output pipeline: no game, no completion marker, a
+  live harness holding 9.5 s of CPU over 6 h 40 min. Every wait condition in the repo matched only
+  SUCCESS, so the silence read as a healthy long run and the window was lost. A watcher that
+  matches only success is indistinguishable from a broken watcher - so this one also matches
+  failure and stall.
 
   The heartbeat matters: without it a hung run would never wake anyone, so the agent would wait
   forever on a signal that is not coming. With it, the longest anyone is ever in the dark is
@@ -29,6 +38,7 @@
 
   Usage:
     wait_for_session.ps1 -Session <dir> [-MaxMinutes 30] [-PollSeconds 30] [-DeadGraceSeconds 900]
+                         [-StallMinutes 20]
 #>
 param(
     [Parameter(Mandatory=$true)][string]$Session,
@@ -39,7 +49,13 @@ param(
     # log mirror and scales with it. Measured 2026-08-05: a 496 MB mirror took ~7 minutes, against
     # the 90 s this used to allow, so a perfectly healthy batch reported DEAD and acting on that
     # would have restarted a 1836-1936 run from scratch. 900 s covers a ~1 GB mirror with room.
-    [int]$DeadGraceSeconds = 900
+    [int]$DeadGraceSeconds = 900,
+    # How long the WHOLE session tree may go without a single file write before this calls it STALLED.
+    # The game mirrors its logs continuously, the concurrent harvest writes a summary every few
+    # seconds, and a build writes build.log - so under any healthy stage something ticks within
+    # seconds. 20 min is ~2 orders of magnitude of slack and still 20x better than the 6 h 40 min L21
+    # cost. 0 disables the check.
+    [int]$StallMinutes = 20
 )
 $ErrorActionPreference = 'Stop'
 
@@ -57,6 +73,23 @@ function Get-Progress {
     }
     return $last
 }
+
+function Get-NewestWrite {
+    # "Is ANYTHING happening?" - the newest write anywhere in the session tree. It deliberately does not
+    # care WHICH stage is live: the game mirrors logs_live continuously, the harvest writes summaries
+    # every few seconds, a build writes build.log. If none of them has written for -StallMinutes, the
+    # session is not working, whatever its processes claim.
+    # WARN: saves\ is excluded - a 45 MB autosave copy takes many seconds and its mtime is the START of
+    # the write, but everything else in the tree ticks faster, so including it only adds noise.
+    $newest = [datetime]::MinValue
+    Get-ChildItem $Session -Recurse -File -ErrorAction SilentlyContinue |
+        Where-Object { $_.FullName -notmatch '\saves\' } |
+        ForEach-Object { if ($_.LastWriteTime -gt $newest) { $newest = $_.LastWriteTime } }
+    return $newest
+}
+
+$lastWrite   = Get-NewestWrite
+$lastWriteAt = Get-Date
 
 while ($true) {
     $done = $false
@@ -88,6 +121,19 @@ while ($true) {
             Write-Output "  (a long HARVEST looks identical - check run.log for 'run N finished' before acting)"
             Write-Output ((Get-Content $log -ErrorAction SilentlyContinue | Select-Object -Last 5) -join "`n")
             exit 2
+        }
+    }
+
+    # ---- STALLED: alive, but nothing has been written anywhere in the session for StallMinutes.
+    if ($StallMinutes -gt 0) {
+        $nw = Get-NewestWrite
+        if ($nw -gt $lastWrite) { $lastWrite = $nw; $lastWriteAt = Get-Date }
+        elseif (((Get-Date) - $lastWriteAt).TotalMinutes -ge $StallMinutes) {
+            Write-Output ("STALLED - harness may be alive but nothing in the session tree has been written for {0} min" -f $StallMinutes)
+            Write-Output ("  newest write: {0}" -f $lastWrite)
+            Write-Output "  (L21: a failed build used to block the scheduler here for hours - check build.log first)"
+            Write-Output ((Get-Content $log -ErrorAction SilentlyContinue | Select-Object -Last 5) -join "`n")
+            exit 3
         }
     }
 

@@ -19,6 +19,8 @@
     powershell -ExecutionPolicy Bypass -File tools\preflight.ps1 -Mod mod_foo    # an alt build
     powershell -ExecutionPolicy Bypass -File tools\preflight.ps1 -UpdateFingerprint
     powershell -ExecutionPolicy Bypass -File tools\preflight.ps1 -WarnOnly       # report, never throw
+    powershell -ExecutionPolicy Bypass -File tools\preflight.ps1 -RepoOnly -Config config\mod_config.foo.json
+    powershell -ExecutionPolicy Bypass -File tools\preflight.ps1 -RepoOnly -Only L20 -Config <cfg>
 
   Exit code 0 = every AUTO entry passed (or was N/A). 1 = at least one FAILED.
 
@@ -34,7 +36,13 @@ param(
     [switch]$RepoOnly,                  # only the checks that need no built mod (for a pre-batch gate)
     [switch]$WarnOnly,                  # print the report but always exit 0
     [switch]$Quiet,                     # only print FAIL/WARN lines
-    [string]$Session = ''               # a session folder to walk the POST-RUN entries against (L12)
+    [string]$Session = '',              # a session folder to walk the POST-RUN entries against (L12)
+    # L20: the config THIS BUILD IS ABOUT TO USE. build.ps1 already knows it and now passes it, which is
+    # what turns L20 from a repo-wide WARN survey into a FAIL on the one config that matters.
+    [string]$Config = '',
+    # run only these landmine IDs (comma-separated). build.ps1 uses it for the EARLY L20 gate, so a
+    # missing tech tree fails in two seconds instead of half-way through emission.
+    [string]$Only = ''
 )
 
 # NOTE: deliberately NO Set-StrictMode. This script dot-sources telemetry_lib.ps1, which documents
@@ -742,6 +750,95 @@ function Test-LmL12 {
     else { Add-Result 'L12' 'saves reaped without summaries' 'PASS' "$seen finished run(s) with archived saves, $tot readable versioned summaries, an escape-hatch save kept in each$note" }
 }
 
+# ============================================================== L20 ====
+function Get-TreeSuffix {
+    <#
+      THE SAME RULE emit_techs.mjs AND emit_research_events.mjs USE, restated once here. Both derive
+      their tree file from the CONFIG'S FILENAME:
+          const raw = process.env.MOD_CONFIG || process.argv[3] || '';
+          const m = basename(raw).match(/^mod_config\.(.+)\.json$/);
+          TREE = 'config/tech_tree_options' + (m ? '.'+m[1] : '') + '.json'
+      MOD_CONFIG wins over the argument in both, so it wins here too - otherwise a redirected run
+      would be checked against the wrong pair, which is the failure mode this whole entry is about.
+    #>
+    param([string]$ConfigPath)
+    $raw = $env:MOD_CONFIG
+    if (-not $raw) { $raw = $ConfigPath }
+    if (-not $raw) { return '' }
+    $bn = Split-Path $raw -Leaf
+    if ($bn -match '^mod_config\.(.+)\.json$') { return '.' + $Matches[1] }
+    return ''
+}
+function Test-LmL20 {
+    <#
+      L20 - an ALTERNATE CONFIG WITHOUT ITS PAIRED tech_tree_options.<sfx>.json cannot be built.
+
+      COST AT DISCOVERY: 6 h 40 min of an overnight window, zero runs (2026-08-18). A full-century
+      n=2 batch was launched against a frozen byte copy of the canonical config - itself the right
+      call, an L10 mitigation so a second agent session editing config/mod_config.json could not
+      change the arm between runs. The freeze had no paired tree, emit_techs.mjs threw ENOENT three
+      seconds in, and the scheduler then failed to abort (L21). From outside, an idle machine and a
+      silent log look exactly like a healthy long run.
+
+      DETECTOR. With -Config: FAIL when the config about to be built has no paired tree, printing the
+      one-line Copy-Item that fixes it. Without -Config: WARN-list every unpaired alternate in
+      config/ - that alone would have caught this, because -WhatIf ran preflight -RepoOnly seconds
+      before launch and printed PREFLIGHT PASSED.
+
+      WARN: do NOT "fix" the underlying trap by falling back to the canonical tree. That pairs an
+      alternate config's BUILDINGS with the canonical config's TECHNOLOGIES - exactly the defect
+      BUGS_AND_FIXES 2026-08-12 records, caught one run before it voided an overnight batch. It must
+      fail; it must fail loudly and early, naming the missing file and the fix.
+    #>
+    $cfgDir = Join-Path $Repo 'config'
+    if ($Config) {
+        $cfgFile = $Config
+        if (-not [System.IO.Path]::IsPathRooted($cfgFile)) { $cfgFile = Join-Path $Repo $cfgFile }
+        if (-not (Test-Path $cfgFile)) {
+            Add-Result 'L20' 'alternate config with no paired tech tree' 'FAIL' "config not found: $cfgFile"
+            return
+        }
+        $sfx  = Get-TreeSuffix -ConfigPath $cfgFile
+        # MOD_CONFIG outranks -Config in both emitters, so say which name the suffix came from -
+        # a message naming the wrong file is how a redirected run gets 'fixed' in the wrong place.
+        $srcName = if ($env:MOD_CONFIG) { (Split-Path $env:MOD_CONFIG -Leaf) + ' (MOD_CONFIG)' } else { Split-Path $cfgFile -Leaf }
+        $tree = Join-Path $cfgDir ('tech_tree_options' + $sfx + '.json')
+        if (Test-Path $tree) {
+            Add-Result 'L20' 'alternate config with no paired tech tree' 'PASS' (
+                "$srcName is paired with $(Split-Path $tree -Leaf)")
+        } else {
+            Add-Result 'L20' 'alternate config with no paired tech tree' 'FAIL' (
+                "$srcName has NO paired tree - emit_techs.mjs will throw ENOENT on" + [Environment]::NewLine +
+                "  config\tech_tree_options$sfx.json" + [Environment]::NewLine +
+                "FIX (one line, from the repo root):" + [Environment]::NewLine +
+                "  Copy-Item config\tech_tree_options.json config\tech_tree_options$sfx.json" + [Environment]::NewLine +
+                "Do NOT make the emitters fall back to the canonical tree: that ships an alternate config's" + [Environment]::NewLine +
+                "BUILDINGS against the canonical config's TECHNOLOGIES (BUGS_AND_FIXES 2026-08-12).")
+        }
+        return
+    }
+    # No -Config: survey the repo. Every alternate that cannot be built today is named, so a batch
+    # pointed at one is caught before it is launched rather than at its first build.
+    $unpaired = @()
+    $paired   = 0
+    foreach ($f in @(Get-ChildItem $cfgDir -Filter 'mod_config.*.json' -File -ErrorAction SilentlyContinue)) {
+        if ($f.Name -notmatch '^mod_config\.(.+)\.json$') { continue }
+        $sfx = '.' + $Matches[1]
+        if (Test-Path (Join-Path $cfgDir ('tech_tree_options' + $sfx + '.json'))) { $paired++ }
+        else { $unpaired += $f.Name }
+    }
+    if ($unpaired.Count) {
+        Add-Result 'L20' 'alternate config with no paired tech tree' 'WARN' (
+            "$($unpaired.Count) alternate config(s) CANNOT BE BUILT today (no paired tech_tree_options):" + [Environment]::NewLine +
+            "  " + ($unpaired -join ([Environment]::NewLine + "  ")) + [Environment]::NewLine +
+            "each needs:  Copy-Item config\tech_tree_options.json config\tech_tree_options.<sfx>.json" + [Environment]::NewLine +
+            "(pass -Config <path> to turn this into a FAIL for the one config about to be built)")
+    } else {
+        Add-Result 'L20' 'alternate config with no paired tech tree' 'PASS' (
+            "$paired alternate config(s) checked, all paired")
+    }
+}
+
 # --------------------------------------------------------------------------- driver ----
 # `Artifact` = needs a BUILT mod to read. The rest read the repo and can therefore gate a batch
 # BEFORE anything is built, which is the difference between failing in two seconds and failing after
@@ -761,9 +858,17 @@ $CHECKS = @(
     @{ Id = 'L14'; Artifact = $true;  Fn = { Test-LmL14 } },
     @{ Id = 'L15'; Artifact = $true;  Fn = { Test-LmL15 } },
     @{ Id = 'L17'; Artifact = $false; Fn = { Test-LmL17 } },
+    # L20 reads the CONFIG, not the mod, so it gates a batch before anything is built - which is the
+    # whole point: the failure it catches costs a whole window when it is found at the first build.
+    @{ Id = 'L20'; Artifact = $false; Fn = { Test-LmL20 } },
     @{ Id = 'L22'; Artifact = $true;  Fn = { Test-LmL22 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
+if ($Only) {
+    $want = @($Only -split '[, ]+' | Where-Object { $_ } | ForEach-Object { $_.ToUpper() })
+    $CHECKS = @($CHECKS | Where-Object { $want -contains $_.Id })
+    if (-not $CHECKS.Count) { Write-Output "PREFLIGHT: -Only '$Only' matched no check"; exit 1 }
+}
 
 foreach ($c in $CHECKS) {
     try { & $c.Fn }

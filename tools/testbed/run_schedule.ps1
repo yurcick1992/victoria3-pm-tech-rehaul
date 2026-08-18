@@ -73,7 +73,13 @@ param(
     [switch] $NoSaveHarvest,
     [int]    $HarvestWorkers = 4,
     # keep every archived save instead of reaping it once its summary verifies (needs ~16 GB per run)
-    [switch] $KeepSaves
+    [switch] $KeepSaves,
+    # ⭐ L21 — HOW LONG A BUILD MAY TAKE BEFORE IT IS KILLED AND THE SCHEDULE ABORTS.
+    # A build is ~7 s. On 2026-08-18 one failed in 3 s and the scheduler hung for 6 h 40 min without
+    # ever reaching its own exit-code test, costing the whole window (TESTBED_LANDMINES L21). The
+    # blocking mechanism was never identified, so this bounds the build rather than diagnosing it.
+    # 10 minutes is ~85x the normal build and still releases the machine the same morning.
+    [int]    $BuildTimeoutMinutes = 10
 )
 
 $ErrorActionPreference = "Stop"
@@ -238,6 +244,21 @@ if ($LASTEXITCODE -ne 0) {
 }
 $global:LASTEXITCODE = 0
 
+# ---- L20, per SETUP, still before the estimate. The repo-wide pass above only WARNS (it does not
+#      know which config this batch will build); here every setup's own config is named, so a batch
+#      pointed at an alternate with no paired tech_tree_options dies in two seconds instead of at
+#      its first build - which on 2026-08-18 cost 6 h 40 min and produced zero runs.
+foreach ($sname in @($setups.PSObject.Properties.Name)) {
+    $scfg = Val $setups.$sname 'config' $null
+    if (-not $scfg) { continue }
+    & (Join-Path (Split-Path $PSScriptRoot -Parent) 'preflight.ps1') -RepoOnly -Only L20 -Config (RepoPath $scfg) -Quiet
+    if ($LASTEXITCODE -ne 0) {
+        $global:LASTEXITCODE = 0
+        throw "PREFLIGHT FAILED (L20) for setup '$sname' - see above. Nothing was built and nothing launched."
+    }
+    $global:LASTEXITCODE = 0
+}
+
 # ---- plan report + estimate ----
 $years = 0; foreach ($p in $plan) { $years += ([int]$p.until.Split('.')[0] - 1836) }
 $estMin = [int]($years * 85 / 60)          # ~85 s per in-game year, measured on a 1836-1935 run
@@ -316,8 +337,89 @@ function Resolve-Setup {
     return @{ Args = $args; ModPath = (Join-Path $Repo "mod_$modName"); Kind = $kind; Config = $cfg }
 }
 
+# ---- L21 - THE BUILD IS BOUNDED, AND ITS VERDICT COMES FROM THE PROCESS, NOT THE PIPELINE.
+#      On 2026-08-18 a build failed in 3 seconds and this scheduler sat alive for 6 h 40 min: the old
+#      form was  & powershell @args 2>&1 | Out-File build.log , and it never reached the exit-code test
+#      below it. session.log ended mid-sentence, no BUILD FAILED line was ever written, the harness held
+#      9.5 s of CPU with no build child, and the whole overnight window produced zero runs.
+#      The blocking mechanism was NEVER IDENTIFIED (candidates: PS 5.1 wrapping a native command's
+#      stderr into NativeCommandError records under 2>&1; Out-File holding the pipeline; a QuickEdit
+#      console-selection freeze). WARN: do NOT write the cause into the fix - write the TIMEOUT, which
+#      is correct whichever it was. Three properties, all load-bearing:
+#        1. the child is BOUNDED and killed as a TREE on expiry (build.ps1 spawns node/robocopy
+#           children, and $proc.Kill() on PS 5.1 orphans them);
+#        2. the exit code comes from the PROCESS OBJECT, so a stuck stream cannot swallow it;
+#        3. output goes to FILES by redirection, never through a PowerShell pipeline.
+#      WARN: Start-Process joins -ArgumentList with SPACES and QUOTES NOTHING, and this repo lives under
+#      a path with a space - every element is quoted here by hand. Same trap as the archiver launch.
+function Quote-ProcArg {
+    param([string]$A)
+    if ($A -eq "") { return '""' }
+    if ($A -match '[\s"]') { return '"' + ($A -replace '"', '\"') + '"' }
+    return $A
+}
+function Invoke-BoundedBuild {
+    param([string[]]$BuildArgs, [string]$RunDir, [int]$TimeoutMinutes)
+    $logPath = Join-Path $RunDir "build.log"
+    $outPath = Join-Path $RunDir "build.stdout.log"
+    $errPath = Join-Path $RunDir "build.stderr.log"
+    foreach ($pth in @($logPath, $outPath, $errPath)) { if (Test-Path $pth) { Remove-Item $pth -Force } }
+
+    $argLine = (($BuildArgs | ForEach-Object { Quote-ProcArg $_ }) -join ' ')
+    # -NoNewWindow so the child shares this console (it reads no stdin and its streams are on files, so
+    # it cannot touch the p/r/s/x keypress control this session depends on).
+    $proc = Start-Process -FilePath "powershell" -ArgumentList $argLine -PassThru -NoNewWindow -RedirectStandardOutput $outPath -RedirectStandardError $errPath
+    # PS 5.1 QUIRK: -PassThru WITHOUT -Wait hands back a Process whose ExitCode reads $null unless
+    # the handle has been touched - .NET closes it otherwise. Proven: the first L21 proof run
+    # reported exit -1 (this function's 'unverifiable' fallback) where the build really exited 1.
+    $null = $proc.Handle
+    $timedOut = $false
+    if (-not $proc.WaitForExit($TimeoutMinutes * 60 * 1000)) {
+        $timedOut = $true
+        try { & taskkill /T /F /PID $proc.Id | Out-Null } catch { }
+        try { if (-not $proc.HasExited) { $proc.Kill() } } catch { }
+        Start-Sleep -Seconds 2
+    } else {
+        $proc.WaitForExit()          # flush the redirected streams before they are read
+    }
+
+    # ONE greppable build.log, stdout then stderr - the node ENOENT that L20 is about arrives on stderr,
+    # and the 2026-08-18 build.log was missing it entirely.
+    $outTxt = ""
+    $errTxt = ""
+    # WARN: `$x = [string](Get-Content -Raw)` on an EMPTY file leaves $x NULL, not "" - the cast has
+    # nothing to act on - and under Set-StrictMode 2.0 the next .Trim() is a terminating error. That
+    # is exactly the TIMEOUT case (a hung build has usually written no stderr at all), so the guard
+    # below is what makes the timeout branch survive to report itself.
+    $rawOut = if (Test-Path $outPath) { Get-Content $outPath -Raw -ErrorAction SilentlyContinue } else { $null }
+    $rawErr = if (Test-Path $errPath) { Get-Content $errPath -Raw -ErrorAction SilentlyContinue } else { $null }
+    if ($null -ne $rawOut) { $outTxt = [string]$rawOut }
+    if ($null -ne $rawErr) { $errTxt = [string]$rawErr }
+    $merged = $outTxt
+    if ($errTxt.Trim()) { $merged += "`r`n----- stderr -----`r`n" + $errTxt }
+    [System.IO.File]::WriteAllText($logPath, $merged, $Utf8)
+    Remove-Item $outPath, $errPath -Force -ErrorAction SilentlyContinue
+
+    $rc = $null
+    if ($timedOut) {
+        $rc = 124
+    } else {
+        try { $rc = $proc.ExitCode } catch { $rc = $null }
+        # An unverifiable build is a FAILED build. Never pass one through: the whole point of taking the
+        # verdict off the process object is that it can be trusted, and a null here means it cannot be.
+        if ($null -eq $rc) { $rc = -1 }
+    }
+    $tail = @()
+    if ($rc -ne 0) {
+        $tail = @(($merged -split "`r?`n") | Where-Object { $_.Trim() } | Select-Object -Last 8)
+    }
+    return @{ ExitCode = $rc; TimedOut = $timedOut; Tail = $tail }
+}
+
 $index = @()
 $abort = $false
+# L21: a build failure/timeout must ABORT and say so in the process exit code, not just in the log.
+$fatalExit = 0
 $runNo = 0
 $modsBuilt = @{}
 foreach ($p in $plan) {
@@ -342,11 +444,18 @@ foreach ($p in $plan) {
 
     Log "building setup '$($p.setup)' (kind $($resolved.Kind))..."
     $t0 = Get-Date
-    # Out-File, not Tee-Object: Tee-Object writes UTF-16 on PS 5.1, which makes build.log ungreppable
-    & powershell @($resolved.Args) 2>&1 | Out-File -FilePath (Join-Path $runDir "build.log") -Encoding utf8
-    if ($LASTEXITCODE -ne 0) {
-        Log "BUILD FAILED for setup '$($p.setup)' (exit $LASTEXITCODE) - see build.log; aborting schedule" "ALERT"
-        $abort = $true
+    $bres = Invoke-BoundedBuild -BuildArgs $resolved.Args -RunDir $runDir -TimeoutMinutes $BuildTimeoutMinutes
+    if ($bres.TimedOut) {
+        Log "BUILD TIMED OUT for setup '$($p.setup)' after $BuildTimeoutMinutes min - child killed; see build.log; aborting schedule" "ALERT"
+        foreach ($bl in $bres.Tail) { Log "  build.log| $bl" "ALERT" }
+        $abort = $true; $fatalExit = 3
+        $index += [ordered]@{ index = $p.index; setup = $p.setup; status = "build_timeout" }
+        continue
+    }
+    if ($bres.ExitCode -ne 0) {
+        Log "BUILD FAILED for setup '$($p.setup)' (exit $($bres.ExitCode)) - see build.log; aborting schedule" "ALERT"
+        foreach ($bl in $bres.Tail) { Log "  build.log| $bl" "ALERT" }
+        $abort = $true; $fatalExit = 3
         $index += [ordered]@{ index = $p.index; setup = $p.setup; status = "build_failed" }
         continue
     }
@@ -561,4 +670,9 @@ if (-not $KeepMods) {
     }
     if ($modsBuilt.Count -gt 0) { Log "removed $($modsBuilt.Count) built mod folder(s) (pass -KeepMods to keep them)" }
 }
-Log "SCHEDULE DONE: $($index.Count)/$($plan.Count) run(s) -> $sessionDir"
+$doneNote = if ($abort) { " [ABORTED - see the ALERT lines above]" } else { "" }
+Log "SCHEDULE DONE: $($index.Count)/$($plan.Count) run(s) -> $sessionDir$doneNote"
+# SCHEDULE DONE is still printed on an aborted schedule: it is what wait_for_session.ps1 wakes on, and
+# a batch that died at the first build must wake the agent in seconds rather than look like a live run.
+# The distinction lives in the EXIT CODE and in session.json's per-run status.
+if ($fatalExit -ne 0) { Log "schedule ended FATAL (exit $fatalExit)" "ALERT"; exit $fatalExit }

@@ -326,7 +326,7 @@ function renderPerf(mode){
   <div class="toggle" role="group" aria-label="Sector scope">
     <button id="sc-all" aria-pressed="true">whole economy</button><button id="sc-tier" aria-pressed="false">tiered sector</button>
   </div>
-  <span class="small">Scope and page apply to every view below unless a caption says otherwise. Urban centres are always excluded from "tiered".</span>
+  <span class="small">Scope and page apply to every view below, world GDP included (it reads tiered-sector value added when the batch carries it, and says so when it does not). Urban centres are always excluded from "tiered".</span>
 </div>
 
 <!-- ============ WORLD PAGE ============ -->
@@ -553,6 +553,10 @@ const YEARS=[1840,1860,1880,1900,1920,1935];
 const EYRS=Object.keys(EMP).map(Number);
 // ---------- per-country data (watchlist) ----------
 const D2=__D2__;
+// __VA__  <- FILL: replace THIS WHOLE LINE with report_data.json's VA block as `const VA={...};`.
+// The empty default is deliberate and safe: with no data the GDP chart stays whole-economy under the
+// tiered scope and prints why, which is exactly the degraded behaviour the filled version falls back to.
+const VA={flat:{},van:{},nb:{},cov:{flat:{seen:0,withVa:0,version:null},van:{seen:0,withVa:0,version:null},nb:{seen:0,withVa:0,version:null}}};
 const TAGS=['GBR','RUS','FRA','USA','PRU','TUR','AUS','SPA','BRZ','SIC','POR','NET'];
 const GP=['GBR','RUS','FRA','USA','PRU','TUR','AUS'];
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
@@ -567,8 +571,10 @@ function page(which){
 }
 document.getElementById('tab-world').onclick=()=>page('world');
 document.getElementById('tab-watch').onclick=()=>page('watch');
-document.getElementById('sc-all').onclick=()=>{SCOPE='all';press('sc-all','sc-tier');renderDecompWorld();renderWatch();};
-document.getElementById('sc-tier').onclick=()=>{SCOPE='tier';press('sc-tier','sc-all');renderDecompWorld();renderWatch();};
+// ⚠ render1 joins these: the GDP chart is scope-aware since F74, and forgetting it here is how a
+// control silently stops applying to one card - which is the exception this whole change removed.
+document.getElementById('sc-all').onclick=()=>{SCOPE='all';press('sc-all','sc-tier');renderDecompWorld();renderWatch();render1();};
+document.getElementById('sc-tier').onclick=()=>{SCOPE='tier';press('sc-tier','sc-all');renderDecompWorld();renderWatch();render1();};
 
 // ---------- world tables ----------
 const cmp=(f,v)=>f.toFixed(1)+'% <span class="dim">/ '+v.toFixed(1)+'%</span>';
@@ -727,23 +733,69 @@ function lineChart(el,series,opts){
 }
 
 // ---------- chart 1 ----------
-function render1(mode){
-  const flatPts=Object.entries(GDP_FLAT).map(([y,g])=>[+y,g]);
-  const vanPts=Object.entries(GDP_VAN).map(([y,g])=>[+y,g]);
-  const nbPts=Object.entries(GDP_NB).map(([y,g])=>[+y,g]);
-  if(mode==='ratio'){
-    lineChart(document.getElementById('chart1'),[
-      {pts:flatPts.map(([y,g])=>[y,g/GDP_VAN[y]]),c:'--accent',label:'flat 0.65×'},
-      {pts:nbPts.map(([y,g])=>[y,g/GDP_VAN[y]]),c:'--gold',label:'×1.5^era'}],
-      {ymin:0.2,ymax:1.8,grid:[0.25,0.5,0.75,1,1.25,1.5,1.75],emph:1,band:[0.8,1.25],fmt:v=>v.toFixed(2)+'×',label:'World GDP ratio'});
-    document.getElementById('cap1').textContent='Yearly world GDP ÷ the vanilla baseline (n=4 mean). Shaded band = the 0.8–1.25× target. The 1928–29 notch is the Russian civil war + Chinese collapse (see incidents), not a business cycle.';
-  }else{
-    lineChart(document.getElementById('chart1'),[
-      {pts:flatPts,c:'--accent',label:'flat 0.65×'},
-      {pts:vanPts,c:'--ink3',label:'vanilla'},
-      {pts:nbPts,c:'--gold',label:'×1.5^era'}],
-      {ymin:0,ymax:7200,grid:[0,1000,2000,3000,4000,5000,6000,7000],fmt:v=>'£'+(v>=1000?(v/1000).toFixed(1)+'B':v+'M'),label:'World GDP absolute'});
-    document.getElementById('cap1').textContent='Yearly world GDP in £M, all three arms on one axis. Same data as the ratio view, unnormalised — vanilla and the flat book are near-identical curves until ~1875; the ×1.5^era book is visibly flat for a century.';
+// SCOPE-AWARE (F74, 2026-08-18). The whole-economy <-> tiered-sector control used to carry a stated
+// exception here: world GDP had no tiered counterpart, because a save persists no per-sector GDP. It
+// does now - value added = outputs - inputs at BASE cost, which at 52x reproduces the save's own `gdp`
+// to 0.3% - so the tiered slice is that same quantity restricted to our tier buildings (urban centres
+// are not tier buildings, so the scope rule's exclusion holds by construction).
+// ⚠ The fields ship in SAVE_SUMMARY_VERSION 6 and NOTHING harvested earlier carries them, nor can the
+// past be backfilled: those saves are reaped. So the chart DEGRADES to whole-economy with a DERIVED
+// note saying how many dates carried the fields. Derived, not written: it disappears by itself the
+// first time a v6-harvested batch is read, which is the property a hand-written caveat never has.
+let C1MODE = 'ratio';
+const VA_MIN_YEARS = 5;   // fewer than this is an endpoint, not a trajectory
+const vaYears = a => Object.keys(VA[a] || {}).map(Number).sort((x, y) => x - y);
+const vaReady = () => vaYears('flat').length >= VA_MIN_YEARS && vaYears('van').length >= VA_MIN_YEARS;
+function vaNote() {
+  const c = VA.cov || {};
+  const line = a => (c[a] ? c[a].withVa + '/' + c[a].seen + (c[a].version != null ? ' (summaries v' + c[a].version + ')' : '') : 'n/a');
+  return ' <b>Scope is whole-economy here even though "tiered sector" is selected.</b> A tiered-sector GDP needs per-building '
+    + 'value added (<code>va_out</code>/<code>va_in</code>), which ships in save-summary v6 (2026-08-18). Dates carrying it in this batch: '
+    + 'mod ' + line('flat') + ', vanilla ' + line('van') + '. It is not backfillable — those saves are reaped — so the series arrives '
+    + 'with the next harvest and this note disappears on its own.';
+}
+function render1(mode) {
+  if (mode) C1MODE = mode;
+  const tier = SCOPE === 'tier' && vaReady();
+  const head = document.querySelector('#chart1').closest('figure').querySelector('h3');
+  const yrs = tier ? vaYears('flat').filter(y => VA.van[y]) : null;
+  if (tier) {
+    if (head) head.textContent = 'Tiered-sector GDP (value added), ' + yrs[0] + '–' + yrs[yrs.length - 1];
+    const pts = a => yrs.map(y => [y, VA[a][y].tier]);
+    if (C1MODE === 'ratio') {
+      lineChart(document.getElementById('chart1'), [
+        { pts: yrs.map(y => [y, VA.flat[y].tier / VA.van[y].tier]), c: '--accent', label: 'mod ÷ vanilla' }],
+        { ymin: 0, ymax: 3, grid: [0, 0.5, 1, 1.5, 2, 2.5, 3], emph: 1, fmt: v => v.toFixed(2) + '×', label: 'Tiered-sector GDP ratio' });
+      document.getElementById('cap1').innerHTML = 'Yearly value added (52 × outputs − inputs at base cost) over the tier buildings only, ÷ the vanilla counterpart set. '
+        + 'This is the same quantity as world GDP, restricted to the sector the mod actually rebuilds — so it is the honest denominator for "did the ladder move the economy". '
+        + 'Urban centres are excluded on both sides.';
+    } else {
+      lineChart(document.getElementById('chart1'), [
+        { pts: pts('flat'), c: '--accent', label: 'mod' },
+        { pts: pts('van'), c: '--ink3', label: 'vanilla' }],
+        { ymin: 0, fmt: v => '£' + (v >= 1000 ? (v / 1000).toFixed(1) + 'B' : v.toFixed(0) + 'M'), label: 'Tiered-sector GDP absolute' });
+      document.getElementById('cap1').innerHTML = 'Tiered-sector value added in £M/yr, both arms on one axis. Same data as the ratio view, unnormalised.';
+    }
+    return;
+  }
+  if (head) head.textContent = 'World GDP, 1837–1936';
+  const flatPts = Object.entries(GDP_FLAT).map(([y, g]) => [+y, g]);
+  const vanPts = Object.entries(GDP_VAN).map(([y, g]) => [+y, g]);
+  const nbPts = Object.entries(GDP_NB).map(([y, g]) => [+y, g]);
+  const scopeNote = SCOPE === 'tier' ? vaNote() : '';
+  if (C1MODE === 'ratio') {
+    lineChart(document.getElementById('chart1'), [
+      { pts: flatPts.map(([y, g]) => [y, g / GDP_VAN[y]]), c: '--accent', label: 'flat 0.65×' },
+      { pts: nbPts.map(([y, g]) => [y, g / GDP_VAN[y]]), c: '--gold', label: '×1.5^era' }],
+      { ymin: 0.2, ymax: 1.8, grid: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75], emph: 1, band: [0.8, 1.25], fmt: v => v.toFixed(2) + '×', label: 'World GDP ratio' });
+    document.getElementById('cap1').innerHTML = 'Yearly world GDP ÷ the vanilla baseline (n=4 mean). Shaded band = the 0.8–1.25× target. The 1928–29 notch is the Russian civil war + Chinese collapse (see incidents), not a business cycle.' + scopeNote;
+  } else {
+    lineChart(document.getElementById('chart1'), [
+      { pts: flatPts, c: '--accent', label: 'flat 0.65×' },
+      { pts: vanPts, c: '--ink3', label: 'vanilla' },
+      { pts: nbPts, c: '--gold', label: '×1.5^era' }],
+      { ymin: 0, ymax: 7200, grid: [0, 1000, 2000, 3000, 4000, 5000, 6000, 7000], fmt: v => '£' + (v >= 1000 ? (v / 1000).toFixed(1) + 'B' : v + 'M'), label: 'World GDP absolute' });
+    document.getElementById('cap1').innerHTML = 'Yearly world GDP in £M, all three arms on one axis. Same data as the ratio view, unnormalised — vanilla and the flat book are near-identical curves until ~1875; the ×1.5^era book is visibly flat for a century.' + scopeNote;
   }
 }
 document.getElementById('c1-ratio').onclick=()=>{press('c1-ratio','c1-abs');render1('ratio')};

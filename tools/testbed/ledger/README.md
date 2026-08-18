@@ -26,8 +26,24 @@ encodes, all user-ruled:
 - **Per-tag anomaly flags in the legends/headers** (dissolutions, civil-war pop collapses,
   annexation-scale jumps) — computed, never hand-listed, because they decide whether a within-tag
   comparison is reliable.
-- **Scope control** (whole economy ⇄ tiered sector) on the decomposition tables; urban centres always
-  excluded from "tiered".
+- **Scope control** (whole economy ⇄ tiered sector) on the decomposition tables **and, since 2026-08-18,
+  on the world GDP chart**; urban centres always excluded from "tiered".
+  ⭐ **The GDP card's exception is gone (F74).** A save persists no per-sector GDP, so world GDP used to
+  sit outside the control with a stated exception. It does not any more: value added = outputs − inputs at
+  BASE cost, and 52 × that reproduces the save's own `gdp` to **0.3 %**, so the tiered slice is the same
+  quantity restricted to our tier buildings (urban centres are not tier buildings, so the exclusion holds
+  by construction). `report_data.mjs` emits a **`VA`** block — `{flat, van, nb}` per year in £M/yr, each
+  `{tier, all}`, plus a `cov` coverage count — and the template plots it under the tiered scope.
+  ⚠⚠ **IT DEGRADES, AND THE DEGRADED NOTE IS DERIVED, NEVER WRITTEN.** `va_out`/`va_in` ship in
+  **`SAVE_SUMMARY_VERSION = 6`** and *nothing harvested before 2026-08-18 carries them*; the past cannot be
+  backfilled, because those saves are reaped. With fewer than **5** years on either arm the chart stays
+  whole-economy and the caption states the actual coverage (`mod 0/200 (summaries v5), vanilla 0/400
+  (summaries v4)` on canon-n2 + the pinned baseline — measured, not assumed). The note therefore
+  **disappears by itself** the first time a v6-harvested batch is read, which is the property a
+  hand-written caveat never has. Both paths were exercised before shipping: the real (empty) data prints
+  the note, a synthetic 20-year series draws the chart.
+  ⚠ `render1()` is called by the scope buttons as well as the mode buttons. Forgetting that is exactly how
+  a control silently stops applying to one card — which is the defect this change removed.
 - A ratio table/chart always sits beside its absolute twin; contraction-aware measures (employment
   with bracketed deltas) over gross level additions.
 - ⭐⭐ **WALL CLOCK IS A FIRST-CLASS ROW, HIGH UP — row `P` in the verdict table plus its own section
@@ -70,6 +86,11 @@ encodes, all user-ruled:
    perf `<script>` block.
 2. The template's inline consts (GDP_FLAT/GDP_VAN/GDP_NB, EMP, PROD_*, TRAJ, LADDER, WATCH, WORLD_*)
    carry the world-level numbers — update them from the scripts' output.
+2b. **Splice the `VA` block** over the line marked `// __VA__` in the template (replace that whole
+   `const VA={flat:{},…};` line with `const VA=` + report_data.json's `VA` + `;`). The empty default in
+   the template is deliberate and safe — an unfilled report shows the whole-economy chart plus the
+   coverage note, which is the same degraded behaviour the filled version falls back to — so this step
+   can never break the page, only leave the tiered GDP view unavailable.
 3. Splice the per-country JSON over the `__D2__` token:
    `node -e "...readFileSync(tpl).replace('__D2__', readFileSync('report_data2.json'))..."`
 4. Publish as an Artifact (same URL = same report, updated) AND copy to the session folder as

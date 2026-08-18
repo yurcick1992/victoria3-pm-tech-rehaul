@@ -113,6 +113,22 @@ foreach ($line in (Get-Content (Join-Path $repo 'tools\goods_prices.tsv'))) {
 # --- load config (default, or a caller-supplied file via -Config) ---
 $cfgPath = if ($Config) { (Resolve-Path -LiteralPath $Config).Path } else { Join-Path $repo 'config\mod_config.json' }
 Write-Output "Config: $cfgPath"
+
+# --- L20 GATE: does this config have its paired tech tree? Asked HERE, before a single file is
+#     emitted, because emit_techs.mjs derives config/tech_tree_options<sfx>.json from the config's
+#     FILENAME and dies on ENOENT half-way through the build if it is missing. On 2026-08-18 that
+#     killed a batch in 3 seconds and cost 6 h 40 min of an overnight window (TESTBED_LANDMINES
+#     L20 + L21). Two seconds here, naming the one-line fix, instead of a stack trace out of node.
+#     WARN: it is the SAME detector the full preflight runs at the end - one definition, run twice,
+#     rather than a second copy of the rule that can drift from it.
+if (-not $NoPreflight) {
+    & (Join-Path $PSScriptRoot 'preflight.ps1') -RepoOnly -Only L20 -Config $cfgPath -Quiet
+    if ($LASTEXITCODE -ne 0) {
+        $global:LASTEXITCODE = 0
+        throw "PREFLIGHT FAILED (L20) - see above and TESTBED_LANDMINES.md."
+    }
+    $global:LASTEXITCODE = 0
+}
 $cfg = Get-Content -LiteralPath $cfgPath -Raw -Encoding UTF8 | ConvertFrom-Json
 # MODEL-ONLY TIERS. The config carries the mod's full five-era ladder, including tiers that have no
 # unlocking technology in the game yet (`model_only: true`). Those exist for the BALANCE MODEL - the UI,
@@ -335,7 +351,7 @@ if ($ControlOnly -or $Overlay) {
     # so a check placed only at the bottom of the script would never see the one arm whose whole
     # promise is "carries nothing". L7 is precisely that promise, checked against the emitted files.
     if (-not $NoPreflight) {
-        & (Join-Path $PSScriptRoot 'preflight.ps1') -Mod $modAbs -Quiet
+        & (Join-Path $PSScriptRoot 'preflight.ps1') -Mod $modAbs -Config $cfgPath -Quiet
         if ($LASTEXITCODE -ne 0) {
             $global:LASTEXITCODE = 0
             throw "PREFLIGHT FAILED - see the landmine IDs above and TESTBED_LANDMINES.md."
@@ -1318,7 +1334,7 @@ Write-Output "MOD CHECKS PASSED: $modRel is a complete build."
 # without a schema bump. Those are invisible to every other check we run, which is why this one
 # throws rather than warns. -NoPreflight exists for a broken detector, not for a hurry.
 if (-not $NoPreflight) {
-    & (Join-Path $PSScriptRoot 'preflight.ps1') -Mod $modAbs -Quiet
+    & (Join-Path $PSScriptRoot 'preflight.ps1') -Mod $modAbs -Config $cfgPath -Quiet
     if ($LASTEXITCODE -ne 0) {
         $global:LASTEXITCODE = 0
         if ($DryRun) { Remove-Item $modAbs -Recurse -Force -ErrorAction SilentlyContinue; Write-Output "Dry-run folder deleted." }

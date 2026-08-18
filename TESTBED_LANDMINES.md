@@ -68,6 +68,9 @@ closed.
 | L17 | A run that FAILED is recorded as `ok`, and the arm count silently shrinks | AUTO (post-run, `-Session`) |
 | L18 | A tier that cannot break even at ANY price the engine can produce | AUTO |
 | L19 | An orphaned game process makes the next run fail instantly and silently | **REGISTERED, DETECTOR OWED** |
+| L20 | An alternate config with no paired `tech_tree_options.<sfx>.json` | AUTO |
+| L21 | A failed build hangs the scheduler instead of aborting it | AUTO (bounded build + fail-aware waiter) |
+| L22 | A mod `effect` block silently replacing a vanilla on_action's | AUTO |
 
 ---
 
@@ -865,9 +868,8 @@ all reached 1841.2.1); **FAIL** on `20260817_152516_anchorage-netseed-n1`, a run
 
 ## L20 — an ALTERNATE CONFIG WITHOUT ITS PAIRED `tech_tree_options.<sfx>.json` cannot be built, and the batch dies at the first build
 
-**Status: REGISTERED, DETECTOR OWED** (queued behind a live batch — `preflight.ps1` runs inside
-`build.ps1`, so wiring it while runs are in flight is itself an L10 breach). Found 2026-08-18.
-**Cost: 6 h 40 min of an overnight window, zero runs.**
+**Status: ✅ FIXED AND GUARDED 2026-08-18 · AUTO.** Found 2026-08-18.
+**Cost at discovery: 6 h 40 min of an overnight window, zero runs.**
 
 **The convention nobody states.** `emit_techs.mjs` and `emit_research_events.mjs` derive a **parallel
 tree file** from the config's *filename*:
@@ -909,19 +911,40 @@ early*, naming the missing file and the one-line fix.
 `2x_thresholds`, `baseline175ab` (2026-08-17), `paper_be20`, `vanilla_stub`, `x10`. So this is a live
 trap, not a one-off self-inflicted wound.
 
-**DETECTOR (owed).** `preflight.ps1` gains `-Config <path>`, passed by `build.ps1`, which already knows
-it: **FAIL** when the config about to be built has no paired tree, naming the exact `Copy-Item` that
-fixes it. With no `-Config`, **WARN**-list every unpaired alternate — that alone would have caught this,
-because `-WhatIf` ran preflight seconds before launch and printed `PREFLIGHT PASSED`.
+✅ **DETECTOR: `Test-LmL20` in `tools/preflight.ps1`**, registered in $CHECKS as a REPO check (it reads
+the config, not a built mod), and wired at **three** call sites:
+- **`build.ps1`, immediately after the config is resolved and before a single file is emitted** —
+  `preflight.ps1 -RepoOnly -Only L20 -Config $cfgPath`, which throws. The `-Only` filter exists for
+  exactly this: the full walk still runs at the end, so the rule has ONE definition run twice, not a
+  second copy that can drift.
+- **`build.ps1`'s two full preflight calls**, which now pass `-Config` (the control arm's early exit
+  included).
+- **`run_schedule.ps1`, per SETUP, before the estimate is printed** — the repo-wide pass only WARNs
+  because it does not know which config a batch will build; this names each setup's own config, so a
+  batch pointed at an unpaired alternate dies in two seconds instead of at its first build.
 
-**Prove it** by renaming a paired tree aside and running the build: it must refuse *before* the mod is
-half-emitted, not throw ENOENT out of node.
+**What it reports.** With `-Config`: PASS/FAIL for that one config, and the FAIL prints the exact
+`Copy-Item` that fixes it. Without: a WARN listing every unpaired alternate in `config/`, which alone
+would have caught this — `-WhatIf` ran `preflight -RepoOnly` seconds before the lost launch and printed
+`PREFLIGHT PASSED`.
+
+⚠ **It mirrors the emitters' suffix rule rather than restating it loosely**, `MOD_CONFIG` precedence
+included (both `emit_techs.mjs` and `emit_research_events.mjs` read `process.env.MOD_CONFIG || argv[3]`).
+A redirected run is therefore checked against the pair it will actually open, and the message names the
+file the suffix came FROM — a message naming the wrong file is how a redirected run gets "fixed" in the
+wrong place.
+
+⚠ **Tripwire PROVEN on real data, all four paths (2026-08-18):** repo survey WARNs the same five
+alternates the census below names; PASS on the canonical config; **FAIL + build refused before any
+emission** on `mod_config.baseline175ab.json`, exit 1; and `MOD_CONFIG=…x10.json` overriding a
+canonical `-Config` FAILs against the x10 tree. A full `-DryRun` on the canonical config passes with
+the check live.
 
 ---
 
 ## L21 — a FAILED BUILD hangs the scheduler instead of aborting it, and the whole window is lost
 
-**Status: REGISTERED, DETECTOR OWED.** Found 2026-08-18, the same incident as **L20**. This is the entry
+**Status: ✅ FIXED AND GUARDED 2026-08-18 · AUTO.** Found 2026-08-18, the same incident as **L20**. This is the entry
 that turned a 3-second, clearly-reported failure into a **6 h 40 min** loss, and it is the more dangerous
 of the two because it is arm- and config-independent: *any* build failure, from any cause, costs the
 whole window.
@@ -957,19 +980,45 @@ mandated in CLAUDE.md was armed as a background waiter conditioned on `logs_live
 silence was read as "still running". **A watcher that matches only success is indistinguishable from a
 broken watcher.** Every wait condition must also match failure, process death, and stall.
 
-**DETECTOR / FIX (owed), three parts:**
+✅ **FIX + DETECTOR SHIPPED 2026-08-18, all three parts.** `run_schedule.ps1` builds through
+**`Invoke-BoundedBuild`**:
+1. **The build is BOUNDED.** `-BuildTimeoutMinutes`, default **10** against a ~7 s build. On expiry the
+   child is killed as a **TREE** (`taskkill /T /F`, then `$proc.Kill()` as a backstop) — `Kill()` alone
+   on PS 5.1 orphans the node and robocopy children the builder spawns.
+2. **The verdict comes off the PROCESS OBJECT, never the pipeline.** `Start-Process -PassThru` +
+   `WaitForExit(ms)` + `$proc.ExitCode`, with output redirected to **files** and merged into one
+   greppable `build.log` (stdout, then a `----- stderr -----` fence). A **null** exit code is treated as
+   **failure**, not success: the whole point of moving the verdict onto the object is that it can be
+   trusted, and null means it cannot.
+3. **The waiter is fail-aware.** `wait_for_session.ps1` gains **STALLED (exit 3)** — nothing anywhere in
+   the session tree has been written for `-StallMinutes` (default 20) — beside the existing DEAD. It
+   watches the newest write across the whole tree rather than one happy-path file, because the game
+   mirrors its logs continuously, the concurrent harvest writes summaries, and a build writes
+   `build.log`: under any healthy stage something ticks within seconds.
 
-1. **Bound the build.** Run it as a job with a timeout (a build is ~7 s; 10 minutes is generous) and on
-   expiry kill it, log `BUILD TIMED OUT`, and abort the schedule with exit 3.
-2. **Do not depend on the pipeline for the verdict.** Capture the exit code from the process object
-   (`Start-Process -Wait -PassThru` / `$proc.ExitCode`) and redirect the build's output to `build.log` by
-   file redirection rather than a PowerShell pipeline, so a stuck stream cannot swallow the result.
-3. **Make the waiter fail-aware.** `wait_for_session.ps1` should report **DEAD/STALLED** when the newest
-   `run.log` has not advanced for N minutes even though the harness is alive — "alive" is not "working".
+A failed or timed-out build now sets `$fatalExit`, so the schedule **still writes `session.json` and
+still prints `SCHEDULE DONE`** (that marker is what the waiter wakes on — a batch that dies at the first
+build must wake the agent in seconds, not look like a live run) with `[ABORTED]` appended, and then
+**exits 3**. Per-run `status` is `build_failed` / `build_timeout`.
 
-**Prove it** by pointing a schedule at a config guaranteed to fail the build (an alternate with no paired
-tree — **L20** supplies one for free): the scheduler must print `BUILD FAILED`, exit non-zero, and
-release the machine in seconds.
+⚠ **THREE THINGS WERE PROVEN BY DELIBERATE BREAKAGE, and the third was a real bug found by proving:**
+- **exit code**: a paired-but-invalid-JSON config → `BUILD FAILED … (exit 1)`, schedule exit 3, **1 s**.
+  The first attempt reported `exit -1`, i.e. the unverifiable fallback — `Start-Process -PassThru`
+  WITHOUT `-Wait` hands back a Process whose `ExitCode` reads `$null` unless the handle has been
+  touched, so `$null = $proc.Handle` is load-bearing.
+- **timeout**: `tools/build.ps1` temporarily replaced by a stub that hangs and spawns a child, run at
+  `-BuildTimeoutMinutes 1` → `BUILD TIMED OUT … after 1 min - child killed`, exit 3, **63 s**; the
+  child's survival marker never appeared, so the tree-kill holds. The real builder was restored and
+  **sha256-verified**.
+- ⚠⚠ **the empty-stream bug the timeout proof exposed:** `$x = [string](Get-Content -Raw)` on an
+  **empty** file leaves `$x` **null**, not `""` — the cast has nothing to act on — and under
+  `Set-StrictMode 2.0` the next `.Trim()` is a terminating error. That is precisely the TIMEOUT case (a
+  hung build has usually written no stderr at all), so the first timeout run aborted with
+  `InvokeMethodOnNull` and **never printed `BUILD TIMED OUT`**. A guard that has only been tested on the
+  happy path is not known to work — this one was two lines from being another silent hang.
+
+⚠ The blocking mechanism of the original incident is **still not identified**, and deliberately so: the
+fix is the timeout, which is correct whichever candidate it was.
 
 ---
 

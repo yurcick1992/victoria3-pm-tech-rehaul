@@ -39,7 +39,16 @@ const classOf = k => {
 function walk(runDir, isFlat) {
   const dir = join(SES, runDir, 'save_summaries');
   const files = readdirSync(dir).filter(f => f.endsWith('.json.gz')).sort();
-  const out = { years: {}, addsByDecade: {}, gdpByYear: {} };
+  // vaByYear: TIERED-SECTOR GDP, which is what makes the report's whole-economy <-> tiered-sector
+  // scope control apply to the GDP chart as well (F74, 2026-08-18). Value added = outputs - inputs at
+  // BASE cost; 52 x the weekly figure reproduces the save's own `gdp` to 0.3%, so the tiered slice is
+  // the same quantity restricted to our own tier buildings. Urban centres are not tier buildings and
+  // are therefore excluded automatically, as the scope control requires.
+  // vaCov: how many summaries actually CARRIED va_* - the fields exist only from
+  // SAVE_SUMMARY_VERSION 6, so every batch harvested before 2026-08-18 has none and the report must
+  // say so rather than draw an empty chart. A DERIVED count, never a hand-written caveat: it goes to
+  // zero on its own the moment a v6-harvested batch is read.
+  const out = { years: {}, addsByDecade: {}, gdpByYear: {}, vaByYear: {}, vaCov: { seen: 0, withVa: 0, version: null } };
   let prev = null;
   for (const f of files) {
     let j; try { j = JSON.parse(gunzipSync(readFileSync(join(dir, f)))); } catch { continue; }
@@ -49,6 +58,17 @@ function walk(runDir, isFlat) {
     let gdpW = 0;
     for (const c of Object.values(j.countries)) gdpW += c.gdp || 0;
     out.gdpByYear[y] = gdpW / 1e6;
+    out.vaCov.seen++;
+    if (out.vaCov.version == null) out.vaCov.version = j.save_summary_version ?? null;
+    let vaTier = 0, vaAll = 0, sawVa = false;
+    for (const [k, b] of Object.entries(j.world.buildings || {})) {
+      if (b.va_out == null && b.va_in == null) continue;
+      sawVa = true;
+      const va = (b.va_out || 0) - (b.va_in || 0);
+      vaAll += va;
+      if (tierEra[k] != null) vaTier += va;
+    }
+    if (sawVa) { out.vaCov.withVa++; out.vaByYear[y] = { tier: 52 * vaTier / 1e6, all: 52 * vaAll / 1e6 }; }
     let ptsAdd = 0;
     if (prev) {
       const d = Math.floor(y / 10) * 10;
@@ -156,7 +176,32 @@ for (const y of Object.keys(van[0].gdpByYear)) {
   vanGdpByYear[y] = vals.reduce((a, b) => a + b, 0) / vals.length;
 }
 const flatAll = flats.map(f => f.gdpByYear);   // per-run world GDP series (n=2 agreement is a finding)
-writeFileSync(join(OUT, 'report_data.json'), JSON.stringify({ flat, flats, flatAll, vanMean, nbGdp, vanGdpByYear, nbAdds: nb[0].addsByDecade }, null, 1));
+
+// ---- VA: the tiered-sector GDP series, per arm, with its own COVERAGE. The template plots it when
+//      there is a trajectory to plot and prints a derived note when there is not (F74 shipped the
+//      fields on 2026-08-18; nothing harvested before that date carries them, and the past cannot be
+//      backfilled without re-melting saves that have already been reaped).
+const mergeVa = runs => {
+  const yrs = new Set(); runs.forEach(r => Object.keys(r.vaByYear).forEach(y => yrs.add(+y)));
+  const o = {};
+  for (const y of [...yrs].sort((a, b) => a - b)) {
+    const rows = runs.map(r => r.vaByYear[y]).filter(Boolean);
+    if (!rows.length) continue;
+    o[y] = { tier: rows.reduce((a, r) => a + r.tier, 0) / rows.length,
+             all:  rows.reduce((a, r) => a + r.all,  0) / rows.length };
+  }
+  return o;
+};
+const covOf = runs => ({ seen: runs.reduce((a, r) => a + r.vaCov.seen, 0),
+                         withVa: runs.reduce((a, r) => a + r.vaCov.withVa, 0),
+                         version: runs[0]?.vaCov.version ?? null });
+const VA = { flat: mergeVa(flats), van: mergeVa(van), nb: mergeVa(nb),
+             cov: { flat: covOf(flats), van: covOf(van), nb: covOf(nb) } };
+writeFileSync(join(OUT, 'report_data.json'), JSON.stringify({ flat, flats, flatAll, vanMean, nbGdp, vanGdpByYear, nbAdds: nb[0].addsByDecade, VA }, null, 1));
 console.log('written. flat years:', Object.keys(flat.years).join(','));
+console.log('VA coverage (tiered-sector GDP, save_summary_version >= 6):',
+  ['flat', 'van', 'nb'].map(a => a + ' ' + VA.cov[a].withVa + '/' + VA.cov[a].seen + ' (v' + VA.cov[a].version + ')').join('  '));
+if (!VA.cov.flat.withVa || !VA.cov.van.withVa)
+  console.log('  -> no trajectory on at least one arm: the report keeps whole-economy GDP under the tiered scope and prints the reason.');
 console.log('frontier share medians:', YEARS.map(y => y + ':' + (flat.years[y]?.frontierShareMedian?.toFixed(2) ?? '-') + '(n=' + (flat.years[y]?.frontierShareN ?? 0) + ')').join('  '));
 console.log('GBR meanEra:', YEARS.map(y => y + ':' + (flat.years[y]?.gbr?.meanEra?.toFixed(2) ?? '-')).join('  '));

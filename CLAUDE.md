@@ -636,7 +636,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         AND before the control arm's early exit — that early exit is why a check at the
                         bottom alone would never see the one arm whose promise is "carries nothing") and by
                         run_schedule.ps1 (`-RepoOnly`, before a batch is estimated, so a landmine costs two
-                        seconds rather than the first run's build). `-NoPreflight` on the builder is for a
+                        seconds rather than the first run's build — and, since 2026-08-18, `-Only L20 -Config`
+                        PER SETUP there and once more in build.ps1 BEFORE any file is emitted). Two flags
+                        serve that: **`-Config <path>`** (the config this build will use — L20 reads the
+                        config, not the mod) and **`-Only <ids>`** (run just these entries, so the early
+                        gate is the SAME detector as the full walk rather than a second copy that can
+                        drift). `-NoPreflight` on the builder is for a
                         BROKEN DETECTOR, not for a hurry. It reads the ARTIFACT, never the generator — same
                         principle as verify_pms.mjs. Adding a check: entry in the register first, then
                         `Test-Lm<ID>` here, then PROVE the tripwire trips by breaking it on purpose
@@ -1162,7 +1167,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         whenever the saves, not the logs, are the instrument
   testbed/wait_for_session.ps1  the wake-up signal for a batch launched into its own window (which the
                         agent harness cannot see). Run it with run_in_background; returns DONE on
-                        completion, RUNNING on a heartbeat, DEAD (exit 2) if the game vanished
+                        completion, RUNNING on a heartbeat, DEAD (exit 2) if the game vanished, and
+                        STALLED (exit 3) if nothing anywhere in the session tree has been written for
+                        -StallMinutes (default 20) — landmine L21: "alive" is not "working"
   testbed/ledger/       THE BATCH LEDGER — the reusable per-batch report (template + data scripts +
                         README with the fill procedure). Ruled conventions encoded: normalized/absolute
                         toggles on every view, world + watchlist pages with selectable countries,
@@ -2456,6 +2463,24 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   (`dump_dates` USED TO BE run-only, with no `$defaults` fallback unlike every neighbouring key — a
   defaults-level one was ignored and every run fell back to ONE dump date instead of twelve, so a
   per-decade series silently became a single endpoint. Both halves fixed: AUTO since 2026-08-17 — the scheduler throws on any `defaults` key it does not thread through, naming it, and `dump_dates` now falls back to defaults like its neighbours) ·
+  **L20 an ALTERNATE CONFIG WITH NO PAIRED `tech_tree_options.<sfx>.json` (AUTO since 2026-08-18)** —
+  `emit_techs.mjs` and `emit_research_events.mjs` derive their tree file from the CONFIG'S FILENAME
+  (`MOD_CONFIG` first, then argv), so `config/mod_config.foo.json` REQUIRES
+  `config/tech_tree_options.foo.json`. Missing ⇒ ENOENT half-way through the build. `Test-LmL20` reads
+  the config, not the mod, and is wired at three places: `build.ps1` **before a single file is emitted**
+  (`preflight.ps1 -RepoOnly -Only L20 -Config <cfg>`, which throws), `build.ps1`'s two full preflight
+  calls (now passing `-Config`), and **`run_schedule.ps1` per SETUP, before the estimate is printed**.
+  Without `-Config` it WARN-lists every unpaired alternate in `config/`. ⚠ Do NOT "fix" the trap by
+  falling back to the canonical tree — that pairs an alternate config's BUILDINGS with the canonical
+  config's TECHNOLOGIES (BUGS_AND_FIXES 2026-08-12) ·
+  **L21 a FAILED BUILD HANGING THE SCHEDULER (AUTO since 2026-08-18)** — `run_schedule.ps1` builds
+  through `Invoke-BoundedBuild`: a `-BuildTimeoutMinutes` bound (default 10 against a ~7 s build) with a
+  **tree**-kill on expiry, the verdict taken from the PROCESS OBJECT (`Start-Process -PassThru` +
+  `$proc.Handle` + `WaitForExit`), output to FILES rather than a PowerShell pipeline, and a null exit
+  code treated as FAILURE. A failed or timed-out build sets `$fatalExit`: `session.json` and
+  `SCHEDULE DONE` are still written (that marker is what wakes the waiter) with `[ABORTED]` appended,
+  then exit 3. `wait_for_session.ps1` gains **STALLED (exit 3)** when nothing anywhere in the session
+  tree has been written for `-StallMinutes` (default 20) — "alive" is not "working" ·
   **L12 savegames reaped without a readable
   summary** — the one POST-RUN entry, walked with `preflight.ps1 -Session <dir>` and N/A on a normal build.
   ⚠⚠ **L14 AND L15 ARE `N/A` FOR AN INSTRUMENT ARM, AND GETTING THAT WRONG MADE THE CONTROL ARM
@@ -2676,9 +2701,14 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   the batch ends — on 2026-08-01 a finished 8-hour batch sat unnoticed for ~2 h. The waiter supplies
   the missing signal: run it with the tool's `run_in_background` (which *is* harness-tracked), and its
   exit wakes the agent. It returns on whichever comes first — **DONE** (session finished),
-  **RUNNING** (the `-MaxMinutes` heartbeat, default 30; just re-launch it to keep waiting), or
+  **RUNNING** (the `-MaxMinutes` heartbeat, default 30; just re-launch it to keep waiting),
   **DEAD** (exit 2 — no game process and no completion marker, after a **`-DeadGraceSeconds` grace,
-  default 900**, re-checked throughout rather than slept blind). The heartbeat is the point: without
+  default 900**, re-checked throughout rather than slept blind), or **STALLED** (exit 3 — the newest
+  write ANYWHERE in the session tree has not moved for **`-StallMinutes`, default 20**, whatever the
+  processes claim). ⭐ STALLED exists because every wait condition in this repo used to match only
+  SUCCESS: on 2026-08-18 a build failed in 3 s, the scheduler blocked on its own output pipeline, and
+  the silence read as a healthy long run for 6 h 40 min (landmine **L21**). **A watcher that matches
+  only success is indistinguishable from a broken watcher.** The heartbeat is the point: without
   it, a hung run would never wake anyone, because the completion signal is exactly what a hang
   withholds.
   ⚠ **Do not confuse the two graces — they are different timers on different scripts.** This one is
