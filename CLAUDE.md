@@ -2685,6 +2685,17 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
      lines; a raw line count is meaningless. Filter by the run's own start time, then discard vanilla's
      own noise (the `jomini_spline_network_graphics` flood) and the catalogued
      `is_production_method_active` PostValidate class (MISSING_PM_REFERENCES). What is left is the signal.
+     ⚠ **A THIRD NOISE CLASS, identified 2026-08-18: `lawgroup_navy_model has no active law`.** It can
+     reach **half a million lines in one run** (canon-n2 run002: 505,787 of 605,475) and appear in NO other
+     run of the same batch (run001: zero), so a first sighting reads as a catastrophic regression.
+     **It is vanilla's, and the evidence is the pure-vanilla arm**: the pinned baseline
+     `20260813_083557/run001_vanilla` carries **140,249** of them. Cause: every law in
+     `common/laws/00_navy_model.txt` is `is_visible = { any_scope_state = { is_coastal = yes } }`, so a
+     country that becomes **landlocked** by conquest has no valid law in the group and vanilla logs it
+     every tick. Intermittent because it depends on who loses their coast in that playthrough.
+     ⚠ It does NOT threaten telemetry: the ring is per log FILE, and our telemetry is in `debug.log`.
+     It does make `error.log` useless for that run past the flood — read it before drawing conclusions
+     from an absence there.
   4. **Is the clock advancing?** The tail of `<run>/run.log` should show `in-game <date>` moving.
   5. **Is the construction mix reasonable?** (User-directed 2026-08-16, after F66.) As soon as the
      concurrent save harvest lands its first summary (~10 min for the 1837 autosave), run
