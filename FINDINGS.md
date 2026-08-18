@@ -7375,3 +7375,49 @@ essentially **one cost curve**: at equal pop-record count the engine costs the s
 **Confidence: high for the conclusion (no slowdown in the measured range), moderate for the exact −2.5%.**
 The sign and rough magnitude are robust — eight independent bins, none above 1.13, six below 1.0. The
 point estimate is a median of medians over an unevenly sampled range.
+
+### F70.1 — RETRACTION: the war-gate zeros were CONFOUNDED, and the tech-clause explanation is withdrawn
+
+**User challenge, 2026-08-18: "Did we have A in all probes as well? This is guaranteed not to fire in
+1836." Correct on both counts.**
+
+The gate ANDs three clauses:
+
+```
+A  any_scope_general = { owner = ROOT            num_mobilized_battalions >= 100 }
+B  any_scope_general = { NOT = { owner = ROOT }  owner = { has_technology_researched = X } }
+C  num_front_casualties = { target = ROOT  value >= N }
+```
+
+Both probes (`20260818_003120` at N=50 000, `20260818_011524` at N=100) held **A at 100 mobilised
+battalions** and varied only C. **A is essentially unreachable in 1836–46**: measured across the whole
+1836 start there are **8 399 barrack levels world-wide**, and Britain — the largest army in the game —
+holds about **705**, i.e. its entire empire's standing army split across many generals and many fronts.
+Clause A demands ONE general, ≥100 MOBILISED battalions, on ONE front.
+
+⇒ **Clause A alone accounts for both zeros.** The two runs are therefore uninformative about B and C,
+and the following claims are **WITHDRAWN**:
+- "casualties are not what blocks the war channel" — unsupported; C was never reached.
+- "the binding clause is the TECHNOLOGY one" — unsupported, and A is the more likely blocker.
+- the civil-war/no-tech-differential argument — still plausible, still untested, and it was never the
+  first thing to suspect.
+
+**What survives:** the ROOT fix (0 owner-link errors on three independent runs, from 18 720) and the
+journal-entry machinery (2 695 / 3 207 / 2 809 completions, all three stages chaining). Those were
+measured, not inferred.
+
+⚠⚠ **THE METHOD ERROR, WHICH IS THE TRANSFERABLE PART.** Varying one term of a conjunction while
+holding the others at values that may themselves be false cannot identify anything: every clause is a
+candidate, and the null result looks identical whichever is responsible. **Isolate the terms before
+tuning any of them** — emit one `debug_log` per clause from the pulse (A alone, B alone, C alone, then
+the conjunctions) and a single short run says which ever pass, for whom, and when. That is one run and
+it answers what two runs and a threshold sweep could not.
+⚠ Related: **no error in the log does not prove a trigger evaluates as intended.** C is syntactically
+accepted and might still be always-false; that remains untested.
+
+**Open design question this exposes, for the user.** 100 mobilised battalions on one front may be
+perfectly correct for an 1870s+ great-power war and simply unreachable early — in which case the war
+research channel is *intended* to be a late-game mechanic and the zeros are not a defect at all. The
+threshold came from a ruling aimed at stopping micro-states firing it (session 20260812_010659, where
+military took 70% of completions). Whether it should also fire in early-game wars is a design call, not
+a bug report.
