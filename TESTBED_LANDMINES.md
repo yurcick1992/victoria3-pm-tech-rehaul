@@ -970,3 +970,65 @@ broken watcher.** Every wait condition must also match failure, process death, a
 **Prove it** by pointing a schedule at a config guaranteed to fail the build (an alternate with no paired
 tree — **L20** supplies one for free): the scheduler must print `BUILD FAILED`, exit non-zero, and
 release the machine in seconds.
+
+---
+
+## L22 — a mod `effect` block on a VANILLA on_action SILENTLY REPLACES vanilla's, and the engine says so in one line nobody reads
+
+**Status: REGISTERED, DETECTOR + FIX OWED** (both queued behind the live `canon-n2` batch — `emit_research_events.mjs`
+is in the build path and the scheduler rebuilds between runs, so changing it mid-batch is an L10 breach).
+Found 2026-08-18, while checking whether the rebuilt war gate fires as designed. **It was not what we were
+looking for**, which is the point of reading `error.log` at all.
+
+**The rule.** An on_action may carry `events`, `random_events` and `effect`. `events` lists *merge* across
+files. **`effect` does NOT.** Two files defining an `effect` for the same on_action do not compose — the
+engine keeps the **most recently loaded one** and discards the other, then logs exactly one line:
+
+```
+[08:43:14][jomini_onaction.cpp:124]: There is more than one 'effect' defined
+          using most recent:common/on_actions/zzz_pm_rehaul_wargate.txt:5
+```
+
+**What happened.** `zzz_pm_rehaul_wargate.txt` declares `on_monthly_pulse_country = { effect = { … } }`.
+Vanilla declares that same on_action in `common/on_actions/00_code_on_actions.txt:475` **with its own
+`effect` block of 1 005 lines**. Our file is `zzz_`-prefixed, so it loads last and **wins**: vanilla's
+entire monthly country effect is discarded for the whole campaign. It carries Ottoman and Portuguese
+monarchy succession (`ottoman_monarchs.1`, `.2`), ruler-trait rolls, and content scoped to
+**AUS BIC FRA GBR HAI HYD JAP MON MOR POR SPA SPC SWI TUR VEN**.
+
+**Why it is silent.** Nothing fails. The mod loads, the build passes every gate, the run completes, the
+war gate itself works. The only evidence is one `error.log` line among ~12 700, sitting in a file that is
+*expected* to carry vanilla's own noise — the exact reason nobody reads it.
+
+**THE CORRECT IDIOM, AND WE ALREADY USE IT EVERYWHERE ELSE.** Register a named action instead of writing a
+bare `effect`:
+
+```
+on_monthly_pulse_country = { on_actions = { pmr_wargate_eval } }   # merges
+pmr_wargate_eval = { effect = { … } }                              # our own block, no collision
+```
+
+`zzz_v3tb_telemetry.txt` does this for `on_game_started_after_lobby`, `on_monthly_pulse`,
+`on_acquired_technology` and the rest; `zzz_pm_rehaul_diag.txt` does it for
+`on_game_started_after_lobby`. **The war gate is the only file in the repo that does not** — so the
+convention was established and simply not followed by the newest emitter. ✅ Both other files were audited
+and are clean, which also means **every control arm is unaffected**.
+
+**DETECTOR (owed).** Parse the EMITTED `common/on_actions/*.txt`. Any top-level block that is a **vanilla
+on_action** (name parsed live from the game's own `common/on_actions/*.txt`; `on_`-prefixed is the
+fallback rule) must **not** contain a direct `effect = {` child. FAIL naming the file, the on_action and
+the two-line rewrite. Cheap, artifact-based, and it would have caught this at the first build.
+⚠ Do not implement it by grepping for the engine's warning string — that requires a *run*, and the whole
+point is to fail at build time.
+
+**Prove it** by re-adding a bare `effect` to a vanilla on_action: preflight must fail before the game
+is ever launched.
+
+⚠ **What is NOT established:** that vanilla's monthly events *observably* stopped firing. The engine
+message and the two declarations are conclusive about which block is kept; the gameplay consequence is
+inferred, not measured. Confirming it is a probe on **vanilla + telemetry** for the baseline rate of
+`ottoman_monarchs.1` against a modded arm — the shape of question that belongs on a control arm
+(user ruling 2026-08-18).
+
+**Scope of contamination.** The wargate file first shipped 2026-08-18, so only that day's sessions carry
+it: the three `wargate-*` probes and the `canon-n2` batch. Earlier sessions are clean.
