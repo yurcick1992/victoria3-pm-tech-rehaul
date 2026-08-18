@@ -160,8 +160,40 @@ const jeName = (tech, s) => `je_pmr_${tech}_${s}`;
 // The war gate's country variable, one per covered war technology. The bar reads `has_variable`;
 // `on_monthly_pulse_country` sets it. See the war-term comment below and ROADMAP.md.
 const wgVar = (tech) => `pmr_wargate_${tech}`;
-const WAR_TECHS = [];
-const keep = (tech) => WAR_TECHS.push(tech);
+const navOwnVar = (tech) => `pmr_navown_${tech}`;
+const navRivalVar = (tech) => `pmr_navrival_${tech}`;
+const WAR_TECHS = [];                       // land: the battle gate
+const NAV_TECHS = [];                       // fleet: observation, no war needed (ROADMAP naval ruling)
+
+// ⭐ FLEET TECHNOLOGIES ARE DERIVED, NEVER LISTED. `common/ship_types` carries `unlocking_technologies`
+// per ship type, so "which technologies would build a ship" is a fact about the game, read live — the
+// same discipline the industry rules apply to production_methods. A patch cannot leave it quietly wrong.
+const SHIP_BY_TECH = (() => {
+  const map = {};
+  let src = '';
+  try { src = readFileSync(join(GAME, 'common/ship_types/00_ship_types.txt'), 'utf8'); } catch { return map; }
+  let cur = null;
+  for (const raw of src.split(/\r?\n/)) {
+    const line = raw.replace(/#.*$/, '').trim();
+    let m;
+    // ⚠ ORDER MATTERS: `unlocking_technologies = {` also satisfies the block-open pattern, so testing
+    // that first swallowed every one of these lines and silently produced ZERO fleet technologies.
+    if ((m = /^unlocking_technologies\s*=\s*\{([^}]*)\}/.exec(line))) {
+      if (cur) for (const tk of m[1].trim().split(/\s+/).filter(Boolean)) (map[tk] ??= []).push(cur);
+    } else if ((m = /^([a-z_0-9]+)\s*=\s*\{/.exec(line))) {
+      // only a COLUMN-0 block is a ship type; nested blocks (upkeep_modifier, …) must not reassign it
+      if (/^[a-z_0-9]+\s*=\s*\{/.test(raw)) cur = m[1];
+    }
+  }
+  return map;
+})();
+const isFleetTech = (tech) => Array.isArray(SHIP_BY_TECH[tech]) && SHIP_BY_TECH[tech].length > 0;
+const keep = (tech) => (isFleetTech(tech) ? NAV_TECHS : WAR_TECHS).push(tech);
+
+// ⭐ THE BATTALION LADDER: 30 × (era + 1) — user-ruled 2026-08-18, replacing a flat 100.
+// A flat threshold was far too hard early (94 and 45 firings per century across canon-n2's two runs)
+// and too slack once armies are large. 60/90/120/150/180 over eras 1–5 says the same thing at any date.
+const battFor = (tech) => 30 * (((TECH[tech] && TECH[tech].era) || 2) + 1);
 
 // the two country-scope values the war gate needs, emitted once
 if ((RE.war_gate || {}).mobilised_share_min) {
@@ -176,7 +208,16 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
   if (!grant) throw new Error(`no era cost for ${tech} (era ${T0.era})`);
   const terms = [];
 
-  if (a.rule === 'war') {
+  if (a.rule === 'war' && isFleetTech(tech)) {
+    // ⭐ FLEET TECHNOLOGIES: POSSESSION, NOT BATTLE (ROADMAP → "The NAVAL channel"). A navy is observed
+    // by seeing the ship, not by bleeding on a front, so this needs no war at all. Ours counts DOUBLE
+    // and SUPERSEDES a rival's — both held is still +2, no stacking bonus (explicit ruling) — which is
+    // why the two terms are `exclusive` and render as one ordered if / else_if below.
+    nWar++;
+    keep(tech);
+    terms.push({ desc: 'pmr_term_nav_own',   trigger: `has_variable = ${navOwnVar(tech)}`,   value: 2, exclusive: true });
+    terms.push({ desc: 'pmr_term_nav_rival', trigger: `has_variable = ${navRivalVar(tech)}`, value: 1, exclusive: true });
+  } else if (a.rule === 'war') {
     nWar++;
     const w = RE.war_gate || {};
     // ⭐⭐ THE GATE IS NOT WRITTEN HERE ANY MORE — it is computed in `on_monthly_pulse_country` and
@@ -245,13 +286,23 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
   // Monthly also puts the bar IN STEP WITH ITS GATE: `on_monthly_pulse_country` is the finest country
   // pulse vanilla has (verified), so a weekly bar reading a monthly flag would have accrued up to
   // three weeks on a stale reading. At monthly there is no stale window at all.
-  const span = a.rule === 'war' ? (RE.war_bar_months ?? 6) : (RE.industry_bar_months ?? 36);
+  // Fleet bars run FIVE YEARS to a stage at the normal rate (ruled), halved when we own one; land war
+  // bars stay at six qualifying months; industry at 36.
+  const span = a.rule !== 'war' ? (RE.industry_bar_months ?? 36)
+             : isFleetTech(tech) ? (RE.naval_bar_months ?? 60)
+             : (RE.war_bar_months ?? 6);
   const cadence = 'monthly_progress';
   // ⚠ A bar's `name` is a LOC KEY, not a label. The first smoke run logged 122 lines of
   // "Unrecognized loc key pmr_bar_<tech>" because only the shared `desc` had one.
   loc.push([barName(tech), `Towards ${(TECH[tech].name || tech).replace(/"/g, '')}`]);
   bars.push(`${barName(tech)} = {\n${T}name = "${barName(tech)}"\n${T}desc = "pmr_bar_desc"\n${T}default_green = yes\n${T}start_value = 0\n${T}min_value = 0\n${T}max_value = ${span}\n${T}${cadence} = {\n` +
-    terms.map(t => `${T}${T}add = {\n${T}${T}${T}desc = "${t.desc}"\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = {\n${T}${T}${T}${T}${t.trigger}\n${T}${T}${T}${T}}\n${T}${T}${T}${T}value = ${t.value}\n${T}${T}${T}}\n${T}${T}}`).join('\n') +
+    // ⚠ EXCLUSIVE terms must render as ONE `add` with if / else_if, or both pay out and "supersedes"
+    // silently becomes "stacks" — owning a ship would give +3 instead of the ruled +2.
+    (terms.length > 1 && terms.every(x => x.exclusive)
+      ? `${T}${T}add = {\n${T}${T}${T}desc = "${terms[0].desc}"\n` +
+        terms.map((x, i) => `${T}${T}${T}${i ? 'else_if' : 'if'} = {\n${T}${T}${T}${T}limit = {\n${T}${T}${T}${T}${T}${x.trigger}\n${T}${T}${T}${T}}\n${T}${T}${T}${T}value = ${x.value}\n${T}${T}${T}}`).join('\n') +
+        `\n${T}${T}}`
+      : terms.map(t => `${T}${T}add = {\n${T}${T}${T}desc = "${t.desc}"\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = {\n${T}${T}${T}${T}${t.trigger}\n${T}${T}${T}${T}}\n${T}${T}${T}${T}value = ${t.value}\n${T}${T}${T}}\n${T}${T}}`).join('\n')) +
     `\n${T}}\n}`);
 
   RE.stages.forEach((stage, si) => {
@@ -289,6 +340,9 @@ loc.push(['pmr_term_improvement', 'Employed in the industry this would improve']
 loc.push(['pmr_term_necessity', 'Employed in the industries that would use it']);
 loc.push(['pmr_term_war_pressed', 'Committed to a front in strength']);
 loc.push(['pmr_term_war_enemy_has_it', 'An enemy already fields it']);
+// the fleet channel's two terms — ours supersedes a rival's, so the bar shows whichever applies
+loc.push(['pmr_term_nav_own', 'A ship of this kind sails under our flag']);
+loc.push(['pmr_term_nav_rival', 'A rival fields a ship of this kind']);
 
 const BOM = '\uFEFF';
 const W = (rel, text) => { const p = join(MOD, rel); mkdirSync(dirname(p), { recursive: true }); writeFileSync(p, BOM + text, 'utf8'); };
@@ -320,9 +374,8 @@ W('common/journal_entries/zzz_pm_rehaul_research.txt', '# AUTO-GENERATED by tool
 // separating battle deaths from attrition (only modifiers, and the boolean `has_high_attrition`). At
 // this threshold, on a front that also holds a superior enemy army, attrition alone is unlikely to
 // carry it; but the term is not battle-pure and must not be described as such.
-if (WAR_TECHS.length) {
+if (WAR_TECHS.length || NAV_TECHS.length) {
   const w = RE.war_gate || {};
-  const batt = w.general_battalions_high ?? 100;
   const cas  = w.front_casualties_min ?? 50000;
   // The variable outlives one pulse so the bar never reads a hole between evaluations, and lapses by
   // itself so no clearing pass is needed - which is also why nothing here ever removes it.
@@ -334,7 +387,7 @@ ${T}${T}${T}${T}any_scope_war = {
 ${T}${T}${T}${T}${T}any_scope_front = {
 ${T}${T}${T}${T}${T}${T}any_scope_general = {
 ${T}${T}${T}${T}${T}${T}${T}owner = ROOT
-${T}${T}${T}${T}${T}${T}${T}num_mobilized_battalions >= ${batt}
+${T}${T}${T}${T}${T}${T}${T}num_mobilized_battalions >= ${battFor(tech)}
 ${T}${T}${T}${T}${T}${T}}
 ${T}${T}${T}${T}${T}${T}any_scope_general = {
 ${T}${T}${T}${T}${T}${T}${T}NOT = { owner = ROOT }
@@ -349,16 +402,63 @@ ${T}${T}${T}${T}}
 ${T}${T}${T}}
 ${T}${T}${T}set_variable = { name = ${wgVar(tech)}  days = ${days} }
 ${T}${T}}`).join('\n');
+  // ⭐ FLEET GATE — country scope throughout, NO war required. Ours supersedes a rival's, so the two
+  // variables are set independently and the BAR resolves precedence with if / else_if.
+  // Every component is vanilla-attested: any_scope_ship in country scope filtered by is_ship_type is an
+  // achievement's own idiom, and vanilla nests country-scoped iterators inside any_rival_country.
+  // ⚠ RIVALRY IS ONE-SIDED BY DESIGN — 12_rivalry.txt carries `is_two_sided_pact = no`, so
+  // `any_rival_country` iterates the countries WE declared and needs no reciprocation.
+  const shipTest = (tech, ind) => {
+    const types = SHIP_BY_TECH[tech] || [];
+    const P = T.repeat(ind);
+    const inner = types.length === 1
+      ? `${P}${T}is_ship_type = ship_type:${types[0]}`
+      : `${P}${T}OR = {\n` + types.map(s => `${P}${T}${T}is_ship_type = ship_type:${s}`).join('\n') + `\n${P}${T}}`;
+    return `${P}any_scope_ship = {\n${inner}\n${P}}`;
+  };
+  const navBlocks = NAV_TECHS.map(tech =>
+`${T}${T}if = {
+${T}${T}${T}limit = {
+${shipTest(tech, 4)}
+${T}${T}${T}}
+${T}${T}${T}set_variable = { name = ${navOwnVar(tech)}  days = ${days} }
+${T}${T}}
+${T}${T}if = {
+${T}${T}${T}limit = {
+${T}${T}${T}${T}any_rival_country = {
+${shipTest(tech, 5)}
+${T}${T}${T}${T}}
+${T}${T}${T}}
+${T}${T}${T}set_variable = { name = ${navRivalVar(tech)}  days = ${days} }
+${T}${T}}`).join('\n');
+
   W('common/on_actions/zzz_pm_rehaul_wargate.txt',
 `# AUTO-GENERATED by tools/emit_research_events.mjs - do not edit by hand.
-# The war research gate. Computed here because a scripted_progress_bar has no valid ROOT; the bars
-# read the variables this sets. See ROADMAP.md -> "The war channel - RULED IN DETAIL".
+# The war and fleet research gates. Computed here because a scripted_progress_bar has no valid ROOT;
+# the bars read the variables this sets. See ROADMAP.md -> "The war channel" / "The NAVAL channel".
+#
+# LANDMINE L22 - WHY THIS REGISTERS NAMED ON_ACTIONS INSTEAD OF WRITING \`effect\` DIRECTLY.
+# An on_action's \`events\` list MERGES across files; its \`effect\` block does NOT. Vanilla declares
+# on_monthly_pulse_country with its own 1005-line effect in common/on_actions/00_code_on_actions.txt,
+# and a second \`effect\` does not compose - the engine keeps the most recently loaded and DISCARDS the
+# other, logging one line in a file full of vanilla's own noise. As zzz_ we loaded last and won, so
+# Ottoman and Portuguese monarchy succession and ruler-trait rolls silently stopped running across
+# fifteen tagged countries. Registering \`on_actions = { ... }\` merges instead, which is the idiom
+# zzz_v3tb_telemetry.txt and zzz_pm_rehaul_diag.txt already used.
 on_monthly_pulse_country = {
-${T}effect = {
+${T}on_actions = {
+${T}${T}pmr_wargate_eval
+${T}}
+}
+
+pmr_wargate_eval = {
+${T}effect = {${WAR_TECHS.length ? `
 ${T}${T}if = {
 ${T}${T}${T}limit = { is_at_war = yes }
 ${blocks}
-${T}${T}}
+${T}${T}}` : ''}${NAV_TECHS.length ? `
+${T}${T}# fleet technologies: observation, deliberately OUTSIDE the war test
+${navBlocks}` : ''}
 ${T}}
 }
 `);

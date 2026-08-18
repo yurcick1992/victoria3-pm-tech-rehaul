@@ -975,7 +975,15 @@ release the machine in seconds.
 
 ## L22 — a mod `effect` block on a VANILLA on_action SILENTLY REPLACES vanilla's, and the engine says so in one line nobody reads
 
-**Status: REGISTERED, DETECTOR + FIX OWED** (both queued behind the live `canon-n2` batch — `emit_research_events.mjs`
+**Status: ✅ FIXED 2026-08-18 (detector still owed).** `emit_research_events.mjs` now registers
+`on_monthly_pulse_country = { on_actions = { pmr_wargate_eval } }` and puts the effect in that named
+action, the idiom the telemetry and diag files already used. Verified against the EMITTED artifact: the
+only direct `effect` child sits under `pmr_wargate_eval`, and `on_monthly_pulse_country` carries an
+`on_actions` list. Vanilla's 1005-line effect is no longer displaced.
+⚠ The build-time DETECTOR is still owed — the fix is in one emitter, nothing stops the next one
+repeating it. See the detector spec below.
+
+**Original status: REGISTERED, DETECTOR + FIX OWED** (both queued behind the live `canon-n2` batch — `emit_research_events.mjs`
 is in the build path and the scheduler rebuilds between runs, so changing it mid-batch is an L10 breach).
 Found 2026-08-18, while checking whether the rebuilt war gate fires as designed. **It was not what we were
 looking for**, which is the point of reading `error.log` at all.

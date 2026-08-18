@@ -221,13 +221,19 @@ pmr_bar_battleship_tech = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 6
+	max_value = 60
 	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_engaged"
+			desc = "pmr_term_nav_own"
 			if = {
 				limit = {
-				has_variable = pmr_wargate_battleship_tech
+					has_variable = pmr_navown_battleship_tech
+				}
+				value = 2
+			}
+			else_if = {
+				limit = {
+					has_variable = pmr_navrival_battleship_tech
 				}
 				value = 1
 			}
@@ -655,13 +661,19 @@ pmr_bar_destroyer = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 6
+	max_value = 60
 	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_engaged"
+			desc = "pmr_term_nav_own"
 			if = {
 				limit = {
-				has_variable = pmr_wargate_destroyer
+					has_variable = pmr_navown_destroyer
+				}
+				value = 2
+			}
+			else_if = {
+				limit = {
+					has_variable = pmr_navrival_destroyer
 				}
 				value = 1
 			}
@@ -724,13 +736,19 @@ pmr_bar_dreadnought_tech = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 6
+	max_value = 60
 	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_engaged"
+			desc = "pmr_term_nav_own"
 			if = {
 				limit = {
-				has_variable = pmr_wargate_dreadnought_tech
+					has_variable = pmr_navown_dreadnought_tech
+				}
+				value = 2
+			}
+			else_if = {
+				limit = {
+					has_variable = pmr_navrival_dreadnought_tech
 				}
 				value = 1
 			}
@@ -1296,13 +1314,19 @@ pmr_bar_ironclad_tech = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 6
+	max_value = 60
 	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_engaged"
+			desc = "pmr_term_nav_own"
 			if = {
 				limit = {
-				has_variable = pmr_wargate_ironclad_tech
+					has_variable = pmr_navown_ironclad_tech
+				}
+				value = 2
+			}
+			else_if = {
+				limit = {
+					has_variable = pmr_navrival_ironclad_tech
 				}
 				value = 1
 			}
@@ -1652,13 +1676,19 @@ pmr_bar_monitor_tech = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 6
+	max_value = 60
 	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_engaged"
+			desc = "pmr_term_nav_own"
 			if = {
 				limit = {
-				has_variable = pmr_wargate_monitor_tech
+					has_variable = pmr_navown_monitor_tech
+				}
+				value = 2
+			}
+			else_if = {
+				limit = {
+					has_variable = pmr_navrival_monitor_tech
 				}
 				value = 1
 			}
@@ -1948,13 +1978,19 @@ pmr_bar_pre_dreadnought_tech = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 6
+	max_value = 60
 	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_engaged"
+			desc = "pmr_term_nav_own"
 			if = {
 				limit = {
-				has_variable = pmr_wargate_pre_dreadnought_tech
+					has_variable = pmr_navown_pre_dreadnought_tech
+				}
+				value = 2
+			}
+			else_if = {
+				limit = {
+					has_variable = pmr_navrival_pre_dreadnought_tech
 				}
 				value = 1
 			}
@@ -2345,13 +2381,19 @@ pmr_bar_sea_lane_strategies = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 6
+	max_value = 60
 	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_engaged"
+			desc = "pmr_term_nav_own"
 			if = {
 				limit = {
-				has_variable = pmr_wargate_sea_lane_strategies
+					has_variable = pmr_navown_sea_lane_strategies
+				}
+				value = 2
+			}
+			else_if = {
+				limit = {
+					has_variable = pmr_navrival_sea_lane_strategies
 				}
 				value = 1
 			}
@@ -2365,13 +2407,19 @@ pmr_bar_self_propelled_torpedoes = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 6
+	max_value = 60
 	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_engaged"
+			desc = "pmr_term_nav_own"
 			if = {
 				limit = {
-				has_variable = pmr_wargate_self_propelled_torpedoes
+					has_variable = pmr_navown_self_propelled_torpedoes
+				}
+				value = 2
+			}
+			else_if = {
+				limit = {
+					has_variable = pmr_navrival_self_propelled_torpedoes
 				}
 				value = 1
 			}
@@ -2612,13 +2660,19 @@ pmr_bar_submarine = {
 	default_green = yes
 	start_value = 0
 	min_value = 0
-	max_value = 6
+	max_value = 60
 	monthly_progress = {
 		add = {
-			desc = "pmr_term_war_engaged"
+			desc = "pmr_term_nav_own"
 			if = {
 				limit = {
-				has_variable = pmr_wargate_submarine
+					has_variable = pmr_navown_submarine
+				}
+				value = 2
+			}
+			else_if = {
+				limit = {
+					has_variable = pmr_navrival_submarine
 				}
 				value = 1
 			}

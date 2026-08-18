@@ -1264,3 +1264,5 @@
  pmr_term_necessity:0 "Employed in the industries that would use it"
  pmr_term_war_pressed:0 "Committed to a front in strength"
  pmr_term_war_enemy_has_it:0 "An enemy already fields it"
+ pmr_term_nav_own:0 "A ship of this kind sails under our flag"
+ pmr_term_nav_rival:0 "A rival fields a ship of this kind"
