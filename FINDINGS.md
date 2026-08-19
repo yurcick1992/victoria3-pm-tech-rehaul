@@ -7640,3 +7640,112 @@ so a patch that renames the field fails loudly instead of silently zeroing every
   this is the schema-generosity hazard the reader's own header warns about, landing again.
 - **42.6% is one run at one date**, and given canon-n2's 46% run-to-run spread on tiered levels it should
   not be treated as a stable share until a batch carries v6 throughout.
+---
+
+## F75 — ⭐⭐ THE AI BUILDS BELOW THE BEST TIER IT ALREADY HOLDS, IN **52.6% OF ALL LEVELS** — and adopting the frontier does not stop it
+
+**Claim.** Across six full-century runs, in the country-industry-years where all three of the following
+hold — (1) the country **already holds** the tier-N technology, (2) tier N is materially better and the
+market can absorb one more of it without the good's price falling more than 20 pp, (3) the industry is
+one the country actually operates — **52.6% of the levels it builds go to a tier BELOW N**. Excluding
+ports (whose levels are 0.1-unit by construction) the figure is **55.3%**: 58,470 of 105,663 levels.
+Unit-weighted, 54.1%.
+
+**Session.** `20260818_221216_canon-n7`, mod arm n=6 (the 7th run is L17-incomplete and excluded), game
+1.13.10, 600 annual save summaries. Tools committed: `tools/testbed/ledger/analyse_ai_tier_choice.mjs`
+and `analyse_ai_tier_profit.mjs`.
+
+**Units: LEVELS, never employment** (user-directed). A construction decision *is* a level decision;
+staffing would conflate "did the AI build it" with "did it man it", and a half-staffed new level is
+still committed capital.
+
+**Condition 2, made operational.** The engine prices as
+`price = base × [1 + 0.75 × clamp((buy−sell)/min(buy,sell), ±1)]`, so adding output ΔQ to a roughly
+balanced market of size Q moves price by about `−75 × ΔQ/Q` pp; a ≤20 pp fall needs **ΔQ/Q ≤ 0.267**.
+ΔQ is one tier-N building's own `output_qty`; Q is the market's current supply of that good, summed
+over every country sharing the `market` id.
+⚠ **Deliberately conservative**: 329,690 cases where the market could not absorb the output were
+DROPPED, not counted against the AI, and so were 1,037,944 country-years where the country does not
+operate that industry at all (an absence, not a refusal) and 2,005 annexation-scale years (a
+transferred factory is not a decision). **Every figure here is a floor.**
+
+### The numbers
+
+| how far behind | levels | share of the fault |
+|---|---|---|
+| 1 tier | 40,204 | 49.8% |
+| 2 tiers | 25,506 | 31.6% |
+| 3 tiers | 13,248 | 16.4% |
+| 4–5 tiers | 1,748 | 2.1% |
+
+**It does not improve over the century**: below-frontier share by decade — 1840s **60.3%**, 1860s 57.4%,
+1880s **59.0%**, 1900s 54.5%, 1920s 51.3%, 1930s 48.9%. The late drift toward 50% is largely that
+late tiers run out of rungs to be behind.
+
+**Adoption lag is bimodal**: median **0 years** from holding the technology to the first level of that
+tier, p75 5 y, max 93 y — but **36.9% of cases never build that tier at all** despite holding its
+technology and operating the industry.
+
+**Concrete case.** Britain's tooling at 1921, holding tier-4 technology: levels **37 / 44 / 147 / 105 /
+31 / 0**. The third rung carries the most capacity; the frontier it can build holds 31. Every other
+major is worse — FRA, USA, RUS, NET, AUS all hold t3 with the mass on t2 or below; JAP holds t2 with 11
+levels still on t0.
+
+### Severity tracks LADDER LENGTH, not industry type
+
+Share of each industry's own building that goes below its best held tier:
+
+| worst | | best | |
+|---|---|---|
+| textile | **76.3%** | power | **28.7%** |
+| tooling | 69.7% | synthetics | 33.9% |
+| arms | 65.0% | fertilizer | 44.4% |
+| artillery | 62.0% | railway | 44.7% |
+| shipyard | 61.5% | steel | 45.6% |
+
+The worst are the **long chains starting at era 0–1** (textile, tooling, food, furniture) plus the war
+industries; the best are the **short late ladders** (power has three tiers). ⇒ **Part of this fault is
+a property of our own design**: every extra rung we add is another way for the AI to build the wrong
+thing, and it takes it at roughly constant probability.
+
+### ⭐ Does the first tier-N building break the cycle? NO — it halves it and no more
+
+- **Rate:** lower-tier building runs at 0.151/yr before the first tier-N level and **0.314/yr after**
+  (2.07×). ⚠ **That comparison is confounded** — "after" is by construction later in the century, when
+  everyone builds more of everything.
+- **Share (the honest measure):** of all levels that country-industry builds, **97.3% went below the
+  frontier before adoption, 47.4% after.**
+
+So adoption roughly halves the share and leaves **nearly half** of continued building on obsolete
+rungs. In **13.1%** of post-adoption country-industry-years the AI is *actively adding* lower-tier
+levels alongside the newer one. The frontier building **joins** the old line rather than replacing it.
+
+### ⚠⚠ THE AI IS NOT BUILDING INSOLVENT BUILDINGS — IT IS FORGOING LARGE GAINS FOR BREAK-EVEN ONES
+
+The sharpest form of the fault — frontier tier present and **profitable**, a lower rung running at a
+**loss**, and the loser still receiving new levels — is **rare**: 907 of 221,764 qualifying
+country-industry-years (**0.4%**), 1,306 levels, concentrated in railway (840) and port (347) and
+rising by decade (14 in the 1840s → 386 in the 1930s).
+
+**The subsidy explanation was tested and FAILS**: only **37 of the 907** cases were subsidised, so this
+is not the AI obeying a `must_have` mandate.
+
+But the magnitudes deflate it: the rung still being built loses a median of **£1.3 per level per week**
+(90% under £5, 96% under £20), while the frontier it passed up earned a median **£106 more per level
+per week** (p75 £253, max £6,432).
+
+⇒ **The AI responds weakly to profit but not at all to RELATIVE profit.** It mostly avoids clear
+losers; what it ignores is an opportunity gap two orders of magnitude larger than the loss it
+tolerates. **This is the finding that should drive the lever choice**: making old tiers merely
+unprofitable does not address a chooser that is already avoiding losses.
+
+### What it does NOT say
+
+- **Not a cause.** It measures the outcome, not the mechanism. `ai_value`, the construction-queue
+  scoring, and expansion-vs-new-construction being scored differently are all untested candidates.
+  ⚠ PM selection is a separate system from construction and may carry internal considerations we
+  cannot see (e.g. what an unlocked PM would make a *new* building worth); do not infer it from here.
+- **Not compared to vanilla.** Whether base-game AI shows the same indifference between its own PM
+  tiers is unmeasured, and that probe belongs on **vanilla + telemetry**. If vanilla behaves the same,
+  this is engine behaviour to design around rather than balance against.
+- **1.13.10 only.** The batch predates 1.13.11.
