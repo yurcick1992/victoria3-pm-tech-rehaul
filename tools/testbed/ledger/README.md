@@ -63,6 +63,35 @@ encodes, all user-ruled:
   blanked the moment an unrelated renderer failed. Keep it independent (and keep it wrapped in its IIFE:
   the main script declares its own top-level `const css`, and a second one throws).
 
+## The `fill_*.mjs` scripts (added 2026-08-19, canon-n7)
+
+`report_data2.mjs` emits **none of `techsT`, `jeT` or `sector`**, and nothing computed the verdict
+table’s own numbers, so those panels were being published EMPTY. These derive them straight from the
+save summaries, and are parameterised only by the run list at the top of each file:
+
+- **`fill_consts.mjs`** — GDP_FLAT / GDP_VAN / GDP_NB, PROD_*, TRAJ, WORLD_FULL, WORLD_PURE. Medians
+  across the arm’s runs. Productive workers = salaried workforce minus government and military
+  staffing, taken off the buildings, which is the panel’s own definition.
+- **`fill_emp.mjs`** — EMP, tier employment by era: staffed levels × the config’s own per-tier
+  employment × `workforce_mult`. EXACT, not proxied; an earlier proxy (levels × people-per-level ×
+  staffing off report_data) came out ~4× low and was thrown away rather than published.
+- **`fill_payback.mjs`** — frontier and stale rung payback (build cost × £720 ÷ annual profit per level,
+  at realised prices) and the leader−p25 stock-era gap. ⚠ A loss-making rung has NO payback and is
+  counted, never folded into a median as a large number (the `vanilla_payback_census` rule).
+- **`fill_research.mjs`** — `techsT` (technologies held per era/tree, mean per country, both arms from
+  `technologies_held`) and `jeT` (journal entries). ⚠⚠ **JE firings are DISTINCT `(stage, technology,
+  country)` triples, never raw log lines** — landmine **L23** measured raw lines overcounting 2.25×.
+- **`fill_build_perf.mjs`** — the PERF const from `perf_raw.json` (see the shape warning below).
+- **`fill_goals.mjs`** — the verdict rows. ⚠ **Every row reads POSITIONALLY**: metric A · metric B →
+  value A · value B → target A · target B. A term with no agreed target carries an explicit em-dash;
+  dropping it re-pairs the surviving values against the WRONG targets, which is how a construction
+  ratio came to be printed against a payback in years.
+- **`fill_assemble.mjs`** — splices the lot into the template and writes REPORT.html.
+
+⚠ They are not yet a single command, and their run lists are edited per batch — same known TODO as
+`--session`. Everything they emit is a median over the arm’s COMPLETE runs; an L17-incomplete run is
+excluded by hand from the run list, so check `preflight.ps1 -Session` before filling.
+
 ## Filling it for a new batch
 
 1. Run the three data scripts against the batch (now parameterized: `--session <name>` on analyse_gdp_gap, `--mod <sess/run[,sess/run]>` on report_data + report_data2, `--config <arm config>` for the arm cost book, `--out <dir>`; defaults reproduce the flatcost-n1 fill. Historical note - they were hardcoded to
