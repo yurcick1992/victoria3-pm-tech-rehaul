@@ -71,6 +71,7 @@ const stat = {
   afterFirst: { before: 0, after: 0, beforeYears: 0, afterYears: 0, keptBuildingLower: 0, stopped: 0,
                 beforeAll: 0, afterAll: 0 },
   worstIndustries: {},
+  perRun: {},                   // run -> {front, lag} — the NOISE FLOOR for this metric
 };
 const bump = (o, k, v) => { o[k] = (o[k] || 0) + v; };
 
@@ -135,6 +136,8 @@ for (const run of RUNS) {
           if (front || lag) {
             stat.cases++;
             stat.frontierLv += front; stat.laggardLv += lag;
+            const pr = (stat.perRun[run] ||= { front: 0, lag: 0 });
+            pr.front += front; pr.lag += lag;
             const dec = Math.floor(year / 10) * 10;
             const d = (stat.byDecade[dec] ||= { front: 0, lag: 0 });
             d.front += front; d.lag += lag;
@@ -179,6 +182,20 @@ console.log(`  excluded: ${stat.annexSkipped.toLocaleString()} annexation-scale 
 console.log(`  excluded: ${stat.absentIndustry.toLocaleString()} country-years where the country does not operate that industry at all`);
 const totU = stat.frontierUnits + stat.laggardUnits, totNP = stat.frontierNoPort + stat.laggardNoPort;
 console.log('');
+// ⭐ THE NOISE FLOOR. A change in the pooled share means nothing without the run-to-run spread of
+// the same quantity on byte-identical runs, and nothing in this project had ever quoted it for THIS
+// metric — only for GDP (71%) and levels (21%). Printed whenever there is more than one run.
+const prKeys = Object.keys(stat.perRun);
+if (prKeys.length > 1) {
+  const shares = prKeys.map(k => { const r = stat.perRun[k]; return 100 * r.lag / ((r.front + r.lag) || 1); });
+  const lo = Math.min(...shares), hi = Math.max(...shares);
+  const mean = shares.reduce((a, b) => a + b, 0) / shares.length;
+  const sd = Math.sqrt(shares.reduce((a, b) => a + (b - mean) ** 2, 0) / shares.length);
+  console.log('');
+  console.log('--- PER-RUN SPREAD of the below-best share (the noise floor for this metric) ---');
+  prKeys.forEach((k, n) => console.log('  ' + k.split('/')[1].padEnd(20) + shares[n].toFixed(2) + '%'));
+  console.log('  range ' + lo.toFixed(2) + '-' + hi.toFixed(2) + '%  (' + (hi - lo).toFixed(2) + 'pp wide) · mean ' + mean.toFixed(2) + '% · sd ' + sd.toFixed(2) + 'pp');
+}
 console.log('--- the same totals, corrected for what a LEVEL means ---');
 console.log(`  unit-weighted (a graded port level is 0.1 of a building): below ${pct(stat.laggardUnits, totU)}`);
 console.log(`  excluding ports entirely                               : below ${pct(stat.laggardNoPort, totNP)}  (${Math.round(stat.laggardNoPort).toLocaleString()} of ${Math.round(totNP).toLocaleString()} levels)`);

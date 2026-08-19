@@ -129,13 +129,15 @@ function classify(key, lad) {
 }
 
 // ---------------------------------------------------------------- sweep one arm ----
-function sweep(session, cfgPath) {
-  const { runs: usable, dropped } = usableRuns(SES, session);
+function sweep(spec, cfgPath) {
+  const i = spec.indexOf(':');
+  const session = i < 0 ? spec : spec.slice(0, i), setup = i < 0 ? '' : spec.slice(i + 1);
+  const { runs: usable, dropped } = usableRuns(SES, session, setup);
   const runs = usable.slice(0, RUNCAP);
-  if (!runs.length) throw new Error(`no usable runs under ${join(SES, session)}`);
+  if (!runs.length) throw new Error(`no usable runs under ${join(SES, spec)}`);
   const lad = ladderOf(cfgPath);
   const A = {
-    session, cfgPath, runs: runs.length, dropped,
+    session: spec, cfgPath, runs: runs.length, dropped,
     sector: {}, sectorU: {}, ind: {}, indU: {}, era: {}, eraU: {},
     indEra: {},                      // industry -> era -> levels
     total: 0, totalU: 0, annexSkipped: 0, years: 0,
@@ -187,6 +189,11 @@ const pct = (a, b) => b ? (100 * a / b).toFixed(2) + '%' : '—';
 const num = n => Math.round(n).toLocaleString();
 const dpp = (x, y) => { const d = y - x; return (d >= 0 ? '+' : '') + d.toFixed(2) + 'pp'; };
 const dx = (x, y) => !x ? '—' : (y / x).toFixed(2) + '×';
+// ⚠⚠ EVERY ABSOLUTE IS PER RUN, not pooled. The two arms rarely have the same n — a 1-run arm
+// against a 6-run baseline made every B/A ratio read 0.16x, i.e. 1/6, and lit up the
+// "risk of disappearing" list with all 22 industries. Shares are n-invariant and need no such
+// correction, which is exactly why the share column looked sane while the absolute one did not.
+const perRun = (v, A) => v / (A.runs || 1);
 
 function header(A) {
   console.log(`  session ${A.session}`);
@@ -226,32 +233,32 @@ function compare(A, B) {
   console.log('  ⭐ THE OVERSHOOT TEST. Extraction and agriculture carry NO ai_value change, so a fall in');
   console.log('     their SHARE that is also a fall in their ABSOLUTE level count is the raw sector being');
   console.log('     starved. A fall in share with flat absolute is just manufacturing growing.');
-  console.log('  sector            A levels   A share    B levels   B share     Δshare    B/A abs');
+  console.log('  sector            A lv/run  A share    B lv/run  B share     Δshare    B/A abs');
   for (const s of SECTOR_ORDER) {
-    const a = A.sector[s] || 0, b = B.sector[s] || 0;
+    const a = perRun(A.sector[s] || 0, A), b = perRun(B.sector[s] || 0, B);
     if (!a && !b) continue;
-    const as = A.total ? 100 * a / A.total : 0, bs = B.total ? 100 * b / B.total : 0;
+    const as = A.total ? 100 * (A.sector[s] || 0) / A.total : 0, bs = B.total ? 100 * (B.sector[s] || 0) / B.total : 0;
     console.log(`  ${s.padEnd(14)} ${num(a).padStart(10)}  ${as.toFixed(2).padStart(6)}%  ${num(b).padStart(10)}  ${bs.toFixed(2).padStart(6)}%   ${dpp(as, bs).padStart(9)}   ${dx(a, b).padStart(7)}`);
   }
 
   const aT = Object.values(A.ind).reduce((x, y) => x + y, 0);
   const bT = Object.values(B.ind).reduce((x, y) => x + y, 0);
   console.log('\n--- ERA MIX OF TIERED CONSTRUCTION (the ladder\'s own target) ---');
-  console.log('  era      A levels   A share    B levels   B share     Δshare    B/A abs');
+  console.log('  era      A lv/run  A share    B lv/run  B share     Δshare    B/A abs');
   for (const e of [...new Set([...Object.keys(A.era), ...Object.keys(B.era)])].sort()) {
-    const a = A.era[e] || 0, b = B.era[e] || 0;
-    const as = aT ? 100 * a / aT : 0, bs = bT ? 100 * b / bT : 0;
+    const a = perRun(A.era[e] || 0, A), b = perRun(B.era[e] || 0, B);
+    const as = aT ? 100 * (A.era[e] || 0) / aT : 0, bs = bT ? 100 * (B.era[e] || 0) / bT : 0;
     console.log(`  e${e}    ${num(a).padStart(10)}  ${as.toFixed(2).padStart(6)}%  ${num(b).padStart(10)}  ${bs.toFixed(2).padStart(6)}%   ${dpp(as, bs).padStart(9)}   ${dx(a, b).padStart(7)}`);
   }
 
   console.log('\n--- PER-INDUSTRY REALLOCATION (share of the tiered sector), biggest movers first ---');
   console.log('  ⚠ A big NEGATIVE Δshare with B/A abs well under 1.00 is an industry being outbid, which');
   console.log('     is the (a) half of the overshoot: the ladder moved the budget between chains, not up them.');
-  console.log('  industry         A levels   A share    B levels   B share     Δshare    B/A abs');
+  console.log('  industry         A lv/run  A share    B lv/run  B share     Δshare    B/A abs');
   const inds = [...new Set([...Object.keys(A.ind), ...Object.keys(B.ind)])];
   const rows = inds.map(k => {
-    const a = A.ind[k] || 0, b = B.ind[k] || 0;
-    return { k, a, b, as: aT ? 100 * a / aT : 0, bs: bT ? 100 * b / bT : 0 };
+    const a = perRun(A.ind[k] || 0, A), b = perRun(B.ind[k] || 0, B);
+    return { k, a, b, as: aT ? 100 * (A.ind[k] || 0) / aT : 0, bs: bT ? 100 * (B.ind[k] || 0) / bT : 0 };
   }).sort((x, y) => Math.abs(y.bs - y.as) - Math.abs(x.bs - x.as));
   for (const r of rows)
     console.log(`  ${r.k.padEnd(15)} ${num(r.a).padStart(9)}  ${r.as.toFixed(2).padStart(6)}%  ${num(r.b).padStart(9)}  ${r.bs.toFixed(2).padStart(6)}%   ${dpp(r.as, r.bs).padStart(9)}   ${dx(r.a, r.b).padStart(7)}`);

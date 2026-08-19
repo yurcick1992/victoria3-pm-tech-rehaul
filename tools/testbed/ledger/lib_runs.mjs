@@ -10,7 +10,14 @@
 // stopped-at-1853 run007 would silently enter an n=6 baseline, and how a later run that did finish
 // would silently be left out of it.
 //
-// Usage:  const { runs, dropped } = usableRuns(SES, SESSION)
+// ⚠⚠ A SESSION CAN HOLD MORE THAN ONE ARM, and folding them together is worse than counting a short
+// run — it averages two different experiments. `20260813_083557_vanilla-vs-mod-n4` is exactly that:
+// four `runNNN_vanilla` folders and two `runNNN_mod` ones. Read whole, its "vanilla" world GDP spread
+// comes out £1,181–5,662M, which looks like enormous variance and is actually two arms in one box.
+// Hence the `setup` argument: it is the run folder's own suffix (`runNNN_<setup>`), the same name the
+// schedule's `setups` block uses. Omit it only for a session you know is single-arm.
+//
+// Usage:  const { runs, dropped } = usableRuns(SES, SESSION[, setup])
 //         runs    -> ['<session>/run001_x', ...]  relative to SES, sorted
 //         dropped -> [{ run, reached, until, reason }]  ALWAYS PRINT THIS; a silent exclusion is
 //                    indistinguishable from a run that never existed.
@@ -26,11 +33,19 @@ const reached = (got, want) => {
   return true;
 };
 
-export function usableRuns(sesRoot, session) {
+export function usableRuns(sesRoot, session, setup = '') {
   const root = join(sesRoot, session);
   if (!existsSync(root)) throw new Error(`no such session: ${root}`);
+  const all = readdirSync(root).filter(x => /^run\d+_/.test(x)).sort();
+  const setups = [...new Set(all.map(d => d.replace(/^run\d+_/, '')))];
+  if (!setup && setups.length > 1)
+    throw new Error(`${session} holds ${setups.length} arms (${setups.join(', ')}) — pass a setup name; `
+      + `folding two arms into one n averages two different experiments`);
+  if (setup && !setups.includes(setup))
+    throw new Error(`${session} has no arm '${setup}' — it holds: ${setups.join(', ')}`);
   const runs = [], dropped = [];
-  for (const d of readdirSync(root).filter(x => /^run\d+_/.test(x)).sort()) {
+  for (const d of all) {
+    if (setup && d.replace(/^run\d+_/, '') !== setup) continue;
     const rel = `${session}/${d}`;
     if (!existsSync(join(root, d, 'save_summaries'))) {
       dropped.push({ run: d, reached: '-', until: '-', reason: 'no save_summaries' });
