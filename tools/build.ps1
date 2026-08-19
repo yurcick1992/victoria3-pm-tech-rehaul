@@ -90,7 +90,14 @@ function New-ClonedBuilding($vanLines, $tierKey, $baseKey, $tech, $pmgTokens, $r
 function Set-BuildingAiValue($lines, $value) {
     $arr = @($lines)
     for ($k = 0; $k -lt $arr.Count; $k++) {
-        if ($arr[$k] -match '^\s*ai_value\s*=\s*\{')      { Write-Output "note: $($arr[0].Trim()) has a complex ai_value block - not overriding"; return $arr }
+        # ⚠⚠ Write-WARNING, never Write-Output. This function RETURNS THE LINES OF A BUILDING BLOCK,
+        # and in PowerShell a bare Write-Output inside a function joins that return value — so the note
+        # was emitted INTO common/buildings/*.txt as a literal line. The note text itself contains
+        # "<key> = {", an unbalanced brace, so the parser opened a bogus block and swallowed the real
+        # building definition that followed. 96 parse errors per run, mod still loads, nothing fails.
+        # Landmine L24. It only ever fired once a CLONED tier with a complex vanilla ai_value block was
+        # given a config ai_value, which the ai_value ladder is the first thing to do.
+        if ($arr[$k] -match '^\s*ai_value\s*=\s*\{')      { Write-Warning "$($arr[0].Trim()) has a complex ai_value block - not overriding"; return $arr }
         if ($arr[$k] -match '^\s*ai_value\s*=\s*-?\d+')   { $arr[$k] = "`tai_value = $([int]$value)"; return $arr }
     }
     $out = New-Object System.Collections.Generic.List[string]

@@ -1176,6 +1176,45 @@ tools/                  dev tooling — NOT shipped in the mod
                         computed per-tag anomaly flags, the whole-economy/tiered-sector scope control.
                         Published as an Artifact per batch AND copied into the session as REPORT.html.
                         ⚠ Session paths hardcoded to the first instance (flatcost-n1); --session flag TODO
+                        (the `fill_*` scripts still are; the three `analyse_ai_*`/`analyse_build_*`
+                        scripts now take `--session`/`--config` and discover their runs)
+  testbed/ledger/lib_runs.mjs  ⭐ WHICH RUNS OF A SESSION MAY BE COUNTED — one implementation, because
+                        two analyses of one batch that disagree about n give two incomparable answers.
+                        `usableRuns(root, session)` DISCOVERS the run folders and keeps only those that
+                        reached their own `until` date with no `abandoned_reason` (landmine **L17** —
+                        `status: ok` in session.json is derived from the observer's EXIT CODE and the
+                        observer exits 0 even when it abandons a run, so it is not evidence).
+                        `reportDropped()` PRINTS every exclusion with its reason; a silent exclusion is
+                        indistinguishable from a run that never existed. ⚠ It replaces the hardcoded
+                        `RUNS = [1..6]` lists, which is how canon-n7's stopped-at-1853 run007 would have
+                        entered an n=6 baseline the moment someone re-pointed a script
+  testbed/ledger/analyse_ai_tier_choice.mjs / analyse_ai_tier_profit.mjs  THE BUILD-CHOICE MEASURE
+                        (FINDINGS **F75**): of the levels a country builds, what share go to a tier BELOW
+                        the best one it already holds, and does the first frontier building stop the
+                        cycle. A ratio over ~62k build decisions INSIDE each run, so it resolves at n=4
+                        where GDP (71% spread at n=6) resolves nothing. `--session <stamp>`
+                        `--config <path>`; no arguments reproduces the canon-n7 baseline exactly
+  testbed/ledger/analyse_build_allocation.mjs  ⭐⭐ THE OVERSHOOT CHECK — WHERE DID CONSTRUCTION GO?
+                        (written 2026-08-19 for the ai_value ladder, user-directed.) The tier-choice
+                        measure asks a WITHIN-industry question, and a ladder can improve it while
+                        failing two ways it cannot see: **between industries** (tier-4 automotive at
+                        ai_value 2500 outbids tier-2 textile at 1500, draining whole chains rather than
+                        climbing them) and **out of the untiered sector entirely** (extraction and
+                        agriculture carry NO ai_value change, so starving them SHOWS UP AS A WIN on the
+                        tier-choice metric). Reports sector / industry / era shares of every level
+                        ADDED, **absolute beside normalized** — a share that rises because its numerator
+                        grew and one that rises because everything else collapsed are different results
+                        — plus a per-industry `B/A abs` column and a "risk of disappearing" list at
+                        <0.60×. `--a <baseline> --b <arm>` to compare, `--session` for one.
+                        ⚠ Levels REMOVED are ignored, never netted: demolition is a different decision
+                        and netting makes a shrinking industry look like an unbuilt one. ⚠ Ports are
+                        graded, so every total is given raw AND unit-weighted. ⚠ It reads building groups
+                        from vanilla with **`mod/common/buildings` layered over**, because the all-new
+                        steamer chain has no vanilla anchor and otherwise falls into "other"; anything
+                        still unsectored is REPORTED BY NAME rather than swept up. ⚠ Strips the UTF-8
+                        BOM before matching top-level blocks — the same trap `verify_pms.mjs` documents,
+                        and here it silently loses `building_coal_mine` and `building_logging_camp`, two
+                        of the raw industries the analysis exists to watch
   testbed/run_schedule.ps1  THE entry point for all measurement: ordered schedule JSON -> build each run via
                         build.ps1 -> run -> harvest -> cross-run markets_all.tsv. Interactive p/r/s/x control;
                         crash policy. Never call the builder directly for test data. Specs in
@@ -2481,6 +2520,19 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   `SCHEDULE DONE` are still written (that marker is what wakes the waiter) with `[ABORTED]` appended,
   then exit 3. `wait_for_session.ps1` gains **STALLED (exit 3)** when nothing anywhere in the session
   tree has been written for `-StallMinutes` (default 20) — "alive" is not "working" ·
+  **L24 a GENERATOR'S OWN DIAGNOSTIC TEXT LEAKED INTO AN EMITTED SCRIPT FILE (AUTO since 2026-08-19)** —
+  `Set-BuildingAiValue` returns the LINES of a building block and reported its "won't override a complex
+  ai_value block" note with `Write-Output`, which in PowerShell **joins the return value**, so the note
+  landed in `common/buildings/*.txt` as a literal line. That text contains `<key> = {`, an unbalanced
+  OPENING brace, so the parser opened a bogus block and swallowed the real definition. **Nothing failed**:
+  build ok, every lint passed, mod loaded, init marker written, clock advancing — 96
+  `Duplicated key …` lines in `error.log` were the only trace, caught at the five-minute smoke check.
+  It had never fired because that refusal path is only reached by a CLONED tier carrying a config
+  `ai_value`, which the ai_value ladder is the first thing to do — **a branch that has never executed is
+  not known to work**. `Test-LmL24` reads every emitted `common/**/*.txt` and requires brace balance plus
+  nothing-but-script at depth 0; deliberately NOT a grep for `note:` or for `Write-Output`. Rule for
+  generators: **a function that returns content must never report through the success stream** — use
+  `Write-Warning`/`Write-Host` ·
   **L12 savegames reaped without a readable
   summary** — the one POST-RUN entry, walked with `preflight.ps1 -Session <dir>` and N/A on a normal build.
   ⚠⚠ **L14 AND L15 ARE `N/A` FOR AN INSTRUMENT ARM, AND GETTING THAT WRONG MADE THE CONTROL ARM

@@ -155,3 +155,64 @@ excluded by hand from the run list, so check `preflight.ps1 -Session` before fil
 The vanilla baseline stays pinned to `20260813_083557` (n=4) until a game patch breaks comparability.
 Collection routes for every metric, including the v13 additions (state_access, construction_queue,
 origins phasing), are documented in TESTBED_METRICS.md.
+
+---
+
+## The analysis scripts (as distinct from the `fill_*` scripts)
+
+`fill_*.mjs` fill the report template. These three answer questions, print to stdout, and are quoted
+into a report by hand:
+
+| script | question |
+|---|---|
+| `analyse_ai_tier_choice.mjs` | Of the levels a country builds, what share go to a tier BELOW the best one it already holds? Does the first frontier building break the cycle? (F75) |
+| `analyse_ai_tier_profit.mjs` | Which industries are worst, normalised — and the indefensible case: the frontier pays, a lower rung loses, and the loser is still built. |
+| `analyse_build_allocation.mjs` | ⭐ **THE OVERSHOOT CHECK.** Where did construction actually go, by sector / industry / era, and how did that split move between two arms? |
+
+**All three take `--session <stamp>` and `--config <path>`, and with no arguments reproduce the
+canon-n7 baseline** (52.6% below-best, 54.1% unit-weighted, 55.3% excluding ports, 62,285 qualifying
+country-industry-years). The `fill_*` scripts still hardcode their session; that TODO stands.
+
+### ⚠ They no longer take a run list, and that is the point
+
+`lib_runs.mjs`'s `usableRuns()` **discovers** the run folders and keeps only those that reached their
+own `until` date carrying no `abandoned_reason` — landmine **L17**. `status: ok` in `session.json` is
+derived from the observer's exit code, and the observer exits 0 even when it abandons a run, so it is
+not evidence; each run's own `meta.json` is. Exclusions are **printed with their reason**, because a
+silent exclusion is indistinguishable from a run that never existed.
+
+The hardcoded `RUNS = [1,2,3,4,5,6]` these replaced was correct only by hand and only for canon-n7: it
+happened to stop before that batch's abandoned seventh run, and would have swallowed it the moment
+anyone re-pointed the script at another session.
+
+### Why `analyse_build_allocation.mjs` exists
+
+The tier-choice measure is **within-industry**. A lever that raises the desire of high tiers can move
+it and still be a failure in two ways that measure cannot see:
+
+- **between industries** — tier-4 automotive at `ai_value` 2500 outbids tier-2 textile at 1500, so the
+  construction budget drains out of whole chains instead of climbing each chain's rungs;
+- **out of the untiered sector** — extraction, agriculture, ranching and fishing carry no `ai_value`
+  change at all, so **starving them registers as a WIN** on the tier-choice metric.
+
+So it reports the sector / industry / era split of every level **added**, absolute beside normalized,
+with a per-industry `B/A abs` ratio and a list of industries now building at under 0.60× the baseline.
+
+Conventions it follows, each of which changed a number when it was got wrong:
+
+- **Levels added, never standing levels** — a standing count confounds building with inheriting.
+- **Removals ignored, never netted** — demolition is a different decision, and netting makes a
+  shrinking industry indistinguishable from an unbuilt one.
+- **Annexation-scale country-years excluded** (>+25% total levels in one year), same rule as the
+  tier-choice analysis; the count is reported.
+- **Raw AND unit-weighted totals**, because ports are graded (`workforce_mult` 0.1/0.2) and a ladder
+  that looks like it moved infrastructure may only have moved the unit.
+- **Absolute beside normalized on every table** — a share that rises because its numerator grew and one
+  that rises because everything else collapsed are different results.
+- **Nothing is swept into "other"**: building groups come from vanilla with `mod/common/buildings`
+  layered over (the all-new steamer chain has no vanilla anchor), and anything still unsectored is
+  reported by name with its level count.
+- ⚠ **The UTF-8 BOM is stripped before matching top-level blocks.** Without it the FIRST block of every
+  vanilla file is invisible — the trap `verify_pms.mjs` documents for production methods — and here it
+  loses `building_coal_mine` and `building_logging_camp`, two of the raw industries the whole analysis
+  is about.

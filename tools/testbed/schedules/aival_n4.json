@@ -1,0 +1,73 @@
+{
+  "schedule_version": 1,
+  "label": "aival-n4",
+  "_why": "THE ai_value LADDER, FOUR FULL-CENTURY RUNS (user-ruled 2026-08-19: 'the ladder I want for AI_values is 500*(era+1), universally (tooling included)', n=4 rather than the handover's n=3). FINDINGS F75 measured that the AI puts 52.6% of the building levels it constructs into a tier BELOW the best one that country could already build, and that this is NOT a solvency failure - the rung it keeps building loses a median 1.3 GBP/level/week while the frontier it passes up earns a median 106 GBP/level/week more. It responds weakly to profit and not at all to relative profit, so the lever is the chooser's own desire term, ai_value. ARM: {kind: config, config: config/mod_config.aival.json} - a full modded build, no overlay, no control. SPAN 1836.1.1 -> 1936.1.1, n=4, metrics identical to canon-n7 and to the pinned vanilla baseline.",
+  "_arms": "aival = {kind: config, config: config/mod_config.aival.json}, PAIRED with config/tech_tree_options.aival.json (landmine L20 - preflight fails per setup on an unpaired config, and it passed on this pair before launch). THE ARM IS canon-n7's OWN CONFIG PLUS ONE FIELD: config/mod_config.aival.json was derived from config/mod_config.json at git 78d1068 with a clean tree, whose sha256 D9512C19AEB7AA0ACC1E67D830269BA60BA0910EB17DE6AAD66D4E96D82238EB is byte-identical to canon-n7's frozen config/mod_config.canon_n7.json. A structural diff of the two configs reports 104 differences and all 104 are industries[].tiers[].ai_value; nothing else moved - no recipe, no cost, no era, no start exception, no research_events key, and building_ai_value is untouched (trade_center 5000, the one pre-existing entry). aival's own sha256 is 0C5C3D02BE2D43653AFBE3D22CF62CC2A07479FD604261F9C151A8FD1C4CAAA7. THE FREEZE IS LANDMINE L10 - run_schedule.ps1 rebuilds before EVERY run, so all four build_state.json must show that same config_sha256 before anything is reported. The freeze covers the CONFIG ONLY: an edit to build.ps1, telemetry_lib.ps1, emit_techs.mjs or emit_research_events.mjs during the batch still lands in later runs alone, so none of them may be touched for the duration. NO CONTROL ARM, by standing user ruling (mod runs only until the dozen vanilla runs of the weekend 2026-08-22/23, which will themselves be on 1.13.11).",
+  "_the_ladder": "ai_value = 500 x (era + 1) on EVERY tier of EVERY industry: e0 500 / e1 1000 / e2 1500 / e3 2000 / e4 2500 / e5 3000, i.e. 11/17/19/21/21/16 tiers respectively. Engine default is 1000, so era 1 sits exactly at it, era 0 at half, era 5 at triple. It is LINEAR, not the geometric 1000 x 1.5^era the handover suggested, and its spread is therefore 6x rather than 7.6x. TOOLING IS FOLDED INTO THE LADDER, deliberately and by explicit user ruling: it was the only industry carrying an ai_value at all (2000 flat on all six rungs, matching vanilla's tooling workshop), and it is now 500..3000 like everything else - so its era-0/1/2 rungs are made LESS attractive than they were, not merely less attractive than its own top rung. UNTIERED BUILDINGS ARE NOT TOUCHED AT ALL (user ruling): the top-level building_ai_value map is unchanged.",
+  "_the_seven_that_do_not_get_it": "WARNING - 98 of the 105 tiers emit the ladder; SEVEN DO NOT, and this is a pre-existing builder rule, not something this arm chose. power (3 tiers) and railway (4) are clone_from_vanilla industries whose vanilla blocks carry a COMPLEX conditional ai_value = { ... } block, and New-ClonedBuilding refuses to override one (build.ps1 line 93, printing 'note: <key> has a complex ai_value block - not overriding'); the quirk is already documented on the UI's Mod-changes page. Verified against the emitted files: the five port tiers and the five art_academy tiers DO get the ladder, only power and railway miss it. Consequence for reading the result: the ladder is untested on exactly the two infrastructure industries, one of which (power, 28.7%) is the BEST performer in the F75 census. It reaches all three worst offenders - textile 76.3%, tooling 69.7%, arms 65.0% - so a null result cannot be blamed on the gap. Do NOT fix it by flattening those vanilla blocks mid-experiment: they are ~190 lines of infrastructure-need logic each and replacing them is a far larger behavioural change than the ladder.",
+  "_comparison": "PRIMARY: against canon-n7 (20260818_221216, mod n=6 usable, game 1.13.10) on THE BUILD-CHOICE MEASURE, which is a ratio over ~62,000 separate build decisions INSIDE each run and is therefore the one channel that resolves at this n. Baseline to beat: 52.6% of built levels going to a tier below the best the country could build (55.3% excluding ports, 54.1% unit-weighted); 49.8/31.6/18.5% one/two/three-plus tiers behind; 97.3% -> 47.4% before -> after the country's first new-tier building; 13.1% of post-adoption years still adding lower tiers; 36.9% never built despite holding the tech and running the industry. Reproduce both sides with tools/testbed/ledger/analyse_ai_tier_choice.mjs and analyse_ai_tier_profit.mjs, REPOINTED at each session (their RUNS list is hardcoded at the top). SECONDARY: the pinned vanilla baseline 20260813_083557 (vanilla n=4, 1.13.10) for GDP/levels/workforce and row P, always with the cross-session caveat. AGGREGATES CANNOT DECIDE THIS AT n=4: canon-n7 measured 71% GDP spread, 21% levels and 24% country count across SIX byte-identical runs, so a change in GDP, level count or survivor count is not evidence of anything here in either direction. They are watched only for the SIDE EFFECT below.",
+  "_watch": "(1) THE HEADLINE: does the below-best-tier share fall from 52.6%, and does the after-first-adoption 47.4% fall further. (2) THE OVERSHOOT, user-directed and the reason this batch is not just a one-number test: did we skew the AI so hard toward new rungs that it now UNDERBUILDS - specifically (a) EXTRACTION AND AGRICULTURE, which carry no ai_value change at all and must now compete against tier-4/5 buildings worth 2500-3000, and (b) tier-N of industry X starved because tier-N+1 of industry Y outbids it, i.e. a REALLOCATION BETWEEN INDUSTRIES rather than up each industry's own ladder. Read it as: per-industry-group share of total built levels (raw vs manufacturing vs infrastructure), and per-industry level counts at 1936, both against canon-n7; and check whether any industry that canon-n7 built at all is now near-absent. A ladder that moves the headline by starving the raw sector is a fail, not a win. (3) THE PLAIN SHRINK CHECK: if the AI stops building lower rungs and does not build more upper ones, total levels and GDP fall - look for a DROP, not for a gain, and read it against canon-n7's own 21%/71% spreads before calling it. (4) ROW P wall clock, pop-matched (world.pop_objects_live), four runs; this is the channel the patch most plausibly moves - see _caveats. (5) Whether the six-rung chains (textile, tooling, arms) improve MORE than the three-rung ones (synthetics, automotive; power is untested here), which is what the ladder predicts and which a flat effect would refute. (6) The port tiers specifically: they are graded fractional-unit buildings whose t1 is deliberately loss-making, and e0 port now sits at ai_value 500.",
+  "_cost": "4 runs x 100 in-game years. ~2h35 each on the mod (the measured curve in MODDING_NOTES, NOT the opening rate), so ~10h20 of game time plus 4 builds of ~1 min and the concurrent save harvest. Disk at launch: 43 GB free; canon-n7's seven runs cost 1.2 GB of retained session with the concurrent harvest reaping saves as they are written, so ~0.7 GB expected here.",
+  "_caveats": "THE PATCH CONFOUND, ACCEPTED BY THE USER (2026-08-19): the game updated 1.13.10 -> 1.13.11 after canon-n7, and BOTH pinned baselines are 1.13.10. 1.13.11 fixes SWAY, which drives diplomatic plays -> wars -> conquest, the widest variance channel this project has. The user's ruling: the confounder is very likely insignificant for the economy-health question ('whether the AI builds new enough stuff'), because that measure counts decisions inside each run and barely cares how many wars happened; it may be NOTICEABLE for wall clock, and there is no way to know from this batch alone. So: the build-choice headline is quoted against canon-n7 with the caveat stated but not hedged into meaninglessness; ROW P IS QUOTED AS INDICATIVE ONLY and must not be reported as a clean 1.13.10-vs-1.13.11 or ladder-vs-no-ladder reading. The dozen vanilla runs of 2026-08-22/23, on 1.13.11, become the real baseline afterwards. NOT a controlled experiment in the strict sense - one arm, no control, cross-session and cross-patch partner; every arm-vs-arm claim must name canon-n7 explicitly and carry both caveats. building_inventory is DELIBERATELY ABSENT - disqualified 2026-08-17, its ~12,700-line boot burst overflows the shared 5x512KB log ring and voided session 20260817_184413; building presence comes from the save summaries, and dropping it also protects the other metrics from ring eviction (L4/L9). Every other metric matches canon-n7 and the pinned baseline so the three stay comparable. Save harvest ON (default) and concurrent - REQUIRED, not optional: row P's pop-matched reading and the whole build-choice analysis are computed from the yearly save summaries. All runs must be moderate_consolidation for the wall-clock reading to hold (TESTBED_METRICS 7.25/7.375) - verify from world.game_rules, not from intent. L17: check every meta.json reached_ingame_date before counting a run; run preflight.ps1 -Session on the folder post-run, and an incomplete run must be excluded from n BY HAND in every fill script's run list. L19: no orphaned victoria3.exe at launch (verified 0). Machine must stay otherwise idle or row P is measuring background load.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "The twelve dates match canon-n7 and the pinned baseline 20260813_083557 exactly, which is what keeps the three sessions comparable."
+  },
+  "setups": {
+    "aival": {
+      "kind": "config",
+      "config": "config/mod_config.aival.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "aival",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "aival",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "aival",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "aival",
+      "until": "1936.1.1"
+    }
+  ],
+  "_relaunch": "RELAUNCH of session 20260819_213936_aival-n4, which was stopped at 5 minutes and is VOID (n=0). That attempt exposed LANDMINE L24: build.ps1 Set-BuildingAiValue returns the LINES of a building block and reported its \"complex ai_value block - not overriding\" note with Write-Output, which in PowerShell joins the return value, so the note was written INTO common/buildings/06_urban_center.txt and 11_private_infrastructure.txt as a literal line whose own text contains an unbalanced opening brace - 96 parse errors, every guard passing. Fixed (Write-Warning); Test-LmL24 in preflight.ps1 now reads every emitted common/**/*.txt for brace balance and nothing-but-script at depth 0, artifact-side, proven to exit 1 on the re-injected line. The path had never run because a CLONED tier had never carried a config ai_value before this ladder. THE ARM IS OTHERWISE UNCHANGED - same frozen config sha256 0C5C3D02BE2D43653AFBE3D22CF62CC2A07479FD604261F9C151A8FD1C4CAAA7, same tech tree pair, same twelve dump dates, same metrics, same 330-min timeout. USER RULING taken between the two launches: the 7 power/railway tiers STAY OFF the ladder (they keep vanilla conditional ai_value blocks untouched), so the ladder ships on 98 of 105 tiers - see _the_seven_that_do_not_get_it."
+}

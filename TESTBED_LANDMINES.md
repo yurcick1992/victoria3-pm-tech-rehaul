@@ -72,6 +72,7 @@ closed.
 | L21 | A failed build hangs the scheduler instead of aborting it | AUTO (bounded build + fail-aware waiter) |
 | L22 | A mod `effect` block silently replacing a vanilla on_action's | AUTO |
 | L23 | A telemetry line counted RAW when a burst repeats it | **REGISTERED, DETECTOR OWED** |
+| L24 | A generator's own diagnostic text leaked into an emitted script file | AUTO |
 
 ---
 
@@ -1167,3 +1168,77 @@ on the raw numbers. Re-derive from distinct triples before using them.
 ⚠ This is L9's sibling — that entry is about reading the shared ring without filtering by the run's own
 token, this one about trusting line COUNTS from a ring under burst. The same instinct fixes both: a log
 line is evidence that something happened, never evidence of how many times.
+
+---
+
+## L24 — a GENERATOR'S OWN DIAGNOSTIC TEXT LEAKED INTO AN EMITTED SCRIPT FILE
+
+**Status: AUTO** — `Test-LmL24` in `tools/preflight.ps1`, artifact-side, so it runs on every build and
+before every batch. Proven to trip by re-injecting the exact damage.
+
+**Found 2026-08-19**, at the five-minute smoke check of the `aival-n4` batch's first run, which was
+stopped and relaunched. Cost: five minutes. Had the smoke check not been done, it would have cost the
+whole ten-hour window and produced an arm whose power and railway buildings may not have existed.
+
+### What happened
+
+`build.ps1`'s `Set-BuildingAiValue` **returns the lines of a building block**, and reported its
+"won't override a complex `ai_value` block" note with `Write-Output`. In PowerShell a bare
+`Write-Output` inside a function **joins that function's return value**, so the note was written into
+`common/buildings/06_urban_center.txt` and `11_private_infrastructure.txt` as a literal line:
+
+```
+note: building_power_plant = { has a complex ai_value block - not overriding
+building_power_plant = {
+	building_group = bg_power
+	...
+```
+
+⚠⚠ **The note text itself contains `<key> = {` — an unbalanced OPENING brace.** So the parser opened a
+bogus block and the real definition nested inside it; the file's depth never returned to zero and every
+subsequent block shifted a level. Seven such lines, one per cloned tier with a complex vanilla block
+(3 power + 4 railway).
+
+**And nothing failed.** The build succeeded. `lint.sh`, `lint_solvency.mjs` and `Invoke-ModChecks` all
+passed — they check *economics* and *completeness*, not syntax. The mod loaded. The init marker
+`PM_TECH_REHAUL: init OK` was written. The clock advanced. The only trace was 96 lines of
+`gamedatabase.h:378 Duplicated key note: will not be created from file: …` in `error.log`, a file that
+is *expected* to carry vanilla's noise and that the smoke check exists to read.
+
+### Why it had never fired
+
+`Set-BuildingAiValue` refuses complex blocks **by design** — mangling railway's 164-line
+Trans-Siberian / Shinkansen / Trans-Continental `ai_value` block would be far worse. But it is only
+*called* on a cloned tier when that tier carries an `ai_value` in the config, and until the ai_value
+ladder **no power or railway tier ever did**. The F66 port probe set ai_values on cloned tiers, but
+ports carry no complex block, so it took the scalar path and the note never printed.
+
+⇒ **A refusal path that has never executed is not known to work.** The same is true of any
+`else`-branch in a generator that only a new config shape can reach.
+
+### DETECTOR
+
+Read every **EMITTED** `common/**/*.txt` — the artifact, never the generator — and require that it is
+syntactically a Paradox script file:
+
+* brace depth ends at **0** and never goes negative;
+* every non-blank, non-comment line at depth 0 is either `}` or `<key> =`.
+
+Prose cannot satisfy the second rule, and that is the whole point. `#` counts as a comment only outside
+quotes.
+
+⚠ **Deliberately NOT a grep for `note:`, and not a lint of `build.ps1` for `Write-Output`.** The bug
+class is *a generator leaking its own output into its output*, and the next instance will use a
+different word in a different function. Verified **zero false positives** across all 36 emitted files
+of both the canonical and the aival builds; **proven to FAIL** (exit 1) with the original bad line
+re-injected, naming both the stray line and the resulting brace imbalance.
+
+### The rule for generators
+
+**A function that returns content must never report through the success stream.** In PowerShell use
+`Write-Warning` (or `Write-Host`); the note is *more* visible there, not less, which is what you want
+for a silent skip. The same trap exists wherever a helper both builds text and narrates — check any
+generator whose return value is assembled from a pipeline.
+
+⚠ This is L2's sibling one level up: L2 is a *data function* used where a script value belongs, this is
+a *diagnostic string* used where script belongs. Both produce a file the engine half-reads.

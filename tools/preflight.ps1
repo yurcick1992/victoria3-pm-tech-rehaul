@@ -471,6 +471,78 @@ function Test-LmL22 {
     }
 }
 
+# ============================================================= L24 ====
+function Test-LmL24 {
+    <#
+      L24 - a GENERATOR'S OWN DIAGNOSTIC TEXT LEAKED INTO AN EMITTED SCRIPT FILE.
+
+      build.ps1's Set-BuildingAiValue returns the LINES of a building block and reported its
+      "won't override a complex ai_value block" note with Write-Output. In PowerShell a bare
+      Write-Output inside a function JOINS ITS RETURN VALUE, so the note was written into
+      common/buildings/06_urban_center.txt and 11_private_infrastructure.txt as a literal line:
+
+          note: building_power_plant = { has a complex ai_value block - not overriding
+          building_power_plant = {
+
+      The note text itself contains "<key> = {", an UNBALANCED OPENING BRACE, so the parser opened a
+      bogus block and the real definition nested inside it. 96 parse errors per run, and NOTHING
+      FAILED: the build succeeded, every lint passed, the mod loaded, the init marker was written,
+      the clock advanced. Found only by reading error.log at the five-minute smoke check.
+
+      DETECTOR. Read every EMITTED common/**/*.txt (the artifact, never the generator) and require
+      that it is syntactically a Paradox script file:
+        * brace depth ends at 0 and never goes negative;
+        * every non-blank, non-comment line at depth 0 is either `}` or `<key> =` .
+      Prose cannot satisfy the second rule, which is the point - the check is about TEXT THAT IS NOT
+      SCRIPT, not about any one generator's bug. `#` is honoured as a comment only outside quotes.
+
+      ⚠ Deliberately NOT a grep for "note:" or for Write-Output in build.ps1. The bug class is a
+      generator leaking its own output, and the next one will use a different word and a different
+      function. Verified zero false positives across all 36 emitted files of both the canonical and
+      the aival builds, and PROVEN to trip by injecting the exact line the bug produced.
+    #>
+    $dir = Join-Path $Mod 'common'
+    if (-not (Test-Path $dir)) { Add-Result 'L24' 'generator text leaked into an emitted script file' 'N/A' 'no common/ emitted'; return }
+
+    $ok  = [regex]'^[@A-Za-z_][\w.:@|''-]*\s*='
+    $bad = @(); $n = 0
+    foreach ($f in Get-ChildItem -Path $dir -Recurse -File -Filter *.txt) {
+        $n++
+        $depth = 0; $minDepth = 0; $stray = @()
+        $lines = [System.IO.File]::ReadAllLines($f.FullName)
+        for ($i = 0; $i -lt $lines.Count; $i++) {
+            # strip a trailing comment, honouring quotes
+            $code = ''; $q = $false
+            foreach ($ch in $lines[$i].ToCharArray()) {
+                if ($ch -eq '"') { $q = -not $q }
+                if ($ch -eq '#' -and -not $q) { break }
+                $code += $ch
+            }
+            $t = $code.Trim()
+            if ($depth -eq 0 -and $t -and $t -ne '}' -and -not $ok.IsMatch($t)) {
+                if ($stray.Count -lt 3) { $stray += "line $($i+1): $($t.Substring(0, [Math]::Min(80, $t.Length)))" }
+            }
+            foreach ($ch in $code.ToCharArray()) {
+                if ($ch -eq '{') { $depth++ }
+                elseif ($ch -eq '}') { $depth--; if ($depth -lt $minDepth) { $minDepth = $depth } }
+            }
+        }
+        $rel = $f.FullName.Substring($Mod.Length).TrimStart('\')
+        if ($stray.Count) { $bad += "  $rel - NOT SCRIPT at top level:"; $bad += ($stray | ForEach-Object { "      $_" }) }
+        if ($depth -ne 0)   { $bad += "  $rel - brace depth ends at $depth, not 0" }
+        if ($minDepth -lt 0){ $bad += "  $rel - brace depth went negative ($minDepth): a stray closing brace" }
+    }
+    if ($bad.Count) {
+        Add-Result 'L24' 'generator text leaked into an emitted script file' 'FAIL' (
+            ($bad -join [Environment]::NewLine) + [Environment]::NewLine +
+            "an emitted file is not valid script. The usual cause is a generator function that both" + [Environment]::NewLine +
+            "RETURNS lines and reports with Write-Output - use Write-Warning/Write-Host for notes.")
+    } else {
+        Add-Result 'L24' 'generator text leaked into an emitted script file' 'PASS' `
+            "$n emitted common/*.txt file(s): brace-balanced, nothing but script at top level"
+    }
+}
+
 # ============================================================== L7 ====
 function Test-LmL7 {
     <#
@@ -861,7 +933,8 @@ $CHECKS = @(
     # L20 reads the CONFIG, not the mod, so it gates a batch before anything is built - which is the
     # whole point: the failure it catches costs a whole window when it is found at the first build.
     @{ Id = 'L20'; Artifact = $false; Fn = { Test-LmL20 } },
-    @{ Id = 'L22'; Artifact = $true;  Fn = { Test-LmL22 } }
+    @{ Id = 'L22'; Artifact = $true;  Fn = { Test-LmL22 } },
+    @{ Id = 'L24'; Artifact = $true;  Fn = { Test-LmL24 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {

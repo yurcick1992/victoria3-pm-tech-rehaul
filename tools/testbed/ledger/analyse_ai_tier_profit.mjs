@@ -17,17 +17,24 @@
 // USAGE: node tools/testbed/ledger/analyse_ai_tier_profit.mjs [--runs 6] [--minlv 3]
 
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { usableRuns, reportDropped } from './lib_runs.mjs';
 import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
 
 const ARGV = process.argv.slice(2);
 const argOf = (n, d) => { const i = ARGV.indexOf(n); return i >= 0 && ARGV[i + 1] ? ARGV[i + 1] : d; };
 const SES = 'tools/testbed/sessions';
-const RUNS = [1, 2, 3, 4, 5, 6].map(i => `20260818_221216_canon-n7/run00${i}_canonfull`).slice(0, +argOf('--runs', '6'));
+// See analyse_ai_tier_choice.mjs for why the run list is DISCOVERED rather than written down.
+const SESSION = argOf('--session', '20260818_221216_canon-n7');
+const CFGPATH = argOf('--config', SESSION === '20260818_221216_canon-n7'
+  ? 'config/mod_config.canon_n7.json' : 'config/mod_config.json');
+const { runs: USABLE, dropped: DROPPED } = usableRuns(SES, SESSION);
+const RUNS = USABLE.slice(0, +argOf('--runs', '99'));
+if (!RUNS.length) { console.error(`no usable runs under ${join(SES, SESSION)}`); process.exit(1); }
 const MINLV = +argOf('--minlv', '3');
 const ANNEX_JUMP = 1.25;
 
-const cfg = JSON.parse(readFileSync('config/mod_config.canon_n7.json', 'utf8'));
+const cfg = JSON.parse(readFileSync(CFGPATH, 'utf8'));
 const IND = {};
 for (const ind of cfg.industries || []) {
   const tiers = (ind.tiers || []).map((t, i) => ({ key: t.key, idx: i, tech: t.tech, wm: +(t.workforce_mult ?? 1) }))
@@ -96,6 +103,8 @@ for (const run of RUNS) {
 
 const pct = (a, b) => b ? (100 * a / b).toFixed(1) + '%' : '—';
 console.log('\n=== (a) WHICH INDUSTRIES BUILD BELOW THE BEST TIER THEY HOLD ===');
+console.log(`session ${SESSION} · ladder ${CFGPATH} · runs ${RUNS.length}`);
+reportDropped(DROPPED);
 console.log('   (share of that industry\'s own building, so size does not decide the ranking)');
 console.log('  industry          below%      below lv     at/above lv');
 const rows = Object.entries(per).map(([id, p]) => ({ id, ...p, tot: p.front + p.lag }))

@@ -27,19 +27,28 @@
 // USAGE: node tools/testbed/ledger/analyse_ai_tier_choice.mjs [--runs <n>] [--json <out>]
 
 import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
+import { usableRuns, reportDropped } from './lib_runs.mjs';
 import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
 
 const ARGV = process.argv.slice(2);
 const argOf = (n, d) => { const i = ARGV.indexOf(n); return i >= 0 && ARGV[i + 1] ? ARGV[i + 1] : d; };
 const SES = 'tools/testbed/sessions';
-const RUNS = [1, 2, 3, 4, 5, 6].map(i => `20260818_221216_canon-n7/run00${i}_canonfull`)
-  .slice(0, +argOf('--runs', '6'));
+// --session <stamp> points the whole analysis at another batch; --config <path> gives it that
+// batch's own FROZEN ladder. Both default to canon-n7, so the published baseline still reproduces
+// with no arguments. Run folders are DISCOVERED, never listed: a hardcoded list silently counts a
+// run that L17 says did not finish, and silently omits one that did.
+const SESSION = argOf('--session', '20260818_221216_canon-n7');
+const CFGPATH = argOf('--config', SESSION === '20260818_221216_canon-n7'
+  ? 'config/mod_config.canon_n7.json' : 'config/mod_config.json');
+const { runs: USABLE, dropped: DROPPED } = usableRuns(SES, SESSION);
+const RUNS = USABLE.slice(0, +argOf('--runs', '99'));
+if (!RUNS.length) { console.error(`no usable runs under ${join(SES, SESSION)}`); process.exit(1); }
 const ABSORB = 0.267;          // dQ/Q that costs 20 pp of price
 const ANNEX_JUMP = 1.25;       // level growth in one year that means conquest, not construction
 
 // ---------------------------------------------------------------- the ladder ----
-const cfg = JSON.parse(readFileSync('config/mod_config.canon_n7.json', 'utf8'));
+const cfg = JSON.parse(readFileSync(CFGPATH, 'utf8'));
 const IND = {};                // industry -> [{key, tier, era, tech, good, out}] ordered
 for (const ind of cfg.industries || []) {
   const tiers = (ind.tiers || []).map((t, i) => ({
@@ -160,6 +169,8 @@ for (const run of RUNS) {
 const pct = (a, b) => b ? (100 * a / b).toFixed(1) + '%' : '—';
 const tot = stat.frontierLv + stat.laggardLv;
 console.log('\n=== AI TIER CHOICE — all three conditions satisfied ===');
+console.log(`session ${SESSION} · ladder ${CFGPATH}`);
+reportDropped(DROPPED);
 console.log(`runs ${RUNS.length} · qualifying country-industry-years ${stat.cases.toLocaleString()}`);
 console.log(`levels built AT or above the best held tier : ${Math.round(stat.frontierLv).toLocaleString().padStart(9)}  ${pct(stat.frontierLv, tot)}`);
 console.log(`levels built BELOW it (the fault)           : ${Math.round(stat.laggardLv).toLocaleString().padStart(9)}  ${pct(stat.laggardLv, tot)}`);

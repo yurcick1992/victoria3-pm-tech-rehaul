@@ -13,6 +13,47 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## A builder's own diagnostic note written INTO the mod, breaking two building files (2026-08-19)
+
+**Symptom.** None from any guard. The build succeeded, `lint.sh`, `lint_solvency.mjs` and
+`Invoke-ModChecks` all passed, `preflight.ps1` passed, the mod loaded, the `PM_TECH_REHAUL: init OK`
+marker was written and the clock advanced. The only trace was 96 lines of
+`gamedatabase.h:378 Duplicated key note: will not be created from file: common/buildings/06_urban_center.txt:165`
+in `error.log` — a file expected to carry vanilla's own noise — found at the five-minute smoke check of
+a batch that was then stopped and relaunched.
+
+**Root cause.** `Set-BuildingAiValue` (tools/build.ps1) **returns the lines of a building block**, and
+reported its "won't override a complex `ai_value` block" note with `Write-Output`. In PowerShell a bare
+`Write-Output` inside a function **joins that function's return value**, so the note became line 0 of the
+returned array and was written into the emitted file:
+
+```
+note: building_power_plant = { has a complex ai_value block - not overriding
+building_power_plant = {
+```
+
+The note text contains `<key> = {`, an **unbalanced opening brace**, so the parser opened a bogus block,
+nested the real definition inside it, and left the file at depth 1 — shifting every subsequent block a
+level. Seven such lines, one per cloned tier with a complex vanilla block (3 power + 4 railway).
+
+**Why it had never fired.** The refusal path is correct and deliberate — mangling railway's 164-line
+Trans-Siberian / Shinkansen / Trans-Continental `ai_value` block would be far worse than skipping it. But
+`Set-BuildingAiValue` is only *called* on a cloned tier when that tier carries an `ai_value` in the config,
+and until the ai_value ladder (500 x (era+1) on all 105 tiers) **no power or railway tier ever did**. The
+F66 port probe did set ai_values on cloned tiers, but ports carry no complex block, so it took the scalar
+path and the note never printed. ⇒ **A branch that has never executed is not known to work** — the same
+holds for any `else` in a generator that only a new config shape can reach.
+
+**Fix.** `Write-Output` → `Write-Warning`. A function that returns content must never report through the
+success stream; the note is *more* visible on the warning stream, which is what a silent skip deserves.
+
+**Prevention.** Landmine **L24**, `Test-LmL24` in `tools/preflight.ps1`, artifact-side so it runs on every
+build: every emitted `common/**/*.txt` must be brace-balanced and hold nothing but script at depth 0.
+Deliberately not a grep for `note:` or for `Write-Output` — the class is *a generator leaking its own
+output into its output*, and the next one will use different words. Zero false positives over all 36
+emitted files of two builds; proven to exit 1 with the original line re-injected.
+---
+
 ## `predict_good_demand.mjs --obsession-budget 1` never loaded a single obsession — and its verification passed anyway (2026-08-16)
 
 **Symptom.** None, twice over. The flag ran without error, the predicted number MOVED in the expected
