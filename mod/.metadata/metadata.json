@@ -1,9 +1,9 @@
 {
-	"name" : "PM and Tech Rehaul (built 2026-08-18 20:29)",
+	"name" : "PM and Tech Rehaul (built 2026-08-19 21:12)",
 	"id" : "com.yurcick.pm_tech_rehaul",
 	"version" : "0.1.0",
 	"game_id" : "victoria3",
-	"supported_game_version" : "1.13.10",
+	"supported_game_version" : "1.13.11",
 	"short_description" : "Removes main-PM diversity from manufacturing buildings and splits each tier into its own tech-gated building type.",
 	"tags" : ["Gameplay", "Economy", "Balance", "Buildings", "Technologies"],
 	"relationships" : [],

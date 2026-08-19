@@ -271,6 +271,24 @@ observer refuses to launch a mod that carries no telemetry, so build it with `-T
 ## Log of version-sensitive findings
 
 Newest first. Append here as we discover more couplings to vanilla.
+- **2026-08-19** — **1.13.11 lands, and the automated half is CLEAN.** Verified the same afternoon it
+  installed (exe stamped 18:49; launcher reports `1.13.11 (Matcha)`): `build.ps1 -DryRun` passes LINT,
+  NEGATIVE-GOODS, SOLVENCY, MOD CHECKS and PREFLIGHT; `verify_pms.mjs` finds all **169 selected PMs**
+  still real and legal; `verify_start_techs.mjs --vs-vanilla` still passes with the same 3 inherited
+  vanilla gaps; and **all 53 base prices in `goods_prices.tsv` are unchanged**. `supported_game_version`
+  bumped 1.13.10 → 1.13.11 — an unbumped stamp makes the game log a version mismatch, which the
+  five-minute smoke check greps for.
+  ⚠⚠ **WHAT IS NOT VERIFIED IS THE BEHAVIOUR.** 1.13.11 fixes the **sway** recursion (the 1.13.10 CTD
+  of F56, which cost this project several crashed runs). Sway feeds diplomatic plays → wars →
+  conquest, and war/country-survival is the widest variance channel measured in
+  `20260818_221216_canon-n7` (24% spread on surviving countries, 71% on GDP). **So the patch
+  plausibly moves the very quantity our error bars are widest on, and nothing measures which way.**
+  ⇒ **The pinned baselines `20260813_083557` (vanilla n=4) and `20260818_221216_canon-n7` (mod n=6)
+  are BOTH 1.13.10.** Any 1.13.11 arm compared against them carries a patch confound on top of the
+  ordinary cross-session caveat. Until a 1.13.11 vanilla baseline exists, prefer a **same-patch A/B** —
+  control and treatment in the same batch, on the current build — over comparing against either pin.
+  A crashed-run tally is now also a weak health signal for the fix: markedly fewer resumes would
+  corroborate it.
 
 - **2026-08-16** — **The graded port factorisation (§10.60.2) adds two vanilla couplings.**
   (1) `convert_history.ps1` clamps **anchorage-mapped** port entries (`pm_anchorage` by name) to exactly
