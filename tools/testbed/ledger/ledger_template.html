@@ -228,10 +228,21 @@ function renderPerf(mode){
   let all=series.flatMap(s=>s.pts.map(p=>p[1]));
   // ⚠ a normalised value can be ~0.005; without rescaling every axis label rounded to "0.0".
   // Pick a power of ten that puts the maximum in [1,100) and say so in the unit label.
+  // ⚠⚠ EMPTY SERIES GUARD. Math.max.apply(null,[]) is -Infinity, and `while(mx*sc<1) sc*=10` then
+  // never terminates: the tab locks up with no error in the console. Any normalisation whose inputs
+  // are missing (a model whose coefficients are absent, a pops/levels series the batch did not
+  // carry) empties `all` and hits it. Found by clicking '÷ modelled cost' on a filled report,
+  // 2026-08-19. A missing input must cost this panel a note, never the page a hang.
+  if(!all.length || !all.some(Number.isFinite)){
+    document.getElementById('perf-chart').innerHTML='';
+    document.getElementById('perf-cap').innerHTML='<b>No data for this view.</b> The selected normalisation needs a series this batch does not carry (for ÷ modelled cost that is <code>PERF.model</code> with <code>c0</code>/<code>cPop</code>/<code>cLv</code>, plus per-year pops and levels for both arms). The other views are unaffected.';
+    return;
+  }
   let sc=1, scLbl='';
   if(!ratio && norm!=='none'){
     const mx=Math.max.apply(null,all);
-    while(mx*sc<1) sc*=10; while(mx*sc>=100) sc/=10;
+    let guard=0;
+    while(mx*sc<1 && guard++<40) sc*=10; while(mx*sc>=100 && guard++<80) sc/=10;
     if(sc!==1){ series.forEach(s2=>s2.pts=s2.pts.map(p=>[p[0],p[1]*sc]));
       all=series.flatMap(s2=>s2.pts.map(p=>p[1]));
       const e=Math.round(Math.log10(sc)); scLbl=' (×10'+String(-e).replace(/-/,'−').split('').map(d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[+d]||d).join('')+')';
@@ -715,6 +726,16 @@ function lineChart(el,series,opts){
   const yp=v=>T+(opts.ymax-v)/(opts.ymax-opts.ymin)*(H-T-B);
   let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+opts.label+'" style="width:100%;height:auto">';
   if(opts.band)s+='<rect x="'+L+'" y="'+yp(opts.band[1])+'" width="'+(W-L-R)+'" height="'+(yp(opts.band[0])-yp(opts.band[1]))+'" fill="'+css('--accent')+'" opacity="0.07"/>';
+  // `grid` is OPTIONAL: a caller that knows its own scale passes ticks, one that does not gets a
+  // 1/2/5 ladder derived from the axis. It used to be mandatory and threw 'opts.grid is not iterable'
+  // on any new caller - which is a whole panel lost to a missing convenience argument.
+  if(!opts.grid){
+    const lo=opts.ymin??0, hi=opts.ymax??Math.max.apply(null,series.flatMap(s2=>s2.pts.map(p=>p[1])).filter(Number.isFinite));
+    const span=(hi-lo)||1, raw=span/5, mag=Math.pow(10,Math.floor(Math.log10(raw)));
+    const step=(raw/mag>=5?5:raw/mag>=2?2:1)*mag;
+    opts.grid=[]; for(let v=Math.ceil(lo/step)*step; v<=hi+1e-9 && opts.grid.length<20; v+=step) opts.grid.push(+v.toFixed(6));
+    if(opts.ymax==null) opts.ymax=opts.grid[opts.grid.length-1]||1;
+  }
   for(const g of opts.grid){
     const em=opts.emph===g;
     s+='<line x1="'+L+'" y1="'+yp(g)+'" x2="'+(W-R)+'" y2="'+yp(g)+'" stroke="'+css('--line')+'" stroke-width="'+(em?1.5:1)+'" '+(em?'stroke-dasharray="5 4"':'')+'/>';
