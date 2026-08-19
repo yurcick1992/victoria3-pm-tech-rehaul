@@ -63,6 +63,33 @@ encodes, all user-ruled:
   blanked the moment an unrelated renderer failed. Keep it independent (and keep it wrapped in its IIFE:
   the main script declares its own top-level `const css`, and a second one throws).
 
+## ⛔ THE GATE: `fill_manifest.json` + `fill_verify.mjs` (2026-08-19)
+
+**Run `node tools/testbed/ledger/fill_verify.mjs <dir>` before publishing. Exit 0 = safe. Exit 1 = do
+not publish.** It reads the finished REPORT.html - the artifact, never the generators - and checks:
+
+1. **Every token filled.** Any `__TOKEN__` left, or one the manifest does not know about.
+2. **Every const present and NON-EMPTY**, against `minKeys`. An empty panel is worse than an absent
+   one, because a reader cannot tell it from a panel of zeroes.
+3. **Staleness.** A list of retired session ids and arm labels that must NOT appear. ⚠ Add to
+   `staleness.forbidden` as each batch is superseded - that list is the memory.
+4. **The page renders**, under a headless DOM: anything that throws is caught, because one renderer
+   failing blanks every panel after it.
+5. **Every table has rows** and **every control runs** - with a 2 s watchdog, since an empty series
+   once hung the page outright.
+
+**WHY IT EXISTS.** Two failures kept recurring and neither was visible on the finished page: the
+flatcost batch’s incidents and its “next lever” (built on an OVERSHOOT) were republished verbatim
+under a batch that UNDERSHOOTS, and three data sections rendered as empty tables. Both were found by
+a human reading the page, which is exactly the review a gate should not depend on.
+
+⚠ **Proven by deliberate breakage**, all four classes: stale string, emptied const, unfilled token,
+and a renderer made to throw. Re-prove it if you change the checker.
+
+⚠⚠ **NEVER HAND-EDIT REPORT.html.** It is an artifact: the next fill overwrites it. Structure goes in
+the template, prose in the token files (`lede/goals/incidents/next/footer.html`), numbers in a
+`fill_*.mjs`. If a paragraph names a year, a country, a run or a number, it is a TOKEN, not shell.
+
 ## The `fill_*.mjs` scripts (added 2026-08-19, canon-n7)
 
 `report_data2.mjs` emits **none of `techsT`, `jeT` or `sector`**, and nothing computed the verdict
