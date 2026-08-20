@@ -34,7 +34,7 @@ const WARN_SHARE = +opt('--warn-share', 0.6);
 const WARN_MIN = +opt('--warn-min', 3);
 
 const dir = existsSync(join(root, 'save_summaries')) ? join(root, 'save_summaries') : root;
-const files = readdirSync(dir).filter(f => f.endsWith('.json.gz')).sort();
+const files = readdirSync(dir).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).sort();
 if (!files.length) { console.error(`no save summaries under ${dir} — nothing to check yet`); process.exit(2); }
 const picked = ALL ? files : [files[files.length - 1]];
 

@@ -21,7 +21,7 @@ function walk(runDir, wantEmp) {
   const dir = join(SES, runDir, 'save_summaries');
   const out = {};
   for (const tag of TAGS) out[tag] = { gdp: {}, pop: {}, lab: {}, emp: {} };
-  for (const f of readdirSync(dir).filter(f => f.endsWith('.json.gz')).sort()) {
+  for (const f of readdirSync(dir).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).sort()) {
     let j; try { j = JSON.parse(gunzipSync(readFileSync(join(dir, f)))); } catch { continue; }
     const y = +(j.provenance.date || '0').split('.')[0];
     for (const tag of TAGS) {

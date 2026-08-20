@@ -18,7 +18,7 @@ function series(runDir) {
   const dir = join(SES, runDir, 'save_summaries');
   if (!existsSync(dir)) return null;
   const out = {};
-  for (const f of readdirSync(dir).filter(x => x.endsWith('.json.gz')).sort()) {
+  for (const f of readdirSync(dir).filter(x => x.endsWith('.json.gz') && !x.includes('.partial.')).sort()) {
     let j; try { j = JSON.parse(gunzipSync(readFileSync(join(dir, f)))); } catch { continue; }
     const y = +(j.provenance.date || '0').split('.')[0];
     let gdp = 0, sal = 0, unemp = 0, peas = 0, wfAll = 0;

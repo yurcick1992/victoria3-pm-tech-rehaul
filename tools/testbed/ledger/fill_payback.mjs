@@ -20,7 +20,7 @@ for (const y of YEARS) {
   const perRunFrontier = [], perRunStale = [], perRunGap = [], lossCount = [];
   for (const r of RUNS) {
     const dir = join(SES, r, 'save_summaries'); if (!existsSync(dir)) continue;
-    const f = readdirSync(dir).filter(x => x.endsWith('.json.gz')).sort()
+    const f = readdirSync(dir).filter(x => x.endsWith('.json.gz') && !x.includes('.partial.')).sort()
       .find(x => { try { return +(JSON.parse(gunzipSync(readFileSync(join(dir,x)))).provenance.date||'').split('.')[0] === y; } catch { return false; } });
     if (!f) continue;
     const j = JSON.parse(gunzipSync(readFileSync(join(dir, f))));

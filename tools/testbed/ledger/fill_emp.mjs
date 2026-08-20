@@ -19,7 +19,7 @@ const YEARS = [1840,1860,1880,1900,1920,1935];
 const per = {};
 for (const r of RUNS) {
   const dir = join(SES, r, 'save_summaries'); if (!existsSync(dir)) continue;
-  for (const f of readdirSync(dir).filter(x => x.endsWith('.json.gz')).sort()) {
+  for (const f of readdirSync(dir).filter(x => x.endsWith('.json.gz') && !x.includes('.partial.')).sort()) {
     let j; try { j = JSON.parse(gunzipSync(readFileSync(join(dir, f)))); } catch { continue; }
     const y = +(j.provenance.date || '0').split('.')[0];
     if (!YEARS.includes(y)) continue;

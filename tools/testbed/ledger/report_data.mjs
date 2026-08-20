@@ -38,7 +38,7 @@ const classOf = k => {
 };
 function walk(runDir, isFlat) {
   const dir = join(SES, runDir, 'save_summaries');
-  const files = readdirSync(dir).filter(f => f.endsWith('.json.gz')).sort();
+  const files = readdirSync(dir).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).sort();
   // vaByYear: TIERED-SECTOR GDP, which is what makes the report's whole-economy <-> tiered-sector
   // scope control apply to the GDP chart as well (F74, 2026-08-18). Value added = outputs - inputs at
   // BASE cost; 52 x the weekly figure reproduces the save's own `gdp` to 0.3%, so the tiered slice is

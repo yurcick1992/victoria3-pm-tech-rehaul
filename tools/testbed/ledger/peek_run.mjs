@@ -50,7 +50,7 @@ for (const ind of cfg.industries || [])
 function snapshot(runDir) {
   const dir = join(SES, runDir, 'save_summaries');
   if (!existsSync(dir)) return null;
-  for (const f of readdirSync(dir).filter(x => x.endsWith('.json.gz')).sort()) {
+  for (const f of readdirSync(dir).filter(x => x.endsWith('.json.gz') && !x.includes('.partial.')).sort()) {
     let j; try { j = JSON.parse(gunzipSync(readFileSync(join(dir, f)))); } catch { continue; }
     if (+(j.provenance.date || '0').split('.')[0] !== YEAR) continue;
     const W = { gdp: 0, sal: 0, gov: 0, lv: 0, ind: {}, era: {}, tierLv: 0 };

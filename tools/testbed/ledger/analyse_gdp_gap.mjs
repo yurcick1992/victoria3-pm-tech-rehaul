@@ -49,7 +49,7 @@ for (const run of runs) {
   const isMod = !/_(vanilla|control)$/.test(run);
   const dir = join(SESSION, run, 'save_summaries');
   let files;
-  try { files = readdirSync(dir).filter(f => f.endsWith('.json.gz')).sort(); } catch { continue; }
+  try { files = readdirSync(dir).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).sort(); } catch { continue; }
   let prevLv = null;
   for (const f of files) {
     let j;

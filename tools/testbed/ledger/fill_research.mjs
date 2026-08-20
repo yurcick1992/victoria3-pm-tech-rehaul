@@ -25,7 +25,7 @@ function held(dirs) {
   const perYear = {};
   for (const r of dirs) {
     const dir = join(SES, r, 'save_summaries'); if (!existsSync(dir)) continue;
-    for (const f of readdirSync(dir).filter(x => x.endsWith('.json.gz')).sort()) {
+    for (const f of readdirSync(dir).filter(x => x.endsWith('.json.gz') && !x.includes('.partial.')).sort()) {
       let j; try { j = JSON.parse(gunzipSync(readFileSync(join(dir, f)))); } catch { continue; }
       const y = +(j.provenance.date||'0').split('.')[0]; if (!YEARS.includes(y)) continue;
       const acc = {}; let n = 0;

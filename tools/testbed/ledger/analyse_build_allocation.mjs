@@ -148,7 +148,7 @@ function sweep(spec, cfgPath) {
   for (const run of runs) {
     const dir = join(SES, run, 'save_summaries');
     if (!existsSync(dir)) continue;
-    const files = readdirSync(dir).filter(f => f.endsWith('.json.gz')).sort();
+    const files = readdirSync(dir).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).sort();
     let prev = null;
     for (const f of files) {
       let j; try { j = JSON.parse(gunzipSync(readFileSync(join(dir, f)))); } catch { continue; }

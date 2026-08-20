@@ -73,6 +73,7 @@ closed.
 | L22 | A mod `effect` block silently replacing a vanilla on_action's | AUTO |
 | L23 | A telemetry line counted RAW when a burst repeats it | **REGISTERED, DETECTOR OWED** |
 | L24 | A generator's own diagnostic text leaked into an emitted script file | AUTO |
+| L25 | A summary reader globs *.json.gz and reads the harvester's in-progress file | FIXED (14 readers), **DETECTOR OWED** |
 
 ---
 
@@ -1242,3 +1243,64 @@ generator whose return value is assembled from a pipeline.
 
 ⚠ This is L2's sibling one level up: L2 is a *data function* used where a script value belongs, this is
 a *diagnostic string* used where script belongs. Both produce a file the engine half-reads.
+
+---
+
+## L25 — a SUMMARY READER GLOBS `*.json.gz` AND SO READS THE HARVESTER'S IN-PROGRESS FILE
+
+**Status: FIXED IN ALL 14 READERS, DETECTOR OWED** — `preflight.ps1` is a build-path file and a batch
+was running when this was found, so the static check is deferred to the end of that batch. Written up
+now so the deferral is a decision and not a lapse.
+
+**Found 2026-08-20**, from a `.partial` filename appearing in a routine construction-mix smoke check.
+
+### The mechanism
+
+`harvest_saves.ps1` writes each summary to a temp name and renames only after verifying it —
+`$tmp = Join-Path $Out "$stem.partial.json.gz"` (line 107). That discipline is correct and is the
+reason L12 exists: a reaped save makes the summary the record, so it must never be half-written.
+
+But **`"0001_x.partial.json.gz".endsWith('.json.gz')` is TRUE**, and every reader globbed exactly that.
+Fourteen of them: all the `analyse_*`, `fill_*`, `report_*` and panel scripts, plus `queue_mix.mjs`.
+
+### Why nothing fails
+
+Two outcomes, both silent:
+
+* **the temp file is still truncated** — `gunzipSync` throws, and every reader wraps the parse in
+  `try { … } catch { continue; }`, so the year is **silently skipped**. A mid-batch read quietly loses
+  data and reports a smaller series as though it were complete.
+* **the temp file is complete but not yet renamed** — both names are in the listing, so the same year
+  is **read twice**. In the diff-based analysers that inserts a spurious zero-delta year, diluting
+  every per-year rate.
+
+Neither raises anything. The reader prints a normal-looking table either way.
+
+### Blast radius, checked rather than assumed
+
+Completed-batch analysis is **unaffected** — once a harvest finishes there are no `.partial` files
+left, which is why every number reported off `canon-n7`, `aival-n4` and the vanilla baseline stands.
+The exposure is to **mid-batch reads**, and one was done on 2026-08-20 (run 1 of `aival-n4`, at the
+user's request). That read is safe for a second reason: the only run still harvesting was `run002`,
+which `lib_runs.usableRuns()` had already excluded for having no readable `meta.json`. Verified, not
+assumed.
+
+### FIX
+
+```js
+.filter(f => f.endsWith('.json.gz') && !f.includes('.partial.'))
+```
+
+applied to all 14. `analyse_ai_tier_choice.mjs` re-run afterwards reproduces the canon-n7 baseline
+byte for byte (52.94% mean, 3.17pp sd, per-run 55.22/47.42/57.08/52.37/50.92/54.65), which is the
+regression check.
+
+### DETECTOR (owed)
+
+A static check: no reader under `tools/testbed/` may test `endsWith('.json.gz')` without also
+excluding `.partial.`. Cheap, repo-side, and it belongs beside L20's config check — both are
+"the file you are about to read is not the file you think it is".
+
+⚠ The general shape is **L9's and L23's**, one layer down: L9 is reading a shared log ring without
+filtering to your own run, L23 is trusting line counts from that ring, and this is trusting a
+directory listing to contain only committed files. **A glob is not a manifest.**

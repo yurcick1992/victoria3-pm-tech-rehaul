@@ -60,7 +60,7 @@ function split(spec) { const i = spec.indexOf(':'); return i < 0 ? [spec, ''] : 
 function runRow(runDir) {
   const dir = join(SES, runDir, 'save_summaries');
   if (!existsSync(dir)) return null;
-  for (const f of readdirSync(dir).filter(x => x.endsWith('.json.gz')).sort()) {
+  for (const f of readdirSync(dir).filter(x => x.endsWith('.json.gz') && !x.includes('.partial.')).sort()) {
     let j; try { j = JSON.parse(gunzipSync(readFileSync(join(dir, f)))); } catch { continue; }
     if (+(j.provenance.date || '0').split('.')[0] !== YEAR) continue;
     let gdp = 0, wfAll = 0, sal = 0, gov = 0, mil = 0, legacyNonProd = 0;

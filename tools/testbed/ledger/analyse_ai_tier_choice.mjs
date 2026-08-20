@@ -78,7 +78,7 @@ const bump = (o, k, v) => { o[k] = (o[k] || 0) + v; };
 for (const run of RUNS) {
   const dir = join(SES, run, 'save_summaries');
   if (!existsSync(dir)) continue;
-  const files = readdirSync(dir).filter(f => f.endsWith('.json.gz')).sort();
+  const files = readdirSync(dir).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).sort();
   let prev = null;
   const techSince = {};        // tag|ind|idx -> first year the tech was held
   const firstBuilt = {};       // tag|ind|idx -> first year a level existed
