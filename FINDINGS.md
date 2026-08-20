@@ -7749,3 +7749,108 @@ unprofitable does not address a chooser that is already avoiding losses.
   tiers is unmeasured, and that probe belongs on **vanilla + telemetry**. If vanilla behaves the same,
   this is engine behaviour to design around rather than balance against.
 - **1.13.10 only.** The batch predates 1.13.11.
+
+---
+
+## F76 — `ai_value` moves the AI's tier choice, and it is the CONTRAST WITH THE UNTIERED FIELD that does it, not the ratio between rungs
+
+**Claim.** Raising our tier buildings' `ai_value` reduces the share of construction the AI puts into
+tiers it has already outgrown, monotonically over three settings — and the effective lever is each
+rung's ratio to the **engine default of 1000**, which is where 75 vanilla buildings sit, not the ratio
+between our own rungs.
+
+**Arms, all `{kind: config}`, 1836→1936, no control.**
+
+| arm | ladder | session | n | game |
+|---|---|---|---|---|
+| canon-n7 | none (flat; only tooling at 2000) | `20260818_221216` | 6 | 1.13.10 |
+| aival | `500 × (era+1)` | `20260819_215528` | 4 | 1.13.11 |
+| aival2 | `1000 × (era+1)` | `20260820_095104` | 2 | 1.13.11 |
+
+`aival` vs `aival2` is a clean **same-patch, same-machine, same-day** A/B; both configs are the
+canonical config plus exactly 104 `tiers[].ai_value` values, verified by explicit path diff.
+98 of 105 tiers carry the ladder — power (3) and railway (4) keep vanilla's conditional `ai_value`
+blocks by user ruling, which makes them a built-in control inside the tiered taxonomy.
+
+### The measurement — share of built levels going to a tier BELOW the best the country already holds
+
+| | canon-n7 | aival | aival2 |
+|---|---|---|---|
+| mean of per-run | **52.94%** | **50.52%** | **47.17%** |
+| per-run values | 47.42 / 50.92 / 52.37 / 54.65 / 55.22 / 57.08 | 49.35 / 50.34 / 50.80 / 51.59 | **46.57 / 47.77** |
+| per-run sd | 3.17pp | 0.81pp | 0.60pp |
+| excluding ports | 55.3% | 51.6% | 50.5% |
+| unit-weighted | 54.1% | 50.8% | 49.1% |
+| after the first frontier building | 47.4% | 46.0% | 42.7% |
+| never built despite holding the tech | 36.9% | 34.5% | 34.3% |
+| post-adoption years still adding lower rungs | 13.1% | 13.0% | 13.5% |
+
+Monotone across three settings, and **the aival and aival2 per-run ranges do not overlap**.
+
+⚠ **Strength: an exact rank test on the six 1.13.11 runs (all 2 below all 4) gives p ≈ 0.067.**
+Suggestive, not established. What lifts confidence past that single number is the monotone progression
+and the mechanism below; it still wants an n≥4 confirmation.
+
+### ⭐⭐ THE MECHANISM, which contradicts the pre-registered prediction
+
+The prediction written into the schedule *before* the run was that doubling would move this metric
+**little**, because it preserves the rung-to-rung ratio (1:2:3:4:5:6 in both arms). That was wrong,
+and the error is instructive.
+
+`ai_value` is not scored among our tiers — it is scored against **every building the AI considers**,
+and **75 vanilla buildings carry no `ai_value` at all and therefore sit at the engine default 1000**:
+every farm, plantation, ranch, logging camp, oil rig, fishery, and the base light/heavy industry
+buildings. (The raw *extractors* — coal, iron, lead, sulfur, cotton, dye, opium, tea — run conditional
+blocks; only monuments 10000, skyscraper 50000 and canals 100000 sit high.)
+
+Each rung's contrast with that field is what moves:
+
+| ÷ the 1000 field | e0 | e1 | e2 | e3 | e4 | e5 |
+|---|---|---|---|---|---|---|
+| `500 × (era+1)` | 0.5× | 1.0× | 1.5× | 2.0× | 2.5× | 3.0× |
+| `1000 × (era+1)` | 1.0× | 2.0× | 3.0× | 4.0× | 5.0× | **6.0×** |
+
+The top rung gains **+3.0×** of field-relative advantage, the bottom **+0.5×**. **A uniform doubling is
+not uniform in effect — it is a steepening in the only frame the AI uses.** The construction data says
+so directly (levels built per run, aival → aival2): **e4 ×1.70, e5 ×2.80**, while **e0 held flat in
+absolute terms (×1.03)** and only lost share.
+
+⇒ **Design rule: reason about `ai_value` relative to the 1000 field, never rung-to-rung.**
+
+### No overshoot at either setting
+
+The standing worry — that a ladder starves the untiered raw sector or whole industries — does **not**
+occur. Construction levels per run, aival → aival2: **extraction ×1.00 (−0.16pp share), agriculture
+×0.93 (−0.76pp)**, manufacturing ×1.15, infrastructure ×1.22. No industry builds at under 0.6× the
+partner's rate in either comparison. Research-event firings are likewise unharmed: **5,264 distinct
+(stage, tech, country) triples over 78 technologies** (canon-n7 5,411/76, aival 5,113/79), which
+matters because those bars are fed by predecessor-tier employment.
+
+### Side reading — the G5 goals, advanced majors pooled (GBR USA FRA NET BEL PRU GER)
+
+| | vanilla (n=4) | canon-n7 | aival | aival2 |
+|---|---|---|---|---|
+| pooled GDP ÷ vanilla | — | 0.945× | 0.984× | **1.045×** |
+| productive share ÷ vanilla | — | 0.972× | 0.912× | 0.923× |
+| GDP per productive worker ÷ vanilla | — | 1.143× | 1.113× | **1.190×** |
+| VA per tiered worker | n/a (v4) | £30.8 | £32.5 | **£34.0** |
+| tiered share of all value added | n/a | 69.1% | 66.8% | **74.3%** |
+
+`aival2` is the first arm whose advanced-major GDP **exceeds** vanilla's while using fewer productive
+workers. G5's ≥1.11× output-per-worker target is met at 1.190×; its ≤0.90× worker target is not
+(0.923×).
+
+### What this does NOT say
+
+- **Nothing is established at n=2.** p ≈ 0.067 on the headline.
+- **Nothing about the ladder's SHAPE.** Only uniform multiples were tested. `500 × 2^era` (rung ratio
+  1:32, top rung 16× the field) and `250 × 2^era` are unmeasured, and the mechanism predicts they go
+  further.
+- **Nothing about an optimum.** Three points on a monotone curve locate no turning point, and the
+  overshoot must appear somewhere.
+- **Nothing about vanilla's own AI.** Whether the base game shows the same indifference between its PM
+  tiers is still unmeasured (F75's open question) and belongs on a vanilla arm.
+- **Variance is NOT claimed.** Per-run sd falls monotonically on every metric (below-best 3.17 → 0.81 →
+  0.60pp; productivity 1.95 → 1.40 → 0.37), but n=2 cannot establish a variance and canon-n7 is a
+  different patch — 1.13.11 fixes sway, the widest variance channel here.
+- **Wall clock is not separated.** 2.76 / 2.72 h against aival's 2.49–2.67, on a larger economy.
