@@ -1103,12 +1103,68 @@ constraint 4), and a check that nothing in the 1836 start depends on the key.
 
 ---
 
-## Step 5 — COMPANY MANDATES
+## Step 5 — COMPANY MANDATES  ⬅ **MEASURED 2026-08-20, and it is bigger than "flavour"**
 
 Change company mandates so they latch onto useful and reasonable industries rather than always the
 Tier-1 building. Related to the standing `MISSING_PM_REFERENCES.md` / narrowed-`has_building` problem:
 457 vanilla `has_building` references now match only our Tier-1 building, and the same "make every tier
 of the industry eligible" fix resolves mandates, monopolies and the flavour references together.
+
+### What is now measured (FINDINGS **F77** and **F77.1**)
+
+- **Every** company mandate and **every** company throughput bonus lands on the **first rung** of one of
+  our chains and never on any other. 21 of our 22 industries are named; of 151 `prosperity_modifier`
+  throughput bonuses across all 222 company types, **85 target our buildings and all 85 target rung 1**
+  (railway alone has 19, textile 11). The modifier is keyed to a literal building key, so the tier split
+  put every higher rung permanently out of reach.
+- ⇒ **a company-backed obsolete mill carries a permanent throughput bonus its modern replacement can
+  never receive** — a standing incentive to keep building the oldest rung, entirely independent of
+  `ai_value`, and acting through every arm of the F76 ladder series.
+- Companies hold **38.5%** of vanilla's tiered sector by levels (41.0% by value added) against **9.0%**
+  (7.1%) of ours. Decomposed: rung-1 is 100% of vanilla's tiered sector and **34.3%** of ours, and
+  **the lock-out alone is 86% of the gap** — arithmetic on our own tier mix, not RNG.
+
+⇒ The fix is no longer only a completeness chore. **The tier split shrank the share of the economy
+companies can touch by about two thirds, and what is still in reach is exactly the part we want
+retired.**
+
+### Step 5a — INSTRUMENTATION FIRST (planned 2026-08-20; do it once the granular batch is analysed)
+
+The one question the melts could **not** answer is the dynamic: *how does the below-best metric move if
+only non-company-owned levels are counted?* That needs ownership **per year**, and only the newest save
+of each run survives the reap — so it cannot be recovered from any past batch and must be captured going
+forward.
+
+1. **`save_state_summary.mjs` — capture company-held levels.** Its `building_ownership_manager` pass
+   already walks every ownership record but extracts only `identity={ country= }`; the `identity={
+   building= }` variant — which is how a company HQ owns — is dropped on the floor. Capture it, resolve
+   the owner building's TYPE, and keep the entry only when that type is `building_company_*`.
+   - ⚠ **A building-identity owner is usually NOT a company.** In the canon melt, financial districts
+     account for 13,864 such records against a few hundred company ones, with manor houses next. Key on
+     the owner's type; never assume.
+   - ⚠ **Parse order must be verified, not assumed.** The existing pass resolves `bldState.get(...)` at
+     ownership-read time, which implies `building_manager` precedes `building_ownership_manager` in the
+     melt — but the owner's *type* is a new lookup, and the file already carries a comment about
+     `states` arriving late. If the order does not hold, defer resolution to the end rather than
+     silently attributing to `(unknown)`.
+   - Emit as `company_levels` per building key beside the existing per-building record — a small map,
+     and it keeps the summary's shape.
+   - **`SAVE_SUMMARY_VERSION` bump** (bump-never-renumber). Pre-bump summaries simply lack the field, so
+     every reader must degrade explicitly and say so — the same discipline `va_out`/`va_in` needed when
+     the VA chart shipped, and the same reason the vanilla baseline cannot answer tiered productivity.
+2. **`analyse_ai_tier_choice.mjs` — `--exclude-company-owned`.** The metric already diffs standing levels
+   year to year, so the non-company flow is `Δ(total) − Δ(company-held)` per building per year, directly
+   available once (1) lands.
+   - ⚠ **Do not bake in the user's simplifying assumption.** "Companies only acquire, never lose unless
+     downsizing" is a reasonable prior, not a fact: report the count of country-years where
+     `Δ(company-held) < 0` rather than clamping it away. If it is rare the assumption is vindicated in
+     the output; if it is not, the assumption was load-bearing and wrong.
+3. **Only then the gameplay change.** Re-pointing mandates touches 222 vanilla company definitions and is
+   a design decision with its own balance consequences — it should be made against a measured baseline,
+   not ahead of one.
+
+⚠ **Sequencing is deliberate.** (1) and (2) are measurement and can land any time the machine is free;
+they change no emitted content, so they cannot disturb a running comparison. (3) is an arm.
 
 ## Step 6 — DAM MEGAPROJECTS
 
