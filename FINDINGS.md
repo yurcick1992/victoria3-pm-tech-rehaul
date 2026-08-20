@@ -8118,3 +8118,79 @@ all of it, and the part it reaches is exactly the part the mod wants retired.
 - ⚠ **A building-identity owner is not always a company.** Financial districts dominate that channel
   (13,864 records in canon against a few hundred company ones); the owner's TYPE is what separates them,
   and the tool keys on `building_company_*` rather than assuming.
+
+---
+
+## F78 — `ai_value` is per BUILDING, not per unit of output: shrinking the unit 5× shrank the tiered sector to 0.41×
+
+**Claim.** Making every tiered building a 1/5 economic unit — goods, cost, employment and effects all
+divided by 5, with the 1836 start multiplied by 5 to compensate — did **not** hold the economy constant.
+The AI built only **2.21× the levels**, so the tiered sector ended at **0.39× its capacity**, while the
+untiered sector was built at an unchanged rate. The cause is that a building's desire score is per
+BUILDING and its SIZE appears nowhere in that comparison.
+
+**Arm:** `20260820_224325_granular-n2`, n=2, 1936, 1.13.11, `config_sha256 c84580e9…`. Built on the
+CANONICAL config — no `ai_value` ladder — so its partner is canon-n7 (n=6, 1.13.10, patch caveat).
+
+### The result
+
+| world @1935 | canon | granular | ratio |
+|---|---|---|---|
+| tier **levels** | 29,297 | 64,891 | **2.21×** — wanted ~5× |
+| tier **building-equivalents** (levels × `workforce_mult`) | 21,357 | 8,269 | **0.39×** — wanted ~1× |
+| world GDP £M | 3,562 | 1,677 | **0.47×** |
+
+Construction flow per run, tiers in building-equivalents:
+
+| | canon | granular | ratio |
+|---|---|---|---|
+| **tiered** | 23,231 | 9,424 | **0.41×** |
+| **everything else** | 187,455 | 180,567 | **0.96×** |
+| tiered share of construction | 11.03% | **4.96%** | — |
+
+⭐ **The untiered sector was built at an unchanged rate.** This is not a general contraction — it is a
+targeted collapse of exactly the sector whose unit was shrunk.
+
+Downstream, from `tiered_panel.mjs` (each arm on its **own** ladder): tiered share of the advanced
+majors' workforce **8.98%** against canon's 31.43% and vanilla's 28.71%; tiered share of all value added
+**38.6%** against canon's 69.1%.
+
+### ⭐⭐ The mechanism, and it confirms F76 from the opposite direction
+
+In the canonical config every tier sits at the engine default **1000** — the same as the 75 untiered
+vanilla buildings F76 identified as the field. Dividing each tier building by 5 while leaving its
+`ai_value` at 1000 means **each build decision in the tiered sector now yields a fifth as much economy
+for the same desire**. The AI went on choosing at roughly the same rate, got ~2.2× the decisions, and
+therefore ~0.41× the capacity.
+
+F76 established that what moves the AI is a rung's `ai_value` **relative to the 1000 field**. F78 is the
+same statement seen from the other side: **the building's SIZE is not in that comparison at all.** A
+desire score is per building, so halving a building halves the economy that score buys.
+
+⇒ **A granularity divisor MUST be paired with an `ai_value` multiplier of the same factor.** Divide the
+building by D, multiply its `ai_value` by D, so a decision carries the same weight per unit of economy.
+The arm as run conflated two changes — granularity **and** an unintended 5× devaluation of the whole
+tiered sector — and the devaluation dominated.
+
+### What it does and does not settle
+
+- **The granularity hypothesis is UNTESTED, not refuted.** It was never isolated: this arm changed the
+  unit *and* the effective desire. A clean test needs `ai_value = 5000` on every tier beside the divisor.
+- **The below-best metric did not move**: **54.10%** (per-run 53.44 / 54.76, sd 0.66pp) against canon's
+  52.94% (sd 3.17pp) — inside the noise. Within the surviving tiered sector the choice pattern is
+  unchanged, which is consistent with the devaluation being a *scale* effect rather than a *choice* one.
+- **The F76.2 test it was built for is inconclusive.** Whether finer grain lifts profit per unit cannot
+  be read from an arm whose tiered sector is 40% the size, because the price environment moved too.
+- **Wall clock: no cost, and the test was weaker than intended.** 2.63 / 2.43 h against the other
+  1.13.11 runs' 2.49–2.76 h, with run 2 the fastest of all nine. But the record count ended at ~2.2×
+  canon's rather than 5×, so this is evidence against a perf cliff at 2×, not at 5×.
+- ⚠ **n=2 against a cross-patch n=6.** The magnitudes here (0.39×, 0.41×, 0.47×) are far outside
+  canon-n7's spread on every channel, so the direction is not in doubt; the exact ratios are one batch.
+
+### ⚠ A tooling defect this exposed, now fixed
+
+`tiered_panel.mjs` took **one** `--config` for all arms. Every previous arm shared the same
+`workforce_mult`, so it never mattered; the granularity arm is the first that differs. Reading canon
+with granular's 0.2 multiplier gave canon a **6.29%** workforce share and **£153.9** per worker against
+its true 31.43% and £30.8 — a 5× error in both, with nothing failing. It now takes `--config-<n>` per
+`--arm`, and canon alone reproduces 31.43% / £30.8 exactly as the regression check.

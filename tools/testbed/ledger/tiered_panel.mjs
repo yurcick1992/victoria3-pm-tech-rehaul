@@ -83,27 +83,38 @@ const VPM = {};
 }
 
 // ---------------------------------------------------------------- the two building maps ----
-const cfg = JSON.parse(readFileSync(argOf('--config', 'config/mod_config.json'), 'utf8'));
-const MODEMP = {};      // mod tier key   -> people per level (workforce_mult applied)
-const VANEMP = {};      // vanilla base key -> people per level
-const INDOF = {};       // any key -> industry id
-for (const ind of cfg.industries || []) {
-  const tiers = (ind.tiers || []).filter(t => t.key);
-  if (!tiers.length) continue;
-  for (const t of tiers) {
-    const per = Object.values(t.employment || {}).reduce((a, b) => a + b, 0);
-    MODEMP[t.key] = per * (+(t.workforce_mult ?? 1));
-    INDOF[t.key] = ind.id;
+// ⚠⚠ EACH ARM CARRIES ITS OWN LADDER. The per-level employment used to convert staffed levels into
+// workers comes from the arm's OWN config, because `workforce_mult` differs between arms — the
+// granularity arm runs 0.2 where canon runs 1. A single shared --config silently computes one arm's
+// workers with another arm's multiplier: canon read a 6.29% workforce share and £153.9 per worker
+// against its true 31.43% and £30.8, a 5x error in both, with nothing failing. Pass --config-<n> per
+// --arm (in order); --config remains the fallback and the vanilla side never uses it.
+function buildEmp(cfgPath) {
+  const cfg = JSON.parse(readFileSync(cfgPath, 'utf8'));
+  const MODEMP = {};      // mod tier key   -> people per level (workforce_mult applied)
+  const VANEMP = {};      // vanilla base key -> people per level
+  const INDOF = {};       // any key -> industry id
+  for (const ind of cfg.industries || []) {
+    const tiers = (ind.tiers || []).filter(t => t.key);
+    if (!tiers.length) continue;
+    for (const t of tiers) {
+      const per = Object.values(t.employment || {}).reduce((a, b) => a + b, 0);
+      MODEMP[t.key] = per * (+(t.workforce_mult ?? 1));
+      INDOF[t.key] = ind.id;
+    }
+    // vanilla side: the base building is tier 0's key, and its per-level employment is that of the
+    // MOST ADVANCED vanilla_pm in the chain (these are advanced majors at 1935; they run it).
+    const base = tiers[0].key;
+    let vanPer = null;
+    for (const t of tiers) if (t.vanilla_pm && VPM[t.vanilla_pm] != null) vanPer = VPM[t.vanilla_pm];
+    if (vanPer == null) vanPer = Object.values(tiers[tiers.length - 1].employment || {}).reduce((a, b) => a + b, 0);
+    VANEMP[base] = vanPer;
+    INDOF[base] = ind.id;
   }
-  // vanilla side: the base building is tier 0's key, and its per-level employment is that of the
-  // MOST ADVANCED vanilla_pm in the chain (these are advanced majors at 1935; they run it).
-  const base = tiers[0].key;
-  let vanPer = null;
-  for (const t of tiers) if (t.vanilla_pm && VPM[t.vanilla_pm] != null) vanPer = VPM[t.vanilla_pm];
-  if (vanPer == null) vanPer = Object.values(tiers[tiers.length - 1].employment || {}).reduce((a, b) => a + b, 0);
-  VANEMP[base] = vanPer;
-  INDOF[base] = ind.id;
+  return { MODEMP, VANEMP, INDOF };
 }
+const DEFCFG = argOf('--config', 'config/mod_config.json');
+let MODEMP, VANEMP, INDOF;
 
 // ---------------------------------------------------------------- one run ----
 function runRow(runDir, isVanilla) {
@@ -145,18 +156,21 @@ function runRow(runDir, isVanilla) {
   return null;
 }
 
-function arm(spec, isVanilla) {
+function arm(spec, isVanilla, cfgPath) {
+  // rebuild the ladder maps for THIS arm before reading any of its runs
+  ({ MODEMP, VANEMP, INDOF } = buildEmp(cfgPath || DEFCFG));
   const [session, setup] = split(spec);
   const { runs } = usableRuns(SES, session, setup);
   const rows = runs.map(r => runRow(r, isVanilla)).filter(Boolean);
   if (!rows.length) throw new Error(`no run of ${spec} has a ${YEAR} summary`);
-  return { spec, rows, n: rows.length, isVanilla };
+  return { spec, rows, n: rows.length, isVanilla, cfg: cfgPath || DEFCFG };
 }
 
 const armSpecs = allOf('--arm'), vanSpec = argOf('--van', '');
 if (!armSpecs.length || !vanSpec) { console.error('need at least one --arm and a --van'); process.exit(1); }
-const V = arm(vanSpec, true);
-const arms = armSpecs.map(s => arm(s, false));
+// the vanilla side is built from vanilla's own PMs, so any config gives it the same VANEMP
+const V = arm(vanSpec, true, DEFCFG);
+const arms = armSpecs.map((s, i) => arm(s, false, argOf('--config-' + (i + 1), DEFCFG)));
 const M = (a, f) => med(a.rows.map(f));
 
 console.log(`\n============ ADVANCED MAJORS, WITHIN THE TIERED INDUSTRIES, ${YEAR} ============`);
