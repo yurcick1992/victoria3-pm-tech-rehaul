@@ -344,3 +344,58 @@ Three industries run **negative value added per worker** in both mod arms: `ship
 expected (naval construction is unmodelled and they carry a −30pp handicap by design); **power is not**,
 and `automotive` at £1–3 is barely above zero. Highest are `explosives` £58, `electrics` £58,
 `fertilizer` £51. `tooling` is the largest employer by far at ~5.4M workers.
+
+---
+
+## ⚠ `fill_consts.mjs` — the "productive workers" definition was CORRECTED on 2026-08-20
+
+**User-ruled.** Reports published **before 2026-08-20 carry the old definition.** This section exists so
+the two are reconcilable rather than merely different.
+
+### What was wrong
+
+It derived government + military payrolls from the **staffing of government/university/military
+BUILDINGS**. `staffing` in a save summary is a count of **staffed levels, not people**. Measured at
+1935, world:
+
+| | mod (canon-n7, n=6) | vanilla (n=4) |
+|---|---|---|
+| salaried workforce | 246.5M | 286.5M |
+| gov + military, the **real** payroll | 15.6M | 16.3M |
+| **what the old code actually subtracted** | **12,430** | **13,176** |
+
+It removed about **eight hundredths of one percent** of the payroll it named. "Productive workers" was
+the salaried workforce with a label it did not earn.
+
+### The fix
+
+```
+productive = population_salaried_workforce
+               − population_government_workforce − population_military_workforce
+```
+
+Both fields are booked directly by the save. Same definition as `advanced_panel.mjs` and
+`tiered_panel.mjs`; **keep the three in step.**
+
+### ⭐ What it changes, and the honest surprise: almost nothing
+
+| | OLD | NEW |
+|---|---|---|
+| productive workers, mod | 246.5M | **230.9M** |
+| productive workers, vanilla | 286.5M | **270.2M** |
+| **workers ÷ vanilla (the G5 row)** | **0.860×** | **0.855×** |
+| **GDP per worker ÷ vanilla** | **1.004×** | **1.011×** |
+
+The **absolute** figures move by ~16M workers each. The **ratios** — which is all G5 reports — move by
+0.5pp and 0.7pp, inside the rounding the report already used.
+
+**Why:** gov + military are **6.3% of the mod's salaried workforce and 5.7% of vanilla's**. Subtracting
+a near-identical share from both numerator and denominator leaves the ratio almost untouched.
+
+⇒ **The published G5 figure was right by luck, not by construction.** The label was wrong and the
+arithmetic was wrong; the number survived because the error was nearly common-mode. Had the two arms
+differed in military size — a war-heavy arm, or a conscription-law change — it would not have survived,
+and nothing in the old code would have signalled that.
+
+**Nothing published needs retracting.** `canon-n7`'s shipped 0.86× / 1.00× stands to two significant
+figures under the corrected definition (0.855× / 1.011×).

@@ -9,10 +9,21 @@ const MOD = [1,2,3,4,5,6].map(i => `20260818_221216_canon-n7/run00${i}_canonfull
 const VAN = ['run001_vanilla','run003_vanilla','run005_vanilla','run007_vanilla'].map(r => '20260813_083557_vanilla-vs-mod-n4/' + r);
 const NB  = ['run002_mod','run006_mod'].map(r => '20260813_083557_vanilla-vs-mod-n4/' + r);
 
-// government + military payrolls come off the buildings themselves, matching the panel's own
-// definition ("productive workers = salaried workforce minus government and military payrolls").
-const NONPROD = k => k === 'building_government_administration' || k === 'building_university'
-  || /barracks|barrack|conscription|naval_base|port_military|army_logistics/.test(k);
+// ⚠⚠ CORRECTED 2026-08-20 (user-ruled). This used to derive government + military payrolls from the
+// STAFFING of government/university/military BUILDINGS. `staffing` in a save summary is a count of
+// STAFFED LEVELS, NOT PEOPLE — Britain at 1935 reads **677** against the save's own
+// population_government_workforce + population_military_workforce of **1,204,779**, five thousandths
+// of one percent of it. So "productive workers" was the SALARIED WORKFORCE under a label it did not
+// earn, and every G5 figure published before this date is that quantity.
+//
+// The save books both payrolls directly, so the subtraction is now real:
+//     productive = population_salaried_workforce
+//                    − population_government_workforce − population_military_workforce
+//
+// ⚠ This MOVES the published number, and deliberately so — gov+military are not the same share of the
+// workforce in a mod arm as in vanilla, which is exactly why the subtraction was meant to be there.
+// The ledger README carries the before/after so older reports stay reconcilable rather than merely
+// contradicted. Same definition as advanced_panel.mjs / tiered_panel.mjs; keep the three in step.
 
 function series(runDir) {
   const dir = join(SES, runDir, 'save_summaries');
@@ -21,25 +32,18 @@ function series(runDir) {
   for (const f of readdirSync(dir).filter(x => x.endsWith('.json.gz') && !x.includes('.partial.')).sort()) {
     let j; try { j = JSON.parse(gunzipSync(readFileSync(join(dir, f)))); } catch { continue; }
     const y = +(j.provenance.date || '0').split('.')[0];
-    let gdp = 0, sal = 0, unemp = 0, peas = 0, wfAll = 0;
+    let gdp = 0, sal = 0, unemp = 0, peas = 0, wfAll = 0, govMilStaff = 0;
     for (const c of Object.values(j.countries)) {
       gdp += c.gdp || 0;
       const ps = c.pop_statistics || {};
       sal += ps.population_salaried_workforce || 0;
       unemp += ps.population_unemployed_workforce || 0;
+      // the real payrolls, booked by the save itself — see the note at the top of this file
+      govMilStaff += (ps.population_government_workforce || 0) + (ps.population_military_workforce || 0);
       for (const [p, n] of Object.entries(c.workforce_by_profession || {})) { wfAll += n; if (p === 'peasants') peas += n; }
     }
-    let lv = 0, nonprodStaff = 0;
-    for (const [k, b] of Object.entries(j.world.buildings || {})) {
-      lv += b.levels || 0;
-      if (NONPROD(k)) nonprodStaff += b.levels || 0;   // levels stand in for payroll scale
-    }
-    // per-country staffing is the honest payroll; world.buildings has no staffing, so use the
-    // countries' own building records where present.
-    let govMilStaff = 0;
-    for (const c of Object.values(j.countries))
-      for (const [k, b] of Object.entries(c.buildings || {}))
-        if (NONPROD(k)) govMilStaff += b.staffing || 0;
+    let lv = 0;
+    for (const b of Object.values(j.world.buildings || {})) lv += b.levels || 0;
     out[y] = { gdp: gdp / 1e6, sal, unemp, peas, wfAll, lv, govMilStaff, pops: j.world.pop_objects_live ?? null };
   }
   return out;
