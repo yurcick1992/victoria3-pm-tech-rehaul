@@ -142,6 +142,7 @@ function sweep(spec, cfgPath) {
     indEra: {},                      // industry -> era -> levels
     total: 0, totalU: 0, annexSkipped: 0, years: 0,
     unmappedGroups: {},              // group -> levels, so nothing is silently swept into "other"
+    ladderEras: Object.fromEntries(Object.entries(lad.chain).map(([id, ts]) => [id, [...new Set(ts.map(t => t.era))].sort((a, b) => a - b)])),
   };
   const bump = (o, k, v) => { o[k] = (o[k] || 0) + v; };
   for (const run of runs) {
@@ -266,21 +267,31 @@ function compare(A, B) {
   console.log('\n--- INDUSTRIES AT RISK OF DISAPPEARING (B/A absolute under 0.60) ---');
   const dying = rows.filter(r => r.a >= 200 && r.a && r.b / r.a < 0.60);
   if (!dying.length) console.log('  none — every industry the baseline built is still being built at >=60% of its rate');
-  else for (const r of dying) console.log(`  ${r.k.padEnd(15)} ${num(r.a)} → ${num(r.b)} levels  (${dx(r.a, r.b)})`);
-
-  console.log('\n--- PER-INDUSTRY ERA MIX: did each chain climb its OWN ladder? ---');
-  console.log('  (share of that industry\'s own construction going to its TOP TWO eras present)');
-  console.log('  industry            A top2    B top2     Δ');
+  console.log('');
+  console.log('--- PER-INDUSTRY ERA MIX: did each chain climb its OWN ladder? ---');
+  // ⚠⚠ THE WINDOW COMES FROM THE LADDER, NOT FROM THE DATA. An earlier version took the top two
+  // eras PRESENT IN EACH ARM, which silently shifts the window down whenever an arm built none of
+  // the top rung — and then reports the shift as a gain. It produced power 30.7% -> 100.0%
+  // (+69pp) on an industry that carries NO ai_value change at all: the baseline had {e3,e4,e5} and
+  // the arm {e3,e4}, so 'top two' meant e5+e4 on one side and e4+e3 on the other. fertilizer
+  // (+33pp) and electrics (+20pp) were the same artifact. The window is now the industry's own top
+  // two ERA VALUES from the config, identical for both arms, so an absent top rung reads as 0 —
+  // which is the true statement.
+  console.log('  (share of that industry\'s construction going to the top two eras OF ITS LADDER)');
+  console.log('  industry            eras       A top2    B top2     Δ');
   for (const k of inds.sort()) {
-    const top2 = (m) => {
-      const e = m[k] || {}; const eras = Object.keys(e).map(Number).sort((x, y) => y - x);
+    const eras = A.ladderEras[k] || B.ladderEras[k] || [];
+    if (eras.length < 2) continue;
+    const win = eras.slice(-2);
+    const sh = (m) => {
+      const e = m[k] || {};
       const tot = Object.values(e).reduce((x, y) => x + y, 0);
       if (!tot) return null;
-      return 100 * eras.slice(0, 2).reduce((s, x) => s + (e[x] || 0), 0) / tot;
+      return 100 * win.reduce((s2, x) => s2 + (e[x] || 0), 0) / tot;
     };
-    const a = top2(A.indEra), b = top2(B.indEra);
+    const a = sh(A.indEra), b = sh(B.indEra);
     if (a == null || b == null) continue;
-    console.log(`  ${k.padEnd(18)} ${a.toFixed(1).padStart(6)}%   ${b.toFixed(1).padStart(6)}%   ${dpp(a, b).padStart(9)}`);
+    console.log(`  ${k.padEnd(18)} e${win.join('+e').padEnd(8)} ${a.toFixed(1).padStart(6)}%   ${b.toFixed(1).padStart(6)}%   ${dpp(a, b).padStart(9)}`);
   }
 }
 
