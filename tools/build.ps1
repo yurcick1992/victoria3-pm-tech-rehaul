@@ -1116,11 +1116,74 @@ function Convert-PmBlock([System.Collections.Generic.List[string]]$blk, [string]
 # freezes that vanilla file against every future patch, ships bytes we did not author, and buys
 # nothing (an unwritten file simply stays vanilla). Today only 01_industry.txt changes (the gate
 # remap); with an empty pm_goods map the other 14 were byte-identical copies.
+# --- GRANULARITY DIVISOR (config `granularity_divisor`, absent/1 = off) ---------------------------
+# Makes every tier building a SMALLER ECONOMIC UNIT without changing the economy's size: each level
+# produces, consumes, employs and pollutes 1/D as much, and convert_history.ps1 multiplies the 1836
+# starting levels by 1/workforce_mult to compensate. The point is GRANULARITY — a build decision
+# perturbs its market D times less — not a change in totals.
+#
+# The tier's OWN main PM is scaled in the CONFIG (goods and building_cost divided explicitly;
+# employment via workforce_mult; pollution / state_infrastructure / ship_construction via effect_mult),
+# exactly as the graded ports already are. That keeps the config the truth and the balance UI honest.
+#
+# ⚠⚠ THE SECONDARY PMs ARE WHAT THIS BLOCK EXISTS FOR, and the graded ports never faced them — ports
+# carry `pmg_main_port_*` and NOTHING ELSE. Every other industry carries automation / luxury / canning /
+# distillery / glassblowing groups whose PMs live in VANILLA files and are additive PER LEVEL. Left
+# unscaled they would be D times too large against a main PM that shrank: an automation method removing
+# 1500 laborers from a building that now employs 1000 goes NEGATIVE, and world pollution would run D×.
+#
+# ⚠ Safe because the set is EXCLUSIVE: every PMG named in an industry's `secondary_pmgs` sits only on
+# buildings we own (verified 2026-08-20 — 0 of them appear on any vanilla building outside our tier
+# set), so scaling their PMs cannot reach vanilla content.
+# ⚠ Only EXTENSIVE quantities are scaled. `building_throughput_add` and friends are PERCENTAGES and are
+# deliberately untouched — scaling those would change the economy rather than its granularity.
+$granDiv = if ($null -ne $cfg.granularity_divisor) { [double]$cfg.granularity_divisor } else { 1.0 }
+$granPms = New-Object System.Collections.Generic.HashSet[string]
+if ($granDiv -gt 1) {
+    $granPmgs = New-Object System.Collections.Generic.HashSet[string]
+    foreach ($ind in $cfg.industries) { foreach ($g in @($ind.secondary_pmgs)) { if ($g) { [void]$granPmgs.Add($g) } } }
+    foreach ($gf in (Get-ChildItem (Join-Path $Game 'common\production_method_groups') -Filter *.txt)) {
+        $gt = [System.IO.File]::ReadAllText($gf.FullName) -replace "^\xEF\xBB\xBF", ''
+        foreach ($gm in [regex]::Matches($gt, '(?m)^([A-Za-z_][A-Za-z0-9_-]*)\s*=\s*\{')) {
+            if (-not $granPmgs.Contains($gm.Groups[1].Value)) { continue }
+            $tail = $gt.Substring($gm.Index)
+            $lm = [regex]::Match($tail, 'production_methods\s*=\s*\{([^{}]*)\}')
+            if ($lm.Success) { foreach ($p in ($lm.Groups[1].Value -split '\s+' | Where-Object { $_ })) { [void]$granPms.Add($p) } }
+        }
+    }
+    Write-Output "granularity divisor $granDiv : $($granPms.Count) secondary PM(s) across $($granPmgs.Count) PMG(s) will be scaled"
+}
+# the EXTENSIVE modifiers — everything else in a PM block is left exactly as vanilla wrote it
+# ⚠ THE TRAILING COMMENT IS LOAD-BEARING FOR THIS REGEX. Vanilla annotates many goods lines with its
+# own arithmetic — `goods_input_silk_add = 15    # x40 = -600` — so a pattern anchored with \s*$ after
+# the number matches the EMPLOYMENT lines (which carry no comment) and silently skips every commented
+# GOODS line. That is exactly what happened on the first build: employment scaled 500 -> 100 while the
+# goods stayed at vanilla size, and the negative-goods linter caught it with 21 cases. The comment is
+# also STALE once the value is scaled, so it is replaced rather than carried forward.
+$granRe = '^(\s*)(goods_input_[a-z_]+_add|goods_output_[a-z_]+_add|building_employment_[a-z_]+_add|state_pollution_generation_add|state_infrastructure_add|country_ship_construction_add)(\s*=\s*)(-?[\d.]+)\s*(#.*)?$'
+$script:granScaled = 0
+function Scale-PmBlock($blkLines, $div) {
+    $out = New-Object System.Collections.Generic.List[string]
+    foreach ($l in $blkLines) {
+        if ($l -match $granRe) {
+            $old = $Matches[4]
+            $v = [double]$old / $div
+            # employment must stay whole; goods and effects may carry decimals, as our own tiers do
+            if ($Matches[2] -like 'building_employment_*') { $v = [math]::Round($v) }
+            else { $v = [math]::Round($v, 6) }
+            $note = if ($Matches[5]) { "`t# granularity /$div (vanilla $old)" } else { '' }
+            $out.Add("$($Matches[1])$($Matches[2])$($Matches[3])$v$note")
+            $script:granScaled++
+        } else { $out.Add($l) }
+    }
+    return $out
+}
+
 $pmEmitted = @(); $pmSkipped = 0; $pmOverridden = New-Object System.Collections.Generic.HashSet[string]
 foreach ($pf in (Get-ChildItem (Join-Path $Game 'common\production_methods') -Filter *.txt)) {
     $orig = [System.IO.File]::ReadAllText($pf.FullName)
     $txt = [regex]::Replace($orig, 'unlocking_production_methods\s*=\s*\{([^{}]*)\}', $gateEval)
-    if ($pmGoods.Count -gt 0 -or $pmEmp.Count -gt 0) {
+    if ($pmGoods.Count -gt 0 -or $pmEmp.Count -gt 0 -or $granPms.Count -gt 0) {
         $lines = $txt -split "`r?`n"; $touched = $false
         $outL = New-Object System.Collections.Generic.List[string]
         $k = 0
@@ -1128,7 +1191,7 @@ foreach ($pf in (Get-ChildItem (Join-Path $Game 'common\production_methods') -Fi
             $line = $lines[$k]
             # PM headers are top-level (column 0) in a production_methods file; names are NOT all pm_-prefixed
             # (plantations/farms use default_/automatic_/worker_/… , e.g. default_building_cotton_plantation).
-            if ($line -match '^([A-Za-z_][A-Za-z0-9_-]*)\s*=\s*\{' -and ($pmGoods.ContainsKey($Matches[1]) -or $pmEmp.ContainsKey($Matches[1]))) {
+            if ($line -match '^([A-Za-z_][A-Za-z0-9_-]*)\s*=\s*\{' -and ($pmGoods.ContainsKey($Matches[1]) -or $pmEmp.ContainsKey($Matches[1]) -or $granPms.Contains($Matches[1]))) {
                 $name = $Matches[1]
                 $blk = New-Object System.Collections.Generic.List[string]
                 $depth = 0
@@ -1136,8 +1199,14 @@ foreach ($pf in (Get-ChildItem (Join-Path $Game 'common\production_methods') -Fi
                     $depth += ([regex]::Matches($lines[$k], '\{')).Count - ([regex]::Matches($lines[$k], '\}')).Count
                     $blk.Add($lines[$k]); $k++
                 } while ($k -lt $lines.Count -and $depth -gt 0)
-                foreach ($nl in (Convert-PmBlock $blk $name $pmGoods[$name] $pmEmp[$name])) { $outL.Add($nl) }
-                [void]$pmOverridden.Add($name)
+                # goods/employment OVERRIDE first (it replaces blocks wholesale), THEN the granularity
+                # scale — so an override is scaled too rather than escaping it.
+                $blk2 = if ($pmGoods.ContainsKey($name) -or $pmEmp.ContainsKey($name)) {
+                    [void]$pmOverridden.Add($name)
+                    Convert-PmBlock $blk $name $pmGoods[$name] $pmEmp[$name]
+                } else { $blk }
+                if ($granPms.Contains($name)) { $blk2 = Scale-PmBlock $blk2 $granDiv }
+                foreach ($nl in $blk2) { $outL.Add($nl) }
                 $touched = $true
                 continue
             }
