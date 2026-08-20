@@ -1194,6 +1194,38 @@ tools/                  dev tooling — NOT shipped in the mod
                         cycle. A ratio over ~62k build decisions INSIDE each run, so it resolves at n=4
                         where GDP (71% spread at n=6) resolves nothing. `--session <stamp>`
                         `--config <path>`; no arguments reproduces the canon-n7 baseline exactly
+  testbed/ledger/advanced_panel.mjs  ⭐⭐ THE PRODUCTIVITY CLAIM, READ WHERE IT IS VISIBLE
+                        (user-ruled 2026-08-20: **report these two alongside the world's 1935 GDP
+                        decomposition, every batch**). Pooled over **GBR USA FRA NET BEL PRU GER**:
+                        (1) productive workers ÷ TOTAL WORKFORCE, ÷ vanilla; (2) GDP ÷ productive
+                        worker, ÷ vanilla. **Pooled because the world reading is diluted by countries
+                        that never industrialise and the per-tag reading is dominated by SIZE** —
+                        whether France holds Piedmont barely changes how industrialised it is but
+                        moves its worker count a lot. Both are ratios INTERNAL to the group, so
+                        territory moving between members cancels; PRU and GER are both listed because
+                        one usually becomes the other. ⚠ Territory leaving the group does NOT cancel —
+                        the pooled workforce is printed per arm as a composition check.
+                        ⚠⚠ **IT DOES NOT USE THE LEDGER'S OWN "productive workers" DEFINITION, WHICH IS
+                        BROKEN.** `fill_consts.mjs` subtracts the STAFFING of government/university/
+                        military BUILDINGS, and `staffing` in a save summary is a LEVELS-SCALE
+                        quantity, not a headcount: Britain 1935 reads **677** against the save's own
+                        `population_government_workforce + population_military_workforce` of
+                        **1,204,779**. So the published G5 "productive workers ÷ vanilla = 0.86×" is
+                        the SALARIED WORKFORCE ratio under a label it does not earn. This tool uses the
+                        direct fields and prints the legacy pair beside them purely for continuity.
+                        `fill_consts.mjs` still needs moving over — deferred only because it would
+                        silently restate a number the shipped report quotes.
+                        ⚠ `total workforce = Σ workforce_by_profession = salaried + unemployed +
+                        peasants` (an exact identity in the save). `population_subsisting_workforce` is
+                        peasants ÷ 100,000 — a SCALED field, never sum it with the others.
+                        ⚠ GDP is printed FIRST, because £/worker is a ratio and quoting it alone invites
+                        "the mod produces more". It does not: output is at or below vanilla's and
+                        EMPLOYMENT FALLS FASTER, which is what lifts the quotient — the design goal, but
+                        a different claim. First read (2026-08-20): productivity ÷van **1.113×** (aival)
+                        and **1.143×** (canon-n7) against the WORLD's 1.03× and 1.01×, i.e. the lens is
+                        far sharper and both mod arms clear G5's ≥1.11× where the world reading misses
+                        it — but sd runs 5–9% on productivity and 6.6–14.7pp on the share, so the two
+                        mod arms are not separable
   testbed/ledger/analyse_build_allocation.mjs  ⭐⭐ THE OVERSHOOT CHECK — WHERE DID CONSTRUCTION GO?
                         (written 2026-08-19 for the ai_value ladder, user-directed.) The tier-choice
                         measure asks a WITHIN-industry question, and a ladder can improve it while

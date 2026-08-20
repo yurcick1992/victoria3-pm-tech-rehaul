@@ -216,3 +216,65 @@ Conventions it follows, each of which changed a number when it was got wrong:
   vanilla file is invisible — the trap `verify_pms.mjs` documents for production methods — and here it
   loses `building_coal_mine` and `building_logging_camp`, two of the raw industries the whole analysis
   is about.
+
+---
+
+## `advanced_panel.mjs` — the productivity claim, read where it is visible
+
+**User ruling, 2026-08-20: report these two alongside the world's 1935 GDP decomposition, every
+batch.** Pooled over **GBR USA FRA NET BEL PRU GER**:
+
+1. **productive share** = productive workers ÷ total workforce, ÷ vanilla
+2. **productivity** = GDP ÷ productive worker, ÷ vanilla
+
+**Why pooled, and why these tags.** The world reading is dominated by countries that never
+industrialise; the per-tag reading is dominated by SIZE. Whether France holds Piedmont or the
+Rhineland barely changes how industrialised France is, but it moves the worker count a lot. Both
+metrics here are ratios INTERNAL to the group, so territory moving between members cancels — and PRU
+and GER are both listed precisely because one usually becomes the other.
+
+⚠ Territory leaving the group entirely does **not** cancel. The tool prints the pooled workforce per
+arm as a composition check; read any ratio move against it.
+
+### The definitions, and why they are not the ledger's
+
+```
+total workforce = Σ workforce_by_profession   ( = salaried + unemployed + peasants, exact identity )
+productive      = population_salaried_workforce
+                    − population_government_workforce − population_military_workforce
+```
+
+⚠⚠ **The ledger's existing G5 row subtracts the STAFFING of government/university/military
+BUILDINGS, and that field is a levels-scale quantity, not a headcount.** For Britain at 1935 it is
+**677** against the save's own gov+military workforce of **1,204,779** — five thousandths of one
+percent. So the published *"productive workers ÷ vanilla = 0.86×"* is, to four decimals, the salaried
+workforce ratio under a label it does not earn. `advanced_panel.mjs` computes both (`direct` and
+`legacy`); the legacy pair is printed only to connect to what is already published, never as a second
+opinion. **`fill_consts.mjs` should be moved onto the direct fields** — not done yet, because it would
+silently restate a number the shipped report already quotes.
+
+⚠ `population_subsisting_workforce` is peasants ÷ 100,000 (verified exactly) — a scaled field, not a
+headcount. Never sum it with the others.
+
+### GDP is printed FIRST, and that is deliberate
+
+"GDP per productive worker" is a ratio, and quoting it alone invites the reading that the mod produces
+more. It does not: pooled group output sits at or slightly below vanilla's and **employment falls
+faster**, which is what lifts the quotient. Labour released rather than output added is the design
+goal — but it is a different claim, and it must not arrive disguised as the other one.
+
+### What it read on 2026-08-20
+
+| arm | group GDP ÷van | productive share ÷van | £/productive worker ÷van |
+|---|---|---|---|
+| vanilla (n=4) | — (£1,366M) | — (73.16%) | — (£19.3) |
+| canon-n7 (n=6) | 0.945× | 0.972× | **1.143×** |
+| aival-n4 (n=4) | 0.984× | **0.912×** | **1.113×** |
+
+Against the **world** figures for the same batches (1.01× and 1.03× productivity), the advanced-majors
+lens is far sharper and both mod arms clear G5's ≥1.11× target that the world reading misses.
+
+⚠ **Variance is large and must be quoted with it.** Productive share sd: vanilla 7.59pp, aival 6.64pp,
+canon-n7 **14.65pp** — the last inflated by canon-n7 run003, a collapsed world (group GDP £379M against
+£1,155–1,846M elsewhere, 57.6M workforce against 76–100M). Productivity sd 0.87 / 1.40 / 1.95 on
+medians near £20, i.e. ~5–9%. **The aival-vs-canon differences on both metrics are inside that.**
