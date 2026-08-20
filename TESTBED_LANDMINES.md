@@ -73,7 +73,7 @@ closed.
 | L22 | A mod `effect` block silently replacing a vanilla on_action's | AUTO |
 | L23 | A telemetry line counted RAW when a burst repeats it | **REGISTERED, DETECTOR OWED** |
 | L24 | A generator's own diagnostic text leaked into an emitted script file | AUTO |
-| L25 | A summary reader globs *.json.gz and reads the harvester's in-progress file | FIXED (14 readers), **DETECTOR OWED** |
+| L25 | A summary reader globs *.json.gz and reads the harvester's in-progress file | AUTO |
 
 ---
 
@@ -1248,9 +1248,9 @@ a *diagnostic string* used where script belongs. Both produce a file the engine 
 
 ## L25 — a SUMMARY READER GLOBS `*.json.gz` AND SO READS THE HARVESTER'S IN-PROGRESS FILE
 
-**Status: FIXED IN ALL 14 READERS, DETECTOR OWED** — `preflight.ps1` is a build-path file and a batch
-was running when this was found, so the static check is deferred to the end of that batch. Written up
-now so the deferral is a decision and not a lapse.
+**Status: AUTO** — `Test-LmL25` in `tools/preflight.ps1`, repo-side, so it gates a batch before
+anything is harvested. The check was deferred while a batch ran (preflight is a build-path file and
+the scheduler rebuilds before every run) and wired in the moment the machine was free.
 
 **Found 2026-08-20**, from a `.partial` filename appearing in a routine construction-mix smoke check.
 
@@ -1304,3 +1304,21 @@ excluding `.partial.`. Cheap, repo-side, and it belongs beside L20's config chec
 ⚠ The general shape is **L9's and L23's**, one layer down: L9 is reading a shared log ring without
 filtering to your own run, L23 is trusting line counts from that ring, and this is trusting a
 directory listing to contain only committed files. **A glob is not a manifest.**
+
+### What the detector found that the hand pass missed
+
+The fix had been applied by walking `tools/testbed/ledger/*.mjs` plus `queue_mix.mjs` — fourteen files,
+found by grepping the directory I happened to be thinking about. On its first run the detector found a
+fifteenth: **`tools/testbed/port_ramp_table.mjs`**, which lives one level up and was never in that list.
+
+⚠ **This is the L1 lesson again** — that fix covered 6 sites found by hand and its detector then found
+13 more. **A hand pass over "the files I know about" is not equivalent to a check over the tree.**
+
+⚠ It also had to learn one scope rule: the walk **skips `tools\testbed\sessions\`**. Those `.mjs` are
+frozen copies archived inside finished sessions — the record of how a past batch was analysed. Sessions
+are never deleted and never rewritten, so "fixing" one would be editing history to make a check pass,
+and the race cannot recur for a batch that finished long ago. Four such files tripped the first run and
+are correctly excluded, not corrected.
+
+**Proven both ways:** PASS on the clean tree (15 readers, every glob site guarded), and FAIL with exit 1
+naming `peek_run.mjs` when its guard is removed.

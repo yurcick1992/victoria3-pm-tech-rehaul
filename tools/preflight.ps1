@@ -543,6 +543,66 @@ function Test-LmL24 {
     }
 }
 
+# ============================================================= L25 ====
+function Test-LmL25 {
+    <#
+      L25 - a summary reader globs *.json.gz and so reads the harvester's IN-PROGRESS file.
+
+      harvest_saves.ps1 writes each save summary to "$stem.partial.json.gz" and renames it only after
+      verifying it. That discipline is correct and is why L12 exists: a reaped save makes the summary
+      the record, so it must never be half-written.
+
+      But "0001_x.partial.json.gz".endsWith('.json.gz') is TRUE, and every reader globbed exactly that.
+      Two silent outcomes, neither of which raises anything:
+        * still truncated -> gunzipSync throws -> every reader wraps the parse in try/catch{continue},
+          so the year is SILENTLY SKIPPED and a mid-batch read reports a short series as complete;
+        * complete but not yet renamed -> both names are in the listing -> the year is READ TWICE,
+          inserting a spurious zero-delta year into the diff-based analysers.
+
+      DETECTOR. Static, repo-side: no script under tools/testbed may test endsWith('.json.gz') without
+      also excluding '.partial.'. It reads the SOURCE here rather than an artifact because the defect
+      is IN the reader - the artifact-vs-generator rule is about not trusting a generator's own report
+      of what it emitted, and there is no artifact to inspect for this one.
+
+      ⚠ Deliberately not a check that the summaries directory is clean at some moment: the race is
+      real only DURING a harvest, so a point-in-time check would pass on every idle repo and catch
+      nothing. The property worth enforcing is that the readers cannot be caught by it at all.
+
+      ⚠ Sibling of L9 (reading the shared log ring unfiltered) and L23 (trusting line counts from that
+      ring) one layer down. A GLOB IS NOT A MANIFEST.
+    #>
+    $root = Join-Path $Repo 'tools\testbed'
+    if (-not (Test-Path $root)) { Add-Result 'L25' 'summary reader globs the harvester temp file' 'N/A' 'no tools\testbed'; return }
+    $bad = @(); $checked = 0
+    foreach ($f in Get-ChildItem -Path $root -Recurse -File -Filter *.mjs) {
+        # ⚠ SKIP tools\testbed\sessions\ — those .mjs are FROZEN COPIES archived inside a finished
+        # session, i.e. the record of how that batch was analysed. Sessions are never deleted and never
+        # rewritten (CLAUDE.md); "fixing" one would be editing history to make a check pass, and the
+        # race it warns about cannot recur for a batch that finished months ago.
+        if ($f.FullName -match '\\sessions\\') { continue }
+        $txt = [System.IO.File]::ReadAllText($f.FullName)
+        if ($txt -notmatch "endsWith\('\.json\.gz'\)") { continue }
+        $checked++
+        # every glob site in the file must carry the exclusion
+        $sites = ([regex]"endsWith\('\.json\.gz'\)").Matches($txt).Count
+        $guards = ([regex]"includes\('\.partial\.'\)").Matches($txt).Count
+        if ($guards -lt $sites) {
+            $rel = $f.FullName.Substring($Repo.Length).TrimStart('\')
+            $bad += "  $rel - $sites glob site(s), $guards guard(s)"
+        }
+    }
+    if ($bad.Count) {
+        Add-Result 'L25' 'summary reader globs the harvester temp file' 'FAIL' (
+            ($bad -join [Environment]::NewLine) + [Environment]::NewLine +
+            "a reader can pick up harvest_saves.ps1's in-progress `"`$stem.partial.json.gz`" and either" + [Environment]::NewLine +
+            "skip that year silently or count it twice. Fix:" + [Environment]::NewLine +
+            "  .filter(f => f.endsWith('.json.gz') && !f.includes('.partial.'))")
+    } else {
+        Add-Result 'L25' 'summary reader globs the harvester temp file' 'PASS' `
+            "$checked summary reader(s), every glob site excludes the .partial temp name"
+    }
+}
+
 # ============================================================== L7 ====
 function Test-LmL7 {
     <#
@@ -934,7 +994,10 @@ $CHECKS = @(
     # whole point: the failure it catches costs a whole window when it is found at the first build.
     @{ Id = 'L20'; Artifact = $false; Fn = { Test-LmL20 } },
     @{ Id = 'L22'; Artifact = $true;  Fn = { Test-LmL22 } },
-    @{ Id = 'L24'; Artifact = $true;  Fn = { Test-LmL24 } }
+    @{ Id = 'L24'; Artifact = $true;  Fn = { Test-LmL24 } },
+    # L25 reads the ANALYSIS SCRIPTS, not the mod, so it costs a build nothing and gates a batch
+    # before anything is harvested — which is when a reader that can race the harvester matters.
+    @{ Id = 'L25'; Artifact = $false; Fn = { Test-LmL25 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {

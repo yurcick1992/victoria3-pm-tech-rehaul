@@ -30,7 +30,7 @@ if (!runs.length) { console.error('no save_summaries in ' + SESSION); process.ex
 
 const perRun = runs.map(dir => {
   const byDate = {};
-  for (const f of readdirSync(dir).filter(x => x.endsWith('.json.gz')).sort()) {
+  for (const f of readdirSync(dir).filter(x => x.endsWith('.json.gz') && !x.includes('.partial.')).sort()) {
     let j; try { j = JSON.parse(gunzipSync(readFileSync(join(dir, f)))); } catch { continue; }
     const date = j.provenance?.date; if (!date) continue;
     const mkOf = {};
