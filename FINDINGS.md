@@ -7854,3 +7854,50 @@ workers. G5's ≥1.11× output-per-worker target is met at 1.190×; its ≤0.90�
   0.60pp; productivity 1.95 → 1.40 → 0.37), but n=2 cannot establish a variance and canon-n7 is a
   different patch — 1.13.11 fixes sway, the widest variance channel here.
 - **Wall clock is not separated.** 2.76 / 2.72 h against aival's 2.49–2.67, on a larger economy.
+
+### F76.1 — the curve TURNS: `1000 × (era+1)²` overshoots, and the metric improves *because the economy shrinks*
+
+**Added 2026-08-20**, session `20260820_162005_aival3-n1` (n=1, 1.13.11, same machine as the other two
+ladder arms). Fourth point on the same-patch curve.
+
+| ladder | top rung ÷ the 1000 field | below-best | advanced-major GDP ÷van | productive share ÷van | £/prod worker ÷van |
+|---|---|---|---|---|---|
+| none | — | 52.94% | — | — | — |
+| `500 × (era+1)` | 3× | 50.52% | 0.984× | 0.912× | 1.113× |
+| `1000 × (era+1)` | 6× | 47.17% | **1.045×** | 0.923× | **1.190×** |
+| `1000 × (era+1)²` | 36× | **39.6%** | **0.601×** | **0.706×** | **1.030×** |
+
+⚠⚠ **THE TARGET METRIC AND THE ECONOMY MOVE IN OPPOSITE DIRECTIONS AT THE FOURTH POINT.** The
+below-best share reaches its best value ever, and it does so because **total construction fell to
+0.79×** (231,233 → 181,599 levels per run) with **every sector down**: extraction 0.62×, agriculture
+0.66×, manufacturing 0.71×, infrastructure 0.64×. Sector *shares* barely move, so this is not
+reallocation — it is less building of everything.
+
+⭐ **The decisive detail is that the TOP rungs fell too**: e4 **0.48×**, e5 **0.62×**, e0 0.51×, with
+the survivors clustering at e2/e3 (+6.08pp, +3.94pp share). The AI did not stop building old rungs in
+order to build new ones; it built less of every rung. **The below-best share improved because its
+denominator collapsed.**
+
+⇒ **A ladder must be judged on construction VOLUME beside the choice metric.** Reporting the choice
+metric alone would have called this the best result of the series. This is the failure mode registered
+in advance as `aival-n4`'s watch item (3) and it is why that item exists.
+
+**Strength.** n=1, so nothing is established — but four channels agree and two lie outside every other
+arm's entire observed range: productive share **51.67%** (aival 61.03–77.78, aival2 64.97–70.12,
+vanilla 67.08–85.68) and advanced-major GDP **£821M** (vanilla 1,231–1,481, aival 1,139–1,668, aival2
+1,323–1,531). Total construction and the per-sector band are composition measures over ~180,000 build
+decisions inside the run, far steadier than a world aggregate.
+
+**Not identified:** the mechanism of the shrink (unaffordable high-tier queueing? refusal of cheap
+early buildings? something else — the construction-queue composition would answer it and was not
+examined), and the location of the turning point, which lies somewhere between `1000 × (era+1)` and
+`1000 × (era+1)²`. The intermediate `500 × 2^era` (top rung 16× the field) is unmeasured.
+
+**Also not reproduced:** the pre-registered prediction that early-stopping chains would be squeezed.
+`shipyard` caps at 4000 against sixteen industries at 36000, yet fell 0.65× — inside the 0.62–0.77 band
+everything else fell into. A relative-disadvantage prediction cannot be tested while total construction
+is contracting. ⭐ The clean reading is the **control**: `power`, which carries no ladder, fell
+**0.43×**, the hardest of any industry — consistent with untreated buildings being crowded out.
+
+⇒ **The ladder question is now BRACKETED**: `1000 × (era+1)` is the strongest setting that has not
+damaged the economy; `1000 × (era+1)²` demonstrably does.
