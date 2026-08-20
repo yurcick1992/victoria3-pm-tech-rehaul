@@ -7901,3 +7901,77 @@ is contracting. ⭐ The clean reading is the **control**: `power`, which carries
 
 ⇒ **The ladder question is now BRACKETED**: `1000 × (era+1)` is the strongest setting that has not
 damaged the economy; `1000 × (era+1)²` demonstrably does.
+
+### F76.2 — the shrink mechanism, identified: the ladder makes the AI BUILD AHEAD OF ITS MARKET, and profit per level pays for it
+
+**Added 2026-08-20**, on the user's instruction to go and find the mechanism F76.1 left open. Reads
+`aival2-n2` (n=2) against `aival3-n1` (n=1), both 1.13.11 on the same machine.
+
+#### The ladder WORKS early — that is the surprise
+
+Tiered levels built per run, and the mean era of what was built:
+
+| decade | a2 tier/run | a3 tier/run | a3÷a2 | a2 mean era | a3 mean era |
+|---|---|---|---|---|---|
+| 1840s | 581 | 583 | 1.00× | 0.68 | **0.97** |
+| 1850s | 768 | 947 | **1.23×** | 0.86 | **1.01** |
+| 1860s | 1,304 | 1,313 | 1.01× | 0.98 | **1.17** |
+| 1870s | 2,067 | 1,610 | 0.78× | 1.17 | 1.38 |
+| 1890s | 3,579 | 2,181 | **0.61×** | 1.57 | 1.92 |
+| 1920s | 9,409 | 5,822 | 0.62× | 2.61 | 2.56 |
+
+Through the 1860s the quadratic arm builds **as much or more** tiered capacity, at a mean era up to
+**0.3 higher**. The lever does exactly what it was designed to do. **The collapse begins in the 1870s**
+and deepens from there.
+
+#### The cause: those buildings earn less, from 1860 onward
+
+Profit per tier level, £/week, world:
+
+| year | aival2 | aival3 | ratio | loss-making levels |
+|---|---|---|---|---|
+| 1850 | £237 | £247 | 1.04× | 3.2% → 4.4% |
+| 1860 | £294 | £269 | 0.92× | 4.9% → 5.9% |
+| 1870 | £327 | £277 | 0.85× | 5.2% → 6.4% |
+| 1890 | £361 | £282 | **0.78×** | 6.5% → 8.0% |
+| 1920 | £459 | £336 | **0.73×** | 9.2% → 10.4% |
+| 1935 | £514 | £432 | 0.84× | 7.2% → 9.2% |
+
+⇒ **A tier built ahead of its market is priced badly.** A higher rung eats more manufactured inputs and
+makes more output; built before the supply chains and the customers exist, it meets input scarcity and
+output glut at once. The mod's own premise is that obsolescence is **price-driven** — this is the same
+mechanism running the other way.
+
+**Profit is what funds construction**, so the loop closes: newer tiers earlier → less profit per level →
+less reinvestment → less construction → a smaller economy → less profit. It compounds, which is exactly
+the shape observed (identical to 1860, then widening every decade to GDP 0.71× and construction spend
+0.61–0.86×).
+
+#### Six hypotheses tested and REJECTED — record them so nobody re-runs them
+
+1. **Construction sectors crowded out by high-ai_value factories.** No: their share of construction is
+   flat (1.60 / 1.58 / 1.64% pooled) and bounces ±0.5pp by decade with no trend. Their absolute fall
+   (0.70×) is a symptom, not a cause.
+2. **Agriculture starved.** No: agriculture levels run 0.98–1.00× of the partner arm in every decade.
+3. **Buildings unstaffable** (high tiers need scarce machinists/engineers). No: staffing ratio 0.723 vs
+   0.718 at 1935, and within 0.03 at every date.
+4. **The construction queue clogged with unaffordable items.** No: weeks-to-drain is 24.9 → 25.6, and
+   queue speed fell in step with the queue, not against it.
+5. **Subsidies diverting the construction budget.** No: subsidies are 2–6% of construction spend and are
+   *lower* in the quadratic arm from 1910 (0.27–0.64×).
+6. **Bankruptcy cascade.** No: bankrupt countries 68.5 → 70 at 1930, 73 → 75 at 1935.
+
+#### What this does NOT establish
+
+- **n=1 on the quadratic arm.** The mechanism is coherent and every channel agrees, but the effect size
+  is one run.
+- **The causal direction is inferred, not proven.** Profit per level and construction volume fall
+  together; that profit *drives* construction is V3's design and the timing fits (profit diverges at
+  1860, volume at 1870), but no intervention isolated it.
+- **It does not identify WHICH tiers are mispriced.** "Built ahead of its market" is the shape of the
+  evidence, not a per-industry diagnosis. The per-tier margin census at the dates of divergence would
+  give that, and was not run.
+
+⇒ **Design implication: the ladder's ceiling is set by the economy's ability to absorb new tiers, not**
+**by the AI's willingness to build them.** Pushing `ai_value` past that point buys era mix with profit,
+and profit is the thing that pays for the next building.
