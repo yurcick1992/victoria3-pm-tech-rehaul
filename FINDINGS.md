@@ -8054,3 +8054,67 @@ arm of the F76 ladder series.
 - **No fix is implied.** Re-pointing company mandates at whole chains is the obvious move and is exactly
   the "make our tier buildings eligible" strategic fix `MISSING_PM_REFERENCES.md` already defers; it
   would touch 222 vanilla company definitions and is a design decision, not a consequence of this.
+
+### F77.1 — the magnitude, measured: companies hold **38.5%** of vanilla's tiered sector and **9.0%** of ours, and the tier split is 86% of the gap
+
+**Added 2026-08-20**, user-directed ("Run now"), from melted savegames via the new
+`tools/testbed/melted_company_ownership.mjs`. ⚠ n=1 per arm, different dates, different worlds — see
+the caveats.
+
+| | tier levels | company-held | share | tier VA £/wk | company VA | share |
+|---|---|---|---|---|---|---|
+| **VANILLA** (saves_debut, **1921**) | 18,410 | 7,090 | **38.51%** | 59.0M | 24.2M | **41.01%** |
+| **CANON** (canon-n7 run001, **1936**) | 31,631 | 2,836 | **8.97%** | 68.0M | 4.8M | **7.06%** |
+
+Per country, company share of tier levels / of tier value added:
+
+| | GBR | USA | FRA | NET | BEL | GER |
+|---|---|---|---|---|---|---|
+| vanilla 1921 | 21.1% / 23.9% | 44.8% / 37.4% | 51.2% / 51.8% | 56.0% / 65.7% | **70.2% / 74.2%** | — |
+| canon 1936 | **2.0% / 0.3%** | 5.1% / 2.1% | 12.3% / 10.8% | 5.8% / 3.9% | — | 10.3% / 3.5% |
+
+⭐ **100% of company-held tier levels sit on rung 1, in BOTH arms** — F77's file-level finding
+reproduced in live saves, and in vanilla trivially so, since vanilla has no rungs above the first.
+
+### The decomposition, which is the actual result
+
+Company share of the tiered sector factorises as *(rung-1's share of the sector)* × *(company
+penetration within rung 1)*:
+
+| | rung-1 share of tier levels | company penetration of rung 1 | product |
+|---|---|---|---|
+| vanilla | **100%** (there are no other rungs) | 38.5% | 38.5% |
+| canon | **34.3%** | 26.8% | 9.2% |
+
+- **The LOCK-OUT** — 65.7% of our tiered sector is above rung 1 and no company can charter any of it —
+  takes 38.5% → 13.2%. **That is 25.3pp of the 29.5pp gap, i.e. 86% of it**, and it is not subject to
+  RNG: it is arithmetic on the mod's own tier mix.
+- **Lower penetration within reach** (26.8% vs 38.5%) accounts for the remaining 4.0pp.
+
+⇒ **The tier split did not merely fail to extend companies to new rungs — it shrank the share of the
+economy companies can touch at all, by roughly two thirds.** Whatever companies contribute (throughput,
+prestige goods, investment, AI construction pull) now reaches a third of the tiered sector rather than
+all of it, and the part it reaches is exactly the part the mod wants retired.
+
+### What this does NOT say
+
+- ⚠⚠ **DIFFERENT DATES.** Vanilla is **1921**, canon **1936** — `saves_debut/` ends in 1921. Companies
+  accumulate over a campaign, so the later date should if anything *favour* canon; the gap is therefore
+  probably understated rather than inflated. But it is not a matched comparison and must not be quoted
+  as one.
+- **n=1 per arm, different worlds, different RNG.** The per-country rows especially: BEL is absent from
+  the canon run and GER from the vanilla one, because they are different playthroughs.
+- **It does not measure a consequence.** That a smaller company footprint *causes* slower development is
+  the hypothesis, not the finding. The finding is the footprint.
+- **The dynamic question is still open.** How the below-best metric moves counting only non-company
+  levels needs ownership PER YEAR; only endpoint saves survive the reap, so the static stock above is
+  the closest available answer. `save_state_summary.mjs` needs its ownership pass extended to the
+  `identity={ building= }` variant (a SAVE_SUMMARY_VERSION bump) for the next batch to answer it
+  properly.
+- ⚠ **Value added here is the save's own per-building `goods_sales`, apportioned to an owner by level
+  share** — the save books VA per building, not per owner, so the split is an apportionment. It is not
+  the §F45 value-added definition (outputs − inputs) used elsewhere in this repo, and the two should not
+  be compared directly.
+- ⚠ **A building-identity owner is not always a company.** Financial districts dominate that channel
+  (13,864 records in canon against a few hundred company ones); the owner's TYPE is what separates them,
+  and the tool keys on `building_company_*` rather than assuming.
