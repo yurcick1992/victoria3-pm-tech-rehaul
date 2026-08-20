@@ -7975,3 +7975,82 @@ the shape observed (identical to 1860, then widening every decade to GDP 0.71× 
 ⇒ **Design implication: the ladder's ceiling is set by the economy's ability to absorb new tiers, not**
 **by the AI's willingness to build them.** Pushing `ai_value` past that point buys era mix with profit,
 and profit is the thing that pays for the next building.
+
+---
+
+## F77 — EVERY company mandate and EVERY company throughput bonus lands on the FIRST rung of a chain, and never on any other
+
+**Claim.** Vanilla company types reference our tiered industries only through the chain's base building,
+so a company's prosperity bonus permanently subsidises the rung the mod is trying to make obsolete and
+can never reach the rung it is trying to promote. Measured from the game files, not inferred.
+
+**Prompted by the user (2026-08-20):** *"could our development lag be related to companies still having
+very obsolete tiers in their mandates, so not developing properly?"* — and `MISSING_PM_REFERENCES.md`
+had already catalogued the class ("narrowed building references … company mandates, monopolies and
+similar mechanics latch onto our Tier-1 building") as **gameplay-significant, not just flavour**. This
+is that catalogue entry measured.
+
+### The mandates
+
+222 vanilla company types reference **48 distinct building keys**, of which **21 are ours**. Every one
+is the **first rung** of its chain:
+
+| first rung named | industries |
+|---|---|
+| e0 | textile, food, furniture, glass, tooling, paper, steel, arms, artillery, port, shipyard |
+| e1 | railway, motor, fertilizer, munition, explosives, art_academy |
+| e2 | electrics, synthetics |
+| e3 | power, automotive |
+
+**Zero** references to any tier above a chain's own first rung — across `building_types` and
+`extension_building_types` alike.
+
+### ⭐ The bonus, which is the part that bites
+
+A company's `prosperity_modifier` grants **`building_<SPECIFIC KEY>_throughput_add`**. Of **151**
+throughput modifiers across all company types, **85 target one of our tiered buildings — and all 85
+target the first rung**:
+
+| building | companies granting it throughput | chain |
+|---|---|---|
+| `building_railway` | **19** | railway e1, chain of 4 |
+| `building_textile_mill` | **11** | textile e0, chain of 5 |
+| `building_power_plant` | 7 | power e3, chain of 3 |
+| `building_steel_mill` | 5 | steel e0, chain of 5 |
+| `building_synthetics_plant` | 5 | synthetics e2, chain of 4 |
+| `building_arms_industry`, `building_art_academy` | 4 each | arms e0 (6), art_academy e1 (5) |
+| `building_tooling_workshop`, `building_food_industry`, `building_munition_plant`, `building_port`, `building_chemical_plant`, `building_motor_industry`, `building_artillery_foundry`, `building_shipyard` | 3 each | — |
+| `building_electrics_industry`, `building_automotive_industry` | 2 each | — |
+| `building_paper_mill`, `building_furniture_manufactory` | 1 each | — |
+
+⇒ **A company-backed obsolete mill carries a permanent throughput bonus its modern replacement can
+never receive.** The modifier is keyed to a literal building key, so the tier split put every higher
+rung permanently outside its reach. That is a standing economic incentive to keep and keep building the
+oldest rung, and it is **entirely independent of `ai_value`** — it would have been acting through every
+arm of the F76 ladder series.
+
+### What is NOT yet measured, and why
+
+- **The share of 1935 output held by companies**, world and per major, in vanilla and in canon. Save
+  SUMMARIES do not carry per-building ownership — only company HQ presence — so this needs a melt.
+  Retained saves make it feasible: canon-n7 keeps 7 endpoint `.v3`, aival-n4 4, aival2 2, and
+  `saves_debut/` holds 341 VANILLA autosaves (⚠ ending **1921**, not 1935).
+- **The dynamic** — how the below-best metric moves counting only non-company-owned levels — is NOT
+  retrievable from what is retained: it needs ownership *per year*, and only the newest save of each run
+  survives the reap. ⭐ **It is one schema bump from being answerable**: `save_state_summary.mjs` already
+  parses `building_ownership_manager`, but its identity pass extracts only `country=` and ignores the
+  `building=` variant a company HQ owns through. Capturing that (SAVE_SUMMARY_VERSION bump) would make
+  it a normal per-year reading on the next batch.
+
+### What this does NOT say
+
+- **It does not measure any effect.** The mechanism is verified in the files; how much of the observed
+  lag it explains is unquantified, and F76's ladder results were measured with it acting throughout.
+- **It does not establish that companies OWN only their listed types.** The mandate and the bonus are
+  file-verified; that ownership cannot extend beyond `building_types` is a reasonable reading of the
+  engine, not something measured here. The melt above settles it.
+- **It is not evidence against F76.2.** Both can hold: a base-rung throughput subsidy and a
+  built-ahead-of-market price penalty push the same direction.
+- **No fix is implied.** Re-pointing company mandates at whole chains is the obvious move and is exactly
+  the "make our tier buildings eligible" strategic fix `MISSING_PM_REFERENCES.md` already defers; it
+  would touch 222 vanilla company definitions and is a design decision, not a consequence of this.
