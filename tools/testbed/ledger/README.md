@@ -278,3 +278,69 @@ lens is far sharper and both mod arms clear G5's ≥1.11× target that the world
 canon-n7 **14.65pp** — the last inflated by canon-n7 run003, a collapsed world (group GDP £379M against
 £1,155–1,846M elsewhere, 57.6M workforce against 76–100M). Productivity sd 0.87 / 1.40 / 1.95 on
 medians near £20, i.e. ~5–9%. **The aival-vs-canon differences on both metrics are inside that.**
+
+---
+
+## `tiered_panel.mjs` — the same two, restricted to the tiered industries
+
+Same pooled shortlist, same two questions, but inside the 22 industries the mod actually reshapes —
+which is where a tier ladder can be expected to show up at all. The whole-economy figure includes
+farms, mines, barracks, manor houses and urban centres, none of which the ladder touches.
+
+### Workers are MODELLED, and here is why that is sound
+
+A save summary has **no per-building headcount**. `staffing` is a count of STAFFED LEVELS, not people
+(government administration: 234 levels, staffing 223.15). So
+
+```
+workers = per-level employment × workforce_mult × staffed levels
+```
+
+⭐ **Total employment per level is constant across an industry's main PMs** — only the profession mix
+moves. Our config reads 5000 at every rung of textile/food/glass/tooling/steel/…, 1000 at every rung of
+power/port/railway, and **vanilla's own main PMs read the same numbers**, checked live against
+`common/production_methods`. Three industries are not flat — furniture 5000→5500, artillery
+5000→5250, explosives 10000→4000 — and **vanilla moves at the same rungs by the same amounts**. So the
+vanilla side uses the employment of the most advanced `vanilla_pm` in each chain (these are advanced
+majors at 1935; they run it), and the comparison is derived rather than assumed.
+
+⚠ **Secondary PMs are not modelled.** Automation removes ~1500 laborers a level and the summary does
+not say which secondaries are active, so both sides are overstated. The bias points the same way on
+both arms, so the ratio survives better than the level.
+⚠ `art_academy` employs 0 in its base PM on both sides (its jobs live in the ownership PMG, which the
+summary does not break out), so it contributes no workers to either — consistently, not silently.
+
+### ⚠⚠ Value added is MOD-ARMS-ONLY and cannot be backfilled
+
+`va_out`/`va_in` ship in **SAVE_SUMMARY_VERSION 6** (2026-08-18). The pinned vanilla baseline
+`20260813_083557` is **v4**; a scan of every session since 2026-08-10 finds **no vanilla arm above
+v5**, and the saves behind them are reaped. Metric 2 therefore has no vanilla denominator today. The
+**2026-08-22/23 vanilla runs will be v6 and close it** — that is the first batch on which "tiered
+productivity ÷ vanilla" becomes answerable at all.
+
+### What it read on 2026-08-20
+
+| arm | tiered share of workforce | ÷van | £VA per tiered worker | tiered share of all VA |
+|---|---|---|---|---|
+| vanilla (n=4) | 28.71% (sd 2.16pp) | — | n/a (v4) | n/a |
+| canon-n7 (n=6) | 31.43% (sd 6.97pp) | 1.095× | £30.8 (sd 4.9) | 69.11% |
+| aival-n4 (n=4) | 29.06% (sd 4.87pp) | 1.012× | £32.5 (sd 1.8) | 66.76% |
+
+⭐ **Two-thirds of all value added in the advanced majors comes from the tiered industries** — the
+sector the mod reshapes is the economy in exactly the countries that matter.
+
+⚠ **The mod puts MORE labour into the tiered sector than vanilla, not less** (1.01× and 1.10×). The
+whole-economy productivity gain is therefore not coming from a leaner tiered sector; it is coming from
+elsewhere in the economy. That is worth a separate look.
+
+⚠ The LEVELS column in section 3 is **not arm-comparable** — the mod's ports are graded, so one vanilla
+port is ten mod port levels. Workers correct for it via `workforce_mult`, and value added is money, so
+those two are comparable. Read levels within an arm only.
+
+### The per-industry table's own finding
+
+Three industries run **negative value added per worker** in both mod arms: `shipyard_steam` (−£25),
+`power` (−£15), `shipyard` (−£11) — inputs cost more than outputs at market prices. Shipyards are
+expected (naval construction is unmodelled and they carry a −30pp handicap by design); **power is not**,
+and `automotive` at £1–3 is barely above zero. Highest are `explosives` £58, `electrics` £58,
+`fertilizer` £51. `tooling` is the largest employer by far at ~5.4M workers.

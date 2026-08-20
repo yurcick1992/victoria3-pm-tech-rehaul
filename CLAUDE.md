@@ -1226,6 +1226,36 @@ tools/                  dev tooling — NOT shipped in the mod
                         far sharper and both mod arms clear G5's ≥1.11× where the world reading misses
                         it — but sd runs 5–9% on productivity and 6.6–14.7pp on the share, so the two
                         mod arms are not separable
+  testbed/ledger/tiered_panel.mjs  THE SAME TWO, RESTRICTED TO THE TIERED INDUSTRIES (user-ruled
+                        2026-08-20) — where a tier ladder can be expected to show at all, the
+                        whole-economy figure being diluted by farms, mines, barracks and urban centres
+                        the ladder never touches. ⭐ WORKERS ARE MODELLED because a summary has NO
+                        per-building headcount — `staffing` counts STAFFED LEVELS, not people (gov
+                        admin: 234 levels, staffing 223.15). So `workers = per-level employment ×
+                        workforce_mult × staffed levels`, and that is DERIVED not assumed: **total
+                        employment per level is constant across an industry's main PMs** (5000
+                        manufacturing, 1000 power/port/railway) and VANILLA'S OWN main PMs read the
+                        same numbers, checked live against common/production_methods; the three that
+                        move (furniture 5000→5500, artillery →5250, explosives 10000→4000) move at the
+                        same rungs on both sides. Vanilla uses its most advanced `vanilla_pm`.
+                        ⚠ Secondary PMs are NOT modelled (automation −1500 laborers/level, and the
+                        summary does not say which are active) — both sides overstated, the ratio
+                        survives better than the level. ⚠ art_academy employs 0 in base on both sides
+                        (jobs live in its ownership PMG), so it contributes no workers to either.
+                        ⚠⚠ **VALUE ADDED IS MOD-ARMS-ONLY AND CANNOT BE BACKFILLED**: `va_out`/`va_in`
+                        ship in SAVE_SUMMARY_VERSION 6 (2026-08-18), the pinned vanilla baseline is
+                        **v4**, NO vanilla arm in sessions/ exceeds v5, and those saves are reaped. The
+                        2026-08-22/23 vanilla runs are the first on which "tiered productivity ÷
+                        vanilla" is answerable at all. First read (2026-08-20): tiered share of the
+                        workforce vanilla 28.71% · canon-n7 31.43% (1.095×) · aival 29.06% (1.012×) —
+                        ⚠ **the mod puts MORE labour into the tiered sector than vanilla, not less**, so
+                        the whole-economy productivity gain comes from elsewhere; £VA per tiered worker
+                        £30.8 / £32.5 (mod only); and ⭐ **the tiered sector is 67–69% of ALL value
+                        added** in these countries. Three industries run NEGATIVE VA per worker in both
+                        arms — shipyard_steam −£25, power −£15, shipyard −£11 (shipyards by design, the
+                        naval income is unmodelled; **power is not**), automotive barely positive at
+                        £1–3. ⚠ Its LEVELS column is not arm-comparable (graded ports: one vanilla port
+                        = ten mod levels); workers and value added are
   testbed/ledger/analyse_build_allocation.mjs  ⭐⭐ THE OVERSHOOT CHECK — WHERE DID CONSTRUCTION GO?
                         (written 2026-08-19 for the ai_value ladder, user-directed.) The tier-choice
                         measure asks a WITHIN-industry question, and a ladder can improve it while
