@@ -1,0 +1,46 @@
+{
+  "schedule_version": 1,
+  "label": "vanilla-1836-refresh-1311",
+  "_why": "REFRESH config/measured_1836.json (and measured_1836_professions.json, from the kept save) ON GAME 1.13.11, immediately before the n=16 vanilla baseline. The committed reference was measured on 1.13.10 (session 20260814_020942_vanilla-1836-wages-n5) and CLAUDE.md's standing warning applies: a stale measured table is silently wrong, not obviously missing. ARM: {kind: control} - this measures THE GAME. Schedule is a VERBATIM copy of vanilla_1836_wages_n5.json (metrics, tags, n, span) so the two sessions stay comparable field by field; only the label and the game version differ.",
+  "_arms": "{kind: control} - vanilla + telemetry and nothing else. This measures THE GAME, so it must not carry our content; a modded arm here would rebase the scenarios on ourselves.",
+  "_comparison": "Against config/measured_1836.json as extracted 2026-08-14 on 1.13.10. Differences are the 1.13.10->1.13.11 patch drift at the 1836 start plus coverage noise; extract_measured averages over the five runs as its documented default.",
+  "_watch": "1836.2.1 and NOT day 0 (F14: construction goods spend is exactly 0 on day 0). VERIFY AFTERWARDS, as the n5 lineage requires: SCEN lines ~570 per run - if lower, the wages per-pop sweep evicted the scenario metrics and wages must be re-run separately and merged with -WagesOnly. First session under telemetry v14: wages runs with the DEFAULT wage_pop_endpoints=both, which on a single dump date means the PW sweep fires there - deliberately, this is the 1836 per-pop distribution the century batch omits by design.",
+  "_cost": "5 runs x 2 in-game months, ~3 min each plus startup, ~15-20 min total.",
+  "_caveats": "GAME 1.13.11. Metric set matches the belgium_check/allmarkets_popsol/wages-n5 lineage that produced the committed measured_1836.json. Tags are the eight preset countries, which is what config/presets.json drives. Monthly autosaves: the harvest keeps each run's newest save (~1836.3.1) permanently, which is what melted_pops_by_profession.mjs reads for the professions refresh.",
+  "defaults": {
+    "metrics": [
+      "boot_dump",
+      "scenario",
+      "building_inventory",
+      "active_pms",
+      "market_goods_scoped",
+      "construction",
+      "pop_sol",
+      "wages"
+    ],
+    "autosave_interval": "monthly",
+    "timeout_minutes": 20,
+    "tags": [
+      "FRA",
+      "GBR",
+      "RUS",
+      "CHI",
+      "AUS",
+      "JAP",
+      "USA",
+      "BEL"
+    ]
+  },
+  "setups": {
+    "vanilla": {
+      "kind": "control"
+    }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1836.3.1", "dump_dates": ["1836.2.1"] },
+    { "setup": "vanilla", "until": "1836.3.1", "dump_dates": ["1836.2.1"] },
+    { "setup": "vanilla", "until": "1836.3.1", "dump_dates": ["1836.2.1"] },
+    { "setup": "vanilla", "until": "1836.3.1", "dump_dates": ["1836.2.1"] },
+    { "setup": "vanilla", "until": "1836.3.1", "dump_dates": ["1836.2.1"] }
+  ]
+}

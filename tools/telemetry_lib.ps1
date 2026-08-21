@@ -1242,7 +1242,16 @@ $nm2 = {
             # v14: WHICH endpoints is now the spec's choice (`wage_pop_endpoints`). A century batch
             # sharing phase 0 with market goods wants `none` - the 1935 sweep is the measured-unsafe
             # case (~4,875 lines) and the per-pop distribution comes from a dedicated 1836 probe.
-            $pwMode = if ($Spec.wage_pop_endpoints) { $Spec.wage_pop_endpoints } else { 'both' }
+            # ⚠ Guarded lookup, not bare dot access: this library sets no StrictMode, but a CALLER's
+            # StrictMode travels through `&` invocation — run_schedule's preflight gate handed L8 a
+            # spec without this key and the bare `$Spec.wage_pop_endpoints` threw there while passing
+            # standalone. Indexer access on a dictionary is StrictMode-safe.
+            $pwMode = 'both'
+            if ($Spec -is [System.Collections.IDictionary]) {
+                if ($Spec['wage_pop_endpoints']) { $pwMode = $Spec['wage_pop_endpoints'] }
+            } elseif ($Spec.PSObject.Properties.Name -contains 'wage_pop_endpoints' -and $Spec.wage_pop_endpoints) {
+                $pwMode = $Spec.wage_pop_endpoints
+            }
             $isEndpoint = switch ($pwMode) {
                 'none'  { $false }
                 'first' { $date -eq $dates[0] }

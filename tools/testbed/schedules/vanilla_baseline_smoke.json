@@ -1,0 +1,34 @@
+{
+  "schedule_version": 1,
+  "label": "vanilla-baseline-smoke",
+  "_why": "SMOKE TEST for the n=16 vanilla baseline's EXACT telemetry set, before committing ~45 hours to it. First live exercise of telemetry v14: (1) state_access now rides PHASE 3 - SMA lines must appear in the 1836.5 tick, three months after the dump they stamp; (2) wage_pop_endpoints=none - the wages metric must emit its cheap WC/SW/WSTR lines and ZERO PW lines; (3) the reconciled L16 defaults threading - wage_pop_endpoints sits at DEFAULTS level on purpose, which the old known-keys list would have thrown on. Also counts lines per phase tick against the ~1,500-line segment threshold (TESTBED_METRICS 5.7). ARM: {kind: control}.",
+  "_arms": "{kind: control} - vanilla + telemetry and nothing else, identical to the batch's arm.",
+  "_comparison": "None - this is plumbing verification, not measurement. Line counts are read against the 5.7 threshold, presence/absence against the v14 design.",
+  "_watch": "(1) SMA lines present, stamped 1836.2.1, physically in the 1836.5 tick. (2) Zero PW lines anywhere. (3) WC/SW/WSTR present. (4) BOOT line says v14. (5) No PM_TECH_REHAUL marker (control arm). (6) Phase tick line counts: phase 0 = scoped market goods + wages cheap lines, phase 1 = country_state+population, phase 2 = treasury, phase 3 = state_access alone.",
+  "_cost": "1 run x 6 in-game months, ~3 min plus startup.",
+  "_caveats": "GAME 1.13.11, telemetry v14. Until 1836.7.1 because phase 3 of the 1836.2.1 dump fires at 1836.5.1 and the v13 lesson is that a run ending before dump+3 months harvests ZERO phase-3 lines. Tags are the batch's seven. wages here runs WITHOUT wage_pop_markets overrides (deep-market default BEL/AUS), matching the batch.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped",
+      "state_access",
+      "wages"
+    ],
+    "wage_pop_endpoints": "none",
+    "autosave_interval": "yearly",
+    "timeout_minutes": 20,
+    "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "JAP", "NET"]
+  },
+  "setups": {
+    "vanilla": {
+      "kind": "control"
+    }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1836.7.1", "dump_dates": ["1836.2.1"] }
+  ]
+}

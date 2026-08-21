@@ -1,0 +1,47 @@
+{
+  "schedule_version": 1,
+  "label": "vanilla-baseline-n16",
+  "_why": "THE LONG VANILLA BASELINE (user-ruled: the next big batch after the ai_value/granularity session; sized n=16 by the user 2026-08-21). Replaces the pinned 1.13.10 baseline 20260813_083557 (n=4 vanilla inside a mixed session) with a clean single-arm vanilla batch on 1.13.11 - the patch every current arm runs on, and the one that fixes sway, the widest variance channel in this project. FIRST vanilla arm with save summaries v6+ (actually v8), so 'tiered value added / vanilla' and per-year company ownership become answerable for the first time; neither can ever be back-filled into older runs. ARM: {kind: control} - vanilla + telemetry and nothing else, ever.",
+  "_arms": "vanilla = {kind: control}. L7 enforces purity against the control's metadata id; L14/L15 are N/A for a control and skip on that same id. Telemetry v14, config none. RUNS 15-16 CARRY EXTRA TELEMETRY ONLY (breakdown_sparse at 1910/1935 on GBR/FRA/USA) - telemetry is the one thing a control may vary; they are still the same arm, and the named never-run replication of the consumption calibration (TESTBED_METRICS: 'the n=2 century batch (breakdowns at 1910/1935 + state_access + same-date saves) is the replication and the access test') rides them for free. Exclude or include them in wall-clock row P explicitly - the breakdown ticks are 6 extra ~1MB log bursts per run, nothing more.",
+  "_comparison": "PRIMARY: run against run WITHIN this batch - n=16 makes medians and spreads quotable, and the batch's first product is the vanilla variance envelope on 1.13.11. SECONDARY: against the pinned 1.13.10 baseline 20260813_083557 - differences are patch drift (sway fix) plus cross-session noise; ratios travel, absolutes do not. TERTIARY: the mod arms (canon-n7, the aival series) compare against THIS session from now on, without the cross-patch caveat they all currently carry.",
+  "_predictions": "Stated before the run, per the no-ceteris-paribus rule. (1) DIRECTION: more war than the 1.13.10 baseline - the patch notes fix sway, sway drives plays, plays drive wars; magnitude deliberately not predicted (the loop touches conquest, GDP denominators and survival counts). (2) Company share of the vanilla tiered-equivalent sector at 1936 lands near F77.1's 38.5% (its measurement basis was endpoint melts of 1.13.10; the two-prefix v7 definition reads slightly higher). (3) The wage/SoL century series reproduces the 1.13.10 vanilla-wages-century shape within cross-session noise. (4) Wall clock per run 2.6-3.1h as in the pinned baseline; if the sway fix produces materially more war, expect the upper end or beyond - war is simulation work.",
+  "_watch": "(1) THE VARIANCE ENVELOPE - per-metric spread at n=16. (2) WAR: STATE lines + events vs the 1.13.10 baseline's (prediction 1). (3) state_access - the FIRST vanilla access baseline anywhere: is late-century colonial access ~1.0 or does vanilla too run access famines? Every colonial-access number so far is mod-arm. (4) The wage trajectory at century scale on the cheap lines (WC/SW/WSTR; per-pop sweep deliberately OFF - wage_pop_endpoints none; the 1836 per-pop distribution came from session 20260821_125917 instead). (5) Runs 15-16: breakdown blocks at 1910/1935 verified against the same-date yearly saves - the late-century replication of the 94-97% consumption calibration, currently resting on 1840 alone. (6) Companies and ownership classes per year from the v8 summaries - the vanilla company-formation baseline for ROADMAP step 5.",
+  "_cost": "16 runs x 100 in-game years. Vanilla measured 2.59/2.68/2.60/3.11 h in the pinned baseline, so ~42-50 h of game time plus 16 one-minute control builds. Disk: canon-n7's seven runs retained 1.2 GB; sixteen at yearly cadence with the concurrent harvest ~2.7 GB against 46.1 GB free at authoring. Machine must stay otherwise idle or row P is measuring background load.",
+  "_caveats": "GAME 1.13.11, telemetry v14 (state_access on phase 3 - a run must span past dump+3 months, and 1935.1.1+3 = 1935.4.1 is well inside the 1936.1.1 span; wage_pop_endpoints=none at defaults level). Save summaries v8 (company ownership, active PMs, per-state infra, prestige out - none of it back-fillable, which is why this batch waited for it). The twelve dump_dates match the pinned baseline and every canon batch exactly. building_inventory stays DISQUALIFIED (boot-burst ring overflow). moderate_consolidation must be verified from world.game_rules, not intent. L17 post-run: preflight -Session before counting any run. NO tooling edits for the duration - run_schedule rebuilds before every run, and an edit lands in run k but not k-1 (the one failure a baseline cannot survive). Smoke-check at +5 min: control arm means NO PM_TECH_REHAUL marker; known vanilla noise: jomini_spline_network_graphics flood, lawgroup_navy_model flood (landlocked-by-conquest countries, up to ~500k lines in a run).",
+  "defaults": {
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped", "state_access", "wages"],
+    "wage_pop_endpoints": "none",
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "JAP", "NET"],
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "_dump_dates_note": "Identical to the pinned baseline 20260813_083557, canon-n2 and canon-n7 - what keeps the sessions comparable."
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1",
+      "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped", "state_access", "wages", "breakdown_sparse"],
+      "breakdown_dates": ["1910.1.1", "1935.1.1"],
+      "breakdown_tags": ["GBR", "FRA", "USA"] },
+    { "setup": "vanilla", "until": "1936.1.1",
+      "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped", "state_access", "wages", "breakdown_sparse"],
+      "breakdown_dates": ["1910.1.1", "1935.1.1"],
+      "breakdown_tags": ["GBR", "FRA", "USA"] }
+  ]
+}

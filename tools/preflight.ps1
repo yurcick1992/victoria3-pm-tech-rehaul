@@ -657,6 +657,7 @@ function Get-CanonicalTelemetry {
         wide_dates       = @('1840.1.1')
         wide_tags        = @('GBR', 'FRA')
         wage_pop_markets = @{ deep = @('GBR') }
+        wage_pop_endpoints = 'both'   # v14; 'both' = the pre-v14 behaviour, so the hash is stable across the bump
     }
     $text = New-TelemetryScript -Spec $spec -Token 'FINGERPRINT' -BuildStamp 'FINGERPRINT'
     return @{ Text = $text; Metrics = $metrics; Version = (Get-TelemetryVersion) }
