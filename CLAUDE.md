@@ -2418,6 +2418,25 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   browser can't run programs). Everything else works **frontend-only**: opening `ui/builder.html`
   directly still edits + previews + **Export mod_config.json** (then run `build.ps1` yourself).
   User-facing setup lives in `README.md`.
+- **⭐⭐ PRINCIPLE — NO CETERIS-PARIBUS EXTRAPOLATION. THE GAME IS ONE INTERCONNECTED SYSTEM.**
+  (User-ruled 2026-08-21, after several in one session.) **Do not reason "X is 5× cheaper, so there
+  will be 5× more of it", or "this change only touches Y".** Every economic quantity in Victoria 3
+  feeds back: buildings → GDP → investment pool and tax revenue → construction → buildings; GDP →
+  education spending → literacy → RESEARCH → which tiers exist at all; war → conquest → the
+  population every aggregate is computed over. A change to one term arrives at every other term
+  within a decade or two of game time.
+  ⚠ **The failure is not usually a wrong direction — it is a confident MAGNITUDE.** Three from one
+  session: (1) "buildings are 1/5 the cost so the AI will build 5× as many" — it built 2.21×, because
+  the smaller sector produced less GDP, so there was less capital to build with (**F78**); (2) reading
+  that 2.21× as a *behavioural response function* of the AI to cheaper buildings, when it is an
+  EQUILIBRIUM outcome of the whole loop and says nothing clean about the chooser; (3) a doubled
+  `ai_value` predicted to do little because the rung ratio was unchanged, when it doubled every rung's
+  contrast with the untiered field and moved the metric more than anything before it (**F76**).
+  ⇒ **State the prediction as a prediction, in the schedule, BEFORE the run** — that is what converts
+  a surprise into a finding instead of a correction. ⇒ **When a result differs from the extrapolation,
+  the first hypothesis is a feedback path you did not draw**, not a broken mechanism. ⇒ **Never present
+  a derived magnitude as a consequence when only its direction is argued** — say which, and say what
+  the loop could do to it.
 - **PRINCIPLE — A REPORTED RATIO CARRIES ITS OWN NUMERATOR AND DENOMINATOR.** (User, 2026-08-06.) If the
   headline metric of a table is a ratio, the table shows **both terms as their own columns**, and the
   ratio column names its direction (`ratio = transp ÷ auto`, not `ratio`). A bare `1907: 2033` forces the
