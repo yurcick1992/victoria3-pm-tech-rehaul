@@ -1100,7 +1100,16 @@ tools/                  dev tooling — NOT shipped in the mod
                         `ownership_levels` (host-side levels by owner class: state / foreign country /
                         financial district / manor house / company / regional company / other building) —
                         validated level-exact against `melted_company_ownership.mjs` on mod AND vanilla
-                        1936 endpoints, goods in/out, and
+                        1936 endpoints, ⭐ ACTIVE PRODUCTION METHODS (v8, 2026-08-21 — the last-call batch
+                        additions): per-building-type `pms` (pm key → LEVELS of buildings running it;
+                        every save building record carries the full active list incl. secondaries —
+                        within one PMG a type's per-PM levels sum exactly to the type's levels, verified
+                        on gov admin's three PMGs; this is F75's missing vanilla denominator and makes
+                        the tiered panel's secondary-PM bias readable), plus a top-level `states` map
+                        (per-state `infrastructure`/`infrastructure_usage`, owner tag, region — market
+                        ACCESS is not persisted and stays log-side) and per-country `prestige_out`
+                        (good → prestige quantity of the output flow, the tuple-sum reading
+                        `melted_building_goods.mjs` validated), goods in/out, and
                         TOP PRODUCERS BY GOOD with quantities (top 20 per good, in EVERY summary),
                         and POP OBJECT COUNTS — total AND non-empty, per country and world-wide.
                         ⚠ 17.4% of vanilla pop records hold NO people, the game's UI hides them, and

@@ -60,7 +60,8 @@ import { fileURLToPath } from 'node:url';
 
 // v2 (2026-08-11) adds POP OBJECT COUNTS.  v3, same day, splits them into TOTAL and NON-EMPTY — user
 // ruling, so a later regression can ask which of the two actually predicts tick speed.
-export const SAVE_SUMMARY_VERSION = 7;   // v7 (2026-08-21): + OWNERSHIP — per-building-type `company_levels` (levels held through an `identity={building=}` owner whose own type is building_company_* OR building_regional_company_*), the `companies` register (type, prosperity, charters, regional HQs, resolved to a country via the HQ building), and `ownership_levels` (host-side levels by owner class: state/foreign_country/financial_district/manor_house/company/company_regional/other_building). ROADMAP step 5a: per-year company data cannot be back-filled, and the long vanilla batch is its baseline. Absent field = zero WITHIN v7+; pre-v7 summaries simply cannot answer it.
+export const SAVE_SUMMARY_VERSION = 8;   // v8 (2026-08-21, same session as v7 — the last-call batch additions): + ACTIVE PRODUCTION METHODS per building type per country (`pms`: pm key -> levels of buildings running it; every building record carries the full active list incl. secondaries — the vanilla denominator F75's open question needs, and the tiered panel's stated secondary-PM bias made readable), + per-state `infrastructure`/`infrastructure_usage` in a new top-level `states` map (the control pair the infra-frac probe lacked; market ACCESS is not in saves and stays log-side), + `prestige_out` per country (good -> prestige quantity of the output flow, the tuple-sum reading melted_building_goods.mjs validated).
+// v7 (2026-08-21): + OWNERSHIP — per-building-type `company_levels` (levels held through an `identity={building=}` owner whose own type is building_company_* OR building_regional_company_*), the `companies` register (type, prosperity, charters, regional HQs, resolved to a country via the HQ building), and `ownership_levels` (host-side levels by owner class: state/foreign_country/financial_district/manor_house/company/company_regional/other_building). ROADMAP step 5a: per-year company data cannot be back-filled, and the long vanilla batch is its baseline. Absent field = zero WITHIN v7+; pre-v7 summaries simply cannot answer it.
 // v6 (2026-08-18): + per-building-type VALUE ADDED (va_out/va_in), PRICED at base cost, so a tiered-sector GDP is derivable (F74)
 // v5 (2026-08-16): + per-country construction-queue composition (government/private: n, left, speed, by_type)
 
@@ -128,11 +129,13 @@ const WANT = new Set(['country_manager', 'states', 'technology', 'pacts', 'build
 let saveDate = '';
 let gameRules = null;
 const stateCountry = new Map(), stateRegion = new Map();
+const stateInfra = new Map(), stateInfraUse = new Map();   // v8: state id -> float
 const C = new Map();                       // country id -> record
 const techByCountry = new Map();           // country id -> {acquired:[], researching, progressed:n}
 const overlord = new Map(), ownMarket = new Set();
 const bldByCountry = new Map();            // "cid|building" -> {n,levels,subsidised,subsidised_levels,profit,cash,staffing}
 const goodsOut = new Map(), goodsIn = new Map();   // "cid|good" -> qty
+const prestigeOut = new Map();                     // "cid|good" -> prestige qty of the output flow (v8)
 const bldState = new Map();                // building id -> state id      (for the ownership pass)
 const bldType = new Map();                 // building id -> type          (for the COMPANY passes, v7)
 const ownedAbroad = new Map(), foreignOwned = new Map();  // cid -> levels
@@ -207,7 +210,7 @@ let tid = null, tcur = null, inAcq = false, inProg = false;
 // pacts
 let pFirst = null, pSecond = null, pAct = null, pT = false;
 // buildings
-let b = null, side = '', inGoods = false, curGood = null, inPrestige = false;
+let b = null, side = '', inGoods = false, curGood = null, inPrestige = false, inPms = false;
 // ownership
 let o = null, inIdent = false;
 // companies (v7)
@@ -401,6 +404,8 @@ for await (const line of rl) {
       let x;
       if ((x = /^country=(\d+)$/.exec(t))) stateCountry.set(sid, +x[1]);
       else if ((x = /^region="([A-Z_0-9]+)"$/.exec(t))) stateRegion.set(sid, x[1]);
+      else if ((x = /^infrastructure=([\-\d.]+)$/.exec(t))) stateInfra.set(sid, +x[1]);
+      else if ((x = /^infrastructure_usage=([\-\d.]+)$/.exec(t))) stateInfraUse.set(sid, +x[1]);
     }
     depth += opens - closes; if (depth <= 0) { mode = 'top'; sid = null; }
     continue;
@@ -449,7 +454,7 @@ for await (const line of rl) {
 
   if (mode === 'building_manager') {
     const m = /^(\d+)=\{$/.exec(t);
-    if (m && depth === 2) { b = { id: +m[1], type: null, state: null, levels: 0, subsidized: false, cash: 0, profit: 0, staffing: 0, out: [], in: [] }; side = ''; inGoods = false; }
+    if (m && depth === 2) { b = { id: +m[1], type: null, state: null, levels: 0, subsidized: false, cash: 0, profit: 0, staffing: 0, out: [], in: [], pms: [], pout: [] }; side = ''; inGoods = false; inPms = false; }
     else if (b) {
       let x;
       if ((x = /^building="([a-z_0-9]+)"$/.exec(t))) b.type = x[1];
@@ -466,8 +471,23 @@ for await (const line of rl) {
         const gm = /^(\d+)=\{$/.exec(t);
         if (gm) { curGood = GOODS[+gm[1]] ?? ('idx' + gm[1]); inPrestige = false; }
         else if (t === 'prestige_goods={') inPrestige = true;
-        else if (inPrestige) { if (t === '}') inPrestige = false; }
+        else if (inPrestige) {
+          // v8: the tuple is per-prestige-variant quantities of this flow; its SUM is the prestige
+          // quantity — the reading melted_building_goods.mjs validated. Output side only, matching it.
+          if (t === '}') inPrestige = false;
+          else if (side === 'out' && curGood && /^[\d.\- ]+$/.test(t)) {
+            const v = t.split(/\s+/).reduce((a, y) => a + (+y || 0), 0);
+            if (v) b.pout.push([curGood, v]);
+          }
+        }
         else { const vm = /^value=([\-\d.]+)$/.exec(t); if (vm && curGood) b[side].push([curGood, +vm[1]]); }
+      }
+      // v8: the ACTIVE PM list — always a multiline block of quoted keys (15,201/15,201 records on a
+      // 1936 vanilla melt). It follows the goods blocks, so `inGoods` is already false here.
+      else if (t === 'production_methods={') inPms = true;
+      else if (inPms) {
+        if (t.startsWith('}')) inPms = false;
+        else for (const q of t.matchAll(/"([a-z_0-9\-]+)"/g)) b.pms.push(q[1]);
       }
     }
     const nd = depth + opens - closes;
@@ -480,7 +500,7 @@ for await (const line of rl) {
         if (ci != null) {
           const k = ci + '|' + b.type;
           let r = bldByCountry.get(k);
-          if (!r) bldByCountry.set(k, r = { n: 0, levels: 0, subsidised: 0, subsidised_levels: 0, profit: 0, cash: 0, staffing: 0, va_out: 0, va_in: 0 });
+          if (!r) bldByCountry.set(k, r = { n: 0, levels: 0, subsidised: 0, subsidised_levels: 0, profit: 0, cash: 0, staffing: 0, va_out: 0, va_in: 0, pms: {} });
           r.n++; r.levels += b.levels; r.profit += b.profit; r.cash += b.cash; r.staffing += b.staffing;
           // VALUE ADDED per building TYPE. The melt stores goods as monetary `value=`, so no price lookup is
           // needed; GDP is 52 x (output - input) at market prices (F45). The per-COUNTRY per-GOOD rollup
@@ -488,6 +508,11 @@ for await (const line of rl) {
           // a tiered-sector GDP needs and what the ledger could not previously scope.
           for (const [g, v] of b.out) r.va_out += v * (GOODS_PRICE[g] || 0);
           for (const [g, v] of b.in)  r.va_in  += v * (GOODS_PRICE[g] || 0);
+          // v8: active-PM adoption in LEVELS — each active PM (base and secondary alike) is credited the
+          // building's whole level count, so within one PMG the per-PM values of a type sum to that
+          // type's levels and adoption shares read directly. Do not sum ACROSS a type's PMGs.
+          for (const pm of b.pms) r.pms[pm] = (r.pms[pm] || 0) + b.levels;
+          for (const [g, v] of b.pout) add(prestigeOut, ci + '|' + g, v);
           if (b.subsidized) { r.subsidised++; r.subsidised_levels += b.levels; }
           for (const [g, v] of b.out) add(goodsOut, ci + '|' + g, v);
           for (const [g, v] of b.in) add(goodsIn, ci + '|' + g, v);
@@ -638,9 +663,10 @@ for (const [id, c] of C) {
   const tech = techByCountry.get(id);
   const sums = side => Object.fromEntries(Object.entries(c.building_budget[side]).map(([k, v]) => [k, +Object.values(v).reduce((a, x) => a + x, 0).toFixed(2)]));
   const blds = {}; for (const [k, r] of bldByCountry) { const [ci, ty] = k.split('|'); if (+ci === id) blds[ty] = r; }
-  const gout = {}, gin = {};
+  const gout = {}, gin = {}, pout = {};
   for (const [k, v] of goodsOut) { const i = k.indexOf('|'); if (+k.slice(0, i) === id && v) gout[k.slice(i + 1)] = +v.toFixed(2); }
   for (const [k, v] of goodsIn) { const i = k.indexOf('|'); if (+k.slice(0, i) === id && v) gin[k.slice(i + 1)] = +v.toFixed(2); }
+  for (const [k, v] of prestigeOut) { const i = k.indexOf('|'); if (+k.slice(0, i) === id && v) pout[k.slice(i + 1)] = +v.toFixed(2); }
   countries[c.tag] = {
     id, market: c.market, government: c.government, country_type: c.country_type, is_main_tag: c.is_main_tag,
     overlord: overlord.has(id) ? tagOf(overlord.get(id)) : null,
@@ -672,6 +698,8 @@ for (const [id, c] of C) {
     companies: companiesByCountry.get(id) ?? [],
     ownership_levels: ownClassByCountry.get(id) ?? {},
     buildings: blds, goods_out: gout, goods_in: gin,
+    // v8: prestige quantity of each output flow (absent good = 0 within v8+)
+    prestige_out: pout,
     // v5: queue COMPOSITION per country — n elements, total work left (points), total speed
     // (points/wk), and per-building-type breakdown. Retired the CQ telemetry (§9).
     queues: {
@@ -706,10 +734,11 @@ const world = { buildings: {}, gdp: 0, population: 0, game_rules: gameRules,
 for (const [, r] of bldByCountry) { void r; }
 for (const [k, r] of bldByCountry) {
   const ty = k.slice(k.indexOf('|') + 1);
-  const w = world.buildings[ty] ??= { n: 0, levels: 0, subsidised_levels: 0, va_out: 0, va_in: 0, company_levels: 0 };
+  const w = world.buildings[ty] ??= { n: 0, levels: 0, subsidised_levels: 0, va_out: 0, va_in: 0, company_levels: 0, pms: {} };
   w.n += r.n; w.levels += r.levels; w.subsidised_levels += r.subsidised_levels;
   w.va_out += r.va_out || 0; w.va_in += r.va_in || 0;
   w.company_levels += r.company_levels || 0;
+  for (const [pm, lv] of Object.entries(r.pms || {})) w.pms[pm] = (w.pms[pm] || 0) + lv;
 }
 // v7 world counters. The two orphan figures are DIAGNOSTIC and expected small — a non-zero value means
 // levels/companies that could not be attributed to any country (unowned state, unresolvable owner id;
@@ -739,6 +768,14 @@ const out = {
   not_captured: NOT_CAPTURED,
   world,
   countries,
+  // v8: every state, keyed by its save-internal id (stable within a campaign; `region` is the durable
+  // key across campaigns). `country` is the owner's tag, null for an unowned state.
+  states: Object.fromEntries([...new Set([...stateCountry.keys(), ...stateRegion.keys(), ...stateInfra.keys()])].sort((a, z) => a - z).map(s => [s, {
+    country: (id => id != null ? (tagOf(id) ?? null) : null)(stateCountry.get(s)),
+    region: stateRegion.get(s) ?? null,
+    infrastructure: stateInfra.get(s) ?? null,
+    infrastructure_usage: stateInfraUse.get(s) ?? null,
+  }])),
   top_producers,
 };
 
