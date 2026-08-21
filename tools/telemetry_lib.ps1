@@ -60,7 +60,14 @@
 #       workforce/dependent, and the measured workforce ratio. Deep markets are the LEAD COUNTRY AND
 #       ITS SUBJECTS, not the whole market - see Get-WageBlock for why. New script values
 #       v3tb_popobj_count (graduated from the probe file), v3tb_state_count, v3tb_poptype_id.
-$script:TELEMETRY_VERSION = 13
+#   v14 (2026-08-21, for the n=16 vanilla baseline): `state_access` moves phase 1 -> 3 (its own
+#       month: beside country_state+population it pushed phase 1 past the ~1,500-line segment
+#       threshold late-century - TESTBED_METRICS §5.7), and the wages metric gains the spec key
+#       `wage_pop_endpoints` (both|first|last|none, default `both` = the old behaviour) selecting
+#       WHICH dump dates carry the heavy per-pop PW sweep. `none` is the century-batch setting:
+#       the cheap WC/SW/WSTR trajectory stays, and the per-pop distribution comes from a dedicated
+#       1836 probe instead of a late-century tick the ring is known to truncate.
+$script:TELEMETRY_VERSION = 14
 
 function Get-TelemetryVersion { return $script:TELEMETRY_VERSION }
 
@@ -74,6 +81,8 @@ function Get-TelemetryDefaults {
         breakdown_tags  = @()      # markets for it, ONE PER TICK - two in one tick truncates the ring
         wide_dates      = @()      # dates for `market_goods_wide` (order book only, long tag list)
         wide_tags       = @()      # the "plausibly advanced" countries worth a yearly world check
+        wage_pop_endpoints = 'both' # which dump dates carry the wages metric's per-pop PW sweep:
+                                   # both|first|last|none (v14; 'both' = the pre-v14 behaviour)
     }
 }
 
@@ -91,6 +100,13 @@ function Read-TelemetrySpec {
         # above - that would flatten it to a list of property bags and lose the group names.
         if ($j.PSObject.Properties.Name -contains 'wage_pop_markets' -and $j.wage_pop_markets) {
             $spec['wage_pop_markets'] = $j.wage_pop_markets
+        }
+        # A SCALAR, kept out of the @() loop for the same reason (it would arrive as a 1-list).
+        if ($j.PSObject.Properties.Name -contains 'wage_pop_endpoints' -and $j.wage_pop_endpoints) {
+            if (@('both','first','last','none') -notcontains $j.wage_pop_endpoints) {
+                throw "telemetry spec wage_pop_endpoints '$($j.wage_pop_endpoints)' - must be both|first|last|none"
+            }
+            $spec['wage_pop_endpoints'] = $j.wage_pop_endpoints
         }
     }
     foreach ($d in $spec.dump_dates) {
@@ -1223,7 +1239,16 @@ $nm2 = {
             # inside a segment - and the full per-pop distribution is taken at the FIRST dump (proven
             # complete) and the LAST (close enough to exit that the ring snapshot still holds it).
             # ⚠ If a dump date is added, the endpoints move. Check the completeness columns.
-            $isEndpoint = ($date -eq $dates[0]) -or ($date -eq $dates[-1])
+            # v14: WHICH endpoints is now the spec's choice (`wage_pop_endpoints`). A century batch
+            # sharing phase 0 with market goods wants `none` - the 1935 sweep is the measured-unsafe
+            # case (~4,875 lines) and the per-pop distribution comes from a dedicated 1836 probe.
+            $pwMode = if ($Spec.wage_pop_endpoints) { $Spec.wage_pop_endpoints } else { 'both' }
+            $isEndpoint = switch ($pwMode) {
+                'none'  { $false }
+                'first' { $date -eq $dates[0] }
+                'last'  { $date -eq $dates[-1] }
+                default { ($date -eq $dates[0]) -or ($date -eq $dates[-1]) }
+            }
             if ($isEndpoint) { foreach ($g in $w.pops.Keys) { $phaseBlocks[0] += $w.pops[$g] } }
         }
 
@@ -1452,7 +1477,8 @@ $nm2 = {
         # ---- STATE MARKET ACCESS (v13): per-state market access of the tagged countries. The
         # placeholder in the batch-ledger report ("is growth ever throttled by infrastructure?").
         # GetMarketAccess is a State data function (exe pool, beside GetMarketAccessStatus/Desc);
-        # the sweep is the SW block's verified idiom. ~1 line per state per tag per dump - tiny.
+        # the sweep is the SW block's verified idiom. ~1 line per state per tag per dump - tiny
+        # at 1836, but a colonial power's state count grows all century.
         if ($metrics -contains "state_access") {
             foreach ($t in $tags) {
                 $blocks += @"
@@ -1467,7 +1493,11 @@ $nm2 = {
 			}
 "@
             }
-            $phaseBlocks[1] += $blocks; $blocks = ""
+            # v14: phase 3, its OWN month. It rode phase 1, where country_state+population already
+            # stand at ~1,250 lines late-century - adding ~300-500 SMA lines pushed the tick past
+            # the ~1,500-line segment threshold (§5.7) exactly when the data matters most. Phase 3
+            # is empty in the baseline metric set. (Access moves slowly; a 3-month stamp lag is fine.)
+            $phaseBlocks[3] += $blocks; $blocks = ""
         }
 
         # ---- CONSTRUCTION QUEUE (v13 PROBE): queued-but-unbuilt levels per tagged country - the

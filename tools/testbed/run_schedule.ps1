@@ -143,7 +143,13 @@ $defDumps    = @(Val $defaults "dump_dates" @())
 # so this refuses to start on any defaults key the scheduler does not actually thread through - and
 # it names the key. A comment sitting on the right line did not stop this happening the first time
 # (TESTBED_LANDMINES L5 makes the same point about spec keys); a check that throws does.
-$KNOWN_DEFAULT_KEYS = @('tags','metrics','autosave_interval','timeout_minutes','dump_dates','wages_markets')
+# ⚠ This list must match what the plan-building loop below ACTUALLY reads from $defaults — it held
+# a dead 'wages_markets' (nothing ever read it) while omitting six keys the loop does thread
+# (wage_pop_markets, breakdown_*, wide_*, origin_goods), so a defaults-level breakdown_dates threw
+# here despite working. Reconciled 2026-08-21; wage_pop_endpoints added with telemetry v14.
+$KNOWN_DEFAULT_KEYS = @('tags','metrics','autosave_interval','timeout_minutes','dump_dates',
+                        'wage_pop_markets','wage_pop_endpoints','breakdown_dates','breakdown_tags',
+                        'wide_dates','wide_tags','origin_goods')
 if ($defaults) {
     $unknown = @($defaults.PSObject.Properties | ForEach-Object { $_.Name } |
                  Where-Object { $KNOWN_DEFAULT_KEYS -notcontains $_ -and $_ -notlike '_*' })
@@ -226,6 +232,9 @@ foreach ($r in $runs) {
         wide_dates      = $(Val $r "wide_dates"      @(Val $defaults "wide_dates"      @()))
         wide_tags       = $(Val $r "wide_tags"       @(Val $defaults "wide_tags"       @()))
         origin_goods    = $(Val $r "origin_goods"    @(Val $defaults "origin_goods"    @()))
+        # v14: which dump dates carry the wages metric's per-pop sweep (both|first|last|none).
+        # A scalar, so plain Val (no array coercion) is right.
+        wage_pop_endpoints = $(Val $r "wage_pop_endpoints" (Val $defaults "wage_pop_endpoints" $null))
         autosave = Val $r "autosave_interval" $defAutosave
         timeout  = [int](Val $r "timeout_minutes" $defTimeout)
     }
@@ -433,6 +442,7 @@ foreach ($p in $plan) {
     $specFile = Join-Path $runDir "telemetry.json"
     $spec = [ordered]@{ dump_dates = $p.dump_dates; tags = $p.tags; metrics = $p.metrics }
     if ($p.wage_pop_markets) { $spec['wage_pop_markets'] = $p.wage_pop_markets }
+    if ($p.wage_pop_endpoints) { $spec['wage_pop_endpoints'] = $p.wage_pop_endpoints }   # v14 scalar
     foreach ($k in @('breakdown_dates','breakdown_tags','wide_dates','wide_tags','origin_goods')) {
         if ($p.$k -and @($p.$k).Count) { $spec[$k] = @($p.$k) }
     }
