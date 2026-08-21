@@ -1128,7 +1128,20 @@ of the industry eligible" fix resolves mandates, monopolies and the flavour refe
 companies can touch by about two thirds, and what is still in reach is exactly the part we want
 retired.**
 
-### Step 5a — INSTRUMENTATION FIRST (planned 2026-08-20; do it once the granular batch is analysed)
+### Step 5a — INSTRUMENTATION FIRST  ⏸ **DEFERRED BY RULING (user, 2026-08-21)**
+
+⏸ **Explicitly deferred, not forgotten.** It was unblocked — the granular batch was analysed and the
+machine was free — and the user ruled it should wait: **the next session is the long vanilla batch**,
+and that is a better use of the machine than a schema change nobody is yet reading.
+
+**When to pick it up:** after the vanilla batch, and **before** any further arm whose reading depends
+on company ownership. ⚠ It cannot be back-filled — per-year ownership needs the summaries to carry it
+*while the runs happen*, and reaped saves cannot be revisited. So every batch run without it is a batch
+that can never answer the dynamic question, including the vanilla one. **That is an accepted cost of
+the deferral**, and the vanilla runs will therefore establish a company-ownership baseline only at
+their endpoints, via melts, exactly as canon-n7 did.
+
+*(Design below, unchanged, planned 2026-08-20.)*
 
 The one question the melts could **not** answer is the dynamic: *how does the below-best metric move if
 only non-company-owned levels are counted?* That needs ownership **per year**, and only the newest save
