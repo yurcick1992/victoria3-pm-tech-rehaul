@@ -4,9 +4,14 @@
 // mandate and **every** company throughput bonus lands on the FIRST rung of one of our chains and never
 // on any other. That is the mechanism; this is the magnitude.
 //
-// ⚠⚠ A SAVE SUMMARY CANNOT ANSWER THIS. `save_state_summary.mjs` carries per-building levels, profit
-// and value added, and company HQ presence — but its ownership pass reads only `identity={ country= }`
-// and ignores the `identity={ building= }` variant a company HQ owns through. So this melts the save.
+// ⚠ SINCE SAVE_SUMMARY_VERSION 7 (2026-08-21) THE SUMMARY CARRIES THE HEADLINE NUMBERS TOO — per-type
+// `company_levels`, the `companies` register and the `ownership_levels` class rollup, per year. This
+// tool remains the endpoint DEEP-DIVE: the rung split and the level-share VA apportionment live here.
+// (Pre-v7 the summary's ownership pass read only `identity={ country= }` and could not answer this.)
+// ⚠ COMPANY-HELD INCLUDES REGIONAL HQs since 2026-08-21: `building_regional_company_*` (the charter
+// regional HQs) own through the same mechanism — 5,190 levels world-wide on the canon-n7 1936 endpoint
+// against 40,466 via main HQs, ~520 of them on tiered types. F77.1's SHIPPED shares (38.5% vanilla /
+// 9.0% ours) are on the older main-HQ-only basis and are therefore slight undercounts on BOTH sides.
 //
 // WHAT IT READS, out of the melted gamestate:
 //   building_manager            id -> {type, state, levels, va_out, va_in}
@@ -140,7 +145,7 @@ for await (const raw of rl) {
 if (!bld.size) { console.error('no buildings parsed — the save layout has moved'); process.exit(1); }
 
 // ---------------------------------------------------------------- attribute ----
-const isCompanyHq = id => (bld.get(id)?.type || '').startsWith('building_company_');
+const isCompanyHq = id => { const t = bld.get(id)?.type || ''; return t.startsWith('building_company_') || t.startsWith('building_regional_company_'); };
 const acc = {};   // scope -> {tierLv, tierVa, compLv, compVa, byRung:{}}
 const scopeOf = b => { const c = stateCountry.get(b.state); return c != null ? (tag.get(c) || '?') : '?'; };
 const bump = (scope, f, v) => { (acc[scope] ||= { tierLv: 0, tierVa: 0, compLv: 0, compVa: 0, byRung: {} })[f] += v; };

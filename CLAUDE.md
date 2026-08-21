@@ -1088,7 +1088,19 @@ tools/                  dev tooling — NOT shipped in the mod
                         levels, profit, cash, staffing), the whole budget with `country_building_budget`
                         itemised by category AND BY BUILDING (⭐ the per-building SUBSIDY line, which
                         needed no deriving — the save books it directly), last_bankruptcy_date,
-                        technologies held, foreign-owned/owned-abroad levels, goods in/out, and
+                        technologies held, foreign-owned/owned-abroad levels,
+                        ⭐ COMPANY OWNERSHIP (v7, 2026-08-21 — ROADMAP step 5a, un-deferred for the long
+                        vanilla batch because per-year ownership cannot be back-filled): per-building-type
+                        `company_levels` (owner-building type `building_company_*` OR
+                        `building_regional_company_*` — the regional-HQ half is ~11% of company holdings
+                        and was invisible to the pre-v7 deep-dive, so F77.1's shipped shares are slight
+                        undercounts on both sides), the per-country `companies` register (type, prosperity,
+                        charters, regional-HQ count — resolved to a country via the HQ BUILDING, never the
+                        record's own `country=`, which is a typed handle, not a country_manager id), and
+                        `ownership_levels` (host-side levels by owner class: state / foreign country /
+                        financial district / manor house / company / regional company / other building) —
+                        validated level-exact against `melted_company_ownership.mjs` on mod AND vanilla
+                        1936 endpoints, goods in/out, and
                         TOP PRODUCERS BY GOOD with quantities (top 20 per good, in EVERY summary),
                         and POP OBJECT COUNTS — total AND non-empty, per country and world-wide.
                         ⚠ 17.4% of vanilla pop records hold NO people, the game's UI hides them, and

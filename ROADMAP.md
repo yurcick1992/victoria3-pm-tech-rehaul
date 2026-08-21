@@ -1128,20 +1128,37 @@ of the industry eligible" fix resolves mandates, monopolies and the flavour refe
 companies can touch by about two thirds, and what is still in reach is exactly the part we want
 retired.**
 
-### Step 5a — INSTRUMENTATION FIRST  ⏸ **DEFERRED BY RULING (user, 2026-08-21)**
+### Step 5a — INSTRUMENTATION FIRST  ✅ **ITEM (1) SHIPPED (2026-08-21, save summary v7)** · item (2) open
 
-⏸ **Explicitly deferred, not forgotten.** It was unblocked — the granular batch was analysed and the
-machine was free — and the user ruled it should wait: **the next session is the long vanilla batch**,
-and that is a better use of the machine than a schema change nobody is yet reading.
+The 2026-08-21 deferral was reversed by the user the same week, **before the long vanilla batch** —
+exactly because per-year ownership cannot be back-filled and that batch is the baseline everything will
+be read against. Shipped as `SAVE_SUMMARY_VERSION = 7`:
+- `company_levels` per building type per country, from the `identity={ building= }` ownership records,
+  filtered on the OWNER building's type. ⚠ **Company-held includes REGIONAL HQs** —
+  `building_regional_company_*` owns through the same mechanism (canon-n7 1936 endpoint: 5,190 levels
+  against 40,466 via main HQs, ~520 of them on tiered types), so both instruments now use the
+  two-prefix definition and **F77.1's shipped shares (38.5% / 9.0%) are slight undercounts on both
+  sides** (`melted_company_ownership.mjs` updated to match; its header carries the note).
+- The **`companies` register** per country: type, prosperity, prosperous flag, charter count,
+  regional-HQ count — resolved to a country via the HQ building (the record's own `country=` is a typed
+  handle, not a country_manager id; it is deliberately not decoded). Yearly summaries date each
+  company's formation to ±1y by first appearance.
+- **`ownership_levels`** per country: host-side levels by owner class (state / foreign_country /
+  financial_district / manor_house / company / company_regional / other_building) — the full capital
+  structure per year, which the §10.45 profession wedge previously had to be derived from one
+  hand-kept campaign.
+- Resolution is **deferred to end-of-parse** (the roadmap's own warning about parse order held), and
+  unattributable levels are counted and emitted (`world.company_levels_unattributed`, 270 levels on 97
+  records at the canon endpoint — owner ids resolving to no building), never guessed.
+- Validated level-exact against `melted_company_ownership.mjs` (independently parsed) on the canon-n7
+  mod endpoint (world 3,357; GBR 130 / USA 127 / FRA 107 / NET 20 / GER 392) and sanity-checked on a
+  vanilla 1936 endpoint (328 companies, 0 unresolved). Cost: +1% summary size.
 
-**When to pick it up:** after the vanilla batch, and **before** any further arm whose reading depends
-on company ownership. ⚠ It cannot be back-filled — per-year ownership needs the summaries to carry it
-*while the runs happen*, and reaped saves cannot be revisited. So every batch run without it is a batch
-that can never answer the dynamic question, including the vanilla one. **That is an accepted cost of
-the deferral**, and the vanilla runs will therefore establish a company-ownership baseline only at
-their endpoints, via melts, exactly as canon-n7 did.
+**Item (2) — `analyse_ai_tier_choice.mjs --exclude-company-owned` — stays open**: it is analysis over
+summaries that carry the field, so unlike (1) it can be written any time after data exists. First data:
+the long vanilla batch.
 
-*(Design below, unchanged, planned 2026-08-20.)*
+*(Original design below, planned 2026-08-20.)*
 
 The one question the melts could **not** answer is the dynamic: *how does the below-best metric move if
 only non-company-owned levels are counted?* That needs ownership **per year**, and only the newest save

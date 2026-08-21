@@ -60,7 +60,8 @@ import { fileURLToPath } from 'node:url';
 
 // v2 (2026-08-11) adds POP OBJECT COUNTS.  v3, same day, splits them into TOTAL and NON-EMPTY — user
 // ruling, so a later regression can ask which of the two actually predicts tick speed.
-export const SAVE_SUMMARY_VERSION = 6;   // v6 (2026-08-18): + per-building-type VALUE ADDED (va_out/va_in), PRICED at base cost, so a tiered-sector GDP is derivable (F74)
+export const SAVE_SUMMARY_VERSION = 7;   // v7 (2026-08-21): + OWNERSHIP — per-building-type `company_levels` (levels held through an `identity={building=}` owner whose own type is building_company_* OR building_regional_company_*), the `companies` register (type, prosperity, charters, regional HQs, resolved to a country via the HQ building), and `ownership_levels` (host-side levels by owner class: state/foreign_country/financial_district/manor_house/company/company_regional/other_building). ROADMAP step 5a: per-year company data cannot be back-filled, and the long vanilla batch is its baseline. Absent field = zero WITHIN v7+; pre-v7 summaries simply cannot answer it.
+// v6 (2026-08-18): + per-building-type VALUE ADDED (va_out/va_in), PRICED at base cost, so a tiered-sector GDP is derivable (F74)
 // v5 (2026-08-16): + per-country construction-queue composition (government/private: n, left, speed, by_type)
 
 // What we knowingly leave out, and why.  Read this before concluding the summary "lost" something.
@@ -121,7 +122,7 @@ const SUBJECT = new Set(['puppet', 'protectorate', 'colony', 'vassal', 'dominion
 const TREND_KEYS = new Map([['gdp', 'gdp'], ['prestige', 'prestige'], ['literacy', 'literacy'], ['avgsoltrend', 'avg_sol']]);
 // Sections we actually walk.  Everything else is skipped in O(1) per line: a top-level section always
 // closes with a `}` in COLUMN 0, so skipping never needs brace arithmetic.
-const WANT = new Set(['country_manager', 'states', 'technology', 'pacts', 'building_manager', 'building_ownership_manager']);
+const WANT = new Set(['country_manager', 'states', 'technology', 'pacts', 'building_manager', 'building_ownership_manager', 'companies']);
 
 // ---------------------------------------------------------------- collectors
 let saveDate = '';
@@ -133,7 +134,18 @@ const overlord = new Map(), ownMarket = new Set();
 const bldByCountry = new Map();            // "cid|building" -> {n,levels,subsidised,subsidised_levels,profit,cash,staffing}
 const goodsOut = new Map(), goodsIn = new Map();   // "cid|good" -> qty
 const bldState = new Map();                // building id -> state id      (for the ownership pass)
+const bldType = new Map();                 // building id -> type          (for the COMPANY passes, v7)
 const ownedAbroad = new Map(), foreignOwned = new Map();  // cid -> levels
+// v7: EVERY ownership record, resolution DEFERRED to the end — the roadmap's own warning: the owner's
+// type is a new lookup, and silently attributing to "(unknown)" at read time is the failure mode.
+// ⚠ A building-identity owner is USUALLY NOT A COMPANY (financial districts are ~17.4k such records in
+// the canon melt, manor houses ~6.2k, companies ~4.8k) — the owner's TYPE decides, at the end.
+// ⚠ COMPANY-HELD INCLUDES REGIONAL HQs: a company owns through its main HQ (`building_company_*`) AND
+// its charter regional HQs (`building_regional_company_*`) — measured on the canon-n7 1936 endpoint:
+// 40,466 + 5,190 levels. The pre-v7 deep-dive tool counted the main HQ alone (F77.1's shipped shares
+// are on that narrower basis); both instruments now use the two-prefix definition.
+const bldOwnRecs = [];                     // {ownerCountry|null, owner: building id|null, building: building id, levels}
+const companyRecs = [];                    // {type, hq: building id, prosperity, prosperous, charters, regional_hqs}
 let popTypeCountSeen = 0;
 
 const add = (m, k, v) => m.set(k, (m.get(k) || 0) + v);
@@ -198,6 +210,8 @@ let pFirst = null, pSecond = null, pAct = null, pT = false;
 let b = null, side = '', inGoods = false, curGood = null, inPrestige = false;
 // ownership
 let o = null, inIdent = false;
+// companies (v7)
+let co = null, coList = null;
 
 const numsOf = t => { const out = []; for (const m of t.matchAll(/-?\d+(?:\.\d+)?/g)) out.push(+m[0]); return out; };
 
@@ -461,6 +475,7 @@ for await (const line of rl) {
     if (b && nd <= 2) {                                   // record closed — attribute it
       if (b.type && b.state !== null) {
         bldState.set(b.id, b.state);
+        bldType.set(b.id, b.type);
         const ci = stateCountry.get(b.state);
         if (ci != null) {
           const k = ci + '|' + b.type;
@@ -486,12 +501,13 @@ for await (const line of rl) {
 
   if (mode === 'building_ownership_manager') {
     const m = /^(\d+)=\{$/.exec(t);
-    if (m && depth === 2) { o = { levels: 0, ownerCountry: null, building: null }; inIdent = false; }
+    if (m && depth === 2) { o = { levels: 0, ownerCountry: null, ownerBld: null, building: null }; inIdent = false; }
     else if (o) {
       let x;
       if (t === 'identity={') inIdent = true;
       else if (inIdent) {
         if ((x = /^country=(\d+)$/.exec(t))) o.ownerCountry = +x[1];
+        else if ((x = /^building=(\d+)$/.exec(t))) o.ownerBld = +x[1];   // v7: a BUILDING owns (company HQ / financial district / manor house)
         if (t === '}') inIdent = false;
       }
       else if ((x = /^levels=(\d+)$/.exec(t))) o.levels = +x[1];
@@ -506,8 +522,35 @@ for await (const line of rl) {
           add(foreignOwned, host, o.levels);
         }
       }
+      if (o.building != null && (o.ownerCountry != null || o.ownerBld != null))
+        bldOwnRecs.push({ ownerCountry: o.ownerCountry, owner: o.ownerBld, building: o.building, levels: o.levels });
       o = null;
     }
+    depth = nd; if (depth <= 0) mode = 'top';
+    continue;
+  }
+
+  // v7 — THE COMPANIES REGISTER. Small database (order 10^2 records by 1936); each record's scalars sit
+  // at depth 3 and the bulk is trend blocks this reader skips by depth. A company carries no country tag
+  // readable here (`country=` is a typed handle, not a country_manager id), so it is resolved at the end
+  // through its HQ building -> state -> country, the same maps the ownership pass uses.
+  if (mode === 'companies') {
+    const m = /^(\d+)=\{$/.exec(t);
+    if (m && depth === 2) { co = { type: null, hq: null, prosperity: null, prosperous: false, charters: 0, regional_hqs: 0 }; coList = null; }
+    else if (co) {
+      let x;
+      if (coList) { if (t.startsWith('}')) coList = null; else co[coList] += numsOf(t).length; }
+      else if (depth === 3) {
+        if ((x = /^company_type="([a-z_0-9]+)"$/.exec(t))) co.type = x[1];
+        else if ((x = /^building=(\d+)$/.exec(t))) co.hq = +x[1];
+        else if ((x = /^prosperity=([\d.]+)$/.exec(t))) co.prosperity = +x[1];
+        else if (t === 'prosperous=yes') co.prosperous = true;
+        else if (t === 'company_charters={') coList = 'charters';
+        else if (t === 'regional_hqs={') coList = 'regional_hqs';
+      }
+    }
+    const nd = depth + opens - closes;
+    if (co && nd <= 2) { if (co.type) companyRecs.push(co); co = null; coList = null; }
     depth = nd; if (depth <= 0) mode = 'top';
     continue;
   }
@@ -539,6 +582,54 @@ for (const [st, e] of popObjByState) {
   let r = popObjByCountry.get(ci);
   if (!r) popObjByCountry.set(ci, r = { n: 0, live: 0 });
   r.n += e.n; r.live += e.live;
+}
+
+// v7 — OWNERSHIP, resolved now that every map is complete (parse order is not assumed).
+// An ownership record whose identity is a BUILDING is company-held iff that owner building's own type
+// is `building_company_*` / `building_regional_company_*` — financial districts and manor houses own
+// through the same mechanism and are the majority, so the owner's TYPE is the whole filter. Attribution
+// is to the HOST country (the owned building's state's owner), the same convention as `buildings`
+// itself, so Δ(total) − Δ(company-held) is a like-for-like join. LEVELS, not buildings: a building's
+// levels split across owners.
+// The same walk classes EVERY record into the ownership-STRUCTURE rollup (who owns this country's
+// buildings: its own state, a foreign state, capitalists, aristocrats, companies, the building itself)
+// — per-year capital structure, which the §10.45 profession wedge previously had to be derived from a
+// single hand-kept campaign.
+const OWN_CLASS = ot =>
+  ot == null ? 'unresolved_owner'
+  : (ot.startsWith('building_regional_company_') || ot === 'building_company_regional_headquarter') ? 'company_regional'
+  : ot.startsWith('building_company_') ? 'company'
+  : ot === 'building_financial_district' ? 'financial_district'
+  : ot === 'building_manor_house' ? 'manor_house'
+  : 'other_building';
+const companyLvByKey = new Map();          // "cid|type" -> levels (company + company_regional)
+const ownClassByCountry = new Map();       // cid -> {class -> levels}
+let companyOwnerUnknown = 0, companyLvOrphan = 0;
+for (const r of bldOwnRecs) {
+  const ci = stateCountry.get(bldState.get(r.building));
+  const cls = r.ownerCountry != null ? (r.ownerCountry === ci ? 'state' : 'foreign_country') : OWN_CLASS(bldType.get(r.owner));
+  if (ci != null) {
+    let bag = ownClassByCountry.get(ci); if (!bag) ownClassByCountry.set(ci, bag = {});
+    bag[cls] = (bag[cls] || 0) + r.levels;
+  }
+  if (cls !== 'company' && cls !== 'company_regional') { if (cls === 'unresolved_owner') companyOwnerUnknown += r.levels; continue; }
+  const ty = bldType.get(r.building);
+  if (!ty || ci == null) { companyLvOrphan += r.levels; continue; }
+  add(companyLvByKey, ci + '|' + ty, r.levels);
+}
+for (const [k, lv] of companyLvByKey) {
+  const r = bldByCountry.get(k);
+  if (r) r.company_levels = lv; else companyLvOrphan += lv;
+}
+// the companies register, resolved to a country through the HQ building (its own `country=` is a typed
+// handle, not a country_manager id — do not decode it, the HQ route uses maps already verified above)
+const companiesByCountry = new Map();
+let companiesUnresolved = 0;
+for (const c of companyRecs) {
+  const ci = stateCountry.get(bldState.get(c.hq));
+  if (ci == null) { companiesUnresolved++; continue; }
+  let a = companiesByCountry.get(ci); if (!a) companiesByCountry.set(ci, a = []);
+  a.push({ type: c.type, prosperity: c.prosperity, prosperous: c.prosperous, charters: c.charters, regional_hqs: c.regional_hqs });
 }
 
 const countries = {};
@@ -575,6 +666,11 @@ for (const [id, c] of C) {
     pop_objects_live: popObjByCountry.get(id)?.live ?? 0,
     foreign_owned_levels: foreignOwned.get(id) ?? 0,
     owned_abroad_levels: ownedAbroad.get(id) ?? 0,
+    // v7: the companies this country hosts (HQ-resolved). Company-HELD levels sit inside each
+    // buildings[type] record as `company_levels` (absent = 0 within v7+), and `ownership_levels` is
+    // the host-side ownership STRUCTURE — levels of buildings in this country by owner class.
+    companies: companiesByCountry.get(id) ?? [],
+    ownership_levels: ownClassByCountry.get(id) ?? {},
     buildings: blds, goods_out: gout, goods_in: gin,
     // v5: queue COMPOSITION per country — n elements, total work left (points), total speed
     // (points/wk), and per-building-type breakdown. Retired the CQ telemetry (§9).
@@ -610,10 +706,20 @@ const world = { buildings: {}, gdp: 0, population: 0, game_rules: gameRules,
 for (const [, r] of bldByCountry) { void r; }
 for (const [k, r] of bldByCountry) {
   const ty = k.slice(k.indexOf('|') + 1);
-  const w = world.buildings[ty] ??= { n: 0, levels: 0, subsidised_levels: 0, va_out: 0, va_in: 0 };
+  const w = world.buildings[ty] ??= { n: 0, levels: 0, subsidised_levels: 0, va_out: 0, va_in: 0, company_levels: 0 };
   w.n += r.n; w.levels += r.levels; w.subsidised_levels += r.subsidised_levels;
   w.va_out += r.va_out || 0; w.va_in += r.va_in || 0;
+  w.company_levels += r.company_levels || 0;
 }
+// v7 world counters. The two orphan figures are DIAGNOSTIC and expected small — a non-zero value means
+// levels/companies that could not be attributed to any country (unowned state, unresolvable owner id;
+// the canon-n7 endpoint reads 270 levels on 97 records whose owner id resolves to no building).
+world.companies = companyRecs.length;
+world.company_levels_unattributed = companyLvOrphan + companyOwnerUnknown;
+world.companies_unresolved = companiesUnresolved;
+world.ownership_levels = {};
+for (const bag of ownClassByCountry.values())
+  for (const [cls, lv] of Object.entries(bag)) world.ownership_levels[cls] = (world.ownership_levels[cls] || 0) + lv;
 for (const c of Object.values(countries)) { world.gdp += c.gdp || 0; world.population += Object.values(c.professions).reduce((a, x) => a + x, 0); }
 world.gdp = Math.round(world.gdp); world.population = Math.round(world.population);
 
