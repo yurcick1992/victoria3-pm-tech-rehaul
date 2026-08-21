@@ -8194,3 +8194,28 @@ tiered sector — and the devaluation dominated.
 with granular's 0.2 multiplier gave canon a **6.29%** workforce share and **£153.9** per worker against
 its true 31.43% and £30.8 — a 5× error in both, with nothing failing. It now takes `--config-<n>` per
 `--arm`, and canon alone reproduces 31.43% / £30.8 exactly as the regression check.
+
+### F78.1 — the assumption that failed, and it was a reasonable one
+
+The granularity arm was designed on a shared prior, stated here so it is not re-derived: **`ai_value`
+would be applied on top of financial considerations — ROI and payback — which are expressed as ratios
+and are therefore invariant to the scale of the building.** On that reading, shrinking every tiered
+building fivefold changes nothing the AI cares about: the same payback period, the same return, five
+times as many decisions.
+
+**That is false, and F78 measures how false.** Scaling a building down 5× while leaving its `ai_value`
+at the engine default cut the sector's realised capacity to **0.39×**. The desire term is evaluated per
+BUILDING and is not normalised by the building's size, so it does not compose with a scale-invariant
+financial layer the way the prior assumed.
+
+⚠ **The response is SUB-LINEAR, not a clean 1/5.** Cost fell 5× alongside size, and the AI did react —
+it built **2.21×** the levels, not 1×. So it is not that scale is ignored; it is that the reaction is
+far short of the 5× needed for parity. ⇒ **an `ai_value` correction of ×D is the principled starting
+point, not a calibrated one**, and a corrected arm must be judged on realised building-equivalent
+capacity rather than assumed to have restored it.
+
+⚠ **Do not record this as a design error in the arm.** The instruction was carried out as specified and
+verified exact; the prior was held by both author and reviewer and only measurement could have
+separated it from the truth. What *should* have been written into the schedule beforehand is the
+prediction that the prior implies — "tiered capacity unchanged, levels ×5" — because that is the line
+the result actually falsified, and stating it in advance is what turns a surprise into a finding.
