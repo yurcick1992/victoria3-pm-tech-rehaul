@@ -1103,12 +1103,25 @@ constraint 4), and a check that nothing in the 1836 start depends on the key.
 
 ---
 
-## Step 5 — COMPANY MANDATES  ⬅ **MEASURED 2026-08-20, and it is bigger than "flavour"**
+## Step 5 — COMPANY MANDATES  ⬅ **MEASURED 2026-08-20, and it is bigger than "flavour" — AND NOW FIRST IN LINE**
 
 Change company mandates so they latch onto useful and reasonable industries rather than always the
 Tier-1 building. Related to the standing `MISSING_PM_REFERENCES.md` / narrowed-`has_building` problem:
 457 vanilla `has_building` references now match only our Tier-1 building, and the same "make every tier
 of the industry eligible" fix resolves mandates, monopolies and the flavour references together.
+
+⭐⭐ **THE `ai_value` LADDER IS SET ASIDE BY RULING (user, 2026-08-23) UNTIL THE COMPANY SYSTEM WORKS.**
+The user's words: pushing the ladder *"at least in a world without proper manufacturing companies leads
+to a broken game."* The measurement behind the call is the n=18 vanilla baseline (F79): companies run
+**47.4%** of vanilla's tiered-equivalent sector by 1936 against the mod's ~9%, vanilla's free PM
+switching converges the majors' stock to 77–90% frontier — the actor the ladder was trying to
+substitute for is the one the tier split locked out. `1000 × (era+1)` stays the bracketed-best,
+unshipped, in its alt config; do not resume the ladder series before step 5's company work lands.
+**The next session investigates the company system**: can a mandate name MANY tiers of a chain (several
+building keys per mandate?), can `prosperity_modifier` throughput bonuses be re-pointed per tier or per
+industry, what does a company's building-selection AI actually accept — the 222 vanilla company
+definitions, `common/company_types`, and the mandate/prosperity schema are the ground to survey, with
+F77's census as the map and F79's vanilla company century as the yardstick.
 
 ### What is now measured (FINDINGS **F77** and **F77.1**)
 
