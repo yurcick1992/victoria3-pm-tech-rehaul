@@ -5413,3 +5413,63 @@ arrived at from the opposite direction.
 
 **Knobs:** `INV_ITERS` (default 400) · `INV_DAMP` (0.5) · `INV_PLATEAU=1` (plateau price hold) ·
 `INV_TRACE=good[@eraIx]` (per-good iteration trace) · honours `MOD_CONFIG` + the artifact-suffix rule.
+
+### §10.65.1 PASS 2 — THE HYBRID MANDATE (user-directed 2026-08-23 "let's try that", run 2026-08-24)
+
+Pass 1's central negative result acted on: the mandate now binds ONLY building-fed goods; **consumer
+goods (pop demand > 70% of buy, classified per era in a short sweep) float to whatever price the pop
+model realises**, and an OUTER loop (`INV_OUTER`, default 3) iterates consumer-chain recipes against
+those realised prices to a joint fixed point. The user's requested highlight: every consumer price
+more than 30pp from base is flagged. Same prototype, same artifact; ~17–21 goods per era classify as
+consumer-priced (the staples, durables, luxuries, colonial goods, services, transportation — plus
+automobiles/telephones/aeroplanes/fine_art when they arrive).
+
+**1. The mandated core still works — and era 1's miss is a DEMAND-SHIFT, not a failure.** Literal
+on-mandate: 9/11 · 0/19 · 22/25 · 25/27 · 29/31 · 25/31. The era-1 zero decomposes: after removing
+the MEDIAN log-offset, **17/19 goods sit within tolerance of the mandate SHIFTED by a common ×1.10**
+— with the population pinned to the premise, SoL-8 pop demand plus the now-competing consumer
+industries exceed what 13M people's workforce can supply at all, so the whole core floats ~13pp above
+its mandated prices while holding the relative structure exactly. Every other era's common shift is
+×0.98–1.02. (Era 5 keeps the §10.40.6 scale-cap collisions — iron/oil at the 1000-deposit cap — and
+the wood/hardwood, telephones/radios joint-production knots.)
+
+**2. ⭐ THE CONSUMER PRICE MAP (the requested highlight).** Beyond ±30pp per era: **15/17 · 7/19 ·
+9/18 · 6/19 · 4/15 · 11/18**. The recurring offenders (>30pp in 2+ eras): liquor 25–68 in five eras
+(pops never fund it at base against beside-goods), opium 34–67, wine 25–34, luxury_clothes /
+luxury_furniture pinned at 25 through eras 0–2 (Phase A's luxury PMs oversupply SoL-8 pops),
+telephones 25–39 (the §10.29 communication-need story from the price side), and the big arc:
+**clothes 165→175→157→93→68→25 and furniture 175→142→83→64→25** — consumer durables genuinely
+SCARCE in eras 0–2 (the premise workforce cannot clothe its own population at base prices) and
+collapsing into abundance by eras 4–5. Groceries hold 45→99→91→94→79→49. Era 0 is the degenerate
+end (nearly everything at 25 — SoL-7 pops fund almost nothing; its GDP collapses and army/constr
+shares with it). ⚠ Instructively, the realised consumer arc 165→25 DECLINES MORE STEEPLY than the
+pass-1 mandate (175→50) — the mandate's direction was right for consumer goods; it is the level path
+that pops refuse.
+
+**3. ⚠⚠ THE COST — the consumer ladder loses its obsolescence engine: illogicality 22 vs pass 1's 7**
+(per era 1/0/1/4/5/11, analytic = seeded). The new faults sit almost exactly in the consumer chains:
+stale-profitable textile/furniture (e3–e4), inverted food/textile/furniture/railway (e4–e5), era-5
+losses when late consumer prices collapse below the last rungs' break-evens. Mechanism: the pass-1
+mandate's scheduled decline WAS the obsolescence driver; realised consumer prices do not decline on
+schedule (they meander with SoL and need composition), so stale consumer rungs stay profitable — and
+the §10.50 ratchet then anchors every later rung's recipe to the leanness the depressed era-0/1
+prices forced, flattening the chains further (textile margins +23…+48%, all ratchet-capped).
+electrics is the worst case: telephones (consumer, glutted at 25) and radios (mandated 75–100) from
+adjacent tiers of one industry — its e2 rung reads −36% at what pops actually pay.
+
+**4. ⚠ CONSUMER PRICE LEVELS ARE INDETERMINATE IN THE COUPLED SYSTEM.** For a saturated-need good,
+(recipe, price, scale) form a CONTINUUM of self-consistent fixed points — a lean recipe at a low
+price with big mills is as self-consistent as a rich recipe at a high price with small ones — and
+the outer loop lands path-dependently (era-5 clothes at 25 is one such landing). The game pins this
+by construction costs and AI thresholds; the standing solver pins it with its price-path priors; a
+promoted inverse solver must pick an explicit anchor. The natural pass-3 candidate: keep a DESIGNED
+price path for consumer chains as the RECIPE-SOLVING anchor (pass 1's mandate, or a plateau-held
+variant), while seeding and SCORING at realised prices with the gap reported — designed deflation as
+intent, pop-realism as measurement.
+
+**The trade-off, stated once:** pass 1 = a clean ladder (7 faults) priced partly in fiction
+(consumer mandates unreachable); pass 2 = honest consumer prices (the highlight map above) at the
+cost of the consumer half of the ladder (22 faults, concentrated there). Both halves are now
+measured; which anchor to adopt is a design ruling, not a computation.
+
+**Pass-2 knobs:** `INV_OUTER` (default 3) · `INV_DEBUG=good,good…` (per-pass book-vs-realised trace).

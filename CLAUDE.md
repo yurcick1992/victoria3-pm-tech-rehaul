@@ -836,11 +836,19 @@ tools/                  dev tooling — NOT shipped in the mod
                         prices (industrial 175−25pp×era, raw 100), DERIVE the recipe book from them in
                         closed form (one pass, no fixed point; same hard invariants as the standing
                         solve), then SEED counts as a pure feasibility problem (price ⟺ buy:sell ratio).
-                        First results: analytic illogicality 7 vs the canon 54 (4 under INV_PLATEAU=1);
+                        Pass-1 results: analytic illogicality 7 vs the canon 54 (4 under INV_PLATEAU=1);
                         the building-fed core seeds coherently in every era; ⭐ POP-FED GOODS CANNOT BE
                         MANDATED — supply-share demand makes their ratio composition-invariant (the
-                        central §10.65 finding). Writes config/era_inverse.json only; touches nothing
-                        canonical. Standalone prototype — its premise tables are a marked FORK of
+                        central §10.65 finding). ⭐ PASS 2 (§10.65.1, 2026-08-24) is the current default
+                        behaviour: the HYBRID book — consumer goods (pop >70% of buy, classified per
+                        era) FLOAT to their realised pop prices, iterated with the recipes (INV_OUTER);
+                        every consumer price >30pp off base is ⚠-flagged. Mandated core holds (era 1 =
+                        a uniform ×1.10 excess-demand shift, 17/19 structurally on); consumer arc runs
+                        clothes 165→25 across the eras; ⚠ the cost is the consumer half of the ladder
+                        (illogicality 22 vs 7 — floating prices remove its obsolescence engine) and
+                        consumer price LEVELS are indeterminate (a continuum of fixed points; §10.65.1
+                        item 4). Writes config/era_inverse.json only; touches nothing canonical.
+                        Standalone prototype — its premise tables are a marked FORK of
                         era_scenarios.mjs's (that module solves at import time and cannot be imported)
   era_macro.mjs         the macroscenario DATA: per-industry X and per-group Y (real US shares of the
                         mapped commodity economy, 2 significant figures, adjustment tags (b)asket

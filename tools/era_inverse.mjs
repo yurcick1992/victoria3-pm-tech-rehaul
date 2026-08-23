@@ -25,6 +25,16 @@
 //        hill-climb. The question it answers is the user's: does a coherent market composition exist
 //        at these prices ("no 8 million steel mills"), and where exactly does the mandate fail?
 //
+// ⭐ PASS 2 — THE HYBRID MANDATE (user-directed 2026-08-23, same session): pass 1 proved pop-fed goods
+// CANNOT be price-mandated (supply-share demand makes their buy:sell ratio composition-invariant), so
+// the mandate now binds ONLY the building-fed half. Per era, goods are CLASSIFIED once (a short seed
+// sweep; pop demand > 70% of buy ⇒ CONSUMER-priced): consumer goods take whatever price the pop model
+// actually produces — read from the seeded order book, fed back into the recipe solve — while
+// building-fed industrial goods keep 175 − 25pp × era and building-fed raw goods keep 100. An OUTER
+// loop (INV_OUTER, default 3) iterates recipes ↔ realised consumer prices to a joint fixed point.
+// The report prints every consumer good's realised price and FLAGS any more than 30pp from base
+// (outside 70…130) — the user's requested highlight.
+//
 // WHAT THIS DELIBERATELY DOES NOT DO (first pass, each a stated simplification):
 //   * PM selections are taken from Phase A's fit (config/era_prices.json), not re-optimised at the
 //     mandated prices.
@@ -51,6 +61,10 @@ const MAX_IT = +(process.env.INV_ITERS || 400);      // count-iteration budget p
 const DAMP = +(process.env.INV_DAMP || 0.5);         // exponent damping on the per-good scale factor
 const PLATEAU_HOLD = process.env.INV_PLATEAU === '1'; // hold a plateaued good's price at its last tier's era
 const TOL_PP = 3;                                     // "on mandate" = implied price within this many pp
+const OUTER = +(process.env.INV_OUTER || 3);          // recipe ↔ realised-consumer-price outer passes
+const POP_CLASS_SHARE = 0.7;                          // pop demand share of buy above which a good is consumer-priced
+const CLASSIFY_ITERS = 15;                            // seed passes the classification sweep runs
+const HIGHLIGHT_PP = 30;                              // ⚠ a consumer price this far from base is flagged
 
 const { E, S, PMECON, config: CFG_RAW } = loadEcon({ quiet: true });
 const rules = makePmRules(E, S);
@@ -245,10 +259,31 @@ function mandatePrice(g, era) {
 // the order-book ratio the V3 price formula demands for price p (% of base):
 //   p ≥ 100:  buy/sell = 1 + (p/100−1)/0.75      p < 100:  buy/sell = 1 / (1 + (1−p/100)/0.75)
 const buyOverSell = p => p >= 100 ? 1 + (p / 100 - 1) / 0.75 : 1 / (1 + (1 - p / 100) / 0.75);
+// the V3 price formula UNROUNDED (priceMultPct rounds to whole %, too coarse for the outer fixed point)
+const pricePctRaw = (buy, sell) => {
+  buy = Math.max(0, buy); sell = Math.max(0, sell);
+  if (buy === 0 && sell === 0) return 100;
+  const mn = Math.min(buy, sell);
+  const dev = clamp(mn > 0 ? (buy - sell) / mn : (buy > sell ? 1 : -1), -1, 1);
+  return (1 + 0.75 * dev) * 100;
+};
+
+// ---- PASS 2: the per-era CONSUMER class and its floating price book ----
+// POPCLASS[eIx] = Set of goods whose demand pops dominate (classification sweep, run once).
+// CONSUMER_P[eIx] = { good -> price } — the realised pop-determined price, updated by the outer loop.
+// A consumer good has NO mandate: its book price IS the last realised price (self-target), which is
+// what the demand mechanism actually supports; everything else keeps the pass-1 mandate.
+const POPCLASS = [];
+const CONSUMER_P = [];
+function bookPrice(eIx, g) {
+  const cls = POPCLASS[eIx];
+  if (cls && cls.has(g)) { const p = (CONSUMER_P[eIx] || {})[g]; return p != null ? p : 100; }
+  return mandatePrice(g, FIT.eras[eIx].era);
+}
 
 function setEraContext(eIx) {
   const era = FIT.eras[eIx].era;
-  for (const g in S.PRICES) S.thresholds[g] = mandatePrice(g, era);
+  for (const g in S.PRICES) S.thresholds[g] = bookPrice(eIx, g);
   S.BASE_WAGE = FIT.eras[eIx].base_wage;
   const sol = FIT.eras[eIx].sol;
   S.SOL = { lower: sol, middle: Math.round(sol * 1.5), upper: Math.round(sol * 3), peasants: sol, slaves: 8 };
@@ -313,6 +348,7 @@ function monoCapInfo(ind, t) {
 }
 const RECIPES = [];   // {ind, t, target, margin, cap, be}
 function deriveRecipes() {
+  RECIPES.length = 0;
   const byEra = new Map();
   for (const i of S.IND) {
     if (i.follows_be === false) continue;
@@ -447,7 +483,8 @@ function ladderAt(eIx, quietTable) {
 // ===================================================================================================
 // PHASE 3 — SEEDING: counts as a feasibility problem
 // ===================================================================================================
-function seedScenario(eIx) {
+function seedScenario(eIx, opts = {}) {
+  const classifyOnly = !!opts.classifyOnly;   // short sweep: classify goods by pop share, read prices
   const era = FIT.eras[eIx].era;
   setEraContext(eIx);
   const placement = placementFor(eIx);
@@ -656,24 +693,20 @@ function seedScenario(eIx) {
     return n * E.thruMult(b) * (outOf(b)[g] || 0);
   };
   const N_MIN = 1e-6;
-  // THE FUTILITY GUARD (the §10.21 lesson: a rule that cannot reach its goal must stop). A POP-FED
-  // good's buy:sell ratio is nearly composition-invariant — the game allocates pop money BY SUPPLY
-  // SHARE (F31/F40), so pop demand tracks supply and no count can steer the ratio. Left steered, such
-  // a good's producers drift exponentially forever and drag every coupled good off ITS mandate. So a
-  // good whose ratio has not moved across a 25-pass window despite steering is declared FUTILE: its
-  // steering stops, its producers freeze at their current level (the mandate does not determine their
-  // scale — that under-determination is a finding, reported per good).
+  // THE FUTILITY GUARD (the §10.21 lesson: a rule that cannot reach its goal must stop). A good whose
+  // ratio has not moved across a 25-pass window DESPITE real steering is declared FUTILE: steering
+  // stops, its producers freeze. In pass 2 this is a backstop — consumer goods self-target their own
+  // realised price, so the systematic pop-fed futility of pass 1 mostly disappears — but mixed-feed
+  // goods and joint-production knots (wood+hardwood) still need it.
   const FUTILE = new Set();
-  const PINNED = new Set();      // a-priori pop-fed goods (popShare > 0.7 at pass 10): never steered —
-                                 // the supply-share demand mechanism makes their ratio track supply, so
-                                 // the mandate cannot bind and their SCALE is under-determined by it
   const appeals = new Map();     // good -> unfreezes used (ONE appeal per good — the §10.49 lesson:
                                  // unlimited re-opens churn forever and nothing ever settles)
   const ratioSnap = new Map();   // good -> {it, logRatio, steer}   (steer = Σ|logF| applied this window)
+  const maxIt = classifyOnly ? CLASSIFY_ITERS : MAX_IT;
   let resid = Infinity, iters = 0;
   const TRACE = (process.env.INV_TRACE || '').split('@');
   const traceGood = TRACE[0] && (TRACE[1] == null || +TRACE[1] === eIx) ? TRACE[0] : null;
-  for (let it = 1; it <= MAX_IT; it++) {
+  for (let it = 1; it <= maxIt; it++) {
     iters = it;
     settle();
     const agg = E.scenarioAggregates();
@@ -688,23 +721,12 @@ function seedScenario(eIx) {
         else walls.add(g);
       } else if (S.ADDSELL[g] != null && domestic >= 1e-6) { delete S.ADDSELL[g]; tradeSupplied.delete(g); }
     }
-    // a-priori pop classification, once, after the initial transient: a good pops dominate cannot be
-    // steered (demand tracks supply — F31/F40) and drags every coupled good off ITS mandate if tried
-    if (it === 10) {
-      for (const [g] of byGood) {
-        const { buy } = E.scenarioBuySell(agg, g);
-        if (!(buy > 1e-6)) continue;
-        const popBuy = ((agg.pop || {})[g] || 0) + ((agg.slave || {})[g] || 0);
-        if (popBuy / buy > 0.7) PINNED.add(g);
-      }
-    }
     // per-good factors first…
-    const logF = new Map();   // good -> log of the supply factor its mandate asks for
+    const logF = new Map();   // good -> log of the supply factor its book price asks for
     let maxErr = 0;
     for (const [g, blds] of byGood) {
-      if (PINNED.has(g)) continue;
       const { buy, sell } = E.scenarioBuySell(agg, g);
-      const rho = buyOverSell(mandatePrice(g, era));
+      const rho = buyOverSell(bookPrice(eIx, g));
       const err = (buy > 1e-6 && sell > 1e-9) ? Math.abs(Math.log((buy / sell) / rho)) : 0;
       const lr = Math.log(Math.max(1e-9, buy) / Math.max(1e-9, sell));
       if (FUTILE.has(g)) {
@@ -774,6 +796,19 @@ function seedScenario(eIx) {
     if (resid < 0.01 && it > 10) break;
   }
   settle();
+  if (classifyOnly) {
+    // the classification sweep's product: who the pops dominate, and what price the pop model gave
+    // them at this composition (the outer loop's starting book)
+    const agg0 = E.scenarioAggregates();
+    const popClass = new Set(), realised = {};
+    for (const g in S.PRICES) {
+      const { buy, sell } = E.scenarioBuySell(agg0, g);
+      if (buy < 1e-3 && sell < 1e-3) continue;
+      const popBuy = ((agg0.pop || {})[g] || 0) + ((agg0.slave || {})[g] || 0);
+      if (buy > 0 && popBuy / buy > POP_CLASS_SHARE) { popClass.add(g); realised[g] = pricePctRaw(buy, sell); }
+    }
+    return { popClass, realised };
+  }
   // final touch-up onto the population premise, prune sub-visible ghosts, settle again
   const kPop = POP_TOTAL[eIx] / Math.max(1, S.POPS.total);
   for (const [b, n] of N) N.set(b, Math.min(n * kPop, scaleCapOf(b)));
@@ -783,30 +818,49 @@ function seedScenario(eIx) {
 
   // ---- diagnostics ----
   const agg = E.scenarioAggregates();
-  const offMandate = [];
-  let checked = 0, onMandate = 0, checkedBld = 0, onBld = 0, checkedPop = 0, onPop = 0;
+  const offMandate = [];      // MANDATED goods off their mandate
+  const consumer = [];        // CONSUMER-priced goods: {g, p, popShare, hot} — hot = >HIGHLIGHT_PP from base
+  const realisedP = {};       // every traded good's realised price (unrounded) — the outer loop's read
+  const cls0 = POPCLASS[eIx] || new Set();
+  const mandErrs = [];        // log((buy/sell)/rho) per mandated good — for the offset/dispersion split
+  let checked = 0, onMandate = 0;
   for (const g in S.PRICES) {
     const { buy, sell } = E.scenarioBuySell(agg, g);
     if (buy < 1e-3 && sell < 1e-3) continue;
-    checked++;
     const popBuy = ((agg.pop || {})[g] || 0) + ((agg.slave || {})[g] || 0);
     const popShare = buy > 0 ? popBuy / buy : 0;
-    const popFed = popShare > 0.5;
-    if (popFed) checkedPop++; else checkedBld++;
+    const praw = pricePctRaw(buy, sell);
+    realisedP[g] = praw;
+    if (cls0.has(g)) {
+      consumer.push({ g, p: praw, popShare, hot: Math.abs(praw - 100) > HIGHLIGHT_PP });
+      continue;                                   // a consumer good has no mandate to be off
+    }
+    if (buy > 1e-3 && sell > 1e-3) mandErrs.push(Math.log((buy / sell) / buyOverSell(bookPrice(eIx, g))));
+    checked++;
     const implied = E.priceMultPct(buy, sell);
-    const pm = mandatePrice(g, era);
-    if (Math.abs(implied - pm) <= TOL_PP) { onMandate++; if (popFed) onPop++; else onBld++; continue; }
+    const pm = bookPrice(eIx, g);
+    if (Math.abs(implied - pm) <= TOL_PP) { onMandate++; continue; }
     const blds = byGood.get(g) || [];
     let adjS = 0, capS = 0;
     for (const b of blds) { const s = sellOfBuilding(b, g); adjS += s; if ((N.get(b) || 0) >= scaleCapOf(b) * 0.99) capS += s; }
     const atCap = adjS > 0 && capS / adjS > 0.9;
     const alive = blds.some(b => (N.get(b) || 0) > 0);
     const cls = !blds.length ? (tradeSupplied.has(g) ? 'trade' : walls.has(g) ? 'WALL' : 'fixed-supply')
-              : atCap ? 'scale-capped' : PINNED.has(g) ? 'pop-pinned' : FUTILE.has(g) ? 'unsteerable'
+              : atCap ? 'scale-capped' : FUTILE.has(g) ? 'unsteerable'
               : alive ? 'unconverged' : 'died-out';
     offMandate.push({ g, mand: pm, implied, buy, sell, cls, popShare });
   }
   offMandate.sort((a, b) => Math.abs(b.implied - b.mand) - Math.abs(a.implied - a.mand));
+  consumer.sort((a, b) => Math.abs(b.p - 100) - Math.abs(a.p - 100));
+  // the AGGREGATE-SCARCITY split: with the population pinned, total supply is bounded, so an era whose
+  // pop demand outruns the workforce shows every mandated good off by a COMMON factor while the
+  // RELATIVE structure still holds. MEDIAN log-offset = that factor (robust — hardwood/artillery
+  // outliers blow an RMS up); "structurally on" = goods within tolerance of the SHIFTED mandate.
+  const sortedErrs = [...mandErrs].sort((a, b) => a - b);
+  const aggMean = sortedErrs.length ? sortedErrs[sortedErrs.length >> 1] : 0;
+  const structOn = mandErrs.filter(x => Math.abs(x - aggMean) < 0.035).length;
+  const aggDisp = mandErrs.length
+    ? Math.sqrt(mandErrs.reduce((a, b) => a + (b - aggMean) ** 2, 0) / mandErrs.length) : 0;
   // presence-based illogicality on the SEEDED scenario
   const faults = PMECON.ladderFaults(S.IND, {
     countOf: t => S.BLDNUM[t.key] || 0,
@@ -850,7 +904,7 @@ function seedScenario(eIx) {
   return {
     eIx, era, iters, resid, N, FIXED1, byGood, placement, refProducers,
     tradeSupplied: [...tradeSupplied], walls: [...walls], offMandate, checked, onMandate,
-    checkedBld, onBld, checkedPop, onPop, futile: [...FUTILE], pinned: [...PINNED],
+    consumer, realisedP, futile: [...FUTILE], aggMean, aggDisp, structOn, mandN: mandErrs.length,
     faults, sec, indShare, grossAll, gdp,
     pops: { ...S.POPS }, jobs: productiveWorkforce(),
     armyShare: gdp > 0 ? armyBill / gdp : 0, battalions,
@@ -862,15 +916,60 @@ function seedScenario(eIx) {
 // ===================================================================================================
 // RUN + REPORT
 // ===================================================================================================
-console.log('THE INVERSE SOLVE — mandated prices → derived recipes → seeded counts (experimental, §10.65)');
-console.log(`  mandate: industrial 175 − 25·era (${FIT.eras.map(e => `e${e.era} ${mandatePrice('__probe_industrial__', 0) && (175 - 25 * e.era)}`).join(' · ')}), non-industrial 100`
-  .replace('__probe_industrial__', ''));
-if (PLATEAU_HOLD) console.log('  INV_PLATEAU=1: a plateaued good holds its last tier era\'s price');
-console.log('  ⚠ era 0\'s 175 sits ON the engine band edge (buy = 2·sell exactly) and would breach §10.15 for industrial inputs — implemented as specified.');
+console.log('THE INVERSE SOLVE, PASS 2 — the HYBRID mandate: building-fed goods mandated, consumer goods pop-priced (experimental, §10.65)');
+console.log(`  mandate (building-fed only): industrial 175 − 25·era (${FIT.eras.map(e => 175 - 25 * e.era).join(' · ')}), raw 100`);
+console.log(`  consumer goods (pop demand > ${POP_CLASS_SHARE * 100}% of buy): price = what the pop model realises, iterated to a fixed point with the recipes`);
+console.log(`  ⚠ highlight: any consumer price more than ${HIGHLIGHT_PP}pp from base (outside ${100 - HIGHLIGHT_PP}…${100 + HIGHLIGHT_PP})`);
+if (PLATEAU_HOLD) console.log('  INV_PLATEAU=1: a plateaued good holds its last tier era\'s price (mandated goods only)');
 console.log('');
 
-deriveRecipes();
-console.log('── PHASE 1: RECIPES DERIVED AT MANDATED PRICES (dominant target +5%, shipyards −30pp, solve_profit honoured) ──');
+console.log('── PHASE 0: CLASSIFICATION SWEEP — who the pops dominate, per era ──');
+for (let e = 0; e < FIT.eras.length; e++) {
+  const r = seedScenario(e, { classifyOnly: true });
+  POPCLASS[e] = r.popClass;
+  CONSUMER_P[e] = { ...r.realised };
+  console.log(`  era ${e}: ${r.popClass.size} consumer-priced goods — ${[...r.popClass].sort().join(', ')}`);
+}
+
+console.log('\n── OUTER LOOP: recipes ↔ realised consumer prices ──');
+let SCEN = [];
+for (let outer = 1; outer <= OUTER; outer++) {
+  // fold the previous pass's realised consumer prices into the book (damped), THEN solve recipes and
+  // seed against that book — so within one pass, recipes, scenarios and the book are consistent
+  if (outer > 1) {
+    for (let e = 0; e < FIT.eras.length; e++) {
+      for (const g of POPCLASS[e]) {
+        const p = SCEN[e] && SCEN[e].realisedP[g];
+        if (p != null) CONSUMER_P[e][g] = 0.5 * (CONSUMER_P[e][g] ?? 100) + 0.5 * p;
+      }
+    }
+  }
+  deriveRecipes();
+  SCEN = [];
+  let maxD = 0; let maxDGood = '';
+  for (let e = 0; e < FIT.eras.length; e++) {
+    const r = seedScenario(e);
+    SCEN.push(r);
+    for (const g of POPCLASS[e]) {
+      const p = r.realisedP[g];
+      if (p == null) continue;
+      const d = Math.abs(p - (CONSUMER_P[e][g] ?? 100));
+      if (d > maxD) { maxD = d; maxDGood = `${g}@e${e}`; }
+    }
+  }
+  console.log(`  pass ${outer}: worst consumer price vs book ${maxD.toFixed(1)}pp (${maxDGood})`);
+  if (process.env.INV_DEBUG) {
+    for (const g of process.env.INV_DEBUG.split(',')) {
+      console.log(`    [debug ${g}] ` + FIT.eras.map((_, e) =>
+        POPCLASS[e].has(g)
+          ? `e${e} book ${Math.round(CONSUMER_P[e][g] ?? 100)}→real ${SCEN[e].realisedP[g] != null ? Math.round(SCEN[e].realisedP[g]) : '—'}`
+          : `e${e} —`).join(' · '));
+    }
+  }
+  if (maxD < 2) break;
+}
+
+console.log('\n── PHASE 1: RECIPES DERIVED AT THE HYBRID BOOK (dominant target +5%, shipyards −30pp, solve_profit honoured) ──');
 {
   const capN = {};
   for (const r of RECIPES) { const c = r.skip ? 'skip:' + r.skip : (r.cap || 'on-target'); capN[c] = (capN[c] || 0) + 1; }
@@ -882,13 +981,13 @@ console.log('── PHASE 1: RECIPES DERIVED AT MANDATED PRICES (dominant target
     console.log(`  ${W(i.id, 14)} ${mine.map(r =>
       `e${r.t.era} ${pct(r.margin)}${r.cap ? '(' + r.cap[0] + ')' : ''} be${r.be.toFixed(0)}`).join(' · ')}`);
   }
-  console.log('  (margin = at its OWN era\'s mandated prices; cap letter: r=ratchet s=solvency l=lean-floor i=insolvent-at-target; be = full BE % of base)');
+  console.log('  (margin = at its OWN era\'s BOOK prices — mandate or realised consumer price; cap letter: r=ratchet s=solvency l=lean-floor i=insolvent-at-target; be = full BE % of base)');
 }
 
-console.log('\n── PHASE 2: THE ANALYTIC LADDER (margins are count-independent under mandated prices) ──');
+console.log('\n── PHASE 2: THE ANALYTIC LADDER (margins are count-independent given the book) ──');
 const LADDERS = [];
 for (let e = 0; e < FIT.eras.length; e++) {
-  console.log(`  era ${e} (${FIT.eras[e].year}) — industrial price ${175 - 25 * e}%  [↑ = leading rung]`);
+  console.log(`  era ${e} (${FIT.eras[e].year}) — industrial mandate ${175 - 25 * e}%, consumer goods at their realised prices  [↑ = leading rung]`);
   const { faults } = ladderAt(e);
   LADDERS.push(faults);
   console.log(`    faults: loss ${faults.loss.length} [${faults.loss.join(',')}] · stale-profitable ${faults.stale.length} [${faults.stale.join(',')}] · inverted ${faults.inverted.length} [${faults.inverted.join(',')}] — excl. excused: ${faults.net}`);
@@ -896,19 +995,28 @@ for (let e = 0; e < FIT.eras.length; e++) {
 console.log(`  TOTAL analytic illogicality (all six eras, excl. excused): ${LADDERS.reduce((a, f) => a + f.net, 0)}`
   + `  (incl.: ${LADDERS.reduce((a, f) => a + f.total, 0)})`);
 
-console.log('\n── PHASE 3: SEEDING — do counts exist whose order book PRODUCES the mandate? ──');
-const SCEN = [];
-for (let e = 0; e < FIT.eras.length; e++) {
-  const r = seedScenario(e);
-  SCEN.push(r);
+console.log('\n── PHASE 3: THE SEEDED SCENARIOS (final outer pass) ──');
+for (const r of SCEN) {
+  const e = r.eIx;
   console.log(`\n  ═ era ${e} (${FIT.eras[e].year}) — ${r.iters} iterations, steerable-core residual ${r.resid.toFixed(3)}`);
-  console.log(`    goods on mandate: ${r.onMandate}/${r.checked} within ±${TOL_PP}pp — building-fed ${r.onBld}/${r.checkedBld} · pop-fed ${r.onPop}/${r.checkedPop}`);
-  if (r.pinned.length) console.log(`    pop-pinned (pops dominate demand, which tracks supply — mandate CANNOT bind): ${r.pinned.join(', ')}`);
+  console.log(`    mandated goods on mandate: ${r.onMandate}/${r.checked} within ±${TOL_PP}pp`
+    + ` · structurally on (after common demand shift ×${Math.exp(r.aggMean).toFixed(2)}): ${r.structOn}/${r.mandN}`);
+  const hot = r.consumer.filter(c => c.hot);
+  console.log(`    CONSUMER PRICES (pop-determined; ⚠ = >${HIGHLIGHT_PP}pp from base — ${hot.length} of ${r.consumer.length}):`);
+  {
+    const parts = r.consumer.map(c => `${c.hot ? '⚠' : ''}${c.g} ${Math.round(c.p)}`);
+    let line = '';
+    for (const p of parts) {
+      if (line && (line + ' · ' + p).length > 104) { console.log('      ' + line); line = p; }
+      else line = line ? line + ' · ' + p : p;
+    }
+    if (line) console.log('      ' + line);
+  }
   if (r.futile.length) console.log(`    unsteerable (steering moved producers, ratio did not move): ${r.futile.join(', ')}`);
   if (r.offMandate.length) {
     console.log('    OFF MANDATE:');
     for (const o of r.offMandate.slice(0, 14)) {
-      console.log(`      ${W(o.g, 16)} mand ${W(o.mand, 4)} implied ${W(o.implied, 4)} buy ${W(fmtN(o.buy), 7)} sell ${W(fmtN(o.sell), 7)} pop ${W(Math.round(o.popShare * 100) + '%', 4)} ${o.cls}`);
+      console.log(`      ${W(o.g, 16)} mand ${W(Math.round(o.mand), 4)} implied ${W(o.implied, 4)} buy ${W(fmtN(o.buy), 7)} sell ${W(fmtN(o.sell), 7)} pop ${W(Math.round(o.popShare * 100) + '%', 4)} ${o.cls}`);
     }
     if (r.offMandate.length > 14) console.log(`      … +${r.offMandate.length - 14} more`);
   }
@@ -945,18 +1053,37 @@ for (let e = 0; e < FIT.eras.length; e++) {
 console.log('\n── SUMMARY ──');
 console.log(`  analytic illogicality by era (excl.): ${LADDERS.map(f => f.net).join(' / ')} — total ${LADDERS.reduce((a, f) => a + f.net, 0)}`);
 console.log(`  seeded   illogicality by era (excl.): ${SCEN.map(r => r.faults.net).join(' / ')} — total ${SCEN.reduce((a, r) => a + r.faults.net, 0)}`);
-console.log(`  goods on mandate by era: ${SCEN.map(r => `${r.onMandate}/${r.checked}`).join(' · ')}`);
-console.log(`  …of which building-fed:  ${SCEN.map(r => `${r.onBld}/${r.checkedBld}`).join(' · ')}`);
-console.log(`  …of which pop-fed:       ${SCEN.map(r => `${r.onPop}/${r.checkedPop}`).join(' · ')}`);
+console.log(`  mandated goods on mandate by era: ${SCEN.map(r => `${r.onMandate}/${r.checked}`).join(' · ')}`);
+console.log(`  consumer goods ⚠ beyond ±${HIGHLIGHT_PP}pp by era: ${SCEN.map(r => `${r.consumer.filter(c => c.hot).length}/${r.consumer.length}`).join(' · ')}`);
+console.log(`  structurally on mandate (after common shift ×): ${SCEN.map(r => `${r.structOn}/${r.mandN} (×${Math.exp(r.aggMean).toFixed(2)})`).join(' · ')}`);
 console.log(`  steerable-core residual by era: ${SCEN.map(r => r.resid.toFixed(3)).join(' · ')}`);
-console.log(`  pop-pinned / unsteerable goods by era: ${SCEN.map(r => `${r.pinned.length}/${r.futile.length}`).join(' · ')}`);
+console.log(`  unsteerable goods by era: ${SCEN.map(r => r.futile.length).join(' · ')}`);
+// the recurring ⚠ offenders — a good far from base in several eras is a structural statement, not noise
+{
+  const hotBy = new Map();
+  for (const r of SCEN) for (const c of r.consumer) if (c.hot) {
+    if (!hotBy.has(c.g)) hotBy.set(c.g, []);
+    hotBy.get(c.g).push(`e${r.eIx} ${Math.round(c.p)}`);
+  }
+  const rec = [...hotBy.entries()].filter(([, v]) => v.length >= 2).sort((a, b) => b[1].length - a[1].length);
+  if (rec.length) {
+    console.log(`  ⚠ RECURRING (>${HIGHLIGHT_PP}pp from base in 2+ eras):`);
+    for (const [g, v] of rec) console.log(`    ${W(g, 18)} ${v.join(' · ')}`);
+  }
+}
 
 if (WRITE) {
   const out = {
-    _comment: 'GENERATED by tools/era_inverse.mjs — the INVERSE-SOLVE experiment (§10.65). '
-      + 'Mandated prices, recipes derived from them, and the seeded scenarios. NOT read by the build; '
-      + 'a design study artifact.',
+    _comment: 'GENERATED by tools/era_inverse.mjs — the INVERSE-SOLVE experiment, PASS 2 (§10.65): the '
+      + 'HYBRID book. Building-fed goods mandated (industrial 175-25pp*era, raw 100); consumer goods '
+      + 'take the price the pop model realises, iterated with the recipes to a fixed point. NOT read '
+      + 'by the build; a design study artifact.',
     mandate: FIT.eras.map((e, i) => ({ era: e.era, year: e.year, industrial: 175 - 25 * e.era, raw: 100 })),
+    consumer_prices: FIT.eras.map((e, i) => ({
+      era: e.era,
+      prices: Object.fromEntries((SCEN[i] ? SCEN[i].consumer : []).map(c => [c.g, Math.round(c.p)])),
+      beyond_30pp: (SCEN[i] ? SCEN[i].consumer : []).filter(c => c.hot).map(c => c.g),
+    })),
     recipes: Object.fromEntries(RECIPES.filter(r => !r.skip).map(r => [r.t.key, {
       industry: r.ind.id, era: r.t.era, inputs: { ...r.t.inputs }, output_qty: r.t.output_qty,
       margin_own_era: Math.round(r.margin * 1000) / 1000, cap: r.cap || null, be: Math.round(r.be),
