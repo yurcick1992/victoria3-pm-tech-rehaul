@@ -8219,3 +8219,116 @@ verified exact; the prior was held by both author and reviewer and only measurem
 separated it from the truth. What *should* have been written into the schedule beforehand is the
 prediction that the prior implies — "tiered capacity unchanged, levels ×5" — because that is the line
 the result actually falsified, and stating it in advance is what turns a surprise into a finding.
+
+## F79 — THE VANILLA BASELINE AT n=18 ON 1.13.11: the variance envelope, the company century, PM adoption, and four pre-registered predictions scored
+
+**Sessions:** `20260821_131149_vanilla-baseline-n16` (n=16) + `20260823_113218_vanilla-baseline-extra-n2`
+(n=2), pooled n=18. **Arm: `{kind: control}`** — vanilla + telemetry v14, save summaries v8, game
+1.13.11, all runs `moderate_consolidation`, spans 1836.1.1→1936.1.1, the pinned twelve dump dates,
+yearly autosaves harvested concurrently. 18/18 reached 1936 (L17), every save summarised before reaping
+(L12). Two runs of the first batch and both extra runs carry `breakdown_sparse` at 1910/1935 on
+GBR/FRA/USA; the extra pair also KEEPS its 1910.1.1/1935.1.1 saves (melt-verified dates), completing the
+same-date consumption-replication design the first batch missed. Report: REPORT.html in both session
+folders (artifact 708787ca-7627-4ba7-a984-8f5cda47016f). **This batch supersedes `20260813_083557` as
+the pinned vanilla baseline.**
+
+### The variance envelope (world metrics, n=18)
+
+| year | GDP med | GDP cv | pop_objects_live med | cv | building levels med | cv |
+|---|---|---|---|---|---|---|
+| 1846 | £528.0M | 3.2% | 42,225 | 1.3% | 101,379 | 0.3% |
+| 1866 | £801.7M | 3.7% | 60,335 | 2.1% | 110,347 | 0.9% |
+| 1886 | £1,191.9M | 8.7% | 75,351 | 2.9% | 127,243 | 2.2% |
+| 1906 | £1,938.0M | 11.4% | 94,764 | 3.9% | 154,992 | 4.5% |
+| 1926 | £3,452.9M | 12.6% | 119,614 | 5.8% | 201,328 | 6.3% |
+| 1936 | £4,550.8M | 9.7% | 135,654 | 5.3% | 235,937 | 6.7% |
+
+(GDP in millions of £: 1936 med = £4,550.8M ≡ 4.55B.)
+Majors' 1936 GDP across runs: GBR med £398M cv 21% · USA £437M cv 30% · GER £478M cv 22% (present in
+14 of 18) · FRA £142M cv **67%** · RUS £292M cv 57% · JAP £36M cv **79%** · NET £40M cv 59% · PRU
+£51M (survives un-unified in only 3 of 18; the North German Federation intermediate is not tracked).
+⇒ **Divergence compounds** (world GDP cv 3.2%→~10–13%) and **per-tag reads are dominated by
+territory**, confirming the pooled-group convention. Any future single-run comparison quotes against
+these floors.
+
+### The four pre-registered predictions (stated in the schedule before launch)
+
+1. **"More war from the 1.13.11 sway fix" — DID NOT SHOW.** Per-run event medians, new (n=18) vs old
+   (n=4 vanilla, 1.13.10): WARSTART **811** [706–971] vs **810** [779–834] · DIPPLAY 885 vs 895 ·
+   PEACE 1607 vs 1603 · CAPIT 792 vs 812 · BANKRUPTCY 234 vs 236 · escalation (wars÷plays) 0.910 vs
+   0.915. The one mover: **REVOLT 5,067 vs 3,887 (×1.30)** with ranges [547–9,536] vs [1,591–6,698] —
+   overlapping, suggestive only, and not obviously a sway effect. ⚠ Does NOT say sway changed nothing:
+   war *composition/size/participants* were not compared, only counts.
+2. **Company share near F77.1's 38.5% — CONSISTENT, on the wider definition.** Tiered-equivalent
+   company share at 1936: **47.4%** [41.5–53.6] (see below). F77.1's figure was 1.13.10 endpoint melts
+   under the main-HQ-only filter; the v7+ definition adds regional HQs (~11% of company holdings).
+3. **Wage series reproduces the 1.13.10 century shape — CONFIRMED.** GBR: 9.50→dip ~8.4 (1860s–90s)→
+   jump→**17.89** at 1935 (old: 9.50→8.2→20.34); FRA long ~10.5 plateau then late rise to 13.62; USA
+   monotone 10.5→14.6. The year of Britain's jump moves between seeds (1895–1900) — a discrete
+   political event, not drift.
+4. **Wall clock 2.6–3.1 h — HELD, spread widened.** 18 runs: 2.34–3.28 h, median 2.76. Consistent
+   with (1): no war-driven slowdown.
+
+### Cross-patch endpoints (1936, medians; cross-session caveat applies)
+
+GDP ratio new/old **0.995** · pop_objects_live 0.994 · levels 1.007 · population 0.987 · surviving
+countries 238 vs 243 (0.979). **Vanilla 1.13.11 is, at endpoint level, the same game as 1.13.10.**
+⚠ An earlier in-session read (+13% GDP) was VOID — a substring filter had admitted the old session's
+MOD runs into its "old vanilla" pool because the session folder is named `vanilla-vs-mod`; filter on
+the run folder's own `_vanilla` suffix, never the whole path.
+
+### The company century (v8 summaries; per-year, medians across 18 runs — CANNOT be back-filled)
+
+| year | companies | company-held levels | share of ALL levels | share of TIERED-EQUIVALENT |
+|---|---|---|---|---|
+| 1846 | 22 [18–30] | 1,108 | 1.1% | 4.0% |
+| 1866 | 68 [54–85] | 4,622 | 4.2% | 15.9% |
+| 1886 | 160 [131–179] | 15,010 | 11.7% | 30.8% |
+| 1906 | 218 [193–247] | 32,114 | 20.7% | 41.3% |
+| 1926 | 273 [230–315] | 62,714 | 30.4% | 45.8% |
+| 1936 | 312 [270–363] | 79,418 | 33.2% | **47.4%** [41.5–53.6] |
+
+Ownership-class shares of all held levels, 1846 → 1936 (medians): manor houses **79% → 28%** ·
+companies (HQ+regional) **1% → 33%** · financial districts 3% → 13% · state ~12% flat · self/other
+7% → 12% · foreign 0% → 1%. The tiered-equivalent set = the 21 vanilla anchor buildings of the mod's
+industries (each industry's tier-1 key; the two all-new chains excluded). **The mod's ~9% company
+share is roughly a fifth of vanilla's 47%** — the F77 lock-out, now with a per-year vanilla curve
+behind it.
+
+### Vanilla PM adoption — F75's denominator (v8 `pms`, principle-gated PM variants folded onto their base rung)
+
+Per-MAJOR share of laddered-type levels running below the country's own best adopted rung, 1936
+(median across runs): GBR **22.5%** · USA 21.0% · GER 19.7% · NET 14.8% · PRU 13.5% · RUS 13.3% ·
+FRA 12.8% · JAP **9.5%**. ⇒ **Vanilla is not indifferent between its PM rungs: free switching
+converges the standing stock to 77–90% frontier within a country.** World-level shares read far higher
+for types whose newest rung has only just debuted (textile 91.7%, steel 97.5%, railway 87.6% at 1936 —
+a fresh frontier makes everyone "behind"; iron/coal mines run 3–7%); quote the per-country numbers.
+⚠ This is a **stock** share. The mod's below-best metric (F75/F76) is a **build-flow** share (52.94%
+unassisted, 47.17% under the `1000×(era+1)` ladder). The fair pairing needs the mod's STOCK share of
+tier levels below the country's best held tier — not yet computed; the flow-vs-stock gap is exactly
+where the "companies + ai_value keep old rungs alive" story lives.
+
+### Market access — the first vanilla baseline anywhere
+
+Median per-run mean access is **1.00 in every (dump, tag) cell** except GBR 0.99–0.98 in the 1910–30
+dumps; the worst pooled share of states below 0.9 access is **11%** (NET at 1890 and 1930), typically
+0–4%. ⇒ **Vanilla does not run access famines**; the mod arms' measured 0.50–0.59 colonial access is
+decisively not vanilla-normal.
+
+### The performance reference curve (row P's denominator)
+
+Wall-clock seconds per in-game year vs live pop objects (bins of 10k, resume-spanning intervals
+dropped, n=18 runs pooled): 30k → **56** · 50k → 69 · 70k → 79 · 90k → 103 · 110k → 131 · 130k → 155 ·
+140k → **168** s/yr. Every future pop-matched wall-clock verdict divides against this curve.
+
+### What this does NOT say
+
+- Nothing about the mod: one arm, no mod runs. Mod comparisons now cite THIS baseline and drop the
+  cross-patch caveat they carried against `20260813_083557`.
+- The war read covers COUNTS only; sway's effect on play outcomes, participants and war size is
+  untested (DIPPLAY/WARSTART composition per war would need the events' fields, not just their kinds).
+- The adoption read is world/major-stock; per-building AI switching latency (how long a building lags
+  the frontier after unlock) is derivable from the yearly `pms` series but not derived here.
+- The 1910/1935 breakdown replication is CAPTURED (all four carrying runs) but not yet SCORED; the
+  extra pair has same-date saves, the first batch pairs only at the 1936 endpoint (its 1910/1935 saves
+  were reaped — recorded in its VERDICT).

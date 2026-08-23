@@ -1,0 +1,28 @@
+{
+  "schedule_version": 1,
+  "label": "vanilla-baseline-extra-n2",
+  "_why": "TWO MORE VANILLA CENTURIES (user, 2026-08-23: 'two more vanilla runs (one batch, n=2), with the same telemetry approach'), pooling with 20260821_131149_vanilla-baseline-n16 to n=18. Same arm, same twelve dump dates, same defaults. Both runs carry the breakdown sweeps like that batch's runs 15-16 - and this time a SAVE-KEEPER (hardlink watcher, outside the harnessed tooling) preserves the 1910.1.1/1935.1.1 autosaves before the harvester reaps them, repairing the n16 batch's recorded miss: the same-date save half of the consumption-breakdown replication. ARM: {kind: control}.",
+  "_arms": "vanilla = {kind: control}, telemetry v14, summaries v8 - identical to the n16 batch's breakdown runs (15-16). Telemetry is the one thing a control may vary; economically the same arm, poolable with all sixteen.",
+  "_comparison": "Pooled INTO the n16 batch (-> n=18) for the variance envelope and every derived product. The breakdown+same-date-save pairs stand on their own as the replication of the 1840 consumption calibration at 1910/1935 (TESTBED_METRICS' named n=2 design, finally with both halves).",
+  "_predictions": "Same as the n16 schedule; nothing new pre-registered. Expected: both runs inside the measured n16 envelope (wall 2.34-3.28 h, GDP 3,750-5,199M, WARSTART 743-971).",
+  "_watch": "(1) The save-keeper actually catches the 1910/1935 saves - verify the hardlinks exist BEFORE the run ends, and verify their in-game dates by melt after. (2) Breakdown C2 blocks at both dates, all three markets, both runs. (3) Runs land inside the n16 envelope.",
+  "_cost": "2 runs x 100 in-game years, ~5.5 h total. Disk: keeper retains ~4 extra saves (~200 MB).",
+  "_caveats": "GAME 1.13.11, telemetry v14, summaries v8, moderate_consolidation to be verified from world.game_rules. The keeper is a session-side watcher script (scratchpad), NOT a change to the harvest tooling - the no-tooling-edits-during-batch rule stands untouched. L17 post-run as always.",
+  "defaults": {
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped", "state_access", "wages", "breakdown_sparse"],
+    "wage_pop_endpoints": "none",
+    "breakdown_dates": ["1910.1.1", "1935.1.1"],
+    "breakdown_tags": ["GBR", "FRA", "USA"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "JAP", "NET"],
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"]
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" }
+  ]
+}
