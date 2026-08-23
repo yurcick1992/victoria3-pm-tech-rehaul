@@ -5319,3 +5319,97 @@ distribution of company-held levels (F77.1's melt read 100% rung 1 in both arms;
 rung mix tracking the country's unlocked frontier). Escalation levers deliberately NOT shipped (measure
 the restoration first): company slots on our techs (`country_max_companies_add`), the
 `COMPANY_MINIMUM_LEVELS_PER_HQ` / `OWNER_COMPANY_EXPANSION_CHANCE_MULTIPLIER` defines.
+
+## 10.65 THE INVERSE SOLVE — mandated prices, derived recipes, seeded counts (user-directed 2026-08-23, EXPERIMENTAL)
+
+**Status: PROTOTYPE UNDER EVALUATION** (`tools/era_inverse.mjs`, artifact `config/era_inverse.json`).
+Nothing in the build or the canonical pipeline reads it; the canonical config is untouched. The user's
+motivation: growing dissatisfaction with the standing solver's architecture (counts as the lever, prices
+realised, targets chased through a jagged fixed point) — so run the problem **backwards** and see whether
+a coherent market composition even exists at designed prices.
+
+**The first-pass spec (user's):**
+1. every NON-INDUSTRIAL good sits at **base (100%)** in every scenario;
+2. every INDUSTRIAL good sits at **175% − 25pp × scenario era** (e0 175 · e1 150 · e2 125 · e3 100 ·
+   e4 75 · e5 50). "Industrial" = a good some ladder tier produces, from that first tier's era onward
+   (before it, dye is a plantation good at 100 — the one-price-rule-per-good-per-era invariant holds).
+3. Recipes are DERIVED from those prices + the ruled profitability targets (dominant +5%, shipyards
+   −30pp, per-tier `solve_profit`) + the ×1.5 output ladder, under the standing hard invariants (4:1
+   lean cap, §10.63 solvency, §10.50 ratchet, negative-goods floor).
+4. Then SEED buildings + workforce so the order book actually PRODUCES the mandated prices — the V3
+   formula makes each price a fixed buy:sell ratio (175 ⇒ 2 · 150 ⇒ 5/3 · 125 ⇒ 4/3 · 100 ⇒ 1 ·
+   75 ⇒ 3/4 · 50 ⇒ 3/5) — and check for coherence ("no 8 million steel mills").
+
+**Stated first-pass simplifications:** PM selections are Phase A's fit (not re-optimised at mandated
+prices); the rung mix within an industry is a placement premise (leading/dominant 1 : one-era-stale
+0.25 : two-era rung one level), scaled as a block; fractional counts; the §10.47 macro layer is not
+enforced (composition read by eye instead). ⚠ The era-0 mandate (175) sits exactly ON the engine band
+edge and would breach §10.15 for industrial inputs — implemented as specified and flagged.
+
+### What it found (numbers from the 2026-08-23 run, canonical config)
+
+1. **Recipes derive in CLOSED FORM — one pass, no iteration, no fixed point.** 88/105 tiers land
+   exactly on the dominant +5% target. 10 are solvency-capped (§10.63) — all era-0/1 rungs, where a
+   175/150% output price against base-price raw inputs affords a richer recipe than the engine's
+   break-even band allows; they earn +10…+24% at their own era instead, inside the §10.49 band. 7 are
+   ratchet-capped (the shipyard chains, port, art academy). The §10.50 ratchet is NEARLY AUTOMATIC
+   under the mandate: for raw-fed chains output prices fall while input prices stand, forcing each rung
+   leaner; for mfg-fed chains both fall together and the wage term provides the monotone improvement.
+
+2. **The ladder's health is COUNT-INDEPENDENT and analytic.** Margins depend only on prices, so
+   illogicality is computable without any scenario: **7 faults total (excl. excused) across all six
+   eras** — per era 0/0/1/0/0/6 — against the standing solver's 54, and the seeded scenarios agree
+   exactly. Obsolescence gradients come out clean: one-era-stale −3…−32%, two-era-stale −16…−51%,
+   raw-fed chains steepest, mfg-fed softest (motor −2% one era stale — the wage-share point, now
+   visible analytically). **The stale-profitable family (36 faults in the shipped solve) is gone BY
+   CONSTRUCTION.**
+   - The era-5 six are the **PLATEAU COLLISION**: the flat mandate keeps deflating goods whose ladder
+     has ended (food/textile/furniture/port/railway all loss-making at 50%). `INV_PLATEAU=1` (hold a
+     plateaued good's price at its last tier's era — §10.30's rule expressed as price) takes the total
+     to **4**; the remaining 3 are the mirror image — a plateau-held OUTPUT over still-deflating INPUTS
+     revives stale rungs (railway e3 reads +27% at 1945: transportation held at 75 while engines fell
+     to 50). Mixed plateau/non-plateau chains cut both ways; any promoted version needs a ruling here.
+
+3. **The BUILDING-FED core is fully seedable.** A damped power iteration (per-good factors blended
+   geometrically over each producer's outputs, scale pinned to the population premise every pass)
+   converges in 25–270 passes to residual ≤ 0.01. Goods whose demand is buildings/army/construction
+   hit the mandate at **11/11 · 17/19 · 23/25 · 25/27 · 26/27 · 25/29** across eras 0–5. Composition
+   is coherent: steel peaks at 12.7% of gross output, tooling ~7%, sector mix walks from raw-fed to
+   mfg-fed with era (mfg-fed manufacturing 1% → 52%), population lands exactly on the premise, army
+   4.5–5.3% of GDP, construction on its ramp. **No absurd counts anywhere.**
+
+4. **⭐⭐ THE CENTRAL NEGATIVE RESULT: POP-FED GOODS CANNOT BE MANDATED — STRUCTURALLY.** The game
+   allocates a need's money by SUPPLY SHARE (F31/F40), so a pop-dominated good's buy:sell ratio is
+   nearly composition-invariant: build more and demand grows with it, build less and it shrinks. No
+   count moves the ratio, so no market composition can realise a designed price. Measured: pop-fed
+   goods on mandate **1/21 · 1/20 · 2/20 · 2/19 · 6/21 · 3/20**. ~16–20 goods per era are pop-pinned;
+   their implied prices sit where SoL budgets put them (groceries 79–93, luxury goods 25–50, colonial
+   goods swinging 49→162 as pop money grows). Two corollaries: (a) **a price mandate can bind only the
+   building-fed half of the economy — consumer prices are an OUTCOME of the pop model at any
+   composition**; (b) the SCALE of a pop-fed industry is under-determined by the mandate (the prototype
+   holds it at the placement seed; the standing solver's price feedback is what normally sets it).
+   This also explains the standing solver's stubborn consumer-chain faults from the other side.
+
+5. **Named residual classes, each real economics rather than solver noise:**
+   - **Joint production**: logging sells wood + hardwood in PM-fixed proportions — two per-good
+     mandates over-determine one producer (wood starved at 128–175 while hardwood gluts at 25–55 in
+     every era). A PM re-optimisation under the mandate (not in the first pass) could resolve it by
+     mixing wood-only camps.
+   - **Scale caps**: at era 5, mandated base-price iron/oil demand overruns the §10.40.6 deposit caps
+     (mines/rigs pinned at 1000; implied 129/141 against 100). The flat-100 raw mandate FORBIDS the
+     scarcity signal the standing solver's ±30 raw band exists to allow.
+   - **Walls**: industrial goods with no reachable producer (unchanged from canon); porcelain is
+     trade-supplied everywhere (no producer in scope — expected).
+
+**What it suggests.** The inverse architecture cleanly separates what CAN be designed — the industrial
+core's prices, recipes and relative sizes, all obtainable in closed form plus a fast, convergent
+feasibility pass with none of the standing solve's machinery (no deadbands, no PM hysteresis, no
+jagged response surface) — from what CANNOT: pop-fed consumer prices, which the game's own demand
+mechanism decides at any composition. The natural second pass, if pursued: mandate industrial goods
+only; let consumer goods take their pop-determined prices (readable analytically); solve consumer-chain
+recipes against THOSE prices instead of a fiction; and fold PM choice into the mandate solve. Raw
+goods likewise argue for a band (scale caps need a scarcity signal), which is §10.42.4's ruling
+arrived at from the opposite direction.
+
+**Knobs:** `INV_ITERS` (default 400) · `INV_DAMP` (0.5) · `INV_PLATEAU=1` (plateau price hold) ·
+`INV_TRACE=good[@eraIx]` (per-good iteration trace) · honours `MOD_CONFIG` + the artifact-suffix rule.
