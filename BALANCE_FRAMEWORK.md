@@ -5473,3 +5473,57 @@ cost of the consumer half of the ladder (22 faults, concentrated there). Both ha
 measured; which anchor to adopt is a design ruling, not a computation.
 
 **Pass-2 knobs:** `INV_OUTER` (default 3) · `INV_DEBUG=good,good…` (per-pass book-vs-realised trace).
+
+### §10.65.2 PASS 3 — THE DESIGN LADDER WITH POP-LIMITED YIELDS (user-ruled 2026-08-24, CURRENT)
+
+**The ruling that reframed pass 2:** *"I'd like our tiered Industry's output prices to have a downward
+ladder, where possible (where it doesn't conflict with pop demand)."* — "industrial" is DEFINED as a
+tiered industry's OUTPUT, consumer chains included: clothes, furniture, groceries are industrial goods
+whose DESIGN price is 175 − 25pp × era exactly like steel's. Pass 2's demand-side classification
+(everything pop-fed floats freely) is SUPERSEDED — it inverted this definition and let the consumer
+half of the ladder lose its obsolescence engine wholesale.
+
+**The mechanism:** every good's book starts at its DESIGN (tiered outputs on the ladder; everything
+else 100); steering always aims at the book; a POP-DOMINATED good (> 50% of buy) that persistently
+refuses its design RE-ANCHORS to what pops support (first anchoring jumps straight to the realised
+price — a midpoint feeds the recipe solve transients; subsequent updates damp 0.5), and each anchor
+is a NAMED CONFLICT (design → achieved). Thin markets (buy < 8 units — era-0 luxuries flipping
+25↔175 on unit-sized moves) never anchor: their price is noise, not a pop statement. The outer loop
+(INV_OUTER, default 6) converges 41 → 10.5pp as the anchor set stabilises (~85–93 anchors).
+
+**Results (2026-08-24 run, canonical config):**
+- **⭐ The design ladder HOLDS across the late eras and the yields are few and named**: tiered outputs
+  holding 175−25·era exactly: 5/8 · 0/13 · 3/18 · **15/21 · 18/21 · 19/21** (e0…e5). Yields at e3:
+  clothes 100→93, groceries 100→96, automobiles 100→94, telephones 100→63; at e4: clothes 75→78,
+  groceries 75→80, telephones 75→25; at e5 only automobiles 50→73 and telephones 50→25. **At eras
+  3–5 pops largely ACCEPT the designed deflation** (glut is achievable), and the pop-priced ⚠ set
+  shrinks to 2–7 goods.
+- **The early eras carry the real conflicts, in BOTH directions**: e1–e2 durables run ABOVE design —
+  clothes 150→175, 125→175; furniture 150→175, 125→153 (pops outbid the ladder; the premise workforce
+  cannot clothe the population, scarcity wins) — while glass 150→108, groceries 125→84 and
+  transportation 150→69 run BELOW it (pops refuse those levels). Era 1 additionally carries the
+  ×1.08 AGGREGATE excess-demand shift (15/18 structurally on the shifted book; nothing on it
+  literally), and era 0 stays degenerate (SoL-7 pops fund almost nothing; most consumer goods at 25,
+  seven industries absent).
+- **Illogicality 15 excl. (14 seeded), per era 0/1/1/1/4/8** — between pass 1's 7 (all-mandate
+  fiction) and pass 2's 22 (free float). The remaining faults sit exactly where the ladder yielded
+  (railway stale on anchored transportation, electrics inverted on telephones@25) plus the era-5
+  plateau block.
+- **⭐⭐ THE ERA-5 PLATEAU COLLISION IS BILATERAL — measured, not assumed.** `INV_PLATEAU=1` (design
+  holds a plateaued good at its last tier's price, ~75) buys only 15→14: food/textile/furniture's
+  permanent tiers need ~70–75% of base to stay viable at era-5 wages, and **the pop model will not
+  fund their goods above ~50 at any composition** (in the linear supply-share regime the price is
+  scale-invariant, so no scarcity strategy reaches 75 either). The Baumol tension is now a number:
+  the plateau industries' viability price and their pop-supported price diverge by ~20–25pp at 1945.
+  No price RULE fixes this; it needs a design decision (richer last-tier recipes, higher SoL premise,
+  or accepting subsidised staples).
+- Standing residuals unchanged in kind: wood/hardwood joint production, era-5 iron/oil at the
+  §10.40.6 deposit caps, era-2 clippers knot, porcelain trade-supplied.
+
+**Where this leaves the experiment:** the inverse architecture now expresses the ruled intent
+directly — designed deflation as the default, pop demand as the named, measured exception. The
+conflict lists (`ladder_yields` in config/era_inverse.json) are the design's honest frontier: each
+entry is a good where the mod must either accept the pop price, change the premise (SoL/population),
+or change the pop model's inputs (need weights, buy packages). Promotion to canon would need: PM
+choice folded into the solve, the §10.47 macro layer, integer counts, and rulings on the plateau
+collision and the early-era durables scarcity.

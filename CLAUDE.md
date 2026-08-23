@@ -839,15 +839,20 @@ tools/                  dev tooling — NOT shipped in the mod
                         Pass-1 results: analytic illogicality 7 vs the canon 54 (4 under INV_PLATEAU=1);
                         the building-fed core seeds coherently in every era; ⭐ POP-FED GOODS CANNOT BE
                         MANDATED — supply-share demand makes their ratio composition-invariant (the
-                        central §10.65 finding). ⭐ PASS 2 (§10.65.1, 2026-08-24) is the current default
-                        behaviour: the HYBRID book — consumer goods (pop >70% of buy, classified per
-                        era) FLOAT to their realised pop prices, iterated with the recipes (INV_OUTER);
-                        every consumer price >30pp off base is ⚠-flagged. Mandated core holds (era 1 =
-                        a uniform ×1.10 excess-demand shift, 17/19 structurally on); consumer arc runs
-                        clothes 165→25 across the eras; ⚠ the cost is the consumer half of the ladder
-                        (illogicality 22 vs 7 — floating prices remove its obsolescence engine) and
-                        consumer price LEVELS are indeterminate (a continuum of fixed points; §10.65.1
-                        item 4). Writes config/era_inverse.json only; touches nothing canonical.
+                        central §10.65 finding). ⭐ PASS 3 (§10.65.2, user-ruled 2026-08-24) is the
+                        current default behaviour: "industrial" = a TIERED INDUSTRY'S OUTPUT (consumer
+                        chains included) and every such good DESIGNS at the downward ladder; a
+                        pop-dominated good (>50% of buy) that persistently refuses its design
+                        RE-ANCHORS to what pops support — each yield a NAMED CONFLICT (design →
+                        achieved), thin markets never anchor, every pop price >30pp off base
+                        ⚠-flagged. Results: the ladder HOLDS at e3–e5 (15/21 · 18/21 · 19/21 exact)
+                        with few yields; early-era conflicts run both ways (durables 150→175 scarce,
+                        groceries/glass/transport below design); illogicality 15 (between pass 1's
+                        all-mandate 7 and pass 2's free-float 22); ⭐ the era-5 plateau collision is
+                        BILATERAL — permanent food/textile/furniture tiers need ~70–75 while pops fund
+                        ~50 at ANY composition (INV_PLATEAU=1 buys only 15→14). Pass 2 (§10.65.1,
+                        everything pop-fed floating) is SUPERSEDED — it inverted the ruled definition.
+                        Writes config/era_inverse.json only; touches nothing canonical.
                         Standalone prototype — its premise tables are a marked FORK of
                         era_scenarios.mjs's (that module solves at import time and cannot be imported)
   era_macro.mjs         the macroscenario DATA: per-industry X and per-group Y (real US shares of the
