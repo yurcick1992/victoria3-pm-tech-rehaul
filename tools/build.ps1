@@ -1293,6 +1293,16 @@ if ($LASTEXITCODE -ne 0) { throw "emit_techs.mjs failed (exit $LASTEXITCODE) - t
 & node (Join-Path $PSScriptRoot 'emit_research_events.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_research_events.mjs failed (exit $LASTEXITCODE) - the mod would ship without its research events." }
 
+# --- COMPANY CHAIN EXTENSION (ROADMAP step 5, user-ruled 2026-08-23) -----------------------------
+# Rewrites the vanilla company_types files (read LIVE, so a patch flows through) so every company
+# reference to a tiered industry names the WHOLE chain instead of the first rung: building_types /
+# extension_building_types expanded, is_building_type/has_building formation tests OR-wrapped,
+# prosperity throughput bonuses per tier (with the modifier types + all-language loc those need),
+# ai_construction_targets duplicated per tier. Without it companies can neither own, boost, nor form
+# off anything above rung 1 (FINDINGS F77/F77.1 - the lock-out is 86% of the company-share gap).
+& node (Join-Path $PSScriptRoot 'emit_companies.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_companies.mjs failed (exit $LASTEXITCODE) - the mod would ship with companies locked to the first rung." }
+
 # --- emit UI data (consumed by ui/builder.html) so the editor always reflects the latest config ---
 # Only the canonical build repoints the UI; alternate builds (-DryRun/-SaveTo) leave ui/data.js alone.
 if (-not $isAlt) {

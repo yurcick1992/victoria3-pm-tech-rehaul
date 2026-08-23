@@ -1103,7 +1103,23 @@ constraint 4), and a check that nothing in the 1836 start depends on the key.
 
 ---
 
-## Step 5 — COMPANY MANDATES  ⬅ **MEASURED 2026-08-20, and it is bigger than "flavour" — AND NOW FIRST IN LINE**
+## Step 5 — COMPANY MANDATES  ⬅ **MEASURED 2026-08-20 — SURVEYED AND FIRST CUT SHIPPED 2026-08-23 (probe, unmeasured)**
+
+✅ **THE SURVEY RAN AND THE IDEAL DESIGN IS RULED AND BUILT (2026-08-23, BALANCE_FRAMEWORK §10.64).**
+Answers to the questions below: a mandate CAN name many building keys (it is a plain key list; vanilla
+companies already carry 2–3), prosperity bonuses CAN be re-pointed per tier (but every new
+`building_<tierkey>_throughput_add` needs a hand-declared modifier type — vanilla hand-enumerates them),
+and a company has NO building-selection AI of its own — it is assigned ownership of investment-pool
+construction of its listed types, so the tier choice is the construction AI's and the company system just
+amplifies it. The two hardcoded formation gates (tech for ≥1 listed type; 5 levels of listed types in one
+state) make "list the whole chain" both necessary and sufficient for companies to form off the lowest
+rung and follow the country up the ladder. `tools/emit_companies.mjs` ships it: all 22 vanilla company
+files rewritten (195 companies), formation tests OR-wrapped, prosperity expanded per tier (85 lines — the
+F77 census exactly), ai_construction_targets duplicated, 75 new modifier types + loc ×11. Shipyard
+companies get BOTH config chains (one vanilla industry, two of ours). **Unmeasured**: deployed 2026-08-23
+for an in-game eyeball; the first measured arm reads the v7+ per-year company series against F79's
+vanilla century (4.0%→47.4% of tiered-equivalent) and the rung mix of company-held levels. The ai_value
+ladder stays set aside until that read is in.
 
 Change company mandates so they latch onto useful and reasonable industries rather than always the
 Tier-1 building. Related to the standing `MISSING_PM_REFERENCES.md` / narrowed-`has_building` problem:

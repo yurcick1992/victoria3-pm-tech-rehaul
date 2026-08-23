@@ -1,0 +1,344 @@
+﻿# Misr Spinning and Weaving Company
+company_misr = {
+	icon = "gfx/interface/icons/company_icons/historical_company_icons/misr.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_light.dds"
+
+	category = bureaucrat_owned
+
+	flavored_company = yes
+
+	preferred_headquarters = { STATE_LOWER_EGYPT }
+
+	building_types = {
+		building_textile_mill
+		building_textile_mill_dye
+		building_textile_mill_sewing
+		building_textile_mill_electric
+		building_textile_mill_highdraft
+		building_cotton_plantation
+	}
+
+	extension_building_types = {
+		building_silk_plantation
+	}
+
+	possible_prestige_goods = {
+		prestige_good_mit_afifi
+	}
+
+	potential = {
+		has_interest_marker_in_region = sr:region_nile_basin
+	}
+
+	attainable = {
+		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
+			any_scope_state = {
+				state_region = s:STATE_LOWER_EGYPT
+			}
+		}
+	}
+
+	possible = {
+		has_technology_researched = corporate_charters
+		any_scope_state = {
+			state_region = s:STATE_LOWER_EGYPT
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_textile_mill
+					is_building_type = building_textile_mill_dye
+					is_building_type = building_textile_mill_sewing
+					is_building_type = building_textile_mill_electric
+					is_building_type = building_textile_mill_highdraft
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		state_loyalists_from_political_movements_mult = 0.1
+	}
+
+	ai_will_do = {
+		has_technology_researched = corporate_charters
+		any_scope_state = {
+			state_region = s:STATE_LOWER_EGYPT
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_textile_mill = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_LOWER_EGYPT
+				is_incorporated = yes
+			}
+		}
+		building_textile_mill_dye = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_LOWER_EGYPT
+				is_incorporated = yes
+			}
+		}
+		building_textile_mill_sewing = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_LOWER_EGYPT
+				is_incorporated = yes
+			}
+		}
+		building_textile_mill_electric = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_LOWER_EGYPT
+				is_incorporated = yes
+			}
+		}
+		building_textile_mill_highdraft = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_LOWER_EGYPT
+				is_incorporated = yes
+			}
+		}
+	}
+
+	ai_weight = {
+		value = 3 # Higher base value for flavored companies
+	}
+}
+
+# Egyptian National Railways
+company_egyptian_rail = {
+	icon = "gfx/interface/icons/company_icons/historical_company_icons/egyptian_rail.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_railways.dds"
+
+	category = bureaucrat_owned
+
+	flavored_company = yes
+
+	building_types = {
+		building_railway
+		building_railway_steam
+		building_railway_electric
+		building_railway_diesel
+	}
+
+	extension_building_types = {
+		building_motor_industry
+		building_motor_industry_compound
+		building_motor_industry_electric
+		building_motor_industry_diesel
+		building_motor_industry_welded_diesel
+	}
+
+	potential = {
+		country_has_primary_culture = cu:misri
+	}
+
+	possible = {
+		has_technology_researched = corporate_charters
+		any_scope_state = {
+			is_in_geographic_region = geographic_region_nile_basin
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_railway
+					is_building_type = building_railway_steam
+					is_building_type = building_railway_electric
+					is_building_type = building_railway_diesel
+				}
+				level >= 5
+			}
+			count >= 2
+		}
+	}
+
+	prosperity_modifier = {
+		state_infrastructure_from_population_max_add = 20
+		state_trade_capacity_mult = 0.1
+	}
+
+	ai_will_do = {
+		has_technology_researched = corporate_charters
+		any_scope_state = {
+			is_in_geographic_region = geographic_region_nile_basin
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_railway = {
+			level = 5
+			state_trigger = {
+				is_in_geographic_region = geographic_region_nile_basin
+				is_incorporated = yes
+			}
+		}
+		building_railway_steam = {
+			level = 5
+			state_trigger = {
+				is_in_geographic_region = geographic_region_nile_basin
+				is_incorporated = yes
+			}
+		}
+		building_railway_electric = {
+			level = 5
+			state_trigger = {
+				is_in_geographic_region = geographic_region_nile_basin
+				is_incorporated = yes
+			}
+		}
+		building_railway_diesel = {
+			level = 5
+			state_trigger = {
+				is_in_geographic_region = geographic_region_nile_basin
+				is_incorporated = yes
+			}
+		}
+	}
+
+	ai_weight = {
+		value = 3 # Higher base value for flavored companies
+	}
+}
+
+# Suez Canal Company
+company_suez_company = {
+	icon = "gfx/interface/icons/company_icons/historical_company_icons/suez_company.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_harbor_shipbuilding.dds"
+
+	category = bureaucrat_owned
+
+	flavored_company = yes
+
+	preferred_headquarters = { STATE_SINAI }
+
+	building_types = {
+		building_trade_center
+		building_port
+		building_port_steam
+		building_port_industrial
+		building_port_modern
+		building_port_motor
+	}
+
+	extension_building_types = {
+		building_shipyard
+		building_shipyard_complex
+		building_shipyard_metal
+		building_shipyard_metal_steel_hull
+		building_shipyard_metal_turbine
+		building_shipyard_metal_oil_fired
+		building_shipyard_arc_welding
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_merchant_marine
+	}
+
+	prestige_goods_trigger = {
+		custom_tooltip = {
+			text = je_prestige_goods_merchant_marine_complete_tt
+			has_variable = prestige_good_generic_merchant_marine_var
+		}
+	}
+
+	potential = {
+		has_interest_marker_in_region = sr:region_nile_basin
+	}
+
+	attainable = {
+		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
+			any_scope_state = {
+				state_region = s:STATE_SINAI
+			}
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			state_region = s:STATE_SINAI
+			any_scope_building = {
+				is_building_type = building_suez_canal
+				occupancy >= 0.5
+			}
+		}
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_trade_center
+					OR = {
+						is_building_type = building_port
+						is_building_type = building_port_steam
+						is_building_type = building_port_industrial
+						is_building_type = building_port_modern
+						is_building_type = building_port_motor
+					}
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		state_trade_advantage_mult = 0.25
+		country_tax_income_add = 50000
+		country_free_charters_add = 1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			state_region = s:STATE_SINAI
+			any_scope_building = {
+				is_building_type = building_suez_canal
+			}
+		}
+	}
+
+	ai_construction_targets = {
+		building_trade_center = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_SINAI
+			}
+		}
+		building_port = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_SINAI
+			}
+		}
+		building_port_steam = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_SINAI
+			}
+		}
+		building_port_industrial = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_SINAI
+			}
+		}
+		building_port_modern = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_SINAI
+			}
+		}
+		building_port_motor = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_SINAI
+			}
+		}
+	}
+
+	ai_weight = {
+		value = 3 # Higher base value for flavored companies
+	}
+}

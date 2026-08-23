@@ -1,0 +1,414 @@
+﻿# Mitsui
+company_mitsui = {
+	icon = "gfx/interface/icons/company_icons/historical_company_icons/japanese_mitsui.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_light.dds"
+
+	flavored_company = yes
+
+	preferred_headquarters = { STATE_KANTO }
+
+	building_types = {
+		building_textile_mill
+		building_textile_mill_dye
+		building_textile_mill_sewing
+		building_textile_mill_electric
+		building_textile_mill_highdraft
+		building_silk_plantation
+		building_dye_plantation
+	}
+
+	extension_building_types = {
+		building_tea_plantation
+		building_food_industry
+		building_food_industry_sweetener
+		building_food_industry_baking_powder
+		building_food_industry_hydrogenated
+		building_food_industry_mechanised
+		building_glassworks
+		building_glassworks_leaded
+		building_glassworks_crystal
+		building_glassworks_plastics
+		building_glassworks_ribbon
+		building_glassworks_fibre
+		building_coal_mine
+	}
+
+	possible_prestige_goods = {
+		prestige_good_tomioka_silk
+	}
+
+	potential = {
+		has_interest_marker_in_region = sr:region_northeast_asia
+	}
+
+	attainable = {
+		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
+			any_scope_state = {
+				state_region = s:STATE_KANSAI
+			}
+		}
+	}
+
+	possible = {
+		has_technology_researched = cotton_gin
+		any_scope_state = {
+			state_region = s:STATE_KANSAI
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_textile_mill
+					is_building_type = building_textile_mill_dye
+					is_building_type = building_textile_mill_sewing
+					is_building_type = building_textile_mill_electric
+					is_building_type = building_textile_mill_highdraft
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		interest_group_ig_industrialists_pol_str_mult = 0.1
+		country_production_tech_research_speed_mult = 0.05
+		state_trade_advantage_mult = 0.05
+	}
+
+	ai_will_do = {
+		has_technology_researched = cotton_gin
+		custom_tooltip = {
+			text = is_meiji_japan
+			has_variable = japan_restoration_complete
+		}
+		any_scope_state = {
+			state_region = s:STATE_KANSAI
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_textile_mill = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KANSAI
+			}
+		}
+		building_textile_mill_dye = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KANSAI
+			}
+		}
+		building_textile_mill_sewing = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KANSAI
+			}
+		}
+		building_textile_mill_electric = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KANSAI
+			}
+		}
+		building_textile_mill_highdraft = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KANSAI
+			}
+		}
+	}
+
+	ai_weight = {
+		value = 3 # Higher base value for flavored companies
+	}
+}
+
+
+# Mitsubishi
+company_mitsubishi = {
+	icon = "gfx/interface/icons/company_icons/historical_company_icons/japanese_mitsubishi.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_heavy.dds"
+
+	flavored_company = yes
+
+	preferred_headquarters = { STATE_KANTO }
+
+	building_types = {
+		building_shipyard
+		building_shipyard_complex
+		building_shipyard_metal
+		building_shipyard_metal_steel_hull
+		building_shipyard_metal_turbine
+		building_shipyard_metal_oil_fired
+		building_shipyard_arc_welding
+		building_iron_mine
+		building_paper_mill
+		building_paper_mill_sulfite
+		building_paper_mill_bleached
+		building_paper_mill_kraft
+		building_paper_mill_nssc
+		building_paper_mill_highspeed
+	}
+
+	extension_building_types = {
+		building_coal_mine
+		building_steel_mill
+		building_steel_mill_bessemer
+		building_steel_mill_open_hearth
+		building_steel_mill_electric_arc
+		building_steel_mill_strip_mill
+		building_motor_industry
+		building_motor_industry_compound
+		building_motor_industry_electric
+		building_motor_industry_diesel
+		building_motor_industry_welded_diesel
+		building_artillery_foundry
+		building_artillery_foundry_smoothbore
+		building_artillery_foundry_breech
+		building_artillery_foundry_recoiled
+		building_artillery_foundry_autofrettage
+		building_artillery_foundry_antiaircraft
+	}
+
+	possible_prestige_goods = {
+		prestige_good_washi_paper
+	}
+
+	potential = {
+		c:JAP ?= this
+	}
+
+	possible = {
+		has_technology_researched = ironclad_tech
+		custom_tooltip = {
+			text = is_meiji_japan
+			has_variable = japan_restoration_complete
+		}
+		any_scope_state = {
+			state_region = s:STATE_KYUSHU
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_shipyard
+					is_building_type = building_shipyard_complex
+					is_building_type = building_shipyard_metal
+					is_building_type = building_shipyard_metal_steel_hull
+					is_building_type = building_shipyard_metal_turbine
+					is_building_type = building_shipyard_metal_oil_fired
+					is_building_type = building_shipyard_arc_welding
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		interest_group_ig_industrialists_pol_str_mult = 0.1
+		building_automotive_industry_throughput_add = 0.1
+		building_automotive_industry_mass_throughput_add = 0.1
+		building_automotive_industry_transfer_line_throughput_add = 0.1
+	}
+
+	ai_will_do = {
+		has_technology_researched = ironclad_tech
+		custom_tooltip = {
+			text = is_meiji_japan
+			has_variable = japan_restoration_complete
+		}
+		any_scope_state = {
+			state_region = s:STATE_KYUSHU
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_shipyard = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KYUSHU
+			}
+		}
+		building_shipyard_complex = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KYUSHU
+			}
+		}
+		building_shipyard_metal = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KYUSHU
+			}
+		}
+		building_shipyard_metal_steel_hull = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KYUSHU
+			}
+		}
+		building_shipyard_metal_turbine = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KYUSHU
+			}
+		}
+		building_shipyard_metal_oil_fired = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KYUSHU
+			}
+		}
+		building_shipyard_arc_welding = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KYUSHU
+			}
+		}
+	}
+
+	ai_weight = {
+		value = 3 # Higher base value for flavored companies
+	}
+}
+
+# South Manchuria Railway
+company_mantetsu = {
+	icon = "gfx/interface/icons/company_icons/historical_company_icons/japanese_mantetsu.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_railways.dds"
+
+	category = bureaucrat_owned
+
+	flavored_company = yes
+
+	preferred_headquarters = { STATE_SHENGJING }
+
+	building_types = {
+		building_railway
+		building_railway_steam
+		building_railway_electric
+		building_railway_diesel
+		building_coal_mine
+		building_glassworks
+		building_glassworks_leaded
+		building_glassworks_crystal
+		building_glassworks_plastics
+		building_glassworks_ribbon
+		building_glassworks_fibre
+	}
+
+	extension_building_types = {
+		building_food_industry
+		building_food_industry_sweetener
+		building_food_industry_baking_powder
+		building_food_industry_hydrogenated
+		building_food_industry_mechanised
+		building_chemical_plant
+		building_chemical_plant_ammoniacal
+		building_chemical_plant_improved
+		building_chemical_plant_nitrogen
+		building_chemical_plant_reforming
+	}
+
+	potential = {
+		c:JAP ?= this
+	}
+
+	possible = {
+		country_or_subject_owns_entire_state_region = STATE_SHENGJING
+		has_technology_researched = railways
+		custom_tooltip = {
+			text = is_meiji_japan
+			has_variable = japan_restoration_complete
+		}
+		any_scope_state = {
+			OR = {
+				region = sr:region_northeast_asia
+				region = sr:region_north_china
+			}
+			any_scope_building = {
+				OR = {
+					is_building_type = building_railway
+					is_building_type = building_railway_steam
+					is_building_type = building_railway_electric
+					is_building_type = building_railway_diesel
+				}
+				level >= 5
+			}
+			count >= 2
+		}
+	}
+
+	prosperity_modifier = {
+		state_non_homeland_colony_growth_speed_mult = 0.1
+		building_wheat_farm_throughput_add = 0.15
+	}
+
+	ai_will_do = {
+		country_or_subject_owns_entire_state_region = STATE_SHENGJING
+		has_technology_researched = railways
+		custom_tooltip = {
+			text = is_meiji_japan
+			has_variable = japan_restoration_complete
+		}
+		any_scope_state = {
+			OR = {
+				region = sr:region_northeast_asia
+				region = sr:region_north_china
+			}
+		}
+	}
+
+	ai_construction_targets = {
+		building_railway = {
+			level = 5
+			state_trigger = {
+				OR = {
+					region = sr:region_northeast_asia
+					region = sr:region_north_china
+				}
+			}
+		}
+		building_railway_steam = {
+			level = 5
+			state_trigger = {
+				OR = {
+					region = sr:region_northeast_asia
+					region = sr:region_north_china
+				}
+			}
+		}
+		building_railway_electric = {
+			level = 5
+			state_trigger = {
+				OR = {
+					region = sr:region_northeast_asia
+					region = sr:region_north_china
+				}
+			}
+		}
+		building_railway_diesel = {
+			level = 5
+			state_trigger = {
+				OR = {
+					region = sr:region_northeast_asia
+					region = sr:region_north_china
+				}
+			}
+		}
+	}
+
+	ai_weight = {
+		value = 3 # Higher base value for flavored companies
+		if = {
+			limit = {
+				has_journal_entry = je_colonize_korea
+				NOT = {
+					any_company = {
+						is_company_type = company_type:company_oriental_development_company # Only one needed
+					}
+				}
+			}
+			add = 6
+		}
+	}
+}

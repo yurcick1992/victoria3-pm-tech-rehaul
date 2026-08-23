@@ -1,0 +1,2014 @@
+﻿company_basic_agriculture_1 = {
+	icon = "gfx/interface/icons/company_icons/company_basic_agriculture_1.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_farm_wheat.dds"
+
+	category = aristocrat_owned
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_guild"
+		"dynamic_company_type_society"
+		"dynamic_company_type_fellowship"
+	}
+
+	building_types = {
+		building_wheat_farm
+		building_rye_farm
+	}
+
+	extension_building_types = {
+		building_maize_farm
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_grain
+	}
+
+	prestige_goods_trigger = {
+		custom_tooltip = {
+			text = je_prestige_goods_grain_complete_tt
+			has_variable = prestige_good_generic_grain_var
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_wheat_farm
+					is_building_type = building_rye_farm
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		building_livestock_ranch_throughput_add = 0.1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_wheat_farm
+					is_building_type = building_rye_farm
+				}
+				level >= 3
+			}
+		}
+	}
+}
+
+company_basic_agriculture_2 = {
+	icon = "gfx/interface/icons/company_icons/basic_agriculture_2.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_farm_rice.dds"
+
+	category = aristocrat_owned
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_guild"
+		"dynamic_company_type_society"
+		"dynamic_company_type_fellowship"
+	}
+
+	building_types = {
+		building_rice_farm
+		building_millet_farm
+		building_maize_farm
+	}
+
+	extension_building_types = {
+		building_rye_farm
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_grain
+	}
+
+	prestige_goods_trigger = {
+		custom_tooltip = {
+			text = je_prestige_goods_grain_complete_tt
+			has_variable = prestige_good_generic_grain_var
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_millet_farm
+					is_building_type = building_rice_farm
+					is_building_type = building_maize_farm
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		building_livestock_ranch_throughput_add = 0.1
+		building_food_industry_throughput_add = 0.1
+		building_food_industry_sweetener_throughput_add = 0.1
+		building_food_industry_baking_powder_throughput_add = 0.1
+		building_food_industry_hydrogenated_throughput_add = 0.1
+		building_food_industry_mechanised_throughput_add = 0.1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_millet_farm
+					is_building_type = building_rice_farm
+					is_building_type = building_maize_farm
+				}
+				level >= 3
+			}
+		}
+	}
+}
+
+company_basic_fabrics = {
+	icon = "gfx/interface/icons/company_icons/basic_fabrics.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_light.dds"
+
+
+	category = aristocrat_owned
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_guild"
+		"dynamic_company_type_society"
+		"dynamic_company_type_fellowship"
+	}
+
+	building_types = {
+		building_cotton_plantation
+		building_livestock_ranch
+	}
+
+	extension_building_types = {
+		building_textile_mill
+		building_textile_mill_dye
+		building_textile_mill_sewing
+		building_textile_mill_electric
+		building_textile_mill_highdraft
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_meat
+	}
+
+	prestige_goods_trigger = {
+		custom_tooltip = {
+			text = je_prestige_goods_meat_complete_tt
+			has_variable = prestige_good_generic_meat_var
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_cotton_plantation
+					is_building_type = building_livestock_ranch
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		building_textile_mill_throughput_add = 0.1
+		building_textile_mill_dye_throughput_add = 0.1
+		building_textile_mill_sewing_throughput_add = 0.1
+		building_textile_mill_electric_throughput_add = 0.1
+		building_textile_mill_highdraft_throughput_add = 0.1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_cotton_plantation
+					is_building_type = building_livestock_ranch
+				}
+				level >= 3
+			}
+		}
+	}
+}
+
+company_basic_colonial_plantations_1 = {
+	icon = "gfx/interface/icons/company_icons/basic_colonial_plantations_1.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_plantation.dds"
+
+	category = aristocrat_owned
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_society"
+		"dynamic_company_type_fellowship"
+	}
+
+	building_types = {
+		building_opium_plantation
+		building_tea_plantation
+	}
+
+	extension_building_types = {
+		building_tobacco_plantation
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_opium
+	}
+
+	prestige_goods_trigger = {
+		custom_tooltip = {
+			text = je_prestige_goods_opium_complete_tt
+			has_variable = prestige_good_generic_opium_var
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_opium_plantation
+					is_building_type = building_tea_plantation
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		state_radicals_from_political_movements_mult = -0.1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_opium_plantation
+					is_building_type = building_tea_plantation
+				}
+				level >= 3
+			}
+		}
+	}
+}
+
+company_basic_colonial_plantations_2 = {
+
+	icon = "gfx/interface/icons/company_icons/basic_colonial_plantations_2.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_plantation.dds"
+
+	category = aristocrat_owned
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_society"
+		"dynamic_company_type_fellowship"
+	}
+
+	building_types = {
+		building_coffee_plantation
+		building_sugar_plantation
+		building_tobacco_plantation
+	}
+
+	extension_building_types = {
+		building_tea_plantation
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_coffee
+	}
+
+	prestige_goods_trigger = {
+		custom_tooltip = {
+			text = je_prestige_goods_coffee_complete_tt
+			has_variable = prestige_good_generic_coffee_var
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_coffee_plantation
+					is_building_type = building_sugar_plantation
+					is_building_type = building_tobacco_plantation
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		state_colony_growth_speed_mult = 0.1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_coffee_plantation
+					is_building_type = building_sugar_plantation
+					is_building_type = building_tobacco_plantation
+				}
+				level >= 3
+			}
+		}
+	}
+}
+
+company_basic_silk_and_dye = {
+	icon = "gfx/interface/icons/company_icons/basic_silk_and_dye.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_plantation.dds"
+
+	category = aristocrat_owned
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_guild"
+		"dynamic_company_type_society"
+		"dynamic_company_type_fellowship"
+	}
+
+	building_types = {
+		building_silk_plantation
+		building_dye_plantation
+	}
+
+	extension_building_types = {
+		building_textile_mill
+		building_textile_mill_dye
+		building_textile_mill_sewing
+		building_textile_mill_electric
+		building_textile_mill_highdraft
+	}
+
+	possible = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_silk_plantation
+					is_building_type = building_dye_plantation
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		country_influence_mult = 0.1
+		building_textile_mill_throughput_add = 0.1
+		building_textile_mill_dye_throughput_add = 0.1
+		building_textile_mill_sewing_throughput_add = 0.1
+		building_textile_mill_electric_throughput_add = 0.1
+		building_textile_mill_highdraft_throughput_add = 0.1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_silk_plantation
+					is_building_type = building_dye_plantation
+				}
+				level >= 3
+			}
+		}
+	}
+}
+
+company_basic_wine_and_fruit = {
+	icon = "gfx/interface/icons/company_icons/basic_wine_and_fruit.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_plantation.dds"
+
+	category = aristocrat_owned
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_guild"
+		"dynamic_company_type_society"
+		"dynamic_company_type_fellowship"
+	}
+
+	building_types = {
+		building_vineyard
+		building_banana_plantation
+	}
+
+	extension_building_types = {
+		building_sugar_plantation
+	}
+
+	possible = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_vineyard
+					is_building_type = building_banana_plantation
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		country_prestige_mult = 0.1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_vineyard
+					is_building_type = building_banana_plantation
+				}
+				level >= 3
+			}
+		}
+	}
+}
+
+company_basic_fishing = {
+	icon = "gfx/interface/icons/company_icons/basic_fishing.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_farm_corn.dds"
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+		"dynamic_company_type_guild"
+	}
+
+	building_types = {
+		building_fishing_wharf
+		building_whaling_station
+	}
+
+	extension_building_types = {
+		building_shipyard
+		building_shipyard_complex
+		building_shipyard_metal
+		building_shipyard_metal_steel_hull
+		building_shipyard_metal_turbine
+		building_shipyard_metal_oil_fired
+		building_shipyard_arc_welding
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_fish
+	}
+
+	prestige_goods_trigger = {
+		custom_tooltip = {
+			text = je_prestige_goods_fish_complete_tt
+			has_variable = prestige_good_generic_fish_var
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_fishing_wharf
+					is_building_type = building_whaling_station
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		country_ship_group_supply_ships_construction_efficiency_add = 0.1
+		building_shipyard_throughput_add = 0.05
+		building_shipyard_complex_throughput_add = 0.05
+		building_shipyard_metal_throughput_add = 0.05
+		building_shipyard_metal_steel_hull_throughput_add = 0.05
+		building_shipyard_metal_turbine_throughput_add = 0.05
+		building_shipyard_metal_oil_fired_throughput_add = 0.05
+		building_shipyard_arc_welding_throughput_add = 0.05
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_fishing_wharf
+					is_building_type = building_whaling_station
+				}
+				level >= 3
+			}
+		}
+	}
+}
+
+company_basic_forestry = {
+	icon = "gfx/interface/icons/company_icons/basic_forestry.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_farm_corn.dds"
+
+	category = aristocrat_owned
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+		"dynamic_company_type_guild"
+	}
+
+	building_types = {
+		building_logging_camp
+		building_rubber_plantation
+	}
+
+	extension_building_types = {
+		building_tooling_workshop
+		building_tooling_workshop_pig_iron
+		building_tooling_workshop_steel
+		building_tooling_workshop_rubber
+		building_tooling_workshop_carbide
+		building_tooling_workshop_tracer
+	}
+
+	possible = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_logging_camp
+					is_building_type = building_rubber_plantation
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		state_infrastructure_from_population_add = 0.7
+		state_infrastructure_from_population_max_add = 15
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_logging_camp
+					is_building_type = building_rubber_plantation
+				}
+				level >= 3
+			}
+		}
+	}
+}
+
+company_basic_oil = {
+	icon = "gfx/interface/icons/company_icons/basic_oil.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_oil_drills.dds"
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+	}
+
+	building_types = {
+		building_oil_rig
+	}
+
+	extension_building_types = {
+		building_coal_mine
+	}
+
+	possible = {
+		any_scope_state = {
+			any_scope_building = {
+				is_building_type = building_oil_rig
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		state_migration_pull_mult = 0.1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			any_scope_building = {
+				is_building_type = building_oil_rig
+				level >= 3
+			}
+		}
+	}
+}
+
+company_basic_gold_mining = {
+	icon = "gfx/interface/icons/company_icons/basic_gold_mining.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_mining.dds"
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+	}
+
+	building_types = {
+		building_gold_mine
+	}
+
+	extension_building_types = {
+		building_lead_mine
+	}
+
+	possible = {
+		any_scope_state = {
+			any_scope_building = {
+				is_building_type = building_gold_mine
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		country_minting_mult = 0.05
+		state_loyalists_from_political_movements_mult = 0.05
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			any_scope_building = {
+				is_building_type = building_gold_mine
+				level >= 3
+			}
+		}
+	}
+}
+
+company_basic_metal_mining = {
+	icon = "gfx/interface/icons/company_icons/basic_metal_mining.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_mining.dds"
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+		"dynamic_company_type_guild"
+	}
+
+	building_types = {
+		building_iron_mine
+		building_lead_mine
+	}
+
+	extension_building_types = {
+		building_coal_mine
+	}
+
+	possible = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_iron_mine
+					is_building_type = building_lead_mine
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		building_steel_mill_throughput_add = 0.1
+		building_steel_mill_bessemer_throughput_add = 0.1
+		building_steel_mill_open_hearth_throughput_add = 0.1
+		building_steel_mill_electric_arc_throughput_add = 0.1
+		building_steel_mill_strip_mill_throughput_add = 0.1
+		state_pollution_reduction_health_mult = 0.05
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_iron_mine
+					is_building_type = building_lead_mine
+				}
+				level >= 5
+			}
+		}
+	}
+}
+
+company_basic_mineral_mining = {
+	icon = "gfx/interface/icons/company_icons/basic_mineral_mining.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_mining.dds"
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+		"dynamic_company_type_guild"
+	}
+
+	building_types = {
+		building_sulfur_mine
+		building_coal_mine
+	}
+
+	extension_building_types = {
+		building_iron_mine
+	}
+
+	possible = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_sulfur_mine
+					is_building_type = building_coal_mine
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		building_chemical_plant_throughput_add = 0.1
+		building_chemical_plant_ammoniacal_throughput_add = 0.1
+		building_chemical_plant_improved_throughput_add = 0.1
+		building_chemical_plant_nitrogen_throughput_add = 0.1
+		building_chemical_plant_reforming_throughput_add = 0.1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_sulfur_mine
+					is_building_type = building_coal_mine
+				}
+				level >= 3
+			}
+		}
+	}
+}
+
+company_basic_food = {
+	icon = "gfx/interface/icons/company_icons/basic_food.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_light.dds"
+
+	category = aristocrat_owned
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+	}
+
+	building_types = {
+		building_food_industry
+		building_food_industry_sweetener
+		building_food_industry_baking_powder
+		building_food_industry_hydrogenated
+		building_food_industry_mechanised
+	}
+
+	extension_building_types = {
+		building_livestock_ranch
+		building_wheat_farm
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_groceries
+	}
+
+	prestige_goods_trigger = {
+		custom_tooltip = {
+			text = je_prestige_goods_groceries_complete_tt
+			has_variable = prestige_good_generic_groceries_var
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_food_industry
+					is_building_type = building_food_industry_sweetener
+					is_building_type = building_food_industry_baking_powder
+					is_building_type = building_food_industry_hydrogenated
+					is_building_type = building_food_industry_mechanised
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		state_birth_rate_mult = 0.05
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_food_industry
+					is_building_type = building_food_industry_sweetener
+					is_building_type = building_food_industry_baking_powder
+					is_building_type = building_food_industry_hydrogenated
+					is_building_type = building_food_industry_mechanised
+				}
+				level >= 3
+			}
+		}
+	}
+}
+
+company_basic_paper = {
+	icon = "gfx/interface/icons/company_icons/basic_paper.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_light.dds"
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+	}
+
+	building_types = {
+		building_paper_mill
+		building_paper_mill_sulfite
+		building_paper_mill_bleached
+		building_paper_mill_kraft
+		building_paper_mill_nssc
+		building_paper_mill_highspeed
+	}
+
+	extension_building_types = {
+		building_logging_camp
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_paper
+	}
+
+	prestige_goods_trigger = {
+		custom_tooltip = {
+			text = je_prestige_goods_paper_complete_tt
+			has_variable = prestige_good_generic_paper_var
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_paper_mill
+					is_building_type = building_paper_mill_sulfite
+					is_building_type = building_paper_mill_bleached
+					is_building_type = building_paper_mill_kraft
+					is_building_type = building_paper_mill_nssc
+					is_building_type = building_paper_mill_highspeed
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		country_bureaucracy_mult = 0.1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_paper_mill
+					is_building_type = building_paper_mill_sulfite
+					is_building_type = building_paper_mill_bleached
+					is_building_type = building_paper_mill_kraft
+					is_building_type = building_paper_mill_nssc
+					is_building_type = building_paper_mill_highspeed
+				}
+				level >= 3
+			}
+		}
+	}
+}
+
+company_basic_home_goods = {
+	icon = "gfx/interface/icons/company_icons/basic_home_goods.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_light.dds"
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+	}
+
+	building_types = {
+		building_glassworks
+		building_glassworks_leaded
+		building_glassworks_crystal
+		building_glassworks_plastics
+		building_glassworks_ribbon
+		building_glassworks_fibre
+		building_furniture_manufactory
+		building_furniture_manufactory_lathe
+		building_furniture_manufactory_mechanized
+		building_furniture_manufactory_plywood
+		building_furniture_manufactory_sprayed
+	}
+
+	extension_building_types = {
+		building_logging_camp
+		building_lead_mine
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_furniture
+	}
+
+	prestige_goods_trigger = {
+		custom_tooltip = {
+			text = je_prestige_goods_furniture_complete_tt
+			has_variable = prestige_good_generic_furniture_var
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					OR = {
+						is_building_type = building_glassworks
+						is_building_type = building_glassworks_leaded
+						is_building_type = building_glassworks_crystal
+						is_building_type = building_glassworks_plastics
+						is_building_type = building_glassworks_ribbon
+						is_building_type = building_glassworks_fibre
+					}
+					OR = {
+						is_building_type = building_furniture_manufactory
+						is_building_type = building_furniture_manufactory_lathe
+						is_building_type = building_furniture_manufactory_mechanized
+						is_building_type = building_furniture_manufactory_plywood
+						is_building_type = building_furniture_manufactory_sprayed
+					}
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		state_loyalists_from_political_movements_mult = 0.075
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					OR = {
+						is_building_type = building_glassworks
+						is_building_type = building_glassworks_leaded
+						is_building_type = building_glassworks_crystal
+						is_building_type = building_glassworks_plastics
+						is_building_type = building_glassworks_ribbon
+						is_building_type = building_glassworks_fibre
+					}
+					OR = {
+						is_building_type = building_furniture_manufactory
+						is_building_type = building_furniture_manufactory_lathe
+						is_building_type = building_furniture_manufactory_mechanized
+						is_building_type = building_furniture_manufactory_plywood
+						is_building_type = building_furniture_manufactory_sprayed
+					}
+				}
+				level >= 3
+			}
+		}
+	}
+}
+
+company_basic_textiles = {
+	icon = "gfx/interface/icons/company_icons/basic_textiles.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_light.dds"
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+	}
+
+	building_types = {
+		building_textile_mill
+		building_textile_mill_dye
+		building_textile_mill_sewing
+		building_textile_mill_electric
+		building_textile_mill_highdraft
+	}
+
+	extension_building_types = {
+		building_cotton_plantation
+		building_silk_plantation
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_clothes
+	}
+
+	prestige_goods_trigger = {
+		custom_tooltip = {
+			text = je_prestige_goods_clothes_complete_tt
+			has_variable = prestige_good_generic_clothes_var
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_textile_mill
+					is_building_type = building_textile_mill_dye
+					is_building_type = building_textile_mill_sewing
+					is_building_type = building_textile_mill_electric
+					is_building_type = building_textile_mill_highdraft
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		state_radicals_from_political_movements_mult = -0.1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_textile_mill
+					is_building_type = building_textile_mill_dye
+					is_building_type = building_textile_mill_sewing
+					is_building_type = building_textile_mill_electric
+					is_building_type = building_textile_mill_highdraft
+				}
+				level >= 5
+			}
+		}
+	}
+}
+
+company_basic_steel = {
+	icon = "gfx/interface/icons/company_icons/basic_steel.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_heavy.dds"
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+	}
+
+	building_types = {
+		building_steel_mill
+		building_steel_mill_bessemer
+		building_steel_mill_open_hearth
+		building_steel_mill_electric_arc
+		building_steel_mill_strip_mill
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_steel
+	}
+
+	prestige_goods_trigger = {
+		custom_tooltip = {
+			text = je_prestige_goods_steel_complete_tt
+			has_variable = prestige_good_generic_steel_var
+		}
+	}
+
+	extension_building_types = {
+		building_iron_mine
+		building_coal_mine
+	}
+
+	possible = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_steel_mill
+					is_building_type = building_steel_mill_bessemer
+					is_building_type = building_steel_mill_open_hearth
+					is_building_type = building_steel_mill_electric_arc
+					is_building_type = building_steel_mill_strip_mill
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		state_construction_mult = 0.05
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_steel_mill
+					is_building_type = building_steel_mill_bessemer
+					is_building_type = building_steel_mill_open_hearth
+					is_building_type = building_steel_mill_electric_arc
+					is_building_type = building_steel_mill_strip_mill
+				}
+				level >= 5
+			}
+		}
+	}
+}
+
+company_basic_metalworks = {
+	icon = "gfx/interface/icons/company_icons/basic_metalworks.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_heavy.dds"
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+	}
+
+	building_types = {
+		building_tooling_workshop
+		building_tooling_workshop_pig_iron
+		building_tooling_workshop_steel
+		building_tooling_workshop_rubber
+		building_tooling_workshop_carbide
+		building_tooling_workshop_tracer
+	}
+
+	extension_building_types = {
+		building_steel_mill
+		building_steel_mill_bessemer
+		building_steel_mill_open_hearth
+		building_steel_mill_electric_arc
+		building_steel_mill_strip_mill
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_tools
+	}
+
+	prestige_goods_trigger = {
+		custom_tooltip = {
+			text = je_prestige_goods_tools_complete_tt
+			has_variable = prestige_good_generic_tools_var
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					OR = {
+						is_building_type = building_tooling_workshop
+						is_building_type = building_tooling_workshop_pig_iron
+						is_building_type = building_tooling_workshop_steel
+						is_building_type = building_tooling_workshop_rubber
+						is_building_type = building_tooling_workshop_carbide
+						is_building_type = building_tooling_workshop_tracer
+					}
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		building_group_bg_manufacturing_throughput_add = 0.05
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					OR = {
+						is_building_type = building_tooling_workshop
+						is_building_type = building_tooling_workshop_pig_iron
+						is_building_type = building_tooling_workshop_steel
+						is_building_type = building_tooling_workshop_rubber
+						is_building_type = building_tooling_workshop_carbide
+						is_building_type = building_tooling_workshop_tracer
+					}
+					OR = {
+						is_building_type = building_arms_industry
+						is_building_type = building_arms_industry_rifles
+						is_building_type = building_arms_industry_repeaters
+						is_building_type = building_arms_industry_bolt_action
+						is_building_type = building_arms_industry_automatic
+						is_building_type = building_arms_industry_stamped
+					}
+					OR = {
+						is_building_type = building_artillery_foundry
+						is_building_type = building_artillery_foundry_smoothbore
+						is_building_type = building_artillery_foundry_breech
+						is_building_type = building_artillery_foundry_recoiled
+						is_building_type = building_artillery_foundry_autofrettage
+						is_building_type = building_artillery_foundry_antiaircraft
+					}
+				}
+				level >= 3
+			}
+		}
+	}
+}
+
+company_basic_shipyards = {
+	icon = "gfx/interface/icons/company_icons/basic_shipyards.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_harbor_shipbuilding.dds"
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+	}
+
+	building_types = {
+		building_shipyard
+		building_shipyard_complex
+		building_shipyard_metal
+		building_shipyard_metal_steel_hull
+		building_shipyard_metal_turbine
+		building_shipyard_metal_oil_fired
+		building_shipyard_arc_welding
+	}
+
+	extension_building_types = {
+		building_logging_camp
+	}
+
+	possible = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_shipyard
+					is_building_type = building_shipyard_complex
+					is_building_type = building_shipyard_metal
+					is_building_type = building_shipyard_metal_steel_hull
+					is_building_type = building_shipyard_metal_turbine
+					is_building_type = building_shipyard_metal_oil_fired
+					is_building_type = building_shipyard_arc_welding
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		ship_hull_damage_mult = 0.05
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_shipyard
+					is_building_type = building_shipyard_complex
+					is_building_type = building_shipyard_metal
+					is_building_type = building_shipyard_metal_steel_hull
+					is_building_type = building_shipyard_metal_turbine
+					is_building_type = building_shipyard_metal_oil_fired
+					is_building_type = building_shipyard_arc_welding
+				}
+				level >= 5
+			}
+		}
+	}
+}
+
+company_basic_chemicals = {
+	icon = "gfx/interface/icons/company_icons/basic_chemicals.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_heavy.dds"
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+	}
+
+	building_types = {
+		building_chemical_plant
+		building_chemical_plant_ammoniacal
+		building_chemical_plant_improved
+		building_chemical_plant_nitrogen
+		building_chemical_plant_reforming
+		building_synthetics_plant
+		building_synthetics_plant_indigo
+		building_synthetics_plant_viscose
+		building_synthetics_plant_polyamide
+	}
+
+	extension_building_types = {
+		building_sulfur_mine
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_fertilizer
+	}
+
+	prestige_goods_trigger = {
+		custom_tooltip = {
+			text = je_prestige_goods_fertilizer_complete_tt
+			has_variable = prestige_good_generic_fertilizer_var
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					OR = {
+						is_building_type = building_chemical_plant
+						is_building_type = building_chemical_plant_ammoniacal
+						is_building_type = building_chemical_plant_improved
+						is_building_type = building_chemical_plant_nitrogen
+						is_building_type = building_chemical_plant_reforming
+					}
+					OR = {
+						is_building_type = building_synthetics_plant
+						is_building_type = building_synthetics_plant_indigo
+						is_building_type = building_synthetics_plant_viscose
+						is_building_type = building_synthetics_plant_polyamide
+					}
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		unit_supply_consumption_mult = -0.05
+		building_chemical_plant_throughput_add = 0.1
+		building_chemical_plant_ammoniacal_throughput_add = 0.1
+		building_chemical_plant_improved_throughput_add = 0.1
+		building_chemical_plant_nitrogen_throughput_add = 0.1
+		building_chemical_plant_reforming_throughput_add = 0.1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					OR = {
+						is_building_type = building_chemical_plant
+						is_building_type = building_chemical_plant_ammoniacal
+						is_building_type = building_chemical_plant_improved
+						is_building_type = building_chemical_plant_nitrogen
+						is_building_type = building_chemical_plant_reforming
+					}
+					OR = {
+						is_building_type = building_synthetics_plant
+						is_building_type = building_synthetics_plant_indigo
+						is_building_type = building_synthetics_plant_viscose
+						is_building_type = building_synthetics_plant_polyamide
+					}
+				}
+				level >= 5
+			}
+		}
+	}
+}
+
+company_basic_motors = {
+	icon = "gfx/interface/icons/company_icons/basic_motors.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_heavy.dds"
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+	}
+
+	building_types = {
+		building_motor_industry
+		building_motor_industry_compound
+		building_motor_industry_electric
+		building_motor_industry_diesel
+		building_motor_industry_welded_diesel
+		building_automotive_industry
+		building_automotive_industry_mass
+		building_automotive_industry_transfer_line
+	}
+
+	extension_building_types = {
+		building_steel_mill
+		building_steel_mill_bessemer
+		building_steel_mill_open_hearth
+		building_steel_mill_electric_arc
+		building_steel_mill_strip_mill
+	}
+
+	possible = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					OR = {
+						is_building_type = building_motor_industry
+						is_building_type = building_motor_industry_compound
+						is_building_type = building_motor_industry_electric
+						is_building_type = building_motor_industry_diesel
+						is_building_type = building_motor_industry_welded_diesel
+					}
+					OR = {
+						is_building_type = building_automotive_industry
+						is_building_type = building_automotive_industry_mass
+						is_building_type = building_automotive_industry_transfer_line
+					}
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		military_formation_army_movement_speed_mult = 0.1
+		military_formation_fleet_movement_speed_mult = 0.1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					OR = {
+						is_building_type = building_motor_industry
+						is_building_type = building_motor_industry_compound
+						is_building_type = building_motor_industry_electric
+						is_building_type = building_motor_industry_diesel
+						is_building_type = building_motor_industry_welded_diesel
+					}
+					OR = {
+						is_building_type = building_automotive_industry
+						is_building_type = building_automotive_industry_mass
+						is_building_type = building_automotive_industry_transfer_line
+					}
+				}
+				level >= 5
+			}
+		}
+	}
+}
+
+company_basic_munitions = {
+	icon = "gfx/interface/icons/company_icons/basic_munitions.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_heavy.dds"
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+	}
+
+	building_types = {
+		building_munition_plant
+		building_munition_plant_shells
+		building_munition_plant_drawn_brass
+		building_munition_plant_filling
+		building_munition_plant_automatic
+		building_explosives_factory
+		building_explosives_factory_ammonia
+		building_explosives_factory_vacuum
+		building_explosives_factory_brine
+		building_explosives_factory_cyclonite
+	}
+
+	extension_building_types = {
+		building_sulfur_mine
+		building_steel_mill
+		building_steel_mill_bessemer
+		building_steel_mill_open_hearth
+		building_steel_mill_electric_arc
+		building_steel_mill_strip_mill
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_explosives
+	}
+
+	prestige_goods_trigger = {
+		custom_tooltip = {
+			text = je_prestige_goods_explosives_complete_tt
+			has_variable = prestige_good_generic_explosives_var
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					OR = {
+						is_building_type = building_munition_plant
+						is_building_type = building_munition_plant_shells
+						is_building_type = building_munition_plant_drawn_brass
+						is_building_type = building_munition_plant_filling
+						is_building_type = building_munition_plant_automatic
+					}
+					OR = {
+						is_building_type = building_explosives_factory
+						is_building_type = building_explosives_factory_ammonia
+						is_building_type = building_explosives_factory_vacuum
+						is_building_type = building_explosives_factory_brine
+						is_building_type = building_explosives_factory_cyclonite
+					}
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		country_military_goods_cost_mult = -0.1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					OR = {
+						is_building_type = building_munition_plant
+						is_building_type = building_munition_plant_shells
+						is_building_type = building_munition_plant_drawn_brass
+						is_building_type = building_munition_plant_filling
+						is_building_type = building_munition_plant_automatic
+					}
+					OR = {
+						is_building_type = building_explosives_factory
+						is_building_type = building_explosives_factory_ammonia
+						is_building_type = building_explosives_factory_vacuum
+						is_building_type = building_explosives_factory_brine
+						is_building_type = building_explosives_factory_cyclonite
+					}
+				}
+				level >= 5
+			}
+		}
+	}
+}
+
+company_basic_electrics = {
+	icon = "gfx/interface/icons/company_icons/basic_electrics.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_heavy.dds"
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+	}
+
+	building_types = {
+		building_electrics_industry
+		building_electrics_industry_wireless
+		building_electrics_industry_radio
+		building_electrics_industry_electronics
+	}
+
+	extension_building_types = {
+		building_iron_mine
+		building_rubber_plantation
+	}
+
+	possible = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_electrics_industry
+					is_building_type = building_electrics_industry_wireless
+					is_building_type = building_electrics_industry_radio
+					is_building_type = building_electrics_industry_electronics
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		building_power_plant_throughput_add = 0.1
+		building_power_plant_pulverized_throughput_add = 0.1
+		building_power_plant_oil_throughput_add = 0.1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					is_building_type = building_electrics_industry
+					is_building_type = building_electrics_industry_wireless
+					is_building_type = building_electrics_industry_radio
+					is_building_type = building_electrics_industry_electronics
+				}
+				level >= 5
+			}
+		}
+	}
+}
+
+company_basic_weapons = {
+	icon = "gfx/interface/icons/company_icons/basic_weapons.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_heavy.dds"
+
+	flavored_company = no
+
+	uses_dynamic_naming = yes
+
+	dynamic_company_type_names = {
+		"dynamic_company_type_company"
+		"dynamic_company_type_consortium"
+		"dynamic_company_type_corporation"
+		"dynamic_company_type_conglomerate"
+		"dynamic_company_type_syndicate"
+		"dynamic_company_type_combine"
+	}
+
+	building_types = {
+		building_arms_industry
+		building_arms_industry_rifles
+		building_arms_industry_repeaters
+		building_arms_industry_bolt_action
+		building_arms_industry_automatic
+		building_arms_industry_stamped
+		building_artillery_foundry
+		building_artillery_foundry_smoothbore
+		building_artillery_foundry_breech
+		building_artillery_foundry_recoiled
+		building_artillery_foundry_autofrettage
+		building_artillery_foundry_antiaircraft
+	}
+
+	extension_building_types = {
+		building_automotive_industry
+		building_automotive_industry_mass
+		building_automotive_industry_transfer_line
+		building_steel_mill
+		building_steel_mill_bessemer
+		building_steel_mill_open_hearth
+		building_steel_mill_electric_arc
+		building_steel_mill_strip_mill
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_small_arms
+	}
+
+	prestige_goods_trigger = {
+		custom_tooltip = {
+			text = je_prestige_goods_small_arms_complete_tt
+			has_variable = prestige_good_generic_small_arms_var
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					OR = {
+						is_building_type = building_arms_industry
+						is_building_type = building_arms_industry_rifles
+						is_building_type = building_arms_industry_repeaters
+						is_building_type = building_arms_industry_bolt_action
+						is_building_type = building_arms_industry_automatic
+						is_building_type = building_arms_industry_stamped
+					}
+					OR = {
+						is_building_type = building_artillery_foundry
+						is_building_type = building_artillery_foundry_smoothbore
+						is_building_type = building_artillery_foundry_breech
+						is_building_type = building_artillery_foundry_recoiled
+						is_building_type = building_artillery_foundry_autofrettage
+						is_building_type = building_artillery_foundry_antiaircraft
+					}
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		unit_army_offense_mult = 0.05
+		unit_army_defense_mult = 0.05
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					OR = {
+						is_building_type = building_arms_industry
+						is_building_type = building_arms_industry_rifles
+						is_building_type = building_arms_industry_repeaters
+						is_building_type = building_arms_industry_bolt_action
+						is_building_type = building_arms_industry_automatic
+						is_building_type = building_arms_industry_stamped
+					}
+					OR = {
+						is_building_type = building_artillery_foundry
+						is_building_type = building_artillery_foundry_smoothbore
+						is_building_type = building_artillery_foundry_breech
+						is_building_type = building_artillery_foundry_recoiled
+						is_building_type = building_artillery_foundry_autofrettage
+						is_building_type = building_artillery_foundry_antiaircraft
+					}
+				}
+				level >= 5
+			}
+		}
+	}
+}
+
+company_construction_power_bloc = {
+	icon = "gfx/interface/icons/company_icons/basic_construction.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_light.dds"
+
+	category = bureaucrat_owned
+
+	building_types = {
+		building_steel_mill
+		building_steel_mill_bessemer
+		building_steel_mill_open_hearth
+		building_steel_mill_electric_arc
+		building_steel_mill_strip_mill
+		building_tooling_workshop
+		building_tooling_workshop_pig_iron
+		building_tooling_workshop_steel
+		building_tooling_workshop_rubber
+		building_tooling_workshop_carbide
+		building_tooling_workshop_tracer
+		building_glassworks
+		building_glassworks_leaded
+		building_glassworks_crystal
+		building_glassworks_plastics
+		building_glassworks_ribbon
+		building_glassworks_fibre
+	}
+
+	extension_building_types = {
+		building_lead_mine
+	}
+
+	potential = {
+		is_in_power_bloc = yes
+	}
+
+	unlocking_principles = {
+		principle_construction_3
+	}
+
+	possible = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					OR = {
+						is_building_type = building_steel_mill
+						is_building_type = building_steel_mill_bessemer
+						is_building_type = building_steel_mill_open_hearth
+						is_building_type = building_steel_mill_electric_arc
+						is_building_type = building_steel_mill_strip_mill
+					}
+					OR = {
+						is_building_type = building_tooling_workshop
+						is_building_type = building_tooling_workshop_pig_iron
+						is_building_type = building_tooling_workshop_steel
+						is_building_type = building_tooling_workshop_rubber
+						is_building_type = building_tooling_workshop_carbide
+						is_building_type = building_tooling_workshop_tracer
+					}
+					OR = {
+						is_building_type = building_glassworks
+						is_building_type = building_glassworks_leaded
+						is_building_type = building_glassworks_crystal
+						is_building_type = building_glassworks_plastics
+						is_building_type = building_glassworks_ribbon
+						is_building_type = building_glassworks_fibre
+					}
+				}
+				level >= 10
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		building_construction_sector_throughput_add = 0.2
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			any_scope_building = {
+				OR = {
+					OR = {
+						is_building_type = building_steel_mill
+						is_building_type = building_steel_mill_bessemer
+						is_building_type = building_steel_mill_open_hearth
+						is_building_type = building_steel_mill_electric_arc
+						is_building_type = building_steel_mill_strip_mill
+					}
+					OR = {
+						is_building_type = building_tooling_workshop
+						is_building_type = building_tooling_workshop_pig_iron
+						is_building_type = building_tooling_workshop_steel
+						is_building_type = building_tooling_workshop_rubber
+						is_building_type = building_tooling_workshop_carbide
+						is_building_type = building_tooling_workshop_tracer
+					}
+					OR = {
+						is_building_type = building_glassworks
+						is_building_type = building_glassworks_leaded
+						is_building_type = building_glassworks_crystal
+						is_building_type = building_glassworks_plastics
+						is_building_type = building_glassworks_ribbon
+						is_building_type = building_glassworks_fibre
+					}
+				}
+				level >= 5
+			}
+		}
+	}
+}

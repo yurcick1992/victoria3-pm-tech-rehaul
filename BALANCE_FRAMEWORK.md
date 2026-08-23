@@ -5258,3 +5258,64 @@ attempt to produce a baseline by re-solving the *unchanged* config came back **b
 capped run — both solves applied the cap. That is a fine determinism check and a useless A/B. The knob was
 written an hour after the comment asserting it was unnecessary.
 
+
+## 10.64 THE COMPANY CHAIN EXTENSION (user-ruled 2026-08-23 — ROADMAP step 5, first shipped cut)
+
+**The ruling.** *"Try adding all industry tiers to all companies that have the industry"* — the IDEAL
+scenario of the 2026-08-23 survey: companies may own and build **every tier of their chains**, form off
+the **lowest existing rung**, and follow the country up the ladder as technology unlocks. The
+*investor-tech* foreign-investment edge (a regional HQ owning abroad what its home country has not
+unlocked, using the host's pool against the host's tech) is **explicitly ACCEPTED**. Implemented as
+`tools/emit_companies.mjs` (see CLAUDE.md), wired into `build.ps1`, which THROWS if it fails.
+
+**Why (F77/F77.1/F79).** Vanilla company types reference a tiered industry only through its first rung —
+`building_types`, `extension_building_types`, all 85 prosperity throughput bonuses, all formation
+`is_building_type` tests, all `ai_construction_targets`. Under the tier split that pointed all THREE of a
+company's economic pulls at the rung the mod wants retired: (1) the country-wide prosperity throughput
+bonus, (2) the code-side +10% throughput / +30% construction efficiency on owned share, (3) the ×2–×3
+investment-AI construction-score multipliers for company building types. Companies held **9.0%** of our
+tiered sector against vanilla's 38.5% (endpoint melts) / **47.4%** (F79's n=18 per-year curve, v7+
+definition), and **86% of the gap is pure lock-out** — 65.7% of our tiered sector sat above rung 1 where
+no company could reach it. F79 also measured what companies are FOR: vanilla's stock converges to 77–90%
+frontier per major, and companies run nearly half its tiered-equivalent sector by 1936. **The ai_value
+ladder stays set aside until this works** (ruling 2026-08-23, ROADMAP step 5).
+
+**What the survey established, and the design leans on (evidence classes as marked):**
+- **[LOC, engine text]** Formation has two HARDCODED gates beside the scripted `possible`: tech to
+  construct **at least one** listed type, and **5 levels of any combination of listed types in one
+  state** not already company-owned (`COMPANY_MINIMUM_LEVELS_PER_HQ`). Listing the whole chain therefore
+  keeps every company formable from tier 1 AND stops the level pool fragmenting per tier.
+- **[FILE, defines]** Companies never spend their own money: they are **selected as owners** of
+  investment-pool construction of their listed types (`OWNER_COMPANY_EXPANSION_CHANCE_MULTIPLIER`, ×100
+  in the HQ state) and their presence multiplies those types' construction scores. So a company has NO
+  tier-selection logic of its own — the tier choice is the construction AI's, which is exactly what the
+  profitability ladder and (later) the ai_value ladder steer. Chain-listing flips the company pulls from
+  backward (rung-1-only) to neutral; the forward tilt is the ladders' job.
+- **[FILE-verified negative]** No bypass of `unlocking_technologies` exists anywhere in defines, AI
+  files or effects — a company cannot cause construction of a tier its state's owner has not unlocked.
+  Not a measurement; the first company arm should carry the cheap detector (v7+ summaries hold
+  `company_levels` per type AND technologies held, so "company-held levels on an unresearched tier" is a
+  one-script post-run check).
+- **[FILE]** `prosperity_modifier` is **country-scope** (the wiki's "company-owned buildings only" is
+  contradicted by the game's own concept text and by the modifiers' contents), so expanding a throughput
+  entry to all tiers means "the bonus follows the industry", which is what it meant in vanilla where one
+  building WAS the industry. Modifier types are **hand-enumerated, not auto-generated** — hence the
+  additive modifier-type file and its loc.
+- **Two scenarios REJECTED by the survey:** *high-tiers-only* `building_types` (t3/t4) is not
+  "unlockable with lower tiers" — the hardcoded gates test the LISTED types, so such a company cannot
+  form until 5 levels of t3+ exist; and *do-nothing* leaves the three rung-1 tilts actively subsidising
+  obsolete capacity.
+
+**Shipped shape (2026-08-23 build):** 22 vanilla company files whole-file-owned (all changed), 195
+companies touched, +1,584 list tokens, 208 OR-wrapped formation tests, 85 prosperity lines expanded
+(exactly F77's census), +656 `ai_construction_targets` entries, 75 new modifier types + loc ×11
+languages. `building_shipyard` maps to BOTH config chains (clippers + steamers) — one vanilla industry,
+two config industries, and a clippers-only company would die with the extinct ladder.
+
+**Status: PROBE, not yet measured.** Deployed for an in-game eyeball; no scheduled arm has run under it.
+The yardstick when one does: F79's vanilla company century (4.0% → 47.4% of the tiered-equivalent sector,
+1846→1936, medians of n=18) read against the same per-year v7+ series on the mod arm, plus the rung
+distribution of company-held levels (F77.1's melt read 100% rung 1 in both arms; success = the company
+rung mix tracking the country's unlocked frontier). Escalation levers deliberately NOT shipped (measure
+the restoration first): company slots on our techs (`country_max_companies_add`), the
+`COMPANY_MINIMUM_LEVELS_PER_HQ` / `OWNER_COMPANY_EXPANSION_CHANCE_MULTIPLIER` defines.

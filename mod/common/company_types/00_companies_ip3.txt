@@ -1,0 +1,1183 @@
+﻿# Săedineni Tyutyunevi Fabriki AD
+company_united_tobacco_factories = {
+	icon = "gfx/interface/icons/company_icons/historical_company_icons/company_united_tobacco_factories.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_plantation.dds"
+
+	category = aristocrat_owned
+
+	flavored_company = yes
+
+	building_types = {
+		building_tobacco_plantation
+	}
+
+	extension_building_types = {
+		building_opium_plantation
+	}
+
+	possible_prestige_goods = {
+		prestige_good_basma_tobacco
+	}
+
+	potential = {
+		has_interest_marker_in_region = sr:region_balkans
+		has_dlc_feature = ip3_content
+	}
+
+	attainable = {
+	}
+
+	possible = {
+		any_scope_state = {
+			state_region = {
+				is_homeland = cu:bulgarian
+			}
+			is_incorporated = yes
+			any_scope_building = {
+				is_building_type = building_tobacco_plantation
+				level >= 5
+			}
+			count >= 2
+		}
+		has_technology_researched = corporate_charters
+	}
+
+	prosperity_modifier = {
+		building_trade_center_throughput_add = 0.05
+		interest_group_ig_industrialists_pop_attraction_mult = 0.2
+		interest_group_ig_industrialists_approval_add = 3
+	}
+
+	ai_will_do = {
+		has_technology_researched = corporate_charters
+		any_scope_state = {
+			state_region = {
+				is_homeland = cu:bulgarian
+			}
+		}
+	}
+
+	ai_construction_targets = {
+		building_tobacco_plantation = {
+			level = 5
+			state_trigger = {
+				state_region = {
+					is_homeland = cu:bulgarian
+				}
+				is_incorporated = yes
+			}
+		}
+	}
+
+	ai_weight = {
+		value = 3 # Higher base value for flavored companies
+	}
+}
+
+# Mate Gavrilović i drug
+company_mate_gavrilovic = {
+	icon = "gfx/interface/icons/company_icons/historical_company_icons/company_mate_gavrilovic.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_light.dds"
+
+	category = shopkeeper_owned
+
+	flavored_company = yes
+
+	building_types = {
+		building_food_industry
+		building_food_industry_sweetener
+		building_food_industry_baking_powder
+		building_food_industry_hydrogenated
+		building_food_industry_mechanised
+	}
+
+	extension_building_types = {
+		building_livestock_ranch
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_groceries
+	}
+
+	potential = {
+		has_interest_marker_in_region = sr:region_balkans
+	}
+
+	attainable = {
+		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
+			s:STATE_CROATIA = {
+				any_scope_state = {
+					owner = root
+				}
+			}
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			state_region = s:STATE_CROATIA
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_food_industry
+					is_building_type = building_food_industry_sweetener
+					is_building_type = building_food_industry_baking_powder
+					is_building_type = building_food_industry_hydrogenated
+					is_building_type = building_food_industry_mechanised
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		unit_morale_recovery_mult = 0.1
+		building_livestock_ranch_throughput_add = 0.1
+		interest_group_ig_petty_bourgeoisie_approval_add = 2
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			state_region = s:STATE_CROATIA
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_food_industry = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_CROATIA
+			}
+		}
+		building_food_industry_sweetener = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_CROATIA
+			}
+		}
+		building_food_industry_baking_powder = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_CROATIA
+			}
+		}
+		building_food_industry_hydrogenated = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_CROATIA
+			}
+		}
+		building_food_industry_mechanised = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_CROATIA
+			}
+		}
+	}
+
+	ai_weight = {
+		value = 3 # Higher base value for flavored companies
+	}
+}
+
+# Stabilimento Tecnico di Fiume / alt. Torpedo-Fabrik von Robert Whitehead
+company_stabilimento_tecnico_di_fiume = {
+	icon = "gfx/interface/icons/company_icons/historical_company_icons/company_stabilimento_tecnico_di_fiume.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_harbor_shipbuilding.dds"
+
+	flavored_company = yes
+
+	building_types = {
+		building_shipyard
+		building_shipyard_complex
+		building_shipyard_metal
+		building_shipyard_metal_steel_hull
+		building_shipyard_metal_turbine
+		building_shipyard_metal_oil_fired
+		building_shipyard_arc_welding
+		building_explosives_factory
+		building_explosives_factory_ammonia
+		building_explosives_factory_vacuum
+		building_explosives_factory_brine
+		building_explosives_factory_cyclonite
+	}
+
+	extension_building_types = {
+		building_steel_mill
+		building_steel_mill_bessemer
+		building_steel_mill_open_hearth
+		building_steel_mill_electric_arc
+		building_steel_mill_strip_mill
+	}
+
+	potential = {
+		has_interest_marker_in_region = sr:region_balkans
+		has_dlc_feature = ip3_content
+	}
+
+	attainable = {
+		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
+			s:STATE_DALMATIA = {
+				any_scope_state = {
+					owner = root
+				}
+			}
+		}
+	}
+
+	possible = {
+		has_technology_researched = self_propelled_torpedoes
+		any_scope_state = {
+			state_region = s:STATE_DALMATIA
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					OR = {
+						is_building_type = building_shipyard
+						is_building_type = building_shipyard_complex
+						is_building_type = building_shipyard_metal
+						is_building_type = building_shipyard_metal_steel_hull
+						is_building_type = building_shipyard_metal_turbine
+						is_building_type = building_shipyard_metal_oil_fired
+						is_building_type = building_shipyard_arc_welding
+					}
+					OR = {
+						is_building_type = building_explosives_factory
+						is_building_type = building_explosives_factory_ammonia
+						is_building_type = building_explosives_factory_vacuum
+						is_building_type = building_explosives_factory_brine
+						is_building_type = building_explosives_factory_cyclonite
+					}
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		ship_hull_damage_mult = 0.075 # Whitehead torpedoes
+	}
+
+	ai_will_do = {
+		has_technology_researched = self_propelled_torpedoes
+		any_scope_state = {
+			state_region = s:STATE_DALMATIA
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_shipyard = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_DALMATIA
+			}
+		}
+		building_shipyard_complex = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_DALMATIA
+			}
+		}
+		building_shipyard_metal = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_DALMATIA
+			}
+		}
+		building_shipyard_metal_steel_hull = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_DALMATIA
+			}
+		}
+		building_shipyard_metal_turbine = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_DALMATIA
+			}
+		}
+		building_shipyard_metal_oil_fired = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_DALMATIA
+			}
+		}
+		building_shipyard_arc_welding = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_DALMATIA
+			}
+		}
+	}
+
+	ai_weight = {
+		value = 3 # Higher base value for flavored companies
+	}
+}
+
+# Klaničko Društvo, Srpsko akcionarsko društvo za klanje i preradu stoke u Beogradu
+company_klanicko_drustvo = {
+	icon = "gfx/interface/icons/company_icons/historical_company_icons/company_klanicko_drustvo.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_light.dds"
+
+	flavored_company = yes
+
+	building_types = {
+		building_food_industry
+		building_food_industry_sweetener
+		building_food_industry_baking_powder
+		building_food_industry_hydrogenated
+		building_food_industry_mechanised
+		building_livestock_ranch
+	}
+
+	extension_building_types = {
+		building_wheat_farm
+		building_logging_camp
+	}
+
+	possible_prestige_goods = {
+		prestige_good_acorn_fed_pork
+	}
+
+	potential = {
+		has_interest_marker_in_region = sr:region_balkans
+		has_dlc_feature = ip3_content
+	}
+
+	attainable = {
+		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
+			s:STATE_WESTERN_SERBIA = {
+				any_scope_state = {
+					owner = root
+				}
+			}
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			state_region = s:STATE_WESTERN_SERBIA
+			is_incorporated = yes
+			any_scope_building = {
+				is_building_type = building_livestock_ranch
+				level >= 5
+			}
+			any_scope_building = {
+				OR = {
+					is_building_type = building_food_industry
+					is_building_type = building_food_industry_sweetener
+					is_building_type = building_food_industry_baking_powder
+					is_building_type = building_food_industry_hydrogenated
+					is_building_type = building_food_industry_mechanised
+				}
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		building_livestock_ranch_throughput_add = 0.1
+		building_synthetics_plant_throughput_add = 0.05
+		building_synthetics_plant_indigo_throughput_add = 0.05
+		building_synthetics_plant_viscose_throughput_add = 0.05
+		building_synthetics_plant_polyamide_throughput_add = 0.05
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			state_region = s:STATE_WESTERN_SERBIA
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_livestock_ranch = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_WESTERN_SERBIA
+			}
+		}
+		building_food_industry = {
+			level = 1
+			state_trigger = {
+				state_region = s:STATE_WESTERN_SERBIA
+			}
+		}
+		building_food_industry_sweetener = {
+			level = 1
+			state_trigger = {
+				state_region = s:STATE_WESTERN_SERBIA
+			}
+		}
+		building_food_industry_baking_powder = {
+			level = 1
+			state_trigger = {
+				state_region = s:STATE_WESTERN_SERBIA
+			}
+		}
+		building_food_industry_hydrogenated = {
+			level = 1
+			state_trigger = {
+				state_region = s:STATE_WESTERN_SERBIA
+			}
+		}
+		building_food_industry_mechanised = {
+			level = 1
+			state_trigger = {
+				state_region = s:STATE_WESTERN_SERBIA
+			}
+		}
+	}
+
+	ai_weight = {
+		value = 3 # Higher base value for flavored companies
+	}
+}
+
+# Jakub Klein a spol.
+company_jakub_klein = {
+	icon = "gfx/interface/icons/company_icons/historical_company_icons/company_jakub_klein.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_light.dds"
+
+	flavored_company = yes
+
+	building_types = {
+		building_logging_camp
+		building_paper_mill
+		building_paper_mill_sulfite
+		building_paper_mill_bleached
+		building_paper_mill_kraft
+		building_paper_mill_nssc
+		building_paper_mill_highspeed
+	}
+
+	extension_building_types = {
+		building_chemical_plant
+		building_chemical_plant_ammoniacal
+		building_chemical_plant_improved
+		building_chemical_plant_nitrogen
+		building_chemical_plant_reforming
+	}
+
+	potential = {
+		has_interest_marker_in_region = sr:region_balkans
+	}
+
+	attainable = {
+		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
+			s:STATE_SLOVAKIA = {
+				any_scope_state = {
+					owner = root
+				}
+			}
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			state_region = s:STATE_SLOVAKIA
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_logging_camp
+					OR = {
+						is_building_type = building_paper_mill
+						is_building_type = building_paper_mill_sulfite
+						is_building_type = building_paper_mill_bleached
+						is_building_type = building_paper_mill_kraft
+						is_building_type = building_paper_mill_nssc
+						is_building_type = building_paper_mill_highspeed
+					}
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		building_paper_mill_throughput_add = 0.1
+		building_paper_mill_sulfite_throughput_add = 0.1
+		building_paper_mill_bleached_throughput_add = 0.1
+		building_paper_mill_kraft_throughput_add = 0.1
+		building_paper_mill_nssc_throughput_add = 0.1
+		building_paper_mill_highspeed_throughput_add = 0.1
+		building_group_bg_agriculture_throughput_add = 0.05
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			state_region = s:STATE_SLOVAKIA
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_logging_camp = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_SLOVAKIA
+			}
+		}
+		building_paper_mill = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_SLOVAKIA
+			}
+		}
+		building_paper_mill_sulfite = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_SLOVAKIA
+			}
+		}
+		building_paper_mill_bleached = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_SLOVAKIA
+			}
+		}
+		building_paper_mill_kraft = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_SLOVAKIA
+			}
+		}
+		building_paper_mill_nssc = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_SLOVAKIA
+			}
+		}
+		building_paper_mill_highspeed = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_SLOVAKIA
+			}
+		}
+	}
+
+	ai_weight = {
+		value = 3 # Higher base value for flavored companies
+	}
+}
+
+# Első Budapesti Gőzmalom Rt. / First Budapest Steam Mill Co.
+company_elso_budapesti_gozmalom = {
+	icon = "gfx/interface/icons/company_icons/historical_company_icons/company_elso_budapesti_gozmalom.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_farm_wheat.dds"
+
+	flavored_company = yes
+
+	building_types = {
+		building_wheat_farm
+		building_food_industry
+		building_food_industry_sweetener
+		building_food_industry_baking_powder
+		building_food_industry_hydrogenated
+		building_food_industry_mechanised
+	}
+
+	extension_building_types = {
+		building_logging_camp
+	}
+
+	possible_prestige_goods = {
+		prestige_good_pannonian_patent_flour
+	}
+
+	potential = {
+		has_interest_marker_in_region = sr:region_balkans
+		has_dlc_feature = ip3_content
+	}
+
+	attainable = {
+		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
+			s:STATE_CENTRAL_HUNGARY = {
+				any_scope_state = {
+					owner = root
+				}
+			}
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			state_region = s:STATE_CENTRAL_HUNGARY
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_food_industry
+					is_building_type = building_food_industry_sweetener
+					is_building_type = building_food_industry_baking_powder
+					is_building_type = building_food_industry_hydrogenated
+					is_building_type = building_food_industry_mechanised
+				}
+			}
+		}
+		any_scope_state = {
+			has_state_trait = state_trait_pannonian_plain
+			is_incorporated = yes
+			any_scope_building = {
+				is_building_type = building_wheat_farm
+				level >= 5
+			}
+			count >= 3
+		}
+	}
+
+	prosperity_modifier = {
+		building_wheat_farm_throughput_add = 0.15
+		state_trade_advantage_mult = 0.05
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			state_region = s:STATE_CENTRAL_HUNGARY
+			has_state_trait = state_trait_pannonian_plain
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_wheat_farm = {
+			level = 5
+			state_trigger = {
+				has_state_trait = state_trait_pannonian_plain
+			}
+		}
+		building_food_industry = {
+			level = 1
+			state_trigger = {
+				state_region = s:STATE_CENTRAL_HUNGARY
+			}
+		}
+		building_food_industry_sweetener = {
+			level = 1
+			state_trigger = {
+				state_region = s:STATE_CENTRAL_HUNGARY
+			}
+		}
+		building_food_industry_baking_powder = {
+			level = 1
+			state_trigger = {
+				state_region = s:STATE_CENTRAL_HUNGARY
+			}
+		}
+		building_food_industry_hydrogenated = {
+			level = 1
+			state_trigger = {
+				state_region = s:STATE_CENTRAL_HUNGARY
+			}
+		}
+		building_food_industry_mechanised = {
+			level = 1
+			state_trigger = {
+				state_region = s:STATE_CENTRAL_HUNGARY
+			}
+		}
+	}
+
+	ai_weight = {
+		value = 3 # Higher base value for flavored companies
+	}
+}
+
+# Witkowitzer Bergbau- und Hüttengewerkschaft
+company_witkowitzer_bergbau_und_huttengewerkschaft = {
+	icon = "gfx/interface/icons/company_icons/historical_company_icons/company_witkowitzer_bergbau_und_huttengewerkschaft.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_mining.dds"
+
+	flavored_company = yes
+
+	building_types = {
+		building_coal_mine
+		building_iron_mine
+	}
+
+	extension_building_types = {
+		building_lead_mine
+		building_sulfur_mine
+	}
+
+	potential = {
+		has_interest_marker_in_region = sr:region_central_europe
+		has_dlc_feature = ip3_content
+	}
+
+	attainable = {
+		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
+			any_scope_state = {
+				state_region = s:STATE_MORAVIA
+			}
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			state_region = s:STATE_MORAVIA
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_coal_mine
+					is_building_type = building_iron_mine
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		building_construction_sector_throughput_add = 0.05
+		building_power_plant_throughput_add = 0.1
+		building_power_plant_pulverized_throughput_add = 0.1
+		building_power_plant_oil_throughput_add = 0.1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			state_region = s:STATE_MORAVIA
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_coal_mine = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_MORAVIA
+			}
+		}
+		building_iron_mine = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_MORAVIA
+			}
+		}
+	}
+
+	ai_weight = {
+		value = 3 # Higher base value for flavored companies
+	}
+}
+
+# Oesterreichisch-Alpine Montangesellschaft
+company_oesterreichisch_alpine_montangesellschaft = {
+	icon = "gfx/interface/icons/company_icons/historical_company_icons/company_oesterreichisch_alpine_montangesellschaft.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_mining.dds"
+
+	flavored_company = yes
+
+	building_types = {
+		building_steel_mill
+		building_steel_mill_bessemer
+		building_steel_mill_open_hearth
+		building_steel_mill_electric_arc
+		building_steel_mill_strip_mill
+		building_iron_mine
+	}
+
+	extension_building_types = {
+		building_railway
+		building_railway_steam
+		building_railway_electric
+		building_railway_diesel
+	}
+
+	potential = {
+		has_interest_marker_in_region = sr:region_central_europe
+	}
+
+	attainable = {
+		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
+			s:STATE_STYRIA = {
+				any_scope_state = {
+					owner = root
+				}
+			}
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			state_region = s:STATE_STYRIA
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					OR = {
+						is_building_type = building_steel_mill
+						is_building_type = building_steel_mill_bessemer
+						is_building_type = building_steel_mill_open_hearth
+						is_building_type = building_steel_mill_electric_arc
+						is_building_type = building_steel_mill_strip_mill
+					}
+					is_building_type = building_iron_mine
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		building_coal_mine_throughput_add = 0.1
+		building_railway_throughput_add = 0.05
+		building_railway_steam_throughput_add = 0.05
+		building_railway_electric_throughput_add = 0.05
+		building_railway_diesel_throughput_add = 0.05
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			state_region = s:STATE_STYRIA
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_steel_mill = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_STYRIA
+			}
+		}
+		building_steel_mill_bessemer = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_STYRIA
+			}
+		}
+		building_steel_mill_open_hearth = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_STYRIA
+			}
+		}
+		building_steel_mill_electric_arc = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_STYRIA
+			}
+		}
+		building_steel_mill_strip_mill = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_STYRIA
+			}
+		}
+		building_iron_mine = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_STYRIA
+			}
+		}
+	}
+
+	ai_weight = {
+		value = 3 # Higher base value for flavored companies
+	}
+}
+
+# Getzner, Mutter & Cie
+company_getzner_mutter = {
+	icon = "gfx/interface/icons/company_icons/historical_company_icons/company_getzner_mutter.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_light.dds"
+
+	flavored_company = yes
+
+	building_types = {
+		building_textile_mill
+		building_textile_mill_dye
+		building_textile_mill_sewing
+		building_textile_mill_electric
+		building_textile_mill_highdraft
+		building_power_plant
+		building_power_plant_pulverized
+		building_power_plant_oil
+	}
+
+	extension_building_types = {
+		building_synthetics_plant
+		building_synthetics_plant_indigo
+		building_synthetics_plant_viscose
+		building_synthetics_plant_polyamide
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_clothes
+	}
+
+	potential = {
+		has_interest_marker_in_region = sr:region_central_europe
+		has_dlc_feature = ip3_content
+	}
+
+	attainable = {
+		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
+			s:STATE_TYROL = {
+				any_scope_state = {
+					owner = root
+				}
+			}
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			state_region = s:STATE_TYROL
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_textile_mill
+					is_building_type = building_textile_mill_dye
+					is_building_type = building_textile_mill_sewing
+					is_building_type = building_textile_mill_electric
+					is_building_type = building_textile_mill_highdraft
+				}
+				level >= 5
+			}
+			any_scope_building = {
+				OR = {
+					is_building_type = building_power_plant
+					is_building_type = building_power_plant_pulverized
+					is_building_type = building_power_plant_oil
+				}
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		building_synthetics_plant_throughput_add = 0.1
+		building_synthetics_plant_indigo_throughput_add = 0.1
+		building_synthetics_plant_viscose_throughput_add = 0.1
+		building_synthetics_plant_polyamide_throughput_add = 0.1
+		interest_group_ig_petty_bourgeoisie_approval_add = 2
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			state_region = s:STATE_TYROL
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_textile_mill = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_TYROL
+			}
+		}
+		building_textile_mill_dye = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_TYROL
+			}
+		}
+		building_textile_mill_sewing = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_TYROL
+			}
+		}
+		building_textile_mill_electric = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_TYROL
+			}
+		}
+		building_textile_mill_highdraft = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_TYROL
+			}
+		}
+		building_power_plant = {
+			level = 1
+			state_trigger = {
+				state_region = s:STATE_TYROL
+			}
+		}
+		building_power_plant_pulverized = {
+			level = 1
+			state_trigger = {
+				state_region = s:STATE_TYROL
+			}
+		}
+		building_power_plant_oil = {
+			level = 1
+			state_trigger = {
+				state_region = s:STATE_TYROL
+			}
+		}
+	}
+
+	ai_weight = {
+		value = 3 # Higher base value for flavored companies
+	}
+}
+
+# Erste Brünner Maschinenfabriks-Gesellschaft / První brněnská strojírna
+company_erste_brunner = {
+	icon = "gfx/interface/icons/company_icons/historical_company_icons/company_erste_brunner.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_light.dds"
+
+	flavored_company = yes
+
+	building_types = {
+		building_motor_industry
+		building_motor_industry_compound
+		building_motor_industry_electric
+		building_motor_industry_diesel
+		building_motor_industry_welded_diesel
+		building_tooling_workshop
+		building_tooling_workshop_pig_iron
+		building_tooling_workshop_steel
+		building_tooling_workshop_rubber
+		building_tooling_workshop_carbide
+		building_tooling_workshop_tracer
+	}
+
+	extension_building_types = {
+		building_power_plant
+		building_power_plant_pulverized
+		building_power_plant_oil
+	}
+
+	possible_prestige_goods = {
+		prestige_good_brunn_type_engines
+	}
+
+	potential = {
+		has_interest_marker_in_region = sr:region_central_europe
+		has_dlc_feature = ip3_content
+	}
+
+	attainable = {
+		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
+			s:STATE_MORAVIA = {
+				any_scope_state = {
+					owner = root
+				}
+			}
+		}
+	}
+
+	possible = {
+		any_scope_state = {
+			state_region = s:STATE_MORAVIA
+			is_incorporated = yes
+			any_scope_building = {
+				OR = {
+					OR = {
+						is_building_type = building_tooling_workshop
+						is_building_type = building_tooling_workshop_pig_iron
+						is_building_type = building_tooling_workshop_steel
+						is_building_type = building_tooling_workshop_rubber
+						is_building_type = building_tooling_workshop_carbide
+						is_building_type = building_tooling_workshop_tracer
+					}
+					OR = {
+						is_building_type = building_motor_industry
+						is_building_type = building_motor_industry_compound
+						is_building_type = building_motor_industry_electric
+						is_building_type = building_motor_industry_diesel
+						is_building_type = building_motor_industry_welded_diesel
+					}
+				}
+				level >= 5
+			}
+		}
+	}
+
+	prosperity_modifier = {
+		building_textile_mill_throughput_add = 0.1
+		building_textile_mill_dye_throughput_add = 0.1
+		building_textile_mill_sewing_throughput_add = 0.1
+		building_textile_mill_electric_throughput_add = 0.1
+		building_textile_mill_highdraft_throughput_add = 0.1
+		building_power_plant_throughput_add = 0.1
+		building_power_plant_pulverized_throughput_add = 0.1
+		building_power_plant_oil_throughput_add = 0.1
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			state_region = s:STATE_MORAVIA
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_tooling_workshop = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_MORAVIA
+			}
+		}
+		building_tooling_workshop_pig_iron = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_MORAVIA
+			}
+		}
+		building_tooling_workshop_steel = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_MORAVIA
+			}
+		}
+		building_tooling_workshop_rubber = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_MORAVIA
+			}
+		}
+		building_tooling_workshop_carbide = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_MORAVIA
+			}
+		}
+		building_tooling_workshop_tracer = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_MORAVIA
+			}
+		}
+		building_motor_industry = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_MORAVIA
+			}
+		}
+		building_motor_industry_compound = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_MORAVIA
+			}
+		}
+		building_motor_industry_electric = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_MORAVIA
+			}
+		}
+		building_motor_industry_diesel = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_MORAVIA
+			}
+		}
+		building_motor_industry_welded_diesel = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_MORAVIA
+			}
+		}
+	}
+
+	ai_weight = {
+		value = 3 # Higher base value for flavored companies
+	}
+}
