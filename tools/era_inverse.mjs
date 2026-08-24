@@ -67,6 +67,14 @@ const TOL_PP = 3;                                     // "on mandate" = implied 
 const OUTER = +(process.env.INV_OUTER || 6);          // design-book ↔ pop-limited re-anchoring passes
 const ANCHOR_POP_SHARE = 0.5;                         // pop share of buy above which a persistent miss re-anchors
 const HIGHLIGHT_PP = 30;                              // ⚠ a pop price this far from base is flagged
+// ⭐ THE DOMINANT MARGIN — a DESIGN AXIOM (user-ruled 2026-08-24: "Redo with 40% margins at my price
+// ladder"). The era-e rung's recipe is solved to earn THIS margin at its own era's book price; the
+// recipe's substance is the COST ENVELOPE C = P/(1+m) — at +40% on the 175−25·era ladder that is
+// 125/107/89/71/54/36 per era. The superseded +5% (the §10.49 dominant target carried over from
+// solver 1) put C at 167…48: recipes viable only at prices the LIVE game never pays, measured as the
+// solver2-n2 GDP collapse (world ×0.18 of vanilla by 1936, tiered margins ~£0 all century, the
+// investment pool never filling). Margin and price are one claim factorised — see §10.65.2.
+const DOM_MARGIN = +(process.env.INV_MARGIN || 0.40);
 
 const { E, S, PMECON, config: CFG_RAW } = loadEcon({ quiet: true });
 const rules = makePmRules(E, S);
@@ -408,7 +416,7 @@ function deriveRecipes() {
     setEraContext(e); thruAllTiers();
     for (const { i, t } of byEra.get(e)) {
       const target = t.solve_profit != null ? +t.solve_profit
-                   : TG.minus1 + (SHIP_INDUSTRIES.has(i.id) ? TG.shipyard_penalty : 0);
+                   : DOM_MARGIN + (SHIP_INDUSTRIES.has(i.id) ? TG.shipyard_penalty : 0);
       const k = E.thruMult(t.key);
       const O = E.outputValue(i, t, true), Wc = E.wageCost(t), secI = E.selInVal(t._sec, true);
       const outGood = E.tierOut(i, t);
@@ -1078,7 +1086,7 @@ for (let outer = 1; outer <= OUTER; outer++) {
   if (outer > 1 && maxD < 2) break;
 }
 
-console.log('\n── PHASE 1: RECIPES DERIVED AT THE HYBRID BOOK (dominant target +5%, shipyards −30pp, solve_profit honoured) ──');
+console.log(`\n── PHASE 1: RECIPES DERIVED AT THE HYBRID BOOK (dominant target +${Math.round(DOM_MARGIN * 100)}%, shipyards −30pp, solve_profit honoured) ──`);
 {
   const capN = {};
   for (const r of RECIPES) { const c = r.skip ? 'skip:' + r.skip : (r.cap || 'on-target'); capN[c] = (capN[c] || 0) + 1; }
