@@ -8506,3 +8506,75 @@ anything subtler does. Attribution is clean ONLY for the margin lever (s2→s2b)
 aival/vanilla still confound the whole book. Build-choice numbers remain inadmissible-with-caveats
 (volumes still well under aival2's). The inflection is one run's shape; treat the "vanilla-pace late
 growth" claim as provisional until solver2c replicates it from a better start.
+
+## F83 — THE VANILLA-ANCHORED LADDER IN-GAME: vanilla-fidelity to 1890, then an OVERSHOOT to ×1.53 — and a century with ZERO tiered losses, so the ladder climbs by accumulation, not displacement
+
+**Arm:** solver2c-n1 (`20260824_174224`) — the §10.65.3 book (price ladder 120/100/84/71/59/50,
++40% margins, envelopes be 86/71/60/51/42/36) + ai_value 500+1000×(era+1), sha `0549AD08…D039FA`.
+vs solver2b: **only `tiers[].inputs` + `target_be`** — the price-ladder axiom's one-lever A/B
+(top 175/150 → 120/100, slope 25pp-linear → ×0.84). n=1, 1836.1.1→1936.1.1, L17-clean, 100/100
+summaries. Benchmarks: F79 vanilla n=18, solver2b (F82), aival2.
+
+### World GDP
+
+| year | solver2c | vanilla med (min–max) | s2c/van | in env | s2b/van | aival2/van |
+|---|---|---|---|---|---|---|
+| 1840 | £430M | £445M (£437–462M) | 0.97× | no | 0.90× | 1.03× |
+| 1850 | £547M | £577M (£548–599M) | 0.95× | no (−£1M) | 0.84× | 1.00× |
+| 1860 | £666M | £725M (£657–744M) | 0.92× | YES | 0.72× | 0.97× |
+| 1880 | £931M | £1,056M (£942–1,150M) | 0.88× | no (−£11M) | 0.61× | 0.95× |
+| 1890 | £1,177M | £1,351M (£1,149–1,518M) | 0.87× | YES | 0.50× | 0.90× |
+| 1900 | £1,692M | £1,725M (£1,235–1,982M) | 0.98× | YES | 0.45× | 0.88× |
+| 1910 | £2,730M | £2,142M (£1,655–2,459M) | **1.27×** | no | 0.43× | 0.85× |
+| 1920 | £4,293M | £2,815M (£2,031–3,283M) | **1.53×** | no | 0.39× | 0.90× |
+| 1930 | £6,285M | £3,827M (£3,040–4,433M) | **1.64×** | no | 0.38× | 0.92× |
+| 1936 | £6,952M | £4,551M (£3,750–5,199M) | **1.53×** | no | 0.40× | 0.95× |
+
+In-envelope 40/100 years (all pre-1900). Century ×17.3 vs vanilla ×10.9. 1920→1936 growth ×1.62 =
+vanilla's ×1.62 exactly — the overshoot accumulates 1890–1920 and then parallels. The anchor test
+(pre-registered): 1837 −3.5% (predicted ~2%, narrow miss; s2b was −10%, s2 −16%), 1840 £7M under
+the envelope floor, **inside the envelope every year 1841–1850** — the F81/F82 early-book stock
+effect is closed.
+
+### Mechanism (pooled GBR/USA/FRA/NET/BEL/PRU/GER)
+
+| | 1850 | 1880 | 1910 | 1930 |
+|---|---|---|---|---|
+| tiered profit s2c | £391k/wk | £856k | £7,444k | £16,047k |
+| tiered profit aival2 | £446k | £1,500k | £3,222k | £7,607k |
+| tiered levels s2c / aival2 | 1,442/1,490 | 2,288/2,850 | 9,943/5,916 | 18,151/9,648 |
+| investment pool s2c / aival2 | £22.6M/£6.4M | £5.4M/£7.8M | £183M/£4.7M | **£2,451M**/£102M |
+| tiered VA share s2c | 36% | 53% | 79% | 80% |
+
+A genuine construction boom (~2× aival2's physical scale by 1930) with the pool ending at 24×
+aival2's — margins outran even a booming economy's absorptive capacity.
+
+### ⭐ THE DESIGN FINDING: NOTHING DIES — accumulation, not displacement
+
+Tiered losses ≈ £0 in every read, all century. Stale rungs keep GROWING beside the new ones
+(1900→1930, world levels: sewing textile 284→936, pig-iron tooling 398→568, baking-powder food
+210→531 — while mechanised food, electric-arc steel, highdraft textile, carbide tooling all adopt
+on top). Prices explain it: **the consumer chains genuinely deflate in-game** (British market 1930,
+% of base: clothes 62, furniture 42, fabric 55, groceries 82 — the mod's designed decline, live)
+**but intermediates do not** (tools 102, iron 108, steel 84, paper 97 vs designed ~50–59), and
+input/output prices CO-DEFLATE (fabric 55 under clothes 62), so an old rung's effective break-even
+falls with its output price and only the 10–40% wage share differentiates rungs. The
+relative-price squeeze the scenario solver engineers does not self-reproduce in the live game
+under ×0.84 slope + 40% margins — §10.65.2's stale-profitable trade confirmed in-game at full
+strength.
+
+### Tier choice (F75/F76 family)
+
+Below-best **39.8%** raw / 42.3% unit-weighted / 44.6% ex-ports — past aival2's 47.17%, best yet.
+⚠ Confounded (book × the 500+1000×(era+1) variant); volumes exceed aival2's, so admissible unlike
+s2/s2b. First frontier building: below-frontier 86.6%→35.9%. Adoption lag median 0y, p75 4y;
+30.6% of unlockable tiers never built.
+
+### What it does NOT say
+
+n=1 — GDP-shape claims (×1.5-scale, monotone, mechanism measured) stand; anything subtler does
+not. GDP = 52×VA and a leaner book inflates VA per unit of activity — part of the late ratio is
+bookkeeping, though the 2× level count says most is scale. Whether the ×1.5 overshoot is
+acceptable against the "after 1836 only GDP stays near vanilla" premise, and whether
+no-displacement demands a steeper late slope or lower late margins, are DESIGN RULINGS pending —
+this finding measures, it does not decide.
