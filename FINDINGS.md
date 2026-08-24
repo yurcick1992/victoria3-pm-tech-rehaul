@@ -8459,3 +8459,50 @@ same day: the dominant margin became a design AXIOM at +40% (`INV_MARGIN`, commi
 - It does not condemn the inverse ARCHITECTURE — the recipes' substance is the envelope row, and the
   architecture takes any envelope row (§10.65.2, the factorisation argument). It condemns C ≈ 143–167
   early, i.e. thin margins priced against a market that never materialises.
+
+## F82 — THE MARGIN-AXIOM A/B: +5% → +40% on identical everything moved world GDP from ×0.18 to ×0.40 of vanilla, with a late-century inflection to vanilla-pace growth
+
+**Arms:** solver2-n2 run001 (`20260824_114350`, the +5% inverse book) vs solver2b-n1 (`20260824_152005`,
+the +40% book) — **structural diff exactly `tiers[].inputs` + `tiers[].target_be`** (the margin axiom's
+consequences); ai_value ladder, config, patch (1.13.11), machine, day identical. n=1 each,
+1836.1.1→1936.1.1, both L17-clean. Benchmarks: F79 vanilla n=18; aival2 (n=2).
+
+### World GDP
+
+| year | solver2b (+40%) | solver2 (+5%) | vanilla med | s2b/van | s2b/s2 |
+|---|---|---|---|---|---|
+| 1840 | £402M | £370M | £445M | 0.90× | 1.09× |
+| 1860 | £522M | £468M | £725M | 0.72× | 1.12× |
+| 1880 | £642M | £564M | £1,056M | 0.61× | 1.14× |
+| 1900 | £779M | £634M | £1,725M | 0.45× | 1.23× |
+| 1920 | £1,097M | £724M | £2,815M | 0.39× | 1.52× |
+| 1930 | £1,472M | £778M | £3,827M | **0.38×** | 1.89× |
+| 1936 | £1,842M | £802M | £4,551M | **0.40×** | **2.30×** |
+
+×4.6 century growth vs ×2.2; **the vanilla ratio bottoms at 1930 and turns UP** — 1920→1936 growth
+×1.68 vs vanilla's ×1.62. The book's back half (envelopes ≤ vanilla parity from e3, measured F81-style
+at ×1.00/×0.76 vanilla input share at e3/e4) grows at vanilla pace once the economy reaches it.
+
+### The mechanism (pooled GBR/USA/FRA/NET/BEL/PRU/GER)
+
+| | 1850 | 1880 | 1910 | 1930 |
+|---|---|---|---|---|
+| tiered profit, solver2b | £233k/wk | £337k | £1,011k | £3,312k |
+| tiered profit, solver2 (+5%) | £33k | £38k | £53k | — |
+| tiered profit, aival2 | £446k | £1,500k | £3,222k | £7,607k |
+| investment pool, solver2b | £2.8M | £1.2M | £4.7M | £24.3M |
+| tiered levels, solver2b | 1,365 | 1,638 | 2,637 | 4,673 |
+| tiered levels, aival2 | 1,490 | 2,850 | 5,916 | 9,648 |
+
+The zero-margin signature (F81) is gone from 1850; the engine still starts ~60 years late vs the
+canonical-book aival2 — early tiered profit half of aival2's — which is the e0/e1 rich-rung drag
+(input share ×2.15/×1.54 vanilla, the −10% 1837 stock effect), i.e. the ladder TOP, not the margins.
+Closed by §10.65.3 (vanilla-anchored ladder, envelopes 86/71/60/51/42/36) → validation arm solver2c.
+
+### What it does NOT say
+
+n=1 per arm — the GDP effect (×2 at century-end, monotone, mechanism measured) doesn't need more;
+anything subtler does. Attribution is clean ONLY for the margin lever (s2→s2b); comparisons to
+aival/vanilla still confound the whole book. Build-choice numbers remain inadmissible-with-caveats
+(volumes still well under aival2's). The inflection is one run's shape; treat the "vanilla-pace late
+growth" claim as provisional until solver2c replicates it from a better start.
