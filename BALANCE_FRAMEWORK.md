@@ -5674,3 +5674,25 @@ What that fixes as design state:
    stale-profitable trade, confirmed in-game at full strength. Any fix must attack the RELATIVE
    margin between rungs (or capacity itself), not the price level — the price level is what the
    anchor ruling just settled.
+
+**Two displacement levers RULED OUT the same night:**
+- ❌ **A technology-carried obsolescence malus** (negative throughput on the rung two eras below,
+  attached to the displacing tech) — **"out of the question. We need emergent obsolescence, not
+  pegged."** The user also named the exploit it would mint: concentrate lower-tier industry in your
+  SUBJECTS, whose countries lack the tech and hence the malus. Do not re-propose modifier-based rot
+  in any form.
+- ⚠ **Capital deepening** (per-level employment declining up the ladder) is judged a COMPLEMENT at
+  best: it steepens the construction incentive and enlarges the old rungs' wage exposure, but with
+  paybacks at 3.7y everything still gets built and no standing stock dies — it cannot create
+  displacement while prices sit above every rung's break-even.
+
+**The open direction (proposed, not ruled): the PER-GOOD PRICE SYSTEM — granular ladders with an
+enforced death condition.** F84 measured the mechanism's ground truth: vanilla runs INPUT SCARCITY
+(fabric rises under flat clothes) while our lean late recipes manufacture the co-deflation
+ourselves (raw demand lags, raw prices fall with output prices). The self-consistent design:
+per-industry anchors = each output's MEASURED vanilla realized price (the §10.65.3 vanilla-anchor
+ruling made granular); raw-input paths taken from measurement rather than asserted flat-100; and
+each industry's output slope derived from the death condition against ITS OWN input-mix path —
+`r_o² < κ·[(1−w)·r_i² + w·g_w]/(1+m)` — so displacement is emergent from cost structure and free
+entry, no pegs. Industries with deflating inputs need steeper slopes (textile at fabric ×0.90/era ⇒
+output ×≤0.78/era); flat-input industries keep ×0.84; rising-input industries gentler.

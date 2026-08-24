@@ -360,15 +360,6 @@ function renderPerf(mode){
   <p class="small" id="decomp-cap"></p>
   </div>
 
-  <div class="card tablewrap">
-  <h3>Trajectory — this arm ÷ vanilla baseline</h3>
-  <table id="t-traj">
-    <tr><th>year</th><th class="num">GDP ×van</th><th class="num">econ levels ×van</th><th class="num">construction ×van</th><th class="num">non-productive adults <span class="dim">(vs van)</span></th><th class="num">pure unemployment <span class="dim">(vs van)</span></th></tr>
-  </table>
-  <p class="small">Non-productive adults = unemployed + peasant workforce ÷ all employable non-dependants.
-  Construction = points delivered per year, inferred from level additions × cost.</p>
-  </div>
-
   <figure class="card">
     <div class="fighead">
       <h3>Who works where — employment in tier buildings, by era</h3>
@@ -391,25 +382,6 @@ function renderPerf(mode){
   the level-addition view cannot show — a rung's workforce contracting while its buildings still stand.
   ⚠ e0 declines only from the 1920s–30s; whether that lateness is the cheap book's doing is a watchlist-level
   question — check per-country on the Watchlist page.</p>
-  </div>
-
-  <div class="card tablewrap">
-  <h3>The ladder — climb and death</h3>
-  <table id="t-ladder">
-    <tr><th>year</th><th>most-built era</th><th class="num">e0 share of builds</th><th class="num">frontier rung payback</th><th class="num">stale rung payback</th><th class="num">stale staffing</th></tr>
-  </table>
-  <p class="small">Frontier = newest rung with ≥50 world levels; stale = two eras below the most-built era
-  (e0 where none). Payback = years of realised weekly profit to repay construction at £720/pt. ⚠ "Most-built" and
-  "e0 share" come from gross level additions (positive year-on-year deltas only — blind to contraction); the
-  employment view above is the contraction-aware complement. Vanilla's own payback runs 10–15y (F53): the frontier
-  column sitting at 3–6y is the overshoot engine.</p>
-  </div>
-
-  <div class="card tablewrap">
-  <h3>Build choice — how much construction goes below the frontier</h3>
-  <table id="t-tierc"></table>
-  <table id="t-tierc-dec" style="margin-top:8px"></table>
-  <p class="small" id="tierc-cap"></p>
   </div>
 
   <div class="card tablewrap">
@@ -436,7 +408,35 @@ function renderPerf(mode){
   JEs by design). No per-date JE series yet — PMR_JE lines carry no game date; the wall-clock join against
   run.log's ticks is the route.</p>
   </div>
-</div>
+<div class="card tablewrap">
+  <h3>Build choice — how much construction goes below the frontier</h3>
+  <table id="t-tierc"></table>
+  <table id="t-tierc-dec" style="margin-top:8px"></table>
+  <p class="small" id="tierc-cap"></p>
+  </div>
+
+  <div class="card tablewrap">
+  <h3>The ladder — climb and death</h3>
+  <table id="t-ladder">
+    <tr><th>year</th><th>most-built era</th><th class="num">e0 share of builds</th><th class="num">frontier rung payback</th><th class="num">stale rung payback</th><th class="num">stale staffing</th></tr>
+  </table>
+  <p class="small">Frontier = newest rung with ≥50 world levels; stale = two eras below the most-built era
+  (e0 where none). Payback = years of realised weekly profit to repay construction at £720/pt. ⚠ "Most-built" and
+  "e0 share" come from gross level additions (positive year-on-year deltas only — blind to contraction); the
+  employment view above is the contraction-aware complement. Vanilla's own payback runs 10–15y (F53): the frontier
+  column sitting at 3–6y is the overshoot engine.</p>
+  </div>
+
+  <div class="card tablewrap">
+  <h3>Trajectory — this arm ÷ vanilla baseline</h3>
+  <table id="t-traj">
+    <tr><th>year</th><th class="num">GDP ×van</th><th class="num">econ levels ×van</th><th class="num">construction ×van</th><th class="num">non-productive adults <span class="dim">(vs van)</span></th><th class="num">pure unemployment <span class="dim">(vs van)</span></th></tr>
+  </table>
+  <p class="small">Non-productive adults = unemployed + peasant workforce ÷ all employable non-dependants.
+  Construction = points delivered per year, inferred from level additions × cost.</p>
+  </div>
+
+  </div>
 
 <!-- ============ WATCHLIST PAGE ============ -->
 <div class="page" id="page-watch">
@@ -461,6 +461,14 @@ function renderPerf(mode){
     see the ⚠ flags above.</figcaption>
   </figure>
 
+  <div class="card tablewrap">
+  <h3>Fewer workers × more product per worker — the G4/G5 decomposition, selection</h3>
+  <table id="t-wdecomp"></table>
+  <p class="small">Same construction as the world table, summed over the selected tags (tags alive in both arms
+  only, per year). This is where the premise splits: leaders can satisfy it (GBR alone reads workers &lt;1 ×
+  productivity &gt;1) while the world aggregate inverts it — select subsets to see who carries which factor.</p>
+  </div>
+
   <figure class="card">
     <div class="fighead">
       <h3>Employment in tier buildings, by era — selection</h3>
@@ -481,15 +489,32 @@ function renderPerf(mode){
   the selection's obsolete rungs shedding real workers.</p>
   </div>
 
-  <div class="card tablewrap">
-  <h3>Fewer workers × more product per worker — the G4/G5 decomposition, selection</h3>
-  <table id="t-wdecomp"></table>
-  <p class="small">Same construction as the world table, summed over the selected tags (tags alive in both arms
-  only, per year). This is where the premise splits: leaders can satisfy it (GBR alone reads workers &lt;1 ×
-  productivity &gt;1) while the world aggregate inverts it — select subsets to see who carries which factor.</p>
+    <div class="card tablewrap">
+  <h3 id="windecomp-h">Industry composition of the selection — value added</h3>
+  <table id="t-windecomp"></table>
+  <p class="small">Cells read <b>mod% <span class="dim">/ vanilla%</span></b> of the SELECTION'S value added in the
+  current scope (whole economy = broad sectors; tiered sector = the exact industries). Bottom row: absolute £M/wk.
+  Same construction as the world panel, summed over the selected tags.</p>
   </div>
 
+<div class="card tablewrap">
+  <div class="fighead">
+    <h3>Research — technologies held (mean per country, by game era) and journal entries — selection</h3>
+    <div class="ctagbar" id="trees-s"></div>
+  </div>
+  <table id="t-tech-s"></table>
+  <table id="t-je-s" style="margin-top:10px"></table>
+  <p class="small">Same construction as the world tables, over the selected tags (techs: selection mean vs the
+  same tags' vanilla mean; JEs: cumulative firings by the selected countries), filtered by the tree chips.</p>
+  </div>
   <div class="card tablewrap">
+  <h3>Build choice — how much construction goes below the frontier</h3>
+  <table id="t-tierc2"></table>
+  <p class="small">⚠ WORLD-WIDE totals, identical to the World page — the build-choice measure is not yet computed
+  per country, so this panel does not follow the selection (the one deliberate divergence between the two pages).</p>
+  </div>
+
+<div class="card tablewrap">
   <h3>Labour — selection vs vanilla (pop-weighted mean of country shares)</h3>
   <table id="t-wlab"></table>
   <p class="small">Pure unemployment = unemployed ÷ (unemployed + salaried); non-productive = unemployed + peasant
@@ -519,17 +544,7 @@ function renderPerf(mode){
   </table>
   </div>
 
-  <div class="card tablewrap">
-  <div class="fighead">
-    <h3>Research — technologies held (mean per country, by game era) and journal entries — selection</h3>
-    <div class="ctagbar" id="trees-s"></div>
   </div>
-  <table id="t-tech-s"></table>
-  <table id="t-je-s" style="margin-top:10px"></table>
-  <p class="small">Same construction as the world tables, over the selected tags (techs: selection mean vs the
-  same tags' vanilla mean; JEs: cumulative firings by the selected countries), filtered by the tree chips.</p>
-  </div>
-</div>
 
 <!-- ============ INCIDENTS + NEXT (always visible) ============ -->
 <section class="sec">
@@ -569,7 +584,7 @@ const WORLD_PURE={1840:[17.7,18.2],1860:[30.0,30.1],1880:[28.7,30.1],1900:[23.2,
 const LADDER={1840:['e1',39,'e2',5.7,'e0',14.8,0.89],1860:['e1',29,'e2',9.4,'e0',12.6,0.83],1880:['e1–e2',22,'e3',6.1,'e0',12.3,0.80],1900:['e3',10,'e4',3.5,'e1',9.1,0.78],1920:['e4',6,'e5',3.8,'e2',7.5,0.79],1935:['e4',5,'e5',3.3,'e2',10.9,0.64]};
 const WATCH={1840:[1.02,0.38,0.79,0.10,67.0,65.7,76],1860:[1.08,0.56,0.97,0.21,65.2,63.4,72],1880:[1.18,0.82,1.22,0.56,58.1,59.6,73],1900:[1.28,1.25,1.56,1.18,48.8,52.1,48],1920:[2.03,2.02,2.30,1.67,22.0,40.7,51],1935:[1.95,2.44,2.64,2.19,6.3,25.6,52]};
 const TIERC={rows:[],cap:''};
-const INDECOMP={years:[],rows:[],tot:{mod:{},van:{}}};
+const INDECOMP={years:[],mod:{},van:{}};
 const YEARS=[1840,1860,1880,1900,1920,1935];
 const EYRS=Object.keys(EMP).map(Number);
 // ---------- per-country data (watchlist) ----------
@@ -594,8 +609,8 @@ document.getElementById('tab-world').onclick=()=>page('world');
 document.getElementById('tab-watch').onclick=()=>page('watch');
 // ⚠ render1 joins these: the GDP chart is scope-aware since F74, and forgetting it here is how a
 // control silently stops applying to one card - which is the exception this whole change removed.
-document.getElementById('sc-all').onclick=()=>{SCOPE='all';press('sc-all','sc-tier');renderDecompWorld();renderWatch();render1();};
-document.getElementById('sc-tier').onclick=()=>{SCOPE='tier';press('sc-tier','sc-all');renderDecompWorld();renderWatch();render1();};
+document.getElementById('sc-all').onclick=()=>{SCOPE='all';press('sc-all','sc-tier');renderDecompWorld();renderCompWorld();renderWatch();render1();};
+document.getElementById('sc-tier').onclick=()=>{SCOPE='tier';press('sc-tier','sc-all');renderDecompWorld();renderCompWorld();renderWatch();render1();};
 
 // ---------- world tables ----------
 const cmp=(f,v)=>f.toFixed(1)+'% <span class="dim">/ '+v.toFixed(1)+'%</span>';
@@ -737,21 +752,29 @@ if(TIERC.dec&&TIERC.dec.length){
   td.insertRow().innerHTML='<th>this batch, by decade</th>'+TIERC.dec.map(d=>'<th class="num">'+d[0]+'s</th>').join('');
   td.insertRow().innerHTML='<td>below-best share</td>'+TIERC.dec.map(d=>'<td class="num">'+d[1].toFixed(0)+'%</td>').join('');
 }
-const idc=document.getElementById('t-indecomp');
-if(INDECOMP.rows.length){
-  idc.insertRow().innerHTML='<th>industry</th>'+INDECOMP.years.map(y=>'<th class="num">'+y+'</th>').join('');
-  for(const r of INDECOMP.rows)
-    idc.insertRow().innerHTML='<td>'+r.id+'</td>'+INDECOMP.years.map(y=>{
-      const m=r.mod[y],v=r.van[y];
-      return '<td class="num">'+(m!=null?m.toFixed(1)+'%':'—')+' <span class="dim">/ '+(v!=null?v.toFixed(1)+'%':'—')+'</span></td>';
-    }).join('');
-  idc.insertRow().innerHTML='<td><b>tiered VA £M/wk</b></td>'+INDECOMP.years.map(y=>{
-    const m=INDECOMP.tot.mod[y],v=INDECOMP.tot.van[y];
-    return '<td class="num"><b>'+(m!=null?m.toFixed(1):'—')+'</b> <span class="dim">/ '+(v!=null?v.toFixed(1):'—')+'</span></td>';
-  }).join('');
-}else{
-  idc.insertRow().innerHTML='<td class="small">No industry-decomposition data — run fill_indecomp.mjs and refill.</td>';
+// ---- industry composition (scope-aware; the same builder serves world AND selection) ----------
+function compTable(el,getM,getV,rowLabel){
+  el.innerHTML='';
+  if(!INDECOMP.years.length){el.insertRow().innerHTML='<td class="small">No industry-composition data — run fill_indecomp.mjs and refill.</td>';return;}
+  const yrs=INDECOMP.years;
+  const tot=o=>Object.values(o||{}).reduce((a,b)=>a+b,0);
+  const last=yrs[yrs.length-1];
+  const keys=[...new Set(yrs.flatMap(y=>Object.keys(getM(y)||{})))].sort((a,b)=>((getM(last)||{})[b]||0)-((getM(last)||{})[a]||0));
+  el.insertRow().innerHTML='<th>'+rowLabel+'</th>'+yrs.map(y=>'<th class="num">'+y+'</th>').join('');
+  const pct=(o,k)=>{const t=tot(o);const v=(o||{})[k];return t&&v!=null?(100*v/t).toFixed(1)+'%':'—';};
+  for(const k of keys)
+    el.insertRow().innerHTML='<td>'+k+'</td>'+yrs.map(y=>'<td class="num">'+pct(getM(y),k)+' <span class="dim">/ '+pct(getV(y),k)+'</span></td>').join('');
+  el.insertRow().innerHTML='<td><b>total VA £M/wk</b></td>'+yrs.map(y=>{
+    const m=tot(getM(y)),v=tot(getV(y));
+    return '<td class="num"><b>'+(m?(m/1e6).toFixed(1):'—')+'</b> <span class="dim">/ '+(v?(v/1e6).toFixed(1):'—')+'</span></td>';}).join('');
 }
+function renderCompWorld(){
+  const kind=SCOPE==='tier'?'ind':'broad';
+  compTable(document.getElementById('t-indecomp'),
+    y=>(INDECOMP.mod[y]||{})[kind],y=>(INDECOMP.van[y]||{})[kind],
+    SCOPE==='tier'?'industry':'sector');
+}
+renderCompWorld();
 const wat=document.getElementById('t-watch');
 for(const y of YEARS){
   const w=WATCH[y];
@@ -1053,6 +1076,19 @@ function renderWatch(){
   const jeSel={};
   for(const tg of sel){const jt=(D2.jeT&&D2.jeT.tags[tg])||{};for(const [k,v] of Object.entries(jt))jeSel[k]=(jeSel[k]||0)+v;}
   jeTable(document.getElementById('t-je-s'),jeSel,trees);
+  // industry composition of the selection (scope-aware)
+  const kindS=SCOPE==='tier'?'ind':'broad';
+  const sumSel=(arm,y)=>{const o={};for(const tg of sel){const t=((INDECOMP[arm][y]||{}).tags||{})[tg];if(!t)continue;for(const [k,v] of Object.entries(t[kindS]||{}))o[k]=(o[k]||0)+v;}return o;};
+  document.getElementById('windecomp-h').textContent='Industry composition of the selection — value added ('+(SCOPE==='tier'?'exact industries':'broad sectors')+')';
+  compTable(document.getElementById('t-windecomp'),y=>sumSel('mod',y),y=>sumSel('van',y),SCOPE==='tier'?'industry':'sector');
+  // build choice, mirrored (world-wide — see the caption)
+  const tc2=document.getElementById('t-tierc2');
+  tc2.innerHTML='';
+  if(TIERC.rows.length){
+    tc2.insertRow().innerHTML='<th>arm</th><th class="num">below-best share of levels built</th><th class="num">unit-weighted</th><th class="num">excluding ports</th><th class="num">…and LESS efficient than the frontier</th>';
+    for(const r of TIERC.rows)
+      tc2.insertRow().innerHTML='<td>'+r.arm+'</td><td class="num">'+(r.raw!=null?r.raw.toFixed(1)+'%':'—')+'</td><td class="num">'+(r.unit!=null?r.unit.toFixed(1)+'%':'—')+'</td><td class="num">'+(r.exports!=null?r.exports.toFixed(1)+'%':'—')+'</td><td class="num">'+(r.less!=null?'<b>'+r.less.toFixed(1)+'%</b>':'—')+'</td>';
+  }
   // labour table (pop-weighted)
   const t=document.getElementById('t-wlab');
   t.innerHTML='<tr><th>year</th><th class="num">pure unemployment <span class="dim">(vs van)</span></th><th class="num">non-productive adults <span class="dim">(vs van)</span></th><th class="num">tags in cell</th></tr>';

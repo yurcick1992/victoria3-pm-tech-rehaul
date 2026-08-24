@@ -5,6 +5,13 @@ World / Watchlist pages (tab switcher) → placeholders → incidents → next l
 encodes, all user-ruled:
 
 - **Every graph/table gets a normalized/absolute toggle** unless there is a specific local reason not to.
+- ⭐ **THE TWO PAGES CARRY THE SAME PANELS IN THE SAME ORDER** (user-ruled 2026-08-24): **GDP →
+  G4/G5 decomposition → employment by era (chart + table) → industry composition (VA) → research →
+  build choice**, then page-specific extras (world: ladder, trajectory; watchlist: labour, tech
+  edge, ex-placeholders). A view diverges only for a stated reason, written in its caption — today
+  exactly one: the watchlist build-choice panel shows WORLD totals (no per-country cut computed
+  yet). The **industry composition panel follows the SCOPE control as a detalisation**: whole
+  economy = broad sectors, tiered sector = the exact 22 industries — same panel, deeper cut.
 - **Every graph/table exists at world level AND watchlist level** (the twelve majors: GBR RUS FRA USA
   PRU TUR AUS SPA BRZ SIC POR NET), the watchlist with **selectable countries** (filter chips).
   **NET was added 2026-08-17** as the port-seed control: the §10.60.3 chain seed converts anchorages

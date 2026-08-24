@@ -186,7 +186,7 @@
       "from": "fill_indecomp.mjs",
       "required": true,
       "minKeys": 3,
-      "means": "industry decomposition: each industry's share of tiered VA, world, mod beside vanilla — user-required 2026-08-24, permanent"
+      "means": "industry composition of VALUE ADDED: {years, mod, van}, each year {ind, broad, tags} - absolute GBP/wk so the renderer can follow scope + selection; user-required 2026-08-24, permanent, BOTH pages"
     }
   ],
   "tables": [
@@ -259,6 +259,16 @@
       "id": "t-wlab",
       "minRows": 4,
       "means": "labour, selection"
+    },
+    {
+      "id": "t-windecomp",
+      "minRows": 5,
+      "means": "industry composition of the selection (VA)"
+    },
+    {
+      "id": "t-tierc2",
+      "minRows": 2,
+      "means": "build choice, watchlist mirror (world-wide)"
     }
   ],
   "controls": [

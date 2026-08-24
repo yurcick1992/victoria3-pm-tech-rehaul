@@ -8578,3 +8578,36 @@ bookkeeping, though the 2× level count says most is scale. Whether the ×1.5 ov
 acceptable against the "after 1836 only GDP stays near vanilla" premise, and whether
 no-displacement demands a steeper late slope or lower late margins, are DESIGN RULINGS pending —
 this finding measures, it does not decide.
+
+## F84 — REALIZED PRICE PATHS, MOD vs VANILLA: the co-deflation that shields stale rungs is ENDOGENOUS to the lean late recipes; vanilla runs the OPPOSITE regime (input scarcity)
+
+**Source:** market telemetry (British market, 12 pinned dump dates), solver2c-n1 vs the vanilla
+n=18 baseline (per-good MEDIAN across the 16 n16 runs). % of base price:
+
+| good | class | mod 1850/1880/1900/1930 | vanilla 1850/1880/1900/1930 |
+|---|---|---|---|
+| fabric | raw input | 84 · 69 · 58 · **55** | 70 · 79 · 93 · **96** |
+| wood | raw input | 109 · 103 · 106 · 96 | 107 · 102 · 86 · 87 |
+| iron | raw input | 137 · 102 · 103 · 108 | 142 · 103 · 94 · 100 |
+| coal | raw input | 110 · 103 · 124 · 113 | 109 · 118 · 106 · 107 |
+| tools | intermediate | 136 · 139 · 130 · **102** | 130 · 115 · 102 · 91 |
+| steel | intermediate | 132 · 59 · 83 · 84 | 132 · 124 · 107 · 114 |
+| paper | intermediate | 170 · 137 · 113 · 97 | 162 · 133 · 118 · 109 |
+| engines | intermediate | 131 · 91 · 116 · 96 | 150 · 140 · 138 · 135 |
+| clothes | final | 103 · 105 · 98 · **62** | 109 · 109 · 120 · **108** |
+| furniture | final | 109 · 119 · 57 · **42** | 121 · 115 · 107 · 84 |
+| groceries | final | 139 · 121 · 115 · 82 | 143 · 119 · 110 · 114 |
+
+**The reading.** (1) **Vanilla is a near-base economy end to end** — finals at 84–114% in 1930,
+intermediates 91–135 — and its raw inputs get SCARCER, not cheaper: fabric RISES 70→96 while
+clothes hold ~108. The engine's natural regime squeezes input-heavy production. (2) **The mod
+inverts that**: fabric crashes 84→55 UNDER clothes' 103→62 — the F83 co-deflation — and the cause
+is our own book: later tiers eat far less raw input per unit of output, so raw demand lags supply
+growth and the raw price falls WITH the output price instead of against it. The design's flat-100
+raw premise is broken by the design's own leanness. (3) The mod's finals overshoot the design's
+decline (clothes 62 vs designed ~59–71 band) while intermediates undershoot it (tools 102 vs
+designed ~50–59) — consumer chains deflate hard, producer chains hold near base.
+
+**What it does NOT say:** n=1 on the mod side; one market (Britain — the biggest); realized paths
+under a build-cost fix will differ (less boom = more downward price pressure). The vanilla side is
+n=16 medians and solid.
