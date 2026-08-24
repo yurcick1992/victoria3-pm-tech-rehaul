@@ -1,0 +1,63 @@
+{
+  "schedule_version": 1,
+  "label": "solver2-n2",
+  "_why": "THE SOLVER-2 (INVERSE-SOLVE) BOOK IN-GAME, user-directed 2026-08-24: 'Build this Solver 2, add the flat ai_value ladder (500+1000*(era+1)), go with n=2.' First in-game outing of the inverse solver's recipe book (BALANCE_FRAMEWORK §10.65.2: recipes DERIVED from the designed price ladder 175-25pp*era with pop-limited yields, wood knot resolved via SINGLE_GOOD_REFS) COMBINED with the next rung of the F76 ai_value ladder family. ⚠ THIS ARM MOVES TWO DIMENSIONS AT ONCE (recipe book AND ai_value ladder) BY DELIBERATE USER DIRECTION - it is a design candidate under test, not a controlled decomposition; no single-dimension attribution may be claimed from it. ARM: {kind: config, config: config/mod_config.solver2.json}. SPAN 1836.1.1 -> 1936.1.1, n=2, metrics identical to canon-n7 / aival / aival2 / the F79 vanilla baseline.",
+  "_arms": "solver2 = {kind: config, config: config/mod_config.solver2.json}, PAIRED with config/tech_tree_options.solver2.json (landmine L20; the pair passed a full -DryRun build before launch: LINT/NEGATIVE-GOODS/SOLVENCY/MOD CHECKS/PREFLIGHT all green). Derived from the canonical config at HEAD by tools/make_solver2_config.mjs; structural diff vs canonical is EXACTLY three per-tier fields - inputs (104), target_be (104, restated from the new recipes under the linter's legacy wage_pct model, same demotion rule era_solver.mjs uses), ai_value (105) - output_qty UNCHANGED (the x1.5 ladder is intact), no top-level key moved. Frozen config sha256 53CC8F1381C2A0C38FAD69EAB9C517A8E7167E16ADCD8E30B58203A155724E0F - L10: run_schedule rebuilds before every run, both build_state.json must show this hash; build.ps1 / telemetry_lib.ps1 / emit_*.mjs are not to be touched for the duration. The ai_value ladder is 500+1000*(era+1): e0 1500 / e1 2500 / e2 3500 / e3 4500 / e4 5500 / e5 6500 - EVERY rung above the untiered field's engine default of 1000, which F76 measured as the operative contrast. Ships on 98 of 105 tiers: power (3) and railway (4) keep vanilla's conditional ai_value blocks by the standing aival ruling (the builder Write-Warns its refusal on all seven; verified in the dry run).",
+  "_predictions": "PRE-REGISTERED (the F78 principle: state the prediction BEFORE the run; a differing result is then a finding, and the first hypothesis for it is an undrawn feedback path). (1) BUILD-CHOICE HEADLINE (the channel that resolves at n=2: per-run sd was 0.81pp in aival and 0.60pp in aival2): the below-best-tier share falls BELOW aival2's range (46.57-47.77%, mean 47.17%), continuing the monotone F76 progression canon 52.94 -> aival 50.52 -> aival2 47.17; direction predicted, magnitude deliberately NOT. If it does NOT clear aival2's range, the contrast mechanism is saturating - itself a finding. (2) RECIPE-BOOK DIRECTION ONLY, loops named: the solver-2 book carries RICHER early rungs (e0-e1 tooling/glass/paper at be ~143-148, solved at designed 150-175% output prices) and LEANER late rungs than the canonical book, so early-game raw-input demand (wood especially - e1 tooling eats ~120 wood/level) should run HIGHER than canon-n7's and late-era manufacturing margins healthier; both pass through price/construction feedback, so magnitudes are not predicted. (3) NOT a prediction but the sharpest watch: the consumer chains (food/textile/furniture) run recipes solved at POP-LIMITED prices (~80-100% of base) rather than the canonical band prices - whether their in-game realised profitability lands nearer zero than canon's is the first genuine in-game test of the pop-anchor half of §10.65.2.",
+  "_comparison": "PRIMARY: canon-n7 (20260818_221216, n=6, 1.13.10), aival (20260819_215528, n=4, 1.13.11) and aival2 (20260820_095104, n=2, 1.13.11) on the F75/F76 build-choice measure via tools/testbed/ledger/analyse_ai_tier_choice.mjs --session <stamp> --config config/mod_config.solver2.json. SECONDARY: the F79 pinned vanilla baseline (20260821_131149 + 20260823_113218, n=18, 1.13.11) for the variance envelope, row P pop-matched wall clock, advanced_panel and tiered_panel productivity reads, and VA composition (F80's va_composition.mjs runs unchanged on this session's summaries - the solver-2 book's VA-upstream shift, §10.65.2 item 2 of F80, is directly testable here). AGGREGATES CANNOT DECIDE AT n=2 (canon-n7 measured 71% GDP spread across byte-identical runs) - GDP/levels/counts are watched for gross breakage only.",
+  "_watch": "(1) The build-choice headline vs aival2. (2) THE OVERSHOOT (standing): per-sector share of built levels via analyse_build_allocation.mjs --a <aival2> --b <this> - the ladder now makes every tier outbid every untiered building on desire; if extraction/agriculture construction shares collapse below aival2's, the ladder overshot (a fail, not a win). (3) THE RECIPE-BOOK SOLVENCY CHECK IN THE WILD: per-building profit from the yearly save summaries - do the rich early rungs (tooling e0/e1, glass e1) run losses at in-game realised prices, and do the consumer chains (recipes at pop prices) hold up. (4) Wood: early logging demand and camp counts vs canon-n7 (prediction 2), plus whether hardwood - domestic in-game (the game AI can pick hardwood PMs; the import stance is solver-side only) - behaves. (5) Row P pop-matched wall clock vs the F79 envelope, indicative. (6) queue_mix at the first 1837 summary (the F66 smoke rule) - the ai_value ladder is exactly the kind of change that could re-skew the private queue.",
+  "_cost": "2 runs x 100 in-game years, ~2h35 each on the mod (the measured curve, NOT the opening rate) + 2 builds + concurrent save harvest = ~5.5h wall clock. Disk at launch checked >= 40 GB free; expected retained session ~0.4 GB.",
+  "_caveats": "n=2 resolves ONLY the within-run-ratio channels (build choice; per-building profit medians); everything else is directional at best. TWO-DIMENSIONAL ARM (recipes + ai_value): any effect vs aival2 confounds the two levers except where a channel is plausibly single-lever (build choice is ai_value's channel per F76; per-building margins are the book's). Game 1.13.11 expected (same as aival/aival2/F79 baseline) - the smoke check verifies the version-match line in error.log. building_inventory DELIBERATELY ABSENT (ring eviction, standing rule). Save harvest ON and concurrent - required (build-choice, VA and row P all read the yearly summaries). All runs moderate_consolidation - verify from world.game_rules. L17 post-run: preflight.ps1 -Session on the folder; a short run is excluded from n by hand. L19 verified 0 orphaned victoria3.exe at launch. Machine otherwise idle for row P.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "The twelve dates match canon-n7, aival, aival2 and the F79 vanilla baseline exactly - what keeps the sessions comparable."
+  },
+  "setups": {
+    "solver2": {
+      "kind": "config",
+      "config": "config/mod_config.solver2.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "solver2",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "solver2",
+      "until": "1936.1.1"
+    }
+  ]
+}

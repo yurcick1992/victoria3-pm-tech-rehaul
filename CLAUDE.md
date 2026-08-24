@@ -866,6 +866,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         Writes config/era_inverse.json only; touches nothing canonical.
                         Standalone prototype — its premise tables are a marked FORK of
                         era_scenarios.mjs's (that module solves at import time and cannot be imported)
+  make_solver2_config.mjs derives config/mod_config.solver2.json — the SOLVER-2 ARM (user-directed
+                        2026-08-24): canonical config + the inverse-solve recipe book (§10.65.2) +
+                        target_be restated (the era_solver drift-guard rule) + ai_value = 500+1000×(era+1)
+                        on every tier (the F76 ladder family’s next rung; power/railway’s 7 tiers refuse
+                        it by the standing ruling). Copies the L20 tech-tree twin. Deterministic
   era_macro.mjs         the macroscenario DATA: per-industry X and per-group Y (real US shares of the
                         mapped commodity economy, 2 significant figures, adjustment tags (b)asket
                         (i)mport (a)rmy-premise (s)judgment recorded per row) + profession bands, and
