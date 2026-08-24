@@ -5536,4 +5536,67 @@ era-preset schema by construction, fractional counts). Verified end-to-end: appl
 letting the panel's auto price mode recompute reproduces the solver's book exactly (steel/tools/engines/
 iron 100 = the era-3 mandate; clothes 93, groceries 96, telephones 63 = the named yields). Both halves
 are build-time copies of config/era_inverse.json — after a `--write`, rebuild. The artifact additionally
-carries `va_by_industry` per scenario (the VA composition the UI cannot show).
+carries `va_by_industry` per scenario (the VA composition the UI cannot show; vanilla's measured
+counterpart is FINDINGS F80).
+
+### ⭐⭐ THE TUNING DISCIPLINE — what may be tuned in the inverse solver, and what structurally prevents the solver-1 slope (stated 2026-08-24, prompted by the user's ceiling request)
+
+Solver 1's constraint accretion had a MECHANISM, not a moral failing: every rule entered the fixed-point
+LOOP as a feedback term, and inside a loop a constraint does not just bind — it REDISTRIBUTES. It moves
+prices, which move recipes, which move counts, which surface a new artifact somewhere else, which
+motivates the next rule (the documented chain: ceiling → no-buyer → raw bands → shrink → PM freeze →
+lift → ratchet → solvency), and the rules then needed precedence rules against EACH OTHER (ceiling
+outranks §10.18; undrop-on-breach; §10.51's collisions). On a jagged response surface (±10 faults from
+no-ops) every knob purchase had to be validated on 3-seed ensembles — tuning became measurement-bound.
+
+The inverse solver's tunables split into three tiers, and the tier decides the discipline:
+1. **DESIGN AXIOMS** — the price book (the ladder formula, the plateau rule), the profit targets, the
+   premises (population, SoL, peasant share, army 5%, the construction ramp), the placement rules.
+   Tune freely: they ARE the design, each is visible as data in the artifact, and each applies
+   uniformly to everything. There is no per-good exception anywhere in this tier.
+2. **CLASSIFICATION RULES** — what counts as pop-dominated (>50% of buy), thin (<8 units), industrial
+   (a tiered output, from its first tier's era). These decide WHICH axiom applies to a good, so they
+   change the answer: treat them as design rulings — few, named, stated in one place.
+3. **SEARCH KNOBS** — damping, factor clamps, futility windows, outer passes, the one-appeal rule.
+   These move HOW the solve converges, not where: the fixed point is knob-independent EXCEPT where the
+   answer is genuinely under-determined (a pop-fed industry's scale), and those spots are FLAGGED as
+   under-determined rather than silently knob-set.
+
+**The rule that keeps it from sliding: a new requirement enters as an AXIOM (change the book or a
+premise) or as an ACCEPTANCE CRITERION (a verify line that fails the scenario by name) — never as a new
+feedback term in the loop.** A failed criterion is remedied by a structural lever (a book change, a
+premise change, a new degree of freedom like PM mixing), ruled explicitly — never by a gain. What makes
+this enforceable rather than aspirational: prices are AXIOMS here, not state, so there is no controller
+for a rule to leak into, and infeasibility cannot be silently traded away — it lands in a named residual
+class (pop-limited / joint-production / scale-capped / wall / thin) instead of being absorbed by price
+drift as in solver 1.
+
+**The §10.15 industrial-input ceiling, added under that rule (verify-only, same session):** RESTRICTED =
+every good any tier recipe, secondary PMG, or combat-unit upkeep can consume (computed from the config
+as loaded — recipe goods SETS are invariant under the solve); a restricted good realising ≥174.5 in a
+non-thin market fails the era by name, and a BOOK that asks a restricted good for the edge is flagged as
+a breach-by-design (era 0's mandate of 175 flags 7 goods — the user's own first-pass spec, §10.65 header
+warning now enforced as a criterion). Result on the shipped run: breaches **1 · 1 · 1 · 0 · 1 · 1** —
+clippers@e0 (thin-economy shipbuilding), artillery@e1 (unconverged micro-market), clippers@e2 (the
+shipyard knot: port demands 282, every producer decayed/froze), wood@e4+e5 (below). No control term was
+added; the failures point at their structural levers.
+
+### The WOOD case — the joint-production knot, mechanics now measured (user question, 2026-08-24)
+
+Wood's realised price across the six scenarios: **25 · 105 · 103 · 25 · 175 · 175** against a design of
+100 everywhere. Not noise — three named causes, read off the shipped presets:
+- **One lever serves two goods in PM-fixed proportions.** Logging camps' era PM (Phase A's selection)
+  produces wood:hardwood at **1:0 (e0) · 1:1 (e1–e2) · 3:1 (e3–e5)** while the DEMAND ratio swings from
+  20:1 (e3: wood 12.6k vs hardwood 0.6k) to 10:1 (e5). The camp count is steered by the value-weighted
+  blend of both goods' errors, so whenever the two disagree the blend nets toward zero, the futility
+  guard reads "steering moved producers, ratio did not move", and camps FREEZE at a path-dependent size:
+  524 camps at e3 (wood glutted to 25, sell 35k vs buy 12.6k) against 60–124 at e4–e5 (wood starved to
+  175, buy 13–20k vs sell 4–8k — paper + furniture recipes tripling demand while the camps stand frozen).
+- **e0's 25 is a classification accident worth knowing about**: pop firewood is >50% of the tiny e0 wood
+  demand, so wood got pop-anchored and the anchor accepted the glut price.
+- **The structural lever, named**: PM MIXING. In the game, different camps in different states run
+  different PMs; the model pins one PM per building type per era. Splitting multi-output raw producers
+  into per-PM sub-producers (a camp@wood-only population beside a camp@sawmill population, each steered
+  by its own outputs) gives the second lever the two mandates need. That is a new degree of freedom —
+  tier-1 above — not a tuning knob, and it is the pass-4 item PM-choice-in-the-solve reduced to its
+  smallest useful piece.

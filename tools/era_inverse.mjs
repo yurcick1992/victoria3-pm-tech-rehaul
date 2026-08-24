@@ -250,6 +250,35 @@ const goneGoods = era => {
 };
 
 // ===================================================================================================
+// THE INDUSTRIAL-INPUT CEILING — §10.15's rule, AS AN ACCEPTANCE CRITERION, NOT A CONTROL TERM.
+//
+// The rule is solver 1's: no good that industry or the army can consume may sit AT the +75% band edge,
+// because a pinned input can no longer signal scarcity and everything downstream is priced against a
+// wall. ⚠ THE IMPLEMENTATION IS DELIBERATELY DIFFERENT FROM SOLVER 1'S, and this is the line that keeps
+// the inverse solver off the constraint slope: solver 1 enforced the ceiling INSIDE the loop (price
+// caps, count boosts, PM-score penalties — three levers, each interacting with every other constraint
+// through the fixed point). Here it is a VERIFY line: the seed runs, and any restricted good whose
+// realised price pins at the edge FAILS the scenario by name, with its residual class attached
+// (joint-production, wall, scale-cap…). The remedy is then a structural change — a book change, a
+// premise change, a new lever like PM mixing — ruled explicitly, never a feedback gain.
+//
+// The set is computed from the CONFIG AS LOADED (main-recipe input goods sets are invariant under the
+// recipe solve — solveTier rescales quantities, never the goods list — so load-time is always), plus
+// every secondary PMG's inputs and every combat unit's upkeep (the §10.15 army half).
+const RESTRICTED = new Set();
+for (const i of S.IND) {
+  for (const t of i.tiers) for (const g in (t.inputs || {})) if (t.inputs[g] > 0) RESTRICTED.add(g);
+  for (const pmg of (i.secondary_pmgs || [])) {
+    const grp = S.VAN.pmgs[pmg]; if (!(grp && grp.pms)) continue;
+    for (const pm of grp.pms) { const r = E.pmRec(pm); for (const g in (r.in || {})) if (r.in[g] > 0) RESTRICTED.add(g); }
+  }
+}
+for (const u of (E.unitTypes ? E.unitTypes() : [])) {
+  const io = E.unitGoodsIO(u); for (const g in (io.in || {})) RESTRICTED.add(g);
+}
+const CEIL_EDGE = 174.5;   // "at the edge" — the engine rounds to 175; realised ≥ this is a pinned input
+
+// ===================================================================================================
 // THE MANDATE
 // ===================================================================================================
 const isIndustrial = (g, era) => GOOD_FIRST_ERA[g] != null && GOOD_FIRST_ERA[g] <= era;
@@ -821,6 +850,11 @@ function seedScenario(eIx) {
   const popShareOf = {};      // every traded good's pop share of buy — the re-anchor gate
   const thinOf = {};          // a market too thin to anchor on: its price is band-edge noise, not a
                               // pop statement (era-0 luxuries flip 25↔175 on unit-sized moves)
+  const ceilingBreach = [];   // restricted goods pinned at the +75% edge — the §10.15 verify line
+  // …and the DESIGN side of the same rule: a book that ASKS a restricted good to sit at the edge is a
+  // breach the composition can never avoid (the era-0 mandate of 175 is exactly this)
+  const ceilingByDesign = [];
+  for (const g in S.PRICES) if (RESTRICTED.has(g) && bookPrice(eIx, g) >= CEIL_EDGE) ceilingByDesign.push(g);
   const mandErrs = [];        // log((buy/sell)/rho) per NON-pop good — for the offset/dispersion split
   let checked = 0, onMandate = 0, tieredN = 0, tieredOnDesign = 0;
   for (const g in S.PRICES) {
@@ -833,6 +867,7 @@ function seedScenario(eIx) {
     popShareOf[g] = popShare;
     thinOf[g] = buy < 8;
     if (popShare > ANCHOR_POP_SHARE && !thinOf[g]) consumer.push({ g, p: praw, popShare, hot: Math.abs(praw - 100) > HIGHLIGHT_PP });
+    if (RESTRICTED.has(g) && praw >= CEIL_EDGE && !thinOf[g]) ceilingBreach.push({ g, buy, sell });
     else if (buy > 1e-3 && sell > 1e-3) mandErrs.push(Math.log((buy / sell) / buyOverSell(bookPrice(eIx, g))));
     checked++;
     // the user's question, tracked directly: does this tiered output HOLD the design ladder?
@@ -962,6 +997,7 @@ function seedScenario(eIx) {
     eIx, era, iters, resid, N, FIXED1, byGood, placement, refProducers,
     tradeSupplied: [...tradeSupplied], walls: [...walls], offMandate, checked, onMandate,
     consumer, realisedP, popShareOf, thinOf, tieredN, tieredOnDesign,
+    ceilingBreach, ceilingByDesign,
     futile: [...FUTILE], aggMean, aggDisp, structOn, mandN: mandErrs.length,
     faults, sec, indShare, grossAll, gdp, vaList, vaAll,
     pops: { ...S.POPS }, jobs: productiveWorkforce(),
@@ -1083,6 +1119,12 @@ for (const r of SCEN) {
   console.log(`    POP-PRICED GOODS (pop > ${ANCHOR_POP_SHARE * 100}% of buy; ⚠ = >${HIGHLIGHT_PP}pp from base — ${hot.length} of ${r.consumer.length}):`);
   wrapPrint(r.consumer.map(c => `${c.hot ? '⚠' : ''}${c.g} ${Math.round(c.p)}`));
   if (r.futile.length) console.log(`    unsteerable (steering moved producers, ratio did not move): ${r.futile.join(', ')}`);
+  console.log(`    INDUSTRIAL-INPUT CEILING (§10.15 as a verify line): ` + (r.ceilingBreach.length
+    ? `⚠ ${r.ceilingBreach.length} consumable input(s) AT the +75% edge — `
+      + r.ceilingBreach.map(c => { const o = r.offMandate.find(x => x.g === c.g);
+          return `${c.g} (buy ${fmtN(c.buy)} / sell ${fmtN(c.sell)}${o ? ', ' + o.cls : ''})`; }).join(' · ')
+    : 'clear')
+    + (r.ceilingByDesign.length ? `   ⚠ the DESIGN itself asks the edge for: ${r.ceilingByDesign.length} good(s) (era-0 mandate 175)` : ''));
   if (r.offMandate.length) {
     console.log('    OFF MANDATE:');
     for (const o of r.offMandate.slice(0, 14)) {
@@ -1132,6 +1174,8 @@ console.log(`  pop-priced goods ⚠ beyond ±${HIGHLIGHT_PP}pp by era: ${SCEN.ma
 console.log(`  structurally on book (after common shift ×): ${SCEN.map(r => `${r.structOn}/${r.mandN} (×${Math.exp(r.aggMean).toFixed(2)})`).join(' · ')}`);
 console.log(`  steerable-core residual by era: ${SCEN.map(r => r.resid.toFixed(3)).join(' · ')}`);
 console.log(`  unsteerable goods by era: ${SCEN.map(r => r.futile.length).join(' · ')}`);
+console.log(`  INDUSTRIAL-INPUT CEILING breaches by era: ${SCEN.map(r => r.ceilingBreach.length).join(' · ')}`
+  + `  [${[...new Set(SCEN.flatMap(r => r.ceilingBreach.map(c => c.g)))].join(', ') || 'none'}]`);
 // the recurring ⚠ offenders — a good far from base in several eras is a structural statement, not noise
 {
   const hotBy = new Map();
@@ -1179,6 +1223,7 @@ if (WRITE) {
       va_by_industry: Object.fromEntries(r.vaList.map(x => [x.id,
         { weekly: Math.round(x.v), share: Math.round(x.share * 1000) / 1000 }])),
       off_mandate: r.offMandate.map(o => ({ good: o.g, mandated: o.mand, implied: o.implied, class: o.cls })),
+      industrial_input_ceiling: { at_edge: r.ceilingBreach.map(c => c.g), design_asks_edge: r.ceilingByDesign },
       walls: r.walls, trade_supplied: r.tradeSupplied,
       faults: { loss: r.faults.loss, stale: r.faults.stale, inverted: r.faults.inverted, net: r.faults.net },
     })),
