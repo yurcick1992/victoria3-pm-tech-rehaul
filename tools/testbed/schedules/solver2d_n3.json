@@ -1,0 +1,67 @@
+{
+  "schedule_version": 1,
+  "label": "solver2d-n3",
+  "_why": "THE GRANULAR PRICE SYSTEM IN-GAME, n=3 (user-ordered 2026-08-24: per-good ladders, 'no build cost multiplier, just the re-solve. And run n=3'). The §10.65.5 book: per-industry anchors = measured vanilla realized prices (n=18, 1840+1850 medians), per-industry slopes derived from the DEATH CONDITION against each recipe's own input-mix path (r_o^2 <= 0.90*[(1-w)*r_i^2 + w*g_w]/(1+m); raw paths measured from solver2c/F84; wage ramp = the premise table, x1.21/era; wage shares measured per tier by iteration). Death validation on the artifact: 54/66 superseded rungs dead as designed; 5 open misses (worst +29%), 4 plateau-compressed (die by wages, by design), 3 floor-clamped (motor - engines chain at the 0.70 slope floor). ARM: {kind: config, config: config/mod_config.solver2d.json}. SPAN 1836.1.1 -> 1936.1.1, n=3, metrics identical to the family.",
+  "_arms": "solver2d = {kind: config, config: config/mod_config.solver2d.json}, PAIRED with config/tech_tree_options.solver2d.json (L20 PASS; full -DryRun 6/6 green). Frozen sha256 1B4B21ABF7D053D29474C1A9E099B0600E01B8B749B8F5477D739211EB967B13. vs solver2c: ONLY tiers[].inputs/output-recipe fields (97) + target_be (96); ai_value 500+1000*(era+1) byte-identical - a clean one-lever A/B on the PRICE-SYSTEM AXIOM (single vanilla-anchored ladder -> per-good anchors+slopes with the death condition). L10 freeze for the duration.",
+  "_predictions": "PRE-REGISTERED. (1) DISPLACEMENT APPEARS: tiered losses stop being ~zero - stale rungs (textile sewing, pig-iron tooling, bessemer steel families) post sustained losses and their level counts STOP GROWING or shrink between 1900 and 1930 (solver2c: sewing 284->936, zero losses all century). Direction only; the below-best and stale-level censuses are the yardstick. (2) The early half stays vanilla-true: 1837 within ~4% of vanilla 417M, in-envelope by the 1840s (the granular anchors average close to the flat 100 that already worked; groceries/paper/engines anchor HIGH per measurement, which should only help early). (3) The late-century overshoot MODERATES vs solver2c x1.53-1.64 (steeper late prices cut margins and the pool) - direction only, no magnitude (the loop owns it; build cost deliberately unchanged this arm). (4) n=3 gives the family its first within-arm variance read - the GDP envelope and the death signal must replicate across seeds to count.",
+  "_comparison": "PRIMARY: solver2c-n1 (the one-lever price-system A/B) and the F79 vanilla n=18 envelope. SECONDARY: solver2b, aival2.",
+  "_watch": "(1) 1837/1840 GDP vs vanilla. (2) Tiered LOSSES pooled-7 (solver2c ~0 all century - any sustained negative is the design working). (3) Stale-rung level trajectories 1900->1930 (sewing/pig-iron/bessemer). (4) The pool (solver2c 2.45B at 1930). (5) queue_mix at first summary (F66). (6) Realized fabric-vs-clothes and tools paths vs the designed granular book (F84 comparison). (7) Consumer plateau tiers stay profitable (the plateau ruling) while their sub-plateau rungs die by wages.",
+  "_cost": "3 runs x 100 in-game years, ~7h50 + builds + concurrent harvest (overnight).",
+  "_caveats": "n=3 same-arm (first within-arm variance read of the family). Vanilla baseline different nights, same patch. Raw-path premises are iteration-1 (measured off solver2c's boom environment; the granular book itself changes raw demand - re-measure after). 5 open death-validation misses + the floor-clamped motor family are expected survivors; do not count them against prediction 1.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "The twelve dates match canon-n7, aival, aival2 and the F79 vanilla baseline exactly - what keeps the sessions comparable."
+  },
+  "setups": {
+    "solver2d": {
+      "kind": "config",
+      "config": "config/mod_config.solver2d.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "solver2d",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "solver2d",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "solver2d",
+      "until": "1936.1.1"
+    }
+  ]
+}

@@ -62,7 +62,14 @@ import { makePmRules } from './era_pm.mjs';
 const WRITE = process.argv.includes('--write');
 const MAX_IT = +(process.env.INV_ITERS || 400);      // count-iteration budget per era
 const DAMP = +(process.env.INV_DAMP || 0.5);         // exponent damping on the per-good scale factor
-const PLATEAU_HOLD = process.env.INV_PLATEAU === '1'; // hold a plateaued good's price at its last tier's era
+// ⭐⭐ THE GRANULAR PRICE SYSTEM (§10.65.5, user-ordered 2026-08-24: per-good ladders with an
+// enforced death condition; "no build cost multiplier, just the re-solve"). Default ON;
+// INV_GRANULAR=0 restores the single-ladder §10.65.3 book for A/B.
+const GRANULAR = process.env.INV_GRANULAR !== '0';
+// Plateau-hold defaults ON under the granular system: the three consumer plateaus' LAST tiers are
+// permanent, so their price must hold at the last tier's era rather than deflate past it (Baumol) —
+// and the death condition below deliberately never targets a last tier.
+const PLATEAU_HOLD = GRANULAR ? process.env.INV_PLATEAU !== '0' : process.env.INV_PLATEAU === '1';
 const TOL_PP = 3;                                     // "on mandate" = implied price within this many pp
 const OUTER = +(process.env.INV_OUTER || 6);          // design-book ↔ pop-limited re-anchoring passes
 const ANCHOR_POP_SHARE = 0.5;                         // pop share of buy above which a persistent miss re-anchors
@@ -300,10 +307,124 @@ const isIndustrial = (g, era) => GOOD_FIRST_ERA[g] != null && GOOD_FIRST_ERA[g] 
 // for A/B ("175,150,125,100,75,50").
 const LADDER = (process.env.INV_LADDER || '120,100,84,71,59,50').split(',').map(Number);
 if (LADDER.length !== FIT.eras.length || LADDER.some(x => !(x > 0))) throw new Error(`INV_LADDER needs ${FIT.eras.length} positive prices`);
+
+// ---------------------------------------------------------------------------------------------
+// ⭐⭐ THE GRANULAR SYSTEM (§10.65.5): per-good ANCHORS + per-good SLOPES + measured RAW paths.
+// F84 measured why one slope cannot work: input and output prices co-deflate in the live game
+// (fabric 55 under clothes 62 — our own lean recipes de-demand raw inputs), so a rung's effective
+// break-even falls with its selling price and nothing ever dies. The fix is structural, not pegged:
+//   anchor A(g)  = the good's MEASURED vanilla realized price for goods trading by 1836 (the
+//                  §10.65.3 vanilla-anchor ruling made per-industry — "shifted vertically");
+//                  a good whose industrial debut is later anchors at 100 at its first era (its 1836
+//                  measurement, where one exists, describes the pre-industrial regime — dye's 25 is
+//                  the plantation glut, not a synthetics price);
+//   slope r_o(g) = derived per industry from the DEATH CONDITION against ITS OWN input-mix path:
+//                  r_o² ≤ κ·[(1−w)·r_i² + w·g_w]/(1+m)   (g_w = the premise wage ramp, ~×1.46 per
+//                  two eras — wages are the one cost that RISES), r_i = base-price-value-weighted mix of the
+//                  input goods' own path ratios (raw goods: MEASURED, config/measured_price_paths;
+//                  tiered goods: their own derived slope — iterated to a fixed point);
+//   raw paths    = measured (solver2c, F84) instead of the asserted flat 100 the design's own
+//                  leanness kept breaking. Hardwood stays at 100 by the §10.46 trade ruling.
+// The strictest tier of a good sets its slope; clamps [0.70, 0.92] are reported, and the DEATH
+// VALIDATION after deriveRecipes is the authority — a rung it cannot kill is printed, not hidden.
+const KAPPA = +(process.env.INV_KAPPA || 0.90);  // 0.95 left ±5% cap-deviation survivors (measured)
+const SLOPE_MIN = 0.70, SLOPE_MAX = 0.92;
+const MEAS = GRANULAR ? JSON.parse(readFileSync(new URL('../config/measured_price_paths.json', import.meta.url), 'utf8')) : null;
+const RAW_PATH = {};
+if (GRANULAR) for (const g in MEAS.raw_paths) RAW_PATH[g] = MEAS.raw_paths[g];
+delete RAW_PATH.hardwood;                              // ruled trade-supplied at design 100 (§10.46)
+const ANCHOR = {}, SLOPE = {}, SLOPE_CLAMPED = {}, WACT = {};   // WACT: tier key -> measured wage share of cost
+if (GRANULAR) {
+  for (const g in GOOD_FIRST_ERA) {
+    ANCHOR[g] = GOOD_FIRST_ERA[g] <= 1 && MEAS.anchors_vanilla[g] != null
+      ? clamp(MEAS.anchors_vanilla[g], 50, 175) : 100;
+    SLOPE[g] = 0.84;
+  }
+}
+// The calibration runs from the main flow (before phase 1), because it re-derives the RECIPES to
+// MEASURE each tier's actual wage share — the analytic wage_pct premise (0.25 of cost) is far off
+// for tiers whose envelope is large against a fixed per-level wage bill, and a slope derived on the
+// wrong wage share leaves the rung alive at era+2 (the first dry run measured exactly that).
+function calibrateGranular() {
+  if (!GRANULAR) return;
+  const TIERS_OF_GOOD = {};
+  for (const i of S.IND) {
+    if (i.follows_be === false) continue;
+    for (const t of i.tiers) (TIERS_OF_GOOD[E.tierOut(i, t)] ||= []).push({ i, t });
+  }
+  const pathStep = (g, eFrom) => {                     // one-era price ratio of good g from era eFrom
+    if (GOOD_FIRST_ERA[g] != null && GOOD_FIRST_ERA[g] <= eFrom) return SLOPE[g];
+    const p = RAW_PATH[g]; if (!p) return 1;
+    const a = p[clamp(eFrom, 0, 5)], b = p[clamp(eFrom + 1, 0, 5)];
+    return a > 0 ? b / a : 1;
+  };
+  const wageAt = e => { const x = FIT.eras.find(q => q.era === clamp(e, 0, 5)); return x ? x.base_wage : 1; };
+  const solveSlopes = () => {
+    for (let it = 0; it < 20; it++) {
+      let moved = 0;
+      for (const g in TIERS_OF_GOOD) {
+        let need = Infinity;
+        for (const { i, t } of TIERS_OF_GOOD[g]) {
+          const e = clamp(t.era ?? 0, 0, 5);
+          if (e + 2 > 5) continue;                                 // no two-era horizon exists to kill it in
+          if (PLATEAU_LAST_ERA[g] != null && e >= PLATEAU_LAST_ERA[g]) continue;
+          const ratio = ratioFor(i, t); if (!ratio) continue;
+          let r2 = 0, tot = 0;
+          for (const gi in ratio) {
+            const v = ratio[gi] * (S.PRICES[gi] || 0); if (!(v > 0)) continue;
+            r2 += v * pathStep(gi, e) * pathStep(gi, e + 1); tot += v;
+          }
+          if (!(tot > 0)) continue;
+          const ri2 = r2 / tot;
+          const w = WACT[t.key] != null ? WACT[t.key]
+                  : (t.wage_pct != null ? +t.wage_pct : DEFAULT_WAGE_PCT);
+          const m = t.solve_profit != null ? +t.solve_profit
+                  : DOM_MARGIN + (SHIP_INDUSTRIES.has(i.id) ? TG.shipyard_penalty : 0);
+          const gw2 = wageAt(e + 2) / wageAt(e);   // the premise wage ramp — the one cost that RISES
+          need = Math.min(need, Math.sqrt(KAPPA * ((1 - w) * ri2 + w * gw2) / (1 + m)));
+        }
+        if (need === Infinity) continue;
+        const next = clamp(need, SLOPE_MIN, SLOPE_MAX);
+        SLOPE_CLAMPED[g] = need < SLOPE_MIN ? 'floor' : need > SLOPE_MAX ? 'ceil' : null;
+        if (Math.abs(next - SLOPE[g]) > 1e-6) moved++;
+        SLOPE[g] = next;
+      }
+      if (!moved) break;
+    }
+  };
+  for (let pass = 0; pass < 6; pass++) {
+    solveSlopes();
+    deriveRecipes();                                   // at the pure design book (BOOK_OVR empty here)
+    let maxDw = 0;
+    for (const i of S.IND) {
+      if (i.follows_be === false) continue;
+      for (const t of i.tiers) {
+        if (!Object.keys(t.inputs || {}).length) continue;
+        const e = clamp(t.era ?? 0, 0, 5);
+        const eIx = FIT.eras.findIndex(x => x.era === e);
+        if (eIx >= 0) S.BASE_WAGE = FIT.eras[eIx].base_wage;
+        const k = 1 + THRU_MANUFACTURING;
+        let I = 0; for (const gi in t.inputs) I += t.inputs[gi] * (S.PRICES[gi] || 0) * mandatePrice(gi, e) / 100;
+        const Wc = E.wageCost(t);
+        const w = Wc / Math.max(1e-9, k * I + Wc);
+        maxDw = Math.max(maxDw, Math.abs(w - (WACT[t.key] ?? w)));
+        WACT[t.key] = w;
+      }
+    }
+    if (pass > 0 && maxDw < 0.005) break;
+  }
+  solveSlopes();                                       // final slopes on the settled wage shares
+  deriveRecipes();
+}
 function mandatePrice(g, era) {
-  if (!isIndustrial(g, era)) return 100;
+  if (!isIndustrial(g, era)) {
+    if (GRANULAR && RAW_PATH[g]) return clamp(RAW_PATH[g][clamp(era, 0, 5)], 25, 175);
+    return 100;
+  }
   const eEff = PLATEAU_HOLD && PLATEAU_LAST_ERA[g] != null ? Math.min(era, PLATEAU_LAST_ERA[g]) : era;
-  return clamp(LADDER[clamp(eEff, 0, LADDER.length - 1)], 25, 175);
+  if (!GRANULAR) return clamp(LADDER[clamp(eEff, 0, LADDER.length - 1)], 25, 175);
+  const eAnchor = Math.max(GOOD_FIRST_ERA[g], 1);      // 1836's era for pre-start goods, the debut era later
+  return clamp(ANCHOR[g] * Math.pow(SLOPE[g], eEff - eAnchor), 25, 175);
 }
 // the order-book ratio the V3 price formula demands for price p (% of base):
 //   p ≥ 100:  buy/sell = 1 + (p/100−1)/0.75      p < 100:  buy/sell = 1 / (1 + (1−p/100)/0.75)
@@ -1044,6 +1165,11 @@ function seedScenario(eIx) {
 // RUN + REPORT
 // ===================================================================================================
 console.log('THE INVERSE SOLVE, PASS 3 — the DESIGN LADDER with pop-limited yields (experimental, §10.65)');
+if (GRANULAR) {
+  console.log('  design: THE GRANULAR PER-GOOD SYSTEM (§10.65.5) — measured vanilla anchors, per-industry');
+  console.log('  slopes from the death condition against each recipe\'s own input-mix path, measured raw paths');
+  calibrateGranular();
+} else
 console.log(`  design: every TIERED INDUSTRY\'S OUTPUT on the LADDER ${LADDER.join(' · ')} (vanilla-anchored: 1836 = 100, ×0.84/era) — consumer chains included; everything else 100`);
 console.log(`  the ladder yields ONLY where pop demand refuses it: a pop-dominated good (> ${ANCHOR_POP_SHARE * 100}% of buy) persistently off its book`);
 console.log(`  re-anchors to what pops support — each yield is a NAMED CONFLICT; ⚠ flags a pop price >${HIGHLIGHT_PP}pp from base`);
@@ -1111,10 +1237,61 @@ console.log(`\n── PHASE 1: RECIPES DERIVED AT THE HYBRID BOOK (dominant targ
   console.log('  (margin = at its OWN era\'s BOOK prices — mandate or realised consumer price; cap letter: r=ratchet s=solvency l=lean-floor i=insolvent-at-target; be = full BE % of base)');
 }
 
+// ⭐ THE DEATH VALIDATION (§10.65.5) — the granular slopes' whole point, checked on the ARTIFACT:
+// every superseded rung, priced at the PURE design book of two eras on (BOOK_OVR is still empty
+// here), must LOSE money. Exempt: a plateau good's last tier (permanent by design), an extinct
+// industry (dies by placement), and the top rung of every ladder (nothing supersedes it yet).
+// A rung the derivation could not kill (slope clamps, era-varying raw paths) is PRINTED — the
+// validation is the authority, not the derivation.
+if (GRANULAR) {
+  console.log('\n── DEATH VALIDATION: every superseded rung at its era+2 design prices ──');
+  const misses = [], plateauC = [], floorC = [];
+  let checked = 0;
+  for (const i of S.IND) {
+    if (i.follows_be === false || i.ladder_end === 'extinct') continue;
+    const maxEra = Math.max(...i.tiers.map(t => t.era ?? 0));
+    for (const t of i.tiers) {
+      const e = t.era ?? 0;
+      if (e >= maxEra) continue;                                   // top rung: nothing supersedes it
+      const g = E.tierOut(i, t);
+      if (i.ladder_end === 'plateau' && PLATEAU_LAST_ERA[g] != null && e >= PLATEAU_LAST_ERA[g]) continue;
+      if (!Object.keys(t.inputs || {}).length) continue;
+      if (e + 2 > 5) continue;      // one-era-stale at century end — the death rule is two-eras-stale
+      const eV = e + 2;
+      checked++;
+      // throughput scales goods both ways; wages at the EVAL era — the same premise ramp the slope
+      // derivation uses (wages are the one cost that rises while everything else deflates)
+      const eIx = FIT.eras.findIndex(x => x.era === eV);
+      if (eIx >= 0) S.BASE_WAGE = FIT.eras[eIx].base_wage;
+      const k = 1 + THRU_MANUFACTURING;
+      const R = k * t.output_qty * (S.PRICES[g] || 0) * mandatePrice(g, eV) / 100;
+      let I = 0; for (const gi in t.inputs) I += t.inputs[gi] * (S.PRICES[gi] || 0) * mandatePrice(gi, eV) / 100;
+      I *= k;
+      const Wc = E.wageCost(t);
+      const marg = (R - I - Wc) / Math.max(1e-9, I + Wc);
+      if (marg >= 0) {
+        const lbl = `${i.id} e${e}@e${eV} ${pct(marg)}`;
+        const eEffV = PLATEAU_HOLD && PLATEAU_LAST_ERA[g] != null ? Math.min(eV, PLATEAU_LAST_ERA[g]) : eV;
+        if (eEffV - e < 2) plateauC.push(lbl);                    // the plateau compresses its death horizon by design
+        else if (SLOPE_CLAMPED[E.tierOut(i, t)] === 'floor') floorC.push(lbl);  // price alone cannot kill this chain within the slope floor
+        else misses.push(lbl);
+      }
+    }
+  }
+  console.log(`  rungs checked ${checked} · DEAD as designed ${checked - misses.length - plateauC.length - floorC.length} · OPEN misses ${misses.length} · plateau-compressed ${plateauC.length} · floor-clamped ${floorC.length}`);
+  if (misses.length) console.log('    OPEN: ' + misses.join(' · '));
+  if (plateauC.length) console.log('    plateau-compressed (the rung directly under a permanent plateau — dies by wages alone, by design): ' + plateauC.join(' · '));
+  if (floorC.length) console.log('    floor-clamped (inputs deflate as fast as any slope ≥ ' + SLOPE_MIN + ' — wage growth is the only killer): ' + floorC.join(' · '));
+  const clamped = Object.entries(SLOPE_CLAMPED).filter(([, v]) => v);
+  if (clamped.length) console.log('  slope clamps: ' + clamped.map(([g, v]) => `${g}(${v})`).join(' · '));
+  console.log('  per-good ladders (anchor ×slope/era): '
+    + Object.keys(SLOPE).sort().map(g => `${g} ${Math.round(ANCHOR[g])}×${SLOPE[g].toFixed(2)}`).join(' · '));
+}
+
 console.log('\n── PHASE 2: THE ANALYTIC LADDER (margins are count-independent given the book) ──');
 const LADDERS = [];
 for (let e = 0; e < FIT.eras.length; e++) {
-  console.log(`  era ${e} (${FIT.eras[e].year}) — industrial mandate ${175 - 25 * e}%, consumer goods at their realised prices  [↑ = leading rung]`);
+  console.log(`  era ${e} (${FIT.eras[e].year}) — ${GRANULAR ? "per-good granular book (§10.65.5)" : "industrial mandate " + LADDER[e] + "%"}, consumer goods at their realised prices  [↑ = leading rung]`);
   const { faults } = ladderAt(e);
   LADDERS.push(faults);
   console.log(`    faults: loss ${faults.loss.length} [${faults.loss.join(',')}] · stale-profitable ${faults.stale.length} [${faults.stale.join(',')}] · inverted ${faults.inverted.length} [${faults.inverted.join(',')}] — excl. excused: ${faults.net}`);
@@ -1230,7 +1407,10 @@ if (WRITE) {
       + 'the vanilla-anchored ladder (1836=100, x0.84/era; consumer chains included), everything else at 100; a pop-dominated good that '
       + 'persistently refuses its design re-anchors to what pops support, each yield a named '
       + 'conflict. NOT read by the build; a design study artifact.',
-    mandate: FIT.eras.map((e, i) => ({ era: e.era, year: e.year, industrial: LADDER[i], raw: 100 })),
+    mandate: FIT.eras.map((e, i) => ({ era: e.era, year: e.year, industrial: GRANULAR ? null : LADDER[i], raw: GRANULAR ? null : 100,
+      goods: Object.fromEntries(Object.keys(S.PRICES).filter(g => GOOD_FIRST_ERA[g] != null || RAW_PATH[g]).sort()
+        .map(g => [g, Math.round(mandatePrice(g, e.era))])) })),
+    granular: GRANULAR ? { kappa: KAPPA, anchors: ANCHOR, slopes: Object.fromEntries(Object.entries(SLOPE).map(([g, v]) => [g, +v.toFixed(3)])) } : null,
     ladder_yields: FIT.eras.map((e, i) => ({
       era: e.era,
       tiered: Object.fromEntries(Object.keys(BOOK_OVR[i]).filter(g => isIndustrial(g, e.era)).sort()
