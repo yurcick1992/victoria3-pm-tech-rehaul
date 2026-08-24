@@ -5527,3 +5527,13 @@ entry is a good where the mod must either accept the pop price, change the premi
 or change the pop model's inputs (need weights, buy packages). Promotion to canon would need: PM
 choice folded into the solve, the §10.47 macro layer, integer counts, and rulings on the plateau
 collision and the early-era durables scarcity.
+
+**UI integration (user-directed 2026-08-24):** the balance sheet carries the experiment as a first-class
+view — a third red recipe button **`recipes: solver 2`** (the derived book, via `PMDATA.inverse` embedded
+by build.ps1 from the artifact's `recipes`) and a second preset row of six scenarios (**Inverse solve ·
+designed ladder, pop-limited yields**, via the artifact's `presets` passed through extract_presets.ps1 —
+era-preset schema by construction, fractional counts). Verified end-to-end: applying `inv3_1900` and
+letting the panel's auto price mode recompute reproduces the solver's book exactly (steel/tools/engines/
+iron 100 = the era-3 mandate; clothes 93, groceries 96, telephones 63 = the named yields). Both halves
+are build-time copies of config/era_inverse.json — after a `--write`, rebuild. The artifact additionally
+carries `va_by_industry` per scenario (the VA composition the UI cannot show).

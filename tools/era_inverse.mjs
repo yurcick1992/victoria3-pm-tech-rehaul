@@ -645,17 +645,23 @@ function seedScenario(eIx) {
     return { soldiers: 1 };
   };
   const WORK_RATIO = WORK_RATIO_BY_ERA[eIx];
+  let POPPROF = {};    // people per profession — the balance sheet edits population by profession
   const setPops = () => {
     const byStratum = { lower: 0, middle: 0, upper: 0 };
-    const addEmp = (emp, c) => { for (const p in emp) { const s = stratumOf(p); if (s) byStratum[s] += emp[p] * c; } };
+    const byProf = {};
+    const addEmp = (emp, c) => { for (const p in emp) { const s = stratumOf(p); if (s) byStratum[s] += emp[p] * c;
+      if (emp[p]) byProf[p] = (byProf[p] || 0) + emp[p] * c; } };
     for (const i of S.IND) for (const t of i.tiers) { const c = S.BLDNUM[t.key] || 0; if (c) addEmp(E.tierEmp(t), c); }
     for (const b of E.refBuildings()) { const c = S.BLDNUM[b] || 0; if (!c || E.isSubsistenceBuilding(b)) continue;
       addEmp(E.selEmp(E.refSel(b)), c); }
     const battalions = Object.values(S.UNITNUM).reduce((a, c) => a + c, 0);
     const milSplit = militarySplit();
+    let soldierWork = 0;
     for (const p in milSplit) {
       const n = battalions * SOLDIERS_PER_BATTALION * milSplit[p], st = stratumOf(p);
       if (st) byStratum[st] += n;
+      if (n) byProf[p] = (byProf[p] || 0) + n;
+      if (p === 'soldiers') soldierWork = n;
     }
     if (S.VAN.buildings[BARRACK_BLD] && battalions > 0)
       S.BLDNUM[BARRACK_BLD] = Math.max(1, battalions / BATTALIONS_PER_BARRACK);
@@ -665,7 +671,12 @@ function seedScenario(eIx) {
       total: nonPeasant + peasants,
       lower: byStratum.lower / WORK_RATIO, middle: byStratum.middle / WORK_RATIO,
       upper: byStratum.upper / WORK_RATIO, peasants, slaves: 0,
+      soldiers: soldierWork / WORK_RATIO,
     };
+    POPPROF = {};
+    for (const p in byProf) POPPROF[p] = Math.round(byProf[p] / WORK_RATIO);
+    POPPROF.peasants = Math.round(peasants);
+    POPPROF.slaves = 0;
     const peasantWork = peasants * WORK_RATIO;
     for (const b in SUBSISTENCE_MIX) {
       if (!S.VAN.buildings[b]) continue;
@@ -861,29 +872,49 @@ function seedScenario(eIx) {
   for (const i2 of S.IND) for (const t2 of i2.tiers) MANUFACTURED.add(E.tierOut(i2, t2));
   const sec = { mfg_high: 0, mfg_low: 0, agri: 0, logging: 0, ore: 0, other: 0 };
   const indShare = [];
-  let grossAll = 0;
+  // VALUE-ADDED composition (outputs − inputs at the scenario's prices, per producer — wages are not
+  // in VA). Per tiered industry, with the untiered side in category aggregates. The user's "does this
+  // look like an economy" read, on the same basis vanilla GDP is measured (F45).
+  const vaBy = {};                        // label -> £/wk of value added
+  const addVA = (label, v) => { if (v) vaBy[label] = (vaBy[label] || 0) + v; };
+  let grossAll = 0, vaAll = 0;
   for (const i2 of S.IND) {
-    let v = 0;
+    let v = 0, va = 0;
     for (const t2 of i2.tiers) {
       const c = S.BLDNUM[t2.key] || 0; if (!c) continue;
-      const vv = c * E.thruMult(t2.key) * E.outputValue(i2, t2, true);
+      const k = E.thruMult(t2.key);
+      const vv = c * k * E.outputValue(i2, t2, true);
       v += vv;
+      va += c * k * (E.outputValue(i2, t2, true) - E.inputValue(t2, true));
       sec[Object.keys(t2.inputs || {}).some(g => MANUFACTURED.has(g)) ? 'mfg_high' : 'mfg_low'] += vv;
     }
     if (v > 0) indShare.push({ id: i2.id, v });
-    grossAll += v;
+    if (va) addVA(i2.id, va);
+    grossAll += v; vaAll += va;
   }
   for (const b of E.refBuildings()) {
-    const c = S.BLDNUM[b] || 0; if (!c || E.isSubsistenceBuilding(b)) continue;
-    const v = c * E.thruMult(b) * E.goodsVal(E.selGoods(E.refSel(b)).out, true);
+    const c = S.BLDNUM[b] || 0; if (!c) continue;
+    const k = E.thruMult(b), g2 = E.selGoods(E.refSel(b));
+    const va = c * k * (E.goodsVal(g2.out, true) - E.goodsVal(g2.in, true));
+    const cat = catOf(b);
+    const vaLabel = E.isSubsistenceBuilding(b) ? '(subsistence)'
+      : isUrban(b) ? '(urban centres)'
+      : cat === 'logging' ? '(logging)'
+      : (AGRICULTURE_CATS.has(cat) || cat === 'fishing_whaling') ? '(agriculture)'
+      : (cat === 'mining' || cat === 'gold_fields' || cat === 'oil' || cat === 'rubber') ? '(extraction)'
+      : '(support/other)';
+    addVA(vaLabel, va); vaAll += va;
+    if (E.isSubsistenceBuilding(b)) continue;
+    const v = c * k * E.goodsVal(g2.out, true);
     if (!(v > 0)) continue;
     grossAll += v;
-    const cat = catOf(b);
     if (cat === 'logging') sec.logging += v;
     else if (AGRICULTURE_CATS.has(cat) || cat === 'fishing_whaling') sec.agri += v;
     else if (cat === 'mining' || cat === 'gold_fields' || cat === 'oil' || cat === 'rubber') sec.ore += v;
     else sec.other += v;
   }
+  const vaList = Object.entries(vaBy).map(([id, v]) => ({ id, v, share: v / Math.max(1, vaAll) }))
+    .sort((a, b) => b.v - a.v);
   indShare.forEach(s => { s.share = s.v / Math.max(1, grossAll); });
   indShare.sort((a, b) => b.share - a.share);
   const battalions = Object.values(S.UNITNUM).reduce((a, c) => a + c, 0);
@@ -891,16 +922,52 @@ function seedScenario(eIx) {
   for (const u of E.unitTypes()) { const n = S.UNITNUM[E.unitRowKey(u, false)] || 0;
     if (n) armyBill += n * E.goodsVal(E.unitGoodsIO(u).in, true); }
   const gdp = E.scenarioValueAdded();
+  // ---- the UI PRESET — the same schema era_scenarios.mjs writes into config/era_presets.json, so
+  // extract_presets.ps1 can pass it straight through into ui/presets.js and the balance sheet's
+  // preset bar renders it like any other scenario. Counts stay FRACTIONAL (this solver's convention;
+  // the order book multiplies, so the UI arithmetic is exact either way).
+  const round2 = x => Math.round(x * 100) / 100;
+  const preset = {
+    id: `inv${era}_${FIT.eras[eIx].year}`,
+    label: String(FIT.eras[eIx].year),
+    era, year: FIT.eras[eIx].year,
+    group: 'Inverse solve · designed ladder, pop-limited yields (§10.65.2)',
+    country: null,
+    base_wage: S.BASE_WAGE,
+    working_adult_ratio: WORK_RATIO,
+    base_wage_note: `era ${era} lower-stratum SoL ${FIT.eras[eIx].sol} via FINDINGS F26 (the FIT's wage)`,
+    market: [],
+    buildings: (() => { const o = {}; for (const b in S.BLDNUM) { const v = round2(S.BLDNUM[b]); if (v > 0) o[b] = v; } return o; })(),
+    pms: (() => { const o = {};
+      for (const i2 of S.IND) for (const t2 of i2.tiers) if (S.BLDNUM[t2.key]) o[t2.key] = { ...t2._sec };
+      for (const b in S.REFSEL) if (S.BLDNUM[b]) o[b] = { ...S.REFSEL[b] }; return o; })(),
+    pops: Object.fromEntries(Object.entries(S.POPS).map(([k, v]) => [k, Math.round(v)])),
+    pops_by_profession: { ...POPPROF },
+    sol: { ...S.SOL },
+    units: (() => { const o = {}; for (const k in S.UNITNUM) { const v = Math.round(S.UNITNUM[k]); if (v > 0) o[k.replace(/\|peace$/, '')] = v; } return o; })(),
+    nonbuy: {},
+    nonsell: (() => { const o = {}; for (const g in S.ADDSELL) { const v = round2(S.ADDSELL[g]); if (v > 0) o[g] = v; } return o; })(),
+    throughput: { ...S.THRU },
+    prices: (() => { const o = {}; for (const g in S.PRICES) o[g] = Math.round((S.thresholds[g] ?? 100) * 10) / 10; return o; })(),
+    subsistence: { free_arable: 0, capacity_jobs: Math.round(S.POPS.peasants * WORK_RATIO),
+                   peasant_workforce: Math.round(S.POPS.peasants * WORK_RATIO), staffing: 1.0,
+                   levels: round2(S.BLDNUM.building_subsistence_farm || 0) },
+    measured: null,
+    notes: [`Synthetic era-${era} scenario from the INVERSE solve (tools/era_inverse.mjs, §10.65.2).`,
+            `Every tiered output DESIGNS at 175−25pp×era; a pop-dominated good that refuses the design is re-anchored to what pops support.`,
+            `Counts are FRACTIONAL by this solver's convention; prices are what this composition's own order book produces.`,
+            `Pair with the red 'recipes: solver 2' button — these counts were seeded against THAT recipe book, not the mod config's.`],
+  };
   return {
     eIx, era, iters, resid, N, FIXED1, byGood, placement, refProducers,
     tradeSupplied: [...tradeSupplied], walls: [...walls], offMandate, checked, onMandate,
     consumer, realisedP, popShareOf, thinOf, tieredN, tieredOnDesign,
     futile: [...FUTILE], aggMean, aggDisp, structOn, mandN: mandErrs.length,
-    faults, sec, indShare, grossAll, gdp,
+    faults, sec, indShare, grossAll, gdp, vaList, vaAll,
     pops: { ...S.POPS }, jobs: productiveWorkforce(),
     armyShare: gdp > 0 ? armyBill / gdp : 0, battalions,
     constrShare: gdp > 0 ? constrCost() / gdp : 0,
-    counts: { ...S.BLDNUM },
+    counts: { ...S.BLDNUM }, preset,
   };
 }
 
@@ -1039,6 +1106,8 @@ for (const r of SCEN) {
   console.log(`    GDP £${fmtN(r.gdp)}/wk · army ${(r.armyShare * 100).toFixed(1)}% (${Math.round(r.battalions)} btn) · constr ${(r.constrShare * 100).toFixed(1)}% (target ${(CONSTR_BY_ERA[e] * 100).toFixed(0)}%)`);
   const st = r.sec, tot = Math.max(1, r.grossAll);
   console.log(`    output mix: mfg(mfg-fed) ${(100 * st.mfg_high / tot).toFixed(0)}% · mfg(raw-fed) ${(100 * st.mfg_low / tot).toFixed(0)}% · agri ${(100 * st.agri / tot).toFixed(0)}% · logging ${(100 * st.logging / tot).toFixed(0)}% · ore ${(100 * st.ore / tot).toFixed(0)}% · other ${(100 * st.other / tot).toFixed(0)}%`);
+  console.log(`    VALUE-ADDED composition (Σ £${fmtN(r.vaAll)}/wk; outputs − inputs at these prices, untiered side in (aggregates)):`);
+  wrapPrint(r.vaList.map(x => `${x.id} ${(100 * x.share).toFixed(1)}%`));
   console.log(`    top industries: ${r.indShare.slice(0, 6).map(s => `${s.id} ${(s.share * 100).toFixed(1)}%${s.share > 0.2 ? '⚠' : ''}`).join(' · ')}`);
   // the coherence read: biggest tier counts
   const tiers = [];
@@ -1107,10 +1176,15 @@ if (WRITE) {
       counts: Object.fromEntries(Object.entries(r.counts).map(([k, v]) => [k, Math.round(v * 100) / 100])),
       pops: Object.fromEntries(Object.entries(r.pops).map(([k, v]) => [k, Math.round(v)])),
       gdp_weekly: Math.round(r.gdp),
+      va_by_industry: Object.fromEntries(r.vaList.map(x => [x.id,
+        { weekly: Math.round(x.v), share: Math.round(x.share * 1000) / 1000 }])),
       off_mandate: r.offMandate.map(o => ({ good: o.g, mandated: o.mand, implied: o.implied, class: o.cls })),
       walls: r.walls, trade_supplied: r.tradeSupplied,
       faults: { loss: r.faults.loss, stale: r.faults.stale, inverted: r.faults.inverted, net: r.faults.net },
     })),
+    // THE UI PRESETS — consumed by tools/extract_presets.ps1 (pass-through into ui/presets.js, like
+    // config/era_presets.json's), so the balance sheet grows a second row of six era scenarios
+    presets: SCEN.map(r => r.preset),
   };
   const path = artifact('era_inverse');
   writeFileSync(path, JSON.stringify(out, null, 1));

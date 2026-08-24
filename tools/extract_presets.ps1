@@ -1200,6 +1200,23 @@ if (Test-Path $eraPath) {
 } else {
     Write-Output "  era presets: $eraPath not found - run 'node tools/era_scenarios.mjs --write' (skipped)"
 }
+# ---- INVERSE-SOLVE presets (§10.65.2): the SECOND solver's six era scenarios --------------------------
+# config/era_inverse.json is produced by tools/era_inverse.mjs --write (the inverse solve: designed
+# price ladder, pop-limited yields). Pass-through exactly like the era presets above — same schema by
+# construction — so the preset bar grows a second row of six scenarios. Absent file or an artifact from
+# before the presets were added ⇒ nothing added; OPTIONAL, unlike the era presets it is an experiment.
+$invPath = Join-Path $Repo ('config\era_inverse{0}.json' -f $eraSfx)
+if (Test-Path $invPath) {
+    $invCfg = Get-Content -LiteralPath $invPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($invCfg.PSObject.Properties['presets'] -and $invCfg.presets) {
+        foreach ($p in $invCfg.presets) { $out.Add($p) }
+        Write-Output ("  inverse presets: added {0} from {1}" -f @($invCfg.presets).Count, (Split-Path $invPath -Leaf))
+    } else {
+        Write-Output "  inverse presets: $invPath carries no presets - re-run 'node tools/era_inverse.mjs --write' (skipped)"
+    }
+} else {
+    Write-Output "  inverse presets: $invPath not found (optional experiment; skipped)"
+}
 
 # ⭐⭐ GOLD IS STRIPPED FROM EVERY PRESET, at the ONE point they are all serialised.
 # Gold is not in the model (era_scenarios' EXCLUDE_REF; BALANCE_FRAMEWORK §10.40.5) because nothing buys

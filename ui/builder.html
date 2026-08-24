@@ -409,6 +409,7 @@
   <span class="recipelbl" title="The sheet is two things: a RECIPE BOOK (emitted to the game) and a SCENARIO (session-only). These two buttons switch the book; everything red writes it.">recipes</span>
   <button id="recipeVanilla" class="recipe" title="WHOLE SHEET, ignores locks: set every tier's output + inputs to its vanilla_pm's base-game recipe and drop every pm_goods override. Tiers we invented have no vanilla PM, so theirs is interpolated along the ×1.5 ladder from the nearest anchored tier. Does NOT touch the scenario (building counts, pops, wages, PM selections, prices).">vanilla</button>
   <button id="recipeMod" class="recipe" title="WHOLE SHEET, ignores locks: restore every tier's output + inputs and every pm_goods override from the mod config as loaded. Does NOT touch the scenario.">mod</button>
+  <button id="recipeInverse" class="recipe" title="WHOLE SHEET, ignores locks: the SECOND SOLVER's book — the inverse solve (BALANCE_FRAMEWORK §10.65.2). Recipes are DERIVED from designed prices: every tiered output on the downward ladder 175−25pp×era, yielding to pop demand only where pops refuse it (each yield a named conflict). Outputs keep the ×1.5 ladder; pm_goods overrides keep the mod config's. Does NOT touch the scenario. Pair with the 'Inverse solve' scenario presets below — those counts were seeded against THIS book. Refresh: node tools/era_inverse.mjs --write, then a build.">solver 2</button>
   <span class="sp"></span>
   <select id="presetScope" title="Scope for the preset and payback tools"></select>
   <button id="applyPreset" title="Reset in-scope UNLOCKED groups to the loaded config defaults (target BE, volumes, build cost, ai_value, secondary PMs) — like a page refresh but honoring current locks">Restore defaults</button>
@@ -2717,7 +2718,8 @@ const REFGRPOPEN = new Set();         // expanded category cards
 // RECIPE BOOKS — the sheet is TWO things in a trenchcoat, and this is the seam.
 //
 //   * the RECIPE BOOK: every tier's output_qty + inputs, and the `pm_goods` overrides. This is what the
-//     builder EMITS to the game. Two of them exist: `vanilla` and `mod`.
+//     builder EMITS to the game. Three of them exist: `vanilla`, `mod` and `solver 2` (the inverse
+//     solve's derived book, PMDATA.inverse — §10.65.2; absent artifact ⇒ the button is disabled).
 //   * the SCENARIO: building counts, pops, wages, workforce ratios, PM selections, prices. Session-only,
 //     never emitted, and it must be switchable without disturbing the recipe book underneath it.
 //
@@ -2759,6 +2761,22 @@ function recipeApply(snap){
 const MOD_BOOK = recipeSnapshot(
   window.PMDATA.config.industries.map(i => ({ tiers: i.tiers })),
   window.PMDATA.config.pm_goods || {});
+// ---- the SOLVER-2 (inverse) book ---------------------------------------------------------------------
+// The inverse solve's derived recipes (tools/era_inverse.mjs --write → config/era_inverse.json, embedded
+// as PMDATA.inverse at build time — §10.65.2). Inputs come from the artifact; a tier the solve skipped
+// (no inputs — e.g. the art academy) has no entry and recipeApply leaves it alone; pm_goods overrides
+// are NOT the inverse solve's business, so the book carries the MOD config's, keeping the badge honest.
+const INVDATA = window.PMDATA.inverse || null;
+let INV_BOOK_KEY = null;
+function inverseBook(){
+  const o = { t:{}, g:{} };
+  for (const pm in (MOD_BOOK.g||{})) o.g[pm] = JSON.parse(JSON.stringify(MOD_BOOK.g[pm]));
+  for (const k in ((INVDATA&&INVDATA.recipes)||{})) {
+    const r = INVDATA.recipes[k];
+    o.t[k] = { o:+r.output_qty||0, i:Object.fromEntries(Object.entries(r.inputs||{}).map(([g,q])=>[g,+q])) };
+  }
+  return o;
+}
 // ---- the VANILLA book --------------------------------------------------------------------------------
 // Each tier's own `vanilla_pm` recipe. Tiers we invented have no vanilla PM at all, so their entry is
 // INTERPOLATED: take the nearest tier that does have one and scale by the ×1.5 ladder over the tier gap.
@@ -2904,29 +2922,41 @@ function refreshPresetButtons(debounced){
 
 function refreshRecipeButtons(){
   const cur = currentRecipeKey();
-  const vb = document.getElementById('recipeVanilla'), mb = document.getElementById('recipeMod');
+  const vb = document.getElementById('recipeVanilla'), mb = document.getElementById('recipeMod'),
+        ib = document.getElementById('recipeInverse');
   if(mb) mb.classList.toggle('same', cur === recipeKey(MOD_BOOK));
   if(vb){
     if(!HAVE_VAN){ vb.disabled = true; vb.classList.remove('same'); }
     else { if(VAN_BOOK_KEY == null) VAN_BOOK_KEY = recipeKey(vanillaBook());
            vb.disabled = false; vb.classList.toggle('same', cur === VAN_BOOK_KEY); }
   }
+  if(ib){
+    if(!INVDATA){ ib.disabled = true; ib.classList.remove('same'); }
+    else { if(INV_BOOK_KEY == null) INV_BOOK_KEY = recipeKey(inverseBook());
+           ib.disabled = false; ib.classList.toggle('same', cur === INV_BOOK_KEY); }
+  }
 }
 function switchRecipes(which){
   if(which === 'vanilla' && !HAVE_VAN){
     banner('warn','Vanilla reference unavailable — run <code>tools\\build.ps1</code> to generate <code>ui/vanilla.js</code> first.'); return; }
-  const book = which === 'vanilla' ? vanillaBook() : MOD_BOOK;
+  if(which === 'inverse' && !INVDATA){
+    banner('warn','The second solver\'s book is unavailable — run <code>node tools/era_inverse.mjs --write</code>, then a build, so <code>ui/data.js</code> carries it.'); return; }
+  const book = which === 'vanilla' ? vanillaBook() : which === 'inverse' ? inverseBook() : MOD_BOOK;
   const before = currentRecipeKey();
   recipeApply(book);
   render();
   const after = currentRecipeKey();
   const interp = which === 'vanilla'
     ? IND.reduce((n,i) => n + i.tiers.filter(t => !t.vanilla_pm).length, 0) : 0;
+  const srcName = which === 'vanilla' ? 'the base game'
+                : which === 'inverse' ? 'the INVERSE solve — recipes derived at designed prices (tiered outputs on the 175−25pp×era ladder, pop-limited yields; §10.65.2). pm_goods overrides stay the mod config\'s'
+                : 'the loaded mod config';
   banner(before === after ? 'info' : 'warn',
-    `Recipe book → <b>${which}</b>. Every tier's output + inputs and all <code>pm_goods</code> overrides `
-    + `now come from ${which === 'vanilla' ? 'the base game' : 'the loaded mod config'}.`
+    `Recipe book → <b>${which === 'inverse' ? 'solver 2 (inverse)' : which}</b>. Every tier's output + inputs and all <code>pm_goods</code> overrides `
+    + `now come from ${srcName}.`
     + (interp ? ` ${interp} tier(s) have no vanilla PM and were interpolated along the ×${LADDER_R} ladder.` : '')
     + ` The scenario — building counts, pops, wages, PM selections, prices — is untouched.`
+    + (which === 'inverse' ? ` The 'Inverse solve' scenario presets were seeded against this book — pair them.` : '')
     + (before === after ? ' (The sheet was already on this book, so nothing changed.)' : ''));
 }
 
@@ -3280,6 +3310,7 @@ document.addEventListener('change', e=>{ if(e.target.id==='lockPrices') setPrice
 // current locks. More named presets will come later; this one is just the reset.)
 document.getElementById('recipeVanilla').onclick=()=>switchRecipes('vanilla');
 document.getElementById('recipeMod').onclick=()=>switchRecipes('mod');
+document.getElementById('recipeInverse').onclick=()=>switchRecipes('inverse');
 document.getElementById('applyPreset').onclick=()=>{
   const scope=document.getElementById('presetScope').value;
   const inScope = scope==='__all'?IND:IND.filter(i=>i.id===scope);

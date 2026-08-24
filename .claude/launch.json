@@ -3,8 +3,9 @@
   "configurations": [
     {
       "name": "balance-ui",
-      "url": "http://localhost:8777",
-      "port": 8777
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": ["-ExecutionPolicy", "Bypass", "-File", "tools\\ui.ps1", "-Port", "8790", "-NoOpen"],
+      "port": 8790
     }
   ]
 }
