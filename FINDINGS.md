@@ -8399,3 +8399,63 @@ single largest tiered VA carrier until ~1890, tooling workshops after.
 - Nothing here is a per-capita or per-worker statement (the tiered_panel owns those), and gold IS
   included in extraction here (a save's gold VA is real; the scenario model excludes gold by
   construction) — it is small (<1% world).
+
+## F81 — THE +5%-MARGIN INVERSE BOOK IN-GAME: world GDP ×0.18 of vanilla by 1936 — zero-margin cost envelopes stall the investment loop
+
+**Session** `20260824_114350_solver2-n2`, arm `{kind: config, config: config/mod_config.solver2.json}`
+(sha `53CC8F13…724F0F`): the §10.65.2 inverse recipe book solved at **+5% dominant margin** on the
+175−25pp×era design ladder, plus `ai_value = 500+1000×(era+1)` (98/105 tiers). Game 1.13.11,
+1836.1.1→1936.1.1, metrics identical to the F76 family and the F79 baseline. **Effective n=1**
+(run001 complete, 100/100 yearly summaries; run002 killed mid-run by user ruling — L17-void).
+Comparators: F79 vanilla n=18; canon-n7 (n=6, 1.13.10); aival2 (n=2, 1.13.11 — the same-ladder-family
+arm whose difference from this one is essentially the recipe book).
+
+### World GDP (run001 vs benchmarks)
+
+| year | solver2 | vanilla med (n=18, min–max) | canon-n7 | aival2 | s2/van | s2/aival2 |
+|---|---|---|---|---|---|---|
+| 1840 | £370M | £445M (437–462) | £449M | £457M | 0.83× | 0.81× |
+| 1850 | £423M | £577M (548–599) | £560M | £575M | 0.73× | 0.73× |
+| 1860 | £468M | £725M (657–744) | £675M | £704M | 0.65× | 0.67× |
+| 1870 | £519M | £864M (717–930) | £769M | £862M | 0.60× | 0.60× |
+| 1880 | £564M | £1,056M (942–1,150) | £910M | £1,008M | 0.53× | 0.56× |
+| 1890 | £582M | £1,351M (1,149–1,518) | £1,075M | £1,209M | 0.43× | 0.48× |
+| 1900 | £634M | £1,725M (1,235–1,982) | £1,286M | £1,511M | 0.37× | 0.42× |
+| 1910 | £697M | £2,142M (1,655–2,459) | £1,608M | £1,823M | 0.33× | 0.38× |
+| 1920 | £724M | £2,815M (2,031–3,283) | £2,230M | £2,531M | 0.26× | 0.29× |
+| 1930 | £778M | £3,827M (3,040–4,433) | £3,152M | £3,538M | 0.20× | 0.22× |
+| 1936 | £802M | £4,551M (3,750–5,199) | £3,815M | £4,332M | **0.18×** | **0.19×** |
+
+×2.2 growth over the century against vanilla's ×10; below the vanilla envelope from 1840 and
+monotonically diverging; no recovery shape.
+
+### The mechanism, measured (pooled GBR/USA/FRA/NET/BEL/PRU/GER)
+
+| | 1850 | 1880 | 1910 |
+|---|---|---|---|
+| tiered profit, solver2 | £33k/wk | £38k/wk | £53k/wk |
+| tiered profit, aival2 | £446k/wk | £1,500k/wk | £3,222k/wk |
+| tiered LOSSES, solver2 | −£1k | −£3k | −£3k |
+| investment pool, solver2 | £0.7M | £0.8M | £1.5M |
+| investment pool, aival2 | £6.4M | £7.8M | £4.7M |
+| tiered levels, solver2 | 1,121 | 1,382 | 1,413 |
+| tiered levels, aival2 | 1,490 | 2,850 | 5,916 |
+
+The buildings were **zero-margin, not insolvent** (losses trivial): recipes solved to +5% at design
+prices of 150–175% have cost envelopes C = P/(1+m) ≈ 143–167% of base, above any price the live
+market delivers, so realised margins sat at ~0 for a century, dividends never flowed, the pool never
+filled, private construction never spun up (F78's loop as the binding channel). Consequence ruled the
+same day: the dominant margin became a design AXIOM at +40% (`INV_MARGIN`, commit `1bb96f5` — envelopes
+125/107/89/71/54/36), validated next as arm solver2b.
+
+### What it does NOT say
+
+- n=1; no within-arm variance. The GDP effect (5–36% of every comparator, monotone, mechanism
+  measured) does not need it; nothing subtler from this session does without replication.
+- The arm moved two levers (book + ai_value ladder); ONLY the GDP/margins channel has clean
+  attribution (via aival2). **The tier-choice numbers from this arm are NOT admissible into the F76
+  ladder table** — computed on starved construction (214 lower-tier levels over 5,022
+  country-industry-years pre-adoption).
+- It does not condemn the inverse ARCHITECTURE — the recipes' substance is the envelope row, and the
+  architecture takes any envelope row (§10.65.2, the factorisation argument). It condemns C ≈ 143–167
+  early, i.e. thin margins priced against a market that never materialises.
