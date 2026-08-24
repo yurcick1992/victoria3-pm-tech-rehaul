@@ -1,0 +1,59 @@
+{
+  "schedule_version": 1,
+  "label": "solver2c-n1",
+  "_why": "THE VANILLA-ANCHORED LADDER IN-GAME, n=1 (user-ruled 2026-08-24 before going AFK: after solver2b completes and is analysed, 'go on with the just-discussed lowered ladder immediately (ai_values are the same as in the last run). n=1'). The §10.65.3 book: price ladder 120/100/84/71/59/50 (1836 = vanilla base, x0.84/era), +40% margins, envelopes be 86/71/60/51/42/36 - era 1 at x1.03 of vanilla’s measured input share, closing the F81 stock effect that F82 measured as the whole residual drag of solver2b. ARM: {kind: config, config: config/mod_config.solver2c.json}. SPAN 1836.1.1 -> 1936.1.1, n=1, metrics identical to the family.",
+  "_arms": "solver2c = {kind: config, config: config/mod_config.solver2c.json}, PAIRED with config/tech_tree_options.solver2c.json (L20 PASS; full -DryRun 6/6 green pre-launch). Frozen sha256 0549AD080FAC2E545CD53AA8DD0EB69F108ECCC1A84394FA5002E30AEED039FA. vs solver2b: ONLY tiers[].inputs + target_be (the ladder axiom’s consequences); ai_value ladder 500+1000*(era+1) byte-identical - so solver2b -> solver2c is again a clean one-lever A/B, this time on the PRICE LADDER (top 175/150 -> 120/100, slope 25pp-linear -> x0.84, floor 50 = 50). L10 freeze for the duration.",
+  "_predictions": "PRE-REGISTERED. (1) THE ANCHOR TEST: the 1837 stock effect vanishes - world GDP 1837 within ~2% of vanilla’s GBP 417M (solver2b: -10%, solver2: -16%), and 1840 lands INSIDE the vanilla min-max envelope (437-462M). This is the direct, sharp test of §10.65.3; it needs only the first summaries. (2) The mid-century divergence shrinks substantially vs solver2b’s 0.72x/0.61x at 1860/1880 - direction only. (3) F82’s late-century vanilla-pace growth replicates from a better start - if BOTH (1) holds and the late pace repeats, century-end should land materially above solver2b’s 0.40x; no magnitude predicted (the loop owns it). (4) The failure read: if 1837 is on-vanilla but mid-century still diverges hard, the drag is NOT recipe richness (something else in the book/economy) - equally a finding.",
+  "_comparison": "PRIMARY: solver2b-n1 (the one-lever ladder A/B) and the F79 vanilla n=18 envelope. SECONDARY: solver2 run001, aival2, canon-n7.",
+  "_watch": "(1) 1837/1840 GDP vs vanilla (prediction 1 - readable within the first 10 minutes of summaries). (2) The decade curve vs solver2b. (3) Pooled-7 tiered margins at 1850 (solver2b GBP 233k - expect >= aival2-class ~GBP 450k if the early book is vanilla-lean AND margins hold). (4) queue_mix at first summary (F66). (5) Stale-rung persistence in-game: the x0.84+40% deaths are shallow by design (-1..-2% + wages) - watch whether old rungs linger (the §10.65.3 stale-profitable trade showing in-game). (6) Ceiling: none by design now - any restricted good at 175 in-game is real scarcity, not the book.",
+  "_cost": "1 run x 100 in-game years, ~2h35 + build + concurrent harvest.",
+  "_caveats": "n=1 point estimate. Same as solver2b_n1 otherwise (L17/L19, moderate_consolidation verify, machine idle - though this launch follows analysis/build work in the same hour; row P indicative only as ever).",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "The twelve dates match canon-n7, aival, aival2 and the F79 vanilla baseline exactly - what keeps the sessions comparable."
+  },
+  "setups": {
+    "solver2c": {
+      "kind": "config",
+      "config": "config/mod_config.solver2c.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "solver2c",
+      "until": "1936.1.1"
+    }
+  ]
+}
