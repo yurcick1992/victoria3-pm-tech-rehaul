@@ -8332,3 +8332,70 @@ dropped, n=18 runs pooled): 30k → **56** · 50k → 69 · 70k → 79 · 90k �
 - The 1910/1935 breakdown replication is CAPTURED (all four carrying runs) but not yet SCORED; the
   extra pair has same-date saves, the first batch pairs only at the 1936 endpoint (its 1910/1935 saves
   were reaped — recorded in its VERDICT).
+
+## F80 — VANILLA'S VALUE-ADDED COMPOSITION BY SECTOR, 1837→1936: the tiered-equivalent sector's VA share rises 12.6→38.7% (world) / 35→57% (pooled industrial seven), extraction 3.7→21.9%
+
+**Sessions:** the pinned F79 vanilla baseline — `20260821_131149_vanilla-baseline-n16` +
+`20260823_113218_vanilla-baseline-extra-n2`, pooled **n=18**, arm `{kind: control}`, game 1.13.11,
+save summaries v8. **Instrument:** `tools/testbed/ledger/va_composition.mjs` (written for this
+question, 2026-08-24): per building type, VA = `va_out − va_in` at market prices — the game's own GDP
+basis (F45) — grouped into the inverse solver's sector buckets, MEDIAN of per-run shares, runs gated
+by `usableRuns` (L17; 18/18 usable, none dropped). Cross-check: per-scope `gdp/(52·Σ VA)` reads
+**0.98–1.05 for world and USA** — the accounting reproduces the game's own GDP series.
+
+**Why it exists:** the inverse-solve experiment (§10.65.2) produces per-era VA compositions, and the
+question "what are these shares in VANILLA?" had no measured answer — the tiered_panel's "67–69% of
+all VA" was mod-arms-only (va_out/va_in ship in v6+; no vanilla arm before this baseline carried them).
+
+### World (median VA share of total VA, n=18)
+
+| sector | 1837 | 1870 | 1900 | 1920 | 1936 |
+|---|---|---|---|---|---|
+| extraction (mines/oil/rubber) | 3.7% | 6.6% | 14.0% | 18.7% | 21.9% |
+| agriculture (farms/plantations/ranching/fishing) | 40.1% | 53.0% | 49.8% | 43.5% | 37.1% |
+| logging | 6.1% | 7.2% | 6.6% | 5.5% | 4.4% |
+| subsistence | 46.5% | 23.9% | 11.5% | 6.0% | 3.0% |
+| urban centres | 4.4% | 6.3% | 9.8% | 12.1% | 12.7% |
+| **tiered-equivalent industry** | **12.6%** | **16.1%** | **25.0%** | **32.6%** | **38.7%** |
+| support/construction/trade/gov | −13.4% | −12.6% | −16.4% | −17.9% | −17.3% |
+
+USA: extraction 9.8→36.6%, agriculture 68.7→18.8%, tiered 17.2→42.5%, urban 7.0→14.6%, support
+−19…−24%. Pooled industrial seven (GBR/USA/FRA/NET/BEL/PRU/GER, the advanced_panel group): extraction
+13.7→33.5%, tiered **35.1→56.9%**, agriculture 35.1→14.9%, support −21…−32%.
+
+Tiered detail (world, 1936): tooling 7.6% · textile 4.4% · glass 4.1% · steel 2.6% · railway 2.6% ·
+furniture 2.2% · port 2.2% · food 2.2% · explosives 2.1% · motor 1.5% · automotive 1.5% · paper 1.4% ·
+arms 1.2% · chemicals 1.0% · power 0.6% · synthetics 0.5% · electrics 0.2%. Textile mills are the
+single largest tiered VA carrier until ~1890, tooling workshops after.
+
+### What it says, read against the models
+
+1. **In vanilla, industrialisation SHOWS in value terms**: the tiered sector's VA share rises
+   monotonically all century (12.6→38.7% world), because vanilla prices do not systematically deflate —
+   supply and demand co-grow, so physical growth is value growth.
+2. **The pithead property is vanilla's too, at a third of the model's size**: extraction's VA share
+   rises ×6 over the century (3.7→21.9% world) because mines eat almost nothing — but the inverse
+   book's designed deflation runs extraction to 40/63/65% at 1900/1920/1945, ×2–3 vanilla at every
+   matched date, because mandated falling output prices hand the chain's value to the raw upstream.
+3. **Negative support VA is a vanilla feature, same order as the models'** (construction + trade +
+   government consume goods and sell nothing): −13…−18% world, −21…−32% pooled7, vs the inverse
+   scenarios' −21…−34%.
+4. **The three books bracket cleanly at the end state**: vanilla pooled7 tiered VA 56.9% (1936) · the
+   canonical mod arms 67–69% (tiered_panel, same group) · the inverse book ~22% (1945, single-country
+   scenario vs vanilla-USA's 42.5%). The canonical mod CONCENTRATES value added in the tiered sector
+   relative to vanilla; the inverse book DISPERSES it into extraction and the consumer.
+
+### What it does NOT say
+
+- Scope caveats: the inverse scenarios are ONE synthetic autarkic US-like country — the vanilla USA
+  column is their nearest comparator, not the world. The tiered_panel's 67–69% may also differ in
+  denominator handling of the negative support sector; the bracket's ordering is robust, the exact
+  gaps are not.
+- ⚠ **OPEN ODDITY**: `gdp/(52·VA)` reads **1.17–1.32 for pooled7** while world and USA sit at
+  0.98–1.05 — the seven industrial countries' game-recorded GDP exceeds their home buildings' VA by
+  20–30%, stably. Not explained (foreign-ownership attribution? trend smoothing? subject GDP?); the
+  SHARES are unaffected (both sides of every share come from the same building VA measurement), but
+  do not quote pooled7 £-levels against pooled7 GDP until this is understood.
+- Nothing here is a per-capita or per-worker statement (the tiered_panel owns those), and gold IS
+  included in extraction here (a save's gold VA is real; the scenario model excludes gold by
+  construction) — it is small (<1% world).
