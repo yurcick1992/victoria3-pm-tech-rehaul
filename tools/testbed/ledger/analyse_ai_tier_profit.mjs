@@ -44,6 +44,7 @@ for (const ind of cfg.industries || []) {
 
 const per = {};          // industry -> {front, lag, lossBuilt, lossLevels, frontProfitable}
 const ev = { checked: 0, hits: 0, levels: 0, byIndustry: {}, byDecade: {}, examples: [] };
+const eff = { cmp: 0, less: 0, noCmp: 0, byDecade: {} };   // (c): below-best adds vs the frontier's per-level profit
 const bump = (o, k, v) => { o[k] = (o[k] || 0) + v; };
 
 for (const run of RUNS) {
@@ -71,9 +72,30 @@ for (const run of RUNS) {
 
           // (a) per-industry split of where the levels went
           const P = (per[id] ||= { front: 0, lag: 0, lossBuilt: 0, lossLevels: 0, cases: 0 });
+          // (c) of the below-best adds, how many went to a rung earning LESS per level than the
+          //     frontier was earning at that same moment (user-requested 2026-08-24: "share of
+          //     built that's not the top level and less efficient than the top level"). Needs the
+          //     frontier to STAND (lv>0) so both per-level profits are the game's own numbers;
+          //     below-best adds with no standing frontier are counted separately as no-comparator.
+          const frC = now.b[tiers[best].key];
+          const frPerLv = frC && frC.lv > 0 ? frC.pr / frC.lv : null;
           for (const t of tiers) {
             const add = (now.b[t.key]?.lv || 0) - (was.b[t.key]?.lv || 0);
-            if (add > 0) { if (t.idx >= best) P.front += add; else P.lag += add; }
+            if (add > 0) {
+              if (t.idx >= best) P.front += add;
+              else {
+                P.lag += add;
+                if (frPerLv == null) { eff.noCmp += add; }
+                else {
+                  eff.cmp += add;
+                  const lowLv = now.b[t.key].lv;
+                  if (lowLv > 0 && now.b[t.key].pr / lowLv < frPerLv) {
+                    eff.less += add;
+                    bump(eff.byDecade, Math.floor(year / 10) * 10, add);
+                  }
+                }
+              }
+            }
           }
 
           // (b) frontier pays, a lower rung loses, and the loser is STILL being built
@@ -125,3 +147,13 @@ for (const k of Object.keys(ev.byDecade).sort())
 console.log('\n  examples (per-level weekly profit, same country, same year, same market):');
 for (const e of ev.examples)
   console.log(`    ${e.year} ${e.tag.padEnd(4)} ${e.id.padEnd(14)} built +${e.add} of t${e.lowIdx} at £${e.lowPerLv.toFixed(0)}/lv/wk (${e.lowLv} lv)  while t${e.bestIdx} paid £${e.frontPerLv.toFixed(0)}/lv/wk (${e.frontLv} lv)`);
+
+console.log('\n=== (c) BELOW-BEST *AND* LESS EFFICIENT THAN THE FRONTIER (per-level profit) ===');
+const totAdds = Object.values(per).reduce((a, p) => a + p.front + p.lag, 0);
+const totLag = Object.values(per).reduce((a, p) => a + p.lag, 0);
+console.log(`  below-best adds with a STANDING frontier to compare against: ${Math.round(eff.cmp).toLocaleString()} of ${Math.round(totLag).toLocaleString()} (${pct(eff.cmp, totLag)}; ${Math.round(eff.noCmp).toLocaleString()} had no standing frontier)`);
+console.log(`  of those, added to a rung earning LESS per level than the frontier: ${Math.round(eff.less).toLocaleString()}  ${pct(eff.less, eff.cmp)}`);
+console.log(`  => share of ALL building that is below-best AND less efficient: ${pct(eff.less, totAdds)}  (below-best alone: ${pct(totLag, totAdds)})`);
+console.log('  by decade (less-efficient below-best levels):');
+for (const k of Object.keys(eff.byDecade).sort())
+  console.log(`    ${k}  ${Math.round(eff.byDecade[k]).toLocaleString()}`);

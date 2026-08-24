@@ -151,8 +151,10 @@ const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 && args[i + 1
 const MODRUNS = argOf('--mod', '20260815_153825_flatcost-n1/run001_flatcost').split(',');
 const flats = MODRUNS.map(r => walk(r, true));
 const flat = flats[0];
-const van = ['run001_vanilla', 'run003_vanilla', 'run005_vanilla', 'run007_vanilla'].map(r => walk('20260813_083557_vanilla-vs-mod-n4/' + r, false));
-const nb = ['run002_mod', 'run006_mod'].map(r => walk('20260813_083557_vanilla-vs-mod-n4/' + r, false)); // cost map irrelevant for GDP series
+// --van / --nb <sess/run[,sess/run...]>: the vanilla-baseline and reference-arm run lists
+// (defaults reproduce the original pinned-n4 fill)
+const van = argOf('--van', ['run001_vanilla', 'run003_vanilla', 'run005_vanilla', 'run007_vanilla'].map(r => '20260813_083557_vanilla-vs-mod-n4/' + r).join(',')).split(',').map(r => walk(r, false));
+const nb = argOf('--nb', ['run002_mod', 'run006_mod'].map(r => '20260813_083557_vanilla-vs-mod-n4/' + r).join(',')).split(',').map(r => walk(r, false)); // cost map irrelevant for GDP series
 // vanilla means at years
 const vanMean = {};
 for (const y of YEARS) {

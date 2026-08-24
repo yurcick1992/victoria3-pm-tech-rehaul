@@ -113,6 +113,17 @@ save summaries, and are parameterised only by the run list at the top of each fi
   value A · value B → target A · target B. A term with no agreed target carries an explicit em-dash;
   dropping it re-pairs the surviving values against the WRONG targets, which is how a construction
   ratio came to be printed against a payback in years.
+- **`fill_tierchoice.mjs`** — the **Build choice panel** (`TIERC`, table `t-tierc`; user-ruled INTO
+  the layout 2026-08-24 — the layout may gain panels, never lose them): the share of tiered
+  construction below the best tier the country holds (raw / unit-weighted / ex-ports, on
+  `analyse_ai_tier_choice.mjs`'s F75/F76-family basis) **and the sharper cut — below-best AND
+  earning LESS per level than that country's standing frontier** (`analyse_ai_tier_profit.mjs`
+  section (c)). It SPAWNS the two analyse tools and parses their headline lines — one source per
+  number, because re-deriving either here would be a second definition of a measured quantity (the
+  `ladderFaults()` lesson); any parse miss exits 1. `--baseline "label|raw|unit|exports|less"`
+  adds prior batches' published rows. ⚠ The two tools qualify country-industry-years slightly
+  differently (~0.5pp on the raw share); each figure is quoted on its own basis and the caption
+  says so. First fills: canon-n7 52.6/54.1/55.3/30.8 · solver2c 39.8/42.3/44.6/**27.9**.
 - **`fill_assemble.mjs`** — splices the lot into the template and writes REPORT.html.
 
 ⚠ They are not yet a single command, and their run lists are edited per batch — same known TODO as
@@ -121,7 +132,7 @@ excluded by hand from the run list, so check `preflight.ps1 -Session` before fil
 
 ## Filling it for a new batch
 
-1. Run the three data scripts against the batch (now parameterized: `--session <name>` on analyse_gdp_gap, `--mod <sess/run[,sess/run]>` on report_data + report_data2, `--config <arm config>` for the arm cost book, `--out <dir>`; defaults reproduce the flatcost-n1 fill. Historical note - they were hardcoded to
+1. Run the three data scripts against the batch (now parameterized: `--session <name>` on analyse_gdp_gap, `--mod <sess/run[,sess/run]>` on report_data + report_data2, **`--van` / `--nb` `<sess/run[,...]>` on both since 2026-08-24** — the vanilla-baseline and reference-arm run lists, so a fill can point at the n=18 ensemble instead of the pinned n4 — `--config <arm config>` for the arm cost book, `--out <dir>`; defaults reproduce the flatcost-n1 fill. Historical note - they were hardcoded to
    `20260815_153825_flatcost-n1` + the `20260813_083557` vanilla baseline — parameterize or edit the
    consts at the top; a proper `--session` flag is the known TODO):
    - `analyse_gdp_gap.mjs` — the world trajectory series (GDP, levels, construction points, labour).
@@ -166,7 +177,7 @@ into a report by hand:
 | script | question |
 |---|---|
 | `analyse_ai_tier_choice.mjs` | Of the levels a country builds, what share go to a tier BELOW the best one it already holds? Does the first frontier building break the cycle? (F75) |
-| `analyse_ai_tier_profit.mjs` | Which industries are worst, normalised — and the indefensible case: the frontier pays, a lower rung loses, and the loser is still built. |
+| `analyse_ai_tier_profit.mjs` | Which industries are worst, normalised — the indefensible case (the frontier pays, a lower rung loses, and the loser is still built) — and, since 2026-08-24, **section (c)**: the share of ALL building that is below-best AND to a rung earning less per level than the standing frontier (the Build choice panel's sharper column). |
 | `analyse_build_allocation.mjs` | ⭐ **THE OVERSHOOT CHECK.** Where did construction actually go, by sector / industry / era, and how did that split move between two arms? |
 
 **All three take `--session <stamp>` and `--config <path>`, and with no arguments reproduce the

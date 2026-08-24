@@ -406,6 +406,12 @@ function renderPerf(mode){
   </div>
 
   <div class="card tablewrap">
+  <h3>Build choice — how much construction goes below the frontier</h3>
+  <table id="t-tierc"></table>
+  <p class="small" id="tierc-cap"></p>
+  </div>
+
+  <div class="card tablewrap">
   <div class="fighead">
     <h3>Research — technologies held (mean per country, by game era) and journal entries</h3>
     <div class="ctagbar" id="trees-w"></div>
@@ -551,6 +557,7 @@ const WORLD_FULL={1840:[77.2,76.5],1860:[71.2,69.7],1880:[62.2,63.9],1900:[48.8,
 const WORLD_PURE={1840:[17.7,18.2],1860:[30.0,30.1],1880:[28.7,30.1],1900:[23.2,26.0],1920:[15.8,21.3],1935:[10.5,16.0]};
 const LADDER={1840:['e1',39,'e2',5.7,'e0',14.8,0.89],1860:['e1',29,'e2',9.4,'e0',12.6,0.83],1880:['e1–e2',22,'e3',6.1,'e0',12.3,0.80],1900:['e3',10,'e4',3.5,'e1',9.1,0.78],1920:['e4',6,'e5',3.8,'e2',7.5,0.79],1935:['e4',5,'e5',3.3,'e2',10.9,0.64]};
 const WATCH={1840:[1.02,0.38,0.79,0.10,67.0,65.7,76],1860:[1.08,0.56,0.97,0.21,65.2,63.4,72],1880:[1.18,0.82,1.22,0.56,58.1,59.6,73],1900:[1.28,1.25,1.56,1.18,48.8,52.1,48],1920:[2.03,2.02,2.30,1.67,22.0,40.7,51],1935:[1.95,2.44,2.64,2.19,6.3,25.6,52]};
+const TIERC={rows:[],cap:''};
 const YEARS=[1840,1860,1880,1900,1920,1935];
 const EYRS=Object.keys(EMP).map(Number);
 // ---------- per-country data (watchlist) ----------
@@ -702,6 +709,16 @@ for(const y of YEARS){
   const l=LADDER[y];
   lad.insertRow().innerHTML='<td>'+y+'</td><td>'+l[0]+'</td><td class="num">'+l[1]+'%</td><td class="num '+((l[3]>=8&&l[3]<=15)?'':'vwarn')+'">'+l[2]+' · '+l[3].toFixed(1)+'y</td>'+
     '<td class="num">'+l[4]+' · '+l[5].toFixed(1)+'y</td><td class="num">'+l[6].toFixed(2)+'</td>';
+}
+const tct=document.getElementById('t-tierc');
+if(TIERC.rows.length){
+  tct.insertRow().innerHTML='<th>arm</th><th class="num">below-best share of levels built</th><th class="num">unit-weighted</th><th class="num">excluding ports</th><th class="num">…and LESS efficient than the frontier</th>';
+  for(const r of TIERC.rows)
+    tct.insertRow().innerHTML='<td>'+r.arm+'</td><td class="num">'+(r.raw!=null?r.raw.toFixed(1)+'%':'—')+'</td><td class="num">'+(r.unit!=null?r.unit.toFixed(1)+'%':'—')+'</td>'+
+      '<td class="num">'+(r.exports!=null?r.exports.toFixed(1)+'%':'—')+'</td><td class="num">'+(r.less!=null?'<b>'+r.less.toFixed(1)+'%</b>':'—')+'</td>';
+  document.getElementById('tierc-cap').innerHTML=TIERC.cap;
+}else{
+  tct.insertRow().innerHTML='<td class="small">No build-choice data for this batch — run analyse_ai_tier_choice.mjs + analyse_ai_tier_profit.mjs (or fill_tierchoice.mjs) and refill.</td>';
 }
 const wat=document.getElementById('t-watch');
 for(const y of YEARS){

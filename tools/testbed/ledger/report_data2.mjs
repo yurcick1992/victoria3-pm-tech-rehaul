@@ -49,8 +49,9 @@ const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 && args[i + 1
 const MODRUNS = argOf('--mod', '20260815_153825_flatcost-n1/run001_flatcost').split(',');
 const flatRuns = MODRUNS.map(r => walk(r, true));
 const flat = flatRuns[0];
-const vans = ['run001_vanilla', 'run003_vanilla', 'run005_vanilla', 'run007_vanilla']
-  .map(r => walk('20260813_083557_vanilla-vs-mod-n4/' + r, false));
+// --van <sess/run[,sess/run...]>: the vanilla-baseline run list (default: the original pinned n4)
+const vans = argOf('--van', ['run001_vanilla', 'run003_vanilla', 'run005_vanilla', 'run007_vanilla']
+  .map(r => '20260813_083557_vanilla-vs-mod-n4/' + r).join(',')).split(',').map(r => walk(r, false));
 // vanilla mean per tag per year over runs where present
 const van = {};
 for (const tag of TAGS) {

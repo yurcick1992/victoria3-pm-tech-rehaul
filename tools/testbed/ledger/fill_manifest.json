@@ -1,63 +1,255 @@
 {
   "_why": "THE CONTRACT BETWEEN THE SHELL AND A BATCH. Every token and every data const the report needs is listed here ONCE, with where it comes from and whether it is required. fill_verify.mjs reads this file and refuses to let a report be published that is missing, empty or stale. It exists because two failures kept recurring and neither was visible on the page: batch-specific prose baked into the shell got republished verbatim for a different batch (the flatcost 'next lever' shipped under canon-n7, every sentence wrong), and data sections the fill scripts did not populate rendered as empty tables rather than saying so.",
-
   "_rule": "The shell holds STRUCTURE. Prose that names a year, a country, a run or a number is a TOKEN, filled from a file. Numbers are CONSTS, derived by a fill_*.mjs. Nobody hand-edits the assembled REPORT.html - it is an artifact, and an edit there is lost on the next fill.",
-
   "tokens": [
-    { "name": "__SESSION__",   "from": "fill_tokens.mjs", "required": true, "means": "session folder name; also the staleness key" },
-    { "name": "__ARM__",       "from": "fill_tokens.mjs", "required": true, "means": "arm kind + the frozen config and its sha" },
-    { "name": "__N__",         "from": "fill_tokens.mjs", "required": true, "means": "runs COUNTED, after L17 excludes incomplete ones" },
-    { "name": "__GAME__",      "from": "fill_tokens.mjs", "required": true, "means": "game build every run actually ran on" },
-    { "name": "__DELTA__",     "from": "fill_tokens.mjs", "required": true, "means": "what changed vs the previous batch's arm" },
-    { "name": "__BASE__",      "from": "fill_tokens.mjs", "required": true, "means": "comparison baseline + whether it is same-night" },
-    { "name": "__HEALTH__",    "from": "fill_tokens.mjs", "required": true, "means": "one-line batch health chip" },
-    { "name": "__LEDE__",      "from": "lede.html",       "required": true, "means": "what this batch is for, and how to read the table" },
-    { "name": "__GOALS__",     "from": "fill_goals.mjs",  "required": true, "means": "G-rows; POSITIONAL: metric A B -> value A B -> target A B" },
-    { "name": "__INCIDENTS__", "from": "incidents.html",  "required": true, "means": "confounds THIS batch carries; must name its own runs" },
-    { "name": "__NEXT__",      "from": "next.html",       "required": true, "means": "the lever this batch's numbers point at" },
-    { "name": "__FOOTER__",    "from": "footer.html",     "required": true, "means": "provenance: what was read, how many, on what build" }
+    {
+      "name": "__SESSION__",
+      "from": "fill_tokens.mjs",
+      "required": true,
+      "means": "session folder name; also the staleness key"
+    },
+    {
+      "name": "__ARM__",
+      "from": "fill_tokens.mjs",
+      "required": true,
+      "means": "arm kind + the frozen config and its sha"
+    },
+    {
+      "name": "__N__",
+      "from": "fill_tokens.mjs",
+      "required": true,
+      "means": "runs COUNTED, after L17 excludes incomplete ones"
+    },
+    {
+      "name": "__GAME__",
+      "from": "fill_tokens.mjs",
+      "required": true,
+      "means": "game build every run actually ran on"
+    },
+    {
+      "name": "__DELTA__",
+      "from": "fill_tokens.mjs",
+      "required": true,
+      "means": "what changed vs the previous batch's arm"
+    },
+    {
+      "name": "__BASE__",
+      "from": "fill_tokens.mjs",
+      "required": true,
+      "means": "comparison baseline + whether it is same-night"
+    },
+    {
+      "name": "__HEALTH__",
+      "from": "fill_tokens.mjs",
+      "required": true,
+      "means": "one-line batch health chip"
+    },
+    {
+      "name": "__LEDE__",
+      "from": "lede.html",
+      "required": true,
+      "means": "what this batch is for, and how to read the table"
+    },
+    {
+      "name": "__GOALS__",
+      "from": "fill_goals.mjs",
+      "required": true,
+      "means": "G-rows; POSITIONAL: metric A B -> value A B -> target A B"
+    },
+    {
+      "name": "__INCIDENTS__",
+      "from": "incidents.html",
+      "required": true,
+      "means": "confounds THIS batch carries; must name its own runs"
+    },
+    {
+      "name": "__NEXT__",
+      "from": "next.html",
+      "required": true,
+      "means": "the lever this batch's numbers point at"
+    },
+    {
+      "name": "__FOOTER__",
+      "from": "footer.html",
+      "required": true,
+      "means": "provenance: what was read, how many, on what build"
+    }
   ],
-
   "consts": [
-    { "name": "GDP_FLAT",   "from": "fill_consts.mjs",    "required": true,  "minKeys": 50, "means": "yearly world GDP, this arm, median of runs" },
-    { "name": "GDP_VAN",    "from": "fill_consts.mjs",    "required": true,  "minKeys": 50, "means": "yearly world GDP, vanilla baseline" },
-    { "name": "GDP_NB",     "from": "fill_consts.mjs",    "required": false, "minKeys": 0,  "means": "superseded cost-book arm, reference only" },
-    { "name": "EMP",        "from": "fill_emp.mjs",       "required": true,  "minKeys": 4,  "means": "tier employment by era, EXACT (staffed levels x per-tier employment)" },
-    { "name": "PROD_FLAT",  "from": "fill_consts.mjs",    "required": true,  "minKeys": 4,  "means": "productive workers + GDP, this arm" },
-    { "name": "PROD_VAN",   "from": "fill_consts.mjs",    "required": true,  "minKeys": 4,  "means": "productive workers + GDP, vanilla" },
-    { "name": "TRAJ",       "from": "fill_consts.mjs",    "required": true,  "minKeys": 4,  "means": "GDP / levels / construction, each divided by vanilla" },
-    { "name": "WORLD_FULL", "from": "fill_consts.mjs",    "required": true,  "minKeys": 4,  "means": "non-productive adults %, [mod, van]" },
-    { "name": "WORLD_PURE", "from": "fill_consts.mjs",    "required": true,  "minKeys": 4,  "means": "pure unemployment %, [mod, van]" },
-    { "name": "LADDER",     "from": "fill_payback.mjs",   "required": true,  "minKeys": 4,  "means": "climb and death: most-built era, e0 share, frontier/stale payback, staffing" },
-    { "name": "WATCH",      "from": "fill_assemble.mjs",  "required": true,  "minKeys": 4,  "means": "watchlist summary row per anchor year" },
-    { "name": "PERF",       "from": "fill_build_perf.mjs","required": true,  "minKeys": 6,  "means": "row P. byYear is YEARS PER MINUTE; model keys are c0/cPop/cLv" },
-    { "name": "VA",         "from": "fill_assemble.mjs",  "required": true,  "minKeys": 3,  "means": "tiered-sector value added + its coverage counts" },
-    { "name": "D2",         "from": "report_data2.mjs",   "required": true,  "minKeys": 3,  "means": "per-country dataset; must carry techsT + jeT (fill_research.mjs supplies them)" }
+    {
+      "name": "GDP_FLAT",
+      "from": "fill_consts.mjs",
+      "required": true,
+      "minKeys": 50,
+      "means": "yearly world GDP, this arm, median of runs"
+    },
+    {
+      "name": "GDP_VAN",
+      "from": "fill_consts.mjs",
+      "required": true,
+      "minKeys": 50,
+      "means": "yearly world GDP, vanilla baseline"
+    },
+    {
+      "name": "GDP_NB",
+      "from": "fill_consts.mjs",
+      "required": false,
+      "minKeys": 0,
+      "means": "superseded cost-book arm, reference only"
+    },
+    {
+      "name": "EMP",
+      "from": "fill_emp.mjs",
+      "required": true,
+      "minKeys": 4,
+      "means": "tier employment by era, EXACT (staffed levels x per-tier employment)"
+    },
+    {
+      "name": "PROD_FLAT",
+      "from": "fill_consts.mjs",
+      "required": true,
+      "minKeys": 4,
+      "means": "productive workers + GDP, this arm"
+    },
+    {
+      "name": "PROD_VAN",
+      "from": "fill_consts.mjs",
+      "required": true,
+      "minKeys": 4,
+      "means": "productive workers + GDP, vanilla"
+    },
+    {
+      "name": "TRAJ",
+      "from": "fill_consts.mjs",
+      "required": true,
+      "minKeys": 4,
+      "means": "GDP / levels / construction, each divided by vanilla"
+    },
+    {
+      "name": "WORLD_FULL",
+      "from": "fill_consts.mjs",
+      "required": true,
+      "minKeys": 4,
+      "means": "non-productive adults %, [mod, van]"
+    },
+    {
+      "name": "WORLD_PURE",
+      "from": "fill_consts.mjs",
+      "required": true,
+      "minKeys": 4,
+      "means": "pure unemployment %, [mod, van]"
+    },
+    {
+      "name": "LADDER",
+      "from": "fill_payback.mjs",
+      "required": true,
+      "minKeys": 4,
+      "means": "climb and death: most-built era, e0 share, frontier/stale payback, staffing"
+    },
+    {
+      "name": "WATCH",
+      "from": "fill_assemble.mjs",
+      "required": true,
+      "minKeys": 4,
+      "means": "watchlist summary row per anchor year"
+    },
+    {
+      "name": "PERF",
+      "from": "fill_build_perf.mjs",
+      "required": true,
+      "minKeys": 6,
+      "means": "row P. byYear is YEARS PER MINUTE; model keys are c0/cPop/cLv"
+    },
+    {
+      "name": "VA",
+      "from": "fill_assemble.mjs",
+      "required": true,
+      "minKeys": 3,
+      "means": "tiered-sector value added + its coverage counts"
+    },
+    {
+      "name": "D2",
+      "from": "report_data2.mjs",
+      "required": true,
+      "minKeys": 3,
+      "means": "per-country dataset; must carry techsT + jeT (fill_research.mjs supplies them)"
+    },
+    {
+      "name": "TIERC",
+      "from": "fill_tierchoice.mjs",
+      "required": true,
+      "minKeys": 2,
+      "means": "build choice: below-best share (F75 basis: raw/unit-weighted/ex-ports) + the below-best-AND-less-efficient-than-frontier share (tier_profit §c) — user-required 2026-08-24"
+    }
   ],
-
   "tables": [
-    { "id": "t-ladder",  "minRows": 4, "means": "the ladder - climb and death" },
-    { "id": "t-tech-w",  "minRows": 4, "means": "technologies held per era" },
-    { "id": "t-je-w",    "minRows": 3, "means": "journal entries by stage" },
-    { "id": "t-decomp",  "minRows": 4, "means": "workers x product per worker" },
-    { "id": "t-traj",    "minRows": 4, "means": "world trajectory vs vanilla" },
-    { "id": "t-watch",   "minRows": 4, "means": "watchlist summary" }
+    {
+      "id": "t-ladder",
+      "minRows": 4,
+      "means": "the ladder - climb and death"
+    },
+    {
+      "id": "t-tech-w",
+      "minRows": 4,
+      "means": "technologies held per era"
+    },
+    {
+      "id": "t-je-w",
+      "minRows": 3,
+      "means": "journal entries by stage"
+    },
+    {
+      "id": "t-decomp",
+      "minRows": 4,
+      "means": "workers x product per worker"
+    },
+    {
+      "id": "t-traj",
+      "minRows": 4,
+      "means": "world trajectory vs vanilla"
+    },
+    {
+      "id": "t-watch",
+      "minRows": 4,
+      "means": "watchlist summary"
+    },
+    {
+      "id": "t-tierc",
+      "minRows": 2,
+      "means": "build choice - construction below the frontier"
+    }
   ],
-
   "controls": [
-    "pf-nmod", "pf-npop", "pf-nlv", "pf-ratio", "pf-abs",
-    "c1-ratio", "c1-abs", "sc-tier", "sc-all",
-    "c2-abs", "c2-norm", "c4-abs", "c4-norm", "tab-watch", "tab-world"
+    "pf-nmod",
+    "pf-npop",
+    "pf-nlv",
+    "pf-ratio",
+    "pf-abs",
+    "c1-ratio",
+    "c1-abs",
+    "sc-tier",
+    "sc-all",
+    "c2-abs",
+    "c2-norm",
+    "c4-abs",
+    "c4-norm",
+    "tab-watch",
+    "tab-world"
   ],
-
   "staleness": {
     "_why": "A report that still names a PREVIOUS batch is the failure that prompted this file. These strings must NOT appear in a freshly filled report; add each retired session id and arm label as it is superseded.",
     "forbidden": [
-      "flatcost", "run001_flatcost", "20260815_153825",
-      "canon-n2", "20260818_084128",
+      "flatcost",
+      "run001_flatcost",
+      "20260815_153825",
+      "canon-n2",
+      "20260818_084128",
       "F52–F59",
       "n=1 by instruction",
-      "1.5^era book is visibly flat"
+      "1.5^era book is visibly flat",
+      "canon-n7 (mod, n=6) vs the pinned",
+      "20260818_221216_canon-n7</",
+      "battalion ladder 30"
     ]
   }
 }
