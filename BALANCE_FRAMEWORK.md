@@ -5623,3 +5623,29 @@ frozen glut-camps (a £750k/wk wood glut) is now a clean aggregate statement: at
 (75M, 22% peasants, work ratio 0.30) the economy supplies ~6% more than the book absorbs. The remedy
 tier is AXIOMS — a premise nudge (peasant share up ~2pp, or SoL) or accepting the shift — a design
 ruling, deliberately not a solver lever.
+
+### §10.65.3 THE VANILLA-ANCHORED LADDER + THE MARGIN AXIOM (user-ruled 2026-08-24, evening — the standing design)
+
+Two rulings the same day, each closing a measured failure:
+1. **Margins +40% flat** (`INV_MARGIN`, superseding the inherited +5%): F81 measured the +5% book's
+   cost envelopes (143–167% of base early) as a century-long zero-margin economy — world GDP ×0.18 of
+   vanilla by 1936, the investment loop never starting.
+2. **The price ladder is vanilla-anchored at 1836** (`INV_LADDER`, default **120 · 100 · 84 · 71 ·
+   59 · 50** — 1836 = base 100, ×0.84/era, era 5 landing on the original ladder's own 50): the
+   in-between +40%@175−25·era book still ran recipes ×2.15/×1.54 vanilla's input share at e0/e1,
+   measured as a −10% GDP stock effect at 1837 (canon/aival2 = vanilla exactly at that date) and a
+   0.90×→0.58× divergence by 1886 (solver2b-n1). The ladder asserts only the DECLINE; the top was the
+   part the live market refused, twice. ⚠ The slope is pinned by the death condition — two eras of
+   decline must outrun one margin, 0.84² < 1/1.4 — so the 1836 ANCHOR is the one free dial (a dearer
+   anchor buys early-premium narrative at a measured stock-effect cost: 110→−2–3%, 120→−4–5%).
+   ⚠ "Shift all profitability graphs upward" via margins alone was considered and REJECTED on the
+   same arithmetic: vanilla-parity at a 150 top needs ≈+115%, and no sane ladder loses >53% per two
+   eras — obsolescence would die at every rung.
+
+**The derived book (2026-08-24): envelopes be 86/71/60/51/42/36; era-1 at ×1.03 vanilla's measured
+input share** — the stock effect closed by construction. Scenario read: eras 1–2 the cleanest of any
+book (34/36 · 38/40 on book at ×1.00 shift), **industrial-input ceiling clear in all six eras for the
+first time**; the trade is late-era scenario illogicality 32 excl. (9 loss in the known pop-anchor
+knots / **22 stale-profitable** / 4 inverted) — the ×0.84+40% deaths are −1…−2% on goods by design,
+wage growth the intended finisher, so realisation drift reads many stale rungs marginally positive in
+the SNAPSHOTS. The in-game validation arm (solver2c) is the test that matters.
