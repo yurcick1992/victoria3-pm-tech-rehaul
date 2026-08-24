@@ -5600,3 +5600,26 @@ Wood's realised price across the six scenarios: **25 · 105 · 103 · 25 · 175 
   by its own outputs) gives the second lever the two mandates need. That is a new degree of freedom —
   tier-1 above — not a tuning knob, and it is the pass-4 item PM-choice-in-the-solve reduced to its
   smallest useful piece.
+
+**RESOLVED (2026-08-24, same day — user: the swings are "quite undesirable"), pending one ruling.**
+True per-PM sub-populations cannot be expressed in the shared econ.js model (one selection per building
+type), so the shipped fix is the smaller stance `SINGLE_GOOD_REFS = { building_logging_camp:
+{ pmg_hardwood: pm_no_hardwood } }` — a LIST, never a condition (the §10.46.1 lesson), same mechanism
+class as MANDATED_PMGS. The camp's hardwood PMG is a pure conversion toggle (−40 wood → +20 hardwood);
+held at base, the camp becomes a SINGLE-GOOD lever the steering can serve, and hardwood — no domestic
+producer left — rides the existing trade-supply channel at exactly its design price.
+⚠ **This EXTENDS §10.46's ruling** (hardwood is already the one trade-supplied good, "every other good
+domestic") from 1780-where-no-PM-exists to all six inverse scenarios — **flagged for user review**; the
+domestic alternative is the pass-4 PM-mixing item.
+**Measured result:** wood **25 · 100 · 100 · 100 · 100 · 100** (the swings are gone; e0 stays the
+degenerate pop-anchored 1780), hardwood **100 in every era** (imports 3 → 2.7k across the eras, visible
+in the presets' trade column), industrial-input ceiling breaches **1·0·0·0·0·0** (only e0 clippers
+left — artillery@e1 cleared too), on-book e1 3/35 → **33/35** and e2 18/39 → **37/39** (the knot had
+been feeding era 1's excess-demand chase), illogicality 15 → **13** (11 seeded).
+⚠ **What the fix REVEALED — the era-3 uniform glut (premise-tier, not a knot):** era 3 now reads 3/43
+on-book literally but **40/43 on the book shifted by a common ×0.94** — every price drifted down in
+lockstep (pop goods 80–84, the core at 95). The ~6% workforce surplus that previously hid inside 524
+frozen glut-camps (a £750k/wk wood glut) is now a clean aggregate statement: at the era-3 premise
+(75M, 22% peasants, work ratio 0.30) the economy supplies ~6% more than the book absorbs. The remedy
+tier is AXIOMS — a premise nudge (peasant share up ~2pp, or SoL) or accepting the shift — a design
+ruling, deliberately not a solver lever.

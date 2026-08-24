@@ -857,6 +857,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         BILATERAL — permanent food/textile/furniture tiers need ~70–75 while pops fund
                         ~50 at ANY composition (INV_PLATEAU=1 buys only 15→14). Pass 2 (§10.65.1,
                         everything pop-fed floating) is SUPERSEDED — it inverted the ruled definition.
+                        ⭐ The §10.15 input ceiling rides along as a VERIFY line (never a control term
+                        — the §10.65.2 tuning discipline), and THE WOOD KNOT IS RESOLVED (2026-08-24):
+                        SINGLE_GOOD_REFS holds the camp's hardwood PMG at base (a LIST, like
+                        MANDATED_PMGS), wood reads 100 in every era 1+, hardwood 100 via the §10.46
+                        trade channel (ruling EXTENSION, flagged), ceiling breaches 1·0·0·0·0·0 —
+                        which revealed era 3's uniform ×0.94 glut (a premise-tier statement, §10.65.2).
                         Writes config/era_inverse.json only; touches nothing canonical.
                         Standalone prototype — its premise tables are a marked FORK of
                         era_scenarios.mjs's (that module solves at import time and cannot be imported)

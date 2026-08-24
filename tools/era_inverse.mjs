@@ -311,6 +311,19 @@ function bookPrice(eIx, g) {
   return o != null ? o : mandatePrice(g, FIT.eras[eIx].era);
 }
 
+// ⭐ SINGLE-GOOD LEVERS (ruling extension 2026-08-24, flagged for user review — a LIST, never a
+// condition: the §10.46.1 lesson). THE WOOD CASE (§10.65.2): the camp's `pmg_hardwood` is a pure
+// conversion toggle (−40 wood → +20 hardwood) that Phase A selects ON in every era, welding two goods
+// with a 10–20:1 demand ratio onto one 3:1 lever — the blend steering then freezes at path-dependent
+// sizes and wood swings 25↔175 between neighbouring scenarios. Held at base, the camp is a SINGLE-GOOD
+// lever the steering can actually serve, and hardwood — with no domestic producer left — rides the
+// existing trade-supply channel at exactly its design price of 100. That is an EXTENSION of §10.46's
+// standing ruling (hardwood is already the one trade-supplied good in solver 1, "every other good
+// domestic"), from 1780-where-no-PM-exists to all six inverse scenarios. The true domestic alternative
+// — per-PM sub-populations of one building type — cannot be expressed in the shared econ.js model (one
+// selection per building) and stays the named pass-4 item.
+const SINGLE_GOOD_REFS = { building_logging_camp: { pmg_hardwood: 'pm_no_hardwood' } };
+
 function setEraContext(eIx) {
   const era = FIT.eras[eIx].era;
   for (const g in S.PRICES) S.thresholds[g] = bookPrice(eIx, g);
@@ -319,10 +332,12 @@ function setEraContext(eIx) {
   S.SOL = { lower: sol, middle: Math.round(sol * 1.5), upper: Math.round(sol * 3), peasants: sol, slaves: 8 };
   S.POPM.working_adult_ratio = WORK_RATIO_BY_ERA[eIx];
   setProfRatio(eIx);
-  // PM selections: Phase A's fit for this era (stated first-pass simplification)
+  // PM selections: Phase A's fit for this era (stated first-pass simplification)…
   Object.keys(S.REFSEL).forEach(k => delete S.REFSEL[k]);
   for (const i of S.IND) for (const t of i.tiers) if (FIT.pms[eIx].tiers[t.key]) t._sec = { ...FIT.pms[eIx].tiers[t.key] };
   for (const b in FIT.pms[eIx].refs) S.REFSEL[b] = { ...FIT.pms[eIx].refs[b] };
+  // …then the single-good-lever stance overrides (see SINGLE_GOOD_REFS above)
+  for (const b in SINGLE_GOOD_REFS) S.REFSEL[b] = { ...(S.REFSEL[b] || {}), ...SINGLE_GOOD_REFS[b] };
 }
 function thruAllTiers() {
   Object.keys(S.THRU).forEach(k => delete S.THRU[k]);
