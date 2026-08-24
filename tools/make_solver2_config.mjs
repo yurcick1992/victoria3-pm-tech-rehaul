@@ -51,11 +51,14 @@ for (const ind of cfg.industries) {
   }
 }
 
-const outPath = join(REPO, 'config', 'mod_config.solver2.json');
+// optional argv suffix (default 'solver2') so each arm generation gets its own frozen file —
+// the aival-family convention: the dead batch's build_state keeps pointing at ITS config untouched
+const SFX = process.argv[2] || 'solver2';
+const outPath = join(REPO, 'config', `mod_config.${SFX}.json`);
 const body = JSON.stringify(cfg);
 writeFileSync(outPath, body);
-copyFileSync(join(REPO, 'config', 'tech_tree_options.json'), join(REPO, 'config', 'tech_tree_options.solver2.json'));
+copyFileSync(join(REPO, 'config', 'tech_tree_options.json'), join(REPO, 'config', `tech_tree_options.${SFX}.json`));
 console.log(`wrote ${outPath}`);
 console.log(`  recipes from the inverse book: ${recipes} · target_be restated: ${restated} · ai_value ladder set: ${aival}`);
 console.log(`  sha256: ${createHash('sha256').update(body).digest('hex').toUpperCase()}`);
-console.log(`  tech-tree twin: config/tech_tree_options.solver2.json (L20)`);
+console.log(`  tech-tree twin: config/tech_tree_options.${SFX}.json (L20)`);

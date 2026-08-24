@@ -1,0 +1,59 @@
+{
+  "schedule_version": 1,
+  "label": "solver2b-n1",
+  "_why": "THE +40%-MARGIN SOLVER-2 BOOK IN-GAME, n=1 (user-ruled 2026-08-24: run002 of solver2-n2 killed as dead, 'Regenerate the new build with solver2 under the same ai_values as the last time, and let’s have an n=1'). Same architecture as solver2-n2, ONE change: the recipe book is re-derived at DOM_MARGIN +40% on the same 175-25pp*era design ladder (INV_MARGIN axiom, commit 1bb96f5) - cost envelopes be 125/107/89/71/54/36 per era, ~40pp leaner than the +5% book whose envelopes (167..48) produced the measured GDP collapse (world x0.18 of vanilla at 1936, tiered margins ~GBP 0 all century, investment pool never above GBP 1.5M). ARM: {kind: config, config: config/mod_config.solver2b.json}. SPAN 1836.1.1 -> 1936.1.1, n=1, metrics identical to the whole comparison family.",
+  "_arms": "solver2b = {kind: config, config: config/mod_config.solver2b.json}, PAIRED with config/tech_tree_options.solver2b.json (L20; full -DryRun green pre-launch, 6/6 checks). Frozen sha256 43868DA5B43BCF9C6B7713499C0A8D66ED3C7C96DB6614EC7CD75924E86A6599. Structural diff vs the dead solver2 arm: EXACTLY tiers[].inputs (104) and tiers[].target_be (104) - the ai_value ladder (500+1000*(era+1), 98/105 emitted, power/railway refuse by standing ruling) and everything else byte-identical, so solver2 -> solver2b is a clean ONE-LEVER change: the recipe book margin axiom. L10 freeze applies for the duration.",
+  "_predictions": "PRE-REGISTERED. (1) THE MARGIN THESIS: the GDP flatline breaks - world GDP leaves solver2’s x2.2-per-century path decisively; if the envelope diagnosis is right, tiered pooled-7 margins run large from 1836 (not ~GBP 0) and the investment pool grows past GBP 5M early. Direction predicted, magnitude deliberately not (F78 - the profit->pool->construction->GDP loop sets it). Failure read: if GDP still flatlines with fat margins, the bottleneck is NOT the envelope and the diagnosis is wrong - equally a finding. (2) Whether GDP lands inside the vanilla envelope, above canon-n7, or between is genuinely open: the book is leaner than canonical at eras 2+ (be 89/71/54/36 vs canonical’s ~100-119/95/71-88/48-72 band) but richer at e0/e1 (125/107). (3) Build-choice below-best: expect aival2-territory (~47%) or better - same ladder, now with capital to express the choice; n=1 gives a point estimate only (family sd 0.6-0.8pp). (4) Early-era watch: e0/e1 envelopes sit at 125/107, above base - the 1836-start rungs may run thin-to-negative until prices firm; watch the first two decades’ tiered margins and whether construction stalls early then accelerates.",
+  "_comparison": "PRIMARY: solver2-n2 run001 (20260824_114350, the +5% book, same ai_value ladder, same patch/machine/day) - the cleanest one-lever A/B this project has had: same everything except the margin axiom. SECONDARY: the F79 vanilla n=18 baseline and canon-n7/aival/aival2 for GDP envelope, build-choice family, VA composition (F80), row P.",
+  "_watch": "(1) World GDP per decade vs solver2 run001 / vanilla / aival2 (the gdp_curve2 comparator). (2) Pooled-7 tiered profit + investment pool at 1850/1880/1910 (the zero-margin signature must be gone). (3) Build-choice + allocation overshoot as in solver2_n2. (4) The e0/e1 rich-rung drag (prediction 4). (5) queue_mix at first summary (F66). (6) Consumer chains at pop-anchored recipes with lean-floor caps (food e3/e4 +15%, automotive ~0%) - do they hold in-game.",
+  "_cost": "1 run x 100 in-game years, ~2h35 (mod curve; solver2 ran faster on a smaller economy - if the thesis holds this one runs FULL length or longer) + 1 build + concurrent harvest.",
+  "_caveats": "n=1: point estimate; no within-arm variance. Everything else as solver2_n2.json (metrics, L17, L19 checked at launch, moderate_consolidation verify, machine idle for row P).",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "The twelve dates match canon-n7, aival, aival2 and the F79 vanilla baseline exactly - what keeps the sessions comparable."
+  },
+  "setups": {
+    "solver2b": {
+      "kind": "config",
+      "config": "config/mod_config.solver2b.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "solver2b",
+      "until": "1936.1.1"
+    }
+  ]
+}
