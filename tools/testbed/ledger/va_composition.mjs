@@ -59,7 +59,8 @@ for (const ses of SESSIONS) {
     const dir = path.join(SES, run, 'save_summaries');
     if (!fs.existsSync(dir)) { console.error(`  no summaries: ${run}`); continue; }
     nRuns++;
-    const files = fs.readdirSync(dir).filter(f => f.endsWith('.json.gz')).sort();
+    // L25: never glob the harvester's in-progress temp file — it can skip a year or count it twice
+    const files = fs.readdirSync(dir).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).sort();
     const byYear = {};
     for (const f of files) {
       const j = JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(dir, f))));
