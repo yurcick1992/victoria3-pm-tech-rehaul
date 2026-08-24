@@ -180,6 +180,13 @@
       "required": true,
       "minKeys": 2,
       "means": "build choice: below-best share (F75 basis: raw/unit-weighted/ex-ports) + the below-best-AND-less-efficient-than-frontier share (tier_profit §c) — user-required 2026-08-24"
+    },
+    {
+      "name": "INDECOMP",
+      "from": "fill_indecomp.mjs",
+      "required": true,
+      "minKeys": 3,
+      "means": "industry decomposition: each industry's share of tiered VA, world, mod beside vanilla — user-required 2026-08-24, permanent"
     }
   ],
   "tables": [
@@ -217,6 +224,41 @@
       "id": "t-tierc",
       "minRows": 2,
       "means": "build choice - construction below the frontier"
+    },
+    {
+      "id": "t-indecomp",
+      "minRows": 10,
+      "means": "industry decomposition of tiered VA"
+    },
+    {
+      "id": "t-tierc-dec",
+      "minRows": 2,
+      "means": "build choice by decade"
+    },
+    {
+      "id": "t-wdecomp",
+      "minRows": 4,
+      "means": "G4/G5 decomposition, watchlist selection"
+    },
+    {
+      "id": "t-tech-s",
+      "minRows": 3,
+      "means": "technologies held, selection"
+    },
+    {
+      "id": "t-je-s",
+      "minRows": 2,
+      "means": "journal entries, selection"
+    },
+    {
+      "id": "t-wemp",
+      "minRows": 4,
+      "means": "tier employment by era, selection"
+    },
+    {
+      "id": "t-wlab",
+      "minRows": 4,
+      "means": "labour, selection"
     }
   ],
   "controls": [

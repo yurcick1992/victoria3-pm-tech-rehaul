@@ -408,7 +408,18 @@ function renderPerf(mode){
   <div class="card tablewrap">
   <h3>Build choice — how much construction goes below the frontier</h3>
   <table id="t-tierc"></table>
+  <table id="t-tierc-dec" style="margin-top:8px"></table>
   <p class="small" id="tierc-cap"></p>
+  </div>
+
+  <div class="card tablewrap">
+  <h3>Industry decomposition — each industry's share of tiered value added (world)</h3>
+  <table id="t-indecomp"></table>
+  <p class="small">Cells read <b>mod% <span class="dim">/ vanilla%</span></b> of the tiered sector's weekly value
+  added, world-wide (VA = outputs − inputs at market prices, the v6+ summary fields; vanilla reads the same 22
+  industries through their base buildings). The bottom row is the sector's absolute size, £M/wk — the shares
+  above it are composition, so a share can fall while its industry grows. Shipyards read negative by design
+  (naval income unmodelled).</p>
   </div>
 
   <div class="card tablewrap">
@@ -558,6 +569,7 @@ const WORLD_PURE={1840:[17.7,18.2],1860:[30.0,30.1],1880:[28.7,30.1],1900:[23.2,
 const LADDER={1840:['e1',39,'e2',5.7,'e0',14.8,0.89],1860:['e1',29,'e2',9.4,'e0',12.6,0.83],1880:['e1–e2',22,'e3',6.1,'e0',12.3,0.80],1900:['e3',10,'e4',3.5,'e1',9.1,0.78],1920:['e4',6,'e5',3.8,'e2',7.5,0.79],1935:['e4',5,'e5',3.3,'e2',10.9,0.64]};
 const WATCH={1840:[1.02,0.38,0.79,0.10,67.0,65.7,76],1860:[1.08,0.56,0.97,0.21,65.2,63.4,72],1880:[1.18,0.82,1.22,0.56,58.1,59.6,73],1900:[1.28,1.25,1.56,1.18,48.8,52.1,48],1920:[2.03,2.02,2.30,1.67,22.0,40.7,51],1935:[1.95,2.44,2.64,2.19,6.3,25.6,52]};
 const TIERC={rows:[],cap:''};
+const INDECOMP={years:[],rows:[],tot:{mod:{},van:{}}};
 const YEARS=[1840,1860,1880,1900,1920,1935];
 const EYRS=Object.keys(EMP).map(Number);
 // ---------- per-country data (watchlist) ----------
@@ -606,7 +618,7 @@ function renderDecompWorld(){
     document.getElementById('decomp-h').textContent='The tiered sector — workers and productivity vs vanilla’s counterpart buildings';
     if(!D2.sector){ t.innerHTML='<tr><td class="small">The tiered-sector decomposition needs a vanilla counterpart set (<code>D2.sector</code>), which this batch’s dataset does not carry. Tier employment by era IS measured and is charted below; the vanilla-vs-mod sector comparison is omitted rather than approximated.</td></tr>';
       document.getElementById('decomp-cap').innerHTML=''; return; }
-    t.innerHTML='<tr><th>year</th><th class="num">tier-sector workers <span class="dim">mod / van</span></th><th class="num">workers ×van</th><th class="num">sector share of productive wf</th><th class="num">clean-sector £/wk per worker <span class="dim">mod / van</span></th><th class="num">productivity ×van</th></tr>';
+    t.innerHTML='<tr><th>year</th><th class="num">tier-sector workers <span class="dim">mod / van</span></th><th class="num">workers ×van</th><th class="num">sector share of productive wf</th><th class="num">£/wk value added per worker <span class="dim">mod / van</span></th><th class="num">productivity ×van</th></tr>';
     for(const y of EYRS){
       const f=D2.sector&&D2.sector.flat.world[y],v=D2.sector&&D2.sector.van.world[y];if(!f||!v)continue;
       const wr=f[0]/v[0];
@@ -618,7 +630,7 @@ function renderDecompWorld(){
         '<td class="num">£'+pf.toFixed(2)+' <span class="dim">/ £'+pv.toFixed(2)+'</span></td>'+
         '<td class="num '+(pr>1.05?'vgood':pr<0.95&&pr?'vbad':'')+'">'+(pr?pr.toFixed(2)+'×':'—')+'</td>';
     }
-    document.getElementById('decomp-cap').innerHTML='Workers: all tier buildings (mod) vs the same 20 vanilla building types (urban centres excluded both sides; vanilla headcount = staffed levels × base employment). Productivity: base-price output value ÷ workers over the <b>15 clean-priced industries</b> — food/textile/furniture excluded (subsistence co-produces their goods), port/power excluded (unpriced or urban-centre-contaminated output). The mod’s sector staffs ~2× vanilla’s and runs ~0.7× its productivity until 1900 — cheap buildings over-absorb into low rungs; parity arrives only with e4/e5.';
+    document.getElementById('decomp-cap').innerHTML='Workers: all tier buildings (mod) vs the same industries’ vanilla base buildings (urban centres excluded both sides; headcount = staffed levels × per-level employment × workforce_mult, vanilla at its most advanced main PM — the tiered_panel.mjs convention). Productivity: weekly VALUE ADDED per worker, measured directly from the v6+ summary fields on BOTH arms (the older base-price clean-subset proxy is retired — VA is the real quantity and both sides now carry it).';
   }
 }
 renderDecompWorld();
@@ -719,6 +731,26 @@ if(TIERC.rows.length){
   document.getElementById('tierc-cap').innerHTML=TIERC.cap;
 }else{
   tct.insertRow().innerHTML='<td class="small">No build-choice data for this batch — run analyse_ai_tier_choice.mjs + analyse_ai_tier_profit.mjs (or fill_tierchoice.mjs) and refill.</td>';
+}
+if(TIERC.dec&&TIERC.dec.length){
+  const td=document.getElementById('t-tierc-dec');
+  td.insertRow().innerHTML='<th>this batch, by decade</th>'+TIERC.dec.map(d=>'<th class="num">'+d[0]+'s</th>').join('');
+  td.insertRow().innerHTML='<td>below-best share</td>'+TIERC.dec.map(d=>'<td class="num">'+d[1].toFixed(0)+'%</td>').join('');
+}
+const idc=document.getElementById('t-indecomp');
+if(INDECOMP.rows.length){
+  idc.insertRow().innerHTML='<th>industry</th>'+INDECOMP.years.map(y=>'<th class="num">'+y+'</th>').join('');
+  for(const r of INDECOMP.rows)
+    idc.insertRow().innerHTML='<td>'+r.id+'</td>'+INDECOMP.years.map(y=>{
+      const m=r.mod[y],v=r.van[y];
+      return '<td class="num">'+(m!=null?m.toFixed(1)+'%':'—')+' <span class="dim">/ '+(v!=null?v.toFixed(1)+'%':'—')+'</span></td>';
+    }).join('');
+  idc.insertRow().innerHTML='<td><b>tiered VA £M/wk</b></td>'+INDECOMP.years.map(y=>{
+    const m=INDECOMP.tot.mod[y],v=INDECOMP.tot.van[y];
+    return '<td class="num"><b>'+(m!=null?m.toFixed(1):'—')+'</b> <span class="dim">/ '+(v!=null?v.toFixed(1):'—')+'</span></td>';
+  }).join('');
+}else{
+  idc.insertRow().innerHTML='<td class="small">No industry-decomposition data — run fill_indecomp.mjs and refill.</td>';
 }
 const wat=document.getElementById('t-watch');
 for(const y of YEARS){
@@ -983,7 +1015,7 @@ function renderWatch(){
         '<td class="num '+(pr>1.05?'vgood':'')+'">'+pr.toFixed(2)+'×</td><td class="num">'+(wr*pr).toFixed(2)+'×</td><td class="num dim">'+n+'</td>';
     }
   }else{
-    dt.innerHTML='<tr><th>year</th><th class="num">tier-sector workers <span class="dim">sel / van</span></th><th class="num">workers ×van</th><th class="num">clean-sector £/wk per worker <span class="dim">sel / van</span></th><th class="num">productivity ×van</th><th class="num">tags</th></tr>';
+    dt.innerHTML='<tr><th>year</th><th class="num">tier-sector workers <span class="dim">sel / van</span></th><th class="num">workers ×van</th><th class="num">£/wk value added per worker <span class="dim">sel / van</span></th><th class="num">productivity ×van</th><th class="num">tags</th></tr>';
     for(const y of EYRS){
       let f=[0,0,0],v=[0,0,0],n=0;
       for(const tg of sel){

@@ -63,6 +63,20 @@ encodes, all user-ruled:
   blanked the moment an unrelated renderer failed. Keep it independent (and keep it wrapped in its IIFE:
   the main script declares its own top-level `const css`, and a second one throws).
 
+## 🛑 HARD REQUIREMENT — EVERY graph and table is CHECKED WORKING before publishing (user-ruled 2026-08-24)
+
+**On making the report you check all graphs and tables and see that they work** — not "the page
+renders", each panel CARRIES DATA. Two watchlist panels (the G4/G5 selection decomposition and the
+research-selection tables) shipped once rendering nothing but zeroes; `fill_verify` passed because
+"has rows" was the whole test. Now enforced two ways, and the mechanical one is the one that counts:
+
+- `fill_verify.mjs` **section 5**: after every control has run, EVERY element whose id starts `t-`
+  must hold at least one data row with a nonzero number that is not a year, and every `chart*`
+  element must have drawn something. Generic on purpose — a new panel is covered the day it is
+  added. Proven by sabotage (an all-zero TIERC failed with both its tables named).
+- The reviewer still eyeballs the assembled page in a browser before publishing — the gate catches
+  zeroes, not nonsense.
+
 ## ⛔ THE GATE: `fill_manifest.json` + `fill_verify.mjs` (2026-08-19)
 
 **Run `node tools/testbed/ledger/fill_verify.mjs <dir>` before publishing. Exit 0 = safe. Exit 1 = do
@@ -124,7 +138,21 @@ save summaries, and are parameterised only by the run list at the top of each fi
   adds prior batches' published rows. ⚠ The two tools qualify country-industry-years slightly
   differently (~0.5pp on the raw share); each figure is quoted on its own basis and the caption
   says so. First fills: canon-n7 52.6/54.1/55.3/30.8 · solver2c 39.8/42.3/44.6/**27.9**.
+- **`fill_indecomp.mjs`** — the **Industry decomposition panel** (`INDECOMP`, table `t-indecomp`;
+  user-ruled 2026-08-24: "we clearly need some industry type decomposition chart, not only now, but
+  always"): each tiered industry's share of the tiered sector's weekly VALUE ADDED, world-wide, at
+  the anchor years, mod beside vanilla (VA = the direct v6+ fields; vanilla reads the same 22
+  industries through their base buildings — tier-1 key = the vanilla base). Bottom row = the
+  sector's absolute £M/wk, because shares are composition and can fall while the industry grows.
 - **`fill_assemble.mjs`** — splices the lot into the template and writes REPORT.html.
+  ⚠ Since 2026-08-24 `report_data2.mjs` also emits **`pw`** (productive workers per tag, the
+  corrected definition) and **`sector`** (tier-equivalent workers + weekly VA, world + per tag, both
+  arms) — the two datasets whose absence rendered the watchlist G4/G5 decomposition and the tiered
+  scope as zeroes/apologies. It also takes `--config` now, and its tierEmp applies `workforce_mult`
+  (it silently counted graded-port workers ×10/×5 before). `fill_research.mjs` fills
+  `techsT.*.tags` (per-tag, from summaries) and `jeT.tags` (per-tag via a curated display-name→tag
+  alias map — PMR_JE lines carry display names, the L11 hazard; unknown names are dropped, never
+  guessed, 'Italy' deliberately absent since several tags can form it).
 
 ⚠ They are not yet a single command, and their run lists are edited per batch — same known TODO as
 `--session`. Everything they emit is a median over the arm’s COMPLETE runs; an L17-incomplete run is

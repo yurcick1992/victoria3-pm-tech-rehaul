@@ -108,6 +108,30 @@ for (const id of M.controls) {
   if (ms > 2000) fail(`control #${id} took ${ms}ms`, 'suspect an unbounded loop — an empty series used to hang the page');
 }
 
+// ------------------------------------- 5. EVERY table carries DATA, not zeroes ----
+// HARD REQUIREMENT (user-ruled 2026-08-24, after two watchlist panels shipped rendering nothing but
+// zeroes): a table that renders rows of 0/—/blank is indistinguishable from a measured zero and
+// worse than an absent panel. After every control has run, EVERY element whose id starts with `t-`
+// must hold at least one data row with a nonzero number that is not a year; every `chart*` element
+// must have drawn something. This is generic on purpose — a new panel is covered the day it is
+// added, without anyone remembering to register it.
+const digitless = s => String(s).replace(/<[^>]*>/g, ' ')      // strip tags
+  .replace(/\b1[6-9]\d\d(?:s|–1[6-9]\d\d)?\b/g, ' ')            // years and year ranges
+  .replace(/\b(?:19|20)\d\d\b/g, ' ');
+for (const [id, el] of reg) {
+  if (/^t-/.test(id) && !id.includes(':')) {
+    const rows = el.children.filter(r => r.innerHTML && !/<th[\s>]/.test(r.innerHTML));
+    if (!rows.length) { if (!M.tables.some(t => t.id === id)) warn(`table #${id} rendered no data rows`); continue; }
+    const hasData = rows.some(r => /[1-9]/.test(digitless(r.innerHTML)));
+    if (!hasData) fail(`table #${id} renders ONLY zeroes/dashes (${rows.length} data rows)`,
+      'the panel is unpopulated for this batch — fill its source (see fill_manifest.json) or the section is lying');
+  }
+  if (/^chart/.test(id) && !id.includes(':')) {
+    if (!(el.children.length || (el.innerHTML && String(el.innerHTML).length > 40)))
+      fail(`chart #${id} drew nothing`, 'its series is empty — fill the const it reads');
+  }
+}
+
 // ------------------------------------------------------------------ verdict ----
 console.log('\nFILL VERIFY — ' + REPORT);
 console.log(`  tokens ${M.tokens.length} · consts ${M.consts.length} · tables ${M.tables.length} · controls ${M.controls.length}`);

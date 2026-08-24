@@ -5649,3 +5649,28 @@ first time**; the trade is late-era scenario illogicality 32 excl. (9 loss in th
 knots / **22 stale-profitable** / 4 inverted) — the ×0.84+40% deaths are −1…−2% on goods by design,
 wage growth the intended finisher, so realisation drift reads many stale rungs marginally positive in
 the SNAPSHOTS. The in-game validation arm (solver2c) is the test that matters.
+
+### §10.65.4 THE SOLVER2C VERDICT — the anchor holds, the back half is REJECTED (user-ruled 2026-08-24, night)
+
+solver2c-n1 (F83) validated the anchor and exposed the back half, and the user ruled on both:
+**"no, neither ×1.5 GDP over vanilla nor depeasanting around 1900 is acceptable. This could be
+improved by increasing build cost, but a harder problem to tackle is older tier not getting
+displaced."**
+
+What that fixes as design state:
+1. **The 1836 anchor + the early ladder STAND** — 0.87–0.97× of vanilla through 1890, in-envelope
+   from 1841; the front half is not to be re-opened for the back half's sins.
+2. **The late-century economy is over-fuelled and the ruling REJECTS it**: GDP ×1.53–1.64 of vanilla
+   by 1920–36, tiered workforce 41% vs vanilla's 29.5%, pooled-7 investment pool £2.45B (24× aival2)
+   — margins far past what construction can absorb. ⭐ **Build cost is the NAMED first lever** (the
+   flat vanilla book of §10.61 prices an e5 plant at an 1836 cost against 3.7y realised paybacks —
+   the overshoot engine the ledger's G3 row has flagged since canon). ⚠ Raising it re-opens §10.61's
+   "no era exponent / no double jeopardy" ruling — any proposal must go back to the user with that
+   tension stated, not around it.
+3. ⭐⭐ **THE HARD PROBLEM IS DISPLACEMENT.** F83's mechanism: in the live game input and output
+   prices CO-DEFLATE (fabric 55 under clothes 62 at 1930), so an old rung's effective break-even
+   falls with its selling price, only the 10–40% wage share separates rungs, and under ×0.84+40%
+   **nothing loses money for a century** — the ladder climbs by accumulation. The §10.65.2
+   stale-profitable trade, confirmed in-game at full strength. Any fix must attack the RELATIVE
+   margin between rungs (or capacity itself), not the price level — the price level is what the
+   anchor ruling just settled.

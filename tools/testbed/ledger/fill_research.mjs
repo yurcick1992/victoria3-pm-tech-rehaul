@@ -46,6 +46,33 @@ function held(dirs) {
   }
   return out;
 }
+// ---- per-tag technologies held (the selection table used to receive {} and render zeroes) -------
+const TAGS = ['GBR', 'RUS', 'FRA', 'USA', 'PRU', 'TUR', 'AUS', 'SPA', 'BRZ', 'SIC', 'POR', 'NET'];
+function heldTags(dirs) {
+  const per = {};                                     // tag -> year -> [rows across runs]
+  for (const r of dirs) {
+    const dir = join(SES, r, 'save_summaries'); if (!existsSync(dir)) continue;
+    for (const f of readdirSync(dir).filter(x => x.endsWith('.json.gz') && !x.includes('.partial.')).sort()) {
+      let j; try { j = JSON.parse(gunzipSync(readFileSync(join(dir, f)))); } catch { continue; }
+      const y = +(j.provenance.date||'0').split('.')[0]; if (!YEARS.includes(y)) continue;
+      for (const tag of TAGS) {
+        const c = j.countries[tag]; if (!c || !Array.isArray(c.technologies_held)) continue;
+        const acc = {};
+        for (const id of c.technologies_held) { const t = TT[id]; if (!t || t.era < 1) continue; const k = t.tree + '|' + t.era; acc[k] = (acc[k]||0) + 1; }
+        (((per[tag] ||= {})[y]) ||= []).push(acc);
+      }
+    }
+  }
+  const out = {};
+  for (const [tag, ys] of Object.entries(per)) {
+    out[tag] = {};
+    for (const [y, rows] of Object.entries(ys)) {
+      const keys = new Set(); rows.forEach(r => Object.keys(r).forEach(k => keys.add(k)));
+      out[tag][y] = {}; for (const k of keys) out[tag][y][k] = +med(rows.map(r => r[k] || 0)).toFixed(1);
+    }
+  }
+  return out;
+}
 // ---- jeT: distinct (stage,tech,country) triples, medianed across runs, bucketed stage|tree|era ----
 function je(dirs) {
   const per = [];
@@ -66,8 +93,48 @@ function je(dirs) {
   const out = {}; for (const k of keys) out[k] = Math.round(med(per.map(a => a[k] || 0)));
   return out;
 }
-const techsT = { totals, flat: { world: held(MOD), tags: {} }, van: { world: held(VAN), tags: {} } };
-const jeT = { world: je(MOD), tags: {} };
+// ---- per-tag JE firings. ⚠ PMR_JE lines carry the country's DISPLAY NAME, not its tag (the L11
+// hazard), so the join is a curated alias map covering the 12 watchlist tags INCLUDING their usual
+// mid-campaign renames (PRU→Germany, AUS→Austria-Hungary). A name the map does not know is DROPPED,
+// never guessed — 'Italy' is deliberately absent (several tags can form it).
+const NAME2TAG = {};
+for (const [tag, names] of Object.entries({
+  GBR: ['Great Britain', 'United Kingdom', 'British Empire'],
+  RUS: ['Russia', 'Russian Empire', 'Soviet Union'],
+  FRA: ['France', 'French Empire', 'French Republic', 'French Commune'],
+  USA: ['United States of America', 'United States', 'America', 'USA'],
+  PRU: ['Prussia', 'Germany', 'German Empire', 'North German Federation'],
+  TUR: ['Ottoman Empire', 'Turkey'],
+  AUS: ['Austria', 'Austria-Hungary'],
+  SPA: ['Spain'], BRZ: ['Brazil'], SIC: ['Two Sicilies', 'Kingdom of the Two Sicilies'],
+  POR: ['Portugal'], NET: ['Netherlands', 'the Netherlands'],
+})) for (const n of names) NAME2TAG[n] = tag;
+function jeTags(dirs) {
+  const per = {};                                    // tag -> [acc per run]
+  for (const r of dirs) {
+    const log = join(SES, r, 'logs_live', 'debug.log'); if (!existsSync(log)) continue;
+    const seen = new Set(); const accs = {};
+    for (const line of readFileSync(log, 'utf8').split(/\r?\n/)) {
+      const i = line.indexOf('PMR_JE|'); if (i < 0) continue;
+      const parts = line.slice(i + 7).trim().split('|'); if (parts.length < 3) continue;
+      const [stage, tech, country] = parts;
+      const tag = NAME2TAG[country.trim()]; if (!tag) continue;
+      const key = stage + '|' + tech + '|' + country; if (seen.has(key)) continue; seen.add(key);
+      const t = TT[tech]; if (!t) continue;
+      const k = stage + '|' + t.tree + '|' + t.era;
+      ((accs[tag] ||= {}))[k] = (accs[tag][k] || 0) + 1;
+    }
+    for (const [tag, acc] of Object.entries(accs)) (per[tag] ||= []).push(acc);
+  }
+  const out = {};
+  for (const [tag, rows] of Object.entries(per)) {
+    const keys = new Set(); rows.forEach(a => Object.keys(a).forEach(k => keys.add(k)));
+    out[tag] = {}; for (const k of keys) out[tag][k] = Math.round(med(rows.map(a => a[k] || 0)));
+  }
+  return out;
+}
+const techsT = { totals, flat: { world: held(MOD), tags: heldTags(MOD) }, van: { world: held(VAN), tags: heldTags(VAN) } };
+const jeT = { world: je(MOD), tags: jeTags(MOD) };
 writeFileSync(join(DIR, 'research.json'), JSON.stringify({ techsT, jeT }));
 console.log('totals per tree|era:', Object.keys(totals).length, 'entries');
 for (const y of YEARS) if (techsT.flat.world[y]) {

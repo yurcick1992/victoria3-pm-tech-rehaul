@@ -35,6 +35,10 @@ const tc = run('analyse_ai_tier_choice.mjs');
 const raw = grab(tc, /levels built BELOW it \(the fault\)\s*:\s*[\d\s,]+\s+([\d.]+)%/, 'raw below-best');
 const unit = grab(tc, /unit-weighted[^:]*:\s*below\s+([\d.]+)%/, 'unit-weighted');
 const exports_ = grab(tc, /excluding ports entirely\s*:\s*below\s+([\d.]+)%/, 'ex-ports');
+// the per-decade trajectory (rows like "  1860        627       523   45.5%")
+const dec = [];
+for (const m of tc.matchAll(/^\s+(1[89]\d0)\s+[\d,]+\s+[\d,]+\s+([\d.]+)%\s*$/gm)) dec.push([+m[1], +m[2]]);
+if (!dec.length) { console.error('PARSE MISS: decade table'); process.exit(1); }
 
 const tp = run('analyse_ai_tier_profit.mjs');
 const less = grab(tp, /below-best AND less efficient:\s*([\d.]+)%/, 'less-efficient share');
@@ -55,5 +59,5 @@ at that moment (analyse_ai_tier_profit.mjs §c — its own qualification set rea
 ~0.5pp off the trio's basis; ${lessOfCmp.toFixed(0)}% of comparable below-best levels are the less-efficient kind).
 Baseline rows are prior batches' published figures, measured by the same tools on their own sessions.`;
 
-writeFileSync(join(OUT, 'tierchoice.json'), JSON.stringify({ rows, cap: cap.replace(/\n/g, ' ') }));
-console.log(`tierchoice.json: raw ${raw}% · unit ${unit}% · ex-ports ${exports_}% · less-efficient ${less}% (rows ${rows.length})`);
+writeFileSync(join(OUT, 'tierchoice.json'), JSON.stringify({ rows, dec, cap: cap.replace(/\n/g, ' ') }));
+console.log(`tierchoice.json: raw ${raw}% · unit ${unit}% · ex-ports ${exports_}% · less-efficient ${less}% (rows ${rows.length}, decades ${dec.length})`);
