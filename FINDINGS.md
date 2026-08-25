@@ -8667,3 +8667,59 @@ solver2c's boom regime and are now shown to be regime-dependent, itself a measur
 inverse-design approach. The early-half slide (0.85× by 1860, below solver2c's 0.92×) traces to the
 scarcity-priced anchors — a fixable anchor choice, not the slopes. Whether displacement must come
 from a non-price channel is a design ruling, not a measurement.
+
+## F86 — THE §10.65.6 PACKAGE (n=3): the dip shallows, the endpoint lands on vanilla, the identity closes, and displacement becomes a FLOW phenomenon
+
+**Arm:** solver2e-n3 (`20260825_095912`) — margin ladder m(e)=0.30+0.08e · anchor blend (measured
+anchors e0/e1, re-base 100@e1 from e2) · payback-normalized cost book (10y own-era design, ×1.1–1.4
+median lift) · ai_value 750×1.8^era. Sha `43BAAED0…1B4D86`. Package A/B vs solver2d (recipes,
+target_be, ai_value, building_cost all move). n=3, 1836→1936, L17-clean, 100/100 each.
+
+### World GDP (median of 3 ÷ vanilla n=18 median; per-run in brackets)
+
+0.93× (1840) · 0.85× (1850) · 0.78× (1870) · **0.72× (1890 — the bottom)** · 0.74× (1900) ·
+0.82× (1920) · **0.97× (1936)** [endpoints 0.90/1.26/0.97]. vs solver2d: dip bottom 0.72 vs 0.59
+(SHALLOWER, earlier), endpoint 0.97 vs 0.98 (same), early half WORSE (0.85 vs 0.93 at 1850 — the
+m(e0)=0.30 recipe-richness cost, predicted and measured live). ⚠ Run 1 alone read the dip DEEPER
+than solver2d (0.61× at 1910) — mid-flight single-run shapes mislead; the median reversed it.
+
+### ⭐ The §10.65.7 identity (medians)
+
+| | 1840 | 1860 | 1880 | 1900 | 1920 | 1935 |
+|---|---|---|---|---|---|---|
+| workers ÷van | 0.97 | 0.87 | 0.77 | 0.67 | 0.61 | **0.68** |
+| productivity ÷van | 0.96 | 0.95 | 1.01 | 1.10 | 1.34 | **1.42** |
+| GDP ÷van | 0.93 | 0.83 | 0.78 | 0.74 | 0.82 | **0.96** |
+
+At 1935 the ruled goals' derived requirement (productivity ≈ 1/workers ≈ 1.47×) is nearly met at
+1.42× — the retained-peasantry + GDP-parity pair is jointly achievable, and the whole mid-century
+dip is the identity's own arithmetic (0.67×1.10 ⇒ 0.74 at 1900).
+
+### Displacement: the flow channel works, price-death stays rare
+
+- Below-best construction **38.7%** raw / 36.1% unit-weighted / 36.3% ex-ports — the family's best
+  (canon 52.6 → s2c 39.8 → s2d 44.2 → **38.7**); less-efficient cut 27.7%.
+- Stale-rung growth roughly HALVED vs solver2d at HIGHER total building (sewing 325–416 end levels
+  vs 732; baking-powder 175–391 vs 517; total tiered levels 9.8–12.4k vs ~9k) — the construction
+  flow moved up-ladder (the exponential ai_value's doing; the sub-default e0 values froze the e0
+  family: textile base ~150–177 flat, furniture base ~70–92, steel base 14–36).
+- Price-death remains rare: pooled-7 losses £1–13k/wk at 1935 across 37–61 building types. The
+  1870 three-way attribution (user-challenged): ONE textbook within-market displacement (PRU base
+  steel −£8/lv beside bessemer +£1,016/lv), the other flagged losses industry-wide, not
+  tier-competitive.
+
+### The §10.65.7 goal readings (1935 medians)
+
+Peasants: GBR **10.5%** (vanilla 1.0 — in the ruled 10–20% target) · USA 44.6% (31.4) · RUS 53.4%
+(47.0) · NET **1.0%** (1.4 — ⚠ run 1's 22.5% was ONE SEED; the median fully depeasants, so
+tall-major retention is seed-contingent outside GBR). SoL: GBR 25.2 (19.7) · USA 14.7 (14.9) ·
+RUS 12.0 (10.7) · NET 20.8 (17.7) — unsuppressed; the tall-major premium is wage-driven (GBR base
+wage ×2.24 vanilla at run-1 read) — the ruled watch item stands.
+
+### What it does NOT say
+
+Package arm — no lever-level attribution inside it. The pool GREW vs solver2d (£0.7–1.5B pooled-7:
+the ×1.1–1.4 cost lift under-compensates margins at realized prices, as pre-stated). Endpoint
+spread 0.90–1.26× — single-run GDP endpoints remain inadmissible. NET/small-tag social readings
+are seed-dominated. Whether flow-displacement without price-death satisfies the design goal is a
+ruling, not a measurement.
