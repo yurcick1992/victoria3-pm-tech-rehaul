@@ -8611,3 +8611,59 @@ designed ~50–59) — consumer chains deflate hard, producer chains hold near b
 **What it does NOT say:** n=1 on the mod side; one market (Britain — the biggest); realized paths
 under a build-cost fix will differ (less boom = more downward price pressure). The vanilla side is
 n=16 medians and solid.
+
+## F85 — THE GRANULAR PRICE SYSTEM IN-GAME (n=3): a U-shaped century landing ON vanilla at the median; displacement fails broadly because the designed death prices never realize — and succeeds exactly where they do
+
+**Arm:** solver2d-n3 (`20260824_225259`) — the §10.65.5 book (measured vanilla anchors, per-industry
+death-condition slopes, measured raw paths) + ai_value 500+1000×(era+1), sha `1B4B21AB…967B13`.
+vs solver2c: recipes + target_be only. n=3, 1836→1936, all L17-clean, 100/100 summaries each.
+
+### World GDP (median of 3, ÷ vanilla n=18 median)
+
+0.95× (1840) · 0.93× (1850) · 0.85× (1860) · 0.75× (1880) · **0.59× (1900)** · 0.73× (1920) ·
+0.82× (1930) · **0.98× (1936, £4,448M)**. Per-run endpoints **0.98× / 1.19× / 0.71×** — two inside
+the 0.8–1.25× band; the spread EXCEEDS the vanilla n=18 envelope's own width, so single-run GDP
+endpoints in this family are ±20%-class noise. The mid-century dip bottoms 0.59–0.69× in all three
+runs (replicated shape). Century growth ×11.2/×13.9/×8.0 vs vanilla ×10.9. solver2c at the same
+dates: 0.98×/1.53×/1.53× (1900/1920/1936).
+
+### ⭐⭐ The displacement result
+
+- **Broadly FAILED**: stale rungs grow in every run (sewing textile 152→732/821/489 world levels
+  1900→1935; pig-iron tooling →453/427/349; baking-powder food →517/523/350); tiered losses stay
+  ~£0 (35–78 building types × trivial amounts); the e0 base tiers even grow slightly.
+- **Cause, measured**: realized prices refuse the designed declines — 1930 British market: tools
+  **119** realized vs **46** designed, clothes 82 vs 38, engines 89 vs 52, paper 107 vs 76. The
+  economy undershoots all mid-century (0.59–0.75×), so scarcity is GENERAL: every sector is
+  supply-short at once and every price holds far above its design.
+- ⭐ **Where the price DID comply, the design worked exactly**: fabric tracked its measured-path
+  premise (58 realized vs 55 designed), steel nearly (62 vs 57), and **furniture landed on its
+  design to the point (49 = 49) — and its e0 rung FROZE AND DIED** (world 102→105→99 levels;
+  pooled-7 2 levels at ~£0) precisely as the death validation designed, **while its e1 rung
+  survived precisely as the validation's "+22% open miss" predicted** (202→515 levels, £108k/wk).
+  The death arithmetic is correct; the prices it requires are what the live economy withholds.
+
+### The two self-defeating price loops (the design-level finding)
+
+solver2c (gentle ladder): strong margins → boom → inputs co-deflate with outputs → nothing dies —
+**accumulation**. solver2d (steep granular ladder): scarcity-measured anchors (paper 158, groceries
+156) price early recipes for a scarcity that normalizes → thin mid-century margins → slower capacity
+growth → **general scarcity holds prices above the death levels** → nothing dies — stagnation, then
+a late margin surge (lean late envelopes × still-high prices) back to vanilla. In both regimes the
+realized price adjusts to keep the marginal standing producer viable: pop demand follows supply
+(F31/F40 supply-share), buildings shed workers before posting deep losses, and free entry stops
+where margins thin. **Price-driven displacement at scale is structurally resisted by the engine.**
+
+### Secondary
+
+Pool at 1935: £288M/£1,688M/£467M (solver2c £4,650M — the hoard shrank 3–16×). Tiered levels
+9.0k/17.1k/8.7k (s2c 19.1k). Tier choice: below-best 44.2% raw / 41.0% ex-ports, less-efficient
+31.7% — WORSE than solver2c's 39.8/27.9 (scarcity makes old rungs pay, and the AI buys them).
+
+### What it does NOT say
+
+The granular SYSTEM is not refuted — its calibration inputs (raw paths, anchors) were measured off
+solver2c's boom regime and are now shown to be regime-dependent, itself a measured property of the
+inverse-design approach. The early-half slide (0.85× by 1860, below solver2c's 0.92×) traces to the
+scarcity-priced anchors — a fixable anchor choice, not the slopes. Whether displacement must come
+from a non-price channel is a design ruling, not a measurement.
