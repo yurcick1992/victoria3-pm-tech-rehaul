@@ -5665,9 +5665,10 @@ Two statements made on solver2e run-1 data, both GOALS that later verdicts must 
    ⚠ Mid-century, a dip is mathematically unavoidable under these goals (the worker gap opens by
    1860 while productivity, vanilla-anchored at 1.0× in 1836, is still climbing): at 1900,
    0.65 × 1.05 ⇒ 0.68× — run 1's dip is almost exactly the goals' own arithmetic, little residual.
-   OPEN RULING: either the mid-century G4 band gets a ruled allowance (the dip as the goal's
-   price), or productivity must arrive earlier (which pushes against the anchor principle's
-   pacing) — the user's call, not the report's.
+   OPEN RULING, DELIBERATELY DEFERRED (user, 2026-08-25): "either seems acceptable … I'm afraid
+   this question will be superseded in later balancing." Do not press for it; do not treat either
+   branch as chosen. Reports keep showing the three-column identity so the question stays
+   decidable whenever later balancing makes it live again — or dissolves it.
 2. **SoL must not be suppressed** (the fear was "12 SoL in 1935 GBR"); the measured solver2e read —
    GBR 25.2 / NET 20.8 / USA 14.7 / RUS 10.6 vs vanilla 19.7/17.7/14.9/10.7 — was ruled acceptable
    for now ("Lovely. No need for changes as of now"). ⚠ The MECHANISM is split and measured: the
