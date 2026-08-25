@@ -33,7 +33,15 @@ for (const line of readFileSync(join(REPO, 'tools', 'goods_prices.tsv'), 'utf8')
   if (m.length >= 2 && !/^#|^good/i.test(m[0]) && +m[1] > 0) PRICES[m[0].trim()] = +m[1];
 }
 
-let recipes = 0, restated = 0, aival = 0;
+// §10.65.6 opt-in flags (user-approved 2026-08-25):
+//   --aival-exp   ai_value = round(750 × 1.8^era) — early rungs at/below the untiered default 1000,
+//                 the frontier far above it (the F76 contrast lever, sharpened in both directions)
+//   --cost-book   building_cost from the inverse artifact's payback-normalized book (own-era design
+//                 payback = 10y at £720/pt; floored at the §10.61 vanilla anchor). Supersedes the
+//                 flat §10.61 rule ONLY for arms passing this flag.
+const AIVAL_EXP = process.argv.includes('--aival-exp');
+const COST_BOOK = process.argv.includes('--cost-book');
+let recipes = 0, restated = 0, aival = 0, costed = 0;
 for (const ind of cfg.industries) {
   for (const t of ind.tiers) {
     const r = inv.recipes[t.key];
@@ -47,7 +55,8 @@ for (const ind of cfg.industries) {
       const wp = t.wage_pct != null ? +t.wage_pct : 0.25;
       if (Obase > 0) { t.target_be = Math.round(Ibase / ((1 - wp) * Obase) * 100); restated++; }
     }
-    if (t.era != null) { t.ai_value = 500 + 1000 * (t.era + 1); aival++; }
+    if (t.era != null) { t.ai_value = AIVAL_EXP ? Math.round(750 * Math.pow(1.8, t.era)) : 500 + 1000 * (t.era + 1); aival++; }
+    if (COST_BOOK && inv.cost_book && inv.cost_book[t.key] != null) { t.building_cost = inv.cost_book[t.key]; costed++; }
   }
 }
 
@@ -59,6 +68,6 @@ const body = JSON.stringify(cfg);
 writeFileSync(outPath, body);
 copyFileSync(join(REPO, 'config', 'tech_tree_options.json'), join(REPO, 'config', `tech_tree_options.${SFX}.json`));
 console.log(`wrote ${outPath}`);
-console.log(`  recipes from the inverse book: ${recipes} · target_be restated: ${restated} · ai_value ladder set: ${aival}`);
+console.log(`  recipes from the inverse book: ${recipes} · target_be restated: ${restated} · ai_value ${AIVAL_EXP ? 'EXP 750×1.8^era' : 'ladder'} set: ${aival}` + (COST_BOOK ? ` · cost book applied: ${costed}` : ''));
 console.log(`  sha256: ${createHash('sha256').update(body).digest('hex').toUpperCase()}`);
 console.log(`  tech-tree twin: config/tech_tree_options.${SFX}.json (L20)`);

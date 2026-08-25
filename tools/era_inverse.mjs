@@ -82,6 +82,15 @@ const HIGHLIGHT_PP = 30;                              // ⚠ a pop price this fa
 // solver2-n2 GDP collapse (world ×0.18 of vanilla by 1936, tiered margins ~£0 all century, the
 // investment pool never filling). Margin and price are one claim factorised — see §10.65.2.
 const DOM_MARGIN = +(process.env.INV_MARGIN || 0.40);
+// ⭐ THE MARGIN LADDER (§10.65.6, user-approved 2026-08-25: "steeper profits ladder … compensate …
+// by increased late-tier building cost … more aggressive AI values"). Under the granular system the
+// dominant margin RISES BY ERA — m(e) = 0.30 + 0.08·e — which serves displacement twice: an old
+// rung solved at a LOWER margin has a lower death threshold ((1+m_old) is what two eras of decline
+// must outrun), while the fat frontier margin is the entry buffer that lets the price fall below
+// the old rung's break-even with entry still profitable. INV_MARGINS overrides (6 comma values);
+// INV_GRANULAR=0 keeps the flat DOM_MARGIN.
+const MARGINS = (process.env.INV_MARGINS || '0.30,0.38,0.46,0.54,0.62,0.70').split(',').map(Number);
+if (MARGINS.length !== 6 || MARGINS.some(x => !(x > 0))) throw new Error('INV_MARGINS needs 6 positive values');
 
 const { E, S, PMECON, config: CFG_RAW } = loadEcon({ quiet: true });
 const rules = makePmRules(E, S);
@@ -189,6 +198,8 @@ const DEFAULT_WAGE_PCT = 0.25;
 // SHARED HELPERS (thin copies of the standing solver's — see the fork warning)
 // ===================================================================================================
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+// the dominant margin at era e (see the MARGIN LADDER note beside DOM_MARGIN)
+const marginAt = e => GRANULAR ? MARGINS[clamp(e, 0, 5)] : DOM_MARGIN;
 const W = (s, n) => String(s).padEnd(n);
 const fmtN = n => (Math.abs(n) >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : Math.abs(n) >= 1e3 ? (n / 1e3).toFixed(0) + 'k' : String(Math.round(n)));
 const pct = x => (x >= 0 ? '+' : '') + (x * 100).toFixed(0) + '%';
@@ -379,7 +390,7 @@ function calibrateGranular() {
           const w = WACT[t.key] != null ? WACT[t.key]
                   : (t.wage_pct != null ? +t.wage_pct : DEFAULT_WAGE_PCT);
           const m = t.solve_profit != null ? +t.solve_profit
-                  : DOM_MARGIN + (SHIP_INDUSTRIES.has(i.id) ? TG.shipyard_penalty : 0);
+                  : marginAt(e) + (SHIP_INDUSTRIES.has(i.id) ? TG.shipyard_penalty : 0);
           const gw2 = wageAt(e + 2) / wageAt(e);   // the premise wage ramp — the one cost that RISES
           need = Math.min(need, Math.sqrt(KAPPA * ((1 - w) * ri2 + w * gw2) / (1 + m)));
         }
@@ -424,7 +435,13 @@ function mandatePrice(g, era) {
   const eEff = PLATEAU_HOLD && PLATEAU_LAST_ERA[g] != null ? Math.min(era, PLATEAU_LAST_ERA[g]) : era;
   if (!GRANULAR) return clamp(LADDER[clamp(eEff, 0, LADDER.length - 1)], 25, 175);
   const eAnchor = Math.max(GOOD_FIRST_ERA[g], 1);      // 1836's era for pre-start goods, the debut era later
-  return clamp(ANCHOR[g] * Math.pow(SLOPE[g], eEff - eAnchor), 25, 175);
+  // ⭐ THE ANCHOR BLEND (§10.65.6): the measured vanilla anchor prices only the e0/e1 rungs — the
+  // real 1836–50 scarcity environment those rungs live in — and from e2 the path re-bases to 100 at
+  // era 1 (the NORMALIZED environment the in-game mid-century actually reaches; F85 measured the
+  // scarcity-priced anchors as the mid-century dip's cause). The e1→e2 step this creates for
+  // high-anchor goods IS the designed normalization, and it is what kills the e1 rung on schedule.
+  const base = eAnchor <= 1 && eEff >= 2 ? 100 : ANCHOR[g];
+  return clamp(base * Math.pow(SLOPE[g], eEff - eAnchor), 25, 175);
 }
 // the order-book ratio the V3 price formula demands for price p (% of base):
 //   p ≥ 100:  buy/sell = 1 + (p/100−1)/0.75      p < 100:  buy/sell = 1 / (1 + (1−p/100)/0.75)
@@ -547,7 +564,7 @@ function deriveRecipes() {
     setEraContext(e); thruAllTiers();
     for (const { i, t } of byEra.get(e)) {
       const target = t.solve_profit != null ? +t.solve_profit
-                   : DOM_MARGIN + (SHIP_INDUSTRIES.has(i.id) ? TG.shipyard_penalty : 0);
+                   : marginAt(t.era ?? 0) + (SHIP_INDUSTRIES.has(i.id) ? TG.shipyard_penalty : 0);
       const k = E.thruMult(t.key);
       const O = E.outputValue(i, t, true), Wc = E.wageCost(t), secI = E.selInVal(t._sec, true);
       const outGood = E.tierOut(i, t);
@@ -1243,6 +1260,34 @@ console.log(`\n── PHASE 1: RECIPES DERIVED AT THE HYBRID BOOK (dominant targ
 // industry (dies by placement), and the top rung of every ladder (nothing supersedes it yet).
 // A rung the derivation could not kill (slope clamps, era-varying raw paths) is PRINTED — the
 // validation is the authority, not the derivation.
+// ⭐ THE PAYBACK-NORMALIZED COST BOOK (§10.65.6, user-approved 2026-08-25 — the compensation half
+// of the margin ladder): each tier's construction cost is set so its OWN-ERA DESIGN payback is
+// PB_YEARS at £720/pt — restoring vanilla's own 10–15y capital discipline that the flat book broke
+// (realised frontier paybacks ran 3.5y in every arm; G3's standing fault). Floored at the tier's
+// existing §10.61 cost (never cheaper than the vanilla anchor). ⚠ Supersedes §10.61's flat rule FOR
+// ARMS THAT OPT IN (make_solver2_config --cost-book); the canonical config's book is untouched.
+const PB_YEARS = +(process.env.INV_PB_YEARS || 10);
+const COST_BOOK = {};
+if (GRANULAR) {
+  for (const i of S.IND) {
+    if (i.follows_be === false) continue;
+    for (const t of i.tiers) {
+      if (!Object.keys(t.inputs || {}).length) continue;
+      const e = clamp(t.era ?? 0, 0, 5), g = E.tierOut(i, t);
+      const eIx = FIT.eras.findIndex(x => x.era === e);
+      if (eIx >= 0) S.BASE_WAGE = FIT.eras[eIx].base_wage;
+      const k = 1 + THRU_MANUFACTURING;
+      const R = k * t.output_qty * (S.PRICES[g] || 0) * mandatePrice(g, e) / 100;
+      let I = 0; for (const gi in t.inputs) I += t.inputs[gi] * (S.PRICES[gi] || 0) * mandatePrice(gi, e) / 100;
+      const profit = R - k * I - E.wageCost(t);
+      const floorCost = t.building_cost ?? i.required_construction ?? 0;
+      COST_BOOK[t.key] = Math.max(floorCost, Math.round(PB_YEARS * 52 * profit / 720));
+    }
+  }
+  const rows = Object.entries(COST_BOOK);
+  const raised = rows.filter(([k, v]) => { const t = S.IND.flatMap(i => i.tiers).find(x => x.key === k); return v > (t.building_cost ?? 0); });
+  console.log(`\n── COST BOOK (payback-normalized at ${PB_YEARS}y own-era design profit): ${rows.length} tiers, ${raised.length} raised above the vanilla floor ──`);
+}
 if (GRANULAR) {
   console.log('\n── DEATH VALIDATION: every superseded rung at its era+2 design prices ──');
   const misses = [], plateauC = [], floorC = [];
@@ -1410,7 +1455,8 @@ if (WRITE) {
     mandate: FIT.eras.map((e, i) => ({ era: e.era, year: e.year, industrial: GRANULAR ? null : LADDER[i], raw: GRANULAR ? null : 100,
       goods: Object.fromEntries(Object.keys(S.PRICES).filter(g => GOOD_FIRST_ERA[g] != null || RAW_PATH[g]).sort()
         .map(g => [g, Math.round(mandatePrice(g, e.era))])) })),
-    granular: GRANULAR ? { kappa: KAPPA, anchors: ANCHOR, slopes: Object.fromEntries(Object.entries(SLOPE).map(([g, v]) => [g, +v.toFixed(3)])) } : null,
+    granular: GRANULAR ? { kappa: KAPPA, margins: MARGINS, pb_years: PB_YEARS, anchors: ANCHOR, slopes: Object.fromEntries(Object.entries(SLOPE).map(([g, v]) => [g, +v.toFixed(3)])) } : null,
+    cost_book: GRANULAR ? COST_BOOK : null,
     ladder_yields: FIT.eras.map((e, i) => ({
       era: e.era,
       tiered: Object.fromEntries(Object.keys(BOOK_OVR[i]).filter(g => isIndustrial(g, e.era)).sort()
