@@ -41,6 +41,17 @@ for (const line of readFileSync(join(REPO, 'tools', 'goods_prices.tsv'), 'utf8')
 //                 flat §10.61 rule ONLY for arms passing this flag.
 const AIVAL_EXP = process.argv.includes('--aival-exp');
 const COST_BOOK = process.argv.includes('--cost-book');
+//   --ai-defines  the INVESTMENT-HOARD levers (user-ruled 2026-08-25, values as ruled): the pool
+//                 pressure factor 0.75→0.9, the wanted-construction thresholds 1.05→1.5 / 0.75→0.9,
+//                 and the private-queue cap 0.05→0.10. Emitted as an NAI partial override by
+//                 emit_techs; levers 4–6 (bg_construction weights, long-build thresholds, the
+//                 update divisor) deliberately NOT taken.
+if (process.argv.includes('--ai-defines')) cfg.ai_defines = {
+  MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR: 0.9,
+  MONEY_SPENDING_CONSTRUCTION_EXCESSIVE_THRESHOLD: 1.5,
+  MONEY_SPENDING_CONSTRUCTION_CRITICAL_THRESHOLD: 0.9,
+  CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED: 0.1,
+};
 let recipes = 0, restated = 0, aival = 0, costed = 0;
 for (const ind of cfg.industries) {
   for (const t of ind.tiers) {
