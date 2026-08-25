@@ -36,13 +36,21 @@ for (const y of YEARS) {
   const cm = RD.flat.years[y]?.ptsAdd, cv = RD.vanMean[y]?.ptsAdd;
   TRAJ[y] = [t[0], t[1], cm && cv ? +(cm / cv).toFixed(2) : 0];
 }
-// --- WATCH: what this batch measured; the two columns it cannot source are marked 0/'—' -------
+// --- WATCH: seven POSITIONAL slots, matching the template's t-watch renderer EXACTLY:
+//     [0] GDP ×van · [1] mean stock era · [2] GBR · [3] p25 tag · [4] non-productive % mod ·
+//     [5] non-productive % van · [6] frontier share of output %.
+// ⚠ 2026-08-25: the frontier share used to be written into slot 4 — the template renders that slot
+// as "non-productive (vs van)", so three published reports showed the frontier share under the
+// wrong label and a hard 0 in its own column. Positional rows are the fill_goals hazard, here too.
 const WATCH = {};
 for (const y of YEARS) {
   const yr = RD.flat.years[y]; if (!yr) continue;
+  const tagEras = Object.values(yr.meanEraByTag || {}).filter(Number.isFinite).sort((a, b) => a - b);
+  const p25 = tagEras.length ? tagEras[Math.floor(tagEras.length * 0.25)] : 0;
   WATCH[y] = [C.TRAJ[y]?.[0] ?? 0, +(yr.era ? Object.entries(yr.era).reduce((a,[k,v])=>a+(+k)*v.lv,0)/Object.values(yr.era).reduce((a,v)=>a+v.lv,0) : 0).toFixed(2),
-              +(yr.gbr?.meanEra ?? 0).toFixed(2), 0,
-              +(100*(yr.frontierShareMedian ?? 0)).toFixed(1), 0, 0];
+              +(yr.gbr?.meanEra ?? 0).toFixed(2), +p25.toFixed(2),
+              C.WORLD_FULL[y]?.[0] ?? 0, C.WORLD_FULL[y]?.[1] ?? 0,
+              +(100 * (yr.frontierShareMedian ?? 0)).toFixed(0)];
 }
 rep(/^const GDP_FLAT=\{.*$/m, 'const GDP_FLAT=' + JSON.stringify(C.GDP_FLAT) + ';', 'GDP_FLAT');
 rep(/^const GDP_VAN=\{.*$/m,  'const GDP_VAN='  + JSON.stringify(C.GDP_VAN)  + ';', 'GDP_VAN');
