@@ -5656,10 +5656,18 @@ Two statements made on solver2e run-1 data, both GOALS that later verdicts must 
 1. ⭐⭐ **DEPEASANTATION MUST NOT BE LIKELY** — *"'possible' for tall high-tech majors, but not
    likely"* — and **the solver2e 1935 peasant shares of 10–20% for GBR/NET are "close to the goal I
    was aiming at"** (readings: GBR 10.5%, NET 22.5%, USA 44.6%, RUS 58.8% of workforce, vs vanilla's
-   1.0/1.4/31.4/47.0). ⚠ This RE-SIGNS the earlier framing: the mid-century "labor-absorption
-   deficit" (productive workers 0.58–0.77× of vanilla) is partly the DESIRED shape, not purely a
-   fault — verdicts must separate "peasantry retained" (goal) from "GDP dip" (fault) instead of
-   reading one through the other.
+   1.0/1.4/31.4/47.0). ⚠ This RE-SIGNS the earlier framing, but NOT by separation — the two are
+   COUPLED through the identity GDP× = workers× × productivity× (challenged and corrected,
+   2026-08-25): retained peasantry IS the worker deficit, so the two ruled goals (peasantry stays;
+   G4's GDP 0.8–1.25×) jointly DERIVE a productivity requirement ≈ 1/workers× — ~1.5× vanilla at
+   the endpoint worker ratio of ~0.65 (run 1 measured 1.36× → GDP 0.88×). Verdicts therefore show
+   all three columns and grade PRODUCTIVITY against the derived requirement, not the raw GDP gap.
+   ⚠ Mid-century, a dip is mathematically unavoidable under these goals (the worker gap opens by
+   1860 while productivity, vanilla-anchored at 1.0× in 1836, is still climbing): at 1900,
+   0.65 × 1.05 ⇒ 0.68× — run 1's dip is almost exactly the goals' own arithmetic, little residual.
+   OPEN RULING: either the mid-century G4 band gets a ruled allowance (the dip as the goal's
+   price), or productivity must arrive earlier (which pushes against the anchor principle's
+   pacing) — the user's call, not the report's.
 2. **SoL must not be suppressed** (the fear was "12 SoL in 1935 GBR"); the measured solver2e read —
    GBR 25.2 / NET 20.8 / USA 14.7 / RUS 10.6 vs vanilla 19.7/17.7/14.9/10.7 — was ruled acceptable
    for now ("Lovely. No need for changes as of now"). ⚠ The MECHANISM is split and measured: the
