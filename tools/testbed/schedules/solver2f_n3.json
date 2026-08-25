@@ -1,0 +1,67 @@
+{
+  "schedule_version": 1,
+  "label": "solver2f-n3",
+  "_why": "THE INVESTMENT-HOARD LEVERS IN-GAME, n=3 (user-ruled 2026-08-25: levers 1-3 at 0.9/1.5+0.9/0.10, lever 5 at x3 = 120/180wk; levers 4+6 explicitly NOT taken). solver2f = solver2e byte-identical on every tier + the six-key NAI partial override. The question: do the pools drain (solver2e: GBP 0.7-1.5B pooled-7 at 1935, world 51% of GDP, NO pool anywhere ever falling GBP 10M/yr), does construction rise, do the peasant-flat offenders (USA r3 -0.09M/5yr, RUS r1 +-0.00M) start absorbing - WITHOUT breaking the solver2e goal set (endpoint ~1x, GBR peasants 10-20%, SoL unsuppressed).",
+  "_arms": "solver2f = {kind: config, config: config/mod_config.solver2f.json}, PAIRED tech twin (L20 PASS; -DryRun 6/6). Frozen sha256 1BE9B93FC6CE3CAD436BF7601103DCFEBBCB59A5149B521CFA6E7CCF8FD40F46. vs solver2e: tier diff ZERO - the six NAI defines are the ONE lever set (pool-pressure 0.75->0.9, wanted-construction 1.05->1.5 / 0.75->0.9, queue cap 0.05->0.10, long-build thresholds 40/60->120/180). L10 freeze.",
+  "_predictions": "PRE-REGISTERED. (1) Pools at 1935 fall vs solver2e (GBP 0.7-1.5B pooled-7) - direction only; a pool DRAINING (falling year-over-year) anywhere would be the first ever observed. (2) Construction rises: uncompensated gov share (solver2e-family ~3.6% GDP at 1935) and/or construction sector levels up. (3) The stagnant-peasantry offenders absorb faster (USA/RUS 5yr deltas). (4) GDP median endpoint stays in 0.8-1.25x and the dip does not deepen materially (more construction = more absorption = possibly SHALLOWER dip). (5) The x3 time thresholds shift construction WITHIN the tiered set toward the expensive frontier (electrics/steel/automotive e4-e5 shares of adds rise vs solver2e). Failure read: pools unchanged => the binding constraint is not these knobs (queue targets or per-state gates), equally a finding.",
+  "_comparison": "PRIMARY: solver2e-n3 (the one-lever-set A/B). SECONDARY: vanilla n=18.",
+  "_watch": "(1) pool trajectories GBR/USA/CAN/MYS. (2) construction sector world levels + the gov construction share. (3) USA/RUS peasant 5yr deltas. (4) GDP medians at anchors. (5) frontier-expensive shares of adds. (6) queue_mix at first summary. (7) any AI budget instability (bankruptcy count vs solver2e 76/232-class).",
+  "_cost": "3 runs x 100 in-game years, ~8h + harvest.",
+  "_caveats": "Engine-behaviour levers measured ON our config (the mod IS the object under test here, not vanilla - deliberate). Package-of-six attribution only. Same-patch different-nights vanilla baseline.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "The twelve dates match canon-n7, aival, aival2 and the F79 vanilla baseline exactly - what keeps the sessions comparable."
+  },
+  "setups": {
+    "solver2f": {
+      "kind": "config",
+      "config": "config/mod_config.solver2f.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "solver2f",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "solver2f",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "solver2f",
+      "until": "1936.1.1"
+    }
+  ]
+}
