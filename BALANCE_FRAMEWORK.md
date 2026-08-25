@@ -5650,6 +5650,24 @@ knots / **22 stale-profitable** / 4 inverted) — the ×0.84+40% deaths are −1
 wage growth the intended finisher, so realisation drift reads many stale rungs marginally positive in
 the SNAPSHOTS. The in-game validation arm (solver2c) is the test that matters.
 
+### §10.65.7 DEPEASANTATION AND SoL — the ruled goals (user, 2026-08-25, on the solver2e n=1 read)
+
+Two statements made on solver2e run-1 data, both GOALS that later verdicts must grade against:
+1. ⭐⭐ **DEPEASANTATION MUST NOT BE LIKELY** — *"'possible' for tall high-tech majors, but not
+   likely"* — and **the solver2e 1935 peasant shares of 10–20% for GBR/NET are "close to the goal I
+   was aiming at"** (readings: GBR 10.5%, NET 22.5%, USA 44.6%, RUS 58.8% of workforce, vs vanilla's
+   1.0/1.4/31.4/47.0). ⚠ This RE-SIGNS the earlier framing: the mid-century "labor-absorption
+   deficit" (productive workers 0.58–0.77× of vanilla) is partly the DESIRED shape, not purely a
+   fault — verdicts must separate "peasantry retained" (goal) from "GDP dip" (fault) instead of
+   reading one through the other.
+2. **SoL must not be suppressed** (the fear was "12 SoL in 1935 GBR"); the measured solver2e read —
+   GBR 25.2 / NET 20.8 / USA 14.7 / RUS 10.6 vs vanilla 19.7/17.7/14.9/10.7 — was ruled acceptable
+   for now ("Lovely. No need for changes as of now"). ⚠ The MECHANISM is split and measured: the
+   tall majors' premium is WAGE-driven labour scarcity (GBR base wage ×2.24 vanilla, NET ×1.75),
+   while USA/RUS reach parity through cheap goods at ×0.92–0.93 wages. The user flagged
+   scarcity-only SoL growth as non-ideal — watch the wage channel's share, don't let it become the
+   only lift.
+
 ### §10.65.4 THE SOLVER2C VERDICT — the anchor holds, the back half is REJECTED (user-ruled 2026-08-24, night)
 
 solver2c-n1 (F83) validated the anchor and exposed the back half, and the user ruled on both:
