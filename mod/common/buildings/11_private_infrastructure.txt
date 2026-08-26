@@ -2,6 +2,7 @@
 ############ PRIVATE INFRASTRUCTURE
 
 building_port = {
+	ai_value = 750
 	building_group = bg_private_infrastructure
 	city_type = port
 	levels_per_mesh = 1
@@ -29,6 +30,7 @@ building_port = {
 }
 
 building_port_steam = {
+	ai_value = 1350
 	building_group = bg_private_infrastructure
 	city_type = port
 	levels_per_mesh = 1
@@ -56,6 +58,7 @@ building_port_steam = {
 }
 
 building_port_industrial = {
+	ai_value = 2430
 	building_group = bg_private_infrastructure
 	city_type = port
 	levels_per_mesh = 1
@@ -83,6 +86,7 @@ building_port_industrial = {
 }
 
 building_port_modern = {
+	ai_value = 4374
 	building_group = bg_private_infrastructure
 	city_type = port
 	levels_per_mesh = 1
@@ -110,6 +114,7 @@ building_port_modern = {
 }
 
 building_port_motor = {
+	ai_value = 7873
 	building_group = bg_private_infrastructure
 	city_type = port
 	levels_per_mesh = 1

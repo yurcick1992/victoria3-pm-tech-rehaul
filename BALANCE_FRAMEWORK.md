@@ -5650,6 +5650,24 @@ knots / **22 stale-profitable** / 4 inverted) — the ×0.84+40% deaths are −1
 wage growth the intended finisher, so realisation drift reads many stale rungs marginally positive in
 the SNAPSHOTS. The in-game validation arm (solver2c) is the test that matters.
 
+### §10.65.9 ⭐⭐ THE SOLVER-2 BOOK SHIPS — solver2f IS the canonical config (user-ruled 2026-08-26, PROVISIONAL "for now")
+
+**"Let's make this all (specifically the s2f, for now) a default shipped option for the mod."**
+`config/mod_config.json` is now a byte-copy of the solver2f arm (the pre-canonization config is
+kept at `config/mod_config.pre_solver2_canon_backup.json`): the **granular per-good recipe book**
+(§10.65.5: measured vanilla anchors, death-condition slopes, measured raw paths) under the
+**§10.65.6 margin ladder + anchor blend + 10y payback-normalized cost book** (NO era cost
+multipliers — those are the s2g/s2h experiments), the **exp ai_value ladder 750×1.8^era**, restated
+`target_be`, and the **six F87 investment-hoard NAI defines** via the config's `ai_defines`.
+Evidence base: F86–F88 (s2f: pool at vanilla's ratio, construction ×1.8, stagnation cured;
+GDP 1.41× and peasantry loss are the KNOWN open trades the s2h dosing work is addressing).
+⚠ **PROVISIONAL** — "for now" is part of the ruling; s2h-class refinements are expected to move it.
+⚠ **The solver-1 pipeline (§10.42–§10.51) is SUPERSEDED as the shipped book but remains the
+premise machinery**: era_prices.json (wages/SoL/targets) still feeds era_inverse — do NOT re-run
+era_solver/era_scenarios `--write` against the new canonical without a ruling (they would overwrite
+the shipped recipes with a solver-1 solve). ⚠ Docs describing the canonical as the solver-1 book
+are stale where they conflict with this section; this section wins until the fuller reconciliation.
+
 ### §10.65.7 DEPEASANTATION AND SoL — the ruled goals (user, 2026-08-25, on the solver2e n=1 read)
 
 Two statements made on solver2e run-1 data, both GOALS that later verdicts must grade against:
