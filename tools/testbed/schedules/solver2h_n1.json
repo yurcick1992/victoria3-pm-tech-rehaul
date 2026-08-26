@@ -1,0 +1,59 @@
+{
+  "schedule_version": 1,
+  "label": "solver2h-n1",
+  "_why": "THE HALVED COST DOSE, n=1 (user-ruled 2026-08-26: 'Let's go with n=1 under these new settings'): e3 ×1.25, e4/e5 ×1.5, thresholds 180/270wk over the NEWLY-CANONIZED solver2f book (§10.65.9 — the canonical config IS solver2f now; this arm = canonical + 58 building_cost fields + 2 thresholds). Dosed by F89's rate-tax mechanism: ~60% of s2g's ~0.8pp/yr K-growth tax, i.e. ~0.4–0.5pp/yr.",
+  "_arms": "solver2h = {kind: config, config: config/mod_config.solver2h.json}, PAIRED tech twin (L20 PASS; -DryRun 6/6). Frozen sha256 7039331F396F1EB612152C24FD9DBFDEA288EBF0EFC4BEA05401624B1E7EF890. vs the canonical (=solver2f): building_cost on 58 e3+ tiers (×1.25/×1.5) + thresholds 180/270. L10 freeze.",
+  "_predictions": "PRE-REGISTERED under the RATE MODEL (F89's correction of F88's static form): (1) 1935 GDP lands ~0.95–1.15× of vanilla — stated wide because K-formation is endogenous and n=1 carries ±20% seed noise; a single run outside 0.75–1.35× would still be uninformative, inside 0.9–1.2 mildly confirming. (2) K-growth 1890→1935 ~4.2–4.5%/yr (between s2f 4.7 and s2g 3.9). (3) GBR peasants between 0.4% (s2f) and 9.9% (s2g) — expect ~4–8%. (4) Pool ratio ~vanilla. (5) e4 paybacks ~6–10y at own-era prices. n=1 IS the ruled scope — read direction and mechanism, not medians.",
+  "_comparison": "PRIMARY: solver2f-n3 (=canonical) and solver2g-n3 bracket the dose; the rate model interpolates. SECONDARY: vanilla n=18.",
+  "_watch": "(1) endpoint + the K trajectory vs both brackets. (2) own-book points at 1890/1910/1935 (the rate-tax read). (3) GBR peasants + pool. (4) queue_mix. (5) below-best (expect ~40–42%).",
+  "_cost": "1 run × 100 in-game years, ~2h40 + harvest.",
+  "_caveats": "n=1 by ruling — direction/mechanism only, no median claims. Two-knob delta (costs+thresholds) as before. Different-nights vanilla baseline.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "The twelve dates match canon-n7, aival, aival2 and the F79 vanilla baseline exactly - what keeps the sessions comparable."
+  },
+  "setups": {
+    "solver2h": {
+      "kind": "config",
+      "config": "config/mod_config.solver2h.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "solver2h",
+      "until": "1936.1.1"
+    }
+  ]
+}

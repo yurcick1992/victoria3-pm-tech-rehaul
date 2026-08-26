@@ -53,6 +53,11 @@ const COST_BOOK = process.argv.includes('--cost-book');
 //                 costs ×2 at unchanged thresholds would re-punish exactly the frontier the
 //                 multipliers price.
 const COST_MULT = process.argv.includes('--cost-mult');
+//   --cost-mult125  the HALVED dose (user-ruled 2026-08-26 after F89's rate-tax mechanism): e3 ×1.25,
+//                   e4/e5 ×1.5, thresholds 180/270wk — ~60% of s2g's growth-rate tax; the rate model
+//                   prices the 1935 median at ~0.95–1.15× of vanilla from the canonical baseline
+const COST_MULT125 = process.argv.includes('--cost-mult125');
+if (COST_MULT && COST_MULT125) { console.error('pick one of --cost-mult / --cost-mult125'); process.exit(1); }
 if (process.argv.includes('--ai-defines')) cfg.ai_defines = {
   MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR: 0.9,
   MONEY_SPENDING_CONSTRUCTION_EXCESSIVE_THRESHOLD: 1.5,
@@ -61,8 +66,8 @@ if (process.argv.includes('--ai-defines')) cfg.ai_defines = {
   // lever 5, user-ruled ×3 (2026-08-25 "Do x3 on the point 5"): our cost book runs ~×2.5–2.8
   // vanilla's 800-point non-unique ceiling on 54 of 105 tiers, so vanilla's 40/60-week maluses
   // (×0.5/×0.25) hit our frontier routinely; ×3 re-calibrates them to the same building class
-  PRODUCTION_BUILDING_LONG_CONSTRUCTION_TIME_THRESHOLD: COST_MULT ? 240 : 120,
-  PRODUCTION_BUILDING_VERY_LONG_CONSTRUCTION_TIME_THRESHOLD: COST_MULT ? 360 : 180,
+  PRODUCTION_BUILDING_LONG_CONSTRUCTION_TIME_THRESHOLD: COST_MULT ? 240 : COST_MULT125 ? 180 : 120,
+  PRODUCTION_BUILDING_VERY_LONG_CONSTRUCTION_TIME_THRESHOLD: COST_MULT ? 360 : COST_MULT125 ? 270 : 180,
 };
 let recipes = 0, restated = 0, aival = 0, costed = 0;
 for (const ind of cfg.industries) {
@@ -80,10 +85,14 @@ for (const ind of cfg.industries) {
     }
     if (t.era != null) { t.ai_value = AIVAL_EXP ? Math.round(750 * Math.pow(1.8, t.era)) : 500 + 1000 * (t.era + 1); aival++; }
     if (COST_BOOK && inv.cost_book && inv.cost_book[t.key] != null) { t.building_cost = inv.cost_book[t.key]; costed++; }
-    // --cost-mult applies AFTER the cost book, or the book would overwrite it
+    // cost multipliers apply AFTER the cost book, or the book would overwrite them
     if (COST_MULT && t.building_cost != null && t.era != null) {
       if (t.era === 3) t.building_cost = Math.round(t.building_cost * 1.5);
       else if (t.era >= 4) t.building_cost = Math.round(t.building_cost * 2);
+    }
+    if (COST_MULT125 && t.building_cost != null && t.era != null) {
+      if (t.era === 3) t.building_cost = Math.round(t.building_cost * 1.25);
+      else if (t.era >= 4) t.building_cost = Math.round(t.building_cost * 1.5);
     }
   }
 }
