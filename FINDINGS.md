@@ -8838,3 +8838,134 @@ if GDP ~0.9–1.1× with GBR ~5–10% is wanted: costs ×1.25/×1.5.
 Which of the six-defines + cost-multiplier interactions drives the K-formation shortfall is open
 (the next arm's question if pursued). Median claims only — the endpoint spread (0.53–1.08×) is the
 family's widest. The thresholds rode along with the costs by ruling (two-knob delta).
+
+
+---
+
+## F90 — OBSOLESCENCE DEATH ARITHMETIC ON THE CANONICAL BOOK: designed vs FACTUAL price paths (derived analysis, 2026-08-26)
+
+**Arm/basis:** derived analysis, no new runs. Recipes = the canonical config (= solver2f, §10.65.9).
+Designed prices = the `mandate` book in `config/era_inverse.json` (pure design, anchor×slope,
+plateau holds). Factual prices = median realized % of base pooled over EVERY mod run of the week
+of 2026-08-24 (8 sessions solver2→solver2h, 16 runs with the relevant dumps, 7 instrumented
+markets), read at each era's calendar year: e0→1836.2, e1→1850, e2→1870, e3→1900, e4→1920+1930
+pooled, e5→1935. Wages on the premise ramp (era_prices.json base_wage) at the evaluation era;
+throughput ×1.2; margin = (R − inputs − wages)/(inputs + wages). GBR scope = British Market rows,
+excluding solver2-n2 r1/r2 (GBR dead: GDP £13M/£11M vs £309–860M elsewhere). e+3 for e2 rungs
+evaluated only where the e5 tier exists at 1935 (steel/glass/tooling/art_academy — every other e5
+tier is absent or negligible in nearly every run: research reaches e5 only at century end).
+art_academy excluded throughout (jobs live in its ownership PMG → this wage read is 0, margins are
+an artifact). Shipyard (clippers) excluded: extinct-by-placement.
+
+### 1. The DESIGN book kills everything on schedule except port e1
+
+Every ordinary e0–e2 rung is dead at its era+2 design prices: e0 rungs at −22…−50%, e1 at −1…−51%,
+e2 at −3…−28% (e2 deaths uniformly shallower — the ladder re-bases at 100 from e2 and the wage
+ramp slows ×1.82→×1.46 per two eras). Own-era margins sit on the §10.65.6 ladder m(e)=0.30+0.08e
+except where derivation clamps bound: compressed (steel e0 +1%, textile e0 +3%, shipyard_steam e1
++5%, railway e1 +13% — the 175 cap × dear measured raws) or inflated (furniture e1 +97%, food e2
++74% — lean-floor-pinned recipes that cannot be enriched down to target). Three cost classes do
+the killing: raw-fed rungs die of output collapse against flat raws; manufactured-fed rungs are
+sheltered by co-deflation and die of the wage ramp (hairline deaths furniture e1 −1%,
+shipyard_steam e1 −2% carry wage shares 25–44% at death); **port e1 is the one OPEN survivor
+(+11% at e3 design prices)** — steamers deflate faster than merchant_marine, a pure co-deflation
+escape (masked in practice by the must_have subsidy mandate).
+
+### 2. At FACTUAL prices, e0 is born dying and death arrives one era late
+
+Margin trios own → e+2 → e+3 (world scope | GBR scope):
+
+```
+rung             WORLD  own    +2    +3      GBR  own    +2    +3
+food e0                  -5%   -9%  -19%          +23%   -7%  -18%
+food e1                 +43%  +17%   -1%          +60%  +24%   -6%
+food e2                +187% +104%    -          +209%  +95%    -
+textile e0              -42%  -11%  -10%          -56%   +1%  -18%
+textile e1              +79%  +79%  +43%          +99%  +66%  +20%
+textile e2              +87%  +52%    -          +118%  +30%    -
+furniture e0            -39%   -3%   -9%          -31%   -4%  -23%
+furniture e1           +115%  +91%  +43%          +96%  +66%   +4%
+furniture e2           +168%  +81%    -          +167%  +33%    -
+glass e0                -48%  +13%  +34%           -4%  +23%  +27%
+glass e1                +29%  +64%  +39%          +22%  +56%  +30%
+glass e2               +105%  +82%  +64%         +115%  +72%  +56%
+tooling e0              -25%  +17%   +8%          -21%   +9%   -4%
+tooling e1              +79%  +70%  +39%          +72%  +60%  +21%
+tooling e2             +171% +113%  +78%         +185%  +90%  +66%
+paper e0                -32%  +27%  +12%           +3%  +17%   -5%
+paper e1                +48%  +23%   -6%          +46%   +7%  -20%
+paper e2               +252% +105%    -          +252%  +73%    -
+fertilizer e1           +19%   -4%  -16%          +27%   -8%  -19%
+fertilizer e2           +76%  +28%    -           +91%  +25%    -
+explosives e1           +61%  +37%  +15%          +69%  +38%  +18%
+explosives e2          +120%  +63%    -          +124%  +68%    -
+steel e0                -39%  -27%  -41%          -56%  -40%  -47%
+steel e2                +94%  +40%  +24%          +59%  +29%  +26%
+motor e1                +37%  +29%   +2%          +43%  +22%   -2%
+motor e2               +108%  +59%    -          +122%  +52%    -
+shipyard_steam e1       +41%  +20%   +2%          +19%   +6%   -7%
+shipyard_steam e2       +37%   +9%    -           +26%    0%    -
+arms e0                 -20%  +10%  -17%          -21%  -11%  -33%
+arms e1                 +88%  +31%   +5%          +79%  +10%   -1%
+arms e2                 +97%  +30%    -           +74%  +23%    -
+artillery e0            -39%  -13%  -26%          -44%  -20%  -42%
+artillery e1            +46%  +15%  -19%          +49%  -10%  -25%
+artillery e2            +81%  +19%    -           +82%  +14%    -
+munition e1             +42%   -3%  -25%          +33%  -25%  -36%
+munition e2            +146%  +31%    -          +124%  +11%    -
+synthetics e2            -7%   -9%    -           -53%   -3%    -
+electrics e2            +56%  +45%    -           +55%  +53%    -
+port e0                 +25%   +7%  +16%          +17%  +26%  +16%
+port e1                 +77%  +92%  +89%         +117% +106%  +55%
+port e2                +107% +119%    -          +159%  +80%    -
+railway e1              +17%   +5%   +1%          +14%   +1%   -5%
+railway e2             +174% +112%    -          +170%  +97%    -
+```
+
+Key factual price paths (world medians, e0→e5): tools 122→158→154→142→119→106 · steel
+112→126→115→92→81→76 · engines —→146→133→116→(89 at e4) · groceries 134→141→135→127→118→112 ·
+wood 142→104→98→91→91→91 · coal 107→109→121→122→117→111 · iron 164→144→118→112→101→103.
+
+**Readings.** (1) ⭐ **At factual prices, e0 rungs are born dying, not made obsolete** — nearly
+every e0 rung is unprofitable at its OWN era (1836's realized raws are dear: wood 142, iron 164,
+fabric 129, hardwood 157) and several IMPROVE with age (glass e0 −48→+13→+34%, tooling e0
+−25→+17%, paper e0 −32→+27%): the mid-century price hump (output prices rising to 1850–70 as
+demand outruns capacity) rewards staleness exactly where the design wants the first deaths. The
+design's monotone "profitable young, dead old" trajectory exists almost nowhere in the factual
+data. (2) **Death arrives ~one era late**: e+2 kills ~8 rungs (food/textile/furniture/steel/
+artillery e0, fertilizer/munition e1, synthetics e2); e+3 roughly doubles the list (food/paper/
+artillery e1 world; + motor/shipyard_steam/railway/arms e1 in GBR). The designed two-eras-stale
+death is factually a three-eras-stale death — consistent with the 1935 snapshot (20/45 rungs dead
+at pooled 1935 prices; no e2 rung dead except synthetics, food e2 +73% three eras stale).
+(3) **GBR kills harder and earlier than the world median** (munition e1 at e+2: −25% GBR vs −3%
+world; artillery e1 −10% vs +15%) — the frontier market deflates manufactured goods (steel 73,
+tools 103, engines 80 by e+3) while the world median holds them up. Emergent obsolescence works
+where the technology is; the laggard-market median is where old capacity shelters. (4) **The
+war chain dies best** (output deflation against hardwood/lead staying high); the never-dies set
+at factual prices: glass (all rungs), tooling e1/e2, textile e1/e2, food e2, paper e2, explosives
+(worst +15%), electrics, port (worst +7% before subsidy), railway e2 — every e2 rung outside
+synthetics, whose own later tiers deflated dye (the one industry where the designed mechanism
+fully fired).
+
+### 3. The recipe book is pinned from both sides — composition has no degrees of freedom left
+
+Lean-room census (O:I value at base prices vs the 4:1 lean floor): **37 of 58 e3+ tiers at the
+floor** (O:I > 3.8); median remaining lean-room ×1.20 at e3, ×1.00 at e4/e5. Rich outliers with
+real headroom: power e3/e4 (1.7/2.6), shipyard_steam e3–e5 (1.8–2.3), synthetics e3/e4 (2.3/2.7),
+automotive e3 (2.1). §10.50 ratchet census: 83 adjacent pairs, **0 violations, 1 rounding
+hairliner** (art_academy e3→e4, 4.007→3.986, −0.5%) — the inverse solve enforces the strong form
+by construction (`monoCapInfo` in era_inverse.mjs). Leaning mid/late recipes further to steepen
+price ladders is therefore not available without raising the 4:1 cap, and its obsolescence effect
+is two-edged regardless (leaner late tiers cut input demand → F84 co-deflation shelters the rung
+below).
+
+### What it does NOT say
+
+The factual price vectors are cross-arm pooled medians over a family of DIFFERENT recipe/cost
+books (solver2→2h) — arm-specific death timing may differ (canon-arms-only margins agree in sign
+almost everywhere at 1935, checked). Wages are the premise ramp, not each run's realized wages;
+margins assume full employment, no subsidies, no throughput beyond the flat ×1.2. The world scope
+is the 7-market median, not a GDP-weighted world. Nothing here measures WHEN within an era a rung
+crosses zero, only the era-anchored snapshots. The e+3 skip rule means most e2 rungs' three-era
+verdicts are unmeasurable this century by construction (no e5 capacity exists to price them
+against).
