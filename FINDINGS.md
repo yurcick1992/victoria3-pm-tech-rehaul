@@ -8765,3 +8765,30 @@ Package-of-six attribution only (which knob carries how much is unmeasured). End
 1.06–1.53× — single-run endpoints inadmissible as ever. No pool anywhere drains in ABSOLUTE terms
 even under the levers — growth outruns spending; only the ratio normalizes. Different-nights
 vanilla baseline, same patch.
+
+## F88 — GDP IS LINEAR IN STANDING ECONOMIC CAPITAL, WITH A NEAR-UNIVERSAL SLOPE: GDP_t ≈ a + b·K_t, b ≈ 0.29–0.34 across every arm INCLUDING vanilla
+
+**Method:** K_t = Σ levels × construction cost × £720 over economic buildings (tiered from the arm's
+book; extraction/agriculture/trade from vanilla's `required_construction`; state, military,
+subsistence, urban centres, ownership excluded). OLS per run over the 100 yearly points, 1837–1936.
+Sessions: solver2f n=3, solver2e r1, vanilla n16 r1–r2.
+
+| arm | a (£M) | b (£GDP/yr per £K) | R² (levels) | R² (ΔGDP vs ΔK) |
+|---|---|---|---|---|
+| s2f r1/r2/r3 | 248/286/306 | 0.32/0.30/0.29 | 0.997/0.993/0.998 | 0.61/0.45/0.80 |
+| s2e r1 | 199 | 0.34 | 0.992 | 0.73 |
+| vanilla r1/r2 | 491/439 | 0.29/0.30 | 0.991/0.991 | 0.28/0.21 |
+
+**Readings.** (1) The slope is ~arm-invariant: every £ of standing economic capital yields ~£0.30/yr
+of GDP (gross capital-output ~3.1–3.4) regardless of recipe book, ai_values or the hoard levers —
+arms differ in HOW MUCH K they deploy, not in what a unit produces (F87's dam finding as one
+number). (2) Vanilla's intercept is ~£200M higher — it extracts more GDP from the capital-light
+base (subsistence/urban/1836 stock). (3) ⭐ The first-difference check (which kills co-trending):
+mod arms hold R² 0.45–0.80 — yearly GDP movement largely IS capital formation — while vanilla reads
+0.21–0.28; the mod has made the economy far more literally "GDP = what you built" than the base
+game. **Used predictively for the first time in solver2g** (e3 ×1.5 / e4–e5 ×2 costs: static
+prediction 1.33× → 1.07× of vanilla at 1936; the arm is the model's test).
+
+**What it does NOT say:** K is net standing stock (demolitions drop out), flat-£720 basis; the
+levels-R² flatters any two monotone series (the Δ column is the honest one); b's invariance is
+measured across THESE books — a radically different output-per-level design would move it.
