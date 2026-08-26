@@ -8792,3 +8792,49 @@ prediction 1.33× → 1.07× of vanilla at 1936; the arm is the model's test).
 **What it does NOT say:** K is net standing stock (demolitions drop out), flat-£720 basis; the
 levels-R² flatters any two monotone series (the Δ column is the honest one); b's invariance is
 measured across THESE books — a radically different output-per-level design would move it.
+
+## F89 — THE COST MULTIPLIERS (n=3): the linear-K law survives its first out-of-sample test per-run; the arm-level prediction fails through K-formation, not the law
+
+**Arm:** solver2g-n3 (`20260826_080546`) — solver2f + e3 building_cost ×1.5, e4/e5 ×2 (58 tiers) +
+long-build thresholds 240/360wk (sha `1868572A…AE5E11`; all else byte-identical). The first
+quantitatively pre-registered arm: F88 predicted the 1936 median at 1.07× static / 1.1–1.2× with
+claw-back. n=3, L17-clean.
+
+### ⭐ The model test, per run (GDP from each world's OWN K, solver2f-valued; a=£280M, b=0.303)
+
+| | 1900 actual/model | 1936 actual/model | 1936 ÷vanilla |
+|---|---|---|---|
+| run 1 | 0.97 | 1.18 | 1.08× |
+| run 2 | 0.90 | **0.98** | 0.53× |
+| run 3 | 0.91 | 1.02 | 0.76× |
+
+**GDP = a + b·K held in every world** — most strikingly in run 2, the family's lowest-ever endpoint
+(0.53× of vanilla), whose GDP is exactly what its own meagre capital predicts. The law is
+structural. **The arm-level median (0.76×) missed the 1.07–1.2× band** because the auxiliary
+assumption — "the same construction points get formed as in solver2f" — failed in runs 2–3.
+Candidate causes, not separable at n=3: the multipliers suppressing point-formation via feedback
+(dearer buildings → thinner queues → smaller construction sector → less K), and/or two low-roll
+seeds (run 2: Russia £56M, no German unification; but two of three under the family's historical
+floor leans feedback-real). No claw-back materialized.
+
+### Goals (1935): the first arm holding peasantry AND pool simultaneously
+
+GBR peasants **9.9%** median (5.6/15.3/9.9 — back in the ruled 10–20% band; s2f read 0.4%) at a
+**31% pool ratio** (= vanilla; s2e needed 51% to hold its peasantry). Price: GDP 0.76× (below
+band), workers ~0.59×, and a K-starved USA over-retaining (median 66% peasants — an artifact of
+the weak seeds, not design). Paybacks at own-era prices: several e4 rungs into/near the 8–15y
+target (glass 9.1, fertilizer 8.9, steel 8.4, arms 8.4); food/tooling still short (2.9/4.7);
+port/railway long (24/32).
+
+### The triangle at three corners
+
+s2e (0.97× · 10.5% · 51%) → s2f (1.41× · 0.4% · 32%) → s2g (0.76× · 9.9% · 31%): the cost
+multipliers cancel the hoard levers' GDP effect while keeping the pool normalization and returning
+the peasantry — the two lever sets are near-independent on the goals axis. Interpolation candidate
+if GDP ~0.9–1.1× with GBR ~5–10% is wanted: costs ×1.25/×1.5.
+
+### What it does NOT say
+
+Which of the six-defines + cost-multiplier interactions drives the K-formation shortfall is open
+(the next arm's question if pursued). Median claims only — the endpoint spread (0.53–1.08×) is the
+family's widest. The thresholds rode along with the costs by ruling (two-knob delta).
