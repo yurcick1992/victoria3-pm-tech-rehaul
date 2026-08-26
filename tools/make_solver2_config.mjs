@@ -46,6 +46,13 @@ const COST_BOOK = process.argv.includes('--cost-book');
 //                 and the private-queue cap 0.05→0.10. Emitted as an NAI partial override by
 //                 emit_techs; levers 4–6 (bg_construction weights, long-build thresholds, the
 //                 update divisor) deliberately NOT taken.
+//   --cost-mult   §10.65.8 (user-approved 2026-08-26, on the F88 GDP=a+b·K fit): e3 building_cost
+//                 ×1.5, e4/e5 ×2 — the static model predicts solver2f's 1.33× endpoint → ~1.07×
+//                 (loop claw-back expected above that) and frontier paybacks into the 8–15y band.
+//                 ⚠ ALSO doubles the long-build thresholds again (240/360wk, ruled "don't forget"):
+//                 costs ×2 at unchanged thresholds would re-punish exactly the frontier the
+//                 multipliers price.
+const COST_MULT = process.argv.includes('--cost-mult');
 if (process.argv.includes('--ai-defines')) cfg.ai_defines = {
   MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR: 0.9,
   MONEY_SPENDING_CONSTRUCTION_EXCESSIVE_THRESHOLD: 1.5,
@@ -54,8 +61,8 @@ if (process.argv.includes('--ai-defines')) cfg.ai_defines = {
   // lever 5, user-ruled ×3 (2026-08-25 "Do x3 on the point 5"): our cost book runs ~×2.5–2.8
   // vanilla's 800-point non-unique ceiling on 54 of 105 tiers, so vanilla's 40/60-week maluses
   // (×0.5/×0.25) hit our frontier routinely; ×3 re-calibrates them to the same building class
-  PRODUCTION_BUILDING_LONG_CONSTRUCTION_TIME_THRESHOLD: 120,
-  PRODUCTION_BUILDING_VERY_LONG_CONSTRUCTION_TIME_THRESHOLD: 180,
+  PRODUCTION_BUILDING_LONG_CONSTRUCTION_TIME_THRESHOLD: COST_MULT ? 240 : 120,
+  PRODUCTION_BUILDING_VERY_LONG_CONSTRUCTION_TIME_THRESHOLD: COST_MULT ? 360 : 180,
 };
 let recipes = 0, restated = 0, aival = 0, costed = 0;
 for (const ind of cfg.industries) {
@@ -73,6 +80,11 @@ for (const ind of cfg.industries) {
     }
     if (t.era != null) { t.ai_value = AIVAL_EXP ? Math.round(750 * Math.pow(1.8, t.era)) : 500 + 1000 * (t.era + 1); aival++; }
     if (COST_BOOK && inv.cost_book && inv.cost_book[t.key] != null) { t.building_cost = inv.cost_book[t.key]; costed++; }
+    // --cost-mult applies AFTER the cost book, or the book would overwrite it
+    if (COST_MULT && t.building_cost != null && t.era != null) {
+      if (t.era === 3) t.building_cost = Math.round(t.building_cost * 1.5);
+      else if (t.era >= 4) t.building_cost = Math.round(t.building_cost * 2);
+    }
   }
 }
 

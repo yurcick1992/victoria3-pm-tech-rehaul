@@ -1,0 +1,67 @@
+{
+  "schedule_version": 1,
+  "label": "solver2g-n3",
+  "_why": "THE COST MULTIPLIERS ON TOP OF THE HOARD LEVERS, n=3 (user-approved 2026-08-26 on the F88 fit: 'we can predict reasonably well... how much GDP will we lose?' — e3 building_cost ×1.5, e4/e5 ×2, long-build thresholds doubled again to 240/360wk per the ruling 'don't forget'). solver2g = solver2f + 58 building_cost fields + the two threshold values; everything else byte-identical. THE MODEL PREDICTION UNDER TEST (F88, GDP=a+b·K with b≈0.29–0.34 arm-invariant): solver2f's 1936 median 1.33× → ~1.07× of vanilla (static; loop claw-back expected to land it 1.1–1.2×), mid-century loss only ~5%; frontier paybacks 3–6y → 6–12y (into the 8–15 band); workers ~0.84×→~0.75× partially restoring the peasantry goal.",
+  "_arms": "solver2g = {kind: config, config: config/mod_config.solver2g.json}, PAIRED tech twin (L20 PASS; -DryRun 6/6). Frozen sha256 1868572A04F87C91FC97A8CACCF9812AA361DD3F2B90809B8ECD5C9FD6AE5E11. vs solver2f: building_cost on 58 e3+ tiers (×1.5/×2) + thresholds 240/360 — the cost-multiplier lever set. L10 freeze.",
+  "_predictions": "PRE-REGISTERED, quantitative for the first time (the F88 model): (1) 1936 GDP median lands 1.07–1.2× of vanilla (static prediction 1.07×; claw-back above it; OUTSIDE this range in either direction = the linear-K model breaks, equally a finding). (2) Mid-century barely moves (predicted −4–6%: 0.70–0.74× band retained). (3) Frontier paybacks at own-era prices: e4/e5 rungs 6–12y (were 3–6). (4) Workers ÷van falls from 0.84× toward ~0.75×; GBR peasants recover from 0.4% toward low single digits. (5) Below-best share RISES somewhat (cheap old rungs relatively more attractive; the 240/360 thresholds and exp ai_value push back) — direction only. (6) Pool ratio stays near vanilla (~32%; the levers still active).",
+  "_comparison": "PRIMARY: solver2f-n3 (the cost-multiplier A/B) and the F88 model prediction. SECONDARY: solver2e, vanilla n=18.",
+  "_watch": "(1) 1936 median vs the 1.07× prediction — the model test. (2) K and levels by era class (the mechanism: same points, fewer levels). (3) Paybacks by era at own-era prices. (4) Peasants GBR/USA/RUS. (5) Below-best. (6) Pool ratio. (7) queue_mix early (the exp-aival early-tier softness is known and shared by both arms).",
+  "_cost": "3 runs × 100 in-game years, ~8h + harvest.",
+  "_caveats": "Two-knob delta vs solver2f (costs + thresholds) — the thresholds ride along by ruling, so attribution is to the pair. The F88 model assumes the AI class-mix and b are invariant; both may drift (stated in the predictions as the model test). Different-nights vanilla baseline.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "The twelve dates match canon-n7, aival, aival2 and the F79 vanilla baseline exactly - what keeps the sessions comparable."
+  },
+  "setups": {
+    "solver2g": {
+      "kind": "config",
+      "config": "config/mod_config.solver2g.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "solver2g",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "solver2g",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "solver2g",
+      "until": "1936.1.1"
+    }
+  ]
+}
