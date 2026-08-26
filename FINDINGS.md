@@ -8723,3 +8723,45 @@ the ×1.1–1.4 cost lift under-compensates margins at realized prices, as pre-s
 spread 0.90–1.26× — single-run GDP endpoints remain inadmissible. NET/small-tag social readings
 are seed-dominated. Whether flow-displacement without price-death satisfies the design goal is a
 ruling, not a measurement.
+
+## F87 — THE INVESTMENT-HOARD LEVERS (n=3): six NAI defines cure the hoard-stagnation completely — and reveal that the §10.65.7 goal set was standing on the dam
+
+**Arm:** solver2f-n3 (`20260825_204213`) — pool-pressure factor 0.75→0.9, wanted-construction
+thresholds 1.05→1.5 / 0.75→0.9, private-queue cap 0.05→0.10, long-build maluses ×3 (120/180wk),
+over a tier-book BYTE-IDENTICAL to solver2e (sha `1BE9B93F…D40F46`) — a clean one-lever-set A/B.
+n=3, 1836→1936, L17-clean. Baselines: solver2e-n3 (F86), vanilla n=18 (F79).
+
+### The levers work
+
+| 1935 (medians) | solver2e | solver2f | vanilla |
+|---|---|---|---|
+| world investment pool ÷ GDP | 51% | **32%** | 31% |
+| construction-sector levels | 1,959 | **3,477** | — |
+| gross construction ÷ GDP (1920) | 11.1% | **15.7%** | 9.7% |
+| uncompensated gov constr ÷ GDP | 3.0% | **2.4%** | 2.2% |
+| USA peasant workforce Δ 1930–35 | −0.09…−3.0M | **−2.0/−5.2/−6.6M** | — |
+| RUS peasant workforce Δ 1930–35 | ±0.0…−0.5M | **−0.6/−1.7/−4.1M** | — |
+
+The pool ratio lands ON vanilla's; the state's own (post-IP-compensation) construction burden falls
+while total construction booms — the pool now carries more of a bigger total. The early game
+IMPROVED (0.89× of vanilla at 1850 vs solver2e's 0.85×). Expensive-frontier adds
+(electrics+steel+automotive, 1920→35) ×1.7; below-best 39.0% ≈ unchanged.
+
+### And the trade they reveal
+
+World GDP 1936 median **1.33× of vanilla** (runs 1.06/1.33/1.53 — the G4 band broken upward,
+solver2c's failure mode returning at ~85% strength); GBR peasants **0.4%** (below vanilla's 1.0),
+USA **14.6%** (half of vanilla's 31.4) — **depeasanting became LIKELY, not possible**, breaking the
+§10.65.7 ruling's first goal. SoL stays healthy (GBR 23.5, USA 16.1, RUS 12.6 vs vanilla
+19.7/14.9/10.7) with the wage premium easing as labour turns abundant.
+⇒ **solver2e's on-vanilla endpoint and retained peasantry were both partly FINANCED by the pool's
+failure to spend.** The hoard was the dam; the goal set stood on it. The knobs interpolate between
+solver2e (near end) and these values (far end) — a middle setting (~0.8 / ~1.2 / 0.075) is the
+obvious probe if the middle of the pool–GDP–peasantry triangle is wanted.
+
+### What it does NOT say
+
+Package-of-six attribution only (which knob carries how much is unmeasured). Endpoint spread
+1.06–1.53× — single-run endpoints inadmissible as ever. No pool anywhere drains in ABSOLUTE terms
+even under the levers — growth outruns spending; only the ratio normalizes. Different-nights
+vanilla baseline, same patch.
