@@ -95,6 +95,7 @@ function buildEmp(cfgPath) {
   const VANEMP = {};      // vanilla base key -> people per level
   const INDOF = {};       // any key -> industry id
   for (const ind of cfg.industries || []) {
+    if (ind.disabled) continue;   // ⚠ a DISABLED industry (port/shipyard/railway/power on the four-rung books) keeps its tiers in the config and its rung-0 KEY IS THE VANILLA BUILDING — counting it put Britain's shipyards and ports into "e0" (BUGS_AND_FIXES 2026-09-03)
     const tiers = (ind.tiers || []).filter(t => t.key);
     if (!tiers.length) continue;
     for (const t of tiers) {

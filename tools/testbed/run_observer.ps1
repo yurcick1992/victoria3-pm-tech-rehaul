@@ -850,6 +850,32 @@ try {
                             $timedOut = $true; $abandoned = "continuation load failed (fresh start at $firstTick)"
                             Start-Sleep -Seconds 3
                         }
+                        # ⚠⚠ THIS BRACE WAS MISSING UNTIL 2026-09-03 (BUGS_AND_FIXES): the crash-resume guard below sat INSIDE the
+                        # continuation block above, whose condition needs $attempt -eq 1 — so on a crash resume it was DEAD CODE, and
+                        # session 20260902_223037 played a second 1836 campaign for 26 minutes after a stepped-back resume failed to load.
+                        # ⭐⭐ THE SAME ABORT FOR A CRASH-RESUME, AND IT IS THE ONE THAT WAS MISSING.
+                        # A resume whose load fails starts a FRESH 1836 game. The ladder that handles
+                        # that (quarantine, step back) lives at the END of the attempt, and the end of
+                        # the attempt is reached in one of two ways, both bad:
+                        #   - the fresh game CRASHES, having burned the wall clock up to that point
+                        #     (measured: 32 min on run004 of 20260830_191950, attempt 4);
+                        #   - the fresh game REACHES THE TARGET, and then `if ($reached -or $timedOut)
+                        #     { break }` fires BEFORE the landing guard is ever consulted, so the run
+                        #     is recorded as a clean 1836→1936 success that is in fact a SECOND
+                        #     campaign spliced into the same run folder (run004, attempt 5: the run
+                        #     played the century twice and meta.json said `reached 1936.1.1`).
+                        # The second is the dangerous one — it is precisely the corruption the guard
+                        # exists to prevent, and it was structurally unreachable in that case.
+                        # Killing the game on the FIRST TICK closes both: the attempt can no longer
+                        # reach the target, so control always falls through to the ladder below.
+                        # ⚠ Deliberately NOT setting $timedOut/$abandoned here — those would break out
+                        # of the resume ladder, which is the thing that must run.
+                        if ($attempt -gt 1 -and $tickAtStart -and $firstTick -and
+                            ((ConvertTo-DateNum $tickAtStart) - (ConvertTo-DateNum $firstTick)) -gt 20000) {
+                            Write-Log "resume landed at $firstTick, far behind $tickAtStart - the save did not load; stopping the game NOW rather than replaying the campaign" "WARN"
+                            Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
+                            Start-Sleep -Seconds 3
+                        }
                     }
                 }
             }

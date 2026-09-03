@@ -179,20 +179,30 @@ function renderPerf(mode){
   const mv=med(van.map(r=>r.min)), mm=med(mod.map(r=>r.min));
   const raw=mm/mv, pr=med(mod.map(r=>r.pops))/med(van.map(r=>r.pops));
   const pctTotal=(raw-1)*100, pct=PERF.pct;
+  // ⚠ A SIGNED PERCENTAGE MUST NOT CARRY A DIRECTION WORD OF ITS OWN. "-11.8% slower" is a double
+  // negative and reads as the opposite of the truth. The sign IS the direction, so spell it out:
+  // positive => slower, negative => FASTER (unsigned), zero => no change.
+  const spd=x=>{const v=+x; if(!isFinite(v)) return "—";
+    if(Math.abs(v)<0.05) return "no change";
+    return (v>0? "+"+v.toFixed(1)+"% slower" : v<0? Math.abs(v).toFixed(1)+"% faster" : "no change");};
   const GY=(PERF.grade&&PERF.grade.green)??5, RY=(PERF.grade&&PERF.grade.yellow)??15;
   const cls=pctTotal<=GY?'ok':pctTotal<=RY?'wa':'bad';
-  const lab=pctTotal<=GY?(pctTotal<=0?'no slowdown':'acceptable'):pctTotal<=RY?'needs improvement':'too slow';
-  document.getElementById('v-perf').innerHTML='<b>'+(pctTotal>=0?'+':'')+pctTotal.toFixed(1)+'%</b>'+
-    ' <span class="dim">total</span><br><span class="dim" style="font-size:12px">'+(pct>=0?'+':'')+pct.toFixed(1)+'% per unit</span>';
+  // The RAW TOTAL is the grade (user-ruled 2026-08-31): a player waits through the total, and
+  // shrinking what the engine simulates is a legitimate way to lower it. So the pill says "faster"
+  // when the arm is faster — the earlier hedge to "no slowdown" deferred to a CLAUDE.md reading that
+  // has since been corrected. The pop-matched figure sits beside it as the per-unit diagnostic.
+  const lab=pctTotal<=GY?(pctTotal<-0.05?'faster':pctTotal<=0.05?'no change':'acceptable'):pctTotal<=RY?'needs improvement':'too slow';
+  document.getElementById('v-perf').innerHTML='<b>'+spd(pctTotal)+'</b>'+
+    ' <span class="dim">total</span><br><span class="dim" style="font-size:12px">'+spd(pct)+' per unit</span>';
   document.getElementById('v-perfpill').innerHTML='<span class="pill '+cls+'">'+lab+'</span>';
   document.getElementById('perf-head').innerHTML=
     '<div style="display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start">'+
       '<div style="flex:1 1 260px"><div class="eyebrow">THE GRADE &mdash; total run time</div>'+
-        '<div style="font:700 34px/1.1 Segoe UI,sans-serif;color:var(--'+(cls==='wa'?'warn':cls==='ok'?'ok':'bad')+');margin:6px 0">'+(pctTotal>=0?'+':'')+pctTotal.toFixed(1)+'% slower</div>'+
+        '<div style="font:700 34px/1.1 Segoe UI,sans-serif;color:var(--'+(cls==='wa'?'warn':cls==='ok'?'ok':'bad')+');margin:6px 0">'+spd(pctTotal)+'</div>'+
         '<div class="small">Vanilla <b>'+mv.toFixed(1)+'</b> min vs mod <b>'+mm.toFixed(1)+'</b> min for the century. '+
         'This is what a player feels, so it sets the grade: &le;+'+GY+'% acceptable, +'+GY+'\u2013'+RY+'% needs improvement, &gt;+'+RY+'% too slow.</div></div>'+
       '<div style="flex:1 1 290px"><div class="eyebrow">Per unit of work &mdash; pop-matched</div>'+
-        '<div style="font:700 34px/1.1 Segoe UI,sans-serif;color:var(--ink2);margin:6px 0">'+(pct>=0?'+':'')+pct.toFixed(1)+'%</div>'+
+        '<div style="font:700 34px/1.1 Segoe UI,sans-serif;color:var(--ink2);margin:6px 0">'+spd(pct)+'</div>'+
         '<div class="small">At equal live pop objects ('+PERF.overlapping+' overlapping bins). The <b>fair arm-vs-arm</b> figure, '+
         'and the gap to the total is the point: the mod ended with <b>&times;'+pr.toFixed(2)+'</b> the live pop objects, so most of '+
         'the extra time is a <b>bigger world</b>, not a dearer engine. Both are real \u2014 the player pays the total.</div></div>'+

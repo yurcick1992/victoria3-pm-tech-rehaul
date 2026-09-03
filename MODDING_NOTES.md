@@ -408,6 +408,23 @@ a bad `-loadsave=` path does exactly that), **no progress** ⇒ abandon. Any of 
 rather than reporting corrupt data. `-loadsave=<absolute path>` was tried and rejected by the exe
 (`Could not load save game [...]. Going to main menu.`), so the save cannot be named explicitly.
 
+⚠⚠ **THE "far behind" CHECK USED TO RUN ONLY WHEN THE ATTEMPT ENDED, AND SO COULD NOT RUN AT ALL ON A
+SUCCESSFUL ONE** (found 2026-08-31, BUGS_AND_FIXES). It sat after `if ($reached -or $timedOut) { break }`,
+so a resume that silently restarted from 1836 and then played the whole century exited through the
+`break` with the landing never examined — recorded as a clean run reaching its target, its folder holding
+**two campaigns** and its wall clock doubled (267 min against 135–146 for its siblings). The abort now
+fires on the **first tick** of a resume, so such an attempt can never reach the target. Landmine **L26**
+is the artifact-side check, because fixing the harness says nothing about sessions already on disk.
+
+⚠⚠ **AND THE TRUNCATED-SAVE HYPOTHESIS IS REFUTED BY THE FIRST QUARANTINE THAT RECORDED SIZES.** The
+leading explanation for an unloadable newest save was *a CTD landing mid-autosave-write, leaving a `.v3`
+that exists, is newest, and is truncated* — which is why the quarantine keeps the file and logs the four
+sizes. On `20260830_191950` run004 the bad `autosave.v3` is **43 302 141 B, the LARGEST of the four**
+(`autosave_1` 42 946 448 · `autosave_2` 42 452 117 · `autosave_3` 42 475 142). It is not truncated, and
+`autosave_1` — a complete, ordinary-sized save — **also failed to load**. What makes a late-campaign
+gamestate unloadable is **unidentified**; do not repeat the truncation explanation as though it were
+established.
+
 A resume rewinds to the last autosave, so a dump date that already fired can fire **again** with different
 numbers. The harvest keeps the **last** emission per `(date, tag, good)` — the one on the timeline that
 actually reached the end — and reports the count as `re-dumped` rows.

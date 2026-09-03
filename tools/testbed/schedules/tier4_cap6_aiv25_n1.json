@@ -1,0 +1,60 @@
+{
+  "schedule_version": 1,
+  "label": "tier4-cap6-aiv25-n1",
+  "_why": "THE SOFTENED LEAN FLOOR + THE STEEPER ai_value LADDER, n=1 (user-ruled 2026-08-30: \"cap IO at 1:6 under base prices ... run another n=1 with the increased ai_value ladder and new margin cap fix\"). Follows 20260830_124844 (rising margins at the 1:4 floor), which separated realised margins 19.5/26.2/44.5/71.5 but moved the CAPACITY MIX by ~1pp and did not depress prices.",
+  "_arms": "tier4 = {kind: config, config: config/mod_config.tier4.json}, PAIRED tech twin tech_tree_options.tier4.json. -DryRun PASSED lint + negative-goods + solvency 66/66 + mod checks + preflight x2. Frozen sha256 7EE87FDCB4701FC17C7F23239EFF1AFC9693BA55CCDB9042385128CBCB571269. Reproduce the solve with: MOD_CONFIG=config/mod_config.tier4.json INV_IO_CAP=6 INV_MARGINS=0.26,0.41,0.55,0.70 INV_ITERS=1500 node tools/era_inverse.mjs --write. L10 freeze while this runs.",
+  "_delta": "vs 20260830_124844 (rising margins, 1:4 floor): TWO levers. (1) THE LEAN FLOOR SOFTENS 1:4 -> 1:6 at BASE prices (new INV_IO_CAP knob, default 4). User-ruled acceptable on narrative grounds: base prices are NOT expected to be the norm for higher tiers, so a 6:1 base-price ratio is not a realism claim about the running economy. Effect: e3 tiers pinned at the floor 10/18 -> 5/18, tiers hitting the 0.70 target 8 -> 13. Median O:I by rung now 1.50/2.11/2.83/4.26. Three tiers remain short (art_academy 33%, electrics 33%, food -7%) because their DESIGNED output price is 0.25-0.40 of base and the ceiling is 0.75*cap*(p_out/p_in)-1 - a price-side limit, not a floor-side one. (2) ai_value 1000 x 2.5^era = 1000/2500/6250/15625, era-keyed (was x2 = 1000/2000/4000/8000); end-to-end spread x15.6 from x8. ALSO IN THIS BUILD, not a design lever: emit_companies no longer tokenises  comments into building_types lists (8 phantom company types per build, every arm - BUGS_AND_FIXES 2026-08-30).",
+  "_predictions": "PRE-REGISTERED. (1) REALISED e3 MARGIN RISES toward 0.70 for the 5 tiers freed by the softer floor; the 3 price-limited ones do not move. Near-certain, it is arithmetic. (2) THE CAPACITY MIX IS THE REAL TEST. The previous run tripled the frontier margin and moved the e3 share of tiered levels by -0.4pp (7.8% -> 7.4%). If a x15.6 ai_value spread ALSO fails to move it, then build choice is not responding to either profit or desire, and the constraint is elsewhere - which would be the most important negative result of the series. NO confident direction. (3) BELOW-BEST: was 52.5% (baseline 55.0%, sd 3.63pp). Direction down if (2) moves, flat otherwise. (4) PRICES: still no confident direction; the previous run did NOT depress them (actual/design 1.6-4.6x at the frontier persists, F94). (5) CONSTRUCTION remains the measured global bottleneck (GBR 48 weeks of backlog, 2 construction sectors queued) and NEITHER lever here touches it - so a null result on (2) is the expected outcome if that bottleneck is what binds.",
+  "_comparison": "PRIMARY: 20260830_124844_tier4-margins-n1 (same book, 1:4 floor, ai_value x2) - the one-step-back comparison. SECONDARY: 20260829_212316_tier4-n3 (flat margins, n=3, GDP spread 0.9%). TERTIARY: solver2f-n3 and the vanilla n=16 baseline.",
+  "_watch": "(1) SMOKE-CHECK AT 5 MINUTES on run 1: PM_TECH_REHAUL marker, game version, error.log filtered BY POSITION not by time, clock advancing, queue_mix read WITH the construction sector and GDP beside it (a short queue means it DRAINED). (2) the four restored industries workers vs the n=1 run - the direct read on the fix. (3) below-best share and the per-era build allocation together. (4) PMR_JE| firings. (5) peasant share trajectory, especially the 1875-1880 divergence point where the first x1.4 cost step binds. (6) K trajectory and the 1935 endpoint.",
+  "_cost": "3 runs x 100 in-game years, ~2h40 each, ~8h plus harvest.",
+  "_caveats": "n=1. TWO levers move together (lean floor + ai_value), so a positive result cannot be attributed to either alone - deliberate, since the previous n=1 isolated the margin lever and it moved the mix by ~1pp. KNOWN AND UNFIXED: automatic_weapons_manufacture pegged behind stormtroopers (~2.7 countries/century) so arms/artillery/munition e3 stay dead content; the bg_construction weighting untouched; three e3 tiers price-limited below target.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "Identical to canon-n7, aival, the solver2 family, the F79 vanilla baseline and the tier4 n=1 run - what keeps the sessions comparable."
+  },
+  "setups": {
+    "tier4": {
+      "kind": "config",
+      "config": "config/mod_config.tier4.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    }
+  ]
+}

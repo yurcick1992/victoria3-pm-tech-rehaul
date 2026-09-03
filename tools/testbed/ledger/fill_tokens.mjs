@@ -12,7 +12,11 @@ put('__N__', '6 <span class="dim">(7th abandoned, incomplete)</span>');
 put('__GAME__', '1.13.10');
 put('__DELTA__', 'research events only: battalion ladder 30×(era+1) · naval possession channel');
 put('__BASE__', '20260813_083557 vanilla n=4 <span class="dim">(different night)</span>');
-put('__HEALTH__', '6/6 complete · P −2.9% PASS');
+// ⚠ A HARDCODED HEADLINE IS A STALENESS BUG WEARING A PLAUSIBLE NUMBER. This literal carried
+//   'P −2.9% PASS' from an older batch and would have been republished under this one had the
+//   out-dir tokens.json not overridden it. Same class as fill_build_perf.mjs's provenance line.
+//   Keep it OBVIOUSLY unfilled so a missing override is visible instead of believable.
+put('__HEALTH__', 'HEALTH CHIP NOT SUPPLIED - put __HEALTH__ in the out-dir tokens.json');
 put('__LEDE__', R('lede.html'));
 put('__GOALS__', R('goals.html'));
 put('__INCIDENTS__', R('incidents.html'));

@@ -61,8 +61,17 @@ for (const c of M.consts) {
 }
 
 // ------------------------------------------------------------- 3. staleness ----
+// ⭐ A DELIBERATE CROSS-BATCH REFERENCE IS NOT STALENESS. A report legitimately names another session
+//   when that session is the SUBJECT — "fill_emp was reading canon-n7", "superseded by X". Marking it
+//   <code class="xref">…</code> exempts it, and the exemption cannot fire by accident: prose left
+//   behind in the template shell never wears the class, so the tripwire keeps its whole strength.
+//   Naming what was exempted, every run, is the price — a silent exemption is an absent check.
+const XREF = /<code class="xref">([\s\S]*?)<\/code>/g;
+const xrefs = [...visible.matchAll(XREF)].map(m => m[1]);
+const scan = visible.replace(XREF, '');
+if (xrefs.length) console.log('  cross-batch references (exempt from staleness): ' + xrefs.join(', '));
 for (const s of M.staleness.forbidden)
-  if (visible.includes(s))
+  if (scan.includes(s))
     fail(`STALE: the report still contains "${s}" from a previous batch`,
          'that text belongs to another session — it is prose in the shell that should be a token');
 

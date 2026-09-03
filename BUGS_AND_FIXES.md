@@ -1545,3 +1545,626 @@ since the failure mode is silent.
 context.* The chain, the link and the comparison were each copied faithfully from a vanilla file that
 uses all three — into a different kind of file, where one of them has no meaning. When script fails
 uniformly rather than occasionally, suspect the **context**, not the data.
+
+
+## 2026-08-29 — ai_value keyed on the RUNG INDEX instead of the ERA (four-rung arm)
+
+**Symptom:** none. The build passed every linter, preflight twice, and played a clean 100-year
+campaign. The defect was found only by reading the emitted numbers *by era* rather than by rung,
+in answer to a direct question about what ai_values the four tiers carry.
+
+**The bug.** `tools/make_tier4_config.mjs` line 209 set
+`t.ai_value = 750 * AI_LADDER ** steps`, where `steps = j - kept[0].era` is the rung index
+*relative to that industry's own first rung*. That anchor is correct for `output_qty` (a tier's
+absolute output is a design output; the ladder is what carries meaning) and it is what the line
+above it does NOT do for `building_cost`, which already used the absolute era `j`.
+
+**Why it matters.** `ai_value` is the AI's construction desire, and a building competes against
+*every other industry's* buildings, not only against its own ladder. Keying it on the rung index
+made it a function of when an industry's ladder happens to start:
+
+| era | ai_value(s) present | spread |
+|---|---|---|
+| 0 | 750 | — |
+| 1 | 750, 1998 | 2.66× |
+| 2 | **750, 1998, 5321** | **7.1×** |
+| 3 | 1998, 5321, 14172 | 7.1× |
+
+The canonical book is strictly era-keyed (one value per era, no exceptions). The four industries
+whose ladders start late — **automotive and power (first rung e2, 7.1× too low), synthetics and
+electrics (first rung e1, 2.66× too low)** — are precisely the new economy, and they were handed a
+malus nobody designed. In the run they came back at **0.14× / 0.34× / 0.06× / 0.54×** of the
+canonical arm's workers, against 0.38–1.27× for the industries starting at e0.
+
+**Fix.** `t.ai_value = Math.round(750 * Math.pow(AI_LADDER, j))` — the absolute era, with a comment
+saying why and naming the three different anchors in that loop (cost: era; ai_value: era;
+output_qty: rung, deliberately). The shipped `config/mod_config.tier4.json` and the pass-through
+copy in `config/era_inverse.tier4.json` were corrected in place (10 tiers), which is exact because
+`ai_value` never enters the solve — `era_inverse.mjs` only copies it into its artifact.
+
+**Lesson.** A per-rung ladder and a per-era ladder look identical on any industry that starts at
+rung 0, which is most of them — so the defect is invisible in a spot check and invisible in every
+aggregate. **Read a per-tier quantity grouped by the axis it is SUPPOSED to be constant on**, and
+assert the invariant: one `ai_value` per era is now checkable in one line.
+
+## 2026-08-29 — `make_tier4_techs.mjs` has NO ladder-era alignment step (latent, not yet harmful)
+
+**Found by:** a user question — "are synthetics and electrics wrongly gated behind a very high level
+tech?" The answer is **no**, but the check exposed a missing guard.
+
+`tech_tree_spec.mjs` carries the LADDER-ERA ALIGNMENT (its line ~1069, user-ruled 2026-08-12): a
+technology gating one of our tiers is placed in the MECHANICAL era that tier maps to, re-derived from
+the ladder every run, only ever lowering, never landing in era 1. **`make_tier4_techs.mjs` — the
+four-rung tree — does none of it.** New technologies get `gameEra(year)`, and vanilla technologies
+keep whatever era vanilla gave them. `gameEra` uses VANILLA's windows (1836/1861/1886/1911), which is
+exactly the two-calendar problem that put **41 of 106 tiers one era too high** in the six-rung book.
+
+**Current damage: 3 of 66 tiers**, all vanilla technologies, all +1 above the mechanical era their
+own era maps to (`ERA_LEAD` 2/3/4/5):
+
+| industry | era | gate | gate era | target |
+|---|---|---|---|---|
+| food | e1 | `pasteurization` | 4 | 3 |
+| motor | e2 | `compression_ignition` | 5 | 4 |
+| arms | e2 | `stormtroopers` | 5 | 4 |
+
+32 are exactly on target and 31 sit below it (harmless — cheaper and earlier). It is this mild only
+because the tree was hand-pegged under the 15-year rule, which tracked the eras closely **by
+accident**. That is luck, not design: nothing in the tool would stop a future peg landing two eras
+high, and the cost is real (era base cost + the ahead-of-time penalty, at exactly the date the rung
+is meant to be the workhorse).
+
+**Not fixed yet** — the n=3 batch `20260829_212316` froze the config hash and L10 forbids a mid-batch
+edit. Fix after it lands: port the alignment rule, or at minimum a validator that FAILS on any tier
+whose gate sits above its era's mechanical target.
+
+⚠ **Analysis trap, hit while measuring this.** The first pass keyed the target on the RUNG INDEX and
+reported 10 misaligned tiers including every new-economy industry. The target is keyed on the tier's
+**ERA**. Keyed correctly it is 3, and none of them are in the new economy. This is the *same* error
+as the ai_value defect logged above, made within the hour — **when a per-tier quantity has both a rung
+index and an era available, state which one it is keyed on, and check that the two differ before
+trusting any result derived from either.**
+
+## 2026-08-30 — TWO added technologies are never researched by anyone, so four frontier rungs are dead content
+
+⚠⚠ **THIS ENTRY REPLACES A WRONG FIRST VERSION WRITTEN THE SAME DAY**, which claimed seven rungs were
+"gated on technologies dated after the game ends". That mechanism is FALSE and the correction matters
+more than the finding: **a technology's `year`/`onset` is a NARRATIVE annotation, not a gate.** The
+mechanical gate is the technology's ERA plus its prerequisites, so a 1938-onset technology is perfectly
+researchable before 1936 by a country that is ahead. The data said so plainly and the first version
+read past it — `glass` (onset 1938) built **184 levels**, and `fertilizer` (onset 1937) is alive while
+`synthetics`, which shares the very same technology `catalytic_synthesis`, is not.
+
+**The real finding**, measured at n=3 over session `20260829_212316`, counting countries holding each
+technology at 1936:
+
+| technology | run1 | run2 | run3 | gates |
+|---|---|---|---|---|
+| `automatic_weapons_manufacture` | **0** | **0** | **0** | arms, artillery, munition e3 |
+| `cyclonite_process` | **0** | **0** | **0** | explosives e3 |
+| `catalytic_synthesis` | 2 | 2 | 1 | fertilizer e3 (alive), synthetics e3 (never built) |
+| `glass_fibre` | 0 | 6 | 2 | glass e3 |
+| `transfer_machining` | 2 | 5 | 5 | tooling, automotive e3 |
+| `continuous_web_processing` | 0 | 2 | 5 | textile, paper e3 |
+
+**Two of the nine technologies added by `make_tier4_techs.mjs` are researched by NOBODY, in any run.**
+That makes four frontier rungs — arms, artillery, munition, explosives — dead content: they exist in
+the files, pass every linter, and can never be constructed. 13 of the 18 e3 rungs are alive; 5 are
+never born, and `synthetics` is the fifth for a different reason (its technology IS held by 1–2
+countries and nobody builds the building — an economic failure, not a gating one).
+
+**Why those two.** Not the era (`catalytic_synthesis` is era 5 too and gets researched). The
+distinguishing features are that `automatic_weapons_manufacture` is the only one in the MILITARY tree,
+and `cyclonite_process` sits behind two prerequisites (`nitrogen_fixation` + `plastics`). With
+`tech_ai_weight_mult` at the ruled 1/1/1, nothing steers the AI toward either. **Not established** —
+it is a hypothesis with n=3 behind the observation and nothing behind the cause.
+
+**Fix owed** (deferred: the batch froze the config hash): re-peg those four rungs onto technologies the
+AI demonstrably researches, or make the two reachable. And add the validator that would have caught it
+— **FAIL when a technology gating a tier is held by zero countries at the campaign end**, which is a
+post-run check rather than a build-time one, so it belongs beside the ledger, not in `preflight`.
+
+**Lesson (unchanged, and the reason the wrong version still found something real).** `payback`,
+`illogicality`, `below-best` and every macro bound are computed over buildings that EXIST. None can
+report a rung nothing ever built — it contributes to no numerator and no denominator and reads as a
+design outcome. **A rung at zero in every arm including the control is evidence about the RULES, not
+about the economy.** Second lesson, from the wrong version: **when a script prints a FILTERED list,
+label the filter in the output.** The first version read a list of zero-level rungs as though it were
+the full set, and reported "all 18 frontier rungs are at zero" when 6 of 18 were alive at the time.
+
+
+## 2026-08-30 — a new technology pegged behind `stormtroopers`, which ~2.7 countries per century ever research
+
+**Found by:** the user asking whether an obvious tech bug was stopping some technologies being
+researched. It was.
+
+`make_tier4_techs.mjs` gives `automatic_weapons_manufacture` (which gates the FRONTIER rung of
+**three** industries — arms, artillery, munition) the prerequisites `stormtroopers` +
+`automatic_machine_guns`. Countries holding each at 1936:
+
+| prerequisite | our mod (n=3) | pure vanilla (n=6) |
+|---|---|---|
+| `automatic_machine_guns` | 64-72 | mean 49.2 |
+| **`stormtroopers`** | **1 / 6 / 0** | **0,6,1,5,4,0 - mean 2.7** |
+
+**`stormtroopers` is a dead end in the BASE GAME** — about 2.7 countries per century reach it. A
+technology chained behind it is unreachable in practice, and `automatic_weapons_manufacture` was
+held by **zero countries in all three runs**, making three frontier rungs dead content.
+
+The same shape, milder, explains the rest: `cyclonite_process` and `catalytic_synthesis` share
+identical era, category, prerequisites and ai_weight, and both sit behind `nitrogen_fixation`
+(27-32 countries) - they land on 0 and 1-2 respectively, i.e. both are marginal and the difference
+between them is noise, not design. `glass_fibre` sits behind `automatic_bottle_blowers` (32-41)
+and lands on 0/6/2.
+
+⭐ **THE RULE: a new technology's reachability is bounded by its RAREST prerequisite, not its own
+era or cost.** Pegging is usually argued from DATES (the 15-year rule) and from tree plausibility;
+neither notices that the peg target is a technology nobody researches.
+
+**Fix owed:** drop `stormtroopers` from `automatic_weapons_manufacture` (leaving
+`automatic_machine_guns`, ~50-70 countries), and add a validator — **FAIL, or at least WARN, when a
+new technology's prerequisite is held by fewer than N countries in the vanilla baseline.** The
+baseline needed for that check already exists and is committed
+(`20260821_131149_vanilla-baseline-n16`), so the rate is measurable at authoring time rather than
+after a 7-hour batch.
+⚠ Note `plastics` runs 105-128 in our mod against vanilla's 33.7 — the research JEs working on the
+production tree. So a vanilla holding rate is a LOWER bound for a production technology, and roughly
+unchanged for a military one; do not apply one threshold to both trees without checking.
+
+
+## 2026-08-30 — FOUR vanilla technologies left gating NOTHING by the four-rung re-peg (UNACCEPTABLE)
+
+**User-ruled 2026-08-30, on spotting it in the tech tree:** *"this is absolutely unacceptable ...
+There is usually no reason to strip vanilla effects from vanilla techs."*
+
+**Measured on the shipped tier4 build.** Of 57 vanilla PRODUCTION technologies, **4 gate nothing
+reachable**:
+
+| technology | vanilla PMs it gates | industry | what gates that industry now |
+|---|---|---|---|
+| `bessemer_process` (era 2, 1856) | `pm_bessemer_process` | steel | e1 `open_hearth_process` (1867) |
+| `lathe` (era 1, 1800) | `pm_lathe`, `pm_leaded_glass`, `pm_dye_workshops` | tooling/glass/synthetics | e1 `steel_railway_cars` |
+| `crystal_glass` | `pm_crystal_glass` | glass | e2 `plastics` |
+| `baking_powder` | `pm_baking_powder` | food | e1 `pasteurization` |
+
+⚠ A first scan said EIGHT. `enclosure`, `shaft_mining`, `prospecting` and `rubber_mastication` are
+FINE — they gate BUILDINGS (farms, mines, plantations) and decrees, which an ad-hoc
+`unlocking_technologies` regex over building bodies missed and `audit_tech_content.mjs` finds
+correctly. **Use the audit tool; do not re-derive its job with a regex.**
+
+**Mechanism.** The PMs are still DEFINED in our emitted `01_industry.txt` (we copy the file
+verbatim apart from the gate remap), but no shipped building carries the PMG that holds them — our
+tier split gives each tier building its own single main PM. So the technology unlocks a method that
+exists and is on nothing.
+
+**Root cause is STRUCTURAL, not only a pegging slip.** Cutting six rungs to four means fewer gates
+are needed than vanilla has technologies for that chain. Vanilla's steel mill has methods behind
+BOTH `bessemer_process` (1856) and `open_hearth_process` (1867); with four steel rungs,
+`make_tier4_techs.mjs` chose one by 15-year date proximity and **never checked whether the
+technology it displaced would be left empty.** Bessemer is the EARLIER and arguably more apt gate
+for steel e1.
+
+**This contradicts a rule already in CLAUDE.md** — *"THERE ARE NO CONTENTLESS VANILLA TECHNOLOGIES"*
+— which was written about not DELETING them. The four-rung re-peg empties them without deleting
+them, which the rule did not anticipate and which is worse: the technology still costs research and
+still appears in the tree, and now buys nothing.
+
+**Fix owed** (deferred: a run is in flight): in `make_tier4_techs.mjs`,
+1. **prefer the technology that already gates the tier's own `vanilla_pm`** — that is the
+   zero-strip choice and needs no 15-year argument;
+2. where a rung genuinely cannot use it, keep the displaced technology non-empty — either attach the
+   orphaned vanilla PM to the tier building's PMG as a secondary, or re-point an adjacent rung onto it;
+3. **VALIDATOR: FAIL when any vanilla technology that gated a PM in the chain we replaced ends up
+   gating nothing reachable in the emitted mod.** `/tmp/orphan.mjs` in this session is the working
+   prototype: parse shipped buildings (mod files replacing vanilla by filename) -> PMGs -> PMs, and
+   check every vanilla technology against that reachable set.
+
+
+## 2026-08-30 — THE VANILLA-LADDER REBUILD: tiers are vanilla production methods again
+
+**User-ruled**, after the orphaned-technology finding: *"the new 4 tiers should be based, in
+references and, if that doesn't create a narrative crime, in names, to the original vanilla PMs …
+Going original 4 PMs -> 6 tiers -> 4 tiers is going backwards and creating avoidable problems."*
+
+**The diagnosis was exactly right.** Vanilla's main ladders hold **3-4 methods**; the canonical
+six-rung book stretched them to 5-6 by INVENTION; the four-rung cut then ran a date-proximity DP over
+*those six* and landed on a set matching neither vanilla's methods nor its gates. Two whole defect
+classes came out of that one step — four vanilla technologies gating nothing, and one technology
+gating two rungs of one industry.
+
+**The rebuild.** A rung IS a vanilla production method, taken from the anchor building's `pmg_base_*`
+group in vanilla order, sourced from the canonical tier that already carries it (all 53 exist), and
+**taking the technology vanilla gates that method with**. An ungated method (pm_bakery, pm_muskets)
+falls back to the vanilla BUILDING's gate. Invention happens only where vanilla is short, pegged to a
+FREE vanilla technology before minting.
+
+| | before | after |
+|---|---|---|
+| tier buildings | 66 | **62** |
+| new technologies minted | 9 | **3** |
+| technologies gating one of our tiers | 25 | **48** |
+| orphaned technologies | 4 | **0** |
+| one technology gating two rungs | 1 (food/conveyors) | **0** |
+
+**Nine industries are now 1:1 with vanilla** — textile, glass, tooling, steel, explosives, arms,
+artillery, art_academy, automotive — with zero invention and zero drops. `bessemer_process`,
+`crystal_glass`, `lathe` and `baking_powder` all gate a rung naturally, and
+`automatic_weapons_manufacture` — the technology pegged behind `stormtroopers`, which ~2.7 countries
+per century research — **is not needed at all**, so that defect disappears with the design rather
+than being patched.
+
+**Power** goes back to vanilla shape (switchable methods) with `pm_early_power_plant` removed via a
+NEW emission path: `pmg_drop_methods` in the config makes build.ps1 own the vanilla PMG file and
+re-emit it without that method. There is no additive way to take a method off a vanilla group.
+
+**Enforcement**: `tools/lint_tech_content.mjs`, wired into build.ps1 beside the solvency linter,
+reads the EMITTED mod and fails on either hard rule. It reads the artifact, not the config, because a
+method can stop being reachable through a BUILDING or a PMG change the tech tool never sees.
+
+**Three fixes to guards whose premises the rebuild removed:**
+- `emit_techs` threw on an EMPTY 1836 grant. That grant existed to hand back technologies our
+  re-pegging had moved; with vanilla gates nothing needs handing back, so empty is now correct.
+- The 15-year peg rule now judges only INVENTED rungs. A rung taking its own method's gate cannot be
+  mispegged — that IS the right technology, and vanilla dates many at invention (camera 1839 for an
+  1885 rung).
+- `smokeless_powder` moved to the production tree: munition's other gates are production, and the
+  engine refuses a cross-category prerequisite.
+
+⚠ **Two things I got wrong while doing this, both from the same cause** — banding vanilla methods by
+their ONSET year rather than vanilla's ERA field. It reported 13 of 18 ladders in conflict (the true figure is 5) and
+made paper look date-inverted when our own `tech_year`s were already ordered. **Vanilla dates at
+invention; use the era field for progression questions and `tech_year` for calendar ones.**
+
+## 2026-08-31 — a resume that silently restarted from 1836 PLAYED THE CENTURY AGAIN, and was recorded as a clean run
+
+**Found** while investigating why run004 of `20260830_191950_tier4-vanilla-ladder-n4` took **267.3
+min** against 135.1 / 145.5 / 145.7 for its three siblings. The answer is the whole bug: it played
+1836→1936 **twice**.
+
+### What happened
+
+CTD at **1931.1.13**, five in-game years from the finish. The resume ladder then failed on every
+candidate — attempts 2 and 3 crashed instantly on `autosave.v3` (quarantined), attempt 4 stepped back
+to `autosave_1.v3`, **that load failed too, and `-handsoff` began a fresh 1836 game**. Attempt 4 ran
+that fresh campaign 32 minutes to 1864.9.14 and crashed; attempt 5 then continued *it*
+(`-continuelastsave` takes the newest save on the machine, which was attempt 4's 1864 autosave) and
+carried it to 1936.1.1. `meta.json`: `reached_ingame_date 1936.1.1`, `self_quit true`,
+`abandoned_reason ""`. A perfect-looking run.
+
+### Root cause — TWO halves, and the second is the dangerous one
+
+`run_observer.ps1` has a resume-landing guard that detects exactly this (`$wanted - $landed -gt
+20000` ⇒ the load failed and a fresh game started ⇒ quarantine and step back). It was written for
+this failure and it is correct. But:
+
+1. **It only runs when the attempt ENDS.** Attempt 4 burned 32 minutes before the harness could look.
+2. **⭐ It sits AFTER `if ($reached -or $timedOut) { break }`, so on a SUCCESSFUL attempt it is
+   structurally unreachable.** Attempt 5's fresh campaign reached the target, `break` fired, and the
+   guard was never consulted. **The guard that exists to prevent a spliced timeline cannot run in the
+   one case where the splice survives into the results.**
+
+The `-ContinueFromSave` path already had a first-tick abort for the identical condition (line ~843).
+The crash-resume path never got one.
+
+### The fix
+
+A first-tick abort for the resume path, mirroring the continuation one: as soon as `$firstTick` is
+known, if it is more than 2 in-game years behind the run's high-water mark, kill the game. The
+attempt can then never reach the target, so control **always** falls through to the existing ladder,
+which does its quarantine/step-back bookkeeping unchanged.
+
+⚠ It deliberately does **not** set `$timedOut`/`$abandoned` — those would `break` out of the very
+ladder that must run. It reuses the existing `> 20000` threshold rather than inventing a constant.
+
+Verified against this run's own dates: trips on 1931.1.13→1836.1.1 and 1931.1.13→1864.9.14, does not
+trip on a legitimate 1931.1.13→1931.1.1 or →1929.6.1 resume (yearly autosaves are ≤1y back).
+
+### And the artifact-side check, because a generator fix is no evidence about data already on disk
+
+Landmine **L26**, AUTO, post-run (`preflight.ps1 -Session <dir>`): any backward in-game date jump
+across a run's summary series. It separates two shapes, because they are different defects —
+**> 2y = a second campaign (FAIL)**; **≤ 2y = the archiver read several slots of the rotation ring in
+one pass, so `autosave_1.v3` (the OLDER save) sorts after `autosave.v3` by filename (WARN, one
+campaign, a few summaries out of order)**.
+
+**Swept over all 74 sessions holding summaries: 5 hits.**
+
+| session | shape | counted? |
+|---|---|---|
+| `20260814_122820_costbook-ab-n2` run001 | 99y — second campaign | no — `usableRuns()` keeps none of that session |
+| `20260818_221216_canon-n7` run007 | 38y — second campaign | **no** — L17 already drops run007; the six-rung baseline is n=6 and clean |
+| `20260817_225120_port-ramp-monthly-n3` | 0.01–0.89y — ring order | counted, negligible (one month) |
+| `20260816_110325_ports-cond-n1` run002 | 1y ×4 — ring order | lib_runs refuses that session (two arms) |
+| `20260830_191950_tier4-vanilla-ladder-n4` run004 | **94y — second campaign** | **yes, the only one** |
+
+So exactly one published `n` contains a doubled campaign, and its effect was **measured, not
+assumed**: run004's below-best share reads **38.14%** against 36.84 / 37.77 / 38.38 for its siblings,
+and the adoption-lag distribution over all four matches run 1 alone. The batch's numbers stand.
+
+### ⚠ It also REFUTES the standing explanation for an unloadable newest save
+
+MODDING_NOTES records the leading hypothesis as *a CTD landing mid-autosave-write, leaving a
+truncated `.v3` that exists, is newest, and fails to load* — and the quarantine machinery was built
+partly to test it by keeping the file and recording sizes. **This is the first quarantine with a
+size record, and it points the other way**: the bad `autosave.v3` is **43 302 141 B — the LARGEST of
+the four**, against `autosave_1` 42 946 448, `autosave_2` 42 452 117, `autosave_3` 42 475 142. Not
+truncated. What makes a late-1931 gamestate unloadable is unidentified, and `autosave_1` — a
+complete, ordinary-sized save — failed to load as well.
+
+### The lesson worth keeping
+
+**A guard placed after an early-exit is not a guard.** The condition `if ($reached) { break }` reads
+as "we are done, nothing more to check", and it silently made a correctness check conditional on the
+run having failed — i.e. it ran in every case except the one that mattered. When adding a validity
+check to a loop, check where the loop can leave from, not only where the check sits.
+
+## 2026-08-31 — a `vanilla_pm_aliases` rung: the converter places the building, the tech grant never hears about it, and L14 shares the blind spot
+
+**Found by the 5-minute smoke check** on `20260831_113919_tier4-flatcost-aiv26-n2`: ten
+`create_building effect [ … must have invented … Mechanical Tools ]` lines in the run's own error
+window, from ten countries — Two Sicilies, the Ottoman Empire, Chile, Brazil, Khalsa Raj and five
+more. Each silently loses its starting tooling workshop.
+
+### The mechanism
+
+The four-rung tooling ladder has **four rungs and three vanilla production methods**, so one method
+is absorbed into a neighbour as an alias:
+
+| rung | `vanilla_pm` | gate | `vanilla_pm_aliases` |
+|---|---|---|---|
+| e0 | `pm_crude_tools` | `manufacturies` | — |
+| **e1** | **`pm_steel`** | **`mechanical_tools`** | **`pm_pig_iron`** |
+| e2 | `pm_rubber_grips` | `vulcanization` | — |
+| e3 | *(invented)* | `cemented_carbide` | — |
+
+`pm_pig_iron`'s own vanilla gate is **`steelworking`**, and in vanilla these ten countries hold it
+and run pig iron in 1836. Our converter maps them through the **alias** onto e1 — a building gated
+on `mechanical_tools`, which they do not hold. The engine drops the block.
+
+**`emit_techs.mjs`'s 1836 grant never reads `vanilla_pm_aliases`.** The grant rule is *"every
+production method vanilla runs in 1836 stays, and the country running it holds the technology"* — it
+walks each tier's `vanilla_pm`, so it grants `mechanical_tools` to countries running `pm_steel` and
+never learns that a `pm_pig_iron` country has also been placed on that rung. Census of the whole
+tools directory: `vanilla_pm_aliases` is read by `history_lib.ps1` (which *places* the building),
+`lib_vanilla_ladder.mjs` and `lint_start_conversion.mjs` — **and by nothing that grants or verifies a
+technology**.
+
+### ⚠ AND L14 CANNOT SEE IT, BECAUSE IT HAS THE SAME BLIND SPOT
+
+`verify_start_techs.mjs:274` reads
+
+```js
+if (t.model_only || !t.vanilla_pm) continue;
+rows.push({ …, vanillaNeeds: [...new Set([...bg, ...(vpm[t.vanilla_pm] || [])])],
+              weNeed: t.tech ? [t.tech] : [] });
+```
+
+For tooling e1 it therefore asks *"what does vanilla need to run `pm_steel`?"* (`mechanical_tools`)
+against *"what do we need?"* (`mechanical_tools`) — identical, no gap. The comparison that would
+fail — vanilla needs `steelworking` for `pm_pig_iron`, we demand `mechanical_tools` — is never
+constructed, because the alias is not in the row set. **The detector passes, and the mod ships ten
+dropped buildings.** This is the second time in two days that a guardrail missed the case it exists
+for by reading a narrower key than the code it guards (cf. the L13 entry of 2026-08-31, whose
+COVERAGE check was per-industry where the property is per-PMG).
+
+### Blast radius
+
+**INHERITED, not new.** The n=4 baseline `20260830_191950_tier4-vanilla-ladder-n4` carries the
+identical 10 lines, so the two arms are affected equally and their comparison is unaffected — which
+is why the running batch was **not** stopped. It arrived with the vanilla-ladder rebuild, which is
+what introduced aliases in the first place (they exist so a dropped rung's vanilla method still has
+somewhere to land). Ten buildings across ten mid-tier countries is small in world terms, but it is a
+silent divergence from the 1836 start the mod's premise says should match vanilla.
+
+### The fix owed (NOT yet applied — the batch is running and the build path must not move mid-batch)
+
+1. **`emit_techs.mjs`**: walk `[t.vanilla_pm, ...(t.vanilla_pm_aliases || [])]` when deciding who
+   gets a rung's technology, so a country placed via an alias is granted the rung's gate.
+2. **`verify_start_techs.mjs`**: build `vannillaNeeds` from the union over the alias set, so the
+   `pm_pig_iron`-needs-`steelworking` / we-demand-`mechanical_tools` mismatch becomes a row and the
+   detector fails. Then prove it by re-running against this book, which must report exactly these
+   ten countries.
+3. Only then rebuild. ⚠ Do not edit either file while a batch is running — `run_schedule.ps1`
+   rebuilds before every run, so the arms would stop being comparable mid-session.
+
+### The lesson
+
+**When one key is widened, every consumer of that key is a candidate for the same widening.** The
+alias was added for the converter and tested on the converter. Nothing swept for who else keys on
+`vanilla_pm`, and two of the three who do are the technology grant and the check that guards it.
+A one-line census — `grep -rl vanilla_pm tools/` — would have listed them all.
+
+### 2026-08-31 — the same defect, THREE times over, and the root cause was an allow-list
+
+*(supersedes the "fix owed" section of the entry above — user-ruled the ten dropped buildings
+unacceptable; the batch was stopped at ~1842 and redone.)*
+
+Chasing the ten dropped tooling workshops found **three** independent defects, and the one that
+actually silenced the alarm was neither of the two first suspected.
+
+**1. `emit_techs.mjs` read `vanilla_pm` only** — the alias blind spot described above. Real, but on
+its own it would still have been *reported* by a working detector.
+
+**2. `verify_start_techs.mjs` hardcoded `config/mod_config.json`.** Line 269 built the "what do WE
+demand for this rung" table from the canonical six-rung book **no matter which config was being
+built**. For every alternate-config build — tier4, solver2, the vanilla stub — L14 compared the
+emitted mod's 1836 start against a ladder that was not in it. Every other tool in the pipeline
+honours `MOD_CONFIG`; this one silently did not. Now honours `MOD_CONFIG` and `--config`.
+
+**3. ⭐ THE ONE THAT MATTERED — an unconditional allow-list.**
+```js
+const NAMED = new Set(['central_archives', 'mechanical_tools', 'intensive_agriculture']);
+…
+const missing = [...reqs].filter(r => !rec.set.has(r) && !NAMED.has(r)).sort();
+```
+It suppressed those three technologies **as a requirement, for every country**. Its premise — *"the
+1836 grant names them, so a gap is never real"* — holds only while the grant names them to every
+tier that can own such a building. The four-rung book broke it: the grant names `mechanical_tools`
+to tiers 1–2, while the tooling e1 rung lands in **tier-3 and tier-4** countries' hands through the
+alias mapping. So the detector was told, in advance and unconditionally, to ignore the exact
+technology that was about to fail.
+
+⇒ **It was also redundant.** `startSets()` already expands the grant per country, so a country that
+genuinely was granted the technology has it in `rec.set` and raises no gap. An allow-list layered on
+a correct per-country set can only ever hide a true failure; anything genuinely inherited from
+vanilla is absorbed by `--vs-vanilla`, which exists for that. `NAMED` is now empty, with a comment
+saying not to repopulate it.
+
+**And the grant carried the mirror image of the same mistake:** `if (VAN_STARTING_NAMED.has(t.tech))
+continue;` skipped any technology vanilla names *anywhere*, where the right test is whether vanilla
+names it **to that tier** (`vTier[st].has(t.tech)`). One allow-list on the granting side, one on the
+checking side, agreeing with each other and both wrong.
+
+⚠ **A subtlety that would have produced a half-fix.** Widening to aliases must ask the question
+**per method**, not over the union of their gates. The union asks *"could a vanilla country of this
+tier run BOTH `pm_steel` and `pm_pig_iron`"* — which tier 3 cannot — so it would have withheld the
+grant from precisely the countries needing it. The right question is *"could this tier run ANY
+method that lands on this rung?"*
+
+### Proof, both directions
+
+- Detector before the grant fix, on the honest (tier4 mod, tier4 config) pair: **exactly the ten
+  countries the engine reported** — BRZ, CHI, CHL, PAN, RUS, SIC, TUR on `mechanical_tools`, plus
+  the three vanilla-inherited `fractional_distillation` rows.
+- After: those seven are gone, three inherited rows remain, `--vs-vanilla` PASSES, `--diff-vanilla`
+  reports **0 rungs newly gated** and no country losing a technology.
+- The canonical six-rung book still builds green with `NAMED` emptied.
+
+### What the baseline lost, for the record
+
+The n=4 baseline `20260830_191950` shipped without this fix, so it was missing **10
+`create_building` blocks = 23 ownership levels** of `building_tooling_workshop_steel` at 1836:
+**RUS 11 · CHI 4 · SIC 3 · TUR 2 · CHL 1 · BRZ 1 · PAN 1**. Any comparison against it must carry
+that: the corrected arm starts with more industry, concentrated in Russia, and the difference
+favours the new arm.
+
+### The lesson
+
+**An allow-list is a standing instruction to ignore evidence, and it does not expire when the
+premise behind it does.** Both of these were written when the grant genuinely covered the case, and
+both kept firing for months after the ladder moved out from under them. If a check must exempt
+something, derive the exemption from the same data the check reads (here: "is it in this country's
+own start set?") so it cannot outlive its reason.
+
+## 2026-09-01 — two ledger fill scripts read a HARDCODED session and ignored `--mod` (3rd and 4th of the same defect)
+
+`fill_emp.mjs` and `fill_research.mjs` both opened with
+`const RUNS = [1,2,3,4,5,6].map(i => '20260818_221216_canon-n7/run00${i}_canonfull')`
+while accepting every other flag. Filling a ledger for ANY other batch therefore reported **canon-n7's**
+employment-by-rung table and its technologies-held / journal-entry tables **under the new batch's title**,
+with nothing failing: the numbers are plausible, the tables render, the report passes `fill_verify`.
+
+Caught by noticing `fill_emp` print employment figures **identical** to a different arm's — implausible
+across different worlds — not by any check.
+
+⚠⚠ **CONSEQUENCE: the published flat-cost n=7 ledger's employment and research sections are canon-n7's.**
+Every other section of that report reads its own data. It needs re-filling and republishing.
+
+**This is the THIRD and FOURTH instance of one defect.** `fill_consts.mjs` and `fill_payback.mjs` had the
+same shape and were each fixed alone, when the defect was found, without sweeping the rest of the family.
+⇒ **RULE: when a tool is parameterised, sweep EVERY sibling for the hardcoded value in the same pass** —
+one grep over the family (`grep -oE "20[0-9]{6}_[0-9]{6}_[a-z0-9-]+" fill_*.mjs report_*.mjs` beside a
+`grep -c '\-\-mod'`) finds them all in seconds and is what should have run the first time.
+
+**Fix:** both now derive their run list from `--mod` and **throw** without it, rather than defaulting.
+A default that is a previous batch is worse than an error, because it produces a believable report.
+`fill_consts`, `report_data` and `report_data2` keep the stamp only as a default they actually override.
+
+**A companion change to `fill_verify.mjs`:** its staleness gate is a substring test over the visible
+document, so a batch report that *deliberately names* another session — as the incidents section above
+must, to report this very bug — tripped it. Rather than weaken the gate, a deliberate cross-batch
+reference is now marked `<code class="xref">…</code>` and exempted, with every exemption **printed by
+name** on each run. The exemption cannot fire by accident: prose left behind in the template shell never
+wears the class. Proven both ways — the marked reference passes, an injected unmarked `flatcost-n1`
+still fails the gate.
+
+## 2026-09-02 — company `ai_construction_targets` duplicated per rung kept the AI rebuilding rung 0 in company home states
+
+**Symptom.** On the user's own metric — people by rung in the shortlist economies — the rung-0 headcount never
+fell in any four-rung arm (flat-cost 0.48M→0.43M over the century, cost ladder 0.48→1.44M) while its share
+collapsed only because the sector grew. In the flat-cost run001 save at 1936, 30 of the shortlist's 46 e0
+textile levels stood in Ile-de-France and 23 of 54 e0 food levels in Leinster; a third to a half of the standing
+e0 buildings had been ESTABLISHED after 1920, 38% of e0 levels were company-held (textile 55%, steel 73%, motor
+71%), and 54–100% of e0 buildings recorded a layoff after 1930 — dying and rebuilt at once (FINDINGS F97 §4).
+
+**Root cause.** The company chain extension (2026-08-23) duplicated every `ai_construction_targets` entry per
+tier. The engine's own comment (`00_ai.txt`): the AI is much more likely to select the building type and the
+state that fulfil these targets "for the next company it's planning to form", ×5 on the type and ×20/×50 on
+the state. Ile-de-France is Maison Worth's target state for `building_textile_mill`, Leinster is Guinness's
+for `building_food_industry` — both rung-0 KEYS, and after duplication both companies carried a standing target
+of `level = 5` of the rung-0 building beside the newer rungs. Not an engine mandate like the port wave (F66):
+script we wrote.
+
+**Fix (`tools/emit_companies.mjs`).** Nothing deleted. Each duplicated entry below the top rung carries
+`owner = { NOT = { has_technology_researched = <next rung's technology> } }` inside its `state_trigger`
+(created if the entry had none). A country that cannot yet build rung k+1 sees exactly vanilla's target on
+rung k; once it can, the target moves to k+1, whose entry is already in the list. Formation (`possible`,
+OR-wrapped over the chain), regional HQs, prosperity and the established-company multipliers run on
+`building_types` and are untouched. The summary line now reports the gated count (310 on the four-rung book).
+⚠ Bounded downside: if the engine consults `state_trigger` only when picking the state, the ×5 type weight
+still leaks to old rungs and behaviour is today's, not worse. Whether the clause is honoured is one of the
+pre-registered unknowns of the ab-ladder batch.
+
+**Lesson.** A vanilla block that names ONE building per industry encodes "the industry"; duplicating it per rung
+encodes "every rung, forever". Every per-rung expansion of a vanilla list needs the question "which rung did
+vanilla MEAN?", and for a construction target the answer is the best one the country can build.
+
+**Outcome (same day).** The gate ran once (20260902_095339 run001, ab1, n=1): shortlist companies 17 against 26 in
+vanilla and 26 in the equally small 1.92-ladder arm, NET/BEL/PRU with no company where both references had them,
+regional HQs 20 against 74 — and the rung-0 headcount it was meant to cut rose 0.73M→1.17M. Not separable from the
+half-sized economy at n=1, but the 1.92 arm is the size control and kept its companies. **Default OFF** now
+(`company_target_gate: true` opts in); the relaunch `ab_ladder_n3x2b` runs without it. The suspicion for the
+mechanism: the AI may treat a company's target list as a conjunction, and an entry whose state_trigger is false
+everywhere makes the company unplannable — the opposite of what the clause intended.
+
+## 2026-09-03 — the crash-resume "abort on the first tick" in `run_observer.ps1` was dead code (a misplaced brace)
+
+**Symptom.** `20260902_223037_ab3-n3` run001 crashed at 1890.3.9, two resumes loaded `autosave.v3` and died
+without advancing, the observer quarantined it and stepped back one autosave — and the next attempt's first tick
+read **1836.1.12** with no abort. The fresh game played 26 minutes to 1858 inside the same run folder (landmine
+L26) before the agent's heartbeat saw the clock go backwards and stopped the batch.
+
+**Cause.** The guard added on 2026-08-31 ("stop the game NOW on a resume whose first tick lands >2 years behind
+`$tickAtStart`") was written directly after the CONTINUATION guard's body and before that guard's closing brace,
+so it sat INSIDE `if ($ContinueFromSave -and $attempt -eq 1 -and …) { … }`. A crash resume is attempt ≥ 2, so the
+enclosing condition was always false and the new guard could never execute. The end-of-attempt ladder (which
+does handle a fresh start, by quarantining and stepping back) is only reached when the attempt ENDS — a crash
+or the target — which is exactly the case the first-tick guard was written to pre-empt. Its operands were all
+correct (`ConvertTo-DateNum` gives 18900225 − 18360112 = 540113 > 20000); the block was simply unreachable.
+
+**Fix.** One brace: close the continuation `if` after its `Start-Sleep`, drop the duplicate `}` after the guard.
+Parse-checked with `[System.Management.Automation.Language.Parser]::ParseFile` (0 errors). Applied 00:25 while
+`20260903_000418_ab3-n3` was on run 1 — that run had already loaded the old script; runs 2–3 use the fixed one.
+
+**Lesson.** A guard that "was structurally unreachable" was replaced by a guard that was structurally
+unreachable in a different way, and both shipped because a guard that never fires looks identical to a guard
+that is never needed. The register's rule applies to the harness too: **prove the tripwire trips** — the
+2026-08-31 fix was never exercised against a real failed load. Owed: a synthetic test that feeds the observer a
+first tick of 1836.1.1 after a `$tickAtStart` of 1890 and asserts the `Stop-Process` path is taken.
+
+## 2026-09-03 — the ledger counted the four-rung book's DISABLED industries as tiered rungs: Britain's shipyards and ports showed up as a growing "e0"
+
+**Symptom.** The user read a steady era-to-era growth of e0 employment for GBR+FRA on the ab3 growth-seeds ledger
+while glass e0 had halved and tooling e0 barely moved. The page's British e0 series ran 0.16M (1840) → 0.83M
+(1930) → 0.68M (1935); the era-0 rungs of the ENABLED industries, staffing-weighted, are 0.16M (1900) → 0.09M
+(1935). The difference is `building_shipyard` (5,000/level) and `building_port` (1,000/level): 469k and 365k
+"e0 people" in Britain at 1935.
+
+**Cause.** On a four-rung book `port`, `shipyard`, `shipyard_steam`, `railway` and `power` carry `disabled: true`
+(§10.66/§10.67.5): the industry is handed back to vanilla, but its tiers stay in the config and its rung-0 KEY IS
+the vanilla building. Nine ledger scripts built their tier→era / tier→employment maps by walking
+`cfg.industries` without the `disabled` filter — `report_data2.mjs` (the per-country employment-by-era panel),
+`fill_emp.mjs` (the world employment-by-era table, hence goal G2's "oldest rung still grows"), `fill_indecomp.mjs`,
+`tiered_panel.mjs`, `report_data.mjs` (era stocks / frontier share), `analyse_ai_tier_profit.mjs`,
+`analyse_build_allocation.mjs`, `analyse_gdp_gap.mjs`, `peek_run.mjs`. `fill_payback.mjs` and
+`analyse_ai_tier_choice.mjs` already filtered, which is why below-best and payback were right while the employment
+panels were wrong. The same defect class as emit_research_events dying on a disabled shipyard tier (§10.67.5) —
+on the six-rung canon nothing is disabled, so nothing ever showed.
+
+**Fix.** `if (ind.disabled) continue;` as the first statement of every industry loop in those nine scripts
+(`peek_run` via a filter on the loop source); node --check on all; the four A/B ledgers (ab1 n=2, ab2 n=2, ab3 n=3,
+ab3 growth seeds) regenerated and republished to their URLs; F98 §2 and F99 §1's world rung headcounts corrected
+(ab2 seed 1 at 1935: e0 8.2M not 10.7M).
+
+**Lesson.** A config walker that means "our tiered industries" must say so — `cfg.industries.filter(i =>
+!i.disabled)` — and the register needs a static detector for the omission (owed: L27, the L25 pattern).

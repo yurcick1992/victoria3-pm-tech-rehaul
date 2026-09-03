@@ -1,0 +1,85 @@
+{
+  "schedule_version": 1,
+  "label": "ab3-n3",
+  "_why": "ab3 = the ab2 book (A 2.0 / B 1.5, capacity-priced, gate off) with ONE change: glass and tooling carry ai_value 1000 × 3^era (1000/3000/9000/27000) instead of the generic 1000 × 2^era (1000/2000/4000/8000). User-ruled 2026-09-02 after F98 §4: in both ab2 seeds glass sat at 150–175% and tools at 120–170% of base in every core market because the construction sector's steel-frame method (40 glass + 20 tools per level) is 80–90% of building glass demand and the AI under-built the plastics and rubber-grip rungs (Britain 44/97 plastics levels vs vanilla's 255) although they were the most profitable buildings on the map. The 1830s desire is unchanged (e0 stays 1000), the later rungs out-bid the generic ladder by 1.5× (e1), 2.25× (e2) and 3.4× (e3). Arm {kind: config, config: config/mod_config.ab3.json}; n=3; 1836 → 1936.1.1; compared against ab2 n=2 (20260902_121027 runs 1, 3) and the vanilla n=16 baseline 20260821_131149.",
+  "_arms": {
+    "ab3": "{kind: config, config: config/mod_config.ab3.json} — ab2's book (A 2.0 / B 1.5, capacity-priced, cost divisor 0.000125, company-target gate OFF) with glass and tooling at ai_value 1000×3^era; every other tier 1000×2^era. Config sha 76054C3C…"
+  },
+  "_delta": "vs ab2 (20260902_121027 runs 1, 3): exactly six ai_value fields differ — glass e1/e2/e3 2000/4000/8000 → 3000/9000/27000 and tooling e1/e2/e3 the same; recipes, costs, employment, techs, defines and company files identical (verified by field diff at generation).",
+  "_predictions": {
+    "P1": "Glass price in the British/French/American markets at 1935 falls from 152–171% toward vanilla's 105–126%; tools from 96–137% toward 91–101%.",
+    "P2": "British plastics-rung output rises toward vanilla's glass supply (27k/wk vs ab2's 7.6–13.9k); glassworks levels in Britain exceed 200 (ab2: 117/194).",
+    "P3": "Shortlist e0 glass and tooling headcount falls below 100k each (ab2: 319k / 277k) and their staffing below 30% (ab2: 85% / 60%).",
+    "P4": "World GDP stays within 0.93–1.03× vanilla (ab2: 0.98/0.97) — the lever moves allocation between chains, not the total.",
+    "P5": "The extra desire does not starve the other chains: below-best share stays ≤ 40% (ab2 36.1%) and no other industry's 1935 output falls by more than a fifth against ab2.",
+    "P6": "Companies stay at vanilla's level (gate off): shortlist ≥ 24 companies, regional HQs ≥ 90.",
+    "P7_risk": "If the AI's private-pool choice does not read ai_value (F76 says it does), P1–P3 all fail together and the plastics deficit is a pool/cost effect, not a desire effect."
+  },
+  "_comparison": "ab2 n=2 (same book minus the six fields) and the vanilla n=16 baseline 20260821_131149; per-run ratios travel across nights, absolute £ do not.",
+  "_watch": [
+    "(1) SMOKE-CHECK AT 5 MINUTES on run 1: PM_TECH_REHAUL marker, game version, error.log by POSITION not time, clock advancing. (2) The 1836.2.1 dump: fabric/grain/wood prices (P6). (3) queue_mix with the construction sector and GDP beside it. (4) At the first 1900 summary: shortlist people by rung (tools in the 2026-09-02 scratch: people_by_rung.mjs) and company-held e0 share. (5) GDP trajectory vs vanilla at 1860/1880/1900/1920. (6) PMR_JE firings. (7) FIRST-RUN REPORT (user-ruled 2026-09-02): after each arm's first run, GDP decomposition = population x productive workers per capita x GDP per productive worker, for the shortlist and the world, against vanilla; and a COMPANY ANOMALY CHECK for the company-target gate (companies formed, prosperity, regional HQs, company-held levels vs the flat-cost arm and vanilla). Standard ledger report after the full batch, per arm.",
+    "first run (user-ruled): first_run_decomp + company_check + the glass/tools price and supply read (F98 §4 tables) before the batch completes"
+  ],
+  "_cost": "3 × 1836→1936, ~2.5 h each on this machine (ab2 ran 148–158 min): ~7.5 h, launched 2026-09-02 ~22:35.",
+  "_caveats": [
+    "n=3 against an n=2 reference: a glass-price move under ~15pp or a GDP move under ~5% is inside seed noise.",
+    "ai_value is read by the AI's construction choice (F76) but the private pool's cost divisor and the pool's size are unchanged, so a null result on P1–P3 says the deficit is not a desire effect.",
+    "Different night from both references."
+  ],
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+  },
+  "setups": {
+    "ab3": {
+      "kind": "config",
+      "config": "config/mod_config.ab3.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "ab3",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "ab3",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "ab3",
+      "until": "1936.1.1"
+    }
+  ]
+}

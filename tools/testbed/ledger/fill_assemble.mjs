@@ -1,7 +1,7 @@
 // Splice every const this batch can support into the ledger template, and NEUTRALISE the ones it
 // cannot. Leaving the template's shipped values in place would publish the PREVIOUS batch's numbers
 // under this batch's title, which is the one failure mode a batch report must not have.
-import { readFileSync, writeFileSync } from 'node:fs';
+import {readFileSync, writeFileSync, existsSync} from 'node:fs';
 import { join } from 'node:path';
 const DIR = process.argv[2];
 const J = n => JSON.parse(readFileSync(join(DIR, n), 'utf8'));
@@ -70,5 +70,34 @@ rep(/^const VA=\{flat:\{\},.*$/m, 'const VA=' + JSON.stringify(RD.VA) + ';', 'VA
 s = s.replace('__D2__', () => D2);
 // LADDER is empty -> its loop would throw. Guard it.
 s = s.replace('  const l=LADDER[y];', '  const l=LADDER[y]; if(!l) continue;');
+// ⭐ SPLICE THE PROSE TOKENS. This step did not exist: fill_assemble handled every const and no
+//   token, so an assembled report carried twelve unfilled __TOKEN__ placeholders and the shell's own
+//   previous-batch prose. fill_verify caught it (that is what the gate is for), but the pipeline
+//   should not have needed catching. Tokens come from tokens.json plus the five prose files.
+{
+  const tokFile = join(DIR, 'tokens.json');
+  const tok = existsSync(tokFile) ? JSON.parse(readFileSync(tokFile, 'utf8')) : {};
+  for (const [name, file] of [['__LEDE__','lede.html'],['__GOALS__','goals.html'],
+                              ['__INCIDENTS__','incidents.html'],['__NEXT__','next.html'],
+                              ['__FOOTER__','footer.html']]) {
+    const p = join(DIR, file);
+    if (existsSync(p)) tok[name] = readFileSync(p, 'utf8');
+  }
+  let missing = [];
+  for (const m of s.match(/__[A-Z_]+__/g) || []) if (!(m in tok) && !missing.includes(m)) missing.push(m);
+  for (const [k, v] of Object.entries(tok)) s = s.split(k).join(v);
+  if (missing.length) console.log('  ⚠ tokens with no source: ' + missing.join(' '));
+  console.log('  tokens spliced: ' + Object.keys(tok).length);
+}
+// THE TITLE IS PER BATCH, not per template. Every batch publishes its own artifact, and a gallery of
+// pages all called "Rehaul Batch Ledger" cannot be told apart. Drop a one-line title.txt in the out
+// dir; absent, the template's own title stands (which is what the six-rung path has always used).
+const TFILE = join(DIR, 'title.txt');
+if (existsSync(TFILE)) {
+  const t = readFileSync(TFILE, 'utf8').trim();
+  if (!/<title>[^<]*<\/title>/.test(s)) { console.error('ANCHOR MISSING: <title>'); process.exit(1); }
+  s = s.replace(/<title>[^<]*<\/title>/, () => '<title>' + t + '</title>');
+  console.log('  title: ' + t);
+}
 writeFileSync(join(DIR, 'REPORT.html'), s);
 console.log('assembled ->', join(DIR, 'REPORT.html'), (s.length/1024).toFixed(0) + ' KB');

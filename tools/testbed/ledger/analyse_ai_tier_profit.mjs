@@ -28,7 +28,8 @@ const SES = 'tools/testbed/sessions';
 const SESSION = argOf('--session', '20260818_221216_canon-n7');
 const CFGPATH = argOf('--config', SESSION === '20260818_221216_canon-n7'
   ? 'config/mod_config.canon_n7.json' : 'config/mod_config.json');
-const { runs: USABLE, dropped: DROPPED } = usableRuns(SES, SESSION);
+const SETUP = argOf('--setup', null);   // a multi-arm session must name its arm
+const { runs: USABLE, dropped: DROPPED } = usableRuns(SES, SESSION, SETUP);
 const RUNS = USABLE.slice(0, +argOf('--runs', '99'));
 if (!RUNS.length) { console.error(`no usable runs under ${join(SES, SESSION)}`); process.exit(1); }
 const MINLV = +argOf('--minlv', '3');
@@ -37,6 +38,7 @@ const ANNEX_JUMP = 1.25;
 const cfg = JSON.parse(readFileSync(CFGPATH, 'utf8'));
 const IND = {};
 for (const ind of cfg.industries || []) {
+  if (ind.disabled) continue;   // ⚠ a DISABLED industry (port/shipyard/railway/power on the four-rung books) keeps its tiers in the config and its rung-0 KEY IS THE VANILLA BUILDING — counting it put Britain's shipyards and ports into "e0" (BUGS_AND_FIXES 2026-09-03)
   const tiers = (ind.tiers || []).map((t, i) => ({ key: t.key, idx: i, tech: t.tech, wm: +(t.workforce_mult ?? 1) }))
     .filter(t => t.key && t.tech);
   if (tiers.length > 1) IND[ind.id] = tiers;

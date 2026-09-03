@@ -1,0 +1,70 @@
+{
+  "schedule_version": 1,
+  "label": "tier4-flatcost-aiv26-n2b",
+  "_why": "THE FLAT BUILD COST, n=2 (user-ruled 2026-08-31: \"let us try a flat build cost, still exponential ai_value ladder, and hope that more reasonable margins for higher tiers will get realised through overbuilding and prices\"). TWO LEVERS against the n=4 baseline 20260830_191950_tier4-vanilla-ladder-n4, both named by the user: (1) building_cost FLAT - lib_tier4_spec COST.k 1.92 -> 1, so every rung costs its industry vanilla anchor (600 regular / 800 heavy / 400 art) instead of 600/1150/2210/4250; (2) ai_value 750 x 2.6^era = 750/1950/5070/13182, superseding 1000 x 2.5^era. Everything else is the same vanilla-ladder book: 62 tier buildings over 17 industries, absolute calendar bands, flat 0.26 design margin, tiers-only JEs, ports/shipyards/railway/power vanilla. ⚠ RELAUNCH: the first attempt (20260831_113919) was STOPPED at ~1842 by user ruling after its 5-minute smoke check found ten starting tooling workshops silently dropped by the engine. Three stacked defects fixed first — see _caveats.",
+  "_arms": "tier4 = {kind: config, config: config/mod_config.tier4.json}, PAIRED tech twin tech_tree_options.tier4.json. -DryRun PASSED lint + negative-goods + solvency 62/62 + TECH CONTENT (193 techs, 0 orphans, 0 duplicate gates) + mod checks + preflight x2. Frozen sha256 A80105162CF6356DDA14E728625B80AF0C8C41B727F6A8337D99585341A1225B. Reproduce the solve with: MOD_CONFIG=config/mod_config.tier4.json INV_IO_CAP=6 INV_MARGINS=0.26,0.41,0.55,0.70 INV_ITERS=1500 node tools/era_inverse.mjs --write. L10 freeze while this runs.",
+  "_delta": "building_cost flat at the vanilla anchor (was a 1.92^tier ladder) + ai_value 750x2.6^era (was 1000x2.5^era). ai_defines long-construction thresholds LEFT at the canonical 120/180 (3x vanilla) - the 8x recalibration existed only to cover the 1.92^3 cost ladder, which no longer exists. NOTE: the baseline batch record does not state its own thresholds (build_state.json has built_from_config and config_sha256 undefined), so that one term is not verifiably held constant. PLUS the alias/grant fix: emit_techs now grants a rung technology per VANILLA METHOD (aliases included) and per TIER, so the ten dropped 1836 tooling workshops (23 ownership levels: RUS 11, CHI 4, SIC 3, TUR 2, CHL/BRZ/PAN 1) are PRESENT in this arm and were ABSENT from the n=4 baseline.",
+  "_predictions": [
+    "P1 STATED BEFORE THE RUN. Payback in each rung own era falls from the fitted ~22y to 24.9 / 13.5 / 6.1 / 3.4 years (t0..t3) at model prices. The frontier is therefore ~7x cheaper to reach, relative to what it earns, than the bottom rung.",
+    "P2 DIRECTION, NOT MAGNITUDE. Frontier levels should rise and below-best build share should fall below the baseline 37.8%. Magnitude is NOT predicted: the economy is one feedback loop (cheaper buildings -> more building -> more GDP -> more capital -> more building), and the last time a cost lever was read as a behavioural response function it was an equilibrium outcome instead (F78: 1/5 cost gave 2.21x buildings, not 5x).",
+    "P3 THE ACTUAL TEST IS THE PRICE PATH (F94). Overbuilding the frontier is only the mechanism; the result wanted is the OUTPUT PRICE FALLING, so that old rungs die of their own margin. Read the designed-vs-achieved price table first, not the build share.",
+    "P4 RISK, stated so it is not a surprise: flat cost removes the only term that made a late rung expensive, so the arm may simply overbuild everything and raise GDP without moving relative prices at all - which would be a clean NEGATIVE result on F94 and worth as much as a positive one.",
+    "P5 GDP should rise against the baseline 0.62x vanilla, because cheaper buildings buy more capacity per construction point. If it does NOT rise, the constraint was never cost."
+  ],
+  "_comparison": "PRIMARY: 20260830_191950_tier4-vanilla-ladder-n4 (n=4, same book, cost ladder 1.92 + ai_value 1000x2.5) - the like-for-like partner, though n=2 vs n=4. SECONDARY: the n=16 vanilla baseline 20260821_131149 (save_summary_version 8). WARNING: different nights - ratios travel, absolutes do not. n=2 resolves only the ratio-over-many-decisions measures (below-best build share, per-run sd ~0.6pp on the baseline); GDP and peasant share have a between-run spread far wider than any effect being looked for.",
+  "_watch": "(1) SMOKE-CHECK AT 5 MINUTES on run 1: PM_TECH_REHAUL marker, game version, error.log filtered BY POSITION not by time, clock advancing, queue_mix read WITH the construction sector and GDP beside it (a short queue means it DRAINED). (2) the four restored industries workers vs the n=1 run - the direct read on the fix. (3) below-best share and the per-era build allocation together. (4) PMR_JE| firings. (5) peasant share trajectory, especially the 1875-1880 divergence point where the first x1.4 cost step binds. (6) K trajectory and the 1935 endpoint.",
+  "_cost": "2 runs x 1836->1936, ~2.4h each = ~5h wall clock, plus ~7s of build per run.",
+  "_caveats": "n=2. THREE levers move against the baseline, not two: (1) flat building_cost, (2) ai_value 750x2.6^era, and (3) the 1836 start is now CORRECT where the baseline was missing 23 levels of tooling e1 across 7 countries - Russia most of all, at 11 levels. That third one is a FIX, not a treatment, but it is still a difference and it favours THIS arm: Russia starts with 11 more levels of a tier-1 tooling workshop than the baseline had. Any GDP or build-share gap under ~1% should be read against it. The three defects behind it: emit_techs granted a rung technology only via vanilla_pm (never its aliases) and skipped anything vanilla named ANYWHERE rather than per tier; verify_start_techs (L14) hardcoded the canonical config so it judged the wrong ladder for every alt-config build, and carried an unconditional NAMED allow-list that suppressed mechanical_tools gaps outright. All three fixed and each proven: the detector now reports exactly the ten countries the engine reported, and reports none after the grant fix.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "Identical to canon-n7, aival, the solver2 family, the F79 vanilla baseline and the tier4 n=1 run - what keeps the sessions comparable."
+  },
+  "setups": {
+    "tier4": {
+      "kind": "config",
+      "config": "config/mod_config.tier4.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    }
+  ]
+}

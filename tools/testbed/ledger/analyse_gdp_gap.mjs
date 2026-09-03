@@ -21,7 +21,7 @@ const OUT = (() => { const a = process.argv.slice(2), i = a.indexOf('--out'); re
 const cfgPathG = (() => { const i = argsG.indexOf('--config'); return i >= 0 && argsG[i + 1] ? argsG[i + 1] : 'C:/claude-code/victoria 3 PM and tech rehaul/config/mod_config.json'; })();
 const cfg = JSON.parse(readFileSync(cfgPathG, 'utf8'));
 const tierEra = {}, tierCost = {}, tierInd = {};
-for (const ind of cfg.industries) for (const t of ind.tiers || []) {
+for (const ind of cfg.industries) if (!ind.disabled) for (const t of ind.tiers || []) {
   tierEra[t.key] = t.era; tierCost[t.key] = t.building_cost; tierInd[t.key] = ind.id;
 }
 const vanCost = requiredConstruction();

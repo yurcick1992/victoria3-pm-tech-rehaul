@@ -1,0 +1,93 @@
+{
+  "schedule_version": 1,
+  "label": "ab-ladder-n3x2b",
+  "_why": "THE A/B LADDER (user-ruled 2026-09-02, BALANCE_FRAMEWORK s10.68) - two arms interleaved, n=3 each. Rung k of an industry (k = era minus its first rung's era) has output = vanilla lowest-tier output x A^k and input VALUE = vanilla lowest-tier input value x B^k over the rung's own vanilla mix; rung 0 IS vanilla's recipe, cost and employment, so 1836 is vanilla by construction. building_cost = vanilla anchor x A^k (capacity-priced: a construction point buys the same output at every rung, and under the engine's 15-25%-of-revenue margin band profit follows revenue, so payback is flat across rungs); ai_value = 1000 x A^era; the private pool's cost divisor scaling set from the book (0.001 x 800 / max cost) so the dearest rung is divided by 1.8 like vanilla's dearest building; long-build thresholds 160/240 and the six hoard defines carried; company formation targets NOT gated (company_target_gate false - the gate ran once, in 20260902_095339 run001 ab1, and read 17 shortlist companies vs 26 in both references with NET/BEL/PRU companyless, so it is off by the user's pre-declared criterion). ab1: A=B=2.5 (vanilla's own shape - vanilla runs A~B~1.5 per method step - at x2.5 per rung). ab2: A=2.0, B=1.5 (the leaning arm; user-chosen 2026-09-02). RELAUNCH of 20260902_095339 (aborted at run 2 by landmine L25 fired by two new reporting tools, now fixed); ab2 goes FIRST so its first-run read arrives before the ab1 replicates.",
+  "_arms": "ab1 = {kind: config, config: config/mod_config.ab1.json} sha256 022F5A993E153C48140FF3C11E181DAB33341310470373A5A706E90F86D5B681 · ab2 = {kind: config, config: config/mod_config.ab2.json} sha256 706DCF956164C1328BE63C595ACA41634DCF3A93F6C97F3F942A017514D0ED62. Both -DryRun PASSED lint (62/62) + negative-goods + solvency (62/62 <= 175) + tech content (193 techs, 0 orphans) + start-conversion + mod checks + preflight x2. Paired tech twins config/tech_tree_options.ab1.json / ab2.json. Regenerate with: node tools/make_ab_config.mjs --A 2.5 --B 2.5 --suffix ab1 · node tools/make_ab_config.mjs --A 2.0 --B 1.5 --suffix ab2. L10 freeze while this runs.",
+  "_delta": "vs the four-rung flat-cost n=7 and cost15 n=1 arms: recipes are vanilla-anchored A/B ladders instead of the inverse-solved book (the solved e0 rungs were input-insolvent at realised prices and starved the 1836 fabric market - F97); cost is capacity-priced instead of flat or x1.5^era; the pool cost divisor is scaled to the book; company formation targets no longer keep every rung alive.",
+  "_predictions": [
+    "P1 GDP: 1935 world GDP 0.85-1.05x vanilla at the n=3 median for BOTH arms (capacity pricing pins output per construction point to vanilla's). Falsified if either median lands outside 0.75-1.25x.",
+    "P2 Obsolescence: shortlist (GBR USA FRA NET BEL PRU GER) e0 HEADCOUNT falls in absolute terms between 1900 and 1935 (it was flat in every earlier arm: flat-cost 0.64M->0.43M, cost ladder 0.97M->1.44M), and e0 is under 30% staffed there by 1935. The measured death curve says a rung two behind empties below ~0.2 of the frontier's VA per worker; ab1 sits at 0.16 for every industry, ab2 at 0.12-0.22 (arms and furniture 0.20, art academy 0.22 - the three under the 5:1 line, a watch item).",
+    "P3 Prevalence: e2 is the largest rung by shortlist employment by 1920 in both arms; e3 stays small (era-5 gate, by the anchor principle).",
+    "P4 Tiered employment 0.4-0.6x vanilla in ab1 and 0.5-0.7x in ab2 (ab2 also needs fewer raw workers); the freed labour lands in agriculture, extraction, services and peasantry. NOT a failure if peasants run above vanilla; a failure if GDP falls with it below P1.",
+    "P5 Below-best build share at or under 25% in both arms; company-held share of e0 levels in the shortlist falls from 38% (flat-cost) and e0 buildings established after 1920 fall from a third-to-half.",
+    "P6 The 1836.2.1 order book is vanilla-like: no raw pinned at 175 (fabric was 175 on the cost15 book). If fabric or grain reads >= 150 at 1836.2.1 the book is wrong, stop the batch.",
+    "P7 NOT PREDICTED: the K-loop's response magnitude (F78/F88 surprised twice) and whether the engine honours an owner-technology clause inside a company state_trigger.",
+    "P8 (added after the ab1 n=1 read, 20260902_095339): ab1 read GDP 0.54x vanilla at 1935 with productive workers per capita 0.53x, construction capacity 0.48x vanilla in the shortlist, manufactured prices 110-165% of base all century and the rung-0 headcount RISING. If ab2 (cost x2^k instead of x2.5^k) also lands under 0.75x, capacity pricing itself is the stall and the arm comparison is moot; if ab2 lands 0.85-1.05x the stall is dose-dependent."
+  ],
+  "_comparison": "PRIMARY between the two arms (same night, interleaved). SECONDARY: the vanilla n=16 baseline 20260821_131149 (different night: ratios travel, absolutes do not); the four-rung flat-cost n=7 (20260831_120102 + 20260831_192428) and cost-ladder n=4 (20260830_191950); the canonical solver2f n=3 (20260825_204213).",
+  "_watch": "(1) SMOKE-CHECK AT 5 MINUTES on run 1: PM_TECH_REHAUL marker, game version, error.log by POSITION not time, clock advancing. (2) The 1836.2.1 dump: fabric/grain/wood prices (P6). (3) queue_mix with the construction sector and GDP beside it. (4) At the first 1900 summary: shortlist people by rung (tools in the 2026-09-02 scratch: people_by_rung.mjs) and company-held e0 share. (5) GDP trajectory vs vanilla at 1860/1880/1900/1920. (6) PMR_JE firings. (7) FIRST-RUN REPORT (user-ruled 2026-09-02): after each arm's first run, GDP decomposition = population x productive workers per capita x GDP per productive worker, for the shortlist and the world, against vanilla; and a COMPANY ANOMALY CHECK for the company-target gate (companies formed, prosperity, regional HQs, company-held levels vs the flat-cost arm and vanilla). Standard ledger report after the full batch, per arm.",
+  "_cost": "6 runs x 1836->1936, ~15.5h (2h35 each on the mod).",
+  "_caveats": "Two arms x n=3. Both arms carry the company-target gate, so the A/B comparison is clean but the comparison with earlier arms carries that extra change. ab2 puts art_academy (0.13) under the 1:6 input floor at its top rung and arms/furniture/art under the 5:1 death ratio (4.9/4.9/4.5); ab1 clears both everywhere. The company-target gate is OFF in this relaunch; 20260902_095339 run001 is the only gate-on observation (n=1).",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+  },
+  "setups": {
+    "ab1": {
+      "kind": "config",
+      "config": "config/mod_config.ab1.json"
+    },
+    "ab2": {
+      "kind": "config",
+      "config": "config/mod_config.ab2.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "ab2",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "ab1",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "ab2",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "ab1",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "ab2",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "ab1",
+      "until": "1936.1.1"
+    }
+  ]
+}

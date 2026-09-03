@@ -7,7 +7,14 @@ import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
 const DIR = process.argv[2];
 const SES = 'tools/testbed/sessions';
-const MOD = [1,2,3,4,5,6].map(i => `20260818_221216_canon-n7/run00${i}_canonfull`);
+// ⚠⚠ --mod IS REQUIRED. This hardcoded canon-n7 while accepting other flags, so technologies-held and
+//   JE-firing tables were canon-n7 numbers under whatever title the fill was given. Same defect as
+//   fill_consts, fill_payback and fill_emp — found by census on 2026-09-01.
+const MOD = (() => {
+  const i = process.argv.indexOf("--mod");
+  if (i > 0 && process.argv[i+1]) return process.argv[i+1].split(",").map(s => s.trim()).filter(Boolean);
+  throw new Error("fill_research.mjs: --mod <sess/run[,...]> is REQUIRED (it used to default to canon-n7).");
+})();
 const VAN = ['run001_vanilla','run003_vanilla','run005_vanilla','run007_vanilla'].map(r => '20260813_083557_vanilla-vs-mod-n4/' + r);
 const YEARS = [1840,1860,1880,1900,1920,1935];
 

@@ -61,7 +61,7 @@ closed.
 | L10 | Editing the generator while a batch is running | MANUAL |
 | L11 | A named tag that is not the country you think it is | **PROPOSED — AUTO, detector not yet written** |
 | L12 | Savegames reaped without a readable summary | AUTO (post-run, `-Session`) |
-| L13 | A starting factory converted onto a tier its own production method contradicts | **MASKED, not fixed — detector not yet written** |
+| L13 | A starting factory converted onto a tier its own production method contradicts | AUTO |
 | L14 | A country starts with a building its own technologies cannot unlock | AUTO |
 | L15 | A country LOSES a starting technology vanilla gives it | AUTO |
 | L16 | A schedule key honoured in `defaults` for some fields and silently dropped for others | AUTO |
@@ -74,10 +74,43 @@ closed.
 | L23 | A telemetry line counted RAW when a burst repeats it | **REGISTERED, DETECTOR OWED** |
 | L24 | A generator's own diagnostic text leaked into an emitted script file | AUTO |
 | L25 | A summary reader globs *.json.gz and reads the harvester's in-progress file | AUTO |
+| L27 | An analysis script walks cfg.industries for tiers without skipping `disabled` industries (their rung-0 key IS the vanilla building) | AUTO |
 
 ---
 
-### L13 — a starting factory converted onto a tier its own production method contradicts · PROPOSED (AUTO)
+### L13 — a starting factory converted onto a tier its own production method contradicts · AUTO
+
+**DETECTOR (written 2026-08-30): `tools/lint_start_conversion.mjs`, run by build.ps1 beside the other
+linters.** Three checks against the EMITTED history and the vanilla files it derives from: COVERAGE
+(every vanilla main method maps to some tier, own rung or `vanilla_pm_alias`), PLACEMENT (a method
+absorbed as an alias may not shift the factory more than a third of the ladder from its vanilla
+position), KEYS (every `building=` in the emitted history is one of ours or a real vanilla building).
+Proven by sabotage: stripping one alias makes it fail naming the method and the industry.
+⚠ It found a real case on its first run — automotive’s `pm_mass_automobile_production`, vanilla’s LAST
+method, converted onto the industry’s FIRST rung because the alias rule picked the nearest rung BY YEAR
+(1913 is closer to 1899 than to 1936). Fixed at source: the alias rule now respects ladder position.
+
+⚠⚠ **IT WAS PROVEN ON ONE BOOK AND SHIPPED BROKEN FOR THE OTHER (fixed 2026-08-31).** Written and
+sabotage-tested against the FOUR-RUNG book, wired into `build.ps1`, and it then **failed the canonical
+six-rung build** with 8 false positives — caught on the next canonical build, not by review. Three
+causes, all of them the config saying something the check did not know:
+
+* **COVERAGE was per INDUSTRY where it is a property of the vanilla PMG.** The shipyard is ONE vanilla
+  building split across TWO config industries (`shipyard` = clippers, `shipyard_steam` = steamers), so
+  each legitimately covers half the group and all four shipbuilding methods read as orphans. The check
+  now indexes tiers by PMG and asks once per group.
+* **A RULED-AWAY rung is not a gap.** `pm_early_power_plant` is GONE by the §10.43 ruling (the 1900
+  municipal engine house lives inside urban centres instead); the tier4 spec likewise drops
+  `pm_improved_fertilizer`. A deliberate removal must not read as a coverage defect.
+* **POWER-BLOC-GATED methods are unreachable by construction.** `pm_*_principle_transport_3` needs a
+  power-bloc principle; the solver never selects one and no 1836 history can carry one.
+
+⇒ **A detector must be proven against EVERY book it will run against, not only the one it was written
+for.** The repo now holds two configs; a check wired into `build.ps1` runs on whichever is built, so
+"it passes and it trips on sabotage" is only half the proof. ⚠ Related: the tool takes an emitted mod
+AND the config it was built from, and a MISMATCHED pair reports every stray tier key individually,
+which reads as the mod being broken. No threshold separates that from a real defect reliably (the two
+books share most keys), so it simply **prints the pair it is comparing** and lets the reader see it.
 
 **The failure.** The 1836 start converter maps each vanilla factory onto one of our tiers by reading the
 main production method it runs. When the mapping silently fails, the factory does **not** disappear and
@@ -123,6 +156,27 @@ factory it could never have constructed. Nothing errors: the engine places what 
 place and never audits that against the country's technology set. The economy then comes out different
 from vanilla's for a reason no log mentions — and the countries it bites are the ones whose 1836
 industry matters most.
+
+⚠⚠ **IT IS BLIND TO `vanilla_pm_aliases`, AND THAT IS EXACTLY HOW IT MISSES (found 2026-08-31, NOT YET
+FIXED).** `verify_start_techs.mjs:274` skips any tier without a `vanilla_pm` and builds `vanillaNeeds`
+from `vpm[t.vanilla_pm]` alone. A rung that ABSORBED another vanilla method as an alias — which the
+four-rung ladder does whenever an industry has more rungs than vanilla has methods — is therefore
+checked only against the method it is NAMED for, never against the one the converter actually places
+through it.
+
+The live case: four-rung tooling e1 is `pm_steel` (gate `mechanical_tools`) with `pm_pig_iron` (gate
+`steelworking`) as its alias. Ten countries run pig iron in vanilla 1836 holding `steelworking`; the
+converter puts them on e1; the engine drops the block for want of `mechanical_tools`. L14 asks *"what
+does vanilla need for `pm_steel`?"* against *"what do we need?"*, gets `mechanical_tools` both sides,
+and **PASSES**. The ten dropped buildings appear only in `error.log`, found by the 5-minute smoke
+check. `emit_techs.mjs` has the same blind spot on the granting side — see BUGS_AND_FIXES 2026-08-31
+for the mechanism and the two-line fix owed.
+
+⇒ **The register’s own recurring lesson, twice in two days**: a guardrail that reads a NARROWER key
+than the code it guards passes for the wrong reason. L13’s COVERAGE check was per-industry where the
+property is per-PMG; L14 is per-`vanilla_pm` where placement is per-alias-set. When a key is widened,
+sweep every consumer of it — `grep -rl vanilla_pm tools/` lists three, and two of them are the grant
+and this check.
 
 **Found live, 2026-08-12, and only because an unrelated bug was fixed first.** While the converter
 silently failed to re-tier the 1836 start (**L13**), vanilla's steel-tooling workshops stayed on the base
@@ -235,7 +289,7 @@ put 100 saves through a reader that crashed on all of them, or that a worker die
 `save_summaries\` beside it; require it non-empty; **read one** and require a `save_summary_version`
 (a directory of zero-byte files counts perfectly well); reject leftover `.partial.json.gz`; report any
 `.err`; and require at least one `.v3` still kept. It reports **N/A** when no `-Session` is given, so it
-costs a build nothing — this is the register's one post-run entry.
+costs a build nothing — this and **L26** are the register's two post-run entries.
 
 ⚠ **Proved by breaking it** (2026-08-11), on both shapes: `save_summaries\` renamed away ⇒ FAIL; every
 save reaped with none kept ⇒ FAIL *"the escape hatch is gone"*; restored ⇒ PASS; no `-Session` ⇒ N/A.
@@ -1322,3 +1376,129 @@ are correctly excluded, not corrected.
 
 **Proven both ways:** PASS on the clean tree (15 readers, every glob site guarded), and FAIL with exit 1
 naming `peek_run.mjs` when its guard is removed.
+
+## L26 — ONE RUN FOLDER HOLDING TWO CAMPAIGNS, recorded as a clean run that reached its target
+
+**Status: AUTO** — `Test-LmL26` in `tools/preflight.ps1`, post-run
+(`preflight.ps1 -Session <dir>`), N/A without `-Session` so it costs a build nothing. The second
+post-run entry after L12.
+
+**Found 2026-08-31**, from a wall-clock outlier: run004 of
+`20260830_191950_tier4-vanilla-ladder-n4` took **267.3 min** against 135.1 / 145.5 / 145.7 for its
+siblings. It had played 1836→1936 **twice**.
+
+### The mechanism
+
+A crash-resume whose load fails does not error — `-handsoff` **begins a fresh 1836 game** (verified,
+MODDING_NOTES). `run_observer.ps1` has a guard for exactly that, and the guard is correct. It is
+just unreachable in the case that matters, because it sits **after**
+`if ($reached -or $timedOut) { break }`: a fresh campaign that runs all the way to the target exits
+through the `break` and the landing is never examined.
+
+Here: CTD at 1931.1.13 → four failed resumes → attempt 4 started fresh at 1836 and crashed at 1864
+→ attempt 5 continued *that* campaign to 1936.1.1 → `reached_ingame_date 1936.1.1`, `self_quit
+true`, `abandoned_reason ""`.
+
+### Why nothing fails
+
+- `meta.json` is entirely well-formed and says the run completed.
+- L17 passes — the run *did* reach its `until` date.
+- The markets TSV is complete (the observer even notes `2358 row(s) re-dumped after a resume`).
+- The summary folder holds 195 files over 100 distinct in-game dates, and readers keyed on the DATE
+  silently take the later campaign, which is coherent — by luck of filename order, not by design.
+- Readers that DIFF CONSECUTIVE FILES cross the seam once and diff 1931 against 1837.
+
+The only visible symptom is the wall clock, and only if someone compares it against sibling runs.
+
+### DETECTOR
+
+Read every `provenance.date` in filename order; classify each backward jump. **Two shapes, and they
+are different defects — collapsing them would file a doubled century next to a filename wobble:**
+
+* **> 2 years ⇒ FAIL, a SECOND CAMPAIGN.** This entry's subject.
+* **≤ 2 years ⇒ WARN, summaries OUT OF ORDER.** The archiver read several slots of the rotation ring
+  in one pass, so `autosave_1.v3` — the *older* save — sorts after `autosave.v3` by filename. One
+  campaign; a handful of summaries in the wrong order. Small, real, separately caused.
+
+Proven both ways when written: FAIL on `20260830_191950` naming the exact seam, FAIL on `canon-n7`
+run007 (38y), WARN on `port-ramp-monthly-n3` (0.01–0.89y), PASS on `20260829_152435_tier4-n1`, N/A
+on a normal build.
+
+### Blast radius, swept rather than assumed
+
+All **74 sessions holding summaries**: 5 hits. Four are already excluded by `lib_runs`/L17 or are the
+sub-year shape. **Exactly one — this batch's run004 — enters a published `n`**, and its effect was
+measured: below-best 38.14% against a 36.84–38.38% sibling spread, adoption lag unchanged. ⭐ Notably
+`canon-n7`'s doubled campaign is **run007, the run L17 already drops**, so the six-rung baseline the
+whole project compares against is clean.
+
+### The generator side
+
+Fixed in `run_observer.ps1`: the fresh-start abort now fires on the **first tick** of a resume, so
+such an attempt can never reach the target and control always falls through to the existing
+quarantine/step-back ladder. Same `> 20000` threshold, no new constant, and deliberately without
+setting `$timedOut`/`$abandoned` (those would break out of the ladder that must run).
+
+⚠ **The register entry is not redundant with that fix.** A fix in the generator says nothing about
+the sessions already on disk, and sessions are never deleted — so the artifact-side check is the
+half that can still be wrong tomorrow.
+
+### 2026-09-03 — the generator-side abort was DEAD CODE, and L26 fired a second time
+
+`20260902_223037_ab3-n3` run001: CTD at 1890.3.9; two resumes from `autosave.v3` loaded it and died without
+advancing (the STUCK branch); the observer quarantined it and stepped back one autosave; **that load failed and
+`-handsoff` began a fresh 1836 game, which played 26 minutes to 1858 with nothing aborting it** — 22 summaries of
+a second campaign written into the same folder, the exact shape this entry describes. The "abort on the FIRST
+TICK of a resume" added on 2026-08-31 never ran: a missing closing brace had nested it inside the CONTINUATION
+guard's `if`, whose condition requires `$attempt -eq 1`, so on every crash resume (attempt ≥ 2) it was
+unreachable. Nothing failed — the script parsed, the guard's log line simply never appeared.
+
+Caught live, not by `Test-LmL26`: the agent's 30-minute heartbeat read the run clock at 1858 where the previous
+heartbeat had read 1890, and a clock that goes BACKWARDS between two readings of one run is this landmine on
+sight. **Add that to the heartbeat**: compare each reading's in-game date with the previous one; a fall of more
+than two years means a second campaign — STOP the batch (the whole schedule; there is no per-run abort) and
+relaunch, or the run plays the century twice. The batch was stopped at 00:03 and relaunched as
+`20260903_000418_ab3-n3`; the fix (one brace moved, parse-checked, BUGS_AND_FIXES 2026-09-03) went in at 00:25
+while that batch was on its run 1, so its run 1 ran the old observer and runs 2–3 the fixed one — a
+crash-handling change only, recorded by the per-run harness hash in `build_state.json`.
+
+**Detector reminder**: `Test-LmL26` remains post-run and would have failed this session's run001 on the 54-year
+backward jump; the live heartbeat is the only thing that saves the machine time.
+
+
+## L27 — AN INDUSTRY LOOP THAT KEEPS THE DISABLED INDUSTRIES, so vanilla ports and shipyards read as "e0"
+
+**Status: AUTO** — `Test-LmL27` in `tools/preflight.ps1`, repo-side (`-RepoOnly`), the L25 pattern: every
+industry loop in `tools	estbed***.mjs` must mention `disabled` on the line or within the next two. Sessions
+are skipped. Proven both ways on 2026-09-03: an unguarded probe file FAILS (`_lm27_probe.mjs:2`), its removal
+PASSES (13 scripts with industry loops, every one guarded).
+
+**Found 2026-09-03**, from the user reading the ab3 growth-seeds ledger: e0 employment for GBR+FRA "growing era
+to era" while glass e0 had halved. The page's British e0 series ran 0.16M → 0.83M (1930) → 0.68M; the era-0 rungs
+of the ENABLED industries, staffing-weighted, ran 0.16M → 0.13M → 0.09M. The difference was `building_shipyard`
+(5,000 per level) and `building_port` (1,000): 469k and 365k "e0 people" at 1935.
+
+### The mechanism
+On a four-rung book `port`, `shipyard`, `shipyard_steam`, `railway` and `power` carry `disabled: true`
+(§10.66/§10.67.5): the industry is handed back to vanilla, but its tiers stay in the config and its rung-0 KEY IS
+THE VANILLA BUILDING. A tier→era map built without the filter labels every vanilla port, shipyard and railway
+level a tiered rung — usually rung 0 — and those buildings grow all century. Nine ledger scripts and one melt
+reader had the omission (`report_data2`, `fill_emp`, `fill_indecomp`, `tiered_panel`, `report_data`,
+`analyse_ai_tier_profit`, `analyse_build_allocation`, `analyse_gdp_gap`, `peek_run`,
+`melted_company_ownership`); `fill_payback` and `analyse_ai_tier_choice` had the filter, which is why payback
+and below-best were right while every employment-by-era panel was wrong. **Nothing failed**: the panel rendered,
+the verify gate passed, goal G2 read "oldest rung still grows" from it. On the six-rung canon nothing is
+disabled, so the defect could not show until a four-rung book met the ledger — and it sat there through five
+four-rung ledgers before a reader noticed.
+
+### What it touched
+The employment-by-era panels (world and per country) of every four-rung ledger since 2026-08-29, goal G2 on all of
+them, the "tiered sector" employment share in `tiered_panel`, and the world rung headcounts quoted in F98 §2 and
+F99 §1 (corrected there: ab2 seed 1 at 1935 e0 8.2M, not 10.7M). Prices, GDP, payback, below-best, companies and
+the first-run decomposition were never affected (they do not walk tiers, or they filtered).
+
+### The rule
+A config walker that means "our tiered industries" says so: `cfg.industries.filter(i => !i.disabled)`, or
+`if (ind.disabled) continue;` as the loop's first statement. The emitters learned this on 2026-08-29
+(`emit_research_events` died on a disabled shipyard tier); the analysis side did not fail loudly, which is exactly
+why it needed a detector rather than a note.

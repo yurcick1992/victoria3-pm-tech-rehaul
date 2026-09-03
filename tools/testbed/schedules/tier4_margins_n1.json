@@ -1,0 +1,60 @@
+{
+  "schedule_version": 1,
+  "label": "tier4-margins-n1",
+  "_why": "THE RISING MARGIN LADDER, n=1 (user-ruled 2026-08-30: \"let us try going with the increased margins\"). ONE LEVER vs the n=3 baseline 20260829_212316: INV_MARGINS 0.26,0.41,0.55,0.70 in place of the flat 0.26,0.26,0.26,0.26. Everything else identical, including the ai_value ladder 1000/2000/4000/8000 and the x1.4^era cost ladder.",
+  "_arms": "tier4 = {kind: config, config: config/mod_config.tier4.json}, PAIRED tech twin tech_tree_options.tier4.json. -DryRun PASSED lint + negative-goods + solvency 66/66 + mod checks + preflight x2. Frozen sha256 68117EFF3AF4ADDA880CBDBC9DA4E01BFF73DC0782DE392E363AF3CF95F91355. L10 freeze: no edits to build.ps1, telemetry_lib.ps1 or any config while this runs.",
+  "_delta": "vs 20260829_212316_tier4-n3 (the SAME book at flat 0.26 margins): the design margin ladder rises 0.26 -> 0.41 -> 0.55 -> 0.70 across the four rungs. VERIFIED landed: median frontier margin in its own era reads 26/41/55/70. e0 stays at F92 measured vanilla-1836 manufacturing (26%), so the vanilla-anchored 1836 is preserved. Top rung matches solver2f proven 0.70 endpoint. Recipes re-solved and applied (--apply-solve, re-solve is a no-op); tech tree re-pegged. NOTHING ELSE CHANGED.",
+  "_predictions": "PRE-REGISTERED. (1) REALIZED MARGINS SEPARATE BY RUNG. The n=3 baseline measured e0 23.5% / e1 24.4% / e2 22.7% - flat, which is WHY below-best is 55%. The design ladder acts on the recipe output:input ratio, which is the only margin lever that survives flat prices. Confident in direction; magnitude unknown because the AI arbitrages profitable rungs by building them. (2) BELOW-BEST FALLS from 55.0% (baseline sd 3.63pp). This is the metric the change targets. (3) PRICES: the user hypothesis is that higher margins normalise through PRICE DEPRESSION, i.e. the extra profit is competed away by overbuilding and F94 gap narrows. THIS IS THE INTERESTING TEST - F94 measured actual/design at 1.6-4.6x at the frontier. No confident direction: the same AI that overbuilds also stops when margins vanish. (4) GDP: no confident direction. Leaner recipes raise value added per level, but the baseline is nearly deterministic (0.9% spread over 3 runs) which suggests a binding constraint that a margin change may not touch. (5) NO PREDICTION on peasants or wall clock.",
+  "_comparison": "PRIMARY: 20260829_212316_tier4-n3 (the same book, flat margins, n=3, spread 0.9% on GDP - an unusually tight baseline). SECONDARY: solver2f-n3 20260825_204213 (six rungs, rising 0.30->0.70). TERTIARY: vanilla n=16 20260821_131149.",
+  "_watch": "(1) SMOKE-CHECK AT 5 MINUTES on run 1: PM_TECH_REHAUL marker, game version, error.log filtered BY POSITION not by time, clock advancing, queue_mix read WITH the construction sector and GDP beside it (a short queue means it DRAINED). (2) the four restored industries workers vs the n=1 run - the direct read on the fix. (3) below-best share and the per-era build allocation together. (4) PMR_JE| firings. (5) peasant share trajectory, especially the 1875-1880 divergence point where the first x1.4 cost step binds. (6) K trajectory and the 1935 endpoint.",
+  "_cost": "3 runs x 100 in-game years, ~2h40 each, ~8h plus harvest.",
+  "_caveats": "n=1 by ruling. The baseline is n=3 with a 0.9% GDP spread, so a GDP move outside ~1% is readable, but below-best has sd 3.63pp there and needs a bigger move to be believed. KNOWN AND DELIBERATELY UNFIXED IN THIS ARM: automatic_weapons_manufacture is pegged behind stormtroopers (~2.7 countries/century), so arms/artillery/munition e3 stay DEAD CONTENT - kept dead so the comparison against the n=3 baseline is one-lever. Also unfixed: the investment-pool hoard in small countries (64 countries hold 57% of world pool on 4.1% of world GDP) - measured NOT to confound the aggregates.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "Identical to canon-n7, aival, the solver2 family, the F79 vanilla baseline and the tier4 n=1 run - what keeps the sessions comparable."
+  },
+  "setups": {
+    "tier4": {
+      "kind": "config",
+      "config": "config/mod_config.tier4.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    }
+  ]
+}

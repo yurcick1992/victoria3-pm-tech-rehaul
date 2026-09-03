@@ -43,7 +43,7 @@ const rat = (a, b) => b ? (a / b).toFixed(2) + '×' : '—';
 // ---------------------------------------------------------------- ladder ----
 const cfg = JSON.parse(readFileSync(argOf('--config', 'config/mod_config.json'), 'utf8'));
 const KEY2 = {};
-for (const ind of cfg.industries || [])
+for (const ind of (cfg.industries || []).filter(i => !i.disabled))   // a disabled industry's rung-0 key IS the vanilla building (BUGS_AND_FIXES 2026-09-03)
   (ind.tiers || []).forEach((t, i) => { if (t.key) KEY2[t.key] = { ind: ind.id, idx: i, era: t.era ?? 0, wm: +(t.workforce_mult ?? 1) }; });
 
 // ---------------------------------------------------------------- one run at YEAR ----

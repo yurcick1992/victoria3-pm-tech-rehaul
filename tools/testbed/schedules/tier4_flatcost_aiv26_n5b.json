@@ -1,0 +1,81 @@
+{
+  "schedule_version": 1,
+  "label": "tier4-flatcost-aiv26-n5b",
+  "_why": "THE FLAT-COST ARM, FIVE MORE RUNS AT THE IDENTICAL SETUP (user-ruled 2026-08-31), to be POOLED with the two of 20260831_120102 for n=7. The pair split 1.66x and 0.94x of vanilla GDP - a 1.76x within-arm spread against the baseline n=4 spread of 1.30x and vanilla n=16 of 1.41x - so the arm is WIDER than either comparator and n=2 cannot locate its centre. These five are for the centre, and for a full normalised ledger report at n=7.",
+  "_arms": "tier4 = {kind: config, config: config/mod_config.tier4.json}, PAIRED tech twin tech_tree_options.tier4.json. -DryRun PASSED lint + negative-goods + solvency 62/62 + TECH CONTENT (193 techs, 0 orphans, 0 duplicate gates) + mod checks + preflight x2. Frozen sha256 A80105162CF6356DDA14E728625B80AF0C8C41B727F6A8337D99585341A1225B. Reproduce the solve with: MOD_CONFIG=config/mod_config.tier4.json INV_IO_CAP=6 INV_MARGINS=0.26,0.41,0.55,0.70 INV_ITERS=1500 node tools/era_inverse.mjs --write. L10 freeze while this runs.",
+  "_delta": "NOTHING. Byte-identical setup to 20260831_120102: same config/mod_config.tier4.json (mtime predates that batch), same build.ps1, same tech tree twin. The queued Break-even rename is deliberately NOT applied until this batch ends, because a loc change would make these five a different build from the first two and break the pooling.",
+  "_predictions": [
+    "P1 STATED BEFORE THE RUN. The n=7 median lands between 0.9x and 1.4x vanilla GDP. Run 1 of the pair (1.66x) is expected to sit at or near the TOP of the seven, not at the centre - it was one draw from a wide distribution, and the 6.4-sigma reading computed against VANILLA sd was the wrong denominator.",
+    "P2 The depeasantation result is expected to HOLD in all five: peasant share well under the 1.92-ladder arm 50.2%, and at or below vanilla 31.0%. That held in both runs of the pair (20.7% and 32.5%) and is the arm’s most reproducible effect so far.",
+    "P3 The within-arm GDP spread is expected to stay WIDE - wider than vanilla’s 1.41x. If it narrows to vanilla-like at n=7, the pair’s spread was itself a small-sample artifact and P1’s reasoning was wrong.",
+    "P4 NOT PREDICTED: whether below-best build share improves. Flat cost removes the cost penalty for climbing, which should help, but the last cost lever moved GDP without moving the price path (F94) and this one may do the same."
+  ],
+  "_comparison": "PRIMARY: pooled with 20260831_120102_tier4-flatcost-aiv26-n2b for n=7. SECONDARY: 20260830_191950_tier4-vanilla-ladder-n4 (the 1.92 cost ladder, n=4) and the n=16 vanilla baseline 20260821_131149. ⚠ Against the n=4 baseline THREE things differ - flat cost, ai_value 750x2.6^era, and the corrected 1836 start (the baseline was missing 23 tooling e1 levels, 11 of them Russia’s).",
+  "_watch": "(1) SMOKE-CHECK AT 5 MINUTES on run 1: PM_TECH_REHAUL marker, game version, error.log filtered BY POSITION not by time, clock advancing, queue_mix read WITH the construction sector and GDP beside it (a short queue means it DRAINED). (2) the four restored industries workers vs the n=1 run - the direct read on the fix. (3) below-best share and the per-era build allocation together. (4) PMR_JE| firings. (5) peasant share trajectory, especially the 1875-1880 divergence point where the first x1.4 cost step binds. (6) K trajectory and the 1935 endpoint.",
+  "_cost": "5 runs x 1836->1936. The pair ran 189.5 and 142.0 min, so ~14h wall clock, plus ~7s of build per run.",
+  "_caveats": "n=5 here, n=7 pooled. Three levers still separate this arm from the n=4 baseline - no single-dial attribution. The pooled n=7 is what the full normalised ledger report will be built on.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "Identical to canon-n7, aival, the solver2 family, the F79 vanilla baseline and the tier4 n=1 run - what keeps the sessions comparable."
+  },
+  "setups": {
+    "tier4": {
+      "kind": "config",
+      "config": "config/mod_config.tier4.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    }
+  ]
+}

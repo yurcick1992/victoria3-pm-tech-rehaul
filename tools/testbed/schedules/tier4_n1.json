@@ -1,0 +1,60 @@
+{
+  "schedule_version": 1,
+  "label": "tier4-n1",
+  "_why": "THE FOUR-RUNG BATTLE TEST, n=1 (user-ruled 2026-08-29: 'let's go with n=1 initially, and then we'll decide on how canonical this becomes'). ONE MEANINGFUL CHANGE — the research journal entries are made significantly less productive — and four accommodations that exist so it can be measured. BALANCE_FRAMEWORK §10.66-10.67. RELAUNCH: the first launch (session 20260829_151749) was stopped at 4 minutes by its own smoke check - see that session VERDICT.md.",
+  "_arms": "tier4 = {kind: config, config: config/mod_config.tier4.json}, PAIRED tech twin tech_tree_options.tier4.json (L20 PASS; -DryRun PASSED all linters incl. solvency 66/66). Frozen sha256 D2E82B887DD1E6D38A02F9596C2A7A5358C6208F45210A669E2EF6FB7BA1F9B1. L10 freeze: no edits to build.ps1, telemetry_lib.ps1 or any config while this runs.",
+  "_delta": "vs the canonical (=solver2f, six rungs): (1) JEs LESS PRODUCTIVE — workforce thresholds 30k/120k/480k (x4) against the canonical 15k/45k/135k/405k, and six stages at grant_fraction 0.25 in place of three at 0.5, i.e. twice the firings for the same 1.5x era-cost total. (2) FOUR rungs on four eras 1836/1875/1905/1940, 66 tier buildings over 18 industries against 105 over 22. (3) port, shipyard, shipyard_steam and railway handed back to VANILLA. (4) flat +26% design margin (F92's measured vanilla-1836 manufacturing figure) in place of the rising 0.30->0.70 ladder. (5) building_cost = each industry's vanilla required_construction x 1.4^era in place of the flat vanilla book. (6) the tech tree adds NINE technologies in place of 42, five of them shared between industries.",
+  "_predictions": "PRE-REGISTERED. Directions only where the mechanism is drawn; magnitudes are NOT predicted, because every one of them runs through the K -> GDP -> investment -> construction loop (the standing no-ceteris-paribus rule). (1) TECHNOLOGIES HELD at 1935 BELOW the canonical arm — two independent cuts, harder JE bars and 33 fewer added technologies to research. Confident in direction, no magnitude. (2) GDP at 1935 BELOW canonical: margins fall from up to +70% to a flat +26% and frontier build cost rises 2.2x, so less K forms per pound (F88's GDP = a + b.K). Moderately confident in direction. (3) BELOW-BEST BUILD SHARE (F75) IMPROVES — but this is CONFOUNDED and must not be read as a behavioural win on its own: with four rungs instead of six there are mechanically fewer rungs to build below, so the metric moves for a structural reason as well as any real displacement. Read it beside the per-era build allocation, not alone. (4) PEASANTS: no prediction — depeasantation runs through employment per level and the count controller in ways this change pushes both directions. (5) PERFORMANCE: no prediction on raw wall clock; the pop-matched reading is the only one that counts and n=1 may not overlap enough bins to answer it at all.",
+  "_comparison": "PRIMARY: solver2f-n3 (= the canonical book, 20260825_204213). SECONDARY: the pinned vanilla baseline 20260813_083557. WARNING: different nights, so absolute figures do not travel between sessions - ratios do.",
+  "_watch": "(1) SMOKE-CHECK AT 5 MINUTES: PM_TECH_REHAUL marker in debug.log, game version match, error.log filtered to this run's window, clock advancing, and queue_mix on the first save summary. (2) research: technologies held at each dump date vs canonical - the ONE meaningful change. (3) PMR_JE| firings in debug.log: the count is the direct read on 'less productive', and it should fall sharply. (4) the obsolescence read: below-best share AND the per-era build allocation together. (5) K trajectory and the 1935 endpoint. (6) queue_mix per major - the four-rung book has never been played, so a runaway family would be new.",
+  "_cost": "1 run x 100 in-game years, ~2h40 plus harvest.",
+  "_caveats": "n=1 by ruling: direction and mechanism only, NO median claims and no arm-separation claims - the ensemble spread on GDP is ~20% at n=1. SIX changes ship together, so nothing here attributes an outcome to any single one; this run says whether the whole configuration is playable and roughly where it lands, not which dial did it. The four-rung book has never been played at all, so a failure may be a defect rather than a design result.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "The twelve dates match canon-n7, aival, aival2, the solver2 family and the F79 vanilla baseline exactly - what keeps the sessions comparable."
+  },
+  "setups": {
+    "tier4": {
+      "kind": "config",
+      "config": "config/mod_config.tier4.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    }
+  ]
+}

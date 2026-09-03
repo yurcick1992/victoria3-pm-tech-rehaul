@@ -5,14 +5,37 @@
 import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
-const cfg = JSON.parse(readFileSync('config/mod_config.canon_n7.json', 'utf8'));
+// ⭐⭐ ERA-COUNT AGNOSTIC (2026-08-31). The ledger serves TWO semi-canonical books now — the six-rung
+//   canonical one and the four-rung vanilla-ladder arm — so nothing here may assume six eras or a
+//   particular config. The arm's OWN config comes in on `--config`; the era count is derived from it.
+//   ⚠ Hardcoding `config/mod_config.canon_n7.json` and `[0,0,0,0,0,0]` produced a report claiming
+//   `topEra: 5` for a book whose top rung is 3, with two empty era buckets and every tier4-only
+//   building unresolved. A panel that is wrong is worse than one that is absent.
+const CFGP = (() => { const i = process.argv.indexOf('--config'); return i > 0 && process.argv[i+1] ? process.argv[i+1] : 'config/mod_config.canon_n7.json'; })();
+const cfg = JSON.parse(readFileSync(CFGP, 'utf8'));
+// the era count IS the config's, never a literal
+const NERA = Math.max(...cfg.industries.filter(i => !i.disabled).flatMap(i => (i.tiers||[]).map(t => t.era ?? 0))) + 1;
+const ERAS = Array.from({length: NERA}, (_, i) => i);
 const tier = {};
-for (const ind of cfg.industries || [])
+for (const ind of (cfg.industries || []).filter(i => !i.disabled))   // ⚠ a DISABLED industry keeps its
+  //   canonical era (4, 5) in the config even though the arm never emits it; including it let a
+  //   disabled port/railway rung set topEra above the book's own top rung.
   for (const t of ind.tiers || [])
     tier[t.key] = { era: t.era ?? 0, cost: (t.building_cost ?? ind.required_construction ?? 0), ind: ind.id };
 const PPP = 720;
 const SES = 'tools/testbed/sessions';
-const RUNS = [1,2,3,4,5,6].map(i => `20260818_221216_canon-n7/run00${i}_canonfull`);
+// ⚠⚠ THE RUN LIST WAS HARDCODED TO canon-n7 WHILE THE CONFIG CAME IN ON --config (fixed 2026-09-01).
+//   The half-fix is the dangerous shape: the caller passes --mod, the tool ignores it, and the output
+//   looks like this batch because the CONFIG is this batch’s. It reported "frontier e4" for a book
+//   whose top rung is e3. Same class as fill_consts’ hardcode (2026-08-31) — when a tool is
+//   parameterised, sweep it for EVERY hardcoded session, not just the one that prompted the change.
+const RUNS = (() => {
+  const i = process.argv.indexOf('--mod');
+  if (i > 0 && process.argv[i+1]) return process.argv[i+1].split(',').map(s => s.trim()).filter(Boolean);
+  throw new Error('fill_payback: --mod <sess/run[,...]> is REQUIRED. It used to default to canon-n7 '
+    + 'while taking the arm’s config on --config, so a four-rung book was scored against six-rung '
+    + 'SUMMARIES and the report named a frontier rung (e4) the book does not contain.');
+})();
 const YEARS = [1840,1860,1880,1900,1920,1935];
 const med = a => { const s=[...a].sort((x,y)=>x-y); const m=s.length>>1; return s.length%2?s[m]:(s[m-1]+s[m])/2; };
 const out = {};

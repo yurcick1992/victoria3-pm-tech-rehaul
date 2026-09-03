@@ -1,0 +1,72 @@
+{
+  "schedule_version": 1,
+  "label": "tier4-vanilla-ladder-n4",
+  "_why": "THE VANILLA-LADDER REBUILD, n=4 (user-ruled 2026-08-30). Rungs are now VANILLA PRODUCTION METHODS, tiers are ABSOLUTE calendar bands, the cost book is three vanilla-anchored ladders fitted to vanilla payback, and the JEs are scoped to technologies that gate a tiered rung. Supersedes every earlier tier4 arm. RELAUNCH: the first launch (20260830_191119) was stopped at ~1840 by its own smoke check - invented rungs inherited their source tier pm_key/pmg_key, so 8 PMs and 8 PMGs were emitted twice and the engine silently DROPPED one of each, leaving those tier buildings with no main production method. Fixed in the generator + a hard duplicate assertion; see that session VERDICT.md.",
+  "_arms": "tier4 = {kind: config, config: config/mod_config.tier4.json}, PAIRED tech twin tech_tree_options.tier4.json. -DryRun PASSED lint + negative-goods + solvency 62/62 + TECH CONTENT (193 techs, 0 orphans, 0 duplicate gates) + mod checks + preflight x2. Frozen sha256 A80105162CF6356DDA14E728625B80AF0C8C41B727F6A8337D99585341A1225B. Reproduce the solve with: MOD_CONFIG=config/mod_config.tier4.json INV_IO_CAP=6 INV_MARGINS=0.26,0.41,0.55,0.70 INV_ITERS=1500 node tools/era_inverse.mjs --write. L10 freeze while this runs.",
+  "_delta": "vs the previous tier4 arms, EVERYTHING structural changed. (1) LADDER FROM VANILLA: each rung IS a vanilla production method taken in vanilla order from the anchor building pmg_base group, keeping its key as vanilla_pm and TAKING ITS OWN METHOD GATE - which is what makes orphaned technologies structurally impossible. 62 buildings over 17 industries; 9 industries are 1:1 with vanilla. (2) ABSOLUTE TIERS: a rung tier is its commercial-adoption year (t0 1700-1830, t1 1830-1880, t2 1880-1915, t3 1915-1940), so late industries START LATE - automotive t2/t3, fertilizer/munition/synthetics/electrics t1+. (3) MODERN TOP RUNGS restored for 12 industries that stopped 25+ years short of 1940 (furniture ended 1871, arms 1886); 14 technologies minted. (4) COST: three vanilla-anchored ladders (600/800/400 at t0) x 1.92 per tier, fitted by minimising mean |log(payback/22.1y)| against vanilla manufacturing payback - 12 values, no bespoke cost. (5) ai_value 1000/2500/6250/15625, ERA-keyed. (6) LONG-CONSTRUCTION THRESHOLDS 320/480 (8x vanilla 40/60) so the x7.1 cost ladder does not trip the AI malus. (7) JE SCOPE: only technologies gating a tiered rung - 40 technologies, 120 journal entries (was 91/273). (8) POWER handed to vanilla with pm_early_power_plant stripped via a new PMG-ownership path. (9) margins 0.26/0.41/0.55/0.70 at a 1:6 lean floor.",
+  "_predictions": "PRE-REGISTERED. (1) NO ORPHANED-TECH or DEAD-CONTENT failures: every rung gate is vanilla or minted-and-used, enforced by lint_tech_content against the emitted mod. Near-certain, it is a build-time invariant. (2) THE NEW ECONOMY IS BUILDABLE: automotive/synthetics/electrics now start at their real dates on their own vanilla gates rather than behind a mis-pegged technology, so the 0.06-0.54x worker collapse of the n=1 arms should not recur. Confident in direction. (3) BUILD CHOICE: no confident direction. Two prior arms moved margins and ai_value by large amounts and moved the capacity mix by ~1pp; this arm changes the LADDER ITSELF, so below-best is not comparable to them like-for-like - the rung count and the tier meaning both changed. (4) PAYBACK should land near vanilla manufacturing (22.1y) by construction; the check is whether the AI behaves differently now that the frontier is genuinely expensive (t3 heavy 5660 against vanilla 800). (5) PRICES: still no confident direction - F94 stands unrefuted and nothing here targets it. (6) GDP: no prediction; too much moved at once.",
+  "_comparison": "PRIMARY: 20260829_212316_tier4-n3 (four-rung, rung-index tiers, flat margins) and 20260830_124844 (rising margins). SECONDARY: solver2f-n3 20260825_204213 (canonical six-rung). TERTIARY: vanilla n=16 20260821_131149. WARNING: the ladder itself changed, so per-rung comparisons against earlier tier4 arms are NOT like-for-like; aggregates are.",
+  "_watch": "(1) SMOKE-CHECK AT 5 MINUTES on run 1: PM_TECH_REHAUL marker, game version, error.log filtered BY POSITION not by time, clock advancing, queue_mix read WITH the construction sector and GDP beside it (a short queue means it DRAINED). (2) the four restored industries workers vs the n=1 run - the direct read on the fix. (3) below-best share and the per-era build allocation together. (4) PMR_JE| firings. (5) peasant share trajectory, especially the 1875-1880 divergence point where the first x1.4 cost step binds. (6) K trajectory and the 1935 endpoint.",
+  "_cost": "4 runs x 100 in-game years, ~2h40 each, ~10.5h plus harvest.",
+  "_caveats": "n=4. NINE structural changes ship together - nothing here attributes an outcome to any single one. The tier convention changed (absolute bands, not rung index), so rung-indexed metrics from earlier tier4 sessions are not comparable. KNOWN AND UNFIXED: F94 (prices do not fall) is untouched; the investment-pool concentration in GBR is untouched; --refresh-presets clobbers ui/presets.js (tooling bug, no effect on the arm).",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "Identical to canon-n7, aival, the solver2 family, the F79 vanilla baseline and the tier4 n=1 run - what keeps the sessions comparable."
+  },
+  "setups": {
+    "tier4": {
+      "kind": "config",
+      "config": "config/mod_config.tier4.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    }
+  ]
+}

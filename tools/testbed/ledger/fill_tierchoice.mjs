@@ -24,7 +24,7 @@ const SESSION = argOf('--session', null), CFG = argOf('--config', null);
 if (!OUT || !SESSION || !CFG) { console.error('usage: fill_tierchoice.mjs <outDir> --session <stamp> --config <path>'); process.exit(1); }
 
 const run = tool => execFileSync(process.execPath,
-  [join('tools/testbed/ledger', tool), '--session', SESSION, '--config', CFG], { encoding: 'utf8', maxBuffer: 1 << 26 });
+  [join('tools/testbed/ledger', tool), '--session', SESSION, '--config', CFG, ...(argOf('--setup', null) ? ['--setup', argOf('--setup', null)] : [])], { encoding: 'utf8', maxBuffer: 1 << 26 });
 const grab = (text, re, what) => {
   const m = text.match(re);
   if (!m) { console.error(`PARSE MISS (${what}): ${re}`); process.exit(1); }

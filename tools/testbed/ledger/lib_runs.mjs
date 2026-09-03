@@ -33,7 +33,23 @@ const reached = (got, want) => {
   return true;
 };
 
+// ⭐ POOLING TWO SESSIONS OF ONE ARM. `session` may be a COMMA-SEPARATED list, in which case each is
+//   walked by the SAME rule and the results concatenate. This exists because a batch is sometimes
+//   split across nights — the flat-cost arm ran n=2 and then n=5 at a byte-identical setup, and the
+//   two only answer the question TOGETHER.
+// ⚠⚠ POOLING IS ONLY LEGITIMATE WHEN THE SETUP IS IDENTICAL. Two sessions built from different
+//   configs are two arms, and folding them is the same error the multi-arm guard below refuses —
+//   it just cannot be detected from the folder names. The CALLER must have checked; state it in the
+//   schedule’s _why, as 20260831_192428 does ("byte-identical setup ... mtime predates that batch").
+export function usableRunsPooled(sesRoot, sessions, setup = '') {
+  const list = String(sessions).split(',').map(s => s.trim()).filter(Boolean);
+  const runs = [], dropped = [];
+  for (const s of list) { const r = usableRuns(sesRoot, s, setup); runs.push(...r.runs); dropped.push(...r.dropped); }
+  return { runs, dropped };
+}
+
 export function usableRuns(sesRoot, session, setup = '') {
+  if (String(session).includes(',')) return usableRunsPooled(sesRoot, session, setup);
   const root = join(sesRoot, session);
   if (!existsSync(root)) throw new Error(`no such session: ${root}`);
   const all = readdirSync(root).filter(x => /^run\d+_/.test(x)).sort();

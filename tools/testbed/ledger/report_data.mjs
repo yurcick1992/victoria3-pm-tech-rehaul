@@ -17,6 +17,7 @@ const vanCost = requiredConstruction();
 const A = { power: 260, port: 260, art_academy: 260, food: 390, textile: 390, furniture: 390, glass: 390, paper: 390, shipyard_steam: 390, tooling: 390, shipyard: 390, arms: 390, artillery: 390, railway: 520, fertilizer: 520, explosives: 520, steel: 520, motor: 520, automotive: 520, munition: 520, synthetics: 520, electrics: 520 };
 const tierEra = {}, tierCost = {}, indTiers = {};
 for (const ind of cfg.industries) {
+  if (ind.disabled) continue;   // ⚠ a DISABLED industry (port/shipyard/railway/power on the four-rung books) keeps its tiers in the config and its rung-0 KEY IS THE VANILLA BUILDING — counting it put Britain's shipyards and ports into "e0" (BUGS_AND_FIXES 2026-09-03)
   indTiers[ind.id] = { good: ind.output_good, tiers: [] };
   for (const t of ind.tiers || []) {
     tierEra[t.key] = t.era; tierCost[t.key] = CFG_GIVEN ? t.building_cost : A[ind.id];

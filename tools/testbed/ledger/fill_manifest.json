@@ -291,7 +291,7 @@
   "staleness": {
     "_why": "A report that still names a PREVIOUS batch is the failure that prompted this file. These strings must NOT appear in a freshly filled report; add each retired session id and arm label as it is superseded.",
     "forbidden": [
-      "flatcost",
+      "flatcost-n1",
       "run001_flatcost",
       "20260815_153825",
       "canon-n2",

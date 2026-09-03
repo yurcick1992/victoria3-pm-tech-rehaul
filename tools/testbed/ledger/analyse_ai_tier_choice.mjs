@@ -41,7 +41,8 @@ const SES = 'tools/testbed/sessions';
 const SESSION = argOf('--session', '20260818_221216_canon-n7');
 const CFGPATH = argOf('--config', SESSION === '20260818_221216_canon-n7'
   ? 'config/mod_config.canon_n7.json' : 'config/mod_config.json');
-const { runs: USABLE, dropped: DROPPED } = usableRuns(SES, SESSION);
+const SETUP = argOf('--setup', null);   // a multi-arm session must name its arm (lib_runs refuses to fold two arms into one n)
+const { runs: USABLE, dropped: DROPPED } = usableRuns(SES, SESSION, SETUP);
 const RUNS = USABLE.slice(0, +argOf('--runs', '99'));
 if (!RUNS.length) { console.error(`no usable runs under ${join(SES, SESSION)}`); process.exit(1); }
 const ABSORB = 0.267;          // dQ/Q that costs 20 pp of price
@@ -51,6 +52,14 @@ const ANNEX_JUMP = 1.25;       // level growth in one year that means conquest, 
 const cfg = JSON.parse(readFileSync(CFGPATH, 'utf8'));
 const IND = {};                // industry -> [{key, tier, era, tech, good, out}] ordered
 for (const ind of cfg.industries || []) {
+  // ⚠⚠ SKIP A DISABLED INDUSTRY. Its rung 0 KEY IS THE VANILLA BUILDING KEY, so leaving it in the map
+  //   makes every VANILLA building of that type count as one of our tiers — with the canonical book's
+  //   `workforce_mult` (0.1 for graded ports) attached. On the four-rung arm, which hands ports,
+  //   shipyards, railway and power back to vanilla, that silently pulled 3,443 vanilla port levels into
+  //   the below-best denominator and weighted them at a tenth, so "raw", "unit-weighted" and
+  //   "excluding ports" all disagreed on a book that has no tiered ports at all (user-spotted
+  //   2026-08-31). Nothing failed; the numbers were simply about a different economy.
+  if (ind.disabled) continue;
   const tiers = (ind.tiers || []).map((t, i) => ({
     key: t.key, idx: i, era: t.era ?? 0, tech: t.tech,
     good: t.output_good || ind.output_good,

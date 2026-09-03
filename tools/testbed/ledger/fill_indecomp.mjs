@@ -27,6 +27,7 @@ const cfg = JSON.parse(readFileSync(argOf('--config', 'config/mod_config.json'),
 
 const MODIND = {}, VANIND = {};              // building key -> industry id, per arm's ladder
 for (const ind of cfg.industries || []) {
+  if (ind.disabled) continue;   // ⚠ a DISABLED industry (port/shipyard/railway/power on the four-rung books) keeps its tiers in the config and its rung-0 KEY IS THE VANILLA BUILDING — counting it put Britain's shipyards and ports into "e0" (BUGS_AND_FIXES 2026-09-03)
   const tiers = (ind.tiers || []).filter(t => t.key);
   for (const t of tiers) MODIND[t.key] = ind.id;
   if (tiers.length) VANIND[tiers[0].key] = ind.id;
@@ -36,6 +37,9 @@ const BROAD = [
   ['agriculture', /_farm$|_plantation$|livestock_ranch|vineyard/],
   ['subsistence', /subsistence/],
   ['urban & trade', /urban_center|trade_center/],
+  // the industries a four-rung book hands BACK to vanilla (disabled: true — their keys are the vanilla buildings); on the
+  // six-rung canon these keys are tiered and MODIND claims them first, so this bucket is empty there (L27, 2026-09-03)
+  ['infrastructure & shipping (vanilla)', /^building_(port|railway|shipyard|power_plant)$/],
   ['state & military', /government_administration|university|construction_sector|barrack|naval_base|conscription_center|port_military|logistics_center|naval_fortification|naval_administration/],
   ['ownership & companies', /manor_house|financial_district|company_|_estate$/],
   ['monuments & canals', /_canal$|skyscraper|cathedral|white_house|capitol_hill|mosque|hagia|forbidden_city|statue|big_ben|eiffel|vatican|kremlin|mausoleum|taj_mahal|angkor|dojo|shwedagon/],
@@ -74,7 +78,17 @@ function walk(runDir, INDOF) {
   }
   return out;
 }
-const mod = walk(argOf('--mod', ''), MODIND);
+// --mod takes a comma list like --van (one run used to be assumed, and a two-run list silently walked nothing)
+const modsRaw = argOf('--mod', '').split(',').filter(Boolean).map(r => walk(r, MODIND));
+const mod = {};
+for (const y of YEARS) {
+  const rows = modsRaw.map(w => w[y]).filter(Boolean); if (!rows.length) continue;
+  const meanM = objs => { const o = {}; const ks = new Set(); objs.forEach(x => Object.keys(x).forEach(k => ks.add(k)));
+    for (const k of ks) o[k] = +(objs.reduce((s, x) => s + (x[k] || 0), 0) / rows.length).toFixed(0); return o; };
+  const tags = {}; const tk = new Set(); rows.forEach(r => Object.keys(r.tags || {}).forEach(k => tk.add(k)));
+  for (const k of tk) { const tr = rows.map(r => (r.tags || {})[k]).filter(Boolean); tags[k] = { ind: meanM(tr.map(x => x.ind)), broad: meanM(tr.map(x => x.broad)) }; }
+  mod[y] = { ind: meanM(rows.map(r => r.ind)), broad: meanM(rows.map(r => r.broad)), tags };
+}
 const vansRaw = argOf('--van', '').split(',').filter(Boolean).map(r => walk(r, VANIND));
 // vanilla: element-wise mean across runs
 const van = {};

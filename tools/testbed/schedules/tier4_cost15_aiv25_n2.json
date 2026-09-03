@@ -1,0 +1,70 @@
+{
+  "schedule_version": 1,
+  "label": "tier4-cost15-aiv25-n2",
+  "_why": "THE 2.5x OUTPUT STEP BOOK WITH COST AND ai_value RAISED BACK (user-ruled 2026-09-01). Four changes from the n=7 flat-cost arm 20260831_120102+192428: (1) building_cost vanilla_e0 x 1.5^era (600/900/1350/2030 regular) in place of flat; (2) ai_value 750 x 2.5^era = 750/1875/4688/11719; (3) AI long-construction thresholds 160/240, 4x vanilla 40/60, so the cost ladder does not push the top rung into the penalty band; (4) the whole 2.5-step + scaled-secondaries + era-mapping work of 2026-09-01, which the n=7 arm predates entirely.",
+  "_arms": "tier4 = {kind: config, config: config/mod_config.tier4.json}, PAIRED tech twin tech_tree_options.tier4.json. -DryRun PASSED lint + negative-goods + solvency 62/62 + TECH CONTENT (193 techs, 0 orphans, 0 duplicate gates) + mod checks + preflight x2. Frozen sha256 A80105162CF6356DDA14E728625B80AF0C8C41B727F6A8337D99585341A1225B. Reproduce the solve with: MOD_CONFIG=config/mod_config.tier4.json INV_IO_CAP=6 INV_MARGINS=0.26,0.41,0.55,0.70 INV_ITERS=1500 node tools/era_inverse.mjs --write. L10 freeze while this runs.",
+  "_delta": "vs the n=7 flat-cost arm: output step 1.965 -> 2.5 per rung (x7.59 -> x15.6 end to end); per-tier SCALED SECONDARY methods (52 minted across 24 buildings) where they were vanilla-flat; secondaries START at the era maximum except distillery/aeroplanes/tanks; era_game_era [1,3,4,5] so game-era-4/5 methods (radios, rayon, aeroplanes, tanks) are reachable at all; building_cost flat -> 1.5^era; ai_value 750x2.6 -> 750x2.5; thresholds 120/180 -> 160/240.",
+  "_predictions": [
+    "P1 STATED BEFORE THE RUN. GDP falls against the flat-cost n=7 median of 1.39x vanilla, because the frontier is now 3.4x dearer to build end to end. Magnitude NOT predicted - the last cost change moved GDP by more than the cost ratio alone implies, through the capital/GDP loop (F78).",
+    "P2 Below-best build share should stay at or below the flat arm 25.2%: the ai_value spread is x15.6 end to end and the frontier is far cheaper to RUN than before, even though it is dearer to build.",
+    "P3 The four analytic faults (food loss at 1940; textile, glass, furniture stale) are recipe-book properties and should NOT move with cost or ai_value. If they do, something reads building_cost that should not.",
+    "P4 NOT PREDICTED: whether radios and tanks stay on design in game. They clear on design in the SOLVE, but the solve sizes to clear markets and never consults profit - the game does the opposite, so a good produced only by a secondary may still starve.",
+    "P5 RISK: the solve has NO profitability constraint on counts (unlike era_scenarios 12 shrink rules), so every scenario figure describes a world where nothing goes out of business. Expect the game to disagree with the seeded scenarios more than the fault count suggests."
+  ],
+  "_comparison": "PRIMARY: the flat-cost n=7 (20260831_120102 + 20260831_192428), same four-rung family. SECONDARY: the n=16 vanilla baseline 20260821_131149. TERTIARY: 20260830_191950 (1.92 cost ladder, n=4). WARNING: different nights, and this arm changes SEVEN things against the n=7 - no single-dial attribution.",
+  "_watch": "(1) SMOKE-CHECK AT 5 MINUTES on run 1: PM_TECH_REHAUL marker, game version, error.log filtered BY POSITION not by time, clock advancing, queue_mix read WITH the construction sector and GDP beside it (a short queue means it DRAINED). (2) the four restored industries workers vs the n=1 run - the direct read on the fix. (3) below-best share and the per-era build allocation together. (4) PMR_JE| firings. (5) peasant share trajectory, especially the 1875-1880 divergence point where the first x1.4 cost step binds. (6) K trajectory and the 1935 endpoint.",
+  "_cost": "2 runs x 1836->1936, ~5h.",
+  "_caveats": "n=2. Seven changes move together. The solve behind this book is a FEASIBILITY solve with no loss-shrink, so its scenarios are not equilibria.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "Identical to canon-n7, aival, the solver2 family, the F79 vanilla baseline and the tier4 n=1 run - what keeps the sessions comparable."
+  },
+  "setups": {
+    "tier4": {
+      "kind": "config",
+      "config": "config/mod_config.tier4.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    }
+  ]
+}

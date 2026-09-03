@@ -49,7 +49,7 @@ const MAJORS = ['GBR', 'USA', 'FRA', 'NET', 'BEL', 'PRU', 'GER'];
 // our tiered set, with the rung index — F77's whole point is WHICH rung
 const cfg = JSON.parse(readFileSync(argOf('--config', 'config/mod_config.json'), 'utf8'));
 const TIER = {};
-for (const ind of cfg.industries || []) (ind.tiers || []).forEach((t, i) => {
+for (const ind of (cfg.industries || []).filter(i => !i.disabled)) (ind.tiers || []).forEach((t, i) => {   // L27: skip disabled industries
   if (t.key) TIER[t.key] = { ind: ind.id, idx: i, era: t.era ?? 0, n: (ind.tiers || []).length };
 });
 

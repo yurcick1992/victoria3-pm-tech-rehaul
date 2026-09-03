@@ -5,9 +5,16 @@ import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
 const SES = 'tools/testbed/sessions';
 const OUT = process.argv[2];
-const MOD = [1,2,3,4,5,6].map(i => `20260818_221216_canon-n7/run00${i}_canonfull`);
-const VAN = ['run001_vanilla','run003_vanilla','run005_vanilla','run007_vanilla'].map(r => '20260813_083557_vanilla-vs-mod-n4/' + r);
-const NB  = ['run002_mod','run006_mod'].map(r => '20260813_083557_vanilla-vs-mod-n4/' + r);
+// ⚠⚠ THESE WERE HARDCODED to canon-n7 and the RETIRED 20260813 vanilla baseline, so a fill for any
+//   other batch silently published canon-n7's numbers under the new batch's title — the exact failure
+//   fill_manifest.json exists to prevent, sitting inside the fill pipeline itself. Caught 2026-08-31
+//   when GDP_FLAT read 3562M at 1935 against the batch's own median of 2668M.
+//   Now: --mod / --van / --nb, comma-separated `session/run` lists, defaults preserved for continuity.
+const argOf = (n, d) => { const i = process.argv.indexOf(n); return i > 0 && process.argv[i+1] ? process.argv[i+1] : d; };
+const list = (v, d) => v ? v.split(',').map(x => x.trim()).filter(Boolean) : d;
+const MOD = list(argOf('--mod', null), [1,2,3,4,5,6].map(i => `20260818_221216_canon-n7/run00${i}_canonfull`));
+const VAN = list(argOf('--van', null), ['run001_vanilla','run003_vanilla','run005_vanilla','run007_vanilla'].map(r => '20260813_083557_vanilla-vs-mod-n4/' + r));
+const NB  = list(argOf('--nb',  null), ['run002_mod','run006_mod'].map(r => '20260813_083557_vanilla-vs-mod-n4/' + r));
 
 // ⚠⚠ CORRECTED 2026-08-20 (user-ruled). This used to derive government + military payrolls from the
 // STAFFING of government/university/military BUILDINGS. `staffing` in a save summary is a count of

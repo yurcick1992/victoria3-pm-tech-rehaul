@@ -111,6 +111,14 @@ and a renderer made to throw. Re-prove it if you change the checker.
 the template, prose in the token files (`lede/goals/incidents/next/footer.html`), numbers in a
 `fill_*.mjs`. If a paragraph names a year, a country, a run or a number, it is a TOKEN, not shell.
 
+## ⚠ Every industry loop SKIPS `disabled` industries (2026-09-03)
+
+On a four-rung book `port` / `shipyard` / `shipyard_steam` / `railway` / `power` carry `disabled: true`; their
+tiers stay in the config and their rung-0 KEY IS THE VANILLA BUILDING, so a tier map built without the filter counts
+Britain's vanilla shipyards and ports as "e0" (it put 0.8M of them into the ab3 ledger's British e0 series — BUGS_AND_FIXES
+2026-09-03). Every script here that walks `cfg.industries` for tiers now starts the loop with
+`if (ind.disabled) continue;`. Keep it that way in any new one.
+
 ## The `fill_*.mjs` scripts (added 2026-08-19, canon-n7)
 
 `report_data2.mjs` emits **none of `techsT`, `jeT` or `sector`**, and nothing computed the verdict
@@ -445,3 +453,28 @@ and nothing in the old code would have signalled that.
 
 **Nothing published needs retracting.** `canon-n7`'s shipped 0.86× / 1.00× stands to two significant
 figures under the corrected definition (0.855× / 1.011×).
+
+## Rendering a signed delta — `spd()` (2026-08-31)
+
+**A signed percentage must never carry a direction word of its own.** The perf panel printed
+`(pctTotal>=0?'+':'')+pctTotal.toFixed(1)+'% slower'`, which on a faster arm renders **`-11.8%
+slower`** — a double negative that reads as the exact opposite of the truth, in 34px type, as the
+section's headline number.
+
+`spd(x)` in `ledger_template.html` is the one renderer: **positive ⇒ `+X% slower`, negative ⇒
+`X% faster`** (unsigned, the word carries the sign), **|x| < 0.05 ⇒ `no change`**, non-finite ⇒ `—`.
+All four sites go through it — the verdict-table cell (total and per-unit) and both big numbers in
+the grade box. Use it for any new signed speed delta rather than re-deriving the sign inline.
+
+⚠ **The PILL says "faster" when the arm is faster.** The RAW TOTAL is the grade (user-ruled
+2026-08-31): a player waits through the total, and shrinking what the engine simulates is a
+legitimate way to lower it. An earlier pass hedged the pill to `no slowdown`, deferring to a CLAUDE.md
+reading that graded on the pop-matched figure; that reading is corrected and the template was right
+all along. The pop-matched number sits beside it as the **per-unit diagnostic** — it answers "is the
+engine dearer per unit of work?", not "did the batch pass?".
+
+⚠ **`fill_tokens.mjs` hardcodes `__HEALTH__`, and that is a staleness trap.** It carried
+`P −2.9% PASS` from an older batch and would have been republished under a later one had the out-dir
+`tokens.json` not overridden it — the same class as `fill_build_perf.mjs`'s provenance line. The
+literal is now an obviously-unfilled placeholder, so a missing override is *visible* rather than
+*believable*. **Put the real chip in the out-dir `tokens.json`.**

@@ -1,0 +1,68 @@
+{
+  "schedule_version": 1,
+  "label": "tier4-n3",
+  "_why": "THE FOUR-RUNG LADDER, RE-RUN AT n=3 WITH THE ai_value DEFECT FIXED (user-ruled 2026-08-29: \"fix with quadratic ai_values (e0=1000, e1=2000, e2=4000, e3=8000). And rerun n=3\"). Supersedes the n=1 session 20260829_152435, whose F93 result stands for the JE half and is confounded for the build/GDP half. BALANCE_FRAMEWORK 10.66-10.67.",
+  "_arms": "tier4 = {kind: config, config: config/mod_config.tier4.json}, PAIRED tech twin tech_tree_options.tier4.json (L20 PASS; -DryRun PASSED lint + negative-goods + solvency 66/66 + mod checks + preflight x2). Frozen sha256 F1894B230AAE0BF623214F87F3385876E86F181A1EF5BE7DBB46CB6104707ED6. L10 freeze: no edits to build.ps1, telemetry_lib.ps1 or any config while this runs.",
+  "_delta": "vs the canonical solver2f (six rungs): (1) JEs LESS PRODUCTIVE - workforce thresholds 30k/120k/480k (x4) and six stages at grant_fraction 0.25 in place of three at 0.5. (2) FOUR rungs on four eras 1836/1875/1905/1940, 66 tier buildings over 18 industries against 105 over 22. (3) port, shipyard, shipyard_steam, railway handed back to VANILLA. (4) flat +26% design margin (F92) in place of the rising 0.30->0.70 ladder. (5) building_cost = each vanilla required_construction x 1.4^era. (6) the tech tree adds NINE technologies in place of 42. (7) NEW THIS RUN: ai_value = 1000 x 2^ERA (1000/2000/4000/8000), ERA-keyed. The n=1 run shipped it RUNG-keyed - a bug - giving era 2 a 7.1x spread and handing automotive/power (7.1x) and synthetics/electrics (2.66x) a malus nobody designed. Also e0 rises 750->1000 = the engine default every untiered vanilla building carries, and the ladder flattens end-to-end from x18.9 to x8. ai_defines: all six investment-hoard NAI values carried from canonical, unchanged.",
+  "_predictions": "PRE-REGISTERED, directions only. (1) THE NEW ECONOMY RECOVERS: automotive/power/synthetics/electrics were at 0.06-0.54x canonical workers in the n=1 run and the malus that caused it is removed - this is the most direct consequence and the one I am most confident of. (2) GDP RISES above the n=1 run 3,815M; whether it reaches canonical 5,962M is OPEN, because the x1.4^era cost ladder is untouched and is the other candidate cause of that gap. (3) PEASANT SHARE FALLS below the n=1 run 44.7% world / 37.0% advanced-group, for the same reason - more buildable industries means more jobs. (4) BELOW-BEST BUILD SHARE: NO CONFIDENT DIRECTION, and two mechanisms oppose. The per-rung contrast FLATTENS (x2.663 -> x2.0), which weakens the within-industry incentive to climb and pushes the fault UP; but the four restored industries change the composition of what gets built at all, which could push either way. n=1 read 52.7% against canonical 39.0% (canonical sd 0.75pp). (5) THE JE RESULT REPLICATES: research subsidy ~0.28x and completions ~0.12x of canonical - ai_value has no path to research, so a large move here would indicate something I have not modelled. (6) No prediction on wall clock; the pop-matched reading is the only one that counts.",
+  "_comparison": "PRIMARY: solver2f-n3 (20260825_204213, canonical, n=3 - like-for-like on n). SECONDARY: the n=16 vanilla baseline 20260821_131149 (save_summary_version 8, so va_out is present and the vanilla productivity denominator is answerable). TERTIARY: the n=1 tier4 run 20260829_152435, for the ai_value fix specifically. WARNING: different nights - ratios travel, absolutes do not.",
+  "_watch": "(1) SMOKE-CHECK AT 5 MINUTES on run 1: PM_TECH_REHAUL marker, game version, error.log filtered BY POSITION not by time, clock advancing, queue_mix read WITH the construction sector and GDP beside it (a short queue means it DRAINED). (2) the four restored industries workers vs the n=1 run - the direct read on the fix. (3) below-best share and the per-era build allocation together. (4) PMR_JE| firings. (5) peasant share trajectory, especially the 1875-1880 divergence point where the first x1.4 cost step binds. (6) K trajectory and the 1935 endpoint.",
+  "_cost": "3 runs x 100 in-game years, ~2h40 each, ~8h plus harvest.",
+  "_caveats": "n=3 permits medians and a noise estimate but NOT strong arm separation on high-variance quantities - the canonical arm own GDP spread is ~20% at n=1 and its below-best sd is 0.75pp at n=3. SEVEN changes ship together, so nothing attributes an outcome to a single one; the ai_value fix is isolated only against the n=1 run, which differs in that one term. The cost ladder x1.4^era remains the leading untested suspect for any residual underbuilding.",
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "Identical to canon-n7, aival, the solver2 family, the F79 vanilla baseline and the tier4 n=1 run - what keeps the sessions comparable."
+  },
+  "setups": {
+    "tier4": {
+      "kind": "config",
+      "config": "config/mod_config.tier4.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "tier4",
+      "until": "1936.1.1"
+    }
+  ]
+}

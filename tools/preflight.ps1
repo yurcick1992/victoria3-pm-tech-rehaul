@@ -543,6 +543,51 @@ function Test-LmL24 {
     }
 }
 
+# ============================================================= L27 ====
+function Test-LmL27 {
+    <#
+      L27 - an analysis script walks cfg.industries for tiers WITHOUT skipping 'disabled' industries.
+
+      On a four-rung book port / shipyard / shipyard_steam / railway / power carry disabled: true: the industry
+      is handed back to vanilla, but its tiers stay in the config and its rung-0 KEY IS THE VANILLA BUILDING
+      (building_port, building_shipyard, building_railway). A tier map built without the filter therefore
+      counts Britain's vanilla shipyards and ports as "e0" - the ab3 growth-seeds ledger showed a British e0
+      series climbing 0.16M -> 0.83M while the real era-0 rungs fell 0.16M -> 0.09M (BUGS_AND_FIXES 2026-09-03).
+      Nine ledger scripts had the omission; nothing failed, the panel was simply wrong, and on the six-rung
+      canon (nothing disabled) it could never show.
+
+      DETECTOR. Static, repo-side, the L25 pattern: every industry loop in tools\testbed\**\*.mjs
+      (for (const x of <...>industries<...>) / .industries.forEach|map|filter|flatMap) must mention 'disabled'
+      on that line or within the next two. Sessions are skipped (frozen copies, never rewritten).
+    #>
+    $root = Join-Path $Repo 'tools\testbed'
+    if (-not (Test-Path $root)) { Add-Result 'L27' 'industry loop that keeps disabled industries' 'N/A' 'no tools\testbed'; return }
+    $bad = @(); $checked = 0; $loops = 0
+    foreach ($f in Get-ChildItem -Path $root -Recurse -File -Filter *.mjs) {
+        if ($f.FullName -match '\\sessions\\') { continue }
+        $lines = [System.IO.File]::ReadAllLines($f.FullName)
+        $hit = $false
+        for ($i = 0; $i -lt $lines.Count; $i++) {
+            $l = $lines[$i]
+            if ($l -notmatch 'for \(const \w+ of [^)]*industries' -and $l -notmatch '\.industries[^;]*\.(forEach|map|filter|flatMap)\(') { continue }
+            $hit = $true; $loops++
+            $win = $l
+            if ($i + 1 -lt $lines.Count) { $win += "`n" + $lines[$i + 1] }
+            if ($i + 2 -lt $lines.Count) { $win += "`n" + $lines[$i + 2] }
+            if ($win -notmatch 'disabled') { $bad += ('{0}:{1}' -f $f.FullName.Substring($Repo.Length + 1), ($i + 1)) }
+        }
+        if ($hit) { $checked++ }
+    }
+    if ($bad.Count -gt 0) {
+        Add-Result 'L27' 'industry loop that keeps disabled industries' 'FAIL' (
+            ("{0} industry loop(s) without a 'disabled' guard:`n        " -f $bad.Count) + ($bad -join "`n        ") +
+            "`n        a disabled industry's rung-0 key IS the vanilla building - start the loop with: if (ind.disabled) continue;")
+    } else {
+        Add-Result 'L27' 'industry loop that keeps disabled industries' 'PASS' `
+            ("{0} script(s) with industry loops, {1} loop(s), every one guarded" -f $checked, $loops)
+    }
+}
+
 # ============================================================= L25 ====
 function Test-LmL25 {
     <#
@@ -822,6 +867,84 @@ function Test-LmL17 {
     }
 }
 
+function Test-LmL26 {
+    <#
+      L26 - ONE RUN FOLDER HOLDING TWO CAMPAIGNS.
+
+      A crash-resume whose load FAILS starts a fresh 1836 game (verified: MODDING_NOTES). If that
+      fresh game then REACHES THE TARGET, run_observer's `if ($reached -or $timedOut) { break }` fires
+      BEFORE the resume-landing guard, so the guard is never consulted: meta.json records
+      `reached_ingame_date` = the target, `self_quit` = true, `abandoned_reason` = empty. The run looks
+      perfect. Its save_summaries hold TWO campaigns, and the wall clock is double.
+
+      Measured on run004 of 20260830_191950_tier4-vanilla-ladder-n4: CTD at 1931.1.13, every resume
+      attempt failed to reload a late save, and the run played 1836->1936 a SECOND time. 267 min
+      against 135-146 for its siblings; 195 summaries over 100 distinct in-game dates.
+
+      Nothing fails. Readers keyed on the DATE take the later campaign (coherent, by filename order);
+      readers that DIFF CONSECUTIVE FILES cross the seam once and diff 1931 against 1837. On that run
+      it cost nothing - measured, its below-best share reads 38.14% against a 36.84-38.38% spread
+      across its siblings - but that is a property of "levels removed are ignored", not of the reader
+      being safe.
+
+      The observer is fixed (the fresh-start abort now fires on the FIRST TICK of a resume, so such an
+      attempt can never reach the target). This entry is the ARTIFACT-side check, because a fix in the
+      generator is no evidence at all about a session already on disk.
+
+      SWEPT over all 74 sessions holding summaries when this was written: 5 hits, of which 4 are
+      already excluded by lib_runs/L17 or are the sub-year shape below. Only this batch counts one.
+
+      DETECTOR: read every provenance.date in filename order and classify each backward jump.
+    #>
+    if (-not $Session) { Add-Result 'L26' 'two campaigns in one run folder' 'N/A' 'no -Session given (this entry is post-run)'; return }
+    if (-not (Test-Path $Session)) { Add-Result 'L26' 'two campaigns in one run folder' 'FAIL' "no such session: $Session"; return }
+    $node = Get-Command node -ErrorAction SilentlyContinue
+    if (-not $node) { Add-Result 'L26' 'two campaigns in one run folder' 'N/A' 'node not on PATH (the summaries are gzipped JSON)'; return }
+    $bad = @(); $soft = @(); $checked = 0
+    foreach ($run in @(Get-ChildItem $Session -Directory)) {
+        $dir = Join-Path $run.FullName 'save_summaries'
+        if (-not (Test-Path $dir)) { continue }
+        $checked++
+        # Read through node: the summaries are gzipped and PowerShell has no streaming gunzip
+        # one-liner. It prints "<years>|<from> -> <to>" per backward jump, nothing when monotone.
+        $js = @'
+const fs=require('fs'),zlib=require('zlib'),path=require('path');
+const dir=process.argv[2];   // [0]=node [1]=this script
+const num=d=>{const p=String(d||'').split('.');return p.length<3?0:(+p[0])*10000+(+p[1])*100+(+p[2]);};
+let prev=null;
+for(const f of fs.readdirSync(dir).filter(x=>x.endsWith('.json.gz')&&!x.includes('.partial.')).sort()){
+  let d; try{ d=JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(dir,f)))).provenance.date; }catch{ continue; }
+  if(prev && num(d)<num(prev.d)) console.log(((num(prev.d)-num(d))/10000).toFixed(2)+'|'+prev.d+' -> '+d+' ('+f+')');
+  prev={d,f};
+}
+'@
+        $tmp = Join-Path $env:TEMP ("lm26_" + [guid]::NewGuid().ToString('N') + '.js')
+        Set-Content -LiteralPath $tmp -Value $js -Encoding utf8
+        try { $out = & node $tmp $dir 2>$null } finally { Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue }
+        foreach ($line in @($out | Where-Object { $_ })) {
+            # TWO SHAPES, and they are DIFFERENT DEFECTS - reporting them as one would put a doubled
+            # century and a filename-ordering wobble under the same headline:
+            #   > 2y  - a SECOND CAMPAIGN in the folder. This entry's subject. FAIL.
+            #   <= 2y - the ARCHIVER read several slots of the rotation ring in one pass, so
+            #           autosave_1.v3 (the OLDER save) sorts AFTER autosave.v3 by filename. ONE
+            #           campaign, a few summaries out of order. Small, real, separately caused. WARN.
+            $yrs = 0.0; $txt = $line
+            if ($line -match '^([0-9.]+)\|(.+)') { $yrs = [double]$Matches[1]; $txt = $Matches[2] }
+            $row = "$($run.Name): $txt [$yrs y]"
+            if ($yrs -gt 2) { $bad += $row } else { $soft += $row }
+        }
+    }
+    if ($checked -eq 0) { Add-Result 'L26' 'two campaigns in one run folder' 'N/A' 'no save_summaries in this session'; return }
+    if ($bad.Count) {
+        Add-Result 'L26' 'two campaigns in one run folder' 'FAIL' ("SECOND CAMPAIGN - backward jump over 2y in " + $bad.Count + " place(s): " + ($bad -join ' | '))
+    } elseif ($soft.Count) {
+        Add-Result 'L26' 'two campaigns in one run folder' 'WARN' ("one campaign, summaries OUT OF ORDER (archiver read the rotation ring in one pass) in " + $soft.Count + " place(s): " + ($soft -join ' | '))
+    } else {
+        Add-Result 'L26' 'two campaigns in one run folder' 'PASS' "$checked run(s), every summary series monotone in game date"
+    }
+}
+
+
 function Test-LmL12 {
     <#
       L12 - A SESSION WHOSE SAVES WERE REAPED BUT WHOSE SUMMARIES ARE NOT THERE.
@@ -985,9 +1108,11 @@ $CHECKS = @(
     @{ Id = 'L7'; Artifact = $true;  Fn = { Test-LmL7 } },
     @{ Id = 'L8'; Artifact = $false; Fn = { Test-LmL8 } },
     @{ Id = 'L9'; Artifact = $false; Fn = { Test-LmL9 } },
-    # L12 needs a finished SESSION, not a mod - it is the one post-run entry, and it reports N/A
+    # L12 needs a finished SESSION, not a mod - it and L26 are the two post-run entries, and both report N/A
     # (never FAIL) when no -Session is given, so it costs a build nothing.
     @{ Id = 'L12'; Artifact = $false; Fn = { Test-LmL12 } },
+    # L26 is the SECOND post-run entry, same N/A-without--Session rule as L12.
+    @{ Id = 'L26'; Artifact = $false; Fn = { Test-LmL26 } },
     @{ Id = 'L14'; Artifact = $true;  Fn = { Test-LmL14 } },
     @{ Id = 'L15'; Artifact = $true;  Fn = { Test-LmL15 } },
     @{ Id = 'L17'; Artifact = $false; Fn = { Test-LmL17 } },
@@ -999,6 +1124,7 @@ $CHECKS = @(
     # L25 reads the ANALYSIS SCRIPTS, not the mod, so it costs a build nothing and gates a batch
     # before anything is harvested — which is when a reader that can race the harvester matters.
     @{ Id = 'L25'; Artifact = $false; Fn = { Test-LmL25 } }
+    @{ Id = 'L27'; Artifact = $false; Fn = { Test-LmL27 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {

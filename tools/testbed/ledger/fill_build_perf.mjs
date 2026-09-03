@@ -22,7 +22,9 @@ for (const arm of ['van', 'mod']) {
   }
 }
 const PERF = {
-  source: 'canon-n7 (mod, n=6) vs the pinned vanilla baseline 20260813_083557 (n=4) — DIFFERENT NIGHTS',
+  // ⚠ DERIVED, never a literal. This line names the sessions compared; hardcoding it republished
+  //   canon-n7 provenance under every later batch. fill_verify catches it as a staleness hit.
+  source: (p.runs && p.runs.length ? [...new Set(p.runs.map(r => String(r.label||"").split("/")[0]))].join(" vs ") : "unknown") + " — DIFFERENT NIGHTS unless stated",
   runs: runs.map(r => ({ label: r.label.split('/').pop(), van: !!r.isVanilla, min: +(r.wall_seconds / 60).toFixed(1), pops: r.endPops, levels: r.endLevels })),
   byYear, pops, levels,
   model: { c0: 0.39, cPop: 0.180, cLv: 0.590 },   // F72: sec/yr = c0 + cPop*kpops + cLv*klevels
