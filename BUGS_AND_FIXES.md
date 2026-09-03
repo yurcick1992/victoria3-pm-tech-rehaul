@@ -2189,3 +2189,13 @@ method employs nobody the base (first non-gated) method of each secondary PMG fr
 loc lines, the build passing, the game would have shown the first line and logged the rest as garbage) — the loc writer now
 escapes `
 `. A loc value is one line; the escape is part of the string.
+
+## 2026-09-03 — a patch script's `$$` reached the emitter as `$`, and the loc lost its `$good$` reference
+
+**Symptom:** the consumption-anchor term text read `explosives$: at least 50 a week…` — the leading `$` of the `$explosives$`
+loc reference gone, so the game would have printed a bare `explosives$`.
+**Cause:** the patch applied its text with `String.prototype.replace(anchor, replacementString)`, and a STRING replacement
+interprets `$$` as one literal `$` (beside `$&`, the backtick/quote forms and `$n`). The patch's template literal `$${s.good}$`
+therefore landed in the emitter as `${s.good}$`. Every earlier patch survived because `${T}` is not a replace pattern; only `$$` is.
+**Fix:** the two lines corrected in place; the fixer used `s.replace(a, () => b)` — a FUNCTION replacement is verbatim.
+**Rule:** when a patch script pastes JavaScript that contains `$$`, pass the replacement as a function, never a string.

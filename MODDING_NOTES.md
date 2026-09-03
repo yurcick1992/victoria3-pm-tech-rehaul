@@ -997,3 +997,14 @@ save**, which carries its own seed — available if ever needed, not currently u
 - A loc string can print a script value evaluated in a scope: `[ROOT.GetCountry.MakeScope.ScriptValue('pmr_src_x')|0]` (vanilla uses the same for `acw_reincorporate_dixie_loyalist_min`). In a journal entry or its scripted progress bar ROOT is the country. The research JEs use it to show "now N" beside each source's mark.
 - A loc VALUE is one line of the yml. A line break inside the text is the two-character escape `
 `; a real newline splits the entry and the rest of the text becomes malformed lines the game ignores (the build does not catch it — `emit_research_events` escapes them since 2026-09-03).
+
+## Market-goods triggers from a country scope (`mg:<good>`) — 2026-09-03
+
+A country's market is a scope (`market = { … }`) and a good in it is `mg:<good>`, on which `market_goods_buy_orders` /
+`market_goods_sell_orders` are triggers — the form the port-subsidy strategies' `possible` blocks use (`retire_trigger`,
+§10.60.3), which F64/F65 proved inside `ai_strategy` blocks. `emit_research_events.mjs` now writes the same shape as a
+scripted-progress-bar term (`market = { mg:ammunition = { market_goods_buy_orders >= 150 } }`) for the consumption anchors.
+⚠ **UNVERIFIED in a progress bar**: a bar's `monthly_progress` terms evaluate in the JE's country scope, where `market`
+should resolve, but no run has ticked one yet. Check the first tick's `error.log` for a `market` / `mg:` scope error before
+trusting a consumption-anchored entry, and a silent zero (the bar never moving in a market that plainly buys the good) is
+the landmine shape (TESTBED_LANDMINES L6) — count `PMR_JE|…|percussion_cap|` lines in the first run.

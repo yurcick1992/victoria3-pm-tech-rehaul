@@ -116,7 +116,7 @@ function addSource(tech, era, rule, src) {
   const a = anchors[tech] = anchors[tech] || { rule, era, sources: [] };
   if (rule === 'improvement') a.rule = 'improvement';        // improvement outranks a weaker rule
   a.era = Math.min(a.era, era);
-  if (!a.sources.some(s => s.building === src.building && s.group === src.group)) a.sources.push(src);
+  if (!a.sources.some(s => s.building === src.building && s.group === src.group && s.good === src.good)) a.sources.push(src);
 }
 
 for (const ind of CFG.industries) {
@@ -158,7 +158,8 @@ for (const ind of CFG.industries) {
         `would have no source from this industry and could never fill. Add an anchor (a building or ` +
         `bg_ group whose presence is the demand pull for it), or give the industry an earlier rung.`);
       for (const s of list) {
-        if (s.startsWith('bg_')) { if (!GROUPS.has(s)) throw new Error(`necessity_anchors[${ind.id}] names unknown building group '${s}'`); addSource(t.tech, t.era, 'necessity', { group: s, ind: ind.id }); }
+        if (s.startsWith('good:')) { addSource(t.tech, t.era, 'necessity', { good: s.slice(5), ind: ind.id }); }
+        else if (s.startsWith('bg_')) { if (!GROUPS.has(s)) throw new Error(`necessity_anchors[${ind.id}] names unknown building group '${s}'`); addSource(t.tech, t.era, 'necessity', { group: s, ind: ind.id }); }
         else addSource(t.tech, t.era, 'necessity', { building: s, ind: ind.id });
       }
     }
@@ -173,7 +174,13 @@ for (const ind of CFG.industries) {
 //   technologies the tier ladder has no stake in. VANILLA's own journal entries are untouched either
 //   way; we only ever ADD ours.
 //   Revert either by setting research_events.scope to 'all' in the config.
+// technologies that unlock a LAND combat unit type (00_land_combat_unit_types.txt), read live
+const UNIT_TECHS = (() => { const out = new Set(); try { const dir = join(GAME, 'common/combat_unit_types'); for (const f of readdirSync(dir)) { if (!/^00_land/.test(f)) continue; const txt = readFileSync(join(dir, f), 'utf8').replace(/#.*$/mg, ''); for (const m of txt.matchAll(/unlocking_technologies\s*=\s*\{([^}]*)\}/g)) for (const t of m[1].trim().split(/\s+/).filter(Boolean)) out.add(t); } } catch (e) { throw new Error('combat_unit_types unreadable: ' + e.message); } return out; })();
 const JE_SCOPE = (RE.scope || 'tiers_only');
+// ⭐ rule C on the unit-type technologies alone (user-ruled 2026-09-03), whatever the scope: `research_events.war_channel = 'unit_types'`
+if (RE.war_channel === 'unit_types')
+  for (const t of OPT.techs.filter(x => x.era > 1 && UNIT_TECHS.has(x.id)))
+    anchors[t.id] = { rule: 'war', era: Math.max(2, t.era), sources: [] };   // a unit-type technology is a war entry even where it also gates a rung
 if (JE_SCOPE === 'all') {
   // rule D: production technologies outside our ladder, anchored on what they unlock
   for (const t of OPT.techs.filter(x => x.category === 'production' && x.era > 1 && !anchors[x.id])) {
@@ -241,7 +248,8 @@ const keep = (tech) => (isFleetTech(tech) ? NAV_TECHS : WAR_TECHS).push(tech);
 // ⭐ THE BATTALION LADDER: 30 × (era + 1) — user-ruled 2026-08-18, replacing a flat 100.
 // A flat threshold was far too hard early (94 and 45 firings per century across canon-n2's two runs)
 // and too slack once armies are large. 60/90/120/150/180 over eras 1–5 says the same thing at any date.
-const battFor = (tech) => 30 * (((TECH[tech] && TECH[tech].era) || 2) + 1);
+// ⭐ FLAT when `war_gate.general_battalions_flat` is set (user-ruled 2026-09-03: at least 50), the era ladder otherwise
+const battFor = (tech) => (RE.war_gate || {}).general_battalions_flat ? +(RE.war_gate || {}).general_battalions_flat : 30 * (((TECH[tech] && TECH[tech].era) || 2) + 1);
 
 // the two country-scope values the war gate needs, emitted once
 if ((RE.war_gate || {}).mobilised_share_min) {
@@ -249,6 +257,8 @@ if ((RE.war_gate || {}).mobilised_share_min) {
   sv.push(`pmr_mob_share = {\n${T}value = 0\n${T}every_scope_general = { add = num_mobilized_battalions }\n${T}if = { limit = { pmr_army_consc > 0 }  divide = pmr_army_consc }\n}`);
 }
 
+// ⭐ NO NAVAL ENTRIES (user-ruled 2026-09-03): `research_events.naval_channel = false` drops every fleet technology's entry
+if (RE.naval_channel === false) for (const tech of Object.keys(anchors)) if (anchors[tech].rule === 'war' && isFleetTech(tech)) delete anchors[tech];
 let nWar = 0, nInd = 0;
 for (const [tech, a] of Object.entries(anchors).sort()) {
   const T0 = TECH[tech];
@@ -310,6 +320,17 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
   } else {
     nInd++;
     a.sources.forEach((s, i) => {
+      if (s.good) {
+        // ⭐ CONSUMPTION ANCHOR (user-ruled 2026-09-03, military first rungs): the country's MARKET buys at least T of the good
+        //   a week — `research_events.consumption_thresholds[good]`; the market-goods trigger the port strategy already uses.
+        //   No live figure: market buy orders have no loc data function we know to be safe.
+        const need = (RE.consumption_thresholds || {})[s.good]; if (need == null) throw new Error(`no consumption_threshold for ${s.good} (anchor of ${tech})`);
+        const dkey = `pmr_term_${tech}_${i}`;
+        loc.push([dkey, `$${s.good}$: at least ${need.toLocaleString('en-US')} a week bought in your market`]);
+        srcLines.push(`$${s.good}$ — at least ${need.toLocaleString('en-US')} a week bought in your market`);
+        terms.push({ desc: dkey, trigger: `market = { mg:${s.good} = { market_goods_buy_orders >= ${need} } }`, value: 1 });
+        return;
+      }
       const n = svName(tech, i);
       const people = thresholdPeople(a.era, s.ind);
       // Σ(level × occupancy): occupancy is a WEIGHT. A `limit = { occupancy >= x }` FILTER would score
@@ -408,7 +429,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     const nice = (TECH[tech].name || tech).replace(/"/g, '');
     loc.push([key, `${nice}: ${stage.charAt(0).toUpperCase() + stage.slice(1)}`]);
     loc.push([key + '_desc', a.rule === 'war'
-      ? `Hard fighting concentrates the mind. While our armies are committed to a front in strength — and the more so when the enemy already fields it — work towards ${nice} advances.`
+      ? `Hard fighting concentrates the mind. Each month a general of ours holds a front with at least ${(RE.war_gate || {}).general_battalions_flat || "the era's"} mobilised battalions against an enemy who already fields ${nice}, this bar advances by one; three stages of ${span} months each, and each completed stage grants half the technology's base research cost.`
       : `The trade already knows its own shortcomings. Where enough hands are employed at the work that ${nice} would improve, the improvement follows.` + `\n\nEach month the bar advances by one for every source at or above its mark; three stages of ${span} months each, and each completed stage grants half the technology's base research cost.` + (srcLines.length ? `\n\n` + srcLines.map(l => '• ' + l).join('\n') : '')]);
     loc.push([key + '_reason', `Our position makes ${nice} worth pursuing.`]);
   });
@@ -419,6 +440,7 @@ loc.push(['pmr_term_improvement', 'Employed in the industry this would improve']
 loc.push(['pmr_term_necessity', 'Employed in the industries that would use it']);
 loc.push(['pmr_term_war_pressed', 'Committed to a front in strength']);
 loc.push(['pmr_term_war_enemy_has_it', 'An enemy already fields it']);
+loc.push(['pmr_term_war_engaged', `A general of ours with at least ${(RE.war_gate || {}).general_battalions_flat || "the era's"} mobilised battalions on a front against an enemy who already fields this`]);
 // the fleet channel's two terms — ours supersedes a rival's, so the bar shows whichever applies
 loc.push(['pmr_term_nav_own', 'A ship of this kind sails under our flag']);
 loc.push(['pmr_term_nav_rival', 'A rival fields a ship of this kind']);
@@ -472,11 +494,7 @@ ${T}${T}${T}${T}${T}${T}any_scope_general = {
 ${T}${T}${T}${T}${T}${T}${T}NOT = { owner = ROOT }
 ${T}${T}${T}${T}${T}${T}${T}owner = { has_technology_researched = ${tech} }
 ${T}${T}${T}${T}${T}${T}}
-${T}${T}${T}${T}${T}${T}num_front_casualties = {
-${T}${T}${T}${T}${T}${T}${T}target = ROOT
-${T}${T}${T}${T}${T}${T}${T}value >= ${cas}
-${T}${T}${T}${T}${T}${T}}
-${T}${T}${T}${T}${T}}
+${cas > 0 ? `${T}${T}${T}${T}${T}${T}num_front_casualties = {\n${T}${T}${T}${T}${T}${T}${T}target = ROOT\n${T}${T}${T}${T}${T}${T}${T}value >= ${cas}\n${T}${T}${T}${T}${T}${T}}\n` : ''}${T}${T}${T}${T}${T}}
 ${T}${T}${T}${T}}
 ${T}${T}${T}}
 ${T}${T}${T}set_variable = { name = ${wgVar(tech)}  days = ${days} }

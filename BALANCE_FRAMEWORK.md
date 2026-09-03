@@ -6528,6 +6528,30 @@ France or the United States in any run**: the majors research those era-2 techno
 tree on the 2026-08-18 war gate) emits NOTHING on either canon**: `research_events.scope` is absent, so the emitter's
 default `tiers_only` covers only the tiers' own technologies — 0 war journal entries in every build since the four-rung
 re-peg (and in today's six-rung dry run too). Turning it on is a ruling, not a calibration.
+⭐⭐ **THE MILITARY CHANNELS, RULED (user, 2026-09-03 — built into `emit_research_events.mjs`, staged in
+`config/mod_config.canon4-je.json`, NOT yet run).** Four rules, by what the technology gates:
+1. **A technology that unlocks a LAND UNIT TYPE gets the WAR entry** (`research_events.war_channel = 'unit_types'`, the
+   unit types read live from `common/combat_unit_types/00_land_*`): a general of ours with **at least 50 mobilised
+   battalions** (`war_gate.general_battalions_flat`, flat — the era ladder 30×(era+1) is the fallback) on a front against
+   an enemy who already holds the technology; **no casualties clause** (`front_casualties_min 0` omits it). Monthly ticks,
+   **6 per stage** (`war_bar_months 6`), so two stages grant the technology at base cost when it is not ahead of time.
+   Eight entries on the four-rung tree: breech_loading_artillery, defense_in_depth, general_staff, landing_craft,
+   mobile_armor, nco_training, power_of_the_purse, trench_works (the era-1 unit techs — line_infantry, artillery,
+   napoleonic_warfare, standing_army — are 1836 grants and get none).
+2. **A military-industry rung WITH a predecessor rung keeps the industry rule** — the predecessor's staffing, 60-month stages.
+3. **A military-industry FIRST rung anchors on the CONSUMPTION of its good** — `necessity_anchors` takes `good:<name>`
+   and the term is `market = { mg:<good> = { market_goods_buy_orders >= T } }`, T from `research_events.consumption_thresholds`;
+   industry tick speed (one stage per 60 months above the line). Staged: percussion cap → **ammunition ≥ 150/week**, the
+   explosives first rung (intensive_agriculture, which also keeps its staple-crops anchor) → **explosives ≥ 50/week**.
+   ⚠ The threshold advice and its basis: the canon-4rung markets read (weekly buy orders, `market_goods_scoped`)
+   ammunition Britain 223–256 at 1850 · 575–615 at 1870 · ~1,000 by 1880, France 166–235, Prussia 156–193, the USA
+   28–310; explosives 53–83 at 1850 · 56–110 at 1860. 150 and 50 put the three majors above the line from the 1840s–50s
+   and most minors below it; both are MARKET-wide figures (a customs-union member reads its overlord's market). ⚠ The
+   `mg:` scope inside a progress-bar term is UNVERIFIED in-game — the smoke check must read the first tick's error.log.
+4. **No naval entries** (`naval_channel: false` drops every fleet technology's war entry).
+Net on canon4-je: **51 technologies (43 industry, 8 war) → 153 journal entries, 51 bars**, against the 43/0 of the previous
+staged state; the army-in-soldiers anchors of the paragraph above are superseded for percussion cap and the explosives
+first rung (the six-rung canon still carries `bg_army + bg_conscription` for munition).
 
 **What it does NOT settle — the open list, in the order the user is weighing it.**
 1. **The company rebuild pattern** — a company expands its rung-0 buildings all century (DMC 21 of France's 25
