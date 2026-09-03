@@ -6573,7 +6573,7 @@ re-peg (and in today's six-rung dry run too). Turning it on is a ruling, not a c
    all of them members of the British market through the East India Company, whose 900+ small arms a week they read as
    their own. Britain itself never fired it (percussion cap researched within a few years of 1836). So the anchor
    currently hands an era-2 military technology at base cost to the princely states, which is not the country the entry
-   was written for. Candidate fix, NOT applied mid-batch (L10): AND the term with market ownership — 
+   was written for. Candidate fix, NOT applied mid-batch (L10): AND the term with market ownership — `market.owner = ROOT`
    (the port strategies' own idiom) — so only the market's owner reads its consumption; a per-country term (own barracks
    levels) is the alternative the user moved away from.
 4. **No naval entries** (`naval_channel: false` drops every fleet technology's war entry).
