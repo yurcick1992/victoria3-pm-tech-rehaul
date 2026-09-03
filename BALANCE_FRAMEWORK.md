@@ -6568,6 +6568,14 @@ re-peg (and in today's six-rung dry run too). Turning it on is a ruling, not a c
    the staple-crops anchor it shares with fertilizer** (25,000 workers; the explicit `explosives: ['bg_staple_crops']`
    entry dedupes onto fertilizer's) — no anchor of its own. ⚠ The `mg:` scope inside a progress-bar term is UNVERIFIED
    in-game — the smoke check must read the first tick's error.log.
+   ⚠ **MEASURED ON RUN 1 OF canon4-je-n5 (2026-09-03): THE TERM READS THE MARKET, SO EVERY MEMBER OF A MARKET TICKS.** The
+   percussion-cap entry completed for ~50 countries — Hyderabad, Travancore, Jaipur, Oudh, the Zulu, Haiti, Aceh… — nearly
+   all of them members of the British market through the East India Company, whose 900+ small arms a week they read as
+   their own. Britain itself never fired it (percussion cap researched within a few years of 1836). So the anchor
+   currently hands an era-2 military technology at base cost to the princely states, which is not the country the entry
+   was written for. Candidate fix, NOT applied mid-batch (L10): AND the term with market ownership — 
+   (the port strategies' own idiom) — so only the market's owner reads its consumption; a per-country term (own barracks
+   levels) is the alternative the user moved away from.
 4. **No naval entries** (`naval_channel: false` drops every fleet technology's war entry).
 Net on canon4-je: **51 technologies (43 industry, 8 war) → 153 journal entries, 51 bars**, against the 43/0 of the previous
 staged state; the army-in-soldiers anchors of the paragraph above are superseded for percussion cap and the explosives
