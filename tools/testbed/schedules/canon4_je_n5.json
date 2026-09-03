@@ -25,7 +25,8 @@
   "_cost": "5 × 1836→1936, ~2.6 h each: ~13 h. LAUNCHED 2026-09-03 with the user's explicit go-ahead (\"Save this, build this, go with n=5\") after the small-arms anchor ruling.",
   "_caveats": [
     "n=3 against n=4 on the same book: the JE-count and tech-pace predictions resolve; GDP under ~10% does not.",
-    "The four-rung tree covers 40 technologies with JEs against the six-rung canon's 201 today (378 at the time of its runs), so 'back to the old level' restores the per-JE parameters, not the number of JEs."
+    "The four-rung tree covers 40 technologies with JEs against the six-rung canon's 201 today (378 at the time of its runs), so 'back to the old level' restores the per-JE parameters, not the number of JEs.",
+    "KNOWN DEFECT, all five runs (found 1838 of run 1, not stopped by the user's instruction): two of the eight war entries are naval-tree technologies — power_of_the_purse and landing_craft unlock MARINES, which vanilla files under land unit types — so a naval technology can be granted on an army front condition. Read the army channel as the other six; list it as a confound on naval-technology pace. Fix (exclude combat_unit_group_marines) queued behind the batch, L10."
   ],
   "defaults": {
     "metrics": [

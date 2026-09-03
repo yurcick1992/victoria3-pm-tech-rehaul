@@ -2213,3 +2213,20 @@ the book since ab1.
 **Fix owed:** emit `<newkey>: "$<sourcekey>$"` (and the `_desc` where the source has one) for every copied PM and PMG in all 11
 languages, the way emit_companies.mjs re-points its modifier loc. NOT applied while canon4-je-n5 runs — a build-path edit
 mid-batch makes the arms incomparable (landmine L10). Apply after SCHEDULE DONE and prove it with a dry-run grep of the loc.
+
+## 2026-09-03 — OPEN (fix queued behind canon4-je-n5, L10): marines put two naval technologies on the war channel
+
+**Symptom:** `PMR_JE|inception|power_of_the_purse|East India Company` at 1838.11 of canon4-je-n5 run 1 — a naval-tree
+technology (prerequisite `admiralty`, a naval-base method) completing a WAR stage, after the user had ruled no naval entries.
+**Cause:** `UNIT_TECHS` is every technology named in `unlocking_technologies` inside `00_land_combat_unit_types.txt`, and
+vanilla keeps the three MARINES unit types there (`group = combat_unit_group_marines` — they fight on land): low-tier on
+`line_infantry` (era 1, so no entry), mid-tier on `power_of_the_purse`, high-tier on `landing_craft`. The `naval_channel:
+false` drop removes only technologies with SHIP modifications (`isFleetTech`), which these lack. The dry-run verification
+listed all eight names and I read "in the land file" as "army" without checking what each unlocks.
+**Effect on the batch:** two extra 6-tick war entries, granting an era-2 and an era-4 naval technology on an army front
+condition; minor-country flavoured (the first firings are the EIC and the Qing). Not stopped; recorded in §10.69 and owed
+a line in the session's VERDICT.
+**Fix owed:** in `tools/emit_research_events.mjs`, skip a unit type whose `group` is `combat_unit_group_marines` when
+building `UNIT_TECHS` (parse the block, not just the `unlocking_technologies` line), leaving the six army entries; prove it
+with a dry run listing exactly breech_loading_artillery, defense_in_depth, general_staff, mobile_armor, nco_training,
+trench_works. Rule: a unit-type gate is classified by the unit's GROUP, never by which file it sits in.

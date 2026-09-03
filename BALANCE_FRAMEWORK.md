@@ -6538,6 +6538,20 @@ re-peg (and in today's six-rung dry run too). Turning it on is a ruling, not a c
    Eight entries on the four-rung tree: breech_loading_artillery, defense_in_depth, general_staff, landing_craft,
    mobile_armor, nco_training, power_of_the_purse, trench_works (the era-1 unit techs — line_infantry, artillery,
    napoleonic_warfare, standing_army — are 1836 grants and get none).
+   ⚠⚠ **TWO OF THE EIGHT ARE NAVAL-TREE TECHNOLOGIES AND SHOULD NOT BE THERE (found 2026-09-03, ~1838 of canon4-je-n5
+   run 1; the user asked "didn't I specify no naval JEs?").** `power_of_the_purse` (prerequisite `admiralty`, "unlocks the
+   Power of the Purse PM in Naval Bases") and `landing_craft` (prerequisites `jeune_ecole`/`monitor_tech`) unlock the mid-
+   and high-tier MARINES — `combat_unit_group_marines`, which vanilla keeps in `00_land_combat_unit_types.txt` because
+   marines fight on land. The classifier read "named in the land file" as "army technology", and the `naval_channel: false`
+   drop keys on SHIP modifications (`isFleetTech`), which neither carries. So the running batch grants a naval technology
+   on an ARMY condition: a general with ≥ 50 battalions on a front against an enemy who holds it. Seen at 1838.11 of run 1:
+   power_of_the_purse inception for the East India Company and the Qing, general_staff for the EIC. Each stage is half
+   the era base cost, so a country at war can take an era-2 naval technology at base cost in a year. Cheap, minor-country
+   flavoured, and NOT stopped — the batch runs as built (user, 2026-09-03: "don't stop the run"), so all five runs carry
+   it; the verdict must list it as a confound on naval-technology pace and on the JE totals (subtract the two
+   technologies' `PMR_JE` lines to read the army channel). **Fix queued behind the batch (L10): exclude unit types whose
+   `group = combat_unit_group_marines` from `UNIT_TECHS`**, which leaves exactly the six army entries: breech_loading_
+   artillery, defense_in_depth, general_staff, mobile_armor, nco_training, trench_works.
 2. **A military-industry rung WITH a predecessor rung keeps the industry rule** — the predecessor's staffing, 60-month stages.
 3. **A military-industry FIRST rung with no predecessor anchors on the CONSUMPTION of the good its output SERVES** —
    `necessity_anchors` takes `good:<name>` and the term is `market = { mg:<good> = { market_goods_buy_orders >= T } }`, T
