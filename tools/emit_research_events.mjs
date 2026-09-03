@@ -73,16 +73,22 @@ const basePmEmp = (pmg) => { const g = VAN.pmgs[pmg]; if (!g) return 0; const P 
 const pmgVaries = (g) => { const grp = VAN.pmgs[g]; if (!grp) return false; const tot = P => Object.values((P && P.emp) || {}).reduce((a, b) => a + (+b || 0), 0); const pms = (grp.pms || []).map(k => (VAN.pms || {})[k]).filter(Boolean); const base = pms.find(x => !x.gated); if (!base) return false; return pms.some(x => tot(x) !== tot(base)); };
 const vanillaKeyOf = (ind) => { const t = [...(ind.tiers || [])].sort((a, b) => a.era - b.era)[0]; return (ind.building && ind.building.key) || (t && t.key); };
 // `ind` = our industry (its vanilla building's secondary groups decide), or `bld` = a vanilla anchor building
-const workforceVaries = (ind, bld) => { const key = bld || vanillaKeyOf(ind); const vb = key && VAN.buildings[key]; const groups = vb ? (vb.pmgs || []).slice(1) : (ind && ind.secondary_pmgs) || []; return groups.some(pmgVaries); };
+const workforceVaries = (ind, bld) => { let key = bld || vanillaKeyOf(ind); if (bld && !VAN.buildings[bld]) { for (const i of CFG.industries) if ((i.tiers || []).some(t => t.key === bld)) { key = vanillaKeyOf(i); break; } }   // one of OUR tier keys named as an anchor → its industry's vanilla building decides
+  const vb = key && VAN.buildings[key]; const groups = vb ? (vb.pmgs || []).slice(1) : (ind && ind.secondary_pmgs) || []; return groups.some(pmgVaries); };
 // a vanilla building's per-level employment: its main group's base method; a tier of ours → tierEmp
-const buildingEmp = (key) => { for (const ind of CFG.industries) for (const t of ind.tiers || []) if (t.key === key) return tierEmp(t, ind); const vb = VAN.buildings[key]; if (!vb) return 0; const g = (vb.pmgs || [])[0]; const grp = g && VAN.pmgs[g]; const base = grp && (grp.pms || []).map(k => (VAN.pms || {})[k]).filter(Boolean).find(x => !x.gated); return base ? Object.values(base.emp || {}).reduce((a, b) => a + (+b || 0), 0) : 0; };
+const buildingEmp = (key) => { for (const ind of CFG.industries) for (const t of ind.tiers || []) if (t.key === key) return tierEmp(t, ind); const vb = VAN.buildings[key]; if (!vb) return 0; const g = (vb.pmgs || [])[0]; const grp = g && VAN.pmgs[g]; const pms = grp ? (grp.pms || []) : []; const baseKey = pms.find(k => { const P = (VAN.pms || {})[k]; return P && !P.gated; }); const P = baseKey && VAN.pms[baseKey]; const fromExtract = P ? Object.values(P.emp || {}).reduce((a, b) => a + (+b || 0), 0) : 0; return fromExtract > 0 ? fromExtract : (baseKey ? (PMEMP[baseKey] || 0) : 0); };
 // the building types of a vanilla building group (from the extract), with their per-level employment
-const groupTypes = (g) => Object.entries(VAN.buildings).filter(([k, b]) => b.group === g).map(([k]) => ({ key: k, emp: buildingEmp(k) })).filter(x => x.emp > 0);
+// a battalion's men: the land combat unit types' max_manpower (1,000 in 1.13), read live — a barracks or conscription
+// level holds one battalion and employs it as soldiers, not through a production method
+const UNIT_MANPOWER = (() => { try { const dir = join(GAME, 'common/combat_unit_types'); const vals = readdirSync(dir).filter(f => f.endsWith('.txt')).flatMap(f => [...readFileSync(join(dir, f), 'utf8').matchAll(/max_manpower\s*=\s*(\d+)/g)].map(m => +m[1])); return vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 1000; } catch { return 1000; } })();
+const MILITARY_GROUPS = new Set(['bg_army', 'bg_conscription']);
+const groupTypes = (g) => Object.entries(VAN.buildings).filter(([k, b]) => b.group === g).map(([k]) => ({ key: k, emp: buildingEmp(k) || (MILITARY_GROUPS.has(g) ? UNIT_MANPOWER : 0) })).filter(x => x.emp > 0);
 const lvValues = new Set();   // per-type staffed-level values already emitted (shared across sources)
 const tierEmp = (tier, ind) => { const wm = tier.workforce_mult != null ? +tier.workforce_mult : 1; const own = Object.values(tier.employment || {}).reduce((a, b) => a + (+b || 0), 0); if (own > 0) return Math.round(own * wm); return Math.round((ind.secondary_pmgs || []).reduce((a, g) => a + basePmEmp(g), 0) * wm); };
 
 // ---- tech -> production methods it unlocks, for the rule-D anchoring ----------------------------
 const techPM = {};
+const PMEMP = {};   // pm -> Σ building_employment_*_add (level_scaled), read live — the extract lacks it for the military methods
 for (const f of readdirSync(join(GAME, 'common/production_methods'))) {
   if (!f.endsWith('.txt')) continue;
   const s = readFileSync(join(GAME, 'common/production_methods', f), 'utf8');
@@ -90,6 +96,7 @@ for (const f of readdirSync(join(GAME, 'common/production_methods'))) {
   while ((m = re.exec(s))) {
     let i = re.lastIndex, d = 1;
     while (i < s.length && d > 0) { if (s[i] === '{') d++; else if (s[i] === '}') d--; i++; }
+    PMEMP[m[1]] = [...s.slice(re.lastIndex, i - 1).matchAll(/building_employment_[a-z_]+_add\s*=\s*(-?\d+)/g)].reduce((a, x) => a + (+x[1] || 0), 0);
     const ut = s.slice(re.lastIndex, i - 1).match(/unlocking_technologies\s*=\s*\{([^}]*)\}/);
     if (!ut) continue;
     for (const t of ut[1].trim().split(/\s+/).filter(Boolean)) (techPM[t] = techPM[t] || new Set()).add(m[1]);
