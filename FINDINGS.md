@@ -8969,3 +8969,789 @@ is the 7-market median, not a GDP-weighted world. Nothing here measures WHEN wit
 crosses zero, only the era-anchored snapshots. The e+3 skip rule means most e2 rungs' three-era
 verdicts are unmeasurable this century by construction (no e5 capacity exists to price them
 against).
+
+## F91 — THE BAND BUDGET: the six-rung ladder is over it, and that is why its own margin ladder INVERTS at e4/e5 (derived analysis, 2026-08-29)
+
+**Arm/basis:** derived analysis, no new runs. Two independent reads. (a) The **shipped** book —
+recipe caps and realised own-era margins straight out of `config/era_inverse.json`, i.e. the
+canonical solver2f config (§10.65.9). (b) A **band-budget model** written for this question
+(scratch, not committed): the §10.65.5 death condition `r_o² ≤ κ·[(1−w)r_i² + w·g_w]/(1+m)` solved
+for the required per-rung slope at rung counts 6/5/4/3 and death horizons of 1 and 2 rungs, holding
+each tier's shipped input MIX and wage share, respreading the output ladder (×1.5^(5/(N−1))), the
+wage ramp and the measured raw price paths over the new rung count. (c) A confirmation arm: the
+four-rung ladder actually built and solved (§10.66, `config/era_inverse.tier4.json`).
+
+### 1. The engine's price band sets a MINIMUM slope, and it depends only on the rung count
+
+Obsolescence is bought with per-rung output-price slope, and every rung of slope compounds. Rebased
+at the 1836 anchor, the last rung must clear the 25% floor:
+
+| rungs | steps rung1→last | min slope @ floor 25 | @ non-pinned 35 |
+|---|---|---|---|
+| 6 | 4 | **0.707** | 0.769 |
+| 5 | 3 | 0.630 | 0.705 |
+| 4 | 2 | 0.500 | 0.592 |
+| 3 | 1 | 0.250 | 0.350 |
+
+⭐ **0.707 is `SLOPE_MIN = 0.70` in `era_inverse.mjs`.** The clamp the solver already ships is this
+band floor showing up in the code — it was tuned, not derived, and it landed on the arithmetic.
+Three goods sit on it (engines, electricity, transportation), i.e. their death condition is unmet.
+
+### 2. The shipped book pays for it by clamping a third of its recipes, and the margin ladder inverts
+
+Counted directly off the artifact's own `cap` field, 105 tiers:
+
+```
+      designed   realised median   lean-floor or insolvent-at-target
+ e0     +30%          +30%                 0/11
+ e1     +38%          +38%                 0/17
+ e2     +46%          +46%                 1/19
+ e3     +54%          +54%                 6/21
+ e4     +62%          +42%                16/21
+ e5     +70%          +25%                13/16
+```
+
+**36 of 105 tiers (34%) are clamped, 30 of them at e4/e5.** The design asks for an output price so
+low that no recipe legal under `MFG_IO_CAP = 4` earns the margin at it, so the frontier rungs earn
+**+42% and +25% against mid-rungs at +46%**. A frontier rung cannot displace a rung that out-earns
+it. This is the mechanism behind "the obsolescence is too weak", and it is arithmetic, not tuning.
+
+### 3. A one-rung death rule is arithmetically impossible above four rungs
+
+Required slope vs the band floor, per good, model (b):
+
+| death horizon | N=6 | N=5 | N=4 | N=3 |
+|---|---|---|---|---|
+| **2 rungs** (the standing rule) | 14/22 with headroom · 7 pinned · **1 impossible** | 21/22 · 1 · 0 | **22/22** · 0 · 0 | 22/22 · 0 · 0 |
+| **1 rung** | 1/22 · 0 · **21 impossible** | 1/22 · 3 · 18 | 10/22 · 10 · 2 | **22/22** · 0 · 0 |
+
+At the shipped margin ladder (0.30→0.70). Flattening it to 0.30→0.50 at N=4/H=1 takes the
+lean-clamped rungs from 18 to 5 — **a fat top margin is self-defeating**, because it raises the bar
+the price decline has to clear.
+
+⚠ **Reducing the per-INDUSTRY tier count buys nothing on its own.** The compounding runs over the
+number of eras in the price path, so the ERA count is the lever.
+
+### 4. Confirmed by building it (§10.66, both arms converged at INV_ITERS=1500)
+
+|  | four rungs | six rungs (canon, same solver, same budget) |
+|---|---|---|
+| tier buildings | 70 | 105 |
+| recipes earning their designed margin | 50/70 (71%) | 66/105 (63%) |
+| recipes clamped | 16/70 (23%) | 35/105 (33%) |
+| superseded rungs dead two eras on | 29/32 (91%) | 53/66 (80%) |
+| slope clamps | 2 (1 at the floor) | 3, all at the floor |
+| analytic illogicality | 9 | 17 |
+
+The four-rung era-2 (1905) ladder reads frontier +48…+57% / one stale −25…+16% / **two stale
+−12…−58%, dead in all 19 industries** — the shape the design has always described and the six-rung
+book does not produce.
+
+### What it does NOT say
+
+- **It is not a measurement of the game.** Every number here is the model's own; no run was made.
+  Whether a shorter ladder changes what the AI builds, or how fast prices actually fall in a live
+  campaign, is untested and is a separate question from feasibility on paper.
+- **It does not say four is optimal.** Four is what the standing *current−2* rule needs to fit
+  inside the band with headroom to spare; three is what a *current−1* rule would need. Both are
+  feasible; which is wanted is a design choice, and the cost of four is that only 2 of 4 rungs get a
+  two-rung death horizon inside the campaign (against 4 of 6 today).
+- **It does not touch the two named residuals.** Textile and furniture stay stale-profitable at any
+  rung count because clothes and furniture are pop-bought and a pop budget is not mandatable
+  (§10.65); transportation stays un-killable because railway's inputs deflate at its own rate
+  (§10.47.1). Neither is a rung-count problem.
+- **The 4:1 lean cap is OUR invariant, not the engine's.** Part of the clamping in §2 would relax if
+  it were loosened — that is an untaken option, not a fact about Victoria 3.
+
+## F92 — WHAT A VANILLA BUILDING EARNS AT THE 1836 START: manufacturing ~26%, extraction ~102%, agriculture ~126% (measured, 2026-08-29)
+
+**Arm/basis:** VANILLA, five runs, one save summary each at **1836.2.1** —
+`tools/testbed/sessions/20260821_125917_vanilla-1836-refresh-1311`, `SAVE_SUMMARY_VERSION 8`, which is
+the first schema carrying per-building-type `va_out`/`va_in` alongside the game's own `profit` and the
+active-PM breakdown. 4 002 (country × building type) observations after excluding types under 4 levels
+and any type with subsidised levels (a subsidised building is not a market read). Tool:
+`tools/vanilla_margins.mjs` (read-only), artifact `config/vanilla_margins_1836.json`.
+
+**The metric is our own margin definition and it needs NO WAGE MODEL.** The sheet's margin is
+`(revenue − inputs − wages)/(inputs + wages)`; total cost **is** revenue minus profit, so it collapses to
+
+```
+margin = profit / (va_out − profit)
+```
+
+on two numbers the save already carries. Levels-weighted within a building type, then across types.
+
+### The result
+
+```
+                                  level-weighted   median type   IQR       types
+all manufacturing                     25.8%           25.7%     18–31%       9
+the buildings our ladder tiers        26.4%           29.9%     20–33%       8
+extraction & logging                 101.8%           52.6%     28–105%      7
+agriculture (commercial)             126.1%           83.9%     64–154%     16
+urban centres                         46.8%              —          —        1
+
+per manufacturing building (level-weighted, levels)
+  textile_mill 29.9% (1090) · paper_mill 33.9% (755) · furniture_manufactory 19.5% (700)
+  glassworks 10.7% (480) · tooling_workshop 25.7% (340) · food_industry 31.5% (310)
+  arms_industry 33.1% (305) · shipyard 17.9% (295) · steel_mill 17.2% (40)
+```
+
+### What it settles
+
+- **The mod's era-0 design margin of 0.30 was already almost exactly right** (§10.65.6's margin ladder
+  starts there). What the measurement does NOT support is the rise to 0.70 — nothing in vanilla earns
+  that in manufacturing, at any point of the 1836 map.
+- **§10.22's raw bands are independently corroborated.** Extraction 0…+400% and agriculture 0…+200%
+  were a judgement call; the game's own 1836 extraction reads 102% level-weighted and agriculture 126%,
+  i.e. raw producers really do run several times manufacturing's margin, and the bands have the right
+  shape and centre.
+- **Manufacturing margins are TIGHT.** IQR 18–31% across nine building types with wildly different
+  recipes. That is what makes a single flat design margin defensible in the first place.
+
+### What it does NOT say
+
+- **It is one date.** 1836.2.1 is the start map plus one month, so it describes the *pre-industrial*
+  equilibrium the game ships with, not what vanilla manufacturing earns in 1900. A later-date read is
+  a different measurement and has not been made.
+- **It rests on `profit` being revenue − inputs − wages and nothing else.** The tool's own cross-check
+  says close but not exact: the wage rate implied by `va_out − va_in − profit` lands in the right place
+  (country medians 0.045–0.080 against the sheet's measured 0.0796 Belgian / 0.0610 Austrian) but has a
+  cv of 0.5–0.7 *within a single country*, which by construction pays one base wage. **Read the class
+  aggregates as solid and any single building type's number as approximate.**
+- **It is not a target.** That vanilla earns 26% is an anchor for what a margin *means* in this engine;
+  whether our ladder should sit on it, above it or below it is a design ruling, not a measurement. (It
+  was ruled onto it the same day — BALANCE_FRAMEWORK §10.66.6.)
+- **Subsistence is excluded from every headline** (1000%+ level-weighted: those buildings have almost
+  no purchased inputs, so the denominator is nearly all wages and the ratio is not comparable).
+- **Two building types are single-country curiosities** — banana_plantation 645% and coffee_plantation
+  3650% level-weighted on ~140 levels — and are the reason the class figure is quoted level-weighted
+  AND as a median across types, which is 84% for agriculture.
+
+## F93 — The JE cut works and barely moves research; the cost ladder buys obsolescence on paper and loses it in fact
+
+**Session** `20260829_152435_tier4-n1` · arm `{kind: config, config: config/mod_config.tier4.json}`
+(the four-rung ladder, §10.66–10.67) · 1836→1936 · **n=1 by ruling** · reached 1936.1.1, 0 resumes,
+0 quarantined saves, 100 summaries, 2h40.
+**Compared against** `20260825_204213_solver2f-n3` (canonical six-rung, n=3) and
+`20260821_131149_vanilla-baseline-n16` (n=16, save_summary_version 8 — the first vanilla baseline
+carrying `va_out`, so the vanilla productivity denominator is answerable at all).
+⚠ Different nights: ratios travel, absolutes do not.
+
+### 1. The journal entries were made ~4× less productive, as designed
+
+`PMR_JE|` counts from `debug.log`. tier4 runs six stages at `grant_fraction` 0.25 and workforce
+thresholds 30k/120k/480k; solver2f runs three at 0.5 and 15k/45k/135k/405k.
+
+| | tier4 | solver2f (mean of 3) | ratio |
+|---|---|---|---|
+| chains started (inception) | 994 | 2,324 | 0.43× |
+| chains completed (final stage) | **97** | **839** | **0.116×** |
+| total firings | 2,788 | 4,972 | 0.561× |
+| completion rate | **9.8%** | **36.1%** | — |
+| research subsidy delivered (firings × grant_fraction) | 697 | 2,486 | **0.28×** |
+
+Both halves bit independently: the ×4 thresholds cut chains *started*, the six stages cut the
+fraction that *finish*.
+
+### 2. …and vanilla-tree research did not move
+
+**A raw technology count is not comparable across arms** — the pools differ (tier4 adds 9
+technologies, solver2f 42, vanilla 0). On the common denominator (vanilla's own **178** technologies,
+read live from `common/technology/technologies/*.txt`), advanced majors hold:
+
+| | tier4 | solver2f | vanilla |
+|---|---|---|---|
+| vanilla technologies held (majors) | **149.9** | 150.6 | 145.3 |
+| ÷ solver2f | **0.995** | — | 0.965 |
+| added technologies held (majors) | 4.7 of 9 | 27.8 of 42 | — |
+
+Cutting the research subsidy by 72% changed vanilla-tree research by **half a percent**. The entire
+raw-count gap (154.6 vs 178.4) is our own added technologies.
+⚠ **Two paths cancel and are not separable at n=1**: tier4 has a 36% smaller economy (less research
+funding) but only 9 added technologies competing for the budget instead of 42. Do NOT read 0.995 as
+"the JE subsidy does not matter".
+⚠ ~1.0 technology per country falls outside the parsed vanilla set in **every** arm, so the
+added-tech column is uniformly inflated by ~1; the true shares are ~41% vs ~64%.
+
+### 3. Below-best build share got WORSE — against a confound pushing the other way
+
+⚠⚠ **THIS SECTION IS VOID — SEE F96.** The figures below counted vanilla ports as our tiers. The
+corrected numbers are 32.0% (margins) and 34.7% (flat) against solver2f 39.0%, i.e. BETTER, not worse.
+
+Pre-registered prediction: it improves, with the stated confound that four rungs give mechanically
+fewer rungs to build below.
+
+| | below-best share | excl. ports |
+|---|---|---|
+| tier4 | **52.7%** | 48.8% |
+| solver2f | **39.0%** (runs 38.09/38.84/39.92, sd 0.75pp) | 36.2% |
+
+**+13.7pp, ~18σ outside the canonical arm's own noise.** The structural confound should have lowered
+it for free; it rose anyway, so the result is stronger than the metric alone. 72.7% of the fault is
+exactly one tier behind.
+
+### 4. The mechanism — more builders, fewer buildings
+
+| world | 1840 | 1860 | 1880 | 1900 | 1920 | 1936 |
+|---|---|---|---|---|---|---|
+| tier4 GDP | 440M | 658M | 808M | 1,156M | 2,000M | **3,815M** |
+| vanilla GDP | 446M | 716M | 1,034M | 1,668M | 2,789M | **4,490M** |
+| solver2f GDP | 411M | 583M | 810M | 1,272M | 2,997M | **5,962M** |
+| tier4 peasant % | 76.1 | 66.9 | 63.6 | 59.6 | 53.5 | **44.7** |
+| vanilla peasant % | 75.8 | 66.5 | 60.1 | 51.3 | 40.3 | **29.7** |
+
+**Divergence begins 1875–1880 — exactly when rung 1 unlocks and the first ×1.4 cost step binds.**
+Rungs sit at 1836/1875/1905/1940 at costs ×1.0/1.4/1.96/2.74.
+
+The signature, on the clean comparison (tier4 and vanilla both run vanilla ports, so neither level
+count is inflated by the graded-port factor):
+
+> **tier4 ends with 1.28× vanilla's construction capacity and 0.81× its buildings** —
+> 68.6 standing levels per construction level against 108.1, **0.63×**.
+
+Construction capacity was never the constraint; each building cost more, so the same effort bought
+fewer, so fewer jobs existed. Advanced-group peasants finish at **37.0%** against vanilla's 17.7%
+and solver2f's 12.0%; the G5 productive share of the workforce is **52.61%** against 74.29% and
+84.46%; GDP per productive worker £26.5 / £19.8 / £32.1; tiered share of the workforce **10.21%**,
+*below* vanilla's 12.31%.
+
+This also explains §3: **an AI that cannot afford the frontier buys the cheap obsolete rung.**
+
+### What this does NOT say
+
+- **No single-dial attribution.** SIX changes shipped together (four rungs, 18 industries not 22,
+  four industries handed to vanilla, flat 26% margin, cost ×1.4^era, 9-technology tree). The cost
+  ladder is the leading suspect for §4 on the date match and the builders/buildings signature —
+  that is a mechanism with evidence, not an isolated result.
+- **n=1.** No median or arm-separation claims. Only §3's gap (13.7pp vs 0.75pp sd) sits comfortably
+  outside the ~20% single-seed GDP spread.
+- **It does not say four rungs is wrong** — it says THIS four-rung configuration underbuilds. §1–2
+  are clean and would survive a cost-ladder revert.
+- **Nothing on performance**: 2h40 raw is not a verdict, and tier4 ends at 0.75× solver2f's live pop
+  objects, so the pop-matched bins may not overlap enough to answer it.
+
+### 5. Addendum — the AI defines DID reach this arm, and they cut in our favour
+
+Checked after the fact (user question, same evening). `config/mod_config.tier4.json` carries all
+**six** `ai_defines` verbatim — `make_tier4_config.mjs` never mentions the block, so it rides along
+with the config — and the built mod emitted the full `NAI` block. Both long-build-time thresholds
+are present:
+
+| define | vanilla | ours | effect |
+|---|---|---|---|
+| `PRODUCTION_BUILDING_LONG_CONSTRUCTION_TIME_THRESHOLD` | 40 wk | **120 wk** | score ×0.5 past it |
+| `PRODUCTION_BUILDING_VERY_LONG_CONSTRUCTION_TIME_THRESHOLD` | 60 wk | **180 wk** | score ×0.25 past it |
+
+**Units are weeks, and the raise is a RELAXATION**: the two `..._MULT` values (0.5 / 0.25) are left
+at vanilla, so tripling the thresholds keeps an expensive building *out* of the penalty band.
+
+Three consequences for §3–§4 above:
+
+1. **Not a tier4-vs-solver2f confound.** Both arms carry the identical six defines, so the
+   below-best and underbuilding gaps between them are not explained by these.
+2. **It strengthens the cost-ladder attribution against vanilla.** Vanilla has none of the six, and
+   they push toward *more* construction — solver2f carries them and built 280k levels against
+   vanilla's 230k. tier4 underbuilt to 187k **despite** holding them.
+3. ⭐ **But the malus is differentially LIVE in tier4, on identical thresholds.** With the flat
+   vanilla cost book, solver2f's buildings sit far below 120 weeks and never approach the band. With
+   costs up to **1.4³ = 2.744×**, tier4's frontier rung approaches it. So the newest rung can take a
+   step-function **×0.5, then ×0.25** cut to its AI score that the rung below does not — a much
+   sharper account of "72.7% of the fault is exactly one tier behind" than diffuse affordability.
+   ⚠ **Hypothesis, not a measured result.** The threshold is construction time *at full
+   construction-industry usage*, so it binds on countries with small construction sectors rather
+   than on cost alone. The test is whether the below-best fault concentrates in low-construction-
+   capacity countries; not run.
+   ⚠ The ×3 threshold raise nearly exactly covers the ×2.744 cost ladder **by coincidence** — k was
+   chosen on payback grounds and the thresholds for the investment-hoard levers, on different days
+   and for unrelated reasons. Do not read them as a designed pair.
+
+
+### 6. Addendum — a SECOND confound, found the same evening: ai_value was rung-keyed, not era-keyed
+
+`make_tier4_config.mjs` set `ai_value` from the rung index rather than the absolute era, so era 2
+carried three different values (750 / 1998 / 5321, a **7.1× spread**) where the canonical book
+carries exactly one per era. The industries whose ladders start late took a malus nobody designed:
+**automotive and power 7.1× too low, synthetics and electrics 2.66× too low** — the whole new
+economy. Their workers came back at **0.14× / 0.34× / 0.06× / 0.54×** of the canonical arm against
+0.38–1.27× for the e0-starting industries: four of the five worst-shrunk. See BUGS_AND_FIXES
+2026-08-29. Fixed in the generator; the config and artifact corrected in place (10 tiers, exact —
+`ai_value` never enters the solve).
+
+**What it changes above:**
+- **§1–2 (the JE result) stand unaffected** — `ai_value` has no path to research.
+- **§4 now has TWO candidate causes**, the cost ladder and this defect, and they are not separable
+  in this run. The new-economy collapse is much better explained by the malus than by cost.
+- **§3 is NOT obviously explained by it.** Within an industry the rung ladder stayed monotone and
+  *steeper* than canonical (×2.66 vs ×1.8), so the incentive to climb was intact or stronger. The
+  defect shifts *composition* (four industries barely built, so the below-best denominator is
+  dominated by e0-starters) rather than the within-industry choice. Unseparable at n=1.
+- ⚠ **The recommendation in the verdict is superseded.** Re-run with the ai_value fix BEFORE judging
+  the cost ladder: one is an outright bug, the other a design choice, and the bug should not be
+  charged to the design.
+
+## F94 — The mandated price decline is not reached in game. Prices stay flat near base, and that is why obsolescence does not happen
+
+**Session** `20260829_212316_tier4-n3` (four-rung ladder, n=3, all runs to 1936.1.1) · designed path
+from `config/era_inverse.tier4.json` · actual from `markets_all.tsv`, median over the 7 watched
+markets × 3 runs, at the dump dates nearest each era anchor.
+
+Solver 2's premise is a **mandated declining output-price ladder** for every tiered industry — that
+decline is the mechanism the whole obsolescence design rests on (CLAUDE.md: *"what kills an old
+building is its output price falling while its input prices do not"*).
+
+### Designed vs actual, % of base
+
+| good | design e0→e3 | actual e0→e3 | design trend | **actual trend** |
+|---|---|---|---|---|
+| clothes | 175 → 44 | 93 → 97 | 0.25× | **1.04×** |
+| engines | 152 → 40 | 90 → 105 | 0.26× | **1.16×** |
+| telephones | 106 → 26 | — → 109 | 0.25× | 0.78× |
+| groceries | 135 → 39 | 125 → 91 | 0.29× | 0.73× |
+| paper | 158 → 65 | 109 → 119 | 0.41× | **1.09×** |
+| steel | 131 → 55 | 109 → 89 | 0.42× | 0.82× |
+| tools | 123 → 54 | 144 → 124 | 0.44× | 0.86× |
+| glass | 97 → 68 | 56 → 118 | 0.70× | **2.13×** |
+| ammunition | 82 → 55 | 84 → 98 | 0.67× | **1.16×** |
+| electricity | 100 → 84 | 92 → 138 | 0.84× | **1.51×** |
+
+**The design asks for 0.25–0.84×. The game delivers 0.66–2.13×, median ≈0.95× — flat, and rising for
+six of eighteen goods.** At the frontier the gap is 1.6–4.6×: clothes 97 against 44, engines 105
+against 40, tools 124 against 54, telephones 109 against 26, fine_art 125 against 27.
+
+### Why this is the batch's central result
+
+Obsolescence in this design is **price-driven**. If a tier's output price never falls, the old rung
+never becomes unprofitable, and nothing pushes capital up the ladder. That is exactly what the rest
+of the session measured and could not otherwise explain:
+
+- **below-best build share 55.0%** (52.1–60.1, sd 3.63pp) against solver2f's 39.0% — the AI keeps
+  building old rungs because old rungs still pay;
+- **productivity 0.958× vanilla** — no shift toward better capacity, so no productivity gain, where
+  solver2f reaches 1.562×;
+- **GDP 0.717× vanilla** on 0.749× the workers, i.e. a smaller economy rather than a better one.
+
+### The mechanism, stated as a hypothesis
+
+The V3 price formula is `price = base × [1 + 0.75·clamp((BUY−SELL)/min(BUY,SELL), ±1)]`, so reaching
+44% of base requires **persistent, large oversupply**. A profit-seeking builder does not produce
+that: the AI stops building when margins vanish, which happens *before* the price falls that far.
+⇒ **The mandated path may not be an equilibrium any profit-driven builder can reach** — the design
+prices in a surplus that the thing generating the surplus will not create.
+⚠ **Hypothesis, not established.** The mechanism is drawn but not isolated: the price formula is
+known, the AI's stopping rule is not measured here, and seven other changes ship in this arm.
+
+### What it does NOT say
+
+- **Not attributable to the four-rung ladder.** The same mandate underlies the six-rung solver2
+  book; this session shows the gap, it does not show four rungs caused it. The like-for-like test is
+  the same comparison run against solver2f's own artifact, which has not been done.
+- **The design is autarkic and single-market**; the game has trade, many countries, and growing pop
+  demand, so a systematic upward bias in game is EXPECTED. The size is the finding, not the sign.
+- **e3 is measured 5 years early** (design anchors 1940, campaign ends 1936), so the frontier column
+  flatters the design slightly. The e0→e2 span (1836→1910) is unaffected and already shows design
+  ~0.5× against actual ~1.0×.
+
+
+## F95 — The lean floor and the price decline compete for the same headroom (and the 1:6 ruling)
+
+**Measured 2026-08-30**, on the four-rung book, while fitting the rising margin ladder
+(0.26/0.41/0.55/0.70).
+
+### The arithmetic
+
+`MFG_IO_CAP` is a floor on INPUTS expressed as a ceiling on the output:input VALUE ratio, **both at
+BASE prices** (`Ibase >= Obase / CAP`, applied LAST in `solveInputsAt` so it overrides the ratchet
+and the solvency clamp). But the margin TARGET is met at DESIGN prices. At `wage_pct` 0.25 the two
+meet as:
+
+> **max expressible margin = 0.75 x CAP x (p_out / p_in) - 1**
+
+| designed p_out (inputs at base) | max margin at 1:4 | at 1:6 |
+|---|---|---|
+| 0.68 | 104% | 206% |
+| 0.55 | 65% | 148% |
+| 0.48 | **44%** | 116% |
+| 0.40 | 20% | 80% |
+| 0.25 | -25% | 13% |
+
+**A tier designed for a low output price cannot reach a high margin however lean its recipe.** The
+steeper the mandated price decline, the lower the margin ceiling at the frontier — the two levers
+draw on one budget, and roughly linearly: ~10pp off the designed output price costs ~30pp of
+expressible margin at 1:4.
+
+### What it did in practice
+
+At 1:4 the 0.70 e3 target **pinned 10 of 18 tiers at the floor**, median realised margin **44%**, i.e.
+BELOW e2's 55% — an inverted top rung, with `food` at -1% and `art_academy` at 0%. ⚠ It passed my
+verification because the MEDIAN across the 18 was 70%: the distribution is bimodal and the median hid
+it. **Check the spread, not the central value, when a clamp may be active.**
+
+At 1:6: pinned tiers **10 -> 5**, on-target tiers **8 -> 13**. Median O:I by rung 1.50 / 2.11 / 2.83 /
+4.26. Three remain short — `art_academy` 33%, `electrics` 33%, `food` -7% — and those are
+**price-limited, not floor-limited**: their designed output prices are 0.25-0.40 of base, so the
+ceiling binds before the floor does. Raising the cap further would not fix them; only the price book
+would.
+
+### The ruling (user, 2026-08-30)
+
+**1:6 at base prices is ACCEPTED**, on the explicit ground that *base prices are not expected to be
+the norm for higher tiers* — so a 6:1 base-price ratio is not a realism claim about the running
+economy, and is not a narrative problem. Knob: `INV_IO_CAP`, default 4, so nothing changes without
+it. ⚠ The realism cost is still real and should be watched: the capped tiers turn ~GBP 600 of inputs
+into ~GBP 3,600 of output at base prices.
+
+## F96 — ⚠ RETRACTION: the four-rung "below-best got worse" result was an artifact
+
+**F93 §3 is VOID.** It reported below-best build share rising to 52.7% against solver2f's 39.0% and
+called prediction 3 failed "in the direction that matters". That comparison was invalid.
+
+**The defect.** `analyse_ai_tier_choice.mjs` built its tier map from **all** config industries,
+including `disabled` ones. A disabled industry's rung 0 KEY IS THE VANILLA BUILDING KEY, so every
+vanilla port in the save was counted as one of our tiers — carrying the canonical book's
+`workforce_mult` of 0.1. On any arm that hands an industry back to vanilla this inflates the
+below-best denominator with buildings the arm does not tier at all. The four-rung arms hand back
+port, shipyard, shipyard_steam, railway and power.
+
+**The tell was visible and I read past it**: "raw 52.7% · unit-weighted 49.8% · excluding ports 49.4%"
+on a book where **every live tier has `workforce_mult = 1` and there are no tiered ports**. Those
+three numbers cannot legitimately differ there. The user spotted it — *"unclear how ports change
+anything, since this version doesn't tier them"*.
+
+**Corrected figures** (disabled industries now skipped; all three measures agree per arm):
+
+| arm | as reported | corrected |
+|---|---|---|
+| tier4 margins n=1 | 52.5% | **32.0%** |
+| tier4 flat n=3 | 55.0% | **34.7%** |
+| tier4 vanilla-ladder n=4 | 52.7% | **37.8%** |
+| solver2f n=3 (canonical) | 39.0% | **39.0%** — unaffected, it has real tiered ports |
+
+**What this reverses.** Every four-rung arm is BETTER than the canonical six-rung book on build
+choice, not worse. The margins arm at 32.0% is the best figure the project has recorded. F93's
+"prediction 3 failed" and every downstream statement resting on it — including the reasoning that
+recipe-side levers move the build mix by ~1pp — must be re-read against these numbers.
+
+⚠ **What is NOT retracted**: F93 §1–2 (the JE result) and §4 (the trajectory) do not route through
+this metric and stand. F94 (prices do not fall) is untouched.
+
+**Fixed** in `analyse_ai_tier_choice.mjs` with a comment naming the mechanism. ⚠ Any other ledger
+tool that maps tier keys must skip disabled industries for the same reason.
+
+## F97 — WHERE THE FOUR-RUNG ARMS ACTUALLY STOOD: the engine's death mechanism, the rung employment that never fell, and vanilla's own A≈B≈1.5 ladder (derived analysis, 2026-09-02)
+
+**Basis:** save summaries (v8) of `20260831_192428_tier4-flatcost-aiv26-n5b` (flat cost, ai_value 750×2.6^era, n=5),
+`20260830_191950_tier4-vanilla-ladder-n4` (cost 1.92^era, n=4), `20260901_135709_tier4-cost15-aiv25-n2` (×2.5
+output step, cost 1.5^era, n=1) and the vanilla baseline `20260821_131149` (8 of 16 runs read); `markets_all.tsv`
+of the same sessions; one melted 1936 save (flat-cost run001); the engine's `00_defines.txt` / `00_ai.txt`.
+Shortlist = GBR USA FRA NET BEL PRU GER pooled. People = staffed levels × the tier's employment per level.
+No new runs. Scratch tools (people_by_rung, agg_wages, death_curve, where_e0, company_share) are in the
+2026-09-02 session scratchpad, not committed.
+
+### 1. The engine cannot hold a pop good below base, and vanilla proves it — the decline is in WAGE units
+
+Pop wealth progression re-absorbs every glut (`WEALTH_PROGRESS_*`): cheap goods let a pop afford the next
+buy package, unit demand rises, price recovers. Only a good with a supply-share cap inside its need can be
+pinned (glass and paper at 0.5; clothes, furniture, groceries are uncapped or 0.9). Median realised price,
+% of base, over 7 markets × runs:
+
+| good | vanilla 1836→1935 | flat-cost 1836→1935 | tier4 design e0→e3 |
+|---|---|---|---|
+| clothes | 111 → 101 | 91 → 86 | 175 → 44 |
+| furniture | 100 → 100 | 102 → 85 | — |
+| groceries | 129 → 118 | 128 → 86 | 135 → 39 |
+| steel | 119 → 106 | 110 → 77 | 131 → 55 |
+| tools | 108 → 96 | 140 → 100 | 123 → 54 |
+
+Base wages over the same span: GBR ×1.40 in vanilla (632→887 per 10 000 employees/wk), **×2.04** in the
+flat-cost arm (634→1 293); USA ×1.33 vs ×1.96. So clothes fell by more than half relative to labour in the
+mod while staying within 15% of base in £. The productivity of the frontier is paid out as wages and
+dividends by the engine's margin band (below), not as lower prices.
+
+### 2. Death in this engine is a labour-market event with a measured threshold
+
+Engine rules (`00_defines.txt`): a building holds profit at 15–25% of revenue by moving wages ±10%/week
+(`BUILDING_PROFIT_TARGET_TO_LOWER_WAGES` 0.15 / `_RAISE_WAGES` 0.25, `MAX_WAGE_STEP_CHANGE` 0.1); it lays off
+5% at a time once its workers' wealth falls under 0.66× expected SoL (`BUILDING_PREFER_LAYOFFS_TARGET_WEALTH_MULT`);
+a worker changes jobs for a 10% raise (`MIN_RAISE_TO_HIRE`); the wage floor is 10 per 10 000 employees, i.e.
+nothing. An unprofitable rung therefore never dies of its balance sheet: it cuts wages until its people leave
+or are laid off. Ghost levels persist for decades (flat-cost paper e0: 0% staffed 1900→1935, 13 levels intact)
+and still consume state infrastructure.
+
+Staffing of BEHIND rungs in the shortlist by (a) era gap to the best rung the country holds in that industry,
+(b) VA per staffed level relative to that best rung:
+
+| 1935 | flat-cost (tight labour) | cost ladder 1.92 (slack) |
+|---|---|---|
+| gap 0 / 1 / 2 / 3 | 77 / 44 / 22 / 13% | 97 / 81 / 52 / 72% |
+| relative VA < 0.2 | 9% | 31% |
+| 0.2–0.4 | 58% | 92% |
+| 0.4–0.6 | 73% | 99% |
+
+The under-0.2 rows are dominated by the inverse-solved rungs whose VA is ~0 at realised prices (the "born
+dying" recipes: paper/steel/motor/arms/tooling e0). The informative row is 0.2–0.4: textile e0 at 0.24 of
+its frontier keeps 46% of its staff in the tight arm and 78% in the slack one. ⇒ **a healthy rung two behind
+empties only when its VA per worker is well under a fifth of the frontier's.** Vanilla's own recipes put two
+rungs at ~1:2.7; a ×2 output step with proportional inputs gives 1:4; ×2.5 gives 1:6.25.
+
+### 3. GDP tracks physical output; the trilemma of the earlier arms
+
+flat-cost: productive workers 1.07× vanilla, GDP/worker 1.30×, GDP 1.39× (0.94–1.70 across 7 runs).
+cost15 (×2.5 step): 1.81× at n=1 with e2 the largest rung. cost ladder 1.92: 0.62×, every productive sector
+built at 0.49–0.63× vanilla's rate (extraction 0.49, agriculture 0.62, manufacturing 0.53, urban 0.63) with
+subsistence 1.39× — the private pool's cost divisor (`…CONSTRUCTION_COST_DIVISOR_SCALING` 0.001, ÷1+0.001×cost)
+divided a 2 200-point rung by 3.2 and a 4 250-point one by 5.3 against ÷1.2–1.6 for vanilla's buildings, and
+the pool starved. Death needs tight labour ⇐ building a lot ⇐ GDP overshoot with a steep ladder; fewer levels
+⇒ slack labour ⇒ old rungs keep their staff. Resolved in §10.68 by pricing capacity (cost ∝ output) and scaling
+the divisor to the book, so a construction point buys vanilla's output at every rung.
+
+### 4. On the user's metric the e0 headcount never fell, and it was being rebuilt
+
+People by rung, shortlist, per run (M):
+
+| arm | 1875 | 1900 | 1920 | 1935 |
+|---|---|---|---|---|
+| flat-cost e0/e1/e2/e3 | 0.48/3.27/0.54/— | 0.64/7.55/2.73/0.02 | 0.50/10.6/9.9/0.5 | **0.43**/11.6/19.0/3.1 |
+| cost ladder 1.92 | 0.48/2.68/0.18 | 0.97/5.02/0.70 | 1.19/7.29/2.64/0.06 | **1.44**/10.9/7.7/0.4 |
+| cost15 | 0.21/1.65/0.29 | 0.27/4.44/1.26 | 0.24/6.11/4.07/0.09 | **0.30**/4.6/8.2/0.5 |
+| vanilla, by main-PM rung | 0.47/1.05/2.47 | 0.79/1.02/5.92/0.56 | 1.68/1.07/9.06/3.14 | **2.70**/1.26/12.4/6.6 |
+
+Vanilla's 2.70M on rung 0 is engines and automobiles (the AI never switches those methods); outside them it is
+~0.13M. Per industry at 1935 the mod keeps more people on rung 0 than vanilla: textile 121k vs 1k, glass 149k
+vs 21k, food 54k vs 7k, tooling 34k vs 10k — 1–3% of each chain, and flat in absolute terms while the share
+collapses because the sector grows 8×. The ledger's "largest employment tier e0" is the WORLD figure (15.9M e0
+of which 0.43M in the shortlist).
+
+Why it never fell (flat-cost run001, 1936 save): the surviving e0 sits in core incorporated states, not colonies
+(textile e0 41 inc / 5 uninc levels, 30 in Ile-de-France; food 49/5, 23 in Leinster; tooling 33/6, 15 in
+Michigan). 54–100% of e0 buildings recorded a layoff after 1930; a third to a half of those standing carry an
+`establishment_date` after 1920 (textile 23%, glass 41%, food 53%, tooling 33%) — ⚠ CORRECTED 2026-09-02: the
+engine RE-CREATES a state's building records when the state changes hands, so a late establishment date is
+partly conquest, not construction (the ab2 melt shows German 1925–33 dates on Alsace-Lorraine, Schleswig and
+Hesse and British ones on Al Rif, Guatemala and New Guinea); the honest measure is LEVELS ADDED per decade,
+which on ab2 reads 70/51/92/83 e0 levels per run in the shortlist across the 1900s–1930s, 5–11% of tiered
+construction — and 38% of e0 levels are company-held
+(textile 55%, steel 73%, motor 71%). Ile-de-France is Maison Worth's `ai_construction_targets` state for
+`building_textile_mill`, Leinster is Guinness's for `building_food_industry`; `emit_companies` duplicated every
+target per rung, so a planned company kept a standing target of 5 levels of the rung-0 building. Fixed 2026-09-02
+(BUGS_AND_FIXES): each duplicated entry below the top rung is gated on the owner NOT holding the next rung's tech.
+Two of the five e0 hot spots match a company target; three (Michigan tooling, Brittany motor, Friesland glass) do not.
+
+### 5. Two book defects the arms carried
+
+The inverse-solved e0 rungs were input-heavy at 1836 scarcity anchors: the cost15 book's textile e0 eats 88.5
+fabric per 45 clothes against vanilla's 40, which starved the 1836 fabric market on day one — fabric 175 at
+1836.2.1 (sell/buy 0.46), clothes 171–175 for the whole century, textile VA per level negative by 1935. That
+run's 1.81× GDP is not a reading of the ×2.5 step. And the born-dying e0 rungs (paper, steel, motor, tooling,
+arms) were emptying by 1875 in every arm, before any frontier existed.
+
+### 6. Vanilla's own ladder is A ≈ B ≈ 1.5
+
+Per method step along each vanilla main PMG at base prices, geometric means across 15 chains: output ×1.53,
+input value ×1.52 (textile 1.46/1.50, steel 1.32/1.32, glass 1.49/1.49, arms 1.49/1.48, motor 1.73/1.73,
+tooling 1.54/1.47, paper 1.58/1.58, food 1.63/1.77). Vanilla never leans: value added per step ×1.4–1.8, the
+same as the output step. Two vanilla rungs apart is ~×2.3 in VA per worker, under the death threshold of §2 —
+which is why vanilla's rung 0 survives wherever the AI does not switch.
+
+### What it does NOT say
+
+No run of the A/B book exists yet; §10.68's predictions are predictions. The staffing curve rests on two arms and
+its 0.2–0.4 bin holds 111 building-type rows; the under-0.2 bin is nearly all input-insolvent recipes, so the
+threshold for a HEALTHY rung is bounded below 0.24 and not pinned. The company-target attribution is two of five
+hot spots plus establishment dates, not a controlled test. Vanilla's rung-0 people are computed from the
+`pms` level split × staffing × 5 000, an approximation.
+
+## F98 — THE A/B LADDER, MEASURED: A 2.0 / B 1.5 lands on vanilla's late-game GDP with fewer, more productive tiered workers; A = B = 2.5 stalls; the surviving e0 rungs ride a construction-driven glass and tools shortage (2026-09-02)
+
+**Arms.** `ab2` = A 2.0 / B 1.5 and `ab1` = A 2.5 / B 2.5 (`tools/make_ab_config.mjs`, BALANCE_FRAMEWORK §10.68:
+rung k output × A^k, input VALUE × B^k over vanilla's own mix, building_cost × A^k, ai_value 1000 × A^era, rung
+0 = vanilla). Session `20260902_121027_ab-ladder-n3x2b`: ab2 n=2 (runs 1, 3), ab1 n=2 (runs 2, 4), both
+company-target gate OFF; run 5 (ab2 seed 3) stopped by the user at 1861 and excluded; run 6 skipped. Plus
+`20260902_095339` run 1 = ab1 with the gate ON (n=1). Span 1836 → 1936.1.1. Vanilla reference
+`20260821_131149_vanilla-baseline-n16` (n=16, median). Ledger for ab2 n=2 published 2026-09-02
+(`tools/testbed/ledger/out_ab2_n2/REPORT.html`, copied into the session as `REPORT_ab2_n2.html`).
+
+### 1. GDP decomposition at 1935 (÷ vanilla median): GDP = population × productive workers per capita × GDP per productive worker
+
+| arm · seed | world GDP | prod/capita | £/prod worker | shortlist GDP | prod/capita | £/prod worker |
+|---|---|---|---|---|---|---|
+| ab2 seed 1 | 0.98× | 0.72× | 1.32× | 1.07× | — | — |
+| ab2 seed 2 | 0.97× | 0.76× | 1.25× | 1.23× | — | — |
+| ab1 gate ON (095339) | 0.54× | 0.53× | 1.08× | — | — | — |
+| ab1 seed 2 (gate off) | 0.39× | 0.44× | 0.94× | 0.36× | 0.39× | 1.10× |
+| ab1 seed 3 (gate off) | 0.47× | 0.49× | 0.95× | 0.45× | 0.50× | 1.15× |
+
+Shortlist = GBR USA FRA NET BEL PRU GER pooled. **ab2 is the shape the design asked for**: output on vanilla's
+level, a quarter fewer productive workers per head, a quarter to a third more output per worker. **ab1 stalls in
+every seed**: construction sector 0.48× vanilla and peasants ~49% of the shortlist population — capacity
+pricing at ×2.5 per rung asks the investment pool for more than it funds, labour stays in subsistence, and
+prices run supply-short across the board. Three seeds, same verdict; the gate-on seed is the best of them.
+
+### 2. Everything else on ab2 (n=2)
+- Companies with the gate off are at vanilla's level (seed 1: shortlist 25 vs 26, 6 of 6 countries with one,
+  regional HQs 135 vs 96, company-held 38.8% vs 39.1%). ⚠ The gate-off ab1 seeds ALSO read below vanilla (shortlist
+  23 companies vs 26, regional HQs 47 vs 96, company-held 23.2% vs 39.1%, world 205 vs 296 companies), so the
+  gate-on collapse (17 vs 26, HQs 20 vs 74, NET/BEL/PRU companyless) is the gate ON TOP of the stall's own
+  poverty — the gate stays off, but it is not the whole of that reading.
+- Tier choice: below-best share of tiered levels built 36.1%; frontier payback 6.6 y against 26.2 y on the
+  stale rungs. Performance: wall 158 / 148 min against vanilla's 155–187, grade P +2.5% PASS.
+- World tiered headcount by rung at 1935 (enabled industries only — ⚠ CORRECTED 2026-09-03: the first reading,
+  10.7 / 29.4 / 17.5 / 1.5M, counted the four-rung book's DISABLED port/shipyard/railway rungs, whose keys are the
+  vanilla buildings, as tiered rungs — BUGS_AND_FIXES 2026-09-03): seed 1 e0 8.2M · e1 26.2M · e2 18.3M · e3 0.2M;
+  seed 2 9.3 / 25.5 / 16.7 / 0.7M — e1 is still the largest rung.
+
+### 3. Which e0 rungs survive, and why (ab2, shortlist, 1935)
+Shortlist e0 headcount 1.18M = 5% of the tiered workforce, and it is concentrated:
+
+| e0 rung | people | staffed | relative VA/worker vs frontier | state |
+|---|---|---|---|---|
+| glass | 319k (18% of its chain) | 85% | 0.08 | alive |
+| tooling | 277k | 60% | 0.03 | alive where tools are dear; 27% staffed in Britain seed 1, where tools reached 96% |
+| motor (one seed) | 196k | — | — | alive |
+| textile | 134k | 46% | — | fading |
+| art academy | 101k | 70% | — | alive |
+| paper | 51k | — | — | fading |
+| steel, artillery, arms, furniture, food, explosives | small | 1–7% | — | **dead**: 80–100% of their workers laid off |
+
+The survivors sit on a price, not on a recipe. e0 levels are still ADDED late (70/51/92/83 per run in the
+1900s–1930s, 5–11% of tiered construction, half of it glass and tooling); the "established after 1920"
+reading of F97 was partly conquest re-creating building records and is corrected there.
+
+### 4. Glass and tools are dear in every core market, in both seeds, and the construction sector is why
+Price as % of base at 1935 (ab2 seed 1 / seed 2 / vanilla median):
+
+| market | glass | tools |
+|---|---|---|
+| British | 158 / 153 / 105 | 96 / 129 / 91 |
+| French | 155 / 159 / 126 | 117 / 137 / 101 |
+| American | 152 / 171 / 111 | 135 / 124 / 93 |
+| Russian | 154 / 172 / 113 | 144 / 167 / 105 |
+
+Glass holds 150–175 from 1880 on in every core market of both seeds while vanilla's eases from ~140 to
+105–125; tools 120–170 against vanilla's 90–115. Steel-frame construction eats **40 glass + 20 tools per
+level** and is **80–90% of all building glass demand in every core country in both games** (Britain ab2:
+20.9k of 26.2k units/wk; vanilla: 18.4k of 21.0k); pops take the rest through the supply-share split.
+
+| Britain, 1935 | construction levels | glass supply | building glass demand | glassworks levels (plastics) |
+|---|---|---|---|---|
+| ab2 seed 1 | 542 | 7.6k | 26.2k | 117 (44) |
+| ab2 seed 2 | 504 | 13.9k | 21.5k | 194 (97) |
+| vanilla r1 | 462 | 27.5k | 21.0k | 264 (255) |
+| vanilla r2 | 270 | 23.8k | 13.9k | 236 |
+
+Not an input constraint: oil 53–99% and lead 85–102% in these markets (American lead 152% in seed 2 the one
+exception). The plastics rung is the most profitable building on the map in every country (£4.3–8.4k/wk per
+level at 96–100% staffing, ~4–6 y payback on 2,400 points), the AI built 44 and 97 levels of it in Britain
+against vanilla's 255, and Britain's private queue at the end of seed 1 (574 items: ports, coal, steel, tea,
+maize) carries no glassworks in its top five. Tools are the same story, milder — construction is 10–25% of
+tools demand, mine pumps, farm tools and factory secondaries the rest — and the one market that built the e2
+tooling rung at scale (Britain seed 1, 214 rubber-grip levels) brought tools to 96% and its e0 rung to 27%.
+
+### What it does NOT say
+- n=2 per arm. The two ab2 seeds agree within 1% on world GDP and differ by 16pp on the shortlist; nothing
+  here separates two ab2-like books.
+- The AI's under-building of the plastics rung is measured (levels, queues, prices); its MECHANISM is not
+  identified — the candidates are the private pool spread over more, dearer buildings and the rung's
+  2,400-point size, which the cost divisor only partly offsets. A change to construction-sector size or to
+  glass supply will move the e0 survivors before any rung-level lever does.
+- ab1's stall is measured; "capacity pricing out-runs the pool" is the proposed mechanism, supported by the
+  construction and peasant readings, not isolated by an arm that varies only the pool.
+- Rung employment (§3) is modelled from staffed levels × per-level employment, secondaries excluded, as in
+  `tiered_panel.mjs`.
+
+## F99 — A STEEPER ai_value LADDER ON GLASS AND TOOLING MOVES THE AI: the plastics rung gets built, glass falls toward vanilla's price, the e0 rungs shrink but do not die — and the ab2 book family stalls in one seed of five (2026-09-03)
+
+**Arm.** `ab3` = the ab2 book (A 2.0 / B 1.5, capacity-priced, pool cost divisor 0.000125, company-target gate OFF)
+with exactly six fields changed: glass and tooling e1/e2/e3 at ai_value 1000 × 3^era = 3000 / 9000 / 27000 instead
+of the generic 1000 × 2^era = 2000 / 4000 / 8000 (`tools/make_ab_config.mjs --ai-steep glass,tooling:3`, user-ruled
+2026-09-02 after F98 §4). Session `20260903_000418_ab3-n3`, n=3, 1836 → 1936.1.1, no crashes (the first launch
+`20260902_223037` was voided by landmine L26 and relaunched; its verdict has the story). References: ab2 n=2
+(`20260902_121027` runs 1, 3) and vanilla n=16 (`20260821_131149`). Ledger `tools/testbed/ledger/out_ab3_n3/`.
+
+### 1. GDP decomposition at 1935, ÷ vanilla median
+| seed | world GDP | prod/capita | £/prod worker | shortlist GDP | prod/capita | £/prod worker |
+|---|---|---|---|---|---|---|
+| ab3 s1 | 0.95× | 0.72× | 1.36× | 1.17× | 0.88× | 1.57× |
+| ab3 s2 | **0.39×** | 0.45× | 0.91× | 0.25× | 0.30× | 1.15× |
+| ab3 s3 | 0.90× | 0.71× | 1.25× | 1.01× | 0.64× | 1.59× |
+| ab2 s1 / s2 | 0.98× / 0.97× | 0.72× / 0.76× | 1.32× / 1.25× | 1.07× / 1.23× | — | — |
+
+The growth seeds land where ab2 did. Ledger: below-best 35.3% (ab2 36.1%), frontier payback 7.3 y against 27.1 y
+on the stale rung (ab2 6.6 / 26.2), P +2.3% PASS (wall 155.5 / 153.9 / 163.2 min), world tiered headcount at 1935,
+enabled industries only (⚠ the ledger's own e0 series counted the disabled port/shipyard rungs until 2026-09-03 —
+BUGS_AND_FIXES): seed 1 e0 7.2M · e1 24.2M · e2 17.9M · e3 1.1M; seed 3 9.1 / 26.7 / 14.5 / 0.6M (ab2 8.2–9.3 /
+25.5–26.2 / 16.7–18.3 / 0.2–0.7). Companies pooled over three seeds:
+shortlist 23 vs 26, HQs 59 vs 96, company-held 32.0% vs 39.1%; seed 1 alone 26 / 114 / 37.8%.
+
+### 2. The lever bites (prices at 1935, % of base)
+| market | glass ab3 s1 / s2 / s3 | glass ab2 s1 / s2 | vanilla | tools ab3 s1 / s2 / s3 | tools ab2 | vanilla |
+|---|---|---|---|---|---|---|
+| British | 118 / 134 / **112** | 158 / 153 | 105 | 103 / 118 / 103 | 96 / 129 | 91 |
+| French | 140 / 173 / 141 | 155 / 159 | 126 | 98 / 145 / 123 | 117 / 137 | 101 |
+| American | 135 / 129 / 146 | 152 / 171 | 111 | 116 / 158 / 84 | 135 / 124 | 93 |
+| Russian | 149 / 135 / 140 | 154 / 172 | 113 | 140 / 138 / 131 | 144 / 167 | 105 |
+
+Britain at 1935 holds 117 leaded + 84 plastics glassworks (seed 1) and 73 + 201 (seed 3) against ab2's 61 + 44
+and 67 + 97; in seed 3 it supplies 34.3k glass a week against 30.5k of building demand — the first British market
+in any four-rung arm that makes its own glass. Germany in seed 1 over-shoots to 391 + 206 glassworks and exports.
+Elsewhere glass moves the right way and stays 20–35pp above vanilla; the American market is the laggard (146 in
+seed 3). Steel did not rise in seed 3 (81–85) after reading 115–124 in seed 1 — a seed effect, not the tooling
+rungs' steel appetite.
+
+### 3. The e0 rungs shrink but do not die (shortlist, 1935)
+| seed | e0 total (share of tiered) | glass e0 | tooling e0 | largest e0 rungs |
+|---|---|---|---|---|
+| ab3 s1 | 773k (3.7% of 20.9M) | 119k @72% staffed | 397k @84% | tooling 397k · glass 119k · paper 85k |
+| ab3 s2 (stall) | 437k (7.8% of 5.6M) | 50k @100% | 75k @94% | steel 95k · tooling 75k · paper 55k |
+| ab3 s3 | 695k (3.9% of 17.9M) | 146k @88% | 61k @65% | motor 188k · textile 180k · glass 146k |
+| ab2 s1 / s2 | 746k (3.1%) / 1,406k (7.3%) | 234k / 404k | 322k / 233k | — |
+
+Glass e0 halves against ab2 and stays alive at 70–90% staffing; the 397k of tooling e0 in seed 1 is one thing —
+the United States holds 75 rung-0 tooling workshops, 74 of them company-owned, grown 15 → 37 → 57 → 75 across
+1880–1935 while American tools sat at 116% (the F97 §4 company pattern, untouched by ai_value). Textile and motor
+e0 (180k / 188k in seed 3) are the other survivors.
+
+### 4. The stall (seed 2)
+Britain's private construction speed fell from 320 to 101 points/week in 1860 with the investment pool at zero and
+stayed at 130–280 for forty years (seed 1: up to 1,460); its construction sector, over-built to 124 levels in
+1855, decayed to 34 by 1900. In 1880 the East India Company — 45% of the British market's GDP — left the market
+while still a colonial subject and dissolved into independent Indian states by 1882; the same event hit seed 1 in
+1899–1900 with India intact and an industrial Britain (GDP 147M → 195M through it). Seed 2's Britain ran 69 → 71
+→ 81 → 88M over 1870–1900 against seed 1's 77 → 106 → 147 → 195M; Germany never formed, Austria collapsed, France
+and the USA went bankrupt (1887, 1918), and the world ended at 0.39×. Glass and tooling counts are identical across
+the seeds through 1870, so nothing ties the stall to the six changed fields — but the ab2 book family now stalls
+in 1 of 5 seeds (ab2 0/2, ab3 1/3) where ab1's ×2.5 pricing stalled 3/3: the family sits near a low-growth
+equilibrium that a bad decade can tip a major into.
+
+### 5. Does vanilla stall like this? No — measured over the 18 reference runs (user question, 2026-09-03)
+World GDP at 1935 across the 18 vanilla runs (n=16 + the extra 2) runs **0.82× to 1.16×** of their median (r013
+3,602M · r007 3,626M · r003 3,756M at the bottom; r011 5,081M at the top): **no vanilla world stalls**. A BRITISH
+stall of seed 2's type does occur once — **r007**: Britain £144M at 1935 (0.37× the British median of £388M), 48
+construction levels, private construction 137 / 111 points a week at 1880 / 1900, pool £22M — and two weak
+Britains beside it (r003: 116 construction levels; r015: 97). But the rest of the world absorbs it: r007's world
+minus Britain is £3,482M against a median rest-of-world of ~£4,000M (0.87×), where ab3 seed 2's rest-of-world is
+£1,555M against the growth seeds' ~£3,500M (0.45×). **In vanilla a stalled Britain is a local event; on the ab2
+book it took the world with it** — the qualitative difference, and the reason the stall reads as the book's
+low-growth equilibrium rather than as seed weather. India leaving the British market is routine in vanilla (14 of
+18 runs, 10 of them before 1862, the Company tag gone in 13) and is not the cause of anything.
+
+| | world GDP ÷ median | GBR GDP ÷ median | GBR construction lv | GBR private pts/wk 1880 / 1900 | rest-of-world ÷ ref |
+|---|---|---|---|---|---|
+| vanilla r007 (the British stall) | 0.83× | 0.37× | 48 | 137 / 111 | 0.87× |
+| vanilla worst world (r013) | 0.82× | 1.10× | 278 | 465 / 781 | — |
+| vanilla median | 1.00× | 1.00× | ~290 | ~500 / ~1,200 | 1.00× |
+| ab3 seed 2 | 0.39× | 0.41× | 38 | 189 / 131 | 0.45× |
+| ab3 seeds 1 / 3, ab2 seeds | 0.90–0.98× | 1.7–1.9× | 500–560 | 550–690 / 1,050–1,850 | ~1.0× |
+
+### What it does NOT say
+- Two growth seeds cannot separate ab3 from ab2 on GDP, companies or below-best; the separation is in the glass
+  supply and price, and in Britain most of all.
+- Whether the stall rate is the arm's or the seed's is undecidable at n=5: it needs more seeds of the same book,
+  or a pool-side lever (cost divisor, top-rung cost) tested against the same seeds.
+- The mechanism behind the ab2 AI's under-building of the plastics rung is still unidentified; ab3 shows that
+  desire moves it, not why the generic desire did not.
+- The prediction scorecard of `schedules/ab3_n3.json`: P1 (glass toward vanilla) and P2 (British glassworks >200)
+  pass in Britain and move the right way elsewhere; P3 (e0 glass/tooling <100k, <30% staffed) fails — lower,
+  not dead; P4 (GDP 0.93–1.03×) passes in the growth seeds and fails on the stall; P5 (no chain loses a fifth)
+  is undecidable inside seed noise; P6 (companies at vanilla) passes in the growth seeds; P7's null case did not
+  occur.

@@ -92,3 +92,11 @@ if you have not rebuilt since the last config change.
 `config/mod_config.json` is the source of truth (the editor reads/writes it). `config/start_exceptions.json`
 holds manual overrides for the 1836 start (force a country's factories to a tier, or remove them).
 Everything under `mod/` is **generated** — never hand-edit it.
+
+
+## Two canonical books (2026-09-03)
+
+The repo carries two canonical balance books: the **six-rung canon** in `config/mod_config.json` (the default the builder
+uses) and **`canon-4rung`** in `config/mod_config.canon-4rung.json` — a four-rung ladder on vanilla's own recipes, described
+in `BALANCE_FRAMEWORK.md` §10.66–10.69. Build the four-rung one with
+`powershell -ExecutionPolicy Bypass -File toolsuild.ps1 -Config configmod_config.canon-4rung.json`.

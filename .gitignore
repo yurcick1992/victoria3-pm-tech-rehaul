@@ -93,3 +93,15 @@ HANDOVER.md
 # alternate-config siblings: emit_techs.mjs derives this path from the config name, so an alt config
 # needs one. Byte copies of the committed tree; regenerate with cp, never commit 585 KB twice.
 config/tech_tree_options.*.json
+
+# The four-rung canon (BALANCE_FRAMEWORK §10.69, 2026-09-03) is SOURCE, like era6 — un-ignored explicitly, with its L20 twin.
+!config/mod_config.canon-4rung.json
+!config/tech_tree_options.canon-4rung.json
+# Ledger fill working dirs (tools/testbed/ledger/out_<batch>/): build products of the fill scripts; the published REPORT.html
+# is copied into the session folder, which is the record.
+tools/testbed/ledger/out_*/
+# hand backups left beside configs and scripts during a re-derivation
+config/*.precap
+config/*.prefix_bak
+config/*.premargin
+tools/testbed/ledger/*.canon6
