@@ -6516,6 +6516,18 @@ base per-level employment — a nominal figure; the JE text quotes the levels an
 caught the earlier wording "75,000 workers at full staffing", which is true under one secondary method and false under
 another). The JE text now names each source, its mark and the live figure (emitter, 2026-09-03; in-game
 rendering of the data function still to be seen on the next run).
+**Anchors re-ruled (user, 2026-09-03): no JE gates on an auto-scaling building.** Combustion engine (automotive's first
+rung) → the motor industry's watertube and diesel rungs at the t2 mark (15 fully staffed levels each, the bar ticking once
+per qualifying source); telephone (electrics' first rung) → trade centres alone (25 levels at 1,000 a level); percussion cap
+(munition) and the explosives first rung → bg_army alone, counted in SOLDIERS (barracks levels × the battalion's 1,000
+manpower, 12,500 at the ×0.5 mark); urban centres and financial districts gate nothing; every later rung keeps its
+predecessor rung. **How the army-anchored entries fired before this (canon-4rung, six non-stalled runs):** percussion cap
+190–235 stage completions a run over 102–122 countries, intensive agriculture 231–261 over 104–120 — and **none for Britain,
+France or the United States in any run**: the majors research those era-2 technologies within a few years of 1836, so the
+60-month bar never completes for them; the army anchor is a minor-country channel. **The war channel (rule C, the military
+tree on the 2026-08-18 war gate) emits NOTHING on either canon**: `research_events.scope` is absent, so the emitter's
+default `tiers_only` covers only the tiers' own technologies — 0 war journal entries in every build since the four-rung
+re-peg (and in today's six-rung dry run too). Turning it on is a ruling, not a calibration.
 
 **What it does NOT settle — the open list, in the order the user is weighing it.**
 1. **The company rebuild pattern** — a company expands its rung-0 buildings all century (DMC 21 of France's 25

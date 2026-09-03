@@ -348,7 +348,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       const what = s.group ? `$${s.group}$` : `$${s.building}$`;
       const indObj = CFG.industries.find(x => x.id === s.ind);
       const varies = s.group ? false : (s.emp != null && s.emp > 0 ? workforceVaries(indObj) : workforceVaries(null, s.building));
-      const unit = (s.group && gTypes.length) ? `workers across its buildings` : !inPeople ? 'fully staffed levels'
+      const unit = (s.group && gTypes.length) ? (MILITARY_GROUPS.has(s.group) ? `soldiers in its buildings` : `workers across its buildings`) : !inPeople ? 'fully staffed levels'
         : varies ? `fully staffed levels (${people.toLocaleString('en-US')} workers at the base method's staffing, labour saving and other staffing changes calculated correctly)`
         : `fully staffed levels (${people.toLocaleString('en-US')} workers)`;
       const live = `[ROOT.GetCountry.MakeScope.ScriptValue('${n}')|0]`;
