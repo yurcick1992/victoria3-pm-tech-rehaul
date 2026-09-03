@@ -74,6 +74,11 @@ const pmgVaries = (g) => { const grp = VAN.pmgs[g]; if (!grp) return false; cons
 const vanillaKeyOf = (ind) => { const t = [...(ind.tiers || [])].sort((a, b) => a.era - b.era)[0]; return (ind.building && ind.building.key) || (t && t.key); };
 // `ind` = our industry (its vanilla building's secondary groups decide), or `bld` = a vanilla anchor building
 const workforceVaries = (ind, bld) => { const key = bld || vanillaKeyOf(ind); const vb = key && VAN.buildings[key]; const groups = vb ? (vb.pmgs || []).slice(1) : (ind && ind.secondary_pmgs) || []; return groups.some(pmgVaries); };
+// a vanilla building's per-level employment: its main group's base method; a tier of ours → tierEmp
+const buildingEmp = (key) => { for (const ind of CFG.industries) for (const t of ind.tiers || []) if (t.key === key) return tierEmp(t, ind); const vb = VAN.buildings[key]; if (!vb) return 0; const g = (vb.pmgs || [])[0]; const grp = g && VAN.pmgs[g]; const base = grp && (grp.pms || []).map(k => (VAN.pms || {})[k]).filter(Boolean).find(x => !x.gated); return base ? Object.values(base.emp || {}).reduce((a, b) => a + (+b || 0), 0) : 0; };
+// the building types of a vanilla building group (from the extract), with their per-level employment
+const groupTypes = (g) => Object.entries(VAN.buildings).filter(([k, b]) => b.group === g).map(([k]) => ({ key: k, emp: buildingEmp(k) })).filter(x => x.emp > 0);
+const lvValues = new Set();   // per-type staffed-level values already emitted (shared across sources)
 const tierEmp = (tier, ind) => { const wm = tier.workforce_mult != null ? +tier.workforce_mult : 1; const own = Object.values(tier.employment || {}).reduce((a, b) => a + (+b || 0), 0); if (own > 0) return Math.round(own * wm); return Math.round((ind.secondary_pmgs || []).reduce((a, g) => a + basePmEmp(g), 0) * wm); };
 
 // ---- tech -> production methods it unlocks, for the rule-D anchoring ----------------------------
@@ -316,17 +321,27 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       //   levels through the predecessor's BASE per-level employment (the config's, i.e. the main method's nominal
       //   workforce) — a nominal figure, which is why the text quotes levels and calls the people number nominal
       //   (user, 2026-09-03: "75,000 workers at full staffing" is true under one secondary method and false under another).
-      const inPeople = s.emp != null && s.emp > 0;
+      // people per level of this source: our tier's, a vanilla building's, or (group) per type below
+      const gTypes = s.group ? groupTypes(s.group) : [];   // a group with no typed employment (bg_army, bg_conscription) stays level-counted
+      const empOf = s.group ? 0 : (s.emp != null && s.emp > 0 ? s.emp : buildingEmp(s.building));
+      const inPeople = (s.group && gTypes.length > 0) || empOf > 0;
       const mult = '';
-      sv.push(`${n} = {\n${T}value = 0\n${T}every_scope_building = {\n${T}${T}limit = { ${filter} }\n${T}${T}add = { value = this.level  multiply = occupancy }\n${T}}${mult}\n}`);
-      const need = Math.max(1, Math.round(people / (inPeople ? s.emp : perLevel)));
+      if (s.group && gTypes.length) {
+        // a GROUP source in people: Σ over its building types of (staffed levels of that type × that type's employment)
+        const types = gTypes;
+        for (const ty of types) { const lv = `pmr_lv_${ty.key.replace(/^building_/, '')}`; if (!lvValues.has(lv)) { lvValues.add(lv); sv.push(`${lv} = {\n${T}value = 0\n${T}every_scope_building = {\n${T}${T}limit = { is_building_type = ${ty.key} }\n${T}${T}add = { value = this.level  multiply = occupancy }\n${T}}\n}`); } }
+        sv.push(`${n} = {\n${T}value = 0\n` + types.map(ty => `${T}add = { value = pmr_lv_${ty.key.replace(/^building_/, '')}  multiply = ${ty.emp} }`).join('\n') + `\n}`);
+      } else {
+        sv.push(`${n} = {\n${T}value = 0\n${T}every_scope_building = {\n${T}${T}limit = { ${filter} }\n${T}${T}add = { value = this.level  multiply = occupancy }\n${T}}${mult}\n}`);
+      }
+      const need = (s.group && gTypes.length) ? people : Math.max(1, Math.round(people / (empOf > 0 ? empOf : perLevel)));
       // ⭐ THE JE SAYS WHAT TICKS (user-ruled 2026-09-03): one desc key per source naming the building (or group), its mark
       //   and the country's live figure through the loc data function [ROOT.GetCountry.MakeScope.ScriptValue('<sv>')|0]
       //   (vanilla's own idiom, e.g. acw_reincorporate_dixie_loyalist_min), instead of the shared 'Employed in the industry'.
       const what = s.group ? `$${s.group}$` : `$${s.building}$`;
       const indObj = CFG.industries.find(x => x.id === s.ind);
-      const varies = s.group ? false : (s.emp != null ? workforceVaries(indObj) : workforceVaries(null, s.building));
-      const unit = !inPeople ? 'fully staffed levels'
+      const varies = s.group ? false : (s.emp != null && s.emp > 0 ? workforceVaries(indObj) : workforceVaries(null, s.building));
+      const unit = (s.group && gTypes.length) ? `workers across its buildings` : !inPeople ? 'fully staffed levels'
         : varies ? `fully staffed levels (${people.toLocaleString('en-US')} workers at the base method's staffing, labour saving and other staffing changes calculated correctly)`
         : `fully staffed levels (${people.toLocaleString('en-US')} workers)`;
       const live = `[ROOT.GetCountry.MakeScope.ScriptValue('${n}')|0]`;
