@@ -68,6 +68,12 @@ const GROUPS = new Set(Object.keys(VAN.groups || {}));
 const basePmEmp = (pmg) => { const g = VAN.pmgs[pmg]; if (!g) return 0; const P = (g.pms || []).map(k => (VAN.pms || {})[k]).find(x => x && !x.gated); return P ? Object.values(P.emp || {}).reduce((a, b) => a + (+b || 0), 0) : 0; };
 // a tier's per-level employment: its main method's (the config's `employment`); a tier whose main method employs nobody
 // (the art academy — its jobs live in the ownership PMG, F101.2) takes the base methods of its secondary PMGs instead
+// does any secondary method of this industry change the per-level workforce (automation, patronage mixes with a different
+// total)? Decides the JE wording: one number where nothing can move it, the explicit note where something can.
+const pmgVaries = (g) => { const grp = VAN.pmgs[g]; if (!grp) return false; const tot = P => Object.values((P && P.emp) || {}).reduce((a, b) => a + (+b || 0), 0); const pms = (grp.pms || []).map(k => (VAN.pms || {})[k]).filter(Boolean); const base = pms.find(x => !x.gated); if (!base) return false; return pms.some(x => tot(x) !== tot(base)); };
+const vanillaKeyOf = (ind) => { const t = [...(ind.tiers || [])].sort((a, b) => a.era - b.era)[0]; return (ind.building && ind.building.key) || (t && t.key); };
+// `ind` = our industry (its vanilla building's secondary groups decide), or `bld` = a vanilla anchor building
+const workforceVaries = (ind, bld) => { const key = bld || vanillaKeyOf(ind); const vb = key && VAN.buildings[key]; const groups = vb ? (vb.pmgs || []).slice(1) : (ind && ind.secondary_pmgs) || []; return groups.some(pmgVaries); };
 const tierEmp = (tier, ind) => { const wm = tier.workforce_mult != null ? +tier.workforce_mult : 1; const own = Object.values(tier.employment || {}).reduce((a, b) => a + (+b || 0), 0); if (own > 0) return Math.round(own * wm); return Math.round((ind.secondary_pmgs || []).reduce((a, g) => a + basePmEmp(g), 0) * wm); };
 
 // ---- tech -> production methods it unlocks, for the rule-D anchoring ----------------------------
@@ -318,7 +324,11 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       //   and the country's live figure through the loc data function [ROOT.GetCountry.MakeScope.ScriptValue('<sv>')|0]
       //   (vanilla's own idiom, e.g. acw_reincorporate_dixie_loyalist_min), instead of the shared 'Employed in the industry'.
       const what = s.group ? `$${s.group}$` : `$${s.building}$`;
-      const unit = inPeople ? `fully staffed levels (${people.toLocaleString('en-US')} workers at the base method's staffing; labour-saving methods do not lower the count)` : 'fully staffed levels';
+      const indObj = CFG.industries.find(x => x.id === s.ind);
+      const varies = s.group ? false : (s.emp != null ? workforceVaries(indObj) : workforceVaries(null, s.building));
+      const unit = !inPeople ? 'fully staffed levels'
+        : varies ? `fully staffed levels (${people.toLocaleString('en-US')} workers at the base method's staffing, labour saving and other staffing changes calculated correctly)`
+        : `fully staffed levels (${people.toLocaleString('en-US')} workers)`;
       const live = `[ROOT.GetCountry.MakeScope.ScriptValue('${n}')|0]`;
       const dkey = `pmr_term_${tech}_${i}`;
       loc.push([dkey, `${what}: at least ${need.toLocaleString('en-US')} ${unit} (now ${live})`]);
