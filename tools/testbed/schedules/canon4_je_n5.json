@@ -22,7 +22,7 @@
     "5-minute smoke check incl. a look at a research JE's text in the mirror if any loc error is logged (the ScriptValue data function inside a JE is unverified in-game)",
     "first run: JE completions (PMR_JE) by country, GBR/FRA/USA technologies held at 1900 vs the canon, first_run_decomp, company_check"
   ],
-  "_cost": "5 × 1836→1936, ~2.6 h each: ~13 h. NOT LAUNCHED — awaiting the user's go-ahead (military channels built 2026-09-03; the staged config is the one to run).",
+  "_cost": "5 × 1836→1936, ~2.6 h each: ~13 h. LAUNCHED 2026-09-03 with the user's explicit go-ahead (\"Save this, build this, go with n=5\") after the small-arms anchor ruling.",
   "_caveats": [
     "n=3 against n=4 on the same book: the JE-count and tech-pace predictions resolve; GDP under ~10% does not.",
     "The four-rung tree covers 40 technologies with JEs against the six-rung canon's 201 today (378 at the time of its runs), so 'back to the old level' restores the per-JE parameters, not the number of JEs."

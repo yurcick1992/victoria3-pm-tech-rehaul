@@ -96,6 +96,9 @@ config/tech_tree_options.*.json
 
 # The four-rung canon (BALANCE_FRAMEWORK §10.69, 2026-09-03) is SOURCE, like era6 — un-ignored explicitly, with its L20 twin.
 !config/mod_config.canon-4rung.json
+# canon4-je: canon-4rung + the ruled research-event parameters (§10.69), the arm under test in canon4-je-n5 (2026-09-03)
+!config/mod_config.canon4-je.json
+!config/tech_tree_options.canon4-je.json
 !config/tech_tree_options.canon-4rung.json
 # Ledger fill working dirs (tools/testbed/ledger/out_<batch>/): build products of the fill scripts; the published REPORT.html
 # is copied into the session folder, which is the record.
