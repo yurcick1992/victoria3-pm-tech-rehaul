@@ -89,8 +89,6 @@ const DOM_MARGIN = +(process.env.INV_MARGIN || 0.40);
 // must outrun), while the fat frontier margin is the entry buffer that lets the price fall below
 // the old rung's break-even with entry still profitable. INV_MARGINS overrides (6 comma values);
 // INV_GRANULAR=0 keeps the flat DOM_MARGIN.
-const MARGINS = (process.env.INV_MARGINS || '0.30,0.38,0.46,0.54,0.62,0.70').split(',').map(Number);
-if (MARGINS.length !== 6 || MARGINS.some(x => !(x > 0))) throw new Error('INV_MARGINS needs 6 positive values');
 
 const { E, S, PMECON, config: CFG_RAW } = loadEcon({ quiet: true });
 const rules = makePmRules(E, S);
@@ -104,14 +102,47 @@ const ARTIFACT_SUFFIX = (() => {
 const artifact = base => join(REPO, 'config', base + ARTIFACT_SUFFIX + '.json');
 const FIT = JSON.parse(readFileSync(artifact('era_prices'), 'utf8'));
 const TG = FIT.targets;
+// ⭐⭐ THE ERA COUNT IS A PARAMETER (2026-08-29). It comes from the fit file, so a four-rung ladder is
+// a DIFFERENT config + fit pair, not a different solver. Everything below that used to say 5 or 6 now
+// says ELAST or NERA. Two things are genuinely era-INDEXED and stay so (the margin ladder, the price
+// ladder); everything else is a CALENDAR premise authored on the original six anchor years and is
+// RESAMPLED onto whatever years the fit file names — population, peasant share, working-adult ratio,
+// the profession wedge, the construction ramp, the measured raw price paths. Resampling by YEAR is the
+// only reading that survives a re-anchoring: those series describe 1900, not 'the fourth rung'.
+const NERA = FIT.eras.length, ELAST = NERA - 1;
+const SRC_YEARS = [1780, 1836, 1870, 1900, 1920, 1945];
+const atYear = (series, year) => {
+  if (!(series && series.length)) return 0;
+  if (year <= SRC_YEARS[0]) return series[0];
+  if (year >= SRC_YEARS[SRC_YEARS.length - 1]) return series[series.length - 1];
+  for (let k = 1; k < SRC_YEARS.length; k++) if (year <= SRC_YEARS[k]) {
+    const f = (year - SRC_YEARS[k - 1]) / (SRC_YEARS[k] - SRC_YEARS[k - 1]);
+    return series[k - 1] + f * (series[k] - series[k - 1]);
+  }
+  return series[series.length - 1];
+};
+const nearestSrc = year => SRC_YEARS.reduce((b, y, k) => Math.abs(y - year) < Math.abs(SRC_YEARS[b] - year) ? k : b, 0);
+// a six-point premise series -> one point per era of THIS fit
+const perEra = series => FIT.eras.map(e => atYear(series, e.year));
+const perEraNearest = table => FIT.eras.map(e => table[nearestSrc(e.year)]);
+// THE 1836 ERA — the rung the measured vanilla anchors belong to, and the one the price path rebases
+// on. It is era 1 on the six-era ladder and era 0 on the four-era one, so it is looked up, never 1.
+const E1836 = (() => { let b = 0; for (let k = 1; k < FIT.eras.length; k++)
+  if (Math.abs(FIT.eras[k].year - 1836) < Math.abs(FIT.eras[b].year - 1836)) b = k; return b; })();
+// THE MARGIN LADDER (see the note beside DOM_MARGIN) — INV_MARGINS overrides with one value per era;
+// the default spreads the ruled 0.30 -> 0.70 across however many rungs there are.
+const MARGINS = process.env.INV_MARGINS
+  ? process.env.INV_MARGINS.split(',').map(Number)
+  : FIT.eras.map((_, j) => +(0.30 + 0.40 * j / Math.max(1, ELAST)).toFixed(4));
+if (MARGINS.length !== NERA || MARGINS.some(x => !(x > 0))) throw new Error(`INV_MARGINS needs ${NERA} positive values, one per era of ${artifact('era_prices')}`);
 const SHIP_INDUSTRIES = new Set(['shipyard', 'shipyard_steam']);
 
 // ===================================================================================================
 // PREMISES — COPIED from tools/era_scenarios.mjs (see the fork warning in the header).
 // ===================================================================================================
-const POP_TOTAL = [5e6, 13e6, 40e6, 75e6, 105e6, 150e6];
-const PEASANT_SHARE = [0.80, 0.45, 0.35, 0.22, 0.12, 0.04];
-const WORK_RATIO_BY_ERA = [0.25, 0.25, 0.25, 0.30, 0.33, 0.40];
+const POP_TOTAL = perEra([5e6, 13e6, 40e6, 75e6, 105e6, 150e6]);
+const PEASANT_SHARE = perEra([0.80, 0.45, 0.35, 0.22, 0.12, 0.04]);
+const WORK_RATIO_BY_ERA = perEra([0.25, 0.25, 0.25, 0.30, 0.33, 0.40]);
 const ARMY_GDP_SHARE = 0.05;
 const ARMY_MIX = {
   0: [['combat_unit_type_line_infantry', 3], ['combat_unit_type_cannon_artillery', 1]],
@@ -138,7 +169,7 @@ const PROF_MULT_BY_ERA = {
 let PROF_RATIO = { ...PROF_RATIO_1836 };
 const setProfRatio = eIx => {
   PROF_RATIO = Object.fromEntries(Object.entries(PROF_RATIO_1836).map(([k, v]) =>
-    [k, v * (PROF_MULT_BY_ERA[k] ? PROF_MULT_BY_ERA[k][eIx] : 1)]));
+    [k, v * (PROF_MULT[k] ? PROF_MULT[k][eIx] : 1)]));
 };
 const PROF_SOURCE = [
   { prof: 'bureaucrats', bld: 'building_government_administration' },
@@ -160,12 +191,31 @@ const SUBSISTENCE_MIX = (() => {
 const SOLDIERS_PER_BATTALION = 1000;
 const BARRACK_BLD = 'building_barrack';
 const BATTALIONS_PER_BARRACK = 1;
-const CONSTR_BY_ERA = [0.08, 0.10, 0.12, 0.15, 0.17, 0.18];
+const CONSTR_BY_ERA = perEra([0.08, 0.10, 0.12, 0.15, 0.17, 0.18]);
 const CONSTRUCTION_PM = {
   0: 'pm_wooden_buildings', 1: 'pm_iron_frame_buildings', 2: 'pm_iron_frame_buildings',
   3: 'pm_steel_frame_buildings', 4: 'pm_steel_frame_buildings', 5: 'pm_arc_welded_buildings',
 };
+// THE SECONDARY GROUPS THAT DO NOT START AT MAXIMUM (user-ruled 2026-09-01). Everything else begins on
+// the richest method its era allows — labour-saving included — and the optimiser may switch it off.
+//   · DISTILLERY: stills convert groceries into liquor, and starting every food plant on them would
+//     flood the liquor market from a side door in every era.
+//   · AEROPLANES + TANKS: vanilla puts these in SEPARATE groups, so they are not mutually exclusive,
+//     and their reductions are -10 and -20 against a 30-car main method — together exactly 100% of
+//     the output. Scaled proportionally that property holds at every rung, so "start at maximum" made
+//     automotive convert its ENTIRE car output into tanks and aeroplanes, which at design prices is a
+//     loss (e2 read -39%: £3000 of automobiles became £1800 of military goods). Measured 2026-09-01.
+// ⚠ The automation group (`pmg_automation_building_automotive_industry`) is NOT excepted — the ruling
+//   is about the CONVERSION methods, and labour-saving still starts at its heaviest.
+const NO_MAX_START_PMGS = new Set(['pmg_distilleries', 'pmg_distillery', 'pmg_aeroplanes', 'pmg_tanks']);
+
 const CONSTRUCTION_BLD = 'building_construction_sector';
+// the two DISCRETE per-era tables above are authored on the six source eras, so they are picked by
+// the NEAREST source year rather than interpolated — an army mix and a construction method are
+// choices, not quantities, and half of one is not a thing
+const ARMY_MIX_BY_ERA = perEraNearest([0, 1, 2, 3, 4, 5].map(k => ARMY_MIX[k]));
+const CONSTRUCTION_PM_BY_ERA = perEraNearest([0, 1, 2, 3, 4, 5].map(k => CONSTRUCTION_PM[k]));
+const PROF_MULT = Object.fromEntries(Object.entries(PROF_MULT_BY_ERA).map(([k, v]) => [k, perEra(v)]));
 const SUPPORT_BLD = {
   ownership:    ['building_manor_house', 'building_financial_district'],
   government:   ['building_government_administration'],
@@ -190,7 +240,14 @@ const PRUNE = (() => { const m = {};
   for (const kv of spec.split(',').filter(Boolean)) {
     const [id, e] = kv.split('@'); (m[id] = m[id] || new Set()).add(+e); } return m; })();
 const EXTINCT_GRACE = 2;
-const MFG_IO_CAP = 4;
+// THE LEAN FLOOR: a manufacturing tier must consume at least 1/CAP of its output VALUE in input
+// goods, both at BASE prices (Ibase >= Obase/CAP). Applied LAST in solveInputsAt, so it overrides
+// the ratchet and the solvency clamp. It interacts with the margin ladder through the DESIGN price:
+// at the floor the best expressible margin is 0.75*CAP*(p_out/p_in) - 1 at wage_pct 0.25, so a tier
+// whose designed output price is low cannot reach a high margin however lean its recipe. At CAP 4
+// and p_out ~0.48 that ceiling is 0.44, which is why the 0.70 e3 target pinned 10 of 18 tiers
+// (BUGS_AND_FIXES / FINDINGS F94 follow-up). INV_IO_CAP overrides for measurement.
+const MFG_IO_CAP = +(process.env.INV_IO_CAP || 4);
 const MAX_TARGET_BE = 175;
 const DEFAULT_WAGE_PCT = 0.25;
 
@@ -199,7 +256,7 @@ const DEFAULT_WAGE_PCT = 0.25;
 // ===================================================================================================
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 // the dominant margin at era e (see the MARGIN LADDER note beside DOM_MARGIN)
-const marginAt = e => GRANULAR ? MARGINS[clamp(e, 0, 5)] : DOM_MARGIN;
+const marginAt = e => GRANULAR ? MARGINS[clamp(e, 0, ELAST)] : DOM_MARGIN;
 const W = (s, n) => String(s).padEnd(n);
 const fmtN = n => (Math.abs(n) >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : Math.abs(n) >= 1e3 ? (n / 1e3).toFixed(0) + 'k' : String(Math.round(n)));
 const pct = x => (x >= 0 ? '+' : '') + (x * 100).toFixed(0) + '%';
@@ -316,7 +373,11 @@ const isIndustrial = (g, era) => GOOD_FIRST_ERA[g] != null && GOOD_FIRST_ERA[g] 
 // landing at the original ladder's own 50. Envelopes at +40%: be 86/71/60/51/42/36 — era 1 at ×1.03
 // of vanilla's measured input share. The superseded 175−25·era row remains reachable via INV_LADDER
 // for A/B ("175,150,125,100,75,50").
-const LADDER = (process.env.INV_LADDER || '120,100,84,71,59,50').split(',').map(Number);
+// (the flat fallback used only when INV_GRANULAR=0 — the six-era row, or a geometric one spanning the
+// same 120..50 on any other era count, so the A/B stays available at four rungs too)
+const LADDER = process.env.INV_LADDER ? process.env.INV_LADDER.split(',').map(Number)
+  : NERA === 6 ? [120, 100, 84, 71, 59, 50]
+  : FIT.eras.map((_, j) => Math.round(120 * Math.pow(50 / 120, j / Math.max(1, ELAST))));
 if (LADDER.length !== FIT.eras.length || LADDER.some(x => !(x > 0))) throw new Error(`INV_LADDER needs ${FIT.eras.length} positive prices`);
 
 // ---------------------------------------------------------------------------------------------
@@ -340,14 +401,14 @@ if (LADDER.length !== FIT.eras.length || LADDER.some(x => !(x > 0))) throw new E
 // VALIDATION after deriveRecipes is the authority — a rung it cannot kill is printed, not hidden.
 const KAPPA = +(process.env.INV_KAPPA || 0.90);  // 0.95 left ±5% cap-deviation survivors (measured)
 const SLOPE_MIN = 0.70, SLOPE_MAX = 0.92;
-const MEAS = GRANULAR ? JSON.parse(readFileSync(new URL('../config/measured_price_paths.json', import.meta.url), 'utf8')) : null;
+const MEAS = GRANULAR ? JSON.parse(readFileSync(artifact('measured_price_paths'), 'utf8')) : null;
 const RAW_PATH = {};
 if (GRANULAR) for (const g in MEAS.raw_paths) RAW_PATH[g] = MEAS.raw_paths[g];
 delete RAW_PATH.hardwood;                              // ruled trade-supplied at design 100 (§10.46)
 const ANCHOR = {}, SLOPE = {}, SLOPE_CLAMPED = {}, WACT = {};   // WACT: tier key -> measured wage share of cost
 if (GRANULAR) {
   for (const g in GOOD_FIRST_ERA) {
-    ANCHOR[g] = GOOD_FIRST_ERA[g] <= 1 && MEAS.anchors_vanilla[g] != null
+    ANCHOR[g] = GOOD_FIRST_ERA[g] <= E1836 && MEAS.anchors_vanilla[g] != null
       ? clamp(MEAS.anchors_vanilla[g], 50, 175) : 100;
     SLOPE[g] = 0.84;
   }
@@ -366,10 +427,10 @@ function calibrateGranular() {
   const pathStep = (g, eFrom) => {                     // one-era price ratio of good g from era eFrom
     if (GOOD_FIRST_ERA[g] != null && GOOD_FIRST_ERA[g] <= eFrom) return SLOPE[g];
     const p = RAW_PATH[g]; if (!p) return 1;
-    const a = p[clamp(eFrom, 0, 5)], b = p[clamp(eFrom + 1, 0, 5)];
+    const a = p[clamp(eFrom, 0, ELAST)], b = p[clamp(eFrom + 1, 0, ELAST)];
     return a > 0 ? b / a : 1;
   };
-  const wageAt = e => { const x = FIT.eras.find(q => q.era === clamp(e, 0, 5)); return x ? x.base_wage : 1; };
+  const wageAt = e => { const x = FIT.eras.find(q => q.era === clamp(e, 0, ELAST)); return x ? x.base_wage : 1; };
   const solveSlopes = () => {
     for (let it = 0; it < 20; it++) {
       let moved = 0;
@@ -377,7 +438,7 @@ function calibrateGranular() {
         let need = Infinity;
         for (const { i, t } of TIERS_OF_GOOD[g]) {
           const e = clamp(t.era ?? 0, 0, 5);
-          if (e + 2 > 5) continue;                                 // no two-era horizon exists to kill it in
+          if (e + 2 > ELAST) continue;                                 // no two-era horizon exists to kill it in
           if (PLATEAU_LAST_ERA[g] != null && e >= PLATEAU_LAST_ERA[g]) continue;
           const ratio = ratioFor(i, t); if (!ratio) continue;
           let r2 = 0, tot = 0;
@@ -429,18 +490,18 @@ function calibrateGranular() {
 }
 function mandatePrice(g, era) {
   if (!isIndustrial(g, era)) {
-    if (GRANULAR && RAW_PATH[g]) return clamp(RAW_PATH[g][clamp(era, 0, 5)], 25, 175);
+    if (GRANULAR && RAW_PATH[g]) return clamp(RAW_PATH[g][clamp(era, 0, ELAST)], 25, 175);
     return 100;
   }
   const eEff = PLATEAU_HOLD && PLATEAU_LAST_ERA[g] != null ? Math.min(era, PLATEAU_LAST_ERA[g]) : era;
   if (!GRANULAR) return clamp(LADDER[clamp(eEff, 0, LADDER.length - 1)], 25, 175);
-  const eAnchor = Math.max(GOOD_FIRST_ERA[g], 1);      // 1836's era for pre-start goods, the debut era later
+  const eAnchor = Math.max(GOOD_FIRST_ERA[g], E1836);  // the 1836 era for pre-start goods, the debut era later
   // ⭐ THE ANCHOR BLEND (§10.65.6): the measured vanilla anchor prices only the e0/e1 rungs — the
   // real 1836–50 scarcity environment those rungs live in — and from e2 the path re-bases to 100 at
   // era 1 (the NORMALIZED environment the in-game mid-century actually reaches; F85 measured the
   // scarcity-priced anchors as the mid-century dip's cause). The e1→e2 step this creates for
   // high-anchor goods IS the designed normalization, and it is what kills the e1 rung on schedule.
-  const base = eAnchor <= 1 && eEff >= 2 ? 100 : ANCHOR[g];
+  const base = eAnchor <= E1836 && eEff >= E1836 + 1 ? 100 : ANCHOR[g];
   return clamp(base * Math.pow(SLOPE[g], eEff - eAnchor), 25, 175);
 }
 // the order-book ratio the V3 price formula demands for price p (% of base):
@@ -480,6 +541,21 @@ function bookPrice(eIx, g) {
 // selection per building) and stays the named pass-4 item.
 const SINGLE_GOOD_REFS = { building_logging_camp: { pmg_hardwood: 'pm_no_hardwood' } };
 
+// ⭐⭐ AN INDUSTRY HANDED BACK TO VANILLA MUST STILL CLIMB (2026-08-29, the four-rung ladder's rule 1).
+// `disabled: true` returns the base-game building to the REFERENCE set, and there `refSel()` picks each
+// PMG's first non-gated method and keeps it for the whole century. For the port that method is
+// `pm_anchorage`, which produces NOTHING — so merchant marine had no domestic producer in any era and
+// the whole scenario read it as trade-supplied; for the shipyard it is `pm_basic_shipbuilding`, i.e.
+// clippers in 1940. There IS a repair further down, but it only fires for a building that already has a
+// count, and a building that produces nothing never becomes a producer in the first place.
+// So: for exactly the buildings our config hands back, advance every PMG to the most advanced method
+// the era's technology reaches — vanilla's own ladder, on vanilla's own tech gates, which is what our
+// tier ladder used to do for them. DERIVED FROM THE CONFIG, so disabling another industry needs no code
+// change here, and it is a no-op on any config that disables nothing (the canonical one).
+const VANILLA_LADDER_REFS = new Set();
+for (const i of (CFG_RAW.industries || [])) if (i.disabled)
+  for (const t of (i.tiers || [])) if (S.VAN.buildings[t.key]) VANILLA_LADDER_REFS.add(t.key);
+
 function setEraContext(eIx) {
   const era = FIT.eras[eIx].era;
   for (const g in S.PRICES) S.thresholds[g] = bookPrice(eIx, g);
@@ -491,7 +567,42 @@ function setEraContext(eIx) {
   // PM selections: Phase A's fit for this era (stated first-pass simplification)…
   Object.keys(S.REFSEL).forEach(k => delete S.REFSEL[k]);
   for (const i of S.IND) for (const t of i.tiers) if (FIT.pms[eIx].tiers[t.key]) t._sec = { ...FIT.pms[eIx].tiers[t.key] };
+  // ⭐⭐ EVERY TIER STARTS AT THE MAXIMUM SECONDARY ITS ERA ALLOWS (user-ruled 2026-09-01). The solve
+  //   used to leave our tiers on whatever Phase A fitted, which in practice meant the base "off"
+  //   used to leave our tiers on whatever Phase A fitted, which in practice meant the base "off"
+  //   method everywhere — so an e3 electrics plant never switched to radios even though doing so is
+  //   plainly profitable, and radios stayed a phantom good. The same climb already existed for the
+  //   vanilla-again buildings (VANILLA_LADDER_REFS below); this applies it to OUR ladder too.
+  // ⚠ LABOUR-SAVING IS NOT AN EXCEPTION, by ruling: the solve starts on the HEAVIEST automation the
+  //   era allows, exactly as it starts on the richest product-mix method.
+  // ⚠ LIQUOR IS THE ONE EXCEPTION: distilling converts groceries into liquor, and starting every food
+  //   plant on stills would flood the liquor market from a side door in every era. It starts OFF and
+  //   the optimiser may switch it on if the scenario rewards it.
+  for (const i of S.IND) for (const t of i.tiers) {
+    if (!t._sec) continue;
+    for (const pmg of Object.keys(t._sec)) {
+      if (NO_MAX_START_PMGS.has(pmg)) continue;
+      const cand = rules.candidates(pmg, era, new Set(Object.values(t._sec)));
+      if (!cand.length) continue;
+      let best = cand[0], bestEra = rules.pmEra(cand[0]);
+      for (const pm of cand) { const q = rules.pmEra(pm); if (q >= bestEra) { bestEra = q; best = pm; } }
+      t._sec[pmg] = best;
+    }
+  }
   for (const b in FIT.pms[eIx].refs) S.REFSEL[b] = { ...FIT.pms[eIx].refs[b] };
+  // …then the vanilla-again buildings climb their own PM ladder (see VANILLA_LADDER_REFS above)…
+  for (const b of VANILLA_LADDER_REFS) {
+    const info = S.VAN.buildings[b] || {};
+    const sel = { ...(S.REFSEL[b] || {}) };
+    for (const pmg of (info.pmgs || [])) {
+      const cand = rules.candidates(pmg, era, new Set(Object.values(sel)));
+      if (!cand.length) continue;
+      let best = cand[0], bestEra = rules.pmEra(cand[0]);
+      for (const pm of cand) { const q = rules.pmEra(pm); if (q >= bestEra) { bestEra = q; best = pm; } }
+      sel[pmg] = best;
+    }
+    S.REFSEL[b] = sel;
+  }
   // …then the single-good-lever stance overrides (see SINGLE_GOOD_REFS above)
   for (const b in SINGLE_GOOD_REFS) S.REFSEL[b] = { ...(S.REFSEL[b] || {}), ...SINGLE_GOOD_REFS[b] };
 }
@@ -678,7 +789,15 @@ function ladderAt(eIx, quietTable) {
       console.log(`    ${W(p.ind.id, 14)} ${cells.join(' · ')}${marks}`);
     }
   }
-  return { faults, placement };
+  // the margin of every PRESENT rung at this era's book — the obsolescence matrix, read straight off
+  // the same numbers the table prints, so the artifact and the console can never disagree
+  const margins = {};
+  for (const p of placement) {
+    if (p.withheld) continue;
+    for (const r of p.rows) (margins[p.ind.id] || (margins[p.ind.id] = {}))[r.t.era] =
+      Math.round(E.TPthr(p.ind, r.t)) / 100;
+  }
+  return { faults, placement, margins };
 }
 
 // ===================================================================================================
@@ -716,9 +835,19 @@ function seedScenario(eIx) {
   // its services sheds levels rather than standing fully manned.
   N.set(URBAN, 5);
   // a building's goods output at one level (with throughput), for steering and attribution
+  // ⭐⭐ SECONDARY OUTPUT COUNTS AS SUPPLY (user-directed 2026-09-01). A good made ONLY by a secondary
+  //   method — radios, porcelain, luxury_clothes, luxury_furniture, liquor, aeroplanes, tanks — had no
+  //   producer anywhere in this solve, because tierGoodsIO returns the MAIN recipe alone. Such a good
+  //   fell to `cls: fixed-supply` on a placeholder 48 and pinned at the +75% ceiling, and the balance
+  //   sheet showed that 48 even after the emitted mod started scaling the method properly.
+  // ⚠ IT ASSUMES THE SECONDARY IS RUNNING, which overstates supply: not every electrics plant makes
+  //   radios. The alternative is ZERO, which is further from the truth and manufactures a phantom
+  //   fixed-supply good at the ceiling. Stated here so the assumption is visible in the numbers.
   const outOf = b => {
     const x = tierOf.get(b);
-    return x ? E.tierGoodsIO(x.ind, x.t).out : E.selGoods(E.refSel(b)).out;
+    if (!x) return E.selGoods(E.refSel(b)).out;
+    return E.tierGoodsIO(x.ind, x.t).out;
+    return out;
   };
   // every good some adjustable building can produce (by-products included — steering is blended)
   const byGood = new Map();
@@ -751,7 +880,7 @@ function seedScenario(eIx) {
   const advanceNonMarketPMs = () => {
     const cs = S.VAN.buildings[CONSTRUCTION_BLD];
     if (cs) {
-      const want = CONSTRUCTION_PM[era], sel = E.refSel(CONSTRUCTION_BLD);
+      const want = CONSTRUCTION_PM_BY_ERA[era], sel = E.refSel(CONSTRUCTION_BLD);
       for (const pmg of (cs.pmgs || [])) if (((S.VAN.pmgs[pmg] || {}).pms || []).includes(want)) sel[pmg] = want;
     }
     for (const b of E.refBuildings()) {
@@ -819,7 +948,7 @@ function seedScenario(eIx) {
     Object.keys(S.UNITNUM).forEach(k => delete S.UNITNUM[k]);
     const gdp = E.scenarioValueAdded();
     const budget = gdp * ARMY_GDP_SHARE;
-    const mix = ARMY_MIX[era] || ARMY_MIX[5];
+    const mix = ARMY_MIX_BY_ERA[era] || ARMY_MIX_BY_ERA[ELAST];
     let unitCost = 0;
     for (const [u, w2] of mix) unitCost += w2 * E.goodsVal(E.unitGoodsIO(u).in, true);
     if (!(unitCost > 0) || !(budget > 0)) return;
@@ -1026,6 +1155,7 @@ function seedScenario(eIx) {
   // breach the composition can never avoid (the era-0 mandate of 175 is exactly this)
   const ceilingByDesign = [];
   for (const g in S.PRICES) if (RESTRICTED.has(g) && bookPrice(eIx, g) >= CEIL_EDGE) ceilingByDesign.push(g);
+  const book = [];            // EVERY traded good's order book — the market screen, for the UI
   const mandErrs = [];        // log((buy/sell)/rho) per NON-pop good — for the offset/dispersion split
   let checked = 0, onMandate = 0, tieredN = 0, tieredOnDesign = 0;
   for (const g in S.PRICES) {
@@ -1057,6 +1187,20 @@ function seedScenario(eIx) {
               : alive ? 'unconverged' : 'died-out';
     offMandate.push({ g, mand: pm, implied, buy, sell, cls, popShare });
   }
+  // the same pass again, but keeping EVERY good — the order book the UI renders as a market screen.
+  // (Kept separate from the loop above so the `continue` that skips on-book goods cannot silently
+  // truncate it; a market screen missing its healthy rows is not a market screen.)
+  for (const g in S.PRICES) {
+    const { buy, sell } = E.scenarioBuySell(agg, g);
+    if (buy < 1e-3 && sell < 1e-3) continue;
+    const off = offMandate.find(o => o.g === g);
+    book.push({ g, buy: Math.round(buy * 10) / 10, sell: Math.round(sell * 10) / 10,
+      price: Math.round(realisedP[g]), design: Math.round(bookPrice(eIx, g)),
+      pop: Math.round((popShareOf[g] || 0) * 100), thin: !!thinOf[g],
+      tiered: isIndustrial(g, era), cls: off ? off.cls : 'on book',
+      supply: (byGood.get(g) || []).filter(b => (N.get(b) || 0) > 0).length });
+  }
+  book.sort((a, b) => b.buy - a.buy);
   offMandate.sort((a, b) => Math.abs(b.implied - b.mand) - Math.abs(a.implied - a.mand));
   consumer.sort((a, b) => Math.abs(b.p - 100) - Math.abs(a.p - 100));
   // the AGGREGATE-SCARCITY split: with the population pinned, total supply is bounded, so an era whose
@@ -1137,6 +1281,13 @@ function seedScenario(eIx) {
     id: `inv${era}_${FIT.eras[eIx].year}`,
     label: String(FIT.eras[eIx].year),
     era, year: FIT.eras[eIx].year,
+    // ⭐ CARRY THE ERA'S OWN ANCHOR YEAR. The sheet's preset chip used to read it out of a HARDCODED
+    // six-era table (`ERA_ANCHOR_YEAR` in builder.html), so on any other era ladder it printed the
+    // wrong anchor beside the right year — "e0·1750" on a scenario anchored at 1836. It is a property
+    // of the ladder, so the ladder states it: the natural_year the tiers at this era carry.
+    anchor: (() => { for (const i2 of S.IND) for (const t2 of i2.tiers)
+      if ((t2.era ?? 0) === era && t2.natural_year != null) return +t2.natural_year;
+      return FIT.eras[eIx].year; })(),
     group: 'Inverse solve · designed ladder, pop-limited yields (§10.65.2)',
     country: null,
     base_wage: S.BASE_WAGE,
@@ -1167,7 +1318,7 @@ function seedScenario(eIx) {
   return {
     eIx, era, iters, resid, N, FIXED1, byGood, placement, refProducers,
     tradeSupplied: [...tradeSupplied], walls: [...walls], offMandate, checked, onMandate,
-    consumer, realisedP, popShareOf, thinOf, tieredN, tieredOnDesign,
+    consumer, realisedP, popShareOf, thinOf, tieredN, tieredOnDesign, book,
     ceilingBreach, ceilingByDesign,
     futile: [...FUTILE], aggMean, aggDisp, structOn, mandN: mandErrs.length,
     faults, sec, indShare, grossAll, gdp, vaList, vaAll,
@@ -1239,7 +1390,12 @@ for (let outer = 1; outer <= OUTER; outer++) {
   if (outer > 1 && maxD < 2) break;
 }
 
-console.log(`\n── PHASE 1: RECIPES DERIVED AT THE HYBRID BOOK (dominant target +${Math.round(DOM_MARGIN * 100)}%, shipyards −30pp, solve_profit honoured) ──`);
+// ⚠ print the margin set that is ACTUALLY in force. This line used to print DOM_MARGIN — the
+// GRANULAR=0 fallback — which is not what a granular run solves to, so a flat-margin arm reported
+// "+40%" while every rung was solved to something else.
+console.log(`\n── PHASE 1: RECIPES DERIVED AT THE HYBRID BOOK (target ${GRANULAR
+  ? (MARGINS.every(m => m === MARGINS[0]) ? `+${Math.round(MARGINS[0] * 100)}% flat` : MARGINS.map(m => `+${Math.round(m * 100)}%`).join('/'))
+  : `+${Math.round(DOM_MARGIN * 100)}%`}, shipyards −30pp, solve_profit honoured) ──`);
 {
   const capN = {};
   for (const r of RECIPES) { const c = r.skip ? 'skip:' + r.skip : (r.cap || 'on-target'); capN[c] = (capN[c] || 0) + 1; }
@@ -1301,7 +1457,7 @@ if (GRANULAR) {
       const g = E.tierOut(i, t);
       if (i.ladder_end === 'plateau' && PLATEAU_LAST_ERA[g] != null && e >= PLATEAU_LAST_ERA[g]) continue;
       if (!Object.keys(t.inputs || {}).length) continue;
-      if (e + 2 > 5) continue;      // one-era-stale at century end — the death rule is two-eras-stale
+      if (e + 2 > ELAST) continue;      // one-era-stale at century end — the death rule is two-eras-stale
       const eV = e + 2;
       checked++;
       // throughput scales goods both ways; wages at the EVAL era — the same premise ramp the slope
@@ -1334,11 +1490,11 @@ if (GRANULAR) {
 }
 
 console.log('\n── PHASE 2: THE ANALYTIC LADDER (margins are count-independent given the book) ──');
-const LADDERS = [];
+const LADDERS = [], LADDER_MARGINS = [];
 for (let e = 0; e < FIT.eras.length; e++) {
   console.log(`  era ${e} (${FIT.eras[e].year}) — ${GRANULAR ? "per-good granular book (§10.65.5)" : "industrial mandate " + LADDER[e] + "%"}, consumer goods at their realised prices  [↑ = leading rung]`);
-  const { faults } = ladderAt(e);
-  LADDERS.push(faults);
+  const { faults, margins } = ladderAt(e);
+  LADDERS.push(faults); LADDER_MARGINS.push(margins);
   console.log(`    faults: loss ${faults.loss.length} [${faults.loss.join(',')}] · stale-profitable ${faults.stale.length} [${faults.stale.join(',')}] · inverted ${faults.inverted.length} [${faults.inverted.join(',')}] — excl. excused: ${faults.net}`);
 }
 console.log(`  TOTAL analytic illogicality (all six eras, excl. excused): ${LADDERS.reduce((a, f) => a + f.net, 0)}`
@@ -1457,6 +1613,24 @@ if (WRITE) {
         .map(g => [g, Math.round(mandatePrice(g, e.era))])) })),
     granular: GRANULAR ? { kappa: KAPPA, margins: MARGINS, pb_years: PB_YEARS, anchors: ANCHOR, slopes: Object.fromEntries(Object.entries(SLOPE).map(([g, v]) => [g, +v.toFixed(3)])) } : null,
     cost_book: GRANULAR ? COST_BOOK : null,
+    // ⭐ THE OBSOLESCENCE MATRIX — every present rung's margin in every era, beside that era's faults.
+    // It is the one view that says whether the ladder WORKS: follow one rung across the eras and it
+    // should go frontier-profitable → marginal → loss-making as the world builds past it.
+    analytic_ladder: FIT.eras.map((e, i) => ({
+      era: e.era, year: e.year, margins: LADDER_MARGINS[i],
+      faults: { loss: LADDERS[i].loss, stale: LADDERS[i].stale, inverted: LADDERS[i].inverted, net: LADDERS[i].net },
+    })),
+    // the structural companions a reader needs beside those numbers, so the artifact stands alone
+    tiers: Object.fromEntries(S.IND.flatMap(i => i.tiers.map(t => [t.key, {
+      industry: i.id, era: t.era, name: t.name, tech: t.tech || null, tech_year: t.tech_year ?? null,
+      output_good: E.tierOut(i, t), employment: t.employment || {},
+      building_cost: t.building_cost ?? null, ai_value: t.ai_value ?? null,
+    }]))),
+    industries: S.IND.map(i => ({ id: i.id, output_good: i.output_good, ladder_end: i.ladder_end || null,
+      eras: i.tiers.map(t => t.era) })),
+    eras: FIT.eras.map(e => ({ era: e.era, year: e.year, sol: e.sol, base_wage: e.base_wage, lead: e.lead })),
+    base_prices: Object.fromEntries(Object.keys(S.PRICES).sort().map(g => [g, S.PRICES[g]])),
+    vanilla_industries: (CFG_RAW.industries || []).filter(i => i.disabled).map(i => i.id),
     ladder_yields: FIT.eras.map((e, i) => ({
       era: e.era,
       tiered: Object.fromEntries(Object.keys(BOOK_OVR[i]).filter(g => isIndustrial(g, e.era)).sort()
@@ -1479,11 +1653,15 @@ if (WRITE) {
       counts: Object.fromEntries(Object.entries(r.counts).map(([k, v]) => [k, Math.round(v * 100) / 100])),
       pops: Object.fromEntries(Object.entries(r.pops).map(([k, v]) => [k, Math.round(v)])),
       gdp_weekly: Math.round(r.gdp),
+      army_share: Math.round(r.armyShare * 1000) / 1000, battalions: Math.round(r.battalions),
+      constr_share: Math.round(r.constrShare * 1000) / 1000, constr_target: CONSTR_BY_ERA[r.eIx],
+      output_mix: r.sec && r.grossAll ? Object.fromEntries(Object.entries(r.sec)
+        .map(([k, v]) => [k, Math.round(1000 * v / r.grossAll) / 1000])) : null,
       va_by_industry: Object.fromEntries(r.vaList.map(x => [x.id,
         { weekly: Math.round(x.v), share: Math.round(x.share * 1000) / 1000 }])),
       off_mandate: r.offMandate.map(o => ({ good: o.g, mandated: o.mand, implied: o.implied, class: o.cls })),
       industrial_input_ceiling: { at_edge: r.ceilingBreach.map(c => c.g), design_asks_edge: r.ceilingByDesign },
-      walls: r.walls, trade_supplied: r.tradeSupplied,
+      walls: r.walls, trade_supplied: r.tradeSupplied, order_book: r.book,
       faults: { loss: r.faults.loss, stale: r.faults.stale, inverted: r.faults.inverted, net: r.faults.net },
     })),
     // THE UI PRESETS — consumed by tools/extract_presets.ps1 (pass-through into ui/presets.js, like

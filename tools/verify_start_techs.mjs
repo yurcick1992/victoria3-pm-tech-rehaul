@@ -24,11 +24,18 @@
 // ⚠ THE UNION ACROSS COUNTRIES IS NOT SUFFICIENT: a leader's generous set covers gaps a tier-3 or tier-4
 // country's does not, and the lower tiers are exactly where 1836 drifts from vanilla. Report per country.
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { join, dirname, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
+// THE CONFIG THIS BUILD USED. `MOD_CONFIG` is the repo-wide override every other tool honours;
+// `--config <path>` is here so preflight can pass the build’s own -Config through explicitly.
+const CONFIG_PATH = (() => {
+  const a = process.argv.indexOf('--config');
+  const p = (a >= 0 && process.argv[a + 1]) || process.env.MOD_CONFIG || 'config/mod_config.json';
+  return isAbsolute(p) ? p : join(REPO, p);
+})();
 
 const strip = s => s.replace(/^\uFEFF/, '');
 const read = f => strip(readFileSync(f, 'utf8'));
@@ -83,7 +90,19 @@ const gateOf = body => { const u = body.match(/unlocking_technologies\s*=\s*\{([
 // Vanilla's explicit named grant covers technologies whose onset postdates 1836 but which the 1836 map
 // depends on. OURS adds `steel_toolmaking` for the same reason (emit_techs documents why). Both are
 // legitimate; what this check is for is a case that is NOT named.
-const NAMED = new Set(['central_archives', 'mechanical_tools', 'intensive_agriculture']);
+// ⚠⚠ `NAMED` IS GONE (2026-08-31). It was an UNCONDITIONAL allow-list —
+//   `['central_archives', 'mechanical_tools', 'intensive_agriculture']` — that suppressed those three
+//   technologies as a REQUIREMENT no matter which country was being judged. Its premise was that the
+//   1836 grant names them, so a gap on one is never real. That premise holds only while the grant
+//   names them to EVERY tier that owns such a building, and the four-rung book broke it: the grant
+//   names `mechanical_tools` to tiers 1 and 2, while the tooling e1 rung (gate `mechanical_tools`)
+//   lands in TIER-3 countries' hands through a `vanilla_pm_aliases` mapping. Ten countries shipped a
+//   building the engine silently dropped, and this list is why nothing said so.
+//   ⇒ It is also REDUNDANT: `startSets()` expands the grant PER COUNTRY, so a country that really was
+//   granted the technology has it in `rec.set` and raises no gap in the first place. An allow-list on
+//   top of a correct per-country set can only ever hide a true failure. Anything genuinely inherited
+//   from vanilla is absorbed by `--vs-vanilla`, which is the mechanism designed for exactly that.
+const NAMED = new Set();   // deliberately empty — see above; do not repopulate
 
 // Analyse one root (our built mod, or the game itself) -> { gaps: {TAG: [tech]}, stats }
 function analyse(root) {
@@ -266,14 +285,27 @@ function reGated() {
     for (const [k, v] of Object.entries(blocks(read(f)))) vpm[k] = gateOf(v);
   for (const f of txts(join(GAME, 'common/buildings')))
     for (const [k, v] of Object.entries(blocks(read(f)))) vb[k] = gateOf(v);
-  const cfg = JSON.parse(read(join(REPO, 'config', 'mod_config.json')));
+  // ⚠⚠ THIS USED TO HARDCODE `config/mod_config.json`, so for EVERY alternate-config build (tier4,
+  //   solver2, the vanilla stub) L14 compared the emitted mod’s 1836 start against the CANONICAL
+  //   six-rung ladder — a table describing a book that was not built. It passed for the wrong reason.
+  //   Every other tool in the pipeline honours MOD_CONFIG; this one silently did not.
+  const cfg = JSON.parse(read(CONFIG_PATH));
   const rows = [];
   for (const ind of cfg.industries || []) {
     const bg = vb[ind.tiers?.[0]?.key] || [];
     for (const t of ind.tiers || []) {
+      // ⚠⚠ ALIASES ARE PART OF THE QUESTION. When an industry has more rungs than vanilla has
+      //   methods, a dropped method is absorbed into a neighbour as `vanilla_pm_aliases`, and
+      //   convert_history places that vanilla factory on THIS rung. So the honest test is: does the
+      //   country running the ALIAS hold the gate this rung demands? Checking `vanilla_pm` alone asks
+      //   "what does vanilla need for the method we NAMED the rung after", which is trivially the same
+      //   technology and can never fail. That blind spot shipped ten dropped tooling workshops
+      //   (BUGS_AND_FIXES 2026-08-31): pm_pig_iron needs `steelworking`, our e1 rung demands
+      //   `mechanical_tools`, and ten countries hold the first and not the second.
       if (t.model_only || !t.vanilla_pm) continue;
-      rows.push({ ind: ind.id, era: t.era, pm: t.vanilla_pm,
-                  vanillaNeeds: [...new Set([...bg, ...(vpm[t.vanilla_pm] || [])])],
+      const pms = [t.vanilla_pm, ...(t.vanilla_pm_aliases || [])].filter(Boolean);
+      rows.push({ ind: ind.id, era: t.era, pm: pms.join('+'),
+                  vanillaNeeds: [...new Set([...bg, ...pms.flatMap(p => vpm[p] || [])])],
                   weNeed: t.tech ? [t.tech] : [] });
     }
   }

@@ -97,6 +97,13 @@ function addSource(tech, era, rule, src) {
 }
 
 for (const ind of CFG.industries) {
+  // ⚠ A `disabled` industry is not emitted AT ALL — the builder, the history converter, emit_techs
+  // and the UI all skip it and the vanilla building stands untouched. So its tiers have no buildings
+  // in the mod, and a research entry naming them would gate a technology on a source that does not
+  // exist. Found by the four-rung arm, which disables ports, shipyards and railways: this loop was
+  // the only emitter that did not skip them, and it died on a shipyard tier's technology being
+  // absent from that arm's tree.
+  if (ind.disabled) continue;
   const ts = ind.tiers || [];
   ts.forEach((t, i) => {
     if (!t.tech) return;
@@ -134,16 +141,28 @@ for (const ind of CFG.industries) {
     }
   });
 }
-// rule D: production technologies outside our ladder, anchored on what they unlock
-for (const t of OPT.techs.filter(x => x.category === 'production' && x.era > 1 && !anchors[x.id])) {
-  const g = new Set();
-  for (const b of (t.vanillaUnlocks || [])) { const grp = (VAN.buildings[b] || {}).group; if (grp) g.add(grp); }
-  for (const pm of (techPM[t.id] || [])) for (const b of (pmBld[pm] || [])) { const grp = (VAN.buildings[b] || {}).group; if (grp) g.add(grp); }
-  for (const grp of g) addSource(t.id, Math.max(2, t.era), 'necessity', { group: grp });
+// ⭐⭐ SCOPE: ONLY TECHNOLOGIES THAT UNLOCK A TIERED INDUSTRY TIER (user-ruled 2026-08-30).
+//   "Leave only those JEs (from ours) that unlock techs that unlock any tiered industry tier."
+//   Rules A (improvement, from the rung below) and B (necessity_anchors, for a first rung with no
+//   predecessor) both describe technologies that gate one of OUR rungs, and they stay. Rules D and C
+//   did not: D covered every OTHER production technology, C the whole military tree, and together
+//   they were 59 of the 91 covered technologies — two thirds of the emitted journal entries for
+//   technologies the tier ladder has no stake in. VANILLA's own journal entries are untouched either
+//   way; we only ever ADD ours.
+//   Revert either by setting research_events.scope to 'all' in the config.
+const JE_SCOPE = (RE.scope || 'tiers_only');
+if (JE_SCOPE === 'all') {
+  // rule D: production technologies outside our ladder, anchored on what they unlock
+  for (const t of OPT.techs.filter(x => x.category === 'production' && x.era > 1 && !anchors[x.id])) {
+    const g = new Set();
+    for (const b of (t.vanillaUnlocks || [])) { const grp = (VAN.buildings[b] || {}).group; if (grp) g.add(grp); }
+    for (const pm of (techPM[t.id] || [])) for (const b of (pmBld[pm] || [])) { const grp = (VAN.buildings[b] || {}).group; if (grp) g.add(grp); }
+    for (const grp of g) addSource(t.id, Math.max(2, t.era), 'necessity', { group: grp });
+  }
+  // rule C: the military tree, on the war gate
+  for (const t of OPT.techs.filter(x => x.category === 'military' && x.era > 1 && !anchors[x.id]))
+    anchors[t.id] = { rule: 'war', era: Math.max(2, t.era), sources: [] };
 }
-// rule C: the military tree, on the war gate
-for (const t of OPT.techs.filter(x => x.category === 'military' && x.era > 1 && !anchors[x.id]))
-  anchors[t.id] = { rule: 'war', era: Math.max(2, t.era), sources: [] };
 
 // ---- emit ----------------------------------------------------------------------------------------
 const T = '\t';

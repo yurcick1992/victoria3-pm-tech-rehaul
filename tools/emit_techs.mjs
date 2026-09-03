@@ -403,13 +403,31 @@ function applyAiWeightMult(txt, mult, label) {
     for (const ind of CFG.industries || []) {
       const bg = vb[ind.tiers?.[0]?.key] || [];
       for (const t of ind.tiers || []) {
-        if (t.model_only || !t.vanilla_pm || !t.tech) continue;
-        const vanillaNeeds = [...new Set([...bg, ...(vpm[t.vanilla_pm] || [])])];
-        for (const st of Object.keys(vTier).map(Number)) {
-          if (!vanillaNeeds.every(x => vTier[st].has(x))) continue;      // vanilla did not allow it either
-          if (eraOf[t.tech] != null && eraOf[t.tech] <= (ERA_GRANTED[st] ?? 0)) continue;
-          if (VAN_STARTING_NAMED.has(t.tech)) continue;
-          (needByTier[st] ||= new Set()).add(t.tech);
+        if (t.model_only || !t.tech) continue;
+        // ⭐⭐ ASK THE QUESTION ONCE PER VANILLA METHOD THIS RUNG CAN RECEIVE — its own AND every
+        //   `vanilla_pm_aliases` entry. When an industry has more rungs than vanilla has methods, a
+        //   dropped method is absorbed as an alias and `convert_history` places THAT vanilla factory
+        //   on THIS rung; a grant that reads `vanilla_pm` alone never learns such a country exists.
+        //   Ten countries shipped a tooling workshop the engine silently dropped for exactly this
+        //   (BUGS_AND_FIXES 2026-08-31).
+        // ⚠ PER METHOD, NOT over the UNION of their gates. The union asks "could a vanilla country of
+        //   this tier run BOTH pm_steel and pm_pig_iron", which tier 3 cannot — so the union silently
+        //   withholds the grant from precisely the countries that need it. The right question is:
+        //   could this tier run ANY method that lands here? If yes, it can own this rung.
+        const pms = [t.vanilla_pm, ...(t.vanilla_pm_aliases || [])].filter(Boolean);
+        if (!pms.length) continue;
+        for (const p of pms) {
+          const vanillaNeeds = [...new Set([...bg, ...(vpm[p] || [])])];
+          for (const st of Object.keys(vTier).map(Number)) {
+            if (!vanillaNeeds.every(x => vTier[st].has(x))) continue;   // vanilla did not allow it either
+            if (eraOf[t.tech] != null && eraOf[t.tech] <= (ERA_GRANTED[st] ?? 0)) continue;
+            // ⚠ PER TIER, not "vanilla names it somewhere". `VAN_STARTING_NAMED` skipped a technology
+            //   vanilla names in ANY tier block — and vanilla names `mechanical_tools` to tiers 1 and 2
+            //   only, so this line withheld it from every tier-3/4 country that our alias mapping puts
+            //   on that rung. Same defect as the detector’s old `NAMED` allow-list, on the other side.
+            if (vTier[st].has(t.tech)) continue;
+            (needByTier[st] ||= new Set()).add(t.tech);
+          }
         }
       }
     }
@@ -421,10 +439,16 @@ function applyAiWeightMult(txt, mult, label) {
     txt = sub(txt, re, `$1${add}`, 1, `1836 map grant, tier ${st}`);
     out.push(`  tier ${st}: ${[...needByTier[st]].sort().join(', ')}`);
   }
-  // A rule that grants nothing is a rule that silently stopped working — the 1836 map contains steel
-  // tooling workshops and beet-sugar refineries, and it always will.
+  // ⚠⚠ ZERO GRANTS IS NOW A LEGITIMATE OUTCOME (2026-08-30). This used to THROW, on the reasoning that
+  //   the 1836 map always contains steel tooling workshops and beet-sugar refineries so SOMETHING must
+  //   be granted. That was true only while our tier gates DIFFERED from vanilla's: the grant existed to
+  //   hand back technologies our re-pegging had moved. Under the vanilla-ladder rule every rung takes
+  //   the technology vanilla gates its own production method with, so a country running that method in
+  //   1836 already holds its technology by vanilla's own starting inventions — and the correct grant is
+  //   empty. A guard whose premise the design removed must not keep failing the build.
   if (!Object.keys(needByTier).length)
-    throw new Error('emit_techs: the 1836 map needed no technology grant at all — that cannot be right');
+    console.log('  1836 map grant: EMPTY — expected under the vanilla-ladder rule (every rung keeps its',
+                'own vanilla method’s gate, so no country needs a technology handed back).');
 
   // ⭐⭐ PER-COUNTRY GRANTS (config `start_tech_grants`) — the one thing the derived rule above CANNOT see.
   // That derivation reads the VANILLA map (`start_baseline.json`), so a building placed by

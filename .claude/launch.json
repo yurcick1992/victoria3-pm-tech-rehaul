@@ -4,8 +4,24 @@
     {
       "name": "balance-ui",
       "runtimeExecutable": "powershell",
-      "runtimeArgs": ["-ExecutionPolicy", "Bypass", "-File", "tools\\ui.ps1", "-Port", "8790", "-NoOpen"],
+      "runtimeArgs": [
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "tools\\ui.ps1",
+        "-Port",
+        "8790",
+        "-NoOpen"
+      ],
       "port": 8790
+    },
+    {
+      "name": "ui2",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "tools/serve_ui2.mjs"
+      ],
+      "port": 8791
     }
   ]
 }

@@ -1,0 +1,314 @@
+{
+ "_provenance": "[object Object] | resampled onto 1836/1875/1905/1940 by tools/make_tier4_config.mjs",
+ "anchors_vanilla": {
+  "ammunition": 132,
+  "artillery": 126,
+  "clippers": 79,
+  "clothes": 102,
+  "coal": 100,
+  "coffee": 104,
+  "dye": 25,
+  "engines": 152,
+  "explosives": 113,
+  "fabric": 85,
+  "fertilizer": 120,
+  "fine_art": 138,
+  "fish": 103,
+  "fruit": 132,
+  "furniture": 110,
+  "glass": 97,
+  "gold": 100,
+  "grain": 93,
+  "groceries": 156,
+  "hardwood": 137,
+  "iron": 147,
+  "lead": 90,
+  "liquor": 50,
+  "luxury_clothes": 91,
+  "luxury_furniture": 103,
+  "meat": 113,
+  "merchant_marine": 83,
+  "oil": 128,
+  "opium": 78,
+  "paper": 158,
+  "porcelain": 169,
+  "services": 77,
+  "silk": 110,
+  "small_arms": 104,
+  "steel": 131,
+  "sugar": 63,
+  "sulfur": 95,
+  "tea": 100,
+  "tobacco": 71,
+  "tools": 123,
+  "transportation": 175,
+  "wine": 34,
+  "wood": 106
+ },
+ "raw_paths": {
+  "ammunition": [
+   121,
+   133,
+   85,
+   81
+  ],
+  "artillery": [
+   151,
+   98,
+   97,
+   72
+  ],
+  "clippers": [
+   129,
+   111,
+   108,
+   111
+  ],
+  "clothes": [
+   103,
+   110,
+   95,
+   62
+  ],
+  "coal": [
+   110,
+   116,
+   123,
+   112
+  ],
+  "coffee": [
+   122,
+   81,
+   81,
+   86
+  ],
+  "dye": [
+   25,
+   32,
+   64,
+   59
+  ],
+  "engines": [
+   134,
+   90,
+   113,
+   93
+  ],
+  "explosives": [
+   144,
+   143,
+   128,
+   95
+  ],
+  "fabric": [
+   94,
+   71,
+   57,
+   64
+  ],
+  "fertilizer": [
+   115,
+   111,
+   82,
+   84
+  ],
+  "fine_art": [
+   151,
+   122,
+   129,
+   122
+  ],
+  "fish": [
+   102,
+   107,
+   101,
+   95
+  ],
+  "fruit": [
+   140,
+   108,
+   87,
+   57
+  ],
+  "furniture": [
+   109,
+   121,
+   55,
+   45
+  ],
+  "glass": [
+   102,
+   135,
+   133,
+   95
+  ],
+  "gold": [
+   100,
+   100,
+   100,
+   100
+  ],
+  "grain": [
+   91,
+   93,
+   101,
+   117
+  ],
+  "groceries": [
+   161,
+   128,
+   107,
+   81
+  ],
+  "hardwood": [
+   126,
+   110,
+   122,
+   119
+  ],
+  "iron": [
+   142,
+   102,
+   104,
+   104
+  ],
+  "lead": [
+   83,
+   107,
+   113,
+   114
+  ],
+  "liquor": [
+   43,
+   66,
+   75,
+   85
+  ],
+  "luxury_clothes": [
+   108,
+   107,
+   85,
+   104
+  ],
+  "luxury_furniture": [
+   108,
+   115,
+   116,
+   135
+  ],
+  "meat": [
+   120,
+   99,
+   109,
+   128
+  ],
+  "merchant_marine": [
+   120,
+   116,
+   84,
+   70
+  ],
+  "oil": [
+   144,
+   109,
+   106,
+   112
+  ],
+  "opium": [
+   84,
+   67,
+   63,
+   75
+  ],
+  "paper": [
+   170,
+   151,
+   110,
+   97
+  ],
+  "porcelain": [
+   170,
+   118,
+   88,
+   99
+  ],
+  "services": [
+   69,
+   78,
+   85,
+   112
+  ],
+  "silk": [
+   119,
+   101,
+   86,
+   98
+  ],
+  "small_arms": [
+   138,
+   98,
+   84,
+   85
+  ],
+  "steamers": [
+   160,
+   92,
+   107,
+   100
+  ],
+  "steel": [
+   132,
+   72,
+   84,
+   87
+  ],
+  "sugar": [
+   74,
+   47,
+   53,
+   86
+  ],
+  "sulfur": [
+   84,
+   87,
+   89,
+   84
+  ],
+  "tea": [
+   118,
+   63,
+   69,
+   79
+  ],
+  "tobacco": [
+   76,
+   73,
+   62,
+   59
+  ],
+  "tools": [
+   136,
+   139,
+   130,
+   103
+  ],
+  "transportation": [
+   175,
+   147,
+   148,
+   101
+  ],
+  "wine": [
+   33,
+   31,
+   47,
+   66
+  ],
+  "wood": [
+   109,
+   110,
+   104,
+   95
+  ]
+ }
+}

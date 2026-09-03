@@ -77,6 +77,19 @@ export function makePmRules(E, S, hooks = {}) {
   // a PM with no unlocking technology is a base PM: always available
   const pmEra = pm => { const r = S.VAN.pms[pm]; return (!r || !r.tech) ? 0 : (TECH_ERA[r.tech] ?? 0); };
 
+  // ⭐⭐ OUR RUNG INDEX IS NOT THE GAME'S ERA (bug found 2026-09-01). `candidates()` gates a method on
+  //   `pmEra(pm) <= era`, comparing the GAME's 1-5 technology era against OUR rung index. On the
+  //   SIX-rung ladder those coincide for rungs 1-5 by accident of counting, so the fault was invisible.
+  //   On the FOUR-rung ladder they do not: our top rung is 3, so every method gated on a game-era-4 or
+  //   -5 technology was excluded from EVERY era, permanently — radios, rayon, aeroplanes and tanks were
+  //   dead content, and an e3 electrics plant was never offered the radio method it would obviously run.
+  // ⚠ THE LADDER DECLARES ITS OWN MAPPING, and the fallback is the IDENTITY — so a book that says
+  //   nothing keeps exactly the behaviour it has today. That is deliberate: a calendar-derived mapping
+  //   would have moved the canonical six-rung book at every era, which is not a change to make as a
+  //   side effect of fixing another ladder. Set `era_game_era` in the config to opt in.
+  const ERA_GAME = (S.CFG && S.CFG.era_game_era) || null;
+  const gameEraOf = e => (ERA_GAME && ERA_GAME[e] != null) ? ERA_GAME[e] : e;
+
   // our tier split renamed the vanilla main PMs, so a gate naming one is satisfied by our replacement
   const PM_REPLACED_BY = {};
   for (const i of S.IND) for (const t of i.tiers) if (t.vanilla_pm) PM_REPLACED_BY[t.vanilla_pm] = t.pm_key;
@@ -99,7 +112,7 @@ export function makePmRules(E, S, hooks = {}) {
     const mand = mandatedPick(pmg, era);
     if (mand) return mand;
     const g = S.VAN.pmgs[pmg]; if (!(g && g.pms)) return [];
-    return g.pms.filter(pm => !E.pmGated(pm) && pmAvailable(pm) && pmEra(pm) <= era && pmGateOk(pm, presentPms)
+    return g.pms.filter(pm => !E.pmGated(pm) && pmAvailable(pm) && pmEra(pm) <= gameEraOf(era) && pmGateOk(pm, presentPms)
       && !(FORBID_FROM[pm] != null && era >= FORBID_FROM[pm]));
   }
   return { pmEra, pmGateOk, pmAvailable, candidates };

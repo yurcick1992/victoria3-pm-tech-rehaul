@@ -459,7 +459,17 @@
     // include negative reductions (e.g. tank line −automobiles), so the map nets out per good.
     function tierGoodsIO(i,t){
       const inm = {...t.inputs}, outm = {}; const og = tierOut(i,t); outm[og] = (outm[og]||0) + t.output_qty;
-      for(const pg in (t._sec||{})){ const sel = t._sec[pg]; if(sel === basePm(pg)) continue; const r = pmRec(sel);
+      // ⭐⭐ A SELECTED SECONDARY USES THE TIER'S OWN SCALED GOODS, not vanilla's flat ones.
+      //   `secondary_goods` is written per tier by emit_secondaries.mjs and holds the quantities the
+      //   GAME actually gets: vanilla's output RATIO against the lowest primary PM that allows the
+      //   method, applied to THIS rung's output. Without this the sheet and the solver would keep
+      //   reading `pmRec()`'s vanilla numbers while the emitted mod shipped scaled ones — the exact
+      //   three-way split that left radios a phantom at 48 (2026-09-01).
+      //   ⚠ Keyed by `.from`, the vanilla method the minted copy was derived from, because that is
+      //   what a selection names.
+      const scaled = sel => { for(const v of Object.values(t.secondary_goods||{})) if(v.from === sel) return v; return null; };
+      for(const pg in (t._sec||{})){ const sel = t._sec[pg]; if(sel === basePm(pg)) continue;
+        const sc = scaled(sel); const r = sc ? {in: sc.in||{}, out: sc.out||{}} : pmRec(sel);
         for(const g in r.in)  inm[g]  = (inm[g] ||0) + r.in[g];
         for(const g in r.out) outm[g] = (outm[g]||0) + r.out[g]; }
       return {in:inm, out:outm};
@@ -580,6 +590,12 @@
         // Must survive into the model — same lesson as tech_year/input_ratio above: a dropped config
         // field is a solver branch that silently never runs (it did, for one full solve).
         solve_profit:(t.solve_profit != null ? +t.solve_profit : null),
+        // ⚠⚠ CARRY secondary_goods, for the same reason solve_profit above must be carried: makeTiers
+        //   builds tier objects from an EXPLICIT field list, so anything the config gains is invisible
+        //   to every consumer until it is named here. era_inverse counts a tier’s secondary OUTPUT as
+        //   supply (radios, porcelain, liquor, tanks … are produced by nothing else), and without this
+        //   line it saw none of it and left radios a fixed-supply phantom at the +75% ceiling.
+        secondary_goods:(t.secondary_goods || null),
         // §10.60 graded port factorisation (user architecture 2026-08-16): the factored tiers' goods
         // volumes + building_cost are divided EXPLICITLY in the config; these two visible multipliers
         // carry the rest — workforce_mult scales base employment (applied in tierEmp, and by build.ps1 at

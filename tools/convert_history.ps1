@@ -39,6 +39,15 @@ $cfg = Get-Content -LiteralPath $cfgPath -Raw -Encoding UTF8 | ConvertFrom-Json
 # also keeps `force_tier`'s bounds check (tiers.Count) honest — it must count BUILDABLE tiers.
 foreach ($ind in $cfg.industries) { $ind.tiers = @($ind.tiers | Where-Object { -not $_.model_only }) }
 $maps = Get-SplitMaps $cfg
+# ⚠ A `disabled` industry is left VANILLA and never enters $industryById, so a start rule naming one
+# hit the "unknown industry" throw and killed the build. That is the right error for a TYPO and the
+# wrong one for an industry this book deliberately does not tier — the four-rung arm hands ports,
+# shipyards and railways back, and start_exceptions still carries the §10.60.3 chain seed for them.
+# So the two cases are separated: a rule for a DISABLED industry is skipped and reported; a rule for
+# an industry that does not exist at all still throws.
+$disabledIds = @{}
+foreach ($ind in $cfg.industries) { if ($ind.disabled) { $disabledIds[[string]$ind.id] = $true } }
+$skippedRules = 0
 $baseIndustry = $maps.baseIndustry; $pmMap = $maps.pmMap; $industryById = $maps.industryById
 
 # manual exceptions (optional)
@@ -97,6 +106,7 @@ $handler = {
         # steam chain is a separate industry whose base building is all-new (never in vanilla history).
         # The rule must name a real industry id; a typo throws rather than silently keeping the old tier.
         $tid = [string]$ex.industry
+        if ($disabledIds.ContainsKey($tid)) { $script:skippedRules++; continue }
         if (-not $industryById.ContainsKey($tid)) { throw "force_industry_tier: unknown industry '$tid' ($country/$state)" }
         $id = $tid
         $tierIndex = [int]$ex.tier
@@ -248,6 +258,7 @@ foreach ($f in $files) {
         }
         if ($ci -lt 0) { throw "create: region_state:$($cr.country) in $($cr.state) has no closing brace" }
 
+        if ($disabledIds.ContainsKey([string]$cr.industry)) { $script:skippedRules++; continue }
         $ind = $industryById[[string]$cr.industry]
         if (-not $ind) { throw "create: unknown industry '$($cr.industry)'" }
         $tier = $ind.tiers[[int]$cr.tier - 1]
@@ -301,6 +312,9 @@ $primaryCulture = @{ GBR = 'british'; FRA = 'french'; NET = 'dutch' }
 $popStates = @{}
 foreach ($cr in $creates) {
     if ($cr.industry -eq 'port') { continue }          # ports get no workforce
+    # …and a rule for a DISABLED industry seeded no building above, so it must seed no pops either.
+    # This is the second pass over $creates; guarding only the first left $ind null here.
+    if ($disabledIds.ContainsKey([string]$cr.industry)) { continue }
     $ind  = $industryById[[string]$cr.industry]
     $tier = $ind.tiers[[int]$cr.tier - 1]
     $lv   = if ($cr.levels) { [int]$cr.levels } else { 1 }
@@ -346,6 +360,9 @@ if ($popStates.Count -gt 0) {
 
 # A grant that found no home is a silent hole — fail rather than ship a seed that isn't there.
 foreach ($cr in $creates) {
+    # a rule for a disabled industry placed nothing on purpose, so it cannot be a "silent hole" —
+    # the THIRD and last pass over $creates that has to know that
+    if ($disabledIds.ContainsKey([string]$cr.industry)) { continue }
     $ind = $industryById[[string]$cr.industry]
     $key = $cr.country + '/' + $cr.state + ' ' + $ind.tiers[[int]$cr.tier - 1].key
     if (-not $script:createPlaced.ContainsKey($key)) {
@@ -373,3 +390,5 @@ if ($script:unmapped.Count -gt 0) {
     Write-Output ("  WARNING: {0} split-industry blocks had no recognized main PM (version drift?):" -f $script:unmapped.Count)
     $script:unmapped | Select-Object -Unique | ForEach-Object { Write-Output "    $_" }
 }
+
+if ($skippedRules -gt 0) { Write-Host "  start rules skipped (their industry is disabled in this config): $skippedRules" }

@@ -1218,7 +1218,49 @@ foreach ($pf in (Get-ChildItem (Join-Path $Game 'common\production_methods') -Fi
     WriteText "$modRel\common\production_methods\$($pf.Name)" $txt $bom
     $pmEmitted += $pf.Name
 }
-# an override naming a PM no vanilla file defines would otherwise vanish without a trace — the exact
+
+# --- PMG OWNERSHIP: methods REMOVED from a vanilla production method group -------------------------
+# config `pmg_drop_methods` (map PMG key -> array of PM keys). The only way to take a method OFF a
+# vanilla building is to own its GROUP file and re-emit it without that method; there is no additive
+# form. Today one entry: pm_early_power_plant leaves pmg_base_building_power_plant, so the power plant
+# keeps its vanilla shape and switchable methods but loses the earliest one (user-ruled 2026-08-30).
+# Same discipline as the PM files above - a group we would copy VERBATIM is not emitted, because
+# owning a vanilla file freezes it against the next patch and buys nothing.
+# The dropped method's own technology must still gate something, or lint_tech_content fails the
+# build: removing a method can orphan its gate, which is exactly rule 1.
+$pmgEmitted = @()
+if ($cfg.pmg_drop_methods) {
+    $pmgDir = Join-Path $Game 'common\production_method_groups'
+    foreach ($gf in Get-ChildItem -Path $pmgDir -Filter *.txt -File) {
+        $txt = Get-Content -Raw -LiteralPath $gf.FullName
+        $orig = $txt
+        foreach ($e in $cfg.pmg_drop_methods.PSObject.Properties) {
+            if ($txt -notmatch [regex]::Escape($e.Name)) { continue }
+            foreach ($pm in $e.Value) {
+                $lines = $txt -split "`n"
+                $out = New-Object System.Collections.Generic.List[string]
+                $inGroup = $false; $depth = 0
+                foreach ($ln in $lines) {
+                    $code = ($ln -split '#')[0]
+                    if ($ln -match ('^\s*' + [regex]::Escape($e.Name) + '\s*=\s*\{')) { $inGroup = $true; $depth = 0 }
+                    if ($inGroup) {
+                        $depth += ([regex]::Matches($code, '\{')).Count - ([regex]::Matches($code, '\}')).Count
+                        if ($ln -match ('^\s*' + [regex]::Escape($pm) + '\s*$')) { continue }
+                        if ($depth -le 0) { $inGroup = $false }
+                    }
+                    $out.Add($ln)
+                }
+                $txt = $out -join "`n"
+            }
+        }
+        if ($txt -ceq $orig) { continue }
+        WriteText "$modRel\common\production_method_groups\$($gf.Name)" $txt $bom
+        $pmgEmitted += $gf.Name
+    }
+    if (-not $pmgEmitted.Count) { throw "pmg_drop_methods named a method that no vanilla group file contains - fix the config rather than shipping a silent no-op" }
+    Write-Host "  PMG ownership: $($pmgEmitted -join ', ')"
+}
+
 # "nothing fails" class TESTBED_LANDMINES exists for
 foreach ($pm in @($pmGoods.Keys) + @($pmEmp.Keys) | Select-Object -Unique) {
     if (-not $pmOverridden.Contains($pm)) { throw "pm_goods/pm_employment override names '$pm', which no vanilla production_methods file defines" }
@@ -1303,6 +1345,7 @@ if ($LASTEXITCODE -ne 0) { throw "emit_research_events.mjs failed (exit $LASTEXI
 & node (Join-Path $PSScriptRoot 'emit_companies.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_companies.mjs failed (exit $LASTEXITCODE) - the mod would ship with companies locked to the first rung." }
 
+
 # --- emit UI data (consumed by ui/builder.html) so the editor always reflects the latest config ---
 # Only the canonical build repoints the UI; alternate builds (-DryRun/-SaveTo) leave ui/data.js alone.
 if (-not $isAlt) {
@@ -1370,6 +1413,20 @@ $summary | Format-Table -AutoSize | Out-String | Write-Output
 # --- convert the 1836 start (the baseline it reads was refreshed BEFORE emit_techs, above) ---
 & (Join-Path $PSScriptRoot 'convert_history.ps1') -Repo $repo -Config $cfgPath -ModDir $modRel
 
+#    factories, with every linter green (2026-09-01).
+#    engine rejected the whole create_building: 130 "Invalid production method" errors, 130 lost
+#    left every starting factory naming a vanilla secondary its building no longer has, and the
+#    per-tier methods, and convert_history REWRITES that history from scratch — so running earlier
+# ⚠⚠ THIS MUST RUN AFTER convert_history.ps1, NOT BEFORE. It re-points the 1836 history at the minted
+# ⭐⭐ PER-TIER SECONDARY METHODS (user-ruled 2026-09-01). A tier building's MAIN recipe scales up
+#   the ladder while its SECONDARY methods kept VANILLA quantities, so a secondary was proportionally
+#   huge at rung 0 and vanishing at the frontier - and `pm_radios`, the mod's only radio source, was
+#   capped at a flat 40/level however big the plant. This mints a per-tier copy of every product-mix
+#   secondary, holding its vanilla output RATIO against the lowest primary PM that allows it.
+# ⚠ It must run AFTER the buildings are emitted: it REWRITES their production_method_groups lists.
+& node (Join-Path $PSScriptRoot 'emit_secondaries.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_secondaries.mjs failed (exit $LASTEXITCODE) - secondary methods would ship at vanilla scale against a laddered main recipe." }
+
 if (-not $NoLint) {
     $bashPath = $null
     $cmd = Get-Command bash -ErrorAction SilentlyContinue
@@ -1405,6 +1462,32 @@ if (-not $NoLint) {
     } else {
         Write-Output "WARN: tools/lint_solvency.mjs missing - L18 not checked"
     }
+    # THE TWO HARD TECH RULES (user-ruled 2026-08-30), checked against the EMITTED mod, not the config:
+    #   1. no orphaned technology EVER (being a prerequisite does not count as content);
+    #   2. no technology may gate two rungs of one industry (they would unlock together, so the later
+    #      rung is free and that step of the ladder costs no research at all).
+    $techLint = Join-Path $repo 'tools/lint_tech_content.mjs'
+    if (Test-Path $techLint) {
+        Write-Output "Running tech-content linter (orphans + duplicate gates)..."
+        & node $techLint $modRel $cfgPath
+        if ($LASTEXITCODE -ne 0) { throw "TECH CONTENT LINT FAILED: an orphaned technology, or one gating two rungs of one industry. See CLAUDE.md and BUGS_AND_FIXES 2026-08-30." }
+    } else {
+        Write-Output "WARN: tools/lint_tech_content.mjs missing - the two hard tech rules are NOT checked"
+    }
+    # LANDMINE L13 - a starting factory converted onto a tier its own production method contradicts.
+    # L14 asks whether the owner can UNLOCK what it owns; this asks whether the factory landed on the
+    # RIGHT RUNG. A wrongly-placed factory keeps valid permission, so L14 passes while 1836 has
+    # silently stopped matching vanilla.
+    $startLint = Join-Path $repo 'tools/lint_start_conversion.mjs'
+    if (Test-Path $startLint) {
+        Write-Output "Running start-conversion linter (L13)..."
+        & node $startLint $modRel $cfgPath
+        if ($LASTEXITCODE -ne 0) { throw "START-CONVERSION LINT FAILED (L13): a vanilla method with no tier to land on, a factory shifted across the ladder, or a stray building key. See TESTBED_LANDMINES.md L13." }
+    } else {
+        Write-Output "WARN: tools/lint_start_conversion.mjs missing - L13 not checked"
+    }
+
+
 }
 # alt builds used a throwaway ladder in TEMP; remove it now that the linter is done with it.
 if ($isAlt -and $ladderPath -and (Test-Path $ladderPath)) { Remove-Item $ladderPath -Force -ErrorAction SilentlyContinue }

@@ -83,6 +83,9 @@ export function loadEcon({ quiet = false } = {}) {
   const S = {
     PRICES: win.PMDATA.prices,
     VAN: win.PMVANILLA || { buildings: {}, pmgs: {}, pms: {} },
+    // the WHOLE config, for the few rules that are properties of the LADDER rather than of a tier:
+    // today only `era_game_era`, the rung-index -> game-era map era_pm.mjs needs (2026-09-01).
+    CFG: cfg,
     HAVE_VAN: !!win.PMVANILLA,
     IND: [],
     thresholds: {},

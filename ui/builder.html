@@ -700,6 +700,11 @@ function makeTiers(i){ return i.tiers.map((t,ix)=>({
     _baseWage:null,   // this tier's own base wage (£/wk); null ⇒ follows the sheet-level BASE_WAGE
     ai_value:(t.ai_value!=null?+t.ai_value:null),   // per-tier AI construction desire; null = engine default (AIVAL_DEFAULT)
     solve_profit:(t.solve_profit!=null?+t.solve_profit:null),   // §10.59 per-tier recipe-solve margin override (solver-side; carried so the fork stays faithful to the config — ui/econ.js makeTiers carries it too)
+    // ⚠⚠ CARRY secondary_goods FOR THE SAME REASON — and this fork is why the sheet disagreed with the
+    //   solver on 2026-09-01: econ.js carried it, builder.html did not, so the sheet read bone china as
+    //   a flat -£120/+£1470 at EVERY glass rung and counted 12 ladder faults where the solve counted 4.
+    //   Two makeTiers with two field lists is exactly the drift CLAUDE.md warns this fork will produce.
+    secondary_goods:(t.secondary_goods||null),
     // §10.60 graded port factorisation: visible+editable per-tier emission multipliers. workforce_mult
     // scales base employment (build.ps1 applies it at emission; tierEmp applies it here so wages/BE/profit
     // match the emitted small unit); effect_mult scales the non-goods effects. null = 1 (unfactored tier).
@@ -1252,7 +1257,15 @@ function priceMultPct(buy, sell){
 // Secondary outputs include negative reductions (e.g. tank line −automobiles), so the map nets out per good.
 function tierGoodsIO(i,t){
   const inm={...t.inputs}, outm={}; const og=tierOut(i,t); outm[og]=(outm[og]||0)+t.output_qty;
-  for(const pg in (t._sec||{})){ const sel=t._sec[pg]; if(sel===basePm(pg)) continue; const r=pmRec(sel);
+  // ⭐⭐ MIRROR OF ui/econ.js — a selected secondary uses the TIER'S OWN scaled goods, not vanilla's
+  //   flat ones. `secondary_goods` is written per tier by emit_secondaries.mjs and is what the GAME
+  //   ships. ⚠ THIS FORK IS THE REASON THE SHEET AND THE SOLVER DISAGREED (2026-09-01): econ.js was
+  //   fixed and builder.html was not, so the solver counted 4 ladder faults while the sheet counted
+  //   12 — the sheet still reading bone china as a flat -£120/+£1470 at EVERY glass rung. CLAUDE.md
+  //   warns about this fork in as many words: change BOTH or neither.
+  const scaled = sel => { for(const v of Object.values(t.secondary_goods||{})) if(v.from===sel) return v; return null; };
+  for(const pg in (t._sec||{})){ const sel=t._sec[pg]; if(sel===basePm(pg)) continue;
+    const sc=scaled(sel); const r = sc ? {in: sc.in||{}, out: sc.out||{}} : pmRec(sel);
     for(const g in r.in)  inm[g]=(inm[g]||0)+r.in[g];
     for(const g in r.out) outm[g]=(outm[g]||0)+r.out[g]; }
   return {in:inm, out:outm};
@@ -1802,8 +1815,12 @@ function fmtPop(n){ n=+n||0;
 const ERA_ANCHOR_YEAR = { 0:1750, 1:1830, 2:1870, 3:1900, 4:1925, 5:1940 };
 // Parsed from the id (`era5_1945`) rather than read from a field, so it works on presets written before
 // the generator learned to carry `era`/`anchor` — and on any it writes afterwards.
+// ⚠ ERA_ANCHOR_YEAR above is the SIX-ERA ladder's table and is only a FALLBACK. A preset that carries
+// its own `anchor` wins, because the anchor is a property of the ladder that preset was solved on —
+// on the four-rung book (1836/1875/1905/1940) the hardcoded table printed "e0·1750" beside a 1836
+// scenario. Presets written before the generator learned to carry it still fall back to the table.
 function eraAnchorOf(p){
-  if(p && p.era!=null && p.year!=null) return { era:+p.era, year:+p.year, anchor:ERA_ANCHOR_YEAR[+p.era] };
+  if(p && p.era!=null && p.year!=null) return { era:+p.era, year:+p.year, anchor:(p.anchor!=null?+p.anchor:ERA_ANCHOR_YEAR[+p.era]) };
   const m=/^era(\d+)_(\d+)$/.exec(p&&p.id||'');
   if(!m) return null;
   return { era:+m[1], year:+m[2], anchor:ERA_ANCHOR_YEAR[+m[1]] };
@@ -1826,7 +1843,10 @@ function presetBarHTML(){
           + (a ? ` Scenario YEAR ${a.year}; it sits in era ${a.era}, whose ANCHOR is ${a.anchor} — the two are different dates and the scenario year is the one the vanilla GDP/SoL/wage references were measured at.` : '')
           + ` Nothing stays 'in' the preset afterwards — edit freely.`;
         return `<button class="pbtn" data-preset="${esc(p.id)}" title="${esc(tip)}">`
-          + (a ? `<span class="eraAnchor" title="era ${a.era}, anchored ${a.anchor}">e${a.era}·${a.anchor}</span>` : '')
+          // the chip exists to show an anchor that DIFFERS from the scenario year (era 0 is anchored
+          // 1750 but scored at 1780). Where a ladder anchors each era ON its scenario year — the
+          // four-rung book does — printing both reads as "1836 1836", so the chip drops the anchor.
+          + (a ? `<span class="eraAnchor" title="era ${a.era}, anchored ${a.anchor}">e${a.era}${a.anchor!=null&&a.anchor!==a.year?'·'+a.anchor:''}</span>` : '')
           + `${esc(presetName(p))}</button>`; }).join('')
       + `</div>`).join('');
   const cm=POPM.class_mult||{};

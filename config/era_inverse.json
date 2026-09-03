@@ -493,6 +493,2587 @@
   "building_art_academy_film": 511,
   "building_art_academy_sound_film": 641
  },
+ "analytic_ladder": [
+  {
+   "era": 0,
+   "year": 1780,
+   "margins": {
+    "food": {
+     "0": 0.3
+    },
+    "textile": {
+     "0": 0.99
+    },
+    "furniture": {
+     "0": 0.3
+    },
+    "tooling": {
+     "0": 0.3
+    },
+    "paper": {
+     "0": 0.3
+    },
+    "shipyard": {
+     "0": 0
+    },
+    "arms": {
+     "0": 0.3
+    },
+    "artillery": {
+     "0": 0.3
+    },
+    "port": {
+     "0": 0.38
+    }
+   },
+   "faults": {
+    "loss": [],
+    "stale": [],
+    "inverted": [],
+    "net": 0
+   }
+  },
+  {
+   "era": 1,
+   "year": 1836,
+   "margins": {
+    "food": {
+     "0": -0.38,
+     "1": 0.38
+    },
+    "textile": {
+     "0": -0.5,
+     "1": 0.38
+    },
+    "furniture": {
+     "0": -0.52,
+     "1": 0.21
+    },
+    "glass": {
+     "0": -0.02,
+     "1": 0.38
+    },
+    "tooling": {
+     "0": -0.11,
+     "1": 0.38
+    },
+    "paper": {
+     "0": 0.1,
+     "1": 0.38
+    },
+    "fertilizer": {
+     "1": 0.38
+    },
+    "explosives": {
+     "1": 0.38
+    },
+    "steel": {
+     "0": -0.23
+    },
+    "motor": {
+     "1": 0.38
+    },
+    "shipyard": {
+     "0": -0.33,
+     "1": 0.08
+    },
+    "shipyard_steam": {
+     "1": 0.05
+    },
+    "arms": {
+     "0": -0.12,
+     "1": 0.38
+    },
+    "artillery": {
+     "0": -0.11,
+     "1": 0.38
+    },
+    "munition": {
+     "1": 0.38
+    },
+    "port": {
+     "0": 0.05,
+     "1": 0.52
+    },
+    "railway": {
+     "1": 0.39
+    },
+    "art_academy": {
+     "1": 0.38
+    }
+   },
+   "faults": {
+    "loss": [
+     "steel"
+    ],
+    "stale": [],
+    "inverted": [],
+    "net": 1
+   }
+  },
+  {
+   "era": 2,
+   "year": 1870,
+   "margins": {
+    "food": {
+     "0": -0.28,
+     "1": -0.08,
+     "2": 0.46
+    },
+    "textile": {
+     "0": -0.43,
+     "1": 0.32,
+     "2": 0.78
+    },
+    "furniture": {
+     "0": -0.62,
+     "1": -0.1,
+     "2": 0.27
+    },
+    "glass": {
+     "0": -0.22,
+     "1": 0.02,
+     "2": 0.46
+    },
+    "tooling": {
+     "0": -0.5,
+     "1": -0.09,
+     "2": 0.46
+    },
+    "paper": {
+     "0": -0.48,
+     "1": -0.35,
+     "2": 0.46
+    },
+    "fertilizer": {
+     "1": -0.06,
+     "2": 0.46
+    },
+    "explosives": {
+     "1": 0,
+     "2": 0.46
+    },
+    "steel": {
+     "0": -0.45,
+     "2": 0.46
+    },
+    "motor": {
+     "1": -0.08,
+     "2": 0.46
+    },
+    "shipyard": {
+     "0": -0.24,
+     "1": 0.33
+    },
+    "shipyard_steam": {
+     "1": 0.17,
+     "2": 0.24
+    },
+    "arms": {
+     "0": -0.33,
+     "1": 0.17,
+     "2": 0.46
+    },
+    "artillery": {
+     "0": -0.42,
+     "1": -0.1,
+     "2": 0.46
+    },
+    "munition": {
+     "1": -0.18,
+     "2": 0.46
+    },
+    "synthetics": {
+     "2": 0.46
+    },
+    "electrics": {
+     "2": 0.46
+    },
+    "port": {
+     "0": -0.19,
+     "1": 0.47,
+     "2": 0.67
+    },
+    "railway": {
+     "1": -0.13,
+     "2": 0.46
+    },
+    "art_academy": {
+     "1": -0.03,
+     "2": 0.46
+    }
+   },
+   "faults": {
+    "loss": [],
+    "stale": [],
+    "inverted": [],
+    "net": 0
+   }
+  },
+  {
+   "era": 3,
+   "year": 1900,
+   "margins": {
+    "food": {
+     "1": -0.59,
+     "2": -0.38,
+     "3": -0.16
+    },
+    "textile": {
+     "1": -0.53,
+     "2": -0.48,
+     "3": -0.22
+    },
+    "furniture": {
+     "1": -0.48,
+     "2": -0.33,
+     "3": -0.2
+    },
+    "glass": {
+     "1": -0.21,
+     "2": 0.1,
+     "3": 0.54
+    },
+    "tooling": {
+     "1": -0.37,
+     "2": 0.09,
+     "3": 0.54
+    },
+    "paper": {
+     "1": -0.5,
+     "2": 0.12,
+     "3": 0.44
+    },
+    "fertilizer": {
+     "1": -0.29,
+     "2": 0.09,
+     "3": 0.54
+    },
+    "explosives": {
+     "1": -0.25,
+     "2": 0.1,
+     "3": 0.54
+    },
+    "steel": {
+     "0": -0.59,
+     "2": 0.08,
+     "3": 0.54
+    },
+    "motor": {
+     "1": -0.28,
+     "2": 0.12,
+     "3": 0.54
+    },
+    "shipyard_steam": {
+     "1": -0.03,
+     "2": 0.05,
+     "3": 0.24
+    },
+    "automotive": {
+     "3": 0.54
+    },
+    "arms": {
+     "1": -0.13,
+     "2": 0.12,
+     "3": 0.54
+    },
+    "artillery": {
+     "1": -0.39,
+     "2": 0.12,
+     "3": 0.54
+    },
+    "munition": {
+     "1": -0.38,
+     "2": 0.1,
+     "3": 0.54
+    },
+    "synthetics": {
+     "2": 0.12,
+     "3": 0.54
+    },
+    "electrics": {
+     "2": -0.65,
+     "3": -0.3
+    },
+    "power": {
+     "3": 0.54
+    },
+    "port": {
+     "1": 0.11,
+     "2": 0.28,
+     "3": 0.57
+    },
+    "railway": {
+     "1": -0.31,
+     "2": 0.08,
+     "3": 0.55
+    },
+    "art_academy": {
+     "1": -0.26,
+     "2": 0.12,
+     "3": 0.44
+    }
+   },
+   "faults": {
+    "loss": [
+     "food",
+     "textile",
+     "furniture",
+     "electrics"
+    ],
+    "stale": [
+     "port"
+    ],
+    "inverted": [],
+    "net": 5
+   }
+  },
+  {
+   "era": 4,
+   "year": 1920,
+   "margins": {
+    "food": {
+     "2": -0.4,
+     "3": -0.16,
+     "4": -0.08
+    },
+    "textile": {
+     "2": 0.03,
+     "3": 0.32,
+     "4": 0.42
+    },
+    "furniture": {
+     "2": 0.11,
+     "3": 0.2,
+     "4": 0.16
+    },
+    "glass": {
+     "2": -0.22,
+     "3": 0.11,
+     "4": 0.3
+    },
+    "tooling": {
+     "2": -0.34,
+     "3": -0.06,
+     "4": 0.25
+    },
+    "paper": {
+     "2": -0.14,
+     "3": 0.14,
+     "4": 0.33
+    },
+    "fertilizer": {
+     "2": -0.18,
+     "3": 0.15,
+     "4": 0.48
+    },
+    "explosives": {
+     "2": -0.18,
+     "3": 0.17,
+     "4": 0.62
+    },
+    "steel": {
+     "2": -0.2,
+     "3": 0.13,
+     "4": 0.46
+    },
+    "motor": {
+     "2": -0.17,
+     "3": 0.17,
+     "4": 0.07
+    },
+    "shipyard_steam": {
+     "2": -0.12,
+     "3": 0.05,
+     "4": 0.32
+    },
+    "automotive": {
+     "3": -0.11,
+     "4": 0.45
+    },
+    "arms": {
+     "2": -0.17,
+     "3": 0.11,
+     "4": 0.28
+    },
+    "artillery": {
+     "2": -0.18,
+     "3": -0.03,
+     "4": 0.36
+    },
+    "munition": {
+     "2": -0.32,
+     "3": -0.04,
+     "4": 0.26
+    },
+    "synthetics": {
+     "2": 0.11,
+     "3": 0.38,
+     "4": 0.62
+    },
+    "electrics": {
+     "2": 0.15,
+     "3": 0.74,
+     "4": 0.86
+    },
+    "power": {
+     "3": 0.15,
+     "4": 0.62
+    },
+    "port": {
+     "2": -0.02,
+     "3": 0.11,
+     "4": 0.47
+    },
+    "railway": {
+     "2": -0.19,
+     "3": 0.23,
+     "4": 0.47
+    },
+    "art_academy": {
+     "2": -0.17,
+     "3": 0.09,
+     "4": 0.47
+    }
+   },
+   "faults": {
+    "loss": [
+     "food"
+    ],
+    "stale": [
+     "textile",
+     "furniture",
+     "synthetics",
+     "electrics"
+    ],
+    "inverted": [
+     "furniture",
+     "motor"
+    ],
+    "net": 7
+   }
+  },
+  {
+   "era": 5,
+   "year": 1945,
+   "margins": {
+    "food": {
+     "2": -0.3,
+     "3": -0.01,
+     "4": 0.11
+    },
+    "textile": {
+     "2": -0.13,
+     "3": 0.15,
+     "4": 0.28
+    },
+    "furniture": {
+     "2": 0.48,
+     "3": 0.55,
+     "4": 0.62
+    },
+    "glass": {
+     "3": -0.13,
+     "4": 0.04,
+     "5": 0.16
+    },
+    "tooling": {
+     "3": -0.3,
+     "4": -0.07,
+     "5": 0.12
+    },
+    "paper": {
+     "3": -0.13,
+     "4": 0.04,
+     "5": 0.19
+    },
+    "fertilizer": {
+     "3": -0.1,
+     "4": 0.14,
+     "5": 0.26
+    },
+    "explosives": {
+     "3": -0.12,
+     "4": 0.25,
+     "5": 0.48
+    },
+    "steel": {
+     "3": -0.12,
+     "4": 0.16,
+     "5": 0.25
+    },
+    "motor": {
+     "3": -0.19,
+     "4": -0.22,
+     "5": -0.1
+    },
+    "shipyard_steam": {
+     "3": -0.14,
+     "4": 0.09,
+     "5": 0.4
+    },
+    "automotive": {
+     "3": -0.19,
+     "4": -0.06,
+     "5": -0.02
+    },
+    "arms": {
+     "3": -0.31,
+     "4": -0.08,
+     "5": 0.08
+    },
+    "artillery": {
+     "3": -0.28,
+     "4": 0,
+     "5": 0.2
+    },
+    "munition": {
+     "3": -0.28,
+     "4": -0.05,
+     "5": 0.11
+    },
+    "synthetics": {
+     "3": 0.18,
+     "4": 0.36,
+     "5": 0.7
+    },
+    "electrics": {
+     "3": 0.51,
+     "4": 0.41,
+     "5": 0.32
+    },
+    "power": {
+     "3": -0.15,
+     "4": 0.16,
+     "5": 0.7
+    },
+    "port": {
+     "2": 0.01,
+     "3": 0.08,
+     "4": 0.44
+    },
+    "railway": {
+     "2": 0.01,
+     "3": 0.72,
+     "4": 0.44
+    },
+    "art_academy": {
+     "3": -0.2,
+     "4": 0.13,
+     "5": 0.5
+    }
+   },
+   "faults": {
+    "loss": [
+     "motor",
+     "automotive"
+    ],
+    "stale": [
+     "furniture",
+     "synthetics",
+     "electrics",
+     "port",
+     "railway"
+    ],
+    "inverted": [
+     "electrics",
+     "railway"
+    ],
+    "net": 9
+   }
+  }
+ ],
+ "tiers": {
+  "building_food_industry": {
+   "industry": "food",
+   "era": 0,
+   "name": "Bakery Food Industries",
+   "tech": "manufacturies",
+   "tech_year": 1750,
+   "output_good": "groceries",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 4500
+   },
+   "building_cost": 600,
+   "ai_value": 750
+  },
+  "building_food_industry_sweetener": {
+   "industry": "food",
+   "era": 1,
+   "name": "Beet Sugar Food Industries",
+   "tech": "beet_sugar_refining",
+   "tech_year": 1815,
+   "output_good": "groceries",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 4000,
+    "machinists": 500
+   },
+   "building_cost": 899,
+   "ai_value": 1350
+  },
+  "building_food_industry_baking_powder": {
+   "industry": "food",
+   "era": 2,
+   "name": "Baking Powder Food Industries",
+   "tech": "baking_powder",
+   "tech_year": 1860,
+   "output_good": "groceries",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3500,
+    "machinists": 750,
+    "engineers": 250
+   },
+   "building_cost": 839,
+   "ai_value": 2430
+  },
+  "building_food_industry_hydrogenated": {
+   "industry": "food",
+   "era": 3,
+   "name": "Hydrogenated Fat Food Industries",
+   "tech": "fat_hydrogenation",
+   "tech_year": 1909,
+   "output_good": "groceries",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3000,
+    "machinists": 1000,
+    "engineers": 500
+   },
+   "building_cost": 1251,
+   "ai_value": 4374
+  },
+  "building_food_industry_mechanised": {
+   "industry": "food",
+   "era": 4,
+   "name": "Mechanised Bakery Food Industries",
+   "tech": "conveyors",
+   "tech_year": 1920,
+   "output_good": "groceries",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2500,
+    "machinists": 1250,
+    "engineers": 750
+   },
+   "building_cost": 758,
+   "ai_value": 7873
+  },
+  "building_textile_mill": {
+   "industry": "textile",
+   "era": 0,
+   "name": "Handsewn Textile Mills",
+   "tech": "manufacturies",
+   "tech_year": 1780,
+   "output_good": "clothes",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 4500
+   },
+   "building_cost": 600,
+   "ai_value": 750
+  },
+  "building_textile_mill_dye": {
+   "industry": "textile",
+   "era": 1,
+   "name": "Calico Printing Textile Mills",
+   "tech": "calico_printing",
+   "tech_year": 1830,
+   "output_good": "clothes",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 4000,
+    "machinists": 500
+   },
+   "building_cost": 722,
+   "ai_value": 1350
+  },
+  "building_textile_mill_sewing": {
+   "industry": "textile",
+   "era": 2,
+   "name": "Sewing Machine Textile Mills",
+   "tech": "mechanized_workshops",
+   "tech_year": 1855,
+   "output_good": "clothes",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3500,
+    "machinists": 750,
+    "engineers": 250
+   },
+   "building_cost": 600,
+   "ai_value": 2430
+  },
+  "building_textile_mill_electric": {
+   "industry": "textile",
+   "era": 3,
+   "name": "Electric Sewing Textile Mills",
+   "tech": "electrical_capacitors",
+   "tech_year": 1905,
+   "output_good": "clothes",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3000,
+    "machinists": 1000,
+    "engineers": 500
+   },
+   "building_cost": 808,
+   "ai_value": 4374
+  },
+  "building_textile_mill_highdraft": {
+   "industry": "textile",
+   "era": 4,
+   "name": "High-Draft Spinning Textile Mills",
+   "tech": "long_draft_spinning",
+   "tech_year": 1925,
+   "output_good": "clothes",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2500,
+    "machinists": 1250,
+    "engineers": 750
+   },
+   "building_cost": 762,
+   "ai_value": 7873
+  },
+  "building_furniture_manufactory": {
+   "industry": "furniture",
+   "era": 0,
+   "name": "Handcrafted Furniture Manufactories",
+   "tech": "manufacturies",
+   "tech_year": 1780,
+   "output_good": "furniture",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 4500
+   },
+   "building_cost": 600,
+   "ai_value": 750
+  },
+  "building_furniture_manufactory_lathe": {
+   "industry": "furniture",
+   "era": 1,
+   "name": "Lathe Furniture Manufactories",
+   "tech": "lathe",
+   "tech_year": 1830,
+   "output_good": "furniture",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3250,
+    "machinists": 1000,
+    "engineers": 250
+   },
+   "building_cost": 1023,
+   "ai_value": 1350
+  },
+  "building_furniture_manufactory_mechanized": {
+   "industry": "furniture",
+   "era": 2,
+   "name": "Mechanized Furniture Manufactories",
+   "tech": "mechanized_workshops",
+   "tech_year": 1855,
+   "output_good": "furniture",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3000,
+    "machinists": 1250,
+    "engineers": 750
+   },
+   "building_cost": 946,
+   "ai_value": 2430
+  },
+  "building_furniture_manufactory_plywood": {
+   "industry": "furniture",
+   "era": 3,
+   "name": "Plywood Furniture Manufactories",
+   "tech": "rotary_veneer",
+   "tech_year": 1900,
+   "output_good": "furniture",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2450,
+    "machinists": 1525,
+    "engineers": 1025
+   },
+   "building_cost": 896,
+   "ai_value": 4374
+  },
+  "building_furniture_manufactory_sprayed": {
+   "industry": "furniture",
+   "era": 4,
+   "name": "Spray-Finished Furniture Manufactories",
+   "tech": "art_silk",
+   "tech_year": 1923,
+   "output_good": "furniture",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1900,
+    "machinists": 1800,
+    "engineers": 1300
+   },
+   "building_cost": 758,
+   "ai_value": 7873
+  },
+  "building_glassworks": {
+   "industry": "glass",
+   "era": 0,
+   "name": "Coal-Fired Glassworks",
+   "tech": "manufacturies",
+   "tech_year": 1750,
+   "output_good": "glass",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 4500
+   },
+   "building_cost": 600,
+   "ai_value": 750
+  },
+  "building_glassworks_leaded": {
+   "industry": "glass",
+   "era": 1,
+   "name": "Leaded Glassworks",
+   "tech": "crystal_glass",
+   "tech_year": 1832,
+   "output_good": "glass",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 4000,
+    "machinists": 500
+   },
+   "building_cost": 600,
+   "ai_value": 1350
+  },
+  "building_glassworks_crystal": {
+   "industry": "glass",
+   "era": 2,
+   "name": "Tank Furnace Glassworks",
+   "tech": "regenerative_furnace",
+   "tech_year": 1867,
+   "output_good": "glass",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3000,
+    "machinists": 1000,
+    "engineers": 500
+   },
+   "building_cost": 743,
+   "ai_value": 2430
+  },
+  "building_glassworks_plastics": {
+   "industry": "glass",
+   "era": 3,
+   "name": "Plastic Glassworks",
+   "tech": "plastics",
+   "tech_year": 1910,
+   "output_good": "glass",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2500,
+    "machinists": 1250,
+    "engineers": 750
+   },
+   "building_cost": 991,
+   "ai_value": 4374
+  },
+  "building_glassworks_ribbon": {
+   "industry": "glass",
+   "era": 4,
+   "name": "Ribbon Machine Glassworks",
+   "tech": "ribbon_machine",
+   "tech_year": 1926,
+   "output_good": "glass",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2000,
+    "machinists": 1500,
+    "engineers": 1000
+   },
+   "building_cost": 935,
+   "ai_value": 7873
+  },
+  "building_glassworks_fibre": {
+   "industry": "glass",
+   "era": 5,
+   "name": "Glass Fibre Works",
+   "tech": "glass_fibre",
+   "tech_year": 1938,
+   "output_good": "glass",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1500,
+    "machinists": 1750,
+    "engineers": 1250
+   },
+   "building_cost": 726,
+   "ai_value": 14172
+  },
+  "building_tooling_workshop": {
+   "industry": "tooling",
+   "era": 0,
+   "name": "Crude Tooling Workshops",
+   "tech": "manufacturies",
+   "tech_year": 1770,
+   "output_good": "tools",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 4500
+   },
+   "building_cost": 600,
+   "ai_value": 750
+  },
+  "building_tooling_workshop_pig_iron": {
+   "industry": "tooling",
+   "era": 1,
+   "name": "Pig Iron Tooling Workshops",
+   "tech": "steelworking",
+   "tech_year": 1830,
+   "output_good": "tools",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 4000,
+    "machinists": 500
+   },
+   "building_cost": 660,
+   "ai_value": 1350
+  },
+  "building_tooling_workshop_steel": {
+   "industry": "tooling",
+   "era": 2,
+   "name": "Steel Tooling Workshops",
+   "tech": "steel_railway_cars",
+   "tech_year": 1865,
+   "output_good": "tools",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3500,
+    "machinists": 500,
+    "engineers": 500
+   },
+   "building_cost": 700,
+   "ai_value": 2430
+  },
+  "building_tooling_workshop_rubber": {
+   "industry": "tooling",
+   "era": 3,
+   "name": "High-Speed Steel Tooling Workshops",
+   "tech": "high_speed_steel",
+   "tech_year": 1901,
+   "output_good": "tools",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3000,
+    "machinists": 1000,
+    "engineers": 500
+   },
+   "building_cost": 846,
+   "ai_value": 4374
+  },
+  "building_tooling_workshop_carbide": {
+   "industry": "tooling",
+   "era": 4,
+   "name": "Cemented Carbide Tooling Workshops",
+   "tech": "cemented_carbide",
+   "tech_year": 1927,
+   "output_good": "tools",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2500,
+    "machinists": 1250,
+    "engineers": 750
+   },
+   "building_cost": 876,
+   "ai_value": 7873
+  },
+  "building_tooling_workshop_tracer": {
+   "industry": "tooling",
+   "era": 5,
+   "name": "Tracer-Controlled Tooling Workshops",
+   "tech": "transfer_machining",
+   "tech_year": 1936,
+   "output_good": "tools",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2000,
+    "machinists": 1500,
+    "engineers": 1000
+   },
+   "building_cost": 703,
+   "ai_value": 14172
+  },
+  "building_paper_mill": {
+   "industry": "paper",
+   "era": 0,
+   "name": "Pulp Pressing Paper Mills",
+   "tech": "manufacturies",
+   "tech_year": 1750,
+   "output_good": "paper",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 4500
+   },
+   "building_cost": 600,
+   "ai_value": 750
+  },
+  "building_paper_mill_sulfite": {
+   "industry": "paper",
+   "era": 1,
+   "name": "Machine Paper Mills",
+   "tech": "fourdrinier_machine",
+   "tech_year": 1830,
+   "output_good": "paper",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 4000,
+    "machinists": 500
+   },
+   "building_cost": 742,
+   "ai_value": 1350
+  },
+  "building_paper_mill_bleached": {
+   "industry": "paper",
+   "era": 2,
+   "name": "Sulfite Pulping Paper Mills",
+   "tech": "chemical_bleaching",
+   "tech_year": 1874,
+   "output_good": "paper",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3000,
+    "machinists": 1000,
+    "engineers": 500
+   },
+   "building_cost": 657,
+   "ai_value": 2430
+  },
+  "building_paper_mill_kraft": {
+   "industry": "paper",
+   "era": 3,
+   "name": "Kraft Process Paper Mills",
+   "tech": "kraft_process",
+   "tech_year": 1890,
+   "output_good": "paper",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2500,
+    "machinists": 1250,
+    "engineers": 750
+   },
+   "building_cost": 905,
+   "ai_value": 4374
+  },
+  "building_paper_mill_nssc": {
+   "industry": "paper",
+   "era": 4,
+   "name": "Semi-Chemical Paper Mills",
+   "tech": "semi_chemical_pulping",
+   "tech_year": 1925,
+   "output_good": "paper",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2000,
+    "machinists": 1500,
+    "engineers": 1000
+   },
+   "building_cost": 854,
+   "ai_value": 7873
+  },
+  "building_paper_mill_highspeed": {
+   "industry": "paper",
+   "era": 5,
+   "name": "High-Speed Machine Paper Mills",
+   "tech": "high_speed_papermaking",
+   "tech_year": 1935,
+   "output_good": "paper",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1500,
+    "machinists": 1750,
+    "engineers": 1250
+   },
+   "building_cost": 675,
+   "ai_value": 14172
+  },
+  "building_chemical_plant": {
+   "industry": "fertilizer",
+   "era": 1,
+   "name": "Superphosphate Plants",
+   "tech": "intensive_agriculture",
+   "tech_year": 1842,
+   "output_good": "fertilizer",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3000,
+    "machinists": 1000,
+    "engineers": 500
+   },
+   "building_cost": 800,
+   "ai_value": 1350
+  },
+  "building_chemical_plant_ammoniacal": {
+   "industry": "fertilizer",
+   "era": 2,
+   "name": "Ammoniacal Liquor Fertilizer Plants",
+   "tech": "aniline",
+   "tech_year": 1865,
+   "output_good": "fertilizer",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2500,
+    "machinists": 1250,
+    "engineers": 750
+   },
+   "building_cost": 883,
+   "ai_value": 2430
+  },
+  "building_chemical_plant_improved": {
+   "industry": "fertilizer",
+   "era": 3,
+   "name": "Improved Fertilizer Plants",
+   "tech": "improved_fertilizer",
+   "tech_year": 1885,
+   "output_good": "fertilizer",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2000,
+    "machinists": 1500,
+    "engineers": 1000
+   },
+   "building_cost": 1179,
+   "ai_value": 4374
+  },
+  "building_chemical_plant_nitrogen": {
+   "industry": "fertilizer",
+   "era": 4,
+   "name": "Nitrogen Fixation Plants",
+   "tech": "nitrogen_fixation",
+   "tech_year": 1913,
+   "output_good": "fertilizer",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1000,
+    "machinists": 2000,
+    "engineers": 1500
+   },
+   "building_cost": 1306,
+   "ai_value": 7873
+  },
+  "building_chemical_plant_reforming": {
+   "industry": "fertilizer",
+   "era": 5,
+   "name": "Steam Reforming Chemical Plants",
+   "tech": "steam_reforming",
+   "tech_year": 1935,
+   "output_good": "fertilizer",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 500,
+    "machinists": 2250,
+    "engineers": 1750
+   },
+   "building_cost": 1007,
+   "ai_value": 14172
+  },
+  "building_explosives_factory": {
+   "industry": "explosives",
+   "era": 1,
+   "name": "Leblanc Explosives Factories",
+   "tech": "leblanc_process",
+   "tech_year": 1820,
+   "output_good": "explosives",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3000,
+    "machinists": 1000,
+    "engineers": 500
+   },
+   "building_cost": 800,
+   "ai_value": 1350
+  },
+  "building_explosives_factory_ammonia": {
+   "industry": "explosives",
+   "era": 2,
+   "name": "Dynamite Explosives Factories",
+   "tech": "dynamite",
+   "tech_year": 1867,
+   "output_good": "explosives",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2500,
+    "machinists": 1000,
+    "engineers": 1000
+   },
+   "building_cost": 800,
+   "ai_value": 2430
+  },
+  "building_explosives_factory_vacuum": {
+   "industry": "explosives",
+   "era": 3,
+   "name": "Ostwald Process Explosives Factories",
+   "tech": "ostwald_process",
+   "tech_year": 1908,
+   "output_good": "explosives",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2000,
+    "machinists": 1000,
+    "engineers": 1000
+   },
+   "building_cost": 982,
+   "ai_value": 4374
+  },
+  "building_explosives_factory_brine": {
+   "industry": "explosives",
+   "era": 4,
+   "name": "Continuous Nitration Explosives Factories",
+   "tech": "conveyors",
+   "tech_year": 1928,
+   "output_good": "explosives",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1000,
+    "machinists": 1000,
+    "engineers": 1500
+   },
+   "building_cost": 1210,
+   "ai_value": 7873
+  },
+  "building_explosives_factory_cyclonite": {
+   "industry": "explosives",
+   "era": 5,
+   "name": "Cyclonite Explosives Factories",
+   "tech": "cyclonite_process",
+   "tech_year": 1940,
+   "output_good": "explosives",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 600,
+    "machinists": 1200,
+    "engineers": 1700
+   },
+   "building_cost": 1155,
+   "ai_value": 14172
+  },
+  "building_steel_mill": {
+   "industry": "steel",
+   "era": 0,
+   "name": "Blister Steel Mills",
+   "tech": "steelworking",
+   "tech_year": 1745,
+   "output_good": "steel",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3500,
+    "machinists": 750,
+    "engineers": 250
+   },
+   "building_cost": 800,
+   "ai_value": 750
+  },
+  "building_steel_mill_bessemer": {
+   "industry": "steel",
+   "era": 2,
+   "name": "Bessemer Steel Mills",
+   "tech": "bessemer_process",
+   "tech_year": 1856,
+   "output_good": "steel",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3000,
+    "machinists": 1000,
+    "engineers": 500
+   },
+   "building_cost": 1048,
+   "ai_value": 2430
+  },
+  "building_steel_mill_open_hearth": {
+   "industry": "steel",
+   "era": 3,
+   "name": "Open-Hearth Steel Mills",
+   "tech": "open_hearth_process",
+   "tech_year": 1885,
+   "output_good": "steel",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2500,
+    "machinists": 1250,
+    "engineers": 750
+   },
+   "building_cost": 1363,
+   "ai_value": 4374
+  },
+  "building_steel_mill_electric_arc": {
+   "industry": "steel",
+   "era": 4,
+   "name": "Electric Arc Steel Mills",
+   "tech": "electric_arc_process",
+   "tech_year": 1912,
+   "output_good": "steel",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2000,
+    "machinists": 1500,
+    "engineers": 1000
+   },
+   "building_cost": 1429,
+   "ai_value": 7873
+  },
+  "building_steel_mill_strip_mill": {
+   "industry": "steel",
+   "era": 5,
+   "name": "Continuous Strip Mill Steelworks",
+   "tech": "continuous_strip_mill",
+   "tech_year": 1932,
+   "output_good": "steel",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1500,
+    "machinists": 1750,
+    "engineers": 1250
+   },
+   "building_cost": 1087,
+   "ai_value": 14172
+  },
+  "building_motor_industry": {
+   "industry": "motor",
+   "era": 1,
+   "name": "Steam Engine Motor Industries",
+   "tech": "atmospheric_engine",
+   "tech_year": 1820,
+   "output_good": "engines",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2500,
+    "machinists": 1500,
+    "engineers": 500
+   },
+   "building_cost": 969,
+   "ai_value": 1350
+  },
+  "building_motor_industry_compound": {
+   "industry": "motor",
+   "era": 2,
+   "name": "Compound Engine Motor Industries",
+   "tech": "watertube_boiler",
+   "tech_year": 1860,
+   "output_good": "engines",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2000,
+    "machinists": 1750,
+    "engineers": 750
+   },
+   "building_cost": 808,
+   "ai_value": 2430
+  },
+  "building_motor_industry_electric": {
+   "industry": "motor",
+   "era": 3,
+   "name": "Electric Engine Motor Industries",
+   "tech": "electric_railway",
+   "tech_year": 1893,
+   "output_good": "engines",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2000,
+    "machinists": 1500,
+    "engineers": 1000
+   },
+   "building_cost": 947,
+   "ai_value": 4374
+  },
+  "building_motor_industry_diesel": {
+   "industry": "motor",
+   "era": 4,
+   "name": "Diesel Engine Motor Industries",
+   "tech": "diesel_engine",
+   "tech_year": 1912,
+   "output_good": "engines",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1500,
+    "machinists": 1500,
+    "engineers": 1500
+   },
+   "building_cost": 800,
+   "ai_value": 7873
+  },
+  "building_motor_industry_welded_diesel": {
+   "industry": "motor",
+   "era": 5,
+   "name": "Welded High-Speed Motor Industries",
+   "tech": "high_speed_diesel",
+   "tech_year": 1935,
+   "output_good": "engines",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1000,
+    "machinists": 1750,
+    "engineers": 1750
+   },
+   "building_cost": 800,
+   "ai_value": 14172
+  },
+  "building_shipyard": {
+   "industry": "shipyard",
+   "era": 0,
+   "name": "Basic Shipyards",
+   "tech": "navigation",
+   "tech_year": 1700,
+   "output_good": "clippers",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3500,
+    "machinists": 750,
+    "engineers": 250
+   },
+   "building_cost": 600,
+   "ai_value": 750
+  },
+  "building_shipyard_complex": {
+   "industry": "shipyard",
+   "era": 1,
+   "name": "Complex Shipyards",
+   "tech": "screw_frigate",
+   "tech_year": 1845,
+   "output_good": "clippers",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3000,
+    "machinists": 1000,
+    "engineers": 500
+   },
+   "building_cost": 600,
+   "ai_value": 1350
+  },
+  "building_shipyard_metal": {
+   "industry": "shipyard_steam",
+   "era": 1,
+   "name": "Metal Shipyards",
+   "tech": "screw_frigate",
+   "tech_year": 1843,
+   "output_good": "steamers",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2000,
+    "machinists": 1500,
+    "engineers": 1000
+   },
+   "building_cost": 600,
+   "ai_value": 1350
+  },
+  "building_shipyard_metal_steel_hull": {
+   "industry": "shipyard_steam",
+   "era": 2,
+   "name": "Steel Hull Steamship Yards",
+   "tech": "steel_hulls",
+   "tech_year": 1875,
+   "output_good": "steamers",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1500,
+    "machinists": 1750,
+    "engineers": 1250
+   },
+   "building_cost": 838,
+   "ai_value": 2430
+  },
+  "building_shipyard_metal_turbine": {
+   "industry": "shipyard_steam",
+   "era": 3,
+   "name": "Turbine Steamship Yards",
+   "tech": "marine_steam_turbine",
+   "tech_year": 1903,
+   "output_good": "steamers",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1000,
+    "machinists": 2000,
+    "engineers": 1500
+   },
+   "building_cost": 942,
+   "ai_value": 4374
+  },
+  "building_shipyard_metal_oil_fired": {
+   "industry": "shipyard_steam",
+   "era": 4,
+   "name": "Oil-Fired Steamship Yards",
+   "tech": "oil_fired_boilers",
+   "tech_year": 1913,
+   "output_good": "steamers",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 500,
+    "machinists": 2250,
+    "engineers": 1750
+   },
+   "building_cost": 1308,
+   "ai_value": 7873
+  },
+  "building_shipyard_arc_welding": {
+   "industry": "shipyard_steam",
+   "era": 5,
+   "name": "Arc Welding Shipyards",
+   "tech": "welded_prefabrication",
+   "tech_year": 1941,
+   "output_good": "steamers",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1000,
+    "machinists": 2000,
+    "engineers": 1500
+   },
+   "building_cost": 1716,
+   "ai_value": 14172
+  },
+  "building_automotive_industry": {
+   "industry": "automotive",
+   "era": 3,
+   "name": "Automobile Industries",
+   "tech": "combustion_engine",
+   "tech_year": 1899,
+   "output_good": "automobiles",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2000,
+    "machinists": 1500,
+    "engineers": 1000
+   },
+   "building_cost": 1081,
+   "ai_value": 4374
+  },
+  "building_automotive_industry_mass": {
+   "industry": "automotive",
+   "era": 4,
+   "name": "Mass Automobile Industries",
+   "tech": "conveyors",
+   "tech_year": 1913,
+   "output_good": "automobiles",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1500,
+    "machinists": 1500,
+    "engineers": 1500
+   },
+   "building_cost": 1367,
+   "ai_value": 7873
+  },
+  "building_automotive_industry_transfer_line": {
+   "industry": "automotive",
+   "era": 5,
+   "name": "Transfer Line Automotive Industries",
+   "tech": "transfer_machining",
+   "tech_year": 1936,
+   "output_good": "automobiles",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1000,
+    "machinists": 1750,
+    "engineers": 1750
+   },
+   "building_cost": 1238,
+   "ai_value": 14172
+  },
+  "building_arms_industry": {
+   "industry": "arms",
+   "era": 0,
+   "name": "Musket Arms Industries",
+   "tech": "gunsmithing",
+   "tech_year": 1770,
+   "output_good": "small_arms",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 4000,
+    "machinists": 500
+   },
+   "building_cost": 606,
+   "ai_value": 750
+  },
+  "building_arms_industry_rifles": {
+   "industry": "arms",
+   "era": 1,
+   "name": "Rifle Arms Industries",
+   "tech": "rifling",
+   "tech_year": 1849,
+   "output_good": "small_arms",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3500,
+    "machinists": 1000
+   },
+   "building_cost": 780,
+   "ai_value": 1350
+  },
+  "building_arms_industry_repeaters": {
+   "industry": "arms",
+   "era": 2,
+   "name": "Repeater Arms Industries",
+   "tech": "repeaters",
+   "tech_year": 1866,
+   "output_good": "small_arms",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3000,
+    "machinists": 1000,
+    "engineers": 500
+   },
+   "building_cost": 921,
+   "ai_value": 2430
+  },
+  "building_arms_industry_bolt_action": {
+   "industry": "arms",
+   "era": 3,
+   "name": "Bolt-Action Arms Industries",
+   "tech": "bolt_action_rifles",
+   "tech_year": 1886,
+   "output_good": "small_arms",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2500,
+    "machinists": 1250,
+    "engineers": 750
+   },
+   "building_cost": 1080,
+   "ai_value": 4374
+  },
+  "building_arms_industry_automatic": {
+   "industry": "arms",
+   "era": 4,
+   "name": "Automatic Arms Industries",
+   "tech": "light_machine_guns",
+   "tech_year": 1915,
+   "output_good": "small_arms",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2000,
+    "machinists": 1500,
+    "engineers": 1000
+   },
+   "building_cost": 1077,
+   "ai_value": 7873
+  },
+  "building_arms_industry_stamped": {
+   "industry": "arms",
+   "era": 5,
+   "name": "Stamped Receiver Arms Industries",
+   "tech": "stamped_receivers",
+   "tech_year": 1938,
+   "output_good": "small_arms",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1500,
+    "machinists": 1750,
+    "engineers": 1250
+   },
+   "building_cost": 667,
+   "ai_value": 14172
+  },
+  "building_artillery_foundry": {
+   "industry": "artillery",
+   "era": 0,
+   "name": "Cannon Artillery Foundries",
+   "tech": "artillery",
+   "tech_year": 1750,
+   "output_good": "artillery",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3500,
+    "machinists": 1000
+   },
+   "building_cost": 685,
+   "ai_value": 750
+  },
+  "building_artillery_foundry_smoothbore": {
+   "industry": "artillery",
+   "era": 1,
+   "name": "Smoothbore Artillery Foundries",
+   "tech": "percussion_cap",
+   "tech_year": 1830,
+   "output_good": "artillery",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3250,
+    "machinists": 1000,
+    "engineers": 250
+   },
+   "building_cost": 909,
+   "ai_value": 1350
+  },
+  "building_artillery_foundry_breech": {
+   "industry": "artillery",
+   "era": 2,
+   "name": "Breech-Loading Artillery Foundries",
+   "tech": "breech_loading_artillery",
+   "tech_year": 1861,
+   "output_good": "artillery",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2750,
+    "machinists": 1500,
+    "engineers": 500
+   },
+   "building_cost": 888,
+   "ai_value": 2430
+  },
+  "building_artillery_foundry_recoiled": {
+   "industry": "artillery",
+   "era": 3,
+   "name": "Recoiled Barrel Artillery Foundries",
+   "tech": "recoil_carriages",
+   "tech_year": 1897,
+   "output_good": "artillery",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2500,
+    "machinists": 1500,
+    "engineers": 750
+   },
+   "building_cost": 1058,
+   "ai_value": 4374
+  },
+  "building_artillery_foundry_autofrettage": {
+   "industry": "artillery",
+   "era": 4,
+   "name": "Autofrettaged Artillery Foundries",
+   "tech": "autofrettage",
+   "tech_year": 1925,
+   "output_good": "artillery",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1975,
+    "machinists": 1762,
+    "engineers": 1013
+   },
+   "building_cost": 1199,
+   "ai_value": 7873
+  },
+  "building_artillery_foundry_antiaircraft": {
+   "industry": "artillery",
+   "era": 5,
+   "name": "Automatic Anti-Aircraft Foundries",
+   "tech": "automatic_aa_guns",
+   "tech_year": 1936,
+   "output_good": "artillery",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1450,
+    "machinists": 2024,
+    "engineers": 1276
+   },
+   "building_cost": 934,
+   "ai_value": 14172
+  },
+  "building_munition_plant": {
+   "industry": "munition",
+   "era": 1,
+   "name": "Percussion Cap Munition Plants",
+   "tech": "percussion_cap",
+   "tech_year": 1830,
+   "output_good": "ammunition",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 3000,
+    "machinists": 1000,
+    "engineers": 500
+   },
+   "building_cost": 900,
+   "ai_value": 1350
+  },
+  "building_munition_plant_shells": {
+   "industry": "munition",
+   "era": 2,
+   "name": "Explosive Shell Munition Plants",
+   "tech": "explosive_shells",
+   "tech_year": 1875,
+   "output_good": "ammunition",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2500,
+    "machinists": 1250,
+    "engineers": 750
+   },
+   "building_cost": 886,
+   "ai_value": 2430
+  },
+  "building_munition_plant_drawn_brass": {
+   "industry": "munition",
+   "era": 3,
+   "name": "Drawn Brass Munition Plants",
+   "tech": "bolt_action_rifles",
+   "tech_year": 1895,
+   "output_good": "ammunition",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 2000,
+    "machinists": 1500,
+    "engineers": 1000
+   },
+   "building_cost": 1089,
+   "ai_value": 4374
+  },
+  "building_munition_plant_filling": {
+   "industry": "munition",
+   "era": 4,
+   "name": "Shell Filling Munition Plants",
+   "tech": "shell_filling",
+   "tech_year": 1915,
+   "output_good": "ammunition",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1500,
+    "machinists": 1750,
+    "engineers": 1250
+   },
+   "building_cost": 1082,
+   "ai_value": 7873
+  },
+  "building_munition_plant_automatic": {
+   "industry": "munition",
+   "era": 5,
+   "name": "Automatic Line Munition Plants",
+   "tech": "stamped_receivers",
+   "tech_year": 1940,
+   "output_good": "ammunition",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1000,
+    "machinists": 2000,
+    "engineers": 1500
+   },
+   "building_cost": 800,
+   "ai_value": 14172
+  },
+  "building_synthetics_plant": {
+   "industry": "synthetics",
+   "era": 2,
+   "name": "Synthetics Plants",
+   "tech": "aniline",
+   "tech_year": 1857,
+   "output_good": "dye",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1000,
+    "machinists": 1500,
+    "engineers": 2000
+   },
+   "building_cost": 846,
+   "ai_value": 2430
+  },
+  "building_synthetics_plant_indigo": {
+   "industry": "synthetics",
+   "era": 3,
+   "name": "Synthetic Indigo Plants",
+   "tech": "synthetic_indigo",
+   "tech_year": 1897,
+   "output_good": "dye",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 500,
+    "machinists": 1750,
+    "engineers": 2250
+   },
+   "building_cost": 1102,
+   "ai_value": 4374
+  },
+  "building_synthetics_plant_viscose": {
+   "industry": "synthetics",
+   "era": 4,
+   "name": "Viscose Rayon Plants",
+   "tech": "art_silk",
+   "tech_year": 1912,
+   "output_good": "dye",
+   "employment": {
+    "shopkeepers": 500,
+    "machinists": 2000,
+    "engineers": 2500
+   },
+   "building_cost": 1157,
+   "ai_value": 7873
+  },
+  "building_synthetics_plant_polyamide": {
+   "industry": "synthetics",
+   "era": 5,
+   "name": "Polyamide Fibre Plants",
+   "tech": "polyamide_synthesis",
+   "tech_year": 1939,
+   "output_good": "dye",
+   "employment": {
+    "shopkeepers": 500,
+    "machinists": 1750,
+    "engineers": 2750
+   },
+   "building_cost": 1454,
+   "ai_value": 14172
+  },
+  "building_electrics_industry": {
+   "industry": "electrics",
+   "era": 2,
+   "name": "Electrics Industries",
+   "tech": "telephone",
+   "tech_year": 1878,
+   "output_good": "telephones",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1500,
+    "machinists": 2000,
+    "engineers": 1000
+   },
+   "building_cost": 1068,
+   "ai_value": 2430
+  },
+  "building_electrics_industry_wireless": {
+   "industry": "electrics",
+   "era": 3,
+   "name": "Wireless Telegraph Electrics Industries",
+   "tech": "wireless_telegraphy",
+   "tech_year": 1901,
+   "output_good": "telephones",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 1000,
+    "machinists": 2250,
+    "engineers": 1250
+   },
+   "building_cost": 2268,
+   "ai_value": 4374
+  },
+  "building_electrics_industry_radio": {
+   "industry": "electrics",
+   "era": 4,
+   "name": "Radio Electrics Industries",
+   "tech": "radio",
+   "tech_year": 1920,
+   "output_good": "telephones",
+   "employment": {
+    "shopkeepers": 500,
+    "laborers": 500,
+    "machinists": 2500,
+    "engineers": 1500
+   },
+   "building_cost": 2182,
+   "ai_value": 7873
+  },
+  "building_electrics_industry_electronics": {
+   "industry": "electrics",
+   "era": 5,
+   "name": "Electronics Industries",
+   "tech": "vacuum_tube_electronics",
+   "tech_year": 1935,
+   "output_good": "telephones",
+   "employment": {
+    "shopkeepers": 500,
+    "machinists": 2750,
+    "engineers": 1750
+   },
+   "building_cost": 2003,
+   "ai_value": 14172
+  },
+  "building_power_plant": {
+   "industry": "power",
+   "era": 3,
+   "name": "Coal-Fired Power Plant",
+   "tech": "steam_turbine",
+   "tech_year": 1900,
+   "output_good": "electricity",
+   "employment": {
+    "laborers": 350,
+    "machinists": 500,
+    "engineers": 150
+   },
+   "building_cost": 455,
+   "ai_value": 4374
+  },
+  "building_power_plant_pulverized": {
+   "industry": "power",
+   "era": 4,
+   "name": "Pulverized-Coal Power Plant",
+   "tech": "pulverized_coal_firing",
+   "tech_year": 1920,
+   "output_good": "electricity",
+   "employment": {
+    "laborers": 250,
+    "machinists": 550,
+    "engineers": 200
+   },
+   "building_cost": 400,
+   "ai_value": 7873
+  },
+  "building_power_plant_oil": {
+   "industry": "power",
+   "era": 5,
+   "name": "Oil-Fired Power Plant",
+   "tech": "oil_turbine",
+   "tech_year": 1932,
+   "output_good": "electricity",
+   "employment": {
+    "laborers": 200,
+    "machinists": 600,
+    "engineers": 200
+   },
+   "building_cost": 420,
+   "ai_value": 14172
+  },
+  "building_port": {
+   "industry": "port",
+   "era": 0,
+   "name": "Basic Port",
+   "tech": "navigation",
+   "tech_year": 1700,
+   "output_good": "merchant_marine",
+   "employment": {
+    "laborers": 700,
+    "clerks": 200,
+    "bureaucrats": 100
+   },
+   "building_cost": 40,
+   "ai_value": 750
+  },
+  "building_port_steam": {
+   "industry": "port",
+   "era": 1,
+   "name": "Steamship Ports",
+   "tech": "screw_frigate",
+   "tech_year": 1840,
+   "output_good": "merchant_marine",
+   "employment": {
+    "laborers": 600,
+    "clerks": 200,
+    "bureaucrats": 100,
+    "machinists": 100
+   },
+   "building_cost": 40,
+   "ai_value": 1350
+  },
+  "building_port_industrial": {
+   "industry": "port",
+   "era": 2,
+   "name": "Industrial Port",
+   "tech": "deep_water_docks",
+   "tech_year": 1875,
+   "output_good": "merchant_marine",
+   "employment": {
+    "laborers": 500,
+    "machinists": 200,
+    "clerks": 200,
+    "bureaucrats": 100
+   },
+   "building_cost": 40,
+   "ai_value": 2430
+  },
+  "building_port_modern": {
+   "industry": "port",
+   "era": 3,
+   "name": "Modern Port",
+   "tech": "concrete_quays",
+   "tech_year": 1908,
+   "output_good": "merchant_marine",
+   "employment": {
+    "laborers": 400,
+    "machinists": 250,
+    "engineers": 50,
+    "clerks": 200,
+    "bureaucrats": 100
+   },
+   "building_cost": 80,
+   "ai_value": 4374
+  },
+  "building_port_motor": {
+   "industry": "port",
+   "era": 4,
+   "name": "Motor Ship Ports",
+   "tech": "mechanised_cargo_handling",
+   "tech_year": 1930,
+   "output_good": "merchant_marine",
+   "employment": {
+    "laborers": 300,
+    "machinists": 300,
+    "engineers": 100,
+    "clerks": 200,
+    "bureaucrats": 100
+   },
+   "building_cost": 80,
+   "ai_value": 7873
+  },
+  "building_railway": {
+   "industry": "railway",
+   "era": 1,
+   "name": "Early Railway",
+   "tech": "railways",
+   "tech_year": 1825,
+   "output_good": "transportation",
+   "employment": {
+    "laborers": 600,
+    "machinists": 200,
+    "clerks": 200
+   },
+   "building_cost": 800,
+   "ai_value": 1350
+  },
+  "building_railway_steam": {
+   "industry": "railway",
+   "era": 2,
+   "name": "Steam Railway",
+   "tech": "steel_railway_cars",
+   "tech_year": 1867,
+   "output_good": "transportation",
+   "employment": {
+    "laborers": 500,
+    "machinists": 300,
+    "clerks": 200
+   },
+   "building_cost": 800,
+   "ai_value": 2430
+  },
+  "building_railway_electric": {
+   "industry": "railway",
+   "era": 3,
+   "name": "Electric Railway",
+   "tech": "electric_railway",
+   "tech_year": 1895,
+   "output_good": "transportation",
+   "employment": {
+    "laborers": 400,
+    "machinists": 350,
+    "engineers": 50,
+    "clerks": 200
+   },
+   "building_cost": 800,
+   "ai_value": 4374
+  },
+  "building_railway_diesel": {
+   "industry": "railway",
+   "era": 4,
+   "name": "Diesel Railway",
+   "tech": "diesel_engine",
+   "tech_year": 1925,
+   "output_good": "transportation",
+   "employment": {
+    "laborers": 400,
+    "machinists": 300,
+    "engineers": 100,
+    "clerks": 200
+   },
+   "building_cost": 800,
+   "ai_value": 7873
+  },
+  "building_art_academy": {
+   "industry": "art_academy",
+   "era": 1,
+   "name": "Traditional Art Academy",
+   "tech": "romanticism",
+   "tech_year": 1800,
+   "output_good": "fine_art",
+   "employment": {},
+   "building_cost": 400,
+   "ai_value": 1350
+  },
+  "building_art_academy_realist": {
+   "industry": "art_academy",
+   "era": 2,
+   "name": "Realist Art Academy",
+   "tech": "realism",
+   "tech_year": 1850,
+   "output_good": "fine_art",
+   "employment": {},
+   "building_cost": 400,
+   "ai_value": 2430
+  },
+  "building_art_academy_photographic": {
+   "industry": "art_academy",
+   "era": 3,
+   "name": "Photographic Art Academy",
+   "tech": "camera",
+   "tech_year": 1885,
+   "output_good": "fine_art",
+   "employment": {},
+   "building_cost": 400,
+   "ai_value": 4374
+  },
+  "building_art_academy_film": {
+   "industry": "art_academy",
+   "era": 4,
+   "name": "Film Art Academy",
+   "tech": "film",
+   "tech_year": 1912,
+   "output_good": "fine_art",
+   "employment": {},
+   "building_cost": 511,
+   "ai_value": 7873
+  },
+  "building_art_academy_sound_film": {
+   "industry": "art_academy",
+   "era": 5,
+   "name": "Sound Film Art Academies",
+   "tech": "sound_film",
+   "tech_year": 1932,
+   "output_good": "fine_art",
+   "employment": {},
+   "building_cost": 641,
+   "ai_value": 14172
+  }
+ },
+ "industries": [
+  {
+   "id": "food",
+   "output_good": "groceries",
+   "ladder_end": "plateau",
+   "eras": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "id": "textile",
+   "output_good": "clothes",
+   "ladder_end": "plateau",
+   "eras": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "id": "furniture",
+   "output_good": "furniture",
+   "ladder_end": "plateau",
+   "eras": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "id": "glass",
+   "output_good": "glass",
+   "ladder_end": null,
+   "eras": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "id": "tooling",
+   "output_good": "tools",
+   "ladder_end": null,
+   "eras": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "id": "paper",
+   "output_good": "paper",
+   "ladder_end": null,
+   "eras": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "id": "fertilizer",
+   "output_good": "fertilizer",
+   "ladder_end": null,
+   "eras": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "id": "explosives",
+   "output_good": "explosives",
+   "ladder_end": null,
+   "eras": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "id": "steel",
+   "output_good": "steel",
+   "ladder_end": null,
+   "eras": [
+    0,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "id": "motor",
+   "output_good": "engines",
+   "ladder_end": null,
+   "eras": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "id": "shipyard",
+   "output_good": "clippers",
+   "ladder_end": "extinct",
+   "eras": [
+    0,
+    1
+   ]
+  },
+  {
+   "id": "shipyard_steam",
+   "output_good": "steamers",
+   "ladder_end": null,
+   "eras": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "id": "automotive",
+   "output_good": "automobiles",
+   "ladder_end": null,
+   "eras": [
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "id": "arms",
+   "output_good": "small_arms",
+   "ladder_end": null,
+   "eras": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "id": "artillery",
+   "output_good": "artillery",
+   "ladder_end": null,
+   "eras": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "id": "munition",
+   "output_good": "ammunition",
+   "ladder_end": null,
+   "eras": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "id": "synthetics",
+   "output_good": "dye",
+   "ladder_end": null,
+   "eras": [
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "id": "electrics",
+   "output_good": "telephones",
+   "ladder_end": null,
+   "eras": [
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "id": "power",
+   "output_good": "electricity",
+   "ladder_end": null,
+   "eras": [
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "id": "port",
+   "output_good": "merchant_marine",
+   "ladder_end": "plateau",
+   "eras": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "id": "railway",
+   "output_good": "transportation",
+   "ladder_end": "plateau",
+   "eras": [
+    1,
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "id": "art_academy",
+   "output_good": "fine_art",
+   "ladder_end": null,
+   "eras": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  }
+ ],
+ "eras": [
+  {
+   "era": 0,
+   "year": 1780,
+   "sol": 7,
+   "base_wage": 0.040317,
+   "lead": 0
+  },
+  {
+   "era": 1,
+   "year": 1836,
+   "sol": 8,
+   "base_wage": 0.060475,
+   "lead": 2
+  },
+  {
+   "era": 2,
+   "year": 1870,
+   "sol": 10,
+   "base_wage": 0.073177,
+   "lead": 3
+  },
+  {
+   "era": 3,
+   "year": 1900,
+   "sol": 12,
+   "base_wage": 0.088548,
+   "lead": 4
+  },
+  {
+   "era": 4,
+   "year": 1920,
+   "sol": 14,
+   "base_wage": 0.107147,
+   "lead": 5
+  },
+  {
+   "era": 5,
+   "year": 1945,
+   "sol": 16,
+   "base_wage": 0.129652,
+   "lead": 5
+  }
+ ],
+ "base_prices": {
+  "aeroplanes": 80,
+  "ammunition": 50,
+  "artillery": 70,
+  "automobiles": 100,
+  "clippers": 60,
+  "clothes": 30,
+  "coal": 30,
+  "coffee": 50,
+  "dye": 40,
+  "electricity": 30,
+  "engines": 60,
+  "explosives": 50,
+  "fabric": 20,
+  "fertilizer": 30,
+  "fine_art": 200,
+  "fish": 20,
+  "fruit": 30,
+  "furniture": 30,
+  "glass": 40,
+  "gold": 100,
+  "grain": 20,
+  "groceries": 30,
+  "hardwood": 40,
+  "iron": 40,
+  "ironclads": 80,
+  "lead": 40,
+  "liquor": 30,
+  "luxury_clothes": 60,
+  "luxury_furniture": 60,
+  "manowars": 70,
+  "meat": 30,
+  "merchant_marine": 50,
+  "oil": 40,
+  "opium": 50,
+  "paper": 30,
+  "porcelain": 70,
+  "radios": 80,
+  "rubber": 40,
+  "services": 30,
+  "silk": 40,
+  "small_arms": 60,
+  "steamers": 70,
+  "steel": 50,
+  "sugar": 30,
+  "sulfur": 50,
+  "tanks": 80,
+  "tea": 50,
+  "telephones": 70,
+  "tobacco": 40,
+  "tools": 40,
+  "transportation": 30,
+  "wine": 50,
+  "wood": 20
+ },
+ "vanilla_industries": [],
  "ladder_yields": [
   {
    "era": 0,
@@ -2187,6 +4768,18 @@
     "soldiers": 34690
    },
    "gdp_weekly": 28026,
+   "army_share": 0.031,
+   "battalions": 9,
+   "constr_share": 0.047,
+   "constr_target": 0.08,
+   "output_mix": {
+    "mfg_high": 0.018,
+    "mfg_low": 0.12,
+    "agri": 0.43,
+    "logging": 0.375,
+    "ore": 0.027,
+    "other": 0.03
+   },
    "va_by_industry": {
     "(subsistence)": {
      "weekly": 11591,
@@ -2309,6 +4902,320 @@
     "hardwood",
     "porcelain"
    ],
+   "order_book": [
+    {
+     "g": "fish",
+     "buy": 278.9,
+     "sell": 272.2,
+     "price": 102,
+     "design": 102,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "wood",
+     "buy": 246.5,
+     "sell": 516.1,
+     "price": 25,
+     "design": 109,
+     "pop": 41,
+     "thin": false,
+     "tiered": false,
+     "cls": "unsteerable",
+     "supply": 1
+    },
+    {
+     "g": "grain",
+     "buy": 164.5,
+     "sell": 188.9,
+     "price": 89,
+     "design": 91,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 0
+    },
+    {
+     "g": "fabric",
+     "buy": 118.4,
+     "sell": 241.8,
+     "price": 25,
+     "design": 25,
+     "pop": 53,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "tobacco",
+     "buy": 98.5,
+     "sell": 382,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "clothes",
+     "buy": 87.2,
+     "sell": 49.8,
+     "price": 156,
+     "design": 156,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 0
+    },
+    {
+     "g": "furniture",
+     "buy": 60.9,
+     "sell": 49.8,
+     "price": 117,
+     "design": 118,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 0
+    },
+    {
+     "g": "services",
+     "buy": 43.5,
+     "sell": 150.5,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "clippers",
+     "buy": 32.4,
+     "sell": 36.8,
+     "price": 90,
+     "design": 90,
+     "pop": 1,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "transportation",
+     "buy": 13.5,
+     "sell": 6.8,
+     "price": 175,
+     "design": 175,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "iron",
+     "buy": 13.5,
+     "sell": 9.4,
+     "price": 133,
+     "design": 142,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "unconverged",
+     "supply": 1
+    },
+    {
+     "g": "liquor",
+     "buy": 12.6,
+     "sell": 49.8,
+     "price": 25,
+     "design": 28,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "pop-limited",
+     "supply": 0
+    },
+    {
+     "g": "merchant_marine",
+     "buy": 9.1,
+     "sell": 7.7,
+     "price": 113,
+     "design": 114,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "tea",
+     "buy": 8,
+     "sell": 35,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": true,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "coal",
+     "buy": 7.7,
+     "sell": 15.6,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": true,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "meat",
+     "buy": 7,
+     "sell": 6.2,
+     "price": 110,
+     "design": 120,
+     "pop": 100,
+     "thin": true,
+     "tiered": false,
+     "cls": "pop-limited",
+     "supply": 0
+    },
+    {
+     "g": "small_arms",
+     "buy": 6.7,
+     "sell": 4.2,
+     "price": 146,
+     "design": 147,
+     "pop": 0,
+     "thin": true,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "tools",
+     "buy": 5.5,
+     "sell": 8.4,
+     "price": 60,
+     "design": 168,
+     "pop": 0,
+     "thin": true,
+     "tiered": true,
+     "cls": "unsteerable",
+     "supply": 1
+    },
+    {
+     "g": "hardwood",
+     "buy": 2.6,
+     "sell": 3.4,
+     "price": 78,
+     "design": 100,
+     "pop": 0,
+     "thin": true,
+     "tiered": false,
+     "cls": "trade",
+     "supply": 0
+    },
+    {
+     "g": "artillery",
+     "buy": 2.2,
+     "sell": 0,
+     "price": 175,
+     "design": 175,
+     "pop": 0,
+     "thin": true,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 0
+    },
+    {
+     "g": "paper",
+     "buy": 2.2,
+     "sell": 0,
+     "price": 175,
+     "design": 175,
+     "pop": 0,
+     "thin": true,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 0
+    },
+    {
+     "g": "porcelain",
+     "buy": 1.9,
+     "sell": 1.4,
+     "price": 126,
+     "design": 170,
+     "pop": 100,
+     "thin": true,
+     "tiered": false,
+     "cls": "trade",
+     "supply": 0
+    },
+    {
+     "g": "fruit",
+     "buy": 0.6,
+     "sell": 0.5,
+     "price": 110,
+     "design": 140,
+     "pop": 100,
+     "thin": true,
+     "tiered": false,
+     "cls": "pop-limited",
+     "supply": 0
+    },
+    {
+     "g": "luxury_clothes",
+     "buy": 0.4,
+     "sell": 0,
+     "price": 175,
+     "design": 108,
+     "pop": 100,
+     "thin": true,
+     "tiered": false,
+     "cls": "pop-limited",
+     "supply": 0
+    },
+    {
+     "g": "luxury_furniture",
+     "buy": 0.4,
+     "sell": 0,
+     "price": 175,
+     "design": 108,
+     "pop": 100,
+     "thin": true,
+     "tiered": false,
+     "cls": "pop-limited",
+     "supply": 0
+    },
+    {
+     "g": "silk",
+     "buy": 0.3,
+     "sell": 0,
+     "price": 175,
+     "design": 119,
+     "pop": 100,
+     "thin": true,
+     "tiered": false,
+     "cls": "pop-limited",
+     "supply": 0
+    }
+   ],
    "faults": {
     "loss": [],
     "stale": [],
@@ -2389,6 +5296,18 @@
     "soldiers": 324933
    },
    "gdp_weekly": 131102,
+   "army_share": 0.044,
+   "battalions": 84,
+   "constr_share": 0.084,
+   "constr_target": 0.1,
+   "output_mix": {
+    "mfg_high": 0.219,
+    "mfg_low": 0.182,
+    "agri": 0.4,
+    "logging": 0.07,
+    "ore": 0.093,
+    "other": 0.036
+   },
    "va_by_industry": {
     "(agriculture)": {
      "weekly": 77952,
@@ -2494,6 +5413,464 @@
     "hardwood",
     "porcelain"
    ],
+   "order_book": [
+    {
+     "g": "grain",
+     "buy": 3183.5,
+     "sell": 3544.5,
+     "price": 91,
+     "design": 91,
+     "pop": 86,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 5
+    },
+    {
+     "g": "wood",
+     "buy": 1041.4,
+     "sell": 924.5,
+     "price": 109,
+     "design": 109,
+     "pop": 29,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "clothes",
+     "buy": 719.6,
+     "sell": 363,
+     "price": 174,
+     "design": 173,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "tools",
+     "buy": 629.4,
+     "sell": 478.6,
+     "price": 124,
+     "design": 123,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "fabric",
+     "buy": 566.5,
+     "sell": 608.7,
+     "price": 94,
+     "design": 94,
+     "pop": 39,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "liquor",
+     "buy": 493.9,
+     "sell": 855.1,
+     "price": 45,
+     "design": 45,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "furniture",
+     "buy": 487.9,
+     "sell": 428.3,
+     "price": 110,
+     "design": 110,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "services",
+     "buy": 355.8,
+     "sell": 500.6,
+     "price": 69,
+     "design": 69,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "coal",
+     "buy": 313.5,
+     "sell": 274.9,
+     "price": 111,
+     "design": 110,
+     "pop": 65,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "iron",
+     "buy": 310.4,
+     "sell": 197.6,
+     "price": 143,
+     "design": 142,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "sugar",
+     "buy": 304.2,
+     "sell": 603.5,
+     "price": 26,
+     "design": 26,
+     "pop": 59,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "paper",
+     "buy": 275.6,
+     "sell": 154.4,
+     "price": 159,
+     "design": 158,
+     "pop": 3,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "tobacco",
+     "buy": 241,
+     "sell": 310.5,
+     "price": 78,
+     "design": 77,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "merchant_marine",
+     "buy": 194.8,
+     "sell": 237.5,
+     "price": 84,
+     "design": 83,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "hardwood",
+     "buy": 161.1,
+     "sell": 161,
+     "price": 100,
+     "design": 100,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 0
+    },
+    {
+     "g": "transportation",
+     "buy": 118,
+     "sell": 60.4,
+     "price": 172,
+     "design": 171,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "silk",
+     "buy": 117.5,
+     "sell": 93.1,
+     "price": 120,
+     "design": 119,
+     "pop": 3,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "groceries",
+     "buy": 99.4,
+     "sell": 80.4,
+     "price": 118,
+     "design": 118,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "small_arms",
+     "buy": 64,
+     "sell": 60.3,
+     "price": 105,
+     "design": 104,
+     "pop": 2,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "glass",
+     "buy": 56.6,
+     "sell": 58.5,
+     "price": 98,
+     "design": 97,
+     "pop": 75,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "steel",
+     "buy": 49.9,
+     "sell": 35,
+     "price": 132,
+     "design": 131,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "steamers",
+     "buy": 44.8,
+     "sell": 44.5,
+     "price": 100,
+     "design": 100,
+     "pop": 2,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "dye",
+     "buy": 44.2,
+     "sell": 87.9,
+     "price": 26,
+     "design": 25,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "tea",
+     "buy": 37.9,
+     "sell": 29.3,
+     "price": 122,
+     "design": 121,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "sulfur",
+     "buy": 36,
+     "sell": 43.3,
+     "price": 85,
+     "design": 84,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "clippers",
+     "buy": 24.9,
+     "sell": 31.6,
+     "price": 80,
+     "design": 79,
+     "pop": 4,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "artillery",
+     "buy": 20.9,
+     "sell": 15.4,
+     "price": 127,
+     "design": 126,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "luxury_clothes",
+     "buy": 20.1,
+     "sell": 228.8,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "engines",
+     "buy": 19.6,
+     "sell": 11.5,
+     "price": 153,
+     "design": 152,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "luxury_furniture",
+     "buy": 18.1,
+     "sell": 206.5,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "coffee",
+     "buy": 17.9,
+     "sell": 13.8,
+     "price": 122,
+     "design": 122,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "wine",
+     "buy": 14.9,
+     "sell": 29.3,
+     "price": 27,
+     "design": 26,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "meat",
+     "buy": 14.1,
+     "sell": 11,
+     "price": 121,
+     "design": 120,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "lead",
+     "buy": 13.8,
+     "sell": 16.8,
+     "price": 84,
+     "design": 83,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "fish",
+     "buy": 10.8,
+     "sell": 10.5,
+     "price": 102,
+     "design": 102,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "oil",
+     "buy": 5.4,
+     "sell": 3.9,
+     "price": 129,
+     "design": 144,
+     "pop": 100,
+     "thin": true,
+     "tiered": false,
+     "cls": "pop-limited",
+     "supply": 1
+    },
+    {
+     "g": "fruit",
+     "buy": 4.9,
+     "sell": 3.2,
+     "price": 141,
+     "design": 140,
+     "pop": 100,
+     "thin": true,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "porcelain",
+     "buy": 3.5,
+     "sell": 3.5,
+     "price": 100,
+     "design": 170,
+     "pop": 100,
+     "thin": true,
+     "tiered": false,
+     "cls": "trade",
+     "supply": 0
+    }
+   ],
    "faults": {
     "loss": [
      "steel"
@@ -2594,6 +5971,18 @@
     "soldiers": 1355819
    },
    "gdp_weekly": 836796,
+   "army_share": 0.049,
+   "battalions": 357,
+   "constr_share": 0.113,
+   "constr_target": 0.12,
+   "output_mix": {
+    "mfg_high": 0.332,
+    "mfg_low": 0.198,
+    "agri": 0.19,
+    "logging": 0.067,
+    "ore": 0.176,
+    "other": 0.036
+   },
    "va_by_industry": {
     "(agriculture)": {
      "weekly": 258975,
@@ -2711,6 +6100,476 @@
     "hardwood",
     "porcelain"
    ],
+   "order_book": [
+    {
+     "g": "wood",
+     "buy": 6615.4,
+     "sell": 5802.4,
+     "price": 111,
+     "design": 111,
+     "pop": 15,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "meat",
+     "buy": 3875.6,
+     "sell": 4002.6,
+     "price": 98,
+     "design": 98,
+     "pop": 80,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "paper",
+     "buy": 3814.2,
+     "sell": 4951.9,
+     "price": 78,
+     "design": 78,
+     "pop": 21,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "tools",
+     "buy": 3779,
+     "sell": 5169,
+     "price": 72,
+     "design": 73,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "coal",
+     "buy": 3700.6,
+     "sell": 3136.8,
+     "price": 113,
+     "design": 114,
+     "pop": 25,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "iron",
+     "buy": 3412.9,
+     "sell": 3344.1,
+     "price": 102,
+     "design": 102,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "clothes",
+     "buy": 3247.6,
+     "sell": 1061.7,
+     "price": 175,
+     "design": 175,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "groceries",
+     "buy": 3225.6,
+     "sell": 3268.9,
+     "price": 99,
+     "design": 99,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "grain",
+     "buy": 3010.1,
+     "sell": 3307,
+     "price": 93,
+     "design": 93,
+     "pop": 66,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 5
+    },
+    {
+     "g": "transportation",
+     "buy": 2794.8,
+     "sell": 3936.3,
+     "price": 69,
+     "design": 70,
+     "pop": 31,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 3
+    },
+    {
+     "g": "sugar",
+     "buy": 2411.9,
+     "sell": 4141,
+     "price": 46,
+     "design": 47,
+     "pop": 33,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "liquor",
+     "buy": 2408,
+     "sell": 4071.9,
+     "price": 48,
+     "design": 49,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "services",
+     "buy": 2286,
+     "sell": 2972.3,
+     "price": 77,
+     "design": 78,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "fabric",
+     "buy": 2131.2,
+     "sell": 2885.9,
+     "price": 73,
+     "design": 74,
+     "pop": 40,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "steel",
+     "buy": 1825.4,
+     "sell": 2365.9,
+     "price": 78,
+     "design": 78,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "furniture",
+     "buy": 1488.5,
+     "sell": 1934.9,
+     "price": 78,
+     "design": 75,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "sulfur",
+     "buy": 1085.1,
+     "sell": 1295.4,
+     "price": 85,
+     "design": 86,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "glass",
+     "buy": 939.4,
+     "sell": 1169.5,
+     "price": 82,
+     "design": 82,
+     "pop": 47,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "tea",
+     "buy": 881.7,
+     "sell": 1336.4,
+     "price": 61,
+     "design": 62,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "fertilizer",
+     "buy": 832.3,
+     "sell": 1062.2,
+     "price": 79,
+     "design": 80,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "merchant_marine",
+     "buy": 803.5,
+     "sell": 1103.3,
+     "price": 72,
+     "design": 73,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "explosives",
+     "buy": 672.3,
+     "sell": 896,
+     "price": 75,
+     "design": 76,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "engines",
+     "buy": 652.7,
+     "sell": 919.4,
+     "price": 69,
+     "design": 70,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "tobacco",
+     "buy": 595.9,
+     "sell": 799.2,
+     "price": 74,
+     "design": 75,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "hardwood",
+     "buy": 576.1,
+     "sell": 576.7,
+     "price": 100,
+     "design": 100,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 0
+    },
+    {
+     "g": "small_arms",
+     "buy": 567.1,
+     "sell": 792.4,
+     "price": 70,
+     "design": 71,
+     "pop": 6,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "lead",
+     "buy": 492,
+     "sell": 458.2,
+     "price": 106,
+     "design": 106,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "dye",
+     "buy": 425.9,
+     "sell": 428.5,
+     "price": 100,
+     "design": 100,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "luxury_furniture",
+     "buy": 288.1,
+     "sell": 603.7,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "ammunition",
+     "buy": 267.6,
+     "sell": 364.2,
+     "price": 73,
+     "design": 74,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "silk",
+     "buy": 247,
+     "sell": 236,
+     "price": 104,
+     "design": 104,
+     "pop": 17,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "steamers",
+     "buy": 243,
+     "sell": 329,
+     "price": 73,
+     "design": 74,
+     "pop": 8,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "luxury_clothes",
+     "buy": 202.7,
+     "sell": 407.6,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "artillery",
+     "buy": 178.4,
+     "sell": 248.9,
+     "price": 70,
+     "design": 71,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "fruit",
+     "buy": 58.3,
+     "sell": 51.8,
+     "price": 110,
+     "design": 110,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "porcelain",
+     "buy": 49.4,
+     "sell": 49.4,
+     "price": 100,
+     "design": 100,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 0
+    },
+    {
+     "g": "coffee",
+     "buy": 26.8,
+     "sell": 33.8,
+     "price": 80,
+     "design": 81,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "fish",
+     "buy": 2.9,
+     "sell": 3.5,
+     "price": 85,
+     "design": 108,
+     "pop": 100,
+     "thin": true,
+     "tiered": false,
+     "cls": "pop-limited",
+     "supply": 0
+    },
+    {
+     "g": "clippers",
+     "buy": 0.7,
+     "sell": 0,
+     "price": 175,
+     "design": 88,
+     "pop": 0,
+     "thin": true,
+     "tiered": true,
+     "cls": "died-out",
+     "supply": 0
+    }
+   ],
    "faults": {
     "loss": [],
     "stale": [],
@@ -2826,6 +6685,18 @@
     "soldiers": 3249114
    },
    "gdp_weekly": 3235846,
+   "army_share": 0.052,
+   "battalions": 1083,
+   "constr_share": 0.148,
+   "constr_target": 0.15,
+   "output_mix": {
+    "mfg_high": 0.337,
+    "mfg_low": 0.271,
+    "agri": 0.139,
+    "logging": 0.018,
+    "ore": 0.199,
+    "other": 0.036
+   },
    "va_by_industry": {
     "(extraction)": {
      "weekly": 1016807,
@@ -3169,6 +7040,536 @@
     "hardwood",
     "porcelain"
    ],
+   "order_book": [
+    {
+     "g": "steel",
+     "buy": 16661.8,
+     "sell": 26734.1,
+     "price": 55,
+     "design": 61,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "unconverged",
+     "supply": 2
+    },
+    {
+     "g": "groceries",
+     "buy": 16566.6,
+     "sell": 31751.8,
+     "price": 31,
+     "design": 39,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "pop-limited",
+     "supply": 2
+    },
+    {
+     "g": "coal",
+     "buy": 14669.9,
+     "sell": 11784.1,
+     "price": 118,
+     "design": 124,
+     "pop": 9,
+     "thin": false,
+     "tiered": false,
+     "cls": "unconverged",
+     "supply": 1
+    },
+    {
+     "g": "tools",
+     "buy": 13016.5,
+     "sell": 22379,
+     "price": 46,
+     "design": 53,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "unconverged",
+     "supply": 2
+    },
+    {
+     "g": "glass",
+     "buy": 12483.6,
+     "sell": 18952.4,
+     "price": 61,
+     "design": 68,
+     "pop": 29,
+     "thin": false,
+     "tiered": true,
+     "cls": "unconverged",
+     "supply": 2
+    },
+    {
+     "g": "sugar",
+     "buy": 11392.1,
+     "sell": 21098.4,
+     "price": 36,
+     "design": 44,
+     "pop": 23,
+     "thin": false,
+     "tiered": false,
+     "cls": "unconverged",
+     "supply": 1
+    },
+    {
+     "g": "iron",
+     "buy": 11240.7,
+     "sell": 11461.9,
+     "price": 99,
+     "design": 103,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "unconverged",
+     "supply": 1
+    },
+    {
+     "g": "clothes",
+     "buy": 10196,
+     "sell": 21203.3,
+     "price": 25,
+     "design": 28,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "transportation",
+     "buy": 9617.5,
+     "sell": 17137.9,
+     "price": 41,
+     "design": 49,
+     "pop": 34,
+     "thin": false,
+     "tiered": true,
+     "cls": "unconverged",
+     "supply": 3
+    },
+    {
+     "g": "fish",
+     "buy": 9328.8,
+     "sell": 9389.8,
+     "price": 100,
+     "design": 104,
+     "pop": 27,
+     "thin": false,
+     "tiered": false,
+     "cls": "unconverged",
+     "supply": 1
+    },
+    {
+     "g": "services",
+     "buy": 8744.6,
+     "sell": 14569.5,
+     "price": 50,
+     "design": 57,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "pop-limited",
+     "supply": 1
+    },
+    {
+     "g": "liquor",
+     "buy": 7889,
+     "sell": 22876.4,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "wood",
+     "buy": 6888.4,
+     "sell": 6738.2,
+     "price": 102,
+     "design": 106,
+     "pop": 11,
+     "thin": false,
+     "tiered": false,
+     "cls": "unconverged",
+     "supply": 1
+    },
+    {
+     "g": "explosives",
+     "buy": 6225.5,
+     "sell": 10358.7,
+     "price": 50,
+     "design": 57,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "unconverged",
+     "supply": 2
+    },
+    {
+     "g": "paper",
+     "buy": 6068.4,
+     "sell": 9758.9,
+     "price": 54,
+     "design": 61,
+     "pop": 17,
+     "thin": false,
+     "tiered": true,
+     "cls": "unconverged",
+     "supply": 2
+    },
+    {
+     "g": "engines",
+     "buy": 5920.6,
+     "sell": 10542.8,
+     "price": 41,
+     "design": 49,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "unconverged",
+     "supply": 2
+    },
+    {
+     "g": "grain",
+     "buy": 5215.6,
+     "sell": 5843.1,
+     "price": 91,
+     "design": 95,
+     "pop": 27,
+     "thin": false,
+     "tiered": false,
+     "cls": "unconverged",
+     "supply": 5
+    },
+    {
+     "g": "fabric",
+     "buy": 4693.7,
+     "sell": 7733.9,
+     "price": 51,
+     "design": 58,
+     "pop": 10,
+     "thin": false,
+     "tiered": false,
+     "cls": "unconverged",
+     "supply": 2
+    },
+    {
+     "g": "lead",
+     "buy": 4292,
+     "sell": 3968.2,
+     "price": 106,
+     "design": 111,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "unconverged",
+     "supply": 1
+    },
+    {
+     "g": "electricity",
+     "buy": 4182.1,
+     "sell": 4435,
+     "price": 95,
+     "design": 100,
+     "pop": 10,
+     "thin": false,
+     "tiered": true,
+     "cls": "unconverged",
+     "supply": 2
+    },
+    {
+     "g": "fertilizer",
+     "buy": 3779.7,
+     "sell": 5934.7,
+     "price": 57,
+     "design": 64,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "unconverged",
+     "supply": 2
+    },
+    {
+     "g": "sulfur",
+     "buy": 3726.2,
+     "sell": 4532.7,
+     "price": 84,
+     "design": 89,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "unconverged",
+     "supply": 1
+    },
+    {
+     "g": "oil",
+     "buy": 3533.4,
+     "sell": 3556.2,
+     "price": 100,
+     "design": 104,
+     "pop": 25,
+     "thin": false,
+     "tiered": false,
+     "cls": "unconverged",
+     "supply": 2
+    },
+    {
+     "g": "tea",
+     "buy": 3482.4,
+     "sell": 6453.4,
+     "price": 36,
+     "design": 44,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "pop-limited",
+     "supply": 1
+    },
+    {
+     "g": "furniture",
+     "buy": 3446.7,
+     "sell": 6880.1,
+     "price": 25,
+     "design": 33,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "pop-limited",
+     "supply": 2
+    },
+    {
+     "g": "silk",
+     "buy": 3235.8,
+     "sell": 4116.9,
+     "price": 80,
+     "design": 85,
+     "pop": 18,
+     "thin": false,
+     "tiered": false,
+     "cls": "unconverged",
+     "supply": 1
+    },
+    {
+     "g": "small_arms",
+     "buy": 2644.5,
+     "sell": 4663.5,
+     "price": 43,
+     "design": 50,
+     "pop": 8,
+     "thin": false,
+     "tiered": true,
+     "cls": "unconverged",
+     "supply": 2
+    },
+    {
+     "g": "ammunition",
+     "buy": 2436.8,
+     "sell": 4160.9,
+     "price": 47,
+     "design": 54,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "unconverged",
+     "supply": 2
+    },
+    {
+     "g": "dye",
+     "buy": 2025.4,
+     "sell": 2786.8,
+     "price": 72,
+     "design": 78,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "unconverged",
+     "supply": 3
+    },
+    {
+     "g": "luxury_clothes",
+     "buy": 1832,
+     "sell": 5335,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "merchant_marine",
+     "buy": 1400.9,
+     "sell": 2418.3,
+     "price": 46,
+     "design": 53,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "unconverged",
+     "supply": 2
+    },
+    {
+     "g": "hardwood",
+     "buy": 1303.1,
+     "sell": 1304.6,
+     "price": 100,
+     "design": 100,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 0
+    },
+    {
+     "g": "rubber",
+     "buy": 1293.6,
+     "sell": 1369.9,
+     "price": 96,
+     "design": 100,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "unconverged",
+     "supply": 1
+    },
+    {
+     "g": "steamers",
+     "buy": 915.6,
+     "sell": 1547.2,
+     "price": 48,
+     "design": 55,
+     "pop": 13,
+     "thin": false,
+     "tiered": true,
+     "cls": "unconverged",
+     "supply": 2
+    },
+    {
+     "g": "artillery",
+     "buy": 812.3,
+     "sell": 1428.4,
+     "price": 43,
+     "design": 50,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "unconverged",
+     "supply": 2
+    },
+    {
+     "g": "luxury_furniture",
+     "buy": 578,
+     "sell": 1415.4,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "coffee",
+     "buy": 563,
+     "sell": 928.7,
+     "price": 51,
+     "design": 58,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "pop-limited",
+     "supply": 1
+    },
+    {
+     "g": "porcelain",
+     "buy": 314.1,
+     "sell": 314.1,
+     "price": 100,
+     "design": 100,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 0
+    },
+    {
+     "g": "meat",
+     "buy": 293.6,
+     "sell": 359.6,
+     "price": 83,
+     "design": 88,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "pop-limited",
+     "supply": 2
+    },
+    {
+     "g": "automobiles",
+     "buy": 201.4,
+     "sell": 257.5,
+     "price": 79,
+     "design": 84,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "pop-limited",
+     "supply": 1
+    },
+    {
+     "g": "tobacco",
+     "buy": 200.3,
+     "sell": 384.7,
+     "price": 31,
+     "design": 39,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "pop-limited",
+     "supply": 1
+    },
+    {
+     "g": "fruit",
+     "buy": 198.5,
+     "sell": 268.6,
+     "price": 74,
+     "design": 79,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "pop-limited",
+     "supply": 1
+    },
+    {
+     "g": "telephones",
+     "buy": 48.3,
+     "sell": 147.2,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "fine_art",
+     "buy": 3.3,
+     "sell": 6,
+     "price": 37,
+     "design": 67,
+     "pop": 100,
+     "thin": true,
+     "tiered": true,
+     "cls": "pop-limited",
+     "supply": 0
+    }
+   ],
    "faults": {
     "loss": [
      "food",
@@ -3295,6 +7696,18 @@
     "soldiers": 5643923
    },
    "gdp_weekly": 9095115,
+   "army_share": 0.052,
+   "battalions": 2191,
+   "constr_share": 0.169,
+   "constr_target": 0.17,
+   "output_mix": {
+    "mfg_high": 0.487,
+    "mfg_low": 0.141,
+    "agri": 0.102,
+    "logging": 0.009,
+    "ore": 0.23,
+    "other": 0.031
+   },
    "va_by_industry": {
     "(extraction)": {
      "weekly": 3570978,
@@ -3462,6 +7875,536 @@
     "hardwood",
     "porcelain"
    ],
+   "order_book": [
+    {
+     "g": "steel",
+     "buy": 50935.9,
+     "sell": 86163,
+     "price": 48,
+     "design": 48,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "glass",
+     "buy": 36672.2,
+     "sell": 58445.2,
+     "price": 55,
+     "design": 55,
+     "pop": 25,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "oil",
+     "buy": 36226.9,
+     "sell": 31964.9,
+     "price": 110,
+     "design": 110,
+     "pop": 6,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "tools",
+     "buy": 34019.4,
+     "sell": 61724.4,
+     "price": 39,
+     "design": 39,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "coal",
+     "buy": 33884.9,
+     "sell": 27326.5,
+     "price": 118,
+     "design": 118,
+     "pop": 3,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "groceries",
+     "buy": 29564.4,
+     "sell": 49139,
+     "price": 50,
+     "design": 50,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "electricity",
+     "buy": 26643.4,
+     "sell": 37301.4,
+     "price": 70,
+     "design": 70,
+     "pop": 5,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 3
+    },
+    {
+     "g": "iron",
+     "buy": 24955.7,
+     "sell": 22550.4,
+     "price": 108,
+     "design": 108,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "transportation",
+     "buy": 24750.3,
+     "sell": 141203.7,
+     "price": 25,
+     "design": 34,
+     "pop": 36,
+     "thin": false,
+     "tiered": true,
+     "cls": "unsteerable",
+     "supply": 3
+    },
+    {
+     "g": "engines",
+     "buy": 23426.8,
+     "sell": 43948.6,
+     "price": 34,
+     "design": 34,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "services",
+     "buy": 21077.6,
+     "sell": 32961.4,
+     "price": 58,
+     "design": 58,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "clothes",
+     "buy": 19520.6,
+     "sell": 8935,
+     "price": 175,
+     "design": 25,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "pop-limited",
+     "supply": 2
+    },
+    {
+     "g": "explosives",
+     "buy": 17009.7,
+     "sell": 72896.2,
+     "price": 25,
+     "design": 43,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "unsteerable",
+     "supply": 2
+    },
+    {
+     "g": "lead",
+     "buy": 12128.8,
+     "sell": 9887.6,
+     "price": 117,
+     "design": 117,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "paper",
+     "buy": 12079.4,
+     "sell": 20481.9,
+     "price": 48,
+     "design": 48,
+     "pop": 19,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "fertilizer",
+     "buy": 11952.4,
+     "sell": 19775.9,
+     "price": 51,
+     "design": 51,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 3
+    },
+    {
+     "g": "sulfur",
+     "buy": 11492.3,
+     "sell": 13331,
+     "price": 88,
+     "design": 88,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "sugar",
+     "buy": 10875.7,
+     "sell": 13775.8,
+     "price": 80,
+     "design": 80,
+     "pop": 16,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 5
+    },
+    {
+     "g": "fish",
+     "buy": 9596.8,
+     "sell": 11001.5,
+     "price": 89,
+     "design": 93,
+     "pop": 37,
+     "thin": false,
+     "tiered": false,
+     "cls": "scale-capped",
+     "supply": 1
+    },
+    {
+     "g": "wood",
+     "buy": 8918.5,
+     "sell": 9394.4,
+     "price": 96,
+     "design": 96,
+     "pop": 8,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "liquor",
+     "buy": 8371.8,
+     "sell": 20271,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "ammunition",
+     "buy": 7121.3,
+     "sell": 12841.4,
+     "price": 40,
+     "design": 40,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "tobacco",
+     "buy": 7056.3,
+     "sell": 14030.8,
+     "price": 26,
+     "design": 26,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "grain",
+     "buy": 6319.8,
+     "sell": 5152,
+     "price": 117,
+     "design": 117,
+     "pop": 15,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 5
+    },
+    {
+     "g": "radios",
+     "buy": 5985.8,
+     "sell": 5985.6,
+     "price": 100,
+     "design": 100,
+     "pop": 60,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "small_arms",
+     "buy": 5581.2,
+     "sell": 10384.6,
+     "price": 35,
+     "design": 35,
+     "pop": 12,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "tea",
+     "buy": 5464.1,
+     "sell": 7431.1,
+     "price": 73,
+     "design": 73,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "coffee",
+     "buy": 5202.1,
+     "sell": 7074.7,
+     "price": 73,
+     "design": 82,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "pop-limited",
+     "supply": 1
+    },
+    {
+     "g": "rubber",
+     "buy": 5036.3,
+     "sell": 5036.4,
+     "price": 100,
+     "design": 100,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "meat",
+     "buy": 4363.1,
+     "sell": 1753.2,
+     "price": 175,
+     "design": 128,
+     "pop": 10,
+     "thin": false,
+     "tiered": false,
+     "cls": "unsteerable",
+     "supply": 2
+    },
+    {
+     "g": "furniture",
+     "buy": 4249.6,
+     "sell": 8444,
+     "price": 26,
+     "design": 28,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "silk",
+     "buy": 3008.6,
+     "sell": 13541,
+     "price": 25,
+     "design": 90,
+     "pop": 76,
+     "thin": false,
+     "tiered": false,
+     "cls": "scale-capped",
+     "supply": 3
+    },
+    {
+     "g": "fruit",
+     "buy": 2320.6,
+     "sell": 4573.4,
+     "price": 27,
+     "design": 27,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 5
+    },
+    {
+     "g": "artillery",
+     "buy": 2191.2,
+     "sell": 4071.8,
+     "price": 36,
+     "design": 36,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "fabric",
+     "buy": 1850.4,
+     "sell": 2960.7,
+     "price": 55,
+     "design": 55,
+     "pop": 16,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "dye",
+     "buy": 1603.1,
+     "sell": 2451.1,
+     "price": 60,
+     "design": 60,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 3
+    },
+    {
+     "g": "hardwood",
+     "buy": 1322.4,
+     "sell": 1322.3,
+     "price": 100,
+     "design": 100,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 0
+    },
+    {
+     "g": "luxury_clothes",
+     "buy": 1217.5,
+     "sell": 1451.3,
+     "price": 86,
+     "design": 86,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "luxury_furniture",
+     "buy": 1217.5,
+     "sell": 1134.6,
+     "price": 105,
+     "design": 102,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "telephones",
+     "buy": 1162.3,
+     "sell": 10438.7,
+     "price": 25,
+     "design": 62,
+     "pop": 46,
+     "thin": false,
+     "tiered": true,
+     "cls": "unsteerable",
+     "supply": 1
+    },
+    {
+     "g": "porcelain",
+     "buy": 1043.6,
+     "sell": 1043.6,
+     "price": 100,
+     "design": 100,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 0
+    },
+    {
+     "g": "steamers",
+     "buy": 887.9,
+     "sell": 1590.8,
+     "price": 41,
+     "design": 41,
+     "pop": 16,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "merchant_marine",
+     "buy": 223.1,
+     "sell": 406.5,
+     "price": 38,
+     "design": 38,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "fine_art",
+     "buy": 14.3,
+     "sell": 23.1,
+     "price": 54,
+     "design": 54,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    }
+   ],
    "faults": {
     "loss": [
      "food"
@@ -3595,6 +8538,18 @@
     "soldiers": 5056318
    },
    "gdp_weekly": 19807334,
+   "army_share": 0.053,
+   "battalions": 2697,
+   "constr_share": 0.18,
+   "constr_target": 0.18,
+   "output_mix": {
+    "mfg_high": 0.527,
+    "mfg_low": 0.101,
+    "agri": 0.088,
+    "logging": 0.003,
+    "ore": 0.243,
+    "other": 0.037
+   },
    "va_by_industry": {
     "(extraction)": {
      "weekly": 9318152,
@@ -3746,6 +8701,584 @@
     "hardwood",
     "porcelain"
    ],
+   "order_book": [
+    {
+     "g": "oil",
+     "buy": 145602.9,
+     "sell": 111320,
+     "price": 123,
+     "design": 113,
+     "pop": 2,
+     "thin": false,
+     "tiered": false,
+     "cls": "scale-capped",
+     "supply": 2
+    },
+    {
+     "g": "steel",
+     "buy": 141580.2,
+     "sell": 259152.4,
+     "price": 38,
+     "design": 38,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "electricity",
+     "buy": 102959.8,
+     "sell": 172973.6,
+     "price": 49,
+     "design": 49,
+     "pop": 4,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 3
+    },
+    {
+     "g": "tools",
+     "buy": 93849.1,
+     "sell": 183422.8,
+     "price": 28,
+     "design": 28,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "glass",
+     "buy": 73408,
+     "sell": 126676.9,
+     "price": 46,
+     "design": 46,
+     "pop": 28,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "iron",
+     "buy": 64008,
+     "sell": 61546.5,
+     "price": 103,
+     "design": 103,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "engines",
+     "buy": 57583.5,
+     "sell": 278538.8,
+     "price": 25,
+     "design": 25,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "groceries",
+     "buy": 54450.3,
+     "sell": 80271,
+     "price": 64,
+     "design": 64,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "transportation",
+     "buy": 53368,
+     "sell": 314880.5,
+     "price": 25,
+     "design": 34,
+     "pop": 41,
+     "thin": false,
+     "tiered": true,
+     "cls": "unsteerable",
+     "supply": 3
+    },
+    {
+     "g": "services",
+     "buy": 52870,
+     "sell": 46609,
+     "price": 110,
+     "design": 113,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "explosives",
+     "buy": 39372.7,
+     "sell": 74693.4,
+     "price": 33,
+     "design": 33,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "clothes",
+     "buy": 36771.7,
+     "sell": 73544.4,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "coal",
+     "buy": 35220.4,
+     "sell": 31077,
+     "price": 110,
+     "design": 110,
+     "pop": 2,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "lead",
+     "buy": 23478,
+     "sell": 20009.9,
+     "price": 113,
+     "design": 113,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "sugar",
+     "buy": 18442,
+     "sell": 21639.1,
+     "price": 87,
+     "design": 87,
+     "pop": 17,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 5
+    },
+    {
+     "g": "liquor",
+     "buy": 17158.9,
+     "sell": 34478.1,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "merchant_marine",
+     "buy": 16295.1,
+     "sell": 29693.4,
+     "price": 38,
+     "design": 38,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "coffee",
+     "buy": 15622.2,
+     "sell": 16500,
+     "price": 96,
+     "design": 96,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "luxury_clothes",
+     "buy": 14524.1,
+     "sell": 16367.9,
+     "price": 90,
+     "design": 77,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "pop-limited",
+     "supply": 2
+    },
+    {
+     "g": "fertilizer",
+     "buy": 14196.7,
+     "sell": 25431.2,
+     "price": 41,
+     "design": 41,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 3
+    },
+    {
+     "g": "rubber",
+     "buy": 14172.8,
+     "sell": 14172.9,
+     "price": 100,
+     "design": 100,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "paper",
+     "buy": 13890.4,
+     "sell": 25483.9,
+     "price": 37,
+     "design": 37,
+     "pop": 24,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "tobacco",
+     "buy": 13255.3,
+     "sell": 23100,
+     "price": 44,
+     "design": 43,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "fabric",
+     "buy": 13027.6,
+     "sell": 18934.1,
+     "price": 66,
+     "design": 66,
+     "pop": 2,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "fish",
+     "buy": 12751,
+     "sell": 11002.4,
+     "price": 112,
+     "design": 95,
+     "pop": 19,
+     "thin": false,
+     "tiered": false,
+     "cls": "scale-capped",
+     "supply": 1
+    },
+    {
+     "g": "grain",
+     "buy": 12416.7,
+     "sell": 10122.1,
+     "price": 117,
+     "design": 117,
+     "pop": 14,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 5
+    },
+    {
+     "g": "sulfur",
+     "buy": 11964.9,
+     "sell": 14677.1,
+     "price": 83,
+     "design": 83,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "silk",
+     "buy": 11663.8,
+     "sell": 11664,
+     "price": 100,
+     "design": 100,
+     "pop": 30,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 3
+    },
+    {
+     "g": "tea",
+     "buy": 10935.5,
+     "sell": 11550,
+     "price": 96,
+     "design": 96,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "meat",
+     "buy": 9346.3,
+     "sell": 6804.9,
+     "price": 128,
+     "design": 128,
+     "pop": 36,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "ammunition",
+     "buy": 8764.3,
+     "sell": 17033.9,
+     "price": 29,
+     "design": 29,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "furniture",
+     "buy": 7673.1,
+     "sell": 13624.4,
+     "price": 42,
+     "design": 43,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "small_arms",
+     "buy": 7313.2,
+     "sell": 14617.7,
+     "price": 25,
+     "design": 25,
+     "pop": 17,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "radios",
+     "buy": 7301.9,
+     "sell": 5537,
+     "price": 124,
+     "design": 124,
+     "pop": 59,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "wood",
+     "buy": 7120.8,
+     "sell": 7596,
+     "price": 95,
+     "design": 95,
+     "pop": 6,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    },
+    {
+     "g": "dye",
+     "buy": 6251.3,
+     "sell": 10681,
+     "price": 47,
+     "design": 47,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 3
+    },
+    {
+     "g": "fruit",
+     "buy": 5230.9,
+     "sell": 9962,
+     "price": 32,
+     "design": 32,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 5
+    },
+    {
+     "g": "tanks",
+     "buy": 4045.1,
+     "sell": 4045.1,
+     "price": 100,
+     "design": 100,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "steamers",
+     "buy": 4003.2,
+     "sell": 7735.5,
+     "price": 30,
+     "design": 30,
+     "pop": 16,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "luxury_furniture",
+     "buy": 2904.8,
+     "sell": 1918.3,
+     "price": 139,
+     "design": 135,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "pop-limited",
+     "supply": 2
+    },
+    {
+     "g": "hardwood",
+     "buy": 2808.1,
+     "sell": 2808,
+     "price": 100,
+     "design": 100,
+     "pop": 0,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 0
+    },
+    {
+     "g": "artillery",
+     "buy": 2696.7,
+     "sell": 5384.2,
+     "price": 25,
+     "design": 25,
+     "pop": 0,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "porcelain",
+     "buy": 2489.8,
+     "sell": 2489.8,
+     "price": 100,
+     "design": 98,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 0
+    },
+    {
+     "g": "telephones",
+     "buy": 2082.8,
+     "sell": 17030.2,
+     "price": 25,
+     "design": 25,
+     "pop": 74,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "automobiles",
+     "buy": 1852,
+     "sell": 5385.2,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "fine_art",
+     "buy": 445.3,
+     "sell": 776.4,
+     "price": 44,
+     "design": 44,
+     "pop": 100,
+     "thin": false,
+     "tiered": true,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "aeroplanes",
+     "buy": 290,
+     "sell": 2022.5,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 2
+    },
+    {
+     "g": "wine",
+     "buy": 49,
+     "sell": 101.4,
+     "price": 25,
+     "design": 25,
+     "pop": 100,
+     "thin": false,
+     "tiered": false,
+     "cls": "on book",
+     "supply": 1
+    }
+   ],
    "faults": {
     "loss": [
      "motor",
@@ -3772,6 +9305,7 @@
    "label": "1780",
    "era": 0,
    "year": 1780,
+   "anchor": 1750,
    "group": "Inverse solve · designed ladder, pop-limited yields (§10.65.2)",
    "country": null,
    "base_wage": 0.040317,
@@ -4034,6 +9568,7 @@
    "label": "1836",
    "era": 1,
    "year": 1836,
+   "anchor": 1830,
    "group": "Inverse solve · designed ladder, pop-limited yields (§10.65.2)",
    "country": null,
    "base_wage": 0.060475,
@@ -4487,6 +10022,7 @@
    "label": "1870",
    "era": 2,
    "year": 1870,
+   "anchor": 1870,
    "group": "Inverse solve · designed ladder, pop-limited yields (§10.65.2)",
    "country": null,
    "base_wage": 0.073177,
@@ -5029,6 +10565,7 @@
    "label": "1900",
    "era": 3,
    "year": 1900,
+   "anchor": 1900,
    "group": "Inverse solve · designed ladder, pop-limited yields (§10.65.2)",
    "country": null,
    "base_wage": 0.088548,
@@ -5656,6 +11193,7 @@
    "label": "1920",
    "era": 4,
    "year": 1920,
+   "anchor": 1925,
    "group": "Inverse solve · designed ladder, pop-limited yields (§10.65.2)",
    "country": null,
    "base_wage": 0.107147,
@@ -6296,6 +11834,7 @@
    "label": "1945",
    "era": 5,
    "year": 1945,
+   "anchor": 1940,
    "group": "Inverse solve · designed ladder, pop-limited yields (§10.65.2)",
    "country": null,
    "base_wage": 0.129652,

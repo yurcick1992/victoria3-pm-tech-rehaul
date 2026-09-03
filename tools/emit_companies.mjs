@@ -72,6 +72,29 @@ for (const [id, keys] of chains) {
   const target = (id === 'shipyard' || id === 'shipyard_steam') ? combinedShipyard : keys;
   for (const k of keys) expand.set(k, target);
 }
+// ⭐⭐ A COMPANY TARGETS ITS BEST UNLOCKED RUNG, NOT EVERY RUNG (2026-09-02). Duplicating an
+// `ai_construction_targets` entry per tier gave every flavoured company a STANDING target of
+// `level = 5` of its rung-0 building beside its targets for the newer rungs — so the AI kept
+// rebuilding the obsolete rung in the company's home state for the whole century. Measured on the
+// flat-cost four-rung arm at 1936: 38% of the shortlist's rung-0 levels were company-held (textile
+// 55%, steel 73%, motor 71%), a third to a half of the standing rung-0 buildings had been
+// ESTABLISHED after 1920, and the rung-0 headcount never fell. Each duplicated entry below the top
+// rung therefore carries `owner = { NOT = { has_technology_researched = <next rung's tech> } }`
+// inside its state_trigger: the target is live only until the country can build the next rung.
+// ⚠⚠ OPT-IN ONLY (`company_target_gate: true` in the config), DEFAULT OFF since the first run that
+// carried it (ab1, session 20260902_095339, n=1): the shortlist ended with 17 companies against 26 in
+// both the vanilla baseline and the equally small 1.92-ladder arm, NET/BEL/PRU with no company at all
+// where both references had them, regional HQs 20 against 74 — while the rung-0 headcount it was meant
+// to cut ROSE 0.73M→1.17M. The user's own pre-declared criterion ("if companies won't form or expand,
+// the cure is worse than the disease") applies; the mechanism is unproven either way at n=1, so the
+// gate stays available for a controlled test and ships in nothing by default.
+const GATE = CFG.company_target_gate === true;
+const nextTech = new Map();          // tier key -> the technology of the rung above it
+if (GATE) for (const ind of CFG.industries) {
+  if (ind.disabled) continue;
+  const tiers = [...ind.tiers].sort((a, b) => (a.era ?? 0) - (b.era ?? 0));
+  for (let i = 0; i + 1 < tiers.length; i++) if (tiers[i + 1].tech) nextTech.set(tiers[i].key, tiers[i + 1].tech);
+}
 
 // vanilla plural aliases (building_textile_mills etc.) -> real key, defensive: the census found none
 // used in company files, but a patch could start using one
@@ -157,7 +180,15 @@ for (const f of readdirSync(CDIR).sort()) {
       const blockLines = [line];
       let d = 1, j = i;
       while (d > 0) { j++; const c = lines[j].split('#')[0]; d += (c.match(/\{/g) || []).length - (c.match(/\}/g) || []).length; blockLines.push(lines[j]); }
-      const tokens = blockLines.slice(1, -1).join(' ').split(/\s+/).filter(Boolean);
+      // STRIP # COMMENTS BEFORE TOKENISING. Vanilla annotates entries in place --
+      //   `building_automotive_industry # Produced the Char 2C` -- and joining the raw lines turned
+      //   every comment word into a list entry, with the `#` left alone on its own line where it
+      //   comments out nothing. The engine then read Produced/the/Char/2C as company types and
+      //   logged `Invalid base building type` for each (8 per build; BUGS_AND_FIXES 2026-08-30).
+      //   The brace walk above already strips comments; this line did not.
+      const tokens = blockLines.slice(1, -1).map(l => l.split('#')[0]).join(' ').split(/\s+/).filter(Boolean);
+      for (const t of tokens) if (!/^building_[a-z0-9_]+$/.test(t))
+        throw new Error(`emit_companies: token "${t}" in a ${lb[1]} list of ${curCompany} (${f}) is not a building key - a comment or stray token leaked into the list.`);
       const seen = new Set(tokens.map(t => resolveKey(t) || t));
       const outTokens = [];
       let expanded = false;
@@ -214,8 +245,17 @@ for (const f of readdirSync(CDIR).sort()) {
           let d = 1, j = i;
           while (d > 0) { j++; const c = lines[j].split('#')[0]; d += (c.match(/\{/g) || []).length - (c.match(/\}/g) || []).length; blockLines.push(lines[j]); }
           for (const c of expand.get(k)) {
+            const body = blockLines.slice(1);
+            const nt = nextTech.get(c);
+            if (nt) {                                       // below the top rung: live only until the next rung unlocks
+              const clause = `owner = { NOT = { has_technology_researched = ${nt} } }`;
+              const st = body.findIndex(l => /^\s*state_trigger\s*=\s*\{/.test(l.split('#')[0]));
+              if (st >= 0) body.splice(st + 1, 0, body[st].replace(/state_trigger.*$/, '\t' + clause));
+              else body.splice(body.length - 1, 0, body[body.length - 1].replace(/\}.*$/, '\tstate_trigger = { ' + clause + ' }'));
+              counts.gatedTargets = (counts.gatedTargets || 0) + 1;
+            }
             out.push(blockLines[0].replace(tg[1], c));
-            for (let b = 1; b < blockLines.length; b++) out.push(blockLines[b]);
+            for (const l of body) out.push(l);
           }
           changed = true; counts.aiTargets += expand.get(k).length - 1; counts.companies.add(f + ':' + curCompany);
           i = j;
@@ -294,4 +334,4 @@ for (const lang of LANGS) {
 
 console.log(`emit_companies: ${counts.files} company files rewritten, ${counts.companies.size} companies touched; ` +
   `+${counts.listTokens} list tokens, ${counts.orWraps} OR-wrapped triggers, ${counts.prosperity} prosperity lines expanded, ` +
-  `+${counts.aiTargets} ai_construction_targets entries; ${neededModTypes.size} new modifier types, ${locKeys} en loc keys x ${LANGS.length} languages.`);
+  `+${counts.aiTargets} ai_construction_targets entries (${counts.gatedTargets || 0} gated to the best unlocked rung); ${neededModTypes.size} new modifier types, ${locKeys} en loc keys x ${LANGS.length} languages.`);
