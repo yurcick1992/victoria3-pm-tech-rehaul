@@ -1825,7 +1825,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         (`company_target_gate: true`), DEFAULT OFF since its one run (20260902_095339 ab1 n=1):
                         shortlist companies 17 vs 26 in both references, NET/BEL/PRU companyless, regional HQs
                         20 vs 74, and the rung-0 headcount it targeted ROSE — the user's pre-declared "cure worse
-                        than the disease" criterion. Off in both A/B arms
+                        than the disease" criterion. Off in both A/B arms. ⭐ RE-TESTED on canon-4rung (user-ruled 2026-09-03 — hard `possible` gates on rungs REJECTED as
+                        artificial limits, a target CONDITION is a willingness lever): session 20260903_094941_canon4-tgate-n2,
+                        n=2, `config/mod_config.canon4-tgate.json` — OUTCOME (F100): HARMLESS to companies on this book (shortlist 25 vs 26, HQs 104 vs 96; the
+                        ab1 collapse was the stall's) and USELESS against the rung-0 rebuild (company-held 48%/39% vs the
+                        canon's 45–46%): the rebuild is the PRIVATE POOL expanding company-owned buildings, not formation
+                        planning. Stays OFF
   tech_tree_spec.mjs    THE INDUSTRY TECH TREE — three candidate designs (ROADMAP step 1), authored here and
                         rendered by ui/techtree.html. `--write` emits config/tech_tree_options.json + ui/techdata.js;
                         `--chains` prints each industry's ladder per option for review. It is a DESIGN DOCUMENT as

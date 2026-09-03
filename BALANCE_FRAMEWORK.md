@@ -6445,6 +6445,55 @@ glass lever biting — British glass 118% / 112% vs 153–158 and vanilla's 105,
 glassworks vs 44 / 97; e0 lower, not dead). The vanilla comparison (F99 §5): 0 world stalls in 18 reference runs
 against 1 in 5 seeds on this book family.
 
+**Ruling on levers (user, 2026-09-03): NO ARTIFICIAL LIMITS.** "I strongly dislike artificial limits, even if they
+steer the AI in the right direction. If there was something that would modify AI willingness to build it further,
+that'd be OK, but not an outright block (especially not that blunt, which would prevent a high-tech resource-missing
+country from building rungs for which it has input goods)." ⇒ the `possible` build gate on rung k−2 is **REJECTED**,
+as is dropping rung 0 from the company prosperity lines; a CONDITION on a company target (the target gate) is a
+willingness lever and is re-tested: **`20260903_094941_canon4-tgate-n2`** = canon-4rung + `company_target_gate:
+true` (`config/mod_config.canon4-tgate.json`, 310 target entries gated at build), n=2, predictions in the schedule
+(P1 companies must not collapse: shortlist ≥ 24, 6 of 6, HQs ≥ 90; P2 the company-held rung-0 levels and the e0
+levels added per decade fall; P5 glass/tools unchanged).
+**First read (run 1, 2026-09-03 12:31 — this seed lost India in 1847 and still grew; one CTD at 1920, resumed
+cleanly on the fixed observer):** **P1 PASSES** — shortlist companies 28 vs vanilla's 26, 6 of 6 countries, prosperity
+97, regional HQs 84 vs 96, company-held 34.5% vs 39.1%: on this book the gate does NOT collapse companies, so the ab1
+reading was the stall's. **P2 FAILS** — the rebuild is untouched: shortlist rung-0 levels 357 of which 171 (48%)
+company-held (canon 45–46%), e0 levels added per decade 22 / 79 / 36 / 64 / 49 / 27 (canon 25–84), shortlist e0 850k
+(canon 695–773k). France is the mechanism laid bare: DMC owns every textile level at every rung (t0 63 of 63, dye
+192 of 194, electric 42 of 42) and grew rung 0 from 5 → 39 → 63 levels over 1900–1935 alongside dye 49 → 135 → 194 and
+electric 0 → 0 → 42, at £404 / £2,516 / £3,316 profit per level — a company expands ALL its rungs in proportion,
+rung 0 included, regardless of profit per construction point; formation planning (what the gate conditions) was
+never the driver. World GDP 0.79× (Britain small after 1847), shortlist 1.16×; glass 124 / 136 / 152 / 160 and tools
+123 / 144 / 163 / 166 in the British / French / American / Russian markets (canon 112–149 and 84–140) — dearer tools,
+n=1. ⇒ the target gate is harmless and useless here; the lever that reaches company EXPANSION has still to be found
+(the AI's expansion choice among a company's own buildings, and what it weighs).
+**What the private pool weighs (00_ai.txt, read 2026-09-03) and what the seeds say about it.** Autonomous-investment
+scoring per building type: predicted profit per employee (`GOODS_PROFIT_FACTOR` 5000 × 1.5), produced value at base
+(`PRODUCED_VALUE_FACTOR` 0.25 × 1.25), the company multiplier (`AUTONOMOUS_INVESTMENT_COMPANY_MULT` 2.0 ⇒ ×3 for EVERY
+building type an established company lists — our chain extension lists every rung), the cost divisor
+(÷(1 + 0.000125 × points)), shortage multipliers (×5 / ×0.01 by state), and a RANDOM factor of 10 × 2 for the pool. So
+a company's rung 0 gets the same ×3 as its rung 3, the cheapest divisor, and a large random term — no preference,
+just a floor. Measured across seeds, the rung-0 share of levels ADDED 1900→1935 over 14 countries:
+
+| arm | glass + tooling rung-0 share | every other industry |
+|---|---|---|
+| ab2 (glass/tooling ai_value ×2^era) | 11.1% / 21.3% | 3.7% / 11.0% |
+| ab3 = canon-4rung (×3^era) | 6.0% / 6.7% | 4.1% / 8.9% |
+| canon-4rung + target gate | 6.2% | 5.2% |
+
+The steeper ai_value ladder roughly HALVED rung-0 building in the two industries it touched; the target gate changed
+nothing. ⇒ the willingness levers, in order: (1) the ai_value ladder on every industry (×3^era, or ×2.5 as a milder
+dose), gated by `analyse_build_allocation`'s between-sector check because the untiered sector stays at 1000; (2) the
+pool's randomness (`PRODUCTION_BUILDING_AUTONOMOUS_INVESTMENT_RANDOM_FACTOR_MULT` 2.0 → 1.0, an `ai_defines` entry);
+(3) the company multiplier itself (2.0 → lower), untargeted. The residual after (1) is the random floor, which no
+weight removes entirely.
+**Batch closed (2026-09-03 15:12, n=2, FINDINGS F100, VERDICT in `20260903_094941`):** P1 holds at n=2 — shortlist
+companies 25 vs 26, 6 of 6, HQs 104 vs 96, company-held 34.4% vs 39.1% — and P2 fails at n=2: rung-0 company-held
+48% / 39% (canon 45–46%), e0 850k / 697k, additions per decade in the canon's band. World GDP 0.79× / 0.85×, no stall
+(the book family is 1 in 7 seeds). Tools dearer in both seeds (British 123 / 124 vs 103 / 103) — un-replicated caveat.
+**The target gate stays opt-in and OFF.** Next by the levers read above: the ai_value ladder on every industry (×3 or
+×2.5 per era) gated by the between-sector allocation check; then the pool's randomness define.
+
 **What it does NOT settle — the open list, in the order the user is weighing it.**
 1. **The company rebuild pattern** — a company expands its rung-0 buildings all century (DMC 21 of France's 25
    rung-0 textile mills in ab3 seed 3; 74 of 75 American rung-0 tooling workshops in seed 1; 82 of 83 French

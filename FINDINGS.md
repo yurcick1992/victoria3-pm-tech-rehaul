@@ -9755,3 +9755,73 @@ low-growth equilibrium rather than as seed weather. India leaving the British ma
   not dead; P4 (GDP 0.93–1.03×) passes in the growth seeds and fails on the stall; P5 (no chain loses a fifth)
   is undecidable inside seed noise; P6 (companies at vanilla) passes in the growth seeds; P7's null case did not
   occur.
+
+## F100 — THE COMPANY TARGET GATE, RE-TESTED ON canon-4rung: harmless to companies and useless against the rebuild, because the rebuild is the private pool expanding what a company owns; the one willingness lever with a measured effect is the ai_value ladder (2026-09-03)
+
+**Arm.** `canon4-tgate` = canon-4rung (§10.69, the ab3 book) with exactly one flag changed, `company_target_gate: true`
+(`config/mod_config.canon4-tgate.json`; field diff against the canon: 0 industries, the flag only): every company
+`ai_construction_targets` entry below the industry's top rung carries `owner = { NOT = { has_technology_researched =
+<next rung's tech> } }` in its `state_trigger` (310 entries gated at build; `emit_companies.mjs`, BUGS_AND_FIXES
+2026-09-02). Session `20260903_094941_canon4-tgate-n2`, n=2, 1836 → 1936.1.1, no defects (run 1 one CTD at 1920.6,
+resumed on the 1920.1 autosave by the fixed observer). User-ruled 2026-09-03 after the `possible` build gate was
+rejected as an artificial limit ("modify AI willingness … not an outright block"). References: canon-4rung growth
+seeds (`20260903_000418` runs 1, 3) and vanilla n=16 (`20260821_131149`).
+
+### 1. The user's criterion passes: the gate does not collapse companies on this book
+| 1935, shortlist medians | canon4-tgate n=2 | canon-4rung (seed 1 alone) | vanilla n=16 | ab1 + gate (the rejected read) |
+|---|---|---|---|---|
+| companies | 25 (28 / 22) | 26 | 26 | 17 |
+| countries with one | 6 of 6 | 6 | 6 | 5 |
+| prosperity | 98.7 | — | 100 | — |
+| regional HQs | 104 (84 / 124) | 114 | 96 | 20 |
+| company-held share of owned levels | 34.4% | 37.8% | 39.1% | — |
+
+The ab1 collapse was the stalling book's, not the gate's (F98 §2 already said so; this settles it).
+
+### 2. The gate does nothing to the rebuild
+| shortlist, 1935 | gate seed 1 | gate seed 2 | canon seed 1 | canon seed 3 |
+|---|---|---|---|---|
+| e0 headcount (share of tiered) | 850k (3.9%) | 697k (4.0%) | 773k (3.7%) | 695k (3.9%) |
+| rung-0 levels, company-held | 357 · 171 (48%) | 310 · 122 (39%) | 334 · 154 (46%) | 277 · 126 (45%) |
+| e0 levels added per decade, 1880s → 1930s | 22 / 79 / 36 / 64 / 49 / 27 | 31 / 35 / 23 / 36 / 69 / 28 | 35 / 84 / 61 / 32 / 26 / 33 | 46 / 27 / 25 / 35 / 67 / 19 |
+
+France in seed 1 lays the mechanism bare: DMC owns every textile level at every rung — rung 0 63 of 63, the dye
+rung 192 of 194, the electric rung 42 of 42 — and grew rung 0 from 5 → 39 → 63 levels over 1900–1935 alongside dye
+49 → 135 → 194 and electric 0 → 0 → 42, at £404 / £2,516 / £3,316 profit per level. France's private queue kept
+taking rung-0 mills through the 1930s (8 queue-years against 23 dye and 24 electric); its government queue held none.
+A company expands ALL its rungs in proportion, rung 0 included; the formation planning the gate conditions was never
+the driver.
+
+### 3. What the private pool weighs (`common/defines/00_ai.txt`), and the lever that measurably moves it
+Autonomous-investment scoring per building type: predicted profit per employee (`PRODUCTION_BUILDING_GOODS_PROFIT_FACTOR`
+5000, ×1.5 for the pool), produced value at base (`PRODUCED_VALUE_FACTOR` 0.25, ×1.25), **the company multiplier
+(`AUTONOMOUS_INVESTMENT_COMPANY_MULT` 2.0 ⇒ ×3 for every building type an established company lists — the chain
+extension lists every rung)**, the cost divisor (÷(1 + 0.000125 × points)), per-state shortage multipliers (×5 / ×0.01),
+and a random factor of 10, doubled for the pool. A company's rung 0 gets the same ×3 as its rung 3, the cheapest
+divisor and a large random term: not a preference, a floor. Measured as the rung-0 share of all levels added
+1900 → 1935 over 14 countries:
+
+| arm | glass + tooling rung-0 share | every other industry |
+|---|---|---|
+| ab2 (glass/tooling ai_value 1000×2^era) | 11.1% / 21.3% | 3.7% / 11.0% |
+| canon-4rung (1000×3^era on those two) | 6.0% / 6.7% | 4.1% / 8.9% |
+| canon-4rung + target gate | 6.2% / — | 5.2% / — |
+
+The steeper ai_value ladder roughly halved rung-0 building in the two industries it touched; the target gate changed
+nothing. The residual is the random floor and the company multiplier, which no weight removes entirely.
+
+### 4. The rest of the two seeds
+World GDP 0.79× / 0.85× vanilla (seed 1's Britain lost India in 1847 and stayed small; neither seed stalled — the
+book family is now 1 stall in 7 seeds), shortlist 1.16× / 1.02×, productive workers per capita 0.67× / 0.65×, £ per
+productive worker 1.20× / 1.30×. Glass at 1935: British 124 / 133 (canon 118 / 112), French 136 / 168, American
+152 / 148, Russian 160 / 130; tools British 123 / 124 against the canon's 103 / 103, and 113–166 elsewhere against
+84–140 — tools are dearer in BOTH gate seeds. Not separable from seed noise at n=2, but the direction is consistent
+with the gate removing the formation-aid weight from the lower tooling rungs; a caveat, not a finding. Wall 161 /
+160 min.
+
+### What it does NOT say
+- n=2 against n=2; only the company non-collapse (large, both seeds, against a 17-company reference) and the
+  rebuild's non-response (both seeds inside the canon's band) resolve.
+- The private-pool scoring is read from the defines; how `ai_value` enters it is not documented there, and the
+  halving in §3 is the empirical statement, not a derivation.
+- The tools price shift is unexplained and un-replicated.

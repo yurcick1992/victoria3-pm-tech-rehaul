@@ -1,0 +1,80 @@
+{
+  "schedule_version": 1,
+  "label": "canon4-tgate-n2",
+  "_why": "canon-4rung (BALANCE_FRAMEWORK §10.69 — the ab3 book) with ONE change: company_target_gate: true — every company's ai_construction_targets entry below the industry's top rung carries owner = { NOT = { has_technology_researched = <next rung's tech> } } in its state_trigger, so the AI's company-formation planning targets the best UNLOCKED rung instead of every rung (emit_companies.mjs, BUGS_AND_FIXES 2026-09-02). User-ruled 2026-09-03 after F99 traced the surviving e0 rungs to the COMPANY REBUILD PATTERN (DMC 21 of France's 25 rung-0 textile mills, 74 of 75 American rung-0 tooling workshops) and REJECTED any hard possible-gate on rungs ('I strongly dislike artificial limits … If there was something that would modify AI willingness to build it further, that'd be OK'). The gate's only earlier run was on ab1, a stalling book whose gate-off seeds also read below vanilla on companies, so its 'cure worse than the disease' verdict is confounded and is re-tested here on the canon. Arm {kind: config, config: config/mod_config.canon4-tgate.json}; n=2; 1836 → 1936.1.1; compared against canon-4rung = ab3 (20260903_000418, growth seeds) and vanilla n=16.",
+  "_arms": {
+    "canon4-tgate": "{kind: config, config: config/mod_config.canon4-tgate.json} — canon-4rung + company_target_gate: true; config sha 3B35F6EA…"
+  },
+  "_delta": "vs canon-4rung (config/mod_config.canon-4rung.json): the top-level company_target_gate flag only — recipes, costs, ai_value, techs, defines identical (field diff: 0 industries differ). The emitted company files differ: N ai_construction_targets entries gated (the build prints the count).",
+  "_predictions": {
+    "P1_companies": "The user's criterion: companies must NOT collapse — shortlist companies ≥ 24 (canon-4rung growth seeds 26 / 23–26, vanilla 26), all 6 countries with one, regional HQs ≥ 90 (114 / 96 vanilla). ab1 gate-on read 17 / 5 countries / 20 HQs.",
+    "P2_rebuild": "The company rebuild pattern shrinks: company-held rung-0 levels in the shortlist at 1935 well below canon-4rung's (France textile e0 21 of 25 company-held; USA tooling e0 74 of 75) and e0 levels ADDED per decade 1900–1935 below half of canon-4rung's 70–90 per run.",
+    "P3_e0": "Shortlist e0 headcount at 1935 below canon-4rung's growth-seed 695–773k, with textile and tooling e0 the movers.",
+    "P4_gdp": "World GDP 0.90–1.00× vanilla (canon-4rung growth seeds 0.95 / 0.90).",
+    "P5_glass": "Glass and tools unchanged from canon-4rung (British glass 110–120%): the gate touches company planning only.",
+    "P6_stall": "The book family's stall rate is 1 in 5; a stall here is an outcome to report, not a defect of the run — the seed's growth or stall is read from Britain's private construction speed by 1870.",
+    "P7_null": "If P1 fails (companies collapse on the canon too), the gate is dead for good; if P1 passes and P2 fails, the rebuild is expansion-driven and the gate cannot reach it."
+  },
+  "_comparison": "canon-4rung growth seeds (20260903_000418 runs 1, 3) for GDP/prices/e0, all three seeds for the stall rate; vanilla n=16 20260821_131149 for companies and GDP.",
+  "_watch": [
+    "5-minute smoke check incl. the emitted company file (a state_trigger with has_technology_researched on a below-top rung's target)",
+    "first run: first_run_decomp + company_check + the e0-by-industry table with company-held levels (the F99 §3 table)"
+  ],
+  "_cost": "2 × 1836→1936, ~2.6 h each: ~5.3 h, launched 2026-09-03 ~09:35.",
+  "_caveats": [
+    "n=2 against n=2: only the company collapse (P1) and a large rebuild change (P2) resolve; GDP differences under ~10% do not.",
+    "Different night from both references."
+  ],
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+  },
+  "setups": {
+    "canon4-tgate": {
+      "kind": "config",
+      "config": "config/mod_config.canon4-tgate.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "canon4-tgate",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon4-tgate",
+      "until": "1936.1.1"
+    }
+  ]
+}
