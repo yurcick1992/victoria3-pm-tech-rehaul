@@ -6539,15 +6539,21 @@ re-peg (and in today's six-rung dry run too). Turning it on is a ruling, not a c
    mobile_armor, nco_training, power_of_the_purse, trench_works (the era-1 unit techs — line_infantry, artillery,
    napoleonic_warfare, standing_army — are 1836 grants and get none).
 2. **A military-industry rung WITH a predecessor rung keeps the industry rule** — the predecessor's staffing, 60-month stages.
-3. **A military-industry FIRST rung anchors on the CONSUMPTION of its good** — `necessity_anchors` takes `good:<name>`
-   and the term is `market = { mg:<good> = { market_goods_buy_orders >= T } }`, T from `research_events.consumption_thresholds`;
-   industry tick speed (one stage per 60 months above the line). Staged: percussion cap → **ammunition ≥ 150/week**, the
-   explosives first rung (intensive_agriculture, which also keeps its staple-crops anchor) → **explosives ≥ 50/week**.
-   ⚠ The threshold advice and its basis: the canon-4rung markets read (weekly buy orders, `market_goods_scoped`)
-   ammunition Britain 223–256 at 1850 · 575–615 at 1870 · ~1,000 by 1880, France 166–235, Prussia 156–193, the USA
-   28–310; explosives 53–83 at 1850 · 56–110 at 1860. 150 and 50 put the three majors above the line from the 1840s–50s
-   and most minors below it; both are MARKET-wide figures (a customs-union member reads its overlord's market). ⚠ The
-   `mg:` scope inside a progress-bar term is UNVERIFIED in-game — the smoke check must read the first tick's error.log.
+3. **A military-industry FIRST rung with no predecessor anchors on the CONSUMPTION of the good its output SERVES** —
+   `necessity_anchors` takes `good:<name>` and the term is `market = { mg:<good> = { market_goods_buy_orders >= T } }`, T
+   from `research_events.consumption_thresholds`; industry tick speed (one stage per 60 months above the line).
+   ⚠ **Not the unlocked good's own consumption — REJECTED by the user (2026-09-03)**: "where would those consumers come
+   from before any supply comes?" — an anchor on ammunition buy orders could only ever fire for a catching-up importer,
+   which is neither the country the entry is for nor a plausible one. So **percussion cap → SMALL ARMS consumption at the
+   British market's 1846 level**: `good:small_arms`, **≥ 900 a week**, interpolated 1840→1850 because the dumps are
+   decade-spaced and a save holds no order book (canon-4rung book, five non-stalled runs: British market 487–778 at 1840,
+   428–1,345 at 1850, medians 707 → 1,028; vanilla n=16: 637–885 → 769–1,314). Who clears 900 on the four-rung book:
+   Britain from the mid-1840s in most seeds; France (446–902 at 1850, 444–881 at 1860), Prussia (696–983 at 1860) and the
+   USA (146–987 at 1860) only at the top of their ranges by 1860; Russia (≤ 793) and everyone smaller not by 1860. Market-
+   wide, so a customs-union member reads its overlord's market. **The explosives first rung (intensive_agriculture) rides
+   the staple-crops anchor it shares with fertilizer** (25,000 workers; the explicit `explosives: ['bg_staple_crops']`
+   entry dedupes onto fertilizer's) — no anchor of its own. ⚠ The `mg:` scope inside a progress-bar term is UNVERIFIED
+   in-game — the smoke check must read the first tick's error.log.
 4. **No naval entries** (`naval_channel: false` drops every fleet technology's war entry).
 Net on canon4-je: **51 technologies (43 industry, 8 war) → 153 journal entries, 51 bars**, against the 43/0 of the previous
 staged state; the army-in-soldiers anchors of the paragraph above are superseded for percussion cap and the explosives

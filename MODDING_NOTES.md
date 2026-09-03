@@ -1003,7 +1003,7 @@ save**, which carries its own seed — available if ever needed, not currently u
 A country's market is a scope (`market = { … }`) and a good in it is `mg:<good>`, on which `market_goods_buy_orders` /
 `market_goods_sell_orders` are triggers — the form the port-subsidy strategies' `possible` blocks use (`retire_trigger`,
 §10.60.3), which F64/F65 proved inside `ai_strategy` blocks. `emit_research_events.mjs` now writes the same shape as a
-scripted-progress-bar term (`market = { mg:ammunition = { market_goods_buy_orders >= 150 } }`) for the consumption anchors.
+scripted-progress-bar term (`market = { mg:small_arms = { market_goods_buy_orders >= 900 } }`) for the consumption anchors.
 ⚠ **UNVERIFIED in a progress bar**: a bar's `monthly_progress` terms evaluate in the JE's country scope, where `market`
 should resolve, but no run has ticked one yet. Check the first tick's `error.log` for a `market` / `mg:` scope error before
 trusting a consumption-anchored entry, and a silent zero (the bar never moving in a market that plainly buys the good) is
