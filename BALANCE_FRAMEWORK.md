@@ -6493,6 +6493,29 @@ companies 25 vs 26, 6 of 6, HQs 104 vs 96, company-held 34.4% vs 39.1% — and P
 (the book family is 1 in 7 seeds). Tools dearer in both seeds (British 123 / 124 vs 103 / 103) — un-replicated caveat.
 **The target gate stays opt-in and OFF.** Next by the levers read above: the ai_value ladder on every industry (×3 or
 ×2.5 per era) gated by the between-sector allocation check; then the pool's randomness define.
+**The research journal entries (F101, 2026-09-03):** canon-4rung fires ~650 JE completions a run (GBR 15–25, USA 3–9,
+FRA 0–3; 13–20 of 40 technologies) against the six-rung canon's ~4,750 (GBR ~85, USA ~80), because `make_tier4_config`
+re-derived the thresholds to 30k / 120k / 480k (six-rung 5k / 15k / 45k / 135k / 405k) and doubled the bar to 72
+months — and its technology pace is exactly vanilla's. The user's hypothesis: restoring them "to the old level (or
+slightly lower)" balances to a better equilibrium. STAGED, not launched: `canon4-je` (thresholds 5k / 15k / 45k /
+135k by anchor year, bar 36) — `config/mod_config.canon4-je.json`, `schedules/canon4_je_n3.json`.
+**Calibration ruled (user, 2026-09-03):** base marks **t1 25k · t2 75k · t3 235k** workers at full staffing in the
+predecessor rung, **60-month bars per stage**, two stages still granting the technology at base cost, and per-industry
+reductions where the chain is small. F101.2 replayed the emitter's arithmetic on Britain's six non-stalled runs: at
+those bases the consumer and heavy chains (textile, glass, tooling, steel, motor, food t3, fertilizer t1) fire in ≥ 4 of
+6 runs; the marks the others need to fire in ≥ 4 of 6 are arms 30k / 40k (t2 / t3), artillery 10k / — / 25k, explosives
+10k (t2, via dynamite), munition 60k, synthetics 10k, fertilizer 30k (t2), electrics 40k (t2), paper 50k / 200k, food
+60k (t2), furniture 120k (t3); the art academy needed a level-counted source (it had none). Staged in
+`config/mod_config.canon4-je.json` as `threshold_mult`: arms {2: 0.4, 3: 0.17} · artillery {1: 0.4, 2: 0.4, 3: 0.11} ·
+munition 0.8 · explosives 0.13 · synthetics 0.13 · fertilizer {2: 0.4, 3: 0.4} · electrics 0.5 · paper 0.65 · furniture 0.5
+· food 0.8 · art_academy 0.2 — superseded the same hour by the RULING: ONE multiplier ×0.5 for arms, artillery, explosives, munition and synthetics, everything else at base; and marks are keyed by the UNLOCKED RUNG'S ERA, never by rung index (a late-appearing industry's first researchable rung at e2 takes the t2 mark). Not reachable by any mark: technologies Britain researches within
+1–4 years of eligibility (electrical_generation, the machine guns) and rungs eligible only from ~1930 (high-speed
+diesel, transfer machining). Labour-saving methods are NOT penalised: every source counts FULLY STAFFED LEVELS (Σ level × occupancy, occupancy being
+the staffed share of the building's current workforce), and a people mark is converted to levels through the predecessor's
+base per-level employment — a nominal figure; the JE text quotes the levels and calls the people number nominal (the user
+caught the earlier wording "75,000 workers at full staffing", which is true under one secondary method and false under
+another). The JE text now names each source, its mark and the live figure (emitter, 2026-09-03; in-game
+rendering of the data function still to be seen on the next run).
 
 **What it does NOT settle — the open list, in the order the user is weighing it.**
 1. **The company rebuild pattern** — a company expands its rung-0 buildings all century (DMC 21 of France's 25

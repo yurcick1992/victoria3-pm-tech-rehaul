@@ -1,0 +1,92 @@
+{
+  "schedule_version": 1,
+  "label": "canon4-je-n5",
+  "_why": "canon-4rung (§10.69) with ONE change: the research-event parameters restored to the six-rung canon's level on the four-rung anchors — RULED 2026-09-03: marks by the UNLOCKED rung's era t1 25k · t2 75k · t3 235k workers at the base method's staffing in the predecessor rung (rule-D keys 4/5 → 235k), 60-month bars per stage, ONE ×0.5 multiplier on arms/artillery/explosives/munition/synthetics, every source counted in fully staffed levels, every JE naming its sources and live figures, the art academy counted at its real per-level employment (config/mod_config.canon4-je.json; field diff against the canon: the research_events block only). User's hypothesis (2026-09-03): 'when we bring them back to the old level (or slightly lower), this gets balanced to better equilibria'. Measured cause (F101): the four-rung book fires ~620–690 JE completions per run over ~150 countries (GBR 15–25, USA 3–9, FRA 0–3; 13–20 of 40 covered technologies) against the six-rung canon's ~4,700–4,800 over ~335 countries (GBR 79–86, USA 80–82, FRA 8–34), and its technology pace is exactly vanilla's (GBR 163 techs at 1935 = vanilla's 163; the six-rung canon 196) — make_tier4_config had re-derived the thresholds ×4 per rung from a 30k base and halved the tick. n=3; 1836 → 1936.1.1; compared against canon-4rung (20260903_000418 growth seeds + 20260903_094941, the same book) and vanilla n=16.",
+  "_arms": {
+    "canon4-je": "{kind: config, config: config/mod_config.canon4-je.json} — canon-4rung + the six-rung research-event parameters; sha DC42F819…"
+  },
+  "_delta": "vs canon-4rung: the research_events block only (thresholds, bar lengths); recipes, costs, ai_value, techs, companies identical. The emitted journal entries are the same 120 (40 technologies) — their bars fill 2× faster and their sources qualify at 2–6× fewer employees.",
+  "_predictions": {
+    "P1_firings": "JE completions per run ≥ 1,500 (canon-4rung 620–690); Britain: ≥ 45% of e2-unlocking and ≥ 40% of e3-unlocking rule-A technologies with at least one stage fired (the F101.2 replay: 45% / 41%); FRA ≥ 5, USA ≥ 30 completions.",
+    "P2_pace": "Technology pace ahead of vanilla: GBR technologies held at 1900 ≥ 135 (canon-4rung 128 = vanilla 125) and at 1935 ≥ 175 (163).",
+    "P3_frontier": "Earlier frontier rungs: British plastics glassworks and rubber-grip tooling levels at 1905 above the canon's (10–12 / 9–56); shortlist e0 headcount at 1935 below the canon's 695–850k; the e1 rung no longer the largest at 1935 in at least one seed.",
+    "P4_gdp": "World GDP 0.90–1.05× vanilla (the six-rung canon's JEs raised GDP; the four-rung book's capacity pricing may absorb it).",
+    "P5_companies": "Companies at vanilla (shortlist ≥ 24, HQs ≥ 90).",
+    "P6_stall": "Stall count reported (family 1 in 7); a stall is an outcome, not a defect.",
+    "P7_risk": "If P1 passes and P3 fails, faster technology does not by itself move the ladder — the price/wage death mechanism still gates it (F97)."
+  },
+  "_comparison": "canon-4rung: 20260903_000418 (runs 1, 3) and 20260903_094941 (both), the same book; vanilla n=16 20260821_131149.",
+  "_watch": [
+    "5-minute smoke check incl. a look at a research JE's text in the mirror if any loc error is logged (the ScriptValue data function inside a JE is unverified in-game)",
+    "first run: JE completions (PMR_JE) by country, GBR/FRA/USA technologies held at 1900 vs the canon, first_run_decomp, company_check"
+  ],
+  "_cost": "5 × 1836→1936, ~2.6 h each: ~13 h. NOT LAUNCHED — awaiting the user's go-ahead (asked for after the art-academy fix, 2026-09-03).",
+  "_caveats": [
+    "n=3 against n=4 on the same book: the JE-count and tech-pace predictions resolve; GDP under ~10% does not.",
+    "The four-rung tree covers 40 technologies with JEs against the six-rung canon's 201 today (378 at the time of its runs), so 'back to the old level' restores the per-JE parameters, not the number of JEs."
+  ],
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+  },
+  "setups": {
+    "canon4-je": {
+      "kind": "config",
+      "config": "config/mod_config.canon4-je.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "canon4-je",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon4-je",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon4-je",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon4-je",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon4-je",
+      "until": "1936.1.1"
+    }
+  ]
+}

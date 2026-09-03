@@ -2168,3 +2168,24 @@ ab3 growth seeds) regenerated and republished to their URLs; F98 §2 and F99 §1
 
 **Lesson.** A config walker that means "our tiered industries" must say so — `cfg.industries.filter(i =>
 !i.disabled)` — and the register needs a static detector for the omission (owed: L27, the L25 pattern).
+
+## 2026-09-03 — FIXED the same day: the art academy's research journal entries could never fire (employment source = 0)
+
+`emit_research_events.mjs` builds each rule-A source's script value as `Σ(level × occupancy) × <employment per level>`,
+taking the employment from the tier's config `employment`. The art academy carries **no base employment** (its jobs
+live in its ownership PMG, kept as a secondary — CLAUDE.md, "art_academy … its tiers carry no base employment"), so
+the multiplier is 0, the value is 0 on every level count, and the `>= threshold` trigger is false forever: `film` and
+`sound_film` fired 0 of 6 for Britain in the calibration (F101.2) with 21–52-year windows open. Present on the
+six-rung canon too (same code). Fix: derive the per-level employment the way `tierEmp()` in `ui/econ.js` does — base
+employment plus every secondary PMG's base PM — or, for a tier whose config employment sums to 0, count STAFFED LEVELS
+against `people / perLevel` the way the group anchors already do. FIXED 2026-09-03 with the calibration change: the rule-A loop no longer `return`s on a zero-employment predecessor, and
+the source loop treats `emp > 0` as the people/levels switch, so the academy's technologies (realism, film, sound_film) get
+bars — the emitted count went 40 → 43 technologies. Then (the user: "fix the art academy not being calculated properly") the
+per-level employment is DERIVED rather than defaulted: `tierEmp()` takes the config employment, or for a tier whose main
+method employs nobody the base (first non-gated) method of each secondary PMG from `ui/vanilla.js` — the academy's
+`pm_traditional_patronage` is 1,000 academics + 3,000 clerks + 1,000 laborers = 5,000 per level, so its marks read
+5 / 15 / 47 fully staffed levels at 25k / 75k / 235k, and the JE text quotes the real people figure.
+⚠ Found on the way: the new multi-line JE description was emitted with REAL newlines inside the yml value (507 malformed
+loc lines, the build passing, the game would have shown the first line and logged the rest as garbage) — the loc writer now
+escapes `
+`. A loc value is one line; the escape is part of the string.

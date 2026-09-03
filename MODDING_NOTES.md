@@ -990,3 +990,10 @@ precisely the flag that skips the lobby:
 **Consequence.** Same-seed A/B is unavailable, so the telemetry tax stays *bounded* ("no detectable
 difference", ~±12 % resolution) rather than measured. The only route to a fixed seed is **resuming a
 save**, which carries its own seed — available if ever needed, not currently used.
+
+
+## Loc: showing a script value, and line breaks (2026-09-03)
+
+- A loc string can print a script value evaluated in a scope: `[ROOT.GetCountry.MakeScope.ScriptValue('pmr_src_x')|0]` (vanilla uses the same for `acw_reincorporate_dixie_loyalist_min`). In a journal entry or its scripted progress bar ROOT is the country. The research JEs use it to show "now N" beside each source's mark.
+- A loc VALUE is one line of the yml. A line break inside the text is the two-character escape `
+`; a real newline splits the entry and the rest of the text becomes malformed lines the game ignores (the build does not catch it — `emit_research_events` escapes them since 2026-09-03).

@@ -9825,3 +9825,93 @@ with the gate removing the formation-aid weight from the lower tooling rungs; a 
 - The private-pool scoring is read from the defines; how `ai_value` enters it is not documented there, and the
   halving in §3 is the empirical statement, not a derivation.
 - The tools price shift is unexplained and un-replicated.
+
+## F101 — THE RESEARCH JOURNAL ENTRIES BARELY FIRE ON THE FOUR-RUNG BOOK: ~650 completions a run against the six-rung canon's ~4,750, and a technology pace exactly vanilla's (2026-09-03)
+
+**Question (user):** how many of our industry-driven research journal entries fire, on average and for GBR / FRA / USA
+— on the suspicion that restoring them to the six-rung level would move the four-rung book to a better equilibrium.
+
+**Instrument.** `PMR_JE|<stage>|<tech>|<country>` lines in each run's `logs_live/debug.log` (one per completed stage per
+country, distinct triples counted); the emitted JE count from the build log; technologies held per country from the
+save summaries.
+
+| | six-rung canon (solver2f, `20260825_204213`, 3 runs) | four-rung canon (ab3 + tgate, `20260903_000418` / `_094941`, 5 runs) |
+|---|---|---|
+| JEs emitted | 201 for 67 technologies today (378 for 126 incl. 40 war at the time of these runs) | 120 for 40 technologies |
+| completions per run | 4,713 / 4,826 / 4,802 | 689 / 619 / 644 / 653 / 646 |
+| countries with ≥ 1 | 332–339 | 146–157 |
+| mean per country with ≥ 1 | 14.2–14.4 | 4.1–4.4 |
+| technologies with ≥ 1 completion | 75–86 | 13–20 (of 40) |
+| GBR (inception / development / implementation) | 85 (39/32/14) · 86 · 79 | 15 (9/6/0) · 1 (stall) · 21 (12/7/2) · 23 · 22 |
+| USA | 82 (41/32/9) · 82 · 80 | 7 · 3 · 9 · 6 · 9 |
+| FRA | 8 · 15 · 34 | 3 · 0 · 0 · 1 · 1 |
+
+**Why.** `make_tier4_config.mjs` re-derived the research-event parameters for four rungs: `thresholds_by_era`
+30k / 30k / 120k / 480k (a 30k base × 4 per rung, keys 4–5 pinned at 480k for the rule-D vanilla technologies) against
+the six-rung canon's 5k / 15k / 45k / 135k / 405k, and `industry_bar_months` 72 against 36 ("each tick is worth half").
+So a bar needs 2–6× the employed people in the predecessor rung and fills half as fast — and the vanilla-pegged tree
+gives it 40 technologies to attach to instead of 67. France barely fires on either book (its technologies arrive by
+research and spread before its bars fill; the leaders fire because spread has nothing to give them).
+
+**Consequence.** Technologies held, mean over runs (production + military + society; the six-rung tree carries ~42
+added technologies, so read the shape):
+
+| | 1880 GBR / FRA / USA | 1900 | 1935 |
+|---|---|---|---|
+| six-rung canon | 124 / 107 / 117 | 149 / 128 / 140 | 196 / 173 / 189 |
+| four-rung canon | 103 / 93 / 101 | 128 / 110 / 123 | 163 / 142 / 158 |
+| vanilla | 102 / 89 / 96 | 125 / 106 / 116 | 163 / 137 / 151 |
+
+The four-rung book's pace IS vanilla's (Britain 163 = 163); the JEs contribute nothing measurable. The six-rung canon
+ran 20–30 technologies ahead by 1880 on the same channel.
+
+**Arm staged, not launched (user's call):** `canon4-je` = canon-4rung with the six-rung parameters mapped onto the
+four-rung anchors by year — thresholds e0 5k · e1 15k · e2 45k · e3 135k (rule-D 4/5 → 135k/405k, the "slightly lower"
+reading: 135k not 405k on the last rung), bar 36 months, war bar 6 — `config/mod_config.canon4-je.json` (field diff
+against the canon: the research_events block only), schedule `tools/testbed/schedules/canon4_je_n3.json`, dry-run
+build clean. What it cannot restore: the number of JEs (40 technologies is a property of the vanilla-pegged tree).
+
+### F101.2 — Calibrating a UNIFIED threshold on a 60-month bar (user's exercise, 2026-09-03)
+Model: the emitter's own bar arithmetic (+1 per month per source whose predecessor-rung employment, staffed levels ×
+employment per level, is ≥ T; the stage fires at 60; the JE is live only while `can_research` holds, i.e. the
+prerequisites — read from the EMITTED tree, not the options file's design prerequisites — are held and the technology
+is not), replayed on Britain's yearly summaries in the six non-stalled four-rung-family runs (ab2 s1/s2, ab3 s1/s3,
+tgate s1/s2), the deadline being the year Britain is observed to hold the technology. Cascades ignored by instruction.
+Rule-A technologies only (a rung with a predecessor rung): 15 gate an era-2 rung, 17 an era-3 rung.
+
+| unified T (people at rung n−1) | era-2-gating techs with ≥ 1 stage fired for GBR | era-3-gating |
+|---|---|---|
+| 5k | 78% | 80% |
+| 15k | 72% | 75% |
+| 30k | 66% | 72% |
+| 45k | 61% | 64% |
+| 60k | 56% | 60% |
+| 90k | 44% | 55% |
+| 135k | 38% | 47% |
+| 200k | 26% | 41% |
+| 480k (canon-4rung's e3) | 7% | 17% |
+
+The user's goals (≥ 50% of era-2-gating, ≥ 20% of era-3-gating) hold for any unified T up to ~70k; canon-4rung's
+120k / 480k give ~40% / 17%. The misses at 45k are structural, not threshold: the war industries' predecessor rungs
+carry 10–50k people in Britain (dynamite, automatic_machine_guns, automatic_aa_guns, bolt_action_rifles — a per-industry
+threshold is the user's stated intent), several technologies are researched within 1–4 years of becoming eligible
+(electrical_generation 1–4 y, automatic_machine_guns 1–18 y, high_speed_diesel and transfer_machining eligible only
+from ~1930), and **the art academy's two technologies (film, sound_film) can never fire on any book: the emitter takes
+the source's employment per level from the config's `employment`, which is 0 for the art academy because its jobs
+live in its ownership PMG — the script value multiplies by 0** (BUGS_AND_FIXES, owed). Goal 2 holds as the emitter
+stands: each stage grants 0.5 × the era base cost, so two stages equal the cost when no ahead-of-time penalty applies.
+
+**The ruled set, replayed (user, 2026-09-03; marks keyed by the UNLOCKED rung's ERA, never the rung index — a late
+industry's first researchable rung at e2 takes the t2 mark):** t1 25k · t2 75k · t3 235k workers at the base method's
+staffing in the predecessor rung, ×0.5 for arms, artillery, explosives, munition and synthetics, 60-month bars, every
+source counted in fully staffed levels. Britain, six non-stalled runs, share of rule-A technologies with ≥ 1 stage
+fired: **unlocking an e1 rung 17%** (9 technologies; most are researched within a few years of 1836 — lathe,
+mechanical_tools, distillation, bessemer never), **an e2 rung 45%** (14: furniture, glass, tooling, steel, motor 6/6;
+fertilizer 4/6; food and arms 2/6; paper, dynamite, the machine guns, art_silk, electrical_generation, film 0/6), **an
+e3 rung 41%** (17: electrical_capacitors, cemented_carbide, continuous_strip_mill 6/6; dough_rollers, glass_fibre 5/6;
+long_draft_spinning 4/6; spray_finishing, transfer_machining 3/6; stamped_receivers 2/6; the rest 0–1/6 — synthetics'
+and electrics' e2 rungs peak at 0–160k people in Britain against marks of 117.5k / 235k). Emitted marks in levels:
+tooling e2 15, arms e2 8, textile e3 47, AA guns 22, film 15.
+
+**What it does NOT say.** Whether more firings move the ladder: F97's death mechanism (wages, not prices) still gates
+obsolescence, and the six-rung canon's faster tree came with the GDP overshoot the four-rung book was built to avoid.

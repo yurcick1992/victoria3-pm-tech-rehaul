@@ -64,6 +64,11 @@ if (Object.keys(ERACOST).length < 5) throw new Error(`only found ${Object.keys(E
 const vsrc = readFileSync(join(REPO, 'ui/vanilla.js'), 'utf8');
 const VAN = JSON.parse(vsrc.slice(vsrc.indexOf('{'), vsrc.lastIndexOf(';')));
 const GROUPS = new Set(Object.keys(VAN.groups || {}));
+// per-level employment of a PMG's BASE method (its first non-gated PM — the UI's basePm() convention), from the extract
+const basePmEmp = (pmg) => { const g = VAN.pmgs[pmg]; if (!g) return 0; const P = (g.pms || []).map(k => (VAN.pms || {})[k]).find(x => x && !x.gated); return P ? Object.values(P.emp || {}).reduce((a, b) => a + (+b || 0), 0) : 0; };
+// a tier's per-level employment: its main method's (the config's `employment`); a tier whose main method employs nobody
+// (the art academy — its jobs live in the ownership PMG, F101.2) takes the base methods of its secondary PMGs instead
+const tierEmp = (tier, ind) => { const wm = tier.workforce_mult != null ? +tier.workforce_mult : 1; const own = Object.values(tier.employment || {}).reduce((a, b) => a + (+b || 0), 0); if (own > 0) return Math.round(own * wm); return Math.round((ind.secondary_pmgs || []).reduce((a, g) => a + basePmEmp(g), 0) * wm); };
 
 // ---- tech -> production methods it unlocks, for the rule-D anchoring ----------------------------
 const techPM = {};
@@ -114,10 +119,10 @@ for (const ind of CFG.industries) {
       const prev = ts[i - 1];
       // §10.60: a factored tier (ports) EMPLOYS config × workforce_mult per level — the script value
       // multiplies emp by in-game levels, so full-size emp here would fill the bar ~10× too fast.
-      const wfM = prev.workforce_mult != null ? +prev.workforce_mult : 1;
-      const emp = Math.round(Object.values(prev.employment || {}).reduce((a, b) => a + b, 0) * wfM);
-      if (!emp) return;                                       // art academy: jobs live in the ownership PMG
-      addSource(t.tech, t.era, 'improvement', { building: prev.key, emp });
+      const emp = tierEmp(prev, ind);   // config employment, or the secondary PMGs' base methods for a tier that has none
+      // a predecessor whose config employment sums to 0 (the art academy: its jobs live in the ownership PMG) used to be
+      // skipped here, so film / sound_film never had a bar that could tick; it is now a LEVEL-counted source (F101.2, 2026-09-03)
+      addSource(t.tech, t.era, 'improvement', { building: prev.key, emp, ind: ind.id });
     } else {
       // ⚠⚠ A RESEARCHABLE FIRST RUNG WITHOUT AN ANCHOR IS A BAR THAT CAN NEVER FILL, and it used to be a
       // silent `return`. The comment said "deliberately unanchored (era-1 freebies etc.)", which is true
@@ -135,8 +140,8 @@ for (const ind of CFG.industries) {
         `would have no source from this industry and could never fill. Add an anchor (a building or ` +
         `bg_ group whose presence is the demand pull for it), or give the industry an earlier rung.`);
       for (const s of list) {
-        if (s.startsWith('bg_')) { if (!GROUPS.has(s)) throw new Error(`necessity_anchors[${ind.id}] names unknown building group '${s}'`); addSource(t.tech, t.era, 'necessity', { group: s }); }
-        else addSource(t.tech, t.era, 'necessity', { building: s });
+        if (s.startsWith('bg_')) { if (!GROUPS.has(s)) throw new Error(`necessity_anchors[${ind.id}] names unknown building group '${s}'`); addSource(t.tech, t.era, 'necessity', { group: s, ind: ind.id }); }
+        else addSource(t.tech, t.era, 'necessity', { building: s, ind: ind.id });
       }
     }
   });
@@ -167,9 +172,15 @@ if (JE_SCOPE === 'all') {
 // ---- emit ----------------------------------------------------------------------------------------
 const T = '\t';
 const sv = [], bars = [], jes = [], loc = [];
-const thresholdPeople = (era) => {
-  const v = (RE.thresholds_by_era || {})[String(era)];
-  if (v == null) throw new Error(`no threshold configured for era ${era}`);
+const thresholdPeople = (era, ind) => {
+  const v0 = (RE.thresholds_by_era || {})[String(era)];
+  if (v0 == null) throw new Error(`no threshold configured for era ${era}`);
+  // ⭐ per-industry reduction (user-ruled 2026-09-03): `research_events.threshold_mult` = { <industry>: 0.4 } or
+  //   { <industry>: { "2": 0.4, "3": 0.17 } } — the war and chemical chains carry a fifth to a tenth of the consumer
+  //   chains' workforce (F101.2), so one base per era cannot serve both. It scales THAT SOURCE's mark, not the technology's.
+  const m = ind != null ? (RE.threshold_mult || {})[ind] : null;
+  const mult = m == null ? 1 : (typeof m === 'object' ? (m[String(era)] ?? m.default ?? 1) : +m);
+  const v = Math.round(v0 * mult);
   return v;
 };
 const perLevel = RE.employment_per_level_default || 5000;
@@ -226,6 +237,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
   const grant = Math.round(ERACOST['era_' + T0.era] * (RE.grant_fraction ?? 0.5));
   if (!grant) throw new Error(`no era cost for ${tech} (era ${T0.era})`);
   const terms = [];
+  const srcLines = [];   // the JE text: what each source is, its mark, and the live figure (user-ruled 2026-09-03)
 
   if (a.rule === 'war' && isFleetTech(tech)) {
     // ⭐ FLEET TECHNOLOGIES: POSSESSION, NOT BATTLE (ROADMAP → "The NAVAL channel"). A navy is observed
@@ -279,9 +291,9 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     terms.push({ desc: `pmr_term_war_engaged`, trigger: `has_variable = ${wgVar(tech)}`, value: 1 });
   } else {
     nInd++;
-    const people = thresholdPeople(a.era);
     a.sources.forEach((s, i) => {
       const n = svName(tech, i);
+      const people = thresholdPeople(a.era, s.ind);
       // Σ(level × occupancy): occupancy is a WEIGHT. A `limit = { occupancy >= x }` FILTER would score
       // seven half-staffed levels as zero while passing three full ones - measured and rejected.
       const filter = s.group ? `is_building_group = ${s.group}` : `is_building_type = ${s.building}`;
@@ -291,11 +303,27 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       // level threshold instead. Emitting `multiply = ${undefined}` here is exactly the bug the first
       // smoke run caught: five script values read `multiply = undefined` and the engine logged
       // "Badly read script value undefined" without the build noticing.
-      const inPeople = s.emp != null;
-      const mult = inPeople ? `\n${T}${T}multiply = ${s.emp}` : '';
+      // ⚠ a tier whose config employment sums to 0 (the art academy: its jobs live in its ownership PMG) would multiply
+      //   by 0 and never qualify — count its STAFFED LEVELS against people / perLevel like a group anchor (BUGS_AND_FIXES 2026-09-03)
+      // ⭐ EVERY source is counted in FULLY STAFFED LEVELS (Σ level × occupancy; occupancy = the staffed share of the
+      //   building's current workforce, so a labour-saving method changes neither term). A people mark is converted to
+      //   levels through the predecessor's BASE per-level employment (the config's, i.e. the main method's nominal
+      //   workforce) — a nominal figure, which is why the text quotes levels and calls the people number nominal
+      //   (user, 2026-09-03: "75,000 workers at full staffing" is true under one secondary method and false under another).
+      const inPeople = s.emp != null && s.emp > 0;
+      const mult = '';
       sv.push(`${n} = {\n${T}value = 0\n${T}every_scope_building = {\n${T}${T}limit = { ${filter} }\n${T}${T}add = { value = this.level  multiply = occupancy }\n${T}}${mult}\n}`);
-      const need = inPeople ? people : Math.max(1, Math.round(people / perLevel));
-      terms.push({ desc: `pmr_term_${a.rule}`, trigger: `${n} >= ${need}`, value: 1 });
+      const need = Math.max(1, Math.round(people / (inPeople ? s.emp : perLevel)));
+      // ⭐ THE JE SAYS WHAT TICKS (user-ruled 2026-09-03): one desc key per source naming the building (or group), its mark
+      //   and the country's live figure through the loc data function [ROOT.GetCountry.MakeScope.ScriptValue('<sv>')|0]
+      //   (vanilla's own idiom, e.g. acw_reincorporate_dixie_loyalist_min), instead of the shared 'Employed in the industry'.
+      const what = s.group ? `$${s.group}$` : `$${s.building}$`;
+      const unit = inPeople ? `fully staffed levels (${people.toLocaleString('en-US')} workers at the base method's staffing; labour-saving methods do not lower the count)` : 'fully staffed levels';
+      const live = `[ROOT.GetCountry.MakeScope.ScriptValue('${n}')|0]`;
+      const dkey = `pmr_term_${tech}_${i}`;
+      loc.push([dkey, `${what}: at least ${need.toLocaleString('en-US')} ${unit} (now ${live})`]);
+      srcLines.push(`${what} — ${need.toLocaleString('en-US')} ${unit}, now ${live}`);
+      terms.push({ desc: dkey, trigger: `${n} >= ${need}`, value: 1 });
     });
     if (!terms.length) continue;
   }
@@ -349,12 +377,12 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     loc.push([key, `${nice}: ${stage.charAt(0).toUpperCase() + stage.slice(1)}`]);
     loc.push([key + '_desc', a.rule === 'war'
       ? `Hard fighting concentrates the mind. While our armies are committed to a front in strength — and the more so when the enemy already fields it — work towards ${nice} advances.`
-      : `The trade already knows its own shortcomings. Where enough hands are employed at the work that ${nice} would improve, the improvement follows.`]);
+      : `The trade already knows its own shortcomings. Where enough hands are employed at the work that ${nice} would improve, the improvement follows.` + `\n\nEach month the bar advances by one for every source at or above its mark; three stages of ${span} months each, and each completed stage grants half the technology's base research cost.` + (srcLines.length ? `\n\n` + srcLines.map(l => '• ' + l).join('\n') : '')]);
     loc.push([key + '_reason', `Our position makes ${nice} worth pursuing.`]);
   });
 }
 
-loc.push(['pmr_bar_desc', 'Progress towards this discovery.']);
+loc.push(['pmr_bar_desc', 'Progress towards this discovery: +1 each month for every source at or above its mark — the entry lists the sources and your current figures.']);
 loc.push(['pmr_term_improvement', 'Employed in the industry this would improve']);
 loc.push(['pmr_term_necessity', 'Employed in the industries that would use it']);
 loc.push(['pmr_term_war_pressed', 'Committed to a front in strength']);
@@ -484,7 +512,7 @@ ${T}}
 }
 for (const lang of (CFG.languages || ['english']))
   W(`localization/${lang}/replace/zzz_pm_rehaul_research_l_${lang}.yml`,
-    `l_${lang}:\n` + loc.map(([k, v]) => ` ${k}:0 "${v.replace(/"/g, '')}"`).join('\n') + '\n');
+    `l_${lang}:\n` + loc.map(([k, v]) => ` ${k}:0 "${v.replace(/"/g, '').replace(/\r?\n/g, '\\n')}"`).join('\n') + '\n');
 
 console.log(`research events: ${Object.keys(anchors).length} technologies (${nInd} industry, ${nWar} war) -> ` +
   `${jes.length} journal entries, ${bars.length} bars, ${sv.length} script values, ${loc.length} loc keys x ${(CFG.languages || ['english']).length} languages`);
