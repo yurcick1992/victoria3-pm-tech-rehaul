@@ -2199,3 +2199,17 @@ interprets `$$` as one literal `$` (beside `$&`, the backtick/quote forms and `$
 therefore landed in the emitter as `${s.good}$`. Every earlier patch survived because `${T}` is not a replace pattern; only `$$` is.
 **Fix:** the two lines corrected in place; the fixer used `s.replace(a, () => b)` — a FUNCTION replacement is verbatim.
 **Rule:** when a patch script pastes JavaScript that contains `$$`, pass the replacement as a function, never a string.
+
+## 2026-09-03 — OPEN (fix queued behind the running batch, L10): rescaled secondary methods ship without loc
+
+**Symptom:** every four-rung run logs ~700–1,000 `Production Method is missing loc key` / `Production Method Group is missing loc
+key` lines (canon4-tgate run001 738, ab3 run001 984, canon4-je run001 ~150 in its first five minutes); the pure-vanilla
+baseline logs none. The keys are the A/B book's RESCALED secondaries — `pm_vacuum_canning_food_industry_sweetener`,
+`pm_tank_production_automotive_industry_transfer_line`, `pmg_synthetic_silk_synthetics_plant_polyamide`, … — the per-building
+copies `tools/emit_secondaries.mjs` writes so a rung's secondaries scale with its recipe (§10.68).
+**Cause:** the emitter copies the method and the group under a new key and emits no localization for either, so the game
+shows the raw key in the building panel. Loud (error.log), cosmetic (no economics touched), and present in every run on
+the book since ab1.
+**Fix owed:** emit `<newkey>: "$<sourcekey>$"` (and the `_desc` where the source has one) for every copied PM and PMG in all 11
+languages, the way emit_companies.mjs re-points its modifier loc. NOT applied while canon4-je-n5 runs — a build-path edit
+mid-batch makes the arms incomparable (landmine L10). Apply after SCHEDULE DONE and prove it with a dry-run grep of the loc.
