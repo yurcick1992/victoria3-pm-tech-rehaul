@@ -38,6 +38,13 @@ const AI_BASE = +arg('--ai-base', 1000);
 // Built for glass and tooling, whose e2 rungs the AI under-built in both ab2 seeds while their goods sat at 150–175%
 // and 120–170% of base (FINDINGS F98 §4).
 const STEEP = (() => { const v = arg('--ai-steep', ''); if (!v) return null; const [list, r] = v.split(':'); if (!(+r > 1)) throw new Error('--ai-steep <ind,ind>:<ratio>'); return { inds: new Set(list.split(',')), ratio: +r }; })();
+// --A-for <ind>:<ratio>[,<ind>:<ratio>]  — user-directed 2026-09-04 (the art-academy stress test): the named industries take
+// their OWN output ratio per rung — output × Ai^k, building_cost × Ai^k (still capacity-priced), ai_value AI_BASE × Ai^era
+// unless --ai-steep names them — while every other industry keeps A. Built for `art_academy:3` (rung 3 = 27× rung 0:
+// replicated, IP-style entertainment scales like nothing labour-bound does); B is NOT per-industry.
+// ⚠ Pin --divisor when using it: the auto divisor is 0.001 × 800 / max cost, and a 3^k academy raises the max cost for
+//   EVERY building's private-pool scoring — the canon's 0.000125 (max cost 6,400) is what "everything else the same" means.
+const A_FOR = (() => { const v = arg('--A-for', ''); const o = {}; if (!v) return o; for (const part of v.split(',')) { const [id, r] = part.split(':'); if (!id || !(+r > 1)) throw new Error('--A-for <ind>:<ratio>[,<ind>:<ratio>]'); o[id.trim()] = +r; } return o; })();
 if (!(A > 1) || !(B > 0) || !SFX) throw new Error('usage: --A <n> --B <n> --suffix <name>');
 
 const PRICE = {};
@@ -78,11 +85,12 @@ for (const ind of cfg.industries) {
     const Vk = I0 * Math.pow(B, k);
     const inputs = {};
     for (const [g, q] of Object.entries(mixRec.in)) { const share = q * (PRICE[g] || 0) / mixVal; const qty = r1(share * Vk / PRICE[g]); if (qty > 0) inputs[g] = qty; }
-    t.output_qty = r1(out0 * Math.pow(A, k));
+    const Ai = A_FOR[ind.id] || A;   // this industry's own output ratio (--A-for), else the book's A
+    t.output_qty = r1(out0 * Math.pow(Ai, k));
     t.inputs = inputs;
     delete t.input_ratio;
-    t.building_cost = Math.round(anchor * Math.pow(A, k));
-    t.ai_value = Math.round(AI_BASE * Math.pow(STEEP && STEEP.inds.has(ind.id) ? STEEP.ratio : A, t.era));
+    t.building_cost = Math.round(anchor * Math.pow(Ai, k));
+    t.ai_value = Math.round(AI_BASE * Math.pow(STEEP && STEEP.inds.has(ind.id) ? STEEP.ratio : Ai, t.era));
     const Obase = t.output_qty * PRICE[outGood]; const Ibase = val(inputs); const wp = t.wage_pct != null ? +t.wage_pct : 0.25;
     t.target_be = Math.round(Ibase / ((1 - wp) * Obase) * 100);
     cmax = Math.max(cmax, t.building_cost);
@@ -90,10 +98,11 @@ for (const ind of cfg.industries) {
   });
 }
 if (STEEP) for (const id of STEEP.inds) if (!cfg.industries.some(i => i.id === id)) throw new Error(`--ai-steep: unknown industry ${id}`);
+for (const id of Object.keys(A_FOR)) if (!cfg.industries.some(i => i.id === id && !i.disabled)) throw new Error(`--A-for: unknown or disabled industry ${id}`);
 const s = +arg('--divisor', (0.001 * 800 / cmax).toPrecision(3));
 cfg.ai_defines = { ...(cfg.ai_defines || {}), PRODUCTION_BUILDING_AUTONOMOUS_INVESTMENT_CONSTRUCTION_COST_DIVISOR_SCALING: s };
 cfg.company_target_gate = process.argv.includes('--company-gate');   // emit_companies opt-in; OFF by default (see its header)
-cfg._ab = { A, B, ai_base: AI_BASE, ai_steep: STEEP ? { industries: [...STEEP.inds], ratio: STEEP.ratio } : null, cost_divisor_scaling: s, company_target_gate: cfg.company_target_gate, base: BASE, generated: new Date().toISOString() };
+cfg._ab = { A, B, A_for: Object.keys(A_FOR).length ? A_FOR : null, ai_base: AI_BASE, ai_steep: STEEP ? { industries: [...STEEP.inds], ratio: STEEP.ratio } : null, cost_divisor_scaling: s, company_target_gate: cfg.company_target_gate, base: BASE, generated: new Date().toISOString() };
 cfg._comment = `A/B LADDER (${SFX}) derived by tools/make_ab_config.mjs from ${BASE}: rung k output = vanilla lowest-tier × ${A}^k, input value × ${B}^k over the rung's own vanilla mix, building_cost = vanilla anchor × ${A}^k, ai_value = ${AI_BASE} × ${A}^era, cost-divisor scaling ${s}${STEEP ? `, ai_value ${AI_BASE} × ${STEEP.ratio}^era for ${[...STEEP.inds].join('/')}` : ''}. target_be restated as the drift guard.`;
 writeFileSync(join(REPO, `config/mod_config.${SFX}.json`), JSON.stringify(cfg));
 writeFileSync(join(REPO, `config/tech_tree_options.${SFX}.json`), readFileSync(join(REPO, 'config/tech_tree_options.tier4.json'), 'utf8'));

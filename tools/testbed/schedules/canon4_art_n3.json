@@ -1,0 +1,76 @@
+{
+  "schedule_version": 1,
+  "label": "canon4-art-n3",
+  "_why": "THE ART-ACADEMY STRESS TEST (user-directed 2026-09-04): canon4-je (canon-4rung + the ruled research events, F102 — economically the canon) with ONE change, the art academy's ladder at A=3 instead of 2: fine art output 5 / 15 / 45 / 135 a level (rung 3 = 27× rung 0; the canon 5 / 10 / 20 / 40), inputs unchanged (B 1.5: paper 10 → 15 → tools 6.8 + paper 10.1 + electricity 3.4 → ×1.5), building_cost capacity-priced ×3^k (400 / 1,200 / 3,600 / 10,800 points), ai_value 1000×3^era (1000 / 3000 / 9000 / 27000), target_be 40 / 20 / 10 / 5%. Every other industry byte-identical to canon4-je; the private-pool cost divisor PINNED at the canon's 0.000125 (the generator's auto value would have followed the 10,800-point academy and changed every building's scoring). The user's question: 'It always bugged me that replicated IP-style entertainment works in game roughly the same as all other, labour-intensive industries. I want to see whether making it realistic would break anything (or maybe to the contrary, it will introduce desirable consequences of unpegging other goods' prices from consumption equilibria, with the price shock of fine art becoming dirt cheap).' config/mod_config.canon4-art.json; tech-tree twin = canon4-je's. n=3, 1836 → 1936.1.1.",
+  "_arms": {
+    "canon4-art": "{kind: config, config: config/mod_config.canon4-art.json} — canon4-je with art_academy at A=3 (make_ab_config --A-for art_academy:3 --divisor 0.000125), research_events transplanted from canon4-je"
+  },
+  "_delta": "vs canon4-je (20260903_173810, n=5): the four art-academy tiers only — output ×3^k, cost ×3^k, ai_value ×3^era. Recipes, costs, ai_value, techs, companies, research events of every other industry identical.",
+  "_predictions": {
+    "P1_price": "Fine art hits the engine's 25% floor in every market holding a film (e2) academy within ~10 years of the first one, and stays there: one e2 level makes 45 a week against the canon's 20, and F19 measured the whole leisure budget of a large market buying ~96 units at base price. British-market fine art ≤ 30% of base by 1905 (canon4-je: read the 1900 dump for the comparison figure).",
+    "P2_death": "Rung 0 academies die (target_be 40% > the 25% floor); rungs 1–3 survive on goods cost alone (BE 20 / 10 / 5% < 25%) — so whether the old academies empty is decided by the wage/SoL layoff (F97), not by price. Prediction: e0 + e1 share of academy workers at 1935 under 30% (canon: read from the summaries); the e3 rung the largest by 1935 in at least one seed.",
+    "P3_unpegging": "The leisure need's other goods lose budget to dirt-cheap art: availability is value-weighted at BASE price, so 27× the units at the floor still weigh 27× — services, opium, luxury clothes/furniture, porcelain and radios see LOWER pop demand and lower prices in markets with e2+ academies than in canon4-je (British services price at 1935 below canon4-je's median). This is the 'desirable consequence' half; it either shows in the order book or it does not.",
+    "P4_prestige": "Fine-art prestige output scales with the units: countries holding e3 academies gain a prestige lead out of proportion to GDP (prestige_out fine_art in the summaries); the great-power ranking at 1935 differs from canon4-je's in ≥ 2 of 3 seeds.",
+    "P5_economy": "World and shortlist GDP within the canon's spread (0.65–0.96× / 0.81–1.30×) — the academy is 0.3–0.4% of construction; a stall count ≤ 1 of 3 reported as an outcome. If GDP moves by more than the spread, the cause is the leisure-budget shift (P3), not the academy's own value added.",
+    "P6_break": "Nothing breaks structurally: no negative goods (lint passed), no runaway construction of 10,800-point academies (queue_mix: academies < 10% of any major's private queue), no error-log class new to this arm."
+  },
+  "_comparison": "canon4-je 20260903_173810 (n=5, F102) is the base; the canon-4rung pair 20260903_094941 for the book without JEs; vanilla n=16 20260821_131149.",
+  "_watch": [
+    "5-minute smoke check: mod marker, version, this run's error window by POSITION, clock, queue_mix at the first summary",
+    "first run (before the batch completes): fine art price path in the British and French markets, academy levels by rung, the leisure goods' prices vs canon4-je, prestige_out fine_art, first_run_decomp, company_check",
+    "post-run: preflight -Session (L12/L17/L26/L28 — L28 must PASS on a session recorded after the 2026-09-04 observer fix)"
+  ],
+  "_cost": "3 × 1836→1936, ~2.7 h each: ~8 h. NOT LAUNCHED — awaiting the user's explicit go-ahead (config built and verified 2026-09-04).",
+  "_caveats": [
+    "n=3 against a base of n=5: GDP under ~10% and JE counts under ~20% do not resolve; the fine-art price, the academy era mix and the leisure-goods prices are the readings this batch is for.",
+    "The cost divisor is pinned to the canon's 0.000125, so the 10,800-point academy scores at ÷2.35 in the private pool (the canon's dearest rung at ÷1.8); the academy is deliberately dearer per level than anything else in the book.",
+    "The market-consumption anchor is unused and percussion cap rides bg_military_industry (12,500 workers); the war channel carries the six army technologies (marines excluded) — both post-F102 fixes are in this arm and NOT in canon4-je's runs."
+  ],
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+  },
+  "setups": {
+    "canon4-art": {
+      "kind": "config",
+      "config": "config/mod_config.canon4-art.json"
+    }
+  },
+  "runs": [
+    { "setup": "canon4-art", "until": "1936.1.1" },
+    { "setup": "canon4-art", "until": "1936.1.1" },
+    { "setup": "canon4-art", "until": "1936.1.1" }
+  ]
+}
