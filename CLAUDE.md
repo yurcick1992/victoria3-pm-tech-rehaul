@@ -112,8 +112,19 @@ one it is on:
   default; inventions only where a slot is free or explicitly ruled").** `config/mod_config.canon4v.json` + twin: every
   vanilla main method is a rung (the audit of that day found eleven industries on canon-4rung carrying a minted rung while
   one of their own vanilla methods survived only as an alias — `DROP_FOR_MODERN` is retired), modern/gap-filler rungs only
-  while a slot is free, 63 buildings, 6 minted technologies (was 9), research events transplanted from canon4-je. Builds
-  clean, NOT ratified, NOT run — canon-4rung stays the measured book until it is.
+  while a slot is free, **59 buildings** (63 before RULE 1), 6 minted technologies (was 9), research events transplanted from
+  canon4-je (41 technologies → 123 entries). Builds clean, NOT ratified, NOT run — canon-4rung stays the measured book until it is.
+  ⭐⭐ **RULE 1 (user-ruled 2026-09-04, §10.71.1): "no new tier can be the same in name and essence as a secondary PM of the same
+  industry."** `make_tier4_config.mjs` THROWS on any invented candidate pegged to a technology that gates one of the industry's
+  own secondary methods (proven by sabotage). It removed food's dough-rollers rung (= vanilla's Automated Bakery automation),
+  synthetics' art-silk rung (= Rayon), electrics' radio rung (= Radio Production) and the dormant motor watertube gap-filler;
+  the electrics "electrical generation" rung — a telephone factory pegged to the POWER-PLANT technology — was rejected with
+  them. Electrics is ONE rung, synthetics two, food three: vanilla's own method count. ⚠ The same audit found the tree's
+  mechanical eras are the SIX-rung alignment carried over unchanged (`era_game_era` [1,3,4,5] is read by era_pm.mjs only):
+  21 of 59 rungs sit in the era their anchor implies, six rungs beyond rung 0 are era-1 START technologies (lathe ×3,
+  distillation, steelworking, crystal_glass), ten rung names describe a technology other than the one gating them, and 14
+  vanilla technologies ship renamed on six-rung reasoning — all open decisions, tabled in §10.71.1. The "film raised to
+  era 4" of the first canon4v report was a no-op (vanilla film IS era 4); the entry is gone.
   ⭐ **`canon4-je`** (`config/mod_config.canon4-je.json` + twin, committed 2026-09-03) = canon-4rung + the ruled research-event
   parameters and military channels (§10.69). **Measured n=5 (F102, session 20260903_173810): Britain's JE completions double
   and it holds 2–12 more technologies at 1935, and NOTHING downstream moves** — GDP 0.79× / shortlist 1.09× (the canon's

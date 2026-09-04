@@ -207,6 +207,18 @@ for (const ind of out.industries) {
   //   fewer than N rungs, then the INVENT gap-fillers in their order while room remains; a candidate that would push
   //   the industry past N is SKIPPED and reported — never a vanilla method dropped in its favour.
   const skippedInv = [];
+  // ⭐⭐ RULE 1 (user-ruled 2026-09-04): NO NEW TIER MAY BE THE SAME IN NAME AND ESSENCE AS A SECONDARY METHOD OF THE SAME
+  //   INDUSTRY. The mechanical half is enforced here: an invented candidate pegged to a VANILLA technology that also gates a
+  //   method in one of the industry's own secondary groups IS that method under another name — the audit of that day found
+  //   three (food's dough_rollers = the food industry's Automated Bakery automation method, synthetics' art_silk = its Rayon
+  //   method, electrics' radio = its Radio Production method) and one dormant (motor's watertube_boiler = its Water-tube
+  //   Boiler automation method). Checked for EVERY candidate, admitted or not: an illegal entry must not sit in the spec.
+  //   The name-and-essence half for a MINTED technology is a reading, made when a candidate is authored in lib_tier4_spec.
+  const secBy = new Map();
+  for (const g of (ind.secondary_pmgs || [])) for (const pm of (VAN.PMG[g] || [])) for (const tech of VAN.gatesOf(pm)) if (!secBy.has(tech)) secBy.set(tech, `${pm} in ${g}`);
+  const rule1 = (tech, what) => { if (secBy.has(tech)) throw new Error(`${ind.id}: ${what} pegged to ${tech} duplicates the industry's own secondary method ${secBy.get(tech)}, which vanilla gates on that very technology — RULE 1 (2026-09-04): no new tier may be a secondary method of the same industry`); };
+  if (MODERN[ind.id]) rule1(MODERN[ind.id].tech, 'MODERN top rung');
+  for (const inv of (INVENT[ind.id] || [])) rule1(inv.tech, 'invented rung');
   // ⭐ THE MODERN TOP RUNG (lib_tier4_spec MODERN): restored from the canonical six-rung book, which
   //   already designed it - name, recipe and technology. Appended LAST, so it is always the frontier.
   const mod = MODERN[ind.id];

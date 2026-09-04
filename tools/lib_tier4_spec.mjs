@@ -33,16 +33,19 @@ export const ORDER = {
 // ⚠ munition had an invented smokeless_powder rung at 1884 - NINE years after dynamite (1875) and
 // the smallest step in the book. It pushed the ladder to five slots once the modern rung arrived, so
 // it goes: munition reads 1830 / 1875 / 1940, and one MINT goes with it.
+// ⭐⭐ RULE 1 (user-ruled 2026-09-04): "no new tier can be the same in name and essence as a secondary PM of the same
+//   industry". Four entries died of it the same day, each pegged to the very technology vanilla gates one of the
+//   industry's OWN secondary methods on: food's dough_rollers (= Automated Bakery, the food industry's automation
+//   method), synthetics' art_silk (= Rayon, its Synthetic Silk group), electrics' radio (= Radio Production, its Radios
+//   group), and the dormant motor watertube_boiler (= the motor industry's Water-tube Boiler automation method).
+//   make_tier4_config now THROWS on any such candidate, admitted or not.
+// ⭐ electrics' electrical_generation went with them (user, 2026-09-04: "that's a power plant, not an electrics
+//   factory"): it was the telephone recipe ×2 pegged to the POWER-PLANT technology, chosen only because the generator
+//   wanted a middle rung and took the nearest free vanilla technology. Vanilla's electrics industry has ONE main method
+//   and so has this ladder until a rung is explicitly ruled; synthetics is its one vanilla method (dye) plus the ruled
+//   MODERN polyamide top.
 export const INVENT = {
-  food:       [{ at: 3, tech: 'dough_rollers', year: 1920,        why: 'industrial continuous bakery - vanilla\u2019s own bakery technology' }],
   furniture:  [{ at: 3, tech: 'pneumatic_tools', year: 1871,      why: 'powered woodworking; vanilla ends at 1850 hand workshops' }],
-  motor:      [{ at: 1, tech: 'watertube_boiler', year: 1867,     why: 'THE GAP: vanilla jumps steam(start) -> electric(1895) with nothing between' }],
-  // synthetics: vanilla has ONE method (pm_dye_production) and its canonical gate is ANILINE itself -
-  // the technology the industry is. So aniline stays on e0 and only ONE rung is invented: rayon. Two
-  // rungs is what makes sense here ("as many as makes sense, up to 4").
-  synthetics: [{ at: 1, tech: 'art_silk', year: 1905, why: 'rayon; vanilla technology, no minting' }],
-  electrics:  [{ at: 1, tech: 'electrical_generation', year: 1895, why: 'generation before transmission products' },
-               { at: 2, tech: 'radio', year: 1920,                why: 'vanilla technology; the interwar electrics rung' }],
   paper:      [{ at: 3, tech: 'continuous_web_processing', new: true, year: 1930,
                  why: 'a Fourdrinier is a continuous WEB, not a conveyor - no vanilla technology fits' }],
   fertilizer: [{ at: 3, tech: 'catalytic_synthesis', new: true, year: 1937,
@@ -75,9 +78,9 @@ export const ERA_MOVES = {
   bolt_action_rifles:    4,   // tops arms
   electric_railway:      4,   // DRAGGED: depends on nothing raised, but motor t2 rides it and
                               // electrical_capacitors depends on it — keeps the chain non-inverted
-  // 2026-09-04: with the minted sound-film rung gone (vanilla 1:1), vanilla's `film` (era 3) is the academy's TOP rung
-  // and the same top-rung rule applies — raised to 4 like the four above. Nothing in vanilla depends on film.
-  film:                  4,
+  // ⚠ 2026-09-04: a `film: 4` entry was added here on the belief that vanilla's film is era 3. It is era 4 in the game
+  //   file (camera is the era-3 one), so the entry was a no-op and is gone; the academy's top rung sits on era 4 by
+  //   vanilla's own placement, not by a move.
 };
 
 // ---- DROPPED vanilla methods (user-ruled 2026-08-30: "drop to have at most four industry rungs") --

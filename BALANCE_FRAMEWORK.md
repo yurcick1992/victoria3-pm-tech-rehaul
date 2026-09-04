@@ -6707,13 +6707,15 @@ INVENT gap-fillers after it, in their order, only while a slot is free; a candid
 four is SKIPPED and reported, never a vanilla method dropped in its favour. Four rungs are placed BY ORDER (rung index =
 era, the anchors being the authority — crystal glass 1674 and film 1912 both sit on an anchor); fewer than four keep the
 adoption-year bands, with an overflow resolved by dropping the last-admitted INVENTION. `make_tier4_techs.mjs` no longer
-emits a minted technology whose rung was not admitted. `film` joins the ERA_MOVES raised to 4 (it is now the academy's
-top rung; the same top-rung rule as the four raised on 2026-08-30).
+emits a minted technology whose rung was not admitted. ⚠ A `film: 4` ERA_MOVES entry was added the same day on the belief
+that vanilla's film is era 3; it is era 4 in the game file (camera is the era-3 one), so the entry was a no-op and is gone
+(§10.71.1).
 
-**The ladder that results (17 industries, 63 buildings; `*` = invented rung, kept because a slot was free):**
+**The ladder that results (17 industries, 59 buildings since rule 1 of §10.71.1 — 63 before it; `*` = invented rung, kept
+because a slot was free):**
 | industry | e0 · 1836 | e1 · 1875 | e2 · 1905 | e3 · 1940 |
 |---|---|---|---|---|
-| food | bakeries | sweeteners | baking powder | dough rollers* |
+| food | bakeries | sweeteners | baking powder | — (dough rollers* removed by rule 1) |
 | textile | handsewn | dye workshops | sewing machines | electric sewing |
 | furniture | handcrafted | lathes | mechanized workshops | spray finishing* |
 | glass | forest glass | leaded | crystal | houseware plastics |
@@ -6727,8 +6729,8 @@ top rung; the same top-rung rule as the four raised on 2026-08-30).
 | arms | muskets | rifles | repeaters | bolt action |
 | artillery | cannons | smoothbores | breech loaders | recoil mechanisms |
 | munition | — | percussion caps | explosive shells | automatic lines* |
-| synthetics | — | synthetic dye | art silk* | polyamide* |
-| electrics | — | telephones | electrical generation* | radio* |
+| synthetics | — | synthetic dye | — (art silk* removed by rule 1) | polyamide* |
+| electrics | — | telephones | — (electrical generation* rejected) | — (radio* removed by rule 1) |
 | art academy | traditional | realist | photographic | film |
 Eight minted technologies are gone with their rungs (long-draft spinning, glass fibre, cemented carbide, continuous
 strip mill, stamped receivers, automatic ordnance, transfer machining, sound film); six remain (continuous web,
@@ -6739,6 +6741,95 @@ pneumatic tools, motor's watertube boiler); automotive's transfer machining over
 **The book.** `config/mod_config.canon4v.json` (+ tree twin) = that structure through `make_ab_config --A 2.0 --B 1.5
 --ai-steep glass,tooling:3` (the canon's A/B rule, divisor 0.000125), with canon4-je's research_events transplanted and
 the combustion-engine anchor re-pointed to the motor rungs that exist (electric + diesel). Dry run: lints, solvency, the
-L13 start-conversion check and preflight all pass; 45 research technologies (39 industry + 6 war) → 135 entries. The
-coverage audit reads 0 vanilla methods dropped or unreferenced. NOT yet the canon and NOT run: canon-4rung stays the
-measured book (F98–F103) until the user ratifies this one and a batch measures it.
+L13 start-conversion check and preflight all pass; 45 research technologies (39 industry + 6 war) → 135 entries (41 →
+123 after rule 1, §10.71.1). The coverage audit reads 0 vanilla methods dropped or unreferenced. NOT yet the canon and NOT
+run: canon-4rung stays the measured book (F98–F103) until the user ratifies this one and a batch measures it.
+
+### 10.71.1 — RULE 1, the power-plant peg, and what the four-rung ladder REALLY gates on (user-ruled + audited 2026-09-04)
+
+**Rule 1 (user, verbatim): "no new tier can be the same in name and essence as a secondary PM of the same industry."**
+Enforced in `make_tier4_config.mjs` for its mechanical half: any MODERN or INVENT candidate pegged to a vanilla technology
+that also gates a method in one of the industry's own secondary groups THROWS (proven: re-adding electrics' radio fails the
+build naming `pm_radios in pmg_radios_category`). The name-and-essence half for a MINTED technology stays a reading made
+when a candidate is authored. **Four candidates died of it**, each the same technology vanilla already spends on that
+industry's secondary method: food e3 `dough_rollers` (= the food industry's *Automated Bakery* automation method),
+synthetics e2 `art_silk` (= *Rayon*, in its *Synthetic Silk* group), electrics e3 `radio` (= *Radio Production*, in its
+*Radios* group), and the dormant motor gap-filler `watertube_boiler` (= the motor industry's *Water-tube Boiler* automation
+method). Two remain as readings for the user: munition e3 *Automatic Cartridge Lines* (minted `automatic_shell_filling`)
+beside the plant's vanilla *Assembly Lines* automation method (`conveyors`), and synthetics e3 *Polyamide Synthesis* beside
+the *Synthetic Silk* group, whose off-method is "Prioritize Dye Production" — the group's essence is artificial fibres.
+
+**"Electrical generation" (user: "that's a power plant, not an electrics factory").** It was the telephone recipe ×2,
+pegged to `electrical_generation` — the technology that unlocks `building_power_plant`, electric fencing, electric
+streetlights, electric saw mills and the tobacco plantation's electric rollers — because the generator wanted a middle rung
+for a one-method industry and took the nearest free vanilla technology by date (`lib_tier4_spec` INVENT, "generation before
+transmission products"). Rejected and gone. **Electrics is one rung (telephones), synthetics two (dye e1, polyamide e3), food
+three** — vanilla's own method count, which is what "4 vanilla → 4 new canon" means for a one-method industry. canon4v is
+regenerated at **59 buildings, 41 research technologies (35 industry + 6 war) → 123 journal entries**; dry run clean.
+
+**Are the names pinned to the right vanilla technologies?** The GATES are: all 53 vanilla rungs carry the technology
+vanilla gates their own method on (the ungated era-0 methods take the building's gate). The NAMES are not, in ten cases —
+each a six-rung name that described a technology which existed only in that tree, kept when the rung was re-pegged to
+vanilla's gate: glass e2 *Regenerative Tank Furnace* (dated 1867) on `crystal_glass` (Lead Crystal, 1674, era 1);
+tooling e3 *High-Speed Steel Tooling* on `vulcanization` (vanilla: *Machined Steel Tools*, rubber grips); paper e1
+*Fourdrinier Machine* on `mechanical_tools` (vanilla: *Sulfite Pulping*) and paper e2 *Sulfite Pulping* on
+`chemical_bleaching` (vanilla: *Paper Bleaching*) — the paper names are shifted one rung against their methods;
+explosives e1 *Dynamite* on `nitroglycerin` (vanilla: *Ammonia-soda Process*; dynamite is the NEXT rung's gate), e2
+*Ostwald Ammonia Oxidation* on `dynamite` (vanilla: *Vacuum Evaporation*), e3 *Continuous Nitration* on
+`electrical_capacitors` (vanilla: *Brine Electrolysis*); textile e1 *Calico Printing* on `lathe` (vanilla: *Dye
+Workshops*); food e1 *Beet Sugar Refining* on `distillation` (vanilla: *Sweeteners*); glass e0 *Coal-Fired Cone
+Glasshouse* (vanilla: *Forest Glass*). Ten more differ only in wording (Bakery/Bakeries, Repeaters/Repeating Rifles…). The
+user declined a rename on 2026-09-04 when these were presented as rewordings; they are re-presented here as names that
+describe a different technology than the one gating the rung — a decision still open.
+⚠ The same applies to the TECHNOLOGY names the tree emits: 14 vanilla technologies are renamed in game (`renamed` in the
+tree twin) and ten of the recorded reasons were written for six-rung rungs that no longer exist — `crystal_glass` → "Lead
+Crystal" ("the crystal tier is a rung above it, on the regenerative furnace": it now gates the crystal rung itself),
+`dough_rollers` → "Mechanised Bakeries" ("in our ladder it is a tier building": it is not), `aniline` → "Coal-Tar
+Chemistry" (the ammoniacal-liquor rung is gone), `percussion_cap` → "Percussion Ordnance" (smoothbores sit on
+`shell_gun`), `steel_railway_cars` → "Bulk Steel" (steel tooling sits on `mechanical_tools`), `watertube_boiler` →
+"High-Pressure Steam", `bolt_action_rifles` → "Magazine Rifles", `art_silk` → "Cellulose Esters", `conveyors` →
+"Continuous-Flow Production", `screw_frigate` → "The Screw Steamer" (ports and yards are vanilla here). Open decision:
+revert them on canon4v, or re-justify each.
+⚠ The tree twin also carries 12 DANGLING prerequisites inherited from the six-rung tree, which had inserted its own minted
+era-1 technologies as prerequisites of vanilla ones (`baking_powder` → `beet_sugar_refining`, `chemical_bleaching` →
+`fourdrinier_machine`, `dynamite` → `leblanc_process`, `mechanized_workshops` → `calico_printing`, `plastics` →
+`regenerative_furnace`, `art_silk` → `rotary_veneer`/`synthetic_indigo`, `conveyors` → `fat_hydrogenation`/
+`ostwald_process`, `radio` → `wireless_telegraphy`, `bolt_action_rifles` → `explosive_shells`, `oil_turbine` →
+`pulverized_coal_firing`). VIEWER-ONLY: `emit_techs.mjs` writes prerequisites for NEW technologies and the one aniline
+swap, so vanilla's own prerequisites stand in game. To be cleaned when the twin is regenerated from vanilla.
+
+**How the rungs REALLY map to mechanical eras.** `era_game_era` [1, 3, 4, 5] (rung 0 → era 1 … rung 3 → era 5, the
+1836/1875/1905/1940 anchors) is read by `era_pm.mjs` alone. The TREE's eras are the six-rung canon's ladder-era
+alignment carried over unchanged (`make_tier4_techs` takes the canonical tree's vanilla technologies as they are) plus the
+five ERA_MOVES raises — nothing ever aligned the technologies to the four anchors. Measured on the 59 rungs: **21 sit in
+the era their anchor implies, 34 below, 4 above**; **six rungs beyond rung 0 are START technologies** (era 1, granted at
+1836 to tier-1/2 countries): food e1 `distillation`, textile/furniture/glass e1 `lathe`, tooling e1 `steelworking`,
+and glass e2 `crystal_glass` — a "1905" rung buildable on day one. Lowered below vanilla's own era by the six-rung
+alignment and still there: `dynamite`, `repeaters`, `breech_loading_artillery` (3 → 2), `combustion_engine` (4 → 3),
+`telephone` (4 → 3), `aniline` (3 → 2), `atmospheric_engine` and `crystal_glass` (→ 1). Above the anchor: motor e1
+`electric_railway` (raised to 4 against an e3 anchor), motor e2 `compression_ignition` (vanilla era 5 on a 1905 rung),
+fertilizer/explosives e0 `intensive_agriculture` (era 2, as in vanilla). Per industry (cell = gate · shipped era / anchor
+era, ⚑ = start-granted):
+| industry | e0 · 1836 | e1 · 1875 | e2 · 1905 | e3 · 1940 |
+|---|---|---|---|---|
+| food | manufacturies 1/1 | distillation 1/3 ⚑ | baking_powder 2/4 | — |
+| textile | manufacturies 1/1 | lathe 1/3 ⚑ | mechanized_workshops 2/4 | electrical_capacitors 4/5 |
+| furniture | manufacturies 1/1 | lathe 1/3 ⚑ | mechanized_workshops 2/4 | spray_finishing 5/5 |
+| glass | manufacturies 1/1 | lathe 1/3 ⚑ | crystal_glass 1/4 ⚑ | plastics 4/5 |
+| tooling | manufacturies 1/1 | steelworking 1/3 ⚑ | mechanical_tools 2/4 | vulcanization 4/5 |
+| paper | manufacturies 1/1 | mechanical_tools 2/3 | chemical_bleaching 2/4 | continuous_web_processing 5/5 |
+| fertilizer | intensive_agriculture 2/1 | improved_fertilizer 3/3 | nitrogen_fixation 4/4 | catalytic_synthesis 5/5 |
+| explosives | intensive_agriculture 2/1 | nitroglycerin 2/3 | dynamite 2/4 | electrical_capacitors 4/5 |
+| steel | steelworking 1/1 | bessemer_process 2/3 | open_hearth_process 3/4 | electric_arc_process 4/5 |
+| motor | atmospheric_engine 1/1 | electric_railway 4/3 | compression_ignition 5/4 | high_speed_diesel 5/5 |
+| automotive | — | — | combustion_engine 3/4 | compression_ignition 5/5 |
+| arms | gunsmithing 1/1 | rifling 2/3 | repeaters 2/4 | bolt_action_rifles 4/5 |
+| artillery | artillery 1/1 | shell_gun 2/3 | breech_loading_artillery 2/4 | automatic_machine_guns 4/5 |
+| munition | — | percussion_cap 2/3 | dynamite 2/4 | automatic_shell_filling 5/5 |
+| synthetics | — | aniline 2/3 | — | polyamide_synthesis 5/5 |
+| electrics | — | telephone 3/3 | — | — |
+| art_academy | romanticism 1/1 | realism 2/3 | camera 3/4 | film 4/5 |
+The anchor principle says the technologies are calibrated to the anchors, never the reverse; the standing alignment rule
+only ever LOWERS and never lands in era 1. Re-aligning the tree to the four anchors (raising the middle rungs' gates) is
+the open decision this table puts in front of the user; until it is taken, "e1 = 1875" and "e2 = 1905" are labels the
+game does not enforce.
