@@ -721,6 +721,10 @@ config/mod_config.canon4-art.json ⚗ THE ART-ACADEMY STRESS TEST (§10.70, 2026
                         on explicit per-rung multipliers (fine art 5/10/35/80, input value ×1/1.5/3/4.5, cost 400/800/2,400/3,600,
                         ai_value the era rule) — e3 profitable but not wildly at the band edges; divisor pinned at 0.000125;
                         tree twin = canon4-je's. Schedule canon4_art_n3.json, not launched. Un-ignored with its twin, like canon4-je
+config/mod_config.canon4v-art3.json ⚗ canon4v WITH THE FILM ACADEMY AT ×3 OUTPUT (§10.73, user-ruled 2026-09-04): the A/B book with
+                        `--tiers-for art_academy:out=1,2,4,24;in=1,1.5,2.25,3.375;cost=1,2,4,8` — Film Art 120 fine art a level
+                        (canon4v 40), inputs/cost/ai_value the ladder's, everything else byte-identical to canon4v. The first batch
+                        of the vanilla-built structure runs on it: schedule canon4v_art3_n5.json, n=5. Un-ignored with its twin
 config/mod_config.tier4.json ⚗ GENERATED (gitignored) by tools/make_tier4_config.mjs FROM THE GAME FILES + tools/lib_tier4_spec.mjs
                         — the four-rung STRUCTURE (rungs = vanilla main methods with vanilla's name, gate, recipe,
                         staffing, icon; the spec's ADDITIONS on top), with tech_tree_options.tier4.json beside it from

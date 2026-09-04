@@ -1,0 +1,79 @@
+{
+  "schedule_version": 1,
+  "label": "canon4v-art3-n5",
+  "_why": "THE FIRST BATCH OF THE VANILLA-BUILT FOUR-RUNG CANDIDATE (canon4v, BALANCE_FRAMEWORK §10.72 — built from the game files and tools/lib_tier4_spec.mjs alone: every rung a vanilla main method with vanilla's name, gate, recipe, staffing and icon; the tree at vanilla's eras; four ruled additions; no six-rung block carried) with ONE ruled change on top (user, 2026-09-04): 'normal ladder, but tier3 (highest) is otherwise normal, but x3 output compared to normal' for the arts academy — Film Art makes 120 fine art a level instead of the ladder's 40; inputs, building_cost (3,200), ai_value (8,000) and every other industry byte-identical to canon4v. config/mod_config.canon4v-art3.json (+ twin). n=5 (user: 'let's go with n=5'), 1836 → 1936.1.1.",
+  "_arms": {
+    "canon4v-art3": "{kind: config, config: config/mod_config.canon4v-art3.json} — canon4v (57 buildings, 183 technologies, 4 minted, research events §10.69 with the motor anchor on coal + iron mines) through make_ab_config --A 2.0 --B 1.5 --ai-steep glass,tooling:3 --divisor 0.000125 --tiers-for art_academy:out=1,2,4,24;in=1,1.5,2.25,3.375;cost=1,2,4,8"
+  },
+  "_delta": "vs canon4v: the film rung's output only (120 vs 40). vs the measured canon-4rung (F98–F103): the whole structure — vanilla names and eras (dynamite, repeaters, breech-loading artillery back at era 3; combustion engine and telephone at 4; crystal glass at 2; only vulcanization moved, 3 → 4), 57 buildings (canon-4rung 63: no minted textile/glass/tooling/steel/arms/artillery/automotive/academy top rungs, no dough-rollers, art-silk, electrical-generation or radio rungs), the six hoard ai_defines NOT carried, the streetlight override and trade-centre ai_value NOT carried, the 1836 start vanilla's (no chain seed), the 14 technology renames gone.",
+  "_predictions": {
+    "P1_canon4v_gdp": "This batch is canon4v's first measurement as much as the academy's. World GDP at 1935 lands 0.75–1.00× the vanilla n=16 median and the shortlist 0.9–1.3× — inside canon-4rung's spread (0.65–0.96× / 0.81–1.30×). The hoard defines' absence moves construction, not GDP, by more than the seed spread: private queue depth at 1900 differs from canon-4rung's by less than the seed-to-seed range.",
+    "P2_later_gates": "With dynamite, repeaters and breech-loading artillery back at vanilla's era 3 and combustion engine at 4, the tiered era mix at 1880 sits BEHIND canon-4rung's: the e2 share of tiered workers at 1880 lower than canon-4rung's median, the 1935 mix inside its spread.",
+    "P3_art_price": "F103 stands: profit-driven entry pins fine art near 130–175% of base regardless of the ladder. A ×3 film rung does NOT cheapen fine art in any market for more than a decade; British fine art at 1935 ≥ 100% of base in ≥ 4 of 5 seeds. The AI builds FEWER academy levels (a level makes 3× the art), so academy employment at 1935 is below canon4-je's / canon4-art's.",
+    "P4_art_mix": "Where film is held, the e3 rung dominates: in the leaders with `film` by 1925, e3's share of academy levels at 1935 > 50% in ≥ 3 of 5 seeds; rungs 0–1 empty out (their break-even is 4–8× e3's per unit).",
+    "P5_no_spillover": "No leisure-budget or SoL effect (F103): the shortlist's average SoL at 1935 and the other leisure goods' prices inside canon4v's own seed spread.",
+    "P6_je": "Britain's research-entry completions 25–45 unique (country, technology, stage) triplets per run (canon4-je 29–43), techs held at 1935 within ±10 of canon4-je's; the coal+iron motor anchor fires only for tier 3–5 countries (tiers 1–2 hold atmospheric_engine from 1836).",
+    "P7_stall": "≤ 1 of 5 seeds stalls (the ab2/ab3 family stalled 1 in 5); a stall is named and excluded from the summary, and n is stated."
+  },
+  "_comparison": "canon4-je 20260903_173810 (n=5, F102, the measured four-rung book with JEs) and canon-4rung 20260903_094941 for the old structure; canon4-art 20260904_100656 (n=2, F103) for the academy; vanilla n=16 20260821_131149 as the denominator.",
+  "_watch": [
+    "5-minute smoke check: mod marker, version, this run's error window by POSITION (parsed time, not a time-shaped grep), clock, queue_mix at the first summary",
+    "first run (before the batch completes): first_run_decomp (GDP = pop × productive/capita × £/productive), fine art price path in the British and French markets, academy levels by rung, je_tally",
+    "post-run: preflight -Session (L12/L17/L26/L28), VERDICT.md, SESSION_VERDICTS row, FINDINGS"
+  ],
+  "_cost": "5 × 1836→1936 ≈ 5 × 2h35 ≈ 13 h on the mod's measured pace (F79 curves).",
+  "_caveats": [
+    "Two changes against the measured book at once — the structure (canon4v) and the academy's ×3 film rung. The academy is 0.3–0.4% of construction and F103 showed a ×16 ladder moved nothing outside the academy, so the batch reads as canon4v's measurement with the academy reading on top; if anything outside the academy differs from canon-4rung, the structure is the first suspect, not the film rung.",
+    "canon-4rung was measured WITH the six hoard ai_defines; canon4v carries only the cost-divisor define. A construction-pace difference is therefore expected and is not a finding about the ladder.",
+    "Vanilla names: building loc reads 'Era N. Arts Academy (Film Art). BE target X%' — the first batch on the derived naming scheme; anything ugly in the ledger's labels is cosmetic."
+  ],
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+  },
+  "setups": {
+    "canon4v-art3": {
+      "kind": "config",
+      "config": "config/mod_config.canon4v-art3.json"
+    }
+  },
+  "runs": [
+    { "setup": "canon4v-art3", "until": "1936.1.1" },
+    { "setup": "canon4v-art3", "until": "1936.1.1" },
+    { "setup": "canon4v-art3", "until": "1936.1.1" },
+    { "setup": "canon4v-art3", "until": "1936.1.1" },
+    { "setup": "canon4v-art3", "until": "1936.1.1" }
+  ]
+}

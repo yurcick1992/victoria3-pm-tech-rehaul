@@ -6922,3 +6922,21 @@ workers); now 3"): no bg_ key is player-facing.
 
 **Open, awaiting the user:** (2) whether any of the not-carried six-rung blocks is wanted on this line (the hoard
 defines were in the MEASURED canon-4rung, so canon4v's first batch is not a pure re-measure); (3) ratification and a run.
+
+## 10.73 — canon4v-art3: THE FILM ACADEMY AT ×3, AND THE FIRST BATCH OF THE VANILLA-BUILT CANDIDATE (user-ruled 2026-09-04)
+
+**The ruling, in the user's words:** "normal ladder, but tier3 (highest) is otherwise normal, but x3 output compared to
+normal. Set this up, and let's go with n=5." The academy's rungs on canon4v are Arts Academy (Traditional Art / Realist Art /
+Photographic Art / Film Art) — vanilla's four methods, the top one cinema, as the user expected.
+
+**The setup.** `config/mod_config.canon4v-art3.json` (+ twin) = canon4v through the same A/B book (2.0 / 1.5, glass and
+tooling at 3^era, divisor pinned 0.000125) with `--tiers-for art_academy:out=1,2,4,24;in=1,1.5,2.25,3.375;cost=1,2,4,8`:
+Film Art makes **120 fine art a level** (the ladder's 40 = 5 × 2³, ×3), inputs (tools 10.1, paper 15.2, electricity 5.1),
+building_cost 3,200 and ai_value 8,000 exactly the ladder's; rungs 0–2 and every other industry byte-identical to canon4v
+(verified by structural diff). target_be restates to the drift guard. The film rung's per-unit break-even is a third of the
+ladder's — the same shape as the §10.70 stress test's top rung, but on the ruled ladder rather than a hypersonic one.
+
+**What the batch measures.** Two things at once, stated as such in the schedule: canon4v's FIRST measurement (the vanilla-built
+structure — vanilla eras, 57 buildings, no six-rung block) and the academy reading on top. F103 predicts the academy half:
+profit-driven entry pins fine art near 130–175% of base whatever a level makes, so the ×3 rung buys fewer academies, not cheaper
+art. Schedule `tools/testbed/schedules/canon4v_art3_n5.json` (predictions P1–P7), n=5, 1836 → 1936.1.1, ~13 h.

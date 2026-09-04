@@ -114,3 +114,6 @@ config/*.precap
 config/*.prefix_bak
 config/*.premargin
 tools/testbed/ledger/*.canon6
+# canon4v-art3: canon4v with the film academy at x3 output (user-ruled 2026-09-04)
+!config/mod_config.canon4v-art3.json
+!config/tech_tree_options.canon4v-art3.json
