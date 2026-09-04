@@ -175,6 +175,11 @@ const NEWT = OPT.techs.filter(t => t.origin === 'new');
       for (const p of t.prereqs) L.push(`\t\t${p}`);
       L.push('\t}');
     }
+    // ⚠ `mod` is the technology's MODIFIER MAP (key -> numeric value) or null. A tree tool once put a STRING here and this
+    //   loop wrote `0 = p  1 = m …` — fourteen "Unknown modifier type" errors per technology at load, with the build clean
+    //   (2026-09-04; caught by the five-minute smoke check, session 20260904_211458 aborted). Anything else fails the build.
+    if (t.mod != null && (typeof t.mod !== 'object' || Array.isArray(t.mod))) throw new Error(`${t.id}: \`mod\` must be a modifier map (key -> value) or null, got ${typeof t.mod}: ${JSON.stringify(t.mod)}`);
+    for (const [k, v] of Object.entries(t.mod || {})) if (!/^[a-z_0-9]+$/.test(k) || !/^-?[0-9.]+$/.test(String(v))) throw new Error(`${t.id}: modifier ${k} = ${v} is not a modifier key with a numeric value`);
     if (t.mod && Object.keys(t.mod).length) {
       L.push('\tmodifier = {');
       for (const [k, v] of Object.entries(t.mod)) L.push(`\t\t${k} = ${v}`);

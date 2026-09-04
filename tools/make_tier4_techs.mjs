@@ -56,7 +56,10 @@ for (const a of ADDITIONS) {
   if (VT[a.tech]) throw new Error(`addition ${a.tech} names a VANILLA technology — an addition mints its own (rule 3 keeps vanilla's for vanilla's methods)`);
   const m = a.minted; if (!m) throw new Error(`addition ${a.tech} carries no minted technology`);
   techs.push({ id: a.tech, name: m.name, vanillaName: null, renamed: null, desc: m.desc || null, category: m.category, era: gameEra(a.year), vanillaEra: null,
-    reEra: false, year: a.year, onset: a.year, idea: false, mod: 'pm_tech_rehaul', origin: 'new', filler: false, platform: null, industry: a.industry,
+    // `mod` is the technology's MODIFIER MAP (key -> value), which emit_techs writes as `modifier = { key = value }`; an
+    // addition unlocks a building and carries none. ⚠ A string here (the first cut wrote the mod id) was emitted as
+    // `0 = p  1 = m …` and cost a batch (2026-09-04, session 20260904_211458). emit_techs now refuses anything but a map.
+    reEra: false, year: a.year, onset: a.year, idea: false, mod: null, origin: 'new', filler: false, platform: null, industry: a.industry,
     prereqs: m.prereqs, unlocks: [], vanillaUnlocks: [], pmUnlocks: [], otherGates: [], modLines: [], blocks: [] });
 }
 const byId = Object.fromEntries(techs.map(t => [t.id, t]));

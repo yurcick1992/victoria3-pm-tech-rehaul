@@ -2263,3 +2263,25 @@ open for writing and `File.ReadLines` threw ("detector error") on an in-flight s
 with a BOM — but its reader strips the BOM and its writer did not put it back, so every converted history file shipped
 without one and the engine's lexer noted `should be in utf8-bom encoding` per file per run. Fixed (the writer prepends
 the BOM); dry run: 0 of 25 files without it.
+
+## 2026-09-04 — a minted technology's modifier block written from a STRING (batch aborted at 8 minutes)
+
+**Symptom.** Five minutes into `20260904_211458_canon4v-art3-n5`, this run's error window held 56 lines of
+`[pdx_persistent_reader.cpp:268]: Error: "Unknown modifier type: N …" in file "common/technology/technologies/zzz_pm_rehaul_techs.txt"`
+— N from 0 to 13, four times each. The build had passed every lint, the tech-content check and both preflight walks; the
+mod loaded; the clock ran.
+
+**Cause.** The four-rung tree tool rewritten that afternoon (`make_tier4_techs.mjs`, §10.72) filled a minted technology's
+`mod` field with the mod id string `'pm_tech_rehaul'`. `emit_techs.mjs` treats `mod` as the technology's MODIFIER MAP
+and iterates `Object.entries` over it — over a string that yields its characters — so the file carried
+`modifier = { 0 = p  1 = m  2 = _ … 13 = l }` under each of the four technologies. Nothing in the build reads the emitted
+technology file back for shape: L24 checks brace balance and depth-0 text, both fine here.
+
+**Fix.** `make_tier4_techs.mjs` writes `mod: null` for an addition (it unlocks a building and carries no modifier);
+`emit_techs.mjs` now THROWS on a `mod` that is not a plain object and on any entry whose key is not a modifier key with a
+numeric value — proven by sabotage (a string `mod` on `spray_finishing` fails the dry run naming it).
+
+**Rule.** A field a generator writes and another consumes with `Object.entries` needs its shape asserted at the consumer:
+a string satisfies `t.mod && Object.keys(t.mod).length` and iterates without complaint. The five-minute smoke check —
+this run's error window by parsed time, noise classes dropped — is what caught it; the batch cost eight minutes instead
+of thirteen hours.
