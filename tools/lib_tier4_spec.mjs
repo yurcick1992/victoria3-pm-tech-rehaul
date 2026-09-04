@@ -108,3 +108,90 @@ export const TECH_RENAMES_RULED = {};
 // A rung's building name is derived, never authored: "<vanilla building> (<vanilla method>)".
 export const bldName = (building, method) => `${building} (${method})`;
 export const slug = pm => pm.replace(/^pm_/, '').replace(/-/g, '_');
+
+// ⭐ THE RESEARCH-EVENT PARAMETERS OF THE FOUR-RUNG LINE (user-ruled 2026-09-03/04, BALANCE_FRAMEWORK §10.69): marks by the
+//   unlocked rung's era 25k/25k/75k/235k, 60-month bars, the military war channel on land unit types, the necessity anchors.
+//   Kept HERE so the pipeline opens no other config (they used to be transplanted from config/mod_config.canon4-je.json).
+//   ⚠ `necessity_anchors.motor` (bg_mining) is the agent's choice of 2026-09-04, awaiting a ruling: the motor industry's first
+//   rung sits on atmospheric_engine, vanilla era 2, a researchable technology with no rung below it.
+export const RESEARCH_EVENTS = {
+    "_comment": "ROADMAP step 2. Industry-driven research events. enabled:false builds the plain techs arm, enabled:true the techs+events arm - which is what makes the arm a CONFIG VARIANT rather than a code flag (user ruling 2026-08-11).",
+    "enabled": true,
+    "stages": [
+      "inception",
+      "development",
+      "implementation"
+    ],
+    "grant_fraction": 0.5,
+    "industry_bar_months": 60,
+    "thresholds_by_era": {
+      "0": 25000,
+      "1": 25000,
+      "2": 75000,
+      "3": 235000,
+      "4": 235000,
+      "5": 235000
+    },
+    "employment_per_level_default": 5000,
+    "war_gate": {
+      "general_battalions_flat": 50,
+      "front_casualties_min": 0,
+      "gate_variable_days": 40,
+      "_note": "user-ruled 2026-09-03: a general of ours with at least 50 mobilised battalions on a front against an enemy who holds the technology; no casualties clause; 6 monthly ticks per stage, two stages grant the technology at base cost"
+    },
+    "necessity_anchors": {
+      "fertilizer": [
+        "bg_staple_crops"
+      ],
+      "synthetics": [
+        "building_textile_mill",
+        "bg_light_industry"
+      ],
+      "automotive": [
+        "building_motor_industry_electric_engines",
+        "building_motor_industry_diesel_engines"
+      ],
+      "electrics": [
+        "building_trade_center"
+      ],
+      "munition": [
+        "bg_military_industry"
+      ],
+      "explosives": [
+        "bg_staple_crops"
+      ],
+      "motor": [
+        "bg_mining"
+      ]
+    },
+    "war_bar_months": 6,
+    "_why_war_gate": "Ruled 2026-08-18. All three clauses bind inside ONE front inside ONE war: our general with >= general_battalions_high mobilised battalions; an ENEMY general on that same front whose owner already holds the technology; and >= front_casualties_min of OUR casualties there. Computed in on_monthly_pulse_country (a progress bar has no valid ROOT) and handed to the bar as an expiring country variable, gate_variable_days. The old two-term structure is gone - a bare state of war must not tick. war_bar_months 6 = one journal entry per six qualifying months, granting grant_fraction x the era base cost.",
+    "naval_bar_months": 60,
+    "_naval_note": "Fleet technologies leave the battle gate entirely: they tick on POSSESSION of a qualifying ship, ours (+2, supersedes) or a declared rival's (+1), no war required. 60 monthly ticks = 5 years per stage at the normal rate. Ship types are derived live from common/ship_types.",
+    "_why_tier4": "Four-rung ladder, 2026-08-29: thresholds ×4 from 30000 (measured against a leading country's real predecessor workforce), and twice the firings for the same total grant (6 stages × 0.25 in place of 3 × 0.5). See BALANCE_FRAMEWORK §10.67.",
+    "_je_restore_note": "canon4-je (user-ruled 2026-09-03): marks by the UNLOCKED rung's ERA — t1 25k · t2 75k · t3 235k workers at full staffing in the predecessor rung (rule-D keys 4/5 → 235k); 60-month bars per stage; ONE multiplier ×0.5 for arms, artillery, explosives, munition, synthetics; every JE names its sources and live figures. A late-appearing industry's rungs take the marks of their ERA, never of their rung index.",
+    "threshold_mult": {
+      "arms": 0.5,
+      "artillery": 0.5,
+      "explosives": 0.5,
+      "munition": 0.5,
+      "synthetics": 0.5
+    },
+    "_anchor_note": "user-ruled 2026-09-03: combustion engine on the motor industry's rungs (the engine trade), telephone on trade centres, percussion cap and the explosives first rung on the army (bg_army, people-counted at the barracks method's 1,000 a level); later rungs keep their predecessor rung (rule A). Urban centres and financial districts — auto-scaling buildings — gate nothing.",
+    "war_channel": "unit_types",
+    "naval_channel": false,
+    "consumption_thresholds": {
+      "_note": "the good:<name> anchor stays implemented (market = { mg:<good> = { market_goods_buy_orders >= T } }) but is UNUSED since 2026-09-04: measured in canon4-je-n5, a market term ticks for every MEMBER of the market (the princely states got percussion cap off Britain's small-arms demand; Britain never). Percussion cap now rides bg_military_industry — arms + artillery employment across every rung, user-ruled 2026-09-04."
+    },
+    "_military_note": "user-ruled 2026-09-03: (1) unit-type technologies → the war channel (flat 50 battalions, no casualties, 6-tick stages); (2) military rungs with a predecessor → the industry rule; (3) military first rungs (percussion cap → ammunition, the explosives first rung → explosives) → the market's buy orders of the good at industry tick speed; (4) no naval entries.",
+    "_anchor_note_vanilla4": "2026-09-04: anchors pruned to the tiered industries; automotive re-pointed to the electric and diesel motor rungs; motor ADDED on bg_mining, because its first rung sits on atmospheric_engine (vanilla era 2, a researchable technology with no predecessor rung; the Newcomen engine drained mines) — that motor anchor is the agent’s choice and awaits a ruling."
+  };
+
+// the candidate's own record, stamped into the config
+export const CANON = {
+  name: 'canon4v (candidate)', declared: '2026-09-04',
+  ruled_by: 'user: 4 vanilla methods -> 4 rungs; additions only where ruled; rules 1-3 on names and additions; NO six-rung data consulted (the third ruling, 2026-09-04)',
+  from: 'tools/make_tier4_config.mjs (the GAME + tools/lib_tier4_spec.mjs, nothing else) -> make_tier4_techs.mjs (vanilla technologies at vanilla eras/names/prerequisites + ERA_MOVES + the additions’ minted technologies) -> make_ab_config --A 2.0 --B 1.5 --ai-steep glass,tooling:3',
+  not_carried: 'the six-rung book’s ai_defines (hoard levers), pm_goods/pm_employment (electric streetlights), building_ai_value (trade centre 5000), building_subsidies, start_tech_grants (NET), technology renames, era alignment, and the start_exceptions chain seed (start_exceptions_file -> config/start_exceptions.vanilla.json)',
+  status: 'NOT yet the canon - awaiting ratification; canon-4rung remains the measured book (F98-F103)',
+};

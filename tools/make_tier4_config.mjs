@@ -20,7 +20,7 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { blocks } from './lib_vanilla_ladder.mjs';
-import { N, ERA_YEARS, LOC, INDUSTRIES, PLACEMENT, ADDITIONS, bldName, slug } from './lib_tier4_spec.mjs';
+import { N, ERA_YEARS, LOC, INDUSTRIES, PLACEMENT, ADDITIONS, RESEARCH_EVENTS, CANON, bldName, slug } from './lib_tier4_spec.mjs';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
@@ -138,8 +138,15 @@ const cfg = {
   era_game_era: [1, 3, 4, 5],
   // the four-rung canon's 1836 start is vanilla's, converted; the six-rung chain seed does not apply
   start_exceptions_file: 'config/start_exceptions.vanilla.json',
+  // the ruled research-event parameters (§10.69) live in the spec — validated here against the industries that exist
+  research_events: structuredClone(RESEARCH_EVENTS),
+  _canon: CANON,
   industries: out.industries,
 };
+for (const [k, v] of Object.entries(cfg.research_events.necessity_anchors)) {
+  if (!cfg.industries.some(i => i.id === k)) throw new Error(`research_events.necessity_anchors names ${k}, which this ladder does not tier`);
+  for (const a of v) if (a.startsWith('building_') && !cfg.industries.some(i => i.tiers.some(t => t.key === a)) && !BLD[a]) throw new Error(`research_events anchor ${k} -> ${a}: neither one of our rungs nor a vanilla building`);
+}
 writeFileSync(join(REPO, `config/mod_config.${SUFFIX}.json`), JSON.stringify(cfg));
 
 console.log(`THE FOUR-RUNG LADDER FROM VANILLA — ${N} rungs, era labels ${ERA_YEARS.join(' / ')}`);
