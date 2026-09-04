@@ -20,7 +20,7 @@
     "first run (before the batch completes): fine art price path in the British and French markets, academy levels by rung, the leisure goods' prices vs canon4-je, prestige_out fine_art, first_run_decomp, company_check",
     "post-run: preflight -Session (L12/L17/L26/L28 — L28 must PASS on a session recorded after the 2026-09-04 observer fix)"
   ],
-  "_cost": "2 × 1836→1936, ~2.7 h each: ~5.5 h. LAUNCHED 2026-09-04 with the user's explicit go-ahead (\"Build and go with n=2\").",
+  "_cost": "2 × 1836→1936: 163 + 155 min (10:07 → 15:26). DONE 2026-09-04, 2/2 reached 1936.1.1 clean; verdict in the session's VERDICT.md and FINDINGS F103.",
   "_caveats": [
     "n=2 against a base of n=5: GDP under ~10% and JE counts under ~20% do not resolve; the fine-art price, the academy era mix and the leisure-goods prices are the readings this batch is for — each is a large, structural effect if it exists at all.",
     "The cost divisor is pinned to the canon's 0.000125 and the dearest academy is 3,600 points (below the book's 6,400 top rung), so the academy scores in the private pool like any mid-book rung.",

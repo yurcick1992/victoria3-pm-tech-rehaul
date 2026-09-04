@@ -293,7 +293,9 @@ if (process.argv.includes('--write')) {
         if (hit) swaps++;
         return 'building = "' + bkey + '"' + mid + 'activate_production_methods = {' + out + '}';
       });
-    if (t !== before) { writeFileSync(fp, t); files++; }
+    // ⚠ rd() strips the BOM; write it back, or every converted history file ships without one and the engine's lexer
+    //   notes `should be in utf8-bom encoding` for each (seen in every run's error.log until 2026-09-04)
+    if (t !== before) { writeFileSync(fp, BOM + t); files++; }
   }
   console.log('  history re-pointed: ' + swaps + ' block(s) in ' + files + ' file(s)');
   // ⚠⚠ VERIFY, DO NOT ASSUME. A vanilla secondary name left in the history names a method its building

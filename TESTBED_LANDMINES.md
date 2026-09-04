@@ -1506,10 +1506,14 @@ why it needed a detector rather than a note.
 
 ## L28 — THE LOG MIRROR RE-COPIED THE CURRENT LOG ON A FALSE ROTATION (found 2026-09-04, canon4-je-n5 run 4)
 
-**Status: AUTO** — `Test-LmL28` in `tools/preflight.ps1`, post-run (`-Session <dir>`): FAIL when any run's
-`logs_live/debug.log`, `error.log` or `dedicated_server.log` holds a seam line `--- harness: source log rotated at
-HH:MM:SS, recovered 0 chars from [] ---`. Proven: FAIL on 20260903_173810_canon4-je-n5 (runs 1 and 4) and on the
-vanilla n=16 baseline; the observer is fixed, so a session recorded after 2026-09-04 must PASS.
+**Status: AUTO** — `Test-LmL28` in `tools/preflight.ps1`, post-run (`-Session <dir>`): for every zero-recovery seam
+(`--- harness: source log rotated at HH:MM:SS, recovered 0 chars from [] ---`) in a run's `logs_live/*.log`, the THIRTY
+non-empty lines after the seam are checked for an identical consecutive run anywhere in the mirror since the previous
+seam — found ⇒ a re-copy ⇒ FAIL (one line, or five, matched error.log's periodic bursts by coincidence and missed the
+loop). ⚠ The seam alone is NOT the signature: a real rotation whose rotated segment was already fully consumed prints
+the same seam and then correctly reads the new file from 0 (canon4-art-n2, recorded after the fix, holds 1–4 per mirror,
+hours apart, nothing duplicated). Proven: PASS on 20260904_100656_canon4-art-n2, FAIL on 20260903_173810_canon4-je-n5
+and on the vanilla n=16 baseline. Opens the mirror with ReadWrite|Delete sharing so an in-flight session can be walked.
 
 **What happened.** `Read-Tail` in `run_observer.ps1` took "the file's length is below the position I have read to"
 as proof of a rotation. `Get-Item` reads the DIRECTORY entry, which NTFS updates lazily for a file another process

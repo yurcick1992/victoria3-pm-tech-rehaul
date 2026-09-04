@@ -6673,3 +6673,14 @@ launched, awaiting the go-ahead.
   prestige good) should scale with the units.
 - Predictions P1–P6 are in the schedule; the readings this batch is for are the fine-art price path, the academy era mix,
   the leisure goods' prices against canon4-je, and prestige_out.
+
+⭐⭐ **MEASURED — canon4-art-n2 (F103, n = 2, both runs clean): THE PRICE SHOCK DOES NOT HAPPEN.** Fine art stayed at
+110–175% of base in every market of both seeds while Britain's production went ×150–230; buy orders stayed 1.5–1.9× sell
+orders throughout. `popneed_leisure` gives fine art `weight = 4` with **`max_supply_share = 1.0`** — no cap — so the
+availability-weighted split hands every extra unit a larger share of the leisure budget, and the glut is absorbed until
+art has the whole need, which no AI economy reaches because the film rung stays profitable (£286k/wk on Britain's 42
+levels). The old academies survive (Britain 20/30/42 at 1935, rung 0 half-staffed), the sector is the canon's size, the
+other leisure goods sit inside the canon's price ranges, GDP and companies are at the reference, nothing broke. The
+sound-film rung was built once (Germany, one level) — the top rung is untested. ⇒ The lever that would produce the
+user's scenario is a `max_supply_share` cap on fine art in the leisure need (0.25, as automobiles), a pop-needs edit the
+overlay arm already knows how to write; untested. Ruling on the ladder itself pending.

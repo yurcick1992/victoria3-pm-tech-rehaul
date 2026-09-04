@@ -10029,3 +10029,65 @@ It does not say the journal entries are useless — Britain's coverage targets w
 and a country at the frontier researches 2–12 technologies more. It does not measure the six-rung canon's GDP lift from
 JEs, which was measured on a different book with a different tech tree. n = 5 against a reference of n = 2 + 2: GDP
 differences under ~10% and JE-count differences under ~20% are inside the seed spread.
+
+## F103 — The art-academy stress test (canon4-art-n2, 2026-09-04): a ×16 output ladder does not cheapen fine art, because the pop-need split absorbs supply — the leisure need has NO cap on fine art's share
+
+**Arm.** `{kind: config, config: config/mod_config.canon4-art.json}` — canon4-je with the art academy alone on explicit
+per-rung multipliers: fine art **5 / 10 / 35 / 80** a level (canon 5 / 10 / 20 / 40), input value ×1 / 1.5 / 3 / 4.5, cost
+400 / 800 / 2,400 / 3,600 points, ai_value the era rule, the private-pool divisor pinned at the canon's; every other
+industry byte-identical. Session `20260904_100656_canon4-art-n2`, **n = 2**, 1836 → 1936.1.1, both runs clean (no crash,
+no resume), no stall (world GDP 1.04× / 0.80× vanilla). Compared against canon4-je (n = 5, F102) and vanilla n = 16.
+The user's question: does making replicated, IP-style entertainment "realistic" break anything, or does the price shock
+of dirt-cheap art unpeg the other leisure goods from their consumption equilibria?
+
+### 1. The price shock did not happen, anywhere, in either seed
+| British market, fine art | 1880 | 1900 | 1920 | 1935 |
+|---|---|---|---|---|
+| run 1: buy · sell · price | 453 · 296 · 140% | 1,734 · 952 · 162% | 5,559 · 2,902 · 169% | 8,864 · 4,759 · 165% |
+| run 2: buy · sell · price | 361 · 260 · 129% | 1,240 · 889 · 130% | 1,892 · 963 · 172% | 4,144 · 2,726 · 139% |
+Britain's production went ×230 (run 1) and ×150 (run 2) over the century and demand rose in step at every dump; buy
+orders stayed 1.5–1.9× the sell orders throughout. The American market ended lowest at 112–114%, the French at 142–154%,
+the Russian at 128–147%, the Japanese at 110%. No market in either run touched 100%, let alone the 25% floor.
+**Why.** The pop-need split weights a good by its availability (F40: value-weighted, at BASE price), and in
+`popneed_leisure` fine art carries `weight = 4` with **`max_supply_share = 1.0`** — no cap — while small arms,
+automobiles and aeroplanes in the same need are capped at 0.2–0.25. So every extra unit of art raises art's share of
+the leisure budget; a glut is absorbed until art has the whole need, which no AI economy reaches because the film rung
+stays profitable all the way (Britain's 42 film academies earn £286k/wk at 1935 in run 1, Germany's 58 earn £537k/wk in
+run 2). F97's "pop wealth progression re-absorbs any glut" is this mechanism seen from the price side.
+
+### 2. So the old academies did not die, and the sector is the canon's size
+Britain 1935: run 1 20 / 30 / 42 / 0 levels by rung (12 / 25 / 31 staffed), run 2 5 / 23 / 27 / 0; Germany run 2
+9 / 15 / 58 / 1 — the only sound-film academy in the batch (the technology is 1940-anchored; no one else holds it by 1935).
+World academy levels 662 / 728 against canon4-je's 470–834; staffed 566 / 619 against 398–715; the sector's profit
+£1.47M / £1.49M a week against £0.88–1.61M. The film rung's levels (148 / 149) match the canon's (79–243) at 1.75× the
+output per level, so the world made ~1.5× the art with the same buildings, and the market bought it at the same price.
+Rung-0 academies at 1935 are half-staffed in Britain (12 of 20) — the wage layoff is biting at the bottom, at a 165% price.
+
+### 3. No unpegging of the other leisure goods
+British market prices at 1935, art runs vs the five canon4-je runs: services 94–95% vs 89–112%, opium 79–82% vs 89–144%,
+luxury clothes 67–71% vs 65–82%, luxury furniture 69–77% vs 62–94%, porcelain 64–92% vs 74–103%, radios 116–175% vs
+104–145% — every one inside the canon's range. Buy orders on every leisure good run ~1.5–2× the canon's medians because
+both art seeds hold large British economies (shortlist GDP 1.05× / 1.08× vanilla), not because art moved anything.
+
+### 4. Nothing broke
+World GDP 0.92× vanilla (1.04× / 0.80×), shortlist 1.07× (1.05× / 1.08×) — inside the canon's 0.65–0.96× / 0.81–1.30×;
+productive workers per capita 0.72×, GDP per productive worker 1.31×; companies at the reference (shortlist 23 vs 26,
+HQs 117 vs 120); construction shares within ±0.5pp of canon4-je's; wall clock 0.96× vanilla, pop-matched +4.0%. Britain's
+journal entries 46 / 32 unique completions, era-2 coverage 53% / 33%, era-3 47% / 35%, technologies at 1935 168 / 170.
+The percussion-cap anchor on arms + artillery employment fired for the Qing, Spain, Russia, the Ottomans, Italy, the
+East India Company and Austria — real foundry holders — and for no princely state.
+
+### What it says
+A ×16 ladder on a pop good changes the SIZE of nothing: the same buildings, the same money, more art per pound, the same
+price. The engine's absorption is the uncapped supply share of fine art in the leisure need, so "dirt-cheap art" is not
+reachable by supply within the range an AI will build. The lever that would make the user's scenario happen is a
+**`max_supply_share` cap on fine art in `popneed_leisure`** (0.25 would treat it as automobiles are treated): beyond a
+quarter of the leisure budget the extra art has no buyer, the price falls to the floor, and the ladder's death mechanism
+gets the price signal it has never had on a pop good. That is a pop-needs edit (the overlay arm already writes that file),
+untested.
+
+### What it does NOT say
+n = 2 says nothing about GDP or JE counts under ~20%. The sound-film rung (80 a level) was built once, one level, in one
+seed — the top rung is untested in practice because its technology is 1940-anchored. Prestige could not be read: fine art
+is not a prestige good in 1.13's summaries (prestige_out carries clothes, luxury furniture, fish, grain, steel, radios,
+coffee, tools).

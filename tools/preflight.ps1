@@ -893,23 +893,48 @@ function Test-LmL28 {
     if (-not $Session) { Add-Result 'L28' 'log mirror re-copied on a false rotation' 'N/A' 'no -Session given (this entry is post-run)'; return }
     if (-not (Test-Path $Session)) { Add-Result 'L28' 'log mirror re-copied on a false rotation' 'FAIL' "no such session: $Session"; return }
     $hits = @(); $checked = 0
-    foreach ($run in @(Get-ChildItem $Session -Directory)) {
-        foreach ($name in @('debug.log', 'error.log', 'dedicated_server.log')) {
-            $mirror = Join-Path $run.FullName ("logs_live\" + $name)
-            if (-not (Test-Path $mirror)) { continue }
-            $checked++
-            $n = 0
-            foreach ($l in [System.IO.File]::ReadLines($mirror)) {
-                if ($l.StartsWith('--- harness: source log rotated') -and $l.Contains('recovered 0 chars from []')) { $n++ }
+    # The scan runs in node (as L26's does): the mirrors are 100k–400k lines and the test needs a rolling index.
+    # THE TEST: a false rotation re-copies the current file from its START, so the lines after a zero-recovery
+    # seam reappear as a long run the mirror already holds since the previous seam. Thirty consecutive identical
+    # lines is the bar — a benign real rotation (rotated segment already consumed, new file read from 0) is
+    # followed by NEW lines, and error.log's periodic bursts repeat 4–8 identical lines, never thirty.
+    # ⚠ One line, or five, was NOT enough: canon4-art-n2 (recorded after the fix, nothing duplicated) read
+    #   1–2 false positives per error mirror on both, and the five-line form MISSED run 4 of canon4-je-n5 — the
+    #   original copy of the chunk had been mirrored in interleaved pieces, so only re-copy-vs-re-copy matched.
+    $js = @'
+const fs=require('fs');
+const L=fs.readFileSync(process.argv[2],'utf8').split(/\r?\n/);   // [0]=node [1]=this script [2]=mirror
+const RUN=30; let hits=0, regionStart=0, pendingAt=-1;
+const isSeam=l=>l.startsWith('--- harness: source log rotated');
+const check=(from)=>{ // the RUN non-empty lines after index from must equal RUN consecutive lines somewhere in [regionStart, from)
+  const nxt=[]; for(let j=from;j<L.length&&nxt.length<RUN;j++){ if(isSeam(L[j])) break; if(L[j].length) nxt.push(L[j]); }
+  if(nxt.length<RUN) return false;
+  for(let e=regionStart;e<from;e++){ if(L[e]!==nxt[0]) continue; let k=1, m=e+1; while(k<RUN&&m<from){ if(!L[m].length){m++;continue;} if(L[m]!==nxt[k]) break; k++; m++; } if(k===RUN) return true; }
+  return false; };
+for(let i=0;i<L.length;i++){ if(!isSeam(L[i])) continue; if(L[i].includes('recovered 0 chars from []')){ if(check(i+1)) hits++; } regionStart=i+1; }
+console.log(hits);
+'@
+    $tmp = Join-Path $env:TEMP ("lm28_" + [guid]::NewGuid().ToString('N') + '.js')
+    Set-Content -LiteralPath $tmp -Value $js -Encoding utf8
+    try {
+        foreach ($run in @(Get-ChildItem $Session -Directory)) {
+            foreach ($name in @('debug.log', 'error.log', 'dedicated_server.log')) {
+                $mirror = Join-Path $run.FullName ("logs_live\" + $name)
+                if (-not (Test-Path $mirror)) { continue }
+                $checked++
+                $n = 0
+                $out = & node $tmp $mirror 2>$null
+                if ($LASTEXITCODE -ne 0) { $hits += ("{0}/{1}: detector could not read the mirror" -f $run.Name, $name); continue }
+                $n = [int]("$out".Trim())
+                if ($n -gt 0) { $hits += ("{0}/{1}: {2} false rotation(s)" -f $run.Name, $name, $n) }
             }
-            if ($n -gt 0) { $hits += ("{0}/{1}: {2} false rotation(s)" -f $run.Name, $name, $n) }
         }
-    }
+    } finally { Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue }
     if ($checked -eq 0) { Add-Result 'L28' 'log mirror re-copied on a false rotation' 'N/A' 'no logs_live mirrors in this session'; return }
     if ($hits.Count) {
         Add-Result 'L28' 'log mirror re-copied on a false rotation' 'FAIL' ("mirror chunks DUPLICATED - de-duplicate before counting lines: " + ($hits -join ' | '))
     } else {
-        Add-Result 'L28' 'log mirror re-copied on a false rotation' 'PASS' ("no zero-recovery seam in $checked mirror(s)")
+        Add-Result 'L28' 'log mirror re-copied on a false rotation' 'PASS' ("no re-copied chunk after any seam in $checked mirror(s)")
     }
 }
 

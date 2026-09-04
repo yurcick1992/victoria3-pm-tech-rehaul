@@ -2248,3 +2248,18 @@ mirror-vs-engine.
 length, return without resetting. Parse-checked; `Test-LmL28` fails any session whose mirrors carry such a seam
 (proven on canon4-je-n5 and the vanilla n=16 baseline). Readers de-duplicate (`je_tally.mjs`).
 **Rule:** a shrink is not a rotation until the file's identity changed; and a count off a mirror is de-duplicated first.
+
+## 2026-09-04 — L28's first detector read a benign rotation as a re-copy; and the converted history files shipped without a BOM
+
+**L28 detector.** The first `Test-LmL28` failed any mirror holding a seam `recovered 0 chars from []`. On the first session
+recorded after the observer fix (canon4-art-n2) it still FAILED: a REAL rotation whose rotated segment the tail had already
+consumed to its end prints the same seam, then correctly reads the new file from 0 — nothing duplicated. The refined test
+looks at what follows the seam: the false rotation re-copies the current file from its start, so THIRTY consecutive lines
+after the seam reappear as a run the mirror already holds since the previous seam (one line, or five, matched error.log's
+periodic bursts by coincidence and missed the loop, whose first copy had been mirrored in interleaved pieces). Proven:
+PASS on canon4-art-n2, FAIL on canon4-je-n5 and on the vanilla n=16 baseline. It also opens the mirror with ReadWrite|Delete sharing — the observer holds a live mirror
+open for writing and `File.ReadLines` threw ("detector error") on an in-flight session.
+**History BOM.** `emit_secondaries.mjs` re-points the 1836 history files' methods after `convert_history.ps1` writes them
+with a BOM — but its reader strips the BOM and its writer did not put it back, so every converted history file shipped
+without one and the engine's lexer noted `should be in utf8-bom encoding` per file per run. Fixed (the writer prepends
+the BOM); dry run: 0 of 25 files without it.
