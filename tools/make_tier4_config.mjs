@@ -145,7 +145,8 @@ const cfg = {
 };
 for (const [k, v] of Object.entries(cfg.research_events.necessity_anchors)) {
   if (!cfg.industries.some(i => i.id === k)) throw new Error(`research_events.necessity_anchors names ${k}, which this ladder does not tier`);
-  for (const a of v) if (a.startsWith('building_') && !cfg.industries.some(i => i.tiers.some(t => t.key === a)) && !BLD[a]) throw new Error(`research_events anchor ${k} -> ${a}: neither one of our rungs nor a vanilla building`);
+  // an anchor entry is a building key, a bg_ group, a good:, or a LIST of building keys (= one summed source, 2026-09-04)
+  for (const a of v.flatMap(x => Array.isArray(x) ? x : [x])) if (typeof a === 'string' && a.startsWith('building_') && !cfg.industries.some(i => i.tiers.some(t => t.key === a)) && !BLD[a]) throw new Error(`research_events anchor ${k} -> ${a}: neither one of our rungs nor a vanilla building`);
 }
 writeFileSync(join(REPO, `config/mod_config.${SUFFIX}.json`), JSON.stringify(cfg));
 
