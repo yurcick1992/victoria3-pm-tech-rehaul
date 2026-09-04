@@ -6913,7 +6913,12 @@ Tier → tech era, as the game will enforce it (cell = gate technology, its era)
 | art_academy | romanticism 1 | realism 2 | camera 3 | film 4 |
 Five rungs beyond rung 0 are era-1 start technologies (distillation, lathe ×3, steelworking), as in vanilla.
 
-**Open, awaiting the user:** (1) the motor industry's research anchor — its first rung now sits on atmospheric_engine (vanilla
-era 2, researchable, no predecessor rung), so the emitter needs one; the agent set `bg_mining` (the Newcomen engine drained
-mines) and it is flagged in the config; (2) whether any of the not-carried six-rung blocks is wanted on this line (the hoard
+**Ruled later the same day — the motor anchor:** COAL + IRON MINES, one summed source (a list in `necessity_anchors` is one
+source over exactly those building types; lead, sulfur and gold mines left out). The entry ticks while the country employs
+25,000 workers in its coal and iron mines together — five fully staffed mine levels — and only tier 3–5 countries ever see
+it, vanilla handing tiers 1 and 2 the technology in 1836. With it, every research-entry term is rephrased for the player
+("Workers in Coal Mines and Iron Mines: at least 25,000; now N"; "Coal Mines: at least 5 fully staffed levels (25,000
+workers); now 3"): no bg_ key is player-facing.
+
+**Open, awaiting the user:** (2) whether any of the not-carried six-rung blocks is wanted on this line (the hoard
 defines were in the MEASURED canon-4rung, so canon4v's first batch is not a pure re-measure); (3) ratification and a run.

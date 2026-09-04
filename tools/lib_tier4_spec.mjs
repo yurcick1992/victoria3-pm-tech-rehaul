@@ -112,8 +112,10 @@ export const slug = pm => pm.replace(/^pm_/, '').replace(/-/g, '_');
 // ⭐ THE RESEARCH-EVENT PARAMETERS OF THE FOUR-RUNG LINE (user-ruled 2026-09-03/04, BALANCE_FRAMEWORK §10.69): marks by the
 //   unlocked rung's era 25k/25k/75k/235k, 60-month bars, the military war channel on land unit types, the necessity anchors.
 //   Kept HERE so the pipeline opens no other config (they used to be transplanted from config/mod_config.canon4-je.json).
-//   ⚠ `necessity_anchors.motor` (bg_mining) is the agent's choice of 2026-09-04, awaiting a ruling: the motor industry's first
-//   rung sits on atmospheric_engine, vanilla era 2, a researchable technology with no rung below it.
+//   `necessity_anchors.motor` = coal + iron mines as ONE summed source (a list = one source; user-ruled 2026-09-04): the motor
+//   industry's first rung sits on atmospheric_engine, vanilla era 2, a researchable technology with no rung below it, and the
+//   technology's own vanilla content is the mine pump. Every term is phrased for the player ("Workers in Coal Mines and Iron
+//   Mines: at least 25,000; now N") — no bg_ key is ever player-facing.
 export const RESEARCH_EVENTS = {
     "_comment": "ROADMAP step 2. Industry-driven research events. enabled:false builds the plain techs arm, enabled:true the techs+events arm - which is what makes the arm a CONFIG VARIANT rather than a code flag (user ruling 2026-08-11).",
     "enabled": true,
@@ -160,9 +162,7 @@ export const RESEARCH_EVENTS = {
       "explosives": [
         "bg_staple_crops"
       ],
-      "motor": [
-        "bg_mining"
-      ]
+      "motor": [["building_coal_mine", "building_iron_mine"]]
     },
     "war_bar_months": 6,
     "_why_war_gate": "Ruled 2026-08-18. All three clauses bind inside ONE front inside ONE war: our general with >= general_battalions_high mobilised battalions; an ENEMY general on that same front whose owner already holds the technology; and >= front_casualties_min of OUR casualties there. Computed in on_monthly_pulse_country (a progress bar has no valid ROOT) and handed to the bar as an expiring country variable, gate_variable_days. The old two-term structure is gone - a bare state of war must not tick. war_bar_months 6 = one journal entry per six qualifying months, granting grant_fraction x the era base cost.",
@@ -184,7 +184,7 @@ export const RESEARCH_EVENTS = {
       "_note": "the good:<name> anchor stays implemented (market = { mg:<good> = { market_goods_buy_orders >= T } }) but is UNUSED since 2026-09-04: measured in canon4-je-n5, a market term ticks for every MEMBER of the market (the princely states got percussion cap off Britain's small-arms demand; Britain never). Percussion cap now rides bg_military_industry — arms + artillery employment across every rung, user-ruled 2026-09-04."
     },
     "_military_note": "user-ruled 2026-09-03: (1) unit-type technologies → the war channel (flat 50 battalions, no casualties, 6-tick stages); (2) military rungs with a predecessor → the industry rule; (3) military first rungs (percussion cap → ammunition, the explosives first rung → explosives) → the market's buy orders of the good at industry tick speed; (4) no naval entries.",
-    "_anchor_note_vanilla4": "2026-09-04: anchors pruned to the tiered industries; automotive re-pointed to the electric and diesel motor rungs; motor ADDED on bg_mining, because its first rung sits on atmospheric_engine (vanilla era 2, a researchable technology with no predecessor rung; the Newcomen engine drained mines) — that motor anchor is the agent’s choice and awaits a ruling."
+    "_anchor_note_vanilla4": "2026-09-04: anchors pruned to the tiered industries; automotive re-pointed to the electric and diesel motor rungs; motor (first rung on atmospheric_engine, vanilla era 2, researchable, no rung below it) anchored on COAL + IRON MINES as one summed source — user-ruled 2026-09-04 (the technology's own vanilla content is the mine pump; lead, sulfur and gold mines left out)."
   };
 
 // the candidate's own record, stamped into the config

@@ -169,7 +169,10 @@ for (const ind of CFG.industries) {
         `would have no source from this industry and could never fill. Add an anchor (a building or ` +
         `bg_ group whose presence is the demand pull for it), or give the industry an earlier rung.`);
       for (const s of list) {
-        if (s.startsWith('good:')) { addSource(t.tech, t.era, 'necessity', { good: s.slice(5), ind: ind.id }); }
+        if (Array.isArray(s)) {   // ⭐ a LIST = ONE source summing exactly these building types (user-ruled 2026-09-04: motor on coal + iron mines)
+          for (const k of s) if (!VAN.buildings[k] && !CFG.industries.some(x => !x.disabled && (x.tiers || []).some(t => t.key === k))) throw new Error(`necessity_anchors[${ind.id}] names unknown building '${k}'`);
+          addSource(t.tech, t.era, 'necessity', { types: s, ind: ind.id }); }
+        else if (s.startsWith('good:')) { addSource(t.tech, t.era, 'necessity', { good: s.slice(5), ind: ind.id }); }
         else if (s.startsWith('bg_')) { if (!GROUPS.has(s)) throw new Error(`necessity_anchors[${ind.id}] names unknown building group '${s}'`); addSource(t.tech, t.era, 'necessity', { group: s, ind: ind.id }); }
         else addSource(t.tech, t.era, 'necessity', { building: s, ind: ind.id });
       }
@@ -365,33 +368,40 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       //   levels through the predecessor's BASE per-level employment (the config's, i.e. the main method's nominal
       //   workforce) — a nominal figure, which is why the text quotes levels and calls the people number nominal
       //   (user, 2026-09-03: "75,000 workers at full staffing" is true under one secondary method and false under another).
-      // people per level of this source: our tier's, a vanilla building's, or (group) per type below
-      const gTypes = s.group ? groupTypes(s.group, s.ind) : [];   // a group with no typed employment (bg_army, bg_conscription) stays level-counted; the unlocked industry's own rungs are left out
-      const empOf = s.group ? 0 : (s.emp != null && s.emp > 0 ? s.emp : buildingEmp(s.building));
-      const inPeople = (s.group && gTypes.length > 0) || empOf > 0;
+      // people per level of this source: our tier's, a vanilla building's, or (group / list) per type below
+      // ⭐ A LIST anchor (user-ruled 2026-09-04: motor's first rung on coal + iron mines) is a GROUP anchor over exactly the
+      //   named building types — one summed source, one mark in people.
+      const gTypes = s.group ? groupTypes(s.group, s.ind)   // a group with no typed employment (bg_army, bg_conscription) stays level-counted; the unlocked industry's own rungs are left out
+        : s.types ? s.types.map(k => { const emp = buildingEmp(k); if (!(emp > 0)) throw new Error(`anchor list of ${tech}: no per-level employment known for ${k}`); return { key: k, emp }; })
+        : [];
+      const empOf = (s.group || s.types) ? 0 : (s.emp != null && s.emp > 0 ? s.emp : buildingEmp(s.building));
+      const inPeople = gTypes.length > 0 || empOf > 0;
       const mult = '';
-      if (s.group && gTypes.length) {
-        // a GROUP source in people: Σ over its building types of (staffed levels of that type × that type's employment)
-        const types = gTypes;
-        for (const ty of types) { const lv = `pmr_lv_${ty.key.replace(/^building_/, '')}`; if (!lvValues.has(lv)) { lvValues.add(lv); sv.push(`${lv} = {\n${T}value = 0\n${T}every_scope_building = {\n${T}${T}limit = { is_building_type = ${ty.key} }\n${T}${T}add = { value = this.level  multiply = occupancy }\n${T}}\n}`); } }
-        sv.push(`${n} = {\n${T}value = 0\n` + types.map(ty => `${T}add = { value = pmr_lv_${ty.key.replace(/^building_/, '')}  multiply = ${ty.emp} }`).join('\n') + `\n}`);
+      if (gTypes.length) {
+        // a GROUP or LIST source in people: Σ over its building types of (staffed levels of that type × that type's employment)
+        for (const ty of gTypes) { const lv = `pmr_lv_${ty.key.replace(/^building_/, '')}`; if (!lvValues.has(lv)) { lvValues.add(lv); sv.push(`${lv} = {\n${T}value = 0\n${T}every_scope_building = {\n${T}${T}limit = { is_building_type = ${ty.key} }\n${T}${T}add = { value = this.level  multiply = occupancy }\n${T}}\n}`); } }
+        sv.push(`${n} = {\n${T}value = 0\n` + gTypes.map(ty => `${T}add = { value = pmr_lv_${ty.key.replace(/^building_/, '')}  multiply = ${ty.emp} }`).join('\n') + `\n}`);
       } else {
         sv.push(`${n} = {\n${T}value = 0\n${T}every_scope_building = {\n${T}${T}limit = { ${filter} }\n${T}${T}add = { value = this.level  multiply = occupancy }\n${T}}${mult}\n}`);
       }
-      const need = (s.group && gTypes.length) ? people : Math.max(1, Math.round(people / (empOf > 0 ? empOf : perLevel)));
-      // ⭐ THE JE SAYS WHAT TICKS (user-ruled 2026-09-03): one desc key per source naming the building (or group), its mark
-      //   and the country's live figure through the loc data function [ROOT.GetCountry.MakeScope.ScriptValue('<sv>')|0]
-      //   (vanilla's own idiom, e.g. acw_reincorporate_dixie_loyalist_min), instead of the shared 'Employed in the industry'.
-      const what = s.group ? `$${s.group}$` : `$${s.building}$`;
+      const need = gTypes.length ? people : Math.max(1, Math.round(people / (empOf > 0 ? empOf : perLevel)));
+      // ⭐ THE JE SAYS WHAT TICKS, READABLY (user-ruled 2026-09-03; rephrased 2026-09-04: "phrase readably, bg_mining shouldn't be
+      //   player-faced"): one desc key per source. A people-counted source reads "Workers in <buildings>: at least 25,000; now N"
+      //   (Soldiers for the military groups), a level-counted one "<building>: at least 5 fully staffed levels (25,000 workers);
+      //   now 3". Names are vanilla's own loc keys ($building_coal_mine$, $bg_staple_crops$), so every language shows its own
+      //   building names; the live figure is the loc data function [ROOT.GetCountry.MakeScope.ScriptValue('<sv>')|0].
+      const names = s.group ? `$${s.group}$` : s.types ? s.types.map(k => `$${k}$`).join(' and ') : `$${s.building}$`;
       const indObj = CFG.industries.find(x => x.id === s.ind);
-      const varies = s.group ? false : (s.emp != null && s.emp > 0 ? workforceVaries(indObj) : workforceVaries(null, s.building));
-      const unit = (s.group && gTypes.length) ? (MILITARY_GROUPS.has(s.group) ? `soldiers in its buildings` : `workers across its buildings`) : !inPeople ? 'fully staffed levels'
-        : varies ? `fully staffed levels (${people.toLocaleString('en-US')} workers at the base method's staffing, labour saving and other staffing changes calculated correctly)`
-        : `fully staffed levels (${people.toLocaleString('en-US')} workers)`;
+      const varies = (s.group || s.types) ? false : (s.emp != null && s.emp > 0 ? workforceVaries(indObj) : workforceVaries(null, s.building));
+      const who = (s.group && MILITARY_GROUPS.has(s.group)) ? 'Soldiers' : 'Workers';
+      const line = gTypes.length ? `${who} in ${names}: at least ${people.toLocaleString('en-US')}`
+        : `${names}: at least ${need.toLocaleString('en-US')} fully staffed levels` + (!inPeople ? '' : varies
+          ? ` (${people.toLocaleString('en-US')} workers at the base method's staffing, labour saving and other staffing changes calculated correctly)`
+          : ` (${people.toLocaleString('en-US')} workers)`);
       const live = `[ROOT.GetCountry.MakeScope.ScriptValue('${n}')|0]`;
       const dkey = `pmr_term_${tech}_${i}`;
-      loc.push([dkey, `${what}: at least ${need.toLocaleString('en-US')} ${unit} (now ${live})`]);
-      srcLines.push(`${what} — ${need.toLocaleString('en-US')} ${unit}, now ${live}`);
+      loc.push([dkey, `${line}; now ${live}`]);
+      srcLines.push(`${line}; now ${live}`);
       terms.push({ desc: dkey, trigger: `${n} >= ${need}`, value: 1 });
     });
     if (!terms.length) continue;
