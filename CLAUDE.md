@@ -105,26 +105,26 @@ one it is on:
   **vanilla's own lowest-tier recipe per industry on the A/B ladder A 2.0 / B 1.5** (§10.68 — output ×2.0 and
   input value ×1.5 per rung over the rung's own vanilla mix, building_cost = vanilla anchor ×2.0^k, i.e.
   capacity-priced; pool cost-divisor 0.000125), **ai_value 1000×2^era with glass and tooling at 1000×3^era**,
-  the company-target gate OFF. Regenerate it with
-  `node tools/make_ab_config.mjs --A 2.0 --B 1.5 --suffix canon-4rung --ai-steep glass,tooling:3`; the file's
-  `_canon` block records the declaration and the sessions it was measured in.
-  ⭐⭐ **`canon4v` — THE VANILLA-FIRST CANDIDATE (§10.71, user-ruled 2026-09-04, restated: "4 vanilla → 4 new canon by
-  default; inventions only where a slot is free or explicitly ruled").** `config/mod_config.canon4v.json` + twin: every
-  vanilla main method is a rung (the audit of that day found eleven industries on canon-4rung carrying a minted rung while
-  one of their own vanilla methods survived only as an alias — `DROP_FOR_MODERN` is retired), modern/gap-filler rungs only
-  while a slot is free, **59 buildings** (63 before RULE 1), 6 minted technologies (was 9), research events transplanted from
-  canon4-je (41 technologies → 123 entries). Builds clean, NOT ratified, NOT run — canon-4rung stays the measured book until it is.
-  ⭐⭐ **RULE 1 (user-ruled 2026-09-04, §10.71.1): "no new tier can be the same in name and essence as a secondary PM of the same
-  industry."** `make_tier4_config.mjs` THROWS on any invented candidate pegged to a technology that gates one of the industry's
-  own secondary methods (proven by sabotage). It removed food's dough-rollers rung (= vanilla's Automated Bakery automation),
-  synthetics' art-silk rung (= Rayon), electrics' radio rung (= Radio Production) and the dormant motor watertube gap-filler;
-  the electrics "electrical generation" rung — a telephone factory pegged to the POWER-PLANT technology — was rejected with
-  them. Electrics is ONE rung, synthetics two, food three: vanilla's own method count. ⚠ The same audit found the tree's
-  mechanical eras are the SIX-rung alignment carried over unchanged (`era_game_era` [1,3,4,5] is read by era_pm.mjs only):
-  21 of 59 rungs sit in the era their anchor implies, six rungs beyond rung 0 are era-1 START technologies (lathe ×3,
-  distillation, steelworking, crystal_glass), ten rung names describe a technology other than the one gating them, and 14
-  vanilla technologies ship renamed on six-rung reasoning — all open decisions, tabled in §10.71.1. The "film raised to
-  era 4" of the first canon4v report was a no-op (vanilla film IS era 4); the entry is gone.
+  the company-target gate OFF. ⚠ FROZEN since 2026-09-04: its STRUCTURE came from the retired clone-from-six-rung generator
+  (§10.72), so the pipeline can no longer reproduce it — the committed file IS the record; its `_canon` block records the
+  declaration and the sessions it was measured in.
+  ⭐⭐ **`canon4v` — THE FOUR-RUNG CANDIDATE, BUILT FROM VANILLA (§10.72, user-ruled 2026-09-04, the third time: "the four-rung
+  generator takes vanilla rungs (up to four) and enriches them. Very rarely alters them. No six-rung-canon data should be
+  consulted whatsoever").** `config/mod_config.canon4v.json` + twin, written by `make_tier4_config.mjs` → `make_tier4_techs.mjs`
+  → `make_ab_config.mjs` from the GAME FILES and `tools/lib_tier4_spec.mjs` alone: every rung IS a vanilla main method with
+  vanilla's name, gate, recipe, staffing and icon; the tree is vanilla's technologies at vanilla's eras, names and prerequisites;
+  the only departures are the spec's explicit entries — four ADDITIONS (furniture spray finishing, paper continuous web,
+  fertilizer catalytic synthesis, motor high-speed diesel; each a minted technology on a top rung vanilla lacks, none on a
+  secondary group's theme), ERA_MOVES (against vanilla's eras only vulcanization moves, 3 → 4), PLACEMENT for the five industries
+  with fewer than four methods. **57 buildings, 183 technologies (4 minted), 41 research technologies → 123 entries**; the 1836
+  start is vanilla's, converted (`start_exceptions_file` → an empty rule set); NOT carried from the six-rung book: the hoard
+  defines, the streetlight override, the trade-centre ai_value, the NET tech grant, the technology renames, the era alignment,
+  the chain seed. **RULES 1–3 (user-ruled 2026-09-04):** vanilla names and gates stay vanilla unless ruled; additions only where
+  a vanilla method is missing, each discussed; no addition on a secondary method's theme — the generator THROWS on an addition
+  pegged to a technology that gates one of the industry's own secondary methods (proven by sabotage). ⚠ One agent's choice
+  awaits a ruling: the motor industry's research anchor (`bg_mining`; its first rung sits on atmospheric_engine, vanilla era
+  2, a researchable technology with no predecessor rung). Builds clean, NOT ratified, NOT run — canon-4rung stays the measured
+  book until it is.
   ⭐ **`canon4-je`** (`config/mod_config.canon4-je.json` + twin, committed 2026-09-03) = canon-4rung + the ruled research-event
   parameters and military channels (§10.69). **Measured n=5 (F102, session 20260903_173810): Britain's JE completions double
   and it holds 2–12 more technologies at 1935, and NOTHING downstream moves** — GDP 0.79× / shortlist 1.09× (the canon's
@@ -721,13 +721,13 @@ config/mod_config.canon4-art.json ⚗ THE ART-ACADEMY STRESS TEST (§10.70, 2026
                         on explicit per-rung multipliers (fine art 5/10/35/80, input value ×1/1.5/3/4.5, cost 400/800/2,400/3,600,
                         ai_value the era rule) — e3 profitable but not wildly at the band edges; divisor pinned at 0.000125;
                         tree twin = canon4-je's. Schedule canon4_art_n3.json, not launched. Un-ignored with its twin, like canon4-je
-config/mod_config.tier4.json ⚗ GENERATED by tools/make_tier4_config.mjs, with era_prices.tier4.json /
-                        measured_price_paths.tier4.json / tech_tree_options.tier4.json /
-                        era_inverse.tier4.json beside it: the FOUR-RUNG LADDER proposal
-                        (BALANCE_FRAMEWORK §10.66) — ports and shipyards vanilla, every other industry
-                        at most 4 tiers on 4 eras. ⚠ A PROPOSAL under review, not a ruling: nothing
-                        canonical reads any of these files, and mod_config.json is still the six-rung
-                        solver2f book
+config/mod_config.tier4.json ⚗ GENERATED (gitignored) by tools/make_tier4_config.mjs FROM THE GAME FILES + tools/lib_tier4_spec.mjs
+                        — the four-rung STRUCTURE (rungs = vanilla main methods with vanilla's name, gate, recipe,
+                        staffing, icon; the spec's ADDITIONS on top), with tech_tree_options.tier4.json beside it from
+                        make_tier4_techs.mjs (vanilla's technologies at vanilla's eras). make_ab_config.mjs turns the pair
+                        into a book (canon4v). ⚠ era_prices.tier4.json / measured_price_paths.tier4.json /
+                        era_inverse.tier4.json are artifacts of the RETIRED derivation (§10.66, superseded 2026-09-04 by
+                        §10.72) and are no longer written
 config/tech_tree_options.json GENERATED by tools/tech_tree_spec.mjs and COMMITTED: the three candidate
                         INDUSTRY TECH TREES (ROADMAP step 1) — every technology with its era, date, prerequisites,
                         dependents and the buildings it unlocks, for all three trees (production/military/society).
@@ -1035,89 +1035,39 @@ tools/                  dev tooling — NOT shipped in the mod
                         (IQR 18–31%), extraction 101.8%, agriculture 126.1% — which independently
                         corroborates §10.22's raw bands. `--json` writes
                         config/vanilla_margins_1836.json, which build_ui2.mjs renders
-  make_tier4_config.mjs ⚗ THE FOUR-RUNG LADDER (user-ruled 2026-08-29 — BALANCE_FRAMEWORK §10.66,
-                        a PROPOSAL, nothing canonical changed). Derives config/mod_config.tier4.json +
-                        era_prices/measured_price_paths/tech_tree_options twins from the canonical
-                        config under two rules: (1) `port`/`shipyard`/`shipyard_steam`/`railway` get
-                        `disabled: true` — vanilla again (`TIER4_VANILLA` overrides; railway joined on
-                        the same day's ruling and took the un-killable `transportation` slope with it);
-                        (2) every other industry is cut to at most 4
-                        tiers on 4 eras (1836/1875/1905/1940, bands at the midpoints). Placement is a
-                        monotone DP over each industry's own `tech_year`s onto a CONTIGUOUS rung range,
-                        minimising distance to the anchors; output is respread ×1.966/rung.
-                        ⭐⭐ **ai_value IS KEYED ON THE ERA, NEVER ON THE RUNG INDEX**, and is
-                        **1000 / 2000 / 4000 / 8000** (`TIER4_AI_BASE` 1000 × `TIER4_AI_RATIO` 2
-                        per era, user-ruled 2026-08-29). e0 at 1000 matches the ENGINE DEFAULT every
-                        untiered vanilla building carries, so our first rung no longer loses to a
-                        generic building by default; end-to-end the ladder is ×8, flatter than the
-                        superseded 750×1.8^(5/3) = 750/1998/5321/14172 (×18.9).
-                        ⚠⚠ The rung-keyed form was a REAL BUG that shipped and played a full
-                        campaign (BUGS_AND_FIXES 2026-08-29): a building competes against every
-                        OTHER industry's buildings, so keying desire on an industry's own rung made
-                        era 2 carry 750/1998/5321 — a **7.1× spread** — and handed the late-starting
-                        industries (automotive, power 7.1×; synthetics, electrics 2.66×, i.e. the
-                        whole new economy) a malus nobody designed; they came back at 0.06–0.54× the
-                        canonical arm's workers against 0.38–1.27× for the e0 starters. Nothing
-                        failed — a per-rung and a per-era ladder are IDENTICAL on any industry
-                        starting at rung 0, which is most of them. `building_cost` is era-keyed too;
-                        only `output_qty` is rung-anchored, deliberately. The invariant to assert is
-                        **one ai_value per era**.
-                        ⭐⭐ RUNG 0 IS ALWAYS THE INDUSTRY'S OWN FIRST TIER — load-bearing, not
-                        aesthetic. That tier's KEY *is* the vanilla building, so dropping it makes the
-                        key stop being ours and `refBuildings()` hands it back as a RIVAL reference
-                        producer: the first cut dropped seven and 1836 came back with 27 vanilla
-                        textile mills and 18 furniture manufactories beside our own rung 0.
-                        ⭐ Every dropped tier's `vanilla_pm` is absorbed into the nearest surviving
-                        rung's `vanilla_pm_aliases`, so the 1836 history conversion keeps a target for
-                        every vanilla method (verified 0 orphans).
-                        ⚠⚠ Run the solve with `ERA_PRUNE=` — the default `steel@0,glass@0` is the
-                        ruled 1780 prune and era 0 is now 1836, where the game demonstrably has both
-                        ⭐⭐ **`--apply-solve` IS A REQUIRED PIPELINE STEP, not an option** (§10.66.9).
-                        `era_inverse.mjs --write` writes its ARTIFACT and nothing else — deliberately —
-                        so after a solve the config still carries the CANONICAL six-era recipes with
-                        only their output_qty re-laddered: a book that is neither arm. The balance
-                        sheet exposed it in a minute (steel at 1905 reading +54% against the solver's
-                        +26%). This mode applies the artifact's recipes and restates target_be from
-                        them as a drift guard; `--cost-book` additionally takes the artifact's
-                        payback-normalized building_cost, OPT-IN because §10.61 rules cost to be
-                        vanilla's own book flat. It EXITS NON-ZERO if any tier has inputs but no solved
-                        recipe. ✅ Re-solving after it is a strict no-op (0 of 66 recipes moved). Order:
-                        make_tier4_config → era_inverse --write → make_tier4_config --apply-solve →
-                        era_inverse --write (must be a no-op) → build_ui2 --report
-                        (F54) — and with `INV_MARGINS=0.26,0.26,0.26,0.26`, the ⭐ FLAT
-                        VANILLA-ANCHORED MARGIN (user-ruled 2026-08-29, §10.66.6: "the margins the
-                        same for a techN industry at its main era, at real prices", set to F92's
-                        measured vanilla-1836 manufacturing figure). It supersedes the rising
-                        0.30→0.70 ladder FOR THIS ARM and collapses the lean-floor clamps 15 → 7,
-                        because a lower margin means a LARGER input budget so no recipe has to be
-                        leaner than 4:1. ⚠ The RECIPE RATCHET becomes the main clamp instead (13
-                        tiers) and GDP falls 13–24% at the two middle eras — both stated costs of the
-                        ruling. Deterministic; writes only its own suffixed files
-  make_tier4_techs.mjs  ⚗⚗ THE FOUR-RUNG TECH TREE, PEGGED TO VANILLA (§10.67.4, user-ruled
-                        2026-08-29). Writes config/tech_tree_options.tier4.json and rewrites each
-                        tier's `tech` in the tier4 config. **42 added technologies down to NINE**,
-                        five of which serve more than one industry.
-                        ⭐⭐ THE RULE IS TWO TESTS, NOT ONE: a peg must be within 15 years AND in a
-                        tree that could plausibly gate that industry. ⚠ The 15-year rule ALONE
-                        decides nothing — the vanilla tree is dense enough that every tier has some
-                        technology within 15 years, and most candidates are society or military techs
-                        that would put a furniture plant behind `antibiotics`.
-                        ⭐ Five new technologies are SHARED because the industries share a cause:
-                        continuous_web_processing (textile+paper — drafting rollers and a Fourdrinier
-                        are one problem), transfer_machining (tooling+automotive), catalytic_synthesis
-                        (fertilizer+synthetics), automatic_weapons_manufacture (arms+artillery+
-                        munition). Vanilla technologies are shared the same way — open_hearth_process
-                        gates glass e1 AND steel e1, because the Siemens regenerative furnace is one
-                        invention; nitrogen_fixation gates fertilizer AND explosives.
-                        ⚠ THREE DOCUMENTED Δ>15 EXCEPTIONS, all the same kind — the vanilla technology
-                        is literally right and vanilla dates it at INVENTION not deployment: paper e1
-                        →chemical_bleaching (Δ75), art_academy e1→camera (Δ46), e2→film (Δ17). They
-                        live in an explicit `EXCEPTIONS` list and the tool's validator FAILS on any
-                        other Δ>15, on a new technology landing in era 1, on a prerequisite in a later
-                        era, and on a technology that unlocks nothing.
-                        ⚠ Run AFTER make_tier4_config --apply-solve. It re-dates two tiers where
-                        vanilla's date is the correct one (steel e1 1885→1867, explosives e0
-                        1820→1842); neither changes its era band, so no re-solve is needed
+  make_tier4_config.mjs ⭐⭐ THE FOUR-RUNG STRUCTURE, FROM VANILLA (user-ruled 2026-09-04, the third time; §10.72).
+                        Reads the GAME (buildings, production-method groups and methods, English loc, and
+                        tech_tree_spec.mjs's ONSET table for a rung's date) and tools/lib_tier4_spec.mjs — NOTHING
+                        ELSE, no config of any other book. Writes config/mod_config.<TIER4_SUFFIX>.json (default
+                        tier4). A tiered industry IS a vanilla building (the spec's INDUSTRIES list); each rung IS one
+                        of its main-group methods in vanilla order with vanilla's method name, gate (the method's own
+                        technology, else the building's), recipe, staffing, pollution and icon; rung 0 keeps the vanilla
+                        building KEY (load-bearing: a different key hands the vanilla building back as a rival
+                        reference producer), higher rungs are <building>_<method>; the building name is
+                        "<vanilla building> (<vanilla method>)". Four methods → rungs 0..3 by order, no dates; fewer →
+                        the spec's PLACEMENT; the spec's ADDITIONS append a top rung (own key, name, minted technology;
+                        recipe/staffing/icon from the rung below). building_cost and ai_value are NOT here — they are
+                        the A/B tool's (ai_value per ERA, never per rung: the rung-keyed form was a shipped bug,
+                        BUGS_AND_FIXES 2026-08-29). RULE 1's validator THROWS on an addition pegged to a technology
+                        that gates one of the industry's own secondary methods (proven by sabotage). The config carries
+                        `start_exceptions_file` → config/start_exceptions.vanilla.json (no rules): the four-rung 1836
+                        start is vanilla's, converted. ⚠ The previous generator (2026-08-29 → 2026-09-04) cloned every
+                        rung from the canonical six-rung config and copied that book's top-level blocks along; its
+                        `--apply-solve` / era_inverse pipeline and the era_prices/measured_price_paths twins are RETIRED
+                        with it (§10.66's four-rung solver-2 arm is history, not regenerable)
+  make_tier4_techs.mjs  ⭐⭐ THE FOUR-RUNG TECH TREE, FROM VANILLA (§10.72). Reads the game's technologies (era,
+                        category, prerequisites, English name), the four-rung config and the spec; writes
+                        config/tech_tree_options.<suffix>.json (the L20 twin). Every vanilla technology carries
+                        vanilla's era, name and prerequisites; the departures are the spec's ERA_MOVES (the 2026-08-30
+                        top-rung rule — against vanilla's eras only vulcanization moves, 3 → 4; `reEra` marks it so
+                        emit_techs patches the vanilla file), TECH_RENAMES_RULED (empty) and the ADDITIONS' minted
+                        technologies (4, each placed by its own year). Validates: no minted technology in era 1, none
+                        gating nothing, every prerequisite known, same-category and not in a later era, no technology
+                        gating two rungs of one industry. ⚠ The previous tool copied the SIX-RUNG twin's technologies —
+                        that ladder's era alignment (dynamite, repeaters, breech-loading artillery, combustion engine,
+                        telephone, aniline all lowered), 14 renames, 12 inserted prerequisites — which is how the
+                        four-rung tree carried six-rung eras until 2026-09-04. emit_techs' hardcoded aniline
+                        prerequisite swap now follows the tree: applied only where aniline was actually moved
   make_ab_config.mjs    ⚗⚗ THE A/B LADDER (user-ruled 2026-09-02, BALANCE_FRAMEWORK §10.68 — two arms
                         under test, nothing canonical changed). Takes the tier4 STRUCTURE (rungs, eras,
                         techs, keys, employment) and VANILLA'S OWN lowest-tier recipe per industry:
@@ -1152,6 +1102,8 @@ tools/                  dev tooling — NOT shipped in the mod
                         per tier, editable goods, the Number column, BE/profit, workforce, the market
                         panel, the preset bar, the ladder chart, the explorer), and one implementation
                         of the sheet serving two books is the only version that cannot drift.
+                        ⚠ Built on the RETIRED derivation's tier4 book (§10.72, 2026-09-04): regenerating it now would
+                        swap in the vanilla-built structure with no solver-2 artifact beside it — read it as history.
                         Swaps: PMDATA.config ← config/mod_config.tier4.json · PMDATA.inverse ←
                         config/era_inverse.tier4.json (the red `recipes: solver 2` button) · PMPRESETS
                         ← ui2/gen/presets.tier4.js. ui/econ.js and ui/vanilla.js are used unchanged.

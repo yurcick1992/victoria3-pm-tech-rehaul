@@ -1,223 +1,104 @@
-// ============================================================================================
-// THE FOUR-RUNG TECH TREE — pegged to vanilla wherever a vanilla technology is within 15 years
-// and in a tree that plausibly gates that industry (user-ruled 2026-08-29).
+// THE FOUR-RUNG TECH TREE, FROM VANILLA — writes config/tech_tree_options.<suffix>.json (the L20 twin of
+// config/mod_config.<suffix>.json), with every tier's technology stamped into its `unlocks`.
 //
-// The six-era tree added 42 technologies. This one adds NINE, five of which serve more than one
-// industry, because the ruling is: only create a technology where no vanilla one can be pegged.
-// "Pegged" is two tests, not one — |tier year − tech year| ≤ 15 AND a tree that could plausibly
-// gate that industry. Every tier has SOME vanilla tech within 15 years; most of those candidates
-// are society or military techs that would put a furniture plant behind `antibiotics`.
+// ⭐⭐⭐ Reads the GAME, the four-rung config and tools/lib_tier4_spec.mjs. Nothing else (user-ruled 2026-09-04: no
+//   six-rung data). The previous tool copied the six-rung twin's vanilla technologies — with THAT ladder's era alignment
+//   (dynamite, repeaters, breech-loading artillery, combustion engine, telephone, aniline all lowered), its fourteen
+//   renames and its inserted prerequisites — and only re-pointed the unlocks. Every vanilla technology now carries
+//   vanilla's era, vanilla's name and vanilla's prerequisites, and every departure is an explicit spec entry:
+//   ERA_MOVES (the top-rung rule), TECH_RENAMES_RULED (empty), and the ADDITIONS' minted technologies.
 //
-//   node tools/make_tier4_techs.mjs
-//
-// Writes config/tech_tree_options.tier4.json and rewrites each tier's `tech` in
-// config/mod_config.tier4.json. Deterministic. Nothing canonical is touched.
-// ⚠ Run AFTER make_tier4_config.mjs (which sets the structure) and after --apply-solve; run the
-// solve again afterwards only if you changed a tier's ERA, which this tool does not.
-// ============================================================================================
-import { readFileSync, writeFileSync } from 'node:fs';
-import {ERA_MOVES} from './lib_tier4_spec.mjs';
+// Run AFTER make_tier4_config.mjs.
+import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { blocks } from './lib_vanilla_ladder.mjs';
+import { INDUSTRIES, ADDITIONS, ERA_MOVES, TECH_RENAMES_RULED } from './lib_tier4_spec.mjs';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
+const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const SUFFIX = process.env.TIER4_SUFFIX || 'tier4';
-const rd = p => JSON.parse(readFileSync(join(REPO, p), 'utf8'));
+const rd = p => readFileSync(p, 'utf8').replace(/^\uFEFF/, '');
 const CFG_PATH = `config/mod_config.${SUFFIX}.json`;
-const cfg = rd(CFG_PATH);
-const canonTree = rd('config/tech_tree_options.json');
-const CANON_OPT = canonTree.options.find(o => o.ships);
+const cfg = JSON.parse(rd(join(REPO, CFG_PATH)));
 
-// vanilla's own mechanical era windows — the same mapping `gameEra` uses. A NEW technology is placed
-// by its own onset year, which is also what the ladder-era alignment rule asks for: a tech gating an
-// e2 tier lands in mechanical 4, an e3 tier in mechanical 5.
-// ⚠ It must never land in era 1: `add_era_researched = era_1` hands every era-1 technology to the
-// tier-1/2 countries at the 1836 start, and vanilla gives them none of these.
+// vanilla's era windows (calendar), for placing a MINTED technology by its own year
 const gameEra = y => y < 1836 ? 1 : y <= 1861 ? 2 : y <= 1886 ? 3 : y <= 1911 ? 4 : 5;
+const ERA_COST = { 1: 7500, 2: 10000, 3: 12500, 4: 15000, 5: 17500 };   // the era base costs, as the viewer shows them
 
-// ---------------------------------------------------------------------------------------------
-// THE PEG TABLE. `null` = leave the tier's current technology alone (it is already a vanilla tech
-// within 15 years). A string = re-peg to that vanilla technology. A `NEW.` id = one of the nine.
-// `redate` moves the TIER's own date where vanilla's is the correct one and ours was the error.
-// ---------------------------------------------------------------------------------------------
-const NEW = {
-  // ⭐⭐ ONLY THREE technologies are minted now (was nine). The vanilla-ladder rebuild (2026-08-30)
-  // takes each rung's gate from its own vanilla production method, so every rung that corresponds to
-  // a vanilla method needs no new technology at all — and seven of the ten invented rungs peg to a
-  // FREE vanilla technology. What remains is the three cases where nothing vanilla fits.
-  continuous_web_processing: {
-    year: 1930, category: 'production', industry: 'paper',
-    name: 'Continuous Web Processing',
-    desc: 'A paper machine that forms, presses and dries an unbroken web at speed, so the mill’s output '
-        + 'stops being a count of sheets and becomes a rate.',
-    prereqs: ['chemical_bleaching', 'shift_work'],
-  },
-  catalytic_synthesis: {
-    year: 1937, category: 'production', industry: 'fertilizer',
-    name: 'Catalytic Synthesis',
-    desc: 'Promoted iron catalysts and continuous high-pressure reformers turn fixed nitrogen from a '
-        + 'laboratory triumph into a commodity produced by the shipload.',
-    prereqs: ['nitrogen_fixation', 'plastics'],
-  },
-  // ---- THE TWELVE MODERN GATES (user-ruled 2026-08-30, option 1: "mint them") ----------------
-  // Twelve industries stopped 25+ years short of 1940 - furniture at 1871, arms 1886, munition 1884 -
-  // which is why t3 sat on era 4 rather than 5. Only three FREE vanilla era-5 technologies are
-  // production ones, so filling 1915-1940 honestly means minting. Stated cost of the ruling.
-  spray_finishing: { year: 1923, category: 'production', industry: 'furniture', name: 'Spray Finishing',
-    desc: 'Compressed-air spray guns and nitrocellulose lacquer finish a carcase in minutes where French polish took days.',
-    prereqs: ['pneumatic_tools'] },
-  long_draft_spinning: { year: 1925, category: 'production', industry: 'textile', name: 'Long-Draft Spinning',
-    desc: 'Drafting the roving over a longer span lets one frame do the work of several, and one spinner tend far more spindles.',
-    prereqs: ['electrical_capacitors'] },
-  glass_fibre: { year: 1938, category: 'production', industry: 'glass', name: 'Glass Fibre',
-    desc: 'Molten glass drawn through platinum bushings becomes a textile - insulation, filtration and reinforcement from the same furnace.',
-    prereqs: ['plastics'] },
-  cemented_carbide: { year: 1927, category: 'production', industry: 'tooling', name: 'Cemented Carbide',
-    desc: 'Tungsten carbide sintered in a cobalt matrix holds an edge at cutting speeds that would draw the temper from any steel tool.',
-    prereqs: ['vulcanization'] },
-  continuous_strip_mill: { year: 1932, category: 'production', industry: 'steel', name: 'Continuous Strip Mill',
-    desc: 'A single line of stands rolls a slab into coil without reheating, and sheet steel stops being sold by the plate.',
-    prereqs: ['electric_arc_process'] },
-  high_speed_diesel: { year: 1935, category: 'production', industry: 'motor', name: 'High-Speed Diesel',
-    desc: 'Precision injection and welded frames take the compression-ignition engine from ships and pit-head to lorries and rail.',
-    prereqs: ['compression_ignition'] },
-  stamped_receivers: { year: 1938, category: 'military', industry: 'arms', name: 'Stamped Receivers',
-    desc: 'Pressed and welded sheet-metal receivers replace milled forgings, cutting the machine hours in a rifle by an order of magnitude.',
-    prereqs: ['bolt_action_rifles'] },
-  automatic_aa_guns: { year: 1936, category: 'military', industry: 'artillery', name: 'Automatic Anti-Aircraft Guns',
-    desc: 'Autoloading mounts with mechanical predictors put a continuous shell stream where an aircraft is going to be.',
-    prereqs: ['automatic_machine_guns'] },
-  automatic_shell_filling: { year: 1940, category: 'production', industry: 'munition', name: 'Automatic Shell Filling',
-    desc: 'Remote filling lines meter and seat explosive charges without a hand near the shell, so output stops being bounded by nerve.',
-    prereqs: ['dynamite'] },   // was smokeless_powder, dropped with munition's 1884 rung
-  polyamide_synthesis: { year: 1939, category: 'production', industry: 'synthetics', name: 'Polyamide Synthesis',
-    desc: 'Condensing diamines with diacids yields a fibre spun from coal, air and water - stronger wet than dry, and wholly synthetic.',
-    prereqs: ['art_silk'] },
-  transfer_machining: { year: 1936, category: 'production', industry: 'automotive', name: 'Transfer Machining',
-    desc: 'A block moves itself between fixed stations, each cutting one feature, so an engine is machined without ever being handled.',
-    prereqs: ['compression_ignition'] },
-  sound_film: { year: 1932, category: 'society', industry: 'art_academy', name: 'Sound Film',
-    desc: 'Optical sound printed beside the frame marries image to voice, and the picture house stops needing an orchestra.',
-    prereqs: ['film'] },
-};
-
-// tier key -> { tech, redate? }.   Only tiers that CHANGE are listed.
-// ⭐⭐ THE PEG TABLE IS GONE (2026-08-30). Gates are no longer chosen here at all: every rung takes
-// the technology VANILLA gates its own production method with, applied in make_tier4_config.mjs where
-// the ladder is derived, and an invented rung takes the peg named in lib_tier4_spec.mjs. Choosing
-// gates by date proximity — which is what this table did — is precisely what orphaned four vanilla
-// technologies and let one technology gate two rungs of one industry.
-const PEGS = {};
-// ⚠ THREE DOCUMENTED EXCEPTIONS to the 15-year rule, deliberately left alone: paper e1 →
-// chemical_bleaching (Δ75), art_academy e1 → camera (Δ46), art_academy e2 → film (Δ17). In each the
-// vanilla technology is LITERALLY the right one and vanilla dates it at invention rather than at
-// deployment. Minting a technology to paper over vanilla's own dating would be worse than the gap.
-const EXCEPTIONS = { paper_1: 'chemical_bleaching', art_academy_1: 'camera', art_academy_2: 'film' };
-
-// ---------------------------------------------------------------------------------------------
-// 1. apply the pegs to the config
-// ---------------------------------------------------------------------------------------------
-const applied = [], redated = [];
-for (const ind of cfg.industries) {
-  if (ind.disabled) continue;
-  for (const t of ind.tiers) {
-    const id = `${ind.id}_${t.era}`;
-    const p = PEGS[id];
-    if (!p) continue;
-    t.tech = p.tech;
-    applied.push(`${ind.id} e${t.era} → ${p.tech}`);
-    if (p.redate) { t.tech_year = p.redate; t.natural_year = t.natural_year; redated.push(`${ind.id} e${t.era} → ${p.redate}`); }
+// ---- the game ---------------------------------------------------------------------------------------------------
+const list = (body, key) => { const m = body.match(new RegExp('(^|\\s)' + key + '\\s*=\\s*\\{([^}]*)\\}')); return m ? m[2].trim().split(/\s+/).filter(Boolean) : []; };
+const ENLOC = (() => { const loc = {}; const walk = d => { for (const f of readdirSync(d, { withFileTypes: true })) { const p = join(d, f.name); if (f.isDirectory()) walk(p); else if (f.name.endsWith('_l_english.yml')) { for (const line of rd(p).split(/\r?\n/)) { const m = line.match(/^\s*([A-Za-z_0-9\-.]+):\d*\s*"(.*)"\s*$/); if (m && !(m[1] in loc)) loc[m[1]] = m[2]; } } } }; walk(join(GAME, 'localization/english')); return loc; })();
+const ONSET = (() => { const src = rd(join(REPO, 'tools/tech_tree_spec.mjs')); const i = src.indexOf('const ONSET = {'); if (i < 0) throw new Error('tech_tree_spec.mjs: ONSET table not found'); let j = i + 'const ONSET = '.length, d = 0; const st = j; do { if (src[j] === '{') d++; else if (src[j] === '}') d--; j++; } while (d > 0); return new Function('return (' + src.slice(st, j) + ')')(); })();
+const VT = {};   // vanilla technologies
+for (const f of readdirSync(join(GAME, 'common/technology/technologies'))) if (f.endsWith('.txt'))
+  for (const [id, body] of Object.entries(blocks(rd(join(GAME, 'common/technology/technologies', f))))) {
+    const era = +(body.match(/^\s*era\s*=\s*era_(\d)/m) || [])[1]; const category = (body.match(/^\s*category\s*=\s*([a-z_]+)/m) || [])[1];
+    if (!era || !category) throw new Error(`vanilla technology ${id}: no era or category`);
+    VT[id] = { era, category, prereqs: list(body, 'unlocking_technologies'), modLines: [...body.matchAll(/^\s*([a-z_]+_(?:add|mult))\s*=\s*(-?[0-9.]+)/gm)].map(m => `${m[1]} = ${m[2]}`) };
   }
-}
+// what vanilla gates on each technology (viewer data)
+const vanillaUnlocks = {}, pmUnlocks = {};
+for (const f of readdirSync(join(GAME, 'common/buildings'))) if (f.endsWith('.txt')) for (const [k, body] of Object.entries(blocks(rd(join(GAME, 'common/buildings', f))))) for (const t of list(body, 'unlocking_technologies')) (vanillaUnlocks[t] ||= []).push(k);
+for (const f of readdirSync(join(GAME, 'common/production_methods'))) if (f.endsWith('.txt')) for (const [k, body] of Object.entries(blocks(rd(join(GAME, 'common/production_methods', f))))) for (const t of list(body, 'unlocking_technologies')) (pmUnlocks[t] ||= []).push(k);
 
-// ---------------------------------------------------------------------------------------------
-// 2. build the tree: every VANILLA technology from the canonical tree, unchanged, plus the nine.
-//    `unlocks` is rebuilt from scratch off the tier4 config, so it can never describe another book.
-// ---------------------------------------------------------------------------------------------
-const techs = CANON_OPT.techs.filter(t => t.origin === 'vanilla').map(t => ({ ...t, unlocks: [] }));
-// ⭐ RAISE the ruled gates (lib_tier4_spec ERA_MOVES). Applied here, before validation, so the
-// prerequisite-inversion check below judges the FINAL eras and not the ones we started from.
-for (const t of techs) if (ERA_MOVES[t.id] != null && ERA_MOVES[t.id] > t.era) t.era = ERA_MOVES[t.id];
-for (const [id, n] of Object.entries(NEW)) {
-  techs.push({
-    id, name: n.name, vanillaName: null, renamed: null, desc: n.desc,
-    category: n.category, era: gameEra(n.year), year: n.year, onset: n.year,
-    idea: false, mod: null, origin: 'new', filler: false, platform: null,
-    industry: n.industry, prereqs: n.prereqs, unlocks: [], vanillaUnlocks: [],
-    pmUnlocks: [], otherGates: [], modLines: [], blocks: [],
-  });
+// ---- the tree ---------------------------------------------------------------------------------------------------
+const techs = Object.entries(VT).map(([id, v]) => {
+  const vname = ENLOC[id] || id; const ruled = TECH_RENAMES_RULED[id];
+  const era = ERA_MOVES[id] != null && ERA_MOVES[id] > v.era ? ERA_MOVES[id] : v.era;
+  return { id, name: ruled ? ruled[0] : vname, vanillaName: vname, renamed: ruled ? ruled[1] : null, desc: null,
+    category: v.category, era, vanillaEra: v.era, reEra: era !== v.era, year: null, onset: ONSET[id] ?? null, idea: false, mod: null,
+    origin: 'vanilla', filler: false, platform: null, industry: null, prereqs: v.prereqs, unlocks: [],
+    vanillaUnlocks: vanillaUnlocks[id] || [], pmUnlocks: pmUnlocks[id] || [], otherGates: [], modLines: v.modLines, blocks: [] };
+});
+const moved = techs.filter(t => t.reEra).map(t => `${t.id} ${t.vanillaEra}→${t.era}`);
+for (const a of ADDITIONS) {
+  if (VT[a.tech]) throw new Error(`addition ${a.tech} names a VANILLA technology — an addition mints its own (rule 3 keeps vanilla's for vanilla's methods)`);
+  const m = a.minted; if (!m) throw new Error(`addition ${a.tech} carries no minted technology`);
+  techs.push({ id: a.tech, name: m.name, vanillaName: null, renamed: null, desc: m.desc || null, category: m.category, era: gameEra(a.year), vanillaEra: null,
+    reEra: false, year: a.year, onset: a.year, idea: false, mod: 'pm_tech_rehaul', origin: 'new', filler: false, platform: null, industry: a.industry,
+    prereqs: m.prereqs, unlocks: [], vanillaUnlocks: [], pmUnlocks: [], otherGates: [], modLines: [], blocks: [] });
 }
 const byId = Object.fromEntries(techs.map(t => [t.id, t]));
+for (const t of techs) for (const p of t.prereqs) if (byId[p]) byId[p].blocks.push(t.id);
 
+// every tier's gate, stamped as an unlock
 const missing = [];
-for (const ind of cfg.industries) {
-  if (ind.disabled) continue;
-  for (const t of ind.tiers) {
-    const T = byId[t.tech];
-    if (!T) { missing.push(`${ind.id} e${t.era} → ${t.tech}`); continue; }
-    T.unlocks.push({ key: t.key, name: t.name, era: t.era, year: t.tech_year ?? null, ind: ind.id });
-  }
+for (const ind of cfg.industries) for (const t of ind.tiers) {
+  const T = byId[t.tech]; if (!T) { missing.push(`${ind.id} e${t.era} → ${t.tech}`); continue; }
+  T.unlocks.push({ key: t.key, name: t.name, era: t.era, year: t.tech_year ?? null, ind: ind.id });
 }
-if (missing.length) { console.error('⚠⚠ tiers whose technology is in NEITHER vanilla nor the new set:\n  ' + missing.join('\n  ')); process.exit(1); }
-// ⭐ A MINTED TECHNOLOGY WHOSE RUNG WAS NOT ADMITTED IS NOT EMITTED (2026-09-04): under the vanilla-first default a
-//   MODERN or gap-filler rung yields when the industry's four slots are vanilla's own, and its technology would then
-//   gate nothing — which the validator below rightly refuses. Dropped here, reported at the end.
-const droppedNew = techs.filter(t => t.origin === 'new' && !t.unlocks.length).map(t => t.id);
-for (const t of techs) if (t.origin === 'new' && !t.unlocks.length) t.dropped = true;
+if (missing.length) { console.error('⚠⚠ tiers whose technology is in NEITHER vanilla nor the additions:\n  ' + missing.join('\n  ')); process.exit(1); }
 
-// ---- the guardrails tech_tree_spec.mjs enforces, re-checked here because this tool bypasses it ----
+// ---- guardrails -------------------------------------------------------------------------------------------------
 const errs = [];
 for (const t of techs) {
-  if (t.origin !== 'new' || t.dropped) continue;
-  if (t.era <= 1) errs.push(`${t.id} is in era ${t.era} — a NEW technology may never land in era 1 (add_era_researched hands every era-1 tech to the 1836 start)`);
-  if (!t.unlocks.length && !t.modLines.length) errs.push(`${t.id} unlocks nothing and carries no modifier — there are no contentless technologies`);
+  if (t.origin === 'new') {
+    if (t.era <= 1) errs.push(`${t.id} is in era ${t.era} — a NEW technology may never land in era 1 (add_era_researched hands every era-1 technology to the 1836 start)`);
+    if (!t.unlocks.length) errs.push(`${t.id} unlocks nothing — there are no contentless technologies`);
+  }
   for (const p of t.prereqs) {
     if (!byId[p]) errs.push(`${t.id} has an unknown prerequisite ${p}`);
-    else if (byId[p].category !== t.category) errs.push(`${t.id} (${t.category}) depends on ${p} (${byId[p].category}) — the engine REFUSES a cross-category prerequisite and logs "is in a different category"`);
+    else if (byId[p].category !== t.category) errs.push(`${t.id} (${t.category}) depends on ${p} (${byId[p].category}) — the engine refuses a cross-category prerequisite`);
     else if (byId[p].era > t.era) errs.push(`${t.id} (era ${t.era}) depends on ${p} (era ${byId[p].era}) — a prerequisite may not sit in a LATER era`);
   }
 }
-// every tier's gate must be reachable, and the 15-year rule must hold except where ruled otherwise
-for (const ind of cfg.industries) {
-  if (ind.disabled) continue;
-  for (const t of ind.tiers) {
-    if ((t.era ?? 0) === 0) continue;               // era-0 rungs ride add_era_researched
-    const T = byId[t.tech], gap = Math.abs((T.onset ?? T.year ?? 0) - (+t.tech_year || 0));
-    if (gap > 15 && EXCEPTIONS[`${ind.id}_${t.era}`] !== t.tech && !ownsGate(ind, t))
-      errs.push(`${ind.id} e${t.era} (${t.tech_year}) is pegged to ${t.tech} (${T.onset}) — Δ${gap}y, over the ruled 15 and not a listed exception`);
-
-// ⭐ THE 15-YEAR RULE ONLY JUDGES A PEG WE CHOSE. A rung that takes the technology VANILLA gates its
-// own production method with cannot be "mispegged" — that IS the right technology, and vanilla dates
-// many of them at invention rather than deployment (camera 1839 for an 1885 rung, open_hearth 1865
-// for 1885). Applying the rule there would demand we peg AWAY from vanilla, which is the mistake the
-// 2026-08-30 rebuild exists to undo.
-function ownsGate(ind, t) {
-  if (!t.vanilla_pm) return false;            // an INVENTED rung: its peg is ours, so the rule applies
-  return true;
-}
-  }
-}
+// one technology may not gate two rungs of one industry
+for (const ind of cfg.industries) { const seen = new Map(); for (const t of ind.tiers) { if (seen.has(t.tech)) errs.push(`${ind.id}: ${t.tech} gates two rungs (${seen.get(t.tech)} and ${t.key})`); seen.set(t.tech, t.key); } }
 if (errs.length) { console.error('⚠⚠ TREE VALIDATION FAILED:\n  ' + errs.join('\n  ')); process.exit(1); }
 
-const kept = techs.filter(t => !t.dropped);
-const out = { ...canonTree, generated: new Date().toISOString().slice(0, 19),
-  options: [{ ...CANON_OPT, id: 'tier4', label: 'Four-rung, vanilla-pegged', ships: true,
-    tagline: `${kept.filter(t => t.origin === 'new').length} added technologies; everything else is vanilla.`,
-    techs: kept }] };
+// ---- write ------------------------------------------------------------------------------------------------------
+const newT = techs.filter(t => t.origin === 'new');
+const out = { generated: new Date().toISOString().slice(0, 19), eraCost: ERA_COST,
+  indOrder: INDUSTRIES.map(i => i.id), indLabel: Object.fromEntries(INDUSTRIES.map(i => [i.id, ENLOC[i.building] || i.id])),
+  options: [{ id: 'tier4', ships: true, label: 'Four-rung, vanilla', tagline: `${newT.length} added technologies; everything else is vanilla — eras, names, prerequisites.`,
+    blurb: 'Written by tools/make_tier4_techs.mjs from the game files and tools/lib_tier4_spec.mjs.', techs }] };
 writeFileSync(join(REPO, `config/tech_tree_options.${SUFFIX}.json`), JSON.stringify(out));
-writeFileSync(join(REPO, CFG_PATH), JSON.stringify(cfg));
 
-if (droppedNew.length) console.log(`  minted technologies NOT emitted (their rung was not admitted): ${droppedNew.join(', ')}`);
-const newT = kept.filter(t => t.origin === 'new');
-console.log(`THE FOUR-RUNG TECH TREE — ${techs.length} technologies, ${newT.length} of them NEW`);
-console.log(`  (the six-era tree adds ${CANON_OPT.techs.filter(t => t.origin === 'new').length})\n`);
-console.log('  new technology                    year  era  serves');
-for (const t of newT)
-  console.log('  ' + t.id.padEnd(33) + t.year + '   ' + t.era + '   '
-    + t.unlocks.map(u => u.ind + ' e' + u.era).join(' + ') + (t.unlocks.length > 1 ? '   ⭐ shared' : ''));
-console.log(`\n  re-pegged to a vanilla technology: ${applied.filter(a => !Object.keys(NEW).some(n => a.endsWith(n))).length}`);
-console.log(`  re-dated tiers: ${redated.join(', ') || 'none'}`);
-console.log(`  documented Δ>15 exceptions: ${Object.entries(EXCEPTIONS).map(([k, v]) => k + '→' + v).join(', ')}`);
-const gated = techs.filter(t => t.unlocks.length).length;
-console.log(`  technologies that gate at least one of our tiers: ${gated}`);
-console.log(`\n  wrote config/tech_tree_options.${SUFFIX}.json and re-pegged ${CFG_PATH}`);
+console.log(`THE FOUR-RUNG TECH TREE FROM VANILLA — ${techs.length} technologies, ${newT.length} of them minted`);
+console.log('  minted technology                 year  era  serves');
+for (const t of newT) console.log('  ' + t.id.padEnd(33) + t.year + '   ' + t.era + '   ' + t.unlocks.map(u => u.ind + ' e' + u.era).join(' + '));
+console.log(`  era moves against vanilla (ERA_MOVES): ${moved.join(', ') || 'none'}`);
+console.log(`  vanilla technologies renamed: ${techs.filter(t => t.renamed).length}`);
+console.log(`  technologies that gate at least one of our tiers: ${techs.filter(t => t.unlocks.length).length}`);
+console.log(`\n  wrote config/tech_tree_options.${SUFFIX}.json — next: node tools/make_ab_config.mjs --A 2.0 --B 1.5 --suffix <canon> --ai-steep glass,tooling:3`);

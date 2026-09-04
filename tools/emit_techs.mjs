@@ -240,9 +240,13 @@ function applyAiWeightMult(txt, mult, label) {
     const re = new RegExp(`(^${t.id} = \\{[\\s\\S]*?\\n\\tera = era_)\\d`, 'm');
     txt = sub(txt, re, `$1${t.era}`, 1, `re-era ${t.id} -> era ${t.era}`);
   }
-  // `aniline` moved to era 2 and can no longer wait on `rubber_mastication`, which is era 3.
-  txt = sub(txt, /(^aniline = \{[\s\S]*?unlocking_technologies = \{)[^}]*(\})/m,
+  // `aniline` moved to era 2 in the SIX-RUNG tree and can no longer wait on `rubber_mastication`, which is era 3 — so
+  // the swap follows the tree: only a tree that actually moved aniline gets it. A tree that keeps vanilla's era (the
+  // four-rung line, user-ruled 2026-09-04: vanilla gates stay vanilla) keeps vanilla's prerequisite too.
+  const anilineMoved = OPT.techs.some(t => t.id === 'aniline' && t.reEra && t.era < 3);
+  if (anilineMoved) txt = sub(txt, /(^aniline = \{[\s\S]*?unlocking_technologies = \{)[^}]*(\})/m,
     '$1\n\t\tchemical_bleaching\n\t$2', 1, 'aniline prerequisite swap');
+  else console.log('  aniline prerequisite swap: not applied (the tree keeps aniline in vanilla\'s era)');
   if (AIW.production !== 1) txt = applyAiWeightMult(txt, AIW.production, 'production');
   write('common/technology/technologies/10_production.txt', txt);
 }

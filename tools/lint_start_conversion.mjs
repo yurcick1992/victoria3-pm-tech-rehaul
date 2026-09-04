@@ -30,8 +30,8 @@ const DRIFT = +(process.env.L13_DRIFT || 0.34);      // a third of the ladder
 const rd = p => readFileSync(p, 'utf8').replace(/^\uFEFF/, '');
 const V = readVanilla(GAME);
 const cfg = JSON.parse(rd(CFGP));
-const canonPath = 'config/mod_config.json';
-const canon = existsSync(canonPath) ? JSON.parse(rd(canonPath)) : cfg;
+// (2026-09-04: the linter used to open config/mod_config.json — the SIX-RUNG book — to find an industry's vanilla ladder
+//  group; on a book whose every rung carries its vanilla_pm that read was never needed, and the ruling forbids it.)
 
 // ⚠⚠ COVERAGE IS A PROPERTY OF THE VANILLA PMG, NOT OF ONE CONFIG INDUSTRY. The shipyard is ONE
 // vanilla building split across TWO config industries (`shipyard` = clippers, `shipyard_steam` =
@@ -40,7 +40,7 @@ const canon = existsSync(canonPath) ? JSON.parse(rd(canonPath)) : cfg;
 const tiersByGroup = {};
 for (const ind of cfg.industries) {
   if (ind.disabled) continue;
-  const g = mainLadder(V, ind, canon.industries.find(x => x.id === ind.id)).group;
+  const g = mainLadder(V, ind).group;
   if (!g) continue;
   (tiersByGroup[g] ||= []).push(...(ind.tiers || []));
 }
@@ -59,7 +59,7 @@ let methods = 0, aliases = 0;
 
 for (const ind of cfg.industries) {
   if (ind.disabled) continue;
-  const L = mainLadder(V, ind, canon.industries.find(x => x.id === ind.id));
+  const L = mainLadder(V, ind);
   const n = L.methods.length;
   if (!n) continue;
   const rungs = (ind.tiers || []).map(t => t.era);

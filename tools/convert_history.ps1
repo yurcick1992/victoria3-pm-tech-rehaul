@@ -52,7 +52,9 @@ $baseIndustry = $maps.baseIndustry; $pmMap = $maps.pmMap; $industryById = $maps.
 
 # manual exceptions (optional)
 $rules = @()
-$exPath = Join-Path $Repo 'config\start_exceptions.json'
+# `start_exceptions_file` in the config names another rule set (the four-rung canon names an EMPTY one — its 1836 start is
+# vanilla's, converted; the six-rung chain seed in config/start_exceptions.json must not reach it. User-ruled 2026-09-04)
+$exPath = if ($cfg.start_exceptions_file) { Join-Path $Repo ($cfg.start_exceptions_file -replace '/', '\') } else { Join-Path $Repo 'config\start_exceptions.json' }
 if (Test-Path $exPath) {
     $ex = Get-Content $exPath -Raw -Encoding UTF8 | ConvertFrom-Json
     if ($ex.rules) { $rules = @($ex.rules) }

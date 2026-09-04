@@ -1372,7 +1372,7 @@ if (-not $isAlt) {
     # start_exceptions rides along so the UI's Mod-changes page can ENUMERATE the 1836 start rules
     # rather than point at the file; `generated` (UTC, stated) lets the page say how old this copy is
     # when the live /api/config fetch is unavailable (standalone snapshot, file:// open).
-    $sxPath = Join-Path $repo 'config\start_exceptions.json'
+    $sxPath = if ($cfg.start_exceptions_file) { Join-Path $repo ($cfg.start_exceptions_file -replace '/', '\') } else { Join-Path $repo 'config\start_exceptions.json' }   # the config may name its own rule set (2026-09-04)
     $startExJson = if (Test-Path $sxPath) { (Get-Content $sxPath -Raw -Encoding UTF8 | ConvertFrom-Json) | ConvertTo-Json -Depth 10 } else { 'null' }
     # THE INVERSE-SOLVE RECIPE BOOK (config/era_inverse.json, §10.65.2) — the UI's third red button
     # ('recipes: solver 2'). Only the small parts the sheet needs (recipes + the mandate + the yield

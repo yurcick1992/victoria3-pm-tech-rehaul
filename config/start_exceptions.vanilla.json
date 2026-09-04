@@ -1,0 +1,4 @@
+{
+  "_comment": "The four-rung canon's 1836 start is VANILLA's, converted onto its rungs by tools/convert_history.ps1 — no manual overrides (user-ruled 2026-09-04: no six-rung data). config/start_exceptions.json carries the six-rung canon's chain seed (§10.60.3: steam-port stubs, metal shipyards, the FRA/NET motor and steel seeds) and is NOT consulted by a config that names this file in `start_exceptions_file`.",
+  "rules": []
+}

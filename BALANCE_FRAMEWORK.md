@@ -5744,6 +5744,11 @@ output ×≤0.78/era); flat-input industries keep ×0.84; rising-input industrie
 
 ## 10.66 THE BAND BUDGET AND THE FOUR-RUNG LADDER (analysis 2026-08-29; the ladder is a PROPOSAL, not a ruling)
 
+⛔ **RETIRED 2026-09-04 (§10.72):** the four-rung STRUCTURE described in this section was derived from the six-rung book (a DP
+over that book's tiers, later a clone of its tiers by vanilla method) — the derivation the user ruled out three times. The
+generator now reads vanilla. The section stays as the record of the band-budget analysis and of what the sessions measured
+between 2026-08-29 and 2026-09-04 (F98–F103, canon-4rung) were built on.
+
 ⚠ **Status: nothing here is ruled and nothing canonical changed.** `config/mod_config.json` is still
 the six-rung solver2f book. The four-rung ladder lives entirely in its own files
 (`config/mod_config.tier4.json` + its `era_prices` / `measured_price_paths` / `tech_tree_options`
@@ -6211,6 +6216,9 @@ food 5.5y against glass 28.8y at VANILLA costs, and a per-era multiplier moves a
 compressing it.
 
 ### §10.67.4 ⭐⭐ THE TECH TREE, PEGGED TO VANILLA — 42 ADDED TECHNOLOGIES DOWN TO 9
+
+⛔ **RETIRED 2026-09-04 (§10.72):** the tree tool described here copied the six-rung twin's technologies — its era alignment,
+renames and inserted prerequisites — and re-pointed the unlocks. It now reads vanilla's technologies from the game.
 
 **The ruling (2026-08-29): only create a technology where no vanilla one can be pegged, and NOTHING
 may be pegged more than 15 years away.** Built by `tools/make_tier4_techs.mjs`.
@@ -6687,6 +6695,10 @@ overlay arm already knows how to write; untested. Ruling on the ladder itself pe
 
 ## 10.71 — THE VANILLA-FIRST FOUR-RUNG LADDER — `canon4v` (user-ruled, restated 2026-09-04; a CANDIDATE canon awaiting ratification)
 
+⛔ **SUPERSEDED 2026-09-04 (§10.72):** the generator this section describes still CLONED each vanilla-method rung from the
+canonical six-rung tier and copied that book's top-level blocks along. The vanilla-first RULE stands; the implementation is
+§10.72's, which reads vanilla and nothing else. The ladder table and counts below (63 → 59 buildings) are the clone-path's.
+
 **The ruling, in the user's words:** the 4-vanilla → 6-rung → 4-rung path "was not the way and it should have been redone
 from scratch; the default was 4 vanilla → 4 new canon, then only where we want to add a rung or we have a very strong,
 explicitly defined and talked-through reason to change anything do we change anything."
@@ -6833,3 +6845,75 @@ The anchor principle says the technologies are calibrated to the anchors, never 
 only ever LOWERS and never lands in era 1. Re-aligning the tree to the four anchors (raising the middle rungs' gates) is
 the open decision this table puts in front of the user; until it is taken, "e1 = 1875" and "e2 = 1905" are labels the
 game does not enforce.
+
+## 10.72 — THE FOUR-RUNG CANON IS BUILT FROM VANILLA AND NOTHING ELSE (user-ruled 2026-09-04, the third time)
+
+**The ruling, in the user's words:** "Find all instances of prose or code that make you do that and get rid of them. Four-rung
+generator takes vanilla rungs (up to four) and enriches them. Very rarely alters them. No six-rung-canon data should be
+consulted whatsoever in preparing the canon4rungs." It was triggered by the agent proposing to fix the rung NAMES inside a
+generator that still cloned every rung from the six-rung book — the derivation already ruled out on 2026-08-30 and again
+earlier on 2026-09-04.
+
+**What consulted six-rung data, and what replaced it.**
+- `make_tier4_config.mjs` cloned each rung from the canonical tier carrying that vanilla method (names, dates, keys,
+  employment, textures came along) and copied the canonical book's top-level blocks: the six hoard `ai_defines`, the electric
+  streetlight `pm_goods`/`pm_employment` override (a six-rung POWER-ladder decision on a book where power is vanilla), the
+  trade-centre `building_ai_value` 5000, `building_subsidies`, the NET `start_tech_grants` (the metal-shipyard seed), and the
+  six-rung fits for `era_prices`/`measured_price_paths` twins. → Rewritten: it reads the game's buildings, method groups,
+  methods and English localisation plus `tools/lib_tier4_spec.mjs`. A rung is a vanilla method with vanilla's name, gate,
+  recipe, staffing, pollution and icon; the building block is vanilla's; secondary groups are vanilla's; none of the six-rung
+  top-level blocks is carried. The structure carries no cost or ai_value — the A/B tool's.
+- `make_tier4_techs.mjs` took the six-rung twin's technologies as its base: that ladder's era alignment (dynamite, repeaters,
+  breech-loading artillery 3 → 2; combustion engine, telephone 4 → 3; aniline 3 → 2; atmospheric engine, crystal glass → 1),
+  its 14 renames ("Lead Crystal", "Coal-Tar Chemistry", "Continuous-Flow Production"…) and 12 prerequisites it had inserted
+  (minted era-1 technologies that do not exist here). → Rewritten: vanilla's technologies from the game, at vanilla's eras,
+  names and prerequisites; the spec's ERA_MOVES (against vanilla only vulcanization moves, 3 → 4) and the additions' minted
+  technologies are the whole departure.
+- `emit_techs.mjs` rewrote aniline's prerequisite on EVERY build (a six-rung era move's consequence). → Applied only when the
+  tree actually moved aniline.
+- `convert_history.ps1` applied `config/start_exceptions.json` — the six-rung chain seed (steam-port stubs, metal shipyards,
+  the FRA/NET motor and steel `create` rules) — to any config. → A config may name its own rule set
+  (`start_exceptions_file`); the four-rung one names an EMPTY set: its 1836 start is vanilla's, converted.
+- `lint_start_conversion.mjs` opened `config/mod_config.json` to find an industry's vanilla group. → Reads the config it lints.
+- `lib_tier4_spec.mjs`'s MODERN table named six-rung tier keys "to restore"; `propose_vanilla_ladder.mjs` proposed the
+  vanilla ladder FROM the canonical config. → The spec is self-contained (ADDITIONS carry key, names, year, minted technology);
+  the proposal script is deleted.
+- Prose: the CLAUDE.md entries for both tools and the tier4 layout line, and §10.66 / §10.67.4 / §10.71's procedures, all
+  described the derivation → rewritten or banner-retired. canon-4rung (the measured book) is FROZEN: its structure came from
+  the retired path and the pipeline can no longer reproduce it; the committed file is the record.
+
+**The spec (the only authored input):** INDUSTRIES (17 vanilla buildings), PLACEMENT for the five with fewer than four
+methods (food e0–e2; automotive e2–e3; munition e1–e2, because the plant does not exist at 1836; synthetics e1; electrics
+e1), ADDITIONS (rule 2: furniture spray finishing 1923, paper continuous web 1930, fertilizer catalytic synthesis 1937, motor
+high-speed diesel 1935 — each where vanilla stops 25+ years short of 1940 and no secondary group covers the theme), ERA_MOVES,
+TECH_RENAMES_RULED (empty). Building names are derived, "<vanilla building> (<vanilla method>)".
+
+**The result, canon4v regenerated:** 57 buildings (59 on the clone path, 63 before rule 1), 183 technologies of which 4
+minted, 41 research technologies → 123 entries; every one of the 53 vanilla rungs carries vanilla's name and vanilla's gate
+(the coverage audit reads 0 flags); the tree's eras are vanilla's. Dry run clean (lints, solvency, tech content, L13, preflight).
+Tier → tech era, as the game will enforce it (cell = gate technology, its era):
+| industry | tier 0 | tier 1 | tier 2 | tier 3 |
+|---|---|---|---|---|
+| food | manufacturies 1 | distillation 1 | baking_powder 2 | — |
+| textile | manufacturies 1 | lathe 1 | mechanized_workshops 2 | electrical_capacitors 4 |
+| furniture | manufacturies 1 | lathe 1 | mechanized_workshops 2 | spray_finishing 5 |
+| glass | manufacturies 1 | lathe 1 | crystal_glass 2 | plastics 4 |
+| tooling | manufacturies 1 | steelworking 1 | mechanical_tools 2 | vulcanization 4 (moved from 3) |
+| paper | manufacturies 1 | mechanical_tools 2 | chemical_bleaching 2 | continuous_web_processing 5 |
+| fertilizer | intensive_agriculture 2 | improved_fertilizer 3 | nitrogen_fixation 4 | catalytic_synthesis 5 |
+| explosives | intensive_agriculture 2 | nitroglycerin 2 | dynamite 3 | electrical_capacitors 4 |
+| steel | steelworking 1 | bessemer_process 2 | open_hearth_process 3 | electric_arc_process 4 |
+| motor | atmospheric_engine 2 | electric_railway 4 | compression_ignition 5 | high_speed_diesel 5 |
+| automotive | — | — | combustion_engine 4 | compression_ignition 5 |
+| arms | gunsmithing 1 | rifling 2 | repeaters 3 | bolt_action_rifles 4 |
+| artillery | artillery 1 | shell_gun 2 | breech_loading_artillery 3 | automatic_machine_guns 4 |
+| munition | — | percussion_cap 2 | dynamite 3 | — |
+| synthetics | — | aniline 3 | — | — |
+| electrics | — | telephone 4 | — | — |
+| art_academy | romanticism 1 | realism 2 | camera 3 | film 4 |
+Five rungs beyond rung 0 are era-1 start technologies (distillation, lathe ×3, steelworking), as in vanilla.
+
+**Open, awaiting the user:** (1) the motor industry's research anchor — its first rung now sits on atmospheric_engine (vanilla
+era 2, researchable, no predecessor rung), so the emitter needs one; the agent set `bg_mining` (the Newcomen engine drained
+mines) and it is flagged in the config; (2) whether any of the not-carried six-rung blocks is wanted on this line (the hoard
+defines were in the MEASURED canon-4rung, so canon4v's first batch is not a pure re-measure); (3) ratification and a run.

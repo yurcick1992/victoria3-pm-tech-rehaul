@@ -1,17 +1,8 @@
-// THE VANILLA MAIN LADDER, read live from the game — the source the four-rung tiers are built FROM.
+// VANILLA, READ LIVE FROM THE GAME — buildings, production-method groups and methods, with the per-method gates and goods.
 //
-// ⭐⭐ THE RULE (user-ruled 2026-08-30): a tier IS a vanilla production method. Rungs come from the
-// anchor building's `pmg_base_*` group, in VANILLA ORDER, keeping the method's key as `vanilla_pm`
-// and its unlocking technology as the gate. We invent a rung ONLY where vanilla has fewer methods
-// than the industry needs, and then peg to an existing technology before minting one.
-//
-// ⚠ Going vanilla → 6 rungs → 4 rungs was the mistake this replaces: the six-rung book invented 1–3
-// rungs per industry, and the four-rung cut then ran a DP over THOSE, landing on a set that matched
-// neither vanilla's methods nor its gates — which is how four vanilla technologies ended up gating
-// nothing (BUGS_AND_FIXES 2026-08-30).
-// ⚠ A rung's ERA is the vanilla ERA of its gate, never the technology's onset YEAR: vanilla dates at
-// INVENTION (crystal_glass 1674, chemical_bleaching 1799), so banding by year puts 13 of 18 ladders
-// in conflict where banding by era leaves 5.
+// ⭐⭐ THE RULE (user-ruled 2026-08-30, restated 2026-09-04 for the third time): a tier IS a vanilla production method, and
+// the four-rung line consults NO six-rung data. This library reads the game only; make_tier4_config.mjs builds the four-rung
+// structure from it and tools/lib_tier4_spec.mjs, the linters read it to check an emitted mod against vanilla.
 // ⚠ Token class must admit a HYPHEN — `pm_ammonia-soda_process`, `pm_coal-fired_plant`. An
 // [a-z_0-9]+ class silently splits them (CLAUDE.md flags the same trap in emit_techs).
 import {readFileSync, readdirSync} from 'fs';
@@ -48,10 +39,10 @@ export function readVanilla(G) {
              out: Object.fromEntries([...b.matchAll(/goods_output_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)].map(m => [m[1], +m[2]])) }; };
   return { PMG, PMBODY, BLD, groupOf, gatesOf, goodsOf };
 }
-// the main ladder for an industry, found through any vanilla_pm it holds in EITHER book
-export function mainLadder(V, industry, canonIndustry) {
+// the vanilla main ladder of a config industry, found through the vanilla_pm its rungs carry
+export function mainLadder(V, industry) {
   const mine = [];
-  for (const src of [industry, canonIndustry]) if (src) for (const t of src.tiers || [])
+  for (const t of industry.tiers || [])
     for (const p of [t.vanilla_pm, ...(t.vanilla_pm_aliases || [])]) if (p && !mine.includes(p)) mine.push(p);
   const g = mine.map(p => V.groupOf[p]).find(Boolean);
   return { group: g || null, methods: g ? V.PMG[g] : [] };
