@@ -82,7 +82,18 @@ const buildingEmp = (key) => { for (const ind of CFG.industries) for (const t of
 // level holds one battalion and employs it as soldiers, not through a production method
 const UNIT_MANPOWER = (() => { try { const dir = join(GAME, 'common/combat_unit_types'); const vals = readdirSync(dir).filter(f => f.endsWith('.txt')).flatMap(f => [...readFileSync(join(dir, f), 'utf8').matchAll(/max_manpower\s*=\s*(\d+)/g)].map(m => +m[1])); return vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 1000; } catch { return 1000; } })();
 const MILITARY_GROUPS = new Set(['bg_army', 'bg_conscription']);
-const groupTypes = (g) => Object.entries(VAN.buildings).filter(([k, b]) => b.group === g).map(([k]) => ({ key: k, emp: buildingEmp(k) || (MILITARY_GROUPS.has(g) ? UNIT_MANPOWER : 0) })).filter(x => x.emp > 0);
+// ⭐ A GROUP ANCHOR COUNTS OUR RUNGS TOO (user-ruled 2026-09-04: "percussion cap is gated by any small arms or artillery
+//   foundry employees over X"). The extract knows only the VANILLA buildings of a group, and a tiered industry's rung 0
+//   IS its vanilla building — so the later rungs (arms_industry_rifles, artillery_foundry_smoothbore, …) were invisible to a
+//   group anchor. Every non-disabled industry whose rung-0 key sits in the group contributes all its rungs at their own
+//   per-level employment; `exceptInd` leaves out the industry the entry unlocks (its rungs cannot exist before it).
+const groupTypes = (g, exceptInd = null) => {
+  const out = Object.entries(VAN.buildings).filter(([k, b]) => b.group === g).map(([k]) => ({ key: k, emp: buildingEmp(k) || (MILITARY_GROUPS.has(g) ? UNIT_MANPOWER : 0) }));
+  const have = new Set(out.map(x => x.key));
+  const skip = new Set();   // the unlocked industry's rungs, INCLUDING its rung 0 (a vanilla building the extract lists under the group)
+  for (const ind of CFG.industries) { if (ind.disabled) continue; const tiers = (ind.tiers || []).filter(t => !t.model_only); if (!tiers.length) continue; if (ind.id === exceptInd) { for (const t of tiers) skip.add(t.key); continue; } const r0 = VAN.buildings[tiers[0].key]; if (!r0 || r0.group !== g) continue; for (const t of tiers) { if (have.has(t.key)) continue; have.add(t.key); out.push({ key: t.key, emp: tierEmp(t, ind) }); } }
+  return out.filter(x => x.emp > 0 && !skip.has(x.key));
+};
 const lvValues = new Set();   // per-type staffed-level values already emitted (shared across sources)
 const tierEmp = (tier, ind) => { const wm = tier.workforce_mult != null ? +tier.workforce_mult : 1; const own = Object.values(tier.employment || {}).reduce((a, b) => a + (+b || 0), 0); if (own > 0) return Math.round(own * wm); return Math.round((ind.secondary_pmgs || []).reduce((a, g) => a + basePmEmp(g), 0) * wm); };
 
@@ -355,7 +366,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       //   workforce) — a nominal figure, which is why the text quotes levels and calls the people number nominal
       //   (user, 2026-09-03: "75,000 workers at full staffing" is true under one secondary method and false under another).
       // people per level of this source: our tier's, a vanilla building's, or (group) per type below
-      const gTypes = s.group ? groupTypes(s.group) : [];   // a group with no typed employment (bg_army, bg_conscription) stays level-counted
+      const gTypes = s.group ? groupTypes(s.group, s.ind) : [];   // a group with no typed employment (bg_army, bg_conscription) stays level-counted; the unlocked industry's own rungs are left out
       const empOf = s.group ? 0 : (s.emp != null && s.emp > 0 ? s.emp : buildingEmp(s.building));
       const inPeople = (s.group && gTypes.length > 0) || empOf > 0;
       const mult = '';

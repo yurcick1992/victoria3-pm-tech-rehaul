@@ -6576,6 +6576,15 @@ re-peg (and in today's six-rung dry run too). Turning it on is a ruling, not a c
    was written for. Candidate fix, NOT applied mid-batch (L10): AND the term with market ownership — `market.owner = ROOT`
    (the port strategies' own idiom) — so only the market's owner reads its consumption; a per-country term (own barracks
    levels) is the alternative the user moved away from.
+   ⭐⭐ **SUPERSEDED 2026-09-04 (user-ruled after F102 §5): percussion cap is gated by ARMS + ARTILLERY EMPLOYMENT, any
+   rung — `necessity_anchors.munition = ['bg_military_industry']`, mark 12,500 workers** (the era-1 base 25,000 × the
+   war industries' ×0.5, i.e. 2.5 fully staffed levels). A group anchor now counts OUR rungs as well as the vanilla
+   building the extract lists (arms_industry + rifles + bolt_action + stamped, artillery_foundry + smoothbore + recoiled +
+   antiaircraft, at 5,000–5,250 a level), and leaves out the unlocked industry's own rungs. Who clears 12,500 on the
+   four-rung book at 1846 (median over four canon runs, arms + artillery staffed levels × employment): BIC 76k, PRU 65k,
+   FRA 60k, RUS 60k, GBR 45k, AUS 42k, SPA 25k, USA 20k, CHI 19k, NET 15k — ten countries; TUR 12k, SIC 10k, EGY 10k just
+   under; 33 countries hold any. The consumption anchor (`good:<name>`) stays implemented and unused: it ticks for every
+   MEMBER of a market, and a princely state with no foundry is not the country the entry is for.
 4. **No naval entries** (`naval_channel: false` drops every fleet technology's war entry).
 Net on canon4-je: **51 technologies (43 industry, 8 war) → 153 journal entries, 51 bars**, against the 43/0 of the previous
 staged state; the army-in-soldiers anchors of the paragraph above are superseded for percussion cap and the explosives

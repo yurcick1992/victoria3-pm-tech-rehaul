@@ -1004,7 +1004,9 @@ A country's market is a scope (`market = { … }`) and a good in it is `mg:<good
 `market_goods_sell_orders` are triggers — the form the port-subsidy strategies' `possible` blocks use (`retire_trigger`,
 §10.60.3), which F64/F65 proved inside `ai_strategy` blocks. `emit_research_events.mjs` now writes the same shape as a
 scripted-progress-bar term (`market = { mg:small_arms = { market_goods_buy_orders >= 900 } }`) for the consumption anchors.
-⚠ **UNVERIFIED in a progress bar**: a bar's `monthly_progress` terms evaluate in the JE's country scope, where `market`
-should resolve, but no run has ticked one yet. Check the first tick's `error.log` for a `market` / `mg:` scope error before
+✅ **VERIFIED in a progress bar (canon4-je-n5, 2026-09-03/04)**: the term parsed and ticked — for every MEMBER of the market,
+which is the catch: a princely state in the British market read Britain's small-arms demand as its own and completed
+the entry, Britain never did. The anchor is no longer used (percussion cap rides `bg_military_industry` employment); the
+idiom stays here because it works. Check the first tick's `error.log` for a `market` / `mg:` scope error before
 trusting a consumption-anchored entry, and a silent zero (the bar never moving in a market that plainly buys the good) is
 the landmine shape (TESTBED_LANDMINES L6) — count `PMR_JE|…|percussion_cap|` lines in the first run.
