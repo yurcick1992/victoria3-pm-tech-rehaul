@@ -102,6 +102,9 @@ config/tech_tree_options.*.json
 # canon4-art: the art-academy stress test (§10.70, 2026-09-04)
 !config/mod_config.canon4-art.json
 !config/tech_tree_options.canon4-art.json
+# canon4v: the vanilla-first four-rung candidate (§10.71, 2026-09-04)
+!config/mod_config.canon4v.json
+!config/tech_tree_options.canon4v.json
 !config/tech_tree_options.canon-4rung.json
 # Ledger fill working dirs (tools/testbed/ledger/out_<batch>/): build products of the fill scripts; the published REPORT.html
 # is copied into the session folder, which is the record.

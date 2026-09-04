@@ -159,11 +159,16 @@ for (const ind of cfg.industries) {
   }
 }
 if (missing.length) { console.error('⚠⚠ tiers whose technology is in NEITHER vanilla nor the new set:\n  ' + missing.join('\n  ')); process.exit(1); }
+// ⭐ A MINTED TECHNOLOGY WHOSE RUNG WAS NOT ADMITTED IS NOT EMITTED (2026-09-04): under the vanilla-first default a
+//   MODERN or gap-filler rung yields when the industry's four slots are vanilla's own, and its technology would then
+//   gate nothing — which the validator below rightly refuses. Dropped here, reported at the end.
+const droppedNew = techs.filter(t => t.origin === 'new' && !t.unlocks.length).map(t => t.id);
+for (const t of techs) if (t.origin === 'new' && !t.unlocks.length) t.dropped = true;
 
 // ---- the guardrails tech_tree_spec.mjs enforces, re-checked here because this tool bypasses it ----
 const errs = [];
 for (const t of techs) {
-  if (t.origin !== 'new') continue;
+  if (t.origin !== 'new' || t.dropped) continue;
   if (t.era <= 1) errs.push(`${t.id} is in era ${t.era} — a NEW technology may never land in era 1 (add_era_researched hands every era-1 tech to the 1836 start)`);
   if (!t.unlocks.length && !t.modLines.length) errs.push(`${t.id} unlocks nothing and carries no modifier — there are no contentless technologies`);
   for (const p of t.prereqs) {
@@ -194,14 +199,16 @@ function ownsGate(ind, t) {
 }
 if (errs.length) { console.error('⚠⚠ TREE VALIDATION FAILED:\n  ' + errs.join('\n  ')); process.exit(1); }
 
+const kept = techs.filter(t => !t.dropped);
 const out = { ...canonTree, generated: new Date().toISOString().slice(0, 19),
   options: [{ ...CANON_OPT, id: 'tier4', label: 'Four-rung, vanilla-pegged', ships: true,
-    tagline: 'Nine added technologies, five of them shared between industries; everything else is vanilla.',
-    techs }] };
+    tagline: `${kept.filter(t => t.origin === 'new').length} added technologies; everything else is vanilla.`,
+    techs: kept }] };
 writeFileSync(join(REPO, `config/tech_tree_options.${SUFFIX}.json`), JSON.stringify(out));
 writeFileSync(join(REPO, CFG_PATH), JSON.stringify(cfg));
 
-const newT = techs.filter(t => t.origin === 'new');
+if (droppedNew.length) console.log(`  minted technologies NOT emitted (their rung was not admitted): ${droppedNew.join(', ')}`);
+const newT = kept.filter(t => t.origin === 'new');
 console.log(`THE FOUR-RUNG TECH TREE — ${techs.length} technologies, ${newT.length} of them NEW`);
 console.log(`  (the six-era tree adds ${CANON_OPT.techs.filter(t => t.origin === 'new').length})\n`);
 console.log('  new technology                    year  era  serves');

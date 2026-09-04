@@ -202,8 +202,25 @@ for (const ind of out.industries) {
     if (g) t.tech = g;
     kept.push({ t, invented: false });
   }
+  // ⭐⭐ INVENTIONS ONLY WHILE A SLOT IS FREE (user-ruled 2026-09-04, restated: "4 vanilla → 4 new canon" is the default).
+  //   Every vanilla method is a rung, unconditionally. The ruled MODERN top rung is admitted first if the industry has
+  //   fewer than N rungs, then the INVENT gap-fillers in their order while room remains; a candidate that would push
+  //   the industry past N is SKIPPED and reported — never a vanilla method dropped in its favour.
+  const skippedInv = [];
+  // ⭐ THE MODERN TOP RUNG (lib_tier4_spec MODERN): restored from the canonical six-rung book, which
+  //   already designed it - name, recipe and technology. Appended LAST, so it is always the frontier.
+  const mod = MODERN[ind.id];
+  if (mod && kept.length < N) {
+    const src = ind.tiers.find(t => t.key === mod.key);
+    if (!src) throw new Error(`${ind.id}: MODERN names ${mod.key}, which the canonical book does not define`);
+    const t = structuredClone(src);
+    delete t.model_only;
+    t.tech = mod.tech; t.tech_year = mod.year; t.natural_year = mod.year;
+    kept.push({ t, invented: true, spec: mod, modern: true });
+  } else if (mod) skippedInv.push(`${mod.tech} (modern top: no free slot, vanilla's four methods hold the ladder)`);
   // splice the invented rungs in at their ruled index (the NARRATIVE gap, not always the top)
   for (const inv of (INVENT[ind.id] || [])) {
+    if (kept.length >= N) { skippedInv.push(`${inv.tech} (gap-filler: no free slot)`); continue; }
     // ⚠ CLONE THE RUNG BELOW, not the one above. An invented rung is a step UP from its predecessor,
     //   so seeding it from its successor imports goods that cannot exist yet: motor’s 1867 watertube-
     //   boiler rung inherited the ELECTRIC engine recipe and consumed 22.6 electricity while the coal
@@ -226,17 +243,7 @@ for (const ind of out.industries) {
     t.name = t.name ? `${t.name} (${inv.tech.replace(/_/g, ' ')})` : t.key;
     kept.splice(Math.min(inv.at, kept.length), 0, { t, invented: true, spec: inv });
   }
-  // ⭐ THE MODERN TOP RUNG (lib_tier4_spec MODERN): restored from the canonical six-rung book, which
-  //   already designed it - name, recipe and technology. Appended LAST, so it is always the frontier.
-  const mod = MODERN[ind.id];
-  if (mod) {
-    const src = ind.tiers.find(t => t.key === mod.key);
-    if (!src) throw new Error(`${ind.id}: MODERN names ${mod.key}, which the canonical book does not define`);
-    const t = structuredClone(src);
-    delete t.model_only;
-    t.tech = mod.tech; t.tech_year = mod.year; t.natural_year = mod.year;
-    kept.push({ t, invented: true, spec: mod, modern: true });
-  }
+  // (the MODERN top rung is admitted above, before the gap-fillers, and only while a slot is free)
   if (!kept.length) { report.push({ id: ind.id, kept: 0, note: 'no vanilla ladder and nothing invented' }); continue; }
   // rung index IS the era; every downstream ladder (cost, ai_value, output) keys on it
   // ⭐⭐ A RUNG'S TIER IS ITS COMMERCIAL-ADOPTION YEAR, NOT ITS POSITION (user-ruled 2026-08-30).
@@ -250,11 +257,23 @@ for (const ind of out.industries) {
   //   push is why a 5th slot is possible at all, and the spec drops a rung wherever it happens.
   const TIER_BANDS = [1830, 1880, 1915];
   const bandOf = y => y < TIER_BANDS[0] ? 0 : y < TIER_BANDS[1] ? 1 : y < TIER_BANDS[2] ? 2 : 3;
-  { let prev = -1;
+  // ⭐⭐ FOUR RUNGS ⇒ PLACED BY ORDER (user-ruled 2026-09-04: "4 vanilla → 4 new canon"): rung index IS the era and the
+  //   anchors are the authority — vanilla's dates are stretched onto them, which the anchor principle allows and the
+  //   audit of that day requires (crystal glass 1674 and film 1912 both have to sit on an anchor). Fewer than four ⇒ the
+  //   adoption-year bands above, with an OVERFLOW resolved by dropping the last-admitted INVENTION, never a vanilla method.
+  const place = () => { let prev = -1;
     for (const k of kept) { let b = bandOf(+k.t.tech_year || ERA_YEARS[0]);
       if (b <= prev) b = prev + 1; prev = b; k.era = b; }
-    const top = kept[kept.length - 1].era;
-    if (top > 3) throw new Error(`${ind.id}: rungs overflow past t3 (${kept.map(k => k.t.tech_year).join('/')}) — drop one in lib_tier4_spec`); }
+    return kept[kept.length - 1].era; };
+  if (kept.length === N) { kept.forEach((k, j) => { k.era = j; }); }
+  else {
+    while (place() > N - 1) {
+      let ix = -1; for (let j = kept.length - 1; j >= 0; j--) if (kept[j].invented) { ix = j; break; }
+      if (ix < 0) throw new Error(`${ind.id}: vanilla methods alone overflow past t${N - 1} (${kept.map(k => k.t.tech_year).join('/')})`);
+      skippedInv.push(`${kept[ix].t.tech} (overflow: the year bands hold no slot for it)`);
+      kept.splice(ix, 1);
+    }
+  }
   const yr = t => +(t.tech_year != null ? t.tech_year : (t.natural_year || ERA_YEARS[0]));
   const base = kept[0].t;
   const baseOut = +base.output_qty || 0;
@@ -324,7 +343,7 @@ for (const ind of out.industries) {
       seen.set(v, k.t.key); } }
   ind.tiers = kept.map(k => k.t);
   report.push({ id: ind.id, kept: ind.tiers.length,
-    note: ind.tiers.map(t => `e${t.era}:${t.tech_year}`).join(' ') + (dropped.length ? `   dropped ${dropped.join(', ')}` : '') });
+    note: ind.tiers.map(t => `e${t.era}:${t.tech_year}${t.vanilla_pm ? '' : '*'}`).join(' ') + (dropped.length ? `   dropped ${dropped.join(', ')}` : '') + (skippedInv.length ? `   inventions skipped: ${skippedInv.join('; ')}` : '') });
 }
 
 // ============================================================================================

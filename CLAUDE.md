@@ -108,6 +108,12 @@ one it is on:
   the company-target gate OFF. Regenerate it with
   `node tools/make_ab_config.mjs --A 2.0 --B 1.5 --suffix canon-4rung --ai-steep glass,tooling:3`; the file's
   `_canon` block records the declaration and the sessions it was measured in.
+  ⭐⭐ **`canon4v` — THE VANILLA-FIRST CANDIDATE (§10.71, user-ruled 2026-09-04, restated: "4 vanilla → 4 new canon by
+  default; inventions only where a slot is free or explicitly ruled").** `config/mod_config.canon4v.json` + twin: every
+  vanilla main method is a rung (the audit of that day found eleven industries on canon-4rung carrying a minted rung while
+  one of their own vanilla methods survived only as an alias — `DROP_FOR_MODERN` is retired), modern/gap-filler rungs only
+  while a slot is free, 63 buildings, 6 minted technologies (was 9), research events transplanted from canon4-je. Builds
+  clean, NOT ratified, NOT run — canon-4rung stays the measured book until it is.
   ⭐ **`canon4-je`** (`config/mod_config.canon4-je.json` + twin, committed 2026-09-03) = canon-4rung + the ruled research-event
   parameters and military channels (§10.69). **Measured n=5 (F102, session 20260903_173810): Britain's JE completions double
   and it holds 2–12 more technologies at 1935, and NOTHING downstream moves** — GDP 0.79× / shortlist 1.09× (the canon's

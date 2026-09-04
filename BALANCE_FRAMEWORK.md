@@ -6684,3 +6684,61 @@ other leisure goods sit inside the canon's price ranges, GDP and companies are a
 sound-film rung was built once (Germany, one level) — the top rung is untested. ⇒ The lever that would produce the
 user's scenario is a `max_supply_share` cap on fine art in the leisure need (0.25, as automobiles), a pop-needs edit the
 overlay arm already knows how to write; untested. Ruling on the ladder itself pending.
+
+## 10.71 — THE VANILLA-FIRST FOUR-RUNG LADDER — `canon4v` (user-ruled, restated 2026-09-04; a CANDIDATE canon awaiting ratification)
+
+**The ruling, in the user's words:** the 4-vanilla → 6-rung → 4-rung path "was not the way and it should have been redone
+from scratch; the default was 4 vanilla → 4 new canon, then only where we want to add a rung or we have a very strong,
+explicitly defined and talked-through reason to change anything do we change anything."
+
+**What the audit of 2026-09-04 found on canon-4rung.** Eleven of seventeen tiered industries carried an INVENTED rung
+while one of their own vanilla methods survived only as an alias: textile (sewing machines), furniture (mechanized
+workshops), glass (crystal glass), tooling (wrought-iron tools), fertilizer (improved fertilizers), steel (open hearth),
+motor (electric engines), automotive (mass production), arms (repeaters), artillery (breech loaders), the art academy
+(photographic art). The cause was `lib_tier4_spec.mjs`'s `DROP_FOR_MODERN` table — the 2026-08-30 "mint them" ruling
+gave twelve industries a modern 1915–1940 rung and, where that made five, the tool dropped the vanilla method with the
+smallest year-gap. A mechanical choice, never talked through. Tech gates were clean throughout (every rung carries its
+own vanilla method's gate); 17 method NAMES are our re-wordings of vanilla's (left as they are — the user declined the
+rename on 2026-09-04).
+
+**The rule now (`make_tier4_config.mjs` + `lib_tier4_spec.mjs`):** every vanilla main method is a rung,
+unconditionally. The ruled MODERN top rung is admitted only if the industry has fewer than four rungs after that; the
+INVENT gap-fillers after it, in their order, only while a slot is free; a candidate that would push an industry past
+four is SKIPPED and reported, never a vanilla method dropped in its favour. Four rungs are placed BY ORDER (rung index =
+era, the anchors being the authority — crystal glass 1674 and film 1912 both sit on an anchor); fewer than four keep the
+adoption-year bands, with an overflow resolved by dropping the last-admitted INVENTION. `make_tier4_techs.mjs` no longer
+emits a minted technology whose rung was not admitted. `film` joins the ERA_MOVES raised to 4 (it is now the academy's
+top rung; the same top-rung rule as the four raised on 2026-08-30).
+
+**The ladder that results (17 industries, 63 buildings; `*` = invented rung, kept because a slot was free):**
+| industry | e0 · 1836 | e1 · 1875 | e2 · 1905 | e3 · 1940 |
+|---|---|---|---|---|
+| food | bakeries | sweeteners | baking powder | dough rollers* |
+| textile | handsewn | dye workshops | sewing machines | electric sewing |
+| furniture | handcrafted | lathes | mechanized workshops | spray finishing* |
+| glass | forest glass | leaded | crystal | houseware plastics |
+| tooling | crude | wrought iron | steel | machined steel |
+| paper | pulp pressing | sulfite pulping | bleaching | continuous web* |
+| fertilizer | artificial | improved | nitrogen fixation | catalytic* |
+| explosives | Leblanc | ammonia-soda | vacuum evaporation | brine electrolysis |
+| steel | blister | Bessemer | open hearth | electric arc |
+| motor | steam | electric | diesel | welded diesel* |
+| automotive | — | — | automobile production | mass production |
+| arms | muskets | rifles | repeaters | bolt action |
+| artillery | cannons | smoothbores | breech loaders | recoil mechanisms |
+| munition | — | percussion caps | explosive shells | automatic lines* |
+| synthetics | — | synthetic dye | art silk* | polyamide* |
+| electrics | — | telephones | electrical generation* | radio* |
+| art academy | traditional | realist | photographic | film |
+Eight minted technologies are gone with their rungs (long-draft spinning, glass fibre, cemented carbide, continuous
+strip mill, stamped receivers, automatic ordnance, transfer machining, sound film); six remain (continuous web,
+catalytic synthesis, spray finishing, high-speed diesel, automatic shell filling, polyamide synthesis). The tree is 193
+technologies, 6 of them ours. Two gap-fillers yielded to a modern top rung where only one slot was free (furniture's
+pneumatic tools, motor's watertube boiler); automotive's transfer machining overflowed the year bands and went.
+
+**The book.** `config/mod_config.canon4v.json` (+ tree twin) = that structure through `make_ab_config --A 2.0 --B 1.5
+--ai-steep glass,tooling:3` (the canon's A/B rule, divisor 0.000125), with canon4-je's research_events transplanted and
+the combustion-engine anchor re-pointed to the motor rungs that exist (electric + diesel). Dry run: lints, solvency, the
+L13 start-conversion check and preflight all pass; 45 research technologies (39 industry + 6 war) → 135 entries. The
+coverage audit reads 0 vanilla methods dropped or unreferenced. NOT yet the canon and NOT run: canon-4rung stays the
+measured book (F98–F103) until the user ratifies this one and a batch measures it.

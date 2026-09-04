@@ -75,6 +75,9 @@ export const ERA_MOVES = {
   bolt_action_rifles:    4,   // tops arms
   electric_railway:      4,   // DRAGGED: depends on nothing raised, but motor t2 rides it and
                               // electrical_capacitors depends on it — keeps the chain non-inverted
+  // 2026-09-04: with the minted sound-film rung gone (vanilla 1:1), vanilla's `film` (era 3) is the academy's TOP rung
+  // and the same top-rung rule applies — raised to 4 like the four above. Nothing in vanilla depends on film.
+  film:                  4,
 };
 
 // ---- DROPPED vanilla methods (user-ruled 2026-08-30: "drop to have at most four industry rungs") --
@@ -86,9 +89,12 @@ export const ERA_MOVES = {
 // history conversion still resolves it — and `improved_fertilizer` the TECHNOLOGY must then still gate
 // something, or lint_tech_content fails the build. It gates the vanilla chemical plant's own method,
 // which the vanilla building still carries, so it stays content-bearing.
-export const DROP_METHODS = {
-  fertilizer: ['pm_improved_fertilizer'],
-};
+// ⭐⭐ SUPERSEDED 2026-09-04 (user-ruled, restated): "the default is 4 vanilla → 4 new canon; only where we want to
+//   add a rung, or have a very strong, explicitly defined and talked-through reason, do we change anything". A vanilla
+//   method is NEVER dropped to make room for an invention: when a candidate rung would push an industry past four, the
+//   INVENTION yields (make_tier4_config admits MODERN first, then INVENT, only while a slot is free). improved_fertilizer
+//   is back on its rung — with four rungs placed by ORDER rather than by year band (the 4→4 default) it fits.
+export const DROP_METHODS = {};
 
 // ---- MODERN TOP RUNGS (user-ruled 2026-08-30: "go with 1, mint them") -------------------------
 // TWELVE industries stopped 25+ years short of 1940 — furniture at 1871, arms 1886, munition 1884 —
@@ -118,18 +124,13 @@ export const MODERN = {
 // ⭐ glass drops `pm_crystal_glass`: it also cures the t0/t1/t2-all-on-era-1 fault, since crystal_glass
 //   was the third era-1 gate in that ladder.
 // ⭐ munition drops `smokeless_powder` (1884, nine years after 1875) — which also removes one MINT.
-export const DROP_FOR_MODERN = {
-  furniture:  'pm_mechanized_workshops',
-  textile:    'pm_sewing_machines',
-  glass:      'pm_crystal_glass',
-  tooling:    'pm_pig_iron',
-  steel:      'pm_open_hearth_process',
-  motor:      'pm_electric_engines',
-  arms:       'pm_repeaters',
-  artillery:  'pm_breech_loaders',
-  automotive: 'pm_mass_automobile_production',
-  art_academy:'pm_photographic_art',
-};
+// ⭐⭐ RETIRED 2026-09-04 (user-ruled, restated): the table above dropped TEN vanilla methods so that minted modern rungs
+//   could take the fourth slot — the audit of that day found every one of them surviving only as an alias (textile's
+//   sewing machines, glass's crystal glass, tooling's wrought iron, steel's open hearth, motor's electric engines, arms'
+//   repeaters, artillery's breech loaders, automotive's mass production, the academy's photographic art, furniture's
+//   mechanized workshops). "4 vanilla → 4 new canon" is the default; a MODERN rung is admitted only where a slot is free
+//   (munition, synthetics, electrics keep theirs; the eleven above lose theirs, and their minted technologies with them).
+export const DROP_FOR_MODERN = {};
 
 // ---- THE COST BOOK: THREE LADDERS, VANILLA-ANCHORED, ONE GROWTH PATTERN (user-ruled 2026-08-30)
 // "t0 are exactly vanilla, take vanilla payback period (for all 1836 scenario industries together),
