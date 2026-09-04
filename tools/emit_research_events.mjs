@@ -175,7 +175,12 @@ for (const ind of CFG.industries) {
 //   way; we only ever ADD ours.
 //   Revert either by setting research_events.scope to 'all' in the config.
 // technologies that unlock a LAND combat unit type (00_land_combat_unit_types.txt), read live
-const UNIT_TECHS = (() => { const out = new Set(); try { const dir = join(GAME, 'common/combat_unit_types'); for (const f of readdirSync(dir)) { if (!/^00_land/.test(f)) continue; const txt = readFileSync(join(dir, f), 'utf8').replace(/#.*$/mg, ''); for (const m of txt.matchAll(/unlocking_technologies\s*=\s*\{([^}]*)\}/g)) for (const t of m[1].trim().split(/\s+/).filter(Boolean)) out.add(t); } } catch (e) { throw new Error('combat_unit_types unreadable: ' + e.message); } return out; })();
+// ⚠ BY THE UNIT'S GROUP, NEVER BY THE FILE IT SITS IN (2026-09-04): vanilla files the three MARINES unit types under
+//   land because marines fight on land, but their gates — line_infantry, power_of_the_purse (prerequisite admiralty),
+//   landing_craft (jeune_ecole/monitor_tech) — are the NAVAL tree's, and the user ruled no naval entries. Reading
+//   "named in 00_land_*" as "army technology" put two naval technologies on the war channel for all five runs of
+//   canon4-je-n5 (BUGS_AND_FIXES 2026-09-03). So each unit-type block is parsed and `combat_unit_group_marines` skipped.
+const UNIT_TECHS = (() => { const out = new Set(); try { const dir = join(GAME, 'common/combat_unit_types'); for (const f of readdirSync(dir)) { if (!/^00_land/.test(f)) continue; const txt = readFileSync(join(dir, f), 'utf8').replace(/#.*$/mg, ''); const re = /^([a-z_0-9]+)\s*=\s*\{/gm; let m; while ((m = re.exec(txt))) { let i = re.lastIndex, d = 1; while (i < txt.length && d > 0) { if (txt[i] === '{') d++; else if (txt[i] === '}') d--; i++; } const body = txt.slice(re.lastIndex, i - 1); re.lastIndex = i; const g = (body.match(/^\s*group\s*=\s*([a-z_0-9]+)/m) || [])[1]; if (g === 'combat_unit_group_marines') continue; const u = body.match(/unlocking_technologies\s*=\s*\{([^}]*)\}/); if (u) for (const t of u[1].trim().split(/\s+/).filter(Boolean)) out.add(t); } } } catch (e) { throw new Error('combat_unit_types unreadable: ' + e.message); } return out; })();
 const JE_SCOPE = (RE.scope || 'tiers_only');
 // ⭐ rule C on the unit-type technologies alone (user-ruled 2026-09-03), whatever the scope: `research_events.war_channel = 'unit_types'`
 if (RE.war_channel === 'unit_types')

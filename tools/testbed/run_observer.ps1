@@ -301,6 +301,17 @@ function Read-Tail {
     try { $len = (Get-Item $State.Path -ErrorAction Stop).Length } catch { return $lines }
 
     if ($len -lt $State.Pos) {
+        # ⚠ LANDMINE L28 — A SHRUNK LENGTH IS NOT ALWAYS A ROTATION. Get-Item reads the DIRECTORY
+        # entry, which NTFS updates lazily for a file another process holds open, while Read-Chunk
+        # reads through a handle and sees the true size - so for seconds at a time the directory
+        # length sits BELOW the position we have already read to. Treating that as a rotation reset
+        # Pos to 0 and re-copied the whole current file every 250 ms poll: run 4 of canon4-je-n5
+        # appended one 946-line chunk 27 times in eight seconds (seams "recovered 0 chars from []"),
+        # canon-n7 run 1 sixteen times. V3TB lines were saved by Seen2; every other line (the research
+        # journal's PMR_JE completions, the game's own events) was multiplied. A real rotation gives
+        # the current path a NEW first line, so an unchanged signature means a stale length: wait.
+        $sigNow = Get-SegmentSig $State.Path
+        if ($sigNow -and $sigNow -eq $State.Sig) { return $lines }
         # The game rotated this log out from under us. The ring is 5 x 512 KB and a SINGLE
         # telemetry dump can write ~450 KB, so more than one rotation can happen between polls -
         # the earlier "read <name>.1" fix handled exactly one and silently lost whole segments

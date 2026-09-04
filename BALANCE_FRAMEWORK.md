@@ -6581,6 +6581,20 @@ Net on canon4-je: **51 technologies (43 industry, 8 war) → 153 journal entries
 staged state; the army-in-soldiers anchors of the paragraph above are superseded for percussion cap and the explosives
 first rung (the six-rung canon still carries `bg_army + bg_conscription` for munition).
 
+⭐⭐ **MEASURED — canon4-je-n5 (2026-09-03/04, F102, n = 5, no stall).** The restored research-event parameters double
+Britain's journal-entry completions (29–43 unique a run against the canon's 14–21), meet the era-3 coverage target in
+every seed and the era-2 target in one, and leave Britain with 2–12 more technologies at 1935 (163–172 against
+160–165). Downstream, nothing moves: world GDP 0.79× vanilla (canon 0.79–0.85), shortlist 1.09× (1.02–1.16), companies
+at the reference, the tiered workforce's era mix inside the canon's spread (British e3 rungs 1.3–10.1% of the sector
+against 1.4–5.9%), output prices inside F94's band in pounds and falling in wage units exactly as in the canon, and the
+F75 build-choice measure 3pp WORSE (37.3% below-best against 34.5%). ⇒ Journal entries buy technologies, not
+capacity: the AI holds the era-3 technologies and does not build the era-3 rungs — F97's mechanism unchanged. The
+"bring them back and it balances" hypothesis is NOT supported. Instrument findings from the same batch: the two
+marines technologies on the war channel (FIXED — `combat_unit_group_marines` excluded, six war entries), the
+consumption anchor ticking for every market member (OPEN — candidate `market.owner = ROOT`), the log mirror's
+false-rotation duplication (L28, FIXED + detector), the secondaries' missing loc (FIXED). The staged config stays
+committed as `config/mod_config.canon4-je.json`; it is NOT promoted to a canon.
+
 **What it does NOT settle — the open list, in the order the user is weighing it.**
 1. **The company rebuild pattern** — a company expands its rung-0 buildings all century (DMC 21 of France's 25
    rung-0 textile mills in ab3 seed 3; 74 of 75 American rung-0 tooling workshops in seed 1; 82 of 83 French

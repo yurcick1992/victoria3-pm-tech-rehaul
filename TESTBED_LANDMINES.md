@@ -75,6 +75,7 @@ closed.
 | L24 | A generator's own diagnostic text leaked into an emitted script file | AUTO |
 | L25 | A summary reader globs *.json.gz and reads the harvester's in-progress file | AUTO |
 | L27 | An analysis script walks cfg.industries for tiers without skipping `disabled` industries (their rung-0 key IS the vanilla building) | AUTO |
+| L28 | The log MIRROR re-copied the current log on a FALSE rotation — a stale directory length below the read position reset the tail to 0 every poll; non-telemetry lines (PMR_JE, events) multiplied ×2–28 in bursts | AUTO (post-run) | `Test-LmL28` — any `recovered 0 chars from []` seam in a run's `logs_live/*.log` FAILS; observer fixed 2026-09-04 |
 
 ---
 
@@ -1502,3 +1503,39 @@ A config walker that means "our tiered industries" says so: `cfg.industries.filt
 `if (ind.disabled) continue;` as the loop's first statement. The emitters learned this on 2026-08-29
 (`emit_research_events` died on a disabled shipyard tier); the analysis side did not fail loudly, which is exactly
 why it needed a detector rather than a note.
+
+## L28 — THE LOG MIRROR RE-COPIED THE CURRENT LOG ON A FALSE ROTATION (found 2026-09-04, canon4-je-n5 run 4)
+
+**Status: AUTO** — `Test-LmL28` in `tools/preflight.ps1`, post-run (`-Session <dir>`): FAIL when any run's
+`logs_live/debug.log`, `error.log` or `dedicated_server.log` holds a seam line `--- harness: source log rotated at
+HH:MM:SS, recovered 0 chars from [] ---`. Proven: FAIL on 20260903_173810_canon4-je-n5 (runs 1 and 4) and on the
+vanilla n=16 baseline; the observer is fixed, so a session recorded after 2026-09-04 must PASS.
+
+**What happened.** `Read-Tail` in `run_observer.ps1` took "the file's length is below the position I have read to"
+as proof of a rotation. `Get-Item` reads the DIRECTORY entry, which NTFS updates lazily for a file another process
+holds open, while `Read-Chunk` reads through a handle and sees the true size — so for seconds at a time the directory
+length sat below `Pos`. The rotation branch drained nothing (no unseen rotated segment), reset `Pos` to 0, and the
+current-file branch re-copied the whole current log; on the next 250 ms poll the directory length was still stale, and
+again. Run 4 of canon4-je-n5 appended one 946-line chunk **27 times in eight seconds** (03:48:30–38); canon-n7 run 1
+**16 times** (1844.11); sporadic ×2 elsewhere (63 doubled completions in run 1, spread over forty years).
+
+**Why nothing failed.** The `V3TB|` telemetry lines are de-duplicated by the mirror's `Seen2` set (added on
+2026-08-01 for the multi-rotation drain), so every TSV and every summary was right. Every OTHER line was multiplied:
+the research journal's `PMR_JE|stage|tech|country` completions, the game's own event lines, the error mirror. A
+reader counting those lines over-reads silently — the same (country, technology, stage) appearing 28 times in one
+second looked like a journal-entry loop and cost an hour of diagnosis before the seam lines gave it away.
+
+**Impact on the record.** F101's six-rung per-run counts are RAW LINES: canon-n7 run 1's 12,004 are 5,232 unique
+completions (×2.3); solver2f run 1's 4,805 are 4,576; the four-rung 620–690 are within 10% of unique. Per-country
+readings and coverage percentages (distinct technologies) are unaffected. Smoke-check error counts read off
+`logs_live/error.log` in an affected window are inflated the same way.
+
+**Fix.** `Read-Tail`: on a shrunk length, take the current file's first-line signature; if it equals the remembered
+one, the length is stale — return without touching `Pos`. A real rotation gives the current path a new first line
+(or an empty file, whose signature is `""`), so the drain still runs for those. Readers: count UNIQUE
+(country, technology, stage) triplets — `tools/testbed/ledger/je_tally.mjs` does, and prints the raw line count
+beside the unique one so the duplication is visible per run.
+
+**Rule.** A count taken off a mirror is a count of what the MIRROR holds, not of what the game did. Anything that
+tallies non-telemetry lines de-duplicates first, and a burst of identical lines in one second is the mirror, not the
+engine, until a unique game line in the same second is shown NOT to be duplicated.

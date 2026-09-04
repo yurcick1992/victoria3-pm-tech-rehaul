@@ -9915,3 +9915,117 @@ tooling e2 15, arms e2 8, textile e3 47, AA guns 22, film 15.
 
 **What it does NOT say.** Whether more firings move the ladder: F97's death mechanism (wages, not prices) still gates
 obsolescence, and the six-rung canon's faster tree came with the GDP overshoot the four-rung book was built to avoid.
+
+⚠ **F101's per-run completion counts are RAW MIRROR LINES (L28, found 2026-09-04): the six-rung canon-n7 run 1 figure is
+2.3× inflated (12,004 lines, 5,232 unique completions); solver2f ~5% (4,805 → 4,576); the four-rung 620–690 within 10%.
+The per-country and coverage readings stand. See F102 §6.**
+
+## F102 — Restoring the research-event parameters on the four-rung book (canon4-je-n5, 2026-09-03/04): Britain's journal entries double, its technology count rises by 2–12, and NOTHING DOWNSTREAM MOVES
+
+**Arm.** `{kind: config, config: config/mod_config.canon4-je.json}` — canon-4rung (§10.69) with ONE change, the
+`research_events` block: marks 25k / 75k / 235k workers by the era of the UNLOCKED rung, 60-month stages, ×0.5 on
+arms / artillery / explosives / munition / synthetics, every source in fully staffed levels with the live figure in the
+entry text, the art academy counted, the war channel on the land unit-type technologies (a general with ≥ 50 battalions
+on a front against an enemy holding the technology, 6-tick stages, no casualties clause), percussion cap on small-arms
+consumption (≥ 900/week, the British market's 1846 level), no naval entries. Session `20260903_173810_canon4-je-n5`,
+**n = 5**, 1836 → 1936.1.1, every run reached its date (run 1 crashed to desktop at 1906.2.3 and resumed cleanly from
+the 1906.1.1 autosave: one campaign, L26 PASS). Compared against canon-4rung (`20260903_094941_canon4-tgate-n2`, the
+same book, n = 2; and `20260903_000418_ab3-n3` runs 1 and 3) and vanilla n = 16 (`20260821_131149`).
+**No stall**: world GDP at 1935 0.65–0.96× vanilla in the five seeds; British GDP £554–832M against the canon's
+£563–788M (run 5, the weakest world at 0.65×, has the STRONGEST Britain at £832M — a small world, not a British stall).
+
+### 1. The economy is the canon's, to the decimal
+| 1935, ÷ vanilla median | JE n=5 median (range) | canon-4rung n=2 |
+|---|---|---|
+| world GDP | 0.79× (0.65–0.96) | 0.79–0.85× |
+| world productive workers per capita | 0.66× | 0.65–0.67× |
+| world GDP per productive worker | 1.21× | 1.20–1.30× |
+| shortlist GDP (GBR USA FRA NET BEL PRU GER) | 1.09× (0.81–1.30) | 1.02–1.16× |
+| shortlist productive workers per capita | 0.74× | 0.65–0.81× |
+| shortlist GDP per productive worker | 1.48× | 1.43× |
+Companies at the reference: shortlist 26 vs 25, regional HQs 120 vs 104, company-held share 34.7% vs 34.4%.
+Construction allocation by sector within ±2.3pp of the canon; the era mix of tiered levels e0 24.6% → 24.6%,
+e1 46.3% → 44.4%, e2 28.0% → 29.6%, e3 1.1% → 1.5% (1.46× absolute on a tiny base).
+
+### 2. The journal entries fired as designed — for Britain
+Unique (country, technology, stage) completions per run (the raw mirror lines over-count, see L28):
+| | JE runs 1–5 | canon runs |
+|---|---|---|
+| completions per run | 459 · 440 · 512 · 346 · 331 | 617–629 |
+| Great Britain | 43 · 29 · 38 · 40 · 35 | 14–21 |
+| France | 3 · 1 · 3 · 3 · 0 | 0–3 |
+| United States | 10 · 8 · 15 · 10 · 9 | 6–10 |
+| GBR coverage, era-1 rungs | 33 · 25 · 25 · 17 · 17% | 8–25% |
+| GBR coverage, era-2 rungs | 47 · 33 · 53 · 40 · 47% | 27–40% |
+| GBR coverage, era-3 rungs | 35 · 35 · 35 · 41 · 53% | 18–29% |
+| GBR technologies held 1900 | 127 · 127 · 128 · 132 · 128 | 125–132 |
+| GBR technologies held 1935 | 172 · 163 · 172 · 166 · 169 | 160–165 |
+The total FELL (the 60-month stages halve the minors' completion rate; the lower marks admit few of them) while
+Britain's roughly doubled. The user's calibration targets — ≥ 50% of era-2-unlocking technologies with a stage fired,
+≥ 20% of era-3 — hold for era 3 in 5 of 5 runs and for era 2 in 1 of 5 (3 of 5 at ≥ 45%). Britain finishes with 2–12
+more technologies than any canon run.
+
+### 3. …and none of it reached the ladder
+Tiered workforce by rung era, Britain, 1935 (staffed levels × per-level employment):
+| | JE runs 1–5 | canon runs |
+|---|---|---|
+| e0 | 1.6 · 2.3 · 1.9 · 1.9 · 1.3% | 0.9–1.4% |
+| e1 | 46.8 · 34.6 · 55.9 · 42.6 · 43.6% | 39.4–45.6% |
+| e2 | 50.3 · 52.9 · 41.0 · 52.4 · 49.8% | 50.2–55.8% |
+| e3 | 1.3 · 10.1 · 1.3 · 3.0 · 5.3% | 1.4–5.9% |
+The shortlist reads the same (e3 2.0 · 4.8 · 1.6 · 1.8 · 4.0% against 1.5–4.1%). Britain's extra technologies sit exactly
+where the era-3 rungs are, and those rungs employ 1–10% of the sector in the JE arm as in the canon. The frontier showed
+earlier at 1905 (rubber-grip tooling 22–78 levels against the canon's 0–56; plastics glass 0–8 against 0–12) and did not
+compound. The F75 build-choice measure is slightly WORSE: 37.3% of levels built below the best held tier (35.1–39.6%)
+against the canon's 34.5% (34.1–34.9%).
+
+### 4. Output prices did not fall — in pounds; in wage units they fell as in the canon
+British market, % of base, 1935 (JE n=5 median / canon n=4 / vanilla n=16): groceries 88 / 94 / 116 · clothes
+117 / 131 / 105 · furniture 77 / 112 / 84 · glass 119 / 121 / 105 · tools 116 / 113 / 91 · paper 117 / 107 / 107 ·
+steel 90 / 83 / 111 · engines 113 / 105 / 132 · small arms 74 / 82 / 72 · ammunition 91 / 76 / 108. Everything inside
+F94's 0.65–1.35 band. In WAGE units (÷ the British base wage, 1836 = 100), 1935: groceries 32 / 25 / 45 · furniture
+52 / 53 / 55 · glass 77 / 67 / 72 · tools 54 / 41 / 54 · paper 57 / 40 / 48 · steel 80 / 50 / 68 · clothes 114 / 101 / 83 ·
+engines 100 / 74 / 95; base wage 1935 £988 / £961 / £904 a week (×1.65 / ×1.60 / ×1.55 over 1837). The decline exists,
+it is the wage rising, and the JE arm's late-century prices in wage units are if anything HIGHER than the canon's.
+
+### 5. The military channels, measured
+- **War entries fire for minors and Russia.** Army completions (the six army technologies) 17–37 unique per run
+  (trench works 8–17, defense in depth 2–8, general staff 1–4, NCO training 2–14, breech-loading artillery 1–3). Among
+  the majors only Russia (every run), Austria (runs 3–4) and the United States (trench works / NCO training, runs 3–5)
+  fired one; Britain, France and Prussia never. Two naval-tree technologies rode the channel by a classifier defect
+  (power of the purse and landing craft unlock MARINES, which vanilla files under land): 2–13 completions a run,
+  minors and Russia. Fixed 2026-09-04 (units in `combat_unit_group_marines` excluded — six war entries remain).
+- **The small-arms consumption anchor ticks for every MEMBER of a market.** Percussion cap completed 17–50 times a
+  run, nearly all for princely states and other British-market members reading Britain's 900+ small arms a week as
+  their own; Britain itself never (researched within a few years of 1836). Open; the candidate fix is to AND the term
+  with market ownership (`market.owner = ROOT`, the port strategies' idiom).
+
+### 6. Three instrument defects the batch found, all fixed
+- **L28 — the log mirror re-copied the current log on a FALSE rotation.** A stale directory length below the read
+  position made Read-Tail reset to 0 every 250 ms poll: run 4 appended one 946-line chunk 27 times in eight seconds
+  (seams `recovered 0 chars from []`), canon-n7 run 1 sixteen times. Telemetry lines were de-duplicated by the
+  mirror; PMR_JE and event lines were not. ⚠ **F101's six-rung figures are RAW LINE COUNTS**: canon-n7 run 1's 12,004
+  lines are 5,232 unique completions; solver2f run 1's 4,805 are 4,576; the four-rung 620–690 are within 10% of unique.
+  Observer fixed (an unchanged first-line signature is a stale length, not a rotation); `Test-LmL28` walks a session.
+- **A run that crosses midnight cannot be windowed by wall time**; the run's own telemetry token marks where its
+  mirror lines begin. `tools/testbed/ledger/je_tally.mjs` is the durable tally (token window + de-duplication).
+- **The rescaled secondary methods shipped without loc** (700–1,000 `missing loc key` lines a run since ab1, raw keys
+  in the building panel). `emit_secondaries.mjs` now emits every copy's name as a reference to its vanilla source in
+  all 11 languages (82 keys).
+
+### 7. Performance
+Total wall clock median 160.1 min against vanilla's 165.1 (0.97×, the arms simulating ×0.85 the pop objects and ×0.78
+the levels); pop-matched +4.3% (12 of 14 bins overlap) — inside the 10% budget.
+
+### What it says
+Bringing the journal entries back to the six-rung level (and beyond, for Britain) buys technologies, not capacity. The
+four-rung book with restored JEs is the four-rung book: same GDP, same companies, same era mix, same prices, a
+3pp-worse tier choice. The AI holds the era-3 technologies and does not build the era-3 rungs, which is F97's
+mechanism unchanged — nothing kills the old rung, so nothing pulls capital to the new one. The user's hypothesis
+("when we bring them back to the old level, this gets balanced to better equilibria") is not supported at n = 5.
+
+### What it does NOT say
+It does not say the journal entries are useless — Britain's coverage targets were met for era 3 and nearly for era 2,
+and a country at the frontier researches 2–12 technologies more. It does not measure the six-rung canon's GDP lift from
+JEs, which was measured on a different book with a different tech tree. n = 5 against a reference of n = 2 + 2: GDP
+differences under ~10% and JE-count differences under ~20% are inside the seed spread.

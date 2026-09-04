@@ -867,6 +867,52 @@ function Test-LmL17 {
     }
 }
 
+function Test-LmL28 {
+    <#
+      L28 - THE LOG MIRROR RE-COPIED THE CURRENT LOG ON A FALSE ROTATION.
+
+      run_observer's Read-Tail took "directory length below my read position" as proof of a rotation.
+      Get-Item reads the DIRECTORY entry, which NTFS updates lazily for a file another process holds
+      open, while the chunk reader sees the true size through a handle - so for seconds at a time the
+      length sits below Pos, the tail reset Pos to 0 and re-copied the whole current file on EVERY
+      250 ms poll. Run 4 of 20260903_173810_canon4-je-n5 appended one 946-line chunk 27 times in eight
+      seconds; canon-n7 run001 sixteen times. V3TB telemetry lines were saved by the Seen2 de-dupe;
+      every other line - the research journal's PMR_JE completions, the game's own event lines, the
+      error mirror's lines - was multiplied. A raw line count off the mirror then over-reads: F101's
+      canon-n7 run001 figure (12,004 lines) is 5,232 unique completions.
+
+      Nothing fails: the run completes, the TSVs are right (V3TB de-duped), the summaries are right.
+      Only a reader that COUNTS non-telemetry lines is wrong, and it is wrong silently.
+
+      The observer is fixed (an unchanged first-line signature means a stale length, not a rotation).
+      This entry is the ARTIFACT-side check: every false rotation left a seam line reading
+      `recovered 0 chars from []`, so a session on disk says for itself whether its mirrors carry
+      duplicated chunks. FAIL = at least one such seam in any run; count PMR_JE and event lines from
+      such a mirror only after de-duplicating (tools/testbed/ledger/je_tally.mjs does).
+    #>
+    if (-not $Session) { Add-Result 'L28' 'log mirror re-copied on a false rotation' 'N/A' 'no -Session given (this entry is post-run)'; return }
+    if (-not (Test-Path $Session)) { Add-Result 'L28' 'log mirror re-copied on a false rotation' 'FAIL' "no such session: $Session"; return }
+    $hits = @(); $checked = 0
+    foreach ($run in @(Get-ChildItem $Session -Directory)) {
+        foreach ($name in @('debug.log', 'error.log', 'dedicated_server.log')) {
+            $mirror = Join-Path $run.FullName ("logs_live\" + $name)
+            if (-not (Test-Path $mirror)) { continue }
+            $checked++
+            $n = 0
+            foreach ($l in [System.IO.File]::ReadLines($mirror)) {
+                if ($l.StartsWith('--- harness: source log rotated') -and $l.Contains('recovered 0 chars from []')) { $n++ }
+            }
+            if ($n -gt 0) { $hits += ("{0}/{1}: {2} false rotation(s)" -f $run.Name, $name, $n) }
+        }
+    }
+    if ($checked -eq 0) { Add-Result 'L28' 'log mirror re-copied on a false rotation' 'N/A' 'no logs_live mirrors in this session'; return }
+    if ($hits.Count) {
+        Add-Result 'L28' 'log mirror re-copied on a false rotation' 'FAIL' ("mirror chunks DUPLICATED - de-duplicate before counting lines: " + ($hits -join ' | '))
+    } else {
+        Add-Result 'L28' 'log mirror re-copied on a false rotation' 'PASS' ("no zero-recovery seam in $checked mirror(s)")
+    }
+}
+
 function Test-LmL26 {
     <#
       L26 - ONE RUN FOLDER HOLDING TWO CAMPAIGNS.
@@ -1113,6 +1159,7 @@ $CHECKS = @(
     @{ Id = 'L12'; Artifact = $false; Fn = { Test-LmL12 } },
     # L26 is the SECOND post-run entry, same N/A-without--Session rule as L12.
     @{ Id = 'L26'; Artifact = $false; Fn = { Test-LmL26 } },
+    @{ Id = 'L28'; Artifact = $false; Fn = { Test-LmL28 } },
     @{ Id = 'L14'; Artifact = $true;  Fn = { Test-LmL14 } },
     @{ Id = 'L15'; Artifact = $true;  Fn = { Test-LmL15 } },
     @{ Id = 'L17'; Artifact = $false; Fn = { Test-LmL17 } },
