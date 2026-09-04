@@ -1,7 +1,7 @@
 {
   "schedule_version": 1,
-  "label": "canon4-art-n3",
-  "_why": "THE ART-ACADEMY STRESS TEST, take 2 (user-directed 2026-09-04): canon4-je (canon-4rung + the ruled research events, F102 — economically the canon) with ONE change, the art academy's ladder on explicit per-rung multipliers — fine art 5 / 10 / 35 / 80 a level (canon 5 / 10 / 20 / 40; e1/e0 ×2 as the other industries, e2/e1 ×3.5, e3/e2 ×2.3), input value ×1 / 1.5 / 3 / 4.5 (£300 / 450 / 900 / 1,350 at base over the rungs' own vanilla mixes), building_cost 400 / 800 / 2,400 / 3,600 points, ai_value the era rule 1000×2^era, target_be 40 / 30 / 17 / 11%. The user's criterion: e3 profitable but not wildly at a 1930s wage with inputs at +75% and output at −75% — computed: +32% at the French/American 1935 wage, +23% British, +10% at the German top; e2 loses 22–39% there; e0 and e1 die at the floor. Every other industry byte-identical to canon4-je; the private-pool cost divisor PINNED at the canon's 0.000125. The user's question: 'It always bugged me that replicated IP-style entertainment works in game roughly the same as all other, labour-intensive industries. I want to see whether making it realistic would break anything (or maybe to the contrary, it will introduce desirable consequences of unpegging other goods' prices from consumption equilibria, with the price shock of fine art becoming dirt cheap).' config/mod_config.canon4-art.json; tech-tree twin = canon4-je's. n=3, 1836 → 1936.1.1.",
+  "label": "canon4-art-n2",
+  "_why": "THE ART-ACADEMY STRESS TEST, take 2 (user-directed 2026-09-04): canon4-je (canon-4rung + the ruled research events, F102 — economically the canon) with ONE change, the art academy's ladder on explicit per-rung multipliers — fine art 5 / 10 / 35 / 80 a level (canon 5 / 10 / 20 / 40; e1/e0 ×2 as the other industries, e2/e1 ×3.5, e3/e2 ×2.3), input value ×1 / 1.5 / 3 / 4.5 (£300 / 450 / 900 / 1,350 at base over the rungs' own vanilla mixes), building_cost 400 / 800 / 2,400 / 3,600 points, ai_value the era rule 1000×2^era, target_be 40 / 30 / 17 / 11%. The user's criterion: e3 profitable but not wildly at a 1930s wage with inputs at +75% and output at −75% — computed: +32% at the French/American 1935 wage, +23% British, +10% at the German top; e2 loses 22–39% there; e0 and e1 die at the floor. Every other industry byte-identical to canon4-je; the private-pool cost divisor PINNED at the canon's 0.000125. The user's question: 'It always bugged me that replicated IP-style entertainment works in game roughly the same as all other, labour-intensive industries. I want to see whether making it realistic would break anything (or maybe to the contrary, it will introduce desirable consequences of unpegging other goods' prices from consumption equilibria, with the price shock of fine art becoming dirt cheap).' config/mod_config.canon4-art.json; tech-tree twin = canon4-je's. n=2 (user: \"Build and go with n=2 (not 3)\"), 1836 → 1936.1.1.",
   "_arms": {
     "canon4-art": "{kind: config, config: config/mod_config.canon4-art.json} — canon4-je with the art academy on --tiers-for out=1,2,7,16;in=1,1.5,3,4.5;cost=1,2,6,9 (--divisor 0.000125), research_events transplanted from canon4-je"
   },
@@ -20,9 +20,9 @@
     "first run (before the batch completes): fine art price path in the British and French markets, academy levels by rung, the leisure goods' prices vs canon4-je, prestige_out fine_art, first_run_decomp, company_check",
     "post-run: preflight -Session (L12/L17/L26/L28 — L28 must PASS on a session recorded after the 2026-09-04 observer fix)"
   ],
-  "_cost": "3 × 1836→1936, ~2.7 h each: ~8 h. NOT LAUNCHED — awaiting the user's explicit go-ahead (config built and verified 2026-09-04).",
+  "_cost": "2 × 1836→1936, ~2.7 h each: ~5.5 h. LAUNCHED 2026-09-04 with the user's explicit go-ahead (\"Build and go with n=2\").",
   "_caveats": [
-    "n=3 against a base of n=5: GDP under ~10% and JE counts under ~20% do not resolve; the fine-art price, the academy era mix and the leisure-goods prices are the readings this batch is for.",
+    "n=2 against a base of n=5: GDP under ~10% and JE counts under ~20% do not resolve; the fine-art price, the academy era mix and the leisure-goods prices are the readings this batch is for — each is a large, structural effect if it exists at all.",
     "The cost divisor is pinned to the canon's 0.000125 and the dearest academy is 3,600 points (below the book's 6,400 top rung), so the academy scores in the private pool like any mid-book rung.",
     "The market-consumption anchor is unused and percussion cap rides bg_military_industry (12,500 workers); the war channel carries the six army technologies (marines excluded) — both post-F102 fixes are in this arm and NOT in canon4-je's runs."
   ],
@@ -69,10 +69,6 @@
     }
   },
   "runs": [
-    {
-      "setup": "canon4-art",
-      "until": "1936.1.1"
-    },
     {
       "setup": "canon4-art",
       "until": "1936.1.1"
