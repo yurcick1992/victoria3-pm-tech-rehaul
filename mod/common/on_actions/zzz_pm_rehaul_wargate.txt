@@ -25,10 +25,12 @@ pmr_wargate_eval = {
 				any_scope_war = {
 					any_scope_front = {
 						any_scope_general = {
+							exists = owner
 							owner = ROOT
 							num_mobilized_battalions >= 50
 						}
 						any_scope_general = {
+							exists = owner
 							NOT = { owner = ROOT }
 							owner = { has_technology_researched = breech_loading_artillery }
 						}
@@ -42,10 +44,12 @@ pmr_wargate_eval = {
 				any_scope_war = {
 					any_scope_front = {
 						any_scope_general = {
+							exists = owner
 							owner = ROOT
 							num_mobilized_battalions >= 50
 						}
 						any_scope_general = {
+							exists = owner
 							NOT = { owner = ROOT }
 							owner = { has_technology_researched = defense_in_depth }
 						}
@@ -59,10 +63,12 @@ pmr_wargate_eval = {
 				any_scope_war = {
 					any_scope_front = {
 						any_scope_general = {
+							exists = owner
 							owner = ROOT
 							num_mobilized_battalions >= 50
 						}
 						any_scope_general = {
+							exists = owner
 							NOT = { owner = ROOT }
 							owner = { has_technology_researched = general_staff }
 						}
@@ -76,10 +82,12 @@ pmr_wargate_eval = {
 				any_scope_war = {
 					any_scope_front = {
 						any_scope_general = {
+							exists = owner
 							owner = ROOT
 							num_mobilized_battalions >= 50
 						}
 						any_scope_general = {
+							exists = owner
 							NOT = { owner = ROOT }
 							owner = { has_technology_researched = mobile_armor }
 						}
@@ -93,10 +101,12 @@ pmr_wargate_eval = {
 				any_scope_war = {
 					any_scope_front = {
 						any_scope_general = {
+							exists = owner
 							owner = ROOT
 							num_mobilized_battalions >= 50
 						}
 						any_scope_general = {
+							exists = owner
 							NOT = { owner = ROOT }
 							owner = { has_technology_researched = nco_training }
 						}
@@ -110,10 +120,12 @@ pmr_wargate_eval = {
 				any_scope_war = {
 					any_scope_front = {
 						any_scope_general = {
+							exists = owner
 							owner = ROOT
 							num_mobilized_battalions >= 50
 						}
 						any_scope_general = {
+							exists = owner
 							NOT = { owner = ROOT }
 							owner = { has_technology_researched = trench_works }
 						}
