@@ -111,6 +111,22 @@ and a renderer made to throw. Re-prove it if you change the checker.
 the template, prose in the token files (`lede/goals/incidents/next/footer.html`), numbers in a
 `fill_*.mjs`. If a paragraph names a year, a country, a run or a number, it is a TOKEN, not shell.
 
+## ⚠ The GDP chart's legend and spread sentence are TOKENS since 2026-09-05
+
+The shell's world-GDP chart carried three literals from the flatcost-n1 fill — the arm line labelled
+`flat 0.65×`, the reference line `×1.5^era`, the vanilla baseline `(n=4 mean)` — and a caption sentence
+"this batch's individual runs range 0.59–1.02× at 1936". **Every report published from 2026-08-15 to
+2026-09-03 shipped them** (ab3-n3's GDP chart calls the ab3 arm "flat 0.65×" and the ab2 reference
+"×1.5^era", and quotes a spread that is not its own). Nothing tripped, because the staleness list is a list of
+strings and nobody had added these. They are now `__ARMLABEL__`, `__NBLABEL__`, `__VANLABEL__` and
+`__SPREAD__` in `fill_manifest.json`, filled from the out-dir `tokens.json` — a fill that omits them fails
+the gate on an unfilled token rather than publishing another batch's labels. `__SPREAD__` is the whole
+sentence after "A median hides the spread —" (the per-run ratio range at 1935 and how to read it).
+
+⚠ **`fill_tierchoice` pushes `--baseline` rows FIRST and the arm's row LAST.** `fill_goals` used to read
+`rows[0]` as the arm's below-best share, which is right only when no baseline is passed (every fill until
+canon4v-art3). It now takes the last row. Any new reader of `tierchoice.json` must do the same.
+
 ## ⚠ Every industry loop SKIPS `disabled` industries (2026-09-03)
 
 On a four-rung book `port` / `shipyard` / `shipyard_steam` / `railway` / `power` carry `disabled: true`; their

@@ -173,6 +173,17 @@ const PERF={"source":"20260813_083557_vanilla-vs-mod-n4","runs":[{"label":"run00
 // ⚠ REFILL with report_perf.mjs --json, then regenerate the PERF const (README step 1b).
 // Speed is IN-GAME YEARS PER MINUTE: higher is better. The pop-matched % stays the only headline;
 // the by-year view is the readable one and is explicitly NOT the verdict.
+// ⭐ DERIVED (2026-09-05): the raw-view caption used to state "vanilla from about 1.0 to 0.4 … The mod tracks it
+//   closely" as a literal; both halves now come from PERF.byYear (in-game years per minute, per arm).
+function perfShapeText(){
+  const v=(PERF.byYear&&PERF.byYear.van)||{}, m=(PERF.byYear&&PERF.byYear.mod)||{};
+  const vy=Object.keys(v).map(Number).sort((a,b)=>a-b); if(!vy.length) return '⚠ Same-date comparison; the verdict is the pop-matched figure above.';
+  const dev={}; for(const y of vy){ if(m[y]&&v[y]){ const d=Math.floor(y/10)*10; (dev[d]||=[]).push(m[y]/v[y]); } }
+  const med=a=>{const t=[...a].sort((x,y)=>x-y),k=t.length>>1;return t.length%2?t[k]:(t[k-1]+t[k])/2;};
+  let worst=null; for(const [d,a] of Object.entries(dev)){ const r=med(a); if(!worst||Math.abs(r-1)>Math.abs(worst[1]-1)) worst=[d,r]; }
+  const track=worst?(Math.abs(worst[1]-1)<=0.10?'The mod tracks it within '+(100*Math.abs(worst[1]-1)).toFixed(0)+'% in every decade.':'The mod diverges from it by up to '+(100*Math.abs(worst[1]-1)).toFixed(0)+'% ('+worst[0]+'s, '+(worst[1]>1?'faster':'slower')+').'):'';
+  return 'Both arms slow through the century as the economies they simulate grow — vanilla from about '+v[vy[0]].toFixed(1)+' to '+v[vy[vy.length-1]].toFixed(1)+' in-game years per minute. '+track+' ⚠ Same-date comparison; the verdict is the pop-matched figure above.';
+}
 function renderPerf(mode){
   const med=a=>{if(!a.length)return null;const s=[...a].sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2;};
   const van=PERF.runs.filter(r=>r.van), mod=PERF.runs.filter(r=>!r.van);
@@ -297,7 +308,7 @@ function renderPerf(mode){
     ? 'Normalised by <b>live pop objects</b> — the records the engine actually steps — so this divides out the economy-size difference the raw curve carries. It is the same idea as the pop-matched verdict, shown as a time series rather than a binning; the two should agree, and where they diverge the binned one is authoritative because it never compares different-sized economies. <b>Higher is better.</b>'
     : ratio
     ? 'Mod speed as a fraction of vanilla at the same <b>date</b>. Above 1.0 the mod is faster. ⚠ This is the NAIVE view: at any given year the two arms hold different-sized economies, so it flatters whichever arm built less. It is here to be read, not to be quoted.'
-    : 'Both arms slow through the century as the economies they simulate grow — vanilla from about 1.0 to 0.4 in-game years per minute. The mod tracks it closely. ⚠ Same-date comparison; the verdict is the pop-matched figure above.';
+    : perfShapeText();
 
   const ty=document.getElementById('t-perfyear');
   ty.innerHTML='<tr><th>decade</th><th class="num">vanilla yr/min</th><th class="num">mod yr/min</th><th class="num">mod ÷ van</th></tr>';
@@ -381,8 +392,7 @@ function renderPerf(mode){
     <div id="chart2"></div>
     <figcaption>Estimated workers employed in the mod's tier buildings (staffed-level-equivalents × the tier's base
     employment; unemployed and subsistence excluded by construction; automation PMs not netted). Unlike counting
-    built levels, this view shows contraction: era-0 employment peaks in 1920 and falls, era-1 peaks in 1930 and
-    falls — obsolete rungs shedding real workers while e4–e5 absorb them.</figcaption>
+    built levels, this view shows contraction: <span id="emp-shape">…</span></figcaption>
   </figure>
 
   <div class="card tablewrap">
@@ -390,8 +400,7 @@ function renderPerf(mode){
   <table id="t-emp"></table>
   <p class="small">Δ in brackets = change since the previous row. Negative brackets are the obsolescence signal
   the level-addition view cannot show — a rung's workforce contracting while its buildings still stand.
-  ⚠ e0 declines only from the 1920s–30s; whether that lateness is the cheap book's doing is a watchlist-level
-  question — check per-country on the Watchlist page.</p>
+  <span id="emp-note">…</span></p>
   </div>
 
   <div class="card tablewrap">
@@ -433,8 +442,7 @@ function renderPerf(mode){
   <p class="small">Frontier = newest rung with ≥50 world levels; stale = two eras below the most-built era
   (e0 where none). Payback = years of realised weekly profit to repay construction at £720/pt. ⚠ "Most-built" and
   "e0 share" come from gross level additions (positive year-on-year deltas only — blind to contraction); the
-  employment view above is the contraction-aware complement. Vanilla's own payback runs 10–15y (F53): the frontier
-  column sitting at 3–6y is the overshoot engine.</p>
+  employment view above is the contraction-aware complement. Vanilla's own payback runs 10–15y (F53): <span id="ladder-note">…</span></p>
   </div>
 
   <div class="card tablewrap">
@@ -475,8 +483,8 @@ function renderPerf(mode){
   <h3>Fewer workers × more product per worker — the G4/G5 decomposition, selection</h3>
   <table id="t-wdecomp"></table>
   <p class="small">Same construction as the world table, summed over the selected tags (tags alive in both arms
-  only, per year). This is where the premise splits: leaders can satisfy it (GBR alone reads workers &lt;1 ×
-  productivity &gt;1) while the world aggregate inverts it — select subsets to see who carries which factor.</p>
+  only, per year). This is where the premise splits between leaders and the periphery — select subsets to see who
+  carries which factor; a selection satisfies it when its workers factor reads &lt;1 and its productivity factor &gt;1.</p>
   </div>
 
   <figure class="card">
@@ -638,7 +646,15 @@ function renderDecompWorld(){
         '<td class="num">£'+pf.toFixed(1)+' <span class="dim">/ £'+pv.toFixed(1)+'</span></td>'+
         '<td class="num '+(pr>1.05?'vgood':'')+'">'+pr.toFixed(2)+'×</td><td class="num">'+(wr*pr).toFixed(2)+'×</td>';
     }
-    document.getElementById('decomp-cap').innerHTML='Productive workers = salaried workforce minus government and military payrolls. The premise says the two middle factors should cancel; through 1900 the productivity factor is ~1.00 and the workers factor never drops below 1 — switch scope to <b>tiered sector</b> to see why (dilution: the tier buildings hold only 20→37% of productive workers).';
+    // ⭐ DERIVED (2026-09-05): this sentence was a shell literal from the first fill (2026-08-15) ("through 1900 the
+    //   productivity factor is ~1.00 and the workers factor never drops below 1 … 20→37%"), published under every batch.
+    (function(){
+      const to1900=EYRS.filter(y=>y<=1900&&PROD_FLAT[y]&&PROD_VAN[y]);
+      const wrs=to1900.map(y=>PROD_FLAT[y].w/PROD_VAN[y].w), prs=to1900.map(y=>(PROD_FLAT[y].g/PROD_FLAT[y].w)/(PROD_VAN[y].g/PROD_VAN[y].w));
+      const ys=EYRS.filter(y=>EMP[y]&&PROD_FLAT[y]&&PROD_FLAT[y].w); const dil=y=>100*EMP[y].reduce((a,b)=>a+b,0)/PROD_FLAT[y].w;
+      const f2=x=>x.toFixed(2)+'×', rng=a=>a.length?f2(Math.min(...a))+'–'+f2(Math.max(...a)):'—';
+      document.getElementById('decomp-cap').innerHTML='Productive workers = salaried workforce minus government and military payrolls. The premise says the two middle factors should cancel; through 1900 the productivity factor reads '+rng(prs)+' and the workers factor '+rng(wrs)+' — switch scope to <b>tiered sector</b> to see why (dilution: the tier buildings hold only '+(ys.length?dil(ys[0]).toFixed(0)+'→'+dil(ys[ys.length-1]).toFixed(0)+'% of productive workers, '+ys[0]+'→'+ys[ys.length-1]:'—')+').';
+    })();
   }else{
     document.getElementById('decomp-h').textContent='The tiered sector — workers and productivity vs vanilla’s counterpart buildings';
     if(!D2.sector){ t.innerHTML='<tr><td class="small">The tiered-sector decomposition needs a vanilla counterpart set (<code>D2.sector</code>), which this batch’s dataset does not carry. Tier employment by era IS measured and is charted below; the vanilla-vs-mod sector comparison is omitted rather than approximated.</td></tr>';
@@ -684,6 +700,29 @@ function empTable(el,data,yrs){
   }
 }
 empTable(document.getElementById('t-emp'),EMP,EYRS);
+// ⭐ DERIVED CAPTIONS (2026-09-05). These two sentences were shell literals from the first fill (2026-08-15) ("era-0
+//   employment peaks in 1920 and falls … while e4–e5 absorb them", "e0 declines only from the 1920s–30s") and were
+//   published under every later batch, including four-rung books with no e4 and an e0 that never declines.
+//   A caption that states a number is derived from the same const the table reads, or it is not a caption.
+(function(){
+  const yrs=EYRS.filter(y=>EMP[y]); if(!yrs.length) return;
+  const last=yrs[yrs.length-1], nE=Math.max(...yrs.map(y=>EMP[y].length));
+  const parts=[], falling=[];
+  for(let e=0;e<nE;e++){
+    const v=yrs.map(y=>EMP[y][e]||0); if(!v.some(x=>x>0)) continue;
+    let pi=0; v.forEach((x,i)=>{ if(x>v[pi]) pi=i; });
+    const first=yrs[v.findIndex(x=>x>0)];
+    if(pi<yrs.length-1){ parts.push('era '+e+' peaks in '+yrs[pi]+' at '+v[pi].toFixed(1)+'M and falls to '+v[v.length-1].toFixed(1)+'M'); falling.push(e); }
+    else parts.push('era '+e+(first>yrs[0]?' (from '+first+')':'')+' still grows through '+last+' ('+v[v.length-1].toFixed(1)+'M)');
+  }
+  const sh=document.getElementById('emp-shape');
+  if(sh) sh.textContent=parts.join('; ')+(falling.length?' — obsolete rungs shedding real workers while the newer ones absorb them.':' — no rung sheds workers in this batch, so the obsolescence signal this view exists for is absent here.');
+  let dec=null; for(let i=1;i<yrs.length;i++){ if((EMP[yrs[i]][0]||0)<(EMP[yrs[i-1]][0]||0)){ dec=yrs[i]; break; } }
+  const e0=yrs.map(y=>EMP[y][0]||0), d0=e0.length>1?e0[e0.length-1]-e0[e0.length-2]:0;
+  const nt=document.getElementById('emp-note');
+  if(nt) nt.innerHTML=dec?('⚠ e0 first declines in the '+dec+' row; whether that lateness is the book’s doing is a watchlist-level question — check per-country on the Watchlist page.')
+    :('⚠ e0 never declines in this batch — it still adds workers in the last row ('+(d0>=0?'+':'')+d0.toFixed(1)+'M to '+last+'); whether the ladder retires it anywhere is a watchlist-level question — check per-country on the Watchlist page.');
+})();
 // ---------- research tables (tree-aware; keys tree|era for techs, stage|tree|era for JEs) ----------
 const TREES=['production','military','society'];
 const TREE_SEL={w:new Set(TREES),s:new Set(TREES)};
@@ -747,6 +786,13 @@ for(const y of YEARS){
   lad.insertRow().innerHTML='<td>'+y+'</td><td>'+l[0]+'</td><td class="num">'+l[1]+'%</td><td class="num '+((l[3]>=8&&l[3]<=15)?'':'vwarn')+'">'+l[2]+' · '+l[3].toFixed(1)+'y</td>'+
     '<td class="num">'+l[4]+' · '+l[5].toFixed(1)+'y</td><td class="num">'+l[6].toFixed(2)+'</td>';
 }
+// ⭐ DERIVED (2026-09-05): "the frontier column sitting at 3–6y is the overshoot engine" was a shell literal from
+//   the first fill (2026-08-15); a four-rung book reads 8.7–18.5y here. Classified on the LAST year's frontier payback.
+(function(){
+  const fr=YEARS.map(y=>LADDER[y]&&LADDER[y][3]).filter(Number.isFinite); const el=document.getElementById('ladder-note'); if(!el||!fr.length) return;
+  const lo=Math.min(...fr), hi=Math.max(...fr), lastV=fr[fr.length-1];
+  el.textContent='the frontier column reads '+lo.toFixed(1)+'–'+hi.toFixed(1)+'y here'+(lastV<8?', below that band at the end — the overshoot engine.':lastV<=15?', inside that band at the end — no overshoot on this book.':', above that band at the end — the frontier pays back slower than vanilla’s own buildings.');
+})();
 const tct=document.getElementById('t-tierc');
 if(TIERC.rows.length){
   tct.insertRow().innerHTML='<th>arm</th><th class="num">below-best share of levels built</th><th class="num">unit-weighted</th><th class="num">excluding ports</th><th class="num">…and LESS efficient than the frontier</th>';
@@ -902,17 +948,17 @@ function render1(mode) {
   const scopeNote = SCOPE === 'tier' ? vaNote() : '';
   if (C1MODE === 'ratio') {
     lineChart(document.getElementById('chart1'), [
-      { pts: flatPts.map(([y, g]) => [y, g / GDP_VAN[y]]), c: '--accent', label: 'flat 0.65×' },
-      { pts: nbPts.map(([y, g]) => [y, g / GDP_VAN[y]]), c: '--gold', label: '×1.5^era' }],
+      { pts: flatPts.map(([y, g]) => [y, g / GDP_VAN[y]]), c: '--accent', label: '__ARMLABEL__' },
+      { pts: nbPts.map(([y, g]) => [y, g / GDP_VAN[y]]), c: '--gold', label: '__NBLABEL__' }],
       { ymin: 0.2, ymax: 1.8, grid: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75], emph: 1, band: [0.8, 1.25], fmt: v => v.toFixed(2) + '×', label: 'World GDP ratio' });
-    document.getElementById('cap1').innerHTML = 'Yearly world GDP ÷ the vanilla baseline (n=4 mean); the mod line is the median of this batch’s runs. Shaded band = the 0.8–1.25× target. ⚠ A median hides the spread — this batch’s individual runs range 0.59–1.02× at 1936, so read the band against the envelope in the verdict, not against this line alone. Sharp notches are civil wars and collapses (see incidents), not business cycles.' + scopeNote;
+    document.getElementById('cap1').innerHTML = 'Yearly world GDP ÷ the vanilla baseline (__VANLABEL__); the mod line is the median of this batch’s runs. Shaded band = the 0.8–1.25× target. ⚠ A median hides the spread — __SPREAD__ Sharp notches are civil wars and collapses (see incidents), not business cycles.' + scopeNote;
   } else {
     lineChart(document.getElementById('chart1'), [
-      { pts: flatPts, c: '--accent', label: 'flat 0.65×' },
+      { pts: flatPts, c: '--accent', label: '__ARMLABEL__' },
       { pts: vanPts, c: '--ink3', label: 'vanilla' },
-      { pts: nbPts, c: '--gold', label: '×1.5^era' }],
+      { pts: nbPts, c: '--gold', label: '__NBLABEL__' }],
       { ymin: 0, ymax: 7200, grid: [0, 1000, 2000, 3000, 4000, 5000, 6000, 7000], fmt: v => '£' + (v >= 1000 ? (v / 1000).toFixed(1) + 'B' : v + 'M'), label: 'World GDP absolute' });
-    document.getElementById('cap1').innerHTML = 'Yearly world GDP in £M, all three arms on one axis: this batch (median), the pinned vanilla baseline, and the superseded ×1.5^era cost book kept for reference. Same data as the ratio view, unnormalised.' + scopeNote;
+    document.getElementById('cap1').innerHTML = 'Yearly world GDP in £M, all three arms on one axis: this batch (median), the vanilla baseline (__VANLABEL__), and the reference series (__NBLABEL__). Same data as the ratio view, unnormalised.' + scopeNote;
   }
 }
 document.getElementById('c1-ratio').onclick=()=>{press('c1-ratio','c1-abs');render1('ratio')};

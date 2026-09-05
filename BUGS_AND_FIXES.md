@@ -2285,3 +2285,32 @@ numeric value — proven by sabotage (a string `mod` on `spray_finishing` fails 
 a string satisfies `t.mod && Object.keys(t.mod).length` and iterates without complaint. The five-minute smoke check —
 this run's error window by parsed time, noise classes dropped — is what caught it; the batch cost eight minutes instead
 of thirteen hours.
+
+## 2026-09-05 — three ledger defects every published batch report carried (found filling canon4v-art3)
+
+**Symptoms.** (1) The row-P "pop-matched" wall-clock table printed `undefined` in its pop-objects column and
+"no overlap" in EVERY row while the headline two lines above said 12 bins overlapped. (2) G3's construction ratio was an
+em-dash in every report. (3) The world-GDP chart labelled every batch's own arm **"flat 0.65×"** and its reference series
+**"×1.5^era"**, and five captions stated numbers from the first fill (2026-08-15): "individual runs range 0.59–1.02×",
+"era-0 employment peaks in 1920 and falls … while e4–e5 absorb them", "e0 declines only from the 1920s–30s", "through
+1900 the productivity factor is ~1.00 and the workers factor never drops below 1 … 20→37%", "the frontier column sitting
+at 3–6y is the overshoot engine". All three shipped in every ledger from flatcost-n1 to ab3-n3.
+
+**Causes.** (1) `fill_build_perf.mjs` passed `report_perf`'s bins (`{bin, vanilla, mod}` in seconds per year)
+straight through to a renderer that reads `{b, v, m}` in years per minute. (2) `fill_goals.mjs` read
+`C.TRAJ[Y].constr`, a key `fill_consts` never emits; the ratio exists in `report_data.json` and `fill_assemble`
+already computed it for the trajectory table. (3) The labels and captions were literals in the shell — the class
+`fill_manifest.json` exists to forbid — and none of them was in the staleness list, so the gate passed: its
+data check saw digits in the samples column of the broken table, and its staleness check is a list of strings.
+
+**Fixes.** (1) The filler maps the bins onto the renderer's shape, null where a side has no samples. (2) G3 reads the
+construction points from `report_data.json`. (3) Four new tokens (`__ARMLABEL__`, `__NBLABEL__`, `__VANLABEL__`,
+`__SPREAD__`, in the manifest, so an unfilled one fails the gate) and five captions DERIVED from the consts they sit
+beside (employment shape and the e0 note from `EMP`, the decomposition factors and dilution from `PROD_*` and
+`EMP`, the frontier-payback classification from `LADDER`, the speed-curve shape from `PERF.byYear`). Also:
+`fill_tierchoice` pushes `--baseline` rows before the arm's, and `fill_goals` read `rows[0]` — right only while
+no baseline was ever passed; it takes the last row now.
+
+**Rule.** A caption that states a number is derived from the same const the table reads, or it is a token. The gate
+catches an unfilled token and a listed string; it cannot catch a plausible literal, so the shell may not hold one.
+Earlier published ledgers are not re-filled; their numbers stand, their labels and those five sentences do not.

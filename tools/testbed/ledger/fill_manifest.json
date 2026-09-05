@@ -73,6 +73,30 @@
       "from": "footer.html",
       "required": true,
       "means": "provenance: what was read, how many, on what build"
+    },
+    {
+      "name": "__ARMLABEL__",
+      "from": "tokens.json",
+      "required": true,
+      "means": "legend label of THIS arm's GDP line (was the literal 'flat 0.65×' in the shell: every report since flatcost-n1 labelled its own arm with the flatcost arm's name)"
+    },
+    {
+      "name": "__NBLABEL__",
+      "from": "tokens.json",
+      "required": true,
+      "means": "legend label of the reference (NB) series (was the literal '×1.5^era')"
+    },
+    {
+      "name": "__VANLABEL__",
+      "from": "tokens.json",
+      "required": true,
+      "means": "how the GDP chart names the vanilla baseline, e.g. 'n=16 median' (was 'n=4 mean')"
+    },
+    {
+      "name": "__SPREAD__",
+      "from": "tokens.json",
+      "required": true,
+      "means": "the sentence after 'A median hides the spread —': this batch's per-run GDP ratio range at 1935 and how to read it (was a literal 0.59–1.02× from an earlier batch)"
     }
   ],
   "consts": [

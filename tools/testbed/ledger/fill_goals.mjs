@@ -23,9 +23,17 @@ const pf = C.PROD_FLAT[Y], pv = C.PROD_VAN[Y];
 const wR = pf.w / pv.w, ppwR = (pf.g / pf.w) / (pv.g / pv.w);
 // early game: mean ratio 1837-1860
 const early = (() => { let a = 0, b = 0; for (let y = 1837; y <= 1860; y++) { a += C.GDP_FLAT[y] || 0; b += C.GDP_VAN[y] || 0; } return a / b; })();
-const constrR = (C.TRAJ && C.TRAJ[Y] && C.TRAJ[Y].constr) ? C.TRAJ[Y].constr : null;
+// G3's construction ratio: construction points added at Y, mod median ÷ vanilla median, from report_data.json —
+//   the same quantity fill_assemble writes into TRAJ's third slot. This used to read C.TRAJ[Y].constr, a key
+//   fill_consts never emits, so G3 printed an em-dash in every report to date (2026-09-05).
+const RD = J('report_data.json');
+const constrR = (RD.flat?.years?.[Y]?.ptsAdd && RD.vanMean?.[Y]?.ptsAdd) ? RD.flat.years[Y].ptsAdd / RD.vanMean[Y].ptsAdd : null;
 const topEmp = y => { const e = EMP[y] || []; let bi = 0; e.forEach((v, i) => { if (v > e[bi]) bi = i; }); return 'e' + bi; };
-const belowBest = (TC.rows && TC.rows[0]) ? TC.rows[0].raw : null;
+// ⚠ THE ARM'S ROW IS THE LAST ONE. fill_tierchoice pushes every --baseline row FIRST and the arm's row last,
+//   so rows[0] is a PRIOR batch's figure whenever a baseline is given — this read rows[0] and would have graded
+//   G1 on canon4-je's number under canon4v's title (caught 2026-09-05 filling canon4v-art3, the first fill to
+//   pass baselines). Take the last row, and never a row by position from the front.
+const belowBest = (TC.rows && TC.rows.length) ? TC.rows[TC.rows.length - 1].raw : null;
 
 const row = (id, goal, metric, val, target, pill, cls) =>
   `<tr><td>${id}</td><td class="goalcell">${goal}</td><td>${metric}</td><td class="num">${val}</td><td class="num dim">${target}</td><td><span class="pill ${cls}">${pill}</span></td></tr>`;

@@ -30,7 +30,13 @@ const PERF = {
   model: { c0: 0.39, cPop: 0.180, cLv: 0.590 },   // F72: sec/yr = c0 + cPop*kpops + cLv*klevels
   grade: { green: 5, yellow: 15 },
   overlapping: p.matched.overlapping, pct: p.matched.pct,
-  bins: p.matched.bins,
+  // ⚠ THE RENDERER'S SHAPE, NOT report_perf's. The template's pop-matched table reads {b, v, m, nV, nM} with v/m in
+  //   IN-GAME YEARS PER MINUTE; report_perf emits {bin, lo, hi, vanilla, mod, nV, nM} in SECONDS PER YEAR. Passing the
+  //   raw bins through printed `undefined` in the pop-objects column and 'no overlap' in EVERY row of every report
+  //   from flatcost-n1 to ab3-n3 (2026-09-05), while the headline above the table said 12 bins overlapped — the
+  //   gate's data check passed on the samples column's digits. A side with no samples is null, never 0.
+  bins: p.matched.bins.map(b => ({ b: b.bin, v: b.nV && b.vanilla ? +(60 / b.vanilla).toFixed(3) : null,
+                                   m: b.nM && b.mod ? +(60 / b.mod).toFixed(3) : null, nV: b.nV, nM: b.nM })),
 };
 writeFileSync(join(DIR, 'perf_panel.json'), JSON.stringify(PERF));
 console.log('PERF built: runs', PERF.runs.length, '| van years', Object.keys(byYear.van).length, '| mod years', Object.keys(byYear.mod).length, '| pct', PERF.pct.toFixed(2));
