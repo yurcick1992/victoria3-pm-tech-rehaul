@@ -7016,3 +7016,37 @@ the numbers; upper-rung staffing NO; A/B widening possible, amount unclear; the 
 mod (vanilla already raises the cap by technology — mechanized workshops +10, shift work +20 on a base of 20 — and the bonus
 rides on the building TYPE, so a split ladder hands it to the entrenched rung and resets it for every new one; a lever against
 obsolescence, not for it; see the 2026-09-05 exchange).
+
+## 10.75 — THE RULED SET ON THE CANON: `canon4v-hai3` (user-ruled 2026-09-05, measured in canon4v_hai3_n2.json)
+
+**Rulings (2026-09-05, after F105).** On the §10.74.1 levers: ai_value 3^era on every tiered industry — OK; the investment-pool
+defines as proposed — OK, with `PRODUCTION_BUILDING_AUTONOMOUS_INVESTMENT_WANTED_COST_COVERAGE` ruled OUT ("don't go into
+that"); upper-rung staffing — NO; A/B widening — possible, amount unclear, not taken; the economy-of-scale suggestion — dropped
+(vanilla already raises the cap by technology, and on a split ladder the bonus rides on the entrenched rung). "Go with another
+n=2 in the ruled config."
+
+**The set, define by define.** Vanilla's values and comments are the game's own (`common/defines/00_ai.txt`).
+
+| define | vanilla | canon4v | canon4v-hai3 | what it does |
+|---|---|---|---|---|
+| `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR` | 0.75 | 0.75 | **0.9** | the AI invests more in construction when its pool has outgrown its construction capacity — F105's measured symptom (world pools 0.48 of GDP at 1935, Britain's above a year of GDP) |
+| `MONEY_SPENDING_CONSTRUCTION_CRITICAL_THRESHOLD` | 0.75 | 0.75 | **0.9** | a construction sector below this fraction of wanted counts as very important to grow |
+| `MONEY_SPENDING_CONSTRUCTION_EXCESSIVE_THRESHOLD` | 1.05 | 1.05 | **1.5** | the AI stops wanting more construction only above this fraction of wanted |
+| `CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED` | 0.05 | 0.05 | **0.1** | the AI's own queue-count cap for production buildings, per point of construction; the least understood of the set, kept because the measured pool reduction on canon4-je came from the set |
+| `PRODUCTION_BUILDING_LONG_CONSTRUCTION_TIME_THRESHOLD` / `_VERY_LONG_` | 40 / 60 wk | 40 / 60 | **160 / 240** | the AI halves a building's score past 40 weeks at full sector usage and quarters it past 60; our rungs cost ×2 / ×4 / ×8 vanilla's anchor by capacity pricing, so vanilla's thresholds tax the top rung for being priced by capacity. ×4 scores the ×4-priced era-3/4 workhorse rung as vanilla scores its own mill; the ×8 rung is still scored down in sectors under ~240 points a week (×8 would neutralise the rule; the six-rung book used ×3 for its 2.7× top rung) |
+| `PRODUCTION_BUILDING_AUTONOMOUS_INVESTMENT_CONSTRUCTION_COST_DIVISOR_SCALING` | 0.001 | 0.000125 | 0.000125 | the pool's score for a construction is divided by 1 + cost × this; at vanilla's value a 4,800-point rung-3 mill scores ÷5.8 against ÷1.6 for the 600-point rung 0 (a 3.6× bias to the old rung), at the book's value ÷1.6 against ÷1.075 (1.5× — a residual) |
+| `PRODUCTION_BUILDING_AUTONOMOUS_INVESTMENT_WANTED_COST_COVERAGE` | 1 | 1 | 1 | RULED OUT. The pool must hold a construction's whole cost before starting it; a rung-3 mill is £2.6–3.5M, which a minor's pool never reaches |
+| `AUTONOMOUS_INVESTMENT_UPDATE_COUNT_DIVISOR` | 500,000 | vanilla | vanilla | one autonomous-investment update per tick per £500k entering the pool; lowering it spends large pools faster at a performance cost — revisit only if pools still hoard after the set |
+
+**ai_value.** 1,000 × 3^era on all 17 tiered industries (1,000 / 3,000 / 9,000 / 27,000), where canon4v steepens glass and
+tooling only and the rest run 1,000 × 2^era. F99 measured the lever on glass and F105 §3 read its path: British glass output
+2.9× vanilla's at 1880 and the price 0.86–0.94× of vanilla's through 1900, converging to 1.07× by 1935 as demand caught up — it
+moves the path earlier; whether it holds a price down late is what this batch reads across seventeen goods.
+
+**The arm.** `config/mod_config.canon4v-hai3.json` + twin: `make_ab_config --A 2.0 --B 1.5 --suffix canon4v-hai3 --ai-steep
+<all 17>:3 --divisor 0.000125 --ai-defines <the five>` (the `--ai-defines K=V,K=V` flag was added for it, so the book is
+regenerable by one command), verified by field diff to differ from canon4v in ai_value, ai_defines and stamps only. Schedule
+`tools/testbed/schedules/canon4v_hai3_n2.json` — n=2, 1836 → 1936, predictions P1–P8 (pool share below 0.30 of world GDP,
+construction ÷ vanilla ≥ 0.95, the under-built consumer industries closing by 1900, the four decliners staying below vanilla
+and three more joining them, below-best ≤ 41%, no stall, P inside budget, the regular academy at 140–165%). The canon
+(`config/mod_config.json`) is untouched until the batch reads.

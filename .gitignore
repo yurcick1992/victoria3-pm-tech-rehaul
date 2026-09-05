@@ -120,3 +120,6 @@ tools/testbed/ledger/*.canon6
 # THE SIX-RUNG CANON, retired 2026-09-05 when canon4v became config/mod_config.json (BALANCE_FRAMEWORK §10.74): source, not derivable
 !config/mod_config.six_rung.json
 !config/tech_tree_options.six_rung.json
+# canon4v-hai3: the ruled set on the canon — ai_value 3^era everywhere + the investment-pool defines (§10.75, 2026-09-05)
+!config/mod_config.canon4v-hai3.json
+!config/tech_tree_options.canon4v-hai3.json

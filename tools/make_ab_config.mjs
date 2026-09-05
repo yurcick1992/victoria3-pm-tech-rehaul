@@ -24,7 +24,7 @@
 // against whatever main recipe the config carries, reductions by their own good's ratio.
 //
 // usage: node tools/make_ab_config.mjs --A 2.5 --B 2.5 --suffix ab1 [--base config/mod_config.tier4.json]
-//        [--ai-base 1000] [--divisor <s>] [--ai-steep glass,tooling:3]   (writes config/mod_config.<suffix>.json + tech_tree_options twin)
+//        [--ai-base 1000] [--divisor <s>] [--ai-steep glass,tooling:3] [--ai-defines K=V,K=V]   (writes config/mod_config.<suffix>.json + tech_tree_options twin)
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -108,8 +108,13 @@ if (STEEP) for (const id of STEEP.inds) if (!cfg.industries.some(i => i.id === i
 for (const id of Object.keys(A_FOR)) if (!cfg.industries.some(i => i.id === id && !i.disabled)) throw new Error(`--A-for: unknown or disabled industry ${id}`);
 const s = +arg('--divisor', (0.001 * 800 / cmax).toPrecision(3));
 cfg.ai_defines = { ...(cfg.ai_defines || {}), PRODUCTION_BUILDING_AUTONOMOUS_INVESTMENT_CONSTRUCTION_COST_DIVISOR_SCALING: s };
+// --ai-defines K=V[,K=V...] (2026-09-05): further NAI defines merged into ai_defines — the investment-pool set of
+//   canon4v-hai3 (BALANCE_FRAMEWORK §10.75) — so a book carrying them is regenerable by one command, not a hand edit.
+const EXTRA_DEFINES = (() => { const v = arg('--ai-defines', ''); if (!v) return {}; const o = {}; for (const kv of v.split(',')) { const [k, x] = kv.split('='); if (!k || !Number.isFinite(+x)) throw new Error('--ai-defines K=V[,K=V]: bad entry ' + kv); o[k.trim()] = +x; } return o; })();
+Object.assign(cfg.ai_defines, EXTRA_DEFINES);
 cfg.company_target_gate = process.argv.includes('--company-gate');   // emit_companies opt-in; OFF by default (see its header)
 cfg._ab = { A, B, A_for: Object.keys(A_FOR).length ? A_FOR : null, tiers_for: Object.keys(TIERS_FOR).length ? TIERS_FOR : null, ai_base: AI_BASE, ai_steep: STEEP ? { industries: [...STEEP.inds], ratio: STEEP.ratio } : null, cost_divisor_scaling: s, company_target_gate: cfg.company_target_gate, base: BASE, generated: new Date().toISOString() };
+cfg._ab.ai_defines_extra = Object.keys(EXTRA_DEFINES).length ? EXTRA_DEFINES : null;
 cfg._comment = `A/B LADDER (${SFX}) derived by tools/make_ab_config.mjs from ${BASE}: rung k output = vanilla lowest-tier × ${A}^k, input value × ${B}^k over the rung's own vanilla mix, building_cost = vanilla anchor × ${A}^k, ai_value = ${AI_BASE} × ${A}^era, cost-divisor scaling ${s}${STEEP ? `, ai_value ${AI_BASE} × ${STEEP.ratio}^era for ${[...STEEP.inds].join('/')}` : ''}. target_be restated as the drift guard.`;
 writeFileSync(join(REPO, `config/mod_config.${SFX}.json`), JSON.stringify(cfg));
 writeFileSync(join(REPO, `config/tech_tree_options.${SFX}.json`), readFileSync(join(REPO, 'config/tech_tree_options.tier4.json'), 'utf8'));
