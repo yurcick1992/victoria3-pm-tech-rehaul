@@ -123,8 +123,12 @@ one it is on:
   a vanilla method is missing, each discussed; no addition on a secondary method's theme — the generator THROWS on an addition
   pegged to a technology that gates one of the industry's own secondary methods (proven by sabotage). The motor industry's research anchor (its first rung sits on
   atmospheric_engine, vanilla era 2, a researchable technology with no rung below it) is COAL + IRON MINES as one summed source —
-  user-ruled 2026-09-04; a list in `necessity_anchors` is one source over exactly those building types. Builds clean, NOT ratified, NOT run — canon-4rung stays the measured
-  book until it is.
+  user-ruled 2026-09-04; a list in `necessity_anchors` is one source over exactly those building types. ⭐ **MEASURED 2026-09-05 (F104,
+  session 20260904_213059, n=4, on canon4v-art3 = canon4v + the film rung ×3):** world GDP 0.93× vanilla (0.82–1.09), shortlist
+  1.29×; tiered outputs BELOW vanilla at 1935 for the first time on any arm (groceries 64%, steel 69%, small arms 44%, clothes 90%
+  of base — F94's flat path moves); fine art 113% (canon4-je 156); tier choice 44.9% below-best (worse, partly by construction on
+  vanilla's era-1 gates); Britain's JE completions 17–19 (canon4-je 29–43); 2 CTDs resumed; 1 seed timed out at 330 min after a
+  2.5× slowdown from 1899, unexplained. NOT ratified — measured. canon-4rung stays the record of the F98–F103 line.
   ⭐ **`canon4-je`** (`config/mod_config.canon4-je.json` + twin, committed 2026-09-03) = canon-4rung + the ruled research-event
   parameters and military channels (§10.69). **Measured n=5 (F102, session 20260903_173810): Britain's JE completions double
   and it holds 2–12 more technologies at 1935, and NOTHING downstream moves** — GDP 0.79× / shortlist 1.09× (the canon's
@@ -724,7 +728,8 @@ config/mod_config.canon4-art.json ⚗ THE ART-ACADEMY STRESS TEST (§10.70, 2026
 config/mod_config.canon4v-art3.json ⚗ canon4v WITH THE FILM ACADEMY AT ×3 OUTPUT (§10.73, user-ruled 2026-09-04): the A/B book with
                         `--tiers-for art_academy:out=1,2,4,24;in=1,1.5,2.25,3.375;cost=1,2,4,8` — Film Art 120 fine art a level
                         (canon4v 40), inputs/cost/ai_value the ladder's, everything else byte-identical to canon4v. The first batch
-                        of the vanilla-built structure runs on it: schedule canon4v_art3_n5.json, n=5. Un-ignored with its twin
+                        of the vanilla-built structure ran on it: schedule canon4v_art3_n5.json, session 20260904_213059, n=4
+                        (F104: fine art 103–117% at 1935, world GDP 0.93×, tiered prices below vanilla). Un-ignored with its twin
 config/mod_config.tier4.json ⚗ GENERATED (gitignored) by tools/make_tier4_config.mjs FROM THE GAME FILES + tools/lib_tier4_spec.mjs
                         — the four-rung STRUCTURE (rungs = vanilla main methods with vanilla's name, gate, recipe,
                         staffing, icon; the spec's ADDITIONS on top), with tech_tree_options.tier4.json beside it from

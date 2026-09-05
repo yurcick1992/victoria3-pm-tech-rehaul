@@ -10091,3 +10091,103 @@ n = 2 says nothing about GDP or JE counts under ~20%. The sound-film rung (80 a 
 seed — the top rung is untested in practice because its technology is 1940-anchored. Prestige could not be read: fine art
 is not a prestige good in 1.13's summaries (prestige_out carries clothes, luxury furniture, fish, grain, steel, radios,
 coffee, tools).
+
+## F104 — THE VANILLA-BUILT FOUR-RUNG CANDIDATE, FIRST MEASURED (canon4v-art3-n5, 2026-09-04/05): world GDP 0.93× vanilla, tiered output prices BELOW vanilla at 1935 for the first time on any arm, the ×3 film rung cheapens fine art to ~113% of base, tier choice and research entries worse
+
+**Arm.** `{kind: config, config: config/mod_config.canon4v-art3.json}` — **canon4v** (BALANCE_FRAMEWORK §10.72: the four-rung
+structure read from the game files and `tools/lib_tier4_spec.mjs` alone — 17 industries, 57 buildings, every rung a vanilla main
+method with vanilla's name, gate, recipe, staffing and icon, the tree at vanilla's eras with only vulcanization moved, four ruled
+additions, NO six-rung block carried: no hoard `ai_defines`, no streetlight override, no trade-centre ai_value, no NET grant, no
+chain seed; research events §10.69 with the motor anchor on coal + iron mines) through the A/B book 2.0 / 1.5 (glass and tooling
+3^era, divisor 0.000125), **with the film academy at 120 fine art a level** (the ladder's 40 = 5 × 2³, ×3 — user-ruled
+2026-09-04). Session `20260904_213059_canon4v-art3-n5`, 5 × 1836 → 1936.1.1, **n = 4**: run 1 VOID (watchdog timeout at
+1915.12.21 after a 2.5× slowdown from 1899 on, no line of ours in its error window, a naval war suspected), runs 2 and 4 one
+CTD each, resumed cleanly. Compared against the vanilla n = 16 baseline `20260821_131149` (medians) and canon4-je-n5
+`20260903_173810` (F102 — the measured canon-4rung book with journal entries). ⚠ TWO changes against canon-4rung at once —
+the structure and the film rung; everything outside the academy is the structure's reading.
+
+### 1. GDP: the decomposition (GDP = population × productive workers per capita × GDP per productive worker)
+| 1935, ÷ vanilla median | GDP | population | productive/capita | £ per productive worker |
+|---|---|---|---|---|
+| world, median of 4 (runs) | **0.93×** (0.82 / 0.87 / 1.00 / 1.09) | 1.02× | 0.68× | 1.36× |
+| shortlist GBR/USA/FRA/NET/BEL/PRU/GER | **1.29×** (1.14 / 1.24 / 1.33 / 1.58) | 1.13× | 0.74× | 1.60× |
+| canon4-je run 1, world (same date) | 0.70× | 1.00× | 0.61× | 1.14× |
+At 1900 the world reads 0.83× (0.77–0.99). Against the canon-4rung family (world 0.70–0.83× at 1935 in the reference runs,
+F98–F102's 0.79–0.95×) this is the highest four-rung GDP measured, and the first arm whose shortlist GDP sits clearly above
+vanilla's — carried by large maps in two seeds (a 91M-pop Britain at 1.90× vanilla's GDP, an 87M France at 1.56×, a surviving
+33M Prussia). `advanced_panel` (shortlist pooled): productive share of the workforce **51.8%** vs vanilla's 74.3% (0.70×), GDP
+per productive worker **£33.1 vs £19.8 (1.67×)** — canon-n7 read 1.14×. `tiered_panel`: the tiered sector holds **19.2%** of
+the workforce (vanilla 29.5%, 0.65×) and **85.7% of value added** (vanilla 57.7%); tiered value added per tiered worker
+**£78.4 vs £24.6 (3.2×)**. No stall (world minimum 0.82×).
+
+### 2. Prices: the tiered outputs sit BELOW vanilla at 1935 — the first time on any arm
+| British market 1935, % of base (median over runs) | arm | canon4-je | vanilla |
+|---|---|---|---|
+| groceries | **64** | 88 | 116 |
+| clothes | **90** | 117 | 105 |
+| furniture | 75 | 77 | 84 |
+| glass | **98** | 119 | 105 |
+| tools | **87** | 116 | 91 |
+| paper | 128 | 117 | 107 |
+| fertilizer | 94 | 110 | 99 |
+| explosives | 92 | 84 | 102 |
+| steel | **69** | 90 | 111 |
+| engines | 132 | 113 | 132 |
+| automobiles | 169 | 166 | 142 |
+| small arms | **44** | 74 | 72 |
+| artillery | **44** | 69 | 78 |
+| ammunition | 101 | 91 | 108 |
+| dye | 76 | 71 | 89 |
+| telephones | 162 | 117 | 142 |
+Seven of the sixteen tiered outputs are below both references, groceries and steel at little more than half of base. F94's
+central open problem — a flat price path, 0.66–2.13× of the era-0 price, median ~0.95 on canon-4rung — moves on this
+ladder. ⚠ 1935 only, the British market only, n = 4; the path over the century is in `markets_all.tsv`, not yet read. The
+late goods (engines, automobiles, telephones) stay dear, as in vanilla.
+
+### 3. The ×3 film rung cheapens fine art; nothing else in the leisure basket moves
+| British fine art, % of base | 1900 | 1920 | 1930 | 1935 | production 1930 → 1935 |
+|---|---|---|---|---|---|
+| run 2 | 165 | 164 | 162 | **103** | 1,385 → 6,369 |
+| run 3 | 151 | 156 | 134 | **117** | 2,398 → 4,943 |
+| run 4 | 154 | 156 | 114 | **110** | 3,014 → 7,406 |
+| run 5 | 171 | 149 | 117 | **116** | 4,344 → 5,768 |
+| canon4-je median | 147 | 159 | 175 | **156** | — |
+Film academies at 1935: Britain 44 / 27 / 25 / 32 levels (55–74% of its academy levels), the world 67 / 65 / 142 / 157;
+Germany 16–50 and the USA 24–25 where they hold `film`. World academy levels 566 against canon4-je's 694: fewer academies,
+more art, cheaper art. F103's "profit-driven entry pins the price whatever a level makes" held for a 35-a-level rung and does
+not hold at 120 — the price fell ~45 pp to just above base, not to the floor. Leisure goods at 1935 (arm | canon4-je | vanilla,
+% of base): services 105 | 100 | 97, opium 115 | 110 | 104, luxury clothes 64 | 72 | 88, luxury furniture 81 | 89 | 112,
+porcelain 77 | 90 | 87, radios 175 | 126 | 173 — inside seed noise, no unpegging pattern. Average SoL 1935: Britain 19.2 |
+19.7 | 19.0, France 13.4 | 13.1 | 13.6, the USA 12.6 | 13.1 | 14.7.
+
+### 4. Era mix, tier choice, research entries, companies
+- **Tiered workers by rung era at 1935** (e0 / e1 / e2 / e3, median): world **22.6 / 25.6 / 43.4 / 8.8%**, GBR+FRA+USA
+  **7.7 / 22.9 / 54.6 / 15.2%**; canon4-je 16.9 / 48.5 / 33.0 / 1.3 and 3.3 / 50.0 / 43.2 / 2.5. ⚠ Not like for like: canon4v's
+  e3 rungs sit on era-4 vanilla technologies where canon-4rung's were era-5 minted ones, so a larger e3 share is partly the
+  ladder's own definition; the larger e0 share is not — rung 0 survives more here.
+- **Tier choice** (`analyse_ai_tier_choice`): **44.9%** of levels built below the best held tier (runs 42.8–45.7%), against
+  canon-4rung's 34.5%, canon4-je's 37.3%, solver2f's 39.0%; 73% of the fault one tier behind. ⚠ Partly by construction: five
+  ladders' rung 1 (and glass's rung 2) sit on era-1 start technologies, so tier-1/2 countries hold a best tier above rung 0
+  from 1836 and every rung-0 level they build counts as below-best.
+- **Research entries** (`je_tally`, unique triplets): 342–361 completions a run, Britain **17–19 over 8–11 technologies**
+  (canon4-je 29–43); Britain's coverage e0 0/7, e1 15–31%, e2 9–27%, e3 25–42%; the war channel 19–41 a run (trench works,
+  defence in depth). Technologies held at 1935: Britain 160–164 (canon4-je 163–172, canon-4rung 160–165), USA 146–162.
+- **Companies** (`company_check`): world 238 vs vanilla's 296, countries with one 107 vs 121, company-held levels 24.1% vs
+  32.8%; the shortlist 27 vs 26 companies, regional HQs 78 vs 96, company-held 32.6% vs 39.1%.
+
+### 5. Performance and stability
+Runs 2–5: 169 / 161 / 160 / 147 min against vanilla's 140–197 (median 164) — 0.97×, inside the 10% budget. **Run 1 timed out
+at 330 min at 1915.12**: on the reference pace to 1899, then one in-game year per eleven to twenty minutes with the game at
+~5 cores, harness idle, mirror clean, no error of ours; the dominant new log class was naval-battle tooltips. None of 16
+vanilla runs exceeded 197 min. Open — a seed property until another run shows it. Two CTDs in four complete runs (canon4-je
+1 in 5), both resumed within a year.
+
+### Predictions (schedule canon4v_art3_n5.json)
+P1 GDP inside the spread — **above it** (0.82–1.09 vs 0.65–0.96). P2 (1880 era mix) not measured. P3 no cheapening —
+**FAIL**, fine art 103–117 vs 156. P4 film rung dominant where held — PASS (Britain 55–74%). P5 no spillover — PASS. P6
+Britain 25–45 completions — **FAIL low** (17–19). P7 ≤ 1 stall — PASS (0 stalls, 1 timeout).
+
+### What it does NOT say
+n = 4, one arm, two changes at once; the shortlist figure rides on two large-map seeds; prices are one market at one date;
+the era-mix and tier-choice metrics are not like-for-like across ladders; run 1's slowdown is unexplained; the price decline
+is not yet a path (§2 reads 1935 only). Nothing here ratifies canon4v — it measures it.

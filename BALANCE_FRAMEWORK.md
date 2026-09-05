@@ -6940,3 +6940,12 @@ ladder's — the same shape as the §10.70 stress test's top rung, but on the ru
 structure — vanilla eras, 57 buildings, no six-rung block) and the academy reading on top. F103 predicts the academy half:
 profit-driven entry pins fine art near 130–175% of base whatever a level makes, so the ×3 rung buys fewer academies, not cheaper
 art. Schedule `tools/testbed/schedules/canon4v_art3_n5.json` (predictions P1–P7), n=5, 1836 → 1936.1.1, ~13 h.
+
+**Outcome (F104, 2026-09-05, n = 4 — run 1 void by watchdog timeout, two crashes resumed).** World GDP 0.93× vanilla at 1935
+(0.82–1.09), shortlist 1.29× on 1.13× the population; productive share 0.70× and GDP per productive worker 1.67× (advanced
+panel); the tiered sector 19.2% of the workforce and 85.7% of value added. **Tiered outputs below vanilla at 1935 for the first
+time** — groceries 64%, steel 69%, small arms 44%, artillery 44%, clothes 90%, glass 98%, tools 87% of base. **The ×3 film rung
+cheapened fine art** to 103–117% of base (canon4-je 156) with 65–157 film academy levels world-wide and no leisure or SoL
+spillover — F103's pinning did not survive a 120-a-level rung. Worse: tier choice 44.9% below-best (canon-4rung 34.5%, partly
+by construction on vanilla's era-1 gates), Britain's research completions 17–19 (canon4-je 29–43). Open: one seed slowed
+2.5× after 1899 and timed out, cause unidentified. canon4v is measured; not ratified.
