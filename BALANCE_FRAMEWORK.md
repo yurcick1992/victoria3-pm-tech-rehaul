@@ -7050,3 +7050,13 @@ regenerable by one command), verified by field diff to differ from canon4v in ai
 construction ÷ vanilla ≥ 0.95, the under-built consumer industries closing by 1900, the four decliners staying below vanilla
 and three more joining them, below-best ≤ 41%, no stall, P inside budget, the regular academy at 140–165%). The canon
 (`config/mod_config.json`) is untouched until the batch reads.
+
+**Outcome (F106, session 20260905_174831, n=2, both runs clean).** The pools fell where the hoard was largest — Britain 1.06 →
+0.41 / 0.73 of GDP — and the construction sector reached vanilla's size (1.03× its levels at 1935), but the world's pools hold
+0.41 in both seeds (canon4v-art3 0.48, vanilla 0.29, canon4-je with the same defines on the old structure 0.19) and total
+building levels stay at 0.77× vanilla's. ai_value 3^era everywhere moved the consumer build-out to before 1900 (British clothes
+1.62× vanilla's output at 1900, paper 1.71, fertilizer 1.00 against 0.68 / 0.62 / 0.54), pushed the four falling goods further
+(pooled groceries 0.61, steel 0.80, arms 0.66, artillery 0.56) and took paper, fertilizer and ammunition below vanilla (0.93 /
+0.94 / 0.91); tools (1.17) and clothes (1.08) did not fall. Tier choice 39.0% (44.9), the oldest rung's workforce 6.9M (9.4M).
+World GDP 0.88× (0.84 / 0.93), inside the canon's spread; companies 193 (238); row P 1.8% faster in total and +6.8% per unit
+pop-matched (from +1.3%). The regular-ladder academy reads fine art 147%. NOT ratified — measured; the canon is untouched.

@@ -2314,3 +2314,27 @@ no baseline was ever passed; it takes the last row now.
 **Rule.** A caption that states a number is derived from the same const the table reads, or it is a token. The gate
 catches an unfilled token and a listed string; it cannot catch a plausible literal, so the shell may not hold one.
 Earlier published ledgers are not re-filled; their numbers stand, their labels and those five sentences do not.
+
+## 2026-09-05 — the war-gate on_action compared a general's `owner` without an existence guard (948 script errors in one run)
+
+**Symptom.** Run 1 of `20260905_174831_canon4v-hai3-n2` logged 948 lines of `Script system error! Error: Event target link
+'owner' returned an invalid object` at six sites of `common/on_actions/zzz_pm_rehaul_wargate.txt` — 158 per site, one site
+per war-channel technology — from 1855 to 1932, i.e. every monthly pulse of one country at war for most of a century. Run 2 of
+the same batch and all ten earlier runs on the same emitter (canon4v-art3-n5, canon4-je-n5) carry none. The build was clean;
+nothing failed; the batch was healthy.
+
+**Cause.** `emit_research_events.mjs` writes, inside `any_scope_front`, two `any_scope_general` tests: `owner = ROOT` and
+`NOT = { owner = ROOT }` + `owner = { has_technology_researched = X }`. A general whose `owner` link resolves to nothing —
+a formation left by a country that ceased to exist mid-war, on a front that persists — makes both comparisons error rather
+than fail, and the engine re-evaluates them every month while the front stands. The effect on the game is small and local:
+that country's war-channel bar does not tick for the month; nothing economic is touched. Ten clean runs before it is why it
+had never been seen — it needs a defunct owner on a live front.
+
+**Fix.** Both blocks open with `exists = owner` (emitter patched; a saved build of canon4v-hai3 emits twelve guards for
+twelve general blocks and passes every check). Not re-run: the batch's readings are unaffected by construction — the gate only
+ever sets an expiring variable for the war-channel journal entry.
+
+**Rule.** A scope link into a game object (`owner`, `market`, `capital`, a general's or a front's country) is a trigger that
+can be INVALID, not merely false, and an invalid link logs an error on every evaluation. Guard every link an on_action or a
+progress bar dereferences with `exists = <link>` before comparing it. The five-minute smoke check reads the run's own error
+window by parsed time, and a class that names one of our files is the signal to look for — this one appeared only after 1855.

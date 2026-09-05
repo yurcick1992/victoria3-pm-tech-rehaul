@@ -513,10 +513,12 @@ ${T}${T}${T}limit = {
 ${T}${T}${T}${T}any_scope_war = {
 ${T}${T}${T}${T}${T}any_scope_front = {
 ${T}${T}${T}${T}${T}${T}any_scope_general = {
+${T}${T}${T}${T}${T}${T}${T}exists = owner
 ${T}${T}${T}${T}${T}${T}${T}owner = ROOT
 ${T}${T}${T}${T}${T}${T}${T}num_mobilized_battalions >= ${battFor(tech)}
 ${T}${T}${T}${T}${T}${T}}
 ${T}${T}${T}${T}${T}${T}any_scope_general = {
+${T}${T}${T}${T}${T}${T}${T}exists = owner
 ${T}${T}${T}${T}${T}${T}${T}NOT = { owner = ROOT }
 ${T}${T}${T}${T}${T}${T}${T}owner = { has_technology_researched = ${tech} }
 ${T}${T}${T}${T}${T}${T}}

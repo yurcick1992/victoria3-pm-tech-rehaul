@@ -10334,3 +10334,108 @@ n = 4, one arm (the ×3 film rung is in it; only fine art reads it). The per-run
 weight as Britain. The wage unit is the summary's `base_wage`, an index here, not F26's level. Nothing separates the four
 goods' decline into "the ladder working" and "demand shortfall" (steel's British buy orders run 0.78–0.89× vanilla's until 1935,
 so part of its decline is the arm's smaller tooling and engine sectors buying less). Not a control on any lever.
+
+## F106 — THE RULED SET ON THE CANON (canon4v-hai3-n2, 2026-09-05): the investment-pool defines halve Britain's hoard but leave the world's pools at 0.41 of GDP; ai_value 3^era everywhere builds the consumer industries out before 1900 and pushes the four falling goods further; total building levels and GDP do not move
+
+**Arm.** `{kind: config, config: config/mod_config.canon4v-hai3.json}` — the canon (canon4v, §10.72/§10.74) with the set ruled on
+2026-09-05 (§10.75): ai_value 1,000 × 3^era on all 17 tiered industries, and TOO_LARGE_INVESTMENT_POOL_FACTOR 0.9,
+CONSTRUCTION_CRITICAL_THRESHOLD 0.9, CONSTRUCTION_EXCESSIVE_THRESHOLD 1.5, MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED 0.1,
+LONG / VERY_LONG construction-time thresholds 160 / 240 weeks. Session `20260905_174831_canon4v-hai3-n2`, n = 2, both runs clean
+(163 / 161 min). Against canon4v-art3 `20260904_213059` runs 2–5 (medians; the ×3 film rung is its only difference from the
+canon) and the vanilla n=16 median `20260821_131149`; canon4-je `20260903_173810` where the defines' old-structure reading matters.
+
+### 1. Pools, construction, levels (median of 2 | canon4v-art3 | vanilla)
+| | 1900 | 1920 | 1935 |
+|---|---|---|---|
+| investment pool ÷ GDP, world | 0.29 \| 0.22 \| 0.20 | 0.39 \| 0.29 \| 0.24 | **0.41** (0.41 / 0.41) \| 0.48 \| 0.29 |
+| shortlist pooled | 0.06 \| 0.13 \| 0.08 | 0.18 \| 0.30 \| 0.20 | 0.53 (0.43 / 0.62) \| 0.66 \| 0.34 |
+| Britain | 0.06 \| 0.19 \| 0.11 | 0.23 \| 0.53 \| 0.32 | **0.57** (0.41 / 0.73) \| 1.06 \| 0.85 |
+| USA | 0.07 \| 0.00 \| 0.02 | 0.06 \| 0.17 \| 0.03 | 0.37 (0.57 / 0.17) \| 0.46 \| 0.15 |
+| construction-sector levels ÷ vanilla | 0.96 \| 0.89 | 0.91 \| 0.94 | **1.03** \| 0.93 |
+| all building levels ÷ vanilla | 0.91 \| 0.92 | 0.82 \| 0.84 | **0.77** \| 0.79 |
+canon4-je, the same defines on the old structure, read 0.18 / 0.14 / 0.19 world. The sector grew; the building count did not.
+
+### 2. GDP (1935, ÷ vanilla median)
+World **0.88×** (0.84 / 0.93; canon4v-art3 0.93, runs 0.82–1.09) on population 0.99×, productive workers per capita 0.63×, £ per
+productive worker 1.41×. Shortlist **1.29×** (1.32 / 1.27) on 0.76× and 1.68×. 1837–1860 GDP 1.03×. No stall.
+
+### 3. Prices — British market % of base (median of 2 | canon4v-art3 | vanilla) and the pooled 1935 ratio
+| good | 1880 | 1900 | 1920 | 1935 | pooled ÷ van 1935 (art) |
+|---|---|---|---|---|---|
+| groceries | 98 \| 106 \| 119 | 94 \| 101 \| 110 | **80** \| 101 \| 108 | **68** \| 64 \| 116 | **0.61** (0.68) |
+| steel | 112 \| 97 \| 121 | 70 \| 79 \| 107 | 77 \| 81 \| 105 | **61** \| 69 \| 111 | 0.80 (0.76) |
+| small arms | 90 \| 74 \| 78 | 81 \| 65 \| 77 | **46** \| 60 \| 73 | 49 \| 44 \| 72 | **0.66** (0.69) |
+| artillery | 83 \| 75 \| 83 | 83 \| 56 \| 80 | **45** \| 54 \| 82 | **35** \| 44 \| 78 | **0.56** (0.73) |
+| paper | 133 \| 129 \| 133 | 113 \| 128 \| 118 | 114 \| 127 \| 113 | **104** \| 128 \| 107 | **0.93** (1.09) |
+| fertilizer | 108 \| 117 \| 114 | 105 \| 116 \| 109 | 107 \| 105 \| 103 | **82** \| 94 \| 99 | **0.94** (1.05) |
+| ammunition | 134 \| 136 \| 127 | 103 \| 111 \| 119 | 98 \| 110 \| 113 | 93 \| 101 \| 108 | **0.91** (0.93) |
+| explosives | 120 \| 112 \| 121 | 112 \| 109 \| 114 | 115 \| 97 \| 105 | 87 \| 92 \| 102 | 0.99 (0.93) |
+| engines | 143 \| 122 \| 139 | 126 \| 121 \| 137 | 125 \| 132 \| 137 | 112 \| 132 \| 132 | 0.98 (0.96) |
+| clothes | 116 \| 115 \| 107 | 108 \| 120 \| 116 | 105 \| 115 \| 112 | 105 \| 90 \| 105 | 1.08 (1.04) |
+| furniture | 115 \| 106 \| 115 | 109 \| 101 \| 105 | 116 \| 86 \| 96 | 100 \| 75 \| 84 | 1.03 (1.06) |
+| glass | 124 \| 113 \| 140 | 122 \| 119 \| 139 | 133 \| 111 \| 109 | 111 \| 98 \| 105 | 1.07 (1.07) |
+| tools | 124 \| 103 \| 113 | 116 \| 114 \| 101 | 103 \| 100 \| 91 | 82 \| 87 \| 91 | **1.17** (0.99) |
+| dye | 44 \| 81 \| 63 | 61 \| 72 \| 72 | 99 \| 81 \| 80 | 84 \| 76 \| 89 | 1.03 (0.85) |
+| automobiles | — | — | 154 \| 169 \| 157 | 162 \| 169 \| 142 | 1.14 (1.18) |
+| telephones | — | — | 153 \| 175 \| 160 | 161 \| 162 \| 142 | 1.16 (1.15) |
+| fine art (regular ladder) | 142 \| 160 \| 130 | 151 \| 160 \| 133 | 140 \| 156 \| 142 | **147** (140 / 155) \| 113 \| 142 | 0.89 (0.81) |
+
+### 4. Where the supply went — British production ÷ vanilla (median of 2 / canon4v-art3)
+| good | 1900 | 1935 |
+|---|---|---|
+| clothes | **1.62** / 0.68 | 1.26 / 1.81 |
+| paper | **1.71** / 0.62 | 1.37 / 0.57 |
+| fertilizer | **1.00** / 0.54 | 1.06 / 0.84 |
+| tools | **0.89** / 0.64 | 1.18 / 1.08 |
+| furniture | 0.95 / 0.99 | 0.36 / 1.69 |
+| glass | 2.71 / 1.99 | 2.12 / 1.71 |
+| groceries | 4.57 / 1.88 | 5.20 / 4.18 |
+| steel | 2.07 / 1.57 | 2.14 / 1.56 |
+| small arms | 1.53 / 1.21 | 2.96 / 2.02 |
+| engines | 1.78 / 1.04 | 1.66 / 0.88 |
+
+### 5. Wage units at 1935 (British price ÷ Britain's base wage, 1840 = 1.00; median of 2 | canon4v-art3 | vanilla)
+groceries 0.20 \| 0.22 \| 0.50 · steel 0.18 \| 0.32 \| 0.57 · small arms 0.18 \| 0.20 \| 0.46 · paper **0.29** \| 0.46 \| 0.46 · clothes
+0.56 \| 0.59 \| 0.75 · glass 0.53 \| 0.55 \| 0.75 · tools 0.51 \| 0.50 \| 0.50 · furniture 0.43 \| 0.40 \| 0.54. Britain's base wage
+×4.28 in run 1 (a 66.6M Britain at full employment and SoL 28.3) and ×1.48 in run 2 (82.8M, SoL 19.9); canon4v-art3 ×1.79, vanilla
+×1.50 — the wage rows are a median of two very different seeds.
+
+### 6. The ladder's own readings
+- Tier choice **39.0%** below-best (37.2 / 40.9; canon4v-art3 44.9, canon4-je 37.4, canon-4rung 35.3); 21.4% below-best and less
+  efficient than the frontier (23.7).
+- Tiered workers by rung era at 1935: **6.9 / 9.9 / 18.7 / 4.4M** (canon4v-art3 9.4 / 11.0 / 18.2 / 3.8) — the oldest rung a
+  quarter smaller, the newest a sixth larger. Frontier payback 9.9y, stale 23.3y (8.7 / 22.8).
+- Research: technologies held per era at 1935 at vanilla's level (34.7 / 34.6 / 23.5 / 5.4 / 0.3 vs 35.9 / 35.5 / 24.7 / 6.1 /
+  0.4); Britain's research-entry completions **3 and 12** (canon4v-art3 17–19, canon4-je 29–43); Britain 164 techs, USA 161, Germany 164.
+- Companies: world **193** (vanilla 296, canon4v-art3 238), countries with one 95 (121), company-held levels 21.8% (32.8 / 24.1);
+  the shortlist 24 (26), regional HQs 54 (96 / 78).
+- The academy: fine art 147% at 1935; Britain 1 / 4 / 36 / 29 levels by rung in run 1, 2 / 4 / 11 / 6 in run 2; world 171 / 202 /
+  167 / 138.
+
+### 7. Performance and stability
+163 / 161 min against vanilla's median 165 — 1.8% faster in total; pop-matched **+6.8%** per unit (12 of 14 bins; canon4v-art3
++1.3%), inside the 10% budget but the per-unit cost moved. No crash, no resume. Run 1 logged 948 war-gate script errors (an
+unguarded `owner` link; BUGS_AND_FIXES 2026-09-05), no economic effect, emitter fixed afterwards.
+
+### Predictions (schedule canon4v_hai3_n2.json)
+P1 world pools < 0.30 — **MISSED** (0.41 / 0.41). P2 construction ÷ vanilla ≥ 0.95 — half: the sector 1.03 ✓, total levels 0.77
+✗. P3 consumer industries closed by 1900 — **PASS**. P4 four decliners ≤ 0.85 and three more < 0.95 — **PASS** (groceries 0.61,
+steel 0.80, arms 0.66, artillery 0.56; paper 0.93, fertilizer 0.94, ammunition 0.91); the failure reading named in the schedule
+applies to tools and clothes. P5 below-best ≤ 41% — **PASS** (39.0). P6 world GDP ≥ 0.90 in both runs — **MISSED** (0.84 / 0.93);
+shortlist ≥ 1.15 ✓, no stall ✓. P7 row P inside budget — PASS (−1.8% total, +6.8% per unit). P8 regular academy 140–165% — **PASS** (147).
+
+### What it says
+1. The defines work where the hoard was largest — Britain's pool from 1.06 to 0.41 and 0.73 of GDP — and the construction sector
+   grows to vanilla's size, but the world's pools sit at 0.41 in both seeds and total building levels stay at 0.77× vanilla's.
+   The spend does not arrive as buildings the level count sees. On the old structure the same set read 0.19 (canon4-je), so the
+   difference is the book: ×8-priced top rungs, and whatever else the pool buys on it.
+2. ai_value 3^era everywhere does what F105 §3 read on glass: it moves the path earlier. The consumer industries that canon4v-art3
+   under-built until 1920 are at or above vanilla's output by 1900, the four falling goods fall further and from a decade earlier,
+   three more cross below vanilla, and tools and clothes do not.
+3. Obsolescence reads better on two counts: 39.0% below-best against 44.9, and the oldest rung's workforce 6.9M against 9.4M.
+4. GDP does not move outside the seed spread (0.84 / 0.93 within 0.82–1.09), and companies fall further (193 against 238).
+
+### What it does NOT say
+n = 2, one arm, two levers at once; the pool share is the defines' signature and the early build-out the ai_value's, nothing else
+separates them. The wage-unit rows average a full-employment Britain and an ordinary one. Prices are one market and a seven-market
+pool at the dump dates. Nothing here ratifies the set — it measures it; the canon file is untouched.
