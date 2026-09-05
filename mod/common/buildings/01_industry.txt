@@ -34,7 +34,7 @@ building_food_industry_sweeteners = {
 		pmg_automation_building_food_industry
 	}
 	required_construction = 1200
-	ai_value = 2000
+	ai_value = 3000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -53,7 +53,7 @@ building_food_industry_baking_powder = {
 		pmg_automation_building_food_industry
 	}
 	required_construction = 2400
-	ai_value = 4000
+	ai_value = 9000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -91,7 +91,7 @@ building_textile_mill_dye_workshops = {
 		pmg_automation_building_textile_mill
 	}
 	required_construction = 1200
-	ai_value = 2000
+	ai_value = 3000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -109,7 +109,7 @@ building_textile_mill_sewing_machines = {
 		pmg_automation_building_textile_mill
 	}
 	required_construction = 2400
-	ai_value = 4000
+	ai_value = 9000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -127,7 +127,7 @@ building_textile_mill_electric_sewing_machines = {
 		pmg_automation_building_textile_mill
 	}
 	required_construction = 4800
-	ai_value = 8000
+	ai_value = 27000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -165,7 +165,7 @@ building_furniture_manufactory_lathe = {
 		pmg_automation_building_furniture_manufactory
 	}
 	required_construction = 1200
-	ai_value = 2000
+	ai_value = 3000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -183,7 +183,7 @@ building_furniture_manufactory_mechanized_workshops = {
 		pmg_automation_building_furniture_manufactory
 	}
 	required_construction = 2400
-	ai_value = 4000
+	ai_value = 9000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -201,7 +201,7 @@ building_furniture_manufactory_spray_finishing = {
 		pmg_automation_building_furniture_manufactory
 	}
 	required_construction = 4800
-	ai_value = 8000
+	ai_value = 27000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -376,7 +376,7 @@ building_paper_mill_sulfite_pulping = {
 		pmg_automation_building_paper_mill
 	}
 	required_construction = 1200
-	ai_value = 2000
+	ai_value = 3000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -393,7 +393,7 @@ building_paper_mill_bleached_paper = {
 		pmg_automation_building_paper_mill
 	}
 	required_construction = 2400
-	ai_value = 4000
+	ai_value = 9000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -410,7 +410,7 @@ building_paper_mill_continuous_web = {
 		pmg_automation_building_paper_mill
 	}
 	required_construction = 4800
-	ai_value = 8000
+	ai_value = 27000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -462,7 +462,7 @@ building_chemical_plant_improved_fertilizer = {
 			}
 		}
 	}
-	ai_value = 2000
+	ai_value = 3000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -487,7 +487,7 @@ building_chemical_plant_nitrogen_fixation = {
 			}
 		}
 	}
-	ai_value = 4000
+	ai_value = 9000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -512,7 +512,7 @@ building_chemical_plant_catalytic_synthesis = {
 			}
 		}
 	}
-	ai_value = 8000
+	ai_value = 27000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -563,7 +563,7 @@ building_explosives_factory_ammonia_soda_process = {
 			}
 		}
 	}
-	ai_value = 2000
+	ai_value = 3000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -588,7 +588,7 @@ building_explosives_factory_vacuum_evaporation = {
 			}
 		}
 	}
-	ai_value = 4000
+	ai_value = 9000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -613,7 +613,7 @@ building_explosives_factory_brine_electrolysis = {
 			}
 		}
 	}
-	ai_value = 8000
+	ai_value = 27000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -641,7 +641,7 @@ building_synthetics_plant = {
 			}
 		}
 	}
-	ai_value = 2000
+	ai_value = 3000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -697,7 +697,7 @@ building_steel_mill_bessemer_process = {
 			}
 		}
 	}
-	ai_value = 2000
+	ai_value = 3000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -724,7 +724,7 @@ building_steel_mill_open_hearth_process = {
 			}
 		}
 	}
-	ai_value = 4000
+	ai_value = 9000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -751,7 +751,7 @@ building_steel_mill_electric_arc_process = {
 			}
 		}
 	}
-	ai_value = 8000
+	ai_value = 27000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -804,7 +804,7 @@ building_motor_industry_electric_engines = {
 			}
 		}
 	}
-	ai_value = 2000
+	ai_value = 3000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -830,7 +830,7 @@ building_motor_industry_diesel_engines = {
 			}
 		}
 	}
-	ai_value = 4000
+	ai_value = 9000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -856,7 +856,7 @@ building_motor_industry_high_speed_diesel = {
 			}
 		}
 	}
-	ai_value = 8000
+	ai_value = 27000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -912,7 +912,7 @@ building_automotive_industry = {
 			}
 		}
 	}
-	ai_value = 4000
+	ai_value = 9000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -940,7 +940,7 @@ building_automotive_industry_mass_automobile_production = {
 			}
 		}
 	}
-	ai_value = 8000
+	ai_value = 27000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -967,7 +967,7 @@ building_electrics_industry = {
 			}
 		}
 	}
-	ai_value = 2000
+	ai_value = 3000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1003,7 +1003,7 @@ building_arms_industry_rifles = {
 		pmg_automation_building_arms_industry
 	}
 	required_construction = 1200
-	ai_value = 2000
+	ai_value = 3000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1020,7 +1020,7 @@ building_arms_industry_repeaters = {
 		pmg_automation_building_arms_industry
 	}
 	required_construction = 2400
-	ai_value = 4000
+	ai_value = 9000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1037,7 +1037,7 @@ building_arms_industry_bolt_action_rifles = {
 		pmg_automation_building_arms_industry
 	}
 	required_construction = 4800
-	ai_value = 8000
+	ai_value = 27000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1072,7 +1072,7 @@ building_artillery_foundry_smoothbores = {
 		pmg_automation_building_arms_industry
 	}
 	required_construction = 1200
-	ai_value = 2000
+	ai_value = 3000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1089,7 +1089,7 @@ building_artillery_foundry_breech_loaders = {
 		pmg_automation_building_arms_industry
 	}
 	required_construction = 2400
-	ai_value = 4000
+	ai_value = 9000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1106,7 +1106,7 @@ building_artillery_foundry_recoiled_barrels = {
 		pmg_automation_building_arms_industry
 	}
 	required_construction = 4800
-	ai_value = 8000
+	ai_value = 27000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1135,7 +1135,7 @@ building_munition_plant = {
 			}
 		}
 	}
-	ai_value = 2000
+	ai_value = 3000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1162,7 +1162,7 @@ building_munition_plant_explosive_shells = {
 			}
 		}
 	}
-	ai_value = 4000
+	ai_value = 9000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }

@@ -7060,3 +7060,36 @@ building levels stay at 0.77× vanilla's. ai_value 3^era everywhere moved the co
 0.94 / 0.91); tools (1.17) and clothes (1.08) did not fall. Tier choice 39.0% (44.9), the oldest rung's workforce 6.9M (9.4M).
 World GDP 0.88× (0.84 / 0.93), inside the canon's spread; companies 193 (238); row P 1.8% faster in total and +6.8% per unit
 pop-matched (from +1.3%). The regular-ladder academy reads fine art 147%. NOT ratified — measured; the canon is untouched.
+
+## 10.76 — canon4v-hai3 IS THE CANON; the 60-run plan with a GDP gate at run 30 (user-ruled 2026-09-06)
+
+**Rulings.** "Canonise the latest config." Then: "Make the handover that will plan for 60 runs of canon + reduced JE fire time (3y ->
+2y for a single industrial JEs, not touching other JEs). After run 30, it should assess the situation. If average GDP is at least
+0.95x of vanilla, it should proceed with the remaining 30 runs. If it's not, it should redo the ladders so that A (output step) is
+2.2 instead of 2.0 (B, the input step, stays at 1.5). Then it should run 30 runs under this setup. […] if something happens with
+claude availability, I want the 60 runs to finish, and only if claude is reliably there to steer, it should do so."
+
+**The canon.** `config/mod_config.json` + `config/tech_tree_options.json` are `config/mod_config.canon4v-hai3.json` + twin verbatim —
+the §10.72 structure through the A/B book (A 2.0 / B 1.5, divisor 0.000125) with ai_value 1,000 × 3^era on all 17 tiered industries
+and the five investment-pool defines of §10.75. Regenerated through the vanilla-only pipeline on promotion and proven identical to the
+committed file apart from stamps. The plain book (`config/mod_config.canon4v.json`) stays as the record of the 2026-09-05 canon.
+
+**The arm.** `config/mod_config.canon-je24.json` + twin: the canon with `research_events.industry_bar_months` **24**, the war bars
+(6) and every other parameter untouched. ⚠ **The canon's industry bar is 60 months per stage, not 36**: §10.69's four-rung research
+parameters set one stage per 60 months (the six-rung book's 36 is what the "3y" premise names). The ruling's target — two years — is
+what is implemented; a one-third cut from the actual value would be 40. Flagged in the handover for correction if the ratio was meant.
+
+**The plan.** `tools/testbed/schedules/canon_je24_n60.json`: 60 × 1836 → 1936 of canon-je24, timeout 420 (a slow seed like F104's
+run 1 completes and counts instead of being voided at 330; a hang is the stall detector's). **The gate after run 30**:
+`node tools/testbed/ledger/assess_gdp_gate.mjs --session <stamp> --setup canon-je24` — the mean over the usable runs (L17 rule via
+lib_runs) of world GDP at 1935 ÷ the vanilla n=16 median, against 0.95 (median, sd and n printed beside it). ≥ 0.95 → nothing to do,
+the schedule runs on to 60. Below → drop `tools/testbed/STOP` the moment run031's folder appears (the STOP file stops the CURRENT run
+at once, so placed at run 31's start it costs nothing and leaves 30 complete runs), remove the STOP file, launch
+`canon_je24_a22_n30.json` (`config/mod_config.canon-je24-a22.json`: A 2.2 / B 1.5 through make_ab_config with the same flags, the
+24-month bar). **Unsteered**: the 60-run schedule needs no decision to finish; an absent agent gets 60 runs of canon-je24, which the
+ruling accepts. ⚠ A leftover STOP file kills the next launch's first run at 1836 (session 20260901_135709 did exactly that) — remove
+it before relaunching.
+
+**Open beside the plan, not ruled.** The four minted additions are unreachable in play (F106 §6: 0–3 countries hold them at 1935 in six
+runs, 0–7 levels world-wide); companies 193 against canon4v-art3's 238; the per-unit wall clock +6.8% pop-matched; the econ selftest's
+Belgian wage expectation (0.0781, F26) predates the 1.13.11 re-measurement (0.0796).

@@ -1,0 +1,78 @@
+{
+  "schedule_version": 1,
+  "label": "canon-je24-a22-n30",
+  "_why": "PHASE 2 OF THE 60-RUN PLAN (user-ruled 2026-09-06, BALANCE_FRAMEWORK §10.76) — LAUNCHED ONLY IF THE GATE FAILS: 'If it's not [average GDP ≥ 0.95× vanilla after run 30], it should redo the ladders so that A (output step) is 2.2 instead of 2.0 (B, the input step, stays at 1.5). Then it should run 30 runs under this setup.' The arm is canon-je24 (the canon with the industry research bar at 24 months) regenerated through make_ab_config with --A 2.2: rung k output × 2.2^k and building_cost × 2.2^k (capacity pricing kept — a rung-3 mill makes 10.6× rung 0 and costs 10.6×), input value × 1.5^k unchanged, divisor pinned 0.000125, ai_value 1,000×3^era and the investment-pool defines unchanged. 30 × 1836 → 1936.1.1, timeout 420. ⚠ Before launching: the phase-1 schedule must have reported SCHEDULE DONE and tools/testbed/STOP must be DELETED (a leftover STOP file kills run 1 at 1836).",
+  "_arms": {
+    "canon-je24-a22": "{kind: config, config: config/mod_config.canon-je24-a22.json} — node tools/make_ab_config.mjs --A 2.2 --B 1.5 --suffix canon-je24-a22 --ai-steep <all 17>:3 --divisor 0.000125 --ai-defines <the five of §10.75>, then research_events.industry_bar_months = 24"
+  },
+  "_delta": "vs canon-je24 (phase 1): A only — output per level and construction cost per level +10% per rung (×1.1, ×1.21, ×1.33 at rungs 1–3); recipes' input value, staffing, techs, research events, ai_value and defines byte-identical.",
+  "_predictions": {
+    "P1_gdp": "Output per capital point is unchanged (cost ∝ A^k), so the direct effect is more output per WORKER at the frontier: world GDP ÷ vanilla rises by 0.02–0.06 over phase 1's mean (more value per productive worker at the same employment), not enough on its own to clear 0.95 if phase 1 read below 0.90.",
+    "P2_prices": "The frontier's break-even falls (rung 3 from ~26% to ~22% of base), so the four falling goods fall further (groceries pooled ≤ 0.55, steel ≤ 0.75) and the consumer goods that held (tools, clothes, glass) move to ≤ 1.0 in at least two of the three.",
+    "P3_stall": "No new stall pattern: ab1's stall was input-driven (B 2.5); B is unchanged here. ≤ 2 stalls in 30.",
+    "P4_obsolescence": "Below-best construction ≤ phase 1's (the dearer top rung is scored down in small sectors by the ×4 time thresholds — a possible drag in minors), the oldest rung's workforce below phase 1's."
+  },
+  "_comparison": "phase 1 (canon-je24, the first 30 runs of the same batch plan) is the comparison; canon4v-hai3-n2 (F106) and vanilla n=16 20260821_131149 as references.",
+  "_watch": [
+    "before launch: SCHEDULE DONE on phase 1, tools/testbed/STOP deleted, a -DryRun build of config/mod_config.canon-je24-a22.json clean",
+    "every run, ~5 min after it starts: marker, version, error window by position, clock",
+    "first run: first_run_decomp against phase 1's mean; the four decliners' British prices",
+    "post-run: preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS, the ledger with phase 1 as the reference series"
+  ],
+  "_cost": "30 × 1836→1936 ≈ 30 × 2h45 ≈ 83 h ≈ 3.5 days continuous, plus resumes.",
+  "_caveats": [
+    "Only meaningful as phase 2 of §10.76; launched on its own it is an A/B-ladder arm without a gate.",
+    "A 2.2 raises the top rung's cost to 10.6× the vanilla anchor; the ×4 construction-time thresholds (160/240) score that rung down in sectors under ~320 points a week — minors will build it later than in phase 1.",
+    "The 24-month industry bar is inherited from phase 1, with the same 60 → 24 caveat."
+  ],
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+  },
+  "setups": {
+    "canon-je24-a22": {
+      "kind": "config",
+      "config": "config/mod_config.canon-je24-a22.json"
+    }
+  },
+  "runs": [
+    { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" },
+    { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" },
+    { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" },
+    { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" },
+    { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" },
+    { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }, { "setup": "canon-je24-a22", "until": "1936.1.1" }
+  ]
+}

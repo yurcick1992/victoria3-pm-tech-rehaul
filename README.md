@@ -96,8 +96,8 @@ Everything under `mod/` is **generated** — never hand-edit it.
 
 ## The canon (2026-09-05)
 
-The balance book the builder ships by default is **`canon4v`** in `config/mod_config.json`: four rungs per industry, each
+The balance book the builder ships by default is **`canon4v-hai3`** in `config/mod_config.json` (since 2026-09-06): four rungs per industry, each
 rung one of vanilla's own production methods with vanilla's name, gate and recipe, enriched by the A/B ladder (output ×2
-and input value ×1.5 per rung, construction priced by capacity) — `BALANCE_FRAMEWORK.md` §10.68, §10.72 and §10.74. The
+and input value ×1.5 per rung, construction priced by capacity) — `BALANCE_FRAMEWORK.md` §10.68, §10.72, §10.74 and §10.75 (the ai_value curve and the investment-pool defines). The
 earlier six-rung book is kept at `config/mod_config.six_rung.json` (+ `config/tech_tree_options.six_rung.json`) and builds
 with `powershell -ExecutionPolicy Bypass -File tools\build.ps1 -Config config\mod_config.six_rung.json`.

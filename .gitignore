@@ -123,3 +123,8 @@ tools/testbed/ledger/*.canon6
 # canon4v-hai3: the ruled set on the canon — ai_value 3^era everywhere + the investment-pool defines (§10.75, 2026-09-05)
 !config/mod_config.canon4v-hai3.json
 !config/tech_tree_options.canon4v-hai3.json
+# the 60-run plan of §10.76 (2026-09-06): the canon with the industry research bar at 24 months, and its A 2.2 fallback
+!config/mod_config.canon-je24.json
+!config/tech_tree_options.canon-je24.json
+!config/mod_config.canon-je24-a22.json
+!config/tech_tree_options.canon-je24-a22.json

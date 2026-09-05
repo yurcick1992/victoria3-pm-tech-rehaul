@@ -1,0 +1,94 @@
+{
+  "schedule_version": 1,
+  "label": "canon-je24-n60",
+  "_why": "THE 60-RUN PLAN (user-ruled 2026-09-06, BALANCE_FRAMEWORK §10.76): the canon (canon4v-hai3 — the vanilla-built four-rung structure through the A/B book 2.0 / 1.5 with ai_value 1,000×3^era on every tiered industry and the investment-pool defines of §10.75) with ONE change: the industry research-entry bar at 24 months per stage instead of the canon's 60 ('3y -> 2y for a single industrial JEs, not touching other JEs' — the war bars stay 6; ⚠ the '3y' premise is the six-rung book's 36; 24 is the named target). 60 × 1836 → 1936.1.1, timeout 420 so a slow seed completes and counts. THE GATE: after run 30 an agent runs `node tools/testbed/ledger/assess_gdp_gate.mjs --session <this stamp> --setup canon-je24`; mean world GDP ÷ vanilla ≥ 0.95 → nothing to do, the schedule runs on; below → STOP file as run 31 starts, remove it, launch canon_je24_a22_n30.json. UNSTEERED: this schedule needs no decision to finish; an absent agent gets 60 runs of this setup, which the ruling accepts.",
+  "_arms": {
+    "canon-je24": "{kind: config, config: config/mod_config.canon-je24.json} — the canon (config/mod_config.json = canon4v-hai3) with research_events.industry_bar_months 24; everything else byte-identical (a copy with one field set and a _variant stamp)"
+  },
+  "_delta": "vs the canon: the industry bar only (60 → 24 months per stage; three stages per technology, half the era base cost granted per stage). vs canon4v-hai3-n2 (F106): the same book plus that bar.",
+  "_plan": {
+    "gate": "after run030 completes: node tools/testbed/ledger/assess_gdp_gate.mjs --session <stamp> --setup canon-je24 (threshold 0.95, world GDP at 1935 ÷ vanilla n=16 median, mean over the usable runs)",
+    "proceed": "mean ≥ 0.95: do nothing; runs 31–60 continue on this setup",
+    "switch": "mean < 0.95: when run031's folder appears, create tools/testbed/STOP (stops the current run at once; run 31 is abandoned at 1836 and excluded by L17), wait for SCHEDULE DONE, DELETE tools/testbed/STOP, then launch tools/testbed/schedules/canon_je24_a22_n30.json (A 2.2 / B 1.5, same bar) for 30 runs",
+    "unsteered": "if nobody is there at run 30 the schedule simply completes 60 runs of canon-je24"
+  },
+  "_predictions": {
+    "P1_gate": "The gate FAILS: the canon read world GDP 0.88× (0.84 / 0.93) at n=2 and 0.93× (0.82–1.09) on the plain book at n=4; a faster industry bar adds research, not output. Mean over 30 runs 0.86–0.93×, below 0.95. If it passes, the bar's research pull is worth more GDP than any lever measured so far.",
+    "P2_je": "Britain's research-entry completions rise from 3–12 per run (F106) to ≥ 15, technologies held at 1935 +3 to +8 against F106's 164; the war channel unchanged (6–month bars, 19–41 completions a run).",
+    "P3_pools_prices": "The F106 readings hold at n=30: world pools 0.35–0.45 of GDP, groceries 0.55–0.70 of vanilla pooled, steel 0.75–0.85, arms and artillery 0.55–0.70; paper, fertilizer and ammunition at or below vanilla; tools and clothes at or above.",
+    "P4_spread": "With n=30 the world GDP ratio's standard error falls under 0.02; the seed spread itself (sd ≈ 0.10) is the finding, and Britain's size (66–90M) explains most of the shortlist spread.",
+    "P5_stability": "≤ 2 stalls in 30 (the ab-family stalled 1 in 5); ≤ 2 seeds slower than 330 min (F104's 2.5× seed); CTDs at the observed rate of about one in three runs, all resumed within a year.",
+    "P6_wall": "Row P total within ±5% of vanilla's median; pop-matched ≤ +10% (F106 +6.8%).",
+    "P7_additions": "The four minted additions stay unreachable: ≤ 5 countries hold any of them at 1935 in any run (F106 §6)."
+  },
+  "_comparison": "canon4v-hai3-n2 20260905_174831 (F106) for the canon without the bar change; canon4v-art3 20260904_213059 (F104/F105) for the plain book; vanilla n=16 20260821_131149 as the denominator.",
+  "_watch": [
+    "every run, ~5 min after it starts: mod marker, version, this run's error window by POSITION (parsed time), clock; the heartbeat script does this for the newest run at each wake",
+    "first run: first_run_decomp, je_tally (Britain's completions), the emitted bars carry max_value = 24 for industry entries and 6 for war entries (grep the scheduled build's scripted_progress_bars)",
+    "after run030 completes: the GDP gate (see _plan); post the verdict",
+    "post-run: preflight -Session (L12/L17/L26/L28), VERDICT.md, SESSION_VERDICTS row, FINDINGS, the ledger"
+  ],
+  "_cost": "60 × 1836→1936 ≈ 60 × 2h45 ≈ 165 h ≈ 7 days continuous, plus resumes; 142 MB a run ≈ 8.5 GB of disk.",
+  "_caveats": [
+    "One arm. Nothing in this batch separates the bar change from the canon; F106 (n=2) is the only reading of the canon without it.",
+    "The industry bar goes 60 → 24, not 36 → 24: the ruling was phrased on the six-rung book's value. If a one-third cut was meant, the bar is 40 and this schedule is wrong by design — check with the user before launch if reachable.",
+    "A Steam update between runs makes the halves incomparable (it happened on 2026-08-12); each run's smoke check reads the version.",
+    "The STOP file stops the CURRENT run at once (not after it) and a leftover STOP file kills the next launch's first run at 1836 — session 20260901_135709 did exactly that. Remove it before any relaunch."
+  ],
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+  },
+  "setups": {
+    "canon-je24": {
+      "kind": "config",
+      "config": "config/mod_config.canon-je24.json"
+    }
+  },
+  "runs": [
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }
+  ]
+}
