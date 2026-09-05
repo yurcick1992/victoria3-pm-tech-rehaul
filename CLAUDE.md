@@ -3432,6 +3432,17 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
      (measured 2026-08-30: it admitted ~110 foreign lines and I read the result as a new error class).
      Parse the stamp and compare it numerically against the run's own start time from `meta.json`:
      `awk 'match($0,/^[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]]/){h=substr($0,2,2);m=substr($0,5,2);s=substr($0,8,2); if(h*3600+m*60+s>=START){print NR; exit}}'`.
+     ⚠⚠ **AND A `>= START` ON SECONDS-OF-DAY IS STILL WRONG FOR A RUN THAT STARTS JUST AFTER MIDNIGHT**
+     (2026-09-06, the 60-run batch's run 1, launched 00:10): every line the previous batch stamped 17:48–23:59
+     passes it, so the window read **17,399 lines instead of 85**. Take the window as a RANGE from the run's
+     start to NOW, wrap-safe (`START <= t <= NOW`, or `t >= START OR t <= NOW` when NOW is past midnight) —
+     `tools/testbed/batch_heartbeat.sh` does that since 2026-09-06; at ~2h45 a run, one run in nine starts
+     inside the hour after midnight.
+     ⚠ **A FIFTH NOISE CLASS, identified 2026-09-06: `untyped trigger [ Scoped object of type 'country' is
+     not valid (Country (4294967295)) ]`** with `Script location: <unknown>:0` — an invalid country handle
+     from code-driven triggers, no script file named. **It is VANILLA's**: the pinned vanilla baseline
+     `20260821_131149` carries **925 / 946** in its first two runs, mod arms 850–1,704 (canon4v-hai3-n2's
+     two runs, canon4v-art3-n5 run 2). The heartbeat filters it with the other four.
   4. **Is the clock advancing?** The tail of `<run>/run.log` should show `in-game <date>` moving.
   5. **Is the construction mix reasonable?** (User-directed 2026-08-16, after F66.) As soon as the
      concurrent save harvest lands its first summary (~10 min for the 1837 autosave), run
