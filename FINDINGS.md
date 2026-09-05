@@ -10191,3 +10191,146 @@ Britain 25–45 completions — **FAIL low** (17–19). P7 ≤ 1 stall — PASS 
 n = 4, one arm, two changes at once; the shortlist figure rides on two large-map seeds; prices are one market at one date;
 the era-mix and tier-choice metrics are not like-for-like across ladders; run 1's slowdown is unexplained; the price decline
 is not yet a path (§2 reads 1935 only). Nothing here ratifies canon4v — it measures it.
+
+## F105 — THE PRICE PATH OF THE VANILLA-BUILT FOUR-RUNG BOOK (canon4v-art3-n5, runs 2–5, read 2026-09-05): a decline over the century in four goods, none in twelve; broad and steeper than vanilla in WAGE units; the private pool hoards
+
+**Source.** `markets_all.tsv` of session `20260904_213059_canon4v-art3-n5` (runs 2–5; twelve dump dates 1836.2 → 1935.1), against
+the vanilla n=16 baseline `20260821_131149` and canon4-je-n5 `20260903_173810` (canon-4rung + research events, WITH the
+six-rung hoard defines); pools and the base wage from the same sessions' save summaries. Medians over runs. F104 read 1935
+only; this is the path it deferred.
+
+### 1. British market, tiered outputs, % of base (arm | vanilla | canon4-je)
+| good | 1840 | 1860 | 1880 | 1900 | 1920 | 1930 | 1935 |
+|---|---|---|---|---|---|---|---|
+| groceries | 166 \| 164 \| 157 | 129 \| 138 \| 129 | 106 \| 119 \| 114 | 101 \| 110 \| 95 | 101 \| 108 \| 85 | 75 \| 114 \| 89 | **64** \| 116 \| 88 |
+| clothes | 87 \| 88 \| 84 | 127 \| 111 \| 115 | 115 \| 107 \| 123 | 120 \| 116 \| 101 | 115 \| 112 \| 117 | 101 \| 107 \| 112 | 90 \| 105 \| 117 |
+| furniture | 106 \| 107 \| 103 | 128 \| 120 \| 126 | 106 \| 115 \| 94 | 101 \| 105 \| 99 | 86 \| 96 \| 81 | 83 \| 83 \| 82 | 75 \| 84 \| 77 |
+| glass | 95 \| 94 \| 90 | 114 \| 101 \| 102 | 113 \| 140 \| 136 | 119 \| 139 \| 143 | 111 \| 109 \| 134 | 106 \| 103 \| 117 | 98 \| 105 \| 119 |
+| tools | 94 \| 118 \| 147 | 120 \| 128 \| 161 | 103 \| 113 \| 158 | 114 \| 101 \| 133 | 100 \| 91 \| 123 | 89 \| 90 \| 128 | 87 \| 91 \| 116 |
+| paper | 152 \| 153 \| 153 | 160 \| 155 \| 153 | 129 \| 133 \| 134 | 128 \| 118 \| 118 | 127 \| 113 \| 104 | 125 \| 108 \| 110 | 128 \| 107 \| 117 |
+| fertilizer | 130 \| 131 \| 123 | 119 \| 113 \| 111 | 117 \| 114 \| 119 | 116 \| 109 \| 120 | 105 \| 103 \| 133 | 92 \| 97 \| 100 | 94 \| 99 \| 110 |
+| explosives | 110 \| 107 \| 101 | 125 \| 133 \| 126 | 112 \| 121 \| 95 | 109 \| 114 \| 87 | 97 \| 105 \| 88 | 91 \| 103 \| 88 | 92 \| 102 \| 84 |
+| steel | 128 \| 130 \| 118 | 115 \| 128 \| 131 | 97 \| 121 \| 118 | 79 \| 107 \| 113 | 81 \| 105 \| 76 | 80 \| 112 \| 84 | **69** \| 111 \| 90 |
+| engines | 150 \| 148 \| 142 | 141 \| 146 \| 132 | 122 \| 139 \| 121 | 121 \| 137 \| 119 | 132 \| 137 \| 105 | 121 \| 135 \| 108 | 132 \| 132 \| 113 |
+| automobiles | — | — | — | — \| 175 \| 164 | 169 \| 157 \| 170 | 169 \| 149 \| 168 | 169 \| 142 \| 166 |
+| small arms | 119 \| 108 \| 109 | 110 \| 90 \| 105 | 74 \| 78 \| 95 | 65 \| 77 \| 85 | 60 \| 73 \| 87 | 60 \| 74 \| 77 | **44** \| 72 \| 74 |
+| artillery | 130 \| 127 \| 133 | 109 \| 97 \| 109 | 75 \| 83 \| 86 | 56 \| 80 \| 86 | 54 \| 82 \| 81 | 55 \| 77 \| 89 | **44** \| 78 \| 69 |
+| ammunition | 114 \| 118 \| 114 | 146 \| 139 \| 131 | 136 \| 127 \| 115 | 111 \| 119 \| 105 | 110 \| 113 \| 100 | 114 \| 111 \| 87 | 101 \| 108 \| 91 |
+| dye | 25 \| 25 \| 25 | 25 \| 39 \| 25 | 81 \| 63 \| 43 | 72 \| 72 \| 65 | 81 \| 80 \| 78 | 68 \| 83 \| 74 | 76 \| 89 \| 71 |
+| telephones | — | — | — | — | 175 \| 160 \| 126 | 166 \| 154 \| 125 | 162 \| 142 \| 117 |
+| fine art | 157 \| 142 \| 154 | 150 \| 129 \| 148 | 160 \| 130 \| 150 | 160 \| 133 \| 147 | 156 \| 142 \| 175 | 126 \| 144 \| 172 | 113 \| 142 \| 156 |
+
+Per-run 1935 (British): groceries 44 / 53 / 76 / 101, clothes 112 / 75 / 105 / 75, glass 96 / 104 / 80 / 101, steel 69 / 75 / 70 / 68,
+small arms 46 / 58 / 43 / 40, artillery 54 / 40 / 47 / 35 — the medians above hide a wide spread on the consumer goods and none on
+steel and the war goods.
+
+### 2. arm ÷ vanilla, seven major markets pooled (British, French, American, Russian, Prussian, Japanese, Dutch)
+| good | 1840 | 1860 | 1880 | 1900 | 1920 | 1930 | 1935 |
+|---|---|---|---|---|---|---|---|
+| groceries | 1.00 | 0.96 | 0.98 | 0.89 | 0.87 | 0.75 | **0.68** |
+| steel | 0.93 | 0.88 | 0.95 | 0.85 | 0.80 | 0.81 | **0.76** |
+| small arms | 1.08 | 1.00 | 1.05 | 1.05 | 0.95 | 0.90 | **0.69** |
+| artillery | 1.03 | 1.03 | 0.91 | 1.00 | 0.77 | 0.86 | **0.73** |
+| fine art (×3 rung) | 1.22 | 1.12 | 1.16 | 1.13 | 1.08 | 0.87 | 0.81 |
+| clothes | 0.84 | 1.08 | 1.22 | 1.11 | 1.05 | 1.08 | 1.04 |
+| furniture | 1.00 | 1.02 | 1.02 | 0.99 | 1.13 | 1.15 | 1.06 |
+| glass | 1.05 | 1.01 | 0.92 | 0.87 | 1.04 | 1.16 | 1.07 |
+| tools | 0.75 | 1.03 | 0.98 | 1.03 | 1.14 | 1.13 | 0.99 |
+| paper | 1.04 | 1.07 | 1.15 | 1.12 | 1.22 | 1.17 | 1.09 |
+| fertilizer | 0.99 | 0.99 | 1.01 | 0.96 | 1.08 | 1.06 | 1.05 |
+| explosives | 1.10 | 1.00 | 0.96 | 0.96 | 0.99 | 1.05 | 0.93 |
+| engines | 1.02 | 0.99 | 0.92 | 1.02 | 1.00 | 1.02 | 0.96 |
+| ammunition | 0.98 | 0.94 | 1.02 | 0.97 | 0.92 | 1.15 | 0.93 |
+| dye | 1.03 | 1.03 | 1.19 | 0.94 | 1.17 | 0.91 | 0.85 |
+| automobiles | — | — | — | — | 1.07 | 1.14 | 1.18 |
+| telephones | — | — | — | — | 1.02 | 1.04 | 1.15 |
+
+### 3. Where the supply went — British production and buy orders, arm ÷ vanilla (prod / buy)
+| good | 1880 | 1900 | 1920 | 1935 |
+|---|---|---|---|---|
+| groceries | 1.91 / 1.26 | 1.88 / 1.59 | 2.43 / 1.47 | **4.18 / 2.42** |
+| steel | 1.14 / 0.78 | 1.57 / 0.86 | 1.45 / 0.89 | **1.56 / 1.01** |
+| small arms | 0.67 / 0.65 | 1.21 / 1.12 | 1.51 / 1.28 | **2.02 / 1.42** |
+| artillery | 0.58 / 0.56 | 1.14 / 0.88 | 1.76 / 1.16 | **1.96 / 1.29** |
+| glass | 2.90 / 1.92 | 1.99 / 1.40 | 1.30 / 1.10 | 1.71 / 1.58 |
+| clothes | 0.44 / 0.45 | 0.68 / 0.79 | 1.56 / 1.18 | 1.81 / 1.28 |
+| furniture | 0.51 / 0.42 | 0.99 / 0.82 | 1.35 / 1.19 | 1.69 / 1.59 |
+| tools | 0.81 / 0.62 | 0.64 / 0.73 | 0.88 / 0.84 | 1.08 / 1.10 |
+| paper | 0.61 / 0.51 | 0.62 / 0.81 | 0.62 / 0.81 | 0.57 / 0.73 |
+| fertilizer | 0.54 / 0.57 | 0.54 / 0.51 | 0.48 / 0.44 | 0.84 / 0.70 |
+| explosives | 0.81 / 0.70 | 0.90 / 0.90 | 0.98 / 0.88 | 1.17 / 0.95 |
+| engines | 1.26 / 0.84 | 1.04 / 0.77 | 0.76 / 0.77 | 0.88 / 0.97 |
+| ammunition | 1.01 / 0.84 | 1.07 / 1.01 | 1.04 / 0.97 | 1.33 / 0.92 |
+| dye | 0.14 / 0.29 | 0.32 / 0.35 | 0.36 / 0.72 | 0.50 / 0.66 |
+| automobiles | — | — | 0.92 / 1.09 | 1.05 / 1.33 |
+| telephones | — | — | 1.64 / 1.77 | 1.55 / 1.62 |
+| fine art | 0.47 / 0.76 | 1.00 / 1.21 | 0.76 / 1.05 | 3.66 / 2.43 |
+
+Raw inputs, British market 1935 (arm \| vanilla): grain 110 \| 114, wood 101 \| 89, iron 93 \| 103, coal 92 \| 102, fabric 94 \| 86,
+lead 105 \| 94, sulfur 87 \| 85, oil 109 \| 78, rubber 127 \| 103, hardwood 103 \| 102 — inputs at or above vanilla except grain,
+iron and coal a little under.
+
+### 4. The same path in WAGE units — British price ÷ Britain's base wage, 1840 = 1.00 (arm | vanilla | canon4-je)
+| good | 1880 | 1900 | 1920 | 1935 |
+|---|---|---|---|---|
+| groceries | 0.49 \| 0.63 \| 0.68 | 0.37 \| 0.57 \| 0.59 | 0.36 \| 0.55 \| 0.42 | **0.22** \| 0.50 \| 0.36 |
+| steel | 0.62 \| 0.80 \| 0.91 | 0.40 \| 0.71 \| 0.90 | 0.42 \| 0.65 \| 0.62 | **0.32** \| 0.57 \| 0.51 |
+| small arms | 0.48 \| 0.66 \| 0.76 | 0.35 \| 0.60 \| 0.75 | 0.35 \| 0.54 \| 0.63 | **0.20** \| 0.46 \| 0.39 |
+| furniture | 0.79 \| 0.96 \| 0.94 | 0.63 \| 0.80 \| 1.09 | 0.58 \| 0.68 \| 0.69 | 0.40 \| 0.54 \| 0.53 |
+| glass | 0.97 \| 1.31 \| 1.36 | 0.80 \| 1.27 \| 1.57 | 0.77 \| 0.90 \| 1.13 | 0.55 \| 0.75 \| 0.81 |
+| clothes | 1.07 \| 1.07 \| 1.42 | 0.96 \| 1.08 \| 1.26 | 0.86 \| 1.01 \| 1.11 | 0.59 \| 0.75 \| 0.88 |
+| fine art | 0.86 \| 0.87 \| 0.87 | 0.72 \| 0.82 \| 0.91 | 0.64 \| 0.81 \| 0.82 | 0.41 \| 0.68 \| 0.60 |
+| fertilizer | 0.77 \| 0.80 \| 0.92 | 0.63 \| 0.70 \| 1.01 | 0.50 \| 0.61 \| 0.84 | 0.37 \| 0.51 \| 0.59 |
+| tools | 0.91 \| 0.88 \| 0.98 | 0.84 \| 0.72 \| 0.87 | 0.70 \| 0.60 \| 0.56 | 0.50 \| 0.50 \| 0.48 |
+| paper | 0.74 \| 0.77 \| 0.81 | 0.56 \| 0.64 \| 0.75 | 0.53 \| 0.59 \| 0.55 | 0.46 \| 0.46 \| 0.49 |
+| grain | 0.73 \| 0.91 \| 0.88 | 0.64 \| 0.90 \| 0.89 | 0.65 \| 0.91 \| 0.83 | 0.57 \| 0.77 \| 0.74 |
+| iron | 0.51 \| 0.61 \| 0.65 | 0.38 \| 0.53 \| 0.65 | 0.36 \| 0.49 \| 0.52 | 0.33 \| 0.49 \| 0.49 |
+| coal | 1.20 \| 1.16 \| 1.38 | 0.80 \| 0.99 \| 1.43 | 0.81 \| 0.92 \| 0.91 | 0.63 \| 0.78 \| 0.71 |
+
+Britain's base wage (the summary's `base_wage` field) rises **×1.79** over 1840–1935 in the arm (637 → 1,142) against ×1.50 in
+vanilla (610 → 915) and ×1.49 in canon4-je. ⚠ That field's basis is the game's own, not F26's measured labourer wage; the index is
+what is compared, not the level.
+
+### 5. The private pool hoards — investment pool ÷ annual GDP (arm | vanilla | canon4-je)
+| | 1900 | 1920 | 1935 |
+|---|---|---|---|
+| world | 0.22 \| 0.20 \| 0.18 | 0.29 \| 0.24 \| 0.14 | **0.48** \| 0.29 \| 0.19 |
+| shortlist (GBR USA FRA NET BEL PRU GER) | 0.13 \| 0.08 \| 0.07 | 0.30 \| 0.20 \| 0.08 | **0.66** \| 0.34 \| 0.26 |
+| Britain (pool £M / GDP £M) | 0.19 (39/210) \| 0.11 (20/188) \| 0.08 (16/185) | 0.53 (215/408) \| 0.32 (108/320) \| 0.13 (43/408) | **1.06 (835/729)** \| 0.85 (333/388) \| 0.39 (249/677) |
+| USA | 0.00 \| 0.02 \| 0.04 | 0.17 \| 0.03 \| 0.05 | **0.46** \| 0.15 \| 0.07 |
+| France | 0.10 \| 0.03 \| 0.01 | 0.06 \| 0.04 \| 0.01 | 0.17 \| 0.05 \| 0.15 |
+
+canon4-je carried the six-rung hoard defines (§10.65.9's `ai_defines`); canon4v carries none of them. At 1935 the world's pools
+hold 0.48 of a year's GDP on canon4v against 0.19 with the defines — a 60% reduction attributable to the set, the same book
+family otherwise. Construction points delivered on canon4v run 0.66–0.80× vanilla's through the century (F104's ledger, TRAJ).
+
+### What it says
+1. **The decline is a PATH, in four goods.** Groceries fall from 1880 (0.98 → 0.68 of vanilla), steel from 1860 (0.95 → 0.76),
+   small arms and artillery from 1900 (→ 0.69 / 0.73); the last decade steepens all four. They are exactly the goods whose
+   British output outran demand: groceries at 4.2× vanilla's production on 2.4× its buy orders, steel 1.56× on 1.01×, arms
+   2.0× on 1.4×. Inputs did not fall with them in £ (raw goods at or above vanilla), which is the design's death condition.
+2. **Twelve goods show no £ decline against vanilla**, and five are DEARER late: paper 1.09–1.22× (the arm makes 0.57–0.62×
+   vanilla's paper all century — the continuous-web addition did not change that), cars 1.18× and telephones 1.15× (demand
+   1.3–1.8× vanilla's, supply not keeping up), glass and furniture 1.06–1.16× in the 1920s–30s. The consumer industries were
+   UNDER-built for two-thirds of the century — clothes at 0.44× vanilla's British output in 1880, furniture 0.51×, paper 0.61×,
+   fertilizer 0.54×, tools 0.64–0.81× — and their mid-century prices sat above vanilla's (clothes 127 vs 111 in 1860).
+3. **Glass shows what ai_value 3^era does over time**: British output 2.9× vanilla's at 1880 and the price 0.86–0.94× of
+   vanilla's through 1880–1900, then demand caught up (buy orders 1.58× vanilla at 1935) and the price converged to 1.07×.
+   The lever moves the path EARLIER; it does not by itself hold a price down once wealth-driven demand grows into the supply.
+4. **In wage units the decline is broad and steeper than vanilla's**: groceries 0.22 of their 1840 wage price (vanilla 0.50),
+   steel 0.32 (0.57), arms 0.20 (0.46), furniture 0.40 (0.54), glass 0.55 (0.75), clothes 0.59 (0.75), fine art 0.41 (0.68);
+   tools and paper equal vanilla's 0.50 and 0.46. The arm's wage rises a fifth faster than vanilla's. Raw inputs fall in wage
+   units too (iron 0.33 vs 0.49, grain 0.57 vs 0.77). F97's death mechanism reads wages, so on this book the old rung's
+   condition binds harder than in vanilla for the four goods and about equally elsewhere.
+5. **Capital is idle while consumer industries are under-built.** Britain's pool exceeds a year of its GDP at 1935 and the
+   shortlist's pools hold two-thirds of one; construction delivered runs at 0.7–0.8× vanilla's. The binding constraint on late
+   prices is construction capacity and its allocation, not the recipe: every 1935 price sits far above the frontier rung's
+   break-even (~28% of base on the A/B book), so widening A over B would not bind until capacity reaches the point where the
+   frontier's margin does.
+
+### What it does NOT say
+n = 4, one arm (the ×3 film rung is in it; only fine art reads it). The per-run 1935 spread on the consumer goods is wide
+(groceries 44–101). Production and buy orders are the British market only; the pooled table gives a small market the same
+weight as Britain. The wage unit is the summary's `base_wage`, an index here, not F26's level. Nothing separates the four
+goods' decline into "the ladder working" and "demand shortfall" (steel's British buy orders run 0.78–0.89× vanilla's until 1935,
+so part of its decline is the arm's smaller tooling and engine sectors buying less). Not a control on any lever.

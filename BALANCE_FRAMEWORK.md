@@ -7002,3 +7002,17 @@ exists; the price is computed); raising output without cost (the money printer).
 VA-per-worker gap the old rung dies on. Recommended order if ruled: ai_value 3^era everywhere (cheapest, measured to bite,
 reversible), then upper-rung staffing, then the hoard defines; A/B and the scale cap after a price PATH has been read off
 `markets_all.tsv`, since F104's decline is one market at one date.
+
+**Read 2026-09-05 (F105).** The path was read before any lever moved. It says: a decline over the century in four goods
+(groceries, steel, small arms, artillery — the ones whose output outran demand), none in £ for the other twelve, five of which
+are dearer than vanilla late because the arm under-builds them (paper at 0.6× vanilla's output all century, cars and
+telephones short of a demand 1.3–1.8× vanilla's); broad and steeper than vanilla in WAGE units (wages ×1.79 vs ×1.50); and
+**the private pool hoards** — world pools 0.48 of GDP at 1935 against vanilla's 0.29 and 0.19 on canon4-je, which carried the
+six-rung hoard defines. So the order above stands with one change of weight: the hoard defines are not third but first, since
+idle capital beside under-built consumer industries is the measured constraint; ai_value 3^era next (glass shows it moves the
+path earlier, F105 §3); the A/B widening cannot be sized from a price target yet, because every 1935 price sits far above the
+frontier's break-even. User rulings the same day: ai_value 3^era everywhere OK; the hoard defines OK with a conscious pass on
+the numbers; upper-rung staffing NO; A/B widening possible, amount unclear; the economy-of-scale suggestion was WRONG for this
+mod (vanilla already raises the cap by technology — mechanized workshops +10, shift work +20 on a base of 20 — and the bonus
+rides on the building TYPE, so a split ladder hands it to the entrenched rung and resets it for every new one; a lever against
+obsolescence, not for it; see the 2026-09-05 exchange).
