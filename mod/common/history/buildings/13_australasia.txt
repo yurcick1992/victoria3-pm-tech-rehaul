@@ -69,11 +69,11 @@
 				add_ownership={
 					country={
 						country="c:NSW"
-						levels=10
+						levels=1
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_basic_port" }
 			}
 		}
 	}
@@ -121,11 +121,11 @@
 				add_ownership={
 					country={
 						country="c:NSW"
-						levels=10
+						levels=1
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_basic_port" }
 			}
 		}
 	}
@@ -206,12 +206,12 @@
 					building={
 						type="building_financial_district"
 						country="c:GBR"
-						levels=10
+						levels=1
 						region="STATE_HOME_COUNTIES"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_basic_port" }
 			}
 		}
 		region_state:KAU={
@@ -275,12 +275,12 @@
 					building={
 						type="building_financial_district"
 						country="c:GBR"
-						levels=10
+						levels=1
 						region="STATE_HOME_COUNTIES"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_basic_port" }
 			}
 		}
 	}
@@ -291,11 +291,11 @@
 				add_ownership={
 					country={
 						country="c:NSW"
-						levels=10
+						levels=1
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_basic_port" }
 			}
 		}
 	}
@@ -323,7 +323,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 		region_state:NTO={

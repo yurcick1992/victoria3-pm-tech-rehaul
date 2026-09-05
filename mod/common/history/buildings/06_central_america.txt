@@ -13,7 +13,7 @@
 				activate_production_methods={ "pm_simple_organization" "pm_professional_bureaucrats" "pm_secular_bureaucrats" }
 			}
 			create_building={
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership={
 					building={
 						type="building_textile_mill"
@@ -23,7 +23,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn" "pm_no_luxury_clothes" "pm_traditional_looms"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" "pm_traditional_looms"  }
 			}
 			create_building={
 				building="building_maize_farm"
@@ -125,18 +125,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
-			}
-			create_building={
-				building="building_port_steam"
-				add_ownership={
-					country={
-						country="c:GBR"
-						levels=1
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 	}
@@ -177,7 +166,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 			create_building={
 				building="building_barrack"
@@ -253,7 +242,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 	}
@@ -385,11 +374,11 @@
 				add_ownership={
 					country={
 						country="c:HAI"
-						levels=10
+						levels=1
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_basic_port" }
 			}
 		}
 	}
@@ -463,11 +452,11 @@
 				add_ownership={
 					country={
 						country="c:HAI"
-						levels=10
+						levels=1
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_basic_port" }
 			}
 		}
 	}
@@ -559,7 +548,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 			create_building={
 				building="building_naval_fortification"
@@ -610,18 +599,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
-			}
-			create_building={
-				building="building_port_steam"
-				add_ownership={
-					country={
-						country="c:GBR"
-						levels=1
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 	}
@@ -688,18 +666,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
-			}
-			create_building={
-				building="building_port_steam"
-				add_ownership={
-					country={
-						country="c:FRA"
-						levels=1
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 		region_state:DEN={
@@ -712,7 +679,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 			create_building={
 				building="building_sugar_plantation"
@@ -738,7 +705,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 			create_building={
 				building="building_cotton_plantation"
@@ -752,17 +719,6 @@
 				}
 				reserves=1
 				activate_production_methods={ "default_building_cotton_plantation" "pm_road_carts"  }
-			}
-			create_building={
-				building="building_port_steam"
-				add_ownership={
-					country={
-						country="c:NET"
-						levels=1
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
 			}
 		}
 		region_state:GBR={
@@ -814,18 +770,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
-			}
-			create_building={
-				building="building_port_steam"
-				add_ownership={
-					country={
-						country="c:GBR"
-						levels=1
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 		region_state:VNZ={
@@ -851,7 +796,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 	}
@@ -936,18 +881,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
-			}
-			create_building={
-				building="building_port_steam"
-				add_ownership={
-					country={
-						country="c:GBR"
-						levels=1
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 	}
@@ -1053,11 +987,11 @@
 				add_ownership={
 					country={
 						country="c:CUB"
-						levels=20
+						levels=2
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_basic_port" }
 			}
 			create_building={
 				building="building_logging_camp"

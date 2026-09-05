@@ -6949,3 +6949,56 @@ cheapened fine art** to 103–117% of base (canon4-je 156) with 65–157 film ac
 spillover — F103's pinning did not survive a 120-a-level rung. Worse: tier choice 44.9% below-best (canon-4rung 34.5%, partly
 by construction on vanilla's era-1 gates), Britain's research completions 17–19 (canon4-je 29–43). Open: one seed slowed
 2.5× after 1899 and timed out, cause unidentified. canon4v is measured; not ratified.
+
+## 10.74 — canon4v IS THE CANON; the art academy back on the regular ladder (user-ruled 2026-09-05)
+
+**Ruling.** "Revert art academies to regular ladder (keep the vanilla t0 build cost, which is unique). While the current
+situation is somewhat better than vanilla, it's also gameable, I'd rather not leave infinite money printers in the mod.
+Canonise the result, commit and push."
+
+**What changed.** Nothing in the book: canon4v (§10.72) already carries the academy on the A/B ladder — fine art 5 / 10 /
+20 / 40 a level, inputs ×1.5 per rung over each method's own mix, building_cost 400 / 800 / 1,600 / 3,200 (rung 0 is
+vanilla's own `construction_cost_medium`, the one 400-point anchor among industries that anchor at 600 or 800; the ladder
+keeps it and doubles from it), ai_value 1,000 × 2^era. The ×3 film rung was only ever the `canon4v-art3` variant (§10.73),
+and it is retired: F104 measured it at 103–117% of base with 120 fine art a level on a 3,200-point building — output per
+construction point three times the ladder's, which is the money printer. `config/mod_config.canon4v-art3.json` stays as
+the measured arm's record; nothing builds it by default.
+
+**The promotion.** The spec's CANON record was stamped canonical and the book regenerated through the vanilla-only pipeline
+(`make_tier4_config` → `make_tier4_techs` → `make_ab_config --A 2.0 --B 1.5 --suffix canon4v --ai-steep glass,tooling:3
+--divisor 0.000125`); the regenerated pair was proven identical to the committed pair apart from its stamps, then copied to
+`config/mod_config.json` + `config/tech_tree_options.json`. The six-rung canon (the solver2f book of §10.65.9) moved to
+`config/mod_config.six_rung.json` + `config/tech_tree_options.six_rung.json`, un-ignored, buildable with `-Config`. The
+six-rung machinery — `build_era_ladder`, `era_solver`, `era_scenarios`, `era_tech_sync`, `payback_census`,
+`vanilla_payback_census`, `verify_pms`, `tech_tree_spec --write` — throws on the four-rung canon unless
+`MOD_CONFIG=config/mod_config.six_rung.json` is set, because a `--write` in any of them would have rewritten a four-rung
+config as if it had six eras. `mod/` and the deployed copy follow the default build. ⚠ The regular-ladder academy is
+itself unmeasured: F104 ran the ×3 variant; everything outside the academy in F104 is this canon's reading.
+
+### 10.74.1 — Obsolescence levers: getting tiered output prices LOWER in the late game without touching pop consumption
+(advice recorded 2026-09-05, NOT ruled)
+
+**The mechanism that sets a late-game price.** Pop demand in UNITS is price-inelastic — a pop buys `need money × share ÷
+BASE price` units (F40) and pays the market price for them — so a surplus is absorbed only by wealth progression, population
+growth and trade (F97), never by pops buying more because the good is cheap. The market formula needs a sustained surplus
+of two-thirds over demand to hold a price at 50% of base. The AI removes any such surplus by not building: construction goes
+where the return on capital is, so the price settles where the FRONTIER rung's return no longer attracts the private pool.
+⇒ A late-game price is set by three things and pops are none of them: (1) the frontier's break-even price — its input value
+and wages per unit of output; (2) the capital available to build frontier capacity; (3) how strongly the AI prefers the
+frontier over older rungs and over the untiered sectors. F104's 64% groceries / 69% steel at 1935 came from (1) alone.
+
+| lever | mechanism | evidence | gameable? |
+|---|---|---|---|
+| **ai_value 3^era on every tiered industry** (today glass + tooling only) | more of the pool goes to the frontier rung, capacity outruns wealth-driven demand sooner | F99: British glass 118/112% vs 153–158 on the same book — the lever moves PRICE | no (willingness, not economics); watch the overshoot check (F76) for starved raw sectors |
+| **widen A/B on the top rungs** (e.g. B 1.25 above rung 2, A unchanged) | the frontier stays profitable at a lower price; rung k−2 dies there | ab1 (2.5/2.5) stalled on the INPUT side; the A÷B ratio, not A, sets the floor | no, if building_cost stays ∝ output (capacity pricing) |
+| **upper-rung staffing ×0.85 per rung** | wages per unit fall, frontier break-even falls, labour released — the "fewer workers" goal directly | tiered_panel: VA per tiered worker already 3.2× vanilla; unmeasured as a lever | no — output per construction point unchanged |
+| **re-add the private-pool hoard defines** (the six-rung canon's `ai_defines`; canon-4rung carried them, canon4v does not) | more capital → more frontier capacity | measured on canon-4rung (F98–F103), absent in F104 | no — capital side |
+| **economy-of-scale cap raised by era-4/5 technologies** (`building_economy_of_scale_level_cap_add`, vanilla's own mechanism) | big frontier buildings gain throughput, cheaper capacity per point | unmeasured; vanilla-shaped | mildly — bounded by vanilla's own cap idiom |
+| **capacity price falling per rung** (cost ∝ A^k × 0.9^k) | more output per construction point at the frontier | this IS the art-×3 direction at 3× — rejected today at that magnitude | yes at any size — the very thing the ruling refuses |
+
+Not levers: base-price changes (units are money ÷ base price — that is pop consumption); scripted price control (none
+exists; the price is computed); raising output without cost (the money printer). The death mechanism itself reads WAGES
+(F97: a building lays off under 0.66× expected SoL), so any lever that lowers the frontier's break-even also widens the
+VA-per-worker gap the old rung dies on. Recommended order if ruled: ai_value 3^era everywhere (cheapest, measured to bite,
+reversible), then upper-rung staffing, then the hoard defines; A/B and the scale cap after a price PATH has been read off
+`markets_all.tsv`, since F104's decline is one market at one date.

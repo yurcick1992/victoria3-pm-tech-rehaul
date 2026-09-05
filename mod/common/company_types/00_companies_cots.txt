@@ -9,18 +9,14 @@ company_sao_paulo_railway = {
 
 	building_types = {
 		building_railway
-		building_railway_steam
-		building_railway_electric
-		building_railway_diesel
 	}
 
 	extension_building_types = {
 		building_logging_camp
 		building_motor_industry
-		building_motor_industry_compound
-		building_motor_industry_electric
-		building_motor_industry_diesel
-		building_motor_industry_welded_diesel
+		building_motor_industry_electric_engines
+		building_motor_industry_diesel_engines
+		building_motor_industry_high_speed_diesel
 	}
 
 	potential = {
@@ -41,12 +37,7 @@ company_sao_paulo_railway = {
 		any_scope_state = {
 			state_region = s:STATE_SAO_PAULO
 			is_incorporated = yes
-			OR = {
-				has_building = building_railway
-				has_building = building_railway_steam
-				has_building = building_railway_electric
-				has_building = building_railway_diesel
-			}
+			has_building = building_railway
 			any_scope_building = {
 				is_building_type = building_coffee_plantation
 				level >= 5
@@ -56,12 +47,7 @@ company_sao_paulo_railway = {
 			region = sr:region_brazil
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_railway
-					is_building_type = building_railway_steam
-					is_building_type = building_railway_electric
-					is_building_type = building_railway_diesel
-				}
+				is_building_type = building_railway
 				level >= 5
 			}
 			count >= 2
@@ -95,27 +81,6 @@ company_sao_paulo_railway = {
 				is_incorporated = yes
 			}
 		}
-		building_railway_steam = {
-			level = 5
-			state_trigger = {
-				region = sr:region_brazil
-				is_incorporated = yes
-			}
-		}
-		building_railway_electric = {
-			level = 5
-			state_trigger = {
-				region = sr:region_brazil
-				is_incorporated = yes
-			}
-		}
-		building_railway_diesel = {
-			level = 5
-			state_trigger = {
-				region = sr:region_brazil
-				is_incorporated = yes
-			}
-		}
 	}
 
 	ai_weight = {
@@ -134,18 +99,10 @@ company_estaleiro_maua = {
 
 	building_types = {
 		building_shipyard
-		building_shipyard_complex
-		building_shipyard_metal
-		building_shipyard_metal_steel_hull
-		building_shipyard_metal_turbine
-		building_shipyard_metal_oil_fired
-		building_shipyard_arc_welding
 		building_artillery_foundry
-		building_artillery_foundry_smoothbore
-		building_artillery_foundry_breech
-		building_artillery_foundry_recoiled
-		building_artillery_foundry_autofrettage
-		building_artillery_foundry_antiaircraft
+		building_artillery_foundry_smoothbores
+		building_artillery_foundry_breech_loaders
+		building_artillery_foundry_recoiled_barrels
 	}
 
 	extension_building_types = {
@@ -171,22 +128,12 @@ company_estaleiro_maua = {
 			is_incorporated = yes
 			any_scope_building = {
 				OR = {
-					OR = {
-						is_building_type = building_shipyard
-						is_building_type = building_shipyard_complex
-						is_building_type = building_shipyard_metal
-						is_building_type = building_shipyard_metal_steel_hull
-						is_building_type = building_shipyard_metal_turbine
-						is_building_type = building_shipyard_metal_oil_fired
-						is_building_type = building_shipyard_arc_welding
-					}
+					is_building_type = building_shipyard
 					OR = {
 						is_building_type = building_artillery_foundry
-						is_building_type = building_artillery_foundry_smoothbore
-						is_building_type = building_artillery_foundry_breech
-						is_building_type = building_artillery_foundry_recoiled
-						is_building_type = building_artillery_foundry_autofrettage
-						is_building_type = building_artillery_foundry_antiaircraft
+						is_building_type = building_artillery_foundry_smoothbores
+						is_building_type = building_artillery_foundry_breech_loaders
+						is_building_type = building_artillery_foundry_recoiled_barrels
 					}
 				}
 				level >= 5
@@ -197,10 +144,9 @@ company_estaleiro_maua = {
 	prosperity_modifier = {
 		country_ship_group_supply_ships_construction_efficiency_add = 0.1
 		building_steel_mill_throughput_add = 0.1
-		building_steel_mill_bessemer_throughput_add = 0.1
-		building_steel_mill_open_hearth_throughput_add = 0.1
-		building_steel_mill_electric_arc_throughput_add = 0.1
-		building_steel_mill_strip_mill_throughput_add = 0.1
+		building_steel_mill_bessemer_process_throughput_add = 0.1
+		building_steel_mill_open_hearth_process_throughput_add = 0.1
+		building_steel_mill_electric_arc_process_throughput_add = 0.1
 	}
 
 	ai_will_do = {
@@ -217,73 +163,25 @@ company_estaleiro_maua = {
 				state_region = s:STATE_RIO_DE_JANEIRO
 			}
 		}
-		building_shipyard_complex = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_RIO_DE_JANEIRO
-			}
-		}
-		building_shipyard_metal = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_RIO_DE_JANEIRO
-			}
-		}
-		building_shipyard_metal_steel_hull = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_RIO_DE_JANEIRO
-			}
-		}
-		building_shipyard_metal_turbine = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_RIO_DE_JANEIRO
-			}
-		}
-		building_shipyard_metal_oil_fired = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_RIO_DE_JANEIRO
-			}
-		}
-		building_shipyard_arc_welding = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_RIO_DE_JANEIRO
-			}
-		}
 		building_artillery_foundry = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_RIO_DE_JANEIRO
 			}
 		}
-		building_artillery_foundry_smoothbore = {
+		building_artillery_foundry_smoothbores = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_RIO_DE_JANEIRO
 			}
 		}
-		building_artillery_foundry_breech = {
+		building_artillery_foundry_breech_loaders = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_RIO_DE_JANEIRO
 			}
 		}
-		building_artillery_foundry_recoiled = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_RIO_DE_JANEIRO
-			}
-		}
-		building_artillery_foundry_autofrettage = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_RIO_DE_JANEIRO
-			}
-		}
-		building_artillery_foundry_antiaircraft = {
+		building_artillery_foundry_recoiled_barrels = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_RIO_DE_JANEIRO
@@ -307,10 +205,9 @@ company_pernambuco_textiles = {
 
 	building_types = {
 		building_textile_mill
-		building_textile_mill_dye
-		building_textile_mill_sewing
-		building_textile_mill_electric
-		building_textile_mill_highdraft
+		building_textile_mill_dye_workshops
+		building_textile_mill_sewing_machines
+		building_textile_mill_electric_sewing_machines
 	}
 
 	extension_building_types = {
@@ -349,10 +246,9 @@ company_pernambuco_textiles = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_textile_mill
-					is_building_type = building_textile_mill_dye
-					is_building_type = building_textile_mill_sewing
-					is_building_type = building_textile_mill_electric
-					is_building_type = building_textile_mill_highdraft
+					is_building_type = building_textile_mill_dye_workshops
+					is_building_type = building_textile_mill_sewing_machines
+					is_building_type = building_textile_mill_electric_sewing_machines
 				}
 				level >= 5
 			}
@@ -378,25 +274,19 @@ company_pernambuco_textiles = {
 				state_region = s:STATE_PERNAMBUCO
 			}
 		}
-		building_textile_mill_dye = {
+		building_textile_mill_dye_workshops = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PERNAMBUCO
 			}
 		}
-		building_textile_mill_sewing = {
+		building_textile_mill_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PERNAMBUCO
 			}
 		}
-		building_textile_mill_electric = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_PERNAMBUCO
-			}
-		}
-		building_textile_mill_highdraft = {
+		building_textile_mill_electric_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PERNAMBUCO
@@ -420,10 +310,9 @@ company_fundicao_ipanema = {
 
 	building_types = {
 		building_steel_mill
-		building_steel_mill_bessemer
-		building_steel_mill_open_hearth
-		building_steel_mill_electric_arc
-		building_steel_mill_strip_mill
+		building_steel_mill_bessemer_process
+		building_steel_mill_open_hearth_process
+		building_steel_mill_electric_arc_process
 		building_iron_mine
 	}
 
@@ -462,10 +351,9 @@ company_fundicao_ipanema = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_steel_mill
-					is_building_type = building_steel_mill_bessemer
-					is_building_type = building_steel_mill_open_hearth
-					is_building_type = building_steel_mill_electric_arc
-					is_building_type = building_steel_mill_strip_mill
+					is_building_type = building_steel_mill_bessemer_process
+					is_building_type = building_steel_mill_open_hearth_process
+					is_building_type = building_steel_mill_electric_arc_process
 				}
 				level >= 5
 			}
@@ -474,16 +362,11 @@ company_fundicao_ipanema = {
 
 	prosperity_modifier = {
 		building_munition_plant_throughput_add = 0.05
-		building_munition_plant_shells_throughput_add = 0.05
-		building_munition_plant_drawn_brass_throughput_add = 0.05
-		building_munition_plant_filling_throughput_add = 0.05
-		building_munition_plant_automatic_throughput_add = 0.05
+		building_munition_plant_explosive_shells_throughput_add = 0.05
 		building_arms_industry_throughput_add = 0.1
 		building_arms_industry_rifles_throughput_add = 0.1
 		building_arms_industry_repeaters_throughput_add = 0.1
-		building_arms_industry_bolt_action_throughput_add = 0.1
-		building_arms_industry_automatic_throughput_add = 0.1
-		building_arms_industry_stamped_throughput_add = 0.1
+		building_arms_industry_bolt_action_rifles_throughput_add = 0.1
 	}
 
 	ai_will_do = {
@@ -500,25 +383,19 @@ company_fundicao_ipanema = {
 				state_region = s:STATE_SAO_PAULO
 			}
 		}
-		building_steel_mill_bessemer = {
+		building_steel_mill_bessemer_process = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_SAO_PAULO
 			}
 		}
-		building_steel_mill_open_hearth = {
+		building_steel_mill_open_hearth_process = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_SAO_PAULO
 			}
 		}
-		building_steel_mill_electric_arc = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_SAO_PAULO
-			}
-		}
-		building_steel_mill_strip_mill = {
+		building_steel_mill_electric_arc_process = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_SAO_PAULO
@@ -550,22 +427,16 @@ company_rossi = {
 		building_arms_industry
 		building_arms_industry_rifles
 		building_arms_industry_repeaters
-		building_arms_industry_bolt_action
-		building_arms_industry_automatic
-		building_arms_industry_stamped
+		building_arms_industry_bolt_action_rifles
 		building_munition_plant
-		building_munition_plant_shells
-		building_munition_plant_drawn_brass
-		building_munition_plant_filling
-		building_munition_plant_automatic
+		building_munition_plant_explosive_shells
 	}
 
 	extension_building_types = {
 		building_explosives_factory
-		building_explosives_factory_ammonia
-		building_explosives_factory_vacuum
-		building_explosives_factory_brine
-		building_explosives_factory_cyclonite
+		building_explosives_factory_ammonia_soda_process
+		building_explosives_factory_vacuum_evaporation
+		building_explosives_factory_brine_electrolysis
 	}
 
 	possible_prestige_goods = {
@@ -601,9 +472,7 @@ company_rossi = {
 					is_building_type = building_arms_industry
 					is_building_type = building_arms_industry_rifles
 					is_building_type = building_arms_industry_repeaters
-					is_building_type = building_arms_industry_bolt_action
-					is_building_type = building_arms_industry_automatic
-					is_building_type = building_arms_industry_stamped
+					is_building_type = building_arms_industry_bolt_action_rifles
 				}
 				level >= 5
 			}
@@ -613,10 +482,9 @@ company_rossi = {
 	prosperity_modifier = {
 		building_livestock_ranch_throughput_add = 0.1
 		building_chemical_plant_throughput_add = 0.05
-		building_chemical_plant_ammoniacal_throughput_add = 0.05
-		building_chemical_plant_improved_throughput_add = 0.05
-		building_chemical_plant_nitrogen_throughput_add = 0.05
-		building_chemical_plant_reforming_throughput_add = 0.05
+		building_chemical_plant_improved_fertilizer_throughput_add = 0.05
+		building_chemical_plant_nitrogen_fixation_throughput_add = 0.05
+		building_chemical_plant_catalytic_synthesis_throughput_add = 0.05
 	}
 
 	ai_will_do = {
@@ -645,19 +513,7 @@ company_rossi = {
 				state_region = s:STATE_RIO_GRANDE_DO_SUL
 			}
 		}
-		building_arms_industry_bolt_action = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_RIO_GRANDE_DO_SUL
-			}
-		}
-		building_arms_industry_automatic = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_RIO_GRANDE_DO_SUL
-			}
-		}
-		building_arms_industry_stamped = {
+		building_arms_industry_bolt_action_rifles = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_RIO_GRANDE_DO_SUL
@@ -809,20 +665,10 @@ company_sudamericana_de_vapores = {
 
 	building_types = {
 		building_port
-		building_port_steam
-		building_port_industrial
-		building_port_modern
-		building_port_motor
 	}
 
 	extension_building_types = {
 		building_shipyard
-		building_shipyard_complex
-		building_shipyard_metal
-		building_shipyard_metal_steel_hull
-		building_shipyard_metal_turbine
-		building_shipyard_metal_oil_fired
-		building_shipyard_arc_welding
 		building_logging_camp
 	}
 
@@ -845,15 +691,7 @@ company_sudamericana_de_vapores = {
 			state_region = s:STATE_SANTIAGO
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_shipyard
-					is_building_type = building_shipyard_complex
-					is_building_type = building_shipyard_metal
-					is_building_type = building_shipyard_metal_steel_hull
-					is_building_type = building_shipyard_metal_turbine
-					is_building_type = building_shipyard_metal_oil_fired
-					is_building_type = building_shipyard_arc_welding
-				}
+				is_building_type = building_shipyard
 				level >= 5
 			}
 		}
@@ -879,42 +717,6 @@ company_sudamericana_de_vapores = {
 				state_region = s:STATE_SANTIAGO
 			}
 		}
-		building_shipyard_complex = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_SANTIAGO
-			}
-		}
-		building_shipyard_metal = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_SANTIAGO
-			}
-		}
-		building_shipyard_metal_steel_hull = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_SANTIAGO
-			}
-		}
-		building_shipyard_metal_turbine = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_SANTIAGO
-			}
-		}
-		building_shipyard_metal_oil_fired = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_SANTIAGO
-			}
-		}
-		building_shipyard_arc_welding = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_SANTIAGO
-			}
-		}
 	}
 
 	ai_weight = {
@@ -933,16 +735,13 @@ company_electricidad_de_caracas = {
 
 	building_types = {
 		building_power_plant
-		building_power_plant_pulverized
-		building_power_plant_oil
 	}
 
 	extension_building_types = {
 		building_motor_industry
-		building_motor_industry_compound
-		building_motor_industry_electric
-		building_motor_industry_diesel
-		building_motor_industry_welded_diesel
+		building_motor_industry_electric_engines
+		building_motor_industry_diesel_engines
+		building_motor_industry_high_speed_diesel
 		building_coal_mine
 	}
 
@@ -965,11 +764,7 @@ company_electricidad_de_caracas = {
 			state_region = s:STATE_MIRANDA
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_power_plant
-					is_building_type = building_power_plant_pulverized
-					is_building_type = building_power_plant_oil
-				}
+				is_building_type = building_power_plant
 				level >= 5
 			}
 		}
@@ -995,18 +790,6 @@ company_electricidad_de_caracas = {
 				state_region = s:STATE_MIRANDA
 			}
 		}
-		building_power_plant_pulverized = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_MIRANDA
-			}
-		}
-		building_power_plant_oil = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_MIRANDA
-			}
-		}
 	}
 
 	ai_weight = {
@@ -1025,18 +808,14 @@ company_cordoba_railway = {
 
 	building_types = {
 		building_railway
-		building_railway_steam
-		building_railway_electric
-		building_railway_diesel
 	}
 
 	extension_building_types = {
 		building_coal_mine
 		building_motor_industry
-		building_motor_industry_compound
-		building_motor_industry_electric
-		building_motor_industry_diesel
-		building_motor_industry_welded_diesel
+		building_motor_industry_electric_engines
+		building_motor_industry_diesel_engines
+		building_motor_industry_high_speed_diesel
 	}
 
 	potential = {
@@ -1057,23 +836,13 @@ company_cordoba_railway = {
 		any_scope_state = {
 			state_region = s:STATE_LA_PAMPA
 			is_incorporated = yes
-			OR = {
-				has_building = building_railway
-				has_building = building_railway_steam
-				has_building = building_railway_electric
-				has_building = building_railway_diesel
-			}
+			has_building = building_railway
 		}
 		any_scope_state = {
 			has_state_trait = state_trait_pampas
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_railway
-					is_building_type = building_railway_steam
-					is_building_type = building_railway_electric
-					is_building_type = building_railway_diesel
-				}
+				is_building_type = building_railway
 				level >= 5
 			}
 			count >= 2
@@ -1101,27 +870,6 @@ company_cordoba_railway = {
 				is_incorporated = yes
 			}
 		}
-		building_railway_steam = {
-			level = 5
-			state_trigger = {
-				has_state_trait = state_trait_pampas
-				is_incorporated = yes
-			}
-		}
-		building_railway_electric = {
-			level = 5
-			state_trigger = {
-				has_state_trait = state_trait_pampas
-				is_incorporated = yes
-			}
-		}
-		building_railway_diesel = {
-			level = 5
-			state_trigger = {
-				has_state_trait = state_trait_pampas
-				is_incorporated = yes
-			}
-		}
 	}
 
 	ai_weight = {
@@ -1140,8 +888,6 @@ company_eea = {
 
 	building_types = {
 		building_power_plant
-		building_power_plant_pulverized
-		building_power_plant_oil
 	}
 
 	extension_building_types = {
@@ -1167,11 +913,7 @@ company_eea = {
 			state_region = s:STATE_LIMA
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_power_plant
-					is_building_type = building_power_plant_pulverized
-					is_building_type = building_power_plant_oil
-				}
+				is_building_type = building_power_plant
 				level >= 5
 			}
 		}
@@ -1192,18 +934,6 @@ company_eea = {
 
 	ai_construction_targets = {
 		building_power_plant = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_LIMA
-			}
-		}
-		building_power_plant_pulverized = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_LIMA
-			}
-		}
-		building_power_plant_oil = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_LIMA

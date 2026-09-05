@@ -40,6 +40,8 @@ const WRITE = process.argv.includes('--write');
 // honoured the override, so a redirected run READ the alternate config and WROTE its solved recipes into
 // the canonical one — silently, since both files are valid and the report names only the one it wrote.
 const CFG = join(REPO, process.env.MOD_CONFIG || join('config', 'mod_config.json'));
+// ⛔ SIX-RUNG GUARD (2026-09-05): refuse the four-rung canon unless pointed at a config explicitly (see econ_host.mjs).
+if (!process.env.MOD_CONFIG && /"era_game_era"/.test(readFileSync(CFG, 'utf8'))) throw new Error("config/mod_config.json is the FOUR-RUNG canon (canon4v, canonised 2026-09-05); this is six-rung machinery - point it at the six-rung book explicitly: MOD_CONFIG=config/mod_config.six_rung.json (BALANCE_FRAMEWORK §10.74)");
 
 // ===================================================================================================
 // DESIGN INPUTS

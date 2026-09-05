@@ -10,18 +10,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
-			}
-			create_building={
-				building="building_port_steam"
-				add_ownership={
-					country={
-						country="c:FRA"
-						levels=1
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 		region_state:BLE={
@@ -50,18 +39,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
-			}
-			create_building={
-				building="building_port_steam"
-				add_ownership={
-					country={
-						country="c:FRA"
-						levels=1
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 		region_state:SIL={
@@ -74,7 +52,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 		region_state:JLF={
@@ -132,7 +110,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 	}
@@ -190,7 +168,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 	}
@@ -208,7 +186,7 @@
 				activate_production_methods={ "pm_simple_organization" "pm_hereditary_bureaucrats" "pm_religious_bureaucrats" }
 			}
 			create_building={
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership={
 					building={
 						type="building_textile_mill"
@@ -218,7 +196,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn" "pm_no_luxury_clothes" "pm_traditional_looms"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" "pm_traditional_looms"  }
 			}
 			create_building={
 				building="building_tobacco_plantation"
@@ -615,7 +593,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 		region_state:MDK={
@@ -660,7 +638,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 		region_state:NET={
@@ -673,18 +651,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
-			}
-			create_building={
-				building="building_port_steam"
-				add_ownership={
-					country={
-						country="c:NET"
-						levels=1
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_port_steam" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 		region_state:DEN={
@@ -697,7 +664,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 		region_state:ASH={
@@ -889,11 +856,11 @@
 				add_ownership={
 					country={
 						country="c:OMA"
-						levels=20
+						levels=2
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_basic_port" }
 			}
 		}
 	}
@@ -1993,7 +1960,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 		region_state:TGI={
@@ -2109,7 +2076,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 		region_state:POR={
@@ -2135,7 +2102,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 		region_state:FNG={
@@ -2257,11 +2224,11 @@
 				add_ownership={
 					country={
 						country="c:POR"
-						levels=10
+						levels=1
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_basic_port" }
 			}
 		}
 	}
@@ -2364,7 +2331,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 		region_state:MSK={
@@ -2696,11 +2663,11 @@
 				add_ownership={
 					country={
 						country="c:SAF"
-						levels=10
+						levels=1
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_basic_port" }
 			}
 		}
 	}
@@ -2766,7 +2733,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 		region_state:GZA={

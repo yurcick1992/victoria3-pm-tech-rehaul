@@ -62,6 +62,14 @@ export function loadEcon({ quiet = false } = {}) {
   const cfgPath = isAbsolute(cfgRel) ? cfgRel : join(REPO, cfgRel);
   try {
     cfg = JSON.parse(readFileSync(cfgPath, 'utf8').replace(/^﻿/, ''));
+    // ⛔ SIX-RUNG MACHINERY GUARD (2026-09-05). The canonical config is the four-rung canon4v; the era pipeline and its
+    //   readers were written for the six-rung book and would score or REWRITE a four-rung config as if it had six eras.
+    //   Only the named tools are refused, and only when no MOD_CONFIG was given — an explicit override is honoured.
+    {
+      const tool = (process.argv[1] || '').split(/[\\/]/).pop();
+      const SIX_RUNG_TOOLS = ['build_era_ladder.mjs', 'era_solver.mjs', 'era_scenarios.mjs', 'era_tech_sync.mjs', 'payback_census.mjs', 'vanilla_payback_census.mjs', 'verify_pms.mjs'];
+      if (!process.env.MOD_CONFIG && cfg && cfg.era_game_era && SIX_RUNG_TOOLS.includes(tool)) throw new Error("config/mod_config.json is the FOUR-RUNG canon (canon4v, canonised 2026-09-05); this is six-rung machinery - point it at the six-rung book explicitly: MOD_CONFIG=config/mod_config.six_rung.json (BALANCE_FRAMEWORK §10.74)");
+    }
     if (!quiet && process.env.MOD_CONFIG) console.error(`econ_host: config <- ${cfgRel}`);
   } catch (e) {
     // An EXPLICIT override that cannot be read is a mistake, not a fallback: silently scoring the

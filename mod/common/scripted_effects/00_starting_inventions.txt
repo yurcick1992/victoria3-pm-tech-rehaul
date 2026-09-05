@@ -2,7 +2,6 @@
 # Starting techs for the cutting edge Western powers - Britain, America, France, Belgium etc
 
 effect_starting_technology_tier_1_tech = {
-	add_technology_researched = steel_railway_cars
 	add_era_researched = era_1
 
 	# Production
@@ -28,13 +27,6 @@ effect_starting_technology_tier_1_tech = {
 # Starting techs for advanced European and American powers - Austria, Prussia, Sweden etc
 
 effect_starting_technology_tier_2_tech = {
-	if = {
-		limit = { this = c:NET }
-		add_technology_researched = atmospheric_engine
-		add_technology_researched = screw_frigate
-		add_technology_researched = steelworking
-	}
-	add_technology_researched = steel_railway_cars
 	add_era_researched = era_1
 
 	add_technology_researched = mechanical_tools
@@ -47,7 +39,6 @@ effect_starting_technology_tier_2_tech = {
 # Starting techs for backwards European and American powers - Spain, Sicily, Russia
 
 effect_starting_technology_tier_3_tech = {
-	add_technology_researched = beet_sugar_refining
 
 	# Production
 	add_technology_researched = enclosure
@@ -90,7 +81,6 @@ effect_starting_technology_tier_3_tech = {
 # Starting techs for most unrecognized nations and very backwards European powers (Ottomans, etc)
 
 effect_starting_technology_tier_4_tech = {
-	add_technology_researched = beet_sugar_refining
 
 	# Production
 	add_technology_researched = enclosure

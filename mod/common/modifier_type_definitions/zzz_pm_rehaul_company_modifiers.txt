@@ -3,16 +3,7 @@
 # (they are NOT auto-generated per building), so every invented tier key needs its own; the body
 # is copied verbatim from the anchor rung's vanilla definition.
 
-building_arms_industry_automatic_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_arms_industry_bolt_action_throughput_add={
+building_arms_industry_bolt_action_rifles_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -39,7 +30,7 @@ building_arms_industry_rifles_throughput_add={
 	}
 }
 
-building_arms_industry_stamped_throughput_add={
+building_art_academy_film_art_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -48,7 +39,7 @@ building_arms_industry_stamped_throughput_add={
 	}
 }
 
-building_art_academy_film_throughput_add={
+building_art_academy_photographic_art_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -57,7 +48,7 @@ building_art_academy_film_throughput_add={
 	}
 }
 
-building_art_academy_photographic_throughput_add={
+building_art_academy_realist_art_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -66,7 +57,7 @@ building_art_academy_photographic_throughput_add={
 	}
 }
 
-building_art_academy_realist_throughput_add={
+building_artillery_foundry_breech_loaders_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -75,7 +66,7 @@ building_art_academy_realist_throughput_add={
 	}
 }
 
-building_art_academy_sound_film_throughput_add={
+building_artillery_foundry_recoiled_barrels_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -84,7 +75,7 @@ building_art_academy_sound_film_throughput_add={
 	}
 }
 
-building_artillery_foundry_antiaircraft_throughput_add={
+building_artillery_foundry_smoothbores_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -93,7 +84,7 @@ building_artillery_foundry_antiaircraft_throughput_add={
 	}
 }
 
-building_artillery_foundry_autofrettage_throughput_add={
+building_automotive_industry_mass_automobile_production_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -102,7 +93,7 @@ building_artillery_foundry_autofrettage_throughput_add={
 	}
 }
 
-building_artillery_foundry_breech_throughput_add={
+building_chemical_plant_catalytic_synthesis_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -111,7 +102,7 @@ building_artillery_foundry_breech_throughput_add={
 	}
 }
 
-building_artillery_foundry_recoiled_throughput_add={
+building_chemical_plant_improved_fertilizer_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -120,88 +111,7 @@ building_artillery_foundry_recoiled_throughput_add={
 	}
 }
 
-building_artillery_foundry_smoothbore_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_automotive_industry_mass_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_automotive_industry_transfer_line_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_chemical_plant_ammoniacal_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_chemical_plant_improved_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_chemical_plant_nitrogen_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_chemical_plant_reforming_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_electrics_industry_electronics_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_electrics_industry_radio_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_electrics_industry_wireless_throughput_add={
+building_chemical_plant_nitrogen_fixation_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -219,25 +129,7 @@ building_food_industry_baking_powder_throughput_add={
 	}
 }
 
-building_food_industry_hydrogenated_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_food_industry_mechanised_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_food_industry_sweetener_throughput_add={
+building_food_industry_sweeteners_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -255,7 +147,7 @@ building_furniture_manufactory_lathe_throughput_add={
 	}
 }
 
-building_furniture_manufactory_mechanized_throughput_add={
+building_furniture_manufactory_mechanized_workshops_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -264,7 +156,7 @@ building_furniture_manufactory_mechanized_throughput_add={
 	}
 }
 
-building_furniture_manufactory_plywood_throughput_add={
+building_furniture_manufactory_spray_finishing_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -273,7 +165,7 @@ building_furniture_manufactory_plywood_throughput_add={
 	}
 }
 
-building_furniture_manufactory_sprayed_throughput_add={
+building_motor_industry_diesel_engines_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -282,7 +174,7 @@ building_furniture_manufactory_sprayed_throughput_add={
 	}
 }
 
-building_motor_industry_compound_throughput_add={
+building_motor_industry_electric_engines_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -291,7 +183,7 @@ building_motor_industry_compound_throughput_add={
 	}
 }
 
-building_motor_industry_diesel_throughput_add={
+building_motor_industry_high_speed_diesel_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -300,7 +192,7 @@ building_motor_industry_diesel_throughput_add={
 	}
 }
 
-building_motor_industry_electric_throughput_add={
+building_munition_plant_explosive_shells_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -309,7 +201,7 @@ building_motor_industry_electric_throughput_add={
 	}
 }
 
-building_motor_industry_welded_diesel_throughput_add={
+building_paper_mill_bleached_paper_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -318,7 +210,7 @@ building_motor_industry_welded_diesel_throughput_add={
 	}
 }
 
-building_munition_plant_automatic_throughput_add={
+building_paper_mill_continuous_web_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -327,7 +219,7 @@ building_munition_plant_automatic_throughput_add={
 	}
 }
 
-building_munition_plant_drawn_brass_throughput_add={
+building_paper_mill_sulfite_pulping_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -336,7 +228,7 @@ building_munition_plant_drawn_brass_throughput_add={
 	}
 }
 
-building_munition_plant_filling_throughput_add={
+building_steel_mill_bessemer_process_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -345,7 +237,7 @@ building_munition_plant_filling_throughput_add={
 	}
 }
 
-building_munition_plant_shells_throughput_add={
+building_steel_mill_electric_arc_process_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -354,7 +246,7 @@ building_munition_plant_shells_throughput_add={
 	}
 }
 
-building_paper_mill_bleached_throughput_add={
+building_steel_mill_open_hearth_process_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -363,7 +255,7 @@ building_paper_mill_bleached_throughput_add={
 	}
 }
 
-building_paper_mill_highspeed_throughput_add={
+building_textile_mill_dye_workshops_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -372,7 +264,7 @@ building_paper_mill_highspeed_throughput_add={
 	}
 }
 
-building_paper_mill_kraft_throughput_add={
+building_textile_mill_electric_sewing_machines_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -381,259 +273,7 @@ building_paper_mill_kraft_throughput_add={
 	}
 }
 
-building_paper_mill_nssc_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_paper_mill_sulfite_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_port_industrial_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_port_modern_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_port_motor_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_port_steam_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_power_plant_oil_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_power_plant_pulverized_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_railway_diesel_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_railway_electric_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_railway_steam_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_shipyard_arc_welding_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_shipyard_complex_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_shipyard_metal_oil_fired_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_shipyard_metal_steel_hull_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_shipyard_metal_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_shipyard_metal_turbine_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_steel_mill_bessemer_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_steel_mill_electric_arc_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_steel_mill_open_hearth_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_steel_mill_strip_mill_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_synthetics_plant_indigo_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_synthetics_plant_polyamide_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_synthetics_plant_viscose_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_textile_mill_dye_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_textile_mill_electric_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_textile_mill_highdraft_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_textile_mill_sewing_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_tooling_workshop_carbide_throughput_add={
+building_textile_mill_sewing_machines_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -651,7 +291,7 @@ building_tooling_workshop_pig_iron_throughput_add={
 	}
 }
 
-building_tooling_workshop_rubber_throughput_add={
+building_tooling_workshop_rubber_grips_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -661,15 +301,6 @@ building_tooling_workshop_rubber_throughput_add={
 }
 
 building_tooling_workshop_steel_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_tooling_workshop_tracer_throughput_add={
 	decimals=0
 	color=good
 	percent=yes

@@ -25,6 +25,8 @@ import { REPO } from './econ_host.mjs';
 // ladder rewrote another — and there would be no way to develop a ladder while a measurement batch is
 // still building from the canonical config.
 const CFG = join(REPO, process.env.MOD_CONFIG || join('config', 'mod_config.json'));
+// ⛔ SIX-RUNG GUARD (2026-09-05): refuse the four-rung canon unless pointed at a config explicitly (see econ_host.mjs).
+if (!process.env.MOD_CONFIG && /"era_game_era"/.test(readFileSync(CFG, 'utf8'))) throw new Error("config/mod_config.json is the FOUR-RUNG canon (canon4v, canonised 2026-09-05); this is six-rung machinery - point it at the six-rung book explicitly: MOD_CONFIG=config/mod_config.six_rung.json (BALANCE_FRAMEWORK §10.74)");
 const WRITE = process.argv.includes('--write');
 
 // The mod's own era anchors. Contracting on purpose: 100 years, then 50, then 25, then 15.

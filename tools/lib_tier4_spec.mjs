@@ -189,9 +189,9 @@ export const RESEARCH_EVENTS = {
 
 // the candidate's own record, stamped into the config
 export const CANON = {
-  name: 'canon4v (candidate)', declared: '2026-09-04',
-  ruled_by: 'user: 4 vanilla methods -> 4 rungs; additions only where ruled; rules 1-3 on names and additions; NO six-rung data consulted (the third ruling, 2026-09-04)',
+  name: 'canon4v', declared: '2026-09-04', canonised: '2026-09-05',
+  ruled_by: 'user: 4 vanilla methods -> 4 rungs; additions only where ruled; rules 1-3 on names and additions; NO six-rung data consulted (the third ruling, 2026-09-04); canonised 2026-09-05 with the art academy on the REGULAR ladder (rung 0 at vanilla’s own 400-point cost, then ×2 per rung) — the ×3 film rung of canon4v-art3 reverted as gameable, an infinite money printer',
   from: 'tools/make_tier4_config.mjs (the GAME + tools/lib_tier4_spec.mjs, nothing else) -> make_tier4_techs.mjs (vanilla technologies at vanilla eras/names/prerequisites + ERA_MOVES + the additions’ minted technologies) -> make_ab_config --A 2.0 --B 1.5 --ai-steep glass,tooling:3',
   not_carried: 'the six-rung book’s ai_defines (hoard levers), pm_goods/pm_employment (electric streetlights), building_ai_value (trade centre 5000), building_subsidies, start_tech_grants (NET), technology renames, era alignment, and the start_exceptions chain seed (start_exceptions_file -> config/start_exceptions.vanilla.json)',
-  status: 'NOT yet the canon - awaiting ratification; canon-4rung remains the measured book (F98-F103)',
+  status: 'THE CANON since 2026-09-05: config/mod_config.json + config/tech_tree_options.json are this book verbatim (the six-rung canon retired to config/mod_config.six_rung.json + config/tech_tree_options.six_rung.json). Measured as canon4v-art3 (film rung ×3) in session 20260904_213059, n=4, F104; the regular-ladder academy itself is unmeasured. canon-4rung remains the record of F98-F103',
 };

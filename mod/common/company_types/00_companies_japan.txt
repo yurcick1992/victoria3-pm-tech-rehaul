@@ -9,10 +9,9 @@ company_mitsui = {
 
 	building_types = {
 		building_textile_mill
-		building_textile_mill_dye
-		building_textile_mill_sewing
-		building_textile_mill_electric
-		building_textile_mill_highdraft
+		building_textile_mill_dye_workshops
+		building_textile_mill_sewing_machines
+		building_textile_mill_electric_sewing_machines
 		building_silk_plantation
 		building_dye_plantation
 	}
@@ -20,16 +19,12 @@ company_mitsui = {
 	extension_building_types = {
 		building_tea_plantation
 		building_food_industry
-		building_food_industry_sweetener
+		building_food_industry_sweeteners
 		building_food_industry_baking_powder
-		building_food_industry_hydrogenated
-		building_food_industry_mechanised
 		building_glassworks
-		building_glassworks_leaded
-		building_glassworks_crystal
-		building_glassworks_plastics
-		building_glassworks_ribbon
-		building_glassworks_fibre
+		building_glassworks_leaded_glass
+		building_glassworks_crystal_glass
+		building_glassworks_houseware_plastics
 		building_coal_mine
 	}
 
@@ -57,10 +52,9 @@ company_mitsui = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_textile_mill
-					is_building_type = building_textile_mill_dye
-					is_building_type = building_textile_mill_sewing
-					is_building_type = building_textile_mill_electric
-					is_building_type = building_textile_mill_highdraft
+					is_building_type = building_textile_mill_dye_workshops
+					is_building_type = building_textile_mill_sewing_machines
+					is_building_type = building_textile_mill_electric_sewing_machines
 				}
 				level >= 5
 			}
@@ -92,25 +86,19 @@ company_mitsui = {
 				state_region = s:STATE_KANSAI
 			}
 		}
-		building_textile_mill_dye = {
+		building_textile_mill_dye_workshops = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_KANSAI
 			}
 		}
-		building_textile_mill_sewing = {
+		building_textile_mill_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_KANSAI
 			}
 		}
-		building_textile_mill_electric = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_KANSAI
-			}
-		}
-		building_textile_mill_highdraft = {
+		building_textile_mill_electric_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_KANSAI
@@ -135,39 +123,27 @@ company_mitsubishi = {
 
 	building_types = {
 		building_shipyard
-		building_shipyard_complex
-		building_shipyard_metal
-		building_shipyard_metal_steel_hull
-		building_shipyard_metal_turbine
-		building_shipyard_metal_oil_fired
-		building_shipyard_arc_welding
 		building_iron_mine
 		building_paper_mill
-		building_paper_mill_sulfite
-		building_paper_mill_bleached
-		building_paper_mill_kraft
-		building_paper_mill_nssc
-		building_paper_mill_highspeed
+		building_paper_mill_sulfite_pulping
+		building_paper_mill_bleached_paper
+		building_paper_mill_continuous_web
 	}
 
 	extension_building_types = {
 		building_coal_mine
 		building_steel_mill
-		building_steel_mill_bessemer
-		building_steel_mill_open_hearth
-		building_steel_mill_electric_arc
-		building_steel_mill_strip_mill
+		building_steel_mill_bessemer_process
+		building_steel_mill_open_hearth_process
+		building_steel_mill_electric_arc_process
 		building_motor_industry
-		building_motor_industry_compound
-		building_motor_industry_electric
-		building_motor_industry_diesel
-		building_motor_industry_welded_diesel
+		building_motor_industry_electric_engines
+		building_motor_industry_diesel_engines
+		building_motor_industry_high_speed_diesel
 		building_artillery_foundry
-		building_artillery_foundry_smoothbore
-		building_artillery_foundry_breech
-		building_artillery_foundry_recoiled
-		building_artillery_foundry_autofrettage
-		building_artillery_foundry_antiaircraft
+		building_artillery_foundry_smoothbores
+		building_artillery_foundry_breech_loaders
+		building_artillery_foundry_recoiled_barrels
 	}
 
 	possible_prestige_goods = {
@@ -188,15 +164,7 @@ company_mitsubishi = {
 			state_region = s:STATE_KYUSHU
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_shipyard
-					is_building_type = building_shipyard_complex
-					is_building_type = building_shipyard_metal
-					is_building_type = building_shipyard_metal_steel_hull
-					is_building_type = building_shipyard_metal_turbine
-					is_building_type = building_shipyard_metal_oil_fired
-					is_building_type = building_shipyard_arc_welding
-				}
+				is_building_type = building_shipyard
 				level >= 5
 			}
 		}
@@ -205,8 +173,7 @@ company_mitsubishi = {
 	prosperity_modifier = {
 		interest_group_ig_industrialists_pol_str_mult = 0.1
 		building_automotive_industry_throughput_add = 0.1
-		building_automotive_industry_mass_throughput_add = 0.1
-		building_automotive_industry_transfer_line_throughput_add = 0.1
+		building_automotive_industry_mass_automobile_production_throughput_add = 0.1
 	}
 
 	ai_will_do = {
@@ -223,42 +190,6 @@ company_mitsubishi = {
 
 	ai_construction_targets = {
 		building_shipyard = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_KYUSHU
-			}
-		}
-		building_shipyard_complex = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_KYUSHU
-			}
-		}
-		building_shipyard_metal = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_KYUSHU
-			}
-		}
-		building_shipyard_metal_steel_hull = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_KYUSHU
-			}
-		}
-		building_shipyard_metal_turbine = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_KYUSHU
-			}
-		}
-		building_shipyard_metal_oil_fired = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_KYUSHU
-			}
-		}
-		building_shipyard_arc_welding = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_KYUSHU
@@ -284,29 +215,21 @@ company_mantetsu = {
 
 	building_types = {
 		building_railway
-		building_railway_steam
-		building_railway_electric
-		building_railway_diesel
 		building_coal_mine
 		building_glassworks
-		building_glassworks_leaded
-		building_glassworks_crystal
-		building_glassworks_plastics
-		building_glassworks_ribbon
-		building_glassworks_fibre
+		building_glassworks_leaded_glass
+		building_glassworks_crystal_glass
+		building_glassworks_houseware_plastics
 	}
 
 	extension_building_types = {
 		building_food_industry
-		building_food_industry_sweetener
+		building_food_industry_sweeteners
 		building_food_industry_baking_powder
-		building_food_industry_hydrogenated
-		building_food_industry_mechanised
 		building_chemical_plant
-		building_chemical_plant_ammoniacal
-		building_chemical_plant_improved
-		building_chemical_plant_nitrogen
-		building_chemical_plant_reforming
+		building_chemical_plant_improved_fertilizer
+		building_chemical_plant_nitrogen_fixation
+		building_chemical_plant_catalytic_synthesis
 	}
 
 	potential = {
@@ -326,12 +249,7 @@ company_mantetsu = {
 				region = sr:region_north_china
 			}
 			any_scope_building = {
-				OR = {
-					is_building_type = building_railway
-					is_building_type = building_railway_steam
-					is_building_type = building_railway_electric
-					is_building_type = building_railway_diesel
-				}
+				is_building_type = building_railway
 				level >= 5
 			}
 			count >= 2
@@ -360,33 +278,6 @@ company_mantetsu = {
 
 	ai_construction_targets = {
 		building_railway = {
-			level = 5
-			state_trigger = {
-				OR = {
-					region = sr:region_northeast_asia
-					region = sr:region_north_china
-				}
-			}
-		}
-		building_railway_steam = {
-			level = 5
-			state_trigger = {
-				OR = {
-					region = sr:region_northeast_asia
-					region = sr:region_north_china
-				}
-			}
-		}
-		building_railway_electric = {
-			level = 5
-			state_trigger = {
-				OR = {
-					region = sr:region_northeast_asia
-					region = sr:region_north_china
-				}
-			}
-		}
-		building_railway_diesel = {
 			level = 5
 			state_trigger = {
 				OR = {

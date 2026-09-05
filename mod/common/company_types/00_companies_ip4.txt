@@ -10,19 +10,15 @@ company_douro_wine_company = {
 	building_types = {
 		building_vineyard
 		building_food_industry
-		building_food_industry_sweetener
+		building_food_industry_sweeteners
 		building_food_industry_baking_powder
-		building_food_industry_hydrogenated
-		building_food_industry_mechanised
 	}
 
 	extension_building_types = {
 		building_glassworks
-		building_glassworks_leaded
-		building_glassworks_crystal
-		building_glassworks_plastics
-		building_glassworks_ribbon
-		building_glassworks_fibre
+		building_glassworks_leaded_glass
+		building_glassworks_crystal_glass
+		building_glassworks_houseware_plastics
 	}
 
 	possible_prestige_goods = {
@@ -89,31 +85,21 @@ company_secn = {
 
 	building_types = {
 		building_shipyard
-		building_shipyard_complex
-		building_shipyard_metal
-		building_shipyard_metal_steel_hull
-		building_shipyard_metal_turbine
-		building_shipyard_metal_oil_fired
-		building_shipyard_arc_welding
 		building_steel_mill
-		building_steel_mill_bessemer
-		building_steel_mill_open_hearth
-		building_steel_mill_electric_arc
-		building_steel_mill_strip_mill
+		building_steel_mill_bessemer_process
+		building_steel_mill_open_hearth_process
+		building_steel_mill_electric_arc_process
 	}
 
 	extension_building_types = {
 		building_motor_industry
-		building_motor_industry_compound
-		building_motor_industry_electric
-		building_motor_industry_diesel
-		building_motor_industry_welded_diesel
+		building_motor_industry_electric_engines
+		building_motor_industry_diesel_engines
+		building_motor_industry_high_speed_diesel
 		building_artillery_foundry
-		building_artillery_foundry_smoothbore
-		building_artillery_foundry_breech
-		building_artillery_foundry_recoiled
-		building_artillery_foundry_autofrettage
-		building_artillery_foundry_antiaircraft
+		building_artillery_foundry_smoothbores
+		building_artillery_foundry_breech_loaders
+		building_artillery_foundry_recoiled_barrels
 	}
 
 	potential = {
@@ -145,15 +131,7 @@ company_secn = {
 			}
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_shipyard
-					is_building_type = building_shipyard_complex
-					is_building_type = building_shipyard_metal
-					is_building_type = building_shipyard_metal_steel_hull
-					is_building_type = building_shipyard_metal_turbine
-					is_building_type = building_shipyard_metal_oil_fired
-					is_building_type = building_shipyard_arc_welding
-				}
+				is_building_type = building_shipyard
 				level >= 3
 			}
 			count >= 3
@@ -192,78 +170,6 @@ company_secn = {
 				}
 			}
 		}
-		building_shipyard_complex = {
-			level = 3
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_GALICIA
-					state_region = s:STATE_ASTURIAS
-					state_region = s:STATE_LOWER_ANDALUSIA
-					state_region = s:STATE_MURCIA
-					state_region = s:STATE_VALENCIA
-				}
-			}
-		}
-		building_shipyard_metal = {
-			level = 3
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_GALICIA
-					state_region = s:STATE_ASTURIAS
-					state_region = s:STATE_LOWER_ANDALUSIA
-					state_region = s:STATE_MURCIA
-					state_region = s:STATE_VALENCIA
-				}
-			}
-		}
-		building_shipyard_metal_steel_hull = {
-			level = 3
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_GALICIA
-					state_region = s:STATE_ASTURIAS
-					state_region = s:STATE_LOWER_ANDALUSIA
-					state_region = s:STATE_MURCIA
-					state_region = s:STATE_VALENCIA
-				}
-			}
-		}
-		building_shipyard_metal_turbine = {
-			level = 3
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_GALICIA
-					state_region = s:STATE_ASTURIAS
-					state_region = s:STATE_LOWER_ANDALUSIA
-					state_region = s:STATE_MURCIA
-					state_region = s:STATE_VALENCIA
-				}
-			}
-		}
-		building_shipyard_metal_oil_fired = {
-			level = 3
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_GALICIA
-					state_region = s:STATE_ASTURIAS
-					state_region = s:STATE_LOWER_ANDALUSIA
-					state_region = s:STATE_MURCIA
-					state_region = s:STATE_VALENCIA
-				}
-			}
-		}
-		building_shipyard_arc_welding = {
-			level = 3
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_GALICIA
-					state_region = s:STATE_ASTURIAS
-					state_region = s:STATE_LOWER_ANDALUSIA
-					state_region = s:STATE_MURCIA
-					state_region = s:STATE_VALENCIA
-				}
-			}
-		}
 	}
 
 	ai_weight = {
@@ -288,9 +194,6 @@ company_gran_azucarera = {
 
 	extension_building_types = {
 		building_railway
-		building_railway_steam
-		building_railway_electric
-		building_railway_diesel
 	}
 
 	possible_prestige_goods = {
@@ -461,26 +364,14 @@ company_ynchausti_y_compania = {
 
 	building_types = {
 		building_food_industry
-		building_food_industry_sweetener
+		building_food_industry_sweeteners
 		building_food_industry_baking_powder
-		building_food_industry_hydrogenated
-		building_food_industry_mechanised
 		building_port
-		building_port_steam
-		building_port_industrial
-		building_port_modern
-		building_port_motor
 		building_sugar_plantation
 	}
 
 	extension_building_types = {
 		building_shipyard
-		building_shipyard_complex
-		building_shipyard_metal
-		building_shipyard_metal_steel_hull
-		building_shipyard_metal_turbine
-		building_shipyard_metal_oil_fired
-		building_shipyard_arc_welding
 		building_rice_farm
 	}
 
@@ -521,18 +412,10 @@ company_ynchausti_y_compania = {
 				OR = {
 					OR = {
 						is_building_type = building_food_industry
-						is_building_type = building_food_industry_sweetener
+						is_building_type = building_food_industry_sweeteners
 						is_building_type = building_food_industry_baking_powder
-						is_building_type = building_food_industry_hydrogenated
-						is_building_type = building_food_industry_mechanised
 					}
-					OR = {
-						is_building_type = building_port
-						is_building_type = building_port_steam
-						is_building_type = building_port_industrial
-						is_building_type = building_port_modern
-						is_building_type = building_port_motor
-					}
+					is_building_type = building_port
 					is_building_type = building_sugar_plantation
 				}
 				level >= 5
@@ -566,42 +449,6 @@ company_ynchausti_y_compania = {
 				}
 			}
 		}
-		building_port_steam = {
-			level = 5
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_LUZON
-					state_region = s:STATE_VISAYAS
-				}
-			}
-		}
-		building_port_industrial = {
-			level = 5
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_LUZON
-					state_region = s:STATE_VISAYAS
-				}
-			}
-		}
-		building_port_modern = {
-			level = 5
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_LUZON
-					state_region = s:STATE_VISAYAS
-				}
-			}
-		}
-		building_port_motor = {
-			level = 5
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_LUZON
-					state_region = s:STATE_VISAYAS
-				}
-			}
-		}
 
 		building_food_industry = {
 			level = 5
@@ -612,7 +459,7 @@ company_ynchausti_y_compania = {
 				}
 			}
 		}
-		building_food_industry_sweetener = {
+		building_food_industry_sweeteners = {
 			level = 5
 			state_trigger = {
 				OR = {
@@ -622,24 +469,6 @@ company_ynchausti_y_compania = {
 			}
 		}
 		building_food_industry_baking_powder = {
-			level = 5
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_LUZON
-					state_region = s:STATE_VISAYAS
-				}
-			}
-		}
-		building_food_industry_hydrogenated = {
-			level = 5
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_LUZON
-					state_region = s:STATE_VISAYAS
-				}
-			}
-		}
-		building_food_industry_mechanised = {
 			level = 5
 			state_trigger = {
 				OR = {
@@ -676,10 +505,9 @@ company_office_cherifien_des_phosphates = {
 	building_types = {
 		building_sulfur_mine
 		building_chemical_plant
-		building_chemical_plant_ammoniacal
-		building_chemical_plant_improved
-		building_chemical_plant_nitrogen
-		building_chemical_plant_reforming
+		building_chemical_plant_improved_fertilizer
+		building_chemical_plant_nitrogen_fixation
+		building_chemical_plant_catalytic_synthesis
 	}
 
 	extension_building_types = {
@@ -754,37 +582,23 @@ company_uniao_fabril = {
 
 	building_types = {
 		building_chemical_plant
-		building_chemical_plant_ammoniacal
-		building_chemical_plant_improved
-		building_chemical_plant_nitrogen
-		building_chemical_plant_reforming
+		building_chemical_plant_improved_fertilizer
+		building_chemical_plant_nitrogen_fixation
+		building_chemical_plant_catalytic_synthesis
 		building_wheat_farm
 		building_tobacco_plantation
 	}
 
 	extension_building_types = {
 		building_textile_mill
-		building_textile_mill_dye
-		building_textile_mill_sewing
-		building_textile_mill_electric
-		building_textile_mill_highdraft
+		building_textile_mill_dye_workshops
+		building_textile_mill_sewing_machines
+		building_textile_mill_electric_sewing_machines
 		building_port
-		building_port_steam
-		building_port_industrial
-		building_port_modern
-		building_port_motor
 		building_shipyard
-		building_shipyard_complex
-		building_shipyard_metal
-		building_shipyard_metal_steel_hull
-		building_shipyard_metal_turbine
-		building_shipyard_metal_oil_fired
-		building_shipyard_arc_welding
 		building_food_industry
-		building_food_industry_sweetener
+		building_food_industry_sweeteners
 		building_food_industry_baking_powder
-		building_food_industry_hydrogenated
-		building_food_industry_mechanised
 	}
 
 	possible_prestige_goods = {
@@ -823,10 +637,9 @@ company_uniao_fabril = {
 				OR = {
 					OR = {
 						is_building_type = building_chemical_plant
-						is_building_type = building_chemical_plant_ammoniacal
-						is_building_type = building_chemical_plant_improved
-						is_building_type = building_chemical_plant_nitrogen
-						is_building_type = building_chemical_plant_reforming
+						is_building_type = building_chemical_plant_improved_fertilizer
+						is_building_type = building_chemical_plant_nitrogen_fixation
+						is_building_type = building_chemical_plant_catalytic_synthesis
 					}
 					is_building_type = building_wheat_farm
 					is_building_type = building_tobacco_plantation
@@ -861,7 +674,7 @@ company_uniao_fabril = {
 				is_incorporated = yes
 			}
 		}
-		building_chemical_plant_ammoniacal = {
+		building_chemical_plant_improved_fertilizer = {
 			level = 5
 			state_trigger = {
 				state_region = {
@@ -870,7 +683,7 @@ company_uniao_fabril = {
 				is_incorporated = yes
 			}
 		}
-		building_chemical_plant_improved = {
+		building_chemical_plant_nitrogen_fixation = {
 			level = 5
 			state_trigger = {
 				state_region = {
@@ -879,16 +692,7 @@ company_uniao_fabril = {
 				is_incorporated = yes
 			}
 		}
-		building_chemical_plant_nitrogen = {
-			level = 5
-			state_trigger = {
-				state_region = {
-					is_homeland = cu:portuguese
-				}
-				is_incorporated = yes
-			}
-		}
-		building_chemical_plant_reforming = {
+		building_chemical_plant_catalytic_synthesis = {
 			level = 5
 			state_trigger = {
 				state_region = {
@@ -934,10 +738,8 @@ company_pedro_domecq = {
 	building_types = {
 		building_vineyard
 		building_food_industry
-		building_food_industry_sweetener
+		building_food_industry_sweeteners
 		building_food_industry_baking_powder
-		building_food_industry_hydrogenated
-		building_food_industry_mechanised
 	}
 
 	extension_building_types = {
@@ -1006,16 +808,12 @@ company_bacardi = {
 
 	building_types = {
 		building_food_industry
-		building_food_industry_sweetener
+		building_food_industry_sweeteners
 		building_food_industry_baking_powder
-		building_food_industry_hydrogenated
-		building_food_industry_mechanised
 		building_glassworks
-		building_glassworks_leaded
-		building_glassworks_crystal
-		building_glassworks_plastics
-		building_glassworks_ribbon
-		building_glassworks_fibre
+		building_glassworks_leaded_glass
+		building_glassworks_crystal_glass
+		building_glassworks_houseware_plastics
 	}
 
 	extension_building_types = {
@@ -1045,10 +843,8 @@ company_bacardi = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_food_industry
-					is_building_type = building_food_industry_sweetener
+					is_building_type = building_food_industry_sweeteners
 					is_building_type = building_food_industry_baking_powder
-					is_building_type = building_food_industry_hydrogenated
-					is_building_type = building_food_industry_mechanised
 				}
 				level >= 5
 			}
@@ -1058,10 +854,9 @@ company_bacardi = {
 	prosperity_modifier = {
 		country_liberty_desire_add = 0.10
 		building_art_academy_throughput_add = 0.1
-		building_art_academy_realist_throughput_add = 0.1
-		building_art_academy_photographic_throughput_add = 0.1
-		building_art_academy_film_throughput_add = 0.1
-		building_art_academy_sound_film_throughput_add = 0.1
+		building_art_academy_realist_art_throughput_add = 0.1
+		building_art_academy_photographic_art_throughput_add = 0.1
+		building_art_academy_film_art_throughput_add = 0.1
 	}
 
 	ai_will_do = {
@@ -1077,25 +872,13 @@ company_bacardi = {
 				state_region = s:STATE_EASTERN_CUBA
 			}
 		}
-		building_food_industry_sweetener = {
+		building_food_industry_sweeteners = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_EASTERN_CUBA
 			}
 		}
 		building_food_industry_baking_powder = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_EASTERN_CUBA
-			}
-		}
-		building_food_industry_hydrogenated = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_EASTERN_CUBA
-			}
-		}
-		building_food_industry_mechanised = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_EASTERN_CUBA
@@ -1117,22 +900,18 @@ company_hispano_suiza = {
 
 	building_types = {
 		building_automotive_industry
-		building_automotive_industry_mass
-		building_automotive_industry_transfer_line
+		building_automotive_industry_mass_automobile_production
 		building_motor_industry
-		building_motor_industry_compound
-		building_motor_industry_electric
-		building_motor_industry_diesel
-		building_motor_industry_welded_diesel
+		building_motor_industry_electric_engines
+		building_motor_industry_diesel_engines
+		building_motor_industry_high_speed_diesel
 	}
 
 	extension_building_types = {
 		building_tooling_workshop
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
-		building_tooling_workshop_rubber
-		building_tooling_workshop_carbide
-		building_tooling_workshop_tracer
+		building_tooling_workshop_rubber_grips
 	}
 
 	potential = {
@@ -1154,8 +933,7 @@ company_hispano_suiza = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_automotive_industry
-					is_building_type = building_automotive_industry_mass
-					is_building_type = building_automotive_industry_transfer_line
+					is_building_type = building_automotive_industry_mass_automobile_production
 				}
 				level >= 5
 			}
@@ -1181,13 +959,7 @@ company_hispano_suiza = {
 				state_region = s:STATE_CATALONIA
 			}
 		}
-		building_automotive_industry_mass = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_CATALONIA
-			}
-		}
-		building_automotive_industry_transfer_line = {
+		building_automotive_industry_mass_automobile_production = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_CATALONIA

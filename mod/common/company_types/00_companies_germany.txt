@@ -11,20 +11,15 @@ company_krupp = {
 		building_arms_industry
 		building_arms_industry_rifles
 		building_arms_industry_repeaters
-		building_arms_industry_bolt_action
-		building_arms_industry_automatic
-		building_arms_industry_stamped
+		building_arms_industry_bolt_action_rifles
 		building_artillery_foundry
-		building_artillery_foundry_smoothbore
-		building_artillery_foundry_breech
-		building_artillery_foundry_recoiled
-		building_artillery_foundry_autofrettage
-		building_artillery_foundry_antiaircraft
+		building_artillery_foundry_smoothbores
+		building_artillery_foundry_breech_loaders
+		building_artillery_foundry_recoiled_barrels
 		building_steel_mill
-		building_steel_mill_bessemer
-		building_steel_mill_open_hearth
-		building_steel_mill_electric_arc
-		building_steel_mill_strip_mill
+		building_steel_mill_bessemer_process
+		building_steel_mill_open_hearth_process
+		building_steel_mill_electric_arc_process
 	}
 
 	extension_building_types = {
@@ -56,26 +51,21 @@ company_krupp = {
 				OR = {
 					OR = {
 						is_building_type = building_steel_mill
-						is_building_type = building_steel_mill_bessemer
-						is_building_type = building_steel_mill_open_hearth
-						is_building_type = building_steel_mill_electric_arc
-						is_building_type = building_steel_mill_strip_mill
+						is_building_type = building_steel_mill_bessemer_process
+						is_building_type = building_steel_mill_open_hearth_process
+						is_building_type = building_steel_mill_electric_arc_process
 					}
 					OR = {
 						is_building_type = building_arms_industry
 						is_building_type = building_arms_industry_rifles
 						is_building_type = building_arms_industry_repeaters
-						is_building_type = building_arms_industry_bolt_action
-						is_building_type = building_arms_industry_automatic
-						is_building_type = building_arms_industry_stamped
+						is_building_type = building_arms_industry_bolt_action_rifles
 					}
 					OR = {
 						is_building_type = building_artillery_foundry
-						is_building_type = building_artillery_foundry_smoothbore
-						is_building_type = building_artillery_foundry_breech
-						is_building_type = building_artillery_foundry_recoiled
-						is_building_type = building_artillery_foundry_autofrettage
-						is_building_type = building_artillery_foundry_antiaircraft
+						is_building_type = building_artillery_foundry_smoothbores
+						is_building_type = building_artillery_foundry_breech_loaders
+						is_building_type = building_artillery_foundry_recoiled_barrels
 					}
 				}
 				level >= 5
@@ -85,9 +75,6 @@ company_krupp = {
 
 	prosperity_modifier = {
 		building_railway_throughput_add = 0.1
-		building_railway_steam_throughput_add = 0.1
-		building_railway_electric_throughput_add = 0.1
-		building_railway_diesel_throughput_add = 0.1
 		unit_kill_rate_add = 0.1
 	}
 
@@ -106,25 +93,19 @@ company_krupp = {
 				state_region = s:STATE_RUHR
 			}
 		}
-		building_steel_mill_bessemer = {
+		building_steel_mill_bessemer_process = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_RUHR
 			}
 		}
-		building_steel_mill_open_hearth = {
+		building_steel_mill_open_hearth_process = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_RUHR
 			}
 		}
-		building_steel_mill_electric_arc = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_RUHR
-			}
-		}
-		building_steel_mill_strip_mill = {
+		building_steel_mill_electric_arc_process = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_RUHR
@@ -148,19 +129,7 @@ company_krupp = {
 				state_region = s:STATE_RUHR
 			}
 		}
-		building_arms_industry_bolt_action = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_RUHR
-			}
-		}
-		building_arms_industry_automatic = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_RUHR
-			}
-		}
-		building_arms_industry_stamped = {
+		building_arms_industry_bolt_action_rifles = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_RUHR
@@ -172,31 +141,19 @@ company_krupp = {
 				state_region = s:STATE_RUHR
 			}
 		}
-		building_artillery_foundry_smoothbore = {
+		building_artillery_foundry_smoothbores = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_RUHR
 			}
 		}
-		building_artillery_foundry_breech = {
+		building_artillery_foundry_breech_loaders = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_RUHR
 			}
 		}
-		building_artillery_foundry_recoiled = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_RUHR
-			}
-		}
-		building_artillery_foundry_autofrettage = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_RUHR
-			}
-		}
-		building_artillery_foundry_antiaircraft = {
+		building_artillery_foundry_recoiled_barrels = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_RUHR
@@ -220,34 +177,26 @@ company_rheinmetall = {
 
 	building_types = {
 		building_artillery_foundry
-		building_artillery_foundry_smoothbore
-		building_artillery_foundry_breech
-		building_artillery_foundry_recoiled
-		building_artillery_foundry_autofrettage
-		building_artillery_foundry_antiaircraft
+		building_artillery_foundry_smoothbores
+		building_artillery_foundry_breech_loaders
+		building_artillery_foundry_recoiled_barrels
 		building_munition_plant
-		building_munition_plant_shells
-		building_munition_plant_drawn_brass
-		building_munition_plant_filling
-		building_munition_plant_automatic
+		building_munition_plant_explosive_shells
 		building_explosives_factory
-		building_explosives_factory_ammonia
-		building_explosives_factory_vacuum
-		building_explosives_factory_brine
-		building_explosives_factory_cyclonite
+		building_explosives_factory_ammonia_soda_process
+		building_explosives_factory_vacuum_evaporation
+		building_explosives_factory_brine_electrolysis
 	}
 
 	extension_building_types = {
 		building_motor_industry
-		building_motor_industry_compound
-		building_motor_industry_electric
-		building_motor_industry_diesel
-		building_motor_industry_welded_diesel
+		building_motor_industry_electric_engines
+		building_motor_industry_diesel_engines
+		building_motor_industry_high_speed_diesel
 		building_steel_mill
-		building_steel_mill_bessemer
-		building_steel_mill_open_hearth
-		building_steel_mill_electric_arc
-		building_steel_mill_strip_mill
+		building_steel_mill_bessemer_process
+		building_steel_mill_open_hearth_process
+		building_steel_mill_electric_arc_process
 	}
 
 	possible_prestige_goods = {
@@ -288,25 +237,19 @@ company_rheinmetall = {
 				OR = {
 					OR = {
 						is_building_type = building_artillery_foundry
-						is_building_type = building_artillery_foundry_smoothbore
-						is_building_type = building_artillery_foundry_breech
-						is_building_type = building_artillery_foundry_recoiled
-						is_building_type = building_artillery_foundry_autofrettage
-						is_building_type = building_artillery_foundry_antiaircraft
+						is_building_type = building_artillery_foundry_smoothbores
+						is_building_type = building_artillery_foundry_breech_loaders
+						is_building_type = building_artillery_foundry_recoiled_barrels
 					}
 					OR = {
 						is_building_type = building_munition_plant
-						is_building_type = building_munition_plant_shells
-						is_building_type = building_munition_plant_drawn_brass
-						is_building_type = building_munition_plant_filling
-						is_building_type = building_munition_plant_automatic
+						is_building_type = building_munition_plant_explosive_shells
 					}
 					OR = {
 						is_building_type = building_explosives_factory
-						is_building_type = building_explosives_factory_ammonia
-						is_building_type = building_explosives_factory_vacuum
-						is_building_type = building_explosives_factory_brine
-						is_building_type = building_explosives_factory_cyclonite
+						is_building_type = building_explosives_factory_ammonia_soda_process
+						is_building_type = building_explosives_factory_vacuum_evaporation
+						is_building_type = building_explosives_factory_brine_electrolysis
 					}
 				}
 				level >= 5
@@ -342,7 +285,7 @@ company_rheinmetall = {
 				is_incorporated = yes
 			}
 		}
-		building_artillery_foundry_smoothbore = {
+		building_artillery_foundry_smoothbores = {
 			level = 5
 			state_trigger = {
 				OR = {
@@ -352,7 +295,7 @@ company_rheinmetall = {
 				is_incorporated = yes
 			}
 		}
-		building_artillery_foundry_breech = {
+		building_artillery_foundry_breech_loaders = {
 			level = 5
 			state_trigger = {
 				OR = {
@@ -362,27 +305,7 @@ company_rheinmetall = {
 				is_incorporated = yes
 			}
 		}
-		building_artillery_foundry_recoiled = {
-			level = 5
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_RUHR
-					state_region = s:STATE_NORTH_RHINE
-				}
-				is_incorporated = yes
-			}
-		}
-		building_artillery_foundry_autofrettage = {
-			level = 5
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_RUHR
-					state_region = s:STATE_NORTH_RHINE
-				}
-				is_incorporated = yes
-			}
-		}
-		building_artillery_foundry_antiaircraft = {
+		building_artillery_foundry_recoiled_barrels = {
 			level = 5
 			state_trigger = {
 				OR = {
@@ -402,37 +325,7 @@ company_rheinmetall = {
 				is_incorporated = yes
 			}
 		}
-		building_munition_plant_shells = {
-			level = 5
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_RUHR
-					state_region = s:STATE_NORTH_RHINE
-				}
-				is_incorporated = yes
-			}
-		}
-		building_munition_plant_drawn_brass = {
-			level = 5
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_RUHR
-					state_region = s:STATE_NORTH_RHINE
-				}
-				is_incorporated = yes
-			}
-		}
-		building_munition_plant_filling = {
-			level = 5
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_RUHR
-					state_region = s:STATE_NORTH_RHINE
-				}
-				is_incorporated = yes
-			}
-		}
-		building_munition_plant_automatic = {
+		building_munition_plant_explosive_shells = {
 			level = 5
 			state_trigger = {
 				OR = {
@@ -452,7 +345,7 @@ company_rheinmetall = {
 				is_incorporated = yes
 			}
 		}
-		building_explosives_factory_ammonia = {
+		building_explosives_factory_ammonia_soda_process = {
 			level = 5
 			state_trigger = {
 				OR = {
@@ -462,7 +355,7 @@ company_rheinmetall = {
 				is_incorporated = yes
 			}
 		}
-		building_explosives_factory_vacuum = {
+		building_explosives_factory_vacuum_evaporation = {
 			level = 5
 			state_trigger = {
 				OR = {
@@ -472,17 +365,7 @@ company_rheinmetall = {
 				is_incorporated = yes
 			}
 		}
-		building_explosives_factory_brine = {
-			level = 5
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_RUHR
-					state_region = s:STATE_NORTH_RHINE
-				}
-				is_incorporated = yes
-			}
-		}
-		building_explosives_factory_cyclonite = {
+		building_explosives_factory_brine_electrolysis = {
 			level = 5
 			state_trigger = {
 				OR = {
@@ -510,17 +393,10 @@ company_schichau = {
 
 	building_types = {
 		building_motor_industry
-		building_motor_industry_compound
-		building_motor_industry_electric
-		building_motor_industry_diesel
-		building_motor_industry_welded_diesel
+		building_motor_industry_electric_engines
+		building_motor_industry_diesel_engines
+		building_motor_industry_high_speed_diesel
 		building_shipyard
-		building_shipyard_complex
-		building_shipyard_metal
-		building_shipyard_metal_steel_hull
-		building_shipyard_metal_turbine
-		building_shipyard_metal_oil_fired
-		building_shipyard_arc_welding
 	}
 
 	possible_prestige_goods = {
@@ -529,14 +405,10 @@ company_schichau = {
 
 	extension_building_types = {
 		building_railway
-		building_railway_steam
-		building_railway_electric
-		building_railway_diesel
 		building_steel_mill
-		building_steel_mill_bessemer
-		building_steel_mill_open_hearth
-		building_steel_mill_electric_arc
-		building_steel_mill_strip_mill
+		building_steel_mill_bessemer_process
+		building_steel_mill_open_hearth_process
+		building_steel_mill_electric_arc_process
 	}
 
 	potential = {
@@ -560,20 +432,11 @@ company_schichau = {
 				OR = {
 					OR = {
 						is_building_type = building_motor_industry
-						is_building_type = building_motor_industry_compound
-						is_building_type = building_motor_industry_electric
-						is_building_type = building_motor_industry_diesel
-						is_building_type = building_motor_industry_welded_diesel
+						is_building_type = building_motor_industry_electric_engines
+						is_building_type = building_motor_industry_diesel_engines
+						is_building_type = building_motor_industry_high_speed_diesel
 					}
-					OR = {
-						is_building_type = building_shipyard
-						is_building_type = building_shipyard_complex
-						is_building_type = building_shipyard_metal
-						is_building_type = building_shipyard_metal_steel_hull
-						is_building_type = building_shipyard_metal_turbine
-						is_building_type = building_shipyard_metal_oil_fired
-						is_building_type = building_shipyard_arc_welding
-					}
+					is_building_type = building_shipyard
 				}
 				level >= 5
 			}
@@ -600,67 +463,25 @@ company_schichau = {
 				state_region = s:STATE_WEST_PRUSSIA
 			}
 		}
-		building_motor_industry_compound = {
+		building_motor_industry_electric_engines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_WEST_PRUSSIA
 			}
 		}
-		building_motor_industry_electric = {
+		building_motor_industry_diesel_engines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_WEST_PRUSSIA
 			}
 		}
-		building_motor_industry_diesel = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_WEST_PRUSSIA
-			}
-		}
-		building_motor_industry_welded_diesel = {
+		building_motor_industry_high_speed_diesel = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_WEST_PRUSSIA
 			}
 		}
 		building_shipyard = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_WEST_PRUSSIA
-			}
-		}
-		building_shipyard_complex = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_WEST_PRUSSIA
-			}
-		}
-		building_shipyard_metal = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_WEST_PRUSSIA
-			}
-		}
-		building_shipyard_metal_steel_hull = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_WEST_PRUSSIA
-			}
-		}
-		building_shipyard_metal_turbine = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_WEST_PRUSSIA
-			}
-		}
-		building_shipyard_metal_oil_fired = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_WEST_PRUSSIA
-			}
-		}
-		building_shipyard_arc_welding = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_WEST_PRUSSIA
@@ -684,21 +505,14 @@ company_siemens_and_halske = {
 
 	building_types = {
 		building_electrics_industry
-		building_electrics_industry_wireless
-		building_electrics_industry_radio
-		building_electrics_industry_electronics
 	}
 
 	extension_building_types = {
 		building_motor_industry
-		building_motor_industry_compound
-		building_motor_industry_electric
-		building_motor_industry_diesel
-		building_motor_industry_welded_diesel
+		building_motor_industry_electric_engines
+		building_motor_industry_diesel_engines
+		building_motor_industry_high_speed_diesel
 		building_railway
-		building_railway_steam
-		building_railway_electric
-		building_railway_diesel
 	}
 
 	potential = {
@@ -719,12 +533,7 @@ company_siemens_and_halske = {
 			state_region = s:STATE_BRANDENBURG
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_electrics_industry
-					is_building_type = building_electrics_industry_wireless
-					is_building_type = building_electrics_industry_radio
-					is_building_type = building_electrics_industry_electronics
-				}
+				is_building_type = building_electrics_industry
 				level >= 5
 			}
 		}
@@ -732,8 +541,6 @@ company_siemens_and_halske = {
 
 	prosperity_modifier = {
 		building_power_plant_throughput_add = 0.15
-		building_power_plant_pulverized_throughput_add = 0.15
-		building_power_plant_oil_throughput_add = 0.15
 	}
 
 	ai_will_do = {
@@ -746,24 +553,6 @@ company_siemens_and_halske = {
 
 	ai_construction_targets = {
 		building_electrics_industry = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BRANDENBURG
-			}
-		}
-		building_electrics_industry_wireless = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BRANDENBURG
-			}
-		}
-		building_electrics_industry_radio = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BRANDENBURG
-			}
-		}
-		building_electrics_industry_electronics = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_BRANDENBURG
@@ -787,17 +576,13 @@ company_prussian_state_railways = {
 
 	building_types = {
 		building_railway
-		building_railway_steam
-		building_railway_electric
-		building_railway_diesel
 	}
 
 	extension_building_types = {
 		building_motor_industry
-		building_motor_industry_compound
-		building_motor_industry_electric
-		building_motor_industry_diesel
-		building_motor_industry_welded_diesel
+		building_motor_industry_electric_engines
+		building_motor_industry_diesel_engines
+		building_motor_industry_high_speed_diesel
 	}
 
 	potential = {
@@ -813,12 +598,7 @@ company_prussian_state_railways = {
 			is_in_geographic_region = geographic_region_greater_germany
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_railway
-					is_building_type = building_railway_steam
-					is_building_type = building_railway_electric
-					is_building_type = building_railway_diesel
-				}
+				is_building_type = building_railway
 				level >= 5
 			}
 			count >= 3
@@ -845,27 +625,6 @@ company_prussian_state_railways = {
 				is_incorporated = yes
 			}
 		}
-		building_railway_steam = {
-			level = 5
-			state_trigger = {
-				is_in_geographic_region = geographic_region_greater_germany
-				is_incorporated = yes
-			}
-		}
-		building_railway_electric = {
-			level = 5
-			state_trigger = {
-				is_in_geographic_region = geographic_region_greater_germany
-				is_incorporated = yes
-			}
-		}
-		building_railway_diesel = {
-			level = 5
-			state_trigger = {
-				is_in_geographic_region = geographic_region_greater_germany
-				is_incorporated = yes
-			}
-		}
 	}
 
 	ai_weight = {
@@ -885,14 +644,10 @@ company_basf = {
 
 	building_types = {
 		building_synthetics_plant
-		building_synthetics_plant_indigo
-		building_synthetics_plant_viscose
-		building_synthetics_plant_polyamide
 		building_chemical_plant
-		building_chemical_plant_ammoniacal
-		building_chemical_plant_improved
-		building_chemical_plant_nitrogen
-		building_chemical_plant_reforming
+		building_chemical_plant_improved_fertilizer
+		building_chemical_plant_nitrogen_fixation
+		building_chemical_plant_catalytic_synthesis
 	}
 
 	extension_building_types = {
@@ -922,12 +677,7 @@ company_basf = {
 			state_region = s:STATE_BADEN
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_synthetics_plant
-					is_building_type = building_synthetics_plant_indigo
-					is_building_type = building_synthetics_plant_viscose
-					is_building_type = building_synthetics_plant_polyamide
-				}
+				is_building_type = building_synthetics_plant
 				level >= 5
 			}
 		}
@@ -948,24 +698,6 @@ company_basf = {
 
 	ai_construction_targets = {
 		building_synthetics_plant = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BADEN
-			}
-		}
-		building_synthetics_plant_indigo = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BADEN
-			}
-		}
-		building_synthetics_plant_viscose = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BADEN
-			}
-		}
-		building_synthetics_plant_polyamide = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_BADEN

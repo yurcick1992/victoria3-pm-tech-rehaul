@@ -9,10 +9,9 @@ company_da_afghan_nassaji_sherkat = {
 
 	building_types = {
 		building_textile_mill
-		building_textile_mill_dye
-		building_textile_mill_sewing
-		building_textile_mill_electric
-		building_textile_mill_highdraft
+		building_textile_mill_dye_workshops
+		building_textile_mill_sewing_machines
+		building_textile_mill_electric_sewing_machines
 	}
 
 	extension_building_types = {
@@ -50,10 +49,9 @@ company_da_afghan_nassaji_sherkat = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_textile_mill
-					is_building_type = building_textile_mill_dye
-					is_building_type = building_textile_mill_sewing
-					is_building_type = building_textile_mill_electric
-					is_building_type = building_textile_mill_highdraft
+					is_building_type = building_textile_mill_dye_workshops
+					is_building_type = building_textile_mill_sewing_machines
+					is_building_type = building_textile_mill_electric_sewing_machines
 				}
 				level >= 5
 			}
@@ -79,25 +77,19 @@ company_da_afghan_nassaji_sherkat = {
 				state_region = s:STATE_BALKH
 			}
 		}
-		building_textile_mill_dye = {
+		building_textile_mill_dye_workshops = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_BALKH
 			}
 		}
-		building_textile_mill_sewing = {
+		building_textile_mill_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_BALKH
 			}
 		}
-		building_textile_mill_electric = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BALKH
-			}
-		}
-		building_textile_mill_highdraft = {
+		building_textile_mill_electric_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_BALKH
@@ -121,17 +113,13 @@ company_iranian_state_railway = {
 
 	building_types = {
 		building_railway
-		building_railway_steam
-		building_railway_electric
-		building_railway_diesel
 	}
 
 	extension_building_types = {
 		building_motor_industry
-		building_motor_industry_compound
-		building_motor_industry_electric
-		building_motor_industry_diesel
-		building_motor_industry_welded_diesel
+		building_motor_industry_electric_engines
+		building_motor_industry_diesel_engines
+		building_motor_industry_high_speed_diesel
 	}
 
 	potential = {
@@ -155,12 +143,7 @@ company_iranian_state_railway = {
 			region = sr:region_greater_persia
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_railway
-					is_building_type = building_railway_steam
-					is_building_type = building_railway_electric
-					is_building_type = building_railway_diesel
-				}
+				is_building_type = building_railway
 				level >= 5
 			}
 			count >= 2
@@ -187,27 +170,6 @@ company_iranian_state_railway = {
 				is_incorporated = yes
 			}
 		}
-		building_railway_steam = {
-			level = 5
-			state_trigger = {
-				region = sr:region_greater_persia
-				is_incorporated = yes
-			}
-		}
-		building_railway_electric = {
-			level = 5
-			state_trigger = {
-				region = sr:region_greater_persia
-				is_incorporated = yes
-			}
-		}
-		building_railway_diesel = {
-			level = 5
-			state_trigger = {
-				region = sr:region_greater_persia
-				is_incorporated = yes
-			}
-		}
 	}
 
 	ai_weight = {
@@ -228,17 +190,13 @@ company_tashkent_railroad = {
 
 	building_types = {
 		building_railway
-		building_railway_steam
-		building_railway_electric
-		building_railway_diesel
 	}
 
 	extension_building_types = {
 		building_motor_industry
-		building_motor_industry_compound
-		building_motor_industry_electric
-		building_motor_industry_diesel
-		building_motor_industry_welded_diesel
+		building_motor_industry_electric_engines
+		building_motor_industry_diesel_engines
+		building_motor_industry_high_speed_diesel
 	}
 
 	potential = {
@@ -259,21 +217,11 @@ company_tashkent_railroad = {
 		any_scope_state = {
 			state_region = s:STATE_FERGANA
 			is_incorporated = yes
-			OR = {
-				has_building = building_railway
-				has_building = building_railway_steam
-				has_building = building_railway_electric
-				has_building = building_railway_diesel
-			}
+			has_building = building_railway
 			custom_tooltip = {
 				text = has_at_least_5_levels_of_railway_tt
 				any_scope_building = {
-					OR = {
-						is_building_type = building_railway
-						is_building_type = building_railway_steam
-						is_building_type = building_railway_electric
-						is_building_type = building_railway_diesel
-					}
+					is_building_type = building_railway
 					level >= 5
 				}
 			}
@@ -284,12 +232,7 @@ company_tashkent_railroad = {
 			custom_tooltip = {
 				text = has_at_least_5_levels_of_railway_tt
 				any_scope_building = {
-					OR = {
-						is_building_type = building_railway
-						is_building_type = building_railway_steam
-						is_building_type = building_railway_electric
-						is_building_type = building_railway_diesel
-					}
+					is_building_type = building_railway
 					level >= 5
 				}
 			}
@@ -311,27 +254,6 @@ company_tashkent_railroad = {
 
 	ai_construction_targets = {
 		building_railway = {
-			level = 5
-			state_trigger = {
-				region = sr:region_central_asia
-				is_incorporated = yes
-			}
-		}
-		building_railway_steam = {
-			level = 5
-			state_trigger = {
-				region = sr:region_central_asia
-				is_incorporated = yes
-			}
-		}
-		building_railway_electric = {
-			level = 5
-			state_trigger = {
-				region = sr:region_central_asia
-				is_incorporated = yes
-			}
-		}
-		building_railway_diesel = {
 			level = 5
 			state_trigger = {
 				region = sr:region_central_asia
@@ -360,12 +282,7 @@ company_west_ural_petroleum = {
 
 	extension_building_types = {
 		building_power_plant
-		building_power_plant_pulverized
-		building_power_plant_oil
 		building_railway
-		building_railway_steam
-		building_railway_electric
-		building_railway_diesel
 	}
 
 	potential = {
@@ -396,8 +313,6 @@ company_west_ural_petroleum = {
 	prosperity_modifier = {
 		state_colony_growth_speed_mult = 0.1
 		building_power_plant_throughput_add = 0.05
-		building_power_plant_pulverized_throughput_add = 0.05
-		building_power_plant_oil_throughput_add = 0.05
 	}
 
 	ai_will_do = {
@@ -439,10 +354,9 @@ company_sherkat_shemali = {
 
 	extension_building_types = {
 		building_textile_mill
-		building_textile_mill_dye
-		building_textile_mill_sewing
-		building_textile_mill_electric
-		building_textile_mill_highdraft
+		building_textile_mill_dye_workshops
+		building_textile_mill_sewing_machines
+		building_textile_mill_electric_sewing_machines
 	}
 
 	potential = {
@@ -587,10 +501,9 @@ company_sherkate_eslamiya = {
 
 	building_types = {
 		building_textile_mill
-		building_textile_mill_dye
-		building_textile_mill_sewing
-		building_textile_mill_electric
-		building_textile_mill_highdraft
+		building_textile_mill_dye_workshops
+		building_textile_mill_sewing_machines
+		building_textile_mill_electric_sewing_machines
 	}
 
 	extension_building_types = {
@@ -628,10 +541,9 @@ company_sherkate_eslamiya = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_textile_mill
-					is_building_type = building_textile_mill_dye
-					is_building_type = building_textile_mill_sewing
-					is_building_type = building_textile_mill_electric
-					is_building_type = building_textile_mill_highdraft
+					is_building_type = building_textile_mill_dye_workshops
+					is_building_type = building_textile_mill_sewing_machines
+					is_building_type = building_textile_mill_electric_sewing_machines
 				}
 				level >= 5
 			}
@@ -656,25 +568,19 @@ company_sherkate_eslamiya = {
 				state_region = s:STATE_ISFAHAN
 			}
 		}
-		building_textile_mill_dye = {
+		building_textile_mill_dye_workshops = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_ISFAHAN
 			}
 		}
-		building_textile_mill_sewing = {
+		building_textile_mill_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_ISFAHAN
 			}
 		}
-		building_textile_mill_electric = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_ISFAHAN
-			}
-		}
-		building_textile_mill_highdraft = {
+		building_textile_mill_electric_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_ISFAHAN
@@ -769,15 +675,10 @@ company_hanseong_jeongi_hoesa = {
 
 	building_types = {
 		building_power_plant
-		building_power_plant_pulverized
-		building_power_plant_oil
 	}
 
 	extension_building_types = {
 		building_railway
-		building_railway_steam
-		building_railway_electric
-		building_railway_diesel
 	}
 
 	potential = {
@@ -799,11 +700,7 @@ company_hanseong_jeongi_hoesa = {
 			state_region = s:STATE_SEOUL
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_power_plant
-					is_building_type = building_power_plant_pulverized
-					is_building_type = building_power_plant_oil
-				}
+				is_building_type = building_power_plant
 				level >= 5
 			}
 		}
@@ -811,14 +708,10 @@ company_hanseong_jeongi_hoesa = {
 
 	prosperity_modifier = {
 		building_art_academy_throughput_add = 0.05
-		building_art_academy_realist_throughput_add = 0.05
-		building_art_academy_photographic_throughput_add = 0.05
-		building_art_academy_film_throughput_add = 0.05
-		building_art_academy_sound_film_throughput_add = 0.05
+		building_art_academy_realist_art_throughput_add = 0.05
+		building_art_academy_photographic_art_throughput_add = 0.05
+		building_art_academy_film_art_throughput_add = 0.05
 		building_railway_throughput_add = 0.05
-		building_railway_steam_throughput_add = 0.05
-		building_railway_electric_throughput_add = 0.05
-		building_railway_diesel_throughput_add = 0.05
 	}
 
 	ai_will_do = {
@@ -831,18 +724,6 @@ company_hanseong_jeongi_hoesa = {
 
 	ai_construction_targets = {
 		building_power_plant = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_SEOUL
-			}
-		}
-		building_power_plant_pulverized = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_SEOUL
-			}
-		}
-		building_power_plant_oil = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_SEOUL
@@ -900,8 +781,6 @@ company_kirgizian_mining_company= {
 
 	prosperity_modifier = {
 		building_power_plant_throughput_add = 0.1
-		building_power_plant_pulverized_throughput_add = 0.1
-		building_power_plant_oil_throughput_add = 0.1
 	}
 
 	ai_will_do = {
@@ -942,10 +821,9 @@ company_persshelk = {
 
 	extension_building_types = {
 		building_textile_mill
-		building_textile_mill_dye
-		building_textile_mill_sewing
-		building_textile_mill_electric
-		building_textile_mill_highdraft
+		building_textile_mill_dye_workshops
+		building_textile_mill_sewing_machines
+		building_textile_mill_electric_sewing_machines
 	}
 
 	potential = {
@@ -1029,10 +907,9 @@ company_perskhlopok = {
 
 	extension_building_types = {
 		building_textile_mill
-		building_textile_mill_dye
-		building_textile_mill_sewing
-		building_textile_mill_electric
-		building_textile_mill_highdraft
+		building_textile_mill_dye_workshops
+		building_textile_mill_sewing_machines
+		building_textile_mill_electric_sewing_machines
 	}
 
 	potential = {
@@ -1070,10 +947,9 @@ company_perskhlopok = {
 
 	prosperity_modifier = {
 		building_textile_mill_throughput_add = 0.05
-		building_textile_mill_dye_throughput_add = 0.05
-		building_textile_mill_sewing_throughput_add = 0.05
-		building_textile_mill_electric_throughput_add = 0.05
-		building_textile_mill_highdraft_throughput_add = 0.05
+		building_textile_mill_dye_workshops_throughput_add = 0.05
+		building_textile_mill_sewing_machines_throughput_add = 0.05
+		building_textile_mill_electric_sewing_machines_throughput_add = 0.05
 		interest_group_ig_rural_folk_approval_add = 2
 	}
 
@@ -1229,10 +1105,8 @@ company_guinness = {
 
 	building_types = {
 		building_food_industry
-		building_food_industry_sweetener
+		building_food_industry_sweeteners
 		building_food_industry_baking_powder
-		building_food_industry_hydrogenated
-		building_food_industry_mechanised
 	}
 
 	extension_building_types = {
@@ -1271,10 +1145,8 @@ company_guinness = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_food_industry
-					is_building_type = building_food_industry_sweetener
+					is_building_type = building_food_industry_sweeteners
 					is_building_type = building_food_industry_baking_powder
-					is_building_type = building_food_industry_hydrogenated
-					is_building_type = building_food_industry_mechanised
 				}
 				level >= 5
 			}
@@ -1303,25 +1175,13 @@ company_guinness = {
 				state_region = s:STATE_LEINSTER
 			}
 		}
-		building_food_industry_sweetener = {
+		building_food_industry_sweeteners = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_LEINSTER
 			}
 		}
 		building_food_industry_baking_powder = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_LEINSTER
-			}
-		}
-		building_food_industry_hydrogenated = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_LEINSTER
-			}
-		}
-		building_food_industry_mechanised = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_LEINSTER
@@ -1352,10 +1212,8 @@ company_oriental_development_company = {
 	extension_building_types = {
 		building_maize_farm
 		building_food_industry
-		building_food_industry_sweetener
+		building_food_industry_sweeteners
 		building_food_industry_baking_powder
-		building_food_industry_hydrogenated
-		building_food_industry_mechanised
 	}
 
 	possible_prestige_goods = {
@@ -1404,9 +1262,6 @@ company_oriental_development_company = {
 
 	prosperity_modifier = {
 		building_railway_throughput_add = 0.05
-		building_railway_steam_throughput_add = 0.05
-		building_railway_electric_throughput_add = 0.05
-		building_railway_diesel_throughput_add = 0.05
 		state_migration_pull_mult = 0.1
 	}
 
@@ -1481,8 +1336,6 @@ company_turkish_petroleum = {
 
 	extension_building_types = {
 		building_power_plant
-		building_power_plant_pulverized
-		building_power_plant_oil
 	}
 
 	potential = {
@@ -1520,9 +1373,6 @@ company_turkish_petroleum = {
 	prosperity_modifier = {
 		state_trade_capacity_mult = 0.05
 		building_railway_throughput_add = 0.05
-		building_railway_steam_throughput_add = 0.05
-		building_railway_electric_throughput_add = 0.05
-		building_railway_diesel_throughput_add = 0.05
 	}
 
 	ai_will_do = {
@@ -1571,8 +1421,6 @@ company_anglo_persian_oil = {
 
 	extension_building_types = {
 		building_power_plant
-		building_power_plant_pulverized
-		building_power_plant_oil
 	}
 
 	potential = {
@@ -1668,8 +1516,6 @@ company_national_iranian_oil = {
 
 	extension_building_types = {
 		building_power_plant
-		building_power_plant_pulverized
-		building_power_plant_oil
 	}
 
 	potential = {

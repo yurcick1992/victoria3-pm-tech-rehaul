@@ -11,10 +11,9 @@ company_misr = {
 
 	building_types = {
 		building_textile_mill
-		building_textile_mill_dye
-		building_textile_mill_sewing
-		building_textile_mill_electric
-		building_textile_mill_highdraft
+		building_textile_mill_dye_workshops
+		building_textile_mill_sewing_machines
+		building_textile_mill_electric_sewing_machines
 		building_cotton_plantation
 	}
 
@@ -46,10 +45,9 @@ company_misr = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_textile_mill
-					is_building_type = building_textile_mill_dye
-					is_building_type = building_textile_mill_sewing
-					is_building_type = building_textile_mill_electric
-					is_building_type = building_textile_mill_highdraft
+					is_building_type = building_textile_mill_dye_workshops
+					is_building_type = building_textile_mill_sewing_machines
+					is_building_type = building_textile_mill_electric_sewing_machines
 				}
 				level >= 5
 			}
@@ -76,28 +74,21 @@ company_misr = {
 				is_incorporated = yes
 			}
 		}
-		building_textile_mill_dye = {
+		building_textile_mill_dye_workshops = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_LOWER_EGYPT
 				is_incorporated = yes
 			}
 		}
-		building_textile_mill_sewing = {
+		building_textile_mill_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_LOWER_EGYPT
 				is_incorporated = yes
 			}
 		}
-		building_textile_mill_electric = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_LOWER_EGYPT
-				is_incorporated = yes
-			}
-		}
-		building_textile_mill_highdraft = {
+		building_textile_mill_electric_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_LOWER_EGYPT
@@ -122,17 +113,13 @@ company_egyptian_rail = {
 
 	building_types = {
 		building_railway
-		building_railway_steam
-		building_railway_electric
-		building_railway_diesel
 	}
 
 	extension_building_types = {
 		building_motor_industry
-		building_motor_industry_compound
-		building_motor_industry_electric
-		building_motor_industry_diesel
-		building_motor_industry_welded_diesel
+		building_motor_industry_electric_engines
+		building_motor_industry_diesel_engines
+		building_motor_industry_high_speed_diesel
 	}
 
 	potential = {
@@ -145,12 +132,7 @@ company_egyptian_rail = {
 			is_in_geographic_region = geographic_region_nile_basin
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_railway
-					is_building_type = building_railway_steam
-					is_building_type = building_railway_electric
-					is_building_type = building_railway_diesel
-				}
+				is_building_type = building_railway
 				level >= 5
 			}
 			count >= 2
@@ -178,27 +160,6 @@ company_egyptian_rail = {
 				is_incorporated = yes
 			}
 		}
-		building_railway_steam = {
-			level = 5
-			state_trigger = {
-				is_in_geographic_region = geographic_region_nile_basin
-				is_incorporated = yes
-			}
-		}
-		building_railway_electric = {
-			level = 5
-			state_trigger = {
-				is_in_geographic_region = geographic_region_nile_basin
-				is_incorporated = yes
-			}
-		}
-		building_railway_diesel = {
-			level = 5
-			state_trigger = {
-				is_in_geographic_region = geographic_region_nile_basin
-				is_incorporated = yes
-			}
-		}
 	}
 
 	ai_weight = {
@@ -220,20 +181,10 @@ company_suez_company = {
 	building_types = {
 		building_trade_center
 		building_port
-		building_port_steam
-		building_port_industrial
-		building_port_modern
-		building_port_motor
 	}
 
 	extension_building_types = {
 		building_shipyard
-		building_shipyard_complex
-		building_shipyard_metal
-		building_shipyard_metal_steel_hull
-		building_shipyard_metal_turbine
-		building_shipyard_metal_oil_fired
-		building_shipyard_arc_welding
 	}
 
 	possible_prestige_goods = {
@@ -271,13 +222,7 @@ company_suez_company = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_trade_center
-					OR = {
-						is_building_type = building_port
-						is_building_type = building_port_steam
-						is_building_type = building_port_industrial
-						is_building_type = building_port_modern
-						is_building_type = building_port_motor
-					}
+					is_building_type = building_port
 				}
 				level >= 5
 			}
@@ -307,30 +252,6 @@ company_suez_company = {
 			}
 		}
 		building_port = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_SINAI
-			}
-		}
-		building_port_steam = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_SINAI
-			}
-		}
-		building_port_industrial = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_SINAI
-			}
-		}
-		building_port_modern = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_SINAI
-			}
-		}
-		building_port_motor = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_SINAI

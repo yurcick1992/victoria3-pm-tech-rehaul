@@ -85,10 +85,8 @@ company_mate_gavrilovic = {
 
 	building_types = {
 		building_food_industry
-		building_food_industry_sweetener
+		building_food_industry_sweeteners
 		building_food_industry_baking_powder
-		building_food_industry_hydrogenated
-		building_food_industry_mechanised
 	}
 
 	extension_building_types = {
@@ -120,10 +118,8 @@ company_mate_gavrilovic = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_food_industry
-					is_building_type = building_food_industry_sweetener
+					is_building_type = building_food_industry_sweeteners
 					is_building_type = building_food_industry_baking_powder
-					is_building_type = building_food_industry_hydrogenated
-					is_building_type = building_food_industry_mechanised
 				}
 				level >= 5
 			}
@@ -150,25 +146,13 @@ company_mate_gavrilovic = {
 				state_region = s:STATE_CROATIA
 			}
 		}
-		building_food_industry_sweetener = {
+		building_food_industry_sweeteners = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_CROATIA
 			}
 		}
 		building_food_industry_baking_powder = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_CROATIA
-			}
-		}
-		building_food_industry_hydrogenated = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_CROATIA
-			}
-		}
-		building_food_industry_mechanised = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_CROATIA
@@ -190,25 +174,17 @@ company_stabilimento_tecnico_di_fiume = {
 
 	building_types = {
 		building_shipyard
-		building_shipyard_complex
-		building_shipyard_metal
-		building_shipyard_metal_steel_hull
-		building_shipyard_metal_turbine
-		building_shipyard_metal_oil_fired
-		building_shipyard_arc_welding
 		building_explosives_factory
-		building_explosives_factory_ammonia
-		building_explosives_factory_vacuum
-		building_explosives_factory_brine
-		building_explosives_factory_cyclonite
+		building_explosives_factory_ammonia_soda_process
+		building_explosives_factory_vacuum_evaporation
+		building_explosives_factory_brine_electrolysis
 	}
 
 	extension_building_types = {
 		building_steel_mill
-		building_steel_mill_bessemer
-		building_steel_mill_open_hearth
-		building_steel_mill_electric_arc
-		building_steel_mill_strip_mill
+		building_steel_mill_bessemer_process
+		building_steel_mill_open_hearth_process
+		building_steel_mill_electric_arc_process
 	}
 
 	potential = {
@@ -233,21 +209,12 @@ company_stabilimento_tecnico_di_fiume = {
 			is_incorporated = yes
 			any_scope_building = {
 				OR = {
-					OR = {
-						is_building_type = building_shipyard
-						is_building_type = building_shipyard_complex
-						is_building_type = building_shipyard_metal
-						is_building_type = building_shipyard_metal_steel_hull
-						is_building_type = building_shipyard_metal_turbine
-						is_building_type = building_shipyard_metal_oil_fired
-						is_building_type = building_shipyard_arc_welding
-					}
+					is_building_type = building_shipyard
 					OR = {
 						is_building_type = building_explosives_factory
-						is_building_type = building_explosives_factory_ammonia
-						is_building_type = building_explosives_factory_vacuum
-						is_building_type = building_explosives_factory_brine
-						is_building_type = building_explosives_factory_cyclonite
+						is_building_type = building_explosives_factory_ammonia_soda_process
+						is_building_type = building_explosives_factory_vacuum_evaporation
+						is_building_type = building_explosives_factory_brine_electrolysis
 					}
 				}
 				level >= 5
@@ -274,42 +241,6 @@ company_stabilimento_tecnico_di_fiume = {
 				state_region = s:STATE_DALMATIA
 			}
 		}
-		building_shipyard_complex = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_DALMATIA
-			}
-		}
-		building_shipyard_metal = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_DALMATIA
-			}
-		}
-		building_shipyard_metal_steel_hull = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_DALMATIA
-			}
-		}
-		building_shipyard_metal_turbine = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_DALMATIA
-			}
-		}
-		building_shipyard_metal_oil_fired = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_DALMATIA
-			}
-		}
-		building_shipyard_arc_welding = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_DALMATIA
-			}
-		}
 	}
 
 	ai_weight = {
@@ -326,10 +257,8 @@ company_klanicko_drustvo = {
 
 	building_types = {
 		building_food_industry
-		building_food_industry_sweetener
+		building_food_industry_sweeteners
 		building_food_industry_baking_powder
-		building_food_industry_hydrogenated
-		building_food_industry_mechanised
 		building_livestock_ranch
 	}
 
@@ -368,10 +297,8 @@ company_klanicko_drustvo = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_food_industry
-					is_building_type = building_food_industry_sweetener
+					is_building_type = building_food_industry_sweeteners
 					is_building_type = building_food_industry_baking_powder
-					is_building_type = building_food_industry_hydrogenated
-					is_building_type = building_food_industry_mechanised
 				}
 			}
 		}
@@ -380,9 +307,6 @@ company_klanicko_drustvo = {
 	prosperity_modifier = {
 		building_livestock_ranch_throughput_add = 0.1
 		building_synthetics_plant_throughput_add = 0.05
-		building_synthetics_plant_indigo_throughput_add = 0.05
-		building_synthetics_plant_viscose_throughput_add = 0.05
-		building_synthetics_plant_polyamide_throughput_add = 0.05
 	}
 
 	ai_will_do = {
@@ -405,25 +329,13 @@ company_klanicko_drustvo = {
 				state_region = s:STATE_WESTERN_SERBIA
 			}
 		}
-		building_food_industry_sweetener = {
+		building_food_industry_sweeteners = {
 			level = 1
 			state_trigger = {
 				state_region = s:STATE_WESTERN_SERBIA
 			}
 		}
 		building_food_industry_baking_powder = {
-			level = 1
-			state_trigger = {
-				state_region = s:STATE_WESTERN_SERBIA
-			}
-		}
-		building_food_industry_hydrogenated = {
-			level = 1
-			state_trigger = {
-				state_region = s:STATE_WESTERN_SERBIA
-			}
-		}
-		building_food_industry_mechanised = {
 			level = 1
 			state_trigger = {
 				state_region = s:STATE_WESTERN_SERBIA
@@ -446,19 +358,16 @@ company_jakub_klein = {
 	building_types = {
 		building_logging_camp
 		building_paper_mill
-		building_paper_mill_sulfite
-		building_paper_mill_bleached
-		building_paper_mill_kraft
-		building_paper_mill_nssc
-		building_paper_mill_highspeed
+		building_paper_mill_sulfite_pulping
+		building_paper_mill_bleached_paper
+		building_paper_mill_continuous_web
 	}
 
 	extension_building_types = {
 		building_chemical_plant
-		building_chemical_plant_ammoniacal
-		building_chemical_plant_improved
-		building_chemical_plant_nitrogen
-		building_chemical_plant_reforming
+		building_chemical_plant_improved_fertilizer
+		building_chemical_plant_nitrogen_fixation
+		building_chemical_plant_catalytic_synthesis
 	}
 
 	potential = {
@@ -484,11 +393,9 @@ company_jakub_klein = {
 					is_building_type = building_logging_camp
 					OR = {
 						is_building_type = building_paper_mill
-						is_building_type = building_paper_mill_sulfite
-						is_building_type = building_paper_mill_bleached
-						is_building_type = building_paper_mill_kraft
-						is_building_type = building_paper_mill_nssc
-						is_building_type = building_paper_mill_highspeed
+						is_building_type = building_paper_mill_sulfite_pulping
+						is_building_type = building_paper_mill_bleached_paper
+						is_building_type = building_paper_mill_continuous_web
 					}
 				}
 				level >= 5
@@ -498,11 +405,9 @@ company_jakub_klein = {
 
 	prosperity_modifier = {
 		building_paper_mill_throughput_add = 0.1
-		building_paper_mill_sulfite_throughput_add = 0.1
-		building_paper_mill_bleached_throughput_add = 0.1
-		building_paper_mill_kraft_throughput_add = 0.1
-		building_paper_mill_nssc_throughput_add = 0.1
-		building_paper_mill_highspeed_throughput_add = 0.1
+		building_paper_mill_sulfite_pulping_throughput_add = 0.1
+		building_paper_mill_bleached_paper_throughput_add = 0.1
+		building_paper_mill_continuous_web_throughput_add = 0.1
 		building_group_bg_agriculture_throughput_add = 0.05
 	}
 
@@ -526,31 +431,19 @@ company_jakub_klein = {
 				state_region = s:STATE_SLOVAKIA
 			}
 		}
-		building_paper_mill_sulfite = {
+		building_paper_mill_sulfite_pulping = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_SLOVAKIA
 			}
 		}
-		building_paper_mill_bleached = {
+		building_paper_mill_bleached_paper = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_SLOVAKIA
 			}
 		}
-		building_paper_mill_kraft = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_SLOVAKIA
-			}
-		}
-		building_paper_mill_nssc = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_SLOVAKIA
-			}
-		}
-		building_paper_mill_highspeed = {
+		building_paper_mill_continuous_web = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_SLOVAKIA
@@ -573,10 +466,8 @@ company_elso_budapesti_gozmalom = {
 	building_types = {
 		building_wheat_farm
 		building_food_industry
-		building_food_industry_sweetener
+		building_food_industry_sweeteners
 		building_food_industry_baking_powder
-		building_food_industry_hydrogenated
-		building_food_industry_mechanised
 	}
 
 	extension_building_types = {
@@ -609,10 +500,8 @@ company_elso_budapesti_gozmalom = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_food_industry
-					is_building_type = building_food_industry_sweetener
+					is_building_type = building_food_industry_sweeteners
 					is_building_type = building_food_industry_baking_powder
-					is_building_type = building_food_industry_hydrogenated
-					is_building_type = building_food_industry_mechanised
 				}
 			}
 		}
@@ -653,25 +542,13 @@ company_elso_budapesti_gozmalom = {
 				state_region = s:STATE_CENTRAL_HUNGARY
 			}
 		}
-		building_food_industry_sweetener = {
+		building_food_industry_sweeteners = {
 			level = 1
 			state_trigger = {
 				state_region = s:STATE_CENTRAL_HUNGARY
 			}
 		}
 		building_food_industry_baking_powder = {
-			level = 1
-			state_trigger = {
-				state_region = s:STATE_CENTRAL_HUNGARY
-			}
-		}
-		building_food_industry_hydrogenated = {
-			level = 1
-			state_trigger = {
-				state_region = s:STATE_CENTRAL_HUNGARY
-			}
-		}
-		building_food_industry_mechanised = {
 			level = 1
 			state_trigger = {
 				state_region = s:STATE_CENTRAL_HUNGARY
@@ -731,8 +608,6 @@ company_witkowitzer_bergbau_und_huttengewerkschaft = {
 	prosperity_modifier = {
 		building_construction_sector_throughput_add = 0.05
 		building_power_plant_throughput_add = 0.1
-		building_power_plant_pulverized_throughput_add = 0.1
-		building_power_plant_oil_throughput_add = 0.1
 	}
 
 	ai_will_do = {
@@ -771,18 +646,14 @@ company_oesterreichisch_alpine_montangesellschaft = {
 
 	building_types = {
 		building_steel_mill
-		building_steel_mill_bessemer
-		building_steel_mill_open_hearth
-		building_steel_mill_electric_arc
-		building_steel_mill_strip_mill
+		building_steel_mill_bessemer_process
+		building_steel_mill_open_hearth_process
+		building_steel_mill_electric_arc_process
 		building_iron_mine
 	}
 
 	extension_building_types = {
 		building_railway
-		building_railway_steam
-		building_railway_electric
-		building_railway_diesel
 	}
 
 	potential = {
@@ -807,10 +678,9 @@ company_oesterreichisch_alpine_montangesellschaft = {
 				OR = {
 					OR = {
 						is_building_type = building_steel_mill
-						is_building_type = building_steel_mill_bessemer
-						is_building_type = building_steel_mill_open_hearth
-						is_building_type = building_steel_mill_electric_arc
-						is_building_type = building_steel_mill_strip_mill
+						is_building_type = building_steel_mill_bessemer_process
+						is_building_type = building_steel_mill_open_hearth_process
+						is_building_type = building_steel_mill_electric_arc_process
 					}
 					is_building_type = building_iron_mine
 				}
@@ -822,9 +692,6 @@ company_oesterreichisch_alpine_montangesellschaft = {
 	prosperity_modifier = {
 		building_coal_mine_throughput_add = 0.1
 		building_railway_throughput_add = 0.05
-		building_railway_steam_throughput_add = 0.05
-		building_railway_electric_throughput_add = 0.05
-		building_railway_diesel_throughput_add = 0.05
 	}
 
 	ai_will_do = {
@@ -841,25 +708,19 @@ company_oesterreichisch_alpine_montangesellschaft = {
 				state_region = s:STATE_STYRIA
 			}
 		}
-		building_steel_mill_bessemer = {
+		building_steel_mill_bessemer_process = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_STYRIA
 			}
 		}
-		building_steel_mill_open_hearth = {
+		building_steel_mill_open_hearth_process = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_STYRIA
 			}
 		}
-		building_steel_mill_electric_arc = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_STYRIA
-			}
-		}
-		building_steel_mill_strip_mill = {
+		building_steel_mill_electric_arc_process = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_STYRIA
@@ -887,20 +748,14 @@ company_getzner_mutter = {
 
 	building_types = {
 		building_textile_mill
-		building_textile_mill_dye
-		building_textile_mill_sewing
-		building_textile_mill_electric
-		building_textile_mill_highdraft
+		building_textile_mill_dye_workshops
+		building_textile_mill_sewing_machines
+		building_textile_mill_electric_sewing_machines
 		building_power_plant
-		building_power_plant_pulverized
-		building_power_plant_oil
 	}
 
 	extension_building_types = {
 		building_synthetics_plant
-		building_synthetics_plant_indigo
-		building_synthetics_plant_viscose
-		building_synthetics_plant_polyamide
 	}
 
 	possible_prestige_goods = {
@@ -929,28 +784,20 @@ company_getzner_mutter = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_textile_mill
-					is_building_type = building_textile_mill_dye
-					is_building_type = building_textile_mill_sewing
-					is_building_type = building_textile_mill_electric
-					is_building_type = building_textile_mill_highdraft
+					is_building_type = building_textile_mill_dye_workshops
+					is_building_type = building_textile_mill_sewing_machines
+					is_building_type = building_textile_mill_electric_sewing_machines
 				}
 				level >= 5
 			}
 			any_scope_building = {
-				OR = {
-					is_building_type = building_power_plant
-					is_building_type = building_power_plant_pulverized
-					is_building_type = building_power_plant_oil
-				}
+				is_building_type = building_power_plant
 			}
 		}
 	}
 
 	prosperity_modifier = {
 		building_synthetics_plant_throughput_add = 0.1
-		building_synthetics_plant_indigo_throughput_add = 0.1
-		building_synthetics_plant_viscose_throughput_add = 0.1
-		building_synthetics_plant_polyamide_throughput_add = 0.1
 		interest_group_ig_petty_bourgeoisie_approval_add = 2
 	}
 
@@ -968,43 +815,25 @@ company_getzner_mutter = {
 				state_region = s:STATE_TYROL
 			}
 		}
-		building_textile_mill_dye = {
+		building_textile_mill_dye_workshops = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_TYROL
 			}
 		}
-		building_textile_mill_sewing = {
+		building_textile_mill_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_TYROL
 			}
 		}
-		building_textile_mill_electric = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_TYROL
-			}
-		}
-		building_textile_mill_highdraft = {
+		building_textile_mill_electric_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_TYROL
 			}
 		}
 		building_power_plant = {
-			level = 1
-			state_trigger = {
-				state_region = s:STATE_TYROL
-			}
-		}
-		building_power_plant_pulverized = {
-			level = 1
-			state_trigger = {
-				state_region = s:STATE_TYROL
-			}
-		}
-		building_power_plant_oil = {
 			level = 1
 			state_trigger = {
 				state_region = s:STATE_TYROL
@@ -1026,22 +855,17 @@ company_erste_brunner = {
 
 	building_types = {
 		building_motor_industry
-		building_motor_industry_compound
-		building_motor_industry_electric
-		building_motor_industry_diesel
-		building_motor_industry_welded_diesel
+		building_motor_industry_electric_engines
+		building_motor_industry_diesel_engines
+		building_motor_industry_high_speed_diesel
 		building_tooling_workshop
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
-		building_tooling_workshop_rubber
-		building_tooling_workshop_carbide
-		building_tooling_workshop_tracer
+		building_tooling_workshop_rubber_grips
 	}
 
 	extension_building_types = {
 		building_power_plant
-		building_power_plant_pulverized
-		building_power_plant_oil
 	}
 
 	possible_prestige_goods = {
@@ -1073,16 +897,13 @@ company_erste_brunner = {
 						is_building_type = building_tooling_workshop
 						is_building_type = building_tooling_workshop_pig_iron
 						is_building_type = building_tooling_workshop_steel
-						is_building_type = building_tooling_workshop_rubber
-						is_building_type = building_tooling_workshop_carbide
-						is_building_type = building_tooling_workshop_tracer
+						is_building_type = building_tooling_workshop_rubber_grips
 					}
 					OR = {
 						is_building_type = building_motor_industry
-						is_building_type = building_motor_industry_compound
-						is_building_type = building_motor_industry_electric
-						is_building_type = building_motor_industry_diesel
-						is_building_type = building_motor_industry_welded_diesel
+						is_building_type = building_motor_industry_electric_engines
+						is_building_type = building_motor_industry_diesel_engines
+						is_building_type = building_motor_industry_high_speed_diesel
 					}
 				}
 				level >= 5
@@ -1092,13 +913,10 @@ company_erste_brunner = {
 
 	prosperity_modifier = {
 		building_textile_mill_throughput_add = 0.1
-		building_textile_mill_dye_throughput_add = 0.1
-		building_textile_mill_sewing_throughput_add = 0.1
-		building_textile_mill_electric_throughput_add = 0.1
-		building_textile_mill_highdraft_throughput_add = 0.1
+		building_textile_mill_dye_workshops_throughput_add = 0.1
+		building_textile_mill_sewing_machines_throughput_add = 0.1
+		building_textile_mill_electric_sewing_machines_throughput_add = 0.1
 		building_power_plant_throughput_add = 0.1
-		building_power_plant_pulverized_throughput_add = 0.1
-		building_power_plant_oil_throughput_add = 0.1
 	}
 
 	ai_will_do = {
@@ -1127,19 +945,7 @@ company_erste_brunner = {
 				state_region = s:STATE_MORAVIA
 			}
 		}
-		building_tooling_workshop_rubber = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_MORAVIA
-			}
-		}
-		building_tooling_workshop_carbide = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_MORAVIA
-			}
-		}
-		building_tooling_workshop_tracer = {
+		building_tooling_workshop_rubber_grips = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_MORAVIA
@@ -1151,25 +957,19 @@ company_erste_brunner = {
 				state_region = s:STATE_MORAVIA
 			}
 		}
-		building_motor_industry_compound = {
+		building_motor_industry_electric_engines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_MORAVIA
 			}
 		}
-		building_motor_industry_electric = {
+		building_motor_industry_diesel_engines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_MORAVIA
 			}
 		}
-		building_motor_industry_diesel = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_MORAVIA
-			}
-		}
-		building_motor_industry_welded_diesel = {
+		building_motor_industry_high_speed_diesel = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_MORAVIA

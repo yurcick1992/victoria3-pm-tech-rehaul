@@ -267,7 +267,7 @@
 				activate_production_methods = { "pm_main_arms_muskets" "pm_automation_disabled" }
 			}
 			create_building = {
-				building="building_glassworks"
+				building = "building_glassworks"
 				add_ownership = {
 					building = {
 						type = "building_manor_house"
@@ -277,10 +277,10 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_glass_forest"  "pm_manual_glassblowing" "pm_ceramics" }
+				activate_production_methods = { "pm_main_glass_forest_glass"  "pm_manual_glassblowing" "pm_ceramics_glassworks" }
 			}
 			create_building = {
-				building="building_shipyard"
+				building = "building_shipyard"
 				add_ownership = {
 					building = {
 						type = "building_financial_district"
@@ -290,7 +290,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_shipyard_basic" }
+				activate_production_methods = { "pm_basic_shipbuilding" }
 			}
 			create_building = {
 				building = "building_silk_plantation"
@@ -325,7 +325,7 @@
 				activate_production_methods = { "default_building_dye_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -335,7 +335,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn" "pm_craftsman_sewing" "pm_traditional_looms" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" "pm_traditional_looms" }
 			}
 			create_building = {
 				building="building_paper_mill"
@@ -364,15 +364,15 @@
 				activate_production_methods={  "pm_unrefrigerated" "pm_fishing_trawlers" }
 			}
 			create_building = {
-				building="building_port"
+				building = "building_port"
 				add_ownership = {
 					country= {
 						country = "c:BIC"
-						levels = 70
+						levels = 7
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_port_basic" }
+				activate_production_methods = { "pm_basic_port" }
 			}
 		}
 	}
@@ -390,7 +390,7 @@
 				activate_production_methods = { "pm_horizontal_drawer_cabinets" "pm_hereditary_bureaucrats" "pm_secular_bureaucrats" }
 			}
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -400,7 +400,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn" "pm_craftsman_sewing" "pm_traditional_looms" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" "pm_traditional_looms" }
 			}
 			create_building = {
 				building = "building_silk_plantation"
@@ -461,15 +461,15 @@
 				activate_production_methods = {  "pm_unrefrigerated" "pm_fishing_trawlers" }
 			}
 			create_building = {
-				building="building_port"
+				building = "building_port"
 				add_ownership = {
 					country= {
 						country = "c:BIC"
-						levels = 10
+						levels = 1
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_port_basic" }
+				activate_production_methods = { "pm_basic_port" }
 			}
 		}
 	}
@@ -573,7 +573,7 @@
 				activate_production_methods = { "pm_horizontal_drawer_cabinets" "pm_hereditary_bureaucrats" "pm_secular_bureaucrats" }
 			}
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -583,7 +583,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn"  "pm_traditional_looms" "pm_craftsman_sewing" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes"  "pm_traditional_looms" "pm_craftsman_sewing_textile_mill" }
 			}
 			create_building = {
 				building = "building_cotton_plantation"
@@ -612,7 +612,7 @@
 				activate_production_methods = { "pm_horizontal_drawer_cabinets" "pm_hereditary_bureaucrats" "pm_secular_bureaucrats" }
 			}
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -622,7 +622,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn" "pm_traditional_looms" "pm_craftsman_sewing" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_traditional_looms" "pm_craftsman_sewing_textile_mill" }
 			}
 			create_building = {
 				building = "building_cotton_plantation"
@@ -678,7 +678,7 @@
 				activate_production_methods = { "default_building_opium_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building="building_furniture_manufactory"
+				building = "building_furniture_manufactory"
 				add_ownership = {
 					building = {
 						type="building_furniture_manufactory"
@@ -688,10 +688,10 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_furniture_handcrafted"  "pm_automation_disabled" "pm_luxury_furniture" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  "pm_automation_disabled" "pm_luxury_furniture_furniture_manufactory" }
 			}
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -701,7 +701,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn" "pm_no_luxury_clothes" "pm_traditional_looms" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" "pm_traditional_looms" }
 			}
 			create_building = {
 				building = "building_dye_plantation"
@@ -775,7 +775,7 @@
 				activate_production_methods={ "default_building_banana_plantation" "pm_road_carts"  }
 			}
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -785,7 +785,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn" "pm_no_luxury_clothes" "pm_traditional_looms" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" "pm_traditional_looms" }
 			}
 			create_building = {
 				building = "building_silk_plantation"
@@ -878,7 +878,7 @@
 				activate_production_methods = { "pm_picks_and_shovels_building_iron_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts" }
 			}
 			create_building={
-				building="building_furniture_manufactory_lathe"
+				building = "building_furniture_manufactory_lathe"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -888,7 +888,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_lathe"  "pm_automation_disabled" "pm_luxury_furniture" }
+				activate_production_methods = { "pm_main_furniture_lathe"  "pm_automation_disabled" "pm_luxury_furniture_furniture_manufactory_lathe" }
 			}
 			create_building = {
 				building="building_arms_industry"
@@ -902,7 +902,7 @@
 				activate_production_methods = { "pm_main_arms_muskets" "pm_automation_disabled" }
 			}
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -912,7 +912,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn"  "pm_traditional_looms" "pm_craftsman_sewing" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes"  "pm_traditional_looms" "pm_craftsman_sewing_textile_mill" }
 			}
 			create_building = {
 				building = "building_cotton_plantation"
@@ -943,7 +943,7 @@
 				activate_production_methods = { "pm_simple_organization" "pm_hereditary_bureaucrats" "pm_religious_bureaucrats" }
 			}
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -953,10 +953,10 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn" "pm_no_luxury_clothes" "pm_traditional_looms" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" "pm_traditional_looms" }
 			}
 			create_building = {
-				building="building_furniture_manufactory"
+				building = "building_furniture_manufactory"
 				add_ownership = {
 					building = {
 						type="building_furniture_manufactory"
@@ -966,7 +966,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_furniture_handcrafted"  "pm_automation_disabled" "pm_luxury_furniture" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  "pm_automation_disabled" "pm_luxury_furniture_furniture_manufactory" }
 			}
 			create_building = {
 				building = "building_cotton_plantation"
@@ -1057,10 +1057,10 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_shipyard_basic"  }
+				activate_production_methods={ "pm_basic_shipbuilding"  }
 			}
 			create_building = {
-				building="building_furniture_manufactory"
+				building = "building_furniture_manufactory"
 				add_ownership = {
 					building = {
 						type="building_furniture_manufactory"
@@ -1070,10 +1070,10 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_furniture_handcrafted"  "pm_automation_disabled" "pm_luxury_furniture" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  "pm_automation_disabled" "pm_luxury_furniture_furniture_manufactory" }
 			}
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -1083,7 +1083,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn" "pm_no_luxury_clothes" "pm_traditional_looms" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" "pm_traditional_looms" }
 			}
 			create_building = {
 				building = "building_fishing_wharf"
@@ -1219,7 +1219,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 	}
@@ -1338,7 +1338,7 @@
 				activate_production_methods = { "default_building_opium_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -1348,7 +1348,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn"  "pm_traditional_looms" "pm_craftsman_sewing" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes"  "pm_traditional_looms" "pm_craftsman_sewing_textile_mill" }
 			}
 		}
 	}
@@ -1429,7 +1429,7 @@
 				activate_production_methods = { "pm_open_air_stockyards" "pm_simple_ranch" "pm_standard_fences" "pm_unrefrigerated" }
 			}
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -1439,7 +1439,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn"  "pm_traditional_looms" "pm_craftsman_sewing" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes"  "pm_traditional_looms" "pm_craftsman_sewing_textile_mill" }
 			}
 			create_building = {
 				building="building_paper_mill"
@@ -1505,7 +1505,7 @@
 				activate_production_methods = { "pm_wooden_buildings" }
 			}
 			create_building = {
-				building="building_glassworks"
+				building = "building_glassworks"
 				add_ownership = {
 					building = {
 						type="building_glassworks"
@@ -1515,10 +1515,10 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_glass_forest"  "pm_manual_glassblowing" "pm_ceramics" }
+				activate_production_methods = { "pm_main_glass_forest_glass"  "pm_manual_glassblowing" "pm_ceramics_glassworks" }
 			}
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -1528,10 +1528,10 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn"  "pm_traditional_looms" "pm_craftsman_sewing" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes"  "pm_traditional_looms" "pm_craftsman_sewing_textile_mill" }
 			}
 			create_building = {
-				building="building_furniture_manufactory"
+				building = "building_furniture_manufactory"
 				add_ownership = {
 					building = {
 						type="building_furniture_manufactory"
@@ -1541,7 +1541,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_furniture_handcrafted" "pm_no_luxuries" "pm_automation_disabled" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_no_luxuries" "pm_automation_disabled" }
 			}
 			create_building={
 				building="building_tooling_workshop_pig_iron"
@@ -1665,7 +1665,7 @@
 				activate_production_methods = { "pm_simple_organization" "pm_hereditary_bureaucrats" "pm_religious_bureaucrats" }
 			}
 			create_building = {
-				building="building_furniture_manufactory"
+				building = "building_furniture_manufactory"
 				add_ownership = {
 					building = {
 						type="building_furniture_manufactory"
@@ -1675,7 +1675,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_furniture_handcrafted"  "pm_automation_disabled" "pm_luxury_furniture" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  "pm_automation_disabled" "pm_luxury_furniture_furniture_manufactory" }
 			}
 			create_building = {
 				building = "building_silk_plantation"
@@ -1734,7 +1734,7 @@
 	s:STATE_CENTRAL_PROVINCES= {
 		region_state:NAG= {
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -1744,7 +1744,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn" "pm_no_luxury_clothes" "pm_traditional_looms" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" "pm_traditional_looms" }
 			}
 			create_building = {
 				building = "building_dye_plantation"
@@ -1931,7 +1931,7 @@
 		}
 		region_state:JAI= {
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -1941,7 +1941,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn"  "pm_traditional_looms" "pm_craftsman_sewing" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes"  "pm_traditional_looms" "pm_craftsman_sewing_textile_mill" }
 			}
 			create_building = {
 				building = "building_opium_plantation"
@@ -2013,20 +2013,20 @@
 				activate_production_methods = { "coffee_plantation_wet_process_manual" "pm_road_carts" }
 			}
 			create_building = {
-				building="building_port"
+				building = "building_port"
 				add_ownership = {
 					country= {
 						country = "c:BCE"
-						levels = 10
+						levels = 1
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_port_basic" }
+				activate_production_methods = { "pm_basic_port" }
 			}
 		}
 		region_state:GBR= {
 			create_building = {
-				building="building_port"
+				building = "building_port"
 				add_ownership = {
 					country = {
 						country = "c:GBR"
@@ -2034,7 +2034,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_port_basic" }
+				activate_production_methods = { "pm_anchorage" }
 			}		
 		}
 	}
@@ -2067,7 +2067,7 @@
 				activate_production_methods = { "default_building_sugar_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building="building_port"
+				building = "building_port"
 				add_ownership = {
 					country= {
 						country = "c:FRA"
@@ -2075,7 +2075,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_port_basic" }
+				activate_production_methods = { "pm_anchorage" }
 			}
 		}
 		region_state:GBR= {
@@ -2106,7 +2106,7 @@
 				activate_production_methods = { "default_building_sugar_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building="building_port"
+				building = "building_port"
 				add_ownership = {
 					country= {
 						country = "c:GBR"
@@ -2114,7 +2114,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_port_basic" }
+				activate_production_methods = { "pm_anchorage" }
 			}
 		}
 	}
@@ -2149,7 +2149,7 @@
 				activate_production_methods = { "default_building_sugar_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building="building_port"
+				building = "building_port"
 				add_ownership = {
 					country= {
 						country = "c:FRA"
@@ -2157,7 +2157,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_port_basic" }
+				activate_production_methods = { "pm_anchorage" }
 			}
 			create_building = {
 				building = "building_logging_camp"
@@ -2227,7 +2227,7 @@
 				activate_production_methods = { "pm_main_arms_muskets" "pm_automation_disabled" }
 			}
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -2237,7 +2237,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn" "pm_craftsman_sewing" "pm_traditional_looms" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" "pm_traditional_looms" }
 			}
 			create_building = {
 				building = "building_tobacco_plantation"
@@ -2310,22 +2310,22 @@
 				activate_production_methods = { "default_building_sugar_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building="building_port"
+				building = "building_port"
 				add_ownership = {
 					country= {
 						country = "c:BIC"
-						levels = 10
+						levels = 1
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_port_basic" }
+				activate_production_methods = { "pm_basic_port" }
 			}
 		}
 	}
 	s:STATE_MYSORE= {
 		region_state:MYS= {
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -2335,7 +2335,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn" "pm_craftsman_sewing" "pm_traditional_looms" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" "pm_traditional_looms" }
 			}
 			create_building = {
 				building = "building_gold_mine"
@@ -2463,7 +2463,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_shipyard_basic"  }
+				activate_production_methods={ "pm_basic_shipbuilding"  }
 			}
 		}
 		region_state:BIC = {
@@ -2498,7 +2498,7 @@
 				activate_production_methods = { "default_building_dye_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building="building_port"
+				building = "building_port"
 				add_ownership = {
 					country= {
 						country = "c:FRA"
@@ -2506,7 +2506,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_port_basic" }
+				activate_production_methods = { "pm_anchorage" }
 			}
 		}
 
@@ -2520,7 +2520,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_port_basic" }
+				activate_production_methods={ "pm_anchorage" }
 			}
 		}
 
@@ -2580,7 +2580,7 @@
 				activate_production_methods = { "default_building_silk_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -2590,7 +2590,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn" "pm_craftsman_sewing" "pm_traditional_looms" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" "pm_traditional_looms" }
 			}
 			create_building = {
 				building="building_arms_industry"
@@ -2669,15 +2669,15 @@
 				activate_production_methods = { "default_building_tobacco_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building="building_port"
+				building = "building_port"
 				add_ownership = {
 					country= {
 						country = "c:BIC"
-						levels = 10
+						levels = 1
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_port_basic" }
+				activate_production_methods = { "pm_basic_port" }
 			}
 		}
 	}
@@ -2805,7 +2805,7 @@
 				activate_production_methods={ "pm_simple_farming_building_rice_farm" "pm_fig_orchards_building_rice_farm" "pm_tools_disabled"  }
 			}
 			create_building = {
-				building="building_port"
+				building = "building_port"
 				add_ownership = {
 					country= {
 						country = "c:POR"
@@ -2813,7 +2813,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_port_basic" }
+				activate_production_methods = { "pm_anchorage" }
 			}
 		}
 		region_state:BIC = {
@@ -2829,7 +2829,7 @@
 				activate_production_methods = { "pm_horizontal_drawer_cabinets" "pm_hereditary_bureaucrats" "pm_secular_bureaucrats" }
 			}
 			create_building = {
-				building="building_shipyard"
+				building = "building_shipyard"
 				add_ownership = {
 					building = {
 						type = "building_financial_district"
@@ -2839,7 +2839,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_shipyard_basic" }
+				activate_production_methods = { "pm_basic_shipbuilding" }
 			}
 			create_building = {
 				building = "building_cotton_plantation"
@@ -2855,7 +2855,7 @@
 				activate_production_methods = { "default_building_cotton_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building="building_furniture_manufactory"
+				building = "building_furniture_manufactory"
 				add_ownership = {
 					building = {
 						type="building_furniture_manufactory"
@@ -2865,7 +2865,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_furniture_handcrafted"  "pm_automation_disabled" "pm_luxury_furniture" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  "pm_automation_disabled" "pm_luxury_furniture_furniture_manufactory" }
 			}
 			create_building = {
 				building = "building_construction_sector"
@@ -2879,7 +2879,7 @@
 				activate_production_methods = { "pm_wooden_buildings" }
 			}
 			create_building = {
-				building="building_textile_mill"
+				building = "building_textile_mill"
 				add_ownership = {
 					building = {
 						type="building_textile_mill"
@@ -2889,7 +2889,7 @@
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn" "pm_craftsman_sewing" "pm_traditional_looms" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" "pm_traditional_looms" }
 			}
 			create_building = {
 				building="building_arms_industry"
@@ -2927,15 +2927,15 @@
 				activate_production_methods = { "pm_fishing_trawlers" "pm_unrefrigerated" }
 			}
 			create_building = {
-				building="building_port"
+				building = "building_port"
 				add_ownership = {
 					country= {
 						country = "c:BIC"
-						levels = 40
+						levels = 4
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_port_basic" }
+				activate_production_methods = { "pm_basic_port" }
 			}
 			create_building={
 				building="building_naval_administration"

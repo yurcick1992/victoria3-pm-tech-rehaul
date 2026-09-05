@@ -83,6 +83,9 @@ const WRITE = process.argv.includes('--write');
 // five tools; here it would produce technologies unlocking buildings that do not exist and tiers no
 // technology unlocks — the two failure modes emit_techs' coverage guard exists to catch.
 const CFGPATH = join(REPO, process.env.MOD_CONFIG || join('config', 'mod_config.json'));
+// ⛔ SIX-RUNG GUARD (2026-09-05): the canonical config is the four-rung canon4v, whose tree is make_tier4_techs' — a
+//   --write here would overwrite config/tech_tree_options.json with the six-rung candidate trees. Refused without MOD_CONFIG.
+if (!process.env.MOD_CONFIG && /"era_game_era"/.test(readFileSync(CFGPATH, 'utf8'))) throw new Error("config/mod_config.json is the FOUR-RUNG canon (canon4v, canonised 2026-09-05); this is six-rung machinery - point it at the six-rung book explicitly: MOD_CONFIG=config/mod_config.six_rung.json (BALANCE_FRAMEWORK §10.74)");
 const SFX = (() => { const b = (process.env.MOD_CONFIG || '').split(/[\\/]/).pop() || '';
   const m = b.match(/^mod_config\.(.+)\.json$/); return m ? '.' + m[1] : ''; })();
 

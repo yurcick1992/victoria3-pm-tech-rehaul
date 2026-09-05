@@ -117,3 +117,6 @@ tools/testbed/ledger/*.canon6
 # canon4v-art3: canon4v with the film academy at x3 output (user-ruled 2026-09-04)
 !config/mod_config.canon4v-art3.json
 !config/tech_tree_options.canon4v-art3.json
+# THE SIX-RUNG CANON, retired 2026-09-05 when canon4v became config/mod_config.json (BALANCE_FRAMEWORK §10.74): source, not derivable
+!config/mod_config.six_rung.json
+!config/tech_tree_options.six_rung.json

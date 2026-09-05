@@ -159,7 +159,7 @@ prospecting = {
 
 crystal_glass = {
 	# Unlocks Leaded Glass PM in Glassworks
-	era = era_1
+	era = era_2
 	texture = "gfx/interface/icons/invention_icons/crystal_glass.dds"
 	category = production
 
@@ -249,7 +249,7 @@ watertube_boiler = {
 atmospheric_engine = {
 	# Unlocks Motor Industry
 	# Unlocks Atmospheric Engine Pump PM in Coal Mine, Iron Mine, Lead Mine, Sulfur Mine
-	era = era_1
+	era = era_2
 	texture = "gfx/interface/icons/invention_icons/atmospheric_engine.dds"
 	category = production
 
@@ -488,7 +488,7 @@ dynamite = {
 	# Unlocks Explosive Shells PM in Munitions Plants
 	# Unlocks Dynamite PM in Coal, Iron, Lean, Sulfur Mines
 	# Countries get a +25% chance of discovering new resources
-	era = era_2
+	era = era_3
 	texture = "gfx/interface/icons/invention_icons/dynamite.dds"
 	category = production
 
@@ -619,12 +619,12 @@ pumpjacks = {
 
 aniline = {
 	# Unlocks Synthetic Plants building
-	era = era_2
+	era = era_3
 	texture = "gfx/interface/icons/invention_icons/aniline.dds"
 	category = production
 
 	unlocking_technologies = {
-		chemical_bleaching
+		rubber_mastication
 	}
 
 	ai_weight = {
@@ -649,7 +649,7 @@ open_hearth_process = {
 
 vulcanization = {
 	# Unlocks Elastics PM in Textile Mills
-	era = era_3
+	era = era_4
 	texture = "gfx/interface/icons/invention_icons/vulcanization.dds"
 	category = production
 
@@ -699,7 +699,7 @@ steel_railway_cars = {
 	# Unlocks Steel Passenger Carriages PM and Armored Cars PM in Railways
 	# Unlocks Tanker Cars PM in Oil Rig buildings
 	# Increases Railway max level by 1
-	era = era_2
+	era = era_3
 	texture = "gfx/interface/icons/invention_icons/steel_railway_cars.dds"
 	category = production
 
@@ -838,7 +838,7 @@ electric_railway = {
 	# Unlocks Log Carts PM in Logging Camps
 	# Unlocks Refrigerated Rail Carts in Fishing Wharfs
 	# Increases Railway max level by 1
-	era = era_3
+	era = era_4
 	texture = "gfx/interface/icons/invention_icons/electric_railway.dds"
 	category = production
 
@@ -868,7 +868,7 @@ combustion_engine = {
 	# Unlocks Chainsaws PM in Logging Camps
 	# Unlocks Combustion Derricks PM in Oil Rigs
 	# Unlocks Public Motor Carriages PM in Urban Centers
-	era = era_3
+	era = era_4
 	texture = "gfx/interface/icons/invention_icons/combustion_engine.dds"
 	category = production
 
@@ -947,7 +947,7 @@ electric_arc_process = {
 
 steam_turbine = {
 	# Unlocks the Coal-Firing PM in Power Plants
-	era = era_3
+	era = era_4
 	texture = "gfx/interface/icons/invention_icons/steam_turbines.dds"
 	category = production
 
@@ -962,7 +962,7 @@ steam_turbine = {
 
 plastics = {
 	# Unlocks the Houseware Plastics PM in Glassworks
-	era = era_3
+	era = era_4
 	texture = "gfx/interface/icons/invention_icons/plastics.dds"
 	category = production
 
@@ -979,7 +979,7 @@ electrical_capacitors = {
 	# Unlocks Electric Sewing Machines PM and Automatic Power Looms PM in Textile Mills
 	# Unlocks Brine Electrolysis PM in Chemical Plants
 	# Unlocks Electric Saw Mills PM in Logging Camps
-	era = era_3
+	era = era_4
 	texture = "gfx/interface/icons/invention_icons/electrical_capacitors.dds"
 	category = production
 
@@ -1019,7 +1019,7 @@ radio = {
 
 telephone = {
 	# Unlocks Electrics Industry building
-	era = era_3
+	era = era_4
 	texture = "gfx/interface/icons/invention_icons/telephone.dds"
 	category = production
 

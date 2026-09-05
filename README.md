@@ -94,9 +94,10 @@ holds manual overrides for the 1836 start (force a country's factories to a tier
 Everything under `mod/` is **generated** — never hand-edit it.
 
 
-## Two canonical books (2026-09-03)
+## The canon (2026-09-05)
 
-The repo carries two canonical balance books: the **six-rung canon** in `config/mod_config.json` (the default the builder
-uses) and **`canon-4rung`** in `config/mod_config.canon-4rung.json` — a four-rung ladder on vanilla's own recipes, described
-in `BALANCE_FRAMEWORK.md` §10.66–10.69. Build the four-rung one with
-`powershell -ExecutionPolicy Bypass -File toolsuild.ps1 -Config configmod_config.canon-4rung.json`.
+The balance book the builder ships by default is **`canon4v`** in `config/mod_config.json`: four rungs per industry, each
+rung one of vanilla's own production methods with vanilla's name, gate and recipe, enriched by the A/B ladder (output ×2
+and input value ×1.5 per rung, construction priced by capacity) — `BALANCE_FRAMEWORK.md` §10.68, §10.72 and §10.74. The
+earlier six-rung book is kept at `config/mod_config.six_rung.json` (+ `config/tech_tree_options.six_rung.json`) and builds
+with `powershell -ExecutionPolicy Bypass -File tools\build.ps1 -Config config\mod_config.six_rung.json`.

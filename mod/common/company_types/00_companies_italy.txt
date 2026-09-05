@@ -9,10 +9,9 @@ company_ilva = {
 
 	building_types = {
 		building_steel_mill
-		building_steel_mill_bessemer
-		building_steel_mill_open_hearth
-		building_steel_mill_electric_arc
-		building_steel_mill_strip_mill
+		building_steel_mill_bessemer_process
+		building_steel_mill_open_hearth_process
+		building_steel_mill_electric_arc_process
 		building_iron_mine
 	}
 
@@ -51,10 +50,9 @@ company_ilva = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_steel_mill
-					is_building_type = building_steel_mill_bessemer
-					is_building_type = building_steel_mill_open_hearth
-					is_building_type = building_steel_mill_electric_arc
-					is_building_type = building_steel_mill_strip_mill
+					is_building_type = building_steel_mill_bessemer_process
+					is_building_type = building_steel_mill_open_hearth_process
+					is_building_type = building_steel_mill_electric_arc_process
 				}
 				level >= 5
 			}
@@ -63,15 +61,10 @@ company_ilva = {
 
 	prosperity_modifier = {
 		building_railway_throughput_add = 0.1
-		building_railway_steam_throughput_add = 0.1
-		building_railway_electric_throughput_add = 0.1
-		building_railway_diesel_throughput_add = 0.1
 		building_artillery_foundry_throughput_add = 0.05
-		building_artillery_foundry_smoothbore_throughput_add = 0.05
-		building_artillery_foundry_breech_throughput_add = 0.05
-		building_artillery_foundry_recoiled_throughput_add = 0.05
-		building_artillery_foundry_autofrettage_throughput_add = 0.05
-		building_artillery_foundry_antiaircraft_throughput_add = 0.05
+		building_artillery_foundry_smoothbores_throughput_add = 0.05
+		building_artillery_foundry_breech_loaders_throughput_add = 0.05
+		building_artillery_foundry_recoiled_barrels_throughput_add = 0.05
 	}
 
 	ai_will_do = {
@@ -88,25 +81,19 @@ company_ilva = {
 				state_region = s:STATE_PIEDMONT
 			}
 		}
-		building_steel_mill_bessemer = {
+		building_steel_mill_bessemer_process = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PIEDMONT
 			}
 		}
-		building_steel_mill_open_hearth = {
+		building_steel_mill_open_hearth_process = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PIEDMONT
 			}
 		}
-		building_steel_mill_electric_arc = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_PIEDMONT
-			}
-		}
-		building_steel_mill_strip_mill = {
+		building_steel_mill_electric_arc_process = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PIEDMONT
@@ -130,28 +117,21 @@ company_ansaldo = {
 
 	building_types = {
 		building_artillery_foundry
-		building_artillery_foundry_smoothbore
-		building_artillery_foundry_breech
-		building_artillery_foundry_recoiled
-		building_artillery_foundry_autofrettage
-		building_artillery_foundry_antiaircraft
+		building_artillery_foundry_smoothbores
+		building_artillery_foundry_breech_loaders
+		building_artillery_foundry_recoiled_barrels
 		building_steel_mill
-		building_steel_mill_bessemer
-		building_steel_mill_open_hearth
-		building_steel_mill_electric_arc
-		building_steel_mill_strip_mill
+		building_steel_mill_bessemer_process
+		building_steel_mill_open_hearth_process
+		building_steel_mill_electric_arc_process
 		building_tooling_workshop
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
-		building_tooling_workshop_rubber
-		building_tooling_workshop_carbide
-		building_tooling_workshop_tracer
+		building_tooling_workshop_rubber_grips
 	}
 
 	extension_building_types = {
 		building_power_plant
-		building_power_plant_pulverized
-		building_power_plant_oil
 	}
 
 	possible_prestige_goods = {
@@ -185,26 +165,21 @@ company_ansaldo = {
 				OR = {
 					OR = {
 						is_building_type = building_artillery_foundry
-						is_building_type = building_artillery_foundry_smoothbore
-						is_building_type = building_artillery_foundry_breech
-						is_building_type = building_artillery_foundry_recoiled
-						is_building_type = building_artillery_foundry_autofrettage
-						is_building_type = building_artillery_foundry_antiaircraft
+						is_building_type = building_artillery_foundry_smoothbores
+						is_building_type = building_artillery_foundry_breech_loaders
+						is_building_type = building_artillery_foundry_recoiled_barrels
 					}
 					OR = {
 						is_building_type = building_steel_mill
-						is_building_type = building_steel_mill_bessemer
-						is_building_type = building_steel_mill_open_hearth
-						is_building_type = building_steel_mill_electric_arc
-						is_building_type = building_steel_mill_strip_mill
+						is_building_type = building_steel_mill_bessemer_process
+						is_building_type = building_steel_mill_open_hearth_process
+						is_building_type = building_steel_mill_electric_arc_process
 					}
 					OR = {
 						is_building_type = building_tooling_workshop
 						is_building_type = building_tooling_workshop_pig_iron
 						is_building_type = building_tooling_workshop_steel
-						is_building_type = building_tooling_workshop_rubber
-						is_building_type = building_tooling_workshop_carbide
-						is_building_type = building_tooling_workshop_tracer
+						is_building_type = building_tooling_workshop_rubber_grips
 					}
 				}
 				level >= 5
@@ -232,31 +207,19 @@ company_ansaldo = {
 				state_region = s:STATE_PIEDMONT
 			}
 		}
-		building_artillery_foundry_smoothbore = {
+		building_artillery_foundry_smoothbores = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PIEDMONT
 			}
 		}
-		building_artillery_foundry_breech = {
+		building_artillery_foundry_breech_loaders = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PIEDMONT
 			}
 		}
-		building_artillery_foundry_recoiled = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_PIEDMONT
-			}
-		}
-		building_artillery_foundry_autofrettage = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_PIEDMONT
-			}
-		}
-		building_artillery_foundry_antiaircraft = {
+		building_artillery_foundry_recoiled_barrels = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PIEDMONT
@@ -268,25 +231,19 @@ company_ansaldo = {
 				state_region = s:STATE_PIEDMONT
 			}
 		}
-		building_steel_mill_bessemer = {
+		building_steel_mill_bessemer_process = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PIEDMONT
 			}
 		}
-		building_steel_mill_open_hearth = {
+		building_steel_mill_open_hearth_process = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PIEDMONT
 			}
 		}
-		building_steel_mill_electric_arc = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_PIEDMONT
-			}
-		}
-		building_steel_mill_strip_mill = {
+		building_steel_mill_electric_arc_process = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PIEDMONT
@@ -310,19 +267,7 @@ company_ansaldo = {
 				state_region = s:STATE_PIEDMONT
 			}
 		}
-		building_tooling_workshop_rubber = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_PIEDMONT
-			}
-		}
-		building_tooling_workshop_carbide = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_PIEDMONT
-			}
-		}
-		building_tooling_workshop_tracer = {
+		building_tooling_workshop_rubber_grips = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PIEDMONT
@@ -348,10 +293,9 @@ company_ricordi = {
 
 	building_types = {
 		building_art_academy
-		building_art_academy_realist
-		building_art_academy_photographic
-		building_art_academy_film
-		building_art_academy_sound_film
+		building_art_academy_realist_art
+		building_art_academy_photographic_art
+		building_art_academy_film_art
 	}
 
 	extension_building_types = {
@@ -377,10 +321,9 @@ company_ricordi = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_art_academy
-					is_building_type = building_art_academy_realist
-					is_building_type = building_art_academy_photographic
-					is_building_type = building_art_academy_film
-					is_building_type = building_art_academy_sound_film
+					is_building_type = building_art_academy_realist_art
+					is_building_type = building_art_academy_photographic_art
+					is_building_type = building_art_academy_film_art
 				}
 				level >= 5
 			}
@@ -406,25 +349,19 @@ company_ricordi = {
 				state_region = s:STATE_LOMBARDY
 			}
 		}
-		building_art_academy_realist = {
+		building_art_academy_realist_art = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_LOMBARDY
 			}
 		}
-		building_art_academy_photographic = {
+		building_art_academy_photographic_art = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_LOMBARDY
 			}
 		}
-		building_art_academy_film = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_LOMBARDY
-			}
-		}
-		building_art_academy_sound_film = {
+		building_art_academy_film_art = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_LOMBARDY
@@ -448,21 +385,18 @@ company_fiat = {
 
 	building_types = {
 		building_motor_industry
-		building_motor_industry_compound
-		building_motor_industry_electric
-		building_motor_industry_diesel
-		building_motor_industry_welded_diesel
+		building_motor_industry_electric_engines
+		building_motor_industry_diesel_engines
+		building_motor_industry_high_speed_diesel
 		building_automotive_industry
-		building_automotive_industry_mass
-		building_automotive_industry_transfer_line
+		building_automotive_industry_mass_automobile_production
 	}
 
 	extension_building_types = {
 		building_steel_mill
-		building_steel_mill_bessemer
-		building_steel_mill_open_hearth
-		building_steel_mill_electric_arc
-		building_steel_mill_strip_mill
+		building_steel_mill_bessemer_process
+		building_steel_mill_open_hearth_process
+		building_steel_mill_electric_arc_process
 	}
 
 	possible_prestige_goods = {
@@ -490,15 +424,13 @@ company_fiat = {
 				OR = {
 					OR = {
 						is_building_type = building_motor_industry
-						is_building_type = building_motor_industry_compound
-						is_building_type = building_motor_industry_electric
-						is_building_type = building_motor_industry_diesel
-						is_building_type = building_motor_industry_welded_diesel
+						is_building_type = building_motor_industry_electric_engines
+						is_building_type = building_motor_industry_diesel_engines
+						is_building_type = building_motor_industry_high_speed_diesel
 					}
 					OR = {
 						is_building_type = building_automotive_industry
-						is_building_type = building_automotive_industry_mass
-						is_building_type = building_automotive_industry_transfer_line
+						is_building_type = building_automotive_industry_mass_automobile_production
 					}
 				}
 				level >= 5
@@ -527,25 +459,19 @@ company_fiat = {
 				state_region = s:STATE_PIEDMONT
 			}
 		}
-		building_motor_industry_compound = {
+		building_motor_industry_electric_engines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PIEDMONT
 			}
 		}
-		building_motor_industry_electric = {
+		building_motor_industry_diesel_engines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PIEDMONT
 			}
 		}
-		building_motor_industry_diesel = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_PIEDMONT
-			}
-		}
-		building_motor_industry_welded_diesel = {
+		building_motor_industry_high_speed_diesel = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PIEDMONT
@@ -557,13 +483,7 @@ company_fiat = {
 				state_region = s:STATE_PIEDMONT
 			}
 		}
-		building_automotive_industry_mass = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_PIEDMONT
-			}
-		}
-		building_automotive_industry_transfer_line = {
+		building_automotive_industry_mass_automobile_production = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PIEDMONT
@@ -587,31 +507,21 @@ company_stt = {
 
 	building_types = {
 		building_shipyard
-		building_shipyard_complex
-		building_shipyard_metal
-		building_shipyard_metal_steel_hull
-		building_shipyard_metal_turbine
-		building_shipyard_metal_oil_fired
-		building_shipyard_arc_welding
 		building_artillery_foundry
-		building_artillery_foundry_smoothbore
-		building_artillery_foundry_breech
-		building_artillery_foundry_recoiled
-		building_artillery_foundry_autofrettage
-		building_artillery_foundry_antiaircraft
+		building_artillery_foundry_smoothbores
+		building_artillery_foundry_breech_loaders
+		building_artillery_foundry_recoiled_barrels
 	}
 
 	extension_building_types = {
 		building_motor_industry
-		building_motor_industry_compound
-		building_motor_industry_electric
-		building_motor_industry_diesel
-		building_motor_industry_welded_diesel
+		building_motor_industry_electric_engines
+		building_motor_industry_diesel_engines
+		building_motor_industry_high_speed_diesel
 		building_steel_mill
-		building_steel_mill_bessemer
-		building_steel_mill_open_hearth
-		building_steel_mill_electric_arc
-		building_steel_mill_strip_mill
+		building_steel_mill_bessemer_process
+		building_steel_mill_open_hearth_process
+		building_steel_mill_electric_arc_process
 	}
 
 	potential = {
@@ -632,15 +542,7 @@ company_stt = {
 			state_region = s:STATE_ISTRIA
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_shipyard
-					is_building_type = building_shipyard_complex
-					is_building_type = building_shipyard_metal
-					is_building_type = building_shipyard_metal_steel_hull
-					is_building_type = building_shipyard_metal_turbine
-					is_building_type = building_shipyard_metal_oil_fired
-					is_building_type = building_shipyard_arc_welding
-				}
+				is_building_type = building_shipyard
 				level >= 5
 			}
 		}
@@ -661,42 +563,6 @@ company_stt = {
 
 	ai_construction_targets = {
 		building_shipyard = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_ISTRIA
-			}
-		}
-		building_shipyard_complex = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_ISTRIA
-			}
-		}
-		building_shipyard_metal = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_ISTRIA
-			}
-		}
-		building_shipyard_metal_steel_hull = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_ISTRIA
-			}
-		}
-		building_shipyard_metal_turbine = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_ISTRIA
-			}
-		}
-		building_shipyard_metal_oil_fired = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_ISTRIA
-			}
-		}
-		building_shipyard_arc_welding = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_ISTRIA

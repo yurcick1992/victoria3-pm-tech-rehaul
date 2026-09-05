@@ -10,9 +10,6 @@ company_kaiping_mining = {
 	building_types = {
 		building_coal_mine
 		building_railway
-		building_railway_steam
-		building_railway_electric
-		building_railway_diesel
 	}
 
 	extension_building_types = {
@@ -100,28 +97,20 @@ company_hanyang_arsenal = {
 		building_arms_industry
 		building_arms_industry_rifles
 		building_arms_industry_repeaters
-		building_arms_industry_bolt_action
-		building_arms_industry_automatic
-		building_arms_industry_stamped
+		building_arms_industry_bolt_action_rifles
 		building_artillery_foundry
-		building_artillery_foundry_smoothbore
-		building_artillery_foundry_breech
-		building_artillery_foundry_recoiled
-		building_artillery_foundry_autofrettage
-		building_artillery_foundry_antiaircraft
+		building_artillery_foundry_smoothbores
+		building_artillery_foundry_breech_loaders
+		building_artillery_foundry_recoiled_barrels
 		building_munition_plant
-		building_munition_plant_shells
-		building_munition_plant_drawn_brass
-		building_munition_plant_filling
-		building_munition_plant_automatic
+		building_munition_plant_explosive_shells
 	}
 
 	extension_building_types = {
 		building_explosives_factory
-		building_explosives_factory_ammonia
-		building_explosives_factory_vacuum
-		building_explosives_factory_brine
-		building_explosives_factory_cyclonite
+		building_explosives_factory_ammonia_soda_process
+		building_explosives_factory_vacuum_evaporation
+		building_explosives_factory_brine_electrolysis
 	}
 
 	possible_prestige_goods = {
@@ -157,9 +146,7 @@ company_hanyang_arsenal = {
 					is_building_type = building_arms_industry
 					is_building_type = building_arms_industry_rifles
 					is_building_type = building_arms_industry_repeaters
-					is_building_type = building_arms_industry_bolt_action
-					is_building_type = building_arms_industry_automatic
-					is_building_type = building_arms_industry_stamped
+					is_building_type = building_arms_industry_bolt_action_rifles
 				}
 				level >= 5
 			}
@@ -198,19 +185,7 @@ company_hanyang_arsenal = {
 				state_region = s:STATE_EASTERN_HUBEI
 			}
 		}
-		building_arms_industry_bolt_action = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_EASTERN_HUBEI
-			}
-		}
-		building_arms_industry_automatic = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_EASTERN_HUBEI
-			}
-		}
-		building_arms_industry_stamped = {
+		building_arms_industry_bolt_action_rifles = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_EASTERN_HUBEI
@@ -236,32 +211,21 @@ company_foochow_arsenal = {
 
 	building_types = {
 		building_shipyard
-		building_shipyard_complex
-		building_shipyard_metal
-		building_shipyard_metal_steel_hull
-		building_shipyard_metal_turbine
-		building_shipyard_metal_oil_fired
-		building_shipyard_arc_welding
 		building_artillery_foundry
-		building_artillery_foundry_smoothbore
-		building_artillery_foundry_breech
-		building_artillery_foundry_recoiled
-		building_artillery_foundry_autofrettage
-		building_artillery_foundry_antiaircraft
+		building_artillery_foundry_smoothbores
+		building_artillery_foundry_breech_loaders
+		building_artillery_foundry_recoiled_barrels
 	}
 
 	extension_building_types = {
 		building_steel_mill
-		building_steel_mill_bessemer
-		building_steel_mill_open_hearth
-		building_steel_mill_electric_arc
-		building_steel_mill_strip_mill
+		building_steel_mill_bessemer_process
+		building_steel_mill_open_hearth_process
+		building_steel_mill_electric_arc_process
 		building_tooling_workshop
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
-		building_tooling_workshop_rubber
-		building_tooling_workshop_carbide
-		building_tooling_workshop_tracer
+		building_tooling_workshop_rubber_grips
 	}
 
 	potential = {
@@ -283,15 +247,7 @@ company_foochow_arsenal = {
 			state_region = s:STATE_FUJIAN
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_shipyard
-					is_building_type = building_shipyard_complex
-					is_building_type = building_shipyard_metal
-					is_building_type = building_shipyard_metal_steel_hull
-					is_building_type = building_shipyard_metal_turbine
-					is_building_type = building_shipyard_metal_oil_fired
-					is_building_type = building_shipyard_arc_welding
-				}
+				is_building_type = building_shipyard
 				level >= 5
 			}
 		}
@@ -300,10 +256,6 @@ company_foochow_arsenal = {
 	prosperity_modifier = {
 		ship_hull_damage_mult = 0.025
 		building_port_throughput_add = 0.10
-		building_port_steam_throughput_add = 0.10
-		building_port_industrial_throughput_add = 0.10
-		building_port_modern_throughput_add = 0.10
-		building_port_motor_throughput_add = 0.10
 	}
 
 	ai_will_do = {
@@ -317,42 +269,6 @@ company_foochow_arsenal = {
 
 	ai_construction_targets = {
 		building_shipyard = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_FUJIAN
-			}
-		}
-		building_shipyard_complex = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_FUJIAN
-			}
-		}
-		building_shipyard_metal = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_FUJIAN
-			}
-		}
-		building_shipyard_metal_steel_hull = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_FUJIAN
-			}
-		}
-		building_shipyard_metal_turbine = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_FUJIAN
-			}
-		}
-		building_shipyard_metal_oil_fired = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_FUJIAN
-			}
-		}
-		building_shipyard_arc_welding = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_FUJIAN
@@ -376,11 +292,9 @@ company_jingdezhen = {
 
 	building_types = {
 		building_glassworks
-		building_glassworks_leaded
-		building_glassworks_crystal
-		building_glassworks_plastics
-		building_glassworks_ribbon
-		building_glassworks_fibre
+		building_glassworks_leaded_glass
+		building_glassworks_crystal_glass
+		building_glassworks_houseware_plastics
 	}
 
 	extension_building_types = {
@@ -411,11 +325,9 @@ company_jingdezhen = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_glassworks
-					is_building_type = building_glassworks_leaded
-					is_building_type = building_glassworks_crystal
-					is_building_type = building_glassworks_plastics
-					is_building_type = building_glassworks_ribbon
-					is_building_type = building_glassworks_fibre
+					is_building_type = building_glassworks_leaded_glass
+					is_building_type = building_glassworks_crystal_glass
+					is_building_type = building_glassworks_houseware_plastics
 				}
 				level >= 5
 			}
@@ -442,31 +354,19 @@ company_jingdezhen = {
 				state_region = s:STATE_JIANGXI
 			}
 		}
-		building_glassworks_leaded = {
+		building_glassworks_leaded_glass = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_JIANGXI
 			}
 		}
-		building_glassworks_crystal = {
+		building_glassworks_crystal_glass = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_JIANGXI
 			}
 		}
-		building_glassworks_plastics = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_JIANGXI
-			}
-		}
-		building_glassworks_ribbon = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_JIANGXI
-			}
-		}
-		building_glassworks_fibre = {
+		building_glassworks_houseware_plastics = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_JIANGXI

@@ -76,10 +76,9 @@ company_bombay_dyeing_company = {
 
 	building_types = {
 		building_textile_mill
-		building_textile_mill_dye
-		building_textile_mill_sewing
-		building_textile_mill_electric
-		building_textile_mill_highdraft
+		building_textile_mill_dye_workshops
+		building_textile_mill_sewing_machines
+		building_textile_mill_electric_sewing_machines
 	}
 
 	extension_building_types = {
@@ -118,10 +117,9 @@ company_bombay_dyeing_company = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_textile_mill
-					is_building_type = building_textile_mill_dye
-					is_building_type = building_textile_mill_sewing
-					is_building_type = building_textile_mill_electric
-					is_building_type = building_textile_mill_highdraft
+					is_building_type = building_textile_mill_dye_workshops
+					is_building_type = building_textile_mill_sewing_machines
+					is_building_type = building_textile_mill_electric_sewing_machines
 				}
 				level >= 5
 			}
@@ -147,25 +145,19 @@ company_bombay_dyeing_company = {
 				state_region = s:STATE_BOMBAY
 			}
 		}
-		building_textile_mill_dye = {
+		building_textile_mill_dye_workshops = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_BOMBAY
 			}
 		}
-		building_textile_mill_sewing = {
+		building_textile_mill_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_BOMBAY
 			}
 		}
-		building_textile_mill_electric = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BOMBAY
-			}
-		}
-		building_textile_mill_highdraft = {
+		building_textile_mill_electric_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_BOMBAY
@@ -196,10 +188,6 @@ company_david_sassoon = {
 
 	extension_building_types = {
 		building_port
-		building_port_steam
-		building_port_industrial
-		building_port_modern
-		building_port_motor
 	}
 
 	possible_prestige_goods = {
@@ -405,10 +393,9 @@ company_madura_mills = {
 
 	building_types = {
 		building_textile_mill
-		building_textile_mill_dye
-		building_textile_mill_sewing
-		building_textile_mill_electric
-		building_textile_mill_highdraft
+		building_textile_mill_dye_workshops
+		building_textile_mill_sewing_machines
+		building_textile_mill_electric_sewing_machines
 	}
 
 	extension_building_types = {
@@ -447,10 +434,9 @@ company_madura_mills = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_textile_mill
-					is_building_type = building_textile_mill_dye
-					is_building_type = building_textile_mill_sewing
-					is_building_type = building_textile_mill_electric
-					is_building_type = building_textile_mill_highdraft
+					is_building_type = building_textile_mill_dye_workshops
+					is_building_type = building_textile_mill_sewing_machines
+					is_building_type = building_textile_mill_electric_sewing_machines
 				}
 				level >= 5
 			}
@@ -461,10 +447,9 @@ company_madura_mills = {
 	prosperity_modifier = {
 		interest_group_ig_petty_bourgeoisie_pop_attraction_mult = 0.1
 		building_textile_mill_throughput_add = 0.1
-		building_textile_mill_dye_throughput_add = 0.1
-		building_textile_mill_sewing_throughput_add = 0.1
-		building_textile_mill_electric_throughput_add = 0.1
-		building_textile_mill_highdraft_throughput_add = 0.1
+		building_textile_mill_dye_workshops_throughput_add = 0.1
+		building_textile_mill_sewing_machines_throughput_add = 0.1
+		building_textile_mill_electric_sewing_machines_throughput_add = 0.1
 		country_state_religion_wages_mult = 0.05
 	}
 
@@ -482,25 +467,19 @@ company_madura_mills = {
 				state_region = s:STATE_MADRAS
 			}
 		}
-		building_textile_mill_dye = {
+		building_textile_mill_dye_workshops = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_MADRAS
 			}
 		}
-		building_textile_mill_sewing = {
+		building_textile_mill_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_MADRAS
 			}
 		}
-		building_textile_mill_electric = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_MADRAS
-			}
-		}
-		building_textile_mill_highdraft = {
+		building_textile_mill_electric_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_MADRAS
@@ -594,31 +573,21 @@ company_wadia_shipbuilders = {
 
 	building_types = {
 		building_shipyard
-		building_shipyard_complex
-		building_shipyard_metal
-		building_shipyard_metal_steel_hull
-		building_shipyard_metal_turbine
-		building_shipyard_metal_oil_fired
-		building_shipyard_arc_welding
 		building_artillery_foundry
-		building_artillery_foundry_smoothbore
-		building_artillery_foundry_breech
-		building_artillery_foundry_recoiled
-		building_artillery_foundry_autofrettage
-		building_artillery_foundry_antiaircraft
+		building_artillery_foundry_smoothbores
+		building_artillery_foundry_breech_loaders
+		building_artillery_foundry_recoiled_barrels
 	}
 
 	extension_building_types = {
 		building_explosives_factory
-		building_explosives_factory_ammonia
-		building_explosives_factory_vacuum
-		building_explosives_factory_brine
-		building_explosives_factory_cyclonite
+		building_explosives_factory_ammonia_soda_process
+		building_explosives_factory_vacuum_evaporation
+		building_explosives_factory_brine_electrolysis
 		building_motor_industry
-		building_motor_industry_compound
-		building_motor_industry_electric
-		building_motor_industry_diesel
-		building_motor_industry_welded_diesel
+		building_motor_industry_electric_engines
+		building_motor_industry_diesel_engines
+		building_motor_industry_high_speed_diesel
 	}
 
 	potential = {
@@ -639,15 +608,7 @@ company_wadia_shipbuilders = {
 			state_region = s:STATE_BOMBAY
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_shipyard
-					is_building_type = building_shipyard_complex
-					is_building_type = building_shipyard_metal
-					is_building_type = building_shipyard_metal_steel_hull
-					is_building_type = building_shipyard_metal_turbine
-					is_building_type = building_shipyard_metal_oil_fired
-					is_building_type = building_shipyard_arc_welding
-				}
+				is_building_type = building_shipyard
 				level >= 5
 			}
 		}
@@ -672,42 +633,6 @@ company_wadia_shipbuilders = {
 
 	ai_construction_targets = {
 		building_shipyard = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BOMBAY
-			}
-		}
-		building_shipyard_complex = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BOMBAY
-			}
-		}
-		building_shipyard_metal = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BOMBAY
-			}
-		}
-		building_shipyard_metal_steel_hull = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BOMBAY
-			}
-		}
-		building_shipyard_metal_turbine = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BOMBAY
-			}
-		}
-		building_shipyard_metal_oil_fired = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BOMBAY
-			}
-		}
-		building_shipyard_arc_welding = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_BOMBAY
@@ -825,16 +750,11 @@ company_ralli_brothers = {
 
 	extension_building_types = {
 		building_port
-		building_port_steam
-		building_port_industrial
-		building_port_modern
-		building_port_motor
 		building_cotton_plantation
 		building_textile_mill
-		building_textile_mill_dye
-		building_textile_mill_sewing
-		building_textile_mill_electric
-		building_textile_mill_highdraft
+		building_textile_mill_dye_workshops
+		building_textile_mill_sewing_machines
+		building_textile_mill_electric_sewing_machines
 	}
 
 	possible_prestige_goods = {
@@ -896,10 +816,9 @@ company_ralli_brothers = {
 	prosperity_modifier = {
 		building_sulfur_mine_throughput_add = 0.1
 		building_textile_mill_throughput_add = 0.1
-		building_textile_mill_dye_throughput_add = 0.1
-		building_textile_mill_sewing_throughput_add = 0.1
-		building_textile_mill_electric_throughput_add = 0.1
-		building_textile_mill_highdraft_throughput_add = 0.1
+		building_textile_mill_dye_workshops_throughput_add = 0.1
+		building_textile_mill_sewing_machines_throughput_add = 0.1
+		building_textile_mill_electric_sewing_machines_throughput_add = 0.1
 		state_trade_advantage_mult = 0.05
 	}
 
@@ -951,8 +870,6 @@ company_calcutta_electric = {
 
 	building_types = {
 		building_power_plant
-		building_power_plant_pulverized
-		building_power_plant_oil
 	}
 
 	extension_building_types = {
@@ -977,11 +894,7 @@ company_calcutta_electric = {
 			state_region = s:STATE_WEST_BENGAL
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_power_plant
-					is_building_type = building_power_plant_pulverized
-					is_building_type = building_power_plant_oil
-				}
+				is_building_type = building_power_plant
 				level >= 5
 			}
 		}
@@ -1002,18 +915,6 @@ company_calcutta_electric = {
 
 	ai_construction_targets = {
 		building_power_plant = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_WEST_BENGAL
-			}
-		}
-		building_power_plant_pulverized = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_WEST_BENGAL
-			}
-		}
-		building_power_plant_oil = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_WEST_BENGAL
