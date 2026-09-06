@@ -3443,6 +3443,17 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
      from code-driven triggers, no script file named. **It is VANILLA's**: the pinned vanilla baseline
      `20260821_131149` carries **925 / 946** in its first two runs, mod arms 850–1,704 (canon4v-hai3-n2's
      two runs, canon4v-art3-n5 run 2). The heartbeat filters it with the other four.
+     ⚠ **A SIXTH, RARE AND HEAVY (identified 2026-09-06, run 9 of the 60-run batch): the TRIO `Div/0 near
+     common/political_movements/…`, `Event target link 'religion' returned an invalid object` (locations in
+     01_power_bloc_values, character interactions, coat-of-arms templates) and the assertion `The null hierarchy
+     will never have social classes associated with it`**, all starting together mid-campaign and running to
+     thousands of lines. **VANILLA's**: the n=16 baseline has the trio in run 7 (8,195 / 10,038 / 1) and the
+     religion class in run 8 (7,827); absent from the other fourteen. A game-state anomaly (an entity with no
+     religion), not script of ours. The heartbeat filters the two script classes. ⚠ NOT a noise class but a WATCH
+     item: `Failed to create battle in <Front> due to 'land_battle_size'` (battle_manager.cpp, engine-side) is
+     0–4 a run in vanilla and in ten earlier four-rung runs, but 7,336 / 4,308 in canon4v-hai3-n2 and 1,304 in
+     run 9 of the 60-run batch — if it recurs across many runs of the ai_value-3^era arms, it may say those arms
+     field armies too small to spawn battles; judge it per batch, not per run.
   4. **Is the clock advancing?** The tail of `<run>/run.log` should show `in-game <date>` moving.
   5. **Is the construction mix reasonable?** (User-directed 2026-08-16, after F66.) As soon as the
      concurrent save harvest lands its first summary (~10 min for the 1837 autosave), run

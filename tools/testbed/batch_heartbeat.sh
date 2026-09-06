@@ -2,9 +2,10 @@
 # THE BATCH HEARTBEAT — one command per wake-up while a schedule runs (CLAUDE.md: smoke-check every run ~5 min after it starts;
 # post only on crash / resume / stall). For the session given: every run's clock, CRASHED and resume counts and summary count; for the
 # NEWEST run the smoke items — mod marker, game-version mismatch, this run's error window by PARSED time (BOM-tolerant, wrap-safe
-# across midnight), the classes left after the five vanilla noise classes (CLAUDE.md's smoke-check list: the spline flood, the
-# is_production_method_active PostValidate class, the navy-law flood, the interest-group leader class, and the untyped-trigger
-# invalid-country class that vanilla itself logs ~900 times a run), and anything naming our files; SCHEDULE DONE; and, for the 60-run plan of §10.76, a
+# across midnight), the classes left after the vanilla noise classes (CLAUDE.md's smoke-check list: the spline flood, the
+# is_production_method_active PostValidate class, the navy-law flood, the interest-group leader class, the untyped-trigger
+# invalid-country class that vanilla itself logs ~900 times a run, and the rare Div/0-political-movements + religion-link pair
+# that vanilla's baseline runs 7 and 8 carry in the thousands), and anything naming our files; SCHEDULE DONE; and, for the 60-run plan of §10.76, a
 # reminder when run030 has landed. Read-only.
 #   bash tools/testbed/batch_heartbeat.sh <session-folder-name>
 cd "$(dirname "$0")/../.." || exit 1
@@ -29,9 +30,9 @@ if [ -n "$RUN" ] && [ -f $RUN/run.log ]; then
     WIN=$(mktemp)
     awk -v A=$SS -v B=$NS 'match($0,/^\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\]/){t=substr($0,2,2)*3600+substr($0,5,2)*60+substr($0,8,2); inwin=(A<=B)?(t>=A&&t<=B):(t>=A||t<=B)} inwin{print}' $RUN/logs_live/error.log > $WIN
     if [ -s "$WIN" ]; then
-      W=$(grep -v -E "jomini_spline_network_graphics|is_production_method_active|lawgroup_navy_model|Could not get leader of interest group|jomini_script_system.cpp:247|Script location|untyped trigger \[ Scoped object of type 'country' is not valid" $WIN | wc -l)
+      W=$(grep -v -E "jomini_spline_network_graphics|is_production_method_active|lawgroup_navy_model|Could not get leader of interest group|jomini_script_system.cpp:247|Script location|untyped trigger \[ Scoped object of type 'country' is not valid|Div/0 near common/political_movements|Event target link 'religion' returned an invalid object" $WIN | wc -l)
       echo "    error window $START-$NOWT: $(wc -l < $WIN) lines, $W after the noise classes; top classes:"
-      grep -v -E "jomini_spline_network_graphics|is_production_method_active|lawgroup_navy_model|Could not get leader of interest group|jomini_script_system.cpp:247|Script location|untyped trigger \[ Scoped object of type 'country' is not valid" $WIN | sed -E 's/^\[[0-9:]+\]\[[^]]*\]: //; s/[0-9]+/N/g' | cut -c1-100 | sort | uniq -c | sort -rn | head -4 | sed 's/^/      /'
+      grep -v -E "jomini_spline_network_graphics|is_production_method_active|lawgroup_navy_model|Could not get leader of interest group|jomini_script_system.cpp:247|Script location|untyped trigger \[ Scoped object of type 'country' is not valid|Div/0 near common/political_movements|Event target link 'religion' returned an invalid object" $WIN | sed -E 's/^\[[0-9:]+\]\[[^]]*\]: //; s/[0-9]+/N/g' | cut -c1-100 | sort | uniq -c | sort -rn | head -4 | sed 's/^/      /'
       OURS=$(grep -i -E "zzz_pm_rehaul|pm_rehaul|journal_entries/zzz|scripted_progress_bars/zzz|company_types" $WIN | grep -v "is_production_method_active\|utf8-bom" | wc -l)
       [ "$OURS" != "0" ] && { echo "    ⚠ $OURS lines name OUR files:"; grep -i -E "zzz_pm_rehaul|pm_rehaul" $WIN | grep -v "utf8-bom" | cut -c1-140 | sort | uniq -c | sort -rn | head -3 | sed 's/^/      /'; }
     else
