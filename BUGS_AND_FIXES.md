@@ -13,6 +13,50 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## The observer died on its own log line while a heartbeat read the file, and the batch burned 48 runs behind the orphaned game (2026-09-07)
+
+**Symptom.** Run 12 of the 60-run plan (`20260906_001032_canon-je24-n60`) was at 1917 with a healthy clock; its
+`run.log` shows the 07:14:20 tick, then nothing but `restored content_load.json + pdx_settings.json` at 07:14:40 — no
+`CRASHED`, no verdict, no `meta.json`, exit code 1. The game process (PID 19656, started 05:15) went on running with
+no observer. Runs 13–60 then each "finished: failed(1)" nineteen seconds apart (build 9 s, archiver, harvester, observer
+exit) and the scheduler wrote `SCHEDULE DONE: 60/60`. Each of those run folders holds one run.log line, the same
+`restored …` tidy-up. The only text that said why was in the scheduler WINDOW — a 120×30 console with no scrollback —
+and only the last run's remained: the observer's own guard, *Victoria 3 is already running (PID 19656)* (L19's
+half-2, working as designed).
+
+**Root cause, in two layers.** (1) `Write-Log` in `run_observer.ps1` is `Add-Content -Path run.log`, called every
+20-second tick and on every telemetry `BEGIN`/`MARKET` line, under `$ErrorActionPreference = "Stop"` with no guard.
+`Add-Content` opens the file for read+write to seek to its end; while ANY other process holds the file open it throws
+**"Stream was not readable"**. The batch heartbeat (`tools/testbed/batch_heartbeat.sh`, run every 25 minutes) reads
+the live run's `run.log` with `tail -1` and `grep -c`, and its 07:14 wake began at 07:14:40 — the tick's write. One
+throw inside the poll loop, whose body is a `try … finally` with no `catch`, unwound the whole observer; the `finally`
+restored the settings files (that last line) and the script exited 1 with the game still up. **Reproduced in 45 s**:
+an `Add-Content` loop under `Stop` against Git Bash `tail`/`grep`/`awk` readers on one file failed **1,041 of 2,677
+appends**, every failure that exception. Ninety heartbeats over eleven runs, three reads each, against writes every
+20 s: the hit was a matter of time. (2) The scheduler had no notion of an INSTANT failure: a run whose observer exits
+non-zero within seconds never launched the game, and two of those in a row mean the environment, not the seed — but
+`run_schedule.ps1` simply moved on, forty-eight times.
+
+**Fix.** All four harness log writers (`Write-Log` in run_observer, `Log` in run_schedule, archive_autosaves and
+harvest_saves) retry `Add-Content` up to eight times with a growing pause and then keep the console line only — **a log
+line is never worth the run**. Re-tested under the same hammer: 866 lines, 145 retried, 21 given up, **0 unhandled
+exceptions**. The scheduler counts consecutive instant failures (non-zero exit under 90 s after launch) and ABORTS the
+schedule at two with an ALERT naming L19/L29, so a future orphan costs two launches, not a run list. ⚠ The abort's
+tripwire is parse-checked, not yet proven live: proving it needs a game running beside a throwaway schedule, which
+cannot be done while a batch owns the machine — owed at the next idle window (TESTBED_LANDMINES L29).
+
+**Cost.** Run 12 lost (11 usable runs of the first session stand; L17 excludes run 12 and the 48 empty folders);
+the plan continued in `20260907_074504_canon-je24-n48-cont` (48 runs, same arm, byte-identical config), the gate
+pooled across both sessions (`assess_gdp_gate.mjs --session a,b`). The orphaned game was ended by hand before the
+relaunch.
+
+**Prevent.** A harness that supervises a game must not die on anything but the game: every periodic file write in
+the poll loop is wrapped, and the loop body itself is the next candidate (the mirror writers hold persistent
+StreamWriter handles and were not the culprit — the once-per-tick reopen was). Readers of a live run's files stay
+legitimate; the writer tolerates them.
+
+---
+
 ## A builder's own diagnostic note written INTO the mod, breaking two building files (2026-08-19)
 
 **Symptom.** None from any guard. The build succeeded, `lint.sh`, `lint_solvency.mjs` and

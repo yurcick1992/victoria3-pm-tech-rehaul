@@ -48,7 +48,12 @@ New-Item -ItemType Directory -Force -Path $Dest | Out-Null
 $log = Join-Path $Dest "archive.log"
 function Log([string]$m, [string]$lvl = "INFO") {
   $line = "[{0}] {1,-5} {2}" -f (Get-Date -Format "HH:mm:ss"), $lvl, $m
-  Write-Host $line; Add-Content -Path $log -Value $line -Encoding utf8
+  Write-Host $line
+  # never let a held-open log file kill the archiver (Add-Content throws while another process reads the file; 2026-09-07)
+  for ($try = 1; $try -le 8; $try++) {
+    try { Add-Content -Path $log -Value $line -Encoding utf8 -ErrorAction Stop; return }
+    catch { Start-Sleep -Milliseconds (25 * $try) }
+  }
 }
 
 Log "archiving autosaves from '$SaveDir' -> '$Dest'"

@@ -3454,6 +3454,14 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
      0–4 a run in vanilla and in ten earlier four-rung runs, but 7,336 / 4,308 in canon4v-hai3-n2 and 1,304 in
      run 9 of the 60-run batch — if it recurs across many runs of the ai_value-3^era arms, it may say those arms
      field armies too small to spawn battles; judge it per batch, not per run.
+     ⚠⚠ **READING A LIVE RUN'S FILES USED TO BE ABLE TO KILL THE RUN (fixed 2026-09-07, landmine L29).** The observer
+     wrote every tick to `run.log` with an unguarded `Add-Content` under `Stop` preference, which throws "Stream was
+     not readable" while another process holds the file open — a heartbeat's `tail -1 run.log` landed inside the
+     07:14:40 tick of the 60-run plan's run 12 and unwound the observer with the game still running; the scheduler
+     then burned runs 13–60 in fifteen minutes on the already-running guard (L19). All four harness log writers now
+     retry and never throw, and the scheduler aborts after two consecutive instant failures. Reading is legitimate;
+     the writer tolerates it. If a run.log ever ends in `restored content_load.json` with no verdict line, that is the
+     signature — check for an orphaned `victoria3.exe` before anything else.
   4. **Is the clock advancing?** The tail of `<run>/run.log` should show `in-game <date>` moving.
   5. **Is the construction mix reasonable?** (User-directed 2026-08-16, after F66.) As soon as the
      concurrent save harvest lands its first summary (~10 min for the 1837 autosave), run

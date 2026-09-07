@@ -1,0 +1,81 @@
+{
+  "schedule_version": 1,
+  "label": "canon-je24-n48-cont",
+  "_why": "CONTINUATION OF THE 60-RUN PLAN (BALANCE_FRAMEWORK §10.76): runs 13–60 of canon-je24 (the canon canon4v-hai3 with research_events.industry_bar_months 24). The first session, 20260906_001032_canon-je24-n60, completed runs 1–11 (11 usable: 9 clean + 2 F99 stalls, runs 3 and 9) and lost run 12 at 1917 to a HARNESS RACE (BUGS_AND_FIXES 2026-09-07: the observer's log write threw 'Stream was not readable' while the batch heartbeat read run.log, and under ErrorActionPreference Stop the observer unwound with the game still running; runs 13–60 then died in seconds on the already-running guard). The four harness log writers now retry and never throw. This schedule supplies the 48 runs the plan still owes, unchanged in every other respect. THE GATE: after this session's run 19 (= the plan's run 30: 11 usable from the first session + 19 here) run `node tools/testbed/ledger/assess_gdp_gate.mjs --session 20260906_001032_canon-je24-n60,<this stamp> --setup canon-je24` — the tool pools the usable runs of both sessions; ≥ 0.95 → the schedule runs on; below → STOP file as run 20's folder appears, delete it, launch canon_je24_a22_n30.json.",
+  "_arms": {
+    "canon-je24": "{kind: config, config: config/mod_config.canon-je24.json} — identical to the first session's arm, byte for byte (the config was not touched)"
+  },
+  "_delta": "vs the first session: nothing in the mod or the game; the harness log writers (run_observer / run_schedule / archive_autosaves / harvest_saves) retry a held-open log file instead of throwing — telemetry, saves and summaries are unaffected, so the two sessions are one arm.",
+  "_plan": {
+    "gate": "after run019 of THIS session completes (plan run 30): node tools/testbed/ledger/assess_gdp_gate.mjs --session 20260906_001032_canon-je24-n60,<this stamp> --setup canon-je24 (threshold 0.95, world GDP at 1935 ÷ vanilla n=16 median, mean over the pooled usable runs)",
+    "proceed": "mean ≥ 0.95: do nothing; runs 20–48 here continue on this setup (plan runs 31–60)",
+    "switch": "mean < 0.95: when run020's folder appears, create tools/testbed/STOP, wait for SCHEDULE DONE, DELETE tools/testbed/STOP, launch tools/testbed/schedules/canon_je24_a22_n30.json",
+    "unsteered": "if nobody is there at the gate the schedule simply completes 48 runs of canon-je24 (plan run 60)"
+  },
+  "_predictions": "the first session's P1–P7 stand (canon_je24_n60.json); interim at n=10: mean 0.810×, two F99 stalls in ten (P5 allowed two in thirty), two CTDs in eleven both resumed",
+  "_comparison": "the first session 20260906_001032_canon-je24-n60 (same arm); canon4v-hai3-n2 20260905_174831 (F106); vanilla n=16 20260821_131149 as the denominator.",
+  "_watch": [
+    "every run, ~5 min after it starts: the batch heartbeat (marker, version, error window by parsed time, clock)",
+    "after run019 completes: the pooled GDP gate (see _plan); post the verdict",
+    "post-run: preflight -Session on BOTH sessions, one VERDICT.md per session, SESSION_VERDICTS rows, FINDINGS, the ledger over the pooled usable runs"
+  ],
+  "_cost": "48 × 1836→1936 ≈ 48 × 2h40 ≈ 128 h ≈ 5.3 days continuous, plus resumes.",
+  "_caveats": [
+    "Two session folders, one arm: every reader must pool them (assess_gdp_gate takes --session a,b; the ledger scripts take one --session each and need the pooled list built by hand from lib_runs' rule).",
+    "The first session's run 12 is lost (no meta.json; L17 excludes it) and its runs 13–60 are empty folders that L17 also excludes; the session's own SCHEDULE DONE says 60/60 and is not evidence of anything.",
+    "A Steam update between runs splits the batch (2026-08-12); each heartbeat reads the version line.",
+    "A leftover tools/testbed/STOP kills the next launch's first run at 1836 — delete it before any relaunch."
+  ],
+  "defaults": {
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420,
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "JAP",
+      "NET"
+    ],
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+  },
+  "setups": {
+    "canon-je24": {
+      "kind": "config",
+      "config": "config/mod_config.canon-je24.json"
+    }
+  },
+  "runs": [
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" },
+    { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }, { "setup": "canon-je24", "until": "1936.1.1" }
+  ]
+}

@@ -76,6 +76,7 @@ closed.
 | L25 | A summary reader globs *.json.gz and reads the harvester's in-progress file | AUTO |
 | L27 | An analysis script walks cfg.industries for tiers without skipping `disabled` industries (their rung-0 key IS the vanilla building) | AUTO |
 | L28 | The log MIRROR re-copied the current log on a FALSE rotation — a stale directory length below the read position reset the tail to 0 every poll; non-telemetry lines (PMR_JE, events) multiplied ×2–28 in bursts | AUTO (post-run) | `Test-LmL28` — any `recovered 0 chars from []` seam in a run's `logs_live/*.log` FAILS; observer fixed 2026-09-04 |
+| L29 | The OBSERVER DIED ON ITS OWN LOG LINE — `Add-Content` to run.log throws "Stream was not readable" while another process reads the file (a heartbeat's `tail -1`), and under `Stop` preference the unguarded tick write unwound the observer with the game still running; the scheduler then burned 48 runs in 15 minutes behind the orphan (L19's cascade) | FIXED (generator) + PROOF OWED | all four harness log writers retry and never throw (2026-09-07); `run_schedule.ps1` aborts after TWO consecutive instant failures (non-zero exit < 90 s after launch) — live proof owed at the next idle window; L17 catches the artifact (a run with no meta.json) |
 
 ---
 
@@ -1543,3 +1544,40 @@ beside the unique one so the duplication is visible per run.
 **Rule.** A count taken off a mirror is a count of what the MIRROR holds, not of what the game did. Anything that
 tallies non-telemetry lines de-duplicates first, and a burst of identical lines in one second is the mirror, not the
 engine, until a unique game line in the same second is shown NOT to be duplicated.
+
+---
+
+## L29 — THE OBSERVER DIED ON ITS OWN LOG LINE, and the batch burned its run list behind the orphaned game (found 2026-09-07, the 60-run plan's run 12)
+
+**Status: FIXED in the generators, PROOF OF THE SCHEDULER'S ABORT OWED.** Root cause and reproduction in
+BUGS_AND_FIXES 2026-09-07.
+
+**What happened.** `Write-Log` in `run_observer.ps1` — `Add-Content -Path run.log`, every 20-second tick and every
+telemetry `BEGIN`/`MARKET` line — runs under `$ErrorActionPreference = "Stop"` inside a poll loop whose body is
+`try … finally` with no `catch`. `Add-Content` opens the file for read+write to seek to its end and throws **"Stream
+was not readable"** while any other process holds it open. The batch heartbeat reads the live run's `run.log` with
+`tail -1` and `grep -c` every 25 minutes; its 07:14 wake began at 07:14:40, the tick's write. The observer unwound at
+1917 with the game still running (PID 19656 lived on for half an hour), exit 1, `meta.json` never written. Every later
+run's observer then refused on its own already-running guard (L19 half-2, correct) — nineteen seconds a run, forty-eight
+runs, `SCHEDULE DONE: 60/60`. Reproduced: 1,041 of 2,677 appends failed against Git Bash readers in 45 s.
+
+**Why nothing failed.** The observer's last line is the `finally` block's tidy-up (`restored content_load.json …`),
+which reads as an orderly stop; the scheduler recorded `failed(1)` and moved on; the exception text went to a console
+window with no scrollback; the archiver and harvester of every ghost run reported alive; the waiter saw a live session.
+The heartbeat that caused it printed a healthy clock two seconds before the death, and its NEXT wake — sixteen minutes
+later — is what noticed.
+
+**Fix.** (1) All four harness log writers (`run_observer` `Write-Log`, `run_schedule` `Log`, `archive_autosaves`
+`Log`, `harvest_saves` `Log`) retry `Add-Content` eight times with a growing pause, then keep the console line only —
+re-tested under the same hammer with 0 unhandled exceptions. (2) `run_schedule.ps1` counts consecutive INSTANT failures
+(observer exit non-zero under 90 s after launch) and aborts the schedule at two, with an ALERT naming this entry: a
+future orphan costs two launches, not a run list.
+
+**DETECTOR.** The artifact side is L17 (a run with no `meta.json` / short of its target is excluded and reported);
+nothing new is needed there. The generator side is the fix itself. **Prove the abort** at the next idle window: start
+the game by hand, launch a throwaway 3-run schedule, expect two `failed … after launch` ALERT lines and an abort —
+cannot be run beside a live batch because a second scheduler shares the `STOP_ARCHIVE` / `STOP_HARVEST` signal files.
+
+**Rule.** A harness that supervises a game may die on nothing but the game. Every periodic write in the poll loop is
+wrapped; readers of a live run's files stay legitimate — the writer tolerates them, not the other way round. And a
+console window is not a log: anything a harness says on its way down must also reach a file.

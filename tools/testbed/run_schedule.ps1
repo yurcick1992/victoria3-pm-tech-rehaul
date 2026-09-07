@@ -290,7 +290,14 @@ function Log {
     param([string]$m, [string]$lvl = "INFO")
     $line = "[{0}] [{1}] {2}" -f (Get-Date -Format "HH:mm:ss"), $lvl, $m
     Write-Host $line
-    Add-Content -Path $sessionLog -Value $line -Encoding utf8
+    # A log line is never worth the batch: Add-Content throws "Stream was not readable" while another process holds the
+    # file open (a heartbeat's `grep -c 'SCHEDULE DONE' session.log`), and under $ErrorActionPreference = "Stop" that
+    # would end the schedule. Same fix as run_observer's Write-Log (2026-09-07): retry briefly, then keep the console line only.
+    for ($try = 1; $try -le 8; $try++) {
+        try { Add-Content -Path $sessionLog -Value $line -Encoding utf8 -ErrorAction Stop; return }
+        catch { Start-Sleep -Milliseconds (25 * $try) }
+    }
+    Write-Host "[log line not written to session.log after 8 tries - the file was held open by another process]"
 }
 
 # ---- build a setup's mod. Rebuilt for EVERY run, deliberately: builds are deterministic
@@ -564,8 +571,10 @@ foreach ($p in $plan) {
         }
     }
 
+    $tObs = Get-Date
     & powershell @obsArgs
     $rc = $LASTEXITCODE
+    $obsSeconds = ((Get-Date) - $tObs).TotalSeconds
 
     if ($arch) {
         # signal it rather than killing it: a kill mid-copy leaves a truncated .v3 in the archive, which
@@ -638,7 +647,19 @@ foreach ($p in $plan) {
     } elseif ($rc -eq 2) {
         Log "stopped by user - not continuing with the remaining runs" "WARN"
         $abort = $true
-    }
+    } elseif ($rc -ne 0 -and $obsSeconds -lt 90) {
+        # ⚠⚠ L19 / L29: an observer that exits non-zero within seconds NEVER GOT THE GAME RUNNING — an orphaned
+        # victoria3.exe left by a dead observer (its already-running guard refuses, correctly), a missing exe, a
+        # refused mod. One is a lost launch. Two in a row is the ENVIRONMENT, not the seed, and without this the
+        # schedule burns its whole run list at twenty seconds a run: on 2026-09-07 runs 13–60 of the 60-run plan died
+        # in fifteen minutes behind the game of run 12, whose observer a log-write race had killed.
+        $instantFails = [int](Get-Variable -Name instantFails -ValueOnly -ErrorAction SilentlyContinue) + 1
+        Log "run $($p.index) failed $([int]$obsSeconds)s after launch - the observer never got the game running (an orphaned victoria3.exe? TESTBED_LANDMINES L19/L29)" "ALERT"
+        if ($instantFails -ge 2) {
+            Log "TWO CONSECUTIVE INSTANT FAILURES - the environment is broken, not the seed. Aborting the whole schedule; fix the cause (kill the orphan, delete a STOP file) and relaunch the remaining runs." "ALERT"
+            $abort = $true
+        }
+    } else { $instantFails = 0 }
     $index += [ordered]@{ index = $p.index; setup = $p.setup; until = $p.until
                           dump_dates = $p.dump_dates; mod = (Split-Path $resolved.ModPath -Leaf)
                           token = $token; status = $status; dir = (Split-Path $runDir -Leaf) }

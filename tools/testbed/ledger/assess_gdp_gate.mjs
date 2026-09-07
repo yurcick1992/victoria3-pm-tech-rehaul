@@ -29,12 +29,20 @@ const sd = a => { if (a.length < 2) return NaN; const m = mean(a); return Math.s
 
 const van = usableRuns(SES, VAN);
 const vanGdp = med(van.runs.map(r => worldGdpAt(join(SES, r), YEAR)));
-const arm = usableRuns(SES, SESSION, SETUP);
-const rows = arm.runs.map(r => ({ run: r.split('/')[1], gdp: worldGdpAt(join(SES, r), YEAR) })).filter(x => Number.isFinite(x.gdp));
+// ONE PLAN, POSSIBLY SEVERAL SESSIONS (2026-09-07): the 60-run plan's first session died at run 12 (a harness race, BUGS_AND_FIXES
+// 2026-09-07) and continued in a second session, so the plan's "first 30 usable runs" straddle two folders. `--session a,b` pools
+// the usable runs of every session named, in order; each row is labelled with its session so the two stay distinguishable.
+const SESSIONS = SESSION.split(',').map(s => s.trim()).filter(Boolean);
+const rows = [], dropped = [];
+for (const ses of SESSIONS) {
+  const arm = usableRuns(SES, ses, SETUP);
+  for (const r of arm.runs) { const gdp = worldGdpAt(join(SES, r), YEAR); if (Number.isFinite(gdp)) rows.push({ ses, run: r.split('/')[1], gdp }); }
+  dropped.push(...arm.dropped);
+}
 const ratios = rows.map(x => x.gdp / vanGdp);
-console.log(`GDP GATE — ${SESSION}${SETUP ? ' / ' + SETUP : ''} · world GDP at ${YEAR}.1.1 ÷ vanilla ${VAN} median (n=${van.runs.length}, £${(vanGdp / 1e6).toFixed(0)}M)`);
-for (const x of rows) console.log(`  ${x.run.padEnd(24)} £${(x.gdp / 1e6).toFixed(0).padStart(5)}M  ${(x.gdp / vanGdp).toFixed(3)}×`);
-if (arm.dropped.length) reportDropped(arm.dropped);
+console.log(`GDP GATE — ${SESSIONS.join(' + ')}${SETUP ? ' / ' + SETUP : ''} · world GDP at ${YEAR}.1.1 ÷ vanilla ${VAN} median (n=${van.runs.length}, £${(vanGdp / 1e6).toFixed(0)}M)`);
+for (const x of rows) console.log(`  ${(SESSIONS.length > 1 ? x.ses.slice(0, 15) + '/' : '') + x.run.padEnd(24)} £${(x.gdp / 1e6).toFixed(0).padStart(5)}M  ${(x.gdp / vanGdp).toFixed(3)}×`);
+if (dropped.length) reportDropped(dropped);
 const m = mean(ratios);
 console.log(`\n  usable runs ${ratios.length} · mean ${m.toFixed(3)}× · median ${med(ratios).toFixed(3)}× · sd ${sd(ratios).toFixed(3)} · min ${Math.min(...ratios).toFixed(3)} · max ${Math.max(...ratios).toFixed(3)}`);
 if (ratios.length < MIN) console.log(`  ⚠ ${ratios.length} usable runs is fewer than the ${MIN} the gate was ruled on — a verdict now is provisional`);

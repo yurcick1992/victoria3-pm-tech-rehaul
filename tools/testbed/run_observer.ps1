@@ -186,7 +186,17 @@ function Write-Log {
     param([string]$Message, [string]$Level = "INFO")
     $line = "[{0}] [{1}] {2}" -f (Get-Date -Format "HH:mm:ss"), $Level, $Message
     Write-Host $line
-    Add-Content -Path $SessionLog -Value $line -Encoding utf8
+    # ⚠⚠ A LOG LINE IS NEVER WORTH THE RUN (2026-09-07, run 12 of the 60-run batch). Add-Content opens the file for
+    # read+write to seek to its end, and while ANY other process holds it open — a `tail -1 run.log` from the batch
+    # heartbeat, a `grep -c` — it throws "Stream was not readable" (reproduced: 1,041 of 2,677 appends failed against
+    # Git Bash readers). Under $ErrorActionPreference = "Stop" that single throw inside the tick loop unwound the whole
+    # observer at 07:14:40 with the game still running, and every later run of the batch died on the
+    # already-running guard. So: retry briefly, then give up on the FILE line, never on the run.
+    for ($try = 1; $try -le 8; $try++) {
+        try { Add-Content -Path $SessionLog -Value $line -Encoding utf8 -ErrorAction Stop; return }
+        catch { Start-Sleep -Milliseconds (25 * $try) }
+    }
+    Write-Host "[log line not written to run.log after 8 tries - the file was held open by another process]"
 }
 
 # ------------------------------------------------------------ log tail ----
