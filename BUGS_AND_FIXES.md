@@ -13,6 +13,27 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-09-10 — the resume verdict's stale-tail filter failed across midnight and killed a resume that was loading correctly
+
+**Symptom.** Run 5 of `20260909_123746_canon-je24-a22-n29-cont` crashed at 1894.4.20 at 00:22:52. The observer launched resume
+attempt 2 and, five seconds later — long before the game could have loaded anything — logged `resume landed at 1872.11.12, far
+behind 1894.4.20 - the save did not load`, killed the game, and launched attempt 3, which loaded the same autosave and played on
+(the campaign is continuous; the cost was one extra launch and a "load failed (attempt 1 of 2 on this save)" mark).
+
+**Root cause.** The 2026-08-06 stale-tail fix skips a tick line when its own `[HH:MM:SS]` stamp is BEHIND the attempt's start
+by less than twelve hours — which only covers an attempt started before midnight reading lines stamped after it. Here the attempt
+started at 00:22 and the stale lines the rotated tail served were stamped 23:5x: "line behind start" was false, so the previous
+evening's tick (1872.11.12, from this run's own earlier play) was trusted as the first tick of the resume. Second midnight bug of
+the batch family (the heartbeat's window had the same shape on 2026-09-06).
+
+**Fix.** The gap is normalised into (−12 h, +12 h] before the test: `$clockGap = line − start; > 43200 ⇒ −86400; ≤ −43200 ⇒
++86400; stale iff < 0`. Applied between runs 5 and 6 of the running batch (the observer is read afresh by each run; it changes
+crash handling only, nothing the measurement reads), parse-checked.
+
+**Detect / prevent.** A resume verdict inside the first ~30 s of an attempt is impossible on its face — the game takes longer to
+load a save — and would be a cheap tripwire; not added. The rule for every wall-clock comparison in the harness: seconds-of-day
+must be compared as a signed gap normalised to half a day, never with a bare `<`.
+
 ## 2026-09-09 — a ledger script added mid-batch failed the next run's BUILD (preflight L27) and aborted phase 2 after one run
 
 **Symptom.** Session `20260909_100930_canon-je24-a22-n30` (the §10.76 plan's phase 2, 30 runs of the A 2.2 book): run 1 completed

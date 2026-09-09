@@ -3372,7 +3372,9 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   verdict keys on `$firstTick`, so this is how a *successful* resume gets thrown away (very probably what
   killed run 19 of the vanilla-retest batch). Fixed by trusting each tick line's **own `[HH:MM:SS]`
   stamp** and ignoring anything older than the attempt — no rotation detection needed. See
-  BUGS_AND_FIXES.
+  BUGS_AND_FIXES. ⚠ And since 2026-09-10 "older" is a signed gap normalised to ±12 h: an attempt started after
+  midnight reading lines stamped 23:5x used to trust them (the gap looked positive), read a stale tick as the landing and kill a
+  resume that was loading — run 5 of 20260909_123746 lost one launch to it (BUGS_AND_FIXES 2026-09-10).
   **To stop:** press **`q`** (finish this run, then stop) or **`x`** (stop now) in the harness console at
   any time — no need to kill the game. A `tools/testbed/STOP` file does the same and is the fallback when
   the harness was launched headlessly (an agent-launched background job has no console).

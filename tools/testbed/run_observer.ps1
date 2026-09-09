@@ -857,8 +857,15 @@ try {
                     if ($line -match '^\[(\d{2}):(\d{2}):(\d{2})\]') {
                         $lineClock = [int]$Matches[1] * 3600 + [int]$Matches[2] * 60 + [int]$Matches[3]
                         $startClock = $attemptStart.Hour * 3600 + $attemptStart.Minute * 60 + $attemptStart.Second
-                        # a run may cross midnight; only treat as stale when it is behind AND not a wrap
-                        if ($lineClock -lt $startClock -and ($startClock - $lineClock) -lt 43200) { continue }
+                        # a run may cross midnight, in EITHER direction. Normalise the signed gap into (-12h, +12h]: a line
+                        # stamped BEFORE the attempt (up to 12 h earlier, wrap included) is stale and skipped; a line
+                        # stamped at or after it is fresh. ⚠ The 2026-08-06 form only handled the attempt-before-
+                        # midnight case: with an attempt at 00:22 and stale lines stamped 23:5x, "line behind start"
+                        # was FALSE, the stale tick was trusted, the in-loop guard read "far behind" and killed a
+                        # resume that was loading correctly (run 5 of 20260909_123746, 2026-09-10; BUGS_AND_FIXES).
+                        $clockGap = $lineClock - $startClock
+                        if ($clockGap -gt 43200) { $clockGap -= 86400 } elseif ($clockGap -le -43200) { $clockGap += 86400 }
+                        if ($clockGap -lt 0) { continue }
                     }
                     $lastTick = $tickHere
                     if (-not $firstTick) {
