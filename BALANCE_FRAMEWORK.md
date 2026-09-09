@@ -7093,3 +7093,19 @@ it before relaunching.
 **Open beside the plan, not ruled.** The four minted additions are unreachable in play (F106 §6: 0–3 countries hold them at 1935 in six
 runs, 0–7 levels world-wide); companies 193 against canon4v-art3's 238; the per-unit wall clock +6.8% pop-matched; the econ selftest's
 Belgian wage expectation (0.0781, F26) predates the 1.13.11 re-measurement (0.0796).
+
+**Outcome (2026-09-09, FINDINGS F107).** Phase 1 ran as two sessions on a byte-identical config — `20260906_001032_canon-je24-n60`
+(runs 1–11 usable; run 12 lost at 1917 to the L29 harness race, runs 13–60 dead in seconds behind the orphaned game) and
+`20260907_074504_canon-je24-n48-cont` (runs 1–19; run 20 stopped at 1842 by the STOP file when the gate read) — thirty usable runs.
+**The gate read SWITCH**: mean world GDP at 1935 **0.835×** the vanilla n=16 median (median 0.832, 0.44–1.11, sd 0.17, n = 30; mean 0.87 / median 0.85
+without the three F99 stalls, which are IN the mean by the ruling's "average"), below 0.95 — so `canon_je24_a22_n30.json` (A 2.2 /
+B 1.5) launched at 10:09 on 2026-09-09 as `20260909_100930_canon-je24-a22-n30`, with the **24-month industry bar kept** (user, 2026-09-09:
+"the ruling on the easier-to-reach JEs (2y per one industry JE instead of 3) still stands"). What the thirty runs say about the bar:
+Britain's research-entry completions rose from 3–12 (F106) to a median of ~25, and its technologies held at 1935 did not move (165
+against 164) — more completions bought no tree depth; GDP 0.835× against the reference's 0.88× at n=2 is inside the seed spread; the
+price, production, pool and wage-unit tables are F106's at the same depth (pooled 1935: groceries 0.76, steel 0.80, small arms 0.62,
+artillery 0.57 of vanilla; tools 1.15, glass 1.13); tier choice 39.2% / 37.9% (39.0). **The bar is not a GDP lever, and the SWITCH is a
+verdict on the A 2.0 book at power, not on the bar.** The stall rate — three in thirty against the two the schedule predicted — is the
+arm's largest open problem and phase 2's first watch item, since a steeper ladder concentrates the private pool on fewer, dearer
+buildings. Ledger https://claude.ai/code/artifact/300e9095-bbd0-42a0-9d6e-a52b087ff5f7 (fill dir `tools/testbed/ledger/out_canon_je24_phase1`);
+the pooled-session tools are `assess_gdp_gate.mjs --session a,b` and `batch_tables.mjs --arm a,b:setup`, both new this batch.

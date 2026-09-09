@@ -105,7 +105,7 @@ command is the file's `_ab` block and §10.76) and copy over. `config/mod_config
 is the named target, not a third off), **a GDP gate after run 30** (mean world GDP ÷ the vanilla n=16 median at 1935 over the usable runs,
 `tools/testbed/ledger/assess_gdp_gate.mjs`: ≥ 0.95 → the same setup for the last 30; below → `config/mod_config.canon-je24-a22.json`,
 A 2.2 / B 1.5, for 30), **built to finish unsteered**: the 60-run schedule runs to the end on its own; only a present agent stops it at
-run 30 and relaunches. ⚠ The four minted additions are held by 0–3 countries at 1935 across six runs (F106 §6) — the top rung of
+run 30 and relaunches. ⭐ OUTCOME 2026-09-09 (F107): phase 1 = 30 usable runs over two sessions (20260906_001032 runs 1–11, dead at run 12 on the L29 harness race; 20260907_074504 runs 1–19), THE GATE READ SWITCH at 0.835× (median 0.83, 0.44–1.11; three F99 stalls in thirty), so phase 2 — canon-je24-a22, A 2.2, the 24-month bar KEPT by ruling — launched 10:09 as 20260909_100930_canon-je24-a22-n30; the bar itself moved Britain’s completions (~25 against 3–12) and nothing downstream. ⚠ The four minted additions are held by 0–3 countries at 1935 across six runs (F106 §6) — the top rung of
 furniture, paper, fertilizer and motor does not exist in play; open, not ruled.
 
 
@@ -786,10 +786,10 @@ config/mod_config.canon4v-hai3.json ⚗ THE RULED SET ON THE CANON (§10.75, use
                         more below vanilla; tier choice 39.0%; GDP 0.88× (0.84 / 0.93); companies 193. Not ratified. Un-ignored with its twin
 config/mod_config.canon-je24.json ⭐ THE 60-RUN PLAN'S ARM (§10.76, user-ruled 2026-09-06): the canon (canon4v-hai3) with
                         research_events.industry_bar_months 24 (the canon: 60; war bars 6 unchanged) — everything else byte-identical.
-                        Schedule canon_je24_n60.json (60 runs, timeout 420); the GDP gate after run 30 is assess_gdp_gate.mjs. Un-ignored
+                        Schedule canon_je24_n60.json (60 runs, timeout 420); the GDP gate after run 30 is assess_gdp_gate.mjs. ⭐ MEASURED 2026-09-09 (F107; sessions 20260906_001032 runs 1–11 + 20260907_074504 runs 1–19, n=30, byte-identical config): THE GATE READ SWITCH — world GDP 0.835× vanilla (median 0.83, 0.44–1.11, sd 0.17; three F99 stalls in thirty), Britain’s research-entry completions ~25 (F106: 3–12) with technologies held unchanged (165 vs 164), prices / production / pools / tier choice (39.2%) at F106’s readings — the bar is not a GDP lever. Un-ignored
 config/mod_config.canon-je24-a22.json ⭐ THE PLAN'S FALLBACK (§10.76): canon-je24 with A 2.2 in place of 2.0 (output and building_cost
                         × 2.2^k; B 1.5, divisor 0.000125, ai_value 3^era, the defines and the 24-month bar unchanged). Schedule
-                        canon_je24_a22_n30.json (30 runs) — launched ONLY if the gate reads below 0.95× vanilla. Un-ignored
+                        canon_je24_a22_n30.json (30 runs) — LAUNCHED 2026-09-09 10:09 as session 20260909_100930_canon-je24-a22-n30 after the gate read 0.835×; the 24-month bar STANDS in this arm (user-ruled 2026-09-09). Its ledger reads against phase 1 as the reference series. Un-ignored
 config/mod_config.tier4.json ⚗ GENERATED (gitignored) by tools/make_tier4_config.mjs FROM THE GAME FILES + tools/lib_tier4_spec.mjs
                         — the four-rung STRUCTURE (rungs = vanilla main methods with vanilla's name, gate, recipe,
                         staffing, icon; the spec's ADDITIONS on top), with tech_tree_options.tier4.json beside it from
@@ -1726,6 +1726,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         ladder (war channel), technologies held, the frontier rungs' British levels at 1905.
                         `--session <stamp>[:<setup>] [--config <path>]` (the config defaults to the run's own
                         build_state). ⚠ F101's six-rung counts were raw lines — canon-n7 run 1 reads 2.3× high
+  testbed/ledger/batch_tables.mjs  ⭐ THE BATCH TABLES for an arm that spans SEVERAL sessions (2026-09-09, F107 — the 60-run
+                        plan's phase 1 lives in two folders after the L29 harness race): pools ÷ GDP, the tiered goods' prices
+                        (British market + the seven-market pool, per dump date, arm beside vanilla, the 1935 ratio), wage units
+                        (F97's unit), British production ÷ vanilla at 1900 and 1935, and GDP ÷ vanilla — medians over the
+                        USABLE runs pooled across the sessions named, every ratio with both its terms. `--arm <sess[,sess]>:<setup>
+                        [--nb <sess>:<setup>] [--van <sess>] [--config <path>] [--exclude <sess/run,…>]` (--exclude names the
+                        stalls, which are reported on their own line). `assess_gdp_gate.mjs --session a,b` pools sessions the same way
   testbed/ledger/analyse_build_allocation.mjs  ⭐⭐ THE OVERSHOOT CHECK — WHERE DID CONSTRUCTION GO?
                         (written 2026-08-19 for the ai_value ladder, user-directed.) The tier-choice
                         measure asks a WITHIN-industry question, and a ladder can improve it while

@@ -10439,3 +10439,240 @@ shortlist ≥ 1.15 ✓, no stall ✓. P7 row P inside budget — PASS (−1.8% t
 n = 2, one arm, two levers at once; the pool share is the defines' signature and the early build-out the ai_value's, nothing else
 separates them. The wage-unit rows average a full-employment Britain and an ordinary one. Prices are one market and a seven-market
 pool at the dump dates. Nothing here ratifies the set — it measures it; the canon file is untouched.
+
+## F107 — THE 60-RUN PLAN, PHASE 1 (canon-je24, n=30 over two sessions, 2026-09-06 → 09-09): the §10.76 gate reads SWITCH at 0.835× vanilla; the 24-month research bar doubles Britain's research-entry completions and moves nothing downstream — prices, pools, production and tier choice are F106's at power; three F99 stalls in thirty; phase 2 (A 2.2) launched
+
+**Arm.** `{kind: config, config: config/mod_config.canon-je24.json}` — the canon (canon4v-hai3, §10.75/§10.76: four rungs on vanilla's
+own methods, the A/B book 2.0 / 1.5, divisor 0.000125, ai_value 1,000 × 3^era on all 17 tiered industries, the five investment-pool
+defines) with ONE change, `research_events.industry_bar_months` 24 in place of 60 (war bars 6 unchanged). Two sessions on a
+byte-identical config: `20260906_001032_canon-je24-n60` runs 1–11 (run 12 lost at 1917 to the L29 harness race, runs 13–60 dead in
+seconds behind the orphaned game) and `20260907_074504_canon-je24-n48-cont` runs 1–19 (run 20 stopped at 1842 by the STOP file when
+the gate read) — **n = 30 usable** (lib_runs' L17 rule). Against canon4v-hai3 `20260905_174831` (F106, n=2, "the reference": the
+same book without the bar change) and the vanilla n=16 median `20260821_131149`. Game 1.13.11. Medians over runs everywhere unless
+stated; the three F99 stalls are IN the gate (the ruling says "average GDP") and OUT of every other table, reported on their own line.
+Pooled-session tools written for this batch: `assess_gdp_gate.mjs --session a,b`, `batch_tables.mjs --arm a,b:setup`.
+
+### 1. The gate — world GDP at 1935 ÷ the vanilla n=16 median (£4,390M), every run
+| run | world £M | ÷ vanilla | shortlist ÷ van | note |
+|---|---|---|---|---|
+| s1 run 9 | 1,942 | **0.44** | 0.50 | F99 stall |
+| cont run 9 | 1,993 | **0.45** | 0.45 | F99 stall |
+| s1 run 3 | 2,648 | **0.60** | 0.64 | F99 stall |
+| s1 run 6 | 2,722 | 0.62 | 0.86 | the mechanism, mild (Britain's pool recovers to 118M) |
+| cont run 14 | 2,934 | 0.67 | 0.83 | the mechanism, mild (Britain's pool 2–36M all century, the Company gone by 1851) |
+| cont run 12 | 3,014 | 0.69 | 0.91 | |
+| cont run 17 | 3,132 | 0.71 | 0.80 | |
+| cont run 11 | 3,304 | 0.75 | 0.94 | |
+| s1 run 10 | 3,345 | 0.76 | 1.10 | |
+| cont run 8 | 3,359 | 0.77 | 0.87 | |
+| cont run 7 | 3,445 | 0.78 | 1.08 | |
+| cont run 5 | 3,521 | 0.80 | 0.99 | |
+| cont run 10 | 3,561 | 0.81 | 1.10 | |
+| cont run 6 | 3,589 | 0.82 | 1.18 | |
+| cont run 18 | 3,633 | 0.83 | 0.96 | |
+| s1 run 2 | 3,671 | 0.84 | 0.99 | |
+| cont run 16 | 3,735 | 0.85 | 0.82 | |
+| s1 run 5 | 3,791 | 0.86 | 1.08 | |
+| cont run 19 | 3,831 | 0.87 | 1.35 | |
+| s1 run 11 | 4,077 | 0.93 | 1.09 | |
+| s1 run 7 | 4,087 | 0.93 | 1.45 | |
+| s1 run 8 | 4,194 | 0.96 | 1.17 | |
+| cont run 2 | 4,318 | 0.98 | 0.97 | |
+| cont run 4 | 4,371 | 1.00 | 1.23 | |
+| s1 run 4 | 4,376 | 1.00 | 1.28 | |
+| cont run 15 | 4,401 | 1.00 | 1.75 | |
+| cont run 3 | 4,623 | 1.05 | 1.26 | |
+| cont run 13 | 4,662 | 1.06 | 1.47 | |
+| s1 run 1 | 4,796 | 1.09 | 1.35 | |
+| cont run 1 | 4,871 | 1.11 | 1.55 | |
+
+**n = 30: mean 0.835, median 0.832, sd 0.173, standard error 0.031 — below 0.95: SWITCH.** Without the three stalls (n = 27): mean
+0.872, median 0.851, sd 0.135; without the five (n = 25): 0.890 / 0.864. Nine runs at or above 0.95, five at or above 1.00, six below
+0.70. Shortlist (GBR USA FRA NET BEL PRU GER) median 1.09× (£1,383M vanilla). Reference: canon4v-hai3 0.88 (0.84 / 0.93); canon4v-art3
+0.93 (0.82–1.09). The stalls are the F99 pattern in every case — Britain's investment pool never forms, the East India Company dissolves,
+India fragments into a 250–300-country world.
+
+Trajectory, median of runs ÷ vanilla median: **1840 1.04 · 1860 0.98 · 1880 0.92 · 1900 0.81 · 1920 0.77 · 1935 0.83** (the reference
+1.05 · 1.01 · 0.95 · 0.85 · 0.78 · 0.88) — the gap opens between 1860 and 1920 and closes a little in the last fifteen years, on both
+books. 1837–1860 GDP 1.03×. Decomposition at 1935, world: productive workers 171M against vanilla's 274M (**0.63×**), GDP per productive
+worker £21.3 against £16.1 (**1.33×**); at 1900 0.71× and 1.13×, at 1920 0.63× and 1.22×. Shortlist 0.62× and 1.70×.
+
+### 2. Stability — stalls, crashes, wall clock
+- **Three F99 stalls in thirty** (s1 runs 3 and 9, cont run 9; the schedule predicted ≤ 2) and two milder seeds carrying the mechanism
+  (s1 run 6, cont run 14) — the pool mechanism in five of thirty seeds, one in six.
+- **Six CTDs and one exit without a dump in thirty runs**, every one resumed on the same campaign: s1 runs 6 and 7; cont runs 7, 8, 13,
+  and 19 twice (a CTD at 1871, a dump-less exit at 1920). No run needed a second autosave; no second campaign (L26 clean).
+- **Wall clock 135–182 min a run (median 158)**; the vanilla n=16 baseline 140–197 (median 166), a different night. Row P: **4.6%
+  faster in total, +5.3% slower per unit pop-matched** (13 of 14 bins; F106 +6.8%, canon4v-art3 +1.3%) — PASS.
+- The harness, not the game, cost run 12 of the first session (L29: the observer's unguarded `Add-Content` to `run.log` threw "Stream
+  was not readable" while the heartbeat's `tail` held the file, and the observer unwound at 1917 with the game still running; runs
+  13–60 then failed in 19 s each behind the orphan, L19). Fixed in all four harness log writers and the scheduler before the
+  continuation; BUGS_AND_FIXES 2026-09-07.
+
+### 3. Research — the bar's own signature
+Britain's research-entry completions per run (unique (country, technology, stage) from the debug mirror, de-duplicated — L28; keyed
+by display name, so a Britain that becomes the "British Republic" mid-century splits its count; the republic's share is added in
+brackets where it reached the run's top-8 table):
+| session 1 | 38 · 36 · 7 [+8] · 28 · 22 · 9 [+13] · 5 [+22] · 25 · 8 [+13] · 13 [+18] · 33 |
+|---|---|
+| continuation | 5 [+29] · 24 · 30 · 28 · 24 · 30 · 30 · 5 · 19 · 21 · 26 · 30 · 25 · 6 [+12] · 24 · 27 · 22 · 35 · 36 |
+
+**Median 24.5 raw (5–38), 26.5 with the republic's share added** — against **3 and 12** on the same book at the 60-month bar (F106),
+17–19 on canon4v-art3, 29–43 on canon4-je (a 36-month bar with the §10.69 parameters, the old structure). 22 of 30 runs at or above 15
+raw (29 of 30 with the republic's share). Britain's coverage by the unlocked rung's era (continuation): e0 0 of 7 in every run (the
+era-1 freebies carry no entry by construction), e1 15–46% of 13, e2 9–45% of 11, e3 0–67% of 12.
+
+**Technologies held at 1935 did not move**: Britain median **165** (154–172; F106 164), USA 154 (144–164; F106 161), Germany 162
+(146–166; F106 164). World per era 35.0 / 34.9 / 23.5 / 5.3 / 0.3 (F106 34.7 / 34.6 / 23.5 / 5.4 / 0.3; vanilla 35.9 / 35.5 / 24.7 /
+6.1 / 0.4). At 1900: Britain 115–129, USA 116–125, Russia 91–98.
+
+Stages, world-wide per run (medians): production era 2 **164 inceptions / 123 developments / 13 implementations**, era 3 44 / 34 / 11,
+era 5 7 / 7 / 5, era 1 5 / 4 / 3, era 4 2 / 1 / 0; military era 2 26 / 18 / 2, era 4 14 / 10 / 2. The third stage rarely completes:
+the reading is that a technology is normally researched by ordinary means before its third bar fills, and the entry closes with it
+(inference from the counts, not measured). The war channel outside the tier ladder: 11–49 completions a run, median 24 (trench works
+5–30, defence in depth 2–17, general staff 1–7, NCO training 0–14).
+
+Britain's levels by rung at 1905 (s1 run 1): glass 6 / 18 / 66 / 2 · tooling 3 / 15 / 118 / 0 · textile 4 / 63 / 68 / 17 · steel 4 / 7 /
+145 / 0 · motor 16 / 0 / 0 / 0 · arms 12 / 1 / 24 / 3 — the e2 rung is the workhorse at 1905 in glass, tooling and steel.
+
+**The four minted additions at 1935, thirty runs** (countries holding the technology; the 1935 summary of each run):
+| technology | runs with any holder | max countries in a run | median | who (country: runs) |
+|---|---|---|---|---|
+| spray_finishing (furniture) | 14 / 30 | 6 | 0 | GBR 11, GER 5, BEL 4, NET 2, JOH 2, WIN 2, USA 1, CAN 1, and nine others once |
+| continuous_web_processing (paper) | 11 / 30 | 4 | 0 | GBR 9, GER 3, SCA 2, USA 1, BEL 1, HUN 1, and six others once |
+| catalytic_synthesis (fertilizer) | 7 / 30 | 3 | 0 | GBR 2, BEL 2, GER 1, NET 1, UNL 1, BRN 1, MLT 1 |
+| high_speed_diesel (motor) | 5 / 30 | 2 | 0 | GBR 2, GER 2, BEL 1, GAO 1, WIN 1 |
+F106 §6's "0–3 countries in six runs" stands at n=30: the top rung of furniture, paper, fertilizer and motor exists in play only in the
+last years and only in Britain, Germany and Belgium with any regularity.
+
+### 4. Pools at 1935 — investment pool ÷ a year's GDP (medians)
+| | n | world | GBR | USA |
+|---|---|---|---|---|
+| canon-je24 (non-stall) | 27 | **0.41** | **0.95** | 0.19 |
+| the three stalls | 3 | 0.16 | 0.06 | 0.15 |
+| canon4v-hai3 (reference) | 2 | 0.41 | 0.57 | 0.37 |
+| vanilla | 16 | 0.29 | 0.85 | 0.15 |
+The world's pools at 0.41 as in F106 (canon4v-art3 0.48, vanilla 0.29); Britain's hoard is back at vanilla's level at n=27 where the
+two reference seeds read 0.41 / 0.73 — the halving F106 credited to the defines was two seeds' worth of spread.
+
+### 5. Prices — British market % of base, arm / vanilla (medians), and the seven-market pool at 1935
+| good | 1880 | 1900 | 1920 | 1935 | pool 1935 arm / van | ratio (reference) |
+|---|---|---|---|---|---|---|
+| groceries | 104 / 119 | 80 / 110 | 84 / 108 | **85** / 116 | 90 / 118 | **0.76** (0.61) |
+| clothes | 108 / 107 | 90 / 116 | 87 / 112 | 81 / 105 | 96 / 101 | 0.95 (1.08) |
+| furniture | 116 / 115 | 103 / 105 | 86 / 96 | 73 / 84 | 103 / 100 | 1.03 (1.03) |
+| glass | 128 / 140 | 131 / 139 | 118 / 109 | 96 / 105 | 127 / 113 | 1.13 (1.07) |
+| tools | 121 / 113 | 116 / 101 | 108 / 91 | 90 / 91 | 112 / 98 | **1.15** (1.17) |
+| paper | 137 / 133 | 115 / 118 | 113 / 113 | 109 / 107 | 123 / 113 | 1.09 (0.93) |
+| fertilizer | 120 / 114 | 115 / 109 | 98 / 103 | 87 / 99 | 104 / 99 | 1.05 (0.94) |
+| explosives | 120 / 121 | 103 / 114 | 93 / 105 | 82 / 102 | 95 / 103 | 0.93 (0.99) |
+| steel | 98 / 121 | 72 / 107 | 71 / 105 | **66** / 111 | 84 / 104 | **0.80** (0.80) |
+| engines | 146 / 139 | 138 / 137 | 140 / 137 | 123 / 132 | 124 / 127 | 0.98 (0.98) |
+| automobiles | — | 165 / 175 | 165 / 157 | 160 / 142 | 161 / 141 | 1.14 (1.14) |
+| small arms | 79 / 78 | 65 / 77 | 50 / 73 | **39** / 72 | 44 / 72 | **0.62** (0.66) |
+| artillery | 75 / 83 | 61 / 80 | 44 / 82 | **35** / 78 | 44 / 77 | **0.57** (0.56) |
+| ammunition | 132 / 127 | 104 / 119 | 93 / 113 | 88 / 108 | 100 / 115 | 0.87 (0.91) |
+| dye | 46 / 63 | 83 / 72 | 93 / 80 | 87 / 89 | 87 / 87 | 1.00 (1.03) |
+| telephones | — | 169 / — | 173 / 160 | 165 / 142 | 169 / 144 | 1.17 (1.16) |
+| fine art (regular ladder) | 156 / 130 | 158 / 133 | 146 / 142 | 136 / 142 | 137 / 146 | 0.94 (0.89) |
+The same four decliners as F105 and F106 (groceries, steel, small arms, artillery) at the same depth in steel and the war goods;
+groceries pools shallower than the two reference seeds (0.76 against 0.61); paper and fertilizer, below vanilla at n=2, sit above it at
+n=27; clothes below. The British-market 1935 column reads lower than the pool for every consumer good (groceries 85 against 90,
+furniture 73 against 103, glass 96 against 127) — Britain over-supplies its own market.
+
+### 6. Wage units — British price 1935 ÷ 1840, divided by Britain's base wage 1935 ÷ 1840 (medians; F97's unit)
+Base wage ×: **arm 1.71 · reference 2.88 · vanilla 1.49**.
+| good | arm | reference | vanilla |
+|---|---|---|---|
+| groceries | **0.30** | 0.20 | 0.50 |
+| clothes | 0.56 | 0.56 | 0.75 |
+| furniture | 0.41 | 0.43 | 0.54 |
+| glass | 0.68 | 0.53 | 0.75 |
+| tools | **0.63** | 0.51 | 0.50 |
+| paper | 0.39 | 0.29 | 0.46 |
+| fertilizer | 0.41 | 0.31 | 0.51 |
+| explosives | 0.43 | 0.39 | 0.62 |
+| steel | **0.31** | 0.18 | 0.57 |
+| engines | 0.45 | 0.41 | 0.60 |
+| small arms | **0.17** | 0.18 | 0.46 |
+| artillery | **0.13** | 0.11 | 0.42 |
+| ammunition | 0.43 | 0.33 | 0.64 |
+| dye | 1.96 | 1.45 | 2.39 |
+| fine art | 0.47 | 0.44 | 0.68 |
+Every tiered good but tools reads below vanilla in wage units; the reference's deeper readings ride its ×2.88 wage (one full-employment
+Britain in two seeds), so the arm's column is the one to carry.
+
+### 7. Production — British goods_out, arm median ÷ vanilla median (units a week)
+| good | 1900 ratio | arm / vanilla | ref ratio | 1935 ratio | arm / vanilla | ref ratio |
+|---|---|---|---|---|---|---|
+| groceries | **6.03** | 30,939 / 5,129 | 5.37 | **3.65** | 54,895 / 15,037 | 5.83 |
+| clothes | 1.86 | 13,116 / 7,060 | 1.27 | **3.84** | 35,896 / 9,359 | 1.39 |
+| furniture | 0.86 | 6,184 / 7,188 | 0.62 | 1.85 | 28,493 / 15,433 | 0.41 |
+| glass | 2.19 | 4,945 / 2,255 | 2.44 | 2.30 | 36,286 / 15,763 | 2.58 |
+| tools | 0.86 | 14,979 / 17,424 | 0.80 | 1.38 | 49,766 / 36,036 | 2.13 |
+| paper | 1.06 | 5,661 / 5,365 | 1.21 | 1.36 | 11,720 / 8,597 | 1.66 |
+| fertilizer | **0.50** | 1,296 / 2,616 | 0.78 | **0.84** | 9,247 / 11,064 | 1.11 |
+| explosives | 1.08 | 6,074 / 5,612 | 1.13 | 1.78 | 27,540 / 15,513 | 1.48 |
+| steel | 1.86 | 28,049 / 15,050 | 2.39 | 2.13 | 87,024 / 40,869 | 2.19 |
+| engines | 0.76 | 1,311 / 1,729 | 1.77 | 1.53 | 6,832 / 4,459 | 1.98 |
+| automobiles | — | 0 / 0 | — | 2.17 | 5,742 / 2,650 | 1.93 |
+| small arms | 2.91 | 2,946 / 1,013 | 1.70 | 3.03 | 7,073 / 2,335 | 2.73 |
+| artillery | 3.39 | 341 / 101 | 3.26 | 3.80 | 659 / 173 | 10.68 |
+| ammunition | 2.68 | 806 / 301 | 5.56 | 1.82 | 1,820 / 1,002 | 3.68 |
+| dye | 0.43 | 52 / 120 | 0.40 | **0.31** | 571 / 1,846 | 1.00 |
+| telephones | — | 0 / 0 | — | 11.60 | 3,225 / 278 | 12.52 |
+| fine art | 4.63 | 218 / 47 | 6.05 | 9.02 | 2,581 / 286 | 3.87 |
+The consumer industries are at or above vanilla's British output by 1935 in every good but fertilizer and dye; tools and furniture are
+below at 1900 (0.86) and above at 1935; fertilizer reaches 0.84 only. Groceries, steel and the war goods are the over-supplied set —
+the same goods whose prices fall.
+
+### 8. The ladder's own readings
+- **Tier choice: 39.2% below-best in the continuation, 37.9% in the first session** (less-efficient-than-the-frontier 21.6 / 21.0;
+  the reference 39.0 / 21.4, canon4v-art3 44.9 / 23.7, canon4-je 37.4 / 20.9, canon-4rung 35.3 / 19.3). By decade (continuation):
+  1830s 50.0 · 1840s 46.5 · 1850s 43.6 · 1860s 45.3 · 1870s 41.1 · 1880s 40.6 · 1890s 39.5 · 1900s 41.1 · 1910s 40.2 · 1920s 36.7 · 1930s 37.1.
+- **Tiered workers by rung era**: 1900 5.36 / 5.36 / 5.23 / 0.07M · 1920 5.88 / 6.76 / 10.78 / 1.36M · 1935 **6.45 / 8.66 / 18.32 /
+  4.67M** (F106 at 1935: 6.9 / 9.9 / 18.7 / 4.4; canon4v-art3 9.4 / 11.0 / 18.2 / 3.8). The oldest rung still grows, 5.36 → 6.45M over
+  1900 → 1935.
+- **Payback, frontier / stale rung**: 1840 19.7 / 21.4y · 1860 11.4 / 18.7 · 1880 10.6 / 21.3 · 1900 11.3 / 23.7 · 1920 12.4 / 25.3 ·
+  1935 **10.8 / 26.7** (F106 9.9 / 23.3): the old rung is a 27-year investment and is still being built.
+- **Companies 216–217 world-wide** (the reference 193, canon4v-art3 238, vanilla 296); the shortlist 22–24 (vanilla 24).
+- Construction ÷ vanilla 1.51× (levels, whole-economy scope, the ledger's G3); the largest employment tier e0 at 1900, e2 at 1920 and 1935
+  (G7 "tiers arrive late", as in every four-rung batch).
+
+### Predictions (schedule canon_je24_n60.json)
+P1 the gate fails, mean 0.86–0.93 — **direction PASS, level MISSED**: 0.835, under the band; 0.87 without the three stalls would sit in
+it. P2 Britain's completions ≥ 15 — **PASS** (median 24.5; 22 of 30 raw, 29 of 30 with the republic's share); technologies held +3 to
++8 — **MISSED** (+1, 165 against 164); war channel 19–41 — median 24, PASS (11–49 across runs). P3 pools 0.35–0.45 — PASS (0.41);
+groceries 0.55–0.70 — **MISSED** (0.76); steel 0.75–0.85 — PASS (0.80); arms and artillery 0.55–0.70 — PASS (0.62 / 0.57); paper,
+fertilizer, ammunition at or below vanilla — paper and fertilizer **MISSED** (1.09 / 1.05), ammunition PASS (0.87); tools and clothes
+at or above — tools PASS (1.15), clothes **MISSED** (0.95). P4 standard error under 0.02 — **MISSED** (0.031; sd 0.17, not 0.10 — the
+stalls widen it; 0.135 without them); Britain's size and the shortlist spread — not measured here. P5 ≤ 2 stalls — **MISSED** (3);
+≤ 2 seeds over 330 min — PASS (none over 182); CTDs about one in three, all resumed — PASS (seven events in thirty, one in four). P6
+row P total within ±5%, pop-matched ≤ +10% — **PASS** (−4.6%, +5.3%). P7 ≤ 5 countries hold any addition in any run — **MISSED by one**
+(spray finishing reaches 6 in one run; the other three ≤ 4; all four median 0).
+
+### What it says
+1. **The gate reads SWITCH, and it is a verdict on the A 2.0 book at power, not on the bar.** Thirty seeds put the canon's world GDP
+   at 0.835× vanilla's median (0.44–1.11, sd 0.17), nine of them at or above 0.95 and six below 0.70; the reference's 0.88 at n=2 sits
+   inside that spread. The seed spread and the stall rate are the finding.
+2. **The 24-month bar does what it was for and no more.** Britain's completions go from 3–12 to a median of 24.5, and its technologies
+   held at 1935 do not move (165 against 164); the third stage of an entry almost never completes (13 of 164 era-2 inceptions
+   world-wide); GDP, prices, production, pools and tier choice are F106's within its own spread. The bar is not a GDP lever.
+3. **Obsolescence reads as in F106**: 39.2% / 37.9% below-best; the oldest rung's workforce 6.45M (F106 6.9, canon4v-art3 9.4) and
+   still growing; its payback 26.7 years against the frontier's 10.8; in wage units every tiered good but tools sits below vanilla,
+   the war goods and steel at a third or less of vanilla's ratio.
+4. **The F99 mechanism is one seed in six on this book** (three stalls and two mild cases in thirty), above the schedule's ≤ 2; Britain's
+   investment pool is the hinge in every case, and the pool defines of §10.75 do not close it.
+5. **Britain's hoard is at vanilla's level at n=27 (0.95 of GDP)**; the halving F106 read (0.41 / 0.73) was two seeds' spread. The world's
+   pools stay at 0.41.
+6. **The minted additions exist in play only at the very end** — Britain holds spray finishing at 1935 in 11 of 30 runs, the diesel rung
+   in 2; the median holder count is zero for all four.
+
+### What it does NOT say
+One arm; the bar is the only change against F106, so its null is clean, but nothing here separates ai_value 3^era from the pool defines
+(F106's caveat stands). The reference is n=2, so "F106's readings hold" means "inside two seeds' spread", not "unchanged". The 27-run
+subset is a selection by outcome and its mean (0.87) is not the ruling's number; the gate's 0.835 is. Prices are the British market
+and a seven-market pool at the dump dates; production ratios are British only; the research tally keys on display name and under-reads
+the republic seeds. Two sessions were pooled on a byte-identical config and a fixed harness: ratios travel between nights, absolute wall
+clock does not. Nothing here ratifies or rejects the 24-month bar for the canon — phase 2 carries it by the user's 2026-09-09 note and
+its own ledger reads against this one.
