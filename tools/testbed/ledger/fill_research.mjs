@@ -106,8 +106,8 @@ function je(dirs) {
 // never guessed — 'Italy' is deliberately absent (several tags can form it).
 const NAME2TAG = {};
 for (const [tag, names] of Object.entries({
-  GBR: ['Great Britain', 'United Kingdom', 'British Empire'],
-  RUS: ['Russia', 'Russian Empire', 'Soviet Union'],
+  GBR: ['Great Britain', 'United Kingdom', 'British Empire', 'British Republic'],   // British Republic: 8 of 30 phase-1 runs (F107)
+  RUS: ['Russia', 'Russian Empire', 'Russian Republic', 'Soviet Union'],
   FRA: ['France', 'French Empire', 'French Republic', 'French Commune'],
   USA: ['United States of America', 'United States', 'America', 'USA'],
   PRU: ['Prussia', 'Germany', 'German Empire', 'North German Federation'],

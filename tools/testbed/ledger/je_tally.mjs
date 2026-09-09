@@ -33,16 +33,27 @@ const techOf = {}; const rungKeys = {};
 for (const ind of industries) { if (ind.disabled) continue; const tiers = (ind.tiers || []).filter(t => !t.model_only); rungKeys[ind.id] = tiers.map(t => t.key); tiers.forEach((t, i) => { if (t.tech) techOf[t.tech] = { ind: ind.id, era: t.era, rung: i }; }); }
 const { runs, dropped } = usableRuns(SES, session, setup); reportDropped(dropped);
 const MAJORS = ['Great Britain', 'France', 'United States of America', 'Prussia', 'German Empire', 'Russia', 'Austria'];
+// ⚠ PMR_JE lines carry DISPLAY NAMES (landmine L11): a country that renames itself mid-campaign — Britain becoming the "British
+// Republic" (8 of the 30 phase-1 runs, F107), France the "French Republic" / "French Commune" — split its tally under the exact-name
+// match, and the medians under-read those seeds. Known renames of the SAME tag are folded onto one canonical name here — EXACT
+// names only ("British East Africa" and "British Senegal" are other countries); a name not listed keeps its own. Prussia → German
+// Empire is a FORMATION (a new tag), so both stay separate, as in MAJORS. The same list lives in fill_research.mjs's NAME2TAG.
+const ALIAS = {
+  'British Republic': 'Great Britain', 'United Kingdom': 'Great Britain', 'British Empire': 'Great Britain',
+  'French Republic': 'France', 'French Commune': 'France', 'French Empire': 'France', 'Kingdom of France': 'France',
+  'Russian Empire': 'Russia', 'Russian Republic': 'Russia', 'Soviet Union': 'Russia',
+  'Austria-Hungary': 'Austria', 'United States': 'United States of America',
+};
 const by = (arr, f) => { const o = {}; for (const x of arr) { const k = f(x); o[k] = (o[k] || 0) + 1; } return o; };
 const readGz = (p) => JSON.parse(gunzipSync(readFileSync(p)).toString('utf8'));
 for (const rel of runs) {
   const D = join(SES, rel); const run = rel.split('/')[1];
   const lines = readFileSync(join(D, 'logs_live', 'debug.log'), 'utf8').split('\n');
   const token = `|${session.slice(0, 15)}s${run.slice(3, 6)}|`; let start = lines.findIndex(l => l.includes(token)); const how = start >= 0 ? 'token' : 'file start (no token line)'; if (start < 0) start = 0;
-  const comp = []; const seen = new Set(); let raw = 0;
-  lines.forEach((l, i) => { if (i < start) return; const m = l.match(/PMR_JE\|([a-z]+)\|([a-z_0-9]+)\|(.*?)\s*$/); if (!m) return; raw++; const c = m[3].trim(); const k = `${c}|${m[2]}|${m[1]}`; if (seen.has(k)) return; seen.add(k); comp.push({ stage: m[1], tech: m[2], c }); });
+  const comp = []; const seen = new Set(); let raw = 0; let folded = 0;
+  lines.forEach((l, i) => { if (i < start) return; const m = l.match(/PMR_JE\|([a-z]+)\|([a-z_0-9]+)\|(.*?)\s*$/); if (!m) return; raw++; const rawName = m[3].trim(); const c = ALIAS[rawName] || rawName; if (c !== rawName) folded++; const k = `${c}|${m[2]}|${m[1]}`; if (seen.has(k)) return; seen.add(k); comp.push({ stage: m[1], tech: m[2], c }); });
   const byC = by(comp, x => x.c);
-  console.log(`\n== ${rel} — ${comp.length} unique completions (${raw} raw lines, ${raw - comp.length} mirror duplicates; window by ${how}); ${Object.keys(byC).length} countries; stages ${JSON.stringify(by(comp, x => x.stage))}`);
+  console.log(`\n== ${rel} — ${comp.length} unique completions (${raw} raw lines, ${raw - comp.length} mirror duplicates; window by ${how}${folded ? `; ${folded} lines folded from renamed display names` : ''}); ${Object.keys(byC).length} countries; stages ${JSON.stringify(by(comp, x => x.stage))}`);
   console.log('   top: ' + Object.entries(byC).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([c, n]) => `${c} ${n}`).join(' · '));
   for (const c of MAJORS) { const mine = comp.filter(x => x.c === c); if (!mine.length && !['Great Britain', 'France', 'United States of America'].includes(c)) continue; const techs = new Set(mine.map(x => x.tech)); console.log(`   ${c}: ${mine.length} over ${techs.size} technologies`); }
   const gbTechs = new Set(comp.filter(x => x.c === 'Great Britain').map(x => x.tech)); const byEra = {};

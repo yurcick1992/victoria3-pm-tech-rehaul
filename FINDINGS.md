@@ -10676,3 +10676,10 @@ and a seven-market pool at the dump dates; production ratios are British only; t
 the republic seeds. Two sessions were pooled on a byte-identical config and a fixed harness: ratios travel between nights, absolute wall
 clock does not. Nothing here ratifies or rejects the 24-month bar for the canon — phase 2 carries it by the user's 2026-09-09 note and
 its own ledger reads against this one.
+
+**Addendum, same day — the tally keyed by country, not display name.** `je_tally.mjs` and `fill_research.mjs` now fold a tag's known
+mid-campaign renames onto one name (the "British Republic" onto Great Britain; the French Republic / Commune onto France; exact names
+only, so British East Africa stays its own country). Re-run over the thirty runs, Britain's research-entry completions read
+38 · 36 · 15 · 28 · 22 · 22 · 26 · 25 · 21 · 31 · 33 (session 1) and 33 · 24 · 30 · 28 · 24 · 30 · 30 · 15 · 19 · 21 · 26 · 30 · 25 · 18 ·
+24 · 27 · 22 · 35 · 36 (continuation): **median 26, range 15–38, all thirty at or above P2's 15** — the raw-name figures above (median
+24.5, 5–38) under-read the eight republic seeds by 8–29 each. Technologies held are unaffected (they come from the summaries by tag).
