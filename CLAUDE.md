@@ -3577,6 +3577,11 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   includes edits that look cosmetic, such as bumping `$script:TELEMETRY_VERSION`. Queue them and apply
   them once the session reports SCHEDULE DONE; if a doc has to describe the new state meanwhile, say
   which session is affected (see TESTBED_METRICS' v10 note).
+  ⚠⚠ **AND SINCE 2026-09-09 THE SAME RULE COVERS EVERY `tools/testbed/**/*.mjs`**: preflight walks them (L27) inside every
+  build, so ADDING or EDITING an analysis script mid-batch can fail the next run's build and abort the whole schedule — phase 2's
+  first session (`20260909_100930`) died at its run 2 on a ledger script added that morning whose `disabled` guard sat three
+  lines below the loop, outside the detector's two-line window. Run `preflight.ps1 -RepoOnly` before committing any such script
+  while a batch plays; a script that passes it cannot break a build.
 - **ALL measurement goes through `tools/testbed/run_schedule.ps1 -Schedule <x.json>`.** This is the entry
   point: it owns *schedule JSON → build each run's mod via `build.ps1` → run it → harvest*. **Never invoke
   the builder directly to produce test data** — that bypasses the record of what was built and why. (Calling

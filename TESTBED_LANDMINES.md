@@ -876,6 +876,14 @@ named, instead of exiting after one line.
 
 ---
 
+**Scope widened 2026-09-09 — the batch's build path is wider than the mod's.** `run_schedule.ps1` builds before every run and
+that build runs preflight, and preflight walks `tools/testbed/**/*.mjs` (L27, L25). So an ANALYSIS script — nothing the mod
+ever reads — is on the batch's build path: `batch_tables.mjs`, added at 10:43 on 2026-09-09 while phase 2 of the §10.76 plan
+played, failed L27 (its `disabled` guard three lines below the loop, outside the detector's two-line window) at run 2's 12:35
+build and the scheduler aborted the schedule after one clean run (BUGS_AND_FIXES 2026-09-09). Rule: while a batch plays, run
+`preflight.ps1 -RepoOnly` before committing ANY file under `tools/testbed` — two seconds — and treat a new analysis script as
+an L10 edit until it passes.
+
 ### L16 — a `defaults` key honoured for some fields and silently dropped for others · AUTO
 
 **The failure.** The schedule JSON accepts the key, nothing reads it, and the run proceeds on a

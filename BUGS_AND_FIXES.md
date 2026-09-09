@@ -13,6 +13,27 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-09-09 — a ledger script added mid-batch failed the next run's BUILD (preflight L27) and aborted phase 2 after one run
+
+**Symptom.** Session `20260909_100930_canon-je24-a22-n30` (the §10.76 plan's phase 2, 30 runs of the A 2.2 book): run 1 completed
+clean at 145.5 min; the scheduler's build for run 2 ended `PREFLIGHT FAILED: 1 landmine(s) live - L27` and the schedule aborted
+(`SCHEDULE DONE: 2/30 [ABORTED]`, exit 3) — no game launched, 29 runs lost from the schedule.
+
+**Root cause.** `tools/testbed/ledger/batch_tables.mjs`, a NEW ledger script written at 10:43 that morning (after run 1's 10:09
+build) for the phase-1 finding, built its industry list with `Object.entries(cfg.industries).map(...)` and put its
+`if (ind.disabled) continue;` guard three lines below — outside the L27 detector's two-line window. The script itself skipped
+disabled industries correctly; the DETECTOR reads a window, and `run_schedule.ps1` runs preflight inside every pre-run build over
+`tools/testbed/**/*.mjs`. So an analysis script that is not on the mod's build path at all was on the BATCH's build path, and an
+edit that could not affect the mod aborted the batch.
+
+**Fix.** The filter on the loop line itself (`(...).filter(ind => !ind.disabled)`; L27 PASS, 17 loops). The 29 remaining runs
+relaunched as `20260909_123746_canon-je24-a22-n29-cont` on a byte-identical config, pooled with run 1 as the 30-run arm.
+
+**Detect / prevent.** L10's scope now includes every `tools/testbed/**/*.mjs` (CLAUDE.md, TESTBED_LANDMINES L10): run
+`preflight.ps1 -RepoOnly` before committing any such script while a batch plays — the same two seconds the scheduler spends
+before an estimate. The scheduler's abort was correct behaviour (a failed build must not launch); the missing habit was the
+repo-only preflight after adding a script.
+
 ## The observer died on its own log line while a heartbeat read the file, and the batch burned 48 runs behind the orphaned game (2026-09-07)
 
 **Symptom.** Run 12 of the 60-run plan (`20260906_001032_canon-je24-n60`) was at 1917 with a healthy clock; its
