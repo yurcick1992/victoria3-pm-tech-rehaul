@@ -175,6 +175,11 @@ save summaries, and are parameterised only by the run list at the top of each fi
   the anchor years, mod beside vanilla (VA = the direct v6+ fields; vanilla reads the same 22
   industries through their base buildings — tier-1 key = the vanilla base). Bottom row = the
   sector's absolute £M/wk, because shares are composition and can fall while the industry grows.
+- **`batch_tables.mjs`** — the F106-layout READING tables for an arm that spans SEVERAL sessions (2026-09-09, F107):
+  pools ÷ GDP, the tiered goods' prices (British market + the seven-market pool per dump date, arm beside vanilla, the 1935
+  ratio), wage units, British production ÷ vanilla at 1900 and 1935, GDP ÷ vanilla — medians over the USABLE runs pooled across
+  the sessions named (`--arm a,b:setup`), stalls named with `--exclude` and reported on their own line. Prints only; nothing in
+  the fill chain reads it — it is what FINDINGS quotes. `assess_gdp_gate.mjs --session a,b` pools sessions the same way.
 - **`fill_assemble.mjs`** — splices the lot into the template and writes REPORT.html.
   ⚠ Since 2026-08-24 `report_data2.mjs` also emits **`pw`** (productive workers per tag, the
   corrected definition) and **`sector`** (tier-equivalent workers + weekly VA, world + per tag, both
