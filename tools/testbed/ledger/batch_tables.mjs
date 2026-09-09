@@ -36,7 +36,7 @@ const pct = x => Number.isFinite(x) ? (100 * x).toFixed(0) : '—';
 
 // ---- the arm's output goods, from the config (rung 0's output per tiered industry; disabled industries skipped — L27) ----
 const cfg = JSON.parse(readFileSync(join(ROOT, CFG), 'utf8'));
-const inds = Array.isArray(cfg.industries) ? cfg.industries : Object.entries(cfg.industries).map(([k, v]) => ({ id: k, ...v }));
+const inds = (Array.isArray(cfg.industries) ? cfg.industries : Object.entries(cfg.industries).map(([k, v]) => ({ id: k, ...v }))).filter(ind => !ind.disabled); // L27: a disabled industry is vanilla's — its rung-0 key IS the vanilla building
 const GOODS = [];
 for (const ind of inds) {
   if (ind.disabled) continue;
