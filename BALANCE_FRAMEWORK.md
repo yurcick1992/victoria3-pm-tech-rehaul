@@ -7139,6 +7139,5 @@ for the record; it starts six industries loss-making at base prices from day one
 **Implementation.** `make_ab_config.mjs --in0 <mult> [--in0-only] --cost-flat --ai-ladder v0,v1,v2,v3` (2026-09-10): the lift on rung 0's
 input value with the ladder anchored on it (`--in0-only` lifts rung 0 alone), the flat cost book, and an explicit ai_value list by era
 index. Books: `config/mod_config.canon-flat-in12.json` and `canon-flat-in13.json` (+ twins), both stamped `_variant`, bar 24; the ×1.2
-book dry-run builds clean. Schedule `canon_flat_in12_n30.json` (30 runs, no gate, predictions P1–P8). ⚠ The specific numbers (1.2 vs
-1.3, the anchoring, the ai list) are the agent's proposal of 2026-09-10 awaiting the user's confirmation; this section is updated when
-it lands.
+book dry-run builds clean. Schedule `canon_flat_in12_n30.json` (30 runs, no gate, predictions P1–P8). ✅ **CONFIRMED by the user 2026-09-10 15:00: "Go with 1.2 as soon as the current run ends"** — the ×1.2 book, the ladder anchored on
+it, ai_value 1,000 / 2,000 / 3,000 / 4,000, flat cost; `canon-flat-in13` stays only as the record of the alternative.
