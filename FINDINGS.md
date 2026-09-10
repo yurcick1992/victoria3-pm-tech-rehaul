@@ -10683,3 +10683,139 @@ only, so British East Africa stays its own country). Re-run over the thirty runs
 38 · 36 · 15 · 28 · 22 · 22 · 26 · 25 · 21 · 31 · 33 (session 1) and 33 · 24 · 30 · 28 · 24 · 30 · 30 · 15 · 19 · 21 · 26 · 30 · 25 · 18 ·
 24 · 27 · 22 · 35 · 36 (continuation): **median 26, range 15–38, all thirty at or above P2's 15** — the raw-name figures above (median
 24.5, 5–38) under-read the eight republic seeds by 8–29 each. Technologies held are unaffected (they come from the summaries by tag).
+
+## F108 — THE STALL CENSUS (2026-09-10): the four-rung books stall where vanilla never does — 16 of 79 runs below 0.70× vanilla's mean world GDP against 0 of 18 (p = 0.03), 29 of 79 below 0.80× (p < 0.001). The mechanism is a rest-of-world that is a quarter smaller in every run plus a bimodal Britain (a 2× giant or a vanilla-sized dwarf), and the stall rate tracks the building-cost ladder's steepness: flat-cost books 0 of 7, ×2^k books 8 of 46, ×2.5^k 3 of 3
+
+**Question (user, 2026-09-10).** Do our four-rung setups stall significantly more often than vanilla, and why?
+
+**Data.** Every usable run (lib_runs' L17 rule) with a 1935 save summary from 2026-08-21 on. Vanilla n = 18 (`20260821_131149` ×16,
+`20260823_113218` ×2, both v8). The four-rung books n = 79: the retired tier4 derivation (17: `tier4-n1/n3`, `tier4-margins-n1`,
+`tier4-vanilla-ladder-n4`, `tier4-flatcost-aiv26` ×7, `tier4-cost15-aiv25` ×1), ab1/ab2/ab3 (8), canon4-je / tgate / art (9), canon4v-art3
+/ hai3 (6), canon-je24 (30, F107), canon-je24-a22 (9 complete of phase 2 at the time of writing). The quantity is world GDP at 1935 ÷ the
+vanilla MEAN (£4,355M; the gate's median is £4,390M). **Clear stall = below 0.70×** (vanilla's own minimum is 0.83×), **mild = 0.70–0.80×**.
+Fisher's exact test, one-sided, against vanilla's 0 of 18 in both bands.
+
+### 1. The census (world GDP at 1935 ÷ vanilla mean; usable runs with a 1935 summary)
+| session | book | n | < 0.70× | 0.70–0.80× | range |
+|---|---|---|---|---|---|
+| 20260821_131149 + 20260823_113218 | vanilla | 18 | 0 | 0 | 0.83–1.17 |
+| 20260829_152435 tier4-n1 | tier4, cost ×1.4^k | 1 | 0 | 0 | 0.84 |
+| 20260829_212316 tier4-n3 | tier4, cost ×1.4^k | 3 | 0 | 3 (0.72, 0.72, 0.71) | 0.71–0.72 |
+| 20260830_124844 tier4-margins-n1 | tier4 | 1 | 0 | 1 (0.80) | 0.80 |
+| 20260830_191950 tier4-vanilla-ladder-n4 | tier4, payback-fitted cost ladders | 4 | 3 (0.56, 0.65, 0.58) | 1 (0.73) | 0.56–0.73 |
+| 20260831_120102 + 192428 tier4-flatcost-aiv26 | tier4, **flat cost** | 7 | 0 | 0 | **0.95–1.71** |
+| 20260901_135709 tier4-cost15-aiv25 | tier4, cost ×1.5^era | 1 | 0 | 0 | 1.82 |
+| 20260902_095339 + 121027 ab-ladder | ab1 (A=B=2.5) | 3 | 3 (0.55, 0.40, 0.47) | 0 | 0.40–0.55 |
+| 20260902_121027 ab-ladder | ab2 (2.0/1.5) | 2 | 0 | 0 | 0.97–0.99 |
+| 20260903_000418 ab3-n3 | ab3 (2.0/1.5, glass+tooling 3^era) | 3 | 1 (0.39) | 0 | 0.39–0.95 |
+| 20260903_094941 canon4-tgate-n2 | canon-4rung + target gate | 2 | 0 | 1 (0.80) | 0.80–0.85 |
+| 20260903_173810 canon4-je-n5 | canon4-je | 5 | 1 (0.66) | 2 (0.79, 0.76) | 0.66–0.97 |
+| 20260904_100656 canon4-art-n2 | canon4-art | 2 | 0 | 0 | 0.81–1.05 |
+| 20260904_213059 canon4v-art3-n5 | canon4v-art3 | 4 | 0 | 0 | 0.83–1.10 |
+| 20260905_174831 canon4v-hai3-n2 | canon4v-hai3 | 2 | 0 | 0 | 0.85–0.94 |
+| 20260906_001032 + 20260907_074504 | canon-je24 (A 2.0) | 30 | 6 (0.61, 0.63, 0.45, 0.46, 0.69, 0.67) | 5 (0.77, 0.79, 0.77, 0.76, 0.72) | 0.45–1.12 |
+| 20260909_100930 + 20260909_123746 | canon-je24-a22 (A 2.2), phase 2 so far | 9 | 2 (0.68, 0.63) | 0 | 0.63–1.10 |
+
+### 2. The tests
+| group | n | < 0.70× | Wilson 95% | p (Fisher, one-sided) | < 0.80× | p |
+|---|---|---|---|---|---|---|
+| all four-rung books | 79 | 16 (20.3%) | 12.9–30.4% | **0.027** | 29 (36.7%) | **0.0008** |
+| without ab1 and without the retired tier4 derivation | 59 | 10 (16.9%) | 9.5–28.5% | 0.057 | 18 (30.5%) | **0.004** |
+| the vanilla-built canon family (canon4v-*, canon-je24*) | 45 | 8 (17.8%) | 9.3–31.3% | 0.056 | 13 (28.9%) | **0.007** |
+| canon-je24 (A 2.0) alone | 30 | 6 (20.0%) | 9.5–37.3% | **0.048** | 11 (36.7%) | **0.0024** |
+| canon-je24-a22 (A 2.2) alone | 9 | 2 (22.2%) | 6.3–54.7% | 0.10 | 2 | 0.10 |
+| ab2 / ab3 / canon4-* (clone-derived) | 14 | 2 (14.3%) | 4.0–39.9% | 0.18 | 5 (35.7%) | **0.0099** |
+| the retired tier4 derivation | 17 | 3 (17.6%) | 6.2–41.0% | 0.10 | 8 (47.1%) | **0.0010** |
+| ab1 (A = B = 2.5) | 3 | 3 (100%) | 44–100% | **0.0008** | 3 | 0.0008 |
+Vanilla per run: 1.03 · 1.01 · 0.86 · 1.01 · 0.95 · 0.97 · 0.83 · 1.12 · 1.14 · 1.02 · 1.17 · 1.02 · 0.83 · 1.00 · 0.90 · 1.11 · 1.00 · 1.03.
+**Confirmed.** The four-rung family's low tail is outside anything vanilla produces: 37% of runs below 0.80× against none of 18 (p < 0.001),
+and one run in five below 0.70× (p = 0.03 over the whole family; 0.05–0.06 for the canon family alone, whose n is smaller).
+⚠ Vanilla's n is 18; a rare vanilla stall (≤ 5%) cannot be excluded by it. Nothing in 18 vanilla runs, nor in F99's earlier 18, shows one.
+
+### 3. Where the GDP goes — world = Britain + India + the rest (£M medians; India = BIC + the subcontinent's tags)
+| year | group | n | world | GBR | BIC | India | rest | countries | GBR pool |
+|---|---|---|---|---|---|---|---|---|---|
+| 1860 | vanilla | 18 | 725 | 55 | 83 | 114 | 553 | 374 | 2 |
+| 1860 | canon-je24, healthy Britain | 25 | 716 | 68 | 83 | 111 | 542 | 377 | 5 |
+| 1860 | canon-je24, British collapses | 5 | 688 | 57 | **15** | 103 | 536 | 381 | 4 |
+| 1900 | vanilla | 18 | 1,714 | 185 | 58 | 165 | **1,350** | 291 | 20 |
+| 1900 | canon-je24, healthy Britain | 25 | 1,438 | **231** | 109 | 162 | **1,050** | 280 | 31 |
+| 1900 | canon-je24, British collapses | 5 | 1,233 | 143 | 0 | 79 | 1,020 | 282 | 8 |
+| 1935 | vanilla | 18 | 4,390 | 388 | 0 | 129 | **3,777** | 235 | 333 |
+| 1935 | canon-je24, healthy Britain | 25 | 3,791 | **762** | 0 | 86 | **2,790** | 238 | 791 |
+| 1935 | canon-je24, British collapses | 5 | 2,648 | **274** | 0 | 90 | 2,372 | 261 | 11 |
+| 1935 | canon-je24-a22, healthy Britain | 7 | 4,173 | 749 | 0 | 71 | 3,174 | 224 | 584 |
+| 1935 | canon-je24-a22, British collapses | 2 | 2,859 | 264 | 0 | 51 | 2,543 | 262 | 28 |
+Two facts, both present in every run: **the mod's world outside Britain and India is a quarter smaller than vanilla's** (0.78× at 1900,
+0.74× at 1935 — the whole of the 0.83× GDP gap and more), and **the mod's Britain is bimodal**: a giant twice vanilla's size (762 against
+388; pool 791 against 333) in 32 of 39 runs, or a dwarf inside vanilla's own range (181–330; pool ≈ 0) in 7. Britain's 1935 GDP per run,
+canon-je24: 777 895 **187** 791 906 453 756 664 **303** 702 647 · 655 637 814 762 742 926 617 **181** **274** 832 782 851 873 **330** 1,021
+776 517 575 660; a22: 749 990 **312** 985 694 600 800 **217** 742; vanilla: 417 469 397 438 386 343 144 277 385 365 389 345 427 475 364 526
+352 407 (median 388, no gap in the distribution). A world total that is a giant Britain on a small rest reads 0.86× when the giant appears
+and 0.45–0.69× when it does not. ⚠ Two of canon-je24's six clear stalls are the other case — a low world with a normal Britain (s1 run 6:
+0.63×, GBR 453; cont run 12: 0.69×, GBR 851) — so the British collapse is the usual shape of a stall, not its definition.
+
+### 4. Britain's trajectory in the collapses (canon-je24 medians; collapsed n=5 / healthy n=25 / vanilla n=18)
+| year | GBR GDP £M | treasury £M | pool £M | construction levels | building profit £k/wk (tiered) | radicals % | BIC £M |
+|---|---|---|---|---|---|---|---|
+| 1840 | 38.7 / 38.0 / 30.6 | 0.7 / 0.2 / 0.3 | 0.1 / 0.4 / 2.3 | 40 / 34 / 20 | 587 (186) / 573 (180) / 383 (103) | 4.3 / 4.0 / 7.7 | 46 / 45 / 45 |
+| 1850 | 48.8 / 51.7 / 38.8 | 0.9 / 0.8 / 0.3 | 3.0 / 3.5 / 7.9 | 81 / 59 / 34 | 882 (284) / 914 (319) / 546 (146) | 11.0 / 9.6 / 11.3 | 67 / 65 / 64 |
+| 1855 | 57.2 / 60.0 / 44.0 | **0.0** / 1.1 / 0.8 | 1.9 / 4.1 / 2.1 | 131 / 116 / 60 | 834 (369) / 1,062 (379) / 643 (177) | 13.2 / 11.4 / 12.4 | 79 / 76 / 75 |
+| 1860 | 56.6 / 68.3 / 54.8 | 0.0 / 0.5 / 1.0 | 4.4 / 4.5 / 2.0 | 129 / 134 / 107 | 701 (276) / 1,142 (450) / 786 (248) | 13.0 / 10.5 / 11.2 | **15** / 83 / 83 |
+| 1865 | 66.1 / 76.0 / 63.7 | 0.0 / 0.9 / 0.5 | 4.3 / 5.4 / 1.2 | **61** / 134 / 99 | 753 (319) / 1,194 (539) / 851 (259) | 13.6 / 10.7 / 10.4 | 15 / 89 / 93 |
+| 1870 | 69.5 / 86.3 / 76.2 | 0.0 / 0.8 / 1.5 | 4.7 / 6.9 / 2.7 | 61 / 121 / 84 | 778 (330) / 1,380 (613) / 1,029 (327) | 11.9 / 11.2 / 10.6 | 15 / 92 / 101 |
+| 1880 | 91.8 / 117 / 98.9 | 0.0 / 0.2 / 0.0 | 5.2 / 11.6 / 3.1 | 56 / 99 / 68 | 820 (387) / 1,939 (853) / 1,348 (405) | 14.3 / 11.8 / 9.7 | 15 / 100 / 110 |
+| 1900 | 143 / 231 / 185 | 0.0 / 3.0 / 0.0 | 7.9 / 30.9 / 19.7 | 46 / 158 / 99 | 850 (609) / 4,478 (1,796) / 2,800 (720) | 14.5 / 6.5 / 9.5 | 0 / 109 / 58 |
+| 1935 | 274 / 762 / 388 | 0.0 / 35.9 / 3.4 | 11 / 791 / 333 | 83 / 669 / 287 | 1,747 (1,547) / 20,213 (7,946) / 8,259 (2,228) | 6.9 / 4.3 / 7.2 | 0 / 0 / 0 |
+The collapsed and the healthy Britain are identical to 1850 (both ahead of vanilla's). The divergence is 1855–1865: the treasury goes to
+zero and stays there for the century, the state's construction sector is cut in half between 1860 and 1865 (129 → 61 levels) and never
+rebuilt (46–83 through 1935, against 158 → 669 in the healthy runs and 99 → 287 in vanilla), building profits stop growing (701–850 £k/wk
+from 1860 to 1900 against 1,142 → 4,478), radicals sit at 12–15% for fifty years, and the private pool never forms (5–11M all century,
+against 31M at 1900 and 791M at 1935). Vanilla's weak Britains (four runs under £350M at 1935) shrink their construction too (90 → 61
+levels 1860–1880) but rebuild it (253 levels at 1935) and their pool forms (295M at 1935).
+
+### 5. The triggers (events.tsv)
+Every collapse begins with an early political shock: the East India Company lost to a revolt before 1860 in three of the five canon-je24
+collapses (s1 run 3: EIC revolt 1840, the "East India Utilitarian Revolt" wins 1843 with Britain capitulating beside it; cont run 14: BIC
+gone by 1850; cont run 9: EIC revolt 1859, lost 1860) and Britain itself lost an early civil war in the others (cont run 14 1845–46; a22
+run 7 "British Proletarian" 1846). ⚠ The shocks are not rarer in vanilla: seven of eighteen vanilla runs have a British civil war before
+1850 and seven lose an EIC civil war; per run the mod's Britain revolts LESS often (12 of 30 against 13 of 18) and the world-wide event
+counts are alike (REVOLT median 6,033 against 5,042; CIVILWARWON 575 against 550; WARSTART 826 against 809; DEFAULT 1,729 against 1,604).
+What differs is the recovery: vanilla's Britain absorbs the shock, the mod's does not.
+
+### 6. The cost ladder
+| book | building_cost per rung | runs | < 0.70× | world GDP range |
+|---|---|---|---|---|
+| tier4 flat-cost (aiv26) | vanilla anchor, **flat** | 7 | **0** | **0.95–1.71** |
+| tier4 cost15 (aiv25) | ×1.5^era | 1 | 0 | 1.82 |
+| tier4-n1 / n3 / margins | ×1.4^k | 5 | 0 (4 mild) | 0.71–0.84 |
+| ab2, ab3, canon4-je/tgate/art, canon4v-art3/hai3, canon-je24 | ×2.0^k (capacity-priced) | 46 | 8 (17%) | 0.39–1.12 |
+| canon-je24-a22 | ×2.2^k | 9 | 2 (22%) | 0.63–1.10 |
+| tier4-vanilla-ladder | payback-fitted rising ladders | 4 | 3 | 0.56–0.73 |
+| ab1 | ×2.5^k (and inputs ×2.5^k) | 3 | 3 | 0.40–0.55 |
+The only four-rung arms that never stalled are the ones whose higher rungs cost what a vanilla building costs — and they ran ABOVE
+vanilla's GDP, up to 1.7×. Every book that prices capacity (cost × A^k) stalls, at a rate that rises with A.
+
+### What it says
+1. **Confirmed**: the four-rung books produce low-GDP worlds vanilla never does — 37% of runs below 0.80× (p < 0.001) and 20% below 0.70×
+   (p = 0.03) against 0 of 18.
+2. **The mechanism is capital, not politics.** The capacity-priced cost ladder makes modernisation cost 2–8 vanilla buildings a level and
+   removes the free method switch, so a country's growth depends on the capital it already has: the rest of the world, which never has much,
+   runs a quarter below vanilla in every seed; Britain, which usually accumulates a pool, doubles — but a Britain shocked before its pool
+   forms (an early EIC or British civil war, which vanilla suffers just as often) cannot climb, cannot rebuild its construction sector, and
+   stays at vanilla's size for the century. The world's total is then the small rest plus a small Britain: 0.45–0.69×.
+3. **The stall rate follows the cost ladder's steepness** — flat 0 of 7 (and GDP above vanilla), ×2^k 8 of 46, ×2.2^k 2 of 9, ×2.5^k 3 of 3 —
+   which is the §10.61 flat-cost ruling's argument in the data: "double jeopardy" (a new building already costs its full price; an era
+   exponent prices the same thing twice) is what starves the laggard.
+4. The 24-month research bar, the 3^era ai_value and the pool defines are not the cause: the stalls predate all three (ab3, canon4-je,
+   tier4-vanilla-ladder), and the phase-1 bar arm stalls at the family rate.
+
+### What it does NOT say
+No arm here varies the cost ladder alone: the flat-cost runs were the retired tier4 derivation with other differences (ai_value 750 × 2.6^era,
+the ×1.5-output ladder, a different tree), so §6 is a correlation across books, not a controlled experiment; a flat-cost variant of the canon
+(cost 600/800 at every rung, everything else canon) is the test, and it has not run. The per-book counts are small (2–9 runs) except
+canon-je24's 30; the family-level test carries the significance. Vanilla's n is 18. "Stall" here is a GDP threshold; the F99 signature
+(Britain's pool never forms, the EIC dissolves) fits four of canon-je24's six and both of a22's, the other two being low worlds with a
+normal Britain. The trajectory tables are medians of five collapsed runs; the trigger list is read from the events log by name, which
+misses an EIC that changes its display name. Nothing here says the giant Britain is desirable — a Britain at twice vanilla's size on a
+world a quarter smaller is a different distribution, not a better one.
