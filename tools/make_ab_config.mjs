@@ -33,6 +33,17 @@ const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/co
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i >= 0 ? process.argv[i + 1] : d; };
 const A = +arg('--A'), B = +arg('--B'), SFX = arg('--suffix'), BASE = arg('--base', 'config/mod_config.tier4.json');
 const AI_BASE = +arg('--ai-base', 1000);
+// --in0 <mult> (user-ruled 2026-09-10, FINDINGS F108): rung 0's INPUT VALUE × mult — the 1836 tier deliberately LESS profitable
+//   than vanilla so it dies when the ladder arrives; the ladder stays anchored on the lifted rung 0 (rung k inputs = I0 × mult × B^k)
+//   unless --in0-only is given (then only rung 0 is lifted and rungs 1+ keep the vanilla-anchored ladder). 1 = the old rule.
+const IN0 = +arg('--in0', 1); if (!(IN0 > 0)) throw new Error('--in0 <mult> must be > 0');
+const IN0_ONLY = process.argv.includes('--in0-only');
+// --cost-flat (user-ruled 2026-09-10, F108 §6: the stall rate follows the cost ladder's steepness): building_cost = the vanilla
+//   anchor at EVERY rung — the §10.61 flat book — instead of anchor × A^k.
+const COST_FLAT = process.argv.includes('--cost-flat');
+// --ai-ladder v0,v1,v2,v3 (user-ruled 2026-09-10): ai_value BY ERA INDEX (t.era, 0-based), an explicit list — "upward but not
+//   exponential", e.g. 1000,2000,3000,4000 — instead of AI_BASE × A^era. --ai-steep still overrides for the industries it names.
+const AI_LADDER = (() => { const v = arg('--ai-ladder', ''); if (!v) return null; const a = v.split(',').map(Number); if (a.length < 4 || a.some(x => !(x > 0))) throw new Error('--ai-ladder v0,v1,v2,v3 (one value per era, era 0 first)'); return a; })();
 // --ai-steep <ind,ind,...>:<ratio>  — user-ruled 2026-09-02 (ab3): the named industries take ai_value = AI_BASE × ratio^era
 // instead of AI_BASE × A^era, so their 1830s desire is unchanged and their later rungs out-bid the generic ladder.
 // Built for glass and tooling, whose e2 rungs the AI under-built in both ab2 seeds while their goods sat at 150–175%
@@ -89,15 +100,16 @@ for (const ind of cfg.industries) {
     const mixVal = val(mixRec.in);
     const TF = TIERS_FOR[ind.id];   // explicit per-rung multipliers (--tiers-for), else the A/B rule
     if (TF && (TF.out.length < ind.tiers.length || TF.in.length < ind.tiers.length || TF.cost.length < ind.tiers.length)) throw new Error(`--tiers-for ${ind.id}: ${ind.tiers.length} rungs need ${ind.tiers.length} multipliers each`);
-    const Vk = I0 * (TF ? TF.in[k] : Math.pow(B, k));
+    const lift = IN0_ONLY ? (k === 0 ? IN0 : 1) : IN0;   // --in0: the lifted rung 0, and the ladder anchored on it unless --in0-only
+    const Vk = I0 * lift * (TF ? TF.in[k] : Math.pow(B, k));
     const inputs = {};
     for (const [g, q] of Object.entries(mixRec.in)) { const share = q * (PRICE[g] || 0) / mixVal; const qty = r1(share * Vk / PRICE[g]); if (qty > 0) inputs[g] = qty; }
     const Ai = A_FOR[ind.id] || A;   // this industry's own output ratio (--A-for), else the book's A
     t.output_qty = r1(out0 * (TF ? TF.out[k] : Math.pow(Ai, k)));
     t.inputs = inputs;
     delete t.input_ratio;
-    t.building_cost = Math.round(anchor * (TF ? TF.cost[k] : Math.pow(Ai, k)));
-    t.ai_value = Math.round(AI_BASE * Math.pow(STEEP && STEEP.inds.has(ind.id) ? STEEP.ratio : Ai, t.era));
+    t.building_cost = Math.round(anchor * (COST_FLAT ? 1 : (TF ? TF.cost[k] : Math.pow(Ai, k))));   // --cost-flat: §10.61's flat book
+    t.ai_value = (AI_LADDER && !(STEEP && STEEP.inds.has(ind.id))) ? Math.round(AI_LADDER[Math.min(t.era, AI_LADDER.length - 1)]) : Math.round(AI_BASE * Math.pow(STEEP && STEEP.inds.has(ind.id) ? STEEP.ratio : Ai, t.era));
     const Obase = t.output_qty * PRICE[outGood]; const Ibase = val(inputs); const wp = t.wage_pct != null ? +t.wage_pct : 0.25;
     t.target_be = Math.round(Ibase / ((1 - wp) * Obase) * 100);
     cmax = Math.max(cmax, t.building_cost);
@@ -115,11 +127,12 @@ Object.assign(cfg.ai_defines, EXTRA_DEFINES);
 cfg.company_target_gate = process.argv.includes('--company-gate');   // emit_companies opt-in; OFF by default (see its header)
 cfg._ab = { A, B, A_for: Object.keys(A_FOR).length ? A_FOR : null, tiers_for: Object.keys(TIERS_FOR).length ? TIERS_FOR : null, ai_base: AI_BASE, ai_steep: STEEP ? { industries: [...STEEP.inds], ratio: STEEP.ratio } : null, cost_divisor_scaling: s, company_target_gate: cfg.company_target_gate, base: BASE, generated: new Date().toISOString() };
 cfg._ab.ai_defines_extra = Object.keys(EXTRA_DEFINES).length ? EXTRA_DEFINES : null;
+cfg._ab.in0 = IN0; cfg._ab.in0_only = IN0_ONLY; cfg._ab.cost_flat = COST_FLAT; cfg._ab.ai_ladder = AI_LADDER;
 cfg._comment = `A/B LADDER (${SFX}) derived by tools/make_ab_config.mjs from ${BASE}: rung k output = vanilla lowest-tier × ${A}^k, input value × ${B}^k over the rung's own vanilla mix, building_cost = vanilla anchor × ${A}^k, ai_value = ${AI_BASE} × ${A}^era, cost-divisor scaling ${s}${STEEP ? `, ai_value ${AI_BASE} × ${STEEP.ratio}^era for ${[...STEEP.inds].join('/')}` : ''}. target_be restated as the drift guard.`;
 writeFileSync(join(REPO, `config/mod_config.${SFX}.json`), JSON.stringify(cfg));
 writeFileSync(join(REPO, `config/tech_tree_options.${SFX}.json`), readFileSync(join(REPO, 'config/tech_tree_options.tier4.json'), 'utf8'));
 
-console.log(`A/B LADDER ${SFX}: A=${A} B=${B} · ai_value ${AI_BASE}×${A}^era · cost divisor scaling ${s} (top rung ${cmax} pts ÷${(1 + s * cmax).toFixed(2)}, 600-pt rung ÷${(1 + 600 * s).toFixed(2)}; vanilla 0.001 would give ÷${(1 + 0.001 * cmax).toFixed(1)})`);
+console.log(`A/B LADDER ${SFX}: A=${A} B=${B} · rung-0 inputs ×${IN0}${IN0_ONLY ? ' (rung 0 only)' : ' (ladder anchored on it)'} · cost ${COST_FLAT ? 'FLAT (vanilla anchor every rung)' : 'anchor × A^k'} · ai_value ${AI_LADDER ? AI_LADDER.join('/') + ' by era' : AI_BASE + '×' + A + '^era'} · cost divisor scaling ${s} (top rung ${cmax} pts ÷${(1 + s * cmax).toFixed(2)}, 600-pt rung ÷${(1 + 600 * s).toFixed(2)}; vanilla 0.001 would give ÷${(1 + 0.001 * cmax).toFixed(1)})`);
 console.log('industry     era k  output      inputs                                                            cost    ai_value  BE%   VA/wk   VA/worker  in-share');
 for (const r of rows) console.log(`${r.ind.padEnd(12)} e${r.era}  ${r.k}  ${String(r.out).padStart(7)}  ${Object.entries(r.inputs).map(([g, q]) => g + ' ' + q).join(', ').padEnd(62)} ${String(r.cost).padStart(6)}  ${String(r.aiv).padStart(7)}  ${String(r.be).padStart(3)}  ${r.va.toFixed(0).padStart(6)}  ${(r.va / r.emp).toFixed(3).padStart(8)}  ${r.share.toFixed(2)}`);
 console.log(`wrote config/mod_config.${SFX}.json + config/tech_tree_options.${SFX}.json`);

@@ -7109,3 +7109,36 @@ verdict on the A 2.0 book at power, not on the bar.** The stall rate — three i
 arm's largest open problem and phase 2's first watch item, since a steeper ladder concentrates the private pool on fewer, dearer
 buildings. Ledger https://claude.ai/code/artifact/300e9095-bbd0-42a0-9d6e-a52b087ff5f7 (fill dir `tools/testbed/ledger/out_canon_je24_phase1`);
 the pooled-session tools are `assess_gdp_gate.mjs --session a,b` and `batch_tables.mjs --arm a,b:setup`, both new this batch.
+
+## 10.77 — THE VANILLA-1836 PREMISE IS DROPPED: rung-0 inputs lifted, building cost flat, ai_value linear (user-ruled 2026-09-10)
+
+**Ruling (user, 2026-09-10, after F108).** "Once this run ends, we end the current batch and start a new one. We get rid of the
+'1836 is as close to vanilla as we can' approach. Instead, to ensure the obsolescence, we raise the inputs of the 1836 tier, lowering its
+margin compared to vanilla. The ladder then stays the same, different A and B. The building cost ladder is flat, the ai_values ladder is
+not exponential (but still upwards)." The user leans ×1.3 on the 1836 tier's inputs, A 2.2 / B 1.5 as in phase 2.
+
+**What it overturns.** §10.72's "rung 0 IS vanilla, so 1836 is vanilla by construction" (the anchor principle's 1836 half) — the 1836
+composition no longer holds at vanilla's margins. §10.61's flat cost book is RESTORED to the shipped configs (F108 §6: the stall rate
+follows the cost ladder's steepness — flat-cost books 0 of 7 at 0.95–1.71× vanilla, ×2^k books 8 of 46, ×2.5^k 3 of 3). The
+exponential ai_value ladders (2^era, 3^era) are replaced by a linear one.
+
+**The arithmetic behind the number (2026-09-10, at base prices, the measured base wage 0.0796/wk, wage weights vanilla's).** Vanilla's
+rung-0 margin is thin and uneven — food/textile/furniture +6%, glass/tooling/paper +11%, steel +7%, munition +4%, fertilizer +8%, arms
++39%, automotive +77%; value-weighted +18% — because the input share of revenue runs from 0.33 (automotive) to 0.77 (steel). A uniform
+lift therefore lands unevenly: at ×1.2 the value-weighted margin is +4% (food −6%, glass 0%, steel −8%, munition −9%, arms +23%);
+at ×1.3 it is −2% (food −11%, glass −5%, steel −14% with zero value added per worker, munition −15%, fertilizer −12%, arms +17%).
+Break-even output prices move from 84–96% of base to 96–106% (×1.2) or 104–117% (×1.3); vanilla's 1836 realised prices sit 5–20%
+above base, which is what keeps a ×1.2 rung 0 alive until rung 1 exists and lets the first price fall from rung-1 supply kill it —
+the obsolescence the ruling wants. On the ladder anchored on the lifted rung 0 (inputs I0 × lift × 1.5^k, output × 2.2^k) rung 1
+reads +44–58% on the consumer goods, rung 2 +100–150%, rung 3 +200–300%; value added per worker rung 0 : 1 : 2 ≈ 1 : 4 : 11, past F97's
+death ratio. **Recommended: ×1.2, the ladder anchored on it, ai_value 1,000 / 2,000 / 3,000 / 4,000 by era (linear +1,000: rung 0 at
+parity with every untiered vanilla building, a 4× top-to-bottom contrast instead of 27×), cost 600 / 800 / 400 flat, the cost divisor
+back at vanilla's 0.001, the 24-month bar and the §10.75 defines kept.** ×1.3 is generated beside it (`config/mod_config.canon-flat-in13.json`)
+for the record; it starts six industries loss-making at base prices from day one.
+
+**Implementation.** `make_ab_config.mjs --in0 <mult> [--in0-only] --cost-flat --ai-ladder v0,v1,v2,v3` (2026-09-10): the lift on rung 0's
+input value with the ladder anchored on it (`--in0-only` lifts rung 0 alone), the flat cost book, and an explicit ai_value list by era
+index. Books: `config/mod_config.canon-flat-in12.json` and `canon-flat-in13.json` (+ twins), both stamped `_variant`, bar 24; the ×1.2
+book dry-run builds clean. Schedule `canon_flat_in12_n30.json` (30 runs, no gate, predictions P1–P8). ⚠ The specific numbers (1.2 vs
+1.3, the anchoring, the ai list) are the agent's proposal of 2026-09-10 awaiting the user's confirmation; this section is updated when
+it lands.

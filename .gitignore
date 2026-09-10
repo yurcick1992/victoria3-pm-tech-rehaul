@@ -128,3 +128,7 @@ tools/testbed/ledger/*.canon6
 !config/tech_tree_options.canon-je24.json
 !config/mod_config.canon-je24-a22.json
 !config/tech_tree_options.canon-je24-a22.json
+!config/mod_config.canon-flat-in12.json
+!config/tech_tree_options.canon-flat-in12.json
+!config/mod_config.canon-flat-in13.json
+!config/tech_tree_options.canon-flat-in13.json
