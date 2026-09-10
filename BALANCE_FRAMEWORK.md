@@ -7110,6 +7110,20 @@ arm's largest open problem and phase 2's first watch item, since a steeper ladde
 buildings. Ledger https://claude.ai/code/artifact/300e9095-bbd0-42a0-9d6e-a52b087ff5f7 (fill dir `tools/testbed/ledger/out_canon_je24_phase1`);
 the pooled-session tools are `assess_gdp_gate.mjs --session a,b` and `batch_tables.mjs --arm a,b:setup`, both new this batch.
 
+**Phase 2 outcome (2026-09-10, FINDINGS F109; ended at run 11 by §10.77, not by a defect).** Two sessions on the byte-identical A 2.2 book —
+`20260909_100930_canon-je24-a22-n30` (run 1; run 2's build died on preflight L27, a ledger script added mid-batch) and
+`20260909_123746_canon-je24-a22-n29-cont` (runs 1–10; run 11 STOP-abandoned at 1836 on the ruling) — **eleven usable runs**. World GDP at
+1935 **0.915×** the vanilla median (median 0.921, sd 0.172, 0.63–1.17; mean 0.97 / median 0.95 with the two census stalls out) against phase 1's
+0.835 — a step of 0.08, about 1.3 standard errors of the difference, consistent in every reading and not resolved. The step is where A works:
+GDP per productive worker 1.39× vanilla (phase 1 1.33×) on 0.66× the productive workers (0.63×). Nothing else moved: the same decliners in
+pounds (pooled 1935: groceries 0.71, steel 0.81, small arms 0.74, artillery 0.49, clothes 0.90; tools 1.09, glass 1.16 above), phase 1's
+wage-unit table within a few points, tier choice 40.2% (39.2), Britain's completions 23 (26) and technologies 167 (165), companies 221 (217).
+Two things moved the right way: Britain's hoard 0.75 of GDP (0.95; vanilla 0.85) and the oldest rung's workforce 5.74M at 1935 (6.45M) — it
+still grows. Stalls 2 of 11 on F108's rule (the ×2.2^k line of the census). The schedule's P2 (groceries ≤ 0.55, steel ≤ 0.75, two of
+tools / clothes / glass ≤ 1.0) MISSED on every count but clothes — **the output step is a small GDP lever and no price lever**, which is the
+F94 corollary the §10.77 ruling acts on. Row P PASS (2.6% faster, +5.1% pop-matched). Ledger https://claude.ai/code/artifact/ca4c2666-3bdc-4ff8-8272-25c3f6af20c0
+(fill dir `tools/testbed/ledger/out_canon_je24_a22_phase2`, phase 1 as the reference series).
+
 ## 10.77 — THE VANILLA-1836 PREMISE IS DROPPED: rung-0 inputs lifted, building cost flat, ai_value linear (user-ruled 2026-09-10)
 
 **Ruling (user, 2026-09-10, after F108).** "Once this run ends, we end the current batch and start a new one. We get rid of the
@@ -7140,4 +7154,4 @@ for the record; it starts six industries loss-making at base prices from day one
 input value with the ladder anchored on it (`--in0-only` lifts rung 0 alone), the flat cost book, and an explicit ai_value list by era
 index. Books: `config/mod_config.canon-flat-in12.json` and `canon-flat-in13.json` (+ twins), both stamped `_variant`, bar 24; the ×1.2
 book dry-run builds clean. Schedule `canon_flat_in12_n30.json` (30 runs, no gate, predictions P1–P8). ✅ **CONFIRMED by the user 2026-09-10 15:00: "Go with 1.2 as soon as the current run ends"** — the ×1.2 book, the ladder anchored on
-it, ai_value 1,000 / 2,000 / 3,000 / 4,000, flat cost; `canon-flat-in13` stays only as the record of the alternative.
+it, ai_value 1,000 / 2,000 / 3,000 / 4,000, flat cost; `canon-flat-in13` stays only as the record of the alternative. **LAUNCHED 2026-09-10 15:12** as `20260910_151220_canon-flat-in12-n30` (30 runs, timeout 420, no gate), the moment phase 2's batch ended at its run 11 (F109: the A 2.2 arm at n=11 read 0.915× vanilla — the comparison this arm is read against, with phase 1 (F107) and the vanilla n=16 as the references).
