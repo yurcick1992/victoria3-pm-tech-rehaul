@@ -1,0 +1,67 @@
+{
+ "schedule_version": 1,
+ "label": "a22in12-tiebreak-n1",
+ "_why": "THE TIE-BREAKER RUN OF canon-je24-a22-in12 (the 2+1 protocol, user-ruled 2026-09-13: a third run where the two disagree). Runs 2 and 4 of session 20260913_143610 (the same config, byte-identical build) DISAGREE on two pre-registered criteria: world GDP 0.65x (run 2) against 0.80x (run 4) the vanilla n=16 median at 1935 - a 0.15 gap sitting on opposite sides of the 0.8 lower bound of the GDP band - and stale (e0) payback 35 y (run 2) against 25 y (run 4), opposite sides of 30 y. They agree on productive workers per capita (0.56x / 0.59x), the era-0 workforce direction (+3% / +4% staffed rung-0 levels 1900 -> 1935, i.e. rung 0 NOT dying under the lift with steep cost) and below-best (37.0% / ~41.8%). Run 4 is the healthier seed (Britain GBP 788M against 493M, pools 0.19 against 0.31 of GDP, tiered levels 7,338 against 6,336). The reading is taken as the median of three. Run sequentially, after the a16 tie-breaker (a16_tiebreak_n1.json) and before the a19 batch.",
+ "_arms": {
+  "canon-je24-a22-in12": "{kind: config, config: config/mod_config.canon-je24-a22-in12.json} - unchanged since the batch (file mtime 2026-09-13 14:21; compare the build_state config hash against runs 2 and 4)."
+ },
+ "_predictions": {
+  "gdp": "world GDP 0.6-0.85x vanilla at 1935 (the two readings 0.65 / 0.80)",
+  "obsolescence": "rung-0 staffing at 1935 between 50% and 65% over all tiered industries; the era-0 staffed-level count within +-15% of its 1900 value - rung 0 thinning, not dying (the lift alone does not fire F97's mechanism under steep cost)",
+  "alignment": "the median of three settles the GDP side of the 0.8 bound and the stale payback side of 30 y"
+ },
+ "_comparison": "runs 2 and 4 of 20260913_143610 (canon-je24-a22-in12); vanilla n=16 (20260821_131149) for every ratio; phase 2 (F109, n=11, the same book without the lift) is the one-lever baseline. Pool the three with batch_tables --arm 20260913_143610_a16-vs-a22in12-n2x2,<this session>:canon-je24-a22-in12.",
+ "_cost": "1 x 1836->1936 ~ 2h20-2h40; ~140 MB.",
+ "_caveats": [
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent; the five-minute smoke check.",
+  "This is the third run of a config, not a new hypothesis; the a19 follow-up waits for it."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+ },
+ "setups": {
+  "canon-je24-a22-in12": {
+   "kind": "config",
+   "config": "config/mod_config.canon-je24-a22-in12.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "canon-je24-a22-in12",
+   "until": "1936.1.1"
+  }
+ ]
+}
