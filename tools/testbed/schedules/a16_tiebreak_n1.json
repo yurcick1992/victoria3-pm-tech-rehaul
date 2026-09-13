@@ -1,0 +1,67 @@
+{
+ "schedule_version": 1,
+ "label": "a16-tiebreak-n1",
+ "_why": "THE TIE-BREAKER RUN OF canon-flat-in12-a16 (the 2+1 protocol, user-ruled 2026-09-13: 'If the two runs are well aligned, the deduction stays. If they diverge strongly, have a third round as a tie breaker'). Runs 1 and 3 of session 20260913_143610 (the same config, byte-identical build) agree on the headline - world GDP 0.57x / 0.60x the vanilla n=16 median at 1935, productive workers per capita 0.69x / 0.68x, pools 0.09 / 0.13 of GDP, tiered levels 11,074 / 11,655, stale (e0) payback 39 y / 54 y - and DISAGREE on one pre-registered criterion: the era-0 workforce moved +13% in run 1 (1,198 -> 1,353 staffed rung-0 levels, 56% staffed at 1935) and -18% in run 3 (1,136 -> 931, 44% staffed). The rule says any failed criterion => one more run of that arm, the reading taken as the median of three. This run decides the obsolescence direction only; the GDP deduction (A 1.6 flat undershoots vanilla by ~40%) stands on the two aligned readings. Run sequentially, after the batch's run 4 (the user's ruling of 2026-09-13: no interleaving; the running batch left to finish).",
+ "_arms": {
+  "canon-flat-in12-a16": "{kind: config, config: config/mod_config.canon-flat-in12-a16.json} - unchanged since the batch (file mtime 2026-09-13 14:21; the scheduler's build_state records the config hash, compare it against runs 1 and 3)."
+ },
+ "_predictions": {
+  "gdp": "world GDP 0.5-0.7x vanilla at 1935 (the two readings 0.57 / 0.60)",
+  "obsolescence": "rung-0 staffing at 1935 between 40% and 60% over all tiered industries; the era-0 staffed-level count within +-20% of its 1900 value - i.e. rung 0 thinning slowly, not dying (F97's mechanism needs the frontier's flood, which A 1.6 does not produce)",
+  "alignment": "all five criteria against the median of the three runs are expected to hold except possibly the workforce direction, which this run settles"
+ },
+ "_comparison": "runs 1 and 3 of 20260913_143610 (canon-flat-in12-a16); vanilla n=16 (20260821_131149) for every ratio. Pool the three with batch_tables --arm 20260913_143610_a16-vs-a22in12-n2x2,<this session>:canon-flat-in12-a16.",
+ "_cost": "1 x 1836->1936 ~ 2h20-2h40; ~140 MB.",
+ "_caveats": [
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent; the five-minute smoke check.",
+  "This is the third run of a config, not a new hypothesis; the a19 follow-up waits for both configs' decisions."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+ },
+ "setups": {
+  "canon-flat-in12-a16": {
+   "kind": "config",
+   "config": "config/mod_config.canon-flat-in12-a16.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "canon-flat-in12-a16",
+   "until": "1936.1.1"
+  }
+ ]
+}
