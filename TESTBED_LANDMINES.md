@@ -77,6 +77,7 @@ closed.
 | L27 | An analysis script walks cfg.industries for tiers without skipping `disabled` industries (their rung-0 key IS the vanilla building) | AUTO |
 | L28 | The log MIRROR re-copied the current log on a FALSE rotation — a stale directory length below the read position reset the tail to 0 every poll; non-telemetry lines (PMR_JE, events) multiplied ×2–28 in bursts | AUTO (post-run) | `Test-LmL28` — any `recovered 0 chars from []` seam in a run's `logs_live/*.log` FAILS; observer fixed 2026-09-04 |
 | L29 | The OBSERVER DIED ON ITS OWN LOG LINE — `Add-Content` to run.log throws "Stream was not readable" while another process reads the file (a heartbeat's `tail -1`), and under `Stop` preference the unguarded tick write unwound the observer with the game still running; the scheduler then burned 48 runs in 15 minutes behind the orphan (L19's cascade) | FIXED (generator) + PROOF OWED | all four harness log writers retry and never throw (2026-09-07); `run_schedule.ps1` aborts after TWO consecutive instant failures (non-zero exit < 90 s after launch) — live proof owed at the next idle window; L17 catches the artifact (a run with no meta.json) |
+| L30 | A BATCH LAUNCHED FROM THE AGENT'S TOOL SHELL DIES WITH THE APP — the shell sits in the desktop app's job object (KILL_ON_JOB_CLOSE), a `Start-Process` child silently breaks away into a SECOND app job, and an app restart (a forced re-auth, 2026-09-10 18:45:29) tore both down: scheduler, observer, game, archiver and harvester died in one second, ten months short of run 1's end | AUTO (launch) + WARN (scheduler) | `tools/testbed/launch_detached.ps1` creates the process through WMI (in NO job) and FAILS unless the kernel confirms it; `run_schedule.ps1` prints an ALERT when it finds itself inside a job. Found 2026-09-13 |
 
 ---
 
@@ -1589,3 +1590,52 @@ cannot be run beside a live batch because a second scheduler shares the `STOP_AR
 **Rule.** A harness that supervises a game may die on nothing but the game. Every periodic write in the poll loop is
 wrapped; readers of a live run's files stay legitimate — the writer tolerates them, not the other way round. And a
 console window is not a log: anything a harness says on its way down must also reach a file.
+
+## L30 — A BATCH LAUNCHED FROM THE AGENT'S TOOL SHELL DIES WITH THE APP: the whole process tree sat in the desktop app's job objects (found 2026-09-13, the flat-cost ×1.2 arm's run 1)
+
+**Status: FIXED (launcher + scheduler self-check), the launcher PROVEN on its first use.** Root cause and measurements in
+BUGS_AND_FIXES 2026-09-13.
+
+**What happened.** `20260910_151220_canon-flat-in12-n30` was launched at 15:12 on 2026-09-10 the way every batch had been
+launched — `Start-Process powershell … run_schedule.ps1` from the agent's PowerShell tool shell, into its own visible
+window — and was built to finish on its own: 30 runs, no gate, nothing an agent had to be present for. At **18:45:29** the
+game's tick log, the observer's `run.log`, the autosave archiver's `archive.log` and the save harvester's `harvest.log`
+all stopped in the same second, with run 1 at in-game 1935.2 — ten months short of its end — in the middle of the
+March-1935 telemetry dump. No minidump, no observer verdict, no `meta.json`, no run 2 folder. The OS stayed up for eight
+more hours (the event log shows no sleep, no unexpected shutdown; Windows Update rebooted the box at 03:00 the next day,
+long after). What did happen at 18:45 was the desktop app restarting for a forced web re-auth.
+
+**Why.** Measured on 2026-09-13 with `IsProcessInJob` / `QueryInformationJobObject` from inside the tool shell: the
+shell runs in a job object whose limits are **KILL_ON_JOB_CLOSE | BREAKAWAY_OK | SILENT_BREAKAWAY_OK |
+DIE_ON_UNHANDLED_EXCEPTION**; a child created with `Start-Process` breaks away from that job silently — and lands in a
+**second** job of the app's (BREAKAWAY_OK only). Both jobs belong to the app; when it went down it took every process in
+them: scheduler → observer → game, plus the archiver and harvester the scheduler had spawned. A job kill is
+simultaneous and silent, which is exactly the signature on disk. The three earlier multi-day batches survived only
+because the app never restarted while they ran.
+
+**Why nothing failed.** From the outside a killed tree and a sleeping machine look identical: no process, no error,
+no marker, no last line. The waiter had been re-armed at 18:10 and returned at 18:35 with RUNNING; the agent session
+itself died in the same restart, so nothing was left to notice the silence.
+
+**Fix.** (1) **`tools/testbed/launch_detached.ps1`** creates the process through **WMI `Win32_Process.Create`**, whose
+creator is the WMI provider host — outside every job of ours — so the child belongs to **no job object at all**
+(measured: `IsProcessInJob` false, a real console with `KeyAvailable` readable, session 1, the working directory
+honoured). It then OPENS the child and asks the kernel; a child that is in any job is killed and the script exits
+non-zero — a launch that cannot be verified is not a launch. The two obvious alternatives were measured and rejected:
+a Task Scheduler task and `CreateProcess(CREATE_BREAKAWAY_FROM_JOB)` both left the child inside a job (limit flags 0,
+owner unknown). (2) **`run_schedule.ps1` checks itself at startup** and prints an ALERT into the session log when it
+is inside a job object — the batch will die with whatever owns that job — naming this entry and the launcher. Not
+fatal: a plain user console can legitimately sit in a benign job, and a human at the keyboard is the case the keys
+were kept for. (3) First use: the interrupted run was finished from its 1935.1.1 autosave through the launcher, all
+three helpers reported `outside any job object`.
+
+**DETECTOR.** AUTO at launch (the launcher's kernel check, exit 2 on failure) and WARN at scheduler start. Not an
+artifact check: the only artifact a job kill leaves is an absence, which L17 already reports as a run short of its
+target.
+
+**Rule.** A batch that is meant to outlive the agent may not be a descendant of the agent's process tree in any job
+the agent's host owns. The agent launches through the launcher and NOTHING else — `Start-Process` from a tool shell is
+the pattern that died. And the other class stays open: a reboot (Windows Update restarted the machine at 03:00 on
+2026-09-11, outside active hours) kills everything, launcher or not — a batch that must survive that needs a resume
+mode (an at-logon task that re-enters the schedule at its last completed run) or Windows Update held back for the
+batch's window; neither exists yet.

@@ -300,6 +300,19 @@ function Log {
     Write-Host "[log line not written to session.log after 8 tries - the file was held open by another process]"
 }
 
+# ---- L30 (2026-09-13): am I inside a Windows job object? A batch launched from the agent's tool shell sat in the
+#      desktop app's job objects and died with the app at 18:45:29 on 2026-09-10, ten months short of run 1's end.
+#      tools/testbed/launch_detached.ps1 creates this script through WMI, in no job at all, and proves it; this is
+#      the belt to that brace. An ALERT, not a throw: a human's own console may legitimately sit in a benign job.
+try {
+    Add-Type -Name JobSelf -Namespace V3TB -ErrorAction SilentlyContinue -MemberDefinition '[DllImport("kernel32.dll", SetLastError=true)] public static extern bool IsProcessInJob(IntPtr hProcess, IntPtr hJob, out bool result); [DllImport("kernel32.dll")] public static extern IntPtr GetCurrentProcess();'
+    $script:LaunchedInJob = $false
+    [void][V3TB.JobSelf]::IsProcessInJob([V3TB.JobSelf]::GetCurrentProcess(), [IntPtr]::Zero, [ref]$script:LaunchedInJob)
+    if ($script:LaunchedInJob) {
+        Log "this scheduler is running INSIDE a Windows job object - it will die with whatever owns that job (landmine L30: an app restart killed 20260910_151220 at 18:45:29). From the agent, launch through tools	estbedlaunch_detached.ps1; from your own console this is usually benign." "ALERT"
+    } else { Log "job-object check: not in a job (L30)" }
+} catch { Log "job-object check skipped: $($_.Exception.Message)" "WARN" }
+
 # ---- build a setup's mod. Rebuilt for EVERY run, deliberately: builds are deterministic
 #      (same config + same vanilla -> same output), they take ~1 min, and caching would hide
 #      a setup whose recipe is not reproducible. See CLAUDE.md.

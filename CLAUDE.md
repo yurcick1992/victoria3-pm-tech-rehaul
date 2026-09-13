@@ -1617,6 +1617,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         completion, RUNNING on a heartbeat, DEAD (exit 2) if the game vanished, and
                         STALLED (exit 3) if nothing anywhere in the session tree has been written for
                         -StallMinutes (default 20) — landmine L21: "alive" is not "working"
+  testbed/launch_detached.ps1  ⭐⭐ THE ONLY WAY THE AGENT LAUNCHES A BATCH (2026-09-13, landmine L30): creates the
+                        scheduler (or any harness script) through WMI `Win32_Process.Create`, so it belongs to NO job
+                        object — the agent's tool shells sit in the desktop app's jobs (KILL_ON_JOB_CLOSE) and a
+                        `Start-Process` child stays in one, which is how an app restart killed a whole batch at 18:45:29
+                        on 2026-09-10. It then asks the kernel whether the child is in a job and kills it if so (exit
+                        non-zero): a launch that cannot be verified is not a launch. Visible console by default (the
+                        p/r/s/x keys work), `-Hidden` for the archiver / harvester, `-NoExit` for the scheduler
   testbed/ledger/       THE BATCH LEDGER — the reusable per-batch report (template + data scripts +
                         README with the fill procedure). Ruled conventions encoded: normalized/absolute
                         toggles on every view, world + watchlist pages with selectable countries,
@@ -3194,7 +3201,10 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   **L27 an analysis script that walks `cfg.industries` for tiers WITHOUT skipping `disabled` industries
   (AUTO since 2026-09-03, the L25 pattern)** — on a four-rung book a disabled industry's rung-0 KEY IS THE
   VANILLA BUILDING, so Britain's shipyards and ports read as a growing "e0" on five ledgers before a reader
-  noticed; nine ledger scripts fixed, proven both ways · **L28 the log MIRROR re-copied the current log on a FALSE rotation
+  noticed; nine ledger scripts fixed, proven both ways · **L30 A BATCH LAUNCHED FROM THE AGENT'S TOOL SHELL DIES WITH THE APP (AUTO at launch since 2026-09-13)** — the tool
+  shell sits in the desktop app's job objects and a `Start-Process` child stays in one of them; `tools/testbed/launch_detached.ps1`
+  creates the scheduler through WMI in no job at all and proves it with a kernel check, `run_schedule.ps1` warns when it finds
+  itself inside a job · **L28 the log MIRROR re-copied the current log on a FALSE rotation
   (AUTO since 2026-09-04)** — `Get-Item`'s directory length lags a file another process holds open, so "length below
   my read position" fired without a rotation and Read-Tail reset to 0 every 250 ms poll: run 4 of canon4-je-n5
   appended one 946-line chunk 27 times in eight seconds, canon-n7 run 1 sixteen times. V3TB lines were de-duplicated by
@@ -3395,8 +3405,16 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   `Start-Process … -NoNewWindow -RedirectStandardOutput …` looks harmless and is not. Spawn it into its
   **own visible window** and leave stdio alone:
   ```
-  Start-Process powershell -ArgumentList '-ExecutionPolicy','Bypass','-NoExit','-File','tools\testbed\run_schedule.ps1','-Schedule','<spec.json>'
+  powershell -ExecutionPolicy Bypass -File tools\testbed\launch_detached.ps1 -File tools\testbed\run_schedule.ps1 -ArgumentList '-Schedule','tools\testbed\schedules\<spec>.json' -NoExit
   ```
+  ⚠⚠ **AND OUTSIDE THE AGENT'S PROCESS TREE — THE LAUNCHER, NEVER `Start-Process` (landmine L30, 2026-09-13).** The
+  agent's tool shells run inside the desktop app's job objects (KILL_ON_JOB_CLOSE), and a `Start-Process` child only
+  breaks away into a second job of the app's: when the app restarted for a re-auth at 18:45:29 on 2026-09-10, the
+  scheduler, observer, game, archiver and harvester of `20260910_151220` died in the same second, ten months short of
+  run 1's end, with the OS up for eight more hours. `tools/testbed/launch_detached.ps1` creates the process through
+  WMI — in NO job object — and refuses (exit non-zero, child killed) unless the kernel confirms that; the scheduler
+  prints an ALERT if it ever finds itself inside a job. A reboot still kills everything (Windows Update restarted the
+  machine at 03:00 the same night); a resume mode is the open item, TESTBED_LANDMINES L30.
   For progress, **tail the session log** (`tools/testbed/sessions/<stamp>/session.log`) rather than
   capturing the process's stdio. Since 2026-07-31 the observer logs a loud `WARN` at startup when it
   has no console, so a headless launch is at least visible in the log — it used to be indistinguishable

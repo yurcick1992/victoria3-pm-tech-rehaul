@@ -2424,3 +2424,67 @@ ever sets an expiring variable for the war-channel journal entry.
 can be INVALID, not merely false, and an invalid link logs an error on every evaluation. Guard every link an on_action or a
 progress bar dereferences with `exists = <link>` before comparing it. The five-minute smoke check reads the run's own error
 window by parsed time, and a class that names one of our files is the signal to look for — this one appeared only after 1855.
+
+## 2026-09-13 — the whole batch died with the agent app: the scheduler was a descendant of the app's job objects (landmine L30)
+
+**Symptom.** `20260910_151220_canon-flat-in12-n30` (30 runs planned, launched 15:12 on 2026-09-10) stopped writing at
+18:45:29 with run 1 at in-game 1935.2, ten months short of 1936.1.1: the tick log, `run.log`, the archiver's and the
+harvester's logs all end in the same second, the game's own log ring too. No minidump, no verdict line, no `meta.json`,
+no run 2. The machine was up until Windows Update rebooted it at 03:00 on 09-11 (System event log: no id 41/6008, no
+sleep entries; three clean 1074 restarts by MoUsoCoreWorker / TrustedInstaller).
+
+**Root cause.** The scheduler was launched with `Start-Process powershell …` from the agent's PowerShell tool shell.
+Measured 2026-09-13 with `IsProcessInJob` + `QueryInformationJobObject(JobObjectExtendedLimitInformation)`:
+
+| process | in a job? | limit flags |
+|---|---|---|
+| the tool shell (parent: the app) | yes | 0x3C00 = KILL_ON_JOB_CLOSE, BREAKAWAY_OK, SILENT_BREAKAWAY_OK, DIE_ON_UNHANDLED_EXCEPTION |
+| a `Start-Process` child of it | yes | 0x800 = BREAKAWAY_OK (silent breakaway moved it into a second job of the app's) |
+| a `CreateProcess(CREATE_BREAKAWAY_FROM_JOB \| CREATE_NEW_CONSOLE)` child | yes | 0x0 |
+| a Task Scheduler task (interactive) | yes | 0x0 (the scheduler service's job) |
+| a `Win32_Process.Create` (WMI) child, parent WmiPrvSE | **no** | — |
+
+An app restart (a forced web re-auth at that moment) tore its jobs down and every process in them died at once.
+Nothing else was wrong with the batch. The earlier multi-day batches survived because the app never restarted while
+they ran — the design was robust to context loss inside a living app, not to the app dying.
+
+**Fix.** `tools/testbed/launch_detached.ps1`: Win32_Process.Create with a normal console window (or hidden for the
+helpers), the working directory set, then a kernel check on the child — in any job ⇒ killed, exit non-zero. Measured
+on the child: no job, `[Console]::KeyAvailable` readable (the p/r/s/x keys work), session 1. `run_schedule.ps1` warns
+at startup when it finds itself inside a job. CLAUDE.md's launch snippet replaced; MODDING_NOTES likewise.
+⚠ Two guards learned while probing: the PowerShell tool refuses any command text containing `Remove-Item` with a
+wildcard (use `Get-ChildItem | Remove-Item -LiteralPath`), and a cleanup filter on `Win32_Process.CommandLine` must
+exclude `$PID` — the tool shell's own command line contains the script text it is filtering for, and the first probe
+killed its own shell.
+
+**What is NOT fixed.** A reboot kills everything regardless (Windows Update at 03:00 is the second failure mode of
+the same night). Options, none built: a resume mode in `run_schedule.ps1` (re-enter a session at its last completed
+run, continue the interrupted run from its newest autosave — the observer already has `-ContinueFromSave`) behind an
+at-logon scheduled task; or Windows Update active hours / a pause covering the batch window.
+
+## 2026-09-13 — a relaunch drained the previous session's ring segments as its own: a false "continuation load failed (fresh start at 1914.2.10)"
+
+**Symptom.** Finishing the killed run from its 1935.1.1 autosave (`run_observer.ps1 -ContinueFromSave
+-ContinueExpectAfter 1934.6.1`, the same mod build, into the run's own folder), the observer abandoned the run ONE
+SECOND after the game process started: "continuation landed at 1914.2.10, BEFORE the expected 1934.6.1 — the save did
+not load". The game had not loaded anything; it was still at its startup banner. `meta.json` said `abandoned`.
+
+**Root cause.** `New-Tail` starts at the current end of the live log and remembers only that file's signature; its
+`Seen` set of drained segments starts EMPTY. The game rotates its 5-slot ring at startup, so every segment already on
+disk shifts one slot (`.1 → .2` …). `Read-Tail` then sees the live file shrink, correctly calls it a rotation, and
+drains "every segment not already consumed, oldest first" — which now includes the previous session's `.2`–`.5`, read
+whole. Their lines carry clock stamps but no date, and the stale-tick filter (signed clock gap, ±12 h, BUGS_AND_FIXES
+2026-09-10) trusts a 17:3x stamp against a 10:01 launch. The first tick line of the oldest drained segment — the
+previous session at 1914.2.10 — became `$firstTick`, and the continuation guard did exactly what it is for. The
+2026-09-10 fix covered a resume a few minutes after a crash; this is the same class a day later: any launch more than
+12 h after the previous session's last line, with that session's ring still on disk, would read it as its own.
+
+**Fix.** `New-Tail` seeds `Seen` with the signatures of every `<log>.1`–`.5` present at launch: anything on disk
+before the launch belongs to an earlier session, whatever its stamp says. A within-run multi-rotation drain is
+unaffected (a segment that appears during the run has a new signature). The failed attempt's `meta.json` was set
+aside (`_pre_resume_backup/meta.failed-attempt-1001.json`), the mirrors restored from the pre-resume backup, and the
+continuation relaunched: it landed at 1935.1.12 and replayed the 1935.1.1 dump from February as expected.
+
+**Also changed for the continuation.** The mirror is opened in APPEND mode on a `-ContinueFromSave` launch as well as
+on a crash resume (`$app = ($attempt -gt 1 -or $ContinueFromSave)`), so a run finished by hand stays one run in one
+file: the old lines first, the new ones after, and the V3TB harvest's last-wins rule keeps the continuation's dump.

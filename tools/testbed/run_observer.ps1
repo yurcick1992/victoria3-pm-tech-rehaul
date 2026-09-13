@@ -100,6 +100,14 @@ param(
     # (-continuelastsave + -handsoff keeps observer mode — verified 2026-08-06, session resume_diag).
     [switch]   $ContinueFromSave,
     [string]   $ContinueExpectAfter = "",
+    # Wall seconds already spent on this run by an EARLIER launch that was killed (2026-09-13: run 1 of
+    # 20260910_151220 died with the agent app at 1935.2, landmine L30, and was finished by hand from its
+    # 1935.1.1 autosave). meta.json's wall_seconds is the SUM - what a player actually waited through -
+    # and the two halves are kept beside it (wall_seconds_prior / wall_seconds_this_launch), so row P
+    # reads the century, not the last launch. Read the prior half off the killed launch's own last tick
+    # line in run.log ("...12 771s  in-game 1935.2.18"), and pass only the play up to where this launch
+    # takes over; the load time of a continuation is not play and is not in it.
+    [double]   $PriorWallSeconds = 0,
     # How many times a run may be resumed FROM THE SAME AUTOSAVE before that save is declared poisoned
     # and the run abandoned. 0 disables resuming (an abnormal exit then just ends the run).
     #
@@ -224,8 +232,20 @@ function New-Tail {
     }
     # Sig/Seen support the multi-rotation drain in Read-Tail: a rotated segment never changes
     # again, so its first ~120 chars (which begin with a timestamp) identify it for good.
+    # ⚠ Seen is SEEDED with every rotated segment already in the ring at launch. The game rotates the
+    # ring at startup, so those segments shift one slot (.1 -> .2 ...) and the drain would otherwise
+    # read them whole as if they had appeared during this run: on 2026-09-13 a continuation launched
+    # a day after the previous session took that session's first surviving tick, 1914.2.10, as its
+    # own landing one second after the game started and abandoned itself. Anything on disk before
+    # the launch belongs to an earlier session, whatever its clock stamp says (the stamps carry no date).
+    $seen = New-Object 'System.Collections.Generic.HashSet[string]'
+    $dir0 = Split-Path -Parent $Path; $base0 = [IO.Path]::GetFileNameWithoutExtension($Path); $ext0 = [IO.Path]::GetExtension($Path)
+    for ($i = 1; $i -le 5; $i++) {
+        $s0 = Get-SegmentSig (Join-Path $dir0 ("{0}.{1}{2}" -f $base0, $i, $ext0))
+        if ($s0) { $null = $seen.Add($s0) }
+    }
     return @{ Path = $Path; Pos = $len; Buf = ""; Writer = $writer; Lines = 0L
-              Sig = (Get-SegmentSig $Path); Seen = (New-Object 'System.Collections.Generic.HashSet[string]')
+              Sig = (Get-SegmentSig $Path); Seen = $seen
               Lost = 0L
               # Seen2 de-duplicates V3TB lines across re-read segments; Dups counts what it caught.
               Seen2 = (New-Object 'System.Collections.Generic.HashSet[string]'); Dups = 0L }
@@ -816,8 +836,12 @@ try {
         Write-KeyLegend
         $proc = Start-Process -FilePath $Exe -ArgumentList $launchArgs -WorkingDirectory $Binaries -PassThru
 
-        # Mirrors APPEND on a resume so one run stays one file.
-        $app = ($attempt -gt 1)
+        # Mirrors APPEND on a resume so one run stays one file. A -ContinueFromSave launch into a folder
+        # that already holds a mirror is the same thing by hand (2026-09-13: run 1 of 20260910_151220 was
+        # killed at 1935.2 with the app that spawned it and finished later from its 1935.1.1 autosave) -
+        # the old lines stay first in the file, the new ones follow, and the V3TB harvest's last-wins rule
+        # keeps the continuation's dump. Into an empty folder append simply creates the file.
+        $app = ($attempt -gt 1 -or $ContinueFromSave)
         $tailDebug = New-Tail (Join-Path $LogDir "debug.log")             (Join-Path $liveDir "debug.log")             $app
         $tailTick  = New-Tail (Join-Path $LogDir "dedicated_server.log")  (Join-Path $liveDir "dedicated_server.log")  $app
         $tailError = New-Tail (Join-Path $LogDir "error.log")             (Join-Path $liveDir "error.log")             $app
@@ -1293,7 +1317,9 @@ try {
 
         $meta = [ordered]@{
             run = $run; token = $token; started = $runStart.ToString("s"); ended = $runEnd.ToString("s")
-            wall_seconds = $wallSec; args = $gameArgs; dump_dates = $DumpDates; until_date = $UntilDate
+            wall_seconds = $(if ($PriorWallSeconds -gt 0) { [math]::Round($wallSec + $PriorWallSeconds, 1) } else { $wallSec })
+            wall_seconds_this_launch = $wallSec; wall_seconds_prior = $PriorWallSeconds
+            args = $gameArgs; dump_dates = $DumpDates; until_date = $UntilDate
             reached_ingame_date = $lastTick; self_quit = ((-not $timedOut) -and (-not $abandoned)); timed_out = $timedOut
             attempts = $attempt; resumes = $resumes; abandoned_reason = $abandoned
             # Saves the fallback ladder moved aside, with their byte sizes against their siblings.

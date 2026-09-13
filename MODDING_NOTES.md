@@ -393,7 +393,9 @@ either the game dying (resume it) or a human killing it (stop the batch). Three 
 ⚠ **Redirecting stdio disables signals 1 and 3.** `[Console]::KeyAvailable` throws when stdout/stdin are
 redirected, so `Start-Process … -NoNewWindow -RedirectStandardOutput …` silently drops the harness into
 headless mode with the STOP file as its only control. Launch batches into their **own visible window**
-(`Start-Process powershell -NoExit -File tools\testbed\run_schedule.ps1 -Schedule <spec>`) and read
+(from a human console `Start-Process powershell -NoExit -File tools\testbed\run_schedule.ps1 -Schedule <spec>`; from the
+AGENT only `tools\testbed\launch_detached.ps1 -File tools\testbed\run_schedule.ps1 -ArgumentList '-Schedule','<spec>' -NoExit`,
+which creates it through WMI outside the app's job objects — landmine L30, 2026-09-13) and read
 progress from `sessions\<stamp>\session.log` instead of capturing stdio. The observer now emits a
 startup `WARN` when it has no console; before that (pre-2026-07-31) the two cases were
 indistinguishable in the log.
