@@ -34,6 +34,11 @@ const topEmp = y => { const e = EMP[y] || []; let bi = 0; e.forEach((v, i) => { 
 //   G1 on canon4-je's number under canon4v's title (caught 2026-09-05 filling canon4v-art3, the first fill to
 //   pass baselines). Take the last row, and never a row by position from the front.
 const belowBest = (TC.rows && TC.rows.length) ? TC.rows[TC.rows.length - 1].raw : null;
+// ⚠ EVERY BAND IS TWO-SIDED (user-ruled 2026-09-13: "If both bounds are given, both must be respected"). G4 used to
+//   grade `gdpR >= 0.8` alone and printed "met" on a 2.10× world; G2's pill and G7's class were literals that ignored
+//   their own numbers. A metric outside EITHER bound is not met — say which side it left.
+const staleShrinks = Number((EMP[Y] || [])[0]) < Number((EMP[1900] || [])[0]);
+const frontierIn = p.frontier >= 8 && p.frontier <= 15;
 
 const row = (id, goal, metric, val, target, pill, cls) =>
   `<tr><td>${id}</td><td class="goalcell">${goal}</td><td>${metric}</td><td class="num">${val}</td><td class="num dim">${target}</td><td><span class="pill ${cls}">${pill}</span></td></tr>`;
@@ -48,20 +53,23 @@ const rows = [
   row('G2', 'Inefficient producers die',
       'Oldest rung: payback <span class="dim">· its employment 1900→1935</span>',
       '<b>' + p.stale.toFixed(1) + ' y</b> <span class="dim">· ' + (EMP[1900] || [])[0] + '→' + (EMP[Y] || [])[0] + 'M</span>',
-      'lengthening <span class="dim">· shrinking</span>', 'oldest rung still grows', 'bad'),
+      'lengthening <span class="dim">· shrinking</span>',
+      staleShrinks && p.stale >= 30 ? 'oldest rung dies' : staleShrinks ? 'shrinks, still pays back' : 'oldest rung still grows',
+      staleShrinks && p.stale >= 30 ? 'ok' : staleShrinks ? 'warn' : 'bad'),
   row('G3', 'Modernising costs capital',
       'Construction ÷ vanilla <span class="dim">· frontier-rung payback</span>',
       f2(constrR) + ' <span class="dim">· <b>' + p.frontier.toFixed(1) + ' y</b></span>', '≥1× <span class="dim">· 8–15 y</span>',
-      p.frontier >= 8 && p.frontier <= 22 ? 'payback in band' : 'out of band',
-      p.frontier >= 8 && p.frontier <= 22 ? 'warn' : 'bad'),
+      frontierIn && constrR != null && constrR >= 1 ? 'met' : frontierIn ? 'payback in band' : p.frontier < 8 ? 'capital too cheap' : 'out of band',
+      frontierIn && constrR != null && constrR >= 1 ? 'ok' : frontierIn ? 'warn' : 'bad'),
   row('G4', 'GDP stays on vanilla’s path', `${Y} world GDP ÷ vanilla`,
       '<b>' + gdpR.toFixed(2) + '×</b>', '0.8–1.25×',
-      gdpR >= 0.8 ? 'met' : 'below the band', gdpR >= 0.8 ? 'ok' : 'bad'),
+      gdpR >= 0.8 && gdpR <= 1.25 ? 'met' : gdpR < 0.8 ? 'below the band' : 'above the band',
+      gdpR >= 0.8 && gdpR <= 1.25 ? 'ok' : 'bad'),
   row('G5', 'Fewer workers, more product per worker',
       'Productive workers ÷ van <span class="dim">· GDP per worker ÷ van</span>',
       '<b>' + wR.toFixed(2) + '×</b> <span class="dim">· <b>' + ppwR.toFixed(2) + '×</b></span>',
       '≤0.9× <span class="dim">· ≥1.11×</span>',
-      wR <= 0.9 && ppwR >= 1.11 ? 'met' : wR <= 0.9 ? 'workers down, productivity short' : 'neither',
+      wR <= 0.9 && ppwR >= 1.11 ? 'met' : wR <= 0.9 ? 'workers down, productivity short' : ppwR >= 1.11 ? 'productivity up, workers not down' : 'neither',
       wR <= 0.9 && ppwR >= 1.11 ? 'ok' : 'bad'),
   row('G6', 'Early game still grows', '1837–1860 GDP ÷ vanilla', early.toFixed(2) + '×', '0.9–1.1×',
       early >= 0.9 && early <= 1.1 ? 'met' : 'outside', early >= 0.9 && early <= 1.1 ? 'ok' : 'bad'),
@@ -69,7 +77,8 @@ const rows = [
       'Largest employment tier at 1900 <span class="dim">· 1920 · ' + Y + '</span>',
       topEmp(1900) + ' <span class="dim">· ' + topEmp(1920) + ' · <b>' + topEmp(Y) + '</b></span>',
       't2 <span class="dim">· t3 · t3</span>',
-      topEmp(Y) === 't3' || topEmp(Y) === 'e3' ? 'on the anchor' : 'tiers arrive late', 'bad'),
+      topEmp(Y) === 't3' || topEmp(Y) === 'e3' ? 'on the anchor' : 'tiers arrive late',
+      topEmp(Y) === 't3' || topEmp(Y) === 'e3' ? 'ok' : 'bad'),
 ];
 writeFileSync(OUTFILE, rows.join('\n    '));
 console.log(`goals computed: GDP ${gdpR.toFixed(2)}x · workers ${wR.toFixed(2)}x · perWorker ${ppwR.toFixed(2)}x · early ${early.toFixed(2)}x · belowBest ${belowBest}% · frontier ${p.frontier}y · stale ${p.stale}y · topEmp ${topEmp(Y)}`);

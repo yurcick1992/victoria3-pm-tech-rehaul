@@ -13,6 +13,16 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-09-13 — the ledger's verdict table graded a 2.10× world GDP as "met" against a 0.8–1.25× band (one-sided graders)
+
+**Symptom.** The F110 ledger (canon-flat-in12, n=1) printed row G4 as `2.10× · 0.8–1.25× · met`, row G2 as `157.3 y · 5.73→4.17M · oldest rung still grows` (the numbers say the opposite), and row G5 as `1.33× · 1.57× · neither` (the productivity term was met). The user: "stop referring to metrics that are out of upper bounds as meeting the target ... If both bounds are given, both must be respected."
+
+**Root cause.** `tools/testbed/ledger/fill_goals.mjs` tested one side of every band and carried two literal pills: G4 graded `gdpR >= 0.8` alone, G2's pill and class were the strings `'oldest rung still grows' / 'bad'` regardless of the row's own payback and employment figures, G7's class was a literal `'bad'` even when its pill said "on the anchor", G3's code used an 8–22 y window while its printed target said 8–15 y and never graded its construction term, and G5's fallback label said "neither" whenever the workers term failed. Every earlier batch sat inside the band's lower half, so the missing upper test never showed.
+
+**Fix.** Every band is tested on both bounds and the pill names the side that failed ("above the band" / "below the band"); G2 grades from its own numbers (employment shrinking 1900→1935 and payback ≥ 30 y ⇒ "oldest rung dies"; shrinking alone ⇒ "shrinks, still pays back"); G3 grades both terms against the printed 8–15 y and ≥1× (a frontier payback under 8 y reads "capital too cheap"); G5 distinguishes "productivity up, workers not down"; G7's class follows its pill. The three published ledgers were refilled and republished at their URLs: phase 1 and phase 2 unchanged in substance (0.83× and 0.92× are inside the band), F110's G4 now reads "above the band", its G2 "oldest rung dies", its G3 "capital too cheap".
+
+**Detect / prevent.** A grader with a band must carry two comparisons; when a target is one-sided by design (G3's construction ≥1×, G5's two terms) the row's target text says so. Memory `bands-are-two-sided`. The same rule applies to prose: a reading outside either bound is a miss in FINDINGS, in a lede and in chat.
+
 ## 2026-09-10 — the resume verdict's stale-tail filter failed across midnight and killed a resume that was loading correctly
 
 **Symptom.** Run 5 of `20260909_123746_canon-je24-a22-n29-cont` crashed at 1894.4.20 at 00:22:52. The observer launched resume

@@ -158,6 +158,10 @@ save summaries, and are parameterised only by the run list at the top of each fi
   value A · value B → target A · target B. A term with no agreed target carries an explicit em-dash;
   dropping it re-pairs the surviving values against the WRONG targets, which is how a construction
   ratio came to be printed against a payback in years.
+  ⚠⚠ **EVERY BAND IS GRADED ON BOTH BOUNDS** (user-ruled 2026-09-13, BUGS_AND_FIXES 2026-09-13): G4 used to test
+  `gdpR >= 0.8` alone and printed "met" on the 2.10× world of F110; G2's pill was a literal. A reading above the upper
+  bound is "above the band", never "met"; a target that is one-sided by design (G3's construction ≥1×) says so in its
+  target text.
 - **`fill_tierchoice.mjs`** — the **Build choice panel** (`TIERC`, table `t-tierc`; user-ruled INTO
   the layout 2026-08-24 — the layout may gain panels, never lose them): the share of tiered
   construction below the best tier the country holds (raw / unit-weighted / ex-ports, on
