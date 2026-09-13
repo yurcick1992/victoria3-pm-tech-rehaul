@@ -945,20 +945,21 @@ function render1(mode) {
   const flatPts = Object.entries(GDP_FLAT).map(([y, g]) => [+y, g]);
   const vanPts = Object.entries(GDP_VAN).map(([y, g]) => [+y, g]);
   const nbPts = Object.entries(GDP_NB).map(([y, g]) => [+y, g]);
+  const hasNb = nbPts.length > 0;   // a reference series is OPT-IN (2026-09-13): one config per report, vanilla the only other line
   const scopeNote = SCOPE === 'tier' ? vaNote() : '';
   if (C1MODE === 'ratio') {
     lineChart(document.getElementById('chart1'), [
-      { pts: flatPts.map(([y, g]) => [y, g / GDP_VAN[y]]), c: '--accent', label: '__ARMLABEL__' },
-      { pts: nbPts.map(([y, g]) => [y, g / GDP_VAN[y]]), c: '--gold', label: '__NBLABEL__' }],
+      { pts: flatPts.map(([y, g]) => [y, g / GDP_VAN[y]]), c: '--accent', label: '__ARMLABEL__' }].concat(hasNb ? [
+      { pts: nbPts.map(([y, g]) => [y, g / GDP_VAN[y]]), c: '--gold', label: '__NBLABEL__' }] : []),
       { ymin: 0.2, ymax: 1.8, grid: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75], emph: 1, band: [0.8, 1.25], fmt: v => v.toFixed(2) + '×', label: 'World GDP ratio' });
     document.getElementById('cap1').innerHTML = 'Yearly world GDP ÷ the vanilla baseline (__VANLABEL__); the mod line is the median of this batch’s runs. Shaded band = the 0.8–1.25× target. ⚠ A median hides the spread — __SPREAD__ Sharp notches are civil wars and collapses (see incidents), not business cycles.' + scopeNote;
   } else {
     lineChart(document.getElementById('chart1'), [
       { pts: flatPts, c: '--accent', label: '__ARMLABEL__' },
-      { pts: vanPts, c: '--ink3', label: 'vanilla' },
-      { pts: nbPts, c: '--gold', label: '__NBLABEL__' }],
+      { pts: vanPts, c: '--ink3', label: 'vanilla' }].concat(hasNb ? [
+      { pts: nbPts, c: '--gold', label: '__NBLABEL__' }] : []),
       { ymin: 0, ymax: 7200, grid: [0, 1000, 2000, 3000, 4000, 5000, 6000, 7000], fmt: v => '£' + (v >= 1000 ? (v / 1000).toFixed(1) + 'B' : v + 'M'), label: 'World GDP absolute' });
-    document.getElementById('cap1').innerHTML = 'Yearly world GDP in £M, all three arms on one axis: this batch (median), the vanilla baseline (__VANLABEL__), and the reference series (__NBLABEL__). Same data as the ratio view, unnormalised.' + scopeNote;
+    document.getElementById('cap1').innerHTML = (hasNb ? 'Yearly world GDP in £M, all three arms on one axis: this batch (median), the vanilla baseline (__VANLABEL__), and the reference series (__NBLABEL__).' : 'Yearly world GDP in £M, this batch (median) and the vanilla baseline (__VANLABEL__) on one axis.') + ' Same data as the ratio view, unnormalised.' + scopeNote;
   }
 }
 document.getElementById('c1-ratio').onclick=()=>{press('c1-ratio','c1-abs');render1('ratio')};

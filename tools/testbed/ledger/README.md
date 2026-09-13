@@ -196,6 +196,14 @@ excluded by hand from the run list, so check `preflight.ps1 -Session` before fil
 
 ## Filling it for a new batch
 
+⭐⭐ **ONE CONFIGURATION PER REPORT (user-ruled 2026-09-13).** A ledger compares its own arm against the vanilla baseline and
+nothing else: no reference ("nb") series on the GDP chart, no other arms' rows in the build-choice table, no other batch's numbers
+in the verdict paragraph. Cross-batch remarks go in ONE clearly labelled closing paragraph of the lede ("Cross-reference — other
+configurations, each with its own report"), stating differences and similarities and naming the other reports. `report_data.mjs` and
+`fill_consts.mjs` take `--nb none` (the default since 2026-09-13; the old default silently plotted the 2026-08-13 arm), the template
+draws the reference line only when a series is supplied, and `fill_tierchoice.mjs` is run without `--baseline` rows. The three
+ledgers of 2026-09-13 (phase 1, phase 2, the §10.77 book) were rebuilt this way after a page was read as conflating configurations.
+
 1. Run the three data scripts against the batch (now parameterized: `--session <name>` on analyse_gdp_gap, `--mod <sess/run[,sess/run]>` on report_data + report_data2, **`--van` / `--nb` `<sess/run[,...]>` on both since 2026-08-24** — the vanilla-baseline and reference-arm run lists, so a fill can point at the n=18 ensemble instead of the pinned n4 — `--config <arm config>` for the arm cost book, `--out <dir>`; defaults reproduce the flatcost-n1 fill. Historical note - they were hardcoded to
    `20260815_153825_flatcost-n1` + the `20260813_083557` vanilla baseline — parameterize or edit the
    consts at the top; a proper `--session` flag is the known TODO):

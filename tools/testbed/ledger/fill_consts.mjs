@@ -14,7 +14,8 @@ const argOf = (n, d) => { const i = process.argv.indexOf(n); return i > 0 && pro
 const list = (v, d) => v ? v.split(',').map(x => x.trim()).filter(Boolean) : d;
 const MOD = list(argOf('--mod', null), [1,2,3,4,5,6].map(i => `20260818_221216_canon-n7/run00${i}_canonfull`));
 const VAN = list(argOf('--van', null), ['run001_vanilla','run003_vanilla','run005_vanilla','run007_vanilla'].map(r => '20260813_083557_vanilla-vs-mod-n4/' + r));
-const NB  = list(argOf('--nb',  null), ['run002_mod','run006_mod'].map(r => '20260813_083557_vanilla-vs-mod-n4/' + r));
+const nbArg = argOf('--nb', null);   // opt-in since 2026-09-13 (one config per report); 'none' or absent = no reference series
+const NB  = (!nbArg || nbArg === 'none') ? [] : list(nbArg, []);
 
 // ⚠⚠ CORRECTED 2026-08-20 (user-ruled). This used to derive government + military payrolls from the
 // STAFFING of government/university/military BUILDINGS. `staffing` in a save summary is a count of

@@ -155,7 +155,10 @@ const flat = flats[0];
 // --van / --nb <sess/run[,sess/run...]>: the vanilla-baseline and reference-arm run lists
 // (defaults reproduce the original pinned-n4 fill)
 const van = argOf('--van', ['run001_vanilla', 'run003_vanilla', 'run005_vanilla', 'run007_vanilla'].map(r => '20260813_083557_vanilla-vs-mod-n4/' + r).join(',')).split(',').map(r => walk(r, false));
-const nb = argOf('--nb', ['run002_mod', 'run006_mod'].map(r => '20260813_083557_vanilla-vs-mod-n4/' + r).join(',')).split(',').map(r => walk(r, false)); // cost map irrelevant for GDP series
+// --nb <sess/run[,...]> | none (default): the reference series is OPT-IN since 2026-09-13 (user-ruled: one config per report) - the old
+// default reproduced the 2026-08-13 pinned arm silently, which is how a ledger came to show a series nobody asked for
+const nbArg = argOf('--nb', 'none');
+const nb = (!nbArg || nbArg === 'none') ? [] : nbArg.split(',').map(r => walk(r, false));
 // vanilla means at years
 const vanMean = {};
 for (const y of YEARS) {
@@ -200,7 +203,7 @@ const covOf = runs => ({ seen: runs.reduce((a, r) => a + r.vaCov.seen, 0),
                          version: runs[0]?.vaCov.version ?? null });
 const VA = { flat: mergeVa(flats), van: mergeVa(van), nb: mergeVa(nb),
              cov: { flat: covOf(flats), van: covOf(van), nb: covOf(nb) } };
-writeFileSync(join(OUT, 'report_data.json'), JSON.stringify({ flat, flats, flatAll, vanMean, nbGdp, vanGdpByYear, nbAdds: nb[0].addsByDecade, VA }, null, 1));
+writeFileSync(join(OUT, 'report_data.json'), JSON.stringify({ flat, flats, flatAll, vanMean, nbGdp, vanGdpByYear, nbAdds: nb[0] ? nb[0].addsByDecade : {}, VA }, null, 1));
 console.log('written. flat years:', Object.keys(flat.years).join(','));
 console.log('VA coverage (tiered-sector GDP, save_summary_version >= 6):',
   ['flat', 'van', 'nb'].map(a => a + ' ' + VA.cov[a].withVa + '/' + VA.cov[a].seen + ' (v' + VA.cov[a].version + ')').join('  '));
