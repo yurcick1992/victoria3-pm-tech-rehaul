@@ -28,6 +28,7 @@
 // ⚠ A RESUMED run restarts the game process, so an interval spanning a resume carries the crash and
 // reload in its wall time. Those intervals are DROPPED, not smoothed, and counted in the report.
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { wallFromTicks } from './lib_wall.mjs';   // 2026-09-13: the century's play time from the observer's ticks, crash overhead out
 import { gunzipSync } from 'node:zlib';
 import { join, basename } from 'node:path';
 
@@ -35,12 +36,16 @@ const args = process.argv.slice(2);
 const optOf = k => { const i = args.indexOf('--' + k); return i >= 0 ? args[i + 1] : null; };
 // ⚠ an option's VALUE is not a directory — drop both the flag and the token after it, or
 // `--json out.json` gets scanned as a session folder and the tool dies on ENOENT.
-const OPTS = ['json', 'bins'];
+const OPTS = ['wall', 'json', 'bins'];
 const consumed = new Set();
 for (const k of OPTS) { const i = args.indexOf('--' + k); if (i >= 0) { consumed.add(i); consumed.add(i + 1); } }
 const dirs = args.filter((a, i) => !a.startsWith('--') && !consumed.has(i));
 const BINS = +(optOf('bins') ?? 14);
 const JSON_OUT = optOf('json');
+// 'play' (default): load once + play, every crash's reload and replay subtracted (lib_wall.mjs) - what the century
+// costs; 'meta': the observer's wall_seconds, every attempt included - what a player who also suffers the crashes waits.
+const WALL = optOf('wall') ?? 'play';
+if (!['play', 'meta'].includes(WALL)) { console.error('--wall must be play or meta'); process.exit(1); }
 if (!dirs.length) { console.error('usage: report_perf.mjs <sessionDir|runDir> [...] [--json out.json] [--bins N]'); process.exit(1); }
 
 const asYear = d => { const [y, m = 1, dd = 1] = String(d).split('.').map(Number); return y + (m - 1) / 12 + (dd - 1) / 365; };
@@ -103,9 +108,14 @@ for (const rp of runDirs) {
   }
 
   const complete = meta.reached_ingame_date === meta.until_date && !meta.abandoned_reason;
+  const wt = wallFromTicks(rp, meta);
+  const wallPlay = wt?.wall_play ?? meta.wall_seconds;
   runs.push({
     label, setup, arm: arm ?? (isVanilla ? 'control' : 'config'), isVanilla,
-    wall_seconds: meta.wall_seconds, reached: meta.reached_ingame_date, until: meta.until_date,
+    wall_seconds: WALL === 'meta' ? meta.wall_seconds : wallPlay, wall_basis: WALL,
+    wall_meta_seconds: meta.wall_seconds, wall_play_seconds: wallPlay, crash_overhead_seconds: wt?.overhead_secs ?? null,
+    attempts: meta.attempts ?? 1, ticks_parsed: !!wt,
+    reached: meta.reached_ingame_date, until: meta.until_date,
     resumes: meta.resumes ?? 0, abandoned: meta.abandoned_reason || '', complete,
     endPops: series.at(-1)?.pops ?? null, endGdp: series.at(-1)?.gdp ?? null, endLevels: series.at(-1)?.levels ?? null,
     nSaves: series.length, droppedIntervals: dropped, pts, series,
@@ -126,6 +136,8 @@ for (const r of runs) {
 const good = runs.filter(r => r.complete);
 const van = good.filter(r => r.isVanilla), mod = good.filter(r => !r.isVanilla);
 console.log('\n=== 1. NAIVE TOTAL WALL CLOCK  (⚠ NOT the verdict — see 3) ===');
+console.log(`  wall basis: ${WALL === 'meta' ? 'meta.wall_seconds (every attempt, crash overhead IN)' : 'play time from the observer ticks (load once + play; reloads and replays OUT; lib_wall.mjs)'}`);
+for (const [nm, set] of [['vanilla', van], ['mod', mod]]) if (set.length) { const ov = set.map(r => r.crash_overhead_seconds).filter(Number.isFinite); const ct = set.filter(r => (r.attempts ?? 1) > 1).length; const sumOv = ov.reduce((x, y) => x + y, 0); const sumPlay = set.reduce((x, r) => x + (r.wall_play_seconds || 0), 0); console.log(`  ${nm.padEnd(8)}: ${ct} of ${set.length} runs resumed after a crash; crash overhead (meta − play) Σ ${(sumOv / 60).toFixed(1)} min = ${sumPlay ? (sumOv / sumPlay * 100).toFixed(2) : '-'}% of play`); }
 const tot = a => a.length ? `${a.map(r => fmtMin(r.wall_seconds)).join(' / ')} min   median ${fmtMin(median(a.map(r => r.wall_seconds)))}` : '(none)';
 console.log(`  vanilla (n=${van.length}): ${tot(van)}`);
 console.log(`  mod     (n=${mod.length}): ${tot(mod)}`);

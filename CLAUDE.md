@@ -797,7 +797,12 @@ config/mod_config.canon-flat-in12.json ⭐ THE FLAT-COST, LIFTED-RUNG-0 ARM (§1
                         make_ab_config --in0 1.2 --cost-flat --ai-ladder 1000,2000,3000,4000 (+ bar 24); dry-run build clean. Schedule
                         canon_flat_in12_n30.json (30 runs, no gate). canon-flat-in13.json + twin = the same at ×1.3 (the user's lean; six
                         industries loss-making at base from 1836 — generated for the record). ✅ CONFIRMED by the user 2026-09-10 ("Go with 1.2"); launched
-                        as soon as phase 2's batch ended. Un-ignored with their twins
+                        as soon as phase 2's batch ended. ⭐ MEASURED 2026-09-13 (F110, n=1 — session 20260910_151220 run 1, killed with the agent app
+                        at 1935.2 (L30) and finished by hand from its autosave; no relaunch by ruling): world GDP 2.10× vanilla (Russia 4.1×, an independent
+                        India, the USA 1.9×, Britain 0.88×), productive workers per capita 1.23× (every earlier arm 0.6–0.7×), rung 0 DYING (6.71 → 4.17M
+                        workers 1920 → 1935, 157-year payback, 0–2% staffed heavy/war rungs from 1880), tier choice 26.0%, prices 0.3–0.6 of vanilla in
+                        pounds and a tenth in wage units, pools 2.28 of world GDP (Britain 11.2), row P 31% slower in total on a world 1.46× the pops
+                        (+8.1% pop-matched). One seed, four levers at once. Un-ignored with their twins
 config/mod_config.tier4.json ⚗ GENERATED (gitignored) by tools/make_tier4_config.mjs FROM THE GAME FILES + tools/lib_tier4_spec.mjs
                         — the four-rung STRUCTURE (rungs = vanilla main methods with vanilla's name, gate, recipe,
                         staffing, icon; the spec's ADDITIONS on top), with tech_tree_options.tier4.json beside it from
@@ -1744,6 +1749,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         ladder (war channel), technologies held, the frontier rungs' British levels at 1905.
                         `--session <stamp>[:<setup>] [--config <path>]` (the config defaults to the run's own
                         build_state). ⚠ F101's six-rung counts were raw lines — canon-n7 run 1 reads 2.3× high
+  testbed/ledger/lib_wall.mjs + wall_from_ticks.mjs  ⭐ THE TRUE WALL CLOCK OF A RUN (2026-09-13): the century's play time rebuilt from the
+                        observer's tick lines (elapsed seconds + in-game date every 20 s, per attempt) — load once + play, each crash-resume's
+                        reload and replay subtracted; `report_perf.mjs` reads it by default (`--wall meta` for the observer's own
+                        wall_seconds). Written because meta's wall over-counts crash-prone arms by 1.5–2 min per CTD and a killed-and-
+                        continued run carries only its last launch. `wall_from_ticks.mjs <session> [--detail]` prints meta / play / overhead per run
   testbed/ledger/batch_tables.mjs  ⭐ THE BATCH TABLES for an arm that spans SEVERAL sessions (2026-09-09, F107 — the 60-run
                         plan's phase 1 lives in two folders after the L29 harness race): pools ÷ GDP, the tiered goods' prices
                         (British market + the seven-market pool, per dump date, arm beside vanilla, the 1935 ratio), wage units
@@ -3761,6 +3771,15 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   answers a different and narrower question — *is the engine dearer per unit of work?* — which is what
   you want when the total moves and you need to know whether the cause is a bigger world or a costlier
   one. Report both, grade the total.
+  ⭐ **SINCE 2026-09-13 THE TOTAL IS THE CENTURY'S PLAY TIME REBUILT FROM THE OBSERVER'S TICK LINES** (`tools/testbed/ledger/lib_wall.mjs`,
+  `report_perf.mjs`'s default; `--wall meta` restores the observer's `wall_seconds`; `wall_from_ticks.mjs <session>` prints the per-run
+  table). `meta.json → wall_seconds` spans EVERY attempt of a run, so a crash-resume added its grace, reload and the replay of the year
+  since the last autosave (1.5–2 min per CTD — measured: vanilla n=16 5.2 min over 16 runs = 0.20% of play, phase 1 17.8 min over 30 =
+  0.38%), and a run killed and continued by hand carried only its last launch (304 s against 12,952 for run 1 of 20260910_151220).
+  The tick lines carry the elapsed seconds and the in-game date every 20 s per attempt; the landing is the tick after the last
+  backward date jump (the tail serves the previous attempt's lines for its first minute). The crash overhead is printed per arm beside
+  the total; the observer's `-PriorWallSeconds` records a continuation's earlier launch. The user's question that produced it:
+  "all previous wall-clock reports were distorted, and more so for more prone-to-CTD builds" — true, and small (F110 §9).
   **Measured, session `20260813_083557`: the modded arm ran the century in 134.6–137.2 min against
   vanilla’s 155.5–186.7 — ×0.86.** That arm ended with **×0.65 the live pop objects and ×0.61 the
   building levels**; pop-matched the two sit on **one curve** at **−2.5%** (8 of 14 overlapping bins,

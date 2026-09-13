@@ -7155,3 +7155,18 @@ input value with the ladder anchored on it (`--in0-only` lifts rung 0 alone), th
 index. Books: `config/mod_config.canon-flat-in12.json` and `canon-flat-in13.json` (+ twins), both stamped `_variant`, bar 24; the ×1.2
 book dry-run builds clean. Schedule `canon_flat_in12_n30.json` (30 runs, no gate, predictions P1–P8). ✅ **CONFIRMED by the user 2026-09-10 15:00: "Go with 1.2 as soon as the current run ends"** — the ×1.2 book, the ladder anchored on
 it, ai_value 1,000 / 2,000 / 3,000 / 4,000, flat cost; `canon-flat-in13` stays only as the record of the alternative. **LAUNCHED 2026-09-10 15:12** as `20260910_151220_canon-flat-in12-n30` (30 runs, timeout 420, no gate), the moment phase 2's batch ended at its run 11 (F109: the A 2.2 arm at n=11 read 0.915× vanilla — the comparison this arm is read against, with phase 1 (F107) and the vanilla n=16 as the references).
+
+**Outcome (2026-09-13, FINDINGS F110 — ONE SEED; the batch died with the agent app at 18:45:29 on 2026-09-10 with run 1 at 1935.2, landmine
+L30, and run 1 was finished by hand from its 1935.1.1 autosave; runs 2–30 never launched and the user ruled no relaunch.)** World GDP at 1935
+**2.10×** the vanilla median (£9,211M) — not a giant Britain (0.88×) but a rest-of-world twice vanilla's (Russia 4.1×, the USA 1.9×, an
+independent India at £1.07B, Japan 9×); productive workers per capita **1.23×** vanilla (every earlier arm 0.6–0.7×), output per productive
+worker 1.60×; trajectory 1.11× (1860) → 1.78 → 2.63 (1900) → 2.26 → 2.10. **Rung 0 dies**: 6.71M → 4.17M workers 1920 → 1935 (phase 2 grows to
+5.74M), stale payback 157 years against the frontier's 4.9, the rung-0 steel / artillery / arms / munition buildings 0–2% staffed at negative
+margins from 1880 and the consumer rungs 7–38% staffed by 1935; tier choice 26.0% (phase 2 40.2%). **Prices through the floor**: pooled 1935 ÷
+vanilla groceries 0.44, clothes 0.50, steel 0.55, tools 0.57, small arms 0.35, artillery 0.32; base wage ×5.55; every tiered good at 0.03–0.12
+of its 1840 wage price. **The pools balloon**: 2.28 of a year's world GDP (phase 2 0.34, vanilla 0.29), Britain 11.2 — the §10.75 defines were
+tuned against the 0.000125 divisor, and a 600-point building on 0.001 is built in weeks. Row P: 215.9 min against 165 — 31% slower in total,
+OVER budget, on a world 1.46× the pop objects; pop-matched +8.1%. Predictions: P2 (rung 0 dies), P5 (prices), P6 (tier choice) PASS; P3
+(0.90–1.30× the world) and P4's early-game clause (1860 at 1.11×) MISSED upward; P7's total MISSED; P1 not scorable at n=1. Four levers changed at
+once and one seed: a direction, not a result — the next seeds (through `launch_detached.ps1`, landmine L30) and the pool hoard are what to settle
+before ruling on it. Ledger https://claude.ai/code/artifact/0e29136d-ec51-4818-b139-1e6fd529cbec (fill dir `tools/testbed/ledger/out_canon_flat_in12_n1`).

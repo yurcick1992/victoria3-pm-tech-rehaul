@@ -207,6 +207,10 @@ excluded by hand from the run list, so check `preflight.ps1 -Session` before fil
      arms (it reads `meta.json` + `save_summaries/`, so nothing extra is instrumented) and it prints the
      naive total, the per-decade rates and the pop-matched verdict:
      `node tools/testbed/ledger/report_perf.mjs <session> [<session2>] --json perf.json`.
+     ⭐ Since 2026-09-13 the total is the century's PLAY TIME rebuilt from the observer's tick lines (`lib_wall.mjs`: load once +
+     play, each crash-resume's reload and replay out; `--wall meta` restores meta.json's wall_seconds), and the crash overhead is
+     printed per arm. meta's wall spans every attempt, so it over-counted crash-prone arms by 1.5–2 min per CTD (0.2–0.4% of play on
+     the batches to date) and carried only the last launch of a run continued by hand. Session DIRS, not names, are the arguments.
      It classifies an arm from `build_state.json`'s `deterministic.arm`, falling back to the folder name,
      and **skips incomplete runs** (L17: a run that stopped early has a meaningless wall clock).
      ⚠ It needs a vanilla arm to compare against. Where a batch has none, run it over the batch **and**
