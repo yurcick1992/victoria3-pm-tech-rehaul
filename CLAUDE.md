@@ -3752,10 +3752,13 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   measurements.) The `runs` list is **explicit and ordered**, so any sequence works including repeats and
   alternation (`A@1841, B@1841, A@1841, B@1846`); each run carries its **index**, and the schedule JSON is
   copied verbatim into the session folder so a result always traces back to its plan.
-  ⭐ **BUT ALTERNATE CONFIGS ONLY IN EXTREMELY LONG, PREDETERMINED BATCHES** (user-ruled 2026-09-13, e.g. 15 canon
-  vs 15 vanilla). A decision-driven test — two runs of one config, a decision on whether a third is needed, that run if
-  so, THEN the next config — runs each config's runs back to back as its own schedule and decides between schedules;
-  the a16/a22-in12 batch of 2026-09-13 interleaved its two configs and had to be unpicked at a run boundary. Setups are
+  ⭐ **BUT DO NOT ALTERNATE CONFIGS** (user-ruled 2026-09-13, twice). A decision-driven test — two runs of one config, a
+  decision on whether a third is needed, that run if so, THEN the next config — runs each config's runs back to back as
+  its own schedule and decides between schedules. The only conceivable case for interleaving is an extremely long,
+  predetermined batch (15 canon vs 15 vanilla), and even the argument for it is unsupported: **there are no recorded
+  confounders from external machine usage or time of day, and any such effect is very likely far below noticeable
+  levels** — so "a Steam update or a slow night hits both arms" justifies nothing. The a16/a22-in12 batch of 2026-09-13
+  interleaved its two configs; by ruling it was left to finish as scheduled (its tie-breakers, if any, run after it). Setups are
   `{kind: control}` (vanilla + telemetry, via `build.ps1 -ControlOnly`) or `{kind: config, config: <path>}`.
   ❌ **`{kind: control, config: <path>}` exists today and is the architectural violation flagged under
   `-ControlOnly` above** — it builds vanilla + telemetry + a pop-need weight file while still calling
