@@ -1108,6 +1108,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         UNDER-CONVERGED STATE READS BETTER: 3/4 illogicality at 400 against 9/8 at
                         1500, with era 2 at 5/46 goods on book and a ×0.94 common demand shift — the
                         §10.14.1 defect in a new costume. Quote the CONVERGED numbers
+  recipe_side_by_side.mjs  ONE INDUSTRY'S RUNGS SIDE BY SIDE ACROSS BOOKS (2026-09-13): `--industry steel [--books lab=path,…]` prints
+                        every rung of the canon, canon-je24-a22 and canon-flat-in12 beside vanilla's own method — output, inputs,
+                        values at base prices, O:I, goods margin, VA per level and per worker, cost, VA per 1,000 construction
+                        points (the capital-productivity column behind F110: flat-in12's steel rung 3 reads 30,596 against
+                        vanilla's 2,125), ai_value, target_be. Read-only; the eyeballing tool for the era pass (HANDOVER §N+1)
   vanilla_margins.mjs   ⭐⭐ WHAT MARGIN DOES A VANILLA BUILDING ACTUALLY RUN AT? (FINDINGS F92) —
                         the anchor the design margin sits on. Read-only. Sources save summaries at
                         v6+ (the first schema carrying per-building-type `va_out`/`va_in`) and reports
