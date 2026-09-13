@@ -3751,7 +3751,11 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   `build.ps1 -DryRun` during development, to check a config still lints, is fine: it produces no
   measurements.) The `runs` list is **explicit and ordered**, so any sequence works including repeats and
   alternation (`A@1841, B@1841, A@1841, B@1846`); each run carries its **index**, and the schedule JSON is
-  copied verbatim into the session folder so a result always traces back to its plan. Setups are
+  copied verbatim into the session folder so a result always traces back to its plan.
+  ⭐ **BUT ALTERNATE CONFIGS ONLY IN EXTREMELY LONG, PREDETERMINED BATCHES** (user-ruled 2026-09-13, e.g. 15 canon
+  vs 15 vanilla). A decision-driven test — two runs of one config, a decision on whether a third is needed, that run if
+  so, THEN the next config — runs each config's runs back to back as its own schedule and decides between schedules;
+  the a16/a22-in12 batch of 2026-09-13 interleaved its two configs and had to be unpicked at a run boundary. Setups are
   `{kind: control}` (vanilla + telemetry, via `build.ps1 -ControlOnly`) or `{kind: config, config: <path>}`.
   ❌ **`{kind: control, config: <path>}` exists today and is the architectural violation flagged under
   `-ControlOnly` above** — it builds vanilla + telemetry + a pop-need weight file while still calling
