@@ -35,8 +35,15 @@
   Keep the window open after the script ends (the scheduler / observer are launched this way).
 
 .EXAMPLE
-  # a batch (the ONLY sanctioned way to launch one from the agent since 2026-09-13)
-  powershell -ExecutionPolicy Bypass -File tools\testbed\launch_detached.ps1 -File tools\testbed\run_schedule.ps1 -ArgumentList '-Schedule','tools\testbed\schedules\x.json' -NoExit
+  # a batch (the ONLY sanctioned way to launch one from the agent since 2026-09-13) - CALL THIS SCRIPT DIRECTLY from a
+  # PowerShell prompt or the agent's PowerShell tool, so -ArgumentList arrives as a real array:
+  & 'tools\testbed\launch_detached.ps1' -File 'tools\testbed\run_schedule.ps1' -ArgumentList '-Schedule','tools\testbed\schedules\x.json' -NoExit
+  # NOT  powershell -ExecutionPolicy Bypass -File tools\testbed\launch_detached.ps1 -File ... -ArgumentList '-Schedule','x.json' -NoExit
+  # (2026-09-13 14:33): through that wrapper -File mode flattens the array into ONE token, "-Schedule,x.json"; the scheduler
+  # never binds its parameter, the -NoExit window sits idle on the error, and this script still reports success - its
+  # proof is only that the child is alive and job-free, not that the child parsed its arguments. Proven with a scratch echo
+  # script: the wrapper delivers "Schedule=[<unbound>]", the direct call "Schedule=[x.json]". After any launch, a session
+  # folder must appear under tools\testbed\sessions within a minute.
 #>
 param(
     [Parameter(Mandatory = $true)][string] $File,

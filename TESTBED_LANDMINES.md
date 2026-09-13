@@ -1636,7 +1636,14 @@ target.
 
 **Rule.** A batch that is meant to outlive the agent may not be a descendant of the agent's process tree in any job
 the agent's host owns. The agent launches through the launcher and NOTHING else — `Start-Process` from a tool shell is
-the pattern that died. And the other class stays open: a reboot (Windows Update restarted the machine at 03:00 on
+the pattern that died. ⚠ **And it calls the launcher DIRECTLY** (`& 'tools\testbed\launch_detached.ps1' -File … -ArgumentList
+'-Schedule','<spec>' -NoExit` from the PowerShell tool), never wrapped in `powershell -File tools\testbed\launch_detached.ps1 …`:
+measured 2026-09-13 14:33 on the first real launch through it, the wrapper's `-File` mode flattened the `-ArgumentList` array
+into the single token `-Schedule,<spec>`, the scheduler never bound its parameter, the `-NoExit` window sat idle on the binding
+error, and the launcher REPORTED SUCCESS — its kernel proof says the child is alive and job-free, nothing about whether the
+child parsed its arguments. No session folder, no game, no children after a minute was the only trace (pid 15392, killed).
+Proven both ways on a scratch echo script (`Schedule=[<unbound>]` through the wrapper, `Schedule=[<spec>]` direct). Rule: after
+any launch, a session folder appears within a minute or the launch did not happen. And the other class stays open: a reboot (Windows Update restarted the machine at 03:00 on
 2026-09-11, outside active hours) kills everything, launcher or not — a batch that must survive that needs a resume
 mode (an at-logon task that re-enters the schedule at its last completed run) or Windows Update held back for the
 batch's window; neither exists yet.

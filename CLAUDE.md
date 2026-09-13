@@ -3520,8 +3520,14 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   `Start-Process … -NoNewWindow -RedirectStandardOutput …` looks harmless and is not. Spawn it into its
   **own visible window** and leave stdio alone:
   ```
-  powershell -ExecutionPolicy Bypass -File tools\testbed\launch_detached.ps1 -File tools\testbed\run_schedule.ps1 -ArgumentList '-Schedule','tools\testbed\schedules\<spec>.json' -NoExit
+  & 'tools\testbed\launch_detached.ps1' -File 'tools\testbed\run_schedule.ps1' -ArgumentList '-Schedule','tools\testbed\schedules\<spec>.json' -NoExit
   ```
+  ⚠⚠ **CALL THE LAUNCHER DIRECTLY FROM THE PowerShell TOOL (`& '…launch_detached.ps1' …`), NEVER WRAPPED IN
+  `powershell -File tools\testbed\launch_detached.ps1 …`** (2026-09-13, 14:33): the wrapper flattens the `-ArgumentList`
+  array into ONE token, `-Schedule,<spec>`, the scheduler never binds its parameter, and the `-NoExit` window sits idle on
+  the error — the launcher itself reports success (the child is alive and job-free), no session folder ever appears, no game
+  starts. Proven both ways with a scratch echo script; the direct call reaches the scheduler as `-Schedule <spec>`. Check
+  for the session folder within a minute of any launch.
   ⚠⚠ **AND OUTSIDE THE AGENT'S PROCESS TREE — THE LAUNCHER, NEVER `Start-Process` (landmine L30, 2026-09-13).** The
   agent's tool shells run inside the desktop app's job objects (KILL_ON_JOB_CLOSE), and a `Start-Process` child only
   breaks away into a second job of the app's: when the app restarted for a re-auth at 18:45:29 on 2026-09-10, the

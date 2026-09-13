@@ -394,8 +394,10 @@ either the game dying (resume it) or a human killing it (stop the batch). Three 
 redirected, so `Start-Process … -NoNewWindow -RedirectStandardOutput …` silently drops the harness into
 headless mode with the STOP file as its only control. Launch batches into their **own visible window**
 (from a human console `Start-Process powershell -NoExit -File tools\testbed\run_schedule.ps1 -Schedule <spec>`; from the
-AGENT only `tools\testbed\launch_detached.ps1 -File tools\testbed\run_schedule.ps1 -ArgumentList '-Schedule','<spec>' -NoExit`,
-which creates it through WMI outside the app's job objects — landmine L30, 2026-09-13) and read
+AGENT only `& 'tools\testbed\launch_detached.ps1' -File 'tools\testbed\run_schedule.ps1' -ArgumentList '-Schedule','<spec>' -NoExit`,
+which creates it through WMI outside the app's job objects — landmine L30, 2026-09-13; ⚠ called DIRECTLY from the PowerShell
+tool, never as `powershell -File launch_detached.ps1 …`, which flattens the array to the single token `-Schedule,<spec>` and
+leaves an idle window with nothing launched while the launcher reports success — measured 2026-09-13 14:33) and read
 progress from `sessions\<stamp>\session.log` instead of capturing stdio. The observer now emits a
 startup `WARN` when it has no console; before that (pre-2026-07-31) the two cases were
 indistinguishable in the log.
