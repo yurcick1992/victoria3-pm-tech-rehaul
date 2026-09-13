@@ -11350,3 +11350,40 @@ quantities (a regex without its backslashes, BUGS_AND_FIXES 2026-09-13), so on e
 rayon, porcelain or radios was cheaper per unit the higher the rung. Every reading of SECONDARY adoption in F98–F110 (the tiered panel's
 "secondary-PM bias", the radio and luxury supplies, the e3 rungs' margins where a secondary was active) is confounded by it; the world
 readings stand for the reason above. The corrected emitter ships in every build from 2026-09-13, and the next tests carry it.
+
+## F112 — PRODUCER/CONSUMER APPEARANCE GAPS UNDER THE ERA RULE: steel's 14 narrative years is the largest, every rung input has a producer, and the motor options do not differ (derived analysis, 2026-09-13)
+
+**Arm and evidence.** Read from the game files and the era-keyed canon of 2026-09-13 (the four-rung tree as shipped, ERA_MOVES included):
+for each of the 17 tiered goods, the first producer (the industry's first rung) and every consumer — the 35 pop-need goods, every method
+of all 115 vanilla buildings (our 17 buildings' secondaries included, dated by their own technology and the building's first rung; their
+main groups ARE our rungs), our rungs' own inputs, and the 18 combat unit types' upkeep — each dated by its gating technology's game era
+through 1/2/3/4/5 → 1836/1850/1875/1905/1940 (era 2 interpolated at 1850: the anchors give it no year), with the technologies' real onset
+dates as a cross-check. Asked by the user after the motor tables: what is the biggest narrative delta between a producer and a consumer
+appearing.
+
+| good | first producer (rung · technology · game era) | earliest consumer of any kind | Δ years | earliest non-pop consumer | Δ years |
+|---|---|---|---|---|---|
+| steel | steel e0 · steelworking · 1 | tooling e2 · mechanical_tools · 2 | **+14** | the same | +14 |
+| engines | motor e0 · atmospheric_engine · 2 | shipyard, complex shipbuilding · 2 | 0 | the same | 0 |
+| fertilizer | fertilizer e0 · intensive_agriculture · 2 | farms, soil-enriching farming · 2 | 0 | the same | 0 |
+| explosives | explosives e0 · intensive_agriculture · 2 | coal mine, nitroglycerin blasting · 2 | 0 | the same | 0 |
+| ammunition | munition e1 · percussion_cap · 2 | skirmish infantry · 2 | 0 | the same | 0 |
+| tools, paper, glass, small arms, artillery | e0 · era 1 | farms / administration / urban centres / forts / cannon units · 1 | 0 | the same | 0 |
+| groceries, clothes, furniture, fine art | e0 · era 1 | pops | 0 | — | — |
+| dye | synthetics e1 · aniline · 3 | glassworks ceramics, dye workshops · 1 | −39 | the same | −39 |
+| automobiles | automotive e2 · combustion_engine · 4 | pops | −69 | urban-centre motor carriages · 4 | 0 |
+| telephones | electrics e2 · telephone · 4 | pops | −69 | administration switchboards · 4 | 0 |
+
+A negative delta is a consumer that exists before the producer: dye is supplied by plantations until aniline; the pop demand for
+automobiles and telephones is latent until supply appears (F40/F43: pops buy a debut good the moment it is sold), and each good's building
+consumer arrives on the very technology that unlocks the producer. The reverse direction — a rung needing an input nobody can make yet —
+is empty: all 131 rung-input pairs have a producer in the same era or earlier.
+
+**What it says.** No tiered producer waits more than one game era for a consumer, and the only positive gap (steel) is nil for the leading
+countries, whom vanilla's 1836 grants hand mechanical_tools (F54's 1838 gamestate: tooling workshops consume 90% of a real steel market).
+The gap picture is the same under motor [0,1,2,3] and [0,2,3]: motor neither makes nor consumes steel, and engines' first consumer sits on
+the same game era as motor's first rung.
+
+**What it does NOT say.** Whether a consumer is LARGE enough (§10.29's era-1 steel question was about volume, not existence); anything about
+availability by country (a technology's game era is the leaders' timing); anything about the six-rung book. Era 2's 1850 is an
+interpolation. Secondaries gated on a main method (`unlocking_production_methods`) are dated by technology only.

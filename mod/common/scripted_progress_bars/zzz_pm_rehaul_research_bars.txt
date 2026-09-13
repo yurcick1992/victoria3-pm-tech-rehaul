@@ -249,7 +249,7 @@ pmr_bar_compression_ignition = {
 			desc = "pmr_term_compression_ignition_0"
 			if = {
 				limit = {
-				pmr_src_compression_ignition_0 >= 15
+				pmr_src_compression_ignition_0 >= 47
 				}
 				value = 1
 			}
@@ -258,7 +258,7 @@ pmr_bar_compression_ignition = {
 			desc = "pmr_term_compression_ignition_1"
 			if = {
 				limit = {
-				pmr_src_compression_ignition_1 >= 15
+				pmr_src_compression_ignition_1 >= 47
 				}
 				value = 1
 			}
@@ -387,7 +387,7 @@ pmr_bar_electric_railway = {
 			desc = "pmr_term_electric_railway_0"
 			if = {
 				limit = {
-				pmr_src_electric_railway_0 >= 5
+				pmr_src_electric_railway_0 >= 15
 				}
 				value = 1
 			}
@@ -457,26 +457,6 @@ pmr_bar_general_staff = {
 			if = {
 				limit = {
 				has_variable = pmr_wargate_general_staff
-				}
-				value = 1
-			}
-		}
-	}
-}
-
-pmr_bar_high_speed_diesel = {
-	name = "pmr_bar_high_speed_diesel"
-	desc = "pmr_bar_desc"
-	default_green = yes
-	start_value = 0
-	min_value = 0
-	max_value = 60
-	monthly_progress = {
-		add = {
-			desc = "pmr_term_high_speed_diesel_0"
-			if = {
-				limit = {
-				pmr_src_high_speed_diesel_0 >= 47
 				}
 				value = 1
 			}

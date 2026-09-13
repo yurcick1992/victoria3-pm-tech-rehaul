@@ -116,20 +116,21 @@ export const INDUSTRIES = [
 export const PLACEMENT = {
   fertilizer: [0, 1, 2, 3],   // intensive_agriculture (2 → e0, −1); improved_fertilizer (3); nitrogen_fixation (4); catalytic_synthesis (minted, 5)
   explosives: [0, 1, 2, 3],   // intensive_agriculture (2 → e0, −1); nitroglycerin (2); dynamite (3, +1); electrical_capacitors (4, +1)
-  // motor: atmospheric_engine (2 → e0, −1); electric engines on electric_railway (GAME ERA 4 → e2, placed e1, −1); diesel on
-  //   compression_ignition (5 → e3, placed e2, −1); high_speed_diesel (minted, 5 → e3). ⚠ PENDING RULING (2026-09-13): the
-  //   derivation gives [0,2,3] and no slot for the addition; the alternative to this entry is [0,2,3] with the addition
-  //   DROPPED — no rung off its era, but no 1940 rung (compression_ignition, an era-5 technology, would BE the e3). Kept
-  //   with the addition because it was ruled 2026-09-04 and both middle rungs are within tolerance; they arrive one era
-  //   LATE (weaker than their date), never early.
-  motor: [0, 1, 2, 3],
+  motor: [0, 2, 3],           // atmospheric_engine (2 → e0, −1: the ladder overflows at e1 — electric_railway 4 → e2, compression_ignition 5 → e3); see below
+  // motor — NO ENTRY (user-ruled 2026-09-13, "option B"): the derivation places it [0, 2, 3] by itself once the minted
+  //   high_speed_diesel addition is gone — atmospheric_engine (2 → e0 by the same first-rung reasoning as fertilizer and
+  //   explosives, but here the ladder FITS: e0 is forced only because electric engines (electric_railway, GAME ERA 4 → e2) and
+  //   diesel (compression_ignition, 5 → e3) take the two slots above), so it needs no ruling. e1 is empty: no engine method
+  //   exists between 1836 and the electric engine. The rejected alternative ("option A", the state from 2026-09-04 to
+  //   2026-09-13) was [0,1,2,3] with the addition, which put electric engines and diesel one era BELOW their technologies.
+  //   Munition stays [1,2] — "earliest munition is t1" (user, 2026-09-13), which is what the derivation gives.
 };
 
 // ⭐ THE ADDITIONS (rule 2): a rung vanilla does not have, appended as the industry's TOP rung, each with its own key,
 //   building name, method name, year and MINTED technology. Its recipe, staffing, pollution and icon are the rung
-//   below's (the A/B book re-scales the recipe). Four, all where vanilla's ladder stops 25+ years short of 1940 and no
-//   secondary group of the building covers the theme (rule 3). "Mint them" was ruled 2026-08-30; these four survive the
-//   2026-09-04 rules.
+//   below's (the A/B book re-scales the recipe). THREE, each where vanilla's top method sits on a game era below 5 so the
+//   e3 (1940) slot is EMPTY under the era rule, and no secondary group of the building covers the theme (rule 3). "Mint
+//   them" was ruled 2026-08-30; four survived the 2026-09-04 rules; motor's fell to the era rule on 2026-09-13 (below).
 export const ADDITIONS = [
   { industry: 'furniture', tech: 'spray_finishing', year: 1923,
     key: 'building_furniture_manufactory_spray_finishing', pm_name: 'Spray Finishing',
@@ -146,11 +147,11 @@ export const ADDITIONS = [
     why: 'vanilla stops at nitrogen fixation; the plant has no secondary group at all',
     minted: { category: 'production', name: 'Catalytic Synthesis', prereqs: ['nitrogen_fixation', 'plastics'],
       desc: 'Promoted iron catalysts and continuous high-pressure reformers turn fixed nitrogen from a laboratory triumph into a commodity produced by the shipload.' } },
-  { industry: 'motor', tech: 'high_speed_diesel', year: 1935,
-    key: 'building_motor_industry_high_speed_diesel', pm_name: 'High-Speed Diesel',
-    why: 'vanilla stops at diesel engines; a product step, not the automation group’s theme',
-    minted: { category: 'production', name: 'High-Speed Diesel', prereqs: ['compression_ignition'],
-      desc: 'Small fast-running diesels on welded frames, built by the thousand for lorries, launches and generators rather than one at a time for ships.' } },
+  // ⚠ REMOVED 2026-09-13 (user-ruled, "option B" of the era pass): motor's high_speed_diesel (1935, minted era 5). Under the era
+  //   rule compression_ignition — an ERA-5 technology — IS motor's e3 (1940) rung, so the addition had no slot; keeping it meant
+  //   electric engines (game era 4) on e1 and diesel (era 5) on e2, each one era below its technology. Motor now derives
+  //   [0, 2, 3]. Its text, for the record: "Small fast-running diesels on welded frames, built by the thousand for lorries,
+  //   launches and generators rather than one at a time for ships."
 ];
 
 // ⭐ ERA MOVES (user-ruled 2026-08-30): a TOP rung may not be gated below era 4 ("e3 techs will be discovered en masse in
@@ -249,7 +250,8 @@ export const RESEARCH_EVENTS = {
 
 // the candidate's own record, stamped into the config
 export const CANON = {
-  name: 'canon4v-hai3', declared: '2026-09-04', canonised: '2026-09-05', reruled: '2026-09-06',
+  name: 'canon4v-hai3', declared: '2026-09-04', canonised: '2026-09-05', reruled: '2026-09-06', era_rule: '2026-09-13',
+  era_rule_note: 'THE ERA RULE (user-ruled 2026-09-13, BALANCE_FRAMEWORK §10.78; the header of this file): every rung on the narrative era its gate technology\'s game era implies, the A/B book keyed on the era; electrics e1 → e2; motor placed by the rule alone at [0,2,3] with the minted high_speed_diesel addition dropped ("option B"); munition [1,2] confirmed ("earliest munition is t1"). Canonised the same day ("Canonize the outcome config"): 56 buildings, 182 technologies (3 minted). The book F106/F107 measured is commit 880f098\'s copy.',
   ruled_by: 'user: 4 vanilla methods -> 4 rungs; additions only where ruled; rules 1-3 on names and additions; NO six-rung data consulted (the third ruling, 2026-09-04); canonised 2026-09-05 with the art academy on the REGULAR ladder (rung 0 at vanilla’s own 400-point cost, then ×2 per rung) — the ×3 film rung of canon4v-art3 reverted as gameable, an infinite money printer; 2026-09-06: the ruled set of §10.75 (ai_value 3^era on every industry, the investment-pool defines) canonised after F106 ("Canonise the latest config")',
   from: 'tools/make_tier4_config.mjs (the GAME + tools/lib_tier4_spec.mjs, nothing else) -> make_tier4_techs.mjs (vanilla technologies at vanilla eras/names/prerequisites + ERA_MOVES + the additions’ minted technologies) -> make_ab_config --A 2.0 --B 1.5 --ai-steep glass,tooling:3',
   not_carried: 'the six-rung book’s ai_defines (hoard levers), pm_goods/pm_employment (electric streetlights), building_ai_value (trade centre 5000), building_subsidies, start_tech_grants (NET), technology renames, era alignment, and the start_exceptions chain seed (start_exceptions_file -> config/start_exceptions.vanilla.json)',

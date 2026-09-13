@@ -587,7 +587,6 @@ company_wadia_shipbuilders = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
-		building_motor_industry_high_speed_diesel
 	}
 
 	potential = {

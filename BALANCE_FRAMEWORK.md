@@ -7239,3 +7239,46 @@ ratio, which touches every book's secondary adoption against the measured baseli
 industries, a game-era-4 one gating e3 in eight): the tolerance accepts it and vanilla's tree forces it; closing it would mean ERA_MOVES
 on vanilla technologies (out of scope, "with techs fixed"). (3) Munition's percussion caps at e1 (the gap rounds up) rather than e0 — the
 2026-09-04 ruling, kept. (4) Electrics' research mark moves with its era: 75,000 trade-centre workers (the e2 mark) instead of 25,000.
+
+### §10.78.1 — The two rulings of the evening, and the canon (user-ruled 2026-09-13, "Canonize the outcome config")
+
+**Motor: option B.** The user asked for the tier-by-technology-era matrix under both readings, as full tables and then as aggregates
+(a cell = how many rungs of that tier are gated by a technology of that game era), leaned to B, and after the producer/consumer check
+below ruled it. Motor is placed by the rule alone at **[0, 2, 3]**: atmospheric engines e0, electric engines (electric_railway, game era 4)
+e2, diesel (compression_ignition, game era 5) e3 — no rung below its technology's era, an empty e1, and the minted high_speed_diesel
+addition DROPPED (compression_ignition, an era-5 technology, is the 1940 rung; the addition had no slot). The book is **56 buildings, 182
+technologies (3 minted)**. **Munition: [1, 2] confirmed** ("earliest munition is t1"), which is what the derivation gives.
+
+The aggregates that decided it (rows = tiers, columns = the gating technology's game era):
+
+| option A — motor [0,1,2,3] with the addition | tech era 1 | 2 | 3 | 4 | 5 | rungs |
+|---|---|---|---|---|---|---|
+| e0 (1836) | 10 | 3 | · | · | · | 13 |
+| e1 (1875) | 5 | 7 | 2 | **1** | · | 15 |
+| e2 (1905) | · | 6 | 6 | 3 | **1** | 16 |
+| e3 (1940) | · | · | · | 8 | 5 | 13 |
+
+| option B — motor [0,2,3], the addition dropped (RULED) | tech era 1 | 2 | 3 | 4 | 5 | rungs |
+|---|---|---|---|---|---|---|
+| e0 (1836) | 10 | 3 | · | · | · | 13 |
+| e1 (1875) | 5 | 7 | 2 | · | · | 14 |
+| e2 (1905) | · | 6 | 6 | 4 | · | 16 |
+| e3 (1940) | · | · | · | 8 | 5 | 13 |
+
+B empties the two cells that were motor alone (an e1 rung on an era-4 technology, an e2 rung on an era-5 one). What stays off the
+diagonal in both is vanilla's front-loading: five era-1 technologies gate e1 rungs, six era-2 technologies gate e2 rungs, eight e3 rungs
+sit on era-4 technologies. Nothing below era 4 gates an e3 rung.
+
+**The producer/consumer check that preceded the ruling (FINDINGS F112).** Dating every consumer of every tiered good by its gating
+technology's game era (pop needs, all 115 vanilla buildings' methods including our buildings' secondaries, our rungs' inputs, the 18
+unit types' upkeep), the largest gap between a producer and its first consumer is **steel, 14 narrative years** (steelworking, held at
+the start, against tooling's steel tools on mechanical_tools, game era 2) — nil in play for the leaders, whom vanilla's 1836 grants hand
+mechanical_tools (F54). Every other tiered good has a consumer in the same era as its first producer; the reverse direction is empty (all
+131 rung-input pairs have a producer in the same era or earlier). Identical under both motor options, since motor neither makes nor
+consumes steel and engines' first consumer (the shipyard's complex shipbuilding, era 2) sits on the same era as motor's first rung.
+
+**What the canon is now.** `config/mod_config.json` = `canon4v-hai3` regenerated: the era rule (§10.78), motor B, munition t1; A 2.0 /
+B 1.5, cost ×2^era, ai_value 1,000×3^era on all 17, divisor 0.000125, the §10.75 defines, the 60-month bar. Every live book (canon-je24,
+canon-je24-a22, canon-flat-in12/13, the two test books) regenerated from the same structure. The book F106/F107 measured is commit
+880f098's copy; the era-keyed motor-A state of the afternoon is commit c18234c's. Consequence for the research entries: motor's e2
+(electric engines) takes the e2 mark (75,000 workers in the predecessor rung, motor e0) in place of the e1 mark.

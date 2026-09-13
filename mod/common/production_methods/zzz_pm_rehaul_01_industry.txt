@@ -717,9 +717,9 @@ pm_main_motor_electric_engines = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_steel_add = 31
-			goods_input_electricity_add = 23.3
-			goods_output_engines_add = 80
+			goods_input_steel_add = 46.6
+			goods_input_electricity_add = 34.9
+			goods_output_engines_add = 160
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -731,28 +731,6 @@ pm_main_motor_electric_engines = {
 }
 
 pm_main_motor_diesel_engines = {
-	texture = "gfx/interface/icons/production_method_icons/diesel_engines.dds"
-	state_modifiers = {
-		workforce_scaled = {
-			state_pollution_generation_add = 10
-		}
-	}
-	building_modifiers = {
-		workforce_scaled = {
-			goods_input_steel_add = 37.5
-			goods_input_oil_add = 37.5
-			goods_output_engines_add = 160
-		}
-		level_scaled = {
-			building_employment_shopkeepers_add = 500
-			building_employment_laborers_add = 1500
-			building_employment_machinists_add = 1500
-			building_employment_engineers_add = 1500
-		}
-	}
-}
-
-pm_main_motor_high_speed_diesel = {
 	texture = "gfx/interface/icons/production_method_icons/diesel_engines.dds"
 	state_modifiers = {
 		workforce_scaled = {

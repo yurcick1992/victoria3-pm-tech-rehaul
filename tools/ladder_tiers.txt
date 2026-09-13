@@ -35,9 +35,8 @@ pm_main_steel_bessemer_process 2 77 0.25
 pm_main_steel_open_hearth_process 3 58 0.25
 pm_main_steel_electric_arc_process 4 43 0.25
 pm_main_motor_steam_engines 1 83 0.25
-pm_main_motor_electric_engines 2 62 0.25
-pm_main_motor_diesel_engines 3 47 0.25
-pm_main_motor_high_speed_diesel 4 35 0.25
+pm_main_motor_electric_engines 2 47 0.25
+pm_main_motor_diesel_engines 3 35 0.25
 pm_main_automotive_automobile_production 1 25 0.25
 pm_main_automotive_mass_automobile_production 2 19 0.25
 pm_main_arms_muskets 1 59 0.25

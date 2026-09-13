@@ -39,8 +39,6 @@
  building_motor_industry_diesel_engines_throughput_add_desc: "Бонус или штраф к потреблению и производству в моторостроении."
  building_motor_industry_electric_engines_throughput_add: "[Concept('concept_throughput', 'Товарооборот')] моторостроения"
  building_motor_industry_electric_engines_throughput_add_desc: "Бонус или штраф к потреблению и производству в моторостроении."
- building_motor_industry_high_speed_diesel_throughput_add: "[Concept('concept_throughput', 'Товарооборот')] моторостроения"
- building_motor_industry_high_speed_diesel_throughput_add_desc: "Бонус или штраф к потреблению и производству в моторостроении."
  building_munition_plant_explosive_shells_throughput_add: "[Concept('concept_throughput', 'Товарооборот')] заводов боеприпасов"
  building_munition_plant_explosive_shells_throughput_add_desc: "Бонус или штраф к потреблению и производству на заводах боеприпасов."
  building_paper_mill_bleached_paper_throughput_add: "[Concept('concept_throughput', 'Товарооборот')] бумажной промышленности"

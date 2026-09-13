@@ -183,15 +183,6 @@ building_motor_industry_electric_engines_throughput_add={
 	}
 }
 
-building_motor_industry_high_speed_diesel_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
 building_munition_plant_explosive_shells_throughput_add={
 	decimals=0
 	color=good

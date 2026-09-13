@@ -120,7 +120,6 @@ company_armstrong_whitworth = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
-		building_motor_industry_high_speed_diesel
 		building_munition_plant
 		building_munition_plant_explosive_shells
 	}

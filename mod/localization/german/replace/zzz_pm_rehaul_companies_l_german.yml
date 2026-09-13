@@ -39,8 +39,6 @@
  building_motor_industry_diesel_engines_throughput_add_desc: "Ein Bonus oder Abzug sowohl auf die Zufuhr als auch auf den Ausstoß von $building_motor_industry_diesel_engines$n."
  building_motor_industry_electric_engines_throughput_add: "$building_motor_industry_electric_engines$-[concept_throughput]"
  building_motor_industry_electric_engines_throughput_add_desc: "Ein Bonus oder Abzug sowohl auf die Zufuhr als auch auf den Ausstoß von $building_motor_industry_electric_engines$n."
- building_motor_industry_high_speed_diesel_throughput_add: "$building_motor_industry_high_speed_diesel$-[concept_throughput]"
- building_motor_industry_high_speed_diesel_throughput_add_desc: "Ein Bonus oder Abzug sowohl auf die Zufuhr als auch auf den Ausstoß von $building_motor_industry_high_speed_diesel$n."
  building_munition_plant_explosive_shells_throughput_add: "$building_munition_plant_explosive_shells$-[concept_throughput]"
  building_munition_plant_explosive_shells_throughput_add_desc: "Ein Bonus oder Abzug sowohl auf die Zufuhr als auch auf den Ausstoß von $building_munition_plant_explosive_shells$."
  building_paper_mill_bleached_paper_throughput_add: "$building_paper_mill_bleached_paper$-[concept_throughput]"

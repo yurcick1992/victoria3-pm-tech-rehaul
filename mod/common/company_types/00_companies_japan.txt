@@ -139,7 +139,6 @@ company_mitsubishi = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
-		building_motor_industry_high_speed_diesel
 		building_artillery_foundry
 		building_artillery_foundry_smoothbores
 		building_artillery_foundry_breech_loaders

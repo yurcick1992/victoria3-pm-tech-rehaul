@@ -39,8 +39,6 @@
  building_motor_industry_diesel_engines_throughput_add_desc: "Bônus ou penalidade à produção e insumo de $building_motor_industry_diesel_engines$"
  building_motor_industry_electric_engines_throughput_add: "[concept_throughput] da construção de $building_motor_industry_electric_engines$"
  building_motor_industry_electric_engines_throughput_add_desc: "Bônus ou penalidade à produção e insumo de $building_motor_industry_electric_engines$"
- building_motor_industry_high_speed_diesel_throughput_add: "[concept_throughput] da construção de $building_motor_industry_high_speed_diesel$"
- building_motor_industry_high_speed_diesel_throughput_add_desc: "Bônus ou penalidade à produção e insumo de $building_motor_industry_high_speed_diesel$"
  building_munition_plant_explosive_shells_throughput_add: "[concept_throughput] da construção de $building_munition_plant_explosive_shells$"
  building_munition_plant_explosive_shells_throughput_add_desc: "Bônus ou penalidade à produção e insumo de $building_munition_plant_explosive_shells$"
  building_paper_mill_bleached_paper_throughput_add: "[concept_throughput] da construção de $building_paper_mill_bleached_paper$"

@@ -1455,7 +1455,6 @@ company_basic_motors = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
-		building_motor_industry_high_speed_diesel
 		building_automotive_industry
 		building_automotive_industry_mass_automobile_production
 	}
@@ -1476,7 +1475,6 @@ company_basic_motors = {
 						is_building_type = building_motor_industry
 						is_building_type = building_motor_industry_electric_engines
 						is_building_type = building_motor_industry_diesel_engines
-						is_building_type = building_motor_industry_high_speed_diesel
 					}
 					OR = {
 						is_building_type = building_automotive_industry
@@ -1502,7 +1500,6 @@ company_basic_motors = {
 						is_building_type = building_motor_industry
 						is_building_type = building_motor_industry_electric_engines
 						is_building_type = building_motor_industry_diesel_engines
-						is_building_type = building_motor_industry_high_speed_diesel
 					}
 					OR = {
 						is_building_type = building_automotive_industry

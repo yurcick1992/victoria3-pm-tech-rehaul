@@ -400,14 +400,6 @@ pmr_src_film_0 = {
 	}
 }
 
-pmr_src_high_speed_diesel_0 = {
-	value = 0
-	every_scope_building = {
-		limit = { is_building_type = building_motor_industry_diesel_engines }
-		add = { value = this.level  multiply = occupancy }
-	}
-}
-
 pmr_src_improved_fertilizer_0 = {
 	value = 0
 	every_scope_building = {

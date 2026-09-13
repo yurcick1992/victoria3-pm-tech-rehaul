@@ -39,8 +39,6 @@
  building_motor_industry_diesel_engines_throughput_add_desc:0 "A bonus or penalty to both input and output of $building_motor_industry_diesel_engines$"
  building_motor_industry_electric_engines_throughput_add:0 "$building_motor_industry_electric_engines$ building [concept_throughput]"
  building_motor_industry_electric_engines_throughput_add_desc:0 "A bonus or penalty to both input and output of $building_motor_industry_electric_engines$"
- building_motor_industry_high_speed_diesel_throughput_add:0 "$building_motor_industry_high_speed_diesel$ building [concept_throughput]"
- building_motor_industry_high_speed_diesel_throughput_add_desc:0 "A bonus or penalty to both input and output of $building_motor_industry_high_speed_diesel$"
  building_munition_plant_explosive_shells_throughput_add:0 "$building_munition_plant_explosive_shells$ building [concept_throughput]"
  building_munition_plant_explosive_shells_throughput_add_desc:0 "A bonus or penalty to both input and output of $building_munition_plant_explosive_shells$"
  building_paper_mill_bleached_paper_throughput_add:0 "$building_paper_mill_bleached_paper$ building [concept_throughput]"

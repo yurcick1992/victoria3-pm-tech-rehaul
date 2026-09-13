@@ -891,7 +891,6 @@ company_ferranti_ltd = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
-		building_motor_industry_high_speed_diesel
 	}
 
 	possible_prestige_goods = {
@@ -966,7 +965,6 @@ company_van_vlissingen_en_dudok_van_heel = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
-		building_motor_industry_high_speed_diesel
 		building_tooling_workshop
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
@@ -1014,7 +1012,6 @@ company_van_vlissingen_en_dudok_van_heel = {
 						is_building_type = building_motor_industry
 						is_building_type = building_motor_industry_electric_engines
 						is_building_type = building_motor_industry_diesel_engines
-						is_building_type = building_motor_industry_high_speed_diesel
 					}
 					level >= 5
 				}
@@ -1053,12 +1050,6 @@ company_van_vlissingen_en_dudok_van_heel = {
 				state_region = s:STATE_HOLLAND
 			}
 		}
-		building_motor_industry_high_speed_diesel = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_HOLLAND
-			}
-		}
 	}
 
 	ai_weight = {
@@ -1079,7 +1070,6 @@ company_maschinenfabrik_oerlikon = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
-		building_motor_industry_high_speed_diesel
 		building_tooling_workshop
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
@@ -1127,7 +1117,6 @@ company_maschinenfabrik_oerlikon = {
 						is_building_type = building_motor_industry
 						is_building_type = building_motor_industry_electric_engines
 						is_building_type = building_motor_industry_diesel_engines
-						is_building_type = building_motor_industry_high_speed_diesel
 					}
 					level >= 5
 				}
@@ -1160,12 +1149,6 @@ company_maschinenfabrik_oerlikon = {
 			}
 		}
 		building_motor_industry_diesel_engines = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_EAST_SWITZERLAND
-			}
-		}
-		building_motor_industry_high_speed_diesel = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_EAST_SWITZERLAND

@@ -119,7 +119,6 @@ company_iranian_state_railway = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
-		building_motor_industry_high_speed_diesel
 	}
 
 	potential = {
@@ -196,7 +195,6 @@ company_tashkent_railroad = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
-		building_motor_industry_high_speed_diesel
 	}
 
 	potential = {

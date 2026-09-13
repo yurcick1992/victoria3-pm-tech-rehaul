@@ -39,8 +39,6 @@
  building_motor_industry_diesel_engines_throughput_add_desc: "$building_motor_industry_diesel_engines$ – premia lub kara wpływająca na produkcję oraz wykorzystanie towarów"
  building_motor_industry_electric_engines_throughput_add: "$building_motor_industry_electric_engines$ – [concept_throughput|l] budynku"
  building_motor_industry_electric_engines_throughput_add_desc: "$building_motor_industry_electric_engines$ – premia lub kara wpływająca na produkcję oraz wykorzystanie towarów"
- building_motor_industry_high_speed_diesel_throughput_add: "$building_motor_industry_high_speed_diesel$ – [concept_throughput|l] budynku"
- building_motor_industry_high_speed_diesel_throughput_add_desc: "$building_motor_industry_high_speed_diesel$ – premia lub kara wpływająca na produkcję oraz wykorzystanie towarów"
  building_munition_plant_explosive_shells_throughput_add: "$building_munition_plant_explosive_shells$ – [concept_throughput|l] budynku"
  building_munition_plant_explosive_shells_throughput_add_desc: "$building_munition_plant_explosive_shells$ – premia lub kara wpływająca na produkcję oraz wykorzystanie towarów"
  building_paper_mill_bleached_paper_throughput_add: "$building_paper_mill_bleached_paper$ – [concept_throughput|l] budynku"

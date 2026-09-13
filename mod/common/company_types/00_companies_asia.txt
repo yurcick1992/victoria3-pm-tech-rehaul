@@ -346,7 +346,6 @@ company_orient_express = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
-		building_motor_industry_high_speed_diesel
 	}
 
 	potential = {
@@ -504,7 +503,6 @@ company_tata = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
-		building_motor_industry_high_speed_diesel
 	}
 
 	possible_prestige_goods = {

@@ -190,11 +190,6 @@ pmg_main_motor_diesel_engines = {
 	production_methods = { pm_main_motor_diesel_engines }
 }
 
-pmg_main_motor_high_speed_diesel = {
-	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
-	production_methods = { pm_main_motor_high_speed_diesel }
-}
-
 pmg_main_automotive_automobile_production = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
 	production_methods = { pm_main_automotive_automobile_production }

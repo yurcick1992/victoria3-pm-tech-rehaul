@@ -39,8 +39,6 @@
  building_motor_industry_diesel_engines_throughput_add_desc: "$building_motor_industry_diesel_engines$의 투입량과 산출량 양측에 대한 보너스 또는 불이익"
  building_motor_industry_electric_engines_throughput_add: "$building_motor_industry_electric_engines$ 건물 [concept_throughput]"
  building_motor_industry_electric_engines_throughput_add_desc: "$building_motor_industry_electric_engines$의 투입량과 산출량 양측에 대한 보너스 또는 불이익"
- building_motor_industry_high_speed_diesel_throughput_add: "$building_motor_industry_high_speed_diesel$ 건물 [concept_throughput]"
- building_motor_industry_high_speed_diesel_throughput_add_desc: "$building_motor_industry_high_speed_diesel$의 투입량과 산출량 양측에 대한 보너스 또는 불이익"
  building_munition_plant_explosive_shells_throughput_add: "$building_munition_plant_explosive_shells$ 건물 [concept_throughput]"
  building_munition_plant_explosive_shells_throughput_add_desc: "$building_munition_plant_explosive_shells$의 투입량과 산출량 양측에 대한 보너스 또는 불이익"
  building_paper_mill_bleached_paper_throughput_add: "$building_paper_mill_bleached_paper$ 건물 [concept_throughput]"

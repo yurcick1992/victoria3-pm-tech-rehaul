@@ -16,7 +16,6 @@ company_sao_paulo_railway = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
-		building_motor_industry_high_speed_diesel
 	}
 
 	potential = {
@@ -741,7 +740,6 @@ company_electricidad_de_caracas = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
-		building_motor_industry_high_speed_diesel
 		building_coal_mine
 	}
 
@@ -815,7 +813,6 @@ company_cordoba_railway = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
-		building_motor_industry_high_speed_diesel
 	}
 
 	potential = {
