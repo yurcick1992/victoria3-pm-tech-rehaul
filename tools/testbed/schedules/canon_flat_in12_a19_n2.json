@@ -1,0 +1,81 @@
+{
+ "schedule_version": 1,
+ "label": "canon-flat-in12-a19-n2",
+ "_why": "THE FOLLOW-UP TO THE 2+1 TESTS (user pre-authorised 2026-09-13: 'Once you're done, you may start another 2-3run batch (with the same logic -- third run if the two disagree), unless it's past 2PM local time, 14.09.2026'). ONE lever from arm 1 of session 20260913_143610 (canon-flat-in12-a16): the output step A 1.9 in place of 1.6, everything else byte-for-byte the a16 book (B 1.5, era-0 inputs x1.2 with the ladder anchored on it, building_cost FLAT at the vanilla anchors, ai_value 1000/2000/3000/4000 by era, cost divisor 0.001, the 10.75 pool defines, the 24-month industry bar, the era-rule canon's structure: 56 buildings, 182 technologies). WHY 1.9: the two measured flat-cost lifted books bracket the design's target on both axes and the midpoint is the bisection step. A 1.6 (run 1 of 20260913_143610) read world GDP 0.57x the vanilla n=16 median at 1935 with rung 0 ALIVE (56% staffed over all tiered industries, the consumer rungs 65-88%), pools 0.09 of GDP, productive workers per capita 0.67x, tiered goods 1.0-1.3x vanilla's British prices, below-best 39.2%; A 2.2 (F110, canon-flat-in12) read 2.10x with rung 0 DEAD (18% staffed), pools 2.28, workers 1.23x, prices 0.3-0.5x, below-best 26.0%. At base prices the rung two behind the frontier holds 0.30 of its value added per worker at A 1.6 (above F97's 0.2 death line - the mechanism cannot fire), 0.14 at A 1.9 and 0.09 at A 2.2 (textile; every four-method industry the same shape). So the output step IS the loop's gain: 1.6 undershoots vanilla's free-upgrade economy at every stage from 1850 (the same tiered level count as vanilla through 1870 at less GDP, then fewer levels), 2.2 explodes at flat cost. 1.9 is the midpoint on the log scale of the two GDP readings (a straight log-linear interpolation lands at 1.07x; the loop is nonlinear and n=1 on each end, so the band below is wide).",
+ "_arms": {
+  "canon-flat-in12-a19": "{kind: config, config: config/mod_config.canon-flat-in12-a19.json} - generated 2026-09-13 17:24 by the era-keyed make_ab_config (the command is the book's _ab.command); dry-run built clean (lint, negative goods, solvency, tech content, start conversion, L31, preflight)."
+ },
+ "_delta": "Against canon-flat-in12-a16 (session 20260913_143610 runs 1 and 3): A 1.9 in place of 1.6 - one lever. Against canon-flat-in12 (F110): A 1.9 in place of 2.2, plus the era pass (automotive, munition, synthetics, electrics, motor at their eras; motor [0,2,3]) and the secondaries fix of 2026-09-13 - read those five industries and every secondary method against vanilla, never against F110.",
+ "_predictions": {
+  "gdp": "world GDP 0.8-1.25x the vanilla n=16 median at 1935 (point estimate ~1.05x; the failure modes are named: below 0.8 means the gain is still too low and the next step is A 2.0-2.1 flat; above 1.25 means the explosive regime of F110 starts below 1.9 and the next lever is the cost slope, not A)",
+  "obsolescence": "the era-0 tiered workforce FALLS 1900 -> 1935 and rung-0 staffing at 1935 lands under 40% (A 1.6: 56%, A 2.2: 18%); stale (e0) payback over 30 y; below-best under 35%",
+  "labour_capital": "productive workers per capita 0.8-1.05x vanilla; unemployment 10-25% of salaried+unemployed (A 1.6: 26.5%, A 2.2: 7.3%, vanilla 16.3%); pools under 0.6 of a year's world GDP (A 1.6: 0.09, A 2.2: 2.28)",
+  "prices": "the tiered goods' British prices at 1935 between the two books' - 0.6-0.9x vanilla's (A 1.6: 1.0-1.3x, A 2.2: 0.3-0.5x); groceries above 0.6x",
+  "stall": "one F99-type stall (Britain's pool never forming) in two runs decides nothing; two stalls are the arm's signature - record, do not tie-break on them"
+ },
+ "_alignment": "Run 1 against run 2 - ALL of: world GDP / vanilla within 0.15 of each other AND on the same side of every G4 bound; productive workers per capita within 0.10; the era-0 workforce moving the same way 1900 -> 1935; stale payback on the same side of 30 y; below-best within 5 pp. All hold => the reading stands at n=2. Any fails => a third run (canon_flat_in12_a19_tiebreak_n1.json), median of three.",
+ "_comparison": "vanilla n=16 (20260821_131149) for every ratio; canon-flat-in12-a16 (session 20260913_143610, arm 1) and canon-flat-in12 (F110, n=1) are the two flat-cost points this book sits between; canon-je24-a22-in12 (session 20260913_143610, arm 2) is the steep-cost control with the same lift.",
+ "_watch": [
+  "every run ~5 min in: mod marker, version, this run's error window by position, clock (batch_heartbeat.sh at each wake)",
+  "first run: first_run_decomp at 1900/1935, rung margins by era at 1840/1900/1935 (scratchpad rung_margins.mjs), pools and unemployment (world_labour.mjs), queue_mix",
+  "post-run: preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS, the ledger (one configuration per report, --nb none)"
+ ],
+ "_cost": "2 x 1836->1936 ~ 2 x 2h20-3h00 ~ 5-6 h, plus a third run of the same on divergence; ~140 MB a run.",
+ "_caveats": [
+  "n=2 by design; the alignment test says whether that is enough.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30; the 'powershell -File' wrapper flattens the arguments and launches nothing); the STOP file must be absent; the five-minute smoke check on EVERY run.",
+  "The user's window: this batch may START before 14:00 local on 2026-09-14; a run started inside the window may finish after it."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+ },
+ "setups": {
+  "canon-flat-in12-a19": {
+   "kind": "config",
+   "config": "config/mod_config.canon-flat-in12-a19.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "canon-flat-in12-a19",
+   "until": "1936.1.1"
+  },
+  {
+   "setup": "canon-flat-in12-a19",
+   "until": "1936.1.1"
+  }
+ ]
+}
