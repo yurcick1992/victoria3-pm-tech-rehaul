@@ -1165,6 +1165,38 @@ function Test-LmL20 {
             "$paired alternate config(s) checked, all paired")
     }
 }
+function Test-LmL31 {
+    <#
+      L31 - A RUNG PLACED OR PRICED BY ITS ORDER IN THE INDUSTRY RATHER THAN BY ITS ERA (found 2026-09-13).
+
+      THE ERA RULE (user-ruled 2026-09-13; BALANCE_FRAMEWORK 10.78): a technology is referred to by its GAME era,
+      a rung by its NARRATIVE era (0-3), and the narrative era is a statement about unlock time AND the rung's
+      place on the ladder (output x A^era, input value x B^era, the lift on era 0 alone, cost, ai_value, the
+      research marks). Nothing fails when it is broken: the build passes, the mod loads, the run completes -
+      and automotive's e2 rung carries an 1836 rung's recipe, electrics' only rung sits one era below its
+      technology, synthetics runs at a seventh of vanilla's share (FINDINGS F111, every batch to 2026-09-13).
+
+      DETECTOR: tools/lint_tier_eras.mjs on the CONFIG (its paired tree supplies the shipping technology eras)
+      - placement within +/-1 era of the technology's, one rung per era, output and value added rising with
+      era, and for an A/B book every multiplier a function of the era. With -Config: that config. Without:
+      the canon (config/mod_config.json) alone - the frozen measured books of the pre-pass generator
+      (canon-4rung, canon4v, canon4-je ...) are records and are expected to fail it.
+    #>
+    $lint = Join-Path $Repo 'tools\lint_tier_eras.mjs'
+    if (-not (Test-Path $lint)) { Add-Result 'L31' 'rung keyed on order, not era' 'FAIL' "detector missing: $lint"; return }
+    $cfgFile = if ($Config) { $Config } else { Join-Path $Repo 'config\mod_config.json' }
+    if (-not [System.IO.Path]::IsPathRooted($cfgFile)) { $cfgFile = Join-Path $Repo $cfgFile }
+    if (-not (Test-Path $cfgFile)) { Add-Result 'L31' 'rung keyed on order, not era' 'FAIL' "config not found: $cfgFile"; return }
+    # ⚠ through cmd, never `& node … 2>&1`: under Stop preference PowerShell wraps a native command's stderr line in an
+    #   ErrorRecord and THROWS, so a legitimate FAIL read as "(detector error) the check itself threw" on its first proof.
+    $out = & cmd /c "node ""$lint"" --config ""$cfgFile"" 2>&1" | Out-String
+    if ($LASTEXITCODE -eq 0) {
+        Add-Result 'L31' 'rung keyed on order, not era' 'PASS' (($out.Trim() -split "`r?`n")[-1])
+    } else {
+        Add-Result 'L31' 'rung keyed on order, not era' 'FAIL' ($out.Trim() + [Environment]::NewLine +
+            "FIX: regenerate the book from the era-keyed generator (make_tier4_config -> make_tier4_techs -> make_ab_config); never hand-edit a rung's era or recipe.")
+    }
+}
 
 # --------------------------------------------------------------------------- driver ----
 # `Artifact` = needs a BUILT mod to read. The rest read the repo and can therefore gate a batch
@@ -1191,6 +1223,8 @@ $CHECKS = @(
     # L20 reads the CONFIG, not the mod, so it gates a batch before anything is built - which is the
     # whole point: the failure it catches costs a whole window when it is found at the first build.
     @{ Id = 'L20'; Artifact = $false; Fn = { Test-LmL20 } },
+    # L31 reads the CONFIG and its paired tree (the era rule); -RepoOnly-capable like L20, so a batch is gated before its build
+    @{ Id = 'L31'; Artifact = $false; Fn = { Test-LmL31 } },
     @{ Id = 'L22'; Artifact = $true;  Fn = { Test-LmL22 } },
     @{ Id = 'L24'; Artifact = $true;  Fn = { Test-LmL24 } },
     # L25 reads the ANALYSIS SCRIPTS, not the mod, so it costs a build nothing and gates a batch

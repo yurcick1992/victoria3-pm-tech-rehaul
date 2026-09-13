@@ -11295,3 +11295,58 @@ so a future continuation records its total itself.
   the plan anticipated.
 - The run's two launches are one campaign (the same autosave chain, the same build); the replayed 48 days of 1935 and the reconstructed
   wall clock are stated in its VERDICT.md and meta.json.
+
+## F111 — THE INDEX-KEYED LADDER: every four-rung batch priced automotive, munition, synthetics and electrics as 1836-era rungs; the world readings stand, the readings about those four industries do not (derived analysis, 2026-09-13)
+
+**Arm and evidence.** Re-read of the save summaries at the last summary (1935/36) of every USABLE run — `lib_runs.mjs`'s rule — of the
+vanilla n=16 baseline (`20260821_131149`), phase 1 (`canon-je24`, sessions `20260906_001032` + `20260907_074504`, n=30), phase 2
+(`canon-je24-a22`, `20260909_100930` + `20260909_123746`, n=11) and the §10.77 book (`canon-flat-in12`, `20260910_151220` run 1, finished
+by hand, n=1); per-country `buildings` summed world-wide (levels, staffing, `va_out − va_in`, profit), medians over runs. Prompted by
+the era pass (BALANCE_FRAMEWORK §10.78): until 2026-09-13 `make_ab_config.mjs` keyed output × A^k, input value × B^k, cost × A^k and
+the ×lift on k = era − the industry's first era, so the four industries that do not start at e0 were priced as if they did, and
+electrics' single rung sat on e1 with a game-era-4 technology. Every other industry's rung is byte-identical before and after the fix.
+
+**The four industries at 1935 (world, medians; "share" = of world value added; £ per staffed level):**
+
+| industry | vanilla n=16 lv / staffed / VA £k / share / £ per lv | phase 1 n=30 | phase 2 n=11 | flat-in12 n=1 |
+|---|---|---|---|---|
+| automotive | 492 / 445 / 1,179 / 1.27% / 2,822 | 286 / 272 / 785 / 1.01% / 2,743 | 397 / 385 / 965 / 0.98% / 2,641 | 1,750 / 953 / 2,898 / 0.79% / 3,040 |
+| electrics | 123 / 101 / 184 / 0.20% / 1,699 | 91 / 87 / 155 / 0.22% / 1,774 | 110 / 108 / 173 / 0.18% / 1,719 | 697 / 202 / 188 / 0.05% / 932 |
+| synthetics | 288 / 219 / 452 / 0.50% / 2,151 | 41 / 34 / 61 / 0.07% / 1,815 | 61 / 36 / 80 / 0.09% / 2,151 | 997 / 542 / 876 / 0.24% / 1,617 |
+| munition | 241 / 69 / 64 / 0.08% / 944 | 157 / 67 / 140 / 0.18% / 1,914 | 167 / 83 / 217 / 0.21% / 2,415 | 841 / 226 / 456 / 0.12% / 2,019 |
+| the four together | 2.05% of world VA | 1.48% | 1.46% | 1.20% |
+
+**Their era peers in the same runs (£ VA per staffed level):** steel e1 / e2 / e3 — phase 1 2,778 / 10,158 / 23,246, phase 2 3,544 /
+14,029 / 34,416, flat-in12 2,435 / 11,072 / 32,130; arms e2 / e3 — 5,883 / 15,699, 7,310 / 22,890, 6,898 / 22,848. Automotive's "e2"
+rung earned a QUARTER of steel's e2 and less than steel's e1; electrics' rung two thirds of steel's e1. That is the k-keying read
+directly: the same vanilla-recipe economics vanilla's own automobile plant has (2,822 per level in the baseline), under a label that
+promised an e2 rung's.
+
+**What the batch tables already showed and nobody read as a defect (F107 / F109):** automobiles 1.13–1.14× and telephones 1.12–1.17×
+vanilla's British price at 1935 — under-supply of an under-powered rung — with dye at 0.86–1.00 and ammunition 0.79–0.99.
+
+**The regenerated books (A 2.0 / B 1.5, the canon):** automotive e2 output 30 → 120 automobiles (inputs 10/5/5 → 22.5/11.3/11.3
+engines/rubber/oil; cost 800 → 3,200; target_be 44 → 25), e3 60 → 240 (cost 1,600 → 6,400); munition e1 50 → 100 ammunition, e2 100 →
+200; synthetics e1 80 → 160 dye; electrics e1 → e2, 60 → 240 telephones, ai_value 3,000 → 9,000. On the flat-cost ×1.2 book the four
+also shed the lifted-vanilla margins (electrics target_be 107 → 50, munition 115 → 72).
+
+**What it says.** The four re-keyed industries were 1.2–1.5% of world value added in the mod arms against 2.05% in vanilla, so the
+WORLD readings of F98–F110 — GDP ÷ vanilla, productive workers per capita, unemployment, pools, construction, the four-method
+industries' obsolescence, the 18-good price panel except automobiles/telephones/dye/ammunition, tier choice (dominated by the
+four-method industries' rung-0 rebuild) — stand as measured. Every reading ABOUT automobiles, telephones, dye or ammunition is
+confounded: their prices, their levels, their staffing, the "late industries are weak" remark in F106 §6's neighbourhood, and the
+research-entry coverage of telephone (its mark moves to the e2 value with the fix). No verdict of F98–F110 changes; the next tests run
+on the corrected books, and their automotive / electrics / synthetics / munition rows are read against vanilla, not against phase 2.
+
+**What it does NOT say.** How large the corrected rungs will be in play (an e2 automotive rung now adds ~£9,750 a level at base prices,
+in line with steel's e2 — whether the AI builds it, and what 4× vanilla's automobile output per level does to the automobile and engine
+markets, is unmeasured); whether the synthetics collapse to a seventh of vanilla's share was the margin alone (vanilla dye at the e0
+margin under a ×1.2 lift is near break-even) or also the plantations' competition; anything about the six-rung book, which is out of the
+era rule's scope. n=1 for flat-in12 throughout.
+
+**Addendum (the same day).** The era pass's dry-run builds surfaced an unrelated defect with a wider blast radius: since 2026-09-01
+`emit_secondaries.mjs` had rescaled every secondary method's OUTPUTS by the rung's output ratio and left its INPUTS at vanilla's
+quantities (a regex without its backslashes, BUGS_AND_FIXES 2026-09-13), so on every measured four-rung book a cannery, a luxury line,
+rayon, porcelain or radios was cheaper per unit the higher the rung. Every reading of SECONDARY adoption in F98–F110 (the tiered panel's
+"secondary-PM bias", the radio and luxury supplies, the e3 rungs' margins where a secondary was active) is confounded by it; the world
+readings stand for the reason above. The corrected emitter ships in every build from 2026-09-13, and the next tests carry it.

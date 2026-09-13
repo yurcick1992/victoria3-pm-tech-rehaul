@@ -630,7 +630,7 @@ building_synthetics_plant = {
 		pmg_main_synthetics_dye_production
 		pmg_synthetic_silk_synthetics_plant
 	}
-	required_construction = 800
+	required_construction = 1600
 	possible = {
 		owner = {
 			NOT = {
@@ -901,7 +901,7 @@ building_automotive_industry = {
 		pmg_tanks_automotive_industry
 		pmg_automation_building_automotive_industry
 	}
-	required_construction = 800
+	required_construction = 3200
 	possible = {
 		owner = {
 			NOT = {
@@ -929,7 +929,7 @@ building_automotive_industry_mass_automobile_production = {
 		pmg_tanks_automotive_industry_mass_automobile_production
 		pmg_automation_building_automotive_industry
 	}
-	required_construction = 1600
+	required_construction = 6400
 	possible = {
 		owner = {
 			NOT = {
@@ -956,7 +956,7 @@ building_electrics_industry = {
 		pmg_main_electrics_telephones
 		pmg_radios_category_electrics_industry
 	}
-	required_construction = 800
+	required_construction = 3200
 	possible = {
 		owner = {
 			NOT = {
@@ -967,7 +967,7 @@ building_electrics_industry = {
 			}
 		}
 	}
-	ai_value = 3000
+	ai_value = 9000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1124,7 +1124,7 @@ building_munition_plant = {
 		pmg_main_munition_percussion_caps
 		pmg_automation_building_munition_plant
 	}
-	required_construction = 800
+	required_construction = 1600
 	possible = {
 		owner = {
 			NOT = {
@@ -1151,7 +1151,7 @@ building_munition_plant_explosive_shells = {
 		pmg_main_munition_explosive_shells
 		pmg_automation_building_munition_plant
 	}
-	required_construction = 1600
+	required_construction = 3200
 	possible = {
 		owner = {
 			NOT = {

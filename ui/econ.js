@@ -574,7 +574,7 @@
     function makeTiers(i){ return i.tiers.map((t,ix) => ({
         key:t.key, name:t.name, tier:ix+1, output_qty:+t.output_qty, target_be:+t.target_be,
         tech:t.tech, natural_year:(t.natural_year != null ? +t.natural_year : null),
-        era:(t.era != null ? +t.era : null),          // the mod's own 5-era ladder (independent of vanilla tech eras)
+        era:(t.era != null ? +t.era : null),          // the rung's NARRATIVE era on the mod's own ladder (0–3 on the four-rung book, 0–5 on the six-rung) — a technology's GAME era is a different number; never the rung's position (`tier` above is a DOM key only)
         // ⚠ THE DATE GATE'S INPUT MUST SURVIVE INTO THE MODEL (§10.44) — same lesson as input_ratio
         // below: a config field the model drops is a solver branch that silently never runs. The
         // scenario solver THROWS on a missing tech_year rather than falling back, which is how this

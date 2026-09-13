@@ -46,8 +46,11 @@ function Get-ListTokens([string[]]$block, [string]$field, [string]$tokenPrefix) 
 }
 
 # Build lookup maps from the mod config.
-#   baseIndustry : base building key (T1 key) -> industry id
-#   pmMap        : industry id -> hashtable(vanilla_pm -> @{ tier_key; new_pm; tier })
+#   baseIndustry : base building key (the vanilla key, the lowest rung's) -> industry id
+#   pmMap        : industry id -> hashtable(vanilla_pm -> @{ tier_key; new_pm; tier; era })
+#                  `tier` is the rung's 1-based POSITION in the industry (a lookup key for tiers[], and the
+#                  six-rung rule set's `force_tier`/`create` numbering); `era` is the rung's NARRATIVE ERA, the
+#                  number every label, name and analysis uses (THE ERA RULE, 2026-09-13). Never print `tier`.
 #   industryById : industry id -> the industry config object (for tiers[] indexing)
 function Get-SplitMaps($cfg) {
     $baseIndustry = @{}; $pmMap = @{}; $industryById = @{}
@@ -64,7 +67,7 @@ function Get-SplitMaps($cfg) {
             # indexing the map with $null (which throws), but keep $n counting so the tier NUMBERS that
             # `force_tier` and the converter use still match the config's own ladder.
             if (-not $t.vanilla_pm) { continue }
-            $entry = @{ tier_key = $t.key; new_pm = $t.pm_key; tier = $n }
+            $entry = @{ tier_key = $t.key; new_pm = $t.pm_key; tier = $n; era = $(if ($null -ne $t.era) { [int]$t.era } else { $n - 1 }) }
             $pmMap[$ind.id][$t.vanilla_pm] = $entry
             # extra vanilla main PMs that also map to this tier (e.g. an undeveloped port's pm_anchorage → T1)
             if ($t.vanilla_pm_aliases) { foreach ($a in $t.vanilla_pm_aliases) { $pmMap[$ind.id][$a] = $entry } }

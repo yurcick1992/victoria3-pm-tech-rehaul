@@ -200,13 +200,19 @@ const JE_SCOPE = (RE.scope || 'tiers_only');
 if (RE.war_channel === 'unit_types')
   for (const t of OPT.techs.filter(x => x.era > 1 && UNIT_TECHS.has(x.id)))
     anchors[t.id] = { rule: 'war', era: Math.max(2, t.era), sources: [] };   // a unit-type technology is a war entry even where it also gates a rung
+// ⭐ TWO ERA KINDS (THE ERA RULE, user-ruled 2026-09-13). `thresholds_by_era` is keyed by the NARRATIVE era of the rung a
+//   technology unlocks (rules A and B above pass `t.era`, the rung's era — 0..3 on a four-rung book). A technology's own
+//   `era` in OPT.techs is its GAME era (1..5), a different number: the grant (`ERACOST['era_' + T0.era]`) and the war
+//   channel read that one. A rule-D entry has no rung, so its game era is converted to the narrative era it would have
+//   placed a rung on, through the book's `era_game_era` (game era 2 rounds up to e1) — never used as the key directly.
+const narrativeEraOf = ge => { const GE = CFG.era_game_era; if (!Array.isArray(GE)) return ge; if (ge <= 1) return 0; const i = GE.findIndex(g => g >= ge); return i < 0 ? GE.length - 1 : i; };
 if (JE_SCOPE === 'all') {
   // rule D: production technologies outside our ladder, anchored on what they unlock
   for (const t of OPT.techs.filter(x => x.category === 'production' && x.era > 1 && !anchors[x.id])) {
     const g = new Set();
     for (const b of (t.vanillaUnlocks || [])) { const grp = (VAN.buildings[b] || {}).group; if (grp) g.add(grp); }
     for (const pm of (techPM[t.id] || [])) for (const b of (pmBld[pm] || [])) { const grp = (VAN.buildings[b] || {}).group; if (grp) g.add(grp); }
-    for (const grp of g) addSource(t.id, Math.max(2, t.era), 'necessity', { group: grp });
+    for (const grp of g) addSource(t.id, narrativeEraOf(Math.max(2, t.era)), 'necessity', { group: grp });
   }
   // rule C: the military tree, on the war gate
   for (const t of OPT.techs.filter(x => x.category === 'military' && x.era > 1 && !anchors[x.id]))

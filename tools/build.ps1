@@ -1486,6 +1486,18 @@ if (-not $NoLint) {
     } else {
         Write-Output "WARN: tools/lint_start_conversion.mjs missing - L13 not checked"
     }
+    # LANDMINE L31 - THE ERA RULE (user-ruled 2026-09-13, BALANCE_FRAMEWORK 10.78): every rung sits within one era of
+    # its technology's, one rung per era, output and value added rising with era, and an A/B book's multipliers are
+    # functions of the rung's ERA and never of its index. Reads the CONFIG and its paired tree - a hand edit or a book
+    # from the pre-pass generator (automotive's e2 rung priced as an 1836 one, every batch to 2026-09-13) fails here.
+    $eraLint = Join-Path $repo 'tools/lint_tier_eras.mjs'
+    if (Test-Path $eraLint) {
+        Write-Output "Running era-rule linter (L31)..."
+        & node $eraLint --config $cfgPath
+        if ($LASTEXITCODE -ne 0) { throw "ERA-RULE LINT FAILED (L31): a rung placed or priced by its order in the industry rather than by its era. Regenerate the book; see BALANCE_FRAMEWORK 10.78 and TESTBED_LANDMINES.md L31." }
+    } else {
+        Write-Output "WARN: tools/lint_tier_eras.mjs missing - L31 not checked"
+    }
 
 
 }

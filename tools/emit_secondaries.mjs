@@ -199,8 +199,11 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
         const Rin = mainInRef > 0 ? tierIn / mainInRef : Rout;
         const nk = p + '_' + bkey.replace(/^building_/, '');
         let nb = pb;
+        // a NEGATIVE quantity (a reduction of the main good, or a saved input) rounds TOWARD ZERO at two decimals, so the
+        // reductions of a full conversion can never sum past the main output by rounding alone (2026-09-13)
+        const r2 = x => x < 0 ? -Math.floor(-x * 100 + 1e-9) / 100 : +x.toFixed(2);
         nb = nb.replace(/goods_output_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g,
-          (_, g2, q) => 'goods_output_' + g2 + '_add = ' + (+(q * Rout).toFixed(2)));
+          (_, g2, q) => 'goods_output_' + g2 + '_add = ' + r2(q * Rout));
         // ⚠⚠ A REDUCTION SCALES WITH ITS OWN GOOD, NOT WITH THE INPUT BILL. `pm_cannery` carries
         //   `goods_input_grain_add = -20`, i.e. "20 less grain than the main method uses". Scaling
         //   that by the AGGREGATE input-value ratio overshoots whenever the tier's recipe holds a
@@ -208,10 +211,15 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
         //   three food tiers and was caught by lint_negative_goods. So a good the reference method
         //   also consumes scales by THIS TIER'S share of THAT good; anything else falls back to the
         //   aggregate ratio.
-        nb = nb.replace(/goods_input_([a-z_]+)_adds*=s*(-?[0-9.]+)/g, (_, g2, q) => {
+        // ⚠⚠ THIS REGEX SHIPPED WITHOUT ITS BACKSLASHES FROM 2026-09-01 TO 2026-09-13 (`_adds*=s*`, i.e. "add, any number of
+        //   the letter s, =, any number of the letter s"), so it matched NO vanilla line (`goods_input_grain_add = -20`) and
+        //   every secondary's INPUTS stayed at vanilla quantities on every rung while its outputs scaled by Rout — an e2
+        //   cannery made 4× vanilla's groceries for vanilla's meat and iron. Nothing failed; the cannery's saved grain simply
+        //   never went negative. BUGS_AND_FIXES 2026-09-13; every four-rung measurement before that date carried it.
+        nb = nb.replace(/goods_input_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g, (_, g2, q) => {
           const mine = (t.inputs || {})[g2], theirs = ref && ref.inp ? ref.inp[g2] : null;
           const k = (mine != null && theirs) ? (mine / theirs) : Rin;
-          return 'goods_input_' + g2 + '_add = ' + (+(q * k).toFixed(2));
+          return 'goods_input_' + g2 + '_add = ' + r2(q * k);
         });
         // a gate naming a vanilla main PM must name OUR tier's method instead, or it never unlocks
         nb = nb.replace(/unlocking_production_methods\s*=\s*\{[\s\S]*?\}/,

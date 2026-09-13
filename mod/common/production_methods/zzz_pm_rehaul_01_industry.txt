@@ -783,10 +783,10 @@ pm_main_automotive_automobile_production = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_engines_add = 10
-			goods_input_rubber_add = 5
-			goods_input_oil_add = 5
-			goods_output_automobiles_add = 30
+			goods_input_engines_add = 22.5
+			goods_input_rubber_add = 11.3
+			goods_input_oil_add = 11.3
+			goods_output_automobiles_add = 120
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -806,10 +806,10 @@ pm_main_automotive_mass_automobile_production = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_engines_add = 10.7
-			goods_input_rubber_add = 10.7
-			goods_input_oil_add = 10.7
-			goods_output_automobiles_add = 60
+			goods_input_engines_add = 24.1
+			goods_input_rubber_add = 24.1
+			goods_input_oil_add = 24.1
+			goods_output_automobiles_add = 240
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -968,9 +968,9 @@ pm_main_munition_percussion_caps = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_explosives_add = 20
-			goods_input_lead_add = 20
-			goods_output_ammunition_add = 50
+			goods_input_explosives_add = 30
+			goods_input_lead_add = 30
+			goods_output_ammunition_add = 100
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -990,9 +990,9 @@ pm_main_munition_explosive_shells = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_explosives_add = 33.8
-			goods_input_lead_add = 25.3
-			goods_output_ammunition_add = 100
+			goods_input_explosives_add = 50.6
+			goods_input_lead_add = 38
+			goods_output_ammunition_add = 200
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -1012,9 +1012,9 @@ pm_main_synthetics_dye_production = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_sulfur_add = 20
-			goods_input_fertilizer_add = 30
-			goods_output_dye_add = 80
+			goods_input_sulfur_add = 30
+			goods_input_fertilizer_add = 45
+			goods_output_dye_add = 160
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -1029,11 +1029,11 @@ pm_main_electrics_telephones = {
 	texture = "gfx/interface/icons/production_method_icons/telephones.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_iron_add = 20
-			goods_input_rubber_add = 20
-			goods_input_lead_add = 20
-			goods_input_tools_add = 10
-			goods_output_telephones_add = 60
+			goods_input_iron_add = 45
+			goods_input_rubber_add = 45
+			goods_input_lead_add = 45
+			goods_input_tools_add = 22.5
+			goods_output_telephones_add = 240
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500

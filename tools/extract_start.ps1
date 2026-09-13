@@ -54,7 +54,9 @@ $handler = {
         if ($mainPm) {
             $script:factories.Add([pscustomobject]@{
                 country = $country; state = $state; building = $bkey; industry = $id
-                vanilla_pm = $mainPm; tier = $pmMap[$id][$mainPm].tier; levels = $levels; owners = $owners
+                # `tier` = the rung's 1-based POSITION (emit_techs.mjs indexes tiers[] with it); `era` = its narrative era,
+                # the number the summary labels by (THE ERA RULE, 2026-09-13 — a position is never printed as a label)
+                vanilla_pm = $mainPm; tier = $pmMap[$id][$mainPm].tier; era = $pmMap[$id][$mainPm].era; levels = $levels; owners = $owners
             })
         } else {
             $acts = @(); foreach ($l in $block) { if ($l -match 'activate_production_methods') { $acts += $l.Trim() } }
@@ -72,7 +74,7 @@ foreach ($fac in $script:factories) {
     if (-not $byIndustry.Contains($fac.industry)) { $byIndustry[$fac.industry] = [ordered]@{ total = 0; tiers = [ordered]@{}; countries = [ordered]@{} } }
     $bi = $byIndustry[$fac.industry]
     $bi.total++
-    $tk = "T$($fac.tier)"
+    $tk = "e$($fac.era)"   # labelled by ERA (was "T<position>", which read the same digit as different vintages across industries)
     if (-not $bi.tiers.Contains($tk)) { $bi.tiers[$tk] = 0 }
     $bi.tiers[$tk]++
     if (-not $bi.countries.Contains($fac.country)) { $bi.countries[$fac.country] = [ordered]@{} }

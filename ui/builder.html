@@ -636,11 +636,16 @@ const tlab = t => (t && t.era != null ? 'e' + t.era : 'T' + (t ? t.tier : '?'));
 // building: what unlocks it, and how far down the tree is that? PMDATA.techs is the SHIPPING option's
 // index (build.ps1, from config/tech_tree_options.json) — the same tree emit_techs.mjs writes into the
 // mod, so the sheet can never name a technology the game does not have.
-// ⚠ THE TWO ERAS ARE NOT THE SAME NUMBER and must never be conflated. A tier's `era` is its rung on the
-// mod's SIX-era ladder (0–5, anchored 1750…1940); a technology's era is its row in the GAME's five-era
-// tree, where our 0 and our 1 both sit in game era 1. So a `e0` building on an `era 1` technology is
-// correct, not a bug — which is exactly why this labels the technology's era as "tech era".
+// ⚠ THE TWO ERAS ARE NOT THE SAME NUMBER and must never be conflated (THE ERA RULE, user-ruled 2026-09-13,
+// BALANCE_FRAMEWORK §10.78). A tier's `era` is its NARRATIVE era on the mod's ladder (0–3 on the four-rung
+// book, anchored 1836/1875/1905/1940 — `era_anchor_years` in the config; 0–5 on the retired six-rung one); a
+// technology's era is its row in the GAME's five-era tree (mechanical: era base cost, the ahead-of-time penalty).
+// The book maps them through `era_game_era` (e0 ↔ 1, e1 ↔ 3, e2 ↔ 4, e3 ↔ 5; game era 2 rounds up to e1), so an
+// `e0` building on an `era 1` technology is correct, not a bug — which is exactly why this labels the
+// technology's era as "tech era". A rung's position in its own industry is NEVER shown as a number.
 const TECHIDX = (window.PMDATA && window.PMDATA.techs) || {};
+// the book's own anchor years, for tooltips: "(anchors 1836 / 1875 / 1905 / 1940)" on a four-rung book, '' when absent
+function eraAnchorLabel(){ const a=(window.PMDATA&&window.PMDATA.config&&window.PMDATA.config.era_anchor_years)||null; return Array.isArray(a)&&a.length?` (anchors ${a.join(' / ')})`:''; }
 function techInfo(id){ return id ? (TECHIDX[id] || null) : null; }
 function techName(id){ const T = techInfo(id); return T && T.n ? T.n : (id || ''); }
 // short form for a cell: "Bessemer Process · tech era 2"; falls back to the bare key when the index is
@@ -654,8 +659,8 @@ function techTitle(id){ const T = techInfo(id);
   return `Unlocked by ${T.n} (${id}) — ${T.c} tree, GAME era ${T.e}`
     + (T.y ? `, real-world onset ~${T.y}` : '')
     + (T.o === 'new' ? '. A technology this mod ADDS.' : '. A vanilla technology.')
-    + ' ⚠ the technology\'s era is its row in the game\'s five-era tree, which is not the mod\'s six-era'
-    + ' ladder — our e0 and e1 both sit in game era 1.'; }
+    + ' ⚠ the technology\'s era is its row in the game\'s five-era tree, which is not the rung\'s narrative era'
+    + ' on the mod\'s ladder (the config\'s era_game_era maps the two: e0 ↔ 1, e1 ↔ 3, e2 ↔ 4, e3 ↔ 5).'; }
 function initSel(pmgs){ const s={}; (pmgs||[]).forEach(pg=>{ const b=basePm(pg); if(b) s[pg]=b; }); return s; }
 // normalize industries into an editable model
 const AIVAL_DEFAULT = 1000;   // PRODUCTION_BUILDING_BASE_VALUE — engine default when a building scripts no ai_value
@@ -691,7 +696,7 @@ function makeTiers(i){ return i.tiers.map((t,ix)=>({
     key:t.key, name:t.name, tier:ix+1, output_qty:+t.output_qty, target_be:+t.target_be,
     tech:t.tech, natural_year:(t.natural_year!=null?+t.natural_year:null),   // unlock tech + its era's representative year
     tech_year:(t.tech_year!=null?+t.tech_year:null),   // §10.44 date gate: year the slot's tech was first deployable (carried through on export)
-    era:(t.era!=null?+t.era:null),     // the mod's own five-era ladder — NOT the tier's position in its industry
+    era:(t.era!=null?+t.era:null),     // the rung's NARRATIVE era on the mod's own ladder — NOT the tier's position in its industry (`tier` above is a DOM key only, never displayed)
     model_only:!!t.model_only,         // modelled but not emitted (no unlocking technology exists yet)
     output_good:t.output_good,   // optional per-tier override (e.g. shipyard clippers→steamers)
     vanilla_pm:t.vanilla_pm,     // base-game main PM this tier replaces (used by "Bring to vanilla")
@@ -1812,13 +1817,13 @@ function fmtPop(n){ n=+n||0;
 // the anchor, a technology leader holds about half that era's technologies). They coincide only at eras
 // 2 and 3. So the button NAME is the year alone and the anchor sits beside it as a read-only chip
 // (user ruling 2026-08-12). The scenarios themselves are not re-dated — the references are what they are.
-const ERA_ANCHOR_YEAR = { 0:1750, 1:1830, 2:1870, 3:1900, 4:1925, 5:1940 };
+// ⚠ The literal table is the SIX-ERA ladder's and is the LAST fallback. The loaded book's own `era_anchor_years`
+// (the four-rung books carry 1836/1875/1905/1940 since the era rule, 2026-09-13) wins over it, and a preset that
+// carries its own `anchor` wins over both, because the anchor is a property of the ladder that preset was solved
+// on — the hardcoded table once printed "e0·1750" beside a 1836 scenario of the four-rung book.
+const ERA_ANCHOR_YEAR = (()=>{ const a=(window.PMDATA&&window.PMDATA.config&&window.PMDATA.config.era_anchor_years)||null; if(Array.isArray(a)&&a.length){ const o={}; a.forEach((y,i)=>{ o[i]=+y; }); return o; } return { 0:1750, 1:1830, 2:1870, 3:1900, 4:1925, 5:1940 }; })();
 // Parsed from the id (`era5_1945`) rather than read from a field, so it works on presets written before
 // the generator learned to carry `era`/`anchor` — and on any it writes afterwards.
-// ⚠ ERA_ANCHOR_YEAR above is the SIX-ERA ladder's table and is only a FALLBACK. A preset that carries
-// its own `anchor` wins, because the anchor is a property of the ladder that preset was solved on —
-// on the four-rung book (1836/1875/1905/1940) the hardcoded table printed "e0·1750" beside a 1836
-// scenario. Presets written before the generator learned to carry it still fall back to the table.
 function eraAnchorOf(p){
   if(p && p.era!=null && p.year!=null) return { era:+p.era, year:+p.year, anchor:(p.anchor!=null?+p.anchor:ERA_ANCHOR_YEAR[+p.era]) };
   const m=/^era(\d+)_(\d+)$/.exec(p&&p.id||'');
@@ -2295,7 +2300,7 @@ function tierRow(i,t){
     + nonGoodsRows(i,t)
     + subtotalRow(`osub_${i.id}_${t.tier}`, 'total out', thruMult(t.key)*outputValue(i,t,true), 'Total weekly output revenue at the CURRENT scenario prices, including the throughput bonus — priced goods only (the non-goods above carry no £).');
   return `<tr data-ind="${esc(i.id)}" data-tier="${t.tier}">
-    <td><span class="pill" style="background:${t.era===0?ERA0COL:(TIERCOL[t.era!=null?t.era:t.tier]||'#666')}" title="${t.era!=null?`Era ${t.era} of the mod's six-era ladder, 1780-1945. This is the ERA, never a position in its own industry: automotive starts at era 3, so its first building is e3. The in-game name says the same thing ("Era ${t.era}. …").${t.tech_year!=null?` First commercially deployable ~${t.tech_year} (tech_year, §10.44) — the date gate places this tier in scenarios from that year on.`:''}`:'tier'}">${t.era!=null?'e'+t.era:t.tier}</span>${t.tech_year!=null?`<div class="muted" style="font-size:10px" title="tech_year: the year this slot's technology was first commercially deployable — what the §10.44 date gate places by">${t.tech_year}</div>`:''}${t.model_only?'<div class="muted" style="font-size:9px" title="modelled but NOT emitted — no unlocking technology exists for it yet">model</div>':''}</td>
+    <td><span class="pill" style="background:${t.era===0?ERA0COL:(TIERCOL[t.era!=null?t.era:t.tier]||'#666')}" title="${t.era!=null?`Era ${t.era} of the mod's ladder${eraAnchorLabel()}. This is the NARRATIVE ERA, never a position in its own industry: it says when the rung unlocks (rungs of one era unlock at about the same time in every industry — automotive starts at e2, so its first building is e2) and where it sits on the ladder (output, inputs, cost and ai_value are functions of the era). The in-game name says the same thing ("Era ${t.era}. …"). THE ERA RULE, 2026-09-13.${t.tech_year!=null?` First commercially deployable ~${t.tech_year} (tech_year, §10.44) — the date gate places this tier in scenarios from that year on.`:''}`:'tier'}">${t.era!=null?'e'+t.era:t.tier}</span>${t.tech_year!=null?`<div class="muted" style="font-size:10px" title="tech_year: the year this slot's technology was first commercially deployable — what the §10.44 date gate places by">${t.tech_year}</div>`:''}${t.model_only?'<div class="muted" style="font-size:9px" title="modelled but NOT emitted — no unlocking technology exists for it yet">model</div>':''}</td>
     <td>${esc(t.name)}<div class="muted" style="font-size:11px">${esc(t.key)}</div><div class="muted" style="font-size:10px" title="${esc(techTitle(t.tech))}">${t.tech?'🔒 '+esc(techLabel(t.tech)):'<i>no unlocking technology</i>'}</div>
       <div class="aivrow" title="Base AI construction desire (building ai_value). Blank = engine default ${AIVAL_DEFAULT}. Emitted as the building's ai_value when set.">ai_value <input type="number" min="0" step="50" value="${t.ai_value!=null?t.ai_value:''}" placeholder="${AIVAL_DEFAULT}" data-ind="${i.id}" data-tier="${t.tier}" data-aiv="1"></div>
       <div class="aivrow" title="§10.60 workforce multiplier — scales this tier's BASE employment at emission and in the sheet's workforce/wages/BE/profit. The factored port tiers run 0.1 (÷10 unit) / 0.2 (÷5); blank = ×1. The 1836 start multiplies this tier's starting levels by 1/this to preserve physical capacity (anchorage entries stay level 1).">workforce × <input type="number" min="0" step="0.05" value="${t.workforce_mult!=null?t.workforce_mult:''}" placeholder="1" data-ind="${i.id}" data-tier="${t.tier}" data-wfm="1"></div>

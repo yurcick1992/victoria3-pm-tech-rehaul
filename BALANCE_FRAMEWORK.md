@@ -7170,3 +7170,72 @@ OVER budget, on a world 1.46× the pop objects; pop-matched +8.1%. Predictions: 
 (0.90–1.30× the world) and P4's early-game clause (1860 at 1.11×) MISSED upward; P7's total MISSED; P1 not scorable at n=1. Four levers changed at
 once and one seed: a direction, not a result — the next seeds (through `launch_detached.ps1`, landmine L30) and the pool hoard are what to settle
 before ruling on it. Ledger https://claude.ai/code/artifact/0e29136d-ec51-4818-b139-1e6fd529cbec (fill dir `tools/testbed/ledger/out_canon_flat_in12_n1`).
+
+## 10.78 — THE ERA RULE: rungs refer to their eras, never to their order, and the ladder is keyed on the era (user-ruled 2026-09-13, "the final ladder realignment")
+
+**The ruling (user, 2026-09-13).** "We always refer to the techs by their actual tech era (which has a real game mechanical meaning —
+unfinished techs of eras under N add penalties to era N tech cost), and always refer to tiers by their narrative era between 0 and 3,
+and same-era industry tiers are roughly the same unlock time, meaning that an industry that starts in 1900 is starting not at t0, but
+at around t2. Adjustments can be made as we don't have too many tiers for good alignment, but if I ever see a t0 automobile industry, I
+will riot." And: "while these tier numbers do not have inherent game mechanical meaning, they have a very strict meaning in the mod, as
+those numbers are the anchors that dictate their economy, by the ladder (our late tiers are uniformly more effective than earlier
+ones)." It restates the 2026-09-03 research-mark ruling ("do not consider late-to-appear industries as t0/t1") and extends it from the
+analyses to the config, the generator and every reader. CLAUDE.md carries it as a GOVERNING section.
+
+**The rule, as implemented (`tools/lib_tier4_spec.mjs` header; `make_tier4_config.mjs`, `make_ab_config.mjs`, `lint_tier_eras.mjs`).**
+1. *Two era kinds.* A technology's GAME era (1–5) is mechanical. A rung's NARRATIVE era (0–3) has the anchors 1836 / 1875 / 1905 / 1940
+   (`era_anchor_years`) and maps through `era_game_era` [1, 3, 4, 5]: e0 ↔ 1 (held at the start), e1 ↔ 3, e2 ↔ 4, e3 ↔ 5; **game era 2
+   (researched 1836–1861) sits in the gap and rounds UP to e1**, the first researched tier.
+2. *Derivation.* A rung's era = its gate technology's narrative era, bumped up only as far as one-rung-per-era needs in vanilla's method
+   order (vanilla's ladders are front-loaded — game eras 1, 1, 2, 4 for a textile mill — so the bump is what places a four-method industry
+   on 0, 1, 2, 3). *Tolerance ±1 era* is the ruled adjustment. A ladder that does not fit needs a `PLACEMENT` ruling; the generator throws
+   otherwise, and throws on any placement — derived or ruled — outside the tolerance.
+3. *The economics follow the era.* output × A^e, input value × lift × B^e (the lift on era 0 alone under `--in0-only`), building cost
+   anchor × A^e or flat, ai_value by e, the research marks by the unlocked rung's era. The rung index is never a key.
+
+**The census (the canon, 57 rungs; "off" = placed era − the technology's narrative era).** Derived, no ruling: food e0/e1+1/e2+1
+(manufacturies 1, distillation 1, baking_powder 2); textile, glass, tooling e0/e1+1/e2+1/e3+1 (1, 1, 2, 4); furniture e0/e1+1/e2+1/e3
+(spray_finishing minted, 5); paper e0/e1/e2+1/e3 (1, 2, 2, 5); steel, arms, artillery, art_academy e0/e1/e2+1/e3+1 (1, 2, 3, 4);
+automotive e2/e3 (combustion_engine 4, compression_ignition 5); munition e1/e2+1 (percussion_cap 2, dynamite 3 — the 2026-09-04 ruling
+reproduced); synthetics e1 (aniline 3); **electrics e2 (telephone, game era 4) — the ruled e1 of 2026-09-04 was one era low and is
+corrected**. Ruled (`PLACEMENT`): fertilizer e0−1/e1/e2/e3 and explosives e0−1/e1/e2+1/e3+1 (the first method intensive_agriculture is
+game era 2 → e1, but three researched rungs sit above it, so the ladder fits only with it at e0 — the 1840s rung treated as the 1836 one,
+the one the lift kills); motor e0−1/e1−1/e2−1/e3 (electric engines on electric_railway, game era 4 → e2, and diesel on compression_ignition,
+5 → e3, each one era BELOW their technology so the minted high_speed_diesel keeps the top rung). ⚠ **Motor is PENDING a ruling**: the
+derivation gives [0, 2, 3] with no slot for the addition; the alternative is to DROP high_speed_diesel — no rung off its era, but no 1940
+rung (compression_ignition, an era-5 technology, would BE the e3). Kept with the addition because it was ruled 2026-09-04 and both middle
+rungs are within tolerance; they arrive late (weaker than their date), never early.
+
+**What the index keying had done (FINDINGS F111).** `make_ab_config` keyed every multiplier on k = era − the industry's first era, so
+automotive's e2 and e3 rungs carried k = 0 and 1 — vanilla's recipe at vanilla's margin, then ×A — and munition's e1/e2, synthetics' e1
+and electrics' rung carried k = 0/1/0/0. Regenerated on the era (the canon, A 2.0 / B 1.5): automotive e2 output 30 → 120 automobiles,
+inputs 10/5/5 → 22.5/11.3/11.3 engines/rubber/oil, cost 800 → 3,200, target_be 44 → 25; e3 60 → 240, cost 1,600 → 6,400; munition e1
+50 → 100 ammunition (cost 800 → 1,600), e2 100 → 200; synthetics e1 80 → 160 dye; electrics e1 → e2, 60 → 240 telephones, cost 800 →
+3,200, ai_value 3,000 → 9,000. On the flat-cost ×1.2 book the same rungs also lose the lifted-vanilla margins that left electrics at
+target_be 107 and munition at 115 — loss-making at base from their debut (F110: 29% and 27% staffed on 697 and 841 built levels).
+Every four-method industry is byte-identical before and after (proved per book, 2026-09-13).
+
+**Guards.** The generator derives, validates and throws. **`tools/lint_tier_eras.mjs` runs inside every `build.ps1`** and as landmine
+**L31** in `preflight.ps1`: placement within ±1 of the technology's era (from the config's PAIRED tree, the era the mod ships), one rung
+per era, output and value added rising with era in every industry, and for an A/B book every multiplier a function of the era (output,
+input value, cost, ai_value recomputed from the vanilla first method and `_ab`). A book records `_ab.keyed_by: 'era'` and `_ab.command`;
+`--bar-months` and `--variant` make the measured books' hand edits part of the command. The history converter names a rung by `era`
+(`tier`, a position, is the six-rung rule set's and throws on a four-rung book); `start_baseline.json` labels by era; the research-event
+emitter converts a rule-D technology's game era to a narrative era before reading the marks; the UI's era pill reads the book's anchors.
+
+**Books regenerated 2026-09-13 (each by its own one-line command, recorded in `_ab.command`):** the canon (`config/mod_config.json` =
+`canon4v-hai3`), `canon-je24`, `canon-je24-a22`, `canon-flat-in12`, `canon-flat-in13`, and the two test books of the next session,
+`canon-flat-in12-a16` (A 1.6 on the flat lifted book) and `canon-je24-a22-in12` (the lift alone on phase 2's book). The books F106–F110
+were measured on are commit `880f098`'s copies (`git show 880f098:config/mod_config.canon-je24.json`). ⚠ Comparability: a run of a
+regenerated book differs from its measured baseline in the four re-keyed industries (~1.5% of world value added at 1935 in every mod arm,
+2.05% in vanilla); world readings — GDP, workers, unemployment, pools, construction, the four-method industries' obsolescence — stay
+comparable; readings about automobiles, telephones, dye and ammunition do not. ⚠ A SECOND change rides along in every build since
+2026-09-13, unrelated to the era rule but found by its dry runs (BUGS_AND_FIXES 2026-09-13): `emit_secondaries.mjs`'s input regex had
+shipped without its backslashes, so every secondary method kept VANILLA input quantities on every rung while its outputs scaled — the
+e2 cannery made 4× vanilla's groceries for vanilla's meat and iron. Fixed; secondaries on rungs 1+ are now dearer by the rung's input
+ratio, which touches every book's secondary adoption against the measured baselines.
+
+**Open.** (1) Motor's ruling above. (2) The systematic "+1" of the four-method industries (a game-era-3 technology gating an e2 rung in six
+industries, a game-era-4 one gating e3 in eight): the tolerance accepts it and vanilla's tree forces it; closing it would mean ERA_MOVES
+on vanilla technologies (out of scope, "with techs fixed"). (3) Munition's percussion caps at e1 (the gap rounds up) rather than e0 — the
+2026-09-04 ruling, kept. (4) Electrics' research mark moves with its era: 75,000 trade-centre workers (the e2 mark) instead of 25,000.

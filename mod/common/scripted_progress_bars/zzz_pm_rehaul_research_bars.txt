@@ -834,7 +834,7 @@ pmr_bar_telephone = {
 			desc = "pmr_term_telephone_0"
 			if = {
 				limit = {
-				pmr_src_telephone_0 >= 25
+				pmr_src_telephone_0 >= 75
 				}
 				value = 1
 			}

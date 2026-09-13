@@ -78,6 +78,7 @@ closed.
 | L28 | The log MIRROR re-copied the current log on a FALSE rotation — a stale directory length below the read position reset the tail to 0 every poll; non-telemetry lines (PMR_JE, events) multiplied ×2–28 in bursts | AUTO (post-run) | `Test-LmL28` — any `recovered 0 chars from []` seam in a run's `logs_live/*.log` FAILS; observer fixed 2026-09-04 |
 | L29 | The OBSERVER DIED ON ITS OWN LOG LINE — `Add-Content` to run.log throws "Stream was not readable" while another process reads the file (a heartbeat's `tail -1`), and under `Stop` preference the unguarded tick write unwound the observer with the game still running; the scheduler then burned 48 runs in 15 minutes behind the orphan (L19's cascade) | FIXED (generator) + PROOF OWED | all four harness log writers retry and never throw (2026-09-07); `run_schedule.ps1` aborts after TWO consecutive instant failures (non-zero exit < 90 s after launch) — live proof owed at the next idle window; L17 catches the artifact (a run with no meta.json) |
 | L30 | A BATCH LAUNCHED FROM THE AGENT'S TOOL SHELL DIES WITH THE APP — the shell sits in the desktop app's job object (KILL_ON_JOB_CLOSE), a `Start-Process` child silently breaks away into a SECOND app job, and an app restart (a forced re-auth, 2026-09-10 18:45:29) tore both down: scheduler, observer, game, archiver and harvester died in one second, ten months short of run 1's end | AUTO (launch) + WARN (scheduler) | `tools/testbed/launch_detached.ps1` creates the process through WMI (in NO job) and FAILS unless the kernel confirms it; `run_schedule.ps1` prints an ALERT when it finds itself inside a job. Found 2026-09-13 |
+| L31 | A RUNG PLACED OR PRICED BY ITS ORDER IN THE INDUSTRY RATHER THAN BY ITS ERA — the A/B generator keyed output, input value, cost and the lift on k = era − the industry's first era, so a late industry's first rung (automotive e2, electrics, synthetics, munition) was priced as an 1836 rung and electrics' only rung sat one era below its game-era-4 technology; eleven batches passed every lint | AUTO | `tools/lint_tier_eras.mjs` inside build.ps1 (throws) and `Test-LmL31` (the config + its paired tree); the generator derives eras from the technologies and throws beyond ±1. Found 2026-09-13 |
 
 ---
 
@@ -1639,3 +1640,38 @@ the pattern that died. And the other class stays open: a reboot (Windows Update 
 2026-09-11, outside active hours) kills everything, launcher or not — a batch that must survive that needs a resume
 mode (an at-logon task that re-enters the schedule at its last completed run) or Windows Update held back for the
 batch's window; neither exists yet.
+
+## L31 — A RUNG PLACED OR PRICED BY ITS ORDER IN THE INDUSTRY, NOT BY ITS ERA (found 2026-09-13, the era pass)
+
+### Why nothing fails
+The four-rung books carry a narrative era on every rung (`t.era`, 0–3), and every label, name and ledger reads it. But two things
+never did: `make_tier4_config.mjs` ASSIGNED eras by vanilla method order (four methods → 0, 1, 2, 3; five short industries by a hand
+table), and `make_ab_config.mjs` keyed the whole economic ladder on **k = era − the industry's first era** — output × A^k, input value
+× B^k, cost × A^k, the ×1.2 lift on k = 0. So a late-starting industry's first rung was priced as an 1836 rung whatever its era said:
+automotive's e2 rung had vanilla's recipe at vanilla's margin, electrics' only rung sat on e1 (telephone is a game-era-4 technology →
+e2) with an 1836 recipe, synthetics' and munition's likewise. The build passed every lint, the mod loaded, eleven batches (F98–F110)
+completed. What they measured for those industries (F111): automotive at 1935 earning £2,700 of value added per staffed level against
+£10,200 for steel's e2 and £5,900 for arms' e2 in the same runs; synthetics at a seventh of vanilla's share of world value added; on
+the flat-cost lifted book electrics and munition loss-making at base from their debut, 29% and 27% staffed on 697 and 841 built levels.
+
+### The rule it enforces
+THE ERA RULE (user-ruled 2026-09-13, BALANCE_FRAMEWORK §10.78, CLAUDE.md's governing section): technologies by their GAME era, rungs by
+their NARRATIVE era, the narrative era derived from the technology's (1 → e0, 2 → e1, 3 → e1, 4 → e2, 5 → e3, bumped up only to keep one
+rung per era), a tolerance of ±1 era, and every economic multiplier a function of the era. The rung index is never a key.
+
+### DETECTOR
+`tools/lint_tier_eras.mjs [--config <path>] [--census]` — reads the CONFIG and its PAIRED tree (the era the mod ships, ERA_MOVES
+included): (1) every rung within ±1 of its technology's narrative era, strictly increasing eras, inside 0..3; (2) for an A/B book
+(`_ab` present) output = vanilla first-method output × A^era, input value = vanilla × lift × B^era, cost = anchor × A^era or flat,
+ai_value = the era list or base × ratio^era — recomputed from the game files and `_ab`; (3) output and value added per level rising
+with era in every industry. Wired into `build.ps1` after the L13 lint (throws) and into `preflight.ps1` as `Test-LmL31` (with
+`-Config` that config; without, the canon alone — the frozen pre-pass records such as canon-4rung are expected to fail it). The
+generator throws at generation on the same rules. Proven: every pre-pass book fails on its four re-keyed industries; every regenerated
+book passes; the six-rung book is out of scope (no `era_game_era`) and says so.
+
+### The generator side
+`make_tier4_config.mjs` derives placement (`derivePlacement` / `placementFaults` in `lib_tier4_spec.mjs`; `PLACEMENT` now holds only the
+ruled adjustments — fertilizer, explosives, motor — and every entry is validated); `make_ab_config.mjs` keys on `t.era` and stamps
+`_ab.keyed_by: 'era'` + `_ab.command`; `convert_history.ps1` resolves a start rule by `era` and throws on a `tier` (position) rule on a
+four-rung book; `extract_start.ps1` labels the baseline by era; `emit_research_events.mjs` converts a rule-D technology's game era to a
+narrative era before reading `thresholds_by_era`.

@@ -72,6 +72,26 @@ function Find-Exception($bkey, $country, $state) {
     return $best
 }
 
+# ⭐ A RULE NAMES A RUNG BY ITS ERA (THE ERA RULE, user-ruled 2026-09-13): `era` = the rung's narrative era, the number every
+#   label and analysis uses. `tier` (a 1-based POSITION in the industry) is the six-rung rule set's legacy form and is honoured
+#   only on a book that carries no `era_game_era` (the six-rung one); on a four-rung book a `tier`-keyed rule THROWS, because a
+#   position is not a rung — automotive's first rung is e2, and "tier 1" of it would silently mean e2 here and e0 elsewhere.
+#   (⚠ no backticks inside the double-quoted throw strings below: in PowerShell they are ESCAPES, and the first cut of this
+#   helper failed to PARSE — every dry-run build died before emitting a file, 2026-09-13.)
+$fourRung = [bool]$cfg.era_game_era
+function Resolve-RuleTier($ind, $rule, $what) {
+    if ($null -ne $rule.era) {
+        $e = [int]$rule.era
+        $t = @($ind.tiers | Where-Object { $null -ne $_.era -and [int]$_.era -eq $e })
+        if (-not $t.Count) { throw "${what}: $($ind.id) has no rung of era $e (its rungs: e$(($ind.tiers | ForEach-Object { $_.era }) -join ', e'))" }
+        return $t[0]
+    }
+    if ($null -eq $rule.tier) { throw "${what}: a rule on $($ind.id) names neither 'era' nor 'tier'" }
+    if ($fourRung) { throw "${what}: a rule on $($ind.id) uses 'tier' = $($rule.tier) (a 1-based position) on a four-rung book - name the rung by 'era' (THE ERA RULE, 2026-09-13)" }
+    $idx = [int]$rule.tier; $maxT = $ind.tiers.Count
+    if ($idx -lt 1) { $idx = 1 }; if ($idx -gt $maxT) { $idx = $maxT }
+    return $ind.tiers[$idx - 1]
+}
 $script:converted = 0; $script:removed = 0; $script:forced = 0; $script:unmapped = @()
 $script:levelsMultiplied = 0; $script:anchorClamped = 0   # §10.60 graded port factorisation counters
 $script:ownerRewrites = 0   # §10.60.3 Q5a: blocks whose ownership was rewritten to the overlord
@@ -111,20 +131,14 @@ $handler = {
         if ($disabledIds.ContainsKey($tid)) { $script:skippedRules++; continue }
         if (-not $industryById.ContainsKey($tid)) { throw "force_industry_tier: unknown industry '$tid' ($country/$state)" }
         $id = $tid
-        $tierIndex = [int]$ex.tier
-        $maxT = $industryById[$id].tiers.Count
-        if ($tierIndex -lt 1) { $tierIndex = 1 }
-        if ($tierIndex -gt $maxT) { $tierIndex = $maxT }
+        $tier = Resolve-RuleTier $industryById[$id] $ex "force_industry_tier ($country/$state)"
         $script:forced++
     }
     elseif ($ex -and $ex.action -eq 'force_tier') {
-        $tierIndex = [int]$ex.tier
-        $maxT = $industryById[$id].tiers.Count
-        if ($tierIndex -lt 1) { $tierIndex = 1 }
-        if ($tierIndex -gt $maxT) { $tierIndex = $maxT }
+        $tier = Resolve-RuleTier $industryById[$id] $ex "force_tier ($country/$state)"
         $script:forced++
     }
-    $tier = $industryById[$id].tiers[$tierIndex - 1]
+    else { $tier = $industryById[$id].tiers[$tierIndex - 1] }   # the vanilla method's own rung (pmMap: position, era carried beside it)
     $tierKey = $tier.key; $newPm = $tier.pm_key
 
     # §10.60 GRADED PORT FACTORISATION: a tier carrying `workforce_mult` is a fractional-unit building
@@ -263,8 +277,8 @@ foreach ($f in $files) {
         if ($disabledIds.ContainsKey([string]$cr.industry)) { $script:skippedRules++; continue }
         $ind = $industryById[[string]$cr.industry]
         if (-not $ind) { throw "create: unknown industry '$($cr.industry)'" }
-        $tier = $ind.tiers[[int]$cr.tier - 1]
-        if (-not $tier) { throw "create: $($cr.industry) has no tier $($cr.tier)" }
+        $tier = Resolve-RuleTier $ind $cr "create ($($cr.country)/$($cr.state))"
+        if (-not $tier) { throw "create: $($cr.industry) has no such rung ($($cr | ConvertTo-Json -Compress))" }
         $lv = if ($cr.levels) { [int]$cr.levels } else { 1 }
         # WHERE it sits and WHO owns it are different questions. `country` is the region_state it is
         # placed in (a subject's state, for a colonial port); `owner` is the government that owns it
@@ -318,7 +332,7 @@ foreach ($cr in $creates) {
     # This is the second pass over $creates; guarding only the first left $ind null here.
     if ($disabledIds.ContainsKey([string]$cr.industry)) { continue }
     $ind  = $industryById[[string]$cr.industry]
-    $tier = $ind.tiers[[int]$cr.tier - 1]
+    $tier = Resolve-RuleTier $ind $cr "create pops ($($cr.country)/$($cr.state))"
     $lv   = if ($cr.levels) { [int]$cr.levels } else { 1 }
     $ownTag = if ($cr.owner) { [string]$cr.owner } else { [string]$cr.country }
     $cul = $primaryCulture[$ownTag]
@@ -366,7 +380,7 @@ foreach ($cr in $creates) {
     # the THIRD and last pass over $creates that has to know that
     if ($disabledIds.ContainsKey([string]$cr.industry)) { continue }
     $ind = $industryById[[string]$cr.industry]
-    $key = $cr.country + '/' + $cr.state + ' ' + $ind.tiers[[int]$cr.tier - 1].key
+    $key = $cr.country + '/' + $cr.state + ' ' + (Resolve-RuleTier $ind $cr "create check ($($cr.country)/$($cr.state))").key
     if (-not $script:createPlaced.ContainsKey($key)) {
         # ASCII only inside a string literal: this file is read as ANSI, so a multi-byte character
         # (an em-dash, a section sign) corrupts the literal and the whole script fails to parse.

@@ -641,3 +641,11 @@ Newest first. Append here as we discover more couplings to vanilla.
   (wood 40 + fabric 20 + iron 50 + tools 10 = £3600/wk ÷ 5 pts/wk) at 0 efficiency bonus; economy ticks
   weekly (52/yr); `goods_prices.tsv` is a static price mirror; UI `poundPerPoint` is a static hint that
   can drift; `building_cost` overrides vanilla's flat 200/400/600/800 construction-cost script-values.
+- **2026-09-13** — **THE ERA RULE couples the rung ladder to VANILLA'S TECHNOLOGY ERAS** (BALANCE_FRAMEWORK §10.78). Every rung's
+  narrative era is DERIVED by `tools/make_tier4_config.mjs` from its gate technology's game era as the mod ships it (vanilla's
+  `era = era_N` in `common/technology/technologies`, plus the spec's ERA_MOVES), and the A/B book's multipliers follow that era.
+  A patch that moves a main method's technology to another era, re-gates a method, or adds a fifth main method to a tiered
+  building therefore RE-PLACES rungs on the next regeneration — the generator prints each rung's deviation and THROWS beyond ±1
+  or on an unruled overflow (a `PLACEMENT` ruling in `tools/lib_tier4_spec.mjs` is the answer, not a guess). After a patch:
+  regenerate (`make_tier4_config → make_tier4_techs → make_ab_config` per the book's `_ab.command`), read the census
+  (`node tools/lint_tier_eras.mjs --census`), and compare it against §10.78's table before building.

@@ -1,16 +1,27 @@
 // ⭐⭐ THE A/B LADDER — user-ruled 2026-09-02 (BALANCE_FRAMEWORK §10.68). Derives a four-rung book from
-// the tier4 STRUCTURE (rungs, eras, techs, employment, keys) and VANILLA'S OWN lowest-tier recipe:
+// the tier4 STRUCTURE (rungs, eras, techs, employment, keys) and VANILLA'S OWN lowest-tier recipe.
 //
-//   k = rung's era − the industry's FIRST rung's era        (automotive: e2 → k=0, e3 → k=1)
-//   output_qty(k)   = vanilla lowest-tier output × A^k
-//   input VALUE(k)  = vanilla lowest-tier input value × B^k, spread over the rung's OWN vanilla
+// ⭐⭐⭐ KEYED ON THE RUNG'S ERA, NEVER ON ITS INDEX — THE ERA RULE (user-ruled 2026-09-13, BALANCE_FRAMEWORK
+//   §10.78; the header of tools/lib_tier4_spec.mjs). "Late tiers are uniformly more effective than earlier
+//   ones" is a statement about ERAS: every e2 rung in the book — steel's open hearth, textile's mechanized
+//   workshops AND automotive's first rung — carries the same multipliers over its industry's vanilla base.
+//   Until 2026-09-13 this tool keyed on k = era − the industry's FIRST rung's era, so a late industry's first
+//   rung (automotive e2, electrics, synthetics, munition) was priced as an 1836 rung: vanilla's recipe at
+//   vanilla's margin, the ×lift on its inputs, the anchor cost — a quarter of its era peers' value added per
+//   level in every measured batch (FINDINGS F111). tools/lint_tier_eras.mjs re-checks every emitted book.
+//
+//   e = the rung's era (t.era, 0..3)                      (automotive: e2 and e3, exactly as labelled)
+//   output_qty(e)   = vanilla lowest-tier output × A^e
+//   input VALUE(e)  = vanilla lowest-tier input value × lift × B^e, spread over the rung's OWN vanilla
 //                     method's input mix (walking down to the nearest lower vanilla rung for an
-//                     invented rung) — so the value ladder is B^k while electricity/oil/tools/dye
-//                     still enter where vanilla's own method brings them in
-//   building_cost   = vanilla construction anchor × A^k     ("capacity-priced": a construction
+//                     invented rung) — so the value ladder is B^e while electricity/oil/tools/dye
+//                     still enter where vanilla's own method brings them in; `lift` (--in0) is the
+//                     ladder's anchor and reaches every rung, or era 0 alone under --in0-only
+//   building_cost   = vanilla construction anchor × A^e     ("capacity-priced": a construction
 //                     point buys the same OUTPUT at every rung; under the engine's 15–25%-of-revenue
-//                     margin band profit ∝ revenue, so payback is flat across rungs)
-//   ai_value        = AI_BASE × A^era                       (era-keyed, the 2026-08-29 rule)
+//                     margin band profit ∝ revenue, so payback is flat across rungs); or the anchor
+//                     flat at every rung under --cost-flat (§10.61)
+//   ai_value        = AI_BASE × A^e, or the explicit --ai-ladder list by era
 //   target_be       restated from the recipe (the lint_profitability drift guard, same rule as
 //                     make_tier4_config --apply-solve)
 //   ai_defines      PRODUCTION_BUILDING_AUTONOMOUS_INVESTMENT_CONSTRUCTION_COST_DIVISOR_SCALING set
@@ -19,12 +30,15 @@
 //                     would divide a 12,500-point rung by 13.5 and hand the private pool back to the
 //                     cheap old rungs (the 1.92-ladder arm's failure mode).
 //
-// Rung 0 is vanilla's recipe, vanilla's cost and vanilla's employment: 1836 is vanilla by construction.
+// An ERA-0 rung is vanilla's recipe (× the lift), vanilla's cost and vanilla's employment; an industry with no era-0
+// rung has no vanilla-priced rung at all — its first rung is priced at ITS era.
 // Secondary methods are NOT written here — tools/emit_secondaries.mjs rescales them at build time
 // against whatever main recipe the config carries, reductions by their own good's ratio.
 //
 // usage: node tools/make_ab_config.mjs --A 2.5 --B 2.5 --suffix ab1 [--base config/mod_config.tier4.json]
-//        [--ai-base 1000] [--divisor <s>] [--ai-steep glass,tooling:3] [--ai-defines K=V,K=V]   (writes config/mod_config.<suffix>.json + tech_tree_options twin)
+//        [--ai-base 1000] [--divisor <s>] [--ai-steep glass,tooling:3] [--ai-defines K=V,K=V]
+//        [--in0 1.2] [--in0-only] [--cost-flat] [--ai-ladder 1000,2000,3000,4000]
+//        [--bar-months 24] [--variant "name|base|ruled_by|delta"]        (writes config/mod_config.<suffix>.json + tech_tree_options twin)
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -61,6 +75,12 @@ const A_FOR = (() => { const v = arg('--A-for', ''); const o = {}; if (!v) retur
 // vanilla mix, as B does), building_cost × cost[k] — instead of A^k / B^k / A^k. Every array has one entry per rung, rung 0
 // first (its entries are 1). ai_value keeps the era rule. Overrides --A-for for that industry.
 const TIERS_FOR = (() => { const v = arg('--tiers-for', ''); const o = {}; if (!v) return o; for (const part of v.split(/\s*\|\s*/)) { const [id, spec] = part.split(':'); if (!id || !spec) throw new Error('--tiers-for <ind>:out=..;in=..;cost=..'); const m = {}; for (const kv of spec.split(';')) { const [k, list] = kv.split('='); m[k.trim()] = list.split(',').map(Number); } for (const k of ['out', 'in', 'cost']) if (!m[k] || m[k].some(x => !(x > 0))) throw new Error(`--tiers-for ${id}: ${k}=<positive per-rung multipliers> required`); o[id.trim()] = m; } return o; })();
+// --bar-months N (2026-09-13): research_events.industry_bar_months — the 24-month bar of canon-je24 and every book since
+//   (§10.76) used to be a hand edit after generation; a book is regenerable by ONE command or it is not regenerable.
+const BAR_MONTHS = (() => { const v = arg('--bar-months', ''); if (!v) return null; if (!(+v > 0)) throw new Error('--bar-months <months>'); return +v; })();
+// --variant "name|base|ruled_by|delta" (2026-09-13): the `_variant` record the measured books carried by hand — what this
+//   book is a variant OF and in what; the exact regenerating command is recorded beside it automatically.
+const VARIANT = (() => { const v = arg('--variant', ''); if (!v) return null; const [name, base, ruled_by, delta] = v.split('|').map(s => s.trim()); if (!name) throw new Error('--variant "name|base|ruled_by|delta"'); return { name, base: base || null, ruled_by: ruled_by || null, delta: delta || null }; })();
 if (!(A > 1) || !(B > 0) || !SFX) throw new Error('usage: --A <n> --B <n> --suffix <name>');
 
 const PRICE = {};
@@ -93,29 +113,35 @@ for (const ind of cfg.industries) {
   const out0 = r0.out[outGood]; if (!(out0 > 0)) throw new Error(`${ind.id}: vanilla ${first.vanilla_pm} makes no ${outGood}`);
   const I0 = val(r0.in), O0 = out0 * PRICE[outGood];
   const anchor = ANCH[(ind.building || {}).required_construction || ind.required_construction]; if (!anchor) throw new Error(`${ind.id}: no required_construction class`);
-  ind.tiers.forEach((t, k) => {
+  ind.tiers.forEach((t, pos) => {
+    // ⭐ THE KEY IS THE ERA. `pos` (the rung's index in the industry) is used for exactly one thing below: walking DOWN
+    //   the industry's own rungs to find the nearest vanilla method whose input MIX this rung borrows. Every multiplier
+    //   — output, input value, the lift, cost, ai_value — is a function of `e`.
+    const e = t.era;
+    if (!Number.isInteger(e) || e < 0) throw new Error(`${ind.id}: rung ${t.key} has no era`);
     // mix: the rung's own vanilla method, else the nearest lower vanilla rung's, else the first rung's
     let mixRec = null;
-    for (let j = k; j >= 0; j--) { const q = rec(ind.tiers[j].vanilla_pm); if (q && Object.keys(q.in).length) { mixRec = q; break; } }
+    for (let j = pos; j >= 0; j--) { const q = rec(ind.tiers[j].vanilla_pm); if (q && Object.keys(q.in).length) { mixRec = q; break; } }
     const mixVal = val(mixRec.in);
-    const TF = TIERS_FOR[ind.id];   // explicit per-rung multipliers (--tiers-for), else the A/B rule
-    if (TF && (TF.out.length < ind.tiers.length || TF.in.length < ind.tiers.length || TF.cost.length < ind.tiers.length)) throw new Error(`--tiers-for ${ind.id}: ${ind.tiers.length} rungs need ${ind.tiers.length} multipliers each`);
-    const lift = IN0_ONLY ? (k === 0 ? IN0 : 1) : IN0;   // --in0: the lifted rung 0, and the ladder anchored on it unless --in0-only
-    const Vk = I0 * lift * (TF ? TF.in[k] : Math.pow(B, k));
+    const TF = TIERS_FOR[ind.id];   // explicit per-ERA multipliers (--tiers-for), else the A/B rule
+    if (TF && (TF.out.length <= e || TF.in.length <= e || TF.cost.length <= e)) throw new Error(`--tiers-for ${ind.id}: its rungs reach e${e}, so out/in/cost need ${e + 1} multipliers each (indexed by ERA, era 0 first)`);
+    const lift = IN0_ONLY ? (e === 0 ? IN0 : 1) : IN0;   // --in0: the lifted era-0 rung, and the ladder anchored on it unless --in0-only
+    const Ve = I0 * lift * (TF ? TF.in[e] : Math.pow(B, e));
     const inputs = {};
-    for (const [g, q] of Object.entries(mixRec.in)) { const share = q * (PRICE[g] || 0) / mixVal; const qty = r1(share * Vk / PRICE[g]); if (qty > 0) inputs[g] = qty; }
+    for (const [g, q] of Object.entries(mixRec.in)) { const share = q * (PRICE[g] || 0) / mixVal; const qty = r1(share * Ve / PRICE[g]); if (qty > 0) inputs[g] = qty; }
     const Ai = A_FOR[ind.id] || A;   // this industry's own output ratio (--A-for), else the book's A
-    t.output_qty = r1(out0 * (TF ? TF.out[k] : Math.pow(Ai, k)));
+    t.output_qty = r1(out0 * (TF ? TF.out[e] : Math.pow(Ai, e)));
     t.inputs = inputs;
     delete t.input_ratio;
-    t.building_cost = Math.round(anchor * (COST_FLAT ? 1 : (TF ? TF.cost[k] : Math.pow(Ai, k))));   // --cost-flat: §10.61's flat book
-    t.ai_value = (AI_LADDER && !(STEEP && STEEP.inds.has(ind.id))) ? Math.round(AI_LADDER[Math.min(t.era, AI_LADDER.length - 1)]) : Math.round(AI_BASE * Math.pow(STEEP && STEEP.inds.has(ind.id) ? STEEP.ratio : Ai, t.era));
+    t.building_cost = Math.round(anchor * (COST_FLAT ? 1 : (TF ? TF.cost[e] : Math.pow(Ai, e))));   // --cost-flat: §10.61's flat book
+    t.ai_value = (AI_LADDER && !(STEEP && STEEP.inds.has(ind.id))) ? Math.round(AI_LADDER[Math.min(e, AI_LADDER.length - 1)]) : Math.round(AI_BASE * Math.pow(STEEP && STEEP.inds.has(ind.id) ? STEEP.ratio : Ai, e));
     const Obase = t.output_qty * PRICE[outGood]; const Ibase = val(inputs); const wp = t.wage_pct != null ? +t.wage_pct : 0.25;
     t.target_be = Math.round(Ibase / ((1 - wp) * Obase) * 100);
     cmax = Math.max(cmax, t.building_cost);
-    rows.push({ ind: ind.id, era: t.era, k, key: t.key, out: t.output_qty, inputs, cost: t.building_cost, aiv: t.ai_value, be: t.target_be, va: Obase - Ibase, share: Ibase / Obase, emp: Object.values(t.employment || {}).reduce((s, x) => s + x, 0) || 5000 });
+    rows.push({ ind: ind.id, era: e, key: t.key, out: t.output_qty, inputs, cost: t.building_cost, aiv: t.ai_value, be: t.target_be, va: Obase - Ibase, share: Ibase / Obase, emp: Object.values(t.employment || {}).reduce((s, x) => s + x, 0) || 5000 });
   });
 }
+if (BAR_MONTHS != null) { if (!cfg.research_events) throw new Error('--bar-months: the base carries no research_events block'); cfg.research_events.industry_bar_months = BAR_MONTHS; }
 if (STEEP) for (const id of STEEP.inds) if (!cfg.industries.some(i => i.id === id)) throw new Error(`--ai-steep: unknown industry ${id}`);
 for (const id of Object.keys(A_FOR)) if (!cfg.industries.some(i => i.id === id && !i.disabled)) throw new Error(`--A-for: unknown or disabled industry ${id}`);
 const s = +arg('--divisor', (0.001 * 800 / cmax).toPrecision(3));
@@ -127,12 +153,18 @@ Object.assign(cfg.ai_defines, EXTRA_DEFINES);
 cfg.company_target_gate = process.argv.includes('--company-gate');   // emit_companies opt-in; OFF by default (see its header)
 cfg._ab = { A, B, A_for: Object.keys(A_FOR).length ? A_FOR : null, tiers_for: Object.keys(TIERS_FOR).length ? TIERS_FOR : null, ai_base: AI_BASE, ai_steep: STEEP ? { industries: [...STEEP.inds], ratio: STEEP.ratio } : null, cost_divisor_scaling: s, company_target_gate: cfg.company_target_gate, base: BASE, generated: new Date().toISOString() };
 cfg._ab.ai_defines_extra = Object.keys(EXTRA_DEFINES).length ? EXTRA_DEFINES : null;
-cfg._ab.in0 = IN0; cfg._ab.in0_only = IN0_ONLY; cfg._ab.cost_flat = COST_FLAT; cfg._ab.ai_ladder = AI_LADDER;
-cfg._comment = `A/B LADDER (${SFX}) derived by tools/make_ab_config.mjs from ${BASE}: rung k output = vanilla lowest-tier × ${A}^k, input value × ${B}^k over the rung's own vanilla mix, building_cost = vanilla anchor × ${A}^k, ai_value = ${AI_BASE} × ${A}^era, cost-divisor scaling ${s}${STEEP ? `, ai_value ${AI_BASE} × ${STEEP.ratio}^era for ${[...STEEP.inds].join('/')}` : ''}. target_be restated as the drift guard.`;
+cfg._ab.in0 = IN0; cfg._ab.in0_only = IN0_ONLY; cfg._ab.cost_flat = COST_FLAT; cfg._ab.ai_ladder = AI_LADDER; cfg._ab.bar_months = BAR_MONTHS;
+// ⭐ the book records that it is era-keyed, and the command that made it — the era pass (2026-09-13) is what a
+//   reader of an older book has to check for: a book without `keyed_by: 'era'` was keyed on the rung index
+cfg._ab.keyed_by = 'era'; cfg._ab.era_rule = '2026-09-13';
+cfg._ab.command = 'node tools/make_ab_config.mjs ' + process.argv.slice(2).map(a => /[\s|"]/.test(a) ? JSON.stringify(a) : a).join(' ');
+if (VARIANT) cfg._variant = { ...VARIANT, declared: new Date().toISOString().slice(0, 10), regenerate: cfg._ab.command };
+else delete cfg._variant;
+cfg._comment = `A/B LADDER (${SFX}) derived by tools/make_ab_config.mjs from ${BASE}, KEYED ON THE RUNG'S ERA (the era rule, 2026-09-13): a rung of era e has output = vanilla lowest-tier × ${A}^e, input value × ${IN0 !== 1 ? IN0 + (IN0_ONLY ? ' (era 0 only)' : '') + ' × ' : ''}${B}^e over the rung's own vanilla mix, building_cost = ${COST_FLAT ? 'the vanilla anchor, flat' : `vanilla anchor × ${A}^e`}, ai_value = ${AI_LADDER ? AI_LADDER.join('/') + ' by era' : `${AI_BASE} × ${A}^e`}, cost-divisor scaling ${s}${STEEP ? `, ai_value ${AI_BASE} × ${STEEP.ratio}^e for ${[...STEEP.inds].join('/')}` : ''}${BAR_MONTHS != null ? `, research_events.industry_bar_months ${BAR_MONTHS}` : ''}. target_be restated as the drift guard.`;
 writeFileSync(join(REPO, `config/mod_config.${SFX}.json`), JSON.stringify(cfg));
 writeFileSync(join(REPO, `config/tech_tree_options.${SFX}.json`), readFileSync(join(REPO, 'config/tech_tree_options.tier4.json'), 'utf8'));
 
-console.log(`A/B LADDER ${SFX}: A=${A} B=${B} · rung-0 inputs ×${IN0}${IN0_ONLY ? ' (rung 0 only)' : ' (ladder anchored on it)'} · cost ${COST_FLAT ? 'FLAT (vanilla anchor every rung)' : 'anchor × A^k'} · ai_value ${AI_LADDER ? AI_LADDER.join('/') + ' by era' : AI_BASE + '×' + A + '^era'} · cost divisor scaling ${s} (top rung ${cmax} pts ÷${(1 + s * cmax).toFixed(2)}, 600-pt rung ÷${(1 + 600 * s).toFixed(2)}; vanilla 0.001 would give ÷${(1 + 0.001 * cmax).toFixed(1)})`);
-console.log('industry     era k  output      inputs                                                            cost    ai_value  BE%   VA/wk   VA/worker  in-share');
-for (const r of rows) console.log(`${r.ind.padEnd(12)} e${r.era}  ${r.k}  ${String(r.out).padStart(7)}  ${Object.entries(r.inputs).map(([g, q]) => g + ' ' + q).join(', ').padEnd(62)} ${String(r.cost).padStart(6)}  ${String(r.aiv).padStart(7)}  ${String(r.be).padStart(3)}  ${r.va.toFixed(0).padStart(6)}  ${(r.va / r.emp).toFixed(3).padStart(8)}  ${r.share.toFixed(2)}`);
+console.log(`A/B LADDER ${SFX} — KEYED ON ERA: A=${A} B=${B} · era-0 inputs ×${IN0}${IN0_ONLY ? ' (era 0 only)' : ' (ladder anchored on it)'} · cost ${COST_FLAT ? 'FLAT (vanilla anchor every rung)' : 'anchor × A^era'} · ai_value ${AI_LADDER ? AI_LADDER.join('/') + ' by era' : AI_BASE + '×' + A + '^era'} · cost divisor scaling ${s} (top rung ${cmax} pts ÷${(1 + s * cmax).toFixed(2)}, 600-pt rung ÷${(1 + 600 * s).toFixed(2)}; vanilla 0.001 would give ÷${(1 + 0.001 * cmax).toFixed(1)})${BAR_MONTHS != null ? ` · industry bar ${BAR_MONTHS} months` : ''}`);
+console.log('industry     era  output      inputs                                                            cost    ai_value  BE%   VA/wk   VA/worker  in-share');
+for (const r of rows) console.log(`${r.ind.padEnd(12)} e${r.era}  ${String(r.out).padStart(7)}  ${Object.entries(r.inputs).map(([g, q]) => g + ' ' + q).join(', ').padEnd(62)} ${String(r.cost).padStart(6)}  ${String(r.aiv).padStart(7)}  ${String(r.be).padStart(3)}  ${r.va.toFixed(0).padStart(6)}  ${(r.va / r.emp).toFixed(3).padStart(8)}  ${r.share.toFixed(2)}`);
 console.log(`wrote config/mod_config.${SFX}.json + config/tech_tree_options.${SFX}.json`);

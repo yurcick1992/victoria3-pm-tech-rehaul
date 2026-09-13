@@ -9,11 +9,57 @@
 //     other config;
 //   - the tree is vanilla's technologies at vanilla's eras, names and prerequisites (make_tier4_techs.mjs reads the game),
 //     plus the minted technologies the ADDITIONS below carry, plus the ERA_MOVES ruled here;
-//   - the enrichment is the A/B book (make_ab_config.mjs: output ×A^k, input value ×B^k, cost ×A^k, ai_value 1000×A^era),
-//     the research events (transplanted from canon4-je, the ruled four-rung parameters) and the keys/names a rung needs
-//     to exist as its own building;
+//   - the enrichment is the A/B book (make_ab_config.mjs: output ×A^era, input value ×B^era, cost by era, ai_value by
+//     era — ERA, never rung index, see THE ERA RULE below), the research events (the ruled four-rung parameters) and
+//     the keys/names a rung needs to exist as its own building;
 //   - EVERYTHING that alters vanilla is an explicit entry in this file with its ruling: ADDITIONS (rule 2), ERA_MOVES,
-//     PLACEMENT (where an industry has fewer than four methods), TECH_RENAMES_RULED (empty).
+//     PLACEMENT (the ruled adjustments where the era rule cannot place a ladder by itself), TECH_RENAMES_RULED (empty).
+//
+// ⭐⭐⭐ THE ERA RULE (user-ruled 2026-09-13 — "the final ladder realignment"; BALANCE_FRAMEWORK §10.78):
+//   TWO ERA KINDS, NEVER CONFLATED. A TECHNOLOGY is referred to by its GAME era (1–5), which has mechanical meaning
+//   (the era base cost; unfinished technologies of the eras below N add to an era-N technology's cost). A RUNG is
+//   referred to by its NARRATIVE era (0–3; the anchors ERA_YEARS, 1836 / 1875 / 1905 / 1940), and a narrative era is a
+//   statement about UNLOCK TIME: the rungs of one era unlock at roughly the same time in every industry, so an industry
+//   that starts around 1900 starts at e2, never at e0 ("if I ever see a t0 automobile industry, I will riot").
+//   The narrative era is ALSO the rung's place on the ladder — output × A^era, input value × B^era, the ×lift on era 0
+//   alone, building cost by era, ai_value by era, the research marks by the unlocked rung's era — so a rung on the wrong
+//   era is a mis-priced rung, and "late tiers are uniformly more effective than earlier ones" holds only if every rung
+//   carries its era. THE RUNG INDEX WITHIN AN INDUSTRY IS NEVER THE KEY to anything.
+//   The mapping is GAME_ERA_OF_ERA (the config's `era_game_era`): e0 ↔ game era 1 (held at the 1836 start), e1 ↔ 3,
+//   e2 ↔ 4, e3 ↔ 5. Game era 2 (researched 1836–1861) sits in the gap and rounds UP to e1, the first researched tier.
+//   A rung's DERIVED era is its technology's narrative era, bumped up only as far as one-rung-per-era requires in
+//   vanilla's method order — vanilla's own ladders are front-loaded (a textile mill's methods sit on game eras 1,1,2,4),
+//   so the bump is what places a four-method industry on 0,1,2,3, and nothing else ever did. TOLERANCE: a rung may sit at
+//   most ERA_TOLERANCE (one) era from its technology's narrative era ("adjustments can be made as we don't have too many
+//   tiers for good alignment"); further off is a defect. make_tier4_config.mjs THROWS on it at generation, and
+//   tools/lint_tier_eras.mjs (landmine L31) re-checks every config on every build — placement AND the era-keyed book.
+export const GAME_ERA_OF_ERA = [1, 3, 4, 5];
+export const ERA_TOLERANCE = 1;
+// a technology's game era -> the narrative era of a rung it gates (era 2, the gap, rounds up to the first researched tier)
+export const eraOfGameEra = ge => { const e = { 1: 0, 2: 1, 3: 1, 4: 2, 5: 3 }[ge]; if (e == null) throw new Error(`no narrative era for game era ${ge}`); return e; };
+// vanilla's era windows (calendar), for placing a MINTED technology by its own year — the game's, not the ladder's anchors
+export const gameEraOfYear = y => y < 1836 ? 1 : y <= 1861 ? 2 : y <= 1886 ? 3 : y <= 1911 ? 4 : 5;
+// THE DERIVATION: rung eras from the gate technologies' game eras (vanilla method order, additions last), bumped up
+// only to keep one rung per era. Returns { eras, overflow } — overflow = true when the ladder does not fit under N,
+// in which case the industry needs a PLACEMENT ruling (the generator throws and says so).
+export function derivePlacement(gameEras) {
+  const eras = []; let prev = -1;
+  for (const ge of gameEras) { const e = Math.max(eraOfGameEra(ge), prev + 1); eras.push(e); prev = e; }
+  return { eras, overflow: eras.some(e => e > N - 1) };
+}
+// THE TOLERANCE CHECK on a full placement (derived or ruled): every rung within ERA_TOLERANCE of its technology's
+// narrative era, strictly increasing, inside 0..N-1. Returns the list of violations (empty = fine).
+export function placementFaults(id, eras, gameEras) {
+  const out = [];
+  if (eras.length !== gameEras.length) out.push(`${id}: ${eras.length} eras for ${gameEras.length} rungs`);
+  eras.forEach((e, k) => {
+    if (!(Number.isInteger(e) && e >= 0 && e <= N - 1)) out.push(`${id}: rung ${k} era ${e} outside 0..${N - 1}`);
+    if (k && !(e > eras[k - 1])) out.push(`${id}: rung ${k} era ${e} not above rung ${k - 1}'s ${eras[k - 1]} — one rung per era`);
+    const imp = eraOfGameEra(gameEras[k]);
+    if (Math.abs(e - imp) > ERA_TOLERANCE) out.push(`${id}: rung ${k} sits at e${e} but its technology is game era ${gameEras[k]} → e${imp}, ${Math.abs(e - imp)} eras off (tolerance ${ERA_TOLERANCE})`);
+  });
+  return out;
+}
 //
 // ⭐⭐ RULES 1-3 ON NAMES AND ADDITIONS (user-ruled 2026-09-04):
 //   1. vanilla names and gating techs stay vanilla (PM-N -> tier N) unless explicitly ruled otherwise;
@@ -55,15 +101,29 @@ export const INDUSTRIES = [
   { id: 'art_academy', building: 'building_art_academy' },
 ];
 
-// Four vanilla methods -> rungs 0..3 by vanilla order, no dates involved. An industry with FEWER methods is placed
-// explicitly here (rung index = era; the labels are 1836/1875/1905/1940). These are the five, ruled 2026-09-04:
-//   food       bakeries / sweeteners / baking powder          -> e0 e1 e2
-//   automotive automobile production / mass production        -> e2 e3 (combustion_engine 1886, vanilla era 4)
-//   munition   percussion caps / explosive shells             -> e1 e2 (the plant does not exist at 1836: vanilla gates
-//                                                                it on percussion_cap, an era-2 technology)
-//   synthetics synthetic dye                                  -> e1 (aniline, vanilla era 3)
-//   electrics  telephone production                          -> e1 (telephone, vanilla era 4)
-export const PLACEMENT = { food: [0, 1, 2], automotive: [2, 3], munition: [1, 2], synthetics: [1], electrics: [1] };
+// ⭐ PLACEMENT — THE RULED ADJUSTMENTS (the era rule above places every other industry by itself). An entry is the FULL
+//   era list in vanilla method order with the additions last, and it is accepted only if every rung is within
+//   ERA_TOLERANCE of its technology's narrative era (placementFaults). The generator THROWS when the derivation
+//   overflows and no entry exists, naming the industry: a ruling is needed, not a guess.
+//   Derived, no entry (2026-09-13, from the technologies' game eras): food [0,1,2]; textile, furniture, glass, tooling,
+//   paper, steel, arms, artillery, art_academy [0,1,2,3]; automotive [2,3] (combustion_engine game era 4, compression_
+//   ignition 5); munition [1,2] (percussion_cap era 2 → e1, dynamite era 3 → e1 bumped to e2 — the 2026-09-04 ruling
+//   reproduced); synthetics [1] (aniline, era 3); electrics [2] (telephone, GAME ERA 4 — the ruled e1 of 2026-09-04 was
+//   one era low, and the ladder priced its only rung as an 1836 one; CORRECTED by the era rule).
+//   The three entries below are the industries whose FIRST method is a game-era-2 technology (→ e1) with three
+//   researched rungs above it: the ladder fits only with that first rung at e0 — an 1840s method treated as the 1836
+//   rung, the one the ×lift is meant to kill.
+export const PLACEMENT = {
+  fertilizer: [0, 1, 2, 3],   // intensive_agriculture (2 → e0, −1); improved_fertilizer (3); nitrogen_fixation (4); catalytic_synthesis (minted, 5)
+  explosives: [0, 1, 2, 3],   // intensive_agriculture (2 → e0, −1); nitroglycerin (2); dynamite (3, +1); electrical_capacitors (4, +1)
+  // motor: atmospheric_engine (2 → e0, −1); electric engines on electric_railway (GAME ERA 4 → e2, placed e1, −1); diesel on
+  //   compression_ignition (5 → e3, placed e2, −1); high_speed_diesel (minted, 5 → e3). ⚠ PENDING RULING (2026-09-13): the
+  //   derivation gives [0,2,3] and no slot for the addition; the alternative to this entry is [0,2,3] with the addition
+  //   DROPPED — no rung off its era, but no 1940 rung (compression_ignition, an era-5 technology, would BE the e3). Kept
+  //   with the addition because it was ruled 2026-09-04 and both middle rungs are within tolerance; they arrive one era
+  //   LATE (weaker than their date), never early.
+  motor: [0, 1, 2, 3],
+};
 
 // ⭐ THE ADDITIONS (rule 2): a rung vanilla does not have, appended as the industry's TOP rung, each with its own key,
 //   building name, method name, year and MINTED technology. Its recipe, staffing, pollution and icon are the rung

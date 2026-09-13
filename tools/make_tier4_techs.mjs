@@ -13,7 +13,7 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { blocks } from './lib_vanilla_ladder.mjs';
-import { INDUSTRIES, ADDITIONS, ERA_MOVES, TECH_RENAMES_RULED } from './lib_tier4_spec.mjs';
+import { INDUSTRIES, ADDITIONS, ERA_MOVES, TECH_RENAMES_RULED, gameEraOfYear } from './lib_tier4_spec.mjs';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
@@ -22,8 +22,9 @@ const rd = p => readFileSync(p, 'utf8').replace(/^\uFEFF/, '');
 const CFG_PATH = `config/mod_config.${SUFFIX}.json`;
 const cfg = JSON.parse(rd(join(REPO, CFG_PATH)));
 
-// vanilla's era windows (calendar), for placing a MINTED technology by its own year
-const gameEra = y => y < 1836 ? 1 : y <= 1861 ? 2 : y <= 1886 ? 3 : y <= 1911 ? 4 : 5;
+// vanilla's era windows (calendar), for placing a MINTED technology by its own year — ONE definition, the spec's (make_tier4_config
+// derives the rung's era from the same function, so the two cannot disagree about where a minted technology lands)
+const gameEra = gameEraOfYear;
 const ERA_COST = { 1: 7500, 2: 10000, 3: 12500, 4: 15000, 5: 17500 };   // the era base costs, as the viewer shows them
 
 // ---- the game ---------------------------------------------------------------------------------------------------

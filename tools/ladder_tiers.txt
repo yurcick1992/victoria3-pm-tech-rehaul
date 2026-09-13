@@ -38,8 +38,8 @@ pm_main_motor_steam_engines 1 83 0.25
 pm_main_motor_electric_engines 2 62 0.25
 pm_main_motor_diesel_engines 3 47 0.25
 pm_main_motor_high_speed_diesel 4 35 0.25
-pm_main_automotive_automobile_production 1 44 0.25
-pm_main_automotive_mass_automobile_production 2 33 0.25
+pm_main_automotive_automobile_production 1 25 0.25
+pm_main_automotive_mass_automobile_production 2 19 0.25
 pm_main_arms_muskets 1 59 0.25
 pm_main_arms_rifles 2 44 0.25
 pm_main_arms_repeaters 3 33 0.25
@@ -48,10 +48,10 @@ pm_main_artillery_cannons 1 76 0.25
 pm_main_artillery_smoothbores 2 57 0.25
 pm_main_artillery_breech_loaders 3 43 0.25
 pm_main_artillery_recoiled_barrels 4 32 0.25
-pm_main_munition_percussion_caps 1 96 0.25
-pm_main_munition_explosive_shells 2 72 0.25
-pm_main_synthetics_dye_production 1 79 0.25
-pm_main_electrics_telephones 1 89 0.25
+pm_main_munition_percussion_caps 1 72 0.25
+pm_main_munition_explosive_shells 2 54 0.25
+pm_main_synthetics_dye_production 1 59 0.25
+pm_main_electrics_telephones 1 50 0.25
 pm_main_art_academy_traditional_art 1 40 0.25
 pm_main_art_academy_realist_art 2 30 0.25
 pm_main_art_academy_photographic_art 3 22 0.25

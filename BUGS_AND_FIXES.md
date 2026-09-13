@@ -13,6 +13,64 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-09-13 — every secondary production method kept VANILLA input quantities on every rung: the emitter's input regex had lost its backslashes (and the negative-goods linter flagged floating-point noise on non-integer ladders)
+
+**Symptom.** None that failed, twice over. (1) In every four-rung build since 2026-09-01 the per-tier secondaries minted by
+`tools/emit_secondaries.mjs` scaled their OUTPUTS by the rung's output ratio and left their INPUTS at vanilla's numbers: the cannery
+on the e2 food rung made 4× vanilla's groceries (A 2.0) for vanilla's 20 meat + 10 iron, the rayon, luxury, porcelain and radio
+conversions likewise — a secondary was cheaper per unit the higher the rung, against the user-ruled rule of 2026-09-01 ("inputs follow
+the tier's own output/input logic … a secondary is as input-efficient as the rung carrying it"). (2) The first dry-run builds of the
+era-keyed A 1.6 and A 2.2 books printed `NEGATIVE-GOODS CHECK FAILED … building_automotive_industry automobiles output min total 0`
+while the A 2.0 canon passed.
+
+**Root cause.** (1) The replace on `goods_input_*_add` lines read `/goods_input_([a-z_]+)_adds*=s*(-?[0-9.]+)/` — `\s*` written
+without its backslashes, i.e. "any number of the letter s" — so it matched no vanilla line (`goods_input_grain_add = -20` has a space
+before `=`) and the block was a silent no-op; the sibling output regex and the two readers above and below it were written correctly.
+The one case it existed for (the cannery's −20 grain going negative on three food tiers) stayed safe by accident: a tier's grain input
+only grows up the ladder. (2) Vanilla's automobile plant nets to EXACTLY zero when both conversions run (30 automobiles, −10 aeroplanes,
+−20 tanks); the rescaled copies (76.8, −25.6, −51.2 on A 1.6) are zero in decimal and a few 1e-15 in doubles, and the awk tested `s<0`
+and printed the total with `%d`, so the failure read "min total 0". Integer ratios (A 2.0: 120, −40, −80) are exact, which is why the
+canon never showed it.
+
+**Fix.** The regex restored (`_add\s*=\s*`); a negative quantity (a reduction) now rounds TOWARD ZERO at two decimals so a full
+conversion's reductions can never sum past the main output by rounding; the linter's threshold is `s < -0.011` (the emitted resolution
+plus a hair) and it prints the total with four decimals. Header comments in both files say why.
+
+**Detect / prevent.** A regex that is meant to match a known line should be proven against that line once (the emitter's report now
+prints Rin, which is what a no-op would have left at 1 on every rung — it did, and nobody read it as a defect). Blast radius: every
+four-rung measurement before 2026-09-13 (F98–F110) carried secondaries with vanilla inputs and scaled outputs; the corrected emitter
+makes every secondary dearer on rungs 1+ by the rung's input ratio, which the comparability caveat of §10.78 now names.
+
+## 2026-09-13 — the A/B ladder was keyed on the rung's INDEX, so a late industry's first rung carried an 1836 rung's economics, and electrics' only rung sat one era below its technology (landmine L31)
+
+**Symptom.** None that failed. In every four-rung batch (F98–F110) the automotive plant earned about £2,700 of value added per staffed
+level at 1935 while steel's e2 rung earned £10,200 and arms' e2 £5,900 in the same runs; synthetics held 0.07–0.09% of world value added
+against vanilla's 0.50%; on the flat-cost ×1.2 book (F110) electrics and munition were loss-making at base from their debut (target_be
+107 and 115) and stood 29% / 27% staffed on 697 / 841 built levels. The batch tables showed automobiles and telephones 12–17% dearer than
+vanilla's British price. All read as "late industries are weak", not as a defect.
+
+**Root cause.** Two order-keyed steps, one on top of the other. `tools/make_tier4_config.mjs` assigned eras by vanilla method ORDER (four
+methods → 0, 1, 2, 3; the five shorter industries from a hand table, which put electrics on e1 although `telephone` is a game-era-4
+technology, i.e. e2). `tools/make_ab_config.mjs` then keyed every multiplier on **k = era − the industry's first era**: output × A^k,
+input value × B^k, cost × A^k, the `--in0` lift on k = 0. For the thirteen industries that start at e0, k = era and nothing was wrong;
+for automotive (e2, e3), munition (e1, e2), synthetics (e1) and electrics (e1) k ran 0, 1 — vanilla's recipe at vanilla's margin, the
+lift on top, the anchor cost — while their `ai_value` (already keyed on `t.era`) pulled the AI toward buildings priced two eras below
+their label. The user's ruling of 2026-09-03 ("do not consider late-to-appear industries as t0/t1") had reached the research marks and
+the analyses but not the generator, because nothing checked the book against its own eras.
+
+**Fix (the era rule, user-ruled 2026-09-13; BALANCE_FRAMEWORK §10.78).** `lib_tier4_spec.mjs` states the rule and exports the
+derivation (`eraOfGameEra`, `derivePlacement`, `placementFaults`, `GAME_ERA_OF_ERA`, `ERA_TOLERANCE`); `make_tier4_config.mjs` derives
+each rung's era from its gate technology's game era as the mod ships it (ERA_MOVES included), bumped only to keep one rung per era,
+honours a `PLACEMENT` ruling where the ladder overflows (fertilizer, explosives, motor) and throws beyond the ±1 tolerance;
+`make_ab_config.mjs` keys on `t.era` and records `_ab.keyed_by: 'era'` and the command that made the book (`--bar-months` and
+`--variant` replace the hand edits the measured books carried). Regenerated: the canon, canon-je24, canon-je24-a22, canon-flat-in12,
+canon-flat-in13 and the two test books — only the four industries changed, proved by a per-book diff.
+
+**Detect / prevent.** `tools/lint_tier_eras.mjs` inside every `build.ps1` and as preflight `Test-LmL31`: placement within ±1 of the
+technology's era from the paired tree, one rung per era, output and value added rising with era, and an A/B book's multipliers
+recomputed from the vanilla first method and `_ab`. A book from before the pass fails it by design. The same rule now covers the
+history converter (a start rule names its rung by `era`; a `tier` position throws on a four-rung book) and the start baseline's labels.
+
 ## 2026-09-13 — the ledger's verdict table graded a 2.10× world GDP as "met" against a 0.8–1.25× band (one-sided graders)
 
 **Symptom.** The F110 ledger (canon-flat-in12, n=1) printed row G4 as `2.10× · 0.8–1.25× · met`, row G2 as `157.3 y · 5.73→4.17M · oldest rung still grows` (the numbers say the opposite), and row G5 as `1.33× · 1.57× · neither` (the productivity term was met). The user: "stop referring to metrics that are out of upper bounds as meeting the target ... If both bounds are given, both must be respected."

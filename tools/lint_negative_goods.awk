@@ -17,6 +17,13 @@
 # output; any total < 0 is a violation. (Only "risky" goods - those with a negative contribution in some
 # PM - can go negative, so buildings with none are skipped outright.)
 #
+# TOLERANCE (2026-09-13): a total is a violation only below -TOL, TOL = 0.011. Vanilla's own automobile
+# plant nets to EXACTLY zero when both conversions run (30 automobiles, -10 aeroplanes, -20 tanks), and
+# the per-tier secondaries emit_secondaries.mjs mints carry those reductions rescaled to two decimals -
+# 76.8 - 25.6 - 51.2 is zero in decimal and a few 1e-15 in doubles, which the strict `< 0` flagged on the
+# A 1.6 and A 2.2 books while the integer-ratio A 2.0 book sailed through. One hundredth (the emitted
+# resolution) plus a hair is the honest line; a design that nets to zero is vanilla's, not a defect.
+#
 # PM names are NOT all pm_-prefixed: plantations/farms use default_/automatic_/worker_/slave_/... , so
 # every top-level block in a production_methods file is treated as a PM, and every token in a
 # production_methods / unlocking_production_methods list is a PM reference.
@@ -52,6 +59,7 @@ cur=="bld" {
 }
 
 END {
+    TOL=0.011;   # see the header: floating-point noise on a rescaled full conversion is not a violation
     viol=0; nb=0; nchk=0;
     for (b in blist) { nb++; check_building(b); }
     # report (sorted by building then good)
@@ -59,7 +67,7 @@ END {
     for (i=2;i<=n;i++){ tmp=sk[i]; j=i-1; while(j>=1 && sk[j]>tmp){ sk[j+1]=sk[j]; j-- } sk[j+1]=tmp }
     print "----";
     for (i=1;i<=n;i++){ split(sk[i], a, SUBSEP);
-        printf "FAIL  %-42s  %-16s  %-6s  min total %d\n", a[1], a[2], a[3], worst[sk[i]]; viol++ }
+        printf "FAIL  %-42s  %-16s  %-6s  min total %.4f\n", a[1], a[2], a[3], worst[sk[i]]; viol++ }
     if (viol>0){ printf "NEGATIVE-GOODS CHECK FAILED: %d building/good case(s) can go negative.\n", viol; exit 1 }
     else       { printf "NEGATIVE-GOODS CHECK PASSED: no legal PM combination drives any good negative (%d buildings, %d with reduction PMs enumerated).\n", nb, nchk }
 }
@@ -96,8 +104,8 @@ function check_building(b,   PG, npg, i, j, k, pg, np, tmp, riskyIn, riskyOut, a
         for(i=1;i<=npg;i++) present[PMV[PG[i],idx[i]]]=1;
         for(i=1;i<=npg;i++){ p=PMV[PG[i],idx[i]]; if(unlock[p]!="" && !gateOK(p)){ ok=0; break } }
         if(ok){
-            for(g in riskyIn){  s=0; for(i=1;i<=npg;i++){ p=PMV[PG[i],idx[i]]; if((p,g) in gin)  s+=gin[p,g]  } if(s<0) recordWorst(b,g,"input",s) }
-            for(g in riskyOut){ s=0; for(i=1;i<=npg;i++){ p=PMV[PG[i],idx[i]]; if((p,g) in gout) s+=gout[p,g] } if(s<0) recordWorst(b,g,"output",s) }
+            for(g in riskyIn){  s=0; for(i=1;i<=npg;i++){ p=PMV[PG[i],idx[i]]; if((p,g) in gin)  s+=gin[p,g]  } if(s < -TOL) recordWorst(b,g,"input",s) }
+            for(g in riskyOut){ s=0; for(i=1;i<=npg;i++){ p=PMV[PG[i],idx[i]]; if((p,g) in gout) s+=gout[p,g] } if(s < -TOL) recordWorst(b,g,"output",s) }
         }
         i=npg; while(i>=1){ idx[i]++; if(idx[i]<=pmgCount[PG[i]]) break; idx[i]=1; i-- } if(i<1) break;
     }
