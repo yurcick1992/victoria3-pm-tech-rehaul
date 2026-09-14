@@ -11590,3 +11590,92 @@ four-rung family's seed spread, by the user's choice, and no rule at n=2 resolve
 GDP ratio. The below-best per-run figures came from a scratch per-run copy of `analyse_ai_tier_choice.mjs` (`--rundir`); the two
 retired cliff criteria are unchanged as verdict flags. Scorers: `scratchpad/vanilla_pairs.mjs`, `mod_pairs.mjs`, `band_calib*.mjs`
 (session-local); the ruled rule is the committed tool.
+
+## F115 — THE FLAT-COST MIDPOINT A 1.9 (canon-flat-in12-a19, n=2, 2026-09-14): 1.80× vanilla with rung 0 dead — F110's regime, milder; at flat cost the output step is the loop's gain and the gain is steep (A 1.6 → 0.60×, A 1.9 → 1.80×, A 2.2 → 2.10×), so the dial between "the old rung dies" and "the world doubles" is the cost slope, not the step
+
+**Claim.** The a16 book (F113, arm 1) with the output step **A 1.9** in place of 1.6 — flat cost at the vanilla anchors, era-0 inputs ×1.2
+with the ladder anchored on it, ai_value 1,000/2,000/3,000/4,000 by era, divisor 0.001, the §10.75 defines, the 24-month bar, the era-rule
+canon's structure — reads **world GDP 1.80× the vanilla n=16 median at 1935 (1.87 / 1.73)**, productive workers per capita **1.12×**
+(1.15 / 1.09 on the live vanilla median), GDP per productive worker 1.54×, unemployment 12–14% (vanilla 13%), peasants 5–6% of the
+population (vanilla 7.5%), **investment pools 1.09–1.35 of a year's world GDP** (Britain's 8.2–8.6 of its own), 32,547–36,259 tiered
+levels (vanilla 21,971 buildings), a construction sector 1.7–1.9× vanilla's, **rung 0 dead** — 20–21% staffed at 1935 at £57–68 profit a
+level, its staffed level count −34% from 1900, stale payback 141 y (fill_payback; frontier 4.9 y) — below-best 30.2%, the tiered goods at
+0.60–0.94× vanilla's British prices (groceries 0.74, clothes 0.60, steel 0.68, engines 0.60), Britain 34–38 research-entry completions and
+173 technologies, and **play 179–185 min against vanilla's 165 (+10% on the median; pop-matched −1.9%)**. The pair is ALIGNED under the
+2+1 rule of F114 (both seeds "way above" on both axes; no tie-breaker), so the arm is read at n=2. **Pre-registered: GDP 0.8–1.25× (point
+~1.05) — MISSED above, the schedule's named failure mode ("the explosive regime of F110 starts below 1.9; the next lever is the cost
+slope, not A"); obsolescence MET on all four terms; workers 0.8–1.05× missed above; pools under 0.6 missed; prices ✓.** The trajectory
+(run 1, ÷ the vanilla median): 0.97× at 1880 on the same tiered level count as vanilla, 1.25× at 1900, 1.75× at 1920, 1.87× at 1935 — the
+flat-cost loop: the A 1.9 frontier earns £1,496–3,279 a level at 1900 and pays back in 3–5 years, the pools that fill from it build
+19,461 tiered levels by 1920 (vanilla 12,999), the flood pulls the tiered goods to 0.6–0.9× vanilla's price, and the lifted rung 0
+cannot pay its workers (50% staffed at 1900, 32% at 1920, 21% at 1935; the consumer rung 0 follows the heavy and war rungs down for the
+first time outside F110). Three flat-cost lifted books now bracket the output step: **A 1.6 → 0.60× with rung 0 alive (44% staffed),
+A 1.9 → 1.80× with rung 0 dead, A 2.2 → 2.10× dead (F110)** — a 19% step in A moved the world 3×, and the death of the old rung and the
+doubling of the world arrived together at both steps that killed it. The lever the design needs is therefore the **cost slope between flat
+and A^era** (the ×2.2^era book keeps rung 0 alive at 0.65× with the same lift, F113); the sweep of that dial began at 14:31 on 2026-09-14
+(`canon-c16-in12`, cost = anchor × 1.6^era).
+
+**Arms, spans, sessions.** `{kind: config, config: config/mod_config.canon-flat-in12-a19.json}`; 1836 → 1936.1.1, timeout 420, yearly
+saves, the F110 metric set; game 1.13.11. Session `20260914_044648_canon-flat-in12-a19-n2` (2 runs, sequential, launched 04:46 through
+`launch_detached.ps1` called directly, inside the user's "start before 14:00" window). Two runs, two campaigns, no crash; play 179.3 /
+184.6 min. `preflight -Session`: L12/L17/L26 pass; L28 on run 2's error-log mirror (nothing here reads it). Reference: the vanilla n=16
+median (`20260821_131149`, a different night). Ledger: `tools/testbed/ledger/out_a19` (one configuration per report).
+
+### 1. The headline table (world, at 1935)
+
+| | A 1.9 run 1 | A 1.9 run 2 | **A 1.9 median** | A 1.6 (F113, n=3) | A 2.2 flat = F110 (n=1) | A 2.2 ×2.2^era + lift (F113, n=3) | vanilla median |
+|---|---|---|---|---|---|---|---|
+| world GDP ÷ vanilla | 1.87 | 1.73 | **1.80** | 0.60 | 2.10 | 0.65 | £4,390M |
+| productive workers per capita ÷ vanilla | 1.15 | 1.12 | **1.12** | 0.69 | 1.23 | 0.56 | 0.140 |
+| GDP per productive worker ÷ vanilla | 1.54 | ~1.55 | 1.54 | 0.89 | 1.60 | 1.32 | £16.1 |
+| unemployment ÷ (salaried + unemployed) | 13.7% | 12.0% | 12.9% | 28% | 7.3% | 34% | 13.4% (run 1) |
+| peasants ÷ population | 5.0% | 6.2% | 5.6% | 12% | 4.1% | 13.5% | 7.5% (run 1) |
+| pools ÷ world GDP | 1.09 | 1.35 | 1.22 | 0.11 | 2.28 | 0.26 | 0.29 |
+| Britain's pool ÷ its GDP | 8.2 | 8.6 | 8.4 | 0.03 | 11.2 | 0.24 | 0.85 |
+| tiered levels | 36,259 | 32,547 | 34,403 | 11,655 | 51,893 | 6,336 | 21,971 |
+| construction sector levels | 4,894 | 4,573 | 4,734 | 1,453 | 6,966 | 1,764 | 2,622 (run 1) |
+| rung-0 staffing | 21% | 20% | **20%** | 44% | 18% | 57% | 69% |
+| rung-0 staffed levels 1900 → 1935 | 935 → 617 (−34%) | falling | −34% | −18% | dying | +3% | — |
+| rung-0 profit per level (£/wk) | 68 | 57 | 62 | 153 | 61 | 260 | 683 |
+| stale payback (fill_payback) · frontier | — | — | 140.8 y · 4.9 y | 57 · 6.0 | 157 · 4.9 | 34 · 9.4 | — |
+| below-best | 30.6% | ~29.8% | **30.2%** (pooled) | 37.7% | 26.0% | 39.9% | — |
+| Britain's GDP · completions · technologies | £593M · 38 · 173 | £411M · 34 · 173 | — | £323M · 24 · 159 | £345M · 38 · 182 | £493M · 15 · 159 | £417M |
+| play (min) · row P | 179 | 185 | 182 (+10%); pop-matched −1.9% | 141 | 216 | 137 | 165 |
+
+### 2. Prices, British market at 1935 (£ and ÷ vanilla's run 1)
+
+| good | run 1 | run 2 | ÷ vanilla (run 1) |
+|---|---|---|---|
+| groceries | 27.3 | 26.6 | 0.74 |
+| clothes | 18.8 | 16.1 | 0.60 |
+| furniture | 23.7 | 29.0 | 0.94 |
+| glass | 41.7 | 43.5 | 1.10 |
+| tools | 29.1 | 36.4 | 0.84 |
+| paper | 27.3 | 32.4 | 0.90 |
+| steel | 36.4 | 27.7 | 0.68 |
+| engines | 44.3 | 82.9 | 0.60 |
+| small arms | 38.6 | 35.9 | 0.89 |
+
+British production ÷ vanilla at 1935 (run 1): groceries 4.2, glass 2.5, steel 2.0, engines 1.7, tools 1.3, clothes 1.3, artillery 15,
+telephones 29, fine art 5.9; furniture 0.71, fertilizer 0.27.
+
+### 3. The ladder as realised (run 1; levels · staffed · margin · profit/level · VA/level, £/wk)
+
+| | 1850 | 1900 | 1920 | 1935 |
+|---|---|---|---|---|
+| e0 | 742 · 80% · 34% · 353 · 1,379 | 1,870 · 50% · 23% · 191 · 1,022 | 2,320 · 32% · 18% · 95 · 611 | 2,940 · 21% · 19% · 68 · 420 |
+| e1 | 467 · 95% · 37% · 844 · 3,097 | 1,958 · 61% · 26% · 448 · 2,160 | 3,358 · 46% · 23% · 358 · 1,934 | 5,206 · 31% · 20% · 266 · 1,567 |
+| e2 | 72 · 99% · 39% · 1,395 · 4,943 | 3,682 · 86% · 27% · 1,496 · 7,053 | 10,558 · 73% · 25% · 1,337 · 6,691 | 17,963 · 58% · 21% · 966 · 5,520 |
+| e3 | — | 337 · 87% · 27% · 3,279 · 15,471 | 3,225 · 76% · 22% · 2,434 · 13,711 | 10,150 · 67% · 19% · 1,907 · 11,876 |
+
+Margins flat at 19–21% on every rung from 1920 (the flood erodes the frontier's own margin too), the £ ladder rising ~2.5–4× a rung;
+rung 1 is also emptying by 1935 (31% staffed). At 1850 the lifted rung 0 earned 34% (vanilla's buildings 34–46%) and the frontier rungs
+already £844–1,395 a level against the a16 arm's £636–653.
+
+### 4. What it does NOT say
+
+- n=2, one regime: the seeds agree, and the arm is not a candidate for anything (GDP and workers "way above", pools hoarded, row P on
+  the edge); it locates the flat-cost loop's gain, nothing more.
+- It does not separate the lift from the step: every flat-cost book measured carries the ×1.2 lift.
+- The vanilla reference is a different night; production ratios are British only; the per-run rung-0 payback is £-per-level arithmetic,
+  fill_payback's 140.8 y the median at realised prices.
