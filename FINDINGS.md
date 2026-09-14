@@ -11821,3 +11821,66 @@ and Germany halved in one or both) is n=2 evidence of an uneven world, not of it
 **What it does NOT say.** Whether the ×1.3 lift at this slope kills rung 0 without reopening the runaway (the sweep's last step); whether
 the price path in wage units moved (the ledger reads it); why France carries the world in both seeds. Sessions `20260914_173832` and
 `20260914_204329`, VERDICT.md in each; config committed as `config/mod_config.canon-c19-in12.json` (`_ab.command`). Ledger https://claude.ai/code/artifact/7c8d37a0-4496-49fe-b5f8-d3d2859d5d95 (one configuration per report).
+
+## F118 — THE ×1.3 INPUT LIFT AT THE FOUND SLOPE RUNS AWAY (canon-c19-in13, n=1 by the run-level stop, 2026-09-15): the lift removes the C 1.9 book's 1870–1900 dip and then doubles the vanilla ratio between 1890 and 1920 (1.44× at 1936, pools 1.07 of GDP); rung 0 thins to 30% but does not die, and the margin ladder is flat again — the lift pushes construction to the frontier, it does not kill the old rung
+
+**Claim.** On the found slope (F117: building cost = anchor × 1.9^era, A 2.2 / B 1.5), raising rung 0's input value from ×1.2 to ×1.3
+with the ladder anchored on it (`canon-c19-in13`; every rung's input value ×1.083) read **1.44× the vanilla per-run median at 1935 and
+1936 (£6,302M / £6,546M)**, above the run-level stop's ×1.3 line, so the config ended at n=1. The lift **removed the dip** the ×1.2
+book had (0.97–0.99× at 1840–1880 against 0.84–0.93×) — and then the world compounded: 1.08 / 1.16 / 1.36 / 1.55 / 1.46 / 1.44× at
+1890 / 1900 / 1910 / 1920 / 1930 / 1935, pools from 0.20 of a year's GDP at 1900 to **1.07** at 1935 (vanilla 0.31; the ×1.2 book
+0.42–0.64). Rung 0 thinned from 45% to **30% staffed** but at a 21% margin against the frontier's 28–34% — **the margin ladder the
+×1.2 book had produced (22–26% against 44–54%) is flat again**. Making the old rung loss-making at base pushes construction to the
+frontier sooner; at a slope where the frontier's capital is cheap enough for that to compound, the push is a runaway. The lift is a
+strong lever on the loop's gain in the MORE-GDP direction, not a lever on the old rung's death.
+
+**Arm, n, span.** Session `20260915_002935_canon-c19-in13-n2`, run 1 (1836 → 1936.1.1, 174 min of play, one attempt, no crash); run 2
+a 6-second stub (the stop watcher dropped the STOP file at the 1936 summary; L17-excluded). Every ratio ÷ the vanilla per-run median
+(n=16 in the ledger tools; the eighteen-run cache in the decade reader). Schedule `canon_c19_in13_n2.json`; predictions pre-registered.
+
+**Numbers.**
+
+| year | GDP £M run / van | ÷ | prod. workers per capita ÷ van | pools ÷ GDP run / van | Britain ÷ van |
+|---|---|---|---|---|---|
+| 1860 | 711 / 725 | 0.98 | 0.93 | 0.15 / 0.16 | 1.44 |
+| 1880 | 1,024 / 1,056 | 0.97 | 0.87 | 0.12 / 0.17 | 1.76 |
+| 1890 | 1,452 / 1,345 | 1.08 | 0.81 | 0.14 / 0.19 | 1.94 |
+| 1900 | 1,981 / 1,714 | 1.16 | 0.81 | 0.20 / 0.20 | 1.90 |
+| 1910 | 2,911 / 2,134 | 1.36 | 0.84 | 0.24 / 0.22 | 2.24 |
+| 1920 | 4,352 / 2,799 | 1.55 | 0.91 | 0.38 / 0.24 | 1.78 |
+| 1930 | 5,558 / 3,812 | 1.46 | 0.87 | 0.71 / 0.27 | 1.45 |
+| 1935 | 6,302 / 4,390 | 1.44 | 0.94 | 1.07 / 0.31 | 1.51 |
+| 1936 | 6,546 / 4,544 | 1.44 | 0.88 | 1.10 / 0.30 | 1.54 |
+
+- **Decomposition at 1935** (vanilla n=16): world 1.44× = population **0.89×** × workers per capita 0.94× × GDP per productive worker
+  **1.71×** (£26.9 against £16.1); shortlist 1.70× at 1900 (workers per capita 0.95×, £/worker 1.74×).
+- **Majors at 1935** (GDP ÷ vanilla median): Italy 2.91×, Germany 2.63×, Sweden 2.47×, Belgium 1.90×, USA 1.52×, Britain 1.51×, Spain
+  0.82×, France 0.56×, Netherlands 0.45×, Japan 0.41×, Russia 0.21×. Peasant share of the strata population: USA 5.6% (vanilla 7.6%),
+  France 14.0% (10.3%), Russia 20.3% (10.5%), Japan 16.2% (10.8%), Germany 0.0% (0.1%); world 8.4% (7.5%).
+- **Rung margins by era at 1935** (levels / staffed / margin = profit ÷ (VA − profit), F92): e0 2,554 / **30%** / 21% · e1 2,767 / 49% /
+  34% · e2 8,514 / 77% / 33% · e3 3,536 / 81% / 28% — flat across the eras again (the ×1.2 book at the same slope: e0 45% / 22–26%
+  against e2/e3 44–54%). Rung 0's level count 2,554 (×1.2: 1,568–1,672): the loss-making old rung is still being BUILT, more of it.
+- **Capital and labour at 1935:** pools £6,723M = 1.07 of world GDP; tiered levels 17,371 (×1.2: 9,917–10,633; vanilla 21,971) on 0.89×
+  vanilla's population; construction sector 4,083 levels; unemployment 16.4%; peasants 8.4%.
+- **Build choice:** below-best 37.9% (×1.2: 34.9%); frontier payback 11.6 y, stale 89.8 y.
+- **Speed:** 173.9 min of play against the vanilla median 164.9 (1.05×); pop-matched +1.8%; no crash.
+- **Predictions vs outcome** (the schedule's pre-registration): GDP 0.85–1.15× — MISSED above (1.44); the 1900 dip 0.65–0.85× — MISSED
+  above (1.16, no dip at all); the 1860 dip 0.88–1.0× — met (0.98); workers 0.55–0.72× — MISSED above (0.94); rung 0 25–45% staffed —
+  met (30%) but its margin below 20% — missed (21%); pools 0.4–0.8 — MISSED above (1.07); tiered levels 8,000–14,000 — missed (17,371);
+  perf within +10% — met (+5%).
+
+**What it says about the goals.** Goal 3 (rung 0 obsolete, via a higher break-even price on the old rung) is NOT reached by the lift at
+this slope: the rung thins, the world runs away, the margin ladder disappears. The found configuration remains `canon-c19-in12`
+(F117). The lift's push is real and immediate (no dip at all), which makes it a candidate on a DEARER slope where the frontier alone
+was too scarce (C 2.2 ×1.2 stalled at 0.65×, F113) — the loop's second pick, `canon-c205-in13`.
+
+**The stop rule in practice.** The fixed watcher read the 1936 summary (1.441×) at 03:25:58, dropped the STOP file, the scheduler
+abandoned run 2 at launch (5.9 s, no game), and the watcher removed the file after SCHEDULE DONE — the first unattended enforcement.
+
+**Confidence.** High for the shape (no dip, then the C 1.6-type runaway a decade earlier; a single lever from F117's pair) and the
+endpoint; n=1 for everything seed-dependent (the carriers Germany / Italy / Sweden; the 0.89× population, unexplained — a larger war
+is the first guess, unmeasured).
+
+**What it does NOT say.** Whether a smaller lift (×1.25) at C 1.9 keeps the band; whether the lift on a dearer slope lands (batch 5
+tests 2.05); why the population fell. Session `20260915_002935`, VERDICT.md there; config committed as
+`config/mod_config.canon-c19-in13.json` (`_ab.command`).
