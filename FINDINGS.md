@@ -11387,3 +11387,147 @@ the same game era as motor's first rung.
 **What it does NOT say.** Whether a consumer is LARGE enough (§10.29's era-1 steel question was about volume, not existence); anything about
 availability by country (a technology's game era is the leaders' timing); anything about the six-rung book. Era 2's 1850 is an
 interpolation. Secondaries gated on a main method (`unlocking_production_methods`) are dated by technology only.
+
+## F113 — THE 2+1 TESTS ON THE ERA-RULE CANON'S STRUCTURE (2026-09-13 → 09-14, n=3 per arm): the ×1.2 lift on rung 0 does not kill the old rung under either flat cost at A 1.6 or steep cost at A 2.2, and both lifted books undershoot vanilla's GDP — 0.60× and 0.65× — from 1850 on; rung-0 death has only ever come with the frontier flood of A 2.2 at flat cost (F110), which is also the 2.10× overshoot
+
+**Claim.** On the era-rule canon's structure (56 buildings, 182 technologies, §10.78.1) two one-lever books were measured at three seeds each, sequential
+decisions by the pre-registered 2+1 protocol (two runs, an alignment test, a tie-breaker where it failed — it failed for both arms). **Arm 1,
+`canon-flat-in12-a16`** = the §10.77 book (F110) with the output step **A 1.6** in place of 2.2 (B 1.5, era-0 inputs ×1.2 with the ladder anchored
+on it, flat cost at the vanilla anchors, ai_value 1,000/2,000/3,000/4,000 by era, divisor 0.001, the §10.75 defines, the 24-month bar) reads **world
+GDP 0.60× the vanilla n=16 median at 1935 (0.57 / 0.60 / 0.60)**, productive workers per capita 0.69× (0.68–0.72), GDP per productive worker
+0.89× (0.87–0.99), pools 0.11 of GDP, **rung 0 thinning but alive** — 44% staffed at 1935 (56 / 44 / 40), its staffed level count −18% from 1900
+in the median seed (+13 / −18 / −23), stale payback 57 y (fill_payback) — and prices AT vanilla's (pooled 1935 ratios 0.91–1.21 on the tiered
+goods). **Arm 2, `canon-je24-a22-in12`** = phase 2's book (F109: A 2.2 / B 1.5, cost ×2.2^era, ai_value 1,000×3^era, divisor 0.000125, bar 24)
+plus the lift and nothing else reads **0.65× (0.60 / 0.65 / 0.80)**, workers per capita 0.56× (0.50–0.59), GDP per worker 1.32×, pools 0.26,
+**rung 0 flat** — 57% staffed (57 / 58 / 55), staffed levels +3% from 1900 (+3 / +4 / −6), stale payback 34 y — with consumer prices 0.83–0.87×
+vanilla's and the durables 1.09–1.21×. Both arms MISSED their pre-registered predictions on the low side (arm 1 GDP 0.9–1.3×, workers 0.9–1.1×,
+below-best <35%; arm 2 GDP 0.8–0.95×, rung 0 dying). The shared shape: every seed of both arms falls behind vanilla steadily from about 1850 —
+when the lifted rung 0 IS the economy (its 1840 margins 5–20 pp under vanilla's, the early pools half) — and neither frontier makes it up: A 1.6's
+rung is worth ~1.5× the one below in £ (what vanilla's free method upgrades match without a construction point), and A 2.2's stays scarce under a
+cost that rises ×2.2 a rung. At base prices the rung two behind the frontier holds 0.30 of its value added per worker at A 1.6 (above F97's 0.2
+death line), 0.14 at A 1.9 and 0.09 at A 2.2; the follow-up book `canon-flat-in12-a19` (A 1.9 flat, one lever from arm 1) launched 04:46 on
+2026-09-14 as session `20260914_044648` (2 runs + 1 on divergence).
+
+**Arms, spans, sessions.** Both `{kind: config}`; 1836 → 1936.1.1, timeout 420, yearly saves, the F110 metric set; game 1.13.11. Batch
+`20260913_143610_a16-vs-a22in12-n2x2` (4 runs, alternating arm 1 / arm 2 / arm 1 / arm 2 — ⚠ the user ruled during it that configs are never
+alternated in a decision-driven batch and that no time-of-day or machine-load confounder has ever been recorded; the batch finished as
+scheduled), tie-breakers `20260914_002335_a16-tiebreak-n1` and `20260914_024056_a22in12-tiebreak-n1` (one run each, sequential). Six runs, six
+campaigns, three CTDs (all in arm 2's batch runs: 1935.4, 1876.1, 1927.6), each resumed on its own campaign; play 124–158 min a run against
+vanilla's median 165. `preflight -Session`: L12/L17/L26 pass everywhere; L28 fails on the batch's run 2 error-log mirror only (nothing here reads
+it). Reference: the vanilla n=16 median (`20260821_131149`, a different night — ratios travel, absolute £ do not). Ledgers (one configuration
+per report, `--nb none`): arm 1 https://claude.ai/code/artifact/e3cbf11e-b33f-44c3-a27d-f645a5086ec9 (`tools/testbed/ledger/out_a16`), arm 2
+https://claude.ai/code/artifact/b68ba17a-3b6e-4273-b6cd-eccad00cfcd8 (`out_a22in12`); copies in the sessions.
+
+### 1. The headline table (world, at 1935; ÷ the vanilla n=16 median unless stated)
+
+| | arm 1 seed 1 (run 1) | seed 2 (run 3) | seed 3 (tie-break) | **arm 1 median** | arm 2 seed 1 (run 2) | seed 2 (run 4) | seed 3 (tie-break) | **arm 2 median** | phase 2 F109 (n=11) | F110 (n=1) | vanilla median |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| world GDP ÷ vanilla | 0.57 | 0.60 | 0.60 | **0.60** | 0.65 | 0.80 | 0.60 | **0.65** | 0.915 | 2.10 | £4,390M |
+| shortlist GDP ÷ vanilla | 0.52 | 0.66 | — | 0.65 (batch_tables) | 0.99 | 1.09 | — | 0.99 | 1.27 | — | £1,383M |
+| productive workers per capita ÷ vanilla | 0.69 | 0.68 | 0.72 | **0.69** | 0.56 | 0.59 | 0.50 | **0.56** | 0.66 | 1.23 | 0.140 |
+| GDP per productive worker ÷ vanilla | 0.89 | 0.99 | 0.87 | **0.89** | 1.31 | 1.45 | 1.32 | **1.32** | 1.39 | 1.60 | £16.1 |
+| unemployment ÷ (salaried + unemployed) | 26.5% | 28.8% | 28.3% | 28.3% | 33.5% | 32.1% | 36.6% | 33.5% | ~34% | 7.3% | 13.4% (run 1) |
+| peasants ÷ population | 12.2% | 12.4% | 11.5% | 12.2% | 13.5% | 12.8% | 14.4% | 13.5% | — | 4.1% | 7.5% (run 1) |
+| investment pools ÷ world GDP | 0.09 | 0.13 | 0.11 | **0.11** | 0.31 | 0.19 | 0.26 | **0.26** | 0.40 | 2.28 | 0.29 |
+| Britain's pool ÷ its GDP | 0.03 | 0.12 | 0.03 | 0.03 | 0.31 | 0.24 | 0.09 | 0.24 | 0.75 | 11.2 | 0.85 |
+| tiered levels (all rungs) | 11,074 | 11,655 | 12,175 | 11,655 | 6,336 | 7,338 | 5,826 | 6,336 | ~10,700 | 51,893 | 21,971 vanilla buildings |
+| construction sector levels | 1,453 | 1,354 | 1,687 | 1,453 | 1,764 | 2,108 | 1,712 | 1,764 | — | 6,966 | 2,622 (run 1) |
+| rung-0 staffing, all tiered industries | 56% | 44% | 40% | **44%** | 57% | 58% | 55% | **57%** | 64% | 18% | 69% (vanilla buildings) |
+| rung-0 staffed levels 1900 → 1935 | 1,198→1,353 (+13%) | 1,136→931 (−18%) | 1,158→886 (−23%) | **−18%** | 958→984 (+3%) | 926→967 (+4%) | 903→847 (−6%) | **+3%** | — | dying | — |
+| rung-0 profit per level (£/wk) at 1935 | 213 | 153 | 125 | 153 | 236 | 338 | 260 | 260 | 354 | 61 | 683 |
+| stale (e0) payback, fill_payback (y) | — | — | — | **57.1** | — | — | — | **34.0** | 27 | 157 | — |
+| frontier payback (y) | — | — | — | 6.0 | — | — | — | 9.4 | — | 4.9 | — |
+| below-best share of tiered building | 39.2% | ~34.8% | — | **37.7% (pooled)** | 37.0% | ~41.8% | — | **39.9% (pooled)** | 40.2% | 26.0% | — |
+| Britain's GDP (£M) | 323 | 474 | 313 | 323 | 493 | 788 | 204 | 493 | — | 345 | 417 (run 1) |
+| Britain's research-entry completions | 23 | 24 | 29 | 24 | 15 | 25 | 11 | 15 | 23 | 38 | — |
+| technologies held, GBR | 158 | 165 | 159 | 159 | 159 | 166 | 151 | 159 | 167 | 182 | — |
+| companies world / shortlist (n=2 batch runs) | — | — | — | 234 / 19 | — | — | — | 200 / 25 | 221 / 24 | 342 / 27 | 296 / 26 |
+| row P, pop-matched | — | — | — | −3.8% | — | — | — | −6.6% | +5.1% | +8.1% | — |
+| play time (min) | 141.4 | 157.9 | 135.4 | 141 | 136.7 | 142.1 | 124.0 | 137 | 161 | 216 | 165 |
+
+### 2. Prices — British market + the seven-market pool, arm ÷ vanilla at 1935 (medians of three), and in wage units
+
+| good | arm 1 pool ratio | arm 2 pool ratio | arm 1 wage units 1935 ÷ 1840 | arm 2 wage units | vanilla wage units |
+|---|---|---|---|---|---|
+| groceries | 1.04 | 0.87 | 0.42 | 0.24 | 0.50 |
+| clothes | 1.08 | 0.83 | 0.57 | 0.30 | 0.75 |
+| furniture | 1.21 | 1.09 | 0.41 | 0.43 | 0.54 |
+| glass | 0.91 | 1.21 | 0.54 | 0.61 | 0.75 |
+| tools | 1.18 | 1.18 | 0.53 | 0.48 | 0.50 |
+| paper | 1.15 | 1.14 | 0.35 | 0.29 | 0.46 |
+| fertilizer | 1.11 | 1.06 | — | — | — |
+| explosives | 0.94 | 0.94 | — | — | — |
+| steel | 0.99 | 0.77 | 0.31 | 0.16 | 0.57 |
+| engines | 0.99 | 1.09 | 0.32 | 0.34 | 0.60 |
+| automobiles | 0.98 | 0.95 | — | — | — |
+| small arms | 1.09 | 0.83 | 0.36 | 0.14 | 0.46 |
+| artillery | 1.22 | 0.76 | — | — | — |
+| telephones | 0.93 | 1.03 | — | — | — |
+| fine art | 0.92 | 0.83 | — | — | — |
+| Britain's base wage 1935 ÷ 1840 | ×1.93 | ×2.35 | | | ×1.49 |
+
+Telephones and automobiles are no longer 12–17% above vanilla's price (F111's index-keyed books): 0.93 / 0.98 and 1.03 / 0.95 — the era pass
+priced the four late industries at their eras and the price signature went with it. **British production ÷ vanilla at 1935 (medians):** arm 1
+engines 4.1, automobiles 4.2, telephones 10.3, clothes 1.72, furniture 1.03, steel 0.98, tools 0.90, glass 0.88, groceries 0.85, paper 0.83;
+arm 2 telephones 16.9, artillery 4.3, small arms 4.2, clothes 4.0, automobiles 2.4, furniture 2.3, groceries 1.85, steel 1.15, engines 1.10,
+tools 1.08, paper 0.72, glass 0.51, fertilizer 0.34.
+
+### 3. The rung ladder as realised (world, margin = profit ÷ (va_out − profit), F92; profit and value added per level, £/wk)
+
+| | arm 1 seed 1 @1840 | arm 1 seed 1 @1900 | arm 1 seed 1 @1935 | arm 1 seed 3 @1935 | arm 2 seed 1 @1935 | arm 2 seed 2 @1935 | arm 2 seed 3 @1935 |
+|---|---|---|---|---|---|---|---|
+| e0 levels · staffed · margin · profit · VA | 676 · 77% · 27% · 287 · 1,370 | 1,843 · 65% · 27% · 250 · 1,163 | 2,416 · 56% · 24% · 213 · 1,097 | 2,215 · 40% · 19% · 125 · 768 | 1,726 · 57% · 23% · 236 · 1,278 | 1,668 · 58% · 38% · 338 · 1,234 | 1,540 · 55% · 31% · 260 · 1,101 |
+| e1 | 356 · 82% · 28% · 485 · 2,245 | 1,418 · 67% · 27% · 382 · 1,819 | 2,343 · 65% · 23% · 360 · 1,905 | 2,743 · 54% · 19% · 276 · 1,728 | 1,593 · 80% · 37% · 929 · 3,455 | 1,852 · 78% · 32% · 887 · 3,686 | 1,555 · 75% · 31% · 799 · 3,399 |
+| e2 | 51 · 99% · 28% · 767 · 3,495 | 1,202 · 83% · 21% · 725 · 4,252 | 5,161 · 73% · 23% · 832 · 4,416 | 5,425 · 70% · 22% · 772 · 4,294 | 2,534 · 95% · 61% · 4,938 · 13,070 | 3,157 · 95% · 44% · 4,061 · 13,372 | 2,258 · 95% · 54% · 4,409 · 12,583 |
+| e3 | — | 7 · 75% · 18% · 932 · 5,977 | 1,154 · 84% · 21% · 1,548 · 8,905 | 1,792 · 81% · 20% · 1,569 · 9,424 | 483 · 95% · 66% · 9,825 · 24,714 | 661 · 94% · 38% · 6,205 · 22,649 | 473 · 99% · 51% · 9,646 · 28,613 |
+
+Arm 1's ladder rises ~1.5× a rung in £ at FLAT margins (23–28% on every rung in every year) — exactly what A 1.6 / B 1.5 prices in; arm 2's
+frontier earns 44–66%. In every seed of both arms the steel, arms and artillery rung 0 are empty (1–9% staffed) from 1900; the consumer rung 0
+(food, textile, glass, tooling, paper, furniture) stays 31–88% staffed to 1935. At 1840 the lift shows as rung-0 margins of 27% (arm 1) and
+35–37% (arm 2) against vanilla's 34–46% at 65–92% staffing.
+
+### 4. The trajectory (world GDP ÷ vanilla — the ledgers' median series against the n=16 median; the seed columns ÷ vanilla run 1)
+
+| year | arm 1 median | arm 1 seed 1 | arm 2 seed 1 | arm 2 seed 2 | arm 2 seed 3 | tiered levels arm 1 seed 1 / vanilla run 1 |
+|---|---|---|---|---|---|---|
+| 1840 | 0.98 | 0.96 | 1.01 | — | — | 1,083 / 1,076 |
+| 1850 | — | 0.94 | 0.99 | 0.99 | — | 1,290 / 1,274 |
+| 1860 | 0.88 | 0.86 | 0.92 | 0.94 | 0.91 | 1,663 / 1,682 |
+| 1870 | — | 0.83 | 0.83 | — | — | 2,141 / 2,312 |
+| 1880 | 0.76 | 0.69 | 0.75 | 0.82 | 0.79 | 2,306 / 3,235 |
+| 1900 | 0.64 | 0.60 | 0.63 | 0.73 | 0.65 | 4,470 / 6,665 |
+| 1920 | 0.61 | 0.52 | 0.57 | 0.63 | 0.51 | 7,153 / 12,999 |
+| 1935 | 0.60 | 0.55 | 0.64 | 0.78 | 0.59 | 11,074 / 21,971 |
+
+No stall event: the shortfall widens smoothly from 1850 in every seed, with the same tiered level count as vanilla through 1870 at less value
+added, then fewer levels. Britain in arm 1 seed 1 split in a civil war at 1880 (35M → 13M people, healed by 1884) and never formed a pool; the
+other five seeds had no split.
+
+### 5. The alignment test (pre-registered in the schedule) and what it decided
+
+Arm 1, runs 1 vs 3: GDP 0.57 / 0.60 ✓ (within 0.15, same side of 0.8); workers 0.69 / 0.68 ✓; stale payback 39 / 54 y ✓ (both > 30);
+below-best 39.2 / ~34.8 ✓ (within 5 pp); era-0 workforce +13% / −18% ✗ → tie-breaker → −23% → the median says shrinking. Arm 2, runs 2 vs 4:
+GDP 0.65 / 0.80 ✗ (opposite sides of 0.8); workers 0.56 / 0.59 ✓; era-0 workforce +3 / +4% ✓; stale payback 35 / 25 y ✗ (opposite sides of 30);
+below-best 37.0 / ~41.8 ✓ → tie-breaker → 0.60× and 32 y → the medians 0.65× (below the bound) and 34 y.
+
+### 6. Predictions against outcomes (the schedule's `_predictions`, written before the launch)
+
+- arm1_gdp 0.9–1.3×: **MISSED, below** (0.60). arm1_workers 0.9–1.1× and unemployment 10–20%: **MISSED** (0.69; 26–29%). arm1_capital: pools
+  under 0.6 ✓ (0.11); construction sector 1–1.5× vanilla ✗ (0.55×). arm1_obsolescence: era-0 workforce falling ✓ (median −18%, one seed up);
+  stale payback over 30 y ✓ (57); below-best under 35% ✗ (37.7). arm1_perf_prices: row P ✓ (−3.8% pop-matched, faster in total); groceries above
+  0.6× vanilla ✓ (1.04).
+- arm2_obsolescence (rung 0 dies without cheap capital): **MISSED** (flat, 57% staffed, 34 y). arm2_world GDP 0.8–0.95×: **MISSED, below** (0.65;
+  one seed on the bound); workers 0.6–0.7×: just below (0.56); unemployment ~30% ✓ (33.5%); pools 0.3–0.4: below (0.26); no F99 stall signature
+  (Britain £204–788M).
+- four_industries: telephones and automobiles no longer above vanilla's price ✓; their share of world VA and VA per level are in the ledgers'
+  industry decomposition (automotive £1.3M/wk of tiered VA in arm 1 at 1935, fourth of seventeen).
+
+### 7. What it does NOT say
+
+- n = 3 per arm: the medians carry a standard error near 0.05 on the GDP ratio; arm 2's spread (0.60–0.80) is the wider and is carried by Britain.
+- It does not separate the lift's early drag from the output step or the cost slope: both arms carry the lift, and the only lifted book without
+  the drag is F110, which carries A 2.2 at flat cost — the flood. Whether a flat-cost step between 1.6 and 2.2 lands GDP near vanilla AND kills
+  the old rung is what `canon-flat-in12-a19` asks (session `20260914_044648`).
+- The reference is a different night; the automotive / electrics / synthetics / munition / motor readings and every secondary-method line are
+  against vanilla, never against F109 or F110 (F111: those books were index-keyed, and every secondary in them carried vanilla inputs).
+- The batch's interleaving is ruled out for the future; nothing in these six runs is confounded by it.
