@@ -31,12 +31,17 @@ if (-not (Test-Path $Exe)) { throw "no exe at $Exe" }
 if (-not (Test-Path (Join-Path $ModDir ".metadata\metadata.json"))) { throw "not a mod folder: $ModDir" }
 if (Get-Process victoria3 -ErrorAction SilentlyContinue) { throw "victoria3.exe is running - the probe needs the game idle" }
 function DateNum([string]$d) { $p = $d.Split('.'); if ($p.Count -lt 3) { return 0 }; return [int]$p[0] * 10000 + [int]$p[1] * 100 + [int]$p[2] }
+function ReadShared([string]$path) {
+    # the game holds its logs open for writing; File.ReadAllLines wants exclusive access and throws - open with ReadWrite sharing
+    $fs = [System.IO.File]::Open($path, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
+    try { $sr = New-Object System.IO.StreamReader($fs); return ($sr.ReadToEnd() -split "`r?`n") } finally { $fs.Dispose() }
+}
 function FreshLines([string]$path, [datetime]$since) {
     # every line stamped [HH:MM:SS] at or after $since, wrap-safe (the ring rotates at launch; a stale line is older than the attempt)
     if (-not (Test-Path $path)) { return @() }
     $s0 = $since.Hour * 3600 + $since.Minute * 60 + $since.Second
     $out = New-Object System.Collections.Generic.List[string]
-    foreach ($l in [System.IO.File]::ReadAllLines($path)) {
+    foreach ($l in (ReadShared $path)) {
         if ($l -match '^\[(\d{2}):(\d{2}):(\d{2})\]') {
             $gap = ([int]$Matches[1] * 3600 + [int]$Matches[2] * 60 + [int]$Matches[3]) - $s0
             if ($gap -gt 43200) { $gap -= 86400 } elseif ($gap -le -43200) { $gap += 86400 }
@@ -60,7 +65,7 @@ try {
         Copy-Item -LiteralPath $Restore -Destination $restoredPath -Force
         Write-Host ("restored {0} ({1:N0} B) -> {2}" -f $Restore, (Get-Item -LiteralPath $Restore).Length, $RestoreAs)
     }
-    $json = '{"enabledMods":[{"path":"' + ($ModDir -replace '\', '/') + '"}],"disabledDLC":[],"enabledUGC":[]}'
+    $json = '{"enabledMods":[{"path":"' + $ModDir.Replace([char]92, [char]47) + '"}],"disabledDLC":[],"enabledUGC":[]}'
     [System.IO.File]::WriteAllText((Join-Path $Doc "content_load.json"), $json, (New-Object System.Text.UTF8Encoding $false))
     $t0 = Get-Date
     $args = @("-continuelastsave", "-gdpr-compliant", "-handsoff", "-disable_renderframeifneeded")

@@ -11753,3 +11753,71 @@ n=1 for everything seed-dependent (the runaway's carriers — France, the USA �
 **What it does NOT say.** Where between 1.6 and 2.2 the threshold sits (batch 2 tests 1.9); whether the frontier's price path in wage
 units moved (the ledger reads it); the below-best share; whether a second seed runs away later or not at all. Session `20260914_143137`,
 VERDICT.md there; config committed as `config/mod_config.canon-c16-in12.json` (`_ab.command`). Ledger https://claude.ai/code/artifact/818b8375-4934-4d0f-be0d-6479b8a8b0b1 (one configuration per report).
+
+## F117 — THE COST SLOPE 1.9 LANDS IN THE BAND (canon-c19-in12, n=2 aligned, 2026-09-14): world GDP 1.08× vanilla with productive workers per capita 0.66× — a dip to 0.75–0.89× around 1900 while the frontier is dear, then realignment by the 1930s; the first book whose old rung is out-earned by its frontier (rung 0 at 22–26% margin against 44–54%), and the first to land both alignment axes in the design's bands
+
+**Claim.** With building cost = anchor × 1.9^era on the lifted A 2.2 book (`canon-c19-in12`: canon-je24-a22-in12 with 600 / 1,140 / 2,166 /
+4,115 in place of 600 / 1,320 / 2,904 / 6,389, nothing else changed), two seeds read **1.09× and 1.07× the vanilla per-run median at 1935**
+(1.11 / 1.07 at 1936) with **productive workers per capita 0.65× and 0.67×** — both inside the 2+1 rule's target bands (F114), the pair
+ALIGNED, no tie-breaker, the run-level stop silent. The slope between C 1.6 (F116: on vanilla's path to 1890, then 1.98×) and C 2.2
+(F113: 0.65×) therefore sits at or near 1.9: the book tracks vanilla to 1860 (0.96–1.03×), dips while the e2/e3 rungs are still too
+dear to fill (0.75× in one seed and 0.89× in the other around 1900, workers per capita down to 0.61–0.63×), and realigns by the 1930s
+as the frontier fills at a capital price that does not run away. **Rung 0 is out-earned, not merely out-staffed**: 45% staffed in both
+seeds at a 22–26% margin against the frontier's 44–54% — every earlier book ran flat margins across the eras (F94's signature).
+
+**Arm, n, span.** Sessions `20260914_173832_canon-c19-in12-n2` (run 1: 152 min of play, one attempt) and `20260914_204329_canon-c19-in12-r2`
+(the one-run replacement: 168 min, one attempt); the first session's run 2 VOID — a CTD at the 1858.1.1 autosave write after which no
+resume could load the continue pointer's target (landmine L32; the deterministic resume feeder is the fix) — partial(1836.1.1),
+L17-excluded. 1836 → 1936.1.1; every ratio ÷ the vanilla per-run median (n=16 in the ledger tools, the eighteen-run cache in the
+decade reader; the medians agree to 1%). Schedule `canon_c19_in12_n2.json` + `canon_c19_in12_r2.json`; predictions pre-registered.
+
+**Numbers (seed 1 / seed 2).**
+
+| year | GDP ÷ van | prod. workers per capita ÷ van | pools ÷ GDP | Britain ÷ van |
+|---|---|---|---|---|
+| 1860 | 0.96 / 1.03 | 0.93 / 0.96 | 0.10 / 0.12 | 1.17 / 1.25 |
+| 1880 | 0.84 / 0.91 | 0.81 / 0.87 | 0.17 / 0.17 | 0.95 / 1.12 |
+| 1900 | 0.75 / 0.89 | 0.68 / 0.73 | 0.24 / 0.22 | 1.08 / 1.05 |
+| 1910 | 0.86 / 0.95 | 0.64 / 0.68 | 0.24 / 0.24 | 1.47 / 1.16 |
+| 1920 | 0.91 / 0.94 | 0.61 / 0.67 | 0.36 / 0.25 | 1.71 / 1.27 |
+| 1930 | 1.04 / 0.94 | 0.61 / 0.63 | 0.51 / 0.36 | 2.34 / 1.30 |
+| 1935 | 1.09 / 1.07 | 0.65 / 0.67 | 0.64 / 0.42 | 2.36 / 1.70 |
+| 1936 | 1.11 / 1.07 | 0.65 / 0.66 | 0.65 / 0.43 | 2.38 / 1.68 |
+
+- **Decomposition at 1935** (vanilla n=16): world 1.09× / 1.07× = population 1.04 / 0.99 × workers per capita 0.65 / 0.67 × GDP per
+  productive worker **1.61× / 1.61×** (£25.3 / £25.4 against £16.1); shortlist GBR USA FRA NET BEL PRU GER 2.29× / 1.47×.
+- **Majors at 1935** (GDP ÷ vanilla median, seed 1 / seed 2): France 4.12 / 4.05, Austria 4.36 / 3.01, Belgium 1.44 / 4.05, Britain
+  2.36 / 1.70, USA 0.88 / 1.05, Spain 0.43 / 1.05, Germany 1.58 / 0.49, Japan 0.51 / 0.61, Netherlands 0.16 / 0.72, Russia 0.21 / 0.49.
+  Peasant share of the strata population (seed 1 / seed 2 vs vanilla): USA 13.9 / 13.9 vs 7.6; Russia 17.9 / 15.0 vs 10.5; Germany
+  0.5 / 10.1 vs 0.1; Japan 16.5 / 13.9 vs 10.8; France 12.0 / 6.2 vs 10.3; world 11.0 / 11.3 vs 7.5 — LESS depeasantation than vanilla
+  in most majors, the sweep's fourth goal, met for the first time (every runaway book had more).
+- **Rung margins by era at 1935** (levels / staffed / margin = profit ÷ (VA − profit), F92; seed 1 / seed 2): e0 1,672 / 45% / 22% ·
+  1,568 / 45% / 26%; e1 2,190 / 70% / 31% · 1,928 / 70% / 30%; e2 5,263 / 91% / 48% · 5,055 / 92% / 54%; e3 1,508 / 92% / 44% ·
+  1,366 / 97% / 49%. The frontier earns twice rung 0's margin in both seeds — the ladder's death condition (F97) has its price signal
+  at last; rung 0 thins (78% → 45% staffed) and its level count still grows slowly (the company rebuild, F97 §4).
+- **Capital and labour at 1935:** pools 0.64 / 0.42 of world GDP (vanilla 0.31; C 1.6 0.69; F110 2.28); tiered levels 10,633 / 9,917
+  (vanilla 21,971; C 1.6 21,913) on 1.04 / 0.99× the population; construction sector 2,971 / 3,092 levels; unemployment 30.5% / 26.6%
+  (vanilla ~13%); peasants 11.0% / 11.3% of the strata population.
+- **Research:** technologies held at 1935 GBR 165 / FRA 152 / USA 169 / GER 167 / RUS 134 (seed 1) — phase 2's readings; journal-entry
+  completions in the median run 139 production inceptions / 96 developments (the ledger's tally).
+- **Build choice:** below-best 34.9% of build decisions over the pair (C 1.6 24.6%; a22-in12 39.9%); frontier payback 7.4 y, stale 46.7 y.
+- **Speed:** 152.4 and 167.9 min of play against the vanilla median 164.9 (0.97×); pop-matched +5.3%; no crash in the usable runs.
+- **Predictions vs outcome** (the schedule's pre-registration): GDP 0.75–1.25× — MET (1.09 / 1.07); "hold 0.9–1.15× through 1920" —
+  MISSED below (0.75 / 0.89 at 1900); the 1860 dip 0.90–1.0× — MET (0.96 / 1.03); workers 0.60–0.80× — MET (0.65 / 0.67); rung 0
+  30–50% staffed — MET (45 / 45); pools 0.2–0.5 — MISSED above in seed 1 (0.64), met in seed 2 (0.42); tiered levels 8,000–20,000 — MET;
+  perf within +10% — MET.
+
+**What it says about the goals** (user, 2026-09-14): (1) GDP realigned with vanilla by the 1930s — MET (1.07–1.09× at 1935, both
+seeds inside the 0.9–1.1 band); (2) no collapse in 1836–1860 — MET (0.96–1.03×), though the dip that follows bottoms at 0.75× in 1900
+in one seed, deeper than the −20% the user tolerated for the early decades; (3) rung 0 obsolete — HALF MET: out-earned (22–26% vs
+44–54%) and half-staffed, not dead; (4) capital scarcer than vanilla — MET on levels (half of vanilla's), on workers per capita (0.66×)
+and on depeasantation (peasant shares above vanilla in most majors), NOT on pools (0.42–0.64 of GDP, above vanilla's 0.31 — capital
+hoarded rather than invested), and unemployment runs at 27–30%.
+
+**Confidence.** High for the band placement (two seeds 0.02 apart on GDP and on workers, the same trajectory shape; C 1.6 and C 2.2
+bracket it on both sides); the 1900 dip's depth is seed-dependent (0.75 vs 0.89); the majors' pattern (a 4× France in both seeds, Russia
+and Germany halved in one or both) is n=2 evidence of an uneven world, not of its cause.
+
+**What it does NOT say.** Whether the ×1.3 lift at this slope kills rung 0 without reopening the runaway (the sweep's last step); whether
+the price path in wage units moved (the ledger reads it); why France carries the world in both seeds. Sessions `20260914_173832` and
+`20260914_204329`, VERDICT.md in each; config committed as `config/mod_config.canon-c19-in12.json` (`_ab.command`). Ledger https://claude.ai/code/artifact/7c8d37a0-4496-49fe-b5f8-d3d2859d5d95 (one configuration per report).
