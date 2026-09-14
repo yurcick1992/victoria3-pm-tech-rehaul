@@ -515,3 +515,11 @@ engine dearer per unit of work?", not "did the batch pass?".
 `tokens.json` not overridden it — the same class as `fill_build_perf.mjs`'s provenance line. The
 literal is now an obviously-unfilled placeholder, so a missing override is *visible* rather than
 *believable*. **Put the real chip in the out-dir `tokens.json`.**
+
+## ⚠ Tokens spliced into JavaScript take NO apostrophes (2026-09-14)
+
+`__ARMLABEL__`, `__NBLABEL__`, `__VANLABEL__` and `__SPREAD__` land inside single-quoted JavaScript string literals in the GDP chart's
+script (the legend and the spread sentence). An apostrophe in any of them ("vanilla's own tiered level count") ends the literal, the
+script fails to parse ("Unexpected identifier"), and EVERY renderer after it stays blank — `fill_verify` catches it ("the page THREW
+while rendering", 17 problems on the a19 fill) but only after the assembly. Write those four tokens without apostrophes; the HTML
+fragments (`lede.html` and friends) may use `&rsquo;` or a plain apostrophe freely, since they are spliced into markup, not script.
