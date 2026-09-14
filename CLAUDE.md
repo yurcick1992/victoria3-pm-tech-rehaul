@@ -3788,7 +3788,17 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   ≥ 0.10 (workers) apart**, in points of the vanilla median. Calibrated on every pair of byte-identical runs (F114): 47%
   of phase 1's, 40% of phase 2's and 69% of vanilla's pairs pass, i.e. the third run is the NORM for this family's seed
   spread, by choice. No obsolescence criterion (rung-0 direction, payback, below-best never failed inside a config in 490
-  pairs; they stay in the VERDICT as flags). The five-criterion rule of the 2026-09-13 schedules is retired. Setups are
+  pairs; they stay in the VERDICT as flags). The five-criterion rule of the 2026-09-13 schedules is retired.
+  ⭐ **THE RUN-LEVEL STOP (user-ruled 2026-09-14, later the same day):** unless a schedule says "full runs" (useful while learning
+  dependencies rather than aiming at every goal), **any run of a 2+1 test that ends above ×1.3 of vanilla's 1936 GDP** (the
+  eighteen-run vanilla median at the 1936.1.1 endpoint; vanilla's own seeds top out at 1.14×) **is the config's LAST run** — the
+  config stops there, be it run 1, 2 or 3, whatever the alignment would say. **Never mid-run**: a failed config still leaves a
+  comparable 1836→1936 result (a mid-run GDP abort was proposed and rejected as too aggressive, and its thresholds as too high).
+  **SCOPE (user, the same message): 2+1 BATCHES ONLY.** A long sequence — any batch not explicitly set up as a series of 2+1 tests
+  under changing configs (a 30-run plan, a 60-run plan, a full-run learning batch) — is NOT subject to it; every run plays.
+  `alignment_check.mjs` prints the stop verdict (exit 3) and `--stop-above 0` is the "full runs" switch; between the runs of a
+  live batch the scratchpad `stop_watch.mjs` enforces it by dropping the STOP file after an offending run's endpoint lands (the
+  next run is abandoned at 1836 and L17-excluded, the phase-2 run-11 shape). Being far BELOW stops nothing (the stall family). Setups are
   `{kind: control}` (vanilla + telemetry, via `build.ps1 -ControlOnly`) or `{kind: config, config: <path>}`.
   ❌ **`{kind: control, config: <path>}` exists today and is the architectural violation flagged under
   `-ControlOnly` above** — it builds vanilla + telemetry + a pop-need weight file while still calling

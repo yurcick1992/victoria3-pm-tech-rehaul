@@ -97,6 +97,23 @@ for (let i = 0; i < rows.length; i++) for (let k = i + 1; k < rows.length; k++) 
 }
 const gm = med(rows.map(r => r.g)), wm = med(rows.map(r => r.w));
 console.log(`\nmedians: GDP ${gm.toFixed(3)}× (${NAMES[band(gm, RULE.gdp.edges)]}) · workers per capita ${wm.toFixed(3)}× (${NAMES[band(wm, RULE.workers.edges)]})`);
+
+// THE RUN-LEVEL STOP (user-ruled 2026-09-14): unless a schedule says "full runs", ANY run of a 2+1 test that ends above
+// STOP_ABOVE × vanilla's 1936 GDP (the eighteen-run vanilla median at the 1936.1.1 endpoint) is the config's LAST run —
+// the config stops there, be it run 1, 2 or 3. Read on the endpoint summary, never mid-run: a failure still leaves a
+// comparable 1836→1936 result. `--stop-above 0` disables it (a "full runs" schedule). SCOPE: 2+1 batches ONLY — a long
+// sequence, or any batch not explicitly set up as a series of 2+1 tests under changing configs, is not subject to it.
+export const STOP_ABOVE = +argOf('--stop-above', '1.3');
+if (STOP_ABOVE > 0) {
+  const van36 = van.runs.map(r => { const j = summaryAt(r, '1936'); return j ? j.world.gdp : null; }).filter(x => x != null);
+  if (van36.length >= 4) {
+    const vm36 = med(van36);
+    let stopped = null;
+    for (const r of rows) { const j = summaryAt(r.run, '1936'); if (!j) continue; r.g36 = j.world.gdp / vm36; if (r.g36 > STOP_ABOVE && !stopped) stopped = r; }
+    console.log(`stop rule: a run above ${STOP_ABOVE}× vanilla's 1936 GDP (median £${Math.round(vm36 / 1e6).toLocaleString('en-US')}M, n=${van36.length}) is the config's last — ` + rows.map(r => `${r.run.split('/')[1]} ${r.g36 == null ? '(no 1936 summary)' : r.g36.toFixed(2) + '×'}`).join(' · '));
+    if (stopped) { console.log(`STOP: ${stopped.run} ended at ${stopped.g36.toFixed(2)}× vanilla's 1936 GDP — THE CONFIG STOPS HERE (no further run of it, whatever the alignment says).`); process.exit(3); }
+  }
+}
 if (divergent && rows.length === 2) { console.log(`VERDICT: DIVERGENT — the pair fails; run the tie-breaker and read the median of three.`); process.exit(2); }
 if (divergent) { console.log(`VERDICT: ${divergent} of ${rows.length * (rows.length - 1) / 2} pairs diverge at n=${rows.length}; the reading is the median of ${rows.length} (the tie-breaker has run — no further run).`); process.exit(0); }
 console.log(`VERDICT: ALIGNED — the reading stands at n=${rows.length}; no tie-breaker.`);
