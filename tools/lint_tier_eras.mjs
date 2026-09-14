@@ -103,7 +103,9 @@ for (const ind of cfg.industries || []) {
     if (Math.abs(t.output_qty - wantOut) > 0.051 + 0.002 * wantOut) faults.push(`${ind.id} e${e}: output ${t.output_qty}, the era rule says ${wantOut} (vanilla ${out0} × ${A}^${e}) — keyed on something other than the era`);
     const wantIn = I0 * (in0only ? (e === 0 ? lift : 1) : lift) * Math.pow(B, e); const gotIn = val(t.inputs);
     if (Math.abs(gotIn - wantIn) > 0.03 * wantIn + 1) faults.push(`${ind.id} e${e}: input value £${gotIn.toFixed(0)}, the era rule says £${wantIn.toFixed(0)} (vanilla £${I0.toFixed(0)} × ${lift} × ${B}^${e})`);
-    if (anchor) { const wantCost = AB.cost_flat ? anchor : Math.round(anchor * Math.pow(A, e)); if (t.building_cost !== wantCost) faults.push(`${ind.id} e${e}: building_cost ${t.building_cost}, the era rule says ${wantCost}`); }
+    // cost: flat (§10.61), or anchor × C^era where C is the book's own cost ratio (`_ab.cost_ratio`, the cost-slope books of
+    // 2026-09-14) and A by default (capacity-priced, the canon)
+    if (anchor) { const C = AB.cost_ratio ?? A; const wantCost = AB.cost_flat ? anchor : Math.round(anchor * Math.pow(C, e)); if (t.building_cost !== wantCost) faults.push(`${ind.id} e${e}: building_cost ${t.building_cost}, the era rule says ${wantCost} (anchor ${anchor} × ${C}^${e})`); }
     const steep = AB.ai_steep && AB.ai_steep.industries.includes(ind.id) ? AB.ai_steep.ratio : null;
     const wantAiv = (AB.ai_ladder && !steep) ? Math.round(AB.ai_ladder[Math.min(e, AB.ai_ladder.length - 1)]) : Math.round((AB.ai_base ?? 1000) * Math.pow(steep || A, e));
     if (t.ai_value !== wantAiv) faults.push(`${ind.id} e${e}: ai_value ${t.ai_value}, the era rule says ${wantAiv}`);
