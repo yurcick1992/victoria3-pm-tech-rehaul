@@ -27,7 +27,8 @@
 //   --arm   the config's runs (usable = reached their until date, L17), pooled over the sessions named
 //   --van   the vanilla baseline session (default 20260821_131149_vanilla-baseline-n16); its per-run medians are the
 //           denominators, computed live from its summaries
-// Exit 0 = aligned (no tie-breaker), 2 = divergent (run the third), 1 = cannot read.
+// Exit 0 = aligned (no tie-breaker), 2 = divergent (run the third), 3 = THE RUN-LEVEL STOP (a run above --stop-above × vanilla's
+// 1936 GDP; read even at n=1, since run 1 alone can end a config), 1 = cannot read / only one run and no stop.
 
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
@@ -79,7 +80,7 @@ const vanGdp = med(vanRows.map(r => r.gdp)), vanPc = med(vanRows.map(r => r.prod
 const arm = usableRuns(SES, armSessions, armSetup);
 reportDropped(arm.dropped);
 const rows = arm.runs.map(readRun).filter(Boolean);
-if (rows.length < 2) { console.error(`arm ${armArg}: ${rows.length} readable run(s) at ${YEAR} — the check needs two`); process.exit(1); }
+if (rows.length < 1) { console.error(`arm ${armArg}: no readable run at ${YEAR}`); process.exit(1); }
 
 console.log(`ALIGNMENT CHECK — ${armArg} · ${rows.length} usable run(s) at ${YEAR} · vanilla ${VAN} n=${vanRows.length}: median GDP £${Math.round(vanGdp / 1e6).toLocaleString('en-US')}M, median productive workers per capita ${vanPc.toFixed(4)}`);
 console.log('run                                                    GDP÷van   band                 wkr/cap÷van   band');
@@ -87,17 +88,6 @@ for (const r of rows) {
   r.g = r.gdp / vanGdp; r.w = r.prodPerCap / vanPc;
   console.log(`${r.run.padEnd(54)} ${r.g.toFixed(3).padStart(7)}   ${NAMES[band(r.g, RULE.gdp.edges)].padEnd(18)} ${r.w.toFixed(3).padStart(11)}   ${NAMES[band(r.w, RULE.workers.edges)]}`);
 }
-let divergent = 0;
-console.log(`\npairs (fail = different bands AND ≥ ${RULE.gdp.threshold} GDP / ≥ ${RULE.workers.threshold} workers apart):`);
-for (let i = 0; i < rows.length; i++) for (let k = i + 1; k < rows.length; k++) {
-  const a = rows[i], b = rows[k];
-  const fg = pairFails(a.g, b.g, 'gdp'), fw = pairFails(a.w, b.w, 'workers');
-  if (fg || fw) divergent++;
-  console.log(`  ${a.run.split('/')[1]} vs ${b.run.split('/')[1]}: GDP ${a.g.toFixed(2)} / ${b.g.toFixed(2)} ${fg ? '✗' : '✓'} · workers ${a.w.toFixed(2)} / ${b.w.toFixed(2)} ${fw ? '✗' : '✓'}${fg || fw ? '   → DIVERGENT' : ''}`);
-}
-const gm = med(rows.map(r => r.g)), wm = med(rows.map(r => r.w));
-console.log(`\nmedians: GDP ${gm.toFixed(3)}× (${NAMES[band(gm, RULE.gdp.edges)]}) · workers per capita ${wm.toFixed(3)}× (${NAMES[band(wm, RULE.workers.edges)]})`);
-
 // THE RUN-LEVEL STOP (user-ruled 2026-09-14): unless a schedule says "full runs", ANY run of a 2+1 test that ends above
 // STOP_ABOVE × vanilla's 1936 GDP (the eighteen-run vanilla median at the 1936.1.1 endpoint) is the config's LAST run —
 // the config stops there, be it run 1, 2 or 3. Read on the endpoint summary, never mid-run: a failure still leaves a
@@ -114,6 +104,18 @@ if (STOP_ABOVE > 0) {
     if (stopped) { console.log(`STOP: ${stopped.run} ended at ${stopped.g36.toFixed(2)}× vanilla's 1936 GDP — THE CONFIG STOPS HERE (no further run of it, whatever the alignment says).`); process.exit(3); }
   }
 }
+if (rows.length < 2) { console.log(`one usable run at ${YEAR} — the pair check needs two (no stop triggered); run 2 decides the tie-breaker`); process.exit(1); }
+let divergent = 0;
+console.log(`\npairs (fail = different bands AND ≥ ${RULE.gdp.threshold} GDP / ≥ ${RULE.workers.threshold} workers apart):`);
+for (let i = 0; i < rows.length; i++) for (let k = i + 1; k < rows.length; k++) {
+  const a = rows[i], b = rows[k];
+  const fg = pairFails(a.g, b.g, 'gdp'), fw = pairFails(a.w, b.w, 'workers');
+  if (fg || fw) divergent++;
+  console.log(`  ${a.run.split('/')[1]} vs ${b.run.split('/')[1]}: GDP ${a.g.toFixed(2)} / ${b.g.toFixed(2)} ${fg ? '✗' : '✓'} · workers ${a.w.toFixed(2)} / ${b.w.toFixed(2)} ${fw ? '✗' : '✓'}${fg || fw ? '   → DIVERGENT' : ''}`);
+}
+const gm = med(rows.map(r => r.g)), wm = med(rows.map(r => r.w));
+console.log(`\nmedians: GDP ${gm.toFixed(3)}× (${NAMES[band(gm, RULE.gdp.edges)]}) · workers per capita ${wm.toFixed(3)}× (${NAMES[band(wm, RULE.workers.edges)]})`);
+
 if (divergent && rows.length === 2) { console.log(`VERDICT: DIVERGENT — the pair fails; run the tie-breaker and read the median of three.`); process.exit(2); }
 if (divergent) { console.log(`VERDICT: ${divergent} of ${rows.length * (rows.length - 1) / 2} pairs diverge at n=${rows.length}; the reading is the median of ${rows.length} (the tie-breaker has run — no further run).`); process.exit(0); }
 console.log(`VERDICT: ALIGNED — the reading stands at n=${rows.length}; no tie-breaker.`);
