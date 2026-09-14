@@ -915,7 +915,7 @@ config/mod_config.canon-c19-in13.json ⭐ THE COST-SLOPE SWEEP, BOOK 3 — THE �
                         on its own): the lift REMOVED the ×1.2 book's dip (0.97–0.99× to 1880) and then RAN AWAY — 1.08 / 1.16 / 1.36 / 1.55× at 1890–1920,
                         1.44× at 1935 and 1936 on 0.89× the population; workers per capita 0.94×, GDP per productive worker 1.71×, pools 1.07 of GDP;
                         rung 0 30% staffed (×1.2: 45%) at a 21% margin with the margin ladder FLAT again (28–34% at the frontier); tiered levels 17,371.
-                        The lift pushes construction to the frontier, it does not kill the old rung; the found config stays canon-c19-in12. Un-ignored with its twin
+                        The lift pushes construction to the frontier, it does not kill the old rung; the found config stays canon-c19-in12. Ledger https://claude.ai/code/artifact/b945cf11-8ec9-40b0-beb9-53f682b3d234. Un-ignored with its twin
 config/mod_config.canon-c205-in13.json ⭐ THE LOOP'S SECOND PICK (drafted 2026-09-15 02:45, the standing loop): the ×1.3 lift on a DEARER slope —
                         canon-c19-in13 with building_cost = anchor × 2.05^era (600 / 1,230 / 2,522 / 5,169; 800 / 1,640 / 3,362 / 6,892) in place of 1.9^era,
                         because the lift at C 1.9 removed the unlifted book's dip and then RAN AWAY (0.97 / 1.08 / 1.16 / 1.36× at 1880–1910 in its first

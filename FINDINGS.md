@@ -11883,4 +11883,4 @@ is the first guess, unmeasured).
 
 **What it does NOT say.** Whether a smaller lift (×1.25) at C 1.9 keeps the band; whether the lift on a dearer slope lands (batch 5
 tests 2.05); why the population fell. Session `20260915_002935`, VERDICT.md there; config committed as
-`config/mod_config.canon-c19-in13.json` (`_ab.command`).
+`config/mod_config.canon-c19-in13.json` (`_ab.command`). Ledger https://claude.ai/code/artifact/b945cf11-8ec9-40b0-beb9-53f682b3d234 (one configuration per report).
