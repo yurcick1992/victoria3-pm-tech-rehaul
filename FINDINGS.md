@@ -11531,3 +11531,62 @@ below-best 37.0 / ~41.8 ✓ → tie-breaker → 0.60× and 32 y → the medians 
 - The reference is a different night; the automotive / electrics / synthetics / munition / motor readings and every secondary-method line are
   against vanilla, never against F109 or F110 (F111: those books were index-keyed, and every secondary in them carried vanilla inputs).
 - The batch's interleaving is ruled out for the future; nothing in these six runs is confounded by it.
+
+## F114 — THE 2+1 ALIGNMENT RULE, CALIBRATED ON EVERY PAIR OF BYTE-IDENTICAL RUNS (2026-09-14): the pre-registered five-criterion rule flagged 42% of vanilla's own pairs and 76–77% of the four-rung books'; its obsolescence terms never failed inside a config; the ruled replacement — two criteria, five bands each, thresholds 0.15 / 0.10 — passes 47% / 40% / 69% of phase 1 / phase 2 / vanilla pairs, so the third run is the norm by choice
+
+**Claim.** The alignment test that decides whether a 2-run config test needs a third run was scored on every pair of runs of three
+byte-identical configs — the vanilla baseline (18 runs: `20260821_131149` n=16 + `20260823_113218` n=2; 153 pairs), phase 1
+`canon-je24` (30 usable runs over `20260906_001032` + `20260907_074504`; 435 pairs) and phase 2 `canon-je24-a22` (11 over
+`20260909_100930` + `20260909_123746`; 55 pairs) — at 1935, every ratio against the vanilla n=16 median. **The rule pre-registered in
+the 2+1 schedules of 2026-09-13** (all five must hold: world GDP ÷ vanilla within 0.15 AND the same side of the 0.8 / 1.25 bounds;
+productive workers per capita within 0.10; the era-0 staffed-level count moving the same way 1900→1935; stale payback the same side
+of 30 y; below-best within 5 pp) **fails 42% of vanilla's pairs (64 of 153; GDP 46 — all by the gap, none by the band side — workers
+45), 77% of phase 1's (335 of 435: GDP 288, of which 209 by the band side, workers 166, below-best 110) and 76% of phase 2's (42 of
+55: GDP 37, workers 26, below-best 3)**; the rung-0 direction and payback terms fail 0 pairs in all 643 (every phase-1 and phase-2
+seed's rung-0 staffed levels GREW 1900→1935, +16% to +109%, at 9–24 y of payback), i.e. they are cliff detectors that only fire
+between books at a tipping point (the a16 arm, F113). Phase 1's failures concentrate one-sidedly in its stall tail (the eleven seeds
+below 0.8× fail 22–28 of 29 pairs each; the two seeds at 43.7% / 44.5% below-best fail 28 each on that term); phase 2's are spread
+over its whole 0.63–1.17× range; vanilla's sit in both tails symmetrically (0.82 / 0.83× and 1.11 / 1.16× fail 11–14 of 17). The
+seed spreads behind it: vanilla 0.82–1.16× (sd ≈ 0.10), phase 1 0.44–1.11×, phase 2 0.63–1.17× on GDP; workers 0.89–1.13× /
+0.47–0.78× / 0.52–0.76×.
+
+**The ruled replacement (user, 2026-09-14; `tools/testbed/ledger/alignment_check.mjs`).** Two criteria, five bands each, a pair fails
+an axis only in DIFFERENT bands AND at least the threshold apart (points of the vanilla median):
+
+| axis | way below | noticeably below | target | noticeably above | way above | threshold |
+|---|---|---|---|---|---|---|
+| world GDP ÷ vanilla median | < 0.60 | 0.60–0.90 | 0.90–1.10 | 1.10–1.50 | > 1.50 | 0.15 |
+| productive workers per capita ÷ vanilla median | < 0.40 | 0.40–0.55 | 0.55–0.72 | 0.72–0.90 | > 0.90 | 0.10 |
+
+The GDP target is narrow because the design aims at vanilla's GDP path. The workers target is centred on the design's own goal, not
+on vanilla: phase 2 (GDP 0.915× with productive workers at two thirds of vanilla's and 1.39× the product per worker, F109) has a
+per-run median worker share of **0.634×** vanilla (phase 1 0.640×), so vanilla reads "way above" on that axis (17 of 18 baseline
+runs) and F110 / the A 1.9 book (1.09–1.23×) likewise. No obsolescence criterion (user: "we never reach it and it's hard to
+calibrate"); rung-0 staffing, stale payback and below-best stay in the verdict as flags.
+
+**Calibration of the candidates** (pass = no axis fails; phase 1 / phase 2 / vanilla):
+
+| GDP bands · threshold | workers bands · threshold | phase 1 | phase 2 | vanilla |
+|---|---|---|---|---|
+| 0.5·0.8·1.25·1.6 · 0.30 | 0.5·0.8·1.15·1.5 · 0.20 | 78% | 82% | 100% |
+| 0.6·0.9·1.1·1.5 · 0.30 | 0.55·0.75·0.95·1.15 · 0.20 | 78% | 76% | 95% |
+| 0.6·0.9·1.1·1.5 · 0.30 | 0.40·0.55·0.72·0.90 · 0.20 | 78% | 76% | 96% |
+| 0.6·0.9·1.1·1.5 · 0.25 | 0.40·0.55·0.72·0.90 · 0.15 | 67% | 64% | 90% |
+| 0.6·0.9·1.1·1.5 · 0.20 | 0.40·0.55·0.72·0.90 · 0.15 | 60% | 55% | 87% |
+| **0.6·0.9·1.1·1.5 · 0.15 (ruled)** | **0.40·0.55·0.72·0.90 · 0.10 (ruled)** | **47%** | **40%** | **69%** |
+
+The threshold sets the pass rate and the edges set the verdicts: every edge set tried lands within 2 points of the same pass rate at a
+given threshold, because a pair test measures the family's seed spread. Band occupancy under the ruled bands: phase 1 GDP
+"noticeably below" 17 of 30 (target 10, way below 2, above 1) and workers "target" 21 of 30 (below 3, above 6); phase 2 GDP below 5 /
+target 5 / above 1 (its centre 0.92× sits on the 0.9 edge) and workers target 7 of 11; vanilla GDP target 11 of 18 (below 4, above 3),
+workers way above 17 of 18; a16 (F113) GDP way below / below, workers target 3 of 3; a22-in12 GDP noticeably below 3 of 3, workers
+noticeably below; A 1.9 way above on both. **Under the ruled rule this week's pairs read:** a16 runs 1 / 3 ALIGNED (0.57 / 0.60,
+workers 0.67 / 0.67), a22-in12 runs 2 / 4 ALIGNED (0.65 / 0.80 both "noticeably below", 0.55 / 0.58), A 1.9 runs 1 / 2 ALIGNED
+(1.87 / 1.73 both "way above", 1.15 / 1.09) — none of the three tie-breakers of 2026-09-14 would have been called; the a22-in12
+trio's third seed (0.60×, way below) diverges from its 0.80× seed, which is what the median of three is for.
+
+**What it does NOT say.** It calibrates a decision rule, not a measurement: at 47% / 40% pass the third run is the norm for the
+four-rung family's seed spread, by the user's choice, and no rule at n=2 resolves a distribution with a seed sd of 0.10–0.17 on the
+GDP ratio. The below-best per-run figures came from a scratch per-run copy of `analyse_ai_tier_choice.mjs` (`--rundir`); the two
+retired cliff criteria are unchanged as verdict flags. Scorers: `scratchpad/vanilla_pairs.mjs`, `mod_pairs.mjs`, `band_calib*.mjs`
+(session-local); the ruled rule is the committed tool.

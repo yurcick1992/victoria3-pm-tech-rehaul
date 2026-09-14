@@ -3763,7 +3763,19 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   predetermined batch (15 canon vs 15 vanilla), and even the argument for it is unsupported: **there are no recorded
   confounders from external machine usage or time of day, and any such effect is very likely far below noticeable
   levels** — so "a Steam update or a slow night hits both arms" justifies nothing. The a16/a22-in12 batch of 2026-09-13
-  interleaved its two configs; by ruling it was left to finish as scheduled (its tie-breakers, if any, run after it). Setups are
+  interleaved its two configs; by ruling it was left to finish as scheduled (its tie-breakers, if any, run after it).
+  ⭐⭐ **THE 2+1 QUICK CONFIG TEST — THE STANDARD (user-ruled 2026-09-14, FINDINGS F114).** Two runs of one config, then
+  `node tools/testbed/ledger/alignment_check.mjs --arm <session[,session]>:<setup>`, then a third run ONLY where the two
+  DIVERGE, the config read as the median of three. **Two criteria, at 1935, as ratios to the vanilla baseline's per-run
+  MEDIAN: world GDP, and productive workers per capita** (salaried − government − military, over the strata population).
+  **Five bands each — GDP: way below <0.6 · noticeably below 0.6–0.9 · TARGET 0.9–1.1 · noticeably above 1.1–1.5 · way
+  above >1.5; workers: way below <0.40 · noticeably below 0.40–0.55 · TARGET 0.55–0.72 · noticeably above 0.72–0.90 · way
+  above >0.90** (the workers target is centred on the design's own goal — phase 2's median worker share of 0.634× vanilla,
+  F109 — so vanilla itself reads "way above" there). **A pair fails an axis only in DIFFERENT bands AND ≥ 0.15 (GDP) /
+  ≥ 0.10 (workers) apart**, in points of the vanilla median. Calibrated on every pair of byte-identical runs (F114): 47%
+  of phase 1's, 40% of phase 2's and 69% of vanilla's pairs pass, i.e. the third run is the NORM for this family's seed
+  spread, by choice. No obsolescence criterion (rung-0 direction, payback, below-best never failed inside a config in 490
+  pairs; they stay in the VERDICT as flags). The five-criterion rule of the 2026-09-13 schedules is retired. Setups are
   `{kind: control}` (vanilla + telemetry, via `build.ps1 -ControlOnly`) or `{kind: config, config: <path>}`.
   ❌ **`{kind: control, config: <path>}` exists today and is the architectural violation flagged under
   `-ControlOnly` above** — it builds vanilla + telemetry + a pop-need weight file while still calling
