@@ -1,0 +1,76 @@
+{
+ "schedule_version": 1,
+ "label": "canon-c19-in12-r2",
+ "_why": "THE REPLACEMENT FOR THE VOID RUN 2 OF 20260914_173832_canon-c19-in12-n2 (same config, one run, sequential): that run crashed at 1858.1.1 - the yearly autosave moment (EXCEPTION_ACCESS_VIOLATION, dump victoria3_01260814_203649) - and every resume attempt logged \"Could not load save game [autosave]\" and went to the main menu (continue_game.json still names the save that was being written when the game died), so the observer's step-back through autosave_1 / autosave_2 could not help and it abandoned the run after two quarantined saves: recorded partial(1836.1.1), L17-excluded, no reading. Run 1 of that session is usable (1.09x vanilla at 1935, 1.11x at 1936, workers per capita 0.65x - in the band, no stop). This run supplies the second usable run of the 2+1 test; then alignment_check.mjs --arm 20260914_173832_canon-c19-in12-n2,<this session>:canon-c19-in12. ORIGINAL BATCH-2 TEXT: THE COST-SLOPE SWEEP, BATCH 2 - THE BISECTION UP (pre-registered in batch 1's schedule: 'above the GDP target band -> C 1.9'). Batch 1, canon-c16-in12 (session 20260914_143137), read 1.04 / 0.98 / 0.99 / 1.04 / 1.07 / 1.12 / 1.27 / 1.59x vanilla's eighteen-run median at 1850..1920 in its first run - on vanilla's path to 1890, then the explosive regime (A 1.9 flat's shape: 1.27-1.41x at 1900, 1.8x at 1936) - and the run-level stop rule (user-ruled 2026-09-14: a 2+1 run above x1.3 of vanilla's 1936 GDP is the config's last) ends that config at n=1 if the endpoint confirms it. So the slope moves up: this book is canon-je24-a22-in12 with building_cost = anchor x 1.9^era (600 / 1,140 / 2,166 / 4,115 and 800 / 1,520 / 2,888 / 5,487) - between C 1.6 (the world takes off after 1890) and C 2.2 (0.65x, the frontier too scarce, F113) - everything else identical (A 2.2 / B 1.5, era-0 inputs x1.2 with the ladder anchored on it, ai_value 1,000x3^era, divisor 0.000125, the 10.75 defines, the 24-month bar, the era-rule canon's structure). The response is a regime change, not a line: at C 1.6 the frontier's capital is cheap enough that the loop (cheap capacity -> GDP -> pools -> more capacity) runs away after 1890; at C 2.2 the frontier never fills. NEXT (one more bisection): above the band -> C 2.05; below -> C 1.75; then the x1.3 lift at the found C.",
+ "_arms": {
+  "canon-c19-in12": "{kind: config, config: config/mod_config.canon-c19-in12.json} - generated 2026-09-14 14:41 by make_ab_config --cost-ratio 1.9 (its _ab.command holds the line); dry-run built clean the same day."
+ },
+ "_delta": "Against canon-c16-in12 (batch 1): the cost slope 1.9^era in place of 1.6^era - one lever. Against canon-je24-a22-in12 (F113, n=3): 1.9^era in place of 2.2^era - one lever.",
+ "_predictions": {
+  "gdp": "world GDP 0.75-1.25x the vanilla eighteen-run median at 1935 (point ~1.0x; a log-linear interpolation between C 1.6's ~1.9x and C 2.2's 0.65x lands ~1.05x, but the response is a threshold, so the band is wide). The trajectory is the read that matters: C 1.6 sat on vanilla's path to 1890 (1.07x) and then compounded (1.12 / 1.27 / 1.59x at 1900 / 1910 / 1920); C 1.9 should hold 0.9-1.15x through 1920 if the loop's gain is below one at this slope. The early dip: 1860 at 0.90-1.0x (C 1.6 0.98x, C 2.2 ~0.92x). Failure modes: above 1.25x - the explosive regime reaches C 1.9 (next: C 2.05); a run above 1.3x at 1936 STOPS the config (the run-level stop, 2+1 batches only); below 0.75x - the frontier is still too scarce (next: C 1.75).",
+  "workers": "productive workers per capita 0.60-0.80x vanilla at 1935 (C 1.6 0.83-0.91x, rising again after 1910 as the runaway pulled labour in; C 2.2 0.56x); peasants per capita ABOVE vanilla's 7.5% at 1935 in most majors",
+  "obsolescence": "rung-0 staffing 30-50% at 1935 (C 2.2 57%, F110 18%; C 1.6 to be read at its endpoint), the era-0 staffed-level count FALLING 1900->1935, stale payback over 30 y; below-best 30-38%",
+  "capital_prices": "pools 0.2-0.5 of a year's world GDP at 1935 (C 1.6 0.30 at 1920 and climbing, C 2.2 0.26); the tiered goods' British prices 0.7-0.9x vanilla's; tiered levels 8,000-20,000",
+  "perf": "row P total within +10% of vanilla's median play time (C 1.6 run 1: two CTDs at 1900.5 and 1901.6, resumed; A 1.9 +9-12% on a bigger world)"
+ },
+ "_alignment": "THE 2+1 RULE (user-ruled 2026-09-14, F114): after run 2, `node tools/testbed/ledger/alignment_check.mjs --arm <session>:canon-c19-in12` - two criteria at 1935 vs the vanilla per-run median, five bands each, a pair fails an axis only in different bands AND >= 0.15 (GDP) / >= 0.10 (workers) apart. DIVERGENT => one more run of this config as its own one-run schedule, the reading the median of three. No obsolescence criterion; rung-0 staffing / payback / below-best are verdict flags. PLUS THE RUN-LEVEL STOP (user-ruled 2026-09-14 afternoon, 2+1 batches only): any run that ends above x1.3 of vanilla's 1936 GDP (the eighteen-run median at the 1936.1.1 endpoint, GBP 4,544M) is the config's LAST run - be it run 1, 2 or 3 - enforced between runs by the scratchpad stop_watch.mjs (drops tools/testbed/STOP after the offending run's 1936 summary lands; the next run is an 1836 stub, L17-excluded). Never mid-run.",
+ "_comparison": "vanilla n=18 (20260821_131149 + 20260823_113218) for every ratio; canon-c16-in12 (batch 1) and canon-je24-a22-in12 (F113) bracket the slope; canon-flat-in12 (F110) and canon-flat-in12-a19 the flat-cost end.",
+ "_watch": [
+  "every run ~5 min in: mod marker, version, this run's error window by position, clock (batch_heartbeat.sh at each wake); arm scratchpad/stop_watch.mjs on the session through launch_detached.ps1 -Hidden",
+  "first run: first_run_decomp at 1900/1935, rung margins by era at 1840/1900/1935 (scratchpad rung_margins.mjs), run_vs_vanilla.mjs (the decade trajectory against the cached vanilla medians), world_labour.mjs, queue_mix; the 1860 dip",
+  "post-run: alignment_check.mjs (it prints the stop verdict too), preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS, the ledger (one configuration per report)"
+ ],
+ "_cost": "1 x 1836->1936 ~ 2h30 (run 1 of the session took 152 min); the tie-breaker, if the pair diverges, is a further one-run schedule.",
+ "_caveats": [
+  "n=2 by design; the alignment tool decides on the third.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent; the five-minute smoke check on EVERY run; never interleave configs."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+ },
+ "setups": {
+  "canon-c19-in12": {
+   "kind": "config",
+   "config": "config/mod_config.canon-c19-in12.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "canon-c19-in12",
+   "until": "1936.1.1"
+  }
+ ]
+}
