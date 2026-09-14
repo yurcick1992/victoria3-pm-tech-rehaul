@@ -1,0 +1,80 @@
+{
+ "schedule_version": 1,
+ "label": "canon-c19-in13-n2",
+ "_why": "THE COST-SLOPE SWEEP, BATCH 3 - THE x1.3 LIFT AT THE FOUND SLOPE (the plan's last step: 'then the x1.3 lift at the found C'). Batch 2, canon-c19-in12 (session 20260914_173832), landed in the GDP band in its first run: 1.04 / 0.97 / 0.96 / 0.93 / 0.84 / 0.85 / 0.75 / 0.86 / 0.91 / 1.04 / 1.09x vanilla's median at 1840..1935 (1.11x at 1936) - a dip to 0.75x at 1900 while the frontier was dear, then realignment by the 1930s - with productive workers per capita 0.65x (in the target band), GDP per productive worker 1.61x, rung 0 at 45% staffed and a 22% margin against the frontier's 44-48% (the first book whose margins are NOT flat across the eras), tiered levels half of vanilla's count, peasants ABOVE vanilla's share in most majors, pools 0.64 of GDP. So C 1.9 is the slope, and this book raises rung 0's input value from x1.2 to x1.3 on it (canon-c19-in13 = canon-c19-in12 with --in0 1.3; the ladder anchored on the lifted rung 0, so every rung's input value rises by 1.3/1.2) - the user's original lean (canon-flat-in13, 2026-09-10), to push rung 0's break-even output price up and make it die rather than thin. Rung 0's textile target_be reads 103 (marginally loss-making at base), as flat-in13's did.",
+ "_arms": {
+  "canon-c19-in13": "{kind: config, config: config/mod_config.canon-c19-in13.json} - generated 2026-09-14 19:50 by make_ab_config --in0 1.3 --cost-ratio 1.9 (its _ab.command holds the line); dry-run built clean the same evening."
+ },
+ "_delta": "Against canon-c19-in12 (batch 2): the era-0 input lift x1.3 in place of x1.2 with the ladder anchored on it - one lever (every rung's input value x1.083). Against canon-flat-in13 (never run): the cost slope 1.9^era in place of flat, A 2.2 kept.",
+ "_predictions": {
+  "gdp": "world GDP 0.85-1.15x the vanilla eighteen-run median at 1935 (point ~1.0x: dearer inputs on every rung trim the loop's gain a little; C 1.9 at x1.2 read 1.09x). The dip: 1900 at 0.65-0.85x (C 1.9 at x1.2: 0.75x), 1860 at 0.88-1.0x (0.96x). Failure modes: below 0.75x - the lift starves the early economy (then the lift is the wrong lever at this slope); above 1.3x at 1936 STOPS the config (the run-level stop).",
+  "workers": "productive workers per capita 0.55-0.72x vanilla at 1935 (C 1.9 at x1.2: 0.65x); peasants per capita ABOVE vanilla's share in most majors (at x1.2: USA 13.9% vs 7.6%, Russia 17.9% vs 10.5%, France 12.0% vs 10.3%)",
+  "obsolescence": "rung-0 staffing 25-45% at 1935 (at x1.2: 45%), its margin below 20% against the frontier's 40%+ (at x1.2: 22% vs 44-48%), the era-0 staffed-level count FALLING 1900->1935, stale payback over 40 y; below-best 25-35%",
+  "capital_prices": "pools 0.4-0.8 of a year's world GDP (at x1.2: 0.64 - above the earlier 0.2-0.5 prediction); tiered levels 8,000-14,000 (at x1.2: 10,633; vanilla 21,971); the tiered goods' British prices 0.7-0.95x vanilla's",
+  "perf": "row P total within +10% of vanilla's median play time (C 1.9 run 1: 152 min, 0.92x the vanilla median, no crash)"
+ },
+ "_alignment": "THE 2+1 RULE (user-ruled 2026-09-14, F114): after run 2, `node tools/testbed/ledger/alignment_check.mjs --arm <session>:canon-c19-in13` - two criteria at 1935 vs the vanilla per-run median, five bands each, a pair fails an axis only in different bands AND >= 0.15 (GDP) / >= 0.10 (workers) apart. DIVERGENT => one more run of this config as its own one-run schedule, the reading the median of three. No obsolescence criterion; rung-0 staffing / payback / below-best are verdict flags. PLUS THE RUN-LEVEL STOP (user-ruled 2026-09-14 afternoon, 2+1 batches only): any run that ends above x1.3 of vanilla's 1936 GDP (the eighteen-run median at the 1936.1.1 endpoint, GBP 4,544M) is the config's LAST run - be it run 1, 2 or 3 - enforced between runs by the scratchpad stop_watch.mjs (drops tools/testbed/STOP after the offending run's 1936 summary lands; the next run is an 1836 stub, L17-excluded). Never mid-run.",
+ "_comparison": "vanilla n=18 (20260821_131149 + 20260823_113218) for every ratio; canon-c19-in12 (batch 2) is the one-lever baseline; canon-c16-in12 (F116) and canon-je24-a22-in12 (F113) bracket the slope.",
+ "_watch": [
+  "every run ~5 min in: mod marker, version, this run's error window by position, clock (batch_heartbeat.sh at each wake); arm scratchpad/stop_watch.mjs on the session through launch_detached.ps1 -Hidden",
+  "first run: first_run_decomp at 1900/1935, rung margins by era at 1840/1900/1935 (scratchpad rung_margins.mjs), run_vs_vanilla.mjs (the decade trajectory against the cached vanilla medians), world_labour.mjs, queue_mix; the 1860 dip",
+  "post-run: alignment_check.mjs (it prints the stop verdict too), preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS, the ledger (one configuration per report)"
+ ],
+ "_cost": "2 x 1836->1936 ~ 2 x 2h30 ~ 5 h, plus a third run of the same on divergence; a run above 1.3x at 1936 ends the config early.",
+ "_caveats": [
+  "n=2 by design; the alignment tool decides on the third.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent; the five-minute smoke check on EVERY run; never interleave configs."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+ },
+ "setups": {
+  "canon-c19-in13": {
+   "kind": "config",
+   "config": "config/mod_config.canon-c19-in13.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "canon-c19-in13",
+   "until": "1936.1.1"
+  },
+  {
+   "setup": "canon-c19-in13",
+   "until": "1936.1.1"
+  }
+ ]
+}

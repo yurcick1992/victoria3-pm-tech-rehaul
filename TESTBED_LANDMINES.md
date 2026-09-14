@@ -1682,3 +1682,29 @@ ruled adjustments — fertilizer, explosives, motor — and every entry is valid
 `_ab.keyed_by: 'era'` + `_ab.command`; `convert_history.ps1` resolves a start rule by `era` and throws on a `tier` (position) rule on a
 four-rung book; `extract_start.ps1` labels the baseline by era; `emit_research_events.mjs` converts a rule-D technology's game era to a
 narrative era before reading `thresholds_by_era`.
+
+## L32 — A CTD DURING THE AUTOSAVE WRITE LEAVES THE CONTINUE POINTER AIMED AT A SAVE THAT DOES NOT EXIST; THE STEP-BACK LADDER IS INERT AGAINST IT (found 2026-09-14, run 2 of 20260914_173832_canon-c19-in12-n2)
+
+**What fails silently.** The engine resumes (`-continuelastsave`) by loading the save whose TITLE its own pointer names —
+`Documents\Paradox Interactive\Victoria 3\continue_game.json`, rewritten at every completed save — NOT the newest file in the save
+folder. PROVED 2026-09-14 23:44 with `tools/testbed/probe_resume.ps1`: (P0) with `autosave.v3` absent and four intact newer slots
+(`autosave_1..4.v3`, 48–50 MB) beside it, the engine logged `Could not load save game [autosave]. Going to main menu.` and `-handsoff`
+began a fresh 1836 game; (P1) a save from a DIFFERENT campaign (the void run's archived 1857 autosave) copied in as `autosave.v3` under
+the same pointer (whose `date` named the other campaign) LOADED and ticked at 1857.1.1 within 28 s. So a crash that lands during the
+autosave write — the 1858.1.1 crash of the run above: the 1857 save had just been rotated into `autosave_1.v3` and the 1858
+`autosave.v3` never completed — leaves the pointer aimed at a file that is absent (or truncated), and EVERY resume fails identically:
+seven launches in 3.5 min, the observer's ladder quarantining the intact 1857 and 1856 saves in between to no effect, then the run
+abandoned as `partial(1836.1.1)`. Nothing errors on our side: the observer's log reads like a corrupt save set, and the intact saves
+sit in the run folder as "evidence" of a truncation that never happened.
+
+**Damage.** A usable run lost (2.5 h of game time) and, with the `-loadsave` flag rejected by the exe, no way for the old ladder to
+recover it. The premise the ladder rested on ("the engine always takes the newest file", MODDING_NOTES, superseded) was wrong.
+
+**Fix (the deterministic resume feeder, run_observer.ps1, 2026-09-14/15 — HANDOVER "THE RESUME FIX"):** on a crash, quarantine the
+whole autosave set into the run folder and feed ONE original member per attempt, newest first, as a COPY under the pointer's own title;
+a re-crash within `-ResumeWindowYears` (5) of the process's first crash feeds the next-older ORIGINAL (the engine's new saves are set
+aside, never fed); beyond the window a new process opens from the engine's current slots; the set exhausted → abandon.
+
+**Detector `Test-LmL32`** (`preflight.ps1 -Session`): any run whose `logs_live/debug.log` carries `Could not load save game [` →
+FAIL naming the run and the count; after the feeder, a `resume feed` line in run.log beside it for the same attempt turns it into a
+WARN (the feeder handled it). Proven on run002 of 20260914_173832 (FAIL) and on the r2 session (PASS).

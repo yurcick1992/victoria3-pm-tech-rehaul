@@ -402,7 +402,11 @@ progress from `sessions\<stamp>\session.log` instead of capturing stdio. The obs
 startup `WARN` when it has no console; before that (pre-2026-07-31) the two cases were
 indistinguishable in the log.
 
-**Resuming is `-continuelastsave`, and it needs a guard.** ⚠ `-continuelastsave` loads the newest save
+**Resuming is `-continuelastsave`, and it needs a guard.** ⚠⚠ **CORRECTED 2026-09-14 (landmine L32, probed): `-continuelastsave`
+loads the save whose TITLE `continue_game.json` names — the engine's own pointer, rewritten at every completed save — NOT the newest
+file.** With the pointer's target absent it logs `Could not load save game [<title>]. Going to main menu.` whatever else is in the
+folder (P0), and any `.v3` copied in under that title loads, even from another campaign and under a pointer whose `date` disagrees
+(P1: a 1857 save loaded in 28 s). The remainder of this paragraph is the pre-L32 reading, kept for the record: `-continuelastsave` loads the newest save
 **on the machine**, not "this run's last save". Measured failure: a resume jumped *forward* from 1836.8 to
 1837.1 because a previous test run's autosave was newer — silently splicing a foreign timeline in and
 skipping a dump date. The harness therefore refuses to resume unless the newest `*.v3` in `save games\` was

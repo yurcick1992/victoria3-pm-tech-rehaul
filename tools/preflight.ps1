@@ -938,6 +938,40 @@ console.log(hits);
     }
 }
 
+function Test-LmL32 {
+    <#
+      L32 - A CTD DURING THE AUTOSAVE WRITE LEAVES THE CONTINUE POINTER AIMED AT A SAVE THAT DOES NOT EXIST.
+
+      The engine resumes by loading the save whose TITLE continue_game.json names (probed 2026-09-14, probe_resume.ps1), not
+      the newest file; a crash that lands during the autosave write leaves that title pointing at a file that never completed,
+      and EVERY resume then logs `Could not load save game [<title>]. Going to main menu.` and begins a fresh 1836 game. Run 2 of
+      20260914_173832_canon-c19-in12-n2 lost a whole campaign that way while the intact 1857/1856 saves sat beside it. Nothing
+      fails on our side: the observer's log reads like a corrupt save set. The observer's deterministic feeder (one quarantined
+      original per attempt, copied under the pointer's title) is the fix; this entry is the ARTIFACT-side check.
+      FAIL = a run whose debug.log mirror carries the engine's line and whose run.log shows no `resume feed` for it (the old
+      ladder, or the feeder not running); WARN = the line is present but the feeder fed a member after it (handled); PASS = no
+      such line in any run.
+    #>
+    if (-not $Session) { Add-Result 'L32' 'a resume that could not load the continue pointer''s target' 'N/A' 'no -Session given (this entry is post-run)'; return }
+    if (-not (Test-Path $Session)) { Add-Result 'L32' 'a resume that could not load the continue pointer''s target' 'FAIL' "no such session: $Session"; return }
+    $fails = @(); $warns = @(); $runs = 0
+    foreach ($r in (Get-ChildItem $Session -Directory | Where-Object { $_.Name -match '^run\d+_' })) {
+        $runs++
+        $dbg = Join-Path $r.FullName 'logs_live\debug.log'
+        if (-not (Test-Path $dbg)) { continue }
+        $n = @(Select-String -LiteralPath $dbg -Pattern 'Could not load save game \[' -SimpleMatch:$false).Count
+        if ($n -eq 0) { continue }
+        $runLog = Join-Path $r.FullName 'run.log'
+        $fed = 0
+        if (Test-Path $runLog) { $fed = @(Select-String -LiteralPath $runLog -Pattern 'resume feed \d+/\d+').Count }
+        if ($fed -gt 0) { $warns += "$($r.Name): $n 'could not load' line(s), $fed feed(s) by the feeder" }
+        else { $fails += "$($r.Name): $n 'could not load save game' line(s) and no resume feed - the pointer's target was missing and nothing restored it" }
+    }
+    if ($fails.Count) { Add-Result 'L32' 'a resume that could not load the continue pointer''s target' 'FAIL' ($fails -join '; ') }
+    elseif ($warns.Count) { Add-Result 'L32' 'a resume that could not load the continue pointer''s target' 'WARN' ($warns -join '; ') }
+    else { Add-Result 'L32' 'a resume that could not load the continue pointer''s target' 'PASS' "$runs run folder(s), no 'Could not load save game' line in any debug.log mirror" }
+}
+
 function Test-LmL26 {
     <#
       L26 - ONE RUN FOLDER HOLDING TWO CAMPAIGNS.
@@ -1217,6 +1251,7 @@ $CHECKS = @(
     # L26 is the SECOND post-run entry, same N/A-without--Session rule as L12.
     @{ Id = 'L26'; Artifact = $false; Fn = { Test-LmL26 } },
     @{ Id = 'L28'; Artifact = $false; Fn = { Test-LmL28 } },
+    @{ Id = 'L32'; Artifact = $false; Fn = { Test-LmL32 } },
     @{ Id = 'L14'; Artifact = $true;  Fn = { Test-LmL14 } },
     @{ Id = 'L15'; Artifact = $true;  Fn = { Test-LmL15 } },
     @{ Id = 'L17'; Artifact = $false; Fn = { Test-LmL17 } },

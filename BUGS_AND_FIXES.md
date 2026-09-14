@@ -2556,3 +2556,54 @@ continuation relaunched: it landed at 1935.1.12 and replayed the 1935.1.1 dump f
 **Also changed for the continuation.** The mirror is opened in APPEND mode on a `-ContinueFromSave` launch as well as
 on a crash resume (`$app = ($attempt -gt 1 -or $ContinueFromSave)`), so a run finished by hand stays one run in one
 file: the old lines first, the new ones after, and the V3TB harvest's last-wins rule keeps the continuation's dump.
+
+## 2026-09-14/15 — a CTD during the autosave write defeated every resume: the engine loads the continue pointer's TITLE, not the newest file (landmine L32; the deterministic resume feeder)
+
+**Symptom.** Run 2 of `20260914_173832_canon-c19-in12-n2` crashed at 1858.1.1 (an access violation at the yearly autosave moment).
+The observer resumed seven times in 3.5 minutes; every attempt logged the engine's `Could not load save game [autosave]. Going to
+main menu.` ~20 s into boot and `-handsoff` began a fresh 1836 game, which the landing guard killed. The step-back ladder quarantined
+the 1857 (`autosave_1.v3`, byte-identical to its archived copy) and 1856 saves in between, to no effect, and abandoned the run
+after "two different autosaves" — with three intact saves on disk. A 2.5-hour campaign lost; a one-run replacement had to be launched.
+
+**Cause.** The ladder rested on "`-continuelastsave` loads the newest save on the machine" (MODDING_NOTES, 2026-08-06). Wrong. Probed
+with `tools/testbed/probe_resume.ps1` on 2026-09-14 23:44: (P0) with `autosave.v3` absent and four intact newer slots beside it the
+engine asked for `[autosave]` and failed; (P1) the void run's archived 1857 save copied in as `autosave.v3` — under the r2 run's
+pointer, whose `date` named a different campaign — loaded and ticked at 1857.1.1 in 28 s. The engine loads the save whose TITLE its
+own `continue_game.json` names, and the pointer is rewritten only at a COMPLETED save: a crash during the write leaves it aimed at a
+file that never existed (the 1857 save had just been rotated into `autosave_1.v3`; the 1858 `autosave.v3` never landed). Removing
+older files cannot change what the engine asks for. The same afternoon's two CTDs in the C 1.6 run resumed first time because they
+hit mid-year, when `autosave.v3` existed.
+
+**Fix (user-designed, `run_observer.ps1`).** THE DETERMINISTIC RESUME FEEDER: on a crash a PROCESS opens — every rotating autosave
+slot the run owns is moved into `<run>\resume_set_<n>\` and listed newest-first, frozen; each attempt COPIES one member under the
+pointer's title (`autosave.v3`) and launches; whatever the engine writes meanwhile is moved into `<run>\resume_attempts\attempt<k>\`
+and never fed. A fresh-1836 landing (the member did not load) and a crash after loading both consume the member. A re-crash within
+`-ResumeWindowYears` (5) of the process's first crash feeds the next-older ORIGINAL — a crash that soon is presumed the same cause
+(user, 2026-09-14: "stepping back more could be a better idea than trying to proceed from 1864 or 1863"); beyond the window a new
+process opens from the engine's current slots and the old one is trimmed to its newest member. The set exhausted → `resume set
+exhausted`. `-MaxResumes` (5) caps attempts per process; `-MaxStepBack` is accepted and ignored; meta.json carries
+`resume_processes`. The in-loop landing guard now kills only a FRESH 1836 game (a fed older member lands years behind the crash by
+design; the old "> 2 years behind" test would have killed it). Detector: `preflight.ps1 -Session` L32 (FAIL on the void run, PASS on
+the replacement — proven).
+
+**Traps met on the way.** A regex written through `node -e` inside a bash double-quoted string lost its backslashes (`[ABORTED]`
+became a character class — the stop watcher quit on every log); `File.ReadAllLines` on a log the game holds open throws (open with
+`FileShare.ReadWrite`); `Start-Process -ArgumentList` quotes nothing, so a label with spaces killed the observer at parameter binding
+(the archiver trap, again); `build.ps1 -SaveTo` emits no telemetry without `-TelemetryOn`, and the observer refuses such a mod.
+
+**Proof 1 (`sessions/20260914_feeder_proof2`, the probe mod to 1847 with yearly saves, hand kills at 1839.10 and 1845.7):** the kill at
+1839.10 opened process 1 at 1839.11.5 with {1839, 1838, 1837} quarantined into `resume_set_1`; feed 1/3 placed the 1839 save as
+`autosave.v3`; the driver then killed the game four seconds later on a stale date (its own bug), so the observer classified that
+member as "did not load" (no tick) and fed 2/3 = the ORIGINAL 1838 with the fed copy set aside into `resume_attempts\` — the game
+loaded 1838 and played to 1845.7, where the second kill, 5.9 years past the process's crash, opened process 2 from the engine's five
+slots {1845…1841} (process 1 closed: kept its newest member, removed two siblings), fed 1/5 = the 1845 save, and the run reached
+1847.1.1 (`meta.json`: 4 attempts, 3 resumes, `resume_processes` with both sets, cursors and outcomes). A corner the driver's bug
+exposed and the feeder handles deterministically: an attempt that dies before its first tick (a crash during load) is consumed as
+"load failed" and the next member is fed.
+
+**Proof 2 (`sessions/20260914_feeder_proof3`, kills only after a real landing):** the kill at 1839.6 opened process 1 at 1839.7.14
+with {1839, 1838, 1837}; feed 1/3 = the 1839 save loaded and ticked into 1840; the kill at 1840.5, within the window, logged
+`resume from autosave.v3 loaded and the game died at 1840.5.29 (within 5 years of 1839.7.14) - feeding the next-older original`
+and fed 2/3 = the ORIGINAL 1838, with the fed 1839 copy and the engine's new 1840 autosave set aside into `resume_attempts\attempt3\`;
+the game loaded 1838 and reached 1842.1.1 (3 attempts, 2 resumes). The user's semi-happy path, reproduced. After the proofs the
+observer also closes a process still open at the run's end (trim to its newest member), so "done and dusted" holds for every process.

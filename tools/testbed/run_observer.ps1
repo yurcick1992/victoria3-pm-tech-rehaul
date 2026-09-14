@@ -131,12 +131,13 @@ param(
     # ⚠ Each retry replays up to one autosave interval, so `resumes` in meta.json is still worth
     # watching: it is now a stability signal rather than a budget, and a large value means the run
     # spent real time re-treading ground.
-    [int]      $MaxResumes = 3,
+    [int]      $MaxResumes = 5,   # L32: attempts per resume process (one member each); was the per-save retry budget
     # How far the resume ladder may walk BACK through the autosave ring when a save is unusable — either
     # it will not load, or it loads and the game dies on it. 2 covers a poisoned gamestate that spans one
     # autosave interval; walking further starts throwing away real progress to chase a run that is very
     # probably lost. 0 disables stepping back entirely (the pre-2026-08-14 behaviour for the stuck case).
     [int]      $MaxStepBack = 2,
+    [int]      $ResumeWindowYears = 5,   # L32 feeder: a re-crash within this many in-game years of a process's first crash feeds the next-older ORIGINAL
     # On an abnormal exit with NO crash artifact, wait this long for a keypress before deciding
     # it was a crash rather than you. Any key = you did it = stop the batch.
     [int]      $StopGraceSeconds = 60,
@@ -693,6 +694,85 @@ function Test-OwnSaveIsNewest {
     return $newest
 }
 
+# ⭐⭐ THE DETERMINISTIC RESUME FEEDER (user-designed 2026-09-14, landmine L32; HANDOVER "THE RESUME FIX", FINDINGS F117).
+# The engine resumes by loading the save whose TITLE continue_game.json names - its own pointer, rewritten at every completed
+# save - NOT the newest file (probed 2026-09-14: with autosave.v3 absent and four intact slots beside it the engine logs
+# "Could not load save game [autosave]" and -handsoff begins a fresh 1836 game; a save from another campaign copied in as
+# autosave.v3 loads in 28 s). A CTD during the autosave write therefore leaves a pointer no step-back can satisfy. So: on a crash a
+# PROCESS opens - the whole autosave set is quarantined into <run>\resume_set_<n>\ and frozen, newest first - and each attempt
+# FEEDS one member, newest first, as a COPY under the pointer's title; whatever the engine writes meanwhile is set aside into
+# <run>\resume_attempts\attempt<k>\ and never fed. A re-crash within -ResumeWindowYears of the process's first crash feeds the
+# next-older ORIGINAL (a crash that soon is presumed the same cause); beyond the window a new process opens from the engine's
+# current slots and the old one is trimmed to its newest member. The set exhausted -> the run is abandoned.
+function Get-PointerTitle {
+    $cg = Join-Path $Doc "continue_game.json"
+    try { if (Test-Path -LiteralPath $cg) { $t = (Get-Content -LiteralPath $cg -Raw | ConvertFrom-Json).title; if ($t) { return [string]$t } } } catch { }
+    return "autosave"
+}
+function Get-ResumeSlots {
+    # the engine's rotating autosave slots this run owns: never the exit save, never an older campaign's file
+    param([datetime]$RunStart)
+    return @(Get-ChildItem $SaveDir -Filter 'autosave*.v3' -ErrorAction SilentlyContinue |
+             Where-Object { $_.Name -ne 'autosave_exit.v3' -and $_.LastWriteTime -ge $RunStart } |
+             Sort-Object LastWriteTime -Descending)
+}
+function Open-ResumeProcess {
+    param([string]$RunDir, [datetime]$RunStart, [string]$CrashTick)
+    $n = @($script:ResumeProcesses).Count + 1
+    $dir = Join-Path $RunDir ("resume_set_" + $n)
+    $null = New-Item -ItemType Directory -Force -Path $dir
+    $members = @()
+    foreach ($f in (Get-ResumeSlots $RunStart)) {
+        $dest = Join-Path $dir $f.Name
+        Move-Item -LiteralPath $f.FullName -Destination $dest -Force
+        $members += [ordered]@{ name = $f.Name; bytes = $f.Length; mtime = $f.LastWriteTime.ToString("s"); path = $dest }
+    }
+    $p = [ordered]@{ n = $n; crash_tick = $CrashTick; opened = (Get-Date).ToString("s"); dir = $dir; set = $members
+                     cursor = 0; attempts = @(); kept = ""; closed = "" }
+    $script:ResumeProcess = $p
+    $script:ResumeProcesses = @($script:ResumeProcesses) + @($p)
+    $names = ($members | ForEach-Object { "{0} {1:N0}B" -f $_.name, $_.bytes }) -join ', '
+    Write-Log "resume process $n opened at $CrashTick - quarantined $($members.Count) autosave(s) into resume_set_$n [$names]" "WARN"
+    return $p
+}
+function Close-ResumeProcess {
+    param([string]$Why)
+    $p = $script:ResumeProcess
+    if (-not $p) { return }
+    # trim to the ONE member closest to the crash (the newest - the mid-write evidence); the rest are byte-identical to archived saves
+    $removed = 0
+    if ($p.set.Count -gt 0) {
+        $p.kept = $p.set[0].name
+        for ($i = 1; $i -lt $p.set.Count; $i++) { Remove-Item -LiteralPath $p.set[$i].path -Force -ErrorAction SilentlyContinue; $removed++ }
+        $script:QuarantinedSaves += @{ name = $p.set[0].name; bytes = $p.set[0].bytes; kept_at = $p.set[0].path
+                                       reason = "resume process $($p.n) at $($p.crash_tick): $Why" }
+    }
+    $p.closed = $Why
+    Write-Log "resume process $($p.n) closed ($Why) - kept $($p.kept), removed $removed sibling(s)"
+    $script:ResumeProcess = $null
+}
+function Invoke-ResumeFeed {
+    param([string]$RunDir, [datetime]$RunStart, [int]$Attempt)
+    $p = $script:ResumeProcess
+    $m = $p.set[$p.cursor]
+    # set aside whatever the engine created since the process opened (the previous fed copy, new autosaves) - never fed
+    $stray = @(Get-ResumeSlots $RunStart)
+    if ($stray.Count -gt 0) {
+        $aside = Join-Path $RunDir ("resume_attempts\attempt" + $Attempt)
+        $null = New-Item -ItemType Directory -Force -Path $aside
+        foreach ($f in $stray) { Move-Item -LiteralPath $f.FullName -Destination (Join-Path $aside $f.Name) -Force }
+    }
+    $title = Get-PointerTitle
+    $target = Join-Path $SaveDir ($title + ".v3")
+    Copy-Item -LiteralPath $m.path -Destination $target -Force
+    (Get-Item -LiteralPath $target).LastWriteTime = Get-Date    # Test-OwnSaveIsNewest reads mtime: the fed copy is this run's newest
+    Write-Log ("resume feed {0}/{1} (process {2}): {3} ({4:N0} B, saved {5}) as {6}.v3; {7} engine save(s) set aside" -f `
+        ($p.cursor + 1), $p.set.Count, $p.n, $m.name, $m.bytes, $m.mtime, $title, $stray.Count) "WARN"
+    $p.attempts = @($p.attempts) + @([ordered]@{ k = $Attempt; member = $m.name; fed_as = ($title + ".v3")
+                                                 set_aside = @($stray | ForEach-Object { $_.Name }); landed = ""; ended = ""; outcome = "" })
+    return $m
+}
+
 function ConvertTo-DateNum {
     # "1886.1.1" / "1886.1.1.6" -> 18860101, for ordering. Returns 0 if unparseable.
     param([string]$D)
@@ -797,7 +877,8 @@ try {
         # ⚠ $steppedBack is a COUNT now, not a bool: a poisoned gamestate can survive more than one
         # autosave, so the ladder may need to walk back further than a single step. Bounded by
         # -MaxStepBack so it can never walk the whole ring.
-        $freshStarts = 0; $stuckTries = 0; $steppedBack = 0
+        $freshStarts = 0; $stuckTries = 0; $steppedBack = 0   # (the pre-L32 ladders' counters, unused since the feeder)
+        $script:ResumeProcess = $null; $script:ResumeProcesses = @()
         $script:QuarantinedSaves = @()
         $script:PendingEvidence = $null
 
@@ -819,7 +900,11 @@ try {
         # The folder is invisible to harvest_saves.ps1 and to landmine L12, which both glob saves\ only.
         # It exists because the 1.13.10 sway recursion (F56) made poisoned-but-loadable saves the key
         # evidence, and a run that RECOVERS after re-crashing is exactly the case that used to lose them.
-        if ($attempt -gt 1 -or $ContinueFromSave) {
+        if ($attempt -gt 1 -and $script:ResumeProcess) {
+            # THE FEED (L32): one original member per attempt, newest first, as a copy under the pointer's title; see the helpers
+            $null = Invoke-ResumeFeed $runDir $runStart $attempt
+        } elseif ($ContinueFromSave -and $attempt -eq 1) {
+            # a hand continuation loads whatever the pointer names; keep the F56 evidence copy of it
             $toLoad = Get-ChildItem $SaveDir -Filter *.v3 -ErrorAction SilentlyContinue |
                       Sort-Object LastWriteTime -Descending | Select-Object -First 1
             if ($toLoad) {
@@ -923,7 +1008,7 @@ try {
                         # ⚠ Deliberately NOT setting $timedOut/$abandoned here — those would break out
                         # of the resume ladder, which is the thing that must run.
                         if ($attempt -gt 1 -and $tickAtStart -and $firstTick -and
-                            ((ConvertTo-DateNum $tickAtStart) - (ConvertTo-DateNum $firstTick)) -gt 20000) {
+                            (ConvertTo-DateNum $firstTick) -lt 18370101 -and (ConvertTo-DateNum $tickAtStart) -ge 18370101) {   # L32: a FRESH 1836 game, not merely "behind" - a fed older member lands years behind by design
                             Write-Log "resume landed at $firstTick, far behind $tickAtStart - the save did not load; stopping the game NOW rather than replaying the campaign" "WARN"
                             Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
                             Start-Sleep -Seconds 3
@@ -1059,99 +1144,39 @@ try {
                 $abandoned = "resume loaded a save ahead of the run"
                 break
             }
-            if ($wanted - $landed -gt 20000) {   # >2 in-game years back = not our autosave
-                # THE LOAD FAILED and -handsoff began a fresh 1836 game (MODDING_NOTES verifies that a
-                # failed load does exactly this). The leading suspect is a CTD that landed DURING an
-                # autosave write, leaving a .v3 that exists, is newest, passes Test-OwnSaveIsNewest -
-                # and is truncated.
-                #
-                # ⭐ SO STEP BACK ONE SAVE RATHER THAN GIVING UP (user, 2026-08-06). Two attempts on the
-                # newest save first, because a one-off failure may be transient; then quarantine it so
-                # the previous autosave becomes the newest and -continuelastsave picks that up instead.
-                # ⚠ MOVING THE FILE IS THE ONLY WAY TO CHOOSE A SAVE. `-loadsave=<path>` is REJECTED by
-                # the exe ("Could not load save game ... Going to main menu.", MODDING_NOTES), so the
-                # save cannot be named - the engine always takes the newest. Quarantining is therefore
-                # the mechanism, and it has a second payoff: the suspect file is KEPT, so its size
-                # against its siblings is direct evidence for or against the truncation hypothesis.
-                $freshStarts++
-                if ($freshStarts -ge 2) {
-                    $bad = Test-OwnSaveIsNewest $runStart
-                    if ($bad -and $steppedBack -lt $MaxStepBack) {
-                        $sizes = @(Get-ChildItem $SaveDir -Filter *.v3 -ErrorAction SilentlyContinue |
-                                   Sort-Object LastWriteTime -Descending | Select-Object -First 4)
-                        $quarantine = Join-Path $runDir ("quarantined_" + $bad.Name)
-                        Move-Item -LiteralPath $bad.FullName -Destination $quarantine -Force
-                        $sizeNote = ($sizes | ForEach-Object { "{0}={1:N0}B" -f $_.Name, $_.Length }) -join ' '
-                        Write-Log "resume failed twice from $($bad.Name) - QUARANTINED it and stepping back one autosave" "WARN"
-                        Write-Log "  save sizes at quarantine: $sizeNote  (a much smaller newest = truncated by a mid-write crash)" "WARN"
-                        $script:QuarantinedSaves += @{ name = $bad.Name; bytes = $bad.Length; kept_at = $quarantine; sizes = $sizeNote }
-                        $steppedBack++
-                        $freshStarts = 0        # the next save gets its own two tries
-                        # count it: this ladder `continue`s past the normal $resumes++ near the bottom
-                        # of the loop, and an uncounted retry would both dodge -MaxResumes and make
-                        # meta.json under-report how hard the run fought to stay alive.
-                        $resumes++
-                        $firstTick = ""; $lastTick = $tickAtStart
-                        continue      # retry, now against the previous autosave
+            $P = $script:ResumeProcess
+            if ($P) {
+                # ⭐⭐ THE PROCESS RULE (L32, user-designed 2026-09-14). A fresh-1836 landing = the member did not load; a crash after
+                # loading = the member loaded and died. Either way the member is consumed. Within -ResumeWindowYears of the process's
+                # first crash the NEXT-OLDER ORIGINAL is fed (a crash that soon is presumed the same cause - never the engine's new
+                # saves, which were set aside at the feed); beyond the window a NEW process opens from the engine's current slots.
+                $freshStart = ($landed -lt 18370101 -and $wanted -ge 18370101)
+                $att = $P.attempts[$P.attempts.Count - 1]
+                $att.landed = $firstTick; $att.ended = $lastTick
+                $att.outcome = $(if ($freshStart) { "load failed (fresh 1836)" } elseif ($crashDirs.Count -gt 0) { "loaded, crashed" } else { "loaded, exited" })
+                $member = $P.set[$P.cursor].name
+                $sinceNum = (ConvertTo-DateNum $lastTick) - (ConvertTo-DateNum $P.crash_tick)
+                if (-not $freshStart -and $sinceNum -gt ($ResumeWindowYears * 10000)) {
+                    Write-Log "resume from $member loaded and the game died at $lastTick - more than $ResumeWindowYears years past process $($P.n)'s crash at $($P.crash_tick): a NEW process" "WARN"
+                    Close-ResumeProcess "superseded by a crash at $lastTick"
+                    $p = Open-ResumeProcess $runDir $runStart $lastTick
+                    if (@($p.set).Count -eq 0) { $abandoned = "resume set empty at $lastTick"; break }
+                } else {
+                    if ($freshStart) { Write-Log "resume landed at $firstTick, a fresh 1836 game - member $member did not load; feeding the next-older original" "WARN" }
+                    else { Write-Log "resume from $member loaded and the game died at $lastTick (within $ResumeWindowYears years of $($P.crash_tick)) - feeding the next-older original" "WARN" }
+                    $P.cursor = $P.cursor + 1
+                    if ($P.cursor -ge @($P.set).Count -or $P.cursor -ge $MaxResumes) {
+                        Write-Log "resume set exhausted ($(@($P.set).Count) member(s), cap $MaxResumes) - ending run $run" "ALERT"
+                        $abandoned = "resume set exhausted"
+                        break
                     }
-                    # Either there was nothing to quarantine, or we already stepped back once and the
-                    # save before it ALSO failed. Two different autosaves failing is not a mid-write
-                    # truncation - something broader is wrong. Stop rather than walking the whole ring.
-                    Write-Log "resume failed from two different autosaves - the save set looks unusable, ending run $run" "ALERT"
-                    $abandoned = "resume failed from two different autosaves"
-                    break
                 }
-                Write-Log "resume landed at $firstTick, far behind $tickAtStart - load failed (attempt $freshStarts of 2 on this save)" "WARN"
                 $resumes++
-                $firstTick = ""; $lastTick = $tickAtStart
+                $firstTick = ""
+                if ($freshStart) { $lastTick = $tickAtStart }
                 continue
             }
-            if ((ConvertTo-DateNum $lastTick) -le $wanted) {
-                # ⭐⭐ THE SAVE LOADS AND THE GAME DIES ON IT — a POISONED GAMESTATE, and until 2026-08-14
-                # this branch gave up on the spot while four untouched autosaves sat in the folder.
-                #
-                # The quarantine ladder below used to hang off the OTHER branch only (the load FAILED and
-                # -handsoff began a fresh 1836 game). That is the narrower fault: a save that will not
-                # load at all. This one — loads fine, then crashes without advancing — is at least as
-                # likely, and it cost TWO of four mod runs in the vanilla-vs-mod batch (run 4 abandoned
-                # at 1851, run 8 at 1845; all four vanilla runs recovered from their own crashes).
-                # ⚠ RUN 8 IS WHY THIS STEPS BACK RATHER THAN JUST RETRYING: it crashed three times in
-                # 25 minutes around 1845, advancing two in-game MONTHS between the first and second, so
-                # the crash reproduces from a save that loads perfectly. Retrying the same save is what
-                # cannot work here; going back past the poisoned state is the only move available.
-                # ⚠ Same mechanism as the other branch and for the same reason: `-loadsave=<path>` is
-                # REJECTED by the exe, so MOVING the newest save is the only way to choose an older one.
-                $stuckTries++
-                if ($stuckTries -ge 2) {
-                    $bad = Test-OwnSaveIsNewest $runStart
-                    if ($bad -and $steppedBack -lt $MaxStepBack) {
-                        $sizes = @(Get-ChildItem $SaveDir -Filter *.v3 -ErrorAction SilentlyContinue |
-                                   Sort-Object LastWriteTime -Descending | Select-Object -First 4)
-                        $quarantine = Join-Path $runDir ("quarantined_stuck_" + $bad.Name)
-                        Move-Item -LiteralPath $bad.FullName -Destination $quarantine -Force
-                        $sizeNote = ($sizes | ForEach-Object { "{0}={1:N0}B" -f $_.Name, $_.Length }) -join ' '
-                        Write-Log "resume loaded $($bad.Name) but the game died without advancing, twice - QUARANTINED it and stepping back one autosave (step $($steppedBack + 1) of $MaxStepBack)" "WARN"
-                        Write-Log "  save sizes at quarantine: $sizeNote" "WARN"
-                        $script:QuarantinedSaves += @{ name = $bad.Name; bytes = $bad.Length; kept_at = $quarantine; sizes = $sizeNote; reason = "loaded but would not tick" }
-                        $steppedBack++
-                        $resumes++          # count it: this ladder `continue`s past the normal $resumes++
-                        $stuckTries = 0     # the next save gets its own two tries
-                        $firstTick = ""; $lastTick = $tickAtStart
-                        continue
-                    }
-                    Write-Log "resume made no progress from $($steppedBack + 1) different autosave(s) - the run is stuck at $lastTick, ending run $run" "ALERT"
-                    $abandoned = "stuck: no progress from $($steppedBack + 1) autosave(s)"
-                    break
-                }
-                Write-Log "resume made no progress (still $lastTick) - retrying this save (attempt $stuckTries of 2)" "WARN"
-                $resumes++
-                $firstTick = ""; $lastTick = $tickAtStart
-                continue
-            }
-            # progress was made, so whatever poisoned the last save is behind us: reset the stuck counter
-            # or a run that crashes repeatedly at DIFFERENT points would accumulate its way into the
-            # ladder and start throwing away saves it is still making progress from.
-            $stuckTries = 0
+            # no process open (a -ContinueFromSave continuation's own first crash): fall through and open one below
         }
         # ⚠ THERE IS DELIBERATELY NO CAP ON TOTAL RESUMES. A run that keeps crashing at DIFFERENT points
         # is a run that keeps making progress, and cutting it off wastes everything it earned - that is
@@ -1187,21 +1212,15 @@ try {
             continue
         }
 
-        # ⭐ THE ONLY RESUME BUDGET THERE IS, and it is PER SAVE. A different save key means the run
-        # reached the next autosave since the last resume - real forward progress - so the counter
-        # resets and the run may keep recovering indefinitely. The same key means it crashed without
-        # getting past that save, and retrying it again would just loop.
-        $saveKey = $ownSave.LastWriteTime.ToString("s")
-        if ($saveKey -eq $lastResumeSave) {
-            $sameSaveTries++
-        } else {
-            if ($sameSaveTries -gt 1) { Write-Log "  progressed to a new autosave - per-save retry counter reset (was $sameSaveTries)" }
-            $sameSaveTries = 1; $lastResumeSave = $saveKey
-        }
-        if ($sameSaveTries -ge $MaxResumes) {
-            Write-Log "run ${run}: $MaxResumes crash(es) from the SAME autosave without progressing - permanent failure, moving to the next run" "ALERT"
-            $abandoned = "$MaxResumes crashes from the same save"
-            break
+        # ⭐⭐ THE FIRST CRASH OPENS A RESUME PROCESS (L32): the whole autosave set is quarantined and fed newest-first, one
+        # member per attempt. -MaxResumes caps the attempts per process (default 5 = the engine's slot count).
+        if (-not $script:ResumeProcess) {
+            $p = Open-ResumeProcess $runDir $runStart $lastTick
+            if (@($p.set).Count -eq 0) {
+                Write-Log "run ${run}: no autosave slot of this run to feed - ending run $run" "ALERT"
+                $abandoned = "resume set empty"
+                break
+            }
         }
 
         if ($crashDirs.Count -gt 0) {
@@ -1217,6 +1236,9 @@ try {
         }
         $resumes++
         }   # ---- end attempt loop ----
+
+        # L32: a process still open when the run ends is done and dusted - trim its set to the one member closest to its crash
+        if ($script:ResumeProcess) { Close-ResumeProcess ("run ended at " + $lastTick + $(if ($abandoned) { " (" + $abandoned + ")" } else { "" })) }
 
         $runEnd  = Get-Date
         $wallSec = [math]::Round(($runEnd - $runStart).TotalSeconds, 1)
@@ -1326,6 +1348,7 @@ try {
             # This is the EVIDENCE for the mid-write-truncation hypothesis: a quarantined file that is
             # much smaller than the autosaves around it confirms it; one the same size refutes it.
             quarantined_saves = $script:QuarantinedSaves
+            resume_processes = @($script:ResumeProcesses | ForEach-Object { $_ })   # L32: each process's frozen set, feeds and outcomes
             attempt_log = $attemptLog; autosave_interval = $AutosaveInterval
             mod_loaded = $modLoaded; mod_init_marker = $modInit
             dump_complete = $sawEnd; dumps_seen = @($dumpsSeen.Keys | Sort-Object); dump_date_ingame = $ingameDate
