@@ -11752,4 +11752,4 @@ n=1 for everything seed-dependent (the runaway's carriers â€” France, the USA â€
 
 **What it does NOT say.** Where between 1.6 and 2.2 the threshold sits (batch 2 tests 1.9); whether the frontier's price path in wage
 units moved (the ledger reads it); the below-best share; whether a second seed runs away later or not at all. Session `20260914_143137`,
-VERDICT.md there; config committed as `config/mod_config.canon-c16-in12.json` (`_ab.command`).
+VERDICT.md there; config committed as `config/mod_config.canon-c16-in12.json` (`_ab.command`). Ledger https://claude.ai/code/artifact/818b8375-4934-4d0f-be0d-6479b8a8b0b1 (one configuration per report).

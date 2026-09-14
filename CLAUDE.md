@@ -890,7 +890,7 @@ config/mod_config.canon-c16-in12.json ⭐ THE COST-SLOPE SWEEP, BOOK 1 (user-rul
                         1.98× at 1936 (£8,986M; France 4.1×, the USA 2.8×, Russia 2.3×, Britain 1.6×, Japan 0.5×); workers per capita 0.95× (0.83× at 1890, pulled
                         back up by the runaway), GDP per productive worker 1.92×, pools 0.69 of GDP, rung 0 36% staffed at 19% margin with its levels still
                         growing (1,889), tiered levels 21,913 (vanilla 21,971), two CTDs resumed. The slope 1.6 is on the flat-cost side of the threshold;
-                        the bisection goes UP to C 1.9. Un-ignored with its twin
+                        the bisection goes UP to C 1.9. Ledger https://claude.ai/code/artifact/818b8375-4934-4d0f-be0d-6479b8a8b0b1. Un-ignored with its twin
 config/mod_config.canon-c19-in12.json ⭐ THE COST-SLOPE SWEEP, BOOK 2 — THE BISECTION UP (pre-registered in book 1's schedule; drafted 2026-09-14 17:00):
                         canon-je24-a22-in12 with building_cost = anchor × 1.9^era (600 / 1,140 / 2,166 / 4,115; 800 / 1,520 / 2,888 / 5,487) — between
                         C 1.6 (book 1's first run sat on vanilla's GDP path to 1890 and then ran away: 1.12 / 1.27 / 1.59× at 1900 / 1910 / 1920) and
