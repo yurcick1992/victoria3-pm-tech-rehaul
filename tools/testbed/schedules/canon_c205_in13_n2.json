@@ -1,0 +1,80 @@
+{
+ "schedule_version": 1,
+ "label": "canon-c205-in13-n2",
+ "_why": "THE LOOP'S SECOND PICK (2026-09-15; the standing loop: report -> clock -> the best new config). The x1.3 lift at C 1.9 (canon-c19-in13, session 20260915_002935) removed the unlifted book's 1870-1900 dip and then ran away - 0.97 / 1.08 / 1.16 / 1.36x vanilla's median at 1880 / 1890 / 1900 / 1910 in its first run (the C 1.6 shape, earlier) - so the lift is a strong lever on the loop's gain in the MORE-GDP direction: making rung 0 loss-making pushes construction to the frontier sooner, and at C 1.9 the frontier's capital is cheap enough for that to compound. To kill rung 0 WITHOUT the runaway the lift needs a dearer frontier: this book keeps the x1.3 lift and moves the slope to 2.05 - between C 1.9 x1.3 (runaway) and C 2.2 x1.2 (F113: 0.65x, the frontier too scarce), where the lift's push should lift a stalling world toward the band while the dearer frontier stops it compounding. Everything else as canon-c19-in13 (A 2.2 / B 1.5, ai_value 3^era, divisor 0.000125, the defines, the 24-month bar). One lever against canon-c19-in13 (the slope). If it lands in the band with rung 0 dead, it is the canon candidate; if it stalls, the lift is not the lever for goal 3 at any slope and the found config stays canon-c19-in12.",
+ "_arms": {
+  "canon-c205-in13": "{kind: config, config: config/mod_config.canon-c205-in13.json} - generated 2026-09-15 02:40 by make_ab_config --in0 1.3 --cost-ratio 2.05 (its _ab.command holds the line); dry-run built clean."
+ },
+ "_delta": "Against canon-c19-in13 (the lift at C 1.9): the cost slope 2.05^era in place of 1.9^era - one lever. Against canon-je24-a22-in12 (F113, C 2.2 x1.2): the slope 2.05 and the lift x1.3 - two levers.",
+ "_predictions": {
+  "gdp": "world GDP 0.80-1.20x the vanilla eighteen-run median at 1935 (point ~1.0x). Trajectory: no early dip (the lift removed it at C 1.9: 0.97-0.99x to 1880), a 1900 reading of 0.90-1.15x, the 1910-1930 climb held below 1.25x by the dearer frontier. Failure modes: above 1.3x at 1936 STOPS the config (the lift dominates even at 2.05 -> next C 2.2 x1.3); below 0.8x - the frontier is too dear for the lift's push to fill (the C 2.2 stall persists -> the lift is not goal 3's lever).",
+  "workers": "productive workers per capita 0.55-0.75x vanilla at 1935 (C 1.9 x1.3: 0.81-0.84x through 1910; C 1.9 x1.2: 0.65-0.67x)",
+  "obsolescence": "rung-0 staffing 15-35% at 1935 with its margin below 15% (the lifted rung 0 is marginally loss-making at base: textile target_be 103) against the frontier's 40%+; the era-0 staffed-level count FALLING 1900->1935; below-best 20-30%",
+  "capital_prices": "pools 0.2-0.5 of a year's world GDP (C 1.9 x1.3 ran 0.20-0.24 through 1910 - at vanilla's level; C 1.9 x1.2 0.42-0.64); tiered levels 8,000-16,000",
+  "perf": "row P total within +10% of vanilla's median play time; no crash expected but the feeder now handles a mid-autosave CTD (L32)"
+ },
+ "_alignment": "THE 2+1 RULE (user-ruled 2026-09-14, F114): after run 2, `node tools/testbed/ledger/alignment_check.mjs --arm <session>:canon-c205-in13` - two criteria at 1935 vs the vanilla per-run median, five bands each, a pair fails an axis only in different bands AND >= 0.15 (GDP) / >= 0.10 (workers) apart. DIVERGENT => one more run of this config as its own one-run schedule, the reading the median of three. No obsolescence criterion; rung-0 staffing / payback / below-best are verdict flags. PLUS THE RUN-LEVEL STOP (user-ruled 2026-09-14 afternoon, 2+1 batches only): any run that ends above x1.3 of vanilla's 1936 GDP (the eighteen-run median at the 1936.1.1 endpoint, GBP 4,544M) is the config's LAST run - be it run 1, 2 or 3 - enforced between runs by the scratchpad stop_watch.mjs (drops tools/testbed/STOP after the offending run's 1936 summary lands; the next run is an 1836 stub, L17-excluded). Never mid-run.",
+ "_comparison": "vanilla n=18 for every ratio; canon-c19-in13 (the lift at C 1.9, runaway) and canon-je24-a22-in12 (F113, C 2.2 x1.2, stall) bracket it; canon-c19-in12 (F117) is the found config it competes with.",
+ "_watch": [
+  "every run ~5 min in: mod marker, version, this run's error window by position, clock (batch_heartbeat.sh at each wake); arm scratchpad/stop_watch.mjs on the session through launch_detached.ps1 -Hidden",
+  "first run: first_run_decomp at 1900/1935, rung margins by era at 1840/1900/1935 (scratchpad rung_margins.mjs), run_vs_vanilla.mjs (the decade trajectory against the cached vanilla medians), world_labour.mjs, queue_mix; the 1860 dip",
+  "post-run: alignment_check.mjs (it prints the stop verdict too), preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS, the ledger (one configuration per report)"
+ ],
+ "_cost": "2 x 1836->1936 ~ 2 x 2h30 ~ 5 h, plus a third run on divergence; a run above 1.3x at 1936 ends the config early.",
+ "_caveats": [
+  "n=2 by design; the alignment tool decides on the third.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent; the five-minute smoke check on EVERY run; never interleave configs."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+ },
+ "setups": {
+  "canon-c205-in13": {
+   "kind": "config",
+   "config": "config/mod_config.canon-c205-in13.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "canon-c205-in13",
+   "until": "1936.1.1"
+  },
+  {
+   "setup": "canon-c205-in13",
+   "until": "1936.1.1"
+  }
+ ]
+}
