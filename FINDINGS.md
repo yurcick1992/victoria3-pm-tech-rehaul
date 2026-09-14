@@ -11679,3 +11679,77 @@ already £844–1,395 a level against the a16 arm's £636–653.
 - It does not separate the lift from the step: every flat-cost book measured carries the ×1.2 lift.
 - The vanilla reference is a different night; production ratios are British only; the per-run rung-0 payback is £-per-level arithmetic,
   fill_payback's 140.8 y the median at realised prices.
+
+## F116 — THE COST SLOPE 1.6 IS ON THE FLAT-COST SIDE OF THE THRESHOLD: on vanilla’s GDP path to 1890, then the runaway (canon-c16-in12, n=1 by the run-level stop, 2026-09-14)
+
+**Claim.** With building cost = anchor × 1.6^era on the lifted A 2.2 book (`canon-c16-in12`: canon-je24-a22-in12 with 600 / 960 / 1,536 /
+2,458 in place of 600 / 1,320 / 2,904 / 6,389, nothing else changed), the world tracks vanilla's GDP within ±7% for fifty years — 1.04 /
+0.98 / 0.99 / 1.04 / 1.07× the vanilla per-run median at 1850 / 1860 / 1870 / 1880 / 1890 — with productive workers per capita drifting
+down to 0.83× (the design's shape), and then compounds: **1.12 / 1.27 / 1.59 / 1.75 / 1.94× at 1900 / 1910 / 1920 / 1930 / 1935, 1.98× at
+1936 (£8,986M against the eighteen-run median £4,544M)**. That is the A 1.9 flat-cost shape (1.27–1.41× at 1900, 1.80× at 1936, F115)
+reached from a cost slope instead of a smaller output step. The config ended at n=1 under the run-level stop (above ×1.3 at 1936 ⇒ the
+config's last run); the bisection goes up, to C 1.9.
+
+**Arm, n, span.** Session `20260914_143137_canon-c16-in12-n2`, run 1 (1836 → 1936.1.1, 172 min of play, two CTDs at 1900.5 and 1901.6
+resumed from the 1900 and 1901 autosaves, 3.4 min of crash overhead = 2.0% of play); run 2 an 1842 stub (STOP file), excluded by L17.
+Every ratio ÷ the vanilla per-run median at that year (`20260821_131149` n=16 in first_run_decomp; the eighteen-run cache of the
+scratchpad decade reader elsewhere — the two medians agree to 1%). Schedule `canon_c16_in12_n2.json`; predictions inside.
+
+**Numbers.**
+
+| year | world GDP £M run / van | ÷ | prod. workers per capita ÷ van | pools ÷ GDP run / van | Britain £M run / van | ÷ |
+|---|---|---|---|---|---|---|
+| 1850 | 598 / 576 | 1.04 | 0.97 | 0.17 / 0.17 | 52 / 39 | 1.33 |
+| 1860 | 714 / 725 | 0.98 | 0.94 | 0.22 / 0.16 | 79 / 55 | 1.44 |
+| 1870 | 855 / 859 | 0.99 | 0.87 | 0.26 / 0.15 | 94 / 76 | 1.23 |
+| 1880 | 1,095 / 1,056 | 1.04 | 0.85 | 0.27 / 0.17 | 122 / 99 | 1.24 |
+| 1890 | 1,437 / 1,345 | 1.07 | 0.83 | 0.15 / 0.19 | 227 / 135 | 1.68 |
+| 1900 | 1,915 / 1,714 | 1.12 | 0.84 | 0.10 / 0.20 | 267 / 185 | 1.44 |
+| 1910 | 2,721 / 2,134 | 1.27 | 0.83 | 0.13 / 0.22 | 409 / 240 | 1.70 |
+| 1920 | 4,450 / 2,799 | 1.59 | 0.91 | 0.30 / 0.24 | 550 / 311 | 1.77 |
+| 1930 | 6,656 / 3,812 | 1.75 | 0.91 | 0.54 / 0.27 | 573 / 375 | 1.53 |
+| 1935 | 8,523 / 4,390 | 1.94 | 0.95 | 0.69 / 0.31 | 607 / 388 | 1.57 |
+| 1936 | 8,986 / 4,544 | 1.98 | 0.95 | 0.71 / 0.30 | 639 / 394 | 1.62 |
+
+- **Decomposition at 1935** (GDP = population × productive workers per capita × GDP per productive worker): world 1.94× = 1.06× × 0.95× ×
+  **1.92×** (£30.3 against £16.1 per productive worker); shortlist GBR USA FRA NET BEL PRU GER 2.29× = 1.16× × 0.98× × 2.06×.
+- **Majors at 1935**, GDP ÷ the vanilla median: France 4.12× (£532M / £129M), USA 2.76×, Belgium 2.45×, Russia 2.32×, Austria 2.20×,
+  Germany 1.58×, Britain 1.57×, Spain 1.55×, Netherlands 1.44×, Sweden 1.00×, Japan 0.49×. Peasant share of the strata population:
+  France 4.0% (vanilla 10.3%), Russia 7.9% (10.5%), USA 6.9% (7.6%), Japan 14.9% (10.8%); world 7.5% = vanilla's. The runaway majors
+  depeasantise FASTER than vanilla — the opposite of the sweep's third goal.
+- **Rung margins by era** (all tiered industries; margin = profit ÷ (VA − profit), F92; staffed = staffing ÷ levels):
+
+| year | e0 levels / staffed / margin | e1 | e2 | e3 |
+|---|---|---|---|---|
+| 1840 | 649 / 78% / 27% | 367 / 92% / 31% | 52 / 100% / 24% | — |
+| 1900 | 1,330 / 57% / 30% | 1,382 / 76% / 29% | 2,895 / 86% / 33% | 89 / 83% / 24% |
+| 1930 | 1,872 / 46% / 23% | 2,237 / 58% / 30% | 9,645 / 85% / 33% | 3,823 / 87% / 24% |
+| 1935 | 1,889 / 36% / 19% | 2,474 / 54% / 32% | 11,696 / 83% / 36% | 5,854 / 83% / 28% |
+
+  Rung 0 thins (78% → 36% staffed) but never dies and keeps being built (649 → 1,889 levels — the company rebuild pattern, F97 §4); the
+  margins are flat across four eras (19–36%) — F94's flat price path: the frontier out-staffs the old rung without out-earning it.
+- **Capital and labour at 1935:** pools £5,902M = 0.69 of world GDP (vanilla 0.31; a22-in12 0.26; F110 2.28); tiered levels 21,913
+  (vanilla 21,971, F110 51,893, a22-in12 ~6,500) on 1.06× the population; construction sector 5,748 levels; unemployment 15.9% of
+  salaried + unemployed; peasants 7.5% of the strata population.
+- **Research:** 512 journal-entry completions in the run (Britain 28 over 15 technologies, e3 coverage 64%); technologies held at 1935
+  GBR 165 / FRA 152 / USA 169 / GER 167 / RUS 134 — phase 2's readings.
+- **Queue mix** at the endpoint: no world-level concentration (power plants 11%, trade centres 7% of 4,569 private items).
+- **Predictions vs outcome** (the schedule's pre-registration): GDP 0.8–1.2× — MISSED above; the 1860 dip 0.80–0.95× — MISSED above
+  (0.98×, no dip at all); workers 0.65–0.85× — MISSED above (0.95×); rung 0 25–45% staffed — met (36%); pools 0.3–0.7 — met (0.69);
+  tiered levels 12,000–25,000 — met (21,913); perf: 172 min of play, two CTDs.
+
+**What moved it.** The one lever is the frontier's capital price. At C 1.6 an e3 rung costs 2,458 points for 2.2³ = 10.6× rung 0's output
+(≈ 232 points per unit of rung-0 capacity, against 600 for rung 0 itself and 601 at C 2.2); once the e2/e3 rungs unlock (1890–1910) the
+loop — cheap capacity → GDP → pools → more capacity — has a gain above one, pools climb from 0.10 to 0.71 of GDP, and the world doubles.
+Before that the book behaves as designed. The threshold slope lies between 1.6 and 2.2 (F113: 0.65×, the frontier too scarce).
+
+**The stop rule in practice.** The run-level stop (CLAUDE.md's 2+1 standard) ended the config after run 1; run 2 played seven minutes to
+1842 because the scratchpad watcher exited on a false end-of-schedule match ("archiver stopped" read as the schedule's end) and the STOP
+file was placed by hand — the watcher's match is fixed; the stub is excluded by L17 and carries no reading.
+
+**Confidence.** High for the trajectory's shape and the endpoint (two independent readers agree; the pattern matches F115 at flat cost);
+n=1 for everything seed-dependent (the runaway's carriers — France, the USA — and its timing).
+
+**What it does NOT say.** Where between 1.6 and 2.2 the threshold sits (batch 2 tests 1.9); whether the frontier's price path in wage
+units moved (the ledger reads it); the below-best share; whether a second seed runs away later or not at all. Session `20260914_143137`,
+VERDICT.md there; config committed as `config/mod_config.canon-c16-in12.json` (`_ab.command`).
