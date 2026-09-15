@@ -12216,3 +12216,73 @@ the halved desire is NOT carried forward. The economy is the found configuration
 spending set on the under-side slope (the loop's fourth pick, `canon-c205-in12-eager`, launched 14:03 local) cuts the hoard without leaving the
 band. Session `20260915_082510`, VERDICT.md there; config committed as `config/mod_config.canon-c19-e0ai500.json` (`_ab.command`). Ledger
 https://claude.ai/code/artifact/a1a6bb8b-0e98-4849-8035-7fcd88027397 (one configuration per report).
+
+## F121 — THE EAGER-SPENDING DEFINES ON THE UNDER-SIDE SLOPE: A BISTABLE CONFIGURATION WHOSE HOARD RETURNS WITH GROWTH (canon-c205-in12-eager, n=3 by tie-breaker, 2026-09-15): two seeds stall at 0.56× and 0.37× with the pool empty because inflow is, one grows to 1.32× with the pool back at 0.83 of GDP despite a 21% larger construction sector and a 1.3-year backlog — the AI's construction-sizing defines shorten the queue but cannot hold the pool below vanilla in a growing economy; the median of three is 0.56× (way below)
+
+**Claim.** The never-run C 2.05 slope with the ×1.2 lift (cost 600 / 1,230 / 2,522 / 5,169) plus the investment-pool defines pushed toward
+spending (`canon-c205-in12-eager`: TOO_LARGE_INVESTMENT_POOL_FACTOR 1.0, CONSTRUCTION CRITICAL 1.25 / EXCESSIVE 3.0,
+MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED 0.05) — the hoarding fix on an under-side base by the user's rule of 2026-09-15 — read
+**0.56×, 0.37× and 1.32× the vanilla per-run median at 1935** (0.57 / 0.35 / 1.14 at 1936), workers per capita 0.50 / 0.37 / 0.75×: every pair
+DIVERGENT under the 2+1 rule, the reading the median of three, **0.56× (way below) and 0.50× (noticeably below)**. Two things it establishes:
+(1) **the configuration is bistable by seed at this slope** — an early British disaster (a civil war 1860–1863 in run 1: the tag holds 8M people,
+no market, no buildings, and its construction sector never recovers, 150 → 48 levels; a bankruptcy in 1912 in run 2) locks the world into a
+stall, while a clean Britain (run 3) grows on the found configuration's path to 1.32×; the dear frontier (2,522 / 5,169 points a level)
+amplifies seed events into regimes. (2) **The eager defines do what they can and it is not enough**: the private construction backlog is 1.1–1.3
+years in all three seeds (the found configuration 2.0–2.4, vanilla 0.3–0.4) and in the growth seed the construction sector reaches 3,625 levels
+(the found config ~3,000) — yet the pool is **0.83 of world GDP there, shortlist 1.31 (Britain 1.80, France 2.01, USA 1.65)**; in the two stalls
+the pool is empty (0.17 / 0.15; shortlist 0.12 / 0.07) because nothing flows into it (the sector 1,886 / 986 levels — it SHRANK with revenue).
+The hoard is a property of growth under this recipe book: inflow outruns capacity even with the AI's construction sizing at its most eager, so
+the remaining levers are the construction sector's throughput or cost per point, or the pool's own inflow rules — balance changes, not AI defines.
+
+**Arm, n, span.** Sessions `20260915_140342_canon-c205-in12-eager-n2` (runs 1–2) + `20260915_182813_canon-c205-in12-eager-tb` (the tie-breaker,
+authorised by the user past the session's 14:00 UTC boundary); 1836 → 1936.1.1; play 119.5 / 134.5 / 153.4 min (0.72 / 0.82 / 0.93× vanilla);
+THREE CTDs (1902.12.23, 1880.3.7, 1920.4.19), all recovered by the deterministic feeder — the third opened a second process beyond the
+five-year window (process 1 "superseded", trimmed to its newest member), the design's other branch proven in the field. Every ratio ÷ the
+vanilla per-run median. Schedules `canon_c205_in12_eager_n2.json` / `_tb.json`, predictions pre-registered; `alignment_check.mjs` pooled exit 0
+(3 of 3 pairs diverge at n=3); `capital_flags.mjs` CLEAN. `preflight -Session` L28 FAIL on both sessions (mirror seams — a watch item).
+
+**Numbers (run 1 / run 2 / run 3).**
+
+| year | GDP ÷ van | prod. workers per capita ÷ van | pools ÷ GDP | Britain ÷ van |
+|---|---|---|---|---|
+| 1860 | 0.85 / 0.88 / 0.94 | 0.90 / 0.88 / 0.90 | 0.08 / 0.09 / 0.21 | 0.15 / 1.15 / 1.13 |
+| 1880 | 0.81 / 0.81 / 0.89 | 0.79 / 0.73 / 0.80 | 0.09 / 0.10 / 0.11 | 0.76 / 1.01 / 1.20 |
+| 1900 | 0.66 / 0.63 / 0.86 | 0.62 / 0.58 / 0.70 | 0.13 / 0.12 / 0.14 | 0.73 / 0.78 / 1.25 |
+| 1920 | 0.56 / 0.46 / 1.12 | 0.51 / 0.43 / 0.68 | 0.15 / 0.13 / 0.26 | 0.59 / 0.57 / 1.88 |
+| 1935 | 0.56 / 0.37 / 1.32 | 0.50 / 0.37 / 0.75 | 0.17 / 0.15 / 0.83 | 0.82 / 0.59 / 2.46 |
+| 1936 | 0.57 / 0.35 / 1.14 | 0.49 / 0.36 / 0.73 | 0.17 / 0.15 / 1.01 | 0.85 / 0.60 / 2.06 |
+
+- **World GDP £M at 1935**: 2,449 / 1,629 / 5,807 against the vanilla median 4,390; run 3 lost 11% in its last year (a late shock; Britain 2.46 →
+  2.06×) and the stop rule reads the 1936 endpoint, 1.137×, below ×1.3.
+- **THE HOARD AND UNEMPLOYMENT SPLITS** (`capital_flags.mjs`): hoard world **0.17 / 0.15 / 0.83** (vanilla 0.29; the found config 0.42–0.70),
+  shortlist **0.12 / 0.07 / 1.31** (Britain 0.07 / 0.00 / 1.80, USA 0.26 / 0.16 / 1.65, France 0.12 / 0.07 / 2.01, Germany 0.01 / 0.09 / 0.64);
+  total unemployment INCLUDING peasants world **70.4% / 77.6% / 55.3%**, shortlist **60.7% / 73.5% / 37.5%** (strict 37.3 / 46.6 / 26.2 and
+  23.1 / 42.8 / 10.4; vanilla 41.7 / 21.7 and 16.3 / 4.0). The capital-abundance flag is CLEAN (run 3: Britain 6.6% at 1.80, Germany 0.8% at 0.64).
+- **Capacity**: private backlog **1.2 / 1.1 / 1.3 y** (the found config 2.0–2.4), private share of speed 73% / 81% / 81%; construction sector
+  **1,886 / 986 / 3,625** levels (the found config 2,971 / 3,092; vanilla 1,568–2,622). Bankruptcies per five-year window: run 2 35–55 (the
+  stall), run 3 18–39 (vanilla 28–43; the found config 28–50) — the eager defines do not ruin AI finances on their own.
+- **Rung margins by era at 1935** (levels / staffed / margin): e0 1,512 / 61% / 26% · 1,308 / 56% / 26% · 1,770 / 54% / 25% (1,198 / 1,162 /
+  1,464 at 1900 — RISING in all three); e2 2,593 / 93% / 47% · 1,357 / 94% / 32% · 5,383 / 96% / 52%; e3 342 / 97% / 38% · 152 / 72% / 26% ·
+  2,019 / 89% / 55%. Tiered levels 5,963 / 3,955 / 11,322. Below-best 37.4% (median); frontier payback 12.1 y, stale 38 y.
+- **Majors at 1935** (÷ vanilla median): run 3 Austria 3.60, Britain 2.46, Germany 2.06, Netherlands 1.38, Russia 1.35, USA 0.67, France 0.57,
+  Japan 0.48; run 1 Britain 0.82, USA 0.53, Germany 0.32, France 0.35; run 2 France 0.97, Japan 0.98, Britain 0.59, USA 0.39, Russia 0.27.
+- **Speed:** 0.72 / 0.82 / 0.93× the vanilla median play time; pop-matched +7.2% over 9 overlapping bins.
+- **Predictions vs outcome** (pre-registered): hoard 0.15–0.35 world — met in the stalls (0.17 / 0.15), MISSED in the growth seed (0.83);
+  shortlist below 0.6 — met / met / MISSED (1.31); Britain below 1.0 — met / met / MISSED (1.80); backlog under 1.5 y — met in all three; sector
+  above 3,500 — met only in run 3; GDP 0.90–1.15× — MISSED three ways (0.56 / 0.37 below, 1.32 above at 1935); workers 0.58–0.72× — missed
+  (0.50 / 0.37 / 0.75); shortlist unemployment 30–50% — run 3 met, the stalls missed; no capital-abundance trip — met; perf within +10% — met.
+
+**What it says about the goals.** The hoard cannot be tuned away with the AI's construction-sizing defines: they cut the queue in half and buy
+a fifth more sector in a growing economy, and the pool still reaches 0.83 of GDP. Its lever is the sector's throughput or cost, or the pool's
+inflow (law-side modifiers) — a balance change to be ruled on. The under-side slope (C 2.05) is not a base to build on: it is bistable, and its
+stalls are locked in by early British disasters the found configuration survives. The eager set on the found slope (`canon-c19-in12-eager`,
+generated) is the remaining pre-registered branch, expected to shorten the backlog and to leave the hoard where growth puts it.
+
+**Confidence.** High for the bistability (three seeds, two mechanisms named — a civil war, a bankruptcy — with the sector series behind each)
+and for the hoard's return with growth (one seed, but the mechanism is the same capacity bound read on the found configuration in F119's
+addendum); n=1 for the growth seed's level (1.32×) and for its last-year shock.
+
+**What it does NOT say.** Whether C 2.05 ×1.2 without the eager set stalls as often (never run alone); whether the eager set on C 1.9 changes
+the found configuration's hoard (the branch); what the 1935–1936 shock in run 3 was. Sessions `20260915_140342` and `20260915_182813`,
+VERDICT.md in each; config committed as `config/mod_config.canon-c205-in12-eager.json` (`_ab.command`). Ledger https://claude.ai/code/artifact/2d6d3356-2b6a-4285-bbc6-1caf07aa9c97 (one
+configuration per report).

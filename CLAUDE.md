@@ -968,8 +968,14 @@ config/mod_config.canon-c205-in12-eager.json ⭐⭐ THE HOARDING FIX ON AN UNDER
                         20260915_182813_canon-c205-in12-eager-tb (user-authorised past the boundary). Provisional reading: EVERY HOARD PREDICTION MET (world 0.17 /
                         0.15, shortlist 0.12 / 0.07, backlog 1.2 / 1.1 y) and the economy STALLED (below F119's 0.71 / 0.74 with the ×1.3 lift) — the construction
                         sector shrank to 1,886 / 986 levels, the pool is small because the economy is, the frontier (2,522 / 5,169 points) too dear to fill;
-                        rung 0 alive at 61 / 56%; a British civil war 1860–63 in run 1, Britain bankrupt 1912 in run 2. The branch ("below 0.8×") is the eager set
-                        on C 1.9: canon-c19-in12-eager. F121 after the third run
+                        rung 0 alive at 61 / 56%; a British civil war 1860–63 in run 1, Britain bankrupt 1912 in run 2. ⭐ READ AT n=3 (F121; the tie-breaker
+                        20260915_182813, two more CTDs recovered by the feeder, the second through the beyond-window path): the third seed GROWS to 1.32× (1.14× at
+                        1936 after a last-year shock) with Britain intact — and the HOARD RETURNS, 0.83 world / 1.31 shortlist (Britain 1.80, France 2.01) despite a
+                        3,625-level construction sector (the found config ~3,000) and a 1.3-y backlog; the median of three 0.56× (way below), workers 0.50×. So: the
+                        configuration is BISTABLE by seed at this slope (early British disasters lock the stalls), and the AI's construction-sizing defines shorten
+                        the queue (1.1–1.3 y in all three) but cannot hold the pool below vanilla in a growing economy — the hoard's lever is the sector's
+                        throughput or cost, or the pool's inflow (balance changes, to be ruled). The eager set on C 1.9 (canon-c19-in12-eager) remains the
+                        pre-registered branch. Ledger https://claude.ai/code/artifact/2d6d3356-2b6a-4285-bbc6-1caf07aa9c97
 config/mod_config.canon-c205-e0ai500-eager.json ⭐ THE SAME WITH THE HALVED RUNG-0 DESIRE (ai_value 500 / 3,000 / 9,000 / 27,000) — runs in place of the book above ONLY
                         if the e0ai500 batch (20260915_082510) earns it (rung 0's level count falling 1900 → 1935 without leaving the band). Dry-run built clean;
                         schedule `canon_c205_e0ai500_eager_n2.json`. Un-ignored with its twin
