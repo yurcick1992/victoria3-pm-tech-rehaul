@@ -1,3 +1,8 @@
+// ⚠⚠ DEAD — SUPERSEDED BY `fit_cost_drivers.mjs` (2026-09-15, FINDINGS F120). The one-off fit that
+// produced F72's constants. It reads `pool.json` out of the SCRATCHPAD of the session that wrote it, so
+// it throws ENOENT for everyone else and cannot be re-run; kept only as the record of how F72 was fitted.
+// The replacement pools the sessions itself, races building OBJECT count and GDP beside levels, and
+// reports leave-one-run-out cv rather than in-sample cv alone.
 import { readFileSync } from 'node:fs';
 import * as fs from 'node:fs';
 const SP='C:/Users/User/AppData/Local/Temp/claude/C--claude-code-victoria-3-PM-and-tech-rehaul/8ddababb-019a-4319-9548-3fda4e90b426/scratchpad/';

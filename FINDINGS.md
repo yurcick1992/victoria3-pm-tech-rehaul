@@ -7426,6 +7426,15 @@ a bug report.
 
 ## F72 — ⭐ WHAT ACTUALLY DRIVES VICTORIA 3's TICK COST, FITTED ACROSS THE WHOLE ARCHIVE: **building levels, not pop objects** — and the game version does not matter
 
+⚠⚠ **RE-RACED AND QUALIFIED BY F120 (2026-09-15), on 170 runs instead of 24.** Two amendments, neither
+overturning the model: (1) the obvious rival driver — the **building OBJECT count** (`Σ world.buildings[*].n`,
+one record per state × building type, the thing the engine actually iterates) — was never tried here, and it
+fits **WORSE** than levels on every cut: beyond pop objects it adds nothing at all, and across books its sign
+is wrong. (2) **"Levels dominate" must not be read as a per-level charge**: GDP does the same job slightly
+better, and the level coefficient collapses 0.430 → 0.150 when GDP sits beside it, so the building term is a
+proxy for how much ECONOMY there is. The shipped constants still centre at 1.019 over the larger pool and are
+deliberately **not** refitted. Read F120 before quoting this finding's mechanism.
+
 **Claim.** Over 2 304 samples from 24 archived full-century runs, engine cost is well described by
 **`sec per in-game year = 0.39 + 0.180·(k live pop objects) + 0.590·(k building levels)`**. **Building
 levels dominate**: levels alone explain the cost as well as both terms together (cv 0.138 vs 0.136),
@@ -11977,3 +11986,130 @@ investment's willingness nor the private allocation limits spending — CAPACITY
 construction sectors it queues arrive years late. Vanilla hoards too in some seeds (run 1: 0.62, Britain 2.14) with a short queue — a different
 mechanism (a pool with nothing worth building), not this one. The lever is therefore construction capacity: the AI's construction-sizing defines
 (`canon-c19-in12-eager`, staged), and if those cannot buy it on the AI's budget, the sector's throughput or cost — not the investment scoring.
+
+---
+
+## F120 — ⭐ THE ROW-P COST MODEL'S BUILDING TERM RE-RACED AGAINST **BUILDING OBJECT COUNT**, ON 170 RUNS: the object count fits WORSE, adds nothing beyond pop objects, and carries the wrong sign across books — but **levels is a size proxy, not a per-level charge** (GDP does the same job)
+
+**The question (user, 2026-09-15).** Row P's tripwire models engine cost as
+`sec per in-game year = c0 + cPop·kpops + cLv·klevels` (F72; `fill_build_perf.mjs`'s `model` block, drawn
+as the ledger's "÷ modelled cost"). The building term is **summed building LEVELS**
+(`Σ world.buildings[*].levels` in `report_perf.mjs`), which is counter-intuitive: the engine iterates
+*building objects* — one record per (state, building type) — exactly as it iterates *pop objects* rather
+than people, and the pop half of the model already uses objects (`world.pop_objects_live`). So: is the
+wording right, and would **building object count** fit better?
+
+**Answer, in one line: the wording is right — it really is levels — and object count is WORSE on every
+cut.** Beyond pop objects it adds literally nothing, and where it is identified at all its sign is wrong.
+
+**Method, arms, n.** No new game time. Every archived run with ≥50 save summaries that reached its own
+`until` date with no `abandoned_reason` (L17), pooled across arms and nights: **170 runs, 16 801
+year-intervals, 25 vanilla and 145 mod** — 7× F72's 24-run / 2 304-sample pool. Cost per in-game year from
+the yearly save-archive wall-clock stamps (a resume / stall / clock gap is dropped, never smoothed); drivers
+from each save's own `world.pop_objects_live`, `Σ world.buildings[*].levels`, `Σ world.buildings[*].n`
+(the building-object count, present in every summary in the archive), `world.gdp` and `world.population`.
+**3 non-yearly-cadence runs excluded by cause** (12× the save writes; F72's rule). Reader:
+`tools/testbed/ledger/fit_cost_drivers.mjs` (`--refresh` rebuilds its pool cache) — it replaces the
+one-off `fit_cost_model.mjs`, whose scratchpad path died with the session that wrote it.
+
+### 1. The horse race — flatness of cost ÷ model (lower is better)
+
+| spec | in-sample cv | leave-one-RUN-out cv | coefficients |
+|---|---|---|---|
+| pops + levels + GDP | 0.1569 | 0.1575 | 28.4 + 0.430·kpops + **0.150**·klevels + 0.009·MGDP |
+| **pops + GDP** | **0.1568** | **0.1572** | 38.0 + 0.525·kpops + 0.012·MGDP |
+| pops + levels + objects | 0.1574 | 0.1582 | 18.9 + 0.827·kpops + 0.510·klevels **− 4.786·kobjects** |
+| **pops + levels (SHIPPED)** | **0.1601** | **0.1607** | 3.55 + 0.445·kpops + 0.430·klevels |
+| levels only | 0.1654 | 0.1658 | −8.68 + 0.777·klevels |
+| pops only | 0.1670 | 0.1673 | 22.7 + 0.944·kpops |
+| **pops + objects** | **0.1675** | **0.1680** | 32.1 + 1.180·kpops **− 2.375·kobjects** |
+| GDP only | 0.1699 | 0.1702 | 61.0 + 0.024·MGDP |
+| **objects only** | **0.1765** | **0.1769** | −8.47 + 8.953·kobjects |
+| population only | 0.1900 | 0.1904 | −49.6 + 0.098·Mpeople |
+
+⭐ **`pops + objects` (0.1680 LOO) is not better than `pops` ALONE (0.1673) — it is very slightly worse.**
+Adding building objects to a model that already knows the pop-object count buys *nothing*. Adding building
+levels buys a real 0.0066 (0.1673 → 0.1607). With run-clustered standard errors on the three-driver spec,
+klevels is **+0.510 (se 0.065, t 7.9)** and kobjects **−4.786 (se 1.314, t −3.6)**: a negative per-object
+cost is not a physical reading, it is the collinearity absorbing the pop term.
+
+### 2. Within pop-object bands — the century growth trend held out
+
+All four drivers grow together over a campaign, so a pooled fit that merely tracks that growth cannot
+separate them. Hold live pop objects roughly fixed and ask what is left:
+
+| band (k live pop objects) | n | corr(cost, levels) | corr(cost, objects) | levels/object spread |
+|---|---|---|---|---|
+| 40–60k | 3 997 | +0.178 | +0.237 | 10.2–13.7 |
+| 60–80k | 4 855 | +0.323 | +0.261 | 9.6–12.3 |
+| 80–100k | 3 425 | +0.274 | +0.079 | 9.5–13.1 |
+| 100–120k | 2 106 | +0.292 | **−0.079** | 9.5–14.8 |
+| 120–140k | 757 | +0.322 | **−0.135** | 9.6–16.5 |
+| 140–170k | 355 | +0.613 | +0.149 | 9.8–15.5 |
+
+**Levels stays positive in all six bands; objects decays to zero and turns negative in the two bands where
+the levels-per-object spread is widest** — i.e. precisely where the two drivers are best separated, object
+count carries no signal.
+
+### 3. The regression-free version — books against vanilla
+
+`obj/pops` is nearly a constant across 29 books (1.02–1.16 of vanilla), because the number of building
+records is close to a deterministic function of how many pop objects a world has developed; `lv/pops`
+varies 0.89–1.17. Correlating each book's time-per-pop against the two:
+
+| | across 29 books |
+|---|---|
+| corr( ×time/×pops , ×levels/×pops ) | **+0.276** |
+| corr( ×time/×pops , ×objects/×pops ) | **−0.286** |
+
+⚠ **The object reading has the wrong sign: books carrying MORE building objects per pop object ran
+FASTER.** Selected rows (medians, vanilla = 161.8 min · 79 459 pops · 140 604 levels · 11 439 objects):
+
+| book | n | ×time | ×pops | ×levels | ×objects |
+|---|---|---|---|---|---|
+| ab1 | 3 | 0.793 | 0.855 | 0.854 | 0.904 |
+| canon-je24 | 30 | 0.962 | 0.910 | 0.901 | 0.950 |
+| canon-je24-a22 | 11 | 0.978 | 0.910 | 0.903 | 0.953 |
+| events | 3 | 0.977 | 1.178 | 1.048 | 1.229 |
+| canonfull | 8 | 1.033 | 1.048 | 0.976 | 1.122 |
+| events_fixed | 2 | 1.038 | 1.191 | 1.079 | 1.270 |
+| canon-flat-in12-a19 | 2 | 1.113 | 1.149 | 1.111 | 1.172 |
+
+⚠ The tier split really does raise objects per level — vanilla runs **14.47** levels per object at 1936
+— the highest of any book — against **10.0–14.0** for every mod arm (the canon family 12.1–12.7), so the
+mod sits on the side of the comparison where an object-priced engine would punish it. It is not punished.
+
+### 4. ⭐ BUT LEVELS IS NOT A PER-LEVEL CHARGE EITHER — it is a size proxy, and GDP is a better one
+
+`pops + GDP` (LOO 0.1572) beats `pops + levels` (0.1607), and when GDP is added beside levels **the level
+coefficient collapses from 0.430 to 0.150** while GDP stays. ⇒ F72's "building levels dominate" should be
+read as *"the building term is best proxied by levels"*, **never** as evidence that the engine charges per
+level. What the data actually says is that the cost beyond pop objects tracks **how much economy there
+is**, and level count tracks that better than record count does — which is mechanically unsurprising, since
+a 50-level building runs 50× the goods orders, employment and money through the same record.
+
+### 5. The shipped constants still centre
+
+`0.39 + 0.180·kpops + 0.590·klevels` over the full 170-run pool: **cv 0.1633, mean actual ÷ predicted
+1.019** (vanilla 1.007, mod 1.021). A refit on today's pool would give `3.55 + 0.445·kpops + 0.430·klevels`
+(cv 0.1601) — a 0.003 gain, with the split moving a long way for it. **Not refitted**: a tripwire wants a
+stable baseline more than a tighter one, and the split was already flagged as weakly identified.
+Collinearity, pooled: corr(pops, levels) 0.952 · corr(pops, **objects**) **0.976** · corr(levels, objects)
+0.948 — objects are the *most* collinear with pops, which is the arithmetic behind §1.
+
+### What it does NOT say
+
+- **It does not refute the engine-side intuition.** DD76's employment update is per pop object, and this
+  model's pop term is already per pop object. The claim here is narrower: *given* the pop-object count,
+  the number of building RECORDS adds no measurable cost in the observed range, while a measure of
+  economic size does.
+- **It is not a causal model.** Three of the four drivers are ≥0.95 correlated; only the level/object
+  ratio (9.5–16.5) and the level/pop ratio give any separation, and both come from cross-arm variation
+  measured on different nights.
+- **It says nothing outside the observed range** — 29k–223k live pop objects, 7 400–32 600 building
+  objects, 10.0–14.5 levels per object at the endpoint.
+- **It does not license a per-building or per-level cost target.** Row P grades the TOTAL a player waits
+  through (user-ruled 2026-08-31); this model is only the tripwire that says whether a build made each
+  unit of world dearer.
+- **It does not re-open the vanilla/mod speed verdict**: under the shipped model the two arms sit at 1.007
+  and 1.021, a 1.4pp gap with per-run scatter of 7–8%.
