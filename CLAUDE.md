@@ -933,7 +933,12 @@ config/mod_config.canon-c19-e0ai500.json ⭐ THE LOOP'S THIRD PICK (drafted 2026
                         but its LEVEL COUNT grows in every book of the sweep (the AI keeps building it — F97 §4), and both price levers tried on it failed (the ×1.3
                         lift ran away at C 1.9, F118, and stalled at C 2.05). Dry-run built clean; schedule `canon_c19_e0ai500_n2.json` (2 runs + 1 on divergence,
                         the run-level stop applies; the KEY prediction: rung 0's level count at 1935 BELOW its 1900 count, for the first time; GDP 0.95–1.20×,
-                        workers 0.60–0.72×, pools 0.35–0.65). Un-ignored with its twin. ⭐ LAUNCHED 2026-09-15 08:25 as session 20260915_082510_canon-c19-e0ai500-n2 (the loop's third iteration; the stop watcher armed)
+                        workers 0.60–0.72×, pools 0.35–0.65). Un-ignored with its twin. ⭐ LAUNCHED 2026-09-15 08:25 as session 20260915_082510_canon-c19-e0ai500-n2 (the loop's third iteration; the stop watcher armed). ⭐ MEASURED n=2 (F120, ALIGNED — no tie-breaker): world GDP 1.13 / 1.04× vanilla at 1935 (1.15 / 1.04 at 1936), workers per
+                        capita 0.70 / 0.64× — in the band, the C 1.9 economy in two more seeds (the family: 1.09 / 1.07 / 1.13 / 1.04×, four seeds in the band); THE
+                        KEY PREDICTION MISSED — rung 0's level count still rose 18% / 12% from 1900 to 1935 at 46–47% staffing and a 24–25% margin, exactly the
+                        found config: the government AI's desire is not what builds the old rung (F100: the private pool expanding company-owned buildings is).
+                        Hoard 0.70 / 0.48 world, 1.20 / 0.76 shortlist (Britain 1.34 / 1.76), capital flag CLEAN; play 0.96 / 1.03×. The halved desire is NOT
+                        carried forward; the loop's fourth pick is canon-c205-in12-eager. Ledger https://claude.ai/code/artifact/a1a6bb8b-0e98-4849-8035-7fcd88027397
 config/mod_config.canon-c19-in12-eager.json ⭐ THE HOARDING FIX (user-ruled 2026-09-15 morning: "hoarding is a problem by itself that should be tuned by
                         spending eagerness defines … significant hoarding (more than 1 yearly world product) can spoil all measurements, and we're aiming at
                         levels lower than vanilla, better to fix that sooner than later"): canon-c19-in12 with ONLY the investment-pool defines pushed toward
@@ -959,7 +964,7 @@ config/mod_config.canon-c205-in12-eager.json ⭐⭐ THE HOARDING FIX ON AN UNDER
                         eager-spending define set of canon-c19-in12-eager. Dry-run built clean; schedule `canon_c205_in12_eager_n2.json` (2 runs + 1 on divergence,
                         the run-level stop and the capital-abundance flag apply; predictions inside: pools 0.15–0.35 world, shortlist below 0.6, Britain below 1.0,
                         backlog under 1.5 y, sector above 3,500 levels, GDP 0.90–1.15×, workers 0.58–0.72×, shortlist unemployment incl. peasants 30–50%). Branches:
-                        above 1.3× → C 2.2 ×1.2 with the set; below 0.8× → C 1.9 with the set (canon-c19-in12-eager). Un-ignored with its twin
+                        above 1.3× → C 2.2 ×1.2 with the set; below 0.8× → C 1.9 with the set (canon-c19-in12-eager). Un-ignored with its twin. ⭐ LAUNCHED 2026-09-15 14:03 local (10:03 UTC, before the 14:00 UTC boundary) as session 20260915_140342_canon-c205-in12-eager-n2 — the loop's fourth iteration, after the e0ai500 pair (F120) failed to earn the halved desire; the stop watcher and a waiter armed, smoke check clean
 config/mod_config.canon-c205-e0ai500-eager.json ⭐ THE SAME WITH THE HALVED RUNG-0 DESIRE (ai_value 500 / 3,000 / 9,000 / 27,000) — runs in place of the book above ONLY
                         if the e0ai500 batch (20260915_082510) earns it (rung 0's level count falling 1900 → 1935 without leaving the band). Dry-run built clean;
                         schedule `canon_c205_e0ai500_eager_n2.json`. Un-ignored with its twin

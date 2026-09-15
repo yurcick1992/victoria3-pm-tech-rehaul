@@ -12154,3 +12154,65 @@ a mean of 95, while one century's own growth runs 51 → 414 s/yr.
   unit of world dearer.
 - **It does not re-open the vanilla/mod speed verdict**: under the shipped model the two arms sit at 1.007
   and 1.021, a 1.4pp gap with per-run scatter of 7–8%.
+
+## F120 — HALVING THE OLD RUNG'S CONSTRUCTION DESIRE DOES NOT TOUCH ITS REBUILD (canon-c19-e0ai500, n=2 aligned, 2026-09-15): rung 0's level count still climbs 12–18% from 1900 to 1935 at 46–47% staffing, exactly the found configuration; the economy is the C 1.9 book's in two more seeds (1.13 / 1.04× GDP, 0.70 / 0.64× workers, in the band) — the willingness lever is closed for goal 3
+
+**Claim.** On the found configuration (F117: cost = anchor × 1.9^era, A 2.2 / B 1.5, the ×1.2 lift), rung 0's ai_value halved to 500 with
+e1–e3 unchanged at 3,000 / 9,000 / 27,000 (`canon-c19-e0ai500`) changed NOTHING about the old rung: its level count rose **1,291 → 1,435 →
+1,529** (run 1, +18%) and **1,249 → 1,326 → 1,400** (run 2, +12%) at 1900 / 1920 / 1935, against the found configuration's 1,330 → 1,568 /
+1,672; staffing **46% / 47%** at a **24% / 25%** margin (F117: 45% at 22–26%) against e1 65–66% at 30–33%, e2 90–94% at 45–46%, e3 93–95% at
+38%. The score the government AI reads is not what builds rung 0; the private pool's expansion of company-owned buildings is (F100), and no
+ai_value reaches it. The pair ALIGNED under the 2+1 rule — **1.13× and 1.04×** the vanilla per-run median at 1935 (medians 1.084× GDP, 0.667×
+workers per capita, both in the target band; 1.16 / 1.05 at 1936, nothing near the stop line) — so with F117 the C 1.9 family reads 1.09 / 1.07 /
+1.13 / 1.04× on GDP and 0.65 / 0.67 / 0.70 / 0.64× on workers across FOUR seeds, in the band four times, the old rung alive in all four.
+
+**Arm, n, span.** Session `20260915_082510_canon-c19-e0ai500-n2`, runs 1–2 (1836 → 1936.1.1; 158.7 and 170.1 min of play, one attempt each,
+no crash). Every ratio ÷ the vanilla per-run median (n=16 in the ledger tools; the eighteen-run cache in the decade reader). Schedule
+`canon_c19_e0ai500_n2.json`, predictions pre-registered; `alignment_check.mjs` exit 0; `capital_flags.mjs` CLEAN.
+
+**Numbers (run 1 / run 2).**
+
+| year | GDP £M run 1 / run 2 / van | ÷ van | prod. workers per capita ÷ van | pools ÷ GDP run 1 / run 2 / van | Britain ÷ van |
+|---|---|---|---|---|---|
+| 1860 | 712 / 667 / 725 | 0.98 / 0.92 | 0.95 / 0.93 | 0.12 / 0.09 / 0.16 | 1.23 / 0.84 |
+| 1880 | 917 / 844 / 1,056 | 0.87 / 0.80 | 0.91 / 0.85 | 0.21 / 0.12 / 0.17 | 1.08 / 0.48 |
+| 1900 | 1,380 / 1,457 / 1,714 | 0.81 / 0.85 | 0.72 / 0.71 | 0.19 / 0.12 / 0.20 | 0.97 / 1.23 |
+| 1920 | 2,602 / 2,528 / 2,799 | 0.93 / 0.90 | 0.66 / 0.64 | 0.35 / 0.23 / 0.24 | 1.25 / 1.46 |
+| 1930 | 3,904 / 3,866 / 3,812 | 1.02 / 1.01 | 0.66 / 0.63 | 0.56 / 0.34 / 0.27 | 1.72 / 1.81 |
+| 1935 | 4,964 / 4,550 / 4,390 | 1.13 / 1.04 | 0.70 / 0.64 | 0.70 / 0.48 / 0.31 | 2.03 / 1.97 |
+| 1936 | 5,239 / 4,730 / 4,544 | 1.15 / 1.04 | 0.70 / 0.64 | 0.71 / 0.50 / 0.30 | 2.08 / 2.01 |
+
+- **Decomposition at 1935** (vanilla n=16, medians): world 1.08× = population 1.00× × workers per capita 0.67× × GDP per productive worker
+  **1.62×** (£25.6 against £16.1); the shortlist (GBR USA FRA NET BEL PRU GER) 1.67× GDP, 0.81× workers, 2.00× per worker.
+- **THE HOARD AND UNEMPLOYMENT SPLITS** (the first batch reported with them — `capital_flags.mjs`): hoard world **0.70 / 0.48** (median 0.59;
+  vanilla 0.29), shortlist GBR+USA+FRA+GER **1.20 / 0.76** (Britain 1.34 / 1.76, Germany 1.86 / 0.27, USA 0.40 / 0.22, France 0.11 / 0.23;
+  vanilla median 0.35); total unemployment INCLUDING peasants world **57.3% / 60.5%**, shortlist **32.4% / 26.6%** (strict, without peasants:
+  23.8% / 29.2% and 6.2% / 5.6%; vanilla 41.7% / 21.7% and 16.3% / 4.0%). The capital-abundance flag (a member under 3% with a hoard over 2)
+  is CLEAN; Germany 0.2% at 1.86 (run 1) and Britain 2.4% at 1.76 (run 2) are the near-misses. The private construction queue is a 2.0 / 2.4-year
+  backlog (Britain 2.6 / 3.1, Germany 3.4 in run 2) with the private share of construction speed 76% / 85% — capacity-bound, as F119's addendum
+  read on the found configuration; construction sector 3,161 / 2,803 levels.
+- **Rung margins by era at 1935** (levels / staffed / margin): run 1 e0 1,529 / 46% / 24% · e1 1,908 / 65% / 33% · e2 5,306 / 94% / 45% · e3
+  2,236 / 93% / 38%; run 2 e0 1,400 / 47% / 25% · e1 1,866 / 66% / 30% · e2 4,728 / 90% / 46% · e3 1,709 / 95% / 38%. Rung 0 at 1900: 1,291 /
+  61% / 30% and 1,249 / 69% / 33%.
+- **Capital and labour at 1935:** tiered levels 10,979 / 9,703 (F117: 10,633 / 9,917; vanilla 21,971); peasants 11.2% of the strata population
+  in both. **Majors** (÷ vanilla median, run 1 / run 2): Britain 2.03 / 1.97, Germany 1.53 / 1.76, USA 1.36 / 1.44, Belgium 0.81 / 2.48, France
+  0.79 / 0.65, Russia 1.12 / 0.55, Japan 0.76 / 1.16, Spain 1.57 / 0.33, Austria 0.92 / 0.04, Italy 0.67 / 0.98.
+- **Build choice:** below-best 30.3% (F117's 34.9% on the C 2.05 lift; the lever moved the share of building that goes below the best rung, not
+  the old rung's count); frontier payback 8.9 y, stale 48 y.
+- **Speed:** 158.7 / 170.1 min of play against the vanilla median 164.9 (0.96 / 1.03×); pop-matched −6.8%; no crash.
+- **Predictions vs outcome** (the schedule's pre-registration): GDP 0.95–1.20× — met (1.13 / 1.04); the 1900 dip 0.75–0.95× — met (0.81 / 0.85);
+  no runaway — met; workers 0.60–0.72× — met (0.70 / 0.64); THE KEY ONE, rung 0's level count at 1935 below 1900's — MISSED (+18% / +12%);
+  staffing 25–40% — missed (46 / 47%); margin 15–25% — met; below-best 25–32% — met (30.3%); pools 0.35–0.65 — run 1 missed above (0.70), run 2
+  met (0.48); tiered levels 9,000–13,000 — met; perf within +10% — met.
+
+**What it says about the goals.** Goal 3 (the old rung obsolete) is not reachable through the AI's construction desire: the rebuild lives in
+the private pool's expansion of company-owned buildings. The willingness lever joins the two price levers (F118, F119) as closed at this slope;
+the halved desire is NOT carried forward. The economy is the found configuration's, now at four seeds in the band.
+
+**Confidence.** High for the null result (a within-run trend, the same in both seeds and in every book of the sweep) and for the band reading
+(n=4 for the family); the majors' distribution is seed-dependent (Austria 0.92 / 0.04, Belgium 0.81 / 2.48).
+
+**What it does NOT say.** Whether ai_value 0 on rung 0 would move the rebuild (F100 says the pool ignores it — untested); whether the eager
+spending set on the under-side slope (the loop's fourth pick, `canon-c205-in12-eager`, launched 14:03 local) cuts the hoard without leaving the
+band. Session `20260915_082510`, VERDICT.md there; config committed as `config/mod_config.canon-c19-e0ai500.json` (`_ab.command`). Ledger
+https://claude.ai/code/artifact/a1a6bb8b-0e98-4849-8035-7fcd88027397 (one configuration per report).
