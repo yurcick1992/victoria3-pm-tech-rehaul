@@ -12328,7 +12328,7 @@ the cap vanilla's own comment in `common/defines/00_ai.txt` names (*"capped at 1
 excludes 1**, so the value was discarded and the key kept **vanilla's 0.75** — *less* eager than the book this batch was a
 one-lever test against. The second line is a consequence of the land `CRITICAL_THRESHOLD` at 1.25 exceeding vanilla's own
 ship `EXCESSIVE_THRESHOLD` of 1.05, a define no book of ours sets; naval only, and what the engine holds for it afterwards
-is not known. The non-eager books (pool factor 0.9) carry neither line — checked on 20260915_082510 and 20260914_173832.
+is not known. The non-eager books (pool factor 0.9) carry neither line. ⭐ SWEPT OVER EVERY SESSION ON DISK (every `error.log` under `tools/testbed/sessions/`): the ONLY sessions carrying a rejected define are the three eager ones and the aborted relaunch — so the defect is confined to this define family and NO earlier finding is affected by it.
 
 **What still stands, unchanged.** Everything this finding measured about the QUEUE: the three levers that DID load
 (CRITICAL 0.9 → 1.25, EXCESSIVE 1.5 → 3.0, MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED 0.1 → 0.05) cut the private
