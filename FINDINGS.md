@@ -12302,7 +12302,9 @@ What survives, and how far:
   its most eager (3,625 levels, a fifth above the found configuration's), or the inflow a quarter smaller. Neither is an AI define:
   the sector's throughput per level and its goods per point are the construction sector's own methods, and the inflow is the laws'
   `state_<pop>_investment_pool_efficiency_mult` / `_contribution_add` modifiers (01_economic_system.txt: ±0.25 to ±0.75 by law).
-  That is the ruling the next session needs before another define batch is spent on the hoard.
+  That is the ruling the next session needs before another define batch is spent on the hoard. ⭐ **RULED 2026-09-15: BOTH ARE
+  REFUSED ON SCOPE** (§10.79) — the mod does not touch the construction sector's methods or the laws' pool modifiers, so the
+  only lever left is the define family's untried cap (0.99) and, indirectly, the configuration's own economics.
 - **The bistability is the slope's, not the set's**: F119 stalled at C 2.05 in both seeds without the set (with the ×1.3 lift), and
   the two F121 stalls are locked in by British events (a civil war 1860–63, a bankruptcy 1912) that the found slope survives in four
   of four seeds. So "C 2.05" is on the cliff, and the under-side rule's "slightly under" has to be found between 1.9 and 2.05.
@@ -12342,8 +12344,12 @@ its most eager on the one define that scales investment with pool size. One untr
 the validator accepts. That is a 32% increase over the 0.75 that actually ran and a 10% increase over the canon's 0.9, so
 it is not nothing; whether it is enough to absorb an inflow of ~£1.1–1.3B a year against £0.8–1.0B of construction spend is
 what `canon-c19-in12-eager` (regenerated at 0.99, session 20260915_232710) now measures. **Until that reads, treat the
-define family as UNTESTED AT ITS CAP rather than spent**, and do not yet spend the balance-side ruling the addendum asks
-for (the construction sector's throughput or the pool's inflow) on the strength of this batch alone.
+define family as UNTESTED AT ITS CAP rather than spent**. ⭐⭐ **AND THE RULING ARRIVED THE SAME EVENING AND REFUSED BOTH
+BALANCE-SIDE LEVERS, ON SCOPE** (user: *"touching the construction methods is something I strongly want to avoid. Going into pool
+efficiency modifiers by laws is completely out of the scope, no way this mod goes into this, we're a bit overextended already"*;
+BALANCE_FRAMEWORK §10.79). So the addendum's two candidates are closed and must not be re-proposed, 0.99 is the LAST in-scope
+define, and if it does not hold the pool the hoard becomes an accepted documented residual of the configuration — reported every
+batch, never tuned again — keeping only its role as the capital-abundance VOID criterion.
 
 **What it costs the comparison.** All three F121 runs share the defect identically, so the batch is internally consistent
 and its three seeds remain comparable with each other. Against the found configuration `canon-c19-in12` (pool factor 0.9,

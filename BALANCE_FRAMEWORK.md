@@ -7327,6 +7327,28 @@ AI builds at its most eager, or the inflow a quarter smaller. ⇒ **The hoard's 
 ruling**: the construction sector's throughput per level or goods per point, or the pool's inflow (the laws'
 `state_<pop>_investment_pool_efficiency_mult` / `_contribution_add`, ±0.25 to ±0.75 today).
 
+⭐⭐ **RULED 2026-09-15 (the same evening the question was put): BOTH BALANCE-SIDE HOARD LEVERS ARE REFUSED, ON SCOPE.**
+The user, in full: *"touching the construction methods is something I strongly want to avoid. Going into pool efficiency modifiers
+by laws is completely out of the scope, no way this mod goes into this, we're a bit overextended already."* So the two candidates the
+arithmetic above identified — the construction sector's throughput per level or goods per point, and the laws' investment-pool
+contribution modifiers — are **closed, and are not to be re-proposed**. (The private-allocation share is a law modifier too,
+`country_private_construction_allocation_mult`; it falls under the same refusal.)
+
+⇒ **What remains in scope for the hoard, in full:**
+1. **The AI define family, at the one value it has never actually held — `TOO_LARGE_INVESTMENT_POOL_FACTOR` 0.99** (L33: the batch
+   that was meant to test 1.0 ran at vanilla's 0.75). `canon-c19-in12-eager` measures it. This is the LAST untried define: the
+   coverage define was ruled out 2026-09-05, the update divisor is not the bottleneck (2,100–2,300 items already queued), and the
+   other three are measured (a queue lever, 3 of 3 seeds).
+2. **The configuration's own economics** — the cost slope C, A/B, the lift — which move the pool INDIRECTLY, by changing how much
+   surplus the economy generates and how fast the frontier absorbs it. That is what the sweep is already doing, and it is what the
+   **under-side rule** (same ruling day) exists for: take the other settings from the side that reads slightly under target,
+   because faster spending raises GDP and depeasantation.
+
+⇒ **And if 0.99 does not hold it: the hoard becomes an ACCEPTED, DOCUMENTED RESIDUAL of the configuration, not a target.** Do not
+spend a further batch on it. It keeps its role as a **void criterion** — the capital-abundance flag (a shortlist member under 3%
+total unemployment including peasants with a hoard over 2 GDP; the pooled shortlist tripping voids the configuration) is a gate on
+results, and needs no lever to work. Report the pool ÷ GDP every batch and say plainly that it sits above vanilla's 0.31.
+
 ⚠⚠ **L33 — THE EAGER SET RAN AT THREE OF ITS FOUR LEVERS, AND THE FOURTH RAN BACKWARDS (found 2026-09-15, corrected in F121).**
 The set raises `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR` from the canon's 0.9 to **1.0** — the cap vanilla's own
 comment in `common/defines/00_ai.txt` names (*"capped at 1"*). **The engine's validator excludes 1** (`Must be between 0 (included) and
