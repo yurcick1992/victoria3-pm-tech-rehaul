@@ -942,9 +942,12 @@ config/mod_config.canon-c19-e0ai500.json ⭐ THE LOOP'S THIRD PICK (drafted 2026
 config/mod_config.canon-c19-in12-eager.json ⭐ THE HOARDING FIX (user-ruled 2026-09-15 morning: "hoarding is a problem by itself that should be tuned by
                         spending eagerness defines … significant hoarding (more than 1 yearly world product) can spoil all measurements, and we're aiming at
                         levels lower than vanilla, better to fix that sooner than later"): canon-c19-in12 with ONLY the investment-pool defines pushed toward
-                        spending — MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR 1.0 (its stated cap) in place of 0.9, CRITICAL 1.25 / EXCESSIVE
+                        spending — MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR **0.99** in place of 0.9 (⚠ 1.0 — the cap vanilla's own comment names — is REJECTED by the engine's validator, whose range is [0,1), and the key then keeps VANILLA's 0.75, i.e. BELOW the canon: landmine **L33**, found 2026-09-15; every eager book was regenerated at 0.99 and F121's `canon-c205-in12-eager` is deliberately left at 1.0 as its own record), CRITICAL 1.25 / EXCESSIVE
                         3.0 in place of 0.9 / 1.5, CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED back to vanilla's 0.05 from 0.1; the
-                        LONG/VERY_LONG thresholds, the divisor, every recipe, cost, ai_value and the bar identical (field diff: ai_defines only). WHY THESE
+                        LONG/VERY_LONG thresholds, the divisor, every recipe, cost, ai_value and the bar identical (field diff: ai_defines only). ⚠ A NAMED RESIDUAL of every eager book: the land CRITICAL at 1.25 makes
+                        VANILLA's own MONEY_SPENDING_SHIP_CONSTRUCTION_EXCESSIVE_THRESHOLD (1.05, a define we never set) invalid, so the engine rejects that one
+                        too and what it holds for the key afterwards is NOT known — naval construction only, identical across every eager arm, accepted rather
+                        than fixed so the batch keeps one lever (L33). WHY THESE
                         (measured on the C 1.9 runs, F119's addendum): the hoard is CAPACITY-BOUND — the private queue is a 2.0–2.4-year backlog at 1935
                         (vanilla 0.3–0.4) with the private share of construction speed already 74–87%, and the GOVERNMENT queue 2.8–3.0 years deep (vanilla
                         0.5), clogged with the dear rungs the government AI builds itself, so the construction sectors it queues arrive years late; the pool
@@ -3504,7 +3507,7 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   the mirror; PMR_JE completions and event lines were multiplied, so any RAW LINE COUNT off a mirror over-reads
   (F101's canon-n7 figure 2.3×). Observer fixed (an unchanged first-line signature = stale length); `Test-LmL28`
   fails a session whose mirrors carry a `recovered 0 chars from []` seam, and `je_tally.mjs` de-duplicates ·
-  **L12 savegames reaped without a readable
+  **L33 AN EMITTED DEFINE THE ENGINE REJECTS AT LOAD (AUTO since 2026-09-15)** — a value outside the validator's hardcoded range is discarded with ONE line in error.log and the key keeps VANILLA's, so the run is not the config: the eager set's `TOO_LARGE_INVESTMENT_POOL_FACTOR = 1.0` (vanilla's own comment says "capped at 1"; the range is [0,1)) ran at vanilla's 0.75 — BELOW the 0.9 it was a one-lever test against — and F121 measured three of its four levers; a bound can also cross-reference a sibling (land CRITICAL 1.25 invalidates vanilla's ship EXCESSIVE 1.05). `Test-LmL33` checks the config's `ai_defines` against the bounds the engine has stated (`-RepoOnly`, gates a launch) and, with `-Session`, every run's error.log for `defines.cpp`'s rejection line; `batch_heartbeat.sh` gives it its own DEFINE REJECTED alarm · **L12 savegames reaped without a readable
   summary** · **L26 ONE RUN FOLDER HOLDING TWO CAMPAIGNS** — a crash-resume whose load fails starts a
   FRESH 1836 game, and if that fresh campaign reaches the target, the observer's landing guard is
   structurally unreachable (it sits after `if ($reached -or $timedOut) { break }`), so the run is

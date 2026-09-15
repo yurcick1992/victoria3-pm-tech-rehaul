@@ -33,6 +33,11 @@ if [ -n "$RUN" ] && [ -f $RUN/run.log ]; then
       W=$(grep -v -E "jomini_spline_network_graphics|is_production_method_active|lawgroup_navy_model|Could not get leader of interest group|jomini_script_system.cpp:247|Script location|untyped trigger \[ Scoped object of type 'country' is not valid|Div/0 near common/political_movements|Event target link 'religion' returned an invalid object" $WIN | wc -l)
       echo "    error window $START-$NOWT: $(wc -l < $WIN) lines, $W after the noise classes; top classes:"
       grep -v -E "jomini_spline_network_graphics|is_production_method_active|lawgroup_navy_model|Could not get leader of interest group|jomini_script_system.cpp:247|Script location|untyped trigger \[ Scoped object of type 'country' is not valid|Div/0 near common/political_movements|Event target link 'religion' returned an invalid object" $WIN | sed -E 's/^\[[0-9:]+\]\[[^]]*\]: //; s/[0-9]+/N/g' | cut -c1-100 | sort | uniq -c | sort -rn | head -4 | sed 's/^/      /'
+      # L33: a define the engine REJECTED keeps VANILLA's value, so the arm is not the book it claims to be.
+      # It is ONE line at load among fifty and it read as ordinary noise once already (2026-09-15: the eager set's
+      # pool factor at 1.0, which the validator excludes) — so it gets its own alarm, never a place in "top classes".
+      DEF=$(grep -c "not valid with given value" $WIN)
+      [ "$DEF" != "0" ] && { echo "    DEFINE REJECTED AT LOAD (L33) — the key keeps VANILLA's value; this run is NOT the config:"; grep "not valid with given value" $WIN | sed -E 's/^\[[0-9:]+\]\[[^]]*\]: //' | sort -u | sed 's/^/      /'; }
       OURS=$(grep -i -E "zzz_pm_rehaul|pm_rehaul|journal_entries/zzz|scripted_progress_bars/zzz|company_types" $WIN | grep -v "is_production_method_active\|utf8-bom" | wc -l)
       [ "$OURS" != "0" ] && { echo "    ⚠ $OURS lines name OUR files:"; grep -i -E "zzz_pm_rehaul|pm_rehaul" $WIN | grep -v "utf8-bom" | cut -c1-140 | sort | uniq -c | sort -rn | head -3 | sed 's/^/      /'; }
     else

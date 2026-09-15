@@ -12309,6 +12309,51 @@ What survives, and how far:
 - **Not salvageable:** any reading of "C 2.05 ×1.2 + eager" as a configuration (GDP, workers, rung 0), and the claim the set is a
   hoard fix — it is a queue fix whose pool follows growth.
 
+**⚠⚠ CORRECTION (2026-09-15 late evening, the next configuration's first minutes) — F121 MEASURED THREE OF ITS FOUR LEVERS. The
+engine REJECTED the pool-pressure define and ran it at vanilla's value, which is BELOW the canon's.**
+
+Found at the five-minute smoke check of the next configuration in the series (`canon-c19-in12-eager`, session
+20260915_232404, killed at two minutes of play and kept as the evidence). Every run of this batch — 20260915_140342's
+two and 20260915_182813's one — carries these two lines in its own `logs_live/error.log`, stamped at load:
+
+```
+[defines.cpp:167]: Define 'NAI::MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR' not valid with given value,
+                   reason: Must be between 0 (included) and 1 (excluded)
+[defines.cpp:167]: Define 'NAI::MONEY_SPENDING_SHIP_CONSTRUCTION_EXCESSIVE_THRESHOLD' not valid with given value,
+                   reason: Must be greater than 1.25
+```
+
+The eager set raised `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR` from the canon's **0.9** to **1.0**,
+the cap vanilla's own comment in `common/defines/00_ai.txt` names (*"capped at 1"*). **The validator's range is [0,1) and
+excludes 1**, so the value was discarded and the key kept **vanilla's 0.75** — *less* eager than the book this batch was a
+one-lever test against. The second line is a consequence of the land `CRITICAL_THRESHOLD` at 1.25 exceeding vanilla's own
+ship `EXCESSIVE_THRESHOLD` of 1.05, a define no book of ours sets; naval only, and what the engine holds for it afterwards
+is not known. The non-eager books (pool factor 0.9) carry neither line — checked on 20260915_082510 and 20260914_173832.
+
+**What still stands, unchanged.** Everything this finding measured about the QUEUE: the three levers that DID load
+(CRITICAL 0.9 → 1.25, EXCESSIVE 1.5 → 3.0, MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED 0.1 → 0.05) cut the private
+backlog to 1.1–1.3 years and the government backlog to 0.9–1.6 in 3 of 3 seeds, against the found configuration's 2.0–2.4
+and 2.8–3.0, and did not damage AI finances. The bistability at C 2.05 stands (F119 stalled there without the set). The
+GDP readings 0.56 / 0.37 / 1.32× stand as readings of *that* mod, which is a real configuration — just not the authored one.
+
+**What is weakened, and by exactly how much.** The conclusion *"the AI's construction-sizing defines are spent as a hoard
+lever"* rested on the pool returning to 0.83 of GDP in the growth seed at the AI's **most eager** — and the AI was not at
+its most eager on the one define that scales investment with pool size. One untried value remains: **0.99**, the highest
+the validator accepts. That is a 32% increase over the 0.75 that actually ran and a 10% increase over the canon's 0.9, so
+it is not nothing; whether it is enough to absorb an inflow of ~£1.1–1.3B a year against £0.8–1.0B of construction spend is
+what `canon-c19-in12-eager` (regenerated at 0.99, session 20260915_232710) now measures. **Until that reads, treat the
+define family as UNTESTED AT ITS CAP rather than spent**, and do not yet spend the balance-side ruling the addendum asks
+for (the construction sector's throughput or the pool's inflow) on the strength of this batch alone.
+
+**What it costs the comparison.** All three F121 runs share the defect identically, so the batch is internally consistent
+and its three seeds remain comparable with each other. Against the found configuration `canon-c19-in12` (pool factor 0.9,
+valid) the arm differs in **four** ways, not three: the three loaded levers, plus a pool factor of 0.75 against 0.9. Any
+reading of F121 as "C 2.05 + the eager set" must say so.
+
+Landmine **L33** and `Test-LmL33` now catch both halves of this — the config's `ai_defines` against the bounds the engine
+has stated, and any run's error log for `defines.cpp`'s rejection line — and `batch_heartbeat.sh` gives it a dedicated
+DEFINE REJECTED alarm, because at minute five these two lines sat in the error window and read as ordinary noise.
+
 ## F122 — THE OLD RUNG ON THE FOUND SLOPE IS NOT REBUILT AFTER 1920, IT PERSISTS: rung 0's level count rises 12–18% from 1900 to 1935 but the growth is front-loaded and stops by 1930, its STAFFED levels fall by a fifth, half or more of the added levels are NEW BUILDINGS in fresh states placed by countries that already hold the frontier, and by 1935 rung 0 is 1% of either construction queue (canon-c19-in12, two seeds, read 2026-09-15)
 
 **Claim.** On the found configuration (`canon-c19-in12`, F117; sessions `20260914_173832` run 1 and `20260914_204329` run 1, the

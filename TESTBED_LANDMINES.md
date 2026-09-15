@@ -79,6 +79,8 @@ closed.
 | L29 | The OBSERVER DIED ON ITS OWN LOG LINE — `Add-Content` to run.log throws "Stream was not readable" while another process reads the file (a heartbeat's `tail -1`), and under `Stop` preference the unguarded tick write unwound the observer with the game still running; the scheduler then burned 48 runs in 15 minutes behind the orphan (L19's cascade) | FIXED (generator) + PROOF OWED | all four harness log writers retry and never throw (2026-09-07); `run_schedule.ps1` aborts after TWO consecutive instant failures (non-zero exit < 90 s after launch) — live proof owed at the next idle window; L17 catches the artifact (a run with no meta.json) |
 | L30 | A BATCH LAUNCHED FROM THE AGENT'S TOOL SHELL DIES WITH THE APP — the shell sits in the desktop app's job object (KILL_ON_JOB_CLOSE), a `Start-Process` child silently breaks away into a SECOND app job, and an app restart (a forced re-auth, 2026-09-10 18:45:29) tore both down: scheduler, observer, game, archiver and harvester died in one second, ten months short of run 1's end | AUTO (launch) + WARN (scheduler) | `tools/testbed/launch_detached.ps1` creates the process through WMI (in NO job) and FAILS unless the kernel confirms it; `run_schedule.ps1` prints an ALERT when it finds itself inside a job. Found 2026-09-13 |
 | L31 | A RUNG PLACED OR PRICED BY ITS ORDER IN THE INDUSTRY RATHER THAN BY ITS ERA — the A/B generator keyed output, input value, cost and the lift on k = era − the industry's first era, so a late industry's first rung (automotive e2, electrics, synthetics, munition) was priced as an 1836 rung and electrics' only rung sat one era below its game-era-4 technology; eleven batches passed every lint | AUTO | `tools/lint_tier_eras.mjs` inside build.ps1 (throws) and `Test-LmL31` (the config + its paired tree); the generator derives eras from the technologies and throws beyond ±1. Found 2026-09-13 |
+| L32 | A CTD DURING THE AUTOSAVE WRITE LEAVES THE CONTINUE POINTER AIMED AT A SAVE THAT DOES NOT EXIST — the engine resumes by the TITLE its own `continue_game.json` names, not the newest file, so a truncated write defeats every step-back and the resume begins a FRESH 1836 game | AUTO | the deterministic resume feeder (quarantined set, one attempt per member, the `-ResumeWindowYears` process rule) + `Test-LmL32`: any run whose debug.log carries `Could not load save game [`. Found 2026-09-14 |
+| L33 | AN EMITTED DEFINE THE ENGINE REJECTS AT LOAD — a value outside the validator's hardcoded range is discarded with ONE line in error.log and the key keeps VANILLA's, so the arm is not the book: the eager set's `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR = 1.0` (vanilla's own comment says "capped at 1"; the range is [0,1)) ran at vanilla's 0.75, BELOW the 0.9 it was a one-lever test against, and F121 measured three of its four levers. A bound can also be a cross-reference: land `CRITICAL_THRESHOLD` 1.25 invalidates vanilla's ship `EXCESSIVE_THRESHOLD` 1.05, a define we never set | AUTO | `Test-LmL33` — (a) the config's `ai_defines` against the bounds the engine has stated (`-RepoOnly`, gates a launch), (b) with `-Session`, every run's error.log for `defines.cpp` "not valid with given value", which needs no table; `batch_heartbeat.sh` gives it its own DEFINE REJECTED alarm. Found 2026-09-15 |
 
 ---
 
@@ -1708,3 +1710,59 @@ aside, never fed); beyond the window a new process opens from the engine's curre
 **Detector `Test-LmL32`** (`preflight.ps1 -Session`): any run whose `logs_live/debug.log` carries `Could not load save game [` →
 FAIL naming the run and the count; after the feeder, a `resume feed` line in run.log beside it for the same attempt turns it into a
 WARN (the feeder handled it). Proven on run002 of 20260914_173832 (FAIL) and on the r2 session (PASS).
+
+## L33 — AN EMITTED DEFINE THE ENGINE REJECTS AT LOAD, so the lever silently reverts to VANILLA — and can move BACKWARDS (found 2026-09-15, run 1 of 20260915_232404_canon-c19-in12-eager-n2; retrospectively in every F121 run)
+
+### Why nothing fails
+Defines are a PARTIAL override and the engine VALIDATES each value as it loads it, against ranges that are hardcoded, undocumented,
+and in one case a cross-reference to a sibling define. A value outside the range is DISCARDED with **one line in error.log** and the
+key keeps the value it already had — vanilla's. Everything downstream looks perfect: `build.ps1` passes every linter, `preflight`
+passes, the mod loads, the init marker is written, the smoke check shows the clock advancing, the run completes, the ledger fills. The
+arm is simply not the configuration anybody authored, and no artifact says so.
+
+### What it actually did
+The eager-spending set (§10.79) raised `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR` from the canon's **0.9** to
+**1.0** — the cap vanilla's own comment names in `common/defines/00_ai.txt` (*"capped at 1"*). The validator's range is **[0,1) and
+excludes 1**:
+
+```
+[defines.cpp:167]: Define 'NAI::MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR' not valid with given value,
+                   reason: Must be between 0 (included) and 1 (excluded)
+```
+
+So the arm ran at **vanilla's 0.75** — *less* eager than the book it was a one-lever test against, on precisely the lever the batch
+existed to measure. **F121 measured three of its four levers**, and the one it lost was the pool-pressure factor, the one aimed
+straight at the hoard. Its conclusions about the QUEUE (both backlogs cut, in 3 of 3 seeds) stand on the three that loaded; its
+statement that the define family is *spent* as a hoard lever is weakened by exactly one untried value.
+
+### And one define's value can invalidate another we never set
+With the land `MONEY_SPENDING_CONSTRUCTION_CRITICAL_THRESHOLD` at 1.25, the engine rejects **vanilla's own**
+`MONEY_SPENDING_SHIP_CONSTRUCTION_EXCESSIVE_THRESHOLD = 1.05` — *"Must be greater than 1.25"* — a define no book of ours sets. The
+bound can therefore be a cross-reference to a sibling, which no table of per-key ranges can fully anticipate. ⚠ Accepted as a named
+residual in every eager arm rather than fixed: it is naval construction only, it is identical across the eager books, and setting it
+would add a naval lever to a batch that exists to isolate the spending set. What value the engine holds after rejecting a value that
+came from vanilla itself is **not known** — say so, do not assume 1.05 survives.
+
+### The rule
+**A define is not applied because we wrote it.** Emitting a define is a request; the engine's validator decides. So the emitted value
+must be inside the bound, and the run's own error log is the only proof that it was.
+
+### DETECTOR `Test-LmL33` (`preflight.ps1`), two halves — the second needs no table
+- **(a) STATIC, before a batch** (reads the CONFIG, so `-RepoOnly -Only L33 -Config <cfg>` gates a launch in two seconds): every
+  `ai_defines` value against KNOWN bounds. The table is small by construction — a bound enters it only once the engine has *stated*
+  it. Today: `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR` ∈ [0,1) → FAIL; land `CRITICAL_THRESHOLD` ≥ the ship
+  `EXCESSIVE_THRESHOLD` (vanilla 1.05 unless overridden) → WARN, since that one is a deliberate trade.
+- **(b) POST-RUN** (`-Session <dir>`): every run's `logs_live\error.log` for `defines.cpp`'s *"not valid with given value"*, which
+  catches ANY define including ones no table knows, and names the run and the keys.
+
+Proven three ways on the day it was written: the unregenerated `canon-c205-in12-eager` (still 1.0) → FAIL on the static half; the
+aborted session → FAIL on the log half, naming both keys; `canon-c19-in12` → PASS clean.
+
+`tools/testbed/batch_heartbeat.sh` prints the same line as its own **DEFINE REJECTED AT LOAD (L33)** alarm, never folded into the
+"top classes" tally — the run that found this had both lines in its error window at minute five and they read as ordinary noise,
+which is the whole reason the alarm is separate.
+
+### The generator side
+`ai_defines` reaches the mod through `emit_techs.mjs` unchanged, and a book's values come from `make_ab_config --ai-defines`. Fix a
+breach by regenerating from the book's own `_ab.command` with the value moved inside the bound — never by hand-editing `ai_defines`,
+which would leave `_ab.command` describing a book that no longer exists.

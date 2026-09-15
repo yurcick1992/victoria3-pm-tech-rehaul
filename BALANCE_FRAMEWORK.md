@@ -7038,6 +7038,15 @@ n=2 in the ruled config."
 | `PRODUCTION_BUILDING_AUTONOMOUS_INVESTMENT_WANTED_COST_COVERAGE` | 1 | 1 | 1 | RULED OUT. The pool must hold a construction's whole cost before starting it; a rung-3 mill is £2.6–3.5M, which a minor's pool never reaches |
 | `AUTONOMOUS_INVESTMENT_UPDATE_COUNT_DIVISOR` | 500,000 | vanilla | vanilla | one autonomous-investment update per tick per £500k entering the pool; lowering it spends large pools faster at a performance cost — revisit only if pools still hoard after the set |
 
+⚠⚠ **THE ENGINE VALIDATES EVERY DEFINE AS IT LOADS IT, AND A REJECTED VALUE REVERTS TO VANILLA IN SILENCE** (landmine **L33**,
+found 2026-09-15). The bounds are hardcoded and undocumented, and vanilla's own comments can be wrong about them: the comment on
+`TOO_LARGE_INVESTMENT_POOL_FACTOR` says *"capped at 1"* while the validator's range is **[0,1)** and excludes 1 — the eager set used
+1.0 and ran at vanilla's 0.75, i.e. BELOW the canon's 0.9, for a whole batch (F121's correction). **0.99 is the usable cap.** A bound
+can also cross-reference a sibling: raising `MONEY_SPENDING_CONSTRUCTION_CRITICAL_THRESHOLD` to 1.25 invalidates vanilla's own
+`MONEY_SPENDING_SHIP_CONSTRUCTION_EXCESSIVE_THRESHOLD` of 1.05, a define we never set. ⇒ When choosing a define value here, check the
+first run's `error.log` for `defines.cpp` *"not valid with given value"* — `Test-LmL33` and the heartbeat's DEFINE REJECTED alarm do it
+for you, but the value in this table is a REQUEST until a run proves the engine took it.
+
 **ai_value.** 1,000 × 3^era on all 17 tiered industries (1,000 / 3,000 / 9,000 / 27,000), where canon4v steepens glass and
 tooling only and the rest run 1,000 × 2^era. F99 measured the lever on glass and F105 §3 read its path: British glass output
 2.9× vanilla's at 1880 and the price 0.86–0.94× of vanilla's through 1900, converging to 1.07× by 1935 as demand caught up — it
@@ -7317,6 +7326,18 @@ queue's spend (inflow ≈ £1.1–1.3B a year against £0.8–1.0B of constructi
 AI builds at its most eager, or the inflow a quarter smaller. ⇒ **The hoard's lever past this point is a balance change and needs a
 ruling**: the construction sector's throughput per level or goods per point, or the pool's inflow (the laws'
 `state_<pop>_investment_pool_efficiency_mult` / `_contribution_add`, ±0.25 to ±0.75 today).
+
+⚠⚠ **L33 — THE EAGER SET RAN AT THREE OF ITS FOUR LEVERS, AND THE FOURTH RAN BACKWARDS (found 2026-09-15, corrected in F121).**
+The set raises `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR` from the canon's 0.9 to **1.0** — the cap vanilla's own
+comment in `common/defines/00_ai.txt` names (*"capped at 1"*). **The engine's validator excludes 1** (`Must be between 0 (included) and
+1 (excluded)`), discards the value, and the key keeps **vanilla's 0.75** — below the very book the arm is a one-lever test against. Every
+F121 run carries the rejection line; the non-eager books (0.9) carry none. So the "⇒" above is stated one value too early: the define
+family is **untested at its cap**, not spent, and `canon-c19-in12-eager` regenerated at **0.99** (the highest the validator accepts, +32%
+on what actually ran) is what decides it. Every unrun eager book was regenerated at 0.99; `canon-c205-in12-eager` stays at 1.0 as F121's
+own record. A second, accepted residual of the set: the land CRITICAL at 1.25 invalidates VANILLA's ship `EXCESSIVE_THRESHOLD` of 1.05,
+a define no book of ours sets — naval only, identical across the eager arms, and what the engine then holds for it is not known.
+⇒ **Do not spend the balance-side ruling on the strength of F121 alone.** Landmine **L33** now gates both halves (the config's
+`ai_defines` against the bounds the engine has stated, and any run's error log for `defines.cpp`'s rejection line).
 
 **The old rung on the found slope (F122).** Its level count rises 12–18% from 1900 to 1935, but front-loaded (1900–1920, flat after
 1930), its staffed levels FALL by a fifth, half or more of the added levels are NEW buildings in fresh states placed by countries that

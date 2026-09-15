@@ -1232,6 +1232,110 @@ function Test-LmL31 {
     }
 }
 
+function Test-LmL33 {
+    <#
+      L33 - AN EMITTED DEFINE THE ENGINE REJECTS AT LOAD, so the lever silently reverts to VANILLA
+      (found 2026-09-15, the first run of canon-c19-in12-eager, and retrospectively in every F121 run).
+
+      Defines are a PARTIAL override and the engine VALIDATES each value as it loads it. A value outside
+      the engine's own (undocumented, hardcoded) range is DISCARDED with one line in error.log and the
+      key keeps VANILLA's value. Nothing else happens: the build passes every linter, preflight passes,
+      the mod loads, the init marker is written, the run completes, and every downstream number is a
+      measurement of a configuration nobody authored.
+
+      IT CAN MOVE A LEVER BACKWARDS. The eager-spending set raised
+      MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR from the canon's 0.9 to 1.0 - the cap
+      vanilla's own comment names ("capped at 1"). The validator's range is [0,1) and EXCLUDES 1, so the
+      arm ran at vanilla's 0.75: LESS eager than the book it was a one-lever test against, on precisely
+      the lever the batch existed to measure. F121 measured three of its four levers.
+
+      AND ONE DEFINE'S VALUE CAN INVALIDATE ANOTHER WE NEVER SET. With the land
+      MONEY_SPENDING_CONSTRUCTION_CRITICAL_THRESHOLD at 1.25, the engine rejects vanilla's own
+      MONEY_SPENDING_SHIP_CONSTRUCTION_EXCESSIVE_THRESHOLD = 1.05 ("Must be greater than 1.25"), which
+      then keeps its vanilla value. Harmless here (naval construction is not measured) but it is the
+      general shape: the bound can be a cross-reference to a sibling.
+
+      DETECTOR, two halves - the second is the general one and needs no table:
+        (a) STATIC, before a batch (reads the CONFIG, so -RepoOnly gates a launch in two seconds): every
+            `ai_defines` value against KNOWN bounds, learned from the engine's own rejection messages.
+            The table is small by construction - a bound enters it only when the engine has stated it.
+        (b) POST-RUN (needs -Session): every run's logs_live\error.log for defines.cpp's
+            "not valid with given value", which catches ANY define, including ones no table knows.
+      The five-minute smoke check (tools/testbed/batch_heartbeat.sh) prints the same line as its own
+      loud DEFINE REJECTED alarm - the run that found this had it in its error window at minute five
+      and it read as ordinary noise.
+    #>
+    $label = 'a define the engine rejects at load'
+
+    # (a) the static half: known bounds, each one learned from an engine rejection message.
+    #     kind 'range' = [lo,hi) inclusive-exclusive as the engine states it; 'gt_key' = must exceed the
+    #     CURRENT value of another define (vanilla's, unless we override it too).
+    $BOUNDS = @(
+        @{ Key = 'MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR'; Kind = 'range'; Lo = 0.0; Hi = 1.0
+           Msg = 'Must be between 0 (included) and 1 (excluded) - vanilla comments it "capped at 1" and the validator excludes 1; use 0.99' }
+        @{ Key = 'MONEY_SPENDING_CONSTRUCTION_CRITICAL_THRESHOLD'; Kind = 'gt_sibling'
+           Sibling = 'MONEY_SPENDING_SHIP_CONSTRUCTION_EXCESSIVE_THRESHOLD'; SiblingVanilla = 1.05
+           Msg = 'raising it above the SHIP excessive threshold makes THAT define invalid, so ship construction silently keeps vanilla' }
+    )
+    $cfgFile = if ($Config) { $Config } else { Join-Path $Repo 'config\mod_config.json' }
+    if (-not [System.IO.Path]::IsPathRooted($cfgFile)) { $cfgFile = Join-Path $Repo $cfgFile }
+    $statFails = @(); $statWarns = @()
+    if (Test-Path $cfgFile) {
+        $cfg = Get-Content $cfgFile -Raw | ConvertFrom-Json
+        $ad = $cfg.ai_defines
+        if ($ad) {
+            foreach ($b in $BOUNDS) {
+                $prop = $ad.PSObject.Properties[$b.Key]
+                if (-not $prop) { continue }
+                $v = [double]$prop.Value
+                if ($b.Kind -eq 'range') {
+                    if ($v -lt $b.Lo -or $v -ge $b.Hi) {
+                        $statFails += "$($b.Key) = $v is outside [$($b.Lo),$($b.Hi)): $($b.Msg)"
+                    }
+                } elseif ($b.Kind -eq 'gt_sibling') {
+                    $sibProp = $ad.PSObject.Properties[$b.Sibling]
+                    $sib = if ($sibProp) { [double]$sibProp.Value } else { [double]$b.SiblingVanilla }
+                    if ($v -ge $sib) {
+                        $statWarns += "$($b.Key) = $v >= $($b.Sibling) = ${sib}: $($b.Msg)"
+                    }
+                }
+            }
+        }
+    }
+
+    # (b) the general half: what the engine ACTUALLY rejected, read off the run's own error log.
+    $runFails = @()
+    if ($Session) {
+        $sess = $Session
+        if (-not [System.IO.Path]::IsPathRooted($sess)) { $sess = Join-Path $Repo $sess }
+        if (Test-Path $sess) {
+            foreach ($run in @(Get-ChildItem $sess -Directory)) {
+                foreach ($log in @('logs_live\error.log', 'logs\error.log')) {
+                    $f = Join-Path $run.FullName $log
+                    if (-not (Test-Path $f)) { continue }
+                    $hits = @(Select-String -Path $f -Pattern "Define '([^']+)' not valid with given value" -AllMatches |
+                              ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
+                    if ($hits.Count) { $runFails += "$($run.Name): $($hits -join ', ')" }
+                    break   # logs_live is the authoritative mirror; do not double-count logs\
+                }
+            }
+        }
+    }
+
+    if ($statFails.Count -or $runFails.Count) {
+        $msg = @()
+        if ($statFails.Count) { $msg += "config $(Split-Path $cfgFile -Leaf): " + ($statFails -join '; ') }
+        if ($runFails.Count)  { $msg += 'REJECTED AT LOAD - ' + ($runFails -join ' | ') }
+        $msg += 'FIX: the key keeps VANILLA''s value, so the arm is not the book. Move the value inside the bound and regenerate through make_ab_config (never hand-edit ai_defines), then re-run.'
+        Add-Result 'L33' $label 'FAIL' ($msg -join [Environment]::NewLine)
+    } elseif ($statWarns.Count) {
+        Add-Result 'L33' $label 'WARN' (($statWarns -join '; ') + ' - accepted deliberately means the sibling stays vanilla; say so in the verdict')
+    } else {
+        $what = if ($Session) { 'no rejected define in this session and none out of bounds in the config' } else { 'no ai_defines value out of a known bound' }
+        Add-Result 'L33' $label 'PASS' $what
+    }
+}
+
 # --------------------------------------------------------------------------- driver ----
 # `Artifact` = needs a BUILT mod to read. The rest read the repo and can therefore gate a batch
 # BEFORE anything is built, which is the difference between failing in two seconds and failing after
@@ -1266,6 +1370,9 @@ $CHECKS = @(
     # before anything is harvested — which is when a reader that can race the harvester matters.
     @{ Id = 'L25'; Artifact = $false; Fn = { Test-LmL25 } }
     @{ Id = 'L27'; Artifact = $false; Fn = { Test-LmL27 } }
+    # L33 reads the CONFIG (the define bounds the engine has stated) and, with -Session, every run's
+    # error.log for what it actually rejected - so it gates a launch AND audits a finished batch.
+    @{ Id = 'L33'; Artifact = $false; Fn = { Test-LmL33 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {

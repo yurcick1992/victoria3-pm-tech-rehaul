@@ -215,6 +215,17 @@ hand on a major patch.
    to another file — the corresponding tool breaks loudly (clone throws "vanilla building … not found"):
    update the path / the industry's `source_file`.
 
+6. **DEFINE VALIDITY BOUNDS — `tools/preflight.ps1` → `Test-LmL33`'s `$BOUNDS` table.** The engine validates every define as it
+   loads it, against ranges that are **hardcoded in the exe, undocumented, and not always what vanilla's own comment says**: the
+   comment on `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR` reads *"capped at 1"* and the validator's range is
+   **[0,1)**. A rejected value is DISCARDED in silence and the key keeps vanilla's, so a whole batch can measure a configuration
+   nobody authored (landmine **L33**, found 2026-09-15; it cost F121 one of its four levers). Our table is a hand-kept mirror of
+   messages the engine has actually printed, so **a patch can move a bound and the table will not know**. After a major patch,
+   read the first run's `logs_live/error.log` for `defines.cpp` *"not valid with given value"*: the heartbeat's DEFINE REJECTED
+   alarm and `preflight -Session` both surface it, and any new bound the engine names belongs in that table. Note a bound can be a
+   **cross-reference** (land `CRITICAL_THRESHOLD` above the ship `EXCESSIVE_THRESHOLD` invalidates the latter), so a value that was
+   valid alone can be rejected beside a sibling we changed.
+
 ---
 
 ## Testbed (`tools/testbed/run_observer.ps1`) — engine couplings to re-verify
