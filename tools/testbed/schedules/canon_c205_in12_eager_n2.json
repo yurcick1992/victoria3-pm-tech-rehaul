@@ -1,0 +1,80 @@
+{
+ "schedule_version": 1,
+ "label": "canon-c205-in12-eager-n2",
+ "_why": "USER-RULED 2026-09-15 10:05 local: \"more aggressive spend of investment pool money will increase the economy and thus depeasantation. So ceteris paribus, the other parts of the config (A/B/initial input penalty/cost_ladder) should be taken from the side that gave values slightly under the GDP/depeasantation target, not at the target.\" The found configuration (canon-c19-in12, C 1.9 x1.2) reads AT the target with a hoard of 0.53 world / 1.06 shortlist (Britain 2.40 in one seed, capital-abundant); the measured under-side books read 0.65x (C 2.2 x1.2, F113) and 0.73x (C 2.05 x1.3, F119) - noticeably below, not slightly - so the under-side base is the interpolation C 2.05 with the x1.2 lift (generated for the sweep, never run): cost 600 / 1,230 / 2,522 / 5,169 between C 1.9 (1.08x) and C 2.2 (0.65x). THE HOARDING FIX ON THAT BASE: the investment-pool defines pushed toward spending (TOO_LARGE_INVESTMENT_POOL_FACTOR 0.9 -> 1.0, CRITICAL 0.9 -> 1.25, EXCESSIVE 1.5 -> 3.0, MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED 0.1 -> 0.05) - the diagnosis (F119 addendum): the hoard is capacity-bound, a 2.0-2.4-year private construction backlog at 1935 with the private share of speed already 74-87% and the government queue 2.8-3.0 years deep. Two changes against the found configuration by the ruling (the slope to the under side, the eager set); one change against the never-run canon-c205-in12 (the eager set). The capital-abundance flag (user, 2026-09-15): total unemployment INCLUDING peasants under 3% with a hoard over 2 GDP in a shortlist country (GBR, USA, FRA, GER) invalidates the config; both are read per run.",
+ "_arms": {
+  "canon-c205-in12-eager": "{kind: config, config: config/mod_config.mod_config.canon-c205-in12-eager.json} - generated 2026-09-15 10:10 by make_ab_config (its _ab.command holds the line); dry-run built clean."
+ },
+ "_delta": "Against canon-c19-in12 (F117): building cost = anchor x 2.05^era in place of 1.9^era AND the four spending defines; A 2.2 / B 1.5, the x1.2 lift, ai_value 3^era, divisor 0.000125, research events and the 24-month bar identical.",
+ "_predictions": {
+  "hoard": "THE KEY PREDICTION: world pools 0.15-0.35 of a year of GDP at 1935 in both seeds (C 1.9 x1.2: 0.42 / 0.64; vanilla median 0.29), the shortlist (GBR+USA+FRA+GER) pool below 0.6 of their GDP (C 1.9: 1.50 / 0.61) and Britain below 1.0 (2.40 / 0.87); the private queue backlog under 1.5 years at 1935; construction sector levels above 3,500. Failure: pools still above 0.4 with the backlog above 2 years -> the AI cannot buy the capacity on its budget and the lever moves to the construction sector itself.",
+  "gdp": "world GDP 0.90-1.15x the vanilla eighteen-run median at 1935 (point ~1.0x: the dearer slope alone would read ~0.85-0.95x, the spent hoard adds); the 1900 dip 0.70-0.90x. Above 1.3x at 1936 STOPS the config (then the slope must rise further: C 2.2 x1.2 with the eager set is the branch); below 0.8x means the eager set did not lift the dearer frontier and C 1.9 with the set is the branch.",
+  "workers": "productive workers per capita 0.58-0.72x vanilla at 1935 (C 1.9: 0.65 / 0.67; C 2.05 x1.3: 0.56 / 0.57); shortlist unemployment INCLUDING peasants 30-50% (C 1.9: 41 / 40%; vanilla 22%), no shortlist member under 3% with a hoard over 2 (the capital-abundance flag)",
+  "obsolescence": "rung 0 40-50% staffed at a 20-28% margin against the frontier 40%+ (this lever is not aimed at it); its level count still rising unless the e0ai500 twin runs instead; below-best 30-38%",
+  "perf": "row P total within +10% of vanilla median play time; no crash expected, the feeder handles a mid-autosave CTD (L32)"
+ },
+ "_alignment": "THE 2+1 RULE (user-ruled 2026-09-14, F114): after run 2, `node tools/testbed/ledger/alignment_check.mjs --arm <session>:canon-c205-in12-eager` - two criteria at 1935 vs the vanilla per-run median, five bands each, a pair fails an axis only in different bands AND >= 0.15 (GDP) / >= 0.10 (workers) apart. DIVERGENT => one more run of this config as its own one-run schedule, the reading the median of three. No obsolescence criterion; rung-0 staffing / payback / below-best are verdict flags. PLUS THE RUN-LEVEL STOP (user-ruled 2026-09-14 afternoon, 2+1 batches only): any run that ends above x1.3 of vanilla's 1936 GDP (the eighteen-run median at the 1936.1.1 endpoint, GBP 4,544M) is the config's LAST run - be it run 1, 2 or 3 - enforced between runs by the scratchpad stop_watch.mjs (drops tools/testbed/STOP after the offending run's 1936 summary lands; the next run is an 1836 stub, L17-excluded). Never mid-run.",
+ "_comparison": "vanilla n=18 for every ratio; canon-c19-in12 (F117) is the reference the config must match in the band with a smaller hoard; C 2.05 x1.3 (F119) says what the slope alone does when the lift pushes.",
+ "_watch": [
+  "every run ~5 min in: mod marker, version, this run's error window by position, clock (batch_heartbeat.sh at each wake); arm scratchpad/stop_watch.mjs on the session through launch_detached.ps1 -Hidden",
+  "first run: queue_series.mjs and unemp_split.mjs / hoard_ratios.mjs (scratchpad) at 1880/1900/1920 - private backlog years, private share, construction sector levels, world and shortlist hoard and unemployment incl. peasants; first_run_decomp at 1900/1935; rung margins by era; run_vs_vanilla.mjs; world_labour.mjs",
+  "post-run: alignment_check.mjs (it prints the stop verdict too), preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS, the ledger (one configuration per report)"
+ ],
+ "_cost": "2 x 1836->1936 ~ 2 x 2h35 ~ 5 h, plus a third run on divergence; a run above 1.3x at 1936 ends the config early.",
+ "_caveats": [
+  "n=2 by design; the alignment tool decides on the third.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent; the five-minute smoke check on EVERY run; never interleave configs."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+ },
+ "setups": {
+  "canon-c205-in12-eager": {
+   "kind": "config",
+   "config": "config/mod_config.canon-c205-in12-eager.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "canon-c205-in12-eager",
+   "until": "1936.1.1"
+  },
+  {
+   "setup": "canon-c205-in12-eager",
+   "until": "1936.1.1"
+  }
+ ]
+}

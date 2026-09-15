@@ -149,5 +149,11 @@ tools/testbed/ledger/*.canon6
 !config/tech_tree_options.canon-c19-e0ai500.json
 !config/mod_config.canon-c19-in12-eager.json
 !config/tech_tree_options.canon-c19-in12-eager.json
+!config/mod_config.canon-c205-e0ai500-eager.json
+!config/tech_tree_options.canon-c205-e0ai500-eager.json
+!config/mod_config.canon-c205-in12-eager.json
+!config/tech_tree_options.canon-c205-in12-eager.json
 !config/mod_config.canon-je24-a22-in12.json
 !config/tech_tree_options.canon-je24-a22-in12.json
+# fit_cost_drivers.mjs re-derives this pool cache from the sessions (--refresh); 1.7 MB of derived data
+tools/testbed/ledger/cost_drivers_pool.json
