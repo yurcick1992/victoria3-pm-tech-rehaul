@@ -964,7 +964,12 @@ config/mod_config.canon-c205-in12-eager.json ⭐⭐ THE HOARDING FIX ON AN UNDER
                         eager-spending define set of canon-c19-in12-eager. Dry-run built clean; schedule `canon_c205_in12_eager_n2.json` (2 runs + 1 on divergence,
                         the run-level stop and the capital-abundance flag apply; predictions inside: pools 0.15–0.35 world, shortlist below 0.6, Britain below 1.0,
                         backlog under 1.5 y, sector above 3,500 levels, GDP 0.90–1.15×, workers 0.58–0.72×, shortlist unemployment incl. peasants 30–50%). Branches:
-                        above 1.3× → C 2.2 ×1.2 with the set; below 0.8× → C 1.9 with the set (canon-c19-in12-eager). Un-ignored with its twin. ⭐ LAUNCHED 2026-09-15 14:03 local (10:03 UTC, before the 14:00 UTC boundary) as session 20260915_140342_canon-c205-in12-eager-n2 — the loop's fourth iteration, after the e0ai500 pair (F120) failed to earn the halved desire; the stop watcher and a waiter armed, smoke check clean
+                        above 1.3× → C 2.2 ×1.2 with the set; below 0.8× → C 1.9 with the set (canon-c19-in12-eager). Un-ignored with its twin. ⭐ LAUNCHED 2026-09-15 14:03 local (10:03 UTC, before the 14:00 UTC boundary) as session 20260915_140342_canon-c205-in12-eager-n2 — the loop's fourth iteration, after the e0ai500 pair (F120) failed to earn the halved desire; the stop watcher and a waiter armed, smoke check clean. ⭐ MEASURED n=2, DIVERGENT (GDP 0.56 / 0.37× at 1935, workers 0.50 / 0.37×) → the TIE-BREAKER launched 14:28 UTC as
+                        20260915_182813_canon-c205-in12-eager-tb (user-authorised past the boundary). Provisional reading: EVERY HOARD PREDICTION MET (world 0.17 /
+                        0.15, shortlist 0.12 / 0.07, backlog 1.2 / 1.1 y) and the economy STALLED (below F119's 0.71 / 0.74 with the ×1.3 lift) — the construction
+                        sector shrank to 1,886 / 986 levels, the pool is small because the economy is, the frontier (2,522 / 5,169 points) too dear to fill;
+                        rung 0 alive at 61 / 56%; a British civil war 1860–63 in run 1, Britain bankrupt 1912 in run 2. The branch ("below 0.8×") is the eager set
+                        on C 1.9: canon-c19-in12-eager. F121 after the third run
 config/mod_config.canon-c205-e0ai500-eager.json ⭐ THE SAME WITH THE HALVED RUNG-0 DESIRE (ai_value 500 / 3,000 / 9,000 / 27,000) — runs in place of the book above ONLY
                         if the e0ai500 batch (20260915_082510) earns it (rung 0's level count falling 1900 → 1935 without leaving the band). Dry-run built clean;
                         schedule `canon_c205_e0ai500_eager_n2.json`. Un-ignored with its twin
