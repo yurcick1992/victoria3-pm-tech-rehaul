@@ -11956,3 +11956,24 @@ seed-dependent at n=2.
 hoarded rather than invested (the pool's cost-divisor and the §10.75 defines are unchanged across the sweep). Session
 `20260915_033205`, VERDICT.md there; config committed as `config/mod_config.canon-c205-in13.json` (`_ab.command`). Ledger
 https://claude.ai/code/artifact/d2dbefff-3fd3-4359-b8d2-7940274760e9 (one configuration per report).
+
+**Addendum 2026-09-15 08:55 local — THE HOARD IS CAPACITY-BOUND (read on the C 1.9 runs; the user's ruling that hoarding is a problem in itself).**
+The save summaries carry each country's private and government construction queues (items, points left, points a week). Read at 1935 on the two
+canon-c19-in12 runs, the ×1.3 lift's run and two vanilla runs (scratchpad `queue_series.mjs`):
+
+| run | private queue: items / points left / points a week → backlog | private share of construction speed | government backlog | pool ÷ GDP (Britain) | construction sector levels |
+|---|---|---|---|---|---|
+| canon-c19-in12 run 1, 1900 | 358 / 295k / 4,490 → 1.3 y | 79% | 2.1 y | 0.24 (0.19) | 1,058 |
+| canon-c19-in12 run 1, 1920 | 1,017 / 974k / 9,794 → 1.9 y | 74% | 1.6 y | 0.36 (1.02) | 1,618 |
+| canon-c19-in12 run 1, 1935 | 2,203 / 3,079k / 24,803 → 2.4 y | 80% | 2.8 y | 0.64 (2.40) | 2,971 |
+| canon-c19-in12 run 2, 1935 | 2,145 / 2,885k / 28,360 → 2.0 y | 87% | 3.0 y | 0.42 (0.87) | 3,092 |
+| canon-c19-in13 (×1.3), 1935 | 1,107 / 1,497k / 23,087 → 1.2 y | 74% | 1.8 y | 1.07 (6.97) | 4,083 |
+| vanilla run 1, 1935 | 872 / 304k / 16,457 → 0.4 y | 82% | 0.5 y | 0.62 (2.14) | 2,622 |
+| vanilla run 3, 1935 | 648 / 223k / 13,639 → 0.3 y | 86% | 0.5 y | 0.19 (0.08) | 1,568 |
+
+The pool is not idle: the private queue already holds two years of work and gets 74–87% of the construction speed, so neither the autonomous
+investment's willingness nor the private allocation limits spending — CAPACITY does. The government queue is five times deeper than vanilla's
+(the government AI builds the dear rungs itself: Britain's holds automotive, arms, artillery and motor rungs at 1,140–4,115 points), so the
+construction sectors it queues arrive years late. Vanilla hoards too in some seeds (run 1: 0.62, Britain 2.14) with a short queue — a different
+mechanism (a pool with nothing worth building), not this one. The lever is therefore construction capacity: the AI's construction-sizing defines
+(`canon-c19-in12-eager`, staged), and if those cannot buy it on the AI's budget, the sector's throughput or cost — not the investment scoring.

@@ -1,0 +1,80 @@
+{
+ "schedule_version": 1,
+ "label": "canon-c19-in12-eager-n2",
+ "_why": "THE HOARDING FIX (user, 2026-09-15 09:00 local: hoarding is a problem in itself that should be tuned by the spending-eagerness defines; a pool above a year of world GDP can spoil every measurement, and the aim is a pool BELOW vanilla's; fix it sooner rather than later). DIAGNOSIS on the C 1.9 runs (scratchpad queue_series.mjs over the save summaries): the private construction queue is a 2.0-2.4-year BACKLOG at 1935 (world 2.9-3.1M points left at 25-28k points a week) against vanilla's 0.3-0.4 years, with the private share of construction speed already 74-87% (allocation is not the limit) and the GOVERNMENT queue 2.8-3.0 years deep (vanilla 0.5) - clogged with the dear rungs the government AI builds itself (arms, artillery, motor, automotive at 1,140-4,115 points), so the construction sectors it queues take years to arrive; the pool (0.42-0.64 of GDP, Britain 0.87-2.40) is capacity-bound, not idle. Under the x1.3 lift the same shape reads 1.07 (Britain 6.97). This book keeps canon-c19-in12 (the found slope, F117) and pushes ONLY the investment-pool defines toward spending: MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR 0.9 -> 1.0 (the define's stated cap), CRITICAL_THRESHOLD 0.9 -> 1.25 and EXCESSIVE_THRESHOLD 1.5 -> 3.0 (the AI keeps rating construction very important until it holds 125% of wanted and only nice-to-have above 300%), CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED 0.1 -> vanilla's 0.05 (fewer government-queued production buildings, so the queue carries construction sectors sooner). Not touched: PRODUCTION_BUILDING_AUTONOMOUS_INVESTMENT_WANTED_COST_COVERAGE (ruled out 2026-09-05), AUTONOMOUS_INVESTMENT_UPDATE_COUNT_DIVISOR (queueing is not the bottleneck: 2,100-2,300 items already queued), the LONG/VERY_LONG thresholds (160/240 kept). One lever (the define set) against canon-c19-in12. Full runs unless the stop rule fires: a spent hoard is more capital at work, so GDP is expected UP from 1.08x - if it passes 1.3x the slope must rise with the hoard gone (C 2.05 x1.2 + this set is the pre-registered branch).",
+ "_arms": {
+  "canon-c19-in12-eager": "{kind: config, config: config/mod_config.canon-c19-in12-eager.json} - generated 2026-09-15 09:15 by make_ab_config (its _ab.command holds the line; differs from canon-c19-in12 in ai_defines only, verified by field diff); dry-run built clean."
+ },
+ "_delta": "Against canon-c19-in12 (F117): the four spending defines above - one lever; every recipe, cost, ai_value, research event and the 24-month bar identical.",
+ "_predictions": {
+  "hoard": "THE KEY PREDICTION: world pools 0.15-0.35 of a year of GDP at 1935 in both seeds (C 1.9: 0.42 / 0.64; vanilla median 0.31), Britain below 1.0 (2.40 / 0.87); the private queue backlog under 1.5 years at 1935 (2.0-2.4); construction sector levels at 1935 above 3,800 (2,971 / 3,092). Failure: pools still above 0.4 with the backlog above 2 years -> the AI cannot buy the capacity on its budget and the lever is the construction sector itself (throughput or its cost), not the AI defines.",
+  "gdp": "world GDP 1.00-1.30x the vanilla eighteen-run median at 1935 (point ~1.15x: the spent hoard is capital at work); the dip around 1900 shallower than C 1.9 (0.80-0.95x). Above 1.3x at 1936 STOPS the config and says the slope must rise with the hoard gone (branch: C 2.05 x1.2 with this set).",
+  "workers": "productive workers per capita 0.62-0.78x vanilla at 1935 (C 1.9: 0.65 / 0.67; more construction absorbs the unemployed: 27-30% -> 20-27%)",
+  "obsolescence": "rung 0 unchanged by this lever: 40-50% staffed at a 20-28% margin against the frontier 40%+; its level count still rising (the willingness lever is the e0ai500 batch, read separately); below-best 30-38%",
+  "perf": "row P total within +10% of vanilla median play time (more buildings under construction and standing: +0-8% expected); no crash expected, the feeder handles a mid-autosave CTD (L32)"
+ },
+ "_alignment": "THE 2+1 RULE (user-ruled 2026-09-14, F114): after run 2, `node tools/testbed/ledger/alignment_check.mjs --arm <session>:canon-c19-in12-eager` - two criteria at 1935 vs the vanilla per-run median, five bands each, a pair fails an axis only in different bands AND >= 0.15 (GDP) / >= 0.10 (workers) apart. DIVERGENT => one more run of this config as its own one-run schedule, the reading the median of three. No obsolescence criterion; rung-0 staffing / payback / below-best are verdict flags. PLUS THE RUN-LEVEL STOP (user-ruled 2026-09-14 afternoon, 2+1 batches only): any run that ends above x1.3 of vanilla's 1936 GDP (the eighteen-run median at the 1936.1.1 endpoint, GBP 4,544M) is the config's LAST run - be it run 1, 2 or 3 - enforced between runs by the scratchpad stop_watch.mjs (drops tools/testbed/STOP after the offending run's 1936 summary lands; the next run is an 1836 stub, L17-excluded). Never mid-run.",
+ "_comparison": "vanilla n=18 for every ratio; canon-c19-in12 (F117) is the one-lever baseline: the config must cut the hoard without leaving the band.",
+ "_watch": [
+  "every run ~5 min in: mod marker, version, this run's error window by position, clock (batch_heartbeat.sh at each wake); arm scratchpad/stop_watch.mjs on the session through launch_detached.ps1 -Hidden",
+  "first run: queue_series.mjs (scratchpad) at 1880/1900/1920 - private backlog years, private share, construction sector levels, pools; first_run_decomp at 1900/1935; rung margins by era; run_vs_vanilla.mjs; world_labour.mjs",
+  "post-run: alignment_check.mjs (it prints the stop verdict too), preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS, the ledger (one configuration per report)"
+ ],
+ "_cost": "2 x 1836->1936 ~ 2 x 2h35 ~ 5 h, plus a third run on divergence; a run above 1.3x at 1936 ends the config early.",
+ "_caveats": [
+  "n=2 by design; the alignment tool decides on the third.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent; the five-minute smoke check on EVERY run; never interleave configs."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+ },
+ "setups": {
+  "canon-c19-in12-eager": {
+   "kind": "config",
+   "config": "config/mod_config.canon-c19-in12-eager.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "canon-c19-in12-eager",
+   "until": "1936.1.1"
+  },
+  {
+   "setup": "canon-c19-in12-eager",
+   "until": "1936.1.1"
+  }
+ ]
+}
