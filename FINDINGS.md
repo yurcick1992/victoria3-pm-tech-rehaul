@@ -12286,3 +12286,128 @@ addendum); n=1 for the growth seed's level (1.32×) and for its last-year shock.
 the found configuration's hoard (the branch); what the 1935–1936 shock in run 3 was. Sessions `20260915_140342` and `20260915_182813`,
 VERDICT.md in each; config committed as `config/mod_config.canon-c205-in12-eager.json` (`_ab.command`). Ledger https://claude.ai/code/artifact/2d6d3356-2b6a-4285-bbc6-1caf07aa9c97 (one
 configuration per report).
+
+**Addendum (2026-09-15, late evening) — what F121 still establishes, and the arithmetic of the hoard.** The user's reading of the
+GDP result ("0.56 / 0.37 / 1.32× is unfit") stands: the configuration is not a base, and its median is the median of a bimodal spread.
+What survives, and how far:
+- **3 of 3 seeds: the eager define set shortens BOTH queues.** Private backlog 1.2 / 1.1 / 1.3 years and — read today — the
+  GOVERNMENT backlog 0.9 / 1.6 / 1.3 years (queue_series.mjs at 1935), against the found configuration's 2.0–2.4 and 2.8–3.0. The
+  set is a queue lever, and a robust one: it holds in the two stalls and in the growth seed alike.
+- **3 of 3: no damage to AI finances** (bankruptcies per five-year window inside the found configuration's and vanilla's range).
+- **1 of 1, the growth seed, and the arithmetic that turns it into a ruling question:** the pool went £1,664M (1925) → £2,812M (1930)
+  → £4,815M (1935), +£315M a year net, while the private queue ran at 27,676 → 27,625 points a week (≈1.44M points a year) — at
+  £540–720 a construction point (F53's steel/iron-frame rates) that is £0.8–1.0B a year of private construction spend, so the
+  inflow was ≈£1.1–1.3B a year, about a fifth of world GDP (£5,807M), and **the pool held five to six years of the private queue's
+  spend**. To hold the pool flat at that GDP the construction sector would have to be roughly a third larger than the AI built at
+  its most eager (3,625 levels, a fifth above the found configuration's), or the inflow a quarter smaller. Neither is an AI define:
+  the sector's throughput per level and its goods per point are the construction sector's own methods, and the inflow is the laws'
+  `state_<pop>_investment_pool_efficiency_mult` / `_contribution_add` modifiers (01_economic_system.txt: ±0.25 to ±0.75 by law).
+  That is the ruling the next session needs before another define batch is spent on the hoard.
+- **The bistability is the slope's, not the set's**: F119 stalled at C 2.05 in both seeds without the set (with the ×1.3 lift), and
+  the two F121 stalls are locked in by British events (a civil war 1860–63, a bankruptcy 1912) that the found slope survives in four
+  of four seeds. So "C 2.05" is on the cliff, and the under-side rule's "slightly under" has to be found between 1.9 and 2.05.
+- **Not salvageable:** any reading of "C 2.05 ×1.2 + eager" as a configuration (GDP, workers, rung 0), and the claim the set is a
+  hoard fix — it is a queue fix whose pool follows growth.
+
+## F122 — THE OLD RUNG ON THE FOUND SLOPE IS NOT REBUILT AFTER 1920, IT PERSISTS: rung 0's level count rises 12–18% from 1900 to 1935 but the growth is front-loaded and stops by 1930, its STAFFED levels fall by a fifth, half or more of the added levels are NEW BUILDINGS in fresh states placed by countries that already hold the frontier, and by 1935 rung 0 is 1% of either construction queue (canon-c19-in12, two seeds, read 2026-09-15)
+
+**Claim.** On the found configuration (`canon-c19-in12`, F117; sessions `20260914_173832` run 1 and `20260914_204329` run 1, the
+yearly save summaries), the "rung 0 still being built" reading that closed F120 has a shape the endpoint hid: **the additions come
+early and as new buildings, and the old rung's employment has been falling since 1900.** Goal 3's remaining problem at this slope is
+therefore persistence — existing rung-0 levels keep a positive margin (22–26%, F117) and nothing removes them — not construction.
+The engine forbids expanding a building below 80% staffing (`PRODUCTION_BUILDING_LOW_EMPLOYMENT_THRESHOLD = 0.8`, 00_ai.txt: "The AI
+will not expand buildings with less than this employment unless those buildings hired last week"), and rung 0 runs at 45–67%, so
+the only construction channel left open to it is a NEW building in a state that has none — and those are placed by the AI's scoring,
+in countries that could build the frontier instead.
+
+**Numbers.** World totals over every country; "staffed" is the summary's `staffing` (staffed-level equivalents); queue shares are
+items of the private / government `queues.by_type` whose key is an era-0 rung (points-left shares in brackets).
+
+| seed 1 | rung-0 buildings | levels | staffed (share) | private queue rung-0 share (items / points) | government queue |
+|---|---|---|---|---|---|
+| 1880 | 723 | 1,117 | 745 (66.7%) | 4.8% of 126 (2.6%) | 5.2% of 194 (7.6%) |
+| 1890 | 815 | 1,258 | 842 (66.9%) | 14.2% of 218 (9.5%) | 6.6% of 243 (7.5%) |
+| 1900 | 871 | 1,411 | 888 (63.0%) | 4.2% of 358 (2.1%) | 4.2% of 331 (4.2%) |
+| 1910 | 922 | 1,529 | 913 (59.7%) | 3.3% of 635 (2.0%) | 1.3% of 231 (1.2%) |
+| 1920 | 977 | 1,645 | 848 (51.5%) | 2.3% of 1,017 (1.1%) | 0.7% of 418 (0.3%) |
+| 1930 | 1,025 | 1,734 | 912 (52.6%) | 1.4% of 1,869 (0.5%) | 0.5% of 631 (0.2%) |
+| 1935 | 1,032 | 1,672 | 754 (45.1%) | 1.2% of 2,203 (0.5%) | 0.8% of 716 (0.4%) |
+
+| seed 2 | rung-0 buildings | levels | staffed (share) | private queue rung-0 share | government queue |
+|---|---|---|---|---|---|
+| 1880 | 657 | 1,095 | 771 (70.4%) | 11.4% of 114 (6.2%) | 9.1% of 175 (12.1%) |
+| 1900 | 824 | 1,404 | 927 (66.0%) | 6.0% of 336 (3.5%) | 4.3% of 235 (3.2%) |
+| 1910 | 873 | 1,502 | 849 (56.5%) | 3.2% of 592 (1.7%) | 1.9% of 320 (1.2%) |
+| 1920 | 929 | 1,554 | 846 (54.5%) | 2.4% of 887 (1.2%) | 1.4% of 362 (2.0%) |
+| 1930 | 965 | 1,566 | 761 (48.6%) | 1.1% of 1,840 (0.5%) | 0.4% of 747 (0.3%) |
+| 1935 | 993 | 1,568 | 703 (44.8%) | 1.0% of 2,145 (0.4%) | 0.7% of 940 (0.5%) |
+
+- **Levels**: +261 (seed 1) and +164 (seed 2) from 1900 to 1935, of which +118 / +116 in the 1900s, +116 / +52 in the 1910s, +89 /
+  +12 in the 1920s and −62 / +2 in 1930–35. **Staffed levels**: 888 → 754 and 927 → 703 (−15% / −24%) — the old rung's employment
+  has fallen every decade since 1900 while its level count rose. **Buildings**: +161 / +169 — new rung-0 buildings in fresh states
+  account for most of the level growth (in seed 2, all of it).
+- **Who places them** (rung0_who.mjs, 1900 → 1935, per country): seed 1 245 buildings (368 levels), **229 of them by countries that
+  hold e2/e3 buildings** (123 countries) against 16 by countries without a frontier building (130 countries); seed 2 304 (490),
+  **287 by frontier-holders** against 17. Top adders: Austria +33 buildings, Bulgaria +27, Prussia +21, Britain +17 (+7 levels),
+  Turkey +10 (seed 1); India +59, the Taiping +28, Italy +27, Germany +14, France +7 (+68 levels) (seed 2). The majors add few
+  levels net (Britain +7 / −8, the USA +22 / −13, France +10 / +68).
+- **The queues at 1935** carry 2,145–2,203 private items world-wide (vanilla's run 1: 872) of which 1.0–1.2% are rung 0 (the top
+  private items are the e3 arms industry, trade centres, e2 tooling, e2/e3 art academies, e3 glass and steel); the government queue's
+  rung-0 share is 0.7–0.8%.
+
+**What it says about goal 3.** (1) The rebuild the sweep has been reading as "rung 0 alive and still built" is a 1900–1920 event of
+new buildings — one or two levels each — in states with no rung-0 building, placed by scoring noise in countries that could build
+the frontier (`PRODUCTION_BUILDING_RANDOM_FACTOR` 10, ×2 for the private pool; F100 §3 called that term "a floor no weight removes"),
+plus a small tail; the willingness lever aimed at it is the noise itself, and the next session's `canon-*-in12-eager-sharp` books
+carry that test (below-best under 22%, fewer than 150 new rung-0 buildings 1900 → 1935 as the pre-registered predictions). (2) After
+1920 nothing builds the old rung and its employment falls; what keeps it alive is a positive margin on existing levels — the price
+path (F94 / F97): at realised prices rung 0's output still covers its inputs and wages. Within the GDP band no sweep book has pushed
+that margin under zero; every book that killed rung 0 (F110, F115, F116) did so in the runaway regime, through wages. (3) The
+diagnostic for a rung-0 lever is therefore the STAFFED count and the building count, not the level count — a level count that rises
+while staffing falls is a rung being abandoned, not rebuilt.
+
+**Confidence.** High for the shape (two seeds, every decade, both queues); the mechanism for the new-building placements (the
+scoring's noise choosing the cheapest rung for a fresh state) is the hypothesis the sharp books test, and the input-locality penalty
+(`PRODUCTION_BUILDING_INPUT_NO_LOCAL_PRODUCTION_FACTOR` −0.5 per pound of non-local inputs, four times heavier on the frontier's
+richer basket) is the named alternative. Readers: `tools/testbed/ledger/rung0_path.mjs`, `rung0_who.mjs`, `queue_rungs.mjs`.
+
+## F123 — THE SESSION TABLE, 2026-09-13 → 2026-09-15: nine configurations, twenty usable runs, every main metric per run at 1935 with the hoard and the peasant-inclusive unemployment split into world and shortlist (user-requested, 2026-09-15)
+
+**Definitions.** Every ratio ÷ the vanilla n=16 per-run median at 1935 (`20260821_131149`; GDP £4,390M, play 164.9 min). Hoard =
+investment pool ÷ GDP, world and the shortlist GBR+USA+FRA+GER pooled (PRU standing in where Germany never formed). Unemployment
+INCLUDING peasants = (unemployed + peasants) ÷ (salaried + unemployed + peasants), world · shortlist. Rung 0 = staffing share of
+its levels; tiered = levels of the 17 tiered industries. Runs in session order; a 3-run config lists all three, then the two runs
+without the outlier (the run farthest from the other two on GDP). Sources: F113 / F115–F121, `capital_flags.mjs`,
+`alignment_check.mjs`, the ledgers. Vanilla medians: hoard 0.29 · 0.35, unemployment incl. peasants 41.7% · 21.7% (strict, without
+peasants: 16.3% · 4.0%), tiered levels 21,971, Britain trips the capital flag in 2 of 16 seeds.
+
+| config (finding) | main parameters | n | GDP ÷ van | workers/cap ÷ van | hoard world · shortlist | rung 0 staffed | tiered levels | unemp. incl. peasants world · shortlist | play min |
+|---|---|---|---|---|---|---|---|---|---|
+| canon-flat-in12-a16 (F113) | A 1.6 / B 1.5 · lift ×1.2 · cost FLAT · ai 1k/2k/3k/4k · divisor 0.001 | 3 | 0.57 / 0.60 / 0.60 | 0.67 / 0.67 / 0.70 | 0.09 / 0.13 / 0.11 · 0.12 / 0.13 / 0.02 | 56 / 44 / 40% | 11,074 / 11,655 / 12,175 | 60.8 / 61.8 / 59.3 · 57.8 / 60.1 / 37.2 | 141 / 158 / 135 |
+| canon-je24-a22-in12 (F113) | A 2.2 / B 1.5 · ×1.2 · cost ×2.2^era · ai 3^era · 0.000125 | 3 | 0.65 / 0.80 / 0.60 | 0.55 / 0.58 / 0.49 | 0.31 / 0.19 / 0.26 · 0.46 / 0.19 / 0.14 | 57 / 58 / 55% | 6,336 / 7,338 / 5,826 | 67.5 / 65.4 / 71.1 · 58.1 / 33.2 / 65.2 | 137 / 142 / 124 |
+| canon-flat-in12-a19 (F115) — **VOID by the capital flag** | A 1.9 / B 1.5 · ×1.2 · FLAT · ai linear · 0.001 | 2 | 1.87 / 1.73 | 1.15 / 1.09 | 1.09 / 1.35 · 3.10 / 3.29 (GBR 8.2 / 8.6) | 21 / 20% | 36,259 / 32,547 | 30.9 / 33.5 · 1.0 / 0.3 ⚑ | 179 / 185 |
+| canon-c16-in12 (F116) — stopped | A 2.2 · ×1.2 · cost ×1.6^era | 1 | 1.94 | 0.95 | 0.69 · 1.12 | 36% | 21,913 | 41.2 · 15.7 (GBR 2.7% ⚑) | 172 |
+| **canon-c19-in12 (F117) — the found slope** | A 2.2 · ×1.2 · cost ×1.9^era | 2 | 1.09 / 1.07 | 0.65 / 0.67 | 0.64 / 0.42 · 1.50 / 0.61 (GBR 2.40 / 0.87) | 45 / 45% | 10,633 / 9,917 | 60.6 / 59.1 · 41.2 / 39.9 | 152 / 168 |
+| canon-c19-in13 (F118) — stopped | ×1.3 · cost ×1.9^era | 1 | 1.44 | 0.94 | 1.07 · 2.43 (GBR 6.97) | 30% | 17,371 | 43.6 · 21.0 | 174 |
+| canon-c205-in13 (F119) | ×1.3 · cost ×2.05^era | 2 | 0.71 / 0.74 | 0.56 / 0.57 | 0.17 / 0.25 · 0.15 / 0.30 | 49 / 50% | 6,986 / 6,849 | 66.7 / 65.9 · 60.1 / 50.1 | 138 / 145 |
+| canon-c19-e0ai500 (F120) | ×1.2 · cost ×1.9^era · rung-0 ai_value 500 | 2 | 1.13 / 1.04 | 0.70 / 0.64 | 0.70 / 0.48 · 1.20 / 0.76 (GBR 1.34 / 1.76) | 46 / 47% | 10,979 / 9,703 | 57.3 / 60.5 · 32.4 / 26.6 | 159 / 170 |
+| canon-c205-in12-eager (F121) — unfit | ×1.2 · cost ×2.05^era · the eager defines | 3 | 0.56 / 0.37 / 1.32 | 0.50 / 0.37 / 0.75 | 0.17 / 0.15 / 0.83 · 0.12 / 0.07 / 1.31 | 61 / 56 / 54% | 5,963 / 3,955 / 11,322 | 70.4 / 77.6 / 55.3 · 60.7 / 73.5 / 37.5 | 120 / 135 / 153 |
+
+All books carry the §10.75 defines (LONG / VERY_LONG 160 / 240; the four-rung canon's investment-pool set unless "eager") and the
+24-month research bar; "×1.2" is rung 0's input value lifted with the ladder anchored on it; A 2.2 / B 1.5 wherever not stated.
+
+**The three-run configurations, all three and the two without the outlier** (outlier = the run farthest from the other two on GDP):
+
+| config | median of three: GDP · workers · hoard world · rung 0 · unemp. world | outlier | the other two: GDP · workers · hoard world · rung 0 · unemp. world |
+|---|---|---|---|
+| canon-flat-in12-a16 | 0.60 · 0.67 · 0.11 · 44% · 60.8 | run 1 (0.57) | 0.60 / 0.60 · 0.67 / 0.70 · 0.13 / 0.11 · 44 / 40% · 61.8 / 59.3 |
+| canon-je24-a22-in12 | 0.65 · 0.55 · 0.26 · 57% · 67.5 | run 2 (0.80) | 0.65 / 0.60 · 0.55 / 0.49 · 0.31 / 0.26 · 57 / 55% · 67.5 / 71.1 |
+| canon-c205-in12-eager | 0.56 · 0.50 · 0.17 · 56% · 70.4 | run 3 (1.32) | 0.56 / 0.37 · 0.50 / 0.37 · 0.17 / 0.15 · 61 / 56% · 70.4 / 77.6 |
+
+**What the table says, read across.** The found slope's family (C 1.9: the F117 pair and the F120 pair, four seeds) is the only
+group inside both bands, with the hoard 0.42–0.70 world and 0.61–1.50 shortlist — above vanilla's 0.29 · 0.35 in every seed, Britain
+at 0.87–2.40 — and the old rung at 45–47%. Every book above the band hoards more (0.69–1.35 world, the shortlist over 2 in the
+runaways) and empties the majors' labour (unemployment incl. peasants 1–21% on the shortlist against vanilla's 22%); every book below
+it hoards less because it grows less (0.09–0.31) and leaves the majors' labour unabsorbed (50–74%). Peasant-inclusive unemployment
+on the shortlist is 40–41% at the found slope against vanilla's 22%: capital scarcer than vanilla, met, at that price. Play time
+is under vanilla's median everywhere but the flat A 1.9 book.

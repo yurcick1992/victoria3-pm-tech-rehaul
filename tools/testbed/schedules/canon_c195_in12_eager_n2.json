@@ -1,0 +1,80 @@
+{
+ "schedule_version": 1,
+ "label": "canon-c195-in12-eager-n2",
+ "_why": "THE UNDER-SIDE BASE, TAKE 2 (user-ruled 2026-09-15 10:05 local: \"more aggressive spend of investment pool money will increase the economy and thus depeasantation. So ceteris paribus, the other parts of the config (A/B/initial input penalty/cost_ladder) should be taken from the side that gave values slightly under the GDP/depeasantation target, not at the target\"). Take 1 was C 2.05 x1.2 with the eager set (F121, n=3): BISTABLE - two seeds locked into stalls by early British disasters (0.56 / 0.37x at 1935), one grew to 1.32x with the hoard back at 0.83 of GDP - so C 2.05 is past the cliff (F119 stalled there too, with the x1.3 lift), not \"slightly under\". This book interpolates on the sweep's own axis: building_cost = anchor x 1.95^era (600 / 1,170 / 2,282 / 4,449 for the 600-point industries; 800 / 1,560 / 3,042 / 5,932 for the 800-point ones) - the top rung 8% dearer than the found slope's 4,115 / 5,487 and 14% cheaper than C 2.05's 5,169 / 6,892 - with the eager-spending define set (MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR 1.0, CRITICAL 1.25, EXCESSIVE 3.0, CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED 0.05; LONG / VERY_LONG 160 / 240), which F121 showed cuts the private backlog to 1.1-1.3 years and the government backlog to 0.9-1.6 in every seed (the found slope: 2.0-2.4 and 2.8-3.0) without holding the pool where growth is. Two changes against canon-c19-in12 (F117 / F120, the found configuration: 1.09 / 1.07 / 1.13 / 1.04x across four seeds, in the band): the slope and the define set; ONE change against canon-c19-in12-eager (the slope) - it runs AFTER that book and is read against it. Full runs unless the stop rule fires.",
+ "_arms": {
+  "canon-c195-in12-eager": "{kind: config, config: config/mod_config.canon-c195-in12-eager.json} - generated 2026-09-15 by make_ab_config (its _ab.command holds the line; field diff against its base verified: see _delta); dry-run built clean 2026-09-15 (lint, negative-goods, era-rule L31, mod checks, preflight)."
+ },
+ "_delta": "Against canon-c19-in12-eager: building_cost = anchor x 1.95^era in place of 1.9^era (the only tier-level difference: building_cost on the 43 rungs above e0, field-diffed); A 2.2 / B 1.5, the x1.2 lift, ai_value 3^era, divisor 0.000125, the eager defines, research events and the 24-month bar identical.",
+ "_predictions": {
+  "gdp": "world GDP 0.90-1.20x the vanilla per-run median at 1935 (point ~1.05: the dearer frontier takes ~0.1 off the found slope's 1.08 and the spent hoard adds ~0.1 back - F121's growth seed is the evidence that the eager set lifts an economy that grows); the 1900 dip 0.72-0.90x (C 1.9: 0.75 / 0.89). Above 1.3x at 1936 STOPS the config -> the branch is canon-c20-in12-eager (generated, dry-run built, schedule canon_c20_in12_eager_n2.json). A stall (below 0.6x, with a British disaster in the seed) in two of three runs -> the slope is on the cliff and the base goes back to C 1.9 (the third config then runs as canon-c19-in12-eager-sharp).",
+  "workers": "productive workers per capita 0.60-0.75x (the found slope 0.64-0.70; F121's growth seed 0.75); shortlist unemployment incl. peasants 30-45% (found 40-41%; vanilla 22%); no capital-abundance trip",
+  "hoard": "world pools 0.30-0.65 of GDP at 1935 (found 0.42-0.70; vanilla median 0.29) - the define set is NOT expected to hold the pool below vanilla (F121); what IS expected, in both seeds: the private backlog 1.0-1.5 y (found 2.0-2.4), the government backlog 0.9-1.6 y (found 2.8-3.0), the construction sector 3,200-4,000 levels at 1935 (found 2,971 / 3,092; F121's growth seed 3,625)",
+  "obsolescence": "rung 0 42-55% staffed at 1935 at a 20-28% margin against the frontier's 40%+; its level count +5 to +20% from 1900 with 200-320 new rung-0 buildings placed (FINDINGS F122 (2026-09-15, the found slope): rung 0's level count rises +12-18% from 1900 to 1935 but front-loaded (1900-1920) and flat after 1930, its STAFFED levels FALL (888 -> 754, 927 -> 703), half or more of the added levels are NEW BUILDINGS in fresh states (871 -> 1,032 / 824 -> 993 buildings) placed by countries that already hold e2/e3 buildings (229 of 245 / 287 of 304 added), and by 1935 rung 0 is 1% of either queue; expansion of a building below 80% staffing is forbidden by PRODUCTION_BUILDING_LOW_EMPLOYMENT_THRESHOLD, so the rebuild is the scoring choosing the cheapest rung for a fresh state); below-best 30-38%",
+  "perf": "row P total within +10% of the vanilla median play time (the found slope 0.97x); no crash expected, the deterministic resume feeder handles a mid-autosave CTD (L32)"
+ },
+ "_alignment": "THE 2+1 RULE (user-ruled 2026-09-14, F114): after run 2, `node tools/testbed/ledger/alignment_check.mjs --arm <session>:canon-c195-in12-eager` - two criteria at 1935 vs the vanilla per-run median, five bands each, a pair fails an axis only in different bands AND >= 0.15 (GDP) / >= 0.10 (workers) apart. DIVERGENT => one more run of this config as its own one-run schedule (the _tb.json beside this one), the reading the median of three (pool both sessions: --arm sessA,sessB:canon-c195-in12-eager). No obsolescence criterion; rung-0 staffing / payback / below-best are verdict flags. PLUS THE RUN-LEVEL STOP (user-ruled 2026-09-14, 2+1 batches only): any run that ends above x1.3 of vanilla's 1936 GDP (the eighteen-run median at the 1936.1.1 endpoint, GBP 4,544M) is the config's LAST run - be it run 1, 2 or 3 - enforced between runs by tools/testbed/stop_watch.ps1 (drops tools/testbed/STOP after the offending run's 1936 summary lands; the next run is an 1836 stub, L17-excluded). Never mid-run. PLUS THE CAPITAL-ABUNDANCE FLAG (user-ruled 2026-09-15): `node tools/testbed/ledger/capital_flags.mjs --arm <session[,session]>:canon-c195-in12-eager` - a shortlist member (GBR, USA, FRA, GER) under 3% total unemployment INCLUDING peasants with a hoard over 2 GDP trips it; the pooled shortlist tripping is a VOID (exit 4).",
+ "_comparison": "vanilla n=16 (20260821_131149) for every ratio; canon-c19-in12-eager (the first config of the session) is the one-lever reference (the slope); canon-c19-in12 (F117 + F120, four seeds) the found configuration both are measured against.",
+ "_watch": [
+  "every run ~5 min in: mod marker, version, this run's error window by position, clock (tools/testbed/batch_heartbeat.sh <session> at each wake); arm tools/testbed/stop_watch.ps1 on the session through launch_detached.ps1 -Hidden and a background wait_for_session.ps1",
+  "first run: tools/testbed/ledger/queue_series.mjs at 1900/1920/1935 - private and government backlog years, private share, construction sector levels, pool; capital_flags.mjs at 1935; first_run_decomp at 1900/1935; rung margins by era; run_vs_vanilla (scratchpad or the ledger); rung0_path.mjs and rung0_who.mjs (tools/testbed/ledger, F122) for the old rung's path",
+  "post-run: alignment_check.mjs (it prints the stop verdict too), capital_flags.mjs, preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS, the ledger (one configuration per report)"
+ ],
+ "_cost": "2 x 1836->1936 ~ 2 x 2h35 ~ 5 h, plus a third run on divergence; a run above 1.3x at 1936 ends the config early.",
+ "_caveats": [
+  "n=2 by design; the alignment tool decides on the third.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent; the five-minute smoke check on EVERY run; never interleave configs."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+ },
+ "setups": {
+  "canon-c195-in12-eager": {
+   "kind": "config",
+   "config": "config/mod_config.canon-c195-in12-eager.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "canon-c195-in12-eager",
+   "until": "1936.1.1"
+  },
+  {
+   "setup": "canon-c195-in12-eager",
+   "until": "1936.1.1"
+  }
+ ]
+}

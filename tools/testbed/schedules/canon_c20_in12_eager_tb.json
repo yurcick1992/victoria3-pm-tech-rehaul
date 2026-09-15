@@ -1,0 +1,76 @@
+{
+ "schedule_version": 1,
+ "label": "canon-c20-in12-eager-tb",
+ "_why": "THE TIE-BREAKER of canon_c20_in12_eager_n2.json: the third run of the 2+1 rule, run ONLY if alignment_check.mjs reads the pair DIVERGENT (exit 2); the config is read as the median of three (pool both sessions in --arm). Same book, same predictions: THE BRANCH BOOK of the under-side series: building_cost = anchor x 2.0^era (600 / 1,200 / 2,400 / 4,800; 800 / 1,600 / 3,200 / 6,400) with the eager-spending define set (MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR 1.0, CRITICAL 1.25, EXCESSIVE 3.0, CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED 0.05; LONG / VERY_LONG 160 / 240) - launched ONLY if canon-c19-in12-eager AND canon-c195-in12-eager both overshoot the band (a run above 1.3x at 1936 under the stop rule, or medians above 1.1x). It sits between C 1.95 and C 2.05 (F121: bistable - two stalls locked in by early British disasters, one growth seed at 1.32x), so the bistability risk is real and the config is not read before n=3 (the 2+1 rule's third run is expected, not exceptional). Everything but the slope as canon-c195-in12-eager.",
+ "_arms": {
+  "canon-c20-in12-eager": "{kind: config, config: config/mod_config.canon-c20-in12-eager.json} - generated 2026-09-15 by make_ab_config (its _ab.command holds the line; field diff against its base verified: see _delta); dry-run built clean 2026-09-15 (lint, negative-goods, era-rule L31, mod checks, preflight)."
+ },
+ "_delta": "Against canon-c195-in12-eager: building_cost = anchor x 2.0^era in place of 1.95^era (43 rungs, field-diffed); nothing else.",
+ "_predictions": {
+  "gdp": "world GDP 0.80-1.15x at 1935 (point ~0.95); the 1900 dip 0.65-0.85x; a stall in any seed (below 0.6x after a British disaster) is F121's mechanism - the frontier too dear to rebuild - and two stalls in three end the under-side series on the cost axis.",
+  "workers": "productive workers per capita 0.55-0.72x; shortlist unemployment incl. peasants 32-48%; no capital-abundance trip",
+  "hoard": "world pools 0.25-0.60 of GDP at 1935; the private backlog 1.0-1.5 y and the government backlog 0.9-1.6 y in every seed (the eager set's measured effect, F121); construction sector 2,800-3,800 levels",
+  "obsolescence": "rung 0 45-58% staffed at 1935 (dearer frontier, more of the old rung kept); its level count +5 to +20% from 1900; below-best 30-40%",
+  "perf": "row P total within +10% of the vanilla median play time (the found slope 0.97x); no crash expected, the deterministic resume feeder handles a mid-autosave CTD (L32)"
+ },
+ "_alignment": "THE 2+1 RULE (user-ruled 2026-09-14, F114): after run 2, `node tools/testbed/ledger/alignment_check.mjs --arm <session>:canon-c20-in12-eager` - two criteria at 1935 vs the vanilla per-run median, five bands each, a pair fails an axis only in different bands AND >= 0.15 (GDP) / >= 0.10 (workers) apart. DIVERGENT => one more run of this config as its own one-run schedule (the _tb.json beside this one), the reading the median of three (pool both sessions: --arm sessA,sessB:canon-c20-in12-eager). No obsolescence criterion; rung-0 staffing / payback / below-best are verdict flags. PLUS THE RUN-LEVEL STOP (user-ruled 2026-09-14, 2+1 batches only): any run that ends above x1.3 of vanilla's 1936 GDP (the eighteen-run median at the 1936.1.1 endpoint, GBP 4,544M) is the config's LAST run - be it run 1, 2 or 3 - enforced between runs by tools/testbed/stop_watch.ps1 (drops tools/testbed/STOP after the offending run's 1936 summary lands; the next run is an 1836 stub, L17-excluded). Never mid-run. PLUS THE CAPITAL-ABUNDANCE FLAG (user-ruled 2026-09-15): `node tools/testbed/ledger/capital_flags.mjs --arm <session[,session]>:canon-c20-in12-eager` - a shortlist member (GBR, USA, FRA, GER) under 3% total unemployment INCLUDING peasants with a hoard over 2 GDP trips it; the pooled shortlist tripping is a VOID (exit 4).",
+ "_comparison": "vanilla n=16 for every ratio; canon-c195-in12-eager and canon-c19-in12-eager as the two slopes below it on the same recipe book and define set.",
+ "_watch": [
+  "every run ~5 min in: mod marker, version, this run's error window by position, clock (tools/testbed/batch_heartbeat.sh <session> at each wake); arm tools/testbed/stop_watch.ps1 on the session through launch_detached.ps1 -Hidden and a background wait_for_session.ps1",
+  "first run: tools/testbed/ledger/queue_series.mjs at 1900/1920/1935 - private and government backlog years, private share, construction sector levels, pool; capital_flags.mjs at 1935; first_run_decomp at 1900/1935; rung margins by era; run_vs_vanilla (scratchpad or the ledger); rung0_path.mjs and rung0_who.mjs (tools/testbed/ledger, F122) for the old rung's path",
+  "post-run: alignment_check.mjs (it prints the stop verdict too), capital_flags.mjs, preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS, the ledger (one configuration per report)"
+ ],
+ "_cost": "1 x 1836->1936 ~ 2h20-2h40; the run-level stop applies.",
+ "_caveats": [
+  "n=2 by design; the alignment tool decides on the third.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent; the five-minute smoke check on EVERY run; never interleave configs."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+ },
+ "setups": {
+  "canon-c20-in12-eager": {
+   "kind": "config",
+   "config": "config/mod_config.canon-c20-in12-eager.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "canon-c20-in12-eager",
+   "until": "1936.1.1"
+  }
+ ]
+}

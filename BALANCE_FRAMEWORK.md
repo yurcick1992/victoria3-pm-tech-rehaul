@@ -7282,3 +7282,58 @@ B 1.5, cost ×2^era, ai_value 1,000×3^era on all 17, divisor 0.000125, the §10
 canon-je24-a22, canon-flat-in12/13, the two test books) regenerated from the same structure. The book F106/F107 measured is commit
 880f098's copy; the era-keyed motor-A state of the afternoon is commit c18234c's. Consequence for the research entries: motor's e2
 (electric engines) takes the e2 mark (75,000 workers in the predecessor rung, motor e0) in place of the e1 mark.
+
+## 10.79 — THE HOARD IS A PROBLEM IN ITSELF, THE CAPITAL-ABUNDANCE FLAG, AND THE UNDER-SIDE RULE (user-ruled 2026-09-15); the cost-slope sweep read, and the next session's three 2+1 configurations
+
+**The three rulings, in the user's words (2026-09-15).**
+1. *"I'm reasonably sure that hoarding is a problem by itself that should be tuned by spending eagerness defines. It seems that they
+   are not the main lever you iterate, but significant hoarding (more than 1 yearly world product) can spoil all measurements, and
+   we're aiming at levels lower than vanilla, better to fix that sooner than later."* — The hoard is the investment pool ÷ GDP; the
+   aim is BELOW vanilla's n=16 median (0.29 world / 0.35 on the GBR+USA+FRA+GER shortlist); a pool above a year of world GDP voids
+   the other readings of a batch.
+2. *"Split unemployment (it includes peasants, right? It must) into world and shortest-list as well. Basically, as situation of
+   complete capital abundance (total unemployment under 3%, hoard over 2 GDP), if not confined to minors, invalidates the config more
+   or less, it just shouldn't happen. More than that, it distorts the economy a lot, and other metrics' readings from this config
+   become heavily unreliable as well."* — THE CAPITAL-ABUNDANCE FLAG: total unemployment INCLUDING peasants = (unemployed + peasants)
+   ÷ (salaried + unemployed + peasants); a shortlist member under 3% with a hoard over 2 GDP trips ⚑, the pooled shortlist tripping is
+   a VOID. `tools/testbed/ledger/capital_flags.mjs` (exit 4 = void) runs in every write-up beside `alignment_check.mjs`. Measured at
+   1935: the flat A 1.9 pair is VOID (0.3–1.0% at a hoard of 3.1–3.3); C 1.6, the ×1.3 lift and one C 1.9 seed trip it for Britain
+   alone (vanilla's own Britain does in 2 of 16 seeds).
+3. *"Note that more aggressive spend of investment pool money will increase the economy and thus depeasantation. So ceteris paribus,
+   the other parts of the config (A/B/initial input penalty/cost_ladder) should be taken from the side that gave values slightly under
+   the GDP/depeasantation target, not at the target."* — THE UNDER-SIDE RULE: the eager-spending defines go on a base that reads
+   slightly under the band, never on the found configuration itself.
+
+**The sweep, read (F113 / F115–F121; the session table is F123).** On the lifted A 2.2 / B 1.5 book the cost slope C
+(`make_ab_config --cost-ratio C`, building_cost = anchor × C^era) is the loop's gain: flat and C 1.6 run away (1.8–1.9× vanilla GDP,
+rung 0 dead or thinning, the majors' labour emptied), **C 1.9 lands** (1.09 / 1.07 / 1.13 / 1.04× across four seeds with workers per
+capita 0.64–0.70×, both bands, F117 + F120 — `canon-c19-in12` is the found configuration), C 2.05 and 2.2 stall (0.65–0.74×). The
+×1.3 lift is closed (a runaway at 1.9, F118; a stall at 2.05, F119); halving rung 0's construction desire changes nothing (F120);
+the eager-spending defines on the under-side slope C 2.05 give a bistable configuration (F121: 0.56 / 0.37 / 1.32×, two stalls
+locked in by early British disasters, one growth seed whose hoard returned at 0.83 world / 1.31 shortlist). What the defines do,
+in 3 of 3 seeds: the private construction backlog 2.0–2.4 → 1.1–1.3 years and the government backlog 2.8–3.0 → 0.9–1.6 years.
+What they cannot do: hold the pool where the economy grows — in the growth seed the pool held five to six years of the private
+queue's spend (inflow ≈ £1.1–1.3B a year against £0.8–1.0B of construction), so the sector would need to be a third larger than the
+AI builds at its most eager, or the inflow a quarter smaller. ⇒ **The hoard's lever past this point is a balance change and needs a
+ruling**: the construction sector's throughput per level or goods per point, or the pool's inflow (the laws'
+`state_<pop>_investment_pool_efficiency_mult` / `_contribution_add`, ±0.25 to ±0.75 today).
+
+**The old rung on the found slope (F122).** Its level count rises 12–18% from 1900 to 1935, but front-loaded (1900–1920, flat after
+1930), its staffed levels FALL by a fifth, half or more of the added levels are NEW buildings in fresh states placed by countries that
+already hold the frontier (229 of 245, 287 of 304), and by 1935 rung 0 is 1% of either queue — expansion below 80% staffing is
+forbidden by `PRODUCTION_BUILDING_LOW_EMPLOYMENT_THRESHOLD`. So after 1920 the old rung persists on a positive margin; it is not
+rebuilt. The last willingness lever on the placements is the scoring's noise (`PRODUCTION_BUILDING_RANDOM_FACTOR` 10, ×2 for the
+private pool), next on the ordered list of 2026-09-03 after the ai_value ladder.
+
+**The next session's three 2+1 configurations (prepared 2026-09-15 evening, each generated by `make_ab_config` with its `_ab.command`
+recorded, field-diffed against its base, dry-run built clean; schedules `_n2.json` + `_tb.json` in `tools/testbed/schedules/`):**
+1. **`canon-c19-in12-eager`** — the eager set on the found slope: reads what the defines do where every seed grows (the backlog and
+   sector predictions stand; the pool is expected to follow growth; GDP may exceed the band — F121's growth seed reached 1.32×).
+2. **`canon-c195-in12-eager`** — the under-side rule on the sweep's own axis: cost × 1.95^era (600 / 1,170 / 2,282 / 4,449) with the
+   eager set, short of the C 2.05 cliff; the branch book `canon-c20-in12-eager` (× 2.0^era) is generated for the case that both eager
+   slopes overshoot.
+3. **`canon-c19-in12-eager-sharp` / `canon-c195-in12-eager-sharp`** — on whichever base read in the band: the government AI's
+   construction noise halved (RANDOM_FACTOR 10 → 5), the private pool's noise quartered with it (its mult 2.0 → 1.0), the pool's
+   profit weight 1.5 → 2.5. Key prediction: below-best under 22% (the sweep 30–38%), fewer than 150 new rung-0 buildings 1900 → 1935
+   (245 / 304), rung 0's 1935 level count at or below 1900's. Willingness only — no gate, cap or removal.
+The order and the branch rules are in HANDOVER.md; the run-level stop, the capital flag and the 2+1 alignment apply to every batch.
