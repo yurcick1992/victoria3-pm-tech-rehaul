@@ -1820,6 +1820,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⚠ Session paths hardcoded to the first instance (flatcost-n1); --session flag TODO
                         (the `fill_*` scripts still are; the three `analyse_ai_*`/`analyse_build_*`
                         scripts now take `--session`/`--config` and discover their runs)
+  testbed/ledger/capital_flags.mjs  ⭐ THE HOARD SPLIT AND THE CAPITAL-ABUNDANCE FLAG (user-ruled 2026-09-15): per usable run at a year, the
+                        investment-pool hoard ÷ GDP for the WORLD and the SHORTLIST (GBR, USA, FRA, GER — PRU standing in for an unformed
+                        Germany) and TOTAL UNEMPLOYMENT INCLUDING PEASANTS ((unemployed + peasants) ÷ workforce) beside the strict figure, each
+                        shortlist member's own reading, the medians and the vanilla reference. A member under 3% with a hoard over 2 trips ⚑; the
+                        pooled shortlist tripping is a VOID (exit 4) — "complete capital abundance … invalidates the config". Vanilla's own Britain
+                        trips ⚑ in 2 of 16 seeds; the flat A 1.9 pair is the measured VOID (0.3–1.0% at a hoard of 3.1–3.3)
   testbed/ledger/lib_runs.mjs  ⭐ WHICH RUNS OF A SESSION MAY BE COUNTED — one implementation, because
                         two analyses of one batch that disagree about n give two incomparable answers.
                         `usableRuns(root, session)` DISCOVERS the run folders and keeps only those that
@@ -3902,7 +3908,8 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   2 GDP), if not confined to minors, invalidates the config more or less, it just shouldn't happen … it distorts the economy a lot, and other metrics'
   readings from this config become heavily unreliable". Total unemployment INCLUDES PEASANTS — (unemployed + peasants) ÷ (salaried + unemployed +
   peasants); the hoard is the investment pool ÷ GDP; read WORLD and the SHORTLIST (GBR, USA, FRA, GER — PRU standing in where Germany never formed) and each
-  shortlist member (scratchpad `unemp_split.mjs` / `hoard_ratios.mjs` over the save summaries, until the ledger carries it). Measured 2026-09-15 at 1935:
+  shortlist member — `node tools/testbed/ledger/capital_flags.mjs --arm <session[,session]>:<setup>` prints both splits per usable run with the
+  medians and the vanilla reference, marks a tripping member ⚑ and exits 4 on a shortlist-wide trip (VOID); run it in every write-up beside `alignment_check.mjs`. Measured 2026-09-15 at 1935:
   the flat A 1.9 pair trips it for the whole shortlist (0.3–1.0% at a hoard of 3.1–3.3); C 1.6, the ×1.3 lift and run 1 of the found config trip it for
   BRITAIN alone (2.7% at 2.28, 2.3% at 6.97, 0.8% at 2.40); vanilla's own Britain trips it in 2 of 16 seeds (0.8% at 2.14, 0.1% at 2.91), so a British
   reading at vanilla's extreme is a flag, a shortlist-wide one is a void. Vanilla medians: world 41.7% / shortlist 21.7% peasant-inclusive (strict, without
