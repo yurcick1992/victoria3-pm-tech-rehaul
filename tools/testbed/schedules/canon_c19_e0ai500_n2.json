@@ -1,0 +1,80 @@
+{
+ "schedule_version": 1,
+ "label": "canon-c19-e0ai500-n2",
+ "_why": "THE LOOP'S THIRD PICK (2026-09-15; the standing loop: report -> clock -> the best NEW config). The found configuration is canon-c19-in12 (F117: GDP 1.09 / 1.07x vanilla, workers per capita 0.65 / 0.67x, rung 0 out-earned at 22-26% vs 44-54%) and its one unmet goal is rung 0's DEATH: it thins to 45% staffing but its LEVEL COUNT grows in every book of the sweep (649 at 1840 -> 1,568-1,672 at 1935 at C 1.9; 1,889 at C 1.6; 2,554 under the x1.3 lift) - the AI keeps BUILDING the old rung (the company rebuild, F97 s4) while it out-earns nothing. Both price levers tried on it failed: the x1.3 input lift at C 1.9 removed the dip and RAN AWAY (F118, 1.44x), and on the 2.05 slope it stalled (session 20260915_033205: 0.72 / 0.71 / 0.72 / 0.70x at 1890-1920). So this book leaves every price alone and turns the one willingness lever the design has for this: rung 0's ai_value (the AI's construction desire) HALVED to 500, e1-e3 unchanged at 3,000 / 9,000 / 27,000 (make_ab_config --ai-ladder 500,3000,9000,27000 in place of --ai-steep <17>:3). Everything else as canon-c19-in12 (cost 1.9^era, the x1.2 lift, A 2.2 / B 1.5, divisor 0.000125, the defines, the 24-month bar). One lever. A willingness lever, not a block (the no-artificial-limits rule): rung 0 stays buildable, less wanted. Expected: fewer new rung-0 levels, so its staffed share falls as old levels close and the frontier absorbs the labour, with little new push on the capital price - the runaway needs cheap frontier capital, which this does not change.",
+ "_arms": {
+  "canon-c19-e0ai500": "{kind: config, config: config/mod_config.canon-c19-e0ai500.json} - generated 2026-09-15 05:40 by make_ab_config --ai-ladder 500,3000,9000,27000 --cost-ratio 1.9 --in0 1.2 (its _ab.command holds the line); dry-run built clean."
+ },
+ "_delta": "Against canon-c19-in12 (F117): rung 0's ai_value 500 in place of 1,000 - one lever; every recipe, cost and define identical.",
+ "_predictions": {
+  "gdp": "world GDP 0.95-1.20x the vanilla eighteen-run median at 1935 (point ~1.10x: a little more frontier, a little less old capacity); the dip 0.75-0.95x around 1900 as at C 1.9 x1.2; no runaway (the capital price is unchanged) - above 1.3x at 1936 STOPS the config and says the willingness lever alone reopens the loop.",
+  "workers": "productive workers per capita 0.60-0.72x vanilla at 1935 (C 1.9 x1.2: 0.65 / 0.67)",
+  "obsolescence": "THE KEY PREDICTION: rung 0's LEVEL COUNT at 1935 below its 1900 count (falling, for the first time in the sweep; C 1.9 x1.2: 1,330 -> 1,568-1,672 rising), staffing 25-40%, margin 15-25% against the frontier's 40%+; below-best 25-32% (the old rung is a smaller share of what gets built)",
+  "capital_prices": "pools 0.35-0.65 of a year's world GDP (as C 1.9 x1.2); tiered levels 9,000-13,000; the tiered goods' British prices 0.7-0.9x vanilla's",
+  "perf": "row P total within +10% of vanilla's median play time; the feeder handles a mid-autosave CTD (L32)"
+ },
+ "_alignment": "THE 2+1 RULE (user-ruled 2026-09-14, F114): after run 2, `node tools/testbed/ledger/alignment_check.mjs --arm <session>:canon-c19-e0ai500` - two criteria at 1935 vs the vanilla per-run median, five bands each, a pair fails an axis only in different bands AND >= 0.15 (GDP) / >= 0.10 (workers) apart. DIVERGENT => one more run of this config as its own one-run schedule, the reading the median of three. No obsolescence criterion; rung-0 staffing / payback / below-best are verdict flags. PLUS THE RUN-LEVEL STOP (user-ruled 2026-09-14 afternoon, 2+1 batches only): any run that ends above x1.3 of vanilla's 1936 GDP (the eighteen-run median at the 1936.1.1 endpoint, GBP 4,544M) is the config's LAST run - be it run 1, 2 or 3 - enforced between runs by the scratchpad stop_watch.mjs (drops tools/testbed/STOP after the offending run's 1936 summary lands; the next run is an 1836 stub, L17-excluded). Never mid-run.",
+ "_comparison": "vanilla n=18 for every ratio; canon-c19-in12 (F117) is the one-lever baseline and the config it must beat on rung 0's level count without losing the band.",
+ "_watch": [
+  "every run ~5 min in: mod marker, version, this run's error window by position, clock (batch_heartbeat.sh at each wake); arm scratchpad/stop_watch.mjs on the session through launch_detached.ps1 -Hidden",
+  "first run: first_run_decomp at 1900/1935, rung margins by era at 1840/1900/1935 (scratchpad rung_margins.mjs), run_vs_vanilla.mjs (the decade trajectory against the cached vanilla medians), world_labour.mjs, queue_mix; the 1860 dip",
+  "post-run: alignment_check.mjs (it prints the stop verdict too), preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS, the ledger (one configuration per report)"
+ ],
+ "_cost": "2 x 1836->1936 ~ 2 x 2h35 ~ 5 h, plus a third run on divergence; a run above 1.3x at 1936 ends the config early.",
+ "_caveats": [
+  "n=2 by design; the alignment tool decides on the third.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent; the five-minute smoke check on EVERY run; never interleave configs."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+ },
+ "setups": {
+  "canon-c19-e0ai500": {
+   "kind": "config",
+   "config": "config/mod_config.canon-c19-e0ai500.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "canon-c19-e0ai500",
+   "until": "1936.1.1"
+  },
+  {
+   "setup": "canon-c19-e0ai500",
+   "until": "1936.1.1"
+  }
+ ]
+}
