@@ -12097,8 +12097,49 @@ stable baseline more than a tighter one, and the split was already flagged as we
 Collinearity, pooled: corr(pops, levels) 0.952 · corr(pops, **objects**) **0.976** · corr(levels, objects)
 0.948 — objects are the *most* collinear with pops, which is the arithmetic behind §1.
 
+### 6. ⭐⭐ WHICH OF THE TWO TERMS MATTERS MORE? — the naive reading of the coefficients is wrong, and so is any confident answer (user question, same day)
+
+`0.590 > 0.180` says nothing: a thousand pop objects is not a thousand building levels. Three yardsticks
+that do mean something, over the same 170-run pool (drivers: cost 51–414 s/yr, kpops 29–223, klevels
+97–366, MGDP 349–9 211):
+
+| yardstick | pop term | size term |
+|---|---|---|
+| seconds contributed, **shipped constants** (share of mean cost / of the modelled span) | 13.8 s/yr — 15% / 18% | 78.7 s/yr — **83% / 82%** |
+| seconds contributed, **refit on the full pool** | 34.1 s/yr — 36% / 43% | 57.4 s/yr — 60% / 57% |
+| **elasticity** (log-log, unit-free, the best-fitting form: R² 0.783 vs the linear 0.717) | **0.272** | **0.708** |
+| standardised beta (shipped / refit) | 0.159 / 0.393 | 0.636 / 0.464 |
+| Shapley share of explained variance | **49.6%** | **50.4%** |
+
+⭐ **The one robust statement is the SUM, not the split**: `log(cost) = −0.098 + 0.272·log(kpops) +
+0.708·log(klevels)`, and **0.272 + 0.708 = 0.980 (se 0.032, run-clustered)** — cost is *proportional* to
+world size, with no economies of scale either way. That sum sits at 0.97–1.03 on every slice tried.
+
+⚠ **The split is not identified, and the coefficient standard errors badly understate that.** Within the
+pool a leave-one-run-out jackknife moves the size share only 71.6–75.2%; across slices it moves 68–91%
+(F72's 24-run pool 91%, everything since 2026-08-19 68%, vanilla 78%, mod 71%), and *within a single book*
+82–99% — because there the pop/level mix barely varies. The linear-form profile is wider still: fitting
+`cost = a + b·(kpops + L·klevels)` over a grid of L, **every split from 41% to 81% size share is within 1%
+of the best cv**, and the two extremes — pops alone, levels alone — cost only **4.3%** and **3.3%**.
+
+⚠⚠ **Because 95% of what the model explains is SHARED.** R² pops alone 0.696 · levels alone 0.702 · both
+0.717 ⇒ unique to pops **0.014 (2.0%)**, unique to levels **0.020 (2.8%)**, shared **0.682 (95.2%)**. PC1
+of the standardised pair holds **97.6%** of their joint variation. ⇒ **They are one factor wearing two
+hats — "how big is the world" — and attributing importance between them is close to arbitrary.**
+
+**What this means for row P in practice.** Between books the two drivers move together (corr 0.829 across
+30 books; their *ratio* varies 5.2% against 8.7–9.9% for the drivers themselves), so the choice of split
+barely changes the tripwire's verdict — it changes the attribution story. It does change the per-book
+*predicted* deviation: the size term carries **4.9×** the between-book spread of the pop term under the
+shipped constants and **1.5×** under a refit (sd across books 6.81 vs 1.38 s/yr, against 4.96 vs 3.40).
+And the whole between-book effect is small next to the trajectory: books sit −17 to +15 s/yr apart around
+a mean of 95, while one century's own growth runs 51 → 414 s/yr.
+
 ### What it does NOT say
 
+- **Do not quote a "pops vs levels" importance split as a fact.** §6 is an uncertainty statement: the sum
+  of the elasticities is measured (0.98 ± 0.03), the split is bounded at best (size share 41–81% linear,
+  68–91% log) and is near-arbitrary in variance terms (95% shared).
 - **It does not refute the engine-side intuition.** DD76's employment update is per pop object, and this
   model's pop term is already per pop object. The claim here is narrower: *given* the pop-object count,
   the number of building RECORDS adds no measurable cost in the observed range, while a measure of

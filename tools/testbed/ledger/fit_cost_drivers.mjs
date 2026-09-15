@@ -200,3 +200,66 @@ for (const [nm, set] of [['vanilla', rows.filter(p => p.van)], ['mod', rows.filt
 const cN = fit(rows, SPECS['pops + levels  (SHIPPED)'][0]);
 console.log(`  a refit on this pool would be ${cN[0].toFixed(2)} + ${cN[1].toFixed(3)}·kpops + ${cN[2].toFixed(3)}·klevels (cv ${cv(rows, pred(SPECS['pops + levels  (SHIPPED)'][0], cN)).toFixed(4)})`);
 console.log('  ⚠ the tripwire wants a STABLE baseline more than a tighter one — do not refit without a ruling.');
+
+// ================================================================================================
+// ⭐⭐ 6-7: WHICH OF THE TWO TERMS MATTERS MORE? (F120 §6, user question 2026-09-15)
+// ⚠⚠ NOT BY COMPARING THE COEFFICIENTS — they are in different units (a thousand pop objects is not a
+// thousand building levels), so 0.590 > 0.180 says nothing on its own. The three comparisons that mean
+// something: the SECONDS each term contributes, the ELASTICITY (log-log, unit-free), and how much
+// variance can be attributed to either ALONE.
+// ================================================================================================
+const sd = a => { const m = mean(a); return Math.sqrt(a.reduce((s, x) => s + (x - m) ** 2, 0) / a.length); };
+const R2 = (pts, f) => { const mu = mean(pts.map(p => p.y));
+  return 1 - pts.reduce((s, p) => s + (p.y - f(p)) ** 2, 0) / pts.reduce((s, p) => s + (p.y - mu) ** 2, 0); };
+const Y = rows.map(p => p.y), A = rows.map(p => p.a), B = rows.map(p => p.b);
+console.log('\n=== 6. HOW IMPORTANT IS EACH TERM? ===');
+console.log('  driver            mean      sd     min      max   max/min');
+for (const [nm, v] of [['cost sec/yr', Y], ['kpops', A], ['klevels', B], ['MGDP', rows.map(p => p.g)]])
+  console.log(`  ${nm.padEnd(15)} ${mean(v).toFixed(1).padStart(7)} ${sd(v).toFixed(1).padStart(7)} ${Math.min(...v).toFixed(1).padStart(7)} ${Math.max(...v).toFixed(1).padStart(8)} ${(Math.max(...v) / Math.min(...v)).toFixed(2).padStart(9)}`);
+console.log('\n  (a) SECONDS CONTRIBUTED — the only common currency, and it depends on which fit you take:');
+const OLD = rows.filter(p => p.run.slice(0, 8) < '20260819');
+for (const [nm, c] of [['shipped (F72)', [0.39, 0.180, 0.590]], ['refit, full pool', cN], ['refit, F72 pool', fit(OLD, SPECS['pops + levels  (SHIPPED)'][0])]]) {
+  const tp = A.map(x => c[1] * x), tl = B.map(x => c[2] * x);
+  const rp = Math.max(...tp) - Math.min(...tp), rl = Math.max(...tl) - Math.min(...tl);
+  console.log(`   ${nm.padEnd(17)} pop term ${mean(tp).toFixed(1).padStart(5)} s/yr (${(mean(tp) / mean(Y) * 100).toFixed(0)}% of mean cost, ${(rp / (rp + rl) * 100).toFixed(0)}% of the span)   size term ${mean(tl).toFixed(1).padStart(5)} s/yr (${(mean(tl) / mean(Y) * 100).toFixed(0)}%, ${(rl / (rp + rl) * 100).toFixed(0)}%)`);
+}
+console.log('\n  (b) ELASTICITIES — log-log, so the two coefficients ARE comparable and unit-free:');
+const LOGROWS = rows.map(p => ({ run: p.run, y: Math.log(p.y), la: Math.log(p.a), lb: Math.log(p.b), lg: Math.log(p.g), lc: Math.log(p.c) }));
+const LG = [p => 1, p => p.la, p => p.lb];
+const cl = fit(LOGROWS, LG);
+console.log(`   log(cost) = ${cl[0].toFixed(3)} + ${cl[1].toFixed(3)}·log(kpops) + ${cl[2].toFixed(3)}·log(klevels)   R² ${R2(LOGROWS, pred(LG, cl)).toFixed(3)} (the linear form: ${R2(rows, pred(SPECS['pops + levels  (SHIPPED)'][0], cN)).toFixed(3)})`);
+console.log(`   ⭐ the size term does ${(cl[2] / cl[1]).toFixed(1)}× the work of the pop term, and their SUM is ${(cl[1] + cl[2]).toFixed(3)}`);
+console.log(`      — a sum of 1.0 means cost is exactly PROPORTIONAL to world size, and that is the robust statement here.`);
+const jk = [];
+for (const rn of runMeta.keys()) { const c = fit(LOGROWS.filter(p => p.run !== rn), LG); jk.push(c[2] / (c[1] + c[2])); }
+console.log(`      leave-one-run-out jackknife of the size share: ${(Math.min(...jk) * 100).toFixed(1)}%-${(Math.max(...jk) * 100).toFixed(1)}%`);
+console.log('      ⚠ but ACROSS POOLS it is far less stable than that jackknife suggests:');
+for (const [nm, set] of [['F72 pool', LOGROWS.filter(p => p.run.slice(0, 8) < '20260819')], ['since 2026-08-19', LOGROWS.filter(p => p.run.slice(0, 8) >= '20260819')],
+                         ['vanilla runs', LOGROWS.filter(p => runMeta.get(p.run).isVanilla)], ['mod runs', LOGROWS.filter(p => !runMeta.get(p.run).isVanilla)]]) {
+  const c = fit(set, LG);
+  console.log(`         ${nm.padEnd(18)} pops ${c[1].toFixed(3)}  size ${c[2].toFixed(3)}  sum ${(c[1] + c[2]).toFixed(3)}  size share ${(c[2] / (c[1] + c[2]) * 100).toFixed(0)}%`);
+}
+console.log('\n  (c) VARIANCE DECOMPOSITION — how much is attributable to EITHER ALONE?');
+const r2p = R2(rows, pred([p => 1, p => p.a], fit(rows, [p => 1, p => p.a])));
+const r2l = R2(rows, pred([p => 1, p => p.b], fit(rows, [p => 1, p => p.b])));
+const r2b = R2(rows, pred(SPECS['pops + levels  (SHIPPED)'][0], cN));
+const uP = r2b - r2l, uL = r2b - r2p, sh = r2b - uP - uL;
+console.log(`   R² pops alone ${r2p.toFixed(3)} · levels alone ${r2l.toFixed(3)} · both ${r2b.toFixed(3)}`);
+console.log(`   unique to pops ${uP.toFixed(3)} (${(uP / r2b * 100).toFixed(1)}%) · unique to levels ${uL.toFixed(3)} (${(uL / r2b * 100).toFixed(1)}%) · SHARED ${sh.toFixed(3)} (${(sh / r2b * 100).toFixed(1)}%)`);
+console.log(`   ⭐ ${(sh / r2b * 100).toFixed(0)}% of what the model explains cannot be attributed to either — Shapley split pops ${((uP + sh / 2) / r2b * 100).toFixed(0)}% / levels ${((uL + sh / 2) / r2b * 100).toFixed(0)}%.`);
+{
+  const r = corr(A, B);
+  console.log(`   PCA on the standardised pair: PC1 holds ${((1 + r) / 2 * 100).toFixed(1)}% of their joint variation — they are one factor wearing two hats.`);
+}
+console.log('\n=== 7. IDENTIFICATION PROFILE: fit cost = a + b·(kpops + L·klevels) over a grid of L ===');
+console.log('   a flat cv means the data cannot choose the split at all.');
+console.log('      L        size share of span     cv     vs best');
+let bestCv = Infinity; const prof = [];
+for (const L of [0, 0.1, 0.2, 0.3, 0.5, 0.7, 1, 1.5, 2, 3, 5, 10, 1e9]) {
+  const cols = [p => 1, p => p.a + L * p.b], c = fit(rows, cols), cvv = cv(rows, pred(cols, c));
+  const rp = c[1] * (Math.max(...A) - Math.min(...A)), rl = c[1] * L * (Math.max(...B) - Math.min(...B));
+  prof.push({ L, share: rl / (rp + rl), cv: cvv }); if (cvv < bestCv) bestCv = cvv;
+}
+for (const g of prof) console.log(`   ${(g.L >= 1e9 ? 'inf (levels only)' : String(g.L)).padStart(17)} ${(g.share * 100).toFixed(0).padStart(6)}%  ${g.cv.toFixed(4)}  ${((g.cv / bestCv - 1) * 100).toFixed(1)}%`);
+const win = prof.filter(g => g.cv <= bestCv * 1.01);
+console.log(`   within 1% of the best cv: size share ${(Math.min(...win.map(g => g.share)) * 100).toFixed(0)}%-${(Math.max(...win.map(g => g.share)) * 100).toFixed(0)}%;  even 0% and 100% cost only ${((prof[0].cv / bestCv - 1) * 100).toFixed(1)}% / ${((prof.at(-1).cv / bestCv - 1) * 100).toFixed(1)}%`);
