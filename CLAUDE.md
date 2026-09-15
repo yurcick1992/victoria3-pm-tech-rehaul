@@ -3874,7 +3874,15 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   under changing configs (a 30-run plan, a 60-run plan, a full-run learning batch) — is NOT subject to it; every run plays.
   `alignment_check.mjs` prints the stop verdict (exit 3) and `--stop-above 0` is the "full runs" switch; between the runs of a
   live batch the scratchpad `stop_watch.mjs` enforces it by dropping the STOP file after an offending run's endpoint lands (the
-  next run is abandoned at 1836 and L17-excluded, the phase-2 run-11 shape). Being far BELOW stops nothing (the stall family). Setups are
+  next run is abandoned at 1836 and L17-excluded, the phase-2 run-11 shape). Being far BELOW stops nothing (the stall family). ⭐ **THE CAPITAL-ABUNDANCE FLAG (user-ruled 2026-09-15):** "a situation of complete capital abundance (total unemployment under 3%, hoard over
+  2 GDP), if not confined to minors, invalidates the config more or less, it just shouldn't happen … it distorts the economy a lot, and other metrics'
+  readings from this config become heavily unreliable". Total unemployment INCLUDES PEASANTS — (unemployed + peasants) ÷ (salaried + unemployed +
+  peasants); the hoard is the investment pool ÷ GDP; read WORLD and the SHORTLIST (GBR, USA, FRA, GER — PRU standing in where Germany never formed) and each
+  shortlist member (scratchpad `unemp_split.mjs` / `hoard_ratios.mjs` over the save summaries, until the ledger carries it). Measured 2026-09-15 at 1935:
+  the flat A 1.9 pair trips it for the whole shortlist (0.3–1.0% at a hoard of 3.1–3.3); C 1.6, the ×1.3 lift and run 1 of the found config trip it for
+  BRITAIN alone (2.7% at 2.28, 2.3% at 6.97, 0.8% at 2.40); vanilla's own Britain trips it in 2 of 16 seeds (0.8% at 2.14, 0.1% at 2.91), so a British
+  reading at vanilla's extreme is a flag, a shortlist-wide one is a void. Vanilla medians: world 41.7% / shortlist 21.7% peasant-inclusive (strict, without
+  peasants: 16.3% / 4.0%); the sweep books run 40–70% peasant-inclusive on the shortlist except the runaways. Setups are
   `{kind: control}` (vanilla + telemetry, via `build.ps1 -ControlOnly`) or `{kind: config, config: <path>}`.
   ❌ **`{kind: control, config: <path>}` exists today and is the architectural violation flagged under
   `-ControlOnly` above** — it builds vanilla + telemetry + a pop-need weight file while still calling
