@@ -1,0 +1,79 @@
+{
+ "schedule_version": 1,
+ "label": "canon-c19-in12-eager-q10-tb",
+ "_why": "THE TIE-BREAKER of canon_c19_in12_eager_q10_n2.json: the third run of the 2+1 rule, launched ONLY when alignment_check.mjs exits 2 on that pair. Read as its own session and pooled with the pair (--arm sessA,sessB:canon-c19-in12-eager-q10); the configuration is then the MEDIAN OF THREE. THE SPLIT TEST. Config 1 of the session (canon-c19-in12-eager, session 20260915_232710) met EVERY hoard prediction and cost a third of the economy: at 1935 run 1 read world pool 0.27 of GDP (the C 1.9 family 0.42 / 0.48 / 0.64 / 0.70; vanilla 0.29), shortlist 0.14 (family 0.61-1.50; vanilla 0.35), Britain 0.15 (family 0.87-2.40), both construction backlogs 0.8 y (family 2.0-2.4 private, 2.8-3.0 government), a 3,123-level construction sector - and world GDP 0.74x vanilla against the family's 1.04-1.13x, productive workers per capita 0.53x against 0.64-0.70x, shortlist unemployment incl. peasants 57.6% against 27-32%. Neither criterion is in band. THE SUSPECT IS NOT THE SPENDING THRESHOLDS BUT THE FOURTH LEVER RIDING WITH THEM: the eager set reverted CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED from the canon's 0.1 to vanilla's 0.05 on the reading that it would 'free the government queue for construction sectors'. The game's own comment says otherwise - 'If country has this number of production building constructions queued, don't add anymore (scaled by construction production)' - i.e. a HARD CAP on concurrent production-building construction, so halving it halves how fast a country can add productive capacity. The fingerprint fits: private queue items 286 at 1920 against the family's 887-1,017, a third fewer productive workers, far more peasants. This book keeps the three SPENDING thresholds (TOO_LARGE_INVESTMENT_POOL_FACTOR 0.99, CRITICAL 1.25, EXCESSIVE 3.0) and leaves the queue cap at the canon's 0.1. It therefore differs from canon-c19-in12-eager in EXACTLY the queue cap, and from the found config canon-c19-in12 in EXACTLY the three thresholds - one book isolating both halves. In scope: AI defines only (the user ruled the balance-side hoard levers out on 2026-09-15 - no construction-method changes, no law-side pool modifiers).",
+ "_arms": {
+  "canon-c19-in12-eager-q10": "{kind: config, config: config/mod_config.canon-c19-in12-eager-q10.json} - generated 2026-09-15 by make_ab_config from canon-c19-in12-eager's own _ab.command with the one flag changed (its _ab.command holds the line); field-diffed both ways (one define against each comparator, recorded twice); dry-run built clean; L20/L31/L33 pass."
+ },
+ "_delta": "Against canon-c19-in12-eager (config 1): CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED 0.05 -> 0.1, nothing else. Against canon-c19-in12 (the found config, F117/F120): the three spending thresholds 0.9 -> 0.99, 0.9 -> 1.25, 1.5 -> 3.0, nothing else.",
+ "_predictions": {
+  "_structure": "THREE informative outcomes, pre-registered so the result cannot be read after the fact. A is the hypothesis; B and C are the ways it is wrong, and both are worth knowing.",
+  "A_the_hypothesis": "GDP recovers to 0.95-1.15x vanilla and workers per capita to 0.60-0.72x (i.e. back into the found config's range) WHILE the hoard stays low - world pool 0.25-0.45, shortlist under 0.6, Britain under 1.0. THEN: the three spending thresholds are the hoard fix, the queue cap was the whole cost, and this book is the new candidate configuration - it would be the first in the sweep in band on both criteria with a pool at or below vanilla.",
+  "B_inseparable": "GDP recovers to 0.95-1.15x AND the hoard returns to 0.40-0.70 world with Britain above 1.0. THEN the short queue and the small economy were the same thing: the cap was the hoard lever and it costs a third of the world to pull. By the 2026-09-15 scope ruling that exhausts the in-scope levers, and the hoard becomes an accepted documented residual - reported every batch, never tuned again, keeping only its role in the capital-abundance void criterion. Do not spend a further batch on it.",
+  "C_thresholds_at_fault": "GDP stays below 0.9x. THEN the spending thresholds themselves cost the growth (the AI starving production buildings to fund construction sectors), the queue cap is exonerated, and the eager family is closed entirely - the found config canon-c19-in12 stands with its hoard as the residual.",
+  "queues": "the backlogs are the diagnostic that separates A from B: under A they stay short (1.0-1.8 y private) because the thresholds keep the sector large; under B they lengthen back toward 2 y as the restored cap lets more be queued. Read queue_series.mjs at 1900/1920/1935 in BOTH runs, not just the pair's medians.",
+  "obsolescence": "rung 0 unchanged either way - 45-55% staffed, its level count still rising; the sharp books are the lever aimed at that, not this one.",
+  "perf": "row P total within +10% of the vanilla median; no crash expected, the feeder handles a mid-autosave CTD (L32)."
+ },
+ "_alignment": "THE 2+1 RULE (user-ruled 2026-09-14, F114): after run 2, `node tools/testbed/ledger/alignment_check.mjs --arm <session>:canon-c19-in12-eager-q10` - world GDP and productive workers per capita at 1935 against the vanilla per-run median, five bands each; a pair fails an axis only in different bands AND >= 0.15 (GDP) / >= 0.10 (workers) apart. DIVERGENT => the _tb.json as its own session, the reading the median of three. PLUS THE RUN-LEVEL STOP: any run above x1.3 of vanilla's 1936 GDP ends the config. PLUS THE CAPITAL-ABUNDANCE FLAG: `capital_flags.mjs`, a shortlist-wide trip is a VOID (exit 4).",
+ "_comparison": "THREE references, and the point of the design is that it sits between two of them: vanilla n=18 for every ratio; canon-c19-in12 (F117 + F120, four seeds: GDP 1.04-1.13x, workers 0.64-0.70x, hoard 0.42-0.70 world / 0.61-1.50 shortlist) one lever away on the thresholds; canon-c19-in12-eager (session 20260915_232710) one lever away on the queue cap.",
+ "_watch": [
+  "every run ~5 min in: tools/testbed/batch_heartbeat.sh <session> - the mod marker, the version, this run's error window BY POSITION, the clock, CRASHED lines, and the DEFINE REJECTED alarm (L33: this book carries the accepted ship-threshold residual and NOTHING else should appear)",
+  "first run: queue_series.mjs at 1900/1920/1935, capital_flags.mjs, first_run_decomp.mjs, rung0_path.mjs",
+  "post-run: alignment_check.mjs, capital_flags.mjs, preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS, the ledger"
+ ],
+ "_cost": "1 x 1836->1936 ~ 2h35.",
+ "_caveats": [
+  "n=2 by design; the alignment tool decides on the third.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent; the five-minute smoke check on EVERY run; never interleave configs.",
+  "This book was prepared while config 1's run 2 was still playing. If run 2 contradicts run 1 - i.e. the pair is DIVERGENT and the median of three lands in band - the premise of this test changes and it should be re-read before launching."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to every four-rung arm - what keeps the sessions comparable."
+ },
+ "setups": {
+  "canon-c19-in12-eager-q10": {
+   "kind": "config",
+   "config": "config/mod_config.canon-c19-in12-eager-q10.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "canon-c19-in12-eager-q10",
+   "until": "1936.1.1"
+  }
+ ]
+}
