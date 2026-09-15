@@ -11884,3 +11884,75 @@ is the first guess, unmeasured).
 **What it does NOT say.** Whether a smaller lift (×1.25) at C 1.9 keeps the band; whether the lift on a dearer slope lands (batch 5
 tests 2.05); why the population fell. Session `20260915_002935`, VERDICT.md there; config committed as
 `config/mod_config.canon-c19-in13.json` (`_ab.command`). Ledger https://claude.ai/code/artifact/b945cf11-8ec9-40b0-beb9-53f682b3d234 (one configuration per report).
+
+## F119 — THE ×1.3 INPUT LIFT ON THE DEARER SLOPE STALLS (canon-c205-in13, n=2 aligned, 2026-09-15): at C 2.05 the lift's push does not fill the frontier — the world sits at 0.66–0.74× vanilla from 1890 to 1936 in both seeds, the released capital is hoarded and then spent to no effect, and rung 0 stays alive at 49–50% staffing; with F118 this closes the lift as a lever at any slope
+
+**Claim.** Keeping the ×1.3 input lift of F118 and moving the cost slope from 1.9 to **2.05 per era** (`canon-c205-in13`: building cost
+600 / 1,230 / 2,522 / 5,169; everything else as canon-c19-in13) read **0.71× and 0.74× the vanilla per-run median at 1935** (0.70 /
+0.75 at 1936) — the pair ALIGNED under the 2+1 rule (both "noticeably below" on GDP; workers per capita 0.56 / 0.57×, both in the
+target band), so no tie-breaker and nothing near the run-level stop. The shape is the C 2.2 ×1.2 stall of F113 (0.65×) a little
+higher: on vanilla's path to 1860 (0.94 / 0.95×), falling through the 1880s (0.88 / 0.78×), then **0.66–0.72× in every decade from
+1890 to 1930 in both seeds** with no recovery. Run 1's pools were hoarded to 0.42 of a year's GDP by 1890 and spent down to 0.13–0.17
+without lifting the world (run 2 0.11–0.27; vanilla 0.31 at 1935). **Rung 0 is alive at 49% / 50% staffing** (1,744 / 1,447 levels,
+still being built: 1,479 / 1,301 at 1900) at a 25% / 24% margin against the frontier's 41–57% — the margin ladder of the C 1.9 ×1.2 book,
+the old rung out-earned but not dead. Read with F118 (the same lift at C 1.9: no dip, then a runaway to 1.44×), **the lift is a lever
+on the loop's gain in the more-GDP direction only**: cheap frontier capital lets its push compound, dear frontier capital lets it
+stall, and at neither slope does it kill the old rung. The found configuration stays `canon-c19-in12` (F117).
+
+**Arm, n, span.** Session `20260915_033205_canon-c205-in13-n2`, runs 1–2 (1836 → 1936.1.1; 138.4 and 145.1 min of play). Run 2 crashed
+at 1926.6.6 and was recovered by the deterministic resume feeder on its first real crash (below). Every ratio ÷ the vanilla per-run
+median (n=16 in the ledger tools; the eighteen-run cache in the decade reader). Schedule `canon_c205_in13_n2.json`, predictions
+pre-registered; `alignment_check.mjs` exit 0.
+
+**Numbers (run 1 / run 2).**
+
+| year | GDP £M run 1 / run 2 / van | ÷ van | prod. workers per capita ÷ van | pools ÷ GDP run 1 / run 2 / van | Britain ÷ van |
+|---|---|---|---|---|---|
+| 1860 | 683 / 692 / 725 | 0.94 / 0.95 | 0.95 / 0.94 | 0.26 / 0.11 / 0.16 | 1.13 / 1.30 |
+| 1880 | 927 / 822 / 1,056 | 0.88 / 0.78 | 0.86 / 0.81 | 0.36 / 0.16 / 0.17 | 0.99 / 1.10 |
+| 1890 | 965 / 925 / 1,345 | 0.72 / 0.69 | 0.77 / 0.75 | 0.42 / 0.17 / 0.19 | 0.67 / 0.74 |
+| 1900 | 1,219 / 1,160 / 1,714 | 0.71 / 0.68 | 0.72 / 0.69 | 0.32 / 0.15 / 0.20 | 0.69 / 0.79 |
+| 1910 | 1,527 / 1,441 / 2,134 | 0.72 / 0.67 | 0.64 / 0.62 | 0.29 / 0.14 / 0.22 | 0.86 / 0.76 |
+| 1920 | 1,972 / 1,859 / 2,799 | 0.70 / 0.66 | 0.61 / 0.60 | 0.15 / 0.11 / 0.24 | 0.87 / 0.95 |
+| 1930 | 2,744 / 2,637 / 3,812 | 0.72 / 0.69 | 0.57 / 0.56 | 0.13 / 0.21 / 0.27 | 0.96 / 1.07 |
+| 1935 | 3,118 / 3,270 / 4,390 | 0.71 / 0.74 | 0.56 / 0.57 | 0.17 / 0.25 / 0.31 | 1.04 / 1.20 |
+| 1936 | 3,188 / 3,417 / 4,544 | 0.70 / 0.75 | 0.56 / 0.57 | 0.17 / 0.27 / 0.30 | 0.98 / 1.22 |
+
+- **Decomposition at 1935** (vanilla n=16, medians): world 0.73× = population **0.95×** × workers per capita 0.56× × GDP per productive
+  worker **1.36×** (£21.4 against £16.1); the 1930 reading is the decision point of nothing — the stall is flat from 1890.
+- **Majors at 1935** (GDP ÷ vanilla median, run 1 / run 2): USA 1.29 / 1.63, Belgium 1.37 / 1.65, Britain 1.04 / 1.20, France 0.69 / 1.45,
+  Netherlands 0.75 / 1.46, Italy 0.58 / 1.03, Spain 0.57 / 0.93, Japan 0.53 / 0.58, Russia 0.50 / 0.44, Germany 0.51 / 0.23 — the
+  level of the world agrees between the seeds, its distribution does not. Peasant share of the strata population 13.8% / 12.7% (vanilla
+  7.5%); USA 15.0% / 9.7% (7.6%), Russia 18.9% / 15.8% (10.5%), Germany 11.7% / 12.9% (0.1%).
+- **Rung margins by era at 1935** (levels / staffed / margin, F92): run 1 e0 1,744 / **49%** / 25% · e1 1,513 / 76% / 38% · e2 3,085 /
+  92% / 43% · e3 644 / 98% / 45%; run 2 e0 1,447 / **50%** / 24% · e1 1,508 / 74% / 28% · e2 3,253 / 95% / 41% · e3 641 / 91% / 57%.
+  Rung 0 at 1900: 1,479 / 59% / 32% and 1,301 / 58% / 26% — its level count GROWS 1900 → 1935 (+18% / +11%) while its staffed levels
+  drift down 2–4%.
+- **Capital and labour at 1935:** tiered levels 6,986 / 6,849 (C 1.9 ×1.2: 9,917–10,633; vanilla 21,971); pools 0.17 / 0.25 of GDP;
+  unemployment 29.4% / 33.0%; construction sector 1,798 / 1,916 levels.
+- **Build choice:** below-best 34.9% (median); frontier payback 9.4 y, stale 48.4 y. Technologies by era at 1935 35.3 / 35.2 / 24.1 /
+  5.3 / 0.1 against vanilla's 35.9 / 35.5 / 24.7 / 6.1 / 0.4 — research at vanilla's pace.
+- **Speed:** 138.4 / 145.1 min of play against the vanilla median 164.9 (0.84 / 0.88×); crash overhead 2.0 min for the pair.
+- **Predictions vs outcome** (the schedule's pre-registration): GDP 0.80–1.20× — MISSED below (0.71 / 0.74); "no early dip" — met to
+  1870, then the C 2.2 stall from 1880; 1900 at 0.90–1.15× — MISSED (0.71 / 0.68); workers 0.55–0.75× — met (0.56 / 0.57); rung 0 15–35%
+  staffed at a margin below 15% — MISSED on both (49–50% at 24–25%); below-best 20–30% — missed (34.9%); pools 0.2–0.5 — run 2 met
+  (0.25), run 1 missed below (0.17); tiered levels 8,000–16,000 — missed below; perf within +10% — met.
+
+**The feeder's first real recovery (L32's fix, in service).** Run 2's CTD at 1926.6.6 came about a minute after the 1926.1.1 autosave
+was written (saved 07:56:40 local, the crash detected 07:57:46). The observer opened resume process 1, moved the five slots into
+`resume_set_1` (42.4 / 42.0 / 41.9 / 41.3 / 41.0 MB, all complete — unlike L32's truncated save), copied member 1/5 in under the
+continue pointer's title, and the engine loaded it; the run reached 1936 on the second attempt with 1.8 min of overhead; the process
+closed at the run's end, kept the loaded member, removed the siblings. `preflight -Session`: L32 PASS.
+
+**What it says about the goals.** Goal 1 (GDP realigned) — missed below at this slope; goal 3 (rung 0 obsolete) — not reached: the
+rung is out-earned and half-staffed but still built. After F116–F119 the cost slope is the loop's gain (1.6 runs away, 1.9 lands,
+2.05 stalls with the lift, 2.2 stalls without it) and the lift only raises the gain. The next lever is willingness, not price:
+`canon-c19-e0ai500` (rung 0's ai_value halved at the found slope), launched 08:25 as session `20260915_082510`.
+
+**Confidence.** High for the shape and the endpoint (two seeds on one path, a single lever from F118); the majors' distribution is
+seed-dependent at n=2.
+
+**What it does NOT say.** Whether C 2.05 WITHOUT the lift, or a smaller lift (×1.25) at C 1.9, lands; why the released capital is
+hoarded rather than invested (the pool's cost-divisor and the §10.75 defines are unchanged across the sweep). Session
+`20260915_033205`, VERDICT.md there; config committed as `config/mod_config.canon-c205-in13.json` (`_ab.command`). Ledger
+https://claude.ai/code/artifact/d2dbefff-3fd3-4359-b8d2-7940274760e9 (one configuration per report).
