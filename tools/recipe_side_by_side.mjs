@@ -31,7 +31,7 @@ const row = (label, vals) => console.log(label.padEnd(W0) + vals.map(v => String
 const nR = Math.max(...B.map(b => b.tiers.length));
 if (B.some(b => b.tiers.length !== nR)) console.log('⚠ the books do not carry the same number of rungs for ' + IND + ': ' + B.map(b => b.lab + ' ' + b.tiers.length).join(', '));
 console.log(`${IND.toUpperCase()} — rungs side by side. Base prices from tools/goods_prices.tsv. Books: `
-  + B.map(b => `${b.lab} (A ${b.ab.A ?? '?'} / B ${b.ab.B ?? '?'}${b.ab.in0 ? ' / in0 ' + b.ab.in0 : ''}${b.ab.cost_flat ? ' / cost flat' : ''}, divisor ${b.div})`).join(' · ')
+  + B.map(b => `${b.lab} (A ${b.ab.A ?? '?'} / B ${b.ab.B ?? '?'}${b.ab.in0 ? ' / in0 ' + b.ab.in0 : ''}${b.ab.cost_flat ? ' / cost flat' : b.ab.cost_ladder ? ' / cost ' + b.ab.cost_ladder.join('/') : b.ab.cost_ratio ? ' / cost ' + b.ab.cost_ratio + '^era' : ''}, divisor ${b.div})`).join(' · ')
   + ' · vanilla PM = the base game\'s own method at that rung (one building, cost = the anchor)');
 const anchor = B[0].tiers[0].building_cost; const vb = V.buildings[B[0].tiers[0].key] || {};
 for (let k = 0; k < nR; k++) {

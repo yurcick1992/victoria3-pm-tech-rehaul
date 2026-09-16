@@ -11,7 +11,8 @@
 //   2. THE ERA-KEYED BOOK (A/B books only, `_ab` present) — the ladder is a function of the rung's ERA and of
 //      nothing else: output_qty = vanilla first-method output × A^era, input value = vanilla first-method input
 //      value × lift × B^era (over the rung's own mix; value checked, not quantities), building_cost = anchor
-//      (flat) or anchor × A^era, ai_value = the era list or AI_BASE × ratio^era. `--A-for` / `--tiers-for`
+//      (flat), anchor × C^era (`_ab.cost_ratio`) or anchor × m_era from the per-era list (`_ab.cost_ladder`),
+//      ai_value = the era list or AI_BASE × ratio^era. `--A-for` / `--tiers-for`
 //      industries are checked only for monotonicity (their multipliers are ruled per industry).
 //   3. UNIFORM EFFECTIVENESS — within every industry, output per level and value added per level at base prices
 //      strictly INCREASE with era. "Late tiers are uniformly more effective than earlier ones" is the design's
@@ -105,7 +106,8 @@ for (const ind of cfg.industries || []) {
     if (Math.abs(gotIn - wantIn) > 0.03 * wantIn + 1) faults.push(`${ind.id} e${e}: input value £${gotIn.toFixed(0)}, the era rule says £${wantIn.toFixed(0)} (vanilla £${I0.toFixed(0)} × ${lift} × ${B}^${e})`);
     // cost: flat (§10.61), or anchor × C^era where C is the book's own cost ratio (`_ab.cost_ratio`, the cost-slope books of
     // 2026-09-14) and A by default (capacity-priced, the canon)
-    if (anchor) { const C = AB.cost_ratio ?? A; const wantCost = AB.cost_flat ? anchor : Math.round(anchor * Math.pow(C, e)); if (t.building_cost !== wantCost) faults.push(`${ind.id} e${e}: building_cost ${t.building_cost}, the era rule says ${wantCost} (anchor ${anchor} × ${C}^${e})`); }
+    // ... or anchor × m_era from an explicit per-era list (`_ab.cost_ladder`, 2026-09-16 — one era's cost moved on its own, or a changed A/B gain-matched per era)
+    if (anchor) { const C = AB.cost_ratio ?? A; const L = Array.isArray(AB.cost_ladder) ? AB.cost_ladder : null; const wantCost = AB.cost_flat ? anchor : L ? Math.round(anchor * L[Math.min(e, L.length - 1)]) : Math.round(anchor * Math.pow(C, e)); if (t.building_cost !== wantCost) faults.push(`${ind.id} e${e}: building_cost ${t.building_cost}, the era rule says ${wantCost} (anchor ${anchor} × ${L ? L[e] + ' by era' : C + '^' + e})`); }
     const steep = AB.ai_steep && AB.ai_steep.industries.includes(ind.id) ? AB.ai_steep.ratio : null;
     const wantAiv = (AB.ai_ladder && !steep) ? Math.round(AB.ai_ladder[Math.min(e, AB.ai_ladder.length - 1)]) : Math.round((AB.ai_base ?? 1000) * Math.pow(steep || A, e));
     if (t.ai_value !== wantAiv) faults.push(`${ind.id} e${e}: ai_value ${t.ai_value}, the era rule says ${wantAiv}`);

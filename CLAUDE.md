@@ -1023,6 +1023,21 @@ config/mod_config.canon-c19-in12-eager-sharp.json ⭐⭐ THE THIRD CONFIG OF THE
 config/mod_config.canon-c195-in12-eager-sharp.json ⭐ THE SAME LEVER ON THE C 1.95 BASE (§10.79): canon-c195-in12-eager + the three sharpening defines
                         above — runs in place of canon-c19-in12-eager-sharp if the under-side book is the one that read in the band. Generated (`_ab.command`), dry-run
                         built clean; schedules `canon_c195_in12_eager_sharp_n2.json` + `_tb.json`. Un-ignored with its twin
+config/mod_config.canon-c19-e2soft.json ⭐ BATCH 1 OF THE FOUR-BATCH PLAN PROPOSED 2026-09-16 (HANDOVER.md; AWAITING THE USER'S RULING, not launched):
+                        canon-c19-in12 with the e2 rung's cost ALONE lowered — `make_ab_config --cost-ladder 1.9,3.083,6.859` (600 / 1,140 / 1,850 / 4,115;
+                        800 / 1,520 / 2,466 / 5,487; the academy 400 / 760 / 1,233 / 2,744) in place of 1.9^era — aimed at the 1890–1910 dip (F117: 0.75 / 0.89
+                        at 1900, the e1 → e2 transition paying for itself); field diff against the found book: 16 building_cost fields, nothing else;
+                        dry-run built clean, L31 passing. Schedule `canon_c19_e2soft_n2.json` + `_tb.json` (KEY: the pair's 1900 mean ≥ 0.90; endpoint
+                        1.05–1.25×; branches e2 2,000 on a stop, e2 1,700 on a null). Un-ignored with its twin
+config/mod_config.canon-b18-gm.json ⭐ BATCH 2 OF THE SAME PLAN (awaiting the ruling): canon-c19-in12 with B 1.8 in place of 1.5 on every rung
+                        above era 0 (rung 0 untouched) and the cost ladder GAIN-MATCHED per era — `--B 1.8 --cost-ladder 1.52,2.79,5.34` (600 / 912 / 1,674 /
+                        3,204; 800 / 1,216 / 2,232 / 4,272) so the frontier's value added per construction point equals the found book's at e1, e2 and e3
+                        (F127 §5); the design's own obsolescence channel (dearer raw inputs, cheaper outputs) and the raw sector's weight (F127: extraction
+                        at 59–63% of vanilla's levels, the tiered sector at 72–74% of building VA), value added per frontier level 0.77–0.80× ⇒ more levels
+                        and more workers per unit of GDP. Field diff: inputs, building_cost and target_be on the 43 rungs above e0; dry-run built clean.
+                        Schedule `canon_b18_gm_n2.json` + `_tb.json` (KEY 1: extraction levels ≥ 11,000 and dearer fabric / iron / coal; KEY 2: rung-0
+                        workers ≤ 2.8M, staffing ≤ 40%; endpoint 0.95–1.20×, workers 0.68–0.80×; branches ±10% on the ladder, then B 2.0 or the A axis).
+                        Un-ignored with its twin
 config/mod_config.tier4.json ⚗ GENERATED (gitignored) by tools/make_tier4_config.mjs FROM THE GAME FILES + tools/lib_tier4_spec.mjs
                         — the four-rung STRUCTURE (rungs = vanilla main methods with vanilla's name, gate, recipe,
                         staffing, icon; the spec's ADDITIONS on top), with tech_tree_options.tier4.json beside it from
@@ -1429,7 +1444,10 @@ tools/                  dev tooling — NOT shipped in the mod
                         = anchor × C^era for any C between 1 (flat) and A (the default, capacity-priced) — THE COST-SLOPE DIAL of the sweep
                         that followed F113/F114 (flat cost at A ≥ 1.9 doubles the world and kills rung 0; ×A^era keeps rung 0 alive);
                         recorded as `_ab.cost_ratio`, which `lint_tier_eras.mjs` (L31) reads when it recomputes cost; exclusive with
-                        `--cost-flat`. the canon's is 0.000125 — ab3 = ab2 + glass,tooling:3
+                        `--cost-flat`. ⭐ 2026-09-16: `--cost-ladder m1,m2,m3` prices building_cost = anchor × m_era from an
+                        explicit PER-ERA list (era 0 = 1): one era's cost can move alone (`canon-c19-e2soft`: the e2 rungs only) or a changed A/B
+                        can be GAIN-MATCHED per era to the found book's value added per construction point (`canon-b18-gm`, FINDINGS F127); recorded
+                        as `_ab.cost_ladder`, which L31 reads (proven to trip on a hand-edited e2 cost); exclusive with both. the canon's is 0.000125 — ab3 = ab2 + glass,tooling:3
                         (1000/3000/9000/27000), the arm under test in 20260902_223037_ab3-n3
                         OUTCOME (F99, 2026-09-03): the lever bites — British glass 118%/112% vs ab2's 153–158, Britain
                         84/201 plastics glassworks vs ab2's 44/97 — GDP 0.95×/0.90× in the two growth seeds, and ONE of

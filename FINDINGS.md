@@ -12719,3 +12719,126 @@ not VOID, which needs the whole shortlist. Unemployment including peasants 49.3%
 decisions INSIDE the run, which is why F75 made it the metric that resolves where GDP does not — 35.3% against 34.9%
 is not a seed difference. The GDP and worker levels are n=1 and are NOT established; they are why the stop fired, not
 a reading of the configuration. The allocation negative is n=1 but large (every sector up 1.38–2.01×).
+
+## F127 — THE OLD RUNG ON THE FOUND SLOPE IS ALREADY SMALLER THAN VANILLA'S, AND ECONOMICALLY DEAD: rung-0 workers 3.4–3.8M world-wide against vanilla's 7.3–9.5M on the same methods, 0.35–0.45M in the majors against 1.1–2.5M; its value added per worker is 1–5% of its industry's frontier in every industry; what holds its staffing at 45% is slack labour, and the slack is a raw sector at 59–69% of vanilla's beside a tiered sector that is 70% of all building value added (derived analysis, 2026-09-16)
+
+**Basis.** The yearly save summaries (v8) of the found configuration's two usable runs — `20260914_173832_canon-c19-in12-n2` run 1 and
+`20260914_204329_canon-c19-in12-r2` run 1 (F117) — at 1935.1.1, beside vanilla runs 1 and 5 of `20260821_131149_vanilla-baseline-n16`; the
+runs' `markets.tsv` for the British market at 1935.1.1; `config/mod_config.canon-c19-in12.json` and `tools/goods_prices.tsv` for the
+base-price arithmetic. No new runs. Scratch readers (`rung_econ_1935`, `rung0_split`, `sector_split`, `gain_match`) in the 2026-09-16
+session scratchpad, not committed. Vanilla's "rung 0" is the levels each of the 17 vanilla buildings runs on the config's rung-0
+`vanilla_pm` (the summary's `pms` split) × the type's staffing share × its employment — F97 §4's approximation, applied per industry.
+
+### 1. Rung 0 at 1935, per industry, on the found book (seed 1; seed 2 within a few points everywhere)
+
+| industry | rung-0 levels | staffed | VA per staffed level £/wk | VA per worker ÷ the industry's frontier | rung-0 share of the industry's staffed levels |
+|---|---|---|---|---|---|
+| textile | 178 | 59% | 544 | 0.03 | 11.4% |
+| food | 77 | 58% | 547 | 0.05 | 5.2% |
+| furniture | 88 | 27% | 328 | 0.04 | 3.0% |
+| glass | 104 | 63% | 558 | 0.03 | 6.9% |
+| tooling | 121 | 34% | 136 | 0.01 | 2.9% |
+| paper | 236 | 63% | 373 | 0.03 | 24.6% |
+| fertilizer | 29 | 37% | 430 | 0.05 | 8.7% |
+| motor | 391 | 61% | 136 | 0.01 | 44.9% |
+| steel · arms · artillery · explosives | 49 · 159 · 71 · 22 | 1–2% | ≤ 0 | ≤ 0.01 | 0.1–0.7% |
+| art academy | 147 | 50% | 645 | — | 12.6% |
+
+The frontier's value added per worker at 1935 (e3 where it exists): textile £3.48/wk, food £2.18 (e2), glass £3.70, tooling £2.74, paper
+£2.35, steel £6.44, arms £4.84. Rung 0's people earn what is left after a £136–558 per-level value added is split between profit and 5,000
+wages — a few pence a week. **The old rung is out-competed twenty to a hundred times over; it is not driven out because nobody hires its
+people.**
+
+### 2. Rung-0 workers, the found book beside vanilla measured the same way (1935; shortlist = GBR USA FRA GER/PRU NET BEL)
+
+| | found seed 1 | found seed 2 | vanilla run 1 (by method) | vanilla run 5 (by method) |
+|---|---|---|---|---|
+| shortlist rung-0 levels · staffed · workers | 224 · 71 (32%) · **0.35M** | 259 · 91 (35%) · **0.45M** | 304 · 225 (74%) · **1.12M** | 676 · 503 (74%) · **2.51M** |
+| rest of world | 1,448 · 683 (47%) · **3.42M** | 1,309 · 612 (47%) · **3.06M** | 2,245 · 1,242 (55%) · **6.21M** | 2,176 · 1,399 (64%) · **6.99M** |
+| of which motor (engines) | 1.19M | 1.17M | 4.16M | 5.10M |
+| rung-0 share of the tiered staffed levels | 8.9% | 8.8% | 10.4% | 14.7% |
+| where it lives (top adders) | CHI 447k, AUS 430k, RUS 258k, USA 223k, TUR 175k | TPG 576k, FRA 267k, CUB 235k, BHT 215k, CAN 191k | FRA 564k, RUS 447k, MEX 393k, NGF 391k, USA 328k | USA 1,167k, RUS 855k, GBR 672k, AUS 631k, FRA 504k |
+
+On the user's own headcount metric (F97 §4) the found book holds **a third to a half of vanilla's rung-0 workers world-wide and a fifth to an
+eighth in the majors**, staffs the levels it has at 32–47% against vanilla's 55–74%, and carries them mostly in laggards (China, the
+Taiping, Austria, Turkey, Cuba) and in the motor industry — where vanilla's own AI never switches its engine plants either (4–5M on the
+atmospheric method at 1935 in both vanilla seeds). The 45% staffing the sweep has been reading as "alive" is a share of a level count that
+is itself 60% of vanilla's.
+
+### 3. Where the slack labour comes from — the sector split at 1935 (world, building value added £/wk; levels)
+
+| sector | found seed 1 | found seed 2 | vanilla run 1 | vanilla run 5 |
+|---|---|---|---|---|
+| tiered e0 / e1 / e2 / e3, VA | 0.3M / 3.5M / 41.4M / 28.4M | 0.2M / 2.9M / 38.8M / 28.5M | 26.9M (all methods) | 23.3M |
+| tiered, share of all building VA | **71.7%** | **73.8%** | 34.6% | 31.1% |
+| tiered levels · staffed | 10,633 · 8,505 | 9,917 · 8,023 | 21,971 · 14,914 | 16,698 · 12,919 |
+| tiered workers (staffed levels × employment) | 39.7M | 36.4M | 70.6M | 72.7M |
+| extraction (mines, logging, oil, rubber, fishing, whaling) levels · VA | 9,221 · 15.3M | 9,356 · 12.5M | 15,613 · 23.5M | 14,937 · 23.9M |
+| agriculture levels · VA | 53,283 · 23.9M | 53,119 · 23.6M | 53,558 · 34.7M | 52,498 · 32.0M |
+| urban centres + infrastructure levels · VA | 22,050 · 10.0M | 22,010 · 9.7M | 39,037 · 13.5M | 33,689 · 13.0M |
+| construction sector levels | 2,971 | 3,092 | 2,622 | 1,931 |
+| world GDP | £4,779M | £4,696M | £4,490M | £4,157M |
+
+The mod's frontier makes the tiered sector **2.5× vanilla's value added on half the levels** and takes it to 72–74% of all building value
+added against vanilla's 31–35%; everything else is smaller — extraction at 59–63% of vanilla's levels (65% of its VA), agriculture at the
+same level count but 69–74% of its VA (the mod's fertilizer chain is 148 levels against vanilla's chemical plants; farms run poorer
+methods), urban centres and infrastructure at 56–65% of the levels. The tiered sector employs 36–40M against vanilla's 71–73M in the same
+buildings. **That is the slack**: world strict unemployment 30.5% / 26.6% against vanilla's 16.3% (F117; `capital_flags`), the shortlist's
+strict 9.0% / 5.4% against 4.0%, and peasant-inclusive 41% against 22% on the shortlist — the majors' surplus is peasants (goal 4, met by
+design), the world's is the unemployed of the laggards whose factories are the rung-0 zombies of §2.
+
+### 4. Prices at 1935, British market (% of base; found seed 1 / seed 2 · vanilla run 1)
+
+Raw inputs: fabric **102 / 95** · 91; iron **113 / 113** · 103; coal **109 / 97** · 96; wood **124 / 90** · 89; lead **122 / 94** · 94; grain 108 / 111
+· 114; sulfur 82 / 86 · 91; dye 73 / 73 · 89; oil 107 / 100 · 109. Tiered outputs: clothes **87 / 97** · 105; groceries 107 / 112 · 122;
+furniture **53 / 75** · —; glass 104 / 88 · 95; tools **81 / 70** · 87; steel **73 / 73** · 107; engines 98 / 109 · 123; paper 84 / 83 · —;
+small arms 23 / — · 67; explosives 63 / — · 105. The consumer and intermediate goods sit 10–35% below vanilla's readings — the price decline F94
+asked for exists on the found slope in £, a third of the way — while the raw inputs sit at or a little above base, with 50–70 points of
+headroom to the engine's 175 ceiling.
+
+### 5. The base-price arithmetic behind the found slope, and the two candidate ladders
+
+Value added per 1,000 construction points by era, industry-weighted over the thirteen industries with an era-0 rung (`gain_match`): the found
+book **773 / 1,613 / 2,450 / 3,335** against vanilla's own shape (A = B = 1.5, cost flat) **1,101 / 1,648 / 2,478 / 3,764** — the found slope
+is, within 2–11% at e1–e3, the slope at which the mod's frontier yields vanilla's value added per construction point; the C 1.6 book ran at
+1.4× that gain (F116: 1.98×), C 2.05 and 2.2 at 0.7–0.8× (F119 / F113: 0.65–0.74×). Rung 0 at ×1.2 sits at 70% of vanilla's per point,
+which is the 1836 start the lift was ruled to weaken (§10.77). The death ratio at base prices (VA per worker two rungs behind ÷ the rung):
+found 0.087 (e0 ÷ e2) and 0.134 (e1 ÷ e3); vanilla's shape 0.44 — and §1 shows the realised ratio at 0.01–0.05, so the base-price ratio is
+not the binding quantity anywhere on the found slope.
+
+Two one-lever candidates were prepared on this reading (`make_ab_config --cost-ladder`, the per-era cost list added the same day; both
+dry-run built clean, L31 passing, field-diffed against the found book):
+
+| book | the lever | building_cost, 600-class / 800-class | what else moves | VA per level ÷ found at e1 / e2 / e3 | VA per 1,000 pts by era |
+|---|---|---|---|---|---|
+| `canon-c19-e2soft` | the e2 rung's cost alone, 2,166 → 1,850 | 600 / 1,140 / **1,850** / 4,115 · 800 / 1,520 / **2,466** / 5,487 | nothing (16 `building_cost` fields) | 1 / 1 / 1 | 773 / 1,613 / **2,868** / 3,335 |
+| `canon-b18-gm` | B 1.8 in place of 1.5, gain-matched per era | 600 / 912 / 1,674 / 3,204 · 800 / 1,216 / 2,232 / 4,272 | inputs, cost and target_be on the 43 rungs above e0; rung 0 untouched | 0.80 / 0.77 / 0.78 | 773 / 1,613 / 2,450 / 3,335 (matched) |
+
+`canon-b18-gm`'s textile e2 eats 103.7 fabric + 17.3 dye + 8.6 tools for 217.8 clothes (the found 72 + 12 + 6), its steel e3 301.7 iron +
+90.5 coal + 90.5 electricity (174.6 + 52.4 + 52.4) — the raw pull the design's own obsolescence mechanism needs ("what kills an old building
+is its output price falling while its input prices do not"), and 22% less value added per frontier level, i.e. more levels and more workers
+per unit of GDP.
+
+### What it says
+
+- Goal 3 read against vanilla — the reference every other goal is read against — is met on the found slope on the headcount and on the
+  economics: fewer people on the lowest method than the base game, by 2–3× world-wide and 3–7× in the majors, earning nothing. What is not
+  met is an absolute ("the old rung dies"), and §1–§3 say why no price lever inside the (A, B, C, lift) family can do it at this GDP: the
+  rung is already at 1–5% of the frontier's value added per worker; its people stay because the mod's economy employs 36–40M in the
+  tiered sector where vanilla employs 71–73M and builds 40% fewer mines.
+- The lever that remains is labour absorption — more buildings per unit of GDP — and the two axes the sweep never moved carry it: B (the
+  frontier's input richness, which is also the design's own price channel and the raw sector's demand) and A (the frontier's productivity
+  per worker). A-down runs against the workers-per-capita band the user centred on the design's own goal (0.634×, F114), so B is the axis
+  proposed first; either must be gain-matched per era or it confounds the axis with the loop gain, the sweep's steepest lever.
+- The 1900 dip (0.75 / 0.89) is the e1 → e2 transition paying for itself — an e2 level costs 1.9× an e1 level while its technology is
+  fresh — and the e2 rung's cost is the one number that addresses it without touching the late loop; `canon-c19-e2soft` is that test.
+
+### What it does NOT say
+
+- Vanilla's "rung 0" is an approximation (levels on the lowest method × the type's staffing share); vanilla's method split is the AI's
+  free switch, not a labour event, so the comparison is on the user's headcount metric only, not on mechanism.
+- Two seeds of each arm; the majors' rung-0 figures swing 2× between vanilla's own seeds (1.12M / 2.51M).
+- Nothing here measures what B 1.8 or a cheaper e2 DO — the predictions are pre-registered in the schedules (`canon_b18_gm_n2.json`,
+  `canon_c19_e2soft_n2.json`) and the no-extrapolation rule applies: the gain match is at base prices, and a raw sector pulled to higher
+  prices lowers the frontier's realised margin by an amount nothing here predicts.
+- Whether 27–31% world strict unemployment is a fault is unruled; the shortlist's is near vanilla's.
