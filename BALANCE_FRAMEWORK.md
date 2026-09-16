@@ -7361,6 +7361,38 @@ a define no book of ours sets — naval only, identical across the eager arms, a
 ⇒ **Do not spend the balance-side ruling on the strength of F121 alone.** Landmine **L33** now gates both halves (the config's
 `ai_defines` against the bounds the engine has stated, and any run's error log for `defines.cpp`'s rejection line).
 
+⭐⭐⭐ **WHAT COUNTS AS A HOARD, AND WHAT COUNTS AS A BACKLOG — THE THRESHOLDS (user-ruled 2026-09-16, GOVERNING for every
+verdict from here).** The user, in full: *"A too-long backlog is undesirable (as the queued buildings can be not needed by the
+time the construction starts), but this is far from critical, unless the queue goes 3+ years. Hoarding is a bigger problem,
+especially persistent hoarding (over 2 yearly GDP for the last 5 years, and doesn't decrease by at least 0.5 yearly GDP YoY
+1931 onwards; or over 5 yearly GDP overall). However, hoarding AND inability to invest (mostly because of the full employment)
+is a strong negative verdict, and not only on the config itself, but also on most other deductions (as this distorts the
+economy)."*
+
+| test | threshold | consequence |
+|---|---|---|
+| **BACKLOG** | 3+ years of construction queue | undesirable below that and NOT a fault — queued buildings may be unwanted by the time they start, which is a cost, not a defect. At 3+ years, a real concern. |
+| **PERSISTENT-A** | pool > 2 yearly GDP in each of the last five years, AND not falling by ≥ 0.5 GDP year on year from 1931 | persistent hoarding — a bigger problem than any backlog. A pool over 2 that IS draining at that rate is not this. |
+| **PERSISTENT-B** | pool > 5 yearly GDP at any point | persistent hoarding, on the level alone. |
+| **ABUNDANCE** | hoard > 2 GDP **and** total unemployment incl. peasants < 3% | ⚑⚑ **THE STRONG NEGATIVE VERDICT**: hoarding it CANNOT invest. It condemns the configuration **and most deductions drawn from it**, because the economy is distorted — so a run that trips it cannot be quoted for prices, tier choice, obsolescence or anything else. Shortlist-wide ⇒ VOID. |
+
+⚠⚠ **THE IMMEDIATE CONSEQUENCE, AND IT REFRAMES THE WHOLE 2026-09-15/16 HOARD THREAD: THE STANDING CONFIGURATION DOES NOT
+HOARD.** `canon-c19-in12` reads a world pool peaking at **0.43 and 0.67** of GDP and a shortlist at **0.66 and 1.59** — an
+order of magnitude inside PERSISTENT-B and never near A's five-year window. Its private backlog of 2.0–2.4 years sits under
+the 3-year line. **By these thresholds it has no hoarding fault at all**, and the 2026-09-15 aim of *"a pool below vanilla's
+0.29"* is a PREFERENCE, not a gate. What DOES trip the tests is the runaway family: the flat-cost book (F110) reads world
+**2.28** rising with all five last years over 2 (⚑A) and a shortlist peak of **8.04** (⚑A ⚑B). The ×1.3 lift at C 1.9 (F118)
+does NOT trip either test (world 1.10, shortlist rising to 2.61 but its five-year window is not all above 2) — so it is a
+concern on other grounds, not a hoarder by this definition.
+⇒ Report pool ÷ GDP every batch as a READING; call it a fault only when a test above fires. Do not re-open the hoard as a
+tuning target: the levers are exhausted (§10.79's refusal, plus F125 — the only in-scope lever that holds the pool cannot
+leave a readable configuration), and by these thresholds the configuration it would be tuning is already clean.
+
+**Implemented** in `tools/testbed/ledger/capital_flags.mjs`, which now prints a PERSISTENT HOARDING block over each run's
+whole yearly series (peak and year, the last five years, ⚑A / ⚑B) beside the single-year abundance verdict, and still exits
+4 on a shortlist-wide abundance trip. Proven on the day: the flat-cost arm trips ⚑A/⚑B, the ×1.3 lift and the standing
+configuration do not.
+
 **The old rung on the found slope (F122).** Its level count rises 12–18% from 1900 to 1935, but front-loaded (1900–1920, flat after
 1930), its staffed levels FALL by a fifth, half or more of the added levels are NEW buildings in fresh states placed by countries that
 already hold the frontier (229 of 245, 287 of 304), and by 1935 rung 0 is 1% of either queue — expansion below 80% staffing is

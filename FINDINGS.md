@@ -12632,6 +12632,18 @@ nobody should spend a batch finding out — see below.
 - n=3 and n=2 cannot establish the SHAPE of either distribution; what they establish is width against a four-seed
   reference measured the same way.
 
+**⭐⭐ RE-READ UNDER THE 2026-09-16 THRESHOLDS (ruled hours after this batch, BALANCE_FRAMEWORK §10.79): THE CONFIGURATION THIS
+THREAD WAS TRYING TO FIX NEVER HAD A HOARDING FAULT.** The ruling sets persistent hoarding at *pool > 2 yearly GDP in each of
+the last five years and not draining by ≥ 0.5 GDP a year from 1931*, or *> 5 GDP at any point*, and puts the backlog line at
+*3+ years*. Measured over their whole yearly series, the standing configuration `canon-c19-in12` peaks at **0.43 and 0.67** of
+world GDP (shortlist 0.66 and 1.59) with a 2.0–2.4-year backlog — an order of magnitude inside the level test and never inside
+the five-year window. **So the 0.42–0.70 that this whole thread treated as the problem is not a fault by the standing
+criteria**, and the "accepted residual" above is better stated as: there was nothing to accept. What DOES trip the tests is the
+runaway family — the flat-cost book (F110) at world **2.28** rising with all five last years over 2 (⚑A) and a shortlist peak of
+**8.04** (⚑A ⚑B). The ×1.3 lift (F118) trips neither (world 1.10; shortlist rises to 2.61 but its five-year window is not all
+above 2). ⇒ Everything F125 measures about the thresholds STANDS — they do move the pool, robustly, and they do destabilise —
+but the motivation for moving it in the first place does not apply to the configuration that stands.
+
 **Confidence.** The hoard result is STRONG (5 seeds, two books, a large effect in one direction). The instability is
 STRONG (3 of 3 pairs divergent here, a 0.68 spread against a 0.09 reference, replicated in F124's separate book). The
 attribution of BOTH to the thresholds rather than the cap is STRONG, because one book isolates it by design. The
