@@ -1,0 +1,88 @@
+{
+ "schedule_version": 1,
+ "label": "canon-a19-gm-n2",
+ "_why": "BATCH 2 OF THE FOUR-BATCH PLAN OF 2026-09-16 (HANDOVER.md), RE-ORDERED BY THE EVENING RULINGS (BALANCE_FRAMEWORK §10.82): THE OUTPUT STEP, GAIN-MATCHED - the frontier's productivity per worker as the labour-absorption lever. F127: on the found configuration the old rung is already economically dead (value added per worker 1-5% of the frontier's) and smaller than vanilla's; it persists because the mod's economy employs 36-40M in the tiered sector where vanilla employs 71-73M in the same buildings, and ruling 2 turned that into a fault with a name - the USA and Russia PLATEAU in both found seeds (strict unemployment 11-14% and 42-54% flat since 1919, peasants falling 5-6 points against vanilla's 11-25). Ruling 3 opened this axis: productive workers per capita may rise to 0.8x vanilla on the top majors and 0.9x world (the found book 0.71-0.72 shortlist, 0.65-0.67 world). THIS BOOK LOWERS A: output x 1.9^era in place of 2.2^era on every rung above era 0 (rung 0 untouched), which cuts value added per frontier level to 0.73 / 0.61 / 0.54 of the found book's at e1 / e2 / e3 - so the same GDP needs 1.4-1.8x the frontier levels and their workers - and raises input per unit of output x1.16 / 1.34 / 1.55 (a raw pull nearly B 1.8's, since the input ladder is unchanged). ⭐ GAIN-MATCHED PER ERA: the cost ladder holds the frontier's value added per construction point at the found book's (make_ab_config --cost-ladder 1.38,2.22,3.68: 600 / 828 / 1,332 / 2,208 and 800 / 1,104 / 1,776 / 2,944), because the loop gain is the sweep's steepest lever and an unmatched A would confound the axis with it. It runs AFTER canon-b18-gm and reads against it and against the found book; if batch 1 already lifted the shortlist's workers above 0.85 in both seeds, the milder canon-a20-gm (A 2.0, --cost-ladder 1.55,2.66,4.63) runs in its place.",
+ "_arms": {
+  "canon-a19-gm": "{kind: config, config: config/mod_config.canon-a19-gm.json} - generated 2026-09-16 by make_ab_config with --A 1.9 --cost-ladder 1.38,2.22,3.68 (its _ab.command holds the line; divisor pinned at the sweep's 0.000125); field diff against the found book: output_qty, building_cost, ai_value and target_be on the 43 rungs above era 0 (ai_value follows 1000 x 3^era unchanged in value - the steep ladder names every industry - so it is byte-identical; the diff is output, cost and BE), rung 0 byte-identical; L31 passing; dry-run built before launch."
+ },
+ "_delta": "Against canon-c19-in12 (the found configuration): A 1.9 in place of 2.2 (output on every rung above era 0) and the per-era cost ladder that holds the frontier's value added per construction point at the found book's; B 1.5, the x1.2 lift on rung 0, ai_value 3^era, the divisor, the defines, the research events and the 24-month bar identical.",
+ "_predictions": {
+  "_structure": "Pre-registered before launch, per the no-extrapolation rule. Three KEY predictions: labour absorption (the lever's direct effect), the plateau test (ruling 2), the workers ceilings (ruling 3); the endpoint on alignment_check.mjs. The gain match is at BASE prices; the realised margin is the WATCH item.",
+  "KEY_1_labour": "tiered levels at 1935 at or above 14,000 world-wide (found 9,917 / 10,633; vanilla 21,971) and tiered workers at or above 50M (found 36.4 / 39.7M) - the frontier at 0.54-0.61x the value added per level needs that many more levels for the same output. NULL: tiered levels under 12,000.",
+  "KEY_2_the_plateau_test": "the USA's peasant share of the workforce falls by at least 10 points 1919 -> 1935 in both seeds with its strict unemployment at or below 10% at 1935 (found: 61 -> 55 and 60 -> 55 at 12.8 / 14.3%); at most ONE plateaued major per seed (strict unemployment above 5% with peasants falling fewer than 8 points; GBR FRA USA GER/PRU RUS AUS judged, Japan excused; the found book: two per seed). NULL: the USA plateaus again in both seeds.",
+  "KEY_3_the_workers_ceilings": "productive workers per capita / vanilla: world 0.72-0.85 (found 0.65 / 0.67), shortlist GBR USA FRA NET BEL PRU GER 0.76-0.88 (found 0.71 / 0.72) - the aim is at most 0.8 on the shortlist and 0.9 world is the tolerance. A shortlist reading above 0.88 in both seeds says A 1.9 overshoots the aim and the step is re-bisected to A 2.05 (--cost-ladder 1.64,2.89,5.15).",
+  "endpoint": "world GDP 0.95-1.20x vanilla at 1935. THE RUN-LEVEL STOP APPLIES (a run above 1.3x at 1936 ends the configuration).",
+  "rung0": "rung 0's world workers at or below 2.8M (found 3.28 / 3.40M) and its staffing at or below 40% (found 45%) - tighter labour pulls its people; its value added per worker stays 1-5% of the frontier's.",
+  "raw_sector_and_prices": "extraction levels at 1935 at or above 10,500 (found 9,221 / 9,356; vanilla ~15,000) - the input ladder is unchanged, so input per unit of output rises 1.16-1.55x; the tiered goods at 1935 (British market) at or below the found book's (clothes at or below 88% of base, steel at or below 72%); raw inputs 5-15 points above the found book's (fabric at or above 105%, iron at or above 115%).",
+  "hoard_and_dip": "pools 0.3-0.6 of world GDP; the 1900 dip 0.75-0.90 - EXPECTED by ruling 1, a reading and never a target; the capital-abundance flag as the found book's (Britain alone may trip it).",
+  "WATCH_the_realised_margin": "the frontier's margin at 1935 (e2 / e3) against the found book's 44-54%: under 30% with GDP under 0.9x means the base-price gain match overstated the realised gain - the branch is the ladder 10% cheaper (--cost-ladder 1.24,2.00,3.31), not a new axis.",
+  "perf": "row P total within +10% of the vanilla median; 4,000-8,000 more tiered levels on ~190,000 total is a size term F120 rated small."
+ },
+ "_alignment": "THE 2+1 RULE (user-ruled 2026-09-14, F114): after run 2, `node tools/testbed/ledger/alignment_check.mjs --arm <session>:canon-a19-gm` - world GDP and productive workers per capita at 1935 against the vanilla per-run median, five bands each; a pair fails an axis only in different bands AND >= 0.15 (GDP) / >= 0.10 (workers) apart. DIVERGENT => canon_a19_gm_tb.json as its own session, the reading the median of three. ⚠ The workers band (0.55-0.72) is the ALIGNMENT criterion and stays; the ceilings of ruling 3 are a VERDICT criterion on top of it, so a pair aligned at 0.78 / 0.80 is aligned and inside the ceilings at once. PLUS THE RUN-LEVEL STOP and THE CAPITAL-ABUNDANCE FLAG (`capital_flags.mjs`, shortlist-wide = VOID, exit 4).",
+ "_comparison": "vanilla n=18 for every ratio; canon-c19-in12 is the one-lever baseline (F117: GDP 1.09 / 1.07x, workers 0.65 / 0.67 world and 0.71 / 0.72 shortlist, tiered levels 10,633 / 9,917 and workers 39.7 / 36.4M, rung 0 45% at 3.40 / 3.28M, extraction 9,221 / 9,356, hoard 0.64 / 0.42; the plateau test: the USA and Russia in both seeds); canon-b18-gm (batch 1, session 20260916_215513) is the other axis, read beside it.",
+ "_branches": "Above 1.3x at 1936 -> the config ends; next = the ladder 10% dearer (--cost-ladder 1.52,2.44,4.05). Below 0.8x in both seeds -> the ladder 10% cheaper. Shortlist workers above 0.88 in both -> A 2.05 gain-matched. In band with KEY 1-3 met -> batch 3 = the A x B combination (A 1.9 / B 1.8 gain-matched, --cost-ladder 1.00,1.39,2.16 - nearly flat cost, so read with the runaway family in mind) or the axis that read stronger alone; batch 4 = the pick's confirmation pair.",
+ "_watch": [
+  "every run ~5 min in: tools/testbed/batch_heartbeat.sh <session> - the mod marker, the version, this run's error window BY POSITION, the clock, CRASHED lines, DEFINE REJECTED (the canon's defines only; no rejection line expected)",
+  "first run: first_run_decomp.mjs (world AND shortlist workers per capita - KEY 3), capital_flags.mjs, queue_series.mjs, rung0_path.mjs, the F127 sector split and the major_series plateau read (moved into tools/testbed/ledger/ between batches, never mid-batch)",
+  "post-run: alignment_check.mjs, capital_flags.mjs, company_check.mjs, preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS, the ledger"
+ ],
+ "_cost": "2 x 1836->1936 ~ 2 x 2h35 ~ 5 h, plus a third run on divergence.",
+ "_caveats": [
+  "n=2 by design; the alignment tool decides on the third.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent; the five-minute smoke check on EVERY run; never interleave configs (one schedule = one config).",
+  "Two things change in the config (A and the cost ladder) under ONE design rule (gain matching at base prices); the WATCH item is where the attribution can fail.",
+  "The absolute rungs are far cheaper than the found book's (e3 2,208 / 2,944 against 4,115 / 5,487); the private pool's cost divisor is pinned at 0.000125, so the top rung is divided by 1.28-1.37 instead of 1.51-1.69 - stated, not tuned."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to every four-rung arm - what keeps the sessions comparable."
+ },
+ "setups": {
+  "canon-a19-gm": {
+   "kind": "config",
+   "config": "config/mod_config.canon-a19-gm.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "canon-a19-gm",
+   "until": "1936.1.1"
+  },
+  {
+   "setup": "canon-a19-gm",
+   "until": "1936.1.1"
+  }
+ ]
+}

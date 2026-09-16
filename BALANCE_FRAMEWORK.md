@@ -7473,3 +7473,50 @@ useful work — it is what holds four seeds inside 0.09 of GDP ratio where remov
 This section exists so that a future need finds the shape already costed, not so that the next session builds it.
 ⚠ It would also re-open the file the same day's fix stopped us owning — see §10.80's neighbour, the conditional
 emission guard: any book that sets `building_subsidies` or `subsidy_conditional` owns a 655-line vanilla file again.
+
+## 10.82 — THE THREE RULINGS OF 2026-09-16 EVENING: the mid-game dip is EXPECTED, a PLATEAU in a major is the fault, and the workers-per-capita ceilings that open the A axis (user-ruled 2026-09-16; the four-batch plan re-ordered on them)
+
+**The questions put** (from the four-batch plan of the same day — HANDOVER.md, FINDINGS F127): whether the found configuration's 1890–1910
+dip is a fault; whether its unemployment is; and whether the workers-per-capita band centred on 0.634× vanilla is a design goal that forbids
+a smaller output step (A). **The user, in full:**
+
+1. *"The mid-game dip is not only acceptable, it's expected to happen in the era where the countries have already acquired the techs for
+   newer PMs but haven't yet built them (as in vanilla they don't have to build, they just switch)."*
+2. *"5-9% in majors is borderline. However, if it's exacerbated by plateauing (say, 5-9% since 1919), then it's definitely unacceptable, at
+   least if widespread. An occasional fully depeasanted major in 1930 (especially a "tall" high tech major like BEL or NET or at least GBR)
+   is tolerable, but the median should not see depeasantation even in majors, and shouldn't plateau in any major. On the other hand, having
+   some minors hoarding and depeasanted is not that problematic, and vanilla tends to do this even more often than the majors (we don't
+   follow the vanilla in this, but this is just how this all works, and fighting it in minors is not worth it)."*
+3. *"I'd aim for at most 0.8 for top majors. However, 0.9 on average in the world is tolerable. Above that -- hardly so."*
+
+**What follows, and what it changed the same evening.**
+
+- **Ruling 1 — the dip is the premise showing.** `canon-c19-e2soft` (the e2 rung's cost alone lowered to fill it) is **DROPPED** before it
+  ran; the book, its twin and its schedules stay in the repo as the record of the proposal and of this ruling. The 0.75 / 0.89 at 1900 is not
+  a fault to tune, and no future batch should aim at it. It stays a READING in every verdict (the decade series), never a target.
+- **Ruling 2 — THE PLATEAU TEST, a standing read on every batch from here.** The agent's operationalisation (stated as such): over
+  1919 → 1935, per major (GBR FRA USA GER/PRU RUS AUS; NET BEL as the "tall" cases; JAP reported but excused, since vanilla's own Japan
+  sits at 40–57% strict unemployment in every seed), **a major PLATEAUS when its strict unemployment stays above 5% while its peasants'
+  share of the workforce falls by fewer than 8 points.** Unacceptable when WIDESPREAD (two or more majors in both seeds). A fully depeasanted
+  Britain / Belgium / Netherlands is tolerable; the MEDIAN major must not be depeasanted; minors are not judged.
+  ⚠ **The found configuration fails this as read on its two seeds** (scratch `major_series.mjs`, the yearly summaries): the **USA plateaus in
+  both** — strict unemployment 11.1 → 12.8% and 12.3 → 14.3% with peasants 61 → 55% and 60 → 55% — and so does **Russia** (42–54%, peasants
+  70 → 73% and 65 → 61%); France in one seed (30 → 34%, peasants 56 → 46%). Vanilla's USA over the same years: 11.6 → 7.4% with peasants
+  57 → 46, 8.8 → 2.1 / 58 → 33, 6.3 → 6.5 / 31 → 13 (runs 1, 5, 9) — it absorbs 11–25 points of peasants where the found book absorbs 5–6;
+  vanilla's Russia stalls in one seed of three (68 → 66 at 32%). The median major at 1935 is nowhere near depeasanted on the found book
+  (GBR 1 / 8%, FRA 46 / 23, USA 55 / 55, PRU-GER 11 / 39, RUS 73 / 61, AUS 19 / 21, BEL 7 / 8, NET 28 / 25) — goal 4 holds; the fault is the
+  OPPOSITE one, stagnation, and it is exactly F127's diagnosis (a tiered sector employing 36–40M where vanilla's employs 71–73M, a raw sector
+  at 59–69% of vanilla's). So the labour-absorption batches carry the plateau test as a KEY prediction: **the USA's peasant share falling ≥ 10
+  points 1919 → 1935 with its strict unemployment ≤ 10% at 1935, and at most one plateaued major (Japan excused) per seed.**
+- **Ruling 3 — THE WORKERS CEILINGS.** Productive workers per capita ÷ vanilla: **≤ 0.8 for the top majors (the aim), ≤ 0.9 world (tolerable),
+  above that not.** The found configuration reads 0.65 / 0.67 world and 0.71 / 0.72 on the GBR-USA-FRA-NET-BEL-PRU-GER shortlist
+  (`first_run_decomp`), so the A axis is OPEN within those ceilings: a smaller output step at the same gain per construction point puts more
+  frontier levels and more workers behind each pound of GDP. The 2+1 rule's workers band (0.55–0.72, F114) is NOT re-centred by this ruling —
+  it stays the alignment criterion; the ceilings are a verdict criterion on top of it, read on the shortlist AND the world.
+
+**The plan as it stands after the rulings (nothing else changed):** batch 1 = `canon-b18-gm` (B 1.8 gain-matched — the design's own price
+channel and the raw sector's weight; rung 0 untouched), LAUNCHED 2026-09-16 21:55 local as `20260916_215513_canon-b18-gm-n2`, its plateau
+predictions pre-registered in the session's `RULING_ADDENDUM.md` before any result existed; batch 2 = the A axis gain-matched —
+`canon-a19-gm` (A 1.9: `--cost-ladder 1.38,2.22,3.68`, value added per frontier level 0.73 / 0.61 / 0.54 of the found book's) or the
+milder `canon-a20-gm` (A 2.0) if batch 1 already lifts the shortlist's workers toward 0.8; batch 3 decided by 1–2 (the second step, the
+A × B combination, or the cost branches); batch 4 the pick's confirmation pair for the canonisation decision.

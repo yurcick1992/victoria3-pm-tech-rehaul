@@ -1023,13 +1023,17 @@ config/mod_config.canon-c19-in12-eager-sharp.json ⭐⭐ THE THIRD CONFIG OF THE
 config/mod_config.canon-c195-in12-eager-sharp.json ⭐ THE SAME LEVER ON THE C 1.95 BASE (§10.79): canon-c195-in12-eager + the three sharpening defines
                         above — runs in place of canon-c19-in12-eager-sharp if the under-side book is the one that read in the band. Generated (`_ab.command`), dry-run
                         built clean; schedules `canon_c195_in12_eager_sharp_n2.json` + `_tb.json`. Un-ignored with its twin
-config/mod_config.canon-c19-e2soft.json ⭐ BATCH 1 OF THE FOUR-BATCH PLAN PROPOSED 2026-09-16 (HANDOVER.md; AWAITING THE USER'S RULING, not launched):
+config/mod_config.canon-c19-e2soft.json ⚠ DROPPED BEFORE IT RAN by ruling 1 of BALANCE_FRAMEWORK §10.82 (2026-09-16 evening: the mid-game dip is
+                        EXPECTED — countries hold the technologies before they have built the rungs, where vanilla just switches); kept with its twin and
+                        schedules as the record of the proposal and of the ruling. It was batch 1 of the four-batch plan:
                         canon-c19-in12 with the e2 rung's cost ALONE lowered — `make_ab_config --cost-ladder 1.9,3.083,6.859` (600 / 1,140 / 1,850 / 4,115;
                         800 / 1,520 / 2,466 / 5,487; the academy 400 / 760 / 1,233 / 2,744) in place of 1.9^era — aimed at the 1890–1910 dip (F117: 0.75 / 0.89
                         at 1900, the e1 → e2 transition paying for itself); field diff against the found book: 16 building_cost fields, nothing else;
                         dry-run built clean, L31 passing. Schedule `canon_c19_e2soft_n2.json` + `_tb.json` (KEY: the pair's 1900 mean ≥ 0.90; endpoint
                         1.05–1.25×; branches e2 2,000 on a stop, e2 1,700 on a null). Un-ignored with its twin
-config/mod_config.canon-b18-gm.json ⭐ BATCH 2 OF THE SAME PLAN (awaiting the ruling): canon-c19-in12 with B 1.8 in place of 1.5 on every rung
+config/mod_config.canon-b18-gm.json ⭐⭐ BATCH 1 OF THE PLAN AS RE-ORDERED BY §10.82 — LAUNCHED 2026-09-16 21:55 local (17:55 UTC) as session
+                        `20260916_215513_canon-b18-gm-n2` (the plateau test and the workers ceilings of §10.82 pre-registered in the session's
+                        RULING_ADDENDUM.md ten minutes after launch, with run 1 at 1836): canon-c19-in12 with B 1.8 in place of 1.5 on every rung
                         above era 0 (rung 0 untouched) and the cost ladder GAIN-MATCHED per era — `--B 1.8 --cost-ladder 1.52,2.79,5.34` (600 / 912 / 1,674 /
                         3,204; 800 / 1,216 / 2,232 / 4,272) so the frontier's value added per construction point equals the found book's at e1, e2 and e3
                         (F127 §5); the design's own obsolescence channel (dearer raw inputs, cheaper outputs) and the raw sector's weight (F127: extraction
@@ -1038,6 +1042,17 @@ config/mod_config.canon-b18-gm.json ⭐ BATCH 2 OF THE SAME PLAN (awaiting the r
                         Schedule `canon_b18_gm_n2.json` + `_tb.json` (KEY 1: extraction levels ≥ 11,000 and dearer fabric / iron / coal; KEY 2: rung-0
                         workers ≤ 2.8M, staffing ≤ 40%; endpoint 0.95–1.20×, workers 0.68–0.80×; branches ±10% on the ladder, then B 2.0 or the A axis).
                         Un-ignored with its twin
+config/mod_config.canon-a19-gm.json ⭐ BATCH 2 OF THE PLAN (§10.82 ruling 3 opened the A axis: workers per capita at most 0.8 on the top majors, 0.9 world):
+                        canon-c19-in12 with the output step A 1.9 in place of 2.2 on every rung above era 0 (rung 0 untouched) and the cost ladder
+                        GAIN-MATCHED per era — `--A 1.9 --cost-ladder 1.38,2.22,3.68` (600 / 828 / 1,332 / 2,208; 800 / 1,104 / 1,776 / 2,944) — value added
+                        per frontier level 0.73 / 0.61 / 0.54 of the found book's ⇒ 1.4–1.8× the frontier levels and workers per unit of GDP, and input per
+                        unit of output ×1.16 / 1.34 / 1.55 (a raw pull nearly B 1.8's). Generated 2026-09-16 (`_ab.command`), L31 passing; schedule
+                        `canon_a19_gm_n2.json` + `_tb.json` (KEYS: tiered levels ≥ 14,000; the USA's peasant share −10 points 1919 → 1935 with ≤ 1 plateaued
+                        major per seed; shortlist workers 0.76–0.88 against the 0.8 aim; endpoint 0.95–1.20×). Runs after canon-b18-gm; if batch 1 already
+                        lifts the shortlist's workers above 0.85 in both seeds, the milder book below runs instead. Un-ignored with its twin
+config/mod_config.canon-a20-gm.json ⭐ THE MILDER A STEP, IN RESERVE (§10.82): as above with A 2.0 — `--A 2.0 --cost-ladder 1.55,2.66,4.63`
+                        (600 / 930 / 1,596 / 2,778; 800 / 1,240 / 2,128 / 3,704), value added per frontier level 0.82 / 0.74 / 0.68 of the found book's.
+                        Generated 2026-09-16, L31 passing; no schedule until it is chosen. Un-ignored with its twin
 config/mod_config.tier4.json ⚗ GENERATED (gitignored) by tools/make_tier4_config.mjs FROM THE GAME FILES + tools/lib_tier4_spec.mjs
                         — the four-rung STRUCTURE (rungs = vanilla main methods with vanilla's name, gate, recipe,
                         staffing, icon; the spec's ADDITIONS on top), with tech_tree_options.tier4.json beside it from

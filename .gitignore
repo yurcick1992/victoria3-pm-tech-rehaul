@@ -170,3 +170,7 @@ tools/testbed/ledger/cost_drivers_pool.json
 !config/tech_tree_options.canon-c19-e2soft.json
 !config/mod_config.canon-b18-gm.json
 !config/tech_tree_options.canon-b18-gm.json
+!config/mod_config.canon-a19-gm.json
+!config/tech_tree_options.canon-a19-gm.json
+!config/mod_config.canon-a20-gm.json
+!config/tech_tree_options.canon-a20-gm.json
