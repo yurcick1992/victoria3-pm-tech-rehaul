@@ -12462,3 +12462,97 @@ runaways) and empties the majors' labour (unemployment incl. peasants 1–21% on
 it hoards less because it grows less (0.09–0.31) and leaves the majors' labour unabsorbed (50–74%). Peasant-inclusive unemployment
 on the shortlist is 40–41% at the found slope against vanilla's 22%: capital scarcer than vanilla, met, at that price. Play time
 is under vanilla's median everywhere but the flat A 1.9 book.
+
+## F124 — THE EAGER-SPENDING DEFINES FIX THE HOARD IN EVERY SEED AND DESTABILISE THE ECONOMY: on the found slope the same book reads 0.74× and 1.45× vanilla GDP, against 1.04–1.13× over four seeds without it — the pool sits at or below vanilla in both, and both construction backlogs are cut to a third (canon-c19-in12-eager, n=2, ENDED BY THE RUN-LEVEL STOP, 2026-09-15/16)
+
+**Session** `20260915_232710_canon-c19-in12-eager-n2`, 2 usable runs, both reaching 1936.1.1 on one attempt with no
+crash (play 145.1 and 178.1 min, overhead 0.2%). Config `config/mod_config.canon-c19-in12-eager.json` — the found
+configuration `canon-c19-in12` (cost × 1.9^era, A 2.2 / B 1.5, the ×1.2 lift, ai_value 3^era, divisor 0.000125, the
+24-month bar) with ONLY the four investment-pool defines pushed toward spending:
+`MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR` 0.9 → **0.99** (⚠ not 1.0: L33 — the engine's range is
+[0,1) and the first attempt at this batch ran at vanilla's 0.75 before it was caught, session 20260915_232404),
+`_CRITICAL_THRESHOLD` 0.9 → 1.25, `_EXCESSIVE_THRESHOLD` 1.5 → 3.0,
+`CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED` 0.1 → vanilla's 0.05. Field diff against the base:
+`ai_defines` only.
+
+### 1. The headline — two seeds of one book, at opposite ends of the scale
+
+| at 1935, ÷ vanilla n=16 medians | run 1 | run 2 | `canon-c19-in12`, 4 seeds (F117 + F120) |
+|---|---|---|---|
+| world GDP | **0.738×** (noticeably below) | **1.446×** (noticeably above) | 1.04 / 1.07 / 1.09 / 1.13 |
+| productive workers per capita | **0.526×** | **0.854×** | 0.64 / 0.65 / 0.67 / 0.70 |
+| world GDP, absolute | £3,240M | £6,349M | £4,696–4,964M |
+| productive workers | 137.6M | 219.6M | 176–196M |
+
+The base family's four seeds span **0.09** of GDP ratio and **0.06** of the worker ratio. This book's two seeds span
+**0.71** and **0.33** — eight and five times wider, from one lever group. Run 2 ended at **1.41× vanilla's 1936 GDP**,
+so **the run-level stop fired and the configuration ended at n=2**; there is no tie-breaker and no median of three, by
+the rule (user-ruled 2026-09-14).
+
+⚠ **Two runs cannot establish a distribution**, and this entry does not claim one. What they establish is that the
+spread is far wider than the base's, measured on the same criteria at the same date against the same reference. The
+reading "bimodal" is an INFERENCE, and it rests on a second arm: **F121's `canon-c205-in12-eager` read 0.37 / 0.56 /
+1.32× across three seeds** with the same define set. Pooled, **five eager seeds span 0.37–1.45×; nine non-eager seeds
+of the same slope family span 1.04–1.13× (C 1.9) or cluster in a stall (C 2.05)**. The define set is the variable the
+two arms share.
+
+### 2. What the set DOES do, robustly, in both seeds — and it is what it was built for
+
+| at 1935 | run 1 | run 2 | `canon-c19-in12` | vanilla n=16 |
+|---|---|---|---|---|
+| investment pool ÷ GDP, world | 0.27 | 0.34 | 0.42 / 0.48 / 0.64 / 0.70 | 0.29 |
+| pool ÷ GDP, shortlist | 0.14 | 0.40 | 0.61–1.50 | 0.35 |
+| Britain's pool ÷ GDP | 0.15 | 0.22 | 0.87 / 1.34 / 1.76 / 2.40 | — |
+| private construction backlog | 0.8 y | 0.8 y | 2.0–2.4 y | 0.3–0.4 y |
+| government backlog | 0.8 y | 1.3 y | 2.8–3.0 y | 0.5 y |
+| construction sector levels | 3,123 | 5,511 | 2,971 / 3,092 | — |
+| capital-abundance flag | CLEAN | CLEAN | CLEAN | Britain trips 2/16 |
+
+**This is the first configuration in the whole sweep whose pool sits at or below vanilla's, and it does so in the
+stalled seed and the booming seed alike.** Britain going from 0.87–2.40 down to 0.15–0.22 is the largest single move
+any hoard lever has produced. The backlogs are cut to roughly a third in both seeds — confirming F121's reading that
+the set is a robust queue lever — and in the booming seed the construction sector reaches 5,511 levels against the
+base's ~3,000. The pool is smaller in ABSOLUTE terms too where the economy is larger (£2,156M on £6,349M against the
+base's £3,036M on £4,779M), so this is capital at work, not a pool starved by a small economy — which is precisely
+what F121 could not distinguish.
+
+### 3. ❌ RETRACTED WITHIN THE BATCH: "the queue cap throttles the economy"
+
+Read after run 1 alone (0.74×, private queue 286 items at 1920 against the base family's 887–1,017), the natural
+reading was that reverting `CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED` to vanilla's 0.05 — a HARD
+CAP, per the game's own comment, on concurrent production-building construction — had halved how fast a country could
+add capacity, and that the schedule's rationale for it ("frees the government queue for construction sectors") had
+misread an ordering hint into a cap. **Run 2 refutes it as a uniform claim**: the same cap, the same book, and a
+5,511-level construction sector carrying the world to 1.45×. A cap that permits that is not what held run 1 at 0.74×.
+
+What survives: the define IS a hard cap (the comment is unambiguous), and the schedule's stated rationale for
+reverting it remains wrong about what it does. What does not survive is the inference that it caused run 1's shortfall.
+The honest statement is that **the two seeds differ by far more than any single lever's mean effect, and attributing
+run 1's level to any one define from n=1 was the error** — the same shape as the ceteris-paribus rule this repo already
+carries, committed here against my own reading half a batch earlier.
+
+### 4. The old rung tracks the economy, and nothing else moves
+
+Rung 0 staffing at 1935: **53.0%** in the stalled seed, **41.6%** in the booming one (base 45–47%), its level count up
+16% and 22% from 1900 in the two runs. The pattern is the base's (F122): front-loaded growth, staffing falling, ~1% of
+either queue by 1935. A poorer world affords the frontier less and staffs the old rung more — so this is the economy's
+size showing through, not a new effect of the defines.
+
+### 5. What this says, and what it does not
+
+- **It says the hoard is tunable within scope after all.** The balance-side levers were refused on 2026-09-15
+  (§10.79); the remaining AI-define lever works, in both seeds, at the value L33 showed had never actually been
+  loaded. The F121 conclusion that the define family is spent is now doubly wrong — it was measured at three of four
+  levers, and at its cap the family does hold the pool.
+- **It says the set is not adoptable as it stands.** A configuration whose two seeds read 0.74× and 1.45× cannot be
+  read against any target band, and the user's standing reading of such a spread (F121) is that it is unfit.
+- **It does NOT say which lever destabilises.** The set moved four defines at once. `canon-c19-in12-eager-q10`
+  (prepared 2026-09-15, schedule `canon_c19_in12_eager_q10_n2.json`) keeps the three spending thresholds and leaves
+  the queue cap at the canon's 0.1 — one define from this book, three from the found config — and its pre-registered
+  outcomes should now be read for SPREAD rather than level.
+- **It does NOT establish bimodality at n=2**, only a spread far wider than the base's; the inference leans on F121.
+- Perf is unaffected: 145.1 and 178.1 min of play, 0.2% overhead, no crash, no resume.
+
+**Confidence.** The hoard and backlog result is STRONG (both seeds, large effect, consistent with F121's three). The
+instability is STRONG in direction and UNQUANTIFIED in shape (n=2 here, n=3 in F121, one shared lever group). The
+attribution to a specific define is OPEN.

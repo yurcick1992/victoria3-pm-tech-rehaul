@@ -1762,6 +1762,14 @@ aborted session → FAIL on the log half, naming both keys; `canon-c19-in12` →
 "top classes" tally — the run that found this had both lines in its error window at minute five and they read as ordinary noise,
 which is the whole reason the alarm is separate.
 
+**EXPECTED vs UNEXPECTED (added 2026-09-16, the first time the two halves disagreed).** The two halves share one source
+of truth: when the static half raises a cross-reference WARN, it records that sibling as an EXPECTED rejection, and the
+log half then reports it as a **WARN** rather than a FAIL. Any other rejected key is still a FAIL, and is named alone.
+Without this, every run of a book whose residual we have deliberately accepted fails the check forever — and a detector
+that always fires is one nobody reads, which is the failure this whole register exists to prevent. Proven both ways on
+the day: the clean eager session WARNs naming the accepted ship key per run, and the aborted session still FAILs, now
+naming only the pool factor.
+
 ### The generator side
 `ai_defines` reaches the mod through `emit_techs.mjs` unchanged, and a book's values come from `make_ab_config --ai-defines`. Fix a
 breach by regenerating from the book's own `_ab.command` with the value moved inside the bound — never by hand-editing `ai_defines`,

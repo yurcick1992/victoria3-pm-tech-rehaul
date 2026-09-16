@@ -1279,7 +1279,7 @@ function Test-LmL33 {
     )
     $cfgFile = if ($Config) { $Config } else { Join-Path $Repo 'config\mod_config.json' }
     if (-not [System.IO.Path]::IsPathRooted($cfgFile)) { $cfgFile = Join-Path $Repo $cfgFile }
-    $statFails = @(); $statWarns = @()
+    $statFails = @(); $statWarns = @(); $expectedKeys = @()
     if (Test-Path $cfgFile) {
         $cfg = Get-Content $cfgFile -Raw | ConvertFrom-Json
         $ad = $cfg.ai_defines
@@ -1297,6 +1297,9 @@ function Test-LmL33 {
                     $sib = if ($sibProp) { [double]$sibProp.Value } else { [double]$b.SiblingVanilla }
                     if ($v -ge $sib) {
                         $statWarns += "$($b.Key) = $v >= $($b.Sibling) = ${sib}: $($b.Msg)"
+                        # The sibling WILL be rejected at load, and we have decided to accept that. Record it so the
+                        # log half agrees with the static half instead of FAILing every run of a book we signed off.
+                        $expectedKeys += "NAI::$($b.Sibling)"
                     }
                 }
             }
@@ -1304,7 +1307,7 @@ function Test-LmL33 {
     }
 
     # (b) the general half: what the engine ACTUALLY rejected, read off the run's own error log.
-    $runFails = @()
+    $runFails = @(); $runWarns = @()
     if ($Session) {
         $sess = $Session
         if (-not [System.IO.Path]::IsPathRooted($sess)) { $sess = Join-Path $Repo $sess }
@@ -1315,7 +1318,12 @@ function Test-LmL33 {
                     if (-not (Test-Path $f)) { continue }
                     $hits = @(Select-String -Path $f -Pattern "Define '([^']+)' not valid with given value" -AllMatches |
                               ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
-                    if ($hits.Count) { $runFails += "$($run.Name): $($hits -join ', ')" }
+                    # A rejection the static half PREDICTED and the book accepted is a WARN, not a FAIL - otherwise every
+                    # run of an accepted book fails this check forever, and a detector that always fires is not read.
+                    $unexpected = @($hits | Where-Object { $expectedKeys -notcontains $_ })
+                    $expectedHit = @($hits | Where-Object { $expectedKeys -contains $_ })
+                    if ($unexpected.Count) { $runFails += "$($run.Name): $($unexpected -join ', ')" }
+                    if ($expectedHit.Count) { $runWarns += "$($run.Name): $($expectedHit -join ', ') (accepted: predicted by the config's own bounds)" }
                     break   # logs_live is the authoritative mirror; do not double-count logs\
                 }
             }
@@ -1328,8 +1336,11 @@ function Test-LmL33 {
         if ($runFails.Count)  { $msg += 'REJECTED AT LOAD - ' + ($runFails -join ' | ') }
         $msg += 'FIX: the key keeps VANILLA''s value, so the arm is not the book. Move the value inside the bound and regenerate through make_ab_config (never hand-edit ai_defines), then re-run.'
         Add-Result 'L33' $label 'FAIL' ($msg -join [Environment]::NewLine)
-    } elseif ($statWarns.Count) {
-        Add-Result 'L33' $label 'WARN' (($statWarns -join '; ') + ' - accepted deliberately means the sibling stays vanilla; say so in the verdict')
+    } elseif ($statWarns.Count -or $runWarns.Count) {
+        $w = @()
+        if ($statWarns.Count) { $w += ($statWarns -join '; ') + ' - accepted deliberately means the sibling stays vanilla; say so in the verdict' }
+        if ($runWarns.Count)  { $w += 'rejected at load AS PREDICTED - ' + ($runWarns -join ' | ') }
+        Add-Result 'L33' $label 'WARN' ($w -join [Environment]::NewLine)
     } else {
         $what = if ($Session) { 'no rejected define in this session and none out of bounds in the config' } else { 'no ai_defines value out of a known bound' }
         Add-Result 'L33' $label 'PASS' $what
