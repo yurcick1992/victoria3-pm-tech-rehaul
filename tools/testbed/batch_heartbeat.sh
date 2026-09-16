@@ -37,7 +37,7 @@ if [ -n "$RUN" ] && [ -f $RUN/run.log ]; then
       # It is ONE line at load among fifty and it read as ordinary noise once already (2026-09-15: the eager set's
       # pool factor at 1.0, which the validator excludes) — so it gets its own alarm, never a place in "top classes".
       DEF=$(grep -c "not valid with given value" $WIN)
-      [ "$DEF" != "0" ] && { echo "    DEFINE REJECTED AT LOAD (L33) — the key keeps VANILLA's value; this run is NOT the config:"; grep "not valid with given value" $WIN | sed -E 's/^\[[0-9:]+\]\[[^]]*\]: //' | sort -u | sed 's/^/      /'; }
+      [ "$DEF" != "0" ] && { echo "    DEFINE REJECTED AT LOAD (L33) — each key below kept VANILLA's value. A key that preflight -Only L33 -Config WARNS about is an accepted residual; ANY OTHER key means this run is not the config:"; grep "not valid with given value" $WIN | sed -E 's/^\[[0-9:]+\]\[[^]]*\]: //' | sort -u | sed 's/^/      /'; }
       OURS=$(grep -i -E "zzz_pm_rehaul|pm_rehaul|journal_entries/zzz|scripted_progress_bars/zzz|company_types" $WIN | grep -v "is_production_method_active\|utf8-bom" | wc -l)
       [ "$OURS" != "0" ] && { echo "    ⚠ $OURS lines name OUR files:"; grep -i -E "zzz_pm_rehaul|pm_rehaul" $WIN | grep -v "utf8-bom" | cut -c1-140 | sort | uniq -c | sort -rn | head -3 | sed 's/^/      /'; }
     else
