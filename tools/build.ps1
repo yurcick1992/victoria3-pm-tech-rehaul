@@ -9,7 +9,7 @@
     mod/common/production_methods/<vanilla file>.txt     (whole-file replacement, but ONLY for the
                                                          files we actually change: the secondary-PM
                                                          gate remap and any pm_goods override)
-    mod/common/ai_strategies/01_admin_strategies.txt     (WHOLE-FILE replacement: AI subsidy policy)
+    mod/common/ai_strategies/01_admin_strategies.txt     (WHOLE-FILE replacement: AI subsidy policy — emitted ONLY when the book sets building_subsidies (non-vanilla) or subsidy_conditional; the canon sets neither, so it is left vanilla)
     mod/common/on_actions/zzz_pm_rehaul_diag.txt         (self-diagnostic tripwire)
     mod/common/on_actions/zzz_v3tb_telemetry.txt         (testbed telemetry, when asked for)
     mod/common/history/buildings/*.txt                   (the re-tiered 1836 start, via convert_history)
@@ -873,7 +873,21 @@ if ($SUBSIDY_TRIO.Count -eq 0) {
 }
 $relAI    = 'common\ai_strategies\01_admin_strategies.txt'
 $srcAI    = Join-Path $Game $relAI
-if (-not (Test-Path -LiteralPath $srcAI)) {
+# ⭐⭐ NOTHING OF OURS TO SAY ⇒ DO NOT OWN THE FILE (2026-09-16). With no `building_subsidies` and no
+# `subsidy_conditional`, every line we would write is VANILLA's own - each typed strategy's own entries,
+# plus ai_strategy_default's restated into the strategies that had none. That restatement exists ONLY to
+# keep the merge-vs-replace ambiguity harmless once WE add a block, so with nothing to add it defends
+# against a hazard we would be creating by writing the file at all. Owning it then costs the standing
+# whole-file price - a 655-line vanilla file frozen against the next patch, shipping bytes we did not
+# author - for nothing, which is the rule stated for the production_methods files: "a file we would copy
+# verbatim is NOT emitted". The canon reached that state when port, railway and power went back to vanilla
+# (the industry list is food..art_academy, no infrastructure), leaving both config keys null.
+# ⚠ The machinery below is UNCHANGED and still runs for any book that sets either key - this is a guard,
+# not a removal. The pre-build wipe deletes the previous build's copy, which is the designed behaviour
+# for a conditional emitter (see the clean step's own note).
+if ($subMap.Count -eq 0 -and -not $subCond) {
+    Write-Output "ai_strategies: no building_subsidies and no subsidy_conditional - $relAI left VANILLA (not emitted)"
+} elseif (-not (Test-Path -LiteralPath $srcAI)) {
     Write-Output "note: $relAI not found in game - skipping AI subsidy emission (subsidy policy will stay vanilla)"
 } else {
     $aiLines = Get-Content -LiteralPath $srcAI

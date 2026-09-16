@@ -5776,7 +5776,7 @@ solver already ships is the band floor showing up in the code. Engines, electric
 sit on it, which is to say their death condition is *not satisfied at all*.
 
 ⭐⭐ **AND THE SHIPPED BOOK IS ALREADY PAYING FOR IT.** Read off `config/era_inverse.json`'s own
-recipe caps, the canonical six-rung book has **36 of 105 tiers (34%) clamped on the 4:1 lean floor or
+recipe caps, the THEN-canonical six-rung book (retired 2026-09-05, closed 2026-09-16) had **36 of 105 tiers (34%) clamped on the 4:1 lean floor or
 insolvent-at-target, 30 of them at e4/e5** — the design asked for an output price so low that no recipe
 legal under `MFG_IO_CAP` can earn the margin at it. The consequence is that **the margin ladder
 inverts in practice**:
@@ -7412,3 +7412,64 @@ recorded, field-diffed against its base, dry-run built clean; schedules `_n2.jso
    profit weight 1.5 → 2.5. Key prediction: below-best under 22% (the sweep 30–38%), fewer than 150 new rung-0 buildings 1900 → 1935
    (245 / 304), rung 0's 1935 level count at or below 1900's. Willingness only — no gate, cap or removal.
 The order and the branch rules are in HANDOVER.md; the run-level stop, the capital flag and the 2+1 alignment apply to every batch.
+
+## 10.80 — THE SIX-RUNG LADDER IS CLOSED FOR GOOD, AND THE REASON IS THE UI, NOT THE ECONOMICS (user-ruled 2026-09-16)
+
+**The user, in full:** *"We likely won't return to the six-rung for UI bloat reasons, even if it worked not that bad
+mechanically. If it is still listed as main/canonical somewhere, it's a mistake, fix now."*
+
+So the six-rung ladder is a **CLOSED line, not a dormant alternative**. Two things follow, and they pull in opposite
+directions, which is why both are written down:
+
+- **It is not a failed design.** It worked acceptably in mechanical terms, and the record of what it measured stays
+  valid on its own terms (§10.65's inverse solve, the illogicality campaign, the solver-2 book). Nothing in this
+  ruling retracts a six-rung measurement; it retracts its FUTURE.
+- **The binding constraint is the balance UI.** The sheet renders a row per rung per industry, and at six rungs over
+  twenty-two industries it stops being readable — which is a real cost, paid on every tuning pass by a human, against
+  a mechanical gain that four rungs already capture. A design nobody can read is not a design that ships.
+
+⇒ **Nothing may describe it as the canon, the shipped book, or the current method.** Corrected in place on the day:
+CLAUDE.md's "TWO CANONS" heading (now "THERE IS ONE CANON…", with the old heading kept below it as history), the list
+line that still equated the six-rung book with `config/mod_config.json` (it has been
+`config/mod_config.six_rung.json` since 2026-09-05), the clause saying `mod/` "follows the six-rung config until
+ruled otherwise" (void since 2026-09-05 — `mod/` and the deployed copy follow the canon), the "THE SHIPPED BOOK IS
+THE SOLVER-2 CONFIGURATION" heading, and "THE FIVE-ERA LADDER (current method)". Two surviving mentions are
+deliberately kept and made explicitly past-tense, because they are statements about what a tool read or what a book
+measured AT THAT DATE, not claims about now.
+
+⚠ **What is NOT removed.** `config/mod_config.six_rung.json` + its tree twin stay in the repo, un-ignored, and the
+six-rung machinery (`build_era_ladder` / `era_solver` / `era_scenarios` / `era_tech_sync` / `payback_census` /
+`vanilla_payback_census` / `verify_pms` / `tech_tree_spec --write`) still runs under
+`MOD_CONFIG=config/mod_config.six_rung.json` and still THROWS on a four-rung book without it. That guard is what stops
+a `--write` rewriting the four-rung canon as if it had six eras, so it protects the CANON and must stay.
+
+## 10.81 — A CONDITIONAL CONSTRUCTION WEIGHT IS EXPRESSIBLE, COSTED, AND DELIBERATELY UNUSED (recorded 2026-09-16)
+
+Recorded because the question was asked and answered, and the answer should not have to be re-derived. **Defines are
+initialised once and are global**: `NAI` values load at game start, are constant, and apply identically to every
+country for the whole century. So the spending thresholds of §10.79 cannot express *"build more construction only
+where it can be applied effectively"* — they can only say always or never, which is exactly why raising them
+destabilised the economy (F125).
+
+**But that conditionality already exists in the mechanism they override.** `MONEY_SPENDING_CONSTRUCTION_*_THRESHOLD`
+are ratios of actual-to-**WANTED** construction, and "wanted" is computed per country from its own situation. Vanilla's
+rule therefore already reads *build more when you need more, stop when you have enough*; moving EXCESSIVE from 1.05 to
+3.0 did not make the AI judge better, it told it to ignore the "enough" signal until it held triple. ⚠ There is **no
+define for land "wanted construction"** — the only `WANTED_*` construction defines in the game are the two naval ones
+(`SHIP_CONSTRUCTION_WANTED_SHIPS_TO_BUILD_COST_FACTOR`, `..._BUILT_SHIPS_COST_FACTOR`). Raising what they want is not
+available; only disabling the brake is, and the brake is load-bearing.
+
+**The genuinely conditional lever is an AI STRATEGY, not a define.** `building_group_weights = { bg_construction = X }`
+sits inside an `ai_strategy`, and a strategy is selected per country by its `possible` block — vanilla uses this itself
+(`ai_strategy_placate_population` weights `bg_construction = 0.5`). We already own the emission path for
+`01_admin_strategies.txt` (§ the AI-subsidy-policy convention), and **F64/F65 measured that AIs DO re-pick strategies
+mid-campaign when `possible` flips** (11 countries on a variant at 1900 → 67 by 1936). So a mutually-exclusive strategy
+pair gated on a country-state trigger — mechanically identical to the port subsidy's retire/exempt variants — could
+weight construction up only while a country has profitable industry to point it at.
+
+⇒ **NOT BUILT, and not to be built for the hoard.** The 2026-09-16 thresholds (§10.79) say the standing configuration
+has no hoarding fault at all, so the motivation has evaporated; and this session's own evidence says the brake is doing
+useful work — it is what holds four seeds inside 0.09 of GDP ratio where removing it spread five seeds over 0.37–1.45.
+This section exists so that a future need finds the shape already costed, not so that the next session builds it.
+⚠ It would also re-open the file the same day's fix stopped us owning — see §10.80's neighbour, the conditional
+emission guard: any book that sets `building_subsidies` or `subsidy_conditional` owns a 655-line vanilla file again.
