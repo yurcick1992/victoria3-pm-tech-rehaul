@@ -12556,3 +12556,83 @@ size showing through, not a new effect of the defines.
 **Confidence.** The hoard and backlog result is STRONG (both seeds, large effect, consistent with F121's three). The
 instability is STRONG in direction and UNQUANTIFIED in shape (n=2 here, n=3 in F121, one shared lever group). The
 attribution to a specific define is OPEN.
+
+## F125 — THE HOARD LEVER IS THE THREE SPENDING THRESHOLDS, AND THEY ARE THE DESTABILISER TOO: the pool falls to 0.11–0.17 of world GDP in every one of five seeds and the economy's spread goes from 0.09 to ~0.7 in both books carrying them — the queue cap is exonerated, the eager family closes, and the hoard becomes an accepted residual (canon-c19-in12-eager-q10, n=3 with the tie-breaker, 2026-09-16)
+
+**Sessions** `20260916_045830_canon-c19-in12-eager-q10-n2` (2 runs) + `20260916_100324_canon-c19-in12-eager-q10-tb`
+(the tie-breaker, launched on a DIVERGENT pair). All three reached 1936.1.1; one CTD at 1897.9.2 in run 2 recovered by
+the resume feeder on its first fed member (L32's sixth real save). Config
+`config/mod_config.canon-c19-in12-eager-q10.json` = the found configuration **plus the three spending thresholds only**
+(`MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR` 0.9 → 0.99, `_CRITICAL_THRESHOLD` 0.9 → 1.25,
+`_EXCESSIVE_THRESHOLD` 1.5 → 3.0), with `CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED` left at the
+canon's 0.1. Field diff: one define against `canon-c19-in12-eager` (F124), three against `canon-c19-in12` — one book
+isolating both halves, which is what made the attribution possible.
+
+### 1. The hoard fix is the thresholds, and it is the most robust result of the sweep
+
+| pool ÷ world GDP at 1935 | seeds | reading |
+|---|---|---|
+| **thresholds only (this book)** | 3 | **0.11 · 0.17 · 0.11** |
+| thresholds + queue cap (F124) | 2 | 0.27 · 0.34 |
+| the found config `canon-c19-in12` | 4 | 0.42 · 0.48 · 0.64 · 0.70 |
+| vanilla n=16 | 16 | 0.29 median |
+
+Five seeds across two books carrying the thresholds, every one **below vanilla and far below the base**. Britain, the
+worst hoarder in every earlier arm, reads **0.19 / 0.35 / 0.00** against the base's 0.87 / 1.34 / 1.76 / 2.40.
+
+⭐ **And the mechanism is not the queue.** Run 2's private backlog returned to **2.0 years** — the base's own level —
+and its pool still read 0.17. So the thresholds move money out of the pool independently of whether the queue drains,
+which is a cleaner and stronger statement than F121's capacity reading and than anything this thread had before.
+
+### 2. And the same thresholds destabilise the economy — this is what closes the thread
+
+| world GDP ÷ vanilla at 1935 | seeds | values | spread |
+|---|---|---|---|
+| the found config `canon-c19-in12` | 4 | 1.04 · 1.07 · 1.09 · 1.13 | **0.09** |
+| thresholds only (this book) | 3 | 1.233 · 0.938 · **0.555** | **0.68** |
+| thresholds + queue cap (F124) | 2 | 0.738 · 1.446 | **0.71** |
+
+Workers per capita the same shape: 0.754 / 0.589 / 0.490 here against the base's 0.64–0.70. **3 of 3 pairs diverge**
+under the 2+1 rule; the median of three is 0.938× GDP and 0.589× workers, both nominally in target band, but a median
+drawn from 0.56–1.23 is not a configuration anybody can aim with.
+
+**⇒ The queue cap is EXONERATED and the thresholds are convicted.** Both books carrying the thresholds are wide
+(0.68, 0.71); the book without them is tight (0.09) over four seeds. The cap differs between the two wide books and
+changes neither the width nor the hoard fix. This also retires, for the second and final time, the run-1 reading of
+F124 that blamed the cap — the attribution is now made from the design that isolates it rather than from a single run.
+
+⚠ **The direction of the instability is not identified.** The plausible mechanism is that the raised thresholds remove
+a damper from a positive feedback (spend → build → grow → more inflow → spend), so a seed either catches the loop
+early or never does; the three seeds here (1.23 / 0.94 / 0.56) and F124's two (0.74 / 1.45) are consistent with that
+and do not establish it. Nothing here identifies WHICH of the three thresholds carries it, and after this result
+nobody should spend a batch finding out — see below.
+
+### 3. What it costs and what it leaves
+
+- **The eager family is CLOSED.** No configuration built on these thresholds can be read against a target band.
+- **The hoard becomes an ACCEPTED, DOCUMENTED RESIDUAL**, exactly as the 2026-09-15 scope ruling provides for. That
+  ruling's trigger was "if the define cap does not hold the pool"; F124 showed the cap DID hold it, so the trigger was
+  not met then. It is met now in the stronger form: **the only in-scope lever that holds the pool cannot leave a
+  readable configuration**, and the balance-side levers were refused on scope. So: report pool ÷ GDP every batch, say
+  plainly that it sits above vanilla's 0.29 in the standing configuration (0.42–0.70), and tune it no further. Its
+  remaining role is the capital-abundance void criterion, which needs no lever.
+- **The found configuration `canon-c19-in12` stands** — four seeds, 1.04–1.13× GDP, 0.64–0.70× workers, hoard
+  0.42–0.70, below-best 34.9%, rung 0 45–47% staffed.
+- Capital-abundance flag CLEAN in all three runs (run 3's Britain reads a pool of 0.00 — the stalled seed has no
+  capital at all, the opposite failure).
+
+### 4. What this does NOT say
+
+- It does not say which of the three thresholds destabilises, and by the ruling above that question is closed rather
+  than open — the answer could not be used.
+- It does not say the thresholds are useless: as a QUEUE and POOL lever they are the strongest measured, and if a
+  future configuration ever needs the pool moved for a reason other than tidiness, this is the tool and this entry is
+  the record of its price.
+- It says nothing about goal 3. Rung 0 tracked the economy's size as always (47.2% staffed in run 2, base 45–47%).
+- n=3 and n=2 cannot establish the SHAPE of either distribution; what they establish is width against a four-seed
+  reference measured the same way.
+
+**Confidence.** The hoard result is STRONG (5 seeds, two books, a large effect in one direction). The instability is
+STRONG (3 of 3 pairs divergent here, a 0.68 spread against a 0.09 reference, replicated in F124's separate book). The
+attribution of BOTH to the thresholds rather than the cap is STRONG, because one book isolates it by design. The
+mechanism behind the instability is a HYPOTHESIS.
