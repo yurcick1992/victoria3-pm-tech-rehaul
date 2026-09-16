@@ -12648,3 +12648,74 @@ but the motivation for moving it in the first place does not apply to the config
 STRONG (3 of 3 pairs divergent here, a 0.68 spread against a 0.09 reference, replicated in F124's separate book). The
 attribution of BOTH to the thresholds rather than the cap is STRONG, because one book isolates it by design. The
 mechanism behind the instability is a HYPOTHESIS.
+
+## F126 — SHARPENING THE AI'S BUILD CHOICE DOES NOTHING TO IT: halving the government's construction noise, quartering the private pool's and raising its profit weighting moves below-best from 34.9% to 35.3% — the willingness line for goal 3 is exhausted (canon-c19-in12-sharp, n=1 by the run-level stop, 2026-09-16)
+
+**Session** `20260916_122445_canon-c19-in12-sharp-n2`. Run 1 reached 1936.1.1 on one attempt, no crash, no resume
+(play 155.4 min, overhead 0.1%); **run 2 was abandoned at 1836 by the run-level stop** and is L17-excluded, because
+run 1 ended at **1.31× vanilla's 1936 GDP**. Config `config/mod_config.canon-c19-in12-sharp.json` = the found
+configuration `canon-c19-in12` plus three AI defines and nothing else (field diff: `ai_defines`, three keys):
+`PRODUCTION_BUILDING_RANDOM_FACTOR` 10 → 5, `PRODUCTION_BUILDING_AUTONOMOUS_INVESTMENT_RANDOM_FACTOR_MULT` 2.0 → 1.0
+(so the pool's noise is quartered, since it multiplies the same factor), and
+`PRODUCTION_BUILDING_AUTONOMOUS_INVESTMENT_PROFIT_FACTOR_MULT` 1.5 → 2.5. All three were accepted by the engine
+(no L33 rejection line — this book does not raise the land CRITICAL threshold, so it carries no ship residual either).
+
+### 1. The key prediction, and it missed at the value pre-registered as decisive
+
+| | sharp run 1 | base `canon-c19-in12` | pre-registered |
+|---|---|---|---|
+| **levels built BELOW the best tier held** | **35.3%** (4,654 of 13,202) | **34.9%** (3,423 of 9,794) | **under 25%**; "at or above ~32% is a null result" |
+
+The schedule said, before the run: *"Anything at or above ~32% is a null result and closes the willingness line for
+goal 3 altogether — after F120 there is nothing else of this kind left to try."* It read 35.3%, i.e. **0.4pp worse
+than the base**. Quartering the private pool's construction noise and making it weigh predicted profit per employee
+1.67× more heavily changed the AI's tier choice by nothing.
+
+### 2. The old rung: staffing fell, placement rose — the level count went the WRONG way
+
+| rung 0 | 1900 | 1935 | base at 1935 | pre-registered |
+|---|---|---|---|---|
+| buildings | 802 | **1,099** (+297) | — | fewer than 150 added |
+| levels | 1,610 | **2,071 (+29%)** | +12–18% | at or below 1900's |
+| staffed | 997 (61.9%) | 805 (**38.9%**) | 45–47% | under 40% ✓ |
+
+Only the staffing prediction was met, and it is the one that does not mean what it looks like: staffing falls because
+the economy ran hot (1.30×), not because the old rung was displaced. Its **building count rose by 297 and its level
+count by 29% — more than the base's 12–18%**. The lever aimed at placement increased placement. Read with F122's
+rule: the diagnostic is the staffed and building counts, never the level count alone, and here two of the three say
+the rung was built MORE.
+
+### 3. The economy ran hot, and the named failure mode did NOT appear
+
+World GDP **1.296×** vanilla at 1935 (1.31× at 1936 → the stop), productive workers per capita **0.814×** — both
+above their bands (0.9–1.1 and 0.55–0.72), and above the base's 1.04–1.13× / 0.64–0.70×.
+
+⭐ **The pre-registered failure mode — a monotone world — did not happen.** `analyse_build_allocation` against a base
+run: every sector's ABSOLUTE level count rose and the shares barely moved — extraction 1.43× (+0.74pp of share),
+agriculture 1.41× (+1.13pp), manufacturing 1.42× (+0.94pp), infrastructure 1.38× (+0.39pp), arts 2.01× (+0.36pp),
+188,496 → 228,923 levels built. Nothing was starved; sharpening the choice did not collapse the world onto one
+building. That is a clean negative on the risk the schedule named, and it is worth as much as the null above.
+
+### 4. Capital
+
+World hoard **0.72** of GDP, shortlist **1.65**; peaks 0.79 and 1.81 at 1936 with the last five years rising, so
+**neither persistent test fires** (§10.79: >2 in each of the last five years, or >5 at any point). ⚑ **Germany alone
+trips the abundance flag** — 0.0% total unemployment including peasants at a hoard of 4.87 — so the verdict is FLAG,
+not VOID, which needs the whole shortlist. Unemployment including peasants 49.3% world / 18.0% shortlist.
+
+### 5. What it says
+
+- **The willingness line for goal 3 is exhausted.** Three levers have now read null against the old rung's
+  placement: the company-target gate (F100), rung 0's own `ai_value` halved (F120), and the scoring noise plus profit
+  weighting (here). F100 identified the actor — the private investment pool expanding company-owned buildings — and
+  this book aimed three defines straight at it with no effect. **Nothing of this kind is left to try**, which is what
+  the pre-registration was for.
+- **The found configuration `canon-c19-in12` stands**, unchanged, as the standing candidate.
+- It does NOT say the old rung cannot be killed — only that *willingness* levers cannot do it. The price side is
+  where the two remaining ideas live (§10.79's closed lift, and whatever a future ruling opens).
+- It does NOT say this configuration is a runaway: n=1, and 1.296× is one seed of a book whose base spans 1.04–1.13×.
+
+**Confidence.** The KEY result is STRONG DESPITE n=1, and deliberately so: below-best is a ratio over ~13,000 build
+decisions INSIDE the run, which is why F75 made it the metric that resolves where GDP does not — 35.3% against 34.9%
+is not a seed difference. The GDP and worker levels are n=1 and are NOT established; they are why the stop fired, not
+a reading of the configuration. The allocation negative is n=1 but large (every sector up 1.38–2.01×).

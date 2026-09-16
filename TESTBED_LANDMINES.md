@@ -568,6 +568,18 @@ Queue the edit; apply it once the session reports `SCHEDULE DONE`.
 
 ---
 
+**⭐ A RUN THAT ARCHIVED NOTHING CANNOT HAVE LOST ANYTHING (refined 2026-09-16).** The run-level stop leaves an
+1836 stub whose archiver started, saw STOP and exited: `saves\` exists (the archiver creates it) and holds no
+`.v3` at all, so "0 summaries" read as the L12 failure on EVERY stopped configuration since the stop rule
+shipped — 20260915_002935 and 20260916_122445 both. A detector that cries wolf on a DESIGNED outcome is the failure
+this register exists to prevent, so such a run is now skipped and the skip is PRINTED, never silent.
+⚠ NOT loosened to "`saves\` is empty ⇒ skip": empty is ambiguous between *nothing was archived* and *everything
+was archived and reaped without a summary*, and the second is precisely what L12 is for. The discriminator is the
+ARCHIVER’S OWN RECORD — its closing line reads `ARCHIVE DONE - <n> saves in …`, so a run whose log says **0**
+archived nothing and is N/A, while a run whose log says 100 is judged exactly as before.
+Proven three ways the same hour: both stopped sessions PASS with the skip line, and run 1 of 20260916_122445
+(100 saves archived) with its `save_summaries` renamed aside still FAILS.
+
 ## Adding a landmine
 
 When a run surfaces a new one:

@@ -1073,6 +1073,7 @@ function Test-LmL12 {
     if (-not (Test-Path $Session)) { Add-Result 'L12' 'saves reaped without summaries' 'FAIL' "no such session: $Session"; return }
     $bad = @(); $seen = 0; $tot = 0
     $inflight = 0
+    $noSaves = 0      # runs whose archiver recorded zero saves (a stopped 1836 stub) - nothing to lose
     foreach ($run in @(Get-ChildItem $Session -Directory)) {
         $sv = Join-Path $run.FullName 'saves'
         if (-not (Test-Path $sv)) { continue }
@@ -1084,6 +1085,20 @@ function Test-LmL12 {
         $ended = $false
         if (Test-Path $meta) { try { $ended = [bool](Get-Content $meta -Raw | ConvertFrom-Json).ended } catch { $ended = $false } }
         if (-not $ended) { $inflight++; continue }
+        # ⭐ A RUN THAT ARCHIVED NOTHING CANNOT HAVE LOST ANYTHING (2026-09-16). The run-level stop leaves an
+        # 1836 stub whose archiver started, saw STOP and exited: saves\ exists (the archiver makes it) and holds
+        # no .v3 at all, so "0 summaries" was read as the L12 failure on EVERY stopped configuration since the
+        # stop rule shipped (20260915_002935 and 20260916_122445 both). That is a detector crying wolf on a
+        # DESIGNED outcome, which is the failure this register exists to prevent.
+        # ⚠ NOT loosened to "saves\ is empty ⇒ skip" — empty is ambiguous between "nothing was archived" and
+        # "everything was archived and reaped without a summary", and the second is exactly what L12 is for. The
+        # discriminator is the ARCHIVER'S OWN RECORD: its last line reads "ARCHIVE DONE - <n> saves in …", so a
+        # run whose log says 0 archived nothing and is N/A; a run whose log says 100 is judged as before.
+        $alog = Join-Path $sv 'archive.log'
+        if ((Test-Path $alog) -and (Select-String -Path $alog -Pattern 'ARCHIVE DONE - 0 saves' -Quiet)) {
+            $noSaves++
+            continue
+        }
         $seen++
         $sm = Join-Path $run.FullName 'save_summaries'
         $kept = @(Get-ChildItem $sv -Filter '*.v3' -ErrorAction SilentlyContinue)
@@ -1109,6 +1124,7 @@ function Test-LmL12 {
     if (-not $seen) { Add-Result 'L12' 'saves reaped without summaries' 'N/A' "no FINISHED run in this session archived saves$note"; return }
     if ($bad.Count) { Add-Result 'L12' 'saves reaped without summaries' 'FAIL' (($bad -join "`n") + $note) }
     else { Add-Result 'L12' 'saves reaped without summaries' 'PASS' "$seen finished run(s) with archived saves, $tot readable versioned summaries, an escape-hatch save kept in each$note" }
+        if ($noSaves) { Write-Output "        (L12: $noSaves run(s) skipped - the archiver recorded 0 saves, a stopped stub)" }
 }
 
 # ============================================================== L20 ====
