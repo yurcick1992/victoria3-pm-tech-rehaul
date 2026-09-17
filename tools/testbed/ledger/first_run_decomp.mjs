@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // THE FIRST-RUN DECOMPOSITION (user-ruled 2026-09-02: report after each arm's first run, before the batch
 // completes): GDP = population × (productive workers per capita) × (GDP per productive worker), for the
-// WORLD and for the SHORTLIST (GBR USA FRA NET BEL PRU GER pooled), against the vanilla n=16 baseline and
+// WORLD and for the SHORTLIST (GBR USA FRA NET BEL PRU NGF GER pooled), against the vanilla n=16 baseline and
 // any reference arms, at the ledger's sample years. Same definitions as advanced_panel.mjs:
 //   productive = population_salaried_workforce − population_government_workforce − population_military_workforce
 //   population = Σ strata (workforce + dependents; equals Σ professions, verified)
@@ -24,7 +24,7 @@ for (let i = 0; i < argv.length; i++) {
   else if (argv[i] === '--years') YEARS = argv[++i].split(',').map(Number);
 }
 if (!arms.length) { console.error('usage: --arm <session>[:<setup>] [--van <session>] [--years a,b,c]'); process.exit(1); }
-const SHORT = new Set(['GBR', 'USA', 'FRA', 'NET', 'BEL', 'PRU', 'GER']);
+const SHORT = new Set(['GBR', 'USA', 'FRA', 'NET', 'BEL', 'PRU', 'NGF', 'GER']);
 const med = a => { if (!a.length) return NaN; const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
 
 function runDirs(spec) {
@@ -60,7 +60,7 @@ const V = groups.find(g => g.isVan);
 const fmt = (x, d = 2) => Number.isFinite(x) ? x.toFixed(d) : '  —  ';
 console.log('GDP = population × productive workers per capita × GDP per productive worker  (productive = salaried − government − military)');
 for (const scope of ['world', 'short']) {
-  console.log(`\n=== ${scope === 'world' ? 'WORLD' : 'SHORTLIST GBR/USA/FRA/NET/BEL/PRU/GER pooled'} ===`);
+  console.log(`\n=== ${scope === 'world' ? 'WORLD' : 'SHORTLIST GBR/USA/FRA/NET/BEL/PRU/NGF/GER pooled'} ===`);
   console.log('year  arm                                   run(s)   GDP £M     pop M   prod/capita  £GDP/prod-worker   | ÷vanilla: GDP   prod/cap   £/worker');
   for (const y of YEARS) {
     const vRows = V ? V.runs.map(r => r.data[y]).filter(Boolean).map(d => d[scope]) : [];

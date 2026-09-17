@@ -1937,7 +1937,7 @@ tools/                  dev tooling — NOT shipped in the mod
                         (the `fill_*` scripts still are; the three `analyse_ai_*`/`analyse_build_*`
                         scripts now take `--session`/`--config` and discover their runs)
   testbed/ledger/capital_flags.mjs  ⭐ THE HOARD SPLIT AND THE CAPITAL-ABUNDANCE FLAG (user-ruled 2026-09-15): per usable run at a year, the
-                        investment-pool hoard ÷ GDP for the WORLD and the SHORTLIST (GBR, USA, FRA, GER — PRU standing in for an unformed
+                        investment-pool hoard ÷ GDP for the WORLD and the SHORTLIST (GBR, USA, FRA, GER — NGF, then PRU, standing in for an unformed
                         Germany) and TOTAL UNEMPLOYMENT INCLUDING PEASANTS ((unemployed + peasants) ÷ workforce) beside the strict figure, each
                         shortlist member's own reading, the medians and the vanilla reference. A member under 3% with a hoard over 2 trips ⚑; the
                         pooled shortlist tripping is a VOID (exit 4) — "complete capital abundance … invalidates the config". Vanilla's own Britain
@@ -1946,7 +1946,7 @@ tools/                  dev tooling — NOT shipped in the mod
                         (new buildings vs expansions), its staffed levels, and its share of the PRIVATE and GOVERNMENT queues (items and points) —
                         `rung0_path.mjs <run> <config> 1900 1920 1935`; `rung0_who.mjs <run> <config>` attributes the 1900 → 1935 rung-0 additions per
                         country beside whether the country holds any e2/e3 building; `queue_rungs.mjs <run> <year> <config>` splits either queue by rung
-                        (world and the GBR/USA/FRA/GER+PRU shortlist). The diagnostic for a rung-0 lever is the STAFFED count and the building count, never
+                        (world and the GBR/USA/FRA/GER+NGF+PRU shortlist). The diagnostic for a rung-0 lever is the STAFFED count and the building count, never
                         the level count alone (F122: levels up 12–18% while staffing fell a fifth)
   testbed/ledger/sector_split.mjs + rung0_split.mjs + rung_econ.mjs  ⭐ THE F127 READERS (2026-09-16, moved in from the scratchpad 2026-09-17):
                         the SECTOR SPLIT (world building value added and staffing at one date, the tiered eras beside agriculture / extraction / urban+infra /
@@ -1986,7 +1986,8 @@ tools/                  dev tooling — NOT shipped in the mod
                         `--config <path>`; no arguments reproduces the canon-n7 baseline exactly
   testbed/ledger/advanced_panel.mjs  ⭐⭐ THE PRODUCTIVITY CLAIM, READ WHERE IT IS VISIBLE
                         (user-ruled 2026-08-20: **report these two alongside the world's 1935 GDP
-                        decomposition, every batch**). Pooled over **GBR USA FRA NET BEL PRU GER**:
+                        decomposition, every batch**). Pooled over **GBR USA FRA NET BEL PRU NGF GER** (⭐ NGF added 2026-09-17: the North German Federation
+                        stands at 1935 in 1 of 16 vanilla seeds and at 1900 in 3, and was in NO pool until then — the German state is PRU → NGF → GER):
                         (1) productive workers ÷ TOTAL WORKFORCE, ÷ vanilla; (2) GDP ÷ productive
                         worker, ÷ vanilla. **Pooled because the world reading is diluted by countries
                         that never industrialise and the per-tag reading is dominated by SIZE** —
@@ -2059,10 +2060,18 @@ tools/                  dev tooling — NOT shipped in the mod
   testbed/ledger/first_run_decomp.mjs  ⭐ THE FIRST-RUN DECOMPOSITION (user-ruled 2026-09-02: report it
                         after each arm's FIRST run, before the batch completes): GDP = population ×
                         productive workers per capita × GDP per productive worker, WORLD and SHORTLIST
-                        (GBR USA FRA NET BEL PRU GER pooled), each arm's runs beside the vanilla n=16
+                        (GBR USA FRA NET BEL PRU NGF GER pooled — NGF since 2026-09-17), each arm's runs beside the vanilla n=16
                         median, every ratio printed with both its terms. Same definitions as
                         advanced_panel (productive = salaried − government − military; population =
                         Σ strata). `--arm <session>[:<setup>] --van <session> [--years …]`
+  testbed/ledger/majors_workers.mjs  ⭐ THE MAJORS' WORKERS-PER-CAPITA CEILING (user-ruled 2026-09-17; the criteria register is being streamlined by
+                        the user — BALANCE_FRAMEWORK §10.82.2 will carry the ruled form): the "majors" of §10.82 ruling 3 are the POOLED shortlist GBR / USA / FRA /
+                        NET / BEL / PRU / NGF / GER ("significantly large, significantly high-tech countries" — never RUS, nor an unusually successful CHI / BGL /
+                        BHT / TUR / SPA, whatever their prestige rank), and the pool's productive workers per capita ÷ vanilla's pooled per-run median AT OR
+                        ABOVE 1.0× IS A FAILURE ("the depeasantation is on undesirable vanilla level"); the aim ≤ 0.8×. Prints the verdict per usable run and
+                        the median, with each member's own ratio beneath as the COMPOSITION (a diagnostic, not the criterion; GER = GER, else NGF, else PRU).
+                        `--arm <session[,session]>[:<setup>] [--van …] [--years …] [--fail 1.0] [--aim 0.8] [--no-members]`. First read at 1935: the found
+                        configuration 0.72 / 0.71, the C 1.9 family pair 0.78 / 0.84, the B 1.8 triple 0.61 / 0.87 / 0.55, the A 1.9 pair 1.03 (FAIL) / 0.77
   testbed/ledger/company_check.mjs  ⭐ THE COMPANY ANOMALY CHECK (user-ruled 2026-09-02, for any arm
                         carrying the company-target gate): companies formed, countries with one,
                         prosperity, % prosperous, charters, regional HQs and the company-held share of
@@ -4056,7 +4065,7 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   next run is abandoned at 1836 and L17-excluded, the phase-2 run-11 shape). Being far BELOW stops nothing (the stall family). ⭐ **THE CAPITAL-ABUNDANCE FLAG (user-ruled 2026-09-15):** "a situation of complete capital abundance (total unemployment under 3%, hoard over
   2 GDP), if not confined to minors, invalidates the config more or less, it just shouldn't happen … it distorts the economy a lot, and other metrics'
   readings from this config become heavily unreliable". Total unemployment INCLUDES PEASANTS — (unemployed + peasants) ÷ (salaried + unemployed +
-  peasants); the hoard is the investment pool ÷ GDP; read WORLD and the SHORTLIST (GBR, USA, FRA, GER — PRU standing in where Germany never formed) and each
+  peasants); the hoard is the investment pool ÷ GDP; read WORLD and the SHORTLIST (GBR, USA, FRA, GER — NGF, then PRU, standing in where Germany never formed) and each
   shortlist member — `node tools/testbed/ledger/capital_flags.mjs --arm <session[,session]>:<setup>` prints both splits per usable run with the
   medians and the vanilla reference, marks a tripping member ⚑ and exits 4 on a shortlist-wide trip (VOID); run it in every write-up beside `alignment_check.mjs`. Measured 2026-09-15 at 1935:
   the flat A 1.9 pair trips it for the whole shortlist (0.3–1.0% at a hoard of 3.1–3.3); C 1.6, the ×1.3 lift and run 1 of the found config trip it for

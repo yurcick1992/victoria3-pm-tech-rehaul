@@ -44,7 +44,7 @@ const argOf = (n, d) => { const i = ARGV.indexOf(n); return i >= 0 && ARGV[i + 1
 const SAVE = ARGV[0];
 if (!SAVE || !existsSync(SAVE)) { console.error('usage: melted_company_ownership.mjs <save.v3|melted.txt> [--melted]'); process.exit(1); }
 const LABEL = argOf('--label', SAVE.split(/[\\/]/).pop());
-const MAJORS = ['GBR', 'USA', 'FRA', 'NET', 'BEL', 'PRU', 'GER'];
+const MAJORS = ['GBR', 'USA', 'FRA', 'NET', 'BEL', 'PRU', 'NGF', 'GER'];
 
 // our tiered set, with the rung index — F77's whole point is WHICH rung
 const cfg = JSON.parse(readFileSync(argOf('--config', 'config/mod_config.json'), 'utf8'));

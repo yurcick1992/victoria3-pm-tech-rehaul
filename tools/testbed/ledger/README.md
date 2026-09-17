@@ -313,7 +313,7 @@ Conventions it follows, each of which changed a number when it was got wrong:
 ## `advanced_panel.mjs` — the productivity claim, read where it is visible
 
 **User ruling, 2026-08-20: report these two alongside the world's 1935 GDP decomposition, every
-batch.** Pooled over **GBR USA FRA NET BEL PRU GER**:
+batch.** Pooled over **GBR USA FRA NET BEL PRU NGF GER** (NGF since 2026-09-17):
 
 1. **productive share** = productive workers ÷ total workforce, ÷ vanilla
 2. **productivity** = GDP ÷ productive worker, ÷ vanilla

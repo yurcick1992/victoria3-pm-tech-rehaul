@@ -31,7 +31,7 @@ for (let i = 0; i < argv.length; i++) {
 }
 const SESSIONS = argSessions.length ? argSessions
   : ['20260821_131149_vanilla-baseline-n16', '20260823_113218_vanilla-baseline-extra-n2'];
-const POOL7 = ['GBR', 'USA', 'FRA', 'NET', 'BEL', 'PRU', 'GER'];
+const POOL7 = ['GBR', 'USA', 'FRA', 'NET', 'BEL', 'PRU', 'NGF', 'GER'];
 
 const TIERED = new Set(['building_food_industry', 'building_textile_mill', 'building_furniture_manufactory',
   'building_glassworks', 'building_tooling_workshop', 'building_paper_mill', 'building_chemical_plant',

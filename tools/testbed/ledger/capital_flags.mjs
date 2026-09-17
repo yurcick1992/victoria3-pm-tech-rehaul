@@ -45,7 +45,7 @@ function hoardSeries(runRel) {
     let j; try { j = JSON.parse(gunzipSync(readFileSync(join(dir, fn)))); } catch { continue; }
     const date = (j.provenance && j.provenance.date) || ''; const yr = +String(date).split('.')[0];
     if (!yr || out.has(yr)) continue;
-    const C = j.countries || {}; const members = SHORT.map(t => (t === 'GER' && !C.GER && C.PRU) ? 'PRU' : t);
+    const C = j.countries || {}; const members = SHORT.map(t => (t === 'GER' && !C.GER && (C.NGF || C.PRU)) ? (C.NGF ? 'NGF' : 'PRU') : t);
     let wp = 0, wg = 0, sp = 0, sg = 0; const per = {};
     for (const [tag, c] of Object.entries(C)) {
       const pool = +c.investment_pool || 0, gdp = +c.gdp || 0;
@@ -75,7 +75,7 @@ const rates = o => ({ strict: o.un / (o.sal + o.un), incl: (o.un + o.pe) / (o.sa
 const trips = r => r.incl < 0.03 && r.hoard > 2;
 function readRun(runRel) {
   const j = summaryAt(runRel, YEAR); if (!j) return null; const C = j.countries || {};
-  const members = SHORT.map(t => (t === 'GER' && !C.GER && C.PRU) ? 'PRU' : t).filter(t => C[t]);
+  const members = SHORT.map(t => (t === 'GER' && !C.GER && (C.NGF || C.PRU)) ? (C.NGF ? 'NGF' : 'PRU') : t).filter(t => C[t]);
   const W = {}, S = {}; const per = [];
   for (const [tag, c] of Object.entries(C)) { const r = readC(c); add(W, r); if (members.includes(tag)) { add(S, r); const x = rates(r); per.push({ tag, ...x, flag: trips(x) }); } }
   return { run: runRel, world: rates(W), short: rates(S), per, members };
