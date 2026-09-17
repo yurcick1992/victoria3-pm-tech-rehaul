@@ -13101,3 +13101,52 @@ midday), whose lines this finding is the first to be written in.
 **What it does not say.** n=1 on the economy (the pair would have said whether 1.56 on the pool's GDP is the book or the seed); nothing about
 prices (the register's price groups were ruled after this run and are not yet implemented); nothing about the hoard's cause beyond the
 backlog picture of F119 (a capacity-bound queue, not idle money — 2.2 years deep at 80% private share of speed).
+
+
+## F131 — THE FOUND CONFIGURATION OVER FOUR SEEDS UNDER THE CRITERIA REGISTER: majority intact (3 of 4), the consensus at the aim on world W, pool W and pool U*, above it on world GDP (1.10), the pool's GDP (1.30) and the hoard (4.2× vanilla) — loss 7.6, still the lowest of every book; Britain's capital abundance is a one-in-four hard break and a 2.3–3.6-GDP British hoard a second seed's soft breach; the seed spread on world GDP runs 1.04–1.31 (canon-c19-in12, batch 4 = two more seeds, 2026-09-17)
+
+**Arm.** `config/mod_config.canon-c19-in12.json`, byte-identical across four sessions: `20260914_173832` run 1 and `20260914_204329` run 1
+(F117), `20260917_132449_canon-c19-in12-confirm-n2` run 1 and `20260917_161410_canon-c19-in12-confirm-tb` run 1 (batch 4 of the plan of
+2026-09-16, its fallback branch, launched after the A 2.05 book broke the capital-abundance line — F130). Batch 4's own run 2 is a VOID
+169-second stub: a CTD before the first autosave, the observer's restart through `-continuelastsave`, run 1's 1936 endpoint loaded AT the
+target — landmine **L34**, found here, fixed and detected the same afternoon; the pair's second seed ran from the tie-breaker schedule.
+Read with `tools/testbed/ledger/criteria.mjs` (THE CRITERIA REGISTER, §10.83 / §10.83.4) against the vanilla n=16 baseline; the end
+state is the 1932–1936 mean.
+
+**The four seeds:**
+
+| seed | world GDP | pool GDP | pool W | pool H (Britain) | status under the register | loss |
+|---|---|---|---|---|---|---|
+| 1 (20260914_173832) | 1.06 | 1.29 | 0.71 | 4.07× (Britain 11 years under 5% U* at 1.80 GDP) | ⛔ BROKEN BY RUNOFF (the capital-abundance pair) | — |
+| 2 (20260914_204329) | 1.04 | 1.45 | 0.70 | 1.58× | intact | 5.3 |
+| 3 (20260917_132449) | 1.30 | 2.12 (beyond > 1.5) | 0.84 | 1.82× (1.26 GDP, U* above 5%) | intact, one soft breach | 44.4 |
+| 4 (20260917_161410) | 1.16 | 1.15 (at the aim) | 0.65 | 6.77× (Britain 3.56 GDP, above 2 every year 1931–36: soft) | intact, two soft hoard lines | 9.5 |
+
+**The consensus** (the two closest intact seeds on world GDP, 2 and 4 — 0.12 apart, under F114's 0.15 threshold; seed 3 set aside):
+
+| line | consensus | verdict |
+|---|---|---|
+| world GDP (priority 1) | **1.10×** (1935 point 1.11) | inside, above the 1.0 aim |
+| world W · U* · H | 0.69 · 1.39 · 2.20× | aim · inside · above the aim |
+| pool W | **0.68×** | AT THE AIM (0.6–0.7) |
+| pool U* | **2.02×** (43.0% vs 21.3%) | AT THE AIM (≥ 2) |
+| pool H | 4.17× (1.40 GDP vs 0.33) | above the aim (the least important one) |
+| pool GDP (W × Y) | 1.30× = 0.68 × 1.86 | inside, above the 1.1 aim |
+| PI · PP · PM | 0.84 (0.86 of base, not falling every decade) · 0.83 · 0.47 | just above the 0.8 aims · read only |
+| T0 · T3 | 0.88× the 1900s (0.60 / 0.57 / 0.60 / 0.57M by decade) · 25.6% of the tiered workers (T3 ÷ rest 0.34) | inside, not falling · the more the better |
+| LOSS | **7.6** = the pool's GDP 2.05 + the pool's hoard 1.88 + world GDP 1.42 + PI 1.20 + world H 0.68 + T3 0.32 | the lowest of every book (A 1.9 17.6) |
+
+**What it says.**
+1. **The found configuration is the register's best book and majority-intact**, at the aim on the labour lines (world W 0.69, pool W 0.68,
+   pool U* 2.02) and a tenth above the aims on GDP (world 1.10, the pool 1.30); its residual is the pool's GDP overshoot, the hoard and the
+   input-goods price index just above its aim.
+2. **The hoard is the binding hard-line risk**: Britain in capital abundance in seed 1 (11 years under 5% at 1.80 GDP) and a 2.3–3.6-GDP
+   British hoard in seed 4 (unemployment above 5%, so soft); the pool's hoard 1.4 GDP on the consensus, 4.2× vanilla's.
+3. **The seed spread is wide**: world GDP 1.04–1.31, the pool's GDP 1.15–2.12; seed 3 alone emptied the old rung (0.13M workers), the other
+   three hold it at 0.54–0.70M. Two seeds are not a measurement of this book; four are barely one.
+4. **The A axis does not change the pool's GDP** (F129/F130: 1.45–1.56 at A 1.9–2.05 against 1.30 here) — it trades W for Y — so the pool's
+   overshoot and the hoard call for the register's other levers: cost (slightly under-side) and eagerness to build.
+
+**What it does not say.** Nothing about the eager define set on this base (unmeasured on C 1.9; F121 measured it on C 2.05 as bistable);
+nothing about the price groups' trajectories beyond "PI not falling every decade"; the ledger of the old shape was not produced (the report
+is to be re-based on the register).

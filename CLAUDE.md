@@ -949,6 +949,11 @@ config/mod_config.canon-c19-in12.json ⭐ THE COST-SLOPE SWEEP, BOOK 2 — THE B
                         first book whose old rung is out-earned; tiered levels 9,917–10,633 (half of vanilla's), pools 0.42–0.64 of GDP, unemployment 27–30%,
                         peasants above vanilla's share in most majors; France 4.1× in both seeds, Russia 0.2–0.5×. Play 0.97× the vanilla median, no crash.
                         THE SWEEP'S FOUND SLOPE. Ledger https://claude.ai/code/artifact/7c8d37a0-4496-49fe-b5f8-d3d2859d5d95.
+                        ⭐ READ OVER FOUR SEEDS UNDER THE CRITERIA REGISTER (F131, 2026-09-17; batch 4 = sessions 20260917_132449 run 1 + 20260917_161410): 3 intact /
+                        1 broken (seed 1: Britain's capital abundance), the consensus of the two closest intact seeds at LOSS 7.6 — the register's best book —
+                        world GDP 1.10 (above the 1.0 aim), pool W 0.68 and pool U* 2.02 (at the aims), the pool's GDP 1.30 (above 1.1), pool H 4.2× vanilla, PI 0.84 /
+                        PP 0.83, T0 flat; the seed spread 1.04–1.31 on world GDP. The residual is the pool's GDP overshoot and the hoard (the A axis does not move
+                        the pool's GDP) — the next levers are cost and eagerness to build, PROPOSED and awaiting the user's confirmation.
                         Un-ignored with its twin
 config/mod_config.canon-c19-in13.json ⭐ THE COST-SLOPE SWEEP, BOOK 3 — THE ×1.3 LIFT AT THE FOUND SLOPE (the plan's last step; the loop's
                         first "best config" pick, 2026-09-15): canon-c19-in12 with `--in0 1.3` in place of 1.2 — rung 0's input value ×1.3 with the ladder
