@@ -1,6 +1,7 @@
 {
  "schedule_version": 1,
  "label": "canon-a205-gm-tb",
+ "_majors_ruling": "THE MAJORS RULING (user, 2026-09-17 midday, BALANCE_FRAMEWORK §10.82.2 pending the streamlined register): the majors of ruling 3 are the POOLED shortlist GBR/USA/FRA/NET/BEL/PRU/NGF/GER (large AND high-tech; never RUS, nor a successful CHI/BGL/BHT/TUR/SPA) and the pool's productive workers per capita at or above vanilla's pooled per-run median (>= 1.0x) is a FAILURE for that seed; the aim <= 0.8. Read with tools/testbed/ledger/majors_workers.mjs. This book's pre-registered shortlist figures (0.80-0.92; > 0.92 both -> A 2.15) are the same pooled quantity; a seed at or above 1.0 fails on its own, whatever the GDP band says. The whole labour/depeasantation/capital criteria register is with the user for streamlining into a shortlist subsection and a world subsection; thresholds may move.",
  "_why": "THE TIE-BREAKER of canon_a205_gm_n2.json: the third run of the 2+1 rule, launched ONLY when alignment_check.mjs exits 2 on that pair. Read as its own session and pooled with the pair (--arm sessA,sessB:canon-a205-gm); the configuration is then the MEDIAN OF THREE. The book, the lever (A 2.05 gain-matched per era, rung 0 untouched), the predictions and the branches are those of canon_a205_gm_n2.json.",
  "_arms": {
   "canon-a205-gm": "{kind: config, config: config/mod_config.canon-a205-gm.json} - the same book as the pair's, byte-identical."

@@ -13035,3 +13035,15 @@ seed each way. Hoard 0.3–0.6 and the dip 0.75–0.90 — met. Perf — met (1.
 
 Session `20260917_051736`, VERDICT.md and RUN1_READ.md there; config committed as `config/mod_config.canon-a19-gm.json` (`_ab.command`).
 Ledger `tools/testbed/ledger/out_a19gm/REPORT.html`, published as https://claude.ai/artifact/EkxBbZVVJQBF7pWyPrCeCi (one configuration per report).
+
+**F129 addendum, 2026-09-17 midday — the majors ruling re-scores seed 1 as a FAILURE.** The user defined ruling 3's "majors" as the POOLED
+shortlist GBR/USA/FRA/NET/BEL/PRU/NGF/GER ("significantly large, significantly high-tech countries", never RUS or a successful CHI / BGL /
+BHT / TUR / SPA whatever their prestige rank) and ruled that the pool's productive workers per capita at or above vanilla's pooled median is a
+failure ("the depeasantation is on undesirable vanilla level"); the aim stays ≤ 0.8. NGF (the North German Federation — at 1935 in 1 of 16
+vanilla seeds, at 1900 in 3) had been in no pool and was added to every pooled script that morning, which moves the vanilla pooled median from
+0.1967 to 0.1982 per head. On that rule (`tools/testbed/ledger/majors_workers.mjs`): seed 1 reads **1.03× — a FAILURE on its own** (the USA
+1.18× its own vanilla median, the Netherlands 1.14×, Britain 0.99×, Germany 0.94×), seed 2 0.77× (within the aim); the found configuration
+0.72 / 0.71, the C 1.9 family pair 0.78 / 0.84, the B 1.8 triple 0.61 / 0.87 / 0.55. The finding's verdict is unchanged in effect — the book
+was already not the pick — but its seed 1 is now a failed seed, not merely "above the aim". ⚠ The whole labour / depeasantation / capital
+criteria register was handed to the user for streamlining the same hour (a shortlist subsection and a world subsection with different
+thresholds); BALANCE_FRAMEWORK §10.82.2 will carry the ruled form, and this addendum's 1.0 line is the ruling as given, not the final register.

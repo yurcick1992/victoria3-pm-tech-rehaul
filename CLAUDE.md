@@ -1065,7 +1065,8 @@ config/mod_config.canon-a19-gm.json ⭐⭐ BATCH 2 OF THE PLAN — LAUNCHED 2026
                         12,431 / 10,833 levels, strict unemployment 19.8% (found 27–31%), the old rung 39.5 / 32.2% staffed (the majors' 21 / 34%), the USA's
                         peasants 57 → 23 and 61 → 47; the price channel's direction seed-dependent (dearer outputs in seed 1, cheaper in seed 2), both above
                         the band; no plateau (§10.82.1), capital flag CLEAN; one CTD recovered by the feeder. NOT the pick — the A axis is BRACKETED (A 2.2 in
-                        band at 1.08× with labour slack, A 1.9 above at 1.16× with labour absorbed) ⇒ batch 3 = canon-a205-gm. Ledger https://claude.ai/artifact/EkxBbZVVJQBF7pWyPrCeCi
+                        band at 1.08× with labour slack, A 1.9 above at 1.16× with labour absorbed) ⇒ batch 3 = canon-a205-gm. ⚠ Under THE MAJORS RULING of 2026-09-17 midday (the pooled shortlist GBR/USA/FRA/NET/BEL/PRU/NGF/GER at or above vanilla's
+                        workers per capita = a failure; `majors_workers.mjs`) seed 1 reads 1.03 = a FAILED seed on its own, seed 2 0.77 (F129 addendum). Ledger https://claude.ai/artifact/EkxBbZVVJQBF7pWyPrCeCi
 config/mod_config.canon-a20-gm.json ⭐ THE MILDER A STEP, IN RESERVE (§10.82): as above with A 2.0 — `--A 2.0 --cost-ladder 1.55,2.66,4.63`
                         (600 / 930 / 1,596 / 2,778; 800 / 1,240 / 2,128 / 3,704), value added per frontier level 0.82 / 0.74 / 0.68 of the found book's.
                         Generated 2026-09-16, L31 passing; no schedule until it is chosen. Un-ignored with its twin
