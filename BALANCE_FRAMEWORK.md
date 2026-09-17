@@ -7559,3 +7559,153 @@ two `canon-b18-gm` sessions' VERDICT.md / RUN1_READ.md / RULING_ADDENDUM.md (not
 URL with the sentence corrected), and the memory.
 
 **Implemented and proven both ways (2026-09-17 07:55 local):** `capital_flags.mjs` prints the PERSISTENT ABUNDANCE block (per shortlist member: the years at or under 10% total unemployment including peasants over 1919–1935, the late hoard maximum, ⚑ PLATEAU when every year is under the line and the pool exceeded 2 GDP in 1931–1935; two members = WIDESPREAD). The found configuration reads NONE (Britain in seed 1 is under the line 15 of 17 years with a hoard of 2.40 — the single-year flag, not a plateau); `canon-b18-gm` reads NONE in all three seeds; the flat A 1.9 pair (F115, the measured VOID) reads ⚑ PLATEAU GBR + USA and GBR + GER + USA — WIDESPREAD, every year of the window under 5% with hoards of 3.2–9.0. That is the "capital is abundant, this is broken" case the ruling names, and nothing else trips it.
+
+
+## 10.83 — THE CRITERIA REGISTER: AIM / SOFT BOUNDARY / HARD BOUNDARY, PER SCOPE — ONE RULE SET FOR THE CONFIG ITERATOR AND THE BATCH REPORT (user-ruled 2026-09-17 midday; supersedes the operational criteria of §10.79, §10.82, §10.82.1 and the capital-abundance flag)
+
+**The ruling, verbatim (the user, after "that's a mess" on the two-scope table of the criteria then in force):**
+
+> All right, the new rulings.
+> Split into
+> 1) the aim, to which we are trying to get with iterating config options
+> 2) the soft boundaries, going beyond which is not acceptable, but which do not break the game and thus readings from these runs can be taken in full
+> 3) the hard boundaries, going beyond which breaks the economy and only allows for a binary failure as a recorded outcome: "broken by stall" or "broken by runoff"
+>
+> In the future, I want you to use these as the framework to find optimum solutions on the config, trying to quantify and reason on which config changes lead to what outcomes.
+>
+> Your "T" must be decomposed into T0, T1, T2 and T3. Ensure that the industries that don't have early game options (e.g. automobiles) start at later tiers, don't count towards T0 share.
+>
+> I intend to have this as a unified rule set for the iterator and the report, so if I missed anything important that you suspect isn't superceded by another point, highlight this and we'll discuss. I'm specifically concerned about not monitoring prices, but I can't find concise wording that will align with the intended price direction but will allow for certain divergences.
+>
+> For the shortlist, unless specified explicitly, the conditions are measured on the pool taken together, not on individual countries.
+> Unless specified explicitly, the conditions concern 1935-1936, or at least 5-10 last in-game years, they're about END STATE, not the path to it.
+>
+> The hard boundaries are checked on individual run level, everything else -- on "consensus" (median of two runs if there are two in total, or of two aligned ones if the first and second runs diverge).
+>
+> Conditions themselves, shortlist:
+> W for the shortlist: aim at 0.6-0.7 of vanilla; soft boundary -- > 1.0 of vanilla
+> U* for the shortlist: aim at 2+ of vanilla; soft boundary -- < 1.0 of vanilla; hard boundary -- under 10% collectively; hard boundary -- under 5% and not rising above that in 1926-1935 for any individual country that's at least 50 million population and isn't in the state of civil war
+> H: aim at <1 of vanilla; hard boundary -- over 5 of vanilla for any individual country that's over 50 million population; hard boundary -- over 3 of vanilla for any individual country each year between 1931 and 1936, and not declining by at least 0.5 of this country's yearly GDP on average (for simplicity, the decline must be 2.5 of 1931 GDP over the course of 5 years)
+> T0: aim at it 0 in 1936, or at least a declining trajectory decade over decade past 1900s. Soft boundary -- a more than 30% increase 1935 over average of 1900-1909.
+> T3: at least X% (suggest X)
+> GDP: aim for high enough Y to hit about 1.1 of vanilla. Soft boundary: <0.95 of vanilla, or >1.5 of vanilla. "Y" not that important by itself, but should compensate dip in W.
+>
+> Conditions, world:
+> GDP: aim 1.0 of vanilla. Soft boundary -- not in the band of [0.75; 1.33] of vanilla
+> GDP: hard boundary: 1836-1845 off vanilla not by more than 10% from 90% vanilla CI (each year, whole world combined, up to two year exceptions per run allowed)
+> W: aim for [0.6-0.95] of vanilla. Soft boundary -- >1.0 of vanilla
+> U*: soft boundary -- < 1.0 of vanilla (should be higher, although no specific aim set)
+> H: aim at <1 of vanilla
+>
+> The most important aims are world GDP in 1935, then shortlist decomposition (W*Y), then W itself, in shortlist AND the world.
+>
+> The levers you can use freely is the A, B, input penalty, eagerness to build (from all PoVs: ai_value; strategies; mod-level static constant), build cost. What stays: anchor of 1836 where possible, except input penalty; everything else in the game.
+
+### 10.83.1 — The register as implemented (`tools/testbed/ledger/criteria.mjs`)
+
+**Scopes.** The SHORTLIST is the pool **GBR / USA / FRA / NET / BEL / PRU / NGF / GER** (the three German tags are one state at three
+stages; NGF was in no pool until 2026-09-17, when it was added to every pooled script — it stands at 1935 in 1 of 16 vanilla seeds), read
+TOGETHER unless a line says "individual country"; the WORLD is the save's own world totals. **Quantities** (every ratio is to the vanilla
+per-run MEDIAN of the same scope and window, n=16 — `20260821_131149_vanilla-baseline-n16`):
+
+| symbol | quantity | exact definition |
+|---|---|---|
+| GDP | world GDP; the pool's GDP | the save's `world.gdp`; Σ `gdp` over the pool |
+| W | productive workers per capita | (salaried − government − military workforce) ÷ Σ strata population |
+| U* | total unemployment INCLUDING peasants | (unemployed + peasants) ÷ (salaried + unemployed + peasants); peasants = `population_subsisting_workforce` × 100,000 |
+| H | the hoard | investment pool ÷ GDP |
+| Y | productivity | GDP ÷ productive workers, so W × Y = GDP per capita (the decomposition) |
+| T0 … T3 | workers in the tiered industries' rungs BY ERA | Σ over building types of staffed levels × per-level employment × workforce_mult, keyed by the rung's era from the run's own config (`build_state.json → mod_under_test.built_from_config`); an industry that starts at e2 (automotive) contributes nothing to T0 — the era rule, never the rung index |
+
+**End state.** The mean over the last five yearly summaries, **1932.1.1 … 1936.1.1** (`--end`), with the 1935 point printed beside it
+for continuity with F117–F129, unless a line names its own years. **Hard boundaries are checked per run; everything else on the
+CONSENSUS**: the median (mean) of two runs; with three, the two closest on world GDP (the aligned pair) and the third set aside; with more,
+the median of all. **A big country** is one whose Σ strata ≥ 50M in the years the line covers.
+
+| SHORTLIST (the pool) | AIM | SOFT boundary (beyond: unacceptable, readings taken in full) | HARD boundary (per run: broken by stall / by runoff) |
+|---|---|---|---|
+| W | 0.6–0.7× | > 1.0× | — |
+| U* | ≥ 2× | < 1.0× | pooled U* < 10% at the end state (runoff); an individual big country, not in civil war, with U* < 5% in EVERY year 1926–1935 (runoff) |
+| H | < 1× | — | an individual big country with H > 5× vanilla at the end state (stall); H > 3× vanilla in every year 1931–1936 unless its pool fell by ≥ 2.5 × its 1931 GDP over those years (stall) |
+| T0 | 0 at 1936, or falling decade over decade after the 1900s (1900–09 > 1910–19 > 1920–29 > 1930–36 means) | T0 at 1935 > 1.3 × the 1900–1909 mean | — |
+| T3 | ≥ X% of the tiered workers (X to be ruled; provisional 25 — see 10.83.3) | — | — |
+| GDP | ≈ 1.1× (±0.05), reached through a high enough Y | < 0.95× or > 1.5× | — |
+
+| WORLD | AIM | SOFT boundary | HARD boundary (per run) |
+|---|---|---|---|
+| GDP | 1.0× (±0.05) — PRIORITY 1 | outside [0.75, 1.33] | 1836–1845: world GDP outside vanilla's 90% CI (the 5th–95th percentile over the 16 seeds, per year) widened by 10% in MORE THAN TWO years (below → stall, above → runoff) |
+| W | 0.6–0.95× | > 1.0× | — |
+| U* | (higher than vanilla, no number) | < 1.0× | — |
+| H | < 1× | — | — |
+
+**Priorities:** world GDP at 1935, then the pool's W × Y, then W itself (pool and world). **Levers (free):** A, B, the input penalty (the
+×lift on era 0), eagerness to build (ai_value, AI strategies, the mod-level defines), building cost. **Stays:** the 1836 anchor where
+possible (except the input penalty), everything else in the game. **Outcome classes:** a run beyond a HARD line records only its binary
+class; the side is the breach's — a U* line or an anchor overshoot = runoff, an H line or an anchor undershoot = stall; when a run
+breaches both kinds, its world GDP side decides (≥ 1.0× runoff, else stall).
+
+**Assumptions the implementation had to make (each flagged for ruling in 10.83.3):** "of vanilla" on a per-country hoard line = the vanilla
+POOLED shortlist H (0.33 in the window ⇒ the lines at 1.00 and 1.67 GDP; `--h-ref world` 0.29, `--h-ref country` each member's own
+vanilla median); a civil war is not in the summaries, so a member-year whose population fell more than 15% year on year is exempt from
+the per-country lines; "under 5% and not rising above that in 1926–1935" is read as U* < 5% in EVERY year 1926–1935.
+
+### 10.83.2 — Calibration: vanilla's own sixteen seeds under the hard boundaries, and the measured books under the register
+
+**The literal hard lines break vanilla itself.** Scored with the pooled hoard reference, **9 of 16 vanilla seeds are "broken"**; with the
+per-country reference **12 of 16**. The breaches: Britain's U* is under 5% in every year 1926–1935 in **8** seeds (0.3–2.6% at most)
+and Germany's in **7** (0.2–2.7%), both in 6 — vanilla's fully depeasanted tall majors; Britain's hoard exceeds 5 × the pooled vanilla
+H (1.67 GDP) at the end state in 2 seeds (2.16, 2.74 GDP) and Germany's in 1 (1.75); the persistent line (> 1.00 GDP every year
+1931–1936, not spent down) trips in 6. Under the per-country reference the tiny vanilla medians of France, the USA and Germany (0.05 /
+0.14 / 0.08) turn hoards of 0.3–0.9 GDP into "5×". The two lines that are well calibrated as written: the **1836–1845 anchor** (0
+violations in every vanilla seed, by construction) and the **pooled U* < 10%** (vanilla's lowest seed 13.7%).
+
+**The measured books** (consensus over the usable runs; the hard column under the LITERAL lines with the pooled reference):
+
+| book (n) | hard, per run | world GDP | pool W | pool U* | pool H | pool GDP | T0 1935 ÷ 1900s | T3 share | world W | world U* | world H |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `canon-c19-in12`, the found (2) | run 1 BROKEN (Britain: U* ≤ 4.5% 1926–35; hoard 2.25 GDP, 1.67–2.65 every year 1931–36) | 1.05 | 0.70 (aim's edge) | 1.93 | 2.82 | 1.37 | 0.64 (1900s .58 / .59 / .68 / .48M) | 25% | 0.65 (aim) | 1.43 | 1.79 |
+| `canon-c19-e0ai500`, the family pair (2) | both BROKEN (Britain and Germany above 3× every year: 1.06–1.97 GDP) | 1.08 | 0.82 | 1.35 | 2.72 | **1.73 (beyond > 1.5)** | 0.34 (aim: declining every decade) | 28% | 0.66 (aim) | 1.41 | 1.93 |
+| `canon-a19-gm` (2) | intact | 1.13 | 0.88 | 1.43 | 1.41 | 1.47 | 0.46 | 35% | 0.86 (aim) | 1.17 | 1.10 |
+| `canon-b18-gm` (3; consensus runs 1 + 3) | intact | **0.66 (beyond < 0.75)** | 0.56 | 2.52 (aim) | 0.83 (aim) | **0.81 (beyond < 0.95)** | 1.22 | 17% | 0.60 (aim) | 1.52 | 0.69 (aim) |
+
+What the register says about the sweep so far: the hoard aim (H < vanilla) is met by no growth book — every book at or above the world
+GDP aim carries 1.4–2.8× vanilla's pooled hoard, and the only book under it is the stalled one; the found configuration is the closest
+on the two priority-1/3 lines (world GDP 1.05, world W 0.65, pool W at the aim's edge) and misses the pool's GDP aim upward (1.37 against
+1.1) with Y 1.95×; the A 1.9 book trades W for Y the wrong way (pool W 0.88, pool GDP 1.47 at the soft line's edge).
+
+### 10.83.3 — Open at the ruling: what the implementation had to assume, what the register does not cover, and the suggestions
+
+1. **The per-country U* hard line as written classifies vanilla's Britain and Germany as broken in 9 of 16 seeds** (10.83.2). Suggested
+   re-calibration, for ruling: make it the CAPITAL-ABUNDANCE pair — U* < 5% in every year 1926–1935 AND the member's hoard averaging more
+   than 2 GDP over 1931–1935 (vanilla: 2 of 16 seeds, Britain at 2.1 and 2.7 GDP — the extreme the 2026-09-15 flag was calibrated on); the
+   found configuration's run 1 (Britain 4.5% at most, mean hoard ~2.2 GDP) would then be a broken run, which the rulings of 2026-09-15/16
+   called "Britain alone at vanilla's extreme = a flag". The widespread form (two big members under 5%) still breaks 6 of 16 vanilla seeds.
+2. **"Of vanilla" on the per-country hoard lines.** The pooled reference puts them at 1.00 and 1.67 GDP; the per-country one is worse
+   (12 of 16). Suggested: absolute GDP-years — the level line at 3 GDP (≈ 9× the pooled vanilla H; vanilla 0 of 16, max 2.74) and the
+   persistent line at 2 GDP every year 1931–1936 not spent down (≈ 6×; vanilla 1 of 16, Britain 2.39–3.06) — the §10.79 numbers, which were
+   calibrated on exactly this.
+3. **Prices are not in the register** (the user's stated concern). Proposed line, concise and divergence-tolerant — **PW, the tiered
+   industries' outputs in WAGE UNITS**: the median over the tiered goods of (market price ÷ the market's base wage) at the end state, ÷
+   vanilla's same median, in the British market and the seven-market pool (`batch_tables.mjs` prints both): **aim ≤ 0.8** (the frontier's
+   goods cheaper in labour than vanilla's — the decline F97 identified as the one the engine's death mechanism reads), **soft boundary
+   > 1.1** (dearer in labour than vanilla's: the price path inverted). Judged on the MEDIAN across the goods, so any single good may
+   diverge either way (a fabric squeeze, a clothes glut) without moving the verdict. Shortlist scope (the two markets), consensus.
+4. **X for T3.** The found configuration reads 25% of the tiered workers in e3 rungs at the end state, the family pair 28%, the A 1.9
+   pair 35%, the stalled B 1.8 book 17%. Suggested **X = 25** — the level the in-band books already hold, so the line separates a stall
+   (17%) from the family without rewarding the runaway; vanilla's equivalent (the share of levels on the top vanilla method) is not
+   yet measured and would make a better anchor.
+5. **Civil war** is not in the save summaries; a > 15% year-on-year population fall stands in for it. A proper flag needs the events
+   telemetry or a save field.
+6. **The run-level stop** (a run above 1.3× vanilla's 1936 GDP ends the config) is a batch-flow rule, not a criterion; suggested: keep it,
+   at the world SOFT top (1.33×, at 1936). **The F114 bands** stay only as the DIVERGENCE test that decides a third run; their TARGET
+   semantics are superseded by the register's aims. **Row P** (the +10% play-time budget) stays as its own standing constraint outside
+   the register. **Below-best tier choice** (F75) and the old rung's margin ladder are mechanism diagnostics, not criteria; T0 carries the
+   old rung's death.
+7. **The end window** is implemented as the 1932–1936 mean; the ruling allows 1935–36 or the last 5–10 years — confirm or set.
+8. **Consensus with three runs** = the two closest on world GDP; with four or more, the median of all — confirm.
+
+**Superseded by this section** (kept as history): §10.82's operational lines for rulings 2 and 3 (the 5–9% borderline, the 0.8 / 0.9
+ceilings — now the register's W aims and soft lines), §10.82.1's plateau test, §10.79's PERSISTENT-A/B hoarding tests and the
+2026-09-15 capital-abundance flag (`capital_flags.mjs` remains a diagnostic printer), `majors_workers.mjs`'s ≥ 1.0 failure line (= the
+register's pooled W soft boundary; the script remains the composition printer), and F114's TARGET bands (the bands remain the
+divergence test). The ruling of 2026-09-16 that the mid-game dip is expected stands: the register reads the end state.

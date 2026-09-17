@@ -128,6 +128,28 @@ earlier ones)". BALANCE_FRAMEWORK **§10.78** is the record; `tools/lib_tier4_sp
    `history_lib.ps1`'s map and `start_baseline.json` (beside `era`, which is what the summary labels by), and `tier` in a
    start rule — honoured only on the six-rung book; on a four-rung book a rule names its rung by **`era`** or the converter throws.
 
+## ⭐⭐⭐ THE CRITERIA REGISTER — AIM / SOFT / HARD, PER SCOPE, ONE RULE SET FOR THE ITERATOR AND THE REPORT (user-ruled 2026-09-17, GOVERNING)
+
+**BALANCE_FRAMEWORK §10.83 is the record (the ruling verbatim, the register, its calibration, the open points); `tools/testbed/ledger/criteria.mjs`
+is the implementation** (`--arm <session[,session]>[:<setup>] --config <book>`; the run's own `build_state.json` names the config). Every criterion
+is one of three kinds: an **AIM** (what the config iteration is trying to reach), a **SOFT boundary** (beyond it unacceptable, but the economy is not
+broken and every reading of the run is taken in full) or a **HARD boundary** (the economy is broken; the run records only a binary outcome — **broken
+by stall** or **broken by runoff**). Two scopes with different numbers: the **SHORTLIST pool GBR / USA / FRA / NET / BEL / PRU / NGF / GER taken
+together** (per country only where a line says so) and the **WORLD**. Everything is about the **END STATE** (the 1932–1936 mean, the 1935 point beside
+it), never the path; **hard lines are checked per run, everything else on the CONSENSUS** (the median of two runs, or of the two aligned runs when the
+first pair diverged). Shortlist: W aim 0.6–0.7× vanilla, soft > 1.0 · U* (unemployment INCLUDING peasants) aim ≥ 2×, soft < 1.0, HARD < 10% pooled and
+< 5% every year 1926–1935 in a ≥ 50M member · H (pool ÷ GDP) aim < 1×, HARD > 5× / > 3× persistently in a ≥ 50M member · T0 (era-0 rung workers, by
+the rung's ERA — automotive's e2 start counts nothing toward T0) aim 0 at 1936 or falling decade over decade, soft 1935 > 1.3 × the 1900s · T3 ≥ X% of
+the tiered workers (X provisional 25) · GDP aim ≈ 1.1× via Y, soft < 0.95 or > 1.5. World: GDP aim 1.0×, soft outside [0.75, 1.33], HARD 1836–1845
+outside vanilla's 90% CI ± 10% in more than two years · W aim 0.6–0.95×, soft > 1.0 · U* soft < 1.0 · H aim < 1×. **Priorities: world GDP at 1935 >
+the pool's W × Y > W.** **Levers: A, B, the input penalty, eagerness to build (ai_value / strategies / defines), building cost; the 1836 anchor stays
+(except the input penalty), everything else in the game stays.** ⚠ Calibrated against vanilla's own seeds the same day: the literal per-country U*
+hard line breaks vanilla's Britain and Germany in 9 of 16 seeds and the hoard "of vanilla" reference is ambiguous — §10.83.2/3 carry the numbers and
+the suggested re-calibration, open for ruling; prices (a wage-unit line), X for T3 and civil-war detection are open there too. ⇒ SUPERSEDED as
+operational criteria: the 2026-09-15 capital-abundance flag, §10.79's persistent-hoarding tests, §10.82's ceilings and §10.82.1's plateau test, and
+F114's TARGET bands (the bands remain the divergence test that decides a third run; the run-level stop remains a batch-flow rule). Their scripts
+(`capital_flags.mjs`, `majors_workers.mjs`, `major_series.mjs`, `alignment_check.mjs`) stay as diagnostics.
+
 ## ⭐⭐⭐ THERE IS ONE CANON, AND THE SIX-RUNG BOOK IS RETIRED FOR GOOD (user-ruled 2026-09-16)
 
 **The user, 2026-09-16:** *"We likely won't return to the six-rung for UI bloat reasons, even if it worked not that
@@ -1937,7 +1959,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⚠ Session paths hardcoded to the first instance (flatcost-n1); --session flag TODO
                         (the `fill_*` scripts still are; the three `analyse_ai_*`/`analyse_build_*`
                         scripts now take `--session`/`--config` and discover their runs)
-  testbed/ledger/capital_flags.mjs  ⭐ THE HOARD SPLIT AND THE CAPITAL-ABUNDANCE FLAG (user-ruled 2026-09-15): per usable run at a year, the
+  testbed/ledger/criteria.mjs  ⭐⭐ THE CRITERIA REGISTER (user-ruled 2026-09-17, BALANCE_FRAMEWORK §10.83 — the governing section near the top of this
+                        file): aim / soft / hard per scope (the shortlist pool and the world), end-state means over 1932–1936, HARD lines per run with the binary
+                        outcome (broken by stall / by runoff), everything else on the consensus of the aligned pair; W, U*, H, Y, GDP and T0…T3 by the rung's ERA
+                        from the run's own config. `--arm <session[,session]>[:<setup>] [--config <book>] [--van …] [--end 1932-1936] [--t3-min 25] [--h-ref
+                        pool|world|country] [--json out]`. The report and the iterator read THIS; the older readers below are diagnostics
+  testbed/ledger/capital_flags.mjs  ⚠ SUPERSEDED AS A CRITERION 2026-09-17 by §10.83 (a diagnostic printer now) — ⭐ THE HOARD SPLIT AND THE CAPITAL-ABUNDANCE FLAG (user-ruled 2026-09-15): per usable run at a year, the
                         investment-pool hoard ÷ GDP for the WORLD and the SHORTLIST (GBR, USA, FRA, GER — NGF, then PRU, standing in for an unformed
                         Germany) and TOTAL UNEMPLOYMENT INCLUDING PEASANTS ((unemployed + peasants) ÷ workforce) beside the strict figure, each
                         shortlist member's own reading, the medians and the vanilla reference. A member under 3% with a hoard over 2 trips ⚑; the
@@ -1956,7 +1983,7 @@ tools/                  dev tooling — NOT shipped in the mod
                         <runDir>…`), and the PER-INDUSTRY PER-ERA RUNG ECONOMICS (VA per staffed level and per worker, margin, the rung's share, VA per worker
                         ÷ the frontier — `rung_econ.mjs <runDir> <config> <year>`). They read the yearly save summaries directly and are what F127 / F128 / F129
                         quote for the raw sector, the old rung and the realised value added per frontier level
-  testbed/ledger/major_series.mjs  ⭐ THE PER-MAJOR SERIES the plateau test is read from (user-ruled 2026-09-16, CORRECTED 2026-09-17 — §10.82.1):
+  testbed/ledger/major_series.mjs  ⚠ the plateau test it served is SUPERSEDED by §10.83 (2026-09-17 midday); the columns stay useful — ⭐ THE PER-MAJOR SERIES the plateau test is read from (user-ruled 2026-09-16, CORRECTED 2026-09-17 — §10.82.1):
                         per major and year, strict unemployment, the peasants' share of the workforce and the salaried workforce from the yearly summaries'
                         pop_statistics. A PLATEAU is capital abundance persisting at the frictional residual — total unemployment INCLUDING peasants ≤ 10% in
                         EVERY year 1919 → 1935 while the pool exceeds 2 GDP in any of 1931–1935 — NOT slow depeasantation (a stall at 20% peasants is a
@@ -2065,7 +2092,7 @@ tools/                  dev tooling — NOT shipped in the mod
                         median, every ratio printed with both its terms. Same definitions as
                         advanced_panel (productive = salaried − government − military; population =
                         Σ strata). `--arm <session>[:<setup>] --van <session> [--years …]`
-  testbed/ledger/majors_workers.mjs  ⭐ THE MAJORS' WORKERS-PER-CAPITA CEILING (user-ruled 2026-09-17; the criteria register is being streamlined by
+  testbed/ledger/majors_workers.mjs  ⚠ its ≥ 1.0 failure line is the register's pooled W SOFT boundary since §10.83 (the same afternoon); kept as the COMPOSITION printer — ⭐ THE MAJORS' WORKERS-PER-CAPITA CEILING (user-ruled 2026-09-17; the criteria register is being streamlined by
                         the user — BALANCE_FRAMEWORK §10.82.2 will carry the ruled form): the "majors" of §10.82 ruling 3 are the POOLED shortlist GBR / USA / FRA /
                         NET / BEL / PRU / NGF / GER ("significantly large, significantly high-tech countries" — never RUS, nor an unusually successful CHI / BGL /
                         BHT / TUR / SPA, whatever their prestige rank), and the pool's productive workers per capita ÷ vanilla's pooled per-run median AT OR
@@ -4042,7 +4069,7 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   confounders from external machine usage or time of day, and any such effect is very likely far below noticeable
   levels** — so "a Steam update or a slow night hits both arms" justifies nothing. The a16/a22-in12 batch of 2026-09-13
   interleaved its two configs; by ruling it was left to finish as scheduled (its tie-breakers, if any, run after it).
-  ⭐⭐ **THE 2+1 QUICK CONFIG TEST — THE STANDARD (user-ruled 2026-09-14, FINDINGS F114).** Two runs of one config, then
+  ⭐⭐ **THE 2+1 QUICK CONFIG TEST — THE STANDARD (user-ruled 2026-09-14, FINDINGS F114).** ⚠ Since 2026-09-17 its bands are ONLY the divergence test that decides a third run; what a config is judged by is THE CRITERIA REGISTER (§10.83), whose aims replace the bands' TARGET semantics. Two runs of one config, then
   `node tools/testbed/ledger/alignment_check.mjs --arm <session[,session]>:<setup>`, then a third run ONLY where the two
   DIVERGE, the config read as the median of three. **Two criteria, at 1935, as ratios to the vanilla baseline's per-run
   MEDIAN: world GDP, and productive workers per capita** (salaried − government − military, over the strata population).
@@ -4063,7 +4090,7 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   under changing configs (a 30-run plan, a 60-run plan, a full-run learning batch) — is NOT subject to it; every run plays.
   `alignment_check.mjs` prints the stop verdict (exit 3) and `--stop-above 0` is the "full runs" switch; between the runs of a
   live batch the scratchpad `stop_watch.mjs` enforces it by dropping the STOP file after an offending run's endpoint lands (the
-  next run is abandoned at 1836 and L17-excluded, the phase-2 run-11 shape). Being far BELOW stops nothing (the stall family). ⭐ **THE CAPITAL-ABUNDANCE FLAG (user-ruled 2026-09-15):** "a situation of complete capital abundance (total unemployment under 3%, hoard over
+  next run is abandoned at 1836 and L17-excluded, the phase-2 run-11 shape). Being far BELOW stops nothing (the stall family). ⚠ SUPERSEDED 2026-09-17 by THE CRITERIA REGISTER (§10.83; the governing section near the top of this file) — kept as the record of the calibration it left behind. ⭐ **THE CAPITAL-ABUNDANCE FLAG (user-ruled 2026-09-15):** "a situation of complete capital abundance (total unemployment under 3%, hoard over
   2 GDP), if not confined to minors, invalidates the config more or less, it just shouldn't happen … it distorts the economy a lot, and other metrics'
   readings from this config become heavily unreliable". Total unemployment INCLUDES PEASANTS — (unemployed + peasants) ÷ (salaried + unemployed +
   peasants); the hoard is the investment pool ÷ GDP; read WORLD and the SHORTLIST (GBR, USA, FRA, GER — NGF, then PRU, standing in where Germany never formed) and each
