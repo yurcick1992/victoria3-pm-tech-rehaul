@@ -7690,6 +7690,11 @@ on the two priority-1/3 lines (world GDP 1.05, world W 0.65, pool W at the aim's
    goods cheaper in labour than vanilla's — the decline F97 identified as the one the engine's death mechanism reads), **soft boundary
    > 1.1** (dearer in labour than vanilla's: the price path inverted). Judged on the MEDIAN across the goods, so any single good may
    diverge either way (a fabric squeeze, a clothes glut) without moving the verdict. Shortlist scope (the two markets), consensus.
+   First readings on `batch_tables.mjs`'s century-change form (the British price 1935 ÷ 1840 in wage units, arm ÷ vanilla, medians over the
+   tiered goods): the found configuration ≈ 0.5 (its base wage ×2.25 against vanilla's ×1.49 — the F97 mechanism), the A 1.9 pair ≈ 0.9 with the
+   goods split either side of 1 (tools 1.26×, glass 1.05×, dye 1.10× dearer in labour than vanilla's; steel 0.74×, clothes 0.76×, small arms 0.41×
+   cheaper): the proposed line separates the two books the way F129's price-channel reading did, and it says the A 1.9 book's obsolescence
+   pressure in labour terms is vanilla's, not the design's.
 4. **X for T3.** The found configuration reads 25% of the tiered workers in e3 rungs at the end state, the family pair 28%, the A 1.9
    pair 35%, the stalled B 1.8 book 17%. Suggested **X = 25** — the level the in-band books already hold, so the line separates a stall
    (17%) from the family without rewarding the runaway; vanilla's equivalent (the share of levels on the top vanilla method) is not
