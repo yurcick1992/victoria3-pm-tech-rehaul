@@ -76,6 +76,15 @@ export function usableRuns(sesRoot, session, setup = '') {
       dropped.push({ run: d, reached: m.reached_ingame_date, until: m.until_date, reason: 'short of its until date (L17)' });
       continue;
     }
+    // L34 (2026-09-17): a run that 'reached' its until date with NO CAMPAIGN behind it - a crash before the first autosave, the
+    // restart launched with -continuelastsave, the machine's newest save (another run's endpoint) loaded AT the target, 169 s, 'complete'.
+    // A century run carries >= 15 yearly-or-five-yearly summaries; a foreign landing carries one or two.
+    const span = (parseDate(m.until_date)[0] || 0) - 1836;
+    const sums = readdirSync(join(root, d, 'save_summaries')).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).length;
+    if (span >= 5 && sums <= 2) {
+      dropped.push({ run: d, reached: m.reached_ingame_date, until: m.until_date, reason: `reached its until date in ${Math.round(+m.wall_seconds || 0)} s with ${sums} summary(ies) - a resume loaded a FOREIGN save at the target (L34)` });
+      continue;
+    }
     runs.push(rel);
   }
   return { runs, dropped };

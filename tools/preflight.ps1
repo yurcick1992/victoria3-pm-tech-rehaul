@@ -972,6 +972,42 @@ function Test-LmL32 {
     else { Add-Result 'L32' 'a resume that could not load the continue pointer''s target' 'PASS' "$runs run folder(s), no 'Could not load save game' line in any debug.log mirror" }
 }
 
+function Test-LmL34 {
+    <#
+      L34 - A RUN RECORDED COMPLETE IN MINUTES: A CRASH BEFORE THE FIRST AUTOSAVE, RESTARTED THROUGH -continuelastsave, LOADED
+      THE PREVIOUS RUN'S ENDPOINT (found 2026-09-17, run 2 of 20260917_132449_canon-c19-in12-confirm-n2).
+
+      The observer's early-death path ('died before any autosave existed ... restarting from the beginning') let the next attempt
+      launch with -continuelastsave, which loads the newest save ON THE MACHINE - run 1's 1936.1.1 autosave, still in the game's
+      save folder. The engine landed at the target date, the observer read 'reached 1936.1.1', the run self-quit after 169 s and
+      meta.json recorded a complete run with ONE summary. L17 passes it (reached == until), L26 cannot see it (no backward date
+      jump in a one-entry series), lib_runs counted it the moment its meta.json was readable.
+
+      DETECTOR: for every ENDED run whose reached_ingame_date equals its until_date over a span of five years or more, require
+      more than two save summaries - a century run carries >= 15 at five_year cadence and ~100 at yearly; a foreign landing carries
+      one or two. GENERATOR FIX: the early-death restart launches a FRESH 1836 game ($freshRestart in run_observer.ps1).
+      N/A without -Session, like L12 / L17 / L26.
+    #>
+    $T = 'a run completed in minutes - a resume loaded a foreign save at the target'
+    if (-not $Session) { Add-Result 'L34' $T 'N/A' 'no -Session given (this entry is post-run)'; return }
+    if (-not (Test-Path $Session)) { Add-Result 'L34' $T 'FAIL' "no such session: $Session"; return }
+    $bad = @(); $checked = 0
+    foreach ($run in @(Get-ChildItem $Session -Directory)) {
+        $meta = Join-Path $run.FullName 'meta.json'; if (-not (Test-Path $meta)) { continue }
+        $m = $null; try { $m = Get-Content $meta -Raw -Encoding UTF8 | ConvertFrom-Json } catch { }
+        if (-not $m -or -not $m.ended) { continue }
+        $checked++
+        if ("$($m.reached_ingame_date)" -ne "$($m.until_date)") { continue }
+        $untilYear = 0; if ("$($m.until_date)" -match '^(\d{4})\.') { $untilYear = [int]$Matches[1] }
+        if (($untilYear - 1836) -lt 5) { continue }
+        $sdir = Join-Path $run.FullName 'save_summaries'; $n = 0
+        if (Test-Path $sdir) { $n = @(Get-ChildItem $sdir -File -Filter '*.json.gz' | Where-Object { $_.Name -notlike '*.partial.*' }).Count }
+        if ($n -le 2) { $bad += "$($run.Name): reached $($m.reached_ingame_date) in $([math]::Round([double]$m.wall_seconds)) s with $n summary(ies)" }
+    }
+    if ($bad.Count) { Add-Result 'L34' $T 'FAIL' ("$($bad.Count) run(s) 'reached' their target with no campaign behind them - a resume loaded a FOREIGN save at the target; do not count them: " + ($bad -join '; ')) }
+    elseif ($checked -eq 0) { Add-Result 'L34' $T 'N/A' 'no ended runs in this session yet' }
+    else { Add-Result 'L34' $T 'PASS' "$checked ended run(s), every completed one has a campaign behind it" }
+}
 function Test-LmL26 {
     <#
       L26 - ONE RUN FOLDER HOLDING TWO CAMPAIGNS.
@@ -1386,6 +1422,7 @@ $CHECKS = @(
     @{ Id = 'L14'; Artifact = $true;  Fn = { Test-LmL14 } },
     @{ Id = 'L15'; Artifact = $true;  Fn = { Test-LmL15 } },
     @{ Id = 'L17'; Artifact = $false; Fn = { Test-LmL17 } },
+    @{ Id = 'L34'; Artifact = $false; Fn = { Test-LmL34 } },
     # L20 reads the CONFIG, not the mod, so it gates a batch before anything is built - which is the
     # whole point: the failure it catches costs a whole window when it is found at the first build.
     @{ Id = 'L20'; Artifact = $false; Fn = { Test-LmL20 } },

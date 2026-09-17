@@ -2607,3 +2607,16 @@ with {1839, 1838, 1837}; feed 1/3 = the 1839 save loaded and ticked into 1840; t
 and fed 2/3 = the ORIGINAL 1838, with the fed 1839 copy and the engine's new 1840 autosave set aside into `resume_attempts\attempt3\`;
 the game loaded 1838 and reached 1842.1.1 (3 attempts, 2 resumes). The user's semi-happy path, reproduced. After the proofs the
 observer also closes a process still open at the run's end (trim to its newest member), so "done and dusted" holds for every process.
+
+
+## 2026-09-17 — a crash before the first autosave restarted the run through `-continuelastsave` and "completed" it in 169 s (landmine L34)
+
+**Symptom.** Run 2 of `20260917_132449_canon-c19-in12-confirm-n2`: CTD at 1836.7.24, "restarting run from the beginning", then "run finished:
+169.4 s wall over 2 attempts, in-game 1936.1.1, exit self-quit" and a meta.json that claims the whole century.
+**Cause.** `run_observer.ps1`'s attempt loop adds `-continuelastsave` to every attempt after the first; the early-death path ("died before
+any autosave existed") cleared the run's own last tick and `continue`d into that rule, so attempt 2 loaded the newest save on the machine —
+the previous run's 1936.1.1 endpoint — and the target check accepted the landing before the "ahead of the run" guard could compare against
+the cleared tick.
+**Fix.** A `$freshRestart` flag: set by the early-death path, consumed by the launch-args step, which then launches a FRESH 1836 game (no
+`-continuelastsave`) and logs it. Detector L34 in `preflight.ps1 -Session` and in `lib_runs.usableRuns` (reached == until over ≥ 5 years with
+≤ 2 summaries ⇒ not a run). The observer edit is parse-checked; a live early crash will prove the path.

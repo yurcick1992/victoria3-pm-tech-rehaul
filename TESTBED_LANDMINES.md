@@ -1786,3 +1786,32 @@ naming only the pool factor.
 `ai_defines` reaches the mod through `emit_techs.mjs` unchanged, and a book's values come from `make_ab_config --ai-defines`. Fix a
 breach by regenerating from the book's own `_ab.command` with the value moved inside the bound — never by hand-editing `ai_defines`,
 which would leave `_ab.command` describing a book that no longer exists.
+
+
+## L34 — A RUN RECORDED COMPLETE IN MINUTES: a crash before the first autosave, restarted through `-continuelastsave`, loaded the PREVIOUS run's endpoint and landed AT the target (found 2026-09-17, run 2 of 20260917_132449_canon-c19-in12-confirm-n2)
+
+**What happened.** Run 2 of the found configuration's confirmation pair crashed to desktop at 1836.7.24 (minidump `victoria3_01260817_160629`),
+two minutes in and before its first autosave. The observer's early-death path logged *"died before any autosave existed (attempt 1 of 3)
+… restarting run from the beginning"* — and the attempt loop then built attempt 2's arguments by the general rule `if ($attempt -gt 1)
+{ -continuelastsave }`. `-continuelastsave` loads the newest save ON THE MACHINE: run 1's `autosave.v3` of 1936.1.1, written 16:03 and still
+sitting in the game's save folder. The engine loaded it, the first tick read 1936.1.1 — the target — and the observer recorded
+*"run finished: 169.4 s wall over 2 attempts, in-game 1936.1.1, exit self-quit"*. `meta.json` says reached 1936.1.1 of 1936.1.1, no
+`abandoned_reason`, one save summary. The scheduler wrote SCHEDULE DONE 2/2.
+
+**Why nothing failed.** L17 compares reached against until — equal. L26 looks for a backward date jump across the summary series — a
+one-entry series has none. The landing guard *"resume landed AHEAD of the run — foreign save"* compares against the run's own last tick,
+which the restart path had just cleared (`(was at )` in the log), and the target check fires before the guard anyway (the structural order
+L26 already notes). `lib_runs.usableRuns` counted the run the moment its meta.json was readable: a 169-second "century" with one summary
+would have entered the found configuration's n as its fourth seed.
+
+**The detector (AUTO, post-run, `preflight.ps1 -Session` → `Test-LmL34`; and `lib_runs.usableRuns` refuses the run):** an ENDED run whose
+reached date equals its until date over a span of five years or more must carry MORE THAN TWO save summaries — a century run has ≥ 15 at
+five_year cadence and ~100 at yearly; a foreign landing has one or two. Proven on the session that found it (FAIL names run 2) and on a
+clean one (PASS).
+
+**The generator fix (`run_observer.ps1`):** the early-death restart sets `$freshRestart`, and the next attempt launches WITHOUT
+`-continuelastsave` — a fresh 1836 game, which is what "restarting from the beginning" meant. ⚠ Live proof owed: parse-checked only until
+the next early crash; the detector stands behind it either way.
+
+**What it touched.** Batch 4 ended as 1 real seed + 1 void stub; the pair's second run was relaunched from the tie-breaker schedule
+(one run). No analysis consumed the stub: the register's read at 16:04 ran before the stub's meta existed and dropped it as unreadable.

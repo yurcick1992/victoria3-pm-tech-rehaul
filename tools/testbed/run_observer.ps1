@@ -882,12 +882,18 @@ try {
         $script:QuarantinedSaves = @()
         $script:PendingEvidence = $null
 
+        $freshRestart = $false   # L34 (2026-09-17): set by the early-death path - the next attempt is a FRESH 1836 game, never -continuelastsave
         # ---- attempt loop: one pass per launch, extra passes are crash resumes ----
         while ($true) {
         $attempt++
         $attemptStart = Get-Date
         $launchArgs = $gameArgs
-        if ($attempt -gt 1 -or $ContinueFromSave) { $launchArgs = @("-continuelastsave") + $gameArgs }
+        if ($freshRestart) {
+            # L34: the run died before its first autosave, so there is nothing of ITS OWN to continue from. -continuelastsave here loads the
+            # machine's newest save - another run's endpoint - and a save that lands AT the target reads as a completed run (169 s, 2026-09-17).
+            $launchArgs = $gameArgs; $freshRestart = $false
+            Write-Log "run ${run}: attempt $attempt is a FRESH 1836 game (died before any autosave; -continuelastsave would load a foreign save - landmine L34)"
+        } elseif ($attempt -gt 1 -or $ContinueFromSave) { $launchArgs = @("-continuelastsave") + $gameArgs }
         $resumeFrom = $lastTick
 
         # ⭐ EVIDENCE COPY, TAKEN AT LAUNCH (user-approved 2026-08-14, FINDINGS F56). Whatever save
@@ -1208,6 +1214,7 @@ try {
                 break
             }
             Write-Log "restarting run $run from the beginning"
+            $freshRestart = $true   # L34: the next attempt must NOT carry -continuelastsave
             $lastTick = ""; $streamed.Clear()
             continue
         }
