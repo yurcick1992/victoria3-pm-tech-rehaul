@@ -1,0 +1,73 @@
+{
+ "schedule_version": 1,
+ "label": "canon-c195-in12-tb",
+ "_why": "THE TIE-BREAKER of canon_c195_in12_n2.json: the third run of the 2+1 rule, run ONLY if alignment_check.mjs reads the pair DIVERGENT (exit 2); the config is read as the consensus of the two closest seeds on world GDP (pool both sessions in --arm). Same book, same predictions as the n2 schedule.",
+ "_arms": {
+  "canon-c195-in12": "{kind: config, config: config/mod_config.canon-c195-in12.json} - generated 2026-09-17 by make_ab_config --cost-ratio 1.95 (its _ab.command holds the line); field diff against canon-c19-in12: 43 building_cost fields, nothing else (ai_defines and research_events byte-identical); dry-run built clean 2026-09-17 (lint, negative-goods, solvency, tech content, L13, era-rule L31, mod checks, preflight)."
+ },
+ "_delta": "Against canon-c19-in12 (the found configuration): building_cost = anchor x 1.95^era (600 / 1,170 / 2,282 / 4,450; 800 / 1,560 / 3,042 / 5,933) in place of 1.9^era on the 43 rungs above e0; A 2.2 / B 1.5, the x1.2 lift, ai_value 3^era, divisor 0.000125, the §10.75 defines (NOT the eager set), research events and the 24-month bar identical.",
+ "_predictions": {
+  "register": "see _register — the predictions are stated in the register's terms (§10.83); the band-style predictions of the older schedules are superseded by it."
+ },
+ "_register": "THE ONE-LEVER CONTROL (batch 2 on a hard break or an unattributable read of canon-c195-in12-eager): the found configuration with building_cost = anchor x 1.95^era and nothing else changed (field diff: 43 building_cost fields; the §10.75 defines, not the eager set). Predictions in the register's terms: world GDP 0.95-1.08, the pool's GDP 1.10-1.30, pool W 0.62-0.70, pool U* >= 2x, pool H 3-4.5x (as the found: the cost step does not touch the hoard), PI 0.80-0.90, PP 0.80-0.90; the capital-abundance break rate as the found's (1 in 4). EXPECTED LOSS 5-8: the GDP terms improve, the hoard terms stay. THE ADOPT RULE (the loss-minimising iterator, 2026-09-17 evening): the incumbent is canon-c19-in12 at consensus loss 7.6 (F131; its clean seeds 5.3 / 9.5, its soft-line seed 44.4, one seed broken). After the pair (and the tie-breaker on F114 divergence): a HARD break in any run = the config is OUT (one broken run ends it). Otherwise read `criteria.mjs --arm <sessions>:<setup>`: the candidate REPLACES the incumbent only if its consensus loss is below 7.6 by at least 3 (the incumbent's own clean pair differs by 4, so a median of two moves by about 3 on seed noise alone) OR it is better on each of the three largest terms (the pool's GDP, the pool's hoard, world GDP) with no new soft breach; read the PER-SEED losses beside the consensus — a seed that crosses a soft line jumps by 10 x the line's weight, so two seeds at 3 and 40 are not better than two at 5 and 9. Every candidate is launched only on the user's go at the start of the sequence; within the sequence the batches follow each other under the 2+1 rule; at its end the next hypothesis is PROPOSED, not launched.",
+ "_alignment": "THE 2+1 RULE (F114, the divergence test only since §10.83): after run 2, `node tools/testbed/ledger/alignment_check.mjs --arm <session>:canon-c195-in12` - DIVERGENT (exit 2) => the _tb.json as its own one-run schedule; what the config is JUDGED by is `node tools/testbed/ledger/criteria.mjs --arm <session[,session]>:canon-c195-in12` (the register: hard per run, the consensus of the intact runs, the loss).",
+ "_comparison": "vanilla n=16 (20260821_131149) for every ratio; canon-c19-in12 (four seeds, F131: consensus loss 7.6) is the incumbent; canon-c195-in12-eager the paired book this one attributes.",
+ "_watch": [
+  "every run ~5 min in: mod marker, version, this run's error window by position, clock (tools/testbed/batch_heartbeat.sh <session> at each wake); arm tools/testbed/stop_watch.ps1 on the session through launch_detached.ps1 -Hidden and a background wait_for_session.ps1",
+  "first run: tools/testbed/ledger/queue_series.mjs at 1900/1920/1935 - private and government backlog years, private share, construction sector levels, pool; capital_flags.mjs at 1935; first_run_decomp at 1900/1935; rung margins by era; run_vs_vanilla (scratchpad or the ledger); rung0_path.mjs and rung0_who.mjs (tools/testbed/ledger, F122) for the old rung's path",
+  "post-run: alignment_check.mjs (it prints the stop verdict too), capital_flags.mjs, preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS, the ledger (one configuration per report)"
+ ],
+ "_cost": "1 x 1836->1936 ~ 2h20-2h40; a hard break ends the config.",
+ "_caveats": [
+  "n=2 by design; the alignment tool decides on the third.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent; the five-minute smoke check on EVERY run; never interleave configs."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+ },
+ "setups": {
+  "canon-c195-in12": {
+   "kind": "config",
+   "config": "config/mod_config.canon-c195-in12.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "canon-c195-in12",
+   "until": "1936.1.1"
+  }
+ ]
+}
