@@ -12842,3 +12842,101 @@ per unit of GDP.
   `canon_c19_e2soft_n2.json`) and the no-extrapolation rule applies: the gain match is at base prices, and a raw sector pulled to higher
   prices lowers the frontier's realised margin by an amount nothing here predicts.
 - Whether 27–31% world strict unemployment is a fault is unruled; the shortlist's is near vanilla's.
+
+## F128 — THE INPUT-VALUE STEP B 1.8, GAIN-MATCHED AT BASE PRICES, STALLS: the base-price match understates the price channel — realised value added per frontier level comes in at 0.54–0.91× the found book's against a planned 0.77–0.80×, because a richer recipe makes more output per pound of value added and the market answers with cheaper outputs and dearer inputs; two seeds of three stall from 1890 (0.70 / 0.65×), one climbs slowly (0.91×); the raw sector is bigger per pound of GDP but not in levels; the old rung is untouched; the USA absorbs labour in two seeds; median of three 0.70× (canon-b18-gm, n=3 by tie-breaker, 2026-09-16/17)
+
+**Claim.** On the found configuration (`canon-c19-in12`, F117) raising the frontier's input value from ×1.5^era to **×1.8^era** over each
+rung's own vanilla mix, with the cost ladder re-derived so the frontier's value added per construction point equals the found book's at
+BASE prices (`make_ab_config --B 1.8 --cost-ladder 1.52,2.79,5.34`: 600 / 912 / 1,674 / 3,204 and 800 / 1,216 / 2,232 / 4,272; rung 0
+byte-identical; `canon-b18-gm`), read **0.70 / 0.91 / 0.65× the vanilla per-run median at 1935** (0.68 / 0.90 / 0.66 at 1936) with
+productive workers per capita **0.63 / 0.66 / 0.58×** — the pair DIVERGENT under the 2+1 rule, the tie-breaker run, the configuration the
+median of three: **0.70× (noticeably below), workers 0.63× (target)**. The stall is the C 2.05 family's shape (F119): on the found book's
+path to 1880 (0.92–0.97×), then flat from 1890 in two seeds. **Why:** at 1900 the frontier's LEVEL counts equal the found book's (e1 1,383
+against 1,236 / 1,366; e2 1,158 against 1,144 / 1,160) while GDP is 0.70–0.79× against 0.74–0.88 — each frontier level yields less than the
+base-price arithmetic assumed. The design's own price channel (CLAUDE.md: an old building dies when its output price falls while its
+input prices do not) works, and it works on the FRONTIER's rungs first, because they are the ones whose recipes changed.
+
+**Arm, n, span.** Sessions `20260916_215513_canon-b18-gm-n2` (runs 1–2, launched 21:55 local on 2026-09-16) + `20260917_030144_canon-b18-gm-tb`
+(the tie-breaker, launched 03:01); 1836 → 1936.1.1; 155.5 / 145.0 / 133.7 min of play, one attempt each, no crash. Every ratio ÷ the vanilla
+per-run median (n=16 `20260821_131149`). Schedules `canon_b18_gm_n2.json` + `_tb.json`, predictions pre-registered; the plateau test and the
+workers ceilings of §10.82 pre-registered in the session's `RULING_ADDENDUM.md` with run 1 at 1836. Batch 1 of the four-batch plan of
+2026-09-16 as re-ordered by §10.82 (`canon-c19-e2soft` dropped by ruling 1).
+
+### 1. The headline (world, at 1935; ÷ the vanilla per-run median)
+
+| | run 1 | run 2 | run 3 | median | the found book (2 seeds) |
+|---|---|---|---|---|---|
+| world GDP | 0.701 | 0.913 | 0.653 | **0.701** | 1.09 / 1.07 |
+| productive workers per capita | 0.626 | 0.663 | 0.582 | **0.626** | 0.65 / 0.67 |
+| GDP per productive worker | 1.13 | 1.40 | 1.20 | 1.20 | 1.61 / 1.61 |
+| shortlist GDP · workers per capita | 0.82 · 0.61 | 1.30 · 0.87 | 0.83 · 0.55 | 0.83 · 0.61 | 1.26 / 1.47 · 0.72 / 0.71 |
+| decades 1860 · 1880 · 1890 · 1900 · 1910 · 1920 · 1930 | .94 .92 .76 .70 .68 .68 .69 | .97 .89 .83 .79 .80 .78 .83 | .92 .90 .79 .71 .65 .65 .67 | | .96/1.03 · .84/.91 · — · .75/.89 · .86/.95 · .91/.94 · 1.04/.94 |
+| tiered levels (e0 · e1 · e2 · e3) | 8,488 (1,704 · 1,863 · 4,225 · 696) | 9,975 (1,640 · 1,751 · 4,671 · 1,913) | 7,994 (1,726 · 1,500 · 3,944 · 824) | 8,488 | 10,633 / 9,917 |
+| tiered workers | 34.2M | 37.6M | 32.2M | | 39.7 / 36.4M |
+| extraction levels · per £M of GDP | 7,994 · 2.6 | 8,809 · 2.2 | 6,880 · 2.4 | 7,994 | 9,221 / 9,356 · 1.9 |
+| construction sector levels | 1,784 | 2,219 | 1,828 | | 2,971 / 3,092 |
+| hoard, world · shortlist | 0.24 · 0.45 | 0.22 · 0.32 | 0.16 · 0.14 | 0.22 · 0.32 | 0.64 / 0.42 · 1.50 / 0.61 |
+| rung 0 workers · staffing | 4.39M · 52% | 3.62M · 44% | 3.89M · 45% | 3.89M · 45% | 3.40 / 3.28M · 45% |
+| strict unemployment, world · shortlist | 31.2 · 22.2% | 24.4 · 4.2% | 31.6 · 21.8% | | 30.5 / 26.6 · 9.0 / 5.4% |
+| play (min; vanilla median 164.9) | 155.5 | 145.0 | 133.7 | 145.0 | 152 / 168 |
+
+Capital flag CLEAN in all three; no persistent hoarding (world peaks 0.28 / 0.26 / 0.18). Nothing near the run-level stop.
+
+### 2. The price channel, read where it acts — realised value added per staffed frontier level, this book ÷ the found book
+
+| rung | planned (base prices) | run 1 | run 2 | run 3 |
+|---|---|---|---|---|
+| textile e2 · e3 | 0.77 · 0.78 | 0.69 · 0.63 | 0.63 · 0.79 | 0.69 · 0.69 |
+| glass e2 · e3 | 0.80 · 0.78 | 0.83 · 0.86 | 0.82 · 0.82 | 0.82 · 0.91 |
+| tooling e2 · e3 | 0.80 · 0.78 | 0.80 · 0.73 | 0.82 · 0.77 | 0.84 · 0.77 |
+| steel e2 · e3 | 0.77 · 0.78 | 0.57 · 0.70 | 0.54 · 0.71 | 0.62 · 0.68 |
+| food e2 | 0.77 | 0.58 | 0.57 | 0.59 |
+
+British market at 1935, % of base (run 1 / run 2 / run 3; the found book seed 1 / seed 2): fabric **111 / 121 / 120** (102 / 95), iron
+**106 / 133 / 128** (113 / 113), coal 92 / 118 / 124 (109 / 97), wood 110 / 122 / 124 (124 / 90), lead 100 / 128 / 103 (122 / 94),
+electricity 96 / **145 / 136** (145 / 142) · clothes **70 / 96 / 77** (87 / 97), glass 82 / 86 / 84 (104 / 88), furniture 60 / 62 / 71
+(53 / 75), tools 74 / 75 / 73 (81 / 70), steel 81 / 109 / 99 (73 / 73), groceries 93 / 85 / 91 (107 / 112), engines 121 / 104 / 126
+(98 / 109). The frontier's margins did not collapse (e2 42–110%, e3 46–91%; the WATCH item did not fire); its VALUE ADDED PER LEVEL did —
+which is what the loop gain is made of.
+
+### 3. The predictions, scored (the schedule's `_predictions` + the addendum's KEY 3 / KEY 4)
+
+- endpoint 0.95–1.20× — MISSED below in 2 of 3 (0.70 / 0.65), 0.91 close; workers 0.68–0.80× — missed below in all three.
+- KEY 1 (the raw pull): extraction ≥ 11,000 levels — MISSED ×3 (7,994 / 8,809 / 6,880), though per £M of GDP 2.2–2.6 against 1.9; raw prices
+  fabric ≥ 108 / iron ≥ 118 / coal ≥ 110 — met in runs 2 and 3, fabric only in run 1.
+- KEY 2 (the old rung ≤ 2.8M, ≤ 40%): NULL ×3 (4.39 / 3.62 / 3.89M at 52 / 44 / 45%) — a poorer world staffs it more (F124 §4), and the motor
+  e0 (1.2–1.5M people, 63–76% staffed) supplies the engines a small motor frontier (95–284 e2 levels against the found's 270; electricity at
+  136–145%) does not.
+- KEY 3 (the plateau test): the USA −10 points of peasants 1919 → 1935 at ≤ 10% strict — MET in runs 1 and 2 (65 → 53 at 9.2%; **44 → 12 at
+  0.3%**, salaried 15.8 → 29.6M), NULL in run 3 (72 → 65 at 24.9%); plateaued majors per seed (Japan excused): run 1 Russia, Austria (+ Germany
+  and France stagnant at 35–49%), run 2 France, Russia, Austria, run 3 USA, Germany, Russia — three per seed against the found book's two.
+- KEY 4 (the ceilings, shortlist ≤ 0.8 / world ≤ 0.9): 0.61 / **0.87** / 0.55 · 0.63 / 0.66 / 0.58 — run 2's shortlist above the aim on an
+  American depeasantation to 12%; the median (0.61) did not trigger the milder A 2.0 substitution for batch 2.
+- tiered goods: tools ≤ 75 met 3 of 3, clothes ≤ 85 met 2 of 3, steel ≤ 70 met 0 of 3; tiered levels 12,000–15,000 — missed ×3; hoard
+  0.35–0.65 — below ×3; perf — met ×3.
+
+### What it says
+
+- **The B axis is a strong NEGATIVE lever on the realised loop gain even at matched base-price gain.** The base-price match is not a design
+  invariant: value added per level is set at REALISED prices, and richer recipes move those prices against themselves — cheaper outputs
+  (run 1) or dearer inputs (runs 2 and 3), depending on the seed. A 10–25% shortfall in gain costs 0.3–0.4 of GDP ratio, as the cost sweep's
+  steepness says (C 2.05 = 0.84× the gain → 0.72×).
+- **Underneath the stall the labour lever works in the direction predicted**: workers per capita ÷ GDP ratio 0.90 / 0.73 / 0.89 against the
+  found book's 0.60–0.63 (more people behind each pound of GDP), the raw sector 15–35% bigger per pound of GDP, the USA absorbing labour in two
+  seeds of three. None of it reaches the goals because the economy that carries it is 30% smaller.
+- **The correction is the cost ladder, and the pre-registered branch (10% cheaper) reads on this evidence as 15%** (`--cost-ladder 1.29,2.37,
+  4.54`) — a batch-3 candidate to be weighed against the A axis's result; a corrected B 1.8 book would put more workers behind each pound of
+  GDP and might overrun the 0.8 shortlist ceiling of §10.82, in which case the step to try is B 1.65.
+- The found configuration `canon-c19-in12` stands.
+
+### What it does NOT say
+
+- Nothing about a corrected ladder's outcome — the direction of the correction is measured, its magnitude is the base-price arithmetic's
+  residual and is not a prediction (the no-extrapolation rule).
+- The plateau count per seed is three seeds on one book against two on the found; the operationalisation (strict unemployment above 5% while
+  peasants fall by fewer than 8 points over 1919 → 1935) is the agent's reading of ruling 2, not the ruling.
+- The two stalled seeds and the climbing seed differ in what the market did (cheaper outputs against dearer inputs); which the seed picks is
+  not identified at n=3.
+
+Sessions `20260916_215513` and `20260917_030144`, VERDICT.md in each; config committed as `config/mod_config.canon-b18-gm.json`
+(`_ab.command`). Ledger: `tools/testbed/ledger/out_b18gm/REPORT.html`, published as https://claude.ai/artifact/LuF9v37w3jS8Z976NDHE6y (one configuration per report).

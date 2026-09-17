@@ -1041,8 +1041,17 @@ config/mod_config.canon-b18-gm.json ⭐⭐ BATCH 1 OF THE PLAN AS RE-ORDERED BY 
                         and more workers per unit of GDP. Field diff: inputs, building_cost and target_be on the 43 rungs above e0; dry-run built clean.
                         Schedule `canon_b18_gm_n2.json` + `_tb.json` (KEY 1: extraction levels ≥ 11,000 and dearer fabric / iron / coal; KEY 2: rung-0
                         workers ≤ 2.8M, staffing ≤ 40%; endpoint 0.95–1.20×, workers 0.68–0.80×; branches ±10% on the ladder, then B 2.0 or the A axis).
-                        Un-ignored with its twin
-config/mod_config.canon-a19-gm.json ⭐ BATCH 2 OF THE PLAN (§10.82 ruling 3 opened the A axis: workers per capita at most 0.8 on the top majors, 0.9 world):
+                        Un-ignored with its twin. ⭐ MEASURED n=3 (FINDINGS F128; sessions 20260916_215513 runs 1–2 + the tie-breaker 20260917_030144):
+                        world GDP 0.70 / 0.91 / 0.65× vanilla at 1935, the MEDIAN OF THREE 0.70× (noticeably below), workers per capita 0.63× — A STALL from
+                        1890 in two seeds, a slow climb in one: the base-price gain match UNDERSTATES the price channel (realised value added per frontier
+                        level 0.54–0.91× the found book's against a planned 0.77–0.80×; a richer recipe makes more output per pound of VA and the market
+                        answers with cheaper outputs or dearer inputs by seed); the raw sector 15–35% bigger per £ of GDP but not in levels; the old rung
+                        untouched (44–52%); the USA absorbs labour in 2 of 3 seeds. NOT adopted; the correction candidate is the ladder 15% cheaper
+                        (`--cost-ladder 1.29,2.37,4.54`), a batch-3 option behind the A axis; a corrected B book may overrun the 0.8 shortlist ceiling, in
+                        which case B 1.65. Ledger https://claude.ai/artifact/LuF9v37w3jS8Z976NDHE6y
+config/mod_config.canon-a19-gm.json ⭐⭐ BATCH 2 OF THE PLAN — LAUNCHED 2026-09-17 05:17 local as session `20260917_051736_canon-a19-gm-n2` after the
+                        B-axis tie-breaker (the median shortlist workers 0.61 did not trigger the A 2.0 substitution); the price-channel lesson of F128
+                        pre-registered in its schedule before launch (§10.82 ruling 3 opened the A axis: workers per capita at most 0.8 on the top majors, 0.9 world):
                         canon-c19-in12 with the output step A 1.9 in place of 2.2 on every rung above era 0 (rung 0 untouched) and the cost ladder
                         GAIN-MATCHED per era — `--A 1.9 --cost-ladder 1.38,2.22,3.68` (600 / 828 / 1,332 / 2,208; 800 / 1,104 / 1,776 / 2,944) — value added
                         per frontier level 0.73 / 0.61 / 0.54 of the found book's ⇒ 1.4–1.8× the frontier levels and workers per unit of GDP, and input per
@@ -1925,6 +1934,10 @@ tools/                  dev tooling — NOT shipped in the mod
                         country beside whether the country holds any e2/e3 building; `queue_rungs.mjs <run> <year> <config>` splits either queue by rung
                         (world and the GBR/USA/FRA/GER+PRU shortlist). The diagnostic for a rung-0 lever is the STAFFED count and the building count, never
                         the level count alone (F122: levels up 12–18% while staffing fell a fifth)
+  testbed/ledger/major_series.mjs  ⭐ THE PLATEAU TEST (user-ruled 2026-09-16, §10.82): per major over 1919 → 1935, strict unemployment and the
+                        peasants' share of the workforce from the yearly summaries' pop_statistics — a major PLATEAUS when its strict unemployment stays above
+                        5% while its peasant share falls by fewer than 8 points (Japan reported but excused; minors not judged). `major_series.mjs
+                        1900,1910,1919,1925,1930,1935 <runDir>…`. The found configuration fails it (the USA and Russia in both seeds); read in every verdict
   testbed/ledger/queue_series.mjs  the construction backlog reader (2026-09-15, from the scratchpad): per year, the private and government queues'
                         items, points left and speed → years of backlog, the private share of speed, the pool ÷ GDP and the construction sector's levels,
                         world + named tags — `queue_series.mjs <run> 1900,1920,1935 GBR,USA,FRA`. What F119's addendum and F121 read the capacity bound with
