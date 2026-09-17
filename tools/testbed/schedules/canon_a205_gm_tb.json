@@ -1,0 +1,61 @@
+{
+ "schedule_version": 1,
+ "label": "canon-a205-gm-tb",
+ "_why": "THE TIE-BREAKER of canon_a205_gm_n2.json: the third run of the 2+1 rule, launched ONLY when alignment_check.mjs exits 2 on that pair. Read as its own session and pooled with the pair (--arm sessA,sessB:canon-a205-gm); the configuration is then the MEDIAN OF THREE. The book, the lever (A 2.05 gain-matched per era, rung 0 untouched), the predictions and the branches are those of canon_a205_gm_n2.json.",
+ "_arms": {
+  "canon-a205-gm": "{kind: config, config: config/mod_config.canon-a205-gm.json} - the same book as the pair's, byte-identical."
+ },
+ "_alignment": "Pool with the pair: `node tools/testbed/ledger/alignment_check.mjs --arm <sessA>,<sessB>:canon-a205-gm`; the run-level stop and the capital-abundance flag apply.",
+ "_cost": "1 x 1836->1936 ~ 2h45.",
+ "_caveats": [
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent; the five-minute smoke check."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to every four-rung arm - what keeps the sessions comparable."
+ },
+ "setups": {
+  "canon-a205-gm": {
+   "kind": "config",
+   "config": "config/mod_config.canon-a205-gm.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "canon-a205-gm",
+   "until": "1936.1.1"
+  }
+ ]
+}
