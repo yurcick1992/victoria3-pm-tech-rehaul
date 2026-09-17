@@ -1098,7 +1098,11 @@ config/mod_config.canon-a205-gm.json ⭐⭐ BATCH 3 OF THE PLAN — THE A AXIS R
                         `--cost-ladder 1.64,2.89,5.15` gain-matched at base prices (600 / 984 / 1,734 / 3,090; 800 / 1,312 / 2,312 / 4,120), value added per
                         frontier level 0.86 / 0.80 / 0.75 of the found book's; schedules `canon_a205_gm_n2.json` + `_tb.json` (predictions as interpolations:
                         GDP 1.00–1.15×, shortlist workers 0.80–0.92, world 0.72–0.82; in band with the shortlist ≤ 0.85 ⇒ the pick, confirmed by batch 4;
-                        above 0.92 on the shortlist in both ⇒ A 2.15; below 0.9× in both ⇒ the found configuration stays the pick). Un-ignored with its twin
+                        above 0.92 on the shortlist in both ⇒ A 2.15; below 0.9× in both ⇒ the found configuration stays the pick). Un-ignored with its twin.
+                        ⭐ MEASURED n=1, BROKEN BY RUNOFF (F130 — the first read under THE CRITERIA REGISTER, §10.83): run 1 at the aim on world GDP (1.00× the
+                        1932–1936 mean), world W (0.70), T0 (falling every decade) and T3 (34%), pool W 0.77, the pool's GDP 1.56 (beyond the 1.5 soft line) — and
+                        Britain under 5% total unemployment in 1932–1936 at a mean hoard of 2.08 GDP: the agreed capital-abundance hard line; one broken run
+                        ends a config, so run 2 was STOPPED at ~1850. The A axis is not the hoard's lever; batch 4 = two more seeds of the found configuration
 config/mod_config.tier4.json ⚗ GENERATED (gitignored) by tools/make_tier4_config.mjs FROM THE GAME FILES + tools/lib_tier4_spec.mjs
                         — the four-rung STRUCTURE (rungs = vanilla main methods with vanilla's name, gate, recipe,
                         staffing, icon; the spec's ADDITIONS on top), with tech_tree_options.tier4.json beside it from

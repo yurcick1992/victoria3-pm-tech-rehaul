@@ -13047,3 +13047,50 @@ vanilla seeds, at 1900 in 3) had been in no pool and was added to every pooled s
 was already not the pick — but its seed 1 is now a failed seed, not merely "above the aim". ⚠ The whole labour / depeasantation / capital
 criteria register was handed to the user for streamlining the same hour (a shortlist subsection and a world subsection with different
 thresholds); BALANCE_FRAMEWORK §10.82.2 will carry the ruled form, and this addendum's 1.0 line is the ruling as given, not the final register.
+
+
+## F130 — THE OUTPUT STEP A 2.05 LANDS THE WORLD AT THE AIM AND BREAKS THE CAPITAL-ABUNDANCE LINE: the first batch read under the criteria register — world GDP 1.00× vanilla, world W 0.70, T0 falling every decade, T3 34%, pool W 0.77, the pool's GDP 1.56× (beyond the soft line), and Britain under 5% total unemployment for the last five years at a hoard of 2.08 of its GDP; the C 1.9 family carries Britain's or Germany's capital abundance in half its seeds, and the A axis is not the hoard's lever (canon-a205-gm, n=1 broken by runoff, run 2 stopped by the ruling, 2026-09-17)
+
+**Arm.** `config/mod_config.canon-a205-gm.json` — the found configuration (`canon-c19-in12`) with A 2.05 in place of 2.2 on every rung above
+era 0 and `--cost-ladder 1.64,2.89,5.15` (600 / 984 / 1,734 / 3,090), the frontier's value added per construction point held at the found
+book's at base prices (value added per frontier level 0.86 / 0.80 / 0.75 of the found's). Session `20260917_104214_canon-a205-gm-n2`, run 1
+usable (145.5 min of play, one attempt, no crash, 1936.1.1 reached), run 2 abandoned at ~1850 by the STOP file (13:23 local). Read against
+the vanilla n=16 baseline with `tools/testbed/ledger/criteria.mjs` — THE CRITERIA REGISTER of BALANCE_FRAMEWORK §10.83 (user-ruled that
+midday), whose lines this finding is the first to be written in.
+
+**The register (run 1; the end state = the 1932–1936 mean, the 1935 point beside it):**
+
+| line | reading | verdict |
+|---|---|---|
+| world GDP (priority 1) | **1.00×** (1935 point 1.03×; the decades 0.97 / 0.91 / 0.82 / 0.93 / 1.03 at 1860 / 80 / 1900 / 20 / 35) | at the aim |
+| world W | 0.70× (0.0994 vs 0.1427 per head) | at the aim (0.6–0.95) |
+| world U* · H | 1.39× (58.6% vs 42.1%) · 2.20× (0.64 vs 0.29) | inside · above the aim |
+| pool W | 0.77× (0.1517 vs 0.1973) — between the found's 0.70 and A 1.9's 0.88, as the gain match predicted | inside, above the 0.6–0.7 aim |
+| pool U* | 1.82× (38.7% vs 21.3%) | inside, below the 2× aim |
+| pool H | 3.28× (1.10 GDP vs 0.33) | above the aim, as every growth book |
+| pool GDP (W × Y) | **1.56×** = 0.77 × 1.59 (1935 point 1.61: £2,223M vs £1,981M) | **beyond the soft line (> 1.5)** |
+| T0 (era-0 rung workers, pool) | 0.38× the 1900s (0.69 / 0.65 / 0.41 / 0.31M by decade), 0.29M = 1.3% of the tiered workers at the end | at the aim (falling every decade) |
+| T3 (share of tiered workers, pool) | 34.0% (T0/T1/T2/T3 0.29 / 1.84 / 13.14 / 7.86M) | the more the better |
+| HARD — capital abundance | **Britain U* under 5% in 1932, 1933, 1934, 1935 and 1936 (five consecutive years) at a mean hoard of 2.08 GDP (1.86–2.31)**, behind a 2.2-year private construction backlog (629 items, 638k points at 5,627 a week; the government queue 0.7 y; construction 737 levels; the pool £1,976M) | ⛔ BROKEN BY RUNOFF (the agreed line: five or more consecutive years at a mean hoard ≥ 1.5 of own GDP; crossed at every candidate threshold up to 2.0) |
+| HARD — the 1836–1845 anchor · pooled U* | 0 years outside vanilla's 90% CI · 38.7% | intact |
+
+**Decomposition (1935):** world GDP 1.03× = population 0.99 × workers per capita 0.71 × GDP per productive worker 1.44; the pool 1.61× =
+0.97 × 0.76 × 1.62.
+
+**What it says.**
+1. **The A axis moves labour and GDP exactly as designed and leaves the hoard where it was.** A 2.05 lands world GDP at the aim and pool W
+   between its brackets, and Britain still hoards two years of GDP at full employment — the state the found configuration's run 1 (11 years
+   1926–1936 at a mean 1.80 GDP) and the family pair's runs (Germany 6 years at 1.64, Britain 7 years at 1.49) show. Counting all six seeds of
+   the C 1.9 family measured so far, a big member sits in capital abundance in three. The register's free levers for it are eagerness to
+   build (ai_value, strategies, the defines) and cost, not the output step.
+2. **The shortlist overshoots while the world sits at the aim** (pool GDP 1.56× against world 1.00×): the mod concentrates growth in the
+   high-tech pool and leaves the rest of the world below vanilla. The register makes this visible for the first time; the found configuration
+   reads 1.37×, the family pair 1.73×, A 1.9 1.47× on the same line, against the 1.1 aim.
+3. **The schedule's A 2.15 branch is moot** under the register — it would move pool W away from the 0.6–0.7 aim.
+4. **One run was enough** by the ruling of the same day (a hard break ends the config); run 2 was stopped at 1850 and batch 4 became the
+   plan's fallback branch — two more seeds of the found configuration (session `20260917_132449_canon-c19-in12-confirm-n2`, launched 13:24),
+   which is itself 1-of-2 broken on the same line.
+
+**What it does not say.** n=1 on the economy (the pair would have said whether 1.56 on the pool's GDP is the book or the seed); nothing about
+prices (the register's price groups were ruled after this run and are not yet implemented); nothing about the hoard's cause beyond the
+backlog picture of F119 (a capacity-bound queue, not idle money — 2.2 years deep at 80% private share of speed).
