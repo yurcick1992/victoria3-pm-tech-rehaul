@@ -130,25 +130,34 @@ earlier ones)". BALANCE_FRAMEWORK **§10.78** is the record; `tools/lib_tier4_sp
 
 ## ⭐⭐⭐ THE CRITERIA REGISTER — AIM / SOFT / HARD, PER SCOPE, ONE RULE SET FOR THE ITERATOR AND THE REPORT (user-ruled 2026-09-17, GOVERNING)
 
-**BALANCE_FRAMEWORK §10.83 is the record (the ruling verbatim, the register, its calibration, the open points); `tools/testbed/ledger/criteria.mjs`
-is the implementation** (`--arm <session[,session]>[:<setup>] --config <book>`; the run's own `build_state.json` names the config). Every criterion
-is one of three kinds: an **AIM** (what the config iteration is trying to reach), a **SOFT boundary** (beyond it unacceptable, but the economy is not
-broken and every reading of the run is taken in full) or a **HARD boundary** (the economy is broken; the run records only a binary outcome — **broken
-by stall** or **broken by runoff**). Two scopes with different numbers: the **SHORTLIST pool GBR / USA / FRA / NET / BEL / PRU / NGF / GER taken
-together** (per country only where a line says so) and the **WORLD**. Everything is about the **END STATE** (the 1932–1936 mean, the 1935 point beside
-it), never the path; **hard lines are checked per run, everything else on the CONSENSUS** (the median of two runs, or of the two aligned runs when the
-first pair diverged). Shortlist: W aim 0.6–0.7× vanilla, soft > 1.0 · U* (unemployment INCLUDING peasants) aim ≥ 2×, soft < 1.0, HARD < 10% pooled and
-< 5% every year 1926–1935 in a ≥ 50M member · H (pool ÷ GDP) aim < 1×, HARD > 5× / > 3× persistently in a ≥ 50M member · T0 (era-0 rung workers, by
-the rung's ERA — automotive's e2 start counts nothing toward T0) aim 0 at 1936 or falling decade over decade, soft 1935 > 1.3 × the 1900s · T3 ≥ X% of
-the tiered workers (X provisional 25) · GDP aim ≈ 1.1× via Y, soft < 0.95 or > 1.5. World: GDP aim 1.0×, soft outside [0.75, 1.33], HARD 1836–1845
-outside vanilla's 90% CI ± 10% in more than two years · W aim 0.6–0.95×, soft > 1.0 · U* soft < 1.0 · H aim < 1×. **Priorities: world GDP at 1935 >
-the pool's W × Y > W.** **Levers: A, B, the input penalty, eagerness to build (ai_value / strategies / defines), building cost; the 1836 anchor stays
-(except the input penalty), everything else in the game stays.** ⚠ Calibrated against vanilla's own seeds the same day: the literal per-country U*
-hard line breaks vanilla's Britain and Germany in 9 of 16 seeds and the hoard "of vanilla" reference is ambiguous — §10.83.2/3 carry the numbers and
-the suggested re-calibration, open for ruling; prices (a wage-unit line), X for T3 and civil-war detection are open there too. ⇒ SUPERSEDED as
-operational criteria: the 2026-09-15 capital-abundance flag, §10.79's persistent-hoarding tests, §10.82's ceilings and §10.82.1's plateau test, and
-F114's TARGET bands (the bands remain the divergence test that decides a third run; the run-level stop remains a batch-flow rule). Their scripts
-(`capital_flags.mjs`, `majors_workers.mjs`, `major_series.mjs`, `alignment_check.mjs`) stay as diagnostics.
+**BALANCE_FRAMEWORK §10.83 is the record (the rulings verbatim, the register, its calibration, the loss and its validation); `tools/testbed/ledger/criteria.mjs`
+is the implementation** (`--arm <session[,session]>[:<setup>] [--arm …] [--config <book>]`; multi-arm prints the RANKING; the run's own `build_state.json` names its
+config). Every criterion is one of three kinds: an **AIM** (what the config iteration is trying to reach), a **SOFT boundary** (beyond it unacceptable, but the
+economy is not broken: every reading of the run is taken in full, and a soft breach NEVER stops a batch) or a **HARD boundary** (the economy is broken; the run
+records only a binary outcome — **broken by stall** or **broken by runoff** — and ONE broken run ends the config: `stop_watch.mjs` drops the STOP file on it).
+Two scopes with different numbers: the **SHORTLIST pool GBR / USA / FRA / NET / BEL / PRU / NGF / GER taken together** (per country only where a line says so)
+and the **WORLD**. Everything is about the **END STATE** — the 1932–1936 mean, the 1935 point beside it (the 1936 point sits 7–10% off the mean on GDP and
+10–18% on the hoard, so a single reading would flip verdicts at the aims' edges) — never the path; **hard lines per run, everything else on the CONSENSUS of the
+intact runs** (the median of two; with three, the two closest on world GDP; a pair that diverges under F114's bands has no consensus and owes a third run).
+**Shortlist:** W aim 0.6–0.7× vanilla, soft > 1.0 · U* (unemployment INCLUDING peasants) aim ≥ 2×, soft < 1.0, HARD < 10% pooled · H (pool ÷ GDP) aim < 1×
+(the least important aim; no book meets it and that is fine) · T0 (era-0 rung workers, by the rung's ERA — automotive's e2 start counts nothing toward T0) aim
+0 at 1936 or falling decade over decade, soft 1935 > 1.3 × the 1900s · T3 ÷ (T0 + T1 + T2) the more the better, low weight · GDP (W × Y) aim ≈ 1.1× via Y, soft
+< 0.95 or > 1.5 · PI (the building inputs steel / tools / engines / fertilizer / explosives / dye / paper, in pounds ÷ base in the British, American, French and
+Dutch markets, ÷ vanilla) aim ≤ 0.8 and falling decade over decade, soft > 1.0 · PP (the pop goods groceries / clothes / furniture / glass / fine art /
+automobiles / telephones / radios in WAGE UNITS ÷ vanilla) aim ≤ 0.8, soft > 1.1 · the war goods read only. **World:** GDP aim 1.0×, soft outside [0.75, 1.33],
+HARD > 1.5× (runoff) or < 0.5× (stall) at the end state and the 1836–1845 anchor (outside vanilla's 90% CI ± 10% in more than two years) · W aim 0.6–0.95×,
+soft > 1.0 · U* soft < 1.0 · H aim < 1×. **HARD — CAPITAL ABUNDANCE (agreed 2026-09-17 13:30):** a shortlist member of 50M+ people with U* under 5% in FIVE or
+more consecutive years ending by 1936 AND a mean hoard over them ≥ 1.5 of its own GDP = broken by runoff (vanilla's own seeds break it in 2 of 16 — Britain at 1.5
+and 2.1 GDP; the found configuration's run 1 and the A 2.05 run 1 break it, F130); three years at ≥ 1.0 GDP, five at any hoard, or a hoard alone (> 3 GDP at the
+end, > 2 every year 1931–36 unspent) are SOFT. **Priorities: world GDP at 1935 > the pool's W × Y > W.** **THE LOSS** (the iterator's objective): L = Σ w · d, d
+= the distance from the aim interval in units of the metric's natural seed spread (vanilla's σ of the same ratio; the mod runs' spread for the T terms), +10 × w
+for a line beyond its soft boundary, T3 as −w · ln(T3 ÷ rest); weights world GDP 3 · pool GDP 2 · pool W 2 · world W 1.5 · pool U* 1 · T0 1 · PI 1 · PP 0.5 ·
+world U* 0.5 · pool H 0.5 · T3 0.3 · world H 0.25 — validated over twelve books (§10.83.4): the found configuration 5.3, the A 1.9 pair 17.6, then the
+soft-breached books, then the stalls, every runaway OUT. **Levers: A, B, the input penalty, eagerness to build (ai_value / strategies / defines), building cost;
+the 1836 anchor stays (except the input penalty), everything else in the game stays.** A distant possibility, NOT to try unless decided explicitly: an
+OUTPUT-goods penalty on the 1836 recipes to raise prices at the anchor. ⇒ SUPERSEDED as operational criteria: the 2026-09-15 capital-abundance flag, §10.79's
+persistent-hoarding tests, §10.82's ceilings and §10.82.1's plateau test, F114's TARGET bands (the bands remain the divergence test) and the 2026-09-14 1.3×
+stop (the fallback only). Their scripts (`capital_flags.mjs`, `majors_workers.mjs`, `major_series.mjs`, `alignment_check.mjs`) stay as diagnostics.
 
 ## ⭐⭐⭐ THERE IS ONE CANON, AND THE SIX-RUNG BOOK IS RETIRED FOR GOOD (user-ruled 2026-09-16)
 
@@ -1965,9 +1974,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         scripts now take `--session`/`--config` and discover their runs)
   testbed/ledger/criteria.mjs  ⭐⭐ THE CRITERIA REGISTER (user-ruled 2026-09-17, BALANCE_FRAMEWORK §10.83 — the governing section near the top of this
                         file): aim / soft / hard per scope (the shortlist pool and the world), end-state means over 1932–1936, HARD lines per run with the binary
-                        outcome (broken by stall / by runoff), everything else on the consensus of the aligned pair; W, U*, H, Y, GDP and T0…T3 by the rung's ERA
-                        from the run's own config. `--arm <session[,session]>[:<setup>] [--config <book>] [--van …] [--end 1932-1936] [--t3-min 25] [--h-ref
-                        pool|world|country] [--json out]`. The report and the iterator read THIS; the older readers below are diagnostics
+                        outcome (broken by stall / by runoff — the anchor, the pooled U*, the capital-abundance pair, the end-state GDP lines), SOFT lines, everything else on
+                        the consensus of the intact runs (a divergent pair owes a third run); W, U*, H, Y, GDP, T0…T3 by the rung's ERA from the run's own config, the
+                        price groups PI / PP / PM from markets.tsv and the summaries' base wages; THE LOSS per run and per consensus, and with several `--arm`s the
+                        RANKING (§10.83.4). `--arm <session[,session]>[:<setup>] [--arm …] [--config <book>] [--van …] [--end 1932-1936] [--weights k=v,…] [--soft-pen 10]
+                        [--json out] [--quiet]`. The report, the iterator and the stop watcher read THIS; the older readers below are diagnostics
   testbed/ledger/capital_flags.mjs  ⚠ SUPERSEDED AS A CRITERION 2026-09-17 by §10.83 (a diagnostic printer now) — ⭐ THE HOARD SPLIT AND THE CAPITAL-ABUNDANCE FLAG (user-ruled 2026-09-15): per usable run at a year, the
                         investment-pool hoard ÷ GDP for the WORLD and the SHORTLIST (GBR, USA, FRA, GER — NGF, then PRU, standing in for an unformed
                         Germany) and TOTAL UNEMPLOYMENT INCLUDING PEASANTS ((unemployed + peasants) ÷ workforce) beside the strict figure, each
@@ -1997,7 +2008,9 @@ tools/                  dev tooling — NOT shipped in the mod
   testbed/ledger/queue_series.mjs  the construction backlog reader (2026-09-15, from the scratchpad): per year, the private and government queues'
                         items, points left and speed → years of backlog, the private share of speed, the pool ÷ GDP and the construction sector's levels,
                         world + named tags — `queue_series.mjs <run> 1900,1920,1935 GBR,USA,FRA`. What F119's addendum and F121 read the capacity bound with
-  testbed/stop_watch.ps1 + stop_watch.mjs  THE RUN-LEVEL STOP between the runs of a live 2+1 batch (2026-09-14, from the scratchpad): polls the
+  testbed/stop_watch.ps1 + stop_watch.mjs  ⭐ SINCE 2026-09-17 IT STOPS ON THE REGISTER'S HARD BREAK — it runs criteria.mjs on each completed run and drops STOP when that run is
+                        broken by stall or by runoff (one broken run ends the config, user-ruled); the 1.3× GDP rule below is the FALLBACK when the register cannot be read. Re-arm
+                        it after the register changes (a running watcher keeps the code it loaded). THE RUN-LEVEL STOP between the runs of a live 2+1 batch (2026-09-14, from the scratchpad): polls the
                         session's save summaries and drops tools/testbed/STOP once a completed run's 1936 GDP exceeds ×1.3 of the vanilla median — armed after
                         every launch through `launch_detached.ps1 -File 'tools\testbed\stop_watch.ps1' -ArgumentList '-Session','<session>','-Poll','30' -Hidden`
   testbed/ledger/lib_runs.mjs  ⭐ WHICH RUNS OF A SESSION MAY BE COUNTED — one implementation, because

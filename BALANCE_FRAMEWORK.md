@@ -7714,3 +7714,98 @@ ceilings — now the register's W aims and soft lines), §10.82.1's plateau test
 2026-09-15 capital-abundance flag (`capital_flags.mjs` remains a diagnostic printer), `majors_workers.mjs`'s ≥ 1.0 failure line (= the
 register's pooled W soft boundary; the script remains the composition printer), and F114's TARGET bands (the bands remain the
 divergence test). The ruling of 2026-09-16 that the mid-game dip is expected stands: the register reads the end state.
+
+
+### 10.83.4 — The afternoon's amendments (user, 2026-09-17 13:00–13:30): the register as it now stands, and the loss validated over twelve batches
+
+**The rulings, verbatim, on the six open points of 10.83.3:**
+
+> 1. The literal hard lines break vanilla itself — This is partially intended, partially not. Let's rephrase: 1) a clear capital abundance of
+> any major, where the U* is consistently below 5% for several years in a row, and the hoard is significant compared to GDP (not necessarily
+> to vanilla), for any significant high-tech major, it's a hard boundary broken, as it distorts the economy and makes other readings almost
+> meaningless. If there's just some hoard or low unemployment by the very late game, this is bad, but not a hard failure. However, vanilla
+> tends to overdo it on lowering U* too, so the aims are significantly off vanilla goals. Suggest rewording the criteria to fit this.
+> — [the rewording proposed: five or more consecutive years under 5% ending by 1936 AND a mean hoard of at least 1.5 of the member's own GDP]
+> **"1. Agreed"**
+> 2. No book meeting the hoard aim is OK. This is a less important goal than other aims anywhere. Suggest a formula to minimize with weights
+> to different aims. — [on the first formula:] Hard to read. However, the "distance" sounds naive, we should probably rely more on natural
+> distributions, rather than taking simple distance in percentage points. Any solution you propose, calculate the outcome metrics on all
+> runs in the latest 10 or so batches that didn't break hard barriers to ensure that the actual best batches get best score.
+> 3. For prices, this is clearly not detailed enough. Perhaps we have to have two or three goods groups to better express that. What
+> obsolescence clearly needs is a significant price reduction towards the end game, where tiered industy outputs drop from, say, +50% prices
+> when t0 is prevalent to −50% when t3 is widespread (if not prevalent yet by 1936). However, the empirics says that for the goods that are
+> consumed by pops, prices tend to not drop that much, and rather, pop wealth grows and consumption grows, there's no stable situation of
+> −50% prices on most consumer goods. — [on the three groups proposed:] At this moment, implement the way you suggest. For the future (but
+> not to try unless decided explicitly) we can try having not only input goods penalty in 1836 recipes, but an output goods penalty
+> (reduction of output) to raise the prices at anchor. Write that down as a distant possibility.
+> 4. [X for T3] No. Rather, go for "the more, the better" for the T3/(T0+T1+T2), with low weight for the resulting formula.
+> 5. [the run-level stop] You mean when one run can be sufficient if a hard boundary is broken? Why should we remove that? — I still don't
+> get it. Why would 1.33 stop the batch then?
+> 6. [the end state as the 1932–1936 mean] IDK. I'd just take the latest reading on most metrics. But maybe you're right, feel free to
+> argue. — All right.
+
+**Where the register stands after them (implemented in `criteria.mjs`):**
+
+- **HARD — capital abundance (agreed):** a shortlist member of 50M or more, not in civil war, with U* under 5% in FIVE or more consecutive
+  years ending by 1936 AND a mean hoard over those years of at least **1.5 of its own GDP** → broken by runoff. Calibration (the longest such
+  stretch per big member, mean hoard over it): vanilla breaks in **2 of 16** seeds (Britain 18 years at 1.52 and at 2.14 GDP; at ≥ 1.0 it
+  would be 5, at ≥ 2.0 1), the found configuration in **1 of 2** (run 1: Britain 11 years 1926–1936 at 1.80), the C 1.9 family pair in 1 of
+  2 (Germany 6 years at 1.64; its other seed's Britain at 1.49 is just under), the A 2.05 book in its one run (Britain 5 years 1932–1936 at
+  2.08), the A 1.9 pair in 0 (Britain 7 years at 1.06), the B 1.8 triple in 0. The years condition alone is vanilla's normal state (Britain
+  under 5% for 9–18 consecutive years in 12 of 16 seeds); the hoard is what separates "clear abundance". **SOFT:** three or more years at
+  ≥ 1.0 GDP, five or more at any hoard, or a hoard alone — over 3 GDP at the end state, or over 2 in every year 1931–1936 without a
+  2.5-GDP spend-down ("just some hoard or low unemployment by the very late game"). The 10.83.1 per-country "of vanilla" hoard lines are
+  withdrawn — the pair replaces them.
+- **HARD — world GDP at the end state** above 1.5× = broken by runoff, below 0.5× = broken by stall (proposed 13:00, implemented; vanilla's
+  seeds 0.86–1.15; the flat-cost runaways 1.7–1.9, C 1.6 1.9, the C 2.05 eager stall 0.37). The 1836–1845 anchor and the pooled U* < 10%
+  line stand as ruled.
+- **The stop:** only a HARD break ends a config — one run is enough — and a SOFT breach never stops a batch (I had proposed stopping at the
+  1.33 soft top on flow grounds; withdrawn). `tools/testbed/stop_watch.mjs` now runs `criteria.mjs` on each completed run of a live 2+1
+  session and drops the STOP file when that run is broken; the 2026-09-14 rule (1936 GDP above 1.3× vanilla) is only the fallback when the
+  register cannot be read.
+- **T3:** no X — "the more, the better" on T3 ÷ (T0 + T1 + T2), entering the loss as −w · ln(ratio) at weight 0.3.
+- **Prices, three groups, implemented as proposed** in the four scoped shortlist markets (British, American, French, Dutch — the telemetry
+  scopes no German or Belgian market): **PI**, the building inputs (steel, tools, engines, fertilizer, explosives, dye, paper) in pounds
+  ÷ base at 1935, ÷ vanilla's — aim ≤ 0.8, soft > 1.0, plus "falling decade over decade 1900 → 1935"; **PP**, the pop goods (groceries,
+  clothes, furniture, glass, fine art, automobiles, telephones, radios) in WAGE UNITS (price ÷ the owner's base wage) ÷ vanilla's — aim
+  ≤ 0.8, soft > 1.1; **PM**, the war goods (small arms, artillery, ammunition), read only. Vanilla's PI path 1.13 → 1.09 → 1.07 → 1.03 →
+  1.02 (vanilla's own free switching lowers its input prices a tenth); the found configuration reads PI 0.80 (0.82 of base, falling every
+  decade) and PP 0.84, the A 1.9 pair PI 0.88 / PP 1.05, the flat-cost A 1.6 book PI 1.04 (beyond the soft line — its inputs dearer than
+  vanilla's). **A DISTANT POSSIBILITY, written down and NOT to be tried unless decided explicitly:** an OUTPUT-goods penalty on the 1836
+  recipes (a reduction of the e0 rung's output) beside the input penalty, to raise prices at the anchor toward the "+50% when t0 is
+  prevalent" the design sketches; the 1836 anchor rules out a plain output cut today.
+- **The end state** stays the 1932–1936 mean (accepted). The argument, measured on vanilla and the books alike: year to year 1931 → 1936
+  world GDP moves 3–5%, U* 2–5%, the hoard 5–8%, and the 1936 point sits 7–10% off the five-year mean on GDP, 4–12% on U*, 10–18% on the
+  hoard, against aims of ±0.05; only W agrees within 1.5–4%.
+
+**THE LOSS, as ruled ("rely on natural distributions", validated on the recent batches).** For each aim line, d = the distance from the aim
+interval in units of the metric's natural seed spread — σ, the standard deviation of the same ratio across vanilla's sixteen seeds (world
+GDP 0.11, W 0.07, U* 0.09, H 0.44; the pool's GDP 0.15, W 0.06, U* 0.31, H 0.85; PI 0.03, PP 0.18), capped at 5; the two T terms with no
+vanilla reference use the spread across the mod runs read in the same invocation; a line BEYOND ITS SOFT BOUNDARY adds a flat 10 × its
+weight, because "unacceptable" has to outrank any accumulation of inside-the-line misses (without it a stalled book at 0.72× world GDP
+out-scored the A 1.9 pair); T3 enters as −w · ln(T3 ÷ (T0 + T1 + T2)). **L = Σ w · d** with the provisional weights **world GDP 3 · pool
+GDP (W × Y) 2 · pool W 2 · world W 1.5 · pool U* 1 · T0 1 · PI 1 · PP 0.5 · world U* 0.5 · pool H 0.5 · T3 0.3 · world H 0.25**
+(`--weights` overrides). A broken run has no loss; a config's loss is its intact consensus's; a consensus pair that DIVERGES under F114's
+bands has no consensus (a third run is owed) and is unranked.
+
+**Validated over the twelve books of the last four days** (`criteria.mjs` with every arm; the consensus over the intact runs; ratios to
+vanilla; the loss beside):
+
+| book (intact / broken) | loss | world GDP | pool GDP | pool W | world W | pool U* | pool H | PI | PP | T0 | T3 ÷ rest |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `canon-c19-in12`, the found (1 / 1) | **5.3** | 1.04 | 1.45 | 0.70 | 0.67 | 1.94 | 1.58 | 0.80 | 0.84 | 0.77 | 0.33 |
+| `canon-a19-gm` (2 / 0) | 17.6 | 1.13 | 1.47 | 0.88 | 0.86 | 1.43 | 1.41 | 0.88 | 1.05 | 0.46 | 0.54 |
+| `canon-c19-e0ai500`, the family pair (1 / 1) | 37.5 (pool GDP beyond the soft line) | 1.05 | 1.79 | 0.86 | 0.64 | 1.21 | 2.10 | 0.80 | 0.70 | 0.26 | 0.37 |
+| `canon-c205-in13` (2 / 0) | 42.3 (world GDP beyond) | 0.72 | 1.03 | 0.58 | 0.56 | 2.51 | 0.70 | 0.91 | 0.90 | 0.48 | 0.22 |
+| `canon-b18-gm` (3 / 0) | 68.6 (world and pool GDP beyond) | 0.66 | 0.81 | 0.56 | 0.60 | 2.52 | 0.83 | 0.95 | 0.94 | 1.22 | 0.20 |
+| `canon-je24-a22-in12` (3 / 0) | 83.1 (world and pool GDP, T0 beyond) | 0.61 | 0.93 | 0.52 | 0.52 | 2.79 | 0.88 | 0.97 | 1.06 | 1.65 | 0.19 |
+| `canon-flat-in12-a16` (3 / 0) | 86.9 (world and pool GDP, PI, PP beyond) | 0.60 | 0.64 | 0.68 | 0.68 | 2.26 | 0.23 | 1.04 | 1.22 | 0.47 | 0.47 |
+| `canon-c205-in12-eager` (2 / 1) | DIVERGENT (0.57 / 1.27) | — | — | — | — | — | — | — | — | — | — |
+| `canon-flat-in12-a19` (0 / 2), `canon-c16-in12` (0 / 1), `canon-c19-in13` (0 / 1), `canon-a205-gm` (0 / 1) | OUT — broken by runoff | | | | | | | | | | |
+
+The ranking is the judgement the sessions had already reached by hand — the found configuration first, the A 1.9 pair second, then the
+books with one soft breach, then the stalls, with every runaway out — so the loss passes the test the ruling set for it: "the actual best
+batches get best score". What the loss adds to the hand reading: the found configuration's whole residual is the pool's GDP (1.45 against
+the 1.1 aim, 4.1 of its 5.3) and its intact consensus rests on ONE run; the A 1.9 pair pays first on pool W (5.6) and the pool's GDP (4.4),
+then PI (2.4) and world GDP (2.3). ⚠ n=1 for the found configuration's loss until batch 4's two seeds land; the weights are provisional and
+were validated once, on these twelve books.
