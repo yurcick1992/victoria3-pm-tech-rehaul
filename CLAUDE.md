@@ -1948,6 +1948,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         country beside whether the country holds any e2/e3 building; `queue_rungs.mjs <run> <year> <config>` splits either queue by rung
                         (world and the GBR/USA/FRA/GER+PRU shortlist). The diagnostic for a rung-0 lever is the STAFFED count and the building count, never
                         the level count alone (F122: levels up 12–18% while staffing fell a fifth)
+  testbed/ledger/sector_split.mjs + rung0_split.mjs + rung_econ.mjs  ⭐ THE F127 READERS (2026-09-16, moved in from the scratchpad 2026-09-17):
+                        the SECTOR SPLIT (world building value added and staffing at one date, the tiered eras beside agriculture / extraction / urban+infra /
+                        construction / subsistence / state — `sector_split.mjs <config> <year> <runDir>…`), RUNG 0 shortlist-vs-rest per industry (levels,
+                        staffed, workers; on a vanilla run by the rung-0 method's share of the `pms` split — `rung0_split.mjs <config> <year> mod|vanilla
+                        <runDir>…`), and the PER-INDUSTRY PER-ERA RUNG ECONOMICS (VA per staffed level and per worker, margin, the rung's share, VA per worker
+                        ÷ the frontier — `rung_econ.mjs <runDir> <config> <year>`). They read the yearly save summaries directly and are what F127 / F128 / F129
+                        quote for the raw sector, the old rung and the realised value added per frontier level
   testbed/ledger/major_series.mjs  ⭐ THE PER-MAJOR SERIES the plateau test is read from (user-ruled 2026-09-16, CORRECTED 2026-09-17 — §10.82.1):
                         per major and year, strict unemployment, the peasants' share of the workforce and the salaried workforce from the yearly summaries'
                         pop_statistics. A PLATEAU is capital abundance persisting at the frictional residual — total unemployment INCLUDING peasants ≤ 10% in
