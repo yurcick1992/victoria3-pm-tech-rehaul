@@ -7809,3 +7809,10 @@ batches get best score". What the loss adds to the hand reading: the found confi
 the 1.1 aim, 4.1 of its 5.3) and its intact consensus rests on ONE run; the A 1.9 pair pays first on pool W (5.6) and the pool's GDP (4.4),
 then PI (2.4) and world GDP (2.3). ⚠ n=1 for the found configuration's loss until batch 4's two seeds land; the weights are provisional and
 were validated once, on these twelve books.
+
+**The σ source does not change the order.** `--sigma mod` takes every spread from the seventeen INTACT mod runs read in the invocation instead
+of vanilla's sixteen seeds — wider on the price and hoard lines, where vanilla barely moves between seeds — and the ranking comes back
+identical (the found 2.4, A 1.9 7.9, the family pair 27.4, the C 2.05 lift 35.9, B 1.8 58.5, A 2.2 in12 71.7, flat A 1.6 75.8; the same
+OUT and DIVERGENT rows): the distances shrink, the soft-breach penalties carry the breached books, and the two in-band books keep their
+places on the same lines. Vanilla's spread stays the default — it is the reference's own natural variation and does not depend on which
+batches happen to be read.

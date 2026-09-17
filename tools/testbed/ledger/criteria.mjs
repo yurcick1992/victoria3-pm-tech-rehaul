@@ -37,11 +37,13 @@
 //   top of the distance — "unacceptable" must outrank any accumulation of inside-the-line misses (the 12-batch validation of 2026-09-17 showed a
 //   stalled book at 0.72× world GDP out-scoring the A 1.9 pair without it). A consensus pair that DIVERGES under F114's bands (different
 //   bands and ≥ 0.15 apart on world GDP, or ≥ 0.10 on world W) has no consensus — it needs its third run and is unranked.
+//   `--sigma mod` takes every σ from the INTACT mod runs read in the invocation instead of vanilla's seeds (the same population the loss is
+//   validated on; wider on the price and hoard lines, where vanilla barely moves between seeds).
 //   Provisional weights (`--weights k=v,…` overrides): world GDP 3, pool GDP 2,
 //   pool W 2, world W 1.5, pool U* 1, T0 1, PI 1, PP 0.5, world U* 0.5, pool H 0.5, T3 0.3, world H 0.25.
 // Not in the summaries: a civil war — a member-year whose population fell more than 15% year on year is exempt from the per-member lines.
 //   node tools/testbed/ledger/criteria.mjs --arm <session[,session]>[:<setup>] [--arm …] [--config <path>] [--van <session>]
-//        [--end 1932-1936] [--big 50] [--weights k=v,…] [--json <out.json>] [--quiet]
+//        [--end 1932-1936] [--big 50] [--weights k=v,…] [--sigma vanilla|mod] [--soft-pen 10] [--json <out.json>] [--quiet]
 import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join, dirname, resolve } from 'node:path';
@@ -54,7 +56,7 @@ const argv = process.argv.slice(2);
 const argOf = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const ARMS = []; for (let i = 0; i < argv.length; i++) if (argv[i] === '--arm') ARMS.push(argv[i + 1]);
 const VAN = argOf('--van', '20260821_131149_vanilla-baseline-n16'); const CONFIG = argOf('--config', ''); const BIG = +argOf('--big', '50') * 1e6;
-const [E0, E1] = argOf('--end', '1932-1936').split('-').map(Number); const JSON_OUT = argOf('--json', ''); const QUIET = argv.includes('--quiet');
+const [E0, E1] = argOf('--end', '1932-1936').split('-').map(Number); const JSON_OUT = argOf('--json', ''); const QUIET = argv.includes('--quiet'); const SIGMA = argOf('--sigma', 'vanilla');
 const W = { gdpW: 3, gdpP: 2, poolW: 2, worldW: 1.5, poolU: 1, T0: 1, PI: 1, PP: 0.5, worldU: 0.5, poolH: 0.5, T3: 0.3, worldH: 0.25 };
 for (const kv of (argOf('--weights', '') || '').split(',').filter(Boolean)) { const [k, v] = kv.split('='); if (k in W) W[k] = +v; else throw new Error('unknown weight ' + k); }
 if (!ARMS.length) { console.error('usage: --arm <session[,session]>[:<setup>] [--arm …] [--config <path>] [--van <session>] [--end 1932-1936] [--weights k=v,…] [--json out]'); process.exit(2); }
@@ -202,13 +204,17 @@ const consensusOf = runs => { // over intact runs
 // ---- read every arm
 const arms = ARMS.map(spec => { const rels = runsOf(spec); const cfg = rels.length ? configFor(join(SES, rels[0])) : null; const runs = rels.map(rel => scoreRun(rel, cfg && cfg.tier)); return { spec, cfg, runs, C: consensusOf(runs) }; });
 const allRuns = arms.flatMap(a => a.runs); const sT = { ratio0: sd(allRuns.map(r => r.T && r.T.ratio0)), r3: sd(allRuns.map(r => r.T && r.T.r3)) };
+if (SIGMA === 'mod') { // the natural spread of the INTACT mod runs, per ratio
+  const ok = allRuns.filter(r => !r.broken); const src = { 'world.gdp': 'gdpW', 'pool.gdp': 'gdpP', 'world.W': 'worldW', 'pool.W': 'poolW', 'world.U': 'worldU', 'pool.U': 'poolU', 'world.H': 'worldH', 'pool.H': 'poolH', PI: 'PI', PP: 'PP' };
+  for (const [k, f] of Object.entries(src)) { const s = sd(ok.map(r => r[f])); if (Number.isFinite(s) && s > 0) sig[k] = s; }
+}
 for (const a of arms) { for (const r of a.runs) r.loss = r.broken ? null : lossOf(r, sT); a.C.loss = a.C.intact && !a.C.divergent ? lossOf(a.C, sT) : null; }
 
 // ---- print
 const verdict = (v, lo, hi, soft) => { const x = r2(v); if (soft && soft(x)) return 'BEYOND THE SOFT BOUNDARY'; if (x >= lo && x <= hi) return 'AT THE AIM'; return x < lo ? 'inside, below the aim' : 'inside, above the aim'; };
 const line = (label, v, verd, extra = '') => console.log('  ' + label.padEnd(28) + (f2(v) + '×').padStart(7) + '  ' + verd.padEnd(26) + (extra ? ' ' + extra : ''));
 if (!QUIET) {
-  console.log('CRITERIA REGISTER (§10.83) — end state = the ' + E0 + '–' + E1 + ' mean · vanilla ' + VAN + ' (n=' + vanRuns.length + ') · σ = the seed spread of each ratio in vanilla');
+  console.log('CRITERIA REGISTER (§10.83) — end state = the ' + E0 + '–' + E1 + ' mean · vanilla ' + VAN + ' (n=' + vanRuns.length + ') · σ = the spread of each ratio across ' + (SIGMA === 'mod' ? 'the INTACT mod runs read here (' + allRuns.filter(r => !r.broken).length + ')' : 'vanilla\'s seeds'));
   console.log('vanilla window medians: world GDP £' + f2(ref['world.gdp'] / 1e6, 0) + 'M (σ ' + f2(sig['world.gdp']) + ') · W ' + f2(ref['world.W'], 4) + ' (σ ' + f2(sig['world.W']) + ') · U* ' + pc(ref['world.U']) + ' (σ ' + f2(sig['world.U']) + ') · H ' + f2(ref['world.H']) + ' (σ ' + f2(sig['world.H']) + ') | pool GDP £' + f2(ref['pool.gdp'] / 1e6, 0) + 'M (σ ' + f2(sig['pool.gdp']) + ') · W ' + f2(ref['pool.W'], 4) + ' (σ ' + f2(sig['pool.W']) + ') · U* ' + pc(ref['pool.U']) + ' (σ ' + f2(sig['pool.U']) + ') · H ' + f2(ref['pool.H']) + ' (σ ' + f2(sig['pool.H']) + ') | PI ' + f2(ref.PI) + ' of base (σ ' + f2(sig.PI) + '; path ' + PYEARS.map(y => f2(ref['PI.' + y])).join(' → ') + ') · PP ' + f2(ref.PP, 1) + ' wage units (σ ' + f2(sig.PP) + ') · PM ' + f2(ref.PM) + ' of base');
   for (const a of arms) {
     console.log('\n' + '='.repeat(150) + '\n' + a.spec + ' · ' + a.runs.length + ' usable run(s) · ' + (a.cfg ? a.cfg.path : 'no config → T not read'));
