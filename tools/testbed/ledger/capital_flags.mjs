@@ -46,12 +46,12 @@ function hoardSeries(runRel) {
     const date = (j.provenance && j.provenance.date) || ''; const yr = +String(date).split('.')[0];
     if (!yr || out.has(yr)) continue;
     const C = j.countries || {}; const members = SHORT.map(t => (t === 'GER' && !C.GER && C.PRU) ? 'PRU' : t);
-    let wp = 0, wg = 0, sp = 0, sg = 0;
+    let wp = 0, wg = 0, sp = 0, sg = 0; const per = {};
     for (const [tag, c] of Object.entries(C)) {
       const pool = +c.investment_pool || 0, gdp = +c.gdp || 0;
-      wp += pool; wg += gdp; if (members.includes(tag)) { sp += pool; sg += gdp; }
+      wp += pool; wg += gdp; if (members.includes(tag)) { sp += pool; sg += gdp; const r = rates(readC(c)); per[tag] = { incl: r.incl, hoard: r.hoard }; }
     }
-    out.set(yr, { world: wp / (wg || 1), short: sp / (sg || 1) });
+    out.set(yr, { world: wp / (wg || 1), short: sp / (sg || 1), per });
   }
   return out;
 }
@@ -111,6 +111,32 @@ for (const r of rows) {
 console.log(persistHits
   ? `  ⚑ ${persistHits} run(s) show PERSISTENT hoarding world-wide — a bigger problem than any backlog; read it beside the abundance verdict below`
   : '  none — no run hoards persistently by either test (a pool of 0.4-0.7 GDP is well inside both)');
+// ---- THE PLATEAU TEST, AS CORRECTED (user, 2026-09-17; BALANCE_FRAMEWORK §10.82.1): a plateau is CAPITAL ABUNDANCE PERSISTING at the
+//   frictional residual — a shortlist member whose total unemployment INCLUDING peasants sits at or under PLAT_INCL in EVERY year of
+//   PLAT_FROM..YEAR (immigrants arriving, workers between jobs) while its pool exceeds PLAT_HOARD GDP in any year of PFROM..YEAR. Slow
+//   depeasantation, or a fiscal-crisis stall at 20% peasants, is NOT a plateau (the 2026-09-16 over-reading measured that; retracted).
+const PLAT_FROM = +argOf('--plateau-from', '1919'), PLAT_INCL = +argOf('--plateau-incl', '0.10'), PLAT_HOARD = +argOf('--plateau-hoard', '2');
+console.log('');
+console.log(`PERSISTENT ABUNDANCE (the plateau test of §10.82.1) — a shortlist member with total unemployment incl. peasants <= ${(PLAT_INCL * 100).toFixed(0)}% in EVERY year ${PLAT_FROM}-${YEAR} AND pool ÷ GDP > ${PLAT_HOARD} in any of ${PFROM}-${YEAR}`);
+let plateauRuns = 0;
+for (const r of rows) {
+  const ser = hoardSeries(r.run); if (!ser || !ser.size) continue;
+  const years = [...ser.keys()].filter(y => y >= PLAT_FROM && y <= +YEAR).sort((a, b) => a - b);
+  const tags = new Set(); for (const y of years) for (const t of Object.keys(ser.get(y).per || {})) tags.add(t);
+  const hits = [], reads = [];
+  for (const t of [...tags].sort()) {
+    const incl = years.map(y => (ser.get(y).per[t] || {}).incl).filter(v => v != null);
+    const hoardLate = years.filter(y => y >= PFROM).map(y => (ser.get(y).per[t] || {}).hoard).filter(v => v != null);
+    if (incl.length < 3) continue;
+    const low = incl.every(v => v <= PLAT_INCL), abundant = hoardLate.some(v => v > PLAT_HOARD);
+    const lowYears = incl.filter(v => v <= PLAT_INCL).length;
+    reads.push(`${t} low ${lowYears}/${incl.length}y max-incl ${pct(Math.max(...incl))} hoard-late-max ${f2(hoardLate.length ? Math.max(...hoardLate) : 0)}`);
+    if (low && abundant) hits.push(t);
+  }
+  if (hits.length) plateauRuns++;
+  console.log(`  ${r.run.split('/').pop()}: ${hits.length ? '⚑ PLATEAU ' + hits.join(', ') + (hits.length >= 2 ? ' — WIDESPREAD' : ' (one member: a flag)') : 'none'}   [${reads.join(' · ')}]`);
+}
+console.log(plateauRuns ? `  ⚑ ${plateauRuns} run(s) with a plateaued shortlist member — capital abundance persisting at the residual (§10.82.1)` : '  none — no shortlist member sits at the frictional residual with an abundant pool over the window');
 console.log('');
 try { const van = usableRuns(SES, VAN).runs.map(readRun).filter(Boolean); if (van.length) console.log(`vanilla ${VAN} n=${van.length} medians: hoard ${f2(med(van.map(r => r.world.hoard)))} · ${f2(med(van.map(r => r.short.hoard)))}; unemployment incl. peasants ${pct(med(van.map(r => r.world.incl)))} · ${pct(med(van.map(r => r.short.incl)))} (strict ${pct(med(van.map(r => r.world.strict)))} · ${pct(med(van.map(r => r.short.strict)))}); Britain trips ⚑ in ${van.filter(r => r.per.some(p => p.tag === 'GBR' && p.flag)).length} of ${van.length}`); } catch (e) { console.log('vanilla reference unavailable:', e.message); }
 const flagged = rows.filter(r => r.per.some(p => p.flag)).length;

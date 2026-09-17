@@ -1,7 +1,9 @@
-// ⭐ THE PLATEAU TEST (user-ruled 2026-09-16, BALANCE_FRAMEWORK §10.82): per major over 1919 → 1935, strict unemployment
-// (unemployed ÷ (salaried + unemployed)) and the peasants share of the workforce (subsisting ÷ total) — a major PLATEAUS when its
-// strict unemployment stays above 5% while its peasant share falls by fewer than 8 points; Japan is reported but excused (vanilla
-// own Japan sits at 40–57%); minors are not judged. Reads the yearly save summaries pop_statistics fields (the same ones
+// ⭐ THE PER-MAJOR SERIES the plateau test is read from (user-ruled 2026-09-16, CORRECTED 2026-09-17 — BALANCE_FRAMEWORK §10.82.1):
+// per major and year, strict unemployment (unemployed ÷ (salaried + unemployed)), the peasants share of the workforce (subsisting ÷
+// total) and the salaried workforce. A PLATEAU is CAPITAL ABUNDANCE PERSISTING at the frictional residual — total unemployment
+// INCLUDING peasants ≤ 10% in EVERY year 1919 → 1935 while the pool exceeds 2 GDP in any of 1931–1935 — NOT slow depeasantation (a
+// stall at 20% peasants is a development reading). capital_flags.mjs prints the verdict (PERSISTENT ABUNDANCE); this prints the
+// columns behind it. Minors are not judged. Reads the yearly save summaries pop_statistics fields (the same ones
 // capital_flags.mjs reads). Columns per year: strict unemp% / peasants% of workforce / salaried M.
 //   node tools/testbed/ledger/major_series.mjs 1900,1910,1919,1925,1930,1935 <runDir> [<runDir>...]
 // Written in the 2026-09-16 session scratchpad for F127 / §10.82; moved here between batches (L27 walks this directory in every build).

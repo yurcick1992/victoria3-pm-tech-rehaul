@@ -12940,3 +12940,12 @@ which is what the loop gain is made of.
 
 Sessions `20260916_215513` and `20260917_030144`, VERDICT.md in each; config committed as `config/mod_config.canon-b18-gm.json`
 (`_ab.command`). Ledger: `tools/testbed/ledger/out_b18gm/REPORT.html`, published as https://claude.ai/artifact/LuF9v37w3jS8Z976NDHE6y (one configuration per report).
+
+**⚠ CORRECTION 2026-09-17 (BALANCE_FRAMEWORK §10.82.1).** The plateau readings in this entry — "three plateaued or stagnant majors per
+seed", KEY 3's count, "France, Russia and Austria plateau" — used the 2026-09-16 operationalisation (strict unemployment above 5% while
+the peasant share falls by fewer than 8 points), which the user corrected the next morning: a plateau is CAPITAL ABUNDANCE PERSISTING at
+the last few percent (total unemployment including peasants ≤ 10% in every year 1919 → 1935 with a hoard > 2 GDP in 1931–1935), not slow
+depeasantation. Under the corrected test NO major plateaus in any of the three seeds (shortlist hoards 0.14–0.45; the capital flag
+CLEAN). What stands unchanged: the stall (0.70 / 0.91 / 0.65×), the price channel on the frontier, the untouched old rung, the raw sector
+per pound of GDP, and the USA's labour absorption in two seeds of three (a reading, not a criterion). The same correction applies to the
+found configuration: it does not fail the plateau test (§10.82.1).

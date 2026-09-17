@@ -7494,6 +7494,10 @@ a smaller output step (A). **The user, in full:**
 - **Ruling 1 — the dip is the premise showing.** `canon-c19-e2soft` (the e2 rung's cost alone lowered to fill it) is **DROPPED** before it
   ran; the book, its twin and its schedules stay in the repo as the record of the proposal and of this ruling. The 0.75 / 0.89 at 1900 is not
   a fault to tune, and no future batch should aim at it. It stays a READING in every verdict (the decade series), never a target.
+- ⚠⚠ **THE PARAGRAPH BELOW OVER-READ RULING 2 AND WAS CORRECTED BY THE USER ON 2026-09-17 — §10.82.1.** A plateau is CAPITAL ABUNDANCE
+  PERSISTING at the last few percent of peasants and job-changers, not slow depeasantation; the "found configuration fails" verdict
+  below is RETRACTED (it does not), and the USA / Russia readings are development readings, not plateaus. Kept as the record of the
+  misreading; the corrected test is §10.82.1's.
 - **Ruling 2 — THE PLATEAU TEST, a standing read on every batch from here.** The agent's operationalisation (stated as such): over
   1919 → 1935, per major (GBR FRA USA GER/PRU RUS AUS; NET BEL as the "tall" cases; JAP reported but excused, since vanilla's own Japan
   sits at 40–57% strict unemployment in every seed), **a major PLATEAUS when its strict unemployment stays above 5% while its peasants'
@@ -7520,3 +7524,38 @@ predictions pre-registered in the session's `RULING_ADDENDUM.md` before any resu
 `canon-a19-gm` (A 1.9: `--cost-ladder 1.38,2.22,3.68`, value added per frontier level 0.73 / 0.61 / 0.54 of the found book's) or the
 milder `canon-a20-gm` (A 2.0) if batch 1 already lifts the shortlist's workers toward 0.8; batch 3 decided by 1–2 (the second step, the
 A × B combination, or the cost branches); batch 4 the pick's confirmation pair for the canonisation decision.
+
+## 10.82.1 — THE PLATEAU TEST, CORRECTED (user, 2026-09-17 morning): a plateau is capital abundance persisting at the last few percent, not slow depeasantation
+
+**The user, in full (2026-09-17 ~07:35 local), on reading the 2026-09-16 operationalisation:** *"I think we might have overdone this on the definition of plateauing. What I meant is that the failure to get rid of last several percent of peasants (e.g. due to new ones constantly immigrating or a tiny share of factories shedding workers who do find jobs later, but not instantly) doesn't change the broader negative 'capital is abundant, this is broken' criterion. Having a local fiscal crisis that stops depeasantation at 20% stable between 1925 and 1935 is NOT plateauing by this definition."*
+
+**What ruling 2 means, then.** The "5–9% since 1919" of the ruling is the FRICTIONAL RESIDUAL — a major that has absorbed its peasants
+down to the last few percent (immigrants arriving, a few factories shedding workers who find jobs later, but not instantly) and sits
+there for fifteen years while its pool holds more than two years of GDP. That major is capital-abundant, and the residual does not
+rescue it from the abundance verdict (§10.79: "hoarding AND inability to invest … a strong negative verdict"): the abundance flag's 3%
+line is not one to hide behind at 6%. Widespread = unacceptable; one tall major (BEL, NET, GBR) at vanilla's own extreme is a flag, as
+before. A major whose absorption STOPS at 20% peasants — a fiscal crisis, a poor economy, an under-built frontier — is NOT a plateau in
+this sense: that is a development reading, judged by the GDP and workers bands, never by this test.
+
+**The corrected operationalisation (the agent's, stated as such):** PLATEAU(major) = total unemployment INCLUDING peasants ≤ 10% in
+EVERY year from 1919 to 1935 (the residual, never cleared and never re-filled) AND the pool ÷ GDP > 2 in any year of 1931–1935 (capital
+abundant). Shortlist members only (GBR, USA, FRA, GER / PRU); two or more in a seed = widespread. `capital_flags.mjs` prints it as
+PERSISTENT ABUNDANCE beside the single-year abundance flag; `major_series.mjs` prints the per-major series it is read from.
+
+**What it retracts.** The 2026-09-16 operationalisation ("strict unemployment above 5% while the peasant share falls by fewer than 8
+points") measured SLOW DEPEASANTATION — the opposite case. The USA at 55–65% peasants and Russia at 60–73% on the found configuration
+are under-absorbed, not capital-abundant, and neither is a plateau. So: **the found configuration `canon-c19-in12` does NOT fail the
+plateau test.** Its one reading of the kind is Britain in seed 1 — 0.8% total unemployment including peasants at a hoard of 2.40 at
+1935, reached only around 1925 (32 → 18 → 5 → 1% peasants over 1900 → 1930) — the single-year abundance flag vanilla's own Britain trips
+in 2 of 16 seeds; tolerable by the ruling's own words. **F128's "three plateaued majors per seed" on `canon-b18-gm` is retracted the
+same way**: under the corrected test no major plateaus in any of its three seeds (shortlist hoards 0.14–0.45, the capital flag CLEAN);
+what stands there is the stall, the price channel, the untouched old rung, and the USA's labour absorption in two seeds of three
+(peasants 65 → 53 and 44 → 12) — a labour READING, not a criterion. `canon-a19-gm`'s KEY 2 was re-labelled the same way before its
+run 1 landed (the repo copy of its schedule carries the note; the session copy is the frozen original).
+
+**Where the over-reading was written and is now marked:** this section's ruling-2 paragraph (kept as the record, with the pointer
+above it), HANDOVER.md, CLAUDE.md's `major_series.mjs` and `canon-a19-gm` entries, FINDINGS F128 (a correction note appended), the
+two `canon-b18-gm` sessions' VERDICT.md / RUN1_READ.md / RULING_ADDENDUM.md (notes appended), the b18 ledger (republished at the same
+URL with the sentence corrected), and the memory.
+
+**Implemented and proven both ways (2026-09-17 07:55 local):** `capital_flags.mjs` prints the PERSISTENT ABUNDANCE block (per shortlist member: the years at or under 10% total unemployment including peasants over 1919–1935, the late hoard maximum, ⚑ PLATEAU when every year is under the line and the pool exceeded 2 GDP in 1931–1935; two members = WIDESPREAD). The found configuration reads NONE (Britain in seed 1 is under the line 15 of 17 years with a hoard of 2.40 — the single-year flag, not a plateau); `canon-b18-gm` reads NONE in all three seeds; the flat A 1.9 pair (F115, the measured VOID) reads ⚑ PLATEAU GBR + USA and GBR + GER + USA — WIDESPREAD, every year of the window under 5% with hoards of 3.2–9.0. That is the "capital is abundant, this is broken" case the ruling names, and nothing else trips it.

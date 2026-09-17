@@ -1056,8 +1056,8 @@ config/mod_config.canon-a19-gm.json ⭐⭐ BATCH 2 OF THE PLAN — LAUNCHED 2026
                         GAIN-MATCHED per era — `--A 1.9 --cost-ladder 1.38,2.22,3.68` (600 / 828 / 1,332 / 2,208; 800 / 1,104 / 1,776 / 2,944) — value added
                         per frontier level 0.73 / 0.61 / 0.54 of the found book's ⇒ 1.4–1.8× the frontier levels and workers per unit of GDP, and input per
                         unit of output ×1.16 / 1.34 / 1.55 (a raw pull nearly B 1.8's). Generated 2026-09-16 (`_ab.command`), L31 passing; schedule
-                        `canon_a19_gm_n2.json` + `_tb.json` (KEYS: tiered levels ≥ 14,000; the USA's peasant share −10 points 1919 → 1935 with ≤ 1 plateaued
-                        major per seed; shortlist workers 0.76–0.88 against the 0.8 aim; endpoint 0.95–1.20×). Runs after canon-b18-gm; if batch 1 already
+                        `canon_a19_gm_n2.json` + `_tb.json` (KEYS: tiered levels ≥ 14,000; the USA's peasant share −10 points 1919 → 1935 (labour absorption) and the corrected plateau
+                        test of §10.82.1 (no shortlist member capital-abundant at the residual); shortlist workers 0.76–0.88 against the 0.8 aim; endpoint 0.95–1.20×). Runs after canon-b18-gm; if batch 1 already
                         lifts the shortlist's workers above 0.85 in both seeds, the milder book below runs instead. Un-ignored with its twin
 config/mod_config.canon-a20-gm.json ⭐ THE MILDER A STEP, IN RESERVE (§10.82): as above with A 2.0 — `--A 2.0 --cost-ladder 1.55,2.66,4.63`
                         (600 / 930 / 1,596 / 2,778; 800 / 1,240 / 2,128 / 3,704), value added per frontier level 0.82 / 0.74 / 0.68 of the found book's.
@@ -1934,10 +1934,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         country beside whether the country holds any e2/e3 building; `queue_rungs.mjs <run> <year> <config>` splits either queue by rung
                         (world and the GBR/USA/FRA/GER+PRU shortlist). The diagnostic for a rung-0 lever is the STAFFED count and the building count, never
                         the level count alone (F122: levels up 12–18% while staffing fell a fifth)
-  testbed/ledger/major_series.mjs  ⭐ THE PLATEAU TEST (user-ruled 2026-09-16, §10.82): per major over 1919 → 1935, strict unemployment and the
-                        peasants' share of the workforce from the yearly summaries' pop_statistics — a major PLATEAUS when its strict unemployment stays above
-                        5% while its peasant share falls by fewer than 8 points (Japan reported but excused; minors not judged). `major_series.mjs
-                        1900,1910,1919,1925,1930,1935 <runDir>…`. The found configuration fails it (the USA and Russia in both seeds); read in every verdict
+  testbed/ledger/major_series.mjs  ⭐ THE PER-MAJOR SERIES the plateau test is read from (user-ruled 2026-09-16, CORRECTED 2026-09-17 — §10.82.1):
+                        per major and year, strict unemployment, the peasants' share of the workforce and the salaried workforce from the yearly summaries'
+                        pop_statistics. A PLATEAU is capital abundance persisting at the frictional residual — total unemployment INCLUDING peasants ≤ 10% in
+                        EVERY year 1919 → 1935 while the pool exceeds 2 GDP in any of 1931–1935 — NOT slow depeasantation (a stall at 20% peasants is a
+                        development reading, judged by the bands). `capital_flags.mjs` prints the verdict (PERSISTENT ABUNDANCE); this prints the columns.
+                        `major_series.mjs 1900,1910,1919,1925,1930,1935 <runDir>…`. The found configuration does NOT fail it (Britain alone trips the single-
+                        year flag in one seed, as vanilla's own Britain does in 2 of 16); the 2026-09-16 claim that it did was the over-reading §10.82.1 retracts
   testbed/ledger/queue_series.mjs  the construction backlog reader (2026-09-15, from the scratchpad): per year, the private and government queues'
                         items, points left and speed → years of backlog, the private share of speed, the pool ÷ GDP and the construction sector's levels,
                         world + named tags — `queue_series.mjs <run> 1900,1920,1935 GBR,USA,FRA`. What F119's addendum and F121 read the capacity bound with
