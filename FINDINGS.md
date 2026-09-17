@@ -11831,6 +11831,8 @@ and Germany halved in one or both) is n=2 evidence of an uneven world, not of it
 the price path in wage units moved (the ledger reads it); why France carries the world in both seeds. Sessions `20260914_173832` and
 `20260914_204329`, VERDICT.md in each; config committed as `config/mod_config.canon-c19-in12.json` (`_ab.command`). Ledger https://claude.ai/code/artifact/7c8d37a0-4496-49fe-b5f8-d3d2859d5d95 (one configuration per report).
 
+**Register addendum, 2026-09-17 (§10.83 / §10.83.4).** Under THE CRITERIA REGISTER the found configuration reads: world GDP 1.04× (the 1932–1936 mean; at the aim), world W 0.67 (aim), pool W 0.70 (the aim's edge), pool U* 1.94 (just under the 2× aim), pool H 1.58× (above the aim), the pool's GDP 1.45 (above the 1.1 aim, inside the soft line), PI 0.80 (aim, falling every decade), PP 0.84, T0 0.77× the 1900s (not yet falling every decade), T3 ÷ rest 0.33 — **loss 5.3, the best of the twelve books scored** — but **run 1 BREAKS the capital-abundance hard line** (Britain U* under 5% in 11 consecutive years 1926–1936 at a mean hoard of 1.80 of its GDP), so its consensus rests on run 2 alone and the book is 1-of-2 intact; batch 4 (`20260917_132449_canon-c19-in12-confirm-n2`, two more seeds) decides whether it is majority-intact.
+
 ## F118 — THE ×1.3 INPUT LIFT AT THE FOUND SLOPE RUNS AWAY (canon-c19-in13, n=1 by the run-level stop, 2026-09-15): the lift removes the C 1.9 book's 1870–1900 dip and then doubles the vanilla ratio between 1890 and 1920 (1.44× at 1936, pools 1.07 of GDP); rung 0 thins to 30% but does not die, and the margin ladder is flat again — the lift pushes construction to the frontier, it does not kill the old rung
 
 **Claim.** On the found slope (F117: building cost = anchor × 1.9^era, A 2.2 / B 1.5), raising rung 0's input value from ×1.2 to ×1.3
@@ -12154,6 +12156,8 @@ a mean of 95, while one century's own growth runs 51 → 414 s/yr.
   unit of world dearer.
 - **It does not re-open the vanilla/mod speed verdict**: under the shipped model the two arms sit at 1.007
   and 1.021, a 1.4pp gap with per-run scatter of 7–8%.
+
+**Register addendum, 2026-09-17 (§10.83.4).** Under THE CRITERIA REGISTER run 1 is BROKEN BY RUNOFF (Germany U* under 5% in 6 consecutive years 1931–1936 at a mean hoard of 1.64 of its GDP — the capital-abundance pair) and run 2 is intact with a SOFT breach (the pool's GDP 1.79 > 1.5; Britain 7 years under 5% at 1.49 GDP, just under the hard line); consensus (n=1 intact): world GDP 1.05, pool W 0.86, PI 0.80, PP 0.70, T0 falling every decade — loss 37.5, third of the twelve books. The C 1.9 family carries Britain's or Germany's capital abundance in half its seeds (F130).
 
 ## F120 — HALVING THE OLD RUNG'S CONSTRUCTION DESIRE DOES NOT TOUCH ITS REBUILD (canon-c19-e0ai500, n=2 aligned, 2026-09-15): rung 0's level count still climbs 12–18% from 1900 to 1935 at 46–47% staffing, exactly the found configuration; the economy is the C 1.9 book's in two more seeds (1.13 / 1.04× GDP, 0.70 / 0.64× workers, in the band) — the willingness lever is closed for goal 3
 
@@ -12950,6 +12954,8 @@ CLEAN). What stands unchanged: the stall (0.70 / 0.91 / 0.65×), the price chann
 per pound of GDP, and the USA's labour absorption in two seeds of three (a reading, not a criterion). The same correction applies to the
 found configuration: it does not fail the plateau test (§10.82.1).
 
+**Register addendum, 2026-09-17 (§10.83.4).** Under THE CRITERIA REGISTER all three runs are intact (no hard line crossed) and the consensus (runs 1 + 3, the closest pair on world GDP) is BEYOND THE SOFT BOUNDARY on world GDP (0.66) and the pool's GDP (0.81): a stall in the register's terms too; pool U* 2.52 (aim), pool H 0.83 (aim), PI 0.95, PP 0.94, T0 1.22× the 1900s (inside), T3 ÷ rest 0.20 — loss 68.6, fifth of the twelve books.
+
 ## F129 — THE OUTPUT STEP A 1.9, GAIN-MATCHED AT BASE PRICES, LANDS ABOVE THE BAND WITH THE LABOUR LEVER WORKING: 1.19 / 1.13× vanilla GDP (aligned, noticeably above) at 0.85 / 0.91× workers per capita, the shortlist at 1.04 / 0.78; the frontier built 30–45% deeper, the raw and urban sectors rebuilt beside it, the old rung the emptiest of any in-band-or-above book (32–40%, the majors' 21–34%), the USA's peasants 57 → 23 and 61 → 47; the price channel's direction seed-dependent on this axis; no plateau, one crash recovered by the feeder (canon-a19-gm, n=2 aligned, 2026-09-17)
 
 **Claim.** On the found configuration (`canon-c19-in12`, F117) lowering the output step from A 2.2 to **A 1.9** on every rung above era 0
@@ -13048,6 +13054,7 @@ was already not the pick — but its seed 1 is now a failed seed, not merely "ab
 criteria register was handed to the user for streamlining the same hour (a shortlist subsection and a world subsection with different
 thresholds); BALANCE_FRAMEWORK §10.82.2 will carry the ruled form, and this addendum's 1.0 line is the ruling as given, not the final register.
 
+**Register addendum, 2026-09-17 (§10.83.4).** Under THE CRITERIA REGISTER both runs are intact (Britain's 7 years under 5% at a 1.06-GDP hoard in run 1 is a SOFT near-abundance, not the hard pair) and nothing is beyond a soft line; consensus: world GDP 1.13 (inside, above the 1.0 aim), world W 0.86 (aim), pool W 0.88 (inside, above the 0.6–0.7 aim), the pool's GDP 1.47 (inside, at the 1.5 line's edge), pool U* 1.43, pool H 1.41, PI 0.88 (inside, above the 0.8 aim), PP 1.05 (inside), T0 0.46× the 1900s, T3 ÷ rest 0.54 (the highest measured) — **loss 17.6, second of the twelve books**, paid first on pool W (5.6) and the pool's GDP (4.4). The majors-rule addendum above (seed 1 at 1.03 pooled = a failed seed) is superseded by the register: 1.00 on the end-state mean, inside the soft line.
 
 ## F130 — THE OUTPUT STEP A 2.05 LANDS THE WORLD AT THE AIM AND BREAKS THE CAPITAL-ABUNDANCE LINE: the first batch read under the criteria register — world GDP 1.00× vanilla, world W 0.70, T0 falling every decade, T3 34%, pool W 0.77, the pool's GDP 1.56× (beyond the soft line), and Britain under 5% total unemployment for the last five years at a hoard of 2.08 of its GDP; the C 1.9 family carries Britain's or Germany's capital abundance in half its seeds, and the A axis is not the hoard's lever (canon-a205-gm, n=1 broken by runoff, run 2 stopped by the ruling, 2026-09-17)
 
