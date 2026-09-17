@@ -12949,3 +12949,89 @@ depeasantation. Under the corrected test NO major plateaus in any of the three s
 CLEAN). What stands unchanged: the stall (0.70 / 0.91 / 0.65×), the price channel on the frontier, the untouched old rung, the raw sector
 per pound of GDP, and the USA's labour absorption in two seeds of three (a reading, not a criterion). The same correction applies to the
 found configuration: it does not fail the plateau test (§10.82.1).
+
+## F129 — THE OUTPUT STEP A 1.9, GAIN-MATCHED AT BASE PRICES, LANDS ABOVE THE BAND WITH THE LABOUR LEVER WORKING: 1.19 / 1.13× vanilla GDP (aligned, noticeably above) at 0.85 / 0.91× workers per capita, the shortlist at 1.04 / 0.78; the frontier built 30–45% deeper, the raw and urban sectors rebuilt beside it, the old rung the emptiest of any in-band-or-above book (32–40%, the majors' 21–34%), the USA's peasants 57 → 23 and 61 → 47; the price channel's direction seed-dependent on this axis; no plateau, one crash recovered by the feeder (canon-a19-gm, n=2 aligned, 2026-09-17)
+
+**Claim.** On the found configuration (`canon-c19-in12`, F117) lowering the output step from A 2.2 to **A 1.9** on every rung above era 0
+(rung 0 byte-identical), with the cost ladder re-derived so the frontier's value added per construction point equals the found book's at
+BASE prices (`make_ab_config --A 1.9 --cost-ladder 1.38,2.22,3.68`: 600 / 828 / 1,332 / 2,208 and 800 / 1,104 / 1,776 / 2,944; value added
+per frontier level 0.73 / 0.61 / 0.54 of the found book's; `canon-a19-gm`), read **1.185 / 1.127× the vanilla per-run median at 1935**
+(1.183 / 1.135 at 1936, under the stop) with **productive workers per capita 0.847 / 0.907× world and 1.04 / 0.78 on the shortlist** —
+the pair ALIGNED under the 2+1 rule (medians **1.156× / 0.877×**, both "noticeably above"), no tie-breaker. The A axis is therefore
+bracketed: A 2.2 in band at 1.08× with slack labour, A 1.9 above it at 1.16× with the labour absorbed. Batch 3 is the re-bisection
+`canon-a205-gm` (A 2.05), launched 10:42 local as `20260917_104214_canon-a205-gm-n2`.
+
+**Arm, n, span.** Session `20260917_051736_canon-a19-gm-n2`, runs 1–2 (launched 05:17 local; 1836 → 1936.1.1; run 1 166.3 min of play on
+one attempt, run 2 a CTD at 1909.5.25 recovered by the resume feeder on its first fed member, ~2 min of overhead, L32 PASS). Every ratio
+÷ the vanilla per-run median (n=16 `20260821_131149`). Schedule `canon_a19_gm_n2.json`, predictions pre-registered; the F128 lesson and
+the plateau correction (§10.82.1) added to the repo copy before run 1 landed. Batch 2 of the four-batch plan of 2026-09-16.
+
+### 1. The headline (world, at 1935; ÷ the vanilla per-run median)
+
+| | run 1 | run 2 | median | the found book (2 seeds) |
+|---|---|---|---|---|
+| world GDP | 1.185 | 1.127 | **1.156** | 1.09 / 1.07 |
+| productive workers per capita | 0.847 | 0.907 | **0.877** | 0.65 / 0.67 |
+| GDP per productive worker | 1.51 | 1.29 | 1.39 | 1.61 / 1.61 |
+| shortlist GDP · workers per capita | 1.79 · **1.04** | 1.15 · **0.78** | 1.47 · 0.91 | 1.26 / 1.47 · 0.72 / 0.71 |
+| decades 1860 · 1880 · 1890 · 1900 · 1910 · 1920 · 1930 | .96 .93 .79 .83 .85 .92 1.03 | .96 .79 .84 .83 .95 1.01 1.00 | | .96/1.03 · .84/.91 · — · .75/.89 · .86/.95 · .91/.94 · 1.04/.94 |
+| tiered levels (e0 · e1 · e2 · e3) | 13,422 (1,694 · 2,062 · 6,911 · 2,755) | 14,701 (1,440 · 1,865 · 7,942 · 3,454) | | 10,633 / 9,917 (e3 1,508 / 1,366) |
+| tiered workers | 50.8M | 55.7M | | 39.7 / 36.4M |
+| extraction levels · agriculture VA £/wk · urban+infra levels | 12,431 · 27.1M · 31,786 | 10,833 · 30.2M · 28,925 | | 9,221 / 9,356 · 23.9 / 23.6M · 22,050 / 22,010 |
+| construction sector levels | 3,484 | 3,066 | | 2,971 / 3,092 |
+| tiered share of building VA | 59% | 61% | | 72 / 74% |
+| hoard, world · shortlist (Britain) | 0.41 · 0.61 (1.19) | 0.25 · 0.43 (0.74) | 0.33 · 0.52 | 0.64 / 0.42 · 1.50 / 0.61 |
+| rung 0 workers · staffing (shortlist) | 3.34M · 39.5% (0.32M · 21%) | 2.31M · 32.2% (0.39M · 34%) | | 3.40 / 3.28M · 45% (0.35 / 0.45M · 32–35%) |
+| strict unemployment world · shortlist; peasants % of workforce | 19.8 · 1.4%; 39% | 19.8 · 16.7%; 32% | | 30.5 / 26.6 · 9.0 / 5.4%; 43–44% |
+| the majors' peasants 1919 → 1935 (strict at 1935) | USA 57 → 23 (1.8%), GBR 13 → 3 (0.4), GER 37 → 7 (0.6), RUS 66 → 55 (22.6) | USA 61 → 47 (6.0), GBR 28 → 16 (4.1), GER 27 → 0 (0.1), RUS 50 → 24 (3.1) | | USA 61 → 55 / 60 → 55, RUS 70 → 73 / 65 → 61 |
+
+Capital flag CLEAN in both; no persistent hoarding; **no plateau by §10.82.1** (Britain 12 of 17 years under the line at a hoard of 1.19
+in seed 1, Germany 10 of 17 at 0.10 in seed 2 — neither both low and abundant). Nothing near the run-level stop.
+
+### 2. The price channel, read where it acts — realised value added per staffed frontier level, this book ÷ the found book
+
+| rung | planned (base prices) | run 1 | run 2 |
+|---|---|---|---|
+| textile e2 · e3 | 0.61 · 0.54 | 0.52 · 0.63 | 0.46 · 0.49 |
+| glass e2 · e3 | 0.61 · 0.54 | 0.70 · 0.67 | 0.60 · 0.64 |
+| tooling e2 · e3 | 0.61 · 0.54 | 0.63 · 0.54 | 0.65 · 0.55 |
+| steel e2 · e3 | 0.61 · 0.54 | 0.54 · 0.54 | 0.53 · 0.47 |
+| food e2 | 0.61 | 0.58 | 0.59 |
+
+British market at 1935, % of base (run 1 / run 2; the found seeds 1 / 2): tools **102 / 72** (81 / 70), glass **105 / 80** (104 / 88),
+clothes **94 / 47** (87 / 97), steel 77 / 76 (73 / 73), furniture 66 / 71 (53 / 75), groceries 103 / 104 (107 / 112) · fabric **57 / 103**
+(102 / 95), iron 105 / 107 (113 / 113), coal 88 / 94 (109 / 97), wood 112 / 108 (124 / 90), electricity 134 / 153 (145 / 142). Seed 1 made
+fewer output units than its market wanted and priced the frontier's goods UP (realised gain at or above plan); seed 2 priced them DOWN
+(at or below plan). Both exceed the band: on this axis the step sets the level and the channel only moves it within the band's width.
+
+### 3. The predictions, scored
+
+Endpoint 0.95–1.20× — met (1.18 / 1.13) and above the 2+1 band; the F128-lesson prediction (GDP 0.85–1.10 if the shortfall were
+proportionate) — missed above, because the shortfall was not there in seed 1. KEY 1 (tiered levels ≥ 14,000, workers ≥ 50M) — met
+(13,422 / 14,701; 50.8 / 55.7M). KEY 2 (the USA −10 points of peasants at ≤ 10% strict) — MET twice (−34 at 1.8%; −14 at 6.0%); the
+corrected plateau test — none, twice. KEY 3 (the ceilings: shortlist ≤ 0.8, world ≤ 0.9) — split: seed 1's shortlist 1.04, seed 2's
+world 0.91; the schedule's re-bisection rule (shortlist > 0.88 in both) did not fire on the shortlist alone — the GDP band is what sends
+the plan to A 2.05 (the session's LAUNCH_NOTE.md). Rung 0 (≤ 2.8M, ≤ 40%) — staffing met twice (39.5 / 32.2%), workers in seed 2 (2.31M).
+Extraction ≥ 10,500 — met twice; the raw squeeze (fabric ≥ 105, iron ≥ 115) — NOT (57 / 103; 105 / 107); the tiered goods cheaper — one
+seed each way. Hoard 0.3–0.6 and the dip 0.75–0.90 — met. Perf — met (1.01×).
+
+### What it says
+
+- **The A axis does what F127 asked of it — more buildings per pound of GDP absorb the labour** — and A 1.9 overshoots: the frontier
+  is built 30–45% deeper at the same value added per construction point, the raw and urban sectors grow with it, strict unemployment
+  falls from the found book's 27–31% to 19.8% (vanilla 16%), the old rung is the emptiest of any book at or above the band, and GDP per
+  productive worker comes down from 1.61× to 1.29–1.51× — the trade the design intends, taken one step too far for the band and for
+  ruling 3's ceilings (a shortlist at 1.04 in one seed).
+- **The base-price gain match is not an invariant on this axis either, but here it is not the level-setter**: the channel went both ways
+  across two seeds and both landed above the band. The A step is the lever; A 2.05 (value added per frontier level 0.86 / 0.80 / 0.75 of
+  the found) is the pre-registered re-bisection and batch 3.
+- The found configuration `canon-c19-in12` stands as the pick until A 2.05 reads.
+
+### What it does NOT say
+
+- n=2: the seed dependence of the price channel's direction is one seed each way, a reading not a distribution.
+- Whether A 2.05 lands in band with the shortlist under 0.8 — its schedule pre-registers 1.00–1.15× and 0.80–0.92 as interpolations.
+- Why seed 1's fabric sits at 57% of base (a plantation glut against a frontier that eats fewer units per level) — unexamined.
+
+Session `20260917_051736`, VERDICT.md and RUN1_READ.md there; config committed as `config/mod_config.canon-a19-gm.json` (`_ab.command`).
+Ledger `tools/testbed/ledger/out_a19gm/REPORT.html`, published as https://claude.ai/artifact/EkxBbZVVJQBF7pWyPrCeCi (one configuration per report).

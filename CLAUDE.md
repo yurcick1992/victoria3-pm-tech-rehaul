@@ -1058,10 +1058,24 @@ config/mod_config.canon-a19-gm.json ⭐⭐ BATCH 2 OF THE PLAN — LAUNCHED 2026
                         unit of output ×1.16 / 1.34 / 1.55 (a raw pull nearly B 1.8's). Generated 2026-09-16 (`_ab.command`), L31 passing; schedule
                         `canon_a19_gm_n2.json` + `_tb.json` (KEYS: tiered levels ≥ 14,000; the USA's peasant share −10 points 1919 → 1935 (labour absorption) and the corrected plateau
                         test of §10.82.1 (no shortlist member capital-abundant at the residual); shortlist workers 0.76–0.88 against the 0.8 aim; endpoint 0.95–1.20×). Runs after canon-b18-gm; if batch 1 already
-                        lifts the shortlist's workers above 0.85 in both seeds, the milder book below runs instead. Un-ignored with its twin
+                        lifts the shortlist's workers above 0.85 in both seeds, the milder book below runs instead. Un-ignored with its twin.
+                        ⭐ MEASURED n=2 ALIGNED (FINDINGS F129, session 20260917_051736): world GDP 1.185 / 1.127× vanilla at 1935 (medians 1.156× — noticeably
+                        ABOVE the band), workers per capita 0.847 / 0.907× world and 1.04 / 0.78 on the shortlist (ruling 3's aim 0.8); THE LABOUR LEVER WORKS —
+                        the frontier 30–45% deeper (tiered levels 13,422 / 14,701, e3 2,755 / 3,454), tiered workers 50.8 / 55.7M (found 36–40M), extraction
+                        12,431 / 10,833 levels, strict unemployment 19.8% (found 27–31%), the old rung 39.5 / 32.2% staffed (the majors' 21 / 34%), the USA's
+                        peasants 57 → 23 and 61 → 47; the price channel's direction seed-dependent (dearer outputs in seed 1, cheaper in seed 2), both above
+                        the band; no plateau (§10.82.1), capital flag CLEAN; one CTD recovered by the feeder. NOT the pick — the A axis is BRACKETED (A 2.2 in
+                        band at 1.08× with labour slack, A 1.9 above at 1.16× with labour absorbed) ⇒ batch 3 = canon-a205-gm. Ledger https://claude.ai/artifact/EkxBbZVVJQBF7pWyPrCeCi
 config/mod_config.canon-a20-gm.json ⭐ THE MILDER A STEP, IN RESERVE (§10.82): as above with A 2.0 — `--A 2.0 --cost-ladder 1.55,2.66,4.63`
                         (600 / 930 / 1,596 / 2,778; 800 / 1,240 / 2,128 / 3,704), value added per frontier level 0.82 / 0.74 / 0.68 of the found book's.
                         Generated 2026-09-16, L31 passing; no schedule until it is chosen. Un-ignored with its twin
+config/mod_config.canon-a205-gm.json ⭐⭐ BATCH 3 OF THE PLAN — THE A AXIS RE-BISECTED, LAUNCHED 2026-09-17 10:42 local as session
+                        `20260917_104214_canon-a205-gm-n2` after the a19 pair read aligned above the band (its LAUNCH_NOTE.md records the trigger as it
+                        actually applied — the GDP band, the shortlist rule met in one seed): A 2.05 in place of 2.2 on every rung above era 0, cost ladder
+                        `--cost-ladder 1.64,2.89,5.15` gain-matched at base prices (600 / 984 / 1,734 / 3,090; 800 / 1,312 / 2,312 / 4,120), value added per
+                        frontier level 0.86 / 0.80 / 0.75 of the found book's; schedules `canon_a205_gm_n2.json` + `_tb.json` (predictions as interpolations:
+                        GDP 1.00–1.15×, shortlist workers 0.80–0.92, world 0.72–0.82; in band with the shortlist ≤ 0.85 ⇒ the pick, confirmed by batch 4;
+                        above 0.92 on the shortlist in both ⇒ A 2.15; below 0.9× in both ⇒ the found configuration stays the pick). Un-ignored with its twin
 config/mod_config.tier4.json ⚗ GENERATED (gitignored) by tools/make_tier4_config.mjs FROM THE GAME FILES + tools/lib_tier4_spec.mjs
                         — the four-rung STRUCTURE (rungs = vanilla main methods with vanilla's name, gate, recipe,
                         staffing, icon; the spec's ADDITIONS on top), with tech_tree_options.tier4.json beside it from
