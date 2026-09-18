@@ -1,0 +1,78 @@
+{
+ "schedule_version": 1,
+ "label": "canon-c19-in12-mild-tb",
+ "_why": "THE TIE-BREAKER of canon_c19_in12_mild_n2.json: the third run of the 2+1 rule, run ONLY if alignment_check.mjs reads the pair DIVERGENT (exit 2); the config is read as the median of three (pool both sessions in --arm). Same book, same predictions. THE MILDER SPENDING SET ON THE INCUMBENT BASE — PROPOSED 2026-09-18 after batches 1 and 2 of the loss-minimising sequence (HANDOVER 2026-09-17), NOT launched without the user's go. What the sequence established: the eager set at FULL strength (TOO_LARGE_INVESTMENT_POOL_FACTOR 0.99, CRITICAL 1.25, EXCESSIVE 3.0) spends the hoard to the register's aim on every slope it has been tried on (F124 / F125 on C 1.9, F132 on C 1.95: world H 0.42-0.50x, pool H 0.50-0.55x, Britain 0.16-0.26 of its GDP, the private backlog under 1.3 y) AND runs the shortlist pool hot in every seed (the pool's GDP 1.96-2.06x beyond the 1.5 soft line, pool W 0.87-0.95 against the 0.6-0.7 aim, the majors depeasanted to vanilla's level) - so at full strength the lever is one-signed on the pool: it trades the incumbent's hoard term (1.88 of its 7.6) for a 30-point soft breach. The cost step alone (batch 2, canon-c195-in12) does not touch the hoard (by construction) and, in its first seed, did not lower the GDP lines either. This book is the BISECTION on the one lever that moves the hoard: the three spending keys half-way between the canon's set (0.9 / 0.9 / 1.5) and the full set - 0.95 / 1.0 / 2.0 - with the land CRITICAL held UNDER the ship EXCESSIVE threshold (vanilla's 1.05), so for the first time a spending book has NO define rejected at load (landmine L33: the full set's CRITICAL 1.25 invalidated vanilla's ship key in every eager run). The queue cap stays at the canon's 0.1 (F125 exonerated it) and everything else is the incumbent byte for byte (field diff: ai_defines, three keys). Full runs; the register's hard lines stop a config, a soft line never does.",
+ "_arms": {
+  "canon-c19-in12-mild": "{kind: config, config: config/mod_config.canon-c19-in12-mild.json} - generated 2026-09-18 by make_ab_config (its _ab.command holds the line); field diff against canon-c19-in12: ai_defines only (TOO_LARGE_INVESTMENT_POOL_FACTOR 0.95, CRITICAL 1.0, EXCESSIVE 2.0); dry-run built clean 2026-09-18 (lint, negative-goods, L31, mod checks, preflight; L33 CLEAN - no rejected define)."
+ },
+ "_delta": "Against canon-c19-in12 (the incumbent): the three spending defines only - 0.95 / 1.0 / 2.0 in place of 0.9 / 0.9 / 1.5. Against canon-c19-in12-eager (F124): the same three keys at 0.95 / 1.0 / 2.0 in place of 0.99 / 1.25 / 3.0, and the queue cap at 0.1 in place of 0.05 (F125: the cap changes nothing).",
+ "_predictions": {
+  "gdp": "world GDP 1.05-1.25x the vanilla per-run median at 1935 (point ~1.15: half the full set's lift over the incumbent); the 1900 dip 0.78-0.95x (the incumbent 0.75-0.95, the full set 0.77-0.78). A stall seed (below 0.6x after a British disaster) is F121's mechanism and would be the FIRST on the found slope with a spending set (F124 / F125 saw 0.56-0.74 there).",
+  "workers": "productive workers per capita 0.70-0.80x world (the incumbent 0.64-0.75, the full set 0.71-0.74); the pool 0.74-0.84x; shortlist unemployment incl. peasants 28-40% (the incumbent 40-45%, the full set 20-29%); no capital-abundance trip expected",
+  "hoard": "world pools 0.30-0.50 of GDP at 1935 (the incumbent 0.42-0.91, the full set 0.12-0.15, vanilla 0.29); the pool's 0.5-0.8; Britain 0.4-1.0 (the incumbent 0.87-3.86, the full set 0.16-0.26); the private backlog 1.2-1.8 y (the incumbent 1.9-2.4, the full set 0.8-1.3); the construction sector 3,200-3,800 levels",
+  "obsolescence": "rung 0 38-50% staffed at 1935 (the incumbent 45-53%, the full set 41-49%); T0 0.5-0.9x the 1900s; the shortlist's rung 0 25-45% staffed; below-best 30-38%",
+  "perf": "row P total within +10% of the vanilla median play time; the resume feeder handles a CTD (L32)"
+ },
+ "_register": "PROPOSED BATCH (after the sequence's batch 2): the milder spending set on the incumbent. Predictions in the register's terms (end state = the 1932-1936 mean, ratios to vanilla n=16), interpolating the incumbent (F131: world GDP 1.10, pool GDP 1.30, pool W 0.68, pool U* 2.02, pool H 4.2x, world H 2.2x, PI 0.84, PP 0.83, T0 0.88, T3 26%) and the full set (F132: 1.23, 2.01, 0.91, 1.15, 0.53x, 0.46x, 0.80, 0.73, 0.39, 31%): pool H 1.5-2.5x (0.5-0.8 of GDP; Britain 0.4-1.0), world H 1.0-1.6x, the private backlog 1.2-1.8 y; the pool's GDP 1.35-1.65 (⚠ the 1.5 soft line sits INSIDE the band - a coin flip on the soft penalty, as the incumbent's own seeds 1.15 / 1.29 / 1.45 / 2.12 already are), pool W 0.74-0.84, pool U* 1.4-1.8x, world GDP 1.10-1.20, PI 0.80-0.86 (falling if the pool builds the frontier), PP 0.75-0.85, T0 0.5-0.9x, T3 26-30%. HARD: the capital-abundance pair LESS likely than the incumbent's 1 in 4 (the hoard spent). EXPECTED LOSS 10-18 without a soft crossing and 30-40 with one - i.e. NOT expected to beat the incumbent's 7.6 under the standing weights: the hoard term is worth at most 1.9 (0.5 x its capped 3.7 sigma) while the pool-GDP, pool-W and world-GDP terms the same spending moves cost 3-8 between them. WHY RUN IT ANYWAY: it is the register's first real TRADE-OFF test (HANDOVER 2026-09-17, 'the weights have never decided a real trade-off') - a book better on the hoard and worse on the pool's GDP is exactly the pair where world GDP 3 / pool GDP 2 / pool H 0.5 bite; if its loss order disagrees with the user's judgement, the weights move (`criteria.mjs --weights`) and §10.83.4 is amended. It also answers whether the hoard lever has a usable middle at all (F125's three thresholds convicted together at full strength; nothing measured between). THE ADOPT RULE (the loss-minimising iterator, 2026-09-17 evening): the incumbent is canon-c19-in12 at consensus loss 7.6 (F131; its clean seeds 5.3 / 9.5, its soft-line seed 44.4, one seed broken). After the pair (and the tie-breaker on F114 divergence): a HARD break in any run = the config is OUT (one broken run ends it). Otherwise read `criteria.mjs --arm <sessions>:<setup>`: the candidate REPLACES the incumbent only if its consensus loss is below 7.6 by at least 3 OR it is better on each of the three largest terms (the pool's GDP, the pool's hoard, world GDP) with no new soft breach; read the PER-SEED losses beside the consensus (a seed that crosses a soft line jumps by 10 x the line's weight). Every candidate is launched only on the user's go; within a sequence the batches follow each other under the 2+1 rule; at its end the next hypothesis is PROPOSED, not launched.",
+ "_alignment": "THE 2+1 RULE (user-ruled 2026-09-14, F114): after run 2, `node tools/testbed/ledger/alignment_check.mjs --arm <session>:canon-c19-in12-mild` - two criteria at 1935 vs the vanilla per-run median, five bands each, a pair fails an axis only in different bands AND >= 0.15 (GDP) / >= 0.10 (workers) apart. DIVERGENT => the _tb.json as its own one-run schedule (pool both sessions in --arm). THE REGISTER (§10.83, 2026-09-17) governs the stop: tools/testbed/stop_watch.ps1 runs criteria.mjs on each completed run and drops tools/testbed/STOP on a HARD break only (the 2026-09-14 1.3x rule is its fallback); read `criteria.mjs --arm <session[,session]>:canon-c19-in12-mild` for the loss and `capital_flags.mjs` beside it.",
+ "_comparison": "vanilla n=16 (20260821_131149) for every ratio; canon-c19-in12 (F131, four seeds) the incumbent and the base; canon-c19-in12-eager (F124) and canon-c195-in12-eager (F132) the full-strength references; canon-c195-in12 (batch 2) the cost-only control.",
+ "_watch": [
+  "every run ~5 min in: mod marker, version, this run's error window by position, clock (tools/testbed/batch_heartbeat.sh <session> at each wake); arm tools/testbed/stop_watch.ps1 on the session through launch_detached.ps1 -Hidden and a background wait_for_session.ps1",
+  "first run: tools/testbed/ledger/queue_series.mjs at 1900/1920/1935 - private and government backlog years, private share, construction sector levels, pool; capital_flags.mjs at 1935; first_run_decomp at 1900/1935; rung margins by era; run_vs_vanilla (scratchpad or the ledger); rung0_path.mjs and rung0_who.mjs (tools/testbed/ledger, F122) for the old rung's path",
+  "post-run: alignment_check.mjs (it prints the stop verdict too), capital_flags.mjs, preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS, the ledger (one configuration per report)"
+ ],
+ "_cost": "1 x 1836->1936 ~ 2h20-2h40.",
+ "_caveats": [
+  "n=2 by design; the alignment tool decides on the third.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent; the five-minute smoke check on EVERY run; never interleave configs.",
+  "PROPOSED, not launched: the user confirms first (2026-09-17 ruling: the next hypothesis is proposed at the end of a sequence)."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+ },
+ "setups": {
+  "canon-c19-in12-mild": {
+   "kind": "config",
+   "config": "config/mod_config.canon-c19-in12-mild.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "canon-c19-in12-mild",
+   "until": "1936.1.1"
+  }
+ ]
+}
