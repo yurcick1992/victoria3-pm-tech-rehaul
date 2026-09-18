@@ -13150,3 +13150,98 @@ state is the 1932–1936 mean.
 **What it does not say.** Nothing about the eager define set on this base (unmeasured on C 1.9; F121 measured it on C 2.05 as bistable);
 nothing about the price groups' trajectories beyond "PI not falling every decade"; the ledger of the old shape was not produced (the report
 is to be re-based on the register).
+
+## F132 — THE EAGER SET ON THE DEARER SLOPE SPENDS THE HOARD AND RUNS THE POOL HOT, IN BOTH SEEDS: cost 1.95^era + the spending defines read world GDP 1.17 / 1.30× vanilla (ALIGNED), the hoard lines AT THE AIM for the first time on any book (world 0.46×, pool 0.53×), the pool's GDP 2.06 / 1.96× beyond the soft line, pool W 0.95 / 0.87 and the majors depeasanted to vanilla's level — consensus loss 44.6 against the incumbent's 7.6, NOT adopted; the dearer top rung did not damp the boom F124 saw on the found slope (canon-c195-in12-eager, n=2 aligned, batch 1 of the loss-minimising sequence, 2026-09-18)
+
+**Arm.** `config/mod_config.canon-c195-in12-eager.json` — the found configuration (`canon-c19-in12`, F117 / F120 / F131: A 2.2 / B 1.5, the
+×1.2 lift on rung 0, ai_value 3^era, divisor 0.000125, the 24-month bar) with TWO levers moved: building_cost = anchor × **1.95**^era in place
+of 1.9^era (600 / 1,170 / 2,282 / 4,449 for the 600-point industries; 800 / 1,560 / 3,042 / 5,932 for the 800-point ones — the top rung 8%
+dearer than the found slope's, 14% cheaper than C 2.05's) AND the eager-spending define set (MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_
+POOL_FACTOR 0.99, CRITICAL 1.25, EXCESSIVE 3.0, CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED 0.05; LONG / VERY_LONG 160 / 240).
+Session `20260918_000707_canon-c195-in12-eager-n2`, two runs, both to 1936.1.1 on one attempt (no crash, no resume; play 170.3 / 147.5 min,
+overhead 0.1 min), 101 summaries each. The ONE rejected define in either run is vanilla's own `MONEY_SPENDING_SHIP_CONSTRUCTION_EXCESSIVE_
+THRESHOLD` (1.05, invalidated by our land CRITICAL 1.25 — landmine L33's accepted naval residual, identical in every eager book); the set's
+four keys were accepted. Read under THE CRITERIA REGISTER (§10.83 / §10.83.4) with `criteria.mjs` against the vanilla n=16 baseline
+(`20260821_131149`); the end state is the 1932–1936 mean. Batch 1 of the sequence prepared in HANDOVER 2026-09-17 (the ruled "under-side"
+pairing of 2026-09-15: a dearer slope to take the GDP lines down, the spending set to take the hoard down).
+
+**Under the register, per seed and on the consensus (ratios to vanilla):**
+
+| line | seed 1 | seed 2 | consensus | incumbent (F131, 4 seeds) | verdict on the consensus |
+|---|---|---|---|---|---|
+| world GDP | 1.17 (1935 pt 1.20; 1936 1.19) | 1.30 (1.31; 1.31) | **1.23** | 1.10 | inside, above the 1.0 aim |
+| world W · U* · H | 0.71 · 1.35 · 0.42 | 0.74 · 1.33 · 0.50 | 0.72 · 1.34 · **0.46** (0.13 of GDP) | 0.69 · 1.39 · 2.20 | at the aim · inside · **at the aim** |
+| pool GDP (W × Y) | **2.06** = 0.95 × 1.96 | **1.96** = 0.87 × 2.12 | **2.01** | 1.30 | **beyond the soft line (> 1.5)** |
+| pool W | 0.95 | 0.87 | 0.91 | 0.68 | inside, above the 0.6–0.7 aim |
+| pool U* | **0.95** (20.2% vs 21.3%) | 1.36 (28.9%) | 1.15 (24.5%) | 2.02 | seed 1 beyond the soft line; inside on the consensus |
+| pool H | 0.50 (0.17 of GDP) | 0.55 (0.18) | **0.53** | 4.17 (1.40) | **at the aim** |
+| PI (building inputs, £) | 0.80 falling | 0.81 falling | **0.80** (0.82 of base) | 0.84 | at the aim |
+| PP (pop goods, wage units) · PM | 0.83 · 0.48 | 0.64 · 0.59 | **0.73** · 0.54 | 0.83 · 0.47 | at the aim · read only |
+| T0 (1935 ÷ the 1900s) | 0.31 (0.16M) | ~0.47 (0.44M) | **0.39** (0.67 / 0.67 / 0.59 / 0.30M) | 0.88 | at the aim |
+| T3 ÷ (T0+T1+T2) | 0.45 (31.2%) | ~0.43 | 0.44 (30.7%; T0…T3 0.26 / 2.80 / 12.34 / 6.84M) | 0.34 (25.6%) | the more the better |
+| HARD | intact | intact | — | 3 / 1 | anchor 0 y out; pooled U* 20.2 / 28.9%; no capital abundance; world GDP inside 0.5–1.5 |
+| LOSS | 54.9 | 45.0 | **44.6** = pool GDP 30.0 (soft) + pool W 6.5 + world GDP 5.1 + pool U* 2.8 + T3 0.2 | **7.6** | not adopted |
+
+**F114 alignment:** world GDP 1.195 / 1.314 at 1935 — both "noticeably above" and 0.12 apart (< 0.15); productive workers per capita 0.709
+(target) / 0.739 (noticeably above), 0.03 apart (< 0.10) — ALIGNED on both axes, no tie-breaker. The stop watcher read both runs "intact (0 hard,
+0 soft)" and dropped no STOP; `alignment_check.mjs`'s superseded fallback line (1936 GDP above 1.3×) fires on run 2 at 1.308× — the register
+governs, a soft line never stops a batch, and the pair was complete.
+
+**Decomposition (1935; GDP = population × productive workers per capita × GDP per productive worker, ÷ vanilla):** world 1.20 = 1.01 × 0.71 ×
+1.67 (seed 1) and 1.31 = 0.97 × 0.74 × 1.83 (seed 2); the pool 2.09 = 1.19 × 0.89 × 2.01 and 1.93 = 1.05 × 0.88 × 2.13. ⚠ Seed 1's pool
+population term is Britain annexing Yue (a 46M Chinese successor state) between 1934 and 1935 — GBR 90 → 136M people at a GDP of £1,019 →
+1,088M; it lowers pool W and raises pool U*, so it does not produce the breaches; Belgium does not exist in seed 1 at any read date. The
+century's path: world 0.96 / 0.90 / 0.78 / 0.92 / 1.20 (seed 1) and 0.93 / 0.90 / 0.77 / — / 1.31 (seed 2) at 1860 / 80 / 1900 / 20 / 35 —
+the family's dip to 1900 in both, the pool at 1.09 / 0.89 at 1900, then the climb.
+
+**The hoard (`queue_series.mjs`, world / Britain):** the pool 0.08 / 0.07 / 0.12 of GDP at 1900 / 1920 / 1935 in seed 1 and 0.08 / 0.11 /
+0.15 in seed 2 (the found configuration 0.16 / 0.50 / 0.91); Britain 0.19 / 0.14 / 0.26 and 0.03 / 0.16 / 0.16 (found 0.10 / 1.55 / 3.86);
+the private backlog 0.8 / 0.8 / 1.3 y and 0.6 / 0.7 / 1.0 y (found 1.4 / 1.6 / 2.4); the government backlog 1.1 / 1.0 / 3.1 and 1.6 / 1.1 /
+1.6 y; the construction sector 3,799 and 4,357 levels at 1935 (found 2,921–3,092); the private share of construction speed 87% / 81%. Capital
+flags CLEAN in both, no persistent hoard by either test; shortlist members' pools at 1935: Britain 0.26 / 0.16, France 0.20 / 0.06, Germany
+0.17 / 0.41, the USA 0.01 / 0.06.
+
+**The majors (`major_series.mjs`, strict unemployment / peasants' share of the workforce, 1900 → 1935):** seed 1 — the USA 7.1% / 69% →
+5.8% / 18%, France 38% / 46% → 3.3% / 13%, Germany 22% / 54% → 1.2% / 36%, the Netherlands 16% / 41% → 1.0% / 2%, Britain 8.6% / 34% → 9.4% /
+21% (the annexation); seed 2 — Britain 9.7% / 35% → 0.4% / 3%, the USA 6.1% / 69% → 6.3% / 36%, France 41% / 54% → 15% / 42%, Germany
+(NGF 15% / 55% at 1900) → 2.8% / 25%, Austria 21% / 57% → 0.0% / 7%, Turkey 35% / 51% → 2.2% / 0%, Russia's salaried workforce 6.3 → 18.7M
+(20% / 49% at the end). World peasants' share 59% → 42% and 61% → 44% (the found seed 4: 57% → 41%).
+
+**The old rung (`rung0_path.mjs` / `rung0_split.mjs`, world):** buildings 670 → 876 and 720 → 902 from 1900 to 1935, levels 1,172 → 1,676
+(+43%) and 1,251 → 1,586 (+27%), STAFFED levels 786 → 687 (67% → 41%) and 804 → 770 (64% → 49%); rung 0 is 0.5–1.5% of the private queue's
+points at 1935. The shortlist's rung 0 is 19% / 23% staffed (0.30 / 0.33M workers; motor 9%, steel / arms / artillery / paper / furniture at
+0–1%), the rest of the world 46% / 54% (3.1 / 3.5M — BIC 377k / China 1,076k, Russia 272 / 358k). `rung_econ`: the frontier's value added
+per worker is 20–50× rung 0's in every industry (motor e0 £0.04 a week against e2's £1.95, textile e0 £0.08 against e3's £3.86); e3 rungs
+staffed 69–100% except artillery 26%.
+
+**Sectors (`sector_split.mjs`, 1935, share of building value added):** tiered e2 34.8% / 36.9% and e3 36.0% / 35.9% (the found seed 4: 39.3%
+/ 25.4% — the frontier is DEEPER with the hoard spent), e1 2.9% / 3.5%, e0 0.2%; extraction 12.4% / 16.4% (8,609 / 11,605 levels; found
+14.4%, 10,865), agriculture 25.3% / 17.7%, construction −17.0% / −16.4% (3,799 / 4,357 levels), urban + infrastructure 9.3%.
+
+**Against the schedule's `_register` predictions:** world GDP 0.95–1.10 → 1.23 (above); the pool's GDP 1.05–1.30 → 2.01 (far above, soft);
+pool W 0.60–0.72 → 0.91 (far above); pool U* ≥ 1.8 → 1.15 (far below; seed 1 soft); pool H 2.0–3.5× → 0.53× and world H 1.5–2.5× → 0.46×
+(far BELOW — the hoard is gone, beyond the prediction, which had assumed F121's "the set cannot hold the pool where growth is"); PI / PP
+0.80–0.90 → 0.80 / 0.73 (met); T0 falling / T3 24–30% → 0.39× / 31% (met); no hard break in two seeds (met); expected loss 3–8 → 44.6.
+
+**What it says.**
+1. **The eager set is a hoard lever that works on every slope it has been tried on** — here the hoard lines land AT THE AIM for the first
+   time on any book (world 0.13 of GDP, the pool 0.18; the private backlog under 1.3 y all century), in both seeds, as in F124's two seeds
+   (0.27 / 0.34) and F125's three (0.11–0.17) on the found slope, and F121's three on C 2.05 (0.15–0.83).
+2. **And the spent capital runs the pool hot, on this slope in BOTH seeds.** The majors absorb their peasants to vanilla's level, the pool's
+   GDP doubles vanilla's, pool W runs 0.87–0.95 against the 0.6–0.7 aim, pool U* 0.95–1.36 against the 2× aim. F124 read the set on C 1.9
+   as a 0.74 / 1.45 split and F125 as 1.23 / 0.94 / 0.56; on C 1.95 the two seeds AGREE and both boom. So the slope step of 8% on the top
+   rung did not damp the set — the eager set's regime is not a function of the cost slope between 1.9 and 1.95 — and in the register's
+   terms the set trades the incumbent's hoard term (1.88 of its 7.6) for the pool's GDP soft breach (30) and 6.5 on pool W: it cannot be
+   adopted while the pool's GDP line stands at 1.1 (soft > 1.5).
+3. **The prices and the old rung are where the design wants them, and the hot pool is what buys them:** PI 0.80 and falling every decade,
+   PP 0.73 (the found's 0.83), T0 0.39× the 1900s with the shortlist's rung 0 nearly empty and T3 31%. The register's price and
+   old-rung aims are met by the same mechanism that breaks its pool GDP line — the lever pair is one-signed on the pool.
+4. **The two levers cannot be separated by this batch alone:** its one-lever reference on the found slope (F124) has no consensus, and the
+   whole of the pool-side reading is the spending set's known signature, so the cost step's own contribution to the GDP lines — the
+   reason the under-side line exists — is unmeasured. Batch 2 is the one-lever control `canon-c195-in12` (the cost step alone; launched
+   05:37 local as `20260918_053753_canon-c195-in12-n2`); the pre-registered overshoot branch (`canon-c20-in12-eager`) also triggered on
+   the letter of its rule and stays available on the user's call.
+
+**What it does NOT say.** Nothing about which define carries the boom (F125 convicted the three spending thresholds together); nothing about a
+milder set (an intermediate CRITICAL / EXCESSIVE, or the pool factor 0.99 alone) — a new hypothesis, to be proposed; nothing about the cost
+step alone (batch 2); no ledger (the report re-base on the register is deferred by ruling; `criteria.mjs` and the VERDICT stand in).
