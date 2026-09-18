@@ -7816,3 +7816,56 @@ identical (the found 2.4, A 1.9 7.9, the family pair 27.4, the C 2.05 lift 35.9,
 OUT and DIVERGENT rows): the distances shrink, the soft-breach penalties carry the breached books, and the two in-band books keep their
 places on the same lines. Vanilla's spread stays the default — it is the reference's own natural variation and does not depend on which
 batches happen to be read.
+
+
+### 10.83.5 — The loss re-weighted and made continuous (user-ruled 2026-09-18 ~09:00 local; implemented the same morning; validation against the historical books DEFERRED by the user's instruction of ~13:20)
+
+**The rulings, verbatim (user, 2026-09-18, after the loss was walked through on batch 1's 44.6 against the incumbent's 7.6):**
+
+> Balance weights more equally (reduce pool GDP weight, increase the now low-weighted options, especially T3/rest and T0/rest). The
+> direction is generally right (except for T), but the share difference is too much.
+>
+> Penalty for being over soft cap is excessive and counterintuitive, and I believe can cost us efficiency when optimising for reducing loss
+> function. While hitting soft cap means "we're not there yet" and "this build can't be final", but being 1% over soft cap isn't instantly
+> infinitely worse than being 1% under, and discarding an otherwise almost-fitting setup for this reason is plain wrong and will break
+> minimisation process.
+
+**What changed in `tools/testbed/ledger/criteria.mjs` (the defaults; the 2026-09-17 form stays reachable by flags):**
+
+1. **The soft line is a KINK, not a step.** Beyond a soft boundary the EXCESS distance (in σ, capped at 5) counts `SOFT_SLOPE` (default 2)
+   more times on top of the aim distance: `d = min(5, gap_from_aim/σ) + SOFT_SLOPE × min(5, excess_beyond_soft/σ)`. The loss is continuous
+   through the line and steeper past it; a book 1% over reads a hair worse than 1% under. The flat `10 × w` step survives only as
+   `--soft-pen` (default 0; `--soft-pen 10 --soft-slope 0` reproduces the 2026-09-17 form). A breach still marks the book "not final": the
+   report's verdict column and the ranking's new `beyond soft (not final)` column carry the breached lines.
+2. **T0 is a share term like T3.** `T0 ÷ (T1 + T2 + T3)`, the less the better, scored as its distance from 0 in the mod runs' spread of that
+   share (σ over the runs read in the invocation, fallback 0.02; measured 0.026 over the 28 intact runs of the 2026-09-13 → 09-18 books,
+   mean 0.037), plus the kink beyond T0's soft line (1935 > 1.3 × the 1900s). The old form (0 unless rising above the 1900s) gave no
+   gradient to a book that empties the old rung; the decade path and the "falling" verdict are still printed.
+3. **The weights:** world GDP 2 · pool W 1.5 · T0 1.5 · T3 1.5 · pool GDP 1.25 · world W 1.25 · pool U* 1 · PI 1 · PP 0.75 · world U* 0.75
+   · pool H 0.75 · world H 0.5 — a 4× range in place of the 12× of the 2026-09-17 set (3 / 2 / 2 / 1.5 / 1 / 1 / 1 / 0.5 / 0.5 / 0.5 / 0.3 /
+   0.25), the priority order kept (world GDP first, then the pool's W and W × Y), the T lines raised to the second tier as ruled.
+   `--weights k=v,…` overrides; the ranking header prints the set in force.
+
+**The re-ranking that was run (2026-09-18 ~12:00 local, every book measured since 2026-09-13, the consensus over the intact runs; NOT yet
+judged — the user deferred validation):**
+
+| book (intact / broken) | loss 2026-09-17 form | loss 2026-09-18 form | world GDP | pool GDP | pool W | pool H | T0 ÷ rest | T3 ÷ rest | beyond soft |
+|---|---|---|---|---|---|---|---|---|---|
+| `canon-c19-in12`, the incumbent (3 / 1) | 9.06 (7.6 as recorded in F131, before T0 became a share) | **11.48** | 1.10 | 1.30 | 0.68 | 4.17 | 0.039 | 0.344 | — |
+| `canon-c205-in13` (2 / 0) | 43.37 | 14.39 | 0.72 | 1.03 | 0.58 | 0.70 | 0.028 | 0.220 | world GDP |
+| `canon-a19-gm` (2 / 0) | 18.34 | 16.16 | 1.13 | 1.47 | 0.88 | 1.41 | 0.019 | 0.538 | — |
+| `canon-c19-e0ai500` (1 / 1) | 38.22 | 20.82 | 1.05 | 1.79 | 0.86 | 2.10 | 0.019 | 0.372 | pool GDP |
+| `canon-b18-gm` (3 / 0) | 70.69 | 25.60 | 0.66 | 0.81 | 0.56 | 0.83 | 0.070 | 0.201 | world GDP, pool GDP |
+| `canon-c195-in12-eager` (2 / 0, F132) | 45.06 | 27.88 | 1.23 | 2.01 | 0.91 | 0.53 | 0.012 | 0.444 | pool GDP |
+| `canon-je24-a22-in12` (3 / 0) | 84.78 | 31.99 | 0.61 | 0.93 | 0.52 | 0.88 | 0.083 | 0.190 | world GDP, pool GDP, T0 |
+| `canon-flat-in12-a16` (3 / 0) | 87.70 | 33.51 | 0.60 | 0.64 | 0.68 | 0.23 | 0.021 | 0.467 | world GDP, pool GDP, PI, PP |
+| `canon-c205-in12-eager` (2 / 1), `canon-c19-in12-eager` (2 / 0), `canon-c19-in12-eager-q10` (3 / 0), `canon-c195-in12` (3 / 0, F133) | DIVERGENT | DIVERGENT | | | | | | | |
+| `canon-flat-in12-a19`, `canon-c16-in12`, `canon-c19-in13`, `canon-a205-gm`, `canon-c19-in12-sharp` | OUT (no intact run) | OUT | | | | | | | |
+
+(The incumbent read 12.75 when ranked beside the batch-2 books alone and 11.48 in the seventeen-book invocation: the T terms' σ is the
+spread of the runs READ, so a loss is comparable only within one invocation — a known property, unchanged from 2026-09-17.)
+
+**Deferred (the user, 2026-09-18 ~13:20 local): the validation judgement** — whether this ranking "puts the actual best batches first" as
+the 2026-09-17 ruling requires, whether the stalled B 1.8 book at 25.6 and the stall-side C 2.05 ×1.3 book at 14.4 sit where they should
+against the A 1.9 pair at 16.2, and whether the T σ should be fixed rather than per invocation. The numbers above are the record for that
+discussion; nothing in the register's AIM / SOFT / HARD lines moved.

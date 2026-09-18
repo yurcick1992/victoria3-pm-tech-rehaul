@@ -13245,3 +13245,61 @@ pool W 0.60–0.72 → 0.91 (far above); pool U* ≥ 1.8 → 1.15 (far below; se
 **What it does NOT say.** Nothing about which define carries the boom (F125 convicted the three spending thresholds together); nothing about a
 milder set (an intermediate CRITICAL / EXCESSIVE, or the pool factor 0.99 alone) — a new hypothesis, to be proposed; nothing about the cost
 step alone (batch 2); no ledger (the report re-base on the register is deferred by ruling; `criteria.mjs` and the VERDICT stand in).
+
+## F133 — THE COST STEP ALONE (C 1.95 ON THE FOUND CONFIGURATION), THREE SEEDS, DATA ONLY: world GDP 1.17 / 0.92 / 0.68× vanilla at the end state, 3 of 3 pairs divergent under F114, no register consensus — not adopted; seed 2's USA never industrialised; recorded without interpretation at the user's instruction (canon-c195-in12, n=3 with the tie-breaker, batch 2 of the loss-minimising sequence, 2026-09-18)
+
+**Arm.** `config/mod_config.canon-c195-in12.json` — `canon-c19-in12` (F117 / F120 / F131) with building_cost = anchor × 1.95^era in place of
+1.9^era (600 / 1,170 / 2,282 / 4,449; 800 / 1,560 / 3,042 / 5,932) and NOTHING else (field diff: 43 building_cost fields; the §10.75 defines,
+not the eager set). Sessions `20260918_053753_canon-c195-in12-n2` (runs 1–2) + `20260918_104602_canon-c195-in12-tb` (the 2+1 tie-breaker).
+Run 1: a CTD at 1903.4.14, the resume feeder fed the newest save, landed 1903.1.7, 147.2 min of play; run 2: one attempt, 148.2 min; run 3:
+one CTD recovered, 152.1 min. 101–102 summaries each; no define rejected; `preflight -Session` PASS except L28 on run 1's error.log mirror
+(one false rotation — raw line counts off that mirror over-read). Read under THE CRITERIA REGISTER (§10.83) with `criteria.mjs` — the loss in
+its 2026-09-18 form (§10.83.5), the 2026-09-17 form in brackets; the end state is the 1932–1936 mean; ratios to vanilla n=16.
+
+**Per seed and the incumbent (ratios to vanilla):**
+
+| line | seed 1 | seed 2 | seed 3 | incumbent (F131, 4 seeds) |
+|---|---|---|---|---|
+| world GDP (1935 point) | 1.17 (1.20) | 0.92 (0.95) | **0.68** (0.69) soft | 1.10 (1.11) |
+| world W · U* · H | 0.73 · 1.34 · 1.97 | 0.60 · 1.50 · 0.77 | 0.56 · 1.57 · 0.79 | 0.69 · 1.39 · 2.20 |
+| pool GDP (= W × Y) | **1.51** = 0.78 × 1.66 (soft, by 0.01) | 1.15 = 0.59 × 1.98 | **0.91** = 0.58 × 1.71 (soft) | 1.30 = 0.68 × 1.86 |
+| pool U* · pool H (of GDP) | 1.67 · 2.35 (0.79; Britain 1.31) | 2.31 · 0.95 (0.31; Britain 0.56) | 2.55 · 0.45 (0.16; Britain 0.17) | 2.02 · 4.17 (1.40) |
+| PI (falling?) · PP · PM | 0.84 (no) · 0.69 · 0.31 | 0.82 (yes) · 0.84 · 0.48 | 0.86 (no) · 0.75 · 0.69 | 0.84 (no) · 0.83 · 0.47 |
+| T0 ÷ rest (1935 ÷ 1900s) · T3 ÷ rest (share) | 0.043 (0.84) · 0.35 (25.8%) | 0.034 (0.68 falling) · 0.33 (24.9%) | 0.052 (1.16) · 0.33 (24.6%) | 0.039 (0.88) · 0.34 (25.6%) |
+| HARD | intact | intact | intact | 3 / 1 |
+| LOSS new (old) | 20.7 (37.4) | 8.6 (4.2) | 21.8 (66.3) | 12.75 (7.6 as recorded in F131; 9.9 with T0 as a share) |
+
+**Alignment (F114, at 1935):** world GDP 1.196 / 0.945 / 0.693 (noticeably above / target / noticeably below), workers per capita 0.755 /
+0.604 / 0.564 (noticeably above / target / target) — every pair fails the GDP axis; `alignment_check.mjs`'s reading is the median of three
+(0.945× / 0.604×); `criteria.mjs`'s consensus rule (the two closest on world GDP, 0.92 / 0.68) finds them divergent and prints no consensus
+and no loss for the configuration. THE ADOPT RULE, applied mechanically: not adopted; the incumbent stays `canon-c19-in12`.
+
+**Decompositions (1935, ÷ vanilla; GDP = population × workers per capita × GDP per productive worker):** world 1.20 = 0.97 × 0.75 × 1.64 ·
+0.94 = 1.00 × 0.60 × 1.56 · 0.69 = 0.92 × 0.56 × 1.33; the pool 1.51 = 1.15 × 0.80 × 1.69 · 1.16 = 0.98 × 0.59 × 2.05 · 0.91 = 0.91 × 0.59
+× 1.74. World paths: 0.98 / 0.92 / 0.88 / 0.95 / 1.20 · 0.93 / 0.90 / 0.92 / — / 0.94 · 0.98 / 0.88 / 0.69 / 0.69 / 0.69 at 1860 / 80 / 1900 /
+20 / 35.
+
+**Hoard and queues (`queue_series.mjs`, 1935):** world pool 0.59 / 0.23 / 0.23 of GDP; the private backlog 2.3 / 1.7 / 1.6 y (Britain 1.9 /
+2.5 / 2.3; the USA 3.5 / 1.1 / 0.8); the government backlog 1.8 / 1.6 / 1.5 y; the construction sector 3,230 / 2,791 / 1,820 levels; Britain's
+pool 1.31 / 0.56 / 0.17 of its GDP. Capital flags CLEAN in all three; no persistent hoard.
+
+**The old rung (`rung0_path.mjs`, world, 1900 → 1935):** buildings 819 → 985 · 855 → 1,005 · 835 → 999; levels 1,420 → 1,691 · 1,474 → 1,707 ·
+1,405 → 1,627; staffed 911 → 857 (64% → 51%) · 965 → 876 (65% → 51%) · 813 → 803 (58% → 49%); the shortlist's rung 0 49% / 40% / 53% staffed
+(0.77 / 0.58 / 0.69M workers). **Sectors (1935, share of building value added):** tiered e2 42.9% / 40.3% / 34.0%, e3 23.0% / 25.7% / 24.4%
+(e3 1,405 / 1,160 / 850 levels), extraction 14.5% / 14.7% / 13.9% (9,588 / 8,351 / 6,613 levels), agriculture 25.6% / 22.8% / 29.9%,
+construction −15.0% / −12.3% / −11.2%.
+
+**Majors (strict unemployment / peasants' share, 1935):** seed 1 — Britain 0.5% / 7%, the USA 8.5% / 34%, Germany 3.3% / 29%, France 39% /
+41%, the Netherlands 6.0% / 13%, Belgium 0.0% / 9%; seed 2 — Britain 0.1% / 3%, the USA 53% / 72% (bankrupt 1859.5.20 and 1891.11.11, a
+council republic from before 1910, GDP £108M at 1935 against vanilla's median £418M and worst seed £154M), Germany 0.7% / 14%, France 49% /
+39%, the Netherlands 0.0% / 8%, Belgium 0.2% / 11%; seed 3 — Britain 2.5% / 19%, Germany 1.9% / 19%, the USA 37% / 67%, France 64% / 42%,
+the Netherlands 60% / 60% with 0.0M salaried in every year read (not examined). World peasants 58% → 39% · 58% → 47% · 61% → 50%.
+
+**Against the schedule's `_register` predictions** (world GDP 0.95–1.08, the pool's GDP 1.10–1.30, pool W 0.62–0.70, pool U* ≥ 2, pool H
+3–4.5×, PI / PP 0.80–0.90, expected loss 5–8): seed 1 above on the GDP lines and W, seed 2 at or below, seed 3 below on every GDP line; the
+hoard below the prediction in seeds 2–3.
+
+**What it says / does not say.** The interpretation — whether the three seeds are one distribution, what the cost step did to the GDP lines,
+how the collapsed USA and the salaried-less Netherlands weigh — is DEFERRED by the user's instruction of 2026-09-18 (~13:20 local): this entry
+records the data. The three seeds' losses under the new form are 20.7 / 8.6 / 21.8 against the incumbent's 12.75; under the old form 37.4 /
+4.2 / 66.3 against 7.6.

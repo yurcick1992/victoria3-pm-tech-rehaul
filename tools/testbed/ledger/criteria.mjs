@@ -32,18 +32,24 @@
 // THE LOSS (user-asked 2026-09-17: "a formula to minimize with weights", distances "relying on natural distributions" and validated so
 //   that the actual best batches score best): L = Σ w · d, where d is the distance from the aim interval in units of the metric's NATURAL
 //   SPREAD — the standard deviation of the same ratio across vanilla's sixteen seeds (σ), capped at 5 — and, for the T terms with no
-//   vanilla reference, the spread across the mod runs read in the same invocation; T3 enters as −w · ln(T3 ÷ (T0 + T1 + T2)). A broken run
-//   has no loss; a config's loss is its intact consensus's. A line BEYOND ITS SOFT BOUNDARY adds a flat penalty of SOFT_PEN (10) × its weight on
-//   top of the distance — "unacceptable" must outrank any accumulation of inside-the-line misses (the 12-batch validation of 2026-09-17 showed a
-//   stalled book at 0.72× world GDP out-scoring the A 1.9 pair without it). A consensus pair that DIVERGES under F114's bands (different
-//   bands and ≥ 0.15 apart on world GDP, or ≥ 0.10 on world W) has no consensus — it needs its third run and is unranked.
+//   vanilla reference, the spread across the mod runs read in the same invocation; T3 enters as −w · ln(T3 ÷ (T0 + T1 + T2)) and, SINCE
+//   2026-09-18, T0 as its share T0 ÷ (T1 + T2 + T3) — the less the better — in the mod runs' spread of that share (fallback 0.02). A broken run
+//   has no loss; a config's loss is its intact consensus's. THE SOFT LINE IS A KINK (user-ruled 2026-09-18; §10.83.5): beyond a soft boundary the
+//   excess distance (in σ, capped at 5) counts SOFT_SLOPE (2) MORE times on top of the aim distance, so the loss is continuous through the line
+//   and steeper past it — a book 1% over a soft line scores a hair worse than one 1% under, not a step worse; the breach still marks the book
+//   'not final' in the report and in the ranking's soft column. The 2026-09-17 flat 10 × w step (which made a soft crossing a discontinuity of
+//   20–30 points and would have "broken the minimisation process") survives only as --soft-pen (default 0). A consensus pair that DIVERGES under
+//   F114's bands (different bands and ≥ 0.15 apart on world GDP, or ≥ 0.10 on world W) has no consensus — it needs its third run and is unranked.
 //   `--sigma mod` takes every σ from the INTACT mod runs read in the invocation instead of vanilla's seeds (the same population the loss is
 //   validated on; wider on the price and hoard lines, where vanilla barely moves between seeds).
-//   Provisional weights (`--weights k=v,…` overrides): world GDP 3, pool GDP 2,
-//   pool W 2, world W 1.5, pool U* 1, T0 1, PI 1, PP 0.5, world U* 0.5, pool H 0.5, T3 0.3, world H 0.25.
+//   Weights (`--weights k=v,…` overrides; user-ruled 2026-09-18 "balance more equally, reduce pool GDP, raise the low ones, especially T3/rest
+//   and T0/rest"): world GDP 2, pool W 1.5, T0 1.5, T3 1.5, pool GDP 1.25, world W 1.25, pool U* 1, PI 1, PP 0.75, world U* 0.75, pool H 0.75,
+//   world H 0.5 (the 2026-09-17 provisional set — 3 / 2 / 2 / 1.5 / 1 / 1 / 1 / 0.5 / 0.5 / 0.5 / 0.3 / 0.25 — is reproduced with
+//   --weights gdpW=3,gdpP=2,poolW=2,worldW=1.5,poolU=1,T0=1,PI=1,PP=0.5,worldU=0.5,poolH=0.5,T3=0.3,worldH=0.25 --soft-pen 10 --soft-slope 0,
+//   apart from T0's form).
 // Not in the summaries: a civil war — a member-year whose population fell more than 15% year on year is exempt from the per-member lines.
 //   node tools/testbed/ledger/criteria.mjs --arm <session[,session]>[:<setup>] [--arm …] [--config <path>] [--van <session>]
-//        [--end 1932-1936] [--big 50] [--weights k=v,…] [--sigma vanilla|mod] [--soft-pen 10] [--json <out.json>] [--quiet]
+//        [--end 1932-1936] [--big 50] [--weights k=v,…] [--sigma vanilla|mod] [--soft-slope 2] [--soft-pen 0] [--json <out.json>] [--quiet]
 import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join, dirname, resolve } from 'node:path';
@@ -57,7 +63,9 @@ const argOf = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1]
 const ARMS = []; for (let i = 0; i < argv.length; i++) if (argv[i] === '--arm') ARMS.push(argv[i + 1]);
 const VAN = argOf('--van', '20260821_131149_vanilla-baseline-n16'); const CONFIG = argOf('--config', ''); const BIG = +argOf('--big', '50') * 1e6;
 const [E0, E1] = argOf('--end', '1932-1936').split('-').map(Number); const JSON_OUT = argOf('--json', ''); const QUIET = argv.includes('--quiet'); const SIGMA = argOf('--sigma', 'vanilla');
-const W = { gdpW: 3, gdpP: 2, poolW: 2, worldW: 1.5, poolU: 1, T0: 1, PI: 1, PP: 0.5, worldU: 0.5, poolH: 0.5, T3: 0.3, worldH: 0.25 };
+// THE WEIGHTS (user-ruled 2026-09-18: "balance weights more equally — reduce pool GDP, increase the now low-weighted options, especially T3/rest and T0/rest";
+// the 2026-09-17 provisional set was gdpW 3, gdpP 2, poolW 2, worldW 1.5, poolU 1, T0 1, PI 1, PP 0.5, worldU 0.5, poolH 0.5, T3 0.3, worldH 0.25 — a 12× range; this is 4×)
+const W = { gdpW: 2, gdpP: 1.25, poolW: 1.5, worldW: 1.25, poolU: 1, T0: 1.5, T3: 1.5, PI: 1, PP: 0.75, worldU: 0.75, poolH: 0.75, worldH: 0.5 };
 for (const kv of (argOf('--weights', '') || '').split(',').filter(Boolean)) { const [k, v] = kv.split('='); if (k in W) W[k] = +v; else throw new Error('unknown weight ' + k); }
 if (!ARMS.length) { console.error('usage: --arm <session[,session]>[:<setup>] [--arm …] [--config <path>] [--van <session>] [--end 1932-1936] [--weights k=v,…] [--json out]'); process.exit(2); }
 const POOL = ['GBR', 'USA', 'FRA', 'NET', 'BEL', 'PRU', 'NGF', 'GER'];
@@ -140,7 +148,7 @@ function scoreRun(rel, tier) {
     const end = [0, 1, 2, 3].map(i => mean([...years.keys()].filter(y => y >= E0 && y <= E1).map(y => tw(y, i))));
     r.T = { end, t36: tw(1936, 0), dec0: [dec(1900, 1909, 0), dec(1910, 1919, 0), dec(1920, 1929, 0), dec(1930, 1936, 0)], worldEnd: [0, 1, 2, 3].map(i => mean([...years.keys()].filter(y => y >= E0 && y <= E1).map(y => years.get(y).T.w[i]))) };
     r.T.ratio0 = tw(1935, 0) / r.T.dec0[0]; r.T.declining = r.T.dec0.every((v, i, a) => i === 0 || !(Number.isFinite(v) && Number.isFinite(a[i - 1])) || v < a[i - 1]);
-    r.T.r3 = (end[0] + end[1] + end[2]) > 0 ? end[3] / (end[0] + end[1] + end[2]) : NaN; r.T.share3 = end.reduce((x, y) => x + y, 0) > 0 ? end[3] / end.reduce((x, y) => x + y, 0) : NaN;
+    r.T.r3 = (end[0] + end[1] + end[2]) > 0 ? end[3] / (end[0] + end[1] + end[2]) : NaN; r.T.r0 = (end[1] + end[2] + end[3]) > 0 ? end[0] / (end[1] + end[2] + end[3]) : NaN; r.T.share3 = end.reduce((x, y) => x + y, 0) > 0 ? end[3] / end.reduce((x, y) => x + y, 0) : NaN;
   }
   // ---- HARD and SOFT, per run
   { let viol = 0, below = 0, above = 0; const det = [];
@@ -170,14 +178,22 @@ function scoreRun(rel, tier) {
   return r;
 }
 // ---- the loss: d = distance from the aim interval ÷ the natural spread (vanilla's seed σ of the same ratio; the mod runs' spread for T)
-const SOFT_PEN = +argOf('--soft-pen', '10');
-const dist = (v, lo, hi, s, soft) => { if (!Number.isFinite(v) || !Number.isFinite(s) || !s) return NaN; const x = r2(v); return Math.min(5, (x < lo ? (lo - x) : x > hi ? (x - hi) : 0) / s) + (soft && soft(x) ? SOFT_PEN : 0); };
+// THE SOFT LINE IS A KINK, NOT A STEP (user-ruled 2026-09-18: "being 1% over soft cap isn't instantly infinitely worse than being 1% under … will break
+// minimisation"): beyond a soft boundary the EXCESS distance (in σ, capped at 5) counts SOFT_SLOPE more times on top of the aim distance, so the loss is
+// continuous through the line and steeper past it; the 2026-09-17 flat 10 × w step survives only as --soft-pen (default 0). A breach still marks the
+// consensus 'not final' in the report and the ranking (the soft column) — "hitting soft cap means we're not there yet".
+const SOFT_PEN = +argOf('--soft-pen', '0'); const SOFT_SLOPE = +argOf('--soft-slope', '2');
+const dist = (v, lo, hi, s, softLo = -Infinity, softHi = Infinity) => { if (!Number.isFinite(v) || !Number.isFinite(s) || !s) return NaN; const x = r2(v);
+  const aim = Math.min(5, (x < lo ? (lo - x) : x > hi ? (x - hi) : 0) / s); const excess = x < softLo ? (softLo - x) : x > softHi ? (x - softHi) : 0;
+  return aim + Math.min(5, excess / s) * SOFT_SLOPE + (excess > 0 ? SOFT_PEN : 0); };
 function lossOf(o, sT) { // o: a run or a consensus object with the metrics; sT: {ratio0, r3} spreads
   const t = {};
-  t.gdpW = dist(o.gdpW, 0.95, 1.05, sig['world.gdp'], x => x < 0.75 || x > 1.33); t.gdpP = dist(o.gdpP, 1.05, 1.15, sig['pool.gdp'], x => x < 0.95 || x > 1.5); t.poolW = dist(o.poolW, 0.6, 0.7, sig['pool.W'], x => x > 1.0); t.worldW = dist(o.worldW, 0.6, 0.95, sig['world.W'], x => x > 1.0);
-  t.poolU = dist(o.poolU, 2.0, Infinity, sig['pool.U'], x => x < 1.0); t.worldU = dist(o.worldU, 1.0, Infinity, sig['world.U'], x => x < 1.0); t.poolH = dist(o.poolH, -Infinity, 1.0, sig['pool.H']); t.worldH = dist(o.worldH, -Infinity, 1.0, sig['world.H']);
-  t.PI = dist(o.PI, -Infinity, 0.8, sig.PI, x => x > 1.0); t.PP = dist(o.PP, -Infinity, 0.8, sig.PP, x => x > 1.1);
-  if (o.T) { t.T0 = ((o.T.declining || o.T.t36 === 0) ? 0 : Math.min(5, Math.max(0, o.T.ratio0 - 1.0) / (sT.ratio0 || 0.3))) + (r2(o.T.ratio0) > 1.3 ? SOFT_PEN : 0); t.T3 = Number.isFinite(o.T.r3) && o.T.r3 > 0 ? -Math.log(o.T.r3) : NaN; }
+  t.gdpW = dist(o.gdpW, 0.95, 1.05, sig['world.gdp'], 0.75, 1.33); t.gdpP = dist(o.gdpP, 1.05, 1.15, sig['pool.gdp'], 0.95, 1.5); t.poolW = dist(o.poolW, 0.6, 0.7, sig['pool.W'], -Infinity, 1.0); t.worldW = dist(o.worldW, 0.6, 0.95, sig['world.W'], -Infinity, 1.0);
+  t.poolU = dist(o.poolU, 2.0, Infinity, sig['pool.U'], 1.0); t.worldU = dist(o.worldU, 1.0, Infinity, sig['world.U'], 1.0); t.poolH = dist(o.poolH, -Infinity, 1.0, sig['pool.H']); t.worldH = dist(o.worldH, -Infinity, 1.0, sig['world.H']);
+  t.PI = dist(o.PI, -Infinity, 0.8, sig.PI, -Infinity, 1.0); t.PP = dist(o.PP, -Infinity, 0.8, sig.PP, -Infinity, 1.1);
+  if (o.T) { // T0 ÷ (T1+T2+T3), the less the better — its distance from 0 in the mod runs' spread (fallback 0.02), plus the kink beyond the soft line (1935 > 1.3 × the 1900s)
+    t.T0 = (Number.isFinite(o.T.r0) ? Math.min(5, o.T.r0 / (sT.r0 || 0.02)) : NaN) + Math.min(5, Math.max(0, o.T.ratio0 - 1.3) / (sT.ratio0 || 0.3)) * SOFT_SLOPE + (r2(o.T.ratio0) > 1.3 ? SOFT_PEN : 0);
+    t.T3 = Number.isFinite(o.T.r3) && o.T.r3 > 0 ? -Math.log(o.T.r3) : NaN; }
   const softList = []; if (r2(o.gdpW) < 0.75 || r2(o.gdpW) > 1.33) softList.push('world GDP'); if (r2(o.gdpP) < 0.95 || r2(o.gdpP) > 1.5) softList.push('pool GDP'); if (r2(o.poolW) > 1.0) softList.push('pool W'); if (r2(o.worldW) > 1.0) softList.push('world W'); if (r2(o.poolU) < 1.0) softList.push('pool U*'); if (r2(o.worldU) < 1.0) softList.push('world U*'); if (r2(o.PI) > 1.0) softList.push('PI'); if (r2(o.PP) > 1.1) softList.push('PP'); if (o.T && r2(o.T.ratio0) > 1.3) softList.push('T0');
   let L = 0, n = 0; const parts = {}; for (const [k, w] of Object.entries(W)) { if (!(k in t) || !Number.isFinite(t[k])) continue; parts[k] = w * t[k]; L += parts[k]; n++; }
   return { L, parts, terms: t, n, soft: softList };
@@ -197,13 +213,13 @@ const consensusOf = runs => { // over intact runs
   const keys = ['gdpW', 'gdp35', 'gdpP', 'poolW', 'poolU', 'poolH', 'poolY', 'worldW', 'worldU', 'worldH', 'worldY', 'poolW_abs', 'worldW_abs', 'poolU_abs', 'worldU_abs', 'poolH_abs', 'worldH_abs', 'PI', 'PI_abs', 'PP', 'PM'];
   for (const k of keys) C[k] = med(cons.map(r => r[k]));
   C.PIfalling = cons.length ? cons.filter(r => r.PIfalling).length >= cons.length / 2 : false;
-  if (cons.length && cons[0].T) { C.T = { ratio0: med(cons.map(r => r.T.ratio0)), r3: med(cons.map(r => r.T.r3)), share3: med(cons.map(r => r.T.share3)), t36: med(cons.map(r => r.T.t36)), dec0: [0, 1, 2, 3].map(i => med(cons.map(r => r.T.dec0[i]))), end: [0, 1, 2, 3].map(i => med(cons.map(r => r.T.end[i]))) }; C.T.declining = C.T.dec0.every((v, i, a) => i === 0 || !(Number.isFinite(v) && Number.isFinite(a[i - 1])) || v < a[i - 1]); }
+  if (cons.length && cons[0].T) { C.T = { ratio0: med(cons.map(r => r.T.ratio0)), r3: med(cons.map(r => r.T.r3)), r0: med(cons.map(r => r.T.r0)), share3: med(cons.map(r => r.T.share3)), t36: med(cons.map(r => r.T.t36)), dec0: [0, 1, 2, 3].map(i => med(cons.map(r => r.T.dec0[i]))), end: [0, 1, 2, 3].map(i => med(cons.map(r => r.T.end[i]))) }; C.T.declining = C.T.dec0.every((v, i, a) => i === 0 || !(Number.isFinite(v) && Number.isFinite(a[i - 1])) || v < a[i - 1]); }
   return C;
 };
 
 // ---- read every arm
 const arms = ARMS.map(spec => { const rels = runsOf(spec); const cfg = rels.length ? configFor(join(SES, rels[0])) : null; const runs = rels.map(rel => scoreRun(rel, cfg && cfg.tier)); return { spec, cfg, runs, C: consensusOf(runs) }; });
-const allRuns = arms.flatMap(a => a.runs); const sT = { ratio0: sd(allRuns.map(r => r.T && r.T.ratio0)), r3: sd(allRuns.map(r => r.T && r.T.r3)) };
+const allRuns = arms.flatMap(a => a.runs); const sT = { ratio0: sd(allRuns.map(r => r.T && r.T.ratio0)), r3: sd(allRuns.map(r => r.T && r.T.r3)), r0: sd(allRuns.map(r => r.T && r.T.r0)) };
 if (SIGMA === 'mod') { // the natural spread of the INTACT mod runs, per ratio
   const ok = allRuns.filter(r => !r.broken); const src = { 'world.gdp': 'gdpW', 'pool.gdp': 'gdpP', 'world.W': 'worldW', 'pool.W': 'poolW', 'world.U': 'worldU', 'pool.U': 'poolU', 'world.H': 'worldH', 'pool.H': 'poolH', PI: 'PI', PP: 'PP' };
   for (const [k, f] of Object.entries(src)) { const s = sd(ok.map(r => r[f])); if (Number.isFinite(s) && s > 0) sig[k] = s; }
@@ -228,7 +244,7 @@ if (!QUIET) {
     line('GDP (W × Y)', C.gdpP, verdict(C.gdpP, 1.05, 1.15, x => x < 0.95 || x > 1.5), '= ' + f2(C.poolW) + ' × ' + f2(C.poolY) + '; aim ≈ 1.1, soft < 0.95 or > 1.5');
     line('PI (input goods, £)', C.PI, verdict(C.PI, -Infinity, 0.8, x => x > 1.0), 'abs ' + f2(C.PI_abs) + ' of base vs ' + f2(ref.PI) + (C.PIfalling ? '; falling decade over decade' : '; NOT falling every decade') + '; aim ≤ 0.8, soft > 1.0');
     line('PP (pop goods, wage units)', C.PP, verdict(C.PP, -Infinity, 0.8, x => x > 1.1), 'aim ≤ 0.8, soft > 1.1  |  PM (war goods, read only) ' + f2(C.PM) + '×');
-    if (C.T) { line('T0 (1935 ÷ the 1900s)', C.T.ratio0, r2(C.T.ratio0) > 1.3 ? 'BEYOND THE SOFT BOUNDARY' : (C.T.t36 === 0 || C.T.declining) ? 'AT THE AIM' : 'inside, not yet falling', 'decades ' + C.T.dec0.map(v => f2(v / 1e6, 2) + 'M').join(' / ') + '; soft > 1.3'); line('T3 ÷ (T0+T1+T2)', C.T.r3, 'the more the better', 'T3 = ' + pc(C.T.share3) + ' of the tiered workers; T0…T3 ' + C.T.end.map(v => f2(v / 1e6, 2) + 'M').join(' / ')); }
+    if (C.T) { line('T0 ÷ (T1+T2+T3)', C.T.r0, 'the less the better', 'T0 = ' + f2(C.T.end && C.T.end[0] / 1e6, 2) + 'M of ' + f2(C.T.end && C.T.end.reduce((x, y) => x + y, 0) / 1e6, 2) + 'M tiered workers'); line('T0 (1935 ÷ the 1900s)', C.T.ratio0, r2(C.T.ratio0) > 1.3 ? 'BEYOND THE SOFT BOUNDARY' : (C.T.t36 === 0 || C.T.declining) ? 'AT THE AIM' : 'inside, not yet falling', 'decades ' + C.T.dec0.map(v => f2(v / 1e6, 2) + 'M').join(' / ') + '; soft > 1.3'); line('T3 ÷ (T0+T1+T2)', C.T.r3, 'the more the better', 'T3 = ' + pc(C.T.share3) + ' of the tiered workers; T0…T3 ' + C.T.end.map(v => f2(v / 1e6, 2) + 'M').join(' / ')); }
     console.log('  WORLD');
     line('GDP (priority 1)', C.gdpW, verdict(C.gdpW, 0.95, 1.05, x => x < 0.75 || x > 1.33), 'the 1935 point ' + f2(C.gdp35) + '×; aim 1.0, soft outside 0.75–1.33');
     line('W', C.worldW, verdict(C.worldW, 0.6, 0.95, x => x > 1.0), 'abs ' + f2(C.worldW_abs, 4) + ' vs ' + f2(ref['world.W'], 4) + '; aim 0.6–0.95, soft > 1.0');
@@ -238,7 +254,7 @@ if (!QUIET) {
     else if (C.divergent) console.log('  LOSS — (divergent pair, no consensus)');
   }
   console.log('\n' + '='.repeat(150) + '\nRANKING by the consensus loss (lower is better; a config with no intact run is out) — weights ' + Object.entries(W).map(([k, v]) => k + ' ' + v).join(', '));
-  console.log('  ' + 'arm'.padEnd(78) + 'intact/broken  loss   worldGDP poolGDP poolW worldW poolU* poolH  PI    PP    T0   T3/rest');
-  for (const a of [...arms].sort((x, y) => (x.C.loss ? x.C.loss.L : 1e9) - (y.C.loss ? y.C.loss.L : 1e9))) { const C = a.C; console.log('  ' + a.spec.slice(0, 77).padEnd(78) + (C.intact + '/' + C.broken).padEnd(15) + (C.loss ? f2(C.loss.L, 2) : C.divergent ? 'DIVRG' : ' OUT ').padStart(5) + '  ' + [C.gdpW, C.gdpP, C.poolW, C.worldW, C.poolU, C.poolH, C.PI, C.PP, C.T && C.T.ratio0, C.T && C.T.r3].map(v => f2(v).padStart(6)).join(' ')); }
+  console.log('  ' + 'arm'.padEnd(78) + 'intact/broken  loss   worldGDP poolGDP poolW worldW poolU* poolH  PI    PP  T0/rest T3/rest  beyond soft (not final)');
+  for (const a of [...arms].sort((x, y) => (x.C.loss ? x.C.loss.L : 1e9) - (y.C.loss ? y.C.loss.L : 1e9))) { const C = a.C; console.log('  ' + a.spec.slice(0, 77).padEnd(78) + (C.intact + '/' + C.broken).padEnd(15) + (C.loss ? f2(C.loss.L, 2) : C.divergent ? 'DIVRG' : ' OUT ').padStart(5) + '  ' + [C.gdpW, C.gdpP, C.poolW, C.worldW, C.poolU, C.poolH, C.PI, C.PP].map(v => f2(v).padStart(6)).join(' ') + ' ' + [C.T && C.T.r0, C.T && C.T.r3].map(v => f2(v, 3).padStart(7)).join(' ') + '  ' + (C.loss && C.loss.soft.length ? C.loss.soft.join(', ') : (C.loss ? '—' : ''))); }
 }
 if (JSON_OUT) { writeFileSync(JSON_OUT, JSON.stringify({ van: VAN, end: [E0, E1], ref, sig, ci, weights: W, arms: arms.map(a => ({ spec: a.spec, config: a.cfg && a.cfg.path, runs: a.runs, consensus: a.C })) }, null, 1)); if (!QUIET) console.log('wrote ' + JSON_OUT); }
