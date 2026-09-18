@@ -1650,16 +1650,54 @@ ladder's whole mechanism.
 
 ---
 
+### P7 — A MINTED TOP RUNG IS LOCKED OUT OF ITS INDUSTRY'S GATED SECONDARY METHOD. CONFIRMED, and it is a LANDMINE (nothing fails).
+
+**The user:** *"our additional late-game tiers can disallow modern secondary PMs when the locks are done through explicit naming of all compatible
+primary PMs. Example: T3 furniture doesn't allow adding top luxury furniture secondary PM."*
+
+Exactly right, and the scope is now bounded. Vanilla gates a secondary method by naming the main methods it may sit beside
+(`unlocking_production_methods`), and **the whole game has exactly three such gates, all in `01_industry.txt`**: `pm_elastics` (textile luxury),
+`pm_precision_tools` (furniture luxury), `pm_bone_china` (glass porcelain). The builder whole-file-replaces that file and appends OUR tier
+`pm_key` for each vanilla main PM the list names — through the map `vanilla_pm` → `pm_key`. **A MINTED rung has no `vanilla_pm`, so it is in no
+map and gets no append.** What ships:
+
+| gate | vanilla names | we append | our rung that is MISSING |
+|---|---|---|---|
+| `pm_elastics` (textile) | `pm_sewing_machines`, `pm_electric_sewing_machines` | our e2, e3 | — (textile has four vanilla methods) |
+| `pm_bone_china` (glass) | `pm_crystal_glass`, `pm_houseware_plastics` | our e2, e3 | — (glass has four) |
+| **`pm_precision_tools` (furniture)** | `pm_lathe`, `pm_mechanized_workshops` | our **e1, e2** | ⚠ **e3 `pm_main_furniture_spray_finishing` — the minted rung** |
+
+⇒ **One live case today, and it is the one the user found.** The canon has three minted rungs — furniture `spray_finishing`, paper
+`continuous_web_processing`, fertilizer `catalytic_synthesis` — and only furniture's industry carries a gated secondary, so only furniture is
+bitten. **It is a latent trap for every future addition**, and it is a textbook landmine: the build passes, every linter passes, the mod loads,
+the game runs, and the player simply cannot select a method.
+
+**The fix (two parts, both small):**
+1. **A minted rung inherits the gate membership of the rung below it.** The generator already copies an addition's recipe, staffing and icon from
+   the rung beneath; gate membership should ride along by the same logic — an addition is "the method after X", so wherever X is allowed, it is.
+   Implement as: when building the `vanilla_pm` → `pm_key` map, a rung with no `vanilla_pm` is registered under the `vanilla_pm` of the nearest
+   rung below it that has one.
+2. ⭐ **A DETECTOR, because this is a landmine and the register's own rule is that an entry needs one.** For every
+   `unlocking_production_methods` list in the emitted files: if any rung of industry I appears in the list, **every higher rung of I must appear
+   too**. Cheap, reads the ARTIFACT not the generator, and would have caught this on the first build after the addition was minted. Belongs in
+   `preflight.ps1` as a new landmine ID with its entry in TESTBED_LANDMINES.md, and must be proven by breaking it on purpose.
+
+⚠ Scope checked: the three gates above are the only ones in `common/production_methods` that name a main method we split. Gates elsewhere in the
+game (ship modifications, company `possible` blocks) are a different mechanism and are catalogued in MISSING_PM_REFERENCES.md.
+
+---
+
 ### Ordering, and what each fix costs
 
 | | item | kind | cost | blocks / blocked by |
 |---|---|---|---|---|
 | 1 | **P3** the BE label | emitter, 2 lines | minutes | improves P4's text for free |
 | 2 | **P4** JE units | emitter + script values | a few hours | eased by P3 |
-| 3 | **P2** the electricity override | config, 2 keys | minutes — **but needs the power-chain ruling first** | — |
-| 4 | **P6** the 1836 supply anchor | converter or generator | a day + a batch | **blocks P1 fix (c)** |
-| 5 | **P1** the ladder | generator + a config sweep | the next measurement campaign | needs P6 for (c); (a)/(b) can go first |
-| 6 | **P5** top-rung output | — | none | rides on P1 |
+| 3 | **P7** the minted rung's locked secondary | generator + a new landmine detector | hours | none |
+| 4 | **P2** the electricity override | config, 2 keys | minutes — **but needs the power-chain ruling first** | — |
+| 5 | **P6** the 1836 supply anchor | converter or generator | a day + a batch | **blocks P1 fix (c)** |
+| 6 | **P1** the ladder | generator + a config sweep | the next measurement campaign | needs P6 for (c); (a)/(b) can go first |
+| 7 | **P5** top-rung output | — | none | rides on P1 |
 
 P3, P4 and P2 are cosmetic-to-local and can be done in one pass without a measurement batch (P2 changes the economy slightly and should be read
 in the next batch, not on its own). P6 and P1 are the real work and belong to one campaign, because P6 changes the 1836 prices that P1's recipes

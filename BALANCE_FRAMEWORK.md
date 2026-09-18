@@ -8014,3 +8014,59 @@ most majors (the design's intent), roughly half of vanilla's tiered building lev
 
 ⇒ **The canon is the best-measured book, not a finished one.** §10.83.7's open items stand unchanged: whether to adopt the obsolescence term,
 batch 2's interpretation, and the untried A/B-gap lever that F135 points at for the hoard.
+
+## 10.85 — THE SHORTLIST'S GDP AND W AIMS WIDENED (user-ruled 2026-09-18 evening, during the first human playtest) — and it unseats the incumbent
+
+**The ruling, verbatim:**
+
+> it's clear that for shortest list, a GDP (and GDP per capita) significantly over vanilla reference is normal. We still, unlike vanilla, insist
+> that full depeasantation is damaging on all fronts and unacceptable, but having 95% of workforce (compared to vanilla full employment) at x2
+> product per productive worker is OK, for the shortlist (the world as a whole still shouldn't run off)
+
+**Implemented in `criteria.mjs` (its defaults ARE the ruled form). The WORLD lines are untouched** — "the world as a whole still shouldn't run
+off" is already the world GDP aim 1.0, soft 0.75–1.33, HARD > 1.5 — and so is everything else in the register:
+
+| line | was | is |
+|---|---|---|
+| pool W | aim **0.6–0.7**, soft > 1.0 | aim **0.6–0.95**, soft > 1.0 (unchanged — that IS "full depeasantation") |
+| pool GDP | aim **≈1.1**, soft < 0.95 or **> 1.5** | aim **1.1–1.9** (= 0.95 × 2.0), soft < 0.95 or **> 2.0** |
+
+**The arithmetic check the ruling needs, and it passes.** The shortlist is **31.0%** of world GDP in vanilla at the end state (£1,320M of
+£4,258M). So a pool at 1.9× with the world held at 1.0× implies the REST of the world at **0.60** of vanilla, and at the world's 1.33 soft top
+it implies **1.07**. The amendment is therefore consistent with the world lines, and the leader/periphery divergence it permits **is goal 1** —
+"falling behind on tech should cost you markets". For reference, the measured books' implied rest-of-world: the incumbent 1.01, A 1.9 0.98, the
+eager C 1.95 book 0.89, the stalls 0.47–0.60.
+
+**⚠⚠ THE CONSEQUENCE: THE AMENDMENT UNSEATS THE INCUMBENT.** Re-scored over the eight ranked books (nothing else changed):
+
+| book | loss BEFORE | loss AFTER | pool W | pool GDP |
+|---|---|---|---|---|
+| `canon-c19-e0ai500` ⚠ n=1 intact | 10.5 | **5.0** | 0.86 | 1.79 |
+| `canon-c195-in12-eager` (F132) | 13.0 | **5.3** | 0.91 | 2.01 (still just over the new soft line) |
+| `canon-a19-gm` | 9.2 | **6.6** | 0.88 | 1.47 |
+| **`canon-c19-in12` — the canon** | **8.4** | **7.9** | 0.68 | 1.30 |
+| `canon-c205-in13` (a stall) | 9.3 | 9.5 | 0.58 | 1.03 |
+| `canon-b18-gm` (a stall) | 15.6 | 15.8 | 0.56 | 0.81 |
+| `canon-flat-in12-a16` | 20.0 | 20.1 | 0.68 | 0.64 |
+| `canon-je24-a22-in12` | 21.6 | 21.8 | 0.52 | 0.93 |
+
+The books that were penalised for being "too rich" are now the best ones, and **the canon drops from first to fourth**. ⚠ Read that with the
+directional ruling (§10.83.7) and with two cautions: `canon-c19-e0ai500` has only ONE intact run, and `canon-c195-in12-eager` belongs to the
+eager family, which F124/F125 measured as unstable by seed (0.74 / 1.45 and 1.23 / 0.94 / 0.56 on world GDP) even though F132's own pair was
+aligned. **No re-canonization is proposed on this evidence** — the amendment changes what to AIM at, and the books that now look best have two
+intact seeds between them.
+
+**⚠ TWO INCONSISTENCIES THE AMENDMENT EXPOSES, both UNRULED:**
+
+1. **Pool U*'s aim now contradicts pool W's.** They are the same axis measured twice — r = **−0.98** over the 29 intact runs — and the aim
+   "U* ≥ 2× vanilla" corresponds to pool W ≈ 0.68. At the new pool W ceiling of 0.95, pool U* is ~1.0, i.e. sitting ON its own soft line
+   ("< 1.0"). So a book can now be AT one aim and beyond the other soft line for the same fact. F134 §7 proposed dropping the redundant
+   unemployment terms and the user kept pool U*; this ruling is what makes the redundancy bite. Options: re-aim pool U* to ≥ 1.0 with soft < 0.9,
+   make it read-only like PM, or drop it. Measured: it barely moves the ranking either way (the top four read 5.0 / 5.3 / 6.6 / 7.9 with it and
+   3.7 / 4.0 / 5.7 / 7.9 without), so this is about coherence, not about scores.
+2. **"GDP per capita" and what the register measures are not the same number.** `gdpP` is TOTAL pool GDP ÷ vanilla's total; the ruling's words
+   ("GDP *and GDP per capita*") and the report's own old label ("W × Y") name the per-capita quantity. They differ by the pool's population
+   ratio, which conquest moves by up to ~20% — F132 seed 1 reads total **2.06** against per-capita **1.86** because Britain annexed a 46M
+   Chinese successor state between 1934 and 1935. ⭐ **It is decisive right now**: the eager book's consensus reads total **2.01** (beyond the new
+   2.0 soft line) and per-capita **1.85** (inside the 1.9 aim). The report now prints BOTH on the pool GDP line; which one the criterion is on is
+   the user's call.

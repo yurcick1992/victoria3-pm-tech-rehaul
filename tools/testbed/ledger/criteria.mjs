@@ -13,6 +13,18 @@
 //   GDP  world GDP; the pool's GDP            W   productive workers per capita = (salaried − government − military) ÷ Σ strata
 //   U*   total unemployment INCLUDING peasants = (unemployed + peasants) ÷ (salaried + unemployed + peasants)
 //   H    the investment-pool hoard ÷ GDP     Y   GDP ÷ productive workers (W × Y = GDP per capita, the decomposition)
+//   ⭐ THE SHORTLIST'S GDP AND W AIMS WERE WIDENED 2026-09-18 evening (user, during the first human playtest): "for shortlist, a GDP (and GDP
+//   per capita) significantly over vanilla reference is normal. We still, unlike vanilla, insist that full depeasantation is damaging on all
+//   fronts and unacceptable, but having 95% of workforce (compared to vanilla full employment) at x2 product per productive worker is OK, for
+//   the shortlist (the world as a whole still shouldn't run off)." ⇒ pool W aim 0.6–0.7 → **0.6–0.95** (soft > 1.0 is unchanged and is what
+//   "full depeasantation" means); pool GDP aim ≈1.1 → **1.1–1.9** (= 0.95 × 2.0), soft > 1.5 → **> 2.0**. The WORLD lines are untouched —
+//   "the world as a whole still shouldn't run off" is already the world GDP aim 1.0, soft 0.75–1.33, HARD > 1.5. ⚠ Arithmetic check: the
+//   shortlist is 31% of world GDP in vanilla, so a pool at 1.9 with the world at 1.0 implies the REST of the world at 0.60, and at the world's
+//   1.33 soft top it implies 1.07 — the amendment is consistent with the world lines, and the implied leader/periphery divergence IS goal 1.
+//   ⚠ TWO THINGS THIS EXPOSES, both unruled: (a) pool U*'s aim of ≥2× vanilla is the SAME axis as pool W (r = −0.98) and corresponds to
+//   pool W ≈ 0.68 — at the new pool W ceiling of 0.95, pool U* is ~1.0, i.e. ON its own soft line, so the two aims now contradict each other;
+//   (b) 'gdpP' is TOTAL pool GDP ÷ vanilla's, while the user's words name GDP *per capita* — the two differ by the pool's population ratio,
+//   which conquest moves by up to ~20% (F132 seed 1: 2.06 total against 1.86 per capita). The report now prints both.
 //   T0…T3  workers in the tiered industries' era-0 … era-3 rungs = Σ staffed levels × per-level employment × workforce_mult, BY THE RUNG'S
 //          ERA from the run's own config (an industry that starts at e2, automotive, contributes nothing to T0); T3's line is "the more the
 //          better" on T3 ÷ (T0 + T1 + T2), low weight — no X (user-ruled 2026-09-17 afternoon)
@@ -203,13 +215,13 @@ const dist = (v, lo, hi, s, softLo = -Infinity, softHi = Infinity) => { if (!Num
   return aim + Math.min(5, excess / s) * SOFT_SLOPE + (excess > 0 ? SOFT_PEN : 0); };
 function lossOf(o, sT) { // o: a run or a consensus object with the metrics; sT: {ratio0, r3} spreads
   const t = {};
-  t.gdpW = dist(o.gdpW, 0.95, 1.05, sig['world.gdp'], 0.75, 1.33); t.gdpP = dist(o.gdpP, 1.05, 1.15, sig['pool.gdp'], 0.95, 1.5); t.poolW = dist(o.poolW, 0.6, 0.7, sig['pool.W'], -Infinity, 1.0); t.worldW = dist(o.worldW, 0.6, 0.95, sig['world.W'], -Infinity, 1.0);
+  t.gdpW = dist(o.gdpW, 0.95, 1.05, sig['world.gdp'], 0.75, 1.33); t.gdpP = dist(o.gdpP, 1.10, 1.90, sig['pool.gdp'], 0.95, 2.0); t.poolW = dist(o.poolW, 0.6, 0.95, sig['pool.W'], -Infinity, 1.0); t.worldW = dist(o.worldW, 0.6, 0.95, sig['world.W'], -Infinity, 1.0);
   t.poolU = dist(o.poolU, 2.0, Infinity, sig['pool.U'], 1.0); t.worldU = dist(o.worldU, 1.0, Infinity, sig['world.U'], 1.0); t.poolH = dist(o.poolH, -Infinity, 1.0, sig['pool.H']); t.worldH = dist(o.worldH, -Infinity, 1.0, sig['world.H']);
   t.PI = dist(o.PI, -Infinity, 0.8, sig.PI, -Infinity, 1.0); t.PP = dist(o.PP, -Infinity, 0.8, sig.PP, -Infinity, 1.1);
   if (o.T) { // T0 ÷ (T1+T2+T3), the less the better — its distance from 0 in the mod runs' spread (fallback 0.02), plus the kink beyond the soft line (1935 > 1.3 × the 1900s)
     t.T0 = (Number.isFinite(o.T.r0) ? Math.min(5, o.T.r0 / (sT.r0 || 0.02)) : NaN) + Math.min(5, Math.max(0, o.T.ratio0 - 1.3) / (sT.ratio0 || 0.3)) * SOFT_SLOPE + (r2(o.T.ratio0) > 1.3 ? SOFT_PEN : 0);
     t.T3 = Number.isFinite(o.T.r3) && o.T.r3 > 0 ? -Math.log(o.T.r3) : NaN; }
-  const softList = []; if (r2(o.gdpW) < 0.75 || r2(o.gdpW) > 1.33) softList.push('world GDP'); if (r2(o.gdpP) < 0.95 || r2(o.gdpP) > 1.5) softList.push('pool GDP'); if (r2(o.poolW) > 1.0) softList.push('pool W'); if (r2(o.worldW) > 1.0) softList.push('world W'); if (r2(o.poolU) < 1.0) softList.push('pool U*'); if (r2(o.worldU) < 1.0) softList.push('world U*'); if (r2(o.PI) > 1.0) softList.push('PI'); if (r2(o.PP) > 1.1) softList.push('PP'); if (o.T && r2(o.T.ratio0) > 1.3) softList.push('T0');
+  const softList = []; if (r2(o.gdpW) < 0.75 || r2(o.gdpW) > 1.33) softList.push('world GDP'); if (r2(o.gdpP) < 0.95 || r2(o.gdpP) > 2.0) softList.push('pool GDP'); if (r2(o.poolW) > 1.0) softList.push('pool W'); if (r2(o.worldW) > 1.0) softList.push('world W'); if (r2(o.poolU) < 1.0) softList.push('pool U*'); if (r2(o.worldU) < 1.0) softList.push('world U*'); if (r2(o.PI) > 1.0) softList.push('PI'); if (r2(o.PP) > 1.1) softList.push('PP'); if (o.T && r2(o.T.ratio0) > 1.3) softList.push('T0');
   let L = 0, n = 0; const parts = {}; for (const [k, w] of Object.entries(W)) { if (!(k in t) || !Number.isFinite(t[k])) continue; parts[k] = w * t[k]; L += parts[k]; n++; }
   return { L, parts, terms: t, n, soft: softList };
 }
@@ -254,10 +266,10 @@ if (!QUIET) {
     for (const r of a.runs) { console.log('  ' + r.rel.split('/').slice(-2).join('/').padEnd(64) + (r.broken ? '⛔ BROKEN BY ' + r.broken.toUpperCase() : '✅ intact') + '  [anchor ' + r.anchor.viol + ' y out; pooled U* ' + pc(r.poolU_abs) + '; world GDP ' + f2(r.gdpW) + '×' + (r.loss ? '; loss ' + f2(r.loss.L, 1) : '') + ']'); for (const h of r.hard) console.log('        ⛔ ' + h); for (const s of r.soft) console.log('        ⚠ soft: ' + s); }
     const C = a.C; console.log('--- CONSENSUS: ' + C.note + ' ---'); if (!C.intact) continue;
     console.log('  SHORTLIST (GBR/USA/FRA/NET/BEL/PRU/NGF/GER pooled)');
-    line('W', C.poolW, verdict(C.poolW, 0.6, 0.7, x => x > 1.0), 'abs ' + f2(C.poolW_abs, 4) + ' vs ' + f2(ref['pool.W'], 4) + '; aim 0.6–0.7, soft > 1.0');
+    line('W', C.poolW, verdict(C.poolW, 0.6, 0.95, x => x > 1.0), 'abs ' + f2(C.poolW_abs, 4) + ' vs ' + f2(ref['pool.W'], 4) + '; aim 0.6–0.95, soft > 1.0 (FULL depeasantation)');
     line('U*', C.poolU, verdict(C.poolU, 2.0, Infinity, x => x < 1.0), 'abs ' + pc(C.poolU_abs) + ' vs ' + pc(ref['pool.U']) + '; aim ≥ 2, soft < 1.0');
     line('H', C.poolH, verdict(C.poolH, -Infinity, 1.0), 'abs ' + f2(C.poolH_abs) + ' vs ' + f2(ref['pool.H']) + '; aim < 1');
-    line('GDP (W × Y)', C.gdpP, verdict(C.gdpP, 1.05, 1.15, x => x < 0.95 || x > 1.5), '= ' + f2(C.poolW) + ' × ' + f2(C.poolY) + '; aim ≈ 1.1, soft < 0.95 or > 1.5');
+    line('GDP (total ÷ vanilla)', C.gdpP, verdict(C.gdpP, 1.10, 1.90, x => x < 0.95 || x > 2.0), 'per-capita reading ' + f2(C.poolW * C.poolY) + ' = W ' + f2(C.poolW) + ' × Y ' + f2(C.poolY) + '; aim 1.1–1.9, soft < 0.95 or > 2.0');
     line('PI (input goods, £)', C.PI, verdict(C.PI, -Infinity, 0.8, x => x > 1.0), 'abs ' + f2(C.PI_abs) + ' of base vs ' + f2(ref.PI) + (C.PIfalling ? '; falling decade over decade' : '; NOT falling every decade') + '; aim ≤ 0.8, soft > 1.0');
     line('PP (pop goods, wage units)', C.PP, verdict(C.PP, -Infinity, 0.8, x => x > 1.1), 'aim ≤ 0.8, soft > 1.1  |  PM (war goods, read only) ' + f2(C.PM) + '×');
     if (C.T) { line('T0 ÷ (T1+T2+T3)', C.T.r0, 'the less the better', 'T0 = ' + f2(C.T.end && C.T.end[0] / 1e6, 2) + 'M of ' + f2(C.T.end && C.T.end.reduce((x, y) => x + y, 0) / 1e6, 2) + 'M tiered workers'); line('T0 (1935 ÷ the 1900s)', C.T.ratio0, r2(C.T.ratio0) > 1.3 ? 'BEYOND THE SOFT BOUNDARY' : (C.T.t36 === 0 || C.T.declining) ? 'AT THE AIM' : 'inside, not yet falling', 'decades ' + C.T.dec0.map(v => f2(v / 1e6, 2) + 'M').join(' / ') + '; soft > 1.3'); line('T3 ÷ (T0+T1+T2)', C.T.r3, 'the more the better', 'T3 = ' + pc(C.T.share3) + ' of the tiered workers; T0…T3 ' + C.T.end.map(v => f2(v / 1e6, 2) + 'M').join(' / ')); }
