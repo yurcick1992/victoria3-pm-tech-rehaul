@@ -427,14 +427,21 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
   // ⚠ A bar's `name` is a LOC KEY, not a label. The first smoke run logged 122 lines of
   // "Unrecognized loc key pmr_bar_<tech>" because only the shared `desc` had one.
   loc.push([barName(tech), `Towards ${(TECH[tech].name || tech).replace(/"/g, '')}`]);
+  // ⚠⚠ THE TOOLTIP IDIOM IS `if { limit … add { desc … value } }`, NOT `add { desc … if { limit … value } }`.
+  // Both parse, and the game's own scripted_progress_bars.md even documents the second — but with the `desc` on
+  // the OUTER add the engine IGNORES it and auto-describes the nested condition instead, so the player reads
+  // "the condition to increase based on enough workforce is fulfilled" where the entry's own sentence should be
+  // (reported from a live campaign 2026-09-18; ROADMAP step 8 P4). Vanilla ships the first form 224 times against
+  // the second's 5, which is the evidence that settled it. EXCLUSIVE terms keep their exclusivity through
+  // if / else_if AT THIS LEVEL — vanilla does the same (00_ep2_ryukyu_rivalry, 00_sepoy_mutiny) — so "supersedes"
+  // still cannot silently become "stacks", and every branch now carries its OWN description instead of sharing
+  // the first term's.
+  const exclusive = terms.length > 1 && terms.every(x => x.exclusive);
   bars.push(`${barName(tech)} = {\n${T}name = "${barName(tech)}"\n${T}desc = "pmr_bar_desc"\n${T}default_green = yes\n${T}start_value = 0\n${T}min_value = 0\n${T}max_value = ${span}\n${T}${cadence} = {\n` +
-    // ⚠ EXCLUSIVE terms must render as ONE `add` with if / else_if, or both pay out and "supersedes"
-    // silently becomes "stacks" — owning a ship would give +3 instead of the ruled +2.
-    (terms.length > 1 && terms.every(x => x.exclusive)
-      ? `${T}${T}add = {\n${T}${T}${T}desc = "${terms[0].desc}"\n` +
-        terms.map((x, i) => `${T}${T}${T}${i ? 'else_if' : 'if'} = {\n${T}${T}${T}${T}limit = {\n${T}${T}${T}${T}${T}${x.trigger}\n${T}${T}${T}${T}}\n${T}${T}${T}${T}value = ${x.value}\n${T}${T}${T}}`).join('\n') +
-        `\n${T}${T}}`
-      : terms.map(t => `${T}${T}add = {\n${T}${T}${T}desc = "${t.desc}"\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = {\n${T}${T}${T}${T}${t.trigger}\n${T}${T}${T}${T}}\n${T}${T}${T}${T}value = ${t.value}\n${T}${T}${T}}\n${T}${T}}`).join('\n')) +
+    terms.map((t, i) => `${T}${T}${exclusive && i ? 'else_if' : 'if'} = {\n` +
+      `${T}${T}${T}limit = {\n${T}${T}${T}${T}${t.trigger}\n${T}${T}${T}}\n` +
+      `${T}${T}${T}add = {\n${T}${T}${T}${T}desc = "${t.desc}"\n${T}${T}${T}${T}value = ${t.value}\n${T}${T}${T}}\n` +
+      `${T}${T}}`).join('\n') +
     `\n${T}}\n}`);
 
   RE.stages.forEach((stage, si) => {

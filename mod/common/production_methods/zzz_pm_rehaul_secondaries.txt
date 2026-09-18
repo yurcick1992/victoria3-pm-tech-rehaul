@@ -735,6 +735,32 @@ pm_luxury_furniture_furniture_manufactory_spray_finishing = {
 		}
 	}
 }
+pm_precision_tools_furniture_manufactory_spray_finishing = {
+	texture = "gfx/interface/icons/production_method_icons/precision_tools.dds"
+
+	unlocking_technologies = {
+		mechanical_tools
+	}
+
+	unlocking_production_methods = { pm_main_furniture_spray_finishing }
+
+	building_modifiers = {
+		workforce_scaled = {
+			# input goods
+			goods_input_hardwood_add = 81.1			# x40 = -1000
+			goods_input_tools_add = 40.6				# x40 = -400
+			goods_input_wood_add = -84.41				# x20 =  500
+
+			# output goods
+			goods_output_furniture_add = -405.47			# x30 = -1650
+			goods_output_luxury_furniture_add = 405.48	# x60 =  3300
+		}
+
+		level_scaled = {
+			building_employment_shopkeepers_add = 1000
+		}
+	}
+}
 pm_ceramics_glassworks = {
 	texture = "gfx/interface/icons/production_method_icons/ceramics.dds"
 

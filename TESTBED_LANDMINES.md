@@ -1815,3 +1815,47 @@ the next early crash; the detector stands behind it either way.
 
 **What it touched.** Batch 4 ended as 1 real seed + 1 void stub; the pair's second run was relaunched from the tie-breaker schedule
 (one run). No analysis consumed the stub: the register's read at 16:04 ran before the stub's meta existed and dropped it as unreadable.
+
+## L35 — A RUNG SILENTLY LOCKED OUT OF ITS INDUSTRY'S GATED SECONDARY METHOD: a MINTED rung has no `vanilla_pm`, so no gate ever names it (found 2026-09-18 by the user, playing the canon: "T3 furniture doesn't allow adding top luxury furniture secondary PM")
+
+### Why nothing fails
+Vanilla gates a handful of secondary methods by naming the MAIN methods they may sit beside (`unlocking_production_methods`). The whole
+game has exactly **three**: `pm_elastics` (textile luxury), `pm_precision_tools` (furniture luxury), `pm_bone_china` (glass porcelain).
+Our tier split renames every main method, so the builder owns `01_industry.txt` and appends OUR rung `pm_key` for each vanilla method a
+gate names — through the map `vanilla_pm` → `pm_key`. **A MINTED rung (a spec ADDITION: furniture spray finishing, paper continuous web,
+fertilizer catalytic synthesis) has no `vanilla_pm`, so it was in no map and was never appended.** `emit_secondaries.mjs` then makes the
+same test a second time when it mints the per-rung copies (`[t.vanilla_pm, ...aliases].some(v => gatedOn.includes(v))`), fails it for the
+same reason, and leaves the rung with vanilla's original secondary — which names main methods the rung does not have.
+
+Everything downstream is green: `build.ps1` passes, every linter passes, `Invoke-ModChecks` passes, `preflight` passed, the mod loads,
+the game runs, the building exists and works. **The only symptom is a method that is not in the list when a player opens the building** —
+which nobody can see from any artifact, and which took a full human campaign to notice.
+
+⚠ It bites in proportion to how many additions the spec carries, and only where the industry ALSO has a gated secondary. Today that is
+exactly one case (furniture e3), and paper and fertilizer are unaffected only because their industries have no gated secondary. **Every
+future addition is a fresh instance.**
+
+### The fix (2026-09-18)
+**A rung with no `vanilla_pm` inherits the gate membership of the nearest rung BELOW it that has one** — the rung the generator already
+copies its recipe, staffing and icon from, so an addition is "the method after X" and belongs wherever X belongs. A gate that does not
+name that lower method still excludes the addition, which is correct. Applied at BOTH sites: `$script:pmRemap` in `build.ps1` (now
+`vanilla_pm` → a LIST of `pm_key`s, not one) and the `gatedOn` test in `emit_secondaries.mjs`. Verified in a real build: the furniture
+gate in the owned `01_industry.txt` now names `pm_main_furniture_spray_finishing`, and
+`pm_precision_tools_furniture_manufactory_spray_finishing` is minted beside the e1 and e2 copies (6 per-rung copies → 7).
+
+### The detector — `Test-LmL35` in `tools/preflight.ps1`
+Reads the **EMITTED** production_methods, never the generator. For every `unlocking_production_methods` list in a file we own that is NOT
+one of ours: **if any rung of industry I is named, every HIGHER-era rung of I must be named too.** A gate naming no rung of ours is
+ignored, as is one naming only the top rung.
+
+⚠ **It deliberately SKIPS `zzz_pm_rehaul_*`.** Our own per-rung secondary file gates each minted copy to exactly ONE rung by
+construction, so the completeness rule is meaningless there — the first cut did not skip it and reported five false positives on the
+correct output. The gate list in the owned vanilla file is the CAUSE; a missing per-rung copy is the SYMPTOM, and checking the cause
+catches both.
+
+⚠ **PowerShell variables are CASE-INSENSITIVE.** The first cut named the detector's title `$T` and the tier loop variable `$t`, so the
+title was silently overwritten with a tier object and the FAIL line printed a config record instead of a sentence. Any `Test-Lm*` that
+loops over `$t`, `$i`, `$f` must not also hold a scalar under the same letter.
+
+**Proven both ways (2026-09-18):** removing `pm_main_furniture_spray_finishing` from a built mod's furniture gate ⇒ `L35 FAIL … a gate
+admits furniture from era 1 upward but omits pm_main_furniture_spray_finishing (era 3)`; restoring it ⇒ `L35 PASS`.

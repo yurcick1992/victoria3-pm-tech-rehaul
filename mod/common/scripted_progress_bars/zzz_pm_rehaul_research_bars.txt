@@ -7,21 +7,21 @@ pmr_bar_aniline = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_aniline_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_aniline_0 >= 3
-				}
+			}
+			add = {
+				desc = "pmr_term_aniline_0"
 				value = 1
 			}
 		}
-		add = {
-			desc = "pmr_term_aniline_1"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_aniline_1 >= 12500
-				}
+			}
+			add = {
+				desc = "pmr_term_aniline_1"
 				value = 1
 			}
 		}
@@ -36,12 +36,12 @@ pmr_bar_atmospheric_engine = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_atmospheric_engine_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_atmospheric_engine_0 >= 25000
-				}
+			}
+			add = {
+				desc = "pmr_term_atmospheric_engine_0"
 				value = 1
 			}
 		}
@@ -56,12 +56,12 @@ pmr_bar_automatic_machine_guns = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_automatic_machine_guns_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_automatic_machine_guns_0 >= 22
-				}
+			}
+			add = {
+				desc = "pmr_term_automatic_machine_guns_0"
 				value = 1
 			}
 		}
@@ -76,12 +76,12 @@ pmr_bar_baking_powder = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_baking_powder_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_baking_powder_0 >= 15
-				}
+			}
+			add = {
+				desc = "pmr_term_baking_powder_0"
 				value = 1
 			}
 		}
@@ -96,12 +96,12 @@ pmr_bar_bessemer_process = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_bessemer_process_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_bessemer_process_0 >= 5
-				}
+			}
+			add = {
+				desc = "pmr_term_bessemer_process_0"
 				value = 1
 			}
 		}
@@ -116,12 +116,12 @@ pmr_bar_bolt_action_rifles = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_bolt_action_rifles_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_bolt_action_rifles_0 >= 24
-				}
+			}
+			add = {
+				desc = "pmr_term_bolt_action_rifles_0"
 				value = 1
 			}
 		}
@@ -136,12 +136,12 @@ pmr_bar_breech_loading_artillery = {
 	min_value = 0
 	max_value = 6
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_war_engaged"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				has_variable = pmr_wargate_breech_loading_artillery
-				}
+			}
+			add = {
+				desc = "pmr_term_war_engaged"
 				value = 1
 			}
 		}
@@ -156,12 +156,12 @@ pmr_bar_camera = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_camera_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_camera_0 >= 15
-				}
+			}
+			add = {
+				desc = "pmr_term_camera_0"
 				value = 1
 			}
 		}
@@ -176,12 +176,12 @@ pmr_bar_catalytic_synthesis = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_catalytic_synthesis_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_catalytic_synthesis_0 >= 47
-				}
+			}
+			add = {
+				desc = "pmr_term_catalytic_synthesis_0"
 				value = 1
 			}
 		}
@@ -196,12 +196,12 @@ pmr_bar_chemical_bleaching = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_chemical_bleaching_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_chemical_bleaching_0 >= 15
-				}
+			}
+			add = {
+				desc = "pmr_term_chemical_bleaching_0"
 				value = 1
 			}
 		}
@@ -216,21 +216,21 @@ pmr_bar_combustion_engine = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_combustion_engine_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_combustion_engine_0 >= 15
-				}
+			}
+			add = {
+				desc = "pmr_term_combustion_engine_0"
 				value = 1
 			}
 		}
-		add = {
-			desc = "pmr_term_combustion_engine_1"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_combustion_engine_1 >= 15
-				}
+			}
+			add = {
+				desc = "pmr_term_combustion_engine_1"
 				value = 1
 			}
 		}
@@ -245,21 +245,21 @@ pmr_bar_compression_ignition = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_compression_ignition_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_compression_ignition_0 >= 47
-				}
+			}
+			add = {
+				desc = "pmr_term_compression_ignition_0"
 				value = 1
 			}
 		}
-		add = {
-			desc = "pmr_term_compression_ignition_1"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_compression_ignition_1 >= 47
-				}
+			}
+			add = {
+				desc = "pmr_term_compression_ignition_1"
 				value = 1
 			}
 		}
@@ -274,12 +274,12 @@ pmr_bar_continuous_web_processing = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_continuous_web_processing_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_continuous_web_processing_0 >= 47
-				}
+			}
+			add = {
+				desc = "pmr_term_continuous_web_processing_0"
 				value = 1
 			}
 		}
@@ -294,12 +294,12 @@ pmr_bar_crystal_glass = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_crystal_glass_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_crystal_glass_0 >= 15
-				}
+			}
+			add = {
+				desc = "pmr_term_crystal_glass_0"
 				value = 1
 			}
 		}
@@ -314,12 +314,12 @@ pmr_bar_defense_in_depth = {
 	min_value = 0
 	max_value = 6
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_war_engaged"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				has_variable = pmr_wargate_defense_in_depth
-				}
+			}
+			add = {
+				desc = "pmr_term_war_engaged"
 				value = 1
 			}
 		}
@@ -334,21 +334,21 @@ pmr_bar_dynamite = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_dynamite_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_dynamite_0 >= 8
-				}
+			}
+			add = {
+				desc = "pmr_term_dynamite_0"
 				value = 1
 			}
 		}
-		add = {
-			desc = "pmr_term_dynamite_1"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_dynamite_1 >= 8
-				}
+			}
+			add = {
+				desc = "pmr_term_dynamite_1"
 				value = 1
 			}
 		}
@@ -363,12 +363,12 @@ pmr_bar_electric_arc_process = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_electric_arc_process_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_electric_arc_process_0 >= 47
-				}
+			}
+			add = {
+				desc = "pmr_term_electric_arc_process_0"
 				value = 1
 			}
 		}
@@ -383,12 +383,12 @@ pmr_bar_electric_railway = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_electric_railway_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_electric_railway_0 >= 15
-				}
+			}
+			add = {
+				desc = "pmr_term_electric_railway_0"
 				value = 1
 			}
 		}
@@ -403,21 +403,21 @@ pmr_bar_electrical_capacitors = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_electrical_capacitors_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_electrical_capacitors_0 >= 47
-				}
+			}
+			add = {
+				desc = "pmr_term_electrical_capacitors_0"
 				value = 1
 			}
 		}
-		add = {
-			desc = "pmr_term_electrical_capacitors_1"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_electrical_capacitors_1 >= 26
-				}
+			}
+			add = {
+				desc = "pmr_term_electrical_capacitors_1"
 				value = 1
 			}
 		}
@@ -432,12 +432,12 @@ pmr_bar_film = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_film_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_film_0 >= 47
-				}
+			}
+			add = {
+				desc = "pmr_term_film_0"
 				value = 1
 			}
 		}
@@ -452,12 +452,12 @@ pmr_bar_general_staff = {
 	min_value = 0
 	max_value = 6
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_war_engaged"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				has_variable = pmr_wargate_general_staff
-				}
+			}
+			add = {
+				desc = "pmr_term_war_engaged"
 				value = 1
 			}
 		}
@@ -472,12 +472,12 @@ pmr_bar_improved_fertilizer = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_improved_fertilizer_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_improved_fertilizer_0 >= 5
-				}
+			}
+			add = {
+				desc = "pmr_term_improved_fertilizer_0"
 				value = 1
 			}
 		}
@@ -492,12 +492,12 @@ pmr_bar_intensive_agriculture = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_intensive_agriculture_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_intensive_agriculture_0 >= 25000
-				}
+			}
+			add = {
+				desc = "pmr_term_intensive_agriculture_0"
 				value = 1
 			}
 		}
@@ -512,21 +512,21 @@ pmr_bar_mechanical_tools = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_mechanical_tools_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_mechanical_tools_0 >= 5
-				}
+			}
+			add = {
+				desc = "pmr_term_mechanical_tools_0"
 				value = 1
 			}
 		}
-		add = {
-			desc = "pmr_term_mechanical_tools_1"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_mechanical_tools_1 >= 5
-				}
+			}
+			add = {
+				desc = "pmr_term_mechanical_tools_1"
 				value = 1
 			}
 		}
@@ -541,21 +541,21 @@ pmr_bar_mechanized_workshops = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_mechanized_workshops_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_mechanized_workshops_0 >= 15
-				}
+			}
+			add = {
+				desc = "pmr_term_mechanized_workshops_0"
 				value = 1
 			}
 		}
-		add = {
-			desc = "pmr_term_mechanized_workshops_1"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_mechanized_workshops_1 >= 15
-				}
+			}
+			add = {
+				desc = "pmr_term_mechanized_workshops_1"
 				value = 1
 			}
 		}
@@ -570,12 +570,12 @@ pmr_bar_mobile_armor = {
 	min_value = 0
 	max_value = 6
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_war_engaged"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				has_variable = pmr_wargate_mobile_armor
-				}
+			}
+			add = {
+				desc = "pmr_term_war_engaged"
 				value = 1
 			}
 		}
@@ -590,12 +590,12 @@ pmr_bar_nco_training = {
 	min_value = 0
 	max_value = 6
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_war_engaged"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				has_variable = pmr_wargate_nco_training
-				}
+			}
+			add = {
+				desc = "pmr_term_war_engaged"
 				value = 1
 			}
 		}
@@ -610,12 +610,12 @@ pmr_bar_nitrogen_fixation = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_nitrogen_fixation_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_nitrogen_fixation_0 >= 15
-				}
+			}
+			add = {
+				desc = "pmr_term_nitrogen_fixation_0"
 				value = 1
 			}
 		}
@@ -630,12 +630,12 @@ pmr_bar_nitroglycerin = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_nitroglycerin_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_nitroglycerin_0 >= 3
-				}
+			}
+			add = {
+				desc = "pmr_term_nitroglycerin_0"
 				value = 1
 			}
 		}
@@ -650,12 +650,12 @@ pmr_bar_open_hearth_process = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_open_hearth_process_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_open_hearth_process_0 >= 15
-				}
+			}
+			add = {
+				desc = "pmr_term_open_hearth_process_0"
 				value = 1
 			}
 		}
@@ -670,12 +670,12 @@ pmr_bar_percussion_cap = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_percussion_cap_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_percussion_cap_0 >= 12500
-				}
+			}
+			add = {
+				desc = "pmr_term_percussion_cap_0"
 				value = 1
 			}
 		}
@@ -690,12 +690,12 @@ pmr_bar_plastics = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_plastics_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_plastics_0 >= 47
-				}
+			}
+			add = {
+				desc = "pmr_term_plastics_0"
 				value = 1
 			}
 		}
@@ -710,12 +710,12 @@ pmr_bar_realism = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_realism_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_realism_0 >= 5
-				}
+			}
+			add = {
+				desc = "pmr_term_realism_0"
 				value = 1
 			}
 		}
@@ -730,12 +730,12 @@ pmr_bar_repeaters = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_repeaters_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_repeaters_0 >= 8
-				}
+			}
+			add = {
+				desc = "pmr_term_repeaters_0"
 				value = 1
 			}
 		}
@@ -750,12 +750,12 @@ pmr_bar_rifling = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_rifling_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_rifling_0 >= 3
-				}
+			}
+			add = {
+				desc = "pmr_term_rifling_0"
 				value = 1
 			}
 		}
@@ -770,12 +770,12 @@ pmr_bar_shell_gun = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_shell_gun_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_shell_gun_0 >= 3
-				}
+			}
+			add = {
+				desc = "pmr_term_shell_gun_0"
 				value = 1
 			}
 		}
@@ -790,12 +790,12 @@ pmr_bar_spray_finishing = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_spray_finishing_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_spray_finishing_0 >= 43
-				}
+			}
+			add = {
+				desc = "pmr_term_spray_finishing_0"
 				value = 1
 			}
 		}
@@ -810,12 +810,12 @@ pmr_bar_telephone = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_telephone_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_telephone_0 >= 75
-				}
+			}
+			add = {
+				desc = "pmr_term_telephone_0"
 				value = 1
 			}
 		}
@@ -830,12 +830,12 @@ pmr_bar_trench_works = {
 	min_value = 0
 	max_value = 6
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_war_engaged"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				has_variable = pmr_wargate_trench_works
-				}
+			}
+			add = {
+				desc = "pmr_term_war_engaged"
 				value = 1
 			}
 		}
@@ -850,12 +850,12 @@ pmr_bar_vulcanization = {
 	min_value = 0
 	max_value = 24
 	monthly_progress = {
-		add = {
-			desc = "pmr_term_vulcanization_0"
-			if = {
-				limit = {
+		if = {
+			limit = {
 				pmr_src_vulcanization_0 >= 47
-				}
+			}
+			add = {
+				desc = "pmr_term_vulcanization_0"
 				value = 1
 			}
 		}

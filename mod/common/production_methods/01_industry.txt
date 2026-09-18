@@ -605,6 +605,7 @@ pm_precision_tools = {
 		pm_mechanized_workshops
 		pm_main_furniture_lathe
 		pm_main_furniture_mechanized_workshops
+		pm_main_furniture_spray_finishing
 	}
 
 	building_modifiers = {

@@ -186,7 +186,18 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
         //   names main PMs it does not have and therefore stays unavailable — the restriction intact.
         const gatedOn = listOf(pb, 'unlocking_production_methods');
         if (gatedOn.length) {
-          const mine = [t.vanilla_pm, ...(t.vanilla_pm_aliases || [])].filter(Boolean);
+          // ⚠⚠ A MINTED RUNG HAS NO `vanilla_pm`, so `mine` used to be EMPTY and the rung always failed the
+          //   gate — it kept the original vanilla secondary, which names main methods it does not have, so the
+          //   method was silently unselectable. Furniture's e3 (spray finishing) could not take precision tools
+          //   at all: reported from a live campaign, 2026-09-18 (ROADMAP step 8 P7; landmine L35). THE RULE, the
+          //   same one build.ps1's gate remap uses: a rung with no `vanilla_pm` inherits the method of the
+          //   nearest rung BELOW it that has one — the rung the generator already copies its recipe, staffing
+          //   and icon from, so an addition is "the method after X" and belongs wherever X belongs. A gate that
+          //   does not name that lower method still excludes the addition, which is correct.
+          const below = (industry.tiers || []).filter(x => (x.era ?? 0) <= (t.era ?? 0) && x.vanilla_pm);
+          const inherited = below.length ? below[below.length - 1] : null;
+          const mine = [t.vanilla_pm || (inherited && inherited.vanilla_pm),
+            ...(t.vanilla_pm_aliases || (inherited && inherited.vanilla_pm_aliases) || [])].filter(Boolean);
           if (!mine.some(v => gatedOn.includes(v))) { newMembers.push(p); continue; }
         }
         const ref = refFor(p);

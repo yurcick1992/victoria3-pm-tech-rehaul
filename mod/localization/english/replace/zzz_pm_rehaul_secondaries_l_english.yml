@@ -43,6 +43,7 @@
  pm_precision_tools_furniture_manufactory_mechanized_workshops:0 "$pm_precision_tools$"
  pmg_luxury_building_furniture_manufactory_furniture_manufactory_mechanized_workshops:0 "$pmg_luxury_building_furniture_manufactory$"
  pm_luxury_furniture_furniture_manufactory_spray_finishing:0 "$pm_luxury_furniture$"
+ pm_precision_tools_furniture_manufactory_spray_finishing:0 "$pm_precision_tools$"
  pmg_luxury_building_furniture_manufactory_furniture_manufactory_spray_finishing:0 "$pmg_luxury_building_furniture_manufactory$"
  pm_ceramics_glassworks:0 "$pm_ceramics$"
  pmg_luxury_building_glassworks_glassworks:0 "$pmg_luxury_building_glassworks$"

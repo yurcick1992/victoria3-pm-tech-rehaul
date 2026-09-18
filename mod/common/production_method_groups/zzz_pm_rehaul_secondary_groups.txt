@@ -114,7 +114,7 @@ pmg_luxury_building_furniture_manufactory_furniture_manufactory_spray_finishing 
 	production_methods = {
 		pm_no_luxuries
 		pm_luxury_furniture_furniture_manufactory_spray_finishing
-		pm_precision_tools
+		pm_precision_tools_furniture_manufactory_spray_finishing
 	}
 }
 pmg_luxury_building_glassworks_glassworks = {

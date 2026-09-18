@@ -1576,7 +1576,7 @@ re-checked against this one.
 
 ---
 
-### P3 — THE BUILDING NAME STILL SAYS "BE TARGET". CONFIRMED, two separate defects in one label.
+### P3 — ✅ FIXED AND DEPLOYED 2026-09-18. The building name said "BE TARGET": two separate defects in one label.
 
 **The user:** *"building titles still say BE Target, despite the ruling that we're not using this, and rather show the factual recipe value-added
 BE (with wages ignored)."*
@@ -1591,20 +1591,30 @@ Today (`tools/build.ps1:590`): `". BE target $([math]::Round($actualBe))%"`, so 
    goods-only figure the user asks for is simply `actualI / Oval × 100` = the same number × `(1 − wage_pct)` = **×0.75** at the default. Food
    e1 would read **49%** instead of 65%, textile e0 **71%** instead of 95%.
 
-**The fix is two lines** in `build.ps1` — compute the goods-only value and change the wording (e.g. `". recipe 49%"`, or spelled out; the exact
-phrasing is the user's call). ⚠ Three consumers must stay in step: the `$summary` object and `tools/ladder_tiers.txt` (the linter reads the
+**Fixed in `build.ps1`**: a goods-only `$goodsBe = $actualI / $Oval * 100` and the label `". Recipe BE N%"`. Verified in the build — food e0 now
+reads `Era 0. Food Industries (Bakeries). Recipe BE 71%` and e1 `Recipe BE 49%`, where they read 95% and 65%. ⚠ Three consumers must stay in step: the `$summary` object and `tools/ladder_tiers.txt` (the linter reads the
 latter and its `target_be` column must NOT change basis, or `lint_profitability.awk` starts failing), and the UI, which shows its own BE.
 ⚠ State plainly that this is a property of the RECIPE at base prices — the player's actual building will differ, because throughput bonuses,
 economy of scale, company modifiers and active secondary methods all move it.
 
 ---
 
-### P4 — THE JE TICK CAUSES ARE NOT EXPLICIT. CONFIRMED — the machinery is there, the UNITS are inconsistent.
+### P4 — ✅ FIXED AND DEPLOYED 2026-09-18. ⚠ MY FIRST DIAGNOSIS WAS WRONG AND THE USER CORRECTED IT.
 
 **The user:** *"the causes for JE tick are not explicit yet (e.g. 'at least 25k people employed in automotive industry era N')."*
 
-The bars DO carry a per-source tooltip naming the source, the mark and the live figure. The defect is that **two different units are used inside
-one bar, and the level-counted ones state the requirement twice in two units**:
+⚠⚠ **THE UNITS READING BELOW WAS WRONG.** The user, from the live campaign: *"the tooltip now doesn't work at all, saying stuff like 'the condition
+to increase based on enough workforce is fulfilled' rather than the actual condition."* The loc keys all resolve (checked: 43 of 43 present), so
+this was never a missing-string problem — **the engine was ignoring our `desc` and auto-describing the condition instead.**
+
+⭐ **THE CAUSE: the wrong nesting.** We emitted `add = { desc = "…"  if = { limit = {…} value = 1 } }` — the `desc` on the OUTER add, the `if`
+inside it. The game's own `scripted_progress_bars.md` documents that shape, which is why it was written; but **vanilla ships the OTHER shape 224
+times against this one's 5**: `if = { limit = {…}  add = { desc = "…"  value = 1 } }`. With the `desc` on the inner `add`, the engine uses it.
+**Fixed in `emit_research_events.mjs`**; EXCLUSIVE terms keep their exclusivity through `if` / `else_if` at that level (vanilla does the same in
+00_ep2_ryukyu_rivalry and 00_sepoy_mutiny), so "supersedes" still cannot become "stacks" — and every branch now carries its OWN description
+instead of sharing the first term's.
+
+⚠ **The units observation below stands as a SEPARATE, still-open readability point** (it was not what the user was seeing):
 
 - level-counted source — `pmr_src_combustion_engine_0` returns **Σ level × occupancy**, and the tooltip reads
   *"$building_motor_industry_electric_engines$: at least 15 fully staffed levels (75,000 workers at the base method's staffing, labour saving and
@@ -1650,7 +1660,7 @@ ladder's whole mechanism.
 
 ---
 
-### P7 — A MINTED TOP RUNG IS LOCKED OUT OF ITS INDUSTRY'S GATED SECONDARY METHOD. CONFIRMED, and it is a LANDMINE (nothing fails).
+### P7 — ✅ FIXED AND DEPLOYED 2026-09-18, with a detector (landmine L35). A minted top rung was locked out of its industry's gated secondary.
 
 **The user:** *"our additional late-game tiers can disallow modern secondary PMs when the locks are done through explicit naming of all compatible
 primary PMs. Example: T3 furniture doesn't allow adding top luxury furniture secondary PM."*
@@ -1672,7 +1682,12 @@ map and gets no append.** What ships:
 bitten. **It is a latent trap for every future addition**, and it is a textbook landmine: the build passes, every linter passes, the mod loads,
 the game runs, and the player simply cannot select a method.
 
-**The fix (two parts, both small):**
+**FIXED 2026-09-18, at BOTH sites — there were two.** `$script:pmRemap` in `build.ps1` is now `vanilla_pm` → a LIST of `pm_key`s, and
+`emit_secondaries.mjs` made the same `vanilla_pm` test a second time when minting the per-rung copies. Verified in a real build: the furniture
+gate names `pm_main_furniture_spray_finishing`, and `pm_precision_tools_furniture_manufactory_spray_finishing` is minted beside the e1 and e2
+copies (6 per-rung copies → 7). **Landmine L35 added to `preflight.ps1` and TESTBED_LANDMINES.md, proven both ways by sabotage.**
+
+**What was done (the plan as written, for the record):**
 1. **A minted rung inherits the gate membership of the rung below it.** The generator already copies an addition's recipe, staffing and icon from
    the rung beneath; gate membership should ride along by the same logic — an addition is "the method after X", so wherever X is allowed, it is.
    Implement as: when building the `vanilla_pm` → `pm_key` map, a rung with no `vanilla_pm` is registered under the `vanilla_pm` of the nearest
@@ -1829,3 +1844,86 @@ that moves both dials with (b) compensating is the coherent next experiment, not
 P3, P4 and P2 are cosmetic-to-local and can be done in one pass without a measurement batch (P2 changes the economy slightly and should be read
 in the next batch, not on its own). P6 and P1 are the real work and belong to one campaign, because P6 changes the 1836 prices that P1's recipes
 would be designed against. ⚠ Nothing in this list may be built or deployed while a playthrough is live.
+
+## ⭐⭐⭐ STEP 9 — THE MARGIN-COMPRESSION CAMPAIGN (the user's steer, 2026-09-18: "I really want to decrease margins across the board, in both early tiers (a bit) and the late tiers (a lot)")
+
+**The steer, verbatim:** *"I really want to decrease margins across the board, tbh, in both early tiers (a bit) and the late tiers (a lot,
+otherwise both their margins and natural cost becomes exorbitant)."*
+
+**This is one change that moves four of the nine complaints**, because the same two numbers produce all of them: P1 (the money printer), P5
+(top-rung output), P8 (build time) and the hoard defect (F135). It is the campaign ROADMAP step 8's convergence note calls for.
+
+### 1. The arithmetic to design against
+
+A rung's margin at base prices is `(O·Aᵉ) ÷ (I·in0·Bᵉ ÷ (1 − wage_pct)) − 1`. So:
+
+- **`r = A ÷ B` sets the SHAPE** — the margin multiplies by `r` per era on top of rung 0's. Today `r = 2.2 ÷ 1.5 = 1.467`, applied to a rung 0
+  sitting at ~break-even, which is why the ladder explodes: **1.05 → 1.54 → 2.27 → 3.33**, i.e. +5% → +55% → +127% → +233%.
+- **`in0` sets the LEVEL** — it scales every rung's input value together.
+- **`A` alone sets the top rung's OUTPUT** (P5) and, through a capacity-priced cost, its BUILD TIME (P8).
+
+### 2. THE CANDIDATE TABLE, holding `in0` at 1.2 so rung 0 is untouched
+
+Cost is set to hold **capital per unit of output constant** at today's ratio (`C ÷ A = 1.9 ÷ 2.2 = 0.864`), so only the MARGIN moves — a clean
+one-dimensional experiment. Margins are % at base prices; "build time" is the e3 cost relative to today's 6.86× vanilla.
+
+| setting | r | textile e0…e3 | glass e0…e3 | steel e0…e3 | top output | e3 build time |
+|---|---|---|---|---|---|---|
+| **TODAY** A 2.2 · B 1.5 · C 1.9 | 1.467 | 5 / **55** / **127** / **233** | 25 / 83 / 169 / 294 | −19 / 19 / 75 / 156 | 10.6× | 100% |
+| A 2.1 · B 1.6 · C 1.80 | 1.313 | 5 / 38 / 82 / 138 | 25 / 64 / 115 / 183 | −19 / 7 / 40 / 84 | 9.3× | 85% |
+| ⭐ **A 2.0 · B 1.7 · C 1.70** | **1.176** | **5 / 24 / 46 / 72** | 25 / 47 / 73 / 104 | −19 / −4 / 12 / 32 | **8.0×** | **72%** |
+| A 1.9 · B 1.7 · C 1.62 | 1.118 | 5 / 18 / 32 / 47 | 25 / 40 / 56 / 75 | −19 / −9 / 1 / 13 | 6.9× | 62% |
+| A 1.8 · B 1.65 · C 1.55 | 1.091 | 5 / 15 / 26 / 37 | 25 / 36 / 49 / 62 | −19 / −11 / −3 / 5 | 5.8× | 54% |
+| A 1.7 · B 1.6 · C 1.48 | 1.063 | 5 / 12 / 19 / 27 | 25 / 33 / 41 / 50 | −19 / −14 / −8 / −3 | 4.9× | 47% |
+
+*(Vanilla's manufacturing runs **23.1%** realised at 1935. Our realised figures sit well below the base-price numbers because prices fall —
+today's realised ladder is 26 / 31 / 47 / 46%.)*
+
+### 3. ⚠⚠ THE TRAP IN THIS TABLE: THE LEVEL IS NOT THE SAME IN EVERY INDUSTRY
+
+Look across the three columns at one row. **Rung 0 starts at +25% in glass, +5% in textile and −19% in steel**, because `in0` was applied over
+*vanilla's own recipes*, whose margins differ wildly. A uniform `r` compression therefore lands very unevenly: at A 1.8 the steel chain is
+**loss-making at base on three of its four rungs**, while glass still earns 36–62%.
+
+⚠ And it is worst where it hurts most: steel, fertilizer, explosives and motor are the thin-margin chains **and** the ones whose prices actually
+fall (F136 — building-fed and army-fed goods reach 25–72% of base), so a uniform compression squeezes them from both ends.
+
+⇒ **Two ways out, and the second is the user's own P1 idea (b):**
+1. **Stop at r ≈ 1.18** (the A 2.0 row), where steel's worst rung is −4% and only at base prices — survivable, since steel's realised price sits
+   at or above base for most of the century (vanilla 100–132, the canon 104–141 to 1870).
+2. ⭐ **Level the rung-0 margins first, per industry**, then compress uniformly. A per-industry `in0` chosen so every industry's e0 lands on the
+   same margin (say +5%) would make one `r` mean the same thing everywhere. That is a generator change — `make_ab_config` takes a scalar `--in0`
+   today — and it is the cleaner design, because the current spread is an inherited accident, not a decision.
+
+### 4. ⭐ WHY THIS IS AFFORDABLE NOW AND WAS NOT LAST WEEK
+
+Lowering `A` means less output per level, so the same economy needs MORE levels and MORE workers — which is why `canon-a19-gm` (F129) read
+**workers per capita 0.85 / 0.91 world and 1.04 / 0.78 on the pool** and was judged to have overshot. **The 2026-09-18 amendment (§10.85) widened
+the pool W aim from 0.6–0.7 to 0.6–0.95**, so that reading is now inside the aim rather than past it. The A axis was closed by a criterion that
+has since moved.
+
+⚠ Note the difference from F129 all the same: that book **gain-matched the cost ladder downward** (`--cost-ladder 1.38,2.22,3.68`) to hold value
+added per construction point constant, which made the frontier cheap and the build-out deep. The proposal here holds **capital per unit of
+output** constant instead, which is a different and gentler move — and F128's lesson (a base-price gain match understates the price channel) is
+the reason not to gain-match again.
+
+### 5. What the campaign should be
+
+1. **First batch: A 2.0 / B 1.7 / C 1.70, `in0` 1.2** — one book, the 2+1 rule, read under the criteria register. Generated by
+   `make_ab_config --A 2.0 --B 1.7 --cost-ratio 1.70 --in0 1.2 …`, no generator change needed.
+   **Predictions to pre-register:** margins at base 5 / 24 / 46 / 72 (textile); realised 1935 margins roughly 15 / 20 / 28 / 28; pool H well below
+   the incumbent's 4.17 (the inflow is roughly halved); world GDP 0.9–1.1; pool W 0.75–0.95 (inside the widened aim); e3 build time −28%; top-rung
+   output 8.0× rung 0 instead of 10.6×. **The KEY reading is pool H against world GDP** — if the hoard falls without the GDP falling, the A/B gap
+   was the inflow and F135's diagnosis is confirmed.
+2. **Then, depending on it:** either step down one more row (A 1.9), or go to the per-industry `in0` levelling of §3.2 and compress harder.
+3. **P6 (the 1836 supply anchor) belongs in the same campaign** — it changes the 1836 prices these recipes are designed against, and it blocks
+   the price-path route entirely.
+4. **P8's construction-throughput compensation is the optional extra**: if −28% build time is not enough, scaling the late construction methods'
+   points AND goods buys the rest without spending GDP.
+
+⚠ **What NOT to do**: do not raise `in0` above 1.2 in the same batch. It is closed as a lever at the current `r` (F118 ran away at C 1.9, F119
+stalled at C 2.05), the candidate table shows it drives rung 0 negative at base, and P6 means the 1836 price is already below base in the
+industries with the most starting capacity — three independent reasons, and combining it with a new `r` would make the result unreadable.
+
+---
+

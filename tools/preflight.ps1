@@ -543,6 +543,71 @@ function Test-LmL24 {
     }
 }
 
+# ============================================================= L35 ====
+function Test-LmL35 {
+    <#
+      L35 - A RUNG SILENTLY LOCKED OUT OF ITS INDUSTRY'S GATED SECONDARY METHOD.
+
+      Vanilla gates a few secondary methods by naming the MAIN methods they may sit beside
+      (unlocking_production_methods). The whole game has exactly three: pm_elastics (textile luxury),
+      pm_precision_tools (furniture luxury), pm_bone_china (glass porcelain). The builder owns
+      01_industry.txt and appends OUR rung pm_key for each vanilla main method the list names - but a
+      MINTED rung has no vanilla_pm, so before 2026-09-18 it was in no map and was never appended, and
+      furniture's e3 (spray finishing) could not take the luxury secondary at all. Nothing failed: the
+      build passed, every linter passed, the mod loaded, and the method was simply unselectable
+      (reported from a live campaign; ROADMAP step 8 P7).
+
+      DETECTOR. Reads the EMITTED production_methods, never the generator. For every
+      unlocking_production_methods list: if any rung of industry I is named, every HIGHER-era rung of I
+      must be named too. A gate naming no rung of ours is ignored, as is one naming only the top rung.
+    #>
+    $Title35 = 'a rung locked out of its gated secondary method'
+    $pmDir = Join-Path $Mod 'common\production_methods'
+    if (-not (Test-Path $pmDir)) { Add-Result 'L35' $Title35 'N/A' 'no emitted production_methods'; return }
+    $cfgPath = if ($Config) { $Config } else { Join-Path $Repo 'config\mod_config.json' }
+    if (-not (Test-Path $cfgPath)) { Add-Result 'L35' $Title35 'N/A' "no config at $cfgPath"; return }
+    $cfg = Get-Content -Raw -LiteralPath $cfgPath | ConvertFrom-Json
+    $rung = @{}
+    foreach ($ind in $cfg.industries) {
+        if ($ind.disabled) { continue }
+        foreach ($t in $ind.tiers) { if ($t.pm_key) { $rung[$t.pm_key] = @{ Ind = $ind.id; Era = [int]$t.era } } }
+    }
+    if ($rung.Count -eq 0) { Add-Result 'L35' $Title35 'N/A' 'no tiered rungs in the config'; return }
+    $bad = @(); $gates = 0; $checked = 0
+    foreach ($f in Get-ChildItem -Path $pmDir -File -Filter *.txt) {
+        # OUR OWN per-rung secondary file gates each minted copy to exactly ONE rung by construction
+        # (emit_secondaries.mjs mints a copy of each gated secondary per rung), so the completeness rule
+        # below does not apply there - it applies to the VANILLA files we own and extend. A missing per-rung
+        # copy is the SYMPTOM; the gate list in the owned vanilla file is the CAUSE, and that is what is checked.
+        if ($f.Name -like 'zzz_pm_rehaul_*') { continue }
+        $txt = Get-Content -Raw -LiteralPath $f.FullName
+        foreach ($m in [regex]::Matches($txt, 'unlocking_production_methods\s*=\s*\{([^{}]*)\}')) {
+            $gates++
+            $toks = @([regex]::Matches($m.Groups[1].Value, 'pm_[A-Za-z0-9_-]+') | ForEach-Object { $_.Value })
+            $ours = @($toks | Where-Object { $rung.ContainsKey($_) })
+            if ($ours.Count -eq 0) { continue }
+            $checked++
+            foreach ($indId in ($ours | ForEach-Object { $rung[$_].Ind } | Select-Object -Unique)) {
+                $lowest = ($ours | Where-Object { $rung[$_].Ind -eq $indId } | ForEach-Object { $rung[$_].Era } | Measure-Object -Minimum).Minimum
+                foreach ($k in $rung.Keys) {
+                    if ($rung[$k].Ind -ne $indId) { continue }
+                    if ($rung[$k].Era -le $lowest) { continue }
+                    if ($toks -contains $k) { continue }
+                    $bad += "$($f.Name): a gate admits $indId from era $lowest upward but omits $k (era $($rung[$k].Era))"
+                }
+            }
+        }
+    }
+    if ($bad.Count) {
+        Add-Result 'L35' $Title35 'FAIL' ("$($bad.Count) rung(s) silently locked out of a gated secondary - a MINTED rung must inherit the gate membership of the rung below it (the pmRemap map in build.ps1): " + (($bad | Select-Object -Unique) -join '; '))
+    } elseif ($checked -eq 0) {
+        Add-Result 'L35' $Title35 'N/A' "$gates gate(s) emitted, none naming a rung of ours"
+    } else {
+        Add-Result 'L35' $Title35 'PASS' "$checked of $gates gate(s) name our rungs; every higher rung of those industries is named too"
+    }
+}
+
+
 # ============================================================= L27 ====
 function Test-LmL27 {
     <#
@@ -1437,6 +1502,8 @@ $CHECKS = @(
     # L33 reads the CONFIG (the define bounds the engine has stated) and, with -Session, every run's
     # error.log for what it actually rejected - so it gates a launch AND audits a finished batch.
     @{ Id = 'L33'; Artifact = $false; Fn = { Test-LmL33 } }
+    # L35 reads the EMITTED production_methods against the config: a minted rung that no gate admits.
+    @{ Id = 'L35'; Artifact = $true;  Fn = { Test-LmL35 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {

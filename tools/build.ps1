@@ -587,7 +587,16 @@ foreach ($ind in $cfg.industries) {
         # ---- localization (shared body) ----
         # follows_be:false industries (ports, railways) stay on vanilla economics, so their name omits
         # the BE target (BE is not the design handle for them).
-        $beLabel = if ($ind.follows_be -eq $false) { "" } else { ". BE target $([math]::Round($actualBe))%" }
+        # ⭐ THE LABEL IS THE RECIPE'S GOODS-ONLY BREAK-EVEN, AND IT SAYS SO (user-ruled 2026-09-18, ROADMAP step 8 P3).
+        # It read ". BE target N%" and was wrong twice: the WORD ("target_be" is a config field that survives only as the
+        # linter's drift guard — this number is computed from the EMITTED recipe), and the BASIS (it was WAGE-INCLUSIVE,
+        # $actualI / (1 - $wage) / $Oval). The user wants "the factual recipe value-added BE, with wages ignored", which is
+        # the same number x (1 - wage_pct) = x0.75 at the default: food e1 reads 49% where it used to read 65%.
+        # ⚠ It is a property of the RECIPE at base prices. A player's building will differ - throughput, economy of scale,
+        # company bonuses and any active secondary all move it. $actualBe (wage-inclusive) is kept for $summary and the
+        # tier map, so tools/ladder_tiers.txt and lint_profitability.awk are untouched.
+        $goodsBe = if ($Oval -gt 0) { $actualI / $Oval * 100 } else { 0 }
+        $beLabel = if ($ind.follows_be -eq $false) { "" } else { ". Recipe BE $([math]::Round($goodsBe))%" }
         # ⚠ THE NUMBER A PLAYER READS IS THE ERA, NOT A POSITION. It used to be `$tierNo`, a 1-based count
         # of EMITTED tiers, which meant the same digit described different vintages in different industries:
         # the automotive industry's first building is era 3, and it shipped as "Tier 1". It also disagreed
@@ -1031,13 +1040,33 @@ if ($subMap.Count -eq 0 -and -not $subCond) {
 # reference PMs by key, so all buildings pick up the edit. Default (no override) = verbatim copy.
 # The BE linter reads vanilla + our zzz (not these owned copies), so it's unaffected. The negative-goods
 # linter (lint_negative_goods.awk) DOES read these owned copies, so it checks pm_goods overrides.
+# ⚠⚠ A MINTED RUNG HAS NO `vanilla_pm`, SO IT USED TO BE IN NO MAP AND WAS NEVER APPENDED TO A GATE - and vanilla gates
+# a secondary by naming the main methods it may sit beside, so our minted TOP rung silently could not take its industry's
+# gated secondary at all (ROADMAP step 8 P7; reported from a live campaign 2026-09-18: "T3 furniture doesn't allow adding
+# top luxury furniture secondary PM"). The whole game has exactly three such gates - pm_elastics (textile),
+# pm_precision_tools (furniture), pm_bone_china (glass) - and furniture is the one industry that has both a gate and a
+# minted top rung, so it was the only live case and a latent trap for every future addition. It is a LANDMINE: the build
+# passes, every linter passes, the mod loads, and the method is simply unselectable.
+# THE RULE: a rung with no `vanilla_pm` inherits the gate membership of the nearest rung BELOW it that has one - which is
+# the same rung the generator already copies its recipe, staffing and icon from, so an addition is "the method after X"
+# wherever X is allowed. A gate that does not name that lower rung's method still appends nothing, which is correct.
+# The map is therefore vanilla_pm -> LIST of pm_keys, not one. Landmine L35 checks the emitted artifact.
 $script:pmRemap = @{}
-foreach ($ind in $cfg.industries) { if ($ind.disabled) { continue }; foreach ($t in $ind.tiers) { if ($t.vanilla_pm) { $script:pmRemap[$t.vanilla_pm] = $t.pm_key } } }
+foreach ($ind in $cfg.industries) {
+    if ($ind.disabled) { continue }
+    $anchor = $null
+    foreach ($t in $ind.tiers) {
+        if ($t.vanilla_pm) { $anchor = $t.vanilla_pm }
+        if (-not $anchor) { continue }   # a minted rung BELOW every vanilla method has nothing to inherit from
+        if (-not $script:pmRemap.ContainsKey($anchor)) { $script:pmRemap[$anchor] = @() }
+        if ($script:pmRemap[$anchor] -notcontains $t.pm_key) { $script:pmRemap[$anchor] += $t.pm_key }
+    }
+}
 $gateEval = [System.Text.RegularExpressions.MatchEvaluator]{
     param($m)
     $toks = @([regex]::Matches($m.Groups[1].Value, 'pm_[A-Za-z0-9_-]+') | ForEach-Object { $_.Value })
     $adds = @()
-    foreach ($tk in $toks) { if ($script:pmRemap.ContainsKey($tk)) { $mapped = $script:pmRemap[$tk]; if (($toks -notcontains $mapped) -and ($adds -notcontains $mapped)) { $adds += $mapped } } }
+    foreach ($tk in $toks) { if ($script:pmRemap.ContainsKey($tk)) { foreach ($mapped in $script:pmRemap[$tk]) { if (($toks -notcontains $mapped) -and ($adds -notcontains $mapped)) { $adds += $mapped } } } }
     if ($adds.Count -eq 0) { return $m.Value }
     "unlocking_production_methods = {`n" + ((@($toks) + $adds | ForEach-Object { "`t`t$_" }) -join "`n") + "`n`t}"
 }
