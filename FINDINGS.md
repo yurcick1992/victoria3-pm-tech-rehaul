@@ -13444,3 +13444,151 @@ progress; as a *ranking* instrument at n=2–3 it is not usable, and as it is we
 **What it does NOT say.** Nothing about whether the AIM / SOFT / HARD lines themselves are right — only about the loss built on them. Nothing
 about the divergent books (four of the seventeen have no consensus and are unranked). The re-weightings of §8 are offline recomputations from
 the same JSON, not re-measurements; they were not written into `criteria.mjs`, which still ships the ruled 2026-09-18 defaults.
+
+## F135 — WHERE THE HOARD COMES FROM: OUR REALISED MARGINS ARE TWICE VANILLA'S (frontier 46–52% against vanilla manufacturing's 23.1% at 1935), so the pool's INFLOW is the source; the cost slope is the only lever that takes the hoard down while also taking W down, and it trades 1.73% of hoard per 1% of world GDP (analysis over 11 runs on one axis, 2026-09-18)
+
+**The question (user, 2026-09-18 evening), on F132's finding that every configuration which spends the hoard overshoots the labour aims:** *"This
+means that we should have less capital accumulation to invest (lower margins throughout the game), or that the higher-tier buildings should require
+even more capital to construct. No?"* Both halves are right in mechanism. What the runs already carry says which one is measured and which is not.
+
+### 1. Why the spending lever is one-signed — an identity, not a tuning failure
+
+The hoard **is** un-invested capital and W **is** capital that became jobs: H = pool ÷ GDP, and the pool falls only by being spent on construction,
+which creates levels, which creates employment. **A configuration cannot spend its hoard without raising its workers per capita.** That is why the
+eager set lands the hoard on its aim and pool W at 0.87–0.95 against the 0.6–0.7 aim in every seed it has been run in (F121, F124, F125, F132 — four
+books, three cost slopes, ten seeds). ⇒ To get a low hoard AND low W the capital must either not accumulate (the user's first half) or be absorbed by
+construction that does not create proportional employment (the second half — a dearer building at the same staffing).
+
+### 2. THE INFLOW: our margins are about double vanilla's, at every rung
+
+Realised margin = profit ÷ (value added out − profit) (F92's identity, no wage model needed), aggregated over every country at **1935**:
+
+| book | e0 | e1 | e2 | e3 |
+|---|---|---|---|---|
+| `canon-c19-in12` (the incumbent, n=4) | 26.3% | 31.4% | **46.6%** | **45.9%** |
+| `canon-c195-in12` (n=3) | 26.8% | 32.6% | 41.5% | 32.7% |
+| `canon-je24-a22-in12` (C 2.2, n=3) | 29.8% | 32.9% | 51.5% | 49.6% |
+| `canon4v-hai3` (the 2026-09-06 canon, n=2) | 31.6% | 36.2% | 44.0% | 61.9% |
+| **vanilla n=16 — its whole manufacturing sector, level-weighted (13 building types)** | — | — | — | **23.1%** |
+
+**Even our OLDEST rung out-earns vanilla's entire manufacturing sector, and our frontier doubles it.** The investment pool is fed by dividends out of
+exactly this profit, so a mod economy of vanilla's size generates pool roughly twice as fast as vanilla's — before any define touches how eagerly it is
+spent. The cause is structural and deliberate: the A/B ladder improves output ÷ input value by A ÷ B = 2.2 ÷ 1.5 = **1.47 per era**, i.e. 3.16× across
+three eras, where vanilla's own method ladder runs A ≈ B ≈ 1.5 and holds the ratio roughly flat (F97 §6). The margin ladder is what makes the frontier
+out-earn the old rung (goal 2); its LEVEL is what feeds the hoard, and nothing in the design has ever set the level.
+
+### 3. THE COST AXIS, one lever, eleven runs — it works, and it is priced in GDP
+
+A 2.2 / B 1.5 / the ×1.2 lift / ai_value 3^era / the 24-month bar held fixed; only `building_cost = anchor × C^era` moves. Per-run ratios to vanilla:
+
+| C | runs | world GDP | pool hoard | pool W | world W |
+|---|---|---|---|---|---|
+| 1.6 | 1 (broken by runoff) | 1.91 | 3.16 | 0.96 | 0.93 |
+| **1.9** (the incumbent) | 4 | 1.06 / 1.04 / 1.30 / 1.16 | 4.07 / 1.58 / 1.82 / 6.77 | 0.71 / 0.70 / 0.84 / 0.65 | 0.64 / 0.67 / 0.73 / 0.72 |
+| 1.95 | 3 | 1.17 / 0.92 / 0.68 | 2.35 / 0.95 / 0.45 | 0.78 / 0.59 / 0.58 | 0.73 / 0.60 / 0.56 |
+| 2.2 (= A^era) | 3 | 0.64 / 0.80 / 0.58 | 1.29 / 0.59 / 0.47 | 0.56 / 0.81 / 0.47 | 0.53 / 0.58 / 0.51 |
+| medians | | 1.91 · **1.11** · 0.92 · 0.64 | 3.16 · **2.95** · 0.95 · 0.59 | 0.96 · **0.70** · 0.59 · 0.56 | 0.93 · **0.69** · 0.60 · 0.53 |
+
+Regressed over all eleven runs against log C: **log world GDP slope −3.34 (r −0.88), log pool hoard −5.76 (r −0.60), pool W −0.99 (r −0.64), world W
+−1.18 (r −0.89)**. So a 10% step on the cost ratio costs about 32% of world GDP and removes about 55% of the hoard.
+
+⭐ **The exchange rate is 1.73% of hoard per 1% of world GDP given up** — and, unlike the spending lever, **the cost lever moves W in the SAME direction
+as the hoard**. That is the whole difference between the user's two options: making buildings dearer absorbs pool into construction points rather than
+into jobs, so H and W fall together; spending the pool faster converts it into jobs, so H falls and W rises.
+
+### 4. What is measured and what is NOT
+
+- **Dearer buildings (the second half): MEASURED and it works**, at a price in world GDP. The incumbent sits at world GDP 1.10 against a 1.0 aim, so
+  there is about a tenth of GDP of headroom to spend on going dearer — which is exactly the step `canon-c195-in12` took (F133: the median of its three
+  seeds is world GDP 0.92 with the hoard at **0.95**, i.e. AT the aim, against the incumbent's 1.11 and 2.95). ⚠ Directional only: the C 1.9 → C 1.95
+  step is 2.6% of the lever and the regression predicts −14% of hoard where the medians moved −68%, so the SIZE is seed noise; the SIGN is solid.
+- **Lower margins throughout (the first half): NOT properly measured.** The only lever tried on it is `--in0` (rung 0's input value, with the whole
+  ladder anchored on it — a LEVEL shift on every rung's input value), at 1.2 → 1.3, and it is CLOSED: F118 at C 1.9 ran away to 1.44× and F119 at C 2.05
+  stalled at 0.72×. The reason it fails is that a uniform input lift raises the break-even of the LOW-output rung most, so it pushes construction toward
+  the frontier instead of thinning the economy — it moves the margin LADDER, not its LEVEL.
+- ⇒ **The untried lever is the A/B GAP** — the rate at which output ÷ input value improves per era — as distinct from either ratio's absolute size.
+  Compressing it (raising B toward A) lowers the frontier's margin specifically, which is where the pool inflow is concentrated, while leaving the 1836
+  anchor alone. ⚠ It is NOT the same as F128's `canon-b18-gm`, which raised B AND gain-matched the cost ladder downward to hold value added per
+  construction point constant — that book stalled, and F128's own diagnosis is that the base-price match understated the price channel. A B step
+  WITHOUT the cost compensation has never run.
+
+**What it does NOT say.** Nothing about whether a lower margin level would hold the frontier's advantage over the old rung — the ratio and the level can
+be moved independently in principle but not obviously in this engine. Nothing about the pool's inflow rate directly: the investment-pool contribution is
+a law and define matter that has not been read out of the saves, so "margins feed the pool" is an inference from the game's own mechanic, not a
+measurement of our runs' pool inflow. The cost-axis regression pools broken and intact runs deliberately (the point is the lever's direction) and mixes
+seeds across four books, so its slopes are directional, not calibrated.
+
+
+## F136 — THE OBSOLESCENCE CENSUS, PER INDUSTRY: the ladder works completely in the war and heavy chains (arms, artillery, explosives, steel shed 92–98% of the old rung's peak workers at NEGATIVE margins) and barely at all in the consumer chains (glass 14%, motor 26%, textile 29% shed, all still at ~21% margin) — and the conditional measure this produces discriminates 5.0× better than the register's T0 term (2026-09-18)
+
+**Why.** The user, 2026-09-18 evening, invited an alternative to the register's T terms *"aligned with obsolescence (tiers N-2/N-3 should become
+unprofitable and mostly shed workers when tier N becomes prevalent)"*. That sentence is conditional (on the frontier arriving), per-industry, and about
+profitability as well as headcount; `T0 ÷ rest` and `T3 ÷ rest` are unconditional aggregate shares and use neither profitability nor any industry
+structure. The measure below was built, run over 51 runs of nine books, and is proposed on that evidence rather than on the reasoning.
+
+**The measure.** Per tiered INDUSTRY, world-wide, at 1935, from the yearly save summaries and the run's own config:
+- **N = the MODAL rung** — the era holding the most staffed levels in that industry. (Parameter-free. ⚠ A prevalence THRESHOLD was tried first and is
+  rejected: at 0.40 it behaves, at 0.55 the pair count halves and selection bias inverts the ranking — the 2026-09-06 canon comes first at 0.793.)
+- For each k ∈ {2, 3} with N − k ≥ 0: **shed = 1 − workers(N−k, 1935) ÷ max over the century of workers(N−k)**, and **dead = clamp(1 − margin(N−k) ÷
+  margin(N), 0, 1)**.
+- **O_shed / O_dead = the mean over the scored pairs**; an industry whose modal rung is e0 or e1 contributes nothing, and a book where no industry
+  climbs scores 0.
+
+### 1. THE CENSUS — the incumbent, run 1, every scored pair
+
+| industry | N | old | workers 1935 / peak | shed | margin old / N |
+|---|---|---|---|---|---|
+| explosives | e3 | e0 | 1k / 57k | **0.98** | 5% / 40% |
+| arms | e3 | e0 | 10k / 475k | **0.98** | **−15%** / 5% |
+| artillery | e3 | e0 | 2k / 64k | **0.97** | **−52%** / 4% |
+| arms | e3 | e1 | 16k / 218k | 0.93 | 6% / 5% |
+| steel | e2 | e0 | 5k / 67k | **0.92** | **−2%** / 20% |
+| artillery | e3 | e1 | 5k / 51k | 0.89 | **−3%** / 4% |
+| furniture | e2 | e0 | 118k / 411k | 0.71 | 36% / 28% |
+| explosives | e3 | e1 | 110k / 202k | 0.46 | 21% / 40% |
+| tooling | e2 | e0 | 204k / 372k | 0.45 | 22% / 86% |
+| food | e2 | e0 | 225k / 370k | 0.39 | 17% / 44% |
+| paper | e2 | e0 | 747k / 1,060k | 0.30 | 23% / 77% |
+| textile | e2 | e0 | 522k / 732k | 0.29 | 21% / **25%** |
+| motor | e2 | e0 | 1,184k / 1,596k | 0.26 | 22% / 65% |
+| glass | e2 | e0 | 329k / 383k | **0.14** | 21% / 54% |
+
+⭐ **The design works completely where the output is bought by the ARMY or by other BUILDINGS** (arms, artillery, explosives, steel: 92–98% shed, three
+of them at negative margins — the old rung is not merely thinned, it is loss-making) **and hardly at all where the output is bought by POPS** (glass,
+motor, textile, paper, food: 14–39% shed, every one of them still earning ~21%). That is F97's mechanism read per industry: a pop-fed good's price
+cannot fall, because pop wealth rises to absorb the glut, so the old rung's output price never falls under its input prices. **Textile is the clearest
+failure in the book — its e0 rung earns 21% against its own frontier's 25%, a ladder that is flat in the one industry with the most workers on it.**
+
+### 2. IT DISCRIMINATES BETTER THAN THE TERM IT WOULD REPLACE
+
+O_shed at the modal definition, median over each book's runs (51 runs in all):
+
+| book | runs | pairs | O_shed | O_dead |
+|---|---|---|---|---|
+| `canon-a19-gm` | 2 | 15.5 | **0.618** | 0.473 |
+| `canon-c19-in12` (the incumbent) | 4 | 14 | **0.615** | 0.551 |
+| `canon-c195-in12` | 3 | 12 | 0.588 | 0.514 |
+| `canon-b18-gm` (a stall) | 3 | 12 | 0.556 | 0.421 |
+| `canon-je24-a22-in12` (C 2.2) | 3 | 11 | 0.525 | 0.545 |
+| `canon-c205-in13` (a stall) | 2 | 13 | 0.516 | 0.629 |
+| `canon-c195-in12-eager` | 2 | 14.5 | 0.503 | 0.551 |
+| `canon-je24` (phase 1) | 30 | 12 | 0.457 | 0.472 |
+| `canon4v-hai3` (the 2026-09-06 canon) | 2 | 12.5 | 0.432 | 0.469 |
+
+**Pooled within-config σ 0.038 over 42 d.f. against a between-book range of 0.19 — a signal ÷ noise of 5.0×, where `T0 ÷ rest` reads 2.8×** (σ 0.025,
+range 0.012–0.083). The two books the register ranks best come first, the two stalls sit mid-table rather than at the top, and the arc is monotone
+(0.432 → 0.457 → 0.615 from the 2026-09-06 canon through phase 1 to the incumbent).
+
+### 3. ⚠ O_dead IS CONTAMINATED BY SURVIVORSHIP AND MUST NOT BE SCORED
+
+The margin half ranks the stalled `canon-c205-in13` FIRST (0.629). The reason is structural: a realised margin is measured over the buildings that still
+exist, and the engine lays a building off when its workers fall under 0.66× expected SoL (F97) — so **the unprofitable old buildings are gone from the
+sample before they can be counted, and what survives is profitable by construction.** In a stalled economy the surviving frontier is small and dear, so
+the ratio flatters it. ⇒ **score O_shed; report O_dead and the per-industry margin table as the diagnostic** (they are what §1 is read from, and §1 is
+the most useful thing this measure produces).
+
+**Confidence.** HIGH on §1 and §2 — 51 runs, the per-industry table reproducible from the same summaries. MEDIUM on the proposed weighting, which has not
+been run inside `criteria.mjs`. **What it does NOT say:** nothing about WHY the consumer chains resist (F97's pop-wealth mechanism is the standing
+hypothesis, not re-measured here); nothing about the shortlist scope (this is world-wide — a shortlist-only reading would show more death, F132 measured
+the shortlist's rung 0 at 19–23% staffing against the rest of the world's 46–54%); the "peak" baseline includes the 1836 inherited stock, so an industry
+that grew its old rung before shedding it scores the same as one that never grew it.

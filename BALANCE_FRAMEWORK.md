@@ -7901,3 +7901,66 @@ readings the table did not contain, all in F134 with the commands:
 own `--json`. The four proposals waiting on a ruling are (a) one term per axis, (b) the priority order restored between pool GDP and pool W,
 (c) σ from the mod's own within-config spread instead of vanilla's, (d) a FIXED T σ in place of the per-invocation one (which moves a book by up
 to ~5 points between invocations) and a floor under the unbounded −ln(T3 ÷ rest) bounty.
+
+### 10.83.7 — The loss AMENDED (user-ruled 2026-09-18 evening, after F134): three of the four fixes taken, one refused, and the statistics ruled DIRECTIONAL
+
+**The rulings, verbatim (user, 2026-09-18 evening, on F134's four proposals and its noise finding):**
+
+> On "diffs not being statistically real": unfortunate, but I can't think of finer metrics, and increasing statistical power would take too long. So
+> treat as directional, especially when moving a lever leads to theoretically understandable results.
+>
+> On changes to loss function: drop world U*, but not the other things you propose dropping. All right on restoring priority line. Ok on the right sigma
+> and fixing sigmas for T. You may suggest alternative approaches to T completely, that are aligned with obsolescence (tiers N-2/N-3 should become
+> unprofitable and mostly shed workers when tier N becomes prevalent).
+
+**⭐⭐ THE STATISTICAL STANCE, RULED: DIRECTIONAL.** F134's noise finding stands and is not to be treated as a blocker. A lever's reading is taken as
+evidence of its DIRECTION, weighted by whether the mechanism is understood — *"especially when moving a lever leads to theoretically understandable
+results"* — not as a significant difference. ⇒ Two consequences for practice: (1) a finding argues the MECHANISM beside the number, and a result whose
+mechanism is not understood carries much less weight than one that is; (2) **the pooled reading across a whole lever axis outranks the two-book
+comparison** — the regression over the eleven runs of the cost axis (F135 §3) is worth more than any one pair on it, and costs no game time.
+⚠ THE ADOPT RULE's "beat the incumbent by ≥ 3" is therefore retired as a significance test. What replaces it: a candidate is adopted when it beats the
+incumbent on the loss AND the lever's direction is understood AND no new hard break — the judgement stays the user's, and the loss is the summary, not
+the referee.
+
+**IMPLEMENTED in `tools/testbed/ledger/criteria.mjs` the same evening (its defaults ARE the ruled form):**
+
+1. **World U* is OUT of the loss** — r = −0.99 with world W over the 29 intact runs, i.e. the same statement twice. It stays a SOFT boundary in the
+   register and a flag in the report and the ranking; it simply carries no weight. Pool U* and world H are KEPT (the user refused those two drops).
+2. **The priority line is restored in the weights**: **world GDP 2 · pool GDP 1.5 · pool W 1.25 · world W 1.25 · T0 1.5 · T3 1.5 · pool U* 1 · PI 1 ·
+   PP 0.75 · pool H 0.75 · world H 0.5.** Pool GDP (the pool's W × Y) now outranks pool W, as the register's own priority sentence says and the
+   2026-09-18 morning set did not. `--weights` still overrides, and naming `worldU` there puts it back.
+3. **σ is a FIXED CONSTANT per line, measured as the POOLED WITHIN-CONFIG spread over the 29 intact runs of the 2026-09-13 → 09-18 books** (17 d.f.):
+   world GDP 0.228 · pool GDP 0.440 · world W 0.089 · pool W 0.148 · world U* 0.129 · pool U* 0.631 · world H 0.566 · pool H 1.358 · PI 0.078 ·
+   PP 0.117, and for the tiered-labour terms T0 ÷ rest **0.025**, T3 ÷ rest 0.106, T0's 1935 ÷ 1900s ratio 0.407. Fixed, so a loss is comparable ACROSS
+   invocations — the defect F134 §10 quantified. `--sigma vanilla` restores the 2026-09-17 behaviour (vanilla's seed spread, 1.3–3.0× narrower);
+   `--sigma runs` recomputes from the runs read in the invocation (the old `--sigma mod`).
+   ⚠ **Re-measure the constants when the run population changes materially, in a finding that says so** — a stale σ is silently wrong, not missing.
+
+**The re-ranking under the amended loss** (the same seventeen books, one invocation): the incumbent **8.40** · `canon-a19-gm` **9.24** ·
+`canon-c205-in13` 9.35 · `canon-c19-e0ai500` 10.48 · `canon-c195-in12-eager` 13.05 · `canon-b18-gm` 15.64 · `canon-flat-in12-a16` 19.97 ·
+`canon-je24-a22-in12` 21.65; the same four DIVERGENT and five OUT rows. **The working book is back above the stall** (F134 §4's failure), by 0.11.
+The noise scales with it: pooled within-book σ of a single run's loss **6.6** (was 11.3), so a two-seed consensus carries se ≈ 4.7 and the separation
+threshold is ≈ 13.1 — the picture F134 §5 describes is unchanged in substance, and the ruling above is what governs its use.
+
+**⭐ PROPOSED, NOT RULED — THE OBSOLESCENCE TERM, to replace T0 (FINDINGS F136, built and validated over 51 runs of nine books).** The user's sentence
+— *"tiers N−2/N−3 should become unprofitable and mostly shed workers when tier N becomes prevalent"* — made into a measure:
+
+- Per tiered INDUSTRY, world-wide, at the end state: **N = the MODAL rung** (the era holding the most staffed levels in that industry — parameter-free;
+  a prevalence THRESHOLD was tried and rejected, it inverts the ranking by selection bias at 0.55).
+- For each k ∈ {2, 3} with N − k ≥ 0: **shed = 1 − workers(N−k, end) ÷ that rung's own maximum over the century**.
+- **O_shed = the mean over the scored pairs**, 0 to 1, the more the better; an industry whose modal rung is e0 or e1 contributes nothing, and a book
+  where nothing climbs scores 0 (so a stall cannot score well by staying poor — F134 §4's failure mode, closed by construction).
+- Into the loss as **w · (1 − O_shed) ÷ σ_O** with σ_O = **0.038** (the measured pooled within-config spread), replacing T0's term; T3 stays.
+- **It discriminates 5.0× signal-to-noise against T0 ÷ rest's 2.8×**, puts the two best books first, the two stalls mid-table, and reads the arc
+  monotonically (0.432 → 0.457 → 0.615 from the 2026-09-06 canon through phase 1 to the incumbent).
+- ⚠ **The margin half is NOT scored.** `dead = 1 − margin(N−k) ÷ margin(N)` ranks a STALL first, because a realised margin is measured over survivors
+  and the engine has already laid off the unprofitable buildings (F97's 0.66× SoL rule) — the old rungs that remain are profitable by construction.
+  It is reported as a diagnostic beside the per-industry table, which is where the finding of F136 §1 comes from.
+- ⭐⭐ **What that table says, and it is the sharpest reading the register has produced:** the ladder works COMPLETELY in the war and heavy chains
+  (arms, artillery, explosives, steel shed 92–98% of the old rung's peak workers, three of them at NEGATIVE margins) and barely at all in the consumer
+  chains (glass 14%, motor 26%, textile 29%, paper 30%, food 39% shed, every one still earning ~21%). **Textile's e0 rung earns 21% against its own
+  frontier's 25% — a flat ladder in the industry carrying the most workers.** That is F97's pop-price mechanism read per industry: a building-fed or
+  army-fed good's price can fall, a pop-fed good's cannot, because pop wealth rises to absorb the glut.
+
+**Still open after this section:** whether to adopt the obsolescence term; whether T3 should also be bounded (−ln is unbounded and can go negative,
+F134 §10); and the interpretation of batch 2 (F133), which the user has not returned to.

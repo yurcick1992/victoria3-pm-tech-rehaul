@@ -62,10 +62,25 @@ const argv = process.argv.slice(2);
 const argOf = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const ARMS = []; for (let i = 0; i < argv.length; i++) if (argv[i] === '--arm') ARMS.push(argv[i + 1]);
 const VAN = argOf('--van', '20260821_131149_vanilla-baseline-n16'); const CONFIG = argOf('--config', ''); const BIG = +argOf('--big', '50') * 1e6;
-const [E0, E1] = argOf('--end', '1932-1936').split('-').map(Number); const JSON_OUT = argOf('--json', ''); const QUIET = argv.includes('--quiet'); const SIGMA = argOf('--sigma', 'vanilla');
-// THE WEIGHTS (user-ruled 2026-09-18: "balance weights more equally — reduce pool GDP, increase the now low-weighted options, especially T3/rest and T0/rest";
-// the 2026-09-17 provisional set was gdpW 3, gdpP 2, poolW 2, worldW 1.5, poolU 1, T0 1, PI 1, PP 0.5, worldU 0.5, poolH 0.5, T3 0.3, worldH 0.25 — a 12× range; this is 4×)
-const W = { gdpW: 2, gdpP: 1.25, poolW: 1.5, worldW: 1.25, poolU: 1, T0: 1.5, T3: 1.5, PI: 1, PP: 0.75, worldU: 0.75, poolH: 0.75, worldH: 0.5 };
+const [E0, E1] = argOf('--end', '1932-1936').split('-').map(Number); const JSON_OUT = argOf('--json', ''); const QUIET = argv.includes('--quiet'); const SIGMA = argOf('--sigma', 'fixed');
+// THE WEIGHTS (user-ruled 2026-09-18 morning: "balance weights more equally — reduce pool GDP, increase the now low-weighted options, especially
+// T3/rest and T0/rest"; AMENDED the same evening after FINDINGS F134: "drop world U*, but not the other things you propose dropping" and "all right
+// on restoring priority line"). So world U* is OUT of the loss — it is r = −0.99 with world W, the same statement twice — while staying a SOFT flag
+// in the register and in the report; and pool GDP goes back ABOVE pool W, so the weights encode the register's own priority sentence "world GDP at
+// 1935 > the pool's W × Y > W" instead of contradicting it. Superseded: the 2026-09-18 morning set gdpW 2, gdpP 1.25, poolW 1.5, worldW 1.25, poolU 1,
+// T0 1.5, T3 1.5, PI 1, PP 0.75, worldU 0.75, poolH 0.75, worldH 0.5; the 2026-09-17 set 3 / 2 / 2 / 1.5 / 1 / 1 / 1 / 0.5 / 0.5 / 0.5 / 0.3 / 0.25.
+// Either is reproducible with --weights (worldU is settable again simply by naming it).
+const W = { gdpW: 2, gdpP: 1.5, poolW: 1.25, worldW: 1.25, poolU: 1, T0: 1.5, T3: 1.5, PI: 1, PP: 0.75, poolH: 0.75, worldH: 0.5 };
+// ⭐⭐ THE σ THE DISTANCES ARE MEASURED IN (user-ruled 2026-09-18 evening, "ok on the right sigma and fixing sigmas for T"; F134 §6 and §10).
+// FIXED CONSTANTS, measured as the POOLED WITHIN-CONFIG spread of each ratio over the 29 intact runs of the books of 2026-09-13 → 09-18 (17 d.f.) —
+// the seed noise of the population actually being scored. Vanilla's own seed spread (the 2026-09-17 default, still `--sigma vanilla`) is 1.3–3.0×
+// NARROWER and unevenly so (pool GDP 3.0× against world W 1.3×), which inflated every distance and the pool-GDP term most of all. FIXED rather than
+// recomputed per invocation, so a loss is comparable ACROSS invocations — the defect F134 §10 quantified on the T terms (a book moved ~5 points
+// depending on what it was ranked beside). `--sigma runs` recomputes from the intact runs read in THIS invocation (the old `--sigma mod`, kept for
+// re-measurement). ⚠ Re-measure these when the run population changes materially, and say so in the finding that does it — a stale σ is silently
+// wrong, not missing.
+const SIG_FIXED = { 'world.gdp': 0.228, 'pool.gdp': 0.440, 'world.W': 0.089, 'pool.W': 0.148, 'world.U': 0.129, 'pool.U': 0.631, 'world.H': 0.566, 'pool.H': 1.358, PI: 0.078, PP: 0.117 };
+const SIG_T_FIXED = { r0: 0.025, r3: 0.106, ratio0: 0.407 }; // the tiered-labour shares, the same basis
 for (const kv of (argOf('--weights', '') || '').split(',').filter(Boolean)) { const [k, v] = kv.split('='); if (k in W) W[k] = +v; else throw new Error('unknown weight ' + k); }
 if (!ARMS.length) { console.error('usage: --arm <session[,session]>[:<setup>] [--arm …] [--config <path>] [--van <session>] [--end 1932-1936] [--weights k=v,…] [--json out]'); process.exit(2); }
 const POOL = ['GBR', 'USA', 'FRA', 'NET', 'BEL', 'PRU', 'NGF', 'GER'];
@@ -220,7 +235,8 @@ const consensusOf = runs => { // over intact runs
 // ---- read every arm
 const arms = ARMS.map(spec => { const rels = runsOf(spec); const cfg = rels.length ? configFor(join(SES, rels[0])) : null; const runs = rels.map(rel => scoreRun(rel, cfg && cfg.tier)); return { spec, cfg, runs, C: consensusOf(runs) }; });
 const allRuns = arms.flatMap(a => a.runs); const sT = { ratio0: sd(allRuns.map(r => r.T && r.T.ratio0)), r3: sd(allRuns.map(r => r.T && r.T.r3)), r0: sd(allRuns.map(r => r.T && r.T.r0)) };
-if (SIGMA === 'mod') { // the natural spread of the INTACT mod runs, per ratio
+if (SIGMA === 'fixed') { for (const [k, v] of Object.entries(SIG_FIXED)) sig[k] = v; sT.r0 = SIG_T_FIXED.r0; sT.r3 = SIG_T_FIXED.r3; sT.ratio0 = SIG_T_FIXED.ratio0; }
+else if (SIGMA === 'runs' || SIGMA === 'mod') { // the spread of the INTACT runs read in THIS invocation (kept for re-measurement)
   const ok = allRuns.filter(r => !r.broken); const src = { 'world.gdp': 'gdpW', 'pool.gdp': 'gdpP', 'world.W': 'worldW', 'pool.W': 'poolW', 'world.U': 'worldU', 'pool.U': 'poolU', 'world.H': 'worldH', 'pool.H': 'poolH', PI: 'PI', PP: 'PP' };
   for (const [k, f] of Object.entries(src)) { const s = sd(ok.map(r => r[f])); if (Number.isFinite(s) && s > 0) sig[k] = s; }
 }
@@ -230,7 +246,7 @@ for (const a of arms) { for (const r of a.runs) r.loss = r.broken ? null : lossO
 const verdict = (v, lo, hi, soft) => { const x = r2(v); if (soft && soft(x)) return 'BEYOND THE SOFT BOUNDARY'; if (x >= lo && x <= hi) return 'AT THE AIM'; return x < lo ? 'inside, below the aim' : 'inside, above the aim'; };
 const line = (label, v, verd, extra = '') => console.log('  ' + label.padEnd(28) + (f2(v) + '×').padStart(7) + '  ' + verd.padEnd(26) + (extra ? ' ' + extra : ''));
 if (!QUIET) {
-  console.log('CRITERIA REGISTER (§10.83) — end state = the ' + E0 + '–' + E1 + ' mean · vanilla ' + VAN + ' (n=' + vanRuns.length + ') · σ = the spread of each ratio across ' + (SIGMA === 'mod' ? 'the INTACT mod runs read here (' + allRuns.filter(r => !r.broken).length + ')' : 'vanilla\'s seeds'));
+  console.log('CRITERIA REGISTER (§10.83) — end state = the ' + E0 + '–' + E1 + ' mean · vanilla ' + VAN + ' (n=' + vanRuns.length + ') · σ = ' + (SIGMA === 'fixed' ? 'the FIXED pooled within-config spread of the 2026-09-13→18 books (F134)' : SIGMA === 'vanilla' ? "vanilla's own seed spread" : 'the spread across the INTACT runs read here (' + allRuns.filter(r => !r.broken).length + ')'));
   console.log('vanilla window medians: world GDP £' + f2(ref['world.gdp'] / 1e6, 0) + 'M (σ ' + f2(sig['world.gdp']) + ') · W ' + f2(ref['world.W'], 4) + ' (σ ' + f2(sig['world.W']) + ') · U* ' + pc(ref['world.U']) + ' (σ ' + f2(sig['world.U']) + ') · H ' + f2(ref['world.H']) + ' (σ ' + f2(sig['world.H']) + ') | pool GDP £' + f2(ref['pool.gdp'] / 1e6, 0) + 'M (σ ' + f2(sig['pool.gdp']) + ') · W ' + f2(ref['pool.W'], 4) + ' (σ ' + f2(sig['pool.W']) + ') · U* ' + pc(ref['pool.U']) + ' (σ ' + f2(sig['pool.U']) + ') · H ' + f2(ref['pool.H']) + ' (σ ' + f2(sig['pool.H']) + ') | PI ' + f2(ref.PI) + ' of base (σ ' + f2(sig.PI) + '; path ' + PYEARS.map(y => f2(ref['PI.' + y])).join(' → ') + ') · PP ' + f2(ref.PP, 1) + ' wage units (σ ' + f2(sig.PP) + ') · PM ' + f2(ref.PM) + ' of base');
   for (const a of arms) {
     console.log('\n' + '='.repeat(150) + '\n' + a.spec + ' · ' + a.runs.length + ' usable run(s) · ' + (a.cfg ? a.cfg.path : 'no config → T not read'));
