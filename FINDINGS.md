@@ -13592,3 +13592,76 @@ been run inside `criteria.mjs`. **What it does NOT say:** nothing about WHY the 
 hypothesis, not re-measured here); nothing about the shortlist scope (this is world-wide — a shortlist-only reading would show more death, F132 measured
 the shortlist's rung 0 at 19–23% staffing against the rest of the world's 46–54%); the "peak" baseline includes the 1836 inherited stock, so an industry
 that grew its old rung before shedding it scores the same as one that never grew it.
+
+## F137 — ⚠⚠ THE 1836 ANCHOR IS BROKEN ON THE SUPPLY SIDE, AND HAS BEEN IN EVERY A-LADDER BOOK: a starting factory converted onto rung e produces `vanilla method 1 × A^e` where the vanilla method it stands in for makes only ~1.33^e, so the 26% of the 1836 map above rung 0 over-produces — tooling +88% world-wide and +81% in the British market at half vanilla's price, food +29%, furniture +25%, textile +18%, while every industry wholly on rung 0 matches vanilla exactly (measured read-only against the shipped canon, 2026-09-18)
+
+**Why it was looked for.** The user, playing the newly canonized `canon-c19-in12` by hand, reported that the early rungs are a money printer
+(ROADMAP step 8, P1). Checking what price path the rungs are priced against turned up an 1836 deviation that is not a price effect at all.
+
+**1. THE MECHANISM, arithmetic from the shipped config and the game's own files.** `convert_history.ps1` maps each vanilla starting factory onto
+the rung whose `vanilla_pm` is the method that factory was running — correct, and landmine L13 checks exactly that mapping. But our rung *e*
+produces `vanilla method 1 × A^e` with A = 2.2, while the vanilla method it stands in for produces far less:
+
+| | vanilla's own method ladder | our rungs | a converted building makes ÷ what it made in vanilla |
+|---|---|---|---|
+| clothes | 45 → 60 → 100 → 140 | 45 → 99 → 218 → 479 | e1 **1.65×** · e2 **2.18×** |
+| steel | 65 → 90 → 120 → 150 | 65 → 143 → 315 → 692 | e1 1.59× · e2 2.63× |
+| fertilizer | 90 → 140 → 200 | 90 → 198 → 436 → 958 | e1 1.41× · e2 2.18× |
+
+**Vanilla steps ~1.33× a method; we step 2.2×.** Every building converted above rung 0 therefore arrives over-sized.
+
+**2. THE WORLD-WIDE SIZE OF IT.** The emitted 1836 history, summed in LEVELS by rung, against a vanilla-equivalent ladder (rung-0 output × 1.33^e):
+
+| industry | levels e0 / e1 / e2 | levels above rung 0 | our 1836 output | vanilla-equivalent | **excess** |
+|---|---|---|---|---|---|
+| tooling | 10 / 16 / 9 | **71%** | 2,663 | 1,416 | **+88%** |
+| munition | 0 / 4 / 0 | 100% | 968 | 585 | +65% |
+| food | 20 / 12 / 0 | 38% | 2,088 | 1,618 | **+29%** |
+| furniture | 39 / 18 / 0 | 32% | 3,537 | 2,832 | +25% |
+| glass | 30 / 12 / 0 | 29% | 1,692 | 1,379 | +23% |
+| textile | 73 / 21 / 0 | 22% | 5,364 | 4,542 | **+18%** |
+| paper | 45 / 10 / 0 | 18% | 2,680 | 2,332 | +15% |
+| arms · artillery · explosives · fertilizer · steel · motor · art academy | all on e0 | **0%** | = | = | **0%** |
+
+**93 of the 392 converted factories land on e1 and 9 on e2 — 26% of the map — and the excess tracks that share industry by industry, with an exact
+0% wherever nothing sits above rung 0.**
+
+**3. THE CONSEQUENCE, measured.** British market at the 1836.2.1 dump, canon (4 runs) vs vanilla (16 runs), medians. **Buy orders agree within a
+few percent on every good — demand is anchored correctly. Production and price are not:**
+
+| good | vanilla prod | canon prod | Δ | vanilla price | canon price |
+|---|---|---|---|---|---|
+| tools | 1,889 | 3,428 | **+81%** | 41 | **21** |
+| groceries | 534 | 817 | +53% | 53 | 53 |
+| glass | 279 | 380 | +36% | 37 | 33 |
+| clothes | 6,578 | 8,510 | +29% | 24 | **17** |
+| paper | 971 | 1,146 | +18% | 41 | 37 |
+| furniture | 4,030 | 4,198 | +4% | 30 | 29 |
+| steel | 562 | 559 | +0% | 50 | 52 |
+| small arms | 640 | 603 | −6% | 63 | 64 |
+| fertilizer | 253 | 236 | −7% | 42 | 47 |
+
+Tooling's +81% in Britain against +88% world-wide is the cleanest match. ⚠ **Furniture is the instructive outlier**: +25% world-wide but only +4%
+in the British market, because that market's furniture is dominated by BIC and the Indian states, whose factories are all on rung 0 — the
+per-market deviation is the world mechanism filtered through who is in the market, not a contradiction.
+
+**4. WHAT IT MEANS.**
+1. **The "1836 matches vanilla" premise holds for composition and demand and is VIOLATED for supply, and therefore for price.** British clothes
+   open at 56% of base against vanilla's 79, tools at 21 against 41.
+2. **It is not specific to this canon.** It follows from the A ladder applied to converted buildings, so every A-ladder book since 2026-09-02 has
+   carried it, in proportion to A. It was never caught because the anchor checks (`extract_start`, L13) compare the building MAPPING, not the
+   goods the mapped building then produces. **A supply-side anchor check is owed** and is the natural detector: Σ levels × rung output against
+   Σ levels × the vanilla method's own output, per good, at build time.
+3. **It compounds P1 (the money printer) rather than causing it.** The early glut depresses prices below base; as pop demand grows the price
+   recovers toward and past base, at which point the e1 rungs — designed to break even at 65% of base — earn 55%+ margins.
+4. **It blocks the price-path design** (ROADMAP step 8, P1 fix (c)), which needs the 1836 price to be HIGH (~170 of base) for rung 0 to be priced
+   against it. Today it is the opposite of high in exactly the industries carrying the most starting capacity.
+
+**Confidence.** HIGH on the mechanism and on the world-wide sizing — both are arithmetic over the shipped config, the emitted history and the
+game's own method outputs, and the 0%-excess control group behaves exactly as predicted. HIGH on the British market measurement (medians over 4
+and 16 runs). MEDIUM on any single market's magnitude, which depends on that market's membership.
+
+**What it does NOT say.** Nothing about markets other than the British on the price side. Nothing about persistence — by 1850 the canon's clothes
+are at 100 and tools at 91, so the market clears it within a decade or two; the claim is about the ANCHOR, not the century. Nothing about which
+fix is right (ROADMAP step 8 P6 lists four, all needing a ruling). The vanilla-equivalent column uses a flat 1.33× step measured on clothes and
+steel rather than each industry's own vanilla ladder, so the per-industry excess is approximate to a few points; the 0% rows are exact.

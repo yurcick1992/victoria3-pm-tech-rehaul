@@ -1417,3 +1417,250 @@ technology — which is the ruled behaviour.
 battle-only — a location filter, not a cause filter, and no counter in the engine splits battle from
 attrition. At a 50 000 threshold on a front that also holds a superior enemy army, attrition alone is
 unlikely to carry it, but the term is not battle-pure and should not be described as such.
+
+## ⭐⭐⭐ STEP 8 — THE FIRST HUMAN PLAYTEST'S DEFECT LIST (user, 2026-09-18, while playing `canon-c19-in12`; PLANNED, NOTHING CHANGED)
+
+**The ask, verbatim:** *"Mistakes I noticed that need fixing. Don't do now as I'm still playing, but plan for fixes."* Five items, listed
+below as P1–P5 in the user's own order, each investigated read-only against the shipped canon and the measured runs. **P6 is not the user's —
+it was found while investigating P1 and is the supply-side root cause of it.** Nothing here is implemented; nothing may be built or deployed
+while a playthrough is live (a build overwrites the deployed copy under the player).
+
+---
+
+### P1 — THE EARLY RUNGS ARE A MONEY PRINTER (especially e1). CONFIRMED, and worse than the realised margins suggest.
+
+**The user:** *"Probably need to reduce the A/B diff, or invent a more complex ladder than A^N / ((input_t0_penalty+1)*B^N). The game quite
+actively resist prolonged prices under base for most goods, maybe some ladder of +70 .. +0 (base) between 1830s and 1920s can be constructed?"*
+
+**Measured — every rung's margin AT BASE PRICES** (`(out − in − wages) / (in + wages)`, wage_pct 0.25, from the shipped config):
+
+| industry | e0 | e1 | e2 | e3 |
+|---|---|---|---|---|
+| food / textile / furniture | +5.5% | **+54.6%** | +127% | +233% |
+| glass / tooling / paper | +25.0% | **+83.3%** | +169% | +294% |
+| steel | −18.8% | +19.2% | +74.8% | +156% |
+| fertilizer | −11.2% | +30.3% | +90.9% | +180% |
+| arms | +40.6% | **+106%** | +203% | +344% |
+| art academy | +108% | +206% | +348% | +556% |
+
+against **vanilla's whole manufacturing sector at 23.1% realised**. The realised mod figures (e0 26% / e1 31% / e2 47% / e3 46% at 1935) are
+much lower only because prices have fallen by then — **in the decades when a rung is new, it earns the base-price number**, and that is what
+the player is feeling.
+
+**The arithmetic behind it, which is the thing to fix.** Every rung is `output × A^era` over `input value × in0 × B^era`, so the output-to-input
+RATIO steps by `A ÷ B = 2.2 ÷ 1.5 = 1.467` per era. Because rung 0 is anchored at roughly break-even (O ÷ total cost ≈ 1.05), **a multiplicative
+step in the ratio lands as a huge additive step in the margin**: 1.05 → 1.54 → 2.27 → 3.33, i.e. +5% → +55% → +127% → +233%. The ladder's
+steepness is not really "A" — it is the GAP, and the gap is being applied to a base of ~1.0 where it is at its most violent.
+
+**Three fixes, in increasing order of ambition. They are not exclusive; (b) is the tactical version of (c).**
+
+**(a) Shrink the A/B gap.** To put e3 near +60% with e0 at +5%, the gap must be `r³ = 1.60 ÷ 1.05` ⇒ **r ≈ 1.15**, e.g. A 2.2 / B 1.91 or
+A 1.73 / B 1.5 — against today's 1.467. ⚠ This is the SAME lever F135 identified for the hoard (the pool's inflow is our doubled margins), so
+two independent problems point at it, which is a reason to try it and a reason to expect it to move a lot at once. ⚠ It also shrinks how much
+price decline the frontier can absorb before it dies too — the frontier's cushion IS the gap.
+
+**(b) A non-geometric ladder — an explicit per-era vector.** The user's "more complex ladder". Half the machinery exists: `make_ab_config.mjs`
+already takes `--tiers-for "<ind>:out=…;in=…;cost=…"` for ONE industry and `--cost-ladder` per era globally. **The work is to generalise
+`--tiers-for` into a global `--out-ladder` / `--in-ladder`** and then author the vector from a DESIGNED margin ladder rather than from a ratio —
+e.g. target margins 5 / 25 / 40 / 55% and solve the output and input vectors backwards. This is the smallest change that ends the money printer
+without committing to a price theory.
+
+**(c) ⭐ DESIGN AGAINST A PRICE PATH INSTEAD OF AGAINST BASE — the user's "+70 .. +0" — and it is measurable that this is the game's own shape.**
+Measured, British market, price as % of base, medians (vanilla n=16 / the canon n=4):
+
+| good | 1836 | 1870 | 1900 | 1935 | | 1836 | 1870 | 1900 | 1935 |
+|---|---|---|---|---|---|---|---|---|---|
+| | **vanilla** | | | | | **canon** | | | |
+| groceries | 175 | 124 | 110 | 116 | | 175 | 113 | 90 | 98 |
+| fertilizer | 138 | 114 | 109 | 99 | | 156 | 123 | 118 | 82 |
+| explosives | 135 | 128 | 114 | 102 | | 158 | 136 | 88 | 66 |
+| steel | 100 | 118 | 107 | 111 | | 104 | 139 | 68 | 72 |
+| clothes | 79 | 112 | 116 | 105 | | 56 | 108 | 82 | 88 |
+| small_arms | 104 | 81 | 77 | 72 | | 107 | 97 | 64 | **29** |
+| artillery | 105 | 72 | 80 | 78 | | 105 | 100 | 60 | **25** |
+| automobiles | — | — | 175 | 142 | | — | — | 154 | 102 |
+
+⭐ **The user's instinct is right and the game already does it for the goods that can**: several goods START well above base (groceries 175,
+fertilizer 138–156, explosives 135–158, automobiles and telephones at the +75% band ceiling on debut) and decay toward base. So the design
+could stop asking for sub-base prices and instead **set a per-era target price path (say 170 / 145 / 120 / 100 of base) and derive each rung's
+break-even as a fixed margin below its OWN era's price.** Rung 0 would break even near 150: profitable at 1836's 170, dead by the time the price
+reaches 120. That is the obsolescence mechanism stated in the units the engine actually delivers, and it stays inside the solvency bound
+(target_be ≤ 175, §10.63).
+
+⚠⚠ **But it CANNOT be one path for all goods, and F136 says why.** Where demand is exogenous or inelastic the price really does collapse — the
+canon's small arms reach **29** and artillery **25** of base, which is exactly why those chains obsolete perfectly. Where pops buy the output the
+price is pinned near base by rising pop wealth (clothes 88, groceries 98) — F97's mechanism — and no recipe can move it. ⇒ **a price-path design
+needs at least two classes: a falling path for building-fed and army-fed goods, and a flat-at-base path for pop-fed goods, where obsolescence has
+to come from somewhere other than the output price.** What that "somewhere else" is for the pop chains is the open design question this playtest
+has sharpened; the standing candidate is labour cost (every rung employs 5,000/level regardless of era, so the old rung's wage bill per unit of
+output is ~10× the frontier's, and rising SoL should bite it) — and F136 shows that today it does NOT bite hard enough (textile e0 still earns
+21% against its own frontier's 25%).
+
+⚠ **(c) has a prerequisite: P6 below.** Designing rung 0 to break even at 150 requires the 1836 price to actually BE ~170. It is not — the canon's
+1836 clothes read 56 of base and tools 21 — and P6 is why.
+
+---
+
+### P6 (NOT the user's; found while investigating P1) — ⚠⚠ THE 1836 ANCHOR IS BROKEN ON THE SUPPLY SIDE, IN PROPORTION TO HOW MANY STARTING FACTORIES SIT ABOVE RUNG 0
+
+**The measurement.** British market at 1836.2.1, canon (n=4) against vanilla (n=16) — buy orders agree within a few percent everywhere, and
+PRODUCTION does not:
+
+| good | vanilla prod | canon prod | | vanilla price | canon price | share of that industry's 1836 factories above e0 |
+|---|---|---|---|---|---|---|
+| tools | 1,889 | **3,428 (+81%)** | | 41 | **21** | **71%** (tooling: 10 e0 / 16 e1 / 9 e2) |
+| groceries | 534 | **817 (+53%)** | | 53 | 53 | 38% (food: 20 e0 / 12 e1) |
+| clothes | 6,578 | **8,510 (+29%)** | | 24 | **17** | 22% (textile: 73 e0 / 21 e1) |
+| paper | 971 | 1,146 (+18%) | | 41 | 37 | 18% |
+| steel | 562 | 559 (+0%) | | 50 | 52 | **0%** |
+| small_arms | 640 | 603 (−6%) | | 63 | 64 | **0%** |
+| fertilizer | 253 | 236 (−7%) | | 42 | 47 | **0%** |
+
+**The correlation holds industry by industry, and FINDINGS F137 re-does it properly in LEVELS world-wide** (tooling +88% output against a
+vanilla-equivalent ladder, munition +65%, food +29%, furniture +25%, glass +23%, textile +18%, paper +15%, and an exact **0%** for every industry
+wholly on rung 0). 26% of the 392 converted starting factories (93 on e1, 9 on e2) land above rung 0. ⚠ Furniture is +25% world-wide but only +4%
+in the British market, because that market’s furniture is mostly BIC’s and India’s, all on rung 0 — a per-market figure is the world mechanism
+filtered through market membership.
+
+**The cause is structural.** Our rung *e* produces `vanilla method 1 × A^e` = ×2.2 at e1 and ×4.84 at e2, while the VANILLA method that building
+was actually running produces only ~1.33× and ~1.8× method 1 (measured: clothes 45 → 60 → 100 → 140; steel 65 → 90 → 120 → 150). So a starting
+building converted onto e1 makes **1.65×** what it made in vanilla, and one converted onto e2 makes **2.7×**. Tooling, where 71% of the starting
+workshops are above rung 0, is the worst case and shows the largest price collapse.
+
+⇒ **The "1836 matches vanilla" premise holds for composition and for demand, and is violated for supply and therefore for price.** This has been
+true of every A-ladder book and was never measured, because the anchor check (`extract_start` / L13) compares the building MAPPING, not the goods
+it then produces.
+
+**Fix options** (all need a ruling; the first is the cheap one):
+1. **Scale a converted building's LEVELS by the inverse of its rung's output multiplier** — a building converted to e1 comes in at `levels ÷ 2.2`
+   (rounded, floor 1). The mechanism already exists for the graded ports (`workforce_mult`, §10.60.2, and `convert_history.ps1` already does
+   `levels × 1/workforce_mult`). Keeps vanilla's output, halves the capital stock those states start with. ⚠ Changes the starting building COUNT,
+   which the player sees.
+2. **Convert everything onto rung 0** regardless of the vanilla method it ran, and let the AI climb. Simplest, and it makes the 1836 map
+   uniformly "pre-industrial", which is arguably what era 0 means. ⚠ Loses the historical distinction between an advanced and a backward 1836
+   economy — probably unacceptable.
+3. **Leave it and re-anchor the design on the measured 1836 prices** instead of on vanilla's. ⚠ Incompatible with (c) above, which needs a HIGH
+   1836 price.
+4. **The recorded "distant possibility" (§10.83): an OUTPUT-goods penalty on the e0 recipes**, which would raise 1836 prices directly. It was
+   written down explicitly as not-to-be-tried-without-a-ruling; P6 is the first concrete argument for it.
+
+---
+
+### P2 — THE URBAN-CENTRE ELECTRICITY OVERRIDE WAS LOST. CONFIRMED, and it is a known, documented drop.
+
+**The user:** *"We somehow lost most of the custom modded additions to electricity (making Urban Center PM produce electricity rather than
+consume it). They were there several canon versions ago, but now they aren't."*
+
+Correct, and the loss is recorded in CLAUDE.md's own canon4v entry: *"NOT carried from the six-rung book: the hoard defines, **the streetlight
+override**, the trade-centre ai_value, …"* — i.e. it was dropped deliberately when canon4v was built from vanilla on 2026-09-04 and never
+restored. Verified in the shipped canon: `pm_goods` and `pm_employment` are both **empty**, and the mod emits no `06_urban_center.txt`
+production-methods file at all. The six-rung book still carries it:
+
+| | vanilla `pm_electric_streetlights` | the six-rung override (§10.43) |
+|---|---|---|
+| inputs | **3 electricity** | **2 coal** |
+| outputs | 10 services | 10 services **+ 1 electricity** |
+| employment | 200 laborers + 50 engineers | **250 engineers** |
+
+**The fix is a straight port** of two config keys (`pm_goods.pm_electric_streetlights`, `pm_employment.pm_electric_streetlights`); the emitter
+already handles the `required_input_goods = electricity` line that must be dropped when the override removes the electricity input (the trap is
+documented in the `pm_goods` entry).
+
+⚠⚠ **One design question must be answered first, and it is why this is not a pure restore.** In the six-rung book the override was half of a
+PAIR: §10.43 also DELETED vanilla's era-3 "Early Power Plant" tier, on the reasoning that the 1900 municipal engine-house is what urban centres
+model. **The four-rung canon does not tier `power` at all — vanilla's whole power-plant chain is intact.** Restoring the override alone gives the
+world municipal generation *and* vanilla's early power plants, which is not what either design intended. So: restore the override and accept the
+overlap, or restore it and suppress vanilla's early power plant, or leave power wholly vanilla. ⚠ Also note §10.43.2's calibration is specific —
+**2 coal was ruled**: 1 left the mandate too profitable, 3 forced a loss-maker — and that was calibrated on the six-rung economy, so it should be
+re-checked against this one.
+
+---
+
+### P3 — THE BUILDING NAME STILL SAYS "BE TARGET". CONFIRMED, two separate defects in one label.
+
+**The user:** *"building titles still say BE Target, despite the ruling that we're not using this, and rather show the factual recipe value-added
+BE (with wages ignored)."*
+
+Today (`tools/build.ps1:590`): `". BE target $([math]::Round($actualBe))%"`, so a building reads
+`Era 1. Food Industries (Sweeteners). BE target 65%`. Two things are wrong:
+
+1. **The word is wrong.** The number is NOT `target_be` — `$actualBe` is computed from the emitted recipe (`build.ps1:534`). The config's
+   `target_be` survives only as a drift guard for the linter. So the label describes the value as a design target when it is a measurement of
+   the recipe.
+2. **The basis is wrong for what the player wants.** `actualBe = actualI / (1 − wage) / Oval × 100` is the WAGE-INCLUSIVE break-even. The
+   goods-only figure the user asks for is simply `actualI / Oval × 100` = the same number × `(1 − wage_pct)` = **×0.75** at the default. Food
+   e1 would read **49%** instead of 65%, textile e0 **71%** instead of 95%.
+
+**The fix is two lines** in `build.ps1` — compute the goods-only value and change the wording (e.g. `". recipe 49%"`, or spelled out; the exact
+phrasing is the user's call). ⚠ Three consumers must stay in step: the `$summary` object and `tools/ladder_tiers.txt` (the linter reads the
+latter and its `target_be` column must NOT change basis, or `lint_profitability.awk` starts failing), and the UI, which shows its own BE.
+⚠ State plainly that this is a property of the RECIPE at base prices — the player's actual building will differ, because throughput bonuses,
+economy of scale, company modifiers and active secondary methods all move it.
+
+---
+
+### P4 — THE JE TICK CAUSES ARE NOT EXPLICIT. CONFIRMED — the machinery is there, the UNITS are inconsistent.
+
+**The user:** *"the causes for JE tick are not explicit yet (e.g. 'at least 25k people employed in automotive industry era N')."*
+
+The bars DO carry a per-source tooltip naming the source, the mark and the live figure. The defect is that **two different units are used inside
+one bar, and the level-counted ones state the requirement twice in two units**:
+
+- level-counted source — `pmr_src_combustion_engine_0` returns **Σ level × occupancy**, and the tooltip reads
+  *"$building_motor_industry_electric_engines$: at least 15 fully staffed levels (75,000 workers at the base method's staffing, labour saving and
+  other staffing changes calculated correctly); now [15 → a LEVEL count]"*. The prose leads with levels, parenthesises people, and the live
+  figure is levels — so "now 7" sits next to "75,000 workers".
+- people-counted source — `pmr_src_aniline_1` returns **PEOPLE**, and reads *"Workers in $bg_light_industry$: at least 12,500; now […]"*.
+
+Aniline's own bar carries one of each, with the same underlying 12,500-people mark expressed as "3 fully staffed levels" in one line and
+"12,500" in the other.
+
+**The fix:** make every source read in PEOPLE. `tierEmp()` already computes per-level employment, so a level-counted source becomes
+`Σ level × occupancy × employment` in the script value, and the tooltip collapses to one unit and one sentence — the user's own phrasing,
+*"at least 25,000 people employed in <industry>, Era N; now X"*. ⚠ Two knock-ons: the threshold constants in the emitted bar (`>= 15`) must be
+converted with the same multiplier, and the long parenthetical (*"at the base method's staffing, labour saving and other staffing changes
+calculated correctly"* — the user's own wording of 2026-09-03) should be shortened but must keep its meaning, which is that the figure stays
+right when automation changes a building's staffing. ⚠ P3 improves this for free: the building names these tooltips interpolate currently end in
+"BE target 65%".
+
+---
+
+### P5 — TIER-3 OUTPUT IS ENORMOUS. CONFIRMED and quantified; the user is inclined to accept it.
+
+**The user:** *"some tier3 output is just insane (e.g. fertilizer). Maybe this doesn't really need fixing though. An increase in minimum viable
+firm size is a desirable thing to simulate."*
+
+Measured against the game's own files:
+
+| industry | vanilla's whole method ladder | our ladder | our top ÷ vanilla's top |
+|---|---|---|---|
+| fertilizer | 90 → 140 → 200 (3 methods) | 90 → 198 → 436 → **958** | **4.8×** |
+| steel | 65 → 90 → 120 → 150 | 65 → 143 → 315 → **692** | **4.6×** |
+| textile (clothes) | 45 → 60 → 100 → 140 | 45 → 99 → 218 → **479** | **3.4×** |
+
+**Vanilla's four methods multiply output by ~2.3–3.1× end to end (about 1.33× a step); ours multiplies by A³ = 10.65× (2.2× a step).** Fertilizer
+is the extreme because vanilla gives it only three methods while our ladder gives it four rungs.
+
+**Recommendation: ACCEPT, with one caveat and one consequence.** The caveat: the 10.65× is the same number that produces P1's margin explosion,
+so **anything done to P1 moves this automatically** — if the output ladder is re-authored per era (P1 fix (b)) or the gap is shrunk (fix (a)),
+tier-3 output comes down with it, and P5 should not be given a separate lever. The consequence worth stating: employment is FLAT at 5,000 per
+level across every rung, so a ×10.65 output step is a ×10.65 step in output per worker — which is precisely the "minimum viable firm size"
+the user wants, and also precisely why the frontier out-earns the old rung at all. Cutting it without cutting the input ladder would kill the
+ladder's whole mechanism.
+
+---
+
+### Ordering, and what each fix costs
+
+| | item | kind | cost | blocks / blocked by |
+|---|---|---|---|---|
+| 1 | **P3** the BE label | emitter, 2 lines | minutes | improves P4's text for free |
+| 2 | **P4** JE units | emitter + script values | a few hours | eased by P3 |
+| 3 | **P2** the electricity override | config, 2 keys | minutes — **but needs the power-chain ruling first** | — |
+| 4 | **P6** the 1836 supply anchor | converter or generator | a day + a batch | **blocks P1 fix (c)** |
+| 5 | **P1** the ladder | generator + a config sweep | the next measurement campaign | needs P6 for (c); (a)/(b) can go first |
+| 6 | **P5** top-rung output | — | none | rides on P1 |
+
+P3, P4 and P2 are cosmetic-to-local and can be done in one pass without a measurement batch (P2 changes the economy slightly and should be read
+in the next batch, not on its own). P6 and P1 are the real work and belong to one campaign, because P6 changes the 1836 prices that P1's recipes
+would be designed against. ⚠ Nothing in this list may be built or deployed while a playthrough is live.

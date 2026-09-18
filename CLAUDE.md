@@ -827,7 +827,14 @@ extraction. (The wage layer is now folded into the ladder.)
 ```
 CLAUDE.md               this file — goals + how to work
 README.md               user-facing setup (play the mod, launch the editor) — for GitHub visitors
-ROADMAP.md              THE PLAN — steps 0-7 from the solved economy to release (tech tree rework, industry-
+ROADMAP.md              THE PLAN — steps 0-8 from the solved economy to release. ⭐ STEP 8 (2026-09-18) is THE FIRST HUMAN
+                        PLAYTEST’S DEFECT LIST: P1 the early rungs are a money printer (e1 earns 55–106% at base prices against vanilla
+                        manufacturing’s 23%, because the A÷B gap of 1.467 lands on a rung 0 anchored at break-even) with three fixes
+                        sketched incl. the user’s price-path idea; P2 the urban-centre electricity override was dropped by canon4v and
+                        is a two-key restore behind one power-chain ruling; P3 the building name says “BE target” for a number that is
+                        neither a target nor goods-only; P4 the JE tick tooltips mix LEVELS and PEOPLE inside one bar; P5 top-rung output
+                        is 3.4–4.8× vanilla’s best — accepted, and it rides on P1; **P6 (found, not reported by the user) the 1836 supply
+                        anchor is broken — FINDINGS F137**. Steps 0-7 (tech tree rework, industry-
                         driven research events, costs+build, the telemetry loop that is the MVP's definition,
                         then mandates/dams/visuals). Plan only: rulings go to BALANCE_FRAMEWORK, results to
                         FINDINGS, engine gotchas to MODDING_NOTES. CONSULT when deciding what to work on next
