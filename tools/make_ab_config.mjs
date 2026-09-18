@@ -52,6 +52,21 @@ const AI_BASE = +arg('--ai-base', 1000);
 //   unless --in0-only is given (then only rung 0 is lifted and rungs 1+ keep the vanilla-anchored ladder). 1 = the old rule.
 const IN0 = +arg('--in0', 1); if (!(IN0 > 0)) throw new Error('--in0 <mult> must be > 0');
 const IN0_ONLY = process.argv.includes('--in0-only');
+// ⭐⭐ --in0-level <margin> (user-ruled 2026-09-18: "I would still prefer flatter but uniform (between industries) ladder"):
+//   a PER-INDUSTRY lift, chosen so every industry's NOTIONAL era-0 rung lands on the SAME margin at base prices, in place of
+//   the one scalar --in0. The scalar is why the ladder's LEVEL is not uniform today: it multiplies vanilla's own recipes,
+//   whose margins differ wildly (glass +25%, textile +5%, steel -19%, arms +41%, the art academy +108%), so ONE r means a
+//   different thing in every industry and a uniform compression drives the thin chains negative while the fat ones stay fat
+//   (ROADMAP step 8 P1 / step 9 §3). With the level made uniform, r alone sets the ladder everywhere.
+//   lift_i = O0 x (1 - wage_pct) / (I0 x (1 + m0)) — the algebra of margin = O / (I x lift / (1 - wp)) - 1 = m0.
+//   ⚠ It is the NOTIONAL era-0 that is levelled, not the industry's first RUNG: O0/I0 come from the first rung's vanilla
+//   method and every rung is priced at A^era / B^era from there, so an industry that starts at e2 (automotive, electrics)
+//   is levelled on the same basis as one that starts at e0. That is the era rule (F111) and this must not break it.
+//   ⚠ EXCLUSIVE with --in0 and with --tiers-for, which set the same numbers by hand.
+const IN0_LEVEL = (() => { const v = arg('--in0-level', ''); if (v === '') return null; const m = +v;
+  if (!Number.isFinite(m) || m <= -1) throw new Error('--in0-level <margin> must be a number > -1 (0.05 = +5%)');
+  if (IN0 !== 1) throw new Error('--in0-level and --in0 both set the era-0 input level; give one');
+  return m; })();
 // --cost-flat (user-ruled 2026-09-10, F108 §6: the stall rate follows the cost ladder's steepness): building_cost = the vanilla
 //   anchor at EVERY rung — the §10.61 flat book — instead of anchor × A^k.
 const COST_FLAT = process.argv.includes('--cost-flat');
@@ -114,6 +129,7 @@ const r1 = x => Math.round(x * 10) / 10;
 
 const cfg = JSON.parse(readFileSync(join(REPO, BASE), 'utf8'));
 const rows = []; let cmax = 0;
+const LEVELLED = {};   // --in0-level: the per-industry lift actually used, recorded in _ab
 for (const ind of cfg.industries) {
   if (ind.disabled) continue;
   ind.tiers.sort((a, b) => a.era - b.era);
@@ -123,6 +139,9 @@ for (const ind of cfg.industries) {
   const out0 = r0.out[outGood]; if (!(out0 > 0)) throw new Error(`${ind.id}: vanilla ${first.vanilla_pm} makes no ${outGood}`);
   const I0 = val(r0.in), O0 = out0 * PRICE[outGood];
   const anchor = ANCH[(ind.building || {}).required_construction || ind.required_construction]; if (!anchor) throw new Error(`${ind.id}: no required_construction class`);
+  const wp0 = ind.tiers[0].wage_pct != null ? +ind.tiers[0].wage_pct : 0.25;
+  const LEVEL_LIFT = IN0_LEVEL != null ? O0 * (1 - wp0) / (I0 * (1 + IN0_LEVEL)) : 1;
+  if (IN0_LEVEL != null) LEVELLED[ind.id] = Math.round(LEVEL_LIFT * 1000) / 1000;
   ind.tiers.forEach((t, pos) => {
     // ⭐ THE KEY IS THE ERA. `pos` (the rung's index in the industry) is used for exactly one thing below: walking DOWN
     //   the industry's own rungs to find the nearest vanilla method whose input MIX this rung borrows. Every multiplier
@@ -135,7 +154,8 @@ for (const ind of cfg.industries) {
     const mixVal = val(mixRec.in);
     const TF = TIERS_FOR[ind.id];   // explicit per-ERA multipliers (--tiers-for), else the A/B rule
     if (TF && (TF.out.length <= e || TF.in.length <= e || TF.cost.length <= e)) throw new Error(`--tiers-for ${ind.id}: its rungs reach e${e}, so out/in/cost need ${e + 1} multipliers each (indexed by ERA, era 0 first)`);
-    const lift = IN0_ONLY ? (e === 0 ? IN0 : 1) : IN0;   // --in0: the lifted era-0 rung, and the ladder anchored on it unless --in0-only
+    // --in0-level: this industry's own lift, so its notional era-0 margin equals the ruled target; else the scalar --in0.
+    const lift = IN0_LEVEL != null ? LEVEL_LIFT : (IN0_ONLY ? (e === 0 ? IN0 : 1) : IN0);
     const Ve = I0 * lift * (TF ? TF.in[e] : Math.pow(B, e));
     const inputs = {};
     for (const [g, q] of Object.entries(mixRec.in)) { const share = q * (PRICE[g] || 0) / mixVal; const qty = r1(share * Ve / PRICE[g]); if (qty > 0) inputs[g] = qty; }
@@ -164,7 +184,7 @@ Object.assign(cfg.ai_defines, EXTRA_DEFINES);
 cfg.company_target_gate = process.argv.includes('--company-gate');   // emit_companies opt-in; OFF by default (see its header)
 cfg._ab = { A, B, A_for: Object.keys(A_FOR).length ? A_FOR : null, tiers_for: Object.keys(TIERS_FOR).length ? TIERS_FOR : null, ai_base: AI_BASE, ai_steep: STEEP ? { industries: [...STEEP.inds], ratio: STEEP.ratio } : null, cost_divisor_scaling: s, company_target_gate: cfg.company_target_gate, base: BASE, generated: new Date().toISOString() };
 cfg._ab.ai_defines_extra = Object.keys(EXTRA_DEFINES).length ? EXTRA_DEFINES : null;
-cfg._ab.in0 = IN0; cfg._ab.in0_only = IN0_ONLY; cfg._ab.cost_flat = COST_FLAT; cfg._ab.cost_ratio = COST_RATIO; cfg._ab.cost_ladder = COST_LADDER; cfg._ab.ai_ladder = AI_LADDER; cfg._ab.bar_months = BAR_MONTHS;
+cfg._ab.in0 = IN0; cfg._ab.in0_level = IN0_LEVEL; cfg._ab.in0_per_industry = IN0_LEVEL != null ? LEVELLED : null; cfg._ab.in0_only = IN0_ONLY; cfg._ab.cost_flat = COST_FLAT; cfg._ab.cost_ratio = COST_RATIO; cfg._ab.cost_ladder = COST_LADDER; cfg._ab.ai_ladder = AI_LADDER; cfg._ab.bar_months = BAR_MONTHS;
 // ⭐ the book records that it is era-keyed, and the command that made it — the era pass (2026-09-13) is what a
 //   reader of an older book has to check for: a book without `keyed_by: 'era'` was keyed on the rung index
 cfg._ab.keyed_by = 'era'; cfg._ab.era_rule = '2026-09-13';

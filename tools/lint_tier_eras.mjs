@@ -92,6 +92,10 @@ for (const ind of cfg.industries || []) {
   // ---- 2. the era-keyed book ----------------------------------------------------------------------------------
   if (!AB) continue;
   const A = +AB.A, B = +AB.B, lift = +(AB.in0 ?? 1), in0only = !!AB.in0_only;
+  // ⭐ --in0-level (2026-09-18): the era-0 input LEVEL is per industry, not one scalar, so the rule this linter
+  //   recomputes is `vanilla × lift_i × B^era` with lift_i from _ab.in0_per_industry. Without this the lint FAILS on
+  //   every rung of a levelled book, which is the guardrail working - it must be taught the field, never bypassed.
+  const perInd = AB.in0_per_industry || null;
   const special = (AB.A_for && AB.A_for[ind.id]) || (AB.tiers_for && AB.tiers_for[ind.id]);
   if (special) { notes.push(`${ind.id}: per-industry multipliers (--A-for / --tiers-for) — ladder checked for monotonicity only`); continue; }
   const first = tiers[0]; const r0 = vanillaRec(first.vanilla_pm);
@@ -102,7 +106,8 @@ for (const ind of cfg.industries || []) {
     const e = t.era;
     const wantOut = Math.round(out0 * Math.pow(A, e) * 10) / 10;
     if (Math.abs(t.output_qty - wantOut) > 0.051 + 0.002 * wantOut) faults.push(`${ind.id} e${e}: output ${t.output_qty}, the era rule says ${wantOut} (vanilla ${out0} × ${A}^${e}) — keyed on something other than the era`);
-    const wantIn = I0 * (in0only ? (e === 0 ? lift : 1) : lift) * Math.pow(B, e); const gotIn = val(t.inputs);
+    const liftI = perInd && perInd[ind.id] != null ? +perInd[ind.id] : lift;
+    const wantIn = I0 * (in0only ? (e === 0 ? liftI : 1) : liftI) * Math.pow(B, e); const gotIn = val(t.inputs);
     if (Math.abs(gotIn - wantIn) > 0.03 * wantIn + 1) faults.push(`${ind.id} e${e}: input value £${gotIn.toFixed(0)}, the era rule says £${wantIn.toFixed(0)} (vanilla £${I0.toFixed(0)} × ${lift} × ${B}^${e})`);
     // cost: flat (§10.61), or anchor × C^era where C is the book's own cost ratio (`_ab.cost_ratio`, the cost-slope books of
     // 2026-09-14) and A by default (capacity-priced, the canon)

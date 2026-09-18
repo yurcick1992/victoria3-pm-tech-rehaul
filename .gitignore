@@ -180,3 +180,7 @@ tools/testbed/ledger/cost_drivers_pool.json
 !config/tech_tree_options.canon-a205-gm.json
 !config/mod_config.canon-c19-in12-mild.json
 !config/tech_tree_options.canon-c19-in12-mild.json
+# ROADMAP step 9 batch 1 — the margin-compression book: per-industry era-0 levelling (+5%) then A 1.9 / B 1.7,
+# so every industry runs the SAME ladder (5 / 17 / 31 / 47 by era, target_be 95 / 85 / 76 / 68 in all 56 rungs).
+!config/mod_config.canon-lvl-a19b17.json
+!config/tech_tree_options.canon-lvl-a19b17.json
