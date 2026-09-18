@@ -13303,3 +13303,144 @@ hoard below the prediction in seeds 2–3.
 how the collapsed USA and the salaried-less Netherlands weigh — is DEFERRED by the user's instruction of 2026-09-18 (~13:20 local): this entry
 records the data. The three seeds' losses under the new form are 20.7 / 8.6 / 21.8 against the incumbent's 12.75; under the old form 37.4 /
 4.2 / 66.3 against 7.6.
+
+## F134 — THE RE-FORMED LOSS, VALIDATED: it reproduces §10.83.5 exactly, it ranks the historical arc in the right order (19.3 → 14.6 → 12.2 → 11.2 from the 2026-09-06 canon to the incumbent), and it FAILS the user's own test in two specific ways — a stall ranks second, and NOT ONE adjacent gap in the ranking is larger than the seed noise (σ of a single run's loss 11.3 against a 22-point between-book spread) (analysis, no new runs, 2026-09-18)
+
+**What was done.** `tools/testbed/ledger/criteria.mjs` at its 2026-09-18 defaults (the kink of slope 2, T0 as a share, the re-balanced weights)
+run over (a) the seventeen books measured since 2026-09-13 in ONE invocation, (b) the four-book historical arc `canon4v-hai3` → `canon-je24` →
+`canon-je24-a22` → `canon-c19-in12`, (c) vanilla's own sixteen seeds scored against the mod's loss, and (d) the loss re-computed offline under
+five re-weightings and the whole `--soft-slope` family (the loss is AFFINE in the slope, so two invocations give every value of it). No game ran.
+
+### 1. The record reproduces
+
+The seventeen-book ranking comes back at 11.49 / 14.40 / 16.17 / 20.83 / 25.63 / 27.89 / 32.01 / 33.52 against §10.83.5's 11.48 / 14.39 /
+16.16 / 20.82 / 25.60 / 27.88 / 31.99 / 33.51 — identical inside rounding, same DIVERGENT and OUT rows. §10.83.5's table is sound.
+
+### 2. THE HISTORICAL ARC — the design HAS advanced, monotonically, on every line the goals care about
+
+| book (date, intact n) | loss | world GDP | pool GDP | pool W | pool H | **T0 ÷ rest** | T3 ÷ rest | **PI** | **PP** |
+|---|---|---|---|---|---|---|---|---|---|
+| `canon4v-hai3` — the CANON, 2026-09-06 (2) | 19.32 | 0.88 | 1.30 | 0.76 | 1.50 | **0.113** ⚠soft | 0.225 | 0.92 | 1.04 |
+| `canon-je24` — phase 1, 2026-09-09 (28) | 14.61 | 0.85 | 1.07 | 0.67 | 1.82 | **0.078** ⚠soft | 0.276 | 0.96 | 0.97 |
+| `canon-je24-a22` — phase 2, 2026-09-10 (10) | 12.18 | 0.91 | 1.30 | 0.68 | 1.48 | **0.060** | 0.229 | 0.93 | 0.89 |
+| `canon-c19-in12` — the incumbent, 2026-09-14/17 (3) | **11.22** | 1.10 | 1.30 | 0.68 | **4.17** | **0.039** | **0.344** | **0.84** | **0.83** |
+
+Read down the three bolded columns: **the old rung's share of tiered labour falls by a factor of three (0.113 → 0.039), the building-input price
+index falls from 0.92 to 0.84 of vanilla's and the pop-goods index in wage units from 1.04 to 0.83** — i.e. F94's mandated price decline, absent
+in every book up to the canon, is now real, and the frontier's share of tiered labour rose from 0.225 to 0.344. World GDP fidelity was restored on
+the way (0.85 → 1.10). **The one line that went backwards is the hoard: pool H 1.50 → 4.17.** That is the incumbent's own diagnosis (F131) stated
+against its predecessors: the found cost slope bought the price decline and the old rung's decline, and paid for it in un-spent capital.
+⚠ **Caveat on the T columns of the first two rows:** those runs were built from the index-keyed books and are scored against today's era-keyed
+copies. Diffed: exactly four rungs differ (motor's electric-engine e1→e2 and diesel e2→e3, electrics e1→e2, motor's high-speed-diesel rung
+dropped) and **the era-0 set is identical, 13 rungs in both** — so T0, the column carrying the claim, is unaffected; T3 for those rows is a hair
+under-counted.
+
+Beside it, the British market at 1935, price ÷ base (median over each arm's runs), which is the same statement in the units F94 is written in:
+
+| | steel | tools | engines | explosives | paper | clothes | furniture | glass | automobiles | telephones |
+|---|---|---|---|---|---|---|---|---|---|---|
+| vanilla (n=16) | 1.11 | 0.91 | 1.32 | 1.02 | 1.07 | 1.05 | 0.84 | 1.05 | 1.47 | 1.42 |
+| `canon4v-hai3` | 0.68 | 0.88 | 1.24 | 0.88 | 1.08 | 1.07 | 1.00 | 1.15 | 1.67 | 1.71 |
+| the incumbent | 0.73 | 0.70 | 1.09 | 0.69 | 0.84 | 0.88 | 0.58 | 0.88 | **1.05** | **1.06** |
+
+The canon's frontier goods were DEARER than vanilla's (automobiles 1.67, telephones 1.71); the incumbent's sit at 1.05 / 1.06. ⚠ `radios` reads
+1.75 — the engine's own +75% band ceiling — in all three arms, so its price carries no information in any of them.
+
+### 3. VANILLA SCORED AGAINST THE MOD'S OWN LOSS — the scale anchor
+
+Vanilla's sixteen seeds (14 intact) read **16.77**, with no T terms (a control has no tiered config, so T0/T3 drop — worth 3.8 on the incumbent,
+whose comparable ten-term figure is 7.7). Its whole loss is three lines: pool W 6.50 (0.98 against the 0.6–0.7 aim), PI 5.00 (1.00 against ≤ 0.8)
+and pool U* 3.22 — exactly the three things the mod exists to change. **So the loss does say "vanilla is not what we want", to the tune of ~17 —
+and the incumbent sits 5.3 points better than vanilla on comparable terms, on a scale whose one-seed noise is 11.3** (§5).
+
+### 4. FAILURE 1 — A STALL RANKS SECOND, AND THE KINK IS NOT WHY
+
+`canon-c205-in13` (F119: "a STALL from 1880 in both seeds", world GDP 0.72, world W 0.56, the construction sector a third of vanilla's) ranks
+**2nd at 14.40**, ahead of `canon-a19-gm` (16.17), a book that works. The hand judgement recorded in §10.83.4 had the stalls last. The kink does
+not explain it: the loss is affine in `--soft-slope`, and the two books **swap only at slope 5.12** — at slope 0 the stall is 13.3 against A 1.9's
+16.2, so it is intrinsically cheap under these weights.
+
+**Why.** A stalled economy satisfies the labour aims by keeping its peasants (pool W 0.58 against the 0.6–0.7 aim costs 0.5; pool U* 2.51 is AT
+the aim) and satisfies the hoard aim by having no capital (pool H 0.70 → zero cost). **Four of the twelve terms — pool W 1.5, world W 1.25, pool
+U* 1, world U* 0.75, 4.5 of the 13.25 total weight — actively reward stalling**, against the GDP group's 3.25, and the world-GDP soft floor of
+0.75 barely bites at 0.72. `canon-b18-gm` (world GDP 0.66) likewise overtook `canon-c195-in12-eager` in the re-form (old form 70.7 vs 45.1; new
+form 25.6 vs 27.9).
+
+### 5. FAILURE 2 — THE RANKING IS ENTIRELY INSIDE THE SEED NOISE
+
+Per-run losses within one config (intact runs only): the incumbent **6.9 / 29.6 / 15.2**, `canon-a19-gm` 27.2 / 9.8, `canon-c195-in12`
+16.0 / 5.1 / 17.2, `canon-c19-in12-eager-q10` 18.0 / 5.8 / 45.2. **Pooled within-book σ of a single run's loss = 11.3** (17 d.f., 11 books) ⇒ a
+two-seed consensus carries se ≈ 8.0, a three-seed one ≈ 6.6, and two books separate at 95% only if their consensus losses differ by ≳ 22.5.
+
+| adjacent pair in the ranking | Δ loss | separable? |
+|---|---|---|
+| incumbent → c205-in13 | 2.9 | no |
+| c205-in13 → a19-gm | 1.8 | no |
+| a19-gm → e0ai500 | 4.7 | no |
+| e0ai500 → b18-gm | 4.8 | no |
+| b18-gm → c195-in12-eager | 2.3 | no |
+| c195-in12-eager → je24-a22-in12 | 4.1 | no |
+| je24-a22-in12 → flat-in12-a16 | 1.5 | no |
+
+**Not one adjacent gap is resolvable, and the incumbent does not separate from the WORST ranked book (Δ 22.0 against a 22.5 threshold).** A
+one-seed reading of the incumbent has already produced 6.9 and 29.6; a19-gm has produced 9.8 and 27.2. ⇒ The loss is a sound DESCRIPTION of one
+config's residual (which term dominates, and by how much) and is NOT, at n=2–3, a ranking instrument. The historical arc of §2 survives only
+because its steps are supported by 28 and 10 runs and by the monotone movement of T0/PI/PP, not by the loss gap.
+
+### 6. WHY THE NOISE IS SO LARGE — the loss divides by the WRONG σ
+
+σ is vanilla's seed spread of the same ratio. The mod's own **within-config** spread is 1.3–3.0× larger on every line but one:
+
+| | world GDP | pool GDP | pool W | world W | pool U* | world U* | pool H | world H | PI | PP |
+|---|---|---|---|---|---|---|---|---|---|---|
+| σ vanilla (in force) | 0.106 | 0.146 | 0.065 | 0.069 | 0.307 | 0.091 | 0.845 | 0.440 | 0.033 | 0.184 |
+| σ mod, within-config | 0.228 | 0.440 | 0.148 | 0.089 | 0.631 | 0.129 | 1.358 | 0.566 | 0.078 | 0.117 |
+| ratio | 2.2× | **3.0×** | 2.3× | 1.3× | 2.1× | 1.4× | 1.6× | 1.3× | 2.3× | 0.6× |
+
+Every distance is therefore 2–3× larger than the scored population's own noise justifies, **and unevenly so** — the pool's GDP is over-stated 3.0×
+against world W's 1.3×, which is most of why "the pool's GDP overshoot" reads as the incumbent's and every eager book's dominant residual.
+
+### 7. THE TWELVE TERMS ARE FOUR — the loss double-counts its own axes
+
+Pearson r over the 29 intact runs: **pool W ~ pool U* −0.98**, **world W ~ world U* −0.99** (arithmetically the same statement: more workers ⇒
+fewer peasants), **pool H ~ world H 0.95**, **world GDP ~ pool GDP 0.93**; everything else 0.5–0.85. A principal-component decomposition gives
+eigenvalues 6.98 / 1.99 / 1.44 / 0.53 / … — **58% of the variance in one component and 3.9 effective dimensions out of twelve terms.** The
+nominal weights are therefore not the effective ones: the depeasantation axis holds 4.5 of 13.25 across four correlated terms, the GDP axis 3.25
+across two.
+
+### 8. WHAT FIXES IT, MEASURED — three re-weightings, offline
+
+| variant | order |
+|---|---|
+| **A** as it stands (12 terms) | c19-in12 11.6 < **c205-in13 14.5** < a19-gm 16.2 < e0ai500 20.9 < b18 25.8 < c195-eager 27.9 < je24-a22-in12 32.1 < flat-a16 33.6 |
+| **B** one term per axis — drop world U*, pool U* (≡ W) and world H (≡ pool H) | c19-in12 **10.2** < **a19-gm 14.3** < c205-in13 14.5 < e0ai500 17.7 < c195-eager 25.2 < b18 25.8 < je24-a22-in12 32.1 < flat-a16 33.6 |
+| **C** B + the register's own priority line honoured (GDP 2.5 / 2.0 over pool W 1.0 / world W 0.75) | c19-in12 **11.2** < **a19-gm 14.9** < c205-in13 15.5 < e0ai500 22.7 < b18 30.4 < c195-eager 33.4 < je24-a22-in12 34.6 < flat-a16 41.9 |
+| **E** C + σ from the mod's own within-config spread | c19-in12 **7.6** < a19-gm 8.5 < c205-in13 9.7 < e0ai500 9.8 < c195-eager 13.9 < b18 17.1 < je24-a22-in12 22.2 < flat-a16 22.5 |
+
+**Dropping the two redundant labour terms alone (B) is enough to put the working book above the stall**, and C reproduces §10.83.4's hand order
+exactly. None of them changes the noise floor.
+
+### 9. A CONTRADICTION IN THE WEIGHTS AS THEY STAND
+
+The register's own priority sentence is *"world GDP at 1935 > the pool's W × Y > W"*. The 2026-09-18 weights are world GDP 2 · **pool W 1.5** ·
+**pool GDP (W × Y) 1.25** — the last two inverted. The 2026-09-17 set (3 / 2 / 2) at least kept W × Y level with W. This is a consequence of the
+ruled "reduce pool GDP, raise the low ones" and needs the user's call: either the priority line moves, or pool GDP's weight goes back above pool W's.
+
+### 10. TWO SMALLER IMPLEMENTATION POINTS
+
+- **The T σ is per invocation and moves a book by ~5 points.** `canon-c195-in12`'s per-run losses read 20.7 / 8.6 / 21.8 in F133's two-book
+  invocation and **16.0 / 5.1 / 17.2** in the seventeen-book one; the incumbent reads 12.75, 11.49 and 11.22 in three different invocations. A
+  loss is comparable only within one invocation — known since 2026-09-17, now quantified. A FIXED σ (the measured 0.026 for T0 ÷ rest over the 28
+  intact runs, and the matching figure for T3) removes it.
+- **T3 = −ln(T3 ÷ rest) is unbounded and can go NEGATIVE** (any book with T3 ÷ rest > 1 earns a bounty with no cap). Not binding today — the best
+  book reads 0.344 — but it is a hole in a minimisation target.
+
+**Confidence.** HIGH on §1, §2, §5, §6 and §7 — all are arithmetic over artifacts the sessions already carry, reproducible by the commands in
+this entry. MEDIUM on §4 and §8, which depend on which books happen to have been measured (eight ranked books, four of them stalls).
+
+**What it says.** The loss is correct arithmetic on the right quantities and its historical arc is the strongest single summary of the project's
+progress; as a *ranking* instrument at n=2–3 it is not usable, and as it is weighted it prefers a stalled economy to a working one.
+
+**What it does NOT say.** Nothing about whether the AIM / SOFT / HARD lines themselves are right — only about the loss built on them. Nothing
+about the divergent books (four of the seventeen have no consensus and are unranked). The re-weightings of §8 are offline recomputations from
+the same JSON, not re-measurements; they were not written into `criteria.mjs`, which still ships the ruled 2026-09-18 defaults.

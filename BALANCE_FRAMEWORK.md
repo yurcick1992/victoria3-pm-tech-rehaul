@@ -7869,3 +7869,35 @@ spread of the runs READ, so a loss is comparable only within one invocation — 
 the 2026-09-17 ruling requires, whether the stalled B 1.8 book at 25.6 and the stall-side C 2.05 ×1.3 book at 14.4 sit where they should
 against the A 1.9 pair at 16.2, and whether the T σ should be fixed rather than per invocation. The numbers above are the record for that
 discussion; nothing in the register's AIM / SOFT / HARD lines moved.
+
+### 10.83.6 — The validation, RUN (FINDINGS **F134**, 2026-09-18 afternoon): the loss reproduces, it ranks the historical arc right, and it fails the ruling's test twice — a stall second, and the whole ranking inside the seed noise
+
+`criteria.mjs` at its 2026-09-18 defaults, re-run over the seventeen books in one invocation, reproduces §10.83.5's table inside rounding. Four
+readings the table did not contain, all in F134 with the commands:
+
+1. **The arc is right.** Scored on the same register, `canon4v-hai3` (the 2026-09-06 canon) → `canon-je24` → `canon-je24-a22` → the incumbent
+   reads **19.32 → 14.61 → 12.18 → 11.22**, with T0 ÷ rest **0.113 → 0.078 → 0.060 → 0.039**, PI 0.92 → 0.96 → 0.93 → **0.84** and PP 1.04 →
+   0.97 → 0.89 → **0.83**. The one line that regressed is the hoard (pool H 1.50 → **4.17**). ⚠ The first two rows' runs were built from
+   index-keyed books; the era-0 rung set is identical between those books and today's, so T0 is unaffected (four rungs differ, all above e0).
+2. **Vanilla scored against the mod's own loss reads 16.77** (no T terms), essentially all of it pool W 6.5 + PI 5.0 + pool U* 3.2 — the loss does
+   say what the mod is for. The incumbent's comparable ten-term figure is 7.7.
+3. ⚠⚠ **THE RANKING IS INSIDE THE NOISE.** Pooled within-book σ of a SINGLE run's loss is **11.3** (17 d.f., 11 books; the incumbent's own three
+   intact seeds read 6.9 / 29.6 / 15.2), so a two-seed consensus carries se ≈ 8.0 and two books separate only at Δ ≳ 22.5. **No adjacent gap in the
+   eight-book ranking exceeds 4.8, and the incumbent does not separate from the last-placed book.** ⇒ the loss is a DESCRIPTION of one config's
+   residual, not a ranking instrument at n=2–3. Two contributing causes, both measured: the σ it divides by is VANILLA's seed spread, and the mod's
+   own within-config spread is **1.3–3.0× wider** on every line but PP (pool GDP 3.0×, world W 1.3× — an uneven over-statement that inflates the
+   pool-GDP term specifically); and the twelve terms carry **3.9 effective dimensions** (pool W ~ pool U* r = −0.98, world W ~ world U* −0.99,
+   pool H ~ world H 0.95, world GDP ~ pool GDP 0.93; 58% of the variance in one component).
+4. ⚠ **A STALL RANKS SECOND.** `canon-c205-in13` (world GDP 0.72, a stall in both seeds) at 14.40 sits above `canon-a19-gm` at 16.17. The kink is
+   not the cause — the loss is affine in `--soft-slope` and the two swap only at **slope 5.12**; at slope 0 the stall is still cheaper (13.3 vs
+   16.2). The cause is that a stalled economy satisfies the labour aims by keeping peasants and the hoard aim by having no capital, and the
+   depeasantation axis holds 4.5 of the 13.25 total weight across four correlated terms against the GDP axis's 3.25 across two. Measured offline,
+   **dropping the two redundant labour terms and world H is enough to restore §10.83.4's hand order** (a19-gm 14.3 < c205-in13 14.5), and doing that
+   *plus* honouring the register's own priority sentence (GDP 2.5 / 2.0 over pool W 1.0 / world W 0.75) reproduces it with a margin.
+5. ⚠ **The weights as ruled contradict the register's priority sentence** — "world GDP > the pool's W × Y > W" against weights world GDP 2 ·
+   pool W **1.5** · pool GDP **1.25**. A consequence of the ruled "reduce pool GDP"; the user's call which of the two moves.
+
+**Nothing was changed in `criteria.mjs`:** it still ships the ruled 2026-09-18 defaults, and the re-weightings are offline recomputations from its
+own `--json`. The four proposals waiting on a ruling are (a) one term per axis, (b) the priority order restored between pool GDP and pool W,
+(c) σ from the mod's own within-config spread instead of vanilla's, (d) a FIXED T σ in place of the per-invocation one (which moves a book by up
+to ~5 points between invocations) and a floor under the unbounded −ln(T3 ÷ rest) bounty.
