@@ -1763,6 +1763,49 @@ queue experiences the same thing — the measurement is of Britain's AI-run queu
 
 ---
 
+### P9 — ⭐ REGISTERED DESIRE: THE TECH TREE SHOULD BE A THING TO PRIORITISE, NOT TO COMPLETE (user, 2026-09-18, after finishing a Brazil campaign)
+
+**The user:** *"I'd prefer the late game techs to be less accessible. In this game as Brazil (so a low-tech low-literacy start) I ended up maybe 5
+techs short from the absolute full tech situation. Sounds excessive. I hoped that highest tier techs will be less prevalent. I'm not sure that
+this needs acting upon, but if there are other ideas that would require changing all this, please register the desire to make the tech tree less
+a thing 'to complete', and more a thing to prioritise."*
+
+**Registered as a standing design desire, not as a scheduled fix** — and it is the one item on this list that the mod has never addressed.
+FINDINGS **F138** has the measurement; the short version:
+
+- **It contradicts the mod's own governing ANCHOR PRINCIPLE**, which says in as many words that *"even an experienced player should finish a whole
+  tree only when unusually lucky, playing a strong nation, and probably neglecting the other trees."*
+- **The tree was never made deeper**: 182 technologies against vanilla's 178 — three minted, ~2%.
+- **The AI completes it identically to vanilla**: top 94% against 95%, and the two distributions match at every quantile.
+- **The human advantage is ~35–50 technologies**: AI-run Brazil reaches 127–143 of 182; the user reached ~177.
+- ⚠ **The one mechanism the mod added pushes the wrong way**: the research journal entries grant **1.5× each covered technology's entire base
+  cost** over their three stages, across **126** technologies — two stages already pay for the technology and the third is surplus. It was added
+  to compensate for a depth increase that never happened.
+
+**Levers, cheapest first. None is scheduled; all are cheap to try except the last.**
+
+1. ⭐ **Cut `grant_fraction`** (config `research_events.grant_fraction`, today **0.5**). At 0.5 a filled bar pays 150% of the technology; at
+   **0.15** it pays 45%, which is a real reward for building the industry without handing the technology over. **One config number, no generator
+   change.** ⚠ It changes the research-event arm that F102/F107 measured, so it needs a batch — but it is the single highest-leverage knob here.
+2. **Drop a stage** (`stages`, today three: inception / development / implementation). Two stages at 0.5 still pays 100%; three stages at 0.25
+   pays 75%. Combining (1) and (2) is the same dial twice — pick one.
+3. **Make the late eras genuinely harder** rather than the early ones cheaper: raise `TECH_AHEAD_OF_TIME_PENALTY_FACTOR` above vanilla's 0.25
+   (⚠ we currently emit exactly 0.25, i.e. a no-op that has been flagged on the UI's Mod-changes page for months), or raise the era base costs for
+   eras 4–5 specifically. **This is the lever that matches the user's words most directly** — "highest tier techs less prevalent" — because it hits
+   the top of the tree and leaves the bottom alone.
+4. **Actually deepen the tree** — the thing ROADMAP step 1 set out to do and did not. ⚠ Expensive, and it must respect the rule that vanilla
+   technologies are never emptied or deleted (`audit_tech_content.mjs`, and the 2026-08-30 ruling); a deeper tree means MINTED technologies with
+   real content, which is a content project, not a tuning one.
+5. **Restore a research cost or spread malus** — the 2026-08-12 ruling withdrew the tech-spread boost on the reasoning that the deeper tree was
+   *"compensated aplenty by the research journal entries"*. F138 §5 shows the compensation shipped and the depth did not, so **the premise of that
+   ruling is void** and the spread knobs (the tech-tree page's panel) are open again.
+
+⚠ **What would settle it cheaply**: the completion curve is already in every run's save summaries (`technologies` per country per year), so any
+future batch can report "technologies held at 1936, top / p95 / median" at no cost. **Add it to the criteria register as a read-only line** so the
+next configuration change does not move it unnoticed — it is not an aim today and should at least be watched.
+
+---
+
 ### Ordering, and what each fix costs
 
 | | item | kind | cost | blocks / blocked by |
@@ -1775,6 +1818,7 @@ queue experiences the same thing — the measurement is of Britain's AI-run queu
 | 6 | **P8** e3 build time | the cost ladder, or owning `13_construction.txt` | a campaign — **it is the same dial as P1 and the hoard** | see the convergence below |
 | 7 | **P1** the ladder | generator + a config sweep | the next measurement campaign | needs P6 for (c); (a)/(b) can go first |
 | 8 | **P5** top-rung output | — | none | rides on P1 |
+| — | **P9** the tech tree is completable | REGISTERED DESIRE, unscheduled | one config number to try (`grant_fraction`) | independent of the rest |
 
 ⭐⭐ **THE CONVERGENCE.** P1 (the money printer), P8 (build time) and the hoard (F135) are three complaints about two dials: **the A/B gap** —
 wanted compressed by P1 and by the hoard's inflow — and **the cost ladder** — wanted flattened at the top by P8 and by the hoard's absorption.

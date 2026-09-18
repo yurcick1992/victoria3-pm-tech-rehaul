@@ -13665,3 +13665,69 @@ and 16 runs). MEDIUM on any single market's magnitude, which depends on that mar
 are at 100 and tools at 91, so the market clears it within a decade or two; the claim is about the ANCHOR, not the century. Nothing about which
 fix is right (ROADMAP step 8 P6 lists four, all needing a ruling). The vanilla-equivalent column uses a flat 1.33× step measured on clothes and
 steel rather than each industry's own vanilla ladder, so the per-industry excess is approximate to a few points; the 0% rows are exact.
+
+## F138 — ⚠ THE TECH TREE IS NOT A THING TO PRIORITISE, AND THE MOD NEVER MADE IT ONE: it is 182 technologies against vanilla's 178 (three minted, ~2% deeper), the top AI completes 94% of it in the canon and 95% in vanilla — identical — and the mod ADDED a research subsidy of **1.5× each covered technology's entire base cost** across 126 technologies to compensate for a depth increase that never happened (measured read-only, 2026-09-18)
+
+**Why it was looked for.** The user, having finished a full campaign as **Brazil** — a deliberately low-tech, low-literacy start — on the newly
+canonized `canon-c19-in12`: *"I ended up maybe 5 techs short from the absolute full tech situation. Sounds excessive. I hoped that highest tier
+techs will be less prevalent … register the desire to make the tech tree less a thing 'to complete', and more a thing to prioritise."*
+
+**1. IT CONTRADICTS THE MOD'S OWN GOVERNING PRINCIPLE.** CLAUDE.md's ANCHOR PRINCIPLE (user-ruled 2026-08-12) states the intent in terms this
+result fails: *"even an experienced player should finish a whole tree only when unusually lucky, playing a strong nation, and probably neglecting
+the other trees."* The user finished **all three trees but ~5 technologies, playing Brazil**.
+
+**2. THE TREE WAS NEVER MADE DEEPER.** Counted from the game files and the shipping tree:
+
+| | production | military | society | **total** |
+|---|---|---|---|---|
+| vanilla | 57 | 58 | 63 | **178** |
+| the mod's shipping tree | 60 | 58 | 64 | **182** |
+
+**Three technologies are minted** (furniture spray finishing, paper continuous web, fertilizer catalytic synthesis) — the tree is **~2% deeper
+than vanilla's**. ROADMAP step 1's rework was a re-dating and re-banding plus the research-event channel; it never added length.
+
+**3. THE AI COMPLETES IT IN THE MOD EXACTLY AS IT DOES IN VANILLA.** Technologies held by every AI country, pooled over 4 canon runs (901
+country-observations) and 4 vanilla runs (922):
+
+| | max | p95 | p75 | median |
+|---|---|---|---|---|
+| **1936, the canon** (of 182) | **171 = 94%** | 155 | 131 | 107 |
+| **1936, vanilla** (of 178) | **169 = 95%** | 156 | 132 | 107 |
+| 1900, the canon | 131 = 72% | 119 | 98 | 77 |
+| 1900, vanilla | 126 = 71% | 116 | 96 | 76 |
+
+**The two distributions are the same to within a technology or two at every quantile.** So the "tree to complete" behaviour is inherited from
+vanilla wholesale — the mod neither caused it nor fixed it.
+
+**4. THE HUMAN ADVANTAGE IS THE STORY, AND IT IS LARGE.** AI-run Brazil at 1936, same book, four seeds: **127 / 133 / 134 / 143 of 182 (70–79%)**;
+in vanilla, 117 / 126 / 132 / 137 of 178 (66–77%). The user, playing Brazil by hand, reports **~177 of 182 (97%)** — **roughly 35–50 technologies
+ahead of what the AI does with the same country**. Whatever makes the tree completable is available to a player and not taken by the AI.
+
+**5. ⭐ THE ONE MECHANISM THE MOD ADDED POINTS THE WRONG WAY, AND BY A LARGE FACTOR.** The research journal entries grant
+`add_technology_progress` **per stage**, over three stages, at `grant_fraction` 0.5 of the era base cost:
+
+| era | base cost | granted by the 3 stages | as a multiple of the base |
+|---|---|---|---|
+| 1 | 7,500 | 11,250 | **×1.50** |
+| 3 | 12,500 | 18,750 | **×1.50** |
+| 5 | 17,500 | 26,250 | **×1.50** |
+
+⇒ **two of the three stages already pay for the whole technology at base cost, and the third is pure surplus.** A technology whose bar fills is
+effectively FREE. **126 technologies carry such an entry** (86 industry, 40 war). ⚠ The actual cost exceeds base where the ahead-of-time penalty
+applies (`TECH_AHEAD_OF_TIME_PENALTY_FACTOR` 0.25), so the grant covers most rather than all of an early-researched technology — but it is still
+the dominant term.
+
+⚠ **This subsidy exists to compensate for the depth that §2 shows was never added.** The 2026-08-12 ruling that withdrew the tech-spread boost
+reasoned that the deeper production tree *"is compensated aplenty by the research journal entries"*. The compensation shipped; the depth did not.
+
+**6. WHY THE AI's NUMBERS DID NOT MOVE ANYWAY.** F107 measured the industry bar at 24 months against 60 and found Britain's completions rose to
+~25 with technologies held unchanged (165 against 164). Twenty-five completions out of 126 possible entries is the AI's ceiling because a bar
+only ticks while its source industries are at their marks — which the AI rarely reaches. **A player who builds deliberately fills far more bars,
+so the subsidy is worth many times more to a human than to the AI** — which is exactly the shape of §4's gap.
+
+**Confidence.** HIGH on §2, §3, §4 (AI side) and §5 — counts from the game files, the shipping tree, the emitted journal entries and 1,823
+country-observations across 8 runs. The player-side figure in §4 is the user's own report of one campaign, not a measurement.
+
+**What it does NOT say.** It does not establish that the journal-entry subsidy is what carried the user's Brazil to 97% — that is the leading
+hypothesis, consistent with §5 and §6, and it is untested because no measurement instruments a human player. Nothing about which technologies
+were missed (the five). Nothing about literacy, which is the other obvious channel for a low-literacy start and was not examined.

@@ -836,7 +836,13 @@ ROADMAP.md              THE PLAN — steps 0-8 from the solved economy to releas
                         is 3.4–4.8× vanilla’s best — accepted, and it rides on P1; **P7** a MINTED rung is locked out of its industry’s gated
                         secondary (furniture e3 — a landmine, one live case); **P8** an e3 takes 2+ years to build, reproduced exactly (4,115 points
                         ÷ Britain’s 1900 government queue rate of ~33/wk = 126 weeks) — build time IS capital cost in this engine, so it is the
-                        SAME dial as the hoard, and the one escape is scaling the late construction methods’ points AND goods together; **P6 (found, not reported by the user) the 1836 supply
+                        SAME dial as the hoard, and the one escape is scaling the late construction methods’ points AND goods together; **P9** a REGISTERED DESIRE — the tech tree
+                        is a thing to COMPLETE, not to prioritise (F138: 182 technologies against vanilla’s 178, the AI completes 94% against
+                        vanilla’s 95% matching at every quantile, and the research JEs grant **1.5× each covered technology’s whole base cost**
+                        across 126 of them — a subsidy added to compensate for a depth increase that never happened; it contradicts the ANCHOR
+                        PRINCIPLE’s own words); ⭐⭐ **THE CONVERGENCE: P1, P8 and the hoard are three complaints about TWO dials** — the A/B gap
+                        and the cost ladder — so ONE campaign moving both, with P8’s construction-throughput compensation, is the coherent next
+                        experiment; **P6 (found, not reported by the user) the 1836 supply
                         anchor is broken — FINDINGS F137**. Steps 0-7 (tech tree rework, industry-
                         driven research events, costs+build, the telemetry loop that is the MVP's definition,
                         then mandates/dams/visuals). Plan only: rulings go to BALANCE_FRAMEWORK, results to
