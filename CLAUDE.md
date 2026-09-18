@@ -833,7 +833,10 @@ ROADMAP.md              THE PLAN — steps 0-8 from the solved economy to releas
                         sketched incl. the user’s price-path idea; P2 the urban-centre electricity override was dropped by canon4v and
                         is a two-key restore behind one power-chain ruling; P3 the building name says “BE target” for a number that is
                         neither a target nor goods-only; P4 the JE tick tooltips mix LEVELS and PEOPLE inside one bar; P5 top-rung output
-                        is 3.4–4.8× vanilla’s best — accepted, and it rides on P1; **P6 (found, not reported by the user) the 1836 supply
+                        is 3.4–4.8× vanilla’s best — accepted, and it rides on P1; **P7** a MINTED rung is locked out of its industry’s gated
+                        secondary (furniture e3 — a landmine, one live case); **P8** an e3 takes 2+ years to build, reproduced exactly (4,115 points
+                        ÷ Britain’s 1900 government queue rate of ~33/wk = 126 weeks) — build time IS capital cost in this engine, so it is the
+                        SAME dial as the hoard, and the one escape is scaling the late construction methods’ points AND goods together; **P6 (found, not reported by the user) the 1836 supply
                         anchor is broken — FINDINGS F137**. Steps 0-7 (tech tree rework, industry-
                         driven research events, costs+build, the telemetry loop that is the MVP's definition,
                         then mandates/dams/visuals). Plan only: rulings go to BALANCE_FRAMEWORK, results to

@@ -1687,6 +1687,82 @@ game (ship modifications, company `possible` blocks) are a different mechanism a
 
 ---
 
+### P8 — AN e3 TAKES 2+ YEARS TO BUILD. CONFIRMED, reproduced to the year, and the cause is NOT the construction sector's size
+
+**The user:** *"e3 construction takes too much time. It may make sense from economic PoV or maybe even narrative PoV, but this is just unfun to
+construct a new industry tier for 2+ years."*
+
+**1. It is the COST, one-for-one.** V3 has no construction-time field: a building's time is `required_construction ÷ the points per week it is
+allocated`. Our e3 costs **4,115** points (600-anchor industries) and **5,487** (800-anchor) against vanilla's flat 600 / 800 — **×6.86**. So an
+e3 takes 6.86× as long as the same building does in vanilla, in any queue, at any date. **Build time and capital cost are the same dial in this
+engine**, which is why this item cannot be fixed without touching one of them.
+
+**2. The capacity is ample — it is the QUEUE that divides it.** Britain's own construction sector in the canon (run 1): 65 levels at 1860 → 173
+at 1900 → 398 at 1920 → **1,316** at 1935. If one e3 got ALL of Britain's points it would take **6.3 weeks at 1860 and 0.3 weeks at 1935**. The
+2+ years is entirely the split across a queue.
+
+**3. Reproduced to the year.** Britain's GOVERNMENT queue — the player's own — at 1900 runs at **327 points/week over 10 items**, i.e. ~33 per
+item. `4,115 ÷ 33 = 126 weeks = ` **2.4 years**, which is exactly what the user reports. The same arithmetic in vanilla: `600 ÷ 33 = 18 weeks`.
+
+**4. And the private queue is worse, which is the AI's build time and the world's:**
+
+| | canon Britain | | | vanilla Britain | | |
+|---|---|---|---|---|---|---|
+| year | private items | points left | **points per item** | private items | points left | **points per item** |
+| 1900 | 130 | 93,332 | **718** | 73 | 21,764 | 298 |
+| 1920 | 511 | 335,641 | **657** | 186 | 93,250 | 501 |
+| 1935 | **1,000** | 1,277,140 | **1,277** | 126 | 35,021 | 278 |
+| backlog | 1.1 → 1.6 → **2.4 y** | | | 0.3 → 0.7 → **0.2 y** | | |
+
+Two compounding causes: **each item is dearer** (up to 4.6× the points of vanilla's average queued item) **and the queue is longer** (1,000
+against 126). ⚠ The 1,000 is a CEILING being hit — `CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED_MAX = 999` — and **we doubled
+the coefficient that gets there**, from vanilla's 0.05 to **0.1**, in §10.75.
+
+**5. ⚠ The player's share of the throughput is small and shrinking.** The private pool takes **83% / 74% / 76%** of Britain's construction speed
+at 1900 / 1920 / 1935 (F132 read 87% / 81% on the eager book). So the player's own queue is drawing on a quarter of the country's capacity while
+each of their buildings costs 6.86× vanilla's. **P8 is the hoard defect (F135) seen from the player's chair**: a large investment pool owns the
+construction sector's output, and what is left for the player is slow.
+
+**The fix options.**
+
+**(a) Flatten the top of the cost ladder.** `make_ab_config --cost-ladder m1,m2,m3` already exists and does exactly this per era. ⚠ It is the
+same dial F135 measured as the hoard's lever — log world GDP regresses on log C at −3.34 — so cutting e3's cost to, say, 3× rung 0 (from 6.86×)
+is a large economic move, not a cosmetic one. **This is the honest, direct fix and it costs GDP.**
+
+**(b) ⭐ MAKE CONSTRUCTION ITSELF GET FASTER WITH THE ERA, in step with the cost ladder — the only option that keeps the capital cost AND cuts the
+time.** Vanilla's construction methods give **2 → 5 → 10 → 15** points per level (base → iron frame `urban_planning`, era 1 → steel frame
+`steel_frame_buildings`, era 3 → arc welded `arc_welding`, era 5). Our cost ladder is **1 → 1.9 → 3.6 → 6.86**. Level-weeks per building:
+
+| | 1836, e0 at iron frame | 1930, e3 at arc welded |
+|---|---|---|
+| cost ÷ points per level | 600 ÷ 5 = **120** | 4,115 ÷ 15 = **274** |
+
+⇒ **an e3 at the best construction method still takes 2.3× the level-weeks an e0 took in 1836.** Equalising it needs arc welding at ~**34**
+points/level instead of 15 (×2.3) and steel frame at ~**18** instead of 10 (×1.8). ⚠⚠ **Their GOODS must be scaled by the same factor**, or each
+construction point costs less in real resources and the capital cost falls with the time — which is exactly goal 3 undone. ⚠ Implementation: the
+points figure is `country_construction_add`, a building modifier, not a goods line, so `pm_goods` cannot reach it — **the builder would have to
+own `common/production_methods/13_construction.txt`** (a small file; the same whole-file-replacement pattern it already uses for `01_industry`).
+⚠ It is also a GDP lever — a country with the same construction sector builds faster, so more gets built — and must be measured, not assumed.
+
+**(c) Put `CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED` back to vanilla's 0.05.** We doubled it to 0.1 in §10.75 for the
+investment pool, and **F125 later exonerated the queue cap for the hoard** ("the queue cap is exonerated"), so it can go back at no known cost.
+Halves the AI's queue depth ⇒ roughly halves each AI building's time. ⚠ It is an **NAI** define: it speeds the AI and the world economy and does
+**nothing** for the player's own government queue.
+
+**(d) Fix the inflow instead.** The private pool's 74–83% share of construction speed is a consequence of our doubled margins (F135). Compressing
+the A/B gap — already wanted by P1 and by the hoard — would shrink the private queue and give the player's own queue a larger share.
+
+⭐⭐ **THE CONVERGENCE WORTH NOTING: three separate complaints now point at the same two dials.** P1 (the money printer) and the hoard both want
+the **A/B gap** compressed; P8 and the hoard both want the **cost ladder** flattened at the top. Neither is free — F135 measured the cost axis at
+1.73% of hoard per 1% of world GDP — but a single campaign that moves both, with (b) compensating the build time, is the coherent next
+experiment rather than six separate ones.
+
+⚠ **What this does NOT establish:** the exact allocation rule V3 uses to split points across a queue (the arithmetic above assumes an even split,
+which reproduces the user's 2.4 years and vanilla's queue behaviour, but was not read out of the engine); and whether a player with a *short*
+queue experiences the same thing — the measurement is of Britain's AI-run queues plus the user's own report.
+
+---
+
 ### Ordering, and what each fix costs
 
 | | item | kind | cost | blocks / blocked by |
@@ -1696,8 +1772,15 @@ game (ship modifications, company `possible` blocks) are a different mechanism a
 | 3 | **P7** the minted rung's locked secondary | generator + a new landmine detector | hours | none |
 | 4 | **P2** the electricity override | config, 2 keys | minutes — **but needs the power-chain ruling first** | — |
 | 5 | **P6** the 1836 supply anchor | converter or generator | a day + a batch | **blocks P1 fix (c)** |
-| 6 | **P1** the ladder | generator + a config sweep | the next measurement campaign | needs P6 for (c); (a)/(b) can go first |
-| 7 | **P5** top-rung output | — | none | rides on P1 |
+| 6 | **P8** e3 build time | the cost ladder, or owning `13_construction.txt` | a campaign — **it is the same dial as P1 and the hoard** | see the convergence below |
+| 7 | **P1** the ladder | generator + a config sweep | the next measurement campaign | needs P6 for (c); (a)/(b) can go first |
+| 8 | **P5** top-rung output | — | none | rides on P1 |
+
+⭐⭐ **THE CONVERGENCE.** P1 (the money printer), P8 (build time) and the hoard (F135) are three complaints about two dials: **the A/B gap** —
+wanted compressed by P1 and by the hoard's inflow — and **the cost ladder** — wanted flattened at the top by P8 and by the hoard's absorption.
+Neither is free (F135 measured the cost axis at 1.73% of hoard per 1% of world GDP), and P8's option (b) — scaling the late construction methods'
+points AND goods so build TIME stays flat while capital COST keeps rising — is the one move that buys P8 without spending GDP. **One campaign
+that moves both dials with (b) compensating is the coherent next experiment, not six separate ones.**
 
 P3, P4 and P2 are cosmetic-to-local and can be done in one pass without a measurement batch (P2 changes the economy slightly and should be read
 in the next batch, not on its own). P6 and P1 are the real work and belong to one campaign, because P6 changes the 1836 prices that P1's recipes
