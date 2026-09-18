@@ -7964,3 +7964,53 @@ threshold is ≈ 13.1 — the picture F134 §5 describes is unchanged in substan
 
 **Still open after this section:** whether to adopt the obsolescence term; whether T3 should also be bounded (−ln is unbounded and can go negative,
 F134 §10); and the interpretation of batch 2 (F133), which the user has not returned to.
+
+## 10.84 — THE CANONIZATION OF `canon-c19-in12` (2026-09-18, user-delegated), and the two defects it ships
+
+**The ask (user, 2026-09-18 evening, before a manual playtest):** *"Any point in canonizing some newer config before we run? If yes, do it, and
+build the mod, I'll launch the game."* — i.e. the judgement was delegated, not the ruling reserved. The answer is yes, and it was done.
+
+**What moved.** `config/mod_config.json` is now a VERBATIM copy of `config/mod_config.canon-c19-in12.json`. ⭐ **`config/tech_tree_options.json`
+needed no change at all — the incumbent's L20 twin was already byte-identical to it** (both descend from the 2026-09-13 era-rule regeneration and
+neither the cost slope nor the ×1.2 lift touches a technology), so the promotion moved exactly ONE file. The previous canon stays tracked as
+`config/mod_config.canon4v-hai3.json` and is also backed up (gitignored, like the solver-2 backup before it) at
+`config/mod_config.pre_c19_canon_backup.json`. Built with the default `build.ps1` at 14:41 local — LINT PASSED (56 buildings within 6 pp),
+NEGATIVE-GOODS, SOLVENCY (L18), TECH CONTENT, START-CONVERSION (L13), ERA-RULE (L31), MOD CHECKS, PREFLIGHT — and deployed; the emitted
+`required_construction` ladder reads 600 / 1,140 / 2,166 / 4,115 as it should, and the deployed copy carries it.
+
+**The book.** A 2.2 / B 1.5 · `building_cost` = the vanilla anchor × **1.9^era** · rung 0's input value **×1.2** with the ladder anchored on it ·
+ai_value 1,000 × 3^era · pool cost-divisor 0.000125 · the §10.75 investment-pool defines · the **24-month** industry research bar. Its `_ab.command`
+regenerates it; `_variant` records its provenance (F117, the cost-slope sweep's bisection step).
+
+**The case, in the register's own units** (the amended loss of §10.83.7, one invocation, 43 intact runs):
+
+| book | intact n | loss | world GDP | T0 ÷ rest | PI | PP | pool H |
+|---|---|---|---|---|---|---|---|
+| `canon4v-hai3` — the canon from 2026-09-06 | 2 | 16.39 | 0.88 | 0.113 | 0.92 | 1.04 | 1.50 |
+| `canon-je24` | 28 | 11.80 | 0.85 | 0.078 | 0.96 | 0.97 | 1.82 |
+| `canon-je24-a22` | 10 | 9.39 | 0.91 | 0.060 | 0.93 | 0.89 | 1.48 |
+| **`canon-c19-in12`** | 3 | **8.40** | **1.10** | **0.039** | **0.84** | **0.83** | **4.17** |
+
+Monotone on every goal column, and the frontier's margin ladder is real for the first time (e0 26.3% against e3 45.9%, where every earlier book
+ran flat — F94's signature failure). ⚠ Under the DIRECTIONAL ruling (§10.83.7) the 8.0-point gap is NOT a significance test — two books separate
+at ≈ 13.1 — and the case rests on the monotone arc across four books and 43 runs plus the understood mechanism (the cost slope), exactly as that
+ruling directs.
+
+**⚠⚠ TWO KNOWN DEFECTS SHIP WITH IT. Both are recorded, neither is a reason to keep the older book (which is worse on every goal column):**
+
+1. **The hoard is the one line that went BACKWARDS across the arc** — pool H 1.50 → 4.17× vanilla. One seed of four broke the capital-abundance
+   HARD line (Britain, 11 consecutive years under 5% U* at a mean hoard of 1.80 of its own GDP, F131) and a second breached the soft hoard lines
+   (Britain 2.3–3.6 GDP). F135 names the mechanism: our realised margins are about twice vanilla's (frontier 46–52% against vanilla
+   manufacturing's 23.1% at 1935; even our e0 rung out-earns it), so the pool's INFLOW is the source, and the spending lever is one-signed by
+   identity. ⇒ a player will see rich countries unable to spend, and one campaign in four may see Britain in outright capital abundance.
+2. **The old rung survives in the consumer chains** (F136's census, at 1935): arms, artillery, explosives and steel shed 92–98% of the old rung's
+   peak workers, three of them at NEGATIVE margins — the ladder working exactly as designed — while glass sheds 14%, motor 26%, textile 29%, paper
+   30% and food 39%, every one still earning ~21%. **Textile's e0 rung earns 21% against its own frontier's 25%.** The split is by who buys the
+   output: a building-fed or army-fed good's price can fall, a pop-fed good's cannot (F97).
+
+**Also true of it and worth stating before a playtest:** the mid-game dip (world GDP 0.75–0.89× around 1900 while the e2 rungs are still too dear
+to fill — ruled EXPECTED in §10.82, never yet felt in play), unemployment at 27–30% against vanilla's ~13% with peasant shares above vanilla's in
+most majors (the design's intent), roughly half of vanilla's tiered building levels, and play time 0.97× vanilla's median.
+
+⇒ **The canon is the best-measured book, not a finished one.** §10.83.7's open items stand unchanged: whether to adopt the obsolescence term,
+batch 2's interpretation, and the untried A/B-gap lever that F135 points at for the hoard.

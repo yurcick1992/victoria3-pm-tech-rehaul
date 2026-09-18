@@ -165,6 +165,39 @@ the reason it is closed is the UI, which has to render a rung per era per indust
 ⇒ Nothing may describe it as the canon, the shipped book, or the current method. Where an old banner below still
 reads that way it has been corrected in place; the headings that follow are HISTORY.
 
+## ⭐⭐⭐ THE CANON IS `canon-c19-in12` SINCE 2026-09-18 (user-delegated: "Any point in canonizing some newer config before we run? If yes, do it")
+
+`config/mod_config.json` is a VERBATIM copy of `config/mod_config.canon-c19-in12.json`; **`config/tech_tree_options.json` needed no change —
+the incumbent's twin was already byte-identical to it**, so the canonization moved exactly one file. Built and deployed 2026-09-18 14:41 local
+(every linter, L31, preflight, MOD CHECKS). The previous canon (`canon4v-hai3`, 2026-09-06) is backed up at
+`config/mod_config.pre_c19_canon_backup.json` and remains reachable as `config/mod_config.canon4v-hai3.json`.
+
+**What it is:** the A/B book at **A 2.2 / B 1.5**, **building_cost = the vanilla anchor × 1.9^era** (600 / 1,140 / 2,166 / 4,115 and
+800 / 1,520 / 2,888 / 5,487), rung 0's **input value × 1.2** with the ladder anchored on it, ai_value 1,000 × 3^era, the pool cost-divisor
+0.000125, the §10.75 investment-pool defines, and the **24-month** industry research bar. Regenerate with the `_ab.command` line in the file.
+
+**Why, in the register's own units** (the amended loss of §10.83.7, one invocation, the arc over 43 intact runs):
+
+| book | intact n | loss | world GDP | T0 ÷ rest | PI | PP | pool H |
+|---|---|---|---|---|---|---|---|
+| `canon4v-hai3` — the canon until today | 2 | 16.39 | 0.88 | 0.113 | 0.92 | 1.04 | 1.50 |
+| `canon-je24` | 28 | 11.80 | 0.85 | 0.078 | 0.96 | 0.97 | 1.82 |
+| `canon-je24-a22` | 10 | 9.39 | 0.91 | 0.060 | 0.93 | 0.89 | 1.48 |
+| **`canon-c19-in12` — the canon** | 3 | **8.40** | **1.10** | **0.039** | **0.84** | **0.83** | **4.17** |
+
+Monotone on every goal column: the old rung's share of tiered labour down by a factor of three, the building-input price index 0.92 → 0.84 of
+vanilla's and the pop-goods index in wage units 1.04 → 0.83 (F94's price decline, for the first time), world GDP fidelity restored, and the
+frontier margin ladder real (e0 26% against e3 46%, where every earlier book ran flat). ⚠ Under the DIRECTIONAL ruling (§10.83.7) the 8.0-point
+gap over the old canon is not a significance test — the case is the monotone arc across four books and 43 runs, not the gap.
+
+⚠⚠ **THE CANON SHIPS TWO KNOWN DEFECTS, both recorded, neither a reason to keep the older book:**
+1. **The hoard.** Pool H 4.17× vanilla's — the one line that went BACKWARDS across the arc. One seed of four broke the capital-abundance hard
+   line (Britain, 11 years under 5% U* at 1.80 GDP); a second breached the soft hoard lines. F135 has the mechanism: our realised margins are
+   twice vanilla's, so the pool's INFLOW is the source, and the spending lever is one-signed by identity.
+2. **The old rung survives in the consumer chains.** F136's census: arms, artillery, explosives and steel shed 92–98% of the old rung's peak
+   workers at negative margins, while glass sheds 14%, motor 26% and textile 29%, every one still earning ~21% — textile's e0 earns 21% against
+   its own frontier's 25%. The split is by who buys the output; a pop-fed good's price cannot fall.
+
 ### (historical) TWO CANONS SINCE 2026-09-03 — the six-rung canon and `canon-4rung` (user-ruled 2026-09-03)
 
 ⭐⭐⭐ **THE CANON WAS REGENERATED UNDER THE ERA RULE ON 2026-09-13 AND CANONISED THAT EVENING** ("Canonize the outcome config"; the
@@ -932,7 +965,7 @@ config/mod_config.canon-c16-in12.json ⭐ THE COST-SLOPE SWEEP, BOOK 1 (user-rul
                         back up by the runaway), GDP per productive worker 1.92×, pools 0.69 of GDP, rung 0 36% staffed at 19% margin with its levels still
                         growing (1,889), tiered levels 21,913 (vanilla 21,971), two CTDs resumed. The slope 1.6 is on the flat-cost side of the threshold;
                         the bisection goes UP to C 1.9. Ledger https://claude.ai/code/artifact/818b8375-4934-4d0f-be0d-6479b8a8b0b1. Un-ignored with its twin
-config/mod_config.canon-c19-in12.json ⭐ THE COST-SLOPE SWEEP, BOOK 2 — THE BISECTION UP (pre-registered in book 1's schedule; drafted 2026-09-14 17:00):
+config/mod_config.canon-c19-in12.json ⭐⭐⭐ THE CANON SINCE 2026-09-18 (config/mod_config.json is a verbatim copy; the banner near the top of this file). Originally THE COST-SLOPE SWEEP, BOOK 2 — THE BISECTION UP (pre-registered in book 1's schedule; drafted 2026-09-14 17:00):
                         canon-je24-a22-in12 with building_cost = anchor × 1.9^era (600 / 1,140 / 2,166 / 4,115; 800 / 1,520 / 2,888 / 5,487) — between
                         C 1.6 (book 1's first run sat on vanilla's GDP path to 1890 and then ran away: 1.12 / 1.27 / 1.59× at 1900 / 1910 / 1920) and
                         C 2.2 (F113: 0.65×, the frontier too scarce); everything else identical. Generated by `make_ab_config --cost-ratio 1.9`
@@ -1147,7 +1180,14 @@ config/tech_tree_options.json GENERATED by tools/tech_tree_spec.mjs and COMMITTE
                         INDUSTRY TECH TREES (ROADMAP step 1) — every technology with its era, date, prerequisites,
                         dependents and the buildings it unlocks, for all three trees (production/military/society).
                         A design input under review, not yet emitted to the mod; NOTHING reads it but the viewer
-config/mod_config.json      ⭐⭐ THE CANON = canon4v-hai3 SINCE 2026-09-06 — canon4v + ai_value 1000×3^era on all 17 industries + the
+config/mod_config.json      ⭐⭐⭐ THE CANON = canon-c19-in12 SINCE 2026-09-18 (the banner near the top of this file) — a VERBATIM copy of
+                        config/mod_config.canon-c19-in12.json: A 2.2 / B 1.5, building_cost = the vanilla anchor × 1.9^era, rung 0's input value ×1.2 with
+                        the ladder anchored on it, ai_value 1000×3^era, divisor 0.000125, the §10.75 defines, the 24-month research bar. Its tech-tree twin
+                        was already byte-identical to config/tech_tree_options.json, so the promotion moved ONE file; the previous canon is backed up at
+                        config/mod_config.pre_c19_canon_backup.json. Loss 8.40 against the old canon's 16.39 on the same register (§10.83.7), monotone on
+                        every goal column over 43 runs; ⚠ it ships the hoard defect (pool H 4.17×, one seed of four in capital abundance) and the surviving
+                        consumer-chain rung 0 (F136). The entry below is the SUPERSEDED record of the 2026-09-06 canon:
+config/mod_config.json      ⭐⭐ (SUPERSEDED 2026-09-18) THE CANON = canon4v-hai3 FROM 2026-09-06 TO 2026-09-18 — canon4v + ai_value 1000×3^era on all 17 industries + the
                         investment-pool defines (§10.75/§10.76); before that canon4v alone (2026-09-05: four rungs on vanilla's own methods, the A/B book, the
                         academy on the regular ladder) — a verbatim copy of config/mod_config.canon4v-hai3.json, regenerated by the
                         vanilla-only pipeline (make_tier4_config → make_tier4_techs → make_ab_config --suffix canon4v-hai3 with §10.76's flags) and
