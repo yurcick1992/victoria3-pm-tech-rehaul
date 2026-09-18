@@ -959,6 +959,13 @@ one-off validation pass.
 
 ## DEFERRED FIXES — known, not scheduled
 
+- ⚠ **Our emitted `common/buildings/*.txt` carry no UTF-8 BOM** and the engine logs *File 'common/buildings/01_industry.txt' should be in
+  utf8-bom encoding (will try to use it anyway)* for 01 and 06 in every run — checked and **pre-existing** (two occurrences in the canon
+  's own sessions), so long-standing, not new. It evidently does use them, so this is cosmetic; but it is two lines of engine complaint
+  per run that a reader has to learn to ignore, which is the class of thing that hides a real one. Fix: write those files with a BOM, as
+  vanilla does. ⚠ **Not while a batch runs** — `run_schedule.ps1` rebuilds the mod before EVERY run, so a builder edit mid-batch makes the
+  arms incomparable (noticed 2026-09-18 at the step-9 batch's smoke check).
+
 ### ⚠ `deviates_from_vanilla` NAMES 5 OF THE 13 DIRECTORIES AN ARM ACTUALLY CARRIES (found 2026-08-12)
 
 **The record of what a run was testing has quietly stopped being true.** `run_observer.ps1` builds
