@@ -8331,4 +8331,43 @@ Since A/B, we still should have improvement at higher eras."*
 iron and coal, and steel is the binding constraint of the whole chain — demand 0.97 of vanilla, supply three quarters, **18% of its early prices at the
 +75% ceiling in the SHIPPED CANON** where vanilla never touches it. This term reaches it from the other side.
 
-**THE RULE, implemented as `make_ab_config --in0-supplier <k>` (requires `--in0-stage`). ⭐⭐ BINARY BY RULING (user, the same day: *"I don’t understand the talk about levels though. Where does it become level-weighed? I thought the being an input of a manufacturer is a binary state"*) — and they are right, the weighting was mine and it was the weaker choice. **w(g) = 1 if any tiered rung STANDING ON THE 1836 MAP consumes the industry’s own output good, else 0** (user, refining it a second time: *“Not even that. w(g) = 1 if any tiered rung present in 1836 consumes its output good”* — and *“it’s a point score, with other points coming from DEPENDING on industrial outputs”*, which is the additive structure already implemented: effective stage = the input-side score + k x this point). Presence is read from the committed , a CONFIG artifact, so the generator needs no build output.  counts a rung at any era,  restores the proportionate version: a property of the RECIPE BOOK alone, needing no levels, no measured demand, no build artifact and no era choice, which removes the 1836-vs-1910 instability the share version carried. `--in0-supplier-mode share` keeps the proportionate version for A/B.portionate version for A/B.
+**THE RULE, implemented as `make_ab_config --in0-supplier <k>` (requires `--in0-stage`).**
+
+⭐⭐ **IT IS A BINARY POINT, NOT A WEIGHTED SHARE, AND IT COUNTS ONLY 1836-PRESENT CONSUMERS** — the user, correcting the first implementation twice in
+a row: *"I don't understand the talk about levels though. Where does it become level-weighed? I thought the being an input of a manufacturer is a
+binary state"*, then *"Not even that. w(g) = 1 if any tiered rung present in 1836 consumes its output good"*, and *"it's a point score, with other
+points coming from DEPENDING on industrial outputs"*. **Both corrections were right and the level-weighting was mine, not asked for.**
+
+**w(g) = 1 if any tiered rung STANDING ON THE 1836 MAP consumes the industry's own output good, else 0.** The score is ADDITIVE POINTS:
+**effective stage = the input-side score (§10.86.6) + k × w**, and the lift is interpolated on that.
+- Presence is read from the committed `config/start_baseline.json` — a CONFIG artifact — so the generator needs **no build output and no measured
+  data**, and the rule is a property of the recipe book and the 1836 map alone.
+- **It removes the era instability that was the one serious objection to the whole term**: the share version read steel 1.00 at 1836 and 0.31 at 1910,
+  and the lift anchors every rung, so an era-dependent weight was an anchor-time number doing a century-long job. A binary point is era-stable.
+- ⚠ The share version also asked the **wrong question** — how much of my output *my own ladder* takes — when the question is whether my output is an
+  INTERMEDIATE good. Tools sold to vanilla's construction sectors, farms and mines are just as intermediate as tools sold to our furniture works.
+- `--in0-supplier-mode any` counts a rung at any era; `share` restores the proportionate version. Both kept for A/B only.
+
+**THE PARTITION — the five industries with a NAMED 1836 CONSUMER:**
+
+| w = 1 (earns the supplier point) | who consumes it, on the 1836 map |
+|---|---|
+| **steel** | tooling e2, motor e0 |
+| **tooling** | furniture e1 |
+| **paper** | art academy e0 |
+| **fertilizer** | explosives e0 |
+| **explosives** | munition e1 |
+
+| w = 0 | why |
+|---|---|
+| food · textile · furniture · glass · arms · artillery · munition · automotive · electrics · art academy | nobody in the ladder buys their output — pops and the army do |
+| **motor** | engines' only buyer, **automotive, does not exist in 1836** (it would score 1 under `--in0-supplier-mode any`) |
+| **synthetics** | **dye is RAW by the ruling, applied symmetrically** — a producer earns no supplier point for selling a good the ruling calls raw |
+
+**At `k = 0.5` on the 1.40 / 1.20 / 1.10 ladder:** **steel, tooling, paper and fertilizer ×1.400 → ×1.300** · explosives ×1.325 → ×1.225 ·
+**everything else unchanged** (motor ×1.200, synthetics ×1.305, the academy ×1.200, automotive ×1.180, and food / textile / furniture / glass / arms /
+artillery at the full ×1.400). ⭐ `w(steel) = 1` is the point of the whole term: steel is F145's binding constraint and no input-keyed rule can reach it.
+
+⚠ **What the rule spends that it need not**: **tooling and paper are among the healthiest industries at every `in0` tested** — never negative in any
+arm — and they take the same −0.10 as steel. That is the price of a rule over a fit, and it is cheap; noted so it is not mistaken for a finding.
+⚠ `config/mod_config.probe-gradsup.json` (grad-a + `--in0-supplier 0.5`) is generated, L20 clean and dry-run built clean. **NOT RUN.**
