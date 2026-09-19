@@ -13731,3 +13731,106 @@ country-observations across 8 runs. The player-side figure in §4 is the user's 
 **What it does NOT say.** It does not establish that the journal-entry subsidy is what carried the user's Brazil to 97% — that is the leading
 hypothesis, consistent with §5 and §6, and it is untested because no measurement instruments a human player. Nothing about which technologies
 were missed (the five). Nothing about literacy, which is the other obvious channel for a low-literacy start and was not examined.
+
+## F139 — ⭐⭐ THE FLAT UNIFORM LADDER FIXES THE HOARD AND LOSES THE ECONOMY, AND THE REASON IS THAT THE REALISED LADDER INVERTS: designed margins 5 / 17 / 31 / 47 by era realise as **37.6 / 26.0 / 26.3 / 27.4** with the OLD rung the most profitable in the game, so era-0 workers GREW 0.70 → 1.33M, the frontier never deepened (T3 14.9% against 25.6%) and the price decline REVERSED (PI 1.02 against 0.84) — one run intact at world GDP 0.60×, one BROKEN BY STALL at 0.45× (canon-lvl-a19b17, n=2 aligned, ROADMAP step 9 batch 1, 2026-09-18/19)
+
+**Arm.** `config/mod_config.canon-lvl-a19b17.json` — the canon (`canon-c19-in12`) with THREE coupled levers, ordered by the user after the first
+human playtest (*"decrease margins across the board, in both early tiers (a bit) and the late tiers (a lot)"*, then *"I would still prefer flatter
+but uniform (between industries) ladder"*): a new `--in0-level 0.05` giving each industry its OWN era-0 lift so every industry's notional era-0
+rung lands on +5% (lifts 0.93 steel … 1.21 textile … 1.43 glass … 1.61 arms … 2.38 art academy); **A 1.9 / B 1.7** (r = 1.118 against the canon's
+1.467); building_cost = anchor × **1.64**^era, set to hold capital per unit of output at the canon's own C ÷ A = 0.864 so only the MARGIN moves.
+Result in the book: margins **5 / 17 / 31 / 47** and target_be **95 / 85 / 76 / 68** identically in all 56 rungs, against the canon's 5/55/127/233
+(textile), 25/83/169/294 (glass) and 41/106/203/343 (arms). Session `20260918_235214_canon-lvl-a19b17-n2`, two runs, both to 1936.1.1 on one
+attempt (142 and 132 min, no crash, no resume). Read under THE CRITERIA REGISTER (§10.83, as amended by §10.83.7 and §10.85).
+
+### 1. THE VERDICT: one intact, one BROKEN BY STALL ⇒ the config is OUT
+
+| | run 1 | run 2 | the canon (F131, 4 seeds) |
+|---|---|---|---|
+| world GDP (end state) | 0.60 ⚠soft | **0.45 ⛔ HARD (< 0.5)** | 1.10 |
+| pool GDP | 0.67 ⚠soft | — | 1.30 |
+| pooled U* | 45.8% | 58.2% | 43.0% |
+| loss | **29.2** | broken | 7.9 |
+
+F114 alignment: 0.596 / 0.395 at 1935, both "way below" and the workers axis both "target" ⇒ **ALIGNED, no tie-breaker**. One broken run ends a
+config (the register's flow rule), so **the book is out and the canon stands**.
+
+### 2. ⭐ WHAT IT GOT RIGHT — the hoard, at the aim, with no spending define touched
+
+| line | this book | the canon | vanilla |
+|---|---|---|---|
+| **pool H** | **0.82×** (0.27 of GDP) | 4.17× (1.40) | 1.00 (0.33) |
+| **world H** | **0.66×** (0.19) | 2.20× | 1.00 (0.29) |
+| pool W · pool U* | 0.71 · 2.15 | 0.68 · 2.02 | — |
+
+**The first book ever to put every hoard line AT THE AIM without the eager spending set** (F124/F125/F132 got there only by spending, and paid
+with a pool GDP of 2.0). It confirms F135's diagnosis directly: **the margin ladder IS the investment pool's inflow.** The mid-century path shows
+it cleanly — world pool ÷ GDP 0.10 / 0.09 / 0.12 / 0.13 at 1870 / 1880 / 1890 / 1895, below both vanilla (0.15–0.19) and the canon (0.13–0.19).
+
+### 3. ⭐⭐ WHY IT FAILED — THE REALISED LADDER INVERTED, AND THAT IS THE FINDING
+
+Realised margin at 1935 (profit ÷ (value added out − profit), world, F92's identity):
+
+| | e0 | e1 | e2 | e3 |
+|---|---|---|---|---|
+| **designed at base prices** | 5% | 17% | 31% | 47% |
+| **realised, run 1** | **37.6%** | 26.0% | 26.3% | 27.4% |
+| **realised, run 2** | **31.0%** | 27.5% | 26.5% | 28.2% |
+| the canon, realised | 26.3% | 31.4% | 46.6% | 45.9% |
+
+**The 1836-design rung became the most profitable rung in the game, in both seeds.** Everything else follows from that one fact:
+
+- **The old rung GREW.** Era-0 workers by decade **0.70 → 0.89 → 1.10 → 1.33M**; T0 at 1935 is **2.09× the 1900s** (beyond the soft line; the
+  canon 0.88×) and T0 ÷ rest **0.11** against the canon's 0.039.
+- **The frontier never deepened.** T3 is **14.9%** of tiered workers against the canon's 25.6%; tiered levels total **8,517** in run 1 and 5,555
+  in run 2, against the canon's **43,913** — a fifth and an eighth.
+- **The price decline reversed.** PI **1.02** of vanilla's and NOT falling decade over decade, against the canon's 0.84 falling; PP 1.03 against
+  0.83. The decline was being bought by frontier VOLUME, and there is no frontier volume.
+- **The economy stalled**: world GDP 0.99 / 0.96 / 0.95 at 1840 / 1845 / 1850, then 0.83 (1860), 0.74 (1875), 0.70 (1890), a trough of **0.52 at
+  1925**, ending 0.60 (run 1) and 0.45 (run 2).
+
+### 4. ⭐⭐ THE GENERAL LESSON: THE MARKET EATS MOST OF THE DESIGNED SLOPE, SO THE DESIGN MUST OVER-PROVIDE IT
+
+Put the two books side by side as designed-vs-realised and the rule is plain:
+
+| designed at base | realised |
+|---|---|
+| the canon **5 / 55 / 127 / 233** | 26 / 31 / 47 / 46 — compressed to about a fifth of its designed spread, still monotone |
+| this book **5 / 17 / 31 / 47** | 38 / 26 / 26 / 27 — **compressed past flat, into inversion** |
+
+⇒ **A designed margin ladder is not the realised one and cannot be read as one.** Prices absorb most of the slope: the rung whose output is
+scarce and whose inputs are cheap earns well whatever the recipe says, and the frontier — which by construction eats more input value per unit of
+output (B) — is the rung the market squeezes. There is therefore a FLOOR under the designed steepness, and r = 1.118 is below it. The canon's
+r = 1.467 realises as a working ladder; halving the gap does not halve the realised ladder, it destroys it.
+
+### 5. AND A CORRECTION TO ROADMAP STEP 8 P1's FRAMING
+
+P1 diagnosed the money printer from BASE prices (e1 +55%, e3 +233%). Those numbers overstate what is in play. Realised, the canon runs:
+
+| year | e0 | e1 | e2 | e3 |
+|---|---|---|---|---|
+| 1850 | 35.9% | 42.9% | 49.4% | — |
+| 1860 | 34.9% | **46.6%** | **76.2%** | — |
+| 1880 | 31.6% | 36.5% | 40.0% | — |
+| 1935 | 26.3% | 31.4% | 46.6% | 45.9% |
+
+against vanilla manufacturing's **23.1%** at 1935. **The complaint is real and it is a MID-CENTURY phenomenon that decays** — e2 at 76% in 1860
+and e1 at 47% is what a player meets, not +233%. Any future attack on P1 should be aimed at the 1850–1880 window and judged on realised margins,
+not on the base-price table.
+
+### 6. WHAT IT RETIRES
+
+**The A/B gap is closed as the hoard's lever.** It does two jobs at once — it feeds the pool's inflow AND it drives obsolescence and the price
+decline — and this batch shows they cannot be separated with it: taking the hoard to its aim cost the frontier, the price path, the old rung's
+death and 40% of world GDP. F135 proposed the gap as the untried lever for the hoard; it is now tried. ⇒ the hoard returns to the outflow side
+(the spending defines, which F132 shows overshoot the pool's GDP) or is accepted, which the register already permits — it is the least important
+aim and no book has ever met it without breaking something larger.
+
+**Confidence.** HIGH on §1–§3 (two seeds, aligned, the same mechanism in both, arithmetic over the save summaries). HIGH on §5 (four canon seeds
+over eight dates). MEDIUM on §4's generality — it is two books' designed-vs-realised pairs, not a swept curve, so "there is a floor" is
+established and "the floor is between r 1.118 and r 1.467" is the bracket, not a measurement.
+
+**What it does NOT say.** The three levers are confounded by construction: the per-industry LEVELLING was never tested on its own, so nothing here
+says whether a uniform level at the canon's own r would work — that separation is the obvious next thing to buy, and it is cheap (one book,
+`--in0-level 0.05` with A 2.2 / B 1.5 / C 1.9 unchanged). Nothing about where between r 1.118 and 1.467 the floor sits. ⚠ `preflight -Session`
+reports L28 on run 1's error.log mirror (one false rotation) — the documented state, raw line counts off that mirror over-read.
