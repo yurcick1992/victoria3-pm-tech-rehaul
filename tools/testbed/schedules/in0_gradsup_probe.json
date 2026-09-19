@@ -1,0 +1,39 @@
+{
+ "schedule_version": 1,
+ "label": "in0-gradsup-probe",
+ "_why": "THE SUPPLIER POINT, MEASURED (user-ruled 2026-09-19: 'Run it against grad-a'). BALANCE_FRAMEWORK 10.86.7. The graded era-0 penalty of 10.86.6 relieves an industry for what it BUYS, and F145 measured what that misses: STEEL, whose inputs are iron and coal, is the binding constraint of the whole chain - demand 0.97 of vanilla, supply three quarters, 18% of its early prices at the +75% ceiling in the SHIPPED CANON where vanilla never touches it - and no input-keyed rule can reach it. The supplier point reaches it from the other side: w = 1 if any tiered rung STANDING ON THE 1836 MAP consumes the industry's own output good, and the score is additive - effective stage = input-side score + k x w.",
+ "_arms": {
+  "probe-gradsup": "in0-stage 1.40 / 1.20 / 1.10 with --in0-supplier 0.5 (mode map). The five industries with a named 1836 consumer are relieved: steel (tooling e2, motor e0), tooling (furniture e1), paper (art academy e0), fertilizer (explosives e0) each x1.400 -> x1.300, and explosives (munition e1) x1.325 -> x1.225. Motor scores 0 (automotive does not exist in 1836) and synthetics scores 0 (dye is RAW by ruling, applied symmetrically)."
+ },
+ "_delta": "ONE FLAG against probe-grada, measured at n=2 in session 20260919_142856: --in0-supplier 0.5. Five industries differ, in `inputs` and `target_be` alone; the other twelve are byte-identical, which makes them the control built into the arm. A 2.2 / B 1.5 / cost anchor x 1.9^era / ai_value 1000x3^era / divisor 0.000125 / the 10.75 defines / the 24-month bar throughout.",
+ "_predictions": {
+  "_basis": "F144 and F145, both at n=2 on the same span and dump dates. Stated before the runs.",
+  "steel": "THE HEADLINE, and the whole point of the term. grad-a reads steel 18 levels / 10.4 STAFFED at 1837.10 (1.00 and 0.75 of vanilla) with 43% of its price readings at the +75% ceiling. Predict gradsup improves BOTH: staffed 0.80-0.95 of vanilla, ceiling share under 35%. ⚠ Steel's own lift falls only 1.40 -> 1.30, so a large move would be a surprise; a move of 0.05-0.15 in staffed share is what the lever is worth. FAILURE MODE: no improvement at all means the supplier point is not acting on the thing it was built for.",
+  "the_control_inside_the_arm": "food, textile, furniture, glass, arms, artillery, motor, munition, automotive, electrics and the academy have IDENTICAL recipes to grad-a, so their era-0 margins and staffing retention should match grad-a's within seed noise. If they move, the difference is not the supplier point - it is the market, and the read needs a third run.",
+  "world_product": "grad-a 0.99 of the control. Relief can only add, so predict 0.99-1.02. A fall would mean the relieved industries crowd something out.",
+  "engines": "motor's own lift is UNCHANGED at x1.20, but its only input is steel and steel is now cheaper to run, so engine supply should improve: predict consumption above grad-a's 0.62 of vanilla and the ceiling share at or below its 30%.",
+  "the_relieved_but_healthy": "tooling and paper are among the healthiest industries at every in0 tested and take the same -0.10 as steel. Expect no visible change in them - that is the rule spending a little where nothing was wrong, and it is the acknowledged price of a rule over a fit (10.86.7)."
+ },
+ "_comparison": "probe-grada (20260919_142856, n=2) is the paired arm; the flat and vanilla references of 20260919_132049 come in through `early_probe --also`. All three sessions share the machine, day, game version, span and dump dates.",
+ "_watch": ["run 1 at ~3 min: mod marker, version, this run's error window BY POSITION, clock", "steel levels AND staffed levels in the first summary set", "post-batch: preflight -Session, VERDICT.md, SESSION_VERDICTS, FINDINGS"],
+ "_cost": "2 runs x 1836->1838 ~ 3 min each ~ 8 min including builds and harvest.",
+ "_caveats": [
+  "TWO IN-GAME YEARS IS NOT THE CENTURY: this measures whether the supplier point moves the anchor's steel, nothing else.",
+  "n=2, and the steel LEVEL count is a coarse integer; STAFFED levels is the primary measure (F144 §2a).",
+  "The supplier weights are derived from the 1836 map by ruling, so they are an anchor-time number; the late game is deferred, not answered.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent."
+ ],
+ "defaults": {
+  "metrics": ["country_state", "population", "treasury", "events", "market_goods_scoped"],
+  "autosave_interval": "quarteryear",
+  "timeout_minutes": 40,
+  "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "JAP", "NET"],
+  "dump_dates": ["1836.2.1", "1836.7.1", "1837.1.1", "1837.7.1", "1837.12.1"],
+  "_dump_dates_note": "Identical to all three earlier probes, which is what makes the sessions comparable."
+ },
+ "setups": { "probe-gradsup": { "kind": "config", "config": "config/mod_config.probe-gradsup.json" } },
+ "runs": [
+  { "setup": "probe-gradsup", "until": "1838.1.1" },
+  { "setup": "probe-gradsup", "until": "1838.1.1" }
+ ]
+}

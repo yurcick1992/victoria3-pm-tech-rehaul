@@ -14701,3 +14701,63 @@ ladder multiplier — and the `in0` lift is both**, since it anchors every rung.
 ⚠ Not implemented: `--in0-supplier <k>` would need the 1836 LEVELS, which live in the emitted history (`mod/common/history/buildings`) rather than in
 any config — a new build-time dependency for the generator. `config/start_baseline.json` carries FACTORY counts, not levels (textile 73 factories /
 153 levels), so it cannot substitute without a change there.
+
+## F147 — ⭐⭐ THE SUPPLIER POINT WORKS: one flag on grad-a takes steel's share of price readings at the +75% ceiling from 43% to **15% — below the shipped canon's 18%, at a 1.40 raw penalty against the canon's 1.20** — lifts engine consumption from 0.62 to **0.95 of vanilla**, and brings world product to **1.00 of the control**, the first penalised arm to reach it (2 runs of 1836→1838 against a same-day n=2 paired arm, 2026-09-19)
+
+**The arm.** `probe-gradsup` = `probe-grada` (`--in0-stage 1.40,1.20,1.10`) plus **`--in0-supplier 0.5`**, mode `map` — BALANCE_FRAMEWORK §10.86.7's
+rule, user-refined twice into its final shape: **w = 1 if any tiered rung STANDING ON THE 1836 MAP consumes the industry's own output good**, and the
+score is additive points, `effective stage = the input-side score + k × w`. Five industries earn the point — **steel** (tooling e2, motor e0),
+**tooling** (furniture e1), **paper** (art academy e0), **fertilizer** (explosives e0), **explosives** (munition e1) — and take ×1.400 → ×1.300
+(explosives ×1.325 → ×1.225). Motor scores 0 (automotive does not exist in 1836) and synthetics scores 0 (dye is raw by ruling, applied symmetrically).
+Session `20260919_155627`, 2 runs in 6 minutes, both clean; read at 1837.10.1 against `probe-grada` (n=2) and the vanilla/flat references.
+
+### 1. THE RESULT
+
+| | grad-a | **gradsup** | vanilla |
+|---|---|---|---|
+| world GDP ÷ control | 0.99 | **1.00** | 1.00 |
+| **steel: share of price readings at the +75% ceiling** | 43% | **15%** | 0% |
+| steel staffed levels ÷ vanilla, 1837.10 | 0.75 | **0.80** | 1.00 |
+| steel staffed at the 1836.10 trough | 5.7 | **7.5** | 13.0 |
+| steel occupancy at the trough | 33% | **44%** | 74% |
+| steel price path 1836.2 → 1837.12 | 126 / 175 / 175 / 154 / 157% | **119 / 171 / 154 / 155 / 155%** | 110 / 139 / 118 / 122 / 124% |
+| **engines consumed ÷ vanilla** | 0.62 | **0.95** | 1.00 |
+| engines: share at the ceiling | 30% | **45%** ⚠ | 23% |
+| era-0 margin at 1837 | 23% | 22% | 33% |
+
+⭐⭐ **The steel ceiling share, 43% → 15%, is the finding.** F145 established that steel is the binding constraint of the whole chain and that **no rule
+keyed on an industry's own INPUTS can reach it**, because steel eats iron and coal; F145 also measured the SHIPPED CANON at **18%** of its steel prices
+pinned at the band edge. This arm runs a raw penalty of 1.40 — well above the canon's uniform 1.20 — and still leaves steel's market **freer than the
+canon's**. That is the supplier point doing precisely the job it was invented for.
+
+⭐ **And the control is inside the arm.** Twelve of the seventeen industries have recipes byte-identical to grad-a's, and they read identically: era-0
+margin 22% against 23%, glass e0 at −17% in both arms. The differences are the term, not the seed.
+
+### 2. THE ONE THING THAT WENT THE OTHER WAY
+
+**Engines at the ceiling ROSE, 30% → 45%, while consumption went 0.62 → 0.95 of vanilla.** Read together this is demand growing faster than supply —
+the engine market is tight at 0.95 of vanilla's volume instead of tight at 0.62 of it, which is a better place to be tight — but it is not an
+unambiguous win, and n=2 cannot separate "more activity" from "worse shortage". ⚠ Vanilla's own engine market sits at the ceiling 23% of the time, so
+only the share against vanilla's is comparable; engines being dear is a base-game property (F143 §3a).
+
+⚠ **The staffing gain is modest and the ceiling gain is large, and those are different claims.** Steel's staffed share moved 0.75 → 0.80, the bottom
+edge of the pre-registered 0.80–0.95. What moved decisively is the market: the early trough is a third shallower (5.7 → 7.5 staffed, 33% → 44%
+occupancy) and the price stops touching the band edge. The term eases the shortage more than it grows the industry.
+
+### 3. WHERE THIS LEAVES THE LEVER
+
+Across the twenty arms measured today, **`grad-a` + the supplier point is the best anchor of any penalised book**: world product at the control's, steel
+freer than the shipped canon's, engines at 0.95 of vanilla, and the raw-input chains still carrying a 1.40 penalty — which is the whole point of the
+exercise, since F143 §1 argues that penalty is what turns the consumer chains from "survives forever on a sliver" into "destroys value from 1890".
+
+⚠ **Everything here is the ANCHOR.** Two in-game years cannot see obsolescence, the price decline, the money printer or the hoard, and the supplier
+weights are a 1836-derived number that the ruling knowingly applies to every rung. **A full century run is what this configuration now needs**, and
+nothing in this finding says it will survive one.
+
+**Confidence.** HIGH on the steel ceiling share (medians over seven markets and both runs; 43% against 15% is far outside anything n=2 noise produced
+in the twelve arms measured today). HIGH on the control check. MEDIUM on the engine reading, which moves two ways at once. MEDIUM on world product at
+1.00 — one point over grad-a is within the seed spread of the other arms.
+
+**What it does NOT say.** Nothing century-scale. Nothing about whether the supplier point should be k = 0.5 rather than some other weight — only one
+value was tested. Nothing about the `any`-era or `share` variants of the rule, both of which remain in the generator for A/B and neither of which has
+been run.
