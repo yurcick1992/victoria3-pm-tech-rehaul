@@ -14405,3 +14405,94 @@ levelling, the available answers are a lower A (which shrinks the cost of motor'
 ⚠ What survives from §3: the terms-of-trade TABLE itself (the numbers are measured and the ordering is right), and the finding that the war chains'
 terms of trade collapse 43–54% while the wood-fed chains' improve. What is withdrawn is reading a high ratio as a rung being safe — for a sole
 supplier it is the opposite, and telling the two apart needs the QUANTITY beside the price.
+
+## F144 — ⭐⭐ GRADING THE ERA-0 PENALTY BY INPUT MANUFACTUREDNESS WORKS AS SPECIFIED AND PROTECTS THE WRONG THING: at a raw penalty of 1.55+ the STEEL industry is demolished at the anchor (17 world levels → 9), which pins steel and engines at the 175% band ceiling and kills the engine chain that the grading was meant to spare — so a buyer's recipe cannot be protected while its supplier is crushed (8 runs of 1836→1838, n=2 per arm, against same-day flat and vanilla references, 2026-09-19)
+
+**Why it was run.** The user: *"Let's experiment on different in0 depending on how manufactured its inputs are. The 'higher manufactured' they are, the
+smaller the in0 penalty should be. An input which input is itself manufactured gives squared effects."* The mechanism being corrected is F143 §3a's:
+a uniform penalty compounds down the chain, and motor — a 0% base-price margin, engines bid to 175% of base against vanilla's 148%, half vanilla's
+level count — is the measured casualty.
+
+**Arms.** Session `20260919_142856_in0-graded-probe`, 8 runs of 1836.1.1 → 1838.1.1 in 22 minutes, all reaching the until date on one attempt.
+`make_ab_config --in0-stage <raw>,<s1>,<s2>` (new, §10.86.6; per INDUSTRY by the user's ruling, which is a no-op at era 0). **grad-a 1.40/1.20/1.10 ·
+grad-b 1.55/1.20/1.05 · grad-c 1.70/1.25/1.00 · grad-rev 1.35/1.55/1.75** (the reverse gradient at a similar average). Vanilla and flat 1.2–1.5 come
+from `20260919_132049` — same day, machine, version, span and dump dates. Read at 1837.10.1.
+
+### 1. THE AGGREGATE LINES TRACK THE RAW VALUE AND ALMOST NOTHING ELSE
+
+| arm | raw / s1 / s2 | world GDP ÷ control | realised e0 margin 1837 | tiered workforce in a loss-making type (1836) |
+|---|---|---|---|---|
+| vanilla | — | 1.00 | 33% | 0% |
+| flat 1.2 (the canon) | 1.20 flat | 1.01 | 26% | 0% |
+| flat 1.4 | 1.40 flat | 0.97 | 21% | 19% |
+| **grad-a** | **1.40 / 1.20 / 1.10** | **0.99** | **23%** | **14%** |
+| flat 1.5 | 1.50 flat | 0.98 | 21% | 19% |
+| **grad-b** | **1.55 / 1.20 / 1.05** | **0.96** | 21% | **34%** |
+| **grad-c** | **1.70 / 1.25 / 1.00** | **0.91** | 19% | **36%** |
+| **grad-rev** | **1.35 / 1.55 / 1.75** | **0.98** | 24% | **9%** |
+
+⭐ **grad-a against flat 1.4 is the designed comparison — same raw strength, the chain spared — and the grading delivers what it promised: 2 points
+more world product and 5 points less of the workforce in a loss-making type.** ⚠ But `grad-rev`, whose gradient is BACKWARDS, reads better than grad-a
+on both lines, because its raw value is 1.35 against grad-a's 1.40. **Every aggregate line in this batch is a function of the RAW value; the gradient
+moves them by less than the raw value's own step of 0.05.** The gain from grading is real and small.
+
+### 2. ⭐⭐ THE RESULT NOBODY PREDICTED: AT A RAW PENALTY OF 1.55+ THE STEEL INDUSTRY IS DEMOLISHED
+
+Steel mills (era 0), world, **levels / staffed levels**, through the probe window:
+
+| arm | 1836.4 | 1836.7 | 1836.10 | 1837.1 | 1837.10 |
+|---|---|---|---|---|---|
+| vanilla | 17 / 17 | 17 / 12 | 18 / 13 | 18 / 15 | **18** / 13 |
+| flat 1.2 | 17 / 13 | 17 / 9 | 17 / 8 | 18 / 11 | **18** / 14 |
+| flat 1.4 | 17 / 13 | 17 / 8 | 17 / 5 | 17 / 8 | **19** / 12 |
+| grad-a (raw 1.40) | 17 / 13 | 17 / 8 | 17 / 5 | 17 / 5 | **17** / 12 |
+| **grad-b (raw 1.55)** | 17 / 12 | 17 / 7 | **11 / 3** | **9 / 2** | **9** / 7 |
+| **grad-c (raw 1.70)** | 17 / 12 | 17 / 6 | **10 / 2** | **9 / 2** | **9** / 5 |
+
+**LEVELS, not staffing — the engine tears the buildings down.** Steel's era-0 margin at 1836.4 is −4% in grad-b and **−21%** in grad-c against
+vanilla's +17%, and half the industry is gone within nine months. Every arm at a raw penalty of 1.40 or below keeps all 17–19 levels, exactly as
+vanilla does; vanilla itself sheds staffing (17 → 13) and demolishes nothing.
+
+⭐ **And the market shows it.** Steel and engines sit **pinned at 175% of base — the engine's own band ceiling — from 1836.7 onward in every mod arm**,
+against vanilla's steel 111–135% and engines 117–159%. A good at the ceiling can no longer signal scarcity at all (§10.15, reached from below).
+
+### 3. ⭐⭐ WHY THE GRADING CANNOT FIX THIS: IT PROTECTS THE BUYER'S RECIPE, NOT THE BUYER'S SUPPLY
+
+**Steel's inputs are iron and coal — both raw — so steel takes the FULL raw lift in every graded scheme** (×1.55 in grad-b, ×1.70 in grad-c), while
+motor, whose input is steel, is spared at ×1.20 and ×1.25. The grading therefore hammers the supplier of the very chain it is sparing. Motor's own
+penalty is IDENTICAL in grad-a and grad-b (×1.20), and the two arms differ only in what happens to steel — which is the whole difference between a
+working engine chain and a dead one.
+
+⇒ **A buyer's recipe cannot be protected while its supplier is crushed.** The user's diagnosis of the compounding is right; keying the relief on the
+BUYER's input basket does not act on it, because the compounding arrives through the SELLER's price.
+
+⚠ **The motor readings themselves are noise and must not be quoted as a series**: motor is 1–2 levels at the 1836 start, so its retention figures
+(119% / 14% / 2% / 24% / 181% / 3% across the arms) are the quantisation of 0, 1 or 2 levels. The steel table is what carries this finding.
+
+### 4. A HYPOTHESIS RAISED AND REFUTED WITHIN THE HOUR
+
+Seeing steel pinned at the ceiling, I supposed the cause was F137's defect on the INPUT side — the converted e1/e2 buildings buying `B^era × lift`
+times their vanilla counterparts' inputs. Measured over the emitted 1836 history: **steel demand is +3% over the vanilla-equivalent** and the whole
+input bill is **+21%**, against F137's **+27.3%** on the output side. The largest input excesses are explosives +80% (munition e1), lead +51%, tools
++44% and dye +44%, none of them steel. **The steel ceiling is a SUPPLY collapse, not a demand inflation** — which is what the level table then showed
+directly.
+
+### 5. WHAT IT MEANS FOR THE LEVER
+
+- **The raw-input penalty must stay at or below ≈1.4.** That is where F140 landed from paper, confirmed in-game by a different mechanism than F140
+  predicted — demolition of a loss-making upstream industry, not the insolvency counts F142 already showed were far too pessimistic.
+- **Grading buys a little and costs nothing at 1.40**: grad-a is the best arm in the batch on the aggregate lines at a given raw strength, and it keeps
+  steel intact. It is worth carrying, but it is not the lever that saves the engine chain.
+- **What would act on the compounding** is relief keyed on the SELLER — i.e. a lower penalty on an industry whose OUTPUT is an input to other tiered
+  industries (steel, tools, engines, fertilizer, explosives, paper), which is the mirror image of the rule tested here. NOT RULED, NOT TESTED.
+- ⚠ A side effect worth naming: the grading spares the ART ACADEMY (its input is paper, stage 1.0) at ×1.20 where the flat arms give it ×1.40–1.55, so
+  its era-0 margin stays at 87% against flat 1.4's 63%. **The rule protects the one rung nobody wants protected** (F143 §1: the academy earns +100%
+  even at `in0` 1.5).
+
+**Confidence.** HIGH on the steel demolition (levels, two runs per arm, the same shape in both graded arms above 1.55 and in neither below). HIGH on
+the price ceiling (market dumps, every arm). HIGH on the input-anchor refutation (arithmetic over the emitted history). MEDIUM on the 2-point
+world-product gain from grading — it is one step of the raw value away from being noise at n=2.
+
+**What it does NOT say.** Nothing century-scale: two in-game years cannot see obsolescence, the price decline or the money printer, and F143 §1's case
+for the penalty is a 1890-and-later argument. Nothing about the per-good variant (ruled out for simplicity and a no-op at era 0, §10.86.6). Nothing
+about whether steel's demolition would also happen at a raw 1.55 penalty in a book whose steel recipe were not already at −19% at base.
