@@ -14802,3 +14802,53 @@ that is the input-side rule (§10.86.6), not the supplier point.
 
 ⚠ **The lesson for the instrument, not just the finding**: price alone could not have told these apart, and a price at the 175% band edge carries no
 information at all (§10.15). **Quantities first whenever a good is at the edge** — `good_market.mjs` exists so this is one command.
+
+#### F147 §1c — ⭐⭐ RESOLVED AT n=6: THE SUPPLIER POINT IMPROVES BOTH MARKETS ON BOTH SIDES, AND BOTH OF THE n=2 READINGS ABOVE WERE WRONG — in opposite directions, on the same day
+
+**Why it was re-run (user: *"Do more n on 1836-1838 to better understand the engine situation"*).** §1 read the engine market at n=2 and called it a
+win; §1a re-read it on the order book, still at n=2, and called it a loss. Session `20260919_161018_in0-engine-power` took **both arms to n=6** — four
+more runs each, pooled with the earlier two — and reads the order book, which is the only thing that can settle it once a price sits at the band edge.
+
+**ENGINES, the instrumented markets summed, median of each arm's runs, at 1837.12:**
+
+| | buy | sell | production | buy/sell | at ceiling | motor levels / staffed |
+|---|---|---|---|---|---|---|
+| vanilla (n=2) | 326 | 192 | 177 | 1.70 | 23% | — |
+| **grad-a (n=6)** | 200 | 95 | 67 | 1.99 | **46%** | 2.5 / 1.6 |
+| **gradsup (n=6)** | **292** | **108** | **78** | 2.21 | **39%** | **4.0 / 2.1** |
+
+⇒ **The supplier point RAISES engine supply**: production **+16%**, delivered volume **+14%**, and the producing industry is **60% larger** (motor 2.5 →
+4.0 levels, 1.6 → 2.1 staffed). Demand rises further still (+46%), so the buy/sell ratio tightens 1.99 → 2.21 — **the market is tighter in ratio at a
+substantially bigger volume** — and **the share of prices at the +75% ceiling FALLS, 46% → 39%.**
+
+**STEEL, same basis:**
+
+| | buy | sell | production | buy/sell | at ceiling | staffed |
+|---|---|---|---|---|---|---|
+| vanilla (n=2) | 1252 | 936 | 937 | 1.34 | 0% | — |
+| **grad-a (n=6)** | 1301 | 706 | 653 | 1.88 | **48%** | 9.5 |
+| **gradsup (n=6)** | **1216** | **737** | **705** | **1.64** | **25%** | **10.7** |
+
+⇒ Steel improves on **both** sides — supply **+8%**, staffed levels **+13%**, demand **−7%** — and its ceiling share falls **48% → 25%**.
+
+### WHAT THIS SUPERSEDES, precisely
+
+| claim | where | verdict at n=6 |
+|---|---|---|
+| "engines consumed 0.62 → 0.95 of vanilla" | §1 | **WRONG as worded** — that was BUY ORDERS, i.e. demand including demand never met. §1a's correction of the *label* stands. |
+| "engine ceiling share rose 30% → 45%" | §1 | **NOISE** — at n=6 it FALLS, 46% → 39%. |
+| "the engine supply got slightly worse (sell 104 → 82, production 68 → 60)" | §1a | **WRONG** — at n=6 supply RISES, sell 95 → 108 and production 67 → 78. |
+| "steel's win is mostly a demand fall (−8%), not a supply rise (+5%)" | §1b | **HALF WRONG** — at n=6 it is balanced: supply +8%, demand −7%. |
+| "steel's ceiling share 43% → 15%" | §1 | **DIRECTION HOLDS, MAGNITUDE SOFTENS** — 48% → 25% at n=6. |
+
+⇒ **THE FINDING STANDS AND IS STRONGER THAN §1 CLAIMED**: the supplier point improves steel and engines together, on supply as well as on price, and
+lowers both ceiling shares. Every n=2 claim about the *engine* market on either side of it was noise.
+
+### ⚠⚠ THE LESSON ABOUT THE INSTRUMENT, which is the more useful half
+
+**Two runs of a ~300-unit market produced two confident, opposite, wrong answers within one day** — first "a win" from price, then "a loss" from
+quantities — and only n=6 separated them. The engine market is supplied by a motor industry of **two to four world levels** at the 1836 start, so a
+single seed moving one level is a 30–50% swing in everything downstream. ⇒ **On this batch shape, n=2 is enough for steel (≈1,250 units, ~18 levels)
+and is NOT enough for engines, motor, explosives, munition or anything else measured in single-digit levels.** F142's warning that motor's retention
+figures were quantisation noise was right and should have been applied to the whole engine market at the same time; it was not, and two findings had
+to be corrected for it.

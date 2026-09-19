@@ -59,8 +59,10 @@ console.log('THE ' + GOOD.toUpperCase() + ' MARKET — the instrumented markets 
 console.log('⚠ a price at 175% of base is the band EDGE: past it the price carries no information and only the quantities do.\n');
 console.log('arm                    n   ' + DATES.map(d => d.split('.').slice(0, 2).join('.').padStart(9)).join('') + '   producer at the end');
 for (const spec of ARMS) {
-  const [ses, setup] = spec.split(':');
-  let runs = []; try { runs = usableRuns(SES, ses, setup || '').runs; } catch { }
+  // POOL_HACK: a spec may name several session:setup pairs joined by '+', pooled as one arm
+  let runs = [], setup = '';
+  for (const part of spec.split('+')) { const [ss, su] = part.split(':'); setup = su || ss;
+    try { runs = runs.concat(usableRuns(SES, ss, su || '').runs); } catch { } }
   const rs = runs.map(readRun).filter(r => Object.keys(r.mk).length);
   if (!rs.length) { console.log('  ' + (setup || ses).padEnd(20) + ' (no usable run)'); continue; }
   const lab = (setup || ses).replace(/^probe-/, '');
