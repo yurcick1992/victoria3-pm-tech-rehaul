@@ -1553,7 +1553,30 @@ it then produces.
 
 ---
 
-### P2 — THE URBAN-CENTRE ELECTRICITY OVERRIDE WAS LOST. CONFIRMED, and it is a known, documented drop.
+### P2 — THE URBAN-CENTRE ELECTRICITY OVERRIDE WAS LOST. ✅ **FIXED 2026-09-19** (user, mid-batch: *"stop now, fix the electricity and restart"*).
+
+✅ **DONE, and put where a rebuild cannot drop it again.** The override now lives in **`tools/lib_tier4_spec.mjs`** as
+`PM_GOODS_RULED` / `PM_EMPLOYMENT_RULED` and is emitted by **`make_tier4_config.mjs`** into every generated book —
+`pm_goods.pm_electric_streetlights = {in:{coal:2}, out:{services:10, electricity:1}}` and
+`pm_employment.pm_electric_streetlights = {engineers:250}`, **byte-identical to `config/mod_config.six_rung.json`**, which is the
+parity the user asked for. It was a hand-edited config key before, and a hand edit is exactly how the 2026-09-04
+rebuild-from-vanilla lost it. Verified end to end on `probe-anch-in12`: the emitted
+`common/production_methods/06_urban_center.txt` diffs against vanilla in **four lines and only on that one method** — electricity
+3 IN → coal 2 IN, `goods_output_electricity_add = 1` added, 200 laborers + 50 engineers → 250 engineers, and the now-meaningless
+`required_input_goods = electricity` dropped; `pm_gas_streetlights` and every other urban-centre method untouched. Every linter
+passes, negative-goods included. Regenerating the book changed **exactly two top-level keys and no rung**.
+⚠ **THE CANON HAS NOT BEEN REGENERATED** and still ships without it, so any arm read against the canon's own century runs
+(`20260917_132449` / `20260917_161410`) carries the fix as a SECOND difference. Re-canonizing is a separate decision.
+⚠ **The power chain around it is deliberately NOT restored** (user-ruled the same day): the regular power-plant industry stays
+vanilla — no tiering, no other change, now or deferred — and the dam megaproject is a polishing-phase item. So this book has both
+the municipal electricity source and vanilla's own Early Power Plant, where §10.43's six-rung design had the municipal source
+*instead of* it. That is intended, not an oversight.
+⚠ **Power-plant content rides along in both owned `06_urban_center` files and cannot be spared** — `building_power_plant` in the
+buildings file (owned since `canon4v` because the art academy shares it) and `pm_early_power_plant` in the production-methods file
+(owned for this override). Both blocks are **byte-identical to vanilla**, so there is no behavioural change; the cost is patch
+drift, recorded in `ON_GAME_UPDATE.md`.
+
+(the original report follows)
 
 **The user:** *"We somehow lost most of the custom modded additions to electricity (making Urban Center PM produce electricity rather than
 consume it). They were there several canon versions ago, but now they aren't."*

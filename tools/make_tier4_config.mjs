@@ -26,7 +26,7 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { blocks } from './lib_vanilla_ladder.mjs';
-import { N, ERA_YEARS, LOC, INDUSTRIES, PLACEMENT, ADDITIONS, ERA_MOVES, RESEARCH_EVENTS, CANON, bldName, slug,
+import { N, ERA_YEARS, LOC, INDUSTRIES, PLACEMENT, ADDITIONS, ERA_MOVES, RESEARCH_EVENTS, CANON, PM_GOODS_RULED, PM_EMPLOYMENT_RULED, bldName, slug,
          GAME_ERA_OF_ERA, ERA_TOLERANCE, eraOfGameEra, gameEraOfYear, derivePlacement, placementFaults } from './lib_tier4_spec.mjs';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -168,6 +168,11 @@ const cfg = {
   // the four-rung canon's 1836 start is vanilla's, converted; the six-rung chain seed does not apply
   start_exceptions_file: 'config/start_exceptions.vanilla.json',
   // the ruled research-event parameters (§10.69) live in the spec — validated here against the industries that exist
+  // ⭐ the per-PM overrides on VANILLA's own methods that are ruled but are not about our rungs — today the urban centre's
+  //   electric streetlights, which §10.43 rules an electricity SOURCE (+1 out, 2 coal in, 250 engineers) against vanilla's
+  //   3-electricity SINK. Lost in the 2026-09-04 rebuild-from-vanilla and restored 2026-09-19 (ROADMAP step 8 P2).
+  pm_goods: structuredClone(PM_GOODS_RULED),
+  pm_employment: structuredClone(PM_EMPLOYMENT_RULED),
   research_events: structuredClone(RESEARCH_EVENTS),
   _canon: CANON,
   industries: out.industries,

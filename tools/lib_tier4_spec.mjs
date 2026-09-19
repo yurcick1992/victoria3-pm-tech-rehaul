@@ -166,6 +166,28 @@ export const ERA_MOVES = { electrical_capacitors: 4, plastics: 4, vulcanization:
 // Threshing" — await a ruling of their own.)
 export const TECH_RENAMES_RULED = {};
 
+// ⭐⭐ PER-PM OVERRIDES ON VANILLA'S OWN METHODS — the four-rung book's copy of the rulings that are NOT about our rungs.
+//   Emitted as the config's top-level `pm_goods` / `pm_employment`, which build.ps1 writes into the owned production-method
+//   files. REPLACEMENT semantics: the override IS that method's whole goods block, so it both adds and removes goods.
+//
+// ⭐⭐ THE URBAN CENTRE IS AN ELECTRICITY **SOURCE**, NOT A SINK (user-ruled, BALANCE_FRAMEWORK §10.43) — restored here
+//   2026-09-19 after the user caught it missing mid-batch ("fix the electricity and restart"). The 1900 MUNICIPAL
+//   engine-house is modelled inside urban centres rather than as a power-plant rung: `pm_electric_streetlights` PRODUCES
+//   +1 electricity and burns 2 coal, and its workforce becomes 250 engineers. Vanilla's own method is the opposite —
+//   `goods_input_electricity_add = 3`, 200 laborers + 50 engineers — so without this the power chain starts life with its
+//   sign flipped at exactly the point it begins to matter.
+//   ⚠⚠ WHY IT WAS ABSENT: the 2026-09-04 rebuild-from-vanilla (§10.72) deliberately carries NOTHING from the six-rung
+//   book, and these two keys went with everything else. Every four-rung book from `canon4v` to `canon-c19-in12` shipped
+//   without them; it is ROADMAP step 8 **P2**. The six-rung config is where they survived.
+//   ⚠ The 2-coal figure is the RULED one (§10.43.2): 1 coal left the mandate too profitable, 3 would force a loss-maker.
+//   ⚠ It belongs HERE, in the spec, rather than in a hand-edited config — a hand edit is exactly how it was lost.
+export const PM_GOODS_RULED = {
+  pm_electric_streetlights: { in: { coal: 2 }, out: { services: 10, electricity: 1 } },
+};
+export const PM_EMPLOYMENT_RULED = {
+  pm_electric_streetlights: { engineers: 250 },
+};
+
 // A rung's building name is derived, never authored: "<vanilla building> (<vanilla method>)".
 export const bldName = (building, method) => `${building} (${method})`;
 export const slug = pm => pm.replace(/^pm_/, '').replace(/-/g, '_');

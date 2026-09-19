@@ -413,6 +413,29 @@ Newest first. Append here as we discover more couplings to vanilla.
     naming an unknown PM is fatal, deliberately); (b) if a patch restructures the PM's
     `building_modifiers` (no `workforce_scaled`/`level_scaled` sub-block) the build also THROWS. Either
     way the failure is loud, not silent — re-point the override and re-check §10.43's arithmetic
+  - ⚠⚠ **IT LAPSED FOR THE WHOLE FOUR-RUNG ERA AND WAS RESTORED 2026-09-19.** The 2026-09-04
+    rebuild-from-vanilla (§10.72) carries nothing from the six-rung book, and `pm_goods` /
+    `pm_employment` went with everything else — so **every four-rung book from `canon4v` to
+    `canon-c19-in12` shipped with urban centres running VANILLA's method (electricity 3 IN, 200
+    laborers + 50 engineers), i.e. an electricity SINK where §10.43 rules a SOURCE**, and this table's
+    "today: … + 06_urban_center.txt" line was false for all of them. It was caught by the user mid-batch
+    (*"fix the electricity and restart"*). The override now lives in **`tools/lib_tier4_spec.mjs`
+    (`PM_GOODS_RULED` / `PM_EMPLOYMENT_RULED`)** and is emitted by `make_tier4_config.mjs` into every
+    generated book, so a rebuild cannot drop it again — a hand-edited config is exactly how it was lost.
+    ⚠ The CANON has not been regenerated and still lacks it; any arm read against the canon's own
+    century runs (`20260917_132449` / `20260917_161410`) carries that as a second difference.
+  - ⚠ **POWER-PLANT CONTENT RIDES ALONG IN BOTH OWNED `06_urban_center` FILES, and that is
+    unavoidable, not a choice** (user-ruled 2026-09-19: power plants stay vanilla, no tiering, no
+    changes now or deferred; the dam megaproject is a polishing-phase item). `building_power_plant`
+    sits in `common/buildings/06_urban_center.txt` — owned since `canon4v` because the **art academy**
+    is in the same file and we tier it — and `pm_early_power_plant` sits in
+    `common/production_methods/06_urban_center.txt`, owned for the streetlights override above. The
+    power plant is **not in a separate file**, so whole-file replacement cannot spare it. **Both blocks
+    are byte-identical to vanilla in our copies (verified by diff 2026-09-19), so there is no
+    behavioural change — only patch drift**: a patch that changes the early power plant would be
+    silently overridden by our frozen copy. **Re-diff both blocks against vanilla after any patch.**
+    The alternative — emitting the single changed PM into an additive `zzz_` file and relying on load
+    order — would avoid owning the PM file but raises a duplicate-key question and is untested.
     (the £90/level delta assumes vanilla's 3-electricity/10-services shape and base prices 30/30/30).
   - **`MANDATED_PMGS` in `tools/era_pm.mjs` hardcodes the street-lighting ladder** (none@0 / gas@1 /
     electric@3) including the PM names. A patch adding a fourth lighting method (LED? arc?) or renaming

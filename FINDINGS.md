@@ -15043,3 +15043,113 @@ ai_value on the absolute era, and prints the anchor as a note — rather than be
 `probe-tool-a1` / `probe-tool-a2`, n=10 each, 1836→1838, session `20260919_173948_tool-anchor-probe`; each differs from the canon in exactly **twelve
 fields** (tooling's four rungs' `output_qty`, `inputs`, `target_be`) with the other sixteen industries byte-identical, which makes them a control built
 into each arm. Their result is a separate finding.
+
+## F149 — ⭐⭐ THE LADDER'S ANCHOR RUNG, MEASURED OVER 32 RUNS: sliding an industry's ladder to start at e1 closes the 1836 supply anchor (F137) at **every** in0 and puts the consumer prices on vanilla's for the first time on any book — and the eight-industry map at in0 1.2 is the **healthiest industrial chain this project has measured** (steel at the +75% ceiling in **5%** of readings against the canon's 18% and vanilla's 0%, steel production **above** vanilla's, engines at a **17%** ceiling share against vanilla's 23%). But the two design goals pull apart on the single in0 axis, the fix is a **split lift**, and sliding ALL seventeen industries **kills the chain outright** — motor e0 dead, engines at 1 unit, steel pinned at the ceiling in 60% of readings even at no lift (5 sessions, 32 runs of 1836→1838, 2026-09-19)
+
+**Arms and evidence.** Five sessions in one evening, all 1836→1838, all on the same machine, day, game version, span and dump dates,
+so every arm pools through `early_probe --also` and `good_market.mjs`. All 32 runs usable; `preflight -Session` passed on each.
+`20260919_173948` (tooling anchored at e1 / e2, **n=10 each**) · `20260919_190944` + `20260919_193440` (the eight-industry map
+across in0 1.2 / 1.3 / 1.4 / 1.5, n=3 each) · `20260919_201023` (all seventeen industries, in0 1.0 / 1.2, n=3 each) ·
+`20260919_215543` (the split lift 1.35 / 1.45, n=3 each). References: the canon and vanilla at n=3 / n=2 in `20260919_132049`.
+Generator work: `make_ab_config --anchor-for` and `--in0-anchored`, both read by `lint_tier_eras` (L31). F148 §9 is the design case.
+
+### 1. THE ANCHOR ERROR CLOSES, AND THE PAPER ARITHMETIC PREDICTED IT
+
+Tools production ÷ vanilla at 1837.12, as tooling's anchor moves: canon **1.69** → e1 **1.36** → e2 **0.89**, against a base-price
+prediction of 1.54 / 1.40 / 0.85. ⭐ A rare case of a base-price number predicting a measured outcome — because it is a QUANTITY
+and not a price (§10.86.2 governs the other direction). On the eight-industry map the whole consumer basket follows:
+
+| seven markets, 1837.12 | vanilla | canon | **8-map @ in0 1.2** |
+|---|---|---|---|
+| glass price / production ÷van | 81% / 1.00 | 76% / 1.35 | **96% / 0.71** |
+| clothes | 109% / 1.00 | 91% / 1.23 | **111% / 0.86** |
+| furniture | 112% / 1.00 | 108% / 1.22 | **121% / 0.82** |
+| tools | 125% / 1.00 | 91% / 1.69 | **99% / 1.37** |
+
+⭐ **The first arm on any book whose consumer prices sit on vanilla's.** The 1836 anchor error goes +26.5% → −0.1% at EVERY in0,
+because in0 moves inputs only and the anchor error is an output measure.
+
+### 2. ⭐⭐ THE INDUSTRIAL CHAIN — the best reading this project has produced, and the axis that destroys it
+
+| 1837.12 | vanilla | canon | **8-map @1.2** | 8-map @1.3 | 8-map @1.4 | **split 1.35** | **all-17 @1.0** |
+|---|---|---|---|---|---|---|---|
+| steel at the +75% ceiling | 0% | 18% | **5%** | 32% | 40% | 13% | **60%** |
+| steel production | 937 | 820 | **1002** | 857 | 645 | **1097** | **490** |
+| steel staffed producer levels | — | 11.6 | **17.2** | 13.8 | 10.2 | 14.9 | 12.3 |
+| engines production | 177 | 118 | **162** | 46 | 15 | 116 | **1** |
+| engines at the ceiling | 23% | 33% | **17%** | 47% | 58% | 28% | **72%** |
+| motor staffed levels | — | 3.2 | 2.6 | 1.4 | 0.3 | 2.6 | **0.0 DEAD** |
+| world product ÷ control | 1.00 | 1.01 | 0.96 | 0.94 | 0.92 | 0.93 | 0.95 |
+
+⭐⭐ Steel and engines have been the binding constraint of the whole book since F144/F145 — the canon runs 18% of steel's price
+readings at the band ceiling where vanilla runs 0%. **The eight-industry slide at in0 1.2 very nearly fixes both**: steel's ceiling
+share 5%, its production ABOVE vanilla's, and engines at a ceiling share BELOW vanilla's own.
+
+⚠ **And the in0 axis destroys it sharply.** 1.2 → 1.3 is only +8% on steel demand and +10 points on steel's own break-even, and
+engines go 162 → 46 while steel's ceiling share goes 5% → 32%. The system sits at the band edge, so it is strongly nonlinear there.
+
+### 3. ⭐⭐ THE TWO GOALS PULL APART ON ONE AXIS, AND A SPLIT LIFT SEPARATES THEM
+
+e0 staffed levels retained 1836→1837 at the realised margin, median run:
+
+| e0 rung | canon | @1.2 | @1.3 | @1.4 | @1.5 | **split 1.35** |
+|---|---|---|---|---|---|---|
+| textile | ~100% | 84% @32% | 75% @27% | 68% @23% | 59% @21% | **77% @24%** |
+| furniture | ~100% | ≥85% | 60% @19% | 41% @24% | 58% @23% | **59% @12%** |
+| tooling | ~100% | 47% @1% | 30% @8% | 29% @15% | 33% @17% | **27% @17%** |
+| glass | 66% | 40% @15% | 34% @13% | 20% @14% | 21% @13% | **25% @11%** |
+
+⭐ **An e0 rung anchored at e1 survives at a noticeable level of employment, and its survivors earn POSITIVE realised margins**
+(11–32%) because the price recovers after the shedding — F142's "in0 is a quantity dial, not a margin dial", again. ⭐ At in0 1.2
+the chain is ideal but textile e0 is comfortable at 84% staffing and 32%, above vanilla manufacturing's 23%; at 1.3–1.4 the e0
+rungs land on target and the chain breaks. ⭐⭐ **The split lift resolves it**: the eight SLID industries carry their own in0 and
+the nine unslid stay at 1.2, so steel's break-even holds at 123% of base and motor's at 100%. **Split 1.35 buys uniform-1.3's e0
+outcome with engines at 116 instead of 46 and steel's ceiling share at 13% instead of 32%** ⇒ **the chain damage on the uniform
+axis was the COST half — the unslid thin chains' own break-evens rising — not the demand half.**
+
+⚠ The wall: at **uniform 1.5** the ANCHOR rungs themselves shed (tooling e1 → 80%, munition e1 → 42%) and motor e0 is dead at 2%;
+at **split 1.45** glass e0 is dying at 19% and munition's e1 anchor rung sheds to 59%. The slid-lift ceiling is ~1.35–1.40.
+⚠ **Glass is the worst e0 at every lift on every anchor map tried** — a scalar cannot compress the dispersion, which is set by how
+profitable each industry's own VANILLA recipe is. The remaining lever is A, reserved by the user.
+
+### 4. ⭐⭐ SLIDING ALL SEVENTEEN INDUSTRIES FAILS, AND THE FAILURE IS STRUCTURAL
+
+At `in0` **1.0 — no lift at all** — steel's price is PINNED at the band edge in **60%** of readings, its production is 0.52 of
+vanilla, **engines production is 1 unit** and motor e0 is DEAD with 0.0 staffed levels at a −47% margin. At 1.2 it is worse (85%,
+0.30). ⇒ **A uniform slide is not neutral across industries**: it costs each one a factor **A ÷ B = 1.467** of margin, which is a
+FIX where the vanilla recipe is fat (the art academy **+108% → +36%**, arms +41% → +39% — the first movement on ROADMAP step 8's
+money printer) and FATAL where it is thin. Steel's e0 is the only steel rung on the 1836 map; sliding it cuts output 65 → 40.9 a
+level while inputs fall only by 1/B, so its break-even goes 123 → 143% of base at no lift and 172% at 1.2. Motor's entire basket
+is steel bought at a pinned price and its own output slides 40 → 18.2, so it cannot pay at any engine price the band allows.
+
+### 5. ⚠⚠ TWO PRE-REGISTERED PREDICTIONS WERE REFUTED, AND THEY CORRECT F148 §2
+
+**(a) F148 §2's crowding-out mechanism does not hold at the anchor.** F148 measured that tooling e2 can pay **369%** of steel's
+base against the motor industry's **100%** (vanilla: 180 vs 120) and inferred that an e1 anchor — which raises tooling's steel
+appetite 49% — would starve the engine chain; the schedule pre-registered a1 as "the worst steel arm ever measured". **The opposite
+happened**: a1 has the LARGEST steel industry of any arm (production 992 against vanilla's 937 and the canon's 820, 15.0 staffed
+producer levels against 11.6) at the SAME 18% ceiling share as the canon, and it is the best engine arm (0.81 of vanilla against
+0.67). **More demand called forth more supply.** ⇒ The reservation-price table in F148 §2 is correct arithmetic about who CAN
+outbid whom and is NOT a prediction about who gets rationed: it treats supply as fixed, and at the 1836 anchor it is elastic.
+**F148 §2's "tooling is the price-setter and motor is the marginal buyer squeezed out" is WITHDRAWN**; what survives is the
+measured reservation prices themselves and the finding that our book doubles tooling's willingness to pay while lowering motor's.
+
+**(b) The all-17 book was predicted to survive at no lift.** It does not — see §4. The prediction reasoned from steel's
+break-even (143% of base, inside the band) without weighing that steel's own OUTPUT had been cut 37% at the same time.
+
+### 6. WHAT IT DOES NOT SAY
+
+- **Two in-game years is not the century.** Nothing here touches obsolescence, the price decline, the money printer or the hoard.
+  The century run of the eight-industry map at in0 1.2 is `20260919_223337_anch-in12-century-n3` (n=3 by ruling).
+- **No obsolescence claim is possible from any of it, in either direction**: an anchor slide is a pure LEVEL shift, so every ratio
+  between rungs — and therefore F97's death test — is identical under every anchor (13/13), by construction.
+- **`building_cost` and `ai_value` do not slide with the anchor**, so capital per unit of output moves for every shifted industry
+  (+82% at e2 under the e2 anchor). Over 21 months almost nothing is built (F142); over a century it would matter.
+- **The anchor slide needs a BALANCE_FRAMEWORK ruling** before a book of this shape could go canon: it is a uniform, named
+  departure from the era rule (§10.78 rule 3), not F111's per-industry re-keying, but it is a departure.
+- n=3 on the sweep arms. Steel (~18 levels, ~1,250 units) resolves; motor, engines, explosives and munition are single-digit
+  levels and do NOT (F147 §1c) — the tooling arms at n=10 are the exception, and a reading of ZERO staffed motor levels is not a
+  quantisation question.
+- ⚠ **ROADMAP step 8 P2 rides along in every arm**: `pm_goods` / `pm_employment` are empty in every four-rung book since
+  `canon4v`, so urban centres run VANILLA's `pm_electric_streetlights` — electricity 3 IN — where §10.43 ruled them a SOURCE
+  (+1 electricity out, 2 coal in, 250 engineers). Tech-gated, so unreachable in these probes; live for most of a century.

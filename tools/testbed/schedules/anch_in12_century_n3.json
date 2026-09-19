@@ -1,0 +1,97 @@
+{
+ "schedule_version": 1,
+ "label": "anch-in12-century-n3",
+ "_why": "THE FIRST CENTURY RUN OF THE ANCHOR SLIDE (user-ruled 2026-09-19: \"Run three runs of arm1 regardless of divergence\"). Everything measured on this book so far is the ANCHOR - 21 in-game months - and the four things the project exists for (obsolescence, the price decline, the money printer, the hoard) are decades out. This is arm 1 of the overnight pair: the EIGHT-industry e1 anchor map at the uniform canon lift 1.2, which over five probe sessions read as the best INDUSTRIAL CHAIN this project has measured - steel at the +75% ceiling in 5% of readings against the canon 18% and vanilla 0%, steel production 1002 ABOVE vanilla 937, engines at a 17% ceiling share against vanilla 23% and 0.92 of its production against the canon 0.67 - with the 1836 anchor error closed (consumer prices on vanilla: glass 96 vs 81, clothes 111 vs 109, furniture 121 vs 112, against the canon 76/91/108) and the e0 rungs alive at 40-85% staffing.",
+ "_arm": "probe-anch-in12: textile, furniture, glass, tooling, munition, synthetics, automotive and electrics have their ladder origin at e1 (A^(era-1) / B^(era-1) over the anchor rungs own vanilla method; for automotive and electrics, which have no e1 rung, the recipe falls back to the first rung and only the exponent moves). The other nine - food, paper, fertilizer, explosives, steel, motor, arms, artillery, art_academy - are UNTOUCHED and keyed on the absolute era exactly as the canon is, which makes them a control built into the arm. building_cost and ai_value stay on the absolute era throughout. Everything else is the canon: A 2.2 / B 1.5 / in0 1.2 / cost anchor x 1.9^era / ai_value 1000x3^era / divisor 0.000125 / the 10.75 defines / the 24-month bar. Field diff against canon-c19-in12: eight industries, three fields (output_qty, inputs, target_be).",
+ "_n": "THREE RUNS, REGARDLESS OF DIVERGENCE - user-ruled, so the 2+1 rule and its alignment_check do NOT gate this batch. The run-level stop does not apply either (it is for 2+1 batches only); the register HARD lines still do, through stop_watch.",
+ "_read_it_with": "tools/testbed/ledger/criteria.mjs (THE CRITERIA REGISTER, 10.83), not the probe reader. Read against the vanilla n=16 baseline 20260821_131149 and the canon canon-c19-in12 (its own century runs, sessions 20260917_132449 + 20260917_161410, 3 intact of 4).",
+ "_what_this_batch_is_for": [
+  "Does the closed 1836 anchor error survive a century, or does the market re-open it? The probes only ever saw 21 months.",
+  "Does the healthy industrial chain hold? Steel and engines at the anchor are the best measured; the canon degrades them by 1900.",
+  "THE FOUR REAL GOALS, none of which any probe could touch: obsolescence (F136 census), the price decline (register PI / PP), the money printer (realised margins by era), the hoard (pool H).",
+  "The e0 rungs at 1936: the probes show them alive at 40-85% after 21 months, which says nothing about whether they die by 1936, which is the design intent."
+ ],
+ "_known_defects_riding_along": [
+  "⭐ ROADMAP step 8 P2 IS FIXED IN THIS BOOK (user-ruled mid-batch 2026-09-19: \"stop now, fix the electricity and restart\"). The urban centre electric-streetlights override is restored: pm_goods {in:{coal:2}, out:{services:10, electricity:1}} and pm_employment {engineers:250}, against vanillas 3-electricity SINK with 200 laborers + 50 engineers. It now lives in tools/lib_tier4_spec.mjs (PM_GOODS_RULED / PM_EMPLOYMENT_RULED) and is emitted by make_tier4_config into every generated book, so it cannot be lost by a rebuild again - a hand-edited config is how it was lost in the 2026-09-04 rebuild-from-vanilla. Verified end to end: mod/common/production_methods/06_urban_center.txt is owned and carries goods_output_electricity_add = 1 with the vanilla input gone; pm_gas_streetlights untouched; NEGATIVE-GOODS, solvency, L31, MOD CHECKS and preflight all pass.",
+  "⚠⚠ THE CONFOUND THIS CREATES, and it must be carried into the verdict: the CANON has NOT been regenerated, so config/mod_config.json and the canons own century runs (20260917_132449 + 20260917_161410) still lack the override. Reading this arm against that reference therefore compares TWO differences, not one - the anchor slide AND the electricity fix. Against VANILLA (20260821_131149) there is no such problem, because vanilla is what the override was written to model.",
+  "The anchor slide itself needs a BALANCE_FRAMEWORK ruling before any book of this shape could go canon (a uniform, named departure from the era rule 10.78 rule 3, not F111s per-industry re-keying)."
+ ],
+ "_predictions": {
+  "_basis": "Five probe sessions of 2026-09-19 (n=10 tooling arms, n=3 per lift on the sweep) plus the canons own century runs. Stated before the runs.",
+  "world_gdp": "The probes read 0.96 of the vanilla control at 1837. The canons century runs read 1.09-1.10 at 1935. PREDICT 0.90-1.15 at the end state - the anchor slide removes ~21% of 1836 tiered output, and whether a century re-fills it is exactly the open question.",
+  "the_chain": "PREDICT steels ceiling share stays below the canons and engines stay above it through 1900, which is where the canon degrades. This is the arms main claim and the probes strongest signal.",
+  "e0_and_obsolescence": "PREDICT T0 (era-0 rung workers, by the rungs ERA) at or below the canons, since the e0 rungs start a century already shedding. ⚠ The anchor slide CANNOT change F97s death test - it is a pure level shift - so if obsolescence improves it is through the price path, not the ladder.",
+  "the_money_printer": "The slid industries e1 rungs sit at 13-25% at base against the canons 55-127%. PREDICT realised era-1 margins well below the canons, which is ROADMAP step 8 P1 moving for the first time on a century run.",
+  "the_hoard": "No prediction. Nothing measured at the anchor speaks to it."
+ },
+ "_cost": "3 runs x 1836->1936 at roughly 2.5 h each plus builds and the save harvest: about 8 hours.",
+ "_watch": [
+  "run 1 at ~5 min: PM_TECH_REHAUL marker, game version, this runs error window BY POSITION (parsed stamps, wrap-safe), clock advancing",
+  "run 1 at ~10 min: queue_mix.mjs on the first summary - no building family over 60% of a majors queue",
+  "first_run_decomp.mjs after run 1, before the batch completes (the standing ruling)",
+  "post-batch: preflight -Session, criteria.mjs, VERDICT.md, SESSION_VERDICTS, FINDINGS"
+ ],
+ "_caveats": [
+  "n=3 fixed. World GDP at the end state has a wide seed spread (F114); three runs describe this book, they do not separate it from a neighbour.",
+  "The register HARD lines apply per run and stop_watch enforces them.",
+  "P2 above rides along.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+ },
+ "setups": {
+  "anch-in12": {
+   "kind": "config",
+   "config": "config/mod_config.probe-anch-in12.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "anch-in12",
+   "until": "1936.1.1"
+  },
+  {
+   "setup": "anch-in12",
+   "until": "1936.1.1"
+  },
+  {
+   "setup": "anch-in12",
+   "until": "1936.1.1"
+  }
+ ],
+ "_restart": "RESTART of session 20260919_223337, stopped by the user at run 1 / 1840 for the P2 fix. That session is ABORTED and its single partial run is L17-excluded; this session is the batch of record."
+}
