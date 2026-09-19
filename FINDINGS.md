@@ -14515,3 +14515,43 @@ lever, but not the 150% the base-price table implied. ⚠ Read even those as noi
 ⚠ **The general defect this exposes**: any rung whose jobs sit in a secondary PMG is charged the default wage share by `target_be`, by
 `era0_solvency.mjs` and by `ladder_options.mjs` alike. The art academy is the only such rung today, but the wage term is model-only and the fix is to
 give it an explicit `wage_pct` — not done, and flagged here so the number is not quoted again without it.
+
+#### F144 §2a — ⚠⚠ CORRECTION (user, 2026-09-19): STAFFED LEVELS IS THE RIGHT HEADLINE, AND ON IT THERE IS NO CEILING — STEEL DECLINES CONTINUOUSLY FROM THE CANON ONWARDS
+
+**The user:** *"BECAUSE the engine sheds workers long before it demolishes, staffing is a much better, more flexible metric, highlighting the
+equilibrium situation (unless the industry is staffed fully)."* **Correct, and §2's framing around the LEVEL count was wrong in a way that hid the
+result.** (The instrument was already right — `early_probe`'s section 3b measures retention in staffed levels; only the prose about the steel table
+elevated levels.)
+
+**Why staffing is the better measure**: it is what actually produces, it responds continuously and immediately, and it therefore reports the
+industry's EQUILIBRIUM SIZE, where the level count is a lagging integer that moves only once the loss has been deep enough for long enough to destroy
+capital. Two caveats to keep it honest: it is **censored above** at full staffing (a healthy industry that wants to grow shows nothing, so levels are
+needed there), and it is **noisy quarter to quarter** (vanilla's own steel staffing runs 17 / 12 / 13 / 15 / 13 / 15 / 13 across the window while its
+level count sits flat at 18).
+
+**Steel mills (era 0), world, median over each arm's usable runs, at 1837.10:**
+
+| arm | raw `in0` | levels ÷ vanilla | **staffed levels ÷ vanilla** | occupancy |
+|---|---|---|---|---|
+| vanilla | — | 1.00 | **1.00** (14.0) | 78% |
+| **flat 1.2 — the shipped canon** | 1.20 | 1.00 | **0.82** | 64% |
+| flat 1.3 | 1.30 | 1.00 | **0.74** | 58% |
+| flat 1.4 | 1.40 | 1.00 | **0.80** | 62% |
+| grad-a | 1.40 | 0.97 | **0.75** | 60% |
+| grad-rev | 1.35 | 1.03 | **0.72** | 54% |
+| **flat 1.5** | 1.50 | **0.67** | **0.58** | 68% |
+| **grad-b** | 1.55 | **0.61** | **0.49** | 62% |
+| **grad-c** | 1.70 | **0.50** | **0.27** | 42% |
+
+⭐⭐ **THREE THINGS THE LEVEL METRIC HID:**
+1. **The shipped canon's steel is ALREADY at 0.82 of vanilla's working size** — on levels it reads 1.00, i.e. "fine". The damage does not start at some
+   ceiling; it starts at `in0` 1.2.
+2. **The decline is CONTINUOUS, not a threshold**: 0.82 → 0.74 → 0.80 → 0.58 → 0.49 → 0.27 as the raw penalty rises. §2's "the ceiling is between 1.40
+   and 1.55" described the point where the lagging metric finally moved, not a property of the economy.
+3. **Demolition begins EARLIER than §2 said — between raw 1.40 and 1.50, not 1.40 and 1.55.** Flat 1.5 already reads 12 levels against vanilla's 18
+   (0.67). §2 missed it because that quick read took run 001 of each arm instead of the median of both.
+
+⇒ **The working maximum for the raw-input penalty is at most ≈1.40, and even there steel runs at three quarters of vanilla's size.** F144 §5's bound
+survives; its justification changes, and it is tighter than stated.
+⚠ Every arm's steel is badly understaffed early — occupancy 26–52% at 1836.10 against vanilla's 74% — and recovers to 42–68% by 1837.10 against
+vanilla's 78%. The early trough is common to the whole book, not to the penalty.
