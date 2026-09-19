@@ -140,6 +140,26 @@ const A_FOR = (() => { const v = arg('--A-for', ''); const o = {}; if (!v) retur
 // vanilla mix, as B does), building_cost × cost[k] — instead of A^k / B^k / A^k. Every array has one entry per rung, rung 0
 // first (its entries are 1). ai_value keeps the era rule. Overrides --A-for for that industry.
 const TIERS_FOR = (() => { const v = arg('--tiers-for', ''); const o = {}; if (!v) return o; for (const part of v.split(/\s*\|\s*/)) { const [id, spec] = part.split(':'); if (!id || !spec) throw new Error('--tiers-for <ind>:out=..;in=..;cost=..'); const m = {}; for (const kv of spec.split(';')) { const [k, list] = kv.split('='); m[k.trim()] = list.split(',').map(Number); } for (const k of ['out', 'in', 'cost']) if (!m[k] || m[k].some(x => !(x > 0))) throw new Error(`--tiers-for ${id}: ${k}=<positive per-rung multipliers> required`); o[id.trim()] = m; } return o; })();
+// ⭐⭐ --anchor-for <ind>:<era>[,<ind>:<era>]  — user-proposed 2026-09-19 (FINDINGS F148 §9): THE LADDER'S ANCHOR RUNG, i.e. the
+//   ORIGIN OF THE EXPONENT. By default an industry's ladder is anchored on its FIRST rung and a rung of era e takes A^e / B^e over
+//   that rung's vanilla method. This names a different rung as the ×1: era e then takes A^(e−a) / B^(e−a) over the ANCHOR rung's
+//   own vanilla method, so rungs BELOW the anchor are divided down (A^−1, B^−1) and rungs above step up from there.
+//   The user's words: *"e1 is the anchor, with the in1 applied to inputs (same as in0 penalty in principle). Then, t2 output is
+//   anchor × A. Not A². Tier0 output is anchor / A. Same for inputs."*
+//   WHY: the 1836 map does not stand on e0 in every industry. Tooling's mass is on **e2** (50 of its 95 levels, the only material
+//   e2 presence anywhere on the map), so its e2 rung — gated on `mechanical_tools`, a GAME-ERA-2 technology vanilla hands the
+//   leaders at the start — is priced as a 1905 rung at A² = 4.84× its own vanilla method's output. That is tooling's +54% share of
+//   F137's anchor error and, through its output, its 369%-of-base reservation price for steel (F148 §2).
+//   ⚠ IT MOVES OUTPUT AND INPUT VALUE ONLY. building_cost and ai_value stay functions of the ABSOLUTE era, because the narrative
+//   era is what says "this is a 1905 building" (§10.78 rule 3) and both are separately-swept levers (C 1.6…2.2, ai 3^era); folding
+//   them in would make the arm unreadable. The consequence is a real and named confound — capital per unit of output moves for the
+//   shifted industry (tooling at anchor e2: +82% at e2) — which barely bites over 21 months, where almost nothing is built, and
+//   would bite over a century.
+//   ⚠ It is a pure LEVEL shift: every ratio BETWEEN rungs is untouched, so F97's death test is identical under every anchor.
+const ANCHOR_FOR = (() => { const v = arg('--anchor-for', ''); const o = {}; if (!v) return o;
+  for (const part of v.split(',')) { const [id, e] = part.split(':');
+    if (!id || !Number.isInteger(+e) || +e < 0) throw new Error('--anchor-for <ind>:<era>[,<ind>:<era>] — era is a non-negative integer');
+    o[id.trim()] = +e; } return o; })();
 // --bar-months N (2026-09-13): research_events.industry_bar_months — the 24-month bar of canon-je24 and every book since
 //   (§10.76) used to be a hand edit after generation; a book is regenerable by ONE command or it is not regenerable.
 const BAR_MONTHS = (() => { const v = arg('--bar-months', ''); if (!v) return null; if (!(+v > 0)) throw new Error('--bar-months <months>'); return +v; })();
@@ -239,8 +259,15 @@ const stageLift = id => { const m = effStage(id), i = Math.floor(m), f = m - i;
 for (const ind of cfg.industries) {
   if (ind.disabled) continue;
   ind.tiers.sort((a, b) => a.era - b.era);
-  const first = ind.tiers[0], r0 = rec(first.vanilla_pm);
-  if (!r0 || !Object.keys(r0.in).length) throw new Error(`${ind.id}: first rung ${first.key} has no vanilla recipe (${first.vanilla_pm})`);
+  // --anchor-for: the rung that IS the ×1 of this industry's ladder (the exponent's origin); by default its first rung.
+  const aEra = ANCHOR_FOR[ind.id];
+  if (aEra != null && !ind.tiers.some(t => t.era === aEra)) throw new Error(`--anchor-for ${ind.id}:${aEra}: it has no e${aEra} rung (eras ${ind.tiers.map(t => t.era).join('/')})`);
+  const first = aEra != null ? ind.tiers.find(t => t.era === aEra) : ind.tiers[0], r0 = rec(first.vanilla_pm);
+  // ⚠⚠ ORIGIN IS 0 UNLESS --anchor-for NAMES THIS INDUSTRY — never `first.era`. munition, synthetics, automotive and electrics
+  //   have no e0 rung, and keying them on (era − their own first era) is exactly the rung-index bug F111 measured and the era
+  //   rule (§10.78 rule 3) forbids: it priced automotive's e2 rung as an 1836 rung.
+  const ORIGIN = aEra != null ? first.era : 0;
+  if (!r0 || !Object.keys(r0.in).length) throw new Error(`${ind.id}: anchor rung ${first.key} has no vanilla recipe (${first.vanilla_pm})`);
   const outGood = first.output_good || ind.output_good;
   const out0 = r0.out[outGood]; if (!(out0 > 0)) throw new Error(`${ind.id}: vanilla ${first.vanilla_pm} makes no ${outGood}`);
   const I0 = val(r0.in), O0 = out0 * PRICE[outGood];
@@ -261,12 +288,15 @@ for (const ind of cfg.industries) {
     const TF = TIERS_FOR[ind.id];   // explicit per-ERA multipliers (--tiers-for), else the A/B rule
     if (TF && (TF.out.length <= e || TF.in.length <= e || TF.cost.length <= e)) throw new Error(`--tiers-for ${ind.id}: its rungs reach e${e}, so out/in/cost need ${e + 1} multipliers each (indexed by ERA, era 0 first)`);
     // --in0-level: this industry's own lift, so its notional era-0 margin equals the ruled target; else the scalar --in0.
-    const lift = (IN0_LEVEL != null || IN0_STAGE) ? LEVEL_LIFT : (IN0_ONLY ? (e === 0 ? IN0 : 1) : IN0);
-    const Ve = I0 * lift * (TF ? TF.in[e] : Math.pow(B, e));
+    // ⭐ the exponent's ORIGIN is the anchor rung's era (--anchor-for), 0 for every unshifted industry. It governs OUTPUT and
+    //   INPUT VALUE only; building_cost and ai_value below stay functions of the absolute era `e`. See the flag's header.
+    const k = e - ORIGIN;
+    const lift = (IN0_LEVEL != null || IN0_STAGE) ? LEVEL_LIFT : (IN0_ONLY ? (k === 0 ? IN0 : 1) : IN0);
+    const Ve = I0 * lift * (TF ? TF.in[e] : Math.pow(B, k));
     const inputs = {};
     for (const [g, q] of Object.entries(mixRec.in)) { const share = q * (PRICE[g] || 0) / mixVal; const qty = r1(share * Ve / PRICE[g]); if (qty > 0) inputs[g] = qty; }
     const Ai = A_FOR[ind.id] || A;   // this industry's own output ratio (--A-for), else the book's A
-    t.output_qty = r1(out0 * (TF ? TF.out[e] : Math.pow(Ai, e)));
+    t.output_qty = r1(out0 * (TF ? TF.out[e] : Math.pow(Ai, k)));
     t.inputs = inputs;
     delete t.input_ratio;
     if (COST_LADDER && e >= COST_LADDER.length) throw new Error(`--cost-ladder: ${ind.id} reaches e${e}, the ladder has ${COST_LADDER.length - 1} multipliers above era 0`);
@@ -281,6 +311,14 @@ for (const ind of cfg.industries) {
 if (BAR_MONTHS != null) { if (!cfg.research_events) throw new Error('--bar-months: the base carries no research_events block'); cfg.research_events.industry_bar_months = BAR_MONTHS; }
 if (STEEP) for (const id of STEEP.inds) if (!cfg.industries.some(i => i.id === id)) throw new Error(`--ai-steep: unknown industry ${id}`);
 for (const id of Object.keys(A_FOR)) if (!cfg.industries.some(i => i.id === id && !i.disabled)) throw new Error(`--A-for: unknown or disabled industry ${id}`);
+for (const id of Object.keys(ANCHOR_FOR)) if (!cfg.industries.some(i => i.id === id && !i.disabled)) throw new Error(`--anchor-for: unknown or disabled industry ${id}`);
+if (Object.keys(ANCHOR_FOR).length) {
+  // --tiers-for indexes its arrays BY ERA over the industry's own rung 0; an anchor shift moves what rung 0 means, so the two
+  //   would silently disagree about the same industry. --in0-only's "era 0 alone" is honoured as "the ANCHOR rung alone" above,
+  //   which is the faithful reading, but it has never been run that way — refuse rather than ship an unmeasured combination.
+  for (const id of Object.keys(ANCHOR_FOR)) if (TIERS_FOR[id]) throw new Error(`--anchor-for and --tiers-for both set ${id}'s ladder; give one`);
+  if (IN0_LEVEL != null || IN0_STAGE) throw new Error('--anchor-for with --in0-level / --in0-stage: both decide the anchor rung\'s input level; give one');
+}
 const s = +arg('--divisor', (0.001 * 800 / cmax).toPrecision(3));
 cfg.ai_defines = { ...(cfg.ai_defines || {}), PRODUCTION_BUILDING_AUTONOMOUS_INVESTMENT_CONSTRUCTION_COST_DIVISOR_SCALING: s };
 // --ai-defines K=V[,K=V...] (2026-09-05): further NAI defines merged into ai_defines — the investment-pool set of
@@ -293,6 +331,7 @@ cfg._ab.ai_defines_extra = Object.keys(EXTRA_DEFINES).length ? EXTRA_DEFINES : n
 cfg._ab.in0 = IN0; cfg._ab.in0_level = IN0_LEVEL; cfg._ab.in0_stage = IN0_STAGE; cfg._ab.in0_supplier = IN0_SUPPLIER; cfg._ab.in0_supplier_mode = IN0_SUPPLIER != null ? IN0_SUPPLIER_MODE : null; cfg._ab.downstream_weight = IN0_SUPPLIER != null ? DOWNSTREAM : null; cfg._ab.good_stage = IN0_STAGE ? STAGE : null; cfg._ab.industry_stage = IN0_STAGE ? IND_STAGE : null; cfg._ab.in0_per_industry = (IN0_LEVEL != null || IN0_STAGE) ? LEVELLED : null; cfg._ab.in0_only = IN0_ONLY; cfg._ab.cost_flat = COST_FLAT; cfg._ab.cost_ratio = COST_RATIO; cfg._ab.cost_ladder = COST_LADDER; cfg._ab.ai_ladder = AI_LADDER; cfg._ab.bar_months = BAR_MONTHS;
 // ⭐ the book records that it is era-keyed, and the command that made it — the era pass (2026-09-13) is what a
 //   reader of an older book has to check for: a book without `keyed_by: 'era'` was keyed on the rung index
+cfg._ab.anchor_for = Object.keys(ANCHOR_FOR).length ? ANCHOR_FOR : null;
 cfg._ab.keyed_by = 'era'; cfg._ab.era_rule = '2026-09-13';
 cfg._ab.command = 'node tools/make_ab_config.mjs ' + process.argv.slice(2).map(a => /[\s|"]/.test(a) ? JSON.stringify(a) : a).join(' ');
 if (VARIANT) cfg._variant = { ...VARIANT, declared: new Date().toISOString().slice(0, 10), regenerate: cfg._ab.command };

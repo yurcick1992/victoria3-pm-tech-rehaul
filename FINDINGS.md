@@ -14978,3 +14978,68 @@ mill, and `pm_steel` tooling is the only steel buyer of size on the map.
 ⇒ **Nothing here argues for taking steel out of 1836 tooling, or for re-dating the 50 e2 levels.** The mis-fit is not the chemistry, it is that a
 technology vanilla hands out in 1836 is priced on the 1905 rung of a geometric ladder. ⚠ What IS ahistorical in our book is the **scale**: our 50 e2
 levels produce 7,260 tools a week against vanilla's 4,000 from the same steel, which is a 1900s tool industry running on 1836 crucible steel.
+
+### F148 §9 (user-proposed the same day) — ⭐⭐ THE LADDER'S ANCHOR RUNG IS A FREE PARAMETER, AND MOVING IT IS A PURE **LEVEL** SHIFT: every ratio between rungs is untouched, so F97's death test is identical under every anchor, while margin, the 1836 anchor error and absolute input/output all move by one rung's worth
+
+**The user's proposal, verbatim:** *"unlike other industries where e0 (anchor) is vanilla + in0 on inputs, and all other tiers are anchor × A^n against anchor × B^n, I propose this: e1 is the anchor, with the in1 applied to inputs (same as in0 penalty in principle). Then, t2 output is anchor × A. Not A². Tier0 output is anchor / A. Same for inputs."*
+
+⭐ **The property that makes it a clean lever**: the ladder enters every scored quantity as a RATIO between rungs except the level itself. Moving the
+origin multiplies the whole industry by a constant, so `VA(e−2) ÷ VA(top)` — F97's death test — is invariant. Measured: **13 of 13 industries pass under
+every anchor tried**, identical. It buys margin and the anchor error and cannot buy or cost obsolescence.
+
+#### The two candidates for tooling, computed from the generated books
+
+| tooling | canon (anchor e0) | **anchor e1** (the proposal) | **anchor e2** (the 1836 modal rung) | vanilla |
+|---|---|---|---|---|
+| e0 | 30 tools / wood 36 | 27.3 / wood 56 | 16.5 / wood 42.7 | 30 / wood 30 |
+| e1 | 66 / wood 23.1 + iron 15.4 | **60 / wood 36 + iron 24** | 36.4 / wood 27.4 + iron 18.3 | 60 / wood 30 + iron 20 |
+| e2 | 145.2 / wood 30.4 + **steel 20.3** | 132 / wood 47.3 + **steel 31.5** | **80 / wood 36 + steel 24** | 80 / wood 30 + steel 20 |
+| e3 | 319.4 / rubber 12.8 + steel 38.4 | 290.4 / rubber 19.9 + steel 59.7 | 176 / rubber 15.2 + steel 45.5 | 110 / rubber 10 + steel 30 |
+| **margin at base** | 25 / 83 / 169 / 294% | **−27 / +7 / +57 / +130%** | **−42 / −15 / +25 / +83%** | — |
+| target_be | 80 / 55 / 37 / 25 | 137 / 93 / 64 / 43 | 173 / 117 / 80 / 55 | — |
+
+| at the emitted 1836 map's own levels | canon | anchor e1 | anchor e2 | vanilla |
+|---|---|---|---|---|
+| world steel demand (supply 1,105) | 1,159 | **1,719** | 1,344 | 1,120 |
+| naive implied steel price | 104% | **142%** | 116% | 101% |
+| world tools output | 9,870 | 8,973 | **5,439** | 6,400 |
+| tooling's own 1836 anchor error | +54% | +40% | **−15%** | 0 |
+| world 1836 anchor error | +26.5% | +23.1% | **+15.3%** | 0 |
+| F97 death test | 13/13 | 13/13 | 13/13 | — |
+
+⭐⭐ **THE PROPOSAL DOES THE MARGIN JOB AND MAKES THE STEEL PROBLEM WORSE, and the reason is specific to tooling.** Anchoring at e1 shifts the whole
+margin ladder down by one rung — e0 to **−27%** at base, which is the obsolescence goal arriving at the anchor — but vanilla's crude-tools rung is
+unusually input-POOR (wood 30 → 30 tools, O:I 2.0 at base, the richest era-0 recipe in the book, which is why tooling's e0 margin is +25% where
+textile's is +5%). Moving to pig iron swaps a cheap anchor for a dear one: input value 600 → 1,400 (**×2.33**) against output 30 → 60 (**×2.00**), and
+every rung above inherits the richer base. **That extra 0.33 lands on steel** — e2's steel goes 20.3 → 31.5 a level, world demand +49%, turning a 5%
+deficit into a 56% one.
+
+⭐ **Anchoring at e2 gets both**, because then e2 IS vanilla's own `pm_steel` × the 1.2 lift exactly (80 tools, wood 36, steel 24): the anchor error goes
+to **−15%**, tools output lands near vanilla's, and e2 sits at **+25% — vanilla manufacturing's measured 23%** (F92). Its steel rise (+16%) is only the
+`in0` lift acting on a vanilla recipe. ⚠ The cost is that e0 (−42%) and e1 (−15%) are loss-making at base, so **45 of the world's 95 tooling levels**
+(RUS 12, AUS 5, CHI 4 and the small holders) start underwater — the F94 corollary again, applied to the countries that are behind in 1836. That is a
+ruling, not arithmetic.
+
+#### ⭐ The same rule has a free win elsewhere, and it is NOT part of the measured arms
+
+**munition's only 1836 rung is e1**, priced at A¹ over its own vanilla method, giving it a **+120% anchor error — the worst in the book** on 8 levels.
+Anchoring "on the lowest rung present on the 1836 map" takes it to **0%** and moves nothing else anywhere (world +26.5% → +25.1%; synthetics, automotive
+and electrics have no 1836 presence, so they are untouched under either rule). ⚠ **Deliberately excluded from the batch by the user** (*"Don't touch
+munitions yet"*), so the arms move tooling alone.
+
+#### The generator flag, and the one confound it deliberately keeps
+
+`make_ab_config --anchor-for <ind>:<era>` (2026-09-19) names the ×1 rung; era *e* then takes `A^(e−a)` / `B^(e−a)` over the ANCHOR rung's vanilla method.
+⚠ **It moves OUTPUT and INPUT VALUE only.** `building_cost` and `ai_value` stay functions of the absolute era, because the narrative era is what says
+"this is a 1905 building" (§10.78 rule 3) and both are separately-swept levers (C 1.6…2.2, ai 3^era) whose inclusion would make the arm unreadable. The
+consequence is real and named: **capital per unit of output moves for the shifted industry** — anchor e1 +10% at e2, anchor e2 **+82%** at e2. Over 21
+months almost nothing is built (F142: the adjustment is paid in staffing), so it barely bites at the anchor and would bite over a century.
+⚠⚠ **ORIGIN IS 0 UNLESS THE FLAG NAMES THE INDUSTRY — never the industry's own first rung.** munition, synthetics, automotive and electrics have no e0
+rung, and keying them on their own first era is exactly the rung-index bug **F111** measured and the era rule forbids; the first implementation did that
+and was caught before it generated a book. `lint_tier_eras.mjs` (L31) was taught the field — it recomputes output and input as `A^(era−a)` and cost and
+ai_value on the absolute era, and prints the anchor as a note — rather than being bypassed.
+
+⚠ **Everything above is at BASE prices** (§10.86.2: a design coordinate, never a prediction) **and over the 1836 map alone.** The measured arms are
+`probe-tool-a1` / `probe-tool-a2`, n=10 each, 1836→1838, session `20260919_173948_tool-anchor-probe`; each differs from the canon in exactly **twelve
+fields** (tooling's four rungs' `output_qty`, `inputs`, `target_be`) with the other sixteen industries byte-identical, which makes them a control built
+into each arm. Their result is a separate finding.

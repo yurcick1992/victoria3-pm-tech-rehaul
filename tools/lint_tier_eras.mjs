@@ -98,17 +98,27 @@ for (const ind of cfg.industries || []) {
   const perInd = AB.in0_per_industry || null;
   const special = (AB.A_for && AB.A_for[ind.id]) || (AB.tiers_for && AB.tiers_for[ind.id]);
   if (special) { notes.push(`${ind.id}: per-industry multipliers (--A-for / --tiers-for) — ladder checked for monotonicity only`); continue; }
-  const first = tiers[0]; const r0 = vanillaRec(first.vanilla_pm);
+  // ⭐⭐ --anchor-for (2026-09-19, FINDINGS F148 §9): the ladder's ×1 is a NAMED rung, not necessarily the first, so the
+  //   exponent counts from that rung's era — output and input value alone; cost and ai_value stay on the absolute era.
+  //   Without this the lint FAILS on every rung of an anchor-shifted industry, which is the guardrail working: teach it the
+  //   field, never bypass it.
+  const aEra = (AB.anchor_for && AB.anchor_for[ind.id] != null) ? +AB.anchor_for[ind.id] : null;
+  if (aEra != null && !tiers.some(t => t.era === aEra)) { faults.push(`${ind.id}: _ab.anchor_for says e${aEra}, which it has no rung for`); continue; }
+  const first = aEra != null ? tiers.find(t => t.era === aEra) : tiers[0]; const r0 = vanillaRec(first.vanilla_pm);
   if (!r0) { notes.push(`${ind.id}: vanilla recipe for ${first.vanilla_pm} unreadable (game files absent?) — book multipliers not checked`); continue; }
+  // ⚠⚠ 0 unless --anchor-for names it — NOT `first.era`: the four industries with no e0 rung are keyed on the absolute era
+  //   (the era rule, §10.78 rule 3; keying them on their own first rung is the F111 bug).
+  const ORIGIN = aEra != null ? first.era : 0;
+  if (aEra != null) notes.push(`${ind.id}: ladder anchored on e${ORIGIN} (--anchor-for) — output/input checked as A^(era−${ORIGIN}), cost and ai_value on the absolute era`);
   const good = first.output_good || ind.output_good; const out0 = r0.out[good]; const I0 = val(r0.in);
   const anchor = ANCH[(ind.building || {}).required_construction || ind.required_construction];
   for (const t of tiers) {
-    const e = t.era;
-    const wantOut = Math.round(out0 * Math.pow(A, e) * 10) / 10;
-    if (Math.abs(t.output_qty - wantOut) > 0.051 + 0.002 * wantOut) faults.push(`${ind.id} e${e}: output ${t.output_qty}, the era rule says ${wantOut} (vanilla ${out0} × ${A}^${e}) — keyed on something other than the era`);
+    const e = t.era, k = e - ORIGIN;
+    const wantOut = Math.round(out0 * Math.pow(A, k) * 10) / 10;
+    if (Math.abs(t.output_qty - wantOut) > 0.051 + 0.002 * wantOut) faults.push(`${ind.id} e${e}: output ${t.output_qty}, the era rule says ${wantOut} (vanilla ${out0} × ${A}^${k}) — keyed on something other than the era`);
     const liftI = perInd && perInd[ind.id] != null ? +perInd[ind.id] : lift;
-    const wantIn = I0 * (in0only ? (e === 0 ? liftI : 1) : liftI) * Math.pow(B, e); const gotIn = val(t.inputs);
-    if (Math.abs(gotIn - wantIn) > 0.03 * wantIn + 1) faults.push(`${ind.id} e${e}: input value £${gotIn.toFixed(0)}, the era rule says £${wantIn.toFixed(0)} (vanilla £${I0.toFixed(0)} × ${lift} × ${B}^${e})`);
+    const wantIn = I0 * (in0only ? (k === 0 ? liftI : 1) : liftI) * Math.pow(B, k); const gotIn = val(t.inputs);
+    if (Math.abs(gotIn - wantIn) > 0.03 * wantIn + 1) faults.push(`${ind.id} e${e}: input value £${gotIn.toFixed(0)}, the era rule says £${wantIn.toFixed(0)} (vanilla £${I0.toFixed(0)} × ${lift} × ${B}^${k})`);
     // cost: flat (§10.61), or anchor × C^era where C is the book's own cost ratio (`_ab.cost_ratio`, the cost-slope books of
     // 2026-09-14) and A by default (capacity-priced, the canon)
     // ... or anchor × m_era from an explicit per-era list (`_ab.cost_ladder`, 2026-09-16 — one era's cost moved on its own, or a changed A/B gain-matched per era)

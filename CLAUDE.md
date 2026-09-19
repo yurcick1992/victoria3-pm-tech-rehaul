@@ -1647,7 +1647,21 @@ tools/                  dev tooling — NOT shipped in the mod
                         `--cost-flat`. ⭐ 2026-09-16: `--cost-ladder m1,m2,m3` prices building_cost = anchor × m_era from an
                         explicit PER-ERA list (era 0 = 1): one era's cost can move alone (`canon-c19-e2soft`: the e2 rungs only) or a changed A/B
                         can be GAIN-MATCHED per era to the found book's value added per construction point (`canon-b18-gm`, FINDINGS F127); recorded
-                        as `_ab.cost_ladder`, which L31 reads (proven to trip on a hand-edited e2 cost); exclusive with both. the canon's is 0.000125 — ab3 = ab2 + glass,tooling:3
+                        as `_ab.cost_ladder`, which L31 reads (proven to trip on a hand-edited e2 cost); exclusive with both. ⭐⭐ 2026-09-19: **`--anchor-for <ind>:<era>`
+                        NAMES THE LADDER'S ANCHOR RUNG — the ORIGIN OF THE EXPONENT** (user-proposed, FINDINGS **F148 §9**). By default an industry's ×1 is its
+                        first rung and era e takes A^e / B^e; this makes era e take **A^(e−a) / B^(e−a)** over the NAMED rung's own vanilla method, so rungs below
+                        the anchor are divided down. WHY: the 1836 map does not stand on e0 in every industry — tooling's mass is on **e2** (50 of its 95 levels,
+                        the only material e2 presence on the map), gated on a GAME-ERA-2 technology vanilla hands the leaders at the start, yet priced as a 1905
+                        rung at A² = 4.84× its own vanilla method. ⭐ It is a pure LEVEL shift: every ratio BETWEEN rungs is untouched, so **F97's death test is
+                        identical under every anchor** (13/13 either way) — it buys margin and the 1836 anchor error and cannot buy or cost obsolescence.
+                        ⚠ **IT MOVES OUTPUT AND INPUT VALUE ONLY**; `building_cost` and `ai_value` stay functions of the ABSOLUTE era, because the narrative era is
+                        what says "this is a 1905 building" (§10.78 rule 3) and both are separately-swept levers. The named consequence: capital per unit of output
+                        moves for the shifted industry (anchor e2: +82% at e2), which barely bites over 21 months and would over a century.
+                        ⚠⚠ **ORIGIN IS 0 UNLESS THE FLAG NAMES THE INDUSTRY — never the industry's own first rung**: munition, synthetics, automotive and electrics
+                        have no e0 rung, and keying them on their own first era is exactly the rung-index bug **F111** measured and the era rule forbids. The first
+                        implementation did that and was caught before it generated a book. Recorded as `_ab.anchor_for`, which L31 reads; exclusive with
+                        `--tiers-for` on the same industry and with `--in0-level` / `--in0-stage`. Measured arms: `probe-tool-a1` / `probe-tool-a2`.
+                        the canon's is 0.000125 — ab3 = ab2 + glass,tooling:3
                         (1000/3000/9000/27000), the arm under test in 20260902_223037_ab3-n3
                         OUTCOME (F99, 2026-09-03): the lever bites — British glass 118%/112% vs ab2's 153–158, Britain
                         84/201 plastics glassworks vs ab2's 44/97 — GDP 0.95×/0.90× in the two growth seeds, and ONE of
@@ -2371,6 +2385,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         added per level rising with era in every industry, and for an A/B book (`_ab` present) output, input
                         value, cost and ai_value RECOMPUTED from the vanilla first method and `_ab` as functions of the era —
                         a book keyed on the rung index (every book before 2026-09-13) fails it on its four late industries.
+                        ⭐ Since 2026-09-19 it honours **`_ab.anchor_for`** (make_ab_config's `--anchor-for`, FINDINGS F148 §9): a shifted
+                        industry's output and input value are recomputed as `A^(era−a)` / `B^(era−a)` over the ANCHOR rung's vanilla
+                        method while cost and ai_value stay on the absolute era, and the anchor is printed as a note. Taught the field
+                        rather than bypassed — without it the lint fails every rung of a shifted industry, which is the guardrail
+                        working. ⚠ Its origin is 0 unless `anchor_for` names the industry, NEVER the industry's own first rung (the
+                        four industries with no e0 rung are keyed on the absolute era — the F111 bug).
                         `--config <path>` scores an alternate book, `--census` prints every rung's era, technology, game era
                         and deviation. Out of scope, and says so: a book without `era_game_era` (the six-rung one)
   emit_techs.mjs        THE TECH TREE, EMITTED (ROADMAP step 1) — called by build.ps1, which THROWS if it
