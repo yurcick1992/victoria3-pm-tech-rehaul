@@ -1,0 +1,49 @@
+{
+ "schedule_version": 1,
+ "label": "in0-graded-probe2",
+ "_why": "THE CEILING PROBED, AND THE CHAIN SPARED FURTHER (user-ruled 2026-09-19, after F144): 'while I get your arguments that when steel's dead, motor will be too, this doesn't refute the multi in0 idea \"by input type\" completely, it just gives us a ceiling on it. Will the regular (raw-inputs) in0 just below this ceiling and manufactured inputs even lower result in a better 1838 situation?' F144 found the ceiling between raw 1.40 (steel keeps all 17-19 world levels, as vanilla does) and raw 1.55 (steel DEMOLISHED, 17 -> 9 levels, which pins steel and engines at the 175% band edge and kills the engine chain). It did not locate the ceiling inside that interval, and it never tested a chain lift below 1.20. This batch does both.",
+ "_arms": {
+  "probe-gradd": "in0-stage 1.45 / 1.05 / 1.00 - raw a step above the proven-safe 1.40, the chain almost untouched. Raw industries x1.45, motor and art_academy x1.05, automotive x1.04.",
+  "probe-grade": "in0-stage 1.50 / 1.05 / 1.00 - raw another step up, still under the 1.55 that demolished steel. THE CEILING TEST: if steel keeps its levels here the ceiling is between 1.50 and 1.55; if it does not, it is between 1.40 and 1.50.",
+  "probe-gradf": "in0-stage 1.40 / 1.00 / 1.00 - the proven-safe raw value with the chain at VANILLA's own recipe (lift 1.00, no penalty at all). The clean test of 'manufactured inputs even lower', against F144's measured grad-a (1.40 / 1.20 / 1.10)."
+ },
+ "_delta": "One flag against F144's arms and one field against the canon. A 2.2 / B 1.5 / cost anchor x 1.9^era / ai_value 1000x3^era / divisor 0.000125 / the 10.75 defines / the 24-month bar throughout.",
+ "_predictions": {
+  "_basis": "F144. Stated before the runs.",
+  "steel": "THE HEADLINE. World steel-mill LEVELS at 1837.10 (not staffing - the engine sheds workers long before it demolishes). grad-f and grad-d should hold 17-19 as every arm at raw <= 1.40 did. grad-e at raw 1.50 is the coin-flip: predict it HOLDS (the jump from 1.40 to 1.55 was 17 -> 9, and 1.50 is nearer the safe end), but a drop to 9-12 would put the ceiling below 1.50 and make 1.45 the working maximum.",
+  "world_product": "Every aggregate line in F144 tracked the RAW value almost alone: flat/graded at raw 1.40 read 0.97-0.99 of the control, raw 1.55 read 0.96, raw 1.70 read 0.91. Predict grad-f 0.99-1.01, grad-d 0.97-0.99, grad-e 0.96-0.98. If sparing the chain to 1.00 buys more than ~1 point over grad-a at the same raw 1.40, the chain relief is worth more than F144 credited.",
+  "the_question": "'A better 1838 situation' = steel intact AND the raw-input chains pushed harder than the canon AND world product no worse than grad-a's 0.99. grad-f is the arm that can win on all three; grad-d wins the middle one by more if its steel holds.",
+  "engines": "Engines were pinned at 175% of base in every arm of both probes, vanilla included from 1836.7. Predict they stay pinned in all three - the engine market is too tight at this date for the lever to show there, which is itself the reason the motor question needs a full run, not a probe.",
+  "art_academy": "Spared at x1.05 and x1.00 here, so its era-0 margin should rise above grad-a's 87%. ⚠ Its jobs live in its OWNERSHIP PMG, so its wage share is far above the config's default 25% and the base-price margin overstates it (user, 2026-09-19); read the REALISED margin from the summaries, which is wage-inclusive by F92's identity, and read it as noisy - the academy is few levels at 1836."
+ },
+ "_comparison": "F144's arms (20260919_142856) and the flat/vanilla references (20260919_132049), merged by `early_probe --also`. grad-f against grad-a is the designed pair: same raw 1.40, chain 1.00 against 1.20.",
+ "_watch": ["run 1 at ~3 min: mod marker, version, this run's error window BY POSITION, clock", "steel levels in every arm's first summary set", "post-batch: preflight -Session, VERDICT.md, SESSION_VERDICTS, FINDINGS"],
+ "_cost": "6 runs x 1836->1838 ~ 3 min each ~ 20 min.",
+ "_caveats": [
+  "TWO IN-GAME YEARS IS NOT THE CENTURY. It bounds the anchor damage; F143 §1 is the century-scale case for the penalty and is paper arithmetic.",
+  "n=2 per arm; the steel LEVEL count is a coarse integer (17 vs 9 is unmistakable, 17 vs 15 would not be).",
+  "Cross-session comparison with both earlier probes - same day, machine, version, span and dump dates.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent."
+ ],
+ "defaults": {
+  "metrics": ["country_state", "population", "treasury", "events", "market_goods_scoped"],
+  "autosave_interval": "quarteryear",
+  "timeout_minutes": 40,
+  "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "JAP", "NET"],
+  "dump_dates": ["1836.2.1", "1836.7.1", "1837.1.1", "1837.7.1", "1837.12.1"],
+  "_dump_dates_note": "Identical to both earlier probes, which is what makes the three sessions comparable."
+ },
+ "setups": {
+  "probe-gradd": { "kind": "config", "config": "config/mod_config.probe-gradd.json" },
+  "probe-grade": { "kind": "config", "config": "config/mod_config.probe-grade.json" },
+  "probe-gradf": { "kind": "config", "config": "config/mod_config.probe-gradf.json" }
+ },
+ "runs": [
+  { "setup": "probe-gradf", "until": "1838.1.1" },
+  { "setup": "probe-gradf", "until": "1838.1.1" },
+  { "setup": "probe-gradd", "until": "1838.1.1" },
+  { "setup": "probe-gradd", "until": "1838.1.1" },
+  { "setup": "probe-grade", "until": "1838.1.1" },
+  { "setup": "probe-grade", "until": "1838.1.1" }
+ ]
+}

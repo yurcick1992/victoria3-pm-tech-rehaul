@@ -14496,3 +14496,22 @@ world-product gain from grading — it is one step of the raw value away from be
 **What it does NOT say.** Nothing century-scale: two in-game years cannot see obsolescence, the price decline or the money printer, and F143 §1's case
 for the penalty is a 1890-and-later argument. Nothing about the per-good variant (ruled out for simplicity and a no-op at era 0, §10.86.6). Nothing
 about whether steel's demolition would also happen at a raw 1.55 penalty in a book whose steel recipe were not already at −19% at base.
+
+#### F143 §1a — ⚠ CORRECTION (user, 2026-09-19): THE ART ACADEMY'S BASE-PRICE MARGIN IS OVERSTATED, BECAUSE ITS WAGE SHARE IS NOT THE DEFAULT 25%
+
+**The user:** *"Art academy supposedly has a significantly higher wage share, so the +87% margin doesn't translate to profits being over the top."*
+**Confirmed at the source:** the art academy's era-0 rung carries **`employment: {}`** — empty — because its jobs live in its OWNERSHIP PMG (5,000
+academics / clerks / laborers a level, CLAUDE.md's `tierEmp()` rule), and it carries no `wage_pct` override, so every base-price calculation in this
+project charges it the default **25% of total cost** for a workforce that is in fact large and expensively weighted (academics `wage_weight` 4).
+
+⇒ **F143 §1's art-academy row (+125 to +165% realised, +100% even at `in0` 1.5) is computed on that wrong wage share and OVERSTATES it.** The same
+applies to §2's base-price table, where the academy shows "0 workers / VA per worker ∞".
+
+⭐ **The REALISED margins are sound and are the ones to quote** — they come from the game's own `profit`, which is revenue − inputs − wages, through
+F92's identity, so the wage bill is whatever the game actually paid. Measured over the 1836–1838 probes: **vanilla's academy 46%, the canon 91%,
+grad-a 87%, grad-b 37%.** So the canon's academy earns roughly TWICE vanilla's — still the highest-margin rung in the book and still worth its own
+lever, but not the 150% the base-price table implied. ⚠ Read even those as noisy: the academy is a handful of levels at 1836.
+
+⚠ **The general defect this exposes**: any rung whose jobs sit in a secondary PMG is charged the default wage share by `target_be`, by
+`era0_solvency.mjs` and by `ladder_options.mjs` alike. The art academy is the only such rung today, but the wage term is model-only and the fix is to
+give it an explicit `wage_pct` — not done, and flagged here so the number is not quoted again without it.
