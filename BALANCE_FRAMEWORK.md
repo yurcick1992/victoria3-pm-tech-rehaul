@@ -8320,3 +8320,33 @@ per-good (−19.8%), tooling e3 −17.8%, arms e1–e3 −14 to −18%, motor e3
 the war and tooling frontiers). ⚠ The honest statement of the cost: **arms e0 eats iron and hardwood, but arms e2 is 78% steel and tools, and the rule
 taxes that frontier as though it still ate raw goods.** Revisit if the frontier's input bill ever becomes the binding question; for the 1830s, which is
 what this lever is for, the choice is a no-op.
+
+#### 10.86.7 — THE SUPPLIER-SIDE TERM: an industry is relieved for what it SELLS as well as for what it BUYS (user-ruled 2026-09-19)
+
+**The ruling:** *"I also do like the idea that 'rawness score' (that leads to higher in0) is reduced a bit not only for the manufacturers with
+manufactured inputs, but also for their suppliers."* And on the weighting: *"At this moment, derive from 1836, and we'll balance the late game later.
+Since A/B, we still should have improvement at higher eras."*
+
+**WHY IT EXISTS.** §10.86.6's rule relieves an industry for what it BUYS, and F145 measured the consequence: it cannot reach **steel**, whose inputs are
+iron and coal, and steel is the binding constraint of the whole chain — demand 0.97 of vanilla, supply three quarters, **18% of its early prices at the
++75% ceiling in the SHIPPED CANON** where vanilla never touches it. This term reaches it from the other side.
+
+**THE RULE, implemented as `make_ab_config --in0-supplier <k>` (requires `--in0-stage`).**
+`w(g)` = the share of good g's **1836** demand that our own ladder buys back — the emitted 1836 history (Σ levels × the rung's own recipe) over the
+world-wide measured demand of `config/measured_1836.json`. Then **effective stage = input stage + k × w(the industry's own output good)**, capped at 2,
+and the lift is interpolated on that. Recorded as `_ab.in0_supplier` and `_ab.downstream_weight`.
+
+**The derived weights at 1836**: **steel 1.00 · explosives 0.95 · dye 0.40 · fertilizer 0.09 · tools 0.08 · paper 0.01**, and **0.00 for every pop-fed
+and army-fed good** — so the relief lands on the chain and nowhere else. ⭐ `w(steel) = 1.00` independently reproduces F54's reading of a vanilla 1838
+gamestate (steel consumed by tooling 90.5% and motor 9.5%).
+
+At `k = 0.5` on the 1.40 / 1.20 / 1.10 ladder: **steel ×1.400 → ×1.300**, explosives ×1.325 → ×1.230, dye ×1.305 → ×1.265, fertilizer/tooling/paper a
+hair, and **food, textile, furniture, glass, arms, artillery, motor, the academy and automotive completely unchanged** — six industries differ from the
+input-only book, in `inputs` and `target_be` alone.
+
+⚠⚠ **THE WEIGHTS ARE AN ANCHOR-TIME NUMBER DOING A CENTURY-LONG JOB, KNOWINGLY.** `w` is violently era-dependent — recomputed at 1910 the same measure
+reads **steel 0.31 · dye 0.69 · fertilizer 0.62 · tools 0.11 · explosives 0.04 · engines 0.04**, because vanilla's own railways, ports and construction
+grow into the same goods — and the lift anchors EVERY rung. The user's ruling accepts that for now on the stated grounds that the A/B ladder already
+supplies the era-over-era improvement; **balancing the late game is deferred, not answered.**
+⚠ It needs the 1836 LEVELS, which exist only in the emitted history (`mod/common/history/buildings`), so the generator THROWS if no build has run.
+`config/start_baseline.json` carries FACTORY counts, not levels (textile 73 factories / 153 levels), so it cannot substitute as things stand.
