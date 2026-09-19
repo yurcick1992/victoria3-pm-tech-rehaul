@@ -93,6 +93,14 @@ const IN0_STAGE = (() => { const v = arg('--in0-stage', ''); if (!v) return null
 //   ⚠ It needs the 1836 LEVELS, which exist only in the emitted history, so mod/common/history/buildings must have been built. It THROWS if not.
 const IN0_SUPPLIER = (() => { const v = arg('--in0-supplier', ''); if (!v) return null; const k = +v;
   if (!(k >= 0)) throw new Error('--in0-supplier <k>, k >= 0'); return k; })();
+// --in0-supplier-mode binary | share (default BINARY, user 2026-09-19: "I thought the 'being an input of a manufacturer' is a binary state").
+//   BINARY: w = 1 if ANY tiered rung at ANY era consumes this industry's output good, else 0. A property of the recipe book alone — no levels, no
+//     market data, no era choice, and therefore none of the 1836-vs-1910 instability the share version carries.
+//   SHARE: w = the share of the good's 1836 demand our own ladder buys back (levels x recipe over the measured market demand). Proportionate, but
+//     it answers "how much do MY OWN ladder's buildings take" when the question is "is my output an intermediate good", and a good sold to vanilla's
+//     construction sectors and farms is just as intermediate. Kept for A/B.
+const IN0_SUPPLIER_MODE = (() => { const v = arg('--in0-supplier-mode', 'binary');
+  if (!['binary', 'share'].includes(v)) throw new Error('--in0-supplier-mode binary|share'); return v; })();
 const IN0_LEVEL = (() => { const v = arg('--in0-level', ''); if (v === '') return null; const m = +v;
   if (!Number.isFinite(m) || m <= -1) throw new Error('--in0-level <margin> must be a number > -1 (0.05 = +5%)');
   if (IN0 !== 1) throw new Error('--in0-level and --in0 both set the era-0 input level; give one');
@@ -187,27 +195,33 @@ const DOWNSTREAM = {};
 if (IN0_SUPPLIER != null) {
   if (!IN0_STAGE) throw new Error('--in0-supplier needs --in0-stage: it adds a term to the same stage scale');
   const H = join(REPO, 'mod/common/history/buildings');
-  if (!existsSync(H)) throw new Error('--in0-supplier needs the emitted 1836 history (mod/common/history/buildings) for the LEVELS; build once first');
+  if (IN0_SUPPLIER_MODE === 'share' && !existsSync(H)) throw new Error('--in0-supplier-mode share needs the emitted 1836 history (mod/common/history/buildings) for the LEVELS; build once first, or use the default binary mode which needs neither');
   const LEV = {};
-  for (const f of readdirSync(H)) { const t = readFileSync(join(H, f), 'utf8').replace(/^\uFEFF/, ''); let i = 0;
+  for (const f of (IN0_SUPPLIER_MODE === 'share' && existsSync(H) ? readdirSync(H) : [])) { const t = readFileSync(join(H, f), 'utf8').replace(/^\uFEFF/, ''); let i = 0;
     while ((i = t.indexOf('create_building', i)) >= 0) { const j = t.indexOf('{', i); let d = 0, k = j;
       for (; k < t.length; k++) { if (t[k] === '{') d++; else if (t[k] === '}') { d--; if (!d) { k++; break; } } }
       const b = t.slice(j, k); const key = (b.match(/building\s*=\s*"([a-z_0-9]+)"/) || [])[1];
       if (key) { let lv = 0; for (const o of b.matchAll(/levels\s*=\s*(\d+)/g)) lv += +o[1]; LEV[key] = (LEV[key] || 0) + (lv || 1); }
       i = k; } }
-  if (!Object.keys(LEV).length) throw new Error('--in0-supplier: the emitted 1836 history yielded no buildings');
+  if (IN0_SUPPLIER_MODE === 'share' && !Object.keys(LEV).length) throw new Error('--in0-supplier-mode share: the emitted 1836 history yielded no buildings');
   // our ladder's own 1836 demand, from the BASE book's recipes (this generator is about to rewrite them, so the weight must not depend on its own output)
   const D = {};
   for (const ind of cfg.industries) { if (ind.disabled) continue;
     for (const t of ind.tiers) { const lv = LEV[t.key] || 0; if (!lv) continue;
       for (const [g, q] of Object.entries(t.inputs || {})) D[g] = (D[g] || 0) + lv * q; } }
   // the whole market's 1836 demand, measured
-  const M = JSON.parse(readFileSync(join(REPO, 'config/measured_1836.json'), 'utf8')).markets || {};
+  const M = IN0_SUPPLIER_MODE === 'share' ? (JSON.parse(readFileSync(join(REPO, 'config/measured_1836.json'), 'utf8')).markets || {}) : {};
   const T = {};
   for (const mk of Object.values(M)) for (const [g, v] of Object.entries(mk.buy || {})) T[g] = (T[g] || 0) + (+v || 0);
+  // who consumes each good, anywhere in our ladder, at any era — the BINARY test
+  const CONSUMED = {};
+  for (const ind of cfg.industries) { if (ind.disabled) continue;
+    for (const t of ind.tiers) for (const g of Object.keys(t.inputs || {})) (CONSUMED[g] ||= new Set()).add(ind.id); }
   for (const ind of cfg.industries) { if (ind.disabled) continue;
     const og = ind.tiers.slice().sort((a, b) => a.era - b.era)[0].output_good || ind.output_good;
-    DOWNSTREAM[ind.id] = T[og] > 0 ? Math.max(0, Math.min(1, (D[og] || 0) / T[og])) : 0; }
+    const others = [...(CONSUMED[og] || [])].filter(x => x !== ind.id);
+    DOWNSTREAM[ind.id] = IN0_SUPPLIER_MODE === 'binary' ? (others.length ? 1 : 0)
+      : (T[og] > 0 ? Math.max(0, Math.min(1, (D[og] || 0) / T[og])) : 0); }
 }
 // the lift an industry gets: linear interpolation on its EFFECTIVE stage between the three given values
 const effStage = id => Math.max(0, Math.min(2, (IND_STAGE[id] || 0) + (IN0_SUPPLIER != null ? IN0_SUPPLIER * (DOWNSTREAM[id] || 0) : 0)));
@@ -267,7 +281,7 @@ Object.assign(cfg.ai_defines, EXTRA_DEFINES);
 cfg.company_target_gate = process.argv.includes('--company-gate');   // emit_companies opt-in; OFF by default (see its header)
 cfg._ab = { A, B, A_for: Object.keys(A_FOR).length ? A_FOR : null, tiers_for: Object.keys(TIERS_FOR).length ? TIERS_FOR : null, ai_base: AI_BASE, ai_steep: STEEP ? { industries: [...STEEP.inds], ratio: STEEP.ratio } : null, cost_divisor_scaling: s, company_target_gate: cfg.company_target_gate, base: BASE, generated: new Date().toISOString() };
 cfg._ab.ai_defines_extra = Object.keys(EXTRA_DEFINES).length ? EXTRA_DEFINES : null;
-cfg._ab.in0 = IN0; cfg._ab.in0_level = IN0_LEVEL; cfg._ab.in0_stage = IN0_STAGE; cfg._ab.in0_supplier = IN0_SUPPLIER; cfg._ab.downstream_weight = IN0_SUPPLIER != null ? DOWNSTREAM : null; cfg._ab.good_stage = IN0_STAGE ? STAGE : null; cfg._ab.industry_stage = IN0_STAGE ? IND_STAGE : null; cfg._ab.in0_per_industry = (IN0_LEVEL != null || IN0_STAGE) ? LEVELLED : null; cfg._ab.in0_only = IN0_ONLY; cfg._ab.cost_flat = COST_FLAT; cfg._ab.cost_ratio = COST_RATIO; cfg._ab.cost_ladder = COST_LADDER; cfg._ab.ai_ladder = AI_LADDER; cfg._ab.bar_months = BAR_MONTHS;
+cfg._ab.in0 = IN0; cfg._ab.in0_level = IN0_LEVEL; cfg._ab.in0_stage = IN0_STAGE; cfg._ab.in0_supplier = IN0_SUPPLIER; cfg._ab.in0_supplier_mode = IN0_SUPPLIER != null ? IN0_SUPPLIER_MODE : null; cfg._ab.downstream_weight = IN0_SUPPLIER != null ? DOWNSTREAM : null; cfg._ab.good_stage = IN0_STAGE ? STAGE : null; cfg._ab.industry_stage = IN0_STAGE ? IND_STAGE : null; cfg._ab.in0_per_industry = (IN0_LEVEL != null || IN0_STAGE) ? LEVELLED : null; cfg._ab.in0_only = IN0_ONLY; cfg._ab.cost_flat = COST_FLAT; cfg._ab.cost_ratio = COST_RATIO; cfg._ab.cost_ladder = COST_LADDER; cfg._ab.ai_ladder = AI_LADDER; cfg._ab.bar_months = BAR_MONTHS;
 // ⭐ the book records that it is era-keyed, and the command that made it — the era pass (2026-09-13) is what a
 //   reader of an older book has to check for: a book without `keyed_by: 'era'` was keyed on the rung index
 cfg._ab.keyed_by = 'era'; cfg._ab.era_rule = '2026-09-13';
@@ -281,7 +295,7 @@ writeFileSync(join(REPO, `config/tech_tree_options.${SFX}.json`), readFileSync(j
 console.log(`A/B LADDER ${SFX} — KEYED ON ERA: A=${A} B=${B} · era-0 inputs ×${IN0}${IN0_ONLY ? ' (era 0 only)' : ' (ladder anchored on it)'} · cost ${COST_FLAT ? 'FLAT (vanilla anchor every rung)' : COST_LADDER ? `anchor × ${COST_LADDER.join('/')} by era (--cost-ladder)` : COST_RATIO ? `anchor × ${COST_RATIO}^era (--cost-ratio)` : 'anchor × A^era'} · ai_value${AI_LADDER ? AI_LADDER.join('/') + ' by era' : AI_BASE + '×' + A + '^era'} · cost divisor scaling ${s} (top rung ${cmax} pts ÷${(1 + s * cmax).toFixed(2)}, 600-pt rung ÷${(1 + 600 * s).toFixed(2)}; vanilla 0.001 would give ÷${(1 + 0.001 * cmax).toFixed(1)})${BAR_MONTHS != null ? ` · industry bar ${BAR_MONTHS} months` : ''}`);
 if (IN0_STAGE) { console.log('--in0-stage ' + IN0_STAGE.join(' / ') + ' (raw / stage 1 / stage 2), dye+silk+electricity RAW by ruling');
   console.log('  good stages: ' + Object.entries(STAGE).sort((a, b) => b[1] - a[1]).map(([g, v]) => g + ' ' + v.toFixed(2)).join(' · '));
-  if (IN0_SUPPLIER != null) console.log('  --in0-supplier ' + IN0_SUPPLIER + ': w(own output, 1836) -> ' + Object.entries(DOWNSTREAM).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]).map(([i, v]) => i + ' ' + v.toFixed(2)).join(' · '));
+  if (IN0_SUPPLIER != null) console.log('  --in0-supplier ' + IN0_SUPPLIER + ' (' + IN0_SUPPLIER_MODE + '): w(own output) -> ' + Object.entries(DOWNSTREAM).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]).map(([i, v]) => i + ' ' + v.toFixed(2)).join(' · '));
   console.log('  industry input stage -> lift: ' + Object.entries(IND_STAGE).sort((a, b) => effStage(b[0]) - effStage(a[0])).map(([i, v]) => i + ' ' + v.toFixed(2) + (IN0_SUPPLIER != null ? '+' + (IN0_SUPPLIER * (DOWNSTREAM[i] || 0)).toFixed(2) : '') + '->x' + LEVELLED[i]).join(' · ')); }
 console.log('industry     era  output      inputs                                                            cost    ai_value  BE%   VA/wk   VA/worker  in-share');
 for (const r of rows) console.log(`${r.ind.padEnd(12)} e${r.era}  ${String(r.out).padStart(7)}  ${Object.entries(r.inputs).map(([g, q]) => g + ' ' + q).join(', ').padEnd(62)} ${String(r.cost).padStart(6)}  ${String(r.aiv).padStart(7)}  ${String(r.be).padStart(3)}  ${r.va.toFixed(0).padStart(6)}  ${(r.va / r.emp).toFixed(3).padStart(8)}  ${r.share.toFixed(2)}`);
