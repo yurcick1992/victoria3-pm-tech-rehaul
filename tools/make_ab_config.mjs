@@ -99,8 +99,8 @@ const IN0_SUPPLIER = (() => { const v = arg('--in0-supplier', ''); if (!v) retur
 //   SHARE: w = the share of the good's 1836 demand our own ladder buys back (levels x recipe over the measured market demand). Proportionate, but
 //     it answers "how much do MY OWN ladder's buildings take" when the question is "is my output an intermediate good", and a good sold to vanilla's
 //     construction sectors and farms is just as intermediate. Kept for A/B.
-const IN0_SUPPLIER_MODE = (() => { const v = arg('--in0-supplier-mode', 'binary');
-  if (!['binary', 'share'].includes(v)) throw new Error('--in0-supplier-mode binary|share'); return v; })();
+const IN0_SUPPLIER_MODE = (() => { const v = arg('--in0-supplier-mode', 'map');
+  if (!['map', 'any', 'share'].includes(v)) throw new Error('--in0-supplier-mode map|any|share'); return v; })();
 const IN0_LEVEL = (() => { const v = arg('--in0-level', ''); if (v === '') return null; const m = +v;
   if (!Number.isFinite(m) || m <= -1) throw new Error('--in0-level <margin> must be a number > -1 (0.05 = +5%)');
   if (IN0 !== 1) throw new Error('--in0-level and --in0 both set the era-0 input level; give one');
@@ -213,15 +213,24 @@ if (IN0_SUPPLIER != null) {
   const M = IN0_SUPPLIER_MODE === 'share' ? (JSON.parse(readFileSync(join(REPO, 'config/measured_1836.json'), 'utf8')).markets || {}) : {};
   const T = {};
   for (const mk of Object.values(M)) for (const [g, v] of Object.entries(mk.buy || {})) T[g] = (T[g] || 0) + (+v || 0);
-  // who consumes each good, anywhere in our ladder, at any era — the BINARY test
+  // ⭐ WHO CONSUMES EACH GOOD — 'map' counts only rungs STANDING ON THE 1836 MAP (user-ruled: "w(g) = 1 if any tiered rung present in 1836
+  //   consumes its output good"), read from the committed config/start_baseline.json, which is a config artifact and not a build one.
+  //   'any' counts a rung at any era. Either way the RAW_BY_RULING goods score 0 on this side too — the ruling is applied symmetrically,
+  //   so a producer of dye, silk or electricity earns no supplier point for selling a good the ruling calls raw.
+  const PRESENT = {};
+  if (IN0_SUPPLIER_MODE === 'map') { const sum = JSON.parse(readFileSync(join(REPO, 'config/start_baseline.json'), 'utf8')).summary || {};
+    if (!Object.keys(sum).length) throw new Error('--in0-supplier-mode map: config/start_baseline.json has no summary');
+    for (const [id, v] of Object.entries(sum)) for (const [e, n] of Object.entries(v.tiers || {})) if (n > 0) (PRESENT[id] ||= new Set()).add(+String(e).replace('e', '')); }
   const CONSUMED = {};
   for (const ind of cfg.industries) { if (ind.disabled) continue;
-    for (const t of ind.tiers) for (const g of Object.keys(t.inputs || {})) (CONSUMED[g] ||= new Set()).add(ind.id); }
+    for (const t of ind.tiers) { if (IN0_SUPPLIER_MODE === 'map' && !(PRESENT[ind.id] || new Set()).has(t.era)) continue;
+      for (const g of Object.keys(t.inputs || {})) (CONSUMED[g] ||= new Set()).add(ind.id); } }
   for (const ind of cfg.industries) { if (ind.disabled) continue;
     const og = ind.tiers.slice().sort((a, b) => a.era - b.era)[0].output_good || ind.output_good;
     const others = [...(CONSUMED[og] || [])].filter(x => x !== ind.id);
-    DOWNSTREAM[ind.id] = IN0_SUPPLIER_MODE === 'binary' ? (others.length ? 1 : 0)
-      : (T[og] > 0 ? Math.max(0, Math.min(1, (D[og] || 0) / T[og])) : 0); }
+    DOWNSTREAM[ind.id] = RAW_BY_RULING.has(og) ? 0
+      : IN0_SUPPLIER_MODE === 'share' ? (T[og] > 0 ? Math.max(0, Math.min(1, (D[og] || 0) / T[og])) : 0)
+      : (others.length ? 1 : 0); }
 }
 // the lift an industry gets: linear interpolation on its EFFECTIVE stage between the three given values
 const effStage = id => Math.max(0, Math.min(2, (IND_STAGE[id] || 0) + (IN0_SUPPLIER != null ? IN0_SUPPLIER * (DOWNSTREAM[id] || 0) : 0)));
