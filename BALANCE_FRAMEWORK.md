@@ -8291,3 +8291,32 @@ headline "what share of the 1836 tiered WORKFORCE sits in a type that has shed m
 ⭐ **AND VANILLA SHEDS TOO, WHICH IS THE BASELINE THIS IS JUDGED AGAINST** — measured in the probe's own control arm over 1836 → 1838: glass retains
 **73%** of its staffed levels (ending at an 18% margin), explosives 75%, munition 82%, artillery 92%, everything else 92–112%. So "an industry that
 sheds a quarter of its workforce in the first two years" is VANILLA'S OWN BEHAVIOUR at the anchor, not a defect of ours.
+
+#### 10.86.6 — THE GRADED ERA-0 PENALTY: BY INDUSTRY, NOT BY GOOD (user-ruled 2026-09-19)
+
+**The ruling that opened it:** *"Let's experiment on different in0 depending on how manufactured its inputs are. The 'higher manufactured' they are, the
+smaller the in0 penalty should be. An input which input is itself manufactured gives squared effects. For the purpose of this, dyes, silk and
+electricity are raw."*
+**The ruling that settled its shape:** *"Nah, 1830s is what matters for this question. And it seems that per good or per industry is almost the same
+for e0, so let's go for per industry for simplicity."*
+
+**THE MECHANISM (F143 §3a).** A uniform `in0` COMPOUNDS down the chain: an industry eating a manufactured good pays its own penalty AND the price rise
+its supplier's penalty caused, so a second-stage industry carries roughly the square of a first-stage one. Motor is the measured proof — its era-0 rung
+is at a 0% base margin against vanilla's +20%, engines are bid to 175% of base against vanilla's 148%, and it builds half vanilla's levels.
+
+**THE RULE, implemented as `make_ab_config --in0-stage <raw>,<stage1>,<stage2>`.** It is a RULE derived from the recipe book, which is what separates it
+from the CLOSED `--in0-level` axis (§10.86.4): nothing is chosen per industry by hand.
+- a good's **STAGE** = 0 if raw, else 1 + the value-weighted mean stage of ITS OWN first rung's inputs. **RAW BY RULING: dye, silk, electricity.**
+  Derived: automobiles 2.20 · engines 2.00 · fine_art 2.00 · ammunition 1.76 · explosives 1.38 · telephones 1.14 · every other tiered good 1.00.
+- an industry's **LIFT** = the three given values interpolated on the value-weighted mean stage of **its ERA-0 inputs**, applied to every rung (the
+  ladder stays anchored on the lifted rung 0).
+
+**PER INDUSTRY, NOT PER GOOD — and the reason it is free.** Interpolating on the mean stage equals the value-weighted mean of per-good lifts whenever a
+basket's inputs sit in one linear segment of the scheme, so the two rules are **identical at era 0 for every industry that stands on the 1836 map**
+(explosives, the only mixed era-0 basket, comes out ×1.419 either way). They diverge only where a basket straddles the kink at stage 1, and in practice
+only at the HIGHER rungs, where the input mix becomes far more manufactured than the era-0 mix the rule keys on — artillery e3 ×1.550 against ×1.244
+per-good (−19.8%), tooling e3 −17.8%, arms e1–e3 −14 to −18%, motor e3 **+13.0%**, automotive e3 **+14.2%**.
+⇒ The simplification is paid for entirely in the frontier rungs' input bill, and it is paid in the direction the money printer wants (a HIGHER bill on
+the war and tooling frontiers). ⚠ The honest statement of the cost: **arms e0 eats iron and hardwood, but arms e2 is 78% steel and tools, and the rule
+taxes that frontier as though it still ate raw goods.** Revisit if the frontier's input bill ever becomes the binding question; for the 1830s, which is
+what this lever is for, the choice is a no-op.
