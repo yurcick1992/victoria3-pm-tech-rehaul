@@ -14555,3 +14555,76 @@ level count sits flat at 18).
 survives; its justification changes, and it is tighter than stated.
 ⚠ Every arm's steel is badly understaffed early — occupancy 26–52% at 1836.10 against vanilla's 74% — and recovers to 42–68% by 1837.10 against
 vanilla's 78%. The early trough is common to the whole book, not to the penalty.
+
+## F145 — ⭐⭐ THE USER'S TEST CONDEMNS THE SHIPPED CANON'S STEEL, AND THE ANSWER TO "RAW JUST UNDER THE CEILING, CHAIN LOWER STILL" IS NO: chain relief does improve the engine market monotonically (consumption 0.34 → 0.62 → 0.73 of vanilla as the chain lift falls 1.40 → 1.20 → 1.00 at a fixed raw 1.40) but relief below 1.20 and any raw above 1.40 both cost STEEL, which is the binding constraint and already sits at 0.82 of vanilla's working size with 18% of its prices pinned at the +75% ceiling IN THE CANON (6 runs of 1836→1838 plus the two earlier probes, 2026-09-19)
+
+**The test, in the user's words:** *"If the steel is meaningfully consumed and its price isn't at +75%, then it's OK."* It is the right test and it is
+decisive, because it separates "a smaller steel sector is a different equilibrium" from "a smaller steel sector is a shortage".
+
+### 1. ⭐⭐ THE SHIPPED CANON FAILS IT
+
+The steel market, the seven instrumented markets summed, median over each arm's runs. **"at ceiling" = the share of (market × date) readings at 174%
+of base or above, where the engine can no longer signal scarcity at all (§10.15, reached from below).**
+
+| arm | raw `in0` | price 1836.2 / 1836.7 / 1837.1 / 1837.7 / 1837.12 | **buy orders ÷ vanilla** | **at ceiling** |
+|---|---|---|---|---|
+| **vanilla** | — | 110 / 139 / 118 / 122 / 124% | **1.00** | **0%** |
+| **flat 1.2 — THE CANON** | 1.20 | 113 / 173 / 150 / 147 / **142%** | **0.97** | **18%** |
+| flat 1.3 | 1.30 | 120 / 175 / 167 / 159 / 153% | 0.95 | 30% |
+| flat 1.4 · grad-a | 1.40 | 127 / 175 / 175 / 165 / 157% | 1.01 · 1.04 | 42% · 43% |
+| grad-f | 1.40 | 124 / 175 / 175 / 175 / 155% | 1.03 | 55% |
+| grad-d | 1.45 | 129 / 175 / 175 / 175 / 168% | 1.04 | 60% |
+| grad-e · flat 1.5 | 1.50 | 132 / 175 / 175 / 175 / 171–175% | 1.04 · 1.02 | 55% · 60% |
+| grad-b | 1.55 | 137 / 175 / 175 / 167 / 173% | 0.92 | 55% |
+| grad-c | 1.70 | 147 / 175 / 175 / 175 / 175% | 0.88 | 73% |
+
+⇒ **Steel is meaningfully consumed in every arm — 0.88 to 1.04 of vanilla's buy orders — and its price IS at the ceiling.** Demand is vanilla's, supply
+is three quarters (F144 §2a), and the price sits at 142–175% against vanilla's 110–139%, which never touches the band edge once. **By the user's own
+criterion the canon's steel is not OK**, and that is a defect of the SHIPPED book at the anchor, independent of the `in0` experiment.
+
+⭐ **The mechanism**: vanilla leaves steel at a **−2.5%** base-price margin, the thinnest of any industry, so the canon's uniform ×1.2 lift pushes it to
+**−19%**; it sheds staffing, supply falls ~20%, and with demand unchanged the price runs to the ceiling. **Steel is the industry with the least
+headroom in vanilla and it gets no relief from a rule keyed on input manufacturedness, because its own inputs are iron and coal.**
+
+### 2. THE ANSWER TO THE QUESTION: NO
+
+| arm | raw / chain | world GDP ÷ control | **steel staffed ÷ van** | steel levels ÷ van | steel at ceiling | **engines consumed ÷ van** | engines at ceiling |
+|---|---|---|---|---|---|---|---|
+| vanilla | — | 1.00 | 1.00 | 1.00 | 0% | 1.00 | 23% |
+| flat 1.2 (canon) | 1.20 flat | 1.01 | 0.82 | 1.00 | 18% | 0.77 | 33% |
+| flat 1.4 | 1.40 flat | 0.97 | 0.80 | 1.00 | 42% | **0.34** | 57% |
+| **grad-a** | **1.40 / 1.20 / 1.10** | **0.99** | **0.75** | **0.97** | 43% | **0.62** | **30%** |
+| grad-f | 1.40 / 1.00 / 1.00 | 0.97 | 0.59 | 0.75 | 55% | **0.73** | 48% |
+| grad-d | 1.45 / 1.05 / 1.00 | 0.96 | 0.56 | 0.83 | 60% | 0.66 | 48% |
+| grad-e | 1.50 / 1.05 / 1.00 | 0.96 | 0.47 | 0.64 | 55% | 0.66 | 43% |
+| grad-b | 1.55 / 1.20 / 1.05 | 0.96 | 0.49 | 0.61 | 55% | 0.32 | 65% |
+| grad-c | 1.70 / 1.25 / 1.00 | 0.91 | 0.27 | 0.50 | 73% | 0.31 | 58% |
+
+⭐ **THE CHAIN RELIEF WORKS, AND IT IS THE FIRST CLEAN CONFIRMATION OF THE IDEA.** Hold the raw penalty at 1.40 and vary only the chain: **engine
+consumption goes 0.34 → 0.62 → 0.73 of vanilla at chain 1.40 → 1.20 → 1.00**, and the engine ceiling share 57% → 30% → 48%. The compounding F143 §3a
+diagnosed is real and grading acts on it.
+
+⚠ **But relief beyond 1.20 costs steel**: grad-f (chain 1.00) has steel at 0.59 staffed and 0.75 levels against grad-a's 0.75 and 0.97, at the SAME raw
+1.40 where steel's own lift is identical. The coherent mechanism: a cheaper motor recipe means more motor plants, more steel demand, and steel is
+already price-ceilinged, so the extra demand only deepens the shortage. ⚠ n=2, mechanism inferred not isolated.
+⚠ **And raw above 1.40 is strictly worse on everything** — grad-d and grad-e lose steel (0.56, 0.47) and world product (0.96) without buying back
+engines (0.66 both).
+
+⇒ **grad-a (1.40 / 1.20 / 1.10) is the optimum of all twelve arms measured today**: the best world product of any penalised arm (0.99), steel's levels
+essentially intact (0.97), and the engine market closest to vanilla's (30% at the ceiling against vanilla's 23%). The first graded arm was the right one.
+
+### 3. WHAT THIS PUTS ON THE TABLE
+
+- **The raw-input penalty's working maximum is 1.40**, now confirmed three ways: F140 on paper, F144 on demolition, this on the market.
+- **The chain lift's optimum is ≈1.20, not lower** — the relief is real but it runs into steel.
+- ⭐ **The binding constraint is STEEL, and no rule keyed on an industry's own INPUTS can relieve it.** What would: relief keyed on the industry's
+  vanilla margin HEADROOM (steel is the thinnest at −2.5%), or on whether its OUTPUT feeds other tiered industries. NOT RULED, NOT TESTED.
+- ⚠ **The canon's steel needs attention regardless of the `in0` question** — 18% of its prices at the band edge at the anchor, where vanilla has 0%.
+
+**Confidence.** HIGH on the market tables (medians over seven markets and every run of each arm; vanilla's 0% ceiling share against every mod arm's
+18%+ is unmistakable). HIGH on the chain-relief gradient at fixed raw 1.40 — three arms, monotone, mechanism understood. MEDIUM on grad-f's steel being
+worse than grad-a's: n=2 and the mechanism is inferred rather than isolated.
+
+**What it does NOT say.** Nothing century-scale. Nothing about engines being "dear" as a defect of ours — vanilla's own engine market is at the ceiling
+23% of the time, so only the ceiling SHARE against vanilla's is comparable. Nothing about whether steel's thinness is better fixed by exempting it from
+the lift or by repairing its recipe.
