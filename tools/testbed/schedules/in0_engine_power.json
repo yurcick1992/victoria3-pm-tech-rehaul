@@ -1,0 +1,51 @@
+{
+ "schedule_version": 1,
+ "label": "in0-engine-power",
+ "_why": "POWER ON THE ENGINE QUESTION (user-ruled 2026-09-19: 'Do more n on 1836-1838 to better understand the engine situation'). F147 left the engine reading moving two ways at once: adding the supplier point took engine CONSUMPTION from 0.62 to 0.95 of vanilla while the share of engine price readings at the +75% ceiling ROSE from 30% to 45%. Read together that is demand outrunning supply rather than starvation - tight at 0.95 of vanilla's volume instead of tight at 0.62 - but n=2 on a market of ~300 units, supplied by a motor industry of about seven world levels at the 1836 start, cannot separate 'more activity' from 'worse shortage'. This batch takes BOTH arms to n=6 and reads the engine market on its own order book (buy, sell, production) rather than on price alone.",
+ "_arms": {
+  "probe-gradsup": "in0-stage 1.40/1.20/1.10 + --in0-supplier 0.5 (map). Four MORE runs; with 20260919_155627's two that is n=6.",
+  "probe-grada": "in0-stage 1.40/1.20/1.10, no supplier point. Four MORE runs; with 20260919_142856's two that is n=6. Re-run because the comparison needs power on BOTH sides - the question is a difference between the arms, not a property of one."
+ },
+ "_delta": "ONE FLAG between the arms: --in0-supplier 0.5. Five industries differ (steel, tooling, paper, fertilizer x1.400 -> x1.300; explosives x1.325 -> x1.225); the other twelve are byte-identical.",
+ "_predictions": {
+  "_basis": "F147 at n=2 each. Stated before the runs.",
+  "the_question": "Is the engine market's higher ceiling share under gradsup a SUPPLY failure or a DEMAND success? The order book answers it directly. SUPPLY SUCCESS: engine PRODUCTION up against grad-a, motor's staffed levels up, buy/sell ratio roughly unchanged - the market is bigger and just as tight. SUPPLY FAILURE: production flat or down while buy orders rise, buy/sell ratio UP - the extra demand is unmet. Predict the first, because steel is motor's only input and the supplier point made it cheaper: engine production +30-60% against grad-a, motor staffed levels up, buy/sell ratio within 10%.",
+  "engines_consumed": "gradsup 0.95 of vanilla against grad-a's 0.62 at n=2. At n=6 predict the gap holds at 0.25-0.40 and both medians move less than 0.08 from their n=2 values.",
+  "steel": "The n=2 headline was steel's ceiling share 43% -> 15%. Predict it holds within 10 points at n=6; that is the finding F147 rests on and this batch is also its replication.",
+  "world_product": "gradsup 1.00 and grad-a 0.99 of the control at n=2; predict both within 0.02 at n=6, i.e. the one-point gap does NOT survive as a separable claim.",
+  "null_result": "If the two arms' engine order books are indistinguishable at n=6, the F147 engine reading was noise and only the STEEL half of that finding stands."
+ },
+ "_reads": "early_probe --also across all four probe sessions; the steel and engine market tables; and the engine order book per arm - buy, sell, production and the buy/sell ratio - which is what separates the two hypotheses.",
+ "_comparison": "The n=2 readings of 20260919_155627 (gradsup) and 20260919_142856 (grad-a), which these runs pool with; vanilla and flat 1.2-1.5 from 20260919_132049.",
+ "_watch": ["run 1 at ~3 min: mod marker, version, this run's error window BY POSITION, clock", "engine production and motor staffing in each arm's first summary set", "post-batch: preflight -Session, VERDICT.md, SESSION_VERDICTS, FINDINGS"],
+ "_cost": "8 runs x 1836->1838 ~ 3 min each ~ 28 min including builds and harvest.",
+ "_caveats": [
+  "TWO IN-GAME YEARS IS NOT THE CENTURY.",
+  "The engine market is SMALL (~300 units against steel's ~1250) and motor is about seven world levels at 1836, so its readings are intrinsically coarser than steel's; n=6 improves them, it does not make them fine.",
+  "Cross-session pooling with two earlier sessions - same machine, day, game version, span and dump dates.",
+  "Configs are run back to back, never interleaved (the 2026-09-13 ruling).",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent."
+ ],
+ "defaults": {
+  "metrics": ["country_state", "population", "treasury", "events", "market_goods_scoped"],
+  "autosave_interval": "quarteryear",
+  "timeout_minutes": 40,
+  "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "JAP", "NET"],
+  "dump_dates": ["1836.2.1", "1836.7.1", "1837.1.1", "1837.7.1", "1837.12.1"],
+  "_dump_dates_note": "Identical to all four earlier probes, which is what makes the sessions poolable."
+ },
+ "setups": {
+  "probe-gradsup": { "kind": "config", "config": "config/mod_config.probe-gradsup.json" },
+  "probe-grada": { "kind": "config", "config": "config/mod_config.probe-grada.json" }
+ },
+ "runs": [
+  { "setup": "probe-gradsup", "until": "1838.1.1" },
+  { "setup": "probe-gradsup", "until": "1838.1.1" },
+  { "setup": "probe-gradsup", "until": "1838.1.1" },
+  { "setup": "probe-gradsup", "until": "1838.1.1" },
+  { "setup": "probe-grada", "until": "1838.1.1" },
+  { "setup": "probe-grada", "until": "1838.1.1" },
+  { "setup": "probe-grada", "until": "1838.1.1" },
+  { "setup": "probe-grada", "until": "1838.1.1" }
+ ]
+}

@@ -14761,3 +14761,44 @@ in the twelve arms measured today). HIGH on the control check. MEDIUM on the eng
 **What it does NOT say.** Nothing century-scale. Nothing about whether the supplier point should be k = 0.5 rather than some other weight — only one
 value was tested. Nothing about the `any`-era or `share` variants of the rule, both of which remain in the generator for A/B and neither of which has
 been run.
+
+#### F147 §1a — ⚠⚠ CORRECTION, SAME DAY: "ENGINES CONSUMED 0.62 → 0.95" WAS BUY ORDERS MISLABELLED AS CONSUMPTION, AND THE ORDER BOOK SAYS THE ENGINE SUPPLY GOT SLIGHTLY WORSE
+
+Reading the engine market on its **order book** rather than on price (`tools/testbed/ledger/good_market.mjs`, written for this) shows §1's engine row
+is wrong in a way that inverts its meaning. **Buy orders are DEMAND, including demand that is never met.** The quantity actually delivered is bounded
+by sell orders and production, and those moved the other way.
+
+**The engine market, the instrumented markets summed, median of each arm's runs (n=2 each):**
+
+| | 1836.2 | 1836.7 | 1837.1 | 1837.7 | **1837.12** |
+|---|---|---|---|---|---|
+| **vanilla** — buy / sell / production | 174 / 189 / 177 | 235 / 189 / 177 | 292 / 186 / 174 | 321 / 192 / 178 | **326 / 192 / 177** |
+| **grad-a** — buy / sell / production | 151 / 188 / 176 | 167 / 84 / 72 | 111 / 38 / 18 | 136 / 63 / 31 | **203 / 104 / 68** |
+| **gradsup** — buy / sell / production | 168 / 185 / 175 | 180 / 103 / 91 | 188 / 92 / 40 | 279 / 101 / 69 | **308 / 82 / 60** |
+
+⇒ **gradsup ends with MORE unmet engine demand (buy 308 against 203) and LESS engine supply (sell 82 against 104, production 60 against 68) than
+grad-a.** Its buy/sell ratio is **3.78** against grad-a's 1.90 and vanilla's 1.70. **So the engine ceiling share rising 30% → 45% is a genuine
+worsening of the shortage, not "demand outrunning supply" as §2 read it.** ⚠ n=2 both sides, on a market of ~300 units — which is exactly why the
+user ordered more n, and the running batch (`20260919_161*_in0-engine-power`, n=6 each) is what settles the magnitudes.
+
+⚠ **And engine production collapses in BOTH mod arms**: 176 → 18 → 68 in grad-a and 175 → 40 → 60 in gradsup, against vanilla's flat 174–178. That is
+a property of the whole book at this penalty, not of the supplier point.
+
+#### F147 §1b — AND THE STEEL WIN IS REAL BUT ITS MECHANISM IS NOT THE ONE §1 IMPLIED
+
+| steel, 1837.12 | buy | sell | production | buy/sell | price | at ceiling |
+|---|---|---|---|---|---|---|
+| vanilla | 1252 | 936 | 937 | 1.34 | 124% | 0% |
+| grad-a | 1305 | 706 | 672 | 1.85 | 157% | 43% |
+| **gradsup** | **1207** | 709 | **705** | **1.71** | 155% | **15%** |
+
+**Steel's market improves mostly because DEMAND falls (buy 1305 → 1207, −8%), not because supply rises (production 672 → 705, +5%).** The reason is
+that the supplier point relieves **tooling** as well as steel — and tooling e2, whose recipe is wood + steel, is the largest steel buyer on the 1836
+map, so a 7% lighter input bill on tooling is a 7% lighter pull on steel. **Relieving steel itself did little for steel's own supply.**
+
+⇒ The ceiling share falling 43% → 15% stands as measured, and it is still the most useful thing the term does. But the mechanism is "a relieved BUYER
+pulls less", not "a relieved PRODUCER makes more" — which matters, because it means the lever's reach depends on relieving the right CONSUMERS, and
+that is the input-side rule (§10.86.6), not the supplier point.
+
+⚠ **The lesson for the instrument, not just the finding**: price alone could not have told these apart, and a price at the 175% band edge carries no
+information at all (§10.15). **Quantities first whenever a good is at the edge** — `good_market.mjs` exists so this is one command.
