@@ -1,0 +1,102 @@
+{
+ "schedule_version": 1,
+ "label": "allanchor-probe",
+ "_why": "THE FULL e1 ANCHOR, PROBED BEFORE ANY CENTURY RUN (user-ruled 2026-09-19: \"no in0 for the tier-1 anchored recipes (although needs probing)\", and the overnight plan is two 2+1 century arms, one on the MIXED anchor map and one on this). Sliding ALL SEVENTEEN industries ladders to start at e1 removes a full rungs margin everywhere (A/B = 1.467), so the canons 1.2 lift on top pushes the raw-fed chains to the band edge: steel e0s break-even goes 123 -> 172% of base and motors 100 -> 147%, and F144/F145 established steel as the binding constraint of the whole chain. This probe asks whether no lift at all is right and what the lift costs.",
+ "_arms": {
+  "probe-allanch-in10": "ALL 17 industries anchored on e1, NO era-0 lift (in0 1.0) - the users own choice. e0 break-evens: steel 143, motor 122, textile 109, arms 72, academy 73. e0 base margins: textile -8%, steel -30%, motor -18%, arms +39%, academy +36%.",
+  "probe-allanch-in12": "The same map with the canons 1.2 lift, as the UPPER BRACKET and the measure of what the lift costs here. steel e0 break-even 172% of base - one point under the engines own 175% band edge, which is F144s demolition signature."
+ },
+ "_the_anchor_map": "EVERY industry slid to origin e1, including the five with no e1 rung (motor e0/e2/e3, automotive e2/e3, electrics e2) where the anchor recipe falls back to the first rungs method and only the exponent moves. There is NO untouched control industry in these arms - the control is the canon and vanilla in 20260919_132049 and the mixed-anchor arms of 20260919_190944 / _193440, all at the same span and dump dates.",
+ "_delta": "Against config/mod_config.canon-c19-in12.json: output_qty, inputs and target_be on the eight anchored industries, and NOTHING else - building_cost and ai_value stay functions of the absolute era in both arms, as --anchor-for specifies. Between the two arms: inputs and target_be only, on every industry (in0 reaches every rung through the anchor). A 2.2 / B 1.5 / cost anchor x 1.9^era / ai_value 1000x3^era / divisor 0.000125 / the 10.75 defines / the 24-month bar throughout; tech-tree twins byte-identical to the canon's.",
+ "_flagged_against_F111": "As with the mixed book: the slide is UNIFORM (every industry one era down), so the relation between industries is preserved and this is not F111s per-industry re-keying. It still needs a BALANCE_FRAMEWORK ruling before a book of this shape could go canon.",
+ "_predictions": {
+  "_basis": "The base-price arithmetic over the emitted 1836 history, plus the mixed-anchor sweep (in0 1.2/1.3/1.4/1.5, n=3 each) at the same span and dump dates. Stated before the runs.",
+  "steel_is_the_question": "PREDICT in10 keeps steel alive - staffed producer levels at or above the canons 11.6 and the ceiling share under 25% - and in12 does NOT: steel shedding below 10 staffed levels, its ceiling share above 30%, and engines following it down. If in12s steel is FINE, the 172% break-even is not the wall the arithmetic says it is and F144s mechanism does not generalise to this book.",
+  "e0_survival": "all-e1 at in0 1.0 is GENTLER on the consumer e0s than the mixed book at 1.2 (textile e0 -8% at base against -23%), so PREDICT textile e0 above 85% retained, furniture and glass above 60%, tooling above 50% - i.e. e0 comfortable, which would mean the no-lift setting is too lenient for the goal and the answer is between 1.0 and 1.2.",
+  "the_dispersion": "This is the first book that compresses the spread of vanillas own recipe margins: the art academy goes +108% -> +36% and arms +41% -> +39% at in0 1.0. PREDICT the academys realised margin falls well below the 79-101% every earlier arm measured. That is the money-printer defect of ROADMAP step 8 P1 moving for the first time.",
+  "world_product": "PREDICT 0.92-0.98 of the control for in10 and 0.88-0.94 for in12, by analogy with the mixed sweep (0.96 at 1.2 falling to 0.89 at 1.5)."
+ },
+ "_comparison": "vanilla and the canon (20260919_132049), the mixed-anchor sweep (20260919_190944 in0 1.2/1.4 and 20260919_193440 in0 1.3/1.5), and the tooling-only arms (20260919_173948). Same machine, day, game version, span, dump dates.",
+ "_watch": [
+  "run 1 at ~3 min: marker, version, error window BY POSITION, clock",
+  "FIRST: steel staffed producer levels and the engines market, which is what this probe is for",
+  "the art academys realised margin - the dispersion claim",
+  "READ AT 1837 (--years 1836,1837): quarterly autosaves give 7 summaries ending 1837.10",
+  "post-batch: preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS"
+ ],
+ "_cost": "6 runs x 1836->1838 at ~2.8 min each plus builds and harvest: about 25 minutes.",
+ "_caveats": [
+  "TWO IN-GAME YEARS IS NOT THE CENTURY. This measures the anchor: prices, survival, world product. It says nothing about obsolescence, the price decline or the hoard.",
+  "The anchor shift is a pure LEVEL shift, so F97's death test is identical under every anchor and no obsolescence claim is possible from this batch in either direction.",
+  "building_cost and ai_value do not shift with the anchor, so capital per unit of output moves for all eight shifted industries. Over 21 months almost nothing is built (F142); over a century it would matter.",
+  "The F111 conflict above is REAL and accepted, not resolved.",
+  "n=3 per arm. Steel (~1,250 units) resolves; engines, motor, explosives and munition are single-digit levels and do NOT (F147 section 1c).",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent.",
+  "There is no untouched control industry inside these arms - every industry moved - so every reading is against the other sessions rather than against a control in the same run.",
+  "n=3, and steel is ~18 world levels: it resolves. Motor, engines, explosives and munition are single-digit levels and do NOT (F147 section 1c)."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "quarteryear",
+  "timeout_minutes": 40,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1836.7.1",
+   "1837.1.1",
+   "1837.7.1",
+   "1837.12.1"
+  ],
+  "_dump_dates_note": "Identical to all six probe sessions of 2026-09-19, which is what makes every earlier arm reusable as a reference."
+ },
+ "setups": {
+  "probe-allanch-in10": {
+   "kind": "config",
+   "config": "config/mod_config.probe-allanch-in10.json"
+  },
+  "probe-allanch-in12": {
+   "kind": "config",
+   "config": "config/mod_config.probe-allanch-in12.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "probe-allanch-in10",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-allanch-in10",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-allanch-in10",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-allanch-in12",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-allanch-in12",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-allanch-in12",
+   "until": "1838.1.1"
+  }
+ ]
+}

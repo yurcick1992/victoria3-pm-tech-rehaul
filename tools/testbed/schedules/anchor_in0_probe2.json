@@ -1,0 +1,100 @@
+{
+ "schedule_version": 1,
+ "label": "anchor-in0-probe2",
+ "_why": "BATCH 2 of the four-setup in0 sweep (user-ruled 2026-09-19, chosen from batch 1 = session 20260919_190944). Batch 1 read: at in0 1.2 the e0 rungs retain 40-85% of staffed levels at POSITIVE realised margins (textile 84% @32%, furniture >=85%, tooling 47% @1%, glass 40% @15%) and the consumer prices land on vanillas (glass 96 vs 81, clothes 111 vs 109, furniture 121 vs 112); at in0 1.4 textile and furniture land on the target (68% @23%, 41% @24%) but GLASS IS DYING at 20% and world product falls to 0.92 of the control. No single in0 hits the goal for all four industries - the dispersion is set by how profitable each industrys own VANILLA recipe is - so this batch takes the interpolated centre and finds the wall.",
+ "_arms": {
+  "probe-anch-in13": "The interpolated centre. Predicted from batch 1: textile e0 ~75%, furniture ~60%, glass ~30%, tooling ~38%, world product ~0.94. This is the setup expected to come closest to the goal (e0 alive at a noticeable level, not thriving, not dying).",
+  "probe-anch-in15": "The wall. At in0 1.5 the ANCHOR rung itself is negative at base for textile (-11%) and tooling (-15%), so this finds where the axis stops working: does glass e0 go under 10% (DEAD), does the anchor rung start shedding, and does world product break 0.90?"
+ },
+ "_the_anchor_map": "EIGHT industries' ladders slide to start at e1: textile, furniture, glass, tooling, munition, synthetics, automotive and electrics. ⭐ The origin is e1 for ALL of them, INCLUDING automotive and electrics, which have no e1 rung (user-ruled 2026-09-19: 'automotive and electrics are not anchored at e2. They are anchored at e1, despite it not existing') - so automotive's e2 takes A^1 and its e3 A^2, and electrics' e2 takes A^1. Where the industry HAS an e1 rung the anchor recipe is that rung's own vanilla method (textile e1 = vanilla's 60 clothes, tooling e1 = vanilla's 60 tools); where it does not, the anchor recipe stays the first rung's, so only the exponent moves. That makes the rule uniformly 'this industry's whole ladder slides down one era' rather than 'anchor on whatever rung it happens to begin with'. Nine industries UNTOUCHED and keyed on the absolute era as the canon is - food, paper, fertilizer, explosives, steel, motor, arms, artillery, art_academy - which makes them a control built into both arms. ⚠ synthetics is the agent's inference, not the user's list: it is e1-only and structurally identical to munition, so the same principle covers it; it is a one-line revert if unwanted.",
+ "_delta": "Identical to batch 1s arms except in0. The anchor map is the same eight industries slid to origin e1; the other nine are untouched and keyed on the absolute era, a control inside both arms.",
+ "_flagged_against_F111": "⚠ THE FLAG IS MILDER THAN THE AGENT FIRST STATED, and the correction matters. Anchoring the late industries on their OWN first rung would have reproduced the index-keying FINDINGS F111 measured as a defect (automotive's e2 at 30 automobiles, a QUARTER of its era peers) and that the ERA RULE (10.78 rule 3) forbids. The user's actual ruling - origin e1 for every shifted industry whether or not e1 exists - does NOT do that: automotive's e2 lands at 66 against the canon's 145.2, exactly the same one-era slide (÷2.2) every other shifted industry takes, so the book is still a function of the era and the relation BETWEEN industries is preserved. What remains is that eight industries sit one era lower on the ladder than the other nine, which is a deliberate, uniform, named departure rather than the per-industry re-keying F111 condemned. It does not bite on a 1836->1838 span (of those eight, only textile, furniture, glass, tooling and munition have rungs on the 1836 map) and it WOULD need an explicit ruling in BALANCE_FRAMEWORK before a book of this shape could go canon.",
+ "_predictions": {
+  "_basis": "Interpolation from batch 1 (in0 1.2 and 1.4, n=3 each) at the same span and dump dates. Stated before the runs.",
+  "centre": "in13: e0 retention textile 70-80%, furniture 55-70%, tooling 33-43%, glass 25-35%; realised margins on the survivors 15-28%; world product 0.93-0.96.",
+  "wall": "in15: glass e0 under 15% and plausibly under 10% (DEAD); tooling e0 under 25%; the e1 ANCHOR rung of textile or tooling begins to shed for the first time in any arm - if it does not, the anchor rung is robust and the axis has more room than the base-price margins suggest; world product 0.89-0.93.",
+  "prices": "Consumer prices rise monotonically with in0 as production falls: predict glass 100-110%, clothes 124-135%, furniture 125-135% at in15, with the ceiling share still under 25% (batch 1 read 4-16%, so the band is not the binding constraint on this axis).",
+  "the_shape_of_the_answer": "If in13 lands the three big consumer industries in the 40-70% band at margins near 23%, the axis has a usable optimum and the sweep is done. If glass is still the outlier at every in0, the finding is that a SCALAR in0 cannot compress the dispersion and the next lever is A, which the user has reserved."
+ },
+ "_comparison": "Batch 1 (20260919_190944, probe-anch-in12 / in14, n=3 each), the canon and vanilla (20260919_132049), and the tooling-only arms (20260919_173948). All share machine, day, game version, span and dump dates.",
+ "_watch": [
+  "run 1 at ~3 min: marker, version, error window BY POSITION, clock",
+  "the first summary set: e0 staffed levels in textile, furniture, glass, tooling AND the e1 anchor rungs",
+  "runs 1-3 are in13 back to back, then 4-6 are in15 - configs are NOT alternated",
+  "READ AT 1837 (--years 1836,1837): quarterly autosaves give 7 summaries ending 1837.10, so the 1838.1 column is empty for most runs - a cadence artifact, not a defect",
+  "post-batch: preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS"
+ ],
+ "_cost": "6 runs x 1836->1838 at ~2.8 min each plus builds and harvest: about 25 minutes.",
+ "_caveats": [
+  "TWO IN-GAME YEARS IS NOT THE CENTURY. This measures the anchor: prices, survival, world product. It says nothing about obsolescence, the price decline or the hoard.",
+  "The anchor shift is a pure LEVEL shift, so F97's death test is identical under every anchor and no obsolescence claim is possible from this batch in either direction.",
+  "building_cost and ai_value do not shift with the anchor, so capital per unit of output moves for all eight shifted industries. Over 21 months almost nothing is built (F142); over a century it would matter.",
+  "The F111 conflict above is REAL and accepted, not resolved.",
+  "n=3 per arm. Steel (~1,250 units) resolves; engines, motor, explosives and munition are single-digit levels and do NOT (F147 section 1c).",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "quarteryear",
+  "timeout_minutes": 40,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1836.7.1",
+   "1837.1.1",
+   "1837.7.1",
+   "1837.12.1"
+  ],
+  "_dump_dates_note": "Identical to all six probe sessions of 2026-09-19, which is what makes every earlier arm reusable as a reference."
+ },
+ "setups": {
+  "probe-anch-in13": {
+   "kind": "config",
+   "config": "config/mod_config.probe-anch-in13.json"
+  },
+  "probe-anch-in15": {
+   "kind": "config",
+   "config": "config/mod_config.probe-anch-in15.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "probe-anch-in13",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-anch-in13",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-anch-in13",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-anch-in15",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-anch-in15",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-anch-in15",
+   "until": "1838.1.1"
+  }
+ ]
+}

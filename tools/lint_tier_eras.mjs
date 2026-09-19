@@ -102,13 +102,14 @@ for (const ind of cfg.industries || []) {
   //   exponent counts from that rung's era — output and input value alone; cost and ai_value stay on the absolute era.
   //   Without this the lint FAILS on every rung of an anchor-shifted industry, which is the guardrail working: teach it the
   //   field, never bypass it.
+  //   ⭐ The anchor era may name a rung the industry does not have (user-ruled 2026-09-19): the origin is the named era either
+  //   way, and the anchor RECIPE falls back to the first rung's vanilla method — the generator's own rule, mirrored here.
   const aEra = (AB.anchor_for && AB.anchor_for[ind.id] != null) ? +AB.anchor_for[ind.id] : null;
-  if (aEra != null && !tiers.some(t => t.era === aEra)) { faults.push(`${ind.id}: _ab.anchor_for says e${aEra}, which it has no rung for`); continue; }
-  const first = aEra != null ? tiers.find(t => t.era === aEra) : tiers[0]; const r0 = vanillaRec(first.vanilla_pm);
+  const first = (aEra != null && tiers.find(t => t.era === aEra)) || tiers[0]; const r0 = vanillaRec(first.vanilla_pm);
   if (!r0) { notes.push(`${ind.id}: vanilla recipe for ${first.vanilla_pm} unreadable (game files absent?) — book multipliers not checked`); continue; }
   // ⚠⚠ 0 unless --anchor-for names it — NOT `first.era`: the four industries with no e0 rung are keyed on the absolute era
   //   (the era rule, §10.78 rule 3; keying them on their own first rung is the F111 bug).
-  const ORIGIN = aEra != null ? first.era : 0;
+  const ORIGIN = aEra != null ? aEra : 0;
   if (aEra != null) notes.push(`${ind.id}: ladder anchored on e${ORIGIN} (--anchor-for) — output/input checked as A^(era−${ORIGIN}), cost and ai_value on the absolute era`);
   const good = first.output_good || ind.output_good; const out0 = r0.out[good]; const I0 = val(r0.in);
   const anchor = ANCH[(ind.building || {}).required_construction || ind.required_construction];

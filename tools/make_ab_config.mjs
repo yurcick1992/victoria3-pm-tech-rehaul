@@ -260,13 +260,17 @@ for (const ind of cfg.industries) {
   if (ind.disabled) continue;
   ind.tiers.sort((a, b) => a.era - b.era);
   // --anchor-for: the rung that IS the ×1 of this industry's ladder (the exponent's origin); by default its first rung.
+  //   ⭐ THE ANCHOR ERA MAY NAME A RUNG THE INDUSTRY DOES NOT HAVE (user-ruled 2026-09-19: "automotive and electrics are not
+  //   anchored at e2. They are anchored at e1, despite it not existing"). The exponent's origin is the NAMED era either way;
+  //   the anchor RECIPE is that rung's vanilla method where it exists, else the industry's first rung's — unchanged from the
+  //   default. So the rule is uniformly "this industry's whole ladder slides to start at era a", not "anchor on whatever rung
+  //   it happens to begin with", which is what makes it one rule rather than a per-industry re-keying.
   const aEra = ANCHOR_FOR[ind.id];
-  if (aEra != null && !ind.tiers.some(t => t.era === aEra)) throw new Error(`--anchor-for ${ind.id}:${aEra}: it has no e${aEra} rung (eras ${ind.tiers.map(t => t.era).join('/')})`);
-  const first = aEra != null ? ind.tiers.find(t => t.era === aEra) : ind.tiers[0], r0 = rec(first.vanilla_pm);
+  const first = (aEra != null && ind.tiers.find(t => t.era === aEra)) || ind.tiers[0], r0 = rec(first.vanilla_pm);
   // ⚠⚠ ORIGIN IS 0 UNLESS --anchor-for NAMES THIS INDUSTRY — never `first.era`. munition, synthetics, automotive and electrics
   //   have no e0 rung, and keying them on (era − their own first era) is exactly the rung-index bug F111 measured and the era
   //   rule (§10.78 rule 3) forbids: it priced automotive's e2 rung as an 1836 rung.
-  const ORIGIN = aEra != null ? first.era : 0;
+  const ORIGIN = aEra != null ? aEra : 0;
   if (!r0 || !Object.keys(r0.in).length) throw new Error(`${ind.id}: anchor rung ${first.key} has no vanilla recipe (${first.vanilla_pm})`);
   const outGood = first.output_good || ind.output_good;
   const out0 = r0.out[outGood]; if (!(out0 > 0)) throw new Error(`${ind.id}: vanilla ${first.vanilla_pm} makes no ${outGood}`);
