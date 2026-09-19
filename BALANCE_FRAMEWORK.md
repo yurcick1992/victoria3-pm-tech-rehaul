@@ -8274,3 +8274,20 @@ and world GDP sits above the aim. That is the COST ladder's doing, not A's.
 half, and takes the labour absorption and world GDP back down toward the aim from a book that already has no hard break. **The accelerating-B ladder is
 the batch after it, not beside it** — it is the sharper instrument for the top rungs and it needs its own seed pair, because combining it with a changed
 A would make the result unreadable.
+
+#### 10.86.5 — INSOLVENCY IS NOT A BINARY: THE READING IS HOW MUCH OF THE 1836 INDUSTRY SURVIVES THE ADJUSTMENT (user-ruled 2026-09-19)
+
+**The user, on the era-0 penalty census:** *"It's important to understand the total output or employment of the 1836.1.1 insolvent industry. Shedding
+half of the workforce and becoming profitable is OK, shedding 95% is death."*
+
+⇒ **A count of loss-making cells is the wrong unit and F140's headline is therefore incomplete.** The engine lays a building off before it demolishes
+it, so an insolvent industry does not vanish: it sheds staffing until its output price recovers, and the design question is where that stops. The
+measure is **staffed levels retained**, with workers and output derived from them, and it is read PER INDUSTRY (all rungs summed) because vanilla has
+one glassworks type where the mod has an e0 and an e1 — a per-TYPE comparison across the arms is not like for like.
+
+**THE BANDS** (`tools/testbed/ledger/early_probe.mjs`): **intact ≥ 85% · an adjustment ≥ 50% · WOUNDED ≥ 20% · DYING ≥ 10% · DEAD below**, plus the
+headline "what share of the 1836 tiered WORKFORCE sits in a type that has shed more than half / 80% / 90%".
+
+⭐ **AND VANILLA SHEDS TOO, WHICH IS THE BASELINE THIS IS JUDGED AGAINST** — measured in the probe's own control arm over 1836 → 1838: glass retains
+**73%** of its staffed levels (ending at an 18% margin), explosives 75%, munition 82%, artillery 92%, everything else 92–112%. So "an industry that
+sheds a quarter of its workforce in the first two years" is VANILLA'S OWN BEHAVIOUR at the anchor, not a defect of ours.

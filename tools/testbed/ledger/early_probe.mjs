@@ -46,7 +46,8 @@ function tierMapOf(runDir) {
   if (!p) return null;
   const abs = existsSync(p) ? p : join(REPO, p); if (!existsSync(abs)) return null;
   const cfg = JSON.parse(readFileSync(abs, 'utf8')); const tier = {};
-  for (const ind of cfg.industries || []) { if (ind.disabled) continue; for (const t of ind.tiers || []) tier[t.key] = { era: t.era, ind: ind.id }; }
+  for (const ind of cfg.industries || []) { if (ind.disabled) continue; for (const t of ind.tiers || []) tier[t.key] = { era: t.era, ind: ind.id,
+    emp: Object.values(t.employment || {}).reduce((a, b) => a + (+b || 0), 0) * (t.workforce_mult || 1), out: +t.output_qty || 0 }; }
   return { path: abs.replace(REPO, '').replace(/^[\\/]/, ''), tier };
 }
 // ---- one run's summaries
@@ -81,6 +82,11 @@ for (const s of SETUPS) { let runs = [];
   // an arm that has not run yet is EMPTY, not an error — a probe is read while it is still playing
   try { const r = usableRuns(SES, SESSION, s); runs = r.runs; reportDropped(r.dropped); } catch { runs = []; }
   ARM[s] = runs.map(rel => ({ rel, years: readRun(rel), P: readPrices(rel), map: tierMapOf(join(SES, rel)) })).filter(r => r.years.size); }
+// ⭐ the CONTROL arm has no config of its own, but an era-0 rung's KEY IS the vanilla building's key (make_tier4_config keeps it, and
+// that is load-bearing there), so a mod arm's map read against a vanilla save matches exactly the era-0 buildings and nothing else.
+// That makes vanilla's own shedding of the same building types the baseline this batch is judged against.
+const FALLBACK = Object.values(ARM).flat().find(r => r.map);
+if (FALLBACK) for (const rs of Object.values(ARM)) for (const r of rs) if (!r.map) r.map = { ...FALLBACK.map, borrowed: true };
 
 console.log('EARLY-GAME PROBE — ' + SESSION + ' · control arm "' + CONTROL + '" · ' + SETUPS.map(s => s + ' n=' + (ARM[s] || []).length).join(' · '));
 console.log('margin = profit ÷ (va_out − profit), F92\'s identity — the game\'s own profitability, no wage model. Two in-game years: the ANCHOR, not the century.\n');
@@ -116,6 +122,72 @@ for (const y of YEARS) {
       const m = (b.vaOut - b.profit) > 0 ? b.profit / (b.vaOut - b.profit) : NaN; if (m < 0) list.push({ k: t.ind + ' e' + t.era, m, s: b.staffing }); }
     list.sort((a, b) => a.m - b.m);
     console.log('    ' + s.padEnd(13) + (list.length ? list.slice(0, 8).map(x => x.k + ' ' + pc(x.m, 0) + '/' + f2(x.s, 0) + 'lv').join(' · ') + (list.length > 8 ? ' · +' + (list.length - 8) : '') : 'none')); }
+}
+
+// ---- 3b. ⭐⭐ WHAT THE INSOLVENT INDUSTRY LOSES — the reading a binary "insolvent" hides
+// (user, 2026-09-19: "It's important to understand the total output or employment of the 1836.1.1 insolvent industry.
+//  Shedding half of the workforce and becoming profitable is OK, shedding 95% is death.")
+// The engine lays a building off before it demolishes it, so the measure is STAFFED LEVELS, and the question is how much of
+// the 1836 workforce and output survives the adjustment — and at what margin it ends up.
+{
+  const BASEY = Math.min(...[...new Set(Object.values(ARM).flat().flatMap(r => [...r.years.keys()]))]);   // the first summary year, ~1836.4.1
+  const ENDY = YEARS[YEARS.length - 1];
+  const band = x => !Number.isFinite(x) ? '—' : x >= 0.85 ? 'intact' : x >= 0.50 ? 'shed <half — an adjustment' : x >= 0.20 ? 'WOUNDED' : x >= 0.10 ? 'DYING' : 'DEAD';
+  console.log('\n=== 3b. WHAT THE INSOLVENT INDUSTRY LOSES — staffed levels, workers and output retained ' + BASEY + ' → ' + ENDY + ' ===');
+  console.log('Retained = staffed levels at ' + ENDY + ' ÷ staffed levels at the first summary. Workers = staffed levels × per-level employment,');
+  console.log('output = staffed levels × the rung\'s own output_qty — both from the run\'s OWN config, so the arms are comparable in units.');
+  console.log('Bands: intact ≥ 85% · an adjustment ≥ 50% · WOUNDED ≥ 20% · DYING ≥ 10% · DEAD below.\n');
+  console.log('arm            tiered workers      tiered output      | of the ' + BASEY + ' tiered WORKFORCE, the share sitting in a type that by ' + ENDY + ' has');
+  console.log('               ' + BASEY + ' → ' + ENDY + '        ' + BASEY + ' → ' + ENDY + '     | shed >half    shed >80%     shed >90% (death)');
+  const per = {};
+  for (const s of SETUPS) { const rs = (ARM[s] || []).filter(r => r.map && r.years.has(BASEY) && r.years.has(ENDY)); if (!rs.length) continue;
+    const g = fn => med(rs.map(fn));
+    const tot = (r, y, f) => { let v = 0; for (const [k, b] of Object.entries(r.years.get(y).B)) { const t = r.map.tier[k]; if (!t) continue; v += b.staffing * f(t); } return v; };
+    const w0 = g(r => tot(r, BASEY, t => t.emp)), w1 = g(r => tot(r, ENDY, t => t.emp));
+    // ⚠ OUTPUT is only computed for an arm with its OWN config: a borrowed map carries the MOD's output_qty, and a vanilla
+    //   glassworks running pm_leaded_glass makes 40 where the era-0 rung makes 30. Employment is safe to borrow — per-level
+    //   employment is constant across an industry's main methods on both sides (the tiered_panel.mjs finding).
+    const own = rs.every(r => !r.map.borrowed);
+    const o0 = own ? g(r => tot(r, BASEY, t => t.out)) : NaN, o1 = own ? g(r => tot(r, ENDY, t => t.out)) : NaN;
+    const shareShed = thr => g(r => { let a = 0, t = 0;
+      for (const [k, b] of Object.entries(r.years.get(BASEY).B)) { const ti = r.map.tier[k]; if (!ti || !(b.staffing > 0)) continue;
+        const e = r.years.get(ENDY).B[k]; const keep = e ? e.staffing / b.staffing : 0; const w = b.staffing * ti.emp; t += w; if (keep < thr) a += w; }
+      return t > 0 ? a / t : NaN; });
+    console.log('  ' + s.padEnd(13) + (f2(w0 / 1e3, 0) + 'k → ' + f2(w1 / 1e3, 0) + 'k').padEnd(20) + (own ? f2(o0, 0) + ' → ' + f2(o1, 0) : '— (map borrowed)').padEnd(19)
+      + '| ' + pc(shareShed(0.5), 0).padStart(9) + pc(shareShed(0.2), 0).padStart(13) + pc(shareShed(0.1), 0).padStart(13));
+    // per (industry, era) detail for the median run
+    const r = rs[Math.floor(rs.length / 2)]; const rows = [];
+    for (const [k, b] of Object.entries(r.years.get(BASEY).B)) { const t = r.map.tier[k]; if (!t || !(b.staffing > 0)) continue;
+      const e = r.years.get(ENDY).B[k] || { staffing: 0, profit: 0, vaOut: 0 };
+      const m0 = (b.vaOut - b.profit) > 0 ? b.profit / (b.vaOut - b.profit) : NaN;
+      const m1 = (e.vaOut - e.profit) > 0 ? e.profit / (e.vaOut - e.profit) : NaN;
+      rows.push({ n: t.ind + ' e' + t.era, keep: e.staffing / b.staffing, m0, m1, w: b.staffing * t.emp, lv0: b.staffing, lv1: e.staffing }); }
+    per[s] = rows.sort((a, b) => a.keep - b.keep);
+  }
+  // ⭐ PER INDUSTRY — the level the question actually lives at, and the only cross-arm comparison that is like for like:
+  //   vanilla has ONE glassworks type where the mod has an e0 and an e1, so a per-TYPE comparison across arms is not one.
+  console.log('\n  PER INDUSTRY — staffed levels retained ' + BASEY + ' → ' + ENDY + ', all rungs of the industry summed (median run of each arm):');
+  const inds = [...new Set(Object.values(per).flat().map(x => x.n.split(' ')[0]))].sort();
+  console.log('    industry     ' + SETUPS.filter(s => (ARM[s] || []).length).map(s => s.replace('probe-', '').padStart(13)).join(''));
+  for (const id of inds) { const cells = SETUPS.filter(s => (ARM[s] || []).length).map(s => {
+      const rs = (ARM[s] || []).filter(r => r.map && r.years.has(BASEY) && r.years.has(ENDY)); if (!rs.length) return '—';
+      const r = rs[Math.floor(rs.length / 2)]; let a = 0, b = 0, m = 0, o = 0;
+      for (const [k, v] of Object.entries(r.years.get(BASEY).B)) { const t = r.map.tier[k]; if (!t || t.ind !== id || !(v.staffing > 0)) continue;
+        a += v.staffing; const e = r.years.get(ENDY).B[k]; b += e ? e.staffing : 0; if (e) { m += e.profit; o += e.vaOut; } }
+      if (!(a > 0)) return '—';
+      return pc(b / a, 0) + ' @' + pc((o - m) > 0 ? m / (o - m) : NaN, 0); });
+    if (cells.every(c => c === '—')) continue;
+    console.log('    ' + id.padEnd(13) + cells.map(c => c.padStart(13)).join('')); }
+  console.log('    (x% @y% = the share of 1836 staffed levels still staffed at ' + ENDY + ', and the industry\'s margin there.)');
+
+  for (const s of SETUPS) { const rows = per[s]; if (!rows || !rows.length) continue;
+    const hurt = rows.filter(x => x.keep < 0.85);
+    console.log('\n  ' + s + ' — every tiered type that lost staffing (median run), worst first:');
+    console.log('    industry/rung     staffed lv ' + BASEY + '→' + ENDY + '   retained   margin ' + BASEY + ' → ' + ENDY + '   workers ' + BASEY + '   verdict');
+    if (!hurt.length) { console.log('    (none — every tiered type held its staffing)'); continue; }
+    for (const x of hurt.slice(0, 14)) console.log('    ' + x.n.padEnd(17) + (f2(x.lv0, 0) + ' → ' + f2(x.lv1, 0)).padStart(14) + pc(x.keep, 0).padStart(11)
+      + ('   ' + pc(x.m0, 0) + ' → ' + pc(x.m1, 0)).padEnd(24) + f2(x.w / 1e3, 0).padStart(9) + 'k   ' + band(x.keep));
+    if (hurt.length > 14) console.log('    … +' + (hurt.length - 14) + ' more'); }
 }
 
 // ---- 4. the input-price feedback
