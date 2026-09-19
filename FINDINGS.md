@@ -13834,3 +13834,198 @@ established and "the floor is between r 1.118 and r 1.467" is the bracket, not a
 says whether a uniform level at the canon's own r would work — that separation is the obvious next thing to buy, and it is cheap (one book,
 `--in0-level 0.05` with A 2.2 / B 1.5 / C 1.9 unchanged). Nothing about where between r 1.118 and 1.467 the floor sits. ⚠ `preflight -Session`
 reports L28 on run 1's error.log mirror (one false rotation) — the documented state, raw line counts off that mirror over-read.
+
+## F140 — ⭐⭐ WHERE PRICES ACTUALLY GO, AND WHAT AN ERA-0 INPUT PENALTY COSTS: at the 1836 anchor a good's price is set by the MARKET (±61 pp of base) and barely by the seed (±10 pp), by 1900 the seed overtakes the market and never gives it back (52 pp against 42); and because the era-0 recipe IS the 1836 map's manufacturing, the penalty subtracts value added one-for-one — ×1.4 deletes 42% of the seven markets' tiered VA and uniform −30% deletes 97% of it (measured read-only over the vanilla n=16 baseline, 2026-09-19)
+
+**Why it was measured.** Two user rulings of 2026-09-19 (BALANCE_FRAMEWORK §10.86): *"realised prices will be far off base, mostly by design, but
+significantly — by random seed … we should always try understanding where prices go, first, and plan configs around that"*, and the design proposal
+*"a tighter A/B to avoid money printing, but a higher t0 input penalty to ensure that t0 industry can't work at base prices"*, with the explicit
+question: **how many of the 1836 industries are insolvent under each candidate penalty at FACTUAL prices, and which are dead beyond rescue?**
+
+**Instrument.** `tools/era0_solvency.mjs`, written for this (read-only). Each industry's era-0 recipe is rebuilt exactly as `make_ab_config.mjs` builds
+it — vanilla's own first main method, output untouched, inputs rescaled so their base-price value is I0 × lift, the same 0.1 rounding — so **lift 1.0
+IS vanilla's own recipe and the vanilla column is like-for-like**. Prices, buy/sell orders and production are the **median over the vanilla n=16
+baseline's seeds** (`20260821_131149`), per market, per good, per dump date. Wages are W = base wage × Σ(employees × wage_weight) with the base wage
+that F92's profit identity implies for each market's lead country (GBR 0.0600 · USA 0.0683 · FRA 0.0581 · PRU 0.0799 · RUS 0.0447 · JAP 0.0613 ·
+NET 0.0685). margin = (O − I − W) ÷ (I + W), the F92 definition. **Base method only** — no secondaries, no throughput — on both sides of every
+comparison, so differences are exact and levels are a few points pessimistic.
+
+### 1. ⭐⭐ WHERE PRICES GO: the market decides at 1836, the seed decides by 1900
+
+Median spread of price ÷ base across the 14 principal goods, in points of base price:
+
+| date | across MARKETS (same seed-median) | across SEEDS (same market) | largest single seed spread |
+|---|---|---|---|
+| 1836.2.1 | **61 pp** | 10 pp | 75 pp |
+| 1840.1.1 | 65 pp | 27 pp | 106 pp |
+| 1850.1.1 | 49 pp | 37 pp | 127 pp |
+| 1900.1.1 | 42 pp | **52 pp** | 150 pp |
+| 1935.1.1 | 30 pp | **53 pp** | 139 pp |
+
+The 1836 anchor itself, as % of base (median of 16 seeds, the seed range in brackets where it is wide):
+
+| good | British | American | French | Prussian | Russian | Japanese | Dutch |
+|---|---|---|---|---|---|---|---|
+| clothes | 79 | 111 | 89 | 93 | 131 | 175 | 158 |
+| groceries | 175 | 130 | 127 | 125 | 126 | 170 | 134 |
+| glass | 94 | 86 | 60 | 52 | 88 | 51 | 62 |
+| tools | 103 | 105 | 112 | 84 | 109 | 157 [113–175] | 170 |
+| iron | 147 | 120 | 170 [121–175] | 127 | 103 | 132 [100–175] | 175 |
+| wood | 104 | 131 | 126 | 116 | **37** | 133 | 174 |
+| fabric | 97 | **38** [26–49] | 132 | 125 | 86 | 110 | 126 |
+
+**The same industry therefore runs from −48% to +116% across markets on vanilla's own recipe** (glass: British +14, Russian +116, French −35, Prussian
+−47, Dutch −48, American −14, Japanese −48). ⇒ *"industry economics at base prices is not even directional"* is correct as stated, and the reason is
+visible here: it is one term among a ±60 pp price term.
+
+### 2. HOW HIGH A TIERED OUTPUT PRICE CAN ACTUALLY GO (all markets × all 12 dump dates, vanilla)
+
+| good | buyer | median | p90 | per-decade median 1836 / 1850 / 1870 / 1890 / 1910 / 1935 |
+|---|---|---|---|---|
+| groceries | pop | 122 | 143 | 129 / 129 / 123 / 120 / 117 / 118 |
+| clothes | pop | 109 | 141 | 111 / 120 / 115 / 107 / 103 / 101 |
+| furniture | pop | 111 | 136 | 100 / 119 / 119 / 112 / 111 / 100 |
+| glass | pop+bld | 106 | 151 | 62 / 94 / 114 / 129 / 134 / 114 |
+| paper | pop+bld | 124 | 161 | 115 / 143 / 140 / 124 / 120 / 113 |
+| tools | building | 117 | 159 | 108 / 131 / 127 / 122 / 108 / 96 |
+| steel | building | 118 | 150 | 119 / 129 / 129 / 119 / 113 / 106 |
+| engines | building | 136 | 175 | 105 / 139 / 148 / 144 / 132 / 128 |
+| small arms | army | 91 | 137 | 104 / 105 / 93 / 87 / 79 / 72 |
+| fine art | pop | 138 | 164 | 122 / 134 / 134 / 145 / 141 / 146 |
+
+⚠ **This refutes the neat story that pop-fed goods are pinned at base and building-fed goods are free.** Pooled by buyer class the medians are pop 120%,
+pop+bld 118%, building 112%, army 102%, and every class reaches 175% somewhere. What IS true is the per-decade median: **no good's decade median leaves
+95–150% in any decade**, so a break-even much above ~130% of base is only reachable in excursions, not as a way of life. F97's "within ~15% of base"
+describes the *late-century* medians (clothes 101, tools 96, steel 106); the early and middle decades run 10–45% above base.
+
+### 3. THE CENSUS — 13 era-0 industries × 7 markets, at the measured prices
+
+70 present (industry × market) cells at 1836.2.1, 75 at 1840.1.1 (a cell is present when that market produces the good).
+
+| option | median target_be | insolvent 1836.2.1 | by output VALUE | insolvent 1840.1.1 | by output VALUE | VERY DEAD (1836 / 1840) |
+|---|---|---|---|---|---|---|
+| **vanilla ×1.0** | 79% | **22/70 = 31%** | 43% | **10/75 = 13%** | 9% | 0 / 1 (Dutch steel) |
+| ×1.2 (the canon) | 95% | 29/70 = 41% | 47% | 18/75 = 24% | 33% | 0 / 1 |
+| ×1.4 | 111% | 38/70 = 54% | 71% | 35/75 = 47% | 58% | 0 / 1 |
+| ×1.6 | 126% | 39/70 = 56% | 73% | 46/75 = 61% | 68% | 1 / 2 |
+| uniform −10% | 111% | 40/70 = 57% | 74% | 36/75 = 48% | 61% | 2 / 1 |
+| uniform −20% | 125% | 41/70 = 59% | 74% | 44/75 = 59% | 73% | 2 / 3 |
+| uniform −30% | 143% | 51/70 = 73% | 82% | 55/75 = 73% | 80% | 10 / 7 |
+
+⭐ **THE VANILLA REFERENCE IS THE HEADLINE.** Vanilla's own 1836 map is loss-making in **22 of 70 cells at the anchor instant** and in **10 of 75 four
+years later** — the anchor snapshot is one month into a market that has not cleared, and the settled reading is the fair one. **Insolvency at 1836 is
+normal, and a third of it is vanilla's.** Per market at 1840, vanilla is insolvent in 0/13 British, 0/9 Russian, 0/12 American, 2/13 French, 3/12
+Prussian, 3/9 Dutch, 2/7 Japanese cells.
+
+Median margin per industry across the markets it stands in, at 1840 (vanilla → ×1.2 → ×1.4 → uniform −20%):
+
+| industry | vanilla | ×1.2 | ×1.4 | −20% | | industry | vanilla | ×1.2 | ×1.4 | −20% |
+|---|---|---|---|---|---|---|---|---|---|---|
+| food | 67% | 49% | 35% | 24% | | steel | 22% | 3% | −10% | 2% |
+| textile | 60% | 41% | 26% | 15% | | motor | 47% | 26% | 11% | 5% |
+| furniture | 24% | 9% | −3% | −11% | | arms | 37% | 20% | 7% | **−23%** |
+| **glass** | **−21%** | −31% | −38% | −51% | | artillery | 19% | 4% | −8% | −20% |
+| tooling | 58% | 39% | 24% | −1% | | fertilizer | 31% | 12% | −2% | 2% |
+| paper | 40% | 24% | 11% | −10% | | explosives | 17% | 1% | −11% | −14% |
+| | | | | | | art academy | 288% | 224% | 177% | 24% |
+
+### 4. ⭐⭐ WHAT IS VERY DEAD — and it is the same three families
+
+VERY DEAD = margin below −20% **and** still negative after that market's sell orders for the output are divided by 3 and the price re-derived from the
+engine's own formula (band 25–175%). `!!` marks the cells still negative at the 175% band edge, i.e. dead at any price the engine can quote.
+
+| option | the very dead, with vanilla's own margin in the same cell |
+|---|---|
+| vanilla, ×1.2, ×1.4 | **none** |
+| ×1.6 | steel French −39% → −11% `!!` [vanilla −7%] |
+| uniform −10% | glass Dutch −65% → −3% `!!` [vanilla −48%] · paper Dutch −40% → −2% `!!` [vanilla −12%] |
+| uniform −20% | glass Dutch −68% `!!` [−48%] · paper Dutch −46% `!!` [−12%] |
+| uniform −30% | glass Prussian −68% [−47%] · Dutch −72% `!!` [−48%] · Japanese −71% [−48%] · paper Dutch −52% `!!` [−12%] · furniture Dutch −25% `!!` [+20%] · **arms British −43% `!!` [+18%] · French −37% `!!` [+32%] · Dutch −45% `!!` [+12%] · artillery British −43% `!!` [−3%] · French −47% `!!` [−10%]** |
+
+At **1840** the list is shorter and its head is purely vanilla's: **Dutch steel reads −83% on VANILLA'S OWN RECIPE**, because that market's steel price
+sits pinned at 25% of base (the band floor) in every one of the sixteen seeds — a vanilla pathology no penalty of ours created and none can fix. Under
+uniform −20% it is joined by Dutch arms (+44% in vanilla → −22%) and Japanese artillery; under uniform −30% by British arms (+26% → −39%), British
+artillery (+20% → −29%), Dutch glass and Dutch paper (+19% → −33%). **The scalar options up to ×1.4 add nothing to vanilla's own one dead cell.**
+
+- **GLASS IS ALREADY DEAD IN VANILLA** in four of seven markets (French −35%, Prussian −47%, Dutch −48%, Japanese −48% at 1836; −21% median at 1840),
+  because forest glass buys 30 wood to make 30 glass and the glass price sits at 51–62% of base in those markets while wood runs 116–174%. Any penalty
+  we add is on top of a vanilla defect. F92's world level-weighted +10.7% for glassworks is the same building read where the wood is cheap.
+- **THE DUTCH MARKET IS THE FRAGILE ONE** (wood 174%, iron 175%, fabric 126% of base at 1836 — a market that imports its inputs dear), and it is where
+  paper and furniture fall over. Its cells are small by output value.
+- **ARMS AND ARTILLERY ONLY DIE UNDER THE UNIFORM OPTIONS**, and that is the uniform lever's signature: vanilla's muskets recipe earns +69% at base, so
+  levelling it to −30% takes a ×2.41 input penalty, and at realised 1836 prices (British iron 147%, hardwood 156%) it collapses from +18% to −43%.
+
+### 5. ⭐⭐ THE REAL CONSTRAINT: the penalty subtracts value added one-for-one
+
+The era-0 recipe *is* the 1836 map's manufacturing, so buying more input per unit of the same output subtracts value added by an accounting identity.
+Σ over the seven markets of production × (price − input cost per unit of output), at each market's realised prices:
+
+| option | tiered VA, 1836.2.1 | vs vanilla | tiered VA, 1840.1.1 | vs vanilla | ≈ points of world GDP |
+|---|---|---|---|---|---|
+| vanilla ×1.0 | £544k/wk | 100% | £755k/wk | 100% | — |
+| ×1.2 (the canon) | £390k | 72% | £596k | **79%** | −1.9 |
+| ×1.4 | £237k | 44% | £438k | 58% | −3.9 |
+| ×1.6 | £83k | 15% | £280k | 37% | −5.8 |
+| uniform −10% | £167k | 31% | £362k | 48% | −4.8 |
+| uniform −20% | £24k | 4% | £214k | 28% | −6.6 |
+| uniform −30% | **−£159k** | **−29%** | £24k | **3%** | −8.9 |
+
+World weekly value added in vanilla is £8,195k at 1837 (world GDP £426M = 52 × weekly VA, F45), so the seven markets' era-0 VA is **9.2% of world GDP**
+and these are its first-order losses in points of world GDP. The register's HARD 1836–1845 anchor is vanilla's 90% CI ± 10%, so ×1.6 and every uniform
+option spend most of that budget on the day they ship. ⚠ Partly returned later — the extra input demand grows the raw sector, which is the B-lever
+effect F128 measured — but not at the anchor, where nothing can be rebuilt yet.
+
+**And the penalty raises its own input prices**, which the margin table does not include. First-order, from the standing era-0 buildings' extra demand
+against each market's own order book: at ×1.4 British fabric 92 → 122% of base and wood 103 → 136%; at uniform −30% British wood 103 → 175% and iron
+148 → 175%, pinned at the band edge where the market can no longer signal scarcity (§10.15's ceiling reached from below).
+
+### 6. THE SAME RUNG THROUGH VANILLA'S WHOLE CENTURY
+
+Share of (market × date) cells where the era-0 rung pays its way, across 7 markets × 12 dump dates in vanilla's price environment:
+
+| option | 1836 | 1850 | 1870 | 1890 | 1910 | 1935 | mean |
+|---|---|---|---|---|---|---|---|
+| vanilla ×1.0 | 69% | 91% | 93% | 96% | 98% | 92% | **92%** |
+| ×1.2 | 59% | 83% | 87% | 89% | 89% | 77% | **82%** |
+| ×1.4 | 46% | 60% | 71% | 69% | 65% | 54% | **62%** |
+| ×1.6 | 44% | 49% | 56% | 51% | 43% | 37% | 46% |
+| uniform −10% | 43% | 65% | 67% | 71% | 66% | 65% | 64% |
+| uniform −20% | 41% | 46% | 58% | 55% | 51% | 40% | 49% |
+| uniform −30% | 27% | 27% | 37% | 34% | 29% | 15% | 27% |
+
+⚠ Directional only for the late century — our own prices are not vanilla's (the canon's PI is 0.84 of vanilla's), so the real mod figures late would be
+lower. ⭐ **The shape is the lesson: the input penalty is a LEVEL, not a SLOPE.** It lowers era 0 by about the same amount in 1836 and in 1936; it cannot
+by itself make era 0 die late while living early. What kills era 0 late is the price decline (F94/F97); the penalty's job is to move era 0 close enough
+to the line that the decline finishes it.
+
+### 7. ⚠⚠ AT THE MOD'S OWN 1836 PRICES EVERY OPTION IS MATERIALLY WORSE — F137 IS A PREREQUISITE, NOT A PARALLEL TASK
+
+Re-run against the canon's own measured 1836.2.1 prices (`--van 20260917_132449_canon-c19-in12-confirm-n2`, 2 runs) instead of vanilla's, because
+F137 established that our shipped 1836 over-produces wherever the map carries rungs above e0 (tooling +88% world-wide at half vanilla's price,
+food +29%, furniture +25%, textile +18%):
+
+| option | insolvent cells | by output VALUE | VERY DEAD | dead at the 175% ceiling |
+|---|---|---|---|---|
+| | vanilla prices → **mod prices** | | | |
+| vanilla ×1.0 | 22 → **28** of 70 | 43% → **61%** | 0 → 0 | 0 → 0 |
+| ×1.2 (the canon) | 29 → **33** | 47% → **72%** | 0 → 0 | 0 → 0 |
+| ×1.4 | 38 → **40** | 71% → **77%** | 0 → **1** | 0 → **1** |
+| ×1.6 | 39 → **44** | 73% → **79%** | 1 → **6** | 2 → **4** |
+| uniform −10% | 40 → 39 | 74% → 77% | 2 → **3** | 2 → 2 |
+| uniform −20% | 41 → **44** | 74% → **81%** | 2 → **10** | 3 → **6** |
+| uniform −30% | 51 → 51 | 82% → **87%** | 10 → **23** | 8 → **20** |
+
+**The very-dead count roughly doubles to quadruples on every option**, and even VANILLA'S OWN RECIPE is insolvent in 40% of cells (61% by output
+value) at the prices our own 1836 produces. ⇒ **Raising the era-0 penalty on top of the F137 defect stacks two output-price cuts on the same
+buildings.** Fix the supply anchor first, or the penalty's measured effect will be the sum of two changes and unreadable — the §10.86.2 ruling's
+own point, applied to our own config.
+
+**Confidence.** HIGH on the price dispersion and the price levels — direct medians over 16 seeds of a committed session. HIGH on the value-added
+arithmetic, which is an identity over the same measured production and prices. HIGH on the *relative* ordering of the options (the recipe rule is
+`make_ab_config`'s own, applied identically). MEDIUM on any single cell's margin level: base-method-only excludes secondary PMs and throughput (+20%
+economy of scale would add roughly 5–9 points to a typical cell), and the wage is a model with a measured rate rather than a measurement.
+
+**What it does NOT say.** Nothing about what the mod's *own* 1836 prices would be under a new penalty — the census holds prices fixed at vanilla's while
+the recipe changes, and F137 shows our shipped 1836 already deviates on the supply side (British tools 21 against vanilla's 41). Nothing about the A/B
+axis, which is not varied here; the era-0 rung's economics depend only on the lift. Nothing about what era 0 does once era 1–3 exist beside it — this is
+the 1836 map alone. No run was launched.

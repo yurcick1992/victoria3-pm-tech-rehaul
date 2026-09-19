@@ -8070,3 +8070,114 @@ intact seeds between them.
    Chinese successor state between 1934 and 1935. ⭐ **It is decisive right now**: the eager book's consensus reads total **2.01** (beyond the new
    2.0 soft line) and per-capita **1.85** (inside the 1.9 aim). The report now prints BOTH on the pool GDP line; which one the criterion is on is
    the user's call.
+
+## 10.86 — THE THREE RULINGS OF 2026-09-19: W GETS HARD BOUNDS FROM VANILLA'S OWN 95% CI, PRICES ARE PLANNED FOR BEFORE A CONFIG IS PLANNED, AND THE ERA-0 INPUT PENALTY IS SIZED AGAINST THE 1836 MAP (user-ruled 2026-09-19)
+
+### 10.86.1 — W, NOT H, CARRIES A VANILLA-DERIVED HARD BOUND
+
+**The user, 2026-09-19:** *"Findings on H are of little use when there's just no capital to spend. That's why hard caps exist. We should probably move
+hard boundaries for [W]: let them be [lower vanilla 95% CI * 0.9; higher vanilla 95% CI * 1.1]."* … *"Oh, sorry, the hard boundaries were meant to be
+for W. H is hardly comparable with vanilla anyway."*
+
+**Both halves are measurements, and they are why the ruling lands where it does.** Over the vanilla n=16 baseline's end state (the 1932–1936 mean):
+
+| | median | 2.5–97.5 percentile | as a ratio to the median | seed spread |
+|---|---|---|---|---|
+| world **H** (pool ÷ GDP) | 0.29 | 0.162 – 0.557 | **0.56 – 1.93×** | ×3.8 min to max |
+| pool **H** | 0.33 | 0.135 – 0.918 | **0.40 – 2.74×** | ×8.0 |
+| world **W** | 0.1427 | 0.1231 – 0.1545 | **0.86 – 1.08×** | ×1.30 |
+| pool **W** | 0.1973 | 0.1746 – 0.2162 | **0.89 – 1.10×** | ×1.22 |
+
+⇒ **H's own vanilla distribution spans a factor of 4 to 8 between seeds, so no bound taken from it means anything; W's spans 1.2–1.3 and does.**
+That is the whole content of *"H is hardly comparable with vanilla anyway"*, in numbers.
+
+**THE RULE, implemented in `tools/testbed/ledger/criteria.mjs`** (derived per invocation from the vanilla reference, never a literal — it tracks the
+reference the way the 1836 anchor's CI already does): hard bounds on **W, both scopes** = [the 2.5th percentile × 0.9, the 97.5th percentile × 1.1].
+At n=16 that is **world 0.78 – 1.19×** and **pool 0.80 – 1.21×**. Above the ceiling is FULL DEPEASANTATION ⇒ **broken by runoff**; below the floor the
+economy never industrialised ⇒ **broken by stall**. Per run, like every other hard line.
+
+⚠⚠ **THE FLOOR AS RULED SITS INSIDE THE REGISTER'S OWN W AIM OF 0.6–0.95, AND BREAKS EVERY BOOK WE HAVE.** Measured with `--w-hard both` over the five
+books of 2026-09-17/19: **the canon (both runs), canon-lvl-a19b17 (both), canon-c195-in12 (all three) and canon-a205-gm all read BROKEN BY STALL on
+world W 0.54–0.78**, leaving one intact run in five books. A book sitting in the middle of the aim it was designed for cannot be "broken"; the aim and
+the floor are in direct contradiction, and only one of them can stand.
+⇒ **THE SHIPPED DEFAULT IS `--w-hard aim`**: the **CEILING from vanilla's CI as ruled** (world 1.19×, pool 1.21×), and the **FLOOR from the register's
+own aim floor × 0.9 = 0.54×** — the ruling's own "×0.9 outward" widening, applied to the number the register actually aims at, because the mod
+deliberately runs W *below* vanilla and therefore cannot take a floor from vanilla's spread. It binds almost nowhere today (the only reading under it
+is canon-lvl-a19b17's run 2 at pool W 0.53, a run already broken by world GDP 0.45), which is the right property for a line meant to catch pathologies.
+`--w-hard both` is the literal ruling, `--w-hard ceiling` drops the floor entirely, `--w-hard off` restores the pre-2026-09-19 register.
+**Open for the user: which floor stands.** The ceiling is not in doubt and is a real tightening — "full depeasantation" was a SOFT flag at > 1.0 and is
+now a HARD break at > 1.19.
+
+### 10.86.2 — ⭐⭐ REALISED PRICES ARE THE FIRST THING TO PLAN, NOT THE LAST THING TO READ (user-ruled 2026-09-19, GOVERNING for config design)
+
+**The user's words:** *"When contemplating a setup, we should understand that (1) realised prices will be far off base, mostly by design, but
+significantly — by random seed. Industry economics 'at base prices' is not even directional, it's just one of the factors. (2) Realised prices are
+hardly transferrable between configs, we get only directional guesses. We should always try understanding where prices go, first, and plan configs
+around that. Even if we no longer use a complex building-level solver."*
+
+**Both claims are now measured, on vanilla's own sixteen seeds (FINDINGS F140 §1):**
+
+| date | spread across MARKETS (same seed-median) | spread across SEEDS (same market) | largest seed spread |
+|---|---|---|---|
+| 1836.2.1 | **61 pp of base** | 10 pp | 75 pp |
+| 1840.1.1 | 65 pp | 27 pp | 106 pp |
+| 1850.1.1 | 49 pp | 37 pp | 127 pp |
+| 1900.1.1 | 42 pp | **52 pp** | 150 pp |
+| 1935.1.1 | 30 pp | **53 pp** | 139 pp |
+
+⇒ **At the 1836 anchor the price is a property of the MARKET (±60 pp) and barely of the seed (±10 pp); by 1900 the seed has overtaken the market and
+never gives it back.** A base-price margin is never a description of anything, and a realised margin read at one date in one seed is a draw from a
+distribution 50 pp wide. ⇒ **A config is designed against a measured price DISTRIBUTION, not against base prices and not against one run's prices.**
+`tools/era0_solvency.mjs` is the instrument this ruling asks for on the recipe side; the criteria register's PI / PP are its end-state half.
+
+### 10.86.3 — THE ERA-0 INPUT PENALTY IS BOUNDED BY THE 1836 MAP'S OWN VALUE ADDED, NOT BY AN INSOLVENCY COUNT
+
+**The user's design proposal, 2026-09-19:** *"I now think we need a tighter A/B to avoid money printing, but a higher t0 input penalty to ensure that t0
+industry can't work at base prices, require higher output prices."* The pairing is coherent and it is the direct answer to F139: a tighter A/B inverted
+the realised ladder because era 0, whose recipe is the cheapest in input value, became the most profitable rung in the game; raising era 0's input
+penalty attacks exactly that.
+
+**What the census says (FINDINGS F140, `tools/era0_solvency.mjs`), over 13 era-0 industries × 7 vanilla markets at the measured 1836/1840 prices:**
+
+| option | target_be (median) | insolvent cells, 1836.2.1 | at 1840.1.1 | VERY DEAD | tiered VA of the 7 markets, 1840 | solvent share over vanilla's century |
+|---|---|---|---|---|---|---|
+| vanilla ×1.0 | 79% | 22/70 (31%) | 10/75 (13%) | 0 | £755k/wk = 100% | 92% |
+| **×1.2 — the canon** | 95% | 29/70 (41%) | 18/75 (24%) | 0 | £596k = **79%** | 82% |
+| ×1.4 | 111% | 38/70 (54%) | 35/75 (47%) | 0 | £438k = 58% | 62% |
+| ×1.6 | 126% | 39/70 (56%) | 46/75 (61%) | 1 | £280k = 37% | 46% |
+| uniform −10% | 111% | 40/70 (57%) | 36/75 (48%) | 2 | £362k = 48% | 64% |
+| uniform −20% | 125% | 41/70 (59%) | 44/75 (59%) | 3 | £214k = 28% | 49% |
+| uniform −30% | 143% | 51/70 (73%) | 55/75 (73%) | 7 | £24k = **3%** | 27% |
+
+⭐⭐ **THE BINDING CONSTRAINT IS THE THIRD-LAST COLUMN, AND IT IS AN ACCOUNTING IDENTITY, NOT A BEHAVIOURAL CLAIM.** The era-0 recipe *is* the 1836
+map's manufacturing, so buying more input per unit of the same output subtracts value added one-for-one: the seven markets' era-0 value added is
+**9.2% of world GDP** at 1840, and the penalty deletes 21% of it at ×1.2, 42% at ×1.4, 63% at ×1.6, 72% at uniform −20% and **97% at uniform −30%**
+(−1.9 / −3.9 / −5.8 / −6.6 / −8.9 points of world GDP, first-order, partly returned later as the raw sector grows into the extra input demand).
+The register's HARD 1836–1845 anchor is vanilla's 90% CI ± 10%, so ×1.6 and the uniform options are spending most of that budget on day one.
+
+⭐ **AND THE PENALTY PUSHES ITS OWN INPUT PRICES UP, which the margin table does not include.** First-order, from the standing era-0 buildings' extra
+demand against each market's own order book: at ×1.4 British fabric goes 92 → 122% of base and wood 103 → 136%; at uniform −30%, wood 103 → 175% and
+iron 148 → 175%, i.e. pinned at the band edge where the market can no longer signal scarcity at all (§10.15's ceiling, from the other side).
+
+⭐ **A SCALAR LIFT AND A UNIFORM LEVEL ARE NOT THE SAME LEVER.** The scalar keeps vanilla's own dispersion (at ×1.4: art academy 56%, arms 83%, steel
+144% — an 88-point spread in what each rung needs from its output price); the uniform level removes it, at the cost of hitting hardest exactly the
+industries vanilla made generous — **arms ×2.11, artillery ×1.64, art academy ×3.13 at −20%** — and those are the industries that go VERY DEAD.
+
+⚠ **The very-dead list is small and it is the same three families every time**: **glass** (already −35% median in vanilla at 1836 and −47/−48% in the
+Prussian, Dutch and Japanese markets — a vanilla property, not ours), **paper and furniture in the Dutch market**, and, only under the uniform options,
+**arms and artillery in Britain and France**. Under the scalar options up to ×1.4 the very-dead count is **zero**.
+
+⚠⚠ **AND F137 IS A PREREQUISITE, NOT A PARALLEL TASK.** Re-run against the canon's OWN measured 1836 prices instead of vanilla's, every option is
+materially worse and the very-dead count doubles to quadruples (×1.6: 1 → 6 cells; uniform −20%: 2 → 10; uniform −30%: 10 → 23), because our shipped
+1836 already over-produces wherever the map carries rungs above era 0 (F137: tooling +88% at half vanilla's price). **Even vanilla's own recipe is
+insolvent in 40% of cells at our own 1836 prices, against 31% at vanilla's.** Raising the penalty on top of that stacks two output-price cuts on the
+same buildings, and the result would be the sum of two changes — unreadable, which is exactly what §10.86.2 forbids.
+
+⇒ **THE RECOMMENDATION PUT TO THE USER: the scalar axis, ×1.35–1.45 (target_be ≈ 108–113), paired with the tighter A/B, and only after F137** — the
+largest penalty that leaves no industry very dead at vanilla's prices, keeps the first-order anchor cost near 4% of world GDP, and still moves era 0
+from "solvent in 82% of vanilla's market-years" to "62%", i.e. onto the line the price decline then has to push it over. The uniform level is the
+better *shape* and should be revisited at −5 to −10% once the supply anchor is fixed, never at −20% or beyond.
+
+⚠ **This SUPERSEDES ROADMAP step 9's standing "do not raise `in0` above 1.2 in the same batch"** on the user's own ruling. Two of its three reasons are
+answered — "it drives rung 0 negative at base" is now the INTENT, and "closed as a lever at the current r" was measured at r = 1.467, which is the
+number being changed — but **the third reason stands and is why F137 comes first**.

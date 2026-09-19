@@ -1957,5 +1957,22 @@ base-price table suggests; aim any future attack at the 1850–1880 window and j
 stalled at C 2.05), the candidate table shows it drives rung 0 negative at base, and P6 means the 1836 price is already below base in the
 industries with the most starting capacity — three independent reasons, and combining it with a new `r` would make the result unreadable.
 
+⭐⭐ **SUPERSEDED IN PART, 2026-09-19 (user-ruled; BALANCE_FRAMEWORK §10.86.3, measured in FINDINGS F140).** The user: *"I now think we need a tighter
+A/B to avoid money printing, but a higher t0 input penalty to ensure that t0 industry can't work at base prices, require higher output prices."*
+The pairing is the direct answer to F139's inversion — a tighter `r` made era 0, whose recipe is the cheapest in input value, the most profitable
+rung in the game, and the `in0` penalty attacks exactly that. **Two of the three reasons above are answered**: "drives rung 0 negative at base" is
+now the stated INTENT, and "closed as a lever" was measured at `r` = 1.467, the number being changed. **The third stands**, and F140 sizes it:
+
+- **The penalty is bounded by the 1836 map's own value added, not by an insolvency count.** The era-0 recipe IS the 1836 manufacturing sector, so a
+  penalty subtracts value added one-for-one: the seven instrumented markets' era-0 VA is 9.2% of world GDP, and the options cost −1.9 (×1.2, today)
+  / −3.9 (×1.4) / −5.8 (×1.6) / −6.6 (uniform −20%) / −8.9 (uniform −30%) points of world GDP on the day they ship, against a HARD 1836–1845 anchor
+  of vanilla's 90% CI ± 10%.
+- **A scalar lift and a uniform `--in0-level` are different levers.** The uniform one hits hardest exactly where vanilla was generous (arms ×2.11,
+  art academy ×3.13 at −20%), and those are the cells that go very dead. Up to ×1.4 on the scalar axis, **nothing is very dead at vanilla's prices**.
+- **P6 / F137 IS A PREREQUISITE.** At the canon's own 1836 prices every option is materially worse and the very-dead count doubles to quadruples;
+  even vanilla's own recipe is insolvent in 40% of cells there. Fix the supply anchor first, or the batch measures two changes at once.
+
+⇒ **The revised next batch: the tighter `r` AND `--in0` 1.35–1.45, after F137 — not before it, and not on the uniform axis.**
+
 ---
 
