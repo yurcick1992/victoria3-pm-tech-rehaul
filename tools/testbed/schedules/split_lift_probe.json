@@ -1,0 +1,102 @@
+{
+ "schedule_version": 1,
+ "label": "split-lift-probe",
+ "_why": "THE SPLIT LIFT (agent-proposed 2026-09-19 from the mixed-anchor sweep, user-ruled \"Yes, generate it and probe at n=3\"). The sweep established that the two design goals PULL APART on the single in0 axis: at 1.2 the industrial chain is the healthiest ever measured (steel ceiling share 5% against the canon 18% and vanilla 0%, steel production ABOVE vanilla, engines 17% ceiling against vanilla 23% and 0.92 of its production) while textile e0 is comfortable at 84% staffing and a 32% realised margin; at 1.3-1.4 the e0 rungs land where the design wants them and the chain BREAKS (engines 162 -> 46 -> 15, steel ceiling 5% -> 32% -> 40%). The cause: steel and motor are NOT slid, they are the whole 1836 supply of steel and engines and the two thinnest recipes in the book, and a uniform lift raises their own break-evens (steel 123 -> 133 -> 143% of base) at the same time as it raises demand on them. THE SPLIT removes the first half and keeps the second - the eight SLID industries carry their own lift, the nine unslid stay at 1.2, so steel e0 break-even stays 123 and motor 100 in both arms.",
+ "_arms": {
+  "probe-split135": "Slid lift 1.35, unslid 1.2. textile e0 -32% at base, tooling e1 (the ANCHOR rung) -5%, tooling e2 buys 35.4 steel a level against mixed@1.2 31.5 (+12% demand).",
+  "probe-split145": "Slid lift 1.45, unslid 1.2. textile e0 -36%, tooling e1 -11%, tooling e2 buys 38.1 steel (+21%). ⚠ At uniform 1.5 the anchor rungs began to shed (tooling e1 at -14% base retained 80%); -11% is close to that line, so this arm is also the anchor-rung stress test."
+ },
+ "_the_anchor_map": "EIGHT industries' ladders slide to start at e1: textile, furniture, glass, tooling, munition, synthetics, automotive and electrics. ⭐ The origin is e1 for ALL of them, INCLUDING automotive and electrics, which have no e1 rung (user-ruled 2026-09-19: 'automotive and electrics are not anchored at e2. They are anchored at e1, despite it not existing') - so automotive's e2 takes A^1 and its e3 A^2, and electrics' e2 takes A^1. Where the industry HAS an e1 rung the anchor recipe is that rung's own vanilla method (textile e1 = vanilla's 60 clothes, tooling e1 = vanilla's 60 tools); where it does not, the anchor recipe stays the first rung's, so only the exponent moves. That makes the rule uniformly 'this industry's whole ladder slides down one era' rather than 'anchor on whatever rung it happens to begin with'. Nine industries UNTOUCHED and keyed on the absolute era as the canon is - food, paper, fertilizer, explosives, steel, motor, arms, artillery, art_academy - which makes them a control built into both arms. ⚠ synthetics is the agent's inference, not the user's list: it is e1-only and structurally identical to munition, so the same principle covers it; it is a one-line revert if unwanted.",
+ "_delta": "Against the mixed book at in0 1.2 (probe-anch-in12, 20260919_190944): ONLY the eight slid industries inputs and target_be move; steel, motor, food, paper, fertilizer, explosives, arms, artillery and the academy are BYTE-IDENTICAL, which makes them the control inside the arm and is exactly the property the split is for.",
+ "_flagged_against_F111": "⚠ THE FLAG IS MILDER THAN THE AGENT FIRST STATED, and the correction matters. Anchoring the late industries on their OWN first rung would have reproduced the index-keying FINDINGS F111 measured as a defect (automotive's e2 at 30 automobiles, a QUARTER of its era peers) and that the ERA RULE (10.78 rule 3) forbids. The user's actual ruling - origin e1 for every shifted industry whether or not e1 exists - does NOT do that: automotive's e2 lands at 66 against the canon's 145.2, exactly the same one-era slide (÷2.2) every other shifted industry takes, so the book is still a function of the era and the relation BETWEEN industries is preserved. What remains is that eight industries sit one era lower on the ladder than the other nine, which is a deliberate, uniform, named departure rather than the per-industry re-keying F111 condemned. It does not bite on a 1836->1838 span (of those eight, only textile, furniture, glass, tooling and munition have rungs on the 1836 map) and it WOULD need an explicit ruling in BALANCE_FRAMEWORK before a book of this shape could go canon.",
+ "_predictions": {
+  "_basis": "The mixed sweep at n=3 per lift and the all-e1 probe, all at the same span and dump dates. Stated before the runs.",
+  "the_whole_question": "Does the chain survive a higher slid lift? PREDICT steel ceiling share under 20% and engines production above 100 in split135 - i.e. much closer to mixed@1.2 (5%, 162) than to mixed@1.3 (32%, 46) - because steel and motor keep their 1.2 economics and only the DEMAND side rises. FAILURE MODE: if split135 reads like mixed@1.3 anyway, then the chain damage was demand-driven, not cost-driven, and the split buys nothing - which would be a clean negative result and would send the lever back to A.",
+  "e0": "PREDICT the slid e0 rungs land between the uniform 1.3 and 1.4 readings: textile 65-75%, furniture 40-60%, glass 20-35%, tooling 25-35%, at realised margins near 20%.",
+  "the_anchor_rung": "PREDICT no anchor-rung shedding at 1.35 and possible shedding at 1.45 (tooling e1 at -11% base). If 1.45 sheds its anchor rung, the slid lift ceiling is ~1.4 and the answer is 1.35-1.40.",
+  "world_product": "PREDICT 0.93-0.96 of the control for both, between mixed@1.2 (0.96) and mixed@1.4 (0.92)."
+ },
+ "_comparison": "The mixed sweep (20260919_190944 in0 1.2/1.4, 20260919_193440 in0 1.3/1.5), the all-e1 probe (20260919_201023), the tooling-only arms (20260919_173948), and the canon + vanilla (20260919_132049). Same machine, day, game version, span, dump dates.",
+ "_watch": [
+  "run 1 at ~3 min: marker, version, error window BY POSITION, clock",
+  "FIRST: steel ceiling share and engines production - the whole point of the arm",
+  "the slid industries e1 ANCHOR rungs, for shedding",
+  "the nine unslid industries must match mixed@1.2 within seed noise - they are byte-identical",
+  "READ AT 1837 (--years 1836,1837)",
+  "post-batch: preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS"
+ ],
+ "_cost": "6 runs x 1836->1838 at ~2.8 min each plus builds and harvest: about 25 minutes.",
+ "_caveats": [
+  "TWO IN-GAME YEARS IS NOT THE CENTURY. This measures the anchor: prices, survival, world product. It says nothing about obsolescence, the price decline or the hoard.",
+  "The anchor shift is a pure LEVEL shift, so F97's death test is identical under every anchor and no obsolescence claim is possible from this batch in either direction.",
+  "building_cost and ai_value do not shift with the anchor, so capital per unit of output moves for all eight shifted industries. Over 21 months almost nothing is built (F142); over a century it would matter.",
+  "The F111 conflict above is REAL and accepted, not resolved.",
+  "n=3 per arm. Steel (~1,250 units) resolves; engines, motor, explosives and munition are single-digit levels and do NOT (F147 section 1c).",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "quarteryear",
+  "timeout_minutes": 40,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1836.7.1",
+   "1837.1.1",
+   "1837.7.1",
+   "1837.12.1"
+  ],
+  "_dump_dates_note": "Identical to all six probe sessions of 2026-09-19, which is what makes every earlier arm reusable as a reference."
+ },
+ "setups": {
+  "probe-split135": {
+   "kind": "config",
+   "config": "config/mod_config.probe-split135.json"
+  },
+  "probe-split145": {
+   "kind": "config",
+   "config": "config/mod_config.probe-split145.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "probe-split135",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-split135",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-split135",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-split145",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-split145",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-split145",
+   "until": "1838.1.1"
+  }
+ ],
+ "_the_rule": "Both lifts are UNIFORM and the set is the anchor map itself, derived - not a per-industry table - so this is a rule of the same kind as --in0-stage, not the CLOSED --in0-level axis. Generator flag --in0-anchored, recorded as _ab.in0_anchored, read by lint_tier_eras (L31)."
+}

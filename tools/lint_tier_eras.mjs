@@ -117,7 +117,8 @@ for (const ind of cfg.industries || []) {
     const e = t.era, k = e - ORIGIN;
     const wantOut = Math.round(out0 * Math.pow(A, k) * 10) / 10;
     if (Math.abs(t.output_qty - wantOut) > 0.051 + 0.002 * wantOut) faults.push(`${ind.id} e${e}: output ${t.output_qty}, the era rule says ${wantOut} (vanilla ${out0} × ${A}^${k}) — keyed on something other than the era`);
-    const liftI = perInd && perInd[ind.id] != null ? +perInd[ind.id] : lift;
+    // --in0-anchored: the SLID set (named in _ab.anchor_for) carries its own lift; everything else the scalar in0
+    const liftI = perInd && perInd[ind.id] != null ? +perInd[ind.id] : ((AB.in0_anchored != null && aEra != null) ? +AB.in0_anchored : lift);
     const wantIn = I0 * (in0only ? (k === 0 ? liftI : 1) : liftI) * Math.pow(B, k); const gotIn = val(t.inputs);
     if (Math.abs(gotIn - wantIn) > 0.03 * wantIn + 1) faults.push(`${ind.id} e${e}: input value £${gotIn.toFixed(0)}, the era rule says £${wantIn.toFixed(0)} (vanilla £${I0.toFixed(0)} × ${lift} × ${B}^${k})`);
     // cost: flat (§10.61), or anchor × C^era where C is the book's own cost ratio (`_ab.cost_ratio`, the cost-slope books of

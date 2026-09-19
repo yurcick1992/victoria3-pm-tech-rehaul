@@ -160,6 +160,23 @@ const ANCHOR_FOR = (() => { const v = arg('--anchor-for', ''); const o = {}; if 
   for (const part of v.split(',')) { const [id, e] = part.split(':');
     if (!id || !Number.isInteger(+e) || +e < 0) throw new Error('--anchor-for <ind>:<era>[,<ind>:<era>] — era is a non-negative integer');
     o[id.trim()] = +e; } return o; })();
+// ⭐⭐ --in0-anchored <mult> (user-ruled 2026-09-19, after the mixed-anchor sweep): A SECOND LIFT, FOR THE SLID INDUSTRIES ONLY.
+//   An industry named in --anchor-for takes THIS lift on its anchor rung's input value; every other industry takes the scalar
+//   --in0. Both are uniform — the set is the anchor map itself, derived, not a per-industry table — so this is a rule of the
+//   same kind as --in0-stage, not the CLOSED --in0-level axis.
+//   WHY (measured, sessions 20260919_190944 / _193440 / _201023): on the eight-industry e1 anchor map the two design goals
+//   pull apart on the single in0 axis. At 1.2 the industrial chain is the healthiest ever measured — steel's share of price
+//   readings at the +75% ceiling 5% against the canon's 18% and vanilla's 0%, steel production ABOVE vanilla's, engines at a
+//   17% ceiling share against vanilla's 23% — but textile's e0 rung is comfortable at 84% staffing and a 32% realised margin.
+//   At 1.3–1.4 the e0 rungs land where the design wants them (30–68% staffing at ~23%) and the chain BREAKS: engines fall
+//   162 → 46 → 15 and steel's ceiling share rises 5% → 32% → 40%. The cause is that steel and motor are NOT slid — they are
+//   the whole 1836 supply of steel and engines, the two thinnest recipes in the book (canon e0 margins −19% and 0%), and a
+//   uniform lift raises their own break-evens (steel 123 → 133 → 143% of base) at the same time as it raises the demand on
+//   them. Lifting only the slid set removes the first half and keeps the second, which is what this flag is for.
+//   ⚠ It does NOT make the slid set free: a slid industry's higher lift still raises what it BUYS (tooling e2's steel goes
+//   31.5 → 36.8 a level at 1.4), so the demand-side pressure on steel remains. Which half dominates is the measurement.
+const IN0_ANCHORED = (() => { const v = arg('--in0-anchored', ''); if (v === '') return null; const m = +v;
+  if (!(m > 0)) throw new Error('--in0-anchored <mult> must be > 0'); return m; })();
 // --bar-months N (2026-09-13): research_events.industry_bar_months — the 24-month bar of canon-je24 and every book since
 //   (§10.76) used to be a hand edit after generation; a book is regenerable by ONE command or it is not regenerable.
 const BAR_MONTHS = (() => { const v = arg('--bar-months', ''); if (!v) return null; if (!(+v > 0)) throw new Error('--bar-months <months>'); return +v; })();
@@ -295,7 +312,8 @@ for (const ind of cfg.industries) {
     // ⭐ the exponent's ORIGIN is the anchor rung's era (--anchor-for), 0 for every unshifted industry. It governs OUTPUT and
     //   INPUT VALUE only; building_cost and ai_value below stay functions of the absolute era `e`. See the flag's header.
     const k = e - ORIGIN;
-    const lift = (IN0_LEVEL != null || IN0_STAGE) ? LEVEL_LIFT : (IN0_ONLY ? (k === 0 ? IN0 : 1) : IN0);
+    const baseLift = (IN0_ANCHORED != null && aEra != null) ? IN0_ANCHORED : IN0;   // --in0-anchored: the SLID set's own lift
+    const lift = (IN0_LEVEL != null || IN0_STAGE) ? LEVEL_LIFT : (IN0_ONLY ? (k === 0 ? baseLift : 1) : baseLift);
     const Ve = I0 * lift * (TF ? TF.in[e] : Math.pow(B, k));
     const inputs = {};
     for (const [g, q] of Object.entries(mixRec.in)) { const share = q * (PRICE[g] || 0) / mixVal; const qty = r1(share * Ve / PRICE[g]); if (qty > 0) inputs[g] = qty; }
@@ -316,6 +334,8 @@ if (BAR_MONTHS != null) { if (!cfg.research_events) throw new Error('--bar-month
 if (STEEP) for (const id of STEEP.inds) if (!cfg.industries.some(i => i.id === id)) throw new Error(`--ai-steep: unknown industry ${id}`);
 for (const id of Object.keys(A_FOR)) if (!cfg.industries.some(i => i.id === id && !i.disabled)) throw new Error(`--A-for: unknown or disabled industry ${id}`);
 for (const id of Object.keys(ANCHOR_FOR)) if (!cfg.industries.some(i => i.id === id && !i.disabled)) throw new Error(`--anchor-for: unknown or disabled industry ${id}`);
+if (IN0_ANCHORED != null && !Object.keys(ANCHOR_FOR).length) throw new Error('--in0-anchored needs --anchor-for: it is the lift for the SLID set, and nothing is slid');
+if (IN0_ANCHORED != null && (IN0_LEVEL != null || IN0_STAGE)) throw new Error('--in0-anchored with --in0-level / --in0-stage: both decide an industry\'s lift; give one');
 if (Object.keys(ANCHOR_FOR).length) {
   // --tiers-for indexes its arrays BY ERA over the industry's own rung 0; an anchor shift moves what rung 0 means, so the two
   //   would silently disagree about the same industry. --in0-only's "era 0 alone" is honoured as "the ANCHOR rung alone" above,
@@ -335,6 +355,7 @@ cfg._ab.ai_defines_extra = Object.keys(EXTRA_DEFINES).length ? EXTRA_DEFINES : n
 cfg._ab.in0 = IN0; cfg._ab.in0_level = IN0_LEVEL; cfg._ab.in0_stage = IN0_STAGE; cfg._ab.in0_supplier = IN0_SUPPLIER; cfg._ab.in0_supplier_mode = IN0_SUPPLIER != null ? IN0_SUPPLIER_MODE : null; cfg._ab.downstream_weight = IN0_SUPPLIER != null ? DOWNSTREAM : null; cfg._ab.good_stage = IN0_STAGE ? STAGE : null; cfg._ab.industry_stage = IN0_STAGE ? IND_STAGE : null; cfg._ab.in0_per_industry = (IN0_LEVEL != null || IN0_STAGE) ? LEVELLED : null; cfg._ab.in0_only = IN0_ONLY; cfg._ab.cost_flat = COST_FLAT; cfg._ab.cost_ratio = COST_RATIO; cfg._ab.cost_ladder = COST_LADDER; cfg._ab.ai_ladder = AI_LADDER; cfg._ab.bar_months = BAR_MONTHS;
 // ⭐ the book records that it is era-keyed, and the command that made it — the era pass (2026-09-13) is what a
 //   reader of an older book has to check for: a book without `keyed_by: 'era'` was keyed on the rung index
+cfg._ab.in0_anchored = IN0_ANCHORED;
 cfg._ab.anchor_for = Object.keys(ANCHOR_FOR).length ? ANCHOR_FOR : null;
 cfg._ab.keyed_by = 'era'; cfg._ab.era_rule = '2026-09-13';
 cfg._ab.command = 'node tools/make_ab_config.mjs ' + process.argv.slice(2).map(a => /[\s|"]/.test(a) ? JSON.stringify(a) : a).join(' ');
