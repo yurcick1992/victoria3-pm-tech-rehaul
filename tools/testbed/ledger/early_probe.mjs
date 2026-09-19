@@ -88,12 +88,14 @@ for (const s of SETUPS) { let runs = [];
 const FALLBACK = Object.values(ARM).flat().find(r => r.map);
 if (FALLBACK) for (const rs of Object.values(ARM)) for (const r of rs) if (!r.map) r.map = { ...FALLBACK.map, borrowed: true };
 
+const dateOf=y=>{const d=[...new Set(Object.values(ARM).flat().map(r=>r.years.get(y)&&r.years.get(y).date).filter(Boolean))];return d.length===1?d[0]:d.join('/');};
 console.log('EARLY-GAME PROBE — ' + SESSION + ' · control arm "' + CONTROL + '" · ' + SETUPS.map(s => s + ' n=' + (ARM[s] || []).length).join(' · '));
 console.log('margin = profit ÷ (va_out − profit), F92\'s identity — the game\'s own profitability, no wage model. Two in-game years: the ANCHOR, not the century.\n');
 
 // ---- 1. the world product
 console.log('=== 1. IS THE WORLD PRODUCT DISTORTED? (world GDP, median over each arm\'s runs) ===');
 const ctlG = {}; for (const y of YEARS) ctlG[y] = med((ARM[CONTROL] || []).map(r => r.years.get(y) && r.years.get(y).gdp));
+console.log('years read: ' + YEARS.map(y => y + ' = ' + dateOf(y)).join(' · '));
 console.log('arm            ' + YEARS.map(y => ('£M ' + y).padStart(12)).join('') + '   ' + YEARS.map(y => ('÷ control').padStart(11)).join('') + '   per-run spread at ' + YEARS[YEARS.length - 1]);
 for (const s of SETUPS) { const rs = ARM[s] || []; if (!rs.length) { console.log('  ' + s.padEnd(13) + ' (no usable run)'); continue; }
   const g = YEARS.map(y => med(rs.map(r => r.years.get(y) && r.years.get(y).gdp)));

@@ -14116,3 +14116,115 @@ is a real measurement but its cost ladder was gain-matched and F128 itself concl
 **What it does NOT say.** Nothing about realised margins — every number here is at base prices and F139 measured the market compressing a designed
 5/55/127/233 into a realised 26/31/47/46. Nothing about where between A 1.7 and A 2.2 the obsolescence actually breaks, since the measured A 1.9 book
 contradicts the base-price test in the favourable direction. No run was launched.
+
+## F142 — ⭐⭐ THE ERA-0 INPUT PENALTY IS A QUANTITY DIAL, NOT A MARGIN DIAL: raising `in0` from 1.2 to 1.5 leaves the realised era-0 margin at 26 → 21% after 21 months while removing 12% of the tiered workforce and 15% of its output, because the industry sheds staffing until its price recovers — and the paper census that predicted 45–60% of types running negative measured 0 / 0 / 0 / 5% (14 runs of 1836→1838, n=3 per arm + n=2 vanilla control, 2026-09-19)
+
+**Why it was run.** The user: *"running a 1836-1838 probe to understand where the very early game stabilises … is not [2.5 hours]. In fact, we could
+run a dozen 2+1 probes of this type to understand the early-game effects of different in0."* F140 had bounded the era-0 penalty ON PAPER, at fixed
+vanilla prices while the recipe moved — the thing BALANCE_FRAMEWORK §10.86.2 says not to trust, because the penalty raises its own input prices and
+shrinks its own buildings and neither feedback is in a fixed-price census. Two in-game years shows both.
+
+**Arms.** Session `20260919_132049_in0-early-probe`, 14 runs of 1836.1.1 → 1838.1.1 in 40 minutes, every one reaching its until date on one attempt.
+A vanilla control (n=2) at the same dump dates, then the shipped canon (`in0` 1.2) and the same book at `in0` 1.3 / 1.4 / 1.5, n=3 each — a one-field
+change verified rung by rung (`inputs` and `target_be` on all 56, nothing else). Read with `tools/testbed/ledger/early_probe.mjs` at **1837.10.1**
+(21 months), the last summary common to all fourteen runs; the 1836 column is 1836.10.1.
+
+### 1. THE WORLD PRODUCT IS BARELY DISTORTED — and the paper over-stated the cost by 2–3×
+
+| arm | world GDP 1836.10 | 1837.10 | ÷ control | per-run spread at 1837.10 | **F140's first-order prediction** |
+|---|---|---|---|---|---|
+| vanilla | £412M | £424M | 1.00 | 420 / 429 | — |
+| **in0 1.2 (the canon)** | 417 | 428 | **1.01** | 429 / 428 / 425 | −1.9 points |
+| in0 1.3 | 411 | 422 | **1.00** | 422 / 423 / 420 | −2.6 |
+| in0 1.4 | 406 | 412 | **0.97** | 412 / 412 / 424 | −3.9 |
+| in0 1.5 | 399 | 414 | **0.98** | 417 / 414 / 403 | −4.9 |
+
+⇒ **about 1 point of world product per +0.1 of `in0`, and it saturates** — in14 and in15 are indistinguishable at n=3. The schedule's pre-registered
+bands (0.97–1.03 / 0.96–1.02 / 0.94–1.00 / 0.92–0.99) were all MET, every one at its generous edge. **The feedbacks damp, they do not amplify** —
+the first-order value-added arithmetic is an upper bound, not an estimate.
+
+### 2. ⭐⭐ THE PENALTY BITES IN FULL, THEN IS ABSORBED WITHIN 21 MONTHS
+
+Realised margin by era (F92's identity, world, median of each arm's runs):
+
+| | designed e0 at base | **realised e0 at 1836.10** | **realised e0 at 1837.10** | e1 at 1837.10 | e2 at 1837.10 |
+|---|---|---|---|---|---|
+| vanilla | (n/a) | 28% | 33% | 16% | — |
+| in0 1.2 | +5% | 20% | **26%** | 29% | 28% |
+| in0 1.3 | −3% | 13% | **23%** | 28% | 23% |
+| in0 1.4 | −10% | 8% | **21%** | 27% | 19% |
+| in0 1.5 | −16% | 3% | **21%** | 28% | 14% |
+
+**At nine months the pass-through is nearly 1:1** — a designed cut of ~8 points per +0.1 of `in0` shows up as ~6 points of realised margin (20 → 13
+→ 8 → 3). **At twenty-one months it is gone**: 26 / 23 / 21 / 21, a **3-point spread out of a 24-point designed one, ~8:1 compression**, worse than
+F139's ~5:1 on the A/B axis. ⇒ **`in0` does not durably move the realised era-0 margin.** It cannot therefore change the AI's relative build
+incentive between rungs, which is what the money-printer complaint is about.
+
+### 3. ⭐⭐ WHAT IT MOVES INSTEAD IS QUANTITY — the adjustment is paid in workers and output
+
+| arm | tiered workers 1836.10 → 1837.10 | tiered output | share of the 1836 tiered WORKFORCE in a type that shed > half |
+|---|---|---|---|
+| vanilla | 4,980k → 4,811k (−3.4%) | — | **0%** |
+| in0 1.2 | 4,574k → 4,364k (−4.6%) | 57,821 → 57,322 (−0.9%) | **0%** |
+| in0 1.3 | 4,396k → 4,073k (−7.3%) | 55,719 → 53,958 (−3.2%) | **0%** |
+| in0 1.4 | 4,168k → 3,815k (−8.5%) | 52,016 → 51,100 (−1.8%) | **9%** |
+| in0 1.5 | 3,951k → 3,445k (−12.8%) | 48,927 → 46,419 (−5.1%) | **9%** |
+
+Note the LEVELS as well as the changes: the tiered sector at in0 1.5 starts the comparison 14% smaller in workers and 15% smaller in output than at
+1.2, because nine months of shedding have already happened. **From 1.2 to 1.5 the penalty costs about 12% of the tiered workforce and 15% of its
+output for 5 points of realised margin, three of which it gives back.**
+
+⭐ **And the mechanism is visible one industry at a time — shed, then recover:**
+
+| | glass e0, staffed levels | its margin 1836.10 → 1837.10 | verdict (user's bands, §10.86.5) |
+|---|---|---|---|
+| vanilla | 111 → 87 (**79%** retained) | 16% → 19% | an adjustment |
+| in0 1.2 | 80 → 42 (52%) | 10% → 11% | an adjustment |
+| in0 1.3 | 76 → 38 (50%) | **−10% → +13%** | an adjustment |
+| in0 1.4 | 76 → 34 (44%) | **−17% → +12%** | **WOUNDED** |
+| in0 1.5 | 76 → 32 (42%) | **−23% → +12%** | **WOUNDED** |
+
+**Every insolvent industry in this batch ends the window PROFITABLE, having shed between 16% and 58% of its staffed levels** — furniture e0 at in15
+goes −8% → +21% shedding 26%, paper e0 17% → 21% shedding 27%, food e0 9% → 18% shedding 24%. **Exactly one type actually dies: `motor e0` at
+in0 1.5, 3% retained at a −0% margin** — and that is a ONE-LEVEL, 2k-worker industry at the 1836 start, a real death of a very small thing.
+
+### 4. THE PRICE PATH — the input spike is real, smaller than the paper said, and temporary; and the penalty partly REPAIRS F137
+
+British market, % of base:
+
+| good | arm | 1836.2.1 | 1836.7.1 | 1837.1.1 | 1837.12.1 |
+|---|---|---|---|---|---|
+| **fabric** | vanilla | 98 | 104 | 101 | 97 |
+| | in0 1.2 → 1.5 | **111 → 126** | 114 → 105 | 112 → 104 | **105 → 100** |
+| **wood** | vanilla | 106 | 116 | 105 | 106 |
+| | in0 1.2 → 1.5 | **110 → 126** | 130 → 127 | 125 → 121 | 112 → 109 |
+| **clothes** | vanilla | 78 | 85 | 84 | **90** |
+| | in0 1.2 → 1.5 | 58 → 57 | 69 → 92 | 78 → 91 | **74 → 88** |
+
+- **The input spike is real but a third of the predicted size and it decays.** F140's first order put British fabric at 92 → 122% of base at ×1.4;
+  measured, 111 → 121 for in12 → in14 **at the anchor instant only**, back to 105 → 100 within 21 months as the raw sector answers.
+- ⭐ **The penalty partly repairs F137's supply-anchor damage.** The canon opens clothes at 58% of base against vanilla's 78 (F137's over-production);
+  by 1837.12 a higher `in0` has pulled the price back toward vanilla — **74 / 76 / 80 / 88% for in0 1.2 / 1.3 / 1.4 / 1.5 against vanilla's 90%** —
+  because the over-supplied industry shrinks. That is a real, previously unlisted benefit of the lever, and it is on the P1/P6 axis.
+
+### 5. THE PREDICTION SCORECARD (pre-registered in the schedule before the batch ran)
+
+| prediction | outcome |
+|---|---|
+| world GDP 0.97–1.03 / 0.96–1.02 / 0.94–1.00 / 0.92–0.99 | ✅ **all four met**, each at the generous edge |
+| no VERY-DEAD type in any arm | ⚠ **nearly** — one, `motor e0` at in15, a 1-level industry |
+| glass the most fragile everywhere, negative in vanilla too | ✅ on fragility (it is the worst in all five arms); ❌ on sign — vanilla's glass earns **+16 to +19%**, not the −21% F140's wage model gave |
+| tiered types running negative: 20–30% at in12 → 45–60% at in15 | ❌❌ **badly wrong: 0 / 0 / 0 / 5%** |
+| realised margins move 1:1 or are absorbed | ❌ for 1:1 — **absorbed, ~8:1, within 21 months** |
+
+⇒ **Two of five wrong, both because a fixed-price census cannot see the adjustment.** This is §10.86.2's ruling paying for itself the first time it
+was tested: the census's *ordering* of the options survives intact, its *levels* do not.
+
+**Confidence.** HIGH on the world-product and margin readings (n=3 per arm, one lever, narrow per-run spreads, the game's own profit identity).
+HIGH on the shed-then-recover mechanism — it is visible per industry in every arm and the control shows the same behaviour at smaller amplitude.
+MEDIUM on the exact retention percentages of small industries (motor and explosives run 1–3 levels, where one level is 30%+ of the industry).
+
+**What it does NOT say.** ⚠ **Nothing century-scale** — obsolescence, the price decline, the hoard and the money printer are all decades out, and
+21 months speaks to none of them. It does NOT say `in0` 1.4 is safe to ship; only that it does not break the anchor. Nothing about A or B, held at
+the canon's throughout. Nothing about whether the shedding it buys compounds into real obsolescence later, which is the one thing that would
+justify the lever and can only be seen in a full run.
