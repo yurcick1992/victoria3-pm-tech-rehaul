@@ -14029,3 +14029,90 @@ economy of scale would add roughly 5–9 points to a typical cell), and the wage
 the recipe changes, and F137 shows our shipped 1836 already deviates on the supply side (British tools 21 against vanilla's 41). Nothing about the A/B
 axis, which is not varied here; the era-0 rung's economics depend only on the lift. Nothing about what era 0 does once era 1–3 exist beside it — this is
 the 1836 map alone. No run was launched.
+
+## F141 — ⭐⭐ THE MONEY PRINTER'S LEVERS, AND WHY TWO OF THEM CANNOT BE PULLED TOGETHER: the margin is a RATIO (out ÷ in) and F97's death test is a DIFFERENCE (out − in), so lowering A cuts the margin and the 1836 anchor error together (+27.3% → +15.3% at A 1.9, +7.5% at A 1.7) while collapsing obsolescence (16 of 17 industries → 10 → 3), and only a NON-GEOMETRIC input ladder cuts the top margin (233% → 65%) with obsolescence untouched (computed read-only over the shipped book and the emitted 1836 history, 2026-09-19)
+
+**Why it was measured.** The user closed the per-industry `--in0-level` axis (*"this is 'the solver' all over again … too complex. Vanilla values +
+uniform ladders and penalties stay, although ladders can be more complex than anchor\*A^era"*) and asked what is left: *"If going with over 1.2 as the
+input penalty breaks 1836 economy significantly, what can you suggest, ladder-wise, to decrease money printing? Maybe a significantly lower A, with
+vanilla B (1.5, is it?)?"* F140 had bounded the `in0` axis at about ×1.4; this bounds the others.
+
+**Instrument.** `tools/ladder_options.mjs` (written for this, read-only). All at base prices from the book's own arithmetic, plus the 1836 anchor
+computed against the EMITTED history.
+
+### 1. THE IDENTITY THAT SETS THE DESIGN SPACE
+
+With `out_e` / `in_e` the ladders and `m0` the rung-0 margin the `in0` penalty leaves:
+
+- **margin at base** = `(1 + m0) × (out_e ÷ in_e) − 1` — a **RATIO**
+- **F97's death test** (a rung two back holding < 0.20 of the frontier's value added per worker; per-level employment is constant across an industry's
+  rungs, so it reduces to VA per level) = `(out_e − in_e) ÷ (out_E − in_E)` — a **DIFFERENCE**
+- **capital per unit of output** = `cost_e ÷ out_e`
+- **the 1836 anchor error** (F137) = `out_e ÷ (that rung's own vanilla method's output)` — the OUTPUT ladder alone
+
+⇒ **Narrowing the ratio to kill the margin narrows the difference too, unless BOTH ladders grow.** That is why "lower A" and "steeper B at the top" are
+different answers and not two spellings of one.
+
+### 2. THE CANDIDATE TABLE (`in0` 1.2 throughout; the death test counted over all 17 industries)
+
+| book | margin e0 / e1 / e2 / e3 | death test < 0.20 | capital ÷ output at e3 | **1836 anchor error** |
+|---|---|---|---|---|
+| **CANON** A 2.2 / B 1.5 / C 1.9 | 5 / 55 / **127** / **233** | **16 of 17** | 0.64 | **+27.3%** |
+| A 2.0 / B 1.55 / C 1.8 | 5 / 36 / 76 / 127 | 14 of 17 | 0.73 | +19.2% |
+| A 1.9 / B 1.5 / C 1.9 | 5 / 34 / 69 / 114 | 10 of 17 | 1.00 | +15.3% |
+| A 1.9 / B 1.5 / C 1.75 | 5 / 34 / 69 / 114 | 10 of 17 | 0.78 | +15.3% |
+| `canon-a19-gm` (**measured**, C gain-matched) | 5 / 34 / 69 / 114 | 10 of 17 | 0.54 | +15.3% |
+| A 1.7 / B 1.5 / C 1.6 | 5 / 20 / 35 / 54 | **3 of 17** ⚠ | 0.83 | +7.5% |
+| A 2.2 / **B = 1 / 1.66 / 3.29 / 6.81** / C 1.9 | 5 / 40 / 55 / **65** | **16 of 17** | 0.64 | +27.3% |
+
+- **Lower A pays twice and costs once**: it cuts the margin AND is the only lever that repairs F137 (the error is `out_e` ÷ the vanilla method's own
+  output), and it shortens build time at a given capital ratio. It costs the death test, which collapses below about A 1.8.
+- **The accelerating input ladder is the only way to cut the TOP margin without touching obsolescence** — 233% → 65% at 16 of 17, because the output
+  ladder is untouched and both ladders grow. ⚠ Its price: the frontier then spends **45.5% of its output value on inputs against 22.5%** (an effective
+  B of 1.90 at the top), and **F128 measured B 1.8 as a stall** (world GDP 0.70 over three seeds). It does nothing for the 1836 anchor.
+
+### 3. ⭐ A CORRECTION TO F137's ARITHMETIC (its conclusion stands, its per-industry numbers move)
+
+F137 sized the 1836 over-production with a flat `1.33^e` vanilla-equivalent and counted `create_building` BLOCKS where its table says "levels". Both
+are replaced here: each rung is compared against **its own vanilla method's output**, weighted by the **levels** the emitted history actually places.
+
+| industry | levels e0 / e1 / e2 | blocks (what F137 counted) | vanilla's own output ladder | F137 said | **exact** |
+|---|---|---|---|---|---|
+| tooling | 10 / 35 / 50 | 10 / 16 / 9 | 30 → 60 → 80 | +88% | **+54%** |
+| textile | 153 / 117 / 0 | 73 / 21 / 0 | 45 → 60 → 100 → 140 | +18% | **+33%** |
+| food | 40 / 36 / 0 | 20 / 12 / 0 | 45 → 65 → 120 | +29% | **+30%** |
+| munition | — / 8 / 0 | — / 4 / 0 | 50 → 90 | +65% | **+120%** |
+| **world, all tiered industries** | | 3,147 blocks in the emitted history | | — | **+27.3%** |
+
+⚠ **Munition is the structural case worth naming**: its first rung IS e1, so the era rule multiplies e1's OWN vanilla method by A¹ — the 1836 map's
+munition plants make 110 ammunition where vanilla's make 50. Every industry whose first rung is above e0 (munition e1, synthetics e1, automotive e2,
+electrics e2) carries that, and it is a side effect of the era keying (F111's fix), not of A alone.
+
+### 4. ⭐⭐ THE USER'S OWN SUGGESTION HAS ALREADY BEEN RUN — AND IT BEATS ITS OWN BASE-PRICE DEATH TEST
+
+`canon-a19-gm` **is** "significantly lower A with vanilla B": A 1.9 / B 1.5 / `in0` 1.2, differing from the proposal only in a gain-matched (cheap)
+cost ladder. Re-scored today under the ±20% world-GDP band (F129's session, n=2):
+
+| | `canon-a19-gm` | the canon |
+|---|---|---|
+| hard breaks | **none** | none at ±20% (run 1 broke at ±10%) |
+| loss | **6.63** | 8.57 |
+| world GDP | 1.15 / 1.10 | 1.30 / 1.16 |
+| **T0 ÷ rest** | **0.019** | 0.030 |
+| T3 ÷ rest | **0.538** | 0.449 |
+| pool W | 0.88 (seed 1 **1.04**, soft breach) | 0.75 |
+
+⭐⭐ **The base-price death test says A 1.9 should be WORSE at obsolescence (10 of 17 against 16 of 17). Measured, its old rung is BETTER on every
+reading** — T0 ÷ rest 0.019 against 0.030, T3 ÷ rest 0.538 against 0.449, the old rung 39.5 / 32.2% staffed against 45% (F129). ⇒ the death test is a
+FLAG, not a gate, and this is §10.86.2's ruling landing on the design side: a base-price ratio is a coordinate, not a prediction.
+
+Its one real defect — pool W 1.04 in one seed, i.e. full depeasantation, and world GDP above the aim — tracks the CHEAP cost ladder (capital ÷ output
+0.54 at the frontier against the canon's 0.64), not A.
+
+**Confidence.** HIGH on the arithmetic (it is the generator's own, applied to the shipped book and the emitted history). HIGH on the corrected 1836
+anchor numbers — exact against each rung's own vanilla method. MEDIUM-HIGH on the raw-pull warning against the accelerating ladder: F128's B 1.8 stall
+is a real measurement but its cost ladder was gain-matched and F128 itself concluded the match understated the price channel.
+
+**What it does NOT say.** Nothing about realised margins — every number here is at base prices and F139 measured the market compressing a designed
+5/55/127/233 into a realised 26/31/47/46. Nothing about where between A 1.7 and A 2.2 the obsolescence actually breaks, since the measured A 1.9 book
+contradicts the base-price test in the favourable direction. No run was launched.

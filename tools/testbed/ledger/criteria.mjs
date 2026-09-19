@@ -35,16 +35,16 @@
 //          median over the same markets of price ÷ the owner's base wage at 1935, ÷ vanilla's; aim ≤ 0.8, soft > 1.1 (pop goods stay near
 //          base in pounds — pop wealth absorbs the glut — so the decline the design needs shows in labour terms, F97)
 //   PM   the war goods (small arms, artillery, ammunition) — read only; the army's demand is exogenous to the ladder
-//   ⭐ W HAS HARD BOUNDS SINCE 2026-09-19 (user): "[lower vanilla 95% CI * 0.9; higher vanilla 95% CI * 1.1]" — put on W rather than H because
-//   "H is hardly comparable with vanilla anyway" (vanilla's own H runs 0.56–1.93× between seeds where its W runs 0.86–1.08×, so only W carries a
-//   vanilla-derived bound). Derived per invocation from the vanilla reference's own 2.5/97.5 percentiles: n=16 gives world 0.78–1.19×, pool
+//   ⚠ W HAS NO HARD BOUND — the 2026-09-19 reading that put one there was superseded the same evening by the world-product ruling above. The
+//   measurement is kept behind --w-hard (default OFF, so nothing unruled ships): vanilla's own W runs 0.86–1.08× between seeds (pool 0.89–1.10×)
+//   against H's 0.56–1.93×, so W is the LABOUR metric a vanilla-derived band could be built on: at ×0.9/×1.1 that is world 0.78–1.19×, pool
 //   0.80–1.21× (absolutely 0.111–0.170 and 0.157–0.238 productive workers per head). Above the ceiling = FULL DEPEASANTATION, broken by runoff.
 //   ⚠⚠ The FLOOR as ruled falls inside the register's own aim of 0.6–0.95, so it would break a book sitting in the middle of its aim; the default
 //   mode is therefore --w-hard ceiling (ceiling only) until the aim and the floor are reconciled, with --w-hard both for the literal ruling.
 //   ⭐ WORLD GDP — the combined GDP of all countries, the thing the user calls the WORLD PRODUCT — HAS A DERIVED HARD BAND SINCE 2026-09-19
 //   (user: "for it, the mod hard boundaries are 95% CI +-10%"): vanilla's own end-state 2.5/97.5 percentiles widened 10% outward, which at n=16
-//   is 0.823–1.146 → **0.74–1.26× of the vanilla median**. Below = stall, above = runoff, per run. It REPLACES the 2026-09-17 provisional
-//   < 0.5 / > 1.5 lines (--gdp-hard legacy restores them). ⚠ It is tighter than the SOFT line on the ceiling (soft: outside 0.75–1.33), so the
+//   is 0.823–1.146 → **0.66–1.38× of the vanilla median** (×0.8 / ×1.2, widened the same evening so a 1.30 run is not broken). Below = stall, above = runoff, per run. It REPLACES the 2026-09-17 provisional
+//   < 0.5 / > 1.5 lines (--gdp-hard legacy restores them). ⚠ At ×0.9/×1.1 it was TIGHTER than the soft line and the soft ceiling could not fire; at ×0.8/×1.2 the
 //   soft ceiling can no longer fire — the two need reconciling.
 // HARD lines: the 1836–1845 anchor (world GDP outside vanilla's 90% CI ± 10% in more than two years: below → stall, above → runoff);
 //   pooled U* < 10% (runoff); CAPITAL ABUNDANCE — a shortlist member of ≥ 50M people, not in civil war, with U* < 5% in FIVE or more
@@ -180,7 +180,7 @@ for (const y of PYEARS) ref['PI.' + y] = med(vanRuns.map(r => priceIdx(r.P, r.wa
 // ⚠⚠ THE FLOOR AS RULED SITS INSIDE THE REGISTER'S OWN AIM (0.6–0.95): the literal band is ~0.78–1.19 world and ~0.80–1.21 pool, so a book
 // at the MIDDLE of its aim is 'broken'. '--w-hard ceiling' (the default until the aim is re-ruled) applies the CEILING only; '--w-hard both'
 // is the literal ruling; '--w-hard off' restores the pre-2026-09-19 register. Whatever the mode, the band is printed and the overlap flagged.
-const WHARD = argOf('--w-hard', 'aim');
+const WHARD = argOf('--w-hard', 'off');   // UNRULED: the 2026-09-19 W reading was superseded within the hour by the world-product one, so no W hard line ships
 if (!['aim', 'ceiling', 'both', 'off'].includes(WHARD)) throw new Error('--w-hard aim|ceiling|both|off');
 const AIMLO = 0.6;   // the register's own W aim floor, which mode 'aim' takes its hard floor from (x 0.9, the ruling's own widening)
 const wci = {};
@@ -191,7 +191,7 @@ const wband = sc => wci[sc] ? (WHARD === 'off' ? 'no hard line' : 'HARD ' + (WHA
 // ⭐⭐ THE WORLD-GDP HARD BAND (user-ruled 2026-09-19: "world product, the combined GDP of all countries ... for it, the mod hard boundaries
 // are 95% CI +-10%"). DERIVED per invocation from the vanilla reference's own end-state seed distribution, never a literal: the 2.5/97.5
 // PERCENTILES of world GDP in the same window, widened 10% outward. At n=16 that is 0.823-1.146x of the vanilla median, so the band is
-// 0.74-1.26x. Below = broken by STALL, above = broken by RUNOFF, per run, replacing the 2026-09-17 provisional < 0.5 / > 1.5 lines.
+// 0.66-1.38x (widened from x0.9/x1.1 to x0.8/x1.2 by the user, 2026-09-19 evening: "to not disallow 1.3 as hard boundary broken"). Below = broken by STALL, above = broken by RUNOFF, per run, replacing the 2026-09-17 provisional < 0.5 / > 1.5 lines.
 // ⚠ It is TIGHTER THAN THE SOFT LINE ON THE CEILING (soft: outside 0.75-1.33), so a run now breaks at 1.26 before it can ever read
 // 'beyond the soft boundary' upward — the soft ceiling is dead on the high side until it is re-ruled. The floor 0.74 sits just inside the
 // soft floor 0.75, so the same is nearly true downward. Flagged in the header, not silently resolved.
@@ -199,7 +199,7 @@ const wband = sc => wci[sc] ? (WHARD === 'off' ? 'no hard line' : 'HARD ' + (WHA
 const GDPHARD = argOf('--gdp-hard', 'ci');
 if (!['ci', 'legacy', 'off'].includes(GDPHARD)) throw new Error('--gdp-hard ci|legacy|off');
 const gci = (() => { const v = vanRuns.map(r => winMean(r.years, 'world', 'gdp')).filter(Number.isFinite); const m = ref['world.gdp'];
-  return (v.length >= 8 && m > 0) ? { lo: pct(v, 0.025) / m * 0.9, hi: pct(v, 0.975) / m * 1.1, n: v.length } : null; })();
+  return (v.length >= 8 && m > 0) ? { lo: pct(v, 0.025) / m * 0.8, hi: pct(v, 0.975) / m * 1.2, n: v.length } : null; })();
 const ci = {}; for (let y = 1836; y <= 1845; y++) { const v = vanRuns.map(r => at(r.years, y, 'world', 'gdp')).filter(Number.isFinite); if (v.length >= 8) ci[y] = { lo: pct(v, 0.05), hi: pct(v, 0.95) }; }
 
 // ---- an arm's runs
@@ -221,8 +221,8 @@ function scoreRun(rel, tier) {
     for (let y = 1836; y <= 1845; y++) { const c = ci[y], g = at(years, y, 'world', 'gdp'); if (!c || !Number.isFinite(g)) continue; if (g < 0.9 * c.lo) { viol++; below++; det.push(y + ' ' + f2(g / c.lo) + '×lo'); } else if (g > 1.1 * c.hi) { viol++; above++; det.push(y + ' ' + f2(g / c.hi) + '×hi'); } }
     r.anchor = { viol, det }; if (viol > 2) { r.hard.push('1836–1845 world GDP outside vanilla\'s 90% CI ±10% in ' + viol + ' years (' + det.join(', ') + ')'); r.side.push(below >= above ? 'stall' : 'runoff'); } }
   if (GDPHARD === 'ci' && gci) {
-    if (r2(r.gdpW) > gci.hi) { r.hard.push('world GDP ' + f2(r.gdpW) + '× vanilla at the end state, beyond the hard ceiling ' + f2(gci.hi) + '× (vanilla\'s 95% CI +10%)'); r.side.push('runoff'); }
-    else if (r2(r.gdpW) < gci.lo) { r.hard.push('world GDP ' + f2(r.gdpW) + '× vanilla at the end state, below the hard floor ' + f2(gci.lo) + '× (vanilla\'s 95% CI −10%)'); r.side.push('stall'); }
+    if (r2(r.gdpW) > gci.hi) { r.hard.push('world GDP ' + f2(r.gdpW) + '× vanilla at the end state, beyond the hard ceiling ' + f2(gci.hi) + '× (vanilla\'s 95% CI +20%)'); r.side.push('runoff'); }
+    else if (r2(r.gdpW) < gci.lo) { r.hard.push('world GDP ' + f2(r.gdpW) + '× vanilla at the end state, below the hard floor ' + f2(gci.lo) + '× (vanilla\'s 95% CI −20%)'); r.side.push('stall'); }
   } else if (GDPHARD === 'legacy') {
     if (r2(r.gdpW) > 1.5) { r.hard.push('world GDP ' + f2(r.gdpW) + '× vanilla at the end state (> 1.5)'); r.side.push('runoff'); }
     if (r2(r.gdpW) < 0.5) { r.hard.push('world GDP ' + f2(r.gdpW) + '× vanilla at the end state (< 0.5)'); r.side.push('stall'); } }
@@ -306,9 +306,9 @@ const line = (label, v, verd, extra = '') => console.log('  ' + label.padEnd(28)
 if (!QUIET) {
   console.log('CRITERIA REGISTER (§10.83) — end state = the ' + E0 + '–' + E1 + ' mean · vanilla ' + VAN + ' (n=' + vanRuns.length + ') · σ = ' + (SIGMA === 'fixed' ? 'the FIXED pooled within-config spread of the 2026-09-13→18 books (F134)' : SIGMA === 'vanilla' ? "vanilla's own seed spread" : 'the spread across the INTACT runs read here (' + allRuns.filter(r => !r.broken).length + ')'));
   console.log('vanilla window medians: world GDP £' + f2(ref['world.gdp'] / 1e6, 0) + 'M (σ ' + f2(sig['world.gdp']) + ') · W ' + f2(ref['world.W'], 4) + ' (σ ' + f2(sig['world.W']) + ') · U* ' + pc(ref['world.U']) + ' (σ ' + f2(sig['world.U']) + ') · H ' + f2(ref['world.H']) + ' (σ ' + f2(sig['world.H']) + ') | pool GDP £' + f2(ref['pool.gdp'] / 1e6, 0) + 'M (σ ' + f2(sig['pool.gdp']) + ') · W ' + f2(ref['pool.W'], 4) + ' (σ ' + f2(sig['pool.W']) + ') · U* ' + pc(ref['pool.U']) + ' (σ ' + f2(sig['pool.U']) + ') · H ' + f2(ref['pool.H']) + ' (σ ' + f2(sig['pool.H']) + ') | PI ' + f2(ref.PI) + ' of base (σ ' + f2(sig.PI) + '; path ' + PYEARS.map(y => f2(ref['PI.' + y])).join(' → ') + ') · PP ' + f2(ref.PP, 1) + ' wage units (σ ' + f2(sig.PP) + ') · PM ' + f2(ref.PM) + ' of base');
-  if (gci) console.log('world GDP hard band (user-ruled 2026-09-19: vanilla\'s 95% CI ×0.9 / ×1.1; mode --gdp-hard ' + GDPHARD + '): ' + f2(gci.lo) + '–' + f2(gci.hi) + '× of the vanilla median'
-    + (GDPHARD === 'ci' ? '  ⚠ tighter than the SOFT line (0.75–1.33), so the soft ceiling can no longer fire — unruled' : ''));
-  console.log('W hard bounds (vanilla 95% CI ×0.9 / ×1.1, user-ruled 2026-09-19; mode --w-hard ' + WHARD + '): world ' + wband('world') + ' (abs ' + f2(wci.world ? wci.world.aLo : NaN, 4) + '–' + f2(wci.world ? wci.world.aHi : NaN, 4) + ') · pool ' + wband('pool') + ' (abs ' + f2(wci.pool ? wci.pool.aLo : NaN, 4) + '–' + f2(wci.pool ? wci.pool.aHi : NaN, 4) + ')'
+  if (gci) console.log('world GDP hard band (user-ruled 2026-09-19: vanilla\'s 95% CI ×0.8 / ×1.2; mode --gdp-hard ' + GDPHARD + '): ' + f2(gci.lo) + '–' + f2(gci.hi) + '× of the vanilla median'
+    + (GDPHARD === 'ci' ? '' : ''));
+  if (WHARD !== 'off') console.log('W hard bounds (UNRULED, measured only - vanilla 95% CI ×0.8 / ×1.2, user-ruled 2026-09-19; mode --w-hard ' + WHARD + '): world ' + wband('world') + ' (abs ' + f2(wci.world ? wci.world.aLo : NaN, 4) + '–' + f2(wci.world ? wci.world.aHi : NaN, 4) + ') · pool ' + wband('pool') + ' (abs ' + f2(wci.pool ? wci.pool.aLo : NaN, 4) + '–' + f2(wci.pool ? wci.pool.aHi : NaN, 4) + ')'
     + (WHARD === 'both' && wci.pool && wci.pool.lo > AIMLO ? '\n  ⚠⚠ the ruled FLOOR (' + f2(wci.pool.lo) + '×) sits INSIDE the register\'s own W aim of 0.6–0.95, so a book in the middle of its aim reads BROKEN — the aim and the floor need reconciling (--w-hard ceiling meanwhile)' : ''));
   for (const a of arms) {
     console.log('\n' + '='.repeat(150) + '\n' + a.spec + ' · ' + a.runs.length + ' usable run(s) · ' + (a.cfg ? a.cfg.path : 'no config → T not read'));

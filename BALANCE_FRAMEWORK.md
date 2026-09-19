@@ -8077,41 +8077,48 @@ intact seeds between them.
 
 **The ruling, settled at the third attempt and stated in the user's own words:** *"What I meant is not H and not W, but rather world product, the
 combined GDP of all countries (do we have a letter for that? We probably shouldn't, 'GDP' is good enough). For it, the mod hard boundaries are
-95% CI ±10%."*
+95% CI ±10%."* — **AMENDED within the hour to ±20%**: *"let's make it 95CI-+20%, not 10%, for hard bounds on world product. To not disallow 1.3 as
+hard boundary broken."*
 
-**THE RULE.** The register's END-STATE world GDP line becomes **[vanilla's 2.5th percentile × 0.9, vanilla's 97.5th percentile × 1.1]**, derived per
+**THE RULE.** The register's END-STATE world GDP line becomes **[vanilla's 2.5th percentile × 0.8, vanilla's 97.5th percentile × 1.2]**, derived per
 invocation from the vanilla reference's own seed distribution in the same window — never a literal, the way the 1836–1845 anchor's CI already works.
-At n=16 vanilla's end-state world GDP runs **0.823–1.146×** its own median, so the band is **0.74–1.26×**. Below = **broken by stall**, above =
+At n=16 vanilla's end-state world GDP runs **0.823–1.146×** its own median, so the band is **0.66–1.38×**. Below = **broken by stall**, above =
 **broken by runoff**, checked per run. It REPLACES the provisional `< 0.5` / `> 1.5` lines of 2026-09-17 (`--gdp-hard legacy` restores them,
 `--gdp-hard off` removes them). ⚠ **"CI" here means the PERCENTILE INTERVAL OF THE SIXTEEN SEEDS, not the confidence interval of a mean** — the
 project's established convention, and now written down in `GLOSSARY.md` §4.
 
-**WHAT IT BREAKS, measured over the six books of 2026-09-17/19 (11 runs):** six runs become broken, and **the shipped canon is one of them** —
+**WHAT IT BREAKS, over the six books of 2026-09-17/19 (11 runs), at both widths — the amendment is what the first column is for:**
 
-| book | runs | under the new band |
-|---|---|---|
-| **`canon-c19-in12` — the canon** | 1.30 / 1.16 | **run 1 BROKEN BY RUNOFF at 1.30 > 1.26** ⇒ one broken run ends the config |
-| `canon-a19-gm` (A 1.9) | 1.15 / 1.10 | **both intact — the only book of the six with no broken run** |
-| `canon-c195-in12-eager` | 1.17 / 1.30 | run 2 broken by runoff |
-| `canon-c195-in12` | 1.17 / 0.92 / 0.68 | the tie-breaker broken by stall |
-| `canon-lvl-a19b17` (F139) | 0.60 / 0.45 | both broken by stall |
-| `canon-a205-gm` | 1.00 | already broken (capital abundance) |
+| book | runs | at ×0.9/×1.1 (0.74–1.26) | **at the ruled ×0.8/×1.2 (0.66–1.38)** |
+|---|---|---|---|
+| **`canon-c19-in12` — the canon** | 1.30 / 1.16 | run 1 BROKEN BY RUNOFF ⇒ config out | **intact** |
+| `canon-a19-gm` (A 1.9) | 1.15 / 1.10 | both intact | **intact** |
+| `canon-c195-in12-eager` | 1.17 / 1.30 | run 2 broken by runoff | **intact** |
+| `canon-c195-in12` | 1.17 / 0.92 / 0.68 | the tie-breaker broken by stall | **intact** |
+| `canon-lvl-a19b17` (F139) | 0.60 / 0.45 | both broken by stall | **both still BROKEN BY STALL** |
+| `canon-a205-gm` | 1.00 | already broken (capital abundance) | already broken |
 
-⚠⚠ **TWO CONSEQUENCES THAT NEED THE USER, both flagged in the tool's own header rather than silently resolved:**
-1. **The hard ceiling (1.26) is now TIGHTER than the soft ceiling (1.33), so the soft line can never fire upward** — a run breaks before it can read
-   "beyond the soft boundary". The floor is the same story at one point of margin (hard 0.74 against soft 0.75). **The world-GDP soft line is
-   effectively dead and should be re-ruled or dropped**; the loss's kink on that term goes with it.
-2. **The canon is a broken config under its own register.** Nothing about the canon changed — this is the new line applied to the four seeds already
-   measured (F131), and it is consistent with what those seeds already said (one of four in capital abundance, pool H 4.17×).
+⇒ **6 of 11 runs broke at ±10%, 2 of 11 at the ruled ±20%**, and the two are F139's stalls, which every other reading already condemned. The line is
+real without being a formality.
+
+✅ **AND THE AMENDMENT FIXES WHAT ±10% BROKE.** At ×0.9/×1.1 the hard ceiling (1.26) was TIGHTER than the SOFT ceiling (1.33), so a run broke before it
+could ever read "beyond the soft boundary" and the loss's kink on that term was unreachable; the floor had the same problem at one point of margin
+(hard 0.74 against soft 0.75). At the ruled ×0.8/×1.2 the band is **0.66–1.38, outside the soft line on both sides**, so soft and hard are ordered
+correctly again and nothing further needs ruling. ⚠ The one thing still worth knowing: **W has no hard bound** — the reading that briefly put one there
+was superseded the same evening, the code keeps it behind `--w-hard` (default **off**) so nothing unruled ships, and **H has none by the ruling itself**.
 
 ⭐ **AND THE HISTORY IS THE POINT OF `GLOSSARY.md`.** This ruling was made three times — first as "hard boundaries for H", then corrected to W, then
 to the world product — and each reading gave a completely different, and separately measured, answer:
 
-| the reading | vanilla's own 95% CI, as a ratio to its median | the band it implies | what it would have done |
+| the reading | vanilla's own 95% CI, as a ratio to its median | the band it implies (at the ±10% first tried) | what it would have done |
 |---|---|---|---|
 | **H** (the hoard ÷ GDP) | world **0.56–1.93×**, pool **0.40–2.74×** | 0.51–2.12 / 0.36–3.02 | breaks the canon on the hoard (pool H 6.77× in one seed) |
 | **W** (productive workers per capita) | world **0.86–1.08×**, pool **0.89–1.10×** | 0.78–1.19 / 0.80–1.21 | **the floor lands INSIDE the register's own W aim of 0.6–0.95 and breaks every book we have** — one intact run in five |
-| **world GDP** (the ruling) | **0.823–1.146×** | **0.74–1.26×** | breaks 6 of 11 runs including the canon's run 1 |
+| **world GDP** (the ruling) | **0.823–1.146×** | 0.74–1.26× at ±10%, **0.66–1.38× at the ruled ±20%** | 6 of 11 runs at ±10% including the canon's; **2 of 11 at ±20%** |
+
+⚠ Note what the widths are doing: because vanilla's own seed spread differs by a factor of six between these three quantities, the SAME formula gives a
+±20% band that is generous on world GDP (0.66–1.38) and would be absurd on H (0.33–2.32). The width is only meaningful next to the metric's own spread,
+which is the substance of *"H is hardly comparable with vanilla anyway"*.
 
 The letters were doing real work and two of the three readings were live hypotheses, which is exactly the condition a glossary is for. **`GLOSSARY.md`
 is now the single page that says what each letter means**, with the rule that a bare letter is only allowed if it is on that page. Kept as measured
@@ -8191,3 +8198,79 @@ better *shape* and should be revisited at −5 to −10% once the supply anchor 
 ⚠ **This SUPERSEDES ROADMAP step 9's standing "do not raise `in0` above 1.2 in the same batch"** on the user's own ruling. Two of its three reasons are
 answered — "it drives rung 0 negative at base" is now the INTENT, and "closed as a lever at the current r" was measured at r = 1.467, which is the
 number being changed — but **the third reason stands and is why F137 comes first**.
+
+### 10.86.4 — THE PER-INDUSTRY UNIFORM LEVEL IS CLOSED; LADDERS MAY BE NON-GEOMETRIC; AND WHAT IS LEFT TO CUT THE MONEY PRINTING (user-ruled 2026-09-19 evening)
+
+**The ruling, verbatim:** *"No, we won't go there, this is 'the solver' all over again, and we didn't manage to do that, too complex. Vanilla values +
+uniform ladders and penalties stay, although ladders can be more complex than anchor\*A^era."* And the question it comes with: *"If going with over 1.2
+as the input penalty breaks 1836 economy significantly, what can you suggest, ladder-wise, to decrease money printing? Maybe a significantly lower A,
+with vanilla B (1.5, is it?)?"*
+
+⇒ **`make_ab_config --in0-level` IS CLOSED as a design axis.** It stays in the tool (it generated `canon-lvl-a19b17`, the F139 book, and the census of
+F140 needs it to price the option) but no book will use it again: a per-industry number chosen to hit a per-industry target is the solver's shape, and
+the solver is the thing this project walked away from. **`in0` is ONE SCALAR. A, B and the cost ladder are UNIFORM across industries.**
+⇒ **What IS opened: a ladder need not be `anchor × A^era`.** Per-era lists are legitimate (the cost ladder has taken them since 2026-09-16,
+`--cost-ladder`), so the OUTPUT and INPUT ladders may be lists too. That is a real new degree of freedom and §10.86.4.2 is what it buys.
+
+#### 10.86.4.1 — The three things a ladder has to satisfy at once, and the identity that makes two of them fight
+
+Written down because the answer falls out of the algebra. With `out_e` and `in_e` the ladders and `m0` the rung-0 margin the `in0` penalty leaves:
+
+- **MARGIN at base** = `(1 + m0) × (out_e ÷ in_e) − 1` — the money printer. It is a RATIO.
+- **OBSOLESCENCE** (F97's death test: a rung two back must hold < 0.20 of the frontier's value added per worker; employment per level is constant
+  across an industry's rungs, so it is just VA per level) = `(out_e − in_e) ÷ (out_E − in_E)` — a DIFFERENCE.
+- **CAPITAL per unit of output** = `cost_e ÷ out_e` — the F113/F117 dial: dearer means fewer frontier levels and less labour absorbed.
+- and, at the anchor, **THE 1836 ERROR (F137)** = `out_e ÷ (that rung's own vanilla method's output)`, which depends on the OUTPUT ladder alone.
+
+⭐ **A ratio and a difference cannot be flattened together by the same move.** Narrowing `out ÷ in` to kill the margin narrows `out − in` too — unless
+BOTH ladders grow, which is the only way to hold a wide difference at a narrow ratio. That is the whole design space, and it is why "lower A" and
+"steeper B at the top" are genuinely different answers rather than two spellings of one.
+
+#### 10.86.4.2 — The candidate table (`tools/ladder_options.mjs`, all at `in0` 1.2, textile shown, the death test counted over all 17 industries)
+
+| book | margin e0/e1/e2/e3 at base | death test < 0.20 | capital ÷ output at e3 | **1836 anchor error** |
+|---|---|---|---|---|
+| **CANON** A 2.2 / B 1.5 / C 1.9 | 5 / 55 / **127** / **233** | **16 of 17** | 0.64 | **+27.3%** |
+| A 2.0 / B 1.55 / C 1.8 | 5 / 36 / 76 / 127 | 14 of 17 | 0.73 | +19.2% |
+| **A 1.9 / B 1.5 / C 1.9** | 5 / 34 / 69 / 114 | 10 of 17 | 1.00 | **+15.3%** |
+| A 1.9 / B 1.5 / C 1.75 | 5 / 34 / 69 / 114 | 10 of 17 | 0.78 | +15.3% |
+| `canon-a19-gm` — **ALREADY MEASURED** | 5 / 34 / 69 / 114 | 10 of 17 | 0.54 | +15.3% |
+| A 1.7 / B 1.5 / C 1.6 | 5 / 20 / 35 / 54 | **3 of 17** ⚠ | 0.83 | +7.5% |
+| A 2.2 / **B accelerating** 1.66/3.29/6.81 / C 1.9 | 5 / 40 / 55 / **65** | **16 of 17** | 0.64 | +27.3% |
+
+⭐ **LOWER A PAYS TWICE AND COSTS ONCE.** It cuts the margin, and because the 1836 error is `out_e ÷ vanilla's own method`, it is also **the only lever
+that repairs F137**: +27.3% → +19.2% (A 2.0) → +15.3% (A 1.9) → +7.5% (A 1.7). It also shortens build time (P8) at a given capital ratio. What it costs
+is the death test, and below about A 1.8 that collapses (3 of 17 at A 1.7) — the rung two back stops being poor enough to die.
+⭐ **THE NON-GEOMETRIC B LADDER IS THE ONLY WAY TO CUT THE TOP MARGIN WITHOUT TOUCHING OBSOLESCENCE** — 233% → 65% with the death test unchanged at
+16 of 17, because the output ladder is untouched and both ladders grow. ⚠ Its price is the raw pull: the frontier then spends **45.5% of its output
+value on inputs against 22.5%**, an effective B of 1.90 at the top, and **F128 measured B 1.8 as a stall** (world GDP 0.70 over three seeds). It also
+leaves the 1836 anchor error untouched. It is the interesting card, and it is the risky one.
+
+#### 10.86.4.3 — ⭐⭐ THE USER'S OWN SUGGESTION HAS ALREADY BEEN RUN, AND IT IS THE BEST BOOK ON THE REGISTER
+
+`canon-a19-gm` **IS** "significantly lower A with vanilla B": A 1.9 / B 1.5 / `in0` 1.2, differing from the proposal only in its cost ladder, which was
+gain-matched and therefore cheap (capital ÷ output 0.54 at e3 against the canon's 0.64). Measured at n=2 (F129, session 20260917_051736), re-scored
+today under the ±20% band:
+
+| | `canon-a19-gm` | the canon |
+|---|---|---|
+| hard breaks | **none — the only book of six with no broken run** | run 1 at 1.30× was broken at ×1.1, intact at ×1.2 |
+| loss | **6.63** | 8.57 |
+| world GDP | 1.15 / 1.10 | 1.30 / 1.16 |
+| **T0 ÷ rest (the old rung's share)** | **0.019** | 0.030 |
+| T3 ÷ rest | **0.538** | 0.449 |
+| pool W | 0.88 (seed 1: **1.04**, a soft breach) | 0.75 |
+
+⭐⭐ **AND IT CONTRADICTS ITS OWN BASE-PRICE DEATH TEST.** The table above says A 1.9 should be WORSE at obsolescence (10 of 17 against 16 of 17);
+measured, its old rung is **better** on every reading — T0 ÷ rest 0.019 against 0.030, T3 ÷ rest 0.538 against 0.449, the old rung 39.5 / 32.2% staffed
+against 45%. That is §10.86.2 again, on the design side this time: **a base-price ratio is a coordinate, not a prediction**, and the death test is to be
+read as a flag, not a gate.
+
+Its one real defect is the other side of the same coin — the cheap frontier absorbs too much labour (pool W 1.04 in one seed = full depeasantation)
+and world GDP sits above the aim. That is the COST ladder's doing, not A's.
+
+⇒ **THE RECOMMENDATION: `A 1.9 / B 1.5 / in0 1.2 / cost = anchor × 1.75^era`** — the measured book with ONE lever moved, the cost slope, from 0.54 to
+0.78 capital per unit of output at the frontier. It cuts the base margin ladder from 5/55/127/233 to 5/34/69/114, cuts the F137 anchor error nearly in
+half, and takes the labour absorption and world GDP back down toward the aim from a book that already has no hard break. **The accelerating-B ladder is
+the batch after it, not beside it** — it is the sharper instrument for the top rungs and it needs its own seed pair, because combining it with a changed
+A would make the result unreadable.
