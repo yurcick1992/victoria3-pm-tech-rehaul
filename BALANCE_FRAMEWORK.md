@@ -3206,6 +3206,46 @@ from now on, and the **integer polish** (below) attacks the amplifier itself.
 
 ## 10.43 The electricity pass (2026-08-09) — municipal generation, the lighting mandate, and power's era-4 start
 
+### ⭐⭐⭐ 10.43.0 THE URBAN-CENTRE ELECTRICITY OVERRIDE IS CANONICAL, ON ITS OWN, REGARDLESS OF EVERY OTHER OPEN EXPERIMENT (user-ruled 2026-09-19)
+
+**The user, after catching it missing mid-batch:** *"Make the notes to canonize the ruling on electricity within Urban Centers,
+regardless of whether we adopt any other changes. I expect that the most effects will be to player's convenience (as he wouldn't
+have to manually change stuff state by state upon electrifying) rather than actual economy (which will change a bit as well, but I
+don't think it will change a lot)."*
+
+⭐ **THE RULING IS FREE-STANDING.** It does not ride on the anchor slide, the in0 sweep, the split lift or anything else under test.
+Whatever book becomes the canon next, **it carries this**:
+
+```
+pm_goods.pm_electric_streetlights      = { in: { coal: 2 }, out: { services: 10, electricity: 1 } }
+pm_employment.pm_electric_streetlights = { engineers: 250 }
+```
+
+byte-identical to `config/mod_config.six_rung.json`, which is the parity the user asked for. It lives in
+**`tools/lib_tier4_spec.mjs`** (`PM_GOODS_RULED` / `PM_EMPLOYMENT_RULED`) and is emitted by **`make_tier4_config.mjs`** into every
+generated book, so a rebuild cannot drop it — a hand-edited config key is exactly how the 2026-09-04 rebuild-from-vanilla lost it
+(ROADMAP step 8 **P2**; every four-rung book from `canon4v` to `canon-c19-in12` shipped with vanilla's 3-electricity SINK).
+
+⚠⚠ **WHAT IS STILL OWED: the canon itself.** `config/mod_config.json` has NOT been regenerated and does not carry it. Until it is,
+any arm read against the canon's own century runs (`20260917_132449` / `20260917_161410`) carries the override as a SECOND
+difference. **Regenerating the canon through the vanilla-only pipeline and re-canonizing is the action this ruling names**; it is a
+two-key diff on the canon and should be provable as such.
+
+⭐ **THE USER'S OWN PREDICTION, recorded so it can be checked rather than assumed**: the dominant effect is **player CONVENIENCE** —
+with the method generating its own power instead of drawing 3 electricity, electrifying a state no longer depends on arranging
+supply for it first, so the player is not switching methods state by state as the grid arrives — and the ECONOMIC effect is real but
+**small**. Nothing has measured either half; the anchor probes could not see it (the method is technology-gated and unreachable in
+1836–1838), and the first century run carrying it is `20260919_224153_anch-in12-century-n3`.
+
+⚠ **THE POWER-PLANT INDUSTRY IS NOT PART OF THIS AND MUST NOT BE REOPENED** (ruled the same day): the regular power plant stays
+vanilla — no tiering, no other change, now or deferred — and the dam megaproject is a polishing-phase item. So a canon carrying this
+override has BOTH the municipal source and vanilla's own Early Power Plant, where §10.43's six-rung design had the municipal source
+*instead of* it. **That is intended.** ⚠ Owning `common/production_methods/06_urban_center.txt` (and, since `canon4v`,
+`common/buildings/06_urban_center.txt` for the art academy) means owning `pm_early_power_plant` and `building_power_plant` with it;
+they are in the same files and whole-file replacement cannot spare them. Both are byte-identical to vanilla in our copies, so the
+cost is patch drift only, recorded in `ON_GAME_UPDATE.md`. The user considered and **rejected** the alternative of an additive
+`zzz_` single-PM override: *"we just aim to not own things unnecessarily. It being in the same file is reason enough."*
+
 **The user's brief (superseding the §10.42.5 queue entry in three ways):** (1) urban-centre lighting
 methods are MANDATED at the highest tier the era allows — a prerequisite of being a city, never a solver
 choice; (2) the electric-streetlights method also consumes **one coal**, with the remaining effectiveness

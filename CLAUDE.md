@@ -190,7 +190,19 @@ vanilla's and the pop-goods index in wage units 1.04 → 0.83 (F94's price decli
 frontier margin ladder real (e0 26% against e3 46%, where every earlier book ran flat). ⚠ Under the DIRECTIONAL ruling (§10.83.7) the 8.0-point
 gap over the old canon is not a significance test — the case is the monotone arc across four books and 43 runs, not the gap.
 
-⚠⚠ **THE CANON SHIPS TWO KNOWN DEFECTS, both recorded, neither a reason to keep the older book:**
+⚠⚠ **THE CANON SHIPS THREE KNOWN DEFECTS, all recorded, none a reason to keep the older book:**
+0. ⭐⭐ **IT LACKS THE URBAN-CENTRE ELECTRICITY OVERRIDE, AND THAT OVERRIDE IS RULED CANONICAL ON ITS OWN (user, 2026-09-19 —
+   BALANCE_FRAMEWORK **§10.43.0**, ROADMAP step 8 **P2**).** Every four-rung book from `canon4v` to this one shipped with urban
+   centres running VANILLA's `pm_electric_streetlights` — **electricity 3 IN**, 200 laborers + 50 engineers, an electricity SINK —
+   where §10.43 rules a SOURCE (+1 electricity out, 2 coal in, 250 engineers). The 2026-09-04 rebuild-from-vanilla dropped the two
+   config keys with everything else it deliberately does not carry. **FIXED IN THE GENERATOR** — the override now lives in
+   `tools/lib_tier4_spec.mjs` (`PM_GOODS_RULED` / `PM_EMPLOYMENT_RULED`) and `make_tier4_config.mjs` emits it into every generated
+   book, byte-identical to the six-rung book's — but **`config/mod_config.json` has NOT been regenerated**, so the shipped canon
+   still lacks it. ⚠ The ruling is FREE-STANDING: whatever book becomes the canon next carries this, regardless of whether any
+   other experiment is adopted. The owed action is to regenerate the canon and re-canonize, a provable **two-key diff**.
+   ⚠ Until then, any arm read against the canon's own century runs carries the override as a SECOND difference.
+   ⚠ The power-plant industry is NOT part of this and must not be reopened (ruled the same day): it stays vanilla, no tiering, no
+   other change, now or deferred; the dam megaproject is a polishing-phase item.
 1. **The hoard.** Pool H 4.17× vanilla's — the one line that went BACKWARDS across the arc. One seed of four broke the capital-abundance hard
    line (Britain, 11 years under 5% U* at 1.80 GDP); a second breached the soft hoard lines. F135 has the mechanism: our realised margins are
    twice vanilla's, so the pool's INFLOW is the source, and the spending lever is one-signed by identity.

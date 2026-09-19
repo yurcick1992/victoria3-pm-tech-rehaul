@@ -1565,8 +1565,17 @@ rebuild-from-vanilla lost it. Verified end to end on `probe-anch-in12`: the emit
 3 IN → coal 2 IN, `goods_output_electricity_add = 1` added, 200 laborers + 50 engineers → 250 engineers, and the now-meaningless
 `required_input_goods = electricity` dropped; `pm_gas_streetlights` and every other urban-centre method untouched. Every linter
 passes, negative-goods included. Regenerating the book changed **exactly two top-level keys and no rung**.
-⚠ **THE CANON HAS NOT BEEN REGENERATED** and still ships without it, so any arm read against the canon's own century runs
-(`20260917_132449` / `20260917_161410`) carries the fix as a SECOND difference. Re-canonizing is a separate decision.
+⭐⭐ **RULED CANONICAL ON ITS OWN, 2026-09-19** (user: *"Make the notes to canonize the ruling on electricity within Urban Centers,
+regardless of whether we adopt any other changes"*). **BALANCE_FRAMEWORK §10.43.0 is the record.** It does not ride on the anchor
+slide, the in0 sweep or the split lift: whatever book becomes the canon next carries this override. ⭐ The user's own prediction,
+recorded to be checked rather than assumed: the dominant effect is **player CONVENIENCE** — electrifying a state no longer depends
+on arranging supply for it first, so the player is not switching methods state by state as the grid arrives — with a real but
+**small** economic effect. Nothing has measured either half yet; the anchor probes could not (the method is technology-gated and
+unreachable in 1836–1838), and `20260919_224153_anch-in12-century-n3` is the first century run carrying it.
+⚠⚠ **STILL OWED: the canon itself.** `config/mod_config.json` has NOT been regenerated and does not carry it, so any arm read
+against the canon's own century runs (`20260917_132449` / `20260917_161410`) carries the fix as a SECOND difference. The action this
+ruling names is to regenerate the canon through the vanilla-only pipeline and re-canonize — a **two-key diff**, and it should be
+provable as exactly that.
 ⚠ **The power chain around it is deliberately NOT restored** (user-ruled the same day): the regular power-plant industry stays
 vanilla — no tiering, no other change, now or deferred — and the dam megaproject is a polishing-phase item. So this book has both
 the municipal electricity source and vanilla's own Early Power Plant, where §10.43's six-rung design had the municipal source
