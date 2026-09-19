@@ -1,0 +1,58 @@
+{
+ "schedule_version": 1,
+ "label": "in0-graded-probe",
+ "_why": "THE GRADED ERA-0 PENALTY (user-ruled 2026-09-19): 'Let's experiment on different in0 depending on how manufactured its inputs are. The \"higher manufactured\" they are, the smaller the in0 penalty should be. An input which input is itself manufactured gives squared effects. For the purpose of this, dyes, silk and electricity are raw.' THE MECHANISM it corrects, measured the same day (F143 §3a): a UNIFORM penalty compounds down the chain - an industry eating a manufactured good pays its own penalty AND the price rise its supplier's penalty caused - and motor is the proof case. Motor's era-0 rung already sits at a 0% base-price margin against vanilla's +20%, engines are bid to 175% of base against vanilla's 148%, and it builds half vanilla's levels; a uniform rise taxes every chain that buys engines. The grading is a RULE, not per-industry tuning (which is the CLOSED --in0-level axis): a good's STAGE is derived from the recipe book - raw = 0, a good our ladder makes = 1 + the value-weighted mean stage of its own first rung's inputs - and an industry's lift is interpolated on the value-weighted mean stage of ITS first rung's inputs. Derived stages: engines 2.00, fine_art 2.00, automobiles 2.20, ammunition 1.76, explosives 1.38, telephones 1.14, everything else 1.00; dye, silk and electricity RAW by the ruling.",
+ "_arms": {
+  "probe-grada": "in0-stage 1.40 / 1.20 / 1.10 - the same RAW strength as the measured flat 1.4, graded. Lifts: the ten raw-input industries x1.40, motor and art_academy x1.20, automotive x1.18, munition x1.25, explosives x1.33.",
+  "probe-gradb": "in0-stage 1.55 / 1.20 / 1.05 - harder on the raw end, softer on the chain. Raw x1.55, motor x1.20, automotive x1.17.",
+  "probe-gradc": "in0-stage 1.70 / 1.25 / 1.00 - the extreme raw push; the chain pays almost nothing. Raw x1.70, motor x1.25.",
+  "probe-gradrev": "in0-stage 1.35 / 1.55 / 1.75 - THE REVERSE GRADIENT at a similar average, the control that makes the others interpretable. Raw x1.35 (close to grad-a's 1.40) but motor x1.55 and automotive x1.59. If the user's direction is right this arm should starve the engine chain hardest while killing the consumer chains least."
+ },
+ "_delta": "One field against the canon (`inputs` + `target_be` on all 56 rungs, nothing else) and one flag against each other: --in0-stage. A 2.2 / B 1.5 / cost anchor x 1.9^era / ai_value 1000x3^era / divisor 0.000125 / the 10.75 defines / the 24-month bar are the canon's throughout. New generator flag --in0-stage, exclusive with --in0 and --in0-level.",
+ "_references": "NO control arm and NO flat arm are run here: session 20260919_132049_in0-early-probe measured vanilla (n=2) and flat in0 1.2 / 1.3 / 1.4 / 1.5 (n=3 each) THE SAME DAY, on the same machine, game version, span and dump dates. Read every arm of this batch against those. The decisive comparison is probe-grada against the measured FLAT 1.4 - same raw strength, the only difference being that the chain is spared.",
+ "_predictions": {
+  "_basis": "F142 (the flat probe) and F143 §3a. Stated before the runs.",
+  "engines": "THE KEY READING. British engine price at 1837.12 and the world motor level count. Flat 1.4 taxes motor at x1.4; grad-a taxes it at x1.20, the canon's own value. Predict engines CHEAPER and motor levels HIGHER in grad-a than in flat 1.4, and the gap widening across grad-b and grad-c. grad-rev should be the worst of all five on both. If engines do NOT respond, the compounding mechanism is not the binding one and the whole grading idea is unsupported.",
+  "consumer_kill": "The raw-input chains (food, textile, furniture, glass, tooling, paper) should track the FLAT arm of the same raw strength: grad-a ~ flat 1.4, grad-b between flat 1.5 and beyond, grad-c beyond anything measured. Their era-0 margins at 1837.10 should fall monotonically a / b / c.",
+  "world_product": "F142 measured ~1 point of world product per +0.1 of a UNIFORM penalty, saturating. Grading concentrates the penalty on the raw-input industries, which are most of the tiered sector, so predict grad-a ~ flat 1.4 (0.97), grad-b 0.95-0.99, grad-c 0.93-0.98, grad-rev 0.96-1.00.",
+  "survival": "By the user's bands (10.86.5): nothing DEAD (< 10% retained) in grad-a or grad-b; glass WOUNDED (20-50%) in all of them; grad-c may push a raw-input type below 20%. motor should be INTACT in a/b/c and the worst-hit type in grad-rev.",
+  "steel": "Steel's inputs are raw (iron + coal) so it takes the full raw lift - x1.70 in grad-c against a base margin already at -19% in the canon. Watch whether steel e0 collapses, and whether that feeds back into engines (motor's only input)."
+ },
+ "_reads": "node tools/testbed/ledger/early_probe.mjs --session <this> --years 1836,1837 for each arm, then the same tool on 20260919_132049 for the flat references. The engine price and motor's levels are the headline; the per-industry survival table of section 3b is the user's own criterion.",
+ "_watch": [
+  "run 1 at ~3 min: mod marker, version, this run's error window BY POSITION, clock advancing",
+  "after each arm's second run: the 2+1 alignment on the arm's own key readings; a third run only where the two diverge",
+  "post-batch: preflight -Session, VERDICT.md, SESSION_VERDICTS row, FINDINGS"
+ ],
+ "_cost": "8 runs x 1836->1838 ~ 3.5 min each ~ 30 min, plus up to four tie-breakers ~ 45 min worst case.",
+ "_caveats": [
+  "TWO IN-GAME YEARS IS NOT THE CENTURY: this measures the anchor's response to the grading, not obsolescence. F143 §1 is the century-scale argument and it is paper arithmetic over another book's prices.",
+  "The flat references come from a DIFFERENT SESSION (20260919_132049) - same day, machine, version, span and dump dates, but a cross-session comparison all the same; say so wherever the two are put side by side.",
+  "The 1836 supply anchor is broken in every A-ladder book (F137) and all arms carry it equally.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent."
+ ],
+ "defaults": {
+  "metrics": ["country_state", "population", "treasury", "events", "market_goods_scoped"],
+  "autosave_interval": "quarteryear",
+  "timeout_minutes": 40,
+  "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "JAP", "NET"],
+  "dump_dates": ["1836.2.1", "1836.7.1", "1837.1.1", "1837.7.1", "1837.12.1"],
+  "_dump_dates_note": "Identical to 20260919_132049_in0-early-probe, which is what makes the two sessions comparable."
+ },
+ "setups": {
+  "probe-grada": { "kind": "config", "config": "config/mod_config.probe-grada.json" },
+  "probe-gradb": { "kind": "config", "config": "config/mod_config.probe-gradb.json" },
+  "probe-gradc": { "kind": "config", "config": "config/mod_config.probe-gradc.json" },
+  "probe-gradrev": { "kind": "config", "config": "config/mod_config.probe-gradrev.json" }
+ },
+ "runs": [
+  { "setup": "probe-grada", "until": "1838.1.1" },
+  { "setup": "probe-grada", "until": "1838.1.1" },
+  { "setup": "probe-gradb", "until": "1838.1.1" },
+  { "setup": "probe-gradb", "until": "1838.1.1" },
+  { "setup": "probe-gradc", "until": "1838.1.1" },
+  { "setup": "probe-gradc", "until": "1838.1.1" },
+  { "setup": "probe-gradrev", "until": "1838.1.1" },
+  { "setup": "probe-gradrev", "until": "1838.1.1" }
+ ]
+}

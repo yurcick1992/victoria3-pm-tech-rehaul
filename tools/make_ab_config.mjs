@@ -63,9 +63,24 @@ const IN0_ONLY = process.argv.includes('--in0-only');
 //   method and every rung is priced at A^era / B^era from there, so an industry that starts at e2 (automotive, electrics)
 //   is levelled on the same basis as one that starts at e0. That is the era rule (F111) and this must not break it.
 //   ⚠ EXCLUSIVE with --in0 and with --tiers-for, which set the same numbers by hand.
+// ⭐⭐ --in0-stage <raw>,<s1>,<s2> (user-ruled 2026-09-19): the era-0 penalty GRADED BY HOW MANUFACTURED THE INDUSTRY'S OWN INPUTS ARE.
+//   "Let's experiment on different in0 depending on how manufactured its inputs are. The 'higher manufactured' they are, the smaller the in0
+//   penalty should be. An input which input is itself manufactured gives squared effects. For the purpose of this, dyes, silk and electricity
+//   are raw."  THE MECHANISM it corrects: a uniform penalty COMPOUNDS down the chain — an industry eating a manufactured good pays its own
+//   penalty AND the price rise its supplier's penalty caused, so a second-stage industry carries roughly the square of a first-stage one.
+//   Motor is the measured proof (F143 §3a): its era-0 rung is already at a 0% base margin, engines are bid to 175% of base against vanilla's
+//   148%, and it builds half vanilla's levels — a uniform rise would tax every chain that buys engines.
+//   ⚠ THIS IS A RULE, NOT PER-INDUSTRY TUNING, which is what separates it from the CLOSED --in0-level axis: a good's STAGE is derived from the
+//   recipe book (raw = 0; a good our own ladder makes = 1 + the value-weighted mean stage of ITS first rung's inputs), an industry's stage is
+//   the value-weighted mean stage of its own first rung's inputs, and the lift is interpolated on that between the three given values.
+//   RAW BY RULING: dye, silk, electricity — our ladder makes them but the goods also come from plantations and from vanilla's own power plants.
+const IN0_STAGE = (() => { const v = arg('--in0-stage', ''); if (!v) return null;
+  const a = v.split(',').map(Number); if (a.length !== 3 || a.some(x => !(x > 0))) throw new Error('--in0-stage <raw>,<stage1>,<stage2>, all > 0');
+  return a; })();
 const IN0_LEVEL = (() => { const v = arg('--in0-level', ''); if (v === '') return null; const m = +v;
   if (!Number.isFinite(m) || m <= -1) throw new Error('--in0-level <margin> must be a number > -1 (0.05 = +5%)');
   if (IN0 !== 1) throw new Error('--in0-level and --in0 both set the era-0 input level; give one');
+  if (IN0_STAGE) throw new Error('--in0-level and --in0-stage both set the era-0 input level; give one');
   return m; })();
 // --cost-flat (user-ruled 2026-09-10, F108 §6: the stall rate follows the cost ladder's steepness): building_cost = the vanilla
 //   anchor at EVERY rung — the §10.61 flat book — instead of anchor × A^k.
@@ -129,7 +144,30 @@ const r1 = x => Math.round(x * 10) / 10;
 
 const cfg = JSON.parse(readFileSync(join(REPO, BASE), 'utf8'));
 const rows = []; let cmax = 0;
-const LEVELLED = {};   // --in0-level: the per-industry lift actually used, recorded in _ab
+const LEVELLED = {};   // --in0-level / --in0-stage: the per-industry lift actually used, recorded in _ab
+// ---- --in0-stage: the goods' manufacturing STAGE, derived from the recipe book itself
+const RAW_BY_RULING = new Set(['dye', 'silk', 'electricity']);   // user-ruled 2026-09-19
+const STAGE = {}, IND_STAGE = {};
+if (IN0_STAGE) {
+  const firstRec = {};   // output good -> the recipe of the industry's first rung
+  for (const ind of cfg.industries) { if (ind.disabled) continue;
+    const t = ind.tiers.slice().sort((a, b) => a.era - b.era)[0], r = rec(t.vanilla_pm);
+    const og = t.output_good || ind.output_good;
+    if (r && Object.keys(r.in).length && !RAW_BY_RULING.has(og)) firstRec[og] = r.in; }
+  const meanStage = (inputs, depth) => { const tot = val(inputs); if (!(tot > 0)) return 0;
+    let m = 0; for (const [g, q] of Object.entries(inputs)) m += q * (PRICE[g] || 0) / tot * stageOf(g, depth); return m; };
+  const stageOf = (g, depth = 0) => { if (RAW_BY_RULING.has(g) || !firstRec[g]) return 0;
+    if (depth > 8) throw new Error('--in0-stage: the recipe graph cycles at ' + g);
+    if (STAGE[g] != null) return STAGE[g];
+    const v = 1 + meanStage(firstRec[g], depth + 1); STAGE[g] = v; return v; };
+  for (const g of Object.keys(firstRec)) stageOf(g);
+  for (const ind of cfg.industries) { if (ind.disabled) continue;
+    const t = ind.tiers.slice().sort((a, b) => a.era - b.era)[0], r = rec(t.vanilla_pm);
+    IND_STAGE[ind.id] = r && Object.keys(r.in).length ? meanStage(r.in, 0) : 0; }
+}
+// the lift an industry gets: linear interpolation on its input stage between the three given values
+const stageLift = id => { const m = Math.max(0, Math.min(2, IND_STAGE[id] || 0)), i = Math.floor(m), f = m - i;
+  return i >= 2 ? IN0_STAGE[2] : IN0_STAGE[i] + f * (IN0_STAGE[i + 1] - IN0_STAGE[i]); };
 for (const ind of cfg.industries) {
   if (ind.disabled) continue;
   ind.tiers.sort((a, b) => a.era - b.era);
@@ -140,8 +178,8 @@ for (const ind of cfg.industries) {
   const I0 = val(r0.in), O0 = out0 * PRICE[outGood];
   const anchor = ANCH[(ind.building || {}).required_construction || ind.required_construction]; if (!anchor) throw new Error(`${ind.id}: no required_construction class`);
   const wp0 = ind.tiers[0].wage_pct != null ? +ind.tiers[0].wage_pct : 0.25;
-  const LEVEL_LIFT = IN0_LEVEL != null ? O0 * (1 - wp0) / (I0 * (1 + IN0_LEVEL)) : 1;
-  if (IN0_LEVEL != null) LEVELLED[ind.id] = Math.round(LEVEL_LIFT * 1000) / 1000;
+  const LEVEL_LIFT = IN0_LEVEL != null ? O0 * (1 - wp0) / (I0 * (1 + IN0_LEVEL)) : IN0_STAGE ? stageLift(ind.id) : 1;
+  if (IN0_LEVEL != null || IN0_STAGE) LEVELLED[ind.id] = Math.round(LEVEL_LIFT * 1000) / 1000;
   ind.tiers.forEach((t, pos) => {
     // ⭐ THE KEY IS THE ERA. `pos` (the rung's index in the industry) is used for exactly one thing below: walking DOWN
     //   the industry's own rungs to find the nearest vanilla method whose input MIX this rung borrows. Every multiplier
@@ -155,7 +193,7 @@ for (const ind of cfg.industries) {
     const TF = TIERS_FOR[ind.id];   // explicit per-ERA multipliers (--tiers-for), else the A/B rule
     if (TF && (TF.out.length <= e || TF.in.length <= e || TF.cost.length <= e)) throw new Error(`--tiers-for ${ind.id}: its rungs reach e${e}, so out/in/cost need ${e + 1} multipliers each (indexed by ERA, era 0 first)`);
     // --in0-level: this industry's own lift, so its notional era-0 margin equals the ruled target; else the scalar --in0.
-    const lift = IN0_LEVEL != null ? LEVEL_LIFT : (IN0_ONLY ? (e === 0 ? IN0 : 1) : IN0);
+    const lift = (IN0_LEVEL != null || IN0_STAGE) ? LEVEL_LIFT : (IN0_ONLY ? (e === 0 ? IN0 : 1) : IN0);
     const Ve = I0 * lift * (TF ? TF.in[e] : Math.pow(B, e));
     const inputs = {};
     for (const [g, q] of Object.entries(mixRec.in)) { const share = q * (PRICE[g] || 0) / mixVal; const qty = r1(share * Ve / PRICE[g]); if (qty > 0) inputs[g] = qty; }
@@ -184,7 +222,7 @@ Object.assign(cfg.ai_defines, EXTRA_DEFINES);
 cfg.company_target_gate = process.argv.includes('--company-gate');   // emit_companies opt-in; OFF by default (see its header)
 cfg._ab = { A, B, A_for: Object.keys(A_FOR).length ? A_FOR : null, tiers_for: Object.keys(TIERS_FOR).length ? TIERS_FOR : null, ai_base: AI_BASE, ai_steep: STEEP ? { industries: [...STEEP.inds], ratio: STEEP.ratio } : null, cost_divisor_scaling: s, company_target_gate: cfg.company_target_gate, base: BASE, generated: new Date().toISOString() };
 cfg._ab.ai_defines_extra = Object.keys(EXTRA_DEFINES).length ? EXTRA_DEFINES : null;
-cfg._ab.in0 = IN0; cfg._ab.in0_level = IN0_LEVEL; cfg._ab.in0_per_industry = IN0_LEVEL != null ? LEVELLED : null; cfg._ab.in0_only = IN0_ONLY; cfg._ab.cost_flat = COST_FLAT; cfg._ab.cost_ratio = COST_RATIO; cfg._ab.cost_ladder = COST_LADDER; cfg._ab.ai_ladder = AI_LADDER; cfg._ab.bar_months = BAR_MONTHS;
+cfg._ab.in0 = IN0; cfg._ab.in0_level = IN0_LEVEL; cfg._ab.in0_stage = IN0_STAGE; cfg._ab.good_stage = IN0_STAGE ? STAGE : null; cfg._ab.industry_stage = IN0_STAGE ? IND_STAGE : null; cfg._ab.in0_per_industry = (IN0_LEVEL != null || IN0_STAGE) ? LEVELLED : null; cfg._ab.in0_only = IN0_ONLY; cfg._ab.cost_flat = COST_FLAT; cfg._ab.cost_ratio = COST_RATIO; cfg._ab.cost_ladder = COST_LADDER; cfg._ab.ai_ladder = AI_LADDER; cfg._ab.bar_months = BAR_MONTHS;
 // ⭐ the book records that it is era-keyed, and the command that made it — the era pass (2026-09-13) is what a
 //   reader of an older book has to check for: a book without `keyed_by: 'era'` was keyed on the rung index
 cfg._ab.keyed_by = 'era'; cfg._ab.era_rule = '2026-09-13';
@@ -196,6 +234,9 @@ writeFileSync(join(REPO, `config/mod_config.${SFX}.json`), JSON.stringify(cfg));
 writeFileSync(join(REPO, `config/tech_tree_options.${SFX}.json`), readFileSync(join(REPO, 'config/tech_tree_options.tier4.json'), 'utf8'));
 
 console.log(`A/B LADDER ${SFX} — KEYED ON ERA: A=${A} B=${B} · era-0 inputs ×${IN0}${IN0_ONLY ? ' (era 0 only)' : ' (ladder anchored on it)'} · cost ${COST_FLAT ? 'FLAT (vanilla anchor every rung)' : COST_LADDER ? `anchor × ${COST_LADDER.join('/')} by era (--cost-ladder)` : COST_RATIO ? `anchor × ${COST_RATIO}^era (--cost-ratio)` : 'anchor × A^era'} · ai_value${AI_LADDER ? AI_LADDER.join('/') + ' by era' : AI_BASE + '×' + A + '^era'} · cost divisor scaling ${s} (top rung ${cmax} pts ÷${(1 + s * cmax).toFixed(2)}, 600-pt rung ÷${(1 + 600 * s).toFixed(2)}; vanilla 0.001 would give ÷${(1 + 0.001 * cmax).toFixed(1)})${BAR_MONTHS != null ? ` · industry bar ${BAR_MONTHS} months` : ''}`);
+if (IN0_STAGE) { console.log('--in0-stage ' + IN0_STAGE.join(' / ') + ' (raw / stage 1 / stage 2), dye+silk+electricity RAW by ruling');
+  console.log('  good stages: ' + Object.entries(STAGE).sort((a, b) => b[1] - a[1]).map(([g, v]) => g + ' ' + v.toFixed(2)).join(' · '));
+  console.log('  industry input stage -> lift: ' + Object.entries(IND_STAGE).sort((a, b) => b[1] - a[1]).map(([i, v]) => i + ' ' + v.toFixed(2) + '->x' + LEVELLED[i]).join(' · ')); }
 console.log('industry     era  output      inputs                                                            cost    ai_value  BE%   VA/wk   VA/worker  in-share');
 for (const r of rows) console.log(`${r.ind.padEnd(12)} e${r.era}  ${String(r.out).padStart(7)}  ${Object.entries(r.inputs).map(([g, q]) => g + ' ' + q).join(', ').padEnd(62)} ${String(r.cost).padStart(6)}  ${String(r.aiv).padStart(7)}  ${String(r.be).padStart(3)}  ${r.va.toFixed(0).padStart(6)}  ${(r.va / r.emp).toFixed(3).padStart(8)}  ${r.share.toFixed(2)}`);
 console.log(`wrote config/mod_config.${SFX}.json + config/tech_tree_options.${SFX}.json`);

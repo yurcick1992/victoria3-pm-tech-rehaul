@@ -194,3 +194,14 @@ tools/testbed/ledger/cost_drivers_pool.json
 !config/tech_tree_options.probe-in14.json
 !config/mod_config.probe-in15.json
 !config/tech_tree_options.probe-in15.json
+
+# THE GRADED ERA-0 PENALTY PROBE (2026-09-19, schedule in0_graded_probe.json): the canon with --in0-stage,
+# the penalty graded by how manufactured each industry's own inputs are. Regenerable from each _ab.command.
+!config/mod_config.probe-grada.json
+!config/tech_tree_options.probe-grada.json
+!config/mod_config.probe-gradb.json
+!config/tech_tree_options.probe-gradb.json
+!config/mod_config.probe-gradc.json
+!config/tech_tree_options.probe-gradc.json
+!config/mod_config.probe-gradrev.json
+!config/tech_tree_options.probe-gradrev.json
