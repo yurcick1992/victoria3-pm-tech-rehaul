@@ -14371,3 +14371,37 @@ weakest for those eating MANUFACTURED ones"* — now measured, with motor as the
 price, which helps, but the e0 rung's terms of trade keep improving as long as steel deflates.
 ⚠ Glass and tooling are immune for a DIFFERENT reason — they start crushed (terms of trade 0.44 / 0.49 at 1836, F137's over-supply) and recover as the
 anchor error washes out. Their immunity is F137's, not the input basket's, and it should fade when the supply anchor is fixed.
+
+#### F143 §3a — ⚠⚠ CORRECTION, SAME DAY: §3 READ THE CAUSATION BACKWARDS. Engines are dear BECAUSE motor's 1836 rung is barely profitable, not because it is comfortable
+
+**The user:** *"No, wait. We're completely not on the same page. As you see, the realised price of engine is very high until e2 kicks in. It's because
+e0 is barely profitable, not because it's too good."* **That is right and §3's "immune / subsidised" reading is withdrawn.**
+
+**What §3 got wrong.** It read motor's rising terms of trade (0.99 → 1.63) as the rung being subsidised by cheap steel. The ratio is the market's
+COMPENSATION for a marginal recipe, not a gift: engines have to be bid far above base before anyone will build a motor plant at all, and the ratio
+records that bidding. The test §3 failed to apply: **a comfortable rung shows a FALLING price and a GROWING quantity; a marginal one shows a price
+pinned high and a quantity that never catches up.** Motor is the second.
+
+**The arithmetic, with vanilla as the control:**
+
+| | vanilla | the canon (`in0` 1.2) |
+|---|---|---|
+| motor e0's margin at BASE prices | **+20%** | **0%** (the ×1.2 lift takes it there) |
+| its break-even output price (target_be) | 83% of base | **100% of base** |
+| **engine price, 1870 / 1890 / 1910 / 1935** | **148 / 144 / 132 / 128%** | **175 / 170 / 142 / 117%** |
+| motor levels at 1880 / 1900 / 1920 | 143 / 458 / 1,157 | **74 / 249 / 457** |
+
+⭐ **Engines are structurally dear in VANILLA too** (148% of base at 1870) — that is a base-game property, not ours. What our book adds is **+27 and
++26 points in the 1870 and 1890 windows**, exactly where motor e0 must earn its keep at a 0% base-price recipe, and it does so with **half vanilla's
+level count** (74 against 143 at 1880, and our e0 makes the same 40 engines a level vanilla's does). A sole supplier that needs 100% of base to break
+even gets built sparingly, so the price sits at 170–175% for sixty years and every downstream chain pays it. By 1935, once e2 is in, our engines are
+11 points CHEAPER than vanilla's — the ladder working, late.
+
+⇒ **Motor is the COUNTER-INDICATION to raising `in0`.** The penalty moves its break-even from 100% to 108 / 117 / 125% of base at `in0` 1.3 / 1.4 / 1.5.
+For an industry that is the sole source of a building input, has no e1 rung for sixty years, and whose good is already bid to 175%, that is a direct
+tax on every chain that buys engines. Whatever `in0` is chosen, **motor wants the opposite of it** — and since the user has ruled out per-industry
+levelling, the available answers are a lower A (which shrinks the cost of motor's era gap, F143 §2), minting the e1 rung, or keeping `in0` moderate.
+
+⚠ What survives from §3: the terms-of-trade TABLE itself (the numbers are measured and the ordering is right), and the finding that the war chains'
+terms of trade collapse 43–54% while the wood-fed chains' improve. What is withdrawn is reading a high ratio as a rung being safe — for a sole
+supplier it is the opposite, and telling the two apart needs the QUANTITY beside the price.
