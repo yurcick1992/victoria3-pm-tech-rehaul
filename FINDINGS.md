@@ -14628,3 +14628,76 @@ worse than grad-a's: n=2 and the mechanism is inferred rather than isolated.
 **What it does NOT say.** Nothing century-scale. Nothing about engines being "dear" as a defect of ours — vanilla's own engine market is at the ceiling
 23% of the time, so only the ceiling SHARE against vanilla's is comparable. Nothing about whether steel's thinness is better fixed by exempting it from
 the lift or by repairing its recipe.
+
+## F146 — ⭐ EARLY STEEL TIGHTNESS DOES NOT PREDICT LATE GDP (162 mod runs over 47 books: pooled r = −0.15 / −0.23, within-book r = **+0.19 / +0.10** — opposite signs, both weak), so the canon's 18% ceiling share is tolerable as the user judged; AND the SUPPLIER-SIDE term the user proposed is derived and would give steel exactly the relief no input-keyed rule can (measured read-only, 2026-09-19)
+
+### 1. THE CORRELATION — asked and answered
+
+**The user, on F145's finding that 18% of the canon's early steel prices sit at the +75% ceiling:** *"18% is not good, but tolerable. I wonder whether
+it correlates with late-game GDP though."*
+
+**Instrument.** Every full-century run on disk carrying both measures: **162 mod runs over 47 books, plus 22 vanilla runs.** Early tightness = the mean
+of steel's price ÷ base over the 1836 / 1840 / 1850 / 1860 dumps across all markets; the ceiling share = the fraction of those readings at ≥ 174%.
+Late = world GDP at 1935 (vanilla median £4,390M over 22 runs).
+
+| | r(early steel price, 1935 GDP) | r(ceiling share, 1935 GDP) |
+|---|---|---|
+| **POOLED** over all 162 mod runs | **−0.150** | **−0.225** |
+| **WITHIN BOOK** (each run de-meaned against its own book — the config removed, the SEED left), n = 151 | **+0.193** | **+0.100** |
+
+⇒ **THE SIGNS DISAGREE AND BOTH ARE WEAK, SO THERE IS NO STABLE RELATIONSHIP.** The pooled negative is a CONFIG effect — books with harsh penalties
+have both tight early steel and low late GDP, because the penalty causes both — and it vanishes the moment the config is controlled for. Within a
+book, a seed whose early steel runs tighter ends *very slightly richer*, which is the opposite of the worry and is what one would expect if a tight
+steel market at 1836 signals a busy economy rather than a broken one.
+
+⭐ **The user's judgement stands: 18% is tolerable.** At the extremes there IS something — `granular` 46% at the ceiling and 0.38× GDP, `ab1` 21% and
+0.47×, against `canon-c19-in12` 8% and 1.12×, `canon-a19-gm` 0% and 1.16× — but the two best books on GDP sit at 0% and 8%, and `solver2f` reached the
+highest GDP in the whole population (1.41×) at a 20% ceiling share. **In the working range the measure carries no information about the endpoint.**
+
+⚠ What it does NOT license: "the steel ceiling is harmless". It says the ceiling share at 1836–1860 does not predict 1935 GDP. Steel at the band edge
+still means the market cannot signal scarcity while it is there, and F145's mechanism (the ×1.2 lift on vanilla's thinnest-margin industry) is
+unchanged. It is a reason not to spend a lever on it, not a reason to think it is fine.
+
+### 2. ⭐⭐ THE SUPPLIER-SIDE TERM, DERIVED
+
+**The user:** *"I also do like the idea that 'rawness score' (that leads to higher in0) is reduced a bit not only for the manufacturers with
+manufactured inputs, but also for their suppliers."* This is exactly the gap F145 §3 named — *"no rule keyed on an industry's own INPUTS can relieve
+steel, because steel eats iron and coal"* — and it closes it from the other side.
+
+**The score.** `w(g)` = the share of a good's 1836 demand that **our own ladder buys back**: the numerator is the emitted 1836 history (Σ levels × the
+rung's own recipe, world-wide), the denominator the measured market demand. Per industry, on its own output good:
+
+| industry | output | our demand | market demand | **w** | who buys it from us |
+|---|---|---|---|---|---|
+| **steel** | steel | 1,159 | 1,155 | **1.00** | tooling 88%, motor 12% |
+| **explosives** | explosives | 288 | 175 | **1.00** | munition 100% |
+| **synthetics** | dye | 842 | 1,100 | **0.77** | textile 100% |
+| tooling | tools | 619 | 5,163 | 0.12 | furniture 100% |
+| fertilizer | fertilizer | 120 | 1,230 | 0.10 | explosives 100% |
+| paper | paper | 96 | 5,093 | 0.02 | art academy 100% |
+| food · textile · furniture · glass · motor · arms · artillery · munition · academy | — | 0 | — | **0.00** | nobody in our ladder |
+
+⭐ **`w(steel) = 1.00` — at 1836 our ladder IS the steel market**, which independently reproduces F54's reading of a vanilla 1838 gamestate (steel
+consumed by tooling 90.5% and motor 9.5%). And every pop-fed and army-fed good scores 0, so the relief lands only where the chain is.
+
+**What it would do**, as `effective stage = input stage + k × w(own output)` with k = 0.5, at grad-a's 1.40 / 1.20 / 1.10:
+
+| industry | input stage | w | effective | lift now | **lift with the term** |
+|---|---|---|---|---|---|
+| **steel** | 0.00 | 1.00 | 0.50 | ×1.400 | **×1.300** |
+| explosives | 0.38 | 1.00 | 0.88 | ×1.325 | **×1.225** |
+| synthetics | 0.47 | 0.77 | 0.86 | ×1.305 | ×1.229 |
+| tooling · fertilizer · paper | 0.00 | 0.12 / 0.10 / 0.02 | ~0.05 | ×1.400 | ×1.388 / ×1.390 / ×1.398 |
+| food · textile · furniture · glass · arms · artillery | 0.00 | 0.00 | 0.00 | ×1.400 | ×1.400 (unchanged) |
+| motor · academy · automotive | 1.00–1.20 | 0.00 | unchanged | ×1.18–1.20 | unchanged |
+
+⇒ **Steel gets a tenth off its lift and the consumer and war chains get nothing — precisely the shape the evidence asks for.**
+
+⚠⚠ **THE ONE DESIGN CHOICE IT FORCES: `w` is era-dependent, and violently so.** Recomputed at **1910** from a canon run (staffed levels × recipes over
+the market's own buy orders), the same weights read **steel 0.31 · dye 0.69 · fertilizer 0.62 · paper 0.20 · tools 0.11 · explosives 0.04 · engines
+0.04**. At 1836 our ladder *is* the steel market; by 1910 it is a third of it, because the rest of the economy (vanilla's railways, ports and
+construction) has grown into the same goods. **So a 1836-derived `w` is the right one for an ANCHOR-time penalty and the wrong one for a century-long
+ladder multiplier — and the `in0` lift is both**, since it anchors every rung. Not ruled.
+⚠ Not implemented: `--in0-supplier <k>` would need the 1836 LEVELS, which live in the emitted history (`mod/common/history/buildings`) rather than in
+any config — a new build-time dependency for the generator. `config/start_baseline.json` carries FACTORY counts, not levels (textile 73 factories /
+153 levels), so it cannot substitute without a change there.
