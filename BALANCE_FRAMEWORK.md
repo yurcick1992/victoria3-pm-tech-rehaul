@@ -8071,42 +8071,52 @@ intact seeds between them.
    2.0 soft line) and per-capita **1.85** (inside the 1.9 aim). The report now prints BOTH on the pool GDP line; which one the criterion is on is
    the user's call.
 
-## 10.86 — THE THREE RULINGS OF 2026-09-19: W GETS HARD BOUNDS FROM VANILLA'S OWN 95% CI, PRICES ARE PLANNED FOR BEFORE A CONFIG IS PLANNED, AND THE ERA-0 INPUT PENALTY IS SIZED AGAINST THE 1836 MAP (user-ruled 2026-09-19)
+## 10.86 — THE THREE RULINGS OF 2026-09-19: THE WORLD PRODUCT GETS A HARD BAND FROM VANILLA'S OWN 95% CI, PRICES ARE PLANNED FOR BEFORE A CONFIG IS PLANNED, AND THE ERA-0 INPUT PENALTY IS SIZED AGAINST THE 1836 MAP (user-ruled 2026-09-19; GLOSSARY.md is its by-product)
 
-### 10.86.1 — W, NOT H, CARRIES A VANILLA-DERIVED HARD BOUND
+### 10.86.1 — THE WORLD PRODUCT GETS A DERIVED HARD BAND: VANILLA'S OWN 95% CI ± 10% (user-ruled 2026-09-19), and the terminology sheet the ruling's own history demanded
 
-**The user, 2026-09-19:** *"Findings on H are of little use when there's just no capital to spend. That's why hard caps exist. We should probably move
-hard boundaries for [W]: let them be [lower vanilla 95% CI * 0.9; higher vanilla 95% CI * 1.1]."* … *"Oh, sorry, the hard boundaries were meant to be
-for W. H is hardly comparable with vanilla anyway."*
+**The ruling, settled at the third attempt and stated in the user's own words:** *"What I meant is not H and not W, but rather world product, the
+combined GDP of all countries (do we have a letter for that? We probably shouldn't, 'GDP' is good enough). For it, the mod hard boundaries are
+95% CI ±10%."*
 
-**Both halves are measurements, and they are why the ruling lands where it does.** Over the vanilla n=16 baseline's end state (the 1932–1936 mean):
+**THE RULE.** The register's END-STATE world GDP line becomes **[vanilla's 2.5th percentile × 0.9, vanilla's 97.5th percentile × 1.1]**, derived per
+invocation from the vanilla reference's own seed distribution in the same window — never a literal, the way the 1836–1845 anchor's CI already works.
+At n=16 vanilla's end-state world GDP runs **0.823–1.146×** its own median, so the band is **0.74–1.26×**. Below = **broken by stall**, above =
+**broken by runoff**, checked per run. It REPLACES the provisional `< 0.5` / `> 1.5` lines of 2026-09-17 (`--gdp-hard legacy` restores them,
+`--gdp-hard off` removes them). ⚠ **"CI" here means the PERCENTILE INTERVAL OF THE SIXTEEN SEEDS, not the confidence interval of a mean** — the
+project's established convention, and now written down in `GLOSSARY.md` §4.
 
-| | median | 2.5–97.5 percentile | as a ratio to the median | seed spread |
-|---|---|---|---|---|
-| world **H** (pool ÷ GDP) | 0.29 | 0.162 – 0.557 | **0.56 – 1.93×** | ×3.8 min to max |
-| pool **H** | 0.33 | 0.135 – 0.918 | **0.40 – 2.74×** | ×8.0 |
-| world **W** | 0.1427 | 0.1231 – 0.1545 | **0.86 – 1.08×** | ×1.30 |
-| pool **W** | 0.1973 | 0.1746 – 0.2162 | **0.89 – 1.10×** | ×1.22 |
+**WHAT IT BREAKS, measured over the six books of 2026-09-17/19 (11 runs):** six runs become broken, and **the shipped canon is one of them** —
 
-⇒ **H's own vanilla distribution spans a factor of 4 to 8 between seeds, so no bound taken from it means anything; W's spans 1.2–1.3 and does.**
-That is the whole content of *"H is hardly comparable with vanilla anyway"*, in numbers.
+| book | runs | under the new band |
+|---|---|---|
+| **`canon-c19-in12` — the canon** | 1.30 / 1.16 | **run 1 BROKEN BY RUNOFF at 1.30 > 1.26** ⇒ one broken run ends the config |
+| `canon-a19-gm` (A 1.9) | 1.15 / 1.10 | **both intact — the only book of the six with no broken run** |
+| `canon-c195-in12-eager` | 1.17 / 1.30 | run 2 broken by runoff |
+| `canon-c195-in12` | 1.17 / 0.92 / 0.68 | the tie-breaker broken by stall |
+| `canon-lvl-a19b17` (F139) | 0.60 / 0.45 | both broken by stall |
+| `canon-a205-gm` | 1.00 | already broken (capital abundance) |
 
-**THE RULE, implemented in `tools/testbed/ledger/criteria.mjs`** (derived per invocation from the vanilla reference, never a literal — it tracks the
-reference the way the 1836 anchor's CI already does): hard bounds on **W, both scopes** = [the 2.5th percentile × 0.9, the 97.5th percentile × 1.1].
-At n=16 that is **world 0.78 – 1.19×** and **pool 0.80 – 1.21×**. Above the ceiling is FULL DEPEASANTATION ⇒ **broken by runoff**; below the floor the
-economy never industrialised ⇒ **broken by stall**. Per run, like every other hard line.
+⚠⚠ **TWO CONSEQUENCES THAT NEED THE USER, both flagged in the tool's own header rather than silently resolved:**
+1. **The hard ceiling (1.26) is now TIGHTER than the soft ceiling (1.33), so the soft line can never fire upward** — a run breaks before it can read
+   "beyond the soft boundary". The floor is the same story at one point of margin (hard 0.74 against soft 0.75). **The world-GDP soft line is
+   effectively dead and should be re-ruled or dropped**; the loss's kink on that term goes with it.
+2. **The canon is a broken config under its own register.** Nothing about the canon changed — this is the new line applied to the four seeds already
+   measured (F131), and it is consistent with what those seeds already said (one of four in capital abundance, pool H 4.17×).
 
-⚠⚠ **THE FLOOR AS RULED SITS INSIDE THE REGISTER'S OWN W AIM OF 0.6–0.95, AND BREAKS EVERY BOOK WE HAVE.** Measured with `--w-hard both` over the five
-books of 2026-09-17/19: **the canon (both runs), canon-lvl-a19b17 (both), canon-c195-in12 (all three) and canon-a205-gm all read BROKEN BY STALL on
-world W 0.54–0.78**, leaving one intact run in five books. A book sitting in the middle of the aim it was designed for cannot be "broken"; the aim and
-the floor are in direct contradiction, and only one of them can stand.
-⇒ **THE SHIPPED DEFAULT IS `--w-hard aim`**: the **CEILING from vanilla's CI as ruled** (world 1.19×, pool 1.21×), and the **FLOOR from the register's
-own aim floor × 0.9 = 0.54×** — the ruling's own "×0.9 outward" widening, applied to the number the register actually aims at, because the mod
-deliberately runs W *below* vanilla and therefore cannot take a floor from vanilla's spread. It binds almost nowhere today (the only reading under it
-is canon-lvl-a19b17's run 2 at pool W 0.53, a run already broken by world GDP 0.45), which is the right property for a line meant to catch pathologies.
-`--w-hard both` is the literal ruling, `--w-hard ceiling` drops the floor entirely, `--w-hard off` restores the pre-2026-09-19 register.
-**Open for the user: which floor stands.** The ceiling is not in doubt and is a real tightening — "full depeasantation" was a SOFT flag at > 1.0 and is
-now a HARD break at > 1.19.
+⭐ **AND THE HISTORY IS THE POINT OF `GLOSSARY.md`.** This ruling was made three times — first as "hard boundaries for H", then corrected to W, then
+to the world product — and each reading gave a completely different, and separately measured, answer:
+
+| the reading | vanilla's own 95% CI, as a ratio to its median | the band it implies | what it would have done |
+|---|---|---|---|
+| **H** (the hoard ÷ GDP) | world **0.56–1.93×**, pool **0.40–2.74×** | 0.51–2.12 / 0.36–3.02 | breaks the canon on the hoard (pool H 6.77× in one seed) |
+| **W** (productive workers per capita) | world **0.86–1.08×**, pool **0.89–1.10×** | 0.78–1.19 / 0.80–1.21 | **the floor lands INSIDE the register's own W aim of 0.6–0.95 and breaks every book we have** — one intact run in five |
+| **world GDP** (the ruling) | **0.823–1.146×** | **0.74–1.26×** | breaks 6 of 11 runs including the canon's run 1 |
+
+The letters were doing real work and two of the three readings were live hypotheses, which is exactly the condition a glossary is for. **`GLOSSARY.md`
+is now the single page that says what each letter means**, with the rule that a bare letter is only allowed if it is on that page. Kept as measured
+readings, not as rulings: H carries no vanilla-derived bound (its seed spread makes one meaningless — the user's own *"H is hardly comparable with
+vanilla anyway"*), and W's hard band is NOT shipped.
 
 ### 10.86.2 — ⭐⭐ REALISED PRICES ARE THE FIRST THING TO PLAN, NOT THE LAST THING TO READ (user-ruled 2026-09-19, GOVERNING for config design)
 
