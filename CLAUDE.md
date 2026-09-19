@@ -2139,6 +2139,27 @@ tools/                  dev tooling — NOT shipped in the mod
                         it after the register changes (a running watcher keeps the code it loaded). THE RUN-LEVEL STOP between the runs of a live 2+1 batch (2026-09-14, from the scratchpad): polls the
                         session's save summaries and drops tools/testbed/STOP once a completed run's 1936 GDP exceeds ×1.3 of the vanilla median — armed after
                         every launch through `launch_detached.ps1 -File 'tools\testbed\stop_watch.ps1' -ArgumentList '-Session','<session>','-Poll','30' -Hidden`
+  testbed/ledger/good_market.mjs  ⭐⭐ ONE GOOD'S ORDER BOOK ACROSS ARMS — buy, sell, PRODUCTION and the producing
+                        industry's size, not price alone (2026-09-19, FINDINGS F147 §1a). Written because price could
+                        not settle a reading and had already produced a wrong one: F147 reported "engines consumed
+                        0.62 → 0.95 of vanilla" from BUY ORDERS, which are DEMAND INCLUDING DEMAND NEVER MET — the
+                        order book showed supply moving the other way (sell 104 → 82, production 68 → 60). ⚠⚠ A price
+                        at the 25% or 175% band edge carries NO information (§10.15), so past it only quantities do,
+                        and that is the regime a squeezed chain lives in. THE TEST it exists for: supply success =
+                        production up, the producer's staffed levels up, buy/sell flat; supply FAILURE = production
+                        flat, buy up, buy/sell up. `--good engines --arm <session>:<setup> [--arm …] [--dates a,b,c]`;
+                        the producing building types come from each run's OWN config, so arms with different books are
+                        still comparable. ⇒ QUANTITIES FIRST whenever a good sits at the edge
+  testbed/ledger/early_probe.mjs  ⭐⭐ THE SHORT-BATCH READER (2026-09-19, F142/F144/F145) — what a 1836→1838 batch
+                        says about the anchor: world product ÷ a control arm, realised margins BY ERA via F92's
+                        identity, the negative-margin types named and weighted by STAFFED levels, the survival table
+                        of §10.86.5 (retained staffed levels, per industry, all rungs summed) and the British price
+                        path. `--session <stamp> [--also <other sessions>] [--control vanilla] [--years 1836,1837]`.
+                        ⚠ `--also` merges arms from other sessions as references — the graded probes run no vanilla
+                        and no flat arm because an earlier session measured them the same day at the same span and
+                        dump dates. ⚠ The CONTROL arm borrows a mod arm's key map (an era-0 rung's key IS the vanilla
+                        building's), so vanilla's own shedding is the baseline; its OUTPUT column is suppressed,
+                        because a borrowed map carries the mod's output_qty
   testbed/ledger/lib_runs.mjs  ⭐ WHICH RUNS OF A SESSION MAY BE COUNTED — one implementation, because
                         two analyses of one batch that disagree about n give two incomparable answers.
                         `usableRuns(root, session)` DISCOVERS the run folders and keeps only those that
