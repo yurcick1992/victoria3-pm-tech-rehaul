@@ -35,8 +35,11 @@ const pc = (x, d = 1) => Number.isFinite(x) ? (100 * x).toFixed(d) + '%' : '—'
 const BASE = Object.fromEntries(readFileSync(join(REPO, 'tools/goods_prices.tsv'), 'utf8').split(/\r?\n/).filter(l => l && !l.startsWith('#')).map(l => l.split('\t')).map(([g, p]) => [g.trim(), +p]));
 
 // ---- the setups in this session, from its own schedule
-const sched = JSON.parse(readFileSync(join(SES, SESSION, 'schedule.json'), 'utf8'));
-const SETUPS = Object.keys(sched.setups || {});
+const ALSO = (argOf('--also', '') || '').split(',').filter(Boolean);   // merge arms from other sessions (same span and dump dates) as references
+const SESS = [SESSION, ...ALSO];
+const SETUPS = [], OWNER = {};
+for (const ss of SESS) { const sc = JSON.parse(readFileSync(join(SES, ss, 'schedule.json'), 'utf8'));
+  for (const k of Object.keys(sc.setups || {})) { if (SETUPS.includes(k)) continue; SETUPS.push(k); OWNER[k] = ss; } }
 
 // ---- a run's config → key → {era, industry}
 function tierMapOf(runDir) {
@@ -80,7 +83,7 @@ function readPrices(rel) {
 const ARM = {};
 for (const s of SETUPS) { let runs = [];
   // an arm that has not run yet is EMPTY, not an error — a probe is read while it is still playing
-  try { const r = usableRuns(SES, SESSION, s); runs = r.runs; reportDropped(r.dropped); } catch { runs = []; }
+  try { const r = usableRuns(SES, OWNER[s] || SESSION, s); runs = r.runs; reportDropped(r.dropped); } catch { runs = []; }
   ARM[s] = runs.map(rel => ({ rel, years: readRun(rel), P: readPrices(rel), map: tierMapOf(join(SES, rel)) })).filter(r => r.years.size); }
 // ⭐ the CONTROL arm has no config of its own, but an era-0 rung's KEY IS the vanilla building's key (make_tier4_config keeps it, and
 // that is load-bearing there), so a mod arm's map read against a vanilla save matches exactly the era-0 buildings and nothing else.
@@ -89,7 +92,7 @@ const FALLBACK = Object.values(ARM).flat().find(r => r.map);
 if (FALLBACK) for (const rs of Object.values(ARM)) for (const r of rs) if (!r.map) r.map = { ...FALLBACK.map, borrowed: true };
 
 const dateOf=y=>{const d=[...new Set(Object.values(ARM).flat().map(r=>r.years.get(y)&&r.years.get(y).date).filter(Boolean))];return d.length===1?d[0]:d.join('/');};
-console.log('EARLY-GAME PROBE — ' + SESSION + ' · control arm "' + CONTROL + '" · ' + SETUPS.map(s => s + ' n=' + (ARM[s] || []).length).join(' · '));
+console.log('EARLY-GAME PROBE — ' + SESS.join(' + ') + ' · control arm "' + CONTROL + '" · ' + SETUPS.map(s => s + ' n=' + (ARM[s] || []).length).join(' · '));
 console.log('margin = profit ÷ (va_out − profit), F92\'s identity — the game\'s own profitability, no wage model. Two in-game years: the ANCHOR, not the century.\n');
 
 // ---- 1. the world product
