@@ -14217,6 +14217,8 @@ British market, % of base:
 | tiered types running negative: 20–30% at in12 → 45–60% at in15 | ❌❌ **badly wrong: 0 / 0 / 0 / 5%** |
 | realised margins move 1:1 or are absorbed | ❌ for 1:1 — **absorbed, ~8:1, within 21 months** |
 
+⚠⚠ **AMENDED BY F143 THE SAME DAY — the conclusion "in0 is not a margin dial" is TRUE AT THE ANCHOR AND FALSE LATER.** The shed-then-recover loop measured here closes only because the rung’s own shedding lifts its price; once e1–e3 supply the good that loop is broken, and at the canon’s OWN 1890 and 1935 prices the era-0 rung goes from +1% / +6% (in0 1.2) to −14% / −9% (in0 1.4) in textile. Read F142 as what the penalty does to the ANCHOR and F143 as what it does to the design.
+
 ⇒ **Two of five wrong, both because a fixed-price census cannot see the adjustment.** This is §10.86.2's ruling paying for itself the first time it
 was tested: the census's *ordering* of the options survives intact, its *levels* do not.
 
@@ -14228,3 +14230,103 @@ MEDIUM on the exact retention percentages of small industries (motor and explosi
 21 months speaks to none of them. It does NOT say `in0` 1.4 is safe to ship; only that it does not break the anchor. Nothing about A or B, held at
 the canon's throughout. Nothing about whether the shedding it buys compounds into real obsolescence later, which is the one thing that would
 justify the lever and can only be seen in a full run.
+
+## F143 — ⭐⭐ THE ERA-0 PENALTY DOES ITS WORK AT 1890, NOT AT 1836, AND THE ARITHMETIC SAYS in0 1.4 IS WHAT TURNS THE CONSUMER CHAINS FROM "BARELY PROFITABLE FOREVER" INTO "DESTROYING VALUE": at the canon's OWN realised prices, textile's 1836 rung earns +1% at 1890 and +6% at 1935 at in0 1.2 and −14% / −9% at in0 1.4. Plus: the motor industry is the only one with a HOLE in its ladder (rungs at e0, e2, e3 — no e1), which is why engines hold the highest sustained price of any tiered good (175 / 170 / 142 / 117% of base) (computed read-only against the canon's measured price paths, 2026-09-19)
+
+**Why it was computed.** The user, correcting an over-broad sentence in F142's write-up: *"My intention is that it would make it insolvent in presence of
+higher-tier industries that will push the output prices down. And the build incentive will come from this: under realised prices in 1890, the t0 will be
+destroying value, so the AI will hopefully not build them. The answer to money printing is mostly not in0, but A/B. Which can be afforded to be milder,
+if in0 ensures that a smaller price difference to 1830s is enough to kill the e0."* And separately: *"I also observed that motor industry is
+systemically problematic in my yesterday's playtest. Is it just worse in terms of base-price added value terms?"*
+
+### 1. ⭐⭐ THE USER'S MECHANISM IS THE ARITHMETIC, AND F142's 21-MONTH READING DOES NOT CONTRADICT IT
+
+F142 measured `in0` as a weak margin lever because at the ANCHOR the loop closes: the rung sheds staffing, supply falls, its price recovers, and the
+margin comes back (glass e0 at in0 1.5: −23% → +12% having shed 58%). **That loop is exactly what higher rungs break.** Once e1–e3 are supplying the
+good, the old rung's shedding no longer lifts the price, so the penalty is permanent. The question is therefore not "what does `in0` do at 1836" but
+"what does it do at the prices the canon actually reaches later", and that is computable from the canon's own measured price paths.
+
+**The era-0 rung's realised margin, BOTH SIDES at the canon's measured prices of that year, by `in0`:**
+
+| industry | 1870 (1.2 / 1.3 / 1.4 / 1.5) | **1890** | 1910 | **1935** |
+|---|---|---|---|---|
+| **textile** | 22 / 13 / 5 / −2 | **1 / −7 / −14 / −19** | 4 / −4 / −11 / −17 | **6 / −2 / −9 / −15** |
+| **food** | 30 / 20 / 11 / 4 | **16 / 7 / −1 / −7** | 11 / 3 / −4 / −11 | **12 / 3 / −4 / −11** |
+| **furniture** | 10 / 2 / −6 / −12 | **3 / −5 / −12 / −18** | 18 / 9 / 1 / −6 | **−5 / −12 / −18 / −24** |
+| glass | 21 / 12 / 4 / −3 | 55 / 43 / 33 / 24 | 85 / 71 / 58 / 48 | **44 / 33 / 23 / 15** |
+| tooling | 44 / 33 / 23 / 15 | 60 / 48 / 37 / 28 | 65 / 52 / 42 / 32 | 21 / 12 / 4 / −3 |
+| paper | 69 / 56 / 45 / 35 | 72 / 59 / 48 / 38 | 74 / 61 / 49 / 40 | 23 / 13 / 5 / −2 |
+| motor | 41 / 30 / 21 / 12 | 40 / 29 / 20 / 12 | 53 / 41 / 31 / 22 | 48 / 37 / 27 / 19 |
+| steel | −7 / −14 / −20 / −25 | −12 / −19 / −25 / −30 | −29 / −35 / −39 / −43 | −46 / −50 / −54 / −57 |
+| arms | 34 / 24 / 15 / 7 | 12 / 3 / −4 / −11 | −13 / −20 / −25 / −30 | −50 / −54 / −57 / −60 |
+| artillery | 13 / 5 / −3 / −9 | −6 / −14 / −20 / −25 | −42 / −46 / −50 / −53 | −54 / −58 / −61 / −64 |
+| **art_academy** | 125 / 107 / 93 / 80 | **129 / 111 / 96 / 83** | 165 / 145 / 127 / 112 | **150 / 131 / 115 / 100** |
+
+⭐ **THE CONSUMER CHAINS SIT WITHIN A FEW POINTS OF ZERO AT in0 1.2 AND GO CLEARLY NEGATIVE AT 1.4.** Textile's 1836 rung earns +1% at 1890 and +6% at
+1935 on the shipped book — which is precisely F136's census finding that textile's e0 sheds only 29% and still earns ~21%, arrived at from the other
+direction. At `in0` 1.4 the same rung reads **−14% and −9%**. ⇒ **`in0` 1.3–1.4 is what converts the consumer chains from "survives forever on a
+sliver" into "destroys value from 1890", and it needs NO extra price decline to do it.** That is the user's design, and it is the first quantitative
+support it has had.
+
+⚠ **Three honest limits.** (a) The prices are the CANON's, measured at A 2.2 / B 1.5; a book with a different `in0` produces somewhat different prices,
+and F142 measured the direction — a higher penalty lifts prices a little, which partly offsets, so this table is an upper bound on the effect.
+(b) Wages are held at the config's base-price share, so a cheap-input year overstates the wage burden; the SIGN and the ORDERING are what the table is
+for. (c) It says nothing about whether the AI's build rule actually reads the sign — F100 found the private pool expanding company-owned buildings
+regardless.
+
+⭐ **And it explains F136's split exactly.** The industries that do NOT die at any `in0` in range are **glass (+44% at 1935), tooling, paper, motor and
+the art academy (+150%)** — the ones whose output price stays high while their input is cheap wood or nothing. The war chains (steel, arms, artillery)
+are already deeply negative at 1.2 and die on their own. F136 measured 92–98% of the old rung's peak workers shed in the war chains and 14–29% in the
+consumer chains; this is the same fact read off the recipe book.
+
+⭐⭐ **THE ART ACADEMY IS THE OUTLIER AND NO PENALTY IN RANGE TOUCHES IT**: its era-0 rung breaks even at 48% of base and fine art realises 119–151%
+all century, so it earns **+100% even at `in0` 1.5**. It needs its own lever, not this one — the 2026-09-05 "infinite money printer" concern, still live.
+
+### 2. IS THE MOTOR INDUSTRY "JUST WORSE IN BASE-PRICE VALUE-ADDED TERMS"? — NO. It is the only industry with a HOLE in its ladder
+
+**Base-price value added per worker at the era-0 rung, `in0` 1.2 (the canon), all thirteen industries that stand on the 1836 map:**
+
+| rank | industry | VA £/level | workers/level | **VA per worker** | margin at base |
+|---|---|---|---|---|---|
+| 1 (worst) | steel | 250 | 5,000 | 0.050 | −19% |
+| 2–4 | food · textile · furniture | 390 | 5,000 | 0.078 | +5% |
+| 5 | fertilizer | 420 | 5,000 | 0.084 | −11% |
+| 6–8 | glass · tooling · paper | 480 | 5,000 | 0.096 | +25% |
+| 9 | artillery | 550 | 5,000 | 0.110 | +9% |
+| 10 | explosives | 580 | 5,000 | 0.116 | −2% |
+| **11** | **motor** | **600** | **5,000** | **0.120** | **0%** |
+| 12 | arms | 840 | 5,000 | 0.168 | +41% |
+
+**Motor is fourth from the top, not the bottom.** Its base-price value added per worker is 54% above steel's and above every consumer chain's. So the
+playtest observation is real but its cause is not the recipe.
+
+⭐⭐ **THE CAUSE IS STRUCTURAL: motor is the ONLY industry whose rungs skip an era.**
+
+| industry | rungs at era | gate technologies |
+|---|---|---|
+| **motor** | **0, 2, 3 — MISSING e1** | atmospheric_engine (game era 2) · electric_railway (**4**) · compression_ignition (5) |
+| every other 1836 industry | 0,1,2,3 (or 0,1,2) | contiguous |
+| automotive 2,3 · munition 1,2 · synthetics 1 · electrics 2 | start late, but no internal hole | |
+
+Vanilla's motor industry has only three main methods and they are gated three game eras apart, so **vanilla has the same hole** — but vanilla's method
+step is ~1.33× where ours is A = 2.2×. **A gap costs vanilla 1.33× of foregone productivity and costs us 2.2×**, and it lands on an industry whose
+output every downstream chain buys. The consequence is measured in the price: **engines hold the highest sustained price of any tiered good in the
+canon — 175 / 170 / 142 / 117% of base at 1870 / 1890 / 1910 / 1935** (steel 133 / 128 / 91 / 72, clothes 102 / 89 / 88 / 85). Engines are scarce for
+sixty years because motor's output per level is frozen at vanilla's 40 from 1836 until `electric_railway`.
+
+⚠ **What it is NOT**: motor's staffing is healthy (69–92% across the century, against vanilla's 66–89%), and its capacity is not collapsed — 778 levels
+at 1935 against vanilla's 1,792, but at 4.84× the output per level at e2, so roughly 85% of vanilla's engine capacity in vanilla-equivalent terms.
+⚠ **A correction to an alarm raised and withdrawn in the same session**: reading only the e0 rung's key made the canon's steel look like 50 levels
+against vanilla's 2,486. Counting ALL rungs, the canon's steel is BETTER staffed than vanilla's at 1935 (80% against 61%) — the near-empty e0 rung is
+the ladder working, not the sector collapsing.
+
+**The three options, none ruled**: mint an e1 engine method (⚠ new territory — every addition so far has been a TOP rung vanilla lacks, never a
+mid-ladder one); move `electric_railway`'s rung down to e1 (within the era rule's ±1 tolerance, but it just moves the hole to e2); or accept it, in
+which case a lower A shrinks the damage automatically, since the hole costs exactly one factor of A.
+
+**Confidence.** HIGH on the base-price value-added ranking and on the ladder hole — both are arithmetic over the shipped config and the game's files.
+HIGH on the engine price path (medians over the canon's own measured runs). MEDIUM on the realised-margin table of §1: the prices are the canon's and a
+different `in0` would move them, so it is directionally right and quantitatively an upper bound.
+
+**What it does NOT say.** Nothing about whether the AI acts on a negative margin — F100 says the private pool expands company-owned buildings whatever
+the sign. Nothing about what `in0` 1.4 does to the century: that needs a full run, and this is paper arithmetic over another book's prices.
