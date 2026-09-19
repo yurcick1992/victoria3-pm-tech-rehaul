@@ -14852,3 +14852,129 @@ single seed moving one level is a 30–50% swing in everything downstream. ⇒ *
 and is NOT enough for engines, motor, explosives, munition or anything else measured in single-digit levels.** F142's warning that motor's retention
 figures were quantisation noise was right and should have been applied to the whole engine market at the same time; it was not, and two findings had
 to be corrected for it.
+
+
+## F148 — ⭐⭐ THE 1836 STEEL/ENGINE SQUEEZE IS NOT A DEMAND STORY: tooling's steel-fed rung is 88% of all 1836 steel demand in BOTH books and our recipe buys ×1.02 of vanilla's steel for it — what our book changes is that the same rung makes ×1.81 the tools (the whole of tooling's +54% anchor error) and can therefore outbid the motor industry for steel **3.7 : 1** where vanilla's outbids it 1.5 : 1, while the price FLOOR under steel is our own `in0` lift taking the steel mill's break-even from 103% to 123% of base. And vanilla's own method ladder over the 1836 map is **out ×1.00 / 1.48 / 2.67 with input tracking it exactly** — against our ×1.00 / 2.20 / 4.84 on ×1.00 / 1.50 / 2.25 (computed read-only over the shipped canon, the emitted 1836 history and the vanilla production-method files, 2026-09-19)
+
+**Asked by the user**: *"I think now that steel is in higher demand [because] t2 tooling industry [is] present in 1836. And this pushes steel price up
+and depresses engines. Are steel-made tools historical in 1836?"* The first clause is right about WHERE and wrong about WHAT; the rest follows.
+
+### 1. THE 1836 STEEL ORDER BOOK, MOD vs VANILLA, AT THE EMITTED HISTORY'S OWN LEVELS
+
+Every tiered starting factory, on its own converted rung, against the vanilla method it stands in for — same levels, same PMs, base prices.
+
+| | mod | vanilla | ratio |
+|---|---|---|---|
+| world steel **demand** | 1,159 | 1,120 | **×1.03** |
+| world steel **supply** | 1,105 | 1,105 | ×1.00 |
+| of which tooling e2 buys | 1,015 (88%) | 1,000 (89%) | ×1.02 |
+| of which motor e0 buys | 144 (12%) | 120 (11%) | ×1.20 |
+| world **tools** output | 9,870 | 6,400 | **×1.54** |
+| of which tooling e2 makes | 7,260 | 4,000 | **×1.81** |
+
+**Only five countries consume steel at the 1836 start, and in all five it is tooling e2**: GBR 21 levels · PRU 11 · FRA 8 · USA 7 · BEL 3 — 50 of the
+world's 95 tooling levels, and **the only rung with a material e2 presence anywhere on the 1836 map**. The naive per-country buy:sell price implied by
+the engine's own formula moves 1–5 points: GBR 102% mod against 99% vanilla, PRU 111 / 110, FRA 119 / 117, USA 128 / 123, BEL 25 / 25.
+
+⇒ **Steel demand at 1836 is a vanilla property, not ours.** Our e2 tooling recipe (wood 30.4 + steel 20.3 → 145.2 tools) happens to land on almost
+exactly vanilla's own `pm_steel` input value (wood 30 + steel 20 → 80 tools), so the ×1.2 era-0 lift and the B ladder cancel out on this one rung.
+
+### 2. WHAT OUR BOOK ACTUALLY CHANGES: THE OUTPUT, AND THEREFORE THE WILLINGNESS TO PAY
+
+Reservation price for steel = the most a level can pay per unit and still break even, wages in at 25%, as a % of steel's base 50:
+
+| consumer | mod, at its own output 100% of base | mod, at the +75% band ceiling | vanilla @100% | vanilla @175% |
+|---|---|---|---|---|
+| **tooling e2** (steel tools) | **369%** | 691% | 180% | 360% |
+| tooling e3 (rubber grips) | 472% | 847% | 193% | 358% |
+| **motor e0** (steam engines) | **100%** | 175% | **120%** | 210% |
+
+⭐⭐ **In vanilla the tooling workshop outbids the engine plant for steel 1.5 : 1; in our book it outbids it 3.7 : 1** — and the two moved in opposite
+directions. Tooling's reservation price doubles because its output is ×1.81; motor's FALLS from 120% to 100% because the ×1.2 lift on its steel input
+is the whole of its recipe. Tooling e2 is never rationed out of the steel market at any price the band allows, so it is the price-setter, and motor is
+the marginal buyer that gets squeezed — which is F143 §3a's engine price pinned at 170–175% for sixty years, seen from the supply side.
+
+### 3. AND THE FLOOR UNDER THE STEEL PRICE IS OURS, FROM THE SUPPLY SIDE
+
+| | inputs → output | break-even output price |
+|---|---|---|
+| steel e0, **mod** | iron 48 + coal 36 → steel 65 | **123% of base** |
+| steel e0, vanilla (`pm_blister_steel_process`) | iron 40 + coal 30 → steel 65 | **103% of base** |
+
+The 20 points are the `in0` 1.2 lift, and they propagate one hop: motor e0's break-even engine price is **123% of base at steel 123%**, **133% at the
+133% steel actually measured at 1836** (F143 §3), against **vanilla's 86%**. ⇒ **The steel price is pushed up by our own steel recipe, not by
+tooling's demand.** Tooling e2 decides who gets the steel; the lift decides what it costs.
+
+### 4. ⭐⭐ THE STRUCTURAL CAUSE: TOOLING e2 IS THE ONLY 1836 RUNG PRICED AS A 1905 RUNG
+
+`lint_tier_eras --census`: tooling e2's gate is **`mechanical_tools`, a GAME-ERA-2 technology** (vanilla's 1836–1861 research band, handed to the
+leaders at the 1836 start), which the era rule's ±1 tolerance bumps to **narrative e2** so that tooling gets one rung per era. Narrative e2 is the
+**1905 anchor**, so that rung receives output ×A² = 4.84, input value ×B² = 2.25 and cost ×1.9² = 2,166 — and fifty levels of it stand on the map in
+1836. Every other +1-bumped rung on the map is an **e1** (textile 117 levels on `lathe`, furniture 86 on `lathe`, food 36 on `distillation`, tooling
+e1 35 on `steelworking` — all GAME ERA 1). Tooling e2 is the only e2.
+
+### 5. ⭐⭐ VANILLA'S OWN METHOD LADDER OVER THE 1836 MAP — the anchor error and the money printer in one table
+
+Level-weighted mean of each vanilla method's output and input value against its own industry's era-0 method, over the rungs the emitted 1836 history
+actually holds:
+
+| | e0 (658 levels) | e1 (352 levels) | e2 (50 levels) |
+|---|---|---|---|
+| **vanilla's own step** — output | ×1.00 | **×1.48** | **×2.67** |
+| **vanilla's own step** — input value | ×1.00 | **×1.46** | **×2.67** |
+| our canon — output | ×1.00 | ×2.20 | ×4.84 |
+| our canon — input value | ×1.00 | ×1.50 | ×2.25 |
+| our overshoot on output | — | **×1.49** | **×1.81** |
+
+⭐ **Vanilla's early method steps are pure throughput: input tracks output to within 1–2%, so vanilla's margin is FLAT across its first three methods.**
+Ours adds out ÷ in = 1.47 at e1 and 2.15 at e2 — i.e. **+47% and +115% of margin where vanilla adds none.** That single table is simultaneously
+F137's 1836 supply anchor (+27.3% over the whole map) and playtest defect **P1**'s money printer; they are the same fact read on the two axes.
+Per industry, vanilla's own bottom ladder is steepest exactly in **tooling** (×2.00 / ×2.67 — vanilla's crude-tools rung is deliberately feeble), which
+is why tooling's per-rung overshoot is the SMALLEST of the consumer chains and its anchor contribution is still the largest at **+54%**: it is the only
+one with levels on e2.
+
+### 6. THE CANDIDATE LADDERS, SCORED (`ladder_options.mjs`, base prices, a design coordinate and not a prediction — §10.86.2)
+
+| book | out ladder | in ladder | margin e0/e1/e2/e3 | death test (F97) | **1836 anchor** |
+|---|---|---|---|---|---|
+| **the canon** | 1 / 2.20 / 4.84 / 10.65 | 1 / 1.50 / 2.25 / 3.38 | 5 / 55 / 127 / 233% | 16 of 17 | **+27.3%** |
+| A 1.9 geometric (`canon-a19-gm`, n=2 run) | 1 / 1.90 / 3.61 / 6.86 | 1 / 1.50 / 2.25 / 3.38 | 5 / 34 / 69 / 114% | 10 of 17 | +15.3% |
+| **front-flattened** | 1 / 1.40 / 2.60 / 10.65 | 1 / 1.18 / 1.70 / 3.38 | **5 / 25 / 61 / 232%** | **15 of 17** | **−1.9%** |
+| vanilla-shaped bottom | 1 / 1.48 / 2.67 / 10.65 | 1 / 1.46 / 2.67 / 3.38 | 5 / 7 / 5 / 232% | 13 of 17 | +0.6% |
+| steep top | 1 / 1.30 / 2.20 / 10.65 | 1 / 1.25 / 2.00 / 3.38 | 5 / 10 / 16 / 232% | 13 of 17 | −5.9% |
+
+⭐⭐ **A NON-GEOMETRIC ladder is the only one of these that does all three at once** — the 2026-09-19 ruling's own opening (*"ladders can be more complex
+than anchor × A^era"*, §10.86.4). The front-flattened book closes the 1836 anchor error (−1.9% against +27.3%), puts the e1 margin at **25%, i.e. on
+vanilla manufacturing's measured 23%** (F92) instead of 55%, and keeps obsolescence at **15 of 17** where the geometric A 1.9 that buys a far smaller
+anchor gain collapses to **10 of 17**. It does NOT touch the top rung's 232% margin — P1's other half is untouched and would still need the B ladder of
+F141 §5. ⚠ The vanilla-shaped and steep-top variants close the anchor harder and buy a FLAT bottom margin ladder (5 / 7 / 5%), which removes any
+reason to climb from e0 to e2 and is therefore worse for goal 3, not better.
+
+⚠ **`make_ab_config` cannot generate any of these**: it has `--cost-ladder` (per-era list) but output and input are the geometric scalars `--A` / `--B`.
+The missing flags are `--out-ladder` / `--in-ladder`, mirroring `--cost-ladder` exactly, plus the matching arm in `lint_tier_eras` (L31), which already
+recomputes cost from `_ab.cost_ladder` and would need to do the same for output and input value.
+
+### 7. WHAT IT DOES **NOT** SAY
+
+- **Every number here is at BASE prices and over the 1836 map alone.** §10.86.2 governs: a base-price margin is a design coordinate, and the measured
+  spread of a good's price ÷ base is 61 pp across markets at 1836. The reservation-price table says who CAN outbid whom, not what either actually pays.
+- **It says nothing about the century.** The three things the ladder exists for are decades out and nothing in this finding touches them; a
+  front-flattened ladder has never been run for an hour, let alone a century.
+- **It does not establish that closing the anchor error improves anything measured.** F137 is a defect on its own terms (the 1836 map over-produces),
+  but the register has never scored a book with the anchor closed.
+- **The death test is F97's base-price proxy**, and §10.86.4.3 records that `canon-a19-gm` measured BETTER obsolescence than the canon while scoring
+  worse on it. Read 15 of 17 as "not obviously broken", not as a prediction.
+- **Historical judgement, not measurement** (§8 below): the history is reasoning from the record, not from the game.
+
+### 8. ARE STEEL-MADE TOOLS HISTORICAL IN 1836? — YES, AND IT IS NEARLY THE ONLY HISTORICAL USE OF STEEL AT THAT DATE
+
+Before Bessemer (1856) and Siemens–Martin (1860s) there was no bulk steel. What existed was **cementation (blister) steel** and **Huntsman's crucible
+steel** (Sheffield, 1740s), made in tens of thousands of tons a year against roughly a million tons of British pig iron — a few per cent of ferrous
+output. Essentially all of it went into **edge tools, files, saws, chisels, razors, springs and cutlery**; Sheffield's entire trade was tools and
+cutlery, and the machine-tool builders of the period (Maudslay, Whitworth) used iron frames with steel cutters. So a steel-fed tooling workshop in 1836
+is not an anachronism — it is the canonical use, and the base game models it exactly right: `pm_blister_steel_process` (cementation) is the 1836 steel
+mill, and `pm_steel` tooling is the only steel buyer of size on the map.
+
+⇒ **Nothing here argues for taking steel out of 1836 tooling, or for re-dating the 50 e2 levels.** The mis-fit is not the chemistry, it is that a
+technology vanilla hands out in 1836 is priced on the 1905 rung of a geometric ladder. ⚠ What IS ahistorical in our book is the **scale**: our 50 e2
+levels produce 7,260 tools a week against vanilla's 4,000 from the same steel, which is a 1900s tool industry running on 1836 crucible steel.

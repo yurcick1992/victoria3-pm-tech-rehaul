@@ -2028,6 +2028,16 @@ in the order the evidence supports them:
    arm, measured at n=2 (F141 §4).
 3. **P6 / F137 first, if either of the above is to be clean** — the 1836 supply anchor is broken in every A-ladder book and it depresses exactly the
    prices these recipes are designed against.
+4. ⭐⭐ **A NON-GEOMETRIC OUTPUT/INPUT LADDER — added 2026-09-19 by FINDINGS F148, and on paper it dominates candidate 2 on every axis at once.** F148
+   measures vanilla's OWN method ladder over the rungs the 1836 map actually holds: **out ×1.00 / 1.48 / 2.67 with input tracking output to within
+   1–2%**, i.e. vanilla's early methods are pure throughput at a FLAT margin, against our geometric ×1.00 / 2.20 / 4.84 on ×1.00 / 1.50 / 2.25, which
+   adds +47% and +115% of margin where vanilla adds none — **F137's anchor error and P1's money printer are the same table read on two axes.** A
+   front-flattened book (`out 1 / 1.40 / 2.60 / 10.65`, `in 1 / 1.18 / 1.70 / 3.38`) scores 1836 anchor **−1.9%** against the canon's +27.3%, an e1
+   margin of **25%** — on vanilla manufacturing's measured 23% (F92) — and obsolescence **15 of 17**, where the geometric A 1.9 that buys a smaller
+   anchor gain collapses to 10 of 17. It is what the 2026-09-19 ruling opened (*"ladders can be more complex than anchor × A^era"*, §10.86.4) and it
+   leaves the top rung's 232% margin untouched, so P1's other half still wants F141 §5's B ladder. ⚠ **Blocked on a generator flag**:
+   `make_ab_config` has `--cost-ladder` but output and input are the geometric `--A` / `--B`; it needs `--out-ladder` / `--in-ladder` mirroring it, and
+   the matching arm in `lint_tier_eras` (L31), which already recomputes cost from `_ab.cost_ladder`. ⚠ Never run for an hour, let alone a century.
 
 ⭐ **And an instrument rule earned the hard way (F147 §1c): on a 1836→1838 batch, n=2 is enough for steel (~1,250 units, ~18 levels) and is NOT enough
 for engines, motor, explosives or munition, which are single-digit levels where one seed moving one level is a 30–50% swing.** Two n=2 readings of the
