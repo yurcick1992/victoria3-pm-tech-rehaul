@@ -841,7 +841,7 @@ GLOSSARY.md             ⭐⭐ THE TERMINOLOGY CHEAT SHEET (user-asked 2026-09-1
                         RULE: a bare letter is only allowed if it is on this page, and where a letter and a phrase
                         compete the PHRASE wins in prose. It names things; it never rules on them
 README.md               user-facing setup (play the mod, launch the editor) — for GitHub visitors
-ROADMAP.md              THE PLAN — steps 0-8 from the solved economy to release. ⭐ STEP 8 (2026-09-18) is THE FIRST HUMAN
+ROADMAP.md              THE PLAN — steps 0-10 from the solved economy to release. ⭐ STEP 10 (2026-09-19) is THE ERA-0 INPUT PENALTY, settled at the anchor over 28 probe runs and five sessions (FINDINGS F140-F147): the design intent is arithmetically right (at the canon own 1890/1935 prices, in0 1.3-1.4 turns the consumer chains from surviving forever on a sliver into destroying value); the penalty is ABSORBED at the anchor within 21 months but not later; the raw-input maximum is 1.40, above which steel is demolished; the GRADED penalty has a final shape (in0-stage for what an industry BUYS + in0-supplier for what it SELLS, counting 1836-present consumers) and probe-gradsup is the best anchor of any penalised book measured. ⚠⚠ NOTHING IN STEP 10 HAS BEEN RUN FOR A CENTURY, which is the whole open question. ⭐ STEP 8 (2026-09-18) is THE FIRST HUMAN
                         PLAYTEST’S DEFECT LIST: P1 the early rungs are a money printer (e1 earns 55–106% at base prices against vanilla
                         manufacturing’s 23%, because the A÷B gap of 1.467 lands on a rung 0 anchored at break-even) with three fixes
                         sketched incl. the user’s price-path idea; P2 the urban-centre electricity override was dropped by canon4v and

@@ -1976,3 +1976,59 @@ now the stated INTENT, and "closed as a lever" was measured at `r` = 1.467, the 
 
 ---
 
+
+## ⭐⭐⭐ STEP 10 — THE ERA-0 INPUT PENALTY, SETTLED AT THE ANCHOR AND UNTESTED OVER THE CENTURY (2026-09-19, FINDINGS F140–F147)
+
+**Where this came from.** ROADMAP step 9's margin-compression campaign closed its first batch (F139: the flat uniform ladder fixes the hoard and loses
+the economy, because the realised ladder inverts). The user then re-opened the `in0` axis — *"we need a tighter A/B to avoid money printing, but a
+higher t0 input penalty to ensure that t0 industry can't work at base prices, require higher output prices"* — and a day of paper analysis and
+**28 short probe runs across five sessions** settled what the penalty does AT THE ANCHOR. Nothing here has been run for a century.
+
+### 1. WHAT IS SETTLED
+
+- **The design intent is arithmetically right (F143 §1).** At the canon's OWN realised prices, textile's 1836 rung earns +1% at 1890 and +6% at 1935 on
+  the shipped book, and **−14% / −9% at `in0` 1.4**. `in0` 1.3–1.4 is what turns the consumer chains from "survives forever on a sliver" into
+  "destroys value from 1890 on", with no extra price decline needed — which is exactly the user's mechanism.
+- **At the anchor the penalty is absorbed (F142).** Realised era-0 margin 26 / 23 / 21 / 21% at `in0` 1.2 / 1.3 / 1.4 / 1.5 after 21 months: a 24-point
+  designed spread becomes a 3-point realised one. The rung sheds staffing until its price recovers. **Read F142 as the ANCHOR and F143 as the DESIGN.**
+- **The world-product cost is about 1 point per +0.1 of `in0`, and it saturates (F142)** — far less than the paper's first-order arithmetic.
+- **The raw-input penalty's working maximum is ≈1.40** (F140 on paper, F144 on demolition, F145 on the market). At 1.50+ the STEEL industry is
+  demolished at the anchor and the chain goes with it.
+- **⭐ THE GRADED PENALTY WORKS AND HAS A FINAL SHAPE (§10.86.6/.7).** `--in0-stage <raw>,<s1>,<s2>` relieves an industry for what it BUYS;
+  `--in0-supplier <k>` adds a binary point for what it SELLS, counting only consumers standing on the 1836 map. **`probe-gradsup` — `--in0-stage
+  1.40,1.20,1.10 --in0-supplier 0.5` — is the best anchor of any penalised book measured**: world product at the control's, steel's ceiling share
+  48% → 25% and engines' 46% → 39% against the ungraded arm, both markets improving on supply as well as price (F147 §1c, n=6).
+- **⚠ The canon has an anchor defect of its own (F145).** Its steel runs demand 0.97 of vanilla on three-quarters the supply with **18% of its early
+  prices at the +75% ceiling**, where vanilla never touches it — because vanilla leaves steel at a −2.5% base margin, the thinnest of any industry, and
+  the uniform ×1.2 lift takes it to −19%. **⭐ But F146 measured that early steel tightness does NOT predict late GDP** (162 runs, 47 books: pooled
+  r = −0.15, within-book **+0.19** — opposite signs, both weak), so it is a reason not to spend a lever on it, not an emergency.
+- **Motor is structurally odd and it is not the recipe (F143 §2/§3a).** It is the only industry whose rungs skip an era (e0, e2, e3 — vanilla gives it
+  three methods three game eras apart), so its output per level is frozen from 1836 to ~1905 while everything else compounds at A^era; a gap costs
+  vanilla 1.33× and costs us 2.2×. **A lower A shrinks that automatically** — a third independent argument for the A cut of F141.
+
+### 2. WHAT IS NOT SETTLED, AND IT IS THE IMPORTANT HALF
+
+⚠⚠ **NOTHING HERE HAS BEEN RUN FOR A CENTURY.** Two in-game years cannot see obsolescence, the price decline, the money printer or the hoard — the four
+things the project is actually for. F143 §1's case for the penalty is paper arithmetic over ANOTHER book's prices, and F139 is the standing warning
+that a designed ladder is not the realised one.
+⚠ **The supplier weights are a 1836-derived number knowingly applied to every rung** (§10.86.7). At 1910 the same measure reads steel 0.31 against
+1836's 1.00. The late game is deferred by ruling, not answered.
+⚠ Only `k = 0.5` and only the `map` variant have been tested; `any` and `share` remain in the generator, unrun.
+
+### 3. THE NEXT STEP, as it stands
+
+**A full 1836→1936 run of `probe-gradsup`'s configuration, or of it combined with F141's A cut**, is what everything above now waits on. The candidates,
+in the order the evidence supports them:
+
+1. **`--in0-stage 1.40,1.20,1.10 --in0-supplier 0.5` on the canon's A 2.2 / B 1.5 / C 1.9** — the measured best anchor, one change from the canon's
+   uniform 1.2. Tests F143 §1's claim that this kills the consumer chains from 1890 without breaking the anchor.
+2. **The same penalty with F141's `A 1.9 / B 1.5 / C 1.75`** — the money printer and the penalty moved together, which is the user's original framing
+   (*"the answer to money printing is mostly not in0, but A/B, which can be afforded to be milder if in0 ensures that a smaller price difference to
+   1830s is enough to kill the e0"*). ⚠ Two levers at once, so it needs the A-only arm beside it to be readable — and `canon-a19-gm` already IS that
+   arm, measured at n=2 (F141 §4).
+3. **P6 / F137 first, if either of the above is to be clean** — the 1836 supply anchor is broken in every A-ladder book and it depresses exactly the
+   prices these recipes are designed against.
+
+⭐ **And an instrument rule earned the hard way (F147 §1c): on a 1836→1838 batch, n=2 is enough for steel (~1,250 units, ~18 levels) and is NOT enough
+for engines, motor, explosives or munition, which are single-digit levels where one seed moving one level is a 30–50% swing.** Two n=2 readings of the
+engine market produced two confident, opposite, wrong answers in one day.
