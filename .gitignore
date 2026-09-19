@@ -184,3 +184,13 @@ tools/testbed/ledger/cost_drivers_pool.json
 # so every industry runs the SAME ladder (5 / 17 / 31 / 47 by era, target_be 95 / 85 / 76 / 68 in all 56 rungs).
 !config/mod_config.canon-lvl-a19b17.json
 !config/tech_tree_options.canon-lvl-a19b17.json
+
+# THE EARLY-GAME in0 PROBE (2026-09-19, schedule in0_early_probe.json): the canon with ONE field moved, the era-0
+# input penalty, at 1.3 / 1.4 / 1.5 against the canon's 1.2. Regenerable from each file's own _ab.command, kept
+# because a finding cites them.
+!config/mod_config.probe-in13.json
+!config/tech_tree_options.probe-in13.json
+!config/mod_config.probe-in14.json
+!config/tech_tree_options.probe-in14.json
+!config/mod_config.probe-in15.json
+!config/tech_tree_options.probe-in15.json
