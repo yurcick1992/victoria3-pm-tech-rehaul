@@ -14330,3 +14330,44 @@ different `in0` would move them, so it is directionally right and quantitatively
 
 **What it does NOT say.** Nothing about whether the AI acts on a negative margin — F100 says the private pool expands company-owned buildings whatever
 the sign. Nothing about what `in0` 1.4 does to the century: that needs a full run, and this is paper arithmetic over another book's prices.
+
+### F143 §3 (added the same day, answering "is it motor's input steel being uniquely high-priced?") — ⭐⭐ NO: STEEL IS THE GOOD THE LADDER DEFLATES HARDEST, AND MOTOR IS THE ONLY 1836 RUNG WHOSE WHOLE INPUT BASKET IS IT
+
+**The terms of trade of every 1836 rung** — (output price ÷ base) ÷ (input-basket price ÷ base), at the canon's own measured prices. This is the
+obsolescence mechanism in one number: the ladder kills an old rung by making its OUTPUT cheaper while its INPUTS are not, so **a rung whose terms of
+trade IMPROVE is immune to it**.
+
+| industry | input basket (share of output value) | 1836 | 1870 | 1890 | 1910 | 1935 | 1935 ÷ 1836 |
+|---|---|---|---|---|---|---|---|
+| glass | wood (60%) | 0.44 | 0.95 | 1.24 | 1.54 | 1.15 | **+161%** ⬅ immune |
+| tooling | wood (60%) | 0.49 | 1.13 | 1.29 | 1.37 | 0.97 | **+98%** ⬅ immune |
+| **motor** | **steel\* (75%)** | 0.99 | 1.32 | 1.32 | 1.56 | **1.63** | **+65%** ⬅ immune |
+| textile | fabric (71%) | 0.74 | 1.21 | 0.98 | 1.02 | 1.08 | +44% |
+| paper | wood (60%) | 0.82 | 1.33 | 1.39 | 1.45 | 0.98 | +20% |
+| furniture | wood+fabric (71%) | 0.78 | 1.04 | 0.99 | 1.17 | 0.91 | +17% |
+| art academy | paper\* (36%) | 1.28 | 1.00 | 1.02 | 1.21 | 1.21 | −5% |
+| explosives | sulfur+fertilizer\* (77%) | 1.27 | 1.49 | 1.21 | 1.07 | 1.14 | −10% |
+| food | grain (71%) | 1.41 | 1.28 | 1.14 | 1.10 | 1.11 | −21% |
+| **steel** | iron+coal (92%) | 0.92 | 1.10 | 1.03 | 0.86 | **0.65** | **−29%** |
+| fertilizer | sulfur+iron (84%) | 1.51 | 1.20 | 1.29 | 1.19 | 1.02 | −32% |
+| artillery | iron+hardwood (69%) | 0.71 | 1.00 | 0.83 | 0.53 | 0.40 | **−43%** |
+| arms | iron+hardwood (53%) | 0.75 | 0.92 | 0.77 | 0.61 | 0.35 | **−54%** |
+
+\* = an input our own ladder manufactures, so the design pushes its price down (the register's PI aims at ≤ 0.8 of vanilla).
+
+⭐⭐ **Motor's input is not uniquely dear — it is uniquely CHEAPENING.** Steel runs 133 → 128 → 91 → **72%** of base across the century (its own terms of
+trade −29%, third worst in the book) while engines run 175 → 170 → 142 → **117%**. Both fall; the input falls further, so **motor's terms of trade
+improve 65% and its era-0 margin RISES, 41 → 40 → 53 → 48%.** The 1836 steam-engine plant is not squeezed by expensive steel; it is subsidised by
+cheap steel, and the subsidy is the design's own price decline working as intended one rung downstream.
+
+⇒ **THE GENERAL RULE, measured**: the obsolescence mechanism works where the output is a tiered good and the input is RAW — the war chains, whose
+terms of trade fall 43–54% and which F136 measured shedding 92–98% of the old rung's peak workers — and it FAILS where the input is itself something
+the ladder deflates. **Motor is the extreme case (75% of its input value is one tiered good), which is why its era-0 rung never goes negative at any
+`in0` in range (§1: +19% even at 1.5).** This is CLAUDE.md's own stated principle — *"the ladder works best for industries eating RAW inputs and
+weakest for those eating MANUFACTURED ones"* — now measured, with motor as the proof case.
+
+⚠ **And it is a self-defeating loop, not a local defect**: the harder the design pushes steel's price down (a register AIM — PI ≤ 0.8), the safer the
+1836 engine plant becomes. Any fix for motor has to break that loop, not just add a rung: an e1 rung raises motor's own output and cuts the engine
+price, which helps, but the e0 rung's terms of trade keep improving as long as steel deflates.
+⚠ Glass and tooling are immune for a DIFFERENT reason — they start crushed (terms of trade 0.44 / 0.49 at 1836, F137's over-supply) and recover as the
+anchor error washes out. Their immunity is F137's, not the input basket's, and it should fade when the supply anchor is fixed.
