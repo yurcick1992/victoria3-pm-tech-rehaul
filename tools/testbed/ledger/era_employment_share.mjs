@@ -29,7 +29,7 @@ const SESSION = arg('--session', '');
 if (!SESSION) { console.error('usage: --session <stamp>[:<setup>] --config <book>'); process.exit(2); }
 const [STAMP, SETUP] = SESSION.split(':');
 const CFG = arg('--config', 'config/mod_config.json');
-const TAGS = arg('--tags', 'GBR,USA,FRA,NET,BEL,PRU,NGF,GER').split(',');
+const TAGS = arg('--tags', 'GBR,USA,FRA,NET,BEL,UNL,PRU,NGF,GER').split(',');
 const YEARS = arg('--years', '1840,1850,1860,1870,1880,1890,1900,1910,1920,1930,1935').split(',').map(Number);
 
 const cfg = JSON.parse(readFileSync(join(REPO, CFG), 'utf8'));

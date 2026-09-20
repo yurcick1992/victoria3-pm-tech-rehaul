@@ -28,7 +28,7 @@ const EXCL = new Set((argOf('--exclude', '') || '').split(',').map(s => s.trim()
 if (!ARM) { console.error('usage: batch_tables.mjs --arm <sess[,sess]>:<setup> [--nb <sess>:<setup>] [--van <sess>] [--config <path>] [--year 1935] [--exclude <sess/run,...>]'); process.exit(2); }
 
 const DUMPS = ['1880.1.1', '1900.1.1', '1920.1.1', YEAR + '.1.1'];
-const SHORT = ['GBR', 'USA', 'FRA', 'NET', 'BEL', 'PRU', 'NGF', 'GER'];
+const SHORT = ['GBR', 'USA', 'FRA', 'NET', 'BEL', 'UNL', 'PRU', 'NGF', 'GER'];   // UNL = the United Netherlands, which REPLACES NET+BEL where it forms (lib_markets.mjs)
 const med = a => { const b = a.filter(Number.isFinite).sort((x, y) => x - y); return b.length ? (b.length % 2 ? b[(b.length - 1) / 2] : (b[b.length / 2 - 1] + b[b.length / 2]) / 2) : NaN; };
 const f2 = x => Number.isFinite(x) ? x.toFixed(2) : '—';
 const f0 = x => Number.isFinite(x) ? x.toFixed(0) : '—';

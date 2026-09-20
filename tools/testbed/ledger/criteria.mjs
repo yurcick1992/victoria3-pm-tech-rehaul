@@ -78,6 +78,7 @@ import { gunzipSync } from 'node:zlib';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { usableRuns, reportDropped } from './lib_runs.mjs';
+import { POOL, MEMBER, MEMBER_FAMILY, MARKET_NAMES, PRICE_TAGS, TAG_OF_MARKET } from './lib_markets.mjs';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SES = join(HERE, '..', 'sessions');
 const REPO = resolve(HERE, '..', '..', '..');
@@ -106,9 +107,13 @@ const SIG_FIXED = { 'world.gdp': 0.228, 'pool.gdp': 0.440, 'world.W': 0.089, 'po
 const SIG_T_FIXED = { r0: 0.025, r3: 0.106, ratio0: 0.407 }; // the tiered-labour shares, the same basis
 for (const kv of (argOf('--weights', '') || '').split(',').filter(Boolean)) { const [k, v] = kv.split('='); if (k in W) W[k] = +v; else throw new Error('unknown weight ' + k); }
 if (!ARMS.length) { console.error('usage: --arm <session[,session]>[:<setup>] [--arm …] [--config <path>] [--van <session>] [--end 1932-1936] [--weights k=v,…] [--json out]'); process.exit(2); }
-const POOL = ['GBR', 'USA', 'FRA', 'NET', 'BEL', 'PRU', 'NGF', 'GER'];
-const MEMBER = ['GBR', 'USA', 'FRA', 'GER', 'BEL', 'NET']; // GER = the German state: GER, else NGF, else PRU
-const MARKETS = { 'British Market': 'GBR', 'American Market': 'USA', 'French Market': 'FRA', 'Dutch Market': 'NET' }; // the scoped shortlist markets
+// ⭐ THE POOL, THE MAJORS AND THE PRICE-TRACKED MARKETS live in lib_markets.mjs since 2026-09-20 — one definition for
+// nine readers, and the place NGF and the UNITED NETHERLANDS (UNL) were added by ruling. UNL is not hypothetical: it
+// stands in 2 of the 16 vanilla baseline seeds from 1876, and where it does, NET and BEL cease to exist — so a pool
+// listing only NET and BEL loses both members silently.
+// ⚠ PI/PP are read over the INTERSECTION of the markets the arm and the vanilla reference both carry (printed with the
+// index): an arm instrumented with the ten-tag list has German and Belgian prices the n=16 vanilla baseline does not,
+// and averaging different baskets on the two sides of a ratio is not a comparison.
 const GI = ['steel', 'tools', 'engines', 'fertilizer', 'explosives', 'dye', 'paper'], GP = ['groceries', 'clothes', 'furniture', 'glass', 'fine_art', 'automobiles', 'telephones', 'radios'], GM = ['small_arms', 'artillery', 'ammunition'];
 const PYEARS = [1900, 1910, 1920, 1930, 1935];
 const med = a => { const s = a.filter(Number.isFinite).sort((x, y) => x - y); if (!s.length) return NaN; const m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
@@ -140,27 +145,36 @@ function readRun(rel, tier) {
     let j; try { j = JSON.parse(gunzipSync(readFileSync(join(dir, fn))).toString('utf8')); } catch { continue; }
     const y = +String((j.provenance && j.provenance.date) || '').split('.')[0]; if (!y || years.has(y)) continue;
     const C = j.countries || {}; const world = agg(), pool = agg(); const members = {}; const T = { w: [0, 0, 0, 0], s: [0, 0, 0, 0] };
-    const ger = C.GER ? 'GER' : C.NGF ? 'NGF' : C.PRU ? 'PRU' : null;
     for (const [tag, c] of Object.entries(C)) { addC(world, c); const inPool = POOL.includes(tag); if (inPool) addC(pool, c);
       if (tier) for (const [k, b] of Object.entries(c.buildings || {})) { const t = tier[k]; if (!t) continue; const w = (+b.staffing || 0) * t.emp; T.w[t.era] += w; if (inPool) T.s[t.era] += w; } }
     world.gdp = +j.world.gdp || world.gdp;
-    for (const m of MEMBER) { const tag = m === 'GER' ? ger : m; const c = tag && C[tag]; if (!c) { members[m] = null; continue; } const a = agg(); addC(a, c); members[m] = { tag, ...fin(a) }; }
-    wage[y] = {}; for (const tag of Object.values(MARKETS)) if (C[tag]) wage[y][tag] = +C[tag].base_wage || NaN;
+    for (const m of MEMBER) { const tag = (MEMBER_FAMILY[m] || [m]).find(x => C[x]); const c = tag && C[tag]; if (!c) { members[m] = null; continue; } const a = agg(); addC(a, c); members[m] = { tag, ...fin(a) }; }
+    wage[y] = {}; for (const tag of PRICE_TAGS) if (C[tag]) wage[y][tag] = +C[tag].base_wage || NaN;
     years.set(y, { world: fin(world), pool: fin(pool), members, T });
   }
   return { years, wage };
 }
-// ---- prices from markets.tsv: per dump year, per market, per good → the absolute price
+// ---- prices from markets.tsv: per dump year, per MARKET NAME, per good → the absolute price
+// ⚠ Keyed by the market's NAME, not by a tag, because the name does not identify the leader: "Dutch Market" is NET's
+//   AND UNL's (UNL_ADJ is "Dutch"), and the German one reads Prussian → North German → German across the century.
+//   The tag is resolved per year against the countries the run actually has, which is what the wage denominator needs.
+const PRICE_MARKET_NAMES = new Set(PRICE_TAGS.flatMap(t => MARKET_NAMES[t] || []));
 function readPrices(rel) {
   const f = join(SES, rel, 'markets.tsv'); const out = {}; if (!existsSync(f)) return out;
   for (const line of readFileSync(f, 'utf8').split(/\r?\n/)) {
     const c = line.split('\t'); if (c.length < 8) continue; const y = +String(c[1]).split('.')[0]; if (!PYEARS.includes(y)) continue;
-    const tag = MARKETS[c[2]]; if (!tag) continue; const g = c[4], p = +c[7]; if (!(p > 0) || !BASE[g]) continue;
-    ((out[y] ||= {})[tag] ||= {})[g] = p;
+    if (!PRICE_MARKET_NAMES.has(c[2])) continue; const g = c[4], p = +c[7]; if (!(p > 0) || !BASE[g]) continue;
+    ((out[y] ||= {})[c[2]] ||= {})[g] = p;
   }
   return out;
 }
-const priceIdx = (P, wage, y, goods, unit) => med(Object.entries(P[y] || {}).flatMap(([tag, gs]) => goods.map(g => gs[g] ? (unit === 'wage' ? gs[g] / (wage[y] && wage[y][tag]) : gs[g] / BASE[g]) : NaN)));
+const tagForMarket = (name, wageRow) => PRICE_TAGS.find(t => (MARKET_NAMES[t] || []).includes(name) && wageRow && Number.isFinite(wageRow[t])) || TAG_OF_MARKET[name];
+// `basis` (optional) restricts the index to a set of market names — the intersection of the arm's and vanilla's.
+const priceIdx = (P, wage, y, goods, unit, basis = null) => med(Object.entries(P[y] || {})
+  .filter(([name]) => !basis || basis.has(name))
+  .flatMap(([name, gs]) => { const tag = tagForMarket(name, wage[y]); const w = wage[y] && wage[y][tag];
+    return goods.map(g => gs[g] ? (unit === 'wage' ? (w > 0 ? gs[g] / w : NaN) : gs[g] / BASE[g]) : NaN); }));
+const marketsIn = (P, y) => new Set(Object.keys(P[y] || {}));
 const winMean = (years, key, sub, lo = E0, hi = E1) => mean([...years.entries()].filter(([y]) => y >= lo && y <= hi).map(([, v]) => v[key] && v[key][sub]));
 const at = (years, y, key, sub) => years.has(y) ? years.get(y)[key][sub] : NaN;
 const runsOf = spec => { const [s, setup] = spec.split(':'); const { runs, dropped } = usableRuns(SES, s, setup || ''); if (!QUIET) reportDropped(dropped); return runs; };
@@ -170,6 +184,11 @@ const vanRuns = runsOf(VAN).map(rel => { const r = readRun(rel, null); return { 
 const ref = {}, sig = {};
 const setRef = (key, vals) => { const m = med(vals); ref[key] = m; sig[key] = m ? sd(vals.map(v => v / m)) : NaN; };
 for (const scope of ['world', 'pool']) for (const q of ['gdp', 'W', 'U', 'H', 'Y']) setRef(scope + '.' + q, vanRuns.map(r => winMean(r.years, scope, q)));
+// ⭐ THE PRICE BASIS: the market names the VANILLA reference actually carries, per year. An arm is scored on the
+// INTERSECTION of its own markets with this — so an arm instrumented with the ten-tag list of 2026-09-20 (which adds
+// the German and Belgian markets) is still compared against vanilla like for like. Those markets enter PI/PP the day
+// a vanilla baseline carries them and not before; the basis is printed so a reader always knows which it was.
+const VANBASIS = {}; for (const y of PYEARS) VANBASIS[y] = new Set(vanRuns.flatMap(r => [...marketsIn(r.P, y)]));
 setRef('PI', vanRuns.map(r => priceIdx(r.P, r.wage, 1935, GI, 'base'))); setRef('PP', vanRuns.map(r => priceIdx(r.P, r.wage, 1935, GP, 'wage'))); setRef('PM', vanRuns.map(r => priceIdx(r.P, r.wage, 1935, GM, 'base')));
 for (const y of PYEARS) ref['PI.' + y] = med(vanRuns.map(r => priceIdx(r.P, r.wage, y, GI, 'base')));
 // ⭐⭐ THE W HARD BOUNDS (user-ruled 2026-09-19: "the hard boundaries were meant to be for W. H is hardly comparable with vanilla anyway")
@@ -207,8 +226,11 @@ function scoreRun(rel, tier) {
   const { years, wage } = readRun(rel, tier); const P = readPrices(rel); const r = { rel, hard: [], soft: [], side: [] };
   r.gdpW = winMean(years, 'world', 'gdp') / ref['world.gdp']; r.gdp35 = at(years, 1935, 'world', 'gdp') / med(vanRuns.map(v => at(v.years, 1935, 'world', 'gdp'))); r.gdpP = winMean(years, 'pool', 'gdp') / ref['pool.gdp'];
   for (const s of ['world', 'pool']) for (const q of ['W', 'U', 'H', 'Y']) { r[s + q] = winMean(years, s, q) / ref[s + '.' + q]; r[s + q + '_abs'] = winMean(years, s, q); }
-  r.PI = priceIdx(P, wage, 1935, GI, 'base') / ref.PI; r.PI_abs = priceIdx(P, wage, 1935, GI, 'base'); r.PP = priceIdx(P, wage, 1935, GP, 'wage') / ref.PP; r.PM = priceIdx(P, wage, 1935, GM, 'base') / ref.PM;
-  r.PIpath = PYEARS.map(y => priceIdx(P, wage, y, GI, 'base')); r.PIfalling = r.PIpath.every((v, i, a) => i === 0 || !(Number.isFinite(v) && Number.isFinite(a[i - 1])) || v <= a[i - 1]);
+  // the price basis: this run's markets ∩ vanilla's, per year (see VANBASIS)
+  const bas = {}; for (const y of PYEARS) { const mine = marketsIn(P, y); bas[y] = new Set([...mine].filter(n => VANBASIS[y].has(n))); }
+  r.basis = [...bas[1935]].sort(); r.basisDropped = [...marketsIn(P, 1935)].filter(n => !VANBASIS[1935].has(n)).sort();
+  r.PI = priceIdx(P, wage, 1935, GI, 'base', bas[1935]) / ref.PI; r.PI_abs = priceIdx(P, wage, 1935, GI, 'base', bas[1935]); r.PP = priceIdx(P, wage, 1935, GP, 'wage', bas[1935]) / ref.PP; r.PM = priceIdx(P, wage, 1935, GM, 'base', bas[1935]) / ref.PM;
+  r.PIpath = PYEARS.map(y => priceIdx(P, wage, y, GI, 'base', bas[y])); r.PIfalling = r.PIpath.every((v, i, a) => i === 0 || !(Number.isFinite(v) && Number.isFinite(a[i - 1])) || v <= a[i - 1]);
   if (tier) {
     const tw = (y, i) => years.has(y) ? years.get(y).T.s[i] : NaN; const dec = (a, b, i) => mean([...years.keys()].filter(y => y >= a && y <= b).map(y => tw(y, i)));
     const end = [0, 1, 2, 3].map(i => mean([...years.keys()].filter(y => y >= E0 && y <= E1).map(y => tw(y, i))));
@@ -315,7 +337,10 @@ if (!QUIET) {
     console.log('--- HARD, per run ---');
     for (const r of a.runs) { console.log('  ' + r.rel.split('/').slice(-2).join('/').padEnd(64) + (r.broken ? '⛔ BROKEN BY ' + r.broken.toUpperCase() : '✅ intact') + '  [anchor ' + r.anchor.viol + ' y out; pooled U* ' + pc(r.poolU_abs) + '; world GDP ' + f2(r.gdpW) + '×' + (r.loss ? '; loss ' + f2(r.loss.L, 1) : '') + ']'); for (const h of r.hard) console.log('        ⛔ ' + h); for (const s of r.soft) console.log('        ⚠ soft: ' + s); }
     const C = a.C; console.log('--- CONSENSUS: ' + C.note + ' ---'); if (!C.intact) continue;
-    console.log('  SHORTLIST (GBR/USA/FRA/NET/BEL/PRU/NGF/GER pooled)');
+    const b0 = a.runs.find(r => r.basis && r.basis.length);
+    if (b0) console.log('  price basis (PI/PP, arm ∩ vanilla): ' + (b0.basis.join(', ') || 'NONE')
+      + (b0.basisDropped.length ? '   ⚠ this arm also carries ' + b0.basisDropped.join(', ') + ', which the vanilla reference does not — NOT in the index, or the two sides would average different baskets' : ''));
+    console.log('  SHORTLIST (' + POOL.join('/') + ' pooled)');
     line('W', C.poolW, verdict(C.poolW, 0.6, 0.95, x => x > 1.0), 'abs ' + f2(C.poolW_abs, 4) + ' vs ' + f2(ref['pool.W'], 4) + '; aim 0.6–0.95, soft > 1.0 (FULL depeasantation), ' + wband('pool'));
     line('U*', C.poolU, verdict(C.poolU, 2.0, Infinity, x => x < 1.0), 'abs ' + pc(C.poolU_abs) + ' vs ' + pc(ref['pool.U']) + '; aim ≥ 2, soft < 1.0');
     line('H', C.poolH, verdict(C.poolH, -Infinity, 1.0), 'abs ' + f2(C.poolH_abs) + ' vs ' + f2(ref['pool.H']) + '; aim < 1');

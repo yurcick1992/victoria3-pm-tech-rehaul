@@ -5,10 +5,19 @@
 // Vanilla values + uniform ladders and penalties stay, although ladders can be more complex than anchor*A^era") and asked what is left, ladder-wise,
 // to cut the money printing — "maybe a significantly lower A, with vanilla B".
 //
+// ⭐⭐ THE WAGE IS THE ECONOMY'S AND THE DECADE'S, NOT A FLAT 25% (user-ruled 2026-09-20: *"in predictions, try assuming the actual wage share by
+// estimating individual wages and applying profession multipliers. Note that an industry tier doesn't have a 'predicted wage', the decade and the
+// economy does (e.g. 'stalling GBR in 1920')"*). So this tool is now asked WHICH economy it is predicting — `--economy GBR@1920` — and builds the
+// wage bill as `wage(GBR, 1920) × Σ(employees × profession wage_weight)` per level, through tools/lib_wage_model.mjs. It used to charge every rung
+// `wage_pct` 0.25 of goods, which is below vanilla's OWN wage share of total cost in every decade (54.6% at 1840 falling to 29.7% at 1935, F152)
+// and which charged the ART ACADEMY almost nothing, because its jobs live in its ownership PMG and `t.employment` is empty (F143 §1a).
+// ⭐ AND THE HEADLINE IS PROFIT IN £ PER LEVEL PER WEEK, not the margin (the same ruling's first half).
+//
 // The three quantities a ladder has to satisfy at once, all computed at BASE prices from the book's own arithmetic (⚠ §10.86.2: base-price margins
 // are a design coordinate, NOT a prediction of what a building earns — F139 measured the market compressing a designed 5/55/127/233 into a realised
 // 26/31/47/46):
-//   1. MARGIN per era = (1 + m0) x (out_e / in_e) - 1, where m0 is the rung-0 margin the `in0` penalty leaves. This is the money printer.
+//   1. PROFIT per level per era = output − inputs − wages, all at base prices; the margin beside it is profit ÷ (inputs + wages). This is the
+//      money printer, and it is now charged a real wage bill.
 //   2. OBSOLESCENCE, F97's death test: a rung two behind must hold LESS THAN ~0.20 of the frontier's VALUE ADDED PER WORKER. Employment per level
 //      is constant across an industry's rungs, so the ratio is just VA per level: (out_e - in_e) / (out_E - in_E).
 //   3. CAPITAL per unit of output = cost_e / out_e, the dial F113/F117 swept — dearer means fewer frontier levels and less labour absorbed.
@@ -19,10 +28,13 @@
 // A ladder is given as either a ratio (geometric, `A=2.2`) or an explicit per-era list (`out=1,2,3.6,6`), which is what "more complex than
 // anchor*A^era" means and what `make_ab_config --cost-ladder` already does for cost.
 //
-// usage: node tools/ladder_options.mjs [--book "name:out=<A|list>,in=<B|list>,cost=<C|list>,in0=<x>" ...] [--config <book>] [--industry textile]
+// usage: node tools/ladder_options.mjs [--book "name:out=<A|list>,in=<B|list>,cost=<C|list>,in0=<x>" ...] [--config <book>]
+//                                      [--industry textile] [--economy GBR@1920] [--wage-premium 1.5]
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readVanilla } from './lib_vanilla_ladder.mjs';
+import { tierEmployment, wageUnits, economyWage, WAGE_PREMIUM } from './lib_wage_model.mjs';
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const argAll = k => process.argv.reduce((a, v, i) => (v === k && process.argv[i + 1] ? [...a, process.argv[i + 1]] : a), []);
@@ -45,6 +57,10 @@ const val = o => Object.entries(o).reduce((s, [g, q]) => s + q * (PRICE[g] || 0)
 const ANCH = { construction_cost_low: 200, construction_cost_medium: 400, construction_cost_high: 600, construction_cost_very_high: 800 };
 
 // ---- the industries, their rungs, and each rung's own vanilla method output (the 1836 anchor reference)
+const VAN = readVanilla(GAME);
+const [ECON_TAG, ECON_YEAR] = (argOf('--economy', 'GBR@1920') + '@1920').split('@');
+const PREMIUM = +argOf('--wage-premium', WAGE_PREMIUM);
+const ECON = economyWage(ECON_TAG, +ECON_YEAR, { premium: PREMIUM });
 const cfg = JSON.parse(readFileSync(join(REPO, CFG), 'utf8'));
 const IND = [];
 for (const ind of cfg.industries) { if (ind.disabled) continue;
@@ -52,7 +68,11 @@ for (const ind of cfg.industries) { if (ind.disabled) continue;
   if (!r0 || !Object.keys(r0.in).length) continue;
   const og = t0.output_good || ind.output_good, out0 = r0.out[og]; if (!(out0 > 0)) continue;
   const anchor = ANCH[(ind.building || {}).required_construction || ind.required_construction] || 600;
-  IND.push({ id: ind.id, og, out0, I0: val(r0.in), O0: out0 * PRICE[og], wp: t0.wage_pct != null ? +t0.wage_pct : 0.25, anchor,
+  // wage UNITS per level, per era — the profession mix changes up the ladder (textile 6,000 → 7,500 units) and the
+  // ART ACADEMY has none of its own, so tierEmployment falls back to its ownership PMG (9,500 units, the F143 defect).
+  const units = {};
+  for (const t of tiers) units[t.era] = wageUnits(tierEmployment(t, ind, VAN));
+  IND.push({ id: ind.id, og, out0, I0: val(r0.in), O0: out0 * PRICE[og], units, anchor,
     rungs: tiers.map(t => ({ key: t.key, era: t.era, vpm: t.vanilla_pm, vanOut: (rec(t.vanilla_pm) || { out: {} }).out[og] || null })) });
 }
 
@@ -80,7 +100,10 @@ const ERAS = 4;
 const ONE = argOf('--industry', '');
 
 console.log('LADDER OPTIONS — designed at BASE prices (a design coordinate, never a prediction: the market compresses a designed ladder, F139)');
-console.log('book = out/in/cost ladders (a ratio = geometric, or a /-separated per-era list) and the era-0 input penalty in0\n');
+console.log('book = out/in/cost ladders (a ratio = geometric, or a /-separated per-era list) and the era-0 input penalty in0');
+console.log('WAGES are the ECONOMY\'s and the DECADE\'s (user-ruled 2026-09-20), not a flat share: ' + ECON.tag + ' @ ' + ECON.year
+  + ' — normal rate £' + ECON.normal.toFixed(4) + '/employee/wk × the measured ' + PREMIUM + '× buildings actually pay = £' + ECON.wage.toFixed(4)
+  + '  (vanilla n=' + ECON.n + ' seeds; --economy TAG@YEAR to move it)\n');
 
 for (const B of BOOKS) {
   const out = ladder(B.out, ERAS), inn = ladder(B.in, ERAS), cost = ladder(B.cost, ERAS), in0 = +B.in0;
@@ -88,22 +111,30 @@ for (const B of BOOKS) {
   const rows = [], anchor = { our: {}, van: {} };
   for (const i of IND) {
     if (ONE && i.id !== ONE) { /* still counted for the anchor */ }
-    const m = [], va = [], cap = [], be = [];
+    const m = [], va = [], cap = [], be = [], pr = [], wg = [], inp = [];
+    const eras = Object.keys(i.units).map(Number);
     for (let e = 0; e < ERAS; e++) { const O = i.O0 * out[e], I = i.I0 * in0 * inn[e], C = i.anchor * cost[e];
-      m[e] = O / (I / (1 - i.wp)) - 1; va[e] = O - I; cap[e] = C / (O / i.O0); be[e] = I / ((1 - i.wp) * O) * 100; }
+      // the rung at this era if the industry has one, else its nearest — the profession mix, not a flat share
+      const ue = i.units[e] != null ? i.units[e] : i.units[eras.reduce((a, b) => Math.abs(b - e) < Math.abs(a - e) ? b : a)];
+      const W = ECON.wage * ue;
+      wg[e] = W; inp[e] = I; pr[e] = O - I - W; m[e] = (I + W) > 0 ? (O - I - W) / (I + W) : NaN; va[e] = O - I; cap[e] = C / (O / i.O0); be[e] = (I + W) / O * 100; }
     const top = Math.max(...i.rungs.map(r => r.era));
-    rows.push({ id: i.id, m, va, be, top, d2: va[Math.max(0, top - 2)] / va[top], d3: top >= 3 ? va[top - 3] / va[top] : NaN });
+    rows.push({ id: i.id, m, va, be, pr, wg, inp, top, d2: va[Math.max(0, top - 2)] / va[top], d3: top >= 3 ? va[top - 3] / va[top] : NaN });
     // the 1836 anchor: levels x our output vs levels x that rung's own vanilla method output
     for (const r of i.rungs) { const lv = LEV[r.key] || 0; if (!lv) continue;
       anchor.our[i.id] = (anchor.our[i.id] || 0) + lv * i.out0 * out[r.era];
       anchor.van[i.id] = (anchor.van[i.id] || 0) + lv * (r.vanOut != null ? r.vanOut : i.out0 * out[r.era]); }
   }
   const show = ONE ? rows.filter(r => r.id === ONE) : rows;
-  console.log('industry      margin at base, e0 / e1 / e2 / e3        target_be            VA(top-2)/VA(top)  VA(top-3)/VA(top)');
-  for (const r of show) console.log('  ' + r.id.padEnd(12) + r.m.map(x => pc(x).padStart(6)).join(' ') + '      ' + r.be.map(x => x.toFixed(0)).join(' / ').padEnd(20) + f2(r.d2).padStart(8) + (r.d2 < 0.2 ? ' ✓' : ' ✗') + f2(r.d3).padStart(16) + (r.d3 < 0.2 ? ' ✓' : r.d3 ? ' ✗' : '  '));
+  const gbp = x => Number.isFinite(x) ? (x < 0 ? '-£' : '£') + Math.abs(Math.round(x)).toLocaleString('en-US') : '—';
+  console.log('industry      PROFIT £/level/wk at base, e0 / e1 / e2 / e3          margin (profit ÷ (inputs+wages))   BE%          VA(t-2)/VA(t)  VA(t-3)/VA(t)');
+  for (const r of show) console.log('  ' + r.id.padEnd(12) + r.pr.map(x => gbp(x).padStart(9)).join(' ') + '   ' + r.m.map(x => pc(x).padStart(6)).join(' ')
+    + '   ' + r.be.map(x => x.toFixed(0)).join('/').padEnd(16) + f2(r.d2).padStart(6) + (r.d2 < 0.2 ? ' ✓' : ' ✗') + f2(r.d3).padStart(12) + (r.d3 < 0.2 ? ' ✓' : r.d3 ? ' ✗' : '  '));
   const med = a => { const s = a.filter(Number.isFinite).sort((x, y) => x - y); return s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2; };
-  console.log('  MEDIAN        ' + [0, 1, 2, 3].map(e => pc(med(rows.map(r => r.m[e]))).padStart(6)).join(' ')
-    + '      death test (F97, < 0.20): ' + rows.filter(r => r.d2 < 0.2).length + '/' + rows.length + ' industries at two rungs back');
+  console.log('  MEDIAN        ' + [0, 1, 2, 3].map(e => gbp(med(rows.map(r => r.pr[e]))).padStart(9)).join(' ') + '   ' + [0, 1, 2, 3].map(e => pc(med(rows.map(r => r.m[e]))).padStart(6)).join(' ')
+    + '   death test (F97, < 0.20): ' + rows.filter(r => r.d2 < 0.2).length + '/' + rows.length + ' at two rungs back');
+  console.log('  wage share of total cost (wages ÷ (inputs + wages)): ' + [0, 1, 2, 3].map(e => pc(med(rows.map(r => r.wg[e] / (r.wg[e] + r.inp[e]))))).join(' / ')
+    + '   [vanilla\'s own, measured: 55% at 1840 → 30% at 1935 — F152; the retired flat wage_pct was 25% everywhere]');
   console.log('  capital per unit of output (cost / output, e0=1.00): ' + [0, 1, 2, 3].map(e => f2(cost[e] / out[e])).join(' / '));
   // the 1836 anchor error, world-wide
   let ours = 0, vans = 0; const per = [];

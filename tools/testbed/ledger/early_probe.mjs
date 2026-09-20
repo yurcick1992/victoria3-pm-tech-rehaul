@@ -93,7 +93,8 @@ if (FALLBACK) for (const rs of Object.values(ARM)) for (const r of rs) if (!r.ma
 
 const dateOf=y=>{const d=[...new Set(Object.values(ARM).flat().map(r=>r.years.get(y)&&r.years.get(y).date).filter(Boolean))];return d.length===1?d[0]:d.join('/');};
 console.log('EARLY-GAME PROBE — ' + SESS.join(' + ') + ' · control arm "' + CONTROL + '" · ' + SETUPS.map(s => s + ' n=' + (ARM[s] || []).length).join(' · '));
-console.log('margin = profit ÷ (va_out − profit), F92\'s identity — the game\'s own profitability, no wage model. Two in-game years: the ANCHOR, not the century.\n');
+console.log('PROFIT in £/week is the headline (user-ruled 2026-09-20). The margin beside it is profit ÷ (va_out − profit), F92\'s identity, which mixes a');
+console.log('MARKET-priced numerator with a BASE-priced denominator (F150) — at the ANCHOR that is worth ~2pp (F152) and further out it is not. Two in-game years, not the century.\n');
 
 // ---- 1. the world product
 console.log('=== 1. IS THE WORLD PRODUCT DISTORTED? (world GDP, median over each arm\'s runs) ===');
@@ -108,16 +109,22 @@ for (const s of SETUPS) { const rs = ARM[s] || []; if (!rs.length) { console.log
 
 // ---- 2 + 3. margins and the dead, per era and per type
 for (const y of YEARS) {
-  console.log('\n=== 2+3. REALISED MARGINS AND THE DEAD AT ' + y + ' ===');
-  console.log('arm            era0    era1    era2    era3   | tiered types running NEGATIVE (of those with staffed levels), and their share of tiered staffed levels');
+  console.log('\n=== 2+3. REALISED PROFIT AND THE DEAD AT ' + y + ' ===');
+  console.log('PROFIT is £/week for the whole era, world-wide (the ruled headline); the margin beside it is F92\'s base-priced ratio —');
+  console.log('at the ANCHOR that is within ~2pp of the unit-correct one (F152 measured the repair at +1.9pp median on vanilla 1836), which is why it still reads here.');
+  console.log('arm              era0 profit / margin     era1              era2              era3       | tiered types running NEGATIVE (of those with staffed levels), and their share of tiered staffed levels');
   for (const s of SETUPS) { const rs = (ARM[s] || []).filter(r => r.years.has(y)); if (!rs.length) continue;
+    const eraP = [0, 1, 2, 3].map(e => med(rs.map(r => { if (!r.map) return NaN; let p = 0;
+      for (const [k, b] of Object.entries(r.years.get(y).B)) { const t = r.map.tier[k]; if (!t || t.era !== e) continue; p += b.profit; }
+      return p; })));
     const eraM = [0, 1, 2, 3].map(e => med(rs.map(r => { if (!r.map) return NaN; let p = 0, o = 0;
       for (const [k, b] of Object.entries(r.years.get(y).B)) { const t = r.map.tier[k]; if (!t || t.era !== e) continue; p += b.profit; o += b.vaOut; }
       return (o - p) > 0 ? p / (o - p) : NaN; })));
     const neg = med(rs.map(r => { if (!r.map) return NaN; let n = 0; for (const [k, b] of Object.entries(r.years.get(y).B)) { if (!r.map.tier[k] || !(b.staffing > 0)) continue; if (b.profit < 0) n++; } return n; }));
     const tot = med(rs.map(r => { if (!r.map) return NaN; let n = 0; for (const [k, b] of Object.entries(r.years.get(y).B)) { if (!r.map.tier[k] || !(b.staffing > 0)) continue; n++; } return n; }));
     const negLv = med(rs.map(r => { if (!r.map) return NaN; let a = 0, t = 0; for (const [k, b] of Object.entries(r.years.get(y).B)) { if (!r.map.tier[k] || !(b.staffing > 0)) continue; t += b.staffing; if (b.profit < 0) a += b.staffing; } return t > 0 ? a / t : NaN; }));
-    console.log('  ' + s.padEnd(13) + eraM.map(v => pc(v, 0).padStart(7)).join(' ') + '   | ' + (Number.isFinite(neg) ? neg + ' of ' + tot + ' (' + pc(neg / tot, 0) + ' of types, ' + pc(negLv, 0) + ' of staffed levels)' : '— (control arm: no tiered buildings)'));
+    const gbp = x => Number.isFinite(x) ? (x < 0 ? '-£' : '£') + Math.abs(Math.round(x)).toLocaleString('en-US') : '—';
+    console.log('  ' + s.padEnd(13) + [0, 1, 2, 3].map(e => (gbp(eraP[e]) + '/' + pc(eraM[e], 0)).padStart(17)).join(' ') + '  | ' + (Number.isFinite(neg) ? neg + ' of ' + tot + ' (' + pc(neg / tot, 0) + ' of types, ' + pc(negLv, 0) + ' of staffed levels)' : '— (control arm: no tiered buildings)'));
   }
   // the named worst, per arm
   console.log('  the worst tiered types (margin, staffed levels), median run of each arm:');

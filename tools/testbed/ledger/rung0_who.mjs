@@ -16,5 +16,5 @@ const withHi = rows.filter(r => r.hi > 0), noHi = rows.filter(r => r.hi === 0);
 const sum = (rs, k) => rs.reduce((s, r) => s + r[k], 0);
 console.log(`rung-0 buildings added 1900->1935: ${sum(rows, 'dn')} (levels ${sum(rows, 'dlv')}) — by countries holding e2/e3 buildings: ${sum(withHi, 'dn')} buildings / ${sum(withHi, 'dlv')} levels (${withHi.length} countries); by countries with NO e2/e3 building: ${sum(noHi, 'dn')} / ${sum(noHi, 'dlv')} (${noHi.length} countries)`);
 console.log('top adders: ' + rows.slice(0, 12).map(r => `${r.tag} +${r.dn}b/+${r.dlv}L${r.hi ? '' : ' (no frontier)'}`).join(', '));
-const SHORT = ['GBR', 'USA', 'FRA', 'GER', 'NGF', 'PRU', 'RUS', 'AUS', 'JAP', 'NET', 'BEL'];
+const SHORT = ['GBR', 'USA', 'FRA', 'GER', 'NGF', 'PRU', 'RUS', 'AUS', 'JAP', 'NET', 'BEL', 'UNL'];
 console.log('majors: ' + rows.filter(r => SHORT.includes(r.tag)).map(r => `${r.tag} ${r.dn >= 0 ? '+' : ''}${r.dn}b/${r.dlv >= 0 ? '+' : ''}${r.dlv}L (e2+ levels ${r.hi})`).join(', '));

@@ -31,7 +31,7 @@ import { gunzipSync } from 'node:zlib';
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '../../..');
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 && process.argv[i + 1] ? process.argv[i + 1] : d; };
 const YEAR = +arg('--year', 1935);
-const POOL = arg('--tags', 'GBR,USA,FRA,NET,BEL,PRU,NGF,GER').split(',');
+const POOL = arg('--tags', 'GBR,USA,FRA,NET,BEL,UNL,PRU,NGF,GER').split(',');
 const median = a => { const b = a.filter(Number.isFinite).sort((x, y) => x - y); return b.length ? b[Math.floor(b.length / 2)] : null; };
 
 function book(cfgPath, slidOverride) {
@@ -88,29 +88,34 @@ if (!arm.length) { console.error('no usable runs in the arm at ' + YEAR); proces
 
 console.log(`SLID vs UNSLID at ${YEAR} — ${ARM_S}${ARM_SET ? ':' + ARM_SET : ''} · ${arm.length} run(s)`);
 console.log(`slid (ladder anchored on e1): ${[...armBook.slid].sort().join(', ') || '(none)'}`);
-console.log('margin = profit ÷ (va_out − profit), F92’s identity — the game’s own profitability, no wage model\n');
+console.log('PROFIT in £/week is the headline (user-ruled 2026-09-20). ⚠ THE MARGIN COLUMN IS F92’s `profit ÷ (va_out − profit)`, which mixes a');
+console.log('MARKET-priced numerator with a BASE-priced denominator (F150). It cannot be repaired here: these totals aggregate one rung across');
+console.log('EVERY market at every price, so there is no single output price to re-value `va_out` at. Read the profit; read the margin as indicative.\n');
 
-// ---- 1. MARGIN BY ERA, SLID vs UNSLID
-console.log('=== 1. REALISED MARGIN BY ERA — level-weighted, median over runs ===');
-console.log('                 ——— WORLD ———                    ——— shortlist pool ———');
-console.log('era        slid      unslid     gap        slid      unslid     gap');
+// ---- 1. PROFIT AND MARGIN BY ERA, SLID vs UNSLID
+console.log('=== 1. REALISED PROFIT (£/wk) AND MARGIN BY ERA — median over runs ===');
+console.log('                 ——————— WORLD ———————                       ——————— shortlist pool ———————');
+console.log('era          slid        unslid      gap             slid        unslid      gap');
 for (const era of [0, 1, 2, 3]) {
-  const cell = (isSlid, pool) => {
-    const vals = arm.map(({ acc }) => {
+  const both = (isSlid, pool) => {
+    const P = [], M = [];
+    for (const { acc } of arm) {
       let prof = 0, vo = 0;
       for (const [key, a] of Object.entries(acc)) {
         const g = armBook.rung[key];
         if (!g || g.era !== era || g.slid !== isSlid) continue;
         prof += pool ? a.pprof : a.prof; vo += pool ? a.pvo : a.vo;
       }
-      return (vo - prof) > 0 ? prof / (vo - prof) : null;
-    });
-    return median(vals);
+      P.push(prof); M.push((vo - prof) > 0 ? prof / (vo - prof) : null);
+    }
+    return { p: median(P), m: median(M) };
   };
-  const ws = cell(true, false), wu = cell(false, false), ps = cell(true, true), pu = cell(false, true);
-  const f = x => x == null ? '   —  ' : (100 * x).toFixed(0) + '%';
+  const ws = both(true, false), wu = both(false, false), ps = both(true, true), pu = both(false, true);
+  const f = x => x == null ? '  —  ' : (100 * x).toFixed(0) + '%';
+  const gbp = x => Number.isFinite(x) ? (x < 0 ? '-£' : '£') + Math.abs(Math.round(x)).toLocaleString('en-US') : '—';
   const g = (a, b) => (a == null || b == null) ? '  —' : ((100 * (a - b)).toFixed(0) + 'pp');
-  console.log(`e${era}    ${f(ws).padStart(8)} ${f(wu).padStart(11)} ${g(ws, wu).padStart(7)}    ${f(ps).padStart(8)} ${f(pu).padStart(11)} ${g(ps, pu).padStart(7)}`);
+  const cell = c => (gbp(c.p) + '/' + f(c.m)).padStart(16);
+  console.log(`e${era}  ${cell(ws)} ${cell(wu)} ${g(ws.m, wu.m).padStart(7)}     ${cell(ps)} ${cell(pu)} ${g(ps.m, pu.m).padStart(7)}`);
 }
 
 // ---- 2. CAPITAL

@@ -15,7 +15,7 @@ for (const runDir of runDirs) {
   const dir = runDir + '/save_summaries';
   const files = readdirSync(dir).filter(x => x.endsWith('.json.gz') && !x.includes('.partial.')).map(x => { const o = JSON.parse(gunzipSync(readFileSync(dir + '/' + x)).toString()); return { d: o.provenance.date, o }; });
   const f = files.filter(o => o.d.startsWith(year + '.')).sort((a, b) => a.d.localeCompare(b.d))[0]; if (!f) continue;
-  const g = {}; let gdp = 0, wk = null; const shortlist = new Set(['GBR', 'USA', 'FRA', 'GER', 'NGF', 'PRU']); let slE0 = 0;
+  const g = {}; let gdp = 0, wk = null; const shortlist = new Set(['GBR', 'USA', 'FRA', 'GER', 'NGF', 'PRU', 'NET', 'BEL', 'UNL']); let slE0 = 0;
   for (const [tag, c] of Object.entries(f.o.countries)) {
     gdp += c.gdp || 0; if (!wk) wk = Object.keys(c.workforce_by_profession || {});
     for (const [k, b] of Object.entries(c.buildings || {})) { const x = g[grp(k)] ||= { lv: 0, st: 0, va: 0, n: 0 }; x.lv += b.levels || 0; x.st += b.staffing || 0; x.va += (b.va_out || 0) - (b.va_in || 0); x.n += b.n || 0; if (tier[k] === 0 && shortlist.has(tag)) slE0 += (b.staffing || 0) * 5000; }

@@ -28,7 +28,7 @@ for (let i = 0; i < argv.length; i++) {
   else if (argv[i] === '--no-members') MEMBERS = false;
 }
 if (!arms.length) { console.error('usage: --arm <session[,session]>[:<setup>] [--arm …] [--van <session>] [--years 1935,…]'); process.exit(1); }
-const POOL = new Set(['GBR', 'USA', 'FRA', 'NET', 'BEL', 'PRU', 'NGF', 'GER']); // first_run_decomp's pool, exactly
+const POOL = new Set(['GBR', 'USA', 'FRA', 'NET', 'BEL', 'UNL', 'PRU', 'NGF', 'GER']); // first_run_decomp's pool, exactly (UNL replaces NET+BEL where it forms)
 const MEMBER = ['GBR', 'USA', 'FRA', 'GER', 'BEL', 'NET'];              // the composition rows; GER = the German state
 const med = a => { const s = a.filter(Number.isFinite).sort((x, y) => x - y); if (!s.length) return NaN; const m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
 const fmt = (x, d = 2) => Number.isFinite(x) ? x.toFixed(d) : '—';

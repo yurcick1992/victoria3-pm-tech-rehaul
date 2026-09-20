@@ -13,9 +13,13 @@
 //     own recipe, which is why the vanilla column is like-for-like and not a different model.
 //   • Prices are the MEDIAN over the vanilla baseline's sixteen seeds, per market, per good, at a dump date (default 1836.2.1 — the
 //     anchor; `--date 1840.1.1` for the settled early game). Seven markets are instrumented.
-//   • Wages are W = base wage × Σ(employees × wage_weight), the sheet's own model, with the base wage MEASURED per market: the wage
-//     rate F92 implies from the game's own profit identity for that market's lead country (GBR 0.0600 … RUS 0.0447).
-//   • margin = (O − I − W) ÷ (I + W), the same definition as F92 and the sheet.
+//   • Wages are W = wage × Σ(employees × wage_weight), the sheet's own model. ⭐ THE WAGE IS THE ECONOMY'S AND THE DECADE'S
+//     (user-ruled 2026-09-20): the market leader's own NORMAL WAGE RATE at this date, median over the vanilla seeds
+//     (config/measured_base_wages.json), × the measured 1.5× premium buildings pay over it — through tools/lib_wage_model.mjs.
+//     It was a seven-entry hardcoded table derived from F92's identity, which F150 showed to be a mixed-units ratio.
+//     ⭐ Employment comes from `tierEmployment`, so the ART ACADEMY is charged the 9,500 wage units of its OWNERSHIP PMG
+//     instead of the zero its empty `employment` used to give it (F143 §1a).
+//   • PROFIT in £ per level per week is the reported quantity (user-ruled 2026-09-20); margin = (O − I − W) ÷ (I + W) beside it.
 //   • BASE METHOD ONLY — no secondary PMs and no throughput. Both sides of every comparison are on that basis, so the DIFFERENCE
 //     between two lifts is exact; the LEVEL is a few points pessimistic (the +20% economy-of-scale case is carried internally as `thr`).
 //
@@ -33,6 +37,9 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readVanilla } from './lib_vanilla_ladder.mjs';
+import { tierEmployment, wageUnits, economyWage } from './lib_wage_model.mjs';
+import { MARKET_NAMES } from './testbed/ledger/lib_markets.mjs';
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const argOf = (k, d) => { const i = process.argv.indexOf(k); return i > 0 && process.argv[i + 1] ? process.argv[i + 1] : d; };
@@ -63,6 +70,7 @@ const WW = {}; for (const f of readdirSync(join(GAME, 'common/pop_types'))) { co
 const val = o => Object.entries(o).reduce((s, [g, q]) => s + q * (PRICE[g] || 0), 0);
 const r1 = x => Math.round(x * 10) / 10;
 
+const VLAD = readVanilla(GAME);   // the live game (vanilla PMGs/methods), for tierEmployment - VAN is the vanilla SESSION
 // ---- the industries' era-0 anchors, from the book's own first rung
 const cfg = JSON.parse(readFileSync(join(REPO, CFG), 'utf8'));
 const IND = [];
@@ -71,8 +79,10 @@ for (const ind of cfg.industries) { if (ind.disabled) continue;
   if (!r0 || !Object.keys(r0.in).length) continue;
   const og = t0.output_good || ind.output_good, out0 = r0.out[og]; if (!(out0 > 0)) continue;
   const wp = t0.wage_pct != null ? +t0.wage_pct : 0.25;
+  // ⭐ wage units through tierEmployment (2026-09-20): a tier with no `employment` of its own — the ART ACADEMY, whose
+  // jobs live in its ownership PMG — used to score ZERO wage units here and so looked free to run (F143 §1a).
   IND.push({ id: ind.id, pm: t0.vanilla_pm, og, out0, mix: r0.in, I0: val(r0.in), O0: out0 * PRICE[og], wp,
-    units: Object.entries(t0.employment || {}).reduce((s, [p, n]) => s + n * (WW[p] ?? 1), 0) * (t0.workforce_mult || 1),
+    units: wageUnits(tierEmployment(t0, ind, VLAD)),
     firstEra: t0.era, onMap: t0.era === 0 });
 }
 // the recipe a lift produces (the make_ab_config rule, rounding included)
@@ -90,8 +100,18 @@ for (const r of rows) { if (r[2] !== DATE) continue; const mk = r[3], g = r[5];
   acc[mk][g].p.push(+r[8]); acc[mk][g].buy.push(+r[6]); acc[mk][g].sell.push(+r[7]); acc[mk][g].prod.push(+r[11]); }
 const med = a => { const b = a.filter(Number.isFinite).sort((x, y) => x - y); if (!b.length) return NaN; return b.length % 2 ? b[(b.length - 1) / 2] : (b[b.length / 2 - 1] + b[b.length / 2]) / 2; };
 const MK = {}; for (const [mk, gs] of Object.entries(acc)) { MK[mk] = {}; for (const [g, v] of Object.entries(gs)) MK[mk][g] = { price: med(v.p), buy: med(v.buy), sell: med(v.sell), prod: med(v.prod), n: v.p.length, spread: [Math.min(...v.p), Math.max(...v.p)] }; }
-// the base wage per market: the wage rate F92 implies for that market's lead country (the game's own profit identity)
-const WAGE = { 'British Market': 0.0600, 'American Market': 0.0683, 'French Market': 0.0581, 'Prussian Market': 0.0799, 'Russian Market': 0.0447, 'Japanese Market': 0.0613, 'Dutch Market': 0.0685 };
+// ⭐⭐ THE BASE WAGE PER MARKET, MEASURED, AT THIS DATE'S DECADE (2026-09-20). It used to be a seven-entry hardcoded
+// table "the wage rate F92 implies" — i.e. derived from the identity F150 found to be a mixed-units ratio, so it was
+// wrong by whatever the market's price level was. Now it is the market leader's own NORMAL WAGE RATE from
+// config/measured_base_wages.json (the save's `base_wage` ÷ POP_SIZE_PACKAGE, median over the vanilla seeds) × the
+// measured 1.5× premium buildings actually pay over it. The table grows with the instrumented markets: add a tag to
+// lib_markets.MARKET_NAMES and it appears here.
+const YEAR = +String(DATE).split('.')[0];
+const WAGE = {}, WAGE_SRC = {};
+for (const [tag, names] of Object.entries(MARKET_NAMES)) {
+  let e = null; try { e = economyWage(tag, YEAR); } catch { continue; }
+  for (const n of names) if (!(n in WAGE)) { WAGE[n] = e.wage; WAGE_SRC[n] = e; }
+}
 const MARKETS = Object.keys(MK).filter(m => WAGE[m] && (!ONLY.length || ONLY.some(o => m.toLowerCase().startsWith(o.toLowerCase()))));
 
 // ---- the engine's own price formula
@@ -122,7 +142,9 @@ const pc0 = x => Number.isFinite(x) ? (100 * x).toFixed(0) + '%' : '—';
 
 const seeds = MK[MARKETS[0]] ? MK[MARKETS[0]][Object.keys(MK[MARKETS[0]])[0]].n : 0;
 console.log('ERA-0 SOLVENCY CENSUS — ' + CFG.replace(/^config\//, '') + ' | prices = the median of ' + VAN + ' at ' + DATE + ' (n=' + seeds + ' seeds) | ' + MARKETS.length + ' markets');
-console.log('margin = (O - I - W)/(I + W), base method only, wages at the F92 per-market wage rate. VERY DEAD = margin < ' + pc0(DEAD) + ' AND still negative with the output sell orders / 3.\n');
+console.log('margin = (O - I - W)/(I + W), base method only. VERY DEAD = margin < ' + pc0(DEAD) + ' AND still negative with the output sell orders / 3.');
+console.log('WAGES: each market leader\'s measured normal rate at ' + YEAR + ' x the 1.5x premium buildings pay (F152) — '
+  + MARKETS.map(m => m.split(' ')[0] + ' GBP' + WAGE[m].toFixed(4) + (WAGE_SRC[m] && WAGE_SRC[m].year !== YEAR ? '@' + WAGE_SRC[m].year : '')).join(' · ') + '\n');
 
 // ---- 1. the book side
 console.log('=== 1. THE RECIPES - what each option asks of the OUTPUT PRICE (target_be = the % of base at which the rung breaks even) ===');

@@ -24,7 +24,7 @@ for (let i = 0; i < argv.length; i++) {
   else if (argv[i] === '--years') YEARS = argv[++i].split(',').map(Number);
 }
 if (!arms.length) { console.error('usage: --arm <session>[:<setup>] [--van <session>] [--years a,b,c]'); process.exit(1); }
-const SHORT = new Set(['GBR', 'USA', 'FRA', 'NET', 'BEL', 'PRU', 'NGF', 'GER']);
+const SHORT = new Set(['GBR', 'USA', 'FRA', 'NET', 'BEL', 'UNL', 'PRU', 'NGF', 'GER']);   // UNL replaces NET+BEL where it forms
 const med = a => { if (!a.length) return NaN; const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
 
 function runDirs(spec) {

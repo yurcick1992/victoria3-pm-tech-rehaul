@@ -9,7 +9,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 const [cfgPath, year, mode, ...runDirs] = process.argv.slice(2);
 const cfg = JSON.parse(readFileSync(cfgPath, 'utf8'));
-const SL = new Set(['GBR', 'USA', 'FRA', 'GER', 'NGF', 'PRU', 'NET', 'BEL']);
+const SL = new Set(['GBR', 'USA', 'FRA', 'GER', 'NGF', 'PRU', 'NET', 'BEL', 'UNL']);
 const e0 = {}; for (const ind of cfg.industries) { if (ind.disabled) continue; const t = [...ind.tiers].sort((a, b) => a.era - b.era)[0]; if (t.era !== 0) continue; e0[t.key] = { ind: ind.id, pm: t.vanilla_pm, emp: Object.values(t.employment || {}).reduce((a, b) => a + b, 0) || 5000 }; }
 for (const runDir of runDirs) {
   const dir = runDir + '/save_summaries';
