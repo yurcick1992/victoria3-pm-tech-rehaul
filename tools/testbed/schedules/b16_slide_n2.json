@@ -1,0 +1,79 @@
+{
+  "_why": "THE NEXT 2+1 — the anchor-slide book made MORE PUNISHING by ONE lever: B 1.5 -> 1.6 (input value x1.6^era in place of 1.5^era). Everything else is byte-identical to probe-anch-costslide: the same eight-industry e1 anchor slide, --anchor-cost, in0 1.2, A 2.2, C 1.9, the same ai_value ladder, defines and 24-month bar. The only economic field that moves is the input quantity on the rungs above e0; target_be and wage_pct also differ because the book is generated on the measured-wage basis of 2026-09-20, but neither is emitted as economics (target_be is the building NAME, wage_pct is model-only).",
+  "_what_it_is_for": "probe-anch-costslide is OUT on one broken run: GBR in CAPITAL ABUNDANCE in run 2 (U* under 5% for six consecutive years 1931-1936 at a mean hoard of 2.46 of its own GDP), with run 1 missing the identical line by one year. F135's mechanism says the pool's INFLOW is our margins, which run at twice vanilla's. B is the lever that cuts every margin above e0 without touching output, and it raises raw-goods demand at the same time, which is where F128 measured the labour going. Both directions attack the break: less inflow -> a smaller hoard; more extraction jobs -> less of the developed world's labour drained into the frontier.",
+  "_measured_at_base_prices": "ladder_options at GBR@1905, main method only (a design coordinate, NOT a prediction - BALANCE_FRAMEWORK 10.86.2): the median profit% by era goes 1 / 62 / 148 / 284 -> 1 / 53 / 121 / 224. F97's death test is UNCHANGED at 16/17 industries, and capital per unit of output is untouched, which is what makes this a margin lever and not a capital one. Paper, which the user singled out, goes 4 / 72 / 168 / 329 -> 4 / 64 / 143 / 266.",
+  "_what_it_will_NOT_fix": "Paper stays about 20pp above the median at every rung. That is arithmetic, not an oversight: a uniform ladder multiplies each industry's OWN era-0 margin, so an industry that starts fat ends fatter, and closing the gap needs a per-industry era-0 lever. The only rule-derived one is the graded penalty (--in0-stage), which gives paper 1.30 against the flat 1.20 - about 8% more input value - and which the generator currently REFUSES to combine with --anchor-for. That is the follow-up, not this batch.",
+  "_predictions": {
+    "_basis": "THE CRITERIA REGISTER (BALANCE_FRAMEWORK 10.83). Stated before the launch, as the no-ceteris-paribus rule requires; these are DIRECTIONS with magnitudes, and the magnitudes are the weak half.",
+    "world_gdp": "0.85-1.05 (probe-anch-costslide read 0.97 / 1.22). A margin cut lowers GDP; the risk this batch runs is that it lowers it too far - F128's B 1.8 gain-matched STALLED at 0.70, and the lesson there was that a base-price gain match UNDERSTATES the price channel. B 1.6 is deliberately well short of that.",
+    "pool_H": "2.0-3.0 (was 3.49). The hoard is the largest single block of the loss (poolH 1.38 + worldH 0.87 of 5.50) and the one this batch is aimed at.",
+    "pool_W": "0.62-0.72 (was 0.69).",
+    "capital_abundance": "the KEY line: NO shortlist member of 50M+ under 5% U* for five consecutive years ending by 1936 at a mean hoard >= 1.5 GDP. probe-anch-costslide broke it in run 2 and missed by one year in run 1.",
+    "T0": "unchanged or slightly better - B does not touch the era-0 rung, whose inputs are x1.2 in both books.",
+    "PI": "0.80-0.90 (was 0.85). Dearer inputs per unit of output raise building-input demand, which pushes PI UP; if PI goes above 1.0 the lever has overshot."
+  },
+  "_stop_rule": "THE RUN-LEVEL STOP applies (2+1 batch): a run ending above x1.3 of vanilla's 1936 GDP median is the config's last. Arm stop_watch.mjs at launch - it reads the register's HARD lines, and F151's lesson is to read those BEFORE alignment_check, because one broken run ends the config however well the seeds agree.",
+  "_third_run": "only on divergence under F114's bands (GDP >= 0.15 apart AND in different bands, or workers >= 0.10 apart AND in different bands).",
+  "_branches": {
+    "hoard_unmoved": "B 1.6 + C 2.0 (capital per unit of output 0.64 -> 0.75 at e3), the pool-ABSORPTION lever, which F135 measured as the only one that takes the hoard down while also taking W down.",
+    "stalled_below_0.85": "back to B 1.5 and attack the hoard with cost alone.",
+    "paper_still_fat": "the graded era-0 penalty combined with the anchor slide - it needs the generator's --anchor-for / --in0-stage conflict lifted first."
+  },
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "markets",
+      "gdp",
+      "buildings",
+      "pops",
+      "construction",
+      "research",
+      "companies",
+      "queues"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "probe-b16-slide": {
+      "kind": "config",
+      "config": "config/mod_config.probe-b16-slide.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "probe-b16-slide",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "probe-b16-slide",
+      "until": "1936.1.1"
+    }
+  ]
+}

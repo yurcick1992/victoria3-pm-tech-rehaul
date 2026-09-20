@@ -1,0 +1,68 @@
+{
+  "_why": "THE VANILLA BASELINE ON THE ELEVEN-TAG LIST (open item 3). The register's PI and PP are read on the INTERSECTION of an arm's markets and vanilla's, and the pinned n=16 baseline `20260821_131149` carries only the SEVEN tags — so the German and Belgian markets a modern arm now instruments are excluded from the price indices, and criteria.mjs prints that it dropped them. This supplies the missing side of the ratio.",
+  "_arm": "{kind: control} — VANILLA + telemetry and nothing else. An engine/reference question belongs on the vanilla arm (CLAUDE.md's arm discipline), and this IS the reference.",
+  "_what_it_also_buys": "SAVE-SUMMARY v9. These runs are the first vanilla ones harvested since the schema gained `goods_sales`, `goods_cost`, `salary_w` and `taxes` per building type (FINDINGS F152 §10), so they are the first vanilla reference on which a wages-inclusive profit% is EXACT rather than repaired through a price multiplier. Past sessions cannot be back-filled — the harvester reaps the .v3.",
+  "_n": "THREE, not sixteen. The pinned n=16 baseline stays the reference for everything it already answers (GDP, W, U*, H, the 1836 anchor CI, the σ constants); this batch exists to add TWO markets to the price basis and to carry v9. Three seeds give a usable median for a price index without spending forty hours. ⚠ It does NOT replace the n=16 baseline and must never be quoted as the vanilla reference for the register's other lines — its own seed spread is far too small for that.",
+  "_reading_it": "After it lands, `criteria.mjs --van <this session>` prints a price basis of six markets instead of four. ⚠ Compare a book against ONE vanilla reference at a time and say which; a loss computed against this baseline is NOT comparable to one computed against the n=16 one, because the price basis differs.",
+  "_cost": "3 runs x 1836->1936. Vanilla runs at roughly 2h20 each, so about 7 hours.",
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "markets",
+      "gdp",
+      "buildings",
+      "pops",
+      "construction",
+      "research",
+      "companies",
+      "queues"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "vanilla": {
+      "kind": "control"
+    }
+  },
+  "runs": [
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    }
+  ]
+}

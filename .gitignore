@@ -141,6 +141,8 @@ tools/testbed/ledger/*.canon6
 !config/tech_tree_options.canon-c16-in12.json
 !config/mod_config.canon-c19-in12.json
 !config/tech_tree_options.canon-c19-in12.json
+!config/mod_config.probe-b16-slide.json
+!config/tech_tree_options.probe-b16-slide.json
 !config/mod_config.canon-c19-in12-elec.json
 !config/tech_tree_options.canon-c19-in12-elec.json
 !config/mod_config.canon-c19-in13.json
