@@ -28,7 +28,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gunzipSync } from 'node:zlib';
 import { MARKET_NAMES } from './lib_markets.mjs';
-import { trueMargin } from '../../lib_wage_model.mjs';
+import { trueMargin, profitLine } from '../../lib_wage_model.mjs';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '../../..');
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 && process.argv[i + 1] ? process.argv[i + 1] : d; };
@@ -84,14 +84,20 @@ for (const r of runs) {
     if ((c.gdp || 0) > m.leaderGdp) { m.leaderGdp = c.gdp || 0; m.leader = tag; }
     for (const [key, b] of Object.entries(c.buildings || {})) {
       if (!RUNG[key]) continue;
-      const a = m.rungs[key] || (m.rungs[key] = { lv: 0, st: 0, prof: 0, vo: 0 });
+      const a = m.rungs[key] || (m.rungs[key] = { lv: 0, st: 0, prof: 0, vo: 0, gs: 0, gc: 0, v9: false });
       a.lv += b.levels || 0; a.st += b.staffing || 0; a.prof += b.profit || 0; a.vo += b.va_out || 0;
+      // v9: the market-priced ledger. Exact, and available in EVERY market — including the ones markets.tsv
+      // never instrumented, which is what the price-multiplier path could not reach (F152 §10).
+      if (b.goods_sales !== undefined) { a.gs += b.goods_sales || 0; a.gc += b.goods_cost || 0; a.v9 = true; }
     }
   }
 
   console.log(`\n=== ${r} · ${YEAR} · e${ERA} rungs that are BOTH staffed ≥ ${MINSTAFF} level(s) AND earning ≥ ${(100 * MINMARGIN).toFixed(0)}% ===`);
-  console.log('PROFIT is the game\'s own weekly bottom line, in £ (annual = ×52). The margin beside it is F150\'s repaired identity');
-  console.log('profit ÷ (R − profit) with R = va_out re-priced to this market; "—" means the market is not instrumented, not that it is zero.');
+  const v9 = Object.values(mkt).some(m => Object.values(m.rungs).some(x => x.v9));
+  console.log('PROFIT is the game\'s own weekly bottom line, in £ (annual = ×52), and the profit% beside it is WAGES-INCLUSIVE — profit ÷ (inputs + wages).');
+  console.log(v9
+    ? '  EXACT (save-summary v9): wages = goods_sales − goods_cost − profit, both already at market prices, in EVERY market.'
+    : '  ⚠ PRE-v9 summary, so profit% comes from F150\'s repaired identity and needs this market\'s prices; "—" means the market is not instrumented, not that it is zero.');
   console.log('A market is named by its largest member by GDP and includes its subjects.\n');
   for (const want of WANT) {
     const m = Object.values(mkt).find(x => x.leader === want);
@@ -102,16 +108,18 @@ for (const r of runs) {
     for (const [key, a] of Object.entries(m.rungs)) {
       totSt += a.st; totLv += a.lv; totProf += a.prof;
       const g = RUNG[key].good;
+      // v9 first — exact and market-independent; the price multiplier only for pre-v9 summaries
+      const P = profitLine({ goods_sales: a.v9 ? a.gs : undefined, goods_cost: a.gc, profit: a.prof });
       const mult = price && price[g] > 0 && BASE[g] > 0 ? price[g] / BASE[g] : null;
-      const margin = mult != null ? trueMargin(a.prof, a.vo * mult) : null;
+      const margin = P.exact ? P.margin : (mult != null ? trueMargin(a.prof, a.vo * mult) : null);
       // the profit test is the ruled headline; the margin test binds only where a margin exists
       const pass = a.st >= MINSTAFF && a.prof > 0 && (margin == null || margin >= MINMARGIN);
-      if (pass) rows.push({ ind: RUNG[key].ind, st: a.st, lv: a.lv, margin, prof: a.prof, priced: mult != null });
+      if (pass) rows.push({ ind: RUNG[key].ind, st: a.st, lv: a.lv, margin, prof: a.prof, priced: P.exact || mult != null, exact: P.exact });
     }
     rows.sort((x, y) => y.prof - x.prof);
     const memberList = m.members.length > 6 ? m.members.slice(0, 6).join(',') + ` +${m.members.length - 6}` : m.members.join(',');
     console.log(`  ${want} MARKET (${m.members.length} member(s): ${memberList}) — e${ERA} total ${totLv.toFixed(0)} levels, ${totSt.toFixed(1)} staffed, profit ${gbp(totProf)}/wk (${gbp(totProf * 52)}/yr)`
-      + (price ? '' : '   ⚠ no market prices in this session — margins unavailable'));
+      + (Object.values(m.rungs).some(x => x.v9) ? '   [profit% EXACT, save-summary v9]' : price ? '' : '   ⚠ pre-v9 summary and no market prices for this market — profit% unavailable'));
     if (!rows.length) { console.log(`     NONE pass both thresholds.\n`); continue; }
     console.log(`     ${rows.length} rung(s) pass BOTH (ranked by profit):`);
     for (const x of rows) console.log(`       ${x.ind.padEnd(13)} profit ${gbp(x.prof).padStart(10)}/wk (${gbp(x.prof * 52).padStart(11)}/yr)   staffed ${x.st.toFixed(2).padStart(7)} lv (~${Math.round(x.st * 5000).toLocaleString('en-US')} workers)   margin ${x.margin == null ? '   —' : (100 * x.margin).toFixed(0).padStart(4) + '%'}   of ${x.lv.toFixed(0)} built`);

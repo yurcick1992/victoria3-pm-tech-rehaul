@@ -255,3 +255,26 @@ export function legacyMargin(profit, vaOut) {
   const c = vaOut - profit;
   return c > 0 ? profit / c : null;
 }
+
+/**
+ * ⭐⭐ THE RULED REPORT LINE, from a save-summary building record: PROFIT in £ and the WAGES-INCLUSIVE
+ * profit percentage beside it (user-ruled 2026-09-20: *"you both report profit % wages-inclusive"*).
+ *
+ *     wages  = goods_sales − goods_cost − profit        (v9+; exact, nothing modelled)
+ *     margin = profit ÷ (goods_cost + wages)            ≡ profit ÷ (goods_sales − profit)
+ *
+ * ⭐ It sums over any set of buildings — the fields are market-priced already, so a rung aggregated across
+ * every market is still exact. That is what the price-multiplier repair could NOT do, and why `rung_econ`
+ * and `slid_vs_unslid` had to drop their margin column on pre-v9 data.
+ * Pass an aggregate `{goods_sales, goods_cost, profit}` or a single record. Returns `exact: false` and a null
+ * margin when the fields are absent (a pre-v9 summary), so a caller can fall back and SAY it fell back.
+ */
+export function profitLine(b) {
+  const sales = +b.goods_sales, cost = +b.goods_cost, profit = +b.profit || 0;
+  if (!Number.isFinite(sales) || !Number.isFinite(cost) || !(sales > 0)) {
+    return { profit, wages: NaN, margin: null, exact: false };
+  }
+  const wages = sales - cost - profit;
+  const total = cost + wages;
+  return { profit, wages, margin: total > 0 ? profit / total : null, exact: true, revenue: sales, inputs: cost };
+}
