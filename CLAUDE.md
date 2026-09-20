@@ -1674,6 +1674,22 @@ tools/                  dev tooling — NOT shipped in the mod
                         and a head-to-head of candidate identities — including the no-weights control that proves the
                         profession weights belong (1.70 without them against 1.15 with).
                         ⚠ Takes a MELT, not a save: rakaly melt --format vic3 --unknown-key stringify -c <save.v3>
+  full_recipe_profit.mjs ⭐⭐ THE FULL RECIPE'S PROFIT AT A NAMED SITUATION — the prediction half of the
+                        2026-09-20 ruling, and the piece `ladder_options.mjs` cannot do (it scores a CANDIDATE
+                        ladder from the book's arithmetic: main method only, one level, no throughput).
+                        This scores a BUILT book's ACTUAL shipped recipe: the main method PLUS every secondary
+                        PMG's active method (goods including the negative reductions, and its employment),
+                        ECONOMY OF SCALE (`1 + 0.01 × min(levels,20)` where the building's group has it, read
+                        live from `common/building_groups` — goods only, never wages; the user's own 15-level
+                        furniture manufactory read +15%, so it is per level FROM level 1), the wage from the
+                        ECONOMY AND THE DECADE, and prices either BASE or MEASURED from a named session.
+                        Reports revenue, inputs, wages, PROFIT £ and the WAGES-INCLUSIVE profit%.
+                        `--mod mod --config <book> --economy GBR@1920 --levels 10 --secondaries base|none
+                         --prices <session>[@1935] --industry textile`
+                        ⚠⚠ It reads an EMITTED MOD, so a candidate must be BUILT first (`build.ps1 -SaveTo
+                        <name> -Config <book>`, then `--mod mod_<name>`). Deliberate: emit_secondaries.mjs
+                        rescales the secondaries at BUILD time against whatever main recipe the config carries,
+                        so reading the config alone would re-implement that rule and invite it to drift.
   fit_wage_model.mjs    ⭐⭐ WHERE THE WAGE MODEL'S TWO COEFFICIENTS COME FROM (FINDINGS F152 §8). Read-only.
                         Written because the user asked whether workforce COMPOSITION was in the model — it is, and
                         testing that rather than asserting it split the flat premium in two. Fits, against the actual
