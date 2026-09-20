@@ -1,0 +1,71 @@
+{
+ "schedule_version": 1,
+ "label": "anch-costslide-tb",
+ "_why": "THE THIRD RUN of the cost-slide 2+1, launched ONLY if alignment_check.mjs says runs 1 and 2 diverge (the 2+1 rule: different bands AND >= 0.15 apart on world GDP or >= 0.10 on productive workers per capita). Read the config as the median of three.",
+ "_arm": "probe-anch-costslide: identical to probe-anch-in12 except building_cost on the eight slid industries, which now pays anchor x C^(era-1). FIELD DIFF: building_cost on 21 rungs, nothing else. textile/tooling/glass/furniture e0 316, e1 600, e2 1140, e3 2166; automotive e2 1520, e3 2888; electrics e2 1520; munition e1 800, e2 1520. ai_value deliberately does NOT slide, so this stays one lever - a slid e3 keeping ai_value 27,000 while costing 2,166 is unusually attractive and is a thing to watch in the result, not to pre-empt.",
+ "_e0_is_intended": "The clean exponent also takes the slid e0 rungs from 600 to 316 (k = -1). RAISED WITH THE USER AND CONFIRMED INTENDED ('600 to 316 is intended'). Those rungs produce anchor / A too, so it is consistent; the risk is that cheaper buildings are easier to build and e0 is the rung the design wants dead. It cannot rescue the 17% of e0 levels already loss-making (payback on a negative profit stays infinite) and it moves e0 payback only 69.7 -> 36.7 years.",
+ "_comparison": "probe-anch-in12 at n=3 (20260919_224153) is the paired arm and differs in building_cost ALONE; the canon at n=3 (20260917_132449 + 20260917_161410) and vanilla n=16 (20260821_131149) are the references. WARNING: the canon lacks the urban-centre electricity override that both anchor arms carry, so an arm-vs-canon reading holds two differences; arm-vs-arm holds one and arm-vs-vanilla holds none.",
+ "_watch": [
+  "run 1 at ~5 min: PM_TECH_REHAUL marker, game version, this run's error window BY POSITION (parsed stamps, wrap-safe), clock advancing",
+  "run 1 at ~10 min: queue_mix.mjs on the first summary - and here especially, because cheaper slid buildings could crowd a major's queue",
+  "first_run_decomp.mjs after run 1, before the batch completes (the standing ruling)",
+  "post-batch: preflight -Session, criteria.mjs, alignment_check.mjs for the third run, VERDICT.md, SESSION_VERDICTS, FINDINGS"
+ ],
+ "_cost": "2 runs x 1836->1936 at roughly 2.5 h each, plus a third only on divergence: 5-8 hours.",
+ "_caveats": [
+  "TWO RUNS is the 2+1 standard, not a description of a book: world GDP at the end state has a wide seed spread (F114).",
+  "The anchor slide itself still needs a BALANCE_FRAMEWORK ruling before a book of this shape could go canon.",
+  "ROADMAP step 8 P2's electricity override rides along, as in the paired arm.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "yearly",
+  "timeout_minutes": 420,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "RUS",
+   "JAP",
+   "NET"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable.",
+  "_tags_note": "⚠⚠ DELIBERATELY THE OLD SEVEN-TAG LIST, not the new ten. This is the TIE-BREAKER for runs 1 and 2 of 20260920_114003, which were built with these seven; an experiment's arms must instrument IDENTICALLY (CLAUDE.md), and a third run of the same pair is the same arm. Every NEW batch uses the ten-tag list in anch_costslide_century.json."
+ },
+ "setups": {
+  "anch-costslide": {
+   "kind": "config",
+   "config": "config/mod_config.probe-anch-costslide.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "anch-costslide",
+   "until": "1936.1.1"
+  }
+ ],
+ "_n": "ONE run, the tie-breaker. Do not launch it unless alignment_check reports divergence."
+}

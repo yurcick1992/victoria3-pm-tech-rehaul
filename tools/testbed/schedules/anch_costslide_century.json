@@ -28,18 +28,59 @@
   "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent."
  ],
  "defaults": {
-  "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
   "autosave_interval": "yearly",
   "timeout_minutes": 420,
-  "tags": ["GBR", "FRA", "USA", "PRU", "RUS", "JAP", "NET"],
-  "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
-  "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable."
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "NGF",
+   "GER",
+   "NET",
+   "BEL",
+   "RUS",
+   "JAP"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1840.1.1",
+   "1850.1.1",
+   "1860.1.1",
+   "1870.1.1",
+   "1880.1.1",
+   "1890.1.1",
+   "1900.1.1",
+   "1910.1.1",
+   "1920.1.1",
+   "1930.1.1",
+   "1935.1.1"
+  ],
+  "_dump_dates_note": "Identical to canon-n7, the solver2 family, the F79 vanilla baseline and every four-rung arm - what keeps the sessions comparable.",
+  "_tags_note": "⭐ GER, BEL and NGF ADDED 2026-09-20 (user-ruled). The old list GBR/FRA/USA/PRU/RUS/JAP/NET could not answer a per-MARKET question about Germany or Belgium: the Prussian market drops out of the telemetry after 1870 when PRU becomes NGF then GER, and Belgium was never instrumented at all - so markets.tsv carries no German prices after 1870 and no Belgian prices ever, and the true-margin table of 2026-09-20 could only be produced for GBR, USA and NET. PRU/NGF/GER are the SAME state in its three forms and all three are needed to follow one market across the century. Cost: about 1,800 extra log lines a run (3 markets x 12 dump dates x ~50 goods), which is nothing against the ring. ⚠ This changes the telemetry the mod is built with, so a run under this list is NOT byte-identically instrumented to runs 1 and 2 of 20260920_114003 - see anch_costslide_tb.json, which deliberately keeps the old list for that pair tie-breaker."
  },
  "setups": {
-  "anch-costslide": { "kind": "config", "config": "config/mod_config.probe-anch-costslide.json" }
+  "anch-costslide": {
+   "kind": "config",
+   "config": "config/mod_config.probe-anch-costslide.json"
+  }
  },
  "runs": [
-  { "setup": "anch-costslide", "until": "1936.1.1" },
-  { "setup": "anch-costslide", "until": "1936.1.1" }
+  {
+   "setup": "anch-costslide",
+   "until": "1936.1.1"
+  },
+  {
+   "setup": "anch-costslide",
+   "until": "1936.1.1"
+  }
  ]
 }
