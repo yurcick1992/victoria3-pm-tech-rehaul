@@ -60,7 +60,7 @@ import { fileURLToPath } from 'node:url';
 
 // v2 (2026-08-11) adds POP OBJECT COUNTS.  v3, same day, splits them into TOTAL and NON-EMPTY — user
 // ruling, so a later regression can ask which of the two actually predicts tick speed.
-export const SAVE_SUMMARY_VERSION = 8;   // v8 (2026-08-21, same session as v7 — the last-call batch additions): + ACTIVE PRODUCTION METHODS per building type per country (`pms`: pm key -> levels of buildings running it; every building record carries the full active list incl. secondaries — the vanilla denominator F75's open question needs, and the tiered panel's stated secondary-PM bias made readable), + per-state `infrastructure`/`infrastructure_usage` in a new top-level `states` map (the control pair the infra-frac probe lacked; market ACCESS is not in saves and stays log-side), + `prestige_out` per country (good -> prestige quantity of the output flow, the tuple-sum reading melted_building_goods.mjs validated).
+export const SAVE_SUMMARY_VERSION = 9;   // v9 (2026-09-20): + THE BUILDING'S OWN LEDGER per building type per country — goods_sales and goods_cost (revenue and inputs at MARKET prices, so no price-multiplier repair is needed) and salary_w = sum(salary_rate x staffing) (the building's OWN wage rate, not the country's base_wage) and taxes. Wages are then EXACT: goods_sales - goods_cost - profit, verified against the game's own building panel to 0.38%. FINDINGS F152 section 9; it retires the inference F150/F152 needed.
 // v7 (2026-08-21): + OWNERSHIP — per-building-type `company_levels` (levels held through an `identity={building=}` owner whose own type is building_company_* OR building_regional_company_*), the `companies` register (type, prosperity, charters, regional HQs, resolved to a country via the HQ building), and `ownership_levels` (host-side levels by owner class: state/foreign_country/financial_district/manor_house/company/company_regional/other_building). ROADMAP step 5a: per-year company data cannot be back-filled, and the long vanilla batch is its baseline. Absent field = zero WITHIN v7+; pre-v7 summaries simply cannot answer it.
 // v6 (2026-08-18): + per-building-type VALUE ADDED (va_out/va_in), PRICED at base cost, so a tiered-sector GDP is derivable (F74)
 // v5 (2026-08-16): + per-country construction-queue composition (government/private: n, left, speed, by_type)
@@ -464,6 +464,11 @@ for await (const line of rl) {
       else if ((x = /^cash_reserves=([\-\d.]+)$/.exec(t))) b.cash = +x[1];
       else if ((x = /^profit_after_reserves=([\-\d.]+)$/.exec(t))) b.profit = +x[1];
       else if ((x = /^staffing=([\-\d.]+)$/.exec(t))) b.staffing = +x[1];
+      // v9 — the building's OWN ledger, which we had been inferring (F152 §9).
+      else if ((x = /^goods_sales=([\-\d.]+)$/.exec(t))) b.sales = +x[1];
+      else if ((x = /^goods_cost=([\-\d.]+)$/.exec(t))) b.cost = +x[1];
+      else if ((x = /^salary_rate=([\-\d.]+)$/.exec(t))) b.rate = +x[1];
+      else if ((x = /^income_taxes=([\-\d.]+)$/.exec(t))) b.tax = +x[1];
       else if (t === 'input_goods={') side = 'in';
       else if (t === 'output_goods={') side = 'out';
       else if (t === 'goods={' && side) inGoods = true;
@@ -500,8 +505,17 @@ for await (const line of rl) {
         if (ci != null) {
           const k = ci + '|' + b.type;
           let r = bldByCountry.get(k);
-          if (!r) bldByCountry.set(k, r = { n: 0, levels: 0, subsidised: 0, subsidised_levels: 0, profit: 0, cash: 0, staffing: 0, va_out: 0, va_in: 0, pms: {} });
+          if (!r) bldByCountry.set(k, r = { n: 0, levels: 0, subsidised: 0, subsidised_levels: 0, profit: 0, cash: 0, staffing: 0, va_out: 0, va_in: 0, goods_sales: 0, goods_cost: 0, taxes: 0, salary_w: 0, pms: {} });
           r.n++; r.levels += b.levels; r.profit += b.profit; r.cash += b.cash; r.staffing += b.staffing;
+          // ⭐⭐ v9: THE BUILDING'S OWN LEDGER — `goods_sales` and `goods_cost` are revenue and inputs at MARKET
+          // prices, and `salary_rate` is the building's OWN wage rate. Until v9 the summary carried only the
+          // base-priced `va_out`/`va_in` we compute ourselves, which is why F150 needed a price-multiplier repair
+          // and F152 fitted two coefficients to guess a wage. With these three, the wage bill is exact:
+          //     wages = goods_sales − goods_cost − profit        (verified against the game's own building panel,
+          //                                                        East Anglia furniture, 1836.2.1, to 0.38%)
+          // `salary_w` is Σ(rate × staffing) so a levels-weighted mean rate is salary_w ÷ staffing.
+          r.goods_sales += b.sales || 0; r.goods_cost += b.cost || 0; r.taxes += b.tax || 0;
+          r.salary_w += (b.rate || 0) * (b.staffing || 0);
           // VALUE ADDED per building TYPE. The melt stores goods as monetary `value=`, so no price lookup is
           // needed; GDP is 52 x (output - input) at market prices (F45). The per-COUNTRY per-GOOD rollup
           // below already consumed these; this keeps the same numbers split by building type, which is what

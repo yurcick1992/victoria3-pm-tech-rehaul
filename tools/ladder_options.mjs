@@ -9,17 +9,16 @@
 // estimating individual wages and applying profession multipliers. Note that an industry tier doesn't have a 'predicted wage', the decade and the
 // economy does (e.g. 'stalling GBR in 1920')"*). So this tool is now asked WHICH economy it is predicting — `--economy GBR@1920` — and builds the
 // wage bill as `wage(GBR, 1920) × Σ(employees × profession wage_weight)` per level, through tools/lib_wage_model.mjs. It used to charge every rung
-// `wage_pct` 0.25 of goods, which is below vanilla's OWN wage share of total cost in every decade (54.6% at 1840 falling to 29.7% at 1935, F152)
-// and which charged the ART ACADEMY almost nothing, because its jobs live in its ownership PMG and `t.employment` is empty (F143 §1a).
+// `wage_pct` 0.25 of goods — ⚠ which, measured exactly (F152 §10), is NOT far out for manufacturing (15–23% across the century; it is the WHOLE
+// economy that runs 54% → 29%). It goes because it is a CONSTANT where the truth is a property of the economy and the decade, and because a share
+// OF GOODS charged the ART ACADEMY almost nothing: its jobs live in its ownership PMG and `t.employment` is empty (F143 §1a).
 // ⭐ AND THE HEADLINE IS PROFIT IN £ PER LEVEL PER WEEK, not the margin (the same ruling's first half).
 //
-// ⭐⭐ THE WAGE ANSWERS BACK, so the profit is a CLOSED FORM and not `O − I − a fixed W` (F152 §8). The engine
-// raises a building's wage where it can afford to (`BUILDING_PROFIT_TARGET_TO_RAISE_WAGES` 0.25), and the
-// measured bill is `W = 1.19 × the normal-rate bill + 0.30 × the building's own profit`, so
-// `P = (O − I − 1.19·Wm) ÷ 1.30`. ⚠⚠ **A RECIPE THEREFORE CANNOT SET A MARGIN**: every designed margin is
-// damped by 1/1.30 before a single price moves, which is one mechanism behind F139's compression of a designed
-// 5/55/127/233 ladder into a realised 26/31/47/46. It also makes the wage share of cost RISE up the ladder
-// (35 / 35 / 41 / 49% on the canon at GBR@1920) where a fixed wage made it fall.
+// ⭐⭐ AND THE WAGE BILL IS JUST `wage × wage units` — NO premium, NO profit term (F152 §10, correcting §8's
+// `1.19 + 0.30 × profit`, which was an artefact of approximating revenue). Measured against the exact bill
+// a save reports (`goods_sales − goods_cost − profit`), `base_wage/10,000 × wage units × staffed levels`
+// reproduces it to ~1% in the median from 1857 on. `predictProfit()` keeps the closed form only so that
+// `--profit-wage-share` can still reproduce the retired reading; at the default 0 it is `O − I − W`.
 //
 // The three quantities a ladder has to satisfy at once, all computed at BASE prices from the book's own arithmetic (⚠ §10.86.2: base-price margins
 // are a design coordinate, NOT a prediction of what a building earns — F139 measured the market compressing a designed 5/55/127/233 into a realised
@@ -37,7 +36,7 @@
 // anchor*A^era" means and what `make_ab_config --cost-ladder` already does for cost.
 //
 // usage: node tools/ladder_options.mjs [--book "name:out=<A|list>,in=<B|list>,cost=<C|list>,in0=<x>" ...] [--config <book>]
-//                                      [--industry textile] [--economy GBR@1920] [--wage-premium 1.19] [--profit-wage-share 0.30]
+//                                      [--industry textile] [--economy GBR@1920] [--wage-premium 1.0] [--profit-wage-share 0]
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -111,10 +110,11 @@ const ONE = argOf('--industry', '');
 console.log('LADDER OPTIONS — designed at BASE prices (a design coordinate, never a prediction: the market compresses a designed ladder, F139)');
 console.log('book = out/in/cost ladders (a ratio = geometric, or a /-separated per-era list) and the era-0 input penalty in0');
 console.log('WAGES are the ECONOMY\'s and the DECADE\'s (user-ruled 2026-09-20), not a flat share: ' + ECON.tag + ' @ ' + ECON.year
-  + ' — normal rate £' + ECON.normal.toFixed(4) + '/employee/wk × the measured ' + PREMIUM + '× buildings actually pay = £' + ECON.wage.toFixed(4)
-  + '  (vanilla n=' + ECON.n + ' seeds; --economy TAG@YEAR to move it)');
-console.log('and the wage ANSWERS BACK (F152 §8): W = that × wage units + ' + PSHARE + ' × the profit itself, so profit = (O − I − W_normal) ÷ '
-  + (1 + PSHARE).toFixed(2) + ' — a designed margin is damped by that before any price moves\n');
+  + ' — £' + ECON.wage.toFixed(4) + '/employee/wk × Σ(employees × profession wage_weight) per level'
+  + (PREMIUM !== 1 ? '  [× a ' + PREMIUM + ' premium, NOT the default]' : '')
+  + '  (the measured rate, vanilla n=' + ECON.n + ' seeds; --economy TAG@YEAR to move it)');
+console.log('⭐ There is NO premium and NO profit term: measured against the exact wage bill, this reproduces it to ~1% in the median'
+  + ' from 1857 on (F152 §10)' + (PSHARE ? '.  ⚠ --profit-wage-share ' + PSHARE + ' is ON: the retired §8 form.' : '') + '\n');
 
 for (const B of BOOKS) {
   const out = ladder(B.out, ERAS), inn = ladder(B.in, ERAS), cost = ladder(B.cost, ERAS), in0 = +B.in0;
@@ -147,7 +147,7 @@ for (const B of BOOKS) {
   console.log('  MEDIAN        ' + [0, 1, 2, 3].map(e => gbp(med(rows.map(r => r.pr[e]))).padStart(9)).join(' ') + '   ' + [0, 1, 2, 3].map(e => pc(med(rows.map(r => r.m[e]))).padStart(6)).join(' ')
     + '   death test (F97, < 0.20): ' + rows.filter(r => r.d2 < 0.2).length + '/' + rows.length + ' at two rungs back');
   console.log('  wage share of total cost (wages ÷ (inputs + wages)): ' + [0, 1, 2, 3].map(e => pc(med(rows.map(r => r.wg[e] / (r.wg[e] + r.inp[e]))))).join(' / ')
-    + '   [vanilla\'s own, measured: 55% at 1840 → 30% at 1935 — F152; the retired flat wage_pct was 25% everywhere]');
+    + '   [measured exactly, F152 §10: MANUFACTURING runs 15–23% across the century; the whole economy 54% → 29%. The flat wage_pct was 25%]');
   console.log('  capital per unit of output (cost / output, e0=1.00): ' + [0, 1, 2, 3].map(e => f2(cost[e] / out[e])).join(' / '));
   // the 1836 anchor error, world-wide
   let ours = 0, vans = 0; const per = [];

@@ -8466,22 +8466,21 @@ replace it and may never be the headline. Implemented in `e0_survivors.mjs`, `ru
   measured 0.0610 Austrian / 0.0796 Belgian.
 - `config/measured_base_wages.json` is the committed path — the normal rate per tag per year, median over the vanilla n=16
   baseline, 17 tags. Regenerate with `tools/measure_wage_share.mjs --write-wages`.
-- ⭐⭐ **THE WAGE BILL HAS TWO TERMS, AND THE SECOND ONE IS THE BUILDING'S OWN PROFIT** (F152 §8, measured on 3,289
-  observations; it supersedes the flat 1.52× of F152 §4 as the shipped constant):
-
-      W = 1.19 × (the normal rate × wage units)  +  0.30 × the building's own profit
-
-  The engine RAISES a building's wage where it can afford to and lowers it where it cannot
-  (`BUILDING_PROFIT_TARGET_TO_RAISE_WAGES` 0.25, `..._TO_LOWER_WAGES` 0.15). The split is identified (weighted
-  collinearity 0.76) and stable across all seven instrumented countries (a 1.01–1.26, b 0.18–0.65), and it predicts a
-  building's own profit at 26.5% median error against the flat premium's 38.7%, with the bias gone (+0.1% against +5.2%).
-  ⚠⚠ **`b` IS A REDUCED-FORM STAND-IN, NOT A SECOND COST — corrected the same day, F152 §9.** A melted save's building
-  record carries **`salary_rate`, the building's OWN wage rate**, beside `goods_sales`/`goods_cost` (revenue and inputs at
-  MARKET). Re-run with each building's own rate over 6,160 buildings, the wage coefficient reads 1.10 and **`b` collapses
-  to 0.019**: it was the COUNTRY-level rate standing in for a BUILDING-level one. The mechanism is real — the engine's
-  wage-raising rule is why the hole was profit-shaped — but `b` is not a term in the wage bill, and the dividend reading
-  once offered beside it is withdrawn. ⇒ use it to PREDICT (no building exists yet, only the country's wage is known);
-  to READ a save, read `salary_rate`, and bump the summary schema so it is there to read.
+- ⭐⭐⭐ **THERE IS NO PREMIUM AND NO PROFIT TERM — `W = wage × wage units × staffed levels` IS THE WHOLE MODEL** (F152 §10,
+  settled against the game's own building panel and the save's own fields; it RETIRES the 1.52× first published here and
+  the `1.19 + 0.30 × profit` that briefly replaced it — BOTH were artefacts of approximating revenue as base-priced
+  `va_out` × a price multiplier, whose residual sat exactly where the wage bill was being read).
+  Scored against the EXACT bill a save reports (`goods_sales − goods_cost − profit`), `base_wage/10,000 × wage units ×
+  staffed levels` reads **0.85 / 0.92 / 0.99 / 0.99 / 1.01 / 1.09** at 1836.2 / 1836.10 / 1857 / 1877 / 1897 / 1921 — right
+  to ~1% in the median for most of the century, the two low readings being the opening year before wages settle.
+  ⚠ The per-building spread is real and wide (p10 ≈ 0.45, p90 ≈ 1.6–1.8): a single building is not predictable to better
+  than a factor of two. ⚠ The claim built on the retired coefficients — that a recipe cannot set a margin because the wage
+  damps it by 1/1.30 — is withdrawn with them.
+  ⭐ **`profit = revenue − inputs − wages`, and DIVIDENDS AND SUBSIDIES SIT BELOW IT** (the user, reading a live game
+  2026-09-20: a building paid a 6.13k dividend against 5.51k of profit and ran its reserves down for it). So
+  `profit_after_reserves` — what the summary already calls `profit` — IS the clean pre-distribution figure §10.87.1 asks
+  reports to quote. ⭐ **Save-summary v9 carries `goods_sales`, `goods_cost` and `salary_w`**, so from v9 on wages,
+  revenue, inputs and profit are all READ and none of this is modelled at all.
   ⭐⭐ **THE DESIGN CONSEQUENCE IS LARGER THAN THE ARITHMETIC: A RECIPE CANNOT SET A BUILDING'S MARGIN.** Solving the line
   above gives `P = (R − I − 1.19·Wm) ÷ 1.30`, so **every designed margin is damped by 1/1.30 before a single price moves** —
   a second, purely mechanical compression channel beside the price one, and one mechanism behind F139's designed

@@ -17,12 +17,9 @@
 //     median over the vanilla seeds (config/measured_base_wages.json), × the measured **1.19×** premium — through
 //     tools/lib_wage_model.mjs. It was a seven-entry hardcoded table derived from F92's identity, which F150 showed to be a
 //     mixed-units ratio.
-//     ⭐⭐ AND THE WAGE ANSWERS BACK (F152 §8): the measured bill is `1.19 × the normal-rate bill + 0.30 × the building's own
-//     profit`, because the engine raises a building's wage where it can afford to and lowers it where it cannot
-//     (`BUILDING_PROFIT_TARGET_TO_RAISE_WAGES` 0.25 / `..._TO_LOWER_WAGES` 0.15). So the profit is the closed form
-//     `(O − I − Wn) ÷ 1.30`, applied identically to the base, throughput, ÷3 and ceiling cases — a loss-making rung is charged
-//     LESS wage, which is the engine's own behaviour and makes this census slightly LESS eager to call things dead than a
-//     fixed wage did. `--profit-wage-share 0` restores the fixed-wage reading.
+//     ⭐⭐ NO PREMIUM AND NO PROFIT TERM (F152 §10, correcting §8): measured against the exact wage bill a save reports
+//     (`goods_sales − goods_cost − profit`), `rate × wage units × staffed levels` reproduces it to ~1% in the median from
+//     1857 on. `--profit-wage-share 0.30` reproduces the retired §8 reading.
 //     ⭐ Employment comes from `tierEmployment`, so the ART ACADEMY is charged the 9,500 wage units of its OWNERSHIP PMG
 //     instead of the zero its empty `employment` used to give it (F143 §1a).
 //   • PROFIT in £ per level per week is the reported quantity (user-ruled 2026-09-20); margin = (O − I − W) ÷ (I + W) beside it.
@@ -158,10 +155,10 @@ const pc0 = x => Number.isFinite(x) ? (100 * x).toFixed(0) + '%' : '—';
 const seeds = MK[MARKETS[0]] ? MK[MARKETS[0]][Object.keys(MK[MARKETS[0]])[0]].n : 0;
 console.log('ERA-0 SOLVENCY CENSUS — ' + CFG.replace(/^config\//, '') + ' | prices = the median of ' + VAN + ' at ' + DATE + ' (n=' + seeds + ' seeds) | ' + MARKETS.length + ' markets');
 console.log('margin = (O - I - W)/(I + W), base method only. VERY DEAD = margin < ' + pc0(DEAD) + ' AND still negative with the output sell orders / 3.');
-console.log('WAGES: each market leader\'s measured normal rate at ' + YEAR + ' x the 1.19x premium (F152 §8) — '
+console.log('WAGES: each market leader\'s own measured wage rate at ' + YEAR + ' (£/employee/wk) x the rung\'s profession-weighted employment — '
   + MARKETS.map(m => m.split(' ')[0] + ' GBP' + WAGE[m].toFixed(4) + (WAGE_SRC[m] && WAGE_SRC[m].year !== YEAR ? '@' + WAGE_SRC[m].year : '')).join(' · '));
-console.log('   ...and the wage ANSWERS BACK: the bill is that + ' + PSHARE + ' x the profit itself, so profit = (O - I - W_normal) / '
-  + (1 + PSHARE).toFixed(2) + ' in every case below (--profit-wage-share 0 for the fixed-wage reading)\n');
+console.log('   no premium and no profit term (F152 §10): that reproduces the exact wage bill a save reports to ~1% in the median'
+  + (PSHARE ? '.  ⚠ --profit-wage-share ' + PSHARE + ' is ON: the retired §8 form.' : '') + '\n');
 
 // ---- 1. the book side
 console.log('=== 1. THE RECIPES - what each option asks of the OUTPUT PRICE (target_be = the % of base at which the rung breaks even) ===');

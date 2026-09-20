@@ -22,42 +22,41 @@
 // so **£ per employee per week = base_wage ÷ 10,000** — GBR 1840 reads 0.0610, which is the magnitude F26
 // measured per-pop off the telemetry (Austrian market 0.0610, Belgian 0.0796). Both numbers are read live.
 //
-// ⚠⚠ `base_wage` IS THE COUNTRY'S NORMAL RATE, NOT WHAT BUILDINGS PAY, AND THE GAP IS TWO THINGS, NOT ONE
-// (F152 §8, measured on 3,289 observations over the vanilla baseline; it corrects F152 §4's flat 1.52×).
-// A building sets its own rate, and the engine RAISES IT WHERE THE BUILDING CAN AFFORD TO —
-// `BUILDING_PROFIT_TARGET_TO_RAISE_WAGES = 0.25`, `..._TO_LOWER_WAGES = 0.15` in `common/defines`. Regressing
-// the actual wage bill on both terms:
+// ⭐⭐ THERE IS NO PREMIUM AND NO PROFIT TERM. THE LINE ABOVE IS THE WHOLE MODEL (FINDINGS F152 §10) — and it
+// RETIRES §4's flat 1.52× and §8's two-term form, BOTH of which were artefacts of approximating revenue.
 //
-//     W = 1.19 × (normal rate × wage units)  +  0.30 × the building's own profit
+// Settled 2026-09-20 by reading the game instead of inferring it. A building record in a melted save carries
+// **`goods_sales` and `goods_cost`** — revenue and inputs at MARKET prices — so the wage bill needs no model
+// at all: **`wages = goods_sales − goods_cost − profit`**, exactly. The user confirmed the same identity off
+// the game's own building panel (East Anglia furniture, 1836.2.1: 40.87k revenue − 35.35k expenses = 5.51k
+// profit, with wages 6.01k inside the expenses; the save reads the identity to 0.38%).
+// ⭐ **DIVIDENDS AND SUBSIDIES SIT BELOW THAT LINE** — the same building paid a 6.13k dividend against 5.51k
+// of profit and lost cash reserves for it. So `profit_after_reserves` IS the clean, pre-distribution figure
+// the 2026-09-20 ruling asks a report to quote.
 //
-// and the split is IDENTIFIED (the two regressors' weighted collinearity is 0.76, well under the 0.95 danger
-// line) and STABLE across all seven instrumented countries (a 1.01–1.26, b 0.18–0.65). ⇒ **the pure premium
-// is ~1.2×, not 1.5×; the rest of the old flat figure was the profit-responsive half.**
-// ⭐⭐ THE CONSEQUENCE FOR DESIGN IS BIGGER THAN THE ARITHMETIC: **a recipe cannot set a building's margin,
-// because the wage answers back.** Solving the line above for profit gives the closed form `predictProfit()`
-// uses, and a design margin is damped by 1/1.30 before any price moves at all — one mechanism behind F139's
-// compression of a designed 5/55/127/233 ladder into a realised 26/31/47/46.
-// ⚠⚠ WHAT `b` ACTUALLY IS — CORRECTED THE SAME DAY (F152 §9), AND IT IS NOT A SECOND COST.
-// A building record in the melted save carries **`salary_rate`, its OWN wage rate**, beside `goods_sales` and
-// `goods_cost` (revenue and inputs at MARKET). Re-running this regression with each building's own rate in
-// place of the country's, over 6,160 buildings: the wage coefficient reads 1.10 and **`b` collapses to 0.019**.
-// So `b` was the COUNTRY-level rate standing in for a BUILDING-level one — a building that earns more sets a
-// higher `salary_rate`, which leaves a profit-shaped hole in a country-keyed fit. The MECHANISM is real (the
-// engine's wage-raising rule is why the hole is profit-shaped); the description of `b` as a term in the wage
-// bill, and the dividend reading once offered beside it, are NOT.
-// ⇒ `b` is a REDUCED-FORM coefficient for an unobserved `salary_rate`. It earns its place in a PREDICTION,
-//   where no building exists yet and only the country's wage is available, and it must never be quoted as a
-//   statement about how the game computes a wage. To READ a save, read `salary_rate`.
-// Measured against the building's own reported profit, the forms rank:
-//     two-term (this one)  median |err| 26.5%   p90  89%   bias  +0.1%
-//     flat 1.52            median |err| 38.7%   p90 149%   bias  +5.2%
-//     no premium at all    median |err| 52.2%   p90 141%   bias +44.3%
+// Scored against that exact wage bill, `base_wage/10,000 × wage units × staffed levels` reproduces it as
+// (actual ÷ modelled, median over 1,000–2,600 country × building-type cells of one vanilla campaign):
 //
-// ⭐ WHY THIS REPLACES THE FLAT `wage_pct` 0.25. The wage share of TOTAL COST (inputs + wages) is a property
-// of the economy and the decade, exactly as the ruling says: vanilla's own runs 54.6% at 1840 → 29.7% at 1935
-// (p10 29.7, p90 61.1 over the cells). A flat 25% is below vanilla's own range in every decade, and it is
-// worst where a building's cost is nearly all labour — the ART ACADEMY, whose jobs live in its ownership PMG,
-// so 25%-of-goods charges it almost nothing and its base-price margin reads +108% / +313% (F143 §1a).
+//     1836.2  0.85 · 1836.10  0.92 · 1857  0.99 · 1877  0.99 · 1897  1.01 · 1921  1.09
+//
+// — RIGHT, to about 1% in the median for most of the century. The two low readings are the opening year,
+// before wages have settled (`BUILDING_INITIAL_WAGE_WEEKS`). The old 1.52 came from using base-priced
+// `va_out`/`va_in` × an approximate price multiplier as revenue and inputs; THAT error, not a premium, is
+// what the coefficient was fitting, and §8's profit term was the same error correlating with profit.
+// ⚠ The per-building SPREAD is real and wide (p10 ≈ 0.45, p90 ≈ 1.6–1.8): every building sets its own
+//   `salary_rate` around the country's reference. The CENTRE is 1.0; a SINGLE building is not predictable to
+//   better than about a factor of two, and nothing here should be quoted per building.
+// ⚠ `salary_rate`, the building's own rate, reads 1.09–1.17 against the same exact bill, so it is not the
+//   rate actually paid either. `base_wage` is the better of the two. Unexplained, and not needed.
+//
+// ⭐ WHY IT STILL REPLACES THE FLAT `wage_pct` 0.25 — and NOT for the reason first given. Measured exactly,
+// the wage share of TOTAL COST is 54% (1836) → 29% (1921) for the WHOLE economy but **15–23% for
+// MANUFACTURING ALONE**, i.e. BELOW the flat 25%, not above it: the whole-economy figure is carried by farms
+// and mines, which are labour-heavy and input-light. For the TIERED industries the old flat share was
+// reasonable. What it cannot do is see a building whose employment is not in `t.employment` — the ART
+// ACADEMY, whose jobs live in its ownership PMG, so a share OF GOODS charges it almost nothing and its
+// base-price margin read +108% / +313% (F143 §1a). That, and being a property of the economy and the decade
+// rather than a constant, is why the model replaces it.
 //
 // ---------------------------------------------------------------------------------------------------
 // 2. THE MARGIN IDENTITY — WHAT WAS WRONG AND WHAT REPLACES IT
@@ -81,8 +80,15 @@
 //       margin = profit ÷ (R − profit)        because  R − profit ≡ inputs + wages  by definition
 // Checked on vanilla GBR 1900 over 45 fully-priced unsubsidised production types: the implied wage bill
 // R − I − profit is POSITIVE for all of them but shipyards (whose naval-construction income is not in the
-// goods flows) and subsistence (its own wage rules), and it agrees with the modelled bill at the premium
-// above. That is `profit = revenue − inputs − wages` at market prices, confirmed.
+// goods flows) and subsistence (its own wage rules). `profit = revenue − inputs − wages` at market prices
+// is CONFIRMED — and was confirmed a second time, directly, off the game's own building panel (§10).
+//
+// ⭐⭐ AND IT IS A WORKAROUND, NOT THE ANSWER. Save-summary **v9 (2026-09-20) carries `goods_sales` and
+// `goods_cost`**, which ARE revenue and inputs at market, so from v9 on nothing needs re-pricing:
+//       margin = profit ÷ (goods_cost + wages),   wages = goods_sales − goods_cost − profit
+// The multiplier above exists for the PRE-v9 sessions, which cannot be back-filled (the harvester reaps the
+// `.v3`). ⚠ It is also the reason the multiplier's error looked like a wage premium for most of a day: the
+// approximation's residual sat exactly where the wage bill was being read.
 //
 // ⇒ `trueMargin()` returns null rather than a number when R is not available or not positive. A report
 //    quotes `profit` in £ regardless; the margin is the optional column.
@@ -113,14 +119,14 @@ export const WAGE_WEIGHT = (() => {
   return w;
 })();
 
-// ⭐ THE TWO MEASURED COEFFICIENTS (F152 §8): W = WAGE_PREMIUM × normal-rate bill + PROFIT_WAGE_SHARE × profit
-export const WAGE_PREMIUM = 1.19;            // per-country 1.01–1.26 over the seven instrumented markets
-export const WAGE_PREMIUM_BAND = [1.01, 1.26];
-export const PROFIT_WAGE_SHARE = 0.30;       // per-country 0.18–0.65
-export const PROFIT_WAGE_SHARE_BAND = [0.18, 0.65];
-// The flat coefficient F152 §4 published before the profit term was separated out. Kept so a tool can
-// reproduce the older reading on purpose; never the default.
-export const WAGE_PREMIUM_FLAT = 1.52;
+// ⭐ THERE IS NO PREMIUM (F152 §10). Kept as a NAMED knob rather than deleted, so a tool can still ask
+// "what if buildings paid x% more than the country's rate" and so the retired readings stay reproducible.
+export const WAGE_PREMIUM = 1.0;             // measured 0.99–1.09 from 1857 on; 0.85–0.92 in the opening year
+export const WAGE_PREMIUM_BAND = [0.85, 1.09];
+export const PROFIT_WAGE_SHARE = 0;          // F152 §8's 0.30 was the price approximation, not a real term
+// The two retired coefficients, kept ONLY so a tool can reproduce those readings deliberately.
+export const WAGE_PREMIUM_FLAT_RETIRED = 1.52;   // F152 §4
+export const WAGE_TWO_TERM_RETIRED = { a: 1.19, b: 0.30 };   // F152 §8
 
 /** Σ (employees × wage_weight) for ONE level. An unknown profession weighs 1 and is reported by the caller. */
 export function wageUnits(employment = {}) {

@@ -15399,9 +15399,12 @@ within noise of vanilla's 1.52. That is what makes it usable as a prediction con
 **52.4% → 41.1%**, i.e. our book carries MORE labour per pound of cost late than vanilla does — consistent with a design
 whose output prices fall while employment per level stays vanilla's.
 
-⚠⚠ **§8 BELOW SPLITS THIS 1.52 IN TWO AND SUPERSEDES IT AS A SHIPPED CONSTANT.** The figure above is sound as what it
-measures — the residual per modelled wage unit — but it is NOT all a wage-rate premium: about a third of it is a term
-proportional to the building's own PROFIT. `WAGE_PREMIUM` is **1.19**, not 1.52.
+⚠⚠⚠ **THIS WHOLE §4 PREMIUM IS RETIRED BY §10 — THERE IS NO PREMIUM.** It was an artefact of approximating revenue as
+base-priced `va_out` × a price multiplier: the approximation's residual sat exactly where the wage bill was being read.
+Measured against the EXACT bill the save reports (`goods_sales − goods_cost − profit`, v9), `base_wage/10,000 × wage
+units × staffed levels` reproduces it to ~1% in the median from 1857 on. **`WAGE_PREMIUM` is 1.0.** §8's two-term
+split of this same number is retired with it. The decade-by-decade WAGE SHARE below survives for the whole economy and
+is wrong for manufacturing alone — see §10 §4.
 
 ⚠ **A flat `wage_pct` of 0.25 is below vanilla's own wage share in every decade of the century**, and it is worst where a
 building's cost is nearly all labour. The **ART ACADEMY** is the loud case: its jobs live in its OWNERSHIP production-method
@@ -15447,7 +15450,9 @@ which is why `lib_markets.mjs` keys prices by tag and resolves the tag per run.
 GDP 1.23 → **1.21**, loss 5.50 → **5.53**. The arm's own numbers did not move at all — what moved is VANILLA's pool
 reference, which now counts the Low Countries in the two seeds where they had unified instead of dropping them.
 
-### ⭐⭐ F152 §8 — CORRECTION, SAME DAY: THE 1.52× IS TWO THINGS, AND THE SECOND ONE MEANS **A RECIPE CANNOT SET A BUILDING'S MARGIN**
+### ⚠⚠⚠ F152 §8 — RETIRED BY §10 THE SAME DAY. Both this section's coefficients and its headline claim are artefacts of approximating revenue; read §10 instead. Kept as the record of how the error was found, and because its COMPOSITION test (40 of 41 cells tighter per wage-unit than per head) stands.
+
+### (RETIRED) F152 §8 — THE 1.52× IS TWO THINGS, AND THE SECOND ONE MEANS **A RECIPE CANNOT SET A BUILDING'S MARGIN**
 
 **How it surfaced.** The user asked whether the model takes workforce composition into account — *"basically the economy state
 and the decade dictate base wages, but actual wages are higher, as buildings are not filled with labourers."* Testing that
@@ -15581,3 +15586,110 @@ settled. Using `levels` instead of `staffing` reads 1.034, closer, which is a hi
 summary (a `SAVE_SUMMARY_VERSION` bump). Then a report needs no price multiplier, no premium and no fitted coefficient —
 wages, revenue, inputs and profit are all read. ⚠ It only helps runs from that point on: `harvest_saves.ps1` reaps the
 `.v3` after summarising, so past sessions cannot be back-filled except from the newest save each run keeps.
+
+### ⭐⭐⭐ F152 §10 — SETTLED AGAINST THE GAME'S OWN INTERFACE: `profit = revenue − inputs − wages`, DIVIDENDS AND SUBSIDIES SIT BELOW IT, AND THE WAGE BILL IS JUST `wage × wage units` — **NO PREMIUM, NO PROFIT TERM**. §4's 1.52× and §8's `1.19 + 0.30 × profit` were BOTH artefacts of approximating revenue (2026-09-20, the user reading a live game)
+
+**How it was settled.** The user: *"Run a game for me, I'll wait for the first autosave, instantly pause and report some
+building's data."* A vanilla game was launched (`tools/testbed/launch_interactive.ps1`, new — it backs up the settings and
+the autosave ring first, because a new game overwrites them), and the user read a building panel at 1836.2.1 while the
+same building was read out of the autosave. That is a DIRECT observation of the quantity two regressions had been
+inferring, and it overturns both of them.
+
+#### 1. THE USER'S READING — East Anglia furniture manufactories, 1836.2.1, 15 fully staffed levels, throughput +15%
+
+| the panel | £ |
+|---|---|
+| inputs: hardwood 16.3k · wood 5.5k · tools 3.8k · fabric 3.5k | 29.1k |
+| **wages** | **6.01k** |
+| **total expenses** | **35.35k** (the panel's own figure; 29.1 + 6.01 = 35.11) |
+| outputs: luxury furniture 21.6k · furniture 19.1k | 40.7k |
+| **revenue** | **40.87k** (the panel's own) |
+| **profit** | **5.51k** |
+
+> ⭐ **`profit = revenue − inputs − wages`, and the panel's own three figures close to the rounding.** Wages are INSIDE
+> expenses. Nothing else is subtracted.
+
+⭐⭐ **AND THE DIVIDEND IS NOT.** The user: *"The dividend the building pays is 6.13k, over its profits. And this leads to
+building actually losing cash reserves weekly, about 600 in a week. So no, dividends do go separately from basic building
+economy."* A building can distribute MORE than it earns and run its reserves down. **Subsidies appear to sit at the same
+level** (the user's reading, flagged by them as not fully certain).
+⇒ **The user's ruling of the morning is therefore exactly satisfiable**: *"what I want reported as profits [is] the figure
+before the dividends"* — and `profit_after_reserves`, which `save_state_summary.mjs` already extracts as `profit`, IS
+that figure. Nothing needs adding to make reports quote the right thing.
+
+#### 2. THE SAVE AGREES, AND CARRIES THE WHOLE LEDGER
+
+The same building type in GBR at the same date, from the melt: `goods_sales` 41,899.91 · `goods_cost` 29,136.82 ·
+`profit_after_reserves` 6,730.37 ⇒ **implied wages 6,032.72 against the panel's 6.01k — 0.38%.**
+(⚠ Not the same instance the user opened — the panel's revenue reads 40.87k against this record's 41.90k — but the same
+type, date and method set, and the identity is what is being tested.)
+
+⇒ **save-summary v9** (this session) now carries `goods_sales`, `goods_cost`, `salary_w` = Σ(`salary_rate` × staffing)
+and `taxes` per building type per country. From v9 on, **wages, revenue, inputs and profit are all READ**: no price
+multiplier, no premium, no fitted coefficient. ⚠ Pre-v9 sessions cannot be back-filled — the harvester reaps the `.v3`.
+
+#### 3. ⭐⭐ THE WAGE MODEL IS RIGHT AS FIRST STATED, AND BOTH CORRECTIONS TO IT WERE WRONG
+
+Scored against the EXACT bill (`goods_sales − goods_cost − profit`) over one vanilla campaign, 1,008–2,623 country ×
+building-type cells per date:
+
+| actual ÷ modelled | 1836.2 | 1836.10 | 1857 | 1877 | 1897 | 1921 |
+|---|---|---|---|---|---|---|
+| **`base_wage/10,000 × wage units × staffed levels`** | 0.85 | 0.92 | **0.99** | **0.99** | **1.01** | 1.09 |
+| the building's own `salary_rate`, same form | 1.09 | 1.10 | 1.13 | 1.13 | 1.13 | 1.17 |
+
+> **The country's `base_wage` × profession-weighted employment IS the wage bill**, to about 1% in the median for most of
+> the century. The two low readings are the opening year, before wages settle (`BUILDING_INITIAL_WAGE_WEEKS`).
+
+⇒ **`WAGE_PREMIUM` is 1.0 and `PROFIT_WAGE_SHARE` is 0.** §4's 1.52 came from using base-priced `va_out`/`va_in` × an
+approximate price multiplier as revenue and inputs — the approximation's residual sat exactly where the wage bill was
+being read — and §8's profit term was the same error correlating with profit. **The "premium" never existed**; so did
+the claim built on it that *"a recipe cannot set a building's margin"* via a 1/1.30 damping. (The engine's wage-raising
+rule is real and in the defines; what is withdrawn is the measured magnitude and the closed form.)
+⚠ The per-building SPREAD is real and wide (p10 ≈ 0.45, p90 ≈ 1.6–1.8) — each building sets its own `salary_rate`. The
+CENTRE is 1.0; a single building is not predictable to better than about a factor of two.
+⚠ `salary_rate` reads 1.09–1.17 against the same exact bill, so it is NOT the rate actually paid either. Unexplained,
+and not needed: `base_wage` is the better of the two.
+
+#### 4. ⚠ AND THE WAGE SHARE OF COST — THE OTHER CLAIM THAT DOES NOT SURVIVE
+
+Measured exactly, wages ÷ (goods cost + wages):
+
+| | 1836.2 | 1836.10 | 1857 | 1877 | 1897 | 1921 |
+|---|---|---|---|---|---|---|
+| the WHOLE economy | 54.3% | 48.6% | 50.9% | 43.1% | 35.5% | 28.9% |
+| **MANUFACTURING alone** | **17.8%** | 15.3% | 23.3% | 18.5% | 16.4% | **15.1%** |
+
+The whole-economy figure reproduces §4's 54.6% → 29.7% (it aggregated, so the approximation's errors cancelled). But
+**manufacturing alone runs 15–23%, BELOW the flat `wage_pct` of 0.25, not above it** — the whole-economy number is
+carried by farms and mines, which are labour-heavy and input-light. ⇒ **The claim that "a flat 25% is below vanilla's own
+wage share in every decade" is WRONG for the tiered industries**, which are the ones the ladder is about. For those the
+flat share was reasonable.
+⇒ The wage model still replaces it, for the reason that survives: it is a property of the economy and the decade rather
+than a constant, and a flat share OF GOODS cannot see a building whose employment is not in `t.employment` — the **ART
+ACADEMY**, whose jobs live in its ownership PMG (F143 §1a). That finding is untouched.
+
+#### 5. WHAT THE CORRECTED TOOLS NOW SAY
+
+`ladder_options` on the canon at GBR@1920: era 0 at **+£11/level/wk (median), essentially break-even**, the frontier at
+147–282%, wage share of cost falling 32 / 25 / 19 / 14% up the ladder. `era0_solvency` on vanilla's own 1836 recipe:
+**19 insolvent (industry × market) cells of 70, median margin +28%** — close to the original hardcoded-table reading
+(22 / 31% / +21%) and now on measured wages rather than on a table derived from the broken identity.
+⇒ ⚠ **Every era-0 figure quoted earlier today is superseded**: the flat-1.52 reading (26 cells / +7%) and the two-term
+one (21 / +14%) were both stations on the way to this.
+
+#### 6. WHAT IT DOES NOT SAY
+
+- One vanilla campaign, six dates. The coefficients are not re-measured on a mod arm, and the mod's own `base_wage` path
+  differs; a mod arm's wage bill should be read from v9 fields rather than modelled at all.
+- It does not explain the per-building spread, the 1.09 drift by 1921, or why `salary_rate` is not the rate paid.
+- The user's reading that SUBSIDIES sit at the dividend level is theirs and explicitly not certain; nothing here tests it.
+
+#### 7. ⚠⚠ THE PROCESS LESSON, WHICH COST MOST OF A DAY
+
+Two regressions, a fitted "premium", a fitted profit term, and a ruling-shaped claim about designed margins — all of it
+inferring a quantity the game writes into the save and prints in its own UI. **The trigger was available the whole time:
+`grep salary_rate` on a melt.** The register's own instruments (`vanilla_margins`, `criteria`) read the SUMMARY, and the
+summary did not carry the fields, so nobody looked at the melt.
+⇒ When a quantity is about what the ENGINE does, look for it in the engine's own data BEFORE modelling it — and treat a
+fitted coefficient with no mechanism as a signal that something observable has not been read yet.

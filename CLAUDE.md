@@ -170,20 +170,22 @@ wage term was either assumed (a flat `wage_pct` of 0.25) or unreconcilable (F92'
    The weights are vanilla's, read live from `common/pop_types`. **THE UNIT IS IN THE DEFINES** — the engine's wage rate is *weekly £ per
    `POP_SIZE_PACKAGE` employees*, so **£/employee/week = a save summary's `base_wage` ÷ 10,000** (GBR 1840 reads 0.0610, against F26's
    independently measured 0.0610 Austrian / 0.0796 Belgian). `config/measured_base_wages.json` is the committed path per tag per year, median
-   over the vanilla n=16 baseline. ⭐⭐ **THE WAGE BILL HAS TWO TERMS — `W = 1.19 × (normal rate × wage units) + 0.30 × the building's own
-   PROFIT`** (F152 §8; it supersedes the flat 1.52 of F152 §4). The engine raises a building's wage where it can afford to
-   (`BUILDING_PROFIT_TARGET_TO_RAISE_WAGES` 0.25) — so **THE WAGE ANSWERS BACK AND A RECIPE CANNOT SET A MARGIN**: solving gives
-   `P = (R − I − 1.19·Wm) ÷ 1.30`, i.e. every designed margin is damped by 1/1.30 before a single price moves. That is a second, purely
-   mechanical compression channel beside the price one, and one mechanism behind F139's designed 5/55/127/233 realising as 26/31/47/46.
-   ⚠⚠ **0.30 IS A REDUCED-FORM STAND-IN FOR AN UNOBSERVED `salary_rate`, NOT A SECOND COST (F152 §9).** A melted save's building record
-   carries **`salary_rate` — the building's OWN wage rate** — beside **`goods_sales` and `goods_cost`, revenue and inputs at MARKET**. With the
-   building's own rate the coefficient collapses to **0.019**. So use the two-term form to PREDICT (no building exists yet, only the country's
-   wage is known) and NEVER quote it as how the game computes a wage. ⭐ To READ a save, read those three fields — which also makes F150's
-   price-multiplier repair unnecessary. They are NOT in the save summary today; extracting them is an owed schema bump.
-   ⚠⚠ The flat 25% is **below vanilla's own wage share of total cost in every decade** (54.6% at 1840 → 29.7% at 1935) and worst where a
-   building's cost is nearly all labour: `tierEmployment()` charges the ART ACADEMY the 9,500 wage units of its OWNERSHIP PMG, where its empty
-   `employment` had given it zero. ⚠ `wage_pct` survives ONLY as the config-side accounting convention `make_ab_config`'s `target_be` and
-   `lint_solvency.mjs` (L18) use; re-basing those two is OPEN and needs its own ruling.
+   over the vanilla n=16 baseline. ⭐⭐⭐ **THERE IS NO PREMIUM AND NO PROFIT TERM — the line above is the whole model** (F152 §10, settled
+   against the game's own building panel; it RETIRES the 1.52× of §4 and the `1.19 + 0.30 × profit` of §8, both of which were artefacts of
+   approximating revenue as base-priced `va_out` × a price multiplier). Scored against the EXACT bill a save reports, it reads
+   **0.85 / 0.92 / 0.99 / 0.99 / 1.01 / 1.09** at 1836.2 / 1836.10 / 1857 / 1877 / 1897 / 1921 — right to ~1% in the median for most of the
+   century, the low readings being the opening year before wages settle. ⚠ The per-building spread is real and wide (p10 ≈ 0.45, p90 ≈ 1.6–1.8):
+   never quote this for ONE building. ⚠ The claim built on the retired coefficients — that a recipe cannot set a margin because the wage damps
+   it by 1/1.30 — is withdrawn with them.
+   ⭐ **`profit = revenue − inputs − wages`, and DIVIDENDS AND SUBSIDIES SIT BELOW IT** (the user, reading a live game: a building paid a 6.13k
+   dividend against 5.51k of profit and ran its reserves down). `profit_after_reserves` — what the summary calls `profit` — IS the clean
+   pre-distribution figure ruling 1 asks for, so nothing needs adding to quote the right thing.
+   ⚠ The wage share of TOTAL cost is 54% → 29% across the century for the WHOLE economy but **15–23% for MANUFACTURING ALONE** — BELOW the flat
+   25%, not above it (the whole-economy figure is carried by labour-heavy, input-light farms and mines). So for the TIERED industries the flat
+   share was reasonable. It is replaced because it is a CONSTANT where the truth is a property of the economy and the decade, and because a share
+   OF GOODS cannot see a building whose employment is not in `t.employment` — the ART ACADEMY, whose jobs live in its OWNERSHIP PMG and which
+   `tierEmployment()` now charges its real 9,500 wage units (F143 §1a). ⚠ `wage_pct` survives ONLY as the config-side accounting convention
+   `make_ab_config`'s `target_be` and `lint_solvency.mjs` (L18) use; re-basing those two is OPEN and needs its own ruling.
 3. ⭐⭐ **THE MARGIN IDENTITY IS REPAIRED.** `va_out`/`va_in` are BASE-priced and `profit` is MARKET-priced, so F92's
    `profit ÷ (va_out − profit)` mixed them (F150). The repair re-prices value added with the building's own goods mix:
    **`margin = profit ÷ (R − profit)`, `R = va_out × (market price ÷ base)`** — the implied wage bill is then positive in 490 of 520 priced
@@ -191,6 +193,9 @@ wage term was either assumed (a flat `wage_pct` of 0.25) or unreconcilable (F92'
    goods flows (financial districts, manor houses, company HQs: GBR 1900 alone is £2.75M/wk of unscoreable profit) — those report profit only.
    ⭐ **F92's 25.8% 1836 anchor STANDS**: at 1836 prices sit at 0.943 of base, so like-for-like the repair reads 30.5% against 30.9%, and the
    gap to 25.8% is a SAMPLE difference (the 7 instrumented markets are the rich ones), which `vanilla_margins.mjs` now prints both ways.
+   ⭐⭐ **AND IT IS A WORKAROUND, NOT THE ANSWER: save-summary v9 (2026-09-20) carries `goods_sales` and `goods_cost`** — revenue and inputs at
+   MARKET — so from v9 on nothing needs re-pricing and `wages = goods_sales − goods_cost − profit` is exact. The multiplier is for PRE-v9
+   sessions, which cannot be back-filled because the harvester reaps the `.v3`.
 
 ## ⭐⭐ THE INSTRUMENTED TAG LIST IS ELEVEN, AND THE POOL, THE MAJORS AND THE PRICE-TRACKED MARKETS ARE ONE FILE (user-ruled 2026-09-20)
 

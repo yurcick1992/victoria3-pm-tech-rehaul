@@ -10,7 +10,8 @@
 //   I = va_in  × priceMultiplier(its input mix)
 //   implied wage bill  = R − I − profit                             ⇐ what the ENGINE actually paid
 //   modelled wage bill = (base_wage ÷ POP_SIZE_PACKAGE) × Σ(emp × wage_weight) × staffed levels
-//   premium            = implied ÷ modelled
+//   premium            = implied ÷ modelled   ⚠⚠ RETIRED as a constant by F152 §10 — it measured the PRICE APPROXIMATION,
+//                                                  not a wage premium. From save-summary v9 read goods_sales/goods_cost instead.
 // The goods mix comes from the ACTIVE production methods the summary records per building type (`pms`),
 // read live from the game for vanilla keys and from the run's own config for a tiered key.
 //
