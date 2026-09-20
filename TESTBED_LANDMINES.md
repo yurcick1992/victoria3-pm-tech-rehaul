@@ -1859,3 +1859,46 @@ loops over `$t`, `$i`, `$f` must not also hold a scalar under the same letter.
 
 **Proven both ways (2026-09-18):** removing `pm_main_furniture_spray_finishing` from a built mod's furniture gate ⇒ `L35 FAIL … a gate
 admits furniture from era 1 upward but omits pm_main_furniture_spray_finishing (era 3)`; restoring it ⇒ `L35 PASS`.
+
+## L36 — A TELEMETRY METRIC NAME THAT MATCHES NOTHING, SO THE RUN MEASURES NOTHING AND SAYS SO NOWHERE (found 2026-09-20, session `20260920_192007_schedule`, both runs)
+
+### Why nothing fails
+`tools/telemetry_lib.ps1` selects every telemetry block with `if ($metrics -contains "<name>")`. An entry in a schedule's `metrics` list
+that matches no such test is **never emitted, and nothing anywhere reports it** — not the scheduler, not the builder, not the observer,
+not preflight. There is no list of valid names to check against and no complaint about an unmatched one.
+
+**MEASURED.** That session's schedule asked for `markets, gdp, buildings, pops, construction, research, companies, queues`, of which
+**only `construction` exists**. Run 1 played a clean, complete 1836→1936 century — `reached_ingame_date 1936.1.1`, `self_quit: true`,
+empty `abandoned_reason`, `mod_loaded: true`, all twelve dump dates in `dumps_seen`, `dump_complete: true`, 100 save summaries — and
+produced `goods_rows: 0`, `markets: {}`, `markets_not_found: {}` and a **94-byte `markets.tsv`: the header, no rows.** Of its 2,917
+`V3TB|` records, **2,891 were `CON`** plus 12 `BEGIN`, 12 `END`, one `SEED`, one `BOOT`, and **not one `G|` goods row.** The market
+block's real name is `market_goods_scoped`. ~2h52 of machine time; the batch's entire purpose unmeasured.
+
+⚠ **It is NOT L5.** There a spec KEY is dropped between the schedule and the builder. Here the key `metrics` arrives intact and its
+VALUES are nonsense, so L5's check cannot see it.
+⚠ **Every surface check passes,** including the ones written for exactly this family: the run is `status: ok`, L17 passes (it reached its
+`until` date), L26 passes, L34 passes. The only trace is a number nobody reads — `goods_rows: 0`.
+⚠ **A wrong name is also silently a COMPARABILITY failure.** A baseline must instrument the same metrics as the arms it will be divided
+into; that list shared ONE name of six with the arms', so even a `markets` that happened to work would not have been comparable.
+
+### Detector — `Test-LmL36`, repo-only, so it gates a batch before anything is built
+Every `metrics` entry in every `tools/testbed/schedules/*.json` (`defaults`, per `setups` entry, per `runs` entry) must appear in
+telemetry_lib.ps1's own `-contains` tests. **The valid set is DERIVED from the generator on every run, never copied into the detector** —
+a second hardcoded list is precisely what would drift, and the check exists because the first list drifted.
+
+⚠ **Read the schedule with a BOM-tolerant parser.** A first pass written in Node with a silent `catch` reported every schedule clean and
+was WRONG: `goodsfilter_probe.json` carries a UTF-8 BOM, `JSON.parse` threw, the catch swallowed it, and the one real offender in the repo
+was invisible. `ConvertFrom-Json` handles the BOM. Same trap as `verify_pms.mjs`, and the same lesson as `lib_runs.reportDropped` — a
+silent exclusion is indistinguishable from a thing that was checked.
+
+⚠ **A detector registers its verdict with `Add-Result`; it does NOT return a hashtable.** The first version returned one, which printed
+raw into the output stream and was never counted, so preflight reported `PASSED` with a `FAIL` visible above it. That is L24's shape
+(a function that returns content must not report through the success stream) reappearing inside the landmine register's own enforcement.
+
+### What it found beyond the session that produced it
+`goodsfilter_probe.json` asked for `consumption_goods` — a name referenced **nowhere** in the repo, evidently a pre-rename leftover for
+what is now `filter_probe`, which is what that schedule's own `_why` describes. It had **never been launched**, so no session is
+invalidated; repaired in place and recorded in the file's `_metric_name_repaired`.
+
+**Proven both ways (2026-09-20):** setting `accel_slide_n2.json`'s metrics to `markets, country_state` ⇒
+`L36 FAIL … accel_slide_n2.json [defaults]: 'markets'` and `PREFLIGHT FAILED`; restoring the real six ⇒ `L36 PASS`.

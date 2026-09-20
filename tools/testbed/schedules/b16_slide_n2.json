@@ -48,14 +48,12 @@
       "JAP"
     ],
     "metrics": [
-      "markets",
-      "gdp",
-      "buildings",
-      "pops",
-      "construction",
-      "research",
-      "companies",
-      "queues"
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
     ],
     "autosave_interval": "yearly",
     "timeout_minutes": 420

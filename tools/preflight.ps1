@@ -1468,6 +1468,63 @@ function Test-LmL33 {
 # `Artifact` = needs a BUILT mod to read. The rest read the repo and can therefore gate a batch
 # BEFORE anything is built, which is the difference between failing in two seconds and failing after
 # the first run's build.
+function Test-LmL36 {
+    <#
+      L36 - A TELEMETRY METRIC NAME THAT MATCHES NOTHING, SILENTLY MEASURING NOTHING
+      (found 2026-09-20, session 20260920_192007_schedule, both runs).
+
+      tools/telemetry_lib.ps1 selects every telemetry block with `if ($metrics -contains "<name>")`.
+      An entry in a schedule's `metrics` list that matches no such test is simply never emitted, and
+      NOTHING anywhere says so. The schedule validates, the build passes, the mod loads, the init
+      marker is written, every dump date fires, `dumps_seen` lists all twelve, `dump_complete` is
+      true, the run reaches 1936 and self-quits - and the TSV is a header with no rows.
+
+      MEASURED: that session's schedule asked for
+          markets, gdp, buildings, pops, construction, research, companies, queues
+      of which ONLY `construction` exists. Run 1 played a clean 1836->1936 century and produced
+      `goods_rows: 0`, `markets: {}`, `markets_not_found: {}`, a 94-byte markets.tsv, and of its 2,917
+      V3TB records 2,891 were CON with not one `G|` goods row. The market block's real name is
+      `market_goods_scoped`. ~2h52 of machine time, and the batch's whole purpose (the PI/PP price
+      basis) unmeasured.
+
+      ⚠ It is NOT L5. There the spec KEY is dropped between the schedule and the builder; here the key
+      arrives intact and its VALUES are nonsense. L5's check cannot see it.
+      ⚠ A wrong name is also silently a COMPARABILITY failure: a baseline must instrument the same
+      metrics as the arms it is divided into, and that list shared one name of six with theirs.
+
+      DETECTOR: every `metrics` entry in every schedule (defaults, per setup, per run) must appear in
+      telemetry_lib.ps1's own `-contains` tests. The valid set is DERIVED from the generator on every
+      run, never copied here - a second hardcoded list is exactly what would drift.
+    #>
+    $lib = Join-Path $PSScriptRoot 'telemetry_lib.ps1'
+    if (-not (Test-Path $lib)) { Add-Result 'L36' 'a telemetry metric name that matches nothing' 'WARN' 'telemetry_lib.ps1 missing - metric names not checked'; return }
+    $valid = [System.Collections.Generic.HashSet[string]]::new()
+    foreach ($m in [regex]::Matches((Get-Content $lib -Raw), '\$metrics\s+-contains\s+[''"]([a-z_0-9]+)[''"]')) {
+        [void]$valid.Add($m.Groups[1].Value)
+    }
+    if ($valid.Count -lt 5) { Add-Result 'L36' 'a telemetry metric name that matches nothing' 'WARN' "only $($valid.Count) metric name(s) derived from telemetry_lib.ps1 - the pattern moved, not checked"; return }
+    $dir = Join-Path $PSScriptRoot 'testbed\schedules'
+    if (-not (Test-Path $dir)) { Add-Result 'L36' 'a telemetry metric name that matches nothing' 'N/A' 'no schedules directory'; return }
+    $bad = @()
+    foreach ($f in Get-ChildItem $dir -Filter *.json -File) {
+        try { $j = Get-Content $f.FullName -Raw | ConvertFrom-Json } catch { continue }
+        $lists = @()
+        if ($j.defaults -and $j.defaults.metrics) { $lists += ,@('defaults', $j.defaults.metrics) }
+        if ($j.setups) { foreach ($p in $j.setups.PSObject.Properties) { if ($p.Value.metrics) { $lists += ,@("setup $($p.Name)", $p.Value.metrics) } } }
+        if ($j.runs) { foreach ($r in $j.runs) { if ($r.metrics) { $lists += ,@('a run', $r.metrics) } } }
+        foreach ($pair in $lists) {
+            foreach ($name in @($pair[1])) {
+                if (-not $valid.Contains([string]$name)) { $bad += "$($f.Name) [$($pair[0])]: '$name'" }
+            }
+        }
+    }
+    if ($bad.Count) {
+        Add-Result 'L36' 'a telemetry metric name that matches nothing' 'FAIL' ("$($bad.Count) metric name(s) match NO block in telemetry_lib.ps1 - they would emit nothing, silently:`n" + ($bad -join "`n") + "`nvalid names: " + (($valid | Sort-Object) -join ', '))
+        return
+    }
+    Add-Result 'L36' 'a telemetry metric name that matches nothing' 'PASS' "every schedule's metrics resolve to a real telemetry block ($($valid.Count) valid names)"
+}
+
 $CHECKS = @(
     @{ Id = 'L1'; Artifact = $true;  Fn = { Test-LmL1 } },
     @{ Id = 'L2'; Artifact = $true;  Fn = { Test-LmL2 } },
@@ -1504,6 +1561,9 @@ $CHECKS = @(
     @{ Id = 'L33'; Artifact = $false; Fn = { Test-LmL33 } }
     # L35 reads the EMITTED production_methods against the config: a minted rung that no gate admits.
     @{ Id = 'L35'; Artifact = $true;  Fn = { Test-LmL35 } }
+    # L36 reads the SCHEDULES against telemetry_lib.ps1's own -contains tests: a metric name that
+    # matches nothing emits nothing, silently. Repo-only, so it gates a batch before anything is built.
+    @{ Id = 'L36'; Artifact = $false; Fn = { Test-LmL36 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {
