@@ -15153,3 +15153,53 @@ break-even (143% of base, inside the band) without weighing that steel's own OUT
 - ⚠ **ROADMAP step 8 P2 rides along in every arm**: `pm_goods` / `pm_employment` are empty in every four-rung book since
   `canon4v`, so urban centres run VANILLA's `pm_electric_streetlights` — electricity 3 IN — where §10.43 ruled them a SOURCE
   (+1 electricity out, 2 coal in, 250 engineers). Tech-gated, so unreachable in these probes; live for most of a century.
+
+## F150 — ⚠⚠ THE MARGIN IDENTITY DOES NOT RECONCILE: F92's `margin = profit ÷ (va_out − profit)` assumes `profit = va_out − va_in − wages`, and on a century endpoint the implied wage bill is **NEGATIVE in 26% of (country × building-type) entries and 45% of LEVELS** — concentrated in the OWNERSHIP buildings, whose profit plainly carries investment income the goods flows do not. Every margin this project has quoted rests on it (measured read-only, 2026-09-20)
+
+**How it surfaced.** The user asked for the era-0 census "in terms of true profits (wages correctly deducted)" and, separately,
+ruled that reports must quote **profit, not margin**. Checking whether the save's own `profit` already deducts wages — F92 says
+it does, and the whole identity rests on that — produced an impossible number on the first building looked at.
+
+**The check**, on run 1 of `20260920_114003_anch-costslide-century` at 1935, over every (country × building type) with levels > 0:
+`implied wages = va_out − va_in − profit`, which must be ≥ 0.
+
+| | entries | share |
+|---|---|---|
+| entries examined | 7,067 | — |
+| **implied wage bill NEGATIVE** | **1,845** | **26.1% of entries · 45.3% of LEVELS** |
+
+**Where it is worst — ownership buildings, and the pattern names the cause:**
+
+| country · building | residual | levels |
+|---|---|---|
+| GBR financial district | **−7,964,993** | 3,184 |
+| GBR company Bolckow Vaughan | −3,059,747 | 2,318 |
+| GBR manor house | −2,597,442 | 2,590 |
+| USA financial district | −2,296,498 | 728 |
+| GBR company HBC | −1,041,485 | 3,075 |
+
+Most affected building types by count of country-entries: manor_house ×222, financial_district ×144, army_logistics_center ×113,
+trade_center ×90, **motor_industry ×67, textile_mill ×60, paper_mill ×47, furniture_manufactory ×42**, railway ×54, power_plant ×39.
+
+⭐ **The reading the pattern supports**: `profit` is the building's whole bottom line and includes income that is not production —
+dividends and ownership income for the financial districts, manor houses and company headquarters that sit at the top of the list —
+while `va_out` / `va_in` are goods flows only. A building that banks non-production income therefore shows `profit > value added`,
+and the residual goes negative. ⚠ This is a READING of the pattern, not a confirmed mechanism; `subsidised` is 0 on the motor
+entries checked, so subsidy is ruled out, and nothing else has been established.
+
+⚠⚠ **WHAT IT PUTS IN DOUBT.** F92's identity is used by `criteria.mjs` (the register's own margin lines), `vanilla_margins.mjs`
+(the 25.8% vanilla manufacturing anchor every design margin is judged against), `slid_vs_unslid.mjs`, `early_probe.mjs` and every
+margin quoted in this session — including the slid-vs-unslid table (slid e2 90% against unslid 41%) and the e0 survivor census.
+Where the residual is sound the identity is sound; where it is negative the margin is measuring something other than production
+profitability, and **45% of levels are on the wrong side of that line**. F92 itself warned the cross-check was "close but not
+exact" and that a single building type was "approximate" — this is a different and larger problem, and it is not random: it is
+concentrated exactly where ownership income is.
+
+⇒ **Owed, before any further margin is quoted** (HANDOVER §0.3): establish what `profit` contains — the melted-save readers can
+see the fields the summary aggregates — and either repair the identity (e.g. margin from `va_out`, `va_in` and a MODELLED wage
+bill) or retire it. Meanwhile `profit` in £ remains the building's own bottom line and is what the user has ruled reports must
+quote.
+
+⚠ **What it does NOT overturn.** Quantities — levels, staffed levels, workers, production volumes, prices, order books — are
+untouched, so F149's price decline, the T0 census, the obsolescence readings and every GDP figure stand. It is specifically the
+MARGIN column, wherever the residual is negative.
