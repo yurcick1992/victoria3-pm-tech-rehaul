@@ -37,10 +37,17 @@
 // because the wage answers back.** Solving the line above for profit gives the closed form `predictProfit()`
 // uses, and a design margin is damped by 1/1.30 before any price moves at all — one mechanism behind F139's
 // compression of a designed 5/55/127/233 ladder into a realised 26/31/47/46.
-// ⚠ A SECOND READING survives the same data and cannot be separated from it: if the save's `profit` is
-// reported NET of owner distributions, then `revenue − inputs − profit` is wages PLUS dividends and b is the
-// dividend share. Both readings give the same arithmetic here; only the LABEL on b differs. Nothing rests on
-// which it is, so nothing claims to know.
+// ⚠⚠ WHAT `b` ACTUALLY IS — CORRECTED THE SAME DAY (F152 §9), AND IT IS NOT A SECOND COST.
+// A building record in the melted save carries **`salary_rate`, its OWN wage rate**, beside `goods_sales` and
+// `goods_cost` (revenue and inputs at MARKET). Re-running this regression with each building's own rate in
+// place of the country's, over 6,160 buildings: the wage coefficient reads 1.10 and **`b` collapses to 0.019**.
+// So `b` was the COUNTRY-level rate standing in for a BUILDING-level one — a building that earns more sets a
+// higher `salary_rate`, which leaves a profit-shaped hole in a country-keyed fit. The MECHANISM is real (the
+// engine's wage-raising rule is why the hole is profit-shaped); the description of `b` as a term in the wage
+// bill, and the dividend reading once offered beside it, are NOT.
+// ⇒ `b` is a REDUCED-FORM coefficient for an unobserved `salary_rate`. It earns its place in a PREDICTION,
+//   where no building exists yet and only the country's wage is available, and it must never be quoted as a
+//   statement about how the game computes a wage. To READ a save, read `salary_rate`.
 // Measured against the building's own reported profit, the forms rank:
 //     two-term (this one)  median |err| 26.5%   p90  89%   bias  +0.1%
 //     flat 1.52            median |err| 38.7%   p90 149%   bias  +5.2%

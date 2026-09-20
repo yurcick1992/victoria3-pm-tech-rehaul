@@ -8475,8 +8475,13 @@ replace it and may never be the headline. Implemented in `e0_survivors.mjs`, `ru
   (`BUILDING_PROFIT_TARGET_TO_RAISE_WAGES` 0.25, `..._TO_LOWER_WAGES` 0.15). The split is identified (weighted
   collinearity 0.76) and stable across all seven instrumented countries (a 1.01–1.26, b 0.18–0.65), and it predicts a
   building's own profit at 26.5% median error against the flat premium's 38.7%, with the bias gone (+0.1% against +5.2%).
-  ⚠ A second reading survives the same data and cannot be separated from it — if `profit` is reported NET of owner
-  distributions then `b` is the dividend share, not a wage response. The arithmetic is identical; only the label differs.
+  ⚠⚠ **`b` IS A REDUCED-FORM STAND-IN, NOT A SECOND COST — corrected the same day, F152 §9.** A melted save's building
+  record carries **`salary_rate`, the building's OWN wage rate**, beside `goods_sales`/`goods_cost` (revenue and inputs at
+  MARKET). Re-run with each building's own rate over 6,160 buildings, the wage coefficient reads 1.10 and **`b` collapses
+  to 0.019**: it was the COUNTRY-level rate standing in for a BUILDING-level one. The mechanism is real — the engine's
+  wage-raising rule is why the hole was profit-shaped — but `b` is not a term in the wage bill, and the dividend reading
+  once offered beside it is withdrawn. ⇒ use it to PREDICT (no building exists yet, only the country's wage is known);
+  to READ a save, read `salary_rate`, and bump the summary schema so it is there to read.
   ⭐⭐ **THE DESIGN CONSEQUENCE IS LARGER THAN THE ARITHMETIC: A RECIPE CANNOT SET A BUILDING'S MARGIN.** Solving the line
   above gives `P = (R − I − 1.19·Wm) ÷ 1.30`, so **every designed margin is damped by 1/1.30 before a single price moves** —
   a second, purely mechanical compression channel beside the price one, and one mechanism behind F139's designed

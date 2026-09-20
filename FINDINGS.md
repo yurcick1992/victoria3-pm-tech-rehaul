@@ -15516,3 +15516,68 @@ lower-wages rule. `--profit-wage-share 0` restores the fixed-wage reading in bot
 profit), it does not distinguish the two readings of `b`, and it is measured on VANILLA only — the mod arm was not re-fitted
 separately, so the coefficients are assumed transferable on the same grounds §4's premium was (the flat premium read 1.52
 vanilla against 1.54 on the mod arm).
+
+### ⚠⚠ F152 §9 — CORRECTION, SAME DAY: THE SAVE REPORTS ALL OF THIS DIRECTLY, AND §8's "0.30 × PROFIT" IS AN ARTEFACT OF NOT READING IT
+
+**How it surfaced.** The user, on being shown §8: *"I don't get this all at all, to be honest. Can you check some building's
+economy to disambiguate? … Because I'm asking for quite a simple thing displayed in the interface, that doesn't contain any
+'premiums' or whatever."* They were right. Melting one save and reading one building record answers in ten lines what §4 and
+§8 spent two regressions inferring.
+
+**A BUILDING RECORD IN THE MELTED SAVE CARRIES ITS OWN LEDGER.** From a vanilla 1919 autosave, a 17-level textile mill:
+
+```
+levels=17   staffing=17   throughput=1.46036
+salary_rate=931.79641                  <- THE BUILDING'S OWN wage rate, not the country's
+goods_cost=58107.89605                 <- inputs at MARKET prices
+goods_sales=89210.35338                <- revenue at MARKET prices
+profit_after_reserves=21647.71902
+income_taxes=1322.32904
+other_building_dividends=21647.71902
+```
+
+⇒ **`goods_sales` and `goods_cost` are revenue and inputs at market**, so the whole F150/F152 §3 price-multiplier repair —
+re-pricing `va_out` with the building's goods mix — exists only because `tools/testbed/save_state_summary.mjs` extracts
+`va_out`/`va_in` (base-priced, computed by us) and `profit_after_reserves`, and **not these two fields**. The repair is
+arithmetically right and it is a workaround for a summary schema that drops the answer.
+⇒ **`salary_rate` is per BUILDING.** The country's `base_wage` is a different, country-level number.
+
+**WHAT THAT DOES TO §8's TWO-TERM FIT.** Re-running the same regression with each building's OWN `salary_rate` in place of
+the country's normal rate, over 6,160 scoreable buildings in that one save:
+
+| coefficient | with the COUNTRY's base_wage (§8) | with the BUILDING's own salary_rate |
+|---|---|---|
+| a, the wage term | 1.19 | **1.10** |
+| **b, the profit term** | **0.30** | **0.019** |
+| c, income taxes | — | 0.647 |
+
+> ⭐⭐ **THE PROFIT TERM COLLAPSES TO 0.019.** It was never a separate cost and it was never dividends. It was the
+> COUNTRY-level wage standing in for a BUILDING-level one: a building that earns more sets a higher `salary_rate`, so
+> regressing on the country's rate leaves a profit-shaped hole, and `b` was filling it.
+
+⚠ **What survives, and what does not.** The MECHANISM survives — the engine does raise a building's wage where it can
+afford to (`BUILDING_PROFIT_TARGET_TO_RAISE_WAGES` 0.25), which is why the hole was profit-shaped, and a designed margin
+IS therefore damped before any price moves. What does NOT survive is §8's description of it as a second term in the wage
+bill, or the dividend reading offered beside it: with the building's own rate there is no such term. `b` is a REDUCED-FORM
+coefficient that stands in for an unobserved `salary_rate` — useful for a design-side prediction, where no building exists
+yet and only the country's wage is available, and wrong as a statement about the game.
+
+**⭐ THE PROFESSION WEIGHTS ARE CONFIRMED, and this is the user's own question answered directly.** Same 6,160 buildings,
+implied wage bill ÷ modelled:
+
+| wage model | median ratio | within ±1% |
+|---|---|---|
+| `salary_rate × Σ(employees × wage_weight) × staffing` | **1.15** | 2.3% |
+| the same with NO weights, heads only | 1.70 | 0.9% |
+
+Weighting by profession is unambiguously right; a head count is 70% out. ⇒ composition is in the model and belongs there.
+
+**⚠ WHAT IS STILL NOT EXPLAINED: the remaining ~10–15% and its spread** (p10 0.67, p90 2.51 across buildings). Candidates
+the record itself names — `income_taxes` (the fit puts 0.65 of it in the residual), `cash_reserves` (buildings with none
+read 1.086 against 1.150 for those with), and employment possibly not being exactly per-level × `staffing`. None is
+settled. Using `levels` instead of `staffing` reads 1.034, closer, which is a hint and not a finding.
+
+⇒ **OWED, and it is a schema change, not a model**: extract `goods_sales`, `goods_cost` and `salary_rate` into the save
+summary (a `SAVE_SUMMARY_VERSION` bump). Then a report needs no price multiplier, no premium and no fitted coefficient —
+wages, revenue, inputs and profit are all read. ⚠ It only helps runs from that point on: `harvest_saves.ps1` reaps the
+`.v3` after summarising, so past sessions cannot be back-filled except from the newest save each run keeps.

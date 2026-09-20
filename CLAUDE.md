@@ -175,8 +175,11 @@ wage term was either assumed (a flat `wage_pct` of 0.25) or unreconcilable (F92'
    (`BUILDING_PROFIT_TARGET_TO_RAISE_WAGES` 0.25) — so **THE WAGE ANSWERS BACK AND A RECIPE CANNOT SET A MARGIN**: solving gives
    `P = (R − I − 1.19·Wm) ÷ 1.30`, i.e. every designed margin is damped by 1/1.30 before a single price moves. That is a second, purely
    mechanical compression channel beside the price one, and one mechanism behind F139's designed 5/55/127/233 realising as 26/31/47/46.
-   ⚠ A second reading survives the same data — if `profit` is reported NET of owner distributions then 0.30 is the dividend share, not a wage
-   response. The arithmetic is identical either way; only the label differs, and nothing rests on it.
+   ⚠⚠ **0.30 IS A REDUCED-FORM STAND-IN FOR AN UNOBSERVED `salary_rate`, NOT A SECOND COST (F152 §9).** A melted save's building record
+   carries **`salary_rate` — the building's OWN wage rate** — beside **`goods_sales` and `goods_cost`, revenue and inputs at MARKET**. With the
+   building's own rate the coefficient collapses to **0.019**. So use the two-term form to PREDICT (no building exists yet, only the country's
+   wage is known) and NEVER quote it as how the game computes a wage. ⭐ To READ a save, read those three fields — which also makes F150's
+   price-multiplier repair unnecessary. They are NOT in the save summary today; extracting them is an owed schema bump.
    ⚠⚠ The flat 25% is **below vanilla's own wage share of total cost in every decade** (54.6% at 1840 → 29.7% at 1935) and worst where a
    building's cost is nearly all labour: `tierEmployment()` charges the ART ACADEMY the 9,500 wage units of its OWNERSHIP PMG, where its empty
    `employment` had given it zero. ⚠ `wage_pct` survives ONLY as the config-side accounting convention `make_ab_config`'s `target_be` and
@@ -1653,6 +1656,19 @@ tools/                  dev tooling — NOT shipped in the mod
                         and **`trueMargin(profit, R)`**, which returns NULL rather than a number when it cannot be
                         computed. ⚠ `TAG_FAMILY` resolves GER→NGF→PRU and NET→UNL, so a wage path does not break
                         where a country changes tag
+  building_ledger.mjs   ⭐⭐ THE BUILDING'S OWN LEDGER, STRAIGHT OUT OF A MELTED SAVE — no model, no inference,
+                        no fitted coefficient (2026-09-20, FINDINGS F152 §9). Written when the user said of the wage
+                        work "I am asking for quite a simple thing displayed in the interface, that does not contain
+                        any premiums or whatever" — and was right. A building record carries salary_rate (THE
+                        BUILDING'S OWN wage rate, not the country's), goods_cost and goods_sales (inputs and revenue
+                        at MARKET prices), profit_after_reserves, income_taxes, cash_reserves and its dividends.
+                        ⇒ goods_sales/goods_cost make F150's price-multiplier repair unnecessary wherever they can be
+                        read; the repair exists because the SUMMARY carries base-priced va_out/va_in instead.
+                        It prints the implied wage bill against the modelled one, the regression that says what else
+                        is in the residual (the profit term collapses to 0.019 once the building's own rate is used)
+                        and a head-to-head of candidate identities — including the no-weights control that proves the
+                        profession weights belong (1.70 without them against 1.15 with).
+                        ⚠ Takes a MELT, not a save: rakaly melt --format vic3 --unknown-key stringify -c <save.v3>
   fit_wage_model.mjs    ⭐⭐ WHERE THE WAGE MODEL'S TWO COEFFICIENTS COME FROM (FINDINGS F152 §8). Read-only.
                         Written because the user asked whether workforce COMPOSITION was in the model — it is, and
                         testing that rather than asserting it split the flat premium in two. Fits, against the actual
