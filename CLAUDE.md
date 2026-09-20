@@ -2671,6 +2671,17 @@ the game.
 
 ## Working conventions
 
+- ⚠⚠ **WRITE PROSE WITH THE FILE-EDITING TOOL, NEVER THROUGH BASH — BACKTICKS AND WINDOWS PATHS ARE EATEN SILENTLY.**
+  A backtick inside a double-quoted bash string is COMMAND SUBSTITUTION: bash runs whatever is between the backticks and
+  substitutes its output, so `` `markets.tsv` `` becomes an empty string and the sentence is left with a hole in it —
+  *"so  carries no German prices"*. A quoted heredoc (`<<'EOF'`) does **not** reliably protect it either; a backslash-heavy
+  Windows path was mangled the same way (`'C:\Program Files...'` → `C:\Program Files (x86)SteamsteamappscommonVictoria 3game`).
+  ⚠ **Nothing fails.** The command exits 0, the file is written, the JSON still parses — the only trace is a missing word,
+  which in a design note is exactly the word that carried the meaning. It cost **three separate edits in one pass** on
+  2026-09-20 (a schedule note, a tie-breaker note and the handover itself) after the previous session's handover had already
+  warned about it, which is why it is here and not only there.
+  ⇒ **Prose containing backticks, or any Windows path, goes through Write/Edit.** Bash is for commands, not for documents.
+  ⇒ **Read the result back after any doc edit** — all three were caught only because the tool echoed the file afterwards.
 - **Keep the docs in sync with reality — always, in the same pass as the change.** Any change
   that affects behavior, file structure, conventions, scope, or numbers must be reflected in the
   relevant `.md` (`CLAUDE.md`, `BALANCE_FRAMEWORK.md`, `MODDING_NOTES.md`, `ON_GAME_UPDATE.md`,
